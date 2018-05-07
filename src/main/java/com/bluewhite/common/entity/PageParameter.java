@@ -1,4 +1,4 @@
-package bluewhite.common.entity;
+package com.bluewhite.common.entity;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

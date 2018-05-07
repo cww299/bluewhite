@@ -1,4 +1,4 @@
-package bluewhite.common.entity;
+package com.bluewhite.common.entity;
 
 import java.io.Serializable;
 import java.util.Set;

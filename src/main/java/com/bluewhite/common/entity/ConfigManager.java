@@ -1,4 +1,4 @@
-package bluewhite.common.entity;
+package com.bluewhite.common.entity;
 
 /**
  * 系统配置加载器
