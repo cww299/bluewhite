@@ -64,8 +64,8 @@
            timeToIdleSeconds="0"
            statistics="true"/>
            
-    <!-- 普通用户访问接口的accessToken缓存，24小时 -->
-    <cache name="normalAccessTokenCache"
+    <!-- 用户访问接口的accessToken缓存，24小时 -->
+    <cache name="apiAccessTokenCache"
            maxEntriesLocalHeap="2000"
            eternal="false"
            timeToIdleSeconds="3600"
@@ -74,15 +74,6 @@
            statistics="true">
     </cache>
     
-    <!-- 管理员访问接口的accessToken缓存，24小时 -->
-    <cache name="adminAccessTokenCache"
-           maxEntriesLocalHeap="2000"
-           eternal="false"
-           timeToIdleSeconds="3600"
-           timeToLiveSeconds="0"
-           overflowToDisk="false"
-           statistics="true">
-    </cache>
     
     
      <cache name="code-cache-auth2"

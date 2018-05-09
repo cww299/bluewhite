@@ -105,37 +105,6 @@ public class CommonResponse {
 		this.data = data;
 	}
 	
-//	/**
-//	 * 设置分页数据，转换成包含total和rows的Map，以便序列化的JSON能符合Easyui datagrid的格式规定。
-//	 * @param pageInfo 分页数据。
-//	 */
-//	public void setDataForEasyuiGrid(PageInfo pageInfo) {
-//		Map<String,Object> map = new HashMap<String,Object>();
-//		if(pageInfo != null) {
-//			map.put("total", pageInfo.getCount());
-//	        map.put("rows", pageInfo.getData());
-//		} else {
-//			map.put("total", 0);
-//	        map.put("rows", null);
-//		}
-//        this.data = map;
-//	}
-//	
-//	/**
-//	 * 设置列表数据，转换成包含total和rows的Map，以便序列化的JSON能符合Easyui datagrid的格式规定。
-//	 * @param list 数据列表。
-//	 */
-//	public void setDataForEasyuiGrid(List<?> list) {
-//		Map<String,Object> map = new HashMap<String,Object>();
-//		if(list != null) {
-//			map.put("total", list.size());
-//	        map.put("rows", list);
-//		} else {
-//			map.put("total", 0);
-//	        map.put("rows", null);
-//		}
-//        this.data = map;
-//	}
 	
 	/**
 	 * 转化成Map对象。

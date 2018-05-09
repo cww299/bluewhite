@@ -4,13 +4,13 @@
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
     <appender name="default" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="C:/logs/activity.manage/activity.manage.html" />
+        <param name="File" value="C:/logs/bluewhite.html" />
        
         <param name="Append" value="true" />
         <param name="MaxBackupIndex" value="10" />
         <param name="MaxFileSize" value="500KB" />
         <param name="Encoding" value = "UTF-8"/>
-        <layout class="bluewhite.common.exception.HTMLLayout">
+        <layout class="com.bluewhite.common.HTMLLayout">
             <param name="Title" value="蓝白erp系统日志" />
         </layout>
     </appender>

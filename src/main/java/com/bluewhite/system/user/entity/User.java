@@ -13,7 +13,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.bluewhite.base.BaseEntity;
 
 /**
@@ -21,66 +23,70 @@ import com.bluewhite.base.BaseEntity;
  * @author zhangliang
  *
  */
+/**
+ * @author LB-BY06
+ *
+ */
 @Entity
 @Table(name = "sys_user")
-//@Inheritance 的 strategy 属性是指定继承关系的生成策略，JOINED 是将父类、子类分别存放在不同的表中，并且建立相应的外键，以确定相互之间的关系。
+// @Inheritance 的 strategy 属性是指定继承关系的生成策略，JOINED
+// 是将父类、子类分别存放在不同的表中，并且建立相应的外键，以确定相互之间的关系。
 @Inheritance(strategy = InheritanceType.JOINED)
-public class User extends BaseEntity<Long>{
+public class User extends BaseEntity<Long> {
 	/**
 	 * 系统管理员标识
 	 */
 	@Column(name = "isAdmin", nullable = false)
-	private Integer isAdmin = 0;
+	private Boolean isAdmin = false;
 
 	/**
 	 * 用户名
 	 */
 	@Column(name = "login_name", nullable = false)
 	private String loginName;
-	
+
 	/**
 	 * 手机
 	 */
 	@Column(name = "phone")
 	private String phone;
-	
+
 	/**
 	 * 用户密码,加密后
 	 */
 	@Column(name = "password")
 	private String password;
-	
+
 	/**
 	 * 真实名
 	 */
 	@Column(name = "realname")
 	private String userName;
-		
+
 	/**
 	 * 是否锁定
 	 */
 	@Column(name = "del_flag")
 	private Integer delFlag;
-	
+
 	/**
 	 * 邮箱
 	 */
 	@Column(name = "email")
 	private String email;
-	
+
 	/**
 	 * 性别
 	 */
 	@Column(name = "gender")
 	private Integer gender;
 
-
 	/**
 	 * 生日
 	 */
 	@Column(name = "birth_date")
 	private Date birthDate;
-	
+
 	/**
 	 * idcard
 	 */
@@ -98,7 +104,7 @@ public class User extends BaseEntity<Long>{
 	 */
 	@Column(name = "position")
 	private String position;
-	
+
 	/**
 	 * 教育水平
 	 */
@@ -110,8 +116,7 @@ public class User extends BaseEntity<Long>{
 	 */
 	@Column(name = "orgName")
 	private String orgName;
-	
-	
+
 	/**
 	 * 角色集合
 	 */
@@ -119,11 +124,60 @@ public class User extends BaseEntity<Long>{
 	@JoinTable(name = "sys_user_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 	private Set<Role> roles = new HashSet<Role>();
 
-	public Integer getIsAdmin() {
+	/**
+	 * 权限
+	 */
+	@Transient
+	@JSONField(serialize = false)
+	private Set<String> permissions = new HashSet<>();
+
+	@Transient
+	@JSONField(serialize = false)
+	private String role;// 特殊业务字段，仅用于判断该用户所含角色
+
+	/**
+	 * 非数据库字段，业务字段，“，”分开存储角色标识
+	 */
+	@Transient
+	private String rolesIdenti;
+
+	/**
+	 * 非数据库字段，业务字段，“，”分开存储角色名称标识
+	 */
+	@Transient
+	private String rolesName;
+	
+	
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public String getRolesIdenti() {
+		return rolesIdenti;
+	}
+
+	public void setRolesIdenti(String rolesIdenti) {
+		this.rolesIdenti = rolesIdenti;
+	}
+
+	public String getRolesName() {
+		return rolesName;
+	}
+
+	public void setRolesName(String rolesName) {
+		this.rolesName = rolesName;
+	}
+
+	public Boolean getIsAdmin() {
 		return isAdmin;
 	}
 
-	public void setIsAdmin(Integer isAdmin) {
+	public void setIsAdmin(Boolean isAdmin) {
 		this.isAdmin = isAdmin;
 	}
 
@@ -230,12 +284,21 @@ public class User extends BaseEntity<Long>{
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
 	}
-	
-	
 
+	public Set<Role> getRoles() {
+		return roles;
+	}
 
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
 
+	public Set<String> getPermissions() {
+		return permissions;
+	}
 
-	
-	
+	public void setPermissions(Set<String> permissions) {
+		this.permissions = permissions;
+	}
+
 }

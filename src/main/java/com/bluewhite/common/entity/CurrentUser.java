@@ -20,7 +20,7 @@ public class CurrentUser {
 	/**
 	 * 登录用户名
 	 */
-	private String username;
+	private String userName;
 	/**
 	 * 登录用户真实名
 	 */
@@ -29,57 +29,39 @@ public class CurrentUser {
 	 * 性别
 	 */
 	private Integer sex;
-	/*个人介绍*/
-	private String note;
 	/**
 	 * 登录用户角色集合
 	 */
 	private Set<String> roles;
+	
 	/**
-	 * 管理员显示区域，其它显示部门名
+	 * 部门名
 	 */
 	private String name;
-	@JSONField(serialize = false)
+	
 	/**
 	 * 登录用户角色标志符集合
 	 */
+	@JSONField(serialize = false)
 	private Set<String> rolesIdenti;// 登录用户的角色标识符
 	/**
 	 * 是否是管理员
 	 */
 	private Boolean admin;
-	/**
-	 * 区划id
-	 */
-	private Long areaId;
-	/**
-	 * 区划名称
-	 */
-	private String areaName;
-	/**
-	 * 区划编码
-	 */
-	private String areaCode;
+
 	/**
 	 * 联系电话
 	 */
-	private String mobileTelephone;
+	private String phone;
+	
 	/**
-	 * 学校id
+	 * 密码
 	 */
-	private Long schoolId;
+	private String password;
+	
+	
 	/**
-	 * 学校名称
-	 */
-	private String schoolName;
-	/**
-	 * 用户openid
-	 */
-	private String openId;
-	/**
-	 * 用户token
-	 */
-	private String userToken;
+
 	/**
 	 * 用户权限集合
 	 */
@@ -94,12 +76,12 @@ public class CurrentUser {
 		this.id = (Long)id;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	public Set<String> getRoles() {
@@ -126,23 +108,6 @@ public class CurrentUser {
 		this.admin = admin;
 	}
 
-	public Long getAreaId() {
-		return areaId;
-	}
-
-	public void setAreaId(Long areaId) {
-		this.areaId = areaId;
-	}
-
-	public String getMobileTelephone() {
-		return mobileTelephone;
-	}
-
-	public void setMobileTelephone(String mobileTelephone) {
-		this.mobileTelephone = mobileTelephone;
-	}
-
-
 	public Set<String> getPermissions() {
 		return permissions;
 	}
@@ -159,13 +124,6 @@ public class CurrentUser {
 		this.name = name;
 	}
 
-	public Long getSchoolId() {
-		return schoolId;
-	}
-
-	public void setSchoolId(Long schoolId) {
-		this.schoolId = schoolId;
-	}
 
 	public String getRealname() {
 		return realname;
@@ -173,46 +131,6 @@ public class CurrentUser {
 
 	public void setRealname(String realname) {
 		this.realname = realname;
-	}
-
-	public String getAreaName() {
-		return areaName;
-	}
-
-	public void setAreaName(String areaName) {
-		this.areaName = areaName;
-	}
-
-	public String getAreaCode() {
-		return areaCode;
-	}
-
-	public void setAreaCode(String areaCode) {
-		this.areaCode = areaCode;
-	}
-
-	public String getSchoolName() {
-		return schoolName;
-	}
-
-	public void setSchoolName(String schoolName) {
-		this.schoolName = schoolName;
-	}
-
-	public String getOpenId() {
-		return openId;
-	}
-
-	public void setOpenId(String openId) {
-		this.openId = openId;
-	}
-
-	public String getUserToken() {
-		return userToken;
-	}
-
-	public void setUserToken(String userToken) {
-		this.userToken = userToken;
 	}
 
 	public Integer getSex() {
@@ -223,12 +141,22 @@ public class CurrentUser {
 		this.sex = sex;
 	}
 
-	public String getNote() {
-		return note;
+	public String getPhone() {
+		return phone;
 	}
 
-	public void setNote(String note) {
-		this.note = note;
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+
 	
 }

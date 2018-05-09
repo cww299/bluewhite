@@ -1,131 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa" 
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:tx="http://www.springframework.org/schema/tx" 
 	xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:beans="http://www.springframework.org/schema/beans"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
-		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
-		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
-		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.1.xsd
-		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd">
-	<context:property-placeholder location="classpath:resources.properties"/>
-	
-<!-- 	<bean id="springContextUtils"    class="bluewhite.common.utils.SpringContextUtils"></bean> -->
-	
-    <!-- 数据源 -->
-    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
-        <!-- 基本属性 url、user、password -->
-        <property name="url" value="${connection.url}"/>
-        <property name="username" value="${connection.username}"/>
-        <property name="password" value="${connection.password}"/>
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.1.xsd
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+		http://www.springframework.org/schema/util 
+		http://www.springframework.org/schema/util/spring-util-4.1.xsd
+		http://www.springframework.org/schema/data/jpa 
+		http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd">
 
-        <!-- 配置初始化大小、最小、最大 -->
-        <property name="initialSize" value="${druid.initialSize}"/>
-        <property name="minIdle" value="${druid.minIdle}"/>
-        <property name="maxActive" value="${druid.maxActive}"/>
+	<context:property-placeholder location="classpath:resources.properties" />
+	<!-- 数据源 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
+		<!-- 基本属性 url、user、password -->
+		<property name="url" value="${connection.url}" />
+		<property name="username" value="${connection.username}" />
+		<property name="password" value="${connection.password}" />
 
-        <!-- 配置获取连接等待超时的时间 -->
-        <property name="maxWait" value="${druid.maxWait}"/>
-        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
-        <property name="timeBetweenEvictionRunsMillis" value="${druid.timeBetweenEvictionRunsMillis}" />
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="${druid.initialSize}" />
+		<property name="minIdle" value="${druid.minIdle}" />
+		<property name="maxActive" value="${druid.maxActive}" />
 
-        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
-        <property name="minEvictableIdleTimeMillis" value="${druid.minEvictableIdleTimeMillis}" />
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="${druid.maxWait}" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="${druid.timeBetweenEvictionRunsMillis}" />
 
-        <property name="validationQuery" value="${druid.validationQuery}" />
-        <property name="testWhileIdle" value="${druid.testWhileIdle}" />
-        <property name="testOnBorrow" value="${druid.testOnBorrow}" />
-        <property name="testOnReturn" value="${druid.testOnReturn}" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="${druid.minEvictableIdleTimeMillis}" />
 
-        <!-- 打开PSCache，并且指定每个连接上PSCache的大小  如果用Oracle，则把poolPreparedStatements配置为true，mysql可以配置为false。-->
-        <property name="poolPreparedStatements" value="${druid.poolPreparedStatements}" />
-        <property name="maxPoolPreparedStatementPerConnectionSize" value="${druid.maxPoolPreparedStatementPerConnectionSize}" />
+		<property name="validationQuery" value="${druid.validationQuery}" />
+		<property name="testWhileIdle" value="${druid.testWhileIdle}" />
+		<property name="testOnBorrow" value="${druid.testOnBorrow}" />
+		<property name="testOnReturn" value="${druid.testOnReturn}" />
+		<!--    /*是否自动回收超时连接*/ -->
+        <property name="removeAbandoned" value="true" />  
+     	<!--   /*延长这个所谓的超时时间*/  --> 
+        <property name="removeAbandonedTimeout" value="1800" />
 
-        <!-- 配置监控统计拦截的filters -->
-        <property name="filters" value="${druid.filters}" />
-    </bean>
-	
-    <bean id="dataSourceProxy" class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
-        <property name="targetDataSource" ref="dataSource"/>
-    </bean>
-    
-	<context:component-scan base-package="com.bluewhite.**.service"/>
-	
-  	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-  		<property name="dataSource" ref="dataSourceProxy"/>
-        <property name="packagesToScan" value="com.bluewhite.**.entity"/>
-        <property name="persistenceUnitName" value="${jpa.persistenceUnitName}"/>
-        <property name="persistenceProvider">
-            <bean class="org.hibernate.jpa.HibernatePersistenceProvider"/>
-        </property>
-  		<property name="jpaVendorAdapter">
-  			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-  				<property name="generateDdl" value="${jpa.generateDdl}"/>
-                <property name="database" value="${jpa.database}"/>
-                <property name="databasePlatform" value="${jpa.databasePlatform}"/>
-                <property name="showSql" value="${jpa.showSql}"/>
-  			</bean>
-  		</property>
-  		<property name="jpaDialect">
-            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
-        </property>
-        <property name="jpaPropertyMap">
-            <map>
-                <!-- 只扫描class文件，不扫描hbm，默认两个都搜索 -->
-                <entry key="hibernate.archive.autodetection" value="class"/>
-                <!-- 不检查@NamedQuery -->
-                <entry key="hibernate.query.startup_check" value="false"/>
-                <entry key="hibernate.query.substitutions" value="${hibernate.query.substitutions}"/>
-                <entry key="hibernate.default_batch_fetch_size" value="${hibernate.default_batch_fetch_size}"/>
-                <entry key="hibernate.max_fetch_depth" value="${hibernate.max_fetch_depth}"/>
-                <entry key="hibernate.generate_statistics" value="${hibernate.generate_statistics}"/>
-                <entry key="hibernate.bytecode.use_reflection_optimizer" value="${hibernate.bytecode.use_reflection_optimizer}"/>
-            </map>
-        </property>
-  	</bean>
-  
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小 如果用Oracle，则把poolPreparedStatements配置为true，mysql可以配置为false。 -->
+		<property name="poolPreparedStatements" value="${druid.poolPreparedStatements}" />
+		<property name="maxPoolPreparedStatementPerConnectionSize"
+			value="${druid.maxPoolPreparedStatementPerConnectionSize}" />
+
+		<!-- 配置监控统计拦截的filters -->
+		<property name="filters" value="${druid.filters}" />
+	</bean>
+
+	<bean id="dataSourceProxy"
+		class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
+		<property name="targetDataSource" ref="dataSource" />
+	</bean>
+
+	<context:component-scan base-package="com.bluewhite.**.service" />
+
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSourceProxy" />
+		<property name="packagesToScan" value="com.bluewhite.**.entity" />
+		<property name="persistenceUnitName" value="${jpa.persistenceUnitName}" />
+		<property name="persistenceProvider">
+			<bean class="org.hibernate.jpa.HibernatePersistenceProvider" />
+		</property>
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="generateDdl" value="${jpa.generateDdl}" />
+				<property name="database" value="${jpa.database}" />
+				<property name="databasePlatform" value="${jpa.databasePlatform}" />
+				<property name="showSql" value="${jpa.showSql}" />
+			</bean>
+		</property>
+		<property name="jpaDialect">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+		</property>
+		<property name="jpaPropertyMap">
+			<map>
+				<!-- 只扫描class文件，不扫描hbm，默认两个都搜索 -->
+				<entry key="hibernate.archive.autodetection" value="class" />
+				<!-- 不检查@NamedQuery -->
+				<entry key="hibernate.query.startup_check" value="false" />
+				<entry key="hibernate.query.substitutions" value="${hibernate.query.substitutions}" />
+				<entry key="hibernate.default_batch_fetch_size" value="${hibernate.default_batch_fetch_size}" />
+				<entry key="hibernate.max_fetch_depth" value="${hibernate.max_fetch_depth}" />
+				<entry key="hibernate.generate_statistics" value="${hibernate.generate_statistics}" />
+				<entry key="hibernate.bytecode.use_reflection_optimizer"
+					value="${hibernate.bytecode.use_reflection_optimizer}" />
+			</map>
+		</property>
+	</bean>
+
 	<!-- 自动扫描并注入Spring Data JPA -->
-	<jpa:repositories base-package="com.bluewhite.**.dao"  entity-manager-factory-ref="entityManagerFactory"   transaction-manager-ref="transactionManager">
-	</jpa:repositories>	
+	<jpa:repositories base-package="com.bluewhite.**.dao"  entity-manager-factory-ref="entityManagerFactory"  transaction-manager-ref="transactionManager">
+	</jpa:repositories>
 
 
+	<!-- 开启注解事务支持 -->
+	<tx:annotation-driven transaction-manager="transactionManager"
+		proxy-target-class="false" />
 
-   <!-- 配置Spring的声明式事务 -->  
-    <!-- 1.配置事务管理器 -->  
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">    
-        <property name="entityManagerFactory" ref="entityManagerFactory" />    
-        <qualifier value="mssqlEM"/>    
-    </bean>    
-    <!-- 2.配置事务属性 -->  
-    <tx:advice id="txAdvice" transaction-manager="transactionManager">  
-        <tx:attributes>  
-            <tx:method name="delete*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception"  
-                no-rollback-for="java.lang.RuntimeException" />  
-            <tx:method name="insert*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.RuntimeException" />  
-            <tx:method name="create*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.RuntimeException" />  
-            <tx:method name="update*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception" />  
-  
-            <tx:method name="find*" propagation="SUPPORTS" read-only="true"/>  
-            <tx:method name="get*" propagation="SUPPORTS" read-only="true"/>  
-            <tx:method name="select*" propagation="SUPPORTS" read-only="true"/>  
-        </tx:attributes>  
-    </tx:advice>  
-    <!-- 3.配置事务切点，并把事务切点和事务属性关联起来 -->  
-<!--     <aop:config>  
-        只对业务逻辑层实施事务  
-        <aop:pointcut id="txPointcut" expression="execution(*com.bluewhite ..service..*.*(..))" />  
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" />  
-    </aop:config>   -->
-    <!-- 4.配置repositories自动代理功能,在 Spring 配置文件中启用扫描并自动创建代理的功能
-    <jpa:repositories base-package="com.bluewhite"     
-        entity-manager-factory-ref="entityManagerFactory"    
-        transaction-manager-ref="transactionManager"/>   
-       -->  
+	<!-- 配置Spring的声明式事务 -->
+	 <!-- 配置事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+	  <!--基于 @Transactional 的方式将声明式事务管理：激活启用事务相关处理 Bean 配置-->
+	  <!--另一种命名空间的声明式事务管理，会导致sql链接无法关于，执行多次sql报错，待解决  -->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+    
+    
+	<aop:config proxy-target-class="true"></aop:config>
+	<!-- 4.配置repositories自动代理功能,在 Spring 配置文件中启用扫描并自动创建代理的功能 -->
+	<jpa:repositories base-package="com.bluewhite"  entity-manager-factory-ref="entityManagerFactory"  transaction-manager-ref="transactionManager" />
 </beans>
