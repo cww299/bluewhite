@@ -5,11 +5,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>某某公司后台登录系统</title>
-	<link rel="stylesheet" href="${ctx }/css/style.css">
+	<title>蓝白erp系统</title>
+	<link rel="stylesheet" href="static/css/style.css">
 
-	<!--<link href='//fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
--->
 	<!-- For-Mobile-Apps-and-Meta-Tags -->
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -20,34 +18,33 @@
 </head>
 
 <body>
-    <h1>某某公司后台登录系统</h1>
+    <h1>蓝白erp系统</h1>
     <div class="container w3">
-        <h2>现在登录</h2>
+        <h2>欢迎使用</h2>
 		<form action="#" method="post">
 			<div class="username">
 				<span class="username" style="height:19px">用户:</span>
-				<input type="text" name="name" class="name" placeholder="" required="">
+				<input type="text" name="name" class="name" placeholder="" required="required">
 				<div class="clear"></div>
 			</div>
 			<div class="password-agileits">
 				<span class="username"style="height:19px">密码:</span>
-				<input type="password" name="password" class="password" placeholder="" required="">
+				<input type="password" name="password" class="password" placeholder="" required="required">
 				<div class="clear"></div>
 			</div>
 			<div class="rem-for-agile">
-				<input type="checkbox" name="remember" class="remember">记得我
-　　
+				<input type="checkbox" name="remember" class="remember">请记住我
 <br>
-				<a href="#">忘记了密码</a><br>
+				<a href="#">忘记密码</a><br>
 			</div>
 			<div class="login-w3">
-					<input type="submit" class="login" value="Login">
+					<input type="submit" class="login" value="登录">
 			</div>
 			<div class="clear"></div>
 		</form>
 	</div>
 	<div class="footer-w3l">
-		<p> 某某公司后台登录系统</p>
+		<p> 蓝白erp系统</p>
 	</div>
 </body>
 </html>
