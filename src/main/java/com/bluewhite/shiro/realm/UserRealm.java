@@ -38,23 +38,20 @@ public class UserRealm extends AuthorizingRealm {
 	//AuthorizationInfo:角色的权限信息集合
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-//    	 String username = (String) principals.getPrimaryPrincipal();
-//    	 User user = userService.findByUserName(username);
-//         // 根据用户查询当前用户拥有的角色
-//         Set<String> roleNames = new HashSet<String>();
-//         for (Role role : user.getRoles()) {
-//             roleNames.add(role.getRole());
-//         }
-//         // 根据用户查询当前用户权限
-//         Set<String> permissions = userService.findStringPermissions(user);
-         
-         CurrentUser user = SessionManager.getUserSession();
+    	 String username = (String) principals.getPrimaryPrincipal();
+    	 User user = userService.findByUserName(username);
+         // 根据用户查询当前用户拥有的角色
+         Set<String> roleNames = new HashSet<String>();
+         for (Role role : user.getRoles()) {
+             roleNames.add(role.getRole());
+         }
+         // 根据用户查询当前用户权限
+         Set<String> permissions = userService.findStringPermissions(user);
          SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
          // 将角色名称提供给info
-         authorizationInfo.setRoles(user.getRoles());
+         authorizationInfo.setRoles(roleNames);
          // 将权限名称提供给info
-         authorizationInfo.setStringPermissions(user.getPermissions());
-         
+         authorizationInfo.setStringPermissions(permissions);
          
         return authorizationInfo;
     }

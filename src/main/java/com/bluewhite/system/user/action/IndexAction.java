@@ -64,8 +64,7 @@ public class IndexAction {
 	 * @throws IllegalAccessException 
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse login(HttpServletRequest request,
+	public String login(HttpServletRequest request,
 			HttpServletResponse reponse, String username, String password) throws IllegalAccessException, InvocationTargetException {
 		CommonResponse cr = new CommonResponse();
 		Subject subject = SecurityUtils.getSubject();
@@ -79,22 +78,21 @@ public class IndexAction {
 				subject.login(new UsernamePasswordToken(username, password));
 				user = userService.loginByUsernameAndPassword(username,password);//普通用户
 				cr.setMessage("用户登录成功。");
-				//手动调取授权
-				SecurityUtils.getSubject().isPermitted(username);
-				
 			} catch (AuthenticationException e) {
 				cr.setCode(ErrorCode.SYSTEM_USER_NOT_AUTHENTICATED.getCode());
 				cr.setMessage("用户认证失败。");//可能的原因：1.账号不存在；2.密码错误;3.token已经过期
-				return cr;
+				request.setAttribute("cr", cr);
+				return "/";
 			}
 		}
 		CurrentUser cu = new CurrentUser();
 		BeanCopyUtils.copyNotEmpty(user, cu, "");
 		SessionManager.setUserSession(cu);
-//		Map<String, Object> data = new HashMap<String, Object>();
-//		data.put("user", cu);
-//		cr.setData(data);
-		return cr;
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("user", cu);
+		cr.setData(data);
+		request.setAttribute("cr", cr);
+		return "index";
 	}
 	
 
@@ -104,14 +102,11 @@ public class IndexAction {
 	 * @param token
 	 * @return cr
 	 */
-	@RequestMapping(value = "/logout", method = RequestMethod.POST)
+	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse logout() {
-		Subject subject = SecurityUtils.getSubject();
-		CommonResponse commonResponse = new CommonResponse();
-		subject.logout();
-		commonResponse.setMessage("登出成功！");
-		return commonResponse;
+	public String logout() {
+		 SecurityUtils.getSubject().logout();  
+		return "/";
 	}
 
 }
