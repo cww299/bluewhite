@@ -38,7 +38,7 @@
 				<a href="#">忘记密码</a><br>
 			</div>
 			<div class="login-w3">
-					<input type="submit" class="login" value="登录">
+					<input type="submit" id="submitBtn" class="login" value="登录">
 			</div>
 			<div class="clear"></div>
 		</form>
@@ -46,6 +46,60 @@
 	<div class="footer-w3l">
 		<p> 蓝白erp系统</p>
 	</div>
+	 <script src="static/js/vendor/jquery-3.3.1.min.js"></script>
+	 <script src="static/js/layer/layer.js"></script>
+	 <script type="text/javascript">
+	 jQuery(function($){
+			var Login = function(){
+				var self = this;
+				//表单jsonArray
+				
+				//初始化js
+				this.init = function(){
+					//注册绑定事件
+					self.events();
+				}
+				this.events = function(){
+					$('#submitBtn').on('click',function(){
+						var index = layer.load(1, {
+							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							  });
+						
+					
+						 $.ajax({
+						      url:"${ctx}/login",
+						      type:"post", 
+						      data:{
+						    	  name:$('.name').val(),
+						    	  password:$('.password').val()  
+						      },
+						     
+				      		  success: function (result) {
+				      			  if(result.code==""){
+					      				 
+					      				location.href = "${ctx}/index";
+
+				      			  }else{
+				      				 
+				      				layer.close(index);
+				      				layer.msg(result.message, {icon: 2}); 
+				      			  }
+					      			
+					      			  
+					      			  
+							      },error:function(){
+										layer.msg("登入失败", {icon: 2});
+										layer.close(index);
+								  }
+
+						  })
+					})
+				}
+			}
+				var login = new Login();
+				login.init();
+			})
+	 </script>
 </body>
 </html>
 
