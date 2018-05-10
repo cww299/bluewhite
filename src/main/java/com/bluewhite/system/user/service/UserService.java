@@ -54,13 +54,6 @@ public interface UserService extends BaseCRUDService<User, Long> {
 	 */
 	public List<User> getPagedUser(PageParameter page, User user);
 
-	/**
-	 * 通过用户名查找
-	 * @param username 用户名
-	 * @return user
-	 */
-	public User findByUsername(String username);
-	
 
 	/**
 	 * 通过手机号查找

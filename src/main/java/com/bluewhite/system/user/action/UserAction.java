@@ -139,7 +139,7 @@ public class UserAction {
 	private CommonResponse exists(User user) {
 		CommonResponse cr = new CommonResponse();
 		if (user.getUserName() != null) {
-			if (userService.findByUsername(user.getUserName()) == null) {
+			if (userService.findByUserName(user.getUserName()) == null) {
 				cr.setData("用户名可以使用");
 			} else {
 				cr.setCode(ErrorCode.SYSTEM_USER_NAME_REPEAT.getCode());

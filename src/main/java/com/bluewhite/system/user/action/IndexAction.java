@@ -76,7 +76,7 @@ public class IndexAction {
 			//用户未登录
 			try {
 				subject.login(new UsernamePasswordToken(username, password));
-				user = userService.loginByUsernameAndPassword(username,password);//普通用户
+				user = userService.findByUserName(username);//普通用户
 				cr.setMessage("用户登录成功。");
 			} catch (AuthenticationException e) {
 				cr.setCode(ErrorCode.SYSTEM_USER_NOT_AUTHENTICATED.getCode());

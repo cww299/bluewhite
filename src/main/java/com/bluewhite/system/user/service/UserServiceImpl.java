@@ -129,12 +129,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		return users;
 	}
 
-	
-
-	public User findByUsername(String userName) {
-		return userDao.findByUserName(userName);
-	}
-	
+	@Override
 	public User findByPhone(String phone) {
 		return userDao.findByPhone(phone);
 	}
