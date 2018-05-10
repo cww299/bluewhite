@@ -21,10 +21,10 @@
     <h1>蓝白erp系统</h1>
     <div class="container w3">
         <h2>欢迎使用</h2>
-		<form action="#" method="post">
+		<form id="form" action="##"  onsubmit="return false"  method="post">
 			<div class="username">
 				<span class="username" style="height:19px">用户:</span>
-				<input type="text" name="name" class="name" placeholder="" required="required">
+				<input type="text" name="username" class="name" placeholder="" required="required">
 				<div class="clear"></div>
 			</div>
 			<div class="password-agileits">
@@ -64,23 +64,15 @@
 						var index = layer.load(1, {
 							  shade: [0.1,'#fff'] //0.1透明度的白色背景
 							  });
-						
-					
 						 $.ajax({
 						      url:"${ctx}/login",
 						      type:"post", 
-						      data:{
-						    	  name:$('.name').val(),
-						    	  password:$('.password').val()  
-						      },
+						   	  data: $('#form').serialize(), 
 						     
 				      		  success: function (result) {
-				      			  if(result.code==""){
-					      				 
+				      			  if(result.code==0){
 					      				location.href = "${ctx}/index";
-
 				      			  }else{
-				      				 
 				      				layer.close(index);
 				      				layer.msg(result.message, {icon: 2}); 
 				      			  }

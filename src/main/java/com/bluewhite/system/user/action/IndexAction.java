@@ -54,6 +54,17 @@ public class IndexAction {
 	private UserService userService;
 	
 	/**
+	 * 跳转首页
+	 * @return
+	 */
+	@RequestMapping(value="/index")
+	public String index() {
+		return "index";
+		
+	}
+	
+	
+	/**
 	 * 普通用户登录
 	 * @param request 请求
 	 * @param reponse 回复
@@ -64,7 +75,8 @@ public class IndexAction {
 	 * @throws IllegalAccessException 
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String login(HttpServletRequest request,
+	@ResponseBody
+	public CommonResponse login(HttpServletRequest request,
 			HttpServletResponse reponse, String username, String password) throws IllegalAccessException, InvocationTargetException {
 		CommonResponse cr = new CommonResponse();
 		Subject subject = SecurityUtils.getSubject();
@@ -77,22 +89,20 @@ public class IndexAction {
 			try {
 				subject.login(new UsernamePasswordToken(username, password));
 				user = userService.findByUserName(username);//普通用户
+				subject.getSession().setAttribute("user", user);
 				cr.setMessage("用户登录成功。");
 			} catch (AuthenticationException e) {
 				cr.setCode(ErrorCode.SYSTEM_USER_NOT_AUTHENTICATED.getCode());
 				cr.setMessage("用户认证失败。");//可能的原因：1.账号不存在；2.密码错误;3.token已经过期
-				request.setAttribute("cr", cr);
-				return "/";
+				return cr;
 			}
 		}
 		CurrentUser cu = new CurrentUser();
 		BeanCopyUtils.copyNotEmpty(user, cu, "");
-		SessionManager.setUserSession(cu);
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("user", cu);
 		cr.setData(data);
-		request.setAttribute("cr", cr);
-		return "index";
+		return cr;
 	}
 	
 

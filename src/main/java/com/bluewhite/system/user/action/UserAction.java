@@ -5,6 +5,9 @@ import java.text.SimpleDateFormat;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -40,11 +43,23 @@ public class UserAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(User.class,"id", "userName", "phoneNum", "admin","realname","area","school","department","roles")
-				.addRetainTerm(Role.class, "name", "role", "description","id")
-				.addRetainTerm(Area.class, "areaName","areaCode","id");
+				.addRetainTerm(User.class,"id", "userName", "phoneNum", "admin","realname","school","department","roles")
+				.addRetainTerm(Role.class, "name", "role", "description","id");
 	}
-
+	
+	
+	/**
+	 * 获取当前用户的权限
+	 */
+	@RequestMapping(value = "/getRoles", method = RequestMethod.GET)
+	@ResponseBody
+	@RequiresPermissions(value = { "user" })
+	public CommonResponse getRoles(HttpServletRequest request) {
+		CommonResponse cr = new CommonResponse();
+//		SecurityUtils.getSubject().isPermitted();
+		cr.setMessage("获取权限成功");
+		return cr;
+	}
 
 	
 	/**

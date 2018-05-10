@@ -15,7 +15,7 @@ import com.bluewhite.common.entity.CurrentUser;
 public class SessionManager {
 
 	/** 用户session标识 **/
-	public static String MEMBER_SESSION = "userSession";
+	public static String MEMBER_SESSION = "user";
 
 	/**
 	 * 获取用户会话信息。
