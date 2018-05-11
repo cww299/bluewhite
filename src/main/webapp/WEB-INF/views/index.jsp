@@ -1,485 +1,27 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<c:set var="ctx" value="${pageContext.request.contextPath }" />
+
+
+
 <!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
 <html class="no-js">
 <!--<![endif]-->
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>NeuBoard</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <!-- Favicon -->
-    <link rel="shortcut icon" href="static/images/favicon.ico" type="image/x-icon">
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="static/plugins/bootstrap/css/bootstrap.min.css">
-    <!-- Fonts  -->
-    <link rel="stylesheet" href="static/css/font-awesome.min.css">
-    <link rel="stylesheet" href="static/css/simple-line-icons.css">
-    <!-- CSS Animate -->
-    <link rel="stylesheet" href="static/css/animate.css">
-    <!-- Daterange Picker -->
-    <link rel="stylesheet" href="static/plugins/daterangepicker/daterangepicker-bs3.css">
-    <!-- Calendar demo -->
-    <link rel="stylesheet" href="static/css/clndr.css">
-    <!-- Switchery -->
-    <link rel="stylesheet" href="static/plugins/switchery/switchery.min.css">
-    <!-- Custom styles for this theme -->
-    <link rel="stylesheet" href="static/css/main.css">
-    <!-- Feature detection -->
-    <script src="static/js/vendor/modernizr-2.6.2.min.js"></script>
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-    <script src="static/js/vendor/html5shiv.js"></script>
-    <script src="static/js/vendor/respond.min.js"></script>
-    <![endif]-->
+   
 </head>
 
 <body>
     <section id="main-wrapper" class="theme-default">
-        <header id="header">
-            <!--logo start-->
-            <div class="brand">
-                <a href="index.html" class="logo">
-                    <i class="icon-layers"></i>
-                    <span>NEU</span>BOARD</a>
-            </div>
-            <!--logo end-->
-            <ul class="nav navbar-nav navbar-left">
-                <li class="toggle-navigation toggle-left">
-                    <button class="sidebar-toggle" id="toggle-left">
-                        <i class="fa fa-bars"></i>
-                    </button>
-                </li>
-                <li class="toggle-profile hidden-xs">
-                    <button type="button" class="btn btn-default" id="toggle-profile">
-                        <i class="icon-user"></i>
-                    </button>
-                </li>
-                <li class="hidden-xs hidden-sm">
-                    <input type="text" class="search" placeholder="Search project...">
-                    <button type="submit" class="btn btn-sm btn-search"><i class="fa fa-search"></i>
-                    </button>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown profile hidden-xs">
-                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
-                        <span class="meta">
-                            <span class="avatar">
-                                <img src="static/img/profile.jpg" class="img-circle" alt="">
-                            </span>
-                        <span class="text">Mike Adams</span>
-                        <span class="caret"></span>
-                        </span>
-                    </a>
-                    <ul class="dropdown-menu animated fadeInRight" role="menu">
-                        <li>
-                            <span class="arrow top"></span>
-                            <h5>
-                                <span>80%</span>
-                                <small class="text-muted">Profile complete</small>
-                            </h5>
-                            <div class="progress progress-xs">
-                                <div class="progress-bar progress-bar" style="width: 80%">
-                                </div>
-                            </div>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="javascript:void(0);">
-                                <span class="icon"><i class="fa fa-user"></i>
-                                </span>My Account</a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0);">
-                                <span class="icon"><i class="fa fa-envelope"></i>
-                                </span>Messages</a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0);">
-                                <span class="icon"><i class="fa fa-cog"></i>
-                                </span>Settings</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="javascript:void(0);">
-                                <span class="icon"><i class="fa fa-sign-out"></i>
-                                </span>Logout</a>
-                        </li>
-                    </ul>
-                </li>
-                 <li class="toggle-fullscreen hidden-xs">
-                    <button type="button" class="btn btn-default expand" id="toggle-fullscreen">
-                        <i class="fa fa-expand"></i>
-                    </button>
-                </li>
-                <li class="toggle-navigation toggle-right">
-                    <button class="sidebar-toggle" id="toggle-right">
-                        <i class="fa fa-indent"></i>
-                    </button>
-                </li>
-            </ul>
-        </header>
-        <!--sidebar left start-->
-        <aside class="sidebar sidebar-left">
-            <div class="sidebar-profile">
-                <div class="avatar">
-                    <img class="img-circle profile-image" src="static/img/profile.jpg" alt="profile">
-                    <i class="on border-dark animated bounceIn"></i>
-                </div>
-                <div class="profile-body dropdown">
-                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><h4>Mike Adams <span class="caret"></span></h4></a>
-                    <small class="title">Front-end Developer</small>
-                    <ul class="dropdown-menu animated fadeInRight" role="menu">
-                        <li class="profile-progress">
-                            <h5>
-                                <span>80%</span>
-                                <small>Profile complete</small>
-                            </h5>
-                            <div class="progress progress-xs">
-                                <div class="progress-bar progress-bar-primary" style="width: 80%">
-                                </div>
-                            </div>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="javascript:void(0);">
-                                <span class="icon"><i class="fa fa-user"></i>
-                                </span>My Account</a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0);">
-                                <span class="icon"><i class="fa fa-envelope"></i>
-                                </span>Messages</a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0);">
-                                <span class="icon"><i class="fa fa-cog"></i>
-                                </span>Settings</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="javascript:void(0);">
-                                <span class="icon"><i class="fa fa-sign-out"></i>
-                                </span>Logout</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <nav>
-                <h5 class="sidebar-header">Navigation</h5>
-                <ul class="nav nav-pills nav-stacked">
-                    <li class="active">
-                        <a href="index.html" title="Dashboard">
-                            <i class="fa  fa-fw fa-tachometer"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-dropdown">
-                        <a href="#" title="UI Elements">
-                            <i class="fa  fa-fw fa-cogs"></i> UI Elements
-                        </a>
-                        <ul class="nav-sub">
-                            <li>
-                                <a href="ui-buttons.html" title="Buttons">
-                                     Buttons
-                                </a>
-                            </li>
-                            <li>
-                                <a href="ui-sliders-progress.html" title="Sliders &amp; Progress">
-                                     Sliders &amp; Progress
-                                </a>
-                            </li>
-                            <li>
-                                <a href="ui-modals-popus.html" title="Modals &amp; Popups">
-                                     Modals &amp; Popups
-                                </a>
-                            </li>
-                            <li>
-                                <a href="ui-tabs-accordions.html" title="Tabs &amp; Accordions">
-                                     Tabs &amp; Accordions
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="ui-alerts-notifications.html" title="Alerts &amp; Notifications">
-                                     Alerts &amp; Notifications
-                                </a>
-                            </li>
-                            <li>
-                                <a href="ui-nestable-lists.html" title=" Nestable Lists">
-                                     Nestable Lists
-                                </a>
-                            </li>
-                            <li>
-                                <a href="ui-panels.html" title="Panels">
-                                     Panels
-                                </a>
-                            </li>
-                            <li>
-                                <a href="ui-icons.html" title="Icons">
-                                     Icons
-                                </a>
-                            </li>
-                            <li>
-                                <a href="ui-typography.html" title="Typography">
-                                     Typography
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-dropdown">
-                        <a href="#" title="Forms">
-                            <i class="fa  fa-fw fa-edit"></i> Forms
-                        </a>
-                        <ul class="nav-sub">
-                            <li><a href="forms-components.html" title="Components">Components</a>
-                            </li>
-                            <li><a href="forms-validation.html" title="Validation">Validation</a>
-                            </li>
-                            <li><a href="forms-mask.html" title="Mask">Mask</a>
-                            </li>
-                            <li><a href="forms-wizard.html" title="Wizard">Wizard</a>
-                            </li>
-                            <li><a href="forms-multiple-file.html" title="Multiple File Upload">Multiple File Upload</a>
-                            </li>
-                            <li><a href="forms-wysiwyg.html" title="WYSIWYG Editor">WYSIWYG Editor</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-dropdown">
-                        <a href="#" title="Tables">
-                            <i class="fa  fa-fw fa-th-list"></i> Tables
-                        </a>
-                        <ul class="nav-sub">
-                            <li>
-                                <a href="tables-basic-tables.html" title="Basic Tables">
-                                     Basic Tables
-                                </a>
-                            </li>
-                            <li>
-                                <a href="tables-data-tables.html" title="Data Tables">
-                                     Data Tables
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-dropdown">
-                        <a href="#" title="Charts">
-                            <i class="fa fa-fw fa-bar-chart-o"></i> Charts
-                        </a>
-                        <ul class="nav-sub">
-                            <li>
-                                <a href="charts-chartjs.html" title="Chartjs">
-                                    Chartjs
-                                </a>
-                            </li>
-                            <li>
-                                <a href="charts-c3.html" title="C3 Charts">
-                                     C3 Charts
-                                </a>
-                            </li>
-                            <li>
-                                <a href="charts-morris.html" title="Morris.js Charts">
-                                     Morris.js Charts
-                                </a>
-                            </li>
-                            <li>
-                                <a href="charts-sparkline.html" title="Sparkline Charts">
-                                     Sparkline Charts
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-dropdown">
-                         <a href="#" title="Mail">
-                            <i class="fa fa-fw fa-envelope-o"></i> Mail
-                            <span class="label label-primary label-circle pull-right">8</span>
-                        </a>
-                        <ul class="nav-sub">
-                            <li>
-                                <a href="mail-inbox.html" title="Mail Inbox">
-                                    Inbox
-                                </a>
-                            </li>
-                            <li>
-                                <a href="mail-compose.html" title="Mail Compose">
-                                     Compose Mail
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-dropdown">
-                        <a href="#" title="Maps">
-                            <i class="fa  fa-fw fa-map-marker"></i> Maps
-                        </a>
-                        <ul class="nav-sub">
-                            <li>
-                                <a href="maps-google.html" title="Google Maps">
-                                     Google Maps
-                                </a>
-                            </li>
-                            <li>
-                                <a href="maps-vector.html" title="Vector Maps">
-                                     Vector Maps
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="Frontend/index.html" title="Frontend">
-                            <i class="fa  fa-fw fa-desktop"></i> Front-end Theme
-                            <span class="pull-right badge badge-danger">new</span>
-                        </a>
-                    </li>
-                    <li class="nav-dropdown">
-                        <a href="#" title="Pages">
-                            <i class="fa  fa-fw fa-file-text"></i> Pages
-                        </a>
-                        <ul class="nav-sub">
-                            <li>
-                                <a href="pages-blank-page.html" title="Blank Page">
-                                     Blank Page
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="pages-profile.html" title="Profile">
-                                     Profile
-                                </a>
-                            </li>
-                            <li>
-                                <a href="pages-sign-in.html" title="Sign In">
-                                     Sign In
-                                </a>
-                            </li>
-                            <li>
-                                <a href="pages-sign-up.html" title="Sign Up">
-                                     Sign Up
-                                </a>
-                            </li>
-                            <li>
-                                <a href="pages-locked-screen.html" title="Locked Screen">
-                                     Locked Screen
-                                </a>
-                            </li>
-                            <li>
-                                <a href="pages-404.html" title="404 Page">
-                                     404 Page
-                                </a>
-                            </li>
-                            <li>
-                                <a href="pages-500.html" title="500 Page">
-                                     500 Page
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-dropdown">
-                        <a href="#" title="Menu Levels">
-                            <i class="fa  fa-fw fa-folder-open"></i> Menu Levels
-                        </a>
-                        <ul class="nav-sub">
-                            <li>
-                                <a href="javascript:;" title="Level 2.1">
-                                    <i class="fa fa-fw fa-file"></i> Level 1.1
-                                </a>
-                            </li>
-                            <li>
-                                <a href="javascript:;" title="Level 2.2">
-                                    <i class="fa fa-fw fa-file"></i> Level 1.2
-                                </a>
-                            </li>
-                            <li class="nav-dropdown">
-                                <a href="#" title="Level 2.3">
-                                    <i class="fa fa-fw fa-folder-open"></i> Level 1.3
-                                </a>
-                                <ul class="nav-sub">
-                                    <li>
-                                        <a href="javascript:;" title="Level 3.1">
-                                            <i class="fa fa-fw fa-file"></i> Level 2.1
-                                        </a>
-                                    </li>
-                                    <li class="nav-dropdown">
-                                        <a href="#" title="Level 3.2">
-                                            <i class="fa fa-fw fa-folder-open"></i> Level 2.2
-                                        </a>
-                                        <ul class="nav-sub">
-                                            <li>
-                                                <a href="javascript:;" title="Level 4.1">
-                                                    <i class="fa fa-fw fa-file"></i> Level 3.1
-                                                </a>
-                                            </li>
-                                            <li class="nav-dropdown">
-                                                <a href="#" title="Level 4.2">
-                                                    <i class="fa fa-fw fa-folder-open"></i> Level 3.2
-                                                </a>
-                                                <ul class="nav-sub">
-                                                    <li class="nav-dropdown">
-                                                        <a href="#" title="Level 5.1">
-                                                            <i class="fa fa-fw fa-folder-open"></i> Level 4.1
-                                                        </a>
-                                                        <ul class="nav-sub">
-                                                            <li>
-                                                                <a href="javascript:;" title="Level 6.1">
-                                                                    <i class="fa fa-fw fa-file"></i> Level 5.1
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="javascript:;" title="Level 6.2">
-                                                                    <i class="fa fa-fw fa-file"></i> Level 5.2
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <a href="javascript:;" title="Level 5.2">
-                                                            <i class="fa fa-fw fa-file"></i> Level 4.2
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="javascript:;" title="Level 5.3">
-                                                            <i class="fa fa-fw fa-file"></i> Level 4.3
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </li>
-
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="animations.html" title="CSS Animations">
-                            <i class="fa  fa-fw fa-magic"></i> CSS Animations
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            <h5 class="sidebar-header">Account Settings</h5>
-            <div class="setting-list">
-                <div class="row">
-                    <div class="col-xs-8">
-                        <label for="check1" class="control-label">Share your status</label>
-                    </div>
-                    <div class="col-xs-4">
-                        <input type="checkbox" class="js-switch" checked id="check1" />
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-8">
-                        <label for="check2" class="control-label">Push Notifications</label>
-                    </div>
-                    <div class="col-xs-4">
-                        <input type="checkbox" class="js-switch" id="check2" />
-                    </div>
-                </div>
-            </div>
-        </aside>
-        <!--sidebar left end-->
+      <%@include file="decorator/leftbar.jsp"%>
+      
+       
         <!--main content start-->
         <section class="main-content-wrapper">
             <div class="pageheader">
@@ -644,7 +186,7 @@
                                 <div class="row wrapper animated fadeInRight">
                                     <div class="col-xs-2 col-sm-2 col-md-2 ">
                                         <span class="avatar">
-                                        <img src="static/img/avatar3.png" class="img-circle" alt="">
+                                        <img src="${ctx }/static/images/avatar3.png" class="img-circle" alt="">
                                         <i class="on animated bounceIn"></i>
                                     </span>
                                     </div>
@@ -664,7 +206,7 @@
                                     </div>
                                     <div class="col-xs-2 col-sm-2 col-md-2">
                                         <span class="avatar">
-                                        <img src="static/img/profile.jpg" class="img-circle" alt="">
+                                        <img src="${ctx }/static/images/profile.jpg" class="img-circle" alt="">
                                         <i class="on animated bounceIn"></i>
                                     </span>
                                     </div>
@@ -802,7 +344,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <span class="avatar">
-                        <img src="static/img/avatar3.png" class="img-circle" alt="">
+                        <img src="${ctx }/static/images/avatar3.png" class="img-circle" alt="">
                           <i class="on animated bounceIn"></i>
                         </span>
                             </div>
@@ -816,7 +358,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <span class="avatar">
-                        <img src="static/img/avatar1.png" class="img-circle" alt="">
+                        <img src="${ctx }/static/images/avatar1.png" class="img-circle" alt="">
                           <i class="on animated bounceIn"></i>
                         </span>
                             </div>
@@ -830,7 +372,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <span class="avatar">
-                        <img src="static/img/avatar2.png" class="img-circle" alt="">
+                        <img src="${ctx }/static/images/avatar2.png" class="img-circle" alt="">
                           <i class="on animated bounceIn"></i>
                         </span>
                             </div>
@@ -844,7 +386,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <span class="avatar">
-                        <img src="static/img/avatar4.jpg" class="img-circle" alt="">
+                        <img src="${ctx }/static/images/avatar4.jpg" class="img-circle" alt="">
                           <i class="on animated bounceIn"></i>
                         </span>
                             </div>
@@ -858,7 +400,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <span class="avatar">
-                        <img src="static/img/avatar5.png" class="img-circle" alt="">
+                        <img src="${ctx }/static/images/avatar5.png" class="img-circle" alt="">
                           <i class="away animated bounceIn"></i>
                         </span>
                             </div>
@@ -872,7 +414,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <span class="avatar">
-                        <img src="static/img/avatar6.png" class="img-circle" alt="">
+                        <img src="${ctx }/static/images/avatar6.png" class="img-circle" alt="">
                           <i class="on animated bounceIn"></i>
                         </span>
                             </div>
@@ -886,7 +428,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <span class="avatar">
-                        <img src="static/img/avatar7.png" class="img-circle" alt="">
+                        <img src="${ctx }/static/images/avatar7.png" class="img-circle" alt="">
                           <i class="on animated bounceIn"></i>
                         </span>
                             </div>
@@ -900,7 +442,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <span class="avatar">
-                        <img src="static/img/avatar8.png" class="img-circle off" alt="">
+                        <img src="${ctx }/static/images/avatar8.png" class="img-circle off" alt="">
                           <i class="off animated bounceIn"></i>
                         </span>
                             </div>
@@ -914,7 +456,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <span class="avatar">
-                        <img src="static/img/avatar9.png" class="img-circle off" alt="">
+                        <img src="${ctx }/static/images/avatar9.png" class="img-circle off" alt="">
                           <i class="off animated bounceIn"></i>
                         </span>
                             </div>
@@ -1040,36 +582,34 @@
     </div>
     <!--/Config demo-->
     <!--Global JS-->
-    <script src="static/js/vendor/jquery-1.11.1.min.js"></script>
-    <script src="static/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="static/plugins/navgoco/jquery.navgoco.min.js"></script>
-    <script src="static/plugins/pace/pace.min.js"></script>
-    <script src="static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-    <script src="static/js/src/app.js"></script>
+    <script src="${ctx }/static/js/vendor/jquery-1.11.1.min.js"></script>
+    <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
+    <script src="${ctx }/static/plugins/pace/pace.min.js"></script>
+    <script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
+    <script src="${ctx }/static/js/src/app.js"></script>
     <!--Page Level JS-->
-    <script src="static/plugins/countTo/jquery.countTo.js"></script>
-    <script src="static/plugins/weather/js/skycons.js"></script>
-    <script src="static/plugins/daterangepicker/moment.min.js"></script>
-    <script src="static/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="${ctx }/static/plugins/countTo/jquery.countTo.js"></script>
+    <script src="${ctx }/static/plugins/weather/js/skycons.js"></script>
+    <script src="${ctx }/static/plugins/daterangepicker/moment.min.js"></script>
+    <script src="${ctx }/static/plugins/daterangepicker/daterangepicker.js"></script>
     <!-- ChartJS  -->
-    <script src="static/plugins/chartjs/Chart.min.js"></script>
+    <script src="${ctx }/static/plugins/chartjs/Chart.min.js"></script>
     <!-- Morris  -->
-    <script src="static/plugins/morris/js/morris.min.js"></script>
-    <script src="static/plugins/morris/js/raphael.2.1.0.min.js"></script>
+    <script src="${ctx }/static/plugins/morris/js/morris.min.js"></script>
+    <script src="${ctx }/static/plugins/morris/js/raphael.2.1.0.min.js"></script>
     <!-- Vector Map  -->
-    <script src="static/plugins/jvectormap/js/jquery-jvectormap-1.2.2.min.js"></script>
-    <script src="static/plugins/jvectormap/js/jquery-jvectormap-world-mill-en.js"></script>
+    <script src="${ctx }/static/plugins/jvectormap/js/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="${ctx }/static/plugins/jvectormap/js/jquery-jvectormap-world-mill-en.js"></script>
     <!-- Gauge  -->
-    <script src="static/plugins/gauge/gauge.min.js"></script>
-    <script src="static/plugins/gauge/gauge-demo.js"></script>
+    <script src="${ctx }/static/plugins/gauge/gauge.min.js"></script>
+    <script src="${ctx }/static/plugins/gauge/gauge-demo.js"></script>
     <!-- Calendar  -->
-    <script src="static/plugins/calendar/clndr.js"></script>
-    <script src="static/plugins/calendar/clndr-demo.js"></script>
+    <script src="${ctx }/static/plugins/calendar/clndr.js"></script>
+    <script src="${ctx }/static/plugins/calendar/clndr-demo.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
     <!-- Switch -->
-    <script src="static/plugins/switchery/switchery.min.js"></script>
-    <srcrip src="static/js/vendor/jquery-3.3.1.min.js"></srcrip>
-    
+    <script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
     <!--Load these page level functions-->
     <script>
     $(document).ready(function() {
