@@ -48,13 +48,11 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 					}
 				}
 			}
-
 			// 取到所有的菜单ID后，获取菜单数据
 			if (!CollectionUtils.isEmpty(menuIds)) {
 				result.addAll(menuDao.findByIdInAndIsShowOrderByOrderNo(menuIds, true));
 			}
 		}
-
 		// 为分类建立键值对
 		Map mapNodes = new HashMap(result.size());
 		for (Menu treeNode : result) {
@@ -79,18 +77,6 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 			} // end else
 		} // end for
 		return topTree;
-	}
-
-	private boolean isAdminRole(Set<Role> roles) {
-		if (CollectionUtils.isEmpty(roles)) {
-			return false;
-		}
-		for (Role role : roles) {
-			if ("管理员".equals(role.getName())) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	@Override
@@ -122,9 +108,8 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 	 */
 	private Set<String> getFilterMenus(CurrentUser currentUser) {
 		Set<String> result = new HashSet<>();
-		if (!currentUser.getAdmin()) {
-			// 非超管，过滤掉省馆菜单，包括省管理员也没有该菜单
-			result.add("/users/province");
+		if (!currentUser.getIsAdmin()) {
+			result.add("/sys/admin");
 		}
 		return result;
 	}

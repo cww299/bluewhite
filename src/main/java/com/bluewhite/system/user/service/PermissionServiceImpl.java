@@ -28,8 +28,7 @@ public class PermissionServiceImpl extends BaseServiceImpl<Permission, Long>
 		if (!CollectionUtils.isEmpty(permissionIds)) {
 			for (Long permissionId : permissionIds) {
 				Permission permission = findOne(permissionId);
-				String actualPermissionStr = menu.getIdentity() + ":"
-						+ permission.getPermission();
+				String actualPermissionStr = menu.getIdentity() + ":" + permission.getPermission();
 				result.add(actualPermissionStr);
 			}
 		}

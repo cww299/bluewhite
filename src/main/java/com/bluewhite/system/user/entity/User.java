@@ -120,7 +120,7 @@ public class User extends BaseEntity<Long> {
 	/**
 	 * 角色集合
 	 */
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "sys_user_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 	private Set<Role> roles = new HashSet<Role>();
 
@@ -131,46 +131,19 @@ public class User extends BaseEntity<Long> {
 	@JSONField(serialize = false)
 	private Set<String> permissions = new HashSet<>();
 
+	/**
+	 * 
+	 */
 	@Transient
 	@JSONField(serialize = false)
-	private String role;// 特殊业务字段，仅用于判断该用户所含角色
-
-	/**
-	 * 非数据库字段，业务字段，“，”分开存储角色标识
-	 */
-	@Transient
-	private String rolesIdenti;
-
-	/**
-	 * 非数据库字段，业务字段，“，”分开存储角色名称标识
-	 */
-	@Transient
-	private String rolesName;
+	private Set<String> role = new HashSet<>();
 	
-	
-
-	public String getRole() {
+	public Set<String> getRole() {
 		return role;
 	}
 
-	public void setRole(String role) {
+	public void setRole(Set<String> role) {
 		this.role = role;
-	}
-
-	public String getRolesIdenti() {
-		return rolesIdenti;
-	}
-
-	public void setRolesIdenti(String rolesIdenti) {
-		this.rolesIdenti = rolesIdenti;
-	}
-
-	public String getRolesName() {
-		return rolesName;
-	}
-
-	public void setRolesName(String rolesName) {
-		this.rolesName = rolesName;
 	}
 
 	public Boolean getIsAdmin() {

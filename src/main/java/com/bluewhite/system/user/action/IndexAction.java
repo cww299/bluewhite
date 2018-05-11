@@ -1,50 +1,35 @@
 package com.bluewhite.system.user.action;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.cache.Cache;
-import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.subject.Subject;
-import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
-import org.hibernate.usertype.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.bluewhite.common.BeanCopyUtils;
-import com.bluewhite.common.ClearCascadeJSON;
-import com.bluewhite.common.Constants;
 import com.bluewhite.common.Log;
-import com.bluewhite.common.ServiceException;
-import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
-import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
-import com.google.common.base.Joiner;
 import com.sun.star.reflection.InvocationTargetException;
 
+/**
+ * 
+ * @author zhangliang
+ *
+ */
 @Controller
 public class IndexAction {
 
@@ -63,6 +48,15 @@ public class IndexAction {
 		
 	}
 	
+	/**
+	 *根据不同菜单跳转不同的jsp
+	 */
+	@RequestMapping(value = "/menusToUrl")
+	public String menusToJsp(HttpServletRequest request,String url) {
+		return url;
+	}
+	
+	
 	
 	/**
 	 * 普通用户登录
@@ -79,6 +73,8 @@ public class IndexAction {
 	public CommonResponse login(HttpServletRequest request,
 			HttpServletResponse reponse, String username, String password) throws IllegalAccessException, InvocationTargetException {
 		CommonResponse cr = new CommonResponse();
+		Map<String, Object> data = new HashMap<String, Object>();
+		CurrentUser cu = new CurrentUser();
 		Subject subject = SecurityUtils.getSubject();
 		User user = (User)subject.getSession().getAttribute("user");
 		//当用户已经认证且用户匹配时
@@ -89,7 +85,8 @@ public class IndexAction {
 			try {
 				subject.login(new UsernamePasswordToken(username, password));
 				user = userService.findByUserName(username);//普通用户
-				subject.getSession().setAttribute("user", user);
+				BeanCopyUtils.copyNotEmpty(user, cu, "");
+				subject.getSession().setAttribute("user", cu);
 				cr.setMessage("用户登录成功。");
 			} catch (AuthenticationException e) {
 				cr.setCode(ErrorCode.SYSTEM_USER_NOT_AUTHENTICATED.getCode());
@@ -97,9 +94,6 @@ public class IndexAction {
 				return cr;
 			}
 		}
-		CurrentUser cu = new CurrentUser();
-		BeanCopyUtils.copyNotEmpty(user, cu, "");
-		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("user", cu);
 		cr.setData(data);
 		return cr;

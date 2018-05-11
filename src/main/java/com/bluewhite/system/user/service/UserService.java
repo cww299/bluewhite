@@ -72,13 +72,6 @@ public interface UserService extends BaseCRUDService<User, Long> {
 	 */
 	public boolean deleteUsers(String ids);
 	
-	/**
-	 * 添加不同角色到同一用户
-	 * @param user  用户实体类
-	 * @param roleIds 角色id
-	 * @return user
-	 */
-	public User saveHasExistUser(User user, String roleIds);
 	
 	/**
 	 * 分页查询统计

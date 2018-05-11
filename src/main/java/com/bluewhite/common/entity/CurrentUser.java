@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Set;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * 当前登录用户信息
@@ -30,24 +31,14 @@ public class CurrentUser {
 	 */
 	private Integer sex;
 	/**
-	 * 登录用户角色集合
-	 */
-	private Set<String> roles;
-	
-	/**
 	 * 部门名
 	 */
 	private String name;
 	
 	/**
-	 * 登录用户角色标志符集合
-	 */
-	@JSONField(serialize = false)
-	private Set<String> rolesIdenti;// 登录用户的角色标识符
-	/**
 	 * 是否是管理员
 	 */
-	private Boolean admin;
+	private Boolean isAdmin;
 
 	/**
 	 * 联系电话
@@ -55,18 +46,16 @@ public class CurrentUser {
 	private String phone;
 	
 	/**
-	 * 密码
+	 * 登录用户角色集合
 	 */
-	private String password;
-	
-	
-	/**
+	@JSONField(serialize = false)
+	private Set<String> role;
 
 	/**
 	 * 用户权限集合
 	 */
 	@JSONField(serialize = false)
-	private Set<String> permissions;// 登录用户的权限
+	private Set<String> permissions;
 
 	public Long getId() {
 		return id;
@@ -84,28 +73,20 @@ public class CurrentUser {
 		this.userName = userName;
 	}
 
-	public Set<String> getRoles() {
-		return roles;
+	public Boolean getIsAdmin() {
+		return isAdmin;
 	}
 
-	public void setRoles(Set<String> roles) {
-		this.roles = roles;
+	public void setIsAdmin(Boolean isAdmin) {
+		this.isAdmin = isAdmin;
 	}
 
-	public Set<String> getRolesIdenti() {
-		return rolesIdenti;
+	public Set<String> getRole() {
+		return role;
 	}
 
-	public void setRolesIdenti(Set<String> rolesIdenti) {
-		this.rolesIdenti = rolesIdenti;
-	}
-
-	public Boolean getAdmin() {
-		return admin;
-	}
-
-	public void setAdmin(Boolean admin) {
-		this.admin = admin;
+	public void setRole(Set<String> role) {
+		this.role = role;
 	}
 
 	public Set<String> getPermissions() {
@@ -149,13 +130,6 @@ public class CurrentUser {
 		this.phone = phone;
 	}
 
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
 	
 
 	

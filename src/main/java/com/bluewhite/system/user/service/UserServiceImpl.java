@@ -134,16 +134,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		return userDao.findByPhone(phone);
 	}
 	
-	
-
-
-	
-	@Override
-	@Transactional
-	public User saveHasExistUser(User user,String roleIds) {
-		return userDao.save(user);
-	}
-
 
 	@Override
 	public boolean deleteUsers(String ids) {

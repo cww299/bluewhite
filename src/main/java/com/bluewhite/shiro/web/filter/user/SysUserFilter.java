@@ -1,5 +1,8 @@
 package com.bluewhite.shiro.web.filter.user;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +17,7 @@ import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
+import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
@@ -45,16 +49,21 @@ public class SysUserFilter extends AccessControlFilter {
 			return false;
 		} else {
 			//用户存在，重新更新用户权限，确保用户权限处于最新状态
-			User user = userService.loginByUsernameAndPassword(currentUser.getUserName(),currentUser.getPassword());
-			if (currentUser == null || !currentUser.getId().equals(user.getId())) {
+			User user = userService.findByUserName(currentUser.getUserName());
+			Set<String> permissions = userService.findStringPermissions(user);
+			Set<String> roles = new HashSet<String>();
+			 for (Role role : user.getRoles()) {
+				 roles.add(role.getRole());
+	         }
+			if (currentUser == null || currentUser.getId().equals(user.getId())) {
 				currentUser = new CurrentUser();
+				currentUser.setIsAdmin(user.getIsAdmin());
 				currentUser.setId(user.getId());
 				currentUser.setUserName(user.getUserName());
-				currentUser.setPermissions(user.getPermissions());
+				currentUser.setRole(roles);
+				currentUser.setPermissions(permissions);
 			}
-			// 每次都让其登录。
 			SessionManager.setUserSession(currentUser);
-			req.setAttribute(Constants.CURRENT_USER, currentUser);
 			return true;
 		}
     }

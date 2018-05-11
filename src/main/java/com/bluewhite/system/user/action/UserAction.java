@@ -1,13 +1,9 @@
 package com.bluewhite.system.user.action;
 
-import java.awt.geom.Area;
 import java.text.SimpleDateFormat;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -20,8 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.bluewhite.common.ClearCascadeJSON;
-import com.bluewhite.common.Constants;
 import com.bluewhite.common.DateTimePattern;
+import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
@@ -49,18 +45,29 @@ public class UserAction {
 	
 	
 	/**
-	 * 获取当前用户的权限
+	 * 新增一个用户
+	 * 
+	 * @param request 请求
+	 * @param user 用户实体类
+	 * @return cr
 	 */
-	@RequestMapping(value = "/getRoles", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/add", method = RequestMethod.POST)
 	@ResponseBody
-	@RequiresPermissions(value = { "user" })
-	public CommonResponse getRoles(HttpServletRequest request) {
+	public CommonResponse createUser(HttpServletRequest request, User user) {
 		CommonResponse cr = new CommonResponse();
-//		SecurityUtils.getSubject().isPermitted();
-		cr.setMessage("获取权限成功");
+		user.setPassword("123456");
+		if(!StringUtils.isEmpty(user.getPhone())){
+			User u = userService.findByPhone(user.getPhone());
+			if(u != null){
+				cr.setMessage("该用户手机号已存在");
+				return cr;
+			}
+		}
+		cr.setData(clearCascadeJSON.format(userService.save(user)).toJSON());
 		return cr;
 	}
-
+	
+	
 	
 	/**
 	 * 修改用户信息
@@ -93,7 +100,7 @@ public class UserAction {
 	@RequestMapping(value = "/info", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse getUser(HttpServletRequest request) {
-		CurrentUser cu = (CurrentUser) request.getAttribute(Constants.CURRENT_USER);
+		CurrentUser cu = SessionManager.getUserSession();
 		User user = userService.findOne(cu.getId());
 		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(user).toJSON());
 		return cr;
@@ -121,31 +128,9 @@ public class UserAction {
 		return cr;
 	}
 
-	/**
-	 * 新增一个用户
-	 * 
-	 * @param request 请求
-	 * @param user 用户实体类
-	 * @return cr
-	 */
-	@RequestMapping(value = "/user/add", method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse createUser(HttpServletRequest request, User user) {
-		CommonResponse cr = new CommonResponse();
-		user.setPassword("123456");
-		if(!StringUtils.isEmpty(user.getPhone())){
-			User u = userService.findByPhone(user.getPhone());
-			if(u != null){
-//				userService.saveHasExistUser(u,user.getRoleIds());
-			}
-		}
-		cr.setData(clearCascadeJSON.format(userService.save(user)).toJSON());
-		return cr;
-	}
 
 	/**
 	 * 判断username是否存在相同的
-	 * 
 	 * @param user 请求
 	 * @return cr
 	 */
