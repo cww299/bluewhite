@@ -76,17 +76,19 @@ public class IndexAction {
 			HttpServletResponse reponse, String username, String password) throws IllegalAccessException, InvocationTargetException {
 		CommonResponse cr = new CommonResponse();
 		Map<String, Object> data = new HashMap<String, Object>();
-		CurrentUser cu = new CurrentUser();
 		Subject subject = SecurityUtils.getSubject();
-		User user = (User)subject.getSession().getAttribute("user");
+		CurrentUser cu = (CurrentUser)subject.getSession().getAttribute("user");
 		//当用户已经认证且用户匹配时
-		if(user != null && subject.isAuthenticated() && subject.getPrincipal().equals(username)){
+		if(cu != null && subject.isAuthenticated() && subject.getPrincipal().equals(username)){
 			cr.setMessage("用户登录成功。");
 		}else{
 			//用户未登录
 			try {
+				if(cu==null){
+					cu = new CurrentUser();
+				}
 				subject.login(new UsernamePasswordToken(username, password));
-				user = userService.findByUserName(username);//普通用户
+				User user = userService.findByUserName(username);//普通用户
 				BeanCopyUtils.copyNotEmpty(user, cu, "");
 				subject.getSession().setAttribute("user", cu);
 				cr.setMessage("用户登录成功。");

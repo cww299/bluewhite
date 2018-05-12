@@ -19,7 +19,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.bluewhite.base.BaseEntity;
 
 /**
- * 用户实体
+ * 员工用户实体
  * @author zhangliang
  *
  */
@@ -38,18 +38,18 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Column(name = "isAdmin", nullable = false)
 	private Boolean isAdmin = false;
+	
+	/**
+	 * 是否锁定
+	 */
+	@Column(name = "del_flag")
+	private Integer delFlag;
 
 	/**
-	 * 用户名
+	 * 登录 名
 	 */
-	@Column(name = "login_name", nullable = false)
+	@Column(name = "login_name")
 	private String loginName;
-
-	/**
-	 * 手机
-	 */
-	@Column(name = "phone")
-	private String phone;
 
 	/**
 	 * 用户密码,加密后
@@ -58,17 +58,29 @@ public class User extends BaseEntity<Long> {
 	private String password;
 
 	/**
-	 * 真实名
+	 * 员工姓名
 	 */
-	@Column(name = "realname")
+	@Column(name = "username")
 	private String userName;
-
+	
 	/**
-	 * 是否锁定
+	 * 员工编号
 	 */
-	@Column(name = "del_flag")
-	private Integer delFlag;
-
+	@Column(name = "number")
+	private String number;
+	
+	/**
+	 * 民族
+	 */
+	@Column(name = "nation")
+	private String nation;
+	
+	/**
+	 * 手机
+	 */
+	@Column(name = "phone")
+	private String phone;
+	
 	/**
 	 * 邮箱
 	 */
@@ -92,7 +104,132 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Column(name = "id_card")
 	private String idCard;
-
+	
+	/**
+	 * 户籍地址
+	 */
+	@Column(name = "permanent_address")
+	private String permanentAddress;
+	/**
+	 * 现居住地址
+	 */
+	@Column(name = "living_address")
+    private String livingAddress;
+    /**
+     * 婚姻状况
+     */
+	@Column(name = "marriage")
+    private String marriage;
+    /**
+     * 生育状况
+     */
+	@Column(name = "procreate")
+    private String procreate;
+    /**
+     * 学历
+     */
+	@Column(name = "education")
+    private String education;
+    /**
+     * 毕业学校
+     */
+	@Column(name = "school")
+    private String school;
+    /**
+     * 专业
+     */
+	@Column(name = "major")
+    private String major;
+    /**
+     * 联系人
+     */
+	@Column(name = "contacts")
+    private String contacts;
+    /**
+     * 联系方式
+     */
+	@Column(name = "information")
+    private String information;
+    /**
+     *入职时间
+     */
+	@Column(name = "entry")
+    private String entry;
+    /**
+     *预计转正时间 
+     */
+	@Column(name = "estimate")
+    private String estimate;
+    /**
+     * 实际转正开始时间
+     */
+	@Column(name = "actua")
+    private String actua;
+	/**
+	 *社保缴纳时间
+	 */
+	@Column(name = "social_security")
+	private String socialSecurity;
+	/**
+	 * 出生日期
+	 */
+	@Column(name = "birthday")
+    private String birthday;
+	/**
+	 * 银行卡1
+	 */
+	@Column(name = "bank_card1")
+    private String bankCard1;
+	/**
+	 * 银行卡2
+	 */
+	@Column(name = "bank_card2")
+    private String bankCard2;
+	/**
+	 * 协议
+	 */
+	@Column(name = "agreement")
+    private String agreement;
+	/**
+	 * 承诺书
+	 */
+	@Column(name = "promise")
+    private String promise;
+	/**
+	 * 合同
+	 */
+	@Column(name = "contract")
+    private String contract;
+	/**
+	 * 合同签订开始日期
+	 */
+	@Column(name = "contract_date")
+    private String contractDate;
+	/**
+	 * 合同签订次数
+	 */
+	@Column(name = "frequency")
+	private Integer frequency;
+	/**
+	 *工作状态(在职离职)
+	 */
+	@Column(name = "quit")
+    private String quit;
+	/**
+	 *离职时间
+	 */
+	@Column(name = "quit_date")
+    private String quitDate;
+	/**
+	 * 理由
+	 */
+	@Column(name = "reason")
+    private String reason;
+	/**
+	 * 培训
+	 */
+	@Column(name = "train")
+    private String train;
 	/**
 	 * 简介
 	 */
@@ -105,11 +242,6 @@ public class User extends BaseEntity<Long> {
 	@Column(name = "position")
 	private String position;
 
-	/**
-	 * 教育水平
-	 */
-	@Column(name = "edu_degree")
-	private Integer eduDegree;
 
 	/**
 	 * 部门
@@ -138,6 +270,225 @@ public class User extends BaseEntity<Long> {
 	@JSONField(serialize = false)
 	private Set<String> role = new HashSet<>();
 	
+	
+	
+	
+	public String getNumber() {
+		return number;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
+	}
+
+	public String getNation() {
+		return nation;
+	}
+
+	public void setNation(String nation) {
+		this.nation = nation;
+	}
+
+	public String getPermanentAddress() {
+		return permanentAddress;
+	}
+
+	public void setPermanentAddress(String permanentAddress) {
+		this.permanentAddress = permanentAddress;
+	}
+
+	public String getLivingAddress() {
+		return livingAddress;
+	}
+
+	public void setLivingAddress(String livingAddress) {
+		this.livingAddress = livingAddress;
+	}
+
+	public String getMarriage() {
+		return marriage;
+	}
+
+	public void setMarriage(String marriage) {
+		this.marriage = marriage;
+	}
+
+	public String getProcreate() {
+		return procreate;
+	}
+
+	public void setProcreate(String procreate) {
+		this.procreate = procreate;
+	}
+
+	public String getEducation() {
+		return education;
+	}
+
+	public void setEducation(String education) {
+		this.education = education;
+	}
+
+	public String getSchool() {
+		return school;
+	}
+
+	public void setSchool(String school) {
+		this.school = school;
+	}
+
+	public String getMajor() {
+		return major;
+	}
+
+	public void setMajor(String major) {
+		this.major = major;
+	}
+
+	public String getContacts() {
+		return contacts;
+	}
+
+	public void setContacts(String contacts) {
+		this.contacts = contacts;
+	}
+
+	public String getInformation() {
+		return information;
+	}
+
+	public void setInformation(String information) {
+		this.information = information;
+	}
+
+	public String getEntry() {
+		return entry;
+	}
+
+	public void setEntry(String entry) {
+		this.entry = entry;
+	}
+
+	public String getEstimate() {
+		return estimate;
+	}
+
+	public void setEstimate(String estimate) {
+		this.estimate = estimate;
+	}
+
+	public String getActua() {
+		return actua;
+	}
+
+	public void setActua(String actua) {
+		this.actua = actua;
+	}
+
+	public String getSocialSecurity() {
+		return socialSecurity;
+	}
+
+	public void setSocialSecurity(String socialSecurity) {
+		this.socialSecurity = socialSecurity;
+	}
+
+	public String getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(String birthday) {
+		this.birthday = birthday;
+	}
+
+	public String getBankCard1() {
+		return bankCard1;
+	}
+
+	public void setBankCard1(String bankCard1) {
+		this.bankCard1 = bankCard1;
+	}
+
+	public String getBankCard2() {
+		return bankCard2;
+	}
+
+	public void setBankCard2(String bankCard2) {
+		this.bankCard2 = bankCard2;
+	}
+
+	public String getAgreement() {
+		return agreement;
+	}
+
+	public void setAgreement(String agreement) {
+		this.agreement = agreement;
+	}
+
+	public String getPromise() {
+		return promise;
+	}
+
+	public void setPromise(String promise) {
+		this.promise = promise;
+	}
+
+	public String getContract() {
+		return contract;
+	}
+
+	public void setContract(String contract) {
+		this.contract = contract;
+	}
+
+	public String getContractDate() {
+		return contractDate;
+	}
+
+	public void setContractDate(String contractDate) {
+		this.contractDate = contractDate;
+	}
+
+	public Integer getFrequency() {
+		return frequency;
+	}
+
+	public void setFrequency(Integer frequency) {
+		this.frequency = frequency;
+	}
+
+	public String getQuit() {
+		return quit;
+	}
+
+	public void setQuit(String quit) {
+		this.quit = quit;
+	}
+
+	public String getQuitDate() {
+		return quitDate;
+	}
+
+	public void setQuitDate(String quitDate) {
+		this.quitDate = quitDate;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	public String getTrain() {
+		return train;
+	}
+
+	public void setTrain(String train) {
+		this.train = train;
+	}
+
 	public Set<String> getRole() {
 		return role;
 	}
@@ -240,14 +591,6 @@ public class User extends BaseEntity<Long> {
 
 	public void setPosition(String position) {
 		this.position = position;
-	}
-
-	public Integer getEduDegree() {
-		return eduDegree;
-	}
-
-	public void setEduDegree(Integer eduDegree) {
-		this.eduDegree = eduDegree;
 	}
 
 	public String getOrgName() {
