@@ -19,7 +19,9 @@
 
 <body>
     <section id="main-wrapper" class="theme-default">
-      <%@include file="decorator/leftbar.jsp"%>
+     <%--  <%@include file="decorator/leftbar.jsp"%> --%>
+      <jsp:include  page="decorator/leftbar.jsp" flush="true"/>
+
       
        
         <!--main content start-->
