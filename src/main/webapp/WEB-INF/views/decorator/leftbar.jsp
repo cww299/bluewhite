@@ -10,30 +10,74 @@
     <title>NeuBoard</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <!-- Favicon -->
     <link rel="shortcut icon" href="${ctx }/static/images/favicon.ico" type="image/x-icon">
-    <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
-    <!-- Fonts  -->
     <link rel="stylesheet" href="${ctx }/static/css/font-awesome.min.css">
     <link rel="stylesheet" href="${ctx }/static/css/simple-line-icons.css">
-    <!-- CSS Animate -->
     <link rel="stylesheet" href="${ctx }/static/css/animate.css">
-    <!-- Daterange Picker -->
     <link rel="stylesheet" href="${ctx }/static/plugins/daterangepicker/daterangepicker-bs3.css">
-   
-    
-    <!-- Switchery -->
     <link rel="stylesheet" href="${ctx }/static/plugins/switchery/switchery.min.css">
     <!-- Custom styles for this theme -->
     <link rel="stylesheet" href="${ctx }/static/css/main.css">
-    <!-- Feature detection -->
+    
+    <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
     <script src="${ctx }/static/js/vendor/modernizr-2.6.2.min.js"></script>
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-    <script src="assets/js/vendor/html5shiv.js"></script>
-    <script src="assets/js/vendor/respond.min.js"></script>
-    <![endif]-->
+<script type="text/javascript">
+        jQuery(function($){
+        	var Login = function(){
+				var self = this;
+				//表单jsonArray
+				
+				//初始化js
+				this.init = function(){
+					//注册绑定事件
+					self.events();
+				}
+				this.events = function(){
+					var html = '';
+					var htmlto = '';
+			      	var arr=new Array();
+			      	var arrTo=new Array();
+			      	var a="";
+			      	var b="";
+			      	var c="";
+			      	var d="";
+					$.ajax({
+					      url:"${ctx}/menus",
+					      type:"GET", 
+			      		  success: function (result) {
+			      			arr=result.data
+			      			
+			      			
+			      			for (var i = 0; i < arr[0].length; i++) {
+			      			 	a=arr[0][i].name
+			      				b= arr[0][i].url
+			      				 arrTo=arr[0][i].children
+			      				 if(arrTo!=null){
+			      					 
+			      				for (var i = 0; i < arrTo.length; i++) {
+			      				var	c=arrTo[i].name
+			      					d=arrTo[i].url
+			      					htmlto +='<li><a href="${ctx }'+d+'" title="Buttons">'+c+'</a></li>'
+								}
+			      				 }
+			      			html +='<li class="nav-dropdown"><a href="#"><i class="fa  fa-fw fa-cogs"></i>'+a+'</a><ul class="nav-sub" style="display:blok">'+htmlto+'</ul></li>'
+							}
+			      					
+					 /*  $('#informatic').append("<li class='active'><a href='${ctx }/index' title='首页'><i class='fa  fa-fw fa-tachometer'></i> 首页</a></li>"+html) */
+						      },error:function(){
+									layer.msg("失败", {icon: 2});
+									layer.close(index);
+							  }
+
+					  })
+				}
+			}
+				var login = new Login();
+				login.init();
+        }) 
+        
+        </script>  
 </head>
 <body>
    <header id="header">
@@ -168,316 +212,33 @@
             </div>
             <nav>
                 <h5 class="sidebar-header">Navigation</h5>
-                <ul class="nav nav-pills nav-stacked">
-                    <li class="active">
-                        <a href="${ctx }/index" title="首页">
-                            <i class="fa  fa-fw fa-tachometer"></i> 首页
-                        </a>
-                    </li>
+                <ul class="nav nav-pills nav-stacked " id="informatic">
+                    
+                    
+                    
                     <li class="nav-dropdown">
                         <a href="#" title="产品总汇">
                             <i class="fa  fa-fw fa-cogs"></i> 产品总汇
                         </a>
-                        <ul class="nav-sub">
-                            <li>
-                                <a href="${ctx }/product/information" title="Buttons">
-                                     产品信息
+                        <ul class="nav-sub" >
+                             <li>
+                                <a href="${ctx }/product/information"  title="Buttons"> 产品信息
                                 </a>
-                            </li>
-                            <li>
-                                <a href="ui-sliders-progress.html" title="Sliders &amp; Progress">
-                                     Sliders &amp; Progress
+                            </li> 
+                           
+                           <li>
+                                <a href="${ctx }/product/information"  title="Buttons"> 产品信息
                                 </a>
-                            </li>
-                            <li>
-                                <a href="ui-modals-popus.html" title="Modals &amp; Popups">
-                                     Modals &amp; Popups
-                                </a>
-                            </li>
-                            <li>
-                                <a href="ui-tabs-accordions.html" title="Tabs &amp; Accordions">
-                                     Tabs &amp; Accordions
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="ui-alerts-notifications.html" title="Alerts &amp; Notifications">
-                                     Alerts &amp; Notifications
-                                </a>
-                            </li>
-                            <li>
-                                <a href="ui-nestable-lists.html" title=" Nestable Lists">
-                                     Nestable Lists
-                                </a>
-                            </li>
-                            <li>
-                                <a href="ui-panels.html" title="Panels">
-                                     Panels
-                                </a>
-                            </li>
-                            <li>
-                                <a href="ui-icons.html" title="Icons">
-                                     Icons
-                                </a>
-                            </li>
-                            <li>
-                                <a href="ui-typography.html" title="Typography">
-                                     Typography
-                                </a>
-                            </li>
+                            </li> 
                         </ul>
-                    </li>
-                    <li class="nav-dropdown">
-                        <a href="#" title="Forms">
-                            <i class="fa  fa-fw fa-edit"></i> Forms
-                        </a>
-                        <ul class="nav-sub">
-                            <li><a href="forms-components.html" title="Components">Components</a>
-                            </li>
-                            <li><a href="forms-validation.html" title="Validation">Validation</a>
-                            </li>
-                            <li><a href="forms-mask.html" title="Mask">Mask</a>
-                            </li>
-                            <li><a href="forms-wizard.html" title="Wizard">Wizard</a>
-                            </li>
-                            <li><a href="forms-multiple-file.html" title="Multiple File Upload">Multiple File Upload</a>
-                            </li>
-                            <li><a href="forms-wysiwyg.html" title="WYSIWYG Editor">WYSIWYG Editor</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-dropdown">
-                        <a href="#" title="Tables">
-                            <i class="fa  fa-fw fa-th-list"></i> Tables
-                        </a>
-                        <ul class="nav-sub">
-                            <li>
-                                <a href="tables-basic-tables.html" title="Basic Tables">
-                                     Basic Tables
-                                </a>
-                            </li>
-                            <li>
-                                <a href="tables-data-tables.html" title="Data Tables">
-                                     Data Tables
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-dropdown">
-                        <a href="#" title="Charts">
-                            <i class="fa fa-fw fa-bar-chart-o"></i> Charts
-                        </a>
-                        <ul class="nav-sub">
-                            <li>
-                                <a href="charts-chartjs.html" title="Chartjs">
-                                    Chartjs
-                                </a>
-                            </li>
-                            <li>
-                                <a href="charts-c3.html" title="C3 Charts">
-                                     C3 Charts
-                                </a>
-                            </li>
-                            <li>
-                                <a href="charts-morris.html" title="Morris.js Charts">
-                                     Morris.js Charts
-                                </a>
-                            </li>
-                            <li>
-                                <a href="charts-sparkline.html" title="Sparkline Charts">
-                                     Sparkline Charts
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-dropdown">
-                         <a href="#" title="Mail">
-                            <i class="fa fa-fw fa-envelope-o"></i> Mail
-                            <span class="label label-primary label-circle pull-right">8</span>
-                        </a>
-                        <ul class="nav-sub">
-                            <li>
-                                <a href="mail-inbox.html" title="Mail Inbox">
-                                    Inbox
-                                </a>
-                            </li>
-                            <li>
-                                <a href="mail-compose.html" title="Mail Compose">
-                                     Compose Mail
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-dropdown">
-                        <a href="#" title="Maps">
-                            <i class="fa  fa-fw fa-map-marker"></i> Maps
-                        </a>
-                        <ul class="nav-sub">
-                            <li>
-                                <a href="maps-google.html" title="Google Maps">
-                                     Google Maps
-                                </a>
-                            </li>
-                            <li>
-                                <a href="maps-vector.html" title="Vector Maps">
-                                     Vector Maps
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="Frontend/index.html" title="Frontend">
-                            <i class="fa  fa-fw fa-desktop"></i> Front-end Theme
-                            <span class="pull-right badge badge-danger">new</span>
-                        </a>
-                    </li>
-                    <li class="nav-dropdown">
-                        <a href="#" title="Pages">
-                            <i class="fa  fa-fw fa-file-text"></i> Pages
-                        </a>
-                        <ul class="nav-sub">
-                            <li>
-                                <a href="pages-blank-page.html" title="Blank Page">
-                                     Blank Page
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="pages-profile.html" title="Profile">
-                                     Profile
-                                </a>
-                            </li>
-                            <li>
-                                <a href="pages-sign-in.html" title="Sign In">
-                                     Sign In
-                                </a>
-                            </li>
-                            <li>
-                                <a href="pages-sign-up.html" title="Sign Up">
-                                     Sign Up
-                                </a>
-                            </li>
-                            <li>
-                                <a href="pages-locked-screen.html" title="Locked Screen">
-                                     Locked Screen
-                                </a>
-                            </li>
-                            <li>
-                                <a href="pages-404.html" title="404 Page">
-                                     404 Page
-                                </a>
-                            </li>
-                            <li>
-                                <a href="pages-500.html" title="500 Page">
-                                     500 Page
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-dropdown">
-                        <a href="#" title="Menu Levels">
-                            <i class="fa  fa-fw fa-folder-open"></i> Menu Levels
-                        </a>
-                        <ul class="nav-sub">
-                            <li>
-                                <a href="javascript:;" title="Level 2.1">
-                                    <i class="fa fa-fw fa-file"></i> Level 1.1
-                                </a>
-                            </li>
-                            <li>
-                                <a href="javascript:;" title="Level 2.2">
-                                    <i class="fa fa-fw fa-file"></i> Level 1.2
-                                </a>
-                            </li>
-                            <li class="nav-dropdown">
-                                <a href="#" title="Level 2.3">
-                                    <i class="fa fa-fw fa-folder-open"></i> Level 1.3
-                                </a>
-                                <ul class="nav-sub">
-                                    <li>
-                                        <a href="javascript:;" title="Level 3.1">
-                                            <i class="fa fa-fw fa-file"></i> Level 2.1
-                                        </a>
-                                    </li>
-                                    <li class="nav-dropdown">
-                                        <a href="#" title="Level 3.2">
-                                            <i class="fa fa-fw fa-folder-open"></i> Level 2.2
-                                        </a>
-                                        <ul class="nav-sub">
-                                            <li>
-                                                <a href="javascript:;" title="Level 4.1">
-                                                    <i class="fa fa-fw fa-file"></i> Level 3.1
-                                                </a>
-                                            </li>
-                                            <li class="nav-dropdown">
-                                                <a href="#" title="Level 4.2">
-                                                    <i class="fa fa-fw fa-folder-open"></i> Level 3.2
-                                                </a>
-                                                <ul class="nav-sub">
-                                                    <li class="nav-dropdown">
-                                                        <a href="#" title="Level 5.1">
-                                                            <i class="fa fa-fw fa-folder-open"></i> Level 4.1
-                                                        </a>
-                                                        <ul class="nav-sub">
-                                                            <li>
-                                                                <a href="javascript:;" title="Level 6.1">
-                                                                    <i class="fa fa-fw fa-file"></i> Level 5.1
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="javascript:;" title="Level 6.2">
-                                                                    <i class="fa fa-fw fa-file"></i> Level 5.2
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <a href="javascript:;" title="Level 5.2">
-                                                            <i class="fa fa-fw fa-file"></i> Level 4.2
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="javascript:;" title="Level 5.3">
-                                                            <i class="fa fa-fw fa-file"></i> Level 4.3
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </li>
-
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="animations.html" title="CSS Animations">
-                            <i class="fa  fa-fw fa-magic"></i> CSS Animations
-                        </a>
-                    </li>
+                    </li>  
+                    
                 </ul>
             </nav>
-            <h5 class="sidebar-header">Account Settings</h5>
-            <div class="setting-list">
-                <div class="row">
-                    <div class="col-xs-8">
-                        <label for="check1" class="control-label">Share your status</label>
-                    </div>
-                    <div class="col-xs-4">
-                        <input type="checkbox" class="js-switch" checked id="check1" />
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-8">
-                        <label for="check2" class="control-label">Push Notifications</label>
-                    </div>
-                    <div class="col-xs-4">
-                        <input type="checkbox" class="js-switch" id="check2" />
-                    </div>
-                </div>
-            </div>
-             <sitemesh:write property='body'></sitemesh:write>  
+            
+              
         </aside>
         <!--sidebar left end-->
 </body>
+        
 </html>
