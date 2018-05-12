@@ -132,7 +132,7 @@ public class User extends BaseEntity<Long> {
 	private Set<String> permissions = new HashSet<>();
 
 	/**
-	 * 
+	 * 角色
 	 */
 	@Transient
 	@JSONField(serialize = false)
