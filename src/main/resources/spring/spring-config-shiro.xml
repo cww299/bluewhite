@@ -57,6 +57,7 @@
 
     <!-- 会话管理器 -->
     <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+    	<property name="sessionIdUrlRewritingEnabled" value="false" />
         <property name="globalSessionTimeout" value="3600000"/>
         <property name="deleteInvalidSessions" value="true"/>
         <property name="sessionValidationSchedulerEnabled" value="true"/>
@@ -102,7 +103,7 @@
 			  <!-- anon表示此地址不需要任何权限即可访问 -->  
 					/login=anon <!-- 前端用户登录 -->
 					/static/**=anon <!--设置静态资源文件为游客可访问-->
-					/**=sysUserFilter <!-- 默认系统用户请求过滤  -->
+					/**=authc <!-- 默认系统用户请求过滤  -->
 					/logout=logout<!-- 退出登录 -->
 			</value>
 		</property>
