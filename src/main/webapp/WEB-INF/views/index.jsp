@@ -19,8 +19,8 @@
 
 <body>
     <section id="main-wrapper" class="theme-default">
-     <%--  <%@include file="decorator/leftbar.jsp"%> --%>
-      <jsp:include  page="decorator/leftbar.jsp" flush="true"/>
+    <%@include file="decorator/leftbar.jsp"%> 
+      <%-- <jsp:include  page="decorator/leftbar.jsp" flush="true"/> --%>
 
       
        
@@ -584,7 +584,7 @@
     </div>
     <!--/Config demo-->
     <!--Global JS-->
-    <script src="${ctx }/static/js/vendor/jquery-1.11.1.min.js"></script>
+    
     <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
     <script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
     <script src="${ctx }/static/plugins/pace/pace.min.js"></script>
@@ -614,13 +614,19 @@
     <script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
     <!--Load these page level functions-->
     <script>
-    $(document).ready(function() {
+   /*  $(document).ready(function() {
         app.dateRangePicker();
         app.chartJs();
         app.weather();
         app.spinStart();
         app.spinStop();
-    });
+    }); */
+    /* window.onload = function(){ 
+    	console.log(2)
+				$('.sele').on('click',function(){
+					console.log(1)
+				})
+    } */
     </script>
      
 </body>
