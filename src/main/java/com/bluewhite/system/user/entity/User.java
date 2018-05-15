@@ -12,11 +12,13 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.basedata.entity.BaseData;
 
 /**
  * 员工用户实体
@@ -154,27 +156,27 @@ public class User extends BaseEntity<Long> {
      *入职时间
      */
 	@Column(name = "entry")
-    private String entry;
+    private Date entry;
     /**
      *预计转正时间 
      */
 	@Column(name = "estimate")
-    private String estimate;
+    private Date estimate;
     /**
      * 实际转正开始时间
      */
 	@Column(name = "actua")
-    private String actua;
+    private Date actua;
 	/**
 	 *社保缴纳时间
 	 */
 	@Column(name = "social_security")
-	private String socialSecurity;
+	private Date socialSecurity;
 	/**
 	 * 出生日期
 	 */
 	@Column(name = "birthday")
-    private String birthday;
+    private Date birthday;
 	/**
 	 * 银行卡1
 	 */
@@ -204,7 +206,7 @@ public class User extends BaseEntity<Long> {
 	 * 合同签订开始日期
 	 */
 	@Column(name = "contract_date")
-    private String contractDate;
+    private Date contractDate;
 	/**
 	 * 合同签订次数
 	 */
@@ -219,7 +221,7 @@ public class User extends BaseEntity<Long> {
 	 *离职时间
 	 */
 	@Column(name = "quit_date")
-    private String quitDate;
+    private Date quitDate;
 	/**
 	 * 理由
 	 */
@@ -237,17 +239,33 @@ public class User extends BaseEntity<Long> {
 	private String remark;
 
 	/**
+	 * 职位id
+	 */
+	@Column(name = "position_id")
+	private Long positionId;
+	
+	/**
 	 * 职位
 	 */
-	@Column(name = "position")
-	private String position;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "position_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData position;
+	
 
-
+	/**
+	 * 部门id
+	 */
+	@Column(name = "orgName_id")
+	private Long orgNameId;
+	
 	/**
 	 * 部门
 	 */
-	@Column(name = "orgName")
-	private String orgName;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "orgName_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData orgName;
+
+
 
 	/**
 	 * 角色集合
@@ -360,47 +378,7 @@ public class User extends BaseEntity<Long> {
 	public void setInformation(String information) {
 		this.information = information;
 	}
-
-	public String getEntry() {
-		return entry;
-	}
-
-	public void setEntry(String entry) {
-		this.entry = entry;
-	}
-
-	public String getEstimate() {
-		return estimate;
-	}
-
-	public void setEstimate(String estimate) {
-		this.estimate = estimate;
-	}
-
-	public String getActua() {
-		return actua;
-	}
-
-	public void setActua(String actua) {
-		this.actua = actua;
-	}
-
-	public String getSocialSecurity() {
-		return socialSecurity;
-	}
-
-	public void setSocialSecurity(String socialSecurity) {
-		this.socialSecurity = socialSecurity;
-	}
-
-	public String getBirthday() {
-		return birthday;
-	}
-
-	public void setBirthday(String birthday) {
-		this.birthday = birthday;
-	}
-
+	
 	public String getBankCard1() {
 		return bankCard1;
 	}
@@ -441,14 +419,6 @@ public class User extends BaseEntity<Long> {
 		this.contract = contract;
 	}
 
-	public String getContractDate() {
-		return contractDate;
-	}
-
-	public void setContractDate(String contractDate) {
-		this.contractDate = contractDate;
-	}
-
 	public Integer getFrequency() {
 		return frequency;
 	}
@@ -463,14 +433,6 @@ public class User extends BaseEntity<Long> {
 
 	public void setQuit(String quit) {
 		this.quit = quit;
-	}
-
-	public String getQuitDate() {
-		return quitDate;
-	}
-
-	public void setQuitDate(String quitDate) {
-		this.quitDate = quitDate;
 	}
 
 	public String getReason() {
@@ -585,19 +547,35 @@ public class User extends BaseEntity<Long> {
 		this.remark = remark;
 	}
 
-	public String getPosition() {
+	public Long getPositionId() {
+		return positionId;
+	}
+
+	public void setPositionId(Long positionId) {
+		this.positionId = positionId;
+	}
+
+	public BaseData getPosition() {
 		return position;
 	}
 
-	public void setPosition(String position) {
+	public void setPosition(BaseData position) {
 		this.position = position;
 	}
 
-	public String getOrgName() {
+	public Long getOrgNameId() {
+		return orgNameId;
+	}
+
+	public void setOrgNameId(Long orgNameId) {
+		this.orgNameId = orgNameId;
+	}
+
+	public BaseData getOrgName() {
 		return orgName;
 	}
 
-	public void setOrgName(String orgName) {
+	public void setOrgName(BaseData orgName) {
 		this.orgName = orgName;
 	}
 
@@ -616,5 +594,63 @@ public class User extends BaseEntity<Long> {
 	public void setPermissions(Set<String> permissions) {
 		this.permissions = permissions;
 	}
+
+	public Date getEntry() {
+		return entry;
+	}
+
+	public void setEntry(Date entry) {
+		this.entry = entry;
+	}
+
+	public Date getEstimate() {
+		return estimate;
+	}
+
+	public void setEstimate(Date estimate) {
+		this.estimate = estimate;
+	}
+
+	public Date getActua() {
+		return actua;
+	}
+
+	public void setActua(Date actua) {
+		this.actua = actua;
+	}
+
+	public Date getSocialSecurity() {
+		return socialSecurity;
+	}
+
+	public void setSocialSecurity(Date socialSecurity) {
+		this.socialSecurity = socialSecurity;
+	}
+
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+
+	public Date getContractDate() {
+		return contractDate;
+	}
+
+	public void setContractDate(Date contractDate) {
+		this.contractDate = contractDate;
+	}
+
+	public Date getQuitDate() {
+		return quitDate;
+	}
+
+	public void setQuitDate(Date quitDate) {
+		this.quitDate = quitDate;
+	}
+	
+	
 
 }
