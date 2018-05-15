@@ -5,6 +5,7 @@
 <!DOCTYPE html>
 <html class="no-js">
 <head>
+
  <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>NeuBoard</title>
@@ -18,60 +19,73 @@
     <link rel="stylesheet" href="${ctx }/static/plugins/daterangepicker/daterangepicker-bs3.css">
     <link rel="stylesheet" href="${ctx }/static/plugins/switchery/switchery.min.css">
     <!-- Custom styles for this theme -->
-    <link rel="stylesheet" href="${ctx }/static/css/main.css">
+    <link rel="stylesheet" href="${ctx }/static/css/main.css"> 
     
-    <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
-    <script src="${ctx }/static/js/vendor/modernizr-2.6.2.min.js"></script>
+<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+ <script src="${ctx }/static/js/vendor/modernizr-2.6.2.min.js"></script>
 <script type="text/javascript">
         jQuery(function($){
         	var Login = function(){
 				var self = this;
 				//表单jsonArray
-				
 				//初始化js
 				this.init = function(){
 					//注册绑定事件
 					self.events();
+					
 				}
+				
 				this.events = function(){
 					var html = '';
-					var htmlto = '';
+					var htmlto;
 			      	var arr=new Array();
 			      	var arrTo=new Array();
-			      	var a="";
-			      	var b="";
+			      	var a=""; 
+	 			    var b="";
 			      	var c="";
-			      	var d="";
+		 			 var d="";
 					$.ajax({
 					      url:"${ctx}/menus",
 					      type:"GET", 
 			      		  success: function (result) {
-			      			arr=result.data
-			      			
-			      			
-			      			for (var i = 0; i < arr[0].length; i++) {
-			      			 	a=arr[0][i].name
-			      				b= arr[0][i].url
-			      				 arrTo=arr[0][i].children
+			      			arr=result.data[0]
+			      			for (var i = 0; i < arr.length; i++) {
+			      			 	a=arr[i].name
+			      				b= arr[i].url
+			      				arrTo=arr[i].children
+			      				htmlto = "";
 			      				 if(arrTo!=null){
-			      					 
-			      				for (var i = 0; i < arrTo.length; i++) {
-			      				var	c=arrTo[i].name
-			      					d=arrTo[i].url
+			      				 for (var k = 0; k < arrTo.length;k++) {
+			      					 c=arrTo[k].name
+			      					d=arrTo[k].url 
 			      					htmlto +='<li><a href="${ctx }'+d+'" title="Buttons">'+c+'</a></li>'
-								}
+			      				
+								} 
+			      				
 			      				 }
-			      			html +='<li class="nav-dropdown"><a href="#"><i class="fa  fa-fw fa-cogs"></i>'+a+'</a><ul class="nav-sub" style="display:blok">'+htmlto+'</ul></li>'
+			      			html +='<li class="nav-dropdown"><a href="#" class="sele"><i class="fa  fa-fw fa-cogs"></i>'+a+'</a><ul class="nav-sub" style="display:none;">'+htmlto+'</ul></li>'
+			      			 	
 							}
-			      					
-					 /*  $('#informatic').append("<li class='active'><a href='${ctx }/index' title='首页'><i class='fa  fa-fw fa-tachometer'></i> 首页</a></li>"+html) */
+					 $('#informatic').append("<li class='active'><a href='${ctx }/index' class='.xinxi' title='首页'><i class='fa  fa-fw fa-tachometer'></i> 首页</a></li>"+html);
+					 $('.sele').on('click',function(){
+						 var display =$(this).next().css("display")
+						if(display=='none'){
+							$(this).next().css("display","block");  
+						}else{
+							$(this).next().css("display","none"); 
+						}
+					 })
 						      },error:function(){
 									layer.msg("失败", {icon: 2});
 									layer.close(index);
 							  }
 
 					  })
+					  
+							
 				}
+				
+				
 			}
 				var login = new Login();
 				login.init();
@@ -112,43 +126,15 @@
                             <span class="avatar">
                                 <img src="${ctx }/static/images/profile.jpg" class="img-circle" alt="">
                             </span>
-                        <span class="text">Mike Adams</span>
+                        <span class="text">用户</span>
                         <span class="caret"></span>
                         </span>
                     </a>
                     <ul class="dropdown-menu animated fadeInRight" role="menu">
                         <li>
-                            <span class="arrow top"></span>
-                            <h5>
-                                <span>80%</span>
-                                <small class="text-muted">Profile complete</small>
-                            </h5>
-                            <div class="progress progress-xs">
-                                <div class="progress-bar progress-bar" style="width: 80%">
-                                </div>
-                            </div>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="javascript:void(0);">
-                                <span class="icon"><i class="fa fa-user"></i>
-                                </span>My Account</a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0);">
-                                <span class="icon"><i class="fa fa-envelope"></i>
-                                </span>Messages</a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0);">
-                                <span class="icon"><i class="fa fa-cog"></i>
-                                </span>Settings</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="javascript:void(0);">
+                            <a href="${ctx }/logout" id="login">
                                 <span class="icon"><i class="fa fa-sign-out"></i>
-                                </span>Logout</a>
+                                </span>退出</a>
                         </li>
                     </ul>
                 </li>
@@ -213,26 +199,6 @@
             <nav>
                 <h5 class="sidebar-header">Navigation</h5>
                 <ul class="nav nav-pills nav-stacked " id="informatic">
-                    
-                    
-                    
-                    <li class="nav-dropdown">
-                        <a href="#" title="产品总汇">
-                            <i class="fa  fa-fw fa-cogs"></i> 产品总汇
-                        </a>
-                        <ul class="nav-sub" >
-                             <li>
-                                <a href="${ctx }/product/information"  title="Buttons"> 产品信息
-                                </a>
-                            </li> 
-                           
-                           <li>
-                                <a href="${ctx }/product/information"  title="Buttons"> 产品信息
-                                </a>
-                            </li> 
-                        </ul>
-                    </li>  
-                    
                 </ul>
             </nav>
             
