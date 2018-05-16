@@ -8,12 +8,14 @@
 
 
    <!-- 对不同的路径，启用不同的装饰器 -->
-   <!--  <mapping path="/index" decorator="/WEB-INF/views/decorator/leftbar.jsp"/>
-  <mapping path="/product/*" decorator="/WEB-INF/views/decorator/leftbar.jsp"/> -->  -->
+    <!--  <mapping path="/index" decorator="/WEB-INF/views/decorator/leftbar.jsp"/> -->
+  <!-- <mapping path="/product/*" decorator="/WEB-INF/views/decorator/leftbar.jsp"/>  -->
 
     <!-- Exclude path from decoration. -->
-  <!--   <mapping path="/static/*" exclude="true" /> -->
-    
-    <mapping path="/login" exclue="true" />
+    <!-- <mapping path="/static/**" exclude="true" /> -->
+    <!--  <excludes>
+        <pattern>/static/*</pattern>
+    </excludes>
+    <mapping path="/login" exclue="true" /> -->
    
 </sitemesh> 
