@@ -33,26 +33,7 @@ public class BaseDataAction{
 																.addRetainTerm(BaseData.class, "id", "name", "type", "parentId", "ord", "remark");
 	@Autowired
 	BaseDataService service;
-	/********************************************动态表单相关**********************************************/
 	
-	/**
-	 * 获取动态表单基础数据源
-	 * @param request 请求
-	 * @param response 返回
-	 * @return cr 
-	 */
-	@RequestMapping(value = "dynamicform/types",method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse getDynamicBaseDataTypesDatas(HttpServletRequest request, HttpServletResponse response){
-		CommonResponse cr = new CommonResponse();
-		List<Map<String, String>> types = service.getDynamicBaseDataTypes();
-		cr.setData(types);
-		return cr;
-	}
-	
-	
-	
-	/********************************************动态表单相关**********************************************/
 	
 	/**
 	 * 获取基础数据类型列表

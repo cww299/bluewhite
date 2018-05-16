@@ -21,6 +21,8 @@ import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
+import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.product.entity.Product;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
@@ -42,6 +44,21 @@ public class UserAction {
 				.addRetainTerm(User.class,"id", "userName", "phoneNum", "admin","realname","school","department","roles")
 				.addRetainTerm(Role.class, "name", "role", "description","id");
 	}
+	
+	/**
+	 *  查看用户列表
+	 * @param request
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = "/user/pages", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse userPages(HttpServletRequest request, User user,PageParameter page) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSON.format(userService.getPagedUser(page,user)).toJSON());
+		return cr;
+	}
+	
 	
 	
 	/**

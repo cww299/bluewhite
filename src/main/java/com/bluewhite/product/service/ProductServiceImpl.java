@@ -22,13 +22,26 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 
 	@Override
 	public PageResult<Product> findPages(Product product,PageParameter page) {
-		  Page<Product> pageMessages = productDao.findAll((root,query,cb) -> {
+		  Page<Product> productPages = productDao.findAll((root,query,cb) -> {
 	        	List<Predicate> predicate = new ArrayList<>();
+	        	//按id过滤
+	        	if (product.getId() != null) {
+					predicate.add(cb.equal(root.get("id").as(Long.class),product.getId()));
+				}
+	        	//按编号过滤
+	        	if (product.getNumber() != null) {
+					predicate.add(cb.like(root.get("number").as(String.class),"%"+product.getNumber()+"%"));
+				}
+	        	//按产品名称过滤
+	        	if (product.getName() != null) {
+					predicate.add(cb.like(root.get("name").as(String.class),"%"+product.getName()+"%"));
+				}
+	        	
 				Predicate[] pre = new Predicate[predicate.size()];
 				query.where(predicate.toArray(pre));
 	        	return null;
 	        }, page);
-	        PageResult<Product> result = new PageResult<>(pageMessages);
+	        PageResult<Product> result = new PageResult<>(productPages);
 	        return result;
 	    }
 

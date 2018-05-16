@@ -32,7 +32,9 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.security.Md5Utils;
+import com.bluewhite.product.entity.Product;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.RoleMenuPermission;
@@ -96,8 +98,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	}
 	
 	@Override
-	public List<User> getPagedUser(PageParameter page, User user) {
-		Page<User> pagedArticles = userDao.findAll((root, query, cb) -> {
+	public PageResult<User> getPagedUser(PageParameter page, User user) {
+		Page<User> pageUser = userDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			if (user.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class),
@@ -111,8 +113,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			query.where(predicate.toArray(pre));
 			return null;
 		}, page);
-		List<User> users = pagedArticles.getContent();
-		return users;
+		PageResult<User> result = new PageResult<>(pageUser);
+		return result;
 	}
 	
 
@@ -159,6 +161,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		userDao.save(user);
 		return true;
 	}
+
+
 
 
 

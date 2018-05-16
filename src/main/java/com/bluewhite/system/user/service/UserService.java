@@ -3,14 +3,11 @@ package com.bluewhite.system.user.service;
 import java.util.List;
 import java.util.Set;
 
-import javax.security.auth.Subject;
-
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
-import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.system.user.entity.Role;
+import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.system.user.entity.User;
 
 @Service
@@ -52,7 +49,7 @@ public interface UserService extends BaseCRUDService<User, Long> {
 	 * @param user
 	 * @return
 	 */
-	public List<User> getPagedUser(PageParameter page, User user);
+	public PageResult<User> getPagedUser(PageParameter page, User user);
 
 
 	/**
@@ -88,6 +85,8 @@ public interface UserService extends BaseCRUDService<User, Long> {
 	 * @param user dai 
 	 */
 	public boolean resetPwdByDefault(Long userId);
+
+	
 	
 	
 	

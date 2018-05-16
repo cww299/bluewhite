@@ -1,6 +1,9 @@
 package com.bluewhite.reportexport.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -16,12 +19,16 @@ import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.product.entity.Product;
 import com.bluewhite.reportexport.entity.ProductPoi;
 import com.bluewhite.reportexport.entity.UserPoi;
+import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.User;
 @Service
 public class ReportExportServiceImpl implements ReportExportService{
 	
 	@Autowired
 	private BaseDataDao baseDataDao;
+	
+	@Autowired
+	private UserDao userDao;
 	
 	@PersistenceContext
 	protected EntityManager entityManager;
@@ -62,49 +69,60 @@ public class ReportExportServiceImpl implements ReportExportService{
 	    }
 
 	@Override
+	@Transactional
 	public int importUserExcel(List<UserPoi> excelUser) {
 		int count = 0;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		if(excelUser.size()>0){
 			List<User> userList = new ArrayList<User>();
-			//部门
-			String orgName = "";
-			//职位
-			String position = "";
 			for(UserPoi proPoi :excelUser){
 				User user  = new User();
 				user.setUserName(proPoi.getUserName());
-				user.setBirthDate(proPoi.getBirthday());
-				user.setEntry(proPoi.getEntry());
+				user.setLoginName(proPoi.getUserName());
+				user.setPassword("123456");
+				Date birthday = null;
+				Date entry = null;
+				try {
+					if(proPoi.getBirthday() !=null || proPoi.getBirthday() != ""){
+						birthday = sdf.parse(proPoi.getBirthday());
+					}
+					if(proPoi.getEntry() !=null || proPoi.getEntry() != ""){
+						entry = sdf.parse(proPoi.getEntry());
+						}
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				user.setBirthDate(birthday);
+				user.setEntry(entry);
 				//导入用户同时更新基础字典表，对用户的部门和职位进行字典管理
 				//部门
-				if(proPoi.getOrgName()!=null && proPoi.getOrgName() != orgName ){
-					orgName = proPoi.getOrgName();
+				BaseData baseOrgName  = baseDataDao.findByName(proPoi.getOrgName());
+				if(baseOrgName == null){
+					baseOrgName = new BaseData();
+					baseOrgName.setName(proPoi.getOrgName());
+					baseOrgName.setType("orgName");
+					baseOrgName.setParentId((long)0);
+					baseDataDao.save(baseOrgName);
 				}
-				BaseData baseOrgName = new BaseData();
-				baseOrgName.setName(orgName);
-				baseOrgName.setType("orgName");
-				baseOrgName.setParentId((long)0);
-				
 				//职位
-				if(proPoi.getPosition()!=null && proPoi.getPosition() != orgName ){
-					position = proPoi.getPosition();
+				BaseData basePosition  = baseDataDao.findByName(proPoi.getPosition());
+				if(basePosition == null){
+					basePosition = new BaseData();
+					basePosition.setName(proPoi.getPosition());
+					basePosition.setType("position");
+					basePosition.setParentId((long)0);
+					baseDataDao.save(basePosition);
 				}
-				BaseData basePosition = new BaseData();
-				basePosition.setName(position);
-				basePosition.setType("position");
-				basePosition.setParentId((long)0);
-				
+				//更新职位和部门的id
+				user.setOrgNameId(baseOrgName.getId());
+				user.setPositionId(basePosition.getId());
 				userList.add(user);
 				count++;
 			}
-			this.saveAllUser(userList);
+			userDao.save(userList);
 		}
 		return count;
 	}
 
-	private void saveAllUser(List<User> userList) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

@@ -56,7 +56,7 @@
     
     
     <!-- SpringMVC在超出上传文件限制时，会抛出org.springframework.web.multipart.MaxUploadSizeExceededException -->  
-    <!-- 该异常是SpringMVC在检查上传的文件信息时抛出来的，而且此时还没有进入到Controller方法中 -->  
+    <!-- 该异常是SpringMVC在检查上传的文件信息时抛出来的，而且此时还没有进入到Controller方法中 
     <bean   class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">  
             <property name="exceptionMappings">
         <map>
@@ -72,10 +72,8 @@
              <entry key="common/error/roleError" value="505" />
         </map>
     </property>
-        
-        
-        
     </bean>  
+        -->  
     
 	
  	

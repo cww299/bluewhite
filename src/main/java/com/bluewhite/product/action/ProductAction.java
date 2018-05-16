@@ -1,8 +1,5 @@
 package com.bluewhite.product.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +11,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.SysLog;
 import com.bluewhite.product.entity.Product;
 import com.bluewhite.product.service.ProductService;
 
@@ -35,18 +34,6 @@ public class ProductAction {
 				"id","number", "name");
 	}
 	
-	
-	/**
-	 * 跳转到产品信息
-	 * @return
-	 */
-	@RequestMapping(value="/product/information")
-	public String index() {
-		return "product/information";
-		
-	}
-	
-	
 	/**
 	 * 分页查看所有的产品
 	 * 
@@ -57,11 +44,48 @@ public class ProductAction {
 	@RequestMapping(value = "/productPages", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse productPages(HttpServletRequest request,PageParameter page,Product product) {
-		CurrentUser cu = SessionManager.getUserSession();
 		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(productService.findPages(product,page))
 				.toJSON());
 		return cr;
 	}
+	
+	/**
+	 * 添加产品
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/addProduct", method = RequestMethod.POST)
+	@ResponseBody
+	@SysLogAspectAnnotation(description = "产品新增操作", module = "产品管理", operateType = "增加", logType = SysLog.ADMIN_LOG_TYPE)
+	public CommonResponse addProduct(HttpServletRequest request,Product product) {
+		CommonResponse cr = new CommonResponse();
+		product = productService.save(product);
+		if(product!=null){
+			cr.setMessage("添加成功");
+		}
+		return cr;
+	}
+	
+	/**
+	 * 修改产品
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/updateProduct", method = RequestMethod.PUT)
+	@ResponseBody
+	public CommonResponse updateProduct(HttpServletRequest request,Product product) {
+		CommonResponse cr = new CommonResponse();
+		product = productService.save(product);
+		if(product!=null){
+			cr.setMessage("修改成功");
+		}
+		return cr;
+	}
+	
 	
 	
 }

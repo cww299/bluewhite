@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,7 +131,7 @@ public class Excelutil<T> {
                             if ((c != null) && (c.length() > 0)) {  
                                 field.set(entity, Character.valueOf(c.charAt(0)));  
                             }  
-                        }  
+                        } 
                     }  
                     if (entity != null) {  
                         list.add(entity);  
@@ -424,7 +425,7 @@ public class Excelutil<T> {
     public  Object getCellValue(Cell cell){  
         Object value = null;  
         DecimalFormat df = new DecimalFormat("0");  //格式化number String字符  
-        SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd");  //日期格式化  
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  //日期格式化  
         DecimalFormat df2 = new DecimalFormat("0.00000000000000");  //格式化数字  
         switch (cell.getCellType()) {  
         case Cell.CELL_TYPE_STRING:  

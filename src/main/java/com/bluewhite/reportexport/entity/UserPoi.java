@@ -31,13 +31,13 @@ public class UserPoi {
 	 * 入职时间
 	 */
 	@Poi(name = "", column = "D")
-	private Date entry;
+	private String entry;
 	
 	/**
 	 * 出生日期
 	 */
 	@Poi(name = "", column = "E")
-    private Date birthday;
+    private String birthday;
 
 	public String getOrgName() {
 		return orgName;
@@ -63,21 +63,23 @@ public class UserPoi {
 		this.position = position;
 	}
 
-	public Date getEntry() {
+	public String getEntry() {
 		return entry;
 	}
 
-	public void setEntry(Date entry) {
+	public void setEntry(String entry) {
 		this.entry = entry;
 	}
 
-	public Date getBirthday() {
+	public String getBirthday() {
 		return birthday;
 	}
 
-	public void setBirthday(Date birthday) {
+	public void setBirthday(String birthday) {
 		this.birthday = birthday;
 	}
+
+
 	
 
 	

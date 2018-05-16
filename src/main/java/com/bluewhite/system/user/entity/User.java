@@ -45,7 +45,7 @@ public class User extends BaseEntity<Long> {
 	 * 是否锁定
 	 */
 	@Column(name = "del_flag")
-	private Integer delFlag;
+	private Integer delFlag = 1;
 
 	/**
 	 * 登录 名
