@@ -23,6 +23,7 @@
     
 <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
  <script src="${ctx }/static/js/vendor/modernizr-2.6.2.min.js"></script>
+ <script src="${ctx }/static/js/layer/layer.js"></script>
 <script type="text/javascript">
         jQuery(function($){
         	var Login = function(){
@@ -38,12 +39,20 @@
 				this.events = function(){
 					var html = '';
 					var htmlto;
+					var htmlth;
+					var htmltr;
 			      	var arr=new Array();
 			      	var arrTo=new Array();
+			      	var arrTh=new Array();
 			      	var a=""; 
 	 			    var b="";
 			      	var c="";
-		 			 var d="";
+		 			var d="";
+		 			var e="";
+		 			var f="";
+		 			var fristicon="";
+		 			var secondicon="";
+		 			var Thirdicon="";
 					$.ajax({
 					      url:"${ctx}/menus",
 					      type:"GET", 
@@ -52,27 +61,58 @@
 			      			for (var i = 0; i < arr.length; i++) {
 			      			 	a=arr[i].name
 			      				b= arr[i].url
+			      				fristicon=arr[i].icon
 			      				arrTo=arr[i].children
 			      				htmlto = "";
+			      			 	htmltr = "";
 			      				 if(arrTo!=null){
 			      				 for (var k = 0; k < arrTo.length;k++) {
 			      					 c=arrTo[k].name
 			      					d=arrTo[k].url 
-			      					htmlto +='<li><a href="${ctx }'+d+'" title="Buttons">'+c+'</a></li>'
-			      				
+			      					secondicon=arrTo[k].icon
+			      					arrTh=arrTo[k].children
+			      					htmlto +='<li><a href="#"  name='+d+' title='+c+'><i class="fa  fa-fw '+secondicon+'"></i>'+c+'</a></li>'
+			      					htmlth = "";
+			      				if(arrTh!=null){
+			      					for (var j = 0; j < arrTh.length; j++) {
+										e=arrTh[j].name
+										f=arrTh[j].url
+										Thirdicon=arrTh[j].icon
+										htmlth +='<li><a href="#" name='+f+' class="third" title='+e+'><i class="fa  fa-fw '+Thirdicon+'"></i>'+e+'</a></li>'
+									}
+			      				}
+			      				htmltr +='<li class="nav-dropdown"><a href="#" name='+d+' class="onclic" title='+c+'><i class="fa  fa-fw '+secondicon+'"></i>'+c+'</a><ul class="nav-sub" style="display:none;">'+htmlth+'</ul></li>'
 								} 
-			      				
 			      				 }
-			      			html +='<li class="nav-dropdown"><a href="#" class="sele"><i class="fa  fa-fw fa-cogs"></i>'+a+'</a><ul class="nav-sub" style="display:none;">'+htmlto+'</ul></li>'
-			      			 	
+			      			html +='<li class="nav-dropdown"><a href="#" class="sele"><i class="fa  fa-fw '+fristicon+'"></i>'+a+'</a><ul class="nav-sub" style="display:none;">'+htmltr+'</ul></li>'
 							}
-					 $('#informatic').append("<li class='active'><a href='${ctx }/index' class='.xinxi' title='首页'><i class='fa  fa-fw fa-tachometer'></i> 首页</a></li>"+html);
+					  $('#informatic').append("<li class='active'><a href='${ctx }/index'  title='首页'><i class='fa  fa-fw fa-tachometer'></i> 首页</a></li>"+html); 
 					 $('.sele').on('click',function(){
 						 var display =$(this).next().css("display")
 						if(display=='none'){
 							$(this).next().css("display","block");  
 						}else{
 							$(this).next().css("display","none"); 
+						}
+					 })
+					 $('.onclic').on('click',function(){
+						 var display =$(this).next().css("display")
+						if(display=='none'){
+							$(this).next().css("display","block");  
+						}else{
+							$(this).next().css("display","none"); 
+						}
+						var p= $(this).attr("name");
+						if(p!="#"){
+							location.href = "${ctx}/menusToUrl?url="+p;
+						}
+					 })
+					 $('.third').on('click',function(){
+						 
+						var p= $(this).attr("name");
+						console.log(p)
+						if(p!="#"){
+							location.href = "${ctx}/menusToUrl?url="+p;
 						}
 					 })
 						      },error:function(){
@@ -200,7 +240,7 @@
                 <h5 class="sidebar-header">Navigation</h5>
                 <ul class="nav nav-pills nav-stacked " id="informatic">
                 </ul>
-            </nav>
+            </nav> 
             
               
         </aside>
