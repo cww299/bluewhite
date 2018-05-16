@@ -64,7 +64,7 @@ public class SysLogServiceImpl extends BaseServiceImpl<SysLog, Long> implements
 				log.setEndTime(ca.getTime());
 			}
 		Page<SysLog> logs =dao.findAll(queryCondition(log),page);
-		PageResult<SysLog> result = new PageResult<>(logs);//分页数据
+		PageResult<SysLog> result = new PageResult<>(logs,page);//分页数据
 		mapResult.put("total", result.getTotal());//总条数
 		for (SysLog sysLog : result.getRows()) {//遍历处理
 			list = new ArrayList<>();

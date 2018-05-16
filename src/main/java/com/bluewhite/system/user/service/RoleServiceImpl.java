@@ -42,7 +42,7 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements
 			query.where(predicate.toArray(pre));
 			return null;
 		}, page);
-		PageResult<Role> result = new PageResult<>(pageData);
+		PageResult<Role> result = new PageResult<>(pageData,page);
 		return result;
 	}
 

@@ -113,7 +113,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			query.where(predicate.toArray(pre));
 			return null;
 		}, page);
-		PageResult<User> result = new PageResult<>(pageUser);
+		PageResult<User> result = new PageResult<>(pageUser,page);
 		return result;
 	}
 	
