@@ -95,7 +95,7 @@
 			//表单jsonArray
 			//初始化js
 			 var data={
-						page:1,
+						page:0,
 				  		size:15,	
 				  		
 
@@ -120,7 +120,7 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			  
+		      			  console.log(result)
 		      			 $(result.data.rows).each(function(i,o){
 		      				
 		      				html +='<tr>'
@@ -137,13 +137,13 @@
 				        //显示分页
 					   	 laypage({
 					      cont: 'pager', 
-					      pages: "10", 
-					      curr:  1,
+					      pages: result.data.totalPages, 
+					      curr:  result.data.pageNum || 1, 
 					      jump: function(obj, first){ 
 					    	  if(!first){ 
 					    		 
 						        	var _data = {
-						        			page:1,
+						        			page:obj.curr,
 									  		size:15,
 								  			
 								  	}
