@@ -1,4 +1,4 @@
-package com.bluewhite.common.entity;
+package com.bluewhite.system.sys.entity;
 
 import java.util.Date;
 
@@ -56,11 +56,6 @@ public class SysLog extends BaseEntity<Long>{
 	@Column(name = "operator_id")
 	private Long opertatorId;
 	
-	/**
-	 * 操作人id
-	 */
-	@Column(name = "operator_sso_user_id")
-	private String ssoUserId;
 
 	/**
 	 * 日志分类
@@ -157,13 +152,6 @@ public class SysLog extends BaseEntity<Long>{
 		this.opertatorId = opertatorId;
 	}
 	
-	public String getSsoUserId() {
-		return ssoUserId;
-	}
-
-	public void setSsoUserId(String ssoUserId) {
-		this.ssoUserId = ssoUserId;
-	}
 
 	public String getLogType() {
 		return logType;

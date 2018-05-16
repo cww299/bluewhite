@@ -41,7 +41,7 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 				query.where(predicate.toArray(pre));
 	        	return null;
 	        }, page);
-	        PageResult<Product> result = new PageResult<>(productPages);
+	        PageResult<Product> result = new PageResult<>(productPages,page);
 	        return result;
 	    }
 

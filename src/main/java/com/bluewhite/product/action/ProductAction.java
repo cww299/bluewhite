@@ -10,14 +10,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.Log;
-import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
-import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.common.entity.SysLog;
 import com.bluewhite.product.entity.Product;
 import com.bluewhite.product.service.ProductService;
+import com.bluewhite.system.sys.entity.SysLog;
 
 @Controller
 public class ProductAction {

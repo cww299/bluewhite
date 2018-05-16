@@ -29,8 +29,8 @@ import com.bluewhite.common.entity.CommonResponse;
 @RequestMapping("basedata")
 public class BaseDataAction{
 	
-	private final static ClearCascadeJSON ccj = ClearCascadeJSON.get()
-																.addRetainTerm(BaseData.class, "id", "name", "type", "parentId", "ord", "remark");
+	private final static ClearCascadeJSON ccj = 
+			ClearCascadeJSON.get().addRetainTerm(BaseData.class, "id", "name", "type", "parentId", "ord", "remark");
 	@Autowired
 	BaseDataService service;
 	

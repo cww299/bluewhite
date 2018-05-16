@@ -12,12 +12,31 @@ import org.springframework.data.domain.Page;
 public class PageResult<T> {
 	private Long total;
 	private List<T> rows;
+	private Long totalPages;
+	private Integer pageNum;
 	public PageResult(){
 		
 	}
-	public PageResult(Page<T> pageResult){
+	public PageResult(Page<T> pageResult,PageParameter page){
 		setRows(pageResult.getContent());
 		setTotal(pageResult.getTotalElements());
+		setTotalPages( (pageResult.getTotalElements() + page.getSize() -1) / page.getSize());
+		setPageNum(page.getPage());
+		
+	}
+	
+
+	public Integer getPageNum() {
+		return pageNum;
+	}
+	public void setPageNum(Integer pageNum) {
+		this.pageNum = pageNum;
+	}
+	public Long getTotalPages() {
+		return totalPages;
+	}
+	public void setTotalPages(Long totalPages) {
+		this.totalPages = totalPages;
 	}
 	public Long getTotal() {
 		return total;

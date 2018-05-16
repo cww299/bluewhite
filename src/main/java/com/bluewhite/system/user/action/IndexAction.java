@@ -110,10 +110,10 @@ public class IndexAction {
 	 * @param token
 	 * @return cr
 	 */
-	@RequestMapping(value = "/logout")
+	@RequestMapping(value = "/logout" , method = RequestMethod.GET)
 	public String logout() {
 		 SecurityUtils.getSubject().logout();  
-		return "/";
+		return "redirect:login.jsp";
 	}
 
 }
