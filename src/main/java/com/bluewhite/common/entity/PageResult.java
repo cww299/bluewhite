@@ -20,7 +20,7 @@ public class PageResult<T> {
 	public PageResult(Page<T> pageResult,PageParameter page){
 		setRows(pageResult.getContent());
 		setTotal(pageResult.getTotalElements());
-		setTotalPages( (pageResult.getTotalElements() + page.getSize() -1) / page.getSize());
+		setTotalPages( ((pageResult.getTotalElements() + page.getSize()) / page.getSize()) -1);
 		setPageNum(page.getPage());
 		
 	}
