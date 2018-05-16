@@ -53,7 +53,7 @@ public class IndexAction {
 	/**
 	 *根据不同菜单跳转不同的jsp
 	 */
-	@RequestMapping(value = "/menusToUrl")
+	@RequestMapping(value = "/menusToUrl", method = RequestMethod.GET)
 	public String menusToJsp(HttpServletRequest request,String url) {
 		return url;
 	}
