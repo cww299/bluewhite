@@ -8,7 +8,7 @@
 
  <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>NeuBoard</title>
+    <title>蓝白工艺</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link rel="shortcut icon" href="${ctx }/static/images/favicon.ico" type="image/x-icon">
@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="${ctx }/static/plugins/switchery/switchery.min.css">
     <!-- Custom styles for this theme -->
     <link rel="stylesheet" href="${ctx }/static/css/main.css"> 
+    <link rel="stylesheet" href="${ctx }/static/js/laypage/skin/laypage.css"> 
     
 <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
  <script src="${ctx }/static/js/vendor/modernizr-2.6.2.min.js"></script>
@@ -53,32 +54,33 @@
 		 			var fristicon="";
 		 			var secondicon="";
 		 			var Thirdicon="";
-					$.ajax({
+					/* 遍历菜单栏 */
+		 			$.ajax({
 					      url:"${ctx}/menus",
 					      type:"GET", 
 			      		  success: function (result) {
 			      			arr=result.data[0]
 			      			for (var i = 0; i < arr.length; i++) {
-			      			 	a=arr[i].name
-			      				b= arr[i].url
-			      				fristicon=arr[i].icon
-			      				arrTo=arr[i].children
+			      			 	a=arr[i].name //第一层次的命名
+			      				b= arr[i].url //第一层次的链接
+			      				fristicon=arr[i].icon //第一层次的图标
+			      				arrTo=arr[i].children //第二层次的数组
 			      				htmlto = "";
 			      			 	htmltr = "";
 			      				 if(arrTo!=null){
 			      				 for (var k = 0; k < arrTo.length;k++) {
-			      					 c=arrTo[k].name
-			      					d=arrTo[k].url 
-			      					secondicon=arrTo[k].icon
-			      					arrTh=arrTo[k].children
-			      					htmlto +='<li><a href="#"  name='+d+' title='+c+'><i class="fa  fa-fw '+secondicon+'"></i>'+c+'</a></li>'
+			      					 c=arrTo[k].name //第二层次的命名
+			      					d=arrTo[k].url  //第二层次的链接
+			      					secondicon=arrTo[k].icon //第二层次的图标
+			      					arrTh=arrTo[k].children //第三层次的数组
+			      					htmlto +='<li><a href="#"  name='+d+' title='+c+'><i class="fa  fa-fw '+secondicon+'"></i>'+c+'</a></li>' //拼接第二层
 			      					htmlth = "";
 			      				if(arrTh!=null){
 			      					for (var j = 0; j < arrTh.length; j++) {
-										e=arrTh[j].name
-										f=arrTh[j].url
-										Thirdicon=arrTh[j].icon
-										htmlth +='<li><a href="#" name='+f+' class="third" title='+e+'><i class="fa  fa-fw '+Thirdicon+'"></i>'+e+'</a></li>'
+										e=arrTh[j].name //第三层次的命名
+										f=arrTh[j].url  //第三层次的链接
+										Thirdicon=arrTh[j].icon //第三层次的图标
+										htmlth +='<li><a href="#" name='+f+' class="third" title='+e+'><i class="fa  fa-fw '+Thirdicon+'"></i>'+e+'</a></li>' //拼接第三层
 									}
 			      				}
 			      				htmltr +='<li class="nav-dropdown"><a href="#" name='+d+' class="onclic" title='+c+'><i class="fa  fa-fw '+secondicon+'"></i>'+c+'</a><ul class="nav-sub" style="display:none;">'+htmlth+'</ul></li>'
@@ -87,7 +89,8 @@
 			      			html +='<li class="nav-dropdown"><a href="#" class="sele"><i class="fa  fa-fw '+fristicon+'"></i>'+a+'</a><ul class="nav-sub" style="display:none;">'+htmltr+'</ul></li>'
 							}
 					  $('#informatic').append("<li class='active'><a href='${ctx }/index'  title='首页'><i class='fa  fa-fw fa-tachometer'></i> 首页</a></li>"+html); 
-					 $('.sele').on('click',function(){
+					 //显示隐藏级联
+					  $('.sele').on('click',function(){ 
 						 var display =$(this).next().css("display")
 						if(display=='none'){
 							$(this).next().css("display","block");  
@@ -95,6 +98,7 @@
 							$(this).next().css("display","none"); 
 						}
 					 })
+					 //显示隐藏级联 +++ 第二层级联跳转页面
 					 $('.onclic').on('click',function(){
 						 var display =$(this).next().css("display")
 						if(display=='none'){
@@ -107,6 +111,7 @@
 							location.href = "${ctx}/menusToUrl?url="+p;
 						}
 					 })
+					 //第三层级联跳转页面
 					 $('.third').on('click',function(){
 						 
 						var p= $(this).attr("name");
@@ -114,6 +119,11 @@
 						if(p!="#"){
 							location.href = "${ctx}/menusToUrl?url="+p;
 						}
+					 })
+					 $('#login').on('click',function(){
+						
+						 location.href = "${ctx}/logout";
+						
 					 })
 						      },error:function(){
 									layer.msg("失败", {icon: 2});
@@ -139,7 +149,7 @@
             <div class="brand">
                 <a href="index.html" class="logo">
                     <i class="icon-layers"></i>
-                    <span>NEU</span>BOARD</a>
+                    <span>蓝白</span>工艺</a>
             </div>
             <!--logo end-->
             <ul class="nav navbar-nav navbar-left">
@@ -172,7 +182,7 @@
                     </a>
                     <ul class="dropdown-menu animated fadeInRight" role="menu">
                         <li>
-                            <a href="${ctx }/logout" id="login">
+                            <a href="#" id="login">
                                 <span class="icon"><i class="fa fa-sign-out"></i>
                                 </span>退出</a>
                         </li>
@@ -246,6 +256,20 @@
         </aside>
         
         <!--sidebar left end-->
+        <section class="main-content-wrapper">
+            <div class="pageheader">
+                <h1>Data Tables</h1>
+                <div class="breadcrumb-wrapper hidden-xs">
+                    <span class="label">你在这里:</span>
+                    <ol class="breadcrumb">
+                        <li><a href="${ctx }/index">首页</a>
+                        </li>
+                        <!-- <li>Tables</li>
+                        <li class="active">Data Tables</li> -->
+                    </ol>
+                </div>
+            </div>
+        
 </body>
         
 </html>

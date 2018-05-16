@@ -20,22 +20,8 @@
 <body>
     <section id="main-wrapper" class="theme-default">
     <%@include file="decorator/leftbar.jsp"%> 
-      <%-- <jsp:include  page="decorator/leftbar.jsp" flush="true"/> --%>
-
-      
-       
         <!--main content start-->
-        <section class="main-content-wrapper">
-            <div class="pageheader">
-                <h1>Dashboard</h1>
-                <p class="description">Welcome to NEUBOARD Responsive Admin Theme</p>
-                <div class="breadcrumb-wrapper hidden-xs">
-                    <span class="label">You are here:</span>
-                    <ol class="breadcrumb">
-                        <li class="active">Dashboard</li>
-                    </ol>
-                </div>
-            </div>
+       
             <section id="main-content" class="animated fadeInUp">
                 <div class="row">
                     <div class="col-md-12 col-lg-6">
