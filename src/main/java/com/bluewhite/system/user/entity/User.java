@@ -52,7 +52,13 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Column(name = "login_name")
 	private String loginName;
-
+	
+	/**
+	 * 照片url
+	 */
+	@Column(name = "picture_url")
+	private String pictureUrl;
+	
 	/**
 	 * 用户密码,加密后
 	 */
@@ -650,6 +656,15 @@ public class User extends BaseEntity<Long> {
 	public void setQuitDate(Date quitDate) {
 		this.quitDate = quitDate;
 	}
+
+	public String getPictureUrl() {
+		return pictureUrl;
+	}
+
+	public void setPictureUrl(String pictureUrl) {
+		this.pictureUrl = pictureUrl;
+	}
+	
 	
 	
 

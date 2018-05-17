@@ -3,6 +3,8 @@ package com.bluewhite.common.entity;
 import java.io.Serializable;
 import java.util.Set;
 
+import javax.persistence.Column;
+
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -46,6 +48,12 @@ public class CurrentUser {
 	private String phone;
 	
 	/**
+	 * 照片url
+	 */
+	private String pictureUrl;
+	
+	
+	/**
 	 * 登录用户角色集合
 	 */
 	@JSONField(serialize = false)
@@ -57,12 +65,13 @@ public class CurrentUser {
 	@JSONField(serialize = false)
 	private Set<String> permissions;
 
+
 	public Long getId() {
 		return id;
 	}
 
-	public void setId(Serializable id) {
-		this.id = (Long)id;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getUserName() {
@@ -129,6 +138,16 @@ public class CurrentUser {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
+
+	public String getPictureUrl() {
+		return pictureUrl;
+	}
+
+	public void setPictureUrl(String pictureUrl) {
+		this.pictureUrl = pictureUrl;
+	}
+	
+	
 
 	
 
