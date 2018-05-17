@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.utils.excel.Excelutil;
+import com.bluewhite.reportexport.entity.ProcedurePoi;
 import com.bluewhite.reportexport.entity.ProductPoi;
 import com.bluewhite.reportexport.entity.UserPoi;
 import com.bluewhite.reportexport.service.ReportExportService;
@@ -49,8 +50,9 @@ public class ReportExportAction {
 				// 创建excel工具类
 				Excelutil<ProductPoi> util = new Excelutil<ProductPoi>(ProductPoi.class);
 				excelProduct = util.importExcel(filename, in);// 导入
-				if(ReportExportService.importProductExcel(excelProduct) > 0){
-					cr.setMessage("导入成功");
+				int count = ReportExportService.importProductExcel(excelProduct);
+				if(count > 0){
+					cr.setMessage("成功导入"+count+"条数据");
 				}
 		} catch (Exception e) {
 			cr.setMessage("导入失败");
@@ -77,8 +79,9 @@ public class ReportExportAction {
 				// 创建excel工具类
 				Excelutil<UserPoi> util = new Excelutil<UserPoi>(UserPoi.class);
 				excelUser = util.importExcel(filename, in);// 导入
-				if(ReportExportService.importUserExcel(excelUser) > 0){
-					cr.setMessage("导入成功");
+				int count = ReportExportService.importUserExcel(excelUser);
+				if(count > 0){
+					cr.setMessage("成功导入"+count+"条数据");
 				}
 		} catch (Exception e) {
 			cr.setMessage("导入失败");
@@ -86,6 +89,30 @@ public class ReportExportAction {
 		return cr;
 	}
 	
+	
+	/**
+	 * 工序导入
+	 */
+	@RequestMapping(value = "/importProcedure",method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse importProcedure(@RequestParam(value="file",required=false) MultipartFile file,Long productId,HttpServletRequest request){
+		CommonResponse cr = new CommonResponse();
+		try {
+				List<ProcedurePoi> excelProcedure = new ArrayList<ProcedurePoi>();
+				InputStream in = file.getInputStream();
+				String filename = file.getOriginalFilename();
+				// 创建excel工具类
+				Excelutil<ProcedurePoi> util = new Excelutil<ProcedurePoi>(ProcedurePoi.class);
+				excelProcedure = util.importExcel(filename, in);// 导入
+				int count = ReportExportService.importProcedureExcel(excelProcedure,productId);
+				if(count > 0){
+					cr.setMessage("成功导入"+count+"条数据");
+				}
+		} catch (Exception e) {
+			cr.setMessage("导入失败");
+		}
+		return cr;
+	}
 	
 
 }

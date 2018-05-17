@@ -11,28 +11,12 @@
 <body>
     <section id="main-wrapper" class="theme-default">
 		<%@include file="../decorator/leftbar.jsp"%> 
-
-        <!--main content start-->
-        <section class="main-content-wrapper">
-            <div class="pageheader">
-                <h1>角色管理</h1>
-                <div class="breadcrumb-wrapper hidden-xs">
-                    <span class="label">你在这里:</span>
-                    <ol class="breadcrumb">
-                        <li><a href="index.html">首页</a>
-                        </li>
-                        <li>系统设置</li>
-                        <li class="active">角色管理</li>
-                    </ol>
-                </div>
-            </div>
-            
             <section id="main-content" class="animated fadeInUp">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Hover rows</h3>
+                                <h3 class="panel-title">角色</h3>
                                 <div class="actions pull-right">
                                     <i class="fa fa-expand"></i>
                                     <i class="fa fa-chevron-down"></i>
@@ -42,49 +26,117 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th>#</th>
-                                            <th>First Name</th>
-                                            <th>Last Name</th>
-                                            <th>Username</th>
+                                            <th>角色序号</th>
+                                            <th>角色名称</th>
+                                            <th>英文名称</th>
+                                            <th>角色类型</th>
+                                            <th>角色描述</th>
+                                            <th>是否可用</th>
+                                            <th>生成时间</th>
+                                            <th>修改时间</th>
+                                            <th>操作</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Mark</td>
-                                            <td>Otto</td>
-                                            <td>@mdo</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Jacob</td>
-                                            <td>Thornton</td>
-                                            <td>@fat</td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td colspan="2">Larry the Bird</td>
-                                            <td>@twitter</td>
-                                        </tr>
+                                    <tbody id="tablecontent">
                                     </tbody>
                                 </table>
+                                 <div id="pager">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
         </section>
-        <!--main content end-->
     </section>
  
     <!--Global JS-->
-    <script src="${ctx }/static/js/vendor/jquery-1.11.1.min.js"></script>
     <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
     <script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
     <script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
     <script src="${ctx }/static/plugins/pace/pace.min.js"></script>
     <script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
     <script src="${ctx }/static/js/src/app.js"></script>
+     <script src="${ctx }/static/js/laypage/laypage.js"></script> 
+    <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
+    <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
+    
+    <script>
+   jQuery(function($){
+   	var Login = function(){
+			var self = this;
+			//表单jsonArray
+			//初始化js
+			 var data={
+						page:1,
+				  		size:15,	
+				} 
+			this.init = function(){
+			//注册绑定事件
+				self.events();
+				self.loadPagination(data);
+			}
+			//加载分页
+			  this.loadPagination = function(data){
+			    var index;
+			    var html ='';
+			    $.ajax({
+				      url:"${ctx}/roles/page",
+				      data:data,
+				      type:"GET",
+				      beforeSend:function(){
+					 	  index = layer.load(1, {
+						  shade: [0.1,'#fff'] //0.1透明度的白色背景
+						  });
+					  }, 
+		      		  success: function (result) {
+		      			 $(result.data.rows).each(function(i,o){
+		      				 
+		      				html +='<tr>'
+		      				+'<td class="edit price">'+o.id+'</td>'
+		      				+'<td class="edit price">'+o.name+'</td>'
+		      				+'<td class="edit price">'+o.role+'</td>'
+		      				+'<td class="edit price">'+o.roleType+'</td>'
+		      				+'<td class="edit price">'+o.description+'</td>'
+		      				+'<td class="edit price">'+o.isShow+'</td>'
+		      				+'<td class="edit price">'+o.createdAt+'</td>'
+		      				+'<td class="edit price">'+o.updatedAt+'</td>'
+							+'<td><button class="btn btn-xs btn-primary update">编辑</button></td></tr>'
+							
+		      			}); 
+				        //显示分页
+					  laypage({
+					      cont: 'pager', 
+					      pages: result.data.totalPages, 
+					      curr:  result.data.pageNum || 1, 
+					      jump: function(obj, first){ 
+					    	  if(!first){ 
+						        	var _data = {
+						        			page:obj.curr,
+									  		size:15,
+								  	}
+						            self.loadPagination(_data);
+							     }
+					      }
+					    });
+				        
+					   	layer.close(index);
+					   	$("#tablecontent").html(html); 
+				      },error:function(){
+							layer.msg("加载失败！", {icon: 2});
+							layer.close(index);
+					  }
+				  });
+			}
+			this.events = function(){
+			}
+   	}
+	var login = new Login();
+	  login.init();
+})
+    </script>
+    
+    
         
 </body>
 </html>

@@ -16,7 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bluewhite.basedata.dao.BaseDataDao;
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.product.entity.Product;
+import com.bluewhite.production.procedure.dao.ProcedureDao;
+import com.bluewhite.production.procedure.entity.Procedure;
+import com.bluewhite.reportexport.entity.ProcedurePoi;
 import com.bluewhite.reportexport.entity.ProductPoi;
 import com.bluewhite.reportexport.entity.UserPoi;
 import com.bluewhite.system.user.dao.UserDao;
@@ -29,6 +33,9 @@ public class ReportExportServiceImpl implements ReportExportService{
 	
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private ProcedureDao procedureDao;
 	
 	@PersistenceContext
 	protected EntityManager entityManager;
@@ -120,6 +127,25 @@ public class ReportExportServiceImpl implements ReportExportService{
 				count++;
 			}
 			userDao.save(userList);
+		}
+		return count;
+	}
+
+	@Override
+	@Transactional
+	public int importProcedureExcel(List<ProcedurePoi> excelProcedure, Long productId) {
+		int count = 0;
+		if(excelProcedure.size()>0){
+			List<Procedure> procedureList =new ArrayList<Procedure>();
+ 			for(ProcedurePoi procedurePoi : excelProcedure){
+				Procedure procedure = new Procedure();
+				procedure.setProductId(productId);
+				procedure.setName(procedurePoi.getName());
+				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime()*60));
+				procedureList.add(procedure);
+				count++;
+			}
+ 			procedureDao.save(procedureList);
 		}
 		return count;
 	}

@@ -12,6 +12,7 @@ import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
+import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.product.entity.Product;
 import com.bluewhite.product.service.ProductService;
@@ -59,9 +60,14 @@ public class ProductAction {
 	@SysLogAspectAnnotation(description = "产品新增操作", module = "产品管理", operateType = "增加", logType = SysLog.ADMIN_LOG_TYPE)
 	public CommonResponse addProduct(HttpServletRequest request,Product product) {
 		CommonResponse cr = new CommonResponse();
-		product = productService.save(product);
-		if(product!=null){
-			cr.setMessage("添加成功");
+		if(product.getNumber() ==null && product.getName() ==null){
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("产品编号和产品名都不能为空");
+		}else{
+			product = productService.save(product);
+			if(product!=null){
+				cr.setMessage("添加成功");
+			}
 		}
 		return cr;
 	}
@@ -83,7 +89,6 @@ public class ProductAction {
 		}
 		return cr;
 	}
-	
 	
 	
 }
