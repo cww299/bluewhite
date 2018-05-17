@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="${ctx }/static/js/laypage/skin/laypage.css"> 
     
 <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+<script src="${ctx }/static/js/vendor/jquery.cookie.js"></script>
  <script src="${ctx }/static/js/vendor/modernizr-2.6.2.min.js"></script>
  <script src="${ctx }/static/js/layer/layer.js"></script>
 <script type="text/javascript">
@@ -31,6 +32,13 @@
 				var self = this;
 				//表单jsonArray
 				//初始化js
+				var _cache;
+				this.setCache = function(cache){
+			  		_cache=cache;
+			  	}
+			  	this.getCache = function(){
+			  		return _cache;
+			  	}
 				this.init = function(){
 					//注册绑定事件
 					self.events();
@@ -38,6 +46,7 @@
 				}
 				
 				this.events = function(){
+					
 					var html = '';
 					var htmlto;
 					var htmlth;
@@ -88,8 +97,11 @@
 			      				 }
 			      			html +='<li class="nav-dropdown"><a href="#" class="sele"><i class="fa  fa-fw '+fristicon+'"></i>'+a+'</a><ul class="nav-sub" style="display:none;">'+htmltr+'</ul></li>'
 							}
+			      			
 					  $('#informatic').append("<li class='active'><a href='${ctx }/index'  title='首页'><i class='fa  fa-fw fa-tachometer'></i> 首页</a></li>"+html); 
-					 //显示隐藏级联
+					  var navstation = $.cookie("navstation");
+					  console.log(navstation)
+					  //显示隐藏级联
 					  $('.sele').on('click',function(){ 
 						 var display =$(this).next().css("display")
 						if(display=='none'){
@@ -109,15 +121,17 @@
 						var p= $(this).attr("name");
 						if(p!="#"){
 							location.href = "${ctx}/menusToUrl?url="+p;
+							
 						}
 					 })
 					 //第三层级联跳转页面
 					 $('.third').on('click',function(){
 						 
 						var p= $(this).attr("name");
-						console.log(p)
+							
 						if(p!="#"){
 							location.href = "${ctx}/menusToUrl?url="+p;
+							$.cookie("navstation", $(this).html(), { path: "/" });
 						}
 					 })
 					 $('#login').on('click',function(){
