@@ -89,18 +89,39 @@
 										e=arrTh[j].name //第三层次的命名
 										f=arrTh[j].url  //第三层次的链接
 										Thirdicon=arrTh[j].icon //第三层次的图标
-										htmlth +='<li><a href="#" name='+f+' class="third" title='+e+'><i class="fa  fa-fw '+Thirdicon+'"></i>'+e+'</a></li>' //拼接第三层
+										htmlth +='<li><a href="#" name='+f+' class="third" title='+e+'><i class="fa   fa-fw '+Thirdicon+'" id="'+f+'"></i>'+e+'</a></li>' //拼接第三层
 									}
 			      				}
-			      				htmltr +='<li class="nav-dropdown"><a href="#" name='+d+' class="onclic" title='+c+'><i class="fa  fa-fw '+secondicon+'"></i>'+c+'</a><ul class="nav-sub" style="display:none;">'+htmlth+'</ul></li>'
+			      				htmltr +='<li class="nav-dropdown"><a href="#" name='+d+' class="onclic" title='+c+'><i class="fa   fa-fw '+secondicon+'"></i>'+c+'</a><ul class="nav-sub" style="display:none;">'+htmlth+'</ul></li>'
 								} 
 			      				 }
 			      			html +='<li class="nav-dropdown"><a href="#" class="sele"><i class="fa  fa-fw '+fristicon+'"></i>'+a+'</a><ul class="nav-sub" style="display:none;">'+htmltr+'</ul></li>'
 							}
 			      			
-					  $('#informatic').append("<li class='active'><a href='${ctx }/index'  title='首页'><i class='fa  fa-fw fa-tachometer'></i> 首页</a></li>"+html); 
+					  $('#informatic').append("<li class=''><a href='${ctx }/index'  title='首页'><i class='fa  fa-fw fa-tachometer'></i> 首页</a></li>"+html); 
 					  var navstation = $.cookie("navstation");
-					  console.log(navstation)
+					  var navstationtwo=$.cookie("navstationtwo");
+					 if(navstation!=null){
+						//确认跳转后菜单栏
+						  $('#informatic li ul li ul li a').each(function(){
+							  if($(this).html() == navstation){
+								$(this).parent().parent().css("display","block").parent().parent().css("display","block")
+								$(this).parent().parent().parent().parent().parent().addClass("active")
+								$(this).parent().addClass("active")
+							  }
+						  }) 
+					 } 
+					  if(navstationtwo!=null){
+						//确认跳转后菜单栏
+						  $('#informatic li ul li a').each(function(){
+							  if($(this).html() == navstationtwo){
+								$(this).parent().parent().css("display","block")
+								$(this).parent().parent().parent().addClass("active")
+								$(this).parent().addClass("active")
+							  }
+						  }) 
+					 }
+					 
 					  //显示隐藏级联
 					  $('.sele').on('click',function(){ 
 						 var display =$(this).next().css("display")
@@ -121,7 +142,8 @@
 						var p= $(this).attr("name");
 						if(p!="#"){
 							location.href = "${ctx}/menusToUrl?url="+p;
-							
+							$.cookie("navstationtwo", $(this).html());//添加cookie 
+							$.cookie("navstation", null);
 						}
 					 })
 					 //第三层级联跳转页面
@@ -131,7 +153,8 @@
 							
 						if(p!="#"){
 							location.href = "${ctx}/menusToUrl?url="+p;
-							$.cookie("navstation", $(this).html(), { path: "/" });
+						 $.cookie("navstation", $(this).html());//添加cookie 
+						 $.cookie("navstationtwo",null);
 						}
 					 })
 					 $('#login').on('click',function(){

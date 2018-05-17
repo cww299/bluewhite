@@ -3474,7 +3474,7 @@ label.valid {
 .theme-default #header button#toggle-profile,
 .theme-default #header button#toggle-fullscreen,
 .theme-default #header .nav li.profile > a {
-  color: #1d212a;
+  color: #f6f8f8;
 }
 .theme-default #header button.sidebar-toggle:hover,
 .theme-default #header button.sidebar-toggle:active,
