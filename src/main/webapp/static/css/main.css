@@ -541,7 +541,7 @@ canvas {
   text-transform: uppercase;
 }
 .sidebar-left a {
-  color: #cf5de2;
+  color: #af0ba8;
 }
 .sidebar-left a:focus,
 .sidebar-left a:hover {
@@ -3467,14 +3467,14 @@ label.valid {
   color: #edce8c;
 }
 .theme-default #header {
-  background: #33a8f3;
+  background: #13161c;
 }
 .theme-default #header .logo,
 .theme-default #header button.sidebar-toggle,
 .theme-default #header button#toggle-profile,
 .theme-default #header button#toggle-fullscreen,
 .theme-default #header .nav li.profile > a {
-  color: #f6f8f8;
+  color: #af0ba8;
 }
 .theme-default #header button.sidebar-toggle:hover,
 .theme-default #header button.sidebar-toggle:active,

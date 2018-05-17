@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+    <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html class="no-js">
@@ -98,7 +99,7 @@
 			      			html +='<li class="nav-dropdown"><a href="#" class="sele"><i class="fa  fa-fw '+fristicon+'"></i>'+a+'</a><ul class="nav-sub" style="display:none;">'+htmltr+'</ul></li>'
 							}
 			      			
-					  $('#informatic').append("<li class=''><a href='${ctx }/index'  title='首页'><i class='fa  fa-fw fa-tachometer'></i> 首页</a></li>"+html); 
+					  $('#informatic').append("<li class=''><a href='${ctx }/index' class='index'   title='首页'><i class='fa  fa-fw fa-tachometer'></i> 首页</a></li>"+html); 
 					  var navstation = $.cookie("navstation");
 					  var navstationtwo=$.cookie("navstationtwo");
 					 if(navstation!=null){
@@ -122,6 +123,11 @@
 						  }) 
 					 }
 					 
+					   $('.index').on('click',function(){ 
+						  $.cookie("navstation", null);
+						  $.cookie("navstationtwo",null);
+						 }) 
+					  
 					  //显示隐藏级联
 					  $('.sele').on('click',function(){ 
 						 var display =$(this).next().css("display")
@@ -188,6 +194,8 @@
                     <i class="icon-layers"></i>
                     <span>蓝白</span>工艺</a>
             </div>
+            
+           
             <!--logo end-->
             <ul class="nav navbar-nav navbar-left">
                 <li class="toggle-navigation toggle-left">
@@ -206,6 +214,7 @@
                     </button>
                 </li>
             </ul>
+            
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown profile hidden-xs">
                     <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
@@ -213,7 +222,7 @@
                             <span class="avatar">
                                 <img src="${ctx }/static/images/profile.jpg" class="img-circle" alt="">
                             </span>
-                        <span class="text">用户</span>
+                        <span class="text"> <shiro:principal/></span>
                         <span class="caret"></span>
                         </span>
                     </a>
