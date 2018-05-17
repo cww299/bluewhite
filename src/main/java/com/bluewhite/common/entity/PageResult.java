@@ -6,13 +6,13 @@ import org.springframework.data.domain.Page;
 
 /**
  * 分页搜索的结果bean
- * @author ZhouYong
+ * @author zhangliang
  *
  */
 public class PageResult<T> {
 	private Long total;
 	private List<T> rows;
-	private Long totalPages;
+	private Integer totalPages;
 	private Integer pageNum;
 	public PageResult(){
 		
@@ -20,8 +20,8 @@ public class PageResult<T> {
 	public PageResult(Page<T> pageResult,PageParameter page){
 		setRows(pageResult.getContent());
 		setTotal(pageResult.getTotalElements());
-		setTotalPages( ((pageResult.getTotalElements() + page.getSize()) / page.getSize()) -1);
-		setPageNum(page.getPage());
+		setTotalPages(pageResult.getTotalPages());
+		setPageNum(page.getPage()+2);
 		
 	}
 	
@@ -32,10 +32,11 @@ public class PageResult<T> {
 	public void setPageNum(Integer pageNum) {
 		this.pageNum = pageNum;
 	}
-	public Long getTotalPages() {
+
+	public Integer getTotalPages() {
 		return totalPages;
 	}
-	public void setTotalPages(Long totalPages) {
+	public void setTotalPages(Integer totalPages) {
 		this.totalPages = totalPages;
 	}
 	public Long getTotal() {

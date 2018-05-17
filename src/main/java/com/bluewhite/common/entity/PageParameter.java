@@ -22,11 +22,11 @@ public class PageParameter implements Pageable{
 
 
 	public int getPage() {
-		return page;
+		return page-1;
 	}
 
 	public void setPage(int page) {
-		this.page = page;
+		this.page = page-1;
 	}
 
 	public int getSize() {
