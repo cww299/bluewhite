@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+    <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html class="no-js">
@@ -23,6 +24,7 @@
     <link rel="stylesheet" href="${ctx }/static/js/laypage/skin/laypage.css"> 
     
 <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+<script src="${ctx }/static/js/vendor/jquery.cookie.js"></script>
  <script src="${ctx }/static/js/vendor/modernizr-2.6.2.min.js"></script>
  <script src="${ctx }/static/js/layer/layer.js"></script>
 <script type="text/javascript">
@@ -31,6 +33,13 @@
 				var self = this;
 				//表单jsonArray
 				//初始化js
+				var _cache;
+				this.setCache = function(cache){
+			  		_cache=cache;
+			  	}
+			  	this.getCache = function(){
+			  		return _cache;
+			  	}
 				this.init = function(){
 					//注册绑定事件
 					self.events();
@@ -38,6 +47,7 @@
 				}
 				
 				this.events = function(){
+					
 					var html = '';
 					var htmlto;
 					var htmlth;
@@ -80,16 +90,45 @@
 										e=arrTh[j].name //第三层次的命名
 										f=arrTh[j].url  //第三层次的链接
 										Thirdicon=arrTh[j].icon //第三层次的图标
-										htmlth +='<li><a href="#" name='+f+' class="third" title='+e+'><i class="fa  fa-fw '+Thirdicon+'"></i>'+e+'</a></li>' //拼接第三层
+										htmlth +='<li><a href="#" name='+f+' class="third" title='+e+'><i class="fa   fa-fw '+Thirdicon+'" id="'+f+'"></i>'+e+'</a></li>' //拼接第三层
 									}
 			      				}
-			      				htmltr +='<li class="nav-dropdown"><a href="#" name='+d+' class="onclic" title='+c+'><i class="fa  fa-fw '+secondicon+'"></i>'+c+'</a><ul class="nav-sub" style="display:none;">'+htmlth+'</ul></li>'
+			      				htmltr +='<li class="nav-dropdown"><a href="#" name='+d+' class="onclic" title='+c+'><i class="fa   fa-fw '+secondicon+'"></i>'+c+'</a><ul class="nav-sub" style="display:none;">'+htmlth+'</ul></li>'
 								} 
 			      				 }
 			      			html +='<li class="nav-dropdown"><a href="#" class="sele"><i class="fa  fa-fw '+fristicon+'"></i>'+a+'</a><ul class="nav-sub" style="display:none;">'+htmltr+'</ul></li>'
 							}
-					  $('#informatic').append("<li class='active'><a href='${ctx }/index'  title='首页'><i class='fa  fa-fw fa-tachometer'></i> 首页</a></li>"+html); 
-					 //显示隐藏级联
+			      			
+					  $('#informatic').append("<li class=''><a href='${ctx }/index' class='index'   title='首页'><i class='fa  fa-fw fa-tachometer'></i> 首页</a></li>"+html); 
+					  var navstation = $.cookie("navstation");
+					  var navstationtwo=$.cookie("navstationtwo");
+					 if(navstation!=null){
+						//确认跳转后菜单栏
+						  $('#informatic li ul li ul li a').each(function(){
+							  if($(this).html() == navstation){
+								$(this).parent().parent().css("display","block").parent().parent().css("display","block")
+								$(this).parent().parent().parent().parent().parent().addClass("active")
+								$(this).parent().addClass("active")
+							  }
+						  }) 
+					 } 
+					  if(navstationtwo!=null){
+						//确认跳转后菜单栏
+						  $('#informatic li ul li a').each(function(){
+							  if($(this).html() == navstationtwo){
+								$(this).parent().parent().css("display","block")
+								$(this).parent().parent().parent().addClass("active")
+								$(this).parent().addClass("active")
+							  }
+						  }) 
+					 }
+					 
+					   $('.index').on('click',function(){ 
+						  $.cookie("navstation", null);
+						  $.cookie("navstationtwo",null);
+						 }) 
+					  
+					  //显示隐藏级联
 					  $('.sele').on('click',function(){ 
 						 var display =$(this).next().css("display")
 						if(display=='none'){
@@ -109,15 +148,19 @@
 						var p= $(this).attr("name");
 						if(p!="#"){
 							location.href = "${ctx}/menusToUrl?url="+p;
+							$.cookie("navstationtwo", $(this).html());//添加cookie 
+							$.cookie("navstation", null);
 						}
 					 })
 					 //第三层级联跳转页面
 					 $('.third').on('click',function(){
 						 
 						var p= $(this).attr("name");
-						console.log(p)
+							
 						if(p!="#"){
 							location.href = "${ctx}/menusToUrl?url="+p;
+						 $.cookie("navstation", $(this).html());//添加cookie 
+						 $.cookie("navstationtwo",null);
 						}
 					 })
 					 $('#login').on('click',function(){
@@ -151,6 +194,8 @@
                     <i class="icon-layers"></i>
                     <span>蓝白</span>工艺</a>
             </div>
+            
+           
             <!--logo end-->
             <ul class="nav navbar-nav navbar-left">
                 <li class="toggle-navigation toggle-left">
@@ -169,6 +214,7 @@
                     </button>
                 </li>
             </ul>
+            
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown profile hidden-xs">
                     <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
@@ -176,7 +222,7 @@
                             <span class="avatar">
                                 <img src="${ctx }/static/images/profile.jpg" class="img-circle" alt="">
                             </span>
-                        <span class="text">用户</span>
+                        <span class="text"> <shiro:principal/></span>
                         <span class="caret"></span>
                         </span>
                     </a>

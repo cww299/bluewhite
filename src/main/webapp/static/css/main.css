@@ -13,7 +13,7 @@ body {
   color: #565656;
   background: #F0F3F3;
   font-family: "Open Sans", Helvetica, Arial, sans-serif;
-  font-size: 100%;
+  font-size: 85%;
   padding: 0px;
   margin: 0px;
   min-height: 100%;
@@ -541,7 +541,7 @@ canvas {
   text-transform: uppercase;
 }
 .sidebar-left a {
-  color: #cf5de2;
+  color: #af0ba8;
 }
 .sidebar-left a:focus,
 .sidebar-left a:hover {
@@ -3467,14 +3467,14 @@ label.valid {
   color: #edce8c;
 }
 .theme-default #header {
-  background: #33a8f3;
+  background: #13161c;
 }
 .theme-default #header .logo,
 .theme-default #header button.sidebar-toggle,
 .theme-default #header button#toggle-profile,
 .theme-default #header button#toggle-fullscreen,
 .theme-default #header .nav li.profile > a {
-  color: #1d212a;
+  color: #af0ba8;
 }
 .theme-default #header button.sidebar-toggle:hover,
 .theme-default #header button.sidebar-toggle:active,
