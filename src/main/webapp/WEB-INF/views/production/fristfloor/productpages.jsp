@@ -23,6 +23,7 @@
     <script src="assets/js/vendor/modernizr-2.6.2.min.js"></script>
     <script src="assets/js/vendor/html5shiv.js"></script>
     <script src="assets/js/vendor/respond.min.js"></script> -->
+    
    
 </head>
 
@@ -57,8 +58,9 @@
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
+                                    <button type="button" id="addproduct" class="btn btn-success">新增产品</button>
                                 </table>
-                                <div id="pager">
+                                <div id="pager" class="pull-right">
                                 
                                 </div>
                             </div>
@@ -67,6 +69,33 @@
                 </div>
             </section>
         </section>
+        <div class="addDictDivType" style="display: none;">
+			<div class=" col-xs-12  col-sm-12  col-md-12 ">
+				<!-- PAGE CONTENT BEGINS -->
+				<div class="space-10"></div>
+				<form class="form-horizontal addDictDivTypeForm">
+				<div class="row col-xs-12  col-sm-12  col-md-12 ">
+
+					<div class="form-group col-md-6">
+						<label class="col-sm-3  control-label no-padding-right"
+							for="description">数量:</label>
+
+						<div >
+							<input type="text" id="taskNumberTo" class="col-md-3 col-sm-3"/>
+						</div>
+					</div>
+					<div class="form-group col-md-6">
+						<label class="col-sm-3  control-label no-padding-right"
+							for="description">实际完成人数:</label>
+
+						<div >
+							<input type="text" id="people" class="col-md-3 col-sm-3"/>
+						</div>
+					</div>
+</div>
+</form>
+</div>
+</div>
         <!--main content end-->
       
         <!--main content end-->
@@ -74,7 +103,7 @@
     
    
    
-   
+   <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
     <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
     <script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
     <script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
@@ -120,7 +149,7 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			  console.log(result)
+		      			
 		      			 $(result.data.rows).each(function(i,o){
 		      				
 		      				html +='<tr>'
@@ -163,7 +192,29 @@
 			}
 			
 			this.events = function(){
-				
+				$('#addproduct').on('click',function(){
+					var _index
+					var dicDiv=$('.addDictDivType');
+					_index = layer.open({
+						  type: 1,
+						  skin: 'layui-layer-rim', //加上边框
+						  area: ['60%', '60%'], 
+						  btnAlign: 'c',//宽高
+						  maxmin: true,
+						  title:"新增产品",
+						  content: dicDiv,
+						  btn: ['确定', '取消'],
+						  yes:function(index, layero){
+							 
+							},
+						  end:function(){
+							/*   $('.addDictDivType').hide();
+						
+							  $('.addDictDivTypeForm')[0].reset(); */
+							
+						  }
+					});
+				})
 			}
    	}
    			var login = new Login();
