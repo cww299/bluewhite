@@ -7,6 +7,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.shiro.web.filter.AccessControlFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ public class SysUserFilter extends AccessControlFilter {
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
     	HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse rep = (HttpServletResponse) response;
+		HttpSession session = req.getSession();
 		//判断有没有用户登录成功，没有则返回错误信息继续登录
 		CurrentUser currentUser = SessionManager.getUserSession();
 		CommonResponse commonResponse = new CommonResponse();
@@ -64,6 +66,7 @@ public class SysUserFilter extends AccessControlFilter {
 				currentUser.setPermissions(permissions);
 			}
 			SessionManager.setUserSession(currentUser);
+			session.setAttribute("user", currentUser);
 			return true;
 		}
     }

@@ -1,12 +1,8 @@
 package com.bluewhite.common.entity;
 
-import java.io.Serializable;
 import java.util.Set;
 
-import javax.persistence.Column;
-
 import com.alibaba.fastjson.annotation.JSONField;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * 当前登录用户信息
@@ -32,10 +28,26 @@ public class CurrentUser {
 	 * 性别
 	 */
 	private Integer sex;
+	
+	/**
+	 * 部门id
+	 */
+	private Long orgNameId ;
+	
 	/**
 	 * 部门名
 	 */
-	private String name;
+	private String orgName;
+	
+	/**
+	 * 职位id
+	 */
+	private Long positionId ;
+	
+	/**
+	 * 职位名
+	 */
+	private String position;
 	
 	/**
 	 * 是否是管理员
@@ -106,14 +118,37 @@ public class CurrentUser {
 		this.permissions = permissions;
 	}
 
-	public String getName() {
-		return name;
+	public Long getOrgNameId() {
+		return orgNameId;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setOrgNameId(Long orgNameId) {
+		this.orgNameId = orgNameId;
 	}
 
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+
+	public Long getPositionId() {
+		return positionId;
+	}
+
+	public void setPositionId(Long positionId) {
+		this.positionId = positionId;
+	}
+
+	public String getPosition() {
+		return position;
+	}
+
+	public void setPosition(String position) {
+		this.position = position;
+	}
 
 	public String getRealname() {
 		return realname;

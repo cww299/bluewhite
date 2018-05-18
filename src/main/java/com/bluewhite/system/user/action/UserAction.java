@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.SessionManager;
@@ -22,7 +23,6 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.product.entity.Product;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
@@ -41,17 +41,20 @@ public class UserAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(User.class,"id", "userName", "phoneNum", "admin","realname","school","department","roles")
-				.addRetainTerm(Role.class, "name", "role", "description","id");
+				.addRetainTerm(User.class,"id","number","pictureUrl", "userName", "phone","position","orgName","idCard",
+						"nation","email","gender","birthDate")
+				.addRetainTerm(Role.class, "name", "role", "description","id")
+				.addRetainTerm(BaseData.class, "name", "type");
 	}
 	
 	/**
 	 *  查看用户列表
+	 *  按不同部门显示的不同的人员
 	 * @param request
 	 * @param user
 	 * @return
 	 */
-	@RequestMapping(value = "/user/pages", method = RequestMethod.GET)
+	@RequestMapping(value = "/pages", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse userPages(HttpServletRequest request, User user,PageParameter page) {
 		CommonResponse cr = new CommonResponse();
@@ -68,7 +71,7 @@ public class UserAction {
 	 * @param user 用户实体类
 	 * @return cr
 	 */
-	@RequestMapping(value = "/user/add", method = RequestMethod.POST)
+	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse createUser(HttpServletRequest request, User user) {
 		CommonResponse cr = new CommonResponse();
@@ -108,6 +111,20 @@ public class UserAction {
 		cr.setMessage("修改成功");
 		return cr;
 	}
+	
+	/**
+	 * 查询用户详细信息
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/userInfo", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse userInfo(HttpServletRequest request,Long id) {
+		User user = userService.findOne(id);
+		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(user).toJSON());
+		return cr;
+	}
+	
 
 	/**
 	 * 查询当前用户信息
@@ -151,7 +168,7 @@ public class UserAction {
 	 * @param user 请求
 	 * @return cr
 	 */
-	@RequestMapping(value = "/user/usernameExist", method = RequestMethod.GET)
+	@RequestMapping(value = "/usernameExist", method = RequestMethod.GET)
 	@ResponseBody
 	private CommonResponse exists(User user) {
 		CommonResponse cr = new CommonResponse();

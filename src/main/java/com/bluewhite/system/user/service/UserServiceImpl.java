@@ -101,14 +101,27 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	public PageResult<User> getPagedUser(PageParameter page, User user) {
 		Page<User> pageUser = userDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
+			//按id查找
 			if (user.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class),
 						user.getId()));
 			}
+			//按姓名查找
 			if (!StringUtils.isEmpty(user.getUserName())) {
 				predicate.add(cb.like(root.get("userName").as(String.class),
 						"%" + user.getUserName() + "%"));
 			}
+			//按员工编号
+			if (!StringUtils.isEmpty(user.getNumber())) {
+				predicate.add(cb.like(root.get("number").as(String.class),
+						"%" + user.getNumber() + "%"));
+			}
+			//按部门
+			if (user.getOrgNameId() != null) {
+				predicate.add(cb.equal(root.get("orgNameId").as(Long.class),
+						user.getOrgNameId()));
+			}
+			
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;

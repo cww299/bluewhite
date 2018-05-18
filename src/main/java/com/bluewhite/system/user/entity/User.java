@@ -9,8 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -19,6 +19,7 @@ import javax.persistence.Transient;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.production.group.entity.Group;
 
 /**
  * 员工用户实体
@@ -270,6 +271,20 @@ public class User extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "orgName_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData orgName;
+	
+	
+	/**
+	 * 分组id
+	 */
+	@Column(name = "group_id")
+	private Long groupId;
+	
+	/**
+	 * 分组
+	 */
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "group_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Group group;
 
 
 
@@ -664,6 +679,23 @@ public class User extends BaseEntity<Long> {
 	public void setPictureUrl(String pictureUrl) {
 		this.pictureUrl = pictureUrl;
 	}
+
+	public Long getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(Long groupId) {
+		this.groupId = groupId;
+	}
+
+	public Group getGroup() {
+		return group;
+	}
+
+	public void setGroup(Group group) {
+		this.group = group;
+	}
+	
 	
 	
 	

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -75,6 +76,7 @@ public class IndexAction {
 	public CommonResponse login(HttpServletRequest request,
 			HttpServletResponse reponse, String username, String password) throws IllegalAccessException, InvocationTargetException {
 		CommonResponse cr = new CommonResponse();
+		HttpSession session = request.getSession();
 		Map<String, Object> data = new HashMap<String, Object>();
 		Subject subject = SecurityUtils.getSubject();
 		CurrentUser cu = (CurrentUser)subject.getSession().getAttribute("user");
@@ -98,6 +100,7 @@ public class IndexAction {
 				return cr;
 			}
 		}
+		session.setAttribute("user", cu);
 		data.put("user", cu);
 		cr.setData(data);
 		return cr;

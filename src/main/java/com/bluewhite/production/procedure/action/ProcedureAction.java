@@ -28,7 +28,7 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 	{
 		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(Procedure.class,
 				"id","name", "workingTime","productId","isDel","procedureType")
-				.addRetainTerm(BaseData.class, "name", "remark");
+				.addRetainTerm(BaseData.class,"id", "name", "remark");
 	}
 	
 	/**
@@ -39,7 +39,7 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 	 * @return cr
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/addProcedure", method = RequestMethod.POST)
+	@RequestMapping(value = "/production/addProcedure", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse addProcedur(HttpServletRequest request,Procedure procedure) {
 		CommonResponse cr = new CommonResponse();
@@ -60,7 +60,7 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 	 * @param procedure
 	 * @return
 	 */
-	@RequestMapping(value = "/getProcedure", method = RequestMethod.GET)
+	@RequestMapping(value = "/production/getProcedure", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse getProcedure(HttpServletRequest request,Procedure procedure) {
 		CommonResponse cr = new CommonResponse();
@@ -81,7 +81,7 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 	 * @param procedure
 	 * @return
 	 */
-	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/production/delete", method = RequestMethod.DELETE)
 	@ResponseBody
 	public CommonResponse delete(HttpServletRequest request,Long id) {
 		CommonResponse cr = new CommonResponse();
