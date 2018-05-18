@@ -55,17 +55,23 @@ public class Constants {
     /**
      *  生产部一楼质检
      */
-    public static String PRODUCT_FRIST_QUALITY = " ";
+    public static String PRODUCT_FRIST_QUALITY = "productFristQuality";
+    //包含的部门
+    public static String QUALITY_ORGNAME = "48,84";
     
     /**
      *  生产部一楼打包
      */
-    public static String PRODUCT_FRIST_PACK = " ";
+    public static String PRODUCT_FRIST_PACK = "productFristPack";
+    //包含的部门
+    public static String PACK_ORGNAME = "";
     
     /**
      *  生产部二楼针工
      */
-    public static String PRODUCT_TOW_DEEDLE = " ";
+    public static String PRODUCT_TOW_DEEDLE = " productTowDeedle";
+    //包含的部门
+    public static String DEEDLE_ORGNAME = "";
     
     
     

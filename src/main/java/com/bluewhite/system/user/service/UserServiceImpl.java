@@ -1,30 +1,15 @@
 package com.bluewhite.system.user.service;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.crypto.hash.SimpleHash;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -35,8 +20,6 @@ import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.utils.security.Md5Utils;
-import com.bluewhite.product.entity.Product;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.RoleMenuPermission;
@@ -102,8 +85,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	@Override
 	public PageResult<User> getPagedUser(PageParameter page, User user) {
 		CurrentUser cu = SessionManager.getUserSession();
-		if(cu.getRole().contains(Constants.PRODUCT_FRIST_PACK)){
-			
+		if(cu.getRole().contains(Constants.PRODUCT_FRIST_QUALITY)){
+			 user.setOrgNameIds(Constants.QUALITY_ORGNAME);
 		}
 		
 		Page<User> pageUser = userDao.findAll((root, query, cb) -> {
@@ -123,11 +106,24 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				predicate.add(cb.like(root.get("number").as(String.class),
 						"%" + user.getNumber() + "%"));
 			}
+			
 			//按部门
-			if (user.getOrgNameId() != null) {
-				predicate.add(cb.equal(root.get("orgNameId").as(Long.class),
-						user.getOrgNameId()));
+//			if (user.getOrgNameId() != null) {
+//				predicate.add(cb.equal(root.get("orgNameId").as(Long.class),
+//						user.getOrgNameId()));
+//			}
+			
+			//部门,多个
+			if (!StringUtils.isEmpty(user.getOrgNameIds())) {
+				List<Long>  orgNameIdList = new ArrayList<Long>();
+					String[] idArr = user.getOrgNameIds().split(",");
+					for (String idStr : idArr) {
+						Long id = Long.parseLong(idStr);
+						orgNameIdList.add(id);
+					}
+				predicate.add(cb.and(root.get("orgNameId").as(Long.class).in(orgNameIdList)));
 			}
+			
 			
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));

@@ -310,8 +310,23 @@ public class User extends BaseEntity<Long> {
 	private Set<String> role = new HashSet<>();
 	
 	
+	/**
+	 * 部门ids
+	 */
+	@Transient
+	private String orgNameIds;
 	
 	
+	
+	
+	public String getOrgNameIds() {
+		return orgNameIds;
+	}
+
+	public void setOrgNameIds(String orgNameIds) {
+		this.orgNameIds = orgNameIds;
+	}
+
 	public String getNumber() {
 		return number;
 	}
