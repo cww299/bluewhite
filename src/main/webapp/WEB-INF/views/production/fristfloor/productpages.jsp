@@ -292,13 +292,13 @@
 				    var indextwo;
 				    var htmltwo = '';
 				    var htmlth = '';
-				    var data={
-				    		productId:productId,
-				    		type:1,
-				    }
-				    $.ajax({
-					      url:"${ctx}/getProcedure",
-					      data:data,
+				    var htmlfr = '';
+				    
+				    //遍历工序类型
+				    var getdata={type:"fristprocedure",}
+	      			$.ajax({
+					      url:"${ctx}/basedata/list",
+					      data:getdata,
 					      type:"GET",
 					      beforeSend:function(){
 					    	  indextwo = layer.load(1, {
@@ -306,52 +306,59 @@
 							  });
 						  }, 
 			      		  success: function (result) {
-			      			  $(result.data.rows).each(function(i,o){
-			      			console.log(o.name)
+			      			  $(result.data).each(function(k,j){
+			      				htmlfr +='<input type="radio" class="Proceduretypeid"  value='+j.id+' >'+j.name+''
+			      			 alert(1)
 			      				
+			      			  });  
+			      			
+					      }
+					  });
+				  
+				  var data={
+				    		productId:productId,
+				    		type:1,
+				    }
+				    //查询工序
+				    $.ajax({
+					      url:"${ctx}/production/getProcedure",
+					      data:data,
+					      type:"GET",
+					      beforeSend:function(){
+					    	  indextwo = layer.load(1, {
+							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							  });
+						  }, 
+			      			 
+			      		  success: function (result) {
+			      			alert(2)
+			      			  $(result.data).each(function(i,o){
+			      				  
 			      				htmltwo +='<tr>'
 			      				+'<td class="text-center id">'+o.name+'</td>'
 			      				+'<td class="text-center edit number">'+o.workingTime+'</td>'
-			      				
+			      				+'<td data-id="'+o.id+'" class="text-center" data-code="'+o.procedureType.id+'">'+htmlfr+'</td>' 
 								+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-success btn-3d addprocedure">添加工序</button></td></tr>'
 								
 			      			});  
 						   	   
 						   	layer.close(indextwo);
-			      			var getdata={type:"fristprocedure",}
-			      			$.ajax({
-							      url:"${ctx}/basedata/list",
-							      data:getdata,
-							      type:"GET",
-							      beforeSend:function(){
-							    	  indextwo = layer.load(1, {
-									  shade: [0.1,'#fff'] //0.1透明度的白色背景
-									  });
-								  }, 
-					      		  success: function (result) {
-					      			
-					      			  $(result.data).each(function(k,j){
-					      				htmlth +='<input type="radio" class="code" name="radio" value='+j.id+' >'+j.name+''
-					      			});  
-					      			
-					      			htmltwo="<tr><td class='text-center'><input type='text' class='input-large workingname'></td><td class='text-center'><input type='text' class='input-small workingtime'></td><td class='text-center'>"+htmlth+"</td><td class='text-center'><button class='btn btn-xs btn-primary btn-3d add' data-productid="+productId+">新增</button></td></tr>";
+						   	//新增时 查找工序类型
+						  alert(3)
+					      			htmltwo="<tr><td class='text-center'><input type='text' class='input-large workingname'></td><td class='text-center'><input type='text' class='input-small workingtime'></td><td class='text-center'>"+htmlfr+"</td><td class='text-center'><button class='btn btn-xs btn-primary btn-3d add' data-productid="+productId+">新增</button></td></tr>"+htmltwo;
 					      			$("#tableworking").html(htmltwo); 
-					      			self.loadevenstwo();
-								   	layer.close(indextwo);
-							      },error:function(){
-										layer.msg("加载失败！", {icon: 2});
-										layer.close(indextwo);
-								  }
-							  });
+					      			
 			      			
 			      			
 						   	  $("#tableworking").html(htmltwo);  
-						   	
+					      			self.loadevenstwo();
+						   	self.checked();
 					      },error:function(){
 								layer.msg("加载失败！", {icon: 2});
 								layer.close(indextwo);
 						  }
 					  });
+				    //打开隐藏框
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
@@ -363,39 +370,6 @@
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
 							 
-							  postData={
-									  number:$("#productNumber").val(),
-									  name:$("#productName").val(),
-									  
-							  }
-							  /* $.ajax({
-									url:"${ctx}/addProduct",
-									data:postData,
-						            traditional: true,
-									type:"post",
-									beforeSend:function(){
-										index = layer.load(1, {
-											  shade: [0.1,'#fff'] //0.1透明度的白色背景
-											});
-									},
-									
-									success:function(result){
-										if(0==result.code){
-											layer.msg("添加成功！", {icon: 1});
-											$(".addDictDivTypeForm")[0].reset();
-											self.loadPagination(data);
-											$('#addDictDivType').hide();
-											
-										}else{
-											layer.msg("添加失败", {icon: 2});
-										}
-										
-										layer.close(index);
-									},error:function(){
-										layer.msg("操作失败！", {icon: 2});
-										layer.close(index);
-									}
-								}); */
 							},
 						  end:function(){
 							  $('#addworking').hide();
@@ -405,12 +379,61 @@
 				})
 				
 			}
+			this.checked=function(){
+				
+				$(".Proceduretypeid").each(function(i,o){
+						
+						var rest=$(o).parent().data("code");
+						if($(o).val()==rest){
+							$(o).attr('checked', 'checked')
+						}
+				})
+				
+			}	
 			this.loadevenstwo=function(){
-				 $(".code").on('click',function(){
-					$(this).attr('checked', 'checked')
-					console.log($(this).siblings())
-					$(this).siblings().removeAttr('checked')
-				}) 
+				  $(".Proceduretypeid").on('click',function(){
+					  $(this).parent().find(".Proceduretypeid").each(function(i,o){
+							$(o).prop("checked", false);
+
+						})
+							 $(this).prop("checked", true);
+					var index; 
+					var del=$(this);
+					var id = $(this).parent().data('id');
+					var rest = $(this).val();
+					
+					$.ajax({
+						url:"${ctx}/production/addProcedure",
+						data:{
+							id:id,
+							procedureTypeId:rest,
+							},
+						type:"post",
+						beforeSend:function(){
+							index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+						},
+						success:function(result){
+							
+							del.parent().find(".Proceduretypeid").each(function(i,o){
+								$(o).prop("checked", false);
+
+							})
+								del.prop("checked", true);
+						
+							layer.msg("修改成功！", {icon: 1});
+							layer.close(index);
+						
+					
+							
+						},
+						error:function(){
+							layer.msg("修改失败！", {icon: 2});
+							layer.close(index);
+						}
+					});
+				})  
 				
 				$('.add').on('click',function(){
 					var index;
@@ -422,8 +445,18 @@
 							  productId:$(this).data('productid'),
 							  procedureTypeId:$(this).parent().parent().find("input:radio:checked").val(),
 					  }
+					if($(this).parent().parent().find("input:radio:checked").val()==null){
+						return 	layer.msg("工序类型不能为空！", {icon: 2});
+					}
+					if($(".workingname").val()==""){
+						return 	layer.msg("工序名不能为空！", {icon: 2});
+					}
+					if($(".workingtime").val()==""){
+						return 	layer.msg("工序时间不能为空！", {icon: 2});
+					}
+					
 					   $.ajax({
-							url:"${ctx}/addProcedure",
+							url:"${ctx}/production/addProcedure",
 							data:postData,
 				            traditional: true,//传数组
 							type:"post",
@@ -436,7 +469,7 @@
 							success:function(result){
 								if(0==result.code){
 									layer.msg("添加成功！", {icon: 1});
-									
+									$("#addworking").load(location.href+" #addworking"); 
 									
 									
 								}else{
