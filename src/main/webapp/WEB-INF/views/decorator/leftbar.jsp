@@ -99,26 +99,28 @@
 			      			html +='<li class="nav-dropdown"><a href="#" class="sele"><i class="fa  fa-fw '+fristicon+'"></i>'+a+'</a><ul class="nav-sub" style="display:none;">'+htmltr+'</ul></li>'
 							}
 			      			
-					  $('#informatic').append("<li class=''><a href='${ctx }/index' class='index'   title='首页'><i class='fa  fa-fw fa-tachometer'></i> 首页</a></li>"+html); 
+					  $('#informatic').append("<li class='active'><a href='${ctx }/index' class='index'   title='首页'><i class='fa  fa-fw fa-tachometer'></i> 首页</a></li>"+html); 
 					  var navstation = $.cookie("navstation");
 					  var navstationtwo=$.cookie("navstationtwo");
 					 if(navstation!=null){
-						//确认跳转后菜单栏
+						//三级确认跳转后菜单栏
 						  $('#informatic li ul li ul li a').each(function(){
 							  if($(this).html() == navstation){
 								$(this).parent().parent().css("display","block").parent().parent().css("display","block")
 								$(this).parent().parent().parent().parent().parent().addClass("active")
 								$(this).parent().addClass("active")
+								$(this).parent().parent().parent().parent().parent().siblings().removeClass("active")
 							  }
 						  }) 
 					 } 
 					  if(navstationtwo!=null){
-						//确认跳转后菜单栏
+						//二级确认跳转后菜单栏
 						  $('#informatic li ul li a').each(function(){
 							  if($(this).html() == navstationtwo){
 								$(this).parent().parent().css("display","block")
 								$(this).parent().parent().parent().addClass("active")
 								$(this).parent().addClass("active")
+							$(this).parent().parent().parent().siblings().removeClass("active")
 							  }
 						  }) 
 					 }

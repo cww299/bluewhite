@@ -79,6 +79,7 @@
                 </div>
             </section>
         </section>
+        <!--隐藏框 产品新增开始  -->
         <div id="addDictDivType" style="display: none;">
 			<div class=" col-xs-12  col-sm-12  col-md-12 ">
 				<!-- PAGE CONTENT BEGINS -->
@@ -107,9 +108,30 @@
 </form>
 </div>
 </div>
-        <!--main content end-->
-      
-        <!--main content end-->
+<!--隐藏框 产品新增结束  -->
+<!--隐藏框 产品工序开始  -->
+        <div id="addworking" style="display: none;">
+			<div class="panel-body">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                        	<th class="text-center">工序名称</th>
+                                            <th class="text-center">工序时间</th>
+                                            <th class="text-center">工序类型</th>
+                                            <th class="text-center">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableworking">
+                                        
+                                    </tbody>
+                                </table>
+                               
+                            </div>
+</div>
+<!--隐藏框 产品工序结束  -->
+   
+        
+        
     </section>
     
    
@@ -167,13 +189,9 @@
 		      				+'<td class="text-center id">'+o.id+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
-							+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-success btn-3d addprocedure">添加工序</button></td></tr>'
+							+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-success btn-3d addprocedure" data-id='+o.id+'>添加工序</button></td></tr>'
 							
 		      			}); 
-		      			  
-		      				
-		      	
-		      			
 				        //显示分页
 					   	 laypage({
 					      cont: 'pager', 
@@ -202,7 +220,9 @@
 					  }
 				  });
 			}
+			
 			this.loadEvents = function(){
+				//修改方法
 				$('.update').on('click',function(){
 					if($(this).text() == "编辑"){
 						$(this).text("保存")
@@ -258,6 +278,178 @@
 							
 					}
 				})
+				
+				//添加工序
+				$('.addprocedure').on('click',function(){
+					var productId=$(this).data('id')
+					var _index
+					var index
+					var postData
+					var dicDiv=$('#addworking');
+					 
+					
+					//工序遍历  
+				    var indextwo;
+				    var htmltwo = '';
+				    var htmlth = '';
+				    var data={
+				    		productId:productId,
+				    		type:1,
+				    }
+				    $.ajax({
+					      url:"${ctx}/getProcedure",
+					      data:data,
+					      type:"GET",
+					      beforeSend:function(){
+					    	  indextwo = layer.load(1, {
+							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							  });
+						  }, 
+			      		  success: function (result) {
+			      			  $(result.data.rows).each(function(i,o){
+			      			console.log(o.name)
+			      				
+			      				htmltwo +='<tr>'
+			      				+'<td class="text-center id">'+o.name+'</td>'
+			      				+'<td class="text-center edit number">'+o.workingTime+'</td>'
+			      				
+								+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-success btn-3d addprocedure">添加工序</button></td></tr>'
+								
+			      			});  
+						   	   
+						   	layer.close(indextwo);
+			      			var getdata={type:"fristprocedure",}
+			      			$.ajax({
+							      url:"${ctx}/basedata/list",
+							      data:getdata,
+							      type:"GET",
+							      beforeSend:function(){
+							    	  indextwo = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									  });
+								  }, 
+					      		  success: function (result) {
+					      			
+					      			  $(result.data).each(function(k,j){
+					      				htmlth +='<input type="radio" class="code" name="radio" value='+j.id+' >'+j.name+''
+					      			});  
+					      			
+					      			htmltwo="<tr><td class='text-center'><input type='text' class='input-large workingname'></td><td class='text-center'><input type='text' class='input-small workingtime'></td><td class='text-center'>"+htmlth+"</td><td class='text-center'><button class='btn btn-xs btn-primary btn-3d add' data-productid="+productId+">新增</button></td></tr>";
+					      			$("#tableworking").html(htmltwo); 
+					      			self.loadevenstwo();
+								   	layer.close(indextwo);
+							      },error:function(){
+										layer.msg("加载失败！", {icon: 2});
+										layer.close(indextwo);
+								  }
+							  });
+			      			
+			      			
+						   	  $("#tableworking").html(htmltwo);  
+						   	
+					      },error:function(){
+								layer.msg("加载失败！", {icon: 2});
+								layer.close(indextwo);
+						  }
+					  });
+					_index = layer.open({
+						  type: 1,
+						  skin: 'layui-layer-rim', //加上边框
+						  area: ['60%', '60%'], 
+						  btnAlign: 'c',//宽高
+						  maxmin: true,
+						  title:"产品工序",
+						  content: dicDiv,
+						  btn: ['确定', '取消'],
+						  yes:function(index, layero){
+							 
+							  postData={
+									  number:$("#productNumber").val(),
+									  name:$("#productName").val(),
+									  
+							  }
+							  /* $.ajax({
+									url:"${ctx}/addProduct",
+									data:postData,
+						            traditional: true,
+									type:"post",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									
+									success:function(result){
+										if(0==result.code){
+											layer.msg("添加成功！", {icon: 1});
+											$(".addDictDivTypeForm")[0].reset();
+											self.loadPagination(data);
+											$('#addDictDivType').hide();
+											
+										}else{
+											layer.msg("添加失败", {icon: 2});
+										}
+										
+										layer.close(index);
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								}); */
+							},
+						  end:function(){
+							  $('#addworking').hide();
+							
+						  }
+					});
+				})
+				
+			}
+			this.loadevenstwo=function(){
+				 $(".code").on('click',function(){
+					$(this).attr('checked', 'checked')
+					console.log($(this).siblings())
+					$(this).siblings().removeAttr('checked')
+				}) 
+				
+				$('.add').on('click',function(){
+					var index;
+					var postData;
+					postData={
+							name:$(".workingname").val(),
+							workingTime:$(".workingtime").val(),
+							  type:1,
+							  productId:$(this).data('productid'),
+							  procedureTypeId:$(this).parent().parent().find("input:radio:checked").val(),
+					  }
+					   $.ajax({
+							url:"${ctx}/addProcedure",
+							data:postData,
+				            traditional: true,//传数组
+							type:"post",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+									layer.msg("添加成功！", {icon: 1});
+									
+									
+									
+								}else{
+									layer.msg("添加失败", {icon: 2});
+								}
+								
+								layer.close(index);
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						}); 
+				})
 			}
 			this.events = function(){
 				
@@ -269,7 +461,6 @@
 				  			name:$('#name').val(),
 				  			number:$('#number').val(),
 				  	}
-					console.log(data)
 		            self.loadPagination(data);
 				});
 				
