@@ -1,5 +1,6 @@
 package com.bluewhite.common.entity;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import com.alibaba.fastjson.annotation.JSONField;
@@ -82,8 +83,8 @@ public class CurrentUser {
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setId(Serializable id) {
+		this.id = (Long)id;
 	}
 
 	public String getUserName() {

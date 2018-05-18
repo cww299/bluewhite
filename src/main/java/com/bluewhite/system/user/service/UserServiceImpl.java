@@ -31,6 +31,8 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.Log;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.security.Md5Utils;
@@ -99,6 +101,11 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	
 	@Override
 	public PageResult<User> getPagedUser(PageParameter page, User user) {
+		CurrentUser cu = SessionManager.getUserSession();
+		if(cu.getRole().contains(Constants.PRODUCT_FRIST_PACK)){
+			
+		}
+		
 		Page<User> pageUser = userDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			//按id查找

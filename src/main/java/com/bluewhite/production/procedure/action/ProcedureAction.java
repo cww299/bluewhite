@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
@@ -43,12 +44,20 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 	@ResponseBody
 	public CommonResponse addProcedur(HttpServletRequest request,Procedure procedure) {
 		CommonResponse cr = new CommonResponse();
-		if(procedure.getProductId()!=null){
-			cr.setData(clearCascadeJSON.format(procedureService.save(procedure)).toJSON());;
-			cr.setMessage("工序添加成功");
+		if(procedure.getId()!=null){
+			Procedure oldProcedure = procedureService.findOne(procedure.getId());
+			BeanCopyUtils.copyNullProperties(oldProcedure,procedure);
+			procedure.setCreatedAt(oldProcedure.getCreatedAt());
+			procedureService.update(procedure);
+			cr.setMessage("工序修改成功");
 		}else{
-			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("产品不能为空");
+			if(procedure.getProductId()!=null){
+				cr.setData(clearCascadeJSON.format(procedureService.save(procedure)).toJSON());;
+				cr.setMessage("工序添加成功");
+			}else{
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				cr.setMessage("产品不能为空");
+			}
 		}
 		return cr;
 	}

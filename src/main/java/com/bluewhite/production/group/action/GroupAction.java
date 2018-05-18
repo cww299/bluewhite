@@ -8,12 +8,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.service.GroupService;
+import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
@@ -46,12 +48,21 @@ private static final Log log = Log.getLog(GroupAction.class);
 	@ResponseBody
 	public CommonResponse addGroup(HttpServletRequest request,Group group) {
 		CommonResponse cr = new CommonResponse();
-		if(group.getType()!=null){
-			cr.setData(clearCascadeJSON.format(groupService.save(group)).toJSON());;
-			cr.setMessage("分组添加成功");
+		if(group.getId()!=null){
+			Group oldGroup = groupService.findOne(group.getId());
+			BeanCopyUtils.copyNullProperties(oldGroup,group);
+			group.setCreatedAt(oldGroup.getCreatedAt());
+			groupService.update(group);
+			cr.setMessage("工序修改成功");
+			
 		}else{
-			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("分组类型不能为空");
+			if(group.getType()!=null){
+				cr.setData(clearCascadeJSON.format(groupService.save(group)).toJSON());;
+				cr.setMessage("分组添加成功");
+			}else{
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				cr.setMessage("分组类型不能为空");
+			}
 		}
 		return cr;
 	}

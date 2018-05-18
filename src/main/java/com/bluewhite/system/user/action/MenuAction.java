@@ -42,7 +42,7 @@ public class MenuAction {
 
 	{
 		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(Menu.class,
-				"identity","span", "url", "icon", "name","children","isHighLight");
+				"identity","span", "url", "icon", "name","children","isHighLight","isShow","parentId");
 	}
 
 	/**
@@ -67,6 +67,20 @@ public class MenuAction {
 	}
 	
 	
+	/**
+	 * 查询所有菜单
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	
+	@RequestMapping(value = "/menuAll", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse menuAll(HttpServletRequest request) {
+		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(menuService.findAll())
+				.toJSON());
+		return cr;
+	}
 
 	
 

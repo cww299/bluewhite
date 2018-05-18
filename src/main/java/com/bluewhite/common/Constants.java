@@ -1,14 +1,10 @@
 package com.bluewhite.common;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class Constants {
     /**
      * 操作名称
      */
 	public static String OP_NAME = "op";
-
 
     /**
      * 消息key
@@ -54,53 +50,25 @@ public class Constants {
      */
     public static final String RANDOM_STRING = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWHYZ0123456789";
     
-    public static boolean isExcludeUrl(String url) {
-    	return isApiExcludeUrl(url)||isResUrl(url);
-    }
+    /**        角色英文名称           **/
     
-    public static boolean isResUrl(String url) {//资源文件不做拦截
-		url = url.toLowerCase();
-		return url.endsWith(".jsp")
-			 ||url.endsWith(".js")
-			 ||url.endsWith(".png")
-			 ||url.endsWith(".apk")
-			 ||url.endsWith(".exe")
-			 ||url.endsWith(".xml")
-			 ||url.endsWith(".mp4")
-			 ||url.endsWith(".jpg")
-			 ||url.endsWith(".gif")
-			 ||url.endsWith(".css")
-			 ||url.endsWith(".swf")
-			 ||url.endsWith(".html")
-			 ||url.endsWith(".docx")
-			 ||url.endsWith(".doc")
-			 ||url.endsWith(".xls")
-			 ||url.endsWith(".txt");
-	}
+    /**
+     *  生产部一楼质检
+     */
+    public static String PRODUCT_FRIST_QUALITY = " ";
     
-    private static boolean isApiExcludeUrl(String url) {
-		return matches("/login", url)
-			 ||matches("/loginByOpenId", url)
-			 ||matches("/logout", url)
-			 ||matches("/login/", url)
-			 ||matches("/logout/", url)
-			 ||matches("^/druid/.*$", url);
-//			 ||matches("^/api/media/.*$", url)||matches("^/api/queue/.*$", url)||matches("^/api/phone/.*$", url)
-//			 ||matches("^/api/device/.*$", url)||matches("^/api/led/.*$", url)||matches("^/commons/errors/.*$", url);
-	}
-	
-	private static boolean matches(String pattern, String source) {
-        if (pattern == null) {
-            throw new IllegalArgumentException("pattern argument cannot be null.");
-        }
-        Pattern p = Pattern.compile(pattern);
-        Matcher m = p.matcher(source);
-        return m.matches();
-    }
-	
-	public static void main(String[] args) {
-		String s = "/api/media/led/findLED.xml";
-		System.out.println(isApiExcludeUrl(s));
-	}
+    /**
+     *  生产部一楼打包
+     */
+    public static String PRODUCT_FRIST_PACK = " ";
+    
+    /**
+     *  生产部二楼针工
+     */
+    public static String PRODUCT_TOW_DEEDLE = " ";
+    
+    
+    
+
 
 }

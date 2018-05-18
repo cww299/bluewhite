@@ -94,7 +94,6 @@
 							+'<td><button class="btn btn-xs btn-primary update">编辑</button></td></tr>'
 							
 		      			}); 
-		      			  console.log(html)
 				        //显示分页
 					  laypage({
 					      cont: 'pager', 

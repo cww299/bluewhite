@@ -53,6 +53,18 @@ public class UserRealm extends AuthorizingRealm {
          // 将权限名称提供给info
          authorizationInfo.setStringPermissions(permissions);
          
+         CurrentUser currentUser = SessionManager.getUserSession();
+ 		if (currentUser == null || currentUser.getId().equals(user.getId())) {
+			currentUser = new CurrentUser();
+			currentUser.setIsAdmin(user.getIsAdmin());
+			currentUser.setId(user.getId());
+			currentUser.setUserName(user.getUserName());
+			currentUser.setOrgNameId(user.getOrgNameId());
+			currentUser.setPositionId(user.getPositionId());
+			currentUser.setRole(roleNames);
+			currentUser.setPermissions(permissions);
+		}
+         SessionManager.setUserSession(currentUser);
         return authorizationInfo;
     }
     
