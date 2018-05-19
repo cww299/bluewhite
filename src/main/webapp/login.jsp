@@ -18,7 +18,7 @@
 </head>
 
 <body>
-    <h1>蓝白erp系统</h1>
+    <h1>蓝白ERP系统</h1>
     <div class="container w3">
         <h2>欢迎使用</h2>
 		<form id="form" action="##"  onsubmit="return false"  method="post">
