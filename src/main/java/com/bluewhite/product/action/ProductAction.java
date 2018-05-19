@@ -30,7 +30,7 @@ public class ProductAction {
 
 	{
 		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(Product.class,
-				"id","number", "name");
+				"id","number","name","departmentPrice");
 	}
 	
 	/**
@@ -45,6 +45,7 @@ public class ProductAction {
 	public CommonResponse productPages(HttpServletRequest request,PageParameter page,Product product) {
 		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(productService.findPages(product,page))
 				.toJSON());
+		cr.setMessage("查询成功");
 		return cr;
 	}
 	

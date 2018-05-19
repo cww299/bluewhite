@@ -14,11 +14,16 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.dao.ProductDao;
 import com.bluewhite.product.entity.Product;
+import com.bluewhite.production.procedure.dao.ProcedureDao;
+import com.bluewhite.production.procedure.entity.Procedure;
+import com.bluewhite.production.productionutils.ProTypeUtils;
 @Service
 public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implements ProductService{
 	
 	@Autowired
 	private ProductDao productDao;
+	@Autowired
+	private ProcedureDao procedureDao;
 
 	@Override
 	public PageResult<Product> findPages(Product product,PageParameter page) {
@@ -36,13 +41,34 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 	        	if (product.getName() != null) {
 					predicate.add(cb.like(root.get("name").as(String.class),"%"+product.getName()+"%"));
 				}
-	        	
 				Predicate[] pre = new Predicate[predicate.size()];
 				query.where(predicate.toArray(pre));
 	        	return null;
 	        }, page);
+		  	this.formulaPrice(productPages);
 	        PageResult<Product> result = new PageResult<>(productPages,page);
 	        return result;
 	    }
+	
+	/**
+	 * 计算当部门预计生产价格
+	 * @param productPages
+	 */
+	private void formulaPrice(Page<Product> productPages) {
+		Integer type = ProTypeUtils.roleGetProType();
+		if(type != null){
+			List<Product> productList = productPages.getContent();
+			for(Product product : productList){
+				List<Procedure> procedureList = procedureDao.findByProductIdAndType(product.getId(), type);
+				Double sumTime = 0.0;
+				for(Procedure procedure : procedureList){
+					sumTime += procedure.getWorkingTime();
+				}
+				Double sumPrice = ProTypeUtils.sumProTypePrice(sumTime);
+				product.setDepartmentPrice(sumPrice);
+			}
+		}
+		
+	}
 
 }

@@ -16,6 +16,7 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.procedure.service.ProcedureService;
+import com.bluewhite.production.productionutils.ProTypeUtils;
 @Controller
 public class ProcedureAction {
 	
@@ -44,6 +45,8 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 	@ResponseBody
 	public CommonResponse addProcedur(HttpServletRequest request,Procedure procedure) {
 		CommonResponse cr = new CommonResponse();
+		int type = ProTypeUtils.roleGetProType();
+		procedure.setType(type);
 		if(procedure.getId()!=null){
 			Procedure oldProcedure = procedureService.findOne(procedure.getId());
 			BeanCopyUtils.copyNullProperties(oldProcedure,procedure);

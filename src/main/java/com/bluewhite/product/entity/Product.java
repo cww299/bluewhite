@@ -1,10 +1,17 @@
 package com.bluewhite.product.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.system.sys.entity.Files;
 
 /**
  * 
@@ -22,6 +29,18 @@ public class Product extends BaseEntity<Long>{
     //产品名
 	@Column(name = "name")
     private String name;
+	
+	
+	
+    //产品图片地址
+	@Column(name = "url")
+    private String url;
+	
+	/**
+	 * 产品图片
+	 */
+	@OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<Files> productFile = new HashSet<Files>();
 	
 	//该单品目前总销量(产值）
 //	@Column(name = "total_sales")
@@ -155,7 +174,7 @@ public class Product extends BaseEntity<Long>{
     private Double hairPrice;
 	
     //当部门预计生产价格
-	@Column(name = "department_price")
+	@Transient
     private Double departmentPrice;
 
 	public String getNumber() {
@@ -429,6 +448,24 @@ public class Product extends BaseEntity<Long>{
 	public void setDepartmentPrice(Double departmentPrice) {
 		this.departmentPrice = departmentPrice;
 	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public Set<Files> getProductFile() {
+		return productFile;
+	}
+
+	public void setProductFile(Set<Files> productFile) {
+		this.productFile = productFile;
+	}
+
+	
 	
 	
 

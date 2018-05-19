@@ -20,6 +20,7 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.product.entity.Product;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
+import com.bluewhite.production.productionutils.ProTypeUtils;
 import com.bluewhite.reportexport.entity.ProcedurePoi;
 import com.bluewhite.reportexport.entity.ProductPoi;
 import com.bluewhite.reportexport.entity.UserPoi;
@@ -135,6 +136,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 	@Transactional
 	public int importProcedureExcel(List<ProcedurePoi> excelProcedure, Long productId) {
 		int count = 0;
+		int type = ProTypeUtils.roleGetProType();
 		if(excelProcedure.size()>0){
 			List<Procedure> procedureList =new ArrayList<Procedure>();
  			for(ProcedurePoi procedurePoi : excelProcedure){
@@ -142,6 +144,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 				procedure.setProductId(productId);
 				procedure.setName(procedurePoi.getName());
 				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime()*60));
+				procedure.setType(type);
 				procedureList.add(procedure);
 				count++;
 			}

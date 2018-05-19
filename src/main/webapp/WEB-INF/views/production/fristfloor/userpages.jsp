@@ -102,7 +102,6 @@
 							+'<td><button class="btn btn-xs btn-primary update">详细信息</button></td></tr>'
 							
 		      			}); 
-		      			  console.log(html)
 				        //显示分页
 					  laypage({
 					      cont: 'pager', 
