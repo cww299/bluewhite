@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.annotation.SysLogAspectAnnotation;
@@ -16,6 +17,7 @@ import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.product.entity.Product;
 import com.bluewhite.product.service.ProductService;
+import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.system.sys.entity.SysLog;
 
 @Controller
@@ -80,13 +82,19 @@ public class ProductAction {
 	 * @return cr
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/updateProduct", method = RequestMethod.PUT)
+	@RequestMapping(value = "/updateProduct", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse updateProduct(HttpServletRequest request,Product product) {
 		CommonResponse cr = new CommonResponse();
-		product = productService.save(product);
-		if(product!=null){
+		if(product.getId()!=null){
+			Product oldProduct = productService.findOne(product.getId());
+			BeanCopyUtils.copyNullProperties(oldProduct,product);
+			product.setCreatedAt(oldProduct.getCreatedAt());
+			productService.update(product);
 			cr.setMessage("修改成功");
+		}else{
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("产品id不能为空");
 		}
 		return cr;
 	}
