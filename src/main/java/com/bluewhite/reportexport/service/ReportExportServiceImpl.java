@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bluewhite.basedata.dao.BaseDataDao;
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.basedata.service.BaseDataService;
+import com.bluewhite.common.Constants;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.product.entity.Product;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
@@ -31,6 +33,9 @@ public class ReportExportServiceImpl implements ReportExportService{
 	
 	@Autowired
 	private BaseDataDao baseDataDao;
+	
+	@Autowired
+	private BaseDataService baseDataService;
 	
 	@Autowired
 	private UserDao userDao;
@@ -134,9 +139,22 @@ public class ReportExportServiceImpl implements ReportExportService{
 
 	@Override
 	@Transactional
-	public int importProcedureExcel(List<ProcedurePoi> excelProcedure, Long productId) {
+	public int importProcedureExcel(List<ProcedurePoi> excelProcedure, Long productId,Integer type) {
 		int count = 0;
-		int type = ProTypeUtils.roleGetProType();
+		if(type==null){
+			type = ProTypeUtils.roleGetProType();
+		}
+		List<BaseData> baseDataList = null;
+		if(type==1){
+			baseDataList = baseDataService.getBaseDataListByType(Constants.PRODUCT_FRIST_QUALITY);
+		}
+		if(type==2){
+			baseDataList = baseDataService.getBaseDataListByType(Constants.PRODUCT_FRIST_PACK);
+		}
+		if(type==3){
+			baseDataList = baseDataService.getBaseDataListByType(Constants.PRODUCT_TOW_DEEDLE);
+		}
+		
 		if(excelProcedure.size()>0){
 			List<Procedure> procedureList =new ArrayList<Procedure>();
  			for(ProcedurePoi procedurePoi : excelProcedure){
@@ -145,6 +163,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 				procedure.setName(procedurePoi.getName());
 				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime()*60));
 				procedure.setType(type);
+				procedure.setProcedureTypeId(baseDataList.get(0).getId());
 				procedureList.add(procedure);
 				count++;
 			}

@@ -45,8 +45,9 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 	@ResponseBody
 	public CommonResponse addProcedur(HttpServletRequest request,Procedure procedure) {
 		CommonResponse cr = new CommonResponse();
-		int type = ProTypeUtils.roleGetProType();
-		procedure.setType(type);
+		if(procedure.getType()==null){
+			procedure.setType(ProTypeUtils.roleGetProType());
+		}
 		if(procedure.getId()!=null){
 			Procedure oldProcedure = procedureService.findOne(procedure.getId());
 			BeanCopyUtils.copyNullProperties(oldProcedure,procedure);
@@ -93,7 +94,7 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 	 * @param procedure
 	 * @return
 	 */
-	@RequestMapping(value = "/production/delete", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/production/delete", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse delete(HttpServletRequest request,Long id) {
 		CommonResponse cr = new CommonResponse();

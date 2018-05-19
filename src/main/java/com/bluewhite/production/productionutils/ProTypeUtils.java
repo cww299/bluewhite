@@ -54,23 +54,22 @@ public  class ProTypeUtils {
 	 * @param type
 	 * @return
 	 */
-	public static Double sumProTypePrice(Double price){
-		CurrentUser cu = SessionManager.getUserSession();
+	public static Double sumProTypePrice(Double price,Integer type){
 		Double sumPrice = 0.0 ;
-		// 生产部一楼质检
-		if(cu.getRole().contains(Constants.PRODUCT_FRIST_QUALITY)){
+		switch (type) {
+		case 1:// 生产部一楼质检
 			sumPrice = price*ProTypeUtils.FRIST_QUALITY;
-		}
-		//生产部一楼打包
-		if(cu.getRole().contains(Constants.PRODUCT_FRIST_PACK)){
+			break;
+		case 2://生产部一楼打包
 			sumPrice = price*ProTypeUtils.FRIST_PACK;
-		}
-		//生产部二楼针工
-		if(cu.getRole().contains(Constants.PRODUCT_TOW_DEEDLE)){
+				break;
+		case 3://生产部二楼针工
 			sumPrice = price*ProTypeUtils.TOW_DEEDLE;
+			break;
+		default:
+			break;
 		}
 		return sumPrice;
-		
 	}
 	
 

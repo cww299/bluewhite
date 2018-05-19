@@ -176,6 +176,19 @@ public class Product extends BaseEntity<Long>{
     //当部门预计生产价格
 	@Transient
     private Double departmentPrice;
+	//工序部门类型
+	@Transient
+	private Integer type;	
+	
+	
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
 
 	public String getNumber() {
 		return number;

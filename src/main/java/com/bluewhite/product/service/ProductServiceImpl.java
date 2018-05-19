@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.product.dao.ProductDao;
 import com.bluewhite.product.entity.Product;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
@@ -45,7 +46,9 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 				query.where(predicate.toArray(pre));
 	        	return null;
 	        }, page);
-		  	this.formulaPrice(productPages);
+		  if(product.getType()!=null){
+			  this.formulaPrice(productPages,product.getType());
+		  }
 	        PageResult<Product> result = new PageResult<>(productPages,page);
 	        return result;
 	    }
@@ -54,9 +57,7 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 	 * 计算当部门预计生产价格
 	 * @param productPages
 	 */
-	private void formulaPrice(Page<Product> productPages) {
-		Integer type = ProTypeUtils.roleGetProType();
-		if(type != null){
+	private void formulaPrice(Page<Product> productPages,Integer type) {
 			List<Product> productList = productPages.getContent();
 			for(Product product : productList){
 				List<Procedure> procedureList = procedureDao.findByProductIdAndType(product.getId(), type);
@@ -64,10 +65,10 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 				for(Procedure procedure : procedureList){
 					sumTime += procedure.getWorkingTime();
 				}
-				Double sumPrice = ProTypeUtils.sumProTypePrice(sumTime);
-				product.setDepartmentPrice(sumPrice);
+				Double sumPrice = ProTypeUtils.sumProTypePrice(sumTime,type);
+				product.setDepartmentPrice(NumUtils.round(sumPrice));
 			}
-		}
+		
 		
 	}
 

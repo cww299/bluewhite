@@ -95,7 +95,7 @@ public class ReportExportAction {
 	 */
 	@RequestMapping(value = "/importProcedure",method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse importProcedure(@RequestParam(value="file",required=false) MultipartFile file,Long productId,HttpServletRequest request){
+	public CommonResponse importProcedure(@RequestParam(value="file",required=false) MultipartFile file,Long productId,Integer type,HttpServletRequest request){
 		CommonResponse cr = new CommonResponse();
 		try {
 				List<ProcedurePoi> excelProcedure = new ArrayList<ProcedurePoi>();
@@ -104,7 +104,7 @@ public class ReportExportAction {
 				// 创建excel工具类
 				Excelutil<ProcedurePoi> util = new Excelutil<ProcedurePoi>(ProcedurePoi.class);
 				excelProcedure = util.importExcel(filename, in);// 导入
-				int count = ReportExportService.importProcedureExcel(excelProcedure,productId);
+				int count = ReportExportService.importProcedureExcel(excelProcedure,productId,type);
 				if(count > 0){
 					cr.setMessage("成功导入"+count+"条数据");
 				}
