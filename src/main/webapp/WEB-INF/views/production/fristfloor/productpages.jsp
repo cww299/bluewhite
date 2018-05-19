@@ -203,7 +203,7 @@
 		      				+'<td class="text-center id">'+o.id+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
-		      				+'<td class="text-center edit name">'+o.departmentPrice+'</td>'
+		      				+'<td class="text-center edit departmentPrice">'+o.departmentPrice+'</td>'
 							+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-success btn-3d addprocedure" data-id='+o.id+' data-name='+o.name+'>添加工序</button></td></tr>'
 							
 		      			}); 
