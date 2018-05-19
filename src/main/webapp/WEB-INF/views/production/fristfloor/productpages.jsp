@@ -62,6 +62,7 @@
                                         	<th class="text-center">产品序号</th>
                                             <th class="text-center">产品编号</th>
                                             <th class="text-center">产品名</th>
+                                            <th class="text-center">生产预计单价</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -113,8 +114,11 @@
         <div id="addworking" style="display: none;">
 			<div class="panel-body">
         	<div class="form-group">
-  				<button type="button" class="btn btn-success" id="btn">导入工序</button>
- 		 	</div>
+    <input type="file" name="file" id="upfile"  >
+ </div>
+ <div class="form-group">
+  <button type="button" class="btn btn-success" id="btn">导入excel</button>
+  </div> 
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
@@ -169,7 +173,7 @@
 			 var data={
 						page:1,
 				  		size:13,	
-				  		
+				  		type:1,
 
 				} 
 			this.init = function(){
@@ -199,7 +203,8 @@
 		      				+'<td class="text-center id">'+o.id+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
-							+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-success btn-3d addprocedure" data-id='+o.id+'>添加工序</button></td></tr>'
+		      				+'<td class="text-center edit name">'+o.departmentPrice+'</td>'
+							+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-success btn-3d addprocedure" data-id='+o.id+' data-name='+o.name+'>添加工序</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -213,6 +218,7 @@
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
+									  		type:1,
 									  		name:$('#name').val(),
 								  			number:$('#number').val(),
 								  	}
@@ -237,6 +243,7 @@
 				$('.addprocedure').on('click',function(){
 					var _index
 					var productId=$(this).data('id')
+					var name=$(this).data('name')
 					var dicDiv=$('#addworking');
 					  //打开隐藏框
 					_index = layer.open({
@@ -245,7 +252,7 @@
 						  area: ['60%', '60%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
-						  title:"产品工序",
+						  title:name,
 						  content: dicDiv,
 						  
 						  yes:function(index, layero){
@@ -406,33 +413,33 @@
 			this.loadevenstwo=function(){
 				//删除工序
 				$(".deleteprocedure").on('click',function(){
-					var id=$(this).parent().prev().data('id');
-							
-					
+					var data={
+							id:$(this).parent().prev().data('id')
+							}
+					var _indexx;
+					var index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
 					$.ajax({
 						url:"${ctx}/production/delete",
-						data:id,
-						type:"DELETE",
+						data:data,
+						type:"GET",
 						beforeSend:function(){
-							index = layer.load(1, {
+							_indexx = layer.load(1, {
 								  shade: [0.1,'#fff'] //0.1透明度的白色背景
 								});
 						}, 
 						success:function(result){
-							
 						if(result.code==0){
-						
 							layer.msg("删除成功！", {icon: 1});
-							layer.close(index);
+							self.loadworking();
+							layer.close(_indexx);
 						}
-					
-							
 						},
 						error:function(){
 							layer.msg("删除失败！", {icon: 2});
-							layer.close(index);
+							layer.close(_indexx);
 						}
 					});
+					  });
 				})
 			//修改工序内容
 				 $(".updateworking").on('click',function(){
@@ -582,11 +589,51 @@
 			}
 			this.events = function(){
 				
+				//导入
+				$('#btn').on('click',function(){
+				
+					console.log(self.getCache())
+					  var imageForm = new FormData();
+				
+				  			
+							imageForm.append("file",$('#upfile')[0].files[0]);
+				  			imageForm.append("productId",self.getCache());
+				  			imageForm.append("type",1)
+					 $.ajax({
+							url:"${ctx}/excel/importProcedure",
+							data:imageForm,
+							type:"post",
+							processData:false,
+							contentType: false,
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							success:function(result){
+								
+								layer.msg(result.message, {icon: 1});
+								self.loadworking();
+								layer.close(index);
+							},
+							error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						}); 
+		          
+					
+				});
+				
+				
+				
+				
 				//查询
 				$('.searchtask').on('click',function(){
 					var data = {
 				  			page:1,
 				  			size:13,
+				  			type:1,
 				  			name:$('#name').val(),
 				  			number:$('#number').val(),
 				  	}

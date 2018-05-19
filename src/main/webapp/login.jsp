@@ -5,48 +5,72 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>蓝白erp系统</title>
-	<link rel="stylesheet" href="static/css/style.css">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<!-- For-Mobile-Apps-and-Meta-Tags -->
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<meta name="keywords" content="Simple Login Form Widget Responsive, Login Form Web Template, Flat Pricing Tables, Flat Drop-Downs, Sign-Up Web Templates, Flat Web Templates, Login Sign-up Responsive Web Template, Smartphone Compatible Web Template, Free Web Designs for Nokia, Samsung, LG, Sony Ericsson, Motorola Web Design" />
-		<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-	<!-- //For-Mobile-Apps-and-Meta-Tags -->
+  <title>蓝白玩偶登录中心</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400">  <!-- Google web font "Open Sans" -->
+  <link rel="stylesheet" href="static/login/css/font-awesome.min.css">
+  <link rel="stylesheet" href="static/login/css/bootstrap.min.css">
+  
+  <link rel="stylesheet" href="static/login/css/demo.css" />
+  <link rel="stylesheet" href="static/login/css/templatemo-style.css">
+  
+  <script type="text/javascript" src="static/login/js/modernizr.custom.86080.js"></script>
+		
+	</head>
 
-</head>
+	<body>
 
-<body>
-    <h1>蓝白ERP系统</h1>
-    <div class="container w3">
-        <h2>欢迎使用</h2>
-		<form id="form" action="##"  onsubmit="return false"  method="post">
-			<div class="username">
-				<span class="username" style="height:19px">用户:</span>
-				<input type="text" name="username" class="name" placeholder="" required="required">
-				<div class="clear"></div>
-			</div>
-			<div class="password-agileits">
-				<span class="username"style="height:19px">密码:</span>
-				<input type="password" name="password" class="password" placeholder="" required="required">
-				<div class="clear"></div>
-			</div>
-			<div class="rem-for-agile">
-				<input type="checkbox" name="remember" class="remember">请记住我
-<br>
-				<a href="#">忘记密码</a><br>
-			</div>
-			<div class="login-w3">
-					<input type="submit" id="submitBtn" class="login" value="登录">
-			</div>
-			<div class="clear"></div>
-		</form>
-	</div>
-	<div class="footer-w3l">
-		<p> 蓝白erp系统</p>
-	</div>
-	 <script src="static/js/vendor/jquery-3.3.1.min.js"></script>
+			<div id="particles-js"></div>
+		
+			<ul class="cb-slideshow">
+	            <li></li>
+	            <li></li>
+	            <li></li>
+	            <li></li>
+	            <li></li>
+	            <li></li>
+	        </ul>
+
+			<div class="container-fluid">
+				<div class="row cb-slideshow-text-container ">
+					<div class= "tm-content col-xl-6 col-sm-8 col-xs-8 ml-auto section">
+					<header class="mb-5"><h1>蓝白ERP系统</h1></header>
+					<P class="mb-5">A sign-up letter template with three background images shuffling by fade in out movements. Thank you for visiting our site!</P>
+					
+                    <form  id="form" action="##"  onsubmit="return false" method="post" class="subscribe-form">
+               	    	<div class="row form-section">
+
+							<div class="col-md-6 col-sm-7 col-xs-7">
+			                      <input  type="text" name="username" class="form-control" id="contact_email" placeholder="登录名" required/>
+			                      
+				  			</div>
+				  			<div class="col-md-7 col-sm-7 col-xs-7">
+			                      
+				  			</div>
+				  			<br>
+				  			<div class="col-md-6 col-sm-7 col-xs-7">
+			                      <input name="password" type="text" class="form-control" id="contact_email" placeholder="密码" required/>
+				  			</div>
+				  			
+							<div class="col-md-5 col-sm-5 col-xs-5">
+								<button type="submit"  class="tm-btn-subscribe" id="submitBtn">登录</button>
+							</div>
+						
+						</div>
+                    </form>
+                    
+					
+
+					</div>
+				</div>	
+				
+			</div>	
+	<script src="static/js/vendor/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="static/login/js/particles.js"></script>
+	<script type="text/javascript" src="static/login/js/app.js"></script>
 	 <script src="static/js/layer/layer.js"></script>
 	 <script type="text/javascript">
 	 jQuery(function($){
@@ -92,7 +116,8 @@
 				login.init();
 			})
 	 </script>
-</body>
+	</body>
+
 </html>
 
 
