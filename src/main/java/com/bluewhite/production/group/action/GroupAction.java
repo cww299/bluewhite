@@ -57,7 +57,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 			
 		}else{
 			if(group.getType()!=null){
-				cr.setData(clearCascadeJSON.format(groupService.save(group)).toJSON());;
+				cr.setData(clearCascadeJSON.format(groupService.save(group)).toJSON());
 				cr.setMessage("分组添加成功");
 			}else{
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -99,12 +99,15 @@ private static final Log log = Log.getLog(GroupAction.class);
 	@ResponseBody
 	public CommonResponse userGroup(HttpServletRequest request,User user) {
 		CommonResponse cr = new CommonResponse();
-		if(user.getId()!=null &&  user.getGroupId()!=null){
-			cr.setData(ClearCascadeJSON.get()
-					.addRetainTerm(User.class, "id", "userName","number","group")
-					.addRetainTerm(Group.class,"name","price")
-							.format(userService.save(user)).toJSON());
-			cr.setMessage("查询成功");
+		if(user.getUserIds()!=null &&  user.getGroupId()!=null){
+			String[] userIds = user.getUserIds().split(",");
+			for (String id : userIds) {
+				Long userId = Long.parseLong(id);
+				User userGroup = userService.findOne(userId);
+				userGroup.setGroupId(user.getGroupId());
+				userService.save(userGroup);
+			}
+			cr.setMessage("分组成功");
 		}else{
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("用户和分组不能为空");

@@ -31,8 +31,9 @@ public class ProductAction {
 	private ClearCascadeJSON clearCascadeJSON;
 
 	{
-		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(Product.class,
-				"id","number","name","departmentPrice");
+		clearCascadeJSON = ClearCascadeJSON
+				.get()
+				.addRetainTerm(Product.class,"id","number","name","departmentPrice");
 	}
 	
 	/**

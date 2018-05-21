@@ -169,7 +169,7 @@ public class Product extends BaseEntity<Long>{
 	@Column(name = "bt_price")
     private String btPrice;
 	
-    //外发价格
+    //产品本身外发价格
 	@Column(name = "hair_price")
     private Double hairPrice;
 	

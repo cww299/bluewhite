@@ -316,9 +316,23 @@ public class User extends BaseEntity<Long> {
 	@Transient
 	private String orgNameIds;
 	
+	/**
+	 * 分组员工ids
+	 */
+	@Transient
+	private String userIds;
 	
 	
 	
+	
+	public String getUserIds() {
+		return userIds;
+	}
+
+	public void setUserIds(String userIds) {
+		this.userIds = userIds;
+	}
+
 	public String getOrgNameIds() {
 		return orgNameIds;
 	}

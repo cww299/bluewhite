@@ -28,7 +28,7 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 
 	@Override
 	public PageResult<Product> findPages(Product product,PageParameter page) {
-		  Page<Product> productPages = productDao.findAll((root,query,cb) -> {
+		  Page<Product> pages = productDao.findAll((root,query,cb) -> {
 	        	List<Predicate> predicate = new ArrayList<>();
 	        	//按id过滤
 	        	if (product.getId() != null) {
@@ -47,9 +47,9 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 	        	return null;
 	        }, page);
 		  if(product.getType()!=null){
-			  this.formulaPrice(productPages,product.getType());
+			  this.formulaPrice(pages,product.getType());
 		  }
-	        PageResult<Product> result = new PageResult<>(productPages,page);
+	        PageResult<Product> result = new PageResult<>(pages,page);
 	        return result;
 	    }
 	
