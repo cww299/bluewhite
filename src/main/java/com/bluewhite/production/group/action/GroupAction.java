@@ -95,7 +95,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 	 * @param request 请求
 	 * @return cr
 	 */
-	@RequestMapping(value = "/production/userGroup", method = RequestMethod.PUT)
+	@RequestMapping(value = "/production/userGroup", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse userGroup(HttpServletRequest request,User user) {
 		CommonResponse cr = new CommonResponse();

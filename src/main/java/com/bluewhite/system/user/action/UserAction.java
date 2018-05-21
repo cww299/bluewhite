@@ -23,6 +23,7 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
@@ -42,7 +43,8 @@ public class UserAction {
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
 				.addRetainTerm(User.class,"id","number","pictureUrl", "userName", "phone","position","orgName","idCard",
-						"nation","email","gender","birthDate")
+						"nation","email","gender","birthDate","group")
+				.addRetainTerm(Group.class, "name", "type", "price")
 				.addRetainTerm(Role.class, "name", "role", "description","id")
 				.addRetainTerm(BaseData.class, "name", "type");
 	}
