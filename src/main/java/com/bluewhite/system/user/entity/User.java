@@ -282,7 +282,7 @@ public class User extends BaseEntity<Long> {
 	/**
 	 * 分组
 	 */
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "group_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Group group;
 

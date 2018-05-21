@@ -22,7 +22,6 @@
     <!-- Custom styles for this theme -->
     <link rel="stylesheet" href="${ctx }/static/css/main.css"> 
     <link rel="stylesheet" href="${ctx }/static/js/laypage/skin/laypage.css"> 
-    
 <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
 <script src="${ctx }/static/js/vendor/jquery.cookie.js"></script>
  <script src="${ctx }/static/js/vendor/modernizr-2.6.2.min.js"></script>

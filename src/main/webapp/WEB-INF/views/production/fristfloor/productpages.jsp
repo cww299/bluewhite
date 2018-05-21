@@ -28,13 +28,13 @@
                     <div class="col-md-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Hover rows</h3>
+                                <h3 class="panel-title">产品信息</h3>
                                 <div class="actions pull-right">
                                     <i class="fa fa-expand"></i>
                                     <i class="fa fa-chevron-down"></i>
                                 </div>
                             </div>
-                            <div class="row" style="height: 30px">
+      <div class="row" style="height: 30px">
 			<div class="col-xs-8 col-sm-8  col-md-8">
 				<form class="form-search" >
 					<div class="row">

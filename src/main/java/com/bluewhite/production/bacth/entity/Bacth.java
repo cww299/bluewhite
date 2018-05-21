@@ -17,7 +17,7 @@ import com.bluewhite.product.entity.Product;
  *
  */
 @Entity
-@Table(name = "pro_group")
+@Table(name = "pro_bacth")
 public class Bacth extends BaseEntity<Long>{
 	
 	/**
@@ -35,8 +35,8 @@ public class Bacth extends BaseEntity<Long>{
 	/**
 	 * 批次号
 	 */
-	@Column(name = "batch_number")
-    private String batchNumber;
+	@Column(name = "bacth_number")
+    private String bacthNumber;
     /**
      * 该批次产品数量
      */
@@ -102,11 +102,11 @@ public class Bacth extends BaseEntity<Long>{
 	public void setProductId(Long productId) {
 		this.productId = productId;
 	}
-	public String getBatchNumber() {
-		return batchNumber;
+	public String getBacthNumber() {
+		return bacthNumber;
 	}
-	public void setBatchNumber(String batchNumber) {
-		this.batchNumber = batchNumber;
+	public void setBacthNumber(String bacthNumber) {
+		this.bacthNumber = bacthNumber;
 	}
 	public Integer getNumber() {
 		return number;
