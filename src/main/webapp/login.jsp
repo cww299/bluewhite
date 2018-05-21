@@ -71,6 +71,7 @@
 	<script src="static/js/vendor/jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="static/login/js/particles.js"></script>
 	<script type="text/javascript" src="static/login/js/app.js"></script>
+	<script src="static/js/vendor/jquery.cookie.js"></script>
 	 <script src="static/js/layer/layer.js"></script>
 	 <script type="text/javascript">
 	 jQuery(function($){
@@ -96,6 +97,8 @@
 				      		  success: function (result) {
 				      			  if(result.code==0){
 					      				location.href = "${ctx}/index";
+					      				$.cookie("navstation", null);
+										$.cookie("navstationtwo",null)
 				      			  }else{
 				      				layer.close(index);
 				      				layer.msg(result.message, {icon: 2}); 

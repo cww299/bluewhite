@@ -26,14 +26,15 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th>序号</th>
-                                            <th>编号</th>
-                                            <th>姓名</th>
-                                            <th>手机号</th>
-                                            <th>身份证号</th>
-                                            <th>部门</th>
-                                            <th>职位</th>
-                                            <th>操作</th>
+                                            <th class="text-center">序号</th>
+                                            <th class="text-center">编号</th>
+                                            <th class="text-center">姓名</th>
+                                            <th class="text-center">手机号</th>
+                                            <th class="text-center">身份证号</th>
+                                            <th class="text-center">部门</th>
+                                            <th class="text-center">职位</th>
+                                            <th class="text-center">操作</th>
+                                            <th class="text-center">员工分组</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent">
@@ -92,14 +93,15 @@
 		      			 $(result.data.rows).each(function(i,o){
 		      				 var order = i+1;
 		      				html +='<tr>'
-		      				+'<td class="edit price">'+order+'</td>'
-		      				+'<td class="edit price">'+o.number+'</td>'
-		      				+'<td class="edit price">'+o.userName+'</td>'
-		      				+'<td class="edit price">'+o.phone+'</td>'
-		      				+'<td class="edit price">'+o.idCard+'</td>'
-		      				+'<td class="edit price">'+o.orgName.name+'</td>'
-		      				+'<td class="edit price">'+o.position.name+'</td>'
-							+'<td><button class="btn btn-xs btn-primary update">详细信息</button></td></tr>'
+		      				+'<td class="text-center edit price">'+order+'</td>'
+		      				+'<td class="text-center edit price">'+o.number+'</td>'
+		      				+'<td class="text-center edit price">'+o.userName+'</td>'
+		      				+'<td class="text-center edit price">'+o.phone+'</td>'
+		      				+'<td class="text-center edit price">'+o.idCard+'</td>'
+		      				+'<td class="text-center edit price">'+o.orgName.name+'</td>'
+		      				+'<td class="text-center edit price">'+o.position.name+'</td>'
+							+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d update">详细信息</button></td>'
+							+'<td class="text-center"><div class="groupChange"></div></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -120,14 +122,84 @@
 				        
 					   	layer.close(index);
 					   	$("#tablecontent").html(html); 
+					   	self.loadEvents();
+					   	self.selected();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
 					  }
 				  });
 			}
-			this.events = function(){
-			}
+		this.loadEvents = function(){
+			//遍历组名信息
+			var data={
+					page:1,
+			  		size:13,	
+			  		type:1,
+
+			} 
+			var index;
+		    var html = '';
+		    $.ajax({
+			      url:"${ctx}/production/getGroup",
+			      data:data,
+			      type:"GET",
+			     
+	      		  success: function (result) {
+	      			 $(result.data).each(function(i,o){
+	      				html +='<option value="'+o.id+'">'+o.name+'</option>'
+	      			}); 
+			        //显示分页
+			       var htmlto='<select class="form-control selectgroupChange"><option value="0">请选择</option>'+html+'</select>'
+				   	$(".groupChange").html(htmlto); 
+				   	self.chang();
+				   
+			      },error:function(){
+						layer.msg("加载失败！", {icon: 2});
+						layer.close(index);
+				  }
+			  });
+	  }
+		this.chang=function(){
+			$('.selectgroupChange').change(function(){
+				var that=$(this);
+				var data={
+						userId:that.parent().data("id"),
+						lbGroup:that.val(),
+					}
+				$.ajax({
+					url:"${ctx}/production/userGroup",
+					data:data,
+					type:"post",
+					
+					success:function(result){
+						if("success"==result.message){
+							layer.msg("操作成功！", {icon: 1});
+							self.loadPagination(_data);
+						}else{
+							layer.msg(result.message, {icon: 2});			
+						}
+						
+					},error:function(){
+						layer.msg("操作失败！", {icon: 2});
+					}
+				})
+				
+				
+			})
+		}
+		this.selected=function(){
+			
+			$('.selectgroupChange').each(function(i,o){
+				console.log(o)
+				var id=$(o).parent().data("group");
+				
+				$(o).val(id);
+			})
+			
+		}
+		this.events = function(){
+	  }
    	}
 	var login = new Login();
 	  login.init();
