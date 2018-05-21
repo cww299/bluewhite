@@ -44,7 +44,7 @@ public class UserAction {
 				.get()
 				.addRetainTerm(User.class,"id","number","pictureUrl", "userName", "phone","position","orgName","idCard",
 						"nation","email","gender","birthDate","group")
-				.addRetainTerm(Group.class, "name", "type", "price")
+				.addRetainTerm(Group.class, "id","name", "type", "price")
 				.addRetainTerm(Role.class, "name", "role", "description","id")
 				.addRetainTerm(BaseData.class, "name", "type");
 	}
