@@ -65,7 +65,7 @@
                                     <tbody id="tablecontent" style="font-size: 14px">
                                     </tbody>
                                 </table>
-                                 <div id="pager">
+                                 <div id="pager" class="pull-right">
                                 </div>
                             </div>
                         </div>

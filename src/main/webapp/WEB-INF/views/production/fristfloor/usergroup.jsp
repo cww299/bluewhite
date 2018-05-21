@@ -34,27 +34,6 @@
                                     <i class="fa fa-chevron-down"></i>
                                 </div>
                             </div>
-                            <div class="row" style="height: 30px">
-			<div class="col-xs-8 col-sm-8  col-md-8">
-				<form class="form-search" >
-					<div class="row">
-						<div class="col-xs-12 col-sm-12 col-md-7">
-							<div class="input-group"> 
-								<table><tr><td>产品编号:</td><td><input type="text" name="number" id="number" class="form-control search-query number" /></td>
-								<td>产品名称:</td><td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
-								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtask">
-										查找
-										<i class="icon-search icon-on-right bigger-110"></i>
-									</button>
-								</span>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
                             <div class="panel-body">
                                 <table class="table table-hover">
                                     <thead>
@@ -109,11 +88,11 @@
 					&times;
 				</button>
 				<h4 class="modal-title" id="myModalLabel">
-					模态框（Modal）标题
+					人员分组详情
 				</h4>
 			</div>
 			<div class="modal-body">
-				在这里添加一些文本
+				
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
@@ -181,8 +160,8 @@
 		      			 $(result.data).each(function(i,o){
 		      				html +='<tr>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
-		      				+'<td class="text-center"><button class="btn btn-primary btn-3d btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">详细信息</button></td>'
-							+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d update" data-id='+o.id+'>编辑</button></td></tr>'
+		      				+'<td class="text-center"><button class="btn btn-primary btn-3d btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
+							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d update" data-id='+o.id+'>编辑</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -198,7 +177,6 @@
 									  		size:13,
 									  		type:1,
 									  		name:$('#name').val(),
-								  			number:$('#number').val(),
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -239,13 +217,12 @@
 							
 							var postData = {
 									id:$(this).data('id'),
-									number:$(this).parent().parent('tr').find(".number").text(),
 									name:$(this).parent().parent('tr').find(".name").text(),
 							}
 							
 							var index;
 							$.ajax({
-								url:"${ctx}/updateProduct",
+								url:"${ctx}/production/addGroup",
 								data:postData,
 								type:"POST",
 								beforeSend:function(){
@@ -270,6 +247,7 @@
 					}
 				})
 				
+				//人员详细显示方法
 				$('.savemode').on('click',function(){
 					var id=$(this).data('id')
 					 var display =$("#savegroup").css("display")
@@ -278,10 +256,11 @@
 						}
 					var postData={
 							id:id,
-							type:1,
 					}
+					 var arr=new Array();
+					var html="";
 					$.ajax({
-						url:"${ctx}/production/getGroup",
+						url:"${ctx}/production/getGroupOne",
 						data:postData,
 						type:"GET",
 						beforeSend:function(){
@@ -291,7 +270,10 @@
 						},
 						
 						success:function(result){
-							console.log(result)
+							$(result.data.users).each(function(i,o){
+							html+=o.userName+"&nbsp&nbsp&nbsp&nbsp"
+							})
+							$('.modal-body').html(html);
 							layer.close(index);
 							
 						},error:function(){
@@ -307,19 +289,6 @@
 				
 			}
 			this.events = function(){
-				//查询
-				$('.searchtask').on('click',function(){
-					var data = {
-				  			page:1,
-				  			size:13,
-				  			type:1,
-				  			name:$('#name').val(),
-				  			number:$('#number').val(),
-				  	}
-		            self.loadPagination(data);
-				});
-				
-				
 				//新增产品
 				$('#addgroup').on('click',function(){
 					
@@ -356,8 +325,6 @@
 									success:function(result){
 										if(0==result.code){
 											layer.msg("添加成功！", {icon: 1});
-											
-											
 										 self.loadPagination(data); 
 											$('#addDictDivType').hide();
 											
