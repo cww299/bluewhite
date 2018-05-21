@@ -90,6 +90,7 @@
 						  });
 					  }, 
 		      		  success: function (result) {
+		      			  console.log(result)
 		      			 $(result.data.rows).each(function(i,o){
 		      				 var order = i+1;
 		      				html +='<tr>'
@@ -101,7 +102,7 @@
 		      				+'<td class="text-center edit price">'+o.orgName.name+'</td>'
 		      				+'<td class="text-center edit price">'+o.position.name+'</td>'
 							+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d update">详细信息</button></td>'
-							+'<td class="text-center"><div class="groupChange"></div></td></tr>'
+							+'<td class="text-center"><div class="groupChange" data-id="'+o.id+'"></div></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -123,7 +124,7 @@
 					   	layer.close(index);
 					   	$("#tablecontent").html(html); 
 					   	self.loadEvents();
-					   	self.selected();
+					   	
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
@@ -153,7 +154,7 @@
 			       var htmlto='<select class="form-control selectgroupChange"><option value="0">请选择</option>'+html+'</select>'
 				   	$(".groupChange").html(htmlto); 
 				   	self.chang();
-				   
+				   	self.selected();
 			      },error:function(){
 						layer.msg("加载失败！", {icon: 2});
 						layer.close(index);
@@ -164,20 +165,23 @@
 			$('.selectgroupChange').change(function(){
 				var that=$(this);
 				var data={
-						userId:that.parent().data("id"),
-						lbGroup:that.val(),
+						userIds:that.parent().data("id"),
+						groupId:that.val(),
 					}
+				var _data={
+						page:1,
+				  		size:15,	
+				} 
 				$.ajax({
 					url:"${ctx}/production/userGroup",
 					data:data,
-					type:"post",
-					
+					type:"POST",
 					success:function(result){
-						if("success"==result.message){
-							layer.msg("操作成功！", {icon: 1});
+						if(0==result.code){
+							layer.msg("分组成功！", {icon: 1});
 							self.loadPagination(_data);
 						}else{
-							layer.msg(result.message, {icon: 2});			
+							layer.msg("分组失败", {icon: 2});			
 						}
 						
 					},error:function(){
