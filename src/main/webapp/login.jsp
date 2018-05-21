@@ -10,13 +10,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>蓝白玩偶登录中心</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400">  <!-- Google web font "Open Sans" -->
   <link rel="stylesheet" href="static/login/css/font-awesome.min.css">
   <link rel="stylesheet" href="static/login/css/bootstrap.min.css">
   
   <link rel="stylesheet" href="static/login/css/demo.css" />
   <link rel="stylesheet" href="static/login/css/templatemo-style.css">
-  
+  <link rel="stylesheet" href="static/3dfont/style.css"> 
   <script type="text/javascript" src="static/login/js/modernizr.custom.86080.js"></script>
 		
 	</head>
@@ -37,8 +36,8 @@
 			<div class="container-fluid">
 				<div class="row cb-slideshow-text-container ">
 					<div class= "tm-content col-xl-6 col-sm-8 col-xs-8 ml-auto section">
-					<header class="mb-5"><h1>蓝白ERP系统</h1></header>
-					<P class="mb-5">A sign-up letter template with three background images shuffling by fade in out movements. Thank you for visiting our site!</P>
+					<header class="mb-5"><h1><a>蓝白ERP系统</a></h1></header>
+					<P class="mb-5"><a>A sign-up letter template with three background images shuffling by fade in out movements. Thank you for visiting our site!</a></P>
 					
                     <form  id="form" action="##"  onsubmit="return false" method="post" class="subscribe-form">
                	    	<div class="row form-section">
@@ -71,6 +70,7 @@
 	<script src="static/js/vendor/jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="static/login/js/particles.js"></script>
 	<script type="text/javascript" src="static/login/js/app.js"></script>
+	<script src="static/js/vendor/jquery.cookie.js"></script>
 	 <script src="static/js/layer/layer.js"></script>
 	 <script type="text/javascript">
 	 jQuery(function($){
@@ -96,6 +96,8 @@
 				      		  success: function (result) {
 				      			  if(result.code==0){
 					      				location.href = "${ctx}/index";
+					      				$.cookie("navstation", null);
+										$.cookie("navstationtwo",null)
 				      			  }else{
 				      				layer.close(index);
 				      				layer.msg(result.message, {icon: 2}); 

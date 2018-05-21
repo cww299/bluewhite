@@ -22,24 +22,50 @@
                                     <i class="fa fa-chevron-down"></i>
                                 </div>
                             </div>
+                            <div class="row" style="height: 30px">
+			<div class="col-xs-8 col-sm-8  col-md-8">
+				<form class="form-search" >
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-7">
+							<div class="input-group"> 
+								<table><tr>
+								<td>员工姓名:</td><td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
+								</tr></table> 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtask">
+										查找
+										<i class="icon-search icon-on-right bigger-110"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+                            
+                            
+                            
+                            
                             <div class="panel-body">
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th>序号</th>
-                                            <th>编号</th>
-                                            <th>姓名</th>
-                                            <th>手机号</th>
-                                            <th>身份证号</th>
-                                            <th>部门</th>
-                                            <th>职位</th>
-                                            <th>操作</th>
+                                            <th class="text-center">序号</th>
+                                            <th class="text-center">编号</th>
+                                            <th class="text-center">姓名</th>
+                                            <th class="text-center">手机号</th>
+                                            <th class="text-center">身份证号</th>
+                                            <th class="text-center">部门</th>
+                                            <th class="text-center">职位</th>
+                                            <th class="text-center">操作</th>
+                                            <th class="text-center">员工分组</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tablecontent">
+                                    <tbody id="tablecontent" style="font-size: 14px">
                                     </tbody>
                                 </table>
-                                 <div id="pager">
+                                 <div id="pager" class="pull-right">
                                 </div>
                             </div>
                         </div>
@@ -68,7 +94,7 @@
 			//初始化js
 			 var data={
 						page:1,
-				  		size:15,	
+				  		size:10,	
 				} 
 			this.init = function(){
 			//注册绑定事件
@@ -90,16 +116,23 @@
 					  }, 
 		      		  success: function (result) {
 		      			 $(result.data.rows).each(function(i,o){
+		      				  var a;
+		      				 if(o.group==null){
+		      					a=0
+		      				 }else{
+		      					 a=o.group.id
+		      				 }
 		      				 var order = i+1;
 		      				html +='<tr>'
-		      				+'<td class="edit price">'+order+'</td>'
-		      				+'<td class="edit price">'+o.number+'</td>'
-		      				+'<td class="edit price">'+o.userName+'</td>'
-		      				+'<td class="edit price">'+o.phone+'</td>'
-		      				+'<td class="edit price">'+o.idCard+'</td>'
-		      				+'<td class="edit price">'+o.orgName.name+'</td>'
-		      				+'<td class="edit price">'+o.position.name+'</td>'
-							+'<td><button class="btn btn-xs btn-primary update">详细信息</button></td></tr>'
+		      				+'<td class="text-center edit price">'+order+'</td>'
+		      				+'<td class="text-center edit price">'+o.number+'</td>'
+		      				+'<td class="text-center edit price">'+o.userName+'</td>'
+		      				+'<td class="text-center edit price">'+o.phone+'</td>'
+		      				+'<td class="text-center edit price">'+o.idCard+'</td>'
+		      				+'<td class="text-center edit price">'+o.orgName.name+'</td>'
+		      				+'<td class="text-center edit price">'+o.position.name+'</td>'
+							+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d update">详细信息</button></td>'
+							+'<td class="text-center"><div class="groupChange" data-id="'+o.id+'" data-groupid="'+a+'" ></div></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -111,7 +144,8 @@
 					    	  if(!first){ 
 						        	var _data = {
 						        			page:obj.curr,
-									  		size:15,
+									  		size:10,
+									  		userName:$('#name').val(),
 								  	}
 						            self.loadPagination(_data);
 							     }
@@ -120,14 +154,95 @@
 				        
 					   	layer.close(index);
 					   	$("#tablecontent").html(html); 
+					   	self.loadEvents();
+					   	
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
 					  }
 				  });
 			}
-			this.events = function(){
-			}
+		this.loadEvents = function(){
+			//遍历组名信息
+			var data={
+					page:1,
+			  		size:100,	
+			  		type:1,
+
+			} 
+			var index;
+		    var html = '';
+		    $.ajax({
+			      url:"${ctx}/production/getGroup",
+			      data:data,
+			      type:"GET",
+			     
+	      		  success: function (result) {
+	      			 $(result.data).each(function(i,o){
+	      				html +='<option value="'+o.id+'">'+o.name+'</option>'
+	      			}); 
+			        //显示分页
+			       var htmlto='<select class="form-control selectgroupChange"><option value="0">请选择</option>'+html+'</select>'
+				   	$(".groupChange").html(htmlto); 
+				   	self.chang();
+				   	self.selected();
+			      },error:function(){
+						layer.msg("加载失败！", {icon: 2});
+						layer.close(index);
+				  }
+			  });
+	  }
+		this.chang=function(){
+			$('.selectgroupChange').change(function(){
+				var that=$(this);
+				var data={
+						userIds:that.parent().data("id"),
+						groupId:that.val(),
+					}
+				var _data={
+						page:1,
+				  		size:10,	
+				} 
+				$.ajax({
+					url:"${ctx}/production/userGroup",
+					data:data,
+					type:"POST",
+					success:function(result){
+						if(0==result.code){
+							layer.msg("分组成功！", {icon: 1});
+							
+						}else{
+							layer.msg("分组失败", {icon: 2});			
+						}
+						
+					},error:function(){
+						layer.msg("操作失败！", {icon: 2});
+					}
+				})
+				
+				
+			})
+		}
+		this.selected=function(){
+			
+			$('.selectgroupChange').each(function(i,o){
+				var id=$(o).parent().data("groupid");
+				$(o).val(id);
+			})
+			
+		}
+		this.events = function(){
+			$('.searchtask').on('click',function(){
+				var data = {
+			  			page:1,
+			  			size:10,
+			  			userName:$('#name').val(),
+			  	}
+				
+	            self.loadPagination(data);
+			});
+			
+	  }
    	}
 	var login = new Login();
 	  login.init();
