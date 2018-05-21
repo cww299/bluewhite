@@ -96,6 +96,33 @@
 				</form>
 </div>
 </div>
+
+
+
+
+<div id="savegroup" style="display: none;">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					模态框（Modal）标题
+				</h4>
+			</div>
+			<div class="modal-body">
+				在这里添加一些文本
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+</div>
 <!--隐藏框 产品新增结束  -->
     </section>
     
@@ -111,6 +138,7 @@
      <script src="${ctx }/static/js/laypage/laypage.js"></script> 
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
+    
     <script>
    jQuery(function($){
    	var Login = function(){
@@ -150,12 +178,10 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			console.log(result)
 		      			 $(result.data).each(function(i,o){
-		      				
 		      				html +='<tr>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
-		      				/* +'<td class="text-center edit departmentPrice">'+o.departmentPrice+'</td>' */
+		      				+'<td class="text-center"><button class="btn btn-primary btn-3d btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">详细信息</button></td>'
 							+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d update" data-id='+o.id+'>编辑</button></td></tr>'
 							
 		      			}); 
@@ -241,25 +267,45 @@
 									layer.close(index);
 								}
 							});
-							
-							
-							
-							
 					}
 				})
 				
-			}
-			this.checked=function(){
-				$(".Proceduretypeid").each(function(i,o){
-						
-						var rest=$(o).parent().data("code");
-						if($(o).val()==rest){
-							$(o).attr('checked', 'checked')
+				$('.savemode').on('click',function(){
+					var id=$(this).data('id')
+					 var display =$("#savegroup").css("display")
+					 if(display=='none'){
+							$("#savegroup").css("display","block");  
 						}
+					var postData={
+							id:id,
+							type:1,
+					}
+					$.ajax({
+						url:"${ctx}/production/getGroup",
+						data:postData,
+						type:"GET",
+						beforeSend:function(){
+							index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+						},
+						
+						success:function(result){
+							console.log(result)
+							layer.close(index);
+							
+						},error:function(){
+							layer.msg("操作失败！", {icon: 2});
+							layer.close(index);
+						}
+					});
+					
+					
+					
 				})
 				
-			}	
-			
+				
+			}
 			this.events = function(){
 				//查询
 				$('.searchtask').on('click',function(){

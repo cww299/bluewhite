@@ -22,6 +22,31 @@
                                     <i class="fa fa-chevron-down"></i>
                                 </div>
                             </div>
+                            <div class="row" style="height: 30px">
+			<div class="col-xs-8 col-sm-8  col-md-8">
+				<form class="form-search" >
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-7">
+							<div class="input-group"> 
+								<table><tr>
+								<td>员工姓名:</td><td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
+								</tr></table> 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtask">
+										查找
+										<i class="icon-search icon-on-right bigger-110"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+                            
+                            
+                            
+                            
                             <div class="panel-body">
                                 <table class="table table-hover">
                                     <thead>
@@ -37,7 +62,7 @@
                                             <th class="text-center">员工分组</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tablecontent">
+                                    <tbody id="tablecontent" style="font-size: 14px">
                                     </tbody>
                                 </table>
                                  <div id="pager">
@@ -69,7 +94,7 @@
 			//初始化js
 			 var data={
 						page:1,
-				  		size:15,	
+				  		size:10,	
 				} 
 			this.init = function(){
 			//注册绑定事件
@@ -90,8 +115,13 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			  console.log(result)
 		      			 $(result.data.rows).each(function(i,o){
+		      				  var a;
+		      				 if(o.group==null){
+		      					a=0
+		      				 }else{
+		      					 a=o.group.id
+		      				 }
 		      				 var order = i+1;
 		      				html +='<tr>'
 		      				+'<td class="text-center edit price">'+order+'</td>'
@@ -102,7 +132,7 @@
 		      				+'<td class="text-center edit price">'+o.orgName.name+'</td>'
 		      				+'<td class="text-center edit price">'+o.position.name+'</td>'
 							+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d update">详细信息</button></td>'
-							+'<td class="text-center"><div class="groupChange" data-id="'+o.id+'"></div></td></tr>'
+							+'<td class="text-center"><div class="groupChange" data-id="'+o.id+'" data-groupid="'+a+'" ></div></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -114,7 +144,8 @@
 					    	  if(!first){ 
 						        	var _data = {
 						        			page:obj.curr,
-									  		size:15,
+									  		size:10,
+									  		userName:$('#name').val(),
 								  	}
 						            self.loadPagination(_data);
 							     }
@@ -135,7 +166,7 @@
 			//遍历组名信息
 			var data={
 					page:1,
-			  		size:13,	
+			  		size:100,	
 			  		type:1,
 
 			} 
@@ -170,7 +201,7 @@
 					}
 				var _data={
 						page:1,
-				  		size:15,	
+				  		size:10,	
 				} 
 				$.ajax({
 					url:"${ctx}/production/userGroup",
@@ -179,7 +210,7 @@
 					success:function(result){
 						if(0==result.code){
 							layer.msg("分组成功！", {icon: 1});
-							self.loadPagination(_data);
+							
 						}else{
 							layer.msg("分组失败", {icon: 2});			
 						}
@@ -195,14 +226,22 @@
 		this.selected=function(){
 			
 			$('.selectgroupChange').each(function(i,o){
-				console.log(o)
-				var id=$(o).parent().data("group");
-				
+				var id=$(o).parent().data("groupid");
 				$(o).val(id);
 			})
 			
 		}
 		this.events = function(){
+			$('.searchtask').on('click',function(){
+				var data = {
+			  			page:1,
+			  			size:10,
+			  			userName:$('#name').val(),
+			  	}
+				
+	            self.loadPagination(data);
+			});
+			
 	  }
    	}
 	var login = new Login();
