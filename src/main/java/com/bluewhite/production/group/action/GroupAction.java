@@ -33,8 +33,11 @@ private static final Log log = Log.getLog(GroupAction.class);
 	private ClearCascadeJSON clearCascadeJSON;
 
 	{
-		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(Group.class,
-				"id","name","price","type");
+		clearCascadeJSON = ClearCascadeJSON
+				.get()
+				.addRetainTerm(Group.class,"id","name","price","type","users")
+				.addRetainTerm(User.class,"id","userName")
+				;
 	}
 	
 	/**
@@ -67,6 +70,26 @@ private static final Log log = Log.getLog(GroupAction.class);
 		return cr;
 	}
 	
+	
+	/**
+	 * 查询单个分组
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/production/getGroupOne", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getGroupOne(HttpServletRequest request,Long id) {
+		CommonResponse cr = new CommonResponse();
+		if(id!=null){
+			cr.setData(clearCascadeJSON.format(groupService.findOne(id)).toJSON());
+			cr.setMessage("查询成功");
+		}else{
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("组不能为空");
+		}
+		return cr;
+	}
 	
 	/**
 	 * 查询分组

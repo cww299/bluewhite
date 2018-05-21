@@ -1,10 +1,16 @@
 package com.bluewhite.production.group.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.system.user.entity.User;
 /**
  * 分组表，用于记录生产部分组
  * @author zhangliang
@@ -31,7 +37,24 @@ public class Group  extends BaseEntity<Long>{
 	private Integer type;
 	
 	
+	/**
+	 * 分组人员
+	 */
+	@OneToMany(mappedBy = "group",cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<User> users = new HashSet<User>();
 	
+	
+	
+	
+
+	public Set<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(Set<User> users) {
+		this.users = users;
+	}
+
 	public Integer getType() {
 		return type;
 	}
