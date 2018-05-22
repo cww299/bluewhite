@@ -56,13 +56,43 @@ public class Procedure extends BaseEntity<Long> {
 	@JoinColumn(name = "procedure_type_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData procedureType;
 	
+	/**
+	 * 外发价格
+	 */
+	@Column(name = "hairPrice")
+	private Double hairPrice;
+	
+    /**
+     * 部门生产总价
+     */
+	@Column(name = "department_price")
+    private Double departmentPrice;
+	
 	
 	/**
 	 * 工序所属部门类型 (1=一楼质检，2=一楼包装，3=二楼针工)
 	 */
+	@Column(name = "type")
 	private Integer type;
 	
 	
+	
+
+	public Double getHairPrice() {
+		return hairPrice;
+	}
+
+	public void setHairPrice(Double hairPrice) {
+		this.hairPrice = hairPrice;
+	}
+
+	public Double getDepartmentPrice() {
+		return departmentPrice;
+	}
+
+	public void setDepartmentPrice(Double departmentPrice) {
+		this.departmentPrice = departmentPrice;
+	}
 
 	public Integer getType() {
 		return type;

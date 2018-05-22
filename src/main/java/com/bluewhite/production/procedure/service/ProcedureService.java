@@ -16,6 +16,12 @@ public interface ProcedureService extends BaseCRUDService<Procedure,Long>{
 	 * @return
 	 */
 	List<Procedure> findByProductIdAndType(Long productId,Integer type);
+	/**
+	 * 根据工序计算出外发单价和生产单价
+	 * @param productId
+	 * @param type
+	 */
+	void countPrice(Procedure procedure);
 
 
 }

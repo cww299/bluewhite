@@ -55,16 +55,23 @@ public class Bacth extends BaseEntity<Long>{
 	@Column(name = "status")
     private Integer status = 0;
 	
+	/**
+	 * 工序所属部门类型 (1=一楼质检，2=一楼包装，3=二楼针工)
+	 */
+	@Column(name = "type")
+	private Integer type;
+	
     /**
      * 批次外发价格
      */
 	@Column(name = "bacth_hair_price")
     private Double bacthHairPrice;
 	
-	/**
-	 * 工序所属部门类型 (1=一楼质检，2=一楼包装，3=二楼针工)
-	 */
-	private Integer type;
+    /**
+     * 批次部门预计生产价格
+     */
+	@Column(name = "bacth_department_price")
+    private Double bacthDepartmentPrice;
 	
 	/**
 	 * 产品名称
@@ -93,6 +100,13 @@ public class Bacth extends BaseEntity<Long>{
 	
 	
 	
+	
+	public Double getBacthDepartmentPrice() {
+		return bacthDepartmentPrice;
+	}
+	public void setBacthDepartmentPrice(Double bacthDepartmentPrice) {
+		this.bacthDepartmentPrice = bacthDepartmentPrice;
+	}
 	public Integer getType() {
 		return type;
 	}

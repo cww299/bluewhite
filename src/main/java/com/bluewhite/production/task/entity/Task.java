@@ -101,6 +101,7 @@ public class Task  extends BaseEntity<Long>{
 	/**
 	 * 工序所属部门类型 (1=一楼质检，2=一楼包装，3=二楼针工)
 	 */
+	@Column(name = "type")
 	private Integer type;
 	
 	/**

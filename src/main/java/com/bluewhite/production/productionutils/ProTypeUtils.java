@@ -1,8 +1,11 @@
 package com.bluewhite.production.productionutils;
 
+import java.util.List;
+
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
+import com.bluewhite.production.procedure.entity.Procedure;
 /**
  * 生产控制计算工具类
  * @author zhangliang
@@ -22,6 +25,24 @@ public  class ProTypeUtils {
 	 * 当部门预计生产价格计算系数 3=二楼针工
 	 */
 	private final static double  TOW_DEEDLE = 0.00750375;
+	
+	/**
+	 * 一楼质检
+	 * 当外发价格计算系数1
+	 */
+	private final static String  QUALITY_STRING = "剪线头";
+	
+	/**
+	 * 一楼质检
+	 * 当外发价格计算系数2
+	 */
+	private final static double  QUALITY_DOUBLE = 0.00621;
+	
+	/**
+	 * 一楼质检
+	 * 当外发价格计算系数3
+	 */
+	private final static double  QUALITY_DOUBLETOW = 0.08;
 	
 	
 	
@@ -65,6 +86,32 @@ public  class ProTypeUtils {
 				break;
 		case 3://生产部二楼针工
 			sumPrice = price*ProTypeUtils.TOW_DEEDLE;
+			break;
+		default:
+			break;
+		}
+		return sumPrice;
+	}
+	
+	/**
+	 * 根据不同的部门，计算出外发价格
+	 * @param price
+	 * @param type
+	 * @return
+	 */
+	public static Double sumProTypeHairPrice(List<Procedure> procedureList, Integer type) {
+		Double sumPrice = 0.0 ;
+		switch (type) {
+		case 1:// 生产部一楼质检
+			for(Procedure procedure : procedureList){
+				if(procedure.getName().equals(ProTypeUtils.QUALITY_STRING)){
+					sumPrice = procedure.getWorkingTime()*ProTypeUtils.QUALITY_DOUBLE*ProTypeUtils.QUALITY_DOUBLETOW;
+				}
+			}
+			break;
+		case 2://生产部一楼打包
+			break;
+		case 3://生产部二楼针工
 			break;
 		default:
 			break;

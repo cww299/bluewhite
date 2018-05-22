@@ -48,7 +48,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	        	if (param.getId() != null) {
 					predicate.add(cb.equal(root.get("id").as(Long.class),param.getId()));
 				}
-	        	
 	        	//按批次号
 	        	if(param.getBacthNumber()!=null){
 	        		predicate.add(cb.equal(root.get("bacth").get("bacthNumber").as(String.class),param.getBacthNumber()));
@@ -56,6 +55,10 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	        	//按产品名称
 	        	if(!StringUtils.isEmpty(param.getProductName())){
 	        		predicate.add(cb.equal(root.get("productName").as(String.class), "%"+param.getProductName()+"%"));
+	        	}
+	        	//按类型
+	        	if(!StringUtils.isEmpty(param.getType())){
+	        		predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
 	        	}
 	            //按时间过滤
 				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) &&  !StringUtils.isEmpty(param.getOrderTimeEnd()) ) {
