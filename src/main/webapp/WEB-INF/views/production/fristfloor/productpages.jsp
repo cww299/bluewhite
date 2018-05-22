@@ -285,6 +285,8 @@
 					var postData
 					var dicDiv=$('#addbatch');
 					var name=$(this).data('name');
+					var bacthDepartmentPrice=$(this).parent().parent().find('.departmentPrice').text();
+					var bacthHairPrice=$(this).parent().parent().find('.hairPrice').text();
 					$('#proName').val(name);
 					var id=$(this).data('id');
 					_index = layer.open({
@@ -302,6 +304,8 @@
 									  bacthNumber:$('#bacthNumber').val(),
 									  number:$('#prosum').val(),
 									  remarks:$('#remarks').val(),
+									  bacthDepartmentPrice:bacthDepartmentPrice,
+									  bacthHairPrice:bacthHairPrice,
 									  type:1
 							  }
 							   $.ajax({

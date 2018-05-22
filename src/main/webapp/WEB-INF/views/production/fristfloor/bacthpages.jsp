@@ -160,16 +160,17 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			  console.log(result)
-		      			 $(result.data).each(function(i,o){
-		      				/* html +='<tr>'
-		      				+'<td class="text-center edit name">'+o.name+'</td>'
-		      				+'<td class="text-center"><button class="btn btn-primary btn-3d btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d update" data-id='+o.id+'>编辑</button></td></tr>' */
+		      			 $(result.data.rows).each(function(i,o){
+		      				 console.log(result.data.rows)
+		      				 html +='<tr>'
+		      				+'<td class="text-center edit bacthNumber">'+o.bacthNumber+'</td>'
+		      				+'<td class="text-center edit bacthNumber">'+o.bacthNumber+'</td>'
+		      				+'<td class="text-center edit bacthNumber">'+o.product.name+'</td>'
+							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d update" data-id='+o.id+'>编辑</button></td></tr>' 
 							
 		      			}); 
 				        //显示分页
-					   	 /* laypage({
+					   	  laypage({
 					      cont: 'pager', 
 					      pages: result.data.totalPages, 
 					      curr:  result.data.pageNum || 1, 
@@ -180,13 +181,12 @@
 						        			page:obj.curr,
 									  		size:13,
 									  		type:1,
-									  		name:$('#name').val(),
 								  	}
 						        
 						            self.loadPagination(_data);
 							     }
 					      }
-					    });  */ 
+					    });  
 					   	layer.close(index);
 					   	 $("#tablecontent").html(html); 
 					   	self.loadEvents();
