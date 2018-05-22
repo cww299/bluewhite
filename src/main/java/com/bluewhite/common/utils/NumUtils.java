@@ -10,7 +10,7 @@ public class NumUtils {
      * @return
      */
     public static Double round(Double value) {
-        return new BigDecimal(value).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        return new BigDecimal(value).setScale(16, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
 

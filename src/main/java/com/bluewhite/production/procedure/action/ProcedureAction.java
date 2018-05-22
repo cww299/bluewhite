@@ -45,9 +45,6 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 	@ResponseBody
 	public CommonResponse addProcedur(HttpServletRequest request,Procedure procedure) {
 		CommonResponse cr = new CommonResponse();
-		if(procedure.getType()==null){
-			procedure.setType(ProTypeUtils.roleGetProType());
-		}
 		if(procedure.getId()!=null){
 			Procedure oldProcedure = procedureService.findOne(procedure.getId());
 			BeanCopyUtils.copyNullProperties(oldProcedure,procedure);
