@@ -38,9 +38,13 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                        	<th class="text-center">组名</th>
-                                            <th class="text-center">人员信息</th>
-                                            <th class="text-center">操作</th>
+                                        	<th class="text-center">批次号</th>
+                                            <th class="text-center">时间</th>
+                                            <th class="text-center">产品名</th>
+                                            <th class="text-center">数量</th>
+                                            <th class="text-center">预计生产单价</th>
+                                            <th class="text-center">外发价格</th>
+                                            <th class="text-center">备注</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent">
@@ -148,7 +152,7 @@
 			    var index;
 			    var html = '';
 			    $.ajax({
-				      url:"${ctx}/production/getGroup",
+				      url:"${ctx}/Bacth/allBacth",
 				      data:data,
 				      type:"GET",
 				      beforeSend:function(){
@@ -157,15 +161,16 @@
 						  });
 					  }, 
 		      		  success: function (result) {
+		      			  console.log(result)
 		      			 $(result.data).each(function(i,o){
-		      				html +='<tr>'
+		      				/* html +='<tr>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-3d btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d update" data-id='+o.id+'>编辑</button></td></tr>'
+							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d update" data-id='+o.id+'>编辑</button></td></tr>' */
 							
 		      			}); 
 				        //显示分页
-					   	 laypage({
+					   	 /* laypage({
 					      cont: 'pager', 
 					      pages: result.data.totalPages, 
 					      curr:  result.data.pageNum || 1, 
@@ -182,7 +187,7 @@
 						            self.loadPagination(_data);
 							     }
 					      }
-					    });  
+					    });  */ 
 					   	layer.close(index);
 					   	 $("#tablecontent").html(html); 
 					   	self.loadEvents();
