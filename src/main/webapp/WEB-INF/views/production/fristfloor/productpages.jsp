@@ -302,7 +302,7 @@
 									  remarks:$('#remarks').val()
 							  }
 							   $.ajax({
-									url:"${ctx}/Bacth/addBacth",
+									url:"${ctx}/bacth/addBacth",
 									data:postData,
 									type:"POST",
 									beforeSend:function(){

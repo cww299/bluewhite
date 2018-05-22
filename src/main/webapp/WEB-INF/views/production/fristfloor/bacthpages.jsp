@@ -138,7 +138,6 @@
 			 var data={
 						page:1,
 				  		size:13,	
-				  		type:1,
 
 				} 
 			this.init = function(){
@@ -152,7 +151,7 @@
 			    var index;
 			    var html = '';
 			    $.ajax({
-				      url:"${ctx}/Bacth/allBacth",
+				      url:"${ctx}/bacth/allBacth",
 				      data:data,
 				      type:"GET",
 				      beforeSend:function(){
