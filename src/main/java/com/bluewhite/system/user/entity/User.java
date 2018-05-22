@@ -20,6 +20,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.production.group.entity.Group;
+import com.bluewhite.production.task.entity.Task;
 
 /**
  * 员工用户实体
@@ -294,6 +295,22 @@ public class User extends BaseEntity<Long> {
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "sys_user_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 	private Set<Role> roles = new HashSet<Role>();
+	
+	
+	
+	/**
+	 * 任务id  
+	 */
+	@Column(name = "task_id")
+	private Long taskId;
+	
+	/**
+	 * 任务   员工多对一任务
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "task_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Task task;
+	
 
 	/**
 	 * 权限
@@ -325,6 +342,22 @@ public class User extends BaseEntity<Long> {
 	
 	
 	
+	public Long getTaskId() {
+		return taskId;
+	}
+
+	public void setTaskId(Long taskId) {
+		this.taskId = taskId;
+	}
+
+	public Task getTask() {
+		return task;
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
+	}
+
 	public String getUserIds() {
 		return userIds;
 	}

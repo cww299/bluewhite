@@ -1,14 +1,16 @@
 package com.bluewhite.production.bacth.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.criteria.Predicate;
 
-import org.apache.commons.lang3.StringUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
@@ -35,12 +37,19 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 		        	}
 		        	//按产品名称
 		        	if(!StringUtils.isEmpty(param.getName())){
-		        		predicate.add(cb.equal(root.get("product").get("name").as(Long.class), "%"+param.getName()+"%"));
+		        		predicate.add(cb.equal(root.get("product").get("name").as(String.class), "%"+param.getName()+"%"));
 		        	}
 		        	//按产品编号
 		        	if(!StringUtils.isEmpty(param.getProductNumber())){
-		        		predicate.add(cb.equal(root.get("product").get("number").as(Long.class), "%"+param.getProductNumber()+"%"));
+		        		predicate.add(cb.equal(root.get("product").get("number").as(String.class), "%"+param.getProductNumber()+"%"));
 		        	}
+		            //按时间过滤
+					if (!StringUtils.isEmpty(param.getOrderTimeBegin()) &&  !StringUtils.isEmpty(param.getOrderTimeEnd()) ) {
+						predicate.add(cb.between(root.get("createdAt").as(Date.class),
+								param.getOrderTimeBegin(),
+								param.getOrderTimeEnd()));
+					}
+		        	
 					Predicate[] pre = new Predicate[predicate.size()];
 					query.where(predicate.toArray(pre));
 		        	return null;

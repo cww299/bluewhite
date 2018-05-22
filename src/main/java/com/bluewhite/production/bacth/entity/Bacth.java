@@ -1,5 +1,7 @@
 package com.bluewhite.production.bacth.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -70,8 +72,34 @@ public class Bacth extends BaseEntity<Long>{
 	 */
 	@Transient
 	private String productNumber;
+	
+
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
     
 	
+	
+	
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
 	public Product getProduct() {
 		return product;
 	}

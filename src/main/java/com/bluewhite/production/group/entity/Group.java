@@ -3,7 +3,6 @@ package com.bluewhite.production.group.entity;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -35,12 +34,10 @@ public class Group  extends BaseEntity<Long>{
 	 * 分组所属部门类型 (1=一楼质检，2=一楼包装，3=二楼针工)
 	 */
 	private Integer type;
-	
-	
 	/**
 	 * 分组人员
 	 */
-	@OneToMany(mappedBy = "group",cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "group")
 	private Set<User> users = new HashSet<User>();
 	
 	
