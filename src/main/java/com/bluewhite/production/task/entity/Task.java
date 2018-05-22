@@ -99,6 +99,11 @@ public class Task  extends BaseEntity<Long>{
 	private Double BPrice;
 	
 	/**
+	 * 工序所属部门类型 (1=一楼质检，2=一楼包装，3=二楼针工)
+	 */
+	private Integer type;
+	
+	/**
 	 * 查询字段
 	 */
 	@Transient
@@ -118,6 +123,13 @@ public class Task  extends BaseEntity<Long>{
 	
 	
 	
+	
+	public Integer getType() {
+		return type;
+	}
+	public void setType(Integer type) {
+		this.type = type;
+	}
 	public String getBacthNumber() {
 		return bacthNumber;
 	}
