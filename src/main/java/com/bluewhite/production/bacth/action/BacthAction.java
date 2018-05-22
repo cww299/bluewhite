@@ -27,23 +27,20 @@ private static final Log log = Log.getLog(BacthAction.class);
 	@Autowired
 	private BacthService bacthService;
 	
-	@Autowired
-	private UserService userService;
-	
 	private ClearCascadeJSON clearCascadeJSON;
 
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(Bacth.class,"id","name","price","type")
-				.addRetainTerm(Product.class,"id","number","name","departmentPrice");
+				.addRetainTerm(Bacth.class,"id","name","number","remarks","status","bacthHairPrice","bacthNumber","price","type","product")
+				.addRetainTerm(Product.class,"id","number","name","departmentPrice","hairPrice");
 	}
 	
 	/**
 	 * 给产品添加批次（修改）
 	 * 
 	 * 是否完成（0=默认未完成，1=完成，status传参）
-	 * 
+	 *  type (1=一楼质检，2=一楼包装，3=二楼针工)
 	 */
 	@RequestMapping(value = "/bacth/addBacth", method = RequestMethod.POST)
 	@ResponseBody
