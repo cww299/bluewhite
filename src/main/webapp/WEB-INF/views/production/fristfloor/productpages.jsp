@@ -299,7 +299,8 @@
 									  productId:id,
 									  bacthNumber:$('#bacthNumber').val(),
 									  number:$('#prosum').val(),
-									  remarks:$('#remarks').val()
+									  remarks:$('#remarks').val(),
+									  type:1
 							  }
 							   $.ajax({
 									url:"${ctx}/bacth/addBacth",
