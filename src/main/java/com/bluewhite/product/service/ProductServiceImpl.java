@@ -44,13 +44,13 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 				query.where(predicate.toArray(pre));
 	        	return null;
 	        }, page);
-		  	List<Procedure> procedureList = procedureDao.findByProductIdAndType(product.getId(), product.getType());
-		  	if(procedureList!=null && procedureList.size()>0){
-		  		for(Product pro : pages.getContent()){
-		  			pro.setHairPrice(procedureList.get(0).getHairPrice());
-		  			pro.setDepartmentPrice(procedureList.get(0).getDepartmentPrice());
-		  		}
-		  	}
+			  for(Product pro : pages.getContent()){
+				  List<Procedure> procedureList = procedureDao.findByProductIdAndType(pro.getId(), product.getType());
+				  if(procedureList!=null && procedureList.size()>0){
+						  pro.setHairPrice(procedureList.get(0).getHairPrice());
+						  pro.setDepartmentPrice(procedureList.get(0).getDepartmentPrice());
+				  }
+			  }
 	        PageResult<Product> result = new PageResult<>(pages,page);
 	        return result;
 	    }

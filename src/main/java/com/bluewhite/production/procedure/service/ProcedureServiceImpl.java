@@ -33,12 +33,12 @@ public class ProcedureServiceImpl extends BaseServiceImpl<Procedure, Long> imple
 		}
 		Double sumPrice = ProTypeUtils.sumProTypePrice(sumTime, procedure.getType());
 		for(Procedure pro : procedureList){
-			pro.setDepartmentPrice(sumPrice);
+			pro.setDepartmentPrice(NumUtils.round(sumPrice));
 		}
 		//计算外发价格
 		Double price = ProTypeUtils.sumProTypeHairPrice(procedureList,procedure.getType());
 		for(Procedure pro : procedureList){
-			pro.setHairPrice(price);
+			pro.setHairPrice(NumUtils.round(price));
 		}
 		procedureDao.save(procedureList);
 	}
