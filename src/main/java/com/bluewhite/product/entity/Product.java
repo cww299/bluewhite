@@ -170,7 +170,7 @@ public class Product extends BaseEntity<Long>{
     private String btPrice;
 	
     //产品本身外发价格
-	@Column(name = "hair_price")
+	@Transient
     private Double hairPrice;
 	
     //当部门预计生产价格

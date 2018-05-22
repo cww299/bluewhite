@@ -56,13 +56,15 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 			cr.setMessage("工序修改成功");
 		}else{
 			if(procedure.getProductId()!=null){
-				cr.setData(clearCascadeJSON.format(procedureService.save(procedure)).toJSON());;
+				procedure = procedureService.save(procedure);
+				cr.setData(clearCascadeJSON.format(procedure).toJSON());;
 				cr.setMessage("工序添加成功");
 			}else{
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 				cr.setMessage("产品不能为空");
 			}
 		}
+		procedureService.countPrice(procedure);
 		return cr;
 	}
 	
