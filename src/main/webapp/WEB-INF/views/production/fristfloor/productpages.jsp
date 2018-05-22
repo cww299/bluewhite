@@ -63,6 +63,7 @@
                                             <th class="text-center">产品编号</th>
                                             <th class="text-center">产品名</th>
                                             <th class="text-center">生产预计单价</th>
+                                            <th class="text-center">外发价格</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -240,7 +241,8 @@
 		      				+'<td class="text-center id">'+o.id+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
-		      				+'<td class="text-center edit departmentPrice">'+o.departmentPrice+'</td>'
+		      				+'<td class="text-center  departmentPrice">'+o.departmentPrice+'</td>'
+		      				+'<td class="text-center  hairPrice">'+o.hairPrice+'</td>'
 							+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-success btn-3d addprocedure" data-id='+o.id+' data-name='+o.name+'>添加工序</button> <button class="btn btn-xs btn-success btn-3d addbatch" data-id='+o.id+' data-name='+o.name+'>填写批次</button></td></tr>'
 							
 		      			}); 
@@ -606,7 +608,8 @@
 					var del=$(this);
 					var id = $(this).parent().data('id');
 					var rest = $(this).val();
-					
+					console.log(id)
+					if(id!=undefined){
 					$.ajax({
 						url:"${ctx}/production/addProcedure",
 						data:{
@@ -638,6 +641,7 @@
 							layer.close(index);
 						}
 					});
+					}
 				})  
 				//新增工序
 				$('.add').on('click',function(){
