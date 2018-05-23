@@ -63,15 +63,12 @@
 				<div class="space-10"></div>
 				<div style="height: 30px"></div>
 				<form class="form-horizontal addDictDivTypeForm">
-					<div class="form-group">
-					
-						<label class="col-sm-3 control-label no-padding-right" for="code">名称:</label>
-
-						<div class="col-sm-9">
-							<input type="text" id="groupName" class="dictKeyClass " />
-						</div>
-					</div>
-
+				<div class="form-group">
+                                        <label class="col-sm-3 control-label">名称:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="groupName" class="form-control">
+                                        </div>
+                 </div>
 				</form>
 </div>
 </div>

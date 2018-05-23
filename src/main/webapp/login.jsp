@@ -51,7 +51,7 @@
 				  			</div>
 				  			<br>
 				  			<div class="col-md-6 col-sm-7 col-xs-7">
-			                      <input name="password" type="text" class="form-control" id="contact_email" placeholder="密码" required/>
+			                      <input name="password" type="password" class="form-control" id="contact_email" placeholder="密码" required/>
 				  			</div>
 				  			
 							<div class="col-md-5 col-sm-5 col-xs-5">
