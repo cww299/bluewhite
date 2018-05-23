@@ -63,6 +63,7 @@
                                             <th class="text-center">产品编号</th>
                                             <th class="text-center">产品名</th>
                                             <th class="text-center">生产预计单价</th>
+                                            <th class="text-center">外发价格</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -129,16 +130,53 @@
                                         </tr>
                                     </thead>
                                     <tbody id="tableworking">
-                                        
                                     </tbody>
                                 </table>
-                               
                             </div>
 </div>
 <!--隐藏框 产品工序结束  -->
-   
-        
-        
+   <!--隐藏框 批次填写开始  -->
+ <div id="addbatch" style="display: none;">
+			<div class=" col-xs-12  col-sm-12  col-md-12 ">
+				<div class="space-10"></div>
+				<div style="height: 30px"></div>
+				<form class="form-horizontal addbatchForm">
+					<div class="form-group">
+					
+						<label class="col-sm-3 col-md-3 control-label no-padding-right" for="code">产品名称:</label>
+						<div class="col-sm-9 col-md-9 ">
+							<input type="text" id="proName" class="dictKeyClass "  />
+						</div>
+						
+					</div>
+					<div class="form-group">
+					
+						<label class="col-sm-3 col-md-3 control-label no-padding-right" for="code">批次号:</label>
+						<div class="col-sm-9 col-md-9">
+							<input type="text" id="bacthNumber" class="dictKeyClass " />
+						</div>
+						
+					</div>
+					<div class="form-group">
+					
+						<label class="col-sm-3 col-md-3 control-label no-padding-right" for="code">数量:</label>
+						<div class="col-sm-9 col-md-9">
+							<input type="text" id="prosum" class="dictKeyClass " />
+						</div>
+						
+					</div>
+					<div class="form-group">
+					
+						<label class="col-sm-3 col-md-3 control-label no-padding-right" for="code">备注:</label>
+						<div class="col-sm-9 col-md-9">
+							<input type="text" id="remarks" class="dictKeyClass " />
+						</div>
+						
+					</div>
+				</form>
+</div>
+</div>       
+    <!--隐藏框 批次填写结束  -->   
     </section>
     
    
@@ -203,8 +241,9 @@
 		      				+'<td class="text-center id">'+o.id+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
-		      				+'<td class="text-center edit departmentPrice">'+o.departmentPrice+'</td>'
-							+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-success btn-3d addprocedure" data-id='+o.id+' data-name='+o.name+'>添加工序</button></td></tr>'
+		      				+'<td class="text-center  departmentPrice">'+o.departmentPrice+'</td>'
+		      				+'<td class="text-center  hairPrice">'+o.hairPrice+'</td>'
+							+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-success btn-3d addprocedure" data-id='+o.id+' data-name='+o.name+'>添加工序</button> <button class="btn btn-xs btn-success btn-3d addbatch" data-id='+o.id+' data-name='+o.name+'>填写批次</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -239,6 +278,74 @@
 			}
 			
 			this.loadEvents = function(){
+				//触发批次弹框
+				$('.addbatch').on('click',function(){
+					var _index
+					var index
+					var postData
+					var dicDiv=$('#addbatch');
+					var name=$(this).data('name');
+					var bacthDepartmentPrice=$(this).parent().parent().find('.departmentPrice').text();
+					var bacthHairPrice=$(this).parent().parent().find('.hairPrice').text();
+					$('#proName').val(name);
+					var id=$(this).data('id');
+					_index = layer.open({
+						  type: 1,
+						  skin: 'layui-layer-rim', //加上边框
+						  area: ['30%', '50%'], 
+						  btnAlign: 'c',//宽高
+						  maxmin: true,
+						  title:"新增小组",
+						  content: dicDiv,
+						  btn: ['确定', '取消'],
+						  yes:function(index, layero){
+							  postData={
+									  productId:id,
+									  bacthNumber:$('#bacthNumber').val(),
+									  number:$('#prosum').val(),
+									  remarks:$('#remarks').val(),
+									  bacthDepartmentPrice:bacthDepartmentPrice,
+									  bacthHairPrice:bacthHairPrice,
+									  type:1
+							  }
+							   $.ajax({
+									url:"${ctx}/bacth/addBacth",
+									data:postData,
+									type:"POST",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									
+									success:function(result){
+										if(0==result.code){
+											layer.msg("添加成功！", {icon: 1});
+										 
+											$('#addbatch').css("display","none");
+											
+										}else{
+											layer.msg("添加失败", {icon: 2});
+										}
+										
+										layer.close(index);
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								}); 
+							},
+						  end:function(){
+							  $('#addbatch').css("display","none");
+						
+							  $('.addbatchForm')[0].reset(); 
+							
+						  }
+					});
+				})
+				
+				
+				
 				//触发工序弹框 加载内容方法
 				$('.addprocedure').on('click',function(){
 					var _index
@@ -505,7 +612,8 @@
 					var del=$(this);
 					var id = $(this).parent().data('id');
 					var rest = $(this).val();
-					
+					console.log(id)
+					if(id!=undefined){
 					$.ajax({
 						url:"${ctx}/production/addProcedure",
 						data:{
@@ -537,6 +645,7 @@
 							layer.close(index);
 						}
 					});
+					}
 				})  
 				//新增工序
 				$('.add').on('click',function(){
