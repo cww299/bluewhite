@@ -119,7 +119,27 @@ public  class ProTypeUtils {
 		return sumPrice;
 	}
 	
-	
+	/**
+	 * 根据不同的部门，计算预计完成时间
+	 * @param price
+	 * @param type
+	 * @return
+	 */
+	public static Double sumExpectTime(Procedure procedure, Integer type) {
+		Double sumExpectTime = 0.0 ;
+		switch (type) {
+		case 1:// 生产部一楼质检
+		
+			break;
+		case 2://生产部一楼打包
+			break;
+		case 3://生产部二楼针工
+			break;
+		default:
+			break;
+		}
+		return sumExpectTime;
+	}
 	
 	
 

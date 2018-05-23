@@ -14,5 +14,11 @@ public interface GroupService extends BaseCRUDService<Group,Long>{
 	 * @return
 	 */
 	List<Group> findByType(Integer type);
+	/**
+	 * 
+	 * @param group
+	 * @return
+	 */
+	List<Group> findList(Group group);
 
 }
