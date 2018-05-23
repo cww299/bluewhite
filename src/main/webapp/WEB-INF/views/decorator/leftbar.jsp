@@ -209,11 +209,7 @@
                         <i class="icon-user"></i>
                     </button>
                 </li>
-                <li class="hidden-xs hidden-sm">
-                    <input type="text" class="search" placeholder="Search project...">
-                    <button type="submit" class="btn btn-sm btn-search"><i class="fa fa-search"></i>
-                    </button>
-                </li>
+                
             </ul>
             
             <ul class="nav navbar-nav navbar-right">
@@ -255,46 +251,12 @@
                     <i class="on border-dark animated bounceIn"></i>
                 </div>
                 <div class="profile-body dropdown">
-                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><h4>Mike Adams <span class="caret"></span></h4></a>
+                    <a href="javascript:void(0);"  aria-expanded="false"><h4><shiro:principal/></h4></a>
                     <small class="title">Front-end Developer</small>
-                    <ul class="dropdown-menu animated fadeInRight" role="menu">
-                        <li class="profile-progress">
-                            <h5>
-                                <span>80%</span>
-                                <small>Profile complete</small>
-                            </h5>
-                            <div class="progress progress-xs">
-                                <div class="progress-bar progress-bar-primary" style="width: 80%">
-                                </div>
-                            </div>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="javascript:void(0);">
-                                <span class="icon"><i class="fa fa-user"></i>
-                                </span>My Account</a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0);">
-                                <span class="icon"><i class="fa fa-envelope"></i>
-                                </span>Messages</a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0);">
-                                <span class="icon"><i class="fa fa-cog"></i>
-                                </span>Settings</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="javascript:void(0);">
-                                <span class="icon"><i class="fa fa-sign-out"></i>
-                                </span>Logout</a>
-                        </li>
-                    </ul>
                 </div>
             </div>
             <nav>
-                <h5 class="sidebar-header">Navigation</h5>
+               
                 <ul class="nav nav-pills nav-stacked " id="informatic">
                 </ul>
             </nav> 
@@ -303,19 +265,164 @@
         </aside>
         
         <!--sidebar left end-->
+        
         <section class="main-content-wrapper">
-            <div class="pageheader">
-                <h1>Data Tables</h1>
-                <div class="breadcrumb-wrapper hidden-xs">
-                    <span class="label">你在这里:</span>
-                    <ol class="breadcrumb">
-                        <li><a href="${ctx }/index">首页</a>
-                        </li>
-                        <!-- <li>Tables</li>
-                        <li class="active">Data Tables</li> -->
-                    </ol>
+          <!--sidebar right start-->
+    <aside id="sidebar-right">
+        <h4 class="sidebar-title">contact List</h4>
+        <div id="contact-list-wrapper">
+            <div class="heading">
+                <ul>
+                    <li class="new-contact"><a href="javascript:void(0)"><i class="fa fa-plus"></i></a>
+                    </li>
+                    <li>
+                        <input type="text" class="search" placeholder="Search">
+                        <button type="submit" class="btn btn-sm btn-search"><i class="fa fa-search"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <div id="contact-list">
+                <ul>
+                    <li>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <span class="avatar">
+                        <img src="${ctx }/static/images/avatar3.png" class="img-circle" alt="">
+                          <i class="on animated bounceIn"></i>
+                        </span>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="name">Ashley Bell </div>
+                                <small class="location text-muted"><i class="icon-pointer"></i> Sarasota, FL</small>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <span class="avatar">
+                        <img src="${ctx }/static/images/avatar1.png" class="img-circle" alt="">
+                          <i class="on animated bounceIn"></i>
+                        </span>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="name">Brian Johnson </div>
+                                <small class="location text-muted"><i class="icon-pointer"></i> San Francisco, CA</small>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <span class="avatar">
+                        <img src="${ctx }/static/images/avatar2.png" class="img-circle" alt="">
+                          <i class="on animated bounceIn"></i>
+                        </span>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="name">Chris Jones </div>
+                                <small class="location text-muted"><i class="icon-pointer"></i> Brooklyn, NY</small>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <span class="avatar">
+                        <img src="${ctx }/static/images/avatar4.jpg" class="img-circle" alt="">
+                          <i class="on animated bounceIn"></i>
+                        </span>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="name">Erica Hill </div>
+                                <small class="location text-muted"><i class="icon-pointer"></i> Palo Alto, Ca</small>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <span class="avatar">
+                        <img src="${ctx }/static/images/avatar5.png" class="img-circle" alt="">
+                          <i class="away animated bounceIn"></i>
+                        </span>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="name">Greg Smith </div>
+                                <small class="location text-muted"><i class="icon-pointer"></i> London, UK</small>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <span class="avatar">
+                        <img src="${ctx }/static/images/avatar6.png" class="img-circle" alt="">
+                          <i class="on animated bounceIn"></i>
+                        </span>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="name">Jason Kendall</div>
+                                <small class="location text-muted"><i class="icon-pointer"></i> New York, NY </small>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <span class="avatar">
+                        <img src="${ctx }/static/images/avatar7.png" class="img-circle" alt="">
+                          <i class="on animated bounceIn"></i>
+                        </span>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="name">Kristen Davis </div>
+                                <small class="location text-muted"><i class="icon-pointer"></i> Greenville, SC</small>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <span class="avatar">
+                        <img src="${ctx }/static/images/avatar8.png" class="img-circle off" alt="">
+                          <i class="off animated bounceIn"></i>
+                        </span>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="name">Michael Shepard </div>
+                                <small class="location text-muted"><i class="icon-pointer"></i> Vancouver, BC</small>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <span class="avatar">
+                        <img src="${ctx }/static/images/avatar9.png" class="img-circle off" alt="">
+                          <i class="off animated bounceIn"></i>
+                        </span>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="name">Paul Allen</div>
+                                <small class="location text-muted"><i class="icon-pointer"></i> Savannah, GA</small>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div id="contact-user">
+                <div class="chat-user active"><span><i class="icon-bubble"></i></span>
+                </div>
+                <div class="email-user"><span><i class="icon-envelope-open"></i></span>
+                </div>
+                <div class="call-user"><span><i class="icon-call-out"></i></span>
                 </div>
             </div>
+        </div>
+    </aside>
+    <!--/sidebar right end-->
         
 </body>
         
