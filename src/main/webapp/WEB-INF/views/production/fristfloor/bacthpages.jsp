@@ -62,7 +62,7 @@
                 </div>
             </section>
         </section>
-        <!--隐藏框 产品新增开始  -->
+        <!--隐藏框 工序分配开始  -->
         <div id="addDictDivType" style="display: none;">
 			<div class=" col-xs-12  col-sm-12  col-md-12 ">
 				<div class="space-10"></div>
@@ -70,28 +70,35 @@
 				<form class="form-horizontal addDictDivTypeForm">
 					<div class="row col-xs-12  col-sm-12  col-md-12 ">
 
-					<div class="form-group col-md-6">
-						<label class="col-sm-3  control-label no-padding-right"
-							for="description">数量:</label>
-
-						<div >
-							<input type="text" id="taskNumberTo" class="col-md-3 col-sm-3"/>
-						</div>
-					</div>
-					<div class="form-group col-md-6">
-						<label class="col-sm-3  control-label no-padding-right"
-							for="description">实际完成人数:</label>
-
-						<div >
-							<input type="text" id="people" class="col-md-3 col-sm-3"/>
-						</div>
-					</div>
+						<div class="form-group">
+                           <label class="col-sm-3 col-md-2 control-label">数量</label>
+                              <div class="col-sm-2 col-md-2">
+                                  <input type="text" class="form-control">
+                              </div>
+                               <div class="col-sm-2 col-md-1"></div>
+                            <label class="col-sm-3 col-md-2 control-label">实际完成人数</label>
+                                <div class="col-sm-2 col-md-2">
+                                  <input type="text" class="form-control">
+                                </div>
+                    	</div>
+                    	
+                    	<div class="form-group">
+                           <label class="col-sm-2 control-label">选择工序</label>
+                              <div class="col-sm-2 working">
+                              </div>
+                              <div class="col-sm-2 checkworking">222</div>
+                            <label class="col-sm-1 control-label">完成人</label>
+                                <div class="col-sm-2 complete">
+                                  <input type="text" class="form-control">
+                                </div>
+                                 <div class="col-sm-2 select">1</div>
+                    	</div>
 				</div>
 
 				</form>
 </div>
 </div>
-
+<!--隐藏框 工序分配结束  -->
     </section>
     
    
@@ -155,7 +162,7 @@
 		      				+'<td class="text-center edit bacthDepartmentPrice">'+o.bacthDepartmentPrice+'</td>'
 		      				+'<td class="text-center edit bacthHairPrice">'+o.bacthHairPrice+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d addDict" data-id='+o.id+'>分配</button> <button class="btn btn-sm btn-primary btn-3d update" data-id='+o.id+'>编辑</button></td></tr>' 
+							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d addDict" data-id='+o.id+' data-proid='+o.product.id+'>分配</button> <button class="btn btn-sm btn-primary btn-3d update" data-id='+o.id+'>编辑</button></td></tr>' 
 							
 		      			}); 
 				        //显示分页
@@ -242,9 +249,81 @@
 				
 				//人员详细显示方法
 				$('.addDict').on('click',function(){
-					
+					var productId=$(this).data('proid')
 					var _index
 					var index
+					var postData
+					//工序遍历  
+				    var indextwo;
+				    var htmltwo = '';
+				    var htmlth = '';
+				    var htmlfr = '';
+				 
+				    //遍历工序类型
+				    var getdata={type:"productFristQuality",}
+	      			$.ajax({
+					      url:"${ctx}/basedata/list",
+					      data:getdata,
+					      type:"GET",
+			      		  success: function (result) {
+			      			  $(result.data).each(function(k,j){
+			      				htmlfr +='<option value="'+j.id+'">'+j.name+'</option>'
+			      			  });  
+			      			$('.working').html("<select class='form-control selectchang'><option>请选择</option>"+htmlfr+"</select>")
+							//改变事件
+			      			$(".selectchang").change(function(){
+			      				
+								   var data={
+										   
+								   }
+							 })
+					      }
+					  });
+					var data={
+							type:1
+					}
+					//遍历组别
+				    $.ajax({
+					      url:"${ctx}/production/getGroup",
+					      data:data,
+					      type:"GET",
+			      		  success: function (result) {
+			      			  $(result.data).each(function(k,j){
+			      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
+			      			  });  
+			      			 $('.complete').html("<select class='form-control selectcomplete'><option>请选择</option>"+htmlth+"</select>") 
+							//改变事件
+			      			 $(".selectcomplete").change(function(){
+			      				var	id=$(this).val()
+								   var data={
+										  id:id
+								   }
+			      				$.ajax({
+									url:"${ctx}/production/getGroupOne",
+									data:data,
+									type:"GET",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									
+									success:function(result){
+										console.log(result)
+										$(result.data.users).each(function(i,o){
+											htmltwo +=o.userName
+										})
+										layer.close(index);
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								});
+							 }) 
+					      }
+					  });
+				    
+				    
 					var postData
 					var dicDiv=$('#addDictDivType');
 					_index = layer.open({
@@ -301,6 +380,12 @@
 					
 				})
 				
+				
+			}
+			
+			this.loadworking=function(){
+					
+				  
 				
 			}
 			this.events = function(){
