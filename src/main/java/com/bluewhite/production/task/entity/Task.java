@@ -36,7 +36,7 @@ public class Task  extends BaseEntity<Long>{
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "bacth_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Bacth Bacth;
+	private Bacth bacth;
 	
 	
 	/**
@@ -56,6 +56,13 @@ public class Task  extends BaseEntity<Long>{
 	 */
 	@Column(name = "product_name")
 	private String productName;
+	
+	/**
+	 * 工序id
+	 */
+	@Column(name = "procedure_id")
+	private Long procedureId;
+	
 	
 	/**
 	 * 工序名称
@@ -87,7 +94,7 @@ public class Task  extends BaseEntity<Long>{
 	@Column(name = "task_time")
     private Double taskTime;
 	/**
-	 * 任务价值
+	 * 任务价值(预计成本费用)
 	 */
 	@Column(name = "task_price")
 	private Double taskPrice;
@@ -114,46 +121,22 @@ public class Task  extends BaseEntity<Long>{
 	 */
 	@Transient
 	private Date orderTimeEnd;
-    
-	
 	/**
 	 * 查询字段 批次号
 	 */
 	@Transient
 	private String bacthNumber;
-	
-	
-	
-	
-	public Integer getType() {
-		return type;
+	public Long getBacthId() {
+		return bacthId;
 	}
-	public void setType(Integer type) {
-		this.type = type;
+	public void setBacthId(Long bacthId) {
+		this.bacthId = bacthId;
 	}
-	public String getBacthNumber() {
-		return bacthNumber;
+	public Bacth getBacth() {
+		return bacth;
 	}
-	public void setBacthNumber(String bacthNumber) {
-		this.bacthNumber = bacthNumber;
-	}
-	public String getProductName() {
-		return productName;
-	}
-	public void setProductName(String productName) {
-		this.productName = productName;
-	}
-	public Date getOrderTimeBegin() {
-		return orderTimeBegin;
-	}
-	public void setOrderTimeBegin(Date orderTimeBegin) {
-		this.orderTimeBegin = orderTimeBegin;
-	}
-	public Date getOrderTimeEnd() {
-		return orderTimeEnd;
-	}
-	public void setOrderTimeEnd(Date orderTimeEnd) {
-		this.orderTimeEnd = orderTimeEnd;
+	public void setBacth(Bacth bacth) {
+		this.bacth = bacth;
 	}
 	public String getUserIds() {
 		return userIds;
@@ -167,35 +150,23 @@ public class Task  extends BaseEntity<Long>{
 	public void setUsers(Set<User> users) {
 		this.users = users;
 	}
+	public String getProductName() {
+		return productName;
+	}
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+	public Long getProcedureId() {
+		return procedureId;
+	}
+	public void setProcedureId(Long procedureId) {
+		this.procedureId = procedureId;
+	}
 	public String getProcedureName() {
 		return procedureName;
 	}
 	public void setProcedureName(String procedureName) {
 		this.procedureName = procedureName;
-	}
-	public Double getTaskPrice() {
-		return taskPrice;
-	}
-	public void setTaskPrice(Double taskPrice) {
-		this.taskPrice = taskPrice;
-	}
-	public Double getBPrice() {
-		return BPrice;
-	}
-	public void setBPrice(Double bPrice) {
-		BPrice = bPrice;
-	}
-	public Long getBacthId() {
-		return bacthId;
-	}
-	public void setBacthId(Long bacthId) {
-		this.bacthId = bacthId;
-	}
-	public Bacth getBacth() {
-		return Bacth;
-	}
-	public void setBacth(Bacth bacth) {
-		Bacth = bacth;
 	}
 	public Integer getNumber() {
 		return number;
@@ -221,6 +192,48 @@ public class Task  extends BaseEntity<Long>{
 	public void setTaskTime(Double taskTime) {
 		this.taskTime = taskTime;
 	}
+	public Double getTaskPrice() {
+		return taskPrice;
+	}
+	public void setTaskPrice(Double taskPrice) {
+		this.taskPrice = taskPrice;
+	}
+	public Double getBPrice() {
+		return BPrice;
+	}
+	public void setBPrice(Double bPrice) {
+		BPrice = bPrice;
+	}
+	public Integer getType() {
+		return type;
+	}
+	public void setType(Integer type) {
+		this.type = type;
+	}
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
+	public String getBacthNumber() {
+		return bacthNumber;
+	}
+	public void setBacthNumber(String bacthNumber) {
+		this.bacthNumber = bacthNumber;
+	}
+	
+	
+	
+	
+	
+
     
     
     

@@ -71,6 +71,8 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				query.where(predicate.toArray(pre));
 	        	return null;
 	        }, page);
+		 
+		 
 	        PageResult<Task> result = new PageResult<>(pages,page);
 	        return result;
 	}

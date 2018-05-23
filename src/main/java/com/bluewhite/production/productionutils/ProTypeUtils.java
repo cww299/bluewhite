@@ -49,7 +49,7 @@ public  class ProTypeUtils {
 	/**
 	 * 根据不同权限返回工序的不同类型
 	 * 1=一楼质检，2=一楼包装，3=二楼针工
-	 * @return
+	 * @return 
 	 */
 	public static Integer roleGetProType(){
 		CurrentUser cu = SessionManager.getUserSession();
@@ -118,6 +118,9 @@ public  class ProTypeUtils {
 		}
 		return sumPrice;
 	}
+	
+	
+	
 	
 
 }

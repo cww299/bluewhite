@@ -6,6 +6,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
@@ -75,8 +76,37 @@ public class Procedure extends BaseEntity<Long> {
 	@Column(name = "type")
 	private Integer type;
 	
+	/**
+	 * 批次id（用于确定总数量，和任务）
+	 */
+	@Transient
+	private Long bacthId;
+	
+	/**
+	 * 剩余数量
+	 */
+	@Transient
+	private Integer residualNumber;
 	
 	
+	
+
+
+	public Long getBacthId() {
+		return bacthId;
+	}
+
+	public void setBacthId(Long bacthId) {
+		this.bacthId = bacthId;
+	}
+
+	public Integer getResidualNumber() {
+		return residualNumber;
+	}
+
+	public void setResidualNumber(Integer residualNumber) {
+		this.residualNumber = residualNumber;
+	}
 
 	public Double getHairPrice() {
 		return hairPrice;

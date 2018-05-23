@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
+import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.production.procedure.entity.Procedure;
 
 @Service
@@ -22,6 +23,20 @@ public interface ProcedureService extends BaseCRUDService<Procedure,Long>{
 	 * @param type
 	 */
 	void countPrice(Procedure procedure);
+	/**
+	 * 根据产品和工序类型查询工序具体
+	 * @param productId
+	 * @param procedureTypeId
+	 * @param type
+	 * @return
+	 */
+	List<Procedure> findByProductIdAndProcedureTypeIdAndType(Long productId, Long procedureTypeId, Integer type);
+	/**
+	 * 按条件查询工序
+	 * @param procedure
+	 * @return
+	 */
+	List<Procedure> findList(Procedure procedure);
 
 
 }

@@ -29,7 +29,7 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 
 	{
 		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(Procedure.class,
-				"id","name", "workingTime","productId","isDel","procedureType")
+				"id","name", "workingTime","productId","isDel","procedureType","residualNumber")
 				.addRetainTerm(BaseData.class,"id", "name", "remark");
 	}
 	
@@ -78,6 +78,27 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 		CommonResponse cr = new CommonResponse();
 		if(procedure.getProductId()!=null){
 			cr.setData(clearCascadeJSON.format(procedureService.findByProductIdAndType(procedure.getProductId(),procedure.getType())).toJSON());
+			cr.setMessage("工序添加成功");
+		}else{
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("产品不能为空");
+		}
+		return cr;
+	}
+	
+	
+	/**
+	 * 根据产品和工序类型查询工序具体
+	 * @param request
+	 * @param procedure
+	 * @return
+	 */
+	@RequestMapping(value = "/production/typeToProcedure", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse typeToProcedure(HttpServletRequest request,Procedure procedure) {
+		CommonResponse cr = new CommonResponse();
+		if(procedure.getProductId()!=null){
+			cr.setData(clearCascadeJSON.format(procedureService.findList(procedure)).toJSON());
 			cr.setMessage("工序添加成功");
 		}else{
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
