@@ -1,17 +1,21 @@
 package com.bluewhite.production.bacth.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.product.entity.Product;
+import com.bluewhite.production.task.entity.Task;
 
 /**
  * 产品批次实体
@@ -56,6 +60,13 @@ public class Bacth extends BaseEntity<Long>{
     private Integer status = 0;
 	
 	/**
+	 * 任务
+	 */
+	@OneToMany(mappedBy = "bacth")
+	private Set<Task> tasks = new HashSet<Task>();
+	
+	
+	/**
 	 * 工序所属部门类型 (1=一楼质检，2=一楼包装，3=二楼针工)
 	 */
 	@Column(name = "type")
@@ -72,6 +83,14 @@ public class Bacth extends BaseEntity<Long>{
      */
 	@Column(name = "bacth_department_price")
     private Double bacthDepartmentPrice;
+	
+	
+	/**
+	 * 地区差价
+	 */
+	@Column(name = "regional_price")
+    private Double regionalPrice;
+	
 	
 	/**
 	 * 产品名称
@@ -96,64 +115,17 @@ public class Bacth extends BaseEntity<Long>{
 	 */
 	@Transient
 	private Date orderTimeEnd;
-    
-	
-	
-	
-	
-	public Double getBacthDepartmentPrice() {
-		return bacthDepartmentPrice;
+	public Long getProductId() {
+		return productId;
 	}
-	public void setBacthDepartmentPrice(Double bacthDepartmentPrice) {
-		this.bacthDepartmentPrice = bacthDepartmentPrice;
-	}
-	public Integer getType() {
-		return type;
-	}
-	public void setType(Integer type) {
-		this.type = type;
-	}
-	public Date getOrderTimeBegin() {
-		return orderTimeBegin;
-	}
-	public void setOrderTimeBegin(Date orderTimeBegin) {
-		this.orderTimeBegin = orderTimeBegin;
-	}
-	public Date getOrderTimeEnd() {
-		return orderTimeEnd;
-	}
-	public void setOrderTimeEnd(Date orderTimeEnd) {
-		this.orderTimeEnd = orderTimeEnd;
+	public void setProductId(Long productId) {
+		this.productId = productId;
 	}
 	public Product getProduct() {
 		return product;
 	}
 	public void setProduct(Product product) {
 		this.product = product;
-	}
-	public Double getBacthHairPrice() {
-		return bacthHairPrice;
-	}
-	public void setBacthHairPrice(Double bacthHairPrice) {
-		this.bacthHairPrice = bacthHairPrice;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getProductNumber() {
-		return productNumber;
-	}
-	public void setProductNumber(String productNumber) {
-		this.productNumber = productNumber;
-	}
-	public Long getProductId() {
-		return productId;
-	}
-	public void setProductId(Long productId) {
-		this.productId = productId;
 	}
 	public String getBacthNumber() {
 		return bacthNumber;
@@ -179,5 +151,66 @@ public class Bacth extends BaseEntity<Long>{
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
+	public Set<Task> getTasks() {
+		return tasks;
+	}
+	public void setTasks(Set<Task> tasks) {
+		this.tasks = tasks;
+	}
+	public Integer getType() {
+		return type;
+	}
+	public void setType(Integer type) {
+		this.type = type;
+	}
+	public Double getBacthHairPrice() {
+		return bacthHairPrice;
+	}
+	public void setBacthHairPrice(Double bacthHairPrice) {
+		this.bacthHairPrice = bacthHairPrice;
+	}
+	public Double getBacthDepartmentPrice() {
+		return bacthDepartmentPrice;
+	}
+	public void setBacthDepartmentPrice(Double bacthDepartmentPrice) {
+		this.bacthDepartmentPrice = bacthDepartmentPrice;
+	}
+	public Double getRegionalPrice() {
+		return regionalPrice;
+	}
+	public void setRegionalPrice(Double regionalPrice) {
+		this.regionalPrice = regionalPrice;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getProductNumber() {
+		return productNumber;
+	}
+	public void setProductNumber(String productNumber) {
+		this.productNumber = productNumber;
+	}
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
+    
+	
+	
+	
+	
 
+	
+	
 }
