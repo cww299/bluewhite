@@ -14,6 +14,12 @@ import com.bluewhite.production.procedure.entity.Procedure;
 public  class ProTypeUtils {
 	
 	/**
+	 * 时间常量
+	 */
+	private final static Integer  TIME = 60;
+	
+	
+	/**
 	 * 当部门预计生产价格计算系数 1=一楼质检
 	 */
 	private final static double  FRIST_QUALITY = 0.00750375;
@@ -125,11 +131,11 @@ public  class ProTypeUtils {
 	 * @param type
 	 * @return
 	 */
-	public static Double sumExpectTime(Procedure procedure, Integer type) {
+	public static Double sumExpectTime(Procedure procedure, Integer type,Integer number) {
 		Double sumExpectTime = 0.0 ;
 		switch (type) {
 		case 1:// 生产部一楼质检
-		
+			sumExpectTime = procedure.getWorkingTime()*number*ProTypeUtils.TIME;
 			break;
 		case 2://生产部一楼打包
 			break;

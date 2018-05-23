@@ -40,22 +40,23 @@ public class Task  extends BaseEntity<Long>{
 	
 	
 	/**
-	 * 领取任务人员ids
+	 * 领取任务人员ids(任务和员工多对多关系)
 	 */
-	@Transient
-	private String userIds;
+	@Column(name = "userIds")
+	private  String[] userIds;
 	
-	/**
-	 * 领取任务人员
-	 */
-	@OneToMany(mappedBy = "task")
-	private Set<User> users = new HashSet<User>();
 	
 	/**
 	 * 产品名称
 	 */
 	@Column(name = "product_name")
 	private String productName;
+	
+	/**
+	 * 工序ids
+	 */
+	@Transient
+	private  String[] procedureIds;
 	
 	/**
 	 * 工序id
@@ -126,6 +127,16 @@ public class Task  extends BaseEntity<Long>{
 	 */
 	@Transient
 	private String bacthNumber;
+	
+	
+	
+	
+	public String[] getProcedureIds() {
+		return procedureIds;
+	}
+	public void setProcedureIds(String[] procedureIds) {
+		this.procedureIds = procedureIds;
+	}
 	public Long getBacthId() {
 		return bacthId;
 	}
@@ -138,18 +149,14 @@ public class Task  extends BaseEntity<Long>{
 	public void setBacth(Bacth bacth) {
 		this.bacth = bacth;
 	}
-	public String getUserIds() {
+
+	public String[] getUserIds() {
 		return userIds;
 	}
-	public void setUserIds(String userIds) {
+	public void setUserIds(String[] userIds) {
 		this.userIds = userIds;
 	}
-	public Set<User> getUsers() {
-		return users;
-	}
-	public void setUsers(Set<User> users) {
-		this.users = users;
-	}
+
 	public String getProductName() {
 		return productName;
 	}
