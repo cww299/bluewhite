@@ -93,6 +93,13 @@ public class Bacth extends BaseEntity<Long>{
 	
 	
 	/**
+	 * 总任务价值(预计成本费用)
+	 */
+	@Column(name = "sum_task_price")
+	private Double sumTaskPrice;
+	
+	
+	/**
 	 * 产品名称
 	 */
 	@Transient
@@ -115,6 +122,15 @@ public class Bacth extends BaseEntity<Long>{
 	 */
 	@Transient
 	private Date orderTimeEnd;
+	
+	
+	
+	public Double getSumTaskPrice() {
+		return sumTaskPrice;
+	}
+	public void setSumTaskPrice(Double sumTaskPrice) {
+		this.sumTaskPrice = sumTaskPrice;
+	}
 	public Long getProductId() {
 		return productId;
 	}

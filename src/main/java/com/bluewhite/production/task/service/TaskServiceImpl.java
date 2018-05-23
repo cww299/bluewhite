@@ -9,11 +9,14 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.production.bacth.dao.BacthDao;
+import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.productionutils.ProTypeUtils;
@@ -30,19 +33,32 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	private UserDao userDao;
 	@Autowired
 	private ProcedureDao procedureDao;
+	@Autowired
+	private BacthDao bacthDao;
+	
+	
+	
 	
 	@Override
+	@Transactional
 	public Task addTask(Task task) {
-		//将工序分成多个任务
+		//将用户变成string类型储存
+		if (!StringUtils.isEmpty(task.getUserIds())) {
+			String[] idArr = task.getUserIds().split(",");
+			task.setUsersIds(idArr);
+		}
+		Double sumTaskPrice = 0.0;
+		//将工序ids分成多个任务
 		if(task.getProcedureIds().length>0){
 			for (int i = 0; i < task.getProcedureIds().length; i++) {
 				Long id = Long.parseLong(task.getProcedureIds()[i]);
 				task.setProcedureId(id);
+				task.setProcedureName(procedureDao.findOne(id).getName());
 				Task newTask = dao.save(task);
 				///员工和任务形成多对多关系
-				if (task.getUserIds().length>0) {
-					for (int j = 0; j < task.getUserIds().length; j++) {
-						Long userid = Long.parseLong(task.getUserIds()[j]);
+				if (task.getUsersIds().length>0) {
+					for (int j = 0; j < task.getUsersIds().length; j++) {
+						Long userid = Long.parseLong(task.getUsersIds()[j]);
 						User user = userDao.findOne(userid);
 						user.setTaskIds(user.getTaskIds()+","+String.valueOf(newTask.getId()));
 						userDao.save(user);
@@ -52,14 +68,20 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				Procedure procedure = procedureDao.findOne(newTask.getProcedureId());
 				newTask.setExpectTime(ProTypeUtils.sumExpectTime(procedure,procedure.getType(),newTask.getNumber()));
 				//任务价值
+				newTask.setTaskPrice(ProTypeUtils.sumTaskPrice(newTask.getTaskTime(), procedure.getType()));
+				//B工资净值
+				newTask.setBPrice(ProTypeUtils.sumBPrice(newTask.getTaskPrice(),  procedure.getType()));
 				dao.save(newTask);
 			}
 		}
-		
-		
-		
-		
-
+		//查出该批次的所有任务
+		Bacth bacth = bacthDao.findOne(task.getBacthId());
+		//计算出该批次下所有人的预计成本总和
+		for(Task ta : bacth.getTasks()){
+			sumTaskPrice+=ta.getTaskPrice();
+		};
+		bacth.setSumTaskPrice(sumTaskPrice);
+		bacthDao.save(bacth);
 		return task;
 	}
 	
