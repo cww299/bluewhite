@@ -2,10 +2,13 @@ package com.bluewhite.production.productionutils;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.production.procedure.entity.Procedure;
+import com.bluewhite.production.productionutils.constant.dao.ProductionConstantDao;
 /**
  * 生产控制计算工具类
  * @author zhangliang
@@ -13,10 +16,18 @@ import com.bluewhite.production.procedure.entity.Procedure;
  */
 public  class ProTypeUtils {
 	
+	@Autowired
+	private static  ProductionConstantDao dao;
+	
 	/**
 	 * 时间常量
 	 */
 	private final static Integer  TIME = 60;
+	
+	/**
+	 * excel常量
+	 */
+	private final static double  EXCELONE = 1.08;
 	
 	
 	/**
@@ -49,6 +60,19 @@ public  class ProTypeUtils {
 	 * 当外发价格计算系数3
 	 */
 	private final static double  QUALITY_DOUBLETOW = 0.08;
+	
+	
+	/**
+	 * 一楼质检
+	 * 放快手包装工秒支出(AC8)
+	 */
+	private static Double getAC8(){
+		return (dao.findByExcelNameAndType("AC5" , 1).getNumber()*ProTypeUtils.EXCELONE
+				*dao.findByExcelNameAndType("AC3" , 1).getNumber()
+				*dao.findByExcelNameAndType("AC7" , 1).getNumber())/ProTypeUtils.TIME/ProTypeUtils.TIME;
+	}
+	
+	
 	
 	
 	
@@ -135,7 +159,7 @@ public  class ProTypeUtils {
 		Double sumExpectTime = 0.0 ;
 		switch (type) {
 		case 1:// 生产部一楼质检
-			sumExpectTime = procedure.getWorkingTime()*number*ProTypeUtils.TIME;
+			sumExpectTime = procedure.getWorkingTime()*number/ProTypeUtils.TIME;
 			break;
 		case 2://生产部一楼打包
 			break;
@@ -147,6 +171,51 @@ public  class ProTypeUtils {
 		return sumExpectTime;
 	}
 	
+	
+	/**
+	 * 根据不同的部门，计算预计任务价值
+	 * @param price
+	 * @param type
+	 * @return
+	 */
+	public static Double sumTaskPrice(Double taskTime, Integer type) {
+		Double sumTaskPrice = 0.0 ;
+		switch (type) {
+		case 1:// 生产部一楼质检
+			sumTaskPrice =taskTime*ProTypeUtils.getAC8()*ProTypeUtils.TIME;
+			break;
+		case 2://生产部一楼打包
+			break;
+		case 3://生产部二楼针工
+			break;
+		default:
+			break;
+		}
+		return sumTaskPrice;
+	}
+	
+	
+	/**
+	 * 根据不同的部门，计算b工资净值
+	 * @param price
+	 * @param type
+	 * @return
+	 */
+	public static Double sumBPrice(Double BPrice, Integer type) {
+		Double sumBPrice = 0.0 ;
+		switch (type) {
+		case 1:// 生产部一楼质检
+			sumBPrice =BPrice*dao.findByExcelNameAndType("AC7" , 1).getNumber();
+			break;
+		case 2://生产部一楼打包
+			break;
+		case 3://生产部二楼针工
+			break;
+		default:
+			break;
+		}
+		return sumBPrice;
+	}
 	
 
 }

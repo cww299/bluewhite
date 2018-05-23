@@ -43,7 +43,7 @@ public class Task  extends BaseEntity<Long>{
 	 * 领取任务人员ids(任务和员工多对多关系)
 	 */
 	@Column(name = "userIds")
-	private  String[] userIds;
+	private  String userIds;
 	
 	
 	/**
@@ -51,6 +51,13 @@ public class Task  extends BaseEntity<Long>{
 	 */
 	@Column(name = "product_name")
 	private String productName;
+	
+	
+	/**
+	 * 领取任务人员ids
+	 */
+	@Transient
+	private  String[] usersIds;
 	
 	/**
 	 * 工序ids
@@ -150,13 +157,18 @@ public class Task  extends BaseEntity<Long>{
 		this.bacth = bacth;
 	}
 
-	public String[] getUserIds() {
+	public String getUserIds() {
 		return userIds;
 	}
-	public void setUserIds(String[] userIds) {
+	public void setUserIds(String userIds) {
 		this.userIds = userIds;
 	}
-
+	public String[] getUsersIds() {
+		return usersIds;
+	}
+	public void setUsersIds(String[] usersIds) {
+		this.usersIds = usersIds;
+	}
 	public String getProductName() {
 		return productName;
 	}
