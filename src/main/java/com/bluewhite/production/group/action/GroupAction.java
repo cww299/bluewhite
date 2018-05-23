@@ -1,5 +1,10 @@
 package com.bluewhite.production.group.action;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +22,8 @@ import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.service.GroupService;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
+
+import javassist.expr.NewArray;
 
 @Controller
 public class GroupAction {
@@ -89,6 +96,36 @@ private static final Log log = Log.getLog(GroupAction.class);
 		}
 		return cr;
 	}
+	
+	
+	/**
+	 * 根据条件查询分组
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/production/allGroup", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse allGroup(HttpServletRequest request,Group group) {
+		CommonResponse cr = new CommonResponse();
+		List<Group> groupAll = null;
+		if(group.getId()==null){
+			Set<User> userlist = new HashSet<User>();
+		List<Group>	groupList = groupService.findList(group);
+			for(Group gr : groupList){
+				userlist.addAll(gr.getUsers());
+			}
+			group.setUsers(userlist);
+			groupAll = new ArrayList<Group>();
+			groupAll.add(group);
+		}else{
+			groupAll = groupService.findList(group);
+		}
+		cr.setData(clearCascadeJSON.format(groupAll).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
 	
 	/**
 	 * 查询分组

@@ -1,4 +1,4 @@
-package com.bluewhite.production.productionutils.constant;
+package com.bluewhite.production.productionutils.constant.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

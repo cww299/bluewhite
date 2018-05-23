@@ -14,6 +14,8 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.production.procedure.dao.ProcedureDao;
+import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.task.dao.TaskDao;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.system.user.dao.UserDao;
@@ -25,6 +27,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	private TaskDao dao;
 	@Autowired
 	private UserDao userDao;
+	@Autowired
+	private ProcedureDao procedureDao;
+	
 	@Override
 	public Task addTask(Task task) {
 		task = dao.save(task);
@@ -37,6 +42,11 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				userDao.save(user);
 			}
 		}
+		//预计完成时间
+		Procedure procedure = procedureDao.findOne(task.getProcedureId());
+//		task.setExpectTime();
+		
+		
 		return task;
 	}
 	
@@ -71,8 +81,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				query.where(predicate.toArray(pre));
 	        	return null;
 	        }, page);
-		 
-		 
 	        PageResult<Task> result = new PageResult<>(pages,page);
 	        return result;
 	}
