@@ -9,7 +9,7 @@
 <head>
      <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>员工分组</title>
+    <title>批次管理</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
    
@@ -28,7 +28,7 @@
                     <div class="col-md-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">分组信息</h3>
+                                <h3 class="panel-title">批次管理</h3>
                                 <div class="actions pull-right">
                                     <i class="fa fa-expand"></i>
                                     <i class="fa fa-chevron-down"></i>
@@ -51,7 +51,6 @@
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
-                                    <button type="button" id="addgroup" class="btn btn-success btn-3d pull-right">新增小组</button>
                                 </table>
                                 <div id="pager" class="pull-right">
                                 
@@ -154,14 +153,14 @@
 		      		  success: function (result) {
 		      			 $(result.data.rows).each(function(i,o){
 		      				 html +='<tr>'
-		      				+'<td class="text-center edit bacthNumber">'+o.bacthNumber+'</td>'
-		      				+'<td class="text-center edit createdAt">'+o.createdAt+'</td>'
-		      				+'<td class="text-center edit name">'+o.product.name+'</td>'
+		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
+		      				+'<td class="text-center  createdAt">'+o.createdAt+'</td>'
+		      				+'<td class="text-center  name">'+o.product.name+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
-		      				+'<td class="text-center edit bacthDepartmentPrice">'+o.bacthDepartmentPrice+'</td>'
-		      				+'<td class="text-center edit bacthHairPrice">'+o.bacthHairPrice+'</td>'
+		      				+'<td class="text-center  bacthDepartmentPrice">'+o.bacthDepartmentPrice+'</td>'
+		      				+'<td class="text-center  bacthHairPrice">'+o.bacthHairPrice+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d addDict" data-id='+o.id+' data-proid='+o.product.id+'>分配</button> <button class="btn btn-sm btn-primary btn-3d update" data-id='+o.id+'>编辑</button></td></tr>' 
+							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d addDict" data-id='+o.id+' data-proid='+o.product.id+' data-proname='+o.product.name+'>分配</button> <button class="btn btn-sm btn-primary btn-3d updateremake" data-id='+o.id+'>编辑</button></td></tr>' 
 							
 		      			}); 
 				        //显示分页
@@ -195,7 +194,7 @@
 			
 			this.loadEvents = function(){
 				//修改方法
-				$('.update').on('click',function(){
+				$('.updateremake').on('click',function(){
 					if($(this).text() == "编辑"){
 						$(this).text("保存")
 						
@@ -216,12 +215,13 @@
 							
 							var postData = {
 									id:$(this).data('id'),
-									name:$(this).parent().parent('tr').find(".name").text(),
+									number:$(this).parent().parent('tr').find(".number").text(),
+									remarks:$(this).parent().parent('tr').find(".remarks").text(),
 							}
 							
 							var index;
 							$.ajax({
-								url:"${ctx}/production/addGroup",
+								url:"${ctx}/bacth/addBacth",
 								data:postData,
 								type:"POST",
 								beforeSend:function(){
@@ -250,6 +250,7 @@
 				$('.addDict').on('click',function(){
 					var that=$(this)
 					var productId=$(this).data('proid')
+					var productName=$(this).data('proname')
 					var bacthId=$(this).data('id')
 					var _index
 					var index
@@ -404,8 +405,6 @@
 								$(".stuCheckBox:checked").each(function() {   
 								    arr.push($(this).val());   
 								}); 
-								console.log(values)
-								console.log(arr)
 							  if(values.length<=0){
 									return layer.msg("至少选择一个工序！", {icon: 2});
 								}
@@ -415,14 +414,16 @@
 								number=$(".sumnumber").val();
 								
 								var postData = {
+										type:1,
 										batchId:that.data("id"),
-										values:values,
-										users:arr,
+										procedureIds:values,
+										userIds:arr,
 										number:number,
+										productName:productName
 								}
 								console.log(postData)
-							   /* $.ajax({
-									url:"${ctx}/production/addGroup",
+							    $.ajax({
+									url:"${ctx}/task/addTask",
 									data:postData,
 						            traditional: true,
 									type:"post",
@@ -447,7 +448,7 @@
 										layer.msg("操作失败！", {icon: 2});
 										layer.close(index);
 									}
-								});  */
+								});  
 							},
 						   end:function(){
 							  $('#addDictDivType').hide();

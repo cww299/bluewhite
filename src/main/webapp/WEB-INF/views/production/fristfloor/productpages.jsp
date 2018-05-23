@@ -87,25 +87,19 @@
 				<!-- PAGE CONTENT BEGINS -->
 				<form class="form-horizontal addDictDivTypeForm">
 				<div class="row col-xs-12  col-sm-12  col-md-12 ">
-				<div class="space-10"></div>
-
-					<div class="form-group col-md-6">
-						<label class="col-sm-3  control-label no-padding-right"
-							for="description">产品编号:</label>
-
-						<div >
-							<input type="text" id="productNumber" class="col-md-4 col-sm-4"/>
-						</div>
-						
-					</div>
-					<div class="form-group col-md-6">
-						<label class="col-sm-3  control-label no-padding-right"
-							for="description">产品名:</label>
-
-						<div >
-							<input type="text" id="productName" class="col-md-4 col-sm-4"/>
-						</div>
-					</div>
+				<div style="height: 30px"></div>
+					<div class="form-group">
+                                        <label class="col-sm-3 control-label">产品编号:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="productNumber" class="form-control">
+                                        </div>
+                 </div>
+                 <div class="form-group">
+                                        <label class="col-sm-3 control-label">产品名:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="productName" class="form-control">
+                                        </div>
+                 </div>
 </div>
 </form>
 </div>
@@ -165,38 +159,6 @@
                                             <input type="text" id="remarks" class="form-control">
                                         </div>
                  </div>
-					<!-- <div class="form-group">
-					
-						<label class="col-sm-3 col-md-3 control-label no-padding-right" for="code">产品名称:</label>
-						<div class="col-sm-9 col-md-9 ">
-							<input type="text" id="proName" class="dictKeyClass "  />
-						</div>
-						
-					</div>
-					<div class="form-group">
-					
-						<label class="col-sm-3 col-md-3 control-label no-padding-right" for="code">批次号:</label>
-						<div class="col-sm-9 col-md-9">
-							<input type="text" id="bacthNumber" class="dictKeyClass " />
-						</div>
-						
-					</div>
-					<div class="form-group">
-					
-						<label class="col-sm-3 col-md-3 control-label no-padding-right" for="code">数量:</label>
-						<div class="col-sm-9 col-md-9">
-							<input type="text" id="prosum" class="dictKeyClass " />
-						</div>
-						
-					</div>
-					<div class="form-group">
-					
-						<label class="col-sm-3 col-md-3 control-label no-padding-right" for="code">备注:</label>
-						<div class="col-sm-9 col-md-9">
-							<input type="text" id="remarks" class="dictKeyClass " />
-						</div>
-						
-					</div> -->
 				</form>
 </div>
 </div>       
@@ -784,7 +746,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['60%', '60%'], 
+						  area: ['30%', '30%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"新增产品",
