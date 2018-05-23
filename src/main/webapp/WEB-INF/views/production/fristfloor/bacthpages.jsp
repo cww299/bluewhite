@@ -86,12 +86,12 @@
                            <label class="col-sm-2 control-label">选择工序</label>
                               <div class="col-sm-2 working">
                               </div>
-                              <div class="col-sm-2 checkworking">222</div>
+                              <div class="col-sm-2 checkworking"></div>
                             <label class="col-sm-1 control-label">完成人</label>
                                 <div class="col-sm-2 complete">
                                   <input type="text" class="form-control">
                                 </div>
-                                 <div class="col-sm-2 select">1</div>
+                                 <div class="col-sm-2 select"></div>
                     	</div>
 				</div>
 
@@ -250,15 +250,16 @@
 				//人员详细显示方法
 				$('.addDict').on('click',function(){
 					var productId=$(this).data('proid')
+					var bacthId=$(this).data('id')
 					var _index
 					var index
 					var postData
 					//工序遍历  
 				    var indextwo;
-				    var htmltwo = '';
+				    
 				    var htmlth = '';
 				    var htmlfr = '';
-				 
+				 	
 				    //遍历工序类型
 				    var getdata={type:"productFristQuality",}
 	      			$.ajax({
@@ -269,20 +270,60 @@
 			      			  $(result.data).each(function(k,j){
 			      				htmlfr +='<option value="'+j.id+'">'+j.name+'</option>'
 			      			  });  
-			      			$('.working').html("<select class='form-control selectchang'><option>请选择</option>"+htmlfr+"</select>")
+			      			$('.working').html("<select class='form-control selectchang'><option value="+0+">请选择</option><option value="+""+">全部</option>"+htmlfr+"</select>")
 							//改变事件
 			      			$(".selectchang").change(function(){
-			      				
+			      				var htmlfv="";
+			      				var	id=$(this).val()
 								   var data={
-										   
+										   productId:productId,
+										   type:1,
+										   bacthId:bacthId,
+										   procedureTypeId:id,
 								   }
+			      				//查询各个工序的名称
+								   $.ajax({
+										url:"${ctx}/production/typeToProcedure",
+										data:data,
+										type:"GET",
+										beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'#fff'] //0.1透明度的白色背景
+												});
+										},
+										
+										success:function(result){
+											$(result.data).each(function(i,o){
+												htmlfv +='<div class="input-group"><input type="checkbox" class="checkWork" value="'+o.id+'">'+o.name+' 剩余:'+o.residualNumber+'</input></div>'
+											})
+											var s="<div class='input-group'><input type='checkbox' class='checkWorkAll'>全选</input></div>"
+											$('.checkworking').html(s+htmlfv);
+											$(".checkWorkAll").on('click',function(){
+							                    if($(this).is(':checked')){ 
+										 			$('.checkWork').each(function(){  
+							                    //此处如果用attr，会出现第三次失效的情况  
+							                     		$(this).prop("checked",true);
+										 			})
+							                    }else{
+							                    	$('.checkWork').each(function(){ 
+							                    		$(this).prop("checked",false);
+							                    		
+							                    	})
+							                    }
+							                });
+											layer.close(index);
+										},error:function(){
+											layer.msg("操作失败！", {icon: 2});
+											layer.close(index);
+										}
+									});
 							 })
 					      }
 					  });
 					var data={
 							type:1
 					}
-					//遍历组别
+					//遍历人名组别
 				    $.ajax({
 					      url:"${ctx}/production/getGroup",
 					      data:data,
@@ -291,9 +332,10 @@
 			      			  $(result.data).each(function(k,j){
 			      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
 			      			  });  
-			      			 $('.complete').html("<select class='form-control selectcomplete'><option>请选择</option>"+htmlth+"</select>") 
+			      			 $('.complete').html("<select class='form-control selectcomplete'><option value="+1000+">请选择</option><option value="+1000+">全部</option>"+htmlth+"</select>") 
 							//改变事件
 			      			 $(".selectcomplete").change(function(){
+			      				var htmltwo = "";
 			      				var	id=$(this).val()
 								   var data={
 										  id:id
@@ -311,8 +353,9 @@
 									success:function(result){
 										console.log(result)
 										$(result.data.users).each(function(i,o){
-											htmltwo +=o.userName
+											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'">'+o.userName+'</input></div>'
 										})
+										$('.select').html(htmltwo)
 										layer.close(index);
 									},error:function(){
 										layer.msg("操作失败！", {icon: 2});
