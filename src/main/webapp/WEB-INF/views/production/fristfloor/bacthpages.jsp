@@ -45,6 +45,7 @@
                                             <th class="text-center">预计生产单价</th>
                                             <th class="text-center">外发价格</th>
                                             <th class="text-center">备注</th>
+                                            <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent">
@@ -67,46 +68,30 @@
 				<div class="space-10"></div>
 				<div style="height: 30px"></div>
 				<form class="form-horizontal addDictDivTypeForm">
-					<div class="form-group">
-					
-						<label class="col-sm-3 control-label no-padding-right" for="code">名称:</label>
+					<div class="row col-xs-12  col-sm-12  col-md-12 ">
 
-						<div class="col-sm-9">
-							<input type="text" id="groupName" class="dictKeyClass " />
+					<div class="form-group col-md-6">
+						<label class="col-sm-3  control-label no-padding-right"
+							for="description">数量:</label>
+
+						<div >
+							<input type="text" id="taskNumberTo" class="col-md-3 col-sm-3"/>
 						</div>
 					</div>
+					<div class="form-group col-md-6">
+						<label class="col-sm-3  control-label no-padding-right"
+							for="description">实际完成人数:</label>
+
+						<div >
+							<input type="text" id="people" class="col-md-3 col-sm-3"/>
+						</div>
+					</div>
+				</div>
 
 				</form>
 </div>
 </div>
- <!--隐藏框 产品新增结束  -->
 
-
-
-<div id="savegroup" style="display: none;">
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-					&times;
-				</button>
-				<h4 class="modal-title" id="myModalLabel">
-					人员分组详情
-				</h4>
-			</div>
-			<div class="modal-body">
-				
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
-				</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
-</div>
-</div>
-<!--隐藏框 产品新增结束  -->
     </section>
     
    
@@ -164,9 +149,13 @@
 		      				 console.log(result.data.rows)
 		      				 html +='<tr>'
 		      				+'<td class="text-center edit bacthNumber">'+o.bacthNumber+'</td>'
-		      				+'<td class="text-center edit bacthNumber">'+o.bacthNumber+'</td>'
-		      				+'<td class="text-center edit bacthNumber">'+o.product.name+'</td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d update" data-id='+o.id+'>编辑</button></td></tr>' 
+		      				+'<td class="text-center edit createdAt">'+o.createdAt+'</td>'
+		      				+'<td class="text-center edit name">'+o.product.name+'</td>'
+		      				+'<td class="text-center edit number">'+o.number+'</td>'
+		      				+'<td class="text-center edit bacthDepartmentPrice">'+o.bacthDepartmentPrice+'</td>'
+		      				+'<td class="text-center edit bacthHairPrice">'+o.bacthHairPrice+'</td>'
+		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
+							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d addDict" data-id='+o.id+'>分配</button> <button class="btn btn-sm btn-primary btn-3d update" data-id='+o.id+'>编辑</button></td></tr>' 
 							
 		      			}); 
 				        //显示分页
@@ -252,49 +241,7 @@
 				})
 				
 				//人员详细显示方法
-				$('.savemode').on('click',function(){
-					var id=$(this).data('id')
-					 var display =$("#savegroup").css("display")
-					 if(display=='none'){
-							$("#savegroup").css("display","block");  
-						}
-					var postData={
-							id:id,
-					}
-					 var arr=new Array();
-					var html="";
-					$.ajax({
-						url:"${ctx}/production/getGroupOne",
-						data:postData,
-						type:"GET",
-						beforeSend:function(){
-							index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								});
-						},
-						
-						success:function(result){
-							$(result.data.users).each(function(i,o){
-							html+=o.userName+"&nbsp&nbsp&nbsp&nbsp"
-							})
-							$('.modal-body').html(html);
-							layer.close(index);
-							
-						},error:function(){
-							layer.msg("操作失败！", {icon: 2});
-							layer.close(index);
-						}
-					});
-					
-					
-					
-				})
-				
-				
-			}
-			this.events = function(){
-				//新增小组
-				$('#addgroup').on('click',function(){
+				$('.addDict').on('click',function(){
 					
 					var _index
 					var index
@@ -303,7 +250,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '30%'], 
+						  area: ['60%', '60%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"新增小组",
@@ -350,7 +297,15 @@
 							
 						  }
 					});
+					
+					
 				})
+				
+				
+			}
+			this.events = function(){
+				//新增小组
+				
 			}
    	}
    			var login = new Login();
