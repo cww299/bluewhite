@@ -73,7 +73,7 @@
 						<div class="form-group">
                            <label class="col-sm-3 col-md-2 control-label">数量</label>
                               <div class="col-sm-2 col-md-2">
-                                  <input type="text" class="form-control">
+                                  <input type="text" class="form-control sumnumber">
                               </div>
                                <div class="col-sm-2 col-md-1"></div>
                             <label class="col-sm-3 col-md-2 control-label">实际完成人数</label>
@@ -153,7 +153,6 @@
 					  }, 
 		      		  success: function (result) {
 		      			 $(result.data.rows).each(function(i,o){
-		      				 console.log(result.data.rows)
 		      				 html +='<tr>'
 		      				+'<td class="text-center edit bacthNumber">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center edit createdAt">'+o.createdAt+'</td>'
@@ -249,6 +248,7 @@
 				
 				//人员详细显示方法
 				$('.addDict').on('click',function(){
+					var that=$(this)
 					var productId=$(this).data('proid')
 					var bacthId=$(this).data('id')
 					var _index
@@ -332,7 +332,7 @@
 			      			  $(result.data).each(function(k,j){
 			      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
 			      			  });  
-			      			 $('.complete').html("<select class='form-control selectcomplete'><option value="+1000+">请选择</option><option value="+1000+">全部</option>"+htmlth+"</select>") 
+			      			 $('.complete').html("<select class='form-control selectcomplete'><option value="+0+">请选择</option><option value="+""+">全部</option>"+htmlth+"</select>") 
 							//改变事件
 			      			 $(".selectcomplete").change(function(){
 			      				var htmltwo = "";
@@ -341,7 +341,7 @@
 										  id:id
 								   }
 			      				$.ajax({
-									url:"${ctx}/production/getGroupOne",
+									url:"${ctx}/production/allGroup",
 									data:data,
 									type:"GET",
 									beforeSend:function(){
@@ -351,11 +351,27 @@
 									},
 									
 									success:function(result){
-										console.log(result)
-										$(result.data.users).each(function(i,o){
+										$(result.data).each(function(i,o){
+										
+										$(o.users).each(function(i,o){
 											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'">'+o.userName+'</input></div>'
 										})
-										$('.select').html(htmltwo)
+										})
+										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
+										$('.select').html(s+htmltwo)
+										$(".checkall").on('click',function(){
+							                    if($(this).is(':checked')){ 
+										 			$('.stuCheckBox').each(function(){  
+							                    //此处如果用attr，会出现第三次失效的情况  
+							                     		$(this).prop("checked",true);
+										 			})
+							                    }else{
+							                    	$('.stuCheckBox').each(function(){ 
+							                    		$(this).prop("checked",false);
+							                    		
+							                    	})
+							                    }
+							                });
 										layer.close(index);
 									},error:function(){
 										layer.msg("操作失败！", {icon: 2});
@@ -379,12 +395,33 @@
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
-							 
-							  postData={
-									  name:$("#groupName").val(),
-									  type:1,
-							  }
-							  $.ajax({
+							  var values=new Array()
+								$(".checkWork:checked").each(function() {   
+									values.push($(this).val());   
+								}); 
+							  var arr=new Array()
+							  
+								$(".stuCheckBox:checked").each(function() {   
+								    arr.push($(this).val());   
+								}); 
+								console.log(values)
+								console.log(arr)
+							  if(values.length<=0){
+									return layer.msg("至少选择一个工序！", {icon: 2});
+								}
+								if(arr.length<=0){
+									return layer.msg("至少选择一个员工！", {icon: 2});
+								}
+								number=$(".sumnumber").val();
+								
+								var postData = {
+										batchId:that.data("id"),
+										values:values,
+										users:arr,
+										number:number,
+								}
+								console.log(postData)
+							   /* $.ajax({
 									url:"${ctx}/production/addGroup",
 									data:postData,
 						            traditional: true,
@@ -410,14 +447,14 @@
 										layer.msg("操作失败！", {icon: 2});
 										layer.close(index);
 									}
-								});
+								});  */
 							},
-						  end:function(){
+						   end:function(){
 							  $('#addDictDivType').hide();
 						
 							  $('.addDictDivTypeForm')[0].reset(); 
 							
-						  }
+						  } 
 					});
 					
 					

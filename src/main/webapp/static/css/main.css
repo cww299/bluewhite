@@ -442,7 +442,7 @@ canvas {
 }
 .sidebar .nav-pills > li > a {
   padding: 9px 10px;
-  font-size: 0.875em;
+  font-size: 1em;
 }
 .sidebar-profile {
   padding: 20px 20px 40px 20px;
@@ -541,7 +541,7 @@ canvas {
   text-transform: uppercase;
 }
 .sidebar-left a {
-  color: #af0ba8;
+  color: #65dcd7;
 }
 .sidebar-left a:focus,
 .sidebar-left a:hover {

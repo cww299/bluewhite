@@ -141,7 +141,31 @@
 				<div class="space-10"></div>
 				<div style="height: 30px"></div>
 				<form class="form-horizontal addbatchForm">
-					<div class="form-group">
+				<div class="form-group">
+                                        <label class="col-sm-3 control-label">产品名称:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="proName" class="form-control">
+                                        </div>
+                 </div>
+                 <div class="form-group">
+                                        <label class="col-sm-3 control-label">批次号:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="bacthNumber" class="form-control">
+                                        </div>
+                 </div>
+                 <div class="form-group">
+                                        <label class="col-sm-3 control-label">数量:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="prosum" class="form-control">
+                                        </div>
+                 </div>
+                 <div class="form-group">
+                                        <label class="col-sm-3 control-label">备注:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="remarks" class="form-control">
+                                        </div>
+                 </div>
+					<!-- <div class="form-group">
 					
 						<label class="col-sm-3 col-md-3 control-label no-padding-right" for="code">产品名称:</label>
 						<div class="col-sm-9 col-md-9 ">
@@ -172,7 +196,7 @@
 							<input type="text" id="remarks" class="dictKeyClass " />
 						</div>
 						
-					</div>
+					</div> -->
 				</form>
 </div>
 </div>       
