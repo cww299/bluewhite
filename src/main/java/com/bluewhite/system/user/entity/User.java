@@ -299,17 +299,11 @@ public class User extends BaseEntity<Long> {
 	
 	
 	/**
-	 * 任务id  
+	 * 任务id (多对多员工任务关系，只存任务的id集合，减少数据表交互) 
 	 */
-	@Column(name = "task_id")
-	private Long taskId;
+	@Column(name = "task_ids")
+	private String taskIds;
 	
-	/**
-	 * 任务   员工多对一任务
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "task_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Task task;
 	
 
 	/**
@@ -342,20 +336,14 @@ public class User extends BaseEntity<Long> {
 	
 	
 	
-	public Long getTaskId() {
-		return taskId;
+
+
+	public String getTaskIds() {
+		return taskIds;
 	}
 
-	public void setTaskId(Long taskId) {
-		this.taskId = taskId;
-	}
-
-	public Task getTask() {
-		return task;
-	}
-
-	public void setTask(Task task) {
-		this.task = task;
+	public void setTaskIds(String taskIds) {
+		this.taskIds = taskIds;
 	}
 
 	public String getUserIds() {

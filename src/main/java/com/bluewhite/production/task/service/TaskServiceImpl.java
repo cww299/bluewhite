@@ -16,6 +16,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
+import com.bluewhite.production.productionutils.ProTypeUtils;
 import com.bluewhite.production.task.dao.TaskDao;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.system.user.dao.UserDao;
@@ -32,21 +33,33 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	
 	@Override
 	public Task addTask(Task task) {
-		task = dao.save(task);
-		if (!StringUtils.isEmpty(task.getUserIds())) {
-			String[] idArr = task.getUserIds().split(",");
-			for (int i = 0; i < idArr.length; i++) {
-				Long id = Long.parseLong(idArr[i]);
-				User user = userDao.findOne(id);
-				user.setTaskId(task.getId());
-				userDao.save(user);
+		//将工序分成多个任务
+		if(task.getProcedureIds().length>0){
+			for (int i = 0; i < task.getProcedureIds().length; i++) {
+				Long id = Long.parseLong(task.getProcedureIds()[i]);
+				task.setProcedureId(id);
+				Task newTask = dao.save(task);
+				///员工和任务形成多对多关系
+				if (task.getUserIds().length>0) {
+					for (int j = 0; j < task.getUserIds().length; j++) {
+						Long userid = Long.parseLong(task.getUserIds()[j]);
+						User user = userDao.findOne(userid);
+						user.setTaskIds(user.getTaskIds()+","+String.valueOf(newTask.getId()));
+						userDao.save(user);
+					}
+				}
+				//预计完成时间
+				Procedure procedure = procedureDao.findOne(newTask.getProcedureId());
+				newTask.setExpectTime(ProTypeUtils.sumExpectTime(procedure,procedure.getType(),newTask.getNumber()));
+				//任务价值
+				dao.save(newTask);
 			}
 		}
-		//预计完成时间
-		Procedure procedure = procedureDao.findOne(task.getProcedureId());
-//		task.setExpectTime();
 		
 		
+		
+		
+
 		return task;
 	}
 	

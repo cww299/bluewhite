@@ -25,10 +25,10 @@ public class ProductionConstant extends BaseEntity<Long>{
 	@Column(name = "number")
 	private Double number;
 	/**
-	 * 常量英文名称
+	 * 常量excel名称
 	 */
-	@Column(name = "pro_name")
-	private String proName;
+	@Column(name = "excel_name")
+	private String excelName;
 	
 	/**
 	 * 常量类型
@@ -52,12 +52,12 @@ public class ProductionConstant extends BaseEntity<Long>{
 		this.number = number;
 	}
 
-	public String getProName() {
-		return proName;
+	public String getExcelName() {
+		return excelName;
 	}
 
-	public void setProName(String proName) {
-		this.proName = proName;
+	public void setExcelName(String excelName) {
+		this.excelName = excelName;
 	}
 
 	public String getType() {
