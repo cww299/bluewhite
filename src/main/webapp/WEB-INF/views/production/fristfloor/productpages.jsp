@@ -307,8 +307,9 @@
 									success:function(result){
 										if(0==result.code){
 											layer.msg("添加成功！", {icon: 1});
-										 
-											$('#addbatch').css("display","none");
+											 
+											 
+											
 											
 										}else{
 											layer.msg("添加失败", {icon: 2});
@@ -322,9 +323,9 @@
 								}); 
 							},
 						  end:function(){
-							  $('#addbatch').css("display","none");
-						
 							  $('.addbatchForm')[0].reset(); 
+							
+						
 							
 						  }
 					});
@@ -789,9 +790,9 @@
 								});
 							},
 						  end:function(){
+							  $('.addDictDivTypeForm')[0].reset(); 
 							  $('#addDictDivType').hide();
 						
-							  $('.addDictDivTypeForm')[0].reset(); 
 							
 						  }
 					});

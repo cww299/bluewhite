@@ -470,7 +470,7 @@
 										if(0==result.code){
 											layer.msg("添加成功！", {icon: 1});
 										 self.loadPagination(data); 
-											$('#addDictDivType').hide();
+											$("#addDictDivType").hide();
 											
 										}else{
 											layer.msg("添加失败", {icon: 2});
@@ -484,9 +484,9 @@
 								});  
 							},
 						   end:function(){
-							  $('#addDictDivType').hide();
-						
 							  $('.addDictDivTypeForm')[0].reset(); 
+							  $("#addDictDivType").hide();
+						
 							
 						  } 
 					});
