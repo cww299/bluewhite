@@ -65,7 +65,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				//任务价值
 				newTask.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(newTask.getExpectTime(), procedure.getType())));
 				//B工资净值
-				newTask.setBPrice(NumUtils.round(ProTypeUtils.sumBPrice(newTask.getTaskPrice(),  procedure.getType())));
+				newTask.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(newTask.getTaskPrice(),  procedure.getType())));
 				dao.save(newTask);
 				
 				///员工和任务形成多对多关系

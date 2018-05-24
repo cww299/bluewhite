@@ -96,6 +96,7 @@ public class Task  extends BaseEntity<Long>{
 	@Column(name = "status")
     private Integer  status;
     
+	
     /**
      * 预计完成时间
      */
@@ -116,8 +117,8 @@ public class Task  extends BaseEntity<Long>{
 	/**
 	 * b工资净值
 	 */
-	@Column(name = "b_price")
-	private Double BPrice;
+	@Column(name = "pay_b")
+	private Double payB;
 	
 	/**
 	 * 工序所属部门类型 (1=一楼质检，2=一楼包装，3=二楼针工)
@@ -229,11 +230,13 @@ public class Task  extends BaseEntity<Long>{
 	public void setTaskPrice(Double taskPrice) {
 		this.taskPrice = taskPrice;
 	}
-	public Double getBPrice() {
-		return BPrice;
+
+	
+	public Double getPayB() {
+		return payB;
 	}
-	public void setBPrice(Double bPrice) {
-		BPrice = bPrice;
+	public void setPayB(Double payB) {
+		this.payB = payB;
 	}
 	public Integer getType() {
 		return type;
