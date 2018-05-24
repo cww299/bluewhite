@@ -98,7 +98,7 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 		CommonResponse cr = new CommonResponse();
 		if(procedure.getProductId()!=null){
 			cr.setData(clearCascadeJSON.format(procedureService.findList(procedure)).toJSON());
-			cr.setMessage("工序添加成功");
+			cr.setMessage("成功");
 		}else{
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品不能为空");
