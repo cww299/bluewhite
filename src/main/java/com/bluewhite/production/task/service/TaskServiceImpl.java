@@ -72,7 +72,11 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					for (int j = 0; j < task.getUsersIds().length; j++) {
 						Long userid = Long.parseLong(task.getUsersIds()[j]);
 						User user = userDao.findOne(userid);
-						user.setTaskIds(user.getTaskIds()+","+String.valueOf(newTask.getId()));
+						if(user.getTaskIds()!=null){
+							user.setTaskIds(user.getTaskIds()+","+String.valueOf(newTask.getId()));
+						}else{
+							user.setTaskIds(user.getTaskIds());
+						}
 						userDao.save(user);
 					}
 				}
