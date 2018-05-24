@@ -38,9 +38,7 @@ public class ProcedureServiceImpl extends BaseServiceImpl<Procedure, Long> imple
 		//计算部门生产总价
 		Double sumTime = 0.0;
 		for(Procedure pro : procedureList){
-			if(!pro.getProcedureTypeId().equals((long)109)){
 				sumTime += pro.getWorkingTime();
-			}
 		}
 		Double sumPrice = ProTypeUtils.sumProTypePrice(sumTime, procedure.getType());
 		for(Procedure pro : procedureList){

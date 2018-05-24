@@ -1,5 +1,8 @@
 package com.bluewhite.production.task.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
@@ -18,6 +20,8 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
+import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.service.UserService;
 
 @Controller
 public class TaskAction {
@@ -27,13 +31,16 @@ private static final Log log = Log.getLog(TaskAction.class);
 	@Autowired
 	private TaskService taskService;
 	
+	@Autowired
+	private UserService userService;
+	
 	private ClearCascadeJSON clearCascadeJSON;
 
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
 				.addRetainTerm(Task.class,"id","userNames","bacth","productName","userIds","procedureName","number","status","expectTime"
-						,"taskTime","payB","taskPrice","type","createdAt")
+						,"expectTaskPrice","taskTime","payB","taskPrice","type","createdAt")
 				.addRetainTerm(Bacth.class,"id","bacthNumber");
 	}
 	
@@ -47,13 +54,13 @@ private static final Log log = Log.getLog(TaskAction.class);
 	public CommonResponse addTask(HttpServletRequest request,Task task) {
 		CommonResponse cr = new CommonResponse();
 		//修改
-		if(!StringUtils.isEmpty(task.getId())){
-			Task oldTask = taskService.findOne(task.getId());
-			BeanCopyUtils.copyNullProperties(oldTask,task);
-			task.setCreatedAt(oldTask.getCreatedAt());
-			taskService.update(task);
-			cr.setMessage("工序修改成功");
-		}else{
+//		if(!StringUtils.isEmpty(task.getId())){
+//			Task oldTask = taskService.findOne(task.getId());
+//			BeanCopyUtils.copyNullProperties(oldTask,task);
+//			task.setCreatedAt(oldTask.getCreatedAt());
+//			taskService.update(task);
+//			cr.setMessage("工序修改成功");
+//		}else{
 			//新增
 			if(!StringUtils.isEmpty(task.getUserIds())){
 				task = taskService.addTask(task);
@@ -62,7 +69,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 				cr.setMessage("领取人不能为空");
 			}
-		}
+//		}
 		return cr;
 	}
 	
@@ -98,6 +105,40 @@ private static final Log log = Log.getLog(TaskAction.class);
 		}
 		return cr;
 	}
+	
+	
+	/**
+	 * 查询该任务的所有领取人
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/task/taskUser", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse taskUser(HttpServletRequest request,Long id) {
+		CommonResponse cr = new CommonResponse();
+		if(id!=null){
+			Task task = taskService.findOne(id);
+			List<User> userList = new ArrayList<User>();
+			if (!StringUtils.isEmpty(task.getUserIds())) {
+				String[] idArr = task.getUserIds().split(",");
+				if (idArr.length>0) {
+					for (int i = 0; i < idArr.length; i++) {
+						Long userid = Long.parseLong(idArr[i]);
+						User user = userService.findOne(userid);
+						userList.add(user);
+						}
+				}
+			}
+			cr.setData(ClearCascadeJSON.get().addRetainTerm(User.class, "id","userName")
+					.format(userList).toJSON());
+			cr.setMessage("查询成功");
+		}else{
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("不能为空");
+		}
+		return cr;
+	}
+	
 	
 
 }

@@ -108,8 +108,16 @@ public class Task  extends BaseEntity<Long>{
      */
 	@Column(name = "task_time")
     private Double taskTime;
+	
 	/**
 	 * 任务价值(预计成本费用)
+	 */
+	@Column(name = "expect_task_price")
+	private Double expectTaskPrice;
+	
+	
+	/**
+	 * 任务价值(实际成本费用)
 	 */
 	@Column(name = "task_price")
 	private Double taskPrice;
@@ -261,6 +269,12 @@ public class Task  extends BaseEntity<Long>{
 	}
 	public void setBacthNumber(String bacthNumber) {
 		this.bacthNumber = bacthNumber;
+	}
+	public Double getExpectTaskPrice() {
+		return expectTaskPrice;
+	}
+	public void setExpectTaskPrice(Double expectTaskPrice) {
+		this.expectTaskPrice = expectTaskPrice;
 	}
 
 	
