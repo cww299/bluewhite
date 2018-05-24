@@ -19,7 +19,7 @@ import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
-import com.bluewhite.production.productionutils.ProTypeUtils;
+import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.dao.TaskDao;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.system.user.dao.UserDao;
@@ -68,7 +68,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				Procedure procedure = procedureDao.findOne(newTask.getProcedureId());
 				newTask.setExpectTime(ProTypeUtils.sumExpectTime(procedure,procedure.getType(),newTask.getNumber()));
 				//任务价值
-				newTask.setTaskPrice(ProTypeUtils.sumTaskPrice(newTask.getTaskTime(), procedure.getType()));
+				newTask.setTaskPrice(ProTypeUtils.sumTaskPrice(newTask.getExpectTime(), procedure.getType()));
 				//B工资净值
 				newTask.setBPrice(ProTypeUtils.sumBPrice(newTask.getTaskPrice(),  procedure.getType()));
 				dao.save(newTask);
@@ -81,6 +81,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 			sumTaskPrice+=ta.getTaskPrice();
 		};
 		bacth.setSumTaskPrice(sumTaskPrice);
+		//计算出该批次的地区差价
+		bacth.setRegionalPrice(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType()));
+		
 		bacthDao.save(bacth);
 		return task;
 	}
@@ -99,7 +102,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	        	}
 	        	//按产品名称
 	        	if(!StringUtils.isEmpty(param.getProductName())){
-	        		predicate.add(cb.equal(root.get("productName").as(String.class), "%"+param.getProductName()+"%"));
+	        		predicate.add(cb.like(root.get("productName").as(String.class), "%"+param.getProductName()+"%"));
 	        	}
 	        	//按类型
 	        	if(!StringUtils.isEmpty(param.getType())){

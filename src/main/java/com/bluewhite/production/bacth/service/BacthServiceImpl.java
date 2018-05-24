@@ -37,11 +37,15 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 		        	}
 		        	//按产品名称
 		        	if(!StringUtils.isEmpty(param.getName())){
-		        		predicate.add(cb.equal(root.get("product").get("name").as(String.class), "%"+param.getName()+"%"));
+		        		predicate.add(cb.like(root.get("product").get("name").as(String.class), "%"+param.getName()+"%"));
 		        	}
 		        	//按产品编号
 		        	if(!StringUtils.isEmpty(param.getProductNumber())){
-		        		predicate.add(cb.equal(root.get("product").get("number").as(String.class), "%"+param.getProductNumber()+"%"));
+		        		predicate.add(cb.like(root.get("product").get("number").as(String.class), "%"+param.getProductNumber()+"%"));
+		        	}
+		        	//按批次
+		        	if(!StringUtils.isEmpty(param.getBacthNumber())){
+		        		predicate.add(cb.like(root.get("bacthNumber").as(String.class), "%"+param.getBacthNumber()+"%"));
 		        	}
 		        	//按类型
 		        	if(!StringUtils.isEmpty(param.getType())){

@@ -68,7 +68,9 @@
 		<property name="targetDataSource" ref="dataSource" />
 	</bean>
 
-	<context:component-scan base-package="com.bluewhite.**.service" />
+	<context:component-scan base-package="com.bluewhite" />
+	
+	
 
 	<bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">

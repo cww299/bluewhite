@@ -16,7 +16,6 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.procedure.service.ProcedureService;
-import com.bluewhite.production.productionutils.ProTypeUtils;
 @Controller
 public class ProcedureAction {
 	

@@ -1,24 +1,21 @@
 package com.bluewhite.production.procedure.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.product.entity.Product;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
-import com.bluewhite.production.productionutils.ProTypeUtils;
+import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
 
 @Service
@@ -71,7 +68,7 @@ public class ProcedureServiceImpl extends BaseServiceImpl<Procedure, Long> imple
 	        	if(param.getProcedureTypeId()!=null){
 	        		predicate.add(cb.equal(root.get("procedureTypeId").as(Long.class),param.getProcedureTypeId()));
 	        	}
-	        	//按产品名称
+	        	//按产品id
 	        	if(!StringUtils.isEmpty(param.getProductId())){
 	        		predicate.add(cb.equal(root.get("productId").as(Long.class), param.getProductId()));
 	        	}
