@@ -45,6 +45,12 @@ public class Task  extends BaseEntity<Long>{
 	@Column(name = "userIds")
 	private  String userIds;
 	
+	/**
+	 * 领取任务人员姓名集合
+	 */
+	@Column(name = "user_names")
+	private  String userNames;
+	
 	
 	/**
 	 * 产品名称
@@ -138,6 +144,12 @@ public class Task  extends BaseEntity<Long>{
 	
 	
 	
+	public String getUserNames() {
+		return userNames;
+	}
+	public void setUserNames(String userNames) {
+		this.userNames = userNames;
+	}
 	public String[] getProcedureIds() {
 		return procedureIds;
 	}
@@ -247,6 +259,7 @@ public class Task  extends BaseEntity<Long>{
 	public void setBacthNumber(String bacthNumber) {
 		this.bacthNumber = bacthNumber;
 	}
+
 	
 	
 	

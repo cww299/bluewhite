@@ -15,9 +15,9 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
-import com.bluewhite.system.user.entity.User;
 
 @Controller
 public class TaskAction {
@@ -32,8 +32,9 @@ private static final Log log = Log.getLog(TaskAction.class);
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(Task.class,"id","name","price","type","users")
-				.addRetainTerm(User.class,"id","userName");
+				.addRetainTerm(Task.class,"id","bacth","productName","userIds","procedureName","number","status","expectTime"
+						,"taskTime","BPrice","type")
+				.addRetainTerm(Bacth.class,"id","bacthNumber");
 	}
 	
 	/**

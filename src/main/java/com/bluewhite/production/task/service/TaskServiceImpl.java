@@ -16,6 +16,7 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
@@ -60,11 +61,11 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				newTask.setProcedureName(procedureDao.findOne(id).getName());
 				//预计完成时间
 				Procedure procedure = procedureDao.findOne(id);
-				newTask.setExpectTime(ProTypeUtils.sumExpectTime(procedure,procedure.getType(),newTask.getNumber()));
+				newTask.setExpectTime(NumUtils.round(ProTypeUtils.sumExpectTime(procedure,procedure.getType(),newTask.getNumber())));
 				//任务价值
-				newTask.setTaskPrice(ProTypeUtils.sumTaskPrice(newTask.getExpectTime(), procedure.getType()));
+				newTask.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(newTask.getExpectTime(), procedure.getType())));
 				//B工资净值
-				newTask.setBPrice(ProTypeUtils.sumBPrice(newTask.getTaskPrice(),  procedure.getType()));
+				newTask.setBPrice(NumUtils.round(ProTypeUtils.sumBPrice(newTask.getTaskPrice(),  procedure.getType())));
 				dao.save(newTask);
 				
 				///员工和任务形成多对多关系
@@ -90,7 +91,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		};
 		bacth.setSumTaskPrice(sumTaskPrice);
 		//计算出该批次的地区差价
-		bacth.setRegionalPrice(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType()));
+		bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType())));
 		
 		bacthDao.save(bacth);
 		return task;
