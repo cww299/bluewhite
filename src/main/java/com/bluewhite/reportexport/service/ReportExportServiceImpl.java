@@ -22,7 +22,7 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.product.entity.Product;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
-import com.bluewhite.production.productionutils.ProTypeUtils;
+import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.reportexport.entity.ProcedurePoi;
 import com.bluewhite.reportexport.entity.ProductPoi;
 import com.bluewhite.reportexport.entity.UserPoi;

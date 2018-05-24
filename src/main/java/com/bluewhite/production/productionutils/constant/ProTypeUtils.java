@@ -1,23 +1,38 @@
-package com.bluewhite.production.productionutils;
+package com.bluewhite.production.productionutils.constant;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
+import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.procedure.entity.Procedure;
-import com.bluewhite.production.productionutils.constant.dao.ProductionConstantDao;
+import com.bluewhite.production.productionutils.constant.service.ProductionConstantService;
 /**
  * 生产控制计算工具类
  * @author zhangliang
  *
  */
+@Component
 public  class ProTypeUtils {
 	
 	@Autowired
-	private static  ProductionConstantDao dao;
+	private  ProductionConstantService service;
+	
+	private static ProTypeUtils proTypeUtils;
+	
+    @PostConstruct
+    public void init() {
+    	proTypeUtils = this;
+    	proTypeUtils.service = this.service;
+    }
+	
+	
 	
 	/**
 	 * 时间常量
@@ -66,10 +81,10 @@ public  class ProTypeUtils {
 	 * 一楼质检
 	 * 放快手包装工秒支出(AC8)
 	 */
-	private static Double getAC8(){
-		return (dao.findByExcelNameAndType("AC5" , 1).getNumber()*ProTypeUtils.EXCELONE
-				*dao.findByExcelNameAndType("AC3" , 1).getNumber()
-				*dao.findByExcelNameAndType("AC7" , 1).getNumber())/ProTypeUtils.TIME/ProTypeUtils.TIME;
+	private static double getAC8(){
+		return (proTypeUtils.service.findByExcelNameAndType("AC5" , 1).getNumber()*ProTypeUtils.EXCELONE
+				*proTypeUtils.service.findByExcelNameAndType("AC3" , 1).getNumber()
+				*proTypeUtils.service.findByExcelNameAndType("AC7" , 1).getNumber())/ProTypeUtils.TIME/ProTypeUtils.TIME;
 	}
 	
 	
@@ -205,7 +220,7 @@ public  class ProTypeUtils {
 		Double sumBPrice = 0.0 ;
 		switch (type) {
 		case 1:// 生产部一楼质检
-			sumBPrice =BPrice*dao.findByExcelNameAndType("AC7" , 1).getNumber();
+			sumBPrice =BPrice*proTypeUtils.service.findByExcelNameAndType("AC7" , 1).getNumber();
 			break;
 		case 2://生产部一楼打包
 			break;
@@ -216,6 +231,29 @@ public  class ProTypeUtils {
 		}
 		return sumBPrice;
 	}
+	
+	/**
+	 * 根据不同的部门，计算出该批次的地区差价
+	 * @param price
+	 * @param type
+	 * @return
+	 */
+	public static Double sumRegionalPrice(Bacth bacth, Integer type) {
+		Double sumRegionalPrice = 0.0 ;
+		switch (type) {
+		case 1:// 生产部一楼质检
+			sumRegionalPrice = bacth.getSumTaskPrice()-(bacth.getBacthHairPrice()/bacth.getBacthDepartmentPrice()*bacth.getSumTaskPrice());
+			break;
+		case 2://生产部一楼打包
+			break;
+		case 3://生产部二楼针工
+			break;
+		default:
+			break;
+		}
+		return sumRegionalPrice;
+	}
+	
 	
 
 }
