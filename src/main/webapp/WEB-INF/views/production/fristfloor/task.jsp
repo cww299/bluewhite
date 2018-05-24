@@ -9,7 +9,7 @@
 <head>
      <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>员工分组</title>
+    <title>任务管理</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
    
@@ -28,7 +28,7 @@
                     <div class="col-md-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">分组信息</h3>
+                                <h3 class="panel-title">任务信息</h3>
                                 <div class="actions pull-right">
                                     <i class="fa fa-expand"></i>
                                     <i class="fa fa-chevron-down"></i>
@@ -38,8 +38,15 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                        	<th class="text-center">组名</th>
-                                            <th class="text-center">人员信息</th>
+                                        	<th class="text-center">批次号</th>
+                                            <th class="text-center">产品名</th>
+                                            <th class="text-center">时间</th>
+                                            <th class="text-center">工序</th>
+                                            <th class="text-center">预计时间</th>
+                                            <th class="text-center">任务价值</th>
+                                            <th class="text-center">b工资净值</th>
+                                            <th class="text-center">数量</th>
+                                            <th class="text-center">完成人</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -145,7 +152,7 @@
 			    var index;
 			    var html = '';
 			    $.ajax({
-				      url:"${ctx}/production/getGroup",
+				      url:"${ctx}/task/allTask",
 				      data:data,
 				      type:"GET",
 				      beforeSend:function(){
@@ -154,6 +161,7 @@
 						  });
 					  }, 
 		      		  success: function (result) {
+		      			  console.log(result)
 		      			 $(result.data).each(function(i,o){
 		      				html +='<tr>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'

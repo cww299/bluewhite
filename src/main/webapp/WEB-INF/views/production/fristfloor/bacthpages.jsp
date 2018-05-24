@@ -208,7 +208,8 @@
 									  		type:1,
 								  			name:$('#name').val(),
 								  			bacthNumber:$('#number').val(),
-								  			
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(),
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -389,7 +390,7 @@
 										$(result.data).each(function(i,o){
 										
 										$(o.users).each(function(i,o){
-											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'">'+o.userName+'</input></div>'
+											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input></div>'
 										})
 										})
 										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
@@ -439,6 +440,10 @@
 								$(".stuCheckBox:checked").each(function() {   
 								    arr.push($(this).val());   
 								}); 
+							  var username=new Array()
+							  $(".stuCheckBox:checked").each(function() {   
+								  username.push($(this).data('username'));   
+								});
 							  if(values.length<=0){
 									return layer.msg("至少选择一个工序！", {icon: 2});
 								}
@@ -453,6 +458,7 @@
 										procedureIds:values,
 										userIds:arr,
 										number:number,
+										userNames:username,
 										productName:productName
 								}
 								
@@ -508,8 +514,8 @@
 				  			type:1,
 				  			name:$('#name').val(),
 				  			bacthNumber:$('#number').val(),
-				  			/* orderTimeBegin:$("#startTime").val(),
-				  			orderTimeEnd:$("#endTime").val(), */
+				  			 orderTimeBegin:$("#startTime").val(),
+				  			orderTimeEnd:$("#endTime").val(), 
 				  	}
 		            self.loadPagination(data);
 				});
