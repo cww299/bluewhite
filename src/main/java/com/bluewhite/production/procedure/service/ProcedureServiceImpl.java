@@ -85,10 +85,11 @@ public class ProcedureServiceImpl extends BaseServiceImpl<Procedure, Long> imple
 			 Bacth bacth = bacthDao.findOne(param.getBacthId());
 			 //循环出所有任务，当所任务的工序和当前工序想匹配时，记录其数值
 			 	for(Procedure pro : list){
+			 		//任务总数
 			 		int number = bacth.getNumber();
 					if(bacth.getTasks().size()>0){
 						 for(Task task : bacth.getTasks()){
-							 if(task.getProcedureId()==pro.getId()){
+							 if(task.getProcedureId().equals(pro.getId())){
 								 number = number - task.getNumber();
 							 }
 						 }

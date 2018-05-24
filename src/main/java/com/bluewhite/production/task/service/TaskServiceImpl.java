@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.production.bacth.dao.BacthDao;
@@ -50,11 +51,22 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		Double sumTaskPrice = 0.0;
 		//将工序ids分成多个任务
 		if(task.getProcedureIds().length>0){
+			Task newTask = null;
 			for (int i = 0; i < task.getProcedureIds().length; i++) {
+				newTask = new Task();
+				BeanCopyUtils.copyNullProperties(task,newTask);
 				Long id = Long.parseLong(task.getProcedureIds()[i]);
-				task.setProcedureId(id);
-				task.setProcedureName(procedureDao.findOne(id).getName());
-				Task newTask = dao.save(task);
+				newTask.setProcedureId(id);
+				newTask.setProcedureName(procedureDao.findOne(id).getName());
+				//预计完成时间
+				Procedure procedure = procedureDao.findOne(id);
+				newTask.setExpectTime(ProTypeUtils.sumExpectTime(procedure,procedure.getType(),newTask.getNumber()));
+				//任务价值
+				newTask.setTaskPrice(ProTypeUtils.sumTaskPrice(newTask.getExpectTime(), procedure.getType()));
+				//B工资净值
+				newTask.setBPrice(ProTypeUtils.sumBPrice(newTask.getTaskPrice(),  procedure.getType()));
+				dao.save(newTask);
+				
 				///员工和任务形成多对多关系
 				if (task.getUsersIds().length>0) {
 					for (int j = 0; j < task.getUsersIds().length; j++) {
@@ -64,14 +76,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						userDao.save(user);
 					}
 				}
-				//预计完成时间
-				Procedure procedure = procedureDao.findOne(newTask.getProcedureId());
-				newTask.setExpectTime(ProTypeUtils.sumExpectTime(procedure,procedure.getType(),newTask.getNumber()));
-				//任务价值
-				newTask.setTaskPrice(ProTypeUtils.sumTaskPrice(newTask.getExpectTime(), procedure.getType()));
-				//B工资净值
-				newTask.setBPrice(ProTypeUtils.sumBPrice(newTask.getTaskPrice(),  procedure.getType()));
-				dao.save(newTask);
 			}
 		}
 		//查出该批次的所有任务
