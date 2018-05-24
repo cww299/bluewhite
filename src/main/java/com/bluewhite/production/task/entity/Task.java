@@ -96,6 +96,7 @@ public class Task  extends BaseEntity<Long>{
 	@Column(name = "status")
     private Integer  status;
     
+	
     /**
      * 预计完成时间
      */
