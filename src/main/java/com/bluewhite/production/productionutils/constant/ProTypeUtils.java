@@ -188,6 +188,29 @@ public  class ProTypeUtils {
 	
 	
 	/**
+	 * 根据不同的部门，计算实际完成时间
+	 * @param price
+	 * @param type
+	 * @return
+	 */
+	public static Double sumTaskTime(Double expectTime, Integer type,Integer number) {
+		Double sumExpectTime = 0.0 ;
+		switch (type) {
+		case 1:// 生产部一楼质检
+			sumExpectTime = expectTime*number/ProTypeUtils.TIME;
+			break;
+		case 2://生产部一楼打包
+			break;
+		case 3://生产部二楼针工
+			break;
+		default:
+			break;
+		}
+		return sumExpectTime;
+	}
+	
+	
+	/**
 	 * 根据不同的部门，计算预计任务价值
 	 * @param price
 	 * @param type
