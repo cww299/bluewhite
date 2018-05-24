@@ -53,7 +53,6 @@
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
-                                    <button type="button" id="addgroup" class="btn btn-success btn-3d pull-right">新增小组</button>
                                 </table>
                                 <div id="pager" class="pull-right">
                                 
@@ -151,6 +150,7 @@
 			  this.loadPagination = function(data){
 			    var index;
 			    var html = '';
+			    var htmlto="";
 			    $.ajax({
 				      url:"${ctx}/task/allTask",
 				      data:data,
@@ -161,8 +161,9 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			  console.log(result)
 		      			 $(result.data.rows).each(function(i,o){
+		      				 htmlto +=o.userNames+"&nbsp&nbsp&nbsp&nbsp"
+		      				$('.modal-body').html(htmlto);
 		      				html +='<tr>'
 		      				+'<td class="text-center edit name">'+o.bacth.bacthNumber+'</td>'
 		      				+'<td class="text-center edit name">'+o.productName+'</td>'
@@ -196,6 +197,7 @@
 					      }
 					    });  
 					   	layer.close(index);
+					   
 					   	 $("#tablecontent").html(html); 
 					   	self.loadEvents();
 					   
@@ -266,7 +268,7 @@
 					 if(display=='none'){
 							$("#savegroup").css("display","block");  
 						}
-					var postData={
+					/* var postData={
 							id:id,
 					}
 					 var arr=new Array();
@@ -292,7 +294,7 @@
 							layer.msg("操作失败！", {icon: 2});
 							layer.close(index);
 						}
-					});
+					}); */
 					
 					
 					
@@ -301,64 +303,7 @@
 				
 			}
 			this.events = function(){
-				//新增小组
-				$('#addgroup').on('click',function(){
-					
-					var _index
-					var index
-					var postData
-					var dicDiv=$('#addDictDivType');
-					_index = layer.open({
-						  type: 1,
-						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '30%'], 
-						  btnAlign: 'c',//宽高
-						  maxmin: true,
-						  title:"新增小组",
-						  content: dicDiv,
-						  btn: ['确定', '取消'],
-						  yes:function(index, layero){
-							 
-							  postData={
-									  name:$("#groupName").val(),
-									  type:1,
-							  }
-							  $.ajax({
-									url:"${ctx}/production/addGroup",
-									data:postData,
-						            traditional: true,
-									type:"post",
-									beforeSend:function(){
-										index = layer.load(1, {
-											  shade: [0.1,'#fff'] //0.1透明度的白色背景
-											});
-									},
-									
-									success:function(result){
-										if(0==result.code){
-											layer.msg("添加成功！", {icon: 1});
-										 self.loadPagination(data); 
-											$('#addDictDivType').hide();
-											
-										}else{
-											layer.msg("添加失败", {icon: 2});
-										}
-										
-										layer.close(index);
-									},error:function(){
-										layer.msg("操作失败！", {icon: 2});
-										layer.close(index);
-									}
-								});
-							},
-						  end:function(){
-							  $('#addDictDivType').hide();
-						
-							  $('.addDictDivTypeForm')[0].reset(); 
-							
-						  }
-					});
-				})
+				
 			}
    	}
    			var login = new Login();
