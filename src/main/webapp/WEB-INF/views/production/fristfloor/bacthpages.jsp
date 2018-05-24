@@ -208,6 +208,7 @@
 									  		type:1,
 								  			name:$('#name').val(),
 								  			bacthNumber:$('#number').val(),
+								  			
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -425,7 +426,7 @@
 						  area: ['60%', '60%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
-						  title:"新增小组",
+						  title:"分配任务",
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
@@ -469,7 +470,7 @@
 									success:function(result){
 										if(0==result.code){
 											layer.msg("添加成功！", {icon: 1});
-										 self.loadPagination(data); 
+										 $('.addDictDivTypeForm')[0].reset(); 
 											$("#addDictDivType").hide();
 											
 										}else{
@@ -507,10 +508,9 @@
 				  			type:1,
 				  			name:$('#name').val(),
 				  			bacthNumber:$('#number').val(),
-				  			startTime:$("#startTime").val(),
-				  			endTime:$("#endTime").val(),
+				  			/* orderTimeBegin:$("#startTime").val(),
+				  			orderTimeEnd:$("#endTime").val(), */
 				  	}
-					console.log(data)
 		            self.loadPagination(data);
 				});
 				
