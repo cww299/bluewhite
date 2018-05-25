@@ -99,8 +99,15 @@
 				<div style="height: 30px"></div>
 				<form class="form-horizontal addDictDivTypeForm">
 					<div class="row col-xs-12  col-sm-12  col-md-12 ">
-
+			<div class="form-group">
+                                        <label class="col-sm-3 control-label">任务分配时间:</label>
+                                        <div class="col-sm-6">
+                                            <input id="Time" placeholder="时间可不填" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#Time', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                                        </div>
+                 </div>
 						<div class="form-group">
+						
                            <label class="col-sm-3 col-md-2 control-label">数量</label>
                               <div class="col-sm-2 col-md-2">
                                   <input type="text" class="form-control sumnumber">
@@ -125,6 +132,8 @@
                                 </div>
                                  <div class="col-sm-2 select"></div>
                     	</div>
+                    	
+                 </div>
 				</div>
 
 				</form>
@@ -470,7 +479,8 @@
 										userNames:username,
 										productName:productName,
 										expectTime:expectTime,
-										bacthNumber:bacthNumber
+										bacthNumber:bacthNumber,
+										allotTime:$('#Time').val(),
 								}
 								
 							    $.ajax({

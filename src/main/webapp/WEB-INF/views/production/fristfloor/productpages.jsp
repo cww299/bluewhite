@@ -608,7 +608,6 @@
 					var del=$(this);
 					var id = $(this).parent().data('id');
 					var rest = $(this).val();
-					console.log(id)
 					if(id!=undefined){
 					$.ajax({
 						url:"${ctx}/production/addProcedure",
