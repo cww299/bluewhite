@@ -159,6 +159,13 @@
                                             <input type="text" id="remarks" class="form-control">
                                         </div>
                  </div>
+                 <div class="form-group">
+                                        <label class="col-sm-3 control-label">批次时间:</label>
+                                        <div class="col-sm-6">
+                                            <input id="Time" placeholder="时间可不填" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#Time', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                                        </div>
+                 </div>
 				</form>
 </div>
 </div>       
@@ -177,6 +184,7 @@
      <script src="${ctx }/static/js/laypage/laypage.js"></script> 
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
+    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
     <script>
  
   /*  $(document).ready(function() {
@@ -292,7 +300,8 @@
 									  remarks:$('#remarks').val(),
 									  bacthDepartmentPrice:bacthDepartmentPrice,
 									  bacthHairPrice:bacthHairPrice,
-									  type:1
+									  type:1,
+									  allotTime:$('#Time').val(),
 							  }
 							   $.ajax({
 									url:"${ctx}/bacth/addBacth",

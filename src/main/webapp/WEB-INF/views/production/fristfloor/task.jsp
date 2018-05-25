@@ -164,7 +164,7 @@
 		      			 $(result.data.rows).each(function(i,o){
 		      				
 		      				html +='<tr>'
-		      				+'<td class="text-center edit name">'+o.bacth.bacthNumber+'</td>'
+		      				+'<td class="text-center edit name">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center edit name">'+o.productName+'</td>'
 		      				+'<td class="text-center edit name">'+o.createdAt+'</td>'
 		      				+'<td class="text-center edit name">'+o.procedureName+'</td>'

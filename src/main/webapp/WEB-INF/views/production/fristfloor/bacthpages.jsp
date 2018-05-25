@@ -194,7 +194,7 @@
 		      				+'<td class="text-center  bacthDepartmentPrice">'+o.bacthDepartmentPrice+'</td>'
 		      				+'<td class="text-center  bacthHairPrice">'+o.bacthHairPrice+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d addDict" data-id='+o.id+' data-proid='+o.product.id+' data-proname='+o.product.name+'>分配</button> <button class="btn btn-sm btn-warning btn-3d updateremake" data-id='+o.id+'>编辑</button></td></tr>' 
+							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button> <button class="btn btn-sm btn-warning btn-3d updateremake" data-id='+o.id+'>编辑</button></td></tr>' 
 							
 		      			}); 
 				        //显示分页
@@ -290,6 +290,7 @@
 					var productId=$(this).data('proid')
 					var productName=$(this).data('proname')
 					var bacthId=$(this).data('id')
+					var bacthNumber=$(this).data('bacthnumber')
 					var _index
 					var index
 					var postData
@@ -468,7 +469,8 @@
 										number:number,
 										userNames:username,
 										productName:productName,
-										expectTime:expectTime
+										expectTime:expectTime,
+										bacthNumber:bacthNumber
 								}
 								
 							    $.ajax({
