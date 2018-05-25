@@ -34,6 +34,37 @@
                                     <i class="fa fa-chevron-down"></i>
                                 </div>
                             </div>
+        <div class="row" style="height: 30px">
+			<div class="col-xs-8 col-sm-8  col-md-8">
+				<form class="form-search" >
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-12">
+							<div class="input-group"> 
+								<table><tr><td>批次号:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
+								<td>产品名称:</td><td><input type="text" name="name" id="name" placeholder="请输入产品名称" class="form-control search-query name" /></td>
+								<td>开始时间:</td>
+								<td>
+								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
+								</td>
+				<td>结束时间:</td>
+				<td>
+					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
+             onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+								</td>
+								</tr></table> 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtask">
+										查找
+										<i class="icon-search icon-on-right bigger-110"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
                             <div class="panel-body">
                                 <table class="table table-hover">
                                     <thead>
@@ -112,7 +143,7 @@
      <script src="${ctx }/static/js/laypage/laypage.js"></script> 
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-    
+    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
     <script>
    jQuery(function($){
    	var Login = function(){
@@ -129,7 +160,7 @@
 			 var data={
 						page:1,
 				  		size:13,	
-
+				  		type:1,
 				} 
 			this.init = function(){
 				
@@ -160,7 +191,7 @@
 		      				+'<td class="text-center  bacthDepartmentPrice">'+o.bacthDepartmentPrice+'</td>'
 		      				+'<td class="text-center  bacthHairPrice">'+o.bacthHairPrice+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d addDict" data-id='+o.id+' data-proid='+o.product.id+' data-proname='+o.product.name+'>分配</button> <button class="btn btn-sm btn-primary btn-3d updateremake" data-id='+o.id+'>编辑</button></td></tr>' 
+							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d addDict" data-id='+o.id+' data-proid='+o.product.id+' data-proname='+o.product.name+'>分配</button> <button class="btn btn-sm btn-warning btn-3d updateremake" data-id='+o.id+'>编辑</button></td></tr>' 
 							
 		      			}); 
 				        //显示分页
@@ -175,6 +206,10 @@
 						        			page:obj.curr,
 									  		size:13,
 									  		type:1,
+								  			name:$('#name').val(),
+								  			bacthNumber:$('#number').val(),
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(),
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -355,7 +390,7 @@
 										$(result.data).each(function(i,o){
 										
 										$(o.users).each(function(i,o){
-											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'">'+o.userName+'</input></div>'
+											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input></div>'
 										})
 										})
 										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
@@ -392,7 +427,7 @@
 						  area: ['60%', '60%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
-						  title:"新增小组",
+						  title:"分配任务",
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
@@ -405,6 +440,10 @@
 								$(".stuCheckBox:checked").each(function() {   
 								    arr.push($(this).val());   
 								}); 
+							  var username=new Array()
+							  $(".stuCheckBox:checked").each(function() {   
+								  username.push($(this).data('username'));   
+								});
 							  if(values.length<=0){
 									return layer.msg("至少选择一个工序！", {icon: 2});
 								}
@@ -415,13 +454,14 @@
 								
 								var postData = {
 										type:1,
-										batchId:that.data("id"),
+										bacthId:that.data("id"),
 										procedureIds:values,
 										userIds:arr,
 										number:number,
+										userNames:username,
 										productName:productName
 								}
-								console.log(postData)
+								
 							    $.ajax({
 									url:"${ctx}/task/addTask",
 									data:postData,
@@ -436,8 +476,8 @@
 									success:function(result){
 										if(0==result.code){
 											layer.msg("添加成功！", {icon: 1});
-										 self.loadPagination(data); 
-											$('#addDictDivType').hide();
+										 $('.addDictDivTypeForm')[0].reset(); 
+											$("#addDictDivType").hide();
 											
 										}else{
 											layer.msg("添加失败", {icon: 2});
@@ -451,9 +491,9 @@
 								});  
 							},
 						   end:function(){
-							  $('#addDictDivType').hide();
-						
 							  $('.addDictDivTypeForm')[0].reset(); 
+							  $("#addDictDivType").hide();
+						
 							
 						  } 
 					});
@@ -464,13 +504,21 @@
 				
 			}
 			
-			this.loadworking=function(){
-					
-				  
-				
-			}
+			
 			this.events = function(){
-				//新增小组
+				//查询
+				$('.searchtask').on('click',function(){
+					var data = {
+				  			page:1,
+				  			size:13,
+				  			type:1,
+				  			name:$('#name').val(),
+				  			bacthNumber:$('#number').val(),
+				  			 orderTimeBegin:$("#startTime").val(),
+				  			orderTimeEnd:$("#endTime").val(), 
+				  	}
+		            self.loadPagination(data);
+				});
 				
 			}
    	}

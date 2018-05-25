@@ -3467,7 +3467,8 @@ label.valid {
   color: #edce8c;
 }
 .theme-default #header {
-  background: #13161c;
+ /*  background: #13161c; */
+  background-image: url('../images/3.png');
 }
 .theme-default #header .logo,
 .theme-default #header button.sidebar-toggle,
