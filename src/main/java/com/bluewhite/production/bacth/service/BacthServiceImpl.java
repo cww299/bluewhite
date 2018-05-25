@@ -53,7 +53,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 		        	}
 		            //按时间过滤
 					if (!StringUtils.isEmpty(param.getOrderTimeBegin()) &&  !StringUtils.isEmpty(param.getOrderTimeEnd()) ) {
-						predicate.add(cb.between(root.get("createdAt").as(Date.class),
+						predicate.add(cb.between(root.get("allotTime").as(Date.class),
 								param.getOrderTimeBegin(),
 								param.getOrderTimeEnd()));
 					}

@@ -24,11 +24,11 @@ public class Group  extends BaseEntity<Long>{
 	@Column(name = "name")
 	private String name;
 	
-	/**
-	 * 到岗小时预计收入
-	 */
-	@Column(name = "price")
-	private Double price;
+//	/**
+//	 * 到岗小时预计收入
+//	 */
+//	@Column(name = "price")
+//	private Double price;
 	
 	/**
 	 * 分组所属部门类型 (1=一楼质检，2=一楼包装，3=二楼针工)
@@ -68,13 +68,13 @@ public class Group  extends BaseEntity<Long>{
 		this.name = name;
 	}
 
-	public Double getPrice() {
-		return price;
-	}
-
-	public void setPrice(Double price) {
-		this.price = price;
-	}
+//	public Double getPrice() {
+//		return price;
+//	}
+//
+//	public void setPrice(Double price) {
+//		this.price = price;
+//	}
 	
 	
 	

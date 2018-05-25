@@ -19,6 +19,8 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
+import com.bluewhite.production.finance.dao.PayBDao;
+import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
@@ -37,6 +39,8 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	private ProcedureDao procedureDao;
 	@Autowired
 	private BacthDao bacthDao;
+	@Autowired
+	private PayBDao payBDao;
 	
 	
 	
@@ -65,6 +69,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				if(newTask.getExpectTime()==null){
 					newTask.setExpectTime(NumUtils.round(ProTypeUtils.sumExpectTime(procedure,procedure.getType(),newTask.getNumber())));
 				}
+				
 				//实际完成时间（1.工序类型不是返工，预计时间等于实际时间，2工序类型是返工，实际完成时间根据公式的出）
 				if(newTask.getExpectTime()==null){
 					newTask.setTaskTime(newTask.getExpectTime());
@@ -97,6 +102,18 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 							user.setTaskIds(user.getTaskIds());
 						}
 						userDao.save(user);
+						//给予每个员工b工资
+						PayB payB  = new PayB();
+						payB.setUserId(userid);
+						payB.setUserName(user.getUserName());
+						payB.setBacth(newTask.getBacth().getBacthNumber());
+						payB.setBacthId(newTask.getBacthId());
+						payB.setProductName(newTask.getProductName());
+						payB.setTaskId(newTask.getId());
+						payB.setType(newTask.getType());
+						//计算B工资数值
+						payB.setPayNumber(newTask.getPayB()/task.getUsersIds().length);
+						payBDao.save(payB);
 					}
 				}
 			}
@@ -137,7 +154,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	        	}
 	            //按时间过滤
 				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) &&  !StringUtils.isEmpty(param.getOrderTimeEnd()) ) {
-					predicate.add(cb.between(root.get("createdAt").as(Date.class),
+					predicate.add(cb.between(root.get("allotTime").as(Date.class),
 							param.getOrderTimeBegin(),
 							param.getOrderTimeEnd()));
 				}
