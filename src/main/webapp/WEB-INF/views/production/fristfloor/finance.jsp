@@ -36,37 +36,27 @@
                             </div>
                              <div class="panel-body">
                                 <div class="tab-wrapper tab-primary">
-                                    <ul class="nav nav-tabs">
-                                        <li class="active"><a href="#home1" data-toggle="tab">Home</a>
+                                    <ul class="nav nav-tabs col-md-12">
+                                        <li class="active col-md-4"><a href="#home1" data-toggle="tab">A工资流水详情</a>
                                         </li>
-                                        <li><a href="#profile1" data-toggle="tab">Profile</a>
+                                        <li class="col-md-4"><a href="#profile1" data-toggle="tab">B工资流水详情</a>
                                         </li>
-                                        <li class="dropdown">
-                                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Dropdown <span class="caret"></span></a>
-                                            <ul class="dropdown-menu">
-                                                <li><a href="#">Something</a>
-                                                </li>
-                                                <li><a href="#">Something Else</a>
-                                                </li>
-                                                <li class="divider"></li>
-                                                <li><a href="#">And one more thing</a>
-                                                </li>
-                                            </ul>
+                                        <li class="col-md-4"><a href="#profile2" data-toggle="tab">杂工资流水详情</a>
                                         </li>
                                     </ul>
                                     <div class="tab-content">
                                         <div class="tab-pane active" id="home1">
-                                            <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher
-                                                retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi
-                                                qui.
+                                            <p>1
                                             </p>
                                         </div>
                                         <div class="tab-pane" id="profile1">
                                             <p>
-                                                Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo
-                                                enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, vero magna velit sapiente labore
-                                                stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint qui sapiente
-                                                accusamus tattooed echo park.
+                                                2
+                                            </p>
+                                        </div>
+                                        <div class="tab-pane" id="profile2">
+                                            <p>
+                                                3
                                             </p>
                                         </div>
                                     </div>
