@@ -93,7 +93,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 	public CommonResponse allTask(HttpServletRequest request,Task task,PageParameter page) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(clearCascadeJSON.format(taskService.findPages(task, page)).toJSON());
-		cr.setMessage("添加成功");
+		cr.setMessage("查询成功");
 		return cr;
 	}
 	
