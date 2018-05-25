@@ -142,7 +142,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				}
 	        	//按批次号
 	        	if(param.getBacthNumber()!=null){
-	        		predicate.add(cb.equal(root.get("bacth").get("bacthNumber").as(String.class),param.getBacthNumber()));
+	        		predicate.add(cb.equal(root.get("bacthNumber").as(String.class),param.getBacthNumber()));
 	        	}
 	        	//按产品名称
 	        	if(!StringUtils.isEmpty(param.getProductName())){
