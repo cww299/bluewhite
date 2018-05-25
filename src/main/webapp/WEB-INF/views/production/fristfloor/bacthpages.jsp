@@ -184,10 +184,11 @@
 						  });
 					  }, 
 		      		  success: function (result) {
+		      			  
 		      			 $(result.data.rows).each(function(i,o){
 		      				 html +='<tr>'
 		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
-		      				+'<td class="text-center  createdAt">'+o.createdAt+'</td>'
+		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
 		      				+'<td class="text-center  name">'+o.product.name+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center  bacthDepartmentPrice">'+o.bacthDepartmentPrice+'</td>'
