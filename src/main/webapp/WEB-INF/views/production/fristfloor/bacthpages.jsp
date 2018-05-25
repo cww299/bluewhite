@@ -99,16 +99,25 @@
 				<div style="height: 30px"></div>
 				<form class="form-horizontal addDictDivTypeForm">
 					<div class="row col-xs-12  col-sm-12  col-md-12 ">
-
+			<div class="form-group">
+                                        <label class="col-sm-3 control-label">任务分配时间:</label>
+                                        <div class="col-sm-6">
+                                            <input id="Time" placeholder="时间可不填" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#Time', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                                        </div>
+                 </div>
 						<div class="form-group">
+						
                            <label class="col-sm-3 col-md-2 control-label">数量</label>
                               <div class="col-sm-2 col-md-2">
                                   <input type="text" class="form-control sumnumber">
                               </div>
                                <div class="col-sm-2 col-md-1"></div>
-                            <label class="col-sm-3 col-md-2 control-label">实际完成人数</label>
+                               <div id="dis" style="display: none">
+                            <label class="col-sm-3 col-md-2 control-label" >预计完成时间</label>
                                 <div class="col-sm-2 col-md-2">
-                                  <input type="text" class="form-control">
+                                  <input type="text" class="form-control sumtime">
+                                </div>
                                 </div>
                     	</div>
                     	
@@ -123,6 +132,8 @@
                                 </div>
                                  <div class="col-sm-2 select"></div>
                     	</div>
+                    	
+                 </div>
 				</div>
 
 				</form>
@@ -182,16 +193,17 @@
 						  });
 					  }, 
 		      		  success: function (result) {
+		      			  
 		      			 $(result.data.rows).each(function(i,o){
 		      				 html +='<tr>'
 		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
-		      				+'<td class="text-center  createdAt">'+o.createdAt+'</td>'
+		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
 		      				+'<td class="text-center  name">'+o.product.name+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center  bacthDepartmentPrice">'+o.bacthDepartmentPrice+'</td>'
 		      				+'<td class="text-center  bacthHairPrice">'+o.bacthHairPrice+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d addDict" data-id='+o.id+' data-proid='+o.product.id+' data-proname='+o.product.name+'>分配</button> <button class="btn btn-sm btn-warning btn-3d updateremake" data-id='+o.id+'>编辑</button></td></tr>' 
+							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button> <button class="btn btn-sm btn-warning btn-3d updateremake" data-id='+o.id+'>编辑</button></td></tr>' 
 							
 		      			}); 
 				        //显示分页
@@ -287,6 +299,7 @@
 					var productId=$(this).data('proid')
 					var productName=$(this).data('proname')
 					var bacthId=$(this).data('id')
+					var bacthNumber=$(this).data('bacthnumber')
 					var _index
 					var index
 					var postData
@@ -311,6 +324,11 @@
 			      			$(".selectchang").change(function(){
 			      				var htmlfv="";
 			      				var	id=$(this).val()
+			      				if(id==109){
+			      					$('#dis').css("display","block")
+			      				}else{
+			      					$('#dis').css("display","none")
+			      				}
 								   var data={
 										   productId:productId,
 										   type:1,
@@ -451,7 +469,7 @@
 									return layer.msg("至少选择一个员工！", {icon: 2});
 								}
 								number=$(".sumnumber").val();
-								
+								expectTime=$(".sumtime").val();
 								var postData = {
 										type:1,
 										bacthId:that.data("id"),
@@ -459,7 +477,10 @@
 										userIds:arr,
 										number:number,
 										userNames:username,
-										productName:productName
+										productName:productName,
+										expectTime:expectTime,
+										bacthNumber:bacthNumber,
+										allotTime:$('#Time').val(),
 								}
 								
 							    $.ajax({
@@ -475,9 +496,11 @@
 									
 									success:function(result){
 										if(0==result.code){
+										  $('.addDictDivTypeForm')[0].reset(); 
+										$('.checkworking').text("");
+										  $('.select').text("");
 											layer.msg("添加成功！", {icon: 1});
-										 $('.addDictDivTypeForm')[0].reset(); 
-											$("#addDictDivType").hide();
+											
 											
 										}else{
 											layer.msg("添加失败", {icon: 2});

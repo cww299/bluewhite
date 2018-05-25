@@ -34,6 +34,39 @@
                                     <i class="fa fa-chevron-down"></i>
                                 </div>
                             </div>
+                            
+                            <div class="row" style="height: 30px">
+			<div class="col-xs-8 col-sm-8  col-md-8">
+				<form class="form-search" >
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-12">
+							<div class="input-group"> 
+								<table><tr><td>批次号:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
+								<td>产品名称:</td><td><input type="text" name="name" id="name" placeholder="请输入产品名称" class="form-control search-query name" /></td>
+								<td>开始时间:</td>
+								<td>
+								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
+								</td>
+				<td>结束时间:</td>
+				<td>
+					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
+             onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+								</td>
+								</tr></table> 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtask">
+										查找
+										<i class="icon-search icon-on-right bigger-110"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+                            
                             <div class="panel-body">
                                 <table class="table table-hover">
                                     <thead>
@@ -120,7 +153,7 @@
      <script src="${ctx }/static/js/laypage/laypage.js"></script> 
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-    
+    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
     <script>
    jQuery(function($){
    	var Login = function(){
@@ -161,20 +194,20 @@
 						  });
 					  }, 
 		      		  success: function (result) {
+		      			 
 		      			 $(result.data.rows).each(function(i,o){
-		      				 htmlto +=o.userNames+"&nbsp&nbsp&nbsp&nbsp"
-		      				$('.modal-body').html(htmlto);
+		      				
 		      				html +='<tr>'
-		      				+'<td class="text-center edit name">'+o.bacth.bacthNumber+'</td>'
+		      				+'<td class="text-center edit name">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center edit name">'+o.productName+'</td>'
-		      				+'<td class="text-center edit name">'+o.createdAt+'</td>'
+		      				+'<td class="text-center edit name">'+o.allotTime+'</td>'
 		      				+'<td class="text-center edit name">'+o.procedureName+'</td>'
-		      				+'<td class="text-center edit name">'+o.expectTime+'</td>'
-		      				+'<td class="text-center edit name">'+o.taskPrice+'</td>'
-		      				+'<td class="text-center edit name">'+o.payB+'</td>'
+		      				+'<td class="text-center edit name">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
+		      				+'<td class="text-center edit name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
+		      				+'<td class="text-center edit name">'+parseFloat((o.payB).toFixed(4))+'</td>'
 		      				+'<td class="text-center edit name">'+o.number+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-3d btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d update" data-id='+o.id+'>编辑</button></td></tr>'
+							+'<td class="text-center"><button class="btn btn-sm btn-danger btn-3d delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -189,7 +222,10 @@
 						        			page:obj.curr,
 									  		size:13,
 									  		type:1,
-									  		name:$('#name').val(),
+									  		productName:$('#name').val(),
+								  			bacthNumber:$('#number').val(),
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(),
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -210,35 +246,17 @@
 			
 			this.loadEvents = function(){
 				//修改方法
-				$('.update').on('click',function(){
-					if($(this).text() == "编辑"){
-						$(this).text("保存")
-						
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
-				        });
-					}else{
-							$(this).text("编辑")
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							
+				$('.delete').on('click',function(){
 							var postData = {
 									id:$(this).data('id'),
-									name:$(this).parent().parent('tr').find(".name").text(),
 							}
 							
 							var index;
+							 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
 							$.ajax({
-								url:"${ctx}/production/addGroup",
+								url:"${ctx}/task/delete",
 								data:postData,
-								type:"POST",
+								type:"GET",
 								beforeSend:function(){
 									index = layer.load(1, {
 										  shade: [0.1,'#fff'] //0.1透明度的白色背景
@@ -247,10 +265,11 @@
 								
 								success:function(result){
 									if(0==result.code){
-									layer.msg("修改成功！", {icon: 1});
+									layer.msg("删除成功！", {icon: 1});
+									self.loadPagination(data)
 									layer.close(index);
 									}else{
-										layer.msg("修改失败！", {icon: 1});
+										layer.msg("删除失败！", {icon: 1});
 										layer.close(index);
 									}
 								},error:function(){
@@ -258,7 +277,7 @@
 									layer.close(index);
 								}
 							});
-					}
+							 })
 				})
 				
 				//人员详细显示方法
@@ -268,13 +287,13 @@
 					 if(display=='none'){
 							$("#savegroup").css("display","block");  
 						}
-					/* var postData={
+					 var postData={
 							id:id,
 					}
 					 var arr=new Array();
 					var html="";
 					$.ajax({
-						url:"${ctx}/production/getGroupOne",
+						url:"${ctx}/task/taskUser",
 						data:postData,
 						type:"GET",
 						beforeSend:function(){
@@ -284,7 +303,7 @@
 						},
 						
 						success:function(result){
-							$(result.data.users).each(function(i,o){
+							$(result.data).each(function(i,o){
 							html+=o.userName+"&nbsp&nbsp&nbsp&nbsp"
 							})
 							$('.modal-body').html(html);
@@ -294,7 +313,7 @@
 							layer.msg("操作失败！", {icon: 2});
 							layer.close(index);
 						}
-					}); */
+					}); 
 					
 					
 					
@@ -303,7 +322,19 @@
 				
 			}
 			this.events = function(){
-				
+				$('.searchtask').on('click',function(){
+					var data = {
+				  			page:1,
+				  			size:13,
+				  			type:1,
+				  			productName:$('#name').val(),
+				  			bacthNumber:$('#number').val(),
+				  			orderTimeBegin:$("#startTime").val(),
+				  			orderTimeEnd:$("#endTime").val(), 
+				  	}
+					console.log(data)
+		            self.loadPagination(data);
+				});
 			}
    	}
    			var login = new Login();

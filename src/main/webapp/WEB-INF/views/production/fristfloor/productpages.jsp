@@ -159,6 +159,13 @@
                                             <input type="text" id="remarks" class="form-control">
                                         </div>
                  </div>
+                 <div class="form-group">
+                                        <label class="col-sm-3 control-label">批次时间:</label>
+                                        <div class="col-sm-6">
+                                            <input id="Time" placeholder="时间可不填" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#Time', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                                        </div>
+                 </div>
 				</form>
 </div>
 </div>       
@@ -177,6 +184,7 @@
      <script src="${ctx }/static/js/laypage/laypage.js"></script> 
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
+    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
     <script>
  
   /*  $(document).ready(function() {
@@ -292,7 +300,8 @@
 									  remarks:$('#remarks').val(),
 									  bacthDepartmentPrice:bacthDepartmentPrice,
 									  bacthHairPrice:bacthHairPrice,
-									  type:1
+									  type:1,
+									  allotTime:$('#Time').val(),
 							  }
 							   $.ajax({
 									url:"${ctx}/bacth/addBacth",
@@ -599,7 +608,6 @@
 					var del=$(this);
 					var id = $(this).parent().data('id');
 					var rest = $(this).val();
-					console.log(id)
 					if(id!=undefined){
 					$.ajax({
 						url:"${ctx}/production/addProcedure",
@@ -638,22 +646,29 @@
 				$('.add').on('click',function(){
 					var index;
 					var postData;
-					postData={
-							name:$(".workingname").val(),
-							workingTime:$(".workingtime").val(),
-							  type:1,
-							  productId:$(this).data('productid'),
-							  procedureTypeId:$(this).parent().parent().find("input:radio:checked").val(),
-					  }
+					var workingtime=$(".workingtime").val();
 					if($(this).parent().parent().find("input:radio:checked").val()==null){
 						return 	layer.msg("工序类型不能为空！", {icon: 2});
 					}
 					if($(".workingname").val()==""){
 						return 	layer.msg("工序名不能为空！", {icon: 2});
 					}
-					if($(".workingtime").val()==""){
+					/* if($(".workingtime").val()==""){
 						return 	layer.msg("工序时间不能为空！", {icon: 2});
+					} */
+					
+					if($(this).parent().parent().find("input:radio:checked").val()==109){
+						workingtime=0.0;
+						
+						
 					}
+					postData={
+							name:$(".workingname").val(),
+							workingTime:workingtime,
+							  type:1,
+							  productId:$(this).data('productid'),
+							  procedureTypeId:$(this).parent().parent().find("input:radio:checked").val(),
+					  }
 					
 					   $.ajax({
 							url:"${ctx}/production/addProcedure",
