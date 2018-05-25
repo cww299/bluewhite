@@ -91,13 +91,25 @@ public class Bacth extends BaseEntity<Long>{
 	@Column(name = "regional_price")
     private Double regionalPrice;
 	
+	/**
+	 * 总返工任务价值(实际返工成本费用总和)
+	 */
+	@Column(name = "sum_rework_price")
+	private Double sumReworkPrice;
+	
+	
 	
 	/**
-	 * 总任务价值(预计成本费用)
+	 * 总任务价值(实际成本费用总和)
 	 */
 	@Column(name = "sum_task_price")
 	private Double sumTaskPrice;
 	
+	/**
+	 * 批次分配时间（默认当前时间前一天）
+	 */
+	@Column(name = "allot_time")
+	private Date allotTime;
 	
 	/**
 	 * 产品名称
@@ -125,6 +137,18 @@ public class Bacth extends BaseEntity<Long>{
 	
 	
 	
+	public Double getSumReworkPrice() {
+		return sumReworkPrice;
+	}
+	public void setSumReworkPrice(Double sumReworkPrice) {
+		this.sumReworkPrice = sumReworkPrice;
+	}
+	public Date getAllotTime() {
+		return allotTime;
+	}
+	public void setAllotTime(Date allotTime) {
+		this.allotTime = allotTime;
+	}
 	public Double getSumTaskPrice() {
 		return sumTaskPrice;
 	}

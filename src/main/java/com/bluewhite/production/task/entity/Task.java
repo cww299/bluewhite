@@ -129,10 +129,22 @@ public class Task  extends BaseEntity<Long>{
 	private Double payB;
 	
 	/**
+	 * 分配时间（默认当前时间前一天）
+	 */
+	@Column(name = "allot_time")
+	private Date allotTime;
+	
+	/**
 	 * 工序所属部门类型 (1=一楼质检，2=一楼包装，3=二楼针工)
 	 */
 	@Column(name = "type")
 	private Integer type;
+	
+    /**
+     * 备注
+     */
+	@Column(name = "remarks")
+    private String remarks;
 	
 	/**
 	 * 查询字段
@@ -153,6 +165,18 @@ public class Task  extends BaseEntity<Long>{
 	
 	
 	
+	public Date getAllotTime() {
+		return allotTime;
+	}
+	public void setAllotTime(Date allotTime) {
+		this.allotTime = allotTime;
+	}
+	public String getRemarks() {
+		return remarks;
+	}
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
 	public String getUserNames() {
 		return userNames;
 	}

@@ -1,6 +1,7 @@
 package com.bluewhite.production.bacth.action;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -61,6 +62,11 @@ private static final Log log = Log.getLog(BacthAction.class);
 			cr.setMessage("修改成功");
 		}else{
 			if(bacth.getProductId()!=null){
+				if(bacth.getAllotTime() == null){
+					Calendar  cal = Calendar.getInstance();
+					cal.add(Calendar.DATE,-1);
+					bacth.setAllotTime(cal.getTime());
+				}
 				bacthService.save(bacth);
 				cr.setMessage("添加成功");
 			}else{
