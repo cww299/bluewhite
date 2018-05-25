@@ -32,6 +32,12 @@ public class Task  extends BaseEntity<Long>{
 	private Long bacthId;
 	
 	/**
+	 * 批次号 (冗余字段，用于前台的展示)
+	 */
+	@Column(name = "bacth_number")
+	private String bacthNumber;
+	
+	/**
 	 * 批次   任务多对一批次
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -156,11 +162,7 @@ public class Task  extends BaseEntity<Long>{
 	 */
 	@Transient
 	private Date orderTimeEnd;
-	/**
-	 * 查询字段 批次号
-	 */
-	@Transient
-	private String bacthNumber;
+
 	
 	
 	

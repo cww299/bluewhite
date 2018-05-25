@@ -106,7 +106,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						PayB payB  = new PayB();
 						payB.setUserId(userid);
 						payB.setUserName(user.getUserName());
-						payB.setBacth(newTask.getBacth().getBacthNumber());
+						payB.setBacth(newTask.getBacthNumber());
 						payB.setBacthId(newTask.getBacthId());
 						payB.setProductName(newTask.getProductName());
 						payB.setTaskId(newTask.getId());
