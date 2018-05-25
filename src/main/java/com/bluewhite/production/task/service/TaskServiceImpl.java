@@ -111,6 +111,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						payB.setProductName(newTask.getProductName());
 						payB.setTaskId(newTask.getId());
 						payB.setType(newTask.getType());
+						payB.setAllotTime(newTask.getAllotTime());
 						//计算B工资数值
 						payB.setPayNumber(newTask.getPayB()/task.getUsersIds().length);
 						payBDao.save(payB);
