@@ -106,9 +106,11 @@
                                   <input type="text" class="form-control sumnumber">
                               </div>
                                <div class="col-sm-2 col-md-1"></div>
-                            <label class="col-sm-3 col-md-2 control-label">实际完成人数</label>
+                               <div id="dis" style="display: none">
+                            <label class="col-sm-3 col-md-2 control-label" >预计完成时间</label>
                                 <div class="col-sm-2 col-md-2">
-                                  <input type="text" class="form-control">
+                                  <input type="text" class="form-control sumtime">
+                                </div>
                                 </div>
                     	</div>
                     	
@@ -311,6 +313,11 @@
 			      			$(".selectchang").change(function(){
 			      				var htmlfv="";
 			      				var	id=$(this).val()
+			      				if(id==109){
+			      					$('#dis').css("display","block")
+			      				}else{
+			      					$('#dis').css("display","none")
+			      				}
 								   var data={
 										   productId:productId,
 										   type:1,
@@ -451,7 +458,7 @@
 									return layer.msg("至少选择一个员工！", {icon: 2});
 								}
 								number=$(".sumnumber").val();
-								
+								expectTime=$(".sumtime").val();
 								var postData = {
 										type:1,
 										bacthId:that.data("id"),
@@ -459,7 +466,8 @@
 										userIds:arr,
 										number:number,
 										userNames:username,
-										productName:productName
+										productName:productName,
+										expectTime:expectTime
 								}
 								
 							    $.ajax({
@@ -475,9 +483,11 @@
 									
 									success:function(result){
 										if(0==result.code){
+										  $('.addDictDivTypeForm')[0].reset(); 
+										$('.checkworking').text("");
+										  $('.select').text("");
 											layer.msg("添加成功！", {icon: 1});
-										 $('.addDictDivTypeForm')[0].reset(); 
-											$("#addDictDivType").hide();
+											
 											
 										}else{
 											layer.msg("添加失败", {icon: 2});

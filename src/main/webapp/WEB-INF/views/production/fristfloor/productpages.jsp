@@ -638,22 +638,29 @@
 				$('.add').on('click',function(){
 					var index;
 					var postData;
-					postData={
-							name:$(".workingname").val(),
-							workingTime:$(".workingtime").val(),
-							  type:1,
-							  productId:$(this).data('productid'),
-							  procedureTypeId:$(this).parent().parent().find("input:radio:checked").val(),
-					  }
+					var workingtime=$(".workingtime").val();
 					if($(this).parent().parent().find("input:radio:checked").val()==null){
 						return 	layer.msg("工序类型不能为空！", {icon: 2});
 					}
 					if($(".workingname").val()==""){
 						return 	layer.msg("工序名不能为空！", {icon: 2});
 					}
-					if($(".workingtime").val()==""){
+					/* if($(".workingtime").val()==""){
 						return 	layer.msg("工序时间不能为空！", {icon: 2});
+					} */
+					
+					if($(this).parent().parent().find("input:radio:checked").val()==109){
+						workingtime=0.0;
+						
+						
 					}
+					postData={
+							name:$(".workingname").val(),
+							workingTime:workingtime,
+							  type:1,
+							  productId:$(this).data('productid'),
+							  procedureTypeId:$(this).parent().parent().find("input:radio:checked").val(),
+					  }
 					
 					   $.ajax({
 							url:"${ctx}/production/addProcedure",

@@ -162,19 +162,18 @@
 					  }, 
 		      		  success: function (result) {
 		      			 $(result.data.rows).each(function(i,o){
-		      				 htmlto +=o.userNames+"&nbsp&nbsp&nbsp&nbsp"
-		      				$('.modal-body').html(htmlto);
+		      				
 		      				html +='<tr>'
 		      				+'<td class="text-center edit name">'+o.bacth.bacthNumber+'</td>'
 		      				+'<td class="text-center edit name">'+o.productName+'</td>'
 		      				+'<td class="text-center edit name">'+o.createdAt+'</td>'
 		      				+'<td class="text-center edit name">'+o.procedureName+'</td>'
-		      				+'<td class="text-center edit name">'+o.expectTime+'</td>'
-		      				+'<td class="text-center edit name">'+o.taskPrice+'</td>'
-		      				+'<td class="text-center edit name">'+o.payB+'</td>'
+		      				+'<td class="text-center edit name">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
+		      				+'<td class="text-center edit name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
+		      				+'<td class="text-center edit name">'+parseFloat((o.payB).toFixed(4))+'</td>'
 		      				+'<td class="text-center edit name">'+o.number+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-3d btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d update" data-id='+o.id+'>编辑</button></td></tr>'
+							+'<td class="text-center"><button class="btn btn-sm btn-danger btn-3d delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -210,35 +209,17 @@
 			
 			this.loadEvents = function(){
 				//修改方法
-				$('.update').on('click',function(){
-					if($(this).text() == "编辑"){
-						$(this).text("保存")
-						
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
-				        });
-					}else{
-							$(this).text("编辑")
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							
+				$('.delete').on('click',function(){
 							var postData = {
 									id:$(this).data('id'),
-									name:$(this).parent().parent('tr').find(".name").text(),
 							}
 							
 							var index;
+							 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
 							$.ajax({
-								url:"${ctx}/production/addGroup",
+								url:"${ctx}/task/delete",
 								data:postData,
-								type:"POST",
+								type:"GET",
 								beforeSend:function(){
 									index = layer.load(1, {
 										  shade: [0.1,'#fff'] //0.1透明度的白色背景
@@ -247,10 +228,11 @@
 								
 								success:function(result){
 									if(0==result.code){
-									layer.msg("修改成功！", {icon: 1});
+									layer.msg("删除成功！", {icon: 1});
+									self.loadPagination(data)
 									layer.close(index);
 									}else{
-										layer.msg("修改失败！", {icon: 1});
+										layer.msg("删除失败！", {icon: 1});
 										layer.close(index);
 									}
 								},error:function(){
@@ -258,7 +240,7 @@
 									layer.close(index);
 								}
 							});
-					}
+							 })
 				})
 				
 				//人员详细显示方法
@@ -268,13 +250,13 @@
 					 if(display=='none'){
 							$("#savegroup").css("display","block");  
 						}
-					/* var postData={
+					 var postData={
 							id:id,
 					}
 					 var arr=new Array();
 					var html="";
 					$.ajax({
-						url:"${ctx}/production/getGroupOne",
+						url:"${ctx}/task/taskUser",
 						data:postData,
 						type:"GET",
 						beforeSend:function(){
@@ -284,7 +266,7 @@
 						},
 						
 						success:function(result){
-							$(result.data.users).each(function(i,o){
+							$(result.data).each(function(i,o){
 							html+=o.userName+"&nbsp&nbsp&nbsp&nbsp"
 							})
 							$('.modal-body').html(html);
@@ -294,7 +276,7 @@
 							layer.msg("操作失败！", {icon: 2});
 							layer.close(index);
 						}
-					}); */
+					}); 
 					
 					
 					
