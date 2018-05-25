@@ -161,12 +161,13 @@
 						  });
 					  }, 
 		      		  success: function (result) {
+		      			 
 		      			 $(result.data.rows).each(function(i,o){
 		      				
 		      				html +='<tr>'
 		      				+'<td class="text-center edit name">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center edit name">'+o.productName+'</td>'
-		      				+'<td class="text-center edit name">'+o.createdAt+'</td>'
+		      				+'<td class="text-center edit name">'+o.allotTime+'</td>'
 		      				+'<td class="text-center edit name">'+o.procedureName+'</td>'
 		      				+'<td class="text-center edit name">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
 		      				+'<td class="text-center edit name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
