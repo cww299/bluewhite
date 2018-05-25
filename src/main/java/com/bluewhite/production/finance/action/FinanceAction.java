@@ -33,7 +33,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(PayB.class,"id","userName","payNumber","bacth","productName",
+				.addRetainTerm(PayB.class,"id","userName","allotTime","payNumber","bacth","productName",
 						"allotTime");
 	}
 	

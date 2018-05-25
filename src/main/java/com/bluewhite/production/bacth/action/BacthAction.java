@@ -40,7 +40,7 @@ private static final Log log = Log.getLog(BacthAction.class);
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(Bacth.class,"id","name","number","createdAt","remarks","status","bacthDepartmentPrice","bacthHairPrice","bacthNumber","price","type","product")
+				.addRetainTerm(Bacth.class,"id","name","allotTime","number","createdAt","remarks","status","bacthDepartmentPrice","bacthHairPrice","bacthNumber","price","type","product")
 				.addRetainTerm(Product.class,"id","number","name");
 	}
 	
