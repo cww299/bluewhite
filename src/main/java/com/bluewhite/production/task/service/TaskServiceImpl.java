@@ -174,12 +174,24 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		//同时删除B工资
 		List<PayB> payB = payBDao.findByTaskId(id);
 		payBDao.delete(payB);
-		//更新该批次的数值(sumTaskPrice,regionalPrice)
+		//更新该批次的数值(sumTaskPrice(总任务价值),regionalPrice（地区差价）)
 		Task task = dao.findOne(id);
 		Bacth bacth = task.getBacth();
-		
-		
-		
+		Double sumTaskPrice = 0.0;
+		//计算出该批次下所有人的实际成本总和
+		for(Task ta : bacth.getTasks()){
+			//排除要删除的任务id
+			if(ta.getId()!=id){
+				sumTaskPrice+=ta.getTaskPrice();
+			}
+		};
+		bacth.setSumTaskPrice(sumTaskPrice);
+		//计算出该批次的地区差价
+		bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType())));
+		//删除任务
+		dao.delete(id);
+		//更新批次
+		bacthDao.save(bacth);
 	}
 
 }
