@@ -34,8 +34,8 @@
                                     <i class="fa fa-chevron-down"></i>
                                 </div>
                             </div>
-                            
-                            <div class="row" style="height: 30px">
+                  <!--查询开始  -->
+           <div class="row" style="height: 30px">
 			<div class="col-xs-8 col-sm-8  col-md-8">
 				<form class="form-search" >
 					<div class="row">
@@ -66,7 +66,7 @@
 				</form>
 			</div>
 		</div>
-                            
+            <!-- 查询结束 -->                
                             <div class="panel-body">
                                 <table class="table table-hover">
                                     <thead>
@@ -194,7 +194,7 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			 
+		      			 console.log(result)
 		      			 $(result.data.rows).each(function(i,o){
 		      				
 		      				html +='<tr>'
@@ -245,7 +245,7 @@
 			}
 			
 			this.loadEvents = function(){
-				//修改方法
+				//删除
 				$('.delete').on('click',function(){
 							var postData = {
 									id:$(this).data('id'),
@@ -332,7 +332,6 @@
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
 				  	}
-					console.log(data)
 		            self.loadPagination(data);
 				});
 			}

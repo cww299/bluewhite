@@ -75,6 +75,8 @@
                                             <th class="text-center">数量</th>
                                             <th class="text-center">预计生产单价</th>
                                             <th class="text-center">外发价格</th>
+                                            <th class="text-center">任务价值</th>
+                                            <th class="text-center">地区差价</th>
                                             <th class="text-center">备注</th>
                                             <th class="text-center">操作</th>
                                         </tr>
@@ -202,8 +204,10 @@
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center  bacthDepartmentPrice">'+o.bacthDepartmentPrice+'</td>'
 		      				+'<td class="text-center  bacthHairPrice">'+o.bacthHairPrice+'</td>'
+		      				+'<td class="text-center  sumTaskPrice">'+o.sumTaskPrice+'</td>'
+		      				+'<td class="text-center  regionalPrice">'+o.regionalPrice+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button> <button class="btn btn-sm btn-warning btn-3d updateremake" data-id='+o.id+'>编辑</button></td></tr>' 
+							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button> <button class="btn btn-sm btn-warning btn-3d updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-3d delete" data-id='+o.id+'>删除</button></td></tr>' 
 							
 		      			}); 
 				        //显示分页
@@ -240,6 +244,40 @@
 			}
 			
 			this.loadEvents = function(){
+				//删除
+				$('.delete').on('click',function(){
+					var postData = {
+							id:$(this).data('id'),
+					}
+					
+					var index;
+					 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
+					$.ajax({
+						url:"${ctx}/bacth/deleteBacth",
+						data:postData,
+						type:"GET",
+						beforeSend:function(){
+							index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+						},
+						
+						success:function(result){
+							if(0==result.code){
+							layer.msg("删除成功！", {icon: 1});
+							self.loadPagination(data)
+							layer.close(index);
+							}else{
+								layer.msg("删除失败！", {icon: 1});
+								layer.close(index);
+							}
+						},error:function(){
+							layer.msg("操作失败！", {icon: 2});
+							layer.close(index);
+						}
+					});
+					 })
+				})
 				//修改方法
 				$('.updateremake').on('click',function(){
 					if($(this).text() == "编辑"){
