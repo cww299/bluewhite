@@ -14,8 +14,10 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.production.farragotask.dao.FarragoTaskDao;
 import com.bluewhite.production.farragotask.entity.FarragoTask;
+import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 @Service
 public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> implements FarragoTaskService{
 
@@ -51,4 +53,11 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
         PageResult<FarragoTask> result = new PageResult<FarragoTask>(pages,page);
         return result;
 }
+
+	@Override
+	public FarragoTask addFarragoTask(FarragoTask farragoTask) {
+		//杂工任务价值
+		farragoTask.setPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(farragoTask.getTime(), farragoTask.getType())));
+		return dao.save(farragoTask);
+	}
 }

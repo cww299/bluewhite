@@ -3,6 +3,7 @@ package com.bluewhite.production.task.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.persistence.criteria.Predicate;
 
@@ -173,25 +174,30 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	public void deleteTask(Long id) {
 		//同时删除B工资
 		List<PayB> payB = payBDao.findByTaskId(id);
-		payBDao.delete(payB);
+		if(payB.size()>0){
+			payBDao.delete(payB);
+		}
 		//更新该批次的数值(sumTaskPrice(总任务价值),regionalPrice（地区差价）)
 		Task task = dao.findOne(id);
 		Bacth bacth = task.getBacth();
 		Double sumTaskPrice = 0.0;
 		//计算出该批次下所有人的实际成本总和
-		for(Task ta : bacth.getTasks()){
+		CopyOnWriteArraySet<Task> taskset = new CopyOnWriteArraySet<Task>( bacth.getTasks());		
+		for(Task ta : taskset){
 			//排除要删除的任务id
-			if(ta.getId()!=id){
+			if(!ta.getId().equals(id)){
 				sumTaskPrice+=ta.getTaskPrice();
+			}else{
+				 dao.delete(ta);
+				 bacth.getTasks().remove(ta);
 			}
 		};
 		bacth.setSumTaskPrice(sumTaskPrice);
 		//计算出该批次的地区差价
 		bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType())));
-		//删除任务
-		dao.delete(id);
 		//更新批次
 		bacthDao.save(bacth);
+
 	}
 
 }

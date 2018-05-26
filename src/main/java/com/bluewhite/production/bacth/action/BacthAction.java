@@ -40,7 +40,7 @@ private static final Log log = Log.getLog(BacthAction.class);
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(Bacth.class,"id","name","allotTime","number","createdAt","remarks","status","bacthDepartmentPrice","bacthHairPrice","bacthNumber","price","type","product")
+				.addRetainTerm(Bacth.class,"id","sumReworkPrice","sumTaskPrice","regionalPrice","name","allotTime","number","createdAt","remarks","status","bacthDepartmentPrice","bacthHairPrice","bacthNumber","price","type","product")
 				.addRetainTerm(Product.class,"id","number","name");
 	}
 	
@@ -98,12 +98,12 @@ private static final Log log = Log.getLog(BacthAction.class);
 	@ResponseBody
 	public CommonResponse deleteBacth(HttpServletRequest request,Bacth bacth) {
 		CommonResponse cr = new CommonResponse();
-		if(bacth.getProductId()!=null){
+		if(bacth.getId()!=null){
 			bacthService.deleteBacth(bacth.getId());
 			cr.setMessage("删除成功");
 		}else{
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("产品不能为空");
+			cr.setMessage("批次不能为空");
 		}
 		return cr;
 	}
