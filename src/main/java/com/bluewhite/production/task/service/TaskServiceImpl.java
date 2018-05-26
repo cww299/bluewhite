@@ -67,19 +67,19 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				//预计完成时间（1.工序类型不是返工，预计时间利用公式计算的得出。2.工序类型是返工，手填预计完成时间）
 				//当前台传值得预计时间不为null，说明该任务类型是返工类型
 				Procedure procedure = procedureDao.findOne(id);
-				if(newTask.getExpectTime()==null){
+				if(task.getExpectTime()==null){
 					newTask.setExpectTime(NumUtils.round(ProTypeUtils.sumExpectTime(procedure,procedure.getType(),newTask.getNumber())));
 				}
 				
 				//实际完成时间（1.工序类型不是返工，预计时间等于实际时间，2工序类型是返工，实际完成时间根据公式的出）
-				if(newTask.getExpectTime()==null){
+				if(task.getExpectTime()==null){
 					newTask.setTaskTime(newTask.getExpectTime());
 				}else{
 					newTask.setTaskTime(NumUtils.round(ProTypeUtils.sumTaskTime(newTask.getExpectTime(),procedure.getType(),newTask.getNumber())));
 				}
 				
 				//预计任务价值（通过预计完成时间得出）（1.工序类型不是返工，预计任务价值通过计算得出   2.工序类型是返工,没有预计任务价值）
-				if(newTask.getExpectTime()==null){
+				if(task.getExpectTime()==null){
 					newTask.setExpectTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(newTask.getExpectTime(), procedure.getType())));
 				}else{
 					newTask.setExpectTaskPrice(null);
@@ -129,7 +129,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		bacth.setSumTaskPrice(sumTaskPrice);
 		//计算出该批次的地区差价
 		bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType())));
-		
 		bacthDao.save(bacth);
 		return task;
 	}
