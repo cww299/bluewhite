@@ -108,7 +108,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 	public CommonResponse delete(HttpServletRequest request,Long id) {
 		CommonResponse cr = new CommonResponse();
 		if(id!=null){
-			taskService.delete(id);
+			taskService.deleteTask(id);
 			cr.setMessage("删除成功");
 		}else{
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

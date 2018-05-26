@@ -99,7 +99,7 @@ private static final Log log = Log.getLog(BacthAction.class);
 	public CommonResponse deleteBacth(HttpServletRequest request,Bacth bacth) {
 		CommonResponse cr = new CommonResponse();
 		if(bacth.getProductId()!=null){
-			bacthService.delete(bacth.getId());
+			bacthService.deleteBacth(bacth.getId());
 			cr.setMessage("删除成功");
 		}else{
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

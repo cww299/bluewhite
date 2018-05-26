@@ -168,4 +168,18 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	        return result;
 	}
 
+	@Override
+	@Transactional
+	public void deleteTask(Long id) {
+		//同时删除B工资
+		List<PayB> payB = payBDao.findByTaskId(id);
+		payBDao.delete(payB);
+		//更新该批次的数值(sumTaskPrice,regionalPrice)
+		Task task = dao.findOne(id);
+		Bacth bacth = task.getBacth();
+		
+		
+		
+	}
+
 }
