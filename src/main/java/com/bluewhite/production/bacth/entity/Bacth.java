@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -62,7 +63,7 @@ public class Bacth extends BaseEntity<Long>{
 	/**
 	 * 任务
 	 */
-	@OneToMany(mappedBy = "bacth")
+	@OneToMany(mappedBy = "bacth",cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Task> tasks = new HashSet<Task>();
 	
 	

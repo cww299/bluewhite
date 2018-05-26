@@ -9,6 +9,18 @@ import com.bluewhite.production.bacth.entity.Bacth;
 @Service
 public interface BacthService extends BaseCRUDService<Bacth,Long>{
 	
+	/**
+	 * 分页查询
+	 * @param param
+	 * @param page
+	 * @return
+	 */
 	public PageResult<Bacth>  findPages(Bacth param,PageParameter page);
+	
+	/**
+	 * 批次删除
+	 * @param id
+	 */
+	public int deleteBacth(Long id);
 
 }

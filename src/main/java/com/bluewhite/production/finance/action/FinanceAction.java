@@ -42,7 +42,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	 * 查询b工资流水
 	 * 
 	 */
-	@RequestMapping(value = "/Finance/allPayB", method = RequestMethod.GET)
+	@RequestMapping(value = "/finance/allPayB", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse allBacth(HttpServletRequest request,PayB payB,PageParameter page) {
 		CommonResponse cr = new CommonResponse();

@@ -23,5 +23,11 @@ public interface TaskService extends BaseCRUDService<Task,Long>{
 	 * @return
 	 */
 	public PageResult<Task>  findPages(Task task, PageParameter page);
+	
+	/**
+	 * 删除任务，同时删除B工资，更新批次的数值
+	 * @param id
+	 */
+	public void deleteTask(Long id);
 
 }

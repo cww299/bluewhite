@@ -9,6 +9,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
@@ -17,11 +18,18 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.service.ProductServiceImpl;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
+import com.bluewhite.production.finance.dao.PayBDao;
+import com.bluewhite.production.finance.entity.PayB;
+import com.bluewhite.production.task.entity.Task;
 @Service
 public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements BacthService{
 
 	@Autowired
 	private BacthDao dao;
+	
+	@Autowired
+	private PayBDao payBDao;
+	
 	
 	@Override
 	public PageResult<Bacth> findPages(Bacth param, PageParameter page) {
@@ -67,4 +75,17 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 		        return result;
 		    }
 
+	@Override
+	@Transactional
+	public int deleteBacth(Long id) {
+		Bacth bacth = dao.findOne(id);
+		for(Task task : bacth.getTasks()){
+			//查询出该任务的所有B工资
+			List<PayB> payB = payBDao.findByTaskId(task.getId());
+			//删除该任务的所有B工资
+			payBDao.delete(payB);
+		};
+		dao.delete(id);
+		return 1;
+	}
 }
