@@ -50,9 +50,54 @@
                                             </p>
                                         </div>
                                         <div class="tab-pane" id="profile1">
-                                            <p>
-                                                2
-                                            </p>
+                                         <!--查询开始  -->
+           <div class="row" style="height: 30px">
+			<div class="col-xs-8 col-sm-8  col-md-8">
+				<form class="form-search" >
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-12">
+							<div class="input-group"> 
+								<table><tr><td>批次号:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
+								<td>产品名:</td><td><input type="text" name="name" id="name" placeholder="请输入产品名称" class="form-control search-query name" /></td>
+								<td>开始时间:</td>
+								<td>
+								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
+								</td>
+				<td>结束时间:</td>
+				<td>
+					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
+             onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+								</td>
+								</tr></table> 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtask">
+										查找
+										<i class="icon-search icon-on-right bigger-110"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+            <!-- 查询结束 -->  
+                                            <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                        	<th class="text-center">姓名</th>
+                                        	<th class="text-center">批次号</th>
+                                            <th class="text-center">产品名</th>
+                                            <th class="text-center">时间</th>
+                                            <th class="text-center">B工资</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablecontent">
+                                        
+                                    </tbody>
+                                </table>
+                                <div id="pager" class="pull-right">
                                         </div>
                                         <div class="tab-pane" id="profile2">
                                             <p>
@@ -67,49 +112,11 @@
                         </div>
             </section>
         </section>
-        <!--隐藏框 产品新增开始  -->
-        <div id="addDictDivType" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-				<div class="space-10"></div>
-				<div style="height: 30px"></div>
-				<form class="form-horizontal addDictDivTypeForm">
-				<div class="form-group">
-                                        <label class="col-sm-3 control-label">名称:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="groupName" class="form-control">
-                                        </div>
-                 </div>
-				</form>
-</div>
-</div>
- <!--隐藏框 产品新增结束  -->
 
 
 
-<div id="savegroup" style="display: none;">
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-					&times;
-				</button>
-				<h4 class="modal-title" id="myModalLabel">
-					人员分组详情
-				</h4>
-			</div>
-			<div class="modal-body">
-				
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
-				</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
-</div>
-</div>
-<!--隐藏框 产品新增结束  -->
+
+
     </section>
     
    
@@ -124,7 +131,109 @@
      <script src="${ctx }/static/js/laypage/laypage.js"></script> 
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
+    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+    <script>
+   jQuery(function($){
+   	var Login = function(){
+			var self = this;
+			//表单jsonArray
+			//初始化js
+			var _cache;
+			this.setCache = function(cache){
+		  		_cache=cache;
+		  	}
+		  	this.getCache = function(){
+		  		return _cache;
+		  	}
+			 var data={
+						page:1,
+				  		size:13,	
+				  		type:1,
+
+				} 
+			this.init = function(){
+				
+				//注册绑定事件
+				self.events();
+				self.loadPagination(data);
+			}
+			//加载分页
+			  this.loadPagination = function(data){
+			    var index;
+			    var html = '';
+			    $.ajax({
+				      url:"${ctx}/Finance/allPayB",
+				      data:data,
+				      type:"GET",
+				      beforeSend:function(){
+					 	  index = layer.load(1, {
+						  shade: [0.1,'#fff'] //0.1透明度的白色背景
+						  });
+					  }, 
+		      		  success: function (result) {
+		      			 $(result.data.rows).each(function(i,o){
+		      				html +='<tr>'
+		      				+'<td class="text-center edit ">'+o.userName+'</td>'
+		      				+'<td class="text-center edit ">'+o.bacth+'</td>'
+		      				+'<td class="text-center edit ">'+o.productName+'</td>'
+		      				+'<td class="text-center edit ">'+o.allotTime+'</td>'
+		      				+'<td class="text-center edit ">'+o.payNumber+'</td></tr>'
+							
+		      			}); 
+				        //显示分页
+					   	 laypage({
+					      cont: 'pager', 
+					      pages: result.data.totalPages, 
+					      curr:  result.data.pageNum || 1, 
+					      jump: function(obj, first){ 
+					    	  if(!first){ 
+					    		 
+						        	var _data = {
+						        			page:obj.curr,
+									  		size:13,
+									  		type:1,
+									  		productName:$('#name').val(),
+								  			bacth:$('#number').val(),
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(),
+								  	}
+						        
+						            self.loadPagination(_data);
+							     }
+					      }
+					    });  
+					   	layer.close(index);
+					   	 $("#tablecontent").html(html); 
+					   
+				      },error:function(){
+							layer.msg("加载失败！", {icon: 2});
+							layer.close(index);
+					  }
+				  });
+			}
+			
+			
+			this.events = function(){
+				$('.searchtask').on('click',function(){
+					var data = {
+				  			page:1,
+				  			size:13,
+				  			type:1,
+				  			productName:$('#name').val(),
+				  			bacth:$('#number').val(),
+				  			orderTimeBegin:$("#startTime").val(),
+				  			orderTimeEnd:$("#endTime").val(), 
+				  	}
+			
+				self.loadPagination(data);
+				});
+			}
+   	}
+   			var login = new Login();
+				login.init();
+			})
     
+    </script>
   
        
 </body>
