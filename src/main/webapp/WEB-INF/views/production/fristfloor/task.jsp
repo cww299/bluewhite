@@ -194,14 +194,17 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			 console.log(result)
 		      			 $(result.data.rows).each(function(i,o){
-		      				
+		      				 var a=""
+		      				 var s=o.procedureName
+		      				if(o.procedure.procedureTypeId==109){
+		      					a="(返工)"
+		      				}
 		      				html +='<tr>'
 		      				+'<td class="text-center edit name">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center edit name">'+o.productName+'</td>'
 		      				+'<td class="text-center edit name">'+o.allotTime+'</td>'
-		      				+'<td class="text-center edit name">'+o.procedureName+'</td>'
+		      				+'<td class="text-center edit name">'+s+a+'</td>'
 		      				+'<td class="text-center edit name">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
 		      				+'<td class="text-center edit name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
 		      				+'<td class="text-center edit name">'+parseFloat((o.payB).toFixed(4))+'</td>'
