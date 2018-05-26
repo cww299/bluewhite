@@ -76,7 +76,8 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 					cal.add(Calendar.DATE,-1);
 					farragoTask.setAllotTime(cal.getTime());
 				}
-				farragoTask = farragoTaskService.save(farragoTask);
+				farragoTask = farragoTaskService.addFarragoTask(farragoTask);
+				
 				cr.setMessage("任务分配成功");
 			}else{
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

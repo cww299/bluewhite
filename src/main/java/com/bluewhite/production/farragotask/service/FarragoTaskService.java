@@ -12,6 +12,12 @@ import com.bluewhite.production.task.entity.Task;
 public interface FarragoTaskService extends BaseCRUDService<FarragoTask,Long>{
 
 	public PageResult<FarragoTask> findPages(FarragoTask farragoTask, PageParameter page);
+	/**
+	 * 新增杂工任务
+	 * @param farragoTask
+	 * @return
+	 */
+	public FarragoTask addFarragoTask(FarragoTask farragoTask);
 
 
 }

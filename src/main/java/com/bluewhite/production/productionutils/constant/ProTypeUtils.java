@@ -150,7 +150,7 @@ public  class ProTypeUtils {
 		case 1:// 生产部一楼质检
 			for(Procedure procedure : procedureList){
 				if(procedure.getName().equals(ProTypeUtils.QUALITY_STRING)){
-					sumPrice = procedure.getWorkingTime()*ProTypeUtils.QUALITY_DOUBLE*ProTypeUtils.QUALITY_DOUBLETOW;
+					sumPrice = (procedure.getWorkingTime()*ProTypeUtils.QUALITY_DOUBLE)+ProTypeUtils.QUALITY_DOUBLETOW;
 				}
 			}
 			break;
