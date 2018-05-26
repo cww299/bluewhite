@@ -61,7 +61,7 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 					query.where(predicate.toArray(pre));
 		        	return null;
 		        }, page);
-		        PageResult<PayB> result = new PageResult<>(pages,page);
+		        PageResult<PayB> result = new PageResult<PayB>(pages,page);
 		        return result;
 		    }
 

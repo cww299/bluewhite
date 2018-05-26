@@ -90,6 +90,12 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				
 				//B工资净值
 				newTask.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(newTask.getTaskPrice(),  procedure.getType())));
+				
+				//当任务有加绩情况时
+				//任务加绩具体数值
+				if(task.getPerformanceNumber()!=null){
+					task.setPerformancePrice(NumUtils.round(ProTypeUtils.sumtaskPerformancePrice(task)));
+				}
 				dao.save(newTask);
 				
 				///员工和任务形成多对多关系
@@ -115,6 +121,10 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						payB.setAllotTime(newTask.getAllotTime());
 						//计算B工资数值
 						payB.setPayNumber(newTask.getPayB()/task.getUsersIds().length);
+						//当存在加绩时，计算加绩工资
+						if(newTask.getPerformanceNumber()!=null){
+							payB.setPerformancePayNumber(newTask.getPerformancePrice()/task.getUsersIds().length);
+						}
 						payBDao.save(payB);
 					}
 				}

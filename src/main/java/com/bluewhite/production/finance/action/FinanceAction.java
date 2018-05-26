@@ -19,7 +19,9 @@ import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.production.finance.entity.FarragoTaskPay;
 import com.bluewhite.production.finance.entity.PayB;
+import com.bluewhite.production.finance.service.FarragoTaskPayService;
 import com.bluewhite.production.finance.service.PayBService;
 
 /**
@@ -34,6 +36,8 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	
 	@Autowired
 	private PayBService payBService;
+	@Autowired
+	private FarragoTaskPayService FarragoTaskPayService;
 	
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -41,7 +45,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
 				.addRetainTerm(PayB.class,"id","userName","allotTime","payNumber","bacth","productName",
-						"allotTime");
+						"allotTime","performancePayNumber");
 	}
 	
 	
@@ -51,9 +55,25 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	 */
 	@RequestMapping(value = "/finance/allPayB", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse allBacth(HttpServletRequest request,PayB payB,PageParameter page) {
+	public CommonResponse allPayB(HttpServletRequest request,PayB payB,PageParameter page) {
 		CommonResponse cr = new CommonResponse();
 			cr.setData(clearCascadeJSON.format(payBService.findPages(payB, page)).toJSON());
+			cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/** 
+	 * 查询杂工工资流水(包括加绩)
+	 * 
+	 */
+	@RequestMapping(value = "/finance/allFarragoTaskPay", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse allFarragoTaskPay(HttpServletRequest request,FarragoTaskPay farragoTaskPay,PageParameter page) {
+		CommonResponse cr = new CommonResponse();
+			cr.setData(ClearCascadeJSON
+					.get()
+					.addRetainTerm(FarragoTaskPay.class,"id","userName","allotTime","performancePayNumber","payNumber","taskId","taskName")
+					.format(FarragoTaskPayService.findPages(farragoTaskPay, page)).toJSON());
 			cr.setMessage("查询成功");
 		return cr;
 	}
