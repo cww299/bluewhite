@@ -289,7 +289,7 @@
 						  area: ['30%', '50%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
-						  title:"新增小组",
+						  title:"填写批次",
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
@@ -317,8 +317,8 @@
 										if(0==result.code){
 											layer.msg("添加成功！", {icon: 1});
 											 
-											 
-											
+											$('.addbatchForm')[0].reset(); 
+											$('#addbatch').hide();
 											
 										}else{
 											layer.msg("添加失败", {icon: 2});
@@ -333,9 +333,7 @@
 							},
 						  end:function(){
 							  $('.addbatchForm')[0].reset(); 
-							
-						
-							
+							  $('#addbatch').hide();
 						  }
 					});
 				})
@@ -703,7 +701,7 @@
 				//导入
 				$('#btn').on('click',function(){
 				
-					console.log(self.getCache())
+				
 					  var imageForm = new FormData();
 				
 				  			
