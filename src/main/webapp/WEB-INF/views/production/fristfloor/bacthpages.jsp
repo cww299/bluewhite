@@ -75,6 +75,8 @@
                                             <th class="text-center">数量</th>
                                             <th class="text-center">预计生产单价</th>
                                             <th class="text-center">外发价格</th>
+                                            <th class="text-center">任务价值</th>
+                                            <th class="text-center">地区差价</th>
                                             <th class="text-center">备注</th>
                                             <th class="text-center">操作</th>
                                         </tr>
@@ -202,6 +204,8 @@
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center  bacthDepartmentPrice">'+o.bacthDepartmentPrice+'</td>'
 		      				+'<td class="text-center  bacthHairPrice">'+o.bacthHairPrice+'</td>'
+		      				+'<td class="text-center  sumTaskPrice">'+o.sumTaskPrice+'</td>'
+		      				+'<td class="text-center  regionalPrice">'+o.regionalPrice+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button> <button class="btn btn-sm btn-warning btn-3d updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-3d delete" data-id='+o.id+'>删除</button></td></tr>' 
 							

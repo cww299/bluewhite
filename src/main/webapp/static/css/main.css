@@ -1985,7 +1985,7 @@ body.fullscreen-widget-active .panel .panel-heading .actions > .fa-times {
 .tab-wrapper .tab-content {
   border: 1px solid #ddd;
   border-top: 0;
-  padding: 10px 15px;
+  /* padding: 10px 15px; */
 }
 .tab-wrapper > .nav-tabs > li a {
   color: #5D5F63;

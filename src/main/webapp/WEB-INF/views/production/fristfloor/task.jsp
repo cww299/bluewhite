@@ -194,7 +194,7 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			 
+		      			 console.log(result)
 		      			 $(result.data.rows).each(function(i,o){
 		      				
 		      				html +='<tr>'
