@@ -162,6 +162,24 @@ public class Task  extends BaseEntity<Long>{
     private String remarks;
 	
 	/**
+	 * 是否工序加价选择(任务加绩选项)
+	 */
+	@Column(name = "performance")
+	private String performance;
+	
+	/**
+	 * 要添加的分价值（任务加绩基础比值）
+	 */
+	@Column(name = "performance_number")
+	private Double performanceNumber;
+	
+	/**
+	 * 要添加的工价（任务加绩具体工资数值）
+	 */
+	@Column(name = "performance_price")
+	private Double performancePrice;
+	
+	/**
 	 * 查询字段
 	 */
 	@Transient
@@ -179,6 +197,24 @@ public class Task  extends BaseEntity<Long>{
 	
 	
 	
+	public String getPerformance() {
+		return performance;
+	}
+	public void setPerformance(String performance) {
+		this.performance = performance;
+	}
+	public Double getPerformanceNumber() {
+		return performanceNumber;
+	}
+	public void setPerformanceNumber(Double performanceNumber) {
+		this.performanceNumber = performanceNumber;
+	}
+	public Double getPerformancePrice() {
+		return performancePrice;
+	}
+	public void setPerformancePrice(Double performancePrice) {
+		this.performancePrice = performancePrice;
+	}
 	public Long getProcedureTypeId() {
 		return procedureTypeId;
 	}

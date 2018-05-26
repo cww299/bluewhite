@@ -19,6 +19,13 @@ import com.bluewhite.base.BaseEntity;
 @Table(name = "pro_farrago_task")
 public class FarragoTask  extends BaseEntity<Long>{
 	
+	
+	/**
+	 * 杂工批次
+	 */
+	@Column(name = "bacth")
+	private String bacth;
+	
 	/**
 	 * 杂工所属部门类型 (1=一楼质检，2=一楼包装，3=二楼针工)
 	 */
@@ -39,7 +46,7 @@ public class FarragoTask  extends BaseEntity<Long>{
 	private Double price;
 	
 	/**
-	 * 杂工实际工作时间
+	 * 杂工实际工作时间(基础裸工时/分（无管理）)
 	 */
 	@Column(name = "time")
 	private Double time;
@@ -55,6 +62,25 @@ public class FarragoTask  extends BaseEntity<Long>{
 	 */
 	@Column(name = "userIds")
 	private  String userIds;
+	
+	/**
+	 * 是否工序加价选择(杂工加绩选项)
+	 */
+	@Column(name = "performance")
+	private String performance;
+	
+	/**
+	 * 要添加的分价值（杂工加绩基础比值）
+	 */
+	@Column(name = "performance_number")
+	private Double performanceNumber;
+	
+	/**
+	 * 要添加的工价（杂工加绩具体工资数值）
+	 */
+	@Column(name = "performance_price")
+	private Double performancePrice;
+	
 	
     /**
      * 备注
@@ -81,8 +107,41 @@ public class FarragoTask  extends BaseEntity<Long>{
 	private  String[] usersIds;
 	
 	
-
 	
+	
+	
+	public String getBacth() {
+		return bacth;
+	}
+
+	public void setBacth(String bacth) {
+		this.bacth = bacth;
+	}
+
+	public String getPerformance() {
+		return performance;
+	}
+
+	public void setPerformance(String performance) {
+		this.performance = performance;
+	}
+
+	public Double getPerformanceNumber() {
+		return performanceNumber;
+	}
+
+	public void setPerformanceNumber(Double performanceNumber) {
+		this.performanceNumber = performanceNumber;
+	}
+
+	public Double getPerformancePrice() {
+		return performancePrice;
+	}
+
+	public void setPerformancePrice(Double performancePrice) {
+		this.performancePrice = performancePrice;
+	}
+
 	public String getRemarks() {
 		return remarks;
 	}

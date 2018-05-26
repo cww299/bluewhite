@@ -10,13 +10,13 @@ import javax.persistence.Transient;
 import com.bluewhite.base.BaseEntity;
 
 /**
- * 生产控制部  B工资实体
+ * 生产控制部  杂工工资实体
  * @author zhangliang
  *
  */
 @Entity
-@Table(name = "pro_payb")
-public class PayB extends BaseEntity<Long>{
+@Table(name = "pro_farrago_task_pay")
+public class FarragoTaskPay extends BaseEntity<Long> {
 	
 	/**
 	 * 员工姓名
@@ -31,7 +31,7 @@ public class PayB extends BaseEntity<Long>{
     private Long userId;
 	
 	/**
-	 * 任务工资数额
+	 * 杂工工资数额
 	 */
 	@Column(name = "pay_number")
 	private Double payNumber;
@@ -49,28 +49,10 @@ public class PayB extends BaseEntity<Long>{
 	private Long taskId;
 	
 	/**
-	 * 批次id(冗余字段，为查询显示方便)
+	 * 任务名称
 	 */
-	@Column(name = "bacth_id")
-	private Long bacthId;
-	
-	/**
-	 * 批次号(冗余字段，为查询显示方便)
-	 */
-	@Column(name = "bacth")
-	private String bacth;
-	
-	/**
-	 * 产品id(冗余字段，为查询显示方便)
-	 */
-	@Column(name = "product_id")
-	private Long productId;
-	
-	/**
-	 * 产品名称(冗余字段，为查询显示方便)
-	 */
-	@Column(name = "product_name")
-	private String productName;
+	@Column(name = "task_name")
+	private String taskName;
 	
 	/**
 	 * 工序所属部门类型 (1=一楼质检，2=一楼包装，3=二楼针工)
@@ -96,110 +78,70 @@ public class PayB extends BaseEntity<Long>{
 	private Date orderTimeEnd;
 	
 	
+	
+	public String getTaskName() {
+		return taskName;
+	}
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
+	}
 	public Double getPerformancePayNumber() {
 		return performancePayNumber;
 	}
-
 	public void setPerformancePayNumber(Double performancePayNumber) {
 		this.performancePayNumber = performancePayNumber;
 	}
-
-	public Date getOrderTimeBegin() {
-		return orderTimeBegin;
-	}
-
-	public void setOrderTimeBegin(Date orderTimeBegin) {
-		this.orderTimeBegin = orderTimeBegin;
-	}
-
-	public Date getOrderTimeEnd() {
-		return orderTimeEnd;
-	}
-
-	public void setOrderTimeEnd(Date orderTimeEnd) {
-		this.orderTimeEnd = orderTimeEnd;
-	}
-
-	public Date getAllotTime() {
-		return allotTime;
-	}
-
-	public void setAllotTime(Date allotTime) {
-		this.allotTime = allotTime;
-	}
-
-	public Integer getType() {
-		return type;
-	}
-
-	public void setType(Integer type) {
-		this.type = type;
-	}
-
-	public Long getBacthId() {
-		return bacthId;
-	}
-
-	public void setBacthId(Long bacthId) {
-		this.bacthId = bacthId;
-	}
-
-	public Long getProductId() {
-		return productId;
-	}
-
-	public void setProductId(Long productId) {
-		this.productId = productId;
-	}
-
 	public String getUserName() {
 		return userName;
 	}
-
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-
 	public Long getUserId() {
 		return userId;
 	}
-
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
-
 	public Double getPayNumber() {
 		return payNumber;
 	}
-
 	public void setPayNumber(Double payNumber) {
 		this.payNumber = payNumber;
 	}
-
 	public Long getTaskId() {
 		return taskId;
 	}
-
 	public void setTaskId(Long taskId) {
 		this.taskId = taskId;
 	}
-
-	public String getBacth() {
-		return bacth;
+	public Integer getType() {
+		return type;
 	}
-
-	public void setBacth(String bacth) {
-		this.bacth = bacth;
+	public void setType(Integer type) {
+		this.type = type;
 	}
-
-	public String getProductName() {
-		return productName;
+	public Date getAllotTime() {
+		return allotTime;
 	}
-
-	public void setProductName(String productName) {
-		this.productName = productName;
+	public void setAllotTime(Date allotTime) {
+		this.allotTime = allotTime;
+	}
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
 	}
 	
 	
 	
+	
+
 }

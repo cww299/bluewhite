@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,8 +25,8 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.procedure.entity.Procedure;
+import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.system.user.entity.User;
@@ -48,8 +49,22 @@ private static final Log log = Log.getLog(TaskAction.class);
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
 				.addRetainTerm(Task.class,"id","userNames","bacthNumber","allotTime","productName","userIds","procedure","procedureName","number","status","expectTime"
-						,"expectTaskPrice","taskTime","payB","taskPrice","type","createdAt")
+						,"expectTaskPrice","taskTime","payB","taskPrice","type","createdAt","performance","performanceNumber","performancePrice")
 				.addRetainTerm(Procedure.class,"id","procedureTypeId");
+	}
+	
+	
+	/**
+	 * 获取杂工加绩类型列表
+	 */
+	@RequestMapping(value = "/task/taskPerformance", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse taskPerformance(HttpServletRequest request) {
+		CommonResponse cr = new CommonResponse();
+		List<Map<String,Object>> mapList= ProTypeUtils.taskPerformance();
+		cr.setData(mapList);
+		cr.setMessage("查询成功");
+		return cr;
 	}
 	
 	/**
