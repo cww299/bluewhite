@@ -87,7 +87,56 @@ public  class ProTypeUtils {
 				*proTypeUtils.service.findByExcelNameAndType("AC7" , 1).getNumber())/ProTypeUtils.TIME/ProTypeUtils.TIME;
 	}
 	
+	/********************   一楼质检加绩系数          **************************/
 	
+	
+	
+	
+	/********************   一楼质检杂工加绩系数          **************************/
+	
+	/**
+	 * 
+	 * 设定精细填写包装工加价比(AD12)
+	 */
+	private static double getAD12(){
+		return ((proTypeUtils.service.findByExcelNameAndType("AC5" , 1).getNumber()*ProTypeUtils.EXCELONE
+				*proTypeUtils.service.findByExcelNameAndType("ZGAC12" , 1).getNumber())
+				-proTypeUtils.service.findByExcelNameAndType("AC5" , 1).getNumber());
+	}
+	
+	
+	/**
+	 * 
+	 * 设定装箱包装工加价比(AD13)
+	 */
+	private static double getAD13(){
+		return ((proTypeUtils.service.findByExcelNameAndType("AC5" , 1).getNumber()*ProTypeUtils.EXCELONE
+				*proTypeUtils.service.findByExcelNameAndType("ZGAC13" , 1).getNumber())
+				-proTypeUtils.service.findByExcelNameAndType("AC5" , 1).getNumber());
+	}
+	
+	
+	
+	/**
+	 * 
+	 * 设定推货工加价比(AD14)
+	 */
+	private static double getAD14(){
+		return ((proTypeUtils.service.findByExcelNameAndType("AC5" , 1).getNumber()*ProTypeUtils.EXCELONE
+				*proTypeUtils.service.findByExcelNameAndType("ZGAC14" , 1).getNumber())
+				-proTypeUtils.service.findByExcelNameAndType("AC5" , 1).getNumber());
+	}
+	
+	
+	/**
+	 * 
+	 * 设定上下车力工加价比(AD15)
+	 */
+	private static double getAD15(){
+		return ((proTypeUtils.service.findByExcelNameAndType("AC5" , 1).getNumber()*ProTypeUtils.EXCELONE
+				*proTypeUtils.service.findByExcelNameAndType("ZGAC15" , 1).getNumber())
+				-proTypeUtils.service.findByExcelNameAndType("AC5" , 1).getNumber());
+	}
 	
 	
 	

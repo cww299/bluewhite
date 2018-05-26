@@ -14,7 +14,9 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.product.entity.Product;
 import com.bluewhite.production.bacth.entity.Bacth;
+import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.system.user.entity.User;
 /**
  * 产品批次任务
@@ -82,6 +84,13 @@ public class Task  extends BaseEntity<Long>{
 	 */
 	@Column(name = "procedure_id")
 	private Long procedureId;
+	
+	/**
+	 * 工序
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "procedure_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Procedure procedure;
 	
 	
 	/**
@@ -162,11 +171,26 @@ public class Task  extends BaseEntity<Long>{
 	 */
 	@Transient
 	private Date orderTimeEnd;
-
+	/**
+	 * 查询字段 ,工序类型id
+	 */
+	@Transient
+	private Long procedureTypeId;
 	
 	
 	
-	
+	public Long getProcedureTypeId() {
+		return procedureTypeId;
+	}
+	public void setProcedureTypeId(Long procedureTypeId) {
+		this.procedureTypeId = procedureTypeId;
+	}
+	public Procedure getProcedure() {
+		return procedure;
+	}
+	public void setProcedure(Procedure procedure) {
+		this.procedure = procedure;
+	}
 	public Date getAllotTime() {
 		return allotTime;
 	}

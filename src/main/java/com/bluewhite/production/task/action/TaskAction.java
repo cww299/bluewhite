@@ -25,6 +25,7 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.production.bacth.entity.Bacth;
+import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.system.user.entity.User;
@@ -46,8 +47,9 @@ private static final Log log = Log.getLog(TaskAction.class);
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(Task.class,"id","userNames","bacthNumber","allotTime","productName","userIds","procedureId","procedureName","number","status","expectTime"
-						,"expectTaskPrice","taskTime","payB","taskPrice","type","createdAt");
+				.addRetainTerm(Task.class,"id","userNames","bacthNumber","allotTime","productName","userIds","procedure","procedureName","number","status","expectTime"
+						,"expectTaskPrice","taskTime","payB","taskPrice","type","createdAt")
+				.addRetainTerm(Procedure.class,"id","procedureTypeId");
 	}
 	
 	/**
@@ -59,14 +61,6 @@ private static final Log log = Log.getLog(TaskAction.class);
 	@ResponseBody
 	public CommonResponse addTask(HttpServletRequest request,Task task) {
 		CommonResponse cr = new CommonResponse();
-		//修改
-//		if(!StringUtils.isEmpty(task.getId())){
-//			Task oldTask = taskService.findOne(task.getId());
-//			BeanCopyUtils.copyNullProperties(oldTask,task);
-//			task.setCreatedAt(oldTask.getCreatedAt());
-//			taskService.update(task);
-//			cr.setMessage("工序修改成功");
-//		}else{
 			//新增
 			if(!StringUtils.isEmpty(task.getUserIds())){
 				if(task.getAllotTime() == null){
@@ -80,7 +74,6 @@ private static final Log log = Log.getLog(TaskAction.class);
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 				cr.setMessage("领取人不能为空");
 			}
-//		}
 		return cr;
 	}
 	

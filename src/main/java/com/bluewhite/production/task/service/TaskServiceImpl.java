@@ -150,6 +150,10 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	        	if(!StringUtils.isEmpty(param.getProductName())){
 	        		predicate.add(cb.like(root.get("productName").as(String.class), "%"+param.getProductName()+"%"));
 	        	}
+	        	//按工序类型
+	        	if(!StringUtils.isEmpty(param.getProcedureTypeId())){
+	        		predicate.add(cb.equal(root.get("procedure").get("procedureTypeId").as(Long.class), param.getProcedureTypeId()));
+	        	}
 	        	//按类型
 	        	if(!StringUtils.isEmpty(param.getType())){
 	        		predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
@@ -160,7 +164,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 							param.getOrderTimeBegin(),
 							param.getOrderTimeEnd()));
 				}
-	        	
 				Predicate[] pre = new Predicate[predicate.size()];
 				query.where(predicate.toArray(pre));
 	        	return null;
