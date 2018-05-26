@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,6 +28,7 @@ import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.production.farragotask.entity.FarragoTask;
 import com.bluewhite.production.farragotask.service.FarragoTaskService;
+import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.action.TaskAction;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
@@ -51,6 +53,21 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 				.get()
 				.addRetainTerm(FarragoTask.class,"id","name","price","time","allotTime","userIds");
 	}
+	
+	/**
+	 * 获取杂工加绩类型列表
+	 */
+	@RequestMapping(value = "/farragoTask/farragoTaskPerformance", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse farragoTaskPerformance(HttpServletRequest request) {
+		CommonResponse cr = new CommonResponse();
+		List<Map<String,Object>> mapList= ProTypeUtils.farragoTaskPerformance();
+		cr.setData(mapList);
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	
 	
 	/**
 	 * 添加杂工任务（修改）

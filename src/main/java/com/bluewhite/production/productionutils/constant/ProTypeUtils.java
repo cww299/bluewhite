@@ -1,6 +1,9 @@
 package com.bluewhite.production.productionutils.constant;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.productionutils.constant.service.ProductionConstantService;
@@ -99,44 +103,64 @@ public  class ProTypeUtils {
 	 * 设定精细填写包装工加价比(AD12)
 	 */
 	private static double getAD12(){
-		return ((proTypeUtils.service.findByExcelNameAndType("AC5" , 1).getNumber()*ProTypeUtils.EXCELONE
+		return ((proTypeUtils.service.findByExcelNameAndType("AC5" , 1).getNumber()
 				*proTypeUtils.service.findByExcelNameAndType("ZGAC12" , 1).getNumber())
 				-proTypeUtils.service.findByExcelNameAndType("AC5" , 1).getNumber());
 	}
-	
 	
 	/**
 	 * 
 	 * 设定装箱包装工加价比(AD13)
 	 */
 	private static double getAD13(){
-		return ((proTypeUtils.service.findByExcelNameAndType("AC5" , 1).getNumber()*ProTypeUtils.EXCELONE
+		return ((proTypeUtils.service.findByExcelNameAndType("AC5" , 1).getNumber()
 				*proTypeUtils.service.findByExcelNameAndType("ZGAC13" , 1).getNumber())
 				-proTypeUtils.service.findByExcelNameAndType("AC5" , 1).getNumber());
 	}
-	
-	
 	
 	/**
 	 * 
 	 * 设定推货工加价比(AD14)
 	 */
 	private static double getAD14(){
-		return ((proTypeUtils.service.findByExcelNameAndType("AC5" , 1).getNumber()*ProTypeUtils.EXCELONE
+		return ((proTypeUtils.service.findByExcelNameAndType("AC5" , 1).getNumber()
 				*proTypeUtils.service.findByExcelNameAndType("ZGAC14" , 1).getNumber())
 				-proTypeUtils.service.findByExcelNameAndType("AC5" , 1).getNumber());
 	}
-	
 	
 	/**
 	 * 
 	 * 设定上下车力工加价比(AD15)
 	 */
 	private static double getAD15(){
-		return ((proTypeUtils.service.findByExcelNameAndType("AC5" , 1).getNumber()*ProTypeUtils.EXCELONE
+		return ((proTypeUtils.service.findByExcelNameAndType("AC5" , 1).getNumber()
 				*proTypeUtils.service.findByExcelNameAndType("ZGAC15" , 1).getNumber())
 				-proTypeUtils.service.findByExcelNameAndType("AC5" , 1).getNumber());
 	}
+	
+	/**
+	 * 杂工加绩工序显示
+	 */
+	public static List<Map<String,Object>>  farragoTaskPerformance(){
+		List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>(4);
+		Map<String,Object> mapAD12 = new HashMap<String,Object>();
+		mapAD12.put("name", "精细填写工序");
+		mapAD12.put("number", NumUtils.round(ProTypeUtils.getAD12()/ProTypeUtils.TIME));
+		mapList.add(mapAD12);
+		Map<String,Object> mapAD13 = new HashMap<String,Object>();
+		mapAD13.put("name", "装箱装包工序");
+		mapAD13.put("number",NumUtils.round( ProTypeUtils.getAD13()/ProTypeUtils.TIME));
+		mapList.add(mapAD13);
+		Map<String,Object> mapAD14 = new HashMap<String,Object>();
+		mapAD14.put("name", "推货工序");
+		mapAD14.put("number",NumUtils.round( ProTypeUtils.getAD14()/ProTypeUtils.TIME));
+		mapList.add(mapAD14);
+		Map<String,Object> mapAD15 = new HashMap<String,Object>();
+		mapAD15.put("name", "上下车力工工序");
+		mapAD15.put("number",NumUtils.round( ProTypeUtils.getAD15()/ProTypeUtils.TIME));
+		mapList.add(mapAD15);
+		return mapList;
+	};
 	
 	
 	
@@ -292,7 +316,7 @@ public  class ProTypeUtils {
 		Double sumBPrice = 0.0 ;
 		switch (type) {
 		case 1:// 生产部一楼质检
-			sumBPrice =BPrice*proTypeUtils.service.findByExcelNameAndType("AC7" , 1).getNumber();
+			sumBPrice =BPrice/proTypeUtils.service.findByExcelNameAndType("AC7" , 1).getNumber();
 			break;
 		case 2://生产部一楼打包
 			break;
