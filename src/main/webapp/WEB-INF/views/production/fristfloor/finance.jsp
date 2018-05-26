@@ -162,7 +162,7 @@
 			    var index;
 			    var html = '';
 			    $.ajax({
-				      url:"${ctx}/Finance/allPayB",
+				      url:"${ctx}/finance/allPayB",
 				      data:data,
 				      type:"GET",
 				      beforeSend:function(){
