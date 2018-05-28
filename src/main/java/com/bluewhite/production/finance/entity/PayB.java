@@ -37,7 +37,7 @@ public class PayB extends BaseEntity<Long>{
 	private Double payNumber;
 	
 	/**
-	 * 杂工加绩工资数额
+	 * 加绩工资数额
 	 */
 	@Column(name = "performance_pay_number")
 	private Double performancePayNumber;

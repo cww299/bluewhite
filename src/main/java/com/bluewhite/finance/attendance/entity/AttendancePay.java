@@ -59,7 +59,7 @@ public class AttendancePay  extends BaseEntity<Long>{
 	private Integer type;
 	
 	/**
-	 * 任务分配时间（默认当前时间前一天）
+	 * 考勤时间
 	 */
 	@Column(name = "allot_time")
 	private Date allotTime;
@@ -75,8 +75,23 @@ public class AttendancePay  extends BaseEntity<Long>{
 	@Transient
 	private Date orderTimeEnd;
 	
+
+	@Transient
+    private String[] usersId;
 	
 	
+
+
+	public String[] getUsersId() {
+		return usersId;
+	}
+
+
+	public void setUsersId(String[] usersId) {
+		this.usersId = usersId;
+	}
+
+
 	public Double getWorkPrice() {
 		return workPrice;
 	}

@@ -142,6 +142,7 @@ public class FarragoTask  extends BaseEntity<Long>{
 		this.performancePrice = performancePrice;
 	}
 
+
 	public String getRemarks() {
 		return remarks;
 	}

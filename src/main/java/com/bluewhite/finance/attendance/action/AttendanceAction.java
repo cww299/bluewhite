@@ -19,6 +19,8 @@ import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
 import com.bluewhite.production.finance.entity.PayB;
+import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.service.UserService;
 
 /**
  * 财务部  考勤 
@@ -32,7 +34,8 @@ public class AttendanceAction {
 	
 		@Autowired
 		private AttendancePayService attendancePayService;
-		
+		@Autowired
+		private UserService userService;
 		
 		private ClearCascadeJSON clearCascadeJSON;
 	
@@ -52,6 +55,40 @@ public class AttendanceAction {
 		@ResponseBody
 		public CommonResponse allAttendancePay(HttpServletRequest request,AttendancePay attendancePay) {
 			CommonResponse cr = new CommonResponse();
+	
+				//新增考勤工资，一键增加考勤
+				if(!StringUtils.isEmpty(attendancePay.getUsersId())){
+					for (int i = 0; i < attendancePay.getUsersId().length; i++) {
+						Long userid = Long.parseLong(attendancePay.getUsersId()[i]);
+						User user = userService.findOne(userid);
+						attendancePay.setUserId(userid);
+						attendancePay.setUserName(user.getUserName());
+						if(attendancePay.getAllotTime() == null){
+							Calendar  cal = Calendar.getInstance();
+							cal.add(Calendar.DATE,-1);
+							attendancePay.setAllotTime(cal.getTime());
+						}
+						attendancePayService.addAttendancePay(attendancePay);
+						cr.setMessage("任务分配成功");
+						
+					}
+				}else{
+					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+					cr.setMessage("考勤人员不能为空");
+				}
+			
+			return cr;
+		}
+		
+		
+		/** 
+		 * 修改考情工资(A工资)
+		 * 
+		 */
+		@RequestMapping(value = "/finance/updateAttendance", method = RequestMethod.GET)
+		@ResponseBody
+		public CommonResponse updateAttendance(HttpServletRequest request,AttendancePay attendancePay) {
+			CommonResponse cr = new CommonResponse();
 			//修改
 			if(!StringUtils.isEmpty(attendancePay.getId())){
 				AttendancePay oldAttendancePay = attendancePayService.findOne(attendancePay.getId());
@@ -60,21 +97,35 @@ public class AttendanceAction {
 				attendancePayService.addAttendancePay(attendancePay);
 				cr.setMessage("修改成功");
 			}else{
-				//新增
-				if(!StringUtils.isEmpty(attendancePay.getUserId())){
-					if(attendancePay.getAllotTime() == null){
-						Calendar  cal = Calendar.getInstance();
-						cal.add(Calendar.DATE,-1);
-						attendancePay.setAllotTime(cal.getTime());
-					}
-					attendancePayService.addAttendancePay(attendancePay);
-					cr.setMessage("任务分配成功");
-				}else{
-					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-					cr.setMessage("考勤人员不能为空");
-				}
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				cr.setMessage("考勤流水不能为空");
 			}
 			return cr;
 		}
+		
+		
+		/** 
+		 * 修改员工考情工资流水（由于当月预计小时收入不精确，导致要修改当月员工的所有收入流水）
+		 * 
+		 */
+		@RequestMapping(value = "/finance/updateAllAttendance", method = RequestMethod.GET)
+		@ResponseBody
+		public CommonResponse updateAllAttendance(HttpServletRequest request,AttendancePay attendancePay) {
+			CommonResponse cr = new CommonResponse();
+			//修改
+			if(!StringUtils.isEmpty(attendancePay.getUserId())){
+				AttendancePay oldAttendancePay = attendancePayService.findOne(attendancePay.getId());
+				BeanCopyUtils.copyNullProperties(oldAttendancePay,attendancePay);
+				attendancePay.setCreatedAt(oldAttendancePay.getCreatedAt());
+				attendancePayService.addAttendancePay(attendancePay);
+				cr.setMessage("修改成功");
+			}else{
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				cr.setMessage("考勤流水不能为空");
+			}
+			return cr;
+		}
+		
+		
 
 }
