@@ -9,7 +9,7 @@
 <head>
      <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>员工分组</title>
+    <title>杂工管理</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
    
@@ -28,7 +28,7 @@
                     <div class="col-md-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">分组信息</h3>
+                                <h3 class="panel-title">杂工详情</h3>
                                 <div class="actions pull-right">
                                     <i class="fa fa-expand"></i>
                                     <i class="fa fa-chevron-down"></i>
@@ -38,15 +38,22 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                        	<th class="text-center">组名</th>
-                                            <th class="text-center">人员信息</th>
+                                        	<th class="text-center">批次名</th>
+                                        	<th class="text-center">日期</th>
+                                            <th class="text-center">工序名</th>
+                                            <th class="text-center">现场管理认可时间</th>
+                                            <th class="text-center">备注</th>
+                                            <th class="text-center">是否工序加价选择</th>
+                                            <th class="text-center">任务价值</th>
+                                            <th class="text-center">添加工价</th>
+                                            <th class="text-center">人员详情</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
-                                    <button type="button" id="addgroup" class="btn btn-success btn-3d pull-right">新增小组</button>
+                                    <button type="button" id="addgroup" class="btn btn-success btn-3d pull-right">新增杂工</button>
                                 </table>
                                 <div id="pager" class="pull-right">
                                 
@@ -134,6 +141,12 @@
                                 </div>
                                  <div class="col-sm-2 select"></div>
                     	</div>
+                    	<div class="form-group">
+                            <label class="col-sm-3 control-label">备注</label>
+                                <div class="col-sm-6">
+                                  <input type="text" class="form-control remarks">
+                                </div>
+                    	</div>
                  </div>
 				</div>
 
@@ -186,7 +199,7 @@
 			    var index;
 			    var html = '';
 			    $.ajax({
-				      url:"${ctx}/production/getGroup",
+				      url:"${ctx}/farragoTask/allFarragoTask",
 				      data:data,
 				      type:"GET",
 				      beforeSend:function(){
@@ -195,11 +208,18 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			 $(result.data).each(function(i,o){
+		      			 $(result.data.rows).each(function(i,o){
 		      				html +='<tr>'
+		      				+'<td class="text-center edit name">'+o.bacth+'</td>'
+		      				+'<td class="text-center edit name">'+o.allotTime+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
+		      				+'<td class="text-center edit name">'+o.time+'</td>'
+		      				+'<td class="text-center edit name">'+o.remarks+'</td>'
+		      				+'<td class="text-center edit name">'+o.performance+'</td>'
+		      				+'<td class="text-center edit name">'+parseFloat((o.price).toFixed(3))+'</td>'
+		      				+'<td class="text-center edit name">'+parseFloat((o.performancePrice).toFixed(3))+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-3d btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d update" data-id='+o.id+'>编辑</button></td></tr>'
+							+'<td class="text-center"><button class="btn btn-sm btn-danger btn-3d delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -233,56 +253,39 @@
 			}
 			
 			this.loadEvents = function(){
-				//修改方法
-				$('.update').on('click',function(){
-					if($(this).text() == "编辑"){
-						$(this).text("保存")
-						
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
-				        });
-					}else{
-							$(this).text("编辑")
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							
-							var postData = {
-									id:$(this).data('id'),
-									name:$(this).parent().parent('tr').find(".name").text(),
-							}
-							
-							var index;
-							$.ajax({
-								url:"${ctx}/production/addGroup",
-								data:postData,
-								type:"POST",
-								beforeSend:function(){
-									index = layer.load(1, {
-										  shade: [0.1,'#fff'] //0.1透明度的白色背景
-										});
-								},
-								
-								success:function(result){
-									if(0==result.code){
-									layer.msg("修改成功！", {icon: 1});
-									layer.close(index);
-									}else{
-										layer.msg("修改失败！", {icon: 1});
-										layer.close(index);
-									}
-								},error:function(){
-									layer.msg("操作失败！", {icon: 2});
-									layer.close(index);
-								}
-							});
+				//删除方法
+				$('.delete').on('click',function(){
+					var postData = {
+							id:$(this).data('id'),
 					}
+					
+					var index;
+					 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
+					$.ajax({
+						url:"${ctx}/farragoTask/delete",
+						data:postData,
+						type:"GET",
+						beforeSend:function(){
+							index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+						},
+						
+						success:function(result){
+							if(0==result.code){
+							layer.msg("删除成功！", {icon: 1});
+							self.loadPagination(data)
+							layer.close(index);
+							}else{
+								layer.msg("删除失败！", {icon: 1});
+								layer.close(index);
+							}
+						},error:function(){
+							layer.msg("操作失败！", {icon: 2});
+							layer.close(index);
+						}
+					});
+					 })
 				})
 				
 				//人员详细显示方法
@@ -298,7 +301,7 @@
 					 var arr=new Array();
 					var html="";
 					$.ajax({
-						url:"${ctx}/production/getGroupOne",
+						url:"${ctx}/farragoTask/taskUser",
 						data:postData,
 						type:"GET",
 						beforeSend:function(){
@@ -308,7 +311,7 @@
 						},
 						
 						success:function(result){
-							$(result.data.users).each(function(i,o){
+							$(result.data).each(function(i,o){
 							html+=o.userName+"&nbsp&nbsp&nbsp&nbsp"
 							})
 							$('.modal-body').html(html);
@@ -441,6 +444,7 @@
 									  allotTime:$("#Time").val(),
 									  name:$(".sumnumber").val(),
 									  time:$(".timedata").val(),
+									  remarks:$(".remarks").val(),
 									  performance:performance,
 									  performanceNumber:performanceNumber,
 									  userIds:arr,
@@ -462,7 +466,7 @@
 										if(0==result.code){
 											layer.msg("添加成功！", {icon: 1});
 										 self.loadPagination(data); 
-											$('#addDictDivType').hide();
+										 $('.addDictDivTypeForm')[0].reset();
 											
 										}else{
 											layer.msg("添加失败", {icon: 2});

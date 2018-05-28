@@ -9,7 +9,7 @@
 <head>
      <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>员工分组</title>
+    <title>工资总汇</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
    
@@ -28,7 +28,7 @@
                     <div class="col-md-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">分组信息</h3>
+                                <h3 class="panel-title">工资详情</h3>
                                 <div class="actions pull-right">
                                     <i class="fa fa-expand"></i>
                                     <i class="fa fa-chevron-down"></i>
@@ -179,7 +179,7 @@
 		      				+'<td class="text-center edit ">'+o.bacth+'</td>'
 		      				+'<td class="text-center edit ">'+o.productName+'</td>'
 		      				+'<td class="text-center edit ">'+o.allotTime+'</td>'
-		      				+'<td class="text-center edit ">'+o.payNumber+'</td></tr>'
+		      				+'<td class="text-center edit ">'+parseFloat((o.payNumber).toFixed(3))+'</td></tr>'
 							
 		      			}); 
 				        //显示分页
