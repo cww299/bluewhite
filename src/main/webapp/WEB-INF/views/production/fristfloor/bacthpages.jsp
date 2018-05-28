@@ -134,7 +134,12 @@
                                 </div>
                                  <div class="col-sm-2 select"></div>
                     	</div>
-                    	
+                    	<div class="form-group">
+                            <label class="col-sm-3 control-label">加绩工序选择</label>
+                                <div class="col-sm-6 workingtw">
+                                  
+                                </div>
+                    	</div>
                  </div>
 				</div>
 
@@ -474,6 +479,29 @@
 					      }
 					  });
 				    
+					//遍历杂工加绩比值
+					var html=""
+					$.ajax({
+						url:"${ctx}/task/taskPerformance",
+						type:"GET",
+						beforeSend:function(){
+							index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+						},
+						
+						success:function(result){
+							$(result.data).each(function(i,o){
+							html+='<option value="'+o.number+'" data-name="'+o.name+'">'+o.name+'</option>'
+							})
+							$('.workingtw').html("<select class='form-control selectchangtw'><option value='0'>请选择</option>"+html+"</select>");
+							layer.close(index);
+							
+						},error:function(){
+							layer.msg("操作失败！", {icon: 2});
+							layer.close(index);
+						}
+					});
 				    
 					var postData
 					var dicDiv=$('#addDictDivType');
@@ -515,6 +543,10 @@
 									}
 								}
 								expectTime=$(".sumtime").val();
+								var performanceNumber=$(".selectchangtw").val();
+								
+								var performance=$(".selectchangtw option:selected").text();
+								
 								var postData = {
 										type:1,
 										bacthId:that.data("id"),
@@ -522,6 +554,8 @@
 										userIds:arr,
 										number:number,
 										userNames:username,
+										performance:performance,
+										performanceNumber:performanceNumber,
 										productName:productName,
 										expectTime:expectTime,
 										bacthNumber:bacthNumber,
