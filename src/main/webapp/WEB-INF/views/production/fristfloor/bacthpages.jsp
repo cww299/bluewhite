@@ -202,6 +202,7 @@
 		      		  success: function (result) {
 		      			  
 		      			 $(result.data.rows).each(function(i,o){
+		      				 
 		      				 html +='<tr>'
 		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
@@ -209,7 +210,7 @@
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center  bacthDepartmentPrice">'+o.bacthDepartmentPrice+'</td>'
 		      				+'<td class="text-center  bacthHairPrice">'+o.bacthHairPrice+'</td>'
-		      				+'<td class="text-center  sumTaskPrice">'+parseFloat((o.sumTaskPrice*1).toFixed(3))+'</td>'
+		      				+'<td class="text-center  sumTaskPrice">'+ parseFloat((o.sumTaskPrice*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center  regionalPrice">'+parseFloat((o.regionalPrice*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button> <button class="btn btn-sm btn-warning btn-3d updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-3d delete" data-id='+o.id+'>删除</button></td></tr>' 

@@ -52,13 +52,10 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">序号</th>
-                                            <th class="text-center">编号</th>
                                             <th class="text-center">姓名</th>
-                                            <th class="text-center">手机号</th>
-                                            <th class="text-center">身份证号</th>
                                             <th class="text-center">部门</th>
                                             <th class="text-center">职位</th>
-                                            <th class="text-center">操作</th>
+                                            <th class="text-center">工作状态</th>
                                             <th class="text-center">员工分组</th>
                                         </tr>
                                     </thead>
@@ -125,13 +122,10 @@
 		      				 var order = i+1;
 		      				html +='<tr>'
 		      				+'<td class="text-center edit price">'+order+'</td>'
-		      				+'<td class="text-center edit price">'+o.number+'</td>'
 		      				+'<td class="text-center edit price">'+o.userName+'</td>'
-		      				+'<td class="text-center edit price">'+o.phone+'</td>'
-		      				+'<td class="text-center edit price">'+o.idCard+'</td>'
 		      				+'<td class="text-center edit price">'+o.orgName.name+'</td>'
 		      				+'<td class="text-center edit price">'+o.position.name+'</td>'
-							+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d update">详细信息</button></td>'
+							+'<td class="text-center" data-status="'+o.status+'" data-id="'+o.id+'"><input type="radio"   class="rest" value="0">工作<input type="radio"   class="rest" value="1">休息 </td>'
 							+'<td class="text-center"><div class="groupChange" data-id="'+o.id+'" data-groupid="'+a+'" ></div></td></tr>'
 							
 		      			}); 
@@ -155,14 +149,69 @@
 					   	layer.close(index);
 					   	$("#tablecontent").html(html); 
 					   	self.loadEvents();
-					   	
+					   self.checked();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
 					  }
 				  });
 			}
+			  this.checked=function(){
+					
+					$(".rest").each(function(i,o){
+							
+							var rest=$(o).parent().data("status");
+							if($(o).val()==rest){
+							
+								$(o).attr('checked', 'checked');;
+							}
+					})
+					
+				}
+			
 		this.loadEvents = function(){
+			
+			$('.rest').on('click',function(){
+				var  del=$(this);
+				var id = $(this).parent().data('id');
+				var rest = $(this).val();
+				
+			    	  $.ajax({
+							url:"${ctx}/system/user/update",
+							data:{
+								id:id,
+								status:rest,
+								},
+							type:"PUT",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							success:function(result){
+								//选择1
+								if(rest>0){
+									del.parent().find(".rest").eq(0).prop("checked", false);
+										
+								}else{
+									del.parent().find(".rest").eq(1).prop("checked", false);	
+								}
+								layer.msg("操作成功！", {icon: 1});
+								layer.close(index);
+							
+						
+								
+							},
+							error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+			    	  
+			 
+	
+			});
+			
 			//遍历组名信息
 			var data={
 					page:1,
