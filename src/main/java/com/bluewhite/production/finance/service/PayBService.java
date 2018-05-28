@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.PayB;
 @Service
 public interface PayBService extends BaseCRUDService<PayB,Long>{
@@ -15,5 +16,12 @@ public interface PayBService extends BaseCRUDService<PayB,Long>{
 	 * @return
 	 */
 	public PageResult<PayB> findPages(PayB payB, PageParameter page);
+	
+	/**
+	 * 汇总后的各项工资
+	 * @param collectPay
+	 * @return
+	 */
+	public CollectPay collectPay(CollectPay collectPay);
 
 }
