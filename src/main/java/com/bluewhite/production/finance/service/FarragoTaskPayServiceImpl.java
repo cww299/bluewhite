@@ -34,7 +34,7 @@ public class FarragoTaskPayServiceImpl extends BaseServiceImpl<FarragoTaskPay, L
 	        	if(!StringUtils.isEmpty(param.getUserName())){
 	        		predicate.add(cb.like(root.get("userName").as(String.class), "%"+param.getUserName()+"%"));
 	        	}
-	        	//按批次
+	        	//按任务名称
 	        	if(!StringUtils.isEmpty(param.getTaskName())){
 	        		predicate.add(cb.like(root.get("taskName").as(String.class), "%"+param.getTaskName()+"%"));
 	        	}

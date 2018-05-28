@@ -21,13 +21,14 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
+import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.FarragoTaskPay;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.finance.service.FarragoTaskPayService;
 import com.bluewhite.production.finance.service.PayBService;
 
 /**
- * 生产部质检财务相关action 
+ * 生产部财务相关action 
  * @author zhangliang
  *
  */
@@ -103,6 +104,22 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	
 	
 	/**************************  汇总相关业务    ********************************/
+	
+	
+	/** 
+	 * 日期内员工的绩效汇总表（上报财务）
+	 * 
+	 */
+	@RequestMapping(value = "/finance/collectPay", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse collectPay(HttpServletRequest request,CollectPay collectPay) {
+		CommonResponse cr = new CommonResponse();
+		payBService.collectPay(collectPay);
+		
+			
+			cr.setMessage("查询成功");
+		return cr;
+	}
 	
 	
 	

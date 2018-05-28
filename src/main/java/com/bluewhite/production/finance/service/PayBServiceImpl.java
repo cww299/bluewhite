@@ -16,6 +16,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.dao.PayBDao;
+import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.PayB;
 @Service
 public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayBService{
@@ -64,5 +65,13 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 		        PageResult<PayB> result = new PageResult<PayB>(pages,page);
 		        return result;
 		    }
+
+	@Override
+	public CollectPay collectPay(CollectPay collectPay) {
+		
+		
+		
+		return null;
+	}
 
 }

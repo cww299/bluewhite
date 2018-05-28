@@ -317,6 +317,13 @@ public class User extends BaseEntity<Long> {
 	@Column(name = "status")
 	private Integer status;
 	
+	
+	/**
+	 * 工作时长
+	 */
+	@Column(name = "work_time")
+	private Double workTime;
+	
 
 	/**
 	 * 权限
@@ -349,6 +356,14 @@ public class User extends BaseEntity<Long> {
 	
 	
 
+
+	public Double getWorkTime() {
+		return workTime;
+	}
+
+	public void setWorkTime(Double workTime) {
+		this.workTime = workTime;
+	}
 
 	public Double getPrice() {
 		return price;
