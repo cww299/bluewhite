@@ -91,16 +91,24 @@
 				<div style="height: 30px"></div>
 				<form class="form-horizontal addDictDivTypeForm">
 					<div class="row col-xs-12  col-sm-12  col-md-12 ">
-			<div class="form-group">
+					<div class="form-group">
                                         <label class="col-sm-3 control-label">日期:</label>
                                         <div class="col-sm-6">
                                             <input id="Time" placeholder="时间可不填" class="form-control laydate-icon"
              					onClick="laydate({elem: '#Time', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                                         </div>
                  </div>
+                 
+                	 <div class="form-group">
+						
+                           <label class="col-sm-3 control-label">批次名</label>
+                              <div class="col-sm-6">
+                                  <input type="text" class="form-control bacth">
+                              </div>
+                    	</div>
 						<div class="form-group">
 						
-                           <label class="col-sm-3 control-label">外发完成最后道工作</label>
+                           <label class="col-sm-3 control-label">工序名</label>
                               <div class="col-sm-6">
                                   <input type="text" class="form-control sumnumber">
                               </div>
@@ -108,8 +116,8 @@
                     	
                     	<div class="form-group">
                             <label class="col-sm-3 control-label">现在管理认可时间</label>
-                                <div class="col-sm-6 timedata">
-                                  <input type="text" class="form-control">
+                                <div class="col-sm-6 ">
+                                  <input type="text" class="form-control timedata">
                                 </div>
                     	</div>
                     	
@@ -389,7 +397,7 @@
 							 }) 
 					      }
 					  });
-					
+					//遍历杂工加绩比值
 					$.ajax({
 						url:"${ctx}/farragoTask/farragoTaskPerformance",
 						type:"GET",
@@ -401,7 +409,7 @@
 						
 						success:function(result){
 							$(result.data).each(function(i,o){
-							html+='<option value="'+o.number+'">'+o.name+'</option>'
+							html+='<option value="'+o.number+'" data-name="'+o.name+'">'+o.name+'</option>'
 							})
 							$('.working').html("<select class='form-control selectchang'><option value='0'>请选择</option>"+html+"</select>");
 							layer.close(index);
@@ -422,11 +430,21 @@
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
+							  var performanceNumber=$(".selectchang").val();
+							  var performance=$(".selectchang option:selected").text();
 							 
+							  var arr=new Array()
+								$(".stuCheckBox:checked").each(function() {   
+								    arr.push($(this).val());   
+								});
 							  postData={
 									  allotTime:$("#Time").val(),
 									  name:$(".sumnumber").val(),
 									  time:$(".timedata").val(),
+									  performance:performance,
+									  performanceNumber:performanceNumber,
+									  userIds:arr,
+									  bacth:$(".bacth").val(),
 									  type:1,
 							  }
 							  $.ajax({
