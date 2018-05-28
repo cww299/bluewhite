@@ -22,7 +22,7 @@
                                     <i class="fa fa-chevron-down"></i>
                                 </div>
                             </div>
-                            <div class="row" style="height: 30px">
+                            <div class="row" style="height: 30px; margin:15px 0 10px">
 			<div class="col-xs-8 col-sm-8  col-md-8">
 				<form class="form-search" >
 					<div class="row">
@@ -43,7 +43,7 @@
 				</form>
 			</div>
 		</div>
-                            
+              <h1 class="page-header"></h1>             
                             
                             
                             
@@ -55,6 +55,8 @@
                                             <th class="text-center">姓名</th>
                                             <th class="text-center">部门</th>
                                             <th class="text-center">职位</th>
+                                            <th class="text-center">考勤时间</th>
+                                            <th class="text-center">当月预计收入</th>
                                             <th class="text-center">工作状态</th>
                                             <th class="text-center">员工分组</th>
                                         </tr>
@@ -125,6 +127,8 @@
 		      				+'<td class="text-center edit price">'+o.userName+'</td>'
 		      				+'<td class="text-center edit price">'+o.orgName.name+'</td>'
 		      				+'<td class="text-center edit price">'+o.position.name+'</td>'
+		      				+'<td class="text-center edit price"><input></input></td>'
+		      				+'<td class="text-center edit price">'+o.price*1+'</td>'
 							+'<td class="text-center" data-status="'+o.status+'" data-id="'+o.id+'"><input type="radio"   class="rest" value="0">工作<input type="radio"   class="rest" value="1">休息 </td>'
 							+'<td class="text-center"><div class="groupChange" data-id="'+o.id+'" data-groupid="'+a+'" ></div></td></tr>'
 							

@@ -34,8 +34,8 @@
                                     <i class="fa fa-chevron-down"></i>
                                 </div>
                             </div>
-        <div class="row" style="height: 30px">
-			<div class="col-xs-8 col-sm-8  col-md-8">
+        <div class="row" style="height: 30px; margin:15px 0 10px">
+			<div class="col-xs-8 col-sm-8  col-md-9">
 				<form class="form-search" >
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 col-md-12">

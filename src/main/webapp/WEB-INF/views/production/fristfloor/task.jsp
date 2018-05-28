@@ -35,7 +35,7 @@
                                 </div>
                             </div>
                   <!--查询开始  -->
-           <div class="row" style="height: 30px">
+          <div class="row" style="height: 30px; margin:15px 0 10px">
 			<div class="col-xs-8 col-sm-8  col-md-8">
 				<form class="form-search" >
 					<div class="row">
