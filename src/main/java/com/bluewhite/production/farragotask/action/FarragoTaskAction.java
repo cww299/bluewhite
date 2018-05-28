@@ -29,9 +29,6 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.production.farragotask.entity.FarragoTask;
 import com.bluewhite.production.farragotask.service.FarragoTaskService;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
-import com.bluewhite.production.task.action.TaskAction;
-import com.bluewhite.production.task.entity.Task;
-import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
@@ -51,7 +48,8 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(FarragoTask.class,"id","name","price","time","allotTime","userIds");
+				.addRetainTerm(FarragoTask.class,"id","name","price","time","allotTime","userIds",
+						"performance","performanceNumber","performancePrice","remarks");
 	}
 	
 	/**
@@ -79,7 +77,7 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 	public CommonResponse addFarragoTask(HttpServletRequest request,FarragoTask farragoTask) {
 		CommonResponse cr = new CommonResponse();
 		//修改
-		if(!StringUtils.isEmpty(farragoTask.getId())){
+		if(!StringUtils.isEmpty(farragoTask.getUserIds())){
 			FarragoTask oldTask = farragoTaskService.findOne(farragoTask.getId());
 			BeanCopyUtils.copyNullProperties(oldTask,farragoTask);
 			farragoTask.setCreatedAt(oldTask.getCreatedAt());

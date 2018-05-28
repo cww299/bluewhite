@@ -7,7 +7,7 @@ import javax.persistence.Table;
 import com.bluewhite.base.BaseEntity;
 
 /**
- * 生产控制部  工资实体
+ * 生产控制部  财务实体
  * @author zhangliang
  *
  */

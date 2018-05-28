@@ -304,6 +304,18 @@ public class User extends BaseEntity<Long> {
 	@Column(name = "task_ids")
 	private String taskIds;
 	
+	/**
+	 * 到岗小时预计收入
+	 */
+	@Column(name = "price")
+	private Double price;
+	
+	
+	/**
+	 * 工作状态（0=工作，1 等于休息）
+	 */
+	@Column(name = "status")
+	private Integer status;
 	
 
 	/**
@@ -337,6 +349,22 @@ public class User extends BaseEntity<Long> {
 	
 	
 
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
 
 	public String getTaskIds() {
 		return taskIds;
