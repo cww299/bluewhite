@@ -18,6 +18,13 @@ public interface FarragoTaskService extends BaseCRUDService<FarragoTask,Long>{
 	 * @return
 	 */
 	public FarragoTask addFarragoTask(FarragoTask farragoTask);
+	
+	/**
+	 * 修改杂工任务
+	 * @param farragoTask
+	 * @return
+	 */
+	public FarragoTask updateFarragoTask(FarragoTask farragoTask);
 
 
 }

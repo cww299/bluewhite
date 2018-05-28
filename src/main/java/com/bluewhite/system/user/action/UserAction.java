@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.SessionManager;
@@ -23,6 +24,7 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
@@ -42,7 +44,7 @@ public class UserAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(User.class,"id","number","pictureUrl", "userName", "phone","position","orgName","idCard",
+				.addRetainTerm(User.class,"id","price","status","number","pictureUrl", "userName", "phone","position","orgName","idCard",
 						"nation","email","gender","birthDate","group")
 				.addRetainTerm(Group.class, "id","name", "type", "price")
 				.addRetainTerm(Role.class, "name", "role", "description","id")
@@ -105,14 +107,15 @@ public class UserAction {
 			cr.setMessage("id为空");
 			return cr;
 		}
-		User u = userService.findOne(user.getId());
-		if(!StringUtils.isEmpty(user.getUserName())){
-			u.setUserName(user.getUserName());
-		}
-		cr.setData(clearCascadeJSON.format(userService.update(u)).toJSON());
+		User oldUser = userService.findOne(user.getId());
+		BeanCopyUtils.copyNullProperties(oldUser,user);
+		user.setCreatedAt(oldUser.getCreatedAt());
+		cr.setData(clearCascadeJSON.format(userService.save(user)).toJSON());
 		cr.setMessage("修改成功");
 		return cr;
 	}
+	
+	
 	
 	/**
 	 * 查询用户详细信息
@@ -190,7 +193,7 @@ public class UserAction {
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
 		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
-				DateTimePattern.DATE.getPattern());
+				DateTimePattern.DATEHMS.getPattern());
 		binder.registerCustomEditor(java.util.Date.class, null,
 				new CustomDateEditor(dateTimeFormat, true));
 		binder.registerCustomEditor(byte[].class,
