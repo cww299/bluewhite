@@ -95,7 +95,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				//任务加绩具体数值
 				if(task.getPerformanceNumber()!=null){
 					task.setTaskTime(newTask.getTaskTime());
-					task.setPerformancePrice(NumUtils.round(ProTypeUtils.sumtaskPerformancePrice(task)));
+					newTask.setPerformancePrice(NumUtils.round(ProTypeUtils.sumtaskPerformancePrice(task)));
 				}
 				dao.save(newTask);
 				
