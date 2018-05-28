@@ -77,7 +77,7 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 	public CommonResponse addFarragoTask(HttpServletRequest request,FarragoTask farragoTask) {
 		CommonResponse cr = new CommonResponse();
 		//修改
-		if(!StringUtils.isEmpty(farragoTask.getUserIds())){
+		if(!StringUtils.isEmpty(farragoTask.getId())){
 			FarragoTask oldTask = farragoTaskService.findOne(farragoTask.getId());
 			BeanCopyUtils.copyNullProperties(oldTask,farragoTask);
 			farragoTask.setCreatedAt(oldTask.getCreatedAt());
