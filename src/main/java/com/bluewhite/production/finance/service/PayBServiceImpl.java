@@ -68,9 +68,6 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 
 	@Override
 	public CollectPay collectPay(CollectPay collectPay) {
-		
-		
-		
 		return null;
 	}
 
