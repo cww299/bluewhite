@@ -96,4 +96,10 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 		}
 		return dao.save(farragoTask);
 	}
+
+	@Override
+	public FarragoTask updateFarragoTask(FarragoTask farragoTask) {
+	
+		return null;
+	}
 }

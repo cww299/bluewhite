@@ -107,12 +107,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 						"%" + user.getNumber() + "%"));
 			}
 			
-			//按部门
-//			if (user.getOrgNameId() != null) {
-//				predicate.add(cb.equal(root.get("orgNameId").as(Long.class),
-//						user.getOrgNameId()));
-//			}
-			
 			//部门,多个
 			if (!StringUtils.isEmpty(user.getOrgNameIds())) {
 				List<Long>  orgNameIdList = new ArrayList<Long>();
