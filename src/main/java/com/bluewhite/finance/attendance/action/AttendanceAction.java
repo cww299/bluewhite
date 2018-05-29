@@ -78,6 +78,8 @@ public class AttendanceAction {
 							Calendar  cal = Calendar.getInstance();
 							cal.add(Calendar.DATE,-1);
 							attendance.setAllotTime(cal.getTime());
+						}else{
+							attendance.setAllotTime(attendancePay.getAllotTime());
 						}
 						attendance.setOrderTimeBegin(DatesUtil.getFirstDayOfMonth(attendance.getAllotTime()));
 						attendance.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(attendance.getAllotTime()));
