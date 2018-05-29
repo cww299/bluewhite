@@ -110,7 +110,7 @@
                  </div>
 						<div class="form-group">
 						
-                           <label class="col-sm-3 col-md-2 control-label">数量</label>
+                           <label class="col-sm-3 col-md-2 control-label">任务数量</label>
                               <div class="col-sm-2 col-md-2">
                                   <input type="text" class="form-control sumnumber">
                               </div>
@@ -362,7 +362,7 @@
 			      			$(".selectchang").change(function(){
 			      				var htmlfv="";
 			      				var	id=$(this).val()
-			      				if(id==109){
+			      				if(id==109 || id==""){
 			      					$('#dis').css("display","block")
 			      				}else{
 			      					$('#dis').css("display","none")
@@ -386,7 +386,7 @@
 										
 										success:function(result){
 											$(result.data).each(function(i,o){
-												htmlfv +='<div class="input-group"><input type="checkbox" class="checkWork" value="'+o.id+'">'+o.name+' 剩余:'+o.residualNumber+'</input></div>'
+												htmlfv +='<div class="input-group"><input type="checkbox" class="checkWork" value="'+o.id+'" data-residualnumber="'+o.residualNumber+'">'+o.name+' 剩余:'+o.residualNumber+'</input></div>'
 											})
 											var s="<div class='input-group'><input type='checkbox' class='checkWorkAll'>全选</input></div>"
 											$('.checkworking').html(s+htmlfv);
@@ -488,8 +488,10 @@
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
 							  var values=new Array()
+							  var numberr=new Array()
 								$(".checkWork:checked").each(function() {   
-									values.push($(this).val());   
+									values.push($(this).val());
+									numberr.push($(this).data('residualnumber'));
 								}); 
 							  var arr=new Array()
 							  
@@ -507,6 +509,11 @@
 									return layer.msg("至少选择一个员工！", {icon: 2});
 								}
 								number=$(".sumnumber").val();
+								for (var i = 0; i < numberr.length; i++) {
+									if(numberr[i]-number<0){
+										return layer.msg("有工序剩余数量不足！", {icon: 2});
+									}
+								}
 								expectTime=$(".sumtime").val();
 								var postData = {
 										type:1,
