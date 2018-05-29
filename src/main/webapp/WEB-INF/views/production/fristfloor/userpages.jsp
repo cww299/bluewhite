@@ -43,9 +43,14 @@
 				</form>
 			</div>
 		</div>
-              <h1 class="page-header"></h1>             
-                            
-                            
+              <h1 class="page-header"></h1>  
+              	<table><tr>           
+                        <td><button type="button" class="btn btn-default btn-square btn-sm btn-3d attendance">一键添加考勤</button>&nbsp&nbsp&nbsp</td> 
+                        <td><input id="startTime" placeholder="请输入考勤时间" class="form-control laydate-icon"
+             				onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+             			</td>
+             			<td><button type="button" class="btn btn-default btn-square btn-sm btn-3d position">到岗预计小时收入</button>&nbsp&nbsp&nbsp</td>   
+                 </tr></table>        
                             
                             <div class="panel-body">
                                 <table class="table table-hover">
@@ -84,7 +89,7 @@
      <script src="${ctx }/static/js/laypage/laypage.js"></script> 
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-    
+    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
     <script>
    jQuery(function($){
    	var Login = function(){
