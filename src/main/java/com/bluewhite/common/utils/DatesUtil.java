@@ -36,7 +36,7 @@ public class DatesUtil {
 	        //设置年份  
 	        cal.set(Calendar.YEAR,year);  
 	        //设置月份  
-	        cal.set(Calendar.MONTH, month-1);  
+	        cal.set(Calendar.MONTH, month);  
 	        //获取某月最小天数  
 	        int firstDay = cal.getActualMinimum(Calendar.DAY_OF_MONTH);  
 	        //设置日历中月份的最小天数  
@@ -59,7 +59,7 @@ public class DatesUtil {
 	        //设置年份  
 	        cal.set(Calendar.YEAR,year);  
 	        //设置月份  
-	        cal.set(Calendar.MONTH, month-1);  
+	        cal.set(Calendar.MONTH, month);  
 	        //获取某月最大天数  
 	        int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);  
 	        //设置日历中月份的最大天数  
