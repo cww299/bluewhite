@@ -66,6 +66,37 @@ public class DatesUtil {
 	        cal.set(Calendar.DAY_OF_MONTH, lastDay);  
 	        Date lastDayOfMonth = cal.getTime();  
 	        return lastDayOfMonth;  
-	    }  
+	    } 
+	
+	/**
+	 * 获取某一天的开始时间
+	 * @param dates
+	 * @return
+	 */
+	public static Date getfristDayOftime(Date dates) { 
+		Calendar calendarFrom = Calendar.getInstance();     
+		calendarFrom.setTime(dates); //获得实体对象里面一个Date类型的属性，set进Calender对象中。  
+		calendarFrom.set(Calendar.HOUR_OF_DAY, 0);//设置时为0点  
+		calendarFrom.set(Calendar.MINUTE, 0);//设置分钟为0分  
+		calendarFrom.set(Calendar.SECOND, 0);//设置秒为0秒  
+		calendarFrom.set(Calendar.MILLISECOND, 000);//设置毫秒为000  
+        return calendarFrom.getTime();  
+    } 
+	
+	/**
+	 * 获取某一天的结束时间
+	 * @param dates
+	 * @return
+	 */
+	public static Date getLastDayOftime(Date dates) { 
+		Calendar calendarEnd = Calendar.getInstance();     
+		calendarEnd.setTime(dates);   
+		calendarEnd.set(Calendar.HOUR_OF_DAY, 23);  
+		calendarEnd.set(Calendar.MINUTE, 59);  
+		calendarEnd.set(Calendar.SECOND, 59);  
+		calendarEnd.set(Calendar.MILLISECOND, 999);  
+        return calendarEnd.getTime();  
+    }  
+
 
 }
