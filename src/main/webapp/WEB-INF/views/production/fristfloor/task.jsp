@@ -35,7 +35,7 @@
                                 </div>
                             </div>
                   <!--查询开始  -->
-           <div class="row" style="height: 30px">
+          <div class="row" style="height: 30px; margin:15px 0 10px">
 			<div class="col-xs-8 col-sm-8  col-md-8">
 				<form class="form-search" >
 					<div class="row">
@@ -79,6 +79,8 @@
                                             <th class="text-center">任务价值</th>
                                             <th class="text-center">b工资净值</th>
                                             <th class="text-center">数量</th>
+                                            <th class="text-center">工序加价</th>
+                                            <th class="text-center">加绩工资</th>
                                             <th class="text-center">完成人</th>
                                             <th class="text-center">操作</th>
                                         </tr>
@@ -209,6 +211,8 @@
 		      				+'<td class="text-center edit name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
 		      				+'<td class="text-center edit name">'+parseFloat((o.payB).toFixed(4))+'</td>'
 		      				+'<td class="text-center edit name">'+o.number+'</td>'
+		      				+'<td class="text-center edit name">'+o.performance+'</td>'
+		      				+'<td class="text-center edit name">'+parseFloat((o.performancePrice).toFixed(4))+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-3d btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-danger btn-3d delete" data-id='+o.id+'>删除</button></td></tr>'
 							

@@ -34,8 +34,8 @@
                                     <i class="fa fa-chevron-down"></i>
                                 </div>
                             </div>
-        <div class="row" style="height: 30px">
-			<div class="col-xs-8 col-sm-8  col-md-8">
+        <div class="row" style="height: 30px; margin:15px 0 10px">
+			<div class="col-xs-8 col-sm-8  col-md-9">
 				<form class="form-search" >
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 col-md-12">
@@ -134,7 +134,12 @@
                                 </div>
                                  <div class="col-sm-2 select"></div>
                     	</div>
-                    	
+                    	<div class="form-group">
+                            <label class="col-sm-3 control-label">加绩工序选择</label>
+                                <div class="col-sm-6 workingtw">
+                                  
+                                </div>
+                    	</div>
                  </div>
 				</div>
 
@@ -197,6 +202,7 @@
 		      		  success: function (result) {
 		      			  
 		      			 $(result.data.rows).each(function(i,o){
+		      				 
 		      				 html +='<tr>'
 		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
@@ -204,8 +210,8 @@
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center  bacthDepartmentPrice">'+o.bacthDepartmentPrice+'</td>'
 		      				+'<td class="text-center  bacthHairPrice">'+o.bacthHairPrice+'</td>'
-		      				+'<td class="text-center  sumTaskPrice">'+o.sumTaskPrice+'</td>'
-		      				+'<td class="text-center  regionalPrice">'+o.regionalPrice+'</td>'
+		      				+'<td class="text-center  sumTaskPrice">'+ parseFloat((o.sumTaskPrice*1).toFixed(3))+'</td>'
+		      				+'<td class="text-center  regionalPrice">'+parseFloat((o.regionalPrice*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button> <button class="btn btn-sm btn-warning btn-3d updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-3d delete" data-id='+o.id+'>删除</button></td></tr>' 
 							
@@ -474,6 +480,29 @@
 					      }
 					  });
 				    
+					//遍历杂工加绩比值
+					var html=""
+					$.ajax({
+						url:"${ctx}/task/taskPerformance",
+						type:"GET",
+						beforeSend:function(){
+							index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+						},
+						
+						success:function(result){
+							$(result.data).each(function(i,o){
+							html+='<option value="'+o.number+'" data-name="'+o.name+'">'+o.name+'</option>'
+							})
+							$('.workingtw').html("<select class='form-control selectchangtw'><option value='0'>请选择</option>"+html+"</select>");
+							layer.close(index);
+							
+						},error:function(){
+							layer.msg("操作失败！", {icon: 2});
+							layer.close(index);
+						}
+					});
 				    
 					var postData
 					var dicDiv=$('#addDictDivType');
@@ -515,6 +544,10 @@
 									}
 								}
 								expectTime=$(".sumtime").val();
+								var performanceNumber=$(".selectchangtw").val();
+								
+								var performance=$(".selectchangtw option:selected").text();
+								
 								var postData = {
 										type:1,
 										bacthId:that.data("id"),
@@ -522,6 +555,8 @@
 										userIds:arr,
 										number:number,
 										userNames:username,
+										performance:performance,
+										performanceNumber:performanceNumber,
 										productName:productName,
 										expectTime:expectTime,
 										bacthNumber:bacthNumber,
