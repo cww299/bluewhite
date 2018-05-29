@@ -46,8 +46,56 @@
                                     </ul>
                                     <div class="tab-content">
                                         <div class="tab-pane active" id="home1">
-                                            <p>1
-                                            </p>
+                                        <!--查询开始  -->
+          		 <div class="row" style="height: 30px; margin:15px 0 10px">
+					<div class="col-xs-8 col-sm-8  col-md-8">
+						<form class="form-search" >
+							<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12">
+							<div class="input-group"> 
+								<table><tr>
+								<td>姓名:</td><td><input type="text" name="name" id="usernameth" placeholder="请输入姓名" class="form-control search-query name" /></td>
+								<td>开始:</td>
+								<td>
+								<input id="startTimeth" placeholder="请输入开始时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#startTimeth', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
+								</td>
+								<td>结束:</td>
+								<td>
+								<input id="endTimeth" placeholder="请输入结束时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#endTimeth', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+								</td>
+								</tr></table> 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtaskth">
+										查找
+										<i class="icon-search icon-on-right bigger-110"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+            <!-- 查询结束 -->
+                                        
+                                            <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                        	<th class="text-center">姓名</th>
+                                        	<th class="text-center">考勤日期</th>
+                                            <th class="text-center">工作小时</th>
+                                            <th class="text-center">到岗预计每小时收入</th>
+                                            <th class="text-center">A工资</th>
+                                            <th class="text-center">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablecontentth">
+                                        
+                                    </tbody>
+                                </table>
+                                <div id="pagerth" class="pull-right"></div>
                                         </div>
                      <!-- B工资流水开始 -->
             <div class="tab-pane" id="profile1">
@@ -85,7 +133,7 @@
 			</div>
 		</div>
             <!-- 查询结束 -->  
-                                            <table class="table table-hover">
+                                   <table class="table table-hover">
                                     <thead>
                                         <tr>
                                         	<th class="text-center">姓名</th>
@@ -207,6 +255,7 @@
 				self.events();
 				self.loadPagination(data);
 				self.loadPaginationtw(data);
+				self.loadPaginationth(data);
 			}
 			//加载分页
 			  this.loadPagination = function(data){
@@ -251,10 +300,12 @@
 						        			page:obj.curr,
 									  		size:13,
 									  		type:1,
-									  		productName:$('#name').val(),
+									  		type:1,
+								  			productName:$('#name').val(),
+								  			userName:$('#username').val(),
 								  			bacth:$('#number').val(),
 								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(),
+								  			orderTimeEnd:$("#endTime").val(), 
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -285,7 +336,6 @@
 							  });
 						  }, 
 			      		  success: function (result) {
-			      			  console.log(result)
 			      			 $(result.data.rows).each(function(i,o){
 			      				htmltw +='<tr>'
 			      				+'<td class="text-center edit ">'+o.userName+'</td>'
@@ -307,13 +357,13 @@
 							        			page:obj.curr,
 										  		size:13,
 										  		type:1,
-										  		productName:$('#name').val(),
-									  			bacth:$('#number').val(),
-									  			orderTimeBegin:$("#startTime").val(),
-									  			orderTimeEnd:$("#endTime").val(),
+										  		userName:$('#usernametw').val(),
+									  			taskName:$('#numbertw').val(),
+									  			orderTimeBegin:$("#startTimetw").val(),
+									  			orderTimeEnd:$("#endTimetw").val(),
 									  	}
 							        
-							            self.loadPagination(_data);
+							            self.loadPaginationtw(_data);
 								     }
 						      }
 						    });  
@@ -327,7 +377,116 @@
 					  });
 				  //杂工工资流水结束
 			  }
-			
+			this.loadPaginationth=function(data){
+				//A工资
+				var index;
+			    var htmlth = '';
+			    $.ajax({
+				      url:"${ctx}/finance/allAttendancePay",
+				      data:data,
+				      type:"GET",
+				      beforeSend:function(){
+					 	  index = layer.load(1, {
+						  shade: [0.1,'#fff'] //0.1透明度的白色背景
+						  });
+					  }, 
+		      		  success: function (result) {
+		      			 
+		      			 $(result.data.rows).each(function(i,o){
+		      				htmlth +='<tr>'
+		      				+'<td class="text-center  ">'+o.userName+'</td>'
+		      				+'<td class="text-center ">'+o.allotTime+'</td>'
+		      				+'<td class="text-center edit workTime">'+o.workTime+'</td>'
+		      				+'<td class="text-center  ">'+o.workPrice+'</td>'
+		      				+'<td class="text-center  ">'+o.payNumber+'</td>'
+		      				+'<td class="text-center"> <button class="btn btn-sm btn-warning btn-3d updateremake" data-id='+o.id+'>编辑</button></td></tr>'
+		      				
+							
+		      			}); 
+				        //显示分页
+					   	 laypage({
+					      cont: 'pagerth', 
+					      pages: result.data.totalPages, 
+					      curr:  result.data.pageNum || 1, 
+					      jump: function(obj, first){ 
+					    	  if(!first){ 
+					    		 
+						        	var _data = {
+						        			page:obj.curr,
+									  		size:13,
+									  		type:1,
+									  		productName:$('#name').val(),
+								  			bacth:$('#number').val(),
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(),
+								  	}
+						        
+						            self.loadPaginationth(_data);
+							     }
+					      }
+					    });  
+					   	layer.close(index);
+					   	 $("#tablecontentth").html(htmlth); 
+					   	self.loadEvents();
+				      },error:function(){
+							layer.msg("加载失败！", {icon: 2});
+							layer.close(index);
+					  }
+				  });
+			}
+			this.loadEvents = function(){
+				//修改方法
+				$('.updateremake').on('click',function(){
+					if($(this).text() == "编辑"){
+						$(this).text("保存")
+						
+						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
+				        });
+					}else{
+							$(this).text("编辑")
+						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+
+					       
+					                $(this).html(obj_text.val()); 
+									
+							});
+							
+							var postData = {
+									id:$(this).data('id'),
+									workTime:$(this).parent().parent('tr').find(".workTime").text(),
+							}
+							var index;
+							
+							$.ajax({
+								url:"${ctx}/finance/updateAttendance",
+								data:postData,
+								type:"GET",
+								beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								
+								success:function(result){
+									if(0==result.code){
+									layer.msg("修改成功！", {icon: 1});
+									layer.close(index);
+									}else{
+										layer.msg("修改失败！", {icon: 1});
+										layer.close(index);
+									}
+								},error:function(){
+									layer.msg("操作失败！", {icon: 2});
+									layer.close(index);
+								}
+							});
+					}
+				})
+			}
 			this.events = function(){
 				$('.searchtask').on('click',function(){
 					var data = {
@@ -355,6 +514,18 @@
 				  	}
 			
 				self.loadPaginationtw(data);
+				});
+				$('.searchtaskth').on('click',function(){
+					var data = {
+				  			page:1,
+				  			size:13,
+				  			type:1,
+				  			userName:$('#usernameth').val(),
+				  			orderTimeBegin:$("#startTimeth").val(),
+				  			orderTimeEnd:$("#endTimeth").val(), 
+				  	}
+			
+				self.loadPaginationth(data);
 				});
 			}
    	}
