@@ -30,6 +30,7 @@
 							<div class="input-group"> 
 								<table><tr>
 								<td>员工姓名:</td><td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
+								<td>小组查询:</td><td id="groupp"></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtask">
@@ -355,7 +356,6 @@
 						workTimes:time,
 						allotTime:$("#startTime").val(),
 				}
-				console.log(data)
 				$.ajax({
 					url:"${ctx}/finance/addAttendance",
 					data:data,
@@ -460,11 +460,30 @@
 			
 		}
 		this.events = function(){
+			//遍历人名组别
+			var htmlth="";
+			var data = {
+		  			type:1,
+		  	}
+		    $.ajax({
+			      url:"${ctx}/production/getGroup",
+			      data:data,
+			      type:"GET",
+	      		  success: function (result) {
+	      			  $(result.data).each(function(k,j){
+	      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
+	      			  });  
+	      			 $('#groupp').html("<select class='form-control selectcomplete'><option value="+""+">请选择</option>"+htmlth+"</select>") 
+			      }
+			  });
+			
+			
 			$('.searchtask').on('click',function(){
 				var data = {
 			  			page:1,
 			  			size:10,
 			  			userName:$('#name').val(),
+			  			groupId:$('.selectcomplete').val()
 			  	}
 				
 	            self.loadPagination(data);
