@@ -66,5 +66,10 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 		dao.save(attendancePay);
 	}
 
+	@Override
+	public AttendancePay findByUserIdAndAllotTime(AttendancePay attendancePay) {
+		return dao.findByUserIdAndAllotTime(attendancePay.getUserId(),attendancePay.getAllotTime());
+	}
+
 }
 

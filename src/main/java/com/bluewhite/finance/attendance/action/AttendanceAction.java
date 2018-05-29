@@ -1,5 +1,6 @@
 package com.bluewhite.finance.attendance.action;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -7,14 +8,19 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
+import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
@@ -59,23 +65,33 @@ public class AttendanceAction {
 		@ResponseBody
 		public CommonResponse allAttendancePay(HttpServletRequest request,AttendancePay attendancePay) {
 			CommonResponse cr = new CommonResponse();
-	
 				//新增考勤工资，一键增加考勤
 				if(!StringUtils.isEmpty(attendancePay.getUsersId())){
 					for (int i = 0; i < attendancePay.getUsersId().length; i++) {
+						PageParameter page = new PageParameter();
+						page.setSize(Integer.MAX_VALUE);
 						Long userid = Long.parseLong(attendancePay.getUsersId()[i]);
+						AttendancePay attendance = new AttendancePay();
 						User user = userService.findOne(userid);
-						attendancePay.setWorkTime(attendancePay.getWorkTimes()[i]);
-						attendancePay.setUserId(userid);
-						attendancePay.setUserName(user.getUserName());
+						attendance.setUserId(userid);
 						if(attendancePay.getAllotTime() == null){
 							Calendar  cal = Calendar.getInstance();
 							cal.add(Calendar.DATE,-1);
-							attendancePay.setAllotTime(cal.getTime());
+							attendance.setAllotTime(cal.getTime());
 						}
-						attendancePayService.addAttendancePay(attendancePay);
-						cr.setMessage("任务分配成功");
-						
+						attendance.setOrderTimeBegin(DatesUtil.getFirstDayOfMonth(attendance.getAllotTime()));
+						attendance.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(attendance.getAllotTime()));
+						if(attendancePayService.findPages(attendance, page)!=null){
+							cr.setMessage(user.getUserName()+"该月已存在考情记录，无需再次添加，请重新选择");
+							cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+							return cr;
+						}else{
+							attendance.setWorkTime(attendancePay.getWorkTimes()[i]);
+							attendance.setWorkPrice(user.getPrice());
+							attendance.setUserName(user.getUserName());
+							attendancePayService.addAttendancePay(attendance);
+							cr.setMessage("任务分配成功");
+						}
 					}
 				}else{
 					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -139,6 +155,17 @@ public class AttendanceAction {
 				cr.setMessage("用户不能为空");
 			}
 			return cr;
+		}
+		
+		
+		@InitBinder
+		protected void initBinder(WebDataBinder binder) {
+			SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
+					DateTimePattern.DATEHM.getPattern());
+			binder.registerCustomEditor(java.util.Date.class, null,
+					new CustomDateEditor(dateTimeFormat, true));
+			binder.registerCustomEditor(byte[].class,
+					new ByteArrayMultipartFileEditor());
 		}
 		
 		
