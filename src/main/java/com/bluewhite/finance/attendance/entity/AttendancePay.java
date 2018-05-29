@@ -79,7 +79,24 @@ public class AttendancePay  extends BaseEntity<Long>{
 	@Transient
     private String[] usersId;
 	
+	@Transient
+	private Double[] workTimes;
 	
+	
+
+
+
+
+
+
+	public Double[] getWorkTimes() {
+		return workTimes;
+	}
+
+
+	public void setWorkTimes(Double[] workTimes) {
+		this.workTimes = workTimes;
+	}
 
 
 	public String[] getUsersId() {

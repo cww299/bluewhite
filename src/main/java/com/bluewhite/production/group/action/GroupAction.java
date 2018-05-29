@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,8 +23,6 @@ import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.service.GroupService;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
-
-import javassist.expr.NewArray;
 
 @Controller
 public class GroupAction {
@@ -120,6 +119,10 @@ private static final Log log = Log.getLog(GroupAction.class);
 			groupAll.add(group);
 		}else{
 			groupAll = groupService.findList(group);
+		}
+		for(Group gr : groupAll){
+			Set<User> users= gr.getUsers().stream().filter(u -> u.getStatus()!=1).collect(Collectors.toSet());
+			gr.setUsers(users);
 		}
 		cr.setData(clearCascadeJSON.format(groupAll).toJSON());
 		cr.setMessage("查询成功");

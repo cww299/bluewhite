@@ -65,6 +65,7 @@ public class AttendanceAction {
 					for (int i = 0; i < attendancePay.getUsersId().length; i++) {
 						Long userid = Long.parseLong(attendancePay.getUsersId()[i]);
 						User user = userService.findOne(userid);
+						attendancePay.setWorkTime(attendancePay.getWorkTimes()[i]);
 						attendancePay.setUserId(userid);
 						attendancePay.setUserName(user.getUserName());
 						if(attendancePay.getAllotTime() == null){
