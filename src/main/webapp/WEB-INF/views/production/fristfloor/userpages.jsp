@@ -30,6 +30,7 @@
 							<div class="input-group"> 
 								<table><tr>
 								<td>员工姓名:</td><td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
+								<td>小组查询:</td><td id="groupp"></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtask">
@@ -45,17 +46,29 @@
 		</div>
               <h1 class="page-header"></h1>  
               	<table><tr>           
-                        <td><button type="button" class="btn btn-default btn-square btn-sm btn-3d attendance">一键添加考勤</button>&nbsp&nbsp&nbsp</td> 
+                        <td><button type="button" class="btn btn-default btn-square btn-sm btn-3d attendance">一键添加考勤</button>&nbsp&nbsp</td> 
                         <td><input id="startTime" placeholder="请输入考勤时间" class="form-control laydate-icon"
              				onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
              			</td>
-             			<td><button type="button" class="btn btn-default btn-square btn-sm btn-3d position">到岗预计小时收入</button>&nbsp&nbsp&nbsp</td>   
+             			<td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+             			<td><button type="button" class="btn btn-default btn-square btn-sm btn-3d position">到岗预计小时收入</button>&nbsp&nbsp</td> 
+             			<td><input id="endTime" placeholder="请输入时间" class="form-control laydate-icon"
+             				onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+             			</td>
+             			<td>&nbsp&nbsp</td>
+             			<td><input type="text" name="name" id="workPrice" class="form-control search-query" placeholder="预计收入" /></td>  
                  </tr></table>        
                             
                             <div class="panel-body">
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
+                                        	<th class="center">
+											<label> 
+											<input type="checkbox" class="ace checks" /> 
+											<span class="lbl"></span>
+											</label>
+											</th>
                                             <th class="text-center">序号</th>
                                             <th class="text-center">姓名</th>
                                             <th class="text-center">部门</th>
@@ -64,6 +77,7 @@
                                             <th class="text-center">当月预计收入</th>
                                             <th class="text-center">工作状态</th>
                                             <th class="text-center">员工分组</th>
+                                            <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent" style="font-size: 14px">
@@ -127,16 +141,16 @@
 		      					 a=o.group.id
 		      				 }
 		      				 var order = i+1;
-		      				html +='<tr>'
-		      				+'<td class="text-center edit price">'+order+'</td>'
-		      				+'<td class="text-center edit price">'+o.userName+'</td>'
-		      				+'<td class="text-center edit price">'+o.orgName.name+'</td>'
-		      				+'<td class="text-center edit price">'+o.position.name+'</td>'
-		      				+'<td class="text-center edit price"><input></input></td>'
-		      				+'<td class="text-center edit price">'+o.price*1+'</td>'
+		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
+		      				+'<td class="text-center ">'+order+'</td>'
+		      				+'<td class="text-center ">'+o.userName+'</td>'
+		      				+'<td class="text-center ">'+o.orgName.name+'</td>'
+		      				+'<td class="text-center ">'+o.position.name+'</td>'
+		      				+'<td class="text-center "><input class="work"></input></td>'
+		      				+'<td class="text-center edit workPrice">'+o.price*1+'</td>'
 							+'<td class="text-center" data-status="'+o.status+'" data-id="'+o.id+'"><input type="radio"   class="rest" value="0">工作<input type="radio"   class="rest" value="1">休息 </td>'
-							+'<td class="text-center"><div class="groupChange" data-id="'+o.id+'" data-groupid="'+a+'" ></div></td></tr>'
-							
+							+'<td class="text-center"><div class="groupChange" data-id="'+o.id+'" data-groupid="'+a+'" ></div></td>'
+							+'<td class="text-center"> <button class="btn btn-sm btn-warning btn-3d updateremake" data-id='+o.id+'>编辑</button></td></tr>'
 		      			}); 
 				        //显示分页
 					  laypage({
@@ -159,6 +173,7 @@
 					   	$("#tablecontent").html(html); 
 					   	self.loadEvents();
 					   self.checked();
+					   self.checkedd();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
@@ -178,7 +193,81 @@
 					
 				}
 			
+			  this.checkedd=function(){
+					
+					$(".checks").on('click',function(){
+						
+	                    if($(this).is(':checked')){ 
+				 			$('.checkboxId').each(function(){  
+	                    //此处如果用attr，会出现第三次失效的情况  
+	                     		$(this).prop("checked",true);
+				 			})
+	                    }else{
+	                    	$('.checkboxId').each(function(){ 
+	                    		$(this).prop("checked",false);
+	                    		
+	                    	})
+	                    }
+	                }); 
+					
+				}
 		this.loadEvents = function(){
+			
+			//修改方法
+			$('.updateremake').on('click',function(){
+				if($(this).text() == "编辑"){
+					$(this).text("保存")
+					
+					$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+			            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
+			        });
+				}else{
+						$(this).text("编辑")
+					$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+				            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+
+				       
+				                $(this).html(obj_text.val()); 
+								
+						});
+						
+						var postData = {
+								id:$(this).data('id'),
+								price:$(this).parent().parent('tr').find(".workPrice").text(),
+						}
+						var index;
+						
+						$.ajax({
+							url:"${ctx}/system/user/update",
+							data:postData,
+							type:"PUT",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+								layer.msg("修改成功！", {icon: 1});
+								layer.close(index);
+								}else{
+									layer.msg("修改失败！", {icon: 1});
+									layer.close(index);
+								}
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+				}
+			})
+			
+			
+			
+			
 			
 			$('.rest').on('click',function(){
 				var  del=$(this);
@@ -239,7 +328,6 @@
 	      			 $(result.data).each(function(i,o){
 	      				html +='<option value="'+o.id+'">'+o.name+'</option>'
 	      			}); 
-			        //显示分页
 			       var htmlto='<select class="form-control selectgroupChange"><option value="0">请选择</option>'+html+'</select>'
 				   	$(".groupChange").html(htmlto); 
 				   	self.chang();
@@ -249,6 +337,88 @@
 						layer.close(index);
 				  }
 			  });
+		    
+		    
+		  $('.attendance').on('click',function(){
+			  var  that=$(this);
+			  var arr=new Array()//员工id
+			  var time=new Array()//考勤时间
+				$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+					time.push($(this).parent().parent().siblings().find(".work").val());
+					arr.push($(this).val());   
+				});
+			  if(arr.length<=0){
+					return layer.msg("至少选择一个！", {icon: 2});
+				}
+				var data={
+						type:1,
+						usersId:arr,
+						workTimes:time,
+						allotTime:$("#startTime").val(),
+				}
+				$.ajax({
+					url:"${ctx}/finance/addAttendance",
+					data:data,
+		            traditional: true,
+					type:"GET",
+					beforeSend:function(){
+						index = layer.load(1, {
+							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							});
+					},
+					
+					success:function(result){
+						if(0==result.code){
+							layer.msg("修改成功！", {icon: 1});
+						}else{
+							layer.msg("添加失败", {icon: 2});
+						}
+						layer.close(index);
+					},error:function(){
+						layer.msg("操作失败！", {icon: 2});
+						layer.close(index);
+					}
+				}); 
+		  })  
+		    
+		    
+		   $('.position').on('click',function(){
+			var  that=$(this);
+			var arr=new Array()
+			$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+				arr.push($(this).val());   
+			});
+			var postdata={
+					usersId:arr,
+					workPrice:$("#workPrice").val(),
+					allotTime:$("#endTime").val(),
+			}
+			$.ajax({
+				url:"${ctx}/finance/updateAllAttendance",
+				data:postData,
+	            traditional: true,
+				type:"post",
+				beforeSend:function(){
+					index = layer.load(1, {
+						  shade: [0.1,'#fff'] //0.1透明度的白色背景
+						});
+				},
+				
+				success:function(result){
+					if(0==result.code){
+						layer.msg("修改成功！", {icon: 1});
+					}else{
+						layer.msg("添加失败", {icon: 2});
+					}
+					layer.close(index);
+				},error:function(){
+					layer.msg("操作失败！", {icon: 2});
+					layer.close(index);
+				}
+			});  
+		   }) 
+		    
+		    
 	  }
 		this.chang=function(){
 			$('.selectgroupChange').change(function(){
@@ -290,11 +460,30 @@
 			
 		}
 		this.events = function(){
+			//遍历人名组别
+			var htmlth="";
+			var data = {
+		  			type:1,
+		  	}
+		    $.ajax({
+			      url:"${ctx}/production/getGroup",
+			      data:data,
+			      type:"GET",
+	      		  success: function (result) {
+	      			  $(result.data).each(function(k,j){
+	      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
+	      			  });  
+	      			 $('#groupp').html("<select class='form-control selectcomplete'><option value="+""+">请选择</option>"+htmlth+"</select>") 
+			      }
+			  });
+			
+			
 			$('.searchtask').on('click',function(){
 				var data = {
 			  			page:1,
 			  			size:10,
 			  			userName:$('#name').val(),
+			  			groupId:$('.selectcomplete').val()
 			  	}
 				
 	            self.loadPagination(data);
