@@ -13,4 +13,6 @@ public interface AttendancePayService  extends BaseCRUDService<AttendancePay,Lon
 
 	public void addAttendancePay(AttendancePay attendancePay);
 
+	public AttendancePay  findByUserIdAndAllotTime(AttendancePay attendancePay);
+
 }
