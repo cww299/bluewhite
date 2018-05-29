@@ -1,5 +1,7 @@
 package com.bluewhite.production.finance.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -22,6 +24,6 @@ public interface PayBService extends BaseCRUDService<PayB,Long>{
 	 * @param collectPay
 	 * @return
 	 */
-	public CollectPay collectPay(CollectPay collectPay);
+	public List<CollectPay> collectPay(CollectPay collectPay);
 
 }

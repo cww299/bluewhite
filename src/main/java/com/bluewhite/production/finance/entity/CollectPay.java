@@ -19,6 +19,11 @@ public class CollectPay {
     private Long userId;
     
 	/**
+	 * 考勤时间
+	 */
+	private Double time;
+    
+	/**
 	 * A工资数额
 	 */
 	private Double payA;
@@ -88,6 +93,14 @@ public class CollectPay {
 	 * 查询字段结束时间
 	 */
 	private Date orderTimeEnd;
+	
+	
+	public Double getTime() {
+		return time;
+	}
+	public void setTime(Double time) {
+		this.time = time;
+	}
 	public String getUserName() {
 		return userName;
 	}
