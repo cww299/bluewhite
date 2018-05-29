@@ -14,7 +14,9 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.production.bacth.entity.Bacth;
+import com.bluewhite.finance.attendance.entity.AttendancePay;
+import com.bluewhite.finance.attendance.service.AttendancePayService;
+import com.bluewhite.production.farragotask.service.FarragoTaskService;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.PayB;
@@ -23,6 +25,10 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 	
 	@Autowired
 	private PayBDao dao;
+	@Autowired
+	private AttendancePayService AttendancePayService;
+	@Autowired
+	private FarragoTaskService farragoTaskService;
 	
 	@Override
 	public PageResult<PayB> findPages(PayB param, PageParameter page) {
@@ -68,6 +74,18 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 
 	@Override
 	public CollectPay collectPay(CollectPay collectPay) {
+		
+		PageParameter page  = new PageParameter();
+		page.setSize(Integer.MAX_VALUE);
+		
+		AttendancePay attendancePay = new AttendancePay();
+		attendancePay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
+		attendancePay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
+		
+		AttendancePayService.findPages(attendancePay, page);
+		
+		
+		
 		return null;
 	}
 

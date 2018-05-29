@@ -35,7 +35,6 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 	        	if(!StringUtils.isEmpty(param.getType())){
 	        		predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
 	        	}
-	        	
 				Predicate[] pre = new Predicate[predicate.size()];
 				query.where(predicate.toArray(pre));
 	        	return null;

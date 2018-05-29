@@ -96,6 +96,12 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				predicate.add(cb.equal(root.get("id").as(Long.class),
 						user.getId()));
 			}
+			//按分组查找
+			if (user.getGroupId() != null) {
+				predicate.add(cb.equal(root.get("groupId").as(Long.class),
+						user.getGroupId()));
+			}
+			
 			//按姓名查找
 			if (!StringUtils.isEmpty(user.getUserName())) {
 				predicate.add(cb.like(root.get("userName").as(String.class),

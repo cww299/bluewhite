@@ -117,7 +117,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		payBService.collectPay(collectPay);
 		
 			
-			cr.setMessage("查询成功");
+		cr.setMessage("查询成功");
 		return cr;
 	}
 	
