@@ -35,6 +35,12 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 	        	if(!StringUtils.isEmpty(param.getUserName())){
 	        		predicate.add(cb.like(root.get("userName").as(String.class), "%"+param.getUserName()+"%"));
 	        	}
+	        	
+	        	//按员工id过滤
+	        	if (param.getUserId() != null) {
+					predicate.add(cb.equal(root.get("userId").as(Long.class),param.getUserId()));
+				}
+	        	
 	        	//按类型
 	        	if(!StringUtils.isEmpty(param.getType())){
 	        		predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));

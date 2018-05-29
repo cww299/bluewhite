@@ -1,6 +1,8 @@
 package com.bluewhite.finance.attendance.action;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,6 +18,8 @@ import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
+import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
 import com.bluewhite.production.finance.entity.PayB;
@@ -112,16 +116,26 @@ public class AttendanceAction {
 		@ResponseBody
 		public CommonResponse updateAllAttendance(HttpServletRequest request,AttendancePay attendancePay) {
 			CommonResponse cr = new CommonResponse();
+			PageParameter page = new PageParameter();
+			page.setSize(Integer.MAX_VALUE);
 			//修改
-			if(!StringUtils.isEmpty(attendancePay.getUserId())){
-				AttendancePay oldAttendancePay = attendancePayService.findOne(attendancePay.getId());
-				BeanCopyUtils.copyNullProperties(oldAttendancePay,attendancePay);
-				attendancePay.setCreatedAt(oldAttendancePay.getCreatedAt());
-				attendancePayService.addAttendancePay(attendancePay);
+			if(!StringUtils.isEmpty(attendancePay.getUsersId())){
+				for (int i = 0; i < attendancePay.getUsersId().length; i++) {
+					Long userid = Long.parseLong(attendancePay.getUsersId()[i]);
+					attendancePay.setUserId(userid);
+					attendancePay.setOrderTimeBegin(DatesUtil.getFirstDayOfMonth(attendancePay.getAllotTime()));
+					attendancePay.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(attendancePay.getAllotTime()));
+					//获取所有的工资流水
+					List<AttendancePay> attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
+					for(AttendancePay pay : attendancePayList){
+						pay.setWorkPrice(attendancePay.getWorkPrice());
+						attendancePayService.addAttendancePay(pay);
+					}
+				}
 				cr.setMessage("修改成功");
 			}else{
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				cr.setMessage("考勤流水不能为空");
+				cr.setMessage("用户不能为空");
 			}
 			return cr;
 		}
