@@ -83,11 +83,12 @@ public class AttendanceAction {
 						}
 						attendance.setOrderTimeBegin(DatesUtil.getFirstDayOfMonth(attendance.getAllotTime()));
 						attendance.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(attendance.getAllotTime()));
-						if(attendancePayService.findPages(attendance, page).getRows()!=null){
+						if(attendancePayService.findPages(attendance, page).getRows().size()>0){
 							cr.setMessage(user.getUserName()+"该月已存在考情记录，无需再次添加，请重新选择");
 							cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 							return cr;
 						}else{
+							attendance.setType(attendancePay.getType());
 							attendance.setWorkTime(attendancePay.getWorkTimes()[i]);
 							attendance.setWorkPrice(user.getPrice());
 							attendance.setUserName(user.getUserName());
