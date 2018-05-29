@@ -369,9 +369,9 @@
 					
 					success:function(result){
 						if(0==result.code){
-							layer.msg("修改成功！", {icon: 1});
+							layer.msg(result.message, {icon: 1});
 						}else{
-							layer.msg("添加失败", {icon: 2});
+							layer.msg(result.message, {icon: 2});
 						}
 						layer.close(index);
 					},error:function(){
@@ -388,16 +388,17 @@
 			$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
 				arr.push($(this).val());   
 			});
-			var postdata={
+			var postData={
 					usersId:arr,
 					workPrice:$("#workPrice").val(),
 					allotTime:$("#endTime").val(),
 			}
+			console.log(postData)
 			$.ajax({
 				url:"${ctx}/finance/updateAllAttendance",
 				data:postData,
 	            traditional: true,
-				type:"post",
+				type:"GET",
 				beforeSend:function(){
 					index = layer.load(1, {
 						  shade: [0.1,'#fff'] //0.1透明度的白色背景
