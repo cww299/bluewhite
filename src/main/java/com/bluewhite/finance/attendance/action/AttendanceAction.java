@@ -94,7 +94,7 @@ public class AttendanceAction {
 							attendance.setWorkPrice(user.getPrice());
 							attendance.setUserName(user.getUserName());
 							attendancePayService.addAttendancePay(attendance);
-							cr.setMessage("任务分配成功");
+							cr.setMessage("考勤添加成功");
 						}
 					}
 				}else{

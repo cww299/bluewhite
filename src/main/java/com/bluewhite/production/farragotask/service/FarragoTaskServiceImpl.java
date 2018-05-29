@@ -44,9 +44,13 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
         	if(!StringUtils.isEmpty(param.getType())){
         		predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
         	}
-        	//按类型
+        	//任务名
         	if(!StringUtils.isEmpty(param.getName())){
         		predicate.add(cb.equal(root.get("name").as(String.class),"%"+ param.getName()+"%"));
+        	}
+        	//按批次名
+        	if(!StringUtils.isEmpty(param.getBacth())){
+        		predicate.add(cb.equal(root.get("bacth").as(String.class),"%"+ param.getBacth()+"%"));
         	}
             //按时间过滤
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) &&  !StringUtils.isEmpty(param.getOrderTimeEnd()) ) {

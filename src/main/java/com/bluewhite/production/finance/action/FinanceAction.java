@@ -114,9 +114,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	@ResponseBody
 	public CommonResponse collectPay(HttpServletRequest request,CollectPay collectPay) {
 		CommonResponse cr = new CommonResponse();
-		payBService.collectPay(collectPay);
-		
-			
+		cr.setData(payBService.collectPay(collectPay));	
 		cr.setMessage("查询成功");
 		return cr;
 	}
