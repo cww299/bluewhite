@@ -9,6 +9,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
@@ -16,9 +17,10 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
-import com.bluewhite.production.farragotask.service.FarragoTaskService;
+import com.bluewhite.production.finance.dao.CollectPayDao;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.CollectPay;
+import com.bluewhite.production.finance.entity.FarragoTaskPay;
 import com.bluewhite.production.finance.entity.PayB;
 @Service
 public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayBService{
@@ -28,7 +30,11 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 	@Autowired
 	private AttendancePayService AttendancePayService;
 	@Autowired
-	private FarragoTaskService farragoTaskService;
+	private FarragoTaskPayService farragoTaskPayService;
+	@Autowired
+	private CollectPayDao collectPayDao;
+	@Autowired
+	private CollectPayService collectPayService;
 	
 	@Override
 	public PageResult<PayB> findPages(PayB param, PageParameter page) {
@@ -73,6 +79,7 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 		    }
 
 	@Override
+	@Transactional
 	public List<CollectPay> collectPay(CollectPay collectPay) {
 		List<CollectPay> collectPayList = new ArrayList<CollectPay>();
 		PageParameter page  = new PageParameter();
@@ -81,24 +88,43 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 		AttendancePay attendancePay = new AttendancePay();
 		attendancePay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 		attendancePay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
+		attendancePay.setType(collectPay.getType());
 		List<AttendancePay> attendancePayList = AttendancePayService.findPages(attendancePay, page).getRows();
 		//B当天工资
 		PayB payB = new PayB();
 		payB.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 		payB.setOrderTimeEnd(collectPay.getOrderTimeEnd());
+		payB.setType(collectPay.getType());
+		//杂工当天工资
+		FarragoTaskPay farragoTaskPay = new FarragoTaskPay();
+		farragoTaskPay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
+		farragoTaskPay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
+		farragoTaskPay.setType(collectPay.getType());
 		for(AttendancePay attendance : attendancePayList ){
 			CollectPay collect = new CollectPay();
+			collect.setType(attendance.getType());
+			collect.setUserId(attendance.getUserId());
 			collect.setUserName(attendance.getUserName());
 			collect.setTime(attendance.getWorkTime());
+			collect.setAllotTime(collectPay.getOrderTimeBegin());
 			collect.setPayA(attendance.getPayNumber());
+			//个人b工资
 			payB.setUserId(attendance.getUserId());
 			List<PayB> payBList = this.findPages(payB, page).getRows();
-			//b工资加上加绩工资， 一天的总工资
+			//个人杂工工资
+			farragoTaskPay.setUserId(attendance.getUserId());
+			List<FarragoTaskPay> farragoTaskPayList = farragoTaskPayService.findPages(farragoTaskPay, page).getRows();
+			//b工资加上加绩工资，加上杂工和杂工绩效 。 一天的总工资
 			Double sumPayB = 0.0;
+			Double sumPayF = 0.0;
+			for(FarragoTaskPay fPay :farragoTaskPayList){
+				sumPayF+=((fPay.getPayNumber()!=null ? fPay.getPayNumber() : 0.0)+(fPay.getPerformancePayNumber()!=null ? fPay.getPerformancePayNumber() : 0.0 ));
+			}
 			for(PayB payBs :payBList){
 				sumPayB+=((payBs.getPayNumber()!=null ? payBs.getPayNumber() : 0.0)+(payBs.getPerformancePayNumber()!=null ? payBs.getPerformancePayNumber() : 0.0 ));
 			}
-			collect.setPayB(sumPayB);
+			//b工资+杂工工资
+			collect.setPayB(sumPayB+sumPayF);
 			//整体上浮后的B
 			collect.setAddPayB(collect.getPayB()*collectPay.getAddNumber());
 			//个人调节系数
@@ -119,9 +145,19 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 				timePay = (collect.getPayA()+collect.getNoPerformanceNumber())/collect.getTime();
 			}
 			collect.setTimePay(timePay);
+			//查询这条数据是否存在加绩流水表中
+			collect.setOrderTimeBegin(collectPay.getOrderTimeBegin());
+			collect.setOrderTimeEnd(collectPay.getOrderTimeEnd());
+			collect.setType(collectPay.getType());
+			List<CollectPay> cpList = collectPayService.findPages(collect, page).getRows();
+			if(cpList.size()==1){
+				collect = cpList.get(0);
+			}else{
+				//将加绩流水入库
+				collectPayDao.save(collect);
+			};
 			collectPayList.add(collect);
 		}
-		
 		return collectPayList;
 	}
 

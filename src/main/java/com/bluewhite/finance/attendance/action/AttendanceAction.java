@@ -61,7 +61,7 @@ public class AttendanceAction {
 		 * 添加考情工资(A工资)
 		 * 
 		 */
-		@RequestMapping(value = "/finance/addAttendance", method = RequestMethod.GET)
+		@RequestMapping(value = "/finance/addAttendance", method = RequestMethod.POST)
 		@ResponseBody
 		public CommonResponse allAttendancePay(HttpServletRequest request,AttendancePay attendancePay) {
 			CommonResponse cr = new CommonResponse();
