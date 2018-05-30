@@ -1,6 +1,7 @@
 package com.bluewhite.common.utils;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -96,7 +97,18 @@ public class DatesUtil {
 		calendarEnd.set(Calendar.SECOND, 59);  
 		calendarEnd.set(Calendar.MILLISECOND, 999);  
         return calendarEnd.getTime();  
-    }  
-
+    }
+	
+	/**
+	 * 比较两个日期是否同一天
+	 * @param d1
+	 * @param d2
+	 * @return
+	 */
+	public static boolean sameDate(Date d1, Date d2){  
+	    SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");  
+	    //fmt.setTimeZone(new TimeZone()); // 如果需要设置时间区域，可以在这里设置  
+	    return fmt.format(d1).equals(fmt.format(d2));  
+	}
 
 }

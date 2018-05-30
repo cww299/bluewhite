@@ -19,11 +19,13 @@ import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
 import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.FarragoTaskPay;
 import com.bluewhite.production.finance.entity.PayB;
+import com.bluewhite.production.finance.service.CollectPayService;
 import com.bluewhite.production.finance.service.FarragoTaskPayService;
 import com.bluewhite.production.finance.service.PayBService;
 
@@ -39,6 +41,8 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	
 	@Autowired
 	private PayBService payBService;
+	@Autowired
+	private CollectPayService collectPayBService;
 	@Autowired
 	private FarragoTaskPayService farragoTaskPayService;
 	@Autowired
@@ -107,20 +111,56 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	
 	
 	/** 
-	 * 日期内员工的绩效汇总表（上报财务）
+	 * 单天员工的绩效汇总表（上报财务）
 	 * 
 	 */
 	@RequestMapping(value = "/finance/collectPay", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse collectPay(HttpServletRequest request,CollectPay collectPay) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(payBService.collectPay(collectPay));	
-		cr.setMessage("查询成功");
+		if(DatesUtil.sameDate(collectPay.getOrderTimeBegin(), collectPay.getOrderTimeEnd())){
+			cr.setData(payBService.collectPay(collectPay));	
+			cr.setMessage("查询成功");
+		}else{
+			cr.setMessage("请选择两个日期为同一天");
+		}
 		return cr;
 	}
 	
 	
+	/** 
+	 * 单天员工的绩效按个人比例调节
+	 * 
+	 */
+	@RequestMapping(value = "/finance/updateCollectPay", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateCollectPay(HttpServletRequest request,CollectPay collectPay) {
+		CommonResponse cr = new CommonResponse();
+		CollectPay pay = collectPayBService.findOne(collectPay.getId());
+		pay.setAddSelfNumber(collectPay.getAddSelfNumber());
+		pay.setAddSelfPayB(collectPay.getAddSelfNumber()*pay.getPayB());
+		pay.setAddPerformancePay(pay.getAddSelfPayB()-pay.getPayA()>0 ? pay.getAddSelfPayB()-pay.getPayA() : 0.0);
+		collectPayBService.save(pay);
+		cr.setMessage("修改成功");
+		return cr;
+	}
 	
+	
+	/** 
+	 * 日期内员工的绩效汇总表（上报财务）
+	 * 
+	 */
+	@RequestMapping(value = "/finance/sumCollectPay", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse sumCollectPay(HttpServletRequest request,CollectPay collectPay) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(CollectPay.class,"userName","addPerformancePay","orderTimeBegin","orderTimeEnd")
+				.format(collectPayBService.collect(collectPay)).toJSON());	
+		cr.setMessage("查询成功");
+		return cr;
+	}
 	
 	
 	
