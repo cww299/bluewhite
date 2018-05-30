@@ -512,7 +512,7 @@
 						  area: ['60%', '60%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
-						  title:"分配任务",
+						  title:productName,
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
