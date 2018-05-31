@@ -44,7 +44,7 @@
                                     </ul>
                                     <div class="tab-content">
                                         <div class="tab-pane active" id="home1">
-                                        <!--查询开始  -->
+                                      <!--查询开始  -->
           		 <div class="row" style="height: 30px; margin:15px 0 10px">
 					<div class="col-xs-8 col-sm-8  col-md-8">
 						<form class="form-search" >
@@ -52,7 +52,6 @@
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
 								<table><tr>
-								<td>姓名:</td><td><input type="text" name="name" id="usernameth" placeholder="请输入姓名" class="form-control search-query name" /></td>
 								<td>开始:</td>
 								<td>
 								<input id="startTimeth" placeholder="请输入开始时间" class="form-control laydate-icon"
@@ -76,19 +75,10 @@
 				</form>
 			</div>
 		</div>
-            <!-- 查询结束 -->
+            <!-- 查询结束 -->  
                                         
                                             <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th class="text-center">姓名</th>
-                                        	<th class="text-center">考勤日期</th>
-                                            <th class="text-center">工作小时</th>
-                                            <th class="text-center">到岗预计每小时收入</th>
-                                            <th class="text-center">A工资</th>
-                                            <th class="text-center">操作</th>
-                                        </tr>
-                                    </thead>
+                                    
                                     <tbody id="tablecontentth">
                                         
                                     </tbody>
@@ -104,9 +94,7 @@
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
-								<table><tr><td>批次:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
-								<td>产品:</td><td><input type="text" name="name" id="name" placeholder="请输入产品名称" class="form-control search-query name" /></td>
-								<td>姓名:</td><td><input type="text" name="name" id="username" placeholder="请输入姓名" class="form-control search-query name" /></td>
+								<table><tr><td>股东占比:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
 								<td>开始:</td>
 								<td>
 								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
@@ -132,16 +120,7 @@
 		</div>
             <!-- 查询结束 -->  
                                    <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th class="text-center">姓名</th>
-                                        	<th class="text-center">批次号</th>
-                                            <th class="text-center">产品名</th>
-                                            <th class="text-center">时间</th>
-                                            <th class="text-center">加绩工资</th>
-                                            <th class="text-center">B工资</th>
-                                        </tr>
-                                    </thead>
+                                   
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
@@ -191,8 +170,7 @@
 		  		return _cache;
 		  	}
 			 var data={
-						page:1,
-				  		size:13,	
+					 Status:1,	
 				  		type:1,
 
 				} 
@@ -214,7 +192,7 @@
 			    var html = '';
 			    //B工资流水开始
 			    $.ajax({
-				      url:"${ctx}/finance/allPayB",
+				      url:"${ctx}/finance/collectInformation",
 				      data:data,
 				      type:"GET",
 				      beforeSend:function(){
@@ -223,46 +201,73 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			 $(result.data.rows).each(function(i,o){
-		      				 var a;
-		      				 if(o.performancePayNumber==null){
-		      					 a=0;
-		      				 }else{
-		      					 a=o.performancePayNumber
-		      				 }
-		      				html +='<tr>'
-		      				+'<td class="text-center edit ">'+o.userName+'</td>'
-		      				+'<td class="text-center edit ">'+o.bacth+'</td>'
-		      				+'<td class="text-center edit ">'+o.productName+'</td>'
-		      				+'<td class="text-center edit ">'+o.allotTime+'</td>'
-		      				+'<td class="text-center edit ">'+parseFloat((a).toFixed(3))+'</td>'
-		      				+'<td class="text-center edit ">'+parseFloat((o.payNumber).toFixed(3))+'</td></tr>'
-							
-		      			}); 
-				        //显示分页
-					   	 laypage({
-					      cont: 'pager', 
-					      pages: result.data.totalPages, 
-					      curr:  result.data.pageNum || 1, 
-					      jump: function(obj, first){ 
-					    	  if(!first){ 
-					    		 
-						        	var _data = {
-						        			page:obj.curr,
-									  		size:13,
-									  		type:1,
-									  		type:1,
-								  			productName:$('#name').val(),
-								  			userName:$('#username').val(),
-								  			bacth:$('#number').val(),
-								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(), 
-								  	}
-						        
-						            self.loadPagination(_data);
-							     }
-					      }
-					    });  
+		      			html +='<tr>'
+			      				+'<td class="edit">打算给予A汇总</td>'
+			      				+'<td class="edit">'+result.data.sumAttendancePay+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">我们可以给予一线的</td>'
+			      				+'<td class="edit">'+result.data.giveThread+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">一线剩余给我们</td>'
+			      				+'<td class="edit">'+result.data.surplusThread+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">考虑管理费，预留在手等。可调配资金</td>'
+			      				+'<td class="edit">'+result.data.deployPrice+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit"> 模拟得出可调配资金</td>'
+			      				+'<td class="edit">'+result.data.analogDeployPrice+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">从A考勤开始日期以消费的房租</td>'
+			      				+'<td class="edit">'+result.data.sumChummage+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">从A考勤开始日期以消费的水电</td>'
+			      				+'<td class="edit">'+result.data.sumHydropower+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">从A考勤开始日期以消费的后勤</td>'
+			      				+'<td class="edit">'+result.data.sumLogistics+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit"> 模拟当月非一线人员发货绩效</td>'
+			      				+'<td class="edit">'+result.data.analogPerformance+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">剩余净管理</td>'
+			      				+'<td class="edit">'+result.data.surplusManage+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">净管理费给付比→</td>'
+			      				+'<td class="edit">'+result.data.manageProportion+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">从开始日至今可发放管理费加绩比</td>'
+			      				+'<td class="edit">'+result.data.managePerformanceProportion+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">模拟当月非一线人员出勤小时</td>'
+			      				+'<td class="edit">'+result.data.analogTime+'</td>'
+			      				+'</tr>'
+			      				+'<td class="edit">每小时可发放</td>'
+			      				+'<td class="edit">'+result.data.grant+'</td>'
+			      				+'</tr>'
+			      				+'<td class="edit">给付后车间剩余</td>'
+			      				+'<td class="edit">'+result.data.giveSurplus+'</td>'
+			      				+'</tr>'
+			      				+'<td class="edit">其中股东占比</td>'
+			      				+'<td class="edit">'+result.data.shareholderProportion+'</td>'
+			      				+'</tr>'
+			      				+'<td class="edit">其中股东收益</td>'
+			      				+'<td class="edit">'+result.data.shareholder+'</td>'
+			      				+'</tr>'
+			      				+'<td class="edit">车间剩余</td>'
+			      				+'<td class="edit">'+result.data.workshopSurplus+'</td>'
+			      				+'</tr>'
 					   	layer.close(index);
 					   	 $("#tablecontent").html(html); 
 					   
@@ -288,39 +293,34 @@
 					  }, 
 		      		  success: function (result) {
 		      			 
-		      			 $(result.data.rows).each(function(i,o){
-		      				htmlth +='<tr>'
-		      				+'<td class="text-center  ">'+o.userName+'</td>'
-		      				+'<td class="text-center ">'+o.allotTime+'</td>'
-		      				+'<td class="text-center edit workTime">'+o.workTime+'</td>'
-		      				+'<td class="text-center  ">'+o.workPrice+'</td>'
-		      				+'<td class="text-center  ">'+o.payNumber+'</td>'
-		      				+'<td class="text-center"> <button class="btn btn-sm btn-warning btn-3d updateremake" data-id='+o.id+'>编辑</button></td></tr>'
-		      				
-							
-		      			}); 
-				        //显示分页
-					   	 laypage({
-					      cont: 'pagerth', 
-					      pages: result.data.totalPages, 
-					      curr:  result.data.pageNum || 1, 
-					      jump: function(obj, first){ 
-					    	  if(!first){ 
-					    		 
-						        	var _data = {
-						        			page:obj.curr,
-									  		size:13,
-									  		type:1,
-									  		productName:$('#name').val(),
-								  			bacth:$('#number').val(),
-								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(),
-								  	}
-						        
-						            self.loadPaginationth(_data);
-							     }
-					      }
-					    });  
+		      				 htmlth +='<tr>'
+			      				+'<td class="edit">全表加工费  汇总</td>'
+			      				+'<td class="edit">'+result.data.sumTask+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">返工费 汇总</td>'
+			      				+'<td class="edit">'+result.data.sumTaskFlag+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">杂工费 汇总</td>'
+			      				+'<td class="edit">'+result.data.sumFarragoTask+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">全表加工费,返工费和杂工费汇总</td>'
+			      				+'<td class="edit">'+result.data.priceCollect+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">不予给付汇总占比</td>'
+			      				+'<td class="edit">'+result.data.proportion+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">预算多余在手部分</td>'
+			      				+'<td class="edit">'+result.data.overtop+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">各批次地区差价汇总(不予给付汇总)</td>'
+			      				+'<td class="edit">'+result.data.regionalPrice+'</td>'
+			      				+'</tr>'
 					   	layer.close(index);
 					   	 $("#tablecontentth").html(htmlth); 
 					   	self.loadEvents();
@@ -331,67 +331,13 @@
 				  });
 			}
 			this.loadEvents = function(){
-				//修改方法
-				$('.updateremake').on('click',function(){
-					if($(this).text() == "编辑"){
-						$(this).text("保存")
-						
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
-				        });
-					}else{
-							$(this).text("编辑")
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							
-							var postData = {
-									id:$(this).data('id'),
-									workTime:$(this).parent().parent('tr').find(".workTime").text(),
-							}
-							var index;
-							
-							$.ajax({
-								url:"${ctx}/finance/updateAttendance",
-								data:postData,
-								type:"GET",
-								beforeSend:function(){
-									index = layer.load(1, {
-										  shade: [0.1,'#fff'] //0.1透明度的白色背景
-										});
-								},
-								
-								success:function(result){
-									if(0==result.code){
-									layer.msg("修改成功！", {icon: 1});
-									layer.close(index);
-									}else{
-										layer.msg("修改失败！", {icon: 1});
-										layer.close(index);
-									}
-								},error:function(){
-									layer.msg("操作失败！", {icon: 2});
-									layer.close(index);
-								}
-							});
-					}
-				})
 			}
 			this.events = function(){
 				$('.searchtask').on('click',function(){
 					var data = {
-				  			page:1,
-				  			size:13,
-				  			type:1,
-				  			productName:$('#name').val(),
-				  			userName:$('#username').val(),
-				  			bacth:$('#number').val(),
+							Status:1,	
+					  		type:1,
+				  			shareholderProportion:$('#number').val(),
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
 				  	}
@@ -399,16 +345,14 @@
 				self.loadPagination(data);
 				});
 				$('.searchtaskth').on('click',function(){
-					var data = {
-				  			page:1,
-				  			size:13,
-				  			type:1,
-				  			userName:$('#usernameth').val(),
+					var date = {
+							Status:0,	
+					  		type:1,
 				  			orderTimeBegin:$("#startTimeth").val(),
 				  			orderTimeEnd:$("#endTimeth").val(), 
 				  	}
 			
-				self.loadPaginationth(data);
+				self.loadPaginationth(date);
 				});
 			}
    	}
