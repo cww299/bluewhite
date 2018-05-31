@@ -74,6 +74,77 @@ public class CollectInformation {
 	 */
 	private Double surplusThread;
 	
+	/**
+	 * 考虑管理费，预留在手等。可调配资金
+	 */
+	private Double deployPrice;
+	
+	
+	/**
+	 * 模拟得出可调配资金
+	 */
+	private Double analogDeployPrice;
+	
+	
+	
+	/**
+	 * 从A考勤开始日期以消费的房租
+	 */
+	private Double sumChummage;
+	
+	
+	/**
+	 * 从A考勤开始日期以消费的水电
+	 */
+	private Double sumHydropower;
+	
+	
+	/**
+	 * 从A考勤开始日期以消费的后勤
+	 */
+	private Double sumLogistics;
+	
+	
+	
+	/**
+	 * 模拟当月非一线人员发货绩效
+	 */
+	private Double analogPerformance;
+	
+	
+	
+	/**
+	 * 剩余净管理
+	 */
+	private Double surplusManage;
+	
+	
+	/**
+	 * 净管理费给付比→
+	 */
+	private Double manageProportion;
+	
+	
+	/**
+	 * 从开始日至今可发放管理费加绩比
+	 */
+	private Double managePerformanceProportion;
+	
+	
+	
+	/**
+	 * 模拟当月非一线人员出勤小时
+	 */
+	private Double analogTime;
+	
+	
+	
+	/**
+	 * 每小时可发放
+	 */
+	private Double grant;
+	
+	
 	
 	/**
 	 * 根据类型返回不同的汇总数据
@@ -83,6 +154,94 @@ public class CollectInformation {
 	
 	
 	
+	public Double getDeployPrice() {
+		return deployPrice;
+	}
+
+	public void setDeployPrice(Double deployPrice) {
+		this.deployPrice = deployPrice;
+	}
+
+	public Double getAnalogDeployPrice() {
+		return analogDeployPrice;
+	}
+
+	public void setAnalogDeployPrice(Double analogDeployPrice) {
+		this.analogDeployPrice = analogDeployPrice;
+	}
+
+	public Double getSumChummage() {
+		return sumChummage;
+	}
+
+	public void setSumChummage(Double sumChummage) {
+		this.sumChummage = sumChummage;
+	}
+
+	public Double getSumHydropower() {
+		return sumHydropower;
+	}
+
+	public void setSumHydropower(Double sumHydropower) {
+		this.sumHydropower = sumHydropower;
+	}
+
+	public Double getSumLogistics() {
+		return sumLogistics;
+	}
+
+	public void setSumLogistics(Double sumLogistics) {
+		this.sumLogistics = sumLogistics;
+	}
+
+	public Double getAnalogPerformance() {
+		return analogPerformance;
+	}
+
+	public void setAnalogPerformance(Double analogPerformance) {
+		this.analogPerformance = analogPerformance;
+	}
+
+	public Double getSurplusManage() {
+		return surplusManage;
+	}
+
+	public void setSurplusManage(Double surplusManage) {
+		this.surplusManage = surplusManage;
+	}
+
+	public Double getManageProportion() {
+		return manageProportion;
+	}
+
+	public void setManageProportion(Double manageProportion) {
+		this.manageProportion = manageProportion;
+	}
+
+	public Double getManagePerformanceProportion() {
+		return managePerformanceProportion;
+	}
+
+	public void setManagePerformanceProportion(Double managePerformanceProportion) {
+		this.managePerformanceProportion = managePerformanceProportion;
+	}
+
+	public Double getAnalogTime() {
+		return analogTime;
+	}
+
+	public void setAnalogTime(Double analogTime) {
+		this.analogTime = analogTime;
+	}
+
+	public Double getGrant() {
+		return grant;
+	}
+
+	public void setGrant(Double grant) {
+		this.grant = grant;
+	}
+
 	public Integer getStatus() {
 		return status;
 	}

@@ -198,9 +198,11 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		
 		//考虑管理费，预留在手等。可调配资金
 		double deployPrice = sumManage+collectInformation.getOvertop()+collectInformation.getSurplusThread();
+		collectInformation.setDeployPrice(deployPrice);
 		
 		//模拟得出可调配资金
 		double analogDeployPrice = deployPrice;
+		collectInformation.setAnalogDeployPrice(analogDeployPrice);
 		
 		//从A考勤开始日期以消费的房租
 		UsualConsume usualConsume = new UsualConsume();
@@ -209,23 +211,39 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		usualConsume.setType(collectInformation.getType());
 		List<UsualConsume> usualConsumeList = usualConsumeservice.findPages(usualConsume, page).getRows();
 		double sumChummage = usualConsumeList.stream().mapToDouble(UsualConsume::getChummage).sum();
+		collectInformation.setSumChummage(sumChummage);
+		
 		//从A考勤开始日期以消费的水电
 		double sumHydropower = usualConsumeList.stream().mapToDouble(UsualConsume::getHydropower).sum();
+		collectInformation.setSumHydropower(sumHydropower);
+		
 		//从A考勤开始日期以消费的后勤
 		double sumLogistics = usualConsumeList.stream().mapToDouble(UsualConsume::getLogistics).sum();
+		collectInformation.setSumLogistics(sumLogistics);
+		
 		//模拟当月非一线人员发货绩效
+		double analogPerformance = 0;
+		collectInformation.setAnalogPerformance(analogPerformance);
 		
 		//剩余净管理
-		double surplusManage = analogDeployPrice-sumChummage-sumHydropower-sumLogistics;
+		double surplusManage = analogDeployPrice-sumChummage-sumHydropower-sumLogistics-analogPerformance;
+		collectInformation.setSurplusManage(surplusManage);
+		
 		//净管理费给付比→
 		double manageProportion = 0.18;
+		collectInformation.setManageProportion(manageProportion);
 		
 		//从开始日至今可发放管理费加绩比
 		double managePerformanceProportion = surplusManage*manageProportion;
-		//模拟当月非一线人员出勤小时
+		collectInformation.setManagePerformanceProportion(managePerformanceProportion);
 		
+		//模拟当月非一线人员出勤小时
+		double  analogTime = 450;
+		collectInformation.setAnalogTime(analogTime);
 		
 		//每小时可发放
+		double grant =  managePerformanceProportion/analogTime;
+		collectInformation.setGrant(grant);
 		
 		return collectInformation;
 	}
