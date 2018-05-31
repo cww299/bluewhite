@@ -9,6 +9,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.production.finance.entity.CollectInformation;
 import com.bluewhite.production.finance.entity.CollectPay;
+import com.bluewhite.production.finance.entity.MonthlyProduction;
 import com.bluewhite.production.finance.entity.PayB;
 @Service
 public interface CollectPayService extends BaseCRUDService<CollectPay,Long>{
@@ -26,6 +27,14 @@ public interface CollectPayService extends BaseCRUDService<CollectPay,Long>{
 	 * @return
 	 */
 	public CollectInformation collectInformation(CollectInformation collectInformation);
+	
+	
+	/**
+	 * 质检月产量报表
+	 * @param collectInformation
+	 * @return
+	 */
+	public List<MonthlyProduction> monthlyProduction(MonthlyProduction monthlyProduction);
 	
 
 

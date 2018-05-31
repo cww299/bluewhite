@@ -165,7 +165,7 @@ public class AttendanceAction {
 		@InitBinder
 		protected void initBinder(WebDataBinder binder) {
 			SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
-					DateTimePattern.DATEHM.getPattern());
+					DateTimePattern.DATEHMS.getPattern());
 			binder.registerCustomEditor(java.util.Date.class, null,
 					new CustomDateEditor(dateTimeFormat, true));
 			binder.registerCustomEditor(byte[].class,

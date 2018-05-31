@@ -137,7 +137,18 @@ public class Bacth extends BaseEntity<Long>{
 	private Date orderTimeEnd;
 	
 	
+	/**
+	 * 产值
+	 */
+	@Transient
+	private Double productPrice;
 	
+	
+	
+	public Double getProductPrice() {
+		return bacthHairPrice*number;
+	}
+
 	public Double getSumReworkPrice() {
 		return sumReworkPrice;
 	}

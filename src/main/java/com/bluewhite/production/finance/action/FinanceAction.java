@@ -2,6 +2,7 @@ package com.bluewhite.production.finance.action;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,6 +27,7 @@ import com.bluewhite.finance.attendance.service.AttendancePayService;
 import com.bluewhite.production.finance.entity.CollectInformation;
 import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.FarragoTaskPay;
+import com.bluewhite.production.finance.entity.MonthlyProduction;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.finance.entity.UsualConsume;
 import com.bluewhite.production.finance.service.CollectPayService;
@@ -305,12 +307,27 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	}
 	
 	
+	/**
+	 * 质检月产量报表
+	 * 
+	 * @param binder
+	 */
+	@RequestMapping(value = "/finance/monthlyProduction", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse monthlyProduction(HttpServletRequest request,MonthlyProduction monthlyProduction) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(collectPayBService.monthlyProduction(monthlyProduction));
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	
 
 	
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
 		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
-				DateTimePattern.DATEHM.getPattern());
+				DateTimePattern.DATEHMS.getPattern());
 		binder.registerCustomEditor(java.util.Date.class, null,
 				new CustomDateEditor(dateTimeFormat, true));
 		binder.registerCustomEditor(byte[].class,

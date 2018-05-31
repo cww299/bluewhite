@@ -122,8 +122,22 @@ public class DatesUtil {
      * long 
      */
     public static long getDaySub(Date beginDate,Date endDate){
-        long day = (endDate.getTime()-beginDate.getTime())/(24*60*60*1000);    
+        long day = (endDate.getTime()-beginDate.getTime()+1000)/(24*60*60*1000);    
         return day;
+    }
+    
+    /**
+     * 获取某个日期的下一天
+     * @param beginDate
+     * @param endDate
+     * @return
+     */
+    public static Date nextDay(Date beginDate){
+	    Calendar calendar = Calendar.getInstance();  
+	    calendar.setTime(beginDate);  
+	    calendar.add(Calendar.DATE, 1);  
+	    Date date = calendar.getTime();
+		return date;  
     }
 
 }
