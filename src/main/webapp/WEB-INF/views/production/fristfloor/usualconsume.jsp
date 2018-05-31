@@ -72,6 +72,7 @@
                                             <th class="text-center">日消费房租选择</th>
                                             <th class="text-center">日消费水电选择</th>
                                             <th class="text-center">日消费餐饮后勤选择</th>
+                                            <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent">
@@ -123,7 +124,7 @@
 		  	}
 			 var data={
 						page:1,
-				  		size:13,	
+				  		size:10,	
 				  		type:1,
 
 				} 
@@ -188,8 +189,8 @@
 		      				+'<td class="text-center edit name">'+o.consumeDate+'</td>'
 		      				+'<td class="text-center edit name">'+o.chummage*1+'</td>'
 		      				+'<td class="text-center edit name">'+o.hydropower*1+'</td>'
-		      				+'<td class="text-center edit name">'+o.logistics*1+'</td></tr>'
-							
+		      				+'<td class="text-center edit name">'+o.logistics*1+'</td>'
+		      				+'<td class="text-center"><button class="btn btn-sm btn-danger btn-3d delete" data-id='+o.id+'>删除</button></td></tr>'
 		      			}); 
 				        //显示分页
 					   	 laypage({
@@ -201,9 +202,8 @@
 					    		 
 						        	var _data = {
 						        			page:obj.curr,
-									  		size:13,
+									  		size:10,
 									  		type:1,
-									  		name:$('#name').val(),
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -224,21 +224,16 @@
 			
 			this.loadEvents = function(){
 				
-				
-				//人员详细显示方法
-				$('.savemode').on('click',function(){
-					var id=$(this).data('id')
-					 var display =$("#savegroup").css("display")
-					 if(display=='none'){
-							$("#savegroup").css("display","block");  
-						}
-					var postData={
-							id:id,
+				//删除方法
+				$('.delete').on('click',function(){
+					var postData = {
+							id:$(this).data('id'),
 					}
-					 var arr=new Array();
-					var html="";
+					console.log(postData)
+					var index;
+					 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
 					$.ajax({
-						url:"${ctx}/production/getGroupOne",
+						url:"${ctx}/finance/delete",
 						data:postData,
 						type:"GET",
 						beforeSend:function(){
@@ -248,21 +243,22 @@
 						},
 						
 						success:function(result){
-							$(result.data.users).each(function(i,o){
-							html+=o.userName+"&nbsp&nbsp&nbsp&nbsp"
-							})
-							$('.modal-body').html(html);
+							if(0==result.code){
+							layer.msg("删除成功！", {icon: 1});
+							self.loadPagination(data)
 							layer.close(index);
-							
+							}else{
+								layer.msg("删除失败！", {icon: 1});
+								layer.close(index);
+							}
 						},error:function(){
 							layer.msg("操作失败！", {icon: 2});
 							layer.close(index);
 						}
 					});
-					
-					
-					
+					 })
 				})
+				
 				
 				
 			}
