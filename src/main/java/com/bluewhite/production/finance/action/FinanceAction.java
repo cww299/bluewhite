@@ -140,6 +140,23 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	}
 	
 	
+	/** 
+	 * 查询日销流水
+	 * 
+	 */
+	@RequestMapping(value = "/finance/allUsualConsume", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse allUsualConsume(HttpServletRequest request,UsualConsume usualConsume,PageParameter page) {
+		CommonResponse cr = new CommonResponse();
+			cr.setData(ClearCascadeJSON
+					.get()
+					.addRetainTerm(UsualConsume.class,"dayChummage","dayHydropower","dayLogistics","consumeDate")
+					.format(usualConsumeservice.findPages(usualConsume, page)).toJSON());
+			cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	
 	/**************************  汇总相关业务    ********************************/
 	
 	
