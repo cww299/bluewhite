@@ -104,7 +104,7 @@
                                 </table>
                                 <div id="pagerth" class="pull-right"></div>
                                         </div>
-                     <!-- B工资流水开始 -->
+                     <!-- 绩效水开始 -->
             <div class="tab-pane" id="profile1">
                       <!--查询开始  -->
           		 <div class="row" style="height: 30px; margin:15px 0 10px">
@@ -113,8 +113,7 @@
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
-								<table><tr><td>批次:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
-								<td>产品:</td><td><input type="text" name="name" id="name" placeholder="请输入产品名称" class="form-control search-query name" /></td>
+								<table><tr>
 								<td>姓名:</td><td><input type="text" name="name" id="username" placeholder="请输入姓名" class="form-control search-query name" /></td>
 								<td>开始:</td>
 								<td>
@@ -144,11 +143,7 @@
                                     <thead>
                                         <tr>
                                         	<th class="text-center">姓名</th>
-                                        	<th class="text-center">批次号</th>
-                                            <th class="text-center">产品名</th>
-                                            <th class="text-center">时间</th>
-                                            <th class="text-center">加绩工资</th>
-                                            <th class="text-center">B工资</th>
+                                        	<th class="text-center">汇总加绩</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent">
@@ -157,7 +152,7 @@
                                 </table>
                                 <div id="pager" class="pull-right"></div>
                                  </div>
-                                 <!-- B工资流水结束 -->
+                                 <!-- 绩效汇总结束 -->
                                     <div class="tab-pane" id="profile2">
                                      <!--查询开始  -->
           		 <div class="row" style="height: 30px; margin:15px 0 10px">
@@ -238,6 +233,15 @@
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
     <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
     <script>
+     
+   /*  var date_ = new Date();  
+    var year = date_.getYear();  
+    var month = date_.getMonth() + 1;  
+    var firstdate = year + '-' + month + '-01' 
+    var day = new Date(year,month,0);      
+    var lastdate = year + '-' + month + '-' + day.getDate();  */ 
+    
+    
    jQuery(function($){
    	var Login = function(){
 			var self = this;
@@ -256,22 +260,43 @@
 				  		type:1,
 
 				} 
+			 var myDate = new Date();
+				//获取当前年
+				var year=myDate.getFullYear();
+				//获取当前月
+				var month=myDate.getMonth()+1;
+				//获取当前日
+				var date=myDate.getDate(); 
+				var h=myDate.getHours();       //获取当前小时数(0-23)
+				var m=myDate.getMinutes();     //获取当前分钟数(0-59)
+				var s=myDate.getSeconds(); 
+				var day = new Date(year,month,0);  
+				var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
+				var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
+				$('#startTime').val(firstdate);
+				$('#endTime').val(lastdate);
+			 var date={
+				  		type:1,
+				  		orderTimeBegin:firstdate,
+				  		orderTimeEnd:lastdate,	
+				} 
+			 
 			this.init = function(){
 				
 				//注册绑定事件
 				self.events();
-				self.loadPagination(data);
+				self.loadPagination(date);
 				self.loadPaginationtw(data);
 				self.loadPaginationth(data);
 			}
 			//加载分页
-			  this.loadPagination = function(data){
+			  this.loadPagination = function(date){
 			    var index;
 			    var html = '';
-			    //B工资流水开始
+			    //绩效汇总开始
 			    $.ajax({
-				      url:"${ctx}/finance/allPayB",
-				      data:data,
+				      url:"${ctx}/finance/sumCollectPay",
+				      data:date,
 				      type:"GET",
 				      beforeSend:function(){
 					 	  index = layer.load(1, {
@@ -279,46 +304,14 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			 $(result.data.rows).each(function(i,o){
-		      				 var a;
-		      				 if(o.performancePayNumber==null){
-		      					 a=0;
-		      				 }else{
-		      					 a=o.performancePayNumber
-		      				 }
+		      			 $(result.data).each(function(i,o){
+		      				
 		      				html +='<tr>'
 		      				+'<td class="text-center edit ">'+o.userName+'</td>'
-		      				+'<td class="text-center edit ">'+o.bacth+'</td>'
-		      				+'<td class="text-center edit ">'+o.productName+'</td>'
-		      				+'<td class="text-center edit ">'+o.allotTime+'</td>'
-		      				+'<td class="text-center edit ">'+parseFloat((a).toFixed(3))+'</td>'
-		      				+'<td class="text-center edit ">'+parseFloat((o.payNumber).toFixed(3))+'</td></tr>'
+		      				+'<td class="text-center edit ">'+o.addPerformancePay+'</td></tr>'
 							
 		      			}); 
-				        //显示分页
-					   	 laypage({
-					      cont: 'pager', 
-					      pages: result.data.totalPages, 
-					      curr:  result.data.pageNum || 1, 
-					      jump: function(obj, first){ 
-					    	  if(!first){ 
-					    		 
-						        	var _data = {
-						        			page:obj.curr,
-									  		size:13,
-									  		type:1,
-									  		type:1,
-								  			productName:$('#name').val(),
-								  			userName:$('#username').val(),
-								  			bacth:$('#number').val(),
-								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(), 
-								  	}
-						        
-						            self.loadPagination(_data);
-							     }
-					      }
-					    });  
+				       
 					   	layer.close(index);
 					   	 $("#tablecontent").html(html); 
 					   
@@ -327,7 +320,7 @@
 							layer.close(index);
 					  }
 				  });
-			  //B工资流水结束
+			  //绩效汇总结束
 			}
 			  this.loadPaginationtw = function(data){
 				//杂工工资流水开始
@@ -384,7 +377,7 @@
 					  });
 				  //杂工工资流水结束
 			  }
-			this.loadPaginationth=function(data){
+			this.loadPaginationth=function(postdata){
 				//绩效计算
 				var index;
 			    $('.searchtaskth').on('click',function(){
@@ -419,11 +412,11 @@
 		      				htmlth +='<tr>'
 		      				+'<td class="text-center  ">'+o.userName+'</td>'
 		      				+'<td class="text-center ">'+o.time+'</td>'
-		      				+'<td class="text-center edit workTime">'+o.payA+'</td>'
+		      				+'<td class="text-center ">'+o.payA+'</td>'
 		      				+'<td class="text-center  ">'+parseFloat((o.payB).toFixed(3))+'</td>'
 		      				+'<td class="text-center  ">'+parseFloat((o.addPayB).toFixed(3))+'</td>'
 		      				+'<td class="text-center  ">'+parseFloat((o.addSelfPayB*1).toFixed(3))+'</td>'
-		      				+'<td class="text-center  ">'+o.addSelfNumber+'</td>'
+		      				+'<td class="text-center  edit addSelfNumber">'+o.addSelfNumber+'</td>'
 		      				+'<td class="text-center  ">'+o.addPerformancePay+'</td>'
 		      				+'<td class="text-center  ">'+o.noPerformanceNumber+'</td>'
 		      				+'<td class="text-center  ">'+o.noTimePay+'</td>'
@@ -464,14 +457,14 @@
 							
 							var postData = {
 									id:$(this).data('id'),
-									workTime:$(this).parent().parent('tr').find(".workTime").text(),
+									addSelfNumber:$(this).parent().parent('tr').find(".addSelfNumber").text(),
 							}
 							var index;
 							
 							$.ajax({
-								url:"${ctx}/finance/updateAttendance",
+								url:"${ctx}/finance/updateCollectPay",
 								data:postData,
-								type:"GET",
+								type:"POST",
 								beforeSend:function(){
 									index = layer.load(1, {
 										  shade: [0.1,'#fff'] //0.1透明度的白色背景
@@ -481,6 +474,7 @@
 								success:function(result){
 									if(0==result.code){
 									layer.msg("修改成功！", {icon: 1});
+									$(".searchtaskth").click()
 									layer.close(index);
 									}else{
 										layer.msg("修改失败！", {icon: 1});
@@ -497,12 +491,7 @@
 			this.events = function(){
 				$('.searchtask').on('click',function(){
 					var data = {
-				  			page:1,
-				  			size:13,
-				  			type:1,
-				  			productName:$('#name').val(),
-				  			userName:$('#username').val(),
-				  			bacth:$('#number').val(),
+							userName:$("#username").val(),
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
 				  	}
@@ -522,18 +511,7 @@
 			
 				self.loadPaginationtw(data);
 				});
-				/* $('.searchtaskth').on('click',function(){
-					var data = {
-				  			page:1,
-				  			size:13,
-				  			type:1,
-				  			userName:$('#usernameth').val(),
-				  			orderTimeBegin:$("#startTimeth").val(),
-				  			orderTimeEnd:$("#endTimeth").val(), 
-				  	}
-			
-				self.loadPaginationth(data);
-				}); */
+				
 			}
    	}
    			var login = new Login();
