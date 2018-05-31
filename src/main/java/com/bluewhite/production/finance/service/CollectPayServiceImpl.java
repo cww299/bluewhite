@@ -26,6 +26,7 @@ import com.bluewhite.production.farragotask.service.FarragoTaskService;
 import com.bluewhite.production.finance.dao.CollectPayDao;
 import com.bluewhite.production.finance.entity.CollectInformation;
 import com.bluewhite.production.finance.entity.CollectPay;
+import com.bluewhite.production.finance.entity.MonthlyProduction;
 import com.bluewhite.production.finance.entity.UsualConsume;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
@@ -259,6 +260,91 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		double workshopSurplus =giveSurplus - shareholder;
 		collectInformation.setWorkshopSurplus(workshopSurplus);
 		return collectInformation;
+	}
+
+	@Override
+	public List<MonthlyProduction> monthlyProduction(MonthlyProduction monthlyProduction) {
+		PageParameter page  = new PageParameter();
+		page.setSize(Integer.MAX_VALUE);
+		List<MonthlyProduction> monthlyProductionList = new ArrayList<MonthlyProduction>();
+		long size = DatesUtil.getDaySub(monthlyProduction.getOrderTimeBegin(), monthlyProduction.getOrderTimeEnd());
+		
+		for(int j=0 ; j<size ; j++){
+			//获取一天的开始时间
+			Date beginTimes = monthlyProduction.getOrderTimeBegin();
+			//获取一天的结束时间
+			Date endTimes = DatesUtil.getLastDayOftime(monthlyProduction.getOrderTimeBegin());
+			Integer type = monthlyProduction.getType();
+			monthlyProduction =	new MonthlyProduction();
+			monthlyProduction.setOrderTimeBegin(beginTimes);
+			monthlyProduction.setOrderTimeEnd(endTimes);
+			monthlyProduction.setType(type);
+			
+				
+		
+		AttendancePay attendancePay = new AttendancePay();
+		attendancePay.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
+		attendancePay.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
+		attendancePay.setType(monthlyProduction.getType());
+		List<AttendancePay> attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
+		//考勤人数
+		List<AttendancePay> list = attendancePayList.stream().filter(AttendancePay->AttendancePay.getWorkTime()!=0).collect(Collectors.toList());
+		int peopleNumber = list.size();
+		monthlyProduction.setPeopleNumber(peopleNumber);
+		//考勤总时间
+		double time = list.stream().mapToDouble(AttendancePay::getWorkTime).sum();
+		monthlyProduction.setTime(time);
+		//当天产量
+		Bacth bacth = new Bacth();
+		bacth.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
+		bacth.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
+		bacth.setType(monthlyProduction.getType());
+		List<Bacth> bacthList = bacthService.findPages(bacth, page).getRows();
+		double productNumber = bacthList.stream().mapToDouble(Bacth::getNumber).sum();
+		monthlyProduction.setProductNumber(productNumber);
+		//当天产值(外发单价乘以质检的个数)
+		double productPrice = bacthList.stream().mapToDouble(Bacth::getProductPrice).sum();
+		monthlyProduction.setProductPrice(productPrice);
+		//返工出勤人数
+		Task task = new Task();
+		task.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
+		task.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
+		task.setType(monthlyProduction.getType());
+		task.setFlag(1);
+		List<Task> taskList = TaskService.findPages(task, page).getRows();
+		List<Long> userList = new ArrayList<Long>();
+		//返工出勤时间
+		double reworkTurnTime = 0;
+		monthlyProduction.setReworkTurnTime(reworkTurnTime);
+		for(Task ta : taskList){
+			if (!StringUtils.isEmpty(ta.getUserIds())) {
+				String[] idArr = ta.getUserIds().split(",");
+				if (idArr.length>0) {
+					for (int i = 0; i < idArr.length; i++) {
+						Long userid = Long.parseLong(idArr[i]);
+						if(!userList.contains(userid)){
+							attendancePay.setUserId(userid);
+							attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
+							reworkTurnTime+=attendancePayList.get(0).getWorkTime();
+							userList.add(userid);
+						}
+					}
+				}
+			}
+		}
+		double reworkNumber = userList.size();
+		monthlyProduction.setReworkNumber(reworkNumber);
+		//返工个数
+		double rework =  taskList.stream().mapToDouble(Task::getNumber).sum();
+		monthlyProduction.setRework(rework);
+		//返工时间
+		double reworkTime = reworkTurnTime;
+		monthlyProduction.setReworkTime(reworkTime);
+		monthlyProductionList.add(monthlyProduction);
+		//获取下一天的时间
+		monthlyProduction.setOrderTimeBegin(DatesUtil.nextDay(monthlyProduction.getOrderTimeBegin()));
+		}
+		return monthlyProductionList;
 	}
 	
 
