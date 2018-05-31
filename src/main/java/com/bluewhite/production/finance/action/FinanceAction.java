@@ -121,12 +121,12 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	@ResponseBody
 	public CommonResponse getUsualConsume(HttpServletRequest request,UsualConsume usualConsume) {
 		CommonResponse cr = new CommonResponse();
-		usualConsume = usualConsumeservice.usualConsume(usualConsume);
+		usualConsume = ProTypeUtils.usualConsume(usualConsume);
 			cr.setData(ClearCascadeJSON
 					.get()
 					.addRetainTerm(UsualConsume.class,"peopleLogistics","peopleNumber","monthChummage",
 							"monthHydropower","chummage","hydropower","logistics","monthLogistics")
-					.format(ProTypeUtils.usualConsume(usualConsume)).toJSON());
+					.format(usualConsumeservice.usualConsume(usualConsume)).toJSON());
 			cr.setMessage("查询成功");
 		return cr;
 	}
