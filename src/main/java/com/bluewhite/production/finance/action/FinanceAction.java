@@ -33,6 +33,7 @@ import com.bluewhite.production.finance.service.FarragoTaskPayService;
 import com.bluewhite.production.finance.service.PayBService;
 import com.bluewhite.production.finance.service.UsualConsumeService;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
+import com.bluewhite.production.productionutils.constant.dao.ProductionConstantDao;
 
 /**
  * 生产部财务相关action 
@@ -136,6 +137,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	@RequestMapping(value = "/finance/usualConsume", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse usualConsume(HttpServletRequest request,UsualConsume usualConsume) {
+		ProTypeUtils.updateUsualConsume(usualConsume);
 		CommonResponse cr = new CommonResponse();
 			cr.setData(ClearCascadeJSON
 					.get()
