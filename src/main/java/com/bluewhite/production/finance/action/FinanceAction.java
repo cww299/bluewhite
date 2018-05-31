@@ -121,9 +121,11 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	@ResponseBody
 	public CommonResponse getUsualConsume(HttpServletRequest request,UsualConsume usualConsume) {
 		CommonResponse cr = new CommonResponse();
+		usualConsume = usualConsumeservice.usualConsume(usualConsume);
 			cr.setData(ClearCascadeJSON
 					.get()
-					.addRetainTerm(UsualConsume.class,"peopleLogistics","peopleNumber","monthChummage","monthHydropower")
+					.addRetainTerm(UsualConsume.class,"peopleLogistics","peopleNumber","monthChummage",
+							"monthHydropower","chummage","hydropower","logistics","monthLogistics")
 					.format(ProTypeUtils.usualConsume(usualConsume)).toJSON());
 			cr.setMessage("查询成功");
 		return cr;
@@ -141,9 +143,10 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		CommonResponse cr = new CommonResponse();
 			cr.setData(ClearCascadeJSON
 					.get()
-					.addRetainTerm(UsualConsume.class,"chummage","hydropower","logistics","monthLogistics")
+					.addRetainTerm(UsualConsume.class,"peopleLogistics","peopleNumber","monthChummage",
+							"monthHydropower","chummage","hydropower","logistics","monthLogistics")
 					.format(usualConsumeservice.usualConsume(usualConsume)).toJSON());
-			cr.setMessage("查询成功");
+			cr.setMessage("修改成功");
 		return cr;
 	}
 	
