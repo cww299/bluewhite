@@ -76,30 +76,14 @@ public class UsualConsume extends BaseEntity<Long> {
 	private Double  monthLogistics;
 	
 	/**
-	 * 日消费房租
-	 */
-	@Transient
-	private Double  dayChummage;
-	
-	/**
-	 * 日消费水电
-	 */
-	@Transient
-	private Double  dayHydropower;
-	
-	/**
-	 * 日消费餐饮后勤
-	 */
-	@Transient
-	private Double  dayLogistics;
-	
-	/**
 	 * 查询字段开始时间
 	 */
+	@Transient
 	private Date orderTimeBegin;
 	/**
 	 * 查询字段结束时间
 	 */
+	@Transient
 	private Date orderTimeEnd;
 	
 	
@@ -153,24 +137,7 @@ public class UsualConsume extends BaseEntity<Long> {
 	public void setMonthLogistics(Double monthLogistics) {
 		this.monthLogistics = monthLogistics;
 	}
-	public Double getDayChummage() {
-		return dayChummage;
-	}
-	public void setDayChummage(Double dayChummage) {
-		this.dayChummage = dayChummage;
-	}
-	public Double getDayHydropower() {
-		return dayHydropower;
-	}
-	public void setDayHydropower(Double dayHydropower) {
-		this.dayHydropower = dayHydropower;
-	}
-	public Double getDayLogistics() {
-		return dayLogistics;
-	}
-	public void setDayLogistics(Double dayLogistics) {
-		this.dayLogistics = dayLogistics;
-	}
+
 	public Integer getType() {
 		return type;
 	}
