@@ -143,8 +143,25 @@ public class CollectInformation {
 	 * 每小时可发放
 	 */
 	private Double grant;
+	/**
+	 * 给付后车间剩余
+	 */
+	private Double giveSurplus;
 	
+	/**
+	 * 其中股东占比
+	 */
+	private Double shareholderProportion;
 	
+	/**
+	 * 其中股东收益
+	 */
+	private Double shareholder;
+	
+	/**
+	 * 车间剩余 
+	 */
+	private Double workshopSurplus;
 	
 	/**
 	 * 根据类型返回不同的汇总数据
@@ -154,6 +171,39 @@ public class CollectInformation {
 	
 	
 	
+	
+	public Double getGiveSurplus() {
+		return giveSurplus;
+	}
+
+	public void setGiveSurplus(Double giveSurplus) {
+		this.giveSurplus = giveSurplus;
+	}
+
+	public Double getShareholderProportion() {
+		return shareholderProportion;
+	}
+
+	public void setShareholderProportion(Double shareholderProportion) {
+		this.shareholderProportion = shareholderProportion;
+	}
+
+	public Double getShareholder() {
+		return shareholder;
+	}
+
+	public void setShareholder(Double shareholder) {
+		this.shareholder = shareholder;
+	}
+
+	public Double getWorkshopSurplus() {
+		return workshopSurplus;
+	}
+
+	public void setWorkshopSurplus(Double workshopSurplus) {
+		this.workshopSurplus = workshopSurplus;
+	}
+
 	public Double getDeployPrice() {
 		return deployPrice;
 	}

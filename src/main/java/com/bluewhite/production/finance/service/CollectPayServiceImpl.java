@@ -245,6 +245,16 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		double grant =  managePerformanceProportion/analogTime;
 		collectInformation.setGrant(grant);
 		
+		//该车间事故损耗
+		//给付后车间剩余
+		double giveSurplus =(1-manageProportion)*surplusManage;
+		collectInformation.setGiveSurplus(giveSurplus);
+		//其中股东收益
+		double shareholder = giveSurplus * collectInformation.getShareholderProportion();
+		collectInformation.setShareholder(shareholder);
+		//车间剩余
+		double workshopSurplus =giveSurplus - shareholder;
+		collectInformation.setWorkshopSurplus(workshopSurplus);
 		return collectInformation;
 	}
 	

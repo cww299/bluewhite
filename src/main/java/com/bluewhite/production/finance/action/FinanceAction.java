@@ -209,7 +209,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		CommonResponse cr = new CommonResponse();
 			cr.setData(ClearCascadeJSON
 					.get()
-					.addRetainTerm(UsualConsume.class,"chummage","hydropower","logistics","consumeDate")
+					.addRetainTerm(UsualConsume.class,"chummage","hydropower","logistics","consumeDate","id")
 					.format(usualConsumeservice.findPages(usualConsume, page)).toJSON());
 			cr.setMessage("查询成功");
 		return cr;
@@ -291,10 +291,13 @@ private static final Log log = Log.getLog(FinanceAction.class);
 					.get()
 					.addRetainTerm(CollectInformation.class,"regionalPrice","sumTask","sumTaskFlag","sumFarragoTask","priceCollect","proportion","overtop")
 					.format(collectInformation).toJSON());	
-		}else if(collectInformation.getStatus()==0){
+		}else if(collectInformation.getStatus()==1){
 			cr.setData(ClearCascadeJSON
 					.get()
-					.addRetainTerm(CollectInformation.class,"sumAttendancePay","giveThread","surplusThread").format(collectInformation).toJSON());	
+					.addRetainTerm(CollectInformation.class,"sumAttendancePay","giveThread","surplusThread",
+							"deployPrice","analogDeployPrice","sumChummage","sumHydropower","sumLogistics",
+							"analogPerformance","surplusManage","manageProportion","managePerformanceProportion",
+							"analogTime","grant","giveSurplus","shareholderProportion","shareholder","workshopSurplus").format(collectInformation).toJSON());	
 		}
 				
 		cr.setMessage("查询成功");
