@@ -84,6 +84,14 @@ public class PayB extends BaseEntity<Long>{
 	@Column(name = "allot_time")
 	private Date allotTime;
 	
+	
+	/**
+	 * 是否是返工工资标识符（0=不是，1=是）
+	 */
+	@Column(name = "flag")
+	private Integer flag = 0;
+	
+	
 	/**
 	 * 查询字段
 	 */
@@ -96,6 +104,14 @@ public class PayB extends BaseEntity<Long>{
 	private Date orderTimeEnd;
 	
 	
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
+
 	public Double getPerformancePayNumber() {
 		return performancePayNumber;
 	}

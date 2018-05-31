@@ -179,6 +179,13 @@ public class Task  extends BaseEntity<Long>{
 	@Column(name = "performance_price")
 	private Double performancePrice;
 	
+	
+	/**
+	 * 是否是返工标识符（0=不是，1=是）
+	 */
+	@Column(name = "flag")
+	private Integer flag = 0;
+	
 	/**
 	 * 查询字段
 	 */
@@ -197,6 +204,13 @@ public class Task  extends BaseEntity<Long>{
 	
 	
 	
+	
+	public Integer getFlag() {
+		return flag;
+	}
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
 	public String getPerformance() {
 		return performance;
 	}
