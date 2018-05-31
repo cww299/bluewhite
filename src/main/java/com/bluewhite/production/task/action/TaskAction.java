@@ -49,13 +49,13 @@ private static final Log log = Log.getLog(TaskAction.class);
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
 				.addRetainTerm(Task.class,"id","userNames","bacthNumber","allotTime","productName","userIds","procedure","procedureName","number","status","expectTime"
-						,"expectTaskPrice","taskTime","payB","taskPrice","type","createdAt","performance","performanceNumber","performancePrice")
+						,"expectTaskPrice","taskTime","payB","taskPrice","type","createdAt","performance","performanceNumber","performancePrice","flag")
 				.addRetainTerm(Procedure.class,"id","procedureTypeId");
 	}
 	
 	
 	/**
-	 * 获取杂工加绩类型列表
+	 * 获取任务加绩类型列表
 	 */
 	@RequestMapping(value = "/task/taskPerformance", method = RequestMethod.GET)
 	@ResponseBody

@@ -67,6 +67,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				//预计完成时间（1.工序类型不是返工，预计时间利用公式计算的得出。2.工序类型是返工，手填预计完成时间）
 				//当前台传值得预计时间不为null，说明该任务类型是返工类型
 				Procedure procedure = procedureDao.findOne(id);
+				newTask.setFlag(1);
 				if(task.getExpectTime()==null){
 					newTask.setExpectTime(NumUtils.round(ProTypeUtils.sumExpectTime(procedure,procedure.getType(),newTask.getNumber())));
 				}
@@ -120,6 +121,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						payB.setTaskId(newTask.getId());
 						payB.setType(newTask.getType());
 						payB.setAllotTime(newTask.getAllotTime());
+						payB.setFlag(newTask.getFlag());
 						//计算B工资数值
 						payB.setPayNumber(newTask.getPayB()/task.getUsersIds().length);
 						//当存在加绩时，计算加绩工资
@@ -167,6 +169,10 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	        	//按类型
 	        	if(!StringUtils.isEmpty(param.getType())){
 	        		predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
+	        	}
+	        	//按返工类型
+	        	if(!StringUtils.isEmpty(param.getFlag())){
+	        		predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
 	        	}
 	            //按时间过滤
 				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) &&  !StringUtils.isEmpty(param.getOrderTimeEnd()) ) {

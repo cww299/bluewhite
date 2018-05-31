@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.sun.tools.extcheck.Main;
+
 public class DatesUtil {
 	
 	
@@ -110,5 +112,18 @@ public class DatesUtil {
 	    //fmt.setTimeZone(new TimeZone()); // 如果需要设置时间区域，可以在这里设置  
 	    return fmt.format(d1).equals(fmt.format(d2));  
 	}
+	
+	
+	/**
+     * <li>功能描述：时间相减得到天数
+     * @param beginDateStr
+     * @param endDateStr
+     * @return
+     * long 
+     */
+    public static long getDaySub(Date beginDate,Date endDate){
+        long day = (endDate.getTime()-beginDate.getTime())/(24*60*60*1000);    
+        return day;
+    }
 
 }

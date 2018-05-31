@@ -16,13 +16,39 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.finance.attendance.entity.AttendancePay;
+import com.bluewhite.finance.attendance.service.AttendancePayService;
+import com.bluewhite.production.bacth.entity.Bacth;
+import com.bluewhite.production.bacth.service.BacthService;
+import com.bluewhite.production.farragotask.entity.FarragoTask;
+import com.bluewhite.production.farragotask.service.FarragoTaskService;
 import com.bluewhite.production.finance.dao.CollectPayDao;
+import com.bluewhite.production.finance.entity.CollectInformation;
 import com.bluewhite.production.finance.entity.CollectPay;
+import com.bluewhite.production.finance.entity.UsualConsume;
+import com.bluewhite.production.task.entity.Task;
+import com.bluewhite.production.task.service.TaskService;
 @Service
 public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> implements CollectPayService{
 	
 	@Autowired
 	private CollectPayDao dao;
+	
+	@Autowired
+	private BacthService bacthService;
+	
+	@Autowired
+	private TaskService TaskService;
+	
+	@Autowired
+	private FarragoTaskService farragoTaskService;
+	
+	@Autowired
+	private AttendancePayService attendancePayService;
+	
+	@Autowired
+	private UsualConsumeService usualConsumeservice;
 	
 	@Override
 	public PageResult<CollectPay> findPages(CollectPay param, PageParameter page) {
@@ -78,4 +104,131 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		}
 		return list;
 	}
+
+	@Override
+	public CollectInformation collectInformation(CollectInformation collectInformation) {
+		PageParameter page  = new PageParameter();
+		page.setSize(Integer.MAX_VALUE);
+		
+		//各批次地区差价汇总(不予给付汇总)
+		Bacth bacth = new Bacth();
+		bacth.setOrderTimeBegin(collectInformation.getOrderTimeBegin());
+		bacth.setOrderTimeEnd(collectInformation.getOrderTimeEnd());
+		bacth.setType(collectInformation.getType());
+		List<Bacth> bacthList = bacthService.findPages(bacth, page).getRows();
+		double regionalPrice = bacthList.stream().mapToDouble(Bacth::getRegionalPrice).sum();
+		collectInformation.setRegionalPrice(regionalPrice);
+		
+		//全表加工费  汇总
+		Task task = new Task();
+		task.setOrderTimeBegin(collectInformation.getOrderTimeBegin());
+		task.setOrderTimeEnd(collectInformation.getOrderTimeEnd());
+		task.setType(collectInformation.getType());
+		task.setFlag(0);
+		List<Task> taskList = TaskService.findPages(task, page).getRows();
+		double sumTask = taskList.stream().mapToDouble(Task::getTaskPrice).sum();
+		collectInformation.setSumTask(sumTask);
+		
+		//返工费 汇总
+		task.setFlag(1);
+		List<Task> taskFlagList = TaskService.findPages(task, page).getRows();
+		double sumTaskFlag = taskFlagList.stream().mapToDouble(Task::getTaskPrice).sum();
+		collectInformation.setSumTaskFlag(sumTaskFlag);
+		
+		//杂工费 汇总
+		FarragoTask farragoTask = new FarragoTask();
+		farragoTask.setOrderTimeBegin(collectInformation.getOrderTimeBegin());
+		farragoTask.setOrderTimeEnd(collectInformation.getOrderTimeEnd());
+		farragoTask.setType(collectInformation.getType());
+		List<FarragoTask> farragoTaskList = farragoTaskService.findPages(farragoTask, page).getRows();
+		double sumFarragoTask = farragoTaskList.stream().mapToDouble(FarragoTask::getPrice).sum();
+		collectInformation.setSumFarragoTask(sumFarragoTask);
+		//全表加工费,返工费和杂工费汇总
+		double priceCollect = sumTask+sumTaskFlag+sumFarragoTask;
+		collectInformation.setPriceCollect(priceCollect);
+		//不予给付汇总占比
+		double proportion = regionalPrice/sumTask;
+		collectInformation.setProportion(proportion);
+		//预算多余在手部分
+		double overtop = regionalPrice/0.25*0.2;
+		collectInformation.setOvertop(overtop);
+		
+		//按条件汇总员工费用所有数据
+		this.collectInformationPay(collectInformation, page);
+		
+		return collectInformation;
+	}
+	
+	/**
+	 * 按条件汇总员工费用所有数据
+	 * @param collectPay
+	 * @return
+	 */
+	private CollectInformation collectInformationPay(CollectInformation collectInformation,PageParameter page) {
+		//已经打算给予A汇总(a工资汇总)
+		AttendancePay attendancePay = new AttendancePay();
+		attendancePay.setOrderTimeBegin(collectInformation.getOrderTimeBegin());
+		attendancePay.setOrderTimeEnd(collectInformation.getOrderTimeEnd());
+		attendancePay.setType(collectInformation.getType());
+		List<AttendancePay> attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
+		double sumAttendancePay = attendancePayList.stream().mapToDouble(AttendancePay::getPayNumber).sum();
+		collectInformation.setSumAttendancePay(sumAttendancePay);
+		//我们可以给予一线的
+		Task task = new Task();
+		task.setOrderTimeBegin(collectInformation.getOrderTimeBegin());
+		task.setOrderTimeEnd(collectInformation.getOrderTimeEnd());
+		task.setType(collectInformation.getType());
+		List<Task> taskList = TaskService.findPages(task, page).getRows();
+		//任务价值汇总
+		double sumTask = taskList.stream().mapToDouble(Task::getTaskPrice).sum();
+		//b工资净值汇总
+		double sumPayB = taskList.stream().mapToDouble(Task::getPayB).sum();
+		//产生的管理费汇总
+		double sumManage = sumTask-sumPayB;
+		//H和N相差天数
+		double days = 0;
+		//天数计算值
+		double dayNumber = DatesUtil.getDaySub(collectInformation.getOrderTimeBegin(), collectInformation.getOrderTimeEnd());
+		//给予一线
+		double giveThread = collectInformation.getPriceCollect()-collectInformation.getRegionalPrice()-sumManage;
+		collectInformation.setGiveThread(giveThread);
+		//一线剩余给我们
+		double surplusThread = giveThread-sumAttendancePay;
+		collectInformation.setSurplusThread(surplusThread);
+		
+		//考虑管理费，预留在手等。可调配资金
+		double deployPrice = sumManage+collectInformation.getOvertop()+collectInformation.getSurplusThread();
+		
+		//模拟得出可调配资金
+		double analogDeployPrice = deployPrice;
+		
+		//从A考勤开始日期以消费的房租
+		UsualConsume usualConsume = new UsualConsume();
+		usualConsume.setOrderTimeBegin(collectInformation.getOrderTimeBegin());
+		usualConsume.setOrderTimeEnd(collectInformation.getOrderTimeEnd());
+		usualConsume.setType(collectInformation.getType());
+		List<UsualConsume> usualConsumeList = usualConsumeservice.findPages(usualConsume, page).getRows();
+		double sumChummage = usualConsumeList.stream().mapToDouble(UsualConsume::getChummage).sum();
+		//从A考勤开始日期以消费的水电
+		double sumHydropower = usualConsumeList.stream().mapToDouble(UsualConsume::getHydropower).sum();
+		//从A考勤开始日期以消费的后勤
+		double sumLogistics = usualConsumeList.stream().mapToDouble(UsualConsume::getLogistics).sum();
+		//模拟当月非一线人员发货绩效
+		
+		//剩余净管理
+		double surplusManage = analogDeployPrice-sumChummage-sumHydropower-sumLogistics;
+		//净管理费给付比→
+		double manageProportion = 0.18;
+		
+		//从开始日至今可发放管理费加绩比
+		double managePerformanceProportion = surplusManage*manageProportion;
+		//模拟当月非一线人员出勤小时
+		
+		
+		//每小时可发放
+		
+		return collectInformation;
+	}
+	
+
 }

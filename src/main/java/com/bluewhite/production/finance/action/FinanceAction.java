@@ -1,6 +1,7 @@
 package com.bluewhite.production.finance.action;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,12 +23,15 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
+import com.bluewhite.production.finance.entity.CollectInformation;
 import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.FarragoTaskPay;
 import com.bluewhite.production.finance.entity.PayB;
+import com.bluewhite.production.finance.entity.UsualConsume;
 import com.bluewhite.production.finance.service.CollectPayService;
 import com.bluewhite.production.finance.service.FarragoTaskPayService;
 import com.bluewhite.production.finance.service.PayBService;
+import com.bluewhite.production.finance.service.UsualConsumeService;
 
 /**
  * 生产部财务相关action 
@@ -47,6 +51,8 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	private FarragoTaskPayService farragoTaskPayService;
 	@Autowired
 	private AttendancePayService attendancePayService;
+	@Autowired
+	private UsualConsumeService usualConsumeservice;
 	
 	
 	private ClearCascadeJSON clearCascadeJSON;
@@ -105,6 +111,33 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		return cr;
 	}
 	
+	/**
+	 * 调节日常消费数值
+	 */
+	@RequestMapping(value = "/finance/usualConsume", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse usualConsume(HttpServletRequest request,UsualConsume usualConsume) {
+		CommonResponse cr = new CommonResponse();
+			cr.setData(ClearCascadeJSON
+					.get()
+					.addRetainTerm(UsualConsume.class,"dayChummage","dayHydropower","dayLogistics")
+					.format(usualConsumeservice.usualConsume(usualConsume)).toJSON());
+			cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/**
+	 * 一键填加日常消费
+	 */
+	@RequestMapping(value = "/finance/addUsualConsume", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse addUsualConsume(HttpServletRequest request,UsualConsume usualConsume) {
+		CommonResponse cr = new CommonResponse();
+		usualConsume.setConsumeDate(new Date());
+		usualConsumeservice.save(usualConsume);
+		cr.setMessage("查询成功");
+		return cr;
+	}
 	
 	
 	/**************************  汇总相关业务    ********************************/
@@ -164,7 +197,33 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	
 	
 	
-	
+	/**
+	 * 生产成本数据汇总 0
+	 * 
+	 * 员工成本数据汇总 1
+	 * 
+	 * 
+	 * @param binder
+	 */
+	@RequestMapping(value = "/finance/collectInformation", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse collectInformation(HttpServletRequest request,CollectInformation collectInformation) {
+		CommonResponse cr = new CommonResponse();
+		collectInformation = collectPayBService.collectInformation(collectInformation);
+		if(collectInformation.getStatus()==0){
+			cr.setData(ClearCascadeJSON
+					.get()
+					.addRetainTerm(CollectInformation.class,"regionalPrice","sumTask","sumTaskFlag","sumFarragoTask","priceCollect","proportion","overtop")
+					.format(collectInformation).toJSON());	
+		}else if(collectInformation.getStatus()==0){
+			cr.setData(ClearCascadeJSON
+					.get()
+					.addRetainTerm(CollectInformation.class,"sumAttendancePay","giveThread","surplusThread").format(collectInformation).toJSON());	
+		}
+				
+		cr.setMessage("查询成功");
+		return cr;
+	}
 	
 	
 
