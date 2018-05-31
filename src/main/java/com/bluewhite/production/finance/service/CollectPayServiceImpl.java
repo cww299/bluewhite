@@ -250,7 +250,10 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		double giveSurplus =(1-manageProportion)*surplusManage;
 		collectInformation.setGiveSurplus(giveSurplus);
 		//其中股东收益
-		double shareholder = giveSurplus * collectInformation.getShareholderProportion();
+		double shareholder = 0;
+		if(collectInformation.getShareholderProportion()!=null){
+			shareholder = giveSurplus * collectInformation.getShareholderProportion();
+		}
 		collectInformation.setShareholder(shareholder);
 		//车间剩余
 		double workshopSurplus =giveSurplus - shareholder;
