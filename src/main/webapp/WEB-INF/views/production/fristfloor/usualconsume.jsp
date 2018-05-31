@@ -40,16 +40,22 @@
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
-								<table><tr><td>最近人消费后勤:</td><td><input type="text" name="number" id="number" class="form-control search-query number" /></td>
-								<td>最近包装车间人数:</td><td><input type="text" name="name" id="sum" class="form-control search-query name" /></td>
-								<td>当月房租设定:</td><td><input type="text" name="name" id="rent" class="form-control search-query name" /></td>
-								<td>当月水电:</td><td><input type="text" name="name" id="price" class="form-control search-query name" /></td>
+								<table><tr><td>最近人消费后勤:</td><td><input type="text" name="number" id="number"  class="form-control search-query numberth" /></td>
+								<td>最近包装车间人数:</td><td><input type="text" name="name" id="sum"  class="form-control search-query name numberth" /></td>
+								<td>当月房租设定:</td><td><input type="text" name="name" id="rent"  class="form-control search-query name numberth" /></td>
+								<td>当月水电:</td><td><input type="text" name="name" id="price"  class="form-control search-query name numberth" /></td>
+								<td><div style="width: 15px"></div></td>
+								<td><button type="button"  class="btn btn-sm btn-primary btn-3d update">修改</button></td>
 								</tr>
 								<tr><td><div style="height: 10px"></div></td></tr>
-								<tr><td>当月后勤餐饮保障:</td><td><input type="text" name="number" id="numbertw" class="form-control search-query number" /></td>
-								<td>日消费房租:</td><td><input type="text" name="name" id="sumtw" class="form-control search-query name" /></td>
-								<td>日消费水电:</td><td><input type="text" name="name" id="renttw" class="form-control search-query name" /></td>
-								<td>日消费餐饮后勤:</td><td><input type="text" name="name" id="pricetw" class="form-control search-query name" /></td>
+								<tr><td>当月后勤餐饮保障:</td><td><input type="text" name="number"  id="numbertw" class="form-control search-query number numberth" /></td>
+								<td>日消费房租:</td><td><input type="text" name="name" id="sumtw"  class="form-control search-query name numberth" /></td>
+								<td>日消费水电:</td><td><input type="text" name="name" id="renttw"  class="form-control search-query name numberth" /></td>
+								<td>日消费餐饮后勤:</td><td><input type="text" name="name" id="pricetw"  class="form-control search-query name numberth" /></td>
+								<td>日期：</td>
+								<td><input id="startTime" placeholder="请输入日期" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+             					</td>
 								</tr>
 								</table> 
 							</div>
@@ -101,7 +107,7 @@
      <script src="${ctx }/static/js/laypage/laypage.js"></script> 
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-    
+    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
     <script>
    jQuery(function($){
    	var Login = function(){
@@ -146,14 +152,14 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			  $('#number').val(result.data.peopleLogistics)
+		      		    $('#number').val(result.data.peopleLogistics)
 				        $('#sum').val(result.data.peopleNumber)
 				        $('#rent').val(result.data.monthChummage)
 				        $('#price').val(result.data.monthHydropower)
-				        $('#numbertw').val(result.data.monthHydropower)
-				        $('#sumtw').val(result.data.monthHydropower)
-				        $('#renttw').val(result.data.monthHydropower)
-				        $('#pricetw').val(result.data.monthHydropower)
+				        $('#numbertw').val(result.data.monthLogistics)
+				        $('#sumtw').val(result.data.chummage)
+				        $('#renttw').val(result.data.hydropower)
+				        $('#pricetw').val(result.data.logistics)
 					   	layer.close(index);
 					   	
 					   
@@ -180,9 +186,9 @@
 		      			 $(result.data.rows).each(function(i,o){
 		      				html +='<tr>'
 		      				+'<td class="text-center edit name">'+o.consumeDate+'</td>'
-		      				+'<td class="text-center edit name">'+o.chummage+'</td>'
-		      				+'<td class="text-center edit name">'+o.hydropower+'</td>'
-		      				+'<td class="text-center edit name">'+o.logistics+'</td></tr>'
+		      				+'<td class="text-center edit name">'+o.chummage*1+'</td>'
+		      				+'<td class="text-center edit name">'+o.hydropower*1+'</td>'
+		      				+'<td class="text-center edit name">'+o.logistics*1+'</td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -217,57 +223,7 @@
 			}
 			
 			this.loadEvents = function(){
-				//修改方法
-				$('.update').on('click',function(){
-					if($(this).text() == "编辑"){
-						$(this).text("保存")
-						
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
-				        });
-					}else{
-							$(this).text("编辑")
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							
-							var postData = {
-									id:$(this).data('id'),
-									name:$(this).parent().parent('tr').find(".name").text(),
-							}
-							
-							var index;
-							$.ajax({
-								url:"${ctx}/production/addGroup",
-								data:postData,
-								type:"POST",
-								beforeSend:function(){
-									index = layer.load(1, {
-										  shade: [0.1,'#fff'] //0.1透明度的白色背景
-										});
-								},
-								
-								success:function(result){
-									if(0==result.code){
-									layer.msg("修改成功！", {icon: 1});
-									layer.close(index);
-									}else{
-										layer.msg("修改失败！", {icon: 1});
-										layer.close(index);
-									}
-								},error:function(){
-									layer.msg("操作失败！", {icon: 2});
-									layer.close(index);
-								}
-							});
-					}
-				})
+				
 				
 				//人员详细显示方法
 				$('.savemode').on('click',function(){
@@ -311,63 +267,86 @@
 				
 			}
 			this.events = function(){
-				//新增小组
+				
+				$('.update').on('click',function(){
+					
+							
+							var postData = {
+									peopleLogistics:$('#number').val(),
+								    peopleNumber:$('#sum').val(),
+								    monthChummage:$('#rent').val(),
+								    monthHydropower:$('#price').val(),
+								    type:1
+							}
+							
+							var index;
+							var index = layer.confirm('确定修改吗', {btn: ['确定', '取消']},function(){
+							 $.ajax({
+								url:"${ctx}/finance/usualConsume",
+								data:postData,
+								type:"GET",
+								beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								
+								success:function(result){
+									if(0==result.code){
+									layer.msg("修改成功！", {icon: 1});
+									self.loadPagination(data); 
+									layer.close(index);
+									}else{
+										layer.msg("修改失败！", {icon: 1});
+										layer.close(index);
+									}
+								},error:function(){
+									layer.msg("操作失败！", {icon: 2});
+									layer.close(index);
+								}
+							}); 
+							})
+				})
+				
+				//新增
 				$('#addgroup').on('click',function(){
 					
 					var _index
 					var index
-					var postData
-					var dicDiv=$('#addDictDivType');
-					_index = layer.open({
-						  type: 1,
-						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '30%'], 
-						  btnAlign: 'c',//宽高
-						  maxmin: true,
-						  title:"新增小组",
-						  content: dicDiv,
-						  btn: ['确定', '取消'],
-						  yes:function(index, layero){
-							 
-							  postData={
-									  name:$("#groupName").val(),
-									  type:1,
-							  }
-							  $.ajax({
-									url:"${ctx}/production/addGroup",
-									data:postData,
-						            traditional: true,
-									type:"post",
-									beforeSend:function(){
-										index = layer.load(1, {
-											  shade: [0.1,'#fff'] //0.1透明度的白色背景
-											});
-									},
-									
-									success:function(result){
-										if(0==result.code){
-											layer.msg("添加成功！", {icon: 1});
-										 self.loadPagination(data); 
-											$('#addDictDivType').hide();
-											
-										}else{
-											layer.msg("添加失败", {icon: 2});
-										}
-										
-										layer.close(index);
-									},error:function(){
-										layer.msg("操作失败！", {icon: 2});
-										layer.close(index);
-									}
-								});
+					var postData={
+							consumeDate:$("#startTime").val(),
+							chummage:$('#sumtw').val(),
+							hydropower:$('#renttw').val(),
+							logistics:$('#pricetw').val(),
+							type:1,
+					  }
+					console.log(postData)
+					  $.ajax({
+							url:"${ctx}/finance/addUsualConsume",
+							data:postData,
+				            traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
 							},
-						  end:function(){
-							  $('#addDictDivType').hide();
-						
-							  $('.addDictDivTypeForm')[0].reset(); 
 							
-						  }
-					});
+							success:function(result){
+								if(0==result.code){
+									layer.msg("添加成功！", {icon: 1});
+								 self.loadPagination(data); 
+									
+								}else{
+									layer.msg("添加失败", {icon: 2});
+								}
+								
+								layer.close(index);
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
 				})
 			}
    	}
