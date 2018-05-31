@@ -252,7 +252,7 @@
                 </div>
                 <div class="profile-body dropdown">
                     <a href="javascript:void(0);"  aria-expanded="false"><h4><shiro:principal/></h4></a>
-                    <small class="title">Front-end Developer</small>
+                    <small class="title">你好世界</small>
                 </div>
             </div>
             <nav>

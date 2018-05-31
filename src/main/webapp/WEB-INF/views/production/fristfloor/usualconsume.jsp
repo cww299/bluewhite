@@ -9,7 +9,7 @@
 <head>
      <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>员工分组</title>
+    <title>日常消费</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
    
@@ -28,25 +28,43 @@
                     <div class="col-md-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">分组信息</h3>
+                                <h3 class="panel-title">日常消费</h3>
                                 <div class="actions pull-right">
                                     <i class="fa fa-expand"></i>
                                     <i class="fa fa-chevron-down"></i>
                                 </div>
                             </div>
+                            <div class="row" style="height: 30px; margin:15px 0 10px">
+			<div class="col-xs-12 col-sm-12  col-md-12">
+				<form class="form-search" >
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-12">
+							<div class="input-group"> 
+								<table><tr><td>最近人消费后勤:</td><td><input type="text" name="number" id="number" class="form-control search-query number" /></td>
+								<td>最近包装车间人数:</td><td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
+								<td>当月房租设定:</td><td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
+								<td>当月水电:</td><td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
+								</tr></table> 
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
                             <div class="panel-body">
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                        	<th class="text-center">组名</th>
-                                            <th class="text-center">人员信息</th>
-                                            <th class="text-center">操作</th>
+                                        	<th class="text-center">日期</th>
+                                            <th class="text-center">日消费房租选择</th>
+                                            <th class="text-center">日消费水电选择</th>
+                                            <th class="text-center">日消费餐饮后勤选择</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
-                                    <button type="button" id="addgroup" class="btn btn-success btn-3d pull-right">新增小组</button>
+                                    <button type="button" id="addgroup" class="btn btn-success btn-3d pull-right">一键新增</button>
                                 </table>
                                 <div id="pager" class="pull-right">
                                 
@@ -57,49 +75,11 @@
                 </div>
             </section>
         </section>
-        <!--隐藏框 产品新增开始  -->
-        <div id="addDictDivType" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-				<div class="space-10"></div>
-				<div style="height: 30px"></div>
-				<form class="form-horizontal addDictDivTypeForm">
-				<div class="form-group">
-                                        <label class="col-sm-3 control-label">名称:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="groupName" class="form-control">
-                                        </div>
-                 </div>
-				</form>
-</div>
-</div>
- <!--隐藏框 产品新增结束  -->
+      
 
 
 
-<div id="savegroup" style="display: none;">
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-					&times;
-				</button>
-				<h4 class="modal-title" id="myModalLabel">
-					人员分组详情
-				</h4>
-			</div>
-			<div class="modal-body">
-				
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
-				</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
-</div>
-</div>
-<!--隐藏框 产品新增结束  -->
+
     </section>
     
    
@@ -145,7 +125,7 @@
 			    var index;
 			    var html = '';
 			    $.ajax({
-				      url:"${ctx}/production/getGroup",
+				      url:"${ctx}/finance/allUsualConsume",
 				      data:data,
 				      type:"GET",
 				      beforeSend:function(){
@@ -181,6 +161,7 @@
 					      }
 					    });  
 					   	layer.close(index);
+					   	
 					   	 $("#tablecontent").html(html); 
 					   	self.loadEvents();
 					   
