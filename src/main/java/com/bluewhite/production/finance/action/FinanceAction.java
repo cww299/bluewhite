@@ -157,12 +157,47 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	@ResponseBody
 	public CommonResponse addUsualConsume(HttpServletRequest request,UsualConsume usualConsume) {
 		CommonResponse cr = new CommonResponse();
-		usualConsume.setConsumeDate(new Date());
-		usualConsumeservice.save(usualConsume);
-		cr.setMessage("新增成功");
+		if(usualConsume.getConsumeDate()==null){
+			usualConsume.setConsumeDate(new Date());
+		}
+		PageParameter page = new PageParameter();
+		page.setSize(Integer.MAX_VALUE);
+		//获取今天的开始和结束时间
+		usualConsume.setOrderTimeBegin(DatesUtil.getfristDayOftime(usualConsume.getConsumeDate()));
+		usualConsume.setOrderTimeEnd(DatesUtil.getLastDayOftime(usualConsume.getConsumeDate()));
+		if(usualConsumeservice.findPages(usualConsume, page).getRows().size()>0){
+			cr.setMessage("改日已经添加过日常消费，无需再次添加");
+		}else{
+			usualConsumeservice.save(usualConsume);
+			cr.setMessage("新增成功");
+		}
 		return cr;
 	}
 	
+	/**
+	 * 修改日常消费
+	 */
+	@RequestMapping(value = "/finance/updateConsume", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse updateConsume(HttpServletRequest request,UsualConsume usualConsume) {
+		CommonResponse cr = new CommonResponse();
+		usualConsumeservice.save(usualConsume);
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * 修改日常消费
+	 */
+	@RequestMapping(value = "/finance/delete", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse delete(HttpServletRequest request,UsualConsume usualConsume) {
+		CommonResponse cr = new CommonResponse();
+		usualConsumeservice.delete(usualConsume.getId());
+		cr.setMessage("删除成功");
+		return cr;
+	}
 	
 	/** 
 	 * 查询日销流水
