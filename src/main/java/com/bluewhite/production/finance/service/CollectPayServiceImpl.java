@@ -188,7 +188,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		//H和N相差天数
 		double days = 0;
 		//天数计算值
-		double dayNumber = DatesUtil.getDaySub(collectInformation.getOrderTimeBegin(), collectInformation.getOrderTimeEnd());
+//		double dayNumber = DatesUtil.getDaySub(collectInformation.getOrderTimeBegin(), collectInformation.getOrderTimeEnd());
 		//给予一线
 		double giveThread = collectInformation.getPriceCollect()-collectInformation.getRegionalPrice()-sumManage;
 		collectInformation.setGiveThread(giveThread);
