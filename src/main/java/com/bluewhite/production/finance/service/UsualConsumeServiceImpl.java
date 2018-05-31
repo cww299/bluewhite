@@ -25,9 +25,9 @@ public class UsualConsumeServiceImpl extends BaseServiceImpl<UsualConsume, Long>
 	@Override
 	public UsualConsume usualConsume(UsualConsume usualConsume) {
 		usualConsume.setMonthLogistics(usualConsume.getPeopleLogistics()*usualConsume.getPeopleNumber());
-		usualConsume.setDayChummage(usualConsume.getMonthChummage()/30);
-		usualConsume.setDayHydropower(usualConsume.getMonthHydropower()/30);
-		usualConsume.setDayLogistics(usualConsume.getMonthLogistics()/30);
+		usualConsume.setChummage(usualConsume.getMonthChummage()/30);
+		usualConsume.setHydropower(usualConsume.getMonthHydropower()/30);
+		usualConsume.setLogistics(usualConsume.getMonthLogistics()/30);
 		return usualConsume;
 	}
 

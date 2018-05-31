@@ -32,6 +32,7 @@ import com.bluewhite.production.finance.service.CollectPayService;
 import com.bluewhite.production.finance.service.FarragoTaskPayService;
 import com.bluewhite.production.finance.service.PayBService;
 import com.bluewhite.production.finance.service.UsualConsumeService;
+import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 
 /**
  * 生产部财务相关action 
@@ -111,6 +112,24 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		return cr;
 	}
 	
+	
+	/**
+	 * 获取日常消费数值
+	 */
+	@RequestMapping(value = "/finance/getUsualConsume", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getUsualConsume(HttpServletRequest request,UsualConsume usualConsume) {
+		CommonResponse cr = new CommonResponse();
+			cr.setData(ClearCascadeJSON
+					.get()
+					.addRetainTerm(UsualConsume.class,"peopleLogistics","peopleNumber","monthChummage","monthHydropower")
+					.format(ProTypeUtils.usualConsume(usualConsume)).toJSON());
+			cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	
+	
 	/**
 	 * 调节日常消费数值
 	 */
@@ -120,7 +139,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		CommonResponse cr = new CommonResponse();
 			cr.setData(ClearCascadeJSON
 					.get()
-					.addRetainTerm(UsualConsume.class,"dayChummage","dayHydropower","dayLogistics")
+					.addRetainTerm(UsualConsume.class,"chummage","hydropower","logistics","monthLogistics")
 					.format(usualConsumeservice.usualConsume(usualConsume)).toJSON());
 			cr.setMessage("查询成功");
 		return cr;
@@ -135,7 +154,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		CommonResponse cr = new CommonResponse();
 		usualConsume.setConsumeDate(new Date());
 		usualConsumeservice.save(usualConsume);
-		cr.setMessage("查询成功");
+		cr.setMessage("新增成功");
 		return cr;
 	}
 	
@@ -150,7 +169,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		CommonResponse cr = new CommonResponse();
 			cr.setData(ClearCascadeJSON
 					.get()
-					.addRetainTerm(UsualConsume.class,"dayChummage","dayHydropower","dayLogistics","consumeDate")
+					.addRetainTerm(UsualConsume.class,"chummage","hydropower","logistics","consumeDate")
 					.format(usualConsumeservice.findPages(usualConsume, page)).toJSON());
 			cr.setMessage("查询成功");
 		return cr;

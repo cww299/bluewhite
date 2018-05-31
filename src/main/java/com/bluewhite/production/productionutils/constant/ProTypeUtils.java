@@ -16,6 +16,7 @@ import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.farragotask.entity.FarragoTask;
+import com.bluewhite.production.finance.entity.UsualConsume;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.productionutils.constant.service.ProductionConstantService;
 import com.bluewhite.production.task.entity.Task;
@@ -463,6 +464,36 @@ public  class ProTypeUtils {
 		}
 		return sumPerformancePrice;
 	}
+	
+	
+	/********************** 日常消费   ***********************************/
+	
+	
+	/**
+	 *  根据不同的部门，获取不同的日常数值
+	 * @param farragoTask
+	 * @return
+	 */
+	public static UsualConsume usualConsume(UsualConsume usualConsume) {
+		
+		switch (usualConsume.getType()) {
+		case 1:// 生产部一楼质检
+			usualConsume.setPeopleLogistics(proTypeUtils.service.findByExcelNameAndType("E7" , 1).getNumber());
+			usualConsume.setPeopleNumber(proTypeUtils.service.findByExcelNameAndType("E8" , 1).getNumber());
+			usualConsume.setMonthChummage(proTypeUtils.service.findByExcelNameAndType("E9" , 1).getNumber());
+			usualConsume.setMonthHydropower(proTypeUtils.service.findByExcelNameAndType("E10" , 1).getNumber());
+			break;
+		case 2://生产部一楼打包
+			break;
+		case 3://生产部二楼针工
+			break;
+		default:
+			break;
+		}
+		return usualConsume;
+	}
+	
+	
 	
 
 }
