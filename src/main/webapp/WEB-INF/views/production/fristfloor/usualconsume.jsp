@@ -41,10 +41,17 @@
 						<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
 								<table><tr><td>最近人消费后勤:</td><td><input type="text" name="number" id="number" class="form-control search-query number" /></td>
-								<td>最近包装车间人数:</td><td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
-								<td>当月房租设定:</td><td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
-								<td>当月水电:</td><td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
-								</tr></table> 
+								<td>最近包装车间人数:</td><td><input type="text" name="name" id="sum" class="form-control search-query name" /></td>
+								<td>当月房租设定:</td><td><input type="text" name="name" id="rent" class="form-control search-query name" /></td>
+								<td>当月水电:</td><td><input type="text" name="name" id="price" class="form-control search-query name" /></td>
+								</tr>
+								<tr><td><div style="height: 10px"></div></td></tr>
+								<tr><td>当月后勤餐饮保障:</td><td><input type="text" name="number" id="numbertw" class="form-control search-query number" /></td>
+								<td>日消费房租:</td><td><input type="text" name="name" id="sumtw" class="form-control search-query name" /></td>
+								<td>日消费水电:</td><td><input type="text" name="name" id="renttw" class="form-control search-query name" /></td>
+								<td>日消费餐饮后勤:</td><td><input type="text" name="name" id="pricetw" class="form-control search-query name" /></td>
+								</tr>
+								</table> 
 							</div>
 						</div>
 					</div>
@@ -124,6 +131,42 @@
 			  this.loadPagination = function(data){
 			    var index;
 			    var html = '';
+			    var htmltw = '';
+			    var postdata={
+			    		type:1,
+			    }
+			    //查询日常数值
+			    $.ajax({
+				      url:"${ctx}/finance/getUsualConsume",
+				      data:postdata,
+				      type:"GET",
+				      beforeSend:function(){
+					 	  index = layer.load(1, {
+						  shade: [0.1,'#fff'] //0.1透明度的白色背景
+						  });
+					  }, 
+		      		  success: function (result) {
+		      			  $('#number').val(result.data.peopleLogistics)
+				        $('#sum').val(result.data.peopleNumber)
+				        $('#rent').val(result.data.monthChummage)
+				        $('#price').val(result.data.monthHydropower)
+				        $('#numbertw').val(result.data.monthHydropower)
+				        $('#sumtw').val(result.data.monthHydropower)
+				        $('#renttw').val(result.data.monthHydropower)
+				        $('#pricetw').val(result.data.monthHydropower)
+					   	layer.close(index);
+					   	
+					   
+					   	self.loadEvents();
+					   
+				      },error:function(){
+							layer.msg("加载失败！", {icon: 2});
+							layer.close(index);
+					  }
+				  });
+			    
+			    
+			    //查询流水日常
 			    $.ajax({
 				      url:"${ctx}/finance/allUsualConsume",
 				      data:data,
@@ -134,11 +177,12 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			 $(result.data).each(function(i,o){
+		      			 $(result.data.rows).each(function(i,o){
 		      				html +='<tr>'
-		      				+'<td class="text-center edit name">'+o.name+'</td>'
-		      				+'<td class="text-center"><button class="btn btn-primary btn-3d btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d update" data-id='+o.id+'>编辑</button></td></tr>'
+		      				+'<td class="text-center edit name">'+o.consumeDate+'</td>'
+		      				+'<td class="text-center edit name">'+o.chummage+'</td>'
+		      				+'<td class="text-center edit name">'+o.hydropower+'</td>'
+		      				+'<td class="text-center edit name">'+o.logistics+'</td></tr>'
 							
 		      			}); 
 				        //显示分页
