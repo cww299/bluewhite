@@ -18,6 +18,7 @@ import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.farragotask.entity.FarragoTask;
 import com.bluewhite.production.finance.entity.UsualConsume;
 import com.bluewhite.production.procedure.entity.Procedure;
+import com.bluewhite.production.productionutils.constant.entity.ProductionConstant;
 import com.bluewhite.production.productionutils.constant.service.ProductionConstantService;
 import com.bluewhite.production.task.entity.Task;
 /**
@@ -493,6 +494,45 @@ public  class ProTypeUtils {
 		return usualConsume;
 	}
 	
+	
+	/**
+	 *  根据不同的部门，修改不同的日常数值
+	 * @param farragoTask
+	 * @return
+	 */
+	public static void updateUsualConsume(UsualConsume usualConsume) {
+		switch (usualConsume.getType()) {
+		case 1:// 生产部一楼质检
+			ProductionConstant E7 = proTypeUtils.service.findByExcelNameAndType("E7" , 1);
+			ProductionConstant E8 = proTypeUtils.service.findByExcelNameAndType("E8" , 1);
+			ProductionConstant E9 = proTypeUtils.service.findByExcelNameAndType("E9" , 1);
+			ProductionConstant E10 = proTypeUtils.service.findByExcelNameAndType("E10" , 1);
+			
+			if(usualConsume.getPeopleLogistics()!=E7.getNumber()){
+				E7.setNumber(usualConsume.getPeopleLogistics());
+				proTypeUtils.service.save(E7);
+			}
+			if(usualConsume.getPeopleNumber()!=E8.getNumber()){
+				E8.setNumber(usualConsume.getPeopleNumber());
+				proTypeUtils.service.save(E8);
+			}
+			if(usualConsume.getMonthChummage()!=E9.getNumber()){
+				E9.setNumber(usualConsume.getMonthChummage());
+				proTypeUtils.service.save(E9);
+			}
+			if(usualConsume.getMonthHydropower()!=E10.getNumber()){
+				E10.setNumber(usualConsume.getMonthHydropower());
+				proTypeUtils.service.save(E10);
+			}
+			break;
+		case 2://生产部一楼打包
+			break;
+		case 3://生产部二楼针工
+			break;
+		default:
+			break;
+		}
+	}
 	
 	
 
