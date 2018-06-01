@@ -30,6 +30,8 @@ import com.bluewhite.production.finance.entity.MonthlyProduction;
 import com.bluewhite.production.finance.entity.UsualConsume;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
+import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.service.UserService;
 @Service
 public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> implements CollectPayService{
 	
@@ -38,6 +40,9 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	
 	@Autowired
 	private BacthService bacthService;
+	
+	@Autowired
+	private UserService userService;
 	
 	@Autowired
 	private TaskService TaskService;
@@ -270,10 +275,16 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		long size = DatesUtil.getDaySub(monthlyProduction.getOrderTimeBegin(), monthlyProduction.getOrderTimeEnd());
 		
 		for(int j=0 ; j<size ; j++){
-			//获取一天的开始时间
-			Date beginTimes = monthlyProduction.getOrderTimeBegin();
+			Date beginTimes = null;
+			if(j!=0){
+				//获取下一天的时间
+				beginTimes = DatesUtil.nextDay(monthlyProduction.getOrderTimeBegin());
+			}else{
+				//获取第一天的开始时间
+				beginTimes = monthlyProduction.getOrderTimeBegin();
+			}
 			//获取一天的结束时间
-			Date endTimes = DatesUtil.getLastDayOftime(monthlyProduction.getOrderTimeBegin());
+			Date endTimes = DatesUtil.getLastDayOftime(beginTimes);
 			Integer type = monthlyProduction.getType();
 			monthlyProduction =	new MonthlyProduction();
 			monthlyProduction.setOrderTimeBegin(beginTimes);
@@ -294,16 +305,18 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		//考勤总时间
 		double time = list.stream().mapToDouble(AttendancePay::getWorkTime).sum();
 		monthlyProduction.setTime(time);
+		
 		//当天产量
-		Bacth bacth = new Bacth();
-		bacth.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
-		bacth.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
-		bacth.setType(monthlyProduction.getType());
-		List<Bacth> bacthList = bacthService.findPages(bacth, page).getRows();
-		double productNumber = bacthList.stream().mapToDouble(Bacth::getNumber).sum();
+		Task task1 = new Task();
+		task1.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
+		task1.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
+		task1.setType(monthlyProduction.getType());
+		task1.setFlag(0);
+		List<Task> taskList1 = TaskService.findPages(task1, page).getRows();
+		double productNumber = taskList1.stream().mapToDouble(Task::getNumber).sum();
 		monthlyProduction.setProductNumber(productNumber);
 		//当天产值(外发单价乘以质检的个数)
-		double productPrice = bacthList.stream().mapToDouble(Bacth::getProductPrice).sum();
+		double productPrice = taskList1.stream().mapToDouble(Task::getProductPrice).sum();
 		monthlyProduction.setProductPrice(productPrice);
 		//返工出勤人数
 		Task task = new Task();
@@ -322,10 +335,16 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				if (idArr.length>0) {
 					for (int i = 0; i < idArr.length; i++) {
 						Long userid = Long.parseLong(idArr[i]);
+						User user = userService.findOne(userid);
 						if(!userList.contains(userid)){
 							attendancePay.setUserId(userid);
 							attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
 							reworkTurnTime+=attendancePayList.get(0).getWorkTime();
+							if(monthlyProduction.getUserName()!=null){
+								monthlyProduction.setUserName(monthlyProduction.getUserName()+","+user.getUserName());
+							}else{
+								monthlyProduction.setUserName(user.getUserName());
+							}
 							userList.add(userid);
 						}
 					}
@@ -341,8 +360,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		double reworkTime = reworkTurnTime;
 		monthlyProduction.setReworkTime(reworkTime);
 		monthlyProductionList.add(monthlyProduction);
-		//获取下一天的时间
-		monthlyProduction.setOrderTimeBegin(DatesUtil.nextDay(monthlyProduction.getOrderTimeBegin()));
 		}
 		return monthlyProductionList;
 	}

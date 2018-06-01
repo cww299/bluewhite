@@ -316,7 +316,11 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	@ResponseBody
 	public CommonResponse monthlyProduction(HttpServletRequest request,MonthlyProduction monthlyProduction) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(collectPayBService.monthlyProduction(monthlyProduction));
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(MonthlyProduction.class,"peopleNumber","time","productNumber","productPrice","reworkNumber","reworkTurnTime",
+						"userName","rework","reworkTime","orderTimeBegin","orderTimeEnd")
+				.format(collectPayBService.monthlyProduction(monthlyProduction)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}

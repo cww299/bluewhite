@@ -34,6 +34,12 @@ public class MonthlyProduction {
 	private Double  reworkTurnTime;
 	
 	/**
+	 * 返工人员   
+	 */
+	private String  userName;
+	
+	
+	/**
 	 * 返工个数  
 	 */
 	private Double  rework;
@@ -59,6 +65,14 @@ public class MonthlyProduction {
 	
 	
 	
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 
 	public Integer getType() {
 		return type;
