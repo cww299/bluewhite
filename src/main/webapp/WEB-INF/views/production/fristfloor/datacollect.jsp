@@ -28,7 +28,7 @@
                     <div class="col-md-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">工资详情</h3>
+                                <h3 class="panel-title">汇总</h3>
                                 <div class="actions pull-right">
                                     <i class="fa fa-expand"></i>
                                     <i class="fa fa-chevron-down"></i>
@@ -37,9 +37,9 @@
                              <div class="panel-body">
                                 <div class="tab-wrapper tab-primary">
                                     <ul class="nav nav-tabs col-md-12">
-                                        <li class="active col-md-6"><a href="#home1" data-toggle="tab">A工资流水详情</a>
+                                        <li class="active col-md-6"><a href="#home1" data-toggle="tab">生产成本数据汇总</a>
                                         </li>
-                                        <li class="col-md-6"><a href="#profile1" data-toggle="tab">B工资流水详情</a>
+                                        <li class="col-md-6"><a href="#profile1" data-toggle="tab">员工成本数据汇总</a>
                                         </li>
                                     </ul>
                                     <div class="tab-content">

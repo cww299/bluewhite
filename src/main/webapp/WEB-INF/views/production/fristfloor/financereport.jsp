@@ -190,11 +190,16 @@
                                             <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                        	<th class="text-center">姓名</th>
-                                        	<th class="text-center">杂工工序名</th>
-                                            <th class="text-center">时间</th>
-                                            <th class="text-center">杂工加绩工资</th>
-                                            <th class="text-center">杂工B工资</th>
+                                        	<th class="text-center">日期</th>
+                                        	<th class="text-center">考勤人数</th>
+                                        	<th class="text-center">考勤总时间</th>
+                                            <th class="text-center">当天产量  </th>
+                                            <th class="text-center">当天产值</th>
+                                            <th class="text-center">返工出勤人数</th>
+                                            <th class="text-center">返工出勤时间 </th>
+                                            <th class="text-center">返工人员</th>
+                                            <th class="text-center">返工个数</th>
+                                            <th class="text-center">返工时间</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontenttw">
@@ -345,22 +350,23 @@
 							  });
 						  }, 
 			      		  success: function (result) {
-			      				 console.log(result.data.peopleNumber)
-			      			 /* $(result.data).each(function(i,o){
+			      			 $(result.data).each(function(i,o){
 			      				htmltw +='<tr>'
+			      				+'<td class="text-center edit ">'+o.orderTimeBegin+'</td>'
 			      				+'<td class="text-center edit ">'+o.peopleNumber+'</td>'
 			      				+'<td class="text-center edit ">'+o.time+'</td>'
 			      				+'<td class="text-center edit ">'+o.productNumber+'</td>'
 			      				+'<td class="text-center edit ">'+o.productPrice+'</td>'
-			      				+'<td class="text-center edit ">'+o.reworkNumber+'</td>
+			      				+'<td class="text-center edit ">'+o.reworkNumber+'</td>'
 			      				+'<td class="text-center edit ">'+o.reworkTurnTime+'</td>'
+			      				+'<td class="text-center edit ">'+o.userName+'</td>'
 			      				+'<td class="text-center edit ">'+o.rework+'</td>'
 			      				+'<td class="text-center edit ">'+o.reworkTime+'</td>'
 			      				+'</tr>'
 								
-			      			});  */
+			      			});  
 					        //显示分页
-						   	 laypage({
+						   /* 	 laypage({
 						      cont: 'pagertw', 
 						      pages: result.data.totalPages, 
 						      curr:  result.data.pageNum || 1, 
@@ -380,7 +386,7 @@
 							            self.loadPaginationtw(_data);
 								     }
 						      }
-						    });  
+						    });  */ 
 						   	layer.close(index);
 						   	 $("#tablecontenttw").html(htmltw); 
 						   
