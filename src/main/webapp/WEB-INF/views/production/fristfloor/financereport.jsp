@@ -41,7 +41,7 @@
                                         </li>
                                         <li class="col-md-4"><a href="#profile1" data-toggle="tab">绩效汇总</a>
                                         </li>
-                                        <li class="col-md-4"><a href="#profile2" data-toggle="tab">杂工资流水详情</a>
+                                        <li class="col-md-4"><a href="#profile2" data-toggle="tab">质检月产量报表</a>
                                         </li>
                                     </ul>
                                     <div class="tab-content">
@@ -161,8 +161,7 @@
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
-								<table><tr><td>工序:</td><td><input type="text" name="number" id="numbertw" placeholder="请输入工序名" class="form-control search-query number" /></td>
-								<td>姓名:</td><td><input type="text" name="name" id="usernametw" placeholder="请输入姓名" class="form-control search-query name" /></td>
+								<table><tr>
 								<td>开始:</td>
 								<td>
 								<input id="startTimetw" placeholder="请输入开始时间" class="form-control laydate-icon"
@@ -260,7 +259,7 @@
 				  		type:1,
 
 				} 
-			 var myDate = new Date();
+			 var myDate = new Date(new Date().getTime() - 86400000);
 				//获取当前年
 				var year=myDate.getFullYear();
 				//获取当前月
@@ -275,18 +274,28 @@
 				var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
 				$('#startTime').val(firstdate);
 				$('#endTime').val(lastdate);
+				var a=year + '-' + '0'+month + '-' + date+' '+'00:00:00'
+				var b=year + '-' + '0'+month + '-' + date+' '+'23:59:59'
+				$('#startTimetw').val(a);
+				$('#endTimetw').val(b);
+				
 			 var date={
 				  		type:1,
 				  		orderTimeBegin:firstdate,
 				  		orderTimeEnd:lastdate,	
 				} 
 			 
+			 var datatw={
+					 type:1,
+				  	orderTimeBegin:a,
+				  	orderTimeEnd:b,
+			 }
 			this.init = function(){
 				
 				//注册绑定事件
 				self.events();
 				self.loadPagination(date);
-				self.loadPaginationtw(data);
+				self.loadPaginationtw(datatw);
 				self.loadPaginationth(data);
 			}
 			//加载分页
@@ -322,13 +331,13 @@
 				  });
 			  //绩效汇总结束
 			}
-			  this.loadPaginationtw = function(data){
-				//杂工工资流水开始
+			  this.loadPaginationtw = function(datatw){
+				//质检月报表
 				    var index;
 				    var htmltw = '';
 				    $.ajax({
-					      url:"${ctx}/finance/allFarragoTaskPay",
-					      data:data,
+					      url:"${ctx}/finance/monthlyProduction",
+					      data:datatw,
 					      type:"GET",
 					      beforeSend:function(){
 						 	  index = layer.load(1, {
@@ -336,15 +345,20 @@
 							  });
 						  }, 
 			      		  success: function (result) {
-			      			 $(result.data.rows).each(function(i,o){
+			      				 console.log(result.data.peopleNumber)
+			      			 /* $(result.data).each(function(i,o){
 			      				htmltw +='<tr>'
-			      				+'<td class="text-center edit ">'+o.userName+'</td>'
-			      				+'<td class="text-center edit ">'+o.taskName+'</td>'
-			      				+'<td class="text-center edit ">'+o.allotTime+'</td>'
-			      				+'<td class="text-center edit ">'+parseFloat((o.performancePayNumber).toFixed(3))+'</td>'
-			      				+'<td class="text-center edit ">'+parseFloat((o.payNumber).toFixed(3))+'</td></tr>'
+			      				+'<td class="text-center edit ">'+o.peopleNumber+'</td>'
+			      				+'<td class="text-center edit ">'+o.time+'</td>'
+			      				+'<td class="text-center edit ">'+o.productNumber+'</td>'
+			      				+'<td class="text-center edit ">'+o.productPrice+'</td>'
+			      				+'<td class="text-center edit ">'+o.reworkNumber+'</td>
+			      				+'<td class="text-center edit ">'+o.reworkTurnTime+'</td>'
+			      				+'<td class="text-center edit ">'+o.rework+'</td>'
+			      				+'<td class="text-center edit ">'+o.reworkTime+'</td>'
+			      				+'</tr>'
 								
-			      			}); 
+			      			});  */
 					        //显示分页
 						   	 laypage({
 						      cont: 'pagertw', 
@@ -503,8 +517,6 @@
 				  			page:1,
 				  			size:13,
 				  			type:1,
-				  			userName:$('#usernametw').val(),
-				  			taskName:$('#numbertw').val(),
 				  			orderTimeBegin:$("#startTimetw").val(),
 				  			orderTimeEnd:$("#endTimetw").val(), 
 				  	}
