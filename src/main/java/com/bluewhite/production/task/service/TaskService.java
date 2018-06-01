@@ -1,5 +1,7 @@
 package com.bluewhite.production.task.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -29,5 +31,11 @@ public interface TaskService extends BaseCRUDService<Task,Long>{
 	 * @param id
 	 */
 	public void deleteTask(Long id);
+	
+	/**
+	 * //根据时间占比，组装出新任务
+	 * @param task
+	 */
+	public List<Task> assembleTask(Task task);
 
 }

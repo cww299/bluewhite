@@ -186,6 +186,13 @@ public class Task  extends BaseEntity<Long>{
 	@Column(name = "flag")
 	private Integer flag ;
 	
+	
+	/**
+	 * 备注
+	 */
+	@Column(name = "remark")
+	private String  remark;
+	
 	/**
 	 * 查询字段
 	 */
@@ -210,7 +217,45 @@ public class Task  extends BaseEntity<Long>{
 	private Double productPrice;
 	
 	
+	/**
+	 * 时间段
+	 */
+	@Transient
+	private String times;
 	
+	/**
+	 * 多组人员
+	 */
+	@Transient
+	private String users;
+	
+
+	
+	
+	public String getTimes() {
+		return times;
+	}
+
+	public void setTimes(String times) {
+		this.times = times;
+	}
+
+	public String getUsers() {
+		return users;
+	}
+
+	public void setUsers(String users) {
+		this.users = users;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
 	public Double getProductPrice() {
 		return (number==null ? 0.0 : number) * 
 				((procedure==null ? new Procedure() : procedure).getHairPrice()==null ? 0.0 : (procedure==null ? new Procedure() : procedure).getHairPrice());

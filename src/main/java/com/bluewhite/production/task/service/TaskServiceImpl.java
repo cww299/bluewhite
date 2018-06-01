@@ -220,4 +220,55 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 
 	}
 
+	@Override
+	public List<Task> assembleTask(Task task) {
+		
+		Integer number = task.getNumber();
+		List<Task> taskList = new ArrayList<Task>();
+		
+		//总时间
+		double sumTime = 0;
+		//将时间段转变成数组,计算出总时间
+		if (!StringUtils.isEmpty(task.getTimes())) {
+			String[] timeArr = task.getUserIds().split(",");
+			if (timeArr.length>0) {
+				for (int i = 0; i <timeArr.length; i++) {
+					double time = Double.valueOf(timeArr[i]);
+					sumTime += time;
+					
+
+				}
+			}
+		}
+		
+		//将时间段转变成数组
+		if (!StringUtils.isEmpty(task.getTimes())) {
+			String[] timeArr = task.getUserIds().split(",");
+			if (timeArr.length>0) {
+				for (int i = 0; i <timeArr.length; i++) {
+					Task tasks = new Task();
+					double time = Double.valueOf(timeArr[i]);
+					tasks.setBacthId(task.getBacthId());
+					tasks.setExpectTime(task.getExpectTime());
+					tasks.setAllotTime(task.getAllotTime());
+					tasks.setType(task.getType());
+					tasks.setProcedureIds(task.getProcedureIds());
+					tasks.setPerformance(task.getPerformance());
+					tasks.setPerformanceNumber(task.getPerformanceNumber());
+					tasks.setNumber(Integer.parseInt(new java.text.DecimalFormat("10").format(time/sumTime))*number);
+					//将用户段转换成数组,将同顺序的用户添加到任务中
+					if (!StringUtils.isEmpty(task.getUsers())) {
+						String[] userArr = task.getUserIds().split(",");
+						if (userArr.length>0) {
+							tasks.setUserIds(userArr[i]);
+						}
+					}
+					taskList.add(tasks);
+				}
+			}
+		}
+		return taskList;
+	
+	}
+
 }
