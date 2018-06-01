@@ -92,6 +92,47 @@ private static final Log log = Log.getLog(TaskAction.class);
 		return cr;
 	}
 	
+	
+	
+	/**
+	 * 给批次添加任务(方式2)
+	 * 应业务要求，增加按时间占比，分配不同任务数量给不同的员工，进行新增任务
+	 * 
+	 */
+	@RequestMapping(value = "/task/addTaskTwo", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse addTaskTwo(HttpServletRequest request,Task task) {
+		CommonResponse cr = new CommonResponse();
+			//根据时间占比，组装出新任务
+			List<Task> taskList = taskService.assembleTask(task);
+			//新增
+			for(Task tasks : taskList){
+				if(!StringUtils.isEmpty(tasks.getUserIds())){
+					if(tasks.getAllotTime() == null){
+						Calendar  cal = Calendar.getInstance();
+						cal.add(Calendar.DATE,-1);
+						tasks.setAllotTime(cal.getTime());
+					}
+					taskService.addTask(tasks);
+					cr.setMessage("任务分配成功");
+				}else{
+					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+					cr.setMessage("领取人不能为空");
+				}
+			}
+		return cr;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/** 
 	 * 分页查询所有任务
 	 * 
