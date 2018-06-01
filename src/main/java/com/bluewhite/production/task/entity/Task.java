@@ -184,7 +184,7 @@ public class Task  extends BaseEntity<Long>{
 	 * 是否是返工标识符（0=不是，1=是）
 	 */
 	@Column(name = "flag")
-	private Integer flag = 0;
+	private Integer flag ;
 	
 	/**
 	 * 查询字段
@@ -203,8 +203,19 @@ public class Task  extends BaseEntity<Long>{
 	private Long procedureTypeId;
 	
 	
+	/**
+	 * 产值
+	 */
+	@Transient
+	private Double productPrice;
 	
 	
+	
+	public Double getProductPrice() {
+		return (number==null ? 0.0 : number) * 
+				((procedure==null ? new Procedure() : procedure).getHairPrice()==null ? 0.0 : (procedure==null ? new Procedure() : procedure).getHairPrice());
+	}
+
 	public Integer getFlag() {
 		return flag;
 	}

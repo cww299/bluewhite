@@ -69,6 +69,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				Procedure procedure = procedureDao.findOne(id);
 				newTask.setFlag(1);
 				if(task.getExpectTime()==null){
+					newTask.setFlag(0);
 					newTask.setExpectTime(NumUtils.round(ProTypeUtils.sumExpectTime(procedure,procedure.getType(),newTask.getNumber())));
 				}
 				
