@@ -298,7 +298,7 @@
 		      				+'<td class="text-center  sumTaskPrice">'+ parseFloat((o.sumTaskPrice*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center  regionalPrice">'+parseFloat((o.regionalPrice*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button> <button class="btn btn-sm btn-primary btn-3d addDicttw" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配2</button> <button class="btn btn-sm btn-warning btn-3d updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-3d delete" data-id='+o.id+'>删除</button></td></tr>' 
+							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button> <button class="btn btn-sm btn-primary btn-3d addDicttw" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+' data-number='+o.number+'>分配2</button> <button class="btn btn-sm btn-warning btn-3d updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-3d delete" data-id='+o.id+'>删除</button></td></tr>' 
 							
 		      			}); 
 				        //显示分页
@@ -647,7 +647,6 @@
 										bacthNumber:bacthNumber,
 										allotTime:$('#Time').val(),
 								}
-								console.log(postData)
 							    $.ajax({
 									url:"${ctx}/task/addTask",
 									data:postData,
@@ -705,6 +704,7 @@
 					var productName=$(this).data('proname')
 					var bacthId=$(this).data('id')
 					var bacthNumber=$(this).data('bacthnumber')
+					var number=$(this).data('number')
 					var _index
 					var index
 					var postData
@@ -867,9 +867,9 @@
 					var time;
 					var timeover;
 					var ss;
-					var times=new Array()
-					var values=new Array()
-					var arrto=new Array()
+					var times=new Array();
+					var values=new Array();
+					var roleidArray = new Array();
 					$('#save').on('click',function(){
 						time=$("#Timetstr").val();
 						timeover=$("#Timetend").val();
@@ -882,9 +882,10 @@
 						    arr.push($(this).val());   
 						}); 
 						  times.push(ss);
-						  arrto.push(arr)
-						
+						  roleidArray.push(arr)
+						  roleidArray.join(".")
 					})
+					console.log(roleidArray)
 					var postData
 					var dicDiv=$('#addDictDivTypetw');
 					_index = layer.open({
@@ -919,12 +920,11 @@
 								if(arr.length<=0){
 									return layer.msg("至少选择一个员工！", {icon: 2});
 								}
-								number=$(".sumnumbertw").val();
-								for (var i = 0; i < numberr.length; i++) {
+								/* for (var i = 0; i < numberr.length; i++) {
 									if(numberr[i]-number<0){
 										return layer.msg("有工序剩余数量不足！", {icon: 2});
 									}
-								}
+								} */
 								expectTime=$(".sumtimetw").val();
 								var performanceNumber=$(".selectchangtwt").val();
 								
@@ -933,11 +933,11 @@
 								
 								var postData = {
 										type:1,
+										times:times,
+										users:roleidArray,
 										bacthId:that.data("id"),
 										procedureIds:values,
-										userIds:arr,
 										number:number,
-										userNames:username,
 										performance:performance,
 										performanceNumber:performanceNumber,
 										productName:productName,
@@ -946,7 +946,7 @@
 										allotTime:$('#Timet').val(),
 								}
 							    $.ajax({
-									url:"${ctx}/task/addTask",
+									url:"${ctx}/task/addTaskTwo",
 									data:postData,
 						            traditional: true,
 									type:"post",
