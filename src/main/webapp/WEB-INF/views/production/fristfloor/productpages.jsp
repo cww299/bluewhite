@@ -361,7 +361,7 @@
 							},
 						  end:function(){
 							  $('#addworking').hide();
-							
+							self.loadPagination(data);
 						  }
 					});
 					self.setCache(productId);

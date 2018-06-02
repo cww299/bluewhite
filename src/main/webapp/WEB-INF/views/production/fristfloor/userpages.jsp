@@ -337,89 +337,6 @@
 						layer.close(index);
 				  }
 			  });
-		    
-		    
-		  $('.attendance').on('click',function(){
-			  var  that=$(this);
-			  var arr=new Array()//员工id
-			  var time=new Array()//考勤时间
-				$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
-					time.push($(this).parent().parent().siblings().find(".work").val());
-					arr.push($(this).val());   
-				});
-			  if(arr.length<=0){
-					return layer.msg("至少选择一个！", {icon: 2});
-				}
-				var data={
-						type:1,
-						usersId:arr,
-						workTimes:time,
-						allotTime:$("#startTime").val(),
-				}
-				$.ajax({
-					url:"${ctx}/finance/addAttendance",
-					data:data,
-		            traditional: true,
-					type:"POST",
-					beforeSend:function(){
-						index = layer.load(1, {
-							  shade: [0.1,'#fff'] //0.1透明度的白色背景
-							});
-					},
-					
-					success:function(result){
-						if(0==result.code){
-							layer.msg(result.message, {icon: 1});
-						}else{
-							layer.msg(result.message, {icon: 2});
-						}
-						layer.close(index);
-					},error:function(){
-						layer.msg("操作失败！", {icon: 2});
-						layer.close(index);
-					}
-				}); 
-		  })  
-		    
-		    
-		   $('.position').on('click',function(){
-			var  that=$(this);
-			var arr=new Array()
-			$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
-				arr.push($(this).val());   
-			});
-			var postData={
-					usersId:arr,
-					workPrice:$("#workPrice").val(),
-					allotTime:$("#endTime").val(),
-			}
-			console.log(postData)
-			$.ajax({
-				url:"${ctx}/finance/updateAllAttendance",
-				data:postData,
-	            traditional: true,
-				type:"GET",
-				beforeSend:function(){
-					index = layer.load(1, {
-						  shade: [0.1,'#fff'] //0.1透明度的白色背景
-						});
-				},
-				
-				success:function(result){
-					if(0==result.code){
-						layer.msg("修改成功！", {icon: 1});
-					}else{
-						layer.msg("添加失败", {icon: 2});
-					}
-					layer.close(index);
-				},error:function(){
-					layer.msg("操作失败！", {icon: 2});
-					layer.close(index);
-				}
-			});  
-		   }) 
-		    
-		    
 	  }
 		this.chang=function(){
 			$('.selectgroupChange').change(function(){
@@ -461,6 +378,88 @@
 			
 		}
 		this.events = function(){
+			$('.position').on('click',function(){
+				var  that=$(this);
+				var arr=new Array()
+				$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+					arr.push($(this).val());   
+				});
+				var postData={
+						usersId:arr,
+						workPrice:$("#workPrice").val(),
+						allotTime:$("#endTime").val(),
+				}
+				
+				$.ajax({
+					url:"${ctx}/finance/updateAllAttendance",
+					data:postData,
+		            traditional: true,
+					type:"GET",
+					beforeSend:function(){
+						index = layer.load(1, {
+							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							});
+					},
+					
+					success:function(result){
+						if(0==result.code){
+							layer.msg("修改成功！", {icon: 1});
+						}else{
+							layer.msg("添加失败", {icon: 2});
+						}
+						layer.close(index);
+					},error:function(){
+						layer.msg("操作失败！", {icon: 2});
+						layer.close(index);
+					}
+				});  
+			   })
+			
+			
+			$('.attendance').on('click',function(){
+				  var  that=$(this);
+				  var arr=new Array()//员工id
+				  var time=new Array()//考勤时间
+					$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+						time.push($(this).parent().parent().siblings().find(".work").val());
+						arr.push($(this).val());   
+					});
+				  if(arr.length<=0){
+						return layer.msg("至少选择一个！", {icon: 2});
+					}
+					var data={
+							type:1,
+							usersId:arr,
+							workTimes:time,
+							allotTime:$("#startTime").val(),
+					}
+					$.ajax({
+						url:"${ctx}/finance/addAttendance",
+						data:data,
+			            traditional: true,
+						type:"POST",
+						beforeSend:function(){
+							index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+						},
+						
+						success:function(result){
+							if(0==result.code){
+							
+								layer.msg(result.message, {icon: 1});
+							}else{
+								layer.msg(result.message, {icon: 2});
+							}
+							layer.close(index);
+						},error:function(){
+							layer.msg("操作失败！", {icon: 2});
+							layer.close(index);
+						}
+					}); 
+			  })
+			
+			
 			//遍历人名组别
 			var htmlth="";
 			var data = {

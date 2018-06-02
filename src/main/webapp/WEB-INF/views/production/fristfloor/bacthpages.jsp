@@ -870,6 +870,7 @@
 					var times=new Array();
 					var values=new Array();
 					var roleidArray = new Array();
+					var str1;
 					$('#save').on('click',function(){
 						time=$("#Timetstr").val();
 						timeover=$("#Timetend").val();
@@ -883,9 +884,8 @@
 						}); 
 						  times.push(ss);
 						  roleidArray.push(arr)
-						  roleidArray.join(".")
+							str1=roleidArray.join(".")
 					})
-					console.log(roleidArray)
 					var postData
 					var dicDiv=$('#addDictDivTypetw');
 					_index = layer.open({
@@ -900,7 +900,7 @@
 						  yes:function(index, layero){
 							  var values=new Array()
 							  var numberr=new Array()
-							  
+							
 								$(".checkWorks:checked").each(function() {   
 									values.push($(this).val());
 									numberr.push($(this).data('residualnumber'));
@@ -934,7 +934,7 @@
 								var postData = {
 										type:1,
 										times:times,
-										users:roleidArray,
+										users:str1,
 										bacthId:that.data("id"),
 										procedureIds:values,
 										number:number,
