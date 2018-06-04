@@ -12,7 +12,7 @@
     <title>批次管理</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-   
+   <link rel="stylesheet" href="${ctx }/static/sfm/css/bootstrap-datetimepicker.min.css">
    
 </head>
 
@@ -171,14 +171,14 @@
 						
                            <label class="col-sm-3 col-md-2 control-label">开始时间</label>
                               <div class="col-sm-2 col-md-2">
-                                  <input id="Timetstr" placeholder="时间可不填" class="form-control laydate-icon"
+                                  <input id="Timetstr"  class="form-control laydate-icon"
              					onClick="laydate({elem: '#Timetstr', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                               </div>
                                <div class="col-sm-2 col-md-1"></div>
                                <div >
                             <label class="col-sm-3 col-md-2 control-label" >结束时间</label>
                                 <div class="col-sm-2 col-md-2">
-                                  <input id="Timetend" placeholder="时间可不填" class="form-control laydate-icon"
+                                  <input id="Timetend"  class="form-control laydate-icon"
              					onClick="laydate({elem: '#Timetend', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                                 </div>
                                   <div class="col-sm-2 col-md-1"><input type="button" class="btn btn-sm btn-success" id="save" value="新增"></input></div>
@@ -188,17 +188,11 @@
                  
                   
 						<div class="form-group">
-						<div>
-                           <label class="col-sm-3 col-md-2 control-label">任务数量</label>
-                              <div class="col-sm-2 col-md-2">
-                                  <input type="text" class="form-control sumnumbertw">
-                              </div>
-                              </div>
                               
                                <div id="diss" style="display: none">
                             <label class="col-sm-3 col-md-2 control-label" >预计完成时间</label>
                                 <div class="col-sm-2 col-md-2">
-                                  <input type="text" class="form-control sumtimetw">
+                                  <input type="text" placeholder="填写分钟" class="form-control sumtimetw">
                                 </div>
                                 </div>
                                  <div class="col-sm-2 col-md-1"></div>
@@ -247,6 +241,7 @@
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
     <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+    <script src="${ctx }/static/sfm/js/bootstrap-datetimepicker.min.js"></script>
     <script>
    jQuery(function($){
    	var Login = function(){
@@ -879,12 +874,14 @@
 						ss=(dt2-dt1)/60000
 						var arr=new Array()
 						
+						
 						$(".stuCheckBoxt:checked").each(function() {   
 						    arr.push($(this).val());   
 						}); 
 						  times.push(ss);
 						  roleidArray.push(arr)
-							str1=roleidArray.join(".")
+						str1=roleidArray.join(".")
+						return layer.msg("添加成功", {icon: 1});
 					})
 					var postData
 					var dicDiv=$('#addDictDivTypetw');
@@ -1012,6 +1009,8 @@
 				  	}
 		            self.loadPagination(data);
 				});
+				
+				
 				
 			}
    	}
