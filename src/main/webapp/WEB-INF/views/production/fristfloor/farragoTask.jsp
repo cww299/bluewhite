@@ -34,6 +34,39 @@
                                     <i class="fa fa-chevron-down"></i>
                                 </div>
                             </div>
+                             <!--查询开始  -->
+          <div class="row" style="height: 30px; margin:15px 0 10px">
+			<div class="col-xs-8 col-sm-8  col-md-8">
+				<form class="form-search" >
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-12">
+							<div class="input-group"> 
+								<table><tr><td>批次名:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
+								<td>工序名称:</td><td><input type="text" name="name" id="name" placeholder="请输入产品名称" class="form-control search-query name" /></td>
+								<td>开始时间:</td>
+								<td>
+								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
+								</td>
+				<td>结束时间:</td>
+				<td>
+					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
+             onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+								</td>
+								</tr></table> 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtask">
+										查找
+										<i class="icon-search icon-on-right bigger-110"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+            <!-- 查询结束 -->
                             <div class="panel-body">
                                 <table class="table table-hover">
                                     <thead>
@@ -330,6 +363,19 @@
 				
 			}
 			this.events = function(){
+				
+				$('.searchtask').on('click',function(){
+					var data = {
+				  			page:1,
+				  			size:13,
+				  			type:1,
+				  			name:$('#name').val(),
+				  			bacth:$('#number').val(),
+				  			orderTimeBegin:$("#startTime").val(),
+				  			orderTimeEnd:$("#endTime").val(), 
+				  	}
+		            self.loadPagination(data);
+				});
 				//新增小组
 				$('#addgroup').on('click',function(){
 					var _index

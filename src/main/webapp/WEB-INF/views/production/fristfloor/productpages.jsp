@@ -235,8 +235,8 @@
 		      				+'<td class="text-center id">'+o.id+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
-		      				+'<td class="text-center  departmentPrice">'+o.departmentPrice+'</td>'
-		      				+'<td class="text-center  hairPrice">'+o.hairPrice+'</td>'
+		      				+'<td class="text-center  departmentPrice">'+o.departmentPrice*1+'</td>'
+		      				+'<td class="text-center  hairPrice">'+o.hairPrice*1+'</td>'
 							+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-success btn-3d addprocedure" data-id='+o.id+' data-name='+o.name+'>添加工序</button> <button class="btn btn-xs btn-success btn-3d addbatch" data-id='+o.id+' data-name='+o.name+'>填写批次</button></td></tr>'
 							
 		      			}); 
@@ -361,7 +361,7 @@
 							},
 						  end:function(){
 							  $('#addworking').hide();
-							
+							self.loadPagination(data);
 						  }
 					});
 					self.setCache(productId);
