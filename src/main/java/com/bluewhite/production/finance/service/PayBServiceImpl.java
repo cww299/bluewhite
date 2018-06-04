@@ -151,7 +151,28 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 			collect.setType(collectPay.getType());
 			List<CollectPay> cpList = collectPayService.findPages(collect, page).getRows();
 			if(cpList.size()==1){
-				collect = cpList.get(0);
+				if(cpList.get(0).getPayA() == collect.getPayA() && cpList.get(0).getPayB() == collect.getPayB()){
+					collect = cpList.get(0);
+				}else{
+					collect.setAddSelfNumber(cpList.get(0).getAddSelfNumber());
+					//考虑个人调节上浮后的B
+					collect.setAddSelfPayB(collect.getPayB()*collect.getAddSelfNumber());
+					//上浮后的加绩
+					collect.setAddPerformancePay(collect.getAddSelfPayB()-collect.getPayA()>0 ? collect.getAddSelfPayB()-collect.getPayA() : 0.0);
+					//上浮后无加绩固定给予(当没有考勤的员工无此加绩固定工资)
+					collect.setNoPerformanceNumber( collect.getPayA()!=0.0 ? collectPay.getNoPerformancePay() : 0.0);
+					//无绩效小时工资
+					collect.setNoTimePay(collect.getPayA()/collect.getTime());
+					//有绩效小时工资(取所有工资中的最大项)
+					if(collect.getAddSelfPayB()>collect.getPayA()){
+						timePay = collect.getAddSelfPayB()/collect.getTime();
+					}else{
+						timePay = (collect.getPayA()+collect.getNoPerformanceNumber())/collect.getTime();
+					}
+					collect.setTimePay(timePay);
+					collect.setId(cpList.get(0).getId());
+					collectPayDao.save(collect);
+				}
 			}else{
 				//将加绩流水入库
 				collectPayDao.save(collect);
