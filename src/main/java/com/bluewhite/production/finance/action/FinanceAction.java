@@ -20,6 +20,7 @@ import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
+import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
@@ -168,7 +169,8 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		usualConsume.setOrderTimeBegin(DatesUtil.getfristDayOftime(usualConsume.getConsumeDate()));
 		usualConsume.setOrderTimeEnd(DatesUtil.getLastDayOftime(usualConsume.getConsumeDate()));
 		if(usualConsumeservice.findPages(usualConsume, page).getRows().size()>0){
-			cr.setMessage("改日已经添加过日常消费，无需再次添加");
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("该日已经添加过日常消费，无需再次添加");
 		}else{
 			usualConsumeservice.save(usualConsume);
 			cr.setMessage("新增成功");
@@ -233,6 +235,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 			cr.setData(payBService.collectPay(collectPay));	
 			cr.setMessage("查询成功");
 		}else{
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("请选择两个日期为同一天");
 		}
 		return cr;
