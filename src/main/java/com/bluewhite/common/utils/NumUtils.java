@@ -13,5 +13,7 @@ public class NumUtils {
         return new BigDecimal(value).setScale(16, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
-
+	public static int roundInt(Double value) {
+		return new BigDecimal(value).setScale(5, BigDecimal.ROUND_HALF_UP).intValue();
+	}
 }

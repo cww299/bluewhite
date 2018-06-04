@@ -257,10 +257,11 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					tasks.setProcedureIds(task.getProcedureIds());
 					tasks.setPerformance(task.getPerformance());
 					tasks.setPerformanceNumber(task.getPerformanceNumber());
-					tasks.setNumber(Integer.parseInt(new java.text.DecimalFormat("10").format(time/sumTime))*number);
+					tasks.setNumber(NumUtils.roundInt(time*number/sumTime));
+					
 					//将用户段转换成数组,将同顺序的用户添加到任务中
 					if (!StringUtils.isEmpty(task.getUsers())) {
-						String[] userArr = task.getUsers().split(",");
+						String[] userArr = task.getUsers().split("\\.");
 						if (userArr.length>0) {
 							tasks.setUserIds(userArr[i]);
 						}

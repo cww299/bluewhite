@@ -9,6 +9,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
@@ -80,6 +81,7 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 		if(farragoTask.getPerformanceNumber()!=null){
 			farragoTask.setPerformancePrice(NumUtils.round(ProTypeUtils.sumPerformancePrice(farragoTask)));
 		}
+		farragoTask =  dao.save(farragoTask);
 		//将杂工工资统计成流水
 		if (farragoTask.getUsersIds().length>0) {
 			for (int j = 0; j < farragoTask.getUsersIds().length; j++) {
@@ -91,6 +93,7 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 				farragoTaskPay.setPayNumber(farragoTask.getPrice()/farragoTask.getUsersIds().length);
 				farragoTaskPay.setType(farragoTask.getType());
 				farragoTaskPay.setUserId(user.getId());
+				farragoTaskPay.setTaskId(farragoTask.getId());
 				farragoTaskPay.setUserName(user.getUserName());
 				farragoTaskPay.setTaskName(farragoTask.getName());
 				//计算杂工加绩工资
@@ -103,7 +106,18 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 
 	@Override
 	public FarragoTask updateFarragoTask(FarragoTask farragoTask) {
+//		farragoTaskPayDao.findByTaskId();	
 	
 		return null;
+	}
+
+	@Override
+	@Transactional
+	public void deleteFarragoTask(Long id) {
+		List<FarragoTaskPay> taskList = farragoTaskPayDao.findByTaskId(id);	
+		if(taskList!=null){
+			farragoTaskPayDao.delete(taskList);
+		}
+		dao.delete(id);
 	}
 }
