@@ -328,7 +328,7 @@
 	      			 $(result.data).each(function(i,o){
 	      				html +='<option value="'+o.id+'">'+o.name+'</option>'
 	      			}); 
-			       var htmlto='<select class="form-control selectgroupChange"><option value="0">请选择</option>'+html+'</select>'
+			       var htmlto='<select class="form-control  selectgroupChange"><option value="">去除分组</option>'+html+'</select>'
 				   	$(".groupChange").html(htmlto); 
 				   	self.chang();
 				   	self.selected();

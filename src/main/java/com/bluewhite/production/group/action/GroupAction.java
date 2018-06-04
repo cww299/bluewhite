@@ -161,7 +161,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 	@ResponseBody
 	public CommonResponse userGroup(HttpServletRequest request,User user) {
 		CommonResponse cr = new CommonResponse();
-		if(user.getUserIds()!=null &&  user.getGroupId()!=null){
+		if(user.getUserIds()!=null){
 			String[] userIds = user.getUserIds().split(",");
 			for (String id : userIds) {
 				Long userId = Long.parseLong(id);
@@ -172,7 +172,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 			cr.setMessage("分组成功");
 		}else{
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("用户和分组不能为空");
+			cr.setMessage("用户不能为空");
 		}
 		return cr;
 	}
