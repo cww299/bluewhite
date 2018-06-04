@@ -12,7 +12,7 @@
     <title>批次管理</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-   
+   <link rel="stylesheet" href="${ctx }/static/sfm/css/bootstrap-datetimepicker.min.css">
    
 </head>
 
@@ -247,6 +247,7 @@
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
     <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+    <script src="${ctx }/static/sfm/js/bootstrap-datetimepicker.min.js"></script>
     <script>
    jQuery(function($){
    	var Login = function(){
@@ -884,7 +885,8 @@
 						}); 
 						  times.push(ss);
 						  roleidArray.push(arr)
-							str1=roleidArray.join(".")
+						str1=roleidArray.join(".")
+						return layer.msg("添加成功", {icon: 1});
 					})
 					var postData
 					var dicDiv=$('#addDictDivTypetw');
@@ -1012,6 +1014,8 @@
 				  	}
 		            self.loadPagination(data);
 				});
+				
+				
 				
 			}
    	}
