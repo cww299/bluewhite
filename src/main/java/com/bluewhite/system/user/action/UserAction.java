@@ -98,8 +98,8 @@ public class UserAction {
 	 * @param request 请求
 	 * @param user 用户实体类
 	 * @return cr
-	 */
-	@RequestMapping(value = "/update", method = RequestMethod.PUT)
+	 */	
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse changeUser(HttpServletRequest request, User user) {
 		CommonResponse cr = new CommonResponse();
