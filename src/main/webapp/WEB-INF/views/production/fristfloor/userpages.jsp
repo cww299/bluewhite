@@ -242,7 +242,7 @@
 						$.ajax({
 							url:"${ctx}/system/user/update",
 							data:postData,
-							type:"PUT",
+							type:"POST",
 							beforeSend:function(){
 								index = layer.load(1, {
 									  shade: [0.1,'#fff'] //0.1透明度的白色背景
@@ -280,7 +280,7 @@
 								id:id,
 								status:rest,
 								},
-							type:"PUT",
+							type:"POST",
 							beforeSend:function(){
 								index = layer.load(1, {
 									  shade: [0.1,'#fff'] //0.1透明度的白色背景
