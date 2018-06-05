@@ -455,7 +455,7 @@
 		      				+'<td class="text-center  ">'+o.noPerformanceNumber+'</td>'
 		      				+'<td class="text-center  ">'+o.noTimePay+'</td>'
 		      				+'<td class="text-center  ">'+o.timePay+'</td>'
-		      				+'<td class="text-center"> <button class="btn btn-sm btn-warning btn-3d updateremake" data-id='+o.id+'>编辑</button></td></tr>'
+		      				+'<td class="text-center"> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button></td></tr>'
 		      			}); 
 				          
 					   	layer.close(index);

@@ -56,6 +56,8 @@
 								<td><input id="startTime" placeholder="请输入日期" class="form-control laydate-icon"
              					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
              					</td>
+             					<td><div style="width: 15px"></div></td>
+             					<td> <button type="button" id="addgroup" class="btn btn-sm btn-success btn-3d pull-right">一键新增</button></td>
 								</tr>
 								</table> 
 							</div>
@@ -78,7 +80,7 @@
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
-                                    <button type="button" id="addgroup" class="btn btn-success btn-3d pull-right">一键新增</button>
+                                   
                                 </table>
                                 <div id="pager" class="pull-right">
                                 
@@ -190,7 +192,7 @@
 		      				+'<td class="text-center edit name">'+o.chummage*1+'</td>'
 		      				+'<td class="text-center edit name">'+o.hydropower*1+'</td>'
 		      				+'<td class="text-center edit name">'+o.logistics*1+'</td>'
-		      				+'<td class="text-center"><button class="btn btn-sm btn-danger btn-3d delete" data-id='+o.id+'>删除</button></td></tr>'
+		      				+'<td class="text-center"><button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 		      			}); 
 				        //显示分页
 					   	 laypage({

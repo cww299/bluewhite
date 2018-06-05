@@ -89,7 +89,7 @@
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
-                                    <button type="button" id="addgroup" class="btn btn-success btn-3d pull-right">新增杂工</button>
+                                    <button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增杂工</button>
                                 </table>
                                 <div id="pager" class="pull-right">
                                 
@@ -254,8 +254,8 @@
 		      				+'<td class="text-center edit name">'+o.performance+'</td>'
 		      				+'<td class="text-center edit name">'+parseFloat((o.price).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit name">'+parseFloat((o.performancePrice).toFixed(3))+'</td>'
-		      				+'<td class="text-center"><button class="btn btn-primary btn-3d btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-danger btn-3d delete" data-id='+o.id+'>删除</button></td></tr>'
+		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
+							+'<td class="text-center"><button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -478,7 +478,7 @@
 						  area: ['30%', '60%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
-						  title:"新增小组",
+						  title:"新增杂工",
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
