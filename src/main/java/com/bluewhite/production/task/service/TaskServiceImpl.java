@@ -233,8 +233,11 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 			String[] timeArr = task.getTimes().split(",");
 			if (timeArr.length>0) {
 				for (int i = 0; i <timeArr.length; i++) {
-					double time = Double.valueOf(timeArr[i]);
-					sumTime += time;
+					String xx = timeArr[i];
+					if(!timeArr[i].equals("delete")){
+						double time = Double.valueOf(timeArr[i]);
+						sumTime += time;
+					}
 					
 
 				}
@@ -247,7 +250,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 			if (timeArr.length>0) {
 				for (int i = 0; i <timeArr.length; i++) {
 					Task tasks = new Task();
-					double time = Double.valueOf(timeArr[i]);
+					double time = 0;
+					if(!timeArr[i].equals("delete")){
+					time = Double.valueOf(timeArr[i]);
 					tasks.setBacthId(task.getBacthId());
 					tasks.setExpectTime(task.getExpectTime());
 					tasks.setAllotTime(task.getAllotTime());
@@ -263,10 +268,13 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					if (!StringUtils.isEmpty(task.getUsers())) {
 						String[] userArr = task.getUsers().split("\\.");
 						if (userArr.length>0) {
+							if(!timeArr[i].equals("delete")){
 							tasks.setUserIds(userArr[i]);
+							}
 						}
 					}
 					taskList.add(tasks);
+				}
 				}
 			}
 		}
