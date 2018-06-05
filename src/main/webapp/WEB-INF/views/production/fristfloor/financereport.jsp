@@ -72,8 +72,7 @@
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtaskth">
-										查找
-										<i class="icon-search icon-on-right bigger-110"></i>
+										查&nbsp找
 									</button>
 								</span>
 							</div>
@@ -133,8 +132,7 @@
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtask">
-										查找
-										<i class="icon-search icon-on-right bigger-110"></i>
+										查&nbsp找
 									</button>
 								</span>
 							</div>
@@ -181,8 +179,7 @@
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtasktw">
-										查找
-										<i class="icon-search icon-on-right bigger-110"></i>
+										查&nbsp找
 									</button>
 								</span>
 							</div>
@@ -455,7 +452,7 @@
 		      				+'<td class="text-center  ">'+o.noPerformanceNumber+'</td>'
 		      				+'<td class="text-center  ">'+o.noTimePay+'</td>'
 		      				+'<td class="text-center  ">'+o.timePay+'</td>'
-		      				+'<td class="text-center"> <button class="btn btn-sm btn-warning btn-3d updateremake" data-id='+o.id+'>编辑</button></td></tr>'
+		      				+'<td class="text-center"> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button></td></tr>'
 		      			}); 
 				          
 					   	layer.close(index);

@@ -70,8 +70,7 @@
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtaskth">
-										查找
-										<i class="icon-search icon-on-right bigger-110"></i>
+										查&nbsp找
 									</button>
 								</span>
 							</div>
@@ -408,9 +407,7 @@
 		      				+'<td class="text-center edit workTime">'+o.workTime+'</td>'
 		      				+'<td class="text-center  ">'+o.workPrice+'</td>'
 		      				+'<td class="text-center  ">'+o.payNumber+'</td>'
-		      				+'<td class="text-center"> <button class="btn btn-sm btn-warning btn-3d updateremake" data-id='+o.id+'>编辑</button></td></tr>'
-		      				
-							
+		      				+'<td class="text-center"> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button></td></tr>'
 		      			}); 
 				        //显示分页
 					   	 laypage({
