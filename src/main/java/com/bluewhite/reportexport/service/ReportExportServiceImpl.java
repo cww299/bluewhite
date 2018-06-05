@@ -22,6 +22,7 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.product.entity.Product;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
+import com.bluewhite.production.procedure.service.ProcedureService;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.reportexport.entity.ProcedurePoi;
 import com.bluewhite.reportexport.entity.ProductPoi;
@@ -42,6 +43,8 @@ public class ReportExportServiceImpl implements ReportExportService{
 	
 	@Autowired
 	private ProcedureDao procedureDao;
+	@Autowired
+	private ProcedureService procedureService;
 	
 	@PersistenceContext
 	protected EntityManager entityManager;
@@ -164,6 +167,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime()*60));
 				procedure.setType(type);
 				procedure.setProcedureTypeId(baseDataList.get(0).getId());
+				procedureService.countPrice(procedure);
 				procedureList.add(procedure);
 				count++;
 			}

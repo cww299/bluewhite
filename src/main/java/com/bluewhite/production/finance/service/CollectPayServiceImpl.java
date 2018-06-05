@@ -101,11 +101,21 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			List<CollectPay> psList= mapCollectPay.get(ps);
 			//计算出加绩总和
 			double sumPay = psList.stream().mapToDouble(CollectPay::getAddPerformancePay).sum();
+			//计算A工资总和
+			double sumPayA = psList.stream().mapToDouble(CollectPay::getPayA).sum();
+			//计算b工资总和
+			double sumPayB = psList.stream().mapToDouble(CollectPay::getPayB).sum();
+			//计算上浮后b工资总和
+			double sumAddPayB = psList.stream().mapToDouble(CollectPay::getAddPayB).sum();
+			
 			CollectPay collect = new CollectPay();
 			collect.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 			collect.setOrderTimeEnd(collectPay.getOrderTimeEnd());
 			collect.setUserName(psList.get(0).getUserName());
 			collect.setAddPerformancePay(sumPay);
+			collect.setPayA(sumPayA);
+			collect.setPayB(sumPayB);
+			collect.setAddPayB(sumAddPayB);
 			list.add(collect);
 		}
 		return list;
@@ -306,18 +316,20 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		double time = list.stream().mapToDouble(AttendancePay::getWorkTime).sum();
 		monthlyProduction.setTime(time);
 		
+		
 		//当天产量
-		Task task1 = new Task();
-		task1.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
-		task1.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
-		task1.setType(monthlyProduction.getType());
-		task1.setFlag(0);
-		List<Task> taskList1 = TaskService.findPages(task1, page).getRows();
-		double productNumber = taskList1.stream().mapToDouble(Task::getNumber).sum();
+		Bacth bacth = new Bacth();
+		bacth.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
+		bacth.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
+		bacth.setType(monthlyProduction.getType());
+		List<Bacth> bacthList = bacthService.findPages(bacth, page).getRows();
+		double productNumber = bacthList.stream().mapToDouble(Bacth::getNumber).sum();
 		monthlyProduction.setProductNumber(productNumber);
 		//当天产值(外发单价乘以质检的个数)
-		double productPrice = taskList1.stream().mapToDouble(Task::getProductPrice).sum();
+		double productPrice = bacthList.stream().mapToDouble(Bacth::getProductPrice).sum();
 		monthlyProduction.setProductPrice(productPrice);
+		
+		
 		//返工出勤人数
 		Task task = new Task();
 		task.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
