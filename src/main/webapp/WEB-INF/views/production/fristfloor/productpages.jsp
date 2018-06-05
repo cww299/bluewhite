@@ -41,6 +41,7 @@
 						<div class="col-xs-12 col-sm-12 col-md-7">
 							<div class="input-group"> 
 								<table><tr><td>产品编号:</td><td><input type="text" name="number" id="number" class="form-control search-query number" /></td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>产品名称:</td><td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
 								</tr></table> 
 								<span class="input-group-btn">

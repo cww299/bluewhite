@@ -55,12 +55,15 @@
 							<div class="input-group"> 
 								<table><tr>
 								<td>我想上浮下调比例:</td><td><input type="text" name="name" id="usernameth" placeholder="请输入比例" class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>无加绩的配合奖励:</td><td><input type="text" name="name" id="code" placeholder="请输入奖励" class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>开始:</td>
 								<td>
 								<input id="startTimeth" placeholder="请输入开始时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#startTimeth', istime: true, format: 'YYYY-MM-DD 00:00:00'})"> 
 								</td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>结束:</td>
 								<td>
 								<input id="endTimeth" placeholder="请输入结束时间" class="form-control laydate-icon"
@@ -115,11 +118,13 @@
 							<div class="input-group"> 
 								<table><tr>
 								<td>姓名:</td><td><input type="text" name="name" id="username" placeholder="请输入姓名" class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>开始:</td>
 								<td>
 								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
 								</td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>结束:</td>
 								<td>
 								<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
@@ -167,6 +172,7 @@
 								<input id="startTimetw" placeholder="请输入开始时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#startTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
 								</td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>结束:</td>
 								<td>
 								<input id="endTimetw" placeholder="请输入结束时间" class="form-control laydate-icon"
@@ -406,13 +412,21 @@
 			    var orderTimeEnd=$("#endTimeth").val();
 			    var  d   =   new   Date(Date.parse(orderTimeBegin.replace(/-/g,   "/")));
 			    var  c   =   new   Date(Date.parse(orderTimeEnd.replace(/-/g,   "/")));
+			    var addNumber=$('#usernameth').val();
+			    var noPerformancePay=$('#code').val();
 			    if(c-d!=86399000){
 			    	return layer.msg("必须输入同一天日期", {icon: 2});
 			    }
+			    if(addNumber==""){
+			    	return layer.msg("我想上浮的比例不能为空", {icon: 2});
+			    }
+			    if(noPerformancePay==""){
+			    	return layer.msg("无加绩的配合奖励不能为空", {icon: 2});
+			    }
 			    	var postdata = {
 				  			type:1,
-				  			addNumber:$('#usernameth').val(),
-				  			noPerformancePay:$('#code').val(),
+				  			addNumber:addNumber,
+				  			noPerformancePay:noPerformancePay,
 				  			orderTimeBegin:orderTimeBegin,
 				  			orderTimeEnd:orderTimeEnd, 
 				  	}

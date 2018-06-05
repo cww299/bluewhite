@@ -158,68 +158,56 @@
 				<div class="space-10"></div>
 				<div style="height: 30px"></div>
 				<form class="form-horizontal addDictDivTypeFormtw">
-					<div class="row col-xs-12  col-sm-12  col-md-12 ">
-			<div class="form-group">
-                                        <label class="col-sm-3 control-label">任务分配时间:</label>
-                                        <div class="col-sm-6">
-                                            <input id="Timet" placeholder="时间可不填" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#Timet', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-                                        </div>
-                 </div>
-                 
-                 <div class="form-group">
-						
-                           <label class="col-sm-3 col-md-2 control-label">开始时间</label>
+					<div class="row col-xs-12  col-sm-12  col-md-12 " id="tabs">
+
+                                     	
+                    <div class="form-group">
+                           <label class="col-sm-2 control-label">加绩工序:</label>
+                            <div class="col-sm-3 workingth">
+                            </div>
+                           <label class="col-sm-2 control-label">选择工序:</label>
+                              <div class="col-sm-2 workingtw">
+                              </div>
+                              <div class="col-sm-2 checkworkingtw"></div>
+                    	</div>
+                    	
+                    <div class="form-group">
+							<label class="col-sm-2 control-label">任务时间:</label>
+                                    <div class="col-sm-3">
+                                        <input id="Timet" placeholder="时间可不填" class="form-control laydate-icon"
+         										onClick="laydate({elem: '#Timet', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                                    </div>
+                            <label class="col-sm-2 control-label" >预计时间:</label>
+                                <div class="col-sm-3">
+                                  <input type="text" placeholder="非返工任务不填写" class="form-control sumtimetw">
+                                </div>
+                 	</div>
+                    	
+                    <div class="form-group" >
+                           <label class="col-sm-3 col-md-2 control-label">开始时间:</label>
                               <div class="col-sm-2 col-md-2">
                                   <input id="Timetstr"  class="form-control laydate-icon"
              					onClick="laydate({elem: '#Timetstr', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                               </div>
-                               <div class="col-sm-2 col-md-1"></div>
                                <div >
-                            <label class="col-sm-3 col-md-2 control-label" >结束时间</label>
+                            <label class="col-sm-1 col-md-1 control-label" >结束时间:</label>
                                 <div class="col-sm-2 col-md-2">
                                   <input id="Timetend"  class="form-control laydate-icon"
              					onClick="laydate({elem: '#Timetend', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                                 </div>
-                                  <div class="col-sm-2 col-md-1"><input type="button" class="btn btn-sm btn-success" id="save" value="新增"></input></div>
                                 </div>
-                               
-                    	</div>
-                 
-                  
-						<div class="form-group">
-                              
-                               <div id="diss" style="display: none">
-                            <label class="col-sm-3 col-md-2 control-label" >预计完成时间</label>
-                                <div class="col-sm-2 col-md-2">
-                                  <input type="text" placeholder="填写分钟" class="form-control sumtimetw">
-                                </div>
-                                </div>
-                                 <div class="col-sm-2 col-md-1"></div>
-                    	</div>
-                    	
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">选择工序</label>
-                              <div class="col-sm-2 workingtw">
-                              </div>
-                              <div class="col-sm-2 checkworkingtw"></div>
-                            <label class="col-sm-1 control-label">完成人</label>
+                            <label class="col-sm-1 control-label">完成人:</label>
                                 <div class="col-sm-2 completetw">
                                   <input type="text" class="form-control">
                                 </div>
-                                 <div class="col-sm-2 selecttw"></div>
+                               <div class="col-sm-1 selecttw"></div>
+                                  <div class="col-sm-2 col-md-1"><input type="button" class="btn btn-sm btn-success" id="save" value="新增"></input></div>
                     	</div>
-                    	<div class="form-group">
-                            <label class="col-sm-3 control-label">加绩工序选择</label>
-                                <div class="col-sm-6 workingth">
-                                  
-                                </div>
-                    	</div>
+                 		
                  </div>
 				</div>
 
 				</form>
-</div>
 </div>
 <!--隐藏框 工序分配2结束  -->
 
@@ -866,21 +854,66 @@
 					var values=new Array();
 					var roleidArray = new Array();
 					var str1;
+					var i = -1;
 					$('#save').on('click',function(){
+					var trHtml="";
+						i++;
 						time=$("#Timetstr").val();
 						timeover=$("#Timetend").val();
 						var dt1 = new Date(Date.parse(time));
 						var dt2 = new Date(Date.parse(timeover));
 						ss=(dt2-dt1)/60000
 						var arr=new Array()
-						
-						
+						var username=new Array()
+						if(dt1=="Invalid Date"){
+							return layer.msg("开始时间不能为空！", {icon: 2});
+						}
+						if(dt2=="Invalid Date"){
+							return layer.msg("结束时间不能为空！", {icon: 2});
+						}
+						if(dt2-dt1<=0){
+							return layer.msg("结束时间不能小于开始时间！", {icon: 2});
+						}
 						$(".stuCheckBoxt:checked").each(function() {   
-						    arr.push($(this).val());   
+						    arr.push($(this).val()); 
+						    username.push($(this).data('username'))
 						}); 
+						if(arr.length==0){
+							 return layer.msg("领取人不能为空", {icon: 2});
+						}
+						
 						  times.push(ss);
 						  roleidArray.push(arr)
-						str1=roleidArray.join(".")
+						  str1=roleidArray.join(".")
+						 
+						 trHtml ='<div class="form-group" data-id="'+i+'">'
+	                           +'<label class="col-sm-3 col-md-2 control-label">开始时间:</label>'
+                        	   +'<div class="col-sm-2 col-md-2">'
+                               +'<input  class="form-control laydate-icon" value="'+time+'" onClick="laydate({elem: "#Timetstr", istime: true, format: "YYYY-MM-DD hh:mm:ss"})">'
+                               +'</div>'
+                               +'<div>'
+                               +'<label class="col-sm-1 col-md-1 control-label" >结束时间:</label>'
+                               +'<div class="col-sm-2 col-md-2">'
+                               +'<input value="'+timeover+'"  class="form-control laydate-icon" onClick="laydate({elem: "#Timetend", istime: true, format: "YYYY-MM-DD hh:mm:ss"})">'
+                               +'</div>'
+                               +'</div>'
+                               +'<label class="col-sm-1 control-label">完成人:</label>'
+                               +'<div class="col-sm-2 completetw">'
+                               +'<input type="text" value="'+username+'" class="form-control">'
+                               +'</div>'
+                               +'<div class="col-sm-1 "></div>'
+                               +'<div class="col-sm-2 col-md-1"><input type="button" class="btn btn-sm btn-success del" id="'+i+'" value="删除"></input></div></div>'
+                              
+                               $("#tabs").append(trHtml); 
+                            	 
+	                       $('.del').on('click',function(){
+                            	   var va=$(this).parent().parent().data('id');
+                            	   times.splice(va,1,"delete");
+                            		roleidArray.splice(va,1,["delete"]);
+                            	   str1=roleidArray.join(".");
+                            	   $(this).parent().parent().hide();
+                            	   return layer.msg("删除成功", {icon: 1});
+                               })
 						return layer.msg("添加成功", {icon: 1});
 					})
 					var postData
@@ -917,17 +950,18 @@
 								if(arr.length<=0){
 									return layer.msg("至少选择一个员工！", {icon: 2});
 								}
-								/* for (var i = 0; i < numberr.length; i++) {
+								 for (var i = 0; i < numberr.length; i++) {
 									if(numberr[i]-number<0){
 										return layer.msg("有工序剩余数量不足！", {icon: 2});
 									}
-								} */
+								} 
 								expectTime=$(".sumtimetw").val();
 								var performanceNumber=$(".selectchangtwt").val();
 								
 								var performance=$(".selectchangtwt option:selected").text();
-								
-								
+								if(performance=="请选择"){
+									performance="";
+								}
 								var postData = {
 										type:1,
 										times:times,

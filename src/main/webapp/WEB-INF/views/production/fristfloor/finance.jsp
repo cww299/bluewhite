@@ -55,11 +55,13 @@
 							<div class="input-group"> 
 								<table><tr>
 								<td>姓名:</td><td><input type="text" name="name" id="usernameth" placeholder="请输入姓名" class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>开始:</td>
 								<td>
 								<input id="startTimeth" placeholder="请输入开始时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#startTimeth', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
 								</td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>结束:</td>
 								<td>
 								<input id="endTimeth" placeholder="请输入结束时间" class="form-control laydate-icon"
@@ -101,19 +103,23 @@
             <div class="tab-pane" id="profile1">
                       <!--查询开始  -->
           		 <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-8 col-sm-8  col-md-8">
+					<div class="col-xs-10 col-sm-10  col-md-10">
 						<form class="form-search" >
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
 								<table><tr><td>批次:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>产品:</td><td><input type="text" name="name" id="name" placeholder="请输入产品名称" class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>姓名:</td><td><input type="text" name="name" id="username" placeholder="请输入姓名" class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>开始:</td>
 								<td>
 								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
 								</td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>结束:</td>
 								<td>
 								<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
@@ -160,12 +166,15 @@
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
 								<table><tr><td>工序:</td><td><input type="text" name="number" id="numbertw" placeholder="请输入工序名" class="form-control search-query number" /></td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>姓名:</td><td><input type="text" name="name" id="usernametw" placeholder="请输入姓名" class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>开始:</td>
 								<td>
 								<input id="startTimetw" placeholder="请输入开始时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#startTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
 								</td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>结束:</td>
 								<td>
 								<input id="endTimetw" placeholder="请输入结束时间" class="form-control laydate-icon"
