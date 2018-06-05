@@ -192,7 +192,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	
 	
 	/**
-	 * 修改日常消费
+	 * 删除日常消费
 	 */
 	@RequestMapping(value = "/finance/delete", method = RequestMethod.GET)
 	@ResponseBody
