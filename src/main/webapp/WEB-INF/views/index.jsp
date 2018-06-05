@@ -26,7 +26,7 @@
             <section id="main-content" class="animated fadeInUp">
                <div id="decoroll2" class="imgfocus">
 
-	<div id="decoimg_a2" class="imgbox">
+	<%-- <div id="decoimg_a2" class="imgbox">
 		<div class="decoimg_b2"><a href="#"><img src="${ctx }/static/img/1.jpg"></a></div>
 		<div class="decoimg_b2"><a href="#"><img src="${ctx }/static/img/2.jpg"></a></div>
 		<div class="decoimg_b2"><a href="#"><img src="${ctx }/static/img/3.jpg"></a></div>
@@ -38,7 +38,7 @@
 		<li><a href="javascript:void(0)" hidefocus="true" target="_self">范冰冰</a></li>
 		<li><a href="javascript:void(0)" hidefocus="true" target="_self">高圆圆</a></li>
 		<li><a href="javascript:void(0)" hidefocus="true" target="_self">刘诗诗</a></li>
-	</ul>
+	</ul> --%>
 	
 </div>
             </section>
