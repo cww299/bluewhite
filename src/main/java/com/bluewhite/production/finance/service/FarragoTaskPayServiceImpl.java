@@ -30,6 +30,10 @@ public class FarragoTaskPayServiceImpl extends BaseServiceImpl<FarragoTaskPay, L
 	        	if (param.getId() != null) {
 					predicate.add(cb.equal(root.get("id").as(Long.class),param.getId()));
 				}
+	        	//按员工id过滤
+	        	if (param.getUserId() != null) {
+					predicate.add(cb.equal(root.get("userId").as(Long.class),param.getUserId()));
+				}
 	        	//按员工姓名
 	        	if(!StringUtils.isEmpty(param.getUserName())){
 	        		predicate.add(cb.like(root.get("userName").as(String.class), "%"+param.getUserName()+"%"));

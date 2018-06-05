@@ -7,10 +7,13 @@ import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.product.dao.ProductDao;
+import com.bluewhite.product.entity.Product;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
@@ -25,6 +28,8 @@ public class ProcedureServiceImpl extends BaseServiceImpl<Procedure, Long> imple
 	private ProcedureDao procedureDao;
 	@Autowired
 	private BacthDao bacthDao;
+	@Autowired
+	private ProductDao productDao;
 	
 	@Override
 	public List<Procedure> findByProductIdAndType(Long productId, Integer type) {
@@ -33,8 +38,10 @@ public class ProcedureServiceImpl extends BaseServiceImpl<Procedure, Long> imple
 	
 	
 	@Override
+	@Transactional
 	public void countPrice(Procedure procedure) {
 		List<Procedure> procedureList = procedureDao.findByProductIdAndType(procedure.getProductId(), procedure.getType());
+		Product product = productDao.findOne(procedure.getProductId());
 		//计算部门生产总价
 		Double sumTime = 0.0;
 		for(Procedure pro : procedureList){
@@ -43,12 +50,15 @@ public class ProcedureServiceImpl extends BaseServiceImpl<Procedure, Long> imple
 		Double sumPrice = ProTypeUtils.sumProTypePrice(sumTime, procedure.getType());
 		for(Procedure pro : procedureList){
 			pro.setDepartmentPrice(NumUtils.round(sumPrice));
+			product.setDepartmentPrice(NumUtils.round(sumPrice));
 		}
 		//计算外发价格
 		Double price = ProTypeUtils.sumProTypeHairPrice(procedureList,procedure.getType());
 		for(Procedure pro : procedureList){
 			pro.setHairPrice(NumUtils.round(price));
+			product.setHairPrice(NumUtils.round(price));		
 		}
+		productDao.save(product);
 		procedureDao.save(procedureList);
 	}
 

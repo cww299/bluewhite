@@ -44,6 +44,10 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 		        	if (param.getId() != null) {
 						predicate.add(cb.equal(root.get("id").as(Long.class),param.getId()));
 					}
+		         	//按员工id过滤
+		        	if (param.getUserId() != null) {
+						predicate.add(cb.equal(root.get("userId").as(Long.class),param.getUserId()));
+					}
 		        	//按产品id
 		        	if(param.getProductId()!=null){
 		        		predicate.add(cb.equal(root.get("productId").as(Long.class),param.getProductId()));

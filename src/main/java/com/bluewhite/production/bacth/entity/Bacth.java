@@ -16,6 +16,7 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.product.entity.Product;
+import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.task.entity.Task;
 
 /**
@@ -136,8 +137,19 @@ public class Bacth extends BaseEntity<Long>{
 	@Transient
 	private Date orderTimeEnd;
 	
+	/**
+	 * 产值
+	 */
+	@Transient
+	private Double productPrice;
 	
 	
+	
+
+	public Double getProductPrice() {
+		return (number==null ? 0.0 : number) * 
+				((product==null ? new Product() : product).getHairPrice()==null ? 0.0 : (product==null ? new Product() : product).getHairPrice());
+	}
 
 	public Double getSumReworkPrice() {
 		return sumReworkPrice;

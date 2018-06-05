@@ -170,17 +170,33 @@ public class Product extends BaseEntity<Long>{
     private String btPrice;
 	
     //产品本身外发价格
-	@Transient
+	@Column(name = "hair_price")
     private Double hairPrice;
 	
     //当部门预计生产价格
-	@Transient
+	@Column(name = "department_price")
     private Double departmentPrice;
 	//工序部门类型
 	@Transient
 	private Integer type;	
 	
 	
+
+	public Double getHairPrice() {
+		return hairPrice;
+	}
+
+	public void setHairPrice(Double hairPrice) {
+		this.hairPrice = hairPrice;
+	}
+
+	public Double getDepartmentPrice() {
+		return departmentPrice;
+	}
+
+	public void setDepartmentPrice(Double departmentPrice) {
+		this.departmentPrice = departmentPrice;
+	}
 
 	public Integer getType() {
 		return type;
@@ -444,22 +460,6 @@ public class Product extends BaseEntity<Long>{
 
 	public void setBtPrice(String btPrice) {
 		this.btPrice = btPrice;
-	}
-
-	public Double getHairPrice() {
-		return hairPrice;
-	}
-
-	public void setHairPrice(Double hairPrice) {
-		this.hairPrice = hairPrice;
-	}
-
-	public Double getDepartmentPrice() {
-		return departmentPrice;
-	}
-
-	public void setDepartmentPrice(Double departmentPrice) {
-		this.departmentPrice = departmentPrice;
 	}
 
 	public String getUrl() {
