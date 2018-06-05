@@ -62,14 +62,14 @@
                             <div class="panel-body">
                                 <table class="table table-hover">
                                     <thead>
-                                        <tr>
+                                        <tr style="font-size: 14px">
                                         	<th class="center">
 											<label> 
 											<input type="checkbox" class="ace checks" /> 
 											<span class="lbl"></span>
 											</label>
 											</th>
-                                            <th class="text-center">序号</th>
+                                            <th  class="text-center">序号</th>
                                             <th class="text-center">姓名</th>
                                             <th class="text-center">部门</th>
                                             <th class="text-center">职位</th>
