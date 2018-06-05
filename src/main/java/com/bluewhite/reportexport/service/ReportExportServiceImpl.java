@@ -150,6 +150,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 		List<BaseData> baseDataList = null;
 		if(type==1){
 			baseDataList = baseDataService.getBaseDataListByType(Constants.PRODUCT_FRIST_QUALITY);
+			
 		}
 		if(type==2){
 			baseDataList = baseDataService.getBaseDataListByType(Constants.PRODUCT_FRIST_PACK);
@@ -164,7 +165,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 				Procedure procedure = new Procedure();
 				procedure.setProductId(productId);
 				procedure.setName(procedurePoi.getName());
-				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime()*60));
+				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime()));
 				procedure.setType(type);
 				procedure.setProcedureTypeId(baseDataList.get(0).getId());
 				procedureService.countPrice(procedure);
