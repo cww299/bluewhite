@@ -30,12 +30,12 @@
 							<div class="input-group"> 
 								<table><tr>
 								<td>员工姓名:</td><td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp</td>
 								<td>小组查询:</td><td id="groupp"></td>
 								</tr></table> 
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtask">
-										查找
-										<i class="icon-search icon-on-right bigger-110"></i>
+									<button type="button" class="btn btn-default btn-square btn-sm btn-3d  searchtask">
+										查&nbsp找
 									</button>
 								</span>
 							</div>
@@ -150,7 +150,7 @@
 		      				+'<td class="text-center edit workPrice">'+o.price*1+'</td>'
 							+'<td class="text-center" data-status="'+o.status+'" data-id="'+o.id+'"><input type="radio"   class="rest" value="0">工作<input type="radio"   class="rest" value="1">休息 </td>'
 							+'<td class="text-center"><div class="groupChange" data-id="'+o.id+'" data-groupid="'+a+'" ></div></td>'
-							+'<td class="text-center"> <button class="btn btn-sm btn-warning btn-3d updateremake" data-id='+o.id+'>编辑</button></td></tr>'
+							+'<td class="text-center"> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button></td></tr>'
 		      			}); 
 				        //显示分页
 					  laypage({
@@ -473,7 +473,7 @@
 	      			  $(result.data).each(function(k,j){
 	      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
 	      			  });  
-	      			 $('#groupp').html("<select class='form-control selectcomplete'><option value="+""+">请选择</option>"+htmlth+"</select>") 
+	      			 $('#groupp').html("<select class='form-control selectcomplete'><option value="+""+">请选择&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>"+htmlth+"</select>") 
 			      }
 			  });
 			

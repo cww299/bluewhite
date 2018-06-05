@@ -157,8 +157,8 @@
 		      			 $(result.data).each(function(i,o){
 		      				html +='<tr>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
-		      				+'<td class="text-center"><button class="btn btn-primary btn-3d btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-3d update" data-id='+o.id+'>编辑</button></td></tr>'
+		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
+							+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button></td></tr>'
 							
 		      			}); 
 				        //显示分页

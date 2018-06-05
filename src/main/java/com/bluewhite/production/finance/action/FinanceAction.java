@@ -2,7 +2,6 @@ package com.bluewhite.production.finance.action;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -36,7 +35,6 @@ import com.bluewhite.production.finance.service.FarragoTaskPayService;
 import com.bluewhite.production.finance.service.PayBService;
 import com.bluewhite.production.finance.service.UsualConsumeService;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
-import com.bluewhite.production.productionutils.constant.dao.ProductionConstantDao;
 
 /**
  * 生产部财务相关action 

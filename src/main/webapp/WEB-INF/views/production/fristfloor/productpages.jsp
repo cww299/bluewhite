@@ -46,8 +46,7 @@
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtask">
-										查找
-										<i class="icon-search icon-on-right bigger-110"></i>
+										查&nbsp找
 									</button>
 								</span>
 							</div>
@@ -238,7 +237,7 @@
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center  departmentPrice">'+o.departmentPrice*1+'</td>'
 		      				+'<td class="text-center  hairPrice">'+o.hairPrice*1+'</td>'
-							+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-success btn-3d addprocedure" data-id='+o.id+' data-name='+o.name+'>添加工序</button> <button class="btn btn-xs btn-success btn-3d addbatch" data-id='+o.id+' data-name='+o.name+'>填写批次</button></td></tr>'
+							+'<td class="text-center"><button class="btn btn-xs btn-info  btn-trans update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-primary btn-trans addprocedure" data-id='+o.id+' data-name='+o.name+'>添加工序</button> <button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.name+'>填写批次</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
