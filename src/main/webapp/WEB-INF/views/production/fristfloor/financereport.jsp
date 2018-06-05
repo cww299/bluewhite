@@ -146,6 +146,9 @@
                                     <thead>
                                         <tr>
                                         	<th class="text-center">姓名</th>
+                                        	<th class="text-center">A工资</th>
+                                        	<th class="text-center">B工资</th>
+                                        	<th class="text-center">上浮后的B</th>
                                         	<th class="text-center">汇总加绩</th>
                                         </tr>
                                     </thead>
@@ -325,6 +328,9 @@
 		      				
 		      				html +='<tr>'
 		      				+'<td class="text-center edit ">'+o.userName+'</td>'
+		      				+'<td class="text-center edit ">'+o.payA+'</td>'
+		      				+'<td class="text-center edit ">'+o.payB+'</td>'
+		      				+'<td class="text-center edit ">'+o.addPayB+'</td>'
 		      				+'<td class="text-center edit ">'+o.addPerformancePay+'</td></tr>'
 							
 		      			}); 
