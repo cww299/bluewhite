@@ -41,7 +41,6 @@ public class ProcedureServiceImpl extends BaseServiceImpl<Procedure, Long> imple
 	@Transactional
 	public void countPrice(Procedure procedure) {
 		List<Procedure> procedureList = procedureDao.findByProductIdAndType(procedure.getProductId(), procedure.getType());
-		Product product = productDao.findOne(procedure.getProductId());
 		//计算部门生产总价
 		Double sumTime = 0.0;
 		for(Procedure pro : procedureList){
@@ -50,15 +49,12 @@ public class ProcedureServiceImpl extends BaseServiceImpl<Procedure, Long> imple
 		Double sumPrice = ProTypeUtils.sumProTypePrice(sumTime, procedure.getType());
 		for(Procedure pro : procedureList){
 			pro.setDepartmentPrice(NumUtils.round(sumPrice));
-			product.setDepartmentPrice(NumUtils.round(sumPrice));
 		}
 		//计算外发价格
 		Double price = ProTypeUtils.sumProTypeHairPrice(procedureList,procedure.getType());
 		for(Procedure pro : procedureList){
 			pro.setHairPrice(NumUtils.round(price));
-			product.setHairPrice(NumUtils.round(price));		
 		}
-		productDao.save(product);
 		procedureDao.save(procedureList);
 	}
 

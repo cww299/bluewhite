@@ -28,6 +28,8 @@ import com.bluewhite.production.finance.entity.CollectInformation;
 import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.MonthlyProduction;
 import com.bluewhite.production.finance.entity.UsualConsume;
+import com.bluewhite.production.procedure.dao.ProcedureDao;
+import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.system.user.entity.User;
@@ -55,6 +57,9 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	
 	@Autowired
 	private UsualConsumeService usualConsumeservice;
+	
+	@Autowired
+	private  ProcedureDao  procedureDao;
 	
 	@Override
 	public PageResult<CollectPay> findPages(CollectPay param, PageParameter page) {
@@ -326,6 +331,12 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		double productNumber = bacthList.stream().mapToDouble(Bacth::getNumber).sum();
 		monthlyProduction.setProductNumber(productNumber);
 		//当天产值(外发单价乘以质检的个数)
+		for(Bacth bac : bacthList){
+			 List<Procedure> procedureList = procedureDao.findByProductIdAndType(bac.getProductId(), bac.getType());
+				  if(procedureList!=null && procedureList.size()>0){
+					  bac.setHairPrice(procedureList.get(0).getHairPrice());
+				  }
+		}
 		double productPrice = bacthList.stream().mapToDouble(Bacth::getProductPrice).sum();
 		monthlyProduction.setProductPrice(productPrice);
 		
