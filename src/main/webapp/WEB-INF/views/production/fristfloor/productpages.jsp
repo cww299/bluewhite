@@ -70,7 +70,7 @@
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
-                                    <button type="button" id="addproduct" class="btn btn-success btn-3d pull-right">新增产品</button>
+                                    <button type="button" id="addproduct" class="btn btn-success  btn-sm btn-3d pull-right">新增产品</button>
                                 </table>
                                 <div id="pager" class="pull-right">
                                 
