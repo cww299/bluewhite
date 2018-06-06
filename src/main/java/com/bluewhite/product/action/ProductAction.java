@@ -1,5 +1,7 @@
 package com.bluewhite.product.action;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +17,11 @@ import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.product.entity.Product;
 import com.bluewhite.product.service.ProductService;
 import com.bluewhite.production.procedure.entity.Procedure;
+import com.bluewhite.production.procedure.service.ProcedureService;
 import com.bluewhite.system.sys.entity.SysLog;
 
 @Controller
@@ -27,6 +31,8 @@ public class ProductAction {
 	
 	@Autowired
 	private ProductService productService;
+	@Autowired
+	private ProcedureService  procedureService;
 	
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -92,6 +98,14 @@ public class ProductAction {
 			BeanCopyUtils.copyNullProperties(oldProduct,product);
 			product.setCreatedAt(oldProduct.getCreatedAt());
 			productService.update(product);
+			//根据不同部门，计算不同的外发价格
+			if(product.getType()==3){
+				List<Procedure>	procedureList = procedureService.findByProductIdAndType(product.getId(),product.getType());
+				for(Procedure pro : procedureList){
+					pro.setHairPrice(product.getHairPrice());
+				}
+				procedureService.saveList(procedureList);
+			}
 			cr.setMessage("修改成功");
 		}else{
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

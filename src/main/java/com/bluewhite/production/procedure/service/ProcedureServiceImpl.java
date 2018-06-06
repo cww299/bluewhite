@@ -106,4 +106,10 @@ public class ProcedureServiceImpl extends BaseServiceImpl<Procedure, Long> imple
 		return list;
 	}
 
+
+	@Override
+	public List<Procedure> saveList(List<Procedure> procedureList) {
+		return procedureDao.save(procedureList);
+	}
+
 }
