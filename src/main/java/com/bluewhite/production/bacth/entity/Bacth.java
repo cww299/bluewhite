@@ -143,12 +143,25 @@ public class Bacth extends BaseEntity<Long>{
 	@Transient
 	private Double productPrice;
 	
-	
+    /**
+     * 不同部门外发价格
+     */
+	@Transient
+    private Double hairPrice;
 	
 
 	public Double getProductPrice() {
-		return (number==null ? 0.0 : number) * 
-				((product==null ? new Product() : product).getHairPrice()==null ? 0.0 : (product==null ? new Product() : product).getHairPrice());
+		return (number==null ? 0.0 : number) * (hairPrice==null ? 0.0 : hairPrice);
+	}
+
+	
+	
+	public Double getHairPrice() {
+		return hairPrice;
+	}
+
+	public void setHairPrice(Double hairPrice) {
+		this.hairPrice = hairPrice;
 	}
 
 	public Double getSumReworkPrice() {
