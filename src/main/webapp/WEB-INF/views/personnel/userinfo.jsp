@@ -22,6 +22,27 @@
                                     <i class="fa fa-chevron-down"></i>
                                 </div>
                             </div>
+                            <div class="row" style="height: 30px; margin:15px 0 10px">
+			<div class="col-xs-8 col-sm-8  col-md-8">
+				<form class="form-search" >
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-7">
+							<div class="input-group"> 
+								<table><tr>
+								<td>员工姓名:</td><td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
+								</tr></table> 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-default btn-square btn-sm btn-3d  searchtask">
+										查&nbsp找
+									</button>
+								</span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+                            
                             <div class="panel-body">
                                 <table class="table table-hover">
                                     <thead>
@@ -66,12 +87,18 @@
                                         </div>
                  </div>
                  <div class="form-group">
-                                        <label class="col-sm-3 control-label">批次号:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="bacthNumber" class="form-control">
+                                        <label class="col-sm-3 control-label">部门:</label>
+                                        <div class="col-sm-6 department">
+                                            
                                         </div>
                  </div>
                 
+                <div class="form-group">
+                                        <label class="col-sm-3 control-label">职位:</label>
+                                        <div class="col-sm-6 position">
+                                            
+                                        </div>
+                 </div>
 				</form>
 </div>
 </div>       
@@ -103,7 +130,8 @@
 			//初始化js
 			 var data={
 						page:1,
-				  		size:15,	
+				  		size:13,	
+				  		
 				} 
 			this.init = function(){
 			//注册绑定事件
@@ -134,7 +162,7 @@
 		      				+'<td class="edit price">'+o.idCard+'</td>'
 		      				+'<td class="edit price">'+o.orgName.name+'</td>'
 		      				+'<td class="edit price">'+o.position.name+'</td>'
-							+'<td><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+'>修改</button></td></tr>'
+							+'<td><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+o.orgName.id+' data-postid='+o.position.id+'>修改</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -146,7 +174,8 @@
 					    	  if(!first){ 
 						        	var _data = {
 						        			page:obj.curr,
-									  		size:15,
+									  		size:13,
+									  		userName:$('#name').val(),
 								  	}
 						            self.loadPagination(_data);
 							     }
@@ -167,23 +196,23 @@
 					$('.addbatch').on('click',function(){
 						var _index
 						var index
-						var postData
+						var postData   
+						var postId=$(this).data('postid');
+						var nameId=$(this).data('nameid');
 						var dicDiv=$('#addbatch');
 						var userName=$(this).data('name');
 						var bacthDepartmentPrice=$(this).parent().parent().find('.departmentPrice').text();
 						var bacthHairPrice=$(this).parent().parent().find('.hairPrice').text();
 						$('#proName').val(userName);
 						var id=$(this).data('id');
-						
-						
+						var a="";
+						var c="";
 						//遍历工序类型
 				    var indextwo;
 				    var htmltwo = '';
 				    var htmlth = '';
 				    var htmlfr = '';
-				    var data={
-				    		type:1,
-				    }
+				    var html = '';
 					    var getdata={type:"orgName",}
 		      			$.ajax({
 						      url:"${ctx}/basedata/list",
@@ -196,12 +225,25 @@
 							  }, 
 				      		  success: function (result) {
 				      			  $(result.data).each(function(k,j){
-				      				htmlfr +='<input type="radio" class="Proceduretypeid"  value='+j.id+' >'+j.name+''
-				      			  }); 
+				      				htmlfr +='<option value="'+j.id+'">'+j.name+'</option>'
+				      			  });
+				      			var htmlth='<select class="form-control  selectgroupChange"><option value="">去除分组</option>'+htmlfr+'</select>'
+				      			
+				      			$(".department").html(htmlth); 
+				      			$('.selectgroupChange').each(function(i,o){
+				    				var id=nameId;
+				    				$(o).val(id);
+				    			})
 				      			layer.close(indextwo);
 				      			//查询工序
-								   /*  $.ajax({
-									      url:"${ctx}/production/getProcedure",
+				      			$(".selectgroupChange").change(function(){
+				      			  var htmltwo = '';
+				      				c=$(this).val();
+				      				var data={
+				    						id:c,
+				    					  }
+								     $.ajax({
+									      url:"${ctx}/basedata/children",
 									      data:data,
 									      type:"GET",
 									      beforeSend:function(){
@@ -213,30 +255,20 @@
 							      		  success: function (result) {
 							      			
 							      			  $(result.data).each(function(i,o){
-							      				  
-							      				htmltwo +='<tr>'
-							      				+'<td class="text-center edit workingnametwo id">'+o.name+'</td>'
-							      				+'<td class="text-center edit workingtimetwo">'+o.workingTime+'</td>'
-							      				+'<td data-id="'+o.id+'" class="text-center" data-code="'+o.procedureType.id+'">'+htmlfr+'</td>' 
-												+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d updateworking" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-danger btn-3d deleteprocedure">删除</button></td></tr>'
-												
+							      				htmltwo +='<option value="'+o.id+'">'+o.name+'</option>'
 							      			});  
-										   	   
-										   	layer.close(indextwo);
-										   	//新增时 查找工序类型
-									      			htmltwo="<tr><td class='text-center'><input type='text' class='input-large workingname'></td><td class='text-center'><input type='text' class='input-small workingtime' ></td><td class='text-center'>"+htmlfr+"</td><td class='text-center'><button class='btn btn-xs btn-primary btn-3d add' data-productid="+productId+">新增</button></td></tr>"+htmltwo;
-									      			$("#tableworking").html(htmltwo); 
-									      			
-							      			
-							      			
-										   	  $("#tableworking").html(htmltwo);  
-									      			self.loadevenstwo();
-										   	self.checked();
+							      			var html='<select class="form-control  selectChange">'+htmltwo+'</select>'
+							      			$(".position").html(html);
+							      		
+							      			layer.close(indextwo);
 									      },error:function(){
 												layer.msg("加载失败！", {icon: 2});
 												layer.close(indextwo);
 										  }
-									  }); */
+									  }); 
+				      			})
+				      			
+				      			
 						      }
 						  });
 						
@@ -253,17 +285,12 @@
 							  yes:function(index, layero){
 								 
 								  postData={
-										  productId:id,
-										  bacthNumber:$('#bacthNumber').val(),
-										  number:$('#prosum').val(),
-										  remarks:$('#remarks').val(),
-										  bacthDepartmentPrice:bacthDepartmentPrice,
-										  bacthHairPrice:bacthHairPrice,
-										  type:1,
-										  allotTime:$('#Time').val(),
+										  id:id,
+										  orgNameId:$('.selectgroupChange').val(),
+										  positionId:$('.selectChange').val()
 								  }
 								   $.ajax({
-										url:"${ctx}/bacth/addBacth",
+										url:"${ctx}/system/user/update",
 										data:postData,
 										type:"POST",
 										beforeSend:function(){
@@ -274,13 +301,19 @@
 										
 										success:function(result){
 											if(0==result.code){
-												layer.msg("添加成功！", {icon: 1});
+												layer.msg("修改成功！", {icon: 1});
 												 
 												$('.addbatchForm')[0].reset(); 
 												$('#addbatch').hide();
+												var data = {
+											  			page:1,
+											  			size:13,
+											  			userName:$('#name').val(),
+											  	}
+												self.loadPagination(data);
 												
 											}else{
-												layer.msg("添加失败", {icon: 2});
+												layer.msg("修改失败", {icon: 2});
 											}
 											
 											layer.close(index);
@@ -297,7 +330,17 @@
 						});
 					})
 			  }
+			  
 			this.events = function(){
+				$('.searchtask').on('click',function(){
+					var data = {
+				  			page:1,
+				  			size:13,
+				  			userName:$('#name').val(),
+				  	}
+					
+		            self.loadPagination(data);
+				});
 			}
    	}
 	var login = new Login();
