@@ -118,7 +118,7 @@
                                     <thead>
                                         <tr>
                                         	<th class="text-center">工序名称</th>
-                                            <th class="text-center">工序时间</th>
+                                            <th class="text-center">工序时间(秒)</th>
                                             <th class="text-center">工序类型</th>
                                             <th class="text-center">操作</th>
                                         </tr>
@@ -483,7 +483,7 @@
 									   	   
 									   	layer.close(indextwo);
 									   	//新增时 查找工序类型
-								      			htmltwo="<tr><td class='text-center'><input type='text' class='input-large workingname'></td><td class='text-center'><input type='text' class='input-small workingtime'></td><td class='text-center'>"+htmlfr+"</td><td class='text-center'><button class='btn btn-xs btn-primary btn-3d add' data-productid="+productId+">新增</button></td></tr>"+htmltwo;
+								      			htmltwo="<tr><td class='text-center'><input type='text' class='input-large workingname'></td><td class='text-center'><input type='text' class='input-small workingtime' ></td><td class='text-center'>"+htmlfr+"</td><td class='text-center'><button class='btn btn-xs btn-primary btn-3d add' data-productid="+productId+">新增</button></td></tr>"+htmltwo;
 								      			$("#tableworking").html(htmltwo); 
 								      			
 						      			

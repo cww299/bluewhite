@@ -103,44 +103,44 @@
 				<div style="height: 30px"></div>
 				<form class="form-horizontal addDictDivTypeForm">
 					<div class="row col-xs-12  col-sm-12  col-md-12 ">
-			<div class="form-group">
-                                        <label class="col-sm-3 control-label">任务分配时间:</label>
-                                        <div class="col-sm-6">
-                                            <input id="Time" placeholder="时间可不填" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#Time', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-                                        </div>
-                 </div>
+		
+                 
 						<div class="form-group">
-						
-                           <label class="col-sm-3 col-md-2 control-label">任务数量</label>
-                              <div class="col-sm-2 col-md-2">
+                           <label class="col-sm-3 col-md-2 control-label">任务数量:</label>
+                              <div class="col-sm-3 col-md-3">
                                   <input type="text" class="form-control sumnumber">
                               </div>
-                               <div class="col-sm-2 col-md-1"></div>
-                               <div id="dis" style="display: none">
-                            <label class="col-sm-3 col-md-2 control-label" >预计完成时间</label>
-                                <div class="col-sm-2 col-md-2">
-                                  <input type="text" class="form-control sumtime">
+                               <div >
+                            <label class="col-sm-2 col-md-2 control-label" >预计完成时间:</label>
+                                <div class="col-sm-3 col-md-3">
+                                  <input type="text"   placeholder="非返工任务不填写"  class="form-control sumtime">
                                 </div>
                                 </div>
                     	</div>
                     	
+                    	
+                 		 <div class="form-group">
+                               <label class="col-sm-2 control-label">任务分配:</label>
+                                 <div class="col-sm-3">
+                                          <input id="Time" placeholder="时间可不填" class="form-control laydate-icon"
+           									onClick="laydate({elem: '#Time', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                                      </div>
+                              <label class="col-sm-2 control-label">加绩工序:</label>
+                              <div class="col-sm-3 workingtw">
+                              </div> 
+                		 </div>
+                    	
+                    	
                     	<div class="form-group">
-                           <label class="col-sm-2 control-label">选择工序</label>
+                           <label class="col-sm-2 control-label">选择工序:</label>
                               <div class="col-sm-2 working">
                               </div>
                               <div class="col-sm-2 checkworking"></div>
-                            <label class="col-sm-1 control-label">完成人</label>
+                            <label class="col-sm-1 control-label">完成人:</label>
                                 <div class="col-sm-2 complete">
                                   <input type="text" class="form-control">
                                 </div>
                                  <div class="col-sm-2 select"></div>
-                    	</div>
-                    	<div class="form-group">
-                            <label class="col-sm-3 control-label">加绩工序选择</label>
-                                <div class="col-sm-6 workingtw">
-                                  
-                                </div>
                     	</div>
                  </div>
 				</div>
@@ -168,7 +168,7 @@
                             <div class="col-sm-3 workingth">
                             </div>
                            <label class="col-sm-2 control-label">选择工序:</label>
-                              <div class="col-sm-2 workingtw">
+                              <div class="col-sm-3 workingtw">
                               </div>
                               <div class="col-sm-2 checkworkingtw"></div>
                     	</div>
