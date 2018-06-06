@@ -72,7 +72,7 @@
     <!-- Switch -->
     <script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
     <!--Load these page level functions-->
-     <script type="text/javascript">
+    <!--  <script type="text/javascript">
 
 	  Qfast.add('widgets', { path: "${ctx }/static/lun/terminator2.2.min.js", type: "js", requires: ['fx'] });  
 	  Qfast(false, 'widgets', function () {
@@ -92,7 +92,7 @@
   });
 
 
-</script>
+</script> -->
      
 </body>
 
