@@ -617,7 +617,10 @@
 								var performanceNumber=$(".selectchangtw").val();
 								
 								var performance=$(".selectchangtw option:selected").text();
-								
+								console.log(performance)
+								if(performance=="请选择请选择"){
+									performance="";
+								}
 								var postData = {
 										type:1,
 										bacthId:that.data("id"),
