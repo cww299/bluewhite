@@ -238,12 +238,11 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						double time = Double.valueOf(timeArr[i]);
 						sumTime += time;
 					}
-					
-
 				}
 			}
 		}
 		
+		int sumNumber = 0;
 		//将时间段转变成数组
 		if (!StringUtils.isEmpty(task.getTimes())) {
 			String[] timeArr = task.getTimes().split(",");
@@ -263,7 +262,10 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					tasks.setPerformance(task.getPerformance());
 					tasks.setPerformanceNumber(task.getPerformanceNumber());
 					tasks.setNumber(NumUtils.roundInt(time*number/sumTime));
-					
+					sumNumber+=tasks.getNumber();
+					if(i==timeArr.length-1){
+						tasks.setNumber(tasks.getNumber()+(number-sumNumber));
+					}
 					//将用户段转换成数组,将同顺序的用户添加到任务中
 					if (!StringUtils.isEmpty(task.getUsers())) {
 						String[] userArr = task.getUsers().split("\\.");
