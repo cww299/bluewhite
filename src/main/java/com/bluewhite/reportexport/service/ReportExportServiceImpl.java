@@ -156,7 +156,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 			baseDataList = baseDataService.getBaseDataListByType(Constants.PRODUCT_FRIST_PACK);
 		}
 		if(type==3){
-			baseDataList = baseDataService.getBaseDataListByType(Constants.PRODUCT_TOW_DEEDLE);
+			baseDataList = baseDataService.getBaseDataListByType(Constants.PRODUCT_TWO_DEEDLE);
 		}
 		
 		if(excelProcedure.size()>0){

@@ -69,7 +69,7 @@ public class Constants {
     /**
      *  生产部二楼针工
      */
-    public static String PRODUCT_TOW_DEEDLE = " productTowDeedle";
+    public static String PRODUCT_TWO_DEEDLE = "productTwoDeedle";
     //包含的部门
     public static String DEEDLE_ORGNAME = "84";
     

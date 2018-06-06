@@ -191,33 +191,40 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 
 	@Override
 	@Transactional
-	public void deleteTask(Long id) {
-		//同时删除B工资
-		List<PayB> payB = payBDao.findByTaskId(id);
-		if(payB.size()>0){
-			payBDao.delete(payB);
-		}
-		//更新该批次的数值(sumTaskPrice(总任务价值),regionalPrice（地区差价）)
-		Task task = dao.findOne(id);
-		Bacth bacth = task.getBacth();
-		Double sumTaskPrice = 0.0;
-		//计算出该批次下所有人的实际成本总和
-		CopyOnWriteArraySet<Task> taskset = new CopyOnWriteArraySet<Task>( bacth.getTasks());		
-		for(Task ta : taskset){
-			//排除要删除的任务id
-			if(!ta.getId().equals(id)){
-				sumTaskPrice+=ta.getTaskPrice();
-			}else{
-				 dao.delete(ta);
-				 bacth.getTasks().remove(ta);
+	public void deleteTask(String ids) {
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length>0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					//同时删除B工资
+					List<PayB> payB = payBDao.findByTaskId(id);
+					if(payB.size()>0){
+						payBDao.delete(payB);
+					}
+					//更新该批次的数值(sumTaskPrice(总任务价值),regionalPrice（地区差价）)
+					Task task = dao.findOne(id);
+					Bacth bacth = task.getBacth();
+					Double sumTaskPrice = 0.0;
+					//计算出该批次下所有人的实际成本总和
+					CopyOnWriteArraySet<Task> taskset = new CopyOnWriteArraySet<Task>(bacth.getTasks());		
+					for(Task ta : taskset){
+						//排除要删除的任务id
+						if(!ta.getId().equals(id)){
+							sumTaskPrice+=ta.getTaskPrice();
+						}else{
+							 dao.delete(ta);
+							 bacth.getTasks().remove(ta);
+						}
+					};
+					bacth.setSumTaskPrice(sumTaskPrice);
+					//计算出该批次的地区差价
+					bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType())));
+					//更新批次
+					bacthDao.save(bacth);
+				};
 			}
-		};
-		bacth.setSumTaskPrice(sumTaskPrice);
-		//计算出该批次的地区差价
-		bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType())));
-		//更新批次
-		bacthDao.save(bacth);
-
+		}
 	}
 
 	@Override

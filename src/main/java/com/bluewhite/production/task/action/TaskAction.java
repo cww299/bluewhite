@@ -154,10 +154,10 @@ private static final Log log = Log.getLog(TaskAction.class);
 	 */
 	@RequestMapping(value = "/task/delete", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse delete(HttpServletRequest request,Long id) {
+	public CommonResponse delete(HttpServletRequest request,String ids) {
 		CommonResponse cr = new CommonResponse();
-		if(id!=null){
-			taskService.deleteTask(id);
+		if(!StringUtils.isEmpty(ids)){
+			taskService.deleteTask(ids);
 			cr.setMessage("删除成功");
 		}else{
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

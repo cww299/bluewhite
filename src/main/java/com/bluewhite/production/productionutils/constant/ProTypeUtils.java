@@ -252,7 +252,7 @@ public  class ProTypeUtils {
 			type = 2;
 		}
 		//生产部二楼针工
-		if(cu.getRole().contains(Constants.PRODUCT_TOW_DEEDLE)){
+		if(cu.getRole().contains(Constants.PRODUCT_TWO_DEEDLE)){
 			type = 3;
 		}
 		return type;
