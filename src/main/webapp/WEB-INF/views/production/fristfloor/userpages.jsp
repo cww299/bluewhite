@@ -384,7 +384,6 @@
 				$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
 					arr.push($(this).val());   
 				});
-				console.log(arr.length)
 				if(arr.length<=0){
 					return layer.msg("必须选择一个用户", {icon: 2});
 				}

@@ -22,6 +22,27 @@
                                     <i class="fa fa-chevron-down"></i>
                                 </div>
                             </div>
+                            <div class="row" style="height: 30px; margin:15px 0 10px">
+			<div class="col-xs-8 col-sm-8  col-md-8">
+				<form class="form-search" >
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-7">
+							<div class="input-group"> 
+								<table><tr>
+								<td>员工姓名:</td><td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
+								</tr></table> 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-default btn-square btn-sm btn-3d  searchtask">
+										查&nbsp找
+									</button>
+								</span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+                            
                             <div class="panel-body">
                                 <table class="table table-hover">
                                     <thead>
@@ -47,6 +68,47 @@
                 </div>
             </section>
         </section>
+        
+        
+        
+        
+        
+        
+         <!--隐藏框 修改开始  -->
+ <div id="addbatch" style="display: none;">
+			<div class=" col-xs-12  col-sm-12  col-md-12 ">
+				<div class="space-10"></div>
+				<div style="height: 30px"></div>
+				<form class="form-horizontal addbatchForm">
+				<div class="form-group">
+                                        <label class="col-sm-3 control-label">姓名:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="proName" class="form-control">
+                                        </div>
+                 </div>
+                 <div class="form-group">
+                                        <label class="col-sm-3 control-label">部门:</label>
+                                        <div class="col-sm-6 department">
+                                            
+                                        </div>
+                 </div>
+                
+                <div class="form-group">
+                                        <label class="col-sm-3 control-label">职位:</label>
+                                        <div class="col-sm-6 position">
+                                            
+                                        </div>
+                 </div>
+				</form>
+</div>
+</div>       
+    <!--隐藏框 修改结束  -->
+        
+        
+        
+        
+        
+        
     </section>
  
     <!--Global JS-->
@@ -68,7 +130,8 @@
 			//初始化js
 			 var data={
 						page:1,
-				  		size:15,	
+				  		size:13,	
+				  		
 				} 
 			this.init = function(){
 			//注册绑定事件
@@ -99,7 +162,7 @@
 		      				+'<td class="edit price">'+o.idCard+'</td>'
 		      				+'<td class="edit price">'+o.orgName.name+'</td>'
 		      				+'<td class="edit price">'+o.position.name+'</td>'
-							+'<td><button class="btn btn-xs btn-primary update">详细信息</button></td></tr>'
+							+'<td><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+o.orgName.id+' data-postid='+o.position.id+'>修改</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -111,7 +174,8 @@
 					    	  if(!first){ 
 						        	var _data = {
 						        			page:obj.curr,
-									  		size:15,
+									  		size:13,
+									  		userName:$('#name').val(),
 								  	}
 						            self.loadPagination(_data);
 							     }
@@ -120,13 +184,163 @@
 				        
 					   	layer.close(index);
 					   	$("#tablecontent").html(html); 
+					   	self.loadEvents();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
 					  }
 				  });
 			}
+			  this.loadEvents = function(){
+					//触发批次弹框
+					$('.addbatch').on('click',function(){
+						var _index
+						var index
+						var postData   
+						var postId=$(this).data('postid');
+						var nameId=$(this).data('nameid');
+						var dicDiv=$('#addbatch');
+						var userName=$(this).data('name');
+						var bacthDepartmentPrice=$(this).parent().parent().find('.departmentPrice').text();
+						var bacthHairPrice=$(this).parent().parent().find('.hairPrice').text();
+						$('#proName').val(userName);
+						var id=$(this).data('id');
+						var a="";
+						var c="";
+						//遍历工序类型
+				    var indextwo;
+				    var htmltwo = '';
+				    var htmlth = '';
+				    var htmlfr = '';
+				    var html = '';
+					    var getdata={type:"orgName",}
+		      			$.ajax({
+						      url:"${ctx}/basedata/list",
+						      data:getdata,
+						      type:"GET",
+						      beforeSend:function(){
+						    	  indextwo = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								  });
+							  }, 
+				      		  success: function (result) {
+				      			  $(result.data).each(function(k,j){
+				      				htmlfr +='<option value="'+j.id+'">'+j.name+'</option>'
+				      			  });
+				      			var htmlth='<select class="form-control  selectgroupChange"><option value="">去除分组</option>'+htmlfr+'</select>'
+				      			
+				      			$(".department").html(htmlth); 
+				      			$('.selectgroupChange').each(function(i,o){
+				    				var id=nameId;
+				    				$(o).val(id);
+				    			})
+				      			layer.close(indextwo);
+				      			//查询工序
+				      			$(".selectgroupChange").change(function(){
+				      			  var htmltwo = '';
+				      				c=$(this).val();
+				      				var data={
+				    						id:c,
+				    					  }
+								     $.ajax({
+									      url:"${ctx}/basedata/children",
+									      data:data,
+									      type:"GET",
+									      beforeSend:function(){
+									    	  indextwo = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											  });
+										  }, 
+							      			 
+							      		  success: function (result) {
+							      			
+							      			  $(result.data).each(function(i,o){
+							      				htmltwo +='<option value="'+o.id+'">'+o.name+'</option>'
+							      			});  
+							      			var html='<select class="form-control  selectChange">'+htmltwo+'</select>'
+							      			$(".position").html(html);
+							      		
+							      			layer.close(indextwo);
+									      },error:function(){
+												layer.msg("加载失败！", {icon: 2});
+												layer.close(indextwo);
+										  }
+									  }); 
+				      			})
+				      			
+				      			
+						      }
+						  });
+						
+						
+						_index = layer.open({
+							  type: 1,
+							  skin: 'layui-layer-rim', //加上边框
+							  area: ['30%', '50%'], 
+							  btnAlign: 'c',//宽高
+							  maxmin: true,
+							  title:userName,
+							  content: dicDiv,
+							  btn: ['确定', '取消'],
+							  yes:function(index, layero){
+								 
+								  postData={
+										  id:id,
+										  orgNameId:$('.selectgroupChange').val(),
+										  positionId:$('.selectChange').val()
+								  }
+								   $.ajax({
+										url:"${ctx}/system/user/update",
+										data:postData,
+										type:"POST",
+										beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'#fff'] //0.1透明度的白色背景
+												});
+										},
+										
+										success:function(result){
+											if(0==result.code){
+												layer.msg("修改成功！", {icon: 1});
+												 
+												$('.addbatchForm')[0].reset(); 
+												$('#addbatch').hide();
+												var data = {
+											  			page:1,
+											  			size:13,
+											  			userName:$('#name').val(),
+											  	}
+												self.loadPagination(data);
+												
+											}else{
+												layer.msg("修改失败", {icon: 2});
+											}
+											
+											layer.close(index);
+										},error:function(){
+											layer.msg("操作失败！", {icon: 2});
+											layer.close(index);
+										}
+									}); 
+								},
+							  end:function(){
+								  $('.addbatchForm')[0].reset(); 
+								  $('#addbatch').hide();
+							  }
+						});
+					})
+			  }
+			  
 			this.events = function(){
+				$('.searchtask').on('click',function(){
+					var data = {
+				  			page:1,
+				  			size:13,
+				  			userName:$('#name').val(),
+				  	}
+					
+		            self.loadPagination(data);
+				});
 			}
    	}
 	var login = new Login();

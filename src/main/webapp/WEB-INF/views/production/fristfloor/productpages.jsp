@@ -367,6 +367,13 @@
 							},
 						  end:function(){
 							  $('#addworking').hide();
+							  data={
+									page:1,
+								  	size:13,	
+								  	type:1,
+								  	name:$('#name').val(),
+						  			number:$('#number').val(),
+							  }
 							self.loadPagination(data);
 						  }
 					});
