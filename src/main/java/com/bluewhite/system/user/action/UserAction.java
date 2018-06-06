@@ -48,7 +48,7 @@ public class UserAction {
 						"nation","email","gender","birthDate","group")
 				.addRetainTerm(Group.class, "id","name", "type", "price")
 				.addRetainTerm(Role.class, "name", "role", "description","id")
-				.addRetainTerm(BaseData.class, "name", "type");
+				.addRetainTerm(BaseData.class, "id","name", "type");
 	}
 	
 	/**
