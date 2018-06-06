@@ -203,7 +203,7 @@
                                   <input type="text" class="form-control">
                                 </div>
                                <div class="col-sm-1 selecttw"></div>
-                                  <div class="col-sm-2 col-md-1"><input type="button" class="btn btn-sm btn-success" id="save" value="新增"></input></div>
+                                  <div class="col-sm-2 col-md-1"><input type="button" class="btn btn-sm  btn-success" id="save" value="新增"></input></div>
                     	</div>
                  		
                  </div>

@@ -46,7 +46,7 @@
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
-                                    <button type="button" id="addgroup" class="btn btn-success btn-3d pull-right">新增小组</button>
+                                    <button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增小组</button>
                                 </table>
                                 <div id="pager" class="pull-right">
                                 
