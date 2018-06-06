@@ -37,6 +37,11 @@ public interface ProcedureService extends BaseCRUDService<Procedure,Long>{
 	 * @return
 	 */
 	List<Procedure> findList(Procedure procedure);
+	/**
+	 * 保存全部list
+	 * @param procedureList
+	 */
+	List<Procedure> saveList(List<Procedure> procedureList);
 
 
 }
