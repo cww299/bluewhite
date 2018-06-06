@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.FlushModeType;
 import javax.persistence.PersistenceContext;
 
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -144,24 +145,17 @@ public class ReportExportServiceImpl implements ReportExportService{
 	@Transactional
 	public int importProcedureExcel(List<ProcedurePoi> excelProcedure, Long productId,Integer type) {
 		int count = 0;
+		if(excelProcedure.size()>0){
+			throw new ServiceException("excel无数据");
+		}
+		List<Procedure> procedureList =new ArrayList<Procedure>();
 		if(type==null){
 			type = ProTypeUtils.roleGetProType();
 		}
 		List<BaseData> baseDataList = null;
 		if(type==1){
 			baseDataList = baseDataService.getBaseDataListByType(Constants.PRODUCT_FRIST_QUALITY);
-			
-		}
-		if(type==2){
-			baseDataList = baseDataService.getBaseDataListByType(Constants.PRODUCT_FRIST_PACK);
-		}
-		if(type==3){
-			baseDataList = baseDataService.getBaseDataListByType(Constants.PRODUCT_TWO_DEEDLE);
-		}
-		
-		if(excelProcedure.size()>0){
-			List<Procedure> procedureList =new ArrayList<Procedure>();
- 			for(ProcedurePoi procedurePoi : excelProcedure){
+			for(ProcedurePoi procedurePoi : excelProcedure){
 				Procedure procedure = new Procedure();
 				procedure.setProductId(productId);
 				procedure.setName(procedurePoi.getName());
@@ -172,8 +166,26 @@ public class ReportExportServiceImpl implements ReportExportService{
 				procedureList.add(procedure);
 				count++;
 			}
- 			procedureDao.save(procedureList);
 		}
+		if(type==2){
+			baseDataList = baseDataService.getBaseDataListByType(Constants.PRODUCT_FRIST_PACK);
+		}
+		if(type==3){
+			baseDataList = baseDataService.getBaseDataListByType(Constants.PRODUCT_TWO_DEEDLE);
+			for(ProcedurePoi procedurePoi : excelProcedure){
+				Procedure procedure = new Procedure();
+				procedure.setProductId(productId);
+				procedure.setName(procedurePoi.getName());
+				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime()*60));
+				procedure.setType(type);
+				procedure.setProcedureTypeId(baseDataList.get(0).getId());
+				procedureService.countPrice(procedure);
+				procedureList.add(procedure);
+				count++;
+			}
+			
+		}
+		procedureDao.save(procedureList);
 		return count;
 	}
 
