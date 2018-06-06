@@ -47,6 +47,41 @@
                 </div>
             </section>
         </section>
+        
+        
+        
+        
+        
+        
+         <!--隐藏框 修改开始  -->
+ <div id="addbatch" style="display: none;">
+			<div class=" col-xs-12  col-sm-12  col-md-12 ">
+				<div class="space-10"></div>
+				<div style="height: 30px"></div>
+				<form class="form-horizontal addbatchForm">
+				<div class="form-group">
+                                        <label class="col-sm-3 control-label">姓名:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="proName" class="form-control">
+                                        </div>
+                 </div>
+                 <div class="form-group">
+                                        <label class="col-sm-3 control-label">批次号:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="bacthNumber" class="form-control">
+                                        </div>
+                 </div>
+                
+				</form>
+</div>
+</div>       
+    <!--隐藏框 修改结束  -->
+        
+        
+        
+        
+        
+        
     </section>
  
     <!--Global JS-->
@@ -99,7 +134,7 @@
 		      				+'<td class="edit price">'+o.idCard+'</td>'
 		      				+'<td class="edit price">'+o.orgName.name+'</td>'
 		      				+'<td class="edit price">'+o.position.name+'</td>'
-							+'<td><button class="btn btn-xs btn-primary update">详细信息</button></td></tr>'
+							+'<td><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+'>修改</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -120,12 +155,148 @@
 				        
 					   	layer.close(index);
 					   	$("#tablecontent").html(html); 
+					   	self.loadEvents();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
 					  }
 				  });
 			}
+			  this.loadEvents = function(){
+					//触发批次弹框
+					$('.addbatch').on('click',function(){
+						var _index
+						var index
+						var postData
+						var dicDiv=$('#addbatch');
+						var userName=$(this).data('name');
+						var bacthDepartmentPrice=$(this).parent().parent().find('.departmentPrice').text();
+						var bacthHairPrice=$(this).parent().parent().find('.hairPrice').text();
+						$('#proName').val(userName);
+						var id=$(this).data('id');
+						
+						
+						//遍历工序类型
+				    var indextwo;
+				    var htmltwo = '';
+				    var htmlth = '';
+				    var htmlfr = '';
+				    var data={
+				    		type:1,
+				    }
+					    var getdata={type:"orgName",}
+		      			$.ajax({
+						      url:"${ctx}/basedata/list",
+						      data:getdata,
+						      type:"GET",
+						      beforeSend:function(){
+						    	  indextwo = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								  });
+							  }, 
+				      		  success: function (result) {
+				      			  $(result.data).each(function(k,j){
+				      				htmlfr +='<input type="radio" class="Proceduretypeid"  value='+j.id+' >'+j.name+''
+				      			  }); 
+				      			layer.close(indextwo);
+				      			//查询工序
+								   /*  $.ajax({
+									      url:"${ctx}/production/getProcedure",
+									      data:data,
+									      type:"GET",
+									      beforeSend:function(){
+									    	  indextwo = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											  });
+										  }, 
+							      			 
+							      		  success: function (result) {
+							      			
+							      			  $(result.data).each(function(i,o){
+							      				  
+							      				htmltwo +='<tr>'
+							      				+'<td class="text-center edit workingnametwo id">'+o.name+'</td>'
+							      				+'<td class="text-center edit workingtimetwo">'+o.workingTime+'</td>'
+							      				+'<td data-id="'+o.id+'" class="text-center" data-code="'+o.procedureType.id+'">'+htmlfr+'</td>' 
+												+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d updateworking" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-danger btn-3d deleteprocedure">删除</button></td></tr>'
+												
+							      			});  
+										   	   
+										   	layer.close(indextwo);
+										   	//新增时 查找工序类型
+									      			htmltwo="<tr><td class='text-center'><input type='text' class='input-large workingname'></td><td class='text-center'><input type='text' class='input-small workingtime' ></td><td class='text-center'>"+htmlfr+"</td><td class='text-center'><button class='btn btn-xs btn-primary btn-3d add' data-productid="+productId+">新增</button></td></tr>"+htmltwo;
+									      			$("#tableworking").html(htmltwo); 
+									      			
+							      			
+							      			
+										   	  $("#tableworking").html(htmltwo);  
+									      			self.loadevenstwo();
+										   	self.checked();
+									      },error:function(){
+												layer.msg("加载失败！", {icon: 2});
+												layer.close(indextwo);
+										  }
+									  }); */
+						      }
+						  });
+						
+						
+						_index = layer.open({
+							  type: 1,
+							  skin: 'layui-layer-rim', //加上边框
+							  area: ['30%', '50%'], 
+							  btnAlign: 'c',//宽高
+							  maxmin: true,
+							  title:userName,
+							  content: dicDiv,
+							  btn: ['确定', '取消'],
+							  yes:function(index, layero){
+								 
+								  postData={
+										  productId:id,
+										  bacthNumber:$('#bacthNumber').val(),
+										  number:$('#prosum').val(),
+										  remarks:$('#remarks').val(),
+										  bacthDepartmentPrice:bacthDepartmentPrice,
+										  bacthHairPrice:bacthHairPrice,
+										  type:1,
+										  allotTime:$('#Time').val(),
+								  }
+								   $.ajax({
+										url:"${ctx}/bacth/addBacth",
+										data:postData,
+										type:"POST",
+										beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'#fff'] //0.1透明度的白色背景
+												});
+										},
+										
+										success:function(result){
+											if(0==result.code){
+												layer.msg("添加成功！", {icon: 1});
+												 
+												$('.addbatchForm')[0].reset(); 
+												$('#addbatch').hide();
+												
+											}else{
+												layer.msg("添加失败", {icon: 2});
+											}
+											
+											layer.close(index);
+										},error:function(){
+											layer.msg("操作失败！", {icon: 2});
+											layer.close(index);
+										}
+									}); 
+								},
+							  end:function(){
+								  $('.addbatchForm')[0].reset(); 
+								  $('#addbatch').hide();
+							  }
+						});
+					})
+			  }
 			this.events = function(){
 			}
    	}
