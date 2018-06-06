@@ -293,6 +293,12 @@
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
+							  if($('#bacthNumber').val()==""){
+								  return layer.msg("批次号不能为空", {icon: 2});
+							  }
+							  if($('#prosum').val()==""){
+								  return layer.msg("数量不能为空", {icon: 2});
+							  }
 							  postData={
 									  productId:id,
 									  bacthNumber:$('#bacthNumber').val(),
