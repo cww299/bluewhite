@@ -378,7 +378,7 @@
 				  	}
 		            self.loadPagination(data);
 				});
-				//新增小组
+				//新增杂工
 				$('#addgroup').on('click',function(){
 					var _index
 					var index
@@ -490,6 +490,15 @@
 								$(".stuCheckBox:checked").each(function() {   
 								    arr.push($(this).val());   
 								});
+							  if(arr.length<=0){
+								 return layer.msg("领取人不能为空", {icon:2 });
+							  }
+							  if($(".sumnumber").val()==""){
+									 return layer.msg("工序不能为空", {icon:2 });
+								  }
+							  if($(".bacth").val()==""){
+									 return layer.msg("批次号不能为空", {icon:2 });
+								  }
 							  postData={
 									  allotTime:$("#Time").val(),
 									  name:$(".sumnumber").val(),
