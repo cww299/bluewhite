@@ -30,7 +30,7 @@ public interface TaskService extends BaseCRUDService<Task,Long>{
 	 * 删除任务，同时删除B工资，更新批次的数值
 	 * @param id
 	 */
-	public void deleteTask(Long id);
+	public void deleteTask(String ids);
 	
 	/**
 	 * //根据时间占比，组装出新任务
