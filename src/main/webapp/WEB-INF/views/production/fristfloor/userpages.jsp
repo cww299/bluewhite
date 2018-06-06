@@ -384,6 +384,16 @@
 				$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
 					arr.push($(this).val());   
 				});
+				console.log(arr.length)
+				if(arr.length<=0){
+					return layer.msg("必须选择一个用户", {icon: 2});
+				}
+				if($("#workPrice").val()==""){
+					return layer.msg("预计收入不能为空", {icon: 2});
+				}
+				if($("#endTime").val()==""){
+					return layer.msg("时间不能为空", {icon: 2});
+				}
 				var postData={
 						usersId:arr,
 						workPrice:$("#workPrice").val(),
