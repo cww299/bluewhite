@@ -13,7 +13,7 @@ public class ProcedurePoi {
 	/**
 	 * 工序时间
 	 */
-	@Poi(name = "", column = "B")
+	@Poi(name = "", column = "C")
 	private Double workingTime;
 
 	public String getName() {
