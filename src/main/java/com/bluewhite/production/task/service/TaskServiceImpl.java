@@ -315,7 +315,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					//B工资净值
 					task.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(task.getTaskPrice(),  task.getType())));
 					//更新为结束状态
-					task.setStatus(1);
+					task.setStatus(2);
 					dao.save(task);
 					//将用户变成string类型储存
 					if (!StringUtils.isEmpty(task.getUserIds())) {
