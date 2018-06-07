@@ -63,14 +63,13 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				newTask = new Task();
 				BeanCopyUtils.copyNullProperties(task,newTask);
 				Long id = Long.parseLong(task.getProcedureIds()[i]);
+				Procedure procedure = procedureDao.findOne(id);
 				newTask.setProcedureId(id);
-				newTask.setProcedureName(procedureDao.findOne(id).getName());
+				newTask.setProcedureName(procedure.getName());
 				//预计完成时间（1.工序类型不是返工，预计时间利用公式计算的得出。2.工序类型是返工，手填预计完成时间）
 				//当前台传值得预计时间不为null，说明该任务类型是返工类型
-				Procedure procedure = procedureDao.findOne(id);
-				newTask.setFlag(1);
+				newTask.setFlag(procedure.getFlag());
 				if(task.getExpectTime()==null){
-					newTask.setFlag(0);
 					newTask.setExpectTime(NumUtils.round(ProTypeUtils.sumExpectTime(procedure,procedure.getType(),newTask.getNumber())));
 				}
 				

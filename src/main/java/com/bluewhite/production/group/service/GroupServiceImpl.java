@@ -32,7 +32,7 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 					predicate.add(cb.equal(root.get("id").as(Long.class),param.getId()));
 				}
 	        	//按类型
-	        	if(!StringUtils.isEmpty(param.getType())){
+	        	if(param.getType()!=null){
 	        		predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
 	        	}
 				Predicate[] pre = new Predicate[predicate.size()];
