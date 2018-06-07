@@ -33,9 +33,21 @@ public interface TaskService extends BaseCRUDService<Task,Long>{
 	public void deleteTask(String ids);
 	
 	/**
-	 * //根据时间占比，组装出新任务
+	 * 根据时间占比，组装出新任务
 	 * @param task
 	 */
 	public List<Task> assembleTask(Task task);
+	
+	/**
+	 * 批量修改任务
+	 * @param ids
+	 */
+	public int updateTask(String ids);
+	
+	/**
+	 * 暂停开始实时任务时间
+	 * @param id
+	 */
+	public void getTaskActualTime(Long id,Integer status);
 
 }

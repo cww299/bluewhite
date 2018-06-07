@@ -78,7 +78,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 		CommonResponse cr = new CommonResponse();
 			//新增
 			if(!StringUtils.isEmpty(task.getUserIds())){
-				if(task.getAllotTime() == null){
+				if(task.getAllotTime() == null && task.getType() == 1){
 					Calendar  cal = Calendar.getInstance();
 					cal.add(Calendar.DATE,-1);
 					task.setAllotTime(cal.getTime());
@@ -108,7 +108,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 			//新增
 			for(Task tasks : taskList){
 				if(!StringUtils.isEmpty(tasks.getUserIds())){
-					if(tasks.getAllotTime() == null){
+					if(tasks.getAllotTime() == null ){
 						Calendar  cal = Calendar.getInstance();
 						cal.add(Calendar.DATE,-1);
 						tasks.setAllotTime(cal.getTime());
@@ -124,8 +124,57 @@ private static final Log log = Log.getLog(TaskAction.class);
 	}
 	
 	
+	/**
+	 *	2楼环境，记录任务实际完成时间（暂停开始）
+	 * 
+	 * 
+	 */
+	@RequestMapping(value = "/task/getTaskActualTime", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getTaskActualTime(HttpServletRequest request,String ids,Integer status) {
+		CommonResponse cr = new CommonResponse();
+			if(!StringUtils.isEmpty(ids)){
+				if (!StringUtils.isEmpty(ids)) {
+					String[] idArr = ids.split(",");
+					if (idArr.length>0) {
+						for (int i = 0; i < idArr.length; i++) {
+							Long id = Long.parseLong(idArr[i]);
+							taskService.getTaskActualTime(id,status);
+						}
+					}
+				}
+					if(status==0){
+						cr.setMessage("开始成功");
+					}else{
+						cr.setMessage("暂停成功");
+					}
+				}else{
+					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+					cr.setMessage("领取人不能为空");
+				}
+		return cr;
+	}
 	
 	
+	
+	/**
+	 *	2楼环境，需要实时获取任务时间，通过结束状态进行任务及B工资的修改
+	 * （批量结束）
+	 * 
+	 */
+	@RequestMapping(value = "/task/updateTask", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse updateTask(HttpServletRequest request,String ids) {
+		CommonResponse cr = new CommonResponse();
+			if(!StringUtils.isEmpty(ids)){
+					int count = taskService.updateTask(ids);
+					cr.setMessage("成功结束"+count+"条任务");
+				}else{
+					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+					cr.setMessage("任务不能为空");
+				}
+		return cr;
+	}
 	
 	
 	

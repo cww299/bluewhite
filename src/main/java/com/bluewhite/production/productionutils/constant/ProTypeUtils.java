@@ -235,6 +235,19 @@ public  class ProTypeUtils {
 	
 	
 	
+	/******** 二楼针工  ******************************/
+	/**
+	 * 二楼针工
+	 * 放快手包装工秒支出(AC8)
+	 */
+	private static double getAC8TWO(){
+		return (proTypeUtils.service.findByExcelNameAndType("AC5" , 3).getNumber()*ProTypeUtils.EXCELONE
+				*proTypeUtils.service.findByExcelNameAndType("AC3" , 3).getNumber()
+				*proTypeUtils.service.findByExcelNameAndType("AC7" , 3).getNumber())/ProTypeUtils.TIME/ProTypeUtils.TIME;
+	}
+	
+	
+	
 	/**
 	 * 根据不同权限返回工序的不同类型
 	 * 1=一楼质检，2=一楼包装，3=二楼针工
@@ -323,6 +336,7 @@ public  class ProTypeUtils {
 		case 2://生产部一楼打包
 			break;
 		case 3://生产部二楼针工
+			sumExpectTime = procedure.getWorkingTime()*number/ProTypeUtils.TIME;
 			break;
 		default:
 			break;
@@ -346,6 +360,7 @@ public  class ProTypeUtils {
 		case 2://生产部一楼打包
 			break;
 		case 3://生产部二楼针工
+			sumExpectTime = expectTime*number/ProTypeUtils.TIME;
 			break;
 		default:
 			break;
@@ -369,6 +384,7 @@ public  class ProTypeUtils {
 		case 2://生产部一楼打包
 			break;
 		case 3://生产部二楼针工
+			sumTaskPrice =taskTime*ProTypeUtils.getAC8TWO()*ProTypeUtils.TIME;
 			break;
 		default:
 			break;

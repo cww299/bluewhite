@@ -17,6 +17,7 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
@@ -99,6 +100,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					task.setTaskTime(newTask.getTaskTime());
 					newTask.setPerformancePrice(NumUtils.round(ProTypeUtils.sumtaskPerformancePrice(task)));
 				}
+				
 				dao.save(newTask);
 				
 				///员工和任务形成多对多关系
@@ -290,5 +292,71 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		return taskList;
 	
 	}
+
+	@Override
+	@Transactional
+	public int updateTask(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length>0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					//先停止任务，更新出实际时间
+					this.getTaskActualTime(id, 1);
+					
+					//查出该任务的所有b工资并删除
+					List<PayB> payBList = payBDao.findByTaskId(id);
+					if(payBList.size()>0){
+						payBDao.delete(payBList);
+					}
+					Task task = dao.findOne(id);
+					//实际任务价值（通过实际完成时间得出）
+					task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskActualTime(), task.getType())));
+					//B工资净值
+					task.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(task.getTaskPrice(),  task.getType())));
+					//将用户变成string类型储存
+					if (!StringUtils.isEmpty(task.getUserIds())) {
+						String[] taskArr = task.getUserIds().split(",");
+						for (int j= 0; j < taskArr.length; j++) {
+							Long userid = Long.parseLong(task.getUsersIds()[j]);
+							User user = userDao.findOne(userid);
+							//给予每个员工b工资
+							PayB payB  = new PayB();
+							payB.setUserId(userid);
+							payB.setUserName(user.getUserName());
+							payB.setBacth(task.getBacthNumber());
+							payB.setBacthId(task.getBacthId());
+							payB.setProductName(task.getProductName());
+							payB.setTaskId(task.getId());
+							payB.setType(task.getType());
+							payB.setAllotTime(task.getAllotTime());
+							payB.setFlag(task.getFlag());
+							//计算B工资数值
+							payB.setPayNumber(task.getPayB()/task.getUsersIds().length);
+							payBDao.save(payB);
+							count++;
+						}
+					}
+				}
+			}
+		}
+		return count;
+		
+	}
+
+	@Override
+	public void getTaskActualTime(Long id,Integer status) {
+			Task task = dao.findOne(id);
+			if(status==0){
+				task.setStartTime(new Date());
+			}else{
+				//得到任务实时时间
+				task.setTaskActualTime(DatesUtil.getTime(task.getStartTime(), new Date()));
+				//同时更新开始时间
+				task.setStartTime(new Date());
+			}
+			dao.save(task);
+		}
 
 }

@@ -126,6 +126,18 @@ public class DatesUtil {
         return day;
     }
     
+	/**
+     * <li>功能描述：时间相减得到时间（分钟）
+     * @param beginDateStr
+     * @param endDateStr
+     * @return
+     * long 
+     */
+    public static Double getTime(Date beginDate,Date endDate){
+    	Double day = (double) ((endDate.getTime()-beginDate.getTime())/(60*1000));    
+        return day;
+    }
+    
     /**
      * 获取某个日期的下一天
      * @param beginDate
