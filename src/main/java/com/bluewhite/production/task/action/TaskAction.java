@@ -3,6 +3,7 @@ package com.bluewhite.production.task.action;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -82,6 +83,8 @@ private static final Log log = Log.getLog(TaskAction.class);
 					Calendar  cal = Calendar.getInstance();
 					cal.add(Calendar.DATE,-1);
 					task.setAllotTime(cal.getTime());
+				}else{
+					task.setAllotTime(new Date());
 				}
 				task = taskService.addTask(task);
 				cr.setMessage("任务分配成功");
@@ -175,12 +178,6 @@ private static final Log log = Log.getLog(TaskAction.class);
 				}
 		return cr;
 	}
-	
-	
-	
-	
-	
-	
 	
 	/** 
 	 * 分页查询所有任务
