@@ -84,6 +84,7 @@
 											<span class="lbl"></span>
 											</label>
 											</th>
+											<th class="text-center">任务编号</th>
                                         	<th class="text-center">批次号</th>
                                             <th class="text-center">产品名</th>
                                             <th class="text-center">时间</th>
@@ -92,8 +93,8 @@
                                             <th class="text-center">任务价值</th>
                                             <th class="text-center">b工资净值</th>
                                             <th class="text-center">数量</th>
-                                            <th class="text-center">工序加价</th>
-                                            <th class="text-center">加绩工资</th>
+                                            <th class="text-center">开始结束</th>
+                                            <th class="text-center">实际用时</th>
                                             <th class="text-center">完成人</th>
                                             <th class="text-center">操作</th>
                                         </tr>
@@ -216,6 +217,7 @@
 		      					a="(返工)"
 		      				}
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
+		      				+'<td class="text-center edit name">'+o.id+'</td>'
 		      				+'<td class="text-center edit name">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center edit name">'+o.productName+'</td>'
 		      				+'<td class="text-center edit name">'+o.allotTime+'</td>'
@@ -224,8 +226,7 @@
 		      				+'<td class="text-center edit name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
 		      				+'<td class="text-center edit name">'+parseFloat((o.payB).toFixed(4))+'</td>'
 		      				+'<td class="text-center edit name">'+o.number+'</td>'
-		      				+'<td class="text-center edit name">'+o.performance+'</td>'
-		      				+'<td class="text-center edit name">'+parseFloat((o.performancePrice*1).toFixed(4))+'</td>'
+		      				+'<td class="text-center" data-id="'+o.id+'" data-status="'+o.status+'"><input type="radio"  class="rest" value="0">开始<input type="radio" class="rest" value="1">暂停</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
@@ -257,6 +258,7 @@
 					   	 $("#tablecontent").html(html); 
 					   	self.loadEvents();
 					   	self.checkedd();
+					   	self.checkeddd();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
@@ -264,7 +266,66 @@
 				  });
 			}
 			
+			  this.checkeddd=function(){
+					
+					$(".rest").each(function(i,o){
+							
+							var rest=$(o).parent().data("status");
+						
+							if($(o).val()==rest){
+							
+								$(o).attr('checked', 'checked');;
+							}
+					})
+					
+				}
 			this.loadEvents = function(){
+				
+				
+				$('.rest').on('click',function(){
+					var  del=$(this);
+					var id = $(this).parent().data('id');
+					var rest = $(this).val();
+					
+				    	  $.ajax({
+								url:"${ctx}/task/getTaskActualTime",
+								data:{
+									ids:id,
+									status:rest,
+									},
+								type:"GET",
+								beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								success:function(result){
+									//选择1
+									
+									if(rest==0){
+								
+										del.parent().find(".rest").eq(1).prop("checked", false);
+
+									}else{
+										del.parent().find(".rest").eq(0).prop("checked", false);
+										
+									}
+									layer.msg("操作成功！", {icon: 1});
+									layer.close(index);
+								
+							
+									
+								},
+								error:function(){
+									layer.msg("操作失败！", {icon: 2});
+									layer.close(index);
+								}
+							});
+				    	  
+				 
+		
+				});
+				
 				//删除
 				$('.delete').on('click',function(){
 							var postData = {
