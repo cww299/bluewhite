@@ -129,7 +129,7 @@ public class ReportExportAction {
 	 * @param response
 	 */
 	@RequestMapping("/importExcel")
-	public void DownStudentExcel(HttpServletResponse response){
+	public void DownStudentExcel(HttpServletResponse response,Task task){
 		response.setContentType("octets/stream");
 	    response.addHeader("Content-Disposition", "attachment;filename=Student.xls");
 	    OutputStream out=null;
@@ -139,7 +139,6 @@ public class ReportExportAction {
             e.printStackTrace();  
 		}  
         //输出的实体与反射的实体相对应
-        Task task = new Task();
         task.setType(3);
         task.setFlag(1);
         PageParameter page  = new PageParameter();

@@ -3,6 +3,7 @@ package com.bluewhite.production.farragotask.action;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -86,11 +87,14 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 		}else{
 			//新增
 			if(!StringUtils.isEmpty(farragoTask.getUserIds())){
-				if(farragoTask.getAllotTime() == null){
+				if(farragoTask.getAllotTime() == null && farragoTask.getType() == 1){
 					Calendar  cal = Calendar.getInstance();
 					cal.add(Calendar.DATE,-1);
 					farragoTask.setAllotTime(cal.getTime());
+				}else{
+					farragoTask.setAllotTime(new Date());
 				}
+				
 				farragoTask = farragoTaskService.addFarragoTask(farragoTask);
 				
 				cr.setMessage("任务分配成功");
