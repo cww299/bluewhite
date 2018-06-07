@@ -147,7 +147,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 								cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 								cr.setMessage("任务编号为"+task.getId()+"的任务未开始，无法暂停，请先开始任务");
 								return cr;	
-							}else if(task.getStatus()==1){
+							}else if(task.getStatus()==2){
 								cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 								cr.setMessage("任务编号为"+task.getId()+"的任务已经结束，无法开始或暂停");
 								return cr;
