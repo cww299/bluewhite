@@ -620,10 +620,15 @@
 					var del=$(this);
 					var id = $(this).parent().data('id');
 					var rest = $(this).val();
+					var flag=0;
+					if(rest==109){
+						flag=1
+					}
 					if(id!=undefined){
 					$.ajax({
 						url:"${ctx}/production/addProcedure",
 						data:{
+							flag:flag,
 							id:id,
 							procedureTypeId:rest,
 							},
@@ -668,13 +673,14 @@
 					/* if($(".workingtime").val()==""){
 						return 	layer.msg("工序时间不能为空！", {icon: 2});
 					} */
-					
+					var flag=0;
 					if($(this).parent().parent().find("input:radio:checked").val()==109){
+						flag=1;
 						workingtime=0.0;
-						
-						
 					}
+					
 					postData={
+							flag:flag,
 							name:$(".workingname").val(),
 							workingTime:workingtime,
 							  type:1,

@@ -281,7 +281,7 @@
 					var dicDiv=$('#addbatch');
 					var name=$(this).data('name');
 					var bacthDepartmentPrice=$(this).parent().parent().find('.departmentPrice').text();
-					var bacthHairPrice=$(this).parent().parent().find('.hairPrice').text();
+					var bacthHairPrice=$(this).parent().parent().find('.workPrice').text();
 					$('#proName').val(name);
 					var id=$(this).data('id');
 					_index = layer.open({
@@ -622,10 +622,15 @@
 					var del=$(this);
 					var id = $(this).parent().data('id');
 					var rest = $(this).val();
+					var flag=0;
+					if(rest==100){
+						flag=1
+					}
 					if(id!=undefined){
 					$.ajax({
 						url:"${ctx}/production/addProcedure",
 						data:{
+							flag:flag,
 							id:id,
 							procedureTypeId:rest,
 							},
@@ -670,13 +675,14 @@
 					/* if($(".workingtime").val()==""){
 						return 	layer.msg("工序时间不能为空！", {icon: 2});
 					} */
-					
-					if($(this).parent().parent().find("input:radio:checked").val()==109){
-						workingtime=0.0;
+					var flag=0;
+					if($(this).parent().parent().find("input:radio:checked").val()==100){
+						flag=1;
 						
 						
 					}
 					postData={
+							flag:flag,
 							name:$(".workingname").val(),
 							workingTime:workingtime,
 							  type:3,
