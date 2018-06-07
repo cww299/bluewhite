@@ -1,9 +1,5 @@
 package com.bluewhite.reportexport.entity;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-
 import com.bluewhite.common.utils.excel.Poi;
 
 public class UserPoi {

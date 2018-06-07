@@ -163,12 +163,6 @@ public class Task  extends BaseEntity<Long>{
 	@Column(name = "type")
 	private Integer type;
 	
-    /**
-     * 备注
-     */
-	@Column(name = "remarks")
-    private String remarks;
-	
 	/**
 	 * 是否工序加价选择(任务加绩选项)
 	 */
@@ -326,12 +320,6 @@ public class Task  extends BaseEntity<Long>{
 	}
 	public void setAllotTime(Date allotTime) {
 		this.allotTime = allotTime;
-	}
-	public String getRemarks() {
-		return remarks;
-	}
-	public void setRemarks(String remarks) {
-		this.remarks = remarks;
 	}
 	public String getUserNames() {
 		return userNames;
