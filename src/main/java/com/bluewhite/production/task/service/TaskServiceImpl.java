@@ -354,7 +354,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				task.setStartTime(new Date());
 			}else{
 				//得到任务实时时间
-				task.setTaskActualTime(DatesUtil.getTime(task.getStartTime(), new Date()));
+				task.setTaskActualTime(DatesUtil.getTime(new Date(),task.getStartTime()));
 				//同时更新开始时间
 				task.setStartTime(new Date());
 			}

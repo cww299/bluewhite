@@ -134,7 +134,8 @@ public class DatesUtil {
      * long 
      */
     public static Double getTime(Date beginDate,Date endDate){
-    	Double day = (double) ((endDate.getTime()-beginDate.getTime())/(60*1000));    
+    	Long time =  (endDate.getTime()-beginDate.getTime())/(60*1000);
+    	Double day = time.doubleValue();    
         return day;
     }
     
