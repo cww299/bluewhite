@@ -142,6 +142,12 @@ private static final Log log = Log.getLog(TaskAction.class);
 					if (idArr.length>0) {
 						for (int i = 0; i < idArr.length; i++) {
 							Long id = Long.parseLong(idArr[i]);
+							Task task = taskService.findOne(id);
+							if(task.getStatus()==1){
+								cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+								cr.setMessage("任务编号为"+task.getId()+"的任务已经结束，无法开始或结束");
+								return cr;
+							}
 							taskService.getTaskActualTime(id,status);
 						}
 					}
