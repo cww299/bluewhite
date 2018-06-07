@@ -1,10 +1,13 @@
 package com.bluewhite.reportexport.action;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,9 +19,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
+import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.excel.Excelutil;
+import com.bluewhite.production.task.entity.Task;
+import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.reportexport.entity.ProcedurePoi;
 import com.bluewhite.reportexport.entity.ProductPoi;
+import com.bluewhite.reportexport.entity.ReworkPoi;
 import com.bluewhite.reportexport.entity.UserPoi;
 import com.bluewhite.reportexport.service.ReportExportService;
 
@@ -31,7 +38,8 @@ public class ReportExportAction {
 	@Autowired
 	private ReportExportService ReportExportService;
 	
-	
+	@Autowired
+	private TaskService taskService;
 	/**
 	 * 基础产品导入                          
 	 * @param residentmessage
@@ -112,6 +120,42 @@ public class ReportExportAction {
 			cr.setMessage("导入失败");
 		}
 		return cr;
+	}
+	
+	
+	/**
+	 * 导出返工价值
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping("/importExcel")
+	public void DownStudentExcel(HttpServletResponse response){
+		response.setContentType("octets/stream");
+	    response.addHeader("Content-Disposition", "attachment;filename=Student.xls");
+	    OutputStream out=null;
+        try {  
+            out = response.getOutputStream();  
+        } catch (IOException e) {  
+            e.printStackTrace();  
+		}  
+        //输出的实体与反射的实体相对应
+        Task task = new Task();
+        task.setType(3);
+        task.setFlag(1);
+        PageParameter page  = new PageParameter();
+		page.setSize(Integer.MAX_VALUE);
+	    List<Task> taskList  =taskService.findPages(task, page).getRows();
+	    List<ReworkPoi> reworkPoiList = new ArrayList<ReworkPoi>();
+	    for(Task tasks : taskList){
+	    	ReworkPoi reworkPoi = new ReworkPoi(); 
+	    	reworkPoi.setBacthNumber(tasks.getBacthNumber());
+	    	reworkPoi.setName(tasks.getProductName());
+	    	reworkPoi.setNumber(tasks.getNumber());
+	    	reworkPoi.setPrice(tasks.getTaskPrice());
+	    	reworkPoi.setRemark(tasks.getRemark());
+	    }
+	    Excelutil<ReworkPoi> util = new Excelutil<ReworkPoi>(ReworkPoi.class);
+        util.exportExcel(reworkPoiList, "返工价值表", out);// 导出  
 	}
 	
 

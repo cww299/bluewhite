@@ -77,6 +77,12 @@ public class Procedure extends BaseEntity<Long> {
 	private Integer type;
 	
 	/**
+	 * 是否是返工标识符（0=不是，1=是）
+	 */
+	@Column(name = "flag")
+	private Integer flag ;
+	
+	/**
 	 * 批次id（用于确定总数量，和任务）
 	 */
 	@Transient
@@ -91,6 +97,14 @@ public class Procedure extends BaseEntity<Long> {
 	
 	
 
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
 
 	public Long getBacthId() {
 		return bacthId;
