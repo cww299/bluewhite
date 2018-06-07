@@ -7,6 +7,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.persistence.criteria.Predicate;
 
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -241,7 +242,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 			String[] timeArr = task.getTimes().split(",");
 			if (timeArr.length>0) {
 				for (int i = 0; i <timeArr.length; i++) {
-					String xx = timeArr[i];
 					if(!timeArr[i].equals("delete")){
 						double time = Double.valueOf(timeArr[i]);
 						sumTime += time;
@@ -314,6 +314,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskActualTime(), task.getType())));
 					//B工资净值
 					task.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(task.getTaskPrice(),  task.getType())));
+					//更新为结束状态
+					task.setStatus(1);
+					dao.save(task);
 					//将用户变成string类型储存
 					if (!StringUtils.isEmpty(task.getUserIds())) {
 						String[] taskArr = task.getUserIds().split(",");
