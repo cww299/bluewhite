@@ -101,10 +101,10 @@ public class Task  extends BaseEntity<Long>{
     private Integer number;
  
     /**
-     * 任务状态(0=开始 ，1=结束)
+     * 任务状态(0=开始 ，1=暂停，2=结束)
      */
 	@Column(name = "status")
-    private Integer  status = 0;
+    private Integer  status ;
     
 	
     /**
