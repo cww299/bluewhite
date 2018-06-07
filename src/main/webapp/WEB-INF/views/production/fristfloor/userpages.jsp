@@ -234,7 +234,7 @@
 						});
 						
 						var postData = {
-								type:3,
+								type:1,
 								id:$(this).data('id'),
 								price:$(this).parent().parent('tr').find(".workPrice").text(),
 						}

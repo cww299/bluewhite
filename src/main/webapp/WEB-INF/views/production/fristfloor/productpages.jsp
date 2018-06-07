@@ -403,6 +403,7 @@
 							});
 							
 							var postData = {
+									type:1,
 									id:$(this).data('id'),
 									number:$(this).parent().parent('tr').find(".number").text(),
 									name:$(this).parent().parent('tr').find(".name").text(),

@@ -230,15 +230,16 @@
 		      		  success: function (result) {
 		      			
 		      			 $(result.data.rows).each(function(i,o){
-		      				
+		      				if(o.hairPrice==null){
+		      					o.hairPrice=0;
+		      				}
 		      				html +='<tr>'
 		      				+'<td class="text-center id">'+o.id+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center  departmentPrice">'+o.departmentPrice*1+'</td>'
-		      				+'<td class="text-center  hairPrice">'+o.hairPrice*1+'</td>'
+		      				+'<td class="text-center edit  workPrice">'+o.hairPrice+'</td>'
 							+'<td class="text-center"><button class="btn btn-xs btn-info  btn-trans update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-primary btn-trans addprocedure" data-id='+o.id+' data-name='+o.name+'>添加工序</button> <button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.name+'>填写批次</button></td></tr>'
-							
 		      			}); 
 				        //显示分页
 					   	 laypage({
@@ -403,11 +404,13 @@
 							});
 							
 							var postData = {
+									type:3,
 									id:$(this).data('id'),
 									number:$(this).parent().parent('tr').find(".number").text(),
 									name:$(this).parent().parent('tr').find(".name").text(),
+									hairPrice:$(this).parent().parent('tr').find(".workPrice").text(),
 							}
-							
+							console.log(postData)
 							var index;
 							$.ajax({
 								url:"${ctx}/updateProduct",
