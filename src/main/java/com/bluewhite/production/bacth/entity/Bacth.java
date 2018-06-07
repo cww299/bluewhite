@@ -56,7 +56,7 @@ public class Bacth extends BaseEntity<Long>{
 	@Column(name = "remarks")
     private String remarks;
     /**
-     * 状态，是否完成（0=未完成，1=完成）
+     * 状态，是否完成（0=未完成，1=完成，完成时，会转入包装列表中）
      */
 	@Column(name = "status")
     private Integer status = 0;
@@ -112,6 +112,7 @@ public class Bacth extends BaseEntity<Long>{
 	 */
 	@Column(name = "allot_time")
 	private Date allotTime;
+	
 	
 	/**
 	 * 产品名称

@@ -101,6 +101,11 @@ public class ProductAction {
 			//根据不同部门，计算不同的外发价格
 			if(product.getType()==3){
 				List<Procedure>	procedureList = procedureService.findByProductIdAndType(product.getId(),product.getType());
+				if(procedureList.size()==0){
+					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+					cr.setMessage("请先填写工序");
+					return cr;
+				}
 				for(Procedure pro : procedureList){
 					pro.setHairPrice(product.getHairPrice());
 				}
