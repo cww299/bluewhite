@@ -69,11 +69,21 @@
 				</form>
 			</div>
 		</div>
-            <!-- 查询结束 -->                
+            <!-- 查询结束 -->    
+            <h1 class="page-header"></h1>
+            <table><tr>           
+                        <td><button type="button" class="btn btn-default btn-danger btn-xs btn-3d attendance">一键删除</button>&nbsp&nbsp</td>
+                        </tr></table>             
                             <div class="panel-body">
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
+                                        	<th class="center">
+											<label> 
+											<input type="checkbox" class="ace checks" /> 
+											<span class="lbl"></span>
+											</label>
+											</th>
                                         	<th class="text-center">批次号</th>
                                             <th class="text-center">产品名</th>
                                             <th class="text-center">时间</th>
@@ -202,10 +212,10 @@
 		      			 $(result.data.rows).each(function(i,o){
 		      				 var a=""
 		      				 var s=o.procedureName
-		      				if(o.procedure.procedureTypeId==109){
+		      				if(o.flag==1){
 		      					a="(返工)"
 		      				}
-		      				html +='<tr>'
+		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center edit name">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center edit name">'+o.productName+'</td>'
 		      				+'<td class="text-center edit name">'+o.allotTime+'</td>'
@@ -246,7 +256,7 @@
 					   
 					   	 $("#tablecontent").html(html); 
 					   	self.loadEvents();
-					   
+					   	self.checkedd();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
@@ -331,6 +341,24 @@
 				
 				
 			}
+			this.checkedd=function(){
+				
+				$(".checks").on('click',function(){
+					
+                    if($(this).is(':checked')){ 
+			 			$('.checkboxId').each(function(){  
+                    //此处如果用attr，会出现第三次失效的情况  
+                     		$(this).prop("checked",true);
+			 			})
+                    }else{
+                    	$('.checkboxId').each(function(){ 
+                    		$(this).prop("checked",false);
+                    		
+                    	})
+                    }
+                }); 
+				
+			}
 			this.events = function(){
 				$('.searchtask').on('click',function(){
 					var data = {
@@ -344,6 +372,51 @@
 				  	}
 		            self.loadPagination(data);
 				});
+				
+				/* 一键删除 */
+				$('.attendance').on('click',function(){
+					  var  that=$(this);
+					  var arr=new Array()//员工id
+						$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+							arr.push($(this).val());   
+						});
+					  if(arr.length<=0){
+							return layer.msg("至少选择一个！", {icon: 2});
+						}
+						var data={
+								type:1,
+								ids:arr,
+						}
+						var index;
+						 index = layer.confirm('确定一键删除吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/task/delete",
+							data:data,
+				            traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+									layer.msg(result.message, {icon: 1});
+									self.loadPagination(data);
+								}else{
+									layer.msg(result.message, {icon: 2});
+								}
+								layer.close(index);
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 });
+				  })
+				
+				
 			}
    	}
    			var login = new Login();

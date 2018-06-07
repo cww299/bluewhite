@@ -410,7 +410,7 @@
 									name:$(this).parent().parent('tr').find(".name").text(),
 									hairPrice:$(this).parent().parent('tr').find(".workPrice").text(),
 							}
-							console.log(postData)
+							
 							var index;
 							$.ajax({
 								url:"${ctx}/updateProduct",
@@ -424,10 +424,10 @@
 								
 								success:function(result){
 									if(0==result.code){
-									layer.msg("修改成功！", {icon: 1});
+									layer.msg(result.message, {icon: 1});
 									layer.close(index);
 									}else{
-										layer.msg("修改失败！", {icon: 1});
+										layer.msg(result.message, {icon: 2});
 										layer.close(index);
 									}
 								},error:function(){
@@ -460,7 +460,7 @@
 				    		type:3,
 				    }
 				    //遍历工序类型
-				    var getdata={type:"productTowDeedle",}
+				    var getdata={type:"productTwoDeedle",}
 	      			$.ajax({
 					      url:"${ctx}/basedata/list",
 					      data:getdata,
