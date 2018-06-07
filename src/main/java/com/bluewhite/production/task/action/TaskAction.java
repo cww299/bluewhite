@@ -145,8 +145,12 @@ private static final Log log = Log.getLog(TaskAction.class);
 							Task task = taskService.findOne(id);
 							if(task.getStatus()==1){
 								cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-								cr.setMessage("任务编号为"+task.getId()+"的任务已经结束，无法开始或结束");
+								cr.setMessage("任务编号为"+task.getId()+"的任务已经结束，无法开始或暂停");
 								return cr;
+							}
+							if(task.getTaskActualTime()==null){
+								cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+								cr.setMessage("任务编号为"+task.getId()+"的任务未开始，无法暂停，请先开始任务");
 							}
 							taskService.getTaskActualTime(id,status);
 						}
