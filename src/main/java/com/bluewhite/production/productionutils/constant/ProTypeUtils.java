@@ -503,6 +503,10 @@ public  class ProTypeUtils {
 		case 2://生产部一楼打包
 			break;
 		case 3://生产部二楼针工
+			usualConsume.setPeopleLogistics(proTypeUtils.service.findByExcelNameAndType("E7" , 3).getNumber());
+			usualConsume.setPeopleNumber(proTypeUtils.service.findByExcelNameAndType("E8" , 3).getNumber());
+			usualConsume.setMonthChummage(proTypeUtils.service.findByExcelNameAndType("E9" , 3).getNumber());
+			usualConsume.setMonthHydropower(proTypeUtils.service.findByExcelNameAndType("E10" , 3).getNumber());
 			break;
 		default:
 			break;
