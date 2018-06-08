@@ -362,7 +362,9 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 						if(!userList.contains(userid)){
 							attendancePay.setUserId(userid);
 							attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
-							reworkTurnTime+=attendancePayList.get(0).getWorkTime();
+							if(attendancePayList.size()>0){
+								reworkTurnTime+=attendancePayList.get(0).getWorkTime();
+							}
 							if(monthlyProduction.getUserName()!=null){
 								monthlyProduction.setUserName(monthlyProduction.getUserName()+","+user.getUserName());
 							}else{
