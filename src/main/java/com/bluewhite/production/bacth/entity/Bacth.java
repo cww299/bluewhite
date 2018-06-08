@@ -64,7 +64,7 @@ public class Bacth extends BaseEntity<Long>{
 	/**
 	 * 任务
 	 */
-	@OneToMany(mappedBy = "bacth",cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "bacth",cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private Set<Task> tasks = new HashSet<Task>();
 	
 	
