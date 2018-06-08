@@ -97,7 +97,9 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 				farragoTaskPay.setUserName(user.getUserName());
 				farragoTaskPay.setTaskName(farragoTask.getName());
 				//计算杂工加绩工资
-				farragoTaskPay.setPerformancePayNumber(farragoTask.getPerformancePrice()/farragoTask.getUsersIds().length);
+				if(farragoTask.getPerformancePrice()!=null){
+					farragoTaskPay.setPerformancePayNumber(farragoTask.getPerformancePrice()/farragoTask.getUsersIds().length);
+				}
 				farragoTaskPayDao.save(farragoTaskPay);
 			}
 		}
