@@ -73,6 +73,7 @@
             <h1 class="page-header"></h1>
             <table><tr>           
                         <td><button type="button" class="btn btn-default btn-danger btn-xs btn-3d attendance">一键删除</button>&nbsp&nbsp</td>
+                        <td><button type="button" class="btn btn-default btn-danger btn-xs btn-3d start">一键开始</button>&nbsp&nbsp</td>
                         </tr></table>             
                             <div class="panel-body">
                                 <table class="table table-hover">
@@ -112,25 +113,10 @@
                 </div>
             </section>
         </section>
-        <!--隐藏框 产品新增开始  -->
-        <div id="addDictDivType" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-				<div class="space-10"></div>
-				<div style="height: 30px"></div>
-				<form class="form-horizontal addDictDivTypeForm">
-				<div class="form-group">
-                                        <label class="col-sm-3 control-label">名称:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="groupName" class="form-control">
-                                        </div>
-                 </div>
-				</form>
-</div>
-</div>
- <!--隐藏框 产品新增结束  -->
+        
 
 
-
+<!--隐藏框 人员信息开始  -->
 <div id="savegroup" style="display: none;">
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
@@ -154,7 +140,7 @@
 	</div><!-- /.modal -->
 </div>
 </div>
-<!--隐藏框 产品新增结束  -->
+<!--隐藏框 人员信息结束  -->
     </section>
     
    
@@ -227,6 +213,7 @@
 		      				+'<td class="text-center edit name">'+parseFloat((o.payB).toFixed(4))+'</td>'
 		      				+'<td class="text-center edit name">'+o.number+'</td>'
 		      				+'<td class="text-center" data-id="'+o.id+'" data-status="'+o.status+'"><input type="radio"  class="rest" value="0">开始<input type="radio" class="rest" value="1">暂停</td>'
+		      				+'<td class="text-center edit name">'+o.taskActualTime+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
@@ -477,6 +464,50 @@
 						 });
 				  })
 				
+				  
+				  /* 一键开始 */
+				$('.start').on('click',function(){
+					  var  that=$(this);
+					  var arr=new Array()//员工id
+						$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+							arr.push($(this).val());   
+						});
+					  if(arr.length<=0){
+							return layer.msg("至少选择一个！", {icon: 2});
+						}
+						var data={
+								status:0,
+								type:3,
+								ids:arr,
+						}
+						var index;
+						 index = layer.confirm('确定一键开始吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/task/getTaskActualTime",
+							data:data,
+				            traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+									layer.msg(result.message, {icon: 1});
+									self.loadPagination(data);
+								}else{
+									layer.msg(result.message, {icon: 2});
+								}
+								layer.close(index);
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 });
+				  })
 				
 			}
    	}
