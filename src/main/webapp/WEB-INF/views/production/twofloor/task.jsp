@@ -466,8 +466,97 @@
 				  })
 				
 				  
-				  /* 一键开始 */
-				$('.start').on('click',function(){
+				  /* 一键暂停 */
+				$('.suspend').on('click',function(){
+					  var  that=$(this);
+					  var arr=new Array()//员工id
+						$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+							arr.push($(this).val());   
+						});
+					  
+					  if(arr.length<=0){
+							return layer.msg("至少选择一个！", {icon: 2});
+						}
+						var data={
+								status:1,
+								type:3,
+								ids:arr,
+						}
+						var index;
+						 index = layer.confirm('确定一键暂停吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/task/getTaskActualTime",
+							data:data,
+				            traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+									layer.msg(result.message, {icon: 1});
+									self.loadPagination(data);
+								}else{
+									layer.msg(result.message, {icon: 2});
+								}
+								layer.close(index);
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 });
+				  })
+				
+				  /* 一键结束 */
+				/* $('.end').on('click',function(){
+					  var  that=$(this);
+					  var arr=new Array()//员工id
+						$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+							arr.push($(this).val());   
+						});
+					  
+					  if(arr.length<=0){
+							return layer.msg("至少选择一个！", {icon: 2});
+						}
+						var data={
+								status:1,
+								type:3,
+								ids:arr,
+						}
+						var index;
+						 index = layer.confirm('确定一键暂停吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/task/getTaskActualTime",
+							data:data,
+				            traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+									layer.msg(result.message, {icon: 1});
+									self.loadPagination(data);
+								}else{
+									layer.msg(result.message, {icon: 2});
+								}
+								layer.close(index);
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 });
+				  }) */
+				  
+				  $('.start').on('click',function(){
 					  var  that=$(this);
 					  var arr=new Array()//员工id
 						$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
@@ -510,7 +599,6 @@
 						});
 						 });
 				  })
-				
 			}
    	}
    			var login = new Login();
