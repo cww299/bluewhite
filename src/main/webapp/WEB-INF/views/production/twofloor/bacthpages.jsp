@@ -106,29 +106,19 @@
 		
                  
 						<div class="form-group">
-                           <label class="col-sm-3 col-md-2 control-label">任务数量:</label>
-                              <div class="col-sm-3 col-md-3">
+                           <label class="col-sm-2 col-md-2 control-label">任务数量:</label>
+                              <div class="col-sm-2 col-md-2">
                                   <input type="text" class="form-control sumnumber">
                               </div>
-                               <div >
-                            <label class="col-sm-2 col-md-2 control-label" >预计完成时间:</label>
-                                <div class="col-sm-3 col-md-3">
-                                  <input type="text"   placeholder="非返工任务不填写"  class="form-control sumtime">
-                                </div>
-                                </div>
-                    	</div>
-                    	
-                    	
-                 		 <div class="form-group">
-                               <label class="col-sm-2 control-label">任务分配:</label>
-                                 <div class="col-sm-3">
+                               <label class="col-sm-3 control-label">任务分配:</label>
+                                 <div class="col-sm-2">
                                           <input id="Time" placeholder="时间可不填" class="form-control laydate-icon"
            									onClick="laydate({elem: '#Time', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                                       </div>
-                              <label class="col-sm-2 control-label">加绩工序:</label>
-                              <div class="col-sm-3 workingtw">
-                              </div> 
-                		 </div>
+                            
+                    	</div>
+                    	
+                    	
                     	
                     	
                     	<div class="form-group">
@@ -154,64 +144,7 @@
 
 
 
-<!--隐藏框 工序分配2开始  -->
-        <div id="addDictDivTypetw" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-				<div class="space-10"></div>
-				<div style="height: 30px"></div>
-				<form class="form-horizontal addDictDivTypeFormtw">
-					<div class="row col-xs-12  col-sm-12  col-md-12 " id="tabs">
 
-                                     	
-                    <div class="form-group">
-                           <label class="col-sm-2 control-label">加绩工序:</label>
-                            <div class="col-sm-3 workingth">
-                            </div>
-                           <label class="col-sm-2 control-label">选择工序:</label>
-                              <div class="col-sm-3 workingtw">
-                              </div>
-                              <div class="col-sm-2 checkworkingtw"></div>
-                    	</div>
-                    	
-                    <div class="form-group">
-							<label class="col-sm-2 control-label">任务时间:</label>
-                                    <div class="col-sm-3">
-                                        <input id="Timet" placeholder="时间可不填" class="form-control laydate-icon"
-         										onClick="laydate({elem: '#Timet', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-                                    </div>
-                            <label class="col-sm-2 control-label" >预计时间:</label>
-                                <div class="col-sm-3">
-                                  <input type="text" placeholder="非返工任务不填写" class="form-control sumtimetw">
-                                </div>
-                 	</div>
-                    	
-                    <div class="form-group" >
-                           <label class="col-sm-3 col-md-2 control-label">开始时间:</label>
-                              <div class="col-sm-2 col-md-2">
-                                  <input id="Timetstr"  class="form-control laydate-icon"
-             					onClick="laydate({elem: '#Timetstr', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-                              </div>
-                               <div >
-                            <label class="col-sm-1 col-md-1 control-label" >结束时间:</label>
-                                <div class="col-sm-2 col-md-2">
-                                  <input id="Timetend"  class="form-control laydate-icon"
-             					onClick="laydate({elem: '#Timetend', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-                                </div>
-                                </div>
-                            <label class="col-sm-1 control-label">完成人:</label>
-                                <div class="col-sm-2 completetw">
-                                  <input type="text" class="form-control">
-                                </div>
-                               <div class="col-sm-1 selecttw"></div>
-                                  <div class="col-sm-2 col-md-1"><input type="button" class="btn btn-sm  btn-success" id="save" value="新增"></input></div>
-                    	</div>
-                 		
-                 </div>
-				</div>
-
-				</form>
-</div>
-<!--隐藏框 工序分配2结束  -->
 
 
 
@@ -248,7 +181,7 @@
 			 var data={
 						page:1,
 				  		size:13,	
-				  		type:1,
+				  		type:3,
 				} 
 			this.init = function(){
 				
@@ -272,18 +205,20 @@
 		      		  success: function (result) {
 		      			  
 		      			 $(result.data.rows).each(function(i,o){
-		      				 
+		      				 if(o.bacthHairPrice==null){
+		      					o.bacthHairPrice=0;
+		      				 }
 		      				 html +='<tr>'
 		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
 		      				+'<td class="text-center  name">'+o.product.name+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center  bacthDepartmentPrice">'+o.bacthDepartmentPrice+'</td>'
-		      				+'<td class="text-center  bacthHairPrice">'+o.bacthHairPrice+'</td>'
+		      				+'<td class="text-center edit bacthHairPrice">'+o.bacthHairPrice+'</td>'
 		      				+'<td class="text-center  sumTaskPrice">'+ parseFloat((o.sumTaskPrice*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center  regionalPrice">'+parseFloat((o.regionalPrice*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button> <button class="btn btn-sm btn-primary btn-trans addDicttw" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+' data-number='+o.number+'>分配2</button> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
+							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button>  <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
 							
 		      			}); 
 				        //显示分页
@@ -297,7 +232,7 @@
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
-									  		type:1,
+									  		type:3,
 								  			name:$('#name').val(),
 								  			bacthNumber:$('#number').val(),
 								  			orderTimeBegin:$("#startTime").val(),
@@ -378,6 +313,7 @@
 									id:$(this).data('id'),
 									number:$(this).parent().parent('tr').find(".number").text(),
 									remarks:$(this).parent().parent('tr').find(".remarks").text(),
+									bacthHairPrice:$(this).parent().parent('tr').find(".bacthHairPrice").text(),
 							}
 							
 							var index;
@@ -445,7 +381,7 @@
 			      				}
 								   var data={
 										   productId:productId,
-										   type:1,
+										   type:3,
 										   bacthId:bacthId,
 										   procedureTypeId:id,
 								   }
@@ -489,7 +425,7 @@
 					      }
 					  });
 					var data={
-							type:1
+							type:3
 					}
 					//遍历人名组别
 				    $.ajax({
@@ -507,7 +443,7 @@
 			      				var	id=$(this).val()
 								   var data={
 										  id:id,
-										  type:3,
+										  type:3
 								   }
 			      				$.ajax({
 									url:"${ctx}/production/allGroup",
@@ -550,31 +486,6 @@
 							 }) 
 					      }
 					  });
-				    
-					//遍历杂工加绩比值
-					var html=""
-					$.ajax({
-						url:"${ctx}/task/taskPerformance",
-						type:"GET",
-						beforeSend:function(){
-							index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								});
-						},
-						
-						success:function(result){
-							$(result.data).each(function(i,o){
-							html+='<option value="'+o.number+'" data-name="'+o.name+'">'+o.name+'</option>'
-							})
-							$('.workingtw').html("<select class='form-control selectchangtw'><option value='0'>请选择</option>"+html+"</select>");
-							layer.close(index);
-							
-						},error:function(){
-							layer.msg("操作失败！", {icon: 2});
-							layer.close(index);
-						}
-					});
-				    
 					var postData
 					var dicDiv=$('#addDictDivType');
 					_index = layer.open({
@@ -614,25 +525,15 @@
 										return layer.msg("有工序剩余数量不足！", {icon: 2});
 									}
 								}
-								expectTime=$(".sumtime").val();
-								var performanceNumber=$(".selectchangtw").val();
 								
-								var performance=$(".selectchangtw option:selected").text();
-								console.log(performance)
-								if(performance=="请选择请选择"){
-									performance="";
-								}
 								var postData = {
-										type:1,
+										type:3,
 										bacthId:that.data("id"),
 										procedureIds:values,
 										userIds:arr,
 										number:number,
 										userNames:username,
-										performance:performance,
-										performanceNumber:performanceNumber,
 										productName:productName,
-										expectTime:expectTime,
 										bacthNumber:bacthNumber,
 										allotTime:$('#Time').val(),
 								}
@@ -677,360 +578,6 @@
 					
 				})
 				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				//分配2
-				$('.addDicttw').on('click',function(){
-					var that=$(this)
-					var productId=$(this).data('proid')
-					var productName=$(this).data('proname')
-					var bacthId=$(this).data('id')
-					var bacthNumber=$(this).data('bacthnumber')
-					var number=$(this).data('number')
-					var _index
-					var index
-					var postData
-					//工序遍历  
-				    var indextwo;
-				    
-				    var htmlth = '';
-				    var htmlfr = '';
-				 	
-				    //遍历工序类型
-				    var getdata={type:"productFristQuality",}
-	      			$.ajax({
-					      url:"${ctx}/basedata/list",
-					      data:getdata,
-					      type:"GET",
-			      		  success: function (result) {
-			      			  $(result.data).each(function(k,j){
-			      				htmlfr +='<option value="'+j.id+'">'+j.name+'</option>'
-			      			  });  
-			      			$('.workingtw').html("<select class='form-control selectchangtt'><option value="+0+">请选择</option><option value="+""+">全部</option>"+htmlfr+"</select>")
-							//改变事件
-			      			$(".selectchangtt").change(function(){
-			      				var htmlfv="";
-			      				var	id=$(this).val()
-			      				if(id==109 || id==""){
-			      					$('#diss').css("display","block")
-			      				}else{
-			      					$('#diss').css("display","none")
-			      				}
-								   var data={
-										   productId:productId,
-										   type:1,
-										   bacthId:bacthId,
-										   procedureTypeId:id,
-								   }
-			      				//查询各个工序的名称
-								   $.ajax({
-										url:"${ctx}/production/typeToProcedure",
-										data:data,
-										type:"GET",
-										beforeSend:function(){
-											index = layer.load(1, {
-												  shade: [0.1,'#fff'] //0.1透明度的白色背景
-												});
-										},
-										
-										success:function(result){
-											$(result.data).each(function(i,o){
-												htmlfv +='<div class="input-group"><input type="checkbox" class="checkWorks" value="'+o.id+'" data-residualnumber="'+o.residualNumber+'">'+o.name+' 剩余:'+o.residualNumber+'</input></div>'
-											})
-											var s="<div class='input-group'><input type='checkbox' class='checkWorkAlls'>全选</input></div>"
-											$('.checkworkingtw').html(s+htmlfv);
-											$(".checkWorkAlls").on('click',function(){
-							                    if($(this).is(':checked')){ 
-										 			$('.checkWorks').each(function(){  
-							                    //此处如果用attr，会出现第三次失效的情况  
-							                     		$(this).prop("checked",true);
-										 			})
-							                    }else{
-							                    	$('.checkWorks').each(function(){ 
-							                    		$(this).prop("checked",false);
-							                    		
-							                    	})
-							                    }
-							                });
-											layer.close(index);
-										},error:function(){
-											layer.msg("操作失败！", {icon: 2});
-											layer.close(index);
-										}
-									});
-							 })
-					      }
-					  });
-					var data={
-							type:1
-					}
-					//遍历人名组别
-				    $.ajax({
-					      url:"${ctx}/production/getGroup",
-					      data:data,
-					      type:"GET",
-			      		  success: function (result) {
-			      			  $(result.data).each(function(k,j){
-			      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
-			      			  });  
-			      			 $('.completetw').html("<select class='form-control selectcompletet'><option value="+0+">请选择</option><option value="+""+">全部</option>"+htmlth+"</select>") 
-							//改变事件
-			      			 $(".selectcompletet").change(function(){
-			      				var htmltwo = "";
-			      				var	id=$(this).val()
-								   var data={
-										  id:id
-								   }
-			      				$.ajax({
-									url:"${ctx}/production/allGroup",
-									data:data,
-									type:"GET",
-									beforeSend:function(){
-										index = layer.load(1, {
-											  shade: [0.1,'#fff'] //0.1透明度的白色背景
-											});
-									},
-									
-									success:function(result){
-										$(result.data).each(function(i,o){
-										
-										$(o.users).each(function(i,o){
-											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxt" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input></div>'
-										})
-										})
-										var s="<div class='input-group'><input type='checkbox' class='checkalls'>全选</input></div>"
-										$('.selecttw').html(s+htmltwo)
-										$(".checkalls").on('click',function(){
-							                    if($(this).is(':checked')){ 
-										 			$('.stuCheckBoxt').each(function(){  
-							                    //此处如果用attr，会出现第三次失效的情况  
-							                     		$(this).prop("checked",true);
-										 			})
-							                    }else{
-							                    	$('.stuCheckBoxt').each(function(){ 
-							                    		$(this).prop("checked",false);
-							                    		
-							                    	})
-							                    }
-							                });
-										layer.close(index);
-									},error:function(){
-										layer.msg("操作失败！", {icon: 2});
-										layer.close(index);
-									}
-								});
-							 }) 
-					      }
-					  });
-				    
-					//遍历杂工加绩比值
-					var html=""
-					$.ajax({
-						url:"${ctx}/task/taskPerformance",
-						type:"GET",
-						beforeSend:function(){
-							index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								});
-						},
-						
-						success:function(result){
-							$(result.data).each(function(i,o){
-							html+='<option value="'+o.number+'" data-name="'+o.name+'">'+o.name+'</option>'
-							})
-							$('.workingth').html("<select class='form-control selectchangtwt'><option value='0'>请选择</option>"+html+"</select>");
-							layer.close(index);
-							
-						},error:function(){
-							layer.msg("操作失败！", {icon: 2});
-							layer.close(index);
-						}
-					});
-					var time;
-					var timeover;
-					var ss;
-					var times=new Array();
-					var values=new Array();
-					var roleidArray = new Array();
-					var str1;
-					var i = -1;
-					$('#save').on('click',function(){
-					var trHtml="";
-						i++;
-						time=$("#Timetstr").val();
-						timeover=$("#Timetend").val();
-						var dt1 = new Date(Date.parse(time));
-						var dt2 = new Date(Date.parse(timeover));
-						ss=(dt2-dt1)/60000
-						var arr=new Array()
-						var username=new Array()
-						if(dt1=="Invalid Date"){
-							return layer.msg("开始时间不能为空！", {icon: 2});
-						}
-						if(dt2=="Invalid Date"){
-							return layer.msg("结束时间不能为空！", {icon: 2});
-						}
-						if(dt2-dt1<=0){
-							return layer.msg("结束时间不能小于开始时间！", {icon: 2});
-						}
-						$(".stuCheckBoxt:checked").each(function() {   
-						    arr.push($(this).val()); 
-						    username.push($(this).data('username'))
-						}); 
-						if(arr.length==0){
-							 return layer.msg("领取人不能为空", {icon: 2});
-						}
-						
-						  times.push(ss);
-						  roleidArray.push(arr)
-						  str1=roleidArray.join(".")
-						 
-						 trHtml ='<div class="form-group" data-id="'+i+'">'
-	                           +'<label class="col-sm-3 col-md-2 control-label">开始时间:</label>'
-                        	   +'<div class="col-sm-2 col-md-2">'
-                               +'<input  class="form-control laydate-icon" value="'+time+'" onClick="laydate({elem: "#Timetstr", istime: true, format: "YYYY-MM-DD hh:mm:ss"})">'
-                               +'</div>'
-                               +'<div>'
-                               +'<label class="col-sm-1 col-md-1 control-label" >结束时间:</label>'
-                               +'<div class="col-sm-2 col-md-2">'
-                               +'<input value="'+timeover+'"  class="form-control laydate-icon" onClick="laydate({elem: "#Timetend", istime: true, format: "YYYY-MM-DD hh:mm:ss"})">'
-                               +'</div>'
-                               +'</div>'
-                               +'<label class="col-sm-1 control-label">完成人:</label>'
-                               +'<div class="col-sm-2 completetw">'
-                               +'<input type="text" value="'+username+'" class="form-control">'
-                               +'</div>'
-                               +'<div class="col-sm-1 "></div>'
-                               +'<div class="col-sm-2 col-md-1"><input type="button" class="btn btn-sm btn-success del" id="'+i+'" value="删除"></input></div></div>'
-                              
-                               $("#tabs").append(trHtml); 
-                            	 
-	                       $('.del').on('click',function(){
-                            	   var va=$(this).parent().parent().data('id');
-                            	   times.splice(va,1,"delete");
-                            		roleidArray.splice(va,1,["delete"]);
-                            	   str1=roleidArray.join(".");
-                            	   $(this).parent().parent().hide();
-                            	   return layer.msg("删除成功", {icon: 1});
-                               })
-						return layer.msg("添加成功", {icon: 1});
-					})
-					var postData
-					var dicDiv=$('#addDictDivTypetw');
-					_index = layer.open({
-						  type: 1,
-						  skin: 'layui-layer-rim', //加上边框
-						  area: ['60%', '60%'], 
-						  btnAlign: 'c',//宽高
-						  maxmin: true,
-						  title:productName,
-						  content: dicDiv,
-						  btn: ['确定', '取消'],
-						  yes:function(index, layero){
-							  var values=new Array()
-							  var numberr=new Array()
-							
-								$(".checkWorks:checked").each(function() {   
-									values.push($(this).val());
-									numberr.push($(this).data('residualnumber'));
-								}); 
-							  var arr=new Array()
-							  
-								$(".stuCheckBoxt:checked").each(function() {   
-								    arr.push($(this).val());   
-								}); 
-							  var username=new Array()
-							  $(".stuCheckBoxt:checked").each(function() {   
-								  username.push($(this).data('username'));   
-								});
-							  if(values.length<=0){
-									return layer.msg("至少选择一个工序！", {icon: 2});
-								}
-								if(arr.length<=0){
-									return layer.msg("至少选择一个员工！", {icon: 2});
-								}
-								 for (var i = 0; i < numberr.length; i++) {
-									if(numberr[i]-number<0){
-										return layer.msg("有工序剩余数量不足！", {icon: 2});
-									}
-								} 
-								expectTime=$(".sumtimetw").val();
-								var performanceNumber=$(".selectchangtwt").val();
-								
-								var performance=$(".selectchangtwt option:selected").text();
-								if(performance=="请选择"){
-									performance="";
-								}
-								var postData = {
-										type:1,
-										times:times,
-										users:str1,
-										bacthId:that.data("id"),
-										procedureIds:values,
-										number:number,
-										performance:performance,
-										performanceNumber:performanceNumber,
-										productName:productName,
-										expectTime:expectTime,
-										bacthNumber:bacthNumber,
-										allotTime:$('#Timet').val(),
-								}
-							    $.ajax({
-									url:"${ctx}/task/addTaskTwo",
-									data:postData,
-						            traditional: true,
-									type:"post",
-									beforeSend:function(){
-										index = layer.load(1, {
-											  shade: [0.1,'#fff'] //0.1透明度的白色背景
-											});
-									},
-									
-									success:function(result){
-										if(0==result.code){
-										  $('.addDictDivTypeFormtw')[0].reset(); 
-										$('.checkworkingtw').text("");
-										  $('.selecttw').text("");
-											layer.msg("添加成功！", {icon: 1});
-											
-											
-										}else{
-											layer.msg("添加失败", {icon: 2});
-										}
-										
-										layer.close(index);
-									},error:function(){
-										layer.msg("操作失败！", {icon: 2});
-										layer.close(index);
-									}
-								});  
-							},
-						   end:function(){
-							  $('.addDictDivTypeFormtw')[0].reset(); 
-							  $("#addDictDivTypetw").hide();
-						
-							
-						  } 
-					});
-					
-					
-				})
-				
-				
-				
-				
-				
-				
-				
-				
-				
 			}
 			
 			
@@ -1041,7 +588,7 @@
 					var data = {
 				  			page:1,
 				  			size:13,
-				  			type:1,
+				  			type:3,
 				  			name:$('#name').val(),
 				  			bacthNumber:$('#number').val(),
 				  			 orderTimeBegin:$("#startTime").val(),

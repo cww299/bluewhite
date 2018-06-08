@@ -145,7 +145,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 	@Transactional
 	public int importProcedureExcel(List<ProcedurePoi> excelProcedure, Long productId,Integer type) {
 		int count = 0;
-		if(excelProcedure.size()>0){
+		if(excelProcedure.size()==0){
 			throw new ServiceException("excel无数据");
 		}
 		List<Procedure> procedureList =new ArrayList<Procedure>();

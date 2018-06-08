@@ -73,6 +73,8 @@
             <h1 class="page-header"></h1>
             <table><tr>           
                         <td><button type="button" class="btn btn-default btn-danger btn-xs btn-3d attendance">一键删除</button>&nbsp&nbsp</td>
+                        <td><button type="button" class="btn btn-default btn-success btn-xs btn-3d start">一键开始</button>&nbsp&nbsp</td>
+                        <td><button type="button" class="btn btn-default btn-success btn-xs btn-3d suspend">一键暂停</button>&nbsp&nbsp</td>
                         </tr></table>             
                             <div class="panel-body">
                                 <table class="table table-hover">
@@ -84,6 +86,7 @@
 											<span class="lbl"></span>
 											</label>
 											</th>
+											<th class="text-center">任务编号</th>
                                         	<th class="text-center">批次号</th>
                                             <th class="text-center">产品名</th>
                                             <th class="text-center">时间</th>
@@ -92,8 +95,8 @@
                                             <th class="text-center">任务价值</th>
                                             <th class="text-center">b工资净值</th>
                                             <th class="text-center">数量</th>
-                                            <th class="text-center">工序加价</th>
-                                            <th class="text-center">加绩工资</th>
+                                            <th class="text-center">开始结束</th>
+                                            <th class="text-center">实际用时</th>
                                             <th class="text-center">完成人</th>
                                             <th class="text-center">操作</th>
                                         </tr>
@@ -111,25 +114,10 @@
                 </div>
             </section>
         </section>
-        <!--隐藏框 产品新增开始  -->
-        <div id="addDictDivType" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-				<div class="space-10"></div>
-				<div style="height: 30px"></div>
-				<form class="form-horizontal addDictDivTypeForm">
-				<div class="form-group">
-                                        <label class="col-sm-3 control-label">名称:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="groupName" class="form-control">
-                                        </div>
-                 </div>
-				</form>
-</div>
-</div>
- <!--隐藏框 产品新增结束  -->
+        
 
 
-
+<!--隐藏框 人员信息开始  -->
 <div id="savegroup" style="display: none;">
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
@@ -153,7 +141,7 @@
 	</div><!-- /.modal -->
 </div>
 </div>
-<!--隐藏框 产品新增结束  -->
+<!--隐藏框 人员信息结束  -->
     </section>
     
    
@@ -185,7 +173,7 @@
 			 var data={
 						page:1,
 				  		size:13,	
-				  		type:1,
+				  		type:3,
 
 				} 
 			this.init = function(){
@@ -215,19 +203,23 @@
 		      				if(o.flag==1){
 		      					a="(返工)"
 		      				}
+		      				 if(o.taskActualTime==null){
+		      					o.taskActualTime=0
+		      				 }
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
-		      				+'<td class="text-center edit name">'+o.bacthNumber+'</td>'
-		      				+'<td class="text-center edit name">'+o.productName+'</td>'
-		      				+'<td class="text-center edit name">'+o.allotTime+'</td>'
-		      				+'<td class="text-center edit name">'+s+a+'</td>'
-		      				+'<td class="text-center edit name">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
-		      				+'<td class="text-center edit name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
-		      				+'<td class="text-center edit name">'+parseFloat((o.payB).toFixed(4))+'</td>'
+		      				+'<td class="text-center  name">'+o.id+'</td>'
+		      				+'<td class="text-center  name">'+o.bacthNumber+'</td>'
+		      				+'<td class="text-center name">'+o.productName+'</td>'
+		      				+'<td class="text-center  name">'+o.allotTime+'</td>'
+		      				+'<td class="text-center  name">'+s+a+'</td>'
+		      				+'<td class="text-center  name">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
+		      				+'<td class="text-center  name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
+		      				+'<td class="text-center  name">'+parseFloat((o.payB).toFixed(4))+'</td>'
 		      				+'<td class="text-center edit name">'+o.number+'</td>'
-		      				+'<td class="text-center edit name">'+o.performance+'</td>'
-		      				+'<td class="text-center edit name">'+parseFloat((o.performancePrice).toFixed(4))+'</td>'
+		      				+'<td class="text-center" data-id="'+o.id+'" data-status="'+o.status+'"><input type="radio"  class="rest" value="0">开始<input type="radio" class="rest" value="1">暂停</td>'
+		      				+'<td class="text-center edit name">'+o.taskActualTime+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
+							+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -241,7 +233,7 @@
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
-									  		type:1,
+									  		type:3,
 									  		productName:$('#name').val(),
 								  			bacthNumber:$('#number').val(),
 								  			orderTimeBegin:$("#startTime").val(),
@@ -257,6 +249,7 @@
 					   	 $("#tablecontent").html(html); 
 					   	self.loadEvents();
 					   	self.checkedd();
+					   	self.checkeddd();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
@@ -264,7 +257,122 @@
 				  });
 			}
 			
+			  this.checkeddd=function(){
+					
+					$(".rest").each(function(i,o){
+							
+							var rest=$(o).parent().data("status");
+						
+							if($(o).val()==rest){
+							
+								$(o).attr('checked', 'checked');;
+							}
+					})
+					
+				}
 			this.loadEvents = function(){
+				
+				
+				$('.rest').on('click',function(){
+					var  del=$(this);
+					var id = $(this).parent().data('id');
+					var rest = $(this).val();
+					
+				    	  $.ajax({
+								url:"${ctx}/task/getTaskActualTime",
+								data:{
+									ids:id,
+									status:rest,
+									},
+								type:"GET",
+								beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								success:function(result){
+									//选择1
+									
+									if(rest==0){
+								
+										del.parent().find(".rest").eq(1).prop("checked", false);
+
+									}else{
+										del.parent().find(".rest").eq(0).prop("checked", false);
+										
+									}
+									layer.msg("操作成功！", {icon: 1});
+									layer.close(index);
+								
+							
+									
+								},
+								error:function(){
+									layer.msg("操作失败！", {icon: 2});
+									layer.close(index);
+								}
+							});
+				    	  
+				 
+		
+				});
+				
+				
+				//修改方法
+				$('.updateremake').on('click',function(){
+					if($(this).text() == "编辑"){
+						$(this).text("保存")
+						
+						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
+				        });
+					}else{
+							$(this).text("编辑")
+						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+
+					       
+					                $(this).html(obj_text.val()); 
+									
+							});
+							
+							var postData = {
+									id:$(this).data('id'),
+									number:$(this).parent().parent('tr').find(".number").text(),
+									remarks:$(this).parent().parent('tr').find(".remarks").text(),
+									bacthHairPrice:$(this).parent().parent('tr').find(".bacthHairPrice").text(),
+							}
+							
+							var index;
+							$.ajax({
+								url:"${ctx}/task/upTask",
+								data:postData,
+								type:"POST",
+								beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								
+								success:function(result){
+									if(0==result.code){
+									layer.msg("修改成功！", {icon: 1});
+									layer.close(index);
+									}else{
+										layer.msg("修改失败！", {icon: 1});
+										layer.close(index);
+									}
+								},error:function(){
+									layer.msg("操作失败！", {icon: 2});
+									layer.close(index);
+								}
+							});
+					}
+				})
+				
+				
 				//删除
 				$('.delete').on('click',function(){
 							var postData = {
@@ -364,7 +472,7 @@
 					var data = {
 				  			page:1,
 				  			size:13,
-				  			type:1,
+				  			type:3,
 				  			productName:$('#name').val(),
 				  			bacthNumber:$('#number').val(),
 				  			orderTimeBegin:$("#startTime").val(),
@@ -384,7 +492,7 @@
 							return layer.msg("至少选择一个！", {icon: 2});
 						}
 						var data={
-								type:1,
+								type:3,
 								ids:arr,
 						}
 						var index;
@@ -416,7 +524,140 @@
 						 });
 				  })
 				
+				  
+				  /* 一键暂停 */
+				$('.suspend').on('click',function(){
+					  var  that=$(this);
+					  var arr=new Array()//员工id
+						$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+							arr.push($(this).val());   
+						});
+					  
+					  if(arr.length<=0){
+							return layer.msg("至少选择一个！", {icon: 2});
+						}
+						var data={
+								status:1,
+								type:3,
+								ids:arr,
+						}
+						var index;
+						 index = layer.confirm('确定一键暂停吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/task/getTaskActualTime",
+							data:data,
+				            traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+									layer.msg(result.message, {icon: 1});
+									self.loadPagination(data);
+								}else{
+									layer.msg(result.message, {icon: 2});
+								}
+								layer.close(index);
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 });
+				  })
 				
+				  /* 一键结束 */
+				/* $('.end').on('click',function(){
+					  var  that=$(this);
+					  var arr=new Array()//员工id
+						$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+							arr.push($(this).val());   
+						});
+					  
+					  if(arr.length<=0){
+							return layer.msg("至少选择一个！", {icon: 2});
+						}
+						var data={
+								status:1,
+								type:3,
+								ids:arr,
+						}
+						var index;
+						 index = layer.confirm('确定一键暂停吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/task/getTaskActualTime",
+							data:data,
+				            traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+									layer.msg(result.message, {icon: 1});
+									self.loadPagination(data);
+								}else{
+									layer.msg(result.message, {icon: 2});
+								}
+								layer.close(index);
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 });
+				  }) */
+				  
+				  $('.start').on('click',function(){
+					  var  that=$(this);
+					  var arr=new Array()//员工id
+						$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+							arr.push($(this).val());   
+						});
+					  
+					  if(arr.length<=0){
+							return layer.msg("至少选择一个！", {icon: 2});
+						}
+						var data={
+								status:0,
+								type:3,
+								ids:arr,
+						}
+						var index;
+						 index = layer.confirm('确定一键开始吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/task/getTaskActualTime",
+							data:data,
+				            traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+									layer.msg(result.message, {icon: 1});
+									self.loadPagination(data);
+								}else{
+									layer.msg(result.message, {icon: 2});
+								}
+								layer.close(index);
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 });
+				  })
 			}
    	}
    			var login = new Login();

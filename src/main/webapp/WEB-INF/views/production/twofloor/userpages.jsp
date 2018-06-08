@@ -234,7 +234,6 @@
 						});
 						
 						var postData = {
-								type:1,
 								id:$(this).data('id'),
 								price:$(this).parent().parent('tr').find(".workPrice").text(),
 						}
@@ -315,7 +314,7 @@
 			var data={
 					page:1,
 			  		size:100,	
-			  		type:1,
+			  		type:3,
 
 			} 
 			var index;
@@ -438,7 +437,7 @@
 						return layer.msg("至少选择一个！", {icon: 2});
 					}
 					var data={
-							type:1,
+							type:3,
 							usersId:arr,
 							workTimes:time,
 							allotTime:$("#startTime").val(),
@@ -473,7 +472,7 @@
 			//遍历人名组别
 			var htmlth="";
 			var data = {
-		  			type:1,
+		  			type:3,
 		  	}
 		    $.ajax({
 			      url:"${ctx}/production/getGroup",

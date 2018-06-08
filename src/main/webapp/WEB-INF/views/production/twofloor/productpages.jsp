@@ -205,7 +205,7 @@
 			 var data={
 						page:1,
 				  		size:13,	
-				  		type:1,
+				  		type:3,
 
 				} 
 			this.init = function(){
@@ -230,15 +230,16 @@
 		      		  success: function (result) {
 		      			
 		      			 $(result.data.rows).each(function(i,o){
-		      				
+		      				if(o.hairPrice==null){
+		      					o.hairPrice=0;
+		      				}
 		      				html +='<tr>'
 		      				+'<td class="text-center id">'+o.id+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center  departmentPrice">'+o.departmentPrice*1+'</td>'
-		      				+'<td class="text-center  hairPrice">'+o.hairPrice*1+'</td>'
+		      				+'<td class="text-center edit  workPrice">'+o.hairPrice+'</td>'
 							+'<td class="text-center"><button class="btn btn-xs btn-info  btn-trans update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-primary btn-trans addprocedure" data-id='+o.id+' data-name='+o.name+'>添加工序</button> <button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.name+'>填写批次</button></td></tr>'
-							
 		      			}); 
 				        //显示分页
 					   	 laypage({
@@ -251,7 +252,7 @@
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
-									  		type:1,
+									  		type:3,
 									  		name:$('#name').val(),
 								  			number:$('#number').val(),
 								  	}
@@ -280,7 +281,7 @@
 					var dicDiv=$('#addbatch');
 					var name=$(this).data('name');
 					var bacthDepartmentPrice=$(this).parent().parent().find('.departmentPrice').text();
-					var bacthHairPrice=$(this).parent().parent().find('.hairPrice').text();
+					var bacthHairPrice=$(this).parent().parent().find('.workPrice').text();
 					$('#proName').val(name);
 					var id=$(this).data('id');
 					_index = layer.open({
@@ -306,7 +307,7 @@
 									  remarks:$('#remarks').val(),
 									  bacthDepartmentPrice:bacthDepartmentPrice,
 									  bacthHairPrice:bacthHairPrice,
-									  type:1,
+									  type:3,
 									  allotTime:$('#Time').val(),
 							  }
 							   $.ajax({
@@ -370,7 +371,7 @@
 							  data={
 									page:1,
 								  	size:13,	
-								  	type:1,
+								  	type:3,
 								  	name:$('#name').val(),
 						  			number:$('#number').val(),
 							  }
@@ -403,10 +404,11 @@
 							});
 							
 							var postData = {
-									type:1,
+									type:3,
 									id:$(this).data('id'),
 									number:$(this).parent().parent('tr').find(".number").text(),
 									name:$(this).parent().parent('tr').find(".name").text(),
+									hairPrice:$(this).parent().parent('tr').find(".workPrice").text(),
 							}
 							
 							var index;
@@ -422,10 +424,10 @@
 								
 								success:function(result){
 									if(0==result.code){
-									layer.msg("修改成功！", {icon: 1});
+									layer.msg(result.message, {icon: 1});
 									layer.close(index);
 									}else{
-										layer.msg("修改失败！", {icon: 1});
+										layer.msg(result.message, {icon: 2});
 										layer.close(index);
 									}
 								},error:function(){
@@ -455,10 +457,10 @@
 				    var htmlfr = '';
 				    var data={
 				    		productId:productId,
-				    		type:1,
+				    		type:3,
 				    }
 				    //遍历工序类型
-				    var getdata={type:"productFristQuality",}
+				    var getdata={type:"productTwoDeedle",}
 	      			$.ajax({
 					      url:"${ctx}/basedata/list",
 					      data:getdata,
@@ -621,7 +623,7 @@
 					var id = $(this).parent().data('id');
 					var rest = $(this).val();
 					var flag=0;
-					if(rest==109){
+					if(rest==100){
 						flag=1
 					}
 					if(id!=undefined){
@@ -674,16 +676,16 @@
 						return 	layer.msg("工序时间不能为空！", {icon: 2});
 					} */
 					var flag=0;
-					if($(this).parent().parent().find("input:radio:checked").val()==109){
+					if($(this).parent().parent().find("input:radio:checked").val()==100){
 						flag=1;
-						workingtime=0.0;
+						
+						
 					}
-					
 					postData={
 							flag:flag,
 							name:$(".workingname").val(),
 							workingTime:workingtime,
-							  type:1,
+							  type:3,
 							  productId:$(this).data('productid'),
 							  procedureTypeId:$(this).parent().parent().find("input:radio:checked").val(),
 					  }
@@ -727,7 +729,7 @@
 				  			
 							imageForm.append("file",$('#upfile')[0].files[0]);
 				  			imageForm.append("productId",self.getCache());
-				  			imageForm.append("type",1)
+				  			imageForm.append("type",3)
 					 $.ajax({
 							url:"${ctx}/excel/importProcedure",
 							data:imageForm,
@@ -762,7 +764,7 @@
 					var data = {
 				  			page:1,
 				  			size:13,
-				  			type:1,
+				  			type:3,
 				  			name:$('#name').val(),
 				  			number:$('#number').val(),
 				  	}
