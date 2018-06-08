@@ -314,12 +314,13 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					if(payBList.size()>0){
 						payBDao.delete(payBList);
 					}
+					//更新为结束状态
+					task.setStatus(2);
+					
 					//实际任务价值（通过实际完成时间得出）
 					task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskActualTime(), task.getType())));
 					//B工资净值
 					task.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(task.getTaskPrice(),  task.getType())));
-					//更新为结束状态
-					task.setStatus(2);
 					dao.save(task);
 					//将用户变成string类型储存
 					if (!StringUtils.isEmpty(task.getUserIds())) {
@@ -389,4 +390,47 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 			dao.save(task);
 		}
 
+	@Override
+	@Transactional
+	public Task upTask(Task task) {
+		Integer number = task.getNumber();
+		task = dao.findOne(task.getId());
+		//查出该任务的所有b工资并删除
+		List<PayB> payBList = payBDao.findByTaskId(task.getId());
+		if(payBList.size()>0){
+			payBDao.delete(payBList);
+		}
+		//实际时间
+		task.setTaskTime(NumUtils.round(ProTypeUtils.sumTaskTime(task.getExpectTime(),task.getType(),number)));
+		//实际任务价值（通过实际完成时间得出）
+		task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskTime(), task.getType())));
+		//B工资净值
+		task.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(task.getTaskPrice(),  task.getType())));
+		dao.save(task);
+		//将用户变成string类型储存
+		if (!StringUtils.isEmpty(task.getUserIds())) {
+			String[] taskArr = task.getUserIds().split(",");
+			for (int j= 0; j < taskArr.length; j++) {
+				Long userid = Long.parseLong(task.getUsersIds()[j]);
+				User user = userDao.findOne(userid);
+				//给予每个员工b工资
+				PayB payB  = new PayB();
+				payB.setUserId(userid);
+				payB.setUserName(user.getUserName());
+				payB.setBacth(task.getBacthNumber());
+				payB.setBacthId(task.getBacthId());
+				payB.setProductName(task.getProductName());
+				payB.setTaskId(task.getId());
+				payB.setType(task.getType());
+				payB.setAllotTime(task.getAllotTime());
+				payB.setFlag(task.getFlag());
+				//计算B工资数值
+				payB.setPayNumber(task.getPayB()/task.getUsersIds().length);
+				payBDao.save(payB);
+			}
+		
+		}
+		return task;
+	}
+	
 }

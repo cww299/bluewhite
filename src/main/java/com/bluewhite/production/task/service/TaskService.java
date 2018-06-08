@@ -49,5 +49,12 @@ public interface TaskService extends BaseCRUDService<Task,Long>{
 	 * @param id
 	 */
 	public void getTaskActualTime(Long id,Integer status)  throws Exception;
+	
+	/**
+	 * 修改任务
+	 * @param task
+	 * @return
+	 */
+	public Task upTask(Task task);
 
 }

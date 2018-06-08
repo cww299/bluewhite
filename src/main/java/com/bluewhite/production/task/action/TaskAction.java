@@ -69,7 +69,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 	}
 	
 	/**
-	 * 给批次添加任务（修改）
+	 * 给批次添加任务
 	 * 
 	 * 
 	 */
@@ -95,6 +95,25 @@ private static final Log log = Log.getLog(TaskAction.class);
 		return cr;
 	}
 	
+	
+	/**
+	 * 修改任务
+	 * 
+	 * 
+	 */
+	@RequestMapping(value = "/task/upTask", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse upTask(HttpServletRequest request,Task task) {
+		CommonResponse cr = new CommonResponse();
+			if(!StringUtils.isEmpty(task.getId())){
+				task = taskService.upTask(task);
+				cr.setMessage("修改成功");
+			}else{
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				cr.setMessage("任务不能为空");
+			}
+		return cr;
+	}
 	
 	
 	/**
