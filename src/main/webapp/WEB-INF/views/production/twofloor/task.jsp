@@ -215,7 +215,7 @@
 		      				+'<td class="text-center  name">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
 		      				+'<td class="text-center  name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
 		      				+'<td class="text-center  name">'+parseFloat((o.payB).toFixed(4))+'</td>'
-		      				+'<td class="text-center edit name">'+o.number+'</td>'
+		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center" data-id="'+o.id+'" data-status="'+o.status+'"><input type="radio"  class="rest" value="0">开始<input type="radio" class="rest" value="1">暂停</td>'
 		      				+'<td class="text-center edit name">'+o.taskActualTime+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
@@ -341,10 +341,7 @@
 							var postData = {
 									id:$(this).data('id'),
 									number:$(this).parent().parent('tr').find(".number").text(),
-									remarks:$(this).parent().parent('tr').find(".remarks").text(),
-									bacthHairPrice:$(this).parent().parent('tr').find(".bacthHairPrice").text(),
 							}
-							
 							var index;
 							$.ajax({
 								url:"${ctx}/task/upTask",
@@ -374,9 +371,9 @@
 				
 				
 				//删除
-				$('.delete').on('click',function(){
+						$('.delete').on('click',function(){
 							var postData = {
-									id:$(this).data('id'),
+									ids:$(this).data('id'),
 							}
 							
 							var index;

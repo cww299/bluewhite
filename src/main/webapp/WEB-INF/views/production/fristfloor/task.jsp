@@ -268,7 +268,7 @@
 				//删除
 				$('.delete').on('click',function(){
 							var postData = {
-									id:$(this).data('id'),
+									ids:$(this).data('id'),
 							}
 							
 							var index;

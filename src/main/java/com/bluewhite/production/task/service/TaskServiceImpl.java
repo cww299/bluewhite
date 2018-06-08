@@ -330,7 +330,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					if (!StringUtils.isEmpty(task.getUserIds())) {
 						String[] taskArr = task.getUserIds().split(",");
 						for (int j= 0; j < taskArr.length; j++) {
-							Long userid = Long.parseLong(task.getUsersIds()[j]);
+							Long userid = Long.parseLong(taskArr[j]);
 							User user = userDao.findOne(userid);
 							//给予每个员工b工资
 							PayB payB  = new PayB();
@@ -344,7 +344,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 							payB.setAllotTime(task.getAllotTime());
 							payB.setFlag(task.getFlag());
 							//计算B工资数值
-							payB.setPayNumber(task.getPayB()/task.getUsersIds().length);
+							payB.setPayNumber(task.getPayB()/taskArr.length);
 							payBDao.save(payB);
 							count++;
 						}
@@ -404,6 +404,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		if(payBList.size()>0){
 			payBDao.delete(payBList);
 		}
+		task.setNumber(number);
 		//实际时间
 		task.setTaskTime(NumUtils.round(ProTypeUtils.sumTaskTime(task.getExpectTime(),task.getType(),number)));
 		//实际任务价值（通过实际完成时间得出）
@@ -415,7 +416,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		if (!StringUtils.isEmpty(task.getUserIds())) {
 			String[] taskArr = task.getUserIds().split(",");
 			for (int j= 0; j < taskArr.length; j++) {
-				Long userid = Long.parseLong(task.getUsersIds()[j]);
+				Long userid = Long.parseLong(taskArr[j]);
 				User user = userDao.findOne(userid);
 				//给予每个员工b工资
 				PayB payB  = new PayB();
@@ -429,7 +430,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				payB.setAllotTime(task.getAllotTime());
 				payB.setFlag(task.getFlag());
 				//计算B工资数值
-				payB.setPayNumber(task.getPayB()/task.getUsersIds().length);
+				payB.setPayNumber(task.getPayB()/taskArr.length);
 				payBDao.save(payB);
 			}
 		
