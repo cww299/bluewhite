@@ -73,8 +73,8 @@
             <h1 class="page-header"></h1>
             <table><tr>           
                         <td><button type="button" class="btn btn-default btn-danger btn-xs btn-3d attendance">一键删除</button>&nbsp&nbsp</td>
-                        <td><button type="button" class="btn btn-default btn-danger btn-xs btn-3d start">一键开始</button>&nbsp&nbsp</td>
-                        <td><button type="button" class="btn btn-default btn-danger btn-xs btn-3d suspend">一键暂停</button>&nbsp&nbsp</td>
+                        <td><button type="button" class="btn btn-default btn-success btn-xs btn-3d start">一键开始</button>&nbsp&nbsp</td>
+                        <td><button type="button" class="btn btn-default btn-success btn-xs btn-3d suspend">一键暂停</button>&nbsp&nbsp</td>
                         </tr></table>             
                             <div class="panel-body">
                                 <table class="table table-hover">
@@ -203,6 +203,9 @@
 		      				if(o.flag==1){
 		      					a="(返工)"
 		      				}
+		      				 if(o.taskActualTime==null){
+		      					o.taskActualTime=0
+		      				 }
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center edit name">'+o.id+'</td>'
 		      				+'<td class="text-center edit name">'+o.bacthNumber+'</td>'
@@ -216,7 +219,7 @@
 		      				+'<td class="text-center" data-id="'+o.id+'" data-status="'+o.status+'"><input type="radio"  class="rest" value="0">开始<input type="radio" class="rest" value="1">暂停</td>'
 		      				+'<td class="text-center edit name">'+o.taskActualTime+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
+							+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
