@@ -50,7 +50,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
 				.addRetainTerm(Task.class,"id","userNames","bacthNumber","allotTime","productName","userIds","procedure","procedureName","number","status","expectTime"
-						,"expectTaskPrice","taskTime","payB","taskPrice","type","createdAt","performance","performanceNumber","performancePrice","flag")
+						,"expectTaskPrice","taskTime","payB","taskPrice","taskActualTime","type","createdAt","performance","performanceNumber","performancePrice","flag")
 				.addRetainTerm(Procedure.class,"id","procedureTypeId");
 	}
 	
@@ -137,25 +137,19 @@ private static final Log log = Log.getLog(TaskAction.class);
 	public CommonResponse getTaskActualTime(HttpServletRequest request,String ids,Integer status) {
 		CommonResponse cr = new CommonResponse();
 			if(!StringUtils.isEmpty(ids)){
-				if (!StringUtils.isEmpty(ids)) {
 					String[] idArr = ids.split(",");
 					if (idArr.length>0) {
 						for (int i = 0; i < idArr.length; i++) {
 							Long id = Long.parseLong(idArr[i]);
-							Task task = taskService.findOne(id);
-							if(task.getStatus()==null){
+							try {
+								taskService.getTaskActualTime(id,status);
+							} catch (Exception e) {
+								cr.setMessage(e.getMessage());
 								cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-								cr.setMessage("任务编号为"+task.getId()+"的任务未开始，无法暂停，请先开始任务");
-								return cr;	
-							}else if(task.getStatus()==2){
-								cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-								cr.setMessage("任务编号为"+task.getId()+"的任务已经结束，无法开始或暂停");
 								return cr;
 							}
-							taskService.getTaskActualTime(id,status);
 						}
 					}
-				}
 					if(status==0){
 						cr.setMessage("开始成功");
 					}else{
@@ -173,14 +167,22 @@ private static final Log log = Log.getLog(TaskAction.class);
 	/**
 	 *	2楼环境，需要实时获取任务时间，通过结束状态进行任务及B工资的修改
 	 * （批量结束）
+	 * @throws Exception 
 	 * 
 	 */
 	@RequestMapping(value = "/task/updateTask", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse updateTask(HttpServletRequest request,String ids) {
+	public CommonResponse updateTask(HttpServletRequest request,String ids)  {
 		CommonResponse cr = new CommonResponse();
 			if(!StringUtils.isEmpty(ids)){
-					int count = taskService.updateTask(ids);
+					int count = 0;
+					try {
+						count = taskService.updateTask(ids);
+					} catch (Exception e) {
+						cr.setMessage(e.getMessage());
+						cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+						return cr;
+					}
 					cr.setMessage("成功结束"+count+"条任务");
 				}else{
 					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
