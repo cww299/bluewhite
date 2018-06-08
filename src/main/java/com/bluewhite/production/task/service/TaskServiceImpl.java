@@ -373,7 +373,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					throw new ServiceException("任务编号为"+id+"的任务已经结束，无法开始或暂停");
 				}
 				//得到任务实时时间
-				task.setTaskActualTime(DatesUtil.getTime(new Date(),task.getStartTime()));
+				task.setTaskActualTime(DatesUtil.getTime(task.getStartTime(),new Date()));
 				//同时更新开始时间
 				task.setStartTime(new Date());
 			}
@@ -383,7 +383,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					throw new ServiceException("任务编号为"+id+"的任务未开始，无法暂停或结束，请先开始任务");
 				} 
 				//得到任务实时时间
-				task.setTaskActualTime(DatesUtil.getTime(new Date(),task.getStartTime()));
+				task.setTaskActualTime(DatesUtil.getTime(task.getStartTime(),new Date()));
 			}
 			task.setStatus(status);
 			dao.save(task);
