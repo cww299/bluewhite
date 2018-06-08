@@ -357,10 +357,12 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 			Task task = dao.findOne(id);
 			//开始
 			if(status==0){
-				if(task.getStatus()==2){
+				if(task.getStatus()==null){
+					task.setStartTime(new Date());
+				}else if(task.getStatus()==2){
 					throw new ServiceException("任务编号为"+id+"的任务已经结束，无法开始或暂停");
 				}
-				task.setStartTime(new Date());
+			
 			}
 			//暂停
 			if(status==1){
