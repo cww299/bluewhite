@@ -42,12 +42,12 @@ public interface TaskService extends BaseCRUDService<Task,Long>{
 	 * 批量修改任务
 	 * @param ids
 	 */
-	public int updateTask(String ids);
+	public int updateTask (String ids) throws Exception;
 	
 	/**
 	 * 暂停开始实时任务时间
 	 * @param id
 	 */
-	public void getTaskActualTime(Long id,Integer status);
+	public void getTaskActualTime(Long id,Integer status)  throws Exception;
 
 }
