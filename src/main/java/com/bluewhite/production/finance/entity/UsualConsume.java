@@ -76,6 +76,12 @@ public class UsualConsume extends BaseEntity<Long> {
 	private Double  monthLogistics;
 	
 	/**
+	 * 设备折旧
+	 */
+	@Transient
+	private Double  equipment;
+	
+	/**
 	 * 查询字段开始时间
 	 */
 	@Transient
@@ -89,6 +95,12 @@ public class UsualConsume extends BaseEntity<Long> {
 	
 	
 
+	public Double getEquipment() {
+		return equipment;
+	}
+	public void setEquipment(Double equipment) {
+		this.equipment = equipment;
+	}
 	public Date getOrderTimeBegin() {
 		return orderTimeBegin;
 	}

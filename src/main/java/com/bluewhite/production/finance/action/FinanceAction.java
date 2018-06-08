@@ -126,7 +126,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 			cr.setData(ClearCascadeJSON
 					.get()
 					.addRetainTerm(UsualConsume.class,"peopleLogistics","peopleNumber","monthChummage",
-							"monthHydropower","chummage","hydropower","logistics","monthLogistics")
+							"monthHydropower","chummage","hydropower","logistics","monthLogistics","equipment")
 					.format(usualConsumeservice.usualConsume(usualConsume)).toJSON());
 			cr.setMessage("查询成功");
 		return cr;
@@ -145,7 +145,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 			cr.setData(ClearCascadeJSON
 					.get()
 					.addRetainTerm(UsualConsume.class,"peopleLogistics","peopleNumber","monthChummage",
-							"monthHydropower","chummage","hydropower","logistics","monthLogistics")
+							"monthHydropower","chummage","hydropower","logistics","monthLogistics","equipment")
 					.format(usualConsumeservice.usualConsume(usualConsume)).toJSON());
 			cr.setMessage("修改成功");
 		return cr;
