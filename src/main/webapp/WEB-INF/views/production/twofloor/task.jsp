@@ -472,6 +472,7 @@
 						$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
 							arr.push($(this).val());   
 						});
+					  
 					  if(arr.length<=0){
 							return layer.msg("至少选择一个！", {icon: 2});
 						}
