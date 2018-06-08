@@ -7,7 +7,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.persistence.criteria.Predicate;
 
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -16,6 +15,8 @@ import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.BeanCopyUtils;
+import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
@@ -294,22 +295,25 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 
 	@Override
 	@Transactional
-	public int updateTask(String ids) {
+	public int updateTask(String ids) throws Exception{
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idArr = ids.split(",");
 			if (idArr.length>0) {
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
+					Task task = dao.findOne(id);
+					if(task.getStatus()==null){
+						throw new ServiceException("编号为"+id+"任务，未开始，无法结束，请核实后操作");
+					}
 					//先停止任务，更新出实际时间
-					this.getTaskActualTime(id, 1);
+					this.getTaskActualTime(id, 2);
 					
 					//查出该任务的所有b工资并删除
 					List<PayB> payBList = payBDao.findByTaskId(id);
 					if(payBList.size()>0){
 						payBDao.delete(payBList);
 					}
-					Task task = dao.findOne(id);
 					//实际任务价值（通过实际完成时间得出）
 					task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskActualTime(), task.getType())));
 					//B工资净值
@@ -347,17 +351,39 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		
 	}
 
+	
 	@Override
-	public void getTaskActualTime(Long id,Integer status) {
+	public void getTaskActualTime(Long id,Integer status) throws Exception {
 			Task task = dao.findOne(id);
+			//开始
 			if(status==0){
+				if(task.getStatus()==2){
+					throw new ServiceException("任务编号为"+id+"的任务已经结束，无法开始或暂停");
+				}
 				task.setStartTime(new Date());
-			}else{
+			}
+			//暂停
+			if(status==1){
+				if(task.getStatus()==null){
+					throw new ServiceException("任务编号为"+id+"的任务未开始，无法暂停或结束，请先开始任务");
+				} 
+				if(task.getStatus()==2){
+					throw new ServiceException("任务编号为"+id+"的任务已经结束，无法开始或暂停");
+				}
 				//得到任务实时时间
 				task.setTaskActualTime(DatesUtil.getTime(new Date(),task.getStartTime()));
 				//同时更新开始时间
 				task.setStartTime(new Date());
 			}
+			//结束
+			if(status==2){
+				if(task.getStatus()==null){
+					throw new ServiceException("任务编号为"+id+"的任务未开始，无法暂停或结束，请先开始任务");
+				} 
+				//得到任务实时时间
+				task.setTaskActualTime(DatesUtil.getTime(new Date(),task.getStartTime()));
+			}
+			task.setStatus(status);
 			dao.save(task);
 		}
 
