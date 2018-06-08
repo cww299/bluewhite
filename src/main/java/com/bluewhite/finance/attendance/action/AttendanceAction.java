@@ -86,7 +86,7 @@ public class AttendanceAction {
 						attendance.setOrderTimeEnd(DatesUtil.getLastDayOftime(attendance.getAllotTime()));
 						attendance.setType(attendancePay.getType());
 						if(attendancePayService.findPages(attendance, page).getRows().size()>0){
-							cr.setMessage(user.getUserName()+"该月已存在考情记录，无需再次添加，请重新选择");
+							cr.setMessage(user.getUserName()+"该天已存在考情记录，无需再次添加，请重新选择");
 							cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 							return cr;
 						}else{
