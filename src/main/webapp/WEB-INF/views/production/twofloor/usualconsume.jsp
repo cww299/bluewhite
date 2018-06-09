@@ -233,7 +233,6 @@
 					var postData = {
 							id:$(this).data('id'),
 					}
-					console.log(postData)
 					var index;
 					 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
 					$.ajax({
@@ -320,7 +319,6 @@
 							logistics:$('#pricetw').val(),
 							type:3,
 					  }
-					console.log(postData)
 					  $.ajax({
 							url:"${ctx}/finance/addUsualConsume",
 							data:postData,
