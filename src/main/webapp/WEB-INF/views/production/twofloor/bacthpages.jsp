@@ -140,7 +140,49 @@
 </div>
 <!--隐藏框 工序分配结束  -->
 
+<!-- 任务详情开始-->
+<div id="addworking" style="display: none;">
+<table><tr>           
+                        <td><button type="button" class="btn btn-default btn-danger btn-xs btn-3d attendance">一键删除</button>&nbsp&nbsp</td>
+                        <td><button type="button" class="btn btn-default btn-success btn-xs btn-3d start">一键开始</button>&nbsp&nbsp</td>
+                        <td><button type="button" class="btn btn-default btn-success btn-xs btn-3d suspend">一键暂停</button>&nbsp&nbsp</td>
+                        </tr></table>             
+                            <div class="panel-body">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                        	<th class="center">
+											<label> 
+											<input type="checkbox" class="ace checks" /> 
+											<span class="lbl"></span>
+											</label>
+											</th>
+											<th class="text-center">任务编号</th>
+                                        	<th class="text-center">批次号</th>
+                                            <th class="text-center">产品名</th>
+                                            <th class="text-center">时间</th>
+                                            <th class="text-center">工序</th>
+                                            <th class="text-center">预计时间</th>
+                                            <th class="text-center">任务价值</th>
+                                            <th class="text-center">b工资净值</th>
+                                            <th class="text-center">数量</th>
+                                            <th class="text-center">开始结束</th>
+                                            <th class="text-center">实际用时</th>
+                                            <th class="text-center">完成人</th>
+                                            <th class="text-center">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablecontent">
+                                        
+                                    </tbody>
+                                </table>
+                                <div id="pager" class="pull-right">
+                                
+                                </div>
+                            </div>
 
+</div>
+<!-- 任务详情结束-->
 
 
 
@@ -209,6 +251,7 @@
 		      					o.bacthHairPrice=0;
 		      				 }
 		      				 html +='<tr>'
+		      				+'<td class="hidden batch">'+o.id+'</td>'
 		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
 		      				+'<td class="text-center  name">'+o.product.name+'</td>'
@@ -255,6 +298,34 @@
 			}
 			
 			this.loadEvents = function(){
+				
+				$('.name').on('click',function(){
+				var dicDiv=$('#addworking');
+					_index = layer.open({
+						  type: 1,
+						  skin: 'layui-layer-rim', //加上边框
+						  area: ['70%', '60%'], 
+						  btnAlign: 'c',//宽高
+						  maxmin: true,
+						  title:name,
+						  content: dicDiv,
+						  
+						  yes:function(index, layero){
+							 
+							},
+						  end:function(){
+							  $('#addworking').hide();
+							  data={
+									page:1,
+								  	size:13,	
+								  	type:3,
+								  	name:$('#name').val(),
+						  			number:$('#number').val(),
+							  }
+							
+						  }
+					});
+				})
 				//删除
 				$('.delete').on('click',function(){
 					var postData = {
@@ -358,7 +429,14 @@
 				    
 				    var htmlth = '';
 				    var htmlfr = '';
-				 	
+				    var ids=that.data("id");
+					$(".batch").each(function(i,o){
+						var a=$(o).text();
+						if(a==ids){
+							$(o).parent().addClass("danger");
+							$(o).parent().siblings().removeClass("danger");
+						}
+					})
 				    //遍历工序类型
 				    var getdata={type:"productFristQuality",}
 	      			$.ajax({
