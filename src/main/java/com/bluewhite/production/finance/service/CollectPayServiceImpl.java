@@ -170,9 +170,20 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		//不予给付汇总占比
 		double proportion = regionalPrice/sumTask;
 		collectInformation.setProportion(proportion);
+		//我们的表和小关的表差价不予给付
+		double priceDifferences = (sumTask-regionalPrice)*(regionalPrice/sumTask);
 		//预算多余在手部分
-		double overtop = regionalPrice/0.25*0.2;
+		double overtop = 0;
+		if(collectInformation.getType()==1){
+			 overtop = regionalPrice > 0 ? 0 : Math.abs(regionalPrice)/0.25*0.2;
+		}else{
+			 overtop = regionalPrice > 0 ? 0 : Math.abs(regionalPrice);
+		}
 		collectInformation.setOvertop(overtop);
+		
+		//没有给一线的已经赚到的
+		
+		//多给了一线的和打棉的
 		
 		//按条件汇总员工费用所有数据
 		this.collectInformationPay(collectInformation, page);
@@ -251,7 +262,12 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		collectInformation.setSurplusManage(surplusManage);
 		
 		//净管理费给付比→
-		double manageProportion = 0.18;
+		double manageProportion = 0;
+		if(collectInformation.getType()==1){
+			 manageProportion = 0.18;
+		}else{
+			manageProportion = 0.11;
+		}
 		collectInformation.setManageProportion(manageProportion);
 		
 		//从开始日至今可发放管理费加绩比
