@@ -54,14 +54,12 @@
 				<td>结束时间:</td>
 				<td>
 					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
-             onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+            					 onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
 								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtask">
-										查找
-										<i class="icon-search icon-on-right bigger-110"></i>
-									</button>
+								<span class="input-group-btn"><button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">查&nbsp找</button></span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn"><button type="button" class="btn btn-default btn-danger btn-sm btn-3d attendance">一键删除</button>
 								</span>
 							</div>
 						</div>
@@ -71,9 +69,6 @@
 		</div>
             <!-- 查询结束 -->    
             <h1 class="page-header"></h1>
-            <table><tr>           
-                        <td><button type="button" class="btn btn-default btn-danger btn-xs btn-3d attendance">一键删除</button>&nbsp&nbsp</td>
-                        </tr></table>             
                             <div class="panel-body">
                                 <table class="table table-hover">
                                     <thead>
@@ -101,6 +96,7 @@
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
+                            
                                 </table>
                                 <div id="pager" class="pull-right">
                                 
@@ -375,9 +371,9 @@
 				
 				/* 一键删除 */
 				$('.attendance').on('click',function(){
-					  var  that=$(this);
+					  var  that=$(".table-hover");
 					  var arr=new Array()//员工id
-						$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+					  that.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
 							arr.push($(this).val());   
 						});
 					  if(arr.length<=0){

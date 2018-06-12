@@ -191,9 +191,9 @@
    <header id="header">
             <!--logo start-->
             <div class="brand">
-                <a href="index.html" class="logo">
+      <!--           <a href="index.html" class="logo">
                     <i class="icon-layers"></i>
-                    <span>蓝白</span>工艺</a>
+                    <span>蓝白</span>工艺</a> -->
             </div>
             
            
@@ -251,7 +251,9 @@
                     <i class="on border-dark animated bounceIn"></i>
                 </div>
                 <div class="profile-body dropdown">
-                    <a href="javascript:void(0);"  aria-expanded="false"><h4><shiro:principal/></h4></a>
+                    <a href="javascript:void(0);"  aria-expanded="false">
+                    <h4><shiro:principal/></h4>
+                    </a>
                     <small class="title">你好世界</small>
                 </div>
             </div>

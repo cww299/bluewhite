@@ -48,7 +48,7 @@
                                         <div class="tab-pane active" id="home1">
                                         <!--查询开始  -->
           		 <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-9 col-sm-9  col-md-9">
+					<div class="col-xs-10 col-sm-10  col-md-10">
 						<form class="form-search" >
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
@@ -58,20 +58,20 @@
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>无加绩的配合奖励:</td><td><input type="text" name="name" id="code" placeholder="请输入奖励" class="form-control search-query name" /></td>
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>开始:</td>
+								<td>开始时间:</td>
 								<td>
 								<input id="startTimeth" placeholder="请输入开始时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#startTimeth', istime: true, format: 'YYYY-MM-DD 00:00:00'})"> 
 								</td>
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>结束:</td>
+								<td>结束时间:</td>
 								<td>
 								<input id="endTimeth" placeholder="请输入结束时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#endTimeth', istime: true, format: 'YYYY-MM-DD 23:59:59'})">
 								</td>
 								</tr></table> 
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtaskth">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtaskth">
 										查&nbsp找
 									</button>
 								</span>
@@ -131,7 +131,7 @@
 								</td>
 								</tr></table> 
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtask">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
 										查&nbsp找
 									</button>
 								</span>
@@ -181,7 +181,7 @@
 								</td>
 								</tr></table> 
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtasktw">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtasktw">
 										查&nbsp找
 									</button>
 								</span>
