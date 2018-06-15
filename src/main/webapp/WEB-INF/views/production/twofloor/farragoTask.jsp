@@ -58,9 +58,13 @@
 								</td>
 								</tr></table> 
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtask">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
 										查&nbsp找
 									</button>
+								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增杂工</button>
 								</span>
 							</div>
 						</div>
@@ -86,7 +90,7 @@
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
-                                    <button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增杂工</button>
+                              
                                 </table>
                                 <div id="pager" class="pull-right">
                                 
@@ -116,7 +120,7 @@
 				
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+				<button type="button" class="btn btn-info" data-dismiss="modal">关闭
 				</button>
 			</div>
 		</div><!-- /.modal-content -->

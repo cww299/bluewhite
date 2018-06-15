@@ -26,7 +26,7 @@
 			<div class="col-xs-8 col-sm-8  col-md-8">
 				<form class="form-search" >
 					<div class="row">
-						<div class="col-xs-12 col-sm-12 col-md-7">
+						<div class="col-xs-12 col-sm-12 col-md-8">
 							<div class="input-group"> 
 								<table><tr>
 								<td>员工姓名:</td><td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
@@ -34,7 +34,7 @@
 								<td>小组查询:</td><td id="groupp"></td>
 								</tr></table> 
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-default btn-square btn-sm btn-3d  searchtask">
+									<button type="button" class="btn btn-info  btn-sm btn-3d  searchtask">
 										查&nbsp找
 									</button>
 								</span>
@@ -45,19 +45,21 @@
 			</div>
 		</div>
               <h1 class="page-header"></h1>  
-              	<table><tr>           
-                        <td><button type="button" class="btn btn-default btn-square btn-sm btn-3d attendance">一键添加考勤</button>&nbsp&nbsp</td> 
+              	<table>
+              	<tr>           
+                        <td><button type="button" class="btn btn-info btn-square btn-sm btn-3d attendance">一键添加考勤</button>&nbsp&nbsp</td> 
                         <td><input id="startTime" placeholder="请输入考勤日期" class="form-control laydate-icon"
              				onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
              			</td>
              			<td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
-             			<td><button type="button" class="btn btn-default btn-square btn-sm btn-3d position">到岗预计小时收入</button>&nbsp&nbsp</td> 
+             			<td><button type="button" class="btn btn-info btn-square btn-sm btn-3d position">到岗预计小时收入</button>&nbsp&nbsp</td> 
              			<td><input id="endTime" placeholder="请输入时间" class="form-control laydate-icon"
              				onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
              			</td>
              			<td>&nbsp&nbsp</td>
              			<td><input type="text" name="name" id="workPrice" class="form-control search-query" placeholder="预计收入" /></td>  
-                 </tr></table>        
+                 </tr>
+                 </table>        
                             
                             <div class="panel-body">
                                 <table class="table table-hover">

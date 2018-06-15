@@ -57,7 +57,7 @@
 								</td>
 								</tr></table> 
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtask">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
 											查&nbsp找
 									</button>
 								</span>
@@ -507,7 +507,7 @@
 			      				var	id=$(this).val()
 								   var data={
 										  id:id,
-										  type:3,
+										  type:1,
 								   }
 			      				$.ajax({
 									url:"${ctx}/production/allGroup",

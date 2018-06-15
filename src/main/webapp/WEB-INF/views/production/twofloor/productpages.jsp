@@ -38,17 +38,24 @@
 			<div class="col-xs-8 col-sm-8  col-md-8">
 				<form class="form-search" >
 					<div class="row">
-						<div class="col-xs-12 col-sm-12 col-md-7">
+						<div class="col-xs-8 col-sm-8 col-md-8">
 							<div class="input-group"> 
 								<table><tr><td>产品编号:</td><td><input type="text" name="number" id="number" class="form-control search-query number" /></td>
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>产品名称:</td><td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
 								</tr></table> 
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtask">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
 										查&nbsp找
 									</button>
 								</span>
+									<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+								   <button type="button" id="addproduct" class="btn btn-success  btn-sm btn-3d pull-right">
+								   新增产品
+								   </button>
+								</span>
+								
 							</div>
 						</div>
 					</div>
@@ -70,7 +77,6 @@
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
-                                    <button type="button" id="addproduct" class="btn btn-success  btn-sm btn-3d pull-right">新增产品</button>
                                 </table>
                                 <div id="pager" class="pull-right">
                                 

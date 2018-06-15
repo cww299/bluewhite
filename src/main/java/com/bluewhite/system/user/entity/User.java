@@ -324,6 +324,12 @@ public class User extends BaseEntity<Long> {
 	@Column(name = "work_time")
 	private Double workTime;
 	
+	/**
+	 * 个人签名
+	 */
+	@Column(name = "signature")
+	private Double signature;
+	
 
 	/**
 	 * 权限
@@ -355,7 +361,15 @@ public class User extends BaseEntity<Long> {
 	
 	
 	
+	
 
+	public Double getSignature() {
+		return signature;
+	}
+
+	public void setSignature(Double signature) {
+		this.signature = signature;
+	}
 
 	public Double getWorkTime() {
 		return workTime;

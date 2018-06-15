@@ -10,7 +10,7 @@ html {
   font-size: 100%;
 }
 body {
-  color: #565656;
+  color: #13161c;
   background: #F0F3F3;
   font-family: "Open Sans", Helvetica, Arial, sans-serif;
   font-size: 85%;
@@ -470,7 +470,7 @@ canvas {
   text-align: center;
 }
 .sidebar-profile .profile-body h4 {
-  color: #f5f5f5;
+  color: #1d212a;
   margin: 10px 0 0 0;
   font-size: 14px;
   font-weight: 600;
@@ -541,17 +541,17 @@ canvas {
   text-transform: uppercase;
 }
 .sidebar-left a {
-  color: #65dcd7;
+  color: #13161c;
 }
 .sidebar-left a:focus,
 .sidebar-left a:hover {
-  color: #fff;
+  color: #3b9fea;
   background-color: transparent;
 }
 .sidebar-left .active > a,
 .sidebar-left .active > a:focus,
 .sidebar-left .active > a:hover {
-  color: #ffffff;
+  color: #3b9fea;
 }
 .sidebar-left .disabled > a,
 .sidebar-left .disabled > a:focus,
@@ -569,7 +569,7 @@ canvas {
   background-color: transparent;
 }
 .sidebar-left .nav > li > a:focus {
-  color: #fff;
+  color: #118def;
   background-color: transparent;
 }
 .sidebar-left .nav > .disabled > a,
@@ -579,7 +579,7 @@ canvas {
   background-color: transparent;
 }
 .sidebar-left .nav-sub li.open > a {
-  color: #fff;
+  color: #118def;
   background-color: transparent;
 }
 .sidebar + .main-content-wrapper {
@@ -3467,15 +3467,15 @@ label.valid {
   color: #edce8c;
 }
 .theme-default #header {
- /*  background: #13161c; */
-  background-image: url('../images/3.png');
+/*   background: #13161c;  */
+   background-image: url('../images/3.jpg'); 
 }
 .theme-default #header .logo,
 .theme-default #header button.sidebar-toggle,
 .theme-default #header button#toggle-profile,
 .theme-default #header button#toggle-fullscreen,
 .theme-default #header .nav li.profile > a {
-  color: #27b6af;
+  color: #f0f1f1;
 }
 .theme-default #header button.sidebar-toggle:hover,
 .theme-default #header button.sidebar-toggle:active,
@@ -3483,15 +3483,15 @@ label.valid {
 .theme-default #header button#toggle-profile:active,
 .theme-default #header button#toggle-fullscreen:hover,
 .theme-default #header button#toggle-fullscreen:active {
-  background: #f6f8f8;
+  background: #4db0ef;
 }
 .theme-default #header .nav li.profile > a:hover,
 .theme-default #header .nav li.profile > a:active,
 .theme-default #header .nav li.profile > a:focus {
-  background: #f6f8f8;
+  background: #4db0ef;
 }
 .theme-default .sidebar-left {
-  background-color: #1d212a;
+  background-color: #eee;
 }
 .theme-default .sidebar-mini .sidebar-left .nav > li.active > a:focus,
 .theme-default .sidebar-mini .sidebar-left .nav > li.active > a:hover,
@@ -3499,19 +3499,19 @@ label.valid {
 .theme-default .sidebar-left .nav > li.active > a:focus,
 .theme-default .sidebar-left .nav > li.active > a:hover {
   color: #fff;
-  background-color: #27b6af;
+  background-color: #0d92f59c;
 }
 .theme-default .sidebar-left .nav > li.open > a,
 .theme-default .sidebar-left .nav > li > a:hover {
   color: #1d2939;
-  background-color: #ffffff;
+  background-color: #118def;
 }
 .theme-default.sidebar-mini .sidebar-left .nav > li.nav-dropdown-open > .nav-sub,
 .theme-default.sidebar-mini .sidebar-left .nav > li:hover > .nav-sub {
-  background-color: #1d212a;
+  background-color: #fff;
 }
 .theme-default .sidebar-profile {
-  background: #13161c;
+  background: #eee;
 }
 .theme-default.sidebar-mini .sidebar-left .nav > li.active > a,
 .theme-default.sidebar-mini .sidebar-left .nav > li.active > a:focus,
@@ -3519,16 +3519,16 @@ label.valid {
 .theme-default .sidebar-left .nav > li.active > a,
 .theme-default .sidebar-left .nav > li.active > a:focus,
 .theme-default .sidebar-left .nav > li.active > a:hover {
-  color: #fff;
-  background-color: #27b6af;
+  color: #13161c;
+  background-color:#0d92f59c;
 }
 .theme-default.sidebar-mini .sidebar-left .nav > li.nav-dropdown-open > a,
 .theme-default.sidebar-mini .sidebar-left .nav > li:hover > a {
   color: #1d2939;
-  background-color: #fff;
+  background-color: #0d92f59c;
 }
 .theme-dark #header {
-  background: #fff;
+  background: #0d92f59c;
 }
 .theme-dark #header .brand {
   background: #1D212A;
@@ -3563,13 +3563,13 @@ label.valid {
 .theme-dark .sidebar-left .nav > li.active > a,
 .theme-dark .sidebar-left .nav > li.active > a:focus,
 .theme-dark .sidebar-left .nav > li.active > a:hover {
-  color: #fff;
+  color: #0d92f59c;
   background-color: #27b6af;
 }
 .theme-dark .sidebar-left .nav > li.open > a,
 .theme-dark .sidebar-left .nav > li > a:hover {
   color: #1d2939;
-  background-color: #ffffff;
+  background-color: #0d92f59c;
 }
 .theme-dark.sidebar-mini .sidebar-left .nav > li.nav-dropdown-open > .nav-sub,
 .theme-dark.sidebar-mini .sidebar-left .nav > li:hover > .nav-sub {

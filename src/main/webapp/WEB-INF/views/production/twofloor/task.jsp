@@ -58,7 +58,7 @@
 								</td>
 								</tr></table> 
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtask">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
 										查找
 										<i class="icon-search icon-on-right bigger-110"></i>
 									</button>
@@ -71,11 +71,13 @@
 		</div>
             <!-- 查询结束 -->    
             <h1 class="page-header"></h1>
-            <table><tr>           
-                        <td><button type="button" class="btn btn-default btn-danger btn-xs btn-3d attendance">一键删除</button>&nbsp&nbsp</td>
-                        <td><button type="button" class="btn btn-default btn-success btn-xs btn-3d start">一键开始</button>&nbsp&nbsp</td>
-                        <td><button type="button" class="btn btn-default btn-success btn-xs btn-3d suspend">一键暂停</button>&nbsp&nbsp</td>
-                        </tr></table>             
+			            <table>
+			            <tr>           
+                        <td><button type="button" class="btn btn-default btn-danger btn-sm btn-3d attendance">一键删除</button>&nbsp&nbsp</td>
+                        <td><button type="button" class="btn btn-info  btn-sm btn-3d start">一键开始</button>&nbsp&nbsp</td>
+                        <td><button type="button" class="btn btn-default btn-success btn-sm btn-3d suspend">一键暂停</button>&nbsp&nbsp</td>
+                        </tr>
+                        </table>             
                             <div class="panel-body">
                                 <table class="table table-hover">
                                     <thead>

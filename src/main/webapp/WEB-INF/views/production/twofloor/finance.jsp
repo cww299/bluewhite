@@ -69,7 +69,7 @@
 								</td>
 								</tr></table> 
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtaskth">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtaskth">
 										查&nbsp找
 									</button>
 								</span>
@@ -126,7 +126,7 @@
 								</td>
 								</tr></table> 
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtask">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
 										查找
 										<i class="icon-search icon-on-right bigger-110"></i>
 									</button>
@@ -181,7 +181,7 @@
 								</td>
 								</tr></table> 
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-default btn-square btn-sm btn-3d searchtasktw">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtasktw">
 										查找
 										<i class="icon-search icon-on-right bigger-110"></i>
 									</button>
