@@ -51,7 +51,7 @@ public class CollectInformation {
 	/**
 	 * 不予给付汇总占比
 	 */
-	private Double proportion;
+	private Double proportion=0.0;
 	
 	/**
 	 * 预算多余在手部分
@@ -151,7 +151,7 @@ public class CollectInformation {
 	/**
 	 * 其中股东占比
 	 */
-	private Double shareholderProportion;
+	private Double shareholderProportion = 0.0;
 	
 	/**
 	 * 其中股东收益

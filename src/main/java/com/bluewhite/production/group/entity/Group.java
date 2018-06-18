@@ -47,9 +47,35 @@ public class Group  extends BaseEntity<Long>{
 	@Column(name = "user_name")
 	private String userName;
 	
+	/**
+	 * 标记
+	 */
+	@Column(name = "sign")
+	private String sign;
+	
+	/**
+	 * 备注
+	 */
+	@Column(name = "remark")
+	private String remark;
 	
 	
 	
+	public String getSign() {
+		return sign;
+	}
+
+	public void setSign(String sign) {
+		this.sign = sign;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 
 	public Long getUserId() {
 		return userId;

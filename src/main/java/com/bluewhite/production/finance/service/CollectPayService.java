@@ -1,6 +1,7 @@
 package com.bluewhite.production.finance.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -10,7 +11,6 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.production.finance.entity.CollectInformation;
 import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.MonthlyProduction;
-import com.bluewhite.production.finance.entity.PayB;
 @Service
 public interface CollectPayService extends BaseCRUDService<CollectPay,Long>{
 
@@ -35,6 +35,21 @@ public interface CollectPayService extends BaseCRUDService<CollectPay,Long>{
 	 * @return
 	 */
 	public List<MonthlyProduction> monthlyProduction(MonthlyProduction monthlyProduction);
+	
+	
+	/**
+	 * 计算各组人员考情时间和B工资+杂工的汇总
+	 * @param monthlyProduction
+	 * @return
+	 */
+	public List<Map<String,Object>> bPayAndTaskPay(MonthlyProduction monthlyProduction);
+	
+	/**
+	 * 获取非一线人员的绩效汇总表，每个组的男女组长，按月
+	 * @param monthlyProduction
+	 * @return
+	 */
+	public Object headmanPay(MonthlyProduction monthlyProduction);
 	
 
 

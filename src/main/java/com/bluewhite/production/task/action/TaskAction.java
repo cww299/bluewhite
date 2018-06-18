@@ -210,6 +210,13 @@ private static final Log log = Log.getLog(TaskAction.class);
 		return cr;
 	}
 	
+	
+	
+
+	
+	
+	
+	
 	/** 
 	 * 分页查询所有任务
 	 * 
@@ -275,6 +282,23 @@ private static final Log log = Log.getLog(TaskAction.class);
 		}
 		return cr;
 	}
+	
+	
+	/********一楼包装*********/
+	
+	/**
+	 * 获取任务加绩类型列表
+	 */
+	@RequestMapping(value = "/task/pickTaskPerformance", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse pickTaskPerformance(HttpServletRequest request) {
+		CommonResponse cr = new CommonResponse();
+		List<Map<String,Object>> mapList= ProTypeUtils.pickTaskPerformance();
+		cr.setData(mapList);
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
 	
 	
 	@InitBinder

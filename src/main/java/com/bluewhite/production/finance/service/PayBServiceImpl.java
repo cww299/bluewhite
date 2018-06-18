@@ -48,6 +48,10 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 		        	if (param.getUserId() != null) {
 						predicate.add(cb.equal(root.get("userId").as(Long.class),param.getUserId()));
 					}
+		           	//按分组id过滤
+		        	if (param.getGroupId() != null) {
+						predicate.add(cb.equal(root.get("user").get("groupId").as(Long.class),param.getGroupId()));
+					}
 		        	//按产品id
 		        	if(param.getProductId()!=null){
 		        		predicate.add(cb.equal(root.get("productId").as(Long.class),param.getProductId()));
@@ -110,6 +114,8 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 			collect.setUserId(attendance.getUserId());
 			collect.setUserName(attendance.getUserName());
 			collect.setTime(attendance.getWorkTime());
+			collect.setOvertime(attendance.getOvertime());
+			collect.setDutyTime(attendance.getDutyTime());
 			collect.setAllotTime(collectPay.getOrderTimeBegin());
 			collect.setPayA(attendance.getPayNumber());
 			//个人b工资

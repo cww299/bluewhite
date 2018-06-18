@@ -86,6 +86,13 @@ public  class ProTypeUtils {
 	
 	
 	/**
+	 * 一楼打包
+	 * 当外发价格
+	 */
+	private final static double  FRIST_PACKTWO = 0.25;
+	
+	
+	/**
 	 * 一楼质检
 	 * 放快手包装工秒支出(AC8)
 	 */
@@ -234,6 +241,89 @@ public  class ProTypeUtils {
 	};
 	
 	
+	/******** 一楼包装 ******************************/
+	/**
+	 * 一楼包装
+	 * 放快手包装工秒支出(AC8)
+	 */
+	private static double getPackAC8(){
+		return (proTypeUtils.service.findByExcelNameAndType("AC5" , 2).getNumber()*ProTypeUtils.EXCELONE
+				*proTypeUtils.service.findByExcelNameAndType("AC3" , 2).getNumber()
+				*proTypeUtils.service.findByExcelNameAndType("AC7" , 2).getNumber())/ProTypeUtils.TIME/ProTypeUtils.TIME;
+	}
+	
+	
+	
+	/**
+	 * 
+	 * 设定精细填写包装工加价比(AD12)
+	 */
+	private static double getBZAD12(){
+		return ((proTypeUtils.service.findByExcelNameAndType("AC5" , 2).getNumber()
+				*proTypeUtils.service.findByExcelNameAndType("BZAC12" , 2).getNumber())
+				-proTypeUtils.service.findByExcelNameAndType("AC5" , 2).getNumber());
+	}
+	
+	/**
+	 * 
+	 * 设定装箱包装工加价比(AD13)
+	 */
+	private static double getBZAD13(){
+		return ((proTypeUtils.service.findByExcelNameAndType("AC5" , 2).getNumber()
+				*proTypeUtils.service.findByExcelNameAndType("BZAC13" , 2).getNumber())
+				-proTypeUtils.service.findByExcelNameAndType("AC5" , 2).getNumber());
+	}
+	
+	/**
+	 * 
+	 * 设定推货工加价比(AD14)
+	 */
+	private static double getBZAD14(){
+		return ((proTypeUtils.service.findByExcelNameAndType("AC5" , 2).getNumber()
+				*proTypeUtils.service.findByExcelNameAndType("BZAC14" , 2).getNumber())
+				-proTypeUtils.service.findByExcelNameAndType("AC5" , 2).getNumber());
+	}
+	
+	/**
+	 * 
+	 * 设定上下车力工加价比(AD15)
+	 */
+	private static double getBZAD15(){
+		return ((proTypeUtils.service.findByExcelNameAndType("AC5" , 2).getNumber()
+				*proTypeUtils.service.findByExcelNameAndType("BZAC15" , 2).getNumber())
+				-proTypeUtils.service.findByExcelNameAndType("AC5" , 2).getNumber());
+	}
+	
+	/**
+	 * 加绩工序显示
+	 */
+	public static List<Map<String,Object>>  pickTaskPerformance(){
+		List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>(4);
+		Map<String,Object> mapAD12 = new HashMap<String,Object>();
+		mapAD12.put("name", "精细填写工序");
+		mapAD12.put("number", NumUtils.round(ProTypeUtils.getBZAD12()/ProTypeUtils.TIME));
+		mapList.add(mapAD12);
+		Map<String,Object> mapAD13 = new HashMap<String,Object>();
+		mapAD13.put("name", "装箱装包工序");
+		mapAD13.put("number",NumUtils.round( ProTypeUtils.getBZAD13()/ProTypeUtils.TIME));
+		mapList.add(mapAD13);
+		Map<String,Object> mapAD14 = new HashMap<String,Object>();
+		mapAD14.put("name", "推货工序");
+		mapAD14.put("number",NumUtils.round( ProTypeUtils.getBZAD14()/ProTypeUtils.TIME));
+		mapList.add(mapAD14);
+		Map<String,Object> mapAD15 = new HashMap<String,Object>();
+		mapAD15.put("name", "上下车力工工序");
+		mapAD15.put("number",NumUtils.round( ProTypeUtils.getBZAD15()/ProTypeUtils.TIME));
+		mapList.add(mapAD15);
+		return mapList;
+	};
+	
+	
+	
+	
+	
+	
+	
 	
 	/******** 二楼针工  ******************************/
 	/**
@@ -312,6 +402,7 @@ public  class ProTypeUtils {
 			}
 			break;
 		case 2://生产部一楼打包
+			sumPrice=ProTypeUtils.FRIST_PACKTWO;
 			break;
 		case 3://生产部二楼针工
 			break;
@@ -334,6 +425,7 @@ public  class ProTypeUtils {
 			sumExpectTime = procedure.getWorkingTime()*number/ProTypeUtils.TIME;
 			break;
 		case 2://生产部一楼打包
+			sumExpectTime = procedure.getWorkingTime()*number/ProTypeUtils.TIME;
 			break;
 		case 3://生产部二楼针工
 			sumExpectTime = procedure.getWorkingTime()*number/ProTypeUtils.TIME;
@@ -358,6 +450,7 @@ public  class ProTypeUtils {
 			sumExpectTime = expectTime*number/ProTypeUtils.TIME;
 			break;
 		case 2://生产部一楼打包
+			sumExpectTime = expectTime*number/ProTypeUtils.TIME;
 			break;
 		case 3://生产部二楼针工
 			sumExpectTime = expectTime*number/ProTypeUtils.TIME;
@@ -366,6 +459,31 @@ public  class ProTypeUtils {
 			break;
 		}
 		return sumExpectTime;
+	}
+	
+	
+	/**
+	 * 根据不同的部门，计算实际任务数量
+	 * @param price
+	 * @param type
+	 * @return
+	 */
+	public static Double getTaskNumber(Double expectTime, Integer type,Double workingTime) {
+		Double taskNumber = 0.0 ;
+		switch (type) {
+		case 1:// 生产部一楼质检
+			taskNumber = expectTime*ProTypeUtils.TIME/workingTime;
+			break;
+		case 2://生产部一楼打包
+			taskNumber = expectTime*ProTypeUtils.TIME/workingTime;
+			break;
+		case 3://生产部二楼针工
+			taskNumber = expectTime*ProTypeUtils.TIME/workingTime;
+			break;
+		default:
+			break;
+		}
+		return taskNumber;
 	}
 	
 	
@@ -382,6 +500,7 @@ public  class ProTypeUtils {
 			sumTaskPrice =taskTime*ProTypeUtils.getAC8()*ProTypeUtils.TIME;
 			break;
 		case 2://生产部一楼打包
+			sumTaskPrice =taskTime*ProTypeUtils.getPackAC8()*ProTypeUtils.TIME;
 			break;
 		case 3://生产部二楼针工
 			sumTaskPrice =taskTime*ProTypeUtils.getAC8TWO()*ProTypeUtils.TIME;
@@ -406,8 +525,10 @@ public  class ProTypeUtils {
 			sumBPrice =BPrice/proTypeUtils.service.findByExcelNameAndType("AC7" , 1).getNumber();
 			break;
 		case 2://生产部一楼打包
+			sumBPrice =BPrice/proTypeUtils.service.findByExcelNameAndType("AC7" , 2).getNumber();
 			break;
 		case 3://生产部二楼针工
+			sumBPrice =BPrice/proTypeUtils.service.findByExcelNameAndType("AC7" , 3).getNumber();
 			break;
 		default:
 			break;
@@ -428,8 +549,10 @@ public  class ProTypeUtils {
 			sumRegionalPrice = bacth.getSumTaskPrice()-(bacth.getBacthHairPrice()/bacth.getBacthDepartmentPrice()*bacth.getSumTaskPrice());
 			break;
 		case 2://生产部一楼打包
+			sumRegionalPrice = bacth.getSumTaskPrice()-(bacth.getBacthHairPrice()/bacth.getBacthDepartmentPrice()*bacth.getSumTaskPrice());
 			break;
 		case 3://生产部二楼针工
+			sumRegionalPrice = bacth.getSumTaskPrice()-(bacth.getBacthHairPrice()/bacth.getBacthDepartmentPrice()*bacth.getSumTaskPrice());
 			break;
 		default:
 			break;
@@ -521,12 +644,16 @@ public  class ProTypeUtils {
 	 * @return
 	 */
 	public static void updateUsualConsume(UsualConsume usualConsume) {
+		ProductionConstant E7 = null;
+		ProductionConstant E8 = null;
+		ProductionConstant E9 = null;
+		ProductionConstant E10 = null;
 		switch (usualConsume.getType()) {
 		case 1:// 生产部一楼质检
-			ProductionConstant E7 = proTypeUtils.service.findByExcelNameAndType("E7" , 1);
-			ProductionConstant E8 = proTypeUtils.service.findByExcelNameAndType("E8" , 1);
-			ProductionConstant E9 = proTypeUtils.service.findByExcelNameAndType("E9" , 1);
-			ProductionConstant E10 = proTypeUtils.service.findByExcelNameAndType("E10" , 1);
+			 E7 = proTypeUtils.service.findByExcelNameAndType("E7" , 1);
+			 E8 = proTypeUtils.service.findByExcelNameAndType("E8" , 1);
+			 E9 = proTypeUtils.service.findByExcelNameAndType("E9" , 1);
+			 E10 = proTypeUtils.service.findByExcelNameAndType("E10" , 1);
 			
 			if(usualConsume.getPeopleLogistics()!=E7.getNumber()){
 				E7.setNumber(usualConsume.getPeopleLogistics());
@@ -548,6 +675,27 @@ public  class ProTypeUtils {
 		case 2://生产部一楼打包
 			break;
 		case 3://生产部二楼针工
+			 E7 = proTypeUtils.service.findByExcelNameAndType("E7" , 3);
+			 E8 = proTypeUtils.service.findByExcelNameAndType("E8" , 3);
+			 E9 = proTypeUtils.service.findByExcelNameAndType("E9" , 3);
+			 E10 = proTypeUtils.service.findByExcelNameAndType("E10",3);
+			
+			if(usualConsume.getPeopleLogistics()!=E7.getNumber()){
+				E7.setNumber(usualConsume.getPeopleLogistics());
+				proTypeUtils.service.save(E7);
+			}
+			if(usualConsume.getPeopleNumber()!=E8.getNumber()){
+				E8.setNumber(usualConsume.getPeopleNumber());
+				proTypeUtils.service.save(E8);
+			}
+			if(usualConsume.getMonthChummage()!=E9.getNumber()){
+				E9.setNumber(usualConsume.getMonthChummage());
+				proTypeUtils.service.save(E9);
+			}
+			if(usualConsume.getMonthHydropower()!=E10.getNumber()){
+				E10.setNumber(usualConsume.getMonthHydropower());
+				proTypeUtils.service.save(E10);
+			}
 			break;
 		default:
 			break;

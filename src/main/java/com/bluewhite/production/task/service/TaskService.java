@@ -56,5 +56,11 @@ public interface TaskService extends BaseCRUDService<Task,Long>{
 	 * @return
 	 */
 	public Task upTask(Task task);
+	
+	/**
+	 * 根据实际时间的到任务数量
+	 * @param task
+	 */
+	public Integer getTaskNumber(Task task);
 
 }

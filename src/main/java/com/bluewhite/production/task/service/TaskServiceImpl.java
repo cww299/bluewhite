@@ -16,7 +16,6 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ServiceException;
-import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
@@ -68,6 +67,10 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				Procedure procedure = procedureDao.findOne(id);
 				newTask.setProcedureId(id);
 				newTask.setProcedureName(procedure.getName());
+				//二楼特殊业务，当存在实际不为null的时候，先计算出任务数量
+				if(newTask.getTaskTime()!=null){
+					newTask.setNumber(NumUtils.roundTwo(ProTypeUtils.getTaskNumber(newTask.getTaskTime(), newTask.getType(), procedure.getWorkingTime())));
+				}
 				//预计完成时间（1.工序类型不是返工，预计时间利用公式计算的得出。2.工序类型是返工，手填预计完成时间）
 				//当前台传值得预计时间不为null，说明该任务类型是返工类型
 				newTask.setFlag(procedure.getFlag());
@@ -436,6 +439,23 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		
 		}
 		return task;
+	}
+
+	@Override
+	public Integer getTaskNumber(Task task) {
+		if(task.getProcedureIds().length>0){
+			Task newTask = null;
+			for (int i = 0; i < task.getProcedureIds().length; i++) {
+				newTask = new Task();
+				BeanCopyUtils.copyNullProperties(task,newTask);
+				Long id = Long.parseLong(task.getProcedureIds()[i]);
+				Procedure procedure = procedureDao.findOne(id);
+				newTask.setNumber(NumUtils.roundTwo(ProTypeUtils.getTaskNumber(newTask.getTaskTime(), newTask.getType(), procedure.getWorkingTime())));
+				
+			}
+		}
+		return null;
+		
 	}
 	
 }

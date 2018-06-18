@@ -2,6 +2,11 @@ package com.bluewhite.production.finance.entity;
 
 import java.util.Date;
 
+/**
+ * 月产量报表
+ * @author zhangliang
+ *
+ */
 public class MonthlyProduction {
 	/**
 	 * 考勤人数

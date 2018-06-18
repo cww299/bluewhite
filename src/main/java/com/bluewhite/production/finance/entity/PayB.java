@@ -4,10 +4,14 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.system.user.entity.User;
 
 /**
  * 生产控制部  B工资实体
@@ -29,6 +33,13 @@ public class PayB extends BaseEntity<Long>{
 	 */
 	@Column(name = "user_id")
     private Long userId;
+	
+	/**
+	 * 员工
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User user;
 	
 	/**
 	 * 任务工资数额
@@ -103,7 +114,22 @@ public class PayB extends BaseEntity<Long>{
 	@Transient
 	private Date orderTimeEnd;
 	
+	/**
+	 * 查询字段 
+	 */
+	@Transient
+	private Long groupId;
 	
+	
+	
+	public Long getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(Long groupId) {
+		this.groupId = groupId;
+	}
+
 	public Integer getFlag() {
 		return flag;
 	}
@@ -214,6 +240,14 @@ public class PayB extends BaseEntity<Long>{
 
 	public void setProductName(String productName) {
 		this.productName = productName;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 	
 	

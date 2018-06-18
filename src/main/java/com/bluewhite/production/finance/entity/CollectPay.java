@@ -34,6 +34,19 @@ public class CollectPay extends BaseEntity<Long> {
 	 */
 	@Column(name = "time")
 	private Double time;
+	
+	/**
+	 * 加班时间(验货和打棉组固有)
+	 */
+	@Column(name = "over_time")
+	private Double overtime;
+	
+	
+	/**
+	 * 缺勤时间
+	 */
+	@Column(name = "duty_time")
+	private Double  dutyTime;
     
 	/**
 	 * A工资数额
@@ -128,6 +141,19 @@ public class CollectPay extends BaseEntity<Long> {
 	
 	
 	
+
+	public Double getOvertime() {
+		return overtime;
+	}
+	public void setOvertime(Double overtime) {
+		this.overtime = overtime;
+	}
+	public Double getDutyTime() {
+		return dutyTime;
+	}
+	public void setDutyTime(Double dutyTime) {
+		this.dutyTime = dutyTime;
+	}
 	public Date getAllotTime() {
 		return allotTime;
 	}

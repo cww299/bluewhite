@@ -281,7 +281,6 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	 * 
 	 * 员工成本数据汇总 1
 	 * 
-	 * 
 	 * @param binder
 	 */
 	@RequestMapping(value = "/finance/collectInformation", method = RequestMethod.GET)
@@ -325,6 +324,52 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		cr.setMessage("查询成功");
 		return cr;
 	}
+	
+	
+	
+	
+	/**
+	 * 获取非一线人员的绩效汇总表，每个组的男女组长，按月
+	 * 
+	 * @param binder
+	 */
+	@RequestMapping(value = "/finance/headmanPay", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse headmanPay(HttpServletRequest request,MonthlyProduction monthlyProduction) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(MonthlyProduction.class,"peopleNumber","time","productNumber","productPrice","reworkNumber","reworkTurnTime",
+						"userName","rework","reworkTime","orderTimeBegin","orderTimeEnd")
+				.format(collectPayBService.headmanPay(monthlyProduction)).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	
+	
+	/****************二楼固有功能**********************/
+	
+	/**
+	 * 获取整个月考勤时间的汇总，各组人员的B工资+杂工工资汇总，计算出他们之间的比值
+	 * 
+	 * @param binder
+	 */
+	@RequestMapping(value = "/finance/bPayAndTaskPay", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse bPayAndTaskPay(HttpServletRequest request,MonthlyProduction monthlyProduction) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(MonthlyProduction.class,"peopleNumber","time","productNumber","productPrice","reworkNumber","reworkTurnTime",
+						"userName","rework","reworkTime","orderTimeBegin","orderTimeEnd")
+				.format(collectPayBService.bPayAndTaskPay(monthlyProduction)).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	
+
 	
 	
 

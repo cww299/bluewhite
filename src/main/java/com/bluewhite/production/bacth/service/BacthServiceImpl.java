@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.service.ProductServiceImpl;
@@ -87,5 +88,42 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 		};
 		dao.delete(id);
 		return 1;
+	}
+
+	@Override
+	public int statusBacth(String[] ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			if (ids.length>0) {
+				for (int i = 0; i < ids.length; i++) {
+					Long id = Long.parseLong(ids[i]);
+					Bacth bacth = dao.findOne(id);
+					bacth.setStatus(1);
+					dao.save(bacth);
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+
+	@Override
+	public int receiveBacth(String[] ids, String[] numbers) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			if (ids.length>0) {
+				for (int i = 0; i < ids.length; i++) {
+					Long id = Long.parseLong(ids[i]);
+					Bacth bacth = new Bacth();
+					Bacth oldBacth = dao.findOne(id);
+					oldBacth.setId(null);
+					BeanCopyUtils.copyNullProperties(oldBacth,bacth);
+					bacth.setNumber(Integer.valueOf(numbers[i]));
+					dao.save(bacth);
+					count++;
+				}
+			}
+		}
+		return count;
 	}
 }
