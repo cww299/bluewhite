@@ -255,7 +255,7 @@ public class User extends BaseEntity<Long> {
 	/**
 	 * 职位
 	 */
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "position_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData position;
 	
@@ -269,7 +269,7 @@ public class User extends BaseEntity<Long> {
 	/**
 	 * 部门
 	 */
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "orgName_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData orgName;
 	

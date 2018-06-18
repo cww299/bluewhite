@@ -111,6 +111,34 @@ private static final Log log = Log.getLog(BacthAction.class);
 	}
 	
 	
+	/** 
+	 * 一键完成批次，改变status，会转入包装列表
+	 * 
+	 */
+	@RequestMapping(value = "/bacth/statusBacth", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse statusBacth(HttpServletRequest request,String[] ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = bacthService.statusBacth(ids);
+		cr.setMessage("成功完成"+count+"批次");
+		return cr;
+	}
+	
+	/****************************一楼包装*************************/
+	
+	/** 
+	 * 一键接收批次，改变批次的数量，重新变成批次到包装列表，type=2
+	 * 
+	 */
+	@RequestMapping(value = "/bacth/receiveBacth", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse receiveBacth(HttpServletRequest request,String[] ids,String[] numbers) {
+		CommonResponse cr = new CommonResponse();
+		int count = bacthService.receiveBacth(ids,numbers);
+		cr.setMessage("成功完成"+count+"批次");
+		return cr;
+	}
+	
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
 		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(

@@ -41,6 +41,11 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 					predicate.add(cb.equal(root.get("userId").as(Long.class),param.getUserId()));
 				}
 	        	
+	        	//按分组id过滤
+	        	if (param.getGroupId() != null) {
+					predicate.add(cb.equal(root.get("user").get("groupId").as(Long.class),param.getGroupId()));
+				}
+	        	
 	        	//按类型
 	        	if(!StringUtils.isEmpty(param.getType())){
 	        		predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
@@ -55,6 +60,9 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 				query.where(predicate.toArray(pre));
 	        	return null;
 	        }, page);
+		 
+		 
+		 
 	        PageResult<AttendancePay> result = new PageResult<AttendancePay>(pages,page);
 	        return result;
 	    }

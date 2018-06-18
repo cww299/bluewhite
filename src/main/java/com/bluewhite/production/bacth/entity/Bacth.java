@@ -16,7 +16,6 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.product.entity.Product;
-import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.task.entity.Task;
 
 /**

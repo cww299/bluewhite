@@ -4,10 +4,14 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.system.user.entity.User;
 
 /**
  * 生产控制部  考勤工资（A工资）实体
@@ -31,6 +35,13 @@ public class AttendancePay  extends BaseEntity<Long>{
 	@Column(name = "user_id")
     private Long userId;
 	
+	/**
+	 * 员工
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User user;
+	
 	
 	/**
 	 * 到岗小时预计收入
@@ -44,6 +55,7 @@ public class AttendancePay  extends BaseEntity<Long>{
 	 */
 	@Column(name = "work_time")
 	private Double workTime;
+	
 	
 	/**
 	 * 当天考勤工资（A工资）
@@ -65,6 +77,32 @@ public class AttendancePay  extends BaseEntity<Long>{
 	private Date allotTime;
 	
 	/**
+	 * 加班时间(验货和打棉组固有)
+	 */
+	@Column(name = "over_time")
+	private Double overtime;
+	
+	
+	/**
+	 * 缺勤时间
+	 */
+	@Column(name = "duty_time")
+	private Double  dutyTime;
+	
+	/**
+	 * 同种最高工资
+	 */
+	@Column(name = "max_pay")
+	private Double maxPay;
+	
+	
+	/**
+	 * 未拿到差价
+	 */
+	@Column(name = "disparity")
+	private Double disparity;
+	
+	/**
 	 * 查询字段
 	 */
 	@Transient
@@ -74,6 +112,12 @@ public class AttendancePay  extends BaseEntity<Long>{
 	 */
 	@Transient
 	private Date orderTimeEnd;
+	
+	/**
+	 * 查询字段 
+	 */
+	@Transient
+	private Long groupId;
 	
 
 	@Transient
@@ -86,7 +130,57 @@ public class AttendancePay  extends BaseEntity<Long>{
 
 
 
+	
 
+
+	public Long getGroupId() {
+		return groupId;
+	}
+
+
+	public void setGroupId(Long groupId) {
+		this.groupId = groupId;
+	}
+
+
+	public Double getOvertime() {
+		return overtime;
+	}
+
+
+	public void setOvertime(Double overtime) {
+		this.overtime = overtime;
+	}
+
+
+	public Double getDutyTime() {
+		return dutyTime;
+	}
+
+
+	public void setDutyTime(Double dutyTime) {
+		this.dutyTime = dutyTime;
+	}
+
+
+	public Double getMaxPay() {
+		return maxPay;
+	}
+
+
+	public void setMaxPay(Double maxPay) {
+		this.maxPay = maxPay;
+	}
+
+
+	public Double getDisparity() {
+		return disparity;
+	}
+
+
+	public void setDisparity(Double disparity) {
+		this.disparity = disparity;
+	}
 
 
 	public Double[] getWorkTimes() {
@@ -195,6 +289,16 @@ public class AttendancePay  extends BaseEntity<Long>{
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+
+	public User getUser() {
+		return user;
+	}
+
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 	
 	

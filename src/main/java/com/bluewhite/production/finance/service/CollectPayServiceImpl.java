@@ -2,6 +2,7 @@ package com.bluewhite.production.finance.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,8 +27,12 @@ import com.bluewhite.production.farragotask.service.FarragoTaskService;
 import com.bluewhite.production.finance.dao.CollectPayDao;
 import com.bluewhite.production.finance.entity.CollectInformation;
 import com.bluewhite.production.finance.entity.CollectPay;
+import com.bluewhite.production.finance.entity.FarragoTaskPay;
 import com.bluewhite.production.finance.entity.MonthlyProduction;
+import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.finance.entity.UsualConsume;
+import com.bluewhite.production.group.entity.Group;
+import com.bluewhite.production.group.service.GroupService;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.task.entity.Task;
@@ -56,7 +61,16 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	private AttendancePayService attendancePayService;
 	
 	@Autowired
-	private UsualConsumeService usualConsumeservice;
+	private PayBService payBService;
+	
+	@Autowired
+	private FarragoTaskPayService farragoTaskPayService;
+	
+	@Autowired
+	private UsualConsumeService usualConsumeService;
+	
+	@Autowired
+	private GroupService groupService;
 	
 	@Autowired
 	private  ProcedureDao  procedureDao;
@@ -174,7 +188,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		double priceDifferences = (sumTask-regionalPrice)*(regionalPrice/sumTask);
 		//预算多余在手部分
 		double overtop = 0;
-		if(collectInformation.getType()==1){
+		if(collectInformation.getType()==1 || collectInformation.getType()==2){
 			 overtop = regionalPrice > 0 ? 0 : Math.abs(regionalPrice)/0.25*0.2;
 		}else{
 			 overtop = regionalPrice > 0 ? 0 : Math.abs(regionalPrice);
@@ -241,7 +255,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		usualConsume.setOrderTimeBegin(collectInformation.getOrderTimeBegin());
 		usualConsume.setOrderTimeEnd(collectInformation.getOrderTimeEnd());
 		usualConsume.setType(collectInformation.getType());
-		List<UsualConsume> usualConsumeList = usualConsumeservice.findPages(usualConsume, page).getRows();
+		List<UsualConsume> usualConsumeList = usualConsumeService.findPages(usualConsume, page).getRows();
 		double sumChummage = usualConsumeList.stream().mapToDouble(UsualConsume::getChummage).sum();
 		collectInformation.setSumChummage(sumChummage);
 		
@@ -263,7 +277,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		
 		//净管理费给付比→
 		double manageProportion = 0;
-		if(collectInformation.getType()==1){
+		if(collectInformation.getType()==1 || collectInformation.getType()==2){
 			 manageProportion = 0.18;
 		}else{
 			manageProportion = 0.11;
@@ -367,7 +381,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		List<Long> userList = new ArrayList<Long>();
 		//返工出勤时间
 		double reworkTurnTime = 0;
-		monthlyProduction.setReworkTurnTime(reworkTurnTime);
 		for(Task ta : taskList){
 			if (!StringUtils.isEmpty(ta.getUserIds())) {
 				String[] idArr = ta.getUserIds().split(",");
@@ -392,6 +405,16 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				}
 			}
 		}
+		//质检返工出勤时间
+		if(monthlyProduction.getType()==1){
+			monthlyProduction.setReworkTurnTime(reworkTurnTime);
+		//针工返工出勤时间
+		}else if((monthlyProduction.getType()==3)){
+			reworkTurnTime = taskList.stream().mapToDouble(Task::getTaskTime).sum();
+			monthlyProduction.setReworkTurnTime(reworkTurnTime);
+		}
+		
+		
 		double reworkNumber = userList.size();
 		monthlyProduction.setReworkNumber(reworkNumber);
 		//返工个数
@@ -403,6 +426,59 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		monthlyProductionList.add(monthlyProduction);
 		}
 		return monthlyProductionList;
+	}
+
+	@Override
+	public List<Map<String,Object>> bPayAndTaskPay(MonthlyProduction monthlyProduction) {
+		PageParameter page  = new PageParameter();
+		page.setSize(Integer.MAX_VALUE);
+		List<Map<String,Object>> bPayAndTaskPay = new ArrayList<Map<String,Object>>();
+		List<Group> groupList = groupService.findAll();
+		Map<String,Object>  map = null;
+			for(Group group : groupList){
+				map = new HashMap<String, Object>();
+				AttendancePay attendancePay = new AttendancePay();
+				attendancePay.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
+				attendancePay.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
+				attendancePay.setType(monthlyProduction.getType());
+				attendancePay.setGroupId(group.getId());
+				List<AttendancePay> attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
+				List<AttendancePay> list = attendancePayList.stream().filter(AttendancePay->AttendancePay.getWorkTime()!=0).collect(Collectors.toList());
+				//考勤总时间
+				double sunTime = list.stream().mapToDouble(AttendancePay::getWorkTime).sum();
+				
+				//B工资
+				PayB payB = new PayB();
+				payB.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
+				payB.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
+				payB.setType(monthlyProduction.getType());
+				payB.setGroupId(group.getId());
+				List<PayB> payBList = payBService.findPages(payB, page).getRows();
+				//分组人员B工资总和
+				double sumBPay = payBList.stream().mapToDouble(PayB::getPayNumber).sum();
+				
+				//杂工工资
+				FarragoTaskPay farragoTaskPay =new FarragoTaskPay();
+				farragoTaskPay.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
+				farragoTaskPay.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
+				farragoTaskPay.setType(monthlyProduction.getType());
+				farragoTaskPay.setGroupId(group.getId());
+				List<FarragoTaskPay> farragoTaskPayList = farragoTaskPayService.findPages(farragoTaskPay, page).getRows();
+				//分组人员杂工工资总和
+				double sumfarragoTaskPay = farragoTaskPayList.stream().mapToDouble(FarragoTaskPay::getPayNumber).sum();
+				
+				map.put("sunTime", sunTime);
+				map.put("sumBPay", sumBPay+sumfarragoTaskPay);
+				map.put("specificValue", (sumBPay+sumfarragoTaskPay)/sunTime);
+				bPayAndTaskPay.add(map);
+			}
+		return bPayAndTaskPay;
+	}
+
+	@Override
+	public Object headmanPay(MonthlyProduction monthlyProduction) {
+		
+		return null;
 	}
 	
 

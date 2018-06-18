@@ -144,7 +144,7 @@
 <div id="addworking" style="display: none;">
 <table><tr>           
                         <td><button type="button" class="btn btn-default btn-danger btn-xs btn-3d attendance">一键删除</button>&nbsp&nbsp</td>
-                        <td><button type="button" class="btn btn-info btn-success btn-xs btn-3d start">一键开始</button>&nbsp&nbsp</td>
+                        <td><button type="button" class="btn btn-info  btn-xs btn-3d start">一键开始</button>&nbsp&nbsp</td>
                         <td><button type="button" class="btn btn-default btn-success btn-xs btn-3d suspend">一键暂停</button>&nbsp&nbsp</td>
                         </tr></table>             
                             <div class="panel-body">
