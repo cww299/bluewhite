@@ -405,8 +405,8 @@
 		      				+'<td class="text-center  ">'+o.userName+'</td>'
 		      				+'<td class="text-center ">'+o.allotTime+'</td>'
 		      				+'<td class="text-center edit workTime">'+o.workTime+'</td>'
-		      				+'<td class="text-center edit dutyTimes">'+o.dutyTimes+'</td>'
-		      				+'<td class="text-center edit overtimes">'+o.overtimes+'</td>'
+		      				+'<td class="text-center edit dutyTimes">'+o.dutyTime+'</td>'
+		      				+'<td class="text-center edit overtimes">'+o.overtime+'</td>'
 		      				+'<td class="text-center  ">'+o.workPrice+'</td>'
 		      				+'<td class="text-center  ">'+o.payNumber+'</td>'
 		      				+'<td class="text-center"> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button></td></tr>'
@@ -466,8 +466,8 @@
 							var postData = {
 									id:$(this).data('id'),
 									workTime:$(this).parent().parent('tr').find(".workTime").text(),
-									dutyTimes:$(this).parent().parent('tr').find(".dutyTimes").text(),
-									overtimes:$(this).parent().parent('tr').find(".overtimes").text(),
+									dutyTime:$(this).parent().parent('tr').find(".dutyTimes").text(),
+									overtime:$(this).parent().parent('tr').find(".overtimes").text(),
 							}
 							var index;
 							

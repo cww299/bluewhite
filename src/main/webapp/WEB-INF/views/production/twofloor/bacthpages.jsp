@@ -35,7 +35,7 @@
                                 </div>
                             </div>
         <div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-8 col-sm-8  col-md-9">
+			<div class="col-xs-10 col-sm-10  col-md-10">
 				<form class="form-search" >
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 col-md-12">
@@ -55,6 +55,8 @@
 					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
              onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
+								<td>&nbsp&nbsp</td>
+								<td>完成状态:</td><td><select class="form-control" id="selectstate"><option value="">请选择</option><option value=1>已完成</option><option value=0>未完成</option></select></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
@@ -68,9 +70,20 @@
 			</div>
 		</div>
                             <div class="panel-body">
+                            <table>
+			            <tr>           
+                        <td><button type="button" class="btn btn-info  btn-sm btn-3d start">一键完成</button>&nbsp&nbsp</td>
+                        </tr>
+                        </table>
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
+                                        	<th class="center">
+											<label> 
+											<input type="checkbox" class="ace checks" /> 
+											<span class="lbl"></span>
+											</label>
+											</th>
                                         	<th class="text-center">批次号</th>
                                             <th class="text-center">时间</th>
                                             <th class="text-center">产品名</th>
@@ -80,6 +93,7 @@
                                             <th class="text-center">任务价值</th>
                                             <th class="text-center">地区差价</th>
                                             <th class="text-center">备注</th>
+                                            <th class="text-center">完成状态</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -118,7 +132,13 @@
                             
                     	</div>
                     	
-                    	
+                    	<div class="form-group">
+                           <label class="col-sm-2 control-label">完成时间:</label>
+                              <div class="col-sm-2 ">
+                              <input type="text" placeholder="返工任务才可填" class="form-control sumtime">
+                              </div>
+                          
+                    	</div>
                     	
                     	
                     	<div class="form-group">
@@ -250,17 +270,24 @@
 		      				 if(o.bacthHairPrice==null){
 		      					o.bacthHairPrice=0;
 		      				 }
-		      				 html +='<tr>'
+		      				 var strname="";
+		      				 if(o.status==1){
+		      					strname="完成";
+		      				 }else{
+		      					strname="未完成";
+		      				 }
+		      				 html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="hidden batch">'+o.id+'</td>'
 		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
-		      				+'<td class="text-center  name">'+o.product.name+'</td>'
+		      				+'<td class="text-center  names">'+o.product.name+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center  bacthDepartmentPrice">'+o.bacthDepartmentPrice+'</td>'
 		      				+'<td class="text-center edit bacthHairPrice">'+o.bacthHairPrice+'</td>'
 		      				+'<td class="text-center  sumTaskPrice">'+ parseFloat((o.sumTaskPrice*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center  regionalPrice">'+parseFloat((o.regionalPrice*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
+		      				+'<td class="text-center ">'+strname+'</td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button>  <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
 							
 		      			}); 
@@ -289,7 +316,7 @@
 					   	layer.close(index);
 					   	 $("#tablecontent").html(html); 
 					   	self.loadEvents();
-					   
+					   	self.checkedd();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
@@ -297,9 +324,28 @@
 				  });
 			}
 			
+			  this.checkedd=function(){
+					
+					$(".checks").on('click',function(){
+						
+	                    if($(this).is(':checked')){ 
+				 			$('.checkboxId').each(function(){  
+	                    //此处如果用attr，会出现第三次失效的情况  
+	                     		$(this).prop("checked",true);
+				 			})
+	                    }else{
+	                    	$('.checkboxId').each(function(){ 
+	                    		$(this).prop("checked",false);
+	                    		
+	                    	})
+	                    }
+	                }); 
+					
+				}
+			
 			this.loadEvents = function(){
 				
-				$('.name').on('click',function(){
+				$('.names').on('click',function(){
 				var dicDiv=$('#addworking');
 					_index = layer.open({
 						  type: 1,
@@ -438,7 +484,7 @@
 						}
 					})
 				    //遍历工序类型
-				    var getdata={type:"productFristQuality",}
+				    var getdata={type:"productTwoDeedle",}
 	      			$.ajax({
 					      url:"${ctx}/basedata/list",
 					      data:getdata,
@@ -614,6 +660,7 @@
 										productName:productName,
 										bacthNumber:bacthNumber,
 										allotTime:$('#Time').val(),
+										taskTime:$('.sumtime').val(),
 								}
 							    $.ajax({
 									url:"${ctx}/task/addTask",
@@ -671,11 +718,55 @@
 				  			bacthNumber:$('#number').val(),
 				  			 orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
+				  			status:$("#selectstate").val(),
 				  	}
+					console.log(data)
 		            self.loadPagination(data);
 				});
-				
-				
+				/* 一键完成  */
+				$('.start').on('click',function(){
+					  var  that=$(this);
+					  var arr=new Array()//员工id
+						$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+							arr.push($(this).val());   
+						});
+					  
+					  if(arr.length<=0){
+							return layer.msg("至少选择一个！", {icon: 2});
+						}
+						var data={
+								status:1,
+								type:3,
+								ids:arr,
+						}
+						var index;
+						 index = layer.confirm('确定一键完成吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/bacth/statusBacth",
+							data:data,
+				            traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+									layer.msg(result.message, {icon: 1});
+									self.loadPagination(data);
+								}else{
+									layer.msg(result.message, {icon: 2});
+								}
+								layer.close(index);
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 });
+				  })
 				
 			}
    	}
