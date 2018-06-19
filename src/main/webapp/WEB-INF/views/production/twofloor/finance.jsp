@@ -87,6 +87,8 @@
                                         	<th class="text-center">姓名</th>
                                         	<th class="text-center">考勤日期</th>
                                             <th class="text-center">工作小时</th>
+                                            <th class="text-center">缺勤时间</th>
+                                            <th class="text-center">加班时间</th>
                                             <th class="text-center">到岗预计每小时收入</th>
                                             <th class="text-center">A工资</th>
                                             <th class="text-center">操作</th>
@@ -403,6 +405,8 @@
 		      				+'<td class="text-center  ">'+o.userName+'</td>'
 		      				+'<td class="text-center ">'+o.allotTime+'</td>'
 		      				+'<td class="text-center edit workTime">'+o.workTime+'</td>'
+		      				+'<td class="text-center edit dutyTimes">'+o.dutyTimes+'</td>'
+		      				+'<td class="text-center edit overtimes">'+o.overtimes+'</td>'
 		      				+'<td class="text-center  ">'+o.workPrice+'</td>'
 		      				+'<td class="text-center  ">'+o.payNumber+'</td>'
 		      				+'<td class="text-center"> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button></td></tr>'
@@ -462,6 +466,8 @@
 							var postData = {
 									id:$(this).data('id'),
 									workTime:$(this).parent().parent('tr').find(".workTime").text(),
+									dutyTimes:$(this).parent().parent('tr').find(".dutyTimes").text(),
+									overtimes:$(this).parent().parent('tr').find(".overtimes").text(),
 							}
 							var index;
 							
