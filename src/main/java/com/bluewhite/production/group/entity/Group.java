@@ -5,10 +5,14 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.system.user.entity.User;
 /**
  * 分组表，用于记录生产部分组
@@ -47,8 +51,23 @@ public class Group  extends BaseEntity<Long>{
 	@Column(name = "user_name")
 	private String userName;
 	
+	
 	/**
-	 * 标记
+	 * 工种id
+	 */
+	@Column(name = "kind_work_id")
+	private Long kindWorkId;
+	
+	
+	/**
+	 * 工种（二楼针工）
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "kind_work_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData kindWork;
+	
+	/**
+	 * 标记（1楼包装）（0=男，1=女）
 	 */
 	@Column(name = "sign")
 	private String sign;
@@ -61,6 +80,23 @@ public class Group  extends BaseEntity<Long>{
 	
 	
 	
+	
+	public Long getKindWorkId() {
+		return kindWorkId;
+	}
+
+	public void setKindWorkId(Long kindWorkId) {
+		this.kindWorkId = kindWorkId;
+	}
+
+	public BaseData getKindWork() {
+		return kindWork;
+	}
+
+	public void setKindWork(BaseData kindWork) {
+		this.kindWork = kindWork;
+	}
+
 	public String getSign() {
 		return sign;
 	}

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.Log;
@@ -40,8 +41,9 @@ private static final Log log = Log.getLog(GroupAction.class);
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(Group.class,"id","name","price","type","users","userName","userId")
-				.addRetainTerm(User.class,"id","userName");
+				.addRetainTerm(Group.class,"id","name","price","type","users","userName","userId","kindWork")
+				.addRetainTerm(User.class,"id","userName")
+				.addRetainTerm(BaseData.class, "id","name", "type");
 	}
 	
 	/**

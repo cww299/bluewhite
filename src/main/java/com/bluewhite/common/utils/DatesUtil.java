@@ -71,6 +71,32 @@ public class DatesUtil {
 	        return lastDayOfMonth;  
 	    } 
 	
+	
+	/**
+	 * 获取前一个月第一天
+	 * @param dates
+	 * @return
+	 */
+	public static Date getFristDayOfLastMonth(Date dates) { 
+		    Calendar calendar1 = Calendar.getInstance();
+		    calendar1.add(Calendar.MONTH, -1);
+		    calendar1.set(Calendar.DAY_OF_MONTH,1);
+		    return calendar1.getTime();
+    
+	}
+	
+	/**
+	 * 获取前一个月最后一天
+	 * @param dates
+	 * @return
+	 */
+	public static Date getLastDayOLastMonth(Date dates) { 
+		    Calendar calendar = Calendar.getInstance();
+		    calendar.set(Calendar.DAY_OF_MONTH, 0);
+		    return calendar.getTime();
+	}
+	
+	
 	/**
 	 * 获取某一天的开始时间
 	 * @param dates
