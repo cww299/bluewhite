@@ -40,6 +40,7 @@
                                         <tr>
                                         	<th class="text-center">组名</th>
                                             <th class="text-center">人员信息</th>
+                                            <th class="text-center">选择工种</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -155,10 +156,18 @@
 					  }, 
 		      		  success: function (result) {
 		      			 $(result.data).each(function(i,o){
+		      				 var a;
+		      				 
+		      				 if(o.kindWork==null){
+		      					a=0
+		      				 }else{
+		      					 a=o.kindWork.id
+		      				 } 
 		      				html +='<tr>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button></td></tr>'
+		      				+'<td class="text-center"><div class="groupChange" data-id="'+o.id+'" data-groupid="'+a+'" ></div></td>'
+		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -244,6 +253,31 @@
 					}
 				})
 				
+				/* 遍历工种 */
+			var getdata={type:"kindWork",}
+			var index;
+		    var html = '';
+		    $.ajax({
+			      url:"${ctx}/basedata/list",
+			      data:getdata,
+			      type:"GET",
+			     
+	      		  success: function (result) {
+	      			 $(result.data).each(function(i,o){
+	      				html +='<option value="'+o.id+'">'+o.name+'</option>'
+	      			}); 
+			       var htmlto='<select class="form-control  selectgroupChange"><option value="">去除工种</option>'+html+'</select>'
+				   	$(".groupChange").html(htmlto); 
+				   	self.chang();
+				   	self.selected();
+			      },error:function(){
+						layer.msg("加载失败！", {icon: 2});
+						layer.close(index);
+				  }
+			  });
+				
+				
+				
 				//人员详细显示方法
 				$('.savemode').on('click',function(){
 					var id=$(this).data('id')
@@ -284,6 +318,45 @@
 				})
 				
 				
+			}
+			this.selected=function(){
+				
+				$('.selectgroupChange').each(function(i,o){
+					var id=$(o).parent().data("groupid");
+					$(o).val(id);
+				})
+				
+			}
+			this.chang=function(){
+				$('.selectgroupChange').change(function(){
+					var that=$(this);
+					var data={
+							id:that.parent().data("id"),
+							kindWorkId:that.val(),
+						}
+					var _data={
+							page:1,
+					  		size:10,	
+					} 
+					$.ajax({
+						url:"${ctx}/production/addGroup",
+						data:data,
+						type:"POST",
+						success:function(result){
+							if(0==result.code){
+								layer.msg("分配工种成功！", {icon: 1});
+								
+							}else{
+								layer.msg("分配工种失败", {icon: 2});			
+							}
+							
+						},error:function(){
+							layer.msg("操作失败！", {icon: 2});
+						}
+					})
+					
+					
+				})
 			}
 			this.events = function(){
 				//新增小组
