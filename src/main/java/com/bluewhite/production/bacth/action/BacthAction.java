@@ -69,6 +69,7 @@ private static final Log log = Log.getLog(BacthAction.class);
 				}else{
 					bacth.setAllotTime(new Date());
 				}
+				bacth.setStatus(0);
 				bacthService.save(bacth);
 				cr.setMessage("添加成功");
 			}else{

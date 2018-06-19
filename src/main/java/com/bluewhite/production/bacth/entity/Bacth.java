@@ -58,7 +58,7 @@ public class Bacth extends BaseEntity<Long>{
      * 状态，是否完成（0=未完成，1=完成，完成时，会转入包装列表中）
      */
 	@Column(name = "status")
-    private Integer status = 0;
+    private Integer status;
 	
 	/**
 	 * 任务
