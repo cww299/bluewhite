@@ -119,6 +119,13 @@ public class AttendancePay  extends BaseEntity<Long>{
 	@Transient
 	private Long groupId;
 	
+	/**
+	 * 工种id
+	 */
+	@Transient
+	private Long kindWorkId;
+	
+	
 
 	@Transient
     private String[] usersId;
@@ -143,6 +150,16 @@ public class AttendancePay  extends BaseEntity<Long>{
 
 	
 	
+
+	public Long getKindWorkId() {
+		return kindWorkId;
+	}
+
+
+	public void setKindWorkId(Long kindWorkId) {
+		this.kindWorkId = kindWorkId;
+	}
+
 
 	public Double[] getOvertimes() {
 		return overtimes;

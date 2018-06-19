@@ -3,6 +3,8 @@ package com.bluewhite.finance.attendance.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
 
 import javax.persistence.criteria.Predicate;
 
@@ -13,8 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.basedata.service.BaseDataService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 @Service
@@ -22,6 +27,8 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 	
 	@Autowired
 	private AttendancePayDao dao;
+	@Autowired
+	BaseDataService service;
 
 	@Override
 	public PageResult<AttendancePay> findPages(AttendancePay param, PageParameter page) {
@@ -46,6 +53,16 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 					predicate.add(cb.equal(root.get("user").get("groupId").as(Long.class),param.getGroupId()));
 				}
 	        	
+	        	//按分组id过滤
+	        	if (param.getGroupId() != null) {
+					predicate.add(cb.equal(root.get("user").get("groupId").as(Long.class),param.getGroupId()));
+				}
+	        	
+	        	//按分组id过滤
+	        	if (param.getGroupId() != null) {
+					predicate.add(cb.equal(root.get("user").get("group").get("kindWorkId").as(Long.class),param.getGroupId()));
+				}
+	        	
 	        	//按类型
 	        	if(!StringUtils.isEmpty(param.getType())){
 	        		predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
@@ -60,12 +77,33 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 				query.where(predicate.toArray(pre));
 	        	return null;
 	        }, page);
-		 
-		 
-		 
+		 	this.countMaxPay(pages.getContent(),param);
 	        PageResult<AttendancePay> result = new PageResult<AttendancePay>(pages,page);
 	        return result;
 	    }
+	
+	/**
+	 * 计算同种工资,(指同工种)
+	 * @param content
+	 * @param param
+	 */
+	private List<AttendancePay> countMaxPay(List<AttendancePay> content, AttendancePay param) {
+		PageParameter page = new PageParameter();
+		page.setSize(Integer.MAX_VALUE);
+		param.setOrderTimeBegin(DatesUtil.getFristDayOfLastMonth(new Date()));
+		param.setOrderTimeEnd(DatesUtil.getLastDayOLastMonth(new Date()));
+		List<BaseData> baseDatas = service.getBaseDataListByType("kindWork");
+		for(BaseData base : baseDatas){
+			param.setKindWorkId(base.getId());
+			List<AttendancePay> attendancePay = this.findPages(param, page).getRows();
+			OptionalDouble maxPay = attendancePay.stream().mapToDouble(AttendancePay::getWorkPrice).max();
+			for(AttendancePay attendance : content){
+				attendance.setMaxPay(maxPay.getAsDouble());
+				attendance.setDisparity(maxPay.getAsDouble()-attendance.getWorkPrice());
+			}
+		}
+		return content;
+	}
 
 	@Override
 	@Transactional
