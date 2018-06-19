@@ -146,10 +146,24 @@ public class AttendancePay  extends BaseEntity<Long>{
 	@Transient
 	private Double[]  dutyTimes;
 
-
+	/**
+	 * 是否计算同种工资差
+	 */
+	@Transient
+	private Integer  sign;
 
 	
 	
+
+	public Integer getSign() {
+		return sign;
+	}
+
+
+	public void setSign(Integer sign) {
+		this.sign = sign;
+	}
+
 
 	public Long getKindWorkId() {
 		return kindWorkId;

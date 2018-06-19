@@ -126,7 +126,14 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			double sumPayB = psList.stream().mapToDouble(CollectPay::getPayB).sum();
 			//计算上浮后b工资总和
 			double sumAddPayB = psList.stream().mapToDouble(CollectPay::getAddPayB).sum();
-			
+			//计算考勤时间
+			double sumTime = psList.stream().mapToDouble(CollectPay::getTime).sum();
+			//计算缺勤时间
+			double sumDutyTime = psList.stream().mapToDouble(CollectPay::getDutyTime).sum();
+			//计算加班时间
+			double sumOvertime = psList.stream().mapToDouble(CollectPay::getOvertime).sum();
+			//小时单价
+			double timePrice = sumPayB/sumTime;
 			CollectPay collect = new CollectPay();
 			collect.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 			collect.setOrderTimeEnd(collectPay.getOrderTimeEnd());
@@ -135,6 +142,9 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			collect.setPayA(sumPayA);
 			collect.setPayB(sumPayB);
 			collect.setAddPayB(sumAddPayB);
+			collect.setDutyTime(sumDutyTime);
+			collect.setOvertime(sumOvertime);
+			collect.setTimePrice(timePrice);
 			list.add(collect);
 		}
 		return list;
