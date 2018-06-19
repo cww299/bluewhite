@@ -77,7 +77,9 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 				query.where(predicate.toArray(pre));
 	        	return null;
 	        }, page);
-		 	this.countMaxPay(pages.getContent(),param);
+			 if(param.getSign()!=null){
+				 this.countMaxPay(pages.getContent(),param);
+			 }
 	        PageResult<AttendancePay> result = new PageResult<AttendancePay>(pages,page);
 	        return result;
 	    }

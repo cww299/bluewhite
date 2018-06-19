@@ -129,6 +129,12 @@ public class CollectPay extends BaseEntity<Long> {
 	
 	
 	/**
+	 * 小时单价
+	 */
+	@Transient
+	private Double timePrice;
+	
+	/**
 	 * 查询字段开始时间
 	 */
 	@Transient
@@ -141,7 +147,15 @@ public class CollectPay extends BaseEntity<Long> {
 	
 	
 	
+	
 
+
+	public Double getTimePrice() {
+		return timePrice;
+	}
+	public void setTimePrice(Double timePrice) {
+		this.timePrice = timePrice;
+	}
 	public Double getOvertime() {
 		return overtime;
 	}
