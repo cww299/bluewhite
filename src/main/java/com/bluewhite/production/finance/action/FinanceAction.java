@@ -78,7 +78,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		CommonResponse cr = new CommonResponse();
 			cr.setData(ClearCascadeJSON
 					.get()
-					.addRetainTerm(AttendancePay.class,"id","userName","allotTime","payNumber","workPrice","workTime")
+					.addRetainTerm(AttendancePay.class,"id","userName","allotTime","payNumber","workPrice","workTime","overtime","dutyTime")
 					.format(attendancePayService.findPages(attendancePay, page)).toJSON());
 			cr.setMessage("查询成功");
 		return cr;

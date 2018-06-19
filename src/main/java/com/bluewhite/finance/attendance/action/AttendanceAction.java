@@ -28,7 +28,6 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
-import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
@@ -47,14 +46,6 @@ public class AttendanceAction {
 		@Autowired
 		private UserService userService;
 		
-		private ClearCascadeJSON clearCascadeJSON;
-	
-		{
-			clearCascadeJSON = ClearCascadeJSON
-					.get()
-					.addRetainTerm(PayB.class,"id","userName","allotTime","payNumber","bacth","productName",
-							"allotTime","performancePayNumber");
-		}
 		
 		
 		/** 
@@ -91,6 +82,12 @@ public class AttendanceAction {
 							return cr;
 						}else{
 							attendance.setWorkTime(attendancePay.getWorkTimes()[i]);
+							if(attendancePay.getDutyTimes().length>0){
+								attendance.setDutyTime(attendancePay.getDutyTimes()[i]); 
+							}
+							if(attendancePay.getOvertimes().length>0){
+								attendance.setOvertime(attendancePay.getOvertimes()[i]);
+							}
 							attendance.setWorkPrice(user.getPrice());
 							attendance.setUserName(user.getUserName());
 							attendancePayService.addAttendancePay(attendance);

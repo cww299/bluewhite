@@ -71,7 +71,7 @@ public class AttendancePay  extends BaseEntity<Long>{
 	private Integer type;
 	
 	/**
-	 * 考勤时间
+	 * 考勤日期
 	 */
 	@Column(name = "allot_time")
 	private Date allotTime;
@@ -126,11 +126,42 @@ public class AttendancePay  extends BaseEntity<Long>{
 	@Transient
 	private Double[] workTimes;
 	
+	/**
+	 * 加班时间(验货和打棉组固有)
+	 */
+	@Transient
+	private Double[] overtimes;
+	
+	
+	/**
+	 * 缺勤时间
+	 */
+	@Transient
+	private Double[]  dutyTimes;
+
+
+
+	
 	
 
+	public Double[] getOvertimes() {
+		return overtimes;
+	}
 
 
-	
+	public void setOvertimes(Double[] overtimes) {
+		this.overtimes = overtimes;
+	}
+
+
+	public Double[] getDutyTimes() {
+		return dutyTimes;
+	}
+
+
+	public void setDutyTimes(Double[] dutyTimes) {
+		this.dutyTimes = dutyTimes;
+	}
 
 
 	public Long getGroupId() {
