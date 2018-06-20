@@ -15,10 +15,16 @@ public interface GroupService extends BaseCRUDService<Group,Long>{
 	 */
 	List<Group> findByType(Integer type);
 	/**
-	 * 
+	 * 分页插叙
 	 * @param group
 	 * @return
 	 */
 	List<Group> findList(Group group);
+	
+	/**
+	 * 批量删除
+	 * @param ids
+	 */
+	void deleteGroup(String ids);
 
 }
