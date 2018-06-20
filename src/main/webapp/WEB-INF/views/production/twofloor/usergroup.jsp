@@ -40,6 +40,7 @@
                                         <tr>
                                         	<th class="text-center">组名</th>
                                             <th class="text-center">人员信息</th>
+                                            <th class="text-center">组长姓名</th>
                                             <th class="text-center">选择工种</th>
                                             <th class="text-center">操作</th>
                                         </tr>
@@ -65,9 +66,15 @@
 				<div style="height: 30px"></div>
 				<form class="form-horizontal addDictDivTypeForm">
 				<div class="form-group">
-                                        <label class="col-sm-3 control-label">名称:</label>
+                                        <label class="col-sm-3 control-label">小组名称:</label>
                                         <div class="col-sm-6">
                                             <input type="text" id="groupName" class="form-control">
+                                        </div>
+                 </div>
+                 <div class="form-group">
+                                        <label class="col-sm-3 control-label">小组组长:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="leader" class="form-control">
                                         </div>
                  </div>
 				</form>
@@ -115,6 +122,7 @@
      <script src="${ctx }/static/js/laypage/laypage.js"></script> 
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
+    <script src="${ctx }/static/js/vendor/typeahead.js"></script>
     
     <script>
    jQuery(function($){
@@ -128,6 +136,19 @@
 		  	}
 		  	this.getCache = function(){
 		  		return _cache;
+		  	}
+		  	this.setIndex = function(index){
+		  		_index=index;
+		  	}
+		  	
+		  	this.getIndex = function(){
+		  		return _index;
+		  	}
+		  	this.setName = function(name){
+		  		_name=name;
+		  	}
+		  	this.getName = function(){
+		  		return _name;
 		  	}
 			 var data={
 						page:1,
@@ -166,6 +187,7 @@
 		      				html +='<tr>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
+		      				+'<td class="text-center edit leadertw">'+o.userName+'</td>'
 		      				+'<td class="text-center"><div class="groupChange" data-id="'+o.id+'" data-groupid="'+a+'" ></div></td>'
 		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button></td></tr>'
 							
@@ -203,6 +225,7 @@
 			this.loadEvents = function(){
 				//修改方法
 				$('.update').on('click',function(){
+					
 					if($(this).text() == "编辑"){
 						$(this).text("保存")
 						
@@ -210,6 +233,7 @@
 
 				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
 				        });
+						self.matertw();
 					}else{
 							$(this).text("编辑")
 						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
@@ -358,18 +382,68 @@
 					
 				})
 			}
+			
+			this.mater=function(){
+				//提示人员姓名
+				$("#leader").typeahead({
+					//ajax 拿way数据
+					source : function(query, process) {
+							return $.ajax({
+								url : '${ctx}/system/user/pages',
+								type : 'GET',
+								data : {
+									userName:query
+								},
+								success : function(result) {
+									//转换成 json集合
+									 var resultList = result.data.rows.map(function (item) {
+										 	//转换成 json对象
+					                        var aItem = {name: item.userName, id:item.id}
+					                        //处理 json对象为字符串
+					                        return JSON.stringify(aItem);
+					                    });
+									//提示框返回数据
+									 return process(resultList);
+								},
+							})
+						
+							//提示框显示
+						}, highlighter: function (item) {
+						    //转出成json对象
+							 var item = JSON.parse(item);
+							return item.name
+							//按条件匹配输出
+		                }, matcher: function (item) {
+		                	//转出成json对象
+					        var item = JSON.parse(item);
+					        self.setIndex(item.id);
+					        self.setName(item.name);
+					    	return item.id
+					    },
+						//item是选中的数据
+						updater:function(item){
+							//转出成json对象
+							var item = JSON.parse(item);
+							self.setIndex(item.id);
+						  	self.setName(item.name);
+								return item.name
+						},
+
+						
+					});
+			}
 			this.events = function(){
 				//新增小组
 				$('#addgroup').on('click',function(){
-					
-					var _index
-					var index
-					var postData
+					self.mater();
+					var _index;
+					var index;
+					var postData;
 					var dicDiv=$('#addDictDivType');
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '30%'], 
+						  area: ['30%', '50%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"新增小组",
@@ -379,6 +453,8 @@
 							 
 							  postData={
 									  name:$("#groupName").val(),
+									  userId:self.getIndex(),
+									  userName:self.getName(),
 									  type:3,
 							  }
 							  $.ajax({
