@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -174,6 +175,25 @@ private static final Log log = Log.getLog(GroupAction.class);
 		}else{
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("用户不能为空");
+		}
+		return cr;
+	}
+	
+	/**
+	 * 删除任务
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/production/group/delete", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse delete(HttpServletRequest request,String ids) {
+		CommonResponse cr = new CommonResponse();
+		if(!StringUtils.isEmpty(ids)){
+			groupService.deleteGroup(ids);
+			cr.setMessage("删除成功");
+		}else{
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("不能为空");
 		}
 		return cr;
 	}
