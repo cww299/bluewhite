@@ -477,6 +477,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				//分组人员杂工工资总和
 				double sumfarragoTaskPay = farragoTaskPayList.stream().mapToDouble(FarragoTaskPay::getPayNumber).sum();
 				
+				map.put("name", group.getName());
 				map.put("sunTime", sunTime);
 				map.put("sumBPay", sumBPay+sumfarragoTaskPay);
 				map.put("specificValue", (sumBPay+sumfarragoTaskPay)/sunTime);
