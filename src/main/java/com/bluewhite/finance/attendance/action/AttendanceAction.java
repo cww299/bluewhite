@@ -86,7 +86,7 @@ public class AttendanceAction {
 								attendance.setDutyTime(attendancePay.getDutyTimes()[i]); 
 							}
 							if(attendancePay.getOvertimes().length>0){
-								attendance.setOvertime(attendancePay.getOvertimes()[i]);
+								attendance.setOverTime(attendancePay.getOvertimes()[i]);
 							}
 							attendance.setWorkPrice(user.getPrice());
 							attendance.setUserName(user.getUserName());

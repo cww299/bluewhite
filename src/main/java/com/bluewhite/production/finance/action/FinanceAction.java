@@ -78,7 +78,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		CommonResponse cr = new CommonResponse();
 			cr.setData(ClearCascadeJSON
 					.get()
-					.addRetainTerm(AttendancePay.class,"id","userName","allotTime","payNumber","workPrice","workTime","overtime","dutyTime")
+					.addRetainTerm(AttendancePay.class,"id","userName","allotTime","payNumber","workPrice","workTime","overtime","dutyTime","maxPay","disparity")
 					.format(attendancePayService.findPages(attendancePay, page)).toJSON());
 			cr.setMessage("查询成功");
 		return cr;
@@ -363,11 +363,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	@ResponseBody
 	public CommonResponse bPayAndTaskPay(HttpServletRequest request,MonthlyProduction monthlyProduction) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(ClearCascadeJSON
-				.get()
-				.addRetainTerm(MonthlyProduction.class,"peopleNumber","time","productNumber","productPrice","reworkNumber","reworkTurnTime",
-						"userName","rework","reworkTime","orderTimeBegin","orderTimeEnd")
-				.format(collectPayBService.bPayAndTaskPay(monthlyProduction)).toJSON());
+		cr.setData(collectPayBService.bPayAndTaskPay(monthlyProduction));
 		cr.setMessage("查询成功");
 		return cr;
 	}

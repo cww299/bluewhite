@@ -97,11 +97,18 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 		List<BaseData> baseDatas = service.getBaseDataListByType("kindWork");
 		for(BaseData base : baseDatas){
 			param.setKindWorkId(base.getId());
+			param.setSign(null);
 			List<AttendancePay> attendancePay = this.findPages(param, page).getRows();
 			OptionalDouble maxPay = attendancePay.stream().mapToDouble(AttendancePay::getWorkPrice).max();
+			Double sumMaxPay = null;
+			if(maxPay.isPresent()){
+				sumMaxPay = maxPay.getAsDouble();
+			}else{
+				sumMaxPay = 0.0;
+			}
 			for(AttendancePay attendance : content){
-				attendance.setMaxPay(maxPay.getAsDouble());
-				attendance.setDisparity(maxPay.getAsDouble()-attendance.getWorkPrice());
+				attendance.setMaxPay(sumMaxPay);
+				attendance.setDisparity(sumMaxPay-attendance.getWorkPrice());
 			}
 		}
 		return content;

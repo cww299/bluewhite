@@ -80,7 +80,7 @@ public class AttendancePay  extends BaseEntity<Long>{
 	 * 加班时间(验货和打棉组固有)
 	 */
 	@Column(name = "over_time")
-	private Double overtime;
+	private Double overTime;
 	
 	
 	/**
@@ -205,13 +205,16 @@ public class AttendancePay  extends BaseEntity<Long>{
 	}
 
 
-	public Double getOvertime() {
-		return overtime;
+
+
+
+	public Double getOverTime() {
+		return overTime;
 	}
 
 
-	public void setOvertime(Double overtime) {
-		this.overtime = overtime;
+	public void setOverTime(Double overTime) {
+		this.overTime = overTime;
 	}
 
 
