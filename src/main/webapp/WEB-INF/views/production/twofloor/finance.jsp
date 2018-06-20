@@ -256,7 +256,7 @@
 						page:1,
 				  		size:13,	
 				  		type:3,
-
+				  		sign:1,
 				} 
 			this.init = function(){
 				
