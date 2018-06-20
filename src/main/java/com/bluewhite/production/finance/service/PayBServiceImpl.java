@@ -114,7 +114,7 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 			collect.setUserId(attendance.getUserId());
 			collect.setUserName(attendance.getUserName());
 			collect.setTime(attendance.getWorkTime());
-			collect.setOvertime(attendance.getOvertime());
+			collect.setOvertime(attendance.getOverTime());
 			collect.setDutyTime(attendance.getDutyTime());
 			collect.setAllotTime(collectPay.getOrderTimeBegin());
 			collect.setPayA(attendance.getPayNumber());
