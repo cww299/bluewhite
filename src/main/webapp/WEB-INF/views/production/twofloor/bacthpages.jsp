@@ -161,10 +161,10 @@
 <!--隐藏框 工序分配结束  -->
 
 <!-- 任务详情开始-->
-<div id="addworking" style="display: none;">
+<div id="addworking" style="display: none;position: absolute;z-index: 3;">
 <table><tr>           
                         <td><button type="button" class="btn btn-default btn-danger btn-xs btn-3d attendance">一键删除</button>&nbsp&nbsp</td>
-                        <td><button type="button" class="btn btn-info  btn-xs btn-3d start">一键开始</button>&nbsp&nbsp</td>
+                        <td><button type="button" class="btn btn-info  btn-xs btn-3d startto">一键开始</button>&nbsp&nbsp</td>
                         <td><button type="button" class="btn btn-default btn-success btn-xs btn-3d suspend">一键暂停</button>&nbsp&nbsp</td>
                         </tr></table>             
                             <div class="panel-body">
@@ -173,7 +173,7 @@
                                         <tr>
                                         	<th class="center">
 											<label> 
-											<input type="checkbox" class="ace checks" /> 
+											<input type="checkbox" class="ace checksto" /> 
 											<span class="lbl"></span>
 											</label>
 											</th>
@@ -192,7 +192,7 @@
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tablecontent">
+                                    <tbody id="tablecontentto">
                                         
                                     </tbody>
                                 </table>
@@ -204,7 +204,31 @@
 </div>
 <!-- 任务详情结束-->
 
-
+<!--隐藏框 人员信息开始  -->
+<div id="savegroup" style="display: none;position: relative; z-index: 5;">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					人员分组详情
+				</h4>
+			</div>
+			<div class="modal-body">
+				
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+</div>
+<!--隐藏框 人员信息结束  -->
 
 
 
@@ -280,7 +304,7 @@
 		      				+'<td class="hidden batch">'+o.id+'</td>'
 		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
-		      				+'<td class="text-center  names">'+o.product.name+'</td>'
+		      				+'<td class="text-center  names" data-id='+o.id+'>'+o.product.name+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center  bacthDepartmentPrice">'+o.bacthDepartmentPrice+'</td>'
 		      				+'<td class="text-center edit bacthHairPrice">'+o.bacthHairPrice+'</td>'
@@ -343,9 +367,315 @@
 					
 				}
 			
+			  this.loadPaginationto = function(data){
+				    var index;
+				    var html = '';
+				    var htmlto="";
+				    $.ajax({
+					      url:"${ctx}/task/allTask",
+					      data:data,
+					      type:"GET",
+					      beforeSend:function(){
+						 	  index = layer.load(1, {
+							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							  });
+						  }, 
+			      		  success: function (result) {
+			      			 $(result.data.rows).each(function(i,o){
+			      				 var a=""
+			      				 var s=o.procedureName
+			      				if(o.flag==1){
+			      					a="(返工)"
+			      				}
+			      				 if(o.taskActualTime==null){
+			      					o.taskActualTime=0
+			      				 }
+			      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxIdto" value="'+o.id+'"/><span class="lbl"></span></label></td>'
+			      				+'<td class="text-center  name">'+o.id+'</td>'
+			      				+'<td class="text-center  name">'+o.bacthNumber+'</td>'
+			      				+'<td class="text-center name">'+o.productName+'</td>'
+			      				+'<td class="text-center  name">'+o.allotTime+'</td>'
+			      				+'<td class="text-center  name">'+s+a+'</td>'
+			      				+'<td class="text-center  name">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
+			      				+'<td class="text-center  name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
+			      				+'<td class="text-center  name">'+parseFloat((o.payB).toFixed(4))+'</td>'
+			      				+'<td class="text-center edit number">'+o.number+'</td>'
+			      				+'<td class="text-center" data-id="'+o.id+'" data-status="'+o.status+'"><input type="radio"  class="rest" value="0">开始<input type="radio" class="rest" value="1">暂停</td>'
+			      				+'<td class="text-center edit name">'+o.taskActualTime+'</td>'
+			      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
+								+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
+								
+			      			}); 
+					        //显示分页
+						   	 laypage({
+						      cont: 'pager', 
+						      pages: result.data.totalPages, 
+						      curr:  result.data.pageNum || 1, 
+						      jump: function(obj, first){ 
+						    	  if(!first){ 
+						    		 
+							        	var _data = {
+							        			page:obj.curr,
+										  		size:13,
+										  		type:3,
+										  		productName:$('#name').val(),
+									  			bacthNumber:$('#number').val(),
+									  			orderTimeBegin:$("#startTime").val(),
+									  			orderTimeEnd:$("#endTime").val(),
+									  	}
+							        
+							            self.loadPagination(_data);
+								     }
+						      }
+						    });  
+						   	layer.close(index);
+						   
+						   	 $("#tablecontentto").html(html); 
+						   	 self.loadEventss();
+						   	self.checkeddto();
+						   	self.checkedddto();
+					      },error:function(){
+								layer.msg("加载失败！", {icon: 2});
+								layer.close(index);
+						  }
+					  });
+				}
+			  this.checkeddto=function(){
+					
+					$(".checksto").on('click',function(){
+						
+	                    if($(this).is(':checked')){ 
+				 			$('.checkboxIdto').each(function(){  
+	                    //此处如果用attr，会出现第三次失效的情况  
+	                     		$(this).prop("checked",true);
+				 			})
+	                    }else{
+	                    	$('.checkboxIdto').each(function(){ 
+	                    		$(this).prop("checked",false);
+	                    		
+	                    	})
+	                    }
+	                }); 
+					
+				}
+			  this.checkedddto=function(){
+					
+					$(".rest").each(function(i,o){
+							
+							var rest=$(o).parent().data("status");
+						
+							if($(o).val()==rest){
+							
+								$(o).attr('checked', 'checked');;
+							}
+					})
+					
+				}
+			  this.loadEventss = function(){
+					
+					
+					$('.rest').on('click',function(){
+						var  del=$(this);
+						var id = $(this).parent().data('id');
+						var rest = $(this).val();
+						
+					    	  $.ajax({
+									url:"${ctx}/task/getTaskActualTime",
+									data:{
+										ids:id,
+										status:rest,
+										},
+									type:"GET",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									success:function(result){
+										//选择1
+										
+										if(rest==0){
+									
+											del.parent().find(".rest").eq(1).prop("checked", false);
+
+										}else{
+											del.parent().find(".rest").eq(0).prop("checked", false);
+											
+										}
+										layer.msg("操作成功！", {icon: 1});
+										layer.close(index);
+									
+								
+										
+									},
+									error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								});
+					    	  
+					 
+			
+					});
+					
+					
+					//修改方法
+					$('.updateremake').on('click',function(){
+						if($(this).text() == "编辑"){
+							$(this).text("保存")
+							
+							$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+					            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
+					        });
+						}else{
+								$(this).text("编辑")
+							$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+						            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+
+						       
+						                $(this).html(obj_text.val()); 
+										
+								});
+								
+								var postData = {
+										id:$(this).data('id'),
+										number:$(this).parent().parent('tr').find(".number").text(),
+								}
+								var index;
+								$.ajax({
+									url:"${ctx}/task/upTask",
+									data:postData,
+									type:"POST",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									
+									success:function(result){
+										if(0==result.code){
+										layer.msg("修改成功！", {icon: 1});
+										layer.close(index);
+										}else{
+											layer.msg("修改失败！", {icon: 1});
+											layer.close(index);
+										}
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								});
+						}
+					})
+					
+					
+					//删除
+							$('.delete').on('click',function(){
+								var postData = {
+										ids:$(this).data('id'),
+								}
+								
+								var index;
+								 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
+								$.ajax({
+									url:"${ctx}/task/delete",
+									data:postData,
+									type:"GET",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									
+									success:function(result){
+										if(0==result.code){
+										layer.msg("删除成功！", {icon: 1});
+										var _data={
+												page:1,
+										  		size:13,
+												bacthId:self.getCache(),
+												type:3,
+										}
+										self.loadPaginationto(_data)
+										layer.close(index);
+										}else{
+											layer.msg("删除失败！", {icon: 1});
+											layer.close(index);
+										}
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								});
+								 })
+					})
+					
+					//人员详细显示方法
+					$('.savemode').on('click',function(){
+						var id=$(this).data('id')
+						 var display =$("#savegroup").css("display")
+						 if(display=='none'){
+								$("#savegroup").css("display","block");  
+							}
+						 var postData={
+								id:id,
+						}
+						 var arr=new Array();
+						var html="";
+						$.ajax({
+							url:"${ctx}/task/taskUser",
+							data:postData,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								$(result.data).each(function(i,o){
+								html+=o.userName+"&nbsp&nbsp&nbsp&nbsp"
+								})
+								$('.modal-body').html(html);
+								layer.close(index);
+								
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						}); 
+						
+						
+						
+					})
+					
+					
+				}  
+			  
 			this.loadEvents = function(){
 				
 				$('.names').on('click',function(){
+					var that=$(this);
+					var a=$(this).data('id');
+					self.setCache(a);
+					var data={
+							bacthId:$(this).data('id'),
+							page:1,
+					  		size:13,	
+					  		type:3,
+
+					} 
+					self.loadPaginationto(data);
+					 var ids=that.data("id");
+						$(".batch").each(function(i,o){
+							var a=$(o).text();
+							if(a==ids){
+								$(o).parent().addClass("danger");
+								$(o).parent().siblings().removeClass("danger");
+							}
+						})
 				var dicDiv=$('#addworking');
 					_index = layer.open({
 						  type: 1,
@@ -756,6 +1086,157 @@
 								if(0==result.code){
 									layer.msg(result.message, {icon: 1});
 									self.loadPagination(data);
+								}else{
+									layer.msg(result.message, {icon: 2});
+								}
+								layer.close(index);
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 });
+				  })
+				  
+				  
+				  /* 一键删除 */
+				$('.attendance').on('click',function(){
+					  var  that=$(this);
+					  var arr=new Array()//员工id
+						$(this).parent().parent().parent().parent().parent().find(".checkboxIdto:checked").each(function() {  
+							arr.push($(this).val());   
+						});
+					  if(arr.length<=0){
+							return layer.msg("至少选择一个！", {icon: 2});
+						}
+						var data={
+								type:3,
+								ids:arr,
+						}
+						var _data={
+								page:1,
+						  		size:13,
+								bacthId:self.getCache(),
+								type:3,
+						}
+						var index;
+						 index = layer.confirm('确定一键删除吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/task/delete",
+							data:data,
+				            traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+									layer.msg(result.message, {icon: 1});
+									self.loadPaginationto(_data);
+								}else{
+									layer.msg(result.message, {icon: 2});
+								}
+								layer.close(index);
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 });
+				  })
+				  /* 一键开始 */
+				   $('.startto').on('click',function(){
+					  var  that=$(this);
+					  var arr=new Array()//员工id
+						$(this).parent().parent().parent().parent().parent().find(".checkboxIdto:checked").each(function() {  
+							arr.push($(this).val());   
+						});
+					  
+					  if(arr.length<=0){
+							return layer.msg("至少选择一个！", {icon: 2});
+						}
+						var data={
+								status:0,
+								type:3,
+								ids:arr,
+						}
+						var _data={
+								page:1,
+						  		size:13,
+								bacthId:self.getCache(),
+								type:3,
+						}
+						var index;
+						 index = layer.confirm('确定一键开始吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/task/getTaskActualTime",
+							data:data,
+				            traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+									layer.msg(result.message, {icon: 1});
+									self.loadPaginationto(_data);
+								}else{
+									layer.msg(result.message, {icon: 2});
+								}
+								layer.close(index);
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 });
+				  })
+				  
+				    /* 一键暂停 */
+				$('.suspend').on('click',function(){
+					  var  that=$(this);
+					  var arr=new Array()//员工id
+						$(this).parent().parent().parent().parent().parent().find(".checkboxIdto:checked").each(function() {  
+							arr.push($(this).val());   
+						});
+					  
+					  if(arr.length<=0){
+							return layer.msg("至少选择一个！", {icon: 2});
+						}
+						var data={
+								status:1,
+								type:3,
+								ids:arr,
+						}
+						var _data={
+								page:1,
+						  		size:13,
+								bacthId:self.getCache(),
+								type:3,
+						}
+						var index;
+						 index = layer.confirm('确定一键暂停吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/task/getTaskActualTime",
+							data:data,
+				            traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+									layer.msg(result.message, {icon: 1});
+									self.loadPaginationto(_data);
 								}else{
 									layer.msg(result.message, {icon: 2});
 								}
