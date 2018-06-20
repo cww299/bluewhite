@@ -89,6 +89,8 @@
                                             <th class="text-center">工作小时</th>
                                             <th class="text-center">缺勤时间</th>
                                             <th class="text-center">加班时间</th>
+                                            <th class="text-center">同种最高工资</th>
+                                            <th class="text-center">未拿到差价</th>
                                             <th class="text-center">到岗预计每小时收入</th>
                                             <th class="text-center">A工资</th>
                                             <th class="text-center">操作</th>
@@ -406,7 +408,9 @@
 		      				+'<td class="text-center ">'+o.allotTime+'</td>'
 		      				+'<td class="text-center edit workTime">'+o.workTime+'</td>'
 		      				+'<td class="text-center edit dutyTimes">'+o.dutyTime+'</td>'
-		      				+'<td class="text-center edit overtimes">'+o.overtime+'</td>'
+		      				+'<td class="text-center edit overtimes">'+o.overTime+'</td>'
+		      				+'<td class="text-center ">'+o.maxPay+'</td>'
+		      				+'<td class="text-center ">'+o.disparity+'</td>'
 		      				+'<td class="text-center  ">'+o.workPrice+'</td>'
 		      				+'<td class="text-center  ">'+o.payNumber+'</td>'
 		      				+'<td class="text-center"> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button></td></tr>'
