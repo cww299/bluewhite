@@ -1,6 +1,8 @@
 package com.bluewhite.production.productionutils.constant;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -728,6 +730,25 @@ public  class ProTypeUtils {
 		}
 	}
 	
+	
+	/**
+	 *  根据不同的部门，得到不同的填写日期
+	 * @param farragoTask
+	 * @return
+	 */
+	public static Date countAllotTime(Date allotTime,Integer type) {
+		
+		if(allotTime == null && type == 1){
+			Calendar  cal = Calendar.getInstance();
+			cal.add(Calendar.DATE,-1);
+			allotTime = cal.getTime();
+		}else if(allotTime == null && type == 2){
+			allotTime = new Date();
+		}else if(allotTime == null && type == 3){
+			allotTime = new Date();
+		}
+		return allotTime;
+	}
 	
 
 }

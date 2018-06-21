@@ -368,10 +368,42 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		return cr;
 	}
 	
+	/**
+	 * 获取整个月分组人员的绩效
+	 * 
+	 * @param binder
+	 */
+	@RequestMapping(value = "/finance/twoPerformancePay", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse twoPerformancePay(HttpServletRequest request,CollectPay collectPay) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON
+						.get()
+						.addRetainTerm(CollectPay.class,"time","timePrice","timePay","userId","userName","addNumber","addPerformancePay")
+						.format(collectPayBService.twoPerformancePay(collectPay)).toJSON());
+		
+		cr.setMessage("查询成功");
+		return cr;
+	}
 	
-
 	
-	
+	/**
+	 * 获取整个月分组人员的绩效,根据系数进行调节奖励
+	 * 
+	 * @param binder
+	 */
+	@RequestMapping(value = "/finance/upadtePerformancePay", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse upadtePerformancePay(HttpServletRequest request,CollectPay collectPay) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON
+					.get()
+					.addRetainTerm(CollectPay.class,"time","timePrice","timePay","userId","userName","addNumber","addPerformancePay")
+					.format(collectPayBService.upadtePerformancePay(collectPay)).toJSON());
+		
+		cr.setMessage("查询成功");
+		return cr;
+	}
 
 	
 	@InitBinder

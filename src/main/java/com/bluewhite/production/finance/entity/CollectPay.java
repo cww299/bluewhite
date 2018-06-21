@@ -28,6 +28,12 @@ public class CollectPay extends BaseEntity<Long> {
 	 */
 	@Column(name = "user_id")
     private Long userId;
+	
+	/**
+	 * 分组id
+	 */
+	@Column(name = "group_id")
+    private Long groupId;
     
 	/**
 	 * 考勤时间
@@ -275,6 +281,12 @@ public class CollectPay extends BaseEntity<Long> {
 	}
 	public void setOrderTimeEnd(Date orderTimeEnd) {
 		this.orderTimeEnd = orderTimeEnd;
+	}
+	public Long getGroupId() {
+		return groupId;
+	}
+	public void setGroupId(Long groupId) {
+		this.groupId = groupId;
 	}
 	
 	

@@ -28,6 +28,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
+import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
@@ -65,13 +66,7 @@ public class AttendanceAction {
 						AttendancePay attendance = new AttendancePay();
 						User user = userService.findOne(userid);
 						attendance.setUserId(userid);
-						if(attendancePay.getAllotTime() == null){
-							Calendar  cal = Calendar.getInstance();
-							cal.add(Calendar.DATE,-1);
-							attendance.setAllotTime(cal.getTime());
-						}else{
-							attendance.setAllotTime(attendancePay.getAllotTime());
-						}
+						attendance.setAllotTime(ProTypeUtils.countAllotTime(attendance.getAllotTime(), attendance.getType()));
 						//获取今天的开始和结束时间
 						attendance.setOrderTimeBegin(DatesUtil.getfristDayOftime(attendance.getAllotTime()));
 						attendance.setOrderTimeEnd(DatesUtil.getLastDayOftime(attendance.getAllotTime()));

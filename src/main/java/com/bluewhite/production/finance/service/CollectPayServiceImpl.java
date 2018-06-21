@@ -126,14 +126,14 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			double sumPayB = psList.stream().mapToDouble(CollectPay::getPayB).sum();
 			//计算上浮后b工资总和
 			double sumAddPayB = psList.stream().mapToDouble(CollectPay::getAddPayB).sum();
-			//计算考勤时间
-			double sumTime = psList.stream().mapToDouble(CollectPay::getTime).sum();
-			//计算缺勤时间
-			double sumDutyTime = psList.stream().mapToDouble(CollectPay::getDutyTime).sum();
-			//计算加班时间
-			double sumOvertime = psList.stream().mapToDouble(CollectPay::getOvertime).sum();
-			//小时单价
-			double timePrice = sumPayB/sumTime;
+//			//计算考勤时间
+//			double sumTime = psList.stream().mapToDouble(CollectPay::getTime).sum();
+//			//计算缺勤时间
+//			double sumDutyTime = psList.stream().mapToDouble(CollectPay::getDutyTime).sum();
+//			//计算加班时间
+//			double sumOvertime = psList.stream().mapToDouble(CollectPay::getOvertime).sum();
+			//预计小时单价
+//			double timePrice = sumPayB/sumTime;
 			CollectPay collect = new CollectPay();
 			collect.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 			collect.setOrderTimeEnd(collectPay.getOrderTimeEnd());
@@ -142,9 +142,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			collect.setPayA(sumPayA);
 			collect.setPayB(sumPayB);
 			collect.setAddPayB(sumAddPayB);
-			collect.setDutyTime(sumDutyTime);
-			collect.setOvertime(sumOvertime);
-			collect.setTimePrice(timePrice);
 			list.add(collect);
 		}
 		return list;
@@ -478,6 +475,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				double sumfarragoTaskPay = farragoTaskPayList.stream().mapToDouble(FarragoTaskPay::getPayNumber).sum();
 				
 				map.put("name", group.getName());
+				map.put("id", group.getId());
 				map.put("sunTime", sunTime);
 				map.put("sumBPay", sumBPay+sumfarragoTaskPay);
 				map.put("specificValue", (sumBPay+sumfarragoTaskPay)/sunTime);
@@ -491,6 +489,75 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		
 		return null;
 	}
+
+	@Override
+	public List<CollectPay> twoPerformancePay(CollectPay collectPay) {
+		PageParameter page  = new PageParameter();
+		page.setSize(Integer.MAX_VALUE);
+		List<CollectPay> collectPayList = new ArrayList<CollectPay>();
+		AttendancePay attendancePay = new AttendancePay();
+		attendancePay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
+		attendancePay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
+		attendancePay.setType(collectPay.getType());
+		List<AttendancePay> attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
+		//将一个月考勤人员按员工id分组
+		Map<Long, List<AttendancePay>> mapCollectPay = attendancePayList.stream().filter(AttendancePay->AttendancePay.getWorkTime()!=0).collect(Collectors.groupingBy(AttendancePay::getUserId,Collectors.toList()));
+		CollectPay collect = null;
+		for(Object ps : mapCollectPay.keySet()){
+			collect = new CollectPay();
+			List<AttendancePay> psList= mapCollectPay.get(ps);
+			collectPay.setUserId((Long)ps);
+			//通过条件查找绩效是否已入库
+			List<CollectPay> list = this.findPages(collectPay, page).getRows();
+			if(list.size()>0){
+				collect = list.get(0);
+			}
+			
+			
+
+		
+			
+			//分别统计出考勤总时间
+			double sunTime = psList.stream().mapToDouble(AttendancePay::getWorkTime).sum();
+			
+
+				//确定绩效汇总时间
+				collect.setAllotTime(collectPay.getOrderTimeEnd());
+
+			collect.setType(collectPay.getType());
+			collect.setTime(sunTime);
+			collect.setUserId(psList.get(0).getUserId());
+			collect.setUserName(psList.get(0).getUserName());
+			dao.save(collect);
+			collectPayList.add(collect);
+		}
+		
+		return collectPayList;
+	}
+
+	@Override
+	public CollectPay upadtePerformancePay(CollectPay collectPay) {
+		CollectPay	collect = dao.findOne(collectPay.getId());
+		
+		if(collectPay.getTimePrice()!=null){
+			collectPay.setTimePay(collectPay.getTimePrice()+(collectPay.getAddNumber()==null?0.0:collectPay.getAddNumber()));
+			collectPay.setAddPerformancePay(collect.getTime()*collectPay.getTimePay());
+			if(collectPay.getTimePrice()!=null && collectPay.getAddNumber()!=null){
+				collectPay.setTimePay(collectPay.getTimePrice()+collectPay.getAddNumber());
+				collectPay.setAddPerformancePay(collect.getTime()*collectPay.getTimePay());
+			}
+		}
+		
+		collect.setTimePrice(collectPay.getTimePrice());
+		collect.setTimePay(collectPay.getTimePay());
+		collect.setAddNumber(collectPay.getAddNumber());
+		collect.setAddPerformancePay(collectPay.getAddPerformancePay());
+		dao.save(collect);
+		return collect;
+	}
+	
+	
+	
 	
 
 }
