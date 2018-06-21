@@ -756,8 +756,11 @@
 									});
 							},
 							success:function(result){
-								
+								if(0==result.code){
 								layer.msg(result.message, {icon: 1});
+								}else{
+									layer.msg(result.message, {icon: 2});
+								}
 								self.loadworking();
 								layer.close(index);
 							},
