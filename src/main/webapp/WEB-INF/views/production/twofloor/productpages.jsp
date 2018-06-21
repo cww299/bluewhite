@@ -208,6 +208,13 @@
 		  	this.getCache = function(){
 		  		return _cache;
 		  	}
+		  	this.setIndex = function(index){
+		  		_index=index;
+		  	}
+		  	
+		  	this.getIndex = function(){
+		  		return _index;
+		  	}
 			 var data={
 						page:1,
 				  		size:13,	
@@ -247,6 +254,7 @@
 		      				+'<td class="text-center edit  workPrice">'+o.hairPrice+'</td>'
 							+'<td class="text-center"><button class="btn btn-xs btn-info  btn-trans update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-primary btn-trans addprocedure" data-id='+o.id+' data-name='+o.name+'>添加工序</button> <button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.name+'>填写批次</button></td></tr>'
 		      			}); 
+		      			 self.setIndex(result.data.pageNum);
 				        //显示分页
 					   	 laypage({
 					      cont: 'pager', 
@@ -375,7 +383,7 @@
 						  end:function(){
 							  $('#addworking').hide();
 							  data={
-									page:1,
+									page: self.getIndex(),
 								  	size:13,	
 								  	type:3,
 								  	name:$('#name').val(),

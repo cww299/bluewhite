@@ -73,7 +73,9 @@
                                             <th class="text-center">姓名</th>
                                             <th class="text-center">部门</th>
                                             <th class="text-center">职位</th>
-                                            <th class="text-center">考勤时间</th>
+                                            <th class="text-center">工作时长</th>
+                                            <th class="text-center">缺勤时间</th>
+                                            <th class="text-center overtimet ">加班时间</th>
                                             <th class="text-center">当月预计收入</th>
                                             <th class="text-center">工作状态</th>
                                             <th class="text-center">员工分组</th>
@@ -123,6 +125,7 @@
 			  this.loadPagination = function(data){
 			    var index;
 			    var html ='';
+			    
 			    $.ajax({
 				      url:"${ctx}/system/user/pages",
 				      data:data,
@@ -141,12 +144,15 @@
 		      					 a=o.group.id
 		      				 }
 		      				 var order = i+1;
+		      				
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center ">'+order+'</td>'
 		      				+'<td class="text-center ">'+o.userName+'</td>'
 		      				+'<td class="text-center ">'+o.orgName.name+'</td>'
 		      				+'<td class="text-center ">'+o.position.name+'</td>'
 		      				+'<td class="text-center "><input class="work"></input></td>'
+		      				+'<td class="text-center "><input class="workto"></input></td>'
+		      				+'<td class="text-center overtimets"><input class="workth"></input></td>'
 		      				+'<td class="text-center edit workPrice">'+o.price*1+'</td>'
 							+'<td class="text-center" data-status="'+o.status+'" data-id="'+o.id+'"><input type="radio"   class="rest" value="0">工作<input type="radio"   class="rest" value="1">休息 </td>'
 							+'<td class="text-center"><div class="groupChange" data-id="'+o.id+'" data-groupid="'+a+'" ></div></td>'
@@ -429,8 +435,12 @@
 				  var  that=$(this);
 				  var arr=new Array()//员工id
 				  var time=new Array()//考勤时间
+				  var overtime=new Array()
+				  var dutyTime=new Array()
 					$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
 						time.push($(this).parent().parent().siblings().find(".work").val());
+						overtime.push($(this).parent().parent().siblings().find(".workth").val());
+						dutyTime.push($(this).parent().parent().siblings().find(".workto").val());
 						arr.push($(this).val());   
 					});
 				  if(arr.length<=0){
@@ -441,6 +451,8 @@
 							usersId:arr,
 							workTimes:time,
 							allotTime:$("#startTime").val(),
+							overtimes:overtime,
+							dutyTimes:dutyTime,
 					}
 					$.ajax({
 						url:"${ctx}/finance/addAttendance",
@@ -488,6 +500,7 @@
 			
 			
 			$('.searchtask').on('click',function(){
+				
 				var data = {
 			  			page:1,
 			  			size:10,
@@ -496,6 +509,10 @@
 			  	}
 				
 	            self.loadPagination(data);
+				/* if($('.selectcomplete').val()==10){
+					$('.overtimet').removeClass("hidden");
+					$('.overtimets').removeClass("hide");
+				} */
 			});
 			
 	  }

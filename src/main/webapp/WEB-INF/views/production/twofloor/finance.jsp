@@ -87,6 +87,10 @@
                                         	<th class="text-center">姓名</th>
                                         	<th class="text-center">考勤日期</th>
                                             <th class="text-center">工作小时</th>
+                                            <th class="text-center">缺勤时间</th>
+                                            <th class="text-center">加班时间</th>
+                                            <th class="text-center">同种最高工资</th>
+                                            <th class="text-center">未拿到差价</th>
                                             <th class="text-center">到岗预计每小时收入</th>
                                             <th class="text-center">A工资</th>
                                             <th class="text-center">操作</th>
@@ -254,7 +258,7 @@
 						page:1,
 				  		size:13,	
 				  		type:3,
-
+				  		sign:1,
 				} 
 			this.init = function(){
 				
@@ -399,10 +403,20 @@
 		      		  success: function (result) {
 		      			 
 		      			 $(result.data.rows).each(function(i,o){
+		      				 if(o.overTime==null){
+		      					o.overTime=0
+		      				 }
+		      				 if(o.dutyTime==null){
+		      					o.dutyTime=0
+		      				 }
 		      				htmlth +='<tr>'
 		      				+'<td class="text-center  ">'+o.userName+'</td>'
 		      				+'<td class="text-center ">'+o.allotTime+'</td>'
 		      				+'<td class="text-center edit workTime">'+o.workTime+'</td>'
+		      				+'<td class="text-center edit dutyTimes">'+o.dutyTime+'</td>'
+		      				+'<td class="text-center edit overtimes">'+o.overTime+'</td>'
+		      				+'<td class="text-center ">'+o.maxPay+'</td>'
+		      				+'<td class="text-center ">'+o.disparity+'</td>'
 		      				+'<td class="text-center  ">'+o.workPrice+'</td>'
 		      				+'<td class="text-center  ">'+o.payNumber+'</td>'
 		      				+'<td class="text-center"> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button></td></tr>'
@@ -462,6 +476,8 @@
 							var postData = {
 									id:$(this).data('id'),
 									workTime:$(this).parent().parent('tr').find(".workTime").text(),
+									dutyTime:$(this).parent().parent('tr').find(".dutyTimes").text(),
+									overtime:$(this).parent().parent('tr').find(".overtimes").text(),
 							}
 							var index;
 							

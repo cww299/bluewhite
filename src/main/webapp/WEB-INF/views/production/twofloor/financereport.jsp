@@ -37,7 +37,7 @@
                              <div class="panel-body">
                                 <div class="tab-wrapper tab-primary">
                                     <ul class="nav nav-tabs col-md-12">
-                                        <li class="active col-md-4"><a href="#home1" data-toggle="tab">绩效流水</a>
+                                        <li class="active col-md-4"><a href="#home1" data-toggle="tab">比值</a>
                                         </li>
                                         <li class="col-md-4"><a href="#profile1" data-toggle="tab">绩效汇总</a>
                                         </li>
@@ -54,10 +54,6 @@
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
 								<table><tr>
-								<td>我想上浮下调比例:</td><td><input type="text" name="name" id="usernameth" placeholder="请输入比例" class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>无加绩的配合奖励:</td><td><input type="text" name="name" id="code" placeholder="请输入奖励" class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>开始:</td>
 								<td>
 								<input id="startTimeth" placeholder="请输入开始时间" class="form-control laydate-icon"
@@ -86,17 +82,10 @@
                                             <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                        	<th class="text-center">姓名</th>
-                                        	<th class="text-center">到岗时间</th>
-                                            <th class="text-center">A工资</th>
+                                        	<th class="text-center">组名</th>
+                                        	<th class="text-center">考勤时间</th>
                                             <th class="text-center">B工资</th>
-                                            <th class="text-center">上浮后的B</th>
-                                            <th class="text-center">考虑个人调节上浮后的B</th>
-                                            <th class="text-center">个人调节发放比例</th>
-                                            <th class="text-center">上浮后的加绩</th>
-                                            <th class="text-center">上浮后无加绩固定给予</th>
-                                            <th class="text-center">无绩效小时工资</th>
-                                            <th class="text-center">有绩效小时工资</th>
+                                            <th class="text-center">比值</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -146,10 +135,11 @@
                                     <thead>
                                         <tr>
                                         	<th class="text-center">姓名</th>
-                                        	<th class="text-center">A工资</th>
-                                        	<th class="text-center">B工资</th>
-                                        	<th class="text-center">上浮后的B</th>
-                                        	<th class="text-center">汇总加绩</th>
+                                        	<th class="text-center">考勤时间</th>
+                                        	<th class="text-center">折算工价</th>
+                                        	<th class="text-center">调节系数</th>
+                                        	<th class="text-center">调节后的折算工价</th>
+                                        	<th class="text-center">调节后的奖励</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent">
@@ -201,10 +191,7 @@
                                         	<th class="text-center">考勤总时间</th>
                                             <th class="text-center">当天产量  </th>
                                             <th class="text-center">当天产值</th>
-                                            <th class="text-center">返工出勤人数</th>
-                                            <th class="text-center">返工出勤时间 </th>
                                             <th class="text-center">返工人员</th>
-                                            <th class="text-center">返工个数</th>
                                             <th class="text-center">返工时间</th>
                                         </tr>
                                     </thead>
@@ -315,7 +302,7 @@
 			    var html = '';
 			    //绩效汇总开始
 			    $.ajax({
-				      url:"${ctx}/finance/sumCollectPay",
+				      url:"${ctx}/finance/twoPerformancePay",
 				      data:date,
 				      type:"GET",
 				      beforeSend:function(){
@@ -325,19 +312,25 @@
 					  }, 
 		      		  success: function (result) {
 		      			 $(result.data).each(function(i,o){
-		      				
+		      				if(o.addSelfNumber==null){
+		      					o.addSelfNumber=0
+		      				}
+		      				if(o.timePrice==null){
+		      					o.timePrice=0
+		      				}
 		      				html +='<tr>'
 		      				+'<td class="text-center edit ">'+o.userName+'</td>'
-		      				+'<td class="text-center edit ">'+o.payA+'</td>'
-		      				+'<td class="text-center edit ">'+o.payB+'</td>'
-		      				+'<td class="text-center edit ">'+o.addPayB+'</td>'
+		      				+'<td class="text-center edit ">'+o.time+'</td>'
+		      				+'<td class="text-center edit "><input class="work" data-id='+o.id+' value="'+o.timePrice+'"></input></td>'
+		      				+'<td class="text-center edit "><input class="worktw" data-id='+o.id+' value="'+o.addSelfNumber+'"></input></td>'
+		      				+'<td class="text-center edit ">'+o.timePay+'</td>'
 		      				+'<td class="text-center edit ">'+o.addPerformancePay+'</td></tr>'
 							
 		      			}); 
 				       
 					   	layer.close(index);
 					   	 $("#tablecontent").html(html); 
-					   
+					   self.loadEventstw();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
@@ -345,6 +338,76 @@
 				  });
 			  //绩效汇总结束
 			}
+			  this.loadEventstw = function(){
+				  $('.work').blur(function(){
+					  var postData = {
+							  	type:3,
+								id:$(this).data('id'),
+								timePrice:$(this).val(),
+								addSelfNumber:$(this).parent().parent().find('.worktw').val(),
+						}
+					 
+						var index;
+						
+						$.ajax({
+							url:"${ctx}/finance/upadtePerformancePay",
+							data:postData,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+									$(".searchtask").click()
+								layer.close(index);
+								}else{
+									layer.msg("修改失败！", {icon: 1});
+									layer.close(index);
+								}
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+				  })
+				  $('.worktw').blur(function(){
+					  var postData = {
+								id:$(this).data('id'),
+								addSelfNumber:$(this).val(),
+								timePrice:$(this).parent().parent().find('.work').val(),
+						}
+						var index;
+						
+						$.ajax({
+							url:"${ctx}/finance/upadtePerformancePay",
+							data:postData,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+								layer.msg("修改成功！", {icon: 1});
+								$(".searchtask").click()
+								layer.close(index);
+								}else{
+									layer.msg("修改失败！", {icon: 1});
+									layer.close(index);
+								}
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+				  })
+			  }
+			
 			  this.loadPaginationtw = function(datatw){
 				//质检月报表
 				    var index;
@@ -366,10 +429,7 @@
 			      				+'<td class="text-center edit ">'+o.time+'</td>'
 			      				+'<td class="text-center edit ">'+o.productNumber+'</td>'
 			      				+'<td class="text-center edit ">'+o.productPrice+'</td>'
-			      				+'<td class="text-center edit ">'+o.reworkNumber+'</td>'
-			      				+'<td class="text-center edit ">'+o.reworkTurnTime+'</td>'
 			      				+'<td class="text-center edit ">'+o.userName+'</td>'
-			      				+'<td class="text-center edit ">'+o.rework+'</td>'
 			      				+'<td class="text-center edit ">'+o.reworkTime+'</td>'
 			      				+'</tr>'
 								
@@ -417,25 +477,17 @@
 			    var  c   =   new   Date(Date.parse(orderTimeEnd.replace(/-/g,   "/")));
 			    var addNumber=$('#usernameth').val();
 			    var noPerformancePay=$('#code').val();
-			    if(c-d!=86399000){
+			    /* if(c-d!=86399000){
 			    	return layer.msg("必须输入同一天日期", {icon: 2});
-			    }
-			    if(addNumber==""){
-			    	return layer.msg("我想上浮的比例不能为空", {icon: 2});
-			    }
-			    if(noPerformancePay==""){
-			    	return layer.msg("无加绩的配合奖励不能为空", {icon: 2});
-			    }
+			    } */
 			    	var postdata = {
 				  			type:3,
-				  			addNumber:addNumber,
-				  			noPerformancePay:noPerformancePay,
 				  			orderTimeBegin:orderTimeBegin,
 				  			orderTimeEnd:orderTimeEnd, 
 				  	}
 			    	
 			    $.ajax({
-				      url:"${ctx}/finance/collectPay",
+				      url:"${ctx}/finance/bPayAndTaskPay",
 				      data:postdata,
 				      type:"GET",
 				      beforeSend:function(){
@@ -447,17 +499,10 @@
 		      			 
 		      			 $(result.data).each(function(i,o){
 		      				htmlth +='<tr>'
-		      				+'<td class="text-center  ">'+o.userName+'</td>'
-		      				+'<td class="text-center ">'+o.time+'</td>'
-		      				+'<td class="text-center ">'+o.payA+'</td>'
-		      				+'<td class="text-center  ">'+parseFloat((o.payB*1).toFixed(3))+'</td>'
-		      				+'<td class="text-center  ">'+parseFloat((o.addPayB*1).toFixed(3))+'</td>'
-		      				+'<td class="text-center  ">'+parseFloat((o.addSelfPayB*1).toFixed(3))+'</td>'
-		      				+'<td class="text-center  edit addSelfNumber">'+o.addSelfNumber+'</td>'
-		      				+'<td class="text-center  ">'+o.addPerformancePay+'</td>'
-		      				+'<td class="text-center  ">'+o.noPerformanceNumber+'</td>'
-		      				+'<td class="text-center  ">'+o.noTimePay+'</td>'
-		      				+'<td class="text-center  ">'+o.timePay+'</td>'
+		      				+'<td class="text-center  ">'+o.name+'</td>'
+		      				+'<td class="text-center ">'+o.sunTime+'</td>'
+		      				+'<td class="text-center ">'+o.sumBPay+'</td>'
+		      				+'<td class="text-center  ">'+o.specificValue+'</td>'
 		      				+'<td class="text-center"> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button></td></tr>'
 		      			}); 
 				          
@@ -528,6 +573,7 @@
 			this.events = function(){
 				$('.searchtask').on('click',function(){
 					var data = {
+							type:3,
 							userName:$("#username").val(),
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
