@@ -79,13 +79,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 		CommonResponse cr = new CommonResponse();
 			//新增
 			if(!StringUtils.isEmpty(task.getUserIds())){
-				if(task.getAllotTime() == null && task.getType() == 1){
-					Calendar  cal = Calendar.getInstance();
-					cal.add(Calendar.DATE,-1);
-					task.setAllotTime(cal.getTime());
-				}else{
-					task.setAllotTime(new Date());
-				}
+				task.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime(), task.getType()));
 				task = taskService.addTask(task);
 				cr.setMessage("任务分配成功");
 			}else{

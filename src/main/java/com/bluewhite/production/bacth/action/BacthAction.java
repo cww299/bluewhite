@@ -26,6 +26,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.product.entity.Product;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.bacth.service.BacthService;
+import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 
 @Controller
 public class BacthAction {
@@ -62,13 +63,7 @@ private static final Log log = Log.getLog(BacthAction.class);
 			cr.setMessage("修改成功");
 		}else{
 			if(bacth.getProductId()!=null){
-				if(bacth.getAllotTime() == null && bacth.getType() == 1){
-					Calendar  cal = Calendar.getInstance();
-					cal.add(Calendar.DATE,-1);
-					bacth.setAllotTime(cal.getTime());
-				}else{
-					bacth.setAllotTime(new Date());
-				}
+				bacth.setAllotTime(ProTypeUtils.countAllotTime(bacth.getAllotTime(), bacth.getType()));
 				bacth.setStatus(0);
 				bacthService.save(bacth);
 				cr.setMessage("添加成功");

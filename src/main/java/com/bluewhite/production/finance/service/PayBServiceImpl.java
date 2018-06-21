@@ -114,8 +114,6 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 			collect.setUserId(attendance.getUserId());
 			collect.setUserName(attendance.getUserName());
 			collect.setTime(attendance.getWorkTime());
-			collect.setOvertime(attendance.getOverTime());
-			collect.setDutyTime(attendance.getDutyTime());
 			collect.setAllotTime(collectPay.getOrderTimeBegin());
 			collect.setPayA(attendance.getPayNumber());
 			//个人b工资
@@ -135,26 +133,27 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 			}
 			//b工资+杂工工资
 			collect.setPayB(sumPayB+sumPayF);
-			//整体上浮后的B
-			collect.setAddPayB(collect.getPayB()*collectPay.getAddNumber());
-			//个人调节系数
-			collect.setAddSelfNumber(1.0);
-			//考虑个人调节上浮后的B
-			collect.setAddSelfPayB(collect.getPayB()*collect.getAddSelfNumber());
-			//上浮后的加绩
-			collect.setAddPerformancePay(collect.getAddSelfPayB()-collect.getPayA()>0 ? collect.getAddSelfPayB()-collect.getPayA() : 0.0);
-			//上浮后无加绩固定给予(当没有考勤的员工无此加绩固定工资)
-			collect.setNoPerformanceNumber( collect.getPayA()!=0.0 ? collectPay.getNoPerformancePay() : 0.0);
-			//无绩效小时工资
-			collect.setNoTimePay(collect.getPayA()/collect.getTime());
-			//有绩效小时工资(取所有工资中的最大项)
-			Double timePay = 0.0 ;
-			if(collect.getAddSelfPayB()>collect.getPayA()){
-				timePay = collect.getAddSelfPayB()/collect.getTime();
-			}else{
-				timePay = (collect.getPayA()+collect.getNoPerformanceNumber())/collect.getTime();
-			}
-			collect.setTimePay(timePay);
+				//整体上浮后的B
+				collect.setAddPayB(collect.getPayB()*collectPay.getAddNumber());
+				//个人调节系数
+				collect.setAddSelfNumber(1.0);
+				//考虑个人调节上浮后的B
+				collect.setAddSelfPayB(collect.getPayB()*collect.getAddSelfNumber());
+				//上浮后的加绩
+				collect.setAddPerformancePay(collect.getAddSelfPayB()-collect.getPayA()>0 ? collect.getAddSelfPayB()-collect.getPayA() : 0.0);
+				//上浮后无加绩固定给予(当没有考勤的员工无此加绩固定工资)
+				collect.setNoPerformanceNumber( collect.getPayA()!=0.0 ? collectPay.getNoPerformancePay() : 0.0);
+				//无绩效小时工资
+				collect.setNoTimePay(collect.getPayA()/collect.getTime());
+				//有绩效小时工资(取所有工资中的最大项)
+				Double timePay = 0.0 ;
+				if(collect.getAddSelfPayB()>collect.getPayA()){
+					timePay = collect.getAddSelfPayB()/collect.getTime();
+				}else{
+					timePay = (collect.getPayA()+collect.getNoPerformanceNumber())/collect.getTime();
+				}
+				collect.setTimePay(timePay);
+			
 			//查询这条数据是否存在加绩流水表中
 			collect.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 			collect.setOrderTimeEnd(collectPay.getOrderTimeEnd());

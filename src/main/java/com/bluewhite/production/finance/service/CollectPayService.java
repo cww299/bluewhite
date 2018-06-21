@@ -51,6 +51,22 @@ public interface CollectPayService extends BaseCRUDService<CollectPay,Long>{
 	 */
 	public Object headmanPay(MonthlyProduction monthlyProduction);
 	
+	
+	/**
+	 * 查询出二楼整个月的绩效
+	 * @param collectPay
+	 * @return
+	 */
+	public List<CollectPay> twoPerformancePay(CollectPay collectPay);
+	
+	
+	/**
+	 * 根据系数进行调节
+	 * @param collectPay
+	 * @return
+	 */
+	public CollectPay upadtePerformancePay(CollectPay collectPay);
+	
 
 
 }
