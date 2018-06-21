@@ -191,10 +191,7 @@
                                         	<th class="text-center">考勤总时间</th>
                                             <th class="text-center">当天产量  </th>
                                             <th class="text-center">当天产值</th>
-                                            <th class="text-center">返工出勤人数</th>
-                                            <th class="text-center">返工出勤时间 </th>
                                             <th class="text-center">返工人员</th>
-                                            <th class="text-center">返工个数</th>
                                             <th class="text-center">返工时间</th>
                                         </tr>
                                     </thead>
@@ -315,12 +312,17 @@
 					  }, 
 		      		  success: function (result) {
 		      			 $(result.data).each(function(i,o){
-		      				
+		      				if(o.addSelfNumber==null){
+		      					o.addSelfNumber=0
+		      				}
+		      				if(o.timePrice==null){
+		      					o.timePrice=0
+		      				}
 		      				html +='<tr>'
 		      				+'<td class="text-center edit ">'+o.userName+'</td>'
 		      				+'<td class="text-center edit ">'+o.time+'</td>'
-		      				+'<td class="text-center edit "><input class="work" value="'+o.timePrice+'"></input></td>'
-		      				+'<td class="text-center edit "><input class="worktw" value="'+o.AddSelfNumber+'"></input></td>'
+		      				+'<td class="text-center edit "><input class="work" data-id='+o.id+' value="'+o.timePrice+'"></input></td>'
+		      				+'<td class="text-center edit "><input class="worktw" data-id='+o.id+' value="'+o.addSelfNumber+'"></input></td>'
 		      				+'<td class="text-center edit ">'+o.timePay+'</td>'
 		      				+'<td class="text-center edit ">'+o.addPerformancePay+'</td></tr>'
 							
@@ -338,7 +340,71 @@
 			}
 			  this.loadEventstw = function(){
 				  $('.work').blur(function(){
-					  console.log($(this).parent().parent())
+					  var postData = {
+							  	type:3,
+								id:$(this).data('id'),
+								timePrice:$(this).val(),
+								addSelfNumber:$(this).parent().parent().find('.worktw').val(),
+						}
+					 
+						var index;
+						
+						$.ajax({
+							url:"${ctx}/finance/upadtePerformancePay",
+							data:postData,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+									$(".searchtask").click()
+								layer.close(index);
+								}else{
+									layer.msg("修改失败！", {icon: 1});
+									layer.close(index);
+								}
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+				  })
+				  $('.worktw').blur(function(){
+					  var postData = {
+								id:$(this).data('id'),
+								addSelfNumber:$(this).val(),
+								timePrice:$(this).parent().parent().find('.work').val(),
+						}
+						var index;
+						
+						$.ajax({
+							url:"${ctx}/finance/upadtePerformancePay",
+							data:postData,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+								layer.msg("修改成功！", {icon: 1});
+								$(".searchtask").click()
+								layer.close(index);
+								}else{
+									layer.msg("修改失败！", {icon: 1});
+									layer.close(index);
+								}
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
 				  })
 			  }
 			
@@ -363,10 +429,7 @@
 			      				+'<td class="text-center edit ">'+o.time+'</td>'
 			      				+'<td class="text-center edit ">'+o.productNumber+'</td>'
 			      				+'<td class="text-center edit ">'+o.productPrice+'</td>'
-			      				+'<td class="text-center edit ">'+o.reworkNumber+'</td>'
-			      				+'<td class="text-center edit ">'+o.reworkTurnTime+'</td>'
 			      				+'<td class="text-center edit ">'+o.userName+'</td>'
-			      				+'<td class="text-center edit ">'+o.rework+'</td>'
 			      				+'<td class="text-center edit ">'+o.reworkTime+'</td>'
 			      				+'</tr>'
 								
@@ -510,6 +573,7 @@
 			this.events = function(){
 				$('.searchtask').on('click',function(){
 					var data = {
+							type:3,
 							userName:$("#username").val(),
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 

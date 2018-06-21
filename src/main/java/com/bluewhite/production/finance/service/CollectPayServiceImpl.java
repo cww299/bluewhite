@@ -500,6 +500,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		attendancePay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 		attendancePay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
 		attendancePay.setType(collectPay.getType());
+		attendancePay.setUserName(collectPay.getUserName());
 		List<AttendancePay> attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
 		//将一个月考勤人员按员工id分组
 		Map<Long, List<AttendancePay>> mapCollectPay = attendancePayList.stream().filter(AttendancePay->AttendancePay.getWorkTime()!=0).collect(Collectors.groupingBy(AttendancePay::getUserId,Collectors.toList()));
@@ -542,7 +543,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		
 		collect.setTimePrice(collectPay.getTimePrice());
 		collect.setTimePay(collectPay.getTimePay());
-		collect.setAddNumber(collectPay.getAddSelfNumber());
+		collect.setAddSelfNumber(collectPay.getAddSelfNumber());
 		collect.setAddPerformancePay(collectPay.getAddPerformancePay());
 		dao.save(collect);
 		return collect;
