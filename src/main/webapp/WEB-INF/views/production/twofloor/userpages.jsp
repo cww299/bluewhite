@@ -506,7 +506,6 @@
 			
 			
 			$('.searchtask').on('click',function(){
-				console.log()
 				var data = {
 			  			page:1,
 			  			size:10,
