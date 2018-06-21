@@ -319,8 +319,8 @@
 		      				html +='<tr>'
 		      				+'<td class="text-center edit ">'+o.userName+'</td>'
 		      				+'<td class="text-center edit ">'+o.time+'</td>'
-		      				+'<td class="text-center edit ">'+o.timePrice+'</td>'
-		      				+'<td class="text-center edit ">'+o.addNumber+'</td>'
+		      				+'<td class="text-center edit "><input class="work" value="'+o.timePrice+'"></input></td>'
+		      				+'<td class="text-center edit "><input class="worktw" value="'+o.AddSelfNumber+'"></input></td>'
 		      				+'<td class="text-center edit ">'+o.timePay+'</td>'
 		      				+'<td class="text-center edit ">'+o.addPerformancePay+'</td></tr>'
 							
@@ -328,7 +328,7 @@
 				       
 					   	layer.close(index);
 					   	 $("#tablecontent").html(html); 
-					   
+					   self.loadEventstw();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
@@ -336,6 +336,12 @@
 				  });
 			  //绩效汇总结束
 			}
+			  this.loadEventstw = function(){
+				  $('.work').blur(function(){
+					  console.log($(this).parent().parent())
+				  })
+			  }
+			
 			  this.loadPaginationtw = function(datatw){
 				//质检月报表
 				    var index;
