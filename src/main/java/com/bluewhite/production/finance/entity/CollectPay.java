@@ -137,7 +137,7 @@ public class CollectPay extends BaseEntity<Long> {
 	/**
 	 * 小时单价
 	 */
-	@Transient
+	@Column(name = "time_price")
 	private Double timePrice;
 	
 	/**
