@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
+import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.excel.Excelutil;
 import com.bluewhite.production.task.entity.Task;
@@ -117,6 +118,7 @@ public class ReportExportAction {
 					cr.setMessage("成功导入"+count+"条数据");
 				}
 		} catch (Exception e) {
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("导入失败");
 		}
 		return cr;
