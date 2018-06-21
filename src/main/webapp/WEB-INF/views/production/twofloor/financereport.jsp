@@ -135,10 +135,11 @@
                                     <thead>
                                         <tr>
                                         	<th class="text-center">姓名</th>
-                                        	<th class="text-center">A工资</th>
-                                        	<th class="text-center">B工资</th>
-                                        	<th class="text-center">上浮后的B</th>
-                                        	<th class="text-center">汇总加绩</th>
+                                        	<th class="text-center">考勤时间</th>
+                                        	<th class="text-center">折算工价</th>
+                                        	<th class="text-center">调节系数</th>
+                                        	<th class="text-center">调节后的折算工价</th>
+                                        	<th class="text-center">调节后的奖励</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent">
@@ -318,9 +319,9 @@
 		      				html +='<tr>'
 		      				+'<td class="text-center edit ">'+o.userName+'</td>'
 		      				+'<td class="text-center edit ">'+o.time+'</td>'
-		      				+'<td class="text-center edit ">'+o.timePay+'</td>'
-		      				+'<td class="text-center edit ">'+o.addNumber+'</td>'
 		      				+'<td class="text-center edit ">'+o.timePrice+'</td>'
+		      				+'<td class="text-center edit ">'+o.addNumber+'</td>'
+		      				+'<td class="text-center edit ">'+o.timePay+'</td>'
 		      				+'<td class="text-center edit ">'+o.addPerformancePay+'</td></tr>'
 							
 		      			}); 
