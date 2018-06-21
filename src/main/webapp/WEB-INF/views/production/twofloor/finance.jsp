@@ -403,6 +403,12 @@
 		      		  success: function (result) {
 		      			 
 		      			 $(result.data.rows).each(function(i,o){
+		      				 if(o.overTime==null){
+		      					o.overTime=0
+		      				 }
+		      				 if(o.dutyTime==null){
+		      					o.dutyTime=0
+		      				 }
 		      				htmlth +='<tr>'
 		      				+'<td class="text-center  ">'+o.userName+'</td>'
 		      				+'<td class="text-center ">'+o.allotTime+'</td>'

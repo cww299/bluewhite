@@ -37,7 +37,7 @@
                              <div class="panel-body">
                                 <div class="tab-wrapper tab-primary">
                                     <ul class="nav nav-tabs col-md-12">
-                                        <li class="active col-md-4"><a href="#home1" data-toggle="tab">绩效流水</a>
+                                        <li class="active col-md-4"><a href="#home1" data-toggle="tab">比值</a>
                                         </li>
                                         <li class="col-md-4"><a href="#profile1" data-toggle="tab">绩效汇总</a>
                                         </li>
@@ -54,10 +54,6 @@
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
 								<table><tr>
-								<td>我想上浮下调比例:</td><td><input type="text" name="name" id="usernameth" placeholder="请输入比例" class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>无加绩的配合奖励:</td><td><input type="text" name="name" id="code" placeholder="请输入奖励" class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>开始:</td>
 								<td>
 								<input id="startTimeth" placeholder="请输入开始时间" class="form-control laydate-icon"
@@ -86,17 +82,10 @@
                                             <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                        	<th class="text-center">姓名</th>
-                                        	<th class="text-center">到岗时间</th>
-                                            <th class="text-center">A工资</th>
+                                        	<th class="text-center">组名</th>
+                                        	<th class="text-center">考勤时间</th>
                                             <th class="text-center">B工资</th>
-                                            <th class="text-center">上浮后的B</th>
-                                            <th class="text-center">考虑个人调节上浮后的B</th>
-                                            <th class="text-center">个人调节发放比例</th>
-                                            <th class="text-center">上浮后的加绩</th>
-                                            <th class="text-center">上浮后无加绩固定给予</th>
-                                            <th class="text-center">无绩效小时工资</th>
-                                            <th class="text-center">有绩效小时工资</th>
+                                            <th class="text-center">比值</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -417,25 +406,17 @@
 			    var  c   =   new   Date(Date.parse(orderTimeEnd.replace(/-/g,   "/")));
 			    var addNumber=$('#usernameth').val();
 			    var noPerformancePay=$('#code').val();
-			    if(c-d!=86399000){
+			    /* if(c-d!=86399000){
 			    	return layer.msg("必须输入同一天日期", {icon: 2});
-			    }
-			    if(addNumber==""){
-			    	return layer.msg("我想上浮的比例不能为空", {icon: 2});
-			    }
-			    if(noPerformancePay==""){
-			    	return layer.msg("无加绩的配合奖励不能为空", {icon: 2});
-			    }
+			    } */
 			    	var postdata = {
 				  			type:3,
-				  			addNumber:addNumber,
-				  			noPerformancePay:noPerformancePay,
 				  			orderTimeBegin:orderTimeBegin,
 				  			orderTimeEnd:orderTimeEnd, 
 				  	}
 			    	
 			    $.ajax({
-				      url:"${ctx}/finance/collectPay",
+				      url:"${ctx}/finance/bPayAndTaskPay",
 				      data:postdata,
 				      type:"GET",
 				      beforeSend:function(){
@@ -447,17 +428,10 @@
 		      			 
 		      			 $(result.data).each(function(i,o){
 		      				htmlth +='<tr>'
-		      				+'<td class="text-center  ">'+o.userName+'</td>'
-		      				+'<td class="text-center ">'+o.time+'</td>'
-		      				+'<td class="text-center ">'+o.payA+'</td>'
-		      				+'<td class="text-center  ">'+parseFloat((o.payB*1).toFixed(3))+'</td>'
-		      				+'<td class="text-center  ">'+parseFloat((o.addPayB*1).toFixed(3))+'</td>'
-		      				+'<td class="text-center  ">'+parseFloat((o.addSelfPayB*1).toFixed(3))+'</td>'
-		      				+'<td class="text-center  edit addSelfNumber">'+o.addSelfNumber+'</td>'
-		      				+'<td class="text-center  ">'+o.addPerformancePay+'</td>'
-		      				+'<td class="text-center  ">'+o.noPerformanceNumber+'</td>'
-		      				+'<td class="text-center  ">'+o.noTimePay+'</td>'
-		      				+'<td class="text-center  ">'+o.timePay+'</td>'
+		      				+'<td class="text-center  ">'+o.name+'</td>'
+		      				+'<td class="text-center ">'+o.sunTime+'</td>'
+		      				+'<td class="text-center ">'+o.sumBPay+'</td>'
+		      				+'<td class="text-center  ">'+o.specificValue+'</td>'
 		      				+'<td class="text-center"> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button></td></tr>'
 		      			}); 
 				          
