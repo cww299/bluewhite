@@ -1050,7 +1050,6 @@
 				  			orderTimeEnd:$("#endTime").val(), 
 				  			status:$("#selectstate").val(),
 				  	}
-					console.log(data)
 		            self.loadPagination(data);
 				});
 				/* 一键完成  */

@@ -393,7 +393,7 @@
 							
 							success:function(result){
 								if(0==result.code){
-								layer.msg("修改成功！", {icon: 1});
+							
 								$(".searchtask").click()
 								layer.close(index);
 								}else{

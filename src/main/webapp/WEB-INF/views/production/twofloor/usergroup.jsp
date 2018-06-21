@@ -187,7 +187,7 @@
 		      				html +='<tr>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-		      				+'<td class="text-center edit leadertw">'+o.userName+'</td>'
+		      				+'<td class="text-center  leadertw"  data-provide="typeahead">'+o.userName+'</td>'
 		      				+'<td class="text-center"><div class="groupChange" data-id="'+o.id+'" data-groupid="'+a+'" ></div></td>'
 		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
@@ -234,6 +234,7 @@
 				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
 				        });
 						self.matertw();
+						
 					}else{
 							$(this).text("编辑")
 						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
@@ -422,6 +423,60 @@
 					
 				})
 			}
+			/* this.matertw=function(){
+				//提示人员姓名
+				
+					
+				
+				 $(".leadertw").typeahead({
+					//ajax 拿way数据
+					
+					source : function(query, process) {
+							return $.ajax({
+								url : '${ctx}/system/user/pages',
+								type : 'GET',
+								data : {
+									userName:query
+								},
+								success : function(result) {
+									alert(1)
+									//转换成 json集合
+									 var resultList = result.data.rows.map(function (item) {
+										 	//转换成 json对象
+					                        var aItem = {name: item.userName, id:item.id}
+					                        //处理 json对象为字符串
+					                        return JSON.stringify(aItem);
+					                    });
+									//提示框返回数据
+									 return process(resultList);
+								},
+							})
+						
+							//提示框显示
+						}, highlighter: function (item) {
+						    //转出成json对象
+							 var item = JSON.parse(item);
+							return item.name
+							//按条件匹配输出
+		                }, matcher: function (item) {
+		                	//转出成json对象
+					        var item = JSON.parse(item);
+					        self.setIndex(item.id);
+					        self.setName(item.name);
+					    	return item.id
+					    },
+						//item是选中的数据
+						updater:function(item){
+							//转出成json对象
+							var item = JSON.parse(item);
+							self.setIndex(item.id);
+						  	self.setName(item.name);
+								return item.name
+						},
+
+						
+					}); 
+			} */
 			
 			this.mater=function(){
 				//提示人员姓名

@@ -145,38 +145,38 @@
                  
                 	 <div class="form-group">
 						
-                           <label class="col-sm-3 control-label">批次名</label>
+                           <label class="col-sm-3 control-label">批次名:</label>
                               <div class="col-sm-6">
                                   <input type="text" class="form-control bacth">
                               </div>
                     	</div>
 						<div class="form-group">
 						
-                           <label class="col-sm-3 control-label">工序名</label>
+                           <label class="col-sm-3 control-label">工序名:</label>
                               <div class="col-sm-6">
                                   <input type="text" class="form-control sumnumber">
                               </div>
                     	</div>
                     	
                     	<div class="form-group">
-                            <label class="col-sm-3 control-label">现在管理认可时间</label>
+                            <label class="col-sm-3 control-label">现在管理认可时间:</label>
                                 <div class="col-sm-6 ">
                                   <input type="text" class="form-control timedata">
                                 </div>
                     	</div>
                     	
                     	<div class="form-group">
-                            <label class="col-sm-3 control-label">完成人</label>
+                            <label class="col-sm-3 control-label">备注:</label>
+                                <div class="col-sm-6">
+                                  <input type="text" class="form-control remarks">
+                                </div>
+                    	</div>
+                    	<div class="form-group">
+                            <label class="col-sm-3 control-label">完成人:</label>
                                 <div class="col-sm-6 complete">
                                   <input type="text" class="form-control">
                                 </div>
                                  <div class="col-sm-2 select"></div>
-                    	</div>
-                    	<div class="form-group">
-                            <label class="col-sm-3 control-label">备注</label>
-                                <div class="col-sm-6">
-                                  <input type="text" class="form-control remarks">
-                                </div>
                     	</div>
                  </div>
 				</div>
