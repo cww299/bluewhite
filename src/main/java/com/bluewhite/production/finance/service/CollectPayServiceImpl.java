@@ -478,7 +478,8 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				map.put("id", group.getId());
 				map.put("sunTime", sunTime);
 				map.put("sumBPay", sumBPay+sumfarragoTaskPay);
-				map.put("specificValue", (sumBPay+sumfarragoTaskPay)/sunTime);
+				Double sum = (sumBPay+sumfarragoTaskPay)/sunTime;
+				map.put("specificValue", sum.isNaN()?0.0:sum);
 				bPayAndTaskPay.add(map);
 			}
 		return bPayAndTaskPay;
@@ -512,18 +513,10 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			if(list.size()>0){
 				collect = list.get(0);
 			}
-			
-			
-
-		
-			
 			//分别统计出考勤总时间
 			double sunTime = psList.stream().mapToDouble(AttendancePay::getWorkTime).sum();
-			
-
-				//确定绩效汇总时间
-				collect.setAllotTime(collectPay.getOrderTimeEnd());
-
+			//确定绩效汇总时间
+			collect.setAllotTime(collectPay.getOrderTimeEnd());
 			collect.setType(collectPay.getType());
 			collect.setTime(sunTime);
 			collect.setUserId(psList.get(0).getUserId());
@@ -538,19 +531,18 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	@Override
 	public CollectPay upadtePerformancePay(CollectPay collectPay) {
 		CollectPay	collect = dao.findOne(collectPay.getId());
-		
 		if(collectPay.getTimePrice()!=null){
-			collectPay.setTimePay(collectPay.getTimePrice()+(collectPay.getAddNumber()==null?0.0:collectPay.getAddNumber()));
+			collectPay.setTimePay(collectPay.getTimePrice()+(collectPay.getAddSelfNumber()==null?0.0:collectPay.getAddSelfNumber()));
 			collectPay.setAddPerformancePay(collect.getTime()*collectPay.getTimePay());
-			if(collectPay.getTimePrice()!=null && collectPay.getAddNumber()!=null){
-				collectPay.setTimePay(collectPay.getTimePrice()+collectPay.getAddNumber());
+			if(collectPay.getTimePrice()!=null && collectPay.getAddSelfNumber()!=null){
+				collectPay.setTimePay(collectPay.getTimePrice()+collectPay.getAddSelfNumber());
 				collectPay.setAddPerformancePay(collect.getTime()*collectPay.getTimePay());
 			}
 		}
 		
 		collect.setTimePrice(collectPay.getTimePrice());
 		collect.setTimePay(collectPay.getTimePay());
-		collect.setAddNumber(collectPay.getAddNumber());
+		collect.setAddNumber(collectPay.getAddSelfNumber());
 		collect.setAddPerformancePay(collectPay.getAddPerformancePay());
 		dao.save(collect);
 		return collect;
