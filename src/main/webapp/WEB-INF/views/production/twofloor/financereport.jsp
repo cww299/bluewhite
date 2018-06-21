@@ -304,7 +304,7 @@
 			    var html = '';
 			    //绩效汇总开始
 			    $.ajax({
-				      url:"${ctx}/finance/sumCollectPay",
+				      url:"${ctx}/finance/twoPerformancePay",
 				      data:date,
 				      type:"GET",
 				      beforeSend:function(){
@@ -317,9 +317,10 @@
 		      				
 		      				html +='<tr>'
 		      				+'<td class="text-center edit ">'+o.userName+'</td>'
-		      				+'<td class="text-center edit ">'+o.payA+'</td>'
-		      				+'<td class="text-center edit ">'+o.payB+'</td>'
-		      				+'<td class="text-center edit ">'+o.addPayB+'</td>'
+		      				+'<td class="text-center edit ">'+o.time+'</td>'
+		      				+'<td class="text-center edit ">'+o.timePay+'</td>'
+		      				+'<td class="text-center edit ">'+o.addNumber+'</td>'
+		      				+'<td class="text-center edit ">'+o.timePrice+'</td>'
 		      				+'<td class="text-center edit ">'+o.addPerformancePay+'</td></tr>'
 							
 		      			}); 
