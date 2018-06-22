@@ -61,11 +61,17 @@ public interface CollectPayService extends BaseCRUDService<CollectPay,Long>{
 	
 	
 	/**
-	 * 根据系数进行调节
+	 * 根据系数进行调节绩效
 	 * @param collectPay
 	 * @return
 	 */
 	public CollectPay upadtePerformancePay(CollectPay collectPay);
+	
+	/**
+	 * 二楼统计出打棉组做其他任务的b工资和数量
+	 * @param collectPay
+	 */
+	public List<CollectPay> cottonOtherTask(CollectPay collectPay);
 	
 
 

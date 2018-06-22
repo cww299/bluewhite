@@ -402,13 +402,17 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	
 	
 	/**
-	 * 二楼统计出打棉组做其他任务的b工资和数量
+	 * 二楼统计出充棉组做其他任务的b工资和数量
 	 * 
 	 */
 	@RequestMapping(value = "/finance/cottonOtherTask ", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse cottonOtherTask(HttpServletRequest request,CollectPay collectPay) {
 		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(CollectPay.class,"PayB","userName")
+				.format(collectPayBService.cottonOtherTask(collectPay)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}

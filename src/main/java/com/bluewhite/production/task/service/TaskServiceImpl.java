@@ -175,12 +175,18 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	        	}
 	        	//按工序类型
 	        	if(!StringUtils.isEmpty(param.getProcedureTypeId())){
-	        		predicate.add(cb.equal(root.get("procedure").get("procedureTypeId").as(Long.class), param.getProcedureTypeId()));
+	        		if(!StringUtils.isEmpty(param.getPeg())){
+	        			predicate.add(cb.notEqual(root.get("procedure").get("procedureTypeId").as(Long.class), param.getProcedureTypeId()));
+	        		}else{
+	        			predicate.add(cb.equal(root.get("procedure").get("procedureTypeId").as(Long.class), param.getProcedureTypeId()));
+	        		}
 	        	}
+	        	
 	        	//按类型
 	        	if(!StringUtils.isEmpty(param.getType())){
 	        		predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
 	        	}
+	          
 	        	//按返工类型
 	        	if(!StringUtils.isEmpty(param.getFlag())){
 	        		predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));

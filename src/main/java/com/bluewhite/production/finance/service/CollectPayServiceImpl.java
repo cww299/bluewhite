@@ -548,6 +548,69 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		dao.save(collect);
 		return collect;
 	}
+
+	@Override
+	public List<CollectPay> cottonOtherTask(CollectPay collectPay) {
+		PageParameter page  = new PageParameter();
+		page.setSize(Integer.MAX_VALUE);
+		
+		List<CollectPay> collectPayList = new ArrayList<CollectPay>(); 
+		Group group= new Group();
+		group.setKindWorkId((long)111);
+		List<Group> groupList = groupService.findList(group);
+		//充棉工人任务集合
+		List<Task> countTask = new ArrayList<Task>();
+		//组装出只属于充棉工的人员
+		CollectPay collect = null;
+		for(Group rp: groupList){
+			if(rp.getUsers().size()>0){
+				for(User us : rp.getUsers()){
+					collect = new CollectPay();
+					double sumPayNumber = 0;
+					
+					//通过工序类型id去查找工种不是充棉的任务
+					Task task= new Task();
+					task.setOrderTimeBegin(collectPay.getOrderTimeBegin());
+					task.setOrderTimeEnd(collectPay.getOrderTimeEnd());
+					task.setType(collectPay.getType());
+					task.setProcedureTypeId((long)97);
+					task.setPeg(1);
+					List<Task> taskList = TaskService.findPages(task, page).getRows();
+				
+					//遍历任务，组装出符合充棉的任务
+					for(Task ta : taskList){
+						if (!StringUtils.isEmpty(ta.getUserIds())) {
+							String [] ids = ta.getUserIds().split(",");
+							if (ids.length>0) {
+								for (int i = 0; i < ids.length; i++) {
+									Long id = Long.parseLong(ids[i]);
+										if(us.getId().equals(id)){
+											countTask.add(ta);
+											break;
+										}
+									}		
+								}
+							}
+							
+						PayB payb =new PayB();
+						payb.setOrderTimeBegin(collectPay.getOrderTimeBegin());
+						payb.setOrderTimeEnd(collectPay.getOrderTimeEnd());
+						payb.setType(collectPay.getType());
+						payb.setUserId(us.getId());
+						payb.setTaskId(ta.getId());
+						List<PayB> payBList = payBService.findPages(payb, page).getRows();
+						double payNumber = payBList.stream().mapToDouble(PayB::getPayNumber).sum();
+						sumPayNumber+=payNumber;
+						}
+					//统计充棉组所做费充棉组的任务价值
+					collect.setUserName(us.getUserName());
+					collect.setPayB(sumPayNumber);
+					collectPayList.add(collect);
+				}
+			}
+		}
+		return collectPayList;
+	}
 	
 	
 	
