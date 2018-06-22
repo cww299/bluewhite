@@ -219,7 +219,7 @@
 
 
 
-<!--隐藏框 产品工序开始  -->
+<!--隐藏框已完成的批次开始  -->
         <div id="addworking" style="display: none;">
 			<div class="panel-body">
  <div class="form-group">
@@ -240,7 +240,7 @@
                                  <div id="pagerr" class="pull-right">
                             </div>
 </div>
-<!--隐藏框 产品工序结束  -->
+<!--隐藏框 已完成的批次结束  -->
 
 
     </section>
