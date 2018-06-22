@@ -316,6 +316,21 @@
 				  		type:3,
 				  		sign:1,
 				} 
+			 var myDate = new Date(new Date().getTime() - 86400000);
+				//获取当前年
+				var year=myDate.getFullYear();
+				//获取当前月
+				var month=myDate.getMonth()+1;
+				//获取当前日
+				var date=myDate.getDate(); 
+				var h=myDate.getHours();       //获取当前小时数(0-23)
+				var m=myDate.getMinutes();     //获取当前分钟数(0-59)
+				var s=myDate.getSeconds(); 
+				var day = new Date(year,month,0);  
+				var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
+				var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
+				$('#startTimefr').val(firstdate);
+				$('#endTimefr').val(lastdate);
 			this.init = function(){
 				
 				//注册绑定事件
@@ -568,7 +583,7 @@
 				var data={
 						type:3,
 						page:1,
-				  		size:13,	
+				  		size:100,	
 				  		orderTimeBegin:$("#startTimefr").val(),
 			  			orderTimeEnd:$("#endTimefr").val(),
 				}
@@ -592,7 +607,6 @@
 		      				+'<td class="text-center  allotTime">'+o.payB+'</td></tr>' 
 							
 		      			}); 
-					   	 console.log(html)
 				        //显示分页
 					   	  laypage({
 					      cont: 'pagerr', 
@@ -609,7 +623,6 @@
 								  			orderTimeEnd:$("#endTime").val(),
 								  	}
 						        
-						            self.loadPagination(_data);
 							     }
 					      }
 					    });  
@@ -669,8 +682,6 @@
 				//触发工序弹框 加载内容方法
 				$('#addprocedure').on('click',function(){
 					var _index
-					var productId=$(this).data('id')
-					var name=$(this).data('name')
 					var dicDiv=$('#addworking');
 					  //打开隐藏框
 					_index = layer.open({
@@ -679,7 +690,7 @@
 						  area: ['60%', '60%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
-						  title:name,
+						  title:"充棉组做非充棉组B工资汇总",
 						  content: dicDiv,
 						  
 						  yes:function(index, layero){
@@ -687,13 +698,6 @@
 							},
 						  end:function(){
 							  $('#addworking').hide();
-							  data={
-									page:self.getIndex(),
-								  	size:13,	
-								  	type:2,
-								  	name:$('#name').val(),
-						  			number:$('#number').val(),
-							  }
 							
 						  }
 					});
