@@ -162,7 +162,6 @@ public class ReportExportServiceImpl implements ReportExportService{
 				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime(), 2));
 				procedure.setType(type);
 				procedure.setProcedureTypeId(baseDataList.get(0).getId());
-				procedureService.countPrice(procedure);
 				procedureList.add(procedure);
 				count++;
 			}
@@ -176,7 +175,6 @@ public class ReportExportServiceImpl implements ReportExportService{
 				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime(), 2));
 				procedure.setType(type);
 				procedure.setProcedureTypeId(baseDataList.get(0).getId());
-				procedureService.countPrice(procedure);
 				procedureList.add(procedure);
 				count++;
 			}
@@ -191,13 +189,14 @@ public class ReportExportServiceImpl implements ReportExportService{
 				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime()*60, 2));
 				procedure.setType(type);
 				procedure.setProcedureTypeId(baseDataList.get(0).getId());
-				procedureService.countPrice(procedure);
+				
 				procedureList.add(procedure);
 				count++;
 			}
 			
 		}
 		procedureDao.save(procedureList);
+		procedureService.countPrice(procedureList.get(0));
 		return count;
 	}
 
