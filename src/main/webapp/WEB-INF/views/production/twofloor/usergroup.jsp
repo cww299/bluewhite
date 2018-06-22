@@ -233,7 +233,6 @@
 
 				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
 				        });
-						self.matertw();
 						
 					}else{
 							$(this).text("编辑")

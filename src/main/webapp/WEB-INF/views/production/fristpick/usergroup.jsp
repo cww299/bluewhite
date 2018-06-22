@@ -41,7 +41,6 @@
                                         	<th class="text-center">组名</th>
                                             <th class="text-center">人员信息</th>
                                             <th class="text-center">组长姓名</th>
-                                            <th class="text-center">选择工种</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -80,7 +79,7 @@
                  <div class="form-group">
                                         <label class="col-sm-3 control-label">小组女组长:</label>
                                         <div class="col-sm-6">
-                                            <input type="text" id="leadertw" class="form-control">
+                                            <input type="text" id="leaderth" class="form-control">
                                         </div>
                  </div>
 				</form>
@@ -156,6 +155,18 @@
 		  	this.getName = function(){
 		  		return _name;
 		  	}
+		  	this.setNum = function(num){
+		  		_num=num;
+		  	}
+		  	this.getNum = function(){
+		  		return _num;
+		  	}
+		  	this.setData = function(data){
+		  		_data=data;
+		  	}
+		  	this.getData = function(){
+		  		return _data;
+		  	}
 			 var data={
 						page:1,
 				  		size:13,	
@@ -190,11 +201,12 @@
 		      				 }else{
 		      					 a=o.kindWork.id
 		      				 } 
+		      				 var b="男:";
+		      				var c="女:";
 		      				html +='<tr>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-		      				+'<td class="text-center  leadertw"  data-provide="typeahead">'+o.userName+'</td>'
-		      				+'<td class="text-center"><div class="groupChange" data-id="'+o.id+'" data-groupid="'+a+'" ></div></td>'
+		      				+'<td class="text-center  leadertw"  data-provide="typeahead">'+b+o.userName+" "+c+o.womanUserName+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
@@ -239,7 +251,6 @@
 
 				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
 				        });
-						self.matertw();
 						
 					}else{
 							$(this).text("编辑")
@@ -284,28 +295,6 @@
 					}
 				})
 				
-				/* 遍历工种 */
-			var getdata={type:"kindWork",}
-			var index;
-		    var html = '';
-		    $.ajax({
-			      url:"${ctx}/basedata/list",
-			      data:getdata,
-			      type:"GET",
-			     
-	      		  success: function (result) {
-	      			 $(result.data).each(function(i,o){
-	      				html +='<option value="'+o.id+'">'+o.name+'</option>'
-	      			}); 
-			       var htmlto='<select class="form-control  selectgroupChange"><option value="">去除工种</option>'+html+'</select>'
-				   	$(".groupChange").html(htmlto); 
-				   	self.chang();
-				   	self.selected();
-			      },error:function(){
-						layer.msg("加载失败！", {icon: 2});
-						layer.close(index);
-				  }
-			  });
 				
 				
 				
@@ -535,7 +524,7 @@
 				
 				
 				//提示人员姓名
-				$("#leadertw").typeahead({
+				$("#leaderth").typeahead({
 					//ajax 拿way数据
 					source : function(query, process) {
 							return $.ajax({
@@ -566,16 +555,16 @@
 		                }, matcher: function (item) {
 		                	//转出成json对象
 					        var item = JSON.parse(item);
-					        self.setIndex(item.id);
-					        self.setName(item.name);
+					        self.setNum(item.id);
+					        self.setData(item.name);
 					    	return item.id
 					    },
 						//item是选中的数据
 						updater:function(item){
 							//转出成json对象
 							var item = JSON.parse(item);
-							self.setIndex(item.id);
-						  	self.setName(item.name);
+							self.setNum(item.id);
+						  	self.setData(item.name);
 								return item.name
 						},
 
@@ -605,6 +594,8 @@
 									  name:$("#groupName").val(),
 									  userId:self.getIndex(),
 									  userName:self.getName(),
+									  womanUserName:self.getData(),
+									  womanUserId:self.getNum(),  		  
 									  type:2,
 							  }
 							  $.ajax({
