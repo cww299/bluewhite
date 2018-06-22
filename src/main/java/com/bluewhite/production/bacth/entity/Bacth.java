@@ -54,11 +54,18 @@ public class Bacth extends BaseEntity<Long>{
      */
 	@Column(name = "remarks")
     private String remarks;
+	
     /**
      * 状态，是否完成（0=未完成，1=完成，完成时，会转入包装列表中）
      */
 	@Column(name = "status")
     private Integer status;
+	
+    /**
+     * 包装 是否接收（0=未接收，1=已接收）
+     */
+	@Column(name = "receive")
+    private Integer receive;
 	
 	/**
 	 * 任务
@@ -156,6 +163,18 @@ public class Bacth extends BaseEntity<Long>{
 
 	
 	
+	public Integer getReceive() {
+		return receive;
+	}
+
+
+
+	public void setReceive(Integer receive) {
+		this.receive = receive;
+	}
+
+
+
 	public Double getHairPrice() {
 		return hairPrice;
 	}

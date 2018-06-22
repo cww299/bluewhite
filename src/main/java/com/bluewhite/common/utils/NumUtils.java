@@ -9,9 +9,13 @@ public class NumUtils {
      * @param value
      * @return
      */
-    public static Double round(Double value) {
-        return new BigDecimal(value).setScale(16, BigDecimal.ROUND_HALF_UP).doubleValue();
+    public static Double round(Double value,Integer number) {
+    	if(number == null){
+    		number = 16;
+    	}
+        return new BigDecimal(value).setScale(number, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
+    
     
 	/**
      * 清理因double精度带来的尾巴问题
