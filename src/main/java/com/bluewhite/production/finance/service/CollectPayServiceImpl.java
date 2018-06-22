@@ -587,8 +587,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		Group group= new Group();
 		group.setKindWorkId((long)111);
 		List<Group> groupList = groupService.findList(group);
-		//充棉工人任务集合
-		List<Task> countTask = new ArrayList<Task>();
 		//组装出只属于充棉工的人员
 		CollectPay collect = null;
 		for(Group rp: groupList){
@@ -614,22 +612,20 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 								for (int i = 0; i < ids.length; i++) {
 									Long id = Long.parseLong(ids[i]);
 										if(us.getId().equals(id)){
-											countTask.add(ta);
+											PayB payb =new PayB();
+											payb.setOrderTimeBegin(collectPay.getOrderTimeBegin());
+											payb.setOrderTimeEnd(collectPay.getOrderTimeEnd());
+											payb.setType(collectPay.getType());
+											payb.setUserId(us.getId());
+											payb.setTaskId(ta.getId());
+											List<PayB> payBList = payBService.findPages(payb, page).getRows();
+											double payNumber = payBList.stream().mapToDouble(PayB::getPayNumber).sum();
+											sumPayNumber+=payNumber;
 											break;
 										}
 									}		
 								}
 							}
-							
-						PayB payb =new PayB();
-						payb.setOrderTimeBegin(collectPay.getOrderTimeBegin());
-						payb.setOrderTimeEnd(collectPay.getOrderTimeEnd());
-						payb.setType(collectPay.getType());
-						payb.setUserId(us.getId());
-						payb.setTaskId(ta.getId());
-						List<PayB> payBList = payBService.findPages(payb, page).getRows();
-						double payNumber = payBList.stream().mapToDouble(PayB::getPayNumber).sum();
-						sumPayNumber+=payNumber;
 						}
 					//统计充棉组所做费充棉组的任务价值
 					collect.setUserName(us.getUserName());
