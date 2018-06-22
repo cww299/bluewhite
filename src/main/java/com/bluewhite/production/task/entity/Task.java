@@ -231,9 +231,22 @@ public class Task  extends BaseEntity<Long>{
 	@Transient
 	private String users;
 	
+	/**
+	 * 非充棉组人员标识
+	 */
+	@Transient
+	private Integer peg;
+	
+	
+	
+	public Integer getPeg() {
+		return peg;
+	}
 
-	
-	
+	public void setPeg(Integer peg) {
+		this.peg = peg;
+	}
+
 	public Date getStartTime() {
 		return startTime;
 	}
