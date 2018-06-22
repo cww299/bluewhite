@@ -516,12 +516,41 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			}
 			//分别统计出考勤总时间
 			double sunTime = psList.stream().mapToDouble(AttendancePay::getWorkTime).sum();
+			//统计出A工资
+			double payA = psList.stream().mapToDouble(AttendancePay::getPayNumber).sum();
+			
+			
+			//B工资
+			PayB payB = new PayB();
+			payB.setOrderTimeBegin(collectPay.getOrderTimeBegin());
+			payB.setOrderTimeEnd(collectPay.getOrderTimeEnd());
+			payB.setType(collectPay.getType());
+			payB.setUserId((Long)ps);
+			List<PayB> payBList = payBService.findPages(payB, page).getRows();
+			//分组人员B工资总和
+			double sumBPay = payBList.stream().mapToDouble(PayB::getPayNumber).sum();
+			
+			//杂工工资
+//			FarragoTaskPay farragoTaskPay =new FarragoTaskPay();
+//			farragoTaskPay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
+//			farragoTaskPay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
+//			farragoTaskPay.setType(collectPay.getType());
+//			farragoTaskPay.setUserId((Long)ps);
+//			List<FarragoTaskPay> farragoTaskPayList = farragoTaskPayService.findPages(farragoTaskPay, page).getRows();
+//			//分组人员杂工工资总和
+//			double sumfarragoTaskPay = farragoTaskPayList.stream().mapToDouble(FarragoTaskPay::getPayNumber).sum();
+			
+			
 			//确定绩效汇总时间
 			collect.setAllotTime(collectPay.getOrderTimeEnd());
 			collect.setType(collectPay.getType());
 			collect.setTime(sunTime);
 			collect.setUserId(psList.get(0).getUserId());
 			collect.setUserName(psList.get(0).getUserName());
+			//汇总B工资
+			collect.setPayB(sumBPay);
+			//汇总A工资
+			collect.setPayA(payA);
 			dao.save(collect);
 			collectPayList.add(collect);
 		}

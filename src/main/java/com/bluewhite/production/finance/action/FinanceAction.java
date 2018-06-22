@@ -375,7 +375,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON
 						.get()
-						.addRetainTerm(CollectPay.class,"id","time","timePrice","timePay","userId","userName","addSelfNumber","addPerformancePay")
+						.addRetainTerm(CollectPay.class,"id","payB","payA","time","timePrice","timePay","userId","userName","addSelfNumber","addPerformancePay")
 						.format(collectPayBService.twoPerformancePay(collectPay)).toJSON());
 		
 		cr.setMessage("查询成功");
