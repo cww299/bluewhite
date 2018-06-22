@@ -411,7 +411,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON
 				.get()
-				.addRetainTerm(CollectPay.class,"PayB","userName")
+				.addRetainTerm(CollectPay.class,"payB","userName")
 				.format(collectPayBService.cottonOtherTask(collectPay)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
