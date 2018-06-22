@@ -75,34 +75,34 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				//当前台传值得预计时间不为null，说明该任务类型是返工类型
 				newTask.setFlag(procedure.getFlag());
 				if(task.getExpectTime()==null){
-					newTask.setExpectTime(NumUtils.round(ProTypeUtils.sumExpectTime(procedure,procedure.getType(),newTask.getNumber())));
+					newTask.setExpectTime(NumUtils.round(ProTypeUtils.sumExpectTime(procedure,procedure.getType(),newTask.getNumber()), null));
 				}
 				
 				//实际完成时间（1.工序类型不是返工，预计时间等于实际时间，2工序类型是返工，实际完成时间根据公式的出）
 				if(task.getExpectTime()==null){
 					newTask.setTaskTime(newTask.getExpectTime());
 				}else{
-					newTask.setTaskTime(NumUtils.round(ProTypeUtils.sumTaskTime(newTask.getExpectTime(),procedure.getType(),newTask.getNumber())));
+					newTask.setTaskTime(NumUtils.round(ProTypeUtils.sumTaskTime(newTask.getExpectTime(),procedure.getType(),newTask.getNumber()), null));
 				}
 				
 				//预计任务价值（通过预计完成时间得出）（1.工序类型不是返工，预计任务价值通过计算得出   2.工序类型是返工,没有预计任务价值）
 				if(task.getExpectTime()==null){
-					newTask.setExpectTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(newTask.getExpectTime(), procedure.getType())));
+					newTask.setExpectTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(newTask.getExpectTime(), procedure.getType()), null));
 				}else{
 					newTask.setExpectTaskPrice(null);
 				}
 				
 				//实际任务价值（通过实际完成时间得出）
-				newTask.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(newTask.getTaskTime(), procedure.getType())));
+				newTask.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(newTask.getTaskTime(), procedure.getType()), null));
 				
 				//B工资净值
-				newTask.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(newTask.getTaskPrice(),  procedure.getType())));
+				newTask.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(newTask.getTaskPrice(),  procedure.getType()), null));
 				
 				//当任务有加绩情况时
 				//任务加绩具体数值
 				if(task.getPerformanceNumber()!=null){
 					task.setTaskTime(newTask.getTaskTime());
-					newTask.setPerformancePrice(NumUtils.round(ProTypeUtils.sumtaskPerformancePrice(task)));
+					newTask.setPerformancePrice(NumUtils.round(ProTypeUtils.sumtaskPerformancePrice(task), null));
 				}
 				
 				dao.save(newTask);
@@ -148,7 +148,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		};
 		bacth.setSumTaskPrice(sumTaskPrice);
 		//计算出该批次的地区差价
-		bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType())));
+		bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType()), null));
 		bacthDao.save(bacth);
 		return task;
 	}
@@ -229,7 +229,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					};
 					bacth.setSumTaskPrice(sumTaskPrice);
 					//计算出该批次的地区差价
-					bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType())));
+					bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType()), null));
 					//更新批次
 					bacthDao.save(bacth);
 				};
@@ -325,9 +325,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					task.setStatus(2);
 					
 					//实际任务价值（通过实际完成时间得出）
-					task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskActualTime(), task.getType())));
+					task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskActualTime(), task.getType()), null));
 					//B工资净值
-					task.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(task.getTaskPrice(),  task.getType())));
+					task.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(task.getTaskPrice(),  task.getType()), null));
 					dao.save(task);
 					//将用户变成string类型储存
 					if (!StringUtils.isEmpty(task.getUserIds())) {
@@ -409,11 +409,11 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		}
 		task.setNumber(number);
 		//实际时间
-		task.setTaskTime(NumUtils.round(ProTypeUtils.sumTaskTime(task.getExpectTime(),task.getType(),number)));
+		task.setTaskTime(NumUtils.round(ProTypeUtils.sumTaskTime(task.getExpectTime(),task.getType(),number), null));
 		//实际任务价值（通过实际完成时间得出）
-		task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskTime(), task.getType())));
+		task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskTime(), task.getType()), null));
 		//B工资净值
-		task.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(task.getTaskPrice(),  task.getType())));
+		task.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(task.getTaskPrice(),  task.getType()), null));
 		dao.save(task);
 		//将用户变成string类型储存
 		if (!StringUtils.isEmpty(task.getUserIds())) {

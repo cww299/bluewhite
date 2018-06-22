@@ -159,7 +159,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 				Procedure procedure = new Procedure();
 				procedure.setProductId(productId);
 				procedure.setName(procedurePoi.getName());
-				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime()));
+				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime(), 2));
 				procedure.setType(type);
 				procedure.setProcedureTypeId(baseDataList.get(0).getId());
 				procedureService.countPrice(procedure);
@@ -169,6 +169,18 @@ public class ReportExportServiceImpl implements ReportExportService{
 		}
 		if(type==2){
 			baseDataList = baseDataService.getBaseDataListByType(Constants.PRODUCT_FRIST_PACK);
+			for(ProcedurePoi procedurePoi : excelProcedure){
+				Procedure procedure = new Procedure();
+				procedure.setProductId(productId);
+				procedure.setName(procedurePoi.getName());
+				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime(), 2));
+				procedure.setType(type);
+				procedure.setProcedureTypeId(baseDataList.get(0).getId());
+				procedureService.countPrice(procedure);
+				procedureList.add(procedure);
+				count++;
+			}
+			
 		}
 		if(type==3){
 			baseDataList = baseDataService.getBaseDataListByType(Constants.PRODUCT_TWO_DEEDLE);
@@ -176,7 +188,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 				Procedure procedure = new Procedure();
 				procedure.setProductId(productId);
 				procedure.setName(procedurePoi.getName());
-				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime()*60));
+				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime()*60, 2));
 				procedure.setType(type);
 				procedure.setProcedureTypeId(baseDataList.get(0).getId());
 				procedureService.countPrice(procedure);

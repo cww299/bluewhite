@@ -63,6 +63,7 @@ private static final Log log = Log.getLog(BacthAction.class);
 			if(bacth.getProductId()!=null){
 				bacth.setAllotTime(ProTypeUtils.countAllotTime(bacth.getAllotTime(), bacth.getType()));
 				bacth.setStatus(0);
+				bacth.setReceive(0);
 				bacthService.save(bacth);
 				cr.setMessage("添加成功");
 			}else{

@@ -60,7 +60,11 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 		        	if(!StringUtils.isEmpty(param.getType())){
 		        		predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
 		        	}
-		           	//按状态
+		           	//按接收状态
+		        	if(!StringUtils.isEmpty(param.getReceive())){
+		        		predicate.add(cb.equal(root.get("receive").as(Integer.class), param.getReceive()));
+		        	}
+		         	//按状态
 		        	if(!StringUtils.isEmpty(param.getStatus())){
 		        		predicate.add(cb.equal(root.get("status").as(Integer.class), param.getStatus()));
 		        	}

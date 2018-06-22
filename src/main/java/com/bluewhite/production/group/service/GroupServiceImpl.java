@@ -18,6 +18,7 @@ import com.bluewhite.production.group.dao.GroupDao;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
+import com.bluewhite.system.user.entity.User;
 
 @Service
 public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements GroupService{
@@ -55,7 +56,13 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 			if (idArr.length>0) {
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
-					dao.delete(dao.findOne(id));
+					Group group = dao.findOne(id);
+					for(User user : group.getUsers()){
+						user.setGroupId(null);	
+						user.setGroup(null);
+						}
+					group.setUsers(null);
+					dao.delete(group);
 				};
 			}
 		}
