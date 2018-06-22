@@ -80,7 +80,7 @@
                                         	<th class="text-center">批次名</th>
                                         	<th class="text-center">日期</th>
                                             <th class="text-center">工序名</th>
-                                            <th class="text-center">现场管理认可时间</th>
+                                            <th class="text-center">现场管理时间</th>
                                             <th class="text-center">备注</th>
                                             <th class="text-center">任务价值</th>
                                             <th class="text-center">人员详情</th>
@@ -159,7 +159,7 @@
                     	</div>
                     	
                     	<div class="form-group">
-                            <label class="col-sm-3 control-label">现在管理认可时间:</label>
+                            <label class="col-sm-3 control-label">现场管理时间:</label>
                                 <div class="col-sm-6 ">
                                   <input type="text" class="form-control timedata">
                                 </div>

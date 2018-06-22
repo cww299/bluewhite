@@ -89,6 +89,10 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		if(cu.getRole().contains(Constants.PRODUCT_FRIST_QUALITY)){
 			 user.setOrgNameIds(Constants.QUALITY_ORGNAME);
 		}
+		//包装
+		if(cu.getRole().contains(Constants.PRODUCT_FRIST_PACK)){
+			 user.setOrgNameIds(Constants.PACK_ORGNAME);
+		}
 		//针工
 		if(cu.getRole().contains(Constants.PRODUCT_TWO_DEEDLE)){
 			 user.setOrgNameIds(Constants.DEEDLE_ORGNAME);

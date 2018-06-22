@@ -281,7 +281,6 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	 * 
 	 * 员工成本数据汇总 1
 	 * 
-	 * @param binder
 	 */
 	@RequestMapping(value = "/finance/collectInformation", method = RequestMethod.GET)
 	@ResponseBody
@@ -310,7 +309,6 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	/**
 	 * 质检月产量报表
 	 * 
-	 * @param binder
 	 */
 	@RequestMapping(value = "/finance/monthlyProduction", method = RequestMethod.GET)
 	@ResponseBody
@@ -335,7 +333,6 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	 * 男组长产量每天产生，女组长根据进行调控填写
 	 * 
 	 * 
-	 * @param binder
 	 */
 	@RequestMapping(value = "/finance/headmanPay", method = RequestMethod.GET)
 	@ResponseBody
@@ -357,7 +354,6 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	/**
 	 * 获取整个月考勤时间的汇总，各组人员的B工资+杂工工资汇总，计算出他们之间的比值
 	 * 
-	 * @param binder
 	 */
 	@RequestMapping(value = "/finance/bPayAndTaskPay", method = RequestMethod.GET)
 	@ResponseBody
@@ -390,7 +386,6 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	/**
 	 * 获取整个月分组人员的绩效,根据系数进行调节奖励
 	 * 
-	 * @param binder
 	 */
 	@RequestMapping(value = "/finance/upadtePerformancePay", method = RequestMethod.GET)
 	@ResponseBody
@@ -404,7 +399,22 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		cr.setMessage("查询成功");
 		return cr;
 	}
+	
+	
+	/**
+	 * 二楼统计出打棉组做其他任务的b工资和数量
+	 * 
+	 */
+	@RequestMapping(value = "/finance/cottonOtherTask ", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse cottonOtherTask(HttpServletRequest request,CollectPay collectPay) {
+		CommonResponse cr = new CommonResponse();
+		cr.setMessage("查询成功");
+		return cr;
+	}
 
+	
+	
 	
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
