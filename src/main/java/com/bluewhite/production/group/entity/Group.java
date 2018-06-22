@@ -53,6 +53,19 @@ public class Group  extends BaseEntity<Long>{
 	
 	
 	/**
+	 * 女组长id
+	 */
+	@Column(name = "woman_user_id")
+	private Long womanUserId;
+	
+	/**
+	 * 组长姓名
+	 */
+	@Column(name = "woman_user_name")
+	private String womanUserName;
+	
+	
+	/**
 	 * 工种id
 	 */
 	@Column(name = "kind_work_id")
@@ -81,6 +94,22 @@ public class Group  extends BaseEntity<Long>{
 	
 	
 	
+	public Long getWomanUserId() {
+		return womanUserId;
+	}
+
+	public void setWomanUserId(Long womanUserId) {
+		this.womanUserId = womanUserId;
+	}
+
+	public String getWomanUserName() {
+		return womanUserName;
+	}
+
+	public void setWomanUserName(String womanUserName) {
+		this.womanUserName = womanUserName;
+	}
+
 	public Long getKindWorkId() {
 		return kindWorkId;
 	}
