@@ -106,10 +106,10 @@
             <div class="tab-pane" id="profile1">
                       <!--查询开始  -->
           		 <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-10 col-sm-10  col-md-10">
+					<div class="col-xs-12 col-sm-12  col-md-12">
 						<form class="form-search" >
 							<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12">
+							<div class="col-xs-11 col-sm-11 col-md-11">
 							<div class="input-group"> 
 								<table><tr><td>批次:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
@@ -135,6 +135,10 @@
 										<i class="icon-search icon-on-right bigger-110"></i>
 									</button>
 								</span>
+									<td>&nbsp&nbsp&nbsp&nbsp</td>
+									<span class="input-group-btn">
+									<button type="button" id="addprocedure" class="btn btn-success btn-sm btn-3d pull-right">充棉B工资</button>
+									</span>
 							</div>
 						</div>
 					</div>
@@ -189,6 +193,7 @@
 										查找
 										<i class="icon-search icon-on-right bigger-110"></i>
 									</button>
+									
 								</span>
 							</div>
 						</div>
@@ -223,7 +228,58 @@
         </section>
 
 
-
+<!--隐藏框已完成的批次开始  -->
+        <div id="addworking" style="display: none;">
+			<div class="panel-body">
+			<div class="row" style="height: 30px; margin:15px 0 10px">
+					<div class="col-xs-8 col-sm-8  col-md-8">
+						<form class="form-search" >
+							<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12">
+							<div class="input-group"> 
+								<table><tr>
+								<td>开始:</td>
+								<td>
+								<input id="startTimefr" placeholder="请输入开始时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#startTimefr', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
+								</td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<td>结束:</td>
+								<td>
+								<input id="endTimefr" placeholder="请输入结束时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#endTimefr', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+								</td>
+								</tr></table> 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtaskfr">
+										查找
+										<i class="icon-search icon-on-right bigger-110"></i>
+									</button>
+									
+								</span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+ <div class="form-group">
+  </div> 
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                        	<th class="text-center">姓名</th>
+                                            <th class="text-center">充棉工资总汇</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableworking">
+                                    </tbody>
+                                </table>
+                                 <div id="pagerr" class="pull-right">
+                            </div>
+</div>
+</div>
+<!--隐藏框 已完成的批次结束  -->
 
 
     </section>
@@ -260,6 +316,21 @@
 				  		type:3,
 				  		sign:1,
 				} 
+			 var myDate = new Date(new Date().getTime() - 86400000);
+				//获取当前年
+				var year=myDate.getFullYear();
+				//获取当前月
+				var month=myDate.getMonth()+1;
+				//获取当前日
+				var date=myDate.getDate(); 
+				var h=myDate.getHours();       //获取当前小时数(0-23)
+				var m=myDate.getMinutes();     //获取当前分钟数(0-59)
+				var s=myDate.getSeconds(); 
+				var day = new Date(year,month,0);  
+				var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
+				var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
+				$('#startTimefr').val(firstdate);
+				$('#endTimefr').val(lastdate);
 			this.init = function(){
 				
 				//注册绑定事件
@@ -507,6 +578,63 @@
 					}
 				})
 			}
+			this.loadworking=function(){
+				$('.searchtaskfr').on('click',function(){
+				var data={
+						type:3,
+						page:1,
+				  		size:100,	
+				  		orderTimeBegin:$("#startTimefr").val(),
+			  			orderTimeEnd:$("#endTimefr").val(),
+				}
+				var index;
+			    var html = '';
+			    $.ajax({
+				      url:"${ctx}/finance/cottonOtherTask",
+				      data:data,
+				      type:"GET",
+				      beforeSend:function(){
+					 	  index = layer.load(1, {
+						  shade: [0.1,'#fff'] //0.1透明度的白色背景
+						  });
+					  }, 
+		      		  success: function (result) {
+		      			  
+		      			 $(result.data).each(function(i,o){
+		      				 
+		      				 html +='<tr>'
+		      				+'<td class="text-center  bacthNumber">'+o.userName+'</td>'
+		      				+'<td class="text-center  allotTime">'+o.payB+'</td></tr>' 
+							
+		      			}); 
+				        //显示分页
+					   	  laypage({
+					      cont: 'pagerr', 
+					      pages: result.data.totalPages, 
+					      curr:  result.data.pageNum || 1, 
+					      jump: function(obj, first){ 
+					    	  if(!first){ 
+					    		 
+						        	var _data = {
+						        			page:obj.curr,
+									  		size:13,
+									  		type:3,
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(),
+								  	}
+						        
+							     }
+					      }
+					    });  
+					   	layer.close(index);
+					   	 $("#tableworking").html(html); 
+				      },error:function(){
+							layer.msg("加载失败！", {icon: 2});
+							layer.close(index);
+					  }
+				  });
+				});
+			}
 			this.events = function(){
 				$('.searchtask').on('click',function(){
 					var data = {
@@ -547,6 +675,37 @@
 			
 				self.loadPaginationth(data);
 				});
+				
+				
+				
+				
+				//触发工序弹框 加载内容方法
+				$('#addprocedure').on('click',function(){
+					var _index
+					var dicDiv=$('#addworking');
+					  //打开隐藏框
+					_index = layer.open({
+						  type: 1,
+						  skin: 'layui-layer-rim', //加上边框
+						  area: ['60%', '60%'], 
+						  btnAlign: 'c',//宽高
+						  maxmin: true,
+						  title:"充棉组做非充棉组B工资汇总",
+						  content: dicDiv,
+						  
+						  yes:function(index, layero){
+							 
+							},
+						  end:function(){
+							  $('#addworking').hide();
+							
+						  }
+					});
+					
+					 self.loadworking(); 
+					
+					
+				})
 			}
    	}
    			var login = new Login();
