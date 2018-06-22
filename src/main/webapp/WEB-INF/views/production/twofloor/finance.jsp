@@ -569,6 +569,7 @@
 			this.loadworking=function(){
 				$('.searchtaskfr').on('click',function(){
 				var data={
+						type:3,
 						page:1,
 				  		size:13,	
 				  		orderTimeBegin:$("#startTimefr").val(),
@@ -590,11 +591,9 @@
 		      			 $(result.data.rows).each(function(i,o){
 		      				 
 		      				 html +='<tr>'
-		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
-		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
-		      				+'<td class="text-center  name">'+o.product.name+'</td>'
-		      				+'<td class="text-center edit number">'+o.number+'</td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans receive" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>接收</button> </td></tr>' 
+		      				+'<td class="text-center  bacthNumber">'+o.userName+'</td>'
+		      				+'<td class="text-center  allotTime">'+o.payB+'</td></tr>' 
+		      				
 							
 		      			}); 
 				        //显示分页
@@ -608,9 +607,7 @@
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
-									  		type:2,
-								  			name:$('#name').val(),
-								  			bacthNumber:$('#number').val(),
+									  		type:3,
 								  			orderTimeBegin:$("#startTime").val(),
 								  			orderTimeEnd:$("#endTime").val(),
 								  	}
