@@ -42,7 +42,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(Group.class,"id","name","price","type","users","userName","userId","kindWork")
+				.addRetainTerm(Group.class,"id","name","price","type","users","userName","userId","kindWork","womanUserName","womanUserId")
 				.addRetainTerm(User.class,"id","userName")
 				.addRetainTerm(BaseData.class, "id","name", "type");
 	}
