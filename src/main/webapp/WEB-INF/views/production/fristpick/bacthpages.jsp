@@ -61,6 +61,10 @@
 											查&nbsp找
 									</button>
 								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button" id="addprocedure" class="btn btn-success btn-sm btn-3d pull-right">一键接收</button>
+								</span>
 							</div>
 						</div>
 					</div>
@@ -214,6 +218,29 @@
 <!--隐藏框 工序分配2结束  -->
 
 
+
+<!--隐藏框 产品工序开始  -->
+        <div id="addworking" style="display: none;">
+			<div class="panel-body">
+ <div class="form-group">
+  </div> 
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                        	<th class="text-center">批次号</th>
+                                            <th class="text-center">时间</th>
+                                            <th class="text-center">产品名</th>
+                                            <th class="text-center">数量</th>
+                                            <th class="text-center">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableworking">
+                                    </tbody>
+                                </table>
+                                 <div id="pagerr" class="pull-right">
+                            </div>
+</div>
+<!--隐藏框 产品工序结束  -->
 
 
     </section>
@@ -1033,8 +1060,73 @@
 				
 				
 			}
-			
-			
+			this.loadworking=function(){
+				var data={
+						page:1,
+				  		size:13,	
+				  		status:1,
+				  		receive:0,
+				}
+				var index;
+			    var html = '';
+			    $.ajax({
+				      url:"${ctx}/bacth/allBacth",
+				      data:data,
+				      type:"GET",
+				      beforeSend:function(){
+					 	  index = layer.load(1, {
+						  shade: [0.1,'#fff'] //0.1透明度的白色背景
+						  });
+					  }, 
+		      		  success: function (result) {
+		      			  
+		      			 $(result.data.rows).each(function(i,o){
+		      				 
+		      				 html +='<tr>'
+		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
+		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
+		      				+'<td class="text-center  name">'+o.product.name+'</td>'
+		      				+'<td class="text-center edit number">'+o.number+'</td>'
+							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans receive" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>接收</button> </td></tr>' 
+							
+		      			}); 
+				        //显示分页
+					   	  laypage({
+					      cont: 'pagerr', 
+					      pages: result.data.totalPages, 
+					      curr:  result.data.pageNum || 1, 
+					      jump: function(obj, first){ 
+					    	  if(!first){ 
+					    		 
+						        	var _data = {
+						        			page:obj.curr,
+									  		size:13,
+									  		type:2,
+								  			name:$('#name').val(),
+								  			bacthNumber:$('#number').val(),
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(),
+								  	}
+						        
+						            self.loadPagination(_data);
+							     }
+					      }
+					    });  
+					   	layer.close(index);
+					   	 $("#tableworking").html(html); 
+					   	self.loadEventsth();
+					   
+				      },error:function(){
+							layer.msg("加载失败！", {icon: 2});
+							layer.close(index);
+					  }
+				  });
+			}
+			this.loadEventsth=function(){
+				 $('.receive').on('click',function(){
+					
+				}) 
+			}
 			this.events = function(){
 				
 				//查询
@@ -1050,6 +1142,45 @@
 				  	}
 		            self.loadPagination(data);
 				});
+				
+				
+				//触发工序弹框 加载内容方法
+				$('#addprocedure').on('click',function(){
+					var _index
+					var productId=$(this).data('id')
+					var name=$(this).data('name')
+					var dicDiv=$('#addworking');
+					  //打开隐藏框
+					_index = layer.open({
+						  type: 1,
+						  skin: 'layui-layer-rim', //加上边框
+						  area: ['60%', '60%'], 
+						  btnAlign: 'c',//宽高
+						  maxmin: true,
+						  title:name,
+						  content: dicDiv,
+						  
+						  yes:function(index, layero){
+							 
+							},
+						  end:function(){
+							  $('#addworking').hide();
+							  data={
+									page:self.getIndex(),
+								  	size:13,	
+								  	type:2,
+								  	name:$('#name').val(),
+						  			number:$('#number').val(),
+							  }
+							self.loadPagination(data);
+						  }
+					});
+					
+					self.loadworking(); 
+					
+					
+				})
+				
 				
 				
 				
