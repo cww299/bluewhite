@@ -268,11 +268,8 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                        	<th class="text-center">批次号</th>
-                                            <th class="text-center">时间</th>
-                                            <th class="text-center">产品名</th>
-                                            <th class="text-center">数量</th>
-                                            <th class="text-center">操作</th>
+                                        	<th class="text-center">姓名</th>
+                                            <th class="text-center">充棉工资总汇</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tableworking">
@@ -588,14 +585,14 @@
 					  }, 
 		      		  success: function (result) {
 		      			  
-		      			 $(result.data.rows).each(function(i,o){
+		      			 $(result.data).each(function(i,o){
 		      				 
 		      				 html +='<tr>'
 		      				+'<td class="text-center  bacthNumber">'+o.userName+'</td>'
 		      				+'<td class="text-center  allotTime">'+o.payB+'</td></tr>' 
-		      				
 							
 		      			}); 
+					   	 console.log(html)
 				        //显示分页
 					   	  laypage({
 					      cont: 'pagerr', 
@@ -618,7 +615,6 @@
 					    });  
 					   	layer.close(index);
 					   	 $("#tableworking").html(html); 
-					   
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
