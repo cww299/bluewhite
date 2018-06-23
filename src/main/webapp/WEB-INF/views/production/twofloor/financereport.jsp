@@ -136,6 +136,8 @@
                                         <tr>
                                         	<th class="text-center">姓名</th>
                                         	<th class="text-center">考勤时间</th>
+                                        	<th class="text-center">A工资汇总</th>
+                                        	<th class="text-center">B工资汇总</th>
                                         	<th class="text-center">折算工价</th>
                                         	<th class="text-center">调节系数</th>
                                         	<th class="text-center">调节后的折算工价</th>
@@ -321,6 +323,8 @@
 		      				html +='<tr>'
 		      				+'<td class="text-center edit ">'+o.userName+'</td>'
 		      				+'<td class="text-center edit ">'+o.time+'</td>'
+		      				+'<td class="text-center edit ">'+o.payA+'</td>'
+		      				+'<td class="text-center edit ">'+o.payB+'</td>'
 		      				+'<td class="text-center edit "><input class="work" data-id='+o.id+' value="'+o.timePrice+'"></input></td>'
 		      				+'<td class="text-center edit "><input class="worktw" data-id='+o.id+' value="'+o.addSelfNumber+'"></input></td>'
 		      				+'<td class="text-center edit ">'+o.timePay+'</td>'
