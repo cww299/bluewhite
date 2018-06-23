@@ -65,7 +65,7 @@
 								</span>
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-info  btn-sm btn-3d start">
+									<button type="button" class="btn btn-success  btn-sm btn-3d start">
 									一键完成
 									</button>
 								</span>
