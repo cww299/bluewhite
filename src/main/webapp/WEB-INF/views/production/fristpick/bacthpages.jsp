@@ -227,6 +227,12 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
+                                        <th class="center">
+											<label> 
+											<input type="checkbox" class="ace checks" /> 
+											<span class="lbl"></span>
+											</label>
+											</th>
                                         	<th class="text-center">批次号</th>
                                             <th class="text-center">时间</th>
                                             <th class="text-center">产品名</th>
@@ -1083,13 +1089,13 @@
 		      			  
 		      			 $(result.data.rows).each(function(i,o){
 		      				 var a=o.number
-		      				 html +='<tr>'
+		      				 html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" data-number='+o.number+' value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
 		      				+'<td class="text-center  name">'+o.product.name+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center edit numberfr"><input class="work"  value="'+a+'"></input></td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans receive" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>接收</button> </td></tr>' 
+							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans receive" data-id='+o.id+'  data-number='+o.number+' data-proname='+o.product.name+'>接收</button> </td></tr>' 
 							
 		      			}); 
 				        //显示分页
@@ -1117,16 +1123,74 @@
 					   	layer.close(index);
 					   	 $("#tableworking").html(html); 
 					   	self.loadEventsth();
-					   
+					   	self.checkedd();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
 					  }
 				  });
 			}
+			this.checkedd=function(){
+				
+				$(".checks").on('click',function(){
+					
+                    if($(this).is(':checked')){ 
+			 			$('.checkboxId').each(function(){  
+                    //此处如果用attr，会出现第三次失效的情况  
+                     		$(this).prop("checked",true);
+			 			})
+                    }else{
+                    	$('.checkboxId').each(function(){ 
+                    		$(this).prop("checked",false);
+                    		
+                    	})
+                    }
+                }); 
+				
+			}
 			this.loadEventsth=function(){
 				 $('.receive').on('click',function(){
-					console.log($('.work').val())
+					 var numbers=new Array()
+					 var arr=new Array()//员工id
+						$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+							arr.push($(this).val()); 
+							numbers.push($(this).parent().parent().parent().find(".work").val());
+						});
+						
+					 var postData = {
+							 ids:arr,
+							 numbers:numbers,
+							 receive:1,
+						}
+					 console.log(postData)
+						var index;
+						 index = layer.confirm('确定接收吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/bacth/receiveBacth",
+							data:postData,
+							traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+								layer.msg("接收成功！", {icon: 1});
+								self.loadPagination(data)
+								layer.close(index);
+								}else{
+									layer.msg("接收失败！", {icon: 1});
+									layer.close(index);
+								}
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 })
 				}) 
 			}
 			this.events = function(){
