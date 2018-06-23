@@ -221,6 +221,9 @@
 
 <!--隐藏框已完成的批次开始  -->
         <div id="addworking" style="display: none;">
+        <table><tr>           
+                        <td><button type="button" class="btn btn-default btn-danger btn-xs btn-3d receive">一键接收</button>&nbsp&nbsp</td>
+                        </tr></table>
 			<div class="panel-body">
  <div class="form-group">
   </div> 
@@ -238,7 +241,6 @@
                                             <th class="text-center">产品名</th>
                                             <th class="text-center">数量</th>
                                             <th class="text-center">待接收数量</th>
-                                            <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tableworking">
@@ -1094,8 +1096,7 @@
 		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
 		      				+'<td class="text-center  name">'+o.product.name+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
-		      				+'<td class="text-center edit numberfr"><input class="work"  value="'+a+'"></input></td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans receive" data-id='+o.id+'  data-number='+o.number+' data-proname='+o.product.name+'>接收</button> </td></tr>' 
+		      				+'<td class="text-center edit numberfr"><input class="work"  value="'+a+'"></input></td><tr>'
 							
 		      			}); 
 				        //显示分页
