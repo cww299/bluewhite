@@ -1003,6 +1003,7 @@
 								var performanceNumber=$(".selectchangtwt").val();
 								
 								var performance=$(".selectchangtwt option:selected").text();
+								
 								if(performance=="请选择"){
 									performance="";
 								}
