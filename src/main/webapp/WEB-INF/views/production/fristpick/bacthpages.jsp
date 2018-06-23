@@ -231,6 +231,7 @@
                                             <th class="text-center">时间</th>
                                             <th class="text-center">产品名</th>
                                             <th class="text-center">数量</th>
+                                            <th class="text-center">待接收数量</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -1081,12 +1082,13 @@
 		      		  success: function (result) {
 		      			  
 		      			 $(result.data.rows).each(function(i,o){
-		      				 
+		      				 var a=o.number
 		      				 html +='<tr>'
 		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
 		      				+'<td class="text-center  name">'+o.product.name+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
+		      				+'<td class="text-center edit numberfr"><input class="work"  value="'+a+'"></input></td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans receive" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>接收</button> </td></tr>' 
 							
 		      			}); 
@@ -1124,7 +1126,7 @@
 			}
 			this.loadEventsth=function(){
 				 $('.receive').on('click',function(){
-					
+					console.log($('.work').val())
 				}) 
 			}
 			this.events = function(){
@@ -1166,7 +1168,7 @@
 						  end:function(){
 							  $('#addworking').hide();
 							  data={
-									page:self.getIndex(),
+									page:1,
 								  	size:13,	
 								  	type:2,
 								  	name:$('#name').val(),
