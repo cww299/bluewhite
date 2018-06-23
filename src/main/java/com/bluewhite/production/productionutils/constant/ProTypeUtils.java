@@ -598,8 +598,10 @@ public  class ProTypeUtils {
 			sumPerformancePrice =task.getPerformanceNumber()*task.getTaskTime();
 			break;
 		case 2://生产部一楼打包
+			sumPerformancePrice =task.getPerformanceNumber()*task.getTaskTime();
 			break;
 		case 3://生产部二楼针工
+			sumPerformancePrice =task.getPerformanceNumber()*task.getTaskTime();
 			break;
 		default:
 			break;
