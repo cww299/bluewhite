@@ -121,6 +121,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 	}
 
 	@Override
+	@Transactional
 	public int receiveBacth(String[] ids, String[] numbers) throws Exception{
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
@@ -129,6 +130,8 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 					Long id = Long.parseLong(ids[i]);
 					Bacth bacth = new Bacth();
 					Bacth oldBacth = dao.findOne(id);
+					oldBacth.setReceive(1);
+					dao.save(oldBacth);
 					bacth.setProductId(oldBacth.getProductId());
 					List<Procedure> procedureList = procedureDao.findByProductIdAndType(oldBacth.getProductId(), 2);
 	  				  if(procedureList!=null && procedureList.size()>0){
