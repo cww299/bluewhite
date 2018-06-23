@@ -35,6 +35,6 @@ public interface BacthService extends BaseCRUDService<Bacth,Long>{
 	 * @param numbers
 	 * @return
 	 */
-	public int receiveBacth(String[] ids, String[] numbers);
+	public int receiveBacth(String[] ids, String[] numbers) throws Exception;
 
 }

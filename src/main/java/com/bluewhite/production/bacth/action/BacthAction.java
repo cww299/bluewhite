@@ -129,8 +129,15 @@ private static final Log log = Log.getLog(BacthAction.class);
 	@ResponseBody
 	public CommonResponse receiveBacth(HttpServletRequest request,String[] ids,String[] numbers) {
 		CommonResponse cr = new CommonResponse();
-		int count = bacthService.receiveBacth(ids,numbers);
-		cr.setMessage("成功完成"+count+"批次");
+		int count = 0;
+		try {
+			count = bacthService.receiveBacth(ids,numbers);
+		} catch (Exception e) {
+			cr.setMessage(e.getMessage());
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			return cr;
+		}
+		cr.setMessage("成功完成"+count+"条批次");
 		return cr;
 	}
 	

@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.BeanCopyUtils;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.service.ProductServiceImpl;
@@ -21,6 +22,8 @@ import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.PayB;
+import com.bluewhite.production.procedure.dao.ProcedureDao;
+import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.task.entity.Task;
 @Service
 public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements BacthService{
@@ -30,6 +33,8 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 	
 	@Autowired
 	private PayBDao payBDao;
+	@Autowired
+	private ProcedureDao procedureDao;
 	
 	
 	@Override
@@ -116,7 +121,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 	}
 
 	@Override
-	public int receiveBacth(String[] ids, String[] numbers) {
+	public int receiveBacth(String[] ids, String[] numbers) throws Exception{
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
 			if (ids.length>0) {
@@ -124,8 +129,18 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 					Long id = Long.parseLong(ids[i]);
 					Bacth bacth = new Bacth();
 					Bacth oldBacth = dao.findOne(id);
-					BeanCopyUtils.copyNullProperties(oldBacth,bacth);
-					bacth.setId(null);
+					bacth.setProductId(oldBacth.getProductId());
+					List<Procedure> procedureList = procedureDao.findByProductIdAndType(oldBacth.getProductId(), 2);
+	  				  if(procedureList!=null && procedureList.size()>0){
+	  					bacth.setBacthHairPrice(procedureList.get(0).getHairPrice());
+	  					bacth.setBacthDepartmentPrice(procedureList.get(0).getDepartmentPrice());
+	  				  }else{
+	  					throw new ServiceException("产品序号为"+oldBacth.getProductId()+"的"+oldBacth.getProduct().getName()+"未添加工序，无法接受，请先添加工序");
+	  				  }
+					bacth.setBacthNumber(oldBacth.getBacthNumber());
+					bacth.setAllotTime(oldBacth.getAllotTime());
+					bacth.setReceive(1);
+					bacth.setStatus(0);
 					bacth.setNumber(Integer.valueOf(numbers[i]));
 					bacth.setType(2);
 					dao.save(bacth);
