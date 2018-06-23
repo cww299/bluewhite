@@ -124,9 +124,10 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 					Long id = Long.parseLong(ids[i]);
 					Bacth bacth = new Bacth();
 					Bacth oldBacth = dao.findOne(id);
-					oldBacth.setId(null);
 					BeanCopyUtils.copyNullProperties(oldBacth,bacth);
+					bacth.setId(null);
 					bacth.setNumber(Integer.valueOf(numbers[i]));
+					bacth.setType(2);
 					dao.save(bacth);
 					count++;
 				}
