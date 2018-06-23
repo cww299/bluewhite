@@ -112,14 +112,12 @@
 </div>
 <!--隐藏框 产品新增结束  -->
 <!--隐藏框 产品工序开始  -->
-        <div id="addworking" style="display: none;">
+     <div id="addworking" style="display: none;">
 			<div class="panel-body">
         	<div class="form-group">
-    <input type="file" name="file" id="upfile"  >
- </div>
- <div class="form-group">
-  <button type="button" class="btn btn-success" id="btn">导入excel</button>
-  </div> 
+		    <input type="file" name="file" id="upfile"  style="display:inline">
+		    <button type="button" class="btn btn-success" id="btn"  style="display:inline">点击导入</button>
+ 		</div>
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
