@@ -63,6 +63,14 @@
 											查&nbsp找
 									</button>
 								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-info  btn-sm btn-3d start">
+									一键完成
+									</button>
+								</span>
+								
+								
 							</div>
 						</div>
 					</div>
@@ -70,11 +78,6 @@
 			</div>
 		</div>
                             <div class="panel-body">
-                            <table>
-			            <tr>           
-                        <td><button type="button" class="btn btn-info  btn-sm btn-3d start">一键完成</button>&nbsp&nbsp</td>
-                        </tr>
-                        </table>
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
@@ -1054,9 +1057,9 @@
 				});
 				/* 一键完成  */
 				$('.start').on('click',function(){
-					  var  that=$(this);
+					  var  that=$(".table-hover");
 					  var arr=new Array()//员工id
-						$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+					  that.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
 							arr.push($(this).val());   
 						});
 					  
