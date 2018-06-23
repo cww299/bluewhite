@@ -591,7 +591,7 @@
 					//遍历杂工加绩比值
 					var html=""
 					$.ajax({
-						url:"${ctx}/task/taskPerformance",
+						url:"${ctx}/task/pickTaskPerformance",
 						type:"GET",
 						beforeSend:function(){
 							index = layer.load(1, {
@@ -673,6 +673,7 @@
 										bacthNumber:bacthNumber,
 										allotTime:$('#Time').val(),
 								}
+								
 							    $.ajax({
 									url:"${ctx}/task/addTask",
 									data:postData,
@@ -1163,7 +1164,6 @@
 							 numbers:numbers,
 							 receive:1,
 						}
-					 console.log(postData)
 						var index;
 						 index = layer.confirm('确定接收吗', {btn: ['确定', '取消']},function(){
 						$.ajax({
@@ -1179,11 +1179,11 @@
 							
 							success:function(result){
 								if(0==result.code){
-								layer.msg("接收成功！", {icon: 1});
-								self.loadPagination(data)
+								layer.msg(result.message, {icon: 1});
+								self.loadworking();
 								layer.close(index);
 								}else{
-									layer.msg("接收失败！", {icon: 1});
+									layer.msg(result.message, {icon: 1});
 									layer.close(index);
 								}
 							},error:function(){
