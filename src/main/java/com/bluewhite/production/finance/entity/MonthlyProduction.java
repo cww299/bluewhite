@@ -2,6 +2,8 @@ package com.bluewhite.production.finance.entity;
 
 import java.util.Date;
 
+import com.bluewhite.common.utils.excel.Poi;
+
 /**
  * 月产量报表
  * @author zhangliang
@@ -11,21 +13,25 @@ public class MonthlyProduction {
 	/**
 	 * 考勤人数
 	 */
+	@Poi(name = "当天出勤人数", column = "B")
 	private Integer peopleNumber;
 	
 	/**
 	 * 考勤总时间  
 	 */
+	@Poi(name = "当天总出勤", column = "C")
 	private Double  time;
 	
 	/**
 	 * 当天产量  
 	 */
+	@Poi(name = "当天产量", column = "D")
 	private Double  productNumber;
 	
 	/**
 	 * 当天产值(外发单价乘以质检的个数)   
 	 */
+	@Poi(name = "当天产值", column = "E")
 	private Double productPrice;
 	
 	/**
@@ -41,6 +47,7 @@ public class MonthlyProduction {
 	/**
 	 * 返工人员   
 	 */
+	@Poi(name = "返工人员签字", column = "G")
 	private String  userName;
 	
 	
@@ -52,13 +59,25 @@ public class MonthlyProduction {
 	/**
 	 * 返工时间     
 	 */
+	@Poi(name = "返工时间（小时)", column = "F")
 	private Double  reworkTime;
 	
+	/**
+	 * 车间主任签名  
+	 */
+	@Poi(name = "车间主任签名", column = "H")
+	private String  remark;
 	
+	/**
+	 * 车间主任签名  
+	 */
+	@Poi(name = "车间主任签名", column = "I")
+	private String  sign;
 	
 	/**
 	 * 查询字段开始时间
 	 */
+	@Poi(name = "日期", column = "A")
 	private Date orderTimeBegin;
 	/**
 	 * 查询字段结束时间
