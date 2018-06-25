@@ -221,18 +221,26 @@
 
 <!--隐藏框已完成的批次开始  -->
         <div id="addworking" style="display: none;">
+        <table><tr>           
+                        <td><button type="button" class="btn btn-default btn-danger btn-xs btn-3d receive">一键接收</button>&nbsp&nbsp</td>
+                        </tr></table>
 			<div class="panel-body">
  <div class="form-group">
   </div> 
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
+                                        <th class="center">
+											<label> 
+											<input type="checkbox" class="ace checks" /> 
+											<span class="lbl"></span>
+											</label>
+											</th>
                                         	<th class="text-center">批次号</th>
                                             <th class="text-center">时间</th>
                                             <th class="text-center">产品名</th>
                                             <th class="text-center">数量</th>
                                             <th class="text-center">待接收数量</th>
-                                            <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tableworking">
@@ -583,7 +591,7 @@
 					//遍历杂工加绩比值
 					var html=""
 					$.ajax({
-						url:"${ctx}/task/taskPerformance",
+						url:"${ctx}/task/pickTaskPerformance",
 						type:"GET",
 						beforeSend:function(){
 							index = layer.load(1, {
@@ -665,6 +673,7 @@
 										bacthNumber:bacthNumber,
 										allotTime:$('#Time').val(),
 								}
+								
 							    $.ajax({
 									url:"${ctx}/task/addTask",
 									data:postData,
@@ -994,6 +1003,7 @@
 								var performanceNumber=$(".selectchangtwt").val();
 								
 								var performance=$(".selectchangtwt option:selected").text();
+								
 								if(performance=="请选择"){
 									performance="";
 								}
@@ -1083,13 +1093,12 @@
 		      			  
 		      			 $(result.data.rows).each(function(i,o){
 		      				 var a=o.number
-		      				 html +='<tr>'
+		      				 html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" data-number='+o.number+' value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
 		      				+'<td class="text-center  name">'+o.product.name+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
-		      				+'<td class="text-center edit numberfr"><input class="work"  value="'+a+'"></input></td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans receive" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>接收</button> </td></tr>' 
+		      				+'<td class="text-center edit numberfr"><input class="work"  value="'+a+'"></input></td><tr>'
 							
 		      			}); 
 				        //显示分页
@@ -1117,16 +1126,73 @@
 					   	layer.close(index);
 					   	 $("#tableworking").html(html); 
 					   	self.loadEventsth();
-					   
+					   	self.checkedd();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
 					  }
 				  });
 			}
+			this.checkedd=function(){
+				
+				$(".checks").on('click',function(){
+					
+                    if($(this).is(':checked')){ 
+			 			$('.checkboxId').each(function(){  
+                    //此处如果用attr，会出现第三次失效的情况  
+                     		$(this).prop("checked",true);
+			 			})
+                    }else{
+                    	$('.checkboxId').each(function(){ 
+                    		$(this).prop("checked",false);
+                    		
+                    	})
+                    }
+                }); 
+				
+			}
 			this.loadEventsth=function(){
 				 $('.receive').on('click',function(){
-					console.log($('.work').val())
+					 var numbers=new Array()
+					 var arr=new Array()//员工id
+						$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+							arr.push($(this).val()); 
+							numbers.push($(this).parent().parent().parent().find(".work").val());
+						});
+						
+					 var postData = {
+							 ids:arr,
+							 numbers:numbers,
+							 receive:1,
+						}
+						var index;
+						 index = layer.confirm('确定接收吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/bacth/receiveBacth",
+							data:postData,
+							traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+								layer.msg(result.message, {icon: 1});
+								self.loadworking();
+								layer.close(index);
+								}else{
+									layer.msg(result.message, {icon: 1});
+									layer.close(index);
+								}
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 })
 				}) 
 			}
 			this.events = function(){
