@@ -77,10 +77,10 @@ public class AttendanceAction {
 							return cr;
 						}else{
 							attendance.setWorkTime(attendancePay.getWorkTimes()[i]);
-							if(attendancePay.getDutyTimes().length>0){
+							if(attendancePay.getDutyTimes()!=null && attendancePay.getDutyTimes().length>0){
 								attendance.setDutyTime(attendancePay.getDutyTimes()[i]); 
 							}
-							if(attendancePay.getOvertimes().length>0){
+							if(attendancePay.getOvertimes()!=null && attendancePay.getOvertimes().length>0){
 								attendance.setOverTime(attendancePay.getOvertimes()[i]);
 							}
 							attendance.setWorkPrice(user.getPrice());
