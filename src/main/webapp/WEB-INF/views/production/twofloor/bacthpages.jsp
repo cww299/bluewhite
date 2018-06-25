@@ -35,7 +35,7 @@
                                 </div>
                             </div>
         <div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-10 col-sm-10  col-md-10">
+			<div class="col-xs-11 col-sm-11  col-md-11">
 				<form class="form-search" >
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 col-md-12">
@@ -69,7 +69,12 @@
 									一键完成
 									</button>
 								</span>
-								
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-success  btn-sm btn-3d export">
+									导出返工价值
+									</button>
+								</span>
 								
 							</div>
 						</div>
@@ -1035,6 +1040,14 @@
 					
 					
 				})
+				
+				//导出返工价值
+					$('.export').on('click',function(){
+						var index;
+						var a=$("#startTime").val();
+						var c= $("#endTime").val();
+						location.href="${ctx}/excel/importExcel?startTime="+a+"&endTime="+c;
+					})
 				
 			}
 			
