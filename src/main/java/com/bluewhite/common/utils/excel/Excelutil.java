@@ -249,8 +249,7 @@ public class Excelutil<T> {
                         // 根据poi中设置情况决定是否导出,有些情况需要保持为空,填写这一列.  
                         if (attr.isExport()) {  
                             cell = row.createCell(getExcelCol(attr.column()));// 创建cell
-                            cell.setCellValue(field.get(vo) == null ? ""  
-                                    : String.valueOf(field.get(vo)));// 如果数据存在就填入,不存在填入空格.
+                            cell.setCellValue(field.get(vo) == null ? ""  : String.valueOf(field.get(vo)));// 如果数据存在就填入,不存在填入空格.
                             cell.setCellType(HSSFCell.CELL_TYPE_STRING);  
                         }  
                       
