@@ -87,16 +87,8 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 		}else{
 			//新增
 			if(!StringUtils.isEmpty(farragoTask.getUserIds())){
-				if(farragoTask.getAllotTime() == null && farragoTask.getType() == 1){
-					Calendar  cal = Calendar.getInstance();
-					cal.add(Calendar.DATE,-1);
-					farragoTask.setAllotTime(cal.getTime());
-				}else{
-					farragoTask.setAllotTime(new Date());
-				}
-				
+				farragoTask.setAllotTime(ProTypeUtils.countAllotTime(farragoTask.getAllotTime(), farragoTask.getType()));
 				farragoTask = farragoTaskService.addFarragoTask(farragoTask);
-				
 				cr.setMessage("任务分配成功");
 			}else{
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
