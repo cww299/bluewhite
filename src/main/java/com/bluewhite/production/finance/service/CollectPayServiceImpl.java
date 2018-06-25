@@ -158,7 +158,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		bacth.setOrderTimeEnd(collectInformation.getOrderTimeEnd());
 		bacth.setType(collectInformation.getType());
 		List<Bacth> bacthList = bacthService.findPages(bacth, page).getRows();
-		double regionalPrice = bacthList.stream().mapToDouble(Bacth::getRegionalPrice).sum();
+		double regionalPrice = bacthList.stream().filter(Bacth->Bacth.getRegionalPrice()!=null).mapToDouble(Bacth::getRegionalPrice).sum();
 		collectInformation.setRegionalPrice(regionalPrice);
 		
 		//全表加工费  汇总
