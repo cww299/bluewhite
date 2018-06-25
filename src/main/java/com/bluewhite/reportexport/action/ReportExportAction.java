@@ -28,6 +28,8 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.excel.Excelutil;
+import com.bluewhite.production.finance.entity.MonthlyProduction;
+import com.bluewhite.production.finance.service.CollectPayService;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.reportexport.entity.ProcedurePoi;
@@ -47,6 +49,9 @@ public class ReportExportAction {
 	
 	@Autowired
 	private TaskService taskService;
+	
+	@Autowired
+	private CollectPayService collectPayBService;
 	/**
 	 * 基础产品导入                          
 	 * @param residentmessage
@@ -164,6 +169,28 @@ public class ReportExportAction {
 	    }
 	    Excelutil<ReworkPoi> util = new Excelutil<ReworkPoi>(ReworkPoi.class);
         util.exportExcel(reworkPoiList, "返工价值表", out);// 导出  
+	}
+	
+	
+	/**
+	 * 导出月产量报表
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping("/importExcel/monthlyProduction")
+	public void DownMonthlyProductionExcel(HttpServletResponse response,MonthlyProduction monthlyProduction){
+		response.setContentType("octets/stream");
+	    response.addHeader("Content-Disposition", "attachment;filename=rework.xls");
+	    OutputStream out=null;
+        try {  
+            out = response.getOutputStream();  
+        } catch (IOException e) {  
+            e.printStackTrace();  
+		}  
+        //输出的实体与反射的实体相对应
+        List<MonthlyProduction> monthlyProductionList =  collectPayBService.monthlyProduction(monthlyProduction);
+	    Excelutil<MonthlyProduction> util = new Excelutil<MonthlyProduction>(MonthlyProduction.class);
+        util.exportExcel(monthlyProductionList, "月产量报表", out);// 导出  
 	}
 	
 	
