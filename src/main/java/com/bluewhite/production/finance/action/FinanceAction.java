@@ -28,6 +28,7 @@ import com.bluewhite.production.finance.entity.CollectInformation;
 import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.FarragoTaskPay;
 import com.bluewhite.production.finance.entity.MonthlyProduction;
+import com.bluewhite.production.finance.entity.NonLine;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.finance.entity.UsualConsume;
 import com.bluewhite.production.finance.service.CollectPayService;
@@ -336,13 +337,27 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	 */
 	@RequestMapping(value = "/finance/headmanPay", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse headmanPay(HttpServletRequest request,MonthlyProduction monthlyProduction) {
+	public CommonResponse headmanPay(HttpServletRequest request,NonLine nonLine) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(ClearCascadeJSON
-				.get()
-				.addRetainTerm(MonthlyProduction.class,"peopleNumber","time","productNumber","productPrice","reworkNumber","reworkTurnTime",
-						"userName","rework","reworkTime","orderTimeBegin","orderTimeEnd")
-				.format(collectPayBService.headmanPay(monthlyProduction)).toJSON());
+		cr.setData(collectPayBService.headmanPay(nonLine));
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * 每天需要进行更新
+	 * 获取非一线人员的绩效汇总表，
+	 * 将 每个组的男女组长+潘松固定成一个列表
+	 * 男组长产量每天产生，女组长根据进行调控填写
+	 * 
+	 * 
+	 */
+	@RequestMapping(value = "/finance/updateHeadmanPay", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse updateHeadmanPay(HttpServletRequest request,NonLine nonLine) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(collectPayBService.updateHeadmanPay(nonLine));
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -377,7 +392,6 @@ private static final Log log = Log.getLog(FinanceAction.class);
 						.get()
 						.addRetainTerm(CollectPay.class,"id","payB","payA","time","timePrice","timePay","userId","userName","addSelfNumber","addPerformancePay")
 						.format(collectPayBService.twoPerformancePay(collectPay)).toJSON());
-		
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -395,7 +409,6 @@ private static final Log log = Log.getLog(FinanceAction.class);
 					.get()
 					.addRetainTerm(CollectPay.class,"id","time","timePrice","timePay","userId","userName","addSelfNumber","addPerformancePay")
 					.format(collectPayBService.upadtePerformancePay(collectPay)).toJSON());
-		
 		cr.setMessage("查询成功");
 		return cr;
 	}

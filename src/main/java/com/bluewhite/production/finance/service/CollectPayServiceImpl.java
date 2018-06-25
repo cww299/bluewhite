@@ -25,10 +25,12 @@ import com.bluewhite.production.bacth.service.BacthService;
 import com.bluewhite.production.farragotask.entity.FarragoTask;
 import com.bluewhite.production.farragotask.service.FarragoTaskService;
 import com.bluewhite.production.finance.dao.CollectPayDao;
+import com.bluewhite.production.finance.dao.NonLineDao;
 import com.bluewhite.production.finance.entity.CollectInformation;
 import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.FarragoTaskPay;
 import com.bluewhite.production.finance.entity.MonthlyProduction;
+import com.bluewhite.production.finance.entity.NonLine;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.finance.entity.UsualConsume;
 import com.bluewhite.production.group.entity.Group;
@@ -74,6 +76,8 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	
 	@Autowired
 	private  ProcedureDao  procedureDao;
+	@Autowired
+	private NonLineDao nonLineDao;
 	
 	@Override
 	public PageResult<CollectPay> findPages(CollectPay param, PageParameter page) {
@@ -296,7 +300,13 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		collectInformation.setManagePerformanceProportion(managePerformanceProportion);
 		
 		//模拟当月非一线人员出勤小时
-		double  analogTime = 450;
+		double  analogTime = 0;
+		if(collectInformation.getType()==1){
+			  analogTime = 450;
+		}else{
+			List<NonLine> nonLine = nonLineDao.findAll();
+			analogTime = nonLine.stream().mapToDouble(NonLine::getChangeTime).sum();
+		}
 		collectInformation.setAnalogTime(analogTime);
 		
 		//每小时可发放
@@ -440,7 +450,9 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		PageParameter page  = new PageParameter();
 		page.setSize(Integer.MAX_VALUE);
 		List<Map<String,Object>> bPayAndTaskPay = new ArrayList<Map<String,Object>>();
-		List<Group> groupList = groupService.findAll();
+		Group gp = new Group();
+		gp.setType(3);
+		List<Group> groupList = groupService.findList(gp);
 		Map<String,Object>  map = null;
 			for(Group group : groupList){
 				map = new HashMap<String, Object>();
@@ -486,10 +498,67 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	}
 
 	@Override
-	public Object headmanPay(MonthlyProduction monthlyProduction) {
+	public List<NonLine> headmanPay(NonLine nonLine) {
+		PageParameter page  = new PageParameter();
+		page.setSize(Integer.MAX_VALUE);
+		//A工资
+		AttendancePay attendancePay = new AttendancePay();
+		attendancePay.setOrderTimeBegin(nonLine.getOrderTimeBegin());
+		attendancePay.setOrderTimeEnd(nonLine.getOrderTimeEnd());
+		attendancePay.setType(nonLine.getType());
 		
-		return null;
+		//B工资
+		PayB payB = new PayB();
+		payB.setOrderTimeBegin(nonLine.getOrderTimeBegin());
+		payB.setOrderTimeEnd(nonLine.getOrderTimeEnd());
+		payB.setType(nonLine.getType());
+		
+		List<NonLine> nonLineList = nonLineDao.findAll();
+		for(NonLine nl : nonLineList){
+			attendancePay.setUserId(nl.getUserId());
+			List<AttendancePay> manAttendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
+			List<AttendancePay> list = manAttendancePayList.stream().filter(AttendancePay->AttendancePay.getWorkTime()!=0).collect(Collectors.toList());
+			//产生考勤工作时间
+			double sunTime = list.stream().mapToDouble(AttendancePay::getWorkTime).sum();
+			nl.setTime(sunTime);
+			
+			//A工资总和
+			double sumAPay = list.stream().mapToDouble(AttendancePay::getPayNumber).sum();
+			payB.setUserId(nl.getUserId());
+			List<PayB> payBList = payBService.findPages(payB, page).getRows();
+			//B工资总和
+			double sumBPay = payBList.stream().mapToDouble(PayB::getPayNumber).sum();
+			//产生考勤工资和已发绩效
+			double sumABPay = sumAPay+sumBPay;
+			nl.setPay(sumABPay);
+		}	
+		nonLineDao.save(nonLineList);
+		return nonLineList;
 	}
+	
+	@Override
+	public NonLine updateHeadmanPay(NonLine nonLine) {
+		NonLine nl = nonLineDao.findOne(nonLine.getId());
+		//昨天产量
+		nl.setYield(nonLine.getYield());
+		//获取各组的产量
+		nl.setAccumulateYield(nl.getAccumulateYield()+nonLine.getYield());
+		//单只协助发货费用/元选择
+		nl.setOnePay(nonLine.getOnePay());
+		//人为手动加减量化绩效比
+		nl.setAddition(nonLine.getAddition());
+		
+		//人为改变后产生的量化绩效出勤时间
+		nl.setChangeTime(nl.getAddition()*nl.getTime());
+		
+		//剩余管理加绩发放
+
+		//累计产生的发货绩效
+		nl.setCumulative(nl.getAccumulateYield()*nonLine.getOnePay());
+		
+		return nonLineDao.save(nl);
+	}
+	
 
 	@Override
 	public List<CollectPay> twoPerformancePay(CollectPay collectPay) {
@@ -636,6 +705,8 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		}
 		return collectPayList;
 	}
+
+
 	
 	
 	

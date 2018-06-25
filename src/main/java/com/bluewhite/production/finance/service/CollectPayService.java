@@ -11,6 +11,7 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.production.finance.entity.CollectInformation;
 import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.MonthlyProduction;
+import com.bluewhite.production.finance.entity.NonLine;
 @Service
 public interface CollectPayService extends BaseCRUDService<CollectPay,Long>{
 
@@ -49,7 +50,7 @@ public interface CollectPayService extends BaseCRUDService<CollectPay,Long>{
 	 * @param monthlyProduction
 	 * @return
 	 */
-	public Object headmanPay(MonthlyProduction monthlyProduction);
+	public List<NonLine>  headmanPay(NonLine nonLine);
 	
 	
 	/**
@@ -72,6 +73,14 @@ public interface CollectPayService extends BaseCRUDService<CollectPay,Long>{
 	 * @param collectPay
 	 */
 	public List<CollectPay> cottonOtherTask(CollectPay collectPay);
+	
+	
+	/**
+	 * 获取非一线人员的绩效汇总表，每个组的男女组长，按月修改
+	 * @param monthlyProduction
+	 * @return
+	 */
+	public NonLine updateHeadmanPay(NonLine nonLine);
 	
 
 
