@@ -139,7 +139,7 @@ public class ReportExportAction {
 	@RequestMapping("/importExcel")
 	public void DownStudentExcel(HttpServletResponse response,Task task){
 		response.setContentType("octets/stream");
-	    response.addHeader("Content-Disposition", "attachment;filename=Student.xls");
+	    response.addHeader("Content-Disposition", "attachment;filename=rework.xls");
 	    OutputStream out=null;
         try {  
             out = response.getOutputStream();  
@@ -160,6 +160,7 @@ public class ReportExportAction {
 	    	reworkPoi.setNumber(tasks.getNumber());
 	    	reworkPoi.setPrice(tasks.getTaskPrice());
 	    	reworkPoi.setRemark(tasks.getRemark());
+	    	reworkPoiList.add(reworkPoi);
 	    }
 	    Excelutil<ReworkPoi> util = new Excelutil<ReworkPoi>(ReworkPoi.class);
         util.exportExcel(reworkPoiList, "返工价值表", out);// 导出  
