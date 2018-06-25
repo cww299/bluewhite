@@ -1043,7 +1043,7 @@
 				
 				//导出返工价值
 					$('.export').on('click',function(){
-						var index;
+						var index; 
 						var a=$("#startTime").val();
 						var c= $("#endTime").val();
 						location.href="${ctx}/excel/importExcel?startTime="+a+"&endTime="+c;
