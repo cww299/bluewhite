@@ -229,7 +229,7 @@
 			 var data={
 						page:1,
 				  		size:13,	
-				  		type:1,
+				  		type:2,
 
 				} 
 			this.init = function(){
@@ -277,7 +277,7 @@
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
-									  		type:1,
+									  		type:2,
 									  		name:$('#name').val(),
 								  	}
 						        
@@ -379,7 +379,7 @@
 					var data = {
 				  			page:1,
 				  			size:13,
-				  			type:1,
+				  			type:2,
 				  			name:$('#name').val(),
 				  			bacth:$('#number').val(),
 				  			orderTimeBegin:$("#startTime").val(),
@@ -396,7 +396,7 @@
 					var html=""
 					var htmlth=""
 					var data={
-							type:1
+							type:2
 					}
 					
 					//遍历人名组别
@@ -414,7 +414,8 @@
 			      				var htmltwo = "";
 			      				var	id=$(this).val()
 								   var data={
-										  id:id
+			      						type:2,
+										  id:id,
 								   }
 			      				$.ajax({
 									url:"${ctx}/production/allGroup",
@@ -517,7 +518,7 @@
 									  performanceNumber:performanceNumber,
 									  userIds:arr,
 									  bacth:$(".bacth").val(),
-									  type:1,
+									  type:2,
 							  }
 							  $.ajax({
 									url:"${ctx}/farragoTask/addFarragoTask",
