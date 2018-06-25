@@ -63,9 +63,9 @@ public class MonthlyProduction {
 	private Double  reworkTime;
 	
 	/**
-	 * 车间主任签名  
+	 * 备注
 	 */
-	@Poi(name = "车间主任签名", column = "H")
+	@Poi(name = "备注", column = "H")
 	private String  remark;
 	
 	/**
@@ -74,10 +74,16 @@ public class MonthlyProduction {
 	@Poi(name = "车间主任签名", column = "I")
 	private String  sign;
 	
+	
+	/**
+	 * 日期
+	 */
+	@Poi(name = "日期", column = "A")
+	private String startDate;
+	
 	/**
 	 * 查询字段开始时间
 	 */
-	@Poi(name = "日期", column = "A")
 	private Date orderTimeBegin;
 	/**
 	 * 查询字段结束时间
@@ -89,6 +95,30 @@ public class MonthlyProduction {
 	
 	
 	
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public String getSign() {
+		return sign;
+	}
+
+	public void setSign(String sign) {
+		this.sign = sign;
+	}
+
+	public String getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
 
 	public String getUserName() {
 		return userName;

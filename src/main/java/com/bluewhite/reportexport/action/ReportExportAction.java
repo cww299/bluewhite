@@ -189,6 +189,8 @@ public class ReportExportAction {
 		}  
         //输出的实体与反射的实体相对应
         List<MonthlyProduction> monthlyProductionList =  collectPayBService.monthlyProduction(monthlyProduction);
+        SimpleDateFormat sdf =   new SimpleDateFormat( " yyyy-MM-dd"); 
+        monthlyProductionList.stream().forEach(MonthlyProduction->MonthlyProduction.setStartDate(sdf.format(MonthlyProduction.getOrderTimeBegin())));
 	    Excelutil<MonthlyProduction> util = new Excelutil<MonthlyProduction>(MonthlyProduction.class);
         util.exportExcel(monthlyProductionList, "月产量报表", out);// 导出  
 	}
