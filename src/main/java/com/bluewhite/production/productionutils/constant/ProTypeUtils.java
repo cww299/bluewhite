@@ -575,8 +575,10 @@ public  class ProTypeUtils {
 			sumPerformancePrice =farragoTask.getPerformanceNumber()*farragoTask.getTime();
 			break;
 		case 2://生产部一楼打包
+			sumPerformancePrice =farragoTask.getPerformanceNumber()*farragoTask.getTime();
 			break;
 		case 3://生产部二楼针工
+			sumPerformancePrice =farragoTask.getPerformanceNumber()*farragoTask.getTime();
 			break;
 		default:
 			break;
@@ -740,14 +742,14 @@ public  class ProTypeUtils {
 	 */
 	public static Date countAllotTime(Date allotTime,Integer type) {
 		
+		Calendar  cal = Calendar.getInstance();
+		cal.add(Calendar.DATE,-1);
 		if(allotTime == null && type == 1){
-			Calendar  cal = Calendar.getInstance();
-			cal.add(Calendar.DATE,-1);
 			allotTime = cal.getTime();
 		}else if(allotTime == null && type == 2){
-			allotTime = new Date();
+			allotTime = cal.getTime();
 		}else if(allotTime == null && type == 3){
-			allotTime = new Date();
+			allotTime = cal.getTime();
 		}
 		return allotTime;
 	}

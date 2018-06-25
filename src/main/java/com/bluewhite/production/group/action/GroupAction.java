@@ -112,7 +112,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 		List<Group> groupAll = null;
 		if(group.getId()==null){
 			Set<User> userlist = new HashSet<User>();
-		List<Group>	groupList = groupService.findList(group);
+			List<Group>	groupList = groupService.findList(group);
 			for(Group gr : groupList){
 				userlist.addAll(gr.getUsers());
 			}
