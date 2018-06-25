@@ -177,6 +177,10 @@
 										查&nbsp找
 									</button>
 								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button"  class="btn btn-success btn-sm btn-3d pull-right export">导出</button>
+								</span>
 							</div>
 						</div>
 					</div>
@@ -596,6 +600,14 @@
 			
 				self.loadPaginationtw(data);
 				});
+				
+				//导出
+				$('.export').on('click',function(){
+					var index; 
+					var a=$("#startTimetw").val();
+					var c= $("#endTimetw").val();
+					location.href="${ctx}excel/importExcel/monthlyProduction?orderTimeBegin="+a+"&orderTimeEnd="+c+"&type="+3;
+				})
 				
 			}
    	}
