@@ -62,6 +62,12 @@ public class Bacth extends BaseEntity<Long>{
     private Integer status;
 	
     /**
+     * 下货完成时间
+     */
+	@Column(name = "status_time")
+    private Date statusTime;
+	
+    /**
      * 包装 是否接收（0=未接收，1=已接收）
      */
 	@Column(name = "receive")
@@ -156,6 +162,21 @@ public class Bacth extends BaseEntity<Long>{
 	@Transient
     private Double hairPrice;
 	
+	
+	
+	
+
+	public Date getStatusTime() {
+		return statusTime;
+	}
+
+
+
+	public void setStatusTime(Date statusTime) {
+		this.statusTime = statusTime;
+	}
+
+
 
 	public Double getProductPrice() {
 		return (number==null ? 0.0 : number) * (hairPrice==null ? 0.0 : hairPrice);

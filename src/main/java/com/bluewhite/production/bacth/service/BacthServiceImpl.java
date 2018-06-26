@@ -112,6 +112,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 					Long id = Long.parseLong(ids[i]);
 					Bacth bacth = dao.findOne(id);
 					bacth.setStatus(1);
+					bacth.setStatusTime(new Date());
 					dao.save(bacth);
 					count++;
 				}
