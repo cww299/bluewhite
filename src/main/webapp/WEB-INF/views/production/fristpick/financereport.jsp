@@ -37,11 +37,13 @@
                              <div class="panel-body">
                                 <div class="tab-wrapper tab-primary">
                                     <ul class="nav nav-tabs col-md-12">
-                                        <li class="active col-md-4"><a href="#home1" data-toggle="tab">绩效流水</a>
+                                        <li class="active col-md-3"><a href="#home1" data-toggle="tab">绩效流水</a>
                                         </li>
-                                        <li class="col-md-4"><a href="#profile1" data-toggle="tab">绩效汇总</a>
+                                        <li class="col-md-3"><a href="#profile1" data-toggle="tab">绩效汇总</a>
                                         </li>
-                                        <li class="col-md-4"><a href="#profile2" data-toggle="tab">质检月产量报表</a>
+                                        <li class="col-md-3"><a href="#profile2" data-toggle="tab">质检月产量报表</a>
+                                        </li>
+                                        <li class="col-md-3"><a href="#profile3" data-toggle="tab">非一线员工绩效汇总</a>
                                         </li>
                                     </ul>
                                     <div class="tab-content">
@@ -214,11 +216,68 @@
                                 </table>
                                 <div id="pagertw" class="pull-right"></div>
                                         </div>
+                                                                  <div class="tab-pane" id="profile3">
+                      <!--查询开始  -->
+          		 <div class="row" style="height: 30px; margin:15px 0 10px">
+					<div class="col-xs-8 col-sm-8  col-md-8">
+						<form class="form-search" >
+							<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12">
+							<div class="input-group"> 
+								<table><tr>
+								<td>姓名:</td><td><input type="text" name="name" id="username" placeholder="请输入姓名" class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<td>开始:</td>
+								<td>
+								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
+								</td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<td>结束:</td>
+								<td>
+								<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+								</td>
+								</tr></table> 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
+										查&nbsp找
+									</button>
+								</span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+            <!-- 查询结束 -->  
+                                   <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                        	<th class="text-center">姓名</th>
+                                        	<th class="text-center">考勤工资和已发绩效</th>
+                                        	<th class="text-center">考勤</th>
+                                        	<th class="text-center">剩余管理发放绩效</th>
+                                        	<th class="text-center">累计产生的发货绩效</th>
+                                        	<th class="text-center">总产量</th>
+                                        	<th class="text-center">单只协助发货费用</th>
+                                        	<th class="text-center">人为手动加减量化绩效比</th>
+                                        	<th class="text-center"><input id="endTimeday" placeholder="选择日期" class=" laydate-icon"
+             					onClick="laydate({elem: '#endTimeday', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablecontentfv">
+                                        
+                                    </tbody>
+                                </table>
+                                <div id="pagerfv" class="pull-right"></div>
+                                 </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     </div>
+
                         </div>
             </section>
         </section>
@@ -308,6 +367,7 @@
 				self.loadPagination(date);
 				self.loadPaginationtw(datatw);
 				self.loadPaginationth(data);
+				self.loadPaginationfv(date);
 			}
 			//加载分页
 			  this.loadPagination = function(date){
@@ -470,6 +530,111 @@
 					  }
 				  });
 			    })
+			}
+			
+			this.loadPaginationfv = function(date){
+			    var index;
+			    var html = '';
+			    //绩效汇总开始
+			    $.ajax({
+				      url:"${ctx}/finance/headmanPay",
+				      data:date,
+				      type:"GET",
+				      beforeSend:function(){
+					 	  index = layer.load(1, {
+						  shade: [0.1,'#fff'] //0.1透明度的白色背景
+						  });
+					  }, 
+		      		  success: function (result) {
+		      			 $(result.data).each(function(i,o){
+		      				if(o.addSelfNumber==null){
+		      					o.addSelfNumber=0
+		      				}
+		      				if(o.timePrice==null){
+		      					o.timePrice=0
+		      				}
+		      				if(o.onePay==null){
+		      					o.onePay=""
+		      				}
+		      				if(o.addition==null){
+		      					o.addition=""
+		      				}
+		      				if(o.yields==null){
+		      					o.yields=""
+		      				}
+		      				if(o.cumulative==null){
+		      					o.cumulative=0
+		      				}
+		      				if(o.surplusManagement==null){
+		      					o.surplusManagement=0
+		      				}
+		      				html +='<tr>'
+		      				+'<td class="text-center edit ">'+o.userName+'</td>'
+		      				+'<td class="text-center edit ">'+o.pay+'</td>'
+		      				+'<td class="text-center edit ">'+o.time+'</td>'
+		      				+'<td class="text-center edit ">'+o.surplusManagement+'</td>'
+		      				+'<td class="text-center edit ">'+o.cumulative+'</td>'
+		      				+'<td class="text-center edit ">'+o.accumulateYield+'</td>'
+		      				+'<td class="text-center edit "><input class="workto" value="'+o.onePay+'"></input></td>'
+		      				+'<td class="text-center edit "><input class="workth" value="'+o.addition+'"></input></td>'
+		      				+'<td class="text-center edit "><input class="work" data-id='+o.id+' value="'+o.yields+'"></input></td></tr>'
+							
+		      			}); 
+				       
+					   	layer.close(index);
+					   	 $("#tablecontentfv").html(html); 
+					 self.loadEventstw();
+				      },error:function(){
+							layer.msg("加载失败！", {icon: 2});
+							layer.close(index);
+					  }
+				  });
+			  //绩效汇总结束
+			}
+			this.loadEventstw = function(){
+				
+				   $('.work').blur(function(){
+					   console.log($(this).parent().parent().find('.workto').val())
+					 if($(this).parent().parent().find('.workto').val()==""){
+						return layer.msg("单只协助发货费不能为空！", {icon: 2});
+					 }
+					   if($(this).parent().parent().find('.workth').val()==null){
+							return layer.msg("人为手动加减量化绩效比不能为空！", {icon: 2});
+						 }
+					   var postData = {
+							  	type:2,
+								id:$(this).data('id'),
+								onePay:$(this).parent().parent().find('.workto').val(),
+								addition:$(this).parent().parent().find('.workth').val(),
+								yields:$(this).val(),
+						}
+					  
+						var index;
+						
+						$.ajax({
+							url:"${ctx}/finance/updateHeadmanPay",
+							data:postData,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+									layer.msg("成功！", {icon: 1});
+								layer.close(index);
+								}else{
+									layer.msg("修改失败！", {icon: 2});
+									layer.close(index);
+								}
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+				  })  
 			}
 			this.loadEvents = function(){
 				//修改方法
