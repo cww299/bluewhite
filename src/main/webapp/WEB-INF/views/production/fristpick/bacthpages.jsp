@@ -240,6 +240,7 @@
                                             <th class="text-center">时间</th>
                                             <th class="text-center">产品名</th>
                                             <th class="text-center">数量</th>
+                                             <th class="text-center">部门</th>
                                             <th class="text-center">待接收数量</th>
                                         </tr>
                                     </thead>
@@ -1093,11 +1094,19 @@
 		      			  
 		      			 $(result.data.rows).each(function(i,o){
 		      				 var a=o.number
+		      				 var c="";
+		      				 if(o.type==1){
+		      					 c="一楼质检"
+		      				 }
+		      				 if(o.type==3){
+		      					 c="二楼针工"
+		      				 }
 		      				 html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" data-number='+o.number+' value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
 		      				+'<td class="text-center  name">'+o.product.name+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
+		      				+'<td class="text-center number">'+c+'</td>'
 		      				+'<td class="text-center edit numberfr"><input class="work"  value="'+a+'"></input></td><tr>'
 							
 		      			}); 
