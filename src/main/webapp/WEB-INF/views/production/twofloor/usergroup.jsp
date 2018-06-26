@@ -72,7 +72,7 @@
                                         </div>
                  </div>
                  <div class="form-group">
-                                        <label class="col-sm-3 control-label">小组组长:</label>
+                                        <label class="col-sm-3 control-label" >小组组长:</label>
                                         <div class="col-sm-6">
                                             <input type="text" id="leader" class="form-control">
                                         </div>
@@ -188,7 +188,7 @@
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
 		      				+'<td class="text-center  leadertw"  data-provide="typeahead">'+o.userName+'</td>'
-		      				+'<td class="text-center"><div class="groupChange" data-id="'+o.id+'" data-groupid="'+a+'" ></div></td>'
+		      				+'<td class="text-center"><div align="center" class="groupChange" data-id="'+o.id+'" data-groupid="'+a+'" ></div></td>'
 		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
@@ -290,7 +290,7 @@
 	      			 $(result.data).each(function(i,o){
 	      				html +='<option value="'+o.id+'">'+o.name+'</option>'
 	      			}); 
-			       var htmlto='<select class="form-control  selectgroupChange"><option value="">去除工种</option>'+html+'</select>'
+			       var htmlto='<select class="form-control   selectgroupChange" style="width: 50%;"><option value="">去除工种</option>'+html+'</select>'
 				   	$(".groupChange").html(htmlto); 
 				   	self.chang();
 				   	self.selected();
