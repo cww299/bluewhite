@@ -87,8 +87,8 @@ public class NonLine extends BaseEntity<Long>{
 	 * 单一日期的产量
 	 * @return
 	 */
-	@Column(name = "yield")
-	private Integer yield;
+	@Column(name = "yields")
+	private Integer yields;
 	
 	/**
 	 * 类型
@@ -171,13 +171,16 @@ public class NonLine extends BaseEntity<Long>{
 	}
 
 
-	public Integer getYield() {
-		return yield;
+	
+
+
+	public Integer getYields() {
+		return yields;
 	}
 
 
-	public void setYield(Integer yield) {
-		this.yield = yield;
+	public void setYields(Integer yields) {
+		this.yields = yields;
 	}
 
 

@@ -116,7 +116,7 @@
 			<div class="panel-body">
         	<div class="form-group">
 		    <input type="file" name="file" id="upfile"  style="display:inline">
-		    <button type="button" class="btn btn-success" id="btn"  style="display:inline">点击导入</button>
+		    <button type="button" class="btn btn-success btn-sm" id="btn"  style="display:inline">点击导入</button>
  		</div>
                                 <table class="table table-hover">
                                     <thead>
@@ -733,7 +733,9 @@
 				//导入
 				$('#btn').on('click',function(){
 				
-				
+					if($('#upfile')[0].files[0]==null){
+						return layer.msg("请选择需要导入的文件", {icon: 2});
+					}
 					  var imageForm = new FormData();
 				
 				  			
