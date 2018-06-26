@@ -305,7 +305,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			  analogTime = 450;
 		}else{
 			List<NonLine> nonLine = nonLineDao.findAll();
-			analogTime = nonLine.stream().mapToDouble(NonLine::getChangeTime).sum();
+			analogTime = nonLine.stream().filter(NonLine->NonLine.getChangeTime()!=null).mapToDouble(NonLine::getChangeTime).sum();
 		}
 		collectInformation.setAnalogTime(analogTime);
 		
