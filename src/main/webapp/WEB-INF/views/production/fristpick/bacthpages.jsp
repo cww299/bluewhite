@@ -237,7 +237,7 @@
 											</label>
 											</th>
                                         	<th class="text-center">批次号</th>
-                                            <th class="text-center">时间</th>
+                                            <th class="text-center">下货时间</th>
                                             <th class="text-center">产品名</th>
                                             <th class="text-center">数量</th>
                                              <th class="text-center">部门</th>
@@ -1103,7 +1103,7 @@
 		      				 }
 		      				 html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" data-number='+o.number+' value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
-		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
+		      				+'<td class="text-center  allotTime">'+o.statusTime+'</td>'
 		      				+'<td class="text-center  name">'+o.product.name+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center number">'+c+'</td>'
