@@ -62,28 +62,23 @@
         </property>  
     </bean>  
     
+   
     
-    <!-- SpringMVC在超出上传文件限制时，会抛出org.springframework.web.multipart.MaxUploadSizeExceededException -->  
-    <!-- 该异常是SpringMVC在检查上传的文件信息时抛出来的，而且此时还没有进入到Controller方法中     
-    <bean   class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">  
-            <property name="exceptionMappings">
-        <map>
-            <entry key="ResourceNotFoundException" value="common/error/resourceNotFoundError" />
-            <entry key=".DataAccessException" value="common/error/dataAccessError" />
-             <entry key="org.apache.shiro.authz.AuthorizationException" value="common/error/roleError" />
-        </map>
-    </property>
-    <property name="statusCodes">
-        <map>
-            <entry key="common/error/resourceNotFoundError" value="404" />
-            <entry key="common/error/dataAccessError" value="500" />
-             <entry key="common/error/roleError" value="505" />
-        </map>
-    </property>
-    </bean>  
-     --> 
-    
-	
+	    <!-- SpringMVC在超出上传文件限制时，会抛出org.springframework.web.multipart.MaxUploadSizeExceededException -->  
+    <!-- 该异常是SpringMVC在检查上传的文件信息时抛出来的，而且此时还没有进入到Controller方法中 -->  
+    <bean  
+        class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">  
+        <property name="exceptionMappings">  
+            <props>  
+                <!-- 遇到MaxUploadSizeExceededException异常时，自动跳转到/WEB-INF/error_fileupload.jsp页面 -->  
+                <prop  
+                    key="org.springframework.web.multipart.MaxUploadSizeExceededException">common/error_fileupload</prop>  
+                <!-- 处理其它异常(包括Controller抛出的) -->  
+                <prop key="java.lang.Throwable">common/500</prop>  
+                 <prop key="ResourceNotFoundException">common/404</prop>  
+            </props>  
+        </property>  
+    </bean> 
  	
 	<!-- 对模型视图名称的解析，即在模型视图名称添加前后缀 -->
 	<bean

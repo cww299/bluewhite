@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <!DOCTYPE>
 <html>
 <head>
@@ -30,10 +32,10 @@
                     
            <header>
              <h1 class="error">404</h1>
-             <p class="text-center">没找到页面</p>
+             <p class="text-center">æ²¡æ¾å°é¡µé¢</p>
           </header>
                     
-                    <p class="text-center">不要担心，请刷新重试</p>
+                    <p class="text-center">ä¸è¦æå¿ï¼è¯·å·æ°éè¯</p>
                     <div class="row">
                         <div class="col-md-12">
                             <a class="btn btn-info btn-block btn-3d" href="index.html">Back to Dashboard</a>
