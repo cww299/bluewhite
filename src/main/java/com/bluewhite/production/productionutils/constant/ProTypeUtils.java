@@ -339,6 +339,28 @@ public  class ProTypeUtils {
 	}
 	
 	
+	/**
+	 *  二楼针工价格
+	 * @param price
+	 * @param type
+	 * @return
+	 */
+	public static Double getDEEDLE(Double time,Integer type){
+		Double sumPrice = 0.0 ;
+		switch (type) {
+		case 1:// 生产部一楼质检
+			break;
+		case 2://生产部一楼打包
+				break;
+		case 3://生产部二楼针工
+			sumPrice = time*1.08*1.15*0.767*1.5;
+			break;
+		default:
+			break;
+		}
+		return sumPrice;
+	}
+	
 	
 	/**
 	 * 根据不同权限返回工序的不同类型

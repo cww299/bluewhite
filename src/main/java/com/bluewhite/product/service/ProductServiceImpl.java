@@ -49,6 +49,9 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		  				  if(procedureList!=null && procedureList.size()>0){
 		  						  pro.setHairPrice(procedureList.get(0).getHairPrice());
 		  						  pro.setDepartmentPrice(procedureList.get(0).getDepartmentPrice());
+		  						  if(product.getType()==2){
+		  							  pro.setDeedlePrice(procedureList.get(0).getDeedlePrice());
+		  						  }
 		  				  }
 			  		  }
 	        PageResult<Product> result = new PageResult<>(pages,page);

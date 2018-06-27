@@ -98,6 +98,11 @@ public class Bacth extends BaseEntity<Long>{
 	@Column(name = "bacth_department_price")
     private Double bacthDepartmentPrice;
 	
+    /**
+     *  批次针工价格
+     */
+	@Column(name = "bacth_deedle_price")
+    private Double bacthDeedlePrice;
 	
 	/**
 	 * 地区差价
@@ -165,6 +170,19 @@ public class Bacth extends BaseEntity<Long>{
 	
 	
 	
+	
+
+	public Double getBacthDeedlePrice() {
+		return bacthDeedlePrice;
+	}
+
+
+
+	public void setBacthDeedlePrice(Double bacthDeedlePrice) {
+		this.bacthDeedlePrice = bacthDeedlePrice;
+	}
+
+
 
 	public Date getStatusTime() {
 		return statusTime;
