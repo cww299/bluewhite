@@ -254,7 +254,7 @@
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center  departmentPrice">'+o.departmentPrice*1+'</td>'
 		      				+'<td class="text-center edit  workPrice">'+o.hairPrice+'</td>'
-		      				+'<td class="text-center  workPrice">'+o.deedlePrice+'</td>'
+		      				+'<td class="text-center  deedlePrice">'+o.deedlePrice+'</td>'
 							+'<td class="text-center"><button class="btn btn-xs btn-info  btn-trans update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-primary btn-trans addprocedure" data-id='+o.id+' data-name='+o.name+'>添加工序</button> <button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.name+'>填写批次</button></td></tr>'
 		      			}); 
 		      			 self.setIndex(result.data.pageNum);
@@ -299,6 +299,7 @@
 					var name=$(this).data('name');
 					var bacthDepartmentPrice=$(this).parent().parent().find('.departmentPrice').text();
 					var bacthHairPrice=$(this).parent().parent().find('.workPrice').text();
+					var deedlePrice=$(this).parent().parent().find('.deedlePrice').text();
 					$('#proName').val(name);
 					var id=$(this).data('id');
 					_index = layer.open({
@@ -324,6 +325,7 @@
 									  remarks:$('#remarks').val(),
 									  bacthDepartmentPrice:bacthDepartmentPrice,
 									  bacthHairPrice:bacthHairPrice,
+									  deedlePrice:deedlePrice,
 									  type:3,
 									  allotTime:$('#Time').val(),
 							  }
