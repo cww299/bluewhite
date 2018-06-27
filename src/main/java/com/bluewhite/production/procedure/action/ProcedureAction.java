@@ -28,7 +28,7 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 
 	{
 		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(Procedure.class,
-				"id","name", "workingTime","productId","isDel","procedureType","residualNumber")
+				"id","name", "workingTime","productId","isDel","procedureType","residualNumber","deedlePrice")
 				.addRetainTerm(BaseData.class,"id", "name", "remark");
 	}
 	

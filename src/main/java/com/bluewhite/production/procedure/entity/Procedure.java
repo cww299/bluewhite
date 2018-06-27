@@ -57,6 +57,13 @@ public class Procedure extends BaseEntity<Long> {
 	@JoinColumn(name = "procedure_type_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData procedureType;
 	
+	
+	/**
+	 * 针工价格
+	 */
+	@Column(name = "deedle_price")
+	private Double deedlePrice;
+	
 	/**
 	 * 外发价格
 	 */
@@ -97,6 +104,14 @@ public class Procedure extends BaseEntity<Long> {
 	
 	
 
+
+	public Double getDeedlePrice() {
+		return deedlePrice;
+	}
+
+	public void setDeedlePrice(Double deedlePrice) {
+		this.deedlePrice = deedlePrice;
+	}
 
 	public Integer getFlag() {
 		return flag;

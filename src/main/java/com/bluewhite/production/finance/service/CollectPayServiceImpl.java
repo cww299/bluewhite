@@ -381,7 +381,11 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		for(Bacth bac : bacthList){
 			 List<Procedure> procedureList = procedureDao.findByProductIdAndType(bac.getProductId(), bac.getType());
 				  if(procedureList!=null && procedureList.size()>0){
-					  bac.setHairPrice(procedureList.get(0).getHairPrice());
+					  if(monthlyProduction.getType()==3){
+						  	bac.setHairPrice(procedureList.get(0).getDeedlePrice());
+						}else{
+							bac.setHairPrice(procedureList.get(0).getHairPrice());
+						}
 				  }
 		}
 		double productPrice = bacthList.stream().mapToDouble(Bacth::getProductPrice).sum();

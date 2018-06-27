@@ -181,7 +181,21 @@ public class Product extends BaseEntity<Long>{
 	@Transient
 	private Integer type;	
 	
+	/**
+	 * 针工价格
+	 */
+	@Transient
+	private Double deedlePrice;
 	
+	
+	
+	public Double getDeedlePrice() {
+		return deedlePrice;
+	}
+
+	public void setDeedlePrice(Double deedlePrice) {
+		this.deedlePrice = deedlePrice;
+	}
 
 	public Double getHairPrice() {
 		return hairPrice;
