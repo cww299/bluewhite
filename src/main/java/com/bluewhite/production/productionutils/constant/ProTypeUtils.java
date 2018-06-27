@@ -353,7 +353,7 @@ public  class ProTypeUtils {
 		case 2://生产部一楼打包
 				break;
 		case 3://生产部二楼针工
-			sumPrice = (time-0.5)*1.08*1.15*0.767*1.5;
+			sumPrice = (time-0.5)*1.08*1.15*0.767*1.5/ProTypeUtils.TIME;
 			break;
 		default:
 			break;
