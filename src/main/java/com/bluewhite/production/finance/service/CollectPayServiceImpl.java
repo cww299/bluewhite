@@ -130,14 +130,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			double sumPayB = psList.stream().mapToDouble(CollectPay::getPayB).sum();
 			//计算上浮后b工资总和
 			double sumAddPayB = psList.stream().mapToDouble(CollectPay::getAddPayB).sum();
-//			//计算考勤时间
-//			double sumTime = psList.stream().mapToDouble(CollectPay::getTime).sum();
-//			//计算缺勤时间
-//			double sumDutyTime = psList.stream().mapToDouble(CollectPay::getDutyTime).sum();
-//			//计算加班时间
-//			double sumOvertime = psList.stream().mapToDouble(CollectPay::getOvertime).sum();
-			//预计小时单价
-//			double timePrice = sumPayB/sumTime;
+
 			CollectPay collect = new CollectPay();
 			collect.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 			collect.setOrderTimeEnd(collectPay.getOrderTimeEnd());
@@ -379,14 +372,11 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		monthlyProduction.setProductNumber(productNumber);
 		//当天产值(外发单价乘以质检的个数)
 		for(Bacth bac : bacthList){
-			 List<Procedure> procedureList = procedureDao.findByProductIdAndType(bac.getProductId(), bac.getType());
-				  if(procedureList!=null && procedureList.size()>0){
-					  if(monthlyProduction.getType()==3){
-						  	bac.setHairPrice(procedureList.get(0).getDeedlePrice());
-						}else{
-							bac.setHairPrice(procedureList.get(0).getHairPrice());
-						}
-				  }
+			  if(monthlyProduction.getType()==3){
+				  	bac.setHairPrice(bac.getBacthDeedlePrice());
+				}else{
+					bac.setHairPrice(bac.getBacthHairPrice());
+				}
 		}
 		double productPrice = bacthList.stream().mapToDouble(Bacth::getProductPrice).sum();
 		monthlyProduction.setProductPrice(productPrice);
