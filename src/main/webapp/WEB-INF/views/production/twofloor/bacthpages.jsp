@@ -98,6 +98,7 @@
                                             <th class="text-center">数量</th>
                                             <th class="text-center">预计生产单价</th>
                                             <th class="text-center">外发价格</th>
+                                            <th class="text-center">针工价格</th>
                                             <th class="text-center">任务价值</th>
                                             <th class="text-center">地区差价</th>
                                             <th class="text-center">备注</th>
@@ -302,6 +303,9 @@
 		      				 if(o.bacthHairPrice==null){
 		      					o.bacthHairPrice=0;
 		      				 }
+		      				if(o.bacthDeedlePrice==null){
+		      					o.bacthDeedlePrice=0;
+		      				 }
 		      				 var strname="";
 		      				 if(o.status==1){
 		      					strname="完成";
@@ -316,6 +320,7 @@
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center  bacthDepartmentPrice">'+o.bacthDepartmentPrice+'</td>'
 		      				+'<td class="text-center edit bacthHairPrice">'+o.bacthHairPrice+'</td>'
+		      				+'<td class="text-center edit bacthDeedlePrice">'+o.bacthDeedlePrice+'</td>'
 		      				+'<td class="text-center  sumTaskPrice">'+ parseFloat((o.sumTaskPrice*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center  regionalPrice">'+parseFloat((o.regionalPrice*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
@@ -769,6 +774,7 @@
 									number:$(this).parent().parent('tr').find(".number").text(),
 									remarks:$(this).parent().parent('tr').find(".remarks").text(),
 									bacthHairPrice:$(this).parent().parent('tr').find(".bacthHairPrice").text(),
+									bacthDeedlePrice:$(this).parent().parent('tr').find(".bacthDeedlePrice").text(),
 							}
 							
 							var index;
