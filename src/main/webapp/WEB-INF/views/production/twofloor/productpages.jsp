@@ -299,7 +299,7 @@
 					var name=$(this).data('name');
 					var bacthDepartmentPrice=$(this).parent().parent().find('.departmentPrice').text();
 					var bacthHairPrice=$(this).parent().parent().find('.workPrice').text();
-					var deedlePrice=$(this).parent().parent().find('.deedlePrice').text();
+					var bacthDeedlePrice=$(this).parent().parent().find('.deedlePrice').text();
 					$('#proName').val(name);
 					var id=$(this).data('id');
 					_index = layer.open({
@@ -325,7 +325,7 @@
 									  remarks:$('#remarks').val(),
 									  bacthDepartmentPrice:bacthDepartmentPrice,
 									  bacthHairPrice:bacthHairPrice,
-									  deedlePrice:deedlePrice,
+									  bacthDeedlePrice:bacthDeedlePrice,
 									  type:3,
 									  allotTime:$('#Time').val(),
 							  }
