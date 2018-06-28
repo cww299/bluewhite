@@ -149,8 +149,14 @@ private static final Log log = Log.getLog(TaskAction.class);
 	@ResponseBody
 	public CommonResponse addRework(HttpServletRequest request,Task task) {
 		CommonResponse cr = new CommonResponse();
-		taskService.addRework(task);
-		
+		try {
+			taskService.addRework(task);
+		} catch (Exception e) {
+			cr.setMessage(e.getMessage());
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			return cr;
+		}
+		cr.setMessage("新增成功");
 		return cr;
 	}
 	

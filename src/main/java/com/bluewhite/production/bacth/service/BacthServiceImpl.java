@@ -158,11 +158,10 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 	}
 
 	@Override
-	public Bacth saveBacth(Bacth bacth) {
+	public Bacth saveBacth(Bacth bacth) throws Exception {
 		bacth.setAllotTime(ProTypeUtils.countAllotTime(bacth.getAllotTime(), bacth.getType()));
 		bacth.setStatus(0);
 		bacth.setReceive(0);
-		bacth.getProductId();
 		List<Procedure> procedureList =procedureDao.findByProductIdAndTypeAndFlag(bacth.getProductId(), bacth.getType(), bacth.getFlag());
 		double time = procedureList.stream().mapToDouble(Procedure::getWorkingTime).sum();
 		if(procedureList!=null && procedureList.size()>0){

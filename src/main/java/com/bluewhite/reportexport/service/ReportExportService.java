@@ -30,6 +30,6 @@ public interface ReportExportService {
 	 * @param excelUser
 	 * @return
 	 */
-	int importProcedureExcel(List<ProcedurePoi> excelProcedure,Long productId,Integer type);
+	int importProcedureExcel(List<ProcedurePoi> excelProcedure,Long productId,Integer type,Integer flag);
 
 }

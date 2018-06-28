@@ -61,7 +61,13 @@ private static final Log log = Log.getLog(BacthAction.class);
 			cr.setMessage("修改成功");
 		}else{
 			if(bacth.getProductId()!=null){
-				bacthService.saveBacth(bacth);
+				try {
+					bacthService.saveBacth(bacth);
+				} catch (Exception e) {
+					cr.setMessage(e.getMessage());
+					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+					return cr;
+				}
 				cr.setMessage("添加成功");
 			}else{
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

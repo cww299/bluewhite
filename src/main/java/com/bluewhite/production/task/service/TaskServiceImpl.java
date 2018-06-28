@@ -114,12 +114,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					for (int j = 0; j < task.getUsersIds().length; j++) {
 						Long userid = Long.parseLong(task.getUsersIds()[j]);
 						User user = userDao.findOne(userid);
-						if(user.getTaskIds()!=null){
-							user.setTaskIds(user.getTaskIds()+","+String.valueOf(newTask.getId()));
-						}else{
-							user.setTaskIds(user.getTaskIds());
-						}
-						userDao.save(user);
 						//给予每个员工b工资
 						PayB payB  = new PayB();
 						payB.setUserId(userid);
@@ -466,7 +460,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	}
 
 	@Override
-	public Task addRework(Task task) {
+	public Task addRework(Task task) throws Exception{
 		Bacth bacth = new Bacth();
 		bacth.setBacthNumber(task.getBacthNumber());
 		bacth.setFlag(task.getFlag());
