@@ -61,6 +61,12 @@ public class Bacth extends BaseEntity<Long>{
 	@Column(name = "status")
     private Integer status;
 	
+	/**
+	 * 是否是返工标识符（0=不是，1=是）
+	 */
+	@Column(name = "flag")
+	private Integer flag ;
+	
     /**
      * 下货完成时间
      */
@@ -132,6 +138,12 @@ public class Bacth extends BaseEntity<Long>{
 	
 	
 	/**
+	 * 当批用时/分
+	 */
+	@Column(name ="time")
+	private Double time;
+	
+	/**
 	 * 产品名称
 	 */
 	@Transient
@@ -171,6 +183,30 @@ public class Bacth extends BaseEntity<Long>{
 	
 	
 	
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
+
+
+
+	public Double getTime() {
+		return time;
+	}
+
+
+
+	public void setTime(Double time) {
+		this.time = time;
+	}
+
+
 
 	public Double getBacthDeedlePrice() {
 		return bacthDeedlePrice;

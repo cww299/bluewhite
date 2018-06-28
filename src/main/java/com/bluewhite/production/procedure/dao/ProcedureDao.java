@@ -11,12 +11,12 @@ import com.bluewhite.production.procedure.entity.Procedure;
  */
 public interface ProcedureDao extends BaseRepository<Procedure, Long>{
 	/**
-	 * 根据产品id和所属部门类型查询其产品工序
+	 * 根据产品id和所属部门类型查询其产品工序和是否返工
 	 * @param productId
 	 * @param type
 	 * @return
 	 */
-	List<Procedure> findByProductIdAndType(Long productId, Integer type);
+	List<Procedure> findByProductIdAndTypeAndFlag(Long productId, Integer type,Integer flag);
 	/**
 	 *  根据产品和工序类型查询工序具体
 	 * @param productId

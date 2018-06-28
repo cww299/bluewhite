@@ -159,7 +159,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 				Procedure procedure = new Procedure();
 				procedure.setProductId(productId);
 				procedure.setName(procedurePoi.getName());
-				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime(), 2));
+				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime(), null));
 				procedure.setType(type);
 				procedure.setProcedureTypeId(baseDataList.get(0).getId());
 				procedureList.add(procedure);
@@ -172,7 +172,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 				Procedure procedure = new Procedure();
 				procedure.setProductId(productId);
 				procedure.setName(procedurePoi.getName());
-				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime(), 2));
+				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime(), null));
 				procedure.setType(type);
 				procedure.setProcedureTypeId(baseDataList.get(0).getId());
 				procedureList.add(procedure);

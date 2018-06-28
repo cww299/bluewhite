@@ -189,7 +189,31 @@ public class ReportExportAction {
 		}  
         //输出的实体与反射的实体相对应
         List<MonthlyProduction> monthlyProductionList =  collectPayBService.monthlyProduction(monthlyProduction);
-        SimpleDateFormat sdf =   new SimpleDateFormat( " yyyy-MM-dd"); 
+        SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd"); 
+        monthlyProductionList.stream().forEach(MonthlyProduction->MonthlyProduction.setStartDate(sdf.format(MonthlyProduction.getOrderTimeBegin())));
+	    Excelutil<MonthlyProduction> util = new Excelutil<MonthlyProduction>(MonthlyProduction.class);
+        util.exportExcel(monthlyProductionList, "月产量报表", out);// 导出  
+	}
+	
+	
+	/**
+	 * 导出各组产量报表
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping("/importExcel/groupProduction")
+	public void groupProduction(HttpServletResponse response,MonthlyProduction monthlyProduction){
+		response.setContentType("octets/stream");
+	    response.addHeader("Content-Disposition", "attachment;filename=rework.xls");
+	    OutputStream out=null;
+        try {  
+            out = response.getOutputStream();  
+        } catch (IOException e) {  
+            e.printStackTrace();  
+		}  
+        //输出的实体与反射的实体相对应
+        List<MonthlyProduction> monthlyProductionList =  collectPayBService.monthlyProduction(monthlyProduction);
+        SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd"); 
         monthlyProductionList.stream().forEach(MonthlyProduction->MonthlyProduction.setStartDate(sdf.format(MonthlyProduction.getOrderTimeBegin())));
 	    Excelutil<MonthlyProduction> util = new Excelutil<MonthlyProduction>(MonthlyProduction.class);
         util.exportExcel(monthlyProductionList, "月产量报表", out);// 导出  

@@ -423,7 +423,7 @@ public class Excelutil<T> {
      */  
     public  Object getCellValue(Cell cell){  
         Object value = null;  
-        DecimalFormat df = new DecimalFormat("0");  //格式化number String字符  
+        DecimalFormat df = new DecimalFormat("0.00000000000000");  //格式化number String字符  
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  //日期格式化  
         DecimalFormat df2 = new DecimalFormat("0.00000000000000");  //格式化数字  
         switch (cell.getCellType()) {  

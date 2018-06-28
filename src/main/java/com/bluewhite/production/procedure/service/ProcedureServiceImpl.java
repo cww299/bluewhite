@@ -32,15 +32,15 @@ public class ProcedureServiceImpl extends BaseServiceImpl<Procedure, Long> imple
 	private ProductDao productDao;
 	
 	@Override
-	public List<Procedure> findByProductIdAndType(Long productId, Integer type) {
-		return procedureDao.findByProductIdAndType(productId,type);
+	public List<Procedure> findByProductIdAndType(Long productId, Integer type,Integer flag) {
+		return procedureDao.findByProductIdAndTypeAndFlag(productId,type,flag);
 	}
 	
 	
 	@Override
 	@Transactional
 	public void countPrice(Procedure procedure) {
-		List<Procedure> procedureList = procedureDao.findByProductIdAndType(procedure.getProductId(), procedure.getType());
+		List<Procedure> procedureList = procedureDao.findByProductIdAndTypeAndFlag(procedure.getProductId(), procedure.getType(),0);
 		//计算部门生产总价
 		Double sumTime = 0.0;
 		for(Procedure pro : procedureList){

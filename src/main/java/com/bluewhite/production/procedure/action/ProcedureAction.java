@@ -76,8 +76,8 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 	public CommonResponse getProcedure(HttpServletRequest request,Procedure procedure) {
 		CommonResponse cr = new CommonResponse();
 		if(procedure.getProductId()!=null){
-			cr.setData(clearCascadeJSON.format(procedureService.findByProductIdAndType(procedure.getProductId(),procedure.getType())).toJSON());
-			cr.setMessage("工序添加成功");
+			cr.setData(clearCascadeJSON.format(procedureService.findByProductIdAndType(procedure.getProductId(),procedure.getType(),procedure.getFlag())).toJSON());
+			cr.setMessage("工序查询成功");
 		}else{
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品不能为空");
