@@ -22,6 +22,7 @@ import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
+import com.bluewhite.production.bacth.service.BacthService;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
@@ -44,7 +45,8 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	private BacthDao bacthDao;
 	@Autowired
 	private PayBDao payBDao;
-	
+	@Autowired
+	private BacthService bacthService;
 	
 	
 	
@@ -457,11 +459,21 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				Long id = Long.parseLong(task.getProcedureIds()[i]);
 				Procedure procedure = procedureDao.findOne(id);
 				newTask.setNumber(NumUtils.roundTwo(ProTypeUtils.getTaskNumber(newTask.getTaskTime(), newTask.getType(), procedure.getWorkingTime())));
-				
 			}
 		}
 		return null;
 		
+	}
+
+	@Override
+	public Task addRework(Task task) {
+		Bacth bacth = new Bacth();
+		bacth.setBacthNumber(task.getBacthNumber());
+		bacth.setFlag(task.getFlag());
+		bacthService.saveBacth(bacth);
+		task.setBacthId(bacth.getId());
+		this.addTask(task);
+		return task;
 	}
 	
 }

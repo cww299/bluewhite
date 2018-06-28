@@ -16,7 +16,7 @@ public interface ProcedureService extends BaseCRUDService<Procedure,Long>{
 	 * @param productId
 	 * @return
 	 */
-	List<Procedure> findByProductIdAndType(Long productId,Integer type);
+	List<Procedure> findByProductIdAndType(Long productId,Integer type,Integer flag);
 	/**
 	 * 根据工序计算出外发单价和生产单价
 	 * @param productId

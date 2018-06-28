@@ -21,9 +21,11 @@ import com.bluewhite.product.service.ProductServiceImpl;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.dao.PayBDao;
+import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
+import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
 @Service
 public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements BacthService{
@@ -134,7 +136,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 					oldBacth.setReceive(1);
 					dao.save(oldBacth);
 					bacth.setProductId(oldBacth.getProductId());
-					List<Procedure> procedureList = procedureDao.findByProductIdAndType(oldBacth.getProductId(), 2);
+					List<Procedure> procedureList = procedureDao.findByProductIdAndTypeAndFlag(oldBacth.getProductId(), 2,0);
 	  				  if(procedureList!=null && procedureList.size()>0){
 	  					bacth.setBacthHairPrice(procedureList.get(0).getHairPrice());
 	  					bacth.setBacthDepartmentPrice(procedureList.get(0).getDepartmentPrice());
@@ -153,5 +155,21 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 			}
 		}
 		return count;
+	}
+
+	@Override
+	public Bacth saveBacth(Bacth bacth) {
+		bacth.setAllotTime(ProTypeUtils.countAllotTime(bacth.getAllotTime(), bacth.getType()));
+		bacth.setStatus(0);
+		bacth.setReceive(0);
+		bacth.getProductId();
+		List<Procedure> procedureList =procedureDao.findByProductIdAndTypeAndFlag(bacth.getProductId(), bacth.getType(), bacth.getFlag());
+		double time = procedureList.stream().mapToDouble(Procedure::getWorkingTime).sum();
+		if(procedureList!=null && procedureList.size()>0){
+			bacth.setTime(time*bacth.getNumber()/60);
+		  }else{
+			throw new ServiceException("当前产品未添加工序，无法分配批次，请先添加工序");
+		  }
+		return dao.save(bacth);
 	}
 }
