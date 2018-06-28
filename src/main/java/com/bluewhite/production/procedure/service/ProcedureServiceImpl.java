@@ -85,6 +85,10 @@ public class ProcedureServiceImpl extends BaseServiceImpl<Procedure, Long> imple
 	        	if(!StringUtils.isEmpty(param.getType())){
 	        		predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
 	        	}
+	        	//是否返工
+	        	if(!StringUtils.isEmpty(param.getFlag())){
+	        		predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getType()));
+	        	}
 				Predicate[] pre = new Predicate[predicate.size()];
 				query.where(predicate.toArray(pre));
 	        	return null;
