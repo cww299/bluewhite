@@ -101,6 +101,7 @@
                                             <th class="text-center">针工价格</th>
                                             <th class="text-center">任务价值</th>
                                             <th class="text-center">地区差价</th>
+                                            <th class="text-center">当批用时</th>
                                             <th class="text-center">备注</th>
                                             <th class="text-center">完成状态</th>
                                             <th class="text-center">操作</th>
@@ -306,6 +307,9 @@
 		      				if(o.bacthDeedlePrice==null){
 		      					o.bacthDeedlePrice=0;
 		      				 }
+		      				if(o.time==null){
+		      					o.time=0;
+		      				 }
 		      				 var strname="";
 		      				 if(o.status==1){
 		      					strname="完成";
@@ -323,6 +327,7 @@
 		      				+'<td class="text-center edit bacthDeedlePrice">'+o.bacthDeedlePrice+'</td>'
 		      				+'<td class="text-center  sumTaskPrice">'+ parseFloat((o.sumTaskPrice*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center  regionalPrice">'+parseFloat((o.regionalPrice*1).toFixed(3))+'</td>'
+		      				+'<td class="text-center ">'+o.time+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
 		      				+'<td class="text-center ">'+strname+'</td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button>  <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
