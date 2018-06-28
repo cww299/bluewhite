@@ -143,7 +143,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 
 	@Override
 	@Transactional
-	public int importProcedureExcel(List<ProcedurePoi> excelProcedure, Long productId,Integer type) {
+	public int importProcedureExcel(List<ProcedurePoi> excelProcedure, Long productId,Integer type,Integer flag) {
 		int count = 0;
 		if(excelProcedure.size()==0){
 			throw new ServiceException("excel无数据");
@@ -157,6 +157,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 			baseDataList = baseDataService.getBaseDataListByType(Constants.PRODUCT_FRIST_QUALITY);
 			for(ProcedurePoi procedurePoi : excelProcedure){
 				Procedure procedure = new Procedure();
+				procedure.setFlag(flag);
 				procedure.setProductId(productId);
 				procedure.setName(procedurePoi.getName());
 				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime(), null));
@@ -170,6 +171,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 			baseDataList = baseDataService.getBaseDataListByType(Constants.PRODUCT_FRIST_PACK);
 			for(ProcedurePoi procedurePoi : excelProcedure){
 				Procedure procedure = new Procedure();
+				procedure.setFlag(flag);
 				procedure.setProductId(productId);
 				procedure.setName(procedurePoi.getName());
 				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime(), null));
@@ -184,6 +186,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 			baseDataList = baseDataService.getBaseDataListByType(Constants.PRODUCT_TWO_DEEDLE);
 			for(ProcedurePoi procedurePoi : excelProcedure){
 				Procedure procedure = new Procedure();
+				procedure.setFlag(flag);
 				procedure.setProductId(productId);
 				procedure.setName(procedurePoi.getName());
 				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime()*60, 2));
@@ -194,6 +197,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 			}
 			Procedure procedure = new Procedure();
 			procedure.setProductId(productId);
+			procedure.setFlag(flag);
 			procedure.setName("下货点到包装");
 			procedure.setWorkingTime(0.5);
 			procedure.setType(type);

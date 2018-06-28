@@ -68,6 +68,6 @@ public interface TaskService extends BaseCRUDService<Task,Long>{
 	 * @param task
 	 * @return
 	 */
-	public Task addRework(Task task);
+	public Task addRework(Task task) throws Exception;
 
 }
