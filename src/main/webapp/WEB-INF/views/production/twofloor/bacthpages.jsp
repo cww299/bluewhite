@@ -141,16 +141,6 @@
                                       </div>
                             
                     	</div>
-                    	
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">完成时间:</label>
-                              <div class="col-sm-2 ">
-                              <input type="text" placeholder="返工任务才可填" class="form-control sumtime">
-                              </div>
-                          
-                    	</div>
-                    	
-                    	
                     	<div class="form-group">
                            <label class="col-sm-2 control-label">选择工序:</label>
                               <div class="col-sm-2 working">
@@ -857,6 +847,7 @@
 										   type:3,
 										   bacthId:bacthId,
 										   procedureTypeId:id,
+										   flag:0,
 								   }
 			      				//查询各个工序的名称
 								   $.ajax({
@@ -916,7 +907,8 @@
 			      				var	id=$(this).val()
 								   var data={
 										  id:id,
-										  type:3
+										  type:3,
+										 
 								   }
 			      				$.ajax({
 									url:"${ctx}/production/allGroup",
@@ -1009,7 +1001,6 @@
 										productName:productName,
 										bacthNumber:bacthNumber,
 										allotTime:$('#Time').val(),
-										taskTime:$('.sumtime').val(),
 								}
 							    $.ajax({
 									url:"${ctx}/task/addTask",
