@@ -10,6 +10,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.production.finance.entity.CollectInformation;
 import com.bluewhite.production.finance.entity.CollectPay;
+import com.bluewhite.production.finance.entity.GroupProduction;
 import com.bluewhite.production.finance.entity.MonthlyProduction;
 import com.bluewhite.production.finance.entity.NonLine;
 @Service
@@ -87,7 +88,7 @@ public interface CollectPayService extends BaseCRUDService<CollectPay,Long>{
 	 * @param collectInformation
 	 * @return
 	 */
-	public List<MonthlyProduction> groupProduction(MonthlyProduction monthlyProduction);
+	public List<GroupProduction> groupProduction(GroupProduction groupProduction);
 	
 
 

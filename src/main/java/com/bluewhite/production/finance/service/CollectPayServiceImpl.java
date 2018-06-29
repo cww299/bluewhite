@@ -29,6 +29,7 @@ import com.bluewhite.production.finance.dao.NonLineDao;
 import com.bluewhite.production.finance.entity.CollectInformation;
 import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.FarragoTaskPay;
+import com.bluewhite.production.finance.entity.GroupProduction;
 import com.bluewhite.production.finance.entity.MonthlyProduction;
 import com.bluewhite.production.finance.entity.NonLine;
 import com.bluewhite.production.finance.entity.PayB;
@@ -699,62 +700,85 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	}
 
 	@Override
-	public List<MonthlyProduction> groupProduction(MonthlyProduction monthlyProduction) {
+	public List<GroupProduction> groupProduction(GroupProduction groupProduction) {
 		PageParameter page  = new PageParameter();
 		page.setSize(Integer.MAX_VALUE);
 		//检验组
 		Group group= new Group();
 		group.setKindWorkId((long)113);
 		List<Group> groupList = groupService.findList(group);
-		
+	
 
 		//查出当日所有检验任务
 		Task task= new Task();
-		task.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
-		task.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
-		task.setType(monthlyProduction.getType());
+		task.setOrderTimeBegin(groupProduction.getOrderTimeBegin());
+		task.setOrderTimeEnd(groupProduction.getOrderTimeEnd());
+		task.setType(groupProduction.getType());
 		task.setProcedureTypeId((long)99);
 		List<Task> taskList = TaskService.findPages(task, page).getRows();
 		
+		//
+		List<GroupProduction> groupProductionList = new ArrayList<GroupProduction>();
 		
 		//将检验任务按产品id分组，统计出数量
 		Map<Object, List<Task>> mapTask = taskList.stream().collect(Collectors.groupingBy(Task::getProductId,Collectors.toList()));
+		
+		
 		for(Object ps : mapTask.keySet()){
+			
+			GroupProduction production = new GroupProduction();
 			List<Task> psList= mapTask.get(ps);
 			//该产品检验组总数量
 			double sumNumber = psList.stream().mapToDouble(Task::getNumber).sum();
-			
-			double groupNumber = 0;
-			for(Group rp: groupList){
-				
-				if(rp.getUsers().size()>0){
-					for(User us : rp.getUsers()){		
-						for(Task ta : taskList){
-							if (!StringUtils.isEmpty(ta.getUserIds())) {
-								String [] ids = ta.getUserIds().split(",");
-								if (ids.length>0) {
-									for (int i = 0; i < ids.length; i++) {
-										Long id = Long.parseLong(ids[i]);
+			double oneNumber = 0;
+			double twoNumber = 0;
+			double threeNumber = 0;
+			double fourNumber = 0;
+			//遍历任务，通过任务 的员工id和分组人员的员工id相匹配，相同则记录任务数
+			for(Task ta : taskList){
+				if (!StringUtils.isEmpty(ta.getUserIds())) {
+					String [] ids = ta.getUserIds().split(",");
+					if (ids.length>0) {
+						for (int i = 0; i < ids.length; i++) {
+							Long id = Long.parseLong(ids[i]);
+								//遍历出每个组
+								for(Group rp: groupList){
+									for (int j = 0; j < groupList.size(); j++) {
+										for(User us : rp.getUsers()){		
 											if(us.getId().equals(id)){
-												
-												groupNumber+=ta.getNumber();
-												
+												switch (j) {
+												case 0:
+													oneNumber+=ta.getNumber();
+													break;
+												case 1:
+													twoNumber+=ta.getNumber();
+													break;
+												case 2:
+													threeNumber+=ta.getNumber();
+													break;
+												case 3:
+													fourNumber+=ta.getNumber();
+													break;
+												}
 											}
-									}
+										}
 								}
 							}
 						}
-							
 					}
 				}
-				
 			}
+		
+			production.setName(psList.get(0).getProductName());
+			production.setOneNumber(oneNumber);
+			production.setTwoNumber(twoNumber);
+			production.setThreeNumber(threeNumber);
+			production.setFourNumber(fourNumber);
+			production.setSumNumber(sumNumber);
+			production.setOrderTimeBegin(groupProduction.getOrderTimeBegin());
+			groupProductionList.add(production);
 		}
-		
-		
-
-		
-		return null;
+		return groupProductionList;
 	}
 
 

@@ -28,6 +28,7 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.excel.Excelutil;
+import com.bluewhite.production.finance.entity.GroupProduction;
 import com.bluewhite.production.finance.entity.MonthlyProduction;
 import com.bluewhite.production.finance.service.CollectPayService;
 import com.bluewhite.production.task.entity.Task;
@@ -202,7 +203,7 @@ public class ReportExportAction {
 	 * @param response
 	 */
 	@RequestMapping("/importExcel/groupProduction")
-	public void groupProduction(HttpServletResponse response,MonthlyProduction monthlyProduction){
+	public void groupProduction(HttpServletResponse response,GroupProduction groupProduction){
 		response.setContentType("octets/stream");
 	    response.addHeader("Content-Disposition", "attachment;filename=rework.xls");
 	    OutputStream out=null;
@@ -212,11 +213,11 @@ public class ReportExportAction {
             e.printStackTrace();  
 		}  
         //输出的实体与反射的实体相对应
-        List<MonthlyProduction> monthlyProductionList =  collectPayBService.groupProduction(monthlyProduction);
+        List<GroupProduction> production =  collectPayBService.groupProduction(groupProduction);
         SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd"); 
-        monthlyProductionList.stream().forEach(MonthlyProduction->MonthlyProduction.setStartDate(sdf.format(MonthlyProduction.getOrderTimeBegin())));
-	    Excelutil<MonthlyProduction> util = new Excelutil<MonthlyProduction>(MonthlyProduction.class);
-        util.exportExcel(monthlyProductionList, "月产量报表", out);// 导出  
+        production.stream().forEach(GroupProduction->GroupProduction.setStartDate(sdf.format(GroupProduction.getOrderTimeBegin())));
+	    Excelutil<GroupProduction> util = new Excelutil<GroupProduction>(GroupProduction.class);
+        util.exportExcel(production, "月产量报表", out);// 导出  
 	}
 	
 	
