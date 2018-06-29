@@ -51,7 +51,7 @@
              				onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
              			</td>
              			<td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
-             			<td><button type="button" class="btn btn-info btn-square btn-sm btn-3d position">到岗预计小时收入</button>&nbsp&nbsp</td> 
+             			<td><button type="button" class="btn btn-info btn-square btn-sm btn-3d position">修改到岗预计小时收入</button>&nbsp&nbsp</td> 
              			<td><input id="endTime" placeholder="请输入时间" class="form-control laydate-icon"
              				onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
              			</td>
@@ -72,7 +72,6 @@
                                             <th  class="text-center">序号</th>
                                             <th class="text-center">姓名</th>
                                             <th class="text-center">部门</th>
-                                            <th class="text-center">职位</th>
                                             <th class="text-center">工作时长</th>
                                             <th class="text-center">缺勤时间</th>
                                             <th class="text-center hidden overtimet ">加班时间</th>
@@ -146,11 +145,11 @@
 		      				 var order = i+1;
 		      				
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
+		      				+'<td class="hidden batch">'+o.id+'</td>'
 		      				+'<td class="text-center ">'+order+'</td>'
 		      				+'<td class="text-center ">'+o.userName+'</td>'
 		      				+'<td class="text-center ">'+o.orgName.name+'</td>'
-		      				+'<td class="text-center ">'+o.position.name+'</td>'
-		      				+'<td class="text-center "><input class="work"></input></td>'
+		      				+'<td class="text-center "><input class="work"  data-id="'+o.id+'"></input></td>'
 		      				+'<td class="text-center "><input class="workto"></input></td>'
 		      				+'<td class="text-center hidden overtimets"><input class="workth"></input></td>'
 		      				+'<td class="text-center edit workPrice">'+o.price*1+'</td>'
@@ -224,6 +223,17 @@
 					
 				}
 		this.loadEvents = function(){
+			 $('.work').on('click',function(){
+				 var ids=$(this).data("id");
+				 $(".batch").each(function(i,o){
+						var a=$(o).text();
+						if(a==ids){
+							$(o).parent().addClass("danger");
+							$(o).parent().siblings().removeClass("danger");
+						}
+					})
+			 }) 
+				
 			
 			//修改方法
 			$('.updateremake').on('click',function(){
@@ -449,9 +459,14 @@
 						dutyTime.push($(this).parent().parent().siblings().find(".workto").val());
 						arr.push($(this).val());   
 					});
+				  if(time==""){
+						return layer.msg("工作时长不能为空！", {icon: 2});
+					}
+				 
 				  if(arr.length<=0){
 						return layer.msg("至少选择一个！", {icon: 2});
 					}
+				  
 					var data={
 							type:3,
 							usersId:arr,

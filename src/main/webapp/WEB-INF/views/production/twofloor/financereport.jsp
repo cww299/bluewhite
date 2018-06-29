@@ -181,6 +181,10 @@
 								<span class="input-group-btn">
 									<button type="button"  class="btn btn-success btn-sm btn-3d pull-right export">导出</button>
 								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button"  class="btn btn-success btn-sm btn-3d pull-right exporttw">验货导出</button>
+								</span>
 							</div>
 						</div>
 					</div>
@@ -609,6 +613,14 @@
 					location.href="${ctx}excel/importExcel/monthlyProduction?orderTimeBegin="+a+"&orderTimeEnd="+c+"&type="+3;
 				})
 				
+				//导出
+				$('.exporttw').on('click',function(){
+					alert(1)
+					var index; 
+					var d=$("#startTimetw").val();
+					var e= $("#endTimetw").val();
+					location.href="${ctx}excel/importExcel/groupProduction?orderTimeBegin="+d+"&orderTimeEnd="+e+"&type="+3;
+				})
 			}
    	}
    			var login = new Login();

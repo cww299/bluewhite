@@ -64,7 +64,7 @@ public class Task  extends BaseEntity<Long>{
 	/**
 	 * 产品id
 	 */
-	@Transient
+	@Column(name = "product_id")
 	private Long productId;
 	
 	

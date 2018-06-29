@@ -9,10 +9,10 @@
 <head>
      <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>批次管理</title>
+    <title>杂工管理</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-   <link rel="stylesheet" href="${ctx }/static/sfm/css/bootstrap-datetimepicker.min.css">
+   
    
 </head>
 
@@ -28,54 +28,57 @@
                     <div class="col-md-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">批次管理</h3>
+                                <h3 class="panel-title">返工详情</h3>
                                 <div class="actions pull-right">
                                     <i class="fa fa-expand"></i>
                                     <i class="fa fa-chevron-down"></i>
                                 </div>
                             </div>
-        <div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-11 col-sm-11  col-md-11">
+                             <!--查询开始  -->
+          <div class="row" style="height: 30px; margin:15px 0 10px">
+			<div class="col-xs-10 col-sm-10 col-md-10">
 				<form class="form-search" >
 					<div class="row">
-						<div class="col-xs-11 col-sm-11 col-md-11">
+						<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
-								<table><tr><td>批次号:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
-									<td>&nbsp&nbsp</td>
+								<table><tr><td>批次名:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>产品名称:</td><td><input type="text" name="name" id="name" placeholder="请输入产品名称" class="form-control search-query name" /></td>
-									<td>&nbsp&nbsp</td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>开始时间:</td>
 								<td>
 								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
 								</td>
-									<td>&nbsp&nbsp</td>
+				<td>&nbsp&nbsp&nbsp&nbsp</td>
 				<td>结束时间:</td>
 				<td>
 					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
              onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
-								<td>&nbsp&nbsp</td>
-								<td>完成状态:</td><td><select class="form-control" id="selectstate"><option value="">请选择</option><option value=1>已完成</option><option value=0>未完成</option></select></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
-											查&nbsp找
+										查&nbsp找
 									</button>
 								</span>
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-success  btn-sm btn-3d start">
-									一键完成
+									<button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增返工</button>
+								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-success  btn-sm btn-3d export">
+									导出返工价值
 									</button>
 								</span>
-								
 							</div>
 						</div>
 					</div>
 				</form>
 			</div>
 		</div>
+            <!-- 查询结束 -->
                             <div class="panel-body">
                                 <table class="table table-hover">
                                     <thead>
@@ -90,20 +93,16 @@
                                             <th class="text-center">时间</th>
                                             <th class="text-center">产品名</th>
                                             <th class="text-center">数量</th>
-                                            <th class="text-center">预计生产单价</th>
-                                            <th class="text-center">外发价格</th>
-                                            <th class="text-center">针工价格</th>
                                             <th class="text-center">任务价值</th>
-                                            <th class="text-center">地区差价</th>
                                             <th class="text-center">当批用时</th>
                                             <th class="text-center">备注</th>
-                                            <th class="text-center">完成状态</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
+                              
                                 </table>
                                 <div id="pager" class="pull-right">
                                 
@@ -114,26 +113,110 @@
                 </div>
             </section>
         </section>
-        <!--隐藏框 工序分配开始  -->
+
+
+
+<div id="savegroup" style="display: none;">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					人员分组详情
+				</h4>
+			</div>
+			<div class="modal-body">
+				
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-info" data-dismiss="modal">关闭
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+</div>
+<!--隐藏框 产品新增结束  -->
+<!--隐藏框 新增杂工开始  -->
         <div id="addDictDivType" style="display: none;">
 			<div class=" col-xs-12  col-sm-12  col-md-12 ">
 				<div class="space-10"></div>
 				<div style="height: 30px"></div>
 				<form class="form-horizontal addDictDivTypeForm">
 					<div class="row col-xs-12  col-sm-12  col-md-12 ">
+					<div class="form-group">
+                                        <label class="col-sm-3 control-label">日期:</label>
+                                        <div class="col-sm-6">
+                                            <input id="Time" placeholder="时间可不填" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#Time', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                                        </div>
+                 </div>
+                 
+                	 <div class="form-group">
+						
+                           <label class="col-sm-3 control-label">批次名:</label>
+                              <div class="col-sm-6">
+                                  <input type="text" class="form-control bacth">
+                              </div>
+                    	</div>
+                    	<div class="form-group">
+						
+                           <label class="col-sm-3 control-label">产品名:</label>
+                              <div class="col-sm-6">
+                                  <input type="text" class="form-control productName">
+                              </div>
+                    	</div>
+						<div class="form-group">
+						
+                           <label class="col-sm-3 control-label">数量:</label>
+                              <div class="col-sm-6">
+                                  <input type="text" class="form-control sumnumber">
+                              </div>
+                    	</div>
+                    	
+                    	
+                    	<div class="form-group">
+                            <label class="col-sm-3 control-label">备注:</label>
+                                <div class="col-sm-6">
+                                  <input type="text" class="form-control remarks">
+                                </div>
+                    	</div>
+                 </div>
+				</div>
+
+				</form>
+</div>
+</div>
+<!--隐藏框 新增结束  -->
+ <!--隐藏框 工序分配开始  -->
+        <div id="addDictDivTypetw" style="display: none;">
+			<div class=" col-xs-12  col-sm-12  col-md-12 ">
+				<div class="space-10"></div>
+				<div style="height: 30px"></div>
+				<form class="form-horizontal addDictDivTypeFormtw">
+					<div class="row col-xs-12  col-sm-12  col-md-12 ">
 		
                  
 						<div class="form-group">
                            <label class="col-sm-2 col-md-2 control-label">任务数量:</label>
                               <div class="col-sm-2 col-md-2">
-                                  <input type="text" class="form-control sumnumber">
+                                  <input type="text" class="form-control sumnumbertw">
                               </div>
                                <label class="col-sm-3 control-label">任务分配:</label>
                                  <div class="col-sm-2">
-                                          <input id="Time" placeholder="时间可不填" class="form-control laydate-icon"
-           									onClick="laydate({elem: '#Time', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                                          <input id="Timetw" placeholder="时间可不填" class="form-control laydate-icon"
+           									onClick="laydate({elem: '#Timetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                                       </div>
                             
+                    	</div>
+                    	<div class="form-group">
+                           <label class="col-sm-2 col-md-2 control-label">任务时间:</label>
+                              <div class="col-sm-2 col-md-2">
+                                  <input type="text" class="form-control timestart">
+                              </div>
                     	</div>
                     	<div class="form-group">
                            <label class="col-sm-2 control-label">选择工序:</label>
@@ -151,9 +234,6 @@
 
 				</form>
 </div>
-</div>
-<!--隐藏框 工序分配结束  -->
-
 <!-- 任务详情开始-->
 <div id="addworking" style="display: none;position: absolute;z-index: 3;">
 <table><tr>           
@@ -197,38 +277,6 @@
 
 </div>
 <!-- 任务详情结束-->
-
-<!--隐藏框 人员信息开始  -->
-<div id="savegroup" style="display: none;position: relative; z-index: 5;">
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-					&times;
-				</button>
-				<h4 class="modal-title" id="myModalLabel">
-					人员分组详情
-				</h4>
-			</div>
-			<div class="modal-body">
-				
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
-				</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
-</div>
-</div>
-<!--隐藏框 人员信息结束  -->
-
-
-
-
-
-
     </section>
     
    
@@ -244,7 +292,7 @@
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
     <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
-    <script src="${ctx }/static/sfm/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="${ctx }/static/js/vendor/typeahead.js"></script>
     <script>
    jQuery(function($){
    	var Login = function(){
@@ -258,11 +306,25 @@
 		  	this.getCache = function(){
 		  		return _cache;
 		  	}
+		  	this.setIndex = function(index){
+		  		_index=index;
+		  	}
+		  	
+		  	this.getIndex = function(){
+		  		return _index;
+		  	}
+		  	this.setName = function(name){
+		  		_name=name;
+		  	}
+		  	this.getName = function(){
+		  		return _name;
+		  	}
 			 var data={
 						page:1,
 				  		size:13,	
 				  		type:3,
-				  		flag:0,
+				  		flag:1,
+
 				} 
 			this.init = function(){
 				
@@ -270,108 +332,76 @@
 				self.events();
 				self.loadPagination(data);
 			}
-			//加载分页
-			  this.loadPagination = function(data){
-			    var index;
-			    var html = '';
-			    $.ajax({
-				      url:"${ctx}/bacth/allBacth",
-				      data:data,
-				      type:"GET",
-				      beforeSend:function(){
-					 	  index = layer.load(1, {
-						  shade: [0.1,'#fff'] //0.1透明度的白色背景
-						  });
-					  }, 
-		      		  success: function (result) {
-		      			  
-		      			 $(result.data.rows).each(function(i,o){
-		      				 if(o.bacthHairPrice==null){
-		      					o.bacthHairPrice=0;
-		      				 }
-		      				if(o.bacthDeedlePrice==null){
-		      					o.bacthDeedlePrice=0;
-		      				 }
-		      				if(o.time==null){
-		      					o.time=0;
-		      				 }
-		      				 var strname="";
-		      				 if(o.status==1){
-		      					strname="完成";
-		      				 }else{
-		      					strname="未完成";
-		      				 }
-		      				 html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
-		      				+'<td class="hidden batch">'+o.id+'</td>'
-		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
-		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
-		      				+'<td class="text-center  names" data-id='+o.id+'>'+o.product.name+'</td>'
-		      				+'<td class="text-center edit number">'+o.number+'</td>'
-		      				+'<td class="text-center  bacthDepartmentPrice">'+o.bacthDepartmentPrice+'</td>'
-		      				+'<td class="text-center edit bacthHairPrice">'+o.bacthHairPrice+'</td>'
-		      				+'<td class="text-center edit bacthDeedlePrice">'+o.bacthDeedlePrice+'</td>'
-		      				+'<td class="text-center  sumTaskPrice">'+ parseFloat((o.sumTaskPrice*1).toFixed(3))+'</td>'
-		      				+'<td class="text-center  regionalPrice">'+parseFloat((o.regionalPrice*1).toFixed(3))+'</td>'
-		      				+'<td class="text-center ">'+o.time+'</td>'
-		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
-		      				+'<td class="text-center ">'+strname+'</td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button>  <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
-							
-		      			}); 
-				        //显示分页
-					   	  laypage({
-					      cont: 'pager', 
-					      pages: result.data.totalPages, 
-					      curr:  result.data.pageNum || 1, 
-					      jump: function(obj, first){ 
-					    	  if(!first){ 
-					    		 
-						        	var _data = {
-						        			page:obj.curr,
-									  		size:13,
-									  		type:3,
-								  			name:$('#name').val(),
-								  			bacthNumber:$('#number').val(),
-								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(),
-								  			flag:0,
-								  	}
-						        
-						            self.loadPagination(_data);
-							     }
-					      }
-					    });  
-					   	layer.close(index);
-					   	 $("#tablecontent").html(html); 
-					   	self.loadEvents();
-					   	self.checkedd();
-				      },error:function(){
-							layer.msg("加载失败！", {icon: 2});
-							layer.close(index);
-					  }
-				  });
-			}
-			
-			  this.checkedd=function(){
-					
-					$(".checks").on('click',function(){
-						
-	                    if($(this).is(':checked')){ 
-				 			$('.checkboxId').each(function(){  
-	                    //此处如果用attr，会出现第三次失效的情况  
-	                     		$(this).prop("checked",true);
-				 			})
-	                    }else{
-	                    	$('.checkboxId').each(function(){ 
-	                    		$(this).prop("checked",false);
-	                    		
-	                    	})
-	                    }
-	                }); 
-					
+			 this.loadPagination = function(data){
+				    var index;
+				    var html = '';
+				    $.ajax({
+					      url:"${ctx}/bacth/allBacth",
+					      data:data,
+					      type:"GET",
+					      beforeSend:function(){
+						 	  index = layer.load(1, {
+							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							  });
+						  }, 
+			      		  success: function (result) {
+			      			  
+			      			 $(result.data.rows).each(function(i,o){
+			      				
+			      				if(o.time==null){
+			      					o.time=0;
+			      				 }
+			      				 var strname="";
+			      				 if(o.status==1){
+			      					strname="完成";
+			      				 }else{
+			      					strname="未完成";
+			      				 }
+			      				 html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
+			      				+'<td class="hidden batch">'+o.id+'</td>'
+			      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
+			      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
+			      				+'<td class="text-center  names" data-id='+o.id+'>'+o.product.name+'</td>'
+			      				+'<td class="text-center edit number">'+o.number+'</td>'
+			      				+'<td class="text-center  sumTaskPrice">'+ parseFloat((o.sumTaskPrice*1).toFixed(3))+'</td>'
+			      				+'<td class="text-center ">'+o.time+'</td>'
+			      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
+								+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button>  <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
+			      			}); 
+					        //显示分页
+						   	  laypage({
+						      cont: 'pager', 
+						      pages: result.data.totalPages, 
+						      curr:  result.data.pageNum || 1, 
+						      jump: function(obj, first){ 
+						    	  if(!first){ 
+						    		 
+							        	var _data = {
+							        			page:obj.curr,
+										  		size:13,
+										  		type:3,
+									  			name:$('#name').val(),
+									  			bacthNumber:$('#number').val(),
+									  			orderTimeBegin:$("#startTime").val(),
+									  			orderTimeEnd:$("#endTime").val(),
+									  			flag:1,
+									  	}
+							        
+							            self.loadPagination(_data);
+								     }
+						      }
+						    });  
+						   	layer.close(index);
+						   	 $("#tablecontent").html(html); 
+						   	self.loadEvents();
+						   
+					      },error:function(){
+								layer.msg("加载失败！", {icon: 2});
+								layer.close(index);
+						  }
+					  });
 				}
-			
-			  this.loadPaginationto = function(data){
+			 this.loadPaginationto = function(data){
 				    var index;
 				    var html = '';
 				    var htmlto="";
@@ -445,7 +475,7 @@
 						  }
 					  });
 				}
-			  this.checkeddto=function(){
+			 this.checkeddto=function(){
 					
 					$(".checksto").on('click',function(){
 						
@@ -463,7 +493,7 @@
 	                }); 
 					
 				}
-			  this.checkedddto=function(){
+			 this.checkedddto=function(){
 					
 					$(".rest").each(function(i,o){
 							
@@ -476,7 +506,7 @@
 					})
 					
 				}
-			  this.loadEventss = function(){
+			 this.loadEventss = function(){
 					
 					
 					$('.rest').on('click',function(){
@@ -657,8 +687,7 @@
 					})
 					
 					
-				}  
-			  
+				} 
 			this.loadEvents = function(){
 				
 				$('.names').on('click',function(){
@@ -706,7 +735,60 @@
 						  }
 					});
 				})
-				//删除
+				
+				//修改方法
+				$('.updateremake').on('click',function(){
+					if($(this).text() == "编辑"){
+						$(this).text("保存")
+						
+						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
+				        });
+					}else{
+							$(this).text("编辑")
+						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+
+					       
+					                $(this).html(obj_text.val()); 
+									
+							});
+							
+							var postData = {
+									id:$(this).data('id'),
+									number:$(this).parent().parent('tr').find(".number").text(),
+									remarks:$(this).parent().parent('tr').find(".remarks").text(),
+							}
+							
+							var index;
+							$.ajax({
+								url:"${ctx}/bacth/addBacth",
+								data:postData,
+								type:"POST",
+								beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								
+								success:function(result){
+									if(0==result.code){
+									layer.msg("修改成功！", {icon: 1});
+									layer.close(index);
+									}else{
+										layer.msg("修改失败！", {icon: 1});
+										layer.close(index);
+									}
+								},error:function(){
+									layer.msg("操作失败！", {icon: 2});
+									layer.close(index);
+								}
+							});
+					}
+				})
+				//删除方法
 				$('.delete').on('click',function(){
 					var postData = {
 							id:$(this).data('id'),
@@ -740,62 +822,7 @@
 					});
 					 })
 				})
-				//修改方法
-				$('.updateremake').on('click',function(){
-					if($(this).text() == "编辑"){
-						$(this).text("保存")
-						
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
-				        });
-					}else{
-							$(this).text("编辑")
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							
-							var postData = {
-									id:$(this).data('id'),
-									number:$(this).parent().parent('tr').find(".number").text(),
-									remarks:$(this).parent().parent('tr').find(".remarks").text(),
-									bacthHairPrice:$(this).parent().parent('tr').find(".bacthHairPrice").text(),
-									bacthDeedlePrice:$(this).parent().parent('tr').find(".bacthDeedlePrice").text(),
-							}
-							
-							var index;
-							$.ajax({
-								url:"${ctx}/bacth/addBacth",
-								data:postData,
-								type:"POST",
-								beforeSend:function(){
-									index = layer.load(1, {
-										  shade: [0.1,'#fff'] //0.1透明度的白色背景
-										});
-								},
-								
-								success:function(result){
-									if(0==result.code){
-									layer.msg("修改成功！", {icon: 1});
-									layer.close(index);
-									}else{
-										layer.msg("修改失败！", {icon: 1});
-										layer.close(index);
-									}
-								},error:function(){
-									layer.msg("操作失败！", {icon: 2});
-									layer.close(index);
-								}
-							});
-					}
-				})
-				
-				//分配1
+				//分配
 				$('.addDict').on('click',function(){
 					var that=$(this)
 					var productId=$(this).data('proid')
@@ -819,7 +846,7 @@
 						}
 					})
 				    //遍历工序类型
-				    var getdata={type:"productTwoDeedle",}
+				    var getdata={type:"productTwoReDeedle",}
 	      			$.ajax({
 					      url:"${ctx}/basedata/list",
 					      data:getdata,
@@ -843,7 +870,7 @@
 										   type:3,
 										   bacthId:bacthId,
 										   procedureTypeId:id,
-										   flag:0,
+										   flag:1,
 								   }
 			      				//查询各个工序的名称
 								   $.ajax({
@@ -948,7 +975,7 @@
 					      }
 					  });
 					var postData
-					var dicDiv=$('#addDictDivType');
+					var dicDiv=$('#addDictDivTypetw');
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
@@ -980,7 +1007,7 @@
 								if(arr.length<=0){
 									return layer.msg("至少选择一个员工！", {icon: 2});
 								}
-								number=$(".sumnumber").val();
+								number=$(".sumnumbertw").val();
 								for (var i = 0; i < numberr.length; i++) {
 									if(numberr[i]-number<0){
 										return layer.msg("有工序剩余数量不足！", {icon: 2});
@@ -996,8 +1023,10 @@
 										userNames:username,
 										productName:productName,
 										bacthNumber:bacthNumber,
-										allotTime:$('#Time').val(),
+										allotTime:$('#Timetw').val(),
+										taskTime:$('.timestart').val(),
 								}
+								
 							    $.ajax({
 									url:"${ctx}/task/addTask",
 									data:postData,
@@ -1011,7 +1040,7 @@
 									
 									success:function(result){
 										if(0==result.code){
-										  $('.addDictDivTypeForm')[0].reset(); 
+										  $('.addDictDivTypeFormtw')[0].reset(); 
 										$('.checkworking').text("");
 										  $('.select').text("");
 											layer.msg("添加成功！", {icon: 1});
@@ -1029,8 +1058,8 @@
 								});  
 							},
 						   end:function(){
-							  $('.addDictDivTypeForm')[0].reset(); 
-							  $("#addDictDivType").hide();
+							  $('.addDictDivTypeFormtw')[0].reset(); 
+							  $("#addDictDivTypetw").hide();
 						
 							
 						  } 
@@ -1038,76 +1067,71 @@
 					
 					
 				})
-				
+				//导出返工价值
+					$('.export').on('click',function(){
+						var index; 
+						var a=$("#startTime").val();
+						var c= $("#endTime").val();
+						location.href="${ctx}/excel/importExcel?startTime="+a+"&endTime="+c;
+					})
 				
 			}
-			
-			
+			this.mater=function(){
+				//提示人员姓名
+				$(".bacth").typeahead({
+					//ajax 拿way数据
+					source : function(query, process) {
+							return $.ajax({
+								url : '${ctx}/bacth/allBacth',
+								type : 'GET',
+								data : {
+									bacthNumber:query
+								},
+								success : function(result) {
+									console.log(result)
+									//转换成 json集合
+									 var resultList = result.data.rows.map(function (item) {
+										 	//转换成 json对象
+					                        var aItem = {name: item.bacthNumber, id:item.product.id,proname:item.product.name}
+					                        //处理 json对象为字符串
+					                        return JSON.stringify(aItem);
+					                    });
+									//提示框返回数据
+									 return process(resultList);
+								},
+							})
+						
+							//提示框显示
+						}, highlighter: function (item) {
+						    //转出成json对象
+							 var item = JSON.parse(item);
+							return item.name+"-"+item.proname
+							//按条件匹配输出
+		                }, matcher: function (item) {
+		                	//转出成json对象
+					        var item = JSON.parse(item);
+					        self.setIndex(item.id);
+					        self.setName(item.name);
+					        
+					        $('.productName').val(item.proname);
+					    	return item.name
+					    },
+						//item是选中的数据
+						updater:function(item){
+							//转出成json对象
+							var item = JSON.parse(item);
+							self.setIndex(item.id);
+						  	self.setName(item.name);
+						  	
+						  	$('.productName').val(item.proname);
+								return item.name
+						},
+
+						
+					});
+			}
 			this.events = function(){
-				
-				//查询
-				$('.searchtask').on('click',function(){
-					var data = {
-				  			page:1,
-				  			size:13,
-				  			type:3,
-				  			name:$('#name').val(),
-				  			bacthNumber:$('#number').val(),
-				  			 orderTimeBegin:$("#startTime").val(),
-				  			orderTimeEnd:$("#endTime").val(), 
-				  			status:$("#selectstate").val(),
-				  			flag:0,
-				  	}
-		            self.loadPagination(data);
-				});
-				/* 一键完成  */
-				$('.start').on('click',function(){
-					  var  that=$(".table-hover");
-					  var arr=new Array()//员工id
-					  that.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
-							arr.push($(this).val());   
-						});
-					  
-					  if(arr.length<=0){
-							return layer.msg("至少选择一个！", {icon: 2});
-						}
-						var data={
-								status:1,
-								type:3,
-								ids:arr,
-								flag:0,
-						}
-						var index;
-						 index = layer.confirm('确定一键完成吗', {btn: ['确定', '取消']},function(){
-						$.ajax({
-							url:"${ctx}/bacth/statusBacth",
-							data:data,
-				            traditional: true,
-							type:"GET",
-							beforeSend:function(){
-								index = layer.load(1, {
-									  shade: [0.1,'#fff'] //0.1透明度的白色背景
-									});
-							},
-							
-							success:function(result){
-								if(0==result.code){
-									layer.msg(result.message, {icon: 1});
-									self.loadPagination(data);
-								}else{
-									layer.msg(result.message, {icon: 2});
-								}
-								layer.close(index);
-							},error:function(){
-								layer.msg("操作失败！", {icon: 2});
-								layer.close(index);
-							}
-						});
-						 });
-				  })
-				  
-				  
-				  /* 一键删除 */
+				 /* 一键删除 */
 				$('.attendance').on('click',function(){
 					  var  that=$(this);
 					  var arr=new Array()//员工id
@@ -1156,110 +1180,102 @@
 						});
 						 });
 				  })
-				  /* 一键开始 */
-				   $('.startto').on('click',function(){
-					  var  that=$(this);
-					  var arr=new Array()//员工id
-						$(this).parent().parent().parent().parent().parent().find(".checkboxIdto:checked").each(function() {  
-							arr.push($(this).val());   
-						});
-					  
-					  if(arr.length<=0){
-							return layer.msg("至少选择一个！", {icon: 2});
-						}
-						var data={
-								status:0,
-								type:3,
-								ids:arr,
-						}
-						var _data={
-								page:1,
-						  		size:13,
-								bacthId:self.getCache(),
-								type:3,
-								
-						}
-						var index;
-						 index = layer.confirm('确定一键开始吗', {btn: ['确定', '取消']},function(){
-						$.ajax({
-							url:"${ctx}/task/getTaskActualTime",
-							data:data,
-				            traditional: true,
-							type:"GET",
-							beforeSend:function(){
-								index = layer.load(1, {
-									  shade: [0.1,'#fff'] //0.1透明度的白色背景
-									});
-							},
+				$('.searchtask').on('click',function(){
+					var data = {
+				  			page:1,
+				  			size:13,
+				  			type:3,
+				  			name:$('#name').val(),
+				  			bacth:$('#number').val(),
+				  			orderTimeBegin:$("#startTime").val(),
+				  			orderTimeEnd:$("#endTime").val(), 
+				  			flag:1,
+				  	}
+		            self.loadPagination(data);
+				});
+				//新增返工
+				$('#addgroup').on('click',function(){
+					self.mater();
+					var _index
+					var index
+					var postData
+					var dicDiv=$('#addDictDivType');
+					var html=""
+					var htmlth=""
+					var data={
+							type:3
 							
-							success:function(result){
-								if(0==result.code){
-									layer.msg(result.message, {icon: 1});
-									self.loadPaginationto(_data);
-								}else{
-									layer.msg(result.message, {icon: 2});
-								}
-								layer.close(index);
-							},error:function(){
-								layer.msg("操作失败！", {icon: 2});
-								layer.close(index);
-							}
-						});
-						 });
-				  })
-				  
-				    /* 一键暂停 */
-				$('.suspend').on('click',function(){
-					  var  that=$(this);
-					  var arr=new Array()//员工id
-						$(this).parent().parent().parent().parent().parent().find(".checkboxIdto:checked").each(function() {  
-							arr.push($(this).val());   
-						});
-					  
-					  if(arr.length<=0){
-							return layer.msg("至少选择一个！", {icon: 2});
-						}
-						var data={
-								status:1,
-								type:3,
-								ids:arr,
-						}
-						var _data={
-								page:1,
-						  		size:13,
-								bacthId:self.getCache(),
-								type:3,
-								
-						}
-						var index;
-						 index = layer.confirm('确定一键暂停吗', {btn: ['确定', '取消']},function(){
-						$.ajax({
-							url:"${ctx}/task/getTaskActualTime",
-							data:data,
-				            traditional: true,
-							type:"GET",
-							beforeSend:function(){
-								index = layer.load(1, {
-									  shade: [0.1,'#fff'] //0.1透明度的白色背景
-									});
+					}
+					
+					_index = layer.open({
+						  type: 1,
+						  skin: 'layui-layer-rim', //加上边框
+						  area: ['30%', '60%'], 
+						  btnAlign: 'c',//宽高
+						  maxmin: true,
+						  title:"新增返工工",
+						  content: dicDiv,
+						  btn: ['确定', '取消'],
+						  yes:function(index, layero){
+							  if($(".sumnumber").val()==""){
+									 return layer.msg("数量不能为空", {icon:2 });
+								  }
+							  if($(".bacth").val()==""){
+									 return layer.msg("批次号不能为空", {icon:2 });
+								  }
+							  postData={
+									  productId:self.getIndex(),
+									  bacthNumber:self.getName(),
+									  allotTime:$("#Time").val(),
+									  number:$(".sumnumber").val(),
+									  remarks:$(".remarks").val(),
+									  bacth:$(".bacth").val(),
+									  type:3,
+									  flag:1,
+							  }
+							  var _data={
+										page:1,
+								  		size:13,	
+								  		type:3,
+								  		flag:1,
+
+								} 
+							  $.ajax({
+									url:"${ctx}/bacth/addBacth",
+									data:postData,
+						            traditional: true,
+									type:"post",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									
+									success:function(result){
+										if(0==result.code){
+											layer.msg("添加成功！", {icon: 1});
+										 self.loadPagination(_data); 
+										 $('.addDictDivTypeForm')[0].reset();
+											
+										}else{
+											layer.msg(result.message, {icon: 2});
+										}
+										
+										layer.close(index);
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								});
 							},
+						  end:function(){
+							  $('#addDictDivType').hide();
+						
+							  $('.addDictDivTypeForm')[0].reset(); 
 							
-							success:function(result){
-								if(0==result.code){
-									layer.msg(result.message, {icon: 1});
-									self.loadPaginationto(_data);
-								}else{
-									layer.msg(result.message, {icon: 2});
-								}
-								layer.close(index);
-							},error:function(){
-								layer.msg("操作失败！", {icon: 2});
-								layer.close(index);
-							}
-						});
-						 });
-				  })
-				
+						  }
+					});
+				})
 			}
    	}
    			var login = new Login();
