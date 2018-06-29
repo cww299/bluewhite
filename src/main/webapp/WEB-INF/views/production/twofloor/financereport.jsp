@@ -615,7 +615,6 @@
 				
 				//导出
 				$('.exporttw').on('click',function(){
-					alert(1)
 					var index; 
 					var d=$("#startTimetw").val();
 					var e= $("#endTimetw").val();
