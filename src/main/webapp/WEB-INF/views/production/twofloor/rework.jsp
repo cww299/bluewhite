@@ -1025,6 +1025,7 @@
 										bacthNumber:bacthNumber,
 										allotTime:$('#Timetw').val(),
 										taskTime:$('.timestart').val(),
+										productId:productId,
 								}
 								
 							    $.ajax({
