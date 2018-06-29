@@ -615,10 +615,11 @@
 				
 				//导出
 				$('.exporttw').on('click',function(){
+					alert(1)
 					var index; 
-					var a=$("#startTimetw").val();
-					var c= $("#endTimetw").val();
-					location.href="${ctxextel/importExcel/groupProduction?orderTimeBegin="+a+"&orderTimeEnd="+c+"&type="+3;
+					var d=$("#startTimetw").val();
+					var e= $("#endTimetw").val();
+					location.href="${ctx}excel/importExcel/groupProduction?orderTimeBegin="+d+"&orderTimeEnd="+e+"&type="+3;
 				})
 			}
    	}
