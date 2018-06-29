@@ -736,16 +736,20 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			 fourNumber = 0.0;
 			//遍历任务，通过任务 的员工id和分组人员的员工id相匹配，相同则记录任务数
 			for(Task ta : taskList){
+				Integer dex = null;
 				if (!StringUtils.isEmpty(ta.getUserIds())) {
 					String [] ids = ta.getUserIds().split(",");
 					if (ids.length>0) {
 						for (int i = 0; i < ids.length; i++) {
+							dex = 0;
 							Long id = Long.parseLong(ids[i]);
 								//遍历出每个组
-								for(Group rp: groupList){
 									for (int j = 0; j < groupList.size(); j++) {
-										for(User us : rp.getUsers()){		
+										dex = 1;
+										for(User us : groupList.get(j).getUsers()){
+											//当任务员工id等于检验分组员工id时，记录数值，并跳出当前循环人员id，同时，该组的任务数量已被记载，跳出分组循环
 											if(us.getId().equals(id)){
+												dex=2;
 												switch (j) {
 												case 0:
 													oneNumber+=ta.getNumber();
@@ -760,10 +764,16 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 													fourNumber+=ta.getNumber();
 													break;
 												}
+												break;
 											}
 										}
-								}
+									if(dex==2){
+										break;
+									}	
 							}
+							if(dex==2){
+								break;
+							}		
 						}
 					}
 				}
