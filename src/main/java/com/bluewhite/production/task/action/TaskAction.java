@@ -123,11 +123,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 			//新增
 			for(Task tasks : taskList){
 				if(!StringUtils.isEmpty(tasks.getUserIds())){
-					if(tasks.getAllotTime() == null ){
-						Calendar  cal = Calendar.getInstance();
-						cal.add(Calendar.DATE,-1);
-						tasks.setAllotTime(cal.getTime());
-					}
+					task.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime(), task.getType()));
 					taskService.addTask(tasks);
 					cr.setMessage("任务分配成功");
 				}else{
