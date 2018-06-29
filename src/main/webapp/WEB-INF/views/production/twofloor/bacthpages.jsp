@@ -997,6 +997,7 @@
 										productName:productName,
 										bacthNumber:bacthNumber,
 										allotTime:$('#Time').val(),
+										productId:productId,
 								}
 							    $.ajax({
 									url:"${ctx}/task/addTask",
