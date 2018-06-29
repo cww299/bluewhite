@@ -700,10 +700,59 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 
 	@Override
 	public List<MonthlyProduction> groupProduction(MonthlyProduction monthlyProduction) {
+		PageParameter page  = new PageParameter();
+		page.setSize(Integer.MAX_VALUE);
+		//检验组
+		Group group= new Group();
+		group.setKindWorkId((long)113);
+		List<Group> groupList = groupService.findList(group);
+		
+
+		//查出当日所有检验任务
+		Task task= new Task();
+		task.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
+		task.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
+		task.setType(monthlyProduction.getType());
+		task.setProcedureTypeId((long)99);
+		List<Task> taskList = TaskService.findPages(task, page).getRows();
 		
 		
+		//将检验任务按产品id分组，统计出数量
+		Map<Object, List<Task>> mapTask = taskList.stream().collect(Collectors.groupingBy(Task::getProductId,Collectors.toList()));
+		for(Object ps : mapTask.keySet()){
+			List<Task> psList= mapTask.get(ps);
+			//该产品检验组总数量
+			double sumNumber = psList.stream().mapToDouble(Task::getNumber).sum();
+			
+			double groupNumber = 0;
+			for(Group rp: groupList){
+				
+				if(rp.getUsers().size()>0){
+					for(User us : rp.getUsers()){		
+						for(Task ta : taskList){
+							if (!StringUtils.isEmpty(ta.getUserIds())) {
+								String [] ids = ta.getUserIds().split(",");
+								if (ids.length>0) {
+									for (int i = 0; i < ids.length; i++) {
+										Long id = Long.parseLong(ids[i]);
+											if(us.getId().equals(id)){
+												
+												groupNumber+=ta.getNumber();
+												
+											}
+									}
+								}
+							}
+						}
+							
+					}
+				}
+				
+			}
+		}
 		
 		
+
 		
 		return null;
 	}
