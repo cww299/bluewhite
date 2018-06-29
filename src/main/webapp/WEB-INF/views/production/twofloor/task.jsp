@@ -36,7 +36,7 @@
                             </div>
                   <!--查询开始  -->
           <div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-12 col-sm-9 col-md-9">
+			<div class="col-xs-10 col-sm-10 col-md-10">
 				<form class="form-search" >
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 col-md-12">
@@ -56,6 +56,8 @@
 					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
              onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
+								<td>&nbsp&nbsp</td>
+								<td>工序:</td><td><select class="form-control selectchoice"><option value="0">针工工序</option><option value="1">返工工序</option></select></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
@@ -176,7 +178,7 @@
 						page:1,
 				  		size:13,	
 				  		type:3,
-
+						flag:$('.selectchoice').val(),
 				} 
 			this.init = function(){
 				
@@ -240,6 +242,7 @@
 								  			bacthNumber:$('#number').val(),
 								  			orderTimeBegin:$("#startTime").val(),
 								  			orderTimeEnd:$("#endTime").val(),
+								  			flag:$('.selectchoice').val(),
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -476,6 +479,7 @@
 				  			bacthNumber:$('#number').val(),
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
+				  			flag:$('.selectchoice').val(),
 				  	}
 		            self.loadPagination(data);
 				});
@@ -628,6 +632,7 @@
 								status:0,
 								type:3,
 								ids:arr,
+								flag:$('.selectchoice').val(),
 						}
 						var index;
 						 index = layer.confirm('确定一键开始吗', {btn: ['确定', '取消']},function(){

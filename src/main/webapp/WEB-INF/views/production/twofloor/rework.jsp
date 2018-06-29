@@ -36,7 +36,7 @@
                             </div>
                              <!--查询开始  -->
           <div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-9 col-sm-9  col-md-9">
+			<div class="col-xs-10 col-sm-10 col-md-10">
 				<form class="form-search" >
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 col-md-12">
@@ -66,6 +66,12 @@
 								<span class="input-group-btn">
 									<button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增返工</button>
 								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-success  btn-sm btn-3d export">
+									导出返工价值
+									</button>
+								</span>
 							</div>
 						</div>
 					</div>
@@ -90,7 +96,6 @@
                                             <th class="text-center">任务价值</th>
                                             <th class="text-center">当批用时</th>
                                             <th class="text-center">备注</th>
-                                            <th class="text-center">完成状态</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -361,7 +366,6 @@
 			      				+'<td class="text-center  sumTaskPrice">'+ parseFloat((o.sumTaskPrice*1).toFixed(3))+'</td>'
 			      				+'<td class="text-center ">'+o.time+'</td>'
 			      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
-			      				+'<td class="text-center ">'+strname+'</td>'
 								+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button>  <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
 			      			}); 
 					        //显示分页
@@ -1063,7 +1067,13 @@
 					
 					
 				})
-				
+				//导出返工价值
+					$('.export').on('click',function(){
+						var index; 
+						var a=$("#startTime").val();
+						var c= $("#endTime").val();
+						location.href="${ctx}/excel/importExcel?startTime="+a+"&endTime="+c;
+					})
 				
 			}
 			this.mater=function(){

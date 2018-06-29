@@ -741,7 +741,8 @@
 				  			
 							imageForm.append("file",$('#upfile')[0].files[0]);
 				  			imageForm.append("productId",self.getCache());
-				  			imageForm.append("type",1)
+				  			imageForm.append("type",1);
+				  			imageForm.append("flag",0);
 					 $.ajax({
 							url:"${ctx}/excel/importProcedure",
 							data:imageForm,

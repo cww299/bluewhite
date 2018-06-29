@@ -35,7 +35,7 @@
                                 </div>
                             </div>
         <div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-8 col-sm-8  col-md-9">
+			<div class="col-xs-11 col-sm-11  col-md-11">
 				<form class="form-search" >
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 col-md-12">
@@ -55,6 +55,8 @@
 					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
              onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
+								<td>&nbsp&nbsp</td>
+								<td>完成状态:</td><td><select class="form-control selectchoice"><option value="0">未完成</option><option value="1">已完成</option></select></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
@@ -64,6 +66,12 @@
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
 									<button type="button" id="addprocedure" class="btn btn-success btn-sm btn-3d pull-right">一键接收</button>
+								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-success  btn-sm btn-3d start">
+									一键完成
+									</button>
 								</span>
 							</div>
 						</div>
@@ -75,6 +83,12 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
+                                        <th class="center">
+											<label> 
+											<input type="checkbox" class="ace checks" /> 
+											<span class="lbl"></span>
+											</label>
+											</th>
                                         	<th class="text-center">批次号</th>
                                             <th class="text-center">时间</th>
                                             <th class="text-center">产品名</th>
@@ -286,6 +300,7 @@
 						page:1,
 				  		size:13,	
 				  		type:2,
+				  		status:$('.selectchoice').val(),
 				} 
 			 
 			this.init = function(){
@@ -311,7 +326,7 @@
 		      			  
 		      			 $(result.data.rows).each(function(i,o){
 		      				 
-		      				 html +='<tr>'
+		      				 html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
 		      				+'<td class="text-center  name">'+o.product.name+'</td>'
@@ -340,6 +355,7 @@
 								  			bacthNumber:$('#number').val(),
 								  			orderTimeBegin:$("#startTime").val(),
 								  			orderTimeEnd:$("#endTime").val(),
+								  			status:$('.selectchoice').val(),
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -349,14 +365,31 @@
 					   	layer.close(index);
 					   	 $("#tablecontent").html(html); 
 					   	self.loadEvents();
-					   
+					   	self.checkedd();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
 					  }
 				  });
 			}
-			
+			  this.checkedd=function(){
+					
+					$(".checks").on('click',function(){
+						
+	                    if($(this).is(':checked')){ 
+				 			$('.checkboxId').each(function(){  
+	                    //此处如果用attr，会出现第三次失效的情况  
+	                     		$(this).prop("checked",true);
+				 			})
+	                    }else{
+	                    	$('.checkboxId').each(function(){ 
+	                    		$(this).prop("checked",false);
+	                    		
+	                    	})
+	                    }
+	                }); 
+					
+				}
 			this.loadEvents = function(){
 				//删除
 				$('.delete').on('click',function(){
@@ -1075,7 +1108,6 @@
 			this.loadworking=function(){
 				var data={
 						page:1,
-				  		size:13,	
 				  		status:1,
 				  		receive:0,
 				}
@@ -1110,28 +1142,8 @@
 		      				+'<td class="text-center edit numberfr"><input class="work"  value="'+a+'"></input></td><tr>'
 							
 		      			}); 
-				        //显示分页
-					   	  laypage({
-					      cont: 'pagerr', 
-					      pages: result.data.totalPages, 
-					      curr:  result.data.pageNum || 1, 
-					      jump: function(obj, first){ 
-					    	  if(!first){ 
-					    		 
-						        	var _data = {
-						        			page:obj.curr,
-									  		size:13,
-									  		type:2,
-								  			name:$('#name').val(),
-								  			bacthNumber:$('#number').val(),
-								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(),
-								  	}
-						        
-						            self.loadPagination(_data);
-							     }
-					      }
-					    });  
+				        
+					   	  
 					   	layer.close(index);
 					   	 $("#tableworking").html(html); 
 					   	self.loadEventsth();
@@ -1205,7 +1217,51 @@
 				}) 
 			}
 			this.events = function(){
-				
+				/* 一键完成  */
+				$('.start').on('click',function(){
+					  var  that=$(".table-hover");
+					  var arr=new Array()//员工id
+					  that.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+							arr.push($(this).val());   
+						});
+					  
+					  if(arr.length<=0){
+							return layer.msg("至少选择一个！", {icon: 2});
+						}
+						var data={
+								status:0,
+								type:2,
+								ids:arr,
+								
+						}
+						var index;
+						 index = layer.confirm('确定一键完成吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/bacth/statusBacth",
+							data:data,
+				            traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+									layer.msg(result.message, {icon: 1});
+									self.loadPagination(data);
+								}else{
+									layer.msg(result.message, {icon: 2});
+								}
+								layer.close(index);
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 });
+				  })
 				//查询
 				$('.searchtask').on('click',function(){
 					var data = {
@@ -1216,6 +1272,7 @@
 				  			bacthNumber:$('#number').val(),
 				  			 orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
+				  			status:$('.selectchoice').val(),
 				  	}
 		            self.loadPagination(data);
 				});
@@ -1248,6 +1305,7 @@
 								  	type:2,
 								  	name:$('#name').val(),
 						  			number:$('#number').val(),
+						  			status:$('.selectchoice').val(),
 							  }
 							self.loadPagination(data);
 						  }

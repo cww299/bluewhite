@@ -38,7 +38,7 @@
 			<div class="col-xs-11 col-sm-11  col-md-11">
 				<form class="form-search" >
 					<div class="row">
-						<div class="col-xs-12 col-sm-12 col-md-12">
+						<div class="col-xs-11 col-sm-11 col-md-11">
 							<div class="input-group"> 
 								<table><tr><td>批次号:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
 									<td>&nbsp&nbsp</td>
@@ -67,12 +67,6 @@
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-success  btn-sm btn-3d start">
 									一键完成
-									</button>
-								</span>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-success  btn-sm btn-3d export">
-									导出返工价值
 									</button>
 								</span>
 								
@@ -1045,13 +1039,6 @@
 					
 				})
 				
-				//导出返工价值
-					$('.export').on('click',function(){
-						var index; 
-						var a=$("#startTime").val();
-						var c= $("#endTime").val();
-						location.href="${ctx}/excel/importExcel?startTime="+a+"&endTime="+c;
-					})
 				
 			}
 			
