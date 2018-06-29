@@ -144,7 +144,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		};
 		bacth.setSumTaskPrice(sumTaskPrice);
 		//计算出该批次的地区差价
-		bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType()), null));
+		if(task.getFlag()==0){
+			bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType()), null));
+		}
 		bacthDao.save(bacth);
 		return task;
 	}
@@ -171,11 +173,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	        	}
 	        	//按工序类型
 	        	if(!StringUtils.isEmpty(param.getProcedureTypeId())){
-	        		if(!StringUtils.isEmpty(param.getPeg())){
-	        			predicate.add(cb.notEqual(root.get("procedure").get("procedureTypeId").as(Long.class), param.getProcedureTypeId()));
-	        		}else{
-	        			predicate.add(cb.equal(root.get("procedure").get("procedureTypeId").as(Long.class), param.getProcedureTypeId()));
-	        		}
+	        		predicate.add(cb.equal(root.get("procedure").get("procedureTypeId").as(Long.class), param.getProcedureTypeId()));
 	        	}
 	        	
 	        	//按类型
@@ -459,15 +457,4 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		
 	}
 
-	@Override
-	public Task addRework(Task task) throws Exception{
-		Bacth bacth = new Bacth();
-		bacth.setBacthNumber(task.getBacthNumber());
-		bacth.setFlag(task.getFlag());
-		bacthService.saveBacth(bacth);
-		task.setBacthId(bacth.getId());
-		this.addTask(task);
-		return task;
-	}
-	
 }

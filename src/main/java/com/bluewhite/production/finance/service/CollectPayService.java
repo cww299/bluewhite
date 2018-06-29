@@ -82,6 +82,13 @@ public interface CollectPayService extends BaseCRUDService<CollectPay,Long>{
 	 */
 	public NonLine updateHeadmanPay(NonLine nonLine);
 	
+	/**
+	 * 检验组产量报表
+	 * @param collectInformation
+	 * @return
+	 */
+	public List<MonthlyProduction> groupProduction(MonthlyProduction monthlyProduction);
+	
 
 
 }
