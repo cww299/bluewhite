@@ -22,7 +22,6 @@ import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
-import com.bluewhite.production.bacth.service.BacthService;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
@@ -45,8 +44,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	private BacthDao bacthDao;
 	@Autowired
 	private PayBDao payBDao;
-	@Autowired
-	private BacthService bacthService;
 	
 	
 	
@@ -120,6 +117,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						payB.setUserName(user.getUserName());
 						payB.setBacth(newTask.getBacthNumber());
 						payB.setBacthId(newTask.getBacthId());
+						payB.setProductId(newTask.getProductId());
 						payB.setProductName(newTask.getProductName());
 						payB.setTaskId(newTask.getId());
 						payB.setType(newTask.getType());
