@@ -140,25 +140,6 @@ private static final Log log = Log.getLog(TaskAction.class);
 	}
 	
 	
-	/**
-	 *	2楼环境，返工任务的新增
-	 * 	需要新增一个返工批次
-	 * 
-	 */
-	@RequestMapping(value = "/task/addRework", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse addRework(HttpServletRequest request,Task task) {
-		CommonResponse cr = new CommonResponse();
-		try {
-			taskService.addRework(task);
-		} catch (Exception e) {
-			cr.setMessage(e.getMessage());
-			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			return cr;
-		}
-		cr.setMessage("新增成功");
-		return cr;
-	}
 	
 	
 	

@@ -658,13 +658,11 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 					collect = new CollectPay();
 					double sumPayNumber = 0;
 					
-					//通过工序类型id去查找工种不是充棉的任务
+					//任务里没有充棉的类型，所以查出所有的任务
 					Task task= new Task();
 					task.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 					task.setOrderTimeEnd(collectPay.getOrderTimeEnd());
 					task.setType(collectPay.getType());
-					task.setProcedureTypeId((long)97);
-					task.setPeg(1);
 					List<Task> taskList = TaskService.findPages(task, page).getRows();
 				
 					//遍历任务，组装出符合充棉的任务
@@ -698,6 +696,16 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			}
 		}
 		return collectPayList;
+	}
+
+	@Override
+	public List<MonthlyProduction> groupProduction(MonthlyProduction monthlyProduction) {
+		
+		
+		
+		
+		
+		return null;
 	}
 
 

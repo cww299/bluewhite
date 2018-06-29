@@ -61,6 +61,12 @@ public class Task  extends BaseEntity<Long>{
 	@Column(name = "product_name")
 	private String productName;
 	
+	/**
+	 * 产品id
+	 */
+	@Transient
+	private Long productId;
+	
 	
 	/**
 	 * 领取任务人员ids
@@ -231,20 +237,15 @@ public class Task  extends BaseEntity<Long>{
 	@Transient
 	private String users;
 	
-	/**
-	 * 非充棉组人员标识
-	 */
-	@Transient
-	private Integer peg;
 	
 	
 	
-	public Integer getPeg() {
-		return peg;
+	public Long getProductId() {
+		return productId;
 	}
 
-	public void setPeg(Integer peg) {
-		this.peg = peg;
+	public void setProductId(Long productId) {
+		this.productId = productId;
 	}
 
 	public Date getStartTime() {
