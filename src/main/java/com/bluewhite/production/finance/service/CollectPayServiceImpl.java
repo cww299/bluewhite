@@ -37,7 +37,6 @@ import com.bluewhite.production.finance.entity.UsualConsume;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.service.GroupService;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
-import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.system.user.entity.User;
@@ -717,7 +716,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		task.setProcedureTypeId((long)99);
 		List<Task> taskList = TaskService.findPages(task, page).getRows();
 		
-		//
 		List<GroupProduction> groupProductionList = new ArrayList<GroupProduction>();
 		
 		//将检验任务按产品id分组，统计出数量
