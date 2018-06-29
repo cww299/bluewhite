@@ -610,7 +610,7 @@
 					var index; 
 					var a=$("#startTimetw").val();
 					var c= $("#endTimetw").val();
-					location.href="${ctx}excel/importExcel/monthlyProduction?orderTimeBegin="+a+"&orderTimeEnd="+c+"&type="+3;
+					location.href="${ctx}/excel/importExcel/monthlyProduction?orderTimeBegin="+a+"&orderTimeEnd="+c+"&type="+3;
 				})
 				
 				//导出
@@ -618,7 +618,7 @@
 					var index; 
 					var d=$("#startTimetw").val();
 					var e= $("#endTimetw").val();
-					location.href="${ctx}excel/importExcel/groupProduction?orderTimeBegin="+d+"&orderTimeEnd="+e+"&type="+3;
+					location.href="${ctx}/excel/importExcel/groupProduction?orderTimeBegin="+d+"&orderTimeEnd="+e+"&type="+3;
 				})
 			}
    	}
