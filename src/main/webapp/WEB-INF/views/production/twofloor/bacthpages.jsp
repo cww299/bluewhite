@@ -268,6 +268,7 @@
 						page:1,
 				  		size:13,	
 				  		type:3,
+				  		flag:0,
 				} 
 			this.init = function(){
 				
@@ -339,6 +340,7 @@
 								  			bacthNumber:$('#number').val(),
 								  			orderTimeBegin:$("#startTime").val(),
 								  			orderTimeEnd:$("#endTime").val(),
+								  			flag:0,
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -430,9 +432,10 @@
 									  			bacthNumber:$('#number').val(),
 									  			orderTimeBegin:$("#startTime").val(),
 									  			orderTimeEnd:$("#endTime").val(),
+									  			flag:0,
 									  	}
 							        
-							            self.loadPagination(_data);
+							            self.loadPaginationto(_data);
 								     }
 						      }
 						    });  
@@ -673,7 +676,6 @@
 							page:1,
 					  		size:13,	
 					  		type:3,
-
 					} 
 					self.loadPaginationto(data);
 					 var ids=that.data("id");
@@ -1067,6 +1069,7 @@
 				  			 orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
 				  			status:$("#selectstate").val(),
+				  			flag:0,
 				  	}
 		            self.loadPagination(data);
 				});
@@ -1085,6 +1088,7 @@
 								status:1,
 								type:3,
 								ids:arr,
+								flag:0,
 						}
 						var index;
 						 index = layer.confirm('确定一键完成吗', {btn: ['确定', '取消']},function(){
@@ -1135,6 +1139,7 @@
 						  		size:13,
 								bacthId:self.getCache(),
 								type:3,
+								
 						}
 						var index;
 						 index = layer.confirm('确定一键删除吗', {btn: ['确定', '取消']},function(){
@@ -1185,6 +1190,7 @@
 						  		size:13,
 								bacthId:self.getCache(),
 								type:3,
+								
 						}
 						var index;
 						 index = layer.confirm('确定一键开始吗', {btn: ['确定', '取消']},function(){
@@ -1236,6 +1242,7 @@
 						  		size:13,
 								bacthId:self.getCache(),
 								type:3,
+								
 						}
 						var index;
 						 index = layer.confirm('确定一键暂停吗', {btn: ['确定', '取消']},function(){
