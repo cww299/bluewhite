@@ -98,6 +98,7 @@
                                             <th class="text-center">任务价值</th>
                                             <th class="text-center">地区差价</th>
                                             <th class="text-center">备注</th>
+                                            <th class="text-center">状态</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -325,7 +326,12 @@
 		      		  success: function (result) {
 		      			  
 		      			 $(result.data.rows).each(function(i,o){
-		      				 
+		      				var strname="";
+		      				 if(o.status==1){
+		      					strname="完成";
+		      				 }else{
+		      					strname="未完成";
+		      				 }
 		      				 html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
@@ -336,6 +342,7 @@
 		      				+'<td class="text-center  sumTaskPrice">'+ parseFloat((o.sumTaskPrice*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center  regionalPrice">'+parseFloat((o.regionalPrice*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
+		      				+'<td class="text-center ">'+strname+'</td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button> <button class="btn btn-sm btn-primary btn-trans addDicttw" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+' data-number='+o.number+'>分配2</button> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
 							
 		      			}); 

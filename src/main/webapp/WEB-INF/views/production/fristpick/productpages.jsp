@@ -320,6 +320,7 @@
 									  bacthHairPrice:bacthHairPrice,
 									  type:2,
 									  allotTime:$('#Time').val(),
+									  flag:0,
 							  }
 							   $.ajax({
 									url:"${ctx}/bacth/addBacth",
@@ -339,7 +340,7 @@
 											$('#addbatch').hide();
 											
 										}else{
-											layer.msg("添加失败", {icon: 2});
+											layer.msg(result.message, {icon: 2});
 										}
 										
 										layer.close(index);
