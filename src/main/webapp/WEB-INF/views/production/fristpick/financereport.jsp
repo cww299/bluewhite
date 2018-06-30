@@ -229,14 +229,14 @@
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>开始:</td>
 								<td>
-								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
+								<input id="startTimefr" placeholder="请输入开始时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#startTimefr', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
 								</td>
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>结束:</td>
 								<td>
-								<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+								<input id="endTimefr" placeholder="请输入结束时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#endTimefr', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
 								</tr></table> 
 								<span class="input-group-btn">
@@ -594,7 +594,6 @@
 			this.loadEventstw = function(){
 				
 				   $('.work').blur(function(){
-					   console.log($(this).parent().parent().find('.workto').val())
 					 if($(this).parent().parent().find('.workto').val()==""){
 						return layer.msg("单只协助发货费不能为空！", {icon: 2});
 					 }

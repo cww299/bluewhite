@@ -97,6 +97,7 @@
                                             <th class="text-center">外发价格</th>
                                             <th class="text-center">任务价值</th>
                                             <th class="text-center">地区差价</th>
+                                            <th class="text-center">当批用时</th>
                                             <th class="text-center">备注</th>
                                             <th class="text-center">状态</th>
                                             <th class="text-center">操作</th>
@@ -337,10 +338,11 @@
 		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
 		      				+'<td class="text-center  name">'+o.product.name+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
-		      				+'<td class="text-center  bacthDepartmentPrice">'+o.bacthDepartmentPrice+'</td>'
+		      				+'<td class="text-center  bacthDepartmentPrice">'+parseFloat((o.bacthDepartmentPrice).toFixed(3))+'</td>'
 		      				+'<td class="text-center  bacthHairPrice">'+o.bacthHairPrice+'</td>'
 		      				+'<td class="text-center  sumTaskPrice">'+ parseFloat((o.sumTaskPrice*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center  regionalPrice">'+parseFloat((o.regionalPrice*1).toFixed(3))+'</td>'
+		      				+'<td class="text-center ">'+parseFloat((o.time).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
 		      				+'<td class="text-center ">'+strname+'</td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button> <button class="btn btn-sm btn-primary btn-trans addDicttw" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+' data-number='+o.number+'>分配2</button> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
@@ -644,7 +646,7 @@
 							$(result.data).each(function(i,o){
 							html+='<option value="'+o.number+'" data-name="'+o.name+'">'+o.name+'</option>'
 							})
-							$('.workingtw').html("<select class='form-control selectchangtw'><option value='0'>请选择</option>"+html+"</select>");
+							$('.workingtw').html("<select class='form-control selectchangtw'><option value='0'></option>"+html+"</select>");
 							layer.close(index);
 							
 						},error:function(){
