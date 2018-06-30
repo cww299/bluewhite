@@ -335,7 +335,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	 * 
 	 * 
 	 */
-	@RequestMapping(value = "/finance/headmanPay", method = RequestMethod.GET)
+	@RequestMapping(value = "/finance/headmanPay", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse headmanPay(HttpServletRequest request,NonLine nonLine) {
 		CommonResponse cr = new CommonResponse();
@@ -353,7 +353,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	 * 
 	 * 
 	 */
-	@RequestMapping(value = "/finance/updateHeadmanPay", method = RequestMethod.GET)
+	@RequestMapping(value = "/finance/updateHeadmanPay", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse updateHeadmanPay(HttpServletRequest request,NonLine nonLine) {
 		CommonResponse cr = new CommonResponse();
@@ -362,6 +362,19 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		return cr;
 	}
 	
+	
+	/**
+	 * 获取当月的产量详细数值 
+	 * 
+	 */
+	@RequestMapping(value = "/finance/getMouthYields", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse getMouthYields(HttpServletRequest request,Long id,String date) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(collectPayBService.getMouthYields(id,date));
+		cr.setMessage("查询成功");
+		return cr;
+	}
 	
 	
 	/****************二楼固有功能**********************/

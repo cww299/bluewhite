@@ -1,8 +1,12 @@
 package com.bluewhite.production.finance.service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,6 +18,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -123,13 +129,13 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		for(Object ps : mapCollectPay.keySet()){
 			List<CollectPay> psList= mapCollectPay.get(ps);
 			//计算出加绩总和
-			double sumPay = psList.stream().mapToDouble(CollectPay::getAddPerformancePay).sum();
+			double sumPay = psList.stream().filter(CollectPay->CollectPay.getAddPerformancePay()!=null).mapToDouble(CollectPay::getAddPerformancePay).sum();
 			//计算A工资总和
 			double sumPayA = psList.stream().mapToDouble(CollectPay::getPayA).sum();
 			//计算b工资总和
 			double sumPayB = psList.stream().mapToDouble(CollectPay::getPayB).sum();
 			//计算上浮后b工资总和
-			double sumAddPayB = psList.stream().mapToDouble(CollectPay::getAddPayB).sum();
+			double sumAddPayB = psList.stream().filter(CollectPay->CollectPay.getAddPayB()!=null).mapToDouble(CollectPay::getAddPayB).sum();
 
 			CollectPay collect = new CollectPay();
 			collect.setOrderTimeBegin(collectPay.getOrderTimeBegin());
@@ -533,26 +539,36 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	@Override
 	public NonLine updateHeadmanPay(NonLine nonLine) {
 		NonLine nl = nonLineDao.findOne(nonLine.getId());
-		//昨天产量
 		nl.setYields(nonLine.getYields());
-		
-		
+		//产量
+		Integer accumulateYield = null;
+		if(nonLine.getYields()!=null){
+			JSONObject jsonObj = JSONObject.parseObject(nonLine.getYields());
+			JSONArray on = jsonObj.getJSONArray("data");
+			for (int i = 0; i < on.size(); i++) {
+				JSONObject jo = on.getJSONObject(i); 
+		         String value =  jo.getString("value");
+		         accumulateYield = Integer.parseInt(value.equals("") ? "0" : value);  
+		         accumulateYield+=accumulateYield;
+			}
+		}
 		//获取各组的产量
-//		nl.setAccumulateYield();
-		
+		nl.setAccumulateYield(accumulateYield);
 		
 		//单只协助发货费用/元选择
-		nl.setOnePay(nonLine.getOnePay());
+		if(nonLine.getOnePay()!=null){
+			nl.setOnePay(nonLine.getOnePay());
+			//累计产生的发货绩效
+			nl.setCumulative(nl.getAccumulateYield()*nonLine.getOnePay());
+		}
+		
 		//人为手动加减量化绩效比
-		nl.setAddition(nonLine.getAddition());
-		
-		//人为改变后产生的量化绩效出勤时间
-		nl.setChangeTime(nl.getAddition()*nl.getTime());
-		
-		//剩余管理加绩发放
-
-		//累计产生的发货绩效
-		nl.setCumulative(nl.getAccumulateYield()*nonLine.getOnePay());
+		if(nonLine.getAddition()!=null){
+			nl.setAddition(nonLine.getAddition());
+			//人为改变后产生的量化绩效出勤时间
+			nl.setChangeTime(nl.getAddition()*nl.getTime());
+		}
+	
 		
 		return nonLineDao.save(nl);
 	}
@@ -796,9 +812,53 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		return groupProductionList;
 	}
 
+	@Override
+	public Object getMouthYields(Long id,String date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");   
+		long size = DatesUtil.getDaySub(DatesUtil.getfristDayOftime(DatesUtil.getFirstDayOfMonth(new Date())),DatesUtil.getLastDayOftime(DatesUtil.getLastDayOfMonth(new Date())));
+		JSONObject outData = new JSONObject();
+		JSONArray gResTable = new JSONArray(); 
+		Date beginTimes = null;
+		NonLine nonLine = nonLineDao.findOne(id);
+		//当产量不为null时，将数据取出，返回前端
+		if(nonLine.getYields()!=null){
+			JSONObject jsonObj = JSONObject.parseObject(nonLine.getYields());
+			JSONArray on = jsonObj.getJSONArray("data");
+			for (int i = 0; i < on.size(); i++) {
+				JSONObject jo = on.getJSONObject(i); 
+		         String value =  jo.getString("name");
+		         try {
+					if(DatesUtil.equalsDate(format.parse(value), format.parse(date))){
+						gResTable.add(jo);
+					 }
+				} catch (ParseException e) {
+				}
+			}
+			outData.put("data", gResTable);
+			
+			//当产量为null时，填充无数据json格式返回
+		}else{
+			for(int j=0 ; j<size ; j++){
+				if(j!=0){
+					//获取下一天的时间
+					beginTimes = DatesUtil.nextDay(beginTimes);
+				}else{
+					//获取第一天的开始时间
+					beginTimes = DatesUtil.getfristDayOftime(DatesUtil.getFirstDayOfMonth(new Date()));
+				}
+				JSONObject name = new JSONObject(); 
+				name.put("name",sdf.format(beginTimes));
+				name.put("value","");
+				gResTable.add(name);
+			}
+			outData.put("data", gResTable);
+		}
+		return outData;
+		
+	}
 
-	
-	
+
 	
 	
 

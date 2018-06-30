@@ -90,6 +90,14 @@ public class NonLine extends BaseEntity<Long>{
 	@Column(name = "yields")
 	private String yields;
 	
+	
+	/**
+	 * 当月所对应的产量
+	 * @return
+	 */
+	@Transient
+	private String mouthYields;
+	
 	/**
 	 * 类型
 	 * @return
@@ -111,6 +119,18 @@ public class NonLine extends BaseEntity<Long>{
 	
 	
 	
+	
+	
+	public String getMouthYields() {
+		return mouthYields;
+	}
+
+
+	public void setMouthYields(String mouthYields) {
+		this.mouthYields = mouthYields;
+	}
+
+
 	public Double getChangeTime() {
 		return changeTime;
 	}

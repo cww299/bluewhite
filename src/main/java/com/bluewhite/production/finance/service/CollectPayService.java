@@ -90,6 +90,12 @@ public interface CollectPayService extends BaseCRUDService<CollectPay,Long>{
 	 */
 	public List<GroupProduction> groupProduction(GroupProduction groupProduction);
 	
+	/**
+	 * 获取当月的产量 
+	 * 
+	 */
+	public Object getMouthYields(Long id,String date);
+	
 
 
 }
