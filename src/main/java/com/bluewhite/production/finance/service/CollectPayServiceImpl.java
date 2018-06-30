@@ -725,8 +725,9 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		Double twoNumber = null;
 		Double threeNumber = null;
 		Double fourNumber = null;
+		GroupProduction production =null;
 		for(Object ps : mapTask.keySet()){
-			GroupProduction production = new GroupProduction();
+			production = new GroupProduction();
 			List<Task> psList= mapTask.get(ps);
 			//该产品检验组总数量
 			double sumNumber = psList.stream().mapToDouble(Task::getNumber).sum();
@@ -735,7 +736,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			 threeNumber = 0.0;
 			 fourNumber = 0.0;
 			//遍历任务，通过任务 的员工id和分组人员的员工id相匹配，相同则记录任务数
-			for(Task ta : taskList){
+			for(Task ta : psList){
 				Integer dex = null;
 				if (!StringUtils.isEmpty(ta.getUserIds())) {
 					String [] ids = ta.getUserIds().split(",");

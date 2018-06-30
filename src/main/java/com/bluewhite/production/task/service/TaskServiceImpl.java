@@ -142,7 +142,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		};
 		bacth.setSumTaskPrice(sumTaskPrice);
 		//计算出该批次的地区差价
-		if(task.getFlag()==0){
+		if(bacth.getFlag()==0){
 			bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType()), null));
 		}
 		bacthDao.save(bacth);
@@ -226,8 +226,10 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						}
 					};
 					bacth.setSumTaskPrice(sumTaskPrice);
-					//计算出该批次的地区差价
-					bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType()), null));
+					if(bacth.getFlag()==0){
+						//计算出该批次的地区差价
+						bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType()), null));
+					}
 					//更新批次
 					bacthDao.save(bacth);
 				};
