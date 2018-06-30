@@ -845,7 +845,10 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 					beginTimes = DatesUtil.nextDay(beginTimes);
 				}else{
 					//获取第一天的开始时间
-					beginTimes = DatesUtil.getfristDayOftime(DatesUtil.getFirstDayOfMonth(new Date()));
+					try {
+						beginTimes = DatesUtil.getfristDayOftime(DatesUtil.getFirstDayOfMonth(format.parse(date)));
+					} catch (ParseException e) {
+					}
 				}
 				JSONObject name = new JSONObject(); 
 				name.put("name",sdf.format(beginTimes));
