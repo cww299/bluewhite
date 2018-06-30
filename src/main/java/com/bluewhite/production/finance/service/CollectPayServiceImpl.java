@@ -535,8 +535,12 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		NonLine nl = nonLineDao.findOne(nonLine.getId());
 		//昨天产量
 		nl.setYields(nonLine.getYields());
+		
+		
 		//获取各组的产量
-		nl.setAccumulateYield(nl.getAccumulateYield()+nonLine.getYields());
+//		nl.setAccumulateYield();
+		
+		
 		//单只协助发货费用/元选择
 		nl.setOnePay(nonLine.getOnePay());
 		//人为手动加减量化绩效比

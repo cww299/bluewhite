@@ -38,7 +38,7 @@ public class NonLine extends BaseEntity<Long>{
 	private Double time;
 	
 	/**
-	 *人为改变后产生的量化绩效出勤时间
+	 * 人为改变后产生的量化绩效出勤时间
 	 */
 	@Column(name = "change_time")
 	private Double changeTime;
@@ -84,11 +84,11 @@ public class NonLine extends BaseEntity<Long>{
 	
 	
 	/**
-	 * 单一日期的产量
+	 * 所有日期的所对应的产量
 	 * @return
 	 */
 	@Column(name = "yields")
-	private Integer yields;
+	private String yields;
 	
 	/**
 	 * 类型
@@ -171,15 +171,13 @@ public class NonLine extends BaseEntity<Long>{
 	}
 
 
-	
 
-
-	public Integer getYields() {
+	public String getYields() {
 		return yields;
 	}
 
 
-	public void setYields(Integer yields) {
+	public void setYields(String yields) {
 		this.yields = yields;
 	}
 
