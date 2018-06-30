@@ -240,7 +240,7 @@
 								</td>
 								</tr></table> 
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtaskfr">
 										查&nbsp找
 									</button>
 								</span>
@@ -283,7 +283,38 @@
         </section>
 
 
-
+<!--隐藏框已完成的批次开始  -->
+        <div id="addworking" style="display: none;">
+        <table><tr>           
+                        <td><button type="button" class="btn btn-default btn-danger btn-xs btn-3d receive">一键接收</button>&nbsp&nbsp</td>
+                        </tr></table>
+			<div class="panel-body">
+ <div class="form-group">
+  </div> 
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                        <th class="center">
+											<label> 
+											<input type="checkbox" class="ace checks" /> 
+											<span class="lbl"></span>
+											</label>
+											</th>
+                                        	<th class="text-center">批次号</th>
+                                            <th class="text-center">下货时间</th>
+                                            <th class="text-center">产品名</th>
+                                            <th class="text-center">数量</th>
+                                             <th class="text-center">部门</th>
+                                            <th class="text-center">待接收数量</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableworking">
+                                    </tbody>
+                                </table>
+                                 <div id="pagerr" class="pull-right">
+                            </div>
+</div>
+<!--隐藏框 已完成的批次结束  -->
 
 
     </section>
@@ -329,6 +360,29 @@
 				  		type:2,
 
 				} 
+			 var datae= 
+				{ 
+				root: 
+				[ 
+				{name:'1',value:'0'}, 
+				{name:'6101',value:'西安市'}, 
+				{name:'6102',value:'铜川市'}, 
+				{name:'6103',value:'宝鸡市'}, 
+				{name:'6104',value:'咸阳市'}, 
+				{name:'6105',value:'渭南市'}, 
+				{name:'6106',value:'延安市'}, 
+				{name:'6107',value:'汉中市'}, 
+				{name:'6108',value:'榆林市'}, 
+				{name:'6109',value:'安康市'}, 
+				{name:'6110',value:'商洛市'} 
+				] 
+				}
+ 			 var dataObj=eval(datae);
+				console.log(dataObj.root) 
+			var	dataObjO=dataObj.root;
+		 	$(dataObjO).each(function(i,o){ 
+			console.log(o.name)
+				}); 
 			 var myDate = new Date(new Date().getTime() - 86400000);
 				//获取当前年
 				var year=myDate.getFullYear();
