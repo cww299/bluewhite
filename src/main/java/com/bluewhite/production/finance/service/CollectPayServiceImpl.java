@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,7 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
@@ -545,23 +543,26 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	
 		
 		//往月产量解析
-		JSONObject nlJsonObj = JSONObject.parseObject(nl.getYields());
-		JSONArray nlOn = nlJsonObj.getJSONArray("data");
-		for (int i = 0; i < nlOn.size(); i++) {
-			JSONObject jo = nlOn.getJSONObject(i); 
-	         String name =  jo.getString("name");
-	     	//当月产量解析
-	 		JSONObject nonLineJsonObj = JSONObject.parseObject(nonLine.getYields());
-	 		JSONArray nonLineOn = nonLineJsonObj.getJSONArray("data");
-	 		for (int j = 0; j < nonLineOn.size(); j++) {
-	 	         String name1 =  nonLineOn.getJSONObject(j).getString("name");
-	 	         String value1 =  nonLineOn.getJSONObject(j).getString("value");
-	 	         if(name.equals(name1)){
-	 	        	jo.put(name, value1);
-	 	         }
-	 		}
+		if(nl.getYields()!=null){
+			JSONObject nlJsonObj = JSONObject.parseObject(nl.getYields());
+			JSONArray nlOn = nlJsonObj.getJSONArray("data");
+			for (int i = 0; i < nlOn.size(); i++) {
+				JSONObject jo = nlOn.getJSONObject(i); 
+				String name =  jo.getString("name");
+				//当月产量解析
+				JSONObject nonLineJsonObj = JSONObject.parseObject(nonLine.getYields());
+				JSONArray nonLineOn = nonLineJsonObj.getJSONArray("data");
+				for (int j = 0; j < nonLineOn.size(); j++) {
+					String name1 =  nonLineOn.getJSONObject(j).getString("name");
+					String value1 =  nonLineOn.getJSONObject(j).getString("value");
+					if(name.equals(name1)){
+						jo.put("name", name);
+						jo.put("value", value1);
+					}
+				}
+			}
+			nonLine.setYields(JSONObject.toJSONString(nlJsonObj));
 		}
-		nonLine.setYields(JSONObject.toJSONString(nlJsonObj));
 		nl.setYields(nonLine.getYields());
 		//产量
 		Integer accumulateYield = 0;
