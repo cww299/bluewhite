@@ -285,27 +285,15 @@
 
 <!--隐藏框已完成的批次开始  -->
         <div id="addworking" style="display: none;">
-        <table><tr>           
-                        <td><button type="button" class="btn btn-default btn-danger btn-xs btn-3d receive">一键接收</button>&nbsp&nbsp</td>
-                        </tr></table>
 			<div class="panel-body">
  <div class="form-group">
   </div> 
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                        <th class="center">
-											<label> 
-											<input type="checkbox" class="ace checks" /> 
-											<span class="lbl"></span>
-											</label>
-											</th>
-                                        	<th class="text-center">批次号</th>
-                                            <th class="text-center">下货时间</th>
-                                            <th class="text-center">产品名</th>
+                                        	<th class="text-center">日期</th>
                                             <th class="text-center">数量</th>
-                                             <th class="text-center">部门</th>
-                                            <th class="text-center">待接收数量</th>
+                                            <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tableworking">
@@ -378,10 +366,8 @@
 				] 
 				}
  			 var dataObj=eval(datae);
-				console.log(dataObj.root) 
 			var	dataObjO=dataObj.root;
 		 	$(dataObjO).each(function(i,o){ 
-			console.log(o.name)
 				}); 
 			 var myDate = new Date(new Date().getTime() - 86400000);
 				//获取当前年
@@ -593,7 +579,7 @@
 			    $.ajax({
 				      url:"${ctx}/finance/headmanPay",
 				      data:date,
-				      type:"GET",
+				      type:"POST",
 				      beforeSend:function(){
 					 	  index = layer.load(1, {
 						  shade: [0.1,'#fff'] //0.1透明度的白色背景
@@ -631,7 +617,8 @@
 		      				+'<td class="text-center edit ">'+o.accumulateYield+'</td>'
 		      				+'<td class="text-center edit "><input class="workto" value="'+o.onePay+'"></input></td>'
 		      				+'<td class="text-center edit "><input class="workth" value="'+o.addition+'"></input></td>'
-		      				+'<td class="text-center edit "><input class="work" data-id='+o.id+' value="'+o.yields+'"></input></td></tr>'
+		      				+'<td class="text-center edit "><input class="work" data-id='+o.id+' value="'+o.yields+'"></input></td>'
+		      				+'<td class="text-center edit "><button class="btn btn-primary btn-trans btn-sm savemode" data-id="'+o.id+'">填写</button></tr>'
 							
 		      			}); 
 				       
@@ -645,7 +632,135 @@
 				  });
 			  //绩效汇总结束
 			}
+			this.loadEventsth=function(){
+				//修改方法
+				$('.updateremake').on('click',function(){
+					if($(this).text() == "编辑"){
+						$(this).text("保存")
+						
+						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
+				        });
+					}else{
+							$(this).text("编辑")
+						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+
+					       
+					                $(this).html(obj_text.val()); 
+									
+							});
+							
+							var postData = {
+									id:$(this).data('id'),
+									addSelfNumber:$(this).parent().parent('tr').find(".addSelfNumber").text(),
+							}
+							var index;
+							
+							$.ajax({
+								url:"${ctx}/finance/updateCollectPay",
+								data:postData,
+								type:"POST",
+								beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								
+								success:function(result){
+									if(0==result.code){
+									layer.msg("修改成功！", {icon: 1});
+									$(".searchtaskth").click()
+									layer.close(index);
+									}else{
+										layer.msg("修改失败！", {icon: 1});
+										layer.close(index);
+									}
+								},error:function(){
+									layer.msg("操作失败！", {icon: 2});
+									layer.close(index);
+								}
+							});
+					}
+				})
+			}
 			this.loadEventstw = function(){
+				
+				
+				//触发工序弹框 加载内容方法
+				$('.savemode').on('click',function(){
+					var _index
+					var productId=$(this).data('id')
+					var name=$(this).data('name')
+					var dicDiv=$('#addworking');
+					 var html = '';
+					 var htmlth = '';
+					var postData={
+						id:$(this).data('id'),
+						date:"2018-06-30"
+					}  
+					$.ajax({
+							url:"${ctx}/finance/getMouthYields",
+							data:postData,
+							type:"POST",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								
+								$(result.data.data).each(function(i,o){
+				      				html +='<tr>'
+				      				+'<td class="text-center edit ">'+o.name+'</td>'
+				      				+'<td class="text-center edit ">'+o.value+'</td>'
+				      				+'<td class="text-center edit "><button class="btn btn-primary btn-trans btn-sm updatemode" data-id="'+o.id+'">编辑</button></td></tr>'
+				      			}); 
+								
+								
+								layer.close(index);
+							   	 $("#tableworking").html(html);
+							   	 self.loadEventsth();
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+					_index = layer.open({
+						  type: 1,
+						  skin: 'layui-layer-rim', //加上边框
+						  area: ['30%', '70%'], 
+						  btnAlign: 'c',//宽高
+						  maxmin: true,
+						  title:name,
+						  content: dicDiv,
+						  
+						  yes:function(index, layero){
+							 
+							},
+						  end:function(){
+							  $('#addworking').hide();
+							  /* data={
+									page:1,
+								  	size:13,	
+								  	type:2,
+								  	name:$('#name').val(),
+						  			number:$('#number').val(),
+						  			status:$('.selectchoice').val(),
+							  }
+							self.loadPaginationfv(data); */
+						  }
+					});
+					
+					/* self.loadworking();  */
+					
+					
+				})
+				
+				
 				
 				   $('.work').blur(function(){
 					 if($(this).parent().parent().find('.workto').val()==""){
@@ -667,7 +782,7 @@
 						$.ajax({
 							url:"${ctx}/finance/updateHeadmanPay",
 							data:postData,
-							type:"GET",
+							type:"POST",
 							beforeSend:function(){
 								index = layer.load(1, {
 									  shade: [0.1,'#fff'] //0.1透明度的白色背景
