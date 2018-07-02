@@ -225,7 +225,7 @@
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
 								<table><tr>
-								<td>姓名:</td><td><input type="text" name="name" id="username" placeholder="请输入姓名" class="form-control search-query name" /></td>
+								<td>姓名:</td><td><input type="text" name="name" id="usernamefr" placeholder="请输入姓名" class="form-control search-query name" /></td>
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>开始:</td>
 								<td>
@@ -827,8 +827,9 @@
 				  			page:1,
 				  			size:13,
 				  			type:2,
-				  			orderTimeBegin:$("#startTimetw").val(),
-				  			orderTimeEnd:$("#endTimetw").val(), 
+				  			userName:$("#usernamefr").val(),
+				  			orderTimeBegin:$("#startTimefr").val(),
+				  			orderTimeEnd:$("#endTimefr").val(), 
 				  	}
 			
 				self.loadPaginationfv(data);
