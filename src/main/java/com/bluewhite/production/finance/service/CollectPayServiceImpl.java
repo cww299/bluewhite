@@ -816,7 +816,12 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	public Object getMouthYields(Long id,String date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");   
-		long size = DatesUtil.getDaySub(DatesUtil.getfristDayOftime(DatesUtil.getFirstDayOfMonth(new Date())),DatesUtil.getLastDayOftime(DatesUtil.getLastDayOfMonth(new Date())));
+		long size = 0;
+		try {
+			size = DatesUtil.getDaySub(DatesUtil.getfristDayOftime(DatesUtil.getFirstDayOfMonth( format.parse(date))),DatesUtil.getLastDayOftime(DatesUtil.getLastDayOfMonth( format.parse(date))));
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 		JSONObject outData = new JSONObject();
 		JSONArray gResTable = new JSONArray(); 
 		Date beginTimes = null;
@@ -838,7 +843,8 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			outData.put("data", gResTable);
 			
 			//当产量为null时，填充无数据json格式返回
-		}else{
+		}
+		if(nonLine.getYields()==null || gResTable.size()==0){
 			for(int j=0 ; j<size ; j++){
 				if(j!=0){
 					//获取下一天的时间
