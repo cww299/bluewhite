@@ -192,6 +192,9 @@ public class NonLine extends BaseEntity<Long>{
 
 
 
+
+
+
 	public String getYields() {
 		return yields;
 	}

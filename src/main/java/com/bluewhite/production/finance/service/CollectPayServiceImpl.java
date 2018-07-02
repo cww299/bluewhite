@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -539,17 +538,42 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	@Override
 	public NonLine updateHeadmanPay(NonLine nonLine) {
 		NonLine nl = nonLineDao.findOne(nonLine.getId());
+		//将当月产量拼接到往月产量中
+		
+	
+		
+		//往月产量解析
+		if(nl.getYields()!=null){
+			JSONObject nlJsonObj = JSONObject.parseObject(nl.getYields());
+			JSONArray nlOn = nlJsonObj.getJSONArray("data");
+			for (int i = 0; i < nlOn.size(); i++) {
+				JSONObject jo = nlOn.getJSONObject(i); 
+				String name =  jo.getString("name");
+				//当月产量解析
+				JSONObject nonLineJsonObj = JSONObject.parseObject(nonLine.getYields());
+				JSONArray nonLineOn = nonLineJsonObj.getJSONArray("data");
+				for (int j = 0; j < nonLineOn.size(); j++) {
+					String name1 =  nonLineOn.getJSONObject(j).getString("name");
+					String value1 =  nonLineOn.getJSONObject(j).getString("value");
+					if(name.equals(name1)){
+						jo.put("name", name);
+						jo.put("value", value1);
+					}
+				}
+			}
+			nonLine.setYields(JSONObject.toJSONString(nlJsonObj));
+		}
 		nl.setYields(nonLine.getYields());
 		//产量
-		Integer accumulateYield = null;
-		if(nonLine.getYields()!=null){
-			JSONObject jsonObj = JSONObject.parseObject(nonLine.getYields());
+		Integer accumulateYield = 0;
+		if(nl.getYields()!=null){
+			JSONObject jsonObj = JSONObject.parseObject(nl.getYields());
 			JSONArray on = jsonObj.getJSONArray("data");
 			for (int i = 0; i < on.size(); i++) {
 				JSONObject jo = on.getJSONObject(i); 
 		         String value =  jo.getString("value");
-		         accumulateYield = Integer.parseInt(value.equals("") ? "0" : value);  
-		         accumulateYield+=accumulateYield;
+		         value = value.equals("") ? "0" : value;  
+		         accumulateYield+=Integer.parseInt(value);
 			}
 		}
 		//获取各组的产量
@@ -860,6 +884,21 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				name.put("name",sdf.format(beginTimes));
 				name.put("value","");
 				gResTable.add(name);
+				
+				//当月产量字段中没有当月json数据是，将当月json数据拼接到，原产量数据中
+				if(nonLine.getYields()!=null){
+					JSONObject jsonObj = JSONObject.parseObject(nonLine.getYields());
+					JSONArray on = jsonObj.getJSONArray("data");
+					on.add(name);
+					JSONObject data = new JSONObject();
+					data.put("data", on);
+					nonLine.setYields(JSONObject.toJSONString(data));
+					nonLineDao.save(nonLine);
+				}
+			
+				
+				
+				
 			}
 			outData.put("data", gResTable);
 		}
