@@ -192,14 +192,7 @@ public class DatesUtil {
         calendar1.setTime(date1);
         Calendar calendar2 = Calendar.getInstance();
         calendar2.setTime(date2);
-        int year1 = calendar1.get(Calendar.YEAR);
-        int year2 = calendar2.get(Calendar.YEAR);
-        int month1 = calendar1.get(Calendar.MONTH);
-        int month2 = calendar2.get(Calendar.MONTH);
-        System.out.println(year1 + "  " + month1);
-        System.out.println(year2 + "  " + month2);
         return calendar1.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR) && calendar1.get(Calendar.MONTH) == calendar2.get(Calendar.MONTH);
-         
     } 
     
     
