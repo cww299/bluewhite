@@ -595,7 +595,7 @@
 		      					o.surplusManagement=0
 		      				}
 		      				html +='<tr>'
-		      				+'<td class="text-center edit ">'+o.userName+'</td>'
+		      				+'<td class="text-center edit selectuserName">'+o.userName+'</td>'
 		      				+'<td class="text-center edit ">'+o.pay+'</td>'
 		      				+'<td class="text-center edit ">'+o.time+'</td>'
 		      				+'<td class="text-center edit ">'+o.surplusManagement+'</td>'
@@ -821,6 +821,17 @@
 				  	}
 			
 				self.loadPaginationtw(data);
+				});
+				$('.searchtaskfr').on('click',function(){
+					var data = {
+				  			page:1,
+				  			size:13,
+				  			type:2,
+				  			orderTimeBegin:$("#startTimetw").val(),
+				  			orderTimeEnd:$("#endTimetw").val(), 
+				  	}
+			
+				self.loadPaginationfv(data);
 				});
 				
 			}
