@@ -238,12 +238,15 @@
 								<input id="endTimefr" placeholder="请输入结束时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#endTimefr', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
+								
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtaskfr">
 										查&nbsp找
 									</button>
 								</span>
+								
+								
 							</div>
 						</div>
 					</div>
@@ -262,8 +265,10 @@
                                         	<th class="text-center">总产量</th>
                                         	<th class="text-center">单只协助发货费用</th>
                                         	<th class="text-center">人为手动加减量化绩效比</th>
-                                        	<th class="text-center"><input id="endTimeday" placeholder="选择日期" class=" laydate-icon"
-             					onClick="laydate({elem: '#endTimeday', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"></th>
+                                        	<th class="text-center">
+									<input id="endTimefv"  class=" laydate-icon"
+             					onClick="laydate({elem: '#endTimefv', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+             					</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontentfv">
@@ -293,7 +298,6 @@
                                         <tr>
                                         	<th class="text-center">日期</th>
                                             <th class="text-center">数量</th>
-                                            <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tableworking">
@@ -348,27 +352,7 @@
 				  		type:2,
 
 				} 
-			 var datae= 
-				{ 
-				root: 
-				[ 
-				{name:'1',value:'0'}, 
-				{name:'6101',value:'西安市'}, 
-				{name:'6102',value:'铜川市'}, 
-				{name:'6103',value:'宝鸡市'}, 
-				{name:'6104',value:'咸阳市'}, 
-				{name:'6105',value:'渭南市'}, 
-				{name:'6106',value:'延安市'}, 
-				{name:'6107',value:'汉中市'}, 
-				{name:'6108',value:'榆林市'}, 
-				{name:'6109',value:'安康市'}, 
-				{name:'6110',value:'商洛市'} 
-				] 
-				}
- 			 var dataObj=eval(datae);
-			var	dataObjO=dataObj.root;
-		 	$(dataObjO).each(function(i,o){ 
-				}); 
+			 
 			 var myDate = new Date(new Date().getTime() - 86400000);
 				//获取当前年
 				var year=myDate.getFullYear();
@@ -376,11 +360,13 @@
 				var month=myDate.getMonth()+1;
 				//获取当前日
 				var date=myDate.getDate(); 
+				
 				var h=myDate.getHours();       //获取当前小时数(0-23)
 				var m=myDate.getMinutes();     //获取当前分钟数(0-59)
 				var s=myDate.getSeconds(); 
 				var day = new Date(year,month,0);  
 				var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
+				var getday = year + '-' + '0'+month + date+' '+'00:00:00';
 				var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
 				$('#startTime').val(firstdate);
 				$('#endTime').val(lastdate);
@@ -388,7 +374,7 @@
 				var b=year + '-' + '0'+month + '-' + date+' '+'23:59:59'
 				$('#startTimetw').val(a);
 				$('#endTimetw').val(b);
-				
+				$('#endTimefv').val(firstdate);
 			 var date={
 				  		type:2,
 				  		orderTimeBegin:firstdate,
@@ -617,13 +603,13 @@
 		      				+'<td class="text-center edit ">'+o.accumulateYield+'</td>'
 		      				+'<td class="text-center edit "><input class="workto" value="'+o.onePay+'"></input></td>'
 		      				+'<td class="text-center edit "><input class="workth" value="'+o.addition+'"></input></td>'
-		      				+'<td class="text-center edit "><input class="work" data-id='+o.id+' value="'+o.yields+'"></input></td>'
 		      				+'<td class="text-center edit "><button class="btn btn-primary btn-trans btn-sm savemode" data-id="'+o.id+'">填写</button></tr>'
 							
 		      			}); 
 				       
 					   	layer.close(index);
 					   	 $("#tablecontentfv").html(html); 
+					  
 					 self.loadEventstw();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
@@ -632,60 +618,7 @@
 				  });
 			  //绩效汇总结束
 			}
-			this.loadEventsth=function(){
-				//修改方法
-				$('.updateremake').on('click',function(){
-					if($(this).text() == "编辑"){
-						$(this).text("保存")
-						
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
-				        });
-					}else{
-							$(this).text("编辑")
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							
-							var postData = {
-									id:$(this).data('id'),
-									addSelfNumber:$(this).parent().parent('tr').find(".addSelfNumber").text(),
-							}
-							var index;
-							
-							$.ajax({
-								url:"${ctx}/finance/updateCollectPay",
-								data:postData,
-								type:"POST",
-								beforeSend:function(){
-									index = layer.load(1, {
-										  shade: [0.1,'#fff'] //0.1透明度的白色背景
-										});
-								},
-								
-								success:function(result){
-									if(0==result.code){
-									layer.msg("修改成功！", {icon: 1});
-									$(".searchtaskth").click()
-									layer.close(index);
-									}else{
-										layer.msg("修改失败！", {icon: 1});
-										layer.close(index);
-									}
-								},error:function(){
-									layer.msg("操作失败！", {icon: 2});
-									layer.close(index);
-								}
-							});
-					}
-				})
-			}
+			
 			this.loadEventstw = function(){
 				
 				
@@ -697,9 +630,12 @@
 					var dicDiv=$('#addworking');
 					 var html = '';
 					 var htmlth = '';
+					 var id=$(this).data('id');
+					 var onePay=$(this).parent().parent().find('.workto').val();
+					 var addition=$(this).parent().parent().find('.workth').val();
 					var postData={
 						id:$(this).data('id'),
-						date:"2018-06-30"
+						date:$('#endTimefv').val(),
 					}  
 					$.ajax({
 							url:"${ctx}/finance/getMouthYields",
@@ -715,15 +651,13 @@
 								
 								$(result.data.data).each(function(i,o){
 				      				html +='<tr>'
-				      				+'<td class="text-center edit ">'+o.name+'</td>'
-				      				+'<td class="text-center edit ">'+o.value+'</td>'
-				      				+'<td class="text-center edit "><button class="btn btn-primary btn-trans btn-sm updatemode" data-id="'+o.id+'">编辑</button></td></tr>'
+				      				+'<td class="text-center edit sumname">'+o.name+'</td>'
+				      				+'<td class="text-center edit "><input class="sumva" value="'+o.value+'"></input></td></tr>'
 				      			}); 
 								
 								
 								layer.close(index);
 							   	 $("#tableworking").html(html);
-							   	 self.loadEventsth();
 							},error:function(){
 								layer.msg("操作失败！", {icon: 2});
 								layer.close(index);
@@ -737,9 +671,62 @@
 						  maxmin: true,
 						  title:name,
 						  content: dicDiv,
-						  
+						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
-							 
+							  var c;
+							  var arr= new Array();
+							  var date;
+							  $('.sumname').each(function(i,o){
+								var a= $(this).text();
+								var b= $(this).next().find('.sumva').val();
+								 c={"name":a,"value":b};
+								 arr.push(c);
+							  })
+							  date={"data":arr};
+							  var postData = {
+									  	type:2,
+										id:id,
+										onePay:onePay,
+										addition:addition,
+										yields:JSON.stringify(date),
+								}
+							  var index;
+							  if(onePay==""){
+									return layer.msg("单只协助发货费不能为空！", {icon: 2});
+								 }
+								   if(addition==null){
+										return layer.msg("人为手动加减量化绩效比不能为空！", {icon: 2});
+									 }
+								$.ajax({
+									url:"${ctx}/finance/updateHeadmanPay",
+									data:postData,
+									traditional: true,
+									type:"POST",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									
+									success:function(result){
+										if(0==result.code){
+											layer.msg("成功！", {icon: 1});
+										 	var _date={
+											  		type:2,
+											  		orderTimeBegin:firstdate,
+											  		orderTimeEnd:lastdate,	
+											}
+											self.loadPaginationfv(_date);
+										layer.close(index);
+										}else{
+											layer.msg("修改失败！", {icon: 2});
+											layer.close(index);
+										}
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								});
 							},
 						  end:function(){
 							  $('#addworking').hide();
@@ -759,50 +746,6 @@
 					
 					
 				})
-				
-				
-				
-				   $('.work').blur(function(){
-					 if($(this).parent().parent().find('.workto').val()==""){
-						return layer.msg("单只协助发货费不能为空！", {icon: 2});
-					 }
-					   if($(this).parent().parent().find('.workth').val()==null){
-							return layer.msg("人为手动加减量化绩效比不能为空！", {icon: 2});
-						 }
-					   var postData = {
-							  	type:2,
-								id:$(this).data('id'),
-								onePay:$(this).parent().parent().find('.workto').val(),
-								addition:$(this).parent().parent().find('.workth').val(),
-								yields:$(this).val(),
-						}
-					  
-						var index;
-						
-						$.ajax({
-							url:"${ctx}/finance/updateHeadmanPay",
-							data:postData,
-							type:"POST",
-							beforeSend:function(){
-								index = layer.load(1, {
-									  shade: [0.1,'#fff'] //0.1透明度的白色背景
-									});
-							},
-							
-							success:function(result){
-								if(0==result.code){
-									layer.msg("成功！", {icon: 1});
-								layer.close(index);
-								}else{
-									layer.msg("修改失败！", {icon: 2});
-									layer.close(index);
-								}
-							},error:function(){
-								layer.msg("操作失败！", {icon: 2});
-								layer.close(index);
-							}
-						});
-				  })  
 			}
 			this.loadEvents = function(){
 				//修改方法
