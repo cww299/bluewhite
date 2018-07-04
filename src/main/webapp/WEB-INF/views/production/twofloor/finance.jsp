@@ -506,8 +506,8 @@
 									  		type:3,
 									  		productName:$('#name').val(),
 								  			bacth:$('#number').val(),
-								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(),
+								  			orderTimeBegin:$("#startTimeth").val(),
+								  			orderTimeEnd:$("#endTimeth").val(),
 								  	}
 						        
 						            self.loadPaginationth(_data);
