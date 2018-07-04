@@ -1,4 +1,4 @@
-package com.bluewhite.product.action;
+package com.bluewhite.product.product.action;
 
 import java.util.List;
 
@@ -18,8 +18,8 @@ import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.product.entity.Product;
-import com.bluewhite.product.service.ProductService;
+import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.product.product.service.ProductService;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.procedure.service.ProcedureService;
 import com.bluewhite.system.sys.entity.SysLog;

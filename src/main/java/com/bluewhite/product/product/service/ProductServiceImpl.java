@@ -1,4 +1,4 @@
-package com.bluewhite.product.service;
+package com.bluewhite.product.product.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.product.dao.ProductDao;
-import com.bluewhite.product.entity.Product;
+import com.bluewhite.product.product.dao.ProductDao;
+import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
 @Service
