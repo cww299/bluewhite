@@ -14,6 +14,7 @@ import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.bluewhite.basedata.dao.BaseDataDao;
 import com.bluewhite.basedata.entity.BaseData;
@@ -100,10 +101,10 @@ public class ReportExportServiceImpl implements ReportExportService{
 				Date birthday = null;
 				Date entry = null;
 				try {
-					if(proPoi.getBirthday() !=null || proPoi.getBirthday() != ""){
+					if(!StringUtils.isEmpty(proPoi.getBirthday())){
 						birthday = sdf.parse(proPoi.getBirthday());
 					}
-					if(proPoi.getEntry() !=null || proPoi.getEntry() != ""){
+					if(!StringUtils.isEmpty(proPoi.getEntry())){
 						entry = sdf.parse(proPoi.getEntry());
 						}
 				} catch (ParseException e) {

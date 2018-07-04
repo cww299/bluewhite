@@ -2,7 +2,6 @@ package com.bluewhite.production.task.action;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -79,7 +78,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 			//新增
 			if(!StringUtils.isEmpty(task.getUserIds())){
 				task.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime(), task.getType()));
-				task = taskService.addTask(task);
+				taskService.addTask(task);
 				cr.setMessage("任务分配成功");
 			}else{
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -99,7 +98,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 	public CommonResponse upTask(HttpServletRequest request,Task task) {
 		CommonResponse cr = new CommonResponse();
 			if(!StringUtils.isEmpty(task.getId())){
-				task = taskService.upTask(task);
+				taskService.upTask(task);
 				cr.setMessage("修改成功");
 			}else{
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

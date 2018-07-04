@@ -16,9 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
-import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.system.sys.entity.Files;
-import com.bluewhite.system.sys.entity.SysLog;
 import com.bluewhite.system.sys.service.FilesService;
 
 @Controller

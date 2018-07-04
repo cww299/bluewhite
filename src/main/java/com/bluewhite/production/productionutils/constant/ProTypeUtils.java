@@ -353,7 +353,7 @@ public  class ProTypeUtils {
 		case 2://生产部一楼打包
 				break;
 		case 3://生产部二楼针工
-			sumPrice = (time-0.5)*1.08*1.15*0.767*1.5/ProTypeUtils.TIME;
+			sumPrice = (time-0.5)*1.08*1.15*0.167*1.5/ProTypeUtils.TIME;
 			break;
 		default:
 			break;
@@ -686,73 +686,37 @@ public  class ProTypeUtils {
 			 E8 = proTypeUtils.service.findByExcelNameAndType("E8" , 1);
 			 E9 = proTypeUtils.service.findByExcelNameAndType("E9" , 1);
 			 E10 = proTypeUtils.service.findByExcelNameAndType("E10" , 1);
-			
-			if(usualConsume.getPeopleLogistics()!=E7.getNumber()){
-				E7.setNumber(usualConsume.getPeopleLogistics());
-				proTypeUtils.service.save(E7);
-			}
-			if(usualConsume.getPeopleNumber()!=E8.getNumber()){
-				E8.setNumber(usualConsume.getPeopleNumber());
-				proTypeUtils.service.save(E8);
-			}
-			if(usualConsume.getMonthChummage()!=E9.getNumber()){
-				E9.setNumber(usualConsume.getMonthChummage());
-				proTypeUtils.service.save(E9);
-			}
-			if(usualConsume.getMonthHydropower()!=E10.getNumber()){
-				E10.setNumber(usualConsume.getMonthHydropower());
-				proTypeUtils.service.save(E10);
-			}
 			break;
 		case 2://生产部一楼打包
 			 E7 = proTypeUtils.service.findByExcelNameAndType("E7" , 2);
 			 E8 = proTypeUtils.service.findByExcelNameAndType("E8" , 2);
 			 E9 = proTypeUtils.service.findByExcelNameAndType("E9" , 2);
 			 E10 = proTypeUtils.service.findByExcelNameAndType("E10" , 2);
-			
-			if(usualConsume.getPeopleLogistics()!=E7.getNumber()){
-				E7.setNumber(usualConsume.getPeopleLogistics());
-				proTypeUtils.service.save(E7);
-			}
-			if(usualConsume.getPeopleNumber()!=E8.getNumber()){
-				E8.setNumber(usualConsume.getPeopleNumber());
-				proTypeUtils.service.save(E8);
-			}
-			if(usualConsume.getMonthChummage()!=E9.getNumber()){
-				E9.setNumber(usualConsume.getMonthChummage());
-				proTypeUtils.service.save(E9);
-			}
-			if(usualConsume.getMonthHydropower()!=E10.getNumber()){
-				E10.setNumber(usualConsume.getMonthHydropower());
-				proTypeUtils.service.save(E10);
-			}
-			
 			break;
 		case 3://生产部二楼针工
 			 E7 = proTypeUtils.service.findByExcelNameAndType("E7" , 3);
 			 E8 = proTypeUtils.service.findByExcelNameAndType("E8" , 3);
 			 E9 = proTypeUtils.service.findByExcelNameAndType("E9" , 3);
 			 E10 = proTypeUtils.service.findByExcelNameAndType("E10",3);
-			
-			if(usualConsume.getPeopleLogistics()!=E7.getNumber()){
-				E7.setNumber(usualConsume.getPeopleLogistics());
-				proTypeUtils.service.save(E7);
-			}
-			if(usualConsume.getPeopleNumber()!=E8.getNumber()){
-				E8.setNumber(usualConsume.getPeopleNumber());
-				proTypeUtils.service.save(E8);
-			}
-			if(usualConsume.getMonthChummage()!=E9.getNumber()){
-				E9.setNumber(usualConsume.getMonthChummage());
-				proTypeUtils.service.save(E9);
-			}
-			if(usualConsume.getMonthHydropower()!=E10.getNumber()){
-				E10.setNumber(usualConsume.getMonthHydropower());
-				proTypeUtils.service.save(E10);
-			}
 			break;
 		default:
 			break;
+		}
+		if(usualConsume.getPeopleLogistics().equals(E7.getNumber())){
+			E7.setNumber(usualConsume.getPeopleLogistics());
+			proTypeUtils.service.save(E7);
+		}
+		if(usualConsume.getPeopleNumber().equals(E8.getNumber())){
+			E8.setNumber(usualConsume.getPeopleNumber());
+			proTypeUtils.service.save(E8);
+		}
+		if(usualConsume.getMonthChummage().equals(E9.getNumber())){
+			E9.setNumber(usualConsume.getMonthChummage());
+			proTypeUtils.service.save(E9);
+		}
+		if(usualConsume.getMonthHydropower().equals(E10.getNumber())){
+			E10.setNumber(usualConsume.getMonthHydropower());
+			proTypeUtils.service.save(E10);
 		}
 	}
 	

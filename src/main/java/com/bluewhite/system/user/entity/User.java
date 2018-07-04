@@ -20,7 +20,6 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.production.group.entity.Group;
-import com.bluewhite.production.task.entity.Task;
 
 /**
  * 员工用户实体

@@ -15,7 +15,6 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.production.finance.dao.UsualConsumeDao;
-import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.finance.entity.UsualConsume;
 @Service
 public class UsualConsumeServiceImpl extends BaseServiceImpl<UsualConsume, Long> implements UsualConsumeService{

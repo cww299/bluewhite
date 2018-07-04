@@ -80,8 +80,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	private GroupService groupService;
 	
 	@Autowired
-	private  ProcedureDao  procedureDao;
-	@Autowired
 	private NonLineDao nonLineDao;
 	
 	@Override

@@ -2,7 +2,6 @@ package com.bluewhite.production.group.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.persistence.criteria.Predicate;
 
@@ -11,13 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
-import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.production.bacth.entity.Bacth;
-import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.group.dao.GroupDao;
 import com.bluewhite.production.group.entity.Group;
-import com.bluewhite.production.productionutils.constant.ProTypeUtils;
-import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.system.user.entity.User;
 
 @Service

@@ -12,8 +12,6 @@ import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.product.dao.ProductDao;
-import com.bluewhite.product.entity.Product;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
@@ -28,8 +26,6 @@ public class ProcedureServiceImpl extends BaseServiceImpl<Procedure, Long> imple
 	private ProcedureDao procedureDao;
 	@Autowired
 	private BacthDao bacthDao;
-	@Autowired
-	private ProductDao productDao;
 	
 	@Override
 	public List<Procedure> findByProductIdAndType(Long productId, Integer type,Integer flag) {

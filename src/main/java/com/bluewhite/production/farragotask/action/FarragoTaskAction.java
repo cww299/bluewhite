@@ -2,8 +2,6 @@ package com.bluewhite.production.farragotask.action;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -88,7 +86,7 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 			//新增
 			if(!StringUtils.isEmpty(farragoTask.getUserIds())){
 				farragoTask.setAllotTime(ProTypeUtils.countAllotTime(farragoTask.getAllotTime(), farragoTask.getType()));
-				farragoTask = farragoTaskService.addFarragoTask(farragoTask);
+				farragoTaskService.addFarragoTask(farragoTask);
 				cr.setMessage("任务分配成功");
 			}else{
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
