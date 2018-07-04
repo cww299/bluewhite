@@ -56,7 +56,7 @@
              onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
 								<td>&nbsp&nbsp</td>
-								<td>完成状态:</td><td><select class="form-control" id="selectstate"><option value="">请选择</option><option value=1>已完成</option><option value=0>未完成</option></select></td>
+								<td>完成状态:</td><td><select class="form-control" id="selectstate"><option value=0>未完成</option><option value=1>已完成</option></select></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
@@ -269,6 +269,7 @@
 				  		size:13,	
 				  		type:3,
 				  		flag:0,
+				  		status:$('#selectstate').val(),
 				} 
 			this.init = function(){
 				
@@ -341,6 +342,7 @@
 								  			orderTimeBegin:$("#startTime").val(),
 								  			orderTimeEnd:$("#endTime").val(),
 								  			flag:0,
+								  			status:$('#selectstate').val(),
 								  	}
 						        
 						            self.loadPagination(_data);

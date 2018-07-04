@@ -1115,11 +1115,15 @@
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
-							 
+							  if($("#productNumber").val()==null){
+								return  layer.msg("产品编号不能为空！", {icon: 2});
+							  }
+							  if($("#productName").val()==null){
+								  return  layer.msg("产品名！", {icon: 2});
+							  }
 							  postData={
 									  number:$("#productNumber").val(),
 									  name:$("#productName").val(),
-									  
 							  }
 							  $.ajax({
 									url:"${ctx}/addProduct",
