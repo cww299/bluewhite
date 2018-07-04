@@ -15,7 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
-import com.bluewhite.product.entity.Product;
+import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.production.task.entity.Task;
 
 /**

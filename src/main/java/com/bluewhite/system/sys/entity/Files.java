@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
-import com.bluewhite.product.entity.Product;
+import com.bluewhite.product.product.entity.Product;
 @Entity
 @Table(name = "sys_files")
 public class Files extends BaseEntity<Long>{

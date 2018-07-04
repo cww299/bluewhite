@@ -21,7 +21,7 @@ import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.basedata.service.BaseDataService;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.product.entity.Product;
+import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.procedure.service.ProcedureService;

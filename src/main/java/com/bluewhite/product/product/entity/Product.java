@@ -1,4 +1,4 @@
-package com.bluewhite.product.entity;
+package com.bluewhite.product.product.entity;
 
 import java.util.HashSet;
 import java.util.Set;

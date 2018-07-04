@@ -1,11 +1,11 @@
-package com.bluewhite.product.service;
+package com.bluewhite.product.product.service;
 
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.product.entity.Product;
+import com.bluewhite.product.product.entity.Product;
 
 
 @Service

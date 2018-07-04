@@ -21,7 +21,7 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.product.entity.Product;
+import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.bacth.service.BacthService;
 
