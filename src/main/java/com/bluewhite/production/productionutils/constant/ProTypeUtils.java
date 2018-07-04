@@ -50,10 +50,15 @@ public  class ProTypeUtils {
 	private final static Integer  TIME = 60;
 	
 	/**
-	 * excel常量
+	 * excel正常工序常量
 	 */
 	private final static double  EXCELONE = 1.08;
 	
+	
+	/**
+	 * excel常量
+	 */
+	private final static double  EXCELTWO = 1.0;
 	
 	/**
 	 * 当部门预计生产价格计算系数 1=一楼质检
@@ -340,6 +345,16 @@ public  class ProTypeUtils {
 	
 	
 	/**
+	 * 二楼针工(杂工和返工)
+	 * 放快手包装工秒支出(AC8)
+	 */
+	private static double getAC8TWOREWORK(){
+		return (proTypeUtils.service.findByExcelNameAndType("AC5" , 3).getNumber()*ProTypeUtils.EXCELTWO
+				*proTypeUtils.service.findByExcelNameAndType("AC3" , 3).getNumber()
+				*proTypeUtils.service.findByExcelNameAndType("AC7" , 3).getNumber())/ProTypeUtils.TIME/ProTypeUtils.TIME;
+	}
+	
+	/**
 	 *  二楼针工价格
 	 * @param price
 	 * @param type
@@ -517,7 +532,7 @@ public  class ProTypeUtils {
 	 * @param type
 	 * @return
 	 */
-	public static Double sumTaskPrice(Double taskTime, Integer type) {
+	public static Double sumTaskPrice(Double taskTime, Integer type, Integer flag) {
 		Double sumTaskPrice = 0.0 ;
 		switch (type) {
 		case 1:// 生产部一楼质检
@@ -527,7 +542,11 @@ public  class ProTypeUtils {
 			sumTaskPrice =taskTime*ProTypeUtils.getPackAC8()*ProTypeUtils.TIME;
 			break;
 		case 3://生产部二楼针工
-			sumTaskPrice =taskTime*ProTypeUtils.getAC8TWO()*ProTypeUtils.TIME;
+			if(flag == 0){
+				sumTaskPrice =taskTime*ProTypeUtils.getAC8TWO()*ProTypeUtils.TIME;
+			}else{
+				sumTaskPrice =taskTime*ProTypeUtils.getAC8TWOREWORK()*ProTypeUtils.TIME;
+			}
 			break;
 		default:
 			break;
