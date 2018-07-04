@@ -11,7 +11,7 @@ public class NumUtils {
      */
     public static Double round(Double value,Integer number) {
     	if(number == null){
-    		number = 16;
+    		number = 10;
     	}
         return new BigDecimal(value).setScale(number, BigDecimal.ROUND_HALF_UP).doubleValue();
     }

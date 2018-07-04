@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.finance.attendance.entity.AttendancePay;
-import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.finance.entity.UsualConsume;
 @Service
 public interface UsualConsumeService extends BaseCRUDService<UsualConsume,Long>{

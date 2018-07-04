@@ -24,7 +24,6 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.product.entity.Product;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.bacth.service.BacthService;
-import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 
 @Controller
 public class BacthAction {

@@ -6,7 +6,6 @@ import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.production.finance.entity.FarragoTaskPay;
-import com.bluewhite.production.finance.entity.PayB;
 @Service
 public interface FarragoTaskPayService  extends BaseCRUDService<FarragoTaskPay,Long>{
 

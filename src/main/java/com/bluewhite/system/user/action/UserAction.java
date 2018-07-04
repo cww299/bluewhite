@@ -24,7 +24,6 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;

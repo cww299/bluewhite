@@ -164,7 +164,7 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 			collect.setType(collectPay.getType());
 			List<CollectPay> cpList = collectPayService.findPages(collect, page).getRows();
 			if(cpList.size()==1){
-				if(cpList.get(0).getPayA() == collect.getPayA() && cpList.get(0).getPayB() == collect.getPayB()){
+				if(cpList.get(0).getPayA().equals(collect.getPayA())  && cpList.get(0).getPayB().equals(collect.getPayB())){
 					collect = cpList.get(0);
 				}else{
 					collect.setAddSelfNumber(cpList.get(0).getAddSelfNumber());

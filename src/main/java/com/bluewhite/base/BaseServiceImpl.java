@@ -1,14 +1,12 @@
 package com.bluewhite.base;
 
-import com.google.common.collect.Lists;
+import java.io.Serializable;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
-import java.io.Serializable;
-import java.util.List;
 
 /**
  * <p>抽象service层基类 提供一些简便方法
