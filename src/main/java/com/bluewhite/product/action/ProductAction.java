@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -69,14 +70,12 @@ public class ProductAction {
 	@SysLogAspectAnnotation(description = "产品新增操作", module = "产品管理", operateType = "增加", logType = SysLog.ADMIN_LOG_TYPE)
 	public CommonResponse addProduct(HttpServletRequest request,Product product) {
 		CommonResponse cr = new CommonResponse();
-		if(product.getNumber() ==null && product.getName() ==null){
+		if(!StringUtils.isEmpty(product.getNumber()) || !StringUtils.isEmpty(product.getName())){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品编号和产品名都不能为空");
 		}else{
-			product = productService.save(product);
-			if(product!=null){
+			productService.save(product);
 				cr.setMessage("添加成功");
-			}
 		}
 		return cr;
 	}
