@@ -86,13 +86,13 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				
 				//预计任务价值（通过预计完成时间得出）（1.工序类型不是返工，预计任务价值通过计算得出   2.工序类型是返工,没有预计任务价值）
 				if(task.getExpectTime()==null){
-					newTask.setExpectTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(newTask.getExpectTime(), procedure.getType()), null));
+					newTask.setExpectTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(newTask.getExpectTime(), procedure.getType(),newTask.getFlag()), null));
 				}else{
 					newTask.setExpectTaskPrice(null);
 				}
 				
 				//实际任务价值（通过实际完成时间得出）
-				newTask.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(newTask.getTaskTime(), procedure.getType()), null));
+				newTask.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(newTask.getTaskTime(), procedure.getType(),newTask.getFlag()), null));
 				
 				//B工资净值
 				newTask.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(newTask.getTaskPrice(),  procedure.getType()), null));
@@ -325,7 +325,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					task.setStatus(2);
 					
 					//实际任务价值（通过实际完成时间得出）
-					task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskActualTime(), task.getType()), null));
+					task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskActualTime(), task.getType(),0), null));
 					//B工资净值
 					task.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(task.getTaskPrice(),  task.getType()), null));
 					dao.save(task);
@@ -411,7 +411,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		//实际时间
 		task.setTaskTime(NumUtils.round(ProTypeUtils.sumTaskTime(task.getExpectTime(),task.getType(),number), null));
 		//实际任务价值（通过实际完成时间得出）
-		task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskTime(), task.getType()), null));
+		task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskTime(), task.getType(),task.getFlag()), null));
 		//B工资净值
 		task.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(task.getTaskPrice(),  task.getType()), null));
 		dao.save(task);
