@@ -1097,6 +1097,11 @@
 								type:1,
 								ids:arr,
 						}
+						var _datae={
+								status:0,
+								type:1,
+								ids:arr,
+						}
 						var index;
 						 index = layer.confirm('确定一键完成吗', {btn: ['确定', '取消']},function(){
 						$.ajax({
@@ -1113,7 +1118,7 @@
 							success:function(result){
 								if(0==result.code){
 									layer.msg(result.message, {icon: 1});
-									self.loadPagination(data);
+									self.loadPagination(_datae);
 								}else{
 									layer.msg(result.message, {icon: 2});
 								}
