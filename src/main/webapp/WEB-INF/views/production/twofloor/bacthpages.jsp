@@ -1131,6 +1131,12 @@
 								ids:arr,
 								flag:0,
 						}
+						var _datae={
+								status:0,
+								type:3,
+								ids:arr,
+								flag:0,
+						}
 						var index;
 						 index = layer.confirm('确定一键完成吗', {btn: ['确定', '取消']},function(){
 						$.ajax({
@@ -1147,7 +1153,7 @@
 							success:function(result){
 								if(0==result.code){
 									layer.msg(result.message, {icon: 1});
-									self.loadPagination(data);
+									self.loadPagination(_datae);
 								}else{
 									layer.msg(result.message, {icon: 2});
 								}
@@ -1180,7 +1186,8 @@
 						  		size:13,
 								bacthId:self.getCache(),
 								type:3,
-								
+								flag:0,
+								status:$("#selectstate").val(),
 						}
 						var index;
 						 index = layer.confirm('确定一键删除吗', {btn: ['确定', '取消']},function(){
@@ -1231,7 +1238,8 @@
 						  		size:13,
 								bacthId:self.getCache(),
 								type:3,
-								
+								flag:0,
+								status:$("#selectstate").val(),
 						}
 						var index;
 						 index = layer.confirm('确定一键开始吗', {btn: ['确定', '取消']},function(){
@@ -1283,7 +1291,8 @@
 						  		size:13,
 								bacthId:self.getCache(),
 								type:3,
-								
+								flag:0,
+								status:$("#selectstate").val(),
 						}
 						var index;
 						 index = layer.confirm('确定一键暂停吗', {btn: ['确定', '取消']},function(){
