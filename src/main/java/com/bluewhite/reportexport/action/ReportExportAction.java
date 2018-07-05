@@ -28,6 +28,9 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.excel.Excelutil;
+import com.bluewhite.product.primecostbasedata.entity.BaseOne;
+import com.bluewhite.product.primecostbasedata.entity.BaseOneTime;
+import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.production.finance.entity.GroupProduction;
 import com.bluewhite.production.finance.entity.MonthlyProduction;
 import com.bluewhite.production.finance.service.CollectPayService;
@@ -218,6 +221,93 @@ public class ReportExportAction {
         production.stream().forEach(GroupProduction->GroupProduction.setStartDate(sdf.format(GroupProduction.getOrderTimeBegin())));
 	    Excelutil<GroupProduction> util = new Excelutil<GroupProduction>(GroupProduction.class);
         util.exportExcel(production, "月产量报表", out);// 导出  
+	}
+	
+	
+	/**
+	 * 基础面料数据导入                          
+	 * @param residentmessage
+	 * @param response
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/importMateriel",method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse importMateriel(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request){
+		CommonResponse cr = new CommonResponse();
+		try {
+				List<Materiel> excelMateriel = new ArrayList<Materiel>();
+				InputStream in = file.getInputStream();
+				String filename = file.getOriginalFilename();
+				// 创建excel工具类
+				Excelutil<Materiel> util = new Excelutil<Materiel>(Materiel.class);
+				excelMateriel = util.importExcel(filename, in);// 导入
+				int count = ReportExportService.importMaterielExcel(excelMateriel);
+				if(count > 0){
+					cr.setMessage("成功导入"+count+"条数据");
+				}
+		} catch (Exception e) {
+			cr.setMessage("导入失败");
+		}
+		return cr;
+	}
+	
+	
+	/**
+	 * 基础数据1导入                          
+	 * @param residentmessage
+	 * @param response
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/importBaseOne",method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse importBaseOne(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request){
+		CommonResponse cr = new CommonResponse();
+		try {
+				List<BaseOne> excelBaseOne = new ArrayList<BaseOne>();
+				InputStream in = file.getInputStream();
+				String filename = file.getOriginalFilename();
+				// 创建excel工具类
+				Excelutil<BaseOne> util = new Excelutil<BaseOne>(BaseOne.class);
+				excelBaseOne = util.importExcel(filename, in);// 导入
+				int count = ReportExportService.importexcelBaseOneExcel(excelBaseOne);
+				if(count > 0){
+					cr.setMessage("成功导入"+count+"条数据");
+				}
+		} catch (Exception e) {
+			cr.setMessage("导入失败");
+		}
+		return cr;
+	}
+	
+	
+	/**
+	 * 基础数据1 时间导入                          
+	 * @param residentmessage
+	 * @param response
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/importBaseOneTime",method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse importBaseOneTime(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request){
+		CommonResponse cr = new CommonResponse();
+		try {
+				List<BaseOneTime> excelBaseOneTime = new ArrayList<BaseOneTime>();
+				InputStream in = file.getInputStream();
+				String filename = file.getOriginalFilename();
+				// 创建excel工具类
+				Excelutil<BaseOneTime> util = new Excelutil<BaseOneTime>(BaseOneTime.class);
+				excelBaseOneTime = util.importExcel(filename, in);// 导入
+				int count = ReportExportService.importexcelBaseOneTimeExcel(excelBaseOneTime);
+				if(count > 0){
+					cr.setMessage("成功导入"+count+"条数据");
+				}
+		} catch (Exception e) {
+			cr.setMessage("导入失败");
+		}
+		return cr;
 	}
 	
 	

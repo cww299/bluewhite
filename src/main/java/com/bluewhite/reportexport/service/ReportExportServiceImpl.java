@@ -21,6 +21,12 @@ import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.basedata.service.BaseDataService;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.product.primecostbasedata.dao.BaseOneDao;
+import com.bluewhite.product.primecostbasedata.dao.BaseOneTimeDao;
+import com.bluewhite.product.primecostbasedata.dao.MaterielDao;
+import com.bluewhite.product.primecostbasedata.entity.BaseOne;
+import com.bluewhite.product.primecostbasedata.entity.BaseOneTime;
+import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
@@ -45,11 +51,21 @@ public class ReportExportServiceImpl implements ReportExportService{
 	
 	@Autowired
 	private ProcedureDao procedureDao;
+	
 	@Autowired
 	private ProcedureService procedureService;
 	
 	@PersistenceContext
 	protected EntityManager entityManager;
+	
+	@Autowired
+	private	MaterielDao materielDao;
+	
+	@Autowired
+	private	BaseOneDao baseOneDao;
+	
+	@Autowired
+	private BaseOneTimeDao baseOneTimeDao;
 
 	@Override
 	@Transactional
@@ -207,6 +223,36 @@ public class ReportExportServiceImpl implements ReportExportService{
 		}
 		procedureDao.save(procedureList);
 		procedureService.countPrice(procedureList.get(0));
+		return count;
+	}
+
+	@Override
+	public int importMaterielExcel(List<Materiel> excelMateriel) {
+		materielDao.save(excelMateriel);
+		return excelMateriel.size();
+	}
+
+	@Override
+	public int importexcelBaseOneExcel(List<BaseOne> excelBaseOne) {
+		for(BaseOne baseOne : excelBaseOne){
+			baseOne.setType("overstock");
+		}
+		baseOneDao.save(excelBaseOne);
+		return excelBaseOne.size();
+	}
+
+	@Override
+	public int importexcelBaseOneTimeExcel(List<BaseOneTime> excelBaseOneTime) {
+		int count = 0;
+		BaseOne baseOne = new BaseOne();
+		baseOne.setName("翻皮壳");
+		baseOne.setType("needlework");
+		baseOne = baseOneDao.save(baseOne);
+		for(BaseOneTime bot : excelBaseOneTime){
+			bot.setBaseOneId(baseOne.getId());
+			count++;
+		}
+		baseOneTimeDao.save(excelBaseOneTime);
 		return count;
 	}
 
