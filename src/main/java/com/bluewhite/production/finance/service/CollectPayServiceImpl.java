@@ -358,6 +358,17 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		List<AttendancePay> attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
 		//考勤人数
 		List<AttendancePay> list = attendancePayList.stream().filter(AttendancePay->AttendancePay.getWorkTime()!=0).collect(Collectors.toList());
+		if(monthlyProduction.getType()==3){
+			//去除管理组的员工
+			Group group= new Group();
+			group.setKindWorkId((long)116);
+			List<Group> groupList = groupService.findList(group);
+			for(Group gp : groupList){
+				for(User user : gp.getUsers()){
+					list = list.stream().filter(AttendancePay->!AttendancePay.getUserId().equals(user.getId()) ).collect(Collectors.toList());
+				}
+			}
+		}
 		int peopleNumber = list.size();
 		monthlyProduction.setPeopleNumber(peopleNumber);
 		//考勤总时间
