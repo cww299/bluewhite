@@ -506,6 +506,7 @@
 						        			page:obj.curr,
 									  		size:13,
 									  		type:3,
+									  		sign:1,
 									  		productName:$('#name').val(),
 								  			bacth:$('#number').val(),
 								  			orderTimeBegin:$("#startTimeth").val(),
