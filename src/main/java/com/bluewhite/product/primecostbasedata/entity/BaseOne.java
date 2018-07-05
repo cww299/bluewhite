@@ -5,13 +5,15 @@ import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
 /**
- * cc裁片基础数据1
+ * 基础数据1(成本计算)
  * @author zhangliang
  *
  */
 @Entity
-@Table(name = "pro_base_cutparts")
-public class BaseCutParts extends BaseEntity<Long>{
+@Table(name = "pro_basedate_one")
+public class BaseOne extends BaseEntity<Long>{
+	
+	
 	
 	
 
