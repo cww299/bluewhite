@@ -480,6 +480,8 @@
 		      				 if(o.dutyTime==null){
 		      					o.dutyTime=0
 		      				 }
+		      				
+		      				
 		      				htmlth +='<tr>'
 		      				+'<td class="text-center  ">'+o.userName+'</td>'
 		      				+'<td class="text-center ">'+o.allotTime+'</td>'
@@ -504,6 +506,7 @@
 						        			page:obj.curr,
 									  		size:13,
 									  		type:3,
+									  		sign:1,
 									  		productName:$('#name').val(),
 								  			bacth:$('#number').val(),
 								  			orderTimeBegin:$("#startTimeth").val(),
