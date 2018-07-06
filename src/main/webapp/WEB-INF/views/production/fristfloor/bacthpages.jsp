@@ -506,10 +506,15 @@
 										
 										success:function(result){
 											$(result.data).each(function(i,o){
-												htmlfv +='<div class="input-group"><input type="checkbox" class="checkWork" value="'+o.id+'" data-residualnumber="'+o.residualNumber+'">'+o.name+' 剩余:'+o.residualNumber+'</input></div>'
+												htmlfv +='<div class="input-group"><input type="checkbox" class="checkWork" value="'+o.id+'" data-name="'+o.name+'" data-residualnumber="'+o.residualNumber+'">'+o.name+' 剩余:'+o.residualNumber+'</input></div>'
 											})
 											var s="<div class='input-group'><input type='checkbox' class='checkWorkAll'>全选</input></div>"
 											$('.checkworking').html(s+htmlfv);
+											$('.checkWork').each(function(i,o){
+												if($(o).data('name')=="贴破洞"){
+													$(this).before('<input class="inputblock"type="text" ></input>');
+												}
+											})
 											$(".checkWorkAll").on('click',function(){
 							                    if($(this).is(':checked')){ 
 										 			$('.checkWork').each(function(){  
