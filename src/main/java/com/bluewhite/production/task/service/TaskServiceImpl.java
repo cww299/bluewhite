@@ -45,7 +45,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	@Autowired
 	private PayBDao payBDao;
 	
-	private final static String  QUALITY_STRING = "补漏洞";
+	private final static String  QUALITY_STRING = "贴破洞";
 	
 	
 	@Override
