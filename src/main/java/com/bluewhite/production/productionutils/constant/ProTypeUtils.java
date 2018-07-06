@@ -74,6 +74,11 @@ public  class ProTypeUtils {
 	private final static double  TOW_DEEDLE = 0.0067275;
 	
 	/**
+	 * 当部门预计生产价格计算系数 3=二楼机工
+	 */
+	private final static double  TOW_MACHINIST = 0.00382852521;
+	
+	/**
 	 * 一楼质检
 	 * 当外发价格计算系数1
 	 */
@@ -345,13 +350,13 @@ public  class ProTypeUtils {
 	
 	
 	/**
-	 * 二楼针工(杂工和返工)
+	 * 二楼机工(杂工和返工)
 	 * 放快手包装工秒支出(AC8)
 	 */
 	private static double getAC8TWOREWORK(){
-		return (proTypeUtils.service.findByExcelNameAndType("AC5" , 3).getNumber()*ProTypeUtils.EXCELTWO
-				*proTypeUtils.service.findByExcelNameAndType("AC3" , 3).getNumber()
-				*proTypeUtils.service.findByExcelNameAndType("AC7" , 3).getNumber())/ProTypeUtils.TIME/ProTypeUtils.TIME;
+		return (proTypeUtils.service.findByExcelNameAndType("AC5" , 4).getNumber()*ProTypeUtils.EXCELTWO
+				*proTypeUtils.service.findByExcelNameAndType("AC3" , 4).getNumber()
+				*proTypeUtils.service.findByExcelNameAndType("AC7" , 4).getNumber())/ProTypeUtils.TIME/ProTypeUtils.TIME;
 	}
 	
 	/**
@@ -397,6 +402,9 @@ public  class ProTypeUtils {
 		if(cu.getRole().contains(Constants.PRODUCT_TWO_DEEDLE)){
 			type = 3;
 		}
+		if(cu.getRole().contains(Constants.PRODUCT_TWO_MACHINIST)){
+			type = 4;
+		}
 		return type;
 	}
 	
@@ -417,6 +425,9 @@ public  class ProTypeUtils {
 				break;
 		case 3://生产部二楼针工
 			sumPrice = time*ProTypeUtils.TOW_DEEDLE;
+			break;
+		case 4://生产部二楼机工
+			sumPrice = time*ProTypeUtils.TOW_MACHINIST;
 			break;
 		default:
 			break;
@@ -445,6 +456,8 @@ public  class ProTypeUtils {
 			break;
 		case 3://生产部二楼针工
 			break;
+		case 4://生产部二楼机工
+			break;
 		default:
 			break;
 		}
@@ -467,6 +480,9 @@ public  class ProTypeUtils {
 			sumExpectTime = procedure.getWorkingTime()*number/ProTypeUtils.TIME;
 			break;
 		case 3://生产部二楼针工
+			sumExpectTime = procedure.getWorkingTime()*number/ProTypeUtils.TIME;
+			break;
+		case 4://生产部二楼机工
 			sumExpectTime = procedure.getWorkingTime()*number/ProTypeUtils.TIME;
 			break;
 		default:
@@ -494,6 +510,9 @@ public  class ProTypeUtils {
 		case 3://生产部二楼针工
 			sumExpectTime = expectTime*number/ProTypeUtils.TIME;
 			break;
+		case 4://生产部二楼机工
+			sumExpectTime = expectTime*number/ProTypeUtils.TIME;
+			break;
 		default:
 			break;
 		}
@@ -517,6 +536,9 @@ public  class ProTypeUtils {
 			taskNumber = expectTime*ProTypeUtils.TIME/workingTime;
 			break;
 		case 3://生产部二楼针工
+			taskNumber = expectTime*ProTypeUtils.TIME/workingTime;
+			break;
+		case 4://生产部二楼机工
 			taskNumber = expectTime*ProTypeUtils.TIME/workingTime;
 			break;
 		default:
@@ -544,9 +566,10 @@ public  class ProTypeUtils {
 		case 3://生产部二楼针工
 			if(flag == 0){
 				sumTaskPrice =taskTime*ProTypeUtils.getAC8TWO()*ProTypeUtils.TIME;
-			}else{
-				sumTaskPrice =taskTime*ProTypeUtils.getAC8TWOREWORK()*ProTypeUtils.TIME;
 			}
+			break;
+		case 4://生产部二楼机工
+			    sumTaskPrice =taskTime*ProTypeUtils.getAC8TWOREWORK()*ProTypeUtils.TIME;
 			break;
 		default:
 			break;
@@ -573,6 +596,9 @@ public  class ProTypeUtils {
 		case 3://生产部二楼针工
 			sumBPrice =BPrice/proTypeUtils.service.findByExcelNameAndType("AC7" , 3).getNumber();
 			break;
+		case 4://生产部二楼机工
+			sumBPrice =BPrice/proTypeUtils.service.findByExcelNameAndType("AC7" , 4).getNumber();
+			break;
 		default:
 			break;
 		}
@@ -595,6 +621,9 @@ public  class ProTypeUtils {
 			sumRegionalPrice = bacth.getSumTaskPrice()-(bacth.getBacthHairPrice()/bacth.getBacthDepartmentPrice()*bacth.getSumTaskPrice());
 			break;
 		case 3://生产部二楼针工
+			sumRegionalPrice = bacth.getSumTaskPrice()-(bacth.getBacthHairPrice()/bacth.getBacthDepartmentPrice()*bacth.getSumTaskPrice());
+			break;
+		case 4://生产部二楼机工
 			sumRegionalPrice = bacth.getSumTaskPrice()-(bacth.getBacthHairPrice()/bacth.getBacthDepartmentPrice()*bacth.getSumTaskPrice());
 			break;
 		default:
@@ -621,6 +650,9 @@ public  class ProTypeUtils {
 		case 3://生产部二楼针工
 			sumPerformancePrice =farragoTask.getPerformanceNumber()*farragoTask.getTime();
 			break;
+		case 4://生产部二楼机工工
+			sumPerformancePrice =farragoTask.getPerformanceNumber()*farragoTask.getTime();
+			break;
 		default:
 			break;
 		}
@@ -644,6 +676,9 @@ public  class ProTypeUtils {
 			sumPerformancePrice =task.getPerformanceNumber()*task.getTaskTime();
 			break;
 		case 3://生产部二楼针工
+			sumPerformancePrice =task.getPerformanceNumber()*task.getTaskTime();
+			break;
+		case 4://生产部二楼机工
 			sumPerformancePrice =task.getPerformanceNumber()*task.getTaskTime();
 			break;
 		default:
@@ -682,6 +717,12 @@ public  class ProTypeUtils {
 			usualConsume.setMonthChummage(proTypeUtils.service.findByExcelNameAndType("E9" , 3).getNumber());
 			usualConsume.setMonthHydropower(proTypeUtils.service.findByExcelNameAndType("E10" , 3).getNumber());
 			break;
+		case 4://生产部二楼机工
+			usualConsume.setPeopleLogistics(proTypeUtils.service.findByExcelNameAndType("E7" , 4).getNumber());
+			usualConsume.setPeopleNumber(proTypeUtils.service.findByExcelNameAndType("E8" , 4).getNumber());
+			usualConsume.setMonthChummage(proTypeUtils.service.findByExcelNameAndType("E9" , 4).getNumber());
+			usualConsume.setMonthHydropower(proTypeUtils.service.findByExcelNameAndType("E10" , 4).getNumber());
+			break;
 		default:
 			break;
 		}
@@ -717,6 +758,12 @@ public  class ProTypeUtils {
 			 E8 = proTypeUtils.service.findByExcelNameAndType("E8" , 3);
 			 E9 = proTypeUtils.service.findByExcelNameAndType("E9" , 3);
 			 E10 = proTypeUtils.service.findByExcelNameAndType("E10",3);
+			break;
+		case 4://生产部二楼机工
+			 E7 = proTypeUtils.service.findByExcelNameAndType("E7" , 4);
+			 E8 = proTypeUtils.service.findByExcelNameAndType("E8" , 4);
+			 E9 = proTypeUtils.service.findByExcelNameAndType("E9" , 4);
+			 E10 = proTypeUtils.service.findByExcelNameAndType("E10",4);
 			break;
 		default:
 			break;
@@ -754,6 +801,8 @@ public  class ProTypeUtils {
 		}else if(allotTime == null && type == 2){
 			allotTime = cal.getTime();
 		}else if(allotTime == null && type == 3){
+			allotTime = cal.getTime();
+		}else if(allotTime == null && type == 4){
 			allotTime = cal.getTime();
 		}
 		return allotTime;

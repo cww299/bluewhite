@@ -141,6 +141,31 @@ public class ReportExportAction {
 	
 	
 	/**
+	 * 二楼机工工序导入
+	 */
+	@RequestMapping(value = "/importMachinistProcedure",method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse importMachinistProcedure(@RequestParam(value="file",required=false) MultipartFile file,Long productId,Integer type,Integer flag,HttpServletRequest request){
+		CommonResponse cr = new CommonResponse();
+		try {
+				List<ProcedurePoi> excelProcedure = new ArrayList<ProcedurePoi>();
+				InputStream in = file.getInputStream();
+				String filename = file.getOriginalFilename();
+				// 创建excel工具类
+				Excelutil<ProcedurePoi> util = new Excelutil<ProcedurePoi>(ProcedurePoi.class);
+				excelProcedure = util.importExcel(filename, in);// 导入
+				int count = ReportExportService.importProcedureExcel(excelProcedure,productId,type,flag);
+				if(count > 0){
+					cr.setMessage("成功导入"+count+"条数据");
+				}
+		} catch (Exception e) {
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("导入失败");
+		}
+		return cr;
+	}
+	
+	/**
 	 * 导出返工价值
 	 * @param request
 	 * @param response

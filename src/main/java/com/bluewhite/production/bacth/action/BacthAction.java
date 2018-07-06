@@ -46,7 +46,7 @@ private static final Log log = Log.getLog(BacthAction.class);
 	 * 给产品添加批次（修改）
 	 * 
 	 * 是否完成（0=默认未完成，1=完成，status传参）
-	 *  type (1=一楼质检，2=一楼包装，3=二楼针工)
+	 *  type (1=一楼质检，2=一楼包装，3=二楼针工,4=二楼机工)
 	 */
 	@RequestMapping(value = "/bacth/addBacth", method = RequestMethod.POST)
 	@ResponseBody

@@ -73,6 +73,13 @@ public class Constants {
     //包含的部门
     public static String DEEDLE_ORGNAME = "84";
     
+    /**
+     *  生产部二楼机工
+     */
+    public static String PRODUCT_TWO_MACHINIST = "productTwoMachinist";
+    //包含的部门
+    public static String MACHINIST_ORGNAME = "76";
+    
     
     
 
