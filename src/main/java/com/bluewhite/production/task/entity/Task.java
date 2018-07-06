@@ -237,9 +237,23 @@ public class Task  extends BaseEntity<Long>{
 	@Transient
 	private String users;
 	
+	/**
+	 * 补漏洞数量
+	 */
+	@Transient
+	private Integer holeNumber;
 	
 	
 	
+
+	public Integer getHoleNumber() {
+		return holeNumber;
+	}
+
+	public void setHoleNumber(Integer holeNumber) {
+		this.holeNumber = holeNumber;
+	}
+
 	public Long getProductId() {
 		return productId;
 	}

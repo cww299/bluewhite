@@ -45,6 +45,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	@Autowired
 	private PayBDao payBDao;
 	
+	private final static String  QUALITY_STRING = "补漏洞";
 	
 	
 	@Override
@@ -64,6 +65,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				BeanCopyUtils.copyNullProperties(task,newTask);
 				Long id = Long.parseLong(task.getProcedureIds()[i]);
 				Procedure procedure = procedureDao.findOne(id);
+				if(procedure.getName().equals(QUALITY_STRING)){
+					newTask.setNumber(task.getHoleNumber());
+				}
 				newTask.setProcedureId(id);
 				newTask.setProcedureName(procedure.getName());
 				//二楼特殊业务，当存在实际不为null的时候，先计算出任务数量
