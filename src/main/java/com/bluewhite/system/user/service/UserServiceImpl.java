@@ -97,6 +97,10 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		if(cu.getRole().contains(Constants.PRODUCT_TWO_DEEDLE)){
 			 user.setOrgNameIds(Constants.DEEDLE_ORGNAME);
 		}
+		//针工
+		if(cu.getRole().contains(Constants.PRODUCT_TWO_MACHINIST)){
+			 user.setOrgNameIds(Constants.MACHINIST_ORGNAME);
+		}
 		
 		Page<User> pageUser = userDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();

@@ -50,7 +50,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 	/**
 	 * 添加，修改分组
 	 * 
-	 * type 分组所属部门类型 (1=一楼质检，2=一楼包装，3=二楼针工)
+	 * type 分组所属部门类型 (1=一楼质检，2=一楼包装，3=二楼针工,4=二楼机工)
 	 * @param request 请求
 	 * @return cr
 	 */
