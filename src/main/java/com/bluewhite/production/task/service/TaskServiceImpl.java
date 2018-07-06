@@ -71,7 +71,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				newTask.setProcedureId(id);
 				newTask.setProcedureName(procedure.getName());
 				//二楼特殊业务，当存在实际不为null的时候，先计算出任务数量
-				if(newTask.getTaskTime()!=null && newTask.getFlag()==3){
+				if(newTask.getTaskTime()!=null && newTask.getType()==3){
 					newTask.setNumber(NumUtils.roundTwo(ProTypeUtils.getTaskNumber(newTask.getTaskTime(), newTask.getType(), procedure.getWorkingTime())));
 				}
 				//预计完成时间（1.工序类型不是返工，预计时间利用公式计算的得出。2.工序类型是返工，手填预计完成时间）
