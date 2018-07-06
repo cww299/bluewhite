@@ -665,9 +665,8 @@
 								}
 								expectTime=$(".sumtime").val();
 								var performanceNumber=$(".selectchangtw").val();
-								
+								var holeNumber=$(".inputblock").val();
 								var performance=$(".selectchangtw option:selected").text();
-								console.log(performance)
 								if(performance=="请选择请选择"){
 									performance="";
 								}
@@ -685,6 +684,7 @@
 										bacthNumber:bacthNumber,
 										allotTime:$('#Time').val(),
 										productId:productId,
+										holeNumber:holeNumber,
 								}
 							    $.ajax({
 									url:"${ctx}/task/addTask",
