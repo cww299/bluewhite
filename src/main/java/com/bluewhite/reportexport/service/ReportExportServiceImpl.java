@@ -245,8 +245,8 @@ public class ReportExportServiceImpl implements ReportExportService{
 	public int importexcelBaseOneTimeExcel(List<BaseOneTime> excelBaseOneTime) {
 		int count = 0;
 		BaseOne baseOne = new BaseOne();
-		baseOne.setName("翻皮壳");
-		baseOne.setType("needlework");
+		baseOne.setName("绿编织袋90*110");
+		baseOne.setType("endocyst");
 		baseOne = baseOneDao.save(baseOne);
 		for(BaseOneTime bot : excelBaseOneTime){
 			bot.setBaseOneId(baseOne.getId());
