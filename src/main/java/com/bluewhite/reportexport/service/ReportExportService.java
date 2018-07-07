@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.BaseOneTime;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
+import com.bluewhite.reportexport.entity.MachinistProcedurePoi;
 import com.bluewhite.reportexport.entity.ProcedurePoi;
 import com.bluewhite.reportexport.entity.ProductPoi;
 import com.bluewhite.reportexport.entity.UserPoi;
@@ -55,5 +56,13 @@ public interface ReportExportService {
 	 * @return
 	 */
 	int importexcelBaseOneTimeExcel(List<BaseOneTime> excelBaseOneTime);
+	
+	/**
+	 * 导入机工工序信息
+	 * @param excelUser
+	 * @return
+	 */
+	int importMachinistProcedureExcel(List<MachinistProcedurePoi> excelProcedure, Long productId, Integer type,
+			Integer flag);
 
 }

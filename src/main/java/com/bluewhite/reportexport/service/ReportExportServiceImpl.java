@@ -32,6 +32,7 @@ import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.procedure.service.ProcedureService;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
+import com.bluewhite.reportexport.entity.MachinistProcedurePoi;
 import com.bluewhite.reportexport.entity.ProcedurePoi;
 import com.bluewhite.reportexport.entity.ProductPoi;
 import com.bluewhite.reportexport.entity.UserPoi;
@@ -256,5 +257,28 @@ public class ReportExportServiceImpl implements ReportExportService{
 		return count;
 	}
 
-
+	@Override
+	public int importMachinistProcedureExcel(List<MachinistProcedurePoi> excelProcedure, Long productId, Integer type,
+			Integer flag) {
+		int count = 0;
+		if(excelProcedure.size()==0){
+			throw new ServiceException("excel无数据");
+		}
+		List<Procedure> procedureList =new ArrayList<Procedure>();
+		List<BaseData> baseDataList = baseDataService.getBaseDataListByType(Constants.PRODUCT_TWO_MACHINIST);
+		for(MachinistProcedurePoi machinistProcedurePoi : excelProcedure){
+			Procedure procedure = new Procedure();
+			procedure.setFlag(flag);
+			procedure.setProductId(productId);
+			procedure.setName(machinistProcedurePoi.getName());
+			procedure.setWorkingTime(NumUtils.round(machinistProcedurePoi.getOneTime()+(machinistProcedurePoi.getScissorsTime()==null ? 0.0 : machinistProcedurePoi.getScissorsTime()/12*1.08*1.25),4));
+			procedure.setType(type);
+			procedure.setProcedureTypeId(baseDataList.get(0).getId());
+			procedureList.add(procedure);
+			count++;
+	}
+		procedureDao.save(procedureList);
+		procedureService.countPrice(procedureList.get(0));
+		return count;
+}
 }
