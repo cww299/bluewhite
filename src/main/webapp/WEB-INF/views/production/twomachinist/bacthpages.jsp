@@ -158,8 +158,6 @@
 <div id="addworking" style="display: none;position: absolute;z-index: 3;">
 <table><tr>           
                         <td><button type="button" class="btn btn-default btn-danger btn-xs btn-3d attendance">一键删除</button>&nbsp&nbsp</td>
-                        <td><button type="button" class="btn btn-info  btn-xs btn-3d startto">一键开始</button>&nbsp&nbsp</td>
-                        <td><button type="button" class="btn btn-default btn-success btn-xs btn-3d suspend">一键暂停</button>&nbsp&nbsp</td>
                         </tr></table>             
                             <div class="panel-body">
                                 <table class="table table-hover">
@@ -180,8 +178,6 @@
                                             <th class="text-center">任务价值</th>
                                             <th class="text-center">b工资净值</th>
                                             <th class="text-center">数量</th>
-                                            <th class="text-center">开始结束</th>
-                                            <th class="text-center">实际用时</th>
                                             <th class="text-center">完成人</th>
                                             <th class="text-center">操作</th>
                                         </tr>
@@ -412,8 +408,6 @@
 			      				+'<td class="text-center  name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
 			      				+'<td class="text-center  name">'+parseFloat((o.payB).toFixed(4))+'</td>'
 			      				+'<td class="text-center edit number">'+o.number+'</td>'
-			      				+'<td class="text-center" data-id="'+o.id+'" data-status="'+o.status+'"><input type="radio"  class="rest" value="0">开始<input type="radio" class="rest" value="1">暂停</td>'
-			      				+'<td class="text-center edit name">'+o.taskActualTime+'</td>'
 			      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
 								+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 								
@@ -1217,111 +1211,7 @@
 						});
 						 });
 				  })
-				  /* 一键开始 */
-				   $('.startto').on('click',function(){
-					  var  that=$(this);
-					  var arr=new Array()//员工id
-						$(this).parent().parent().parent().parent().parent().find(".checkboxIdto:checked").each(function() {  
-							arr.push($(this).val());   
-						});
-					  
-					  if(arr.length<=0){
-							return layer.msg("至少选择一个！", {icon: 2});
-						}
-						var data={
-								status:0,
-								type:4,
-								ids:arr,
-						}
-						var _data={
-								page:1,
-						  		size:13,
-								bacthId:self.getCache(),
-								type:4,
-								flag:0,
-								status:$("#selectstate").val(),
-						}
-						var index;
-						 index = layer.confirm('确定一键开始吗', {btn: ['确定', '取消']},function(){
-						$.ajax({
-							url:"${ctx}/task/getTaskActualTime",
-							data:data,
-				            traditional: true,
-							type:"GET",
-							beforeSend:function(){
-								index = layer.load(1, {
-									  shade: [0.1,'#fff'] //0.1透明度的白色背景
-									});
-							},
-							
-							success:function(result){
-								if(0==result.code){
-									layer.msg(result.message, {icon: 1});
-									self.loadPaginationto(_data);
-								}else{
-									layer.msg(result.message, {icon: 2});
-								}
-								layer.close(index);
-							},error:function(){
-								layer.msg("操作失败！", {icon: 2});
-								layer.close(index);
-							}
-						});
-						 });
-				  })
 				  
-				    /* 一键暂停 */
-				$('.suspend').on('click',function(){
-					  var  that=$(this);
-					  var arr=new Array()//员工id
-						$(this).parent().parent().parent().parent().parent().find(".checkboxIdto:checked").each(function() {  
-							arr.push($(this).val());   
-						});
-					  
-					  if(arr.length<=0){
-							return layer.msg("至少选择一个！", {icon: 2});
-						}
-						var data={
-								status:1,
-								type:4,
-								ids:arr,
-						}
-						var _data={
-								page:1,
-						  		size:13,
-								bacthId:self.getCache(),
-								type:4,
-								flag:0,
-								status:$("#selectstate").val(),
-						}
-						var index;
-						 index = layer.confirm('确定一键暂停吗', {btn: ['确定', '取消']},function(){
-						$.ajax({
-							url:"${ctx}/task/getTaskActualTime",
-							data:data,
-				            traditional: true,
-							type:"GET",
-							beforeSend:function(){
-								index = layer.load(1, {
-									  shade: [0.1,'#fff'] //0.1透明度的白色背景
-									});
-							},
-							
-							success:function(result){
-								if(0==result.code){
-									layer.msg(result.message, {icon: 1});
-									self.loadPaginationto(_data);
-								}else{
-									layer.msg(result.message, {icon: 2});
-								}
-								layer.close(index);
-							},error:function(){
-								layer.msg("操作失败！", {icon: 2});
-								layer.close(index);
-							}
-						});
-						 });
-				  })
 				
 			}
    	}

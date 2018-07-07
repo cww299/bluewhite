@@ -76,8 +76,6 @@
 			            <table>
 			            <tr>           
                         <td><button type="button" class="btn btn-default btn-danger btn-sm btn-3d attendance">一键删除</button>&nbsp&nbsp</td>
-                        <td><button type="button" class="btn btn-info  btn-sm btn-3d start">一键开始</button>&nbsp&nbsp</td>
-                        <td><button type="button" class="btn btn-default btn-success btn-sm btn-3d suspend">一键暂停</button>&nbsp&nbsp</td>
                         </tr>
                         </table>             
                             <div class="panel-body">
@@ -99,8 +97,6 @@
                                             <th class="text-center">任务价值</th>
                                             <th class="text-center">b工资净值</th>
                                             <th class="text-center">数量</th>
-                                            <th class="text-center">开始结束</th>
-                                            <th class="text-center">实际用时</th>
                                             <th class="text-center">完成人</th>
                                             <th class="text-center">操作</th>
                                         </tr>
@@ -220,8 +216,6 @@
 		      				+'<td class="text-center  name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
 		      				+'<td class="text-center  name">'+parseFloat((o.payB).toFixed(4))+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
-		      				+'<td class="text-center" data-id="'+o.id+'" data-status="'+o.status+'"><input type="radio"  class="rest" value="0">开始<input type="radio" class="rest" value="1">暂停</td>'
-		      				+'<td class="text-center edit name">'+o.taskActualTime+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
@@ -529,7 +523,7 @@
 				
 				  
 				  /* 一键暂停 */
-				$('.suspend').on('click',function(){
+				/* $('.suspend').on('click',function(){
 					  var  that=$(this);
 					  var arr=new Array()//员工id
 						$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
@@ -571,7 +565,7 @@
 							}
 						});
 						 });
-				  })
+				  }) */
 				
 				  /* 一键结束 */
 				/* $('.end').on('click',function(){
@@ -618,7 +612,7 @@
 						 });
 				  }) */
 				  
-				  $('.start').on('click',function(){
+				  /* $('.start').on('click',function(){
 					  var  that=$(this);
 					  var arr=new Array()//员工id
 						$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
@@ -661,7 +655,7 @@
 							}
 						});
 						 });
-				  })
+				  }) */
 			}
    	}
    			var login = new Login();

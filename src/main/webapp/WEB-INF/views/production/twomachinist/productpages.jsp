@@ -71,7 +71,6 @@
                                             <th class="text-center">产品名</th>
                                             <th class="text-center">生产预计单价</th>
                                             <th class="text-center">外发价格</th>
-                                            <th class="text-center">针工价格</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -276,7 +275,6 @@
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center  departmentPrice">'+o.departmentPrice*1+'</td>'
 		      				+'<td class="text-center edit  workPrice">'+o.hairPrice+'</td>'
-		      				+'<td class="text-center  deedlePrice">'+o.deedlePrice+'</td>'
 							+'<td class="text-center"><button class="btn btn-xs btn-info  btn-trans update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-primary btn-trans addprocedure" data-id='+o.id+' data-name='+o.name+'>添加机工工序</button> <button class="btn btn-xs btn-primary btn-trans addproceduretw" data-id='+o.id+' data-name='+o.name+'>添加返工工序</button> <button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.name+'>填写批次</button></td></tr>'
 		      			}); 
 		      			 self.setIndex(result.data.pageNum);
@@ -1014,7 +1012,7 @@
 				  			imageForm.append("type",4);
 				  			imageForm.append("flag",0)
 					 $.ajax({
-							url:"${ctx}/excel/importProcedure",
+							url:"${ctx}/excel/importMachinistProcedure",
 							data:imageForm,
 							type:"post",
 							processData:false,
