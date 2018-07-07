@@ -69,6 +69,7 @@ public class CollectInformation {
 	 * 我们可以给予一线的
 	 */
 	private Double giveThread;
+	
 	/**
 	 * 一线剩余给我们
 	 */
@@ -79,6 +80,10 @@ public class CollectInformation {
 	 */
 	private Double deployPrice;
 	
+	/**
+	 * 考虑管理费，预留在手等。可调配资金
+	 */
+	private Double manage;
 	
 	/**
 	 * 模拟得出可调配资金
@@ -172,6 +177,14 @@ public class CollectInformation {
 	
 	
 	
+	public Double getManage() {
+		return manage;
+	}
+
+	public void setManage(Double manage) {
+		this.manage = manage;
+	}
+
 	public Double getGiveSurplus() {
 		return giveSurplus;
 	}
