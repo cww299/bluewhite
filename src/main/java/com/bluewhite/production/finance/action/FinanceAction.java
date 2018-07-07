@@ -296,7 +296,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		}else if(collectInformation.getStatus()==1){
 			cr.setData(ClearCascadeJSON
 					.get()
-					.addRetainTerm(CollectInformation.class,"sumAttendancePay","giveThread","surplusThread",
+					.addRetainTerm(CollectInformation.class,"sumAttendancePay","giveThread","surplusThread","manage",
 							"deployPrice","analogDeployPrice","sumChummage","sumHydropower","sumLogistics",
 							"analogPerformance","surplusManage","manageProportion","managePerformanceProportion",
 							"analogTime","grant","giveSurplus","shareholderProportion","shareholder","workshopSurplus").format(collectInformation).toJSON());	

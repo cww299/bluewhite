@@ -238,6 +238,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		double sumPayB = taskList.stream().mapToDouble(Task::getPayB).sum();
 		//产生的管理费汇总
 		double sumManage = sumTask-sumPayB;
+		collectInformation.setManage(sumManage);
 		//H和N相差天数
 		double days = 0;
 		//天数计算值
@@ -286,7 +287,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		double manageProportion = 0;
 		if(collectInformation.getType()==1 || collectInformation.getType()==2){
 			 manageProportion = 0.18;
-		}else{
+		}else if(collectInformation.getType()==3){
 			manageProportion = 0.11;
 		}
 		collectInformation.setManageProportion(manageProportion);
@@ -297,7 +298,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		
 		//模拟当月非一线人员出勤小时
 		double  analogTime = 0;
-		if(collectInformation.getType()==1){
+		if(collectInformation.getType()==1 || collectInformation.getType()==4){
 			  analogTime = 450;
 		}else{
 			List<NonLine> nonLine = nonLineDao.findAll();
@@ -431,7 +432,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			}
 		}
 		//质检返工出勤时间
-		if(monthlyProduction.getType()==1){
+		if(monthlyProduction.getType()==1 || monthlyProduction.getType()==2 || monthlyProduction.getType()==4){
 			monthlyProduction.setReworkTurnTime(reworkTurnTime);
 		//针工返工出勤时间
 		}else if((monthlyProduction.getType()==3)){
