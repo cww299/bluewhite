@@ -70,7 +70,7 @@ public class ProductAction {
 	@SysLogAspectAnnotation(description = "产品新增操作", module = "产品管理", operateType = "增加", logType = SysLog.ADMIN_LOG_TYPE)
 	public CommonResponse addProduct(HttpServletRequest request,Product product) {
 		CommonResponse cr = new CommonResponse();
-		if(!StringUtils.isEmpty(product.getNumber()) || !StringUtils.isEmpty(product.getName())){
+		if(StringUtils.isEmpty(product.getNumber()) && StringUtils.isEmpty(product.getName())){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品编号和产品名都不能为空");
 		}else{
