@@ -948,7 +948,7 @@
 						}); 
 				})
 				
-				//新增工序
+				//新增返工工序
 				$('.addtw').on('click',function(){
 					var index;
 					var postData;

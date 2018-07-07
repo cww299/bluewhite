@@ -92,7 +92,6 @@
                                             <th class="text-center">数量</th>
                                             <th class="text-center">预计生产单价</th>
                                             <th class="text-center">外发价格</th>
-                                            <th class="text-center">针工价格</th>
                                             <th class="text-center">任务价值</th>
                                             <th class="text-center">地区差价</th>
                                             <th class="text-center">当批用时</th>
@@ -312,7 +311,6 @@
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center  bacthDepartmentPrice">'+parseFloat((o.bacthDepartmentPrice).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit bacthHairPrice">'+o.bacthHairPrice+'</td>'
-		      				+'<td class="text-center edit bacthDeedlePrice">'+parseFloat((o.bacthDeedlePrice).toFixed(3))+'</td>'
 		      				+'<td class="text-center  sumTaskPrice">'+ parseFloat((o.sumTaskPrice*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center  regionalPrice">'+parseFloat((o.regionalPrice*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center ">'+parseFloat((o.time).toFixed(3))+'</td>'

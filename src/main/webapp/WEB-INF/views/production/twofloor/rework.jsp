@@ -1086,7 +1086,9 @@
 								url : '${ctx}/bacth/allBacth',
 								type : 'GET',
 								data : {
-									bacthNumber:query
+									bacthNumber:query,
+									type:3,
+									flag:0,
 								},
 								success : function(result) {
 									console.log(result)
