@@ -36,6 +36,7 @@ import com.bluewhite.production.finance.entity.MonthlyProduction;
 import com.bluewhite.production.finance.service.CollectPayService;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
+import com.bluewhite.reportexport.entity.MachinistProcedurePoi;
 import com.bluewhite.reportexport.entity.ProcedurePoi;
 import com.bluewhite.reportexport.entity.ProductPoi;
 import com.bluewhite.reportexport.entity.ReworkPoi;
@@ -148,13 +149,13 @@ public class ReportExportAction {
 	public CommonResponse importMachinistProcedure(@RequestParam(value="file",required=false) MultipartFile file,Long productId,Integer type,Integer flag,HttpServletRequest request){
 		CommonResponse cr = new CommonResponse();
 		try {
-				List<ProcedurePoi> excelProcedure = new ArrayList<ProcedurePoi>();
+				List<MachinistProcedurePoi> excelProcedure = new ArrayList<MachinistProcedurePoi>();
 				InputStream in = file.getInputStream();
 				String filename = file.getOriginalFilename();
 				// 创建excel工具类
-				Excelutil<ProcedurePoi> util = new Excelutil<ProcedurePoi>(ProcedurePoi.class);
+				Excelutil<MachinistProcedurePoi> util = new Excelutil<MachinistProcedurePoi>(MachinistProcedurePoi.class);
 				excelProcedure = util.importExcel(filename, in);// 导入
-				int count = ReportExportService.importProcedureExcel(excelProcedure,productId,type,flag);
+				int count = ReportExportService.importMachinistProcedureExcel(excelProcedure,productId,type,flag);
 				if(count > 0){
 					cr.setMessage("成功导入"+count+"条数据");
 				}

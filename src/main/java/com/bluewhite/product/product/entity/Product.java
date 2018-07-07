@@ -169,9 +169,6 @@ public class Product extends BaseEntity<Long>{
 	@Column(name = "bt_price")
     private String btPrice;
 	
-	
-	
-	
     //产品本身外发价格
 	@Transient
     private Double hairPrice;

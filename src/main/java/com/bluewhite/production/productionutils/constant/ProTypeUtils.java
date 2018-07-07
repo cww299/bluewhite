@@ -629,6 +629,9 @@ public  class ProTypeUtils {
 		default:
 			break;
 		}
+		if(bacth.getBacthHairPrice()==0){
+			sumRegionalPrice = 0.0;
+		}
 		return sumRegionalPrice;
 	}
 	
