@@ -40,7 +40,6 @@
                                         <tr>
                                         	<th class="text-center">组名</th>
                                             <th class="text-center">人员信息</th>
-                                            <th class="text-center">选择工种</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -180,7 +179,6 @@
 		      				html +='<tr>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-		      				+'<td class="text-center"><div align="center" class="groupChange" data-id="'+o.id+'" data-groupid="'+a+'" ></div></td>'
 		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
@@ -269,28 +267,6 @@
 					}
 				})
 				
-				/* 遍历工种 */
-			var getdata={type:"kindWork",}
-			var index;
-		    var html = '';
-		    $.ajax({
-			      url:"${ctx}/basedata/list",
-			      data:getdata,
-			      type:"GET",
-			     
-	      		  success: function (result) {
-	      			 $(result.data).each(function(i,o){
-	      				html +='<option value="'+o.id+'">'+o.name+'</option>'
-	      			}); 
-			       var htmlto='<select class="form-control   selectgroupChange" style="width: 50%;"><option value="">去除工种</option>'+html+'</select>'
-				   	$(".groupChange").html(htmlto); 
-				   	self.chang();
-				   	self.selected();
-			      },error:function(){
-						layer.msg("加载失败！", {icon: 2});
-						layer.close(index);
-				  }
-			  });
 				
 				
 				
