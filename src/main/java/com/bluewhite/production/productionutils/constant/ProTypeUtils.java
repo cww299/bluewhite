@@ -810,6 +810,27 @@ public  class ProTypeUtils {
 		}
 		return allotTime;
 	}
+
+	public static Double sumFarragoTaskTime(Double procedureTime, Integer type, Integer number) {
+		Double sumExpectTime = 0.0 ;
+		switch (type) {
+		case 1:// 生产部一楼质检
+			sumExpectTime = procedureTime;
+			break;
+		case 2://生产部一楼打包
+			sumExpectTime = procedureTime;
+			break;
+		case 3://生产部二楼针工
+			sumExpectTime =procedureTime*number/ProTypeUtils.TIME;
+			break;
+		case 4://生产部二楼机工
+			sumExpectTime = procedureTime;
+			break;
+		default:
+			break;
+		}
+		return sumExpectTime;
+	}
 	
 
 }

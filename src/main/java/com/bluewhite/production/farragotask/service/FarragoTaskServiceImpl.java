@@ -75,6 +75,10 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 			String[] idArr = farragoTask.getUserIds().split(",");
 			farragoTask.setUsersIds(idArr);
 		}
+		//当数量不为null，计算出实际完成时间
+		if(farragoTask.getNumber()!=null){
+			farragoTask.setTime(NumUtils.round(ProTypeUtils.sumFarragoTaskTime(farragoTask.getProcedureTime(),farragoTask.getType(),farragoTask.getNumber()), null));
+		}
 		//杂工任务价值
 		farragoTask.setPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(farragoTask.getTime(), farragoTask.getType(),0), null));
 		//杂工加绩具体数值

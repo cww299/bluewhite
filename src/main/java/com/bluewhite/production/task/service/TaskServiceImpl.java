@@ -71,7 +71,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				newTask.setProcedureId(id);
 				newTask.setProcedureName(procedure.getName());
 				//二楼特殊业务，当存在实际不为null的时候，先计算出任务数量
-				if(newTask.getTaskTime()!=null && newTask.getType()==3){
+				if(task.getTaskTime()!=null && task.getType()==3){
 					newTask.setNumber(NumUtils.roundTwo(ProTypeUtils.getTaskNumber(newTask.getTaskTime(), newTask.getType(), procedure.getWorkingTime())));
 				}
 				//预计完成时间（1.工序类型不是返工，预计时间利用公式计算的得出。2.工序类型是返工，手填预计完成时间）
@@ -85,7 +85,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				if(task.getExpectTime()==null){
 					newTask.setTaskTime(newTask.getExpectTime());
 				}else{
-					newTask.setTaskTime(NumUtils.round(ProTypeUtils.sumTaskTime(newTask.getExpectTime(),procedure.getType(),newTask.getNumber()), null));
+					newTask.setTaskTime(NumUtils.round(ProTypeUtils.sumTaskTime(procedure.getWorkingTime(),procedure.getType(),newTask.getNumber()), null));
 				}
 				
 				//预计任务价值（通过预计完成时间得出）（1.工序类型不是返工，预计任务价值通过计算得出   2.工序类型是返工,没有预计任务价值）
@@ -99,7 +99,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				newTask.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(newTask.getTaskTime(), procedure.getType(),newTask.getFlag()), null));
 				
 				//B工资净值
-				newTask.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(newTask.getTaskPrice(),  procedure.getType()), null));
+				newTask.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(newTask.getTaskPrice(), procedure.getType()), null));
 				
 				//当任务有加绩情况时
 				//任务加绩具体数值
