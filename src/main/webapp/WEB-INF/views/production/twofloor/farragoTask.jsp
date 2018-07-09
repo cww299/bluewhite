@@ -164,7 +164,18 @@
                                   <input type="text" class="form-control timedata">
                                 </div>
                     	</div>
-                    	
+                    	<div class="form-group">
+                            <label class="col-sm-3 control-label">一只净时间</label>
+                                <div class="col-sm-6 ">
+                                  <input type="text" placeholder="可不填" class="form-control timeone">
+                                </div>
+                    	</div>
+                    	<div class="form-group">
+                            <label class="col-sm-3 control-label">杂工任务数量</label>
+                                <div class="col-sm-6 ">
+                                  <input type="text" placeholder="可不填" class="form-control onenumber">
+                                </div>
+                    	</div>
                     	<div class="form-group">
                             <label class="col-sm-3 control-label">备注:</label>
                                 <div class="col-sm-6">
