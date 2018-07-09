@@ -32,6 +32,17 @@ public class FarragoTask  extends BaseEntity<Long>{
 	@Column(name = "type")
 	private Integer type;
 	
+    /**
+     * 杂工任务数量
+     */
+	@Column(name = "number")
+    private Integer number;
+	
+    /**
+     * 杂工工序时间
+     */
+	@Column(name = "procedure_time")
+    private Double procedureTime;
 	
 	/**
 	 * 杂工名称
@@ -110,6 +121,23 @@ public class FarragoTask  extends BaseEntity<Long>{
 	
 	
 	
+	
+	public Double getProcedureTime() {
+		return procedureTime;
+	}
+
+	public void setProcedureTime(Double procedureTime) {
+		this.procedureTime = procedureTime;
+	}
+
+	public Integer getNumber() {
+		return number;
+	}
+
+	public void setNumber(Integer number) {
+		this.number = number;
+	}
+
 	public String getBacth() {
 		return bacth;
 	}
