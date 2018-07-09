@@ -178,10 +178,6 @@
 					   	layer.close(index);
 					   
 					   	$("#tablecontent").html(html); 
-					   	if($('.selectcomplete').find("option:selected").attr("emoney")==120 || $('.selectcomplete').find("option:selected").attr("emoney")==113){
-							$('.overtimets').removeClass("hidden");
-							$('.overtimet').removeClass("hidden");
-						}
 					   	self.loadEvents();
 					   self.checked();
 					   self.checkedd();
@@ -513,7 +509,7 @@
 			      type:"GET",
 	      		  success: function (result) {
 	      			  $(result.data).each(function(k,j){
-	      				htmlth +='<option value="'+j.id+'" emoney="'+j.kindWork.id+'">'+j.name+'</option>'
+	      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
 	      			  });  
 	      			 $('#groupp').html("<select class='form-control selectcomplete'><option value="+""+">请选择&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>"+htmlth+"</select>") 
 			      }

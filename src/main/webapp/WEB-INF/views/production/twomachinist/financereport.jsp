@@ -125,10 +125,6 @@
 								<span class="input-group-btn">
 									<button type="button"  class="btn btn-success btn-sm btn-3d pull-right export">导出</button>
 								</span>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<span class="input-group-btn">
-									<button type="button"  class="btn btn-success btn-sm btn-3d pull-right exporttw">验货导出</button>
-								</span>
 							</div>
 						</div>
 					</div>
