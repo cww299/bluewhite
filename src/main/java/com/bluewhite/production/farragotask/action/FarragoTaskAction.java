@@ -48,7 +48,7 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
 				.addRetainTerm(FarragoTask.class,"id","bacth","name","price","time","allotTime","userIds",
-						"performance","performanceNumber","performancePrice","remarks","number");
+						"performance","performanceNumber","performancePrice","remarks","number","procedureTime");
 	}
 	
 	/**
