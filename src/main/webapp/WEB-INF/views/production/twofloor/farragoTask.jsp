@@ -81,6 +81,7 @@
                                         	<th class="text-center">日期</th>
                                             <th class="text-center">工序名</th>
                                             <th class="text-center">现场管理时间</th>
+                                            <th class="text-center">数量</th>
                                             <th class="text-center">备注</th>
                                             <th class="text-center">任务价值</th>
                                             <th class="text-center">人员详情</th>
@@ -161,10 +162,21 @@
                     	<div class="form-group">
                             <label class="col-sm-3 control-label">现场管理时间:</label>
                                 <div class="col-sm-6 ">
-                                  <input type="text" class="form-control timedata">
+                                  <input type="text" placeholder="可不填" class="form-control timedata">
                                 </div>
                     	</div>
-                    	
+                    	<div class="form-group">
+                            <label class="col-sm-3 control-label">一只净时间</label>
+                                <div class="col-sm-6 ">
+                                  <input type="text" placeholder="可不填" class="form-control timeone">
+                                </div>
+                    	</div>
+                    	<div class="form-group">
+                            <label class="col-sm-3 control-label">杂工任务数量</label>
+                                <div class="col-sm-6 ">
+                                  <input type="text" placeholder="可不填" class="form-control onenumber">
+                                </div>
+                    	</div>
                     	<div class="form-group">
                             <label class="col-sm-3 control-label">备注:</label>
                                 <div class="col-sm-6">
@@ -240,11 +252,15 @@
 					  }, 
 		      		  success: function (result) {
 		      			 $(result.data.rows).each(function(i,o){
+		      				 if(o.number==null){
+		      					o.number=0;
+		      				 }
 		      				html +='<tr>'
 		      				+'<td class="text-center edit name">'+o.bacth+'</td>'
 		      				+'<td class="text-center edit name">'+o.allotTime+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center edit name">'+o.time+'</td>'
+		      				+'<td class="text-center edit name">'+o.number+'</td>'
 		      				+'<td class="text-center edit name">'+o.remarks+'</td>'
 		      				+'<td class="text-center edit name">'+parseFloat((o.price).toFixed(3))+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
@@ -399,7 +415,8 @@
 			      				var htmltwo = "";
 			      				var	id=$(this).val()
 								   var data={
-										  id:id
+										  id:id,
+										  type:3,
 								   }
 			      				$.ajax({
 									url:"${ctx}/production/allGroup",
@@ -472,6 +489,8 @@
 									 return layer.msg("批次号不能为空", {icon:2 });
 								  }
 							  postData={
+									  procedureTime:$(".timeone").val(),
+									  number:$(".onenumber").val(),
 									  allotTime:$("#Time").val(),
 									  name:$(".sumnumber").val(),
 									  time:$(".timedata").val(),
