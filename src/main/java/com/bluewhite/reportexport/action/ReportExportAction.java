@@ -50,7 +50,7 @@ public class ReportExportAction {
 	private final static Log log = Log.getLog(ReportExportAction.class);
 	
 	@Autowired
-	private ReportExportService ReportExportService;
+	private ReportExportService reportExportService;
 	
 	@Autowired
 	private TaskService taskService;
@@ -75,7 +75,7 @@ public class ReportExportAction {
 				// 创建excel工具类
 				Excelutil<ProductPoi> util = new Excelutil<ProductPoi>(ProductPoi.class);
 				excelProduct = util.importExcel(filename, in);// 导入
-				int count = ReportExportService.importProductExcel(excelProduct);
+				int count = reportExportService.importProductExcel(excelProduct);
 				if(count > 0){
 					cr.setMessage("成功导入"+count+"条数据");
 				}
@@ -104,7 +104,7 @@ public class ReportExportAction {
 				// 创建excel工具类
 				Excelutil<UserPoi> util = new Excelutil<UserPoi>(UserPoi.class);
 				excelUser = util.importExcel(filename, in);// 导入
-				int count = ReportExportService.importUserExcel(excelUser);
+				int count = reportExportService.importUserExcel(excelUser);
 				if(count > 0){
 					cr.setMessage("成功导入"+count+"条数据");
 				}
@@ -129,7 +129,7 @@ public class ReportExportAction {
 				// 创建excel工具类
 				Excelutil<ProcedurePoi> util = new Excelutil<ProcedurePoi>(ProcedurePoi.class);
 				excelProcedure = util.importExcel(filename, in);// 导入
-				int count = ReportExportService.importProcedureExcel(excelProcedure,productId,type,flag);
+				int count = reportExportService.importProcedureExcel(excelProcedure,productId,type,flag);
 				if(count > 0){
 					cr.setMessage("成功导入"+count+"条数据");
 				}
@@ -155,7 +155,7 @@ public class ReportExportAction {
 				// 创建excel工具类
 				Excelutil<MachinistProcedurePoi> util = new Excelutil<MachinistProcedurePoi>(MachinistProcedurePoi.class);
 				excelProcedure = util.importExcel(filename, in);// 导入
-				int count = ReportExportService.importMachinistProcedureExcel(excelProcedure,productId,type,flag);
+				int count = reportExportService.importMachinistProcedureExcel(excelProcedure,productId,type,flag);
 				if(count > 0){
 					cr.setMessage("成功导入"+count+"条数据");
 				}
@@ -268,7 +268,7 @@ public class ReportExportAction {
 				// 创建excel工具类
 				Excelutil<Materiel> util = new Excelutil<Materiel>(Materiel.class);
 				excelMateriel = util.importExcel(filename, in);// 导入
-				int count = ReportExportService.importMaterielExcel(excelMateriel);
+				int count = reportExportService.importMaterielExcel(excelMateriel);
 				if(count > 0){
 					cr.setMessage("成功导入"+count+"条数据");
 				}
@@ -297,7 +297,7 @@ public class ReportExportAction {
 				// 创建excel工具类
 				Excelutil<BaseOne> util = new Excelutil<BaseOne>(BaseOne.class);
 				excelBaseOne = util.importExcel(filename, in);// 导入
-				int count = ReportExportService.importexcelBaseOneExcel(excelBaseOne);
+				int count = reportExportService.importexcelBaseOneExcel(excelBaseOne);
 				if(count > 0){
 					cr.setMessage("成功导入"+count+"条数据");
 				}
@@ -326,7 +326,7 @@ public class ReportExportAction {
 				// 创建excel工具类
 				Excelutil<BaseOneTime> util = new Excelutil<BaseOneTime>(BaseOneTime.class);
 				excelBaseOneTime = util.importExcel(filename, in);// 导入
-				int count = ReportExportService.importexcelBaseOneTimeExcel(excelBaseOneTime);
+				int count = reportExportService.importexcelBaseOneTimeExcel(excelBaseOneTime);
 				if(count > 0){
 					cr.setMessage("成功导入"+count+"条数据");
 				}
