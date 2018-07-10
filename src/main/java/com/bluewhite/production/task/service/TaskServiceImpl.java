@@ -74,9 +74,11 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				if(task.getTaskTime()!=null && task.getType()==3){
 					newTask.setNumber(NumUtils.roundTwo(ProTypeUtils.getTaskNumber(newTask.getTaskTime(), newTask.getType(), procedure.getWorkingTime())));
 				}
+				
 				//预计完成时间（1.工序类型不是返工，预计时间利用公式计算的得出。2.工序类型是返工，手填预计完成时间）
 				//当前台传值得预计时间不为null，说明该任务类型是返工类型
 				newTask.setFlag(procedure.getFlag());
+				
 				if(task.getExpectTime()==null){
 					newTask.setExpectTime(NumUtils.round(ProTypeUtils.sumExpectTime(procedure,procedure.getType(),newTask.getNumber()), null));
 				}

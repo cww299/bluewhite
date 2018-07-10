@@ -54,6 +54,9 @@ public class AttendanceAction {
 		@ResponseBody
 		public CommonResponse allAttendancePay(HttpServletRequest request,AttendancePay attendancePay) {
 			CommonResponse cr = new CommonResponse();
+			
+		
+			
 				//新增考勤工资，一键增加考勤
 				if(!StringUtils.isEmpty(attendancePay.getUsersId())){
 					for (int i = 0; i < attendancePay.getUsersId().length; i++) {
@@ -74,6 +77,16 @@ public class AttendanceAction {
 							return cr;
 						}else{
 							attendance.setWorkTime(attendancePay.getWorkTimes()[i]);
+							
+							if(attendance.getType()==1 || attendance.getType()==2){
+								if(attendance.getWorkTime()==0){
+									cr.setMessage("考勤时间不能为0");
+									cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+									return cr;
+								}
+								
+							}
+							
 							if(attendancePay.getDutyTimes()!=null && attendancePay.getDutyTimes().length>0){
 								attendance.setDutyTime(attendancePay.getDutyTimes()[i]); 
 							}
@@ -149,6 +162,21 @@ public class AttendanceAction {
 			}
 			return cr;
 		}
+		
+		
+		/** 
+		 * 删除考勤
+		 * 
+		 */
+		@RequestMapping(value = "/finance/deleteAttendance", method = RequestMethod.GET)
+		@ResponseBody
+		public CommonResponse updateAllAttendance(HttpServletRequest request,Long id) {
+			CommonResponse cr = new CommonResponse();
+			attendancePayService.delete(id);
+			cr.setMessage("删除成功");
+			return cr;
+		}
+		
 		
 		
 		@InitBinder

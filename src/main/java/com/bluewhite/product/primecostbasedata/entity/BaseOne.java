@@ -34,12 +34,49 @@ public class BaseOne extends BaseEntity<Long>{
 	@Column(name = "type")
     private String type;
 	
+	/**
+	 * 已考证的时间/秒
+	 */
+	@Poi(name = "", column = "B")
+	@Column(name = "textual_time")
+	private Double textualTime;
+	
+	/**
+	 * 需要时间考证设定/秒
+	 */
+	@Poi(name = "", column = "C")
+	@Column(name = "time")
+	private Double time;
+	
 	
 	/**
 	 * 名称和时间关联，进行联查
 	 */
 	@OneToMany(mappedBy = "baseOne",cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private Set<BaseOneTime> baseOneTimes = new HashSet<BaseOneTime>();
+
+	
+	
+	
+
+	public Double getTextualTime() {
+		return textualTime;
+	}
+
+
+	public void setTextualTime(Double textualTime) {
+		this.textualTime = textualTime;
+	}
+
+
+	public Double getTime() {
+		return time;
+	}
+
+
+	public void setTime(Double time) {
+		this.time = time;
+	}
 
 
 	public String getName() {
