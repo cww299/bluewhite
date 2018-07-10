@@ -528,6 +528,7 @@
 			this.events = function(){
 				$('.searchtask').on('click',function(){
 					var data = {
+							type:1,
 							userName:$("#username").val(),
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
