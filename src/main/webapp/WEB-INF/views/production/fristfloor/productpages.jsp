@@ -689,7 +689,6 @@
 					var flag=0;
 					if($(this).parent().parent().find("input:radio:checked").val()==109){
 						flag=1;
-						workingtime=0.0;
 					}
 					
 					postData={
