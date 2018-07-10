@@ -42,6 +42,21 @@ public class Materiel extends BaseEntity<Long>{
 	@Column(name = "remark")
 	@Poi(name = "", column = "D")
     private String remark;
+	
+	/**
+     * 物料类型
+     */
+	@Column(name = "type")
+    private String type;
+	
+	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 
 	public String getNumber() {
 		return number;
