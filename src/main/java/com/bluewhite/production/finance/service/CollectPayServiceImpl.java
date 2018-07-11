@@ -23,6 +23,7 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
 import com.bluewhite.production.bacth.entity.Bacth;
@@ -678,7 +679,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			
 			//汇总A工资
 			collect.setPayA(payA);
-			collect.setRatio(collect.getPayB()/collect.getPayA());
+			collect.setRatio(NumUtils.round(collect.getPayB()/collect.getPayA()*100,2));
 			dao.save(collect);
 			collectPayList.add(collect);
 		}
