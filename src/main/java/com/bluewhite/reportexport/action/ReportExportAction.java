@@ -356,12 +356,12 @@ public class ReportExportAction {
         try {  
             out = response.getOutputStream();  
         } catch (IOException e) {  
-            e.printStackTrace();  
+            e.printStackTrace();
 		}  
         //输出的实体与反射的实体相对应
         List<CollectPay> collectPayList = payBService.collectPay(collectPay);
         SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd"); 
-        collectPayList.stream().forEach(CollectPay->CollectPay.setStartDate(sdf.format(CollectPay.getOrderTimeBegin())));
+        collectPayList.stream().forEach(CollectPay->CollectPay.setStartDate(sdf.format(collectPay.getOrderTimeBegin())));
 	    Excelutil<CollectPay> util = new Excelutil<CollectPay>(CollectPay.class);
         util.exportExcel(collectPayList, "绩效报表", out);// 导出  
 	}
