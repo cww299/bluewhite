@@ -77,13 +77,14 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                        	<th class="text-center">批次名</th>
-                                        	<th class="text-center">日期</th>
-                                            <th class="text-center">工序名</th>
-                                            <th class="text-center">现场管理时间</th>
-                                            <th class="text-center">备注</th>
+                                        	<th class="text-center">任务编号</th>
+                                        	<th class="text-center">批次号</th>
+                                            <th class="text-center">产品名</th>
+                                            <th class="text-center">时间</th>
+                                            <th class="text-center">工序</th>
                                             <th class="text-center">任务价值</th>
-                                            <th class="text-center">人员详情</th>
+                                            <th class="text-center">b工资净值</th>
+                                            <th class="text-center">完成人</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -233,7 +234,7 @@
 						page:1,
 				  		size:13,	
 				  		type:4,
-
+				  		flag:1,
 				} 
 			this.init = function(){
 				
@@ -246,7 +247,7 @@
 			    var index;
 			    var html = '';
 			    $.ajax({
-				      url:"${ctx}/farragoTask/allFarragoTask",
+				      url:"${ctx}/task/allTask",
 				      data:data,
 				      type:"GET",
 				      beforeSend:function(){
@@ -256,15 +257,21 @@
 					  }, 
 		      		  success: function (result) {
 		      			 $(result.data.rows).each(function(i,o){
-		      				html +='<tr>'
-		      				+'<td class="text-center edit name">'+o.bacth+'</td>'
-		      				+'<td class="text-center edit name">'+o.allotTime+'</td>'
-		      				+'<td class="text-center edit name">'+o.name+'</td>'
-		      				+'<td class="text-center edit name">'+o.time+'</td>'
-		      				+'<td class="text-center edit name">'+o.remarks+'</td>'
-		      				+'<td class="text-center edit name">'+parseFloat((o.price).toFixed(3))+'</td>'
+		      					 var a=""
+			      				 var s=o.procedureName
+			      				 if(o.taskActualTime==null){
+			      					o.taskActualTime=0
+			      				 }
+		      				html +='<tr></td>'
+		      				+'<td class="text-center  name">'+o.id+'</td>'
+		      				+'<td class="text-center  name">'+o.bacthNumber+'</td>'
+		      				+'<td class="text-center name">'+o.productName+'</td>'
+		      				+'<td class="text-center  name">'+o.allotTime+'</td>'
+		      				+'<td class="text-center  name">'+s+'</td>'
+		      				+'<td class="text-center  name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
+		      				+'<td class="text-center  name">'+parseFloat((o.payB).toFixed(4))+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
+							+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -346,7 +353,7 @@
 					 var arr=new Array();
 					var html="";
 					$.ajax({
-						url:"${ctx}/farragoTask/taskUser",
+						url:"${ctx}/task/taskUser",
 						data:postData,
 						type:"GET",
 						beforeSend:function(){
@@ -387,7 +394,6 @@
 									type:4,
 								},
 								success : function(result) {
-									console.log(result)
 									//转换成 json集合
 									 var resultList = result.data.rows.map(function (item) {
 										 	//转换成 json对象
@@ -548,11 +554,11 @@
 									  AC5:$(".hourly").val(),
 									  allotTime:$("#Time").val(),
 									  procedureName:$(".sumnumber").val(),
-									  time:$(".timedata").val(),
+									  taskTime:$(".timedata").val(),
 									  remarks:$(".remarks").val(),
 									  productName:$(".product").val(),
 									  userIds:arr,
-									  bacth:$(".bacth").val(),
+									  bacthNumber:$(".bacth").val(),
 									  type:4,
 							  }
 							  $.ajax({

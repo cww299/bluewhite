@@ -444,7 +444,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		double reworkNumber = userList.size();
 		monthlyProduction.setReworkNumber(reworkNumber);
 		//返工个数
-		double rework =  taskList.stream().mapToDouble(Task::getNumber).sum();
+		double rework =  taskList.stream().filter(Task->Task.getNumber()!=null).mapToDouble(Task::getNumber).sum();
 		monthlyProduction.setRework(rework);
 		//返工时间
 		double reworkTime = reworkTurnTime;
