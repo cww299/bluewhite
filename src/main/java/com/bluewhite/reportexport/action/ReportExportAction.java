@@ -31,9 +31,11 @@ import com.bluewhite.common.utils.excel.Excelutil;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.BaseOneTime;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
+import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.GroupProduction;
 import com.bluewhite.production.finance.entity.MonthlyProduction;
 import com.bluewhite.production.finance.service.CollectPayService;
+import com.bluewhite.production.finance.service.PayBService;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.reportexport.entity.MachinistProcedurePoi;
@@ -57,6 +59,10 @@ public class ReportExportAction {
 	
 	@Autowired
 	private CollectPayService collectPayBService;
+	
+	@Autowired
+	private PayBService payBService;
+	
 	/**
 	 * 基础产品导入                          
 	 * @param residentmessage
@@ -334,6 +340,30 @@ public class ReportExportAction {
 			cr.setMessage("导入失败");
 		}
 		return cr;
+	}
+	
+	
+	/**
+	 * 导出包装绩效
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping("/importExcel/DownCollectPay")
+	public void DownCollectPay(HttpServletResponse response,CollectPay collectPay){
+		response.setContentType("octets/stream");
+	    response.addHeader("Content-Disposition", "attachment;filename=rework.xls");
+	    OutputStream out=null;
+        try {  
+            out = response.getOutputStream();  
+        } catch (IOException e) {  
+            e.printStackTrace();  
+		}  
+        //输出的实体与反射的实体相对应
+        List<CollectPay> collectPayList = payBService.collectPay(collectPay);
+        SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd"); 
+        collectPayList.stream().forEach(CollectPay->CollectPay.setStartDate(sdf.format(CollectPay.getOrderTimeBegin())));
+	    Excelutil<CollectPay> util = new Excelutil<CollectPay>(CollectPay.class);
+        util.exportExcel(collectPayList, "绩效报表", out);// 导出  
 	}
 	
 	

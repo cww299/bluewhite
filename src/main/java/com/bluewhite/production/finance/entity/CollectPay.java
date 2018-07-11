@@ -8,6 +8,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.common.utils.excel.Poi;
 /**
  * 绩效汇总类 绩效流水表
  * @author zhangliang
@@ -21,6 +22,7 @@ public class CollectPay extends BaseEntity<Long> {
 	 * 员工姓名
 	 */
 	@Column(name = "user_name")
+	@Poi(name = "员工姓名", column = "A")
     private String userName;
 	
 	/**
@@ -39,6 +41,7 @@ public class CollectPay extends BaseEntity<Long> {
 	 * 考勤时间
 	 */
 	@Column(name = "time")
+	@Poi(name = "考勤时间", column = "B")
 	private Double time;
 	
 	/**
@@ -94,6 +97,7 @@ public class CollectPay extends BaseEntity<Long> {
 	 * 上浮后的加绩工资
 	 */
 	@Column(name = "add_performance_pay")
+	@Poi(name = "考勤时间", column = "C")
 	private Double addPerformancePay;
 	
 	/**
@@ -158,10 +162,21 @@ public class CollectPay extends BaseEntity<Long> {
 	private Date orderTimeEnd;
 	
 	
+	/**
+	 * 日期
+	 */
+	@Poi(name = "日期", column = "D")
+	private String startDate;
+	
 	
 	
 
-
+	public String getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
 	public Double getRatio() {
 		return ratio;
 	}
