@@ -436,7 +436,7 @@
 		      				+'<td class="text-center ">'+o.disparity+'</td>'
 		      				+'<td class="text-center  ">'+o.workPrice+'</td>'
 		      				+'<td class="text-center  ">'+o.payNumber+'</td>'
-		      				+'<td class="text-center"> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button></td></tr>'
+		      				+'<td class="text-center"> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 		      			}); 
 				        //显示分页
 					   	 laypage({
@@ -471,6 +471,41 @@
 				  });
 			}
 			this.loadEvents = function(){
+				//删除
+				$('.delete').on('click',function(){
+					var postData = {
+							id:$(this).data('id'),
+					}
+					
+					var index;
+					 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
+					$.ajax({
+						url:"${ctx}/finance/deleteAttendance",
+						data:postData,
+						type:"GET",
+						beforeSend:function(){
+							index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+						},
+						
+						success:function(result){
+							if(0==result.code){
+							layer.msg("删除成功！", {icon: 1});
+							self.loadPaginationth(data)
+							layer.close(index);
+							}else{
+								layer.msg("删除失败！", {icon: 1});
+								layer.close(index);
+							}
+						},error:function(){
+							layer.msg("操作失败！", {icon: 2});
+							layer.close(index);
+						}
+					});
+					 })
+				})
+				
 				//修改方法
 				$('.updateremake').on('click',function(){
 					if($(this).text() == "编辑"){

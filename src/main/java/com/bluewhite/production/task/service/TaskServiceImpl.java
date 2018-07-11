@@ -464,6 +464,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	}
 
 	@Override
+	@Transactional
 	public Task addReTask(Task task) {
 		//将用户变成string类型储存
 				if (!StringUtils.isEmpty(task.getUserIds())) {
@@ -476,6 +477,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				}
 				//返工任务价值
 				task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskTime(), task.getType(),0,task.getAC5()), null));
+				
+				//B工资净值
+				task.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(task.getTaskPrice(), task.getType()), null));
 				
 				task = dao.save(task);
 				//将返工工资统计成流水
