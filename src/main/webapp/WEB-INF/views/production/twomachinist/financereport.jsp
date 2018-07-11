@@ -268,12 +268,13 @@
 		      				if(o.timePrice==null){
 		      					o.timePrice=0
 		      				}
+		      				var c="%";
 		      				html +='<tr>'
 		      				+'<td class="text-center edit ">'+o.userName+'</td>'
 		      				+'<td class="text-center edit ">'+o.time+'</td>'
 		      				+'<td class="text-center edit ">'+o.payA+'</td>'
 		      				+'<td class="text-center edit ">'+o.payB+'</td>'
-		      				+'<td class="text-center edit ">'+o.ratio+'</td></tr>'
+		      				+'<td class="text-center edit ">'+o.ratio+c+'</td></tr>'
 		      				
 		      				
 							

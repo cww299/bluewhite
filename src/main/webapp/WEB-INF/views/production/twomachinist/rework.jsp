@@ -415,7 +415,7 @@
 		                }, matcher: function (item) {
 		                	//转出成json对象
 					        var item = JSON.parse(item);
-					        $('.product').val(item.name);
+					       /*  $('.product').val(item.name); */
 					     self.setCache(item.id);
 					    	return item.name
 					    },
@@ -425,7 +425,7 @@
 							var item = JSON.parse(item);
 							
 						  	
-						  	$('.product').val(item.name);
+						   $('.product').val(item.name); 
 						  	self.setCache(item.id);
 								return item.name
 						}, 
