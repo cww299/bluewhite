@@ -672,14 +672,14 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			collect.setUserName(psList.get(0).getUserName());
 			//汇总B工资
 			if(collectPay.getType()==4){
-				collect.setPayB(NumUtils.round(sumBPay+sumfarragoTaskPay*100,2));
+				collect.setPayB(sumBPay+sumfarragoTaskPay);
 			}else{
 				collect.setPayB(sumBPay);
 			}
 			
 			//汇总A工资
 			collect.setPayA(payA);
-			collect.setRatio(collect.getPayB()/collect.getPayA());
+			collect.setRatio(NumUtils.round(collect.getPayB()/collect.getPayA()*100,2));
 			dao.save(collect);
 			collectPayList.add(collect);
 		}
