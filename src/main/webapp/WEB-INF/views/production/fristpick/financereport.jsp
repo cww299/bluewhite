@@ -806,7 +806,8 @@
 					var data = {
 							userName:$("#username").val(),
 				  			orderTimeBegin:$("#startTime").val(),
-				  			orderTimeEnd:$("#endTime").val(), 
+				  			orderTimeEnd:$("#endTime").val(),
+				  			type:2,
 				  	}
 			
 				self.loadPagination(data);
