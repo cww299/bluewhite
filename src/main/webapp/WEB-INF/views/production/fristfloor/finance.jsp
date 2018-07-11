@@ -462,7 +462,7 @@
 						success:function(result){
 							if(0==result.code){
 							layer.msg("删除成功！", {icon: 1});
-							self.loadPagination(data)
+							self.loadPaginationth(data)
 							layer.close(index);
 							}else{
 								layer.msg("删除失败！", {icon: 1});
