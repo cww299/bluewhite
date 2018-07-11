@@ -141,6 +141,12 @@ public class CollectPay extends BaseEntity<Long> {
 	private Double timePrice;
 	
 	/**
+	 * B工资比A工资
+	 */
+	@Column(name = "ratio")
+	private Double ratio;
+	
+	/**
 	 * 查询字段开始时间
 	 */
 	@Transient
@@ -156,6 +162,12 @@ public class CollectPay extends BaseEntity<Long> {
 	
 
 
+	public Double getRatio() {
+		return ratio;
+	}
+	public void setRatio(Double ratio) {
+		this.ratio = ratio;
+	}
 	public Double getTimePrice() {
 		return timePrice;
 	}

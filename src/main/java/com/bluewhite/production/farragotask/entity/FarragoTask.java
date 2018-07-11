@@ -117,11 +117,23 @@ public class FarragoTask  extends BaseEntity<Long>{
 	@Transient
 	private  String[] usersIds;
 	
+	/**
+	 * ac5
+	 */
+	@Transient
+	private  Double AC5;
 	
 	
 	
 	
-	
+	public Double getAC5() {
+		return AC5;
+	}
+
+	public void setAC5(Double aC5) {
+		AC5 = aC5;
+	}
+
 	public Double getProcedureTime() {
 		return procedureTime;
 	}

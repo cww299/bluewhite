@@ -18,12 +18,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.production.farragotask.entity.FarragoTask;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
@@ -282,6 +284,40 @@ private static final Log log = Log.getLog(TaskAction.class);
 		List<Map<String,Object>> mapList= ProTypeUtils.pickTaskPerformance();
 		cr.setData(mapList);
 		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	
+	
+	/********二楼机工*********/
+	
+	/**
+	 * 添加返工任务任务
+	 * 
+	 * 
+	 */
+	@RequestMapping(value = "/task/addReTask", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse addReTask(HttpServletRequest request,Task task) {
+		CommonResponse cr = new CommonResponse();
+			//修改
+			if(!StringUtils.isEmpty(task.getId())){
+				Task oldTask = taskService.findOne(task.getId());
+				BeanCopyUtils.copyNullProperties(oldTask,task);
+				task.setCreatedAt(oldTask.getCreatedAt());
+				taskService.update(task);
+				cr.setMessage("修改成功");
+			}else{
+				//新增
+				if(!StringUtils.isEmpty(task.getUserIds())){
+					task.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime(), task.getType()));
+					taskService.addReTask(task);
+					cr.setMessage("任务分配成功");
+				}else{
+					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+					cr.setMessage("领取人不能为空");
+				}
+			}
 		return cr;
 	}
 	
