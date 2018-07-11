@@ -1091,7 +1091,6 @@
 									flag:0,
 								},
 								success : function(result) {
-									console.log(result)
 									//转换成 json集合
 									 var resultList = result.data.rows.map(function (item) {
 										 	//转换成 json对象

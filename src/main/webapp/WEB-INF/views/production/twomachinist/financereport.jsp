@@ -86,6 +86,7 @@
                                         	<th class="text-center">考勤时间</th>
                                         	<th class="text-center">A工资汇总</th>
                                         	<th class="text-center">B工资汇总</th>
+                                        	<th class="text-center">比值</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent">
@@ -271,7 +272,8 @@
 		      				+'<td class="text-center edit ">'+o.userName+'</td>'
 		      				+'<td class="text-center edit ">'+o.time+'</td>'
 		      				+'<td class="text-center edit ">'+o.payA+'</td>'
-		      				+'<td class="text-center edit ">'+o.payB+'</td></tr>'
+		      				+'<td class="text-center edit ">'+o.payB+'</td>'
+		      				+'<td class="text-center edit ">'+o.ratio+'</td></tr>'
 		      				
 		      				
 							
