@@ -244,7 +244,21 @@ public class Task  extends BaseEntity<Long>{
 	private Integer holeNumber;
 	
 	
+	/**
+	 * ac5
+	 */
+	@Transient
+	private  Double AC5;
 	
+	
+
+	public Double getAC5() {
+		return AC5;
+	}
+
+	public void setAC5(Double aC5) {
+		AC5 = aC5;
+	}
 
 	public Integer getHoleNumber() {
 		return holeNumber;

@@ -80,7 +80,7 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 			farragoTask.setTime(NumUtils.round(ProTypeUtils.sumFarragoTaskTime(farragoTask.getProcedureTime(),farragoTask.getType(),farragoTask.getNumber()), null));
 		}
 		//杂工任务价值
-		farragoTask.setPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(farragoTask.getTime(), farragoTask.getType(),0), null));
+		farragoTask.setPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(farragoTask.getTime(), farragoTask.getType(),0,farragoTask.getAC5()), null));
 		//杂工加绩具体数值
 		if(farragoTask.getPerformanceNumber()!=null){
 			farragoTask.setPerformancePrice(NumUtils.round(ProTypeUtils.sumPerformancePrice(farragoTask), null));

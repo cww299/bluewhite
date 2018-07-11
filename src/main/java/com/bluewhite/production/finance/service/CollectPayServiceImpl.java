@@ -647,15 +647,20 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			//分组人员B工资总和
 			double sumBPay = payBList.stream().mapToDouble(PayB::getPayNumber).sum();
 			
-			//杂工工资
-//			FarragoTaskPay farragoTaskPay =new FarragoTaskPay();
-//			farragoTaskPay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
-//			farragoTaskPay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
-//			farragoTaskPay.setType(collectPay.getType());
-//			farragoTaskPay.setUserId((Long)ps);
-//			List<FarragoTaskPay> farragoTaskPayList = farragoTaskPayService.findPages(farragoTaskPay, page).getRows();
-//			//分组人员杂工工资总和
-//			double sumfarragoTaskPay = farragoTaskPayList.stream().mapToDouble(FarragoTaskPay::getPayNumber).sum();
+			double sumfarragoTaskPay = 0;
+			if(collectPay.getType()==4){
+				
+				//杂工工资
+				FarragoTaskPay farragoTaskPay =new FarragoTaskPay();
+				farragoTaskPay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
+				farragoTaskPay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
+				farragoTaskPay.setType(collectPay.getType());
+				farragoTaskPay.setUserId((Long)ps);
+				List<FarragoTaskPay> farragoTaskPayList = farragoTaskPayService.findPages(farragoTaskPay, page).getRows();
+				//分组人员杂工工资总和
+				sumfarragoTaskPay = farragoTaskPayList.stream().mapToDouble(FarragoTaskPay::getPayNumber).sum();
+				
+			}
 			
 			
 			//确定绩效汇总时间
@@ -665,9 +670,15 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			collect.setUserId(psList.get(0).getUserId());
 			collect.setUserName(psList.get(0).getUserName());
 			//汇总B工资
-			collect.setPayB(sumBPay);
+			if(collectPay.getType()==4){
+				collect.setPayB(sumBPay+sumfarragoTaskPay);
+			}else{
+				collect.setPayB(sumBPay);
+			}
+			
 			//汇总A工资
 			collect.setPayA(payA);
+			collect.setRatio(collect.getPayB()/collect.getPayA());
 			dao.save(collect);
 			collectPayList.add(collect);
 		}

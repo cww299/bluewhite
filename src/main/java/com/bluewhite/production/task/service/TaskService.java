@@ -63,5 +63,11 @@ public interface TaskService extends BaseCRUDService<Task,Long>{
 	 */
 	public Integer getTaskNumber(Task task);
 	
+	/**
+	 * 二楼机工添加返工任务
+	 * @param task
+	 */
+	public Task addReTask(Task task);
+	
 
 }

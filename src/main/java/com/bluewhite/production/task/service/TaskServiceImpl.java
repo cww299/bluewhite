@@ -23,6 +23,7 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.dao.PayBDao;
+import com.bluewhite.production.finance.entity.FarragoTaskPay;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
@@ -92,13 +93,13 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				
 				//预计任务价值（通过预计完成时间得出）（1.工序类型不是返工，预计任务价值通过计算得出   2.工序类型是返工,没有预计任务价值）
 				if(task.getExpectTime()==null){
-					newTask.setExpectTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(newTask.getExpectTime(), procedure.getType(),0), null));
+					newTask.setExpectTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(newTask.getExpectTime(), procedure.getType(),0,null), null));
 				}else{
 					newTask.setExpectTaskPrice(null);
 				}
 				
 				//实际任务价值（通过实际完成时间得出）
-				newTask.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(newTask.getTaskTime(), procedure.getType(),newTask.getFlag()), null));
+				newTask.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(newTask.getTaskTime(), procedure.getType(),newTask.getFlag(),null), null));
 				
 				//B工资净值
 				newTask.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(newTask.getTaskPrice(), procedure.getType()), null));
@@ -330,7 +331,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					task.setStatus(2);
 					
 					//实际任务价值（通过实际完成时间得出）
-					task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskActualTime(), task.getType(),0), null));
+					task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskActualTime(), task.getType(),0,null), null));
 					//B工资净值
 					task.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(task.getTaskPrice(),  task.getType()), null));
 					dao.save(task);
@@ -416,7 +417,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		//实际时间
 		task.setTaskTime(NumUtils.round(ProTypeUtils.sumTaskTime(task.getExpectTime(),task.getType(),number), null));
 		//实际任务价值（通过实际完成时间得出）
-		task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskTime(), task.getType(),0), null));
+		task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskTime(), task.getType(),0,null), null));
 		//B工资净值
 		task.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(task.getTaskPrice(),  task.getType()), null));
 		dao.save(task);
@@ -461,5 +462,46 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		return null;
 		
 	}
+
+	@Override
+	public Task addReTask(Task task) {
+		//将用户变成string类型储存
+				if (!StringUtils.isEmpty(task.getUserIds())) {
+					String[] idArr = task.getUserIds().split(",");
+					task.setUsersIds(idArr);
+				}
+				//当数量不为null，计算出实际完成时间
+				if(task.getNumber()!=null){
+					task.setTaskTime(NumUtils.round(ProTypeUtils.sumFarragoTaskTime(task.getTaskTime(),task.getType(),task.getNumber()), null));
+				}
+				//返工任务价值
+				task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskTime(), task.getType(),0,task.getAC5()), null));
+				
+				task = dao.save(task);
+				//将返工工资统计成流水
+				if (task.getUsersIds().length>0) {
+					for (int j = 0; j < task.getUsersIds().length; j++) {
+						Long userid = Long.parseLong(task.getUsersIds()[j]);
+						User user = userDao.findOne(userid);
+						//给予每个员工b工资
+						PayB payB  = new PayB();
+						payB.setUserId(userid);
+						payB.setUserName(user.getUserName());
+						payB.setBacth(task.getBacthNumber());
+						payB.setBacthId(task.getBacthId());
+						payB.setProductId(task.getProductId());
+						payB.setProductName(task.getProductName());
+						payB.setTaskId(task.getId());
+						payB.setType(task.getType());
+						payB.setAllotTime(task.getAllotTime());
+						payB.setFlag(task.getFlag());
+						//计算B工资数值
+						payB.setPayNumber(task.getPayB()/task.getUsersIds().length);
+						payBDao.save(payB);
+					}
+				}
+				return dao.save(task);
+			}
+
 
 }
