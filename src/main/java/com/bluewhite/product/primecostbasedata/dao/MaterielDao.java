@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.bluewhite.base.BaseRepository;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
-import com.bluewhite.production.group.entity.Group;
 
 /**
 * 
