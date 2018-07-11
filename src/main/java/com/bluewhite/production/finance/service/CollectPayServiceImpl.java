@@ -23,6 +23,7 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
 import com.bluewhite.production.bacth.entity.Bacth;
@@ -671,7 +672,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			collect.setUserName(psList.get(0).getUserName());
 			//汇总B工资
 			if(collectPay.getType()==4){
-				collect.setPayB(sumBPay+sumfarragoTaskPay);
+				collect.setPayB(NumUtils.round(sumBPay+sumfarragoTaskPay*100,2));
 			}else{
 				collect.setPayB(sumBPay);
 			}

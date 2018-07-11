@@ -36,6 +36,7 @@ import com.bluewhite.production.finance.entity.GroupProduction;
 import com.bluewhite.production.finance.entity.MonthlyProduction;
 import com.bluewhite.production.finance.service.CollectPayService;
 import com.bluewhite.production.finance.service.PayBService;
+import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.reportexport.entity.MachinistProcedurePoi;
@@ -199,7 +200,7 @@ public class ReportExportAction {
 	    	reworkPoi.setBacthNumber(tasks.getBacthNumber());
 	    	reworkPoi.setName(tasks.getProductName());
 	    	reworkPoi.setNumber(tasks.getNumber());
-	    	reworkPoi.setPrice(tasks.getTaskPrice());
+	    	reworkPoi.setPrice(tasks.getTaskPrice()/0.00621*0.003833333);
 	    	reworkPoi.setRemark(tasks.getRemark());
 	    	reworkPoiList.add(reworkPoi);
 	    }
