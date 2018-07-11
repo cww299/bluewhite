@@ -97,7 +97,7 @@ public class ProductAction {
 			product.setCreatedAt(oldProduct.getCreatedAt());
 			productService.update(product);
 			//根据不同部门，计算不同的外发价格
-			if(product.getType()==3){
+			if(product.getType()==3 || product.getType()==4){
 				List<Procedure>	procedureList = procedureService.findByProductIdAndType(product.getId(),product.getType(),0);
 				if(procedureList.size()==0){
 					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
