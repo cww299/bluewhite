@@ -77,6 +77,12 @@
 										查&nbsp找
 									</button>
 								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									 <button type="button" id="export" class="btn btn-success  btn-sm btn-3d pull-right">
+									 导出绩效
+									 </button>
+								</span>
 							</div>
 						</div>
 					</div>
@@ -802,6 +808,15 @@
 				})
 			}
 			this.events = function(){
+				//导出
+				$('#export').on('click',function(){
+					var index; 
+					var a=$("#startTimeth").val();
+					var c= $("#endTimeth").val();
+					var d=$("#usernameth").val();
+					var e=$("#code").val();
+					location.href="${ctx}/excel/importExcel/DownCollectPay?orderTimeBegin="+a+"&orderTimeEnd="+c+"&type="+2+"&addNumber="+d+"&noPerformancePay="+e;
+				})
 				$('.searchtask').on('click',function(){
 					var data = {
 							userName:$("#username").val(),
