@@ -80,7 +80,12 @@ public class Constants {
     //包含的部门
     public static String MACHINIST_ORGNAME = "76";
     
-    
+    /**
+     *  生产部八号裁剪  
+     */
+    public static String PRODUCT_RIGHT_TAILOR = "productEightTailor";
+    //包含的部门
+    public static String TAILOR_ORGNAME = "72";
     
 
 

@@ -26,7 +26,7 @@ public class UsualConsumeServiceImpl extends BaseServiceImpl<UsualConsume, Long>
 		if(usualConsume.getType()==3){
 			usualConsume.setEquipment((double) 290);
 		}
-		if(usualConsume.getType()==4){
+		if(usualConsume.getType()==4 || usualConsume.getType()==5){
 			usualConsume.setEquipment((double) 6);
 		}
 		usualConsume.setMonthLogistics(usualConsume.getPeopleLogistics()*usualConsume.getPeopleNumber());
@@ -34,7 +34,7 @@ public class UsualConsumeServiceImpl extends BaseServiceImpl<UsualConsume, Long>
 		if(usualConsume.getType()==1 || usualConsume.getType()==2){
 			usualConsume.setHydropower(usualConsume.getMonthHydropower()/30);
 		}
-		if(usualConsume.getType()==3 || usualConsume.getType()==4){
+		if(usualConsume.getType()==3 || usualConsume.getType()==4  || usualConsume.getType()==5){
 			usualConsume.setHydropower((usualConsume.getMonthHydropower()/30)+usualConsume.getEquipment());
 		}
 		usualConsume.setLogistics(usualConsume.getMonthLogistics()/30);
