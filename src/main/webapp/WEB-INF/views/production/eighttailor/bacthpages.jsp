@@ -55,7 +55,7 @@
 					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
              onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
-								<!-- <td>&nbsp&nbsp</td> -->
+								<td>&nbsp&nbsp</td>
 								<!-- <td>完成状态:</td><td><select class="form-control" id="selectstate"><option value=0>未完成</option><option value=1>已完成</option></select></td> -->
 								</tr></table> 
 								<span class="input-group-btn">
@@ -262,7 +262,7 @@
 			 var data={
 						page:1,
 				  		size:13,	
-				  		type:4,
+				  		type:5,
 				  		flag:0,
 				  		status:$('#selectstate').val(),
 				} 
@@ -330,7 +330,7 @@
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
-									  		type:4,
+									  		type:5,
 								  			name:$('#name').val(),
 								  			bacthNumber:$('#number').val(),
 								  			orderTimeBegin:$("#startTime").val(),
@@ -421,7 +421,7 @@
 							        	var _data = {
 							        			page:obj.curr,
 										  		size:13,
-										  		type:4,
+										  		type:5,
 										  		productName:$('#name').val(),
 									  			bacthNumber:$('#number').val(),
 									  			orderTimeBegin:$("#startTime").val(),
@@ -601,7 +601,7 @@
 												page:1,
 										  		size:13,
 												bacthId:self.getCache(),
-												type:4,
+												type:5,
 										}
 										self.loadPaginationto(_data)
 										layer.close(index);
@@ -669,7 +669,7 @@
 							bacthId:$(this).data('id'),
 							page:1,
 					  		size:13,	
-					  		type:4,
+					  		type:5,
 					} 
 					self.loadPaginationto(data);
 					 var ids=that.data("id");
@@ -698,7 +698,7 @@
 							  data={
 									page:1,
 								  	size:13,	
-								  	type:4,
+								  	type:5,
 								  	name:$('#name').val(),
 						  			number:$('#number').val(),
 							  }
@@ -819,7 +819,7 @@
 						}
 					})
 				    //遍历工序类型
-				    var getdata={type:"productTwoMachinist",}
+				    var getdata={type:"productEightTailor",}
 	      			$.ajax({
 					      url:"${ctx}/basedata/list",
 					      data:getdata,
@@ -841,7 +841,7 @@
 			      				}
 								   var data={
 										   productId:productId,
-										   type:4,
+										   type:5,
 										   bacthId:bacthId,
 										   procedureTypeId:id,
 										   flag:0,
@@ -886,7 +886,7 @@
 					      }
 					  });
 					var data={
-							type:4
+							type:5
 					}
 					//遍历人名组别
 				    $.ajax({
@@ -904,7 +904,7 @@
 			      				var	id=$(this).val()
 								   var data={
 										  id:id,
-										  type:4,
+										  type:5,
 										 
 								   }
 			      				$.ajax({
@@ -989,7 +989,7 @@
 								}
 								
 								var postData = {
-										type:4,
+										type:5,
 										bacthId:that.data("id"),
 										procedureIds:values,
 										userIds:arr,
@@ -1096,7 +1096,7 @@
 					var data = {
 				  			page:1,
 				  			size:13,
-				  			type:4,
+				  			type:5,
 				  			name:$('#name').val(),
 				  			bacthNumber:$('#number').val(),
 				  			 orderTimeBegin:$("#startTime").val(),
@@ -1119,13 +1119,13 @@
 						}
 						var data={
 								status:1,
-								type:4,
+								type:5,
 								ids:arr,
 								flag:0,
 						}
 						var _datae={
 								status:0,
-								type:4,
+								type:5,
 								ids:arr,
 								flag:0,
 						}
@@ -1170,14 +1170,14 @@
 							return layer.msg("至少选择一个！", {icon: 2});
 						}
 						var data={
-								type:4,
+								type:5,
 								ids:arr,
 						}
 						var _data={
 								page:1,
 						  		size:13,
 								bacthId:self.getCache(),
-								type:4,
+								type:5,
 								flag:0,
 								status:$("#selectstate").val(),
 						}
