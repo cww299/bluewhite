@@ -100,6 +100,12 @@ public class FarragoTask  extends BaseEntity<Long>{
     private String remarks;
 	
 	/**
+	 * b工资净值
+	 */
+	@Column(name = "pay_b")
+	private Double payB;
+	
+	/**
 	 * 查询字段
 	 */
 	@Transient
@@ -126,6 +132,14 @@ public class FarragoTask  extends BaseEntity<Long>{
 	
 	
 	
+	public Double getPayB() {
+		return payB;
+	}
+
+	public void setPayB(Double payB) {
+		this.payB = payB;
+	}
+
 	public Double getAC5() {
 		return AC5;
 	}

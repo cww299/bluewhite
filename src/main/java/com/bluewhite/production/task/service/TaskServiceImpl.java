@@ -45,6 +45,8 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	private BacthDao bacthDao;
 	@Autowired
 	private PayBDao payBDao;
+
+	
 	
 	private final static String  QUALITY_STRING = "贴破洞";
 	
@@ -178,6 +180,11 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	        	//按工序类型
 	        	if(!StringUtils.isEmpty(param.getProcedureTypeId())){
 	        		predicate.add(cb.equal(root.get("procedure").get("procedureTypeId").as(Long.class), param.getProcedureTypeId()));
+	        	}
+	        	
+	        	//按工序id
+	        	if(!StringUtils.isEmpty(param.getProcedureId())){
+	        		predicate.add(cb.equal(root.get("procedureId").as(Long.class), param.getProcedureId()));
 	        	}
 	        	
 	        	//按类型

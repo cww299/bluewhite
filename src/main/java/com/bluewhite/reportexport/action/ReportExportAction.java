@@ -249,7 +249,7 @@ public class ReportExportAction {
             e.printStackTrace();  
 		}  
         //输出的实体与反射的实体相对应
-        List<GroupProduction> production =  collectPayBService.groupProduction(groupProduction);
+        List<GroupProduction> production =  collectPayBService.groupProduction(groupProduction);	
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
         production.stream().forEach(GroupProduction->GroupProduction.setStartDate(sdf.format(GroupProduction.getOrderTimeBegin())));
 	    Excelutil<GroupProduction> util = new Excelutil<GroupProduction>(GroupProduction.class);

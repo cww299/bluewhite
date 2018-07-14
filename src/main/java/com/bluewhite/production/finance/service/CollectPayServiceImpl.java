@@ -284,12 +284,14 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		double surplusManage = analogDeployPrice-sumChummage-sumHydropower-sumLogistics-analogPerformance;
 		collectInformation.setSurplusManage(surplusManage);
 		
-		//净管理费给付比→
+		//净管理费给付比
 		double manageProportion = 0;
 		if(collectInformation.getType()==1 || collectInformation.getType()==2){
 			 manageProportion = 0.18;
 		}else if(collectInformation.getType()==3){
 			manageProportion = 0.11;
+		}else if(collectInformation.getType()==5){
+			manageProportion = 0.4;
 		}
 		collectInformation.setManageProportion(manageProportion);
 		
@@ -299,7 +301,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		
 		//模拟当月非一线人员出勤小时
 		double  analogTime = 0;
-		if(collectInformation.getType()==1 || collectInformation.getType()==4){
+		if(collectInformation.getType()==1 || collectInformation.getType()==4 || collectInformation.getType()==5){
 			  analogTime = 450;
 		}else{
 			List<NonLine> nonLine = nonLineDao.findAll();

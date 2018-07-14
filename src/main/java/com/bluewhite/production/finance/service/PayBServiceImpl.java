@@ -135,8 +135,8 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 			for(PayB payBs :payBList){
 				sumPayB+=((payBs.getPayNumber()!=null ? payBs.getPayNumber() : 0.0)+(payBs.getPerformancePayNumber()!=null ? payBs.getPerformancePayNumber() : 0.0 ));
 			}
-			//b工资+杂工工资
-			collect.setPayB(sumPayB+sumPayF);
+				//b工资+杂工工资
+				collect.setPayB(sumPayB+sumPayF);
 				//整体上浮后的B
 				collect.setAddPayB(collect.getPayB()*collectPay.getAddNumber());
 				//个人调节系数

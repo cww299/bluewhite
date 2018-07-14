@@ -85,6 +85,9 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 		if(farragoTask.getPerformanceNumber()!=null){
 			farragoTask.setPerformancePrice(NumUtils.round(ProTypeUtils.sumPerformancePrice(farragoTask), null));
 		}
+		//B工资净值
+		farragoTask.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(farragoTask.getPrice(), farragoTask.getType()), null));
+		
 		farragoTask =  dao.save(farragoTask);
 		//将杂工工资统计成流水
 		if (farragoTask.getUsersIds().length>0) {
@@ -94,7 +97,7 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 				FarragoTaskPay farragoTaskPay = new FarragoTaskPay();
 				farragoTaskPay.setAllotTime(farragoTask.getAllotTime());
 				//计算杂工工资
-				farragoTaskPay.setPayNumber(farragoTask.getPrice()/farragoTask.getUsersIds().length);
+				farragoTaskPay.setPayNumber(farragoTask.getPayB()/farragoTask.getUsersIds().length);
 				farragoTaskPay.setType(farragoTask.getType());
 				farragoTaskPay.setUserId(user.getId());
 				farragoTaskPay.setTaskId(farragoTask.getId());

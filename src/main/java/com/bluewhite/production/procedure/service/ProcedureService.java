@@ -41,6 +41,12 @@ public interface ProcedureService extends BaseCRUDService<Procedure,Long>{
 	 * @param procedureList
 	 */
 	List<Procedure> saveList(List<Procedure> procedureList);
+	
+	/**
+	 * 删除工序
+	 * @param id
+	 */
+	void deleteProcedure(Long id)  throws Exception;
 
 
 }
