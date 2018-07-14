@@ -42,22 +42,21 @@
 						<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
 								<table><tr><td>批次名:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
-								<td>&nbsp&nbsp</td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>工序名称:</td><td><input type="text" name="name" id="name" placeholder="请输入产品名称" class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp</td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>开始时间:</td>
 								<td>
 								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
 								</td>
-									<td>&nbsp&nbsp</td>
-									<td>结束时间:</td>
-									<td>
-										<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
-					             onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				<td>&nbsp&nbsp&nbsp&nbsp</td>
+				<td>结束时间:</td>
+				<td>
+					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
+             onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
-								</tr>
-								</table> 
+								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
 										查&nbsp找
@@ -65,12 +64,8 @@
 								</span>
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
-								   <button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">
-								   			新增杂工
-								   </button>
+									<button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增杂工</button>
 								</span>
-								
-								 
 							</div>
 						</div>
 					</div>
@@ -87,10 +82,8 @@
                                             <th class="text-center">工序名</th>
                                             <th class="text-center">现场管理时间</th>
                                             <th class="text-center">备注</th>
-                                            <th class="text-center">工序加绩选择</th>
                                             <th class="text-center">任务价值</th>
                                             <th class="text-center">B工资净值</th>
-                                            <th class="text-center">添加工价</th>
                                             <th class="text-center">人员详情</th>
                                             <th class="text-center">操作</th>
                                         </tr>
@@ -98,7 +91,7 @@
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
-                                
+                              
                                 </table>
                                 <div id="pager" class="pull-right">
                                 
@@ -128,7 +121,7 @@
 				
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+				<button type="button" class="btn btn-info" data-dismiss="modal">关闭
 				</button>
 			</div>
 		</div><!-- /.modal-content -->
@@ -153,44 +146,49 @@
                  
                 	 <div class="form-group">
 						
-                           <label class="col-sm-3 control-label">批次名</label>
+                           <label class="col-sm-3 control-label">批次名:</label>
                               <div class="col-sm-6">
                                   <input type="text" class="form-control bacth">
                               </div>
                     	</div>
 						<div class="form-group">
 						
-                           <label class="col-sm-3 control-label">工序名</label>
+                           <label class="col-sm-3 control-label">工序名:</label>
                               <div class="col-sm-6">
                                   <input type="text" class="form-control sumnumber">
                               </div>
                     	</div>
                     	
                     	<div class="form-group">
-                            <label class="col-sm-3 control-label">现场管理时间</label>
+                            <label class="col-sm-3 control-label">现场管理时间:</label>
                                 <div class="col-sm-6 ">
-                                  <input type="text" class="form-control timedata">
-                                </div>
-                    	</div>
-                    	
-                    	<div class="form-group">
-                            <label class="col-sm-3 control-label">加绩工序选择</label>
-                                <div class="col-sm-6 working">
-                                  
+                                  <input type="text" placeholder="可不填" class="form-control timedata">
                                 </div>
                     	</div>
                     	<div class="form-group">
-                            <label class="col-sm-3 control-label">完成人</label>
+                            <label class="col-sm-3 control-label">一只净时间</label>
+                                <div class="col-sm-6 ">
+                                  <input type="text" placeholder="可不填" class="form-control timeone">
+                                </div>
+                    	</div>
+                    	<div class="form-group">
+                            <label class="col-sm-3 control-label">杂工任务数量</label>
+                                <div class="col-sm-6 ">
+                                  <input type="text" placeholder="可不填" class="form-control onenumber">
+                                </div>
+                    	</div>
+                    	<div class="form-group">
+                            <label class="col-sm-3 control-label">备注:</label>
+                                <div class="col-sm-6">
+                                  <input type="text" class="form-control remarks">
+                                </div>
+                    	</div>
+                    	<div class="form-group">
+                            <label class="col-sm-3 control-label">完成人:</label>
                                 <div class="col-sm-6 complete">
                                   <input type="text" class="form-control">
                                 </div>
                                  <div class="col-sm-2 select"></div>
-                    	</div>
-                    	<div class="form-group">
-                            <label class="col-sm-3 control-label">备注</label>
-                                <div class="col-sm-6">
-                                  <input type="text" class="form-control remarks">
-                                </div>
                     	</div>
                  </div>
 				</div>
@@ -230,7 +228,7 @@
 			 var data={
 						page:1,
 				  		size:13,	
-				  		type:2,
+				  		type:5,
 
 				} 
 			this.init = function(){
@@ -260,10 +258,8 @@
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center edit name">'+o.time+'</td>'
 		      				+'<td class="text-center edit name">'+o.remarks+'</td>'
-		      				+'<td class="text-center edit name">'+o.performance+'</td>'
 		      				+'<td class="text-center edit name">'+parseFloat((o.price).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit name">'+parseFloat((o.payB).toFixed(3))+'</td>'
-		      				+'<td class="text-center edit name">'+parseFloat((o.performancePrice).toFixed(3))+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
@@ -279,7 +275,7 @@
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
-									  		type:2,
+									  		type:5,
 									  		name:$('#name').val(),
 								  	}
 						        
@@ -381,7 +377,7 @@
 					var data = {
 				  			page:1,
 				  			size:13,
-				  			type:2,
+				  			type:5,
 				  			name:$('#name').val(),
 				  			bacth:$('#number').val(),
 				  			orderTimeBegin:$("#startTime").val(),
@@ -398,7 +394,7 @@
 					var html=""
 					var htmlth=""
 					var data={
-							type:2
+							type:5
 					}
 					
 					//遍历人名组别
@@ -416,8 +412,8 @@
 			      				var htmltwo = "";
 			      				var	id=$(this).val()
 								   var data={
-			      						type:2,
 										  id:id,
+										  type:5,
 								   }
 			      				$.ajax({
 									url:"${ctx}/production/allGroup",
@@ -460,28 +456,6 @@
 							 }) 
 					      }
 					  });
-					//遍历杂工加绩比值
-					$.ajax({
-						url:"${ctx}/farragoTask/farragoTaskPerformance",
-						type:"GET",
-						beforeSend:function(){
-							index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								});
-						},
-						
-						success:function(result){
-							$(result.data).each(function(i,o){
-							html+='<option value="'+o.number+'" data-name="'+o.name+'">'+o.name+'</option>'
-							})
-							$('.working').html("<select class='form-control selectchang'><option value='0'>请选择</option>"+html+"</select>");
-							layer.close(index);
-							
-						},error:function(){
-							layer.msg("操作失败！", {icon: 2});
-							layer.close(index);
-						}
-					});
 					
 					_index = layer.open({
 						  type: 1,
@@ -512,6 +486,8 @@
 									 return layer.msg("批次号不能为空", {icon:2 });
 								  }
 							  postData={
+									  procedureTime:$(".timeone").val(),
+									  number:$(".onenumber").val(),
 									  allotTime:$("#Time").val(),
 									  name:$(".sumnumber").val(),
 									  time:$(".timedata").val(),
@@ -520,7 +496,7 @@
 									  performanceNumber:performanceNumber,
 									  userIds:arr,
 									  bacth:$(".bacth").val(),
-									  type:2,
+									  type:5,
 							  }
 							  $.ajax({
 									url:"${ctx}/farragoTask/addFarragoTask",

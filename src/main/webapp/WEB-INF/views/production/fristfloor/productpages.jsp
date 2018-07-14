@@ -557,7 +557,7 @@
 						}, 
 						success:function(result){
 						if(result.code==0){
-							layer.msg("删除成功！", {icon: 1});
+							layer.msg(result.message, {icon: 1});
 							self.loadworking();
 							layer.close(_indexx);
 						}

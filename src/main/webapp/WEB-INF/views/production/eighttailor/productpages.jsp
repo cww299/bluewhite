@@ -49,13 +49,13 @@
 										查&nbsp找
 									</button>
 								</span>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
+									<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
-									 <button type="button" id="addproduct" class="btn btn-success  btn-sm btn-3d pull-right">
-									 新增产品
-									 </button>
+								   <button type="button" id="addproduct" class="btn btn-success  btn-sm btn-3d pull-right">
+								   新增产品
+								   </button>
 								</span>
-								  
+								
 							</div>
 						</div>
 					</div>
@@ -111,8 +111,8 @@
 </div>
 </div>
 <!--隐藏框 产品新增结束  -->
-<!--隐藏框 产品工序开始  -->
-     <div id="addworking" style="display: none;">
+<!--隐藏框 产品针工工序开始  -->
+        <div id="addworking" style="display: none;">
 			<div class="panel-body">
         	<div class="form-group">
 		    <input type="file" name="file" id="upfile"  style="display:inline">
@@ -132,7 +132,7 @@
                                 </table>
                             </div>
 </div>
-<!--隐藏框 产品工序结束  -->
+<!--隐藏框 产品针工工序结束  -->
    <!--隐藏框 批次填写开始  -->
  <div id="addbatch" style="display: none;">
 			<div class=" col-xs-12  col-sm-12  col-md-12 ">
@@ -216,7 +216,7 @@
 			 var data={
 						page:1,
 				  		size:13,	
-				  		type:2,
+				  		type:5,
 
 				} 
 			this.init = function(){
@@ -241,17 +241,21 @@
 		      		  success: function (result) {
 		      			
 		      			 $(result.data.rows).each(function(i,o){
-		      				
+		      				if(o.hairPrice==null){
+		      					o.hairPrice=0;
+		      				}
+		      				if(o.deedlePrice==null){
+		      					o.deedlePrice=0;
+		      				}
 		      				html +='<tr>'
 		      				+'<td class="text-center id">'+o.id+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center  departmentPrice">'+o.departmentPrice*1+'</td>'
-		      				+'<td class="text-center  hairPrice">'+o.hairPrice*1+'</td>'
-							+'<td class="text-center"><button class="btn btn-xs btn-info  btn-trans update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-primary btn-trans addprocedure" data-id='+o.id+' data-name='+o.name+'>添加工序</button> <button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.name+'>填写批次</button></td></tr>'
-							
+		      				+'<td class="text-center edit  workPrice">'+o.hairPrice+'</td>'
+							+'<td class="text-center"><button class="btn btn-xs btn-info  btn-trans update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-primary btn-trans addprocedure" data-id='+o.id+' data-name='+o.name+'>添加裁剪工序</button> <button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.name+'>填写批次</button></td></tr>'
 		      			}); 
-		      			self.setIndex(result.data.pageNum);
+		      			 self.setIndex(result.data.pageNum);
 				        //显示分页
 					   	 laypage({
 					      cont: 'pager', 
@@ -263,7 +267,7 @@
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
-									  		type:2,
+									  		type:5,
 									  		name:$('#name').val(),
 								  			number:$('#number').val(),
 								  	}
@@ -292,7 +296,8 @@
 					var dicDiv=$('#addbatch');
 					var name=$(this).data('name');
 					var bacthDepartmentPrice=$(this).parent().parent().find('.departmentPrice').text();
-					var bacthHairPrice=$(this).parent().parent().find('.hairPrice').text();
+					var bacthHairPrice=$(this).parent().parent().find('.workPrice').text();
+					var bacthDeedlePrice=$(this).parent().parent().find('.deedlePrice').text();
 					$('#proName').val(name);
 					var id=$(this).data('id');
 					_index = layer.open({
@@ -318,7 +323,8 @@
 									  remarks:$('#remarks').val(),
 									  bacthDepartmentPrice:bacthDepartmentPrice,
 									  bacthHairPrice:bacthHairPrice,
-									  type:2,
+									  bacthDeedlePrice:bacthDeedlePrice,
+									  type:5,
 									  allotTime:$('#Time').val(),
 									  flag:0,
 							  }
@@ -359,7 +365,7 @@
 				
 				
 				
-				//触发工序弹框 加载内容方法
+				//触发针工工序弹框 加载内容方法
 				$('.addprocedure').on('click',function(){
 					var _index
 					var productId=$(this).data('id')
@@ -381,9 +387,9 @@
 						  end:function(){
 							  $('#addworking').hide();
 							  data={
-									page:self.getIndex(),
+									page: self.getIndex(),
 								  	size:13,	
-								  	type:2,
+								  	type:5,
 								  	name:$('#name').val(),
 						  			number:$('#number').val(),
 							  }
@@ -416,10 +422,11 @@
 							});
 							
 							var postData = {
-									type:2,
+									type:5,
 									id:$(this).data('id'),
 									number:$(this).parent().parent('tr').find(".number").text(),
 									name:$(this).parent().parent('tr').find(".name").text(),
+									hairPrice:$(this).parent().parent('tr').find(".workPrice").text(),
 							}
 							
 							var index;
@@ -435,10 +442,10 @@
 								
 								success:function(result){
 									if(0==result.code){
-									layer.msg("修改成功！", {icon: 1});
+									layer.msg(result.message, {icon: 1});
 									layer.close(index);
 									}else{
-										layer.msg("修改失败！", {icon: 1});
+										layer.msg(result.message, {icon: 2});
 										layer.close(index);
 									}
 								},error:function(){
@@ -468,10 +475,11 @@
 				    var htmlfr = '';
 				    var data={
 				    		productId:productId,
-				    		type:2,
+				    		type:5,
+				    		flag:0,
 				    }
 				    //遍历工序类型
-				    var getdata={type:"productFristPack",}
+				    var getdata={type:"productEightTailor",}
 	      			$.ajax({
 					      url:"${ctx}/basedata/list",
 					      data:getdata,
@@ -528,6 +536,8 @@
 				  
 				
 			}
+			
+			
 			this.checked=function(){
 				$(".Proceduretypeid").each(function(i,o){
 						
@@ -559,6 +569,36 @@
 						if(result.code==0){
 							layer.msg(result.message, {icon: 1});
 							self.loadworking();
+							layer.close(_indexx);
+						}
+						},
+						error:function(){
+							layer.msg("删除失败！", {icon: 2});
+							layer.close(_indexx);
+						}
+					});
+					  });
+				})
+				//删除工序
+				$(".deleteproceduretw").on('click',function(){
+					var data={
+							id:$(this).parent().prev().data('id')
+							}
+					var _indexx;
+					var index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
+					$.ajax({
+						url:"${ctx}/production/delete",
+						data:data,
+						type:"GET",
+						beforeSend:function(){
+							_indexx = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+						}, 
+						success:function(result){
+						if(result.code==0){
+							layer.msg(result.message, {icon: 1});
+							self.loadworkingtw();
 							layer.close(_indexx);
 						}
 						},
@@ -623,6 +663,59 @@
 								
 						}
 				 })
+				 $(".updateworkingtw").on('click',function(){
+					 if($(this).text() == "编辑"){
+							$(this).text("保存")
+							
+							$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+					            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
+					        });
+						}else{
+								$(this).text("编辑")
+							$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+						            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+
+						       
+						                $(this).html(obj_text.val()); 
+										
+								});
+								var data={
+										id:$(this).data('id'),
+										name:$(this).parent().parent('tr').find('.workingnametwotw').text(),
+										workingTime:$(this).parent().parent('tr').find('.workingtimetwotw').text(),
+								}
+								$.ajax({
+									url:"${ctx}/production/addProcedure",
+									data:data,
+									type:"post",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									success:function(result){
+										
+									if(result.code==0){
+									
+										layer.msg("修改成功！", {icon: 1});
+										layer.close(index);
+									}
+								
+										
+									},
+									error:function(){
+										layer.msg("修改失败！", {icon: 2});
+										layer.close(index);
+									}
+								});
+								
+								
+								
+								
+						}
+				 })
 				  $(".Proceduretypeid").on('click',function(){
 					  $(this).parent().find(".Proceduretypeid").each(function(i,o){
 							$(o).prop("checked", false);
@@ -634,7 +727,7 @@
 					var id = $(this).parent().data('id');
 					var rest = $(this).val();
 					var flag=0;
-					if(rest==109){
+					if(rest==100){
 						flag=1
 					}
 					if(id!=undefined){
@@ -683,19 +776,11 @@
 					if($(".workingname").val()==""){
 						return 	layer.msg("工序名不能为空！", {icon: 2});
 					}
-					/* if($(".workingtime").val()==""){
-						return 	layer.msg("工序时间不能为空！", {icon: 2});
-					} */
-					var flag=0;
-					if($(this).parent().parent().find("input:radio:checked").val()==109){
-						flag=1;
-					}
-					
 					postData={
-							flag:flag,
+							flag:0,
 							name:$(".workingname").val(),
 							workingTime:workingtime,
-							  type:2,
+							  type:5,
 							  productId:$(this).data('productid'),
 							  procedureTypeId:$(this).parent().parent().find("input:radio:checked").val(),
 					  }
@@ -727,6 +812,54 @@
 							}
 						}); 
 				})
+				
+				//新增返工工序
+				$('.addtw').on('click',function(){
+					var index;
+					var postData;
+					var workingtime=$(".workingtimetw").val();
+					if($(this).parent().parent().find("input:radio:checked").val()==null){
+						return 	layer.msg("工序类型不能为空！", {icon: 2});
+					}
+					if($(".workingnametw").val()==""){
+						return 	layer.msg("工序名不能为空！", {icon: 2});
+					}
+					postData={
+							flag:1,
+							name:$(".workingnametw").val(),
+							workingTime:workingtime,
+							  type:5,
+							  productId:$(this).data('productid'),
+							  procedureTypeId:$(this).parent().parent().find("input:radio:checked").val(),
+					  }
+					
+					   $.ajax({
+							url:"${ctx}/production/addProcedure",
+							data:postData,
+				            traditional: true,//传数组
+							type:"post",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+									layer.msg("添加成功！", {icon: 1});
+									self.loadworkingtw();
+									layer.close(index);
+								}else{
+									layer.msg("添加失败", {icon: 2});
+								}
+								
+								
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						}); 
+				})
 			}
 			this.events = function(){
 				
@@ -741,10 +874,10 @@
 				  			
 							imageForm.append("file",$('#upfile')[0].files[0]);
 				  			imageForm.append("productId",self.getCache());
-				  			imageForm.append("type",2);
-				  			imageForm.append("flag",0);
+				  			imageForm.append("type",5);
+				  			imageForm.append("flag",0)
 					 $.ajax({
-							url:"${ctx}/excel/importProcedure",
+							url:"${ctx}/excel/importMachinistProcedure",
 							data:imageForm,
 							type:"post",
 							processData:false,
@@ -755,8 +888,11 @@
 									});
 							},
 							success:function(result){
-								
+								if(0==result.code){
 								layer.msg(result.message, {icon: 1});
+								}else{
+									layer.msg(result.message, {icon: 2});
+								}
 								self.loadworking();
 								layer.close(index);
 							},
@@ -769,7 +905,47 @@
 					
 				});
 				
+				//导入
+				$('#btntw').on('click',function(){
 				
+					if($('#upfiletw')[0].files[0]==null){
+						return layer.msg("请选择需要导入的文件", {icon: 2});
+					}
+					  var imageForm = new FormData();
+				
+				  			
+							imageForm.append("file",$('#upfiletw')[0].files[0]);
+				  			imageForm.append("productId",self.getCache());
+				  			imageForm.append("type",5);
+				  			imageForm.append("flag",1)
+					 $.ajax({
+							url:"${ctx}/excel/importProcedure",
+							data:imageForm,
+							type:"post",
+							processData:false,
+							contentType: false,
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							success:function(result){
+								if(0==result.code){
+								layer.msg(result.message, {icon: 1});
+								}else{
+									layer.msg(result.message, {icon: 2});
+								}
+								self.loadworkingtw();
+								layer.close(index);
+							},
+							error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						}); 
+		          
+					
+				});
 				
 				
 				//查询
@@ -777,7 +953,7 @@
 					var data = {
 				  			page:1,
 				  			size:13,
-				  			type:2,
+				  			type:5,
 				  			name:$('#name').val(),
 				  			number:$('#number').val(),
 				  	}
@@ -802,11 +978,15 @@
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
-							 
+							  if($("#productNumber").val()==null){
+								return  layer.msg("产品编号不能为空！", {icon: 2});
+							  }
+							  if($("#productName").val()==null){
+								  return  layer.msg("产品名！", {icon: 2});
+							  }
 							  postData={
 									  number:$("#productNumber").val(),
 									  name:$("#productName").val(),
-									  
 							  }
 							  $.ajax({
 									url:"${ctx}/addProduct",
