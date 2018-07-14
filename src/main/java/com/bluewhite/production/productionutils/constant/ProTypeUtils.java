@@ -369,7 +369,7 @@ public  class ProTypeUtils {
 	 * 放快手包装工秒支出(AC8)
 	 */
 	private static double getAC8TWOREWORK( Double AC5){
-		return (AC5==null ? proTypeUtils.service.findByExcelNameAndType("AC5" , 4).getNumber() : AC5 *ProTypeUtils.EXCELTWO
+		return ((AC5==null ? proTypeUtils.service.findByExcelNameAndType("AC5" , 4).getNumber() : AC5 )* ProTypeUtils.EXCELTWO
 				*proTypeUtils.service.findByExcelNameAndType("AC3" , 4).getNumber()
 				*proTypeUtils.service.findByExcelNameAndType("AC7" , 4).getNumber())/ProTypeUtils.TIME/ProTypeUtils.TIME;
 	}
@@ -605,7 +605,7 @@ public  class ProTypeUtils {
 		case 4://生产部二楼机工
 			    sumTaskPrice =taskTime*ProTypeUtils.getAC8TWOREWORK(AC5)*ProTypeUtils.TIME;
 			break;
-		case 5://生产部二楼机工
+		case 5://生产部八号裁剪
 		    sumTaskPrice =taskTime*ProTypeUtils.getAC8N()*ProTypeUtils.TIME;
 		break;
 		default:
@@ -637,7 +637,7 @@ public  class ProTypeUtils {
 			sumBPrice =BPrice/proTypeUtils.service.findByExcelNameAndType("AC7" , 4).getNumber();
 			break;
 		case 5://生产部二楼机工
-			sumBPrice =BPrice/proTypeUtils.service.findByExcelNameAndType("AC7" , 4).getNumber();
+			sumBPrice =BPrice/proTypeUtils.service.findByExcelNameAndType("AC7" , 5).getNumber();
 			break;
 		default:
 			break;

@@ -89,6 +89,13 @@ public class Procedure extends BaseEntity<Long> {
 	@Column(name = "flag")
 	private Integer flag ;
 	
+	
+	/**
+	 * 八号仓库特殊业务，同一种产品会有会有激光和冲床两种类型工序，同时会产生不同的外发单价
+	 */
+	@Column(name = "sign")
+	private Integer sign ;
+	
 	/**
 	 * 批次id（用于确定总数量，和任务）
 	 */
@@ -104,6 +111,14 @@ public class Procedure extends BaseEntity<Long> {
 	
 	
 
+
+	public Integer getSign() {
+		return sign;
+	}
+
+	public void setSign(Integer sign) {
+		this.sign = sign;
+	}
 
 	public Double getDeedlePrice() {
 		return deedlePrice;
