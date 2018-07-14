@@ -89,6 +89,7 @@
                                             <th class="text-center">备注</th>
                                             <th class="text-center">工序加绩选择</th>
                                             <th class="text-center">任务价值</th>
+                                            <th class="text-center">B工资净值</th>
                                             <th class="text-center">添加工价</th>
                                             <th class="text-center">人员详情</th>
                                             <th class="text-center">操作</th>
@@ -261,6 +262,7 @@
 		      				+'<td class="text-center edit name">'+o.remarks+'</td>'
 		      				+'<td class="text-center edit name">'+o.performance+'</td>'
 		      				+'<td class="text-center edit name">'+parseFloat((o.price).toFixed(3))+'</td>'
+		      				+'<td class="text-center edit name">'+parseFloat((o.payB).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit name">'+parseFloat((o.performancePrice).toFixed(3))+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
