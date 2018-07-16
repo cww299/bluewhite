@@ -2,6 +2,8 @@ package com.bluewhite.production.procedure.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
@@ -42,6 +44,10 @@ public class ProcedureServiceImpl extends BaseServiceImpl<Procedure, Long> imple
 	@Transactional
 	public void countPrice(Procedure procedure) {
 		List<Procedure> procedureList = procedureDao.findByProductIdAndTypeAndFlag(procedure.getProductId(), procedure.getType(),0);
+		
+		if(procedure.getType()!=null && procedure.getType()==5){
+			procedureList = procedureList.stream().filter(Procedure->Procedure.getSign()==procedure.getSign()).collect(Collectors.toList());
+		}
 		//计算部门生产总价
 		Double sumTime = 0.0;
 		for(Procedure pro : procedureList){

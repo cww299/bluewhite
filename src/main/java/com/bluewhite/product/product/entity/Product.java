@@ -169,6 +169,10 @@ public class Product extends BaseEntity<Long>{
 	@Column(name = "bt_price")
     private String btPrice;
 	
+	 //八号仓库特殊业务，同一种产品会有会有激光和冲床两种类型工序，同时会产生不同的外发单价（0=激光，1=冲床）
+	@Transient
+	private Integer sign; 
+	
     //产品本身外发价格
 	@Transient
     private Double hairPrice;
@@ -176,6 +180,14 @@ public class Product extends BaseEntity<Long>{
     //当部门预计生产价格
 	@Transient
     private Double departmentPrice;
+	
+    //产品本身外发价格()
+	@Transient
+    private Double puncherHairPrice;
+	
+    //当部门预计生产价格()
+	@Transient
+    private Double puncherDepartmentPrice;
 	
 	//工序部门类型
 	@Transient
@@ -189,6 +201,32 @@ public class Product extends BaseEntity<Long>{
 	
 	
 	
+	
+	
+	public Integer getSign() {
+		return sign;
+	}
+
+	public void setSign(Integer sign) {
+		this.sign = sign;
+	}
+
+	public Double getPuncherHairPrice() {
+		return puncherHairPrice;
+	}
+
+	public void setPuncherHairPrice(Double puncherHairPrice) {
+		this.puncherHairPrice = puncherHairPrice;
+	}
+
+	public Double getPuncherDepartmentPrice() {
+		return puncherDepartmentPrice;
+	}
+
+	public void setPuncherDepartmentPrice(Double puncherDepartmentPrice) {
+		this.puncherDepartmentPrice = puncherDepartmentPrice;
+	}
+
 	public Double getDeedlePrice() {
 		return deedlePrice;
 	}

@@ -2,6 +2,7 @@ package com.bluewhite.product.product.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
@@ -47,8 +48,18 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		  		for(Product pro : pages.getContent()){
 		  			  List<Procedure> procedureList = procedureDao.findByProductIdAndTypeAndFlag(pro.getId(), product.getType(),0);
 		  				  if(procedureList!=null && procedureList.size()>0){
+		  					if(pro.getType()!=null && pro.getType()==5){
+		  						  List<Procedure> procedureList1 = procedureList.stream().filter(Procedure->Procedure.getSign()==0).collect(Collectors.toList());
+		  						  pro.setHairPrice(procedureList1.get(0).getHairPrice());
+		  						  pro.setDepartmentPrice(procedureList1.get(0).getDepartmentPrice());
+		  						  List<Procedure> procedureList2 = procedureList.stream().filter(Procedure->Procedure.getSign()==1).collect(Collectors.toList());
+		  						  pro.setPuncherHairPrice(procedureList2.get(0).getHairPrice());
+		  						  pro.setPuncherDepartmentPrice(procedureList2.get(0).getDepartmentPrice());
+		  						  
+		  					  }else{
 		  						  pro.setHairPrice(procedureList.get(0).getHairPrice());
-		  						  pro.setDepartmentPrice(procedureList.get(0).getDepartmentPrice());
+		  						  pro.setDepartmentPrice(procedureList.get(0).getDepartmentPrice()); 
+		  					  }
 		  						  if(product.getType()==3){
 		  							  pro.setDeedlePrice(procedureList.get(0).getDeedlePrice());
 		  						  }
