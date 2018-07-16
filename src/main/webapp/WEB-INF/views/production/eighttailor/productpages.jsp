@@ -116,6 +116,7 @@
 			<div class="panel-body">
         	<div class="form-group">
 		    <input type="file" name="file" id="upfile"  style="display:inline">
+			<select  id="selectstate"><option value=0>激光</option><option value=1>冲床</option></select>
 		    <button type="button" class="btn btn-success btn-sm" id="btn"  style="display:inline">点击导入</button>
  		</div>
                                 <table class="table table-hover">
@@ -867,19 +868,19 @@
 				
 				//导入
 				$('#btn').on('click',function(){
-				
+				var a=$('#selectstate').val();
 					if($('#upfile')[0].files[0]==null){
 						return layer.msg("请选择需要导入的文件", {icon: 2});
 					}
 					  var imageForm = new FormData();
 				
-				  			
+					  		imageForm.append("sign",a);
 							imageForm.append("file",$('#upfile')[0].files[0]);
 				  			imageForm.append("productId",self.getCache());
 				  			imageForm.append("type",5);
-				  			imageForm.append("flag",0)
+				  			
 					 $.ajax({
-							url:"${ctx}/excel/importMachinistProcedure",
+							url:"${ctx}/excel/importEightTailor",
 							data:imageForm,
 							type:"post",
 							processData:false,
