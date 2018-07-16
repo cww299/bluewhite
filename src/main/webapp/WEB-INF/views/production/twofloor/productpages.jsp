@@ -293,7 +293,7 @@
 									  		size:13,
 									  		type:3,
 									  		name:$('#name').val(),
-								  			number:$('#number').val(),
+								  			id:$('#number').val(),
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -737,6 +737,8 @@
 							layer.msg(result.message, {icon: 1});
 							self.loadworkingtw();
 							layer.close(_indexx);
+						}else{
+							layer.msg(result.message, {icon: 2});
 						}
 						},
 						error:function(){
@@ -1092,7 +1094,7 @@
 				  			size:13,
 				  			type:3,
 				  			name:$('#name').val(),
-				  			number:$('#number').val(),
+				  			id:$('#number').val(),
 				  	}
 		            self.loadPagination(data);
 				});
