@@ -869,6 +869,7 @@
 				//导入
 				$('#btn').on('click',function(){
 				var a=$('#selectstate').val();
+				console.log(a)
 					if($('#upfile')[0].files[0]==null){
 						return layer.msg("请选择需要导入的文件", {icon: 2});
 					}
@@ -908,47 +909,6 @@
 					
 				});
 				
-				//导入
-				$('#btntw').on('click',function(){
-				
-					if($('#upfiletw')[0].files[0]==null){
-						return layer.msg("请选择需要导入的文件", {icon: 2});
-					}
-					  var imageForm = new FormData();
-				
-				  			
-							imageForm.append("file",$('#upfiletw')[0].files[0]);
-				  			imageForm.append("productId",self.getCache());
-				  			imageForm.append("type",5);
-				  			imageForm.append("flag",1)
-					 $.ajax({
-							url:"${ctx}/excel/importProcedure",
-							data:imageForm,
-							type:"post",
-							processData:false,
-							contentType: false,
-							beforeSend:function(){
-								index = layer.load(1, {
-									  shade: [0.1,'#fff'] //0.1透明度的白色背景
-									});
-							},
-							success:function(result){
-								if(0==result.code){
-								layer.msg(result.message, {icon: 1});
-								}else{
-									layer.msg(result.message, {icon: 2});
-								}
-								self.loadworkingtw();
-								layer.close(index);
-							},
-							error:function(){
-								layer.msg("操作失败！", {icon: 2});
-								layer.close(index);
-							}
-						}); 
-		          
-					
-				});
 				
 				
 				//查询
