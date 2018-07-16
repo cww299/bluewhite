@@ -48,7 +48,7 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		  		for(Product pro : pages.getContent()){
 		  			  List<Procedure> procedureList = procedureDao.findByProductIdAndTypeAndFlag(pro.getId(), product.getType(),0);
 		  				  if(procedureList!=null && procedureList.size()>0){
-		  					if(pro.getType()!=null && pro.getType()==5){
+		  					if(product.getType()!=null && product.getType()==5){
 		  						  List<Procedure> procedureList1 = procedureList.stream().filter(Procedure->Procedure.getSign()==0).collect(Collectors.toList());
 		  						  pro.setHairPrice(procedureList1.get(0).getHairPrice());
 		  						  pro.setDepartmentPrice(procedureList1.get(0).getDepartmentPrice());
