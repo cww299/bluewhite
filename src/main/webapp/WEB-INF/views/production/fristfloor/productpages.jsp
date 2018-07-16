@@ -560,6 +560,8 @@
 							layer.msg(result.message, {icon: 1});
 							self.loadworking();
 							layer.close(_indexx);
+						}else{
+							layer.msg(result.message, {icon: 2});
 						}
 						},
 						error:function(){
