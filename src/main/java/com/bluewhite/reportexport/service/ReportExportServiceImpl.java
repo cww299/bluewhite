@@ -311,6 +311,9 @@ public class ReportExportServiceImpl implements ReportExportService{
 			procedureList.add(procedure);
 			count++;
 		}
+		for(Procedure pro : procedureList){
+			pro.setHairPrice(sumPrice);
+		}
 		procedureDao.save(procedureList);
 		procedureService.countPrice(procedureList.get(0));
 		return count;
