@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.BaseOneTime;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
+import com.bluewhite.reportexport.entity.EightTailorPoi;
 import com.bluewhite.reportexport.entity.MachinistProcedurePoi;
 import com.bluewhite.reportexport.entity.ProcedurePoi;
 import com.bluewhite.reportexport.entity.ProductPoi;
@@ -64,5 +65,14 @@ public interface ReportExportService {
 	 */
 	int importMachinistProcedureExcel(List<MachinistProcedurePoi> excelProcedure, Long productId, Integer type,
 			Integer flag);
+	/**
+	 * 导入裁剪工序信息
+	 * @param excelProcedure
+	 * @param productId
+	 * @param type
+	 * @param sign
+	 * @return
+	 */
+	int importEightTailorProcedure(List<EightTailorPoi> excelProcedure, Long productId, Integer type, Integer sign);
 
 }

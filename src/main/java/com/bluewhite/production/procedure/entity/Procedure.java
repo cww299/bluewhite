@@ -91,7 +91,7 @@ public class Procedure extends BaseEntity<Long> {
 	
 	
 	/**
-	 * 八号仓库特殊业务，同一种产品会有会有激光和冲床两种类型工序，同时会产生不同的外发单价
+	 * 八号仓库特殊业务，同一种产品会有会有激光和冲床两种类型工序，同时会产生不同的外发单价（0=激光，1=冲床）
 	 */
 	@Column(name = "sign")
 	private Integer sign ;

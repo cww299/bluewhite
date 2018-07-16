@@ -36,9 +36,9 @@ import com.bluewhite.production.finance.entity.GroupProduction;
 import com.bluewhite.production.finance.entity.MonthlyProduction;
 import com.bluewhite.production.finance.service.CollectPayService;
 import com.bluewhite.production.finance.service.PayBService;
-import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
+import com.bluewhite.reportexport.entity.EightTailorPoi;
 import com.bluewhite.reportexport.entity.MachinistProcedurePoi;
 import com.bluewhite.reportexport.entity.ProcedurePoi;
 import com.bluewhite.reportexport.entity.ProductPoi;
@@ -172,6 +172,34 @@ public class ReportExportAction {
 		}
 		return cr;
 	}
+	
+	
+	
+	/**
+	 * 八号裁剪工序导入
+	 */
+	@RequestMapping(value = "/importEightTailor",method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse importEightTailor(@RequestParam(value="file",required=false) MultipartFile file,Long productId,Integer type,Integer sign,HttpServletRequest request){
+		CommonResponse cr = new CommonResponse();
+		try {
+				List<EightTailorPoi> excelProcedure = new ArrayList<EightTailorPoi>();
+				InputStream in = file.getInputStream();
+				String filename = file.getOriginalFilename();
+				// 创建excel工具类
+				Excelutil<EightTailorPoi> util = new Excelutil<EightTailorPoi>(EightTailorPoi.class);
+				excelProcedure = util.importExcel(filename, in);// 导入
+				int count = reportExportService.importEightTailorProcedure(excelProcedure,productId,type,sign);
+				if(count > 0){
+					cr.setMessage("成功导入"+count+"条数据");
+				}
+		} catch (Exception e) {
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("导入失败");
+		}
+		return cr;
+	}
+	
 	
 	/**
 	 * 导出返工价值
