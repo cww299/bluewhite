@@ -120,6 +120,7 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 		if(id!=null){
 			try {
 				procedureService.deleteProcedure(id);
+				
 			} catch (Exception e) {
 				cr.setMessage(e.getMessage());
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

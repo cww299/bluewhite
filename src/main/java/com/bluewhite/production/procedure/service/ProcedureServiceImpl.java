@@ -142,7 +142,9 @@ public class ProcedureServiceImpl extends BaseServiceImpl<Procedure, Long> imple
 			}
 			throw new ServiceException("该工序已经分配给任务编号为"+mag+"的任务，需要先删除任务。");
 		}
+		Procedure procedure = procedureDao.findOne(id);
 		procedureDao.delete(id);
+		this.countPrice(procedure);
 		
 	}
 
