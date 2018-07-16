@@ -32,6 +32,7 @@ import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.procedure.service.ProcedureService;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
+import com.bluewhite.reportexport.entity.EightTailorPoi;
 import com.bluewhite.reportexport.entity.MachinistProcedurePoi;
 import com.bluewhite.reportexport.entity.ProcedurePoi;
 import com.bluewhite.reportexport.entity.ProductPoi;
@@ -281,4 +282,37 @@ public class ReportExportServiceImpl implements ReportExportService{
 		procedureService.countPrice(procedureList.get(0));
 		return count;
 }
+
+	@Override
+	public int importEightTailorProcedure(List<EightTailorPoi> excelProcedure, Long productId, Integer type,
+			Integer sign) {
+		int count = 0;
+		if(excelProcedure.size()==0){
+			throw new ServiceException("excel无数据");
+		}
+		double  sumPrice = 0;
+		List<Procedure> procedureList =new ArrayList<Procedure>();
+		for(EightTailorPoi et : excelProcedure ){
+			Procedure procedure = new Procedure();
+			procedure.setFlag(0);
+			procedure.setProductId(productId);
+			procedure.setName(et.getName());
+			procedure.setType(type);
+			procedure.setSign(sign);
+			if(sign==0){
+				procedure.setWorkingTime(NumUtils.round((et.getClothTime()+et.getLaserTime())*et.getNumber(), null));
+				procedure.setProcedureTypeId((long)140);
+				sumPrice += et.getNumber()*et.getPerimeter()*0.005;
+			}else{
+				procedure.setWorkingTime(NumUtils.round(et.getNumber()*(et.getOverlay()+et.getStamping()+1), null));
+				procedure.setProcedureTypeId((long)141);
+				sumPrice+=et.getNumber()*0.012;
+			}
+			procedureList.add(procedure);
+			count++;
+		}
+		procedureDao.save(procedureList);
+		procedureService.countPrice(procedureList.get(0));
+		return count;
+	}
 }

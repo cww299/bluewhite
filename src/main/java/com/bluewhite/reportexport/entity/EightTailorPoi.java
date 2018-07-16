@@ -14,27 +14,27 @@ public class EightTailorPoi {
 	 * 裁剪数量
 	 */
 	@Poi(name = "", column = "B")
-	private Integer number;
+	private Double number;
 	
 	
 	/**
 	 * 总片数
 	 */
 	@Poi(name = "", column = "C")
-	private Integer allNumber;
+	private Double allNumber;
 	
 	/**
 	 * 拉布时间
 	 */
 	@Poi(name = "", column = "N")
-	private Integer clothTime;
+	private Double clothTime;
 	
 	
 	/**
 	 * 单片激光放快手时间
 	 */
 	@Poi(name = "", column = "P")
-	private Integer laserTime;
+	private Double laserTime;
 
 	/**
 	 * 裁片周长
@@ -42,31 +42,59 @@ public class EightTailorPoi {
 	@Poi(name = "", column = "H")
 	private Double perimeter;
 
+	/**
+	 * 叠布秒数（含快手)
+	 */
+	@Poi(name = "", column = "L")
+	private Double overlay;
+	
+	/**
+	 * 冲压秒数（含快手)
+	 */
+	@Poi(name = "", column = "M")
+	private Double stamping;
 	
 	
-	
-	
-	public Integer getClothTime() {
+
+	public Double getOverlay() {
+		return overlay;
+	}
+
+	public void setOverlay(Double overlay) {
+		this.overlay = overlay;
+	}
+
+	public Double getStamping() {
+		return stamping;
+	}
+
+	public void setStamping(Double stamping) {
+		this.stamping = stamping;
+	}
+
+	public Double getClothTime() {
 		return clothTime;
 	}
 
-	public void setClothTime(Integer clothTime) {
+	public void setClothTime(Double clothTime) {
 		this.clothTime = clothTime;
 	}
 
-	public Integer getLaserTime() {
+	public Double getLaserTime() {
 		return laserTime;
 	}
 
-	public void setLaserTime(Integer laserTime) {
+	public void setLaserTime(Double laserTime) {
 		this.laserTime = laserTime;
 	}
 
-	public Integer getAllNumber() {
+	
+
+	public Double getAllNumber() {
 		return allNumber;
 	}
 
-	public void setAllNumber(Integer allNumber) {
+	public void setAllNumber(Double allNumber) {
 		this.allNumber = allNumber;
 	}
 
@@ -77,12 +105,13 @@ public class EightTailorPoi {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 
-	public Integer getNumber() {
+	public Double getNumber() {
 		return number;
 	}
 
-	public void setNumber(Integer number) {
+	public void setNumber(Double number) {
 		this.number = number;
 	}
 
