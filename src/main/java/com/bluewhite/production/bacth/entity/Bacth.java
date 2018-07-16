@@ -123,6 +123,11 @@ public class Bacth extends BaseEntity<Long>{
 	private Double sumReworkPrice;
 	
 	
+	/**
+	 * 八号仓库特殊业务，同一种产品会有会有激光和冲床两种类型工序，同时会产生不同的外发单价（0=激光，1=冲床）
+	 */
+	@Column(name = "sign")
+	private Integer sign ;
 	
 	/**
 	 * 总任务价值(实际成本费用总和)
@@ -184,23 +189,29 @@ public class Bacth extends BaseEntity<Long>{
 	
 	
 
+	public Integer getSign() {
+		return sign;
+	}
+
+	public void setSign(Integer sign) {
+		this.sign = sign;
+	}
+
+	public void setProductPrice(Double productPrice) {
+		this.productPrice = productPrice;
+	}
+
 	public Integer getFlag() {
 		return flag;
 	}
-
-
 
 	public void setFlag(Integer flag) {
 		this.flag = flag;
 	}
 
-
-
 	public Double getTime() {
 		return time;
 	}
-
-
 
 	public void setTime(Double time) {
 		this.time = time;
