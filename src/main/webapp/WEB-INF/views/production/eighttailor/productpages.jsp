@@ -69,8 +69,10 @@
                                         	<th class="text-center">产品序号</th>
                                             <th class="text-center">产品编号</th>
                                             <th class="text-center">产品名</th>
-                                            <th class="text-center">生产预计单价</th>
-                                            <th class="text-center">外发价格</th>
+                                            <th class="text-center">激光预计生产单价</th>
+                                            <th class="text-center">激光外发价格</th>
+                                            <th class="text-center">冲床预计生产单价</th>
+                                            <th class="text-center">冲床外发价格</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -144,6 +146,12 @@
                                         <label class="col-sm-3 control-label">产品名称:</label>
                                         <div class="col-sm-6">
                                             <input type="text" id="proName" class="form-control">
+                                        </div>
+                 </div>
+                 <div class="form-group">
+                                        <label class="col-sm-3 control-label">裁剪方式:</label>
+                                        <div class="col-sm-6">
+                                            <select  id="selectcut" class="form-control"><option value=0>激光</option><option value=1>冲床</option></select>
                                         </div>
                  </div>
                  <div class="form-group">
@@ -248,12 +256,17 @@
 		      				if(o.deedlePrice==null){
 		      					o.deedlePrice=0;
 		      				}
+		      				if(o.puncherHairPrice==null){
+		      					o.puncherHairPrice=0;
+		      				}
 		      				html +='<tr>'
 		      				+'<td class="text-center id">'+o.id+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center  departmentPrice">'+o.departmentPrice*1+'</td>'
 		      				+'<td class="text-center edit  workPrice">'+o.hairPrice+'</td>'
+		      				+'<td class="text-center  puncherDepartmentPrice">'+o.puncherDepartmentPrice*1+'</td>'
+		      				+'<td class="text-center edit  puncherHairPrice">'+o.puncherHairPrice+'</td>'
 							+'<td class="text-center"><button class="btn btn-xs btn-info  btn-trans update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-primary btn-trans addprocedure" data-id='+o.id+' data-name='+o.name+'>添加裁剪工序</button> <button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.name+'>填写批次</button></td></tr>'
 		      			}); 
 		      			 self.setIndex(result.data.pageNum);
@@ -297,8 +310,15 @@
 					var dicDiv=$('#addbatch');
 					var name=$(this).data('name');
 					var bacthDepartmentPrice=$(this).parent().parent().find('.departmentPrice').text();
-					var bacthHairPrice=$(this).parent().parent().find('.workPrice').text();
-					var bacthDeedlePrice=$(this).parent().parent().find('.deedlePrice').text();
+					var bacthHairPrice=0;
+					var bacthDeedlePrice=0;
+					if($('#selectcut').val()==0){
+					 bacthHairPrice=$(this).parent().parent().find('.workPrice').text();
+					 bacthDeedlePrice=$(this).parent().parent().find('.deedlePrice').text();
+					}else{
+						bacthHairPrice=$(this).parent().parent().find('.puncherDepartmentPrice').text();
+						bacthDeedlePrice=$(this).parent().parent().find('.puncherHairPrice').text();
+					}
 					$('#proName').val(name);
 					var id=$(this).data('id');
 					_index = layer.open({
@@ -328,6 +348,7 @@
 									  type:5,
 									  allotTime:$('#Time').val(),
 									  flag:0,
+									  sign:$('selectcut').val(),
 							  }
 							   $.ajax({
 									url:"${ctx}/bacth/addBacth",
