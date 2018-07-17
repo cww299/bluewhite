@@ -318,7 +318,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		cr.setData(ClearCascadeJSON
 				.get()
 				.addRetainTerm(MonthlyProduction.class,"peopleNumber","time","productNumber","productPrice","reworkNumber","reworkTurnTime",
-						"userName","rework","reworkTime","orderTimeBegin","orderTimeEnd")
+						"userName","rework","reworkTime","orderTimeBegin","orderTimeEnd","farragoTaskTime","farragoTaskPrice")
 				.format(collectPayBService.monthlyProduction(monthlyProduction)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
