@@ -310,15 +310,11 @@
 					var dicDiv=$('#addbatch');
 					var name=$(this).data('name');
 					var bacthDepartmentPrice=$(this).parent().parent().find('.departmentPrice').text();
-					var bacthHairPrice=0;
-					var bacthDeedlePrice=0;
-					if($('#selectcut').val()==0){
-					 bacthHairPrice=$(this).parent().parent().find('.workPrice').text();
-					 bacthDeedlePrice=$(this).parent().parent().find('.deedlePrice').text();
-					}else{
-						bacthHairPrice=$(this).parent().parent().find('.puncherDepartmentPrice').text();
-						bacthDeedlePrice=$(this).parent().parent().find('.puncherHairPrice').text();
-					}
+					var bacthHairPrice=$(this).parent().parent().find('.workPrice').text();
+					var bacthDeedlePrice=$(this).parent().parent().find('.deedlePrice').text();
+					var puncherDepartmentPrice=$(this).parent().parent().find('.puncherDepartmentPrice').text();
+					var puncherHairPrice=$(this).parent().parent().find('.puncherHairPrice').text();
+					
 					$('#proName').val(name);
 					var id=$(this).data('id');
 					_index = layer.open({
@@ -337,18 +333,28 @@
 							  if($('#prosum').val()==""){
 								  return layer.msg("数量不能为空", {icon: 2});
 							  }
+							  var a;
+							  var b;
+							  if($('#selectcut').val()==0){
+								  a=bacthDepartmentPrice;
+								  b=bacthHairPrice;
+							  }
+							  if($('#selectcut').val()==1){
+								  a=puncherDepartmentPrice;
+								  b=puncherHairPrice;
+							  }
 							  postData={
 									  productId:id,
 									  bacthNumber:$('#bacthNumber').val(),
 									  number:$('#prosum').val(),
 									  remarks:$('#remarks').val(),
-									  bacthDepartmentPrice:bacthDepartmentPrice,
-									  bacthHairPrice:bacthHairPrice,
+									  bacthDepartmentPrice:a,
+									  bacthHairPrice:b,
 									  bacthDeedlePrice:bacthDeedlePrice,
 									  type:5,
 									  allotTime:$('#Time').val(),
 									  flag:0,
-									  sign:$('selectcut').val(),
+									  sign:$('#selectcut').val(),
 							  }
 							   $.ajax({
 									url:"${ctx}/bacth/addBacth",
@@ -837,53 +843,7 @@
 						}); 
 				})
 				
-				//新增返工工序
-				$('.addtw').on('click',function(){
-					var index;
-					var postData;
-					var workingtime=$(".workingtimetw").val();
-					if($(this).parent().parent().find("input:radio:checked").val()==null){
-						return 	layer.msg("工序类型不能为空！", {icon: 2});
-					}
-					if($(".workingnametw").val()==""){
-						return 	layer.msg("工序名不能为空！", {icon: 2});
-					}
-					postData={
-							flag:1,
-							name:$(".workingnametw").val(),
-							workingTime:workingtime,
-							  type:5,
-							  productId:$(this).data('productid'),
-							  procedureTypeId:$(this).parent().parent().find("input:radio:checked").val(),
-					  }
-					
-					   $.ajax({
-							url:"${ctx}/production/addProcedure",
-							data:postData,
-				            traditional: true,//传数组
-							type:"post",
-							beforeSend:function(){
-								index = layer.load(1, {
-									  shade: [0.1,'#fff'] //0.1透明度的白色背景
-									});
-							},
-							
-							success:function(result){
-								if(0==result.code){
-									layer.msg("添加成功！", {icon: 1});
-									self.loadworkingtw();
-									layer.close(index);
-								}else{
-									layer.msg("添加失败", {icon: 2});
-								}
-								
-								
-							},error:function(){
-								layer.msg("操作失败！", {icon: 2});
-								layer.close(index);
-							}
-						}); 
-				})
+			
 			}
 			this.events = function(){
 				
