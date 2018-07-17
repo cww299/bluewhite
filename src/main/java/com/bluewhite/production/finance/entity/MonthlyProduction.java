@@ -35,6 +35,18 @@ public class MonthlyProduction {
 	private Double productPrice;
 	
 	/**
+	 * 杂工总时间
+	 */
+	@Poi(name = "杂工时间", column = "F")
+	private Double  farragoTaskTime;
+	
+	/**
+	 * 杂工价值 
+	 */
+	@Poi(name = "杂工价值", column = "G")
+	private Double farragoTaskPrice;
+	
+	/**
 	 * 返工出勤人数   
 	 */
 	private Double  reworkNumber;
@@ -95,6 +107,23 @@ public class MonthlyProduction {
 	
 	
 	
+	
+
+	public Double getFarragoTaskTime() {
+		return farragoTaskTime;
+	}
+
+	public void setFarragoTaskTime(Double farragoTaskTime) {
+		this.farragoTaskTime = farragoTaskTime;
+	}
+
+	public Double getFarragoTaskPrice() {
+		return farragoTaskPrice;
+	}
+
+	public void setFarragoTaskPrice(Double farragoTaskPrice) {
+		this.farragoTaskPrice = farragoTaskPrice;
+	}
 
 	public String getRemark() {
 		return remark;

@@ -386,7 +386,22 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		bacth.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
 		bacth.setType(monthlyProduction.getType());
 		List<Bacth> bacthList = bacthService.findPages(bacth, page).getRows();
-		double productNumber = bacthList.stream().mapToDouble(Bacth::getNumber).sum();
+		double productNumber = 0;
+		if(monthlyProduction.getType()==5){
+			Map<String, List<Bacth>> map = bacthList.stream().collect(Collectors.groupingBy(Bacth::getBacthNumber,Collectors.toList()));
+			for(Object ps : map.keySet()){
+				List<Bacth> psList= map.get(ps);
+				Map<Long, List<Bacth>> map1 = psList.stream().collect(Collectors.groupingBy(Bacth::getProductId,Collectors.toList()));
+					for(Object ps1 : map1.keySet()){
+						List<Bacth> psList1= map.get(ps1);
+						if(psList1!=null && psList1.size()<=2){
+							productNumber+=psList1.get(0).getNumber();
+						}
+					}
+			}
+		}else{
+			productNumber = bacthList.stream().mapToDouble(Bacth::getNumber).sum();
+		}
 		monthlyProduction.setProductNumber(productNumber);
 		//当天产值(外发单价乘以质检的个数)
 		for(Bacth bac : bacthList){
@@ -452,7 +467,21 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		//返工时间
 		double reworkTime = reworkTurnTime;
 		monthlyProduction.setReworkTime(reworkTime);
+		
+		if(monthlyProduction.getType()==5){
+			
+			FarragoTask farragoTask = new FarragoTask();
+			farragoTask.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
+			farragoTask.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
+			farragoTask.setType(monthlyProduction.getType());
+			List<FarragoTask> farragoTaskList = farragoTaskService.findPages(farragoTask, page).getRows();
+			double sumTime = farragoTaskList.stream().mapToDouble(FarragoTask::getTime).sum();
+			monthlyProduction.setFarragoTaskTime(sumTime);
+			monthlyProduction.setFarragoTaskPrice(sumTime*14);;
+		}
 		monthlyProductionList.add(monthlyProduction);
+		
+		
 		}
 		return monthlyProductionList;
 	}
