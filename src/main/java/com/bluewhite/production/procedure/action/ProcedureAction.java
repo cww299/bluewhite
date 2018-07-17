@@ -14,6 +14,8 @@ import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
+import com.bluewhite.production.bacth.entity.Bacth;
+import com.bluewhite.production.bacth.service.BacthService;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.procedure.service.ProcedureService;
 @Controller
@@ -23,6 +25,9 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 	
 	@Autowired
 	private ProcedureService procedureService;
+	
+	@Autowired
+	private BacthService bacthService;
 	
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -96,6 +101,11 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 	@ResponseBody
 	public CommonResponse typeToProcedure(HttpServletRequest request,Procedure procedure) {
 		CommonResponse cr = new CommonResponse();
+		
+		if(procedure.getType()==5){
+			Bacth bacth = bacthService.findOne(procedure.getBacthId());
+			procedure.setSign(bacth.getSign());
+		}
 		if(procedure.getProductId()!=null){
 			cr.setData(clearCascadeJSON.format(procedureService.findList(procedure)).toJSON());
 			cr.setMessage("成功");
