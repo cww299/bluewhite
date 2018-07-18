@@ -47,6 +47,18 @@ public class MonthlyProduction {
 	private Double farragoTaskPrice;
 	
 	/**
+	 * 返工时间     
+	 */
+	@Poi(name = "返工时间（小时)", column = "F")
+	private Double  reworkTime;
+	
+	/**
+	 * 返工人员   
+	 */
+	@Poi(name = "返工人员签字", column = "G")
+	private String  userName;
+	
+	/**
 	 * 返工出勤人数   
 	 */
 	private Double  reworkNumber;
@@ -57,22 +69,9 @@ public class MonthlyProduction {
 	private Double  reworkTurnTime;
 	
 	/**
-	 * 返工人员   
-	 */
-	@Poi(name = "返工人员签字", column = "G")
-	private String  userName;
-	
-	
-	/**
 	 * 返工个数  
 	 */
 	private Double  rework;
-	
-	/**
-	 * 返工时间     
-	 */
-	@Poi(name = "返工时间（小时)", column = "F")
-	private Double  reworkTime;
 	
 	/**
 	 * 备注
