@@ -206,6 +206,7 @@
                                             <th class="text-center">返工人员</th>
                                             <th class="text-center">返工个数</th>
                                             <th class="text-center">返工时间</th>
+                                            <th class="text-center">返工再验个数</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontenttw">
@@ -371,6 +372,7 @@
 			      				+'<td class="text-center edit ">'+o.userName+'</td>'
 			      				+'<td class="text-center edit ">'+o.rework+'</td>'
 			      				+'<td class="text-center edit ">'+o.reworkTime+'</td>'
+			      				+'<td class="text-center edit ">'+o.reworkCount+'</td>'
 			      				+'</tr>'
 								
 			      			});  
