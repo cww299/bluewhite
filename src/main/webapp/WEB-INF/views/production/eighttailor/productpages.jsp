@@ -69,8 +69,10 @@
                                         	<th class="text-center">产品序号</th>
                                             <th class="text-center">产品编号</th>
                                             <th class="text-center">产品名</th>
-                                            <th class="text-center">生产预计单价</th>
-                                            <th class="text-center">外发价格</th>
+                                            <th class="text-center">激光预计生产单价</th>
+                                            <th class="text-center">激光外发价格</th>
+                                            <th class="text-center">冲床预计生产单价</th>
+                                            <th class="text-center">冲床外发价格</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -116,6 +118,7 @@
 			<div class="panel-body">
         	<div class="form-group">
 		    <input type="file" name="file" id="upfile"  style="display:inline">
+			<select  id="selectstate"><option value=0>激光</option><option value=1>冲床</option></select>
 		    <button type="button" class="btn btn-success btn-sm" id="btn"  style="display:inline">点击导入</button>
  		</div>
                                 <table class="table table-hover">
@@ -143,6 +146,12 @@
                                         <label class="col-sm-3 control-label">产品名称:</label>
                                         <div class="col-sm-6">
                                             <input type="text" id="proName" class="form-control">
+                                        </div>
+                 </div>
+                 <div class="form-group">
+                                        <label class="col-sm-3 control-label">裁剪方式:</label>
+                                        <div class="col-sm-6">
+                                            <select  id="selectcut" class="form-control"><option value=0>激光</option><option value=1>冲床</option></select>
                                         </div>
                  </div>
                  <div class="form-group">
@@ -247,12 +256,17 @@
 		      				if(o.deedlePrice==null){
 		      					o.deedlePrice=0;
 		      				}
+		      				if(o.puncherHairPrice==null){
+		      					o.puncherHairPrice=0;
+		      				}
 		      				html +='<tr>'
 		      				+'<td class="text-center id">'+o.id+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center  departmentPrice">'+o.departmentPrice*1+'</td>'
 		      				+'<td class="text-center edit  workPrice">'+o.hairPrice+'</td>'
+		      				+'<td class="text-center  puncherDepartmentPrice">'+o.puncherDepartmentPrice*1+'</td>'
+		      				+'<td class="text-center edit  puncherHairPrice">'+o.puncherHairPrice+'</td>'
 							+'<td class="text-center"><button class="btn btn-xs btn-info  btn-trans update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-primary btn-trans addprocedure" data-id='+o.id+' data-name='+o.name+'>添加裁剪工序</button> <button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.name+'>填写批次</button></td></tr>'
 		      			}); 
 		      			 self.setIndex(result.data.pageNum);
@@ -298,6 +312,9 @@
 					var bacthDepartmentPrice=$(this).parent().parent().find('.departmentPrice').text();
 					var bacthHairPrice=$(this).parent().parent().find('.workPrice').text();
 					var bacthDeedlePrice=$(this).parent().parent().find('.deedlePrice').text();
+					var puncherDepartmentPrice=$(this).parent().parent().find('.puncherDepartmentPrice').text();
+					var puncherHairPrice=$(this).parent().parent().find('.puncherHairPrice').text();
+					
 					$('#proName').val(name);
 					var id=$(this).data('id');
 					_index = layer.open({
@@ -316,17 +333,28 @@
 							  if($('#prosum').val()==""){
 								  return layer.msg("数量不能为空", {icon: 2});
 							  }
+							  var a;
+							  var b;
+							  if($('#selectcut').val()==0){
+								  a=bacthDepartmentPrice;
+								  b=bacthHairPrice;
+							  }
+							  if($('#selectcut').val()==1){
+								  a=puncherDepartmentPrice;
+								  b=puncherHairPrice;
+							  }
 							  postData={
 									  productId:id,
 									  bacthNumber:$('#bacthNumber').val(),
 									  number:$('#prosum').val(),
 									  remarks:$('#remarks').val(),
-									  bacthDepartmentPrice:bacthDepartmentPrice,
-									  bacthHairPrice:bacthHairPrice,
+									  bacthDepartmentPrice:a,
+									  bacthHairPrice:b,
 									  bacthDeedlePrice:bacthDeedlePrice,
 									  type:5,
 									  allotTime:$('#Time').val(),
 									  flag:0,
+									  sign:$('#selectcut').val(),
 							  }
 							   $.ajax({
 									url:"${ctx}/bacth/addBacth",
@@ -815,71 +843,26 @@
 						}); 
 				})
 				
-				//新增返工工序
-				$('.addtw').on('click',function(){
-					var index;
-					var postData;
-					var workingtime=$(".workingtimetw").val();
-					if($(this).parent().parent().find("input:radio:checked").val()==null){
-						return 	layer.msg("工序类型不能为空！", {icon: 2});
-					}
-					if($(".workingnametw").val()==""){
-						return 	layer.msg("工序名不能为空！", {icon: 2});
-					}
-					postData={
-							flag:1,
-							name:$(".workingnametw").val(),
-							workingTime:workingtime,
-							  type:5,
-							  productId:$(this).data('productid'),
-							  procedureTypeId:$(this).parent().parent().find("input:radio:checked").val(),
-					  }
-					
-					   $.ajax({
-							url:"${ctx}/production/addProcedure",
-							data:postData,
-				            traditional: true,//传数组
-							type:"post",
-							beforeSend:function(){
-								index = layer.load(1, {
-									  shade: [0.1,'#fff'] //0.1透明度的白色背景
-									});
-							},
-							
-							success:function(result){
-								if(0==result.code){
-									layer.msg("添加成功！", {icon: 1});
-									self.loadworkingtw();
-									layer.close(index);
-								}else{
-									layer.msg("添加失败", {icon: 2});
-								}
-								
-								
-							},error:function(){
-								layer.msg("操作失败！", {icon: 2});
-								layer.close(index);
-							}
-						}); 
-				})
+			
 			}
 			this.events = function(){
 				
 				//导入
 				$('#btn').on('click',function(){
-				
+				var a=$('#selectstate').val();
+				console.log(a)
 					if($('#upfile')[0].files[0]==null){
 						return layer.msg("请选择需要导入的文件", {icon: 2});
 					}
 					  var imageForm = new FormData();
 				
-				  			
+					  		imageForm.append("sign",a);
 							imageForm.append("file",$('#upfile')[0].files[0]);
 				  			imageForm.append("productId",self.getCache());
 				  			imageForm.append("type",5);
-				  			imageForm.append("flag",0)
+				  			
 					 $.ajax({
-							url:"${ctx}/excel/importMachinistProcedure",
+							url:"${ctx}/excel/importEightTailor",
 							data:imageForm,
 							type:"post",
 							processData:false,
@@ -907,47 +890,6 @@
 					
 				});
 				
-				//导入
-				$('#btntw').on('click',function(){
-				
-					if($('#upfiletw')[0].files[0]==null){
-						return layer.msg("请选择需要导入的文件", {icon: 2});
-					}
-					  var imageForm = new FormData();
-				
-				  			
-							imageForm.append("file",$('#upfiletw')[0].files[0]);
-				  			imageForm.append("productId",self.getCache());
-				  			imageForm.append("type",5);
-				  			imageForm.append("flag",1)
-					 $.ajax({
-							url:"${ctx}/excel/importProcedure",
-							data:imageForm,
-							type:"post",
-							processData:false,
-							contentType: false,
-							beforeSend:function(){
-								index = layer.load(1, {
-									  shade: [0.1,'#fff'] //0.1透明度的白色背景
-									});
-							},
-							success:function(result){
-								if(0==result.code){
-								layer.msg(result.message, {icon: 1});
-								}else{
-									layer.msg(result.message, {icon: 2});
-								}
-								self.loadworkingtw();
-								layer.close(index);
-							},
-							error:function(){
-								layer.msg("操作失败！", {icon: 2});
-								layer.close(index);
-							}
-						}); 
-		          
-					
-				});
 				
 				
 				//查询

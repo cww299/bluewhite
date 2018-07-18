@@ -1017,7 +1017,7 @@
 										  var htmlfv="";
 										  var data={
 												   productId:productId,
-												   type:4,
+												   type:5,
 												   bacthId:bacthId,
 												   procedureTypeId:self.getNum(),
 												   flag:0,

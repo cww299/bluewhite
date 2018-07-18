@@ -142,8 +142,8 @@
                                         	<th class="text-center">考勤总时间</th>
                                             <th class="text-center">当天产量  </th>
                                             <th class="text-center">当天产值</th>
-                                            <th class="text-center">返工人员</th>
-                                            <th class="text-center">返工时间</th>
+                                            <th class="text-center">杂工价值</th>
+                                            <th class="text-center">杂工时间</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontenttw">
@@ -311,8 +311,8 @@
 			      				+'<td class="text-center edit ">'+o.time+'</td>'
 			      				+'<td class="text-center edit ">'+o.productNumber+'</td>'
 			      				+'<td class="text-center edit ">'+o.productPrice+'</td>'
-			      				+'<td class="text-center edit ">'+o.userName+'</td>'
-			      				+'<td class="text-center edit ">'+o.reworkTime+'</td>'
+			      				+'<td class="text-center edit ">'+o.farragoTaskPrice+'</td>'
+			      				+'<td class="text-center edit ">'+o.farragoTaskTime+'</td>'
 			      				+'</tr>'
 								
 			      			});  
