@@ -36,7 +36,7 @@
                             </div>
                   <!--查询开始  -->
           <div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-12 col-sm-9 col-md-9">
+			<div class="col-xs-12 col-sm-10 col-md-10">
 				<form class="form-search" >
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 col-md-12">
@@ -52,10 +52,13 @@
 								</td>
 				<td>&nbsp&nbsp</td>
 				<td>结束时间:</td>
+				
 				<td>
 					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
             					 onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
+								<td>&nbsp&nbsp</td>
+							<td>工序:</td><td><select class="form-control selectchoice" ><option value="0">质检工序</option><option value="1">返工工序</option></select></td>
 								</tr></table> 
 								<span class="input-group-btn"><button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">查&nbsp找</button></span>
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
@@ -182,7 +185,7 @@
 						page:1,
 				  		size:13,	
 				  		type:1,
-
+						
 				} 
 			this.init = function(){
 				
@@ -212,18 +215,18 @@
 		      					a="(返工)"
 		      				}
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
-		      				+'<td class="text-center edit name">'+o.bacthNumber+'</td>'
-		      				+'<td class="text-center edit name">'+o.productName+'</td>'
-		      				+'<td class="text-center edit name">'+o.allotTime+'</td>'
-		      				+'<td class="text-center edit name">'+s+a+'</td>'
-		      				+'<td class="text-center edit name">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
-		      				+'<td class="text-center edit name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
-		      				+'<td class="text-center edit name">'+parseFloat((o.payB).toFixed(4))+'</td>'
-		      				+'<td class="text-center edit name">'+o.number+'</td>'
-		      				+'<td class="text-center edit name">'+o.performance+'</td>'
-		      				+'<td class="text-center edit name">'+parseFloat((o.performancePrice).toFixed(4))+'</td>'
+		      				+'<td class="text-center  name">'+o.bacthNumber+'</td>'
+		      				+'<td class="text-center  name">'+o.productName+'</td>'
+		      				+'<td class="text-center  name">'+o.allotTime+'</td>'
+		      				+'<td class="text-center  name">'+s+a+'</td>'
+		      				+'<td class="text-center  name">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
+		      				+'<td class="text-center  name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
+		      				+'<td class="text-center  name">'+parseFloat((o.payB).toFixed(4))+'</td>'
+		      				+'<td class="text-center edit number">'+o.number+'</td>'
+		      				+'<td class="text-center  name">'+o.performance+'</td>'
+		      				+'<td class="text-center  name">'+parseFloat((o.performancePrice).toFixed(4))+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
+							+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -242,6 +245,7 @@
 								  			bacthNumber:$('#number').val(),
 								  			orderTimeBegin:$("#startTime").val(),
 								  			orderTimeEnd:$("#endTime").val(),
+								  			flag:$('.selectchoice').val(),
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -295,7 +299,56 @@
 							});
 							 })
 				})
-				
+				//修改方法
+				$('.updateremake').on('click',function(){
+					if($(this).text() == "编辑"){
+						$(this).text("保存")
+						
+						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
+				        });
+					}else{
+							$(this).text("编辑")
+						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+
+					       
+					                $(this).html(obj_text.val()); 
+									
+							});
+							
+							var postData = {
+									id:$(this).data('id'),
+									number:$(this).parent().parent('tr').find(".number").text(),
+							}
+							var index;
+							$.ajax({
+								url:"${ctx}/task/upTask",
+								data:postData,
+								type:"POST",
+								beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								
+								success:function(result){
+									if(0==result.code){
+									layer.msg("修改成功！", {icon: 1});
+									layer.close(index);
+									}else{
+										layer.msg("修改失败！", {icon: 1});
+										layer.close(index);
+									}
+								},error:function(){
+									layer.msg("操作失败！", {icon: 2});
+									layer.close(index);
+								}
+							});
+					}
+				})
 				//人员详细显示方法
 				$('.savemode').on('click',function(){
 					var id=$(this).data('id')
@@ -365,6 +418,7 @@
 				  			bacthNumber:$('#number').val(),
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
+				  			flag:$('.selectchoice').val(),
 				  	}
 		            self.loadPagination(data);
 				});

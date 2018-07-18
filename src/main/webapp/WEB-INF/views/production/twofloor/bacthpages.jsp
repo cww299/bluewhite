@@ -190,7 +190,7 @@
                                         
                                     </tbody>
                                 </table>
-                                <div id="pager" class="pull-right">
+                                <div id="pagerr" class="pull-right">
                                 
                                 </div>
                             </div>
@@ -420,7 +420,7 @@
 			      			}); 
 					        //显示分页
 						   	 laypage({
-						      cont: 'pager', 
+						      cont: 'pagerr', 
 						      pages: result.data.totalPages, 
 						      curr:  result.data.pageNum || 1, 
 						      jump: function(obj, first){ 

@@ -44,12 +44,12 @@
 								<td>最近包装车间人数:</td><td><input type="text" name="name" id="sum"  class="form-control search-query name numberth" /></td>
 								<td>当月房租设定:</td><td><input type="text" name="name" id="rent"  class="form-control search-query name numberth" /></td>
 								<td>当月水电:</td><td><input type="text" name="name" id="price"  class="form-control search-query name numberth" /></td>
-								<td>设备折旧:</td><td><input type="text" name="name" id="equipment"  class="form-control search-query name numberth" /></td>
+								<td>当月后勤餐饮保障:</td><td><input type="text" name="number"  id="numbertw" class="form-control search-query number numberth" /></td>
 								<td><div style="width: 15px"></div></td>
 								<td><button type="button"  class="btn btn-sm btn-info btn-3d update">修改</button></td>
 								</tr>
 								<tr><td><div style="height: 10px"></div></td></tr>
-								<tr><td>当月后勤餐饮保障:</td><td><input type="text" name="number"  id="numbertw" class="form-control search-query number numberth" /></td>
+								<tr>
 								<td>日消费房租:</td><td><input type="text" name="name" id="sumtw"  class="form-control search-query name numberth" /></td>
 								<td>日消费水电折旧:</td><td><input type="text" name="name" id="renttw"  class="form-control search-query name numberth" /></td>
 								<td>日消费餐饮后勤:</td><td><input type="text" name="name" id="pricetw"  class="form-control search-query name numberth" /></td>
@@ -57,7 +57,7 @@
 								<td><input id="startTime" placeholder="请输入日期" class="form-control laydate-icon"
              					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
              					</td>
-             					<td><div style="width: 15px"></div></td>
+             					
              					<td> <button type="button" id="addgroup" class="btn btn-sm btn-success btn-3d pull-right">新增</button></td>
 								</tr>
 								</table> 
@@ -164,7 +164,6 @@
 				        $('#sumtw').val(result.data.chummage)
 				        $('#renttw').val(result.data.hydropower)
 				        $('#pricetw').val(result.data.logistics)
-				         $('#equipment').val(result.data.equipment)
 					   	layer.close(index);
 		      		  
 					   

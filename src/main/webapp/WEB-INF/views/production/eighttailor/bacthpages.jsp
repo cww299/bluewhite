@@ -185,7 +185,7 @@
                                         
                                     </tbody>
                                 </table>
-                                <div id="pager" class="pull-right">
+                                <div id="pagerr" class="pull-right">
                                 
                                 </div>
                             </div>
@@ -303,11 +303,17 @@
 		      				 }else{
 		      					strname="未完成";
 		      				 }
+		      				 var a="";
+		      				 if(o.sign==0){
+		      					 a="（激光）"
+		      				 }else{
+		      					 a="（冲床）"
+		      				 }
 		      				 html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="hidden batch">'+o.id+'</td>'
 		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
-		      				+'<td class="text-center  names" data-id='+o.id+'>'+o.product.name+'</td>'
+		      				+'<td class="text-center  names" data-id='+o.id+'>'+o.product.name+a+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center  bacthDepartmentPrice">'+parseFloat((o.bacthDepartmentPrice).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit bacthHairPrice">'+o.bacthHairPrice+'</td>'
@@ -412,7 +418,7 @@
 			      			}); 
 					        //显示分页
 						   	 laypage({
-						      cont: 'pager', 
+						      cont: 'pagerr', 
 						      pages: result.data.totalPages, 
 						      curr:  result.data.pageNum || 1, 
 						      jump: function(obj, first){ 
