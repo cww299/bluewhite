@@ -45,7 +45,7 @@ public class IndexAction {
 	 * @return
 	 */
 	@RequiresPermissions( "sys:index" )  
-	@RequestMapping(value="/index")
+	@RequestMapping(value="/")
 	public String index() {
 		return "index";
 		
@@ -96,7 +96,7 @@ public class IndexAction {
 				cr.setMessage("用户登录成功。");
 			} catch (AuthenticationException e) {
 				cr.setCode(ErrorCode.SYSTEM_USER_NOT_AUTHENTICATED.getCode());
-				cr.setMessage("用户认证失败。");//可能的原因：1.账号不存在；2.密码错误;3.token已经过期
+				cr.setMessage("用户账号或者密码不正确。");//可能的原因：1.账号不存在；2.密码错误;3.token已经过期
 				return cr;
 			}
 		}
