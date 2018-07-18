@@ -263,7 +263,7 @@
                                     <tbody id="tableworking">
                                     </tbody>
                                 </table>
-                                 <div id="pagerr" class="pull-right">
+                                 <div id="pager" class="pull-right">
                             </div>
 </div>
 <!--隐藏框 已完成的批次结束  -->
@@ -271,7 +271,45 @@
 
     </section>
     
-   
+  <!-- 任务详情开始-->
+<div id="addwork" style="display: none;position: absolute;z-index: 3;">
+<table><tr>           
+                        <td><button type="button" class="btn btn-default btn-danger btn-xs btn-3d attendance">一键删除</button>&nbsp&nbsp</td>
+                        </tr></table>             
+                            <div class="panel-body">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                        	<th class="center">
+											<label> 
+											<input type="checkbox" class="ace checks" /> 
+											<span class="lbl"></span>
+											</label>
+											</th>
+                                        	<th class="text-center">批次号</th>
+                                            <th class="text-center">产品名</th>
+                                            <th class="text-center">时间</th>
+                                            <th class="text-center">工序</th>
+                                            <th class="text-center">预计时间</th>
+                                            <th class="text-center">任务价值</th>
+                                            <th class="text-center">b工资净值</th>
+                                            <th class="text-center">数量</th>
+                                            <th class="text-center">工序加价</th>
+                                            <th class="text-center">加绩工资</th>
+                                            <th class="text-center">完成人</th>
+                                            <th class="text-center">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablecontentto">
+                                        
+                                    </tbody>
+                                </table>
+                                <div id="pagerr" class="pull-right">
+                                
+                                </div>
+                            </div>
+
+</div> 
    
    <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
     <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
@@ -336,7 +374,7 @@
 		      				 html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
-		      				+'<td class="text-center  name">'+o.product.name+'</td>'
+		      				+'<td class="text-center  names" data-id='+o.id+'>'+o.product.name+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center  bacthDepartmentPrice">'+parseFloat((o.bacthDepartmentPrice).toFixed(3))+'</td>'
 		      				+'<td class="text-center  bacthHairPrice">'+o.bacthHairPrice+'</td>'
@@ -399,7 +437,306 @@
 	                }); 
 					
 				}
+			  this.loadPaginationto = function(data){
+				    var index;
+				    var html = '';
+				    var htmlto="";
+				    $.ajax({
+					      url:"${ctx}/task/allTask",
+					      data:data,
+					      type:"GET",
+					      beforeSend:function(){
+						 	  index = layer.load(1, {
+							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							  });
+						  }, 
+			      		  success: function (result) {
+			      			 $(result.data.rows).each(function(i,o){
+			      				 var a=""
+			      				 var s=o.procedureName
+			      				if(o.flag==1){
+			      					a="(返工)"
+			      				}
+			      				 if(o.taskActualTime==null){
+			      					o.taskActualTime=0
+			      				 }
+			      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxIdto" value="'+o.id+'"/><span class="lbl"></span></label></td>'
+			      				+'<td class="text-center ">'+o.bacthNumber+'</td>'
+			      				+'<td class="text-center ">'+o.productName+'</td>'
+			      				+'<td class="text-center ">'+o.allotTime+'</td>'
+			      				+'<td class="text-center ">'+s+a+'</td>'
+			      				+'<td class="text-center ">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
+			      				+'<td class="text-center ">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
+			      				+'<td class="text-center ">'+parseFloat((o.payB).toFixed(4))+'</td>'
+			      				+'<td class="text-center edit number">'+o.number+'</td>'
+			      				+'<td class="text-center ">'+o.performance+'</td>'
+			      				+'<td class="text-center ">'+parseFloat((o.performancePrice).toFixed(4))+'</td>'
+			      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
+								+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremaketw" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
+								
+			      			}); 
+					        //显示分页
+						   	 laypage({
+						      cont: 'pager', 
+						      pages: result.data.totalPages, 
+						      curr:  result.data.pageNum || 1, 
+						      jump: function(obj, first){ 
+						    	  if(!first){ 
+						    		 
+							        	var _data = {
+							        			page:obj.curr,
+										  		size:13,
+										  		type:2,
+										  		productName:$('#name').val(),
+									  			bacthNumber:$('#number').val(),
+									  			orderTimeBegin:$("#startTime").val(),
+									  			orderTimeEnd:$("#endTime").val(),
+									  			flag:0,
+									  	}
+							        
+							            self.loadPaginationto(_data);
+								     }
+						      }
+						    });  
+						   	layer.close(index);
+						   
+						   	 $("#tablecontentto").html(html); 
+						   	 self.loadEventss();
+						   	
+					      },error:function(){
+								layer.msg("加载失败！", {icon: 2});
+								layer.close(index);
+						  }
+					  });
+				}
+			  this.loadEventss = function(){
+					
+					
+					$('.rest').on('click',function(){
+						var  del=$(this);
+						var id = $(this).parent().data('id');
+						var rest = $(this).val();
+						
+					    	  $.ajax({
+									url:"${ctx}/task/getTaskActualTime",
+									data:{
+										ids:id,
+										status:rest,
+										},
+									type:"GET",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									success:function(result){
+										//选择1
+										
+										if(rest==0){
+									
+											del.parent().find(".rest").eq(1).prop("checked", false);
+
+										}else{
+											del.parent().find(".rest").eq(0).prop("checked", false);
+											
+										}
+										layer.msg("操作成功！", {icon: 1});
+										layer.close(index);
+									
+								
+										
+									},
+									error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								});
+					    	  
+					 
+			
+					});
+					
+					
+					//修改方法
+					$('.updateremaketw').on('click',function(){
+						if($(this).text() == "编辑"){
+							$(this).text("保存")
+							
+							$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+					            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
+					        });
+						}else{
+								$(this).text("编辑")
+							$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+						            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+
+						       
+						                $(this).html(obj_text.val()); 
+										
+								});
+								
+								var postData = {
+										id:$(this).data('id'),
+										number:$(this).parent().parent('tr').find(".number").text(),
+								}
+								var index;
+								$.ajax({
+									url:"${ctx}/task/upTask",
+									data:postData,
+									type:"POST",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									
+									success:function(result){
+										if(0==result.code){
+										layer.msg("修改成功！", {icon: 1});
+										layer.close(index);
+										}else{
+											layer.msg("修改失败！", {icon: 1});
+											layer.close(index);
+										}
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								});
+						}
+					})
+					
+					
+					//删除
+							$('.delete').on('click',function(){
+								var postData = {
+										ids:$(this).data('id'),
+								}
+								
+								var index;
+								 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
+								$.ajax({
+									url:"${ctx}/task/delete",
+									data:postData,
+									type:"GET",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									
+									success:function(result){
+										if(0==result.code){
+										layer.msg("删除成功！", {icon: 1});
+										var _data={
+												page:1,
+										  		size:13,
+												bacthId:self.getCache(),
+												type:2,
+										}
+										self.loadPaginationto(_data)
+										layer.close(index);
+										}else{
+											layer.msg("删除失败！", {icon: 1});
+											layer.close(index);
+										}
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								});
+								 })
+					})
+					
+					//人员详细显示方法
+					$('.savemode').on('click',function(){
+						var id=$(this).data('id')
+						 var display =$("#savegroup").css("display")
+						 if(display=='none'){
+								$("#savegroup").css("display","block");  
+							}
+						 var postData={
+								id:id,
+						}
+						 var arr=new Array();
+						var html="";
+						$.ajax({
+							url:"${ctx}/task/taskUser",
+							data:postData,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								$(result.data).each(function(i,o){
+								html+=o.userName+"&nbsp&nbsp&nbsp&nbsp"
+								})
+								$('.modal-body').html(html);
+								layer.close(index);
+								
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						}); 
+						
+						
+						
+					})
+					
+					
+				} 
 			this.loadEvents = function(){
+				$('.names').on('click',function(){
+					var that=$(this);
+					var a=$(this).data('id');
+					self.setCache(a);
+					var data={
+							bacthId:$(this).data('id'),
+							page:1,
+					  		size:13,	
+					  		type:2,
+					} 
+					self.loadPaginationto(data);
+					 var ids=that.data("id");
+						$(".batch").each(function(i,o){
+							var a=$(o).text();
+							if(a==ids){
+								$(o).parent().addClass("danger");
+								$(o).parent().siblings().removeClass("danger");
+							}
+						})
+				var dicDiv=$('#addwork');
+					_index = layer.open({
+						  type: 1,
+						  skin: 'layui-layer-rim', //加上边框
+						  area: ['70%', '60%'], 
+						  btnAlign: 'c',//宽高
+						  maxmin: true,
+						  title:name,
+						  content: dicDiv,
+						  
+						  yes:function(index, layero){
+							 
+							},
+						  end:function(){
+							  $('#addwork').hide();
+							  data={
+									page:1,
+								  	size:13,	
+								  	type:2,
+								  	name:$('#name').val(),
+						  			number:$('#number').val(),
+							  }
+							
+						  }
+					});
+				})
 				//删除
 				$('.delete').on('click',function(){
 					var postData = {
@@ -1228,6 +1565,54 @@
 				}) 
 			}
 			this.events = function(){
+				/* 一键删除 */
+				$('.attendance').on('click',function(){
+					  var  that=$(this);
+					  var arr=new Array()//员工id
+						$(this).parent().parent().parent().parent().parent().find(".checkboxIdto:checked").each(function() {  
+							arr.push($(this).val());   
+						});
+					  if(arr.length<=0){
+							return layer.msg("至少选择一个！", {icon: 2});
+						}
+						var data={
+								type:5,
+								ids:arr,
+						}
+						var _data={
+								page:1,
+						  		size:13,
+								bacthId:self.getCache(),
+								type:2,
+						}
+						var index;
+						 index = layer.confirm('确定一键删除吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/task/delete",
+							data:data,
+				            traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+									layer.msg(result.message, {icon: 1});
+									self.loadPaginationto(_data);
+								}else{
+									layer.msg(result.message, {icon: 2});
+								}
+								layer.close(index);
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 });
+				  })
 				/* 一键完成  */
 				$('.start').on('click',function(){
 					  var  that=$(".table-hover");

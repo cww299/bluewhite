@@ -57,7 +57,7 @@
              onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
 								<td>&nbsp&nbsp</td>
-								<td>工序:</td><td><select class="form-control selectchoice"><option value="0">裁剪工序</option></select></td>
+								<td><select class="form-control selectchoice hidden" ><option value="0">裁剪工序</option></select></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
