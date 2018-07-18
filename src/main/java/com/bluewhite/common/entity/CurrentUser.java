@@ -63,7 +63,7 @@ public class CurrentUser {
 	/**
 	 * 照片url
 	 */
-	private String pictureUrl;
+	private String pictureUrl ;
 	
 	
 	/**
@@ -77,6 +77,9 @@ public class CurrentUser {
 	 */
 	@JSONField(serialize = false)
 	private Set<String> permissions;
+
+	
+	
 
 
 	public Long getId() {

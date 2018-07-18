@@ -95,7 +95,7 @@
 						     
 				      		  success: function (result) {
 				      			  if(result.code==0){
-					      				location.href = "${ctx}/index";
+					      				location.href = "${ctx}/";
 					      				$.cookie("navstation", null);
 										$.cookie("navstationtwo",null)
 				      			  }else{
