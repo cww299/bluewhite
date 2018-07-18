@@ -83,6 +83,9 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	@Autowired
 	private NonLineDao nonLineDao;
 	
+	private static String rework = "返工再验";
+	
+	
 	@Override
 	public PageResult<CollectPay> findPages(CollectPay param, PageParameter page) {
 		 Page<CollectPay> pages = dao.findAll((root,query,cb) -> {
@@ -457,16 +460,23 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			reworkTurnTime = taskList.stream().mapToDouble(Task::getTaskTime).sum();
 			monthlyProduction.setReworkTurnTime(reworkTurnTime);
 		}
+		//返工再验个数
+		double reworkCount = taskList.stream().filter(Task->Task.getProcedureName().equals(rework)).mapToDouble(Task::getNumber).sum();
+		monthlyProduction.setReworkCount(reworkCount);
 		
 		
-		double reworkNumber = userList.size();
+		int reworkNumber = userList.size();
 		monthlyProduction.setReworkNumber(reworkNumber);
 		//返工个数
 		double rework =  taskList.stream().filter(Task->Task.getNumber()!=null).mapToDouble(Task::getNumber).sum();
-		monthlyProduction.setRework(rework);
+		monthlyProduction.setRework(rework-reworkCount);
 		//返工时间
 		double reworkTime = reworkTurnTime;
 		monthlyProduction.setReworkTime(reworkTime);
+		if(monthlyProduction.getType()==1){
+			monthlyProduction.setPeopleNumber(peopleNumber-reworkNumber);
+			monthlyProduction.setTime(time-reworkTurnTime);
+		}
 		
 		//杂工
 		if(monthlyProduction.getType()==5){
