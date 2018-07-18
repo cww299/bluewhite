@@ -37,13 +37,13 @@ public class MonthlyProduction {
 	/**
 	 * 杂工总时间
 	 */
-	@Poi(name = "杂工时间", column = "F")
+	@Poi(name = "杂工时间", column = "J")
 	private Double  farragoTaskTime;
 	
 	/**
 	 * 杂工价值 
 	 */
-	@Poi(name = "杂工价值", column = "G")
+	@Poi(name = "杂工价值", column = "K")
 	private Double farragoTaskPrice;
 	
 	/**
