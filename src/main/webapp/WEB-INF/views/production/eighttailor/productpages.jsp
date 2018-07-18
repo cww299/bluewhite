@@ -151,7 +151,7 @@
                  <div class="form-group">
                                         <label class="col-sm-3 control-label">裁剪方式:</label>
                                         <div class="col-sm-6">
-                                            <select  id="selectcut" class="form-control"><option value=0>激光</option><option value=1>冲床</option></select>
+                                            <select  id="selectcut" style="width: 30px;" class="form-control"><option value=0>激光</option><option value=1>冲床</option></select>
                                         </div>
                  </div>
                  <div class="form-group">
@@ -806,10 +806,18 @@
 					if($(".workingname").val()==""){
 						return 	layer.msg("工序名不能为空！", {icon: 2});
 					}
+					var b;
+					if($(this).parent().parent().find("input:radio:checked").val()==140){
+						b=0;
+					}
+					if($(this).parent().parent().find("input:radio:checked").val()==141){
+						b=1;
+					}
 					postData={
-							flag:0,
-							name:$(".workingname").val(),
-							workingTime:workingtime,
+							  flag:0,
+							  sign:b,
+							  name:$(".workingname").val(),
+							  workingTime:workingtime,
 							  type:5,
 							  productId:$(this).data('productid'),
 							  procedureTypeId:$(this).parent().parent().find("input:radio:checked").val(),
