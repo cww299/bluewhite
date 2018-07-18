@@ -562,6 +562,7 @@
 							layer.close(_indexx);
 						}else{
 							layer.msg(result.message, {icon: 2});
+							layer.close(_indexx);
 						}
 						},
 						error:function(){

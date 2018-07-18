@@ -705,6 +705,9 @@
 							layer.msg(result.message, {icon: 1});
 							self.loadworking();
 							layer.close(_indexx);
+						}else{
+							layer.msg(result.message, {icon: 2});
+							layer.close(_indexx);
 						}
 						},
 						error:function(){
@@ -737,6 +740,7 @@
 							layer.close(_indexx);
 						}else{
 							layer.msg(result.message, {icon: 2});
+							layer.close(_indexx);
 						}
 						},
 						error:function(){
