@@ -61,7 +61,7 @@ public class MonthlyProduction {
 	/**
 	 * 返工出勤人数   
 	 */
-	private Double  reworkNumber;
+	private Integer  reworkNumber;
 	
 	/**
 	 * 返工出勤时间   
@@ -93,6 +93,12 @@ public class MonthlyProduction {
 	private String startDate;
 	
 	/**
+	 * 返工再验个数
+	 */
+	@Poi(name = "返工再验个数", column = "M")
+	private Double reworkCount;
+	
+	/**
 	 * 查询字段开始时间
 	 */
 	private Date orderTimeBegin;
@@ -107,6 +113,14 @@ public class MonthlyProduction {
 	
 	
 	
+
+	public Double getReworkCount() {
+		return reworkCount;
+	}
+
+	public void setReworkCount(Double reworkCount) {
+		this.reworkCount = reworkCount;
+	}
 
 	public Double getFarragoTaskTime() {
 		return farragoTaskTime;
@@ -214,11 +228,12 @@ public class MonthlyProduction {
 		this.productPrice = productPrice;
 	}
 
-	public Double getReworkNumber() {
+
+	public Integer getReworkNumber() {
 		return reworkNumber;
 	}
 
-	public void setReworkNumber(Double reworkNumber) {
+	public void setReworkNumber(Integer reworkNumber) {
 		this.reworkNumber = reworkNumber;
 	}
 
