@@ -468,8 +468,8 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		double reworkTime = reworkTurnTime;
 		monthlyProduction.setReworkTime(reworkTime);
 		
+		//杂工
 		if(monthlyProduction.getType()==5){
-			
 			FarragoTask farragoTask = new FarragoTask();
 			farragoTask.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
 			farragoTask.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
