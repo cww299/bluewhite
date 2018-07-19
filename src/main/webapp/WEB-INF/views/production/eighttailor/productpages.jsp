@@ -151,7 +151,7 @@
                  <div class="form-group">
                                         <label class="col-sm-3 control-label">裁剪方式:</label>
                                         <div class="col-sm-6">
-                                            <select  id="selectcut" style="width: 30px;" class="form-control"><option value=0>激光</option><option value=1>冲床</option></select>
+                                            <select  id="selectcut"  class="form-control"><option value=0>激光</option><option value=1>冲床</option></select>
                                         </div>
                  </div>
                  <div class="form-group">
@@ -859,7 +859,6 @@
 				//导入
 				$('#btn').on('click',function(){
 				var a=$('#selectstate').val();
-				console.log(a)
 					if($('#upfile')[0].files[0]==null){
 						return layer.msg("请选择需要导入的文件", {icon: 2});
 					}
