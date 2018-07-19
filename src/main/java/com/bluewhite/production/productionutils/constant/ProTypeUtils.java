@@ -482,6 +482,11 @@ public  class ProTypeUtils {
 		case 4://生产部二楼机工
 			break;
 		case 5://生产部八号裁剪
+			for(Procedure procedure : procedureList){
+				if(procedure.getHairPrice()!=null){
+					sumPrice = procedure.getHairPrice();
+				}
+			}
 			break;
 		default:
 			break;

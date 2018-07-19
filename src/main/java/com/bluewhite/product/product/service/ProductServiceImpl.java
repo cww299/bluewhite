@@ -50,15 +50,20 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		  				  if(procedureList!=null && procedureList.size()>0){
 		  					if(product.getType()!=null && product.getType()==5){
 		  						  List<Procedure> procedureList1 = procedureList.stream().filter(Procedure->Procedure.getSign()==0).collect(Collectors.toList());
-		  						  pro.setHairPrice(procedureList1.get(0).getHairPrice());
-		  						  pro.setDepartmentPrice(procedureList1.get(0).getDepartmentPrice());
+		  						  if(procedureList1.size()>0){
+		  							  pro.setHairPrice(procedureList1.get(0).getHairPrice());
+		  							  pro.setDepartmentPrice(procedureList1.get(0).getDepartmentPrice());
+		  						  }
 		  						  List<Procedure> procedureList2 = procedureList.stream().filter(Procedure->Procedure.getSign()==1).collect(Collectors.toList());
-		  						  pro.setPuncherHairPrice(procedureList2.get(0).getHairPrice());
-		  						  pro.setPuncherDepartmentPrice(procedureList2.get(0).getDepartmentPrice());
-		  						  
+		  						  if(procedureList2.size()>0){
+		  							  pro.setPuncherHairPrice(procedureList2.get(0).getHairPrice());
+		  							  pro.setPuncherDepartmentPrice(procedureList2.get(0).getDepartmentPrice());
+		  						  }
 		  					  }else{
-		  						  pro.setHairPrice(procedureList.get(0).getHairPrice());
-		  						  pro.setDepartmentPrice(procedureList.get(0).getDepartmentPrice()); 
+		  						  if(procedureList.size()>0){
+		  							  pro.setHairPrice(procedureList.get(0).getHairPrice());
+		  							  pro.setDepartmentPrice(procedureList.get(0).getDepartmentPrice()); 
+		  						  }
 		  					  }
 		  						  if(product.getType()==3){
 		  							  pro.setDeedlePrice(procedureList.get(0).getDeedlePrice());
