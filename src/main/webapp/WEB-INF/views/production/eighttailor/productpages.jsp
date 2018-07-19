@@ -455,6 +455,7 @@
 									number:$(this).parent().parent('tr').find(".number").text(),
 									name:$(this).parent().parent('tr').find(".name").text(),
 									hairPrice:$(this).parent().parent('tr').find(".workPrice").text(),
+									puncherHairPrice:$(this).parent().parent('tr').find(".puncherHairPrice").text(),
 							}
 							
 							var index;
