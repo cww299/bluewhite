@@ -1,6 +1,7 @@
 package com.bluewhite.product.product.action;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -97,18 +98,38 @@ public class ProductAction {
 			product.setCreatedAt(oldProduct.getCreatedAt());
 			productService.update(product);
 			//根据不同部门，计算不同的外发价格
-			if(product.getType()==3 || product.getType()==4){
-				List<Procedure>	procedureList = procedureService.findByProductIdAndType(product.getId(),product.getType(),0);
-				if(procedureList.size()==0){
-					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-					cr.setMessage("请先填写工序");
-					return cr;
-				}
+			List<Procedure>	procedureList = procedureService.findByProductIdAndType(product.getId(),product.getType(),0);
+			if(procedureList.size()==0){
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				cr.setMessage("请先填写工序");
+				return cr;
+			}
+			//针工机工修改外发价格
+			if(product.getType()==3 || product.getType()==4 ){
 				for(Procedure pro : procedureList){
 					pro.setHairPrice(product.getHairPrice());
 				}
 				procedureService.saveList(procedureList);
 			}
+			//裁剪修改外发价格
+			if(product.getType()==5){
+				List<Procedure>	procedureList1 = procedureList.stream().filter(Procedure->Procedure.getSign()==0).collect(Collectors.toList());
+				if(product.getHairPrice()!=null){
+					for(Procedure pro : procedureList1){
+						pro.setHairPrice(product.getHairPrice());
+					}
+					procedureService.saveList(procedureList1);
+				}
+				
+				List<Procedure> procedureList2 = procedureList.stream().filter(Procedure->Procedure.getSign()==1).collect(Collectors.toList());
+				if(product.getPuncherHairPrice()!=null){
+					for(Procedure pro : procedureList2){
+						pro.setHairPrice(product.getPuncherHairPrice());
+					}
+					procedureService.saveList(procedureList2);
+				}
+			}
+			
 			cr.setMessage("修改成功");
 		}else{
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
