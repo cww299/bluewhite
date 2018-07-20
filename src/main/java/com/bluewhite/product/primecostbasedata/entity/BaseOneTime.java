@@ -52,7 +52,7 @@ public class BaseOneTime extends BaseEntity<Long>{
 	/**
 	 * 多对一
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "baseOneId", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseOne baseOne;
 
@@ -86,6 +86,14 @@ public class BaseOneTime extends BaseEntity<Long>{
 
 	public void setBaseOne(BaseOne baseOne) {
 		this.baseOne = baseOne;
+	}
+
+	public Double getTextualTime() {
+		return textualTime;
+	}
+
+	public void setTextualTime(Double textualTime) {
+		this.textualTime = textualTime;
 	}
 	
 	
