@@ -658,6 +658,8 @@ public  class ProTypeUtils {
 	 */
 	public static Double sumRegionalPrice(Bacth bacth, Integer type) {
 		Double sumRegionalPrice = 0.0 ;
+		bacth.setBacthHairPrice(bacth.getBacthHairPrice()==null?0.0:bacth.getBacthHairPrice());
+		bacth.setBacthDepartmentPrice(bacth.getBacthDepartmentPrice()==null?0.0:bacth.getBacthDepartmentPrice());
 		switch (type) {
 		case 1:// 生产部一楼质检
 			sumRegionalPrice = bacth.getSumTaskPrice()-(bacth.getBacthHairPrice()/bacth.getBacthDepartmentPrice()*bacth.getSumTaskPrice());
@@ -671,7 +673,7 @@ public  class ProTypeUtils {
 		case 4://生产部二楼机工
 			sumRegionalPrice = bacth.getSumTaskPrice()-(bacth.getBacthHairPrice()/bacth.getBacthDepartmentPrice()*bacth.getSumTaskPrice());
 			break;
-		case 5://生产部二楼机工
+		case 5://八号裁剪
 			sumRegionalPrice = bacth.getSumTaskPrice()-(bacth.getBacthHairPrice()/bacth.getBacthDepartmentPrice()*bacth.getSumTaskPrice());
 			break;
 		default:

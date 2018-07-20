@@ -41,14 +41,14 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 		CommonResponse cr = new CommonResponse();
 		if(StringUtils.isEmpty(cutParts.getProductId())){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("产品都不能为空");
+			cr.setMessage("产品不能为空");
 		}else{
-			cutPartsService.save(cutParts);
+			cutPartsService.saveCutParts(cutParts);
 			cr.setMessage("添加成功");
 		}
 		return cr;
 	}
-	
+		
 	
 	
 

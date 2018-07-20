@@ -52,7 +52,7 @@ public class BaseOne extends BaseEntity<Long>{
 	/**
 	 * 名称和时间关联，进行联查
 	 */
-	@OneToMany(mappedBy = "baseOne",cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToMany(mappedBy = "baseOne")
 	private Set<BaseOneTime> baseOneTimes = new HashSet<BaseOneTime>();
 
 	

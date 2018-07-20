@@ -13,9 +13,10 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneTimeDao;
-import com.bluewhite.product.primecostbasedata.dao.MaterielDao;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.BaseOneTime;
+import com.bluewhite.product.primecostbasedata.entity.Materiel;
+import com.bluewhite.product.primecostbasedata.service.MaterielService;
 
 @Controller
 public class BaseOneAction {
@@ -29,7 +30,7 @@ public class BaseOneAction {
 	private BaseOneTimeDao baseOneTimeDao;
 	
 	@Autowired
-	private MaterielDao materielDao;
+	private MaterielService materielService;
 	
 	/**
 	 * 产品基础数据获取
@@ -44,10 +45,9 @@ public class BaseOneAction {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON
 				.get()
-				.addRetainTerm(BaseOne.class, "name","textualTime","time","baseOneTimes")
-				.addRetainTerm(BaseOneTime.class,"textualTime","time","baseOneTimes")
+				.addRetainTerm(BaseOne.class, "id","name","textualTime","time")
 				.format(baseOneDao.findByType(type)).toJSON());
-		cr.setMessage("添加成功");
+		cr.setMessage("成功");
 		return cr;
 	}
 	
@@ -65,10 +65,9 @@ public class BaseOneAction {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON
 				.get()
-				.addRetainTerm(BaseOne.class, "name","textualTime","time","baseOneTimes")
-				.addRetainTerm(BaseOneTime.class,"textualTime","time","baseOneTimes")
-				.format(baseOneDao.findOne(id)).toJSON());
-		cr.setMessage("添加成功");
+				.addRetainTerm(BaseOneTime.class,"textualTime","time","categorySetting")
+				.format(baseOneTimeDao.findByBaseOneId(id)).toJSON());
+		cr.setMessage("成功");
 		return cr;
 	}
 	
@@ -81,10 +80,13 @@ public class BaseOneAction {
 	 */
 	@RequestMapping(value = "/product/getMateriel", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getMateriel(HttpServletRequest request,String type) {
+	public CommonResponse getMateriel(HttpServletRequest request,Materiel materiel) {
 		CommonResponse cr = new CommonResponse();
-		baseOneDao.findByType(type);
-		cr.setMessage("添加成功");
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(Materiel.class,"number","name","price","type","remark")
+				.format(materielService.findPages(materiel)).toJSON());
+		cr.setMessage("成功");
 		return cr;
 	}
 

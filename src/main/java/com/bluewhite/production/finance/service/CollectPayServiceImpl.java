@@ -396,7 +396,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				List<Bacth> psList= map.get(ps);
 				Map<Long, List<Bacth>> map1 = psList.stream().collect(Collectors.groupingBy(Bacth::getProductId,Collectors.toList()));
 					for(Object ps1 : map1.keySet()){
-						List<Bacth> psList1= map.get(ps1);
+						List<Bacth> psList1= map1.get(ps1);
 						if(psList1!=null && psList1.size()<=2){
 							productNumber+=psList1.get(0).getNumber();
 						}
