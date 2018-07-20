@@ -264,6 +264,12 @@
 		  	this.getNum = function(){
 		  		return _num;
 		  	}
+			this.getCount = function(){
+		  		return _count;
+		  	}
+		  	this.setCount = function(count){
+		  		_count=count;
+		  	}
 			 var data={
 						page:1,
 				  		size:13,	
@@ -325,6 +331,7 @@
 							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button>  <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
 							
 		      			}); 
+		      			 self.setCount(result.data.pageNum)
 				        //显示分页
 					   	  laypage({
 					      cont: 'pager', 
@@ -1086,7 +1093,14 @@
 							  $('.addDictDivTypeForm')[0].reset(); 
 							  $("#addDictDivType").hide();
 							   $('.checkworking').text(""); 
-							
+							   var data={
+										page:self.getCount(),
+								  		size:13,	
+								  		type:3,
+								  		flag:0,
+								  		status:$('#selectstate').val(),
+								} 
+							   self.loadPagination(data);
 						  } 
 					});
 					
