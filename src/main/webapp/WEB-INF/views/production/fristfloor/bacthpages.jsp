@@ -300,6 +300,12 @@
 		  	this.getCache = function(){
 		  		return _cache;
 		  	}
+		  	this.getCount = function(){
+		  		return _count;
+		  	}
+		  	this.setCount = function(count){
+		  		_count=count;
+		  	}
 			 var data={
 						page:1,
 				  		size:13,	
@@ -351,6 +357,7 @@
 							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button> <button class="btn btn-sm btn-primary btn-trans addDicttw" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+' data-number='+o.number+'>分配2</button> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
 							
 		      			}); 
+		      			self.setCount(result.data.pageNum)
 				        //显示分页
 					   	  laypage({
 					      cont: 'pager', 
@@ -695,7 +702,7 @@
 							  data={
 									page:1,
 								  	size:13,	
-								  	type:5,
+								  	type:1,
 								  	name:$('#name').val(),
 						  			number:$('#number').val(),
 							  }
@@ -777,6 +784,14 @@
 								success:function(result){
 									if(0==result.code){
 									layer.msg("修改成功！", {icon: 1});
+									var data={
+											page:self.getCount(),
+									  		size:13,	
+									  		type:1,
+									  		flag:0,
+									  		status:$('#selectstate').val(),
+									} 
+								   self.loadPagination(data);
 									layer.close(index);
 									}else{
 										layer.msg("修改失败！", {icon: 1});
@@ -1058,7 +1073,14 @@
 						   end:function(){
 							  $('.addDictDivTypeForm')[0].reset(); 
 							  $("#addDictDivType").hide();
-						
+							  var data={
+										page:self.getCount(),
+								  		size:13,	
+								  		type:1,
+								  		flag:0,
+								  		status:$('#selectstate').val(),
+								} 
+							   self.loadPagination(data);
 							
 						  } 
 					});
