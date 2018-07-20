@@ -2,8 +2,10 @@ package com.bluewhite.product.primecost.cutparts.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.product.primecost.cutparts.dao.CutPartsDao;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 
@@ -15,7 +17,23 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 	
 	
 	@Override
-	public CutParts saveCutParts(CutParts cutParts) {
+	public CutParts saveCutParts(CutParts cutParts) throws Exception {
+		if(StringUtils.isEmpty(cutParts.getCutPartsNumber())){
+			throw new ServiceException("使用片数不能为空");
+		}
+		if(StringUtils.isEmpty(cutParts.getOneMaterial())){
+			throw new ServiceException("单片用料不能为空");
+		}
+		cutParts.setAddMaterial(cutParts.getCutPartsNumber()*cutParts.getOneMaterial());
+		//当批各单片用料
+		if(cutParts.getComposite()==0){
+			cutParts.setBatchMaterial(cutParts.getAddMaterial()*(cutParts.getManualLoss()+1)*cutParts.getCutPartsNumber()/cutParts.getCutPartsNumber()*9000);
+		}else{
+			cutParts.setBatchMaterial(0.0);
+		}
+		
+		
+		//各单片比全套用料
 		
 		
 		

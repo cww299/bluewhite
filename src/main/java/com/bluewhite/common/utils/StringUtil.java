@@ -35,8 +35,6 @@ public class StringUtil {
 	public static void main(String[] args) {
 		String dou = "皮毛你说的";
 		System.out.println(specialStrKeyword(dou));
-		
-		
 	}
 
 }
