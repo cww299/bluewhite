@@ -1073,8 +1073,8 @@
 													layer.close(index);
 												}
 											});
-										
-										  $('.select').text("");
+										  $('.stuCheckBox').prop("checked",false);
+										  /* $('.select').text(""); */
 											layer.msg("添加成功！", {icon: 1});
 											
 											
