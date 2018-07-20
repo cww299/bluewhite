@@ -277,7 +277,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 			procedure.setProcedureTypeId(baseDataList.get(0).getId());
 			procedureList.add(procedure);
 			count++;
-	}
+		}
 		procedureDao.save(procedureList);
 		procedureService.countPrice(procedureList.get(0));
 		return count;

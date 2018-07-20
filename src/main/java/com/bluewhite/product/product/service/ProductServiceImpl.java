@@ -9,6 +9,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
@@ -35,12 +36,11 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 					predicate.add(cb.equal(root.get("id").as(Long.class),product.getId()));
 				}
 	        	//按编号过滤
-	        	if (product.getNumber() != null) {
+	        	if (!StringUtils.isEmpty(product.getNumber())) {
 					predicate.add(cb.like(root.get("number").as(String.class),"%"+product.getNumber()+"%"));
 				}
 	        	//按产品名称过滤
-	        	if (product.getName() != null) {
-	        		
+	        	if (!StringUtils.isEmpty(product.getName())) {
 					predicate.add(cb.like(root.get("name").as(String.class),"%"+StringUtil.specialStrKeyword(product.getName())+"%"));
 				}
 				Predicate[] pre = new Predicate[predicate.size()];

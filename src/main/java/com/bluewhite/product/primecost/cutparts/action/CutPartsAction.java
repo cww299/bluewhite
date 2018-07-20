@@ -10,13 +10,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bluewhite.common.Log;
-import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
-import com.bluewhite.product.product.entity.Product;
-import com.bluewhite.system.sys.entity.SysLog;
 
 @Controller
 public class CutPartsAction {
@@ -43,7 +40,11 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品不能为空");
 		}else{
-			cutPartsService.saveCutParts(cutParts);
+			try {
+				cutPartsService.saveCutParts(cutParts);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			cr.setMessage("添加成功");
 		}
 		return cr;

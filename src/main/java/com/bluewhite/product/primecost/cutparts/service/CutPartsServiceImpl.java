@@ -25,9 +25,9 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 			throw new ServiceException("单片用料不能为空");
 		}
 		cutParts.setAddMaterial(cutParts.getCutPartsNumber()*cutParts.getOneMaterial());
-		
+		//当批各单片用料
 		if(cutParts.getComposite()==0){
-			cutParts.setBatchMaterial(0.0);
+			cutParts.setBatchMaterial(cutParts.getAddMaterial()*(cutParts.getManualLoss()+1)*cutParts.getCutPartsNumber()/cutParts.getCutPartsNumber()*9000);
 		}else{
 			cutParts.setBatchMaterial(0.0);
 		}
