@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.product.product.dao.ProductDao;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
@@ -39,7 +40,8 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 				}
 	        	//按产品名称过滤
 	        	if (product.getName() != null) {
-					predicate.add(cb.like(root.get("name").as(String.class),"%"+product.getName()+"%"));
+	        		
+					predicate.add(cb.like(root.get("name").as(String.class),"%"+StringUtil.specialStrKeyword(product.getName())+"%"));
 				}
 				Predicate[] pre = new Predicate[predicate.size()];
 				query.where(predicate.toArray(pre));
