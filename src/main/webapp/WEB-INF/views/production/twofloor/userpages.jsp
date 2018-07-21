@@ -178,7 +178,7 @@
 					   	layer.close(index);
 					   
 					   	$("#tablecontent").html(html); 
-					   	if($('.selectcomplete').find("option:selected").attr("emoney")==120 || $('.selectcomplete').find("option:selected").attr("emoney")==113){
+					   	if($('.selectcomplete').find("option:selected").attr("emoney")==120 || $('.selectcomplete').find("option:selected").attr("emoney")==113 || $('.selectcomplete').find("option:selected").attr("emoney")==116){
 							$('.overtimets').removeClass("hidden");
 							$('.overtimet').removeClass("hidden");
 						}
@@ -529,7 +529,7 @@
 			  	}
 				
 	            self.loadPagination(data);
-				 if($('.selectcomplete').find("option:selected").attr("emoney")==120 || $('.selectcomplete').find("option:selected").attr("emoney")==113){
+				 if($('.selectcomplete').find("option:selected").attr("emoney")==120 || $('.selectcomplete').find("option:selected").attr("emoney")==116 || $('.selectcomplete').find("option:selected").attr("emoney")==113){
 					$('.overtimet').removeClass("hidden");
 				}else{
 					$('.overtimet').addClass("hidden");
