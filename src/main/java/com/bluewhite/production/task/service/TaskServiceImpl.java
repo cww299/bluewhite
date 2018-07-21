@@ -527,6 +527,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						if(payB.size()>0){
 							payBDao.delete(payB);
 						}
+						 dao.delete(id);
 					}
 				}
 			}
