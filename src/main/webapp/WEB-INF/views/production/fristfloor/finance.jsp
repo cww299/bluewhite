@@ -144,6 +144,7 @@
                                         	<th class="text-center">姓名</th>
                                         	<th class="text-center">批次号</th>
                                             <th class="text-center">产品名</th>
+                                            <th class="text-center">工序名</th>
                                             <th class="text-center">时间</th>
                                             <th class="text-center">加绩工资</th>
                                             <th class="text-center">B工资</th>
@@ -291,6 +292,7 @@
 		      				+'<td class="text-center edit ">'+o.userName+'</td>'
 		      				+'<td class="text-center edit ">'+o.bacth+'</td>'
 		      				+'<td class="text-center edit ">'+o.productName+'</td>'
+		      				+'<td class="text-center edit ">'+o.procedureName+'</td>'
 		      				+'<td class="text-center edit ">'+o.allotTime+'</td>'
 		      				+'<td class="text-center edit ">'+parseFloat((a).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit ">'+parseFloat((o.payNumber).toFixed(3))+'</td></tr>'
