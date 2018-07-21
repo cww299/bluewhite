@@ -24,8 +24,6 @@ import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
-import com.bluewhite.product.product.entity.Product;
-import com.bluewhite.production.bacth.entity.Bacth;
 
 @Controller
 public class CutPartsAction {

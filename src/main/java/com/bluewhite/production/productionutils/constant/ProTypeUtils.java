@@ -478,8 +478,18 @@ public  class ProTypeUtils {
 			sumPrice=ProTypeUtils.FRIST_PACKTWO;
 			break;
 		case 3://生产部二楼针工
+			for(Procedure procedure : procedureList){
+				if(procedure.getHairPrice()!=null){
+					sumPrice = procedure.getHairPrice();
+				}
+			}
 			break;
 		case 4://生产部二楼机工
+			for(Procedure procedure : procedureList){
+				if(procedure.getHairPrice()!=null){
+					sumPrice = procedure.getHairPrice();
+				}
+			}
 			break;
 		case 5://生产部八号裁剪
 			for(Procedure procedure : procedureList){
