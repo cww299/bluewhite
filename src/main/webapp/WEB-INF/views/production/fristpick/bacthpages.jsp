@@ -418,6 +418,7 @@
 					    });  
 					   	layer.close(index);
 					   	 $("#tablecontent").html(html); 
+					   	 
 					   	self.loadEvents();
 					   	self.checkedd();
 				      },error:function(){
@@ -823,7 +824,7 @@
 									  		size:13,	
 									  		type:2,
 									  		flag:0,
-									  		status:$('#selectstate').val(),
+									  		status:$('.selectchoice').val(),
 									} 
 								   self.loadPagination(data);
 									layer.close(index);
@@ -1103,14 +1104,14 @@
 						   end:function(){
 							  $('.addDictDivTypeForm')[0].reset(); 
 							  $("#addDictDivType").hide();
-							  var data={
+							  var date={
 										page:self.getCount(),
 								  		size:13,	
 								  		type:2,
 								  		flag:0,
-								  		status:$('#selectstate').val(),
+								  	status:$('.selectchoice').val(),
 								} 
-							   self.loadPagination(data);
+							   self.loadPagination(date);
 							
 						  } 
 					});
@@ -1463,7 +1464,7 @@
 								  		size:13,	
 								  		type:2,
 								  		flag:0,
-								  		status:$('#selectstate').val(),
+								  		status:$('.selectchoice').val(),
 								} 
 							   self.loadPagination(data);
 							

@@ -292,7 +292,7 @@
 		      				+'<td class="text-center edit ">'+o.userName+'</td>'
 		      				+'<td class="text-center edit ">'+o.bacth+'</td>'
 		      				+'<td class="text-center edit ">'+o.productName+'</td>'
-		      				+'<td class="text-center edit ">'+o.procedureName+'</td>'
+		      				+'<td class="text-center edit ">'+o.task.procedureName+'</td>'
 		      				+'<td class="text-center edit ">'+o.allotTime+'</td>'
 		      				+'<td class="text-center edit ">'+parseFloat((a).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit ">'+parseFloat((o.payNumber).toFixed(3))+'</td></tr>'
