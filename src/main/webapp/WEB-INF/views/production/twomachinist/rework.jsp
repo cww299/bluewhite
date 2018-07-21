@@ -43,7 +43,7 @@
 							<div class="input-group"> 
 								<table><tr><td>批次名:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>工序名称:</td><td><input type="text" name="name" id="name" placeholder="请输入产品名称" class="form-control search-query name" /></td>
+								<td>产品名称:</td><td><input type="text" name="name" id="name" placeholder="请输入产品名称" class="form-control search-query name" /></td>
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>开始时间:</td>
 								<td>
@@ -286,7 +286,11 @@
 						        			page:obj.curr,
 									  		size:13,
 									  		type:4,
-									  		name:$('#name').val(),
+									  		productName:$('#name').val(),
+								  			bacthNumber:$('#number').val(),
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(), 
+								  			flag:1,
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -440,10 +444,11 @@
 				  			page:1,
 				  			size:13,
 				  			type:4,
-				  			name:$('#name').val(),
-				  			bacth:$('#number').val(),
+				  			productName:$('#name').val(),
+				  			bacthNumber:$('#number').val(),
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
+				  			flag:1,
 				  	}
 		            self.loadPagination(data);
 				});
@@ -560,6 +565,7 @@
 									  userIds:arr,
 									  bacthNumber:$(".bacth").val(),
 									  type:4,
+									  flag:1,
 							  }
 							  $.ajax({
 									url:"${ctx}/task/addReTask",
@@ -575,7 +581,11 @@
 									success:function(result){
 										if(0==result.code){
 											layer.msg("添加成功！", {icon: 1});
-										 self.loadPagination(data); 
+											var date={
+													type:4,
+													flag:1,
+											}
+										 self.loadPagination(date); 
 										 $('.addDictDivTypeForm')[0].reset();
 											
 										}else{
