@@ -271,7 +271,7 @@
 		      				+'<td class="text-center  name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
 		      				+'<td class="text-center  name">'+parseFloat((o.payB).toFixed(4))+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
+							+'<td class="text-center"> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -312,13 +312,13 @@
 				//删除方法
 				$('.delete').on('click',function(){
 					var postData = {
-							id:$(this).data('id'),
+							ids:$(this).data('id'),
 					}
 					
 					var index;
 					 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
 					$.ajax({
-						url:"${ctx}/farragoTask/delete",
+						url:"${ctx}/task/deleteReTask",
 						data:postData,
 						type:"GET",
 						beforeSend:function(){
@@ -333,7 +333,7 @@
 							self.loadPagination(data)
 							layer.close(index);
 							}else{
-								layer.msg("删除失败！", {icon: 1});
+								layer.msg("删除失败！", {icon: 2});
 								layer.close(index);
 							}
 						},error:function(){
@@ -554,6 +554,9 @@
 							  if($(".timedata").val()==""){
 									 return layer.msg("现场认证管理时间不能为空", {icon:2 });
 								  }
+							  if(self.getCache()==""){
+								  return layer.msg("产品不能为空", {icon:2 });
+							  }
 							  postData={
 									  productId:self.getCache(),
 									  AC5:$(".hourly").val(),
