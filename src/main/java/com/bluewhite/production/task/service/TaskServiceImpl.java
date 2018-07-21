@@ -514,5 +514,23 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				return dao.save(task);
 			}
 
+	@Override
+	@Transactional
+	public void deleteReTask(String ids) {
+			if (!StringUtils.isEmpty(ids)) {
+				String[] idArr = ids.split(",");
+				if (idArr.length>0) {
+					for (int i = 0; i < idArr.length; i++) {
+						Long id = Long.parseLong(idArr[i]);
+						//同时删除B工资
+						List<PayB> payB = payBDao.findByTaskId(id);
+						if(payB.size()>0){
+							payBDao.delete(payB);
+						}
+					}
+				}
+			}
+		}
+
 
 }

@@ -322,6 +322,25 @@ private static final Log log = Log.getLog(TaskAction.class);
 	}
 	
 	
+	/**
+	 * 删除技工返工任务
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/task/deleteReTask", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteReTask(HttpServletRequest request,String ids) {
+		CommonResponse cr = new CommonResponse();
+		if(!StringUtils.isEmpty(ids)){
+			taskService.deleteReTask(ids);
+			cr.setMessage("删除成功");
+		}else{
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("不能为空");
+		}
+		return cr;
+	}
+	
 	
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {

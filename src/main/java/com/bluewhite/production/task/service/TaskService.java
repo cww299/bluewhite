@@ -69,5 +69,9 @@ public interface TaskService extends BaseCRUDService<Task,Long>{
 	 */
 	public Task addReTask(Task task);
 	
+	
+	
+	public void deleteReTask(String ids);
+	
 
 }
