@@ -11,6 +11,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.production.bacth.entity.Bacth;
+import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -58,6 +60,13 @@ public class PayB extends BaseEntity<Long>{
 	 */
 	@Column(name = "task_id")
 	private Long taskId;
+	
+	/**
+	 * 批次   任务多对一批次
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "task_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Task task;
 	
 	/**
 	 * 批次id(冗余字段，为查询显示方便)
@@ -122,6 +131,16 @@ public class PayB extends BaseEntity<Long>{
 	
 	
 	
+	
+
+	public Task getTask() {
+		return task;
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
+	}
+
 	public Long getGroupId() {
 		return groupId;
 	}
