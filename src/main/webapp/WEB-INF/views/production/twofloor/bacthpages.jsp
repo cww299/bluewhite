@@ -1028,7 +1028,7 @@
 									
 									success:function(result){
 										if(0==result.code){
-										  /* $('.addDictDivTypeForm')[0].reset();  */
+										  $('.addDictDivTypeForm')[0].reset();  
 										  var htmlfv="";
 										  var data={
 												   productId:productId,
@@ -1074,7 +1074,7 @@
 												}
 											});
 										  $('.stuCheckBox').prop("checked",false);
-										 /*  $('.select').text(""); */
+										  $('.select').text(""); 
 											layer.msg("添加成功！", {icon: 1});
 											
 											
