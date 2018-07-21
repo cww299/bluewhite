@@ -1080,8 +1080,7 @@
 								  		flag:0,
 								  		status:$('#selectstate').val(),
 								} 
-							   self.loadPagination(data);
-							
+							  /*  self.loadPagination(data); */
 						  } 
 					});
 					
