@@ -291,6 +291,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					tasks.setPerformance(task.getPerformance());
 					tasks.setPerformanceNumber(task.getPerformanceNumber());
 					tasks.setNumber(NumUtils.roundInt(time*number/sumTime));
+					tasks.setHoleNumber(NumUtils.roundInt(time*number/sumTime));
 					sumNumber+=tasks.getNumber();
 					if(i==timeArr.length-1){
 						tasks.setNumber(tasks.getNumber()+(number-sumNumber));

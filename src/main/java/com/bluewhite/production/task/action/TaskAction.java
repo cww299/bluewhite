@@ -124,7 +124,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 			//新增
 			for(Task tasks : taskList){
 				if(!StringUtils.isEmpty(tasks.getUserIds())){
-					task.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime(), task.getType()));
+					tasks.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime(), task.getType()));
 					taskService.addTask(tasks);
 					cr.setMessage("任务分配成功");
 				}else{
