@@ -58,7 +58,7 @@ private static final Log log = Log.getLog(BacthAction.class);
 			Bacth oldBacth = bacthService.findOne(bacth.getId());
 			BeanCopyUtils.copyNullProperties(oldBacth,bacth);
 			bacth.setCreatedAt(oldBacth.getCreatedAt());
-			if(bacth.getFlag()==0){
+			if(bacth.getFlag()==0 && bacth.getRegionalPrice()!=null){
 				bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType()), null));
 			}
 			bacthService.update(bacth);
