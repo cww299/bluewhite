@@ -36,6 +36,7 @@ import com.bluewhite.production.finance.service.FarragoTaskPayService;
 import com.bluewhite.production.finance.service.PayBService;
 import com.bluewhite.production.finance.service.UsualConsumeService;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
+import com.bluewhite.production.task.entity.Task;
 
 /**
  * 生产部财务相关action 
@@ -65,7 +66,8 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
 				.addRetainTerm(PayB.class,"id","userName","allotTime","payNumber","bacth","productName",
-						"allotTime","performancePayNumber");
+						"allotTime","performancePayNumber","task")
+				.addRetainTerm(Task.class,"procedureName");
 	}
 	
 	
