@@ -74,6 +74,10 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 	        	if (param.getId() != null) {
 					predicate.add(cb.equal(root.get("id").as(Long.class),param.getId()));
 				}
+	        	//按产品id过滤
+	        	if (param.getProductId() != null) {
+					predicate.add(cb.equal(root.get("productId").as(Long.class),param.getProductId()));
+				}
 	        	//按裁片名称过滤
 	        	if (!StringUtils.isEmpty(param.getCutPartsName())) {
 					predicate.add(cb.like(root.get("cutPartsName").as(String.class),"%"+param.getCutPartsName()+"%"));
