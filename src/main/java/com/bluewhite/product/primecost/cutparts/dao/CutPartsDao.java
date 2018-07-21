@@ -1,5 +1,7 @@
 package com.bluewhite.product.primecost.cutparts.dao;
 
+import java.util.List;
+
 import com.bluewhite.base.BaseRepository;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 
@@ -9,5 +11,12 @@ import com.bluewhite.product.primecost.cutparts.entity.CutParts;
  *
  */
 public interface CutPartsDao extends BaseRepository<CutParts, Long>{
+	
+	/**
+	 * 
+	 * @param productId
+	 * @return
+	 */
+	List<CutParts> findByProductId(Long productId);
 
 }

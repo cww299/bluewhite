@@ -76,7 +76,7 @@ public  class ProTypeUtils {
 	/**
 	 * 当部门预计生产价格计算系数 4=二楼机工
 	 */
-	private final static double  TOW_MACHINIST = 0.00382852521;
+	private final static double  TOW_MACHINIST = 0.00383;
 	
 	/**
 	 * 当部门预计生产价格计算系数 5=二八号裁剪
