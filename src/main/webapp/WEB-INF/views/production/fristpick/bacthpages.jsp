@@ -1146,7 +1146,7 @@
 				    var htmlfr = '';
 				 	
 				    //遍历工序类型
-				    var getdata={type:"productFristQuality",}
+				    var getdata={type:"productFristPack",}
 	      			$.ajax({
 					      url:"${ctx}/basedata/list",
 					      data:getdata,
