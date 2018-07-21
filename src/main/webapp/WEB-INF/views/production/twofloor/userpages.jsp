@@ -73,8 +73,8 @@
                                             <th class="text-center">姓名</th>
                                             <th class="text-center">部门</th>
                                             <th class="text-center">工作时长</th>
-                                            <th class="text-center">缺勤时间</th>
                                             <th class="text-center hidden overtimet ">加班时间</th>
+                                            <th class="text-center">缺勤时间</th>
                                             <th class="text-center">当月预计收入</th>
                                             <th class="text-center">工作状态</th>
                                             <th class="text-center">员工分组</th>
@@ -150,8 +150,8 @@
 		      				+'<td class="text-center ">'+o.userName+'</td>'
 		      				+'<td class="text-center ">'+o.orgName.name+'</td>'
 		      				+'<td class="text-center "><input class="work"  data-id="'+o.id+'"></input></td>'
-		      				+'<td class="text-center "><input class="workto"></input></td>'
 		      				+'<td class="text-center hidden overtimets"><input class="workth"></input></td>'
+		      				+'<td class="text-center "><input class="workto"></input></td>'
 		      				+'<td class="text-center edit workPrice">'+o.price*1+'</td>'
 							+'<td class="text-center" data-status="'+o.status+'" data-id="'+o.id+'"><input type="radio"   class="rest" value="0">工作<input type="radio"   class="rest" value="1">休息 </td>'
 							+'<td class="text-center"><div class="groupChange" data-id="'+o.id+'" data-groupid="'+a+'" ></div></td>'
