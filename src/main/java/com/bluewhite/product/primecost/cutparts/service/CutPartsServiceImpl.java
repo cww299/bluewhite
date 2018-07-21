@@ -1,13 +1,24 @@
 package com.bluewhite.product.primecost.cutparts.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.criteria.Predicate;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.product.primecost.cutparts.dao.CutPartsDao;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
+import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.production.finance.entity.CollectPay;
 
 @Service
 public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implements CutPartsService{
@@ -38,11 +49,58 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 			cutParts.setBatchMaterialPrice(0.0);
 		}
 		
+		if(cutParts.getComposite()==1){
+			cutParts.setComplexBatchMaterial(cutParts.getAddMaterial()*(cutParts.getManualLoss()+1)*9000);
+			cutParts.setBatchComplexMaterialPrice(cutParts.getComplexBatchMaterial()*cutParts.getProductCost());
+			cutParts.setBatchComplexAddPrice(cutParts.getComplexBatchMaterial()*cutParts.getComplexProductCost());
+		}
+		dao.save(cutParts);
 		//各单片比全套用料
-		
-		
-		
-		return null;
+		List<CutParts> cutPartsList = dao.findByProductId(cutParts.getProductId());
+		double scaleMaterial = 0;
+		if(cutPartsList.size()>0){
+			scaleMaterial =  cutPartsList.stream().mapToDouble(CutParts::getAddMaterial).sum();
+		}
+		cutParts.setScaleMaterial(cutParts.getAddMaterial()/scaleMaterial);
+		return dao.save(cutParts);
+	}
+
+
+	@Override
+	public PageResult<CutParts> findPages(CutParts param, PageParameter page) {
+		 Page<CutParts> pages = dao.findAll((root,query,cb) -> {
+	        	List<Predicate> predicate = new ArrayList<>();
+	        	//按id过滤
+	        	if (param.getId() != null) {
+					predicate.add(cb.equal(root.get("id").as(Long.class),param.getId()));
+				}
+	        	//按裁片名称过滤
+	        	if (!StringUtils.isEmpty(param.getCutPartsName())) {
+					predicate.add(cb.like(root.get("cutPartsName").as(String.class),"%"+param.getCutPartsName()+"%"));
+				}
+				Predicate[] pre = new Predicate[predicate.size()];
+				query.where(predicate.toArray(pre));
+	        	return null;
+	        }, page);
+		 PageResult<CutParts> result = new PageResult<CutParts>(pages,page);
+		return result;
+	}
+
+
+	@Override
+	public void deleteCutParts(CutParts cutParts) {
+		//删除
+		dao.delete(cutParts.getId());
+		//更新其他各单片比全套用料
+		List<CutParts> cutPartsList = dao.findByProductId(cutParts.getProductId());
+		double scaleMaterial = 0;
+		if(cutPartsList.size()>0){
+			scaleMaterial =  cutPartsList.stream().mapToDouble(CutParts::getAddMaterial).sum();
+		}
+		for(CutParts cp : cutPartsList){
+			cp.setScaleMaterial(cp.getAddMaterial()/scaleMaterial);
+		}
+		dao.save(cutPartsList);
 	}
 
 }

@@ -163,7 +163,7 @@ public class CutParts extends BaseEntity<Long>{
 
 	 */
 	@Column(name = "batch_complex_add_price")
-    private Double batchComplexAddPprice;
+    private Double batchComplexAddPrice;
 	
 
 	
@@ -224,12 +224,14 @@ public class CutParts extends BaseEntity<Long>{
 		this.batchComplexMaterialPrice = batchComplexMaterialPrice;
 	}
 
-	public Double getBatchComplexAddPprice() {
-		return batchComplexAddPprice;
+
+
+	public Double getBatchComplexAddPrice() {
+		return batchComplexAddPrice;
 	}
 
-	public void setBatchComplexAddPprice(Double batchComplexAddPprice) {
-		this.batchComplexAddPprice = batchComplexAddPprice;
+	public void setBatchComplexAddPrice(Double batchComplexAddPrice) {
+		this.batchComplexAddPrice = batchComplexAddPrice;
 	}
 
 	public String getCutPartsName() {
