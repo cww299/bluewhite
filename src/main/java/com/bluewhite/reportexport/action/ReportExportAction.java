@@ -10,6 +10,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -31,11 +37,15 @@ import com.bluewhite.common.utils.excel.Excelutil;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.BaseOneTime;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
+import com.bluewhite.production.bacth.entity.Bacth;
+import com.bluewhite.production.bacth.service.BacthService;
 import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.GroupProduction;
 import com.bluewhite.production.finance.entity.MonthlyProduction;
 import com.bluewhite.production.finance.service.CollectPayService;
 import com.bluewhite.production.finance.service.PayBService;
+import com.bluewhite.production.procedure.dao.ProcedureDao;
+import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.reportexport.entity.EightTailorPoi;
@@ -63,6 +73,12 @@ public class ReportExportAction {
 	
 	@Autowired
 	private PayBService payBService;
+	
+	@Autowired
+	private BacthService bacthService;
+	
+	@Autowired
+	private ProcedureDao procedureDao;
 	
 	/**
 	 * 基础产品导入                          
@@ -394,6 +410,81 @@ public class ReportExportAction {
 	    Excelutil<CollectPay> util = new Excelutil<CollectPay>(CollectPay.class);
         util.exportExcel(collectPayList, "绩效报表", out);// 导出  
 	}
+	
+	
+
+	
+	/**
+	 * 机工导出批次任务工序详细
+	 * @author zhangliang
+	 */
+	@RequestMapping("/importExcel/DownBacth")
+	public void DownBacth(HttpServletRequest request,HttpServletResponse response,Long id){
+		response.setContentType("octets/stream");
+	    response.addHeader("Content-Disposition", "attachment;filename=cgd.xls");
+	    // 第一步，创建一个webbook，对应一个Excel文件  
+        XSSFWorkbook wb = new XSSFWorkbook();  
+        // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet  
+        XSSFSheet sheet = wb.createSheet("任务报表"); 
+        //设置表格默认宽度为15个字节
+    	sheet.setDefaultColumnWidth(15);
+        // 在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short  
+        XSSFRow row = sheet.createRow(0);
+        XSSFRow row2 = sheet.createRow(2);
+        // 第四步，创建单元格，并设置值表头 设置表头居中  
+        XSSFCellStyle style = wb.createCellStyle();  
+       
+        XSSFCell cell = row.createCell(0);  
+        cell.setCellValue("批次号");  
+        cell.setCellStyle(style);  
+        cell = row.createCell(1);  
+        cell.setCellValue("产品名");  
+        cell.setCellStyle(style);  
+       
+       Bacth bacth =  bacthService.findOne(id);		 		
+	 
+        // 第四步，创建单元格，并设置值  
+       	row = sheet.createRow(1);  
+        row.createCell(0).setCellValue(bacth.getBacthNumber());  
+        row.createCell(1).setCellValue(bacth.getProduct().getName());  
+       
+        
+        XSSFCell cell2 = row2.createCell(0);  
+        cell2.setCellValue("需要完成的工序");  
+        cell2.setCellStyle(style);  
+        cell2 = row2.createCell(1);  
+        cell2.setCellValue("未完成的数量");  
+        cell2.setCellStyle(style);  
+        cell2 = row2.createCell(2);  
+        cell2.setCellValue("未完成的数量预计时间（分）");  
+        cell2.setCellStyle(style);  
+        cell2 = row2.createCell(3);  
+        cell2.setCellValue("分配任务填写备注");  
+        cell2.setCellStyle(style);
+        
+        List<Procedure> procedureList = procedureDao.findByProductIdAndTypeAndFlag(bacth.getProduct().getId(), bacth.getType(),0);
+		       
+    	for (int i = 0; i < procedureList.size(); i++)  
+        {  
+            row2 = sheet.createRow( i + 3);  
+            // 第四步，创建单元格，并设置值  
+            row2.createCell(0).setCellValue(procedureList.get(i).getName());  
+            row2.createCell(1).setCellValue(bacth.getNumber());  
+            row2.createCell(2).setCellValue(bacth.getNumber()*procedureList.get(i).getWorkingTime()/60);  
+            row2.createCell(3).setCellValue("");  
+        } 
+    try {	
+    	OutputStream outputStream=response.getOutputStream();
+    	wb.write(outputStream);
+    	outputStream.flush();
+    	outputStream.close(); 
+  		} catch (IOException e1) {
+  			e1.printStackTrace();
+  		}
+}
+	
+	
+	
 	
 	
 	@InitBinder

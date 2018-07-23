@@ -418,6 +418,13 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		monthlyProduction.setProductPrice(productPrice);
 		
 		
+		//当类型为机工时，产值和产量的计算方式变化
+		if(monthlyProduction.getType()==4){
+			
+			
+			
+		}
+		
 		//返工出勤人数
 		Task task = new Task();
 		task.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
