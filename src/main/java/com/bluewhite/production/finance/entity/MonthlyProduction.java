@@ -95,7 +95,7 @@ public class MonthlyProduction {
 	/**
 	 * 返工再验个数
 	 */
-	@Poi(name = "返工再验个数", column = "M")
+	@Poi(name = "返工再验个数", column = "L")
 	private Double reworkCount;
 	
 	/**

@@ -38,31 +38,31 @@ public class GroupProduction {
 	 * 总产量
 	 */
 	@Poi(name = "总数量", column = "C")
-	private Double sumNumber;
+	private Integer sumNumber;
 	
 	/**
 	 * 一组产量
 	 */
 	@Poi(name = "一组", column = "D")
-	private Double oneNumber;
+	private Integer oneNumber;
 	
 	/**
 	 * 二组产量
 	 */
 	@Poi(name = "二组", column = "E")
-	private Double twoNumber;
+	private Integer twoNumber;
 	
 	/**
 	 * 三组产量
 	 */
 	@Poi(name = "三组", column = "F")
-	private Double threeNumber;
+	private Integer threeNumber;
 	
 	/**
 	 * 四组产量
 	 */
 	@Poi(name = "四组", column = "G")
-	private Double fourNumber;
+	private Integer fourNumber;
 	
 	/**
 	 * 备注
@@ -117,43 +117,45 @@ public class GroupProduction {
 		this.name = name;
 	}
 
-	public Double getSumNumber() {
+
+	public Integer getSumNumber() {
 		return sumNumber;
 	}
 
-	public void setSumNumber(Double sumNumber) {
+	public void setSumNumber(Integer sumNumber) {
 		this.sumNumber = sumNumber;
 	}
 
-	public Double getOneNumber() {
+	
+	public Integer getOneNumber() {
 		return oneNumber;
 	}
 
-	public void setOneNumber(Double oneNumber) {
+	public void setOneNumber(Integer oneNumber) {
 		this.oneNumber = oneNumber;
 	}
 
-	public Double getTwoNumber() {
+	public Integer getTwoNumber() {
 		return twoNumber;
 	}
 
-	public void setTwoNumber(Double twoNumber) {
+	public void setTwoNumber(Integer twoNumber) {
 		this.twoNumber = twoNumber;
 	}
 
-	public Double getThreeNumber() {
+	public Integer getThreeNumber() {
 		return threeNumber;
 	}
 
-	public void setThreeNumber(Double threeNumber) {
+	public void setThreeNumber(Integer threeNumber) {
 		this.threeNumber = threeNumber;
 	}
 
-	public Double getFourNumber() {
+	public Integer getFourNumber() {
 		return fourNumber;
 	}
 
-	public void setFourNumber(Double fourNumber) {
+	public void setFourNumber(Integer fourNumber) {
 		this.fourNumber = fourNumber;
 	}
 

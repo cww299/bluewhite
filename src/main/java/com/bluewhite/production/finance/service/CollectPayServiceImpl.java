@@ -828,20 +828,20 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		//将检验任务按产品id分组，统计出数量
 		Map<Object, List<Task>> mapTask = taskList.stream().collect(Collectors.groupingBy(Task::getProductId,Collectors.toList()));
 		
-		Double oneNumber = null;
-		Double twoNumber = null;
-		Double threeNumber = null;
-		Double fourNumber = null;
+		Integer oneNumber = null;
+		Integer twoNumber = null;
+		Integer threeNumber = null;
+		Integer fourNumber = null;
 		GroupProduction production =null;
 		for(Object ps : mapTask.keySet()){
 			production = new GroupProduction();
 			List<Task> psList= mapTask.get(ps);
 			//该产品检验组总数量
-			double sumNumber = psList.stream().mapToDouble(Task::getNumber).sum();
-			 oneNumber = 0.0;
-			 twoNumber = 0.0;
-			 threeNumber = 0.0;
-			 fourNumber = 0.0;
+			Integer sumNumber = psList.stream().mapToInt(Task::getNumber).sum();
+			 oneNumber = 0;
+			 twoNumber = 0;
+			 threeNumber = 0;
+			 fourNumber = 0;
 			//遍历任务，通过任务 的员工id和分组人员的员工id相匹配，相同则记录任务数
 			for(Task ta : psList){
 				Integer dex = null;
