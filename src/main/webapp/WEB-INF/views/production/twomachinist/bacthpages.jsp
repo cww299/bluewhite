@@ -63,12 +63,12 @@
 											查&nbsp找
 									</button>
 								</span>
-								<!-- <td>&nbsp&nbsp&nbsp&nbsp</td>
+								 <td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-success  btn-sm btn-3d start">
-									一键完成
+									<button type="button" class="btn btn-success  btn-sm btn-3d export">
+									导出工序
 									</button>
-								</span> -->
+								</span> 
 								
 							</div>
 						</div>
@@ -1113,6 +1113,16 @@
 			
 			this.events = function(){
 				
+				//导出
+				$('.export').on('click',function(){
+					var a=""//员工id
+					
+					$(this).parent().parent().parent().parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+						a=$(this).val();   
+					});
+					
+					 location.href="${ctx}/excel/importExcel/DownBacth?id="+a; 
+				})
 				//查询
 				$('.searchtask').on('click',function(){
 					var data = {
