@@ -43,6 +43,7 @@ import com.bluewhite.production.finance.entity.UsualConsume;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.service.GroupService;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
+import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.system.user.entity.User;
@@ -60,7 +61,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	private UserService userService;
 	
 	@Autowired
-	private TaskService TaskService;
+	private TaskService taskService;
 	
 	@Autowired
 	private FarragoTaskService farragoTaskService;
@@ -82,6 +83,9 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	
 	@Autowired
 	private NonLineDao nonLineDao;
+	
+	@Autowired
+	private ProcedureDao procedureDao;
 	
 	private static String rework = "返工再验";
 	
@@ -171,13 +175,13 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		task.setOrderTimeEnd(collectInformation.getOrderTimeEnd());
 		task.setType(collectInformation.getType());
 		task.setFlag(0);
-		List<Task> taskList = TaskService.findPages(task, page).getRows();
+		List<Task> taskList = taskService.findPages(task, page).getRows();
 		double sumTask = taskList.stream().mapToDouble(Task::getTaskPrice).sum();
 		collectInformation.setSumTask(sumTask);
 		
 		//返工费 汇总
 		task.setFlag(1);
-		List<Task> taskFlagList = TaskService.findPages(task, page).getRows();
+		List<Task> taskFlagList = taskService.findPages(task, page).getRows();
 		double sumTaskFlag = taskFlagList.stream().mapToDouble(Task::getTaskPrice).sum();
 		collectInformation.setSumTaskFlag(sumTaskFlag);
 		
@@ -235,7 +239,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		task.setOrderTimeBegin(collectInformation.getOrderTimeBegin());
 		task.setOrderTimeEnd(collectInformation.getOrderTimeEnd());
 		task.setType(collectInformation.getType());
-		List<Task> taskList = TaskService.findPages(task, page).getRows();
+		List<Task> taskList = taskService.findPages(task, page).getRows();
 		//任务价值汇总
 		double sumTask = taskList.stream().mapToDouble(Task::getTaskPrice).sum();
 		//b工资净值汇总
@@ -402,10 +406,27 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 						}
 					}
 			}
+		}else if(monthlyProduction.getType()==4){
+			//当类型为机工时，产值和产量的计算方式变化
+			for(Bacth bac : bacthList){
+				 List<Procedure> procedureList = procedureDao.findByProductIdAndTypeAndFlag(bac.getProductId(), bac.getType(),0);
+				 //总工序数量
+				 double sumPro =  bac.getNumber()*procedureList.size();
+				 //已完成的任务工序数量
+				 Task task1 = new Task();
+				 task1.setBacthId(bac.getId());
+				 List<Task> taskList = taskService.findPages(task1, page).getRows();
+				 double sunTask = taskList.stream().mapToDouble(Task::getNumber).sum();
+				 productNumber += NumUtils.round((bac.getNumber()*(sunTask/sumPro)),0);
+				 bac.setNumber( NumUtils.roundTwo(productNumber));
+			}
+			
+			
 		}else{
 			productNumber = bacthList.stream().mapToDouble(Bacth::getNumber).sum();
 		}
 		monthlyProduction.setProductNumber(productNumber);
+		
 		//当天产值(外发单价乘以质检的个数)
 		for(Bacth bac : bacthList){
 			  if(monthlyProduction.getType()==3){
@@ -418,12 +439,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		monthlyProduction.setProductPrice(productPrice);
 		
 		
-		//当类型为机工时，产值和产量的计算方式变化
-		if(monthlyProduction.getType()==4){
-			
-			
-			
-		}
+	
 		
 		//返工出勤人数
 		Task task = new Task();
@@ -431,7 +447,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		task.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
 		task.setType(monthlyProduction.getType());
 		task.setFlag(1);
-		List<Task> taskList = TaskService.findPages(task, page).getRows();
+		List<Task> taskList = taskService.findPages(task, page).getRows();
 		List<Long> userList = new ArrayList<Long>();
 		//返工出勤时间
 		double reworkTurnTime = 0;
@@ -777,7 +793,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 					task.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 					task.setOrderTimeEnd(collectPay.getOrderTimeEnd());
 					task.setType(collectPay.getType());
-					List<Task> taskList = TaskService.findPages(task, page).getRows();
+					List<Task> taskList = taskService.findPages(task, page).getRows();
 				
 					//遍历任务，组装出符合充棉的任务
 					for(Task ta : taskList){
@@ -828,7 +844,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		task.setOrderTimeEnd(groupProduction.getOrderTimeEnd());
 		task.setType(groupProduction.getType());
 		task.setProcedureTypeId((long)99);
-		List<Task> taskList = TaskService.findPages(task, page).getRows();
+		List<Task> taskList = taskService.findPages(task, page).getRows();
 		
 		List<GroupProduction> groupProductionList = new ArrayList<GroupProduction>();
 		
