@@ -19,6 +19,7 @@ import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.product.product.service.ProductService;
 import com.bluewhite.production.procedure.entity.Procedure;
@@ -58,6 +59,29 @@ public class ProductAction {
 		cr.setMessage("查询成功");
 		return cr;
 	}
+	
+	/**
+	 * 分页查看所有的产品的成本报价
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getProductPages", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getProductPages(HttpServletRequest request,PageParameter page,Product product) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(Product.class,"id","primeCost")
+				.addRetainTerm(PrimeCost.class,"cutPartsPrice","otherCutPartsPrice","cutPrice","machinistPrice","embroiderPrice"
+						,"embroiderPrice","needleworkPrice","packPrice","freightPrice","freightPrice","invoice","taxIncidence"
+						,"surplus","budget","budgetRate","actualCombat","actualCombatRate")
+				.format(productService.findPages(product,page)).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
 	
 	/**
 	 * 添加产品

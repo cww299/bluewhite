@@ -6,11 +6,15 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
 import com.bluewhite.system.sys.entity.Files;
 
 /**
@@ -42,6 +46,11 @@ public class Product extends BaseEntity<Long>{
 	@OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Files> productFile = new HashSet<Files>();
 	
+    @OneToOne(fetch=FetchType.LAZY,cascade = CascadeType.ALL) 
+    @JoinColumn(name="prime_cost_id",referencedColumnName="id",nullable=false)
+	private PrimeCost primeCost;
+    
+    
 	//该单品目前总销量(产值）
 //	@Column(name = "total_sales")
 //    private Integer totalSales;
@@ -203,6 +212,14 @@ public class Product extends BaseEntity<Long>{
 	
 	
 	
+	public PrimeCost getPrimeCost() {
+		return primeCost;
+	}
+
+	public void setPrimeCost(PrimeCost primeCost) {
+		this.primeCost = primeCost;
+	}
+
 	public Integer getSign() {
 		return sign;
 	}
