@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.product.primecost.common.entity.CommonData;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
-import com.bluewhite.product.product.entity.Product;
 
 @Service
 public interface CutPartsService extends BaseCRUDService<CutParts,Long>{
@@ -17,7 +17,7 @@ public interface CutPartsService extends BaseCRUDService<CutParts,Long>{
 	 * @return
 	 * @throws Exception
 	 */
-	public CutParts saveCutParts(CutParts cutParts) throws Exception;
+	public CutParts saveCutParts(CutParts cutParts,CommonData commonData) throws Exception;
 	
 	/**
 	 * 按条件查询cc裁片
