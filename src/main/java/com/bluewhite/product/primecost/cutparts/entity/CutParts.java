@@ -2,14 +2,9 @@ package com.bluewhite.product.primecost.cutparts.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
-import com.bluewhite.product.primecost.common.entity.CommonData;
 /**
  * cc裁片填写
  * @author zhangliang
@@ -26,18 +21,16 @@ public class CutParts extends BaseEntity<Long>{
     private Long productId;
 	
 	/**
-	 * 共用数据id
+	 * 批量产品数量或模拟批量数
 	 */
-	@Column(name = "common_data_id")
-	private Long commonDataId;
+	@Column(name = "number")
+	private Integer number;
 	
 	/**
-	 * 共用数据实体
+	 * 面料损耗默认值
 	 */
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "common_data_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private CommonData commonData;
-	
+	@Column(name = "loss")
+	private Double loss;
 	
 	/**
 	 * 选择该样品的裁片名字
@@ -189,22 +182,22 @@ public class CutParts extends BaseEntity<Long>{
 
 	
 
-	public Long getCommonDataId() {
-		return commonDataId;
+
+	public Integer getNumber() {
+		return number;
 	}
 
-	public void setCommonDataId(Long commonDataId) {
-		this.commonDataId = commonDataId;
+	public void setNumber(Integer number) {
+		this.number = number;
 	}
 
-	public CommonData getCommonData() {
-		return commonData;
+	public Double getLoss() {
+		return loss;
 	}
 
-	public void setCommonData(CommonData commonData) {
-		this.commonData = commonData;
+	public void setLoss(Double loss) {
+		this.loss = loss;
 	}
-
 
 	public Long getProductId() {
 		return productId;

@@ -14,8 +14,6 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.product.primecost.common.dao.CommonDataDao;
-import com.bluewhite.product.primecost.common.entity.CommonData;
 import com.bluewhite.product.primecost.cutparts.dao.CutPartsDao;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.product.dao.ProductDao;
@@ -28,28 +26,24 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 	private CutPartsDao dao;
 	@Autowired
 	private ProductDao productdao;
-	
-	@Autowired
-	private CommonDataDao commonDataDao;
+
 	
 	@Override
-	public CutParts saveCutParts(CutParts cutParts,CommonData commonData) throws Exception {
+	public CutParts saveCutParts(CutParts cutParts) throws Exception {
 		if(StringUtils.isEmpty(cutParts.getCutPartsNumber())){
 			throw new ServiceException("使用片数不能为空");
 		}
 		if(StringUtils.isEmpty(cutParts.getOneMaterial())){
 			throw new ServiceException("单片用料不能为空");
 		}
-		if(StringUtils.isEmpty(commonData.getNumber())){
+		if(StringUtils.isEmpty(cutParts.getNumber())){
 			throw new ServiceException("批量产品数量或模拟批量数不能为空");
 		}
 		
-		commonDataDao.save(commonData);
-		cutParts.setCommonDataId(commonData.getId());
 		cutParts.setAddMaterial(cutParts.getCutPartsNumber()*cutParts.getOneMaterial());
 		//当批各单片用料
 		if(cutParts.getComposite()==0){
-			cutParts.setBatchMaterial(cutParts.getAddMaterial()*(cutParts.getManualLoss()+1)*cutParts.getCutPartsNumber()/cutParts.getCutPartsNumber()*commonData.getNumber());
+			cutParts.setBatchMaterial(cutParts.getAddMaterial()*(cutParts.getManualLoss()+1)*cutParts.getCutPartsNumber()/cutParts.getCutPartsNumber()*cutParts.getNumber());
 		}else{
 			cutParts.setBatchMaterial(0.0);
 		}
@@ -61,7 +55,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		}
 		
 		if(cutParts.getComposite()==1){
-			cutParts.setComplexBatchMaterial(cutParts.getAddMaterial()*(cutParts.getManualLoss()+1)*commonData.getNumber());
+			cutParts.setComplexBatchMaterial(cutParts.getAddMaterial()*(cutParts.getManualLoss()+1)*cutParts.getNumber());
 			cutParts.setBatchComplexMaterialPrice(cutParts.getComplexBatchMaterial()*cutParts.getProductCost());
 			cutParts.setBatchComplexAddPrice(cutParts.getComplexBatchMaterial()*cutParts.getComplexProductCost());
 		}
@@ -80,7 +74,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		double batchMaterialPrice = cutPartsList.stream().mapToDouble(CutParts::getBatchMaterialPrice).sum();
 		double batchComplexMaterialPrice = cutPartsList.stream().mapToDouble(CutParts::getBatchComplexMaterialPrice).sum();
 		double batchComplexAddPrice = cutPartsList.stream().mapToDouble(CutParts::getBatchComplexAddPrice).sum();
-		product.getPrimeCost().setCutPartsPrice((batchMaterialPrice+batchComplexMaterialPrice+batchComplexAddPrice)/commonData.getNumber());
+		product.getPrimeCost().setCutPartsPrice((batchMaterialPrice+batchComplexMaterialPrice+batchComplexAddPrice)/cutParts.getNumber());
 		productdao.save(product);
 		return cutParts;
 	}

@@ -237,7 +237,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 	@Override
 	public int importexcelBaseOneExcel(List<BaseOne> excelBaseOne) {
 		for(BaseOne baseOne : excelBaseOne){
-			baseOne.setType("fixation");
+			baseOne.setType("unit");
 		}
 		baseOneDao.save(excelBaseOne);
 		return excelBaseOne.size();

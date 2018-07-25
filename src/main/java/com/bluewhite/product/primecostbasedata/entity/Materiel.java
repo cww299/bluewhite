@@ -39,9 +39,9 @@ public class Materiel extends BaseEntity<Long>{
 	/**
      * 物料克重等备注
      */
-	@Column(name = "remark")
+	@Column(name = "unit")
 	@Poi(name = "", column = "D")
-    private String remark;
+    private String unit;
 	
 	/**
      * 物料类型
@@ -50,6 +50,68 @@ public class Materiel extends BaseEntity<Long>{
     private String type;
 	
 	
+	/**
+	 * 请将有价格变化提示的新价格誊写到该行（有变化一定要更新！）
+	 * @return
+	 */
+	@Column(name = "change_price")
+    private String changePrice;
+	
+	/**
+	 * 需要的数字填写
+	 * @return
+	 */
+	@Column(name = "count")
+	private Integer count;
+	
+	/**
+	 * 换算之后的单位
+	 * @return
+	 */
+	@Column(name = "convert_unit")
+    private String convertUnit;
+	
+	/**
+	 * 换算之后的单位的价格
+	 * @return
+	 */
+	@Column(name = "convert_price")
+    private Double convertPrice;
+	
+	
+	
+	public String getConvertUnit() {
+		return convertUnit;
+	}
+
+	public void setConvertUnit(String convertUnit) {
+		this.convertUnit = convertUnit;
+	}
+
+	public Double getConvertPrice() {
+		return convertPrice;
+	}
+
+	public void setConvertPrice(Double convertPrice) {
+		this.convertPrice = convertPrice;
+	}
+
+	public Integer getCount() {
+		return count;
+	}
+
+	public void setCount(Integer count) {
+		this.count = count;
+	}
+
+	public String getChangePrice() {
+		return changePrice;
+	}
+
+	public void setChangePrice(String changePrice) {
+		this.changePrice = changePrice;
+	}
+
 	public String getType() {
 		return type;
 	}
@@ -82,13 +144,15 @@ public class Materiel extends BaseEntity<Long>{
 		this.price = price;
 	}
 
-	public String getRemark() {
-		return remark;
+	public String getUnit() {
+		return unit;
 	}
 
-	public void setRemark(String remark) {
-		this.remark = remark;
+	public void setUnit(String unit) {
+		this.unit = unit;
 	}
+
+
 	
 	
 	
