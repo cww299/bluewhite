@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -421,7 +420,7 @@ public class ReportExportAction {
 	@RequestMapping("/importExcel/DownBacth")
 	public void DownBacth(HttpServletRequest request,HttpServletResponse response,Long id){
 		response.setContentType("octets/stream");
-	    response.addHeader("Content-Disposition", "attachment;filename=cgd.xls");
+	    response.addHeader("Content-Disposition", "attachment;filename=task.xlsx");
 	    // 第一步，创建一个webbook，对应一个Excel文件  
         XSSFWorkbook wb = new XSSFWorkbook();  
         // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet  

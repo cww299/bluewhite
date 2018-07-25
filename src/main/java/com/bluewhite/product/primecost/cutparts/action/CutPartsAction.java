@@ -22,7 +22,6 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.product.primecost.common.entity.CommonData;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
 
@@ -54,14 +53,14 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 	 */
 	@RequestMapping(value = "/product/addCutParts", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addProduct(HttpServletRequest request,CutParts cutParts,CommonData commonData) {
+	public CommonResponse addProduct(HttpServletRequest request,CutParts cutParts) {
 		CommonResponse cr = new CommonResponse();
 		if(StringUtils.isEmpty(cutParts.getProductId())){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品不能为空");
 		}else{
 			try {
-				cutPartsService.saveCutParts(cutParts, commonData);
+				cutPartsService.saveCutParts(cutParts);
 			} catch (Exception e) {
 				cr.setMessage(e.getMessage());
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -82,7 +81,7 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 	 */
 	@RequestMapping(value = "/product/updateCutParts", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse updateCutParts(HttpServletRequest request,CutParts cutParts,CommonData commonData) {
+	public CommonResponse updateCutParts(HttpServletRequest request,CutParts cutParts) {
 		CommonResponse cr = new CommonResponse();
 		if(StringUtils.isEmpty(cutParts.getProductId()) || StringUtils.isEmpty(cutParts.getId())){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -92,7 +91,7 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 				CutParts oldCutParts = cutPartsService.findOne(cutParts.getId());
 				BeanCopyUtils.copyNullProperties(oldCutParts,cutParts);
 				cutParts.setCreatedAt(oldCutParts.getCreatedAt());
-				cutPartsService.saveCutParts(cutParts,commonData);
+				cutPartsService.saveCutParts(cutParts);
 			} catch (Exception e) {
 				cr.setMessage(e.getMessage());
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
