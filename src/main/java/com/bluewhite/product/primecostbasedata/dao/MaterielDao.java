@@ -18,5 +18,11 @@ public interface MaterielDao extends BaseRepository<Materiel, Long>{
 	 * @return
 	 */
 	List<Materiel> findByType(String type);
+	/**
+	 * 根据物料名查找物料
+	 * @param name
+	 * @return
+	 */
+	Materiel findByName(String name);
 
 }

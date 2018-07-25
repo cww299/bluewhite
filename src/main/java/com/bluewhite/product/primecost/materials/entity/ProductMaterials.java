@@ -67,10 +67,10 @@ public class ProductMaterials extends BaseEntity<Long>{
     private Double productCost;
 	
 	/**
-	 * 产品备注
+	 * 产品单位
 	 */
-	@Column(name = "product_remark")
-    private Double productRemark;
+	@Column(name = "product_unit")
+    private Double productUnit;
 	
 	
 	/**
@@ -152,12 +152,12 @@ public class ProductMaterials extends BaseEntity<Long>{
 		this.productCost = productCost;
 	}
 
-	public Double getProductRemark() {
-		return productRemark;
+	public Double getProductUnit() {
+		return productUnit;
 	}
 
-	public void setProductRemark(Double productRemark) {
-		this.productRemark = productRemark;
+	public void setProductUnit(Double productUnit) {
+		this.productUnit = productUnit;
 	}
 
 	public Double getBatchMaterial() {
