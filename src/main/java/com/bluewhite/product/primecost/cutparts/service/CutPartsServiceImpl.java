@@ -3,6 +3,7 @@ package com.bluewhite.product.primecost.cutparts.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Transient;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 
 	
 	@Override
+	@Transient
 	public CutParts saveCutParts(CutParts cutParts) throws Exception {
 		if(StringUtils.isEmpty(cutParts.getCutPartsNumber())){
 			throw new ServiceException("使用片数不能为空");
