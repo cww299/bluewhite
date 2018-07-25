@@ -613,9 +613,9 @@ public  class ProTypeUtils {
 			sumTaskPrice =taskTime*ProTypeUtils.getPackAC8()*ProTypeUtils.TIME;
 			break;
 		case 3://生产部二楼针工
-			if(flag == 0){
+//			if(flag == 0){
+//			}
 				sumTaskPrice =taskTime*ProTypeUtils.getAC8TWO()*ProTypeUtils.TIME;
-			}
 			break;
 		case 4://生产部二楼机工
 			    sumTaskPrice =taskTime*ProTypeUtils.getAC8TWOREWORK(AC5)*ProTypeUtils.TIME;
