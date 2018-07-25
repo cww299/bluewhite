@@ -230,8 +230,17 @@ public class ReportExportServiceImpl implements ReportExportService{
 
 	@Override
 	public int importMaterielExcel(List<Materiel> excelMateriel) {
-		materielDao.save(excelMateriel);
-		return excelMateriel.size();
+		int count = 0;
+		for(Materiel materiel : excelMateriel){
+			Materiel mt  = materielDao.findByName(materiel.getName());
+			mt.setConvertPrice(mt.getPrice()/materiel.getConvertNumber());
+			mt.setConvertNumber(materiel.getConvertNumber());
+			mt.setConvertUnit(materiel.getConvertUnit());
+			materielDao.save(mt);
+			count++;
+			System.out.println(count);
+		}
+		return count;
 	}
 
 	@Override

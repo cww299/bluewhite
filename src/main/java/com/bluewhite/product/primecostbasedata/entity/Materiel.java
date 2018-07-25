@@ -19,28 +19,25 @@ public class Materiel extends BaseEntity<Long>{
      * 物料编号
      */
 	@Column(name = "number")
-	@Poi(name = "", column = "A")
     private String number;
 	
 	/**
      * 物料名
      */
 	@Column(name = "name")
-	@Poi(name = "", column = "B")
+	@Poi(name = "", column = "A")
     private String name;
 	
 	/**
      * 物料最新价格
      */
 	@Column(name = "price")
-	@Poi(name = "", column = "C")
-    private String price;
+    private Double price;
 	
 	/**
      * 物料克重等备注
      */
 	@Column(name = "unit")
-	@Poi(name = "", column = "D")
     private String unit;
 	
 	/**
@@ -69,6 +66,7 @@ public class Materiel extends BaseEntity<Long>{
 	 * @return
 	 */
 	@Column(name = "convert_unit")
+	@Poi(name = "", column = "C")
     private String convertUnit;
 	
 	/**
@@ -78,8 +76,24 @@ public class Materiel extends BaseEntity<Long>{
 	@Column(name = "convert_price")
     private Double convertPrice;
 	
+	/**
+	 * 需要的数字填写
+	 * @return
+	 */
+	@Column(name = "convert_number")
+	@Poi(name = "", column = "B")
+    private Double convertNumber;
 	
 	
+	
+	public Double getConvertNumber() {
+		return convertNumber;
+	}
+
+	public void setConvertNumber(Double convertNumber) {
+		this.convertNumber = convertNumber;
+	}
+
 	public String getConvertUnit() {
 		return convertUnit;
 	}
@@ -136,11 +150,11 @@ public class Materiel extends BaseEntity<Long>{
 		this.name = name;
 	}
 
-	public String getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
-	public void setPrice(String price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 

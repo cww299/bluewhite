@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
@@ -34,7 +35,6 @@ public class BaseOneAction {
 	
 	/**
 	 * 产品基础数据获取
-	 * 
 	 * @param request 请求
 	 * @return cr
 	 * @throws Exception
@@ -89,5 +89,28 @@ public class BaseOneAction {
 		cr.setMessage("成功");
 		return cr;
 	}
+	
+	/**
+	 * 新增修改物料产品基础数据
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/product/addMateriel", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse addMateriel(HttpServletRequest request,Materiel materiel) {
+		CommonResponse cr = new CommonResponse();
+		if(materiel.getId()!=null){
+			Materiel oldMateriel = materielService.findOne(materiel.getId());
+			BeanCopyUtils.copyNullProperties(oldMateriel,materiel);
+			materiel.setCreatedAt(oldMateriel.getCreatedAt());
+			
+		}
+		materielService.save(materiel);
+		cr.setMessage("成功");
+		return cr;
+	}
+	
 
 }
