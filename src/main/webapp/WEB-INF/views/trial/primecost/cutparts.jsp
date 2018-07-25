@@ -193,7 +193,7 @@
 			
 			this.loadEvents = function(){
 				//修改方法
-				$('.edit').on('click',function(){
+				$('.edit').click(function(){
 					
 						
 				            $(this).html("<input class='text-center input-mini' type='text' value='"+$(this).text()+"'>");
