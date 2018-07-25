@@ -1078,7 +1078,7 @@
 				
 			}
 			this.mater=function(){
-				//提示人员姓名
+				//提示
 				$(".bacth").typeahead({
 					//ajax 拿way数据
 					source : function(query, process) {
@@ -1094,7 +1094,7 @@
 									//转换成 json集合
 									 var resultList = result.data.rows.map(function (item) {
 										 	//转换成 json对象
-					                        var aItem = {name: item.bacthNumber, id:item.product.id,proname:item.product.name}
+					                        var aItem = {name: item.bacthNumber, id:item.product.id,proname:item.product.name,number:item.number}
 					                        //处理 json对象为字符串
 					                        return JSON.stringify(aItem);
 					                    });
@@ -1114,7 +1114,7 @@
 					        var item = JSON.parse(item);
 					        self.setIndex(item.id);
 					        self.setName(item.name);
-					        
+					        $('.sumnumber').val(item.number);
 					        $('.productName').val(item.proname);
 					    	return item.name
 					    },
@@ -1124,7 +1124,7 @@
 							var item = JSON.parse(item);
 							self.setIndex(item.id);
 						  	self.setName(item.name);
-						  	
+						  	$('.sumnumber').val(item.number);
 						  	$('.productName').val(item.proname);
 								return item.name
 						},
