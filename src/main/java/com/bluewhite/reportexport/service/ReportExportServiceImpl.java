@@ -23,9 +23,11 @@ import com.bluewhite.common.Constants;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneTimeDao;
+import com.bluewhite.product.primecostbasedata.dao.BaseThreeDao;
 import com.bluewhite.product.primecostbasedata.dao.MaterielDao;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.BaseOneTime;
+import com.bluewhite.product.primecostbasedata.entity.BaseThree;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
@@ -65,6 +67,9 @@ public class ReportExportServiceImpl implements ReportExportService{
 	
 	@Autowired
 	private	BaseOneDao baseOneDao;
+	
+	@Autowired
+	private BaseThreeDao baseThreeDao;
 	
 	@Autowired
 	private BaseOneTimeDao baseOneTimeDao;
@@ -326,5 +331,10 @@ public class ReportExportServiceImpl implements ReportExportService{
 		procedureDao.save(procedureList);
 		procedureService.countPrice(procedureList.get(0));
 		return count;
+	}
+
+	@Override
+	public int importexcelBaseThreeExcel(List<BaseThree> excelBaseThree) {
+		return baseThreeDao.save(excelBaseThree).size();
 	}
 }

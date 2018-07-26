@@ -1,21 +1,30 @@
 package com.bluewhite.product.primecostbasedata.action;
 
+import java.text.SimpleDateFormat;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
+import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneTimeDao;
+import com.bluewhite.product.primecostbasedata.dao.BaseThreeDao;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.BaseOneTime;
+import com.bluewhite.product.primecostbasedata.entity.BaseThree;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.product.primecostbasedata.service.MaterielService;
 
@@ -26,6 +35,9 @@ public class BaseOneAction {
 	
 	@Autowired
 	private BaseOneDao baseOneDao;
+	
+	@Autowired
+	private BaseThreeDao baseThreeDao;
 	
 	@Autowired
 	private BaseOneTimeDao baseOneTimeDao;
@@ -71,6 +83,22 @@ public class BaseOneAction {
 		return cr;
 	}
 	
+	
+	/**
+	 * 产品基础数据3获取
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/product/getBaseThree", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getBaseThree(HttpServletRequest request) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(baseThreeDao.findAll());
+		cr.setMessage("成功");
+		return cr;
+	}
+	
 	/**
 	 * 物料产品基础数据获取
 	 * 
@@ -112,5 +140,14 @@ public class BaseOneAction {
 		return cr;
 	}
 	
+	@InitBinder
+	protected void initBinder(WebDataBinder binder) {
+		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
+				DateTimePattern.DATEHMS.getPattern());
+		binder.registerCustomEditor(java.util.Date.class, null,
+				new CustomDateEditor(dateTimeFormat, true));
+		binder.registerCustomEditor(byte[].class,
+				new ByteArrayMultipartFileEditor());
+	}
 
 }

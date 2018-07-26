@@ -53,7 +53,7 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 	 */
 	@RequestMapping(value = "/product/addCutParts", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addProduct(HttpServletRequest request,CutParts cutParts) {
+	public CommonResponse addCutParts(HttpServletRequest request,CutParts cutParts) {
 		CommonResponse cr = new CommonResponse();
 		if(StringUtils.isEmpty(cutParts.getProductId())){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -113,7 +113,7 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 	 */
 	@RequestMapping(value = "/product/getCutParts", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse productPages(HttpServletRequest request,PageParameter page,CutParts cutParts) {
+	public CommonResponse getCutParts(HttpServletRequest request,PageParameter page,CutParts cutParts) {
 		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(cutPartsService.findPages(cutParts,page))
 				.toJSON());
 		cr.setMessage("查询成功");
@@ -128,7 +128,7 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 	 */
 	@RequestMapping(value = "/product/deleteCutParts", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteBacth(HttpServletRequest request,CutParts cutParts) {
+	public CommonResponse deleteCutParts(HttpServletRequest request,CutParts cutParts) {
 		CommonResponse cr = new CommonResponse();
 		if(cutParts.getId()!=null){
 			cutPartsService.deleteCutParts(cutParts);

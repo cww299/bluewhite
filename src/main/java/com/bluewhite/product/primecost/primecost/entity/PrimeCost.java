@@ -16,6 +16,12 @@ import com.bluewhite.base.BaseEntity;
 public class PrimeCost extends BaseEntity<Long>{
 	
 	
+	/**
+	 * 批量产品数量或模拟批量数
+	 */
+	@Column(name = "number")
+	private Integer number;
+	
 	
 	/**
 	 * 面料价格(含复合物料和加工费）
@@ -230,6 +236,14 @@ public class PrimeCost extends BaseEntity<Long>{
 
 	public void setActualCombatRate(Double actualCombatRate) {
 		this.actualCombatRate = actualCombatRate;
+	}
+
+	public Integer getNumber() {
+		return number;
+	}
+
+	public void setNumber(Integer number) {
+		this.number = number;
 	}
 	
 	

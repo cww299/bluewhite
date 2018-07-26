@@ -35,6 +35,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.excel.Excelutil;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.BaseOneTime;
+import com.bluewhite.product.primecostbasedata.entity.BaseThree;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.bacth.service.BacthService;
@@ -377,6 +378,34 @@ public class ReportExportAction {
 				Excelutil<BaseOneTime> util = new Excelutil<BaseOneTime>(BaseOneTime.class);
 				excelBaseOneTime = util.importExcel(filename, in);// 导入
 				int count = reportExportService.importexcelBaseOneTimeExcel(excelBaseOneTime);
+				if(count > 0){
+					cr.setMessage("成功导入"+count+"条数据");
+				}
+		} catch (Exception e) {
+			cr.setMessage("导入失败");
+		}
+		return cr;
+	}
+	
+	/**
+	 * 基础数据3 导入                          
+	 * @param residentmessage
+	 * @param response
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/importBaseThree",method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse importBaseThree(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request){
+		CommonResponse cr = new CommonResponse();
+		try {
+				List<BaseThree> excelBaseThree = new ArrayList<BaseThree>();
+				InputStream in = file.getInputStream();
+				String filename = file.getOriginalFilename();
+				// 创建excel工具类
+				Excelutil<BaseThree> util = new Excelutil<BaseThree>(BaseThree.class);
+				excelBaseThree = util.importExcel(filename, in);// 导入
+				int count = reportExportService.importexcelBaseThreeExcel(excelBaseThree);
 				if(count > 0){
 					cr.setMessage("成功导入"+count+"条数据");
 				}
