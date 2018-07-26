@@ -54,7 +54,7 @@ public class ProductMaterialsAction {
 	 */
 	@RequestMapping(value = "/product/addProductMaterials", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addProduct(HttpServletRequest request,ProductMaterials productMaterials) {
+	public CommonResponse addProductMaterials(HttpServletRequest request,ProductMaterials productMaterials) {
 		CommonResponse cr = new CommonResponse();
 		if(StringUtils.isEmpty(productMaterials.getProductId())){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -82,7 +82,7 @@ public class ProductMaterialsAction {
 	 */
 	@RequestMapping(value = "/product/getProductMaterials", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse productPages(HttpServletRequest request,PageParameter page,ProductMaterials productMaterials) {
+	public CommonResponse getProductMaterials(HttpServletRequest request,PageParameter page,ProductMaterials productMaterials) {
 		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(productMaterialsService.findPages(productMaterials,page))
 				.toJSON());
 		cr.setMessage("查询成功");
@@ -97,7 +97,7 @@ public class ProductMaterialsAction {
 	 */
 	@RequestMapping(value = "/product/deleteProductMaterials", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteBacth(HttpServletRequest request,ProductMaterials productMaterials) {
+	public CommonResponse deleteProductMaterials(HttpServletRequest request,ProductMaterials productMaterials) {
 		CommonResponse cr = new CommonResponse();
 		if(productMaterials.getId()!=null){
 			productMaterialsService.deleteProductMaterials(productMaterials);

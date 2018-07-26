@@ -76,6 +76,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		double batchMaterialPrice = cutPartsList.stream().mapToDouble(CutParts::getBatchMaterialPrice).sum();
 		double batchComplexMaterialPrice = cutPartsList.stream().mapToDouble(CutParts::getBatchComplexMaterialPrice).sum();
 		double batchComplexAddPrice = cutPartsList.stream().mapToDouble(CutParts::getBatchComplexAddPrice).sum();
+		product.getPrimeCost().setNumber(cutParts.getNumber());
 		product.getPrimeCost().setCutPartsPrice((batchMaterialPrice+batchComplexMaterialPrice+batchComplexAddPrice)/cutParts.getNumber());
 		productdao.save(product);
 		return cutParts;

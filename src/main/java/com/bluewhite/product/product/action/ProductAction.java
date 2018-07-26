@@ -74,7 +74,7 @@ public class ProductAction {
 		cr.setData(ClearCascadeJSON
 				.get()
 				.addRetainTerm(Product.class,"id","primeCost")
-				.addRetainTerm(PrimeCost.class,"cutPartsPrice","otherCutPartsPrice","cutPrice","machinistPrice","embroiderPrice"
+				.addRetainTerm(PrimeCost.class,"number","cutPartsPrice","otherCutPartsPrice","cutPrice","machinistPrice","embroiderPrice"
 						,"embroiderPrice","needleworkPrice","packPrice","freightPrice","freightPrice","invoice","taxIncidence"
 						,"surplus","budget","budgetRate","actualCombat","actualCombatRate")
 				.format(productService.findPages(product,page)).toJSON());
