@@ -33,8 +33,7 @@ public class BaseOneAction {
 	
 	private final static Log log = Log.getLog(BaseOneAction.class);
 	
-	@Autowired
-	private BaseOneDao baseOneDao;
+
 	
 	@Autowired
 	private BaseThreeDao baseThreeDao;
@@ -53,12 +52,12 @@ public class BaseOneAction {
 	 */
 	@RequestMapping(value = "/product/getBaseOne", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getBaseOne(HttpServletRequest request,String type) {
+	public CommonResponse getBaseOne(HttpServletRequest request,BaseOne baseOne) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON
 				.get()
 				.addRetainTerm(BaseOne.class, "id","name","textualTime","time")
-				.format(baseOneDao.findByType(type)).toJSON());
+				.format(materielService.findPagesBaseOne(baseOne)).toJSON());
 		cr.setMessage("成功");
 		return cr;
 	}

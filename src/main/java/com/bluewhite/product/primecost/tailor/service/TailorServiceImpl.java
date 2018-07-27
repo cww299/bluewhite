@@ -32,6 +32,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		
 		
 		
+		
 		return tailor;
 	}
 
