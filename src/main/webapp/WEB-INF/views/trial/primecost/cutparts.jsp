@@ -34,19 +34,68 @@
                                     <i class="fa fa-chevron-down"></i>
                                 </div>
                             </div>
+                            <div class="row" style="height: 30px; margin:15px 0 10px">
+			<div class="col-xs-11 col-sm-11  col-md-11">
+				<form class="form-search" >
+					<div class="row">
+						<div class="col-xs-11 col-sm-11 col-md-11">
+							<div class="input-group"> 
+								<table><tr>
+								<td>产品名:</td><td><input type="text" name="name" id="productName" placeholder="请输入产品名称" class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp</td>
+								<td>默认数量:</td><td><input type="text" name="number" id="number" placeholder="请输入默认数量" class="form-control search-query number" /></td>
+									<td>&nbsp&nbsp</td>
+								<td>默认耗损:</td><td><input type="text" name="name" id="name" placeholder="请输入产品名称" class="form-control search-query name" /></td>
+								<!-- <td>&nbsp&nbsp</td> -->
+								<!-- <td>完成状态:</td><td><select class="form-control" id="selectstate"><option value=0>未完成</option><option value=1>已完成</option></select></td> -->
+								</tr></table> 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
+											查&nbsp找
+									</button>
+								</span>
+								 <td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button" id="addCutting" class="btn btn-success  btn-sm btn-3d export">
+									新增裁片
+									</button>
+								</span> 
+								
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
                             <div class="panel-body">
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                        	<th class="text-center">组名</th>
-                                            <th class="text-center">人员信息</th>
-                                            <th class="text-center">操作</th>
+                                        	<th class="text-center">裁片名</th>
+                                            <th class="text-center">片数</th>
+                                            <th class="text-center">编号</th>
+                                            <th class="text-center">名称</th>
+                                            <th class="text-center">是否复合</th>
+                                            <th class="text-center">单片用料</th>
+                                            <th class="text-center">单位</th>
+                                            <th class="text-center">全套比用料</th>
+                                            <th class="text-center">单只用料</th>
+                                            <th class="text-center">耗损</th>
+                                            <th class="text-center">产品单价</th>
+                                            <th class="text-center">产品单位</th>
+                                            <th class="text-center">单片用料</th>
+                                            <th class="text-center">复合物料编号</th>
+                                            <th class="text-center">复合物料名称</th>
+                                            <th class="text-center">是否双层对复</th>
+                                            <th class="text-center">复合物料耗损比</th>
+                                            <th class="text-center">复合物用料</th>
+                                            <th class="text-center">复合单片价格</th>
+                                            <th class="text-center">符合加工费价格</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
-                                    <button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增小组</button>
                                 </table>
                                 <div id="pager" class="pull-right">
                                 
@@ -114,7 +163,7 @@
      <script src="${ctx }/static/js/laypage/laypage.js"></script> 
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-    
+    <script src="${ctx }/static/js/vendor/typeahead.js"></script>
     <script>
    jQuery(function($){
    	var Login = function(){
@@ -131,8 +180,6 @@
 			 var data={
 						page:1,
 				  		size:13,	
-				  		type:1,
-
 				} 
 			this.init = function(){
 				
@@ -145,7 +192,7 @@
 			    var index;
 			    var html = '';
 			    $.ajax({
-				      url:"${ctx}/production/getGroup",
+				      url:"${ctx}/product/getCutParts",
 				      data:data,
 				      type:"GET",
 				      beforeSend:function(){
@@ -154,11 +201,11 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			 $(result.data).each(function(i,o){
+		      			 $(result.data.rows).each(function(i,o){
 		      				html +='<tr>'
-		      				+'<td class="text-center edit name">'+o.name+'</td>'
-		      				+'<td class="text-center edit"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-							+'<td class="text-center edit"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button></td></tr>'
+		      				+'<td class="text-center edit name" contentEditable="true">'+o.cutPartsName+'</td>'
+		      				+'<td class="text-center edit name" contentEditable="true">'+o.cutPartsNumber+'</td>'
+							+'<td class="text-center edit" contentEditable="true"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -172,7 +219,6 @@
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
-									  		type:1,
 									  		name:$('#name').val(),
 								  	}
 						        
@@ -192,88 +238,103 @@
 			}
 			
 			this.loadEvents = function(){
-				//修改方法
-				$('.edit').click(function(){
-					
-						
-				            $(this).html("<input class='text-center input-mini' type='text' value='"+$(this).text()+"'>");
-						/* $(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-				        }); */
-					
-							/* $(this).text("编辑")
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val());  */
-									
-							
-					
-				})
+				
+			} 
+			this.mater=function(){
+				//提示裁片名
 			
-				
-				
+				$(".cuttingName").typeahead({
+					//ajax 拿way数据
+					source : function(query, process) {
+							return $.ajax({
+								url : '${ctx}/product/getBaseOne',
+								type : 'GET',
+								data : {
+									name:query,
+									type:cutParts
+								},
+								success : function(result) {
+									console.log(result)
+									//转换成 json集合
+									 var resultList = result.data.rows.map(function (item) {
+										 	//转换成 json对象
+					                        var aItem = {name: item.name, id:item.id}
+					                        //处理 json对象为字符串
+					                        return JSON.stringify(aItem);
+					                    });
+									//提示框返回数据
+									 return process(resultList);
+								},
+							})
+							//提示框显示
+						}, highlighter: function (item) {
+						    //转出成json对象
+							 var item = JSON.parse(item);
+							return item.name+"-"+item.id
+							//按条件匹配输出
+		                }, matcher: function (item) {
+		                	//转出成json对象
+					        var item = JSON.parse(item);
+					    	return item.name
+					    },
+						//item是选中的数据
+						updater:function(item){
+							//转出成json对象
+							var item = JSON.parse(item);
+								return item.name
+						},
+					});
+			
 			}
 			this.events = function(){
-				//新增小组
-				$('#addgroup').on('click',function(){
-					
-					var _index
-					var index
-					var postData
-					var dicDiv=$('#addDictDivType');
-					_index = layer.open({
-						  type: 1,
-						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '30%'], 
-						  btnAlign: 'c',//宽高
-						  maxmin: true,
-						  title:"新增小组",
-						  content: dicDiv,
-						  btn: ['确定', '取消'],
-						  yes:function(index, layero){
-							 
-							  postData={
-									  name:$("#groupName").val(),
-									  type:1,
-							  }
-							  $.ajax({
-									url:"${ctx}/production/addGroup",
-									data:postData,
-						            traditional: true,
-									type:"post",
-									beforeSend:function(){
-										index = layer.load(1, {
-											  shade: [0.1,'#fff'] //0.1透明度的白色背景
-											});
-									},
-									
-									success:function(result){
-										if(0==result.code){
-											layer.msg("添加成功！", {icon: 1});
-										 self.loadPagination(data); 
-											$('#addDictDivType').hide();
-											
-										}else{
-											layer.msg("添加失败", {icon: 2});
-										}
-										
-										layer.close(index);
-									},error:function(){
-										layer.msg("操作失败！", {icon: 2});
-										layer.close(index);
-									}
-								});
-							},
-						  end:function(){
-							  $('#addDictDivType').hide();
-						
-							  $('.addDictDivTypeForm')[0].reset(); 
-							
-						  }
+				
+				
+				//提示产品名
+				$("#productName").typeahead({
+					//ajax 拿way数据
+					source : function(query, process) {
+							return $.ajax({
+								url : '${ctx}/productPages',
+								type : 'GET',
+								data : {
+									name:query,
+								},
+								success : function(result) {
+									//转换成 json集合
+									 var resultList = result.data.rows.map(function (item) {
+										 	//转换成 json对象
+					                        var aItem = {name: item.name, id:item.id}
+					                        //处理 json对象为字符串
+					                        return JSON.stringify(aItem);
+					                    });
+									//提示框返回数据
+									 return process(resultList);
+								},
+							})
+							//提示框显示
+						}, highlighter: function (item) {
+						    //转出成json对象
+							 var item = JSON.parse(item);
+							return item.name+"-"+item.id
+							//按条件匹配输出
+		                }, matcher: function (item) {
+		                	//转出成json对象
+					        var item = JSON.parse(item);
+					    	return item.name
+					    },
+						//item是选中的数据
+						updater:function(item){
+							//转出成json对象
+							var item = JSON.parse(item);
+								return item.name
+						},
 					});
+				
+				//新增裁片
+				$('#addCutting').on('click',function(){
+					var html='<tr><td class="2" autocomplete="off" data-provide="typeahead" contentEditable="true"><input type="text" class="text-center  cuttingName" /></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td></tr>';
+					$("#tablecontent").append(html);
+					self.mater();
 				})
 			}
    	}
