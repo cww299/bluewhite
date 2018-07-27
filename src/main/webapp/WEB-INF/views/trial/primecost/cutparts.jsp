@@ -41,7 +41,7 @@
 						<div class="col-xs-11 col-sm-11 col-md-11">
 							<div class="input-group"> 
 								<table><tr>
-								<td>产品名:</td><td><input type="text" name="name" id="productName" placeholder="请输入产品名称" class="form-control search-query name" /></td>
+								<td>产品名:</td><td><input type="text" name="name" id="productName" placeholder="请输入产品名称" class="form-control search-query name" data-provide="typeahead" autocomplete=off/></td>
 								<td>&nbsp&nbsp</td>
 								<td>默认数量:</td><td><input type="text" name="number" id="number" placeholder="请输入默认数量" class="form-control search-query number" /></td>
 									<td>&nbsp&nbsp</td>
@@ -242,7 +242,6 @@
 			} 
 			this.mater=function(){
 				//提示裁片名
-			
 				$(".cuttingName").typeahead({
 					//ajax 拿way数据
 					source : function(query, process) {
@@ -251,12 +250,11 @@
 								type : 'GET',
 								data : {
 									name:query,
-									type:cutParts
+									type:"cutParts",
 								},
 								success : function(result) {
-									console.log(result)
 									//转换成 json集合
-									 var resultList = result.data.rows.map(function (item) {
+									 var resultList = result.data.map(function (item) {
 										 	//转换成 json对象
 					                        var aItem = {name: item.name, id:item.id}
 					                        //处理 json对象为字符串
@@ -270,7 +268,7 @@
 						}, highlighter: function (item) {
 						    //转出成json对象
 							 var item = JSON.parse(item);
-							return item.name+"-"+item.id
+							return item.name
 							//按条件匹配输出
 		                }, matcher: function (item) {
 		                	//转出成json对象
@@ -285,6 +283,55 @@
 						},
 					});
 			
+				$(".materiel").on('click',function(){
+					var that=$(this);
+				
+				//提示物料名
+				$(".materiel").typeahead({
+					//ajax 拿way数据
+					source : function(query, process) {
+							return $.ajax({
+								url : '${ctx}/product/getMateriel',
+								type : 'GET',
+								data : {
+									name:query,
+									type:"material",
+								},
+								success : function(result) {
+									//转换成 json集合
+									 var resultList = result.data.map(function (item) {
+										 	//转换成 json对象
+					                        var aItem = {name: item.name, number:item.number}
+					                        //处理 json对象为字符串
+					                        return JSON.stringify(aItem);
+					                    });
+									//提示框返回数据
+									 return process(resultList);
+								},
+							})
+							
+							//提示框显示
+						}, highlighter: function (item) {
+						    //转出成json对象
+							 var item = JSON.parse(item);
+							return item.name+"-"+item.number
+							//按条件匹配输出
+		                }, matcher: function (item) {
+		                	//转出成json对象
+					        var item = JSON.parse(item);
+					        that.parent().prev().text(item.number);
+					    	return item.name
+					    },
+						//item是选中的数据
+						updater:function(item){
+							//转出成json对象
+							var item = JSON.parse(item);
+							that.parent().prev().text(item.number);
+								return item.name
+						},
+						
+					});
+				})
 			}
 			this.events = function(){
 				
@@ -299,6 +346,7 @@
 								data : {
 									name:query,
 								},
+								
 								success : function(result) {
 									//转换成 json集合
 									 var resultList = result.data.rows.map(function (item) {
@@ -311,6 +359,7 @@
 									 return process(resultList);
 								},
 							})
+							
 							//提示框显示
 						}, highlighter: function (item) {
 						    //转出成json对象
@@ -323,16 +372,18 @@
 					    	return item.name
 					    },
 						//item是选中的数据
+						
 						updater:function(item){
 							//转出成json对象
 							var item = JSON.parse(item);
 								return item.name
 						},
+						
 					});
 				
 				//新增裁片
 				$('#addCutting').on('click',function(){
-					var html='<tr><td class="2" autocomplete="off" data-provide="typeahead" contentEditable="true"><input type="text" class="text-center  cuttingName" /></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td></tr>';
+					var html='<tr><td  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:68px; height:30px;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" /></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit materielNumber" ></td><td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"    style="border: none;width:120px; height:30px;" class="text-center  materiel" /></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td></tr>';
 					$("#tablecontent").append(html);
 					self.mater();
 				})
