@@ -476,10 +476,10 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			}
 		}
 		//质检返工出勤时间
-		if(monthlyProduction.getType()==1 || monthlyProduction.getType()==2 || monthlyProduction.getType()==4){
+		if(monthlyProduction.getType()==1 || monthlyProduction.getType()==2 ){
 			monthlyProduction.setReworkTurnTime(reworkTurnTime);
 		//针工返工出勤时间
-		}else if((monthlyProduction.getType()==3)){
+		}else if((monthlyProduction.getType()==3 || monthlyProduction.getType()==4)){
 			reworkTurnTime = taskList.stream().mapToDouble(Task::getTaskTime).sum();
 			monthlyProduction.setReworkTurnTime(reworkTurnTime);
 		}
