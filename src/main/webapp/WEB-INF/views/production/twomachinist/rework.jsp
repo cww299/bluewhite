@@ -82,6 +82,7 @@
                                             <th class="text-center">产品名</th>
                                             <th class="text-center">时间</th>
                                             <th class="text-center">工序</th>
+                                            <th class="text-center">任务时间</th>
                                             <th class="text-center">任务价值</th>
                                             <th class="text-center">b工资净值</th>
                                             <th class="text-center">完成人</th>
@@ -268,6 +269,7 @@
 		      				+'<td class="text-center name">'+o.productName+'</td>'
 		      				+'<td class="text-center  name">'+o.allotTime+'</td>'
 		      				+'<td class="text-center  name">'+s+'</td>'
+		      				+'<td class="text-center  name">'+o.taskTime+'</td>'
 		      				+'<td class="text-center  name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
 		      				+'<td class="text-center  name">'+parseFloat((o.payB).toFixed(4))+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
