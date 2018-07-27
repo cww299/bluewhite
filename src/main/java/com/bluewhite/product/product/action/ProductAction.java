@@ -100,7 +100,7 @@ public class ProductAction {
 			cr.setMessage("产品编号和产品名都不能为空");
 		}else{
 			productService.save(product);
-				cr.setMessage("添加成功");
+			cr.setMessage("添加成功");
 		}
 		return cr;
 	}

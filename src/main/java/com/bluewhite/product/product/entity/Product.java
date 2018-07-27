@@ -46,8 +46,10 @@ public class Product extends BaseEntity<Long>{
 	@OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Files> productFile = new HashSet<Files>();
 	
+	
+	
     @OneToOne(fetch=FetchType.LAZY,cascade = CascadeType.ALL) 
-    @JoinColumn(name="prime_cost_id",referencedColumnName="id",nullable=false)
+    @JoinColumn(name="prime_cost_id",referencedColumnName="id",nullable=true)
 	private PrimeCost primeCost;
     
     
