@@ -33,7 +33,7 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 					}
 		        	//按编号过滤
 		        	if (materiel.getNumber() != null) {
-						predicate.add(cb.like(root.get("number").as(String.class),"%"+materiel.getNumber()+"%"));
+						predicate.add(cb.like(root.get("type").as(String.class),"%"+materiel.getNumber()+"%"));
 					}
 		        	//按产品名称过滤
 		        	if (materiel.getName() != null) {
@@ -56,7 +56,7 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 				}
 	        	//按类型过滤
 	        	if (baseOne.getType()!= null) {
-					predicate.add(cb.equal(root.get("number").as(String.class),baseOne.getType()));
+					predicate.add(cb.equal(root.get("type").as(String.class),baseOne.getType()));
 				}
 	        	//按产品名称过滤
 	        	if (baseOne.getName() != null) {
