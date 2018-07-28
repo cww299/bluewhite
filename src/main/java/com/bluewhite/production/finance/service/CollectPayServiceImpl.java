@@ -417,7 +417,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				 task1.setBacthId(bac.getId());
 				 List<Task> taskList = taskService.findPages(task1, page).getRows();
 				 double sunTask = taskList.stream().mapToDouble(Task::getNumber).sum();
-				 productNumber += NumUtils.round((bac.getNumber()*(sunTask/sumPro)),0);
+				 productNumber = NumUtils.round((bac.getNumber()*(sunTask/sumPro)),0);
 				 bac.setNumber( NumUtils.roundTwo(productNumber));
 			}
 			

@@ -58,7 +58,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		}
 		
 		//根据裁剪类型进行新增
-		this.addcutPartsType(tailor.getTailorTypeId());
+		this.addcutPartsType(tailor);
 		
 		
 		
@@ -67,12 +67,17 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 
 	
 	
-	private void addcutPartsType(Long tailorTypeId) {
-		switch (tailorTypeId.intValue()) {
+	private void addcutPartsType(Tailor tailor) {
+		switch (tailor.getTailorTypeId().intValue()) {
 		case 71://普通激光切割
 			 OrdinaryLaser  ordinaryLaser = new  OrdinaryLaser();
-			 
-			 
+			 ordinaryLaser.setProductId(tailor.getProductId());
+			 ordinaryLaser.setTailorTypeId(tailor.getTailorTypeId());
+			 ordinaryLaser.setTailorType(tailor.getTailorType());
+			 ordinaryLaser.setTailorName(tailor.getTailorName());
+			 ordinaryLaser.setTailorNumber(tailor.getTailorNumber());
+			 ordinaryLaser.setTailorSize(tailor.getTailorSize());
+//			 ordinaryLaser.setManagePrice();
 			break;
 		case 72://绣花激光切割
 			
