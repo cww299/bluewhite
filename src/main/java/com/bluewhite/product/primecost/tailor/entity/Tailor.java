@@ -54,6 +54,12 @@ public class Tailor extends BaseEntity<Long>{
 	@Column(name = "tailor_size")
     private Double tailorSize;
 	
+	/**
+	 * 手选裁剪方式id
+	 */
+	@Column(name = "tailor_Type_id")
+    private Long tailorTypeId;
+	
 	
 	/**
 	 * 手选裁剪方式(储存方式，？1.存实体加id， ？2存字符串)
@@ -256,6 +262,15 @@ public class Tailor extends BaseEntity<Long>{
 	public void setMachinistPriceDown(Double machinistPriceDown) {
 		this.machinistPriceDown = machinistPriceDown;
 	}
+
+	public Long getTailorTypeId() {
+		return tailorTypeId;
+	}
+
+	public void setTailorTypeId(Long tailorTypeId) {
+		this.tailorTypeId = tailorTypeId;
+	}
+	
 	
 	
 
