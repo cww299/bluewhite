@@ -284,6 +284,7 @@
 					});
 			
 				$(".materiel").on('click',function(){
+					
 					var that=$(this);
 				
 				//提示物料名
@@ -319,14 +320,15 @@
 		                }, matcher: function (item) {
 		                	//转出成json对象
 					        var item = JSON.parse(item);
-					        that.parent().prev().text(item.number);
+					        that.parent().prev().find('.materielNumber').text(item.number);
 					    	return item.name
 					    },
 						//item是选中的数据
 						updater:function(item){
 							//转出成json对象
 							var item = JSON.parse(item);
-							that.parent().prev().text(item.number);
+							that.parent().parent().find('.materielNumber').text(item.number);
+							console.log(that.parent().parent().find('.materielNumber').text(item.number))
 								return item.name
 						},
 						

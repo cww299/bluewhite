@@ -322,7 +322,7 @@
 		      				+'<td class="text-center ">'+parseFloat((o.time).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
 		      				+'<td class="text-center ">'+strname+'</td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button>  <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
+							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button>  <button class="btn btn-sm btn-info  btn-trans updateremaketw" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
 							
 		      			}); 
 		      			 self.setCount(result.data.pageNum)
@@ -748,7 +748,7 @@
 					 })
 				})
 				//修改方法
-				$('.updateremake').on('click',function(){
+				$('.updateremaketw').on('click',function(){
 					if($(this).text() == "编辑"){
 						$(this).text("保存")
 						

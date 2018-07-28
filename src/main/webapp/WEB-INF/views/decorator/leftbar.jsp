@@ -98,7 +98,7 @@
 			      			html +='<li class="nav-dropdown"><a href="#" class="sele"><i class="fa  fa-fw '+fristicon+'"></i>'+a+'</a><ul class="nav-sub" style="display:none;">'+htmltr+'</ul></li>'
 							}
 			      			
-					  $('#informatic').append("<li class='active'><a href='${ctx }/index' class='index'   title='首页'><i class='fa  fa-fw fa-tachometer'></i> 首页</a></li>"+html); 
+					  $('#informatic').append("<li class='active'><a href='${ctx }/' class='index'   title='首页'><i class='fa  fa-fw fa-tachometer'></i> 首页</a></li>"+html); 
 					  var navstation = $.cookie("navstation");
 					  var navstationtwo=$.cookie("navstationtwo");
 					 if(navstation!=null){
