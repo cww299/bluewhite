@@ -9,6 +9,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
@@ -17,6 +18,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.cutparts.dao.CutPartsDao;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
+import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
 import com.bluewhite.product.product.dao.ProductDao;
 import com.bluewhite.product.product.entity.Product;
 
@@ -30,7 +32,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 
 	
 	@Override
-	@Transient
+	@Transactional
 	public CutParts saveCutParts(CutParts cutParts) throws Exception {
 		if(StringUtils.isEmpty(cutParts.getCutPartsNumber())){
 			throw new ServiceException("使用片数不能为空");
@@ -74,11 +76,15 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		dao.save(cutParts);
 		//同时更新产品成本价格表(面料价格(含复合物料和加工费)
 		Product product =  productdao.findOne(cutParts.getProductId());
-		double batchMaterialPrice = cutPartsList.stream().mapToDouble(CutParts::getBatchMaterialPrice).sum();
-		double batchComplexMaterialPrice = cutPartsList.stream().mapToDouble(CutParts::getBatchComplexMaterialPrice).sum();
-		double batchComplexAddPrice = cutPartsList.stream().mapToDouble(CutParts::getBatchComplexAddPrice).sum();
-		product.getPrimeCost().setNumber(cutParts.getNumber());
-		product.getPrimeCost().setCutPartsPrice((batchMaterialPrice+batchComplexMaterialPrice+batchComplexAddPrice)/cutParts.getNumber());
+		double batchMaterialPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchMaterialPrice()!=null).mapToDouble(CutParts::getBatchMaterialPrice).sum();
+		double batchComplexMaterialPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchComplexMaterialPrice()!=null).mapToDouble(CutParts::getBatchComplexMaterialPrice).sum();
+		double batchComplexAddPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchComplexAddPrice()!=null).mapToDouble(CutParts::getBatchComplexAddPrice).sum();
+		PrimeCost primeCost = product.getPrimeCost();
+		if(primeCost==null){
+			 primeCost = new PrimeCost();
+		}
+		primeCost.setNumber(cutParts.getNumber());
+		primeCost.setCutPartsPrice((batchMaterialPrice+batchComplexMaterialPrice+batchComplexAddPrice)/cutParts.getNumber());
 		productdao.save(product);
 		return cutParts;
 	}
@@ -110,6 +116,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 
 
 	@Override
+	@Transactional
 	public void deleteCutParts(CutParts cutParts) {
 		//删除
 		dao.delete(cutParts.getId());
