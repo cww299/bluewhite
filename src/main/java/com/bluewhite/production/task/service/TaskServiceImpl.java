@@ -415,12 +415,14 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	@Transactional
 	public Task upTask(Task task) {
 		Integer number = task.getNumber();
+		Date allotTime = task.getAllotTime();
 		task = dao.findOne(task.getId());
 		//查出该任务的所有b工资并删除
 		List<PayB> payBList = payBDao.findByTaskId(task.getId());
 		if(payBList.size()>0){
 			payBDao.delete(payBList);
 		}
+		task.setAllotTime(allotTime);
 		task.setNumber(number);
 		//实际时间
 		task.setTaskTime(NumUtils.round(ProTypeUtils.sumTaskTime(task.getExpectTime(),task.getType(),number), null));
