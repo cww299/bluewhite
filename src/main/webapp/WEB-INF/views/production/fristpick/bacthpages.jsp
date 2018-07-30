@@ -379,7 +379,7 @@
 		      				 }
 		      				 html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
-		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
+		      				+'<td class="text-center edit allotTime">'+o.allotTime+'</td>'
 		      				+'<td class="text-center  names" data-id='+o.id+'>'+o.product.name+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center  bacthDepartmentPrice">'+parseFloat((o.bacthDepartmentPrice).toFixed(3))+'</td>'
@@ -471,7 +471,7 @@
 			      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxIdto" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 			      				+'<td class="text-center ">'+o.bacthNumber+'</td>'
 			      				+'<td class="text-center ">'+o.productName+'</td>'
-			      				+'<td class="text-center ">'+o.allotTime+'</td>'
+			      				+'<td class="text-center edit allotTimetw">'+o.allotTime+'</td>'
 			      				+'<td class="text-center ">'+s+a+'</td>'
 			      				+'<td class="text-center ">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
 			      				+'<td class="text-center ">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
@@ -588,6 +588,7 @@
 								var postData = {
 										id:$(this).data('id'),
 										number:$(this).parent().parent('tr').find(".number").text(),
+										allotTime:$(this).parent().parent('tr').find(".allotTimetw").text(),
 								}
 								var index;
 								$.ajax({
@@ -803,6 +804,7 @@
 									id:$(this).data('id'),
 									number:$(this).parent().parent('tr').find(".number").text(),
 									remarks:$(this).parent().parent('tr').find(".remarks").text(),
+									allotTime:$(this).parent().parent('tr').find(".allotTime").text(),
 							}
 							
 							var index;
@@ -1488,6 +1490,7 @@
 						page:1,
 				  		status:1,
 				  		receive:0,
+				  		falg:0,
 				}
 				var index;
 			    var html = '';

@@ -317,7 +317,7 @@
 		      				 html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="hidden batch">'+o.id+'</td>'
 		      				+'<td class="text-center edit bacthNumber">'+o.bacthNumber+'</td>'
-		      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
+		      				+'<td class="text-center edit allotTimetw">'+o.allotTime+'</td>'
 		      				+'<td class="text-center  names" data-id='+o.id+'>'+o.product.name+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center  bacthDepartmentPrice">'+parseFloat((o.bacthDepartmentPrice).toFixed(3))+'</td>'
@@ -413,7 +413,7 @@
 			      				+'<td class="text-center  name">'+o.id+'</td>'
 			      				+'<td class="text-center  name">'+o.bacthNumber+'</td>'
 			      				+'<td class="text-center name">'+o.productName+'</td>'
-			      				+'<td class="text-center  name">'+o.allotTime+'</td>'
+			      				+'<td class="text-center edit allotTime">'+o.allotTime+'</td>'
 			      				+'<td class="text-center  name">'+s+a+'</td>'
 			      				+'<td class="text-center  name">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
 			      				+'<td class="text-center  name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
@@ -562,6 +562,7 @@
 								var postData = {
 										id:$(this).data('id'),
 										number:$(this).parent().parent('tr').find(".number").text(),
+										allotTime:$(this).parent().parent('tr').find(".allotTime").text(),
 								}
 								var index;
 								$.ajax({
@@ -782,6 +783,7 @@
 									bacthHairPrice:$(this).parent().parent('tr').find(".bacthHairPrice").text(),
 									bacthDeedlePrice:$(this).parent().parent('tr').find(".bacthDeedlePrice").text(),
 									bacthNumber:$(this).parent().parent('tr').find(".bacthNumber").text(),
+									allotTime:$(this).parent().parent('tr').find(".allotTimetw").text(),
 							}
 							
 							var index;

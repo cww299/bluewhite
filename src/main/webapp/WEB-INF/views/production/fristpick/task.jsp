@@ -216,7 +216,7 @@
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center ">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center ">'+o.productName+'</td>'
-		      				+'<td class="text-center ">'+o.allotTime+'</td>'
+		      				+'<td class="text-center edit allotTime">'+o.allotTime+'</td>'
 		      				+'<td class="text-center ">'+s+a+'</td>'
 		      				+'<td class="text-center ">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
 		      				+'<td class="text-center ">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
@@ -321,6 +321,7 @@
 							var postData = {
 									id:$(this).data('id'),
 									number:$(this).parent().parent('tr').find(".number").text(),
+									allotTime:$(this).parent().parent('tr').find(".allotTime").text(),
 							}
 							var index;
 							$.ajax({
