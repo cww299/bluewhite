@@ -96,7 +96,7 @@
                                             <th class="text-center">是否双层对复</th>
                                             <th class="text-center">复合物单价</th>
                                             <th class="text-center">复合物备注</th>
-                                            <th class="text-center">复合物料耗损比</th>
+                                            <th class="text-center">复合物料耗损</th>
                                             <th class="text-center">复合物用料</th>
                                             <th class="text-center">复合单片价格</th>
                                             <th class="text-center">复合加工费价格</th>
@@ -212,8 +212,29 @@
 		      		  success: function (result) {
 		      			 $(result.data.rows).each(function(i,o){
 		      				html +='<tr>'
-		      				+'<td class="text-center edit name" contentEditable="true">'+o.cutPartsName+'</td>'
-		      				+'<td class="text-center edit name" contentEditable="true">'+o.cutPartsNumber+'</td>'
+		      				+'<td class="text-center edit name" >'+o.cutPartsName+'</td>'
+		      				+'<td class="text-center edit name" >'+o.cutPartsNumber+'</td>'
+		      				+'<td class="text-center edit name" >'+o.materielNumber+'</td>'
+		      				+'<td class="text-center edit name" >'+o.materielName+'</td>'
+		      				+'<td class="text-center edit name" >'+o.composite+'</td>'
+		      				+'<td class="text-center edit name" >'+o.oneMaterial+'</td>'
+		      				+'<td class="text-center edit name" >'+o.unit+'</td>'
+		      				+'<td class="text-center edit name" >'+o.scaleMaterial+'</td>'
+		      				+'<td class="text-center edit name" >'+o.addMaterial+'</td>'
+		      				+'<td class="text-center edit name" >'+o.manualLoss+'</td>'
+		      				+'<td class="text-center edit name" >'+o.productCost+'</td>'
+		      				+'<td class="text-center edit name" >'+o.productRemark+'</td>'
+		      				+'<td class="text-center edit name" >'+o.batchMaterial+'</td>'
+		      				+'<td class="text-center edit name" >'+o.batchMaterialPrice+'</td>'
+		      				+'<td class="text-center edit name" >'+o.complexMaterielNumber+'</td>'
+		      				+'<td class="text-center edit name" >'+o.complexMaterielName+'</td>'
+		      				+'<td class="text-center edit name" >'+o.bilayer+'</td>'
+		      				+'<td class="text-center edit name" >'+o.complexProductCost+'</td>'
+		      				+'<td class="text-center edit name" >'+o.complexProductRemark+'</td>'
+		      				+'<td class="text-center edit name" >'+o.compositeManualLoss+'</td>'
+		      				+'<td class="text-center edit name" >'+o.complexBatchMaterial+'</td>'
+		      				+'<td class="text-center edit name" >'+o.batchComplexMaterialPrice+'</td>'
+		      				+'<td class="text-center edit name" >'+o.batchComplexAddPrice+'</td>'
 							+'<td class="text-center edit" contentEditable="true"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button></td></tr>'
 							
 		      			}); 

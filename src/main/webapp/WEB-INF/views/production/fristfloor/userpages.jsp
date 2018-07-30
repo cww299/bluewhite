@@ -165,6 +165,7 @@
 						        			page:obj.curr,
 									  		size:10,
 									  		userName:$('#name').val(),
+									  		groupId:$('.selectcomplete').val()
 								  	}
 						            self.loadPagination(_data);
 							     }
