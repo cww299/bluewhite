@@ -344,8 +344,6 @@
 						compositeManualLoss:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.compositeManualLoss').val(),
 					}
 					var index;
-					 index = layer.confirm('确定新增吗', {btn: ['确定', '取消']},function(){
-					console.log(postData)
 					$.ajax({
 						url:"${ctx}/product/addCutParts",
 						data:postData,
@@ -374,7 +372,7 @@
 							layer.close(index);
 						}
 					});
-					 })
+					
 					
 						
 				}
