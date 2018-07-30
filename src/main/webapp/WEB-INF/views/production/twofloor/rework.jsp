@@ -36,7 +36,7 @@
                             </div>
                              <!--查询开始  -->
           <div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-10 col-sm-10 col-md-10">
+			<div class="col-xs-12 col-sm-12 col-md-12">
 				<form class="form-search" >
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 col-md-12">
@@ -56,10 +56,18 @@
 					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
              onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
+								<td>&nbsp&nbsp</td>
+								<td>完成状态:</td><td><select class="form-control" id="selectstate"><option value=0>未完成</option><option value=1>已完成</option></select></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
 										查&nbsp找
+									</button>
+								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-success  btn-sm btn-3d start">
+									一键完成
 									</button>
 								</span>
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
@@ -96,6 +104,7 @@
                                             <th class="text-center">任务价值</th>
                                             <th class="text-center">当批用时</th>
                                             <th class="text-center">备注</th>
+                                            <th class="text-center">完成状态</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -324,7 +333,7 @@
 				  		size:13,	
 				  		type:3,
 				  		flag:1,
-
+				  		status:$('#selectstate').val(),
 				} 
 			this.init = function(){
 				
@@ -366,6 +375,7 @@
 			      				+'<td class="text-center  sumTaskPrice">'+ parseFloat((o.sumTaskPrice*1).toFixed(3))+'</td>'
 			      				+'<td class="text-center ">'+o.time+'</td>'
 			      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
+			      				+'<td class="text-center edit remarks">'+strname+'</td>'
 								+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button>  <button class="btn btn-sm btn-info  btn-trans updateremaketw" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
 			      			}); 
 					        //显示分页
@@ -385,6 +395,7 @@
 									  			orderTimeBegin:$("#startTime").val(),
 									  			orderTimeEnd:$("#endTime").val(),
 									  			flag:1,
+									  			status:$('#selectstate').val(),
 									  	}
 							        
 							            self.loadPagination(_data);
@@ -394,7 +405,7 @@
 						   	layer.close(index);
 						   	 $("#tablecontent").html(html); 
 						   	self.loadEvents();
-						   
+						   	self.checkedd();
 					      },error:function(){
 								layer.msg("加载失败！", {icon: 2});
 								layer.close(index);
@@ -486,6 +497,24 @@
 				 			})
 	                    }else{
 	                    	$('.checkboxIdto').each(function(){ 
+	                    		$(this).prop("checked",false);
+	                    		
+	                    	})
+	                    }
+	                }); 
+					
+				}
+			 this.checkedd=function(){
+					
+					$(".checks").on('click',function(){
+						
+	                    if($(this).is(':checked')){ 
+				 			$('.checkboxId').each(function(){  
+	                    //此处如果用attr，会出现第三次失效的情况  
+	                     		$(this).prop("checked",true);
+				 			})
+	                    }else{
+	                    	$('.checkboxId').each(function(){ 
 	                    		$(this).prop("checked",false);
 	                    		
 	                    	})
@@ -1134,6 +1163,57 @@
 					});
 			}
 			this.events = function(){
+				/* 一键完成  */
+				$('.start').on('click',function(){
+					  var  that=$(".table-hover");
+					  var arr=new Array()//员工id
+					  that.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+							arr.push($(this).val());   
+						});
+					  
+					  if(arr.length<=0){
+							return layer.msg("至少选择一个！", {icon: 2});
+						}
+						var data={
+								status:1,
+								type:3,
+								ids:arr,
+								flag:1,
+						}
+						var _datae={
+								status:0,
+								type:3,
+								ids:arr,
+								flag:1,
+						}
+						var index;
+						 index = layer.confirm('确定一键完成吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/bacth/statusBacth",
+							data:data,
+				            traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+									layer.msg(result.message, {icon: 1});
+									self.loadPagination(_datae);
+								}else{
+									layer.msg(result.message, {icon: 2});
+								}
+								layer.close(index);
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 });
+				  })
 				 /* 一键删除 */
 				$('.attendance').on('click',function(){
 					  var  that=$(this);
@@ -1193,6 +1273,7 @@
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
 				  			flag:1,
+				  			status:$('#selectstate').val(),
 				  	}
 		            self.loadPagination(data);
 				});
