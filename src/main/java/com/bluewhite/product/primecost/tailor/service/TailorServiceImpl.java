@@ -20,6 +20,8 @@ import com.bluewhite.product.primecost.tailor.dao.OrdinaryLaserDao;
 import com.bluewhite.product.primecost.tailor.dao.TailorDao;
 import com.bluewhite.product.primecost.tailor.entity.OrdinaryLaser;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
+import com.bluewhite.product.primecostbasedata.dao.PrimeCoefficientDao;
+import com.bluewhite.product.primecostbasedata.entity.PrimeCoefficient;
 import com.bluewhite.product.product.dao.ProductDao;
 
 @Service
@@ -33,6 +35,9 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 	private OrdinaryLaserDao ordinaryLaserDao;
 	@Autowired
 	private ProductDao productdao;
+	@Autowired
+	private PrimeCoefficientDao primeCoefficientDao;
+	
 	
 	@Override
 	public Tailor saveTailor(Tailor tailor) throws Exception {
@@ -68,8 +73,12 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 	
 	
 	private void addcutPartsType(Tailor tailor) {
+		PrimeCoefficient primeCoefficient = null;
+		String type = null;
 		switch (tailor.getTailorTypeId().intValue()) {
 		case 71://普通激光切割
+			type = "ordinarylaser";
+			primeCoefficient = primeCoefficientDao.findByType(type);
 			 OrdinaryLaser  ordinaryLaser = new  OrdinaryLaser();
 			 ordinaryLaser.setProductId(tailor.getProductId());
 			 ordinaryLaser.setTailorTypeId(tailor.getTailorTypeId());
@@ -77,7 +86,8 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			 ordinaryLaser.setTailorName(tailor.getTailorName());
 			 ordinaryLaser.setTailorNumber(tailor.getTailorNumber());
 			 ordinaryLaser.setTailorSize(tailor.getTailorSize());
-//			 ordinaryLaser.setManagePrice();
+			 ordinaryLaser.setRabbTime(ordinaryLaser.getTailorSize()*primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
+			 ordinaryLaserDao.save(ordinaryLaser);
 			break;
 		case 72://绣花激光切割
 			

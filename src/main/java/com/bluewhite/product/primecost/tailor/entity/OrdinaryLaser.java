@@ -11,7 +11,7 @@ import com.bluewhite.base.BaseEntity;
  *
  */
 @Entity
-@Table(name = "pro_tailor")
+@Table(name = "pro_ordinary_laser")
 public class OrdinaryLaser extends BaseEntity<Long>{
 	
 	/**
@@ -74,7 +74,7 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 	 * 激光停顿点
 	 */
 	@Column(name = "stall_point")
-    private String stallPoint;	
+    private Double stallPoint;	
 	
 	/**
 	 * 单双激光头(单 = 1，双 =2， 0.5=3， 1=4)
@@ -207,11 +207,11 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 		this.perimeter = perimeter;
 	}
 
-	public String getStallPoint() {
+	public Double getStallPoint() {
 		return stallPoint;
 	}
 
-	public void setStallPoint(String stallPoint) {
+	public void setStallPoint(Double stallPoint) {
 		this.stallPoint = stallPoint;
 	}
 

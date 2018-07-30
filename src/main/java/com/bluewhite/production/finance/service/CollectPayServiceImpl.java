@@ -44,6 +44,7 @@ import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.service.GroupService;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
+import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.system.user.entity.User;
@@ -335,6 +336,32 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		collectInformation.setWorkshopSurplus(workshopSurplus);
 		return collectInformation;
 	}
+	
+	//将之前的数据汇总到现在的数据中，作为起点
+	private void beforeData(CollectInformation collectInformation){
+		
+		switch (collectInformation.getType()) {
+		case 1:// 生产部一楼质检
+			
+			break;
+		case 2://生产部一楼打包
+			
+			break;
+		case 3://生产部二楼针工
+			
+			break;
+		case 4://生产部二楼机工
+			
+			break;
+		case 5://八号裁剪
+			
+			break;
+		default:
+			break;
+		}
+		
+	}
+	
 
 	@Override
 	public List<MonthlyProduction> monthlyProduction(MonthlyProduction monthlyProduction) {
