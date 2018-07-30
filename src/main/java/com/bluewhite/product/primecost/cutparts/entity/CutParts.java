@@ -126,6 +126,12 @@ public class CutParts extends BaseEntity<Long>{
     private Double manualLoss;
 	
 	/**
+	 * 复合物手动损耗选择
+	 */
+	@Column(name = "composite_manual_loss")
+    private Double compositeManualLoss;
+	
+	/**
 	 * 产品单价
 	 */
 	@Column(name = "product_cost")
@@ -148,6 +154,12 @@ public class CutParts extends BaseEntity<Long>{
 	 */
 	@Column(name = "batch_material_price")
     private Double batchMaterialPrice;
+	
+	/**
+	 * 选择是否双层对复
+	 */
+	@Column(name = "bilayer")
+	private Integer bilayer;
 	
 	/**
 	 * 该复合物单价
@@ -182,6 +194,22 @@ public class CutParts extends BaseEntity<Long>{
 
 	
 
+
+	public Double getCompositeManualLoss() {
+		return compositeManualLoss;
+	}
+
+	public void setCompositeManualLoss(Double compositeManualLoss) {
+		this.compositeManualLoss = compositeManualLoss;
+	}
+
+	public Integer getBilayer() {
+		return bilayer;
+	}
+
+	public void setBilayer(Integer bilayer) {
+		this.bilayer = bilayer;
+	}
 
 	public Integer getNumber() {
 		return number;

@@ -57,10 +57,11 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		}
 		
 		if(cutParts.getComposite()==1){
-			cutParts.setComplexBatchMaterial(cutParts.getAddMaterial()*(cutParts.getManualLoss()+1)*cutParts.getNumber());
+			cutParts.setComplexBatchMaterial(cutParts.getAddMaterial()*(cutParts.getCompositeManualLoss()+1)*cutParts.getNumber());
 			cutParts.setBatchComplexMaterialPrice(cutParts.getComplexBatchMaterial()*cutParts.getProductCost());
 			cutParts.setBatchComplexAddPrice(cutParts.getComplexBatchMaterial()*cutParts.getComplexProductCost());
 		}
+		
 		dao.save(cutParts);
 		//各单片比全套用料
 		List<CutParts> cutPartsList = dao.findByProductId(cutParts.getProductId());

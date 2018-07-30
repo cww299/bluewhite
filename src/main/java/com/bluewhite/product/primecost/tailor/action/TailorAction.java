@@ -20,9 +20,11 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.product.primecost.cutparts.entity.CutParts;
+import com.bluewhite.product.primecost.tailor.entity.OrdinaryLaser;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
+import com.bluewhite.product.primecost.tailor.service.OrdinaryLaserService;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
+import com.bluewhite.product.primecostbasedata.entity.PrimeCoefficient;
 
 @Controller
 public class TailorAction {
@@ -34,7 +36,8 @@ public class TailorAction {
 	@Autowired
 	private TailorService tailorService;
 	
-	
+	@Autowired
+	private OrdinaryLaserService  ordinaryLaserService;
 	
 	
 	/**
@@ -80,6 +83,33 @@ public class TailorAction {
 		return cr;
 	}
 	
+	
+	/**
+	 * 裁剪普通激光填写
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/product/addOrdinaryLaser", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse addOrdinaryLaser(HttpServletRequest request,OrdinaryLaser ordinaryLaser,PrimeCoefficient primeCoefficient) {
+		CommonResponse cr = new CommonResponse();
+		if(StringUtils.isEmpty(ordinaryLaser.getId())){
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("产品不能为空");
+		}else{
+			try {
+				ordinaryLaserService.saveordinaryLaser(ordinaryLaser,primeCoefficient);
+			} catch (Exception e) {
+				cr.setMessage(e.getMessage());
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				return cr;
+			}
+			cr.setMessage("添加成功");
+		}
+		return cr;
+	}
 	
 	
 	
