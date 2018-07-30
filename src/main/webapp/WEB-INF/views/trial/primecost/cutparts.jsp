@@ -54,6 +54,12 @@
 											查&nbsp找
 									</button>
 								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button" id="save" class="btn btn-success  btn-sm btn-3d">
+									保存
+									</button>
+								</span>
 								 <td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
 									<button type="button" id="addCutting" class="btn btn-success  btn-sm btn-3d export">
@@ -298,7 +304,7 @@
 				     
 		      		  success: function (result) {
 		      			 $(result.data).each(function(i,o){
-		      				html +='<option value="'+o.id+'">'+o.name+'</option>'
+		      				html +='<option value="'+o.name+'">'+o.name+'</option>'
 		      			}); 
 				       var htmlto='<select class="  selectgroupChange" style="border: none;width:50px; height:30px; background-color: #BFBFBF;"><option value=""></option>'+html+'</select>'
 					   	$(".selectCompany").html(htmlto); 
@@ -312,6 +318,69 @@
 			
 			}
 			this.events = function(){
+				/*保存  */
+				$('#save').on('click',function(){
+					
+					var leng = $(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').length;
+				for (var i = 0; i <leng; i++) {
+					var postData = {
+						cutPartsName:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.cuttingName').val(),
+						cutPartsNumber:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.sliceNumber').val(),
+						sliceNumber:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.materielNumber').text(),
+						materielName:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.materiel').val(),
+						composite:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.selectname').val(),
+						oneMaterial:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.oneMaterial').val(),
+						unit:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.selectgroupChange').val(),
+						manualLoss:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.manualLoss').val(),
+						productCost:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unitPrice').text(),
+						productRemark:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unit').text(),
+						complexMaterielName:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.complexMateriel').val(),
+						complexMaterielNumber:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.complexMaterielNumber').text(),
+					}
+					
+					console.log(postData)
+					
+						
+				}
+						
+					
+					var index;
+					 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
+					$.ajax({
+						url:"${ctx}/product/addCutParts",
+						data:postData,
+						type:"GET",
+						beforeSend:function(){
+							index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+						},
+						
+						success:function(result){
+							if(0==result.code){
+							layer.msg("删除成功！", {icon: 1});
+							var _data={
+									page:1,
+							  		size:13,
+									bacthId:self.getCache(),
+									type:3,
+							}
+							self.loadPaginationto(_data)
+							layer.close(index);
+							}else{
+								layer.msg("删除失败！", {icon: 1});
+								layer.close(index);
+							}
+						},error:function(){
+							layer.msg("操作失败！", {icon: 2});
+							layer.close(index);
+						}
+					});
+					 })
+		})
+				
+				
+				
 				//提示产品名
 				$("#productName").typeahead({
 					//ajax 拿way数据
@@ -361,20 +430,21 @@
 				$('#addCutting').on('click',function(){
 					
 					 html='<tr><td  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:68px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" /></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center" /></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center sliceNumber" /></td>'
 					 +'<td class="text-center edit materielNumber " ></td>'
 					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"    style="border: none;width:120px; height:30px; background-color: #BFBFBF;" class="text-center   materiel"  /></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><select class="text-center  selectname" style="border: none;width:60px; height:30px; background-color: #BFBFBF;"><option value=""></option><option value="复">复</option></select></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:60px; height:30px; background-color: #BFBFBF;" class="text-center" /></td>'
-					 +'<td class="text-center edit selectCompany" style="padding: 2px 0px 2px 0px;></td><td class="text-center edit name"></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><select class="text-center  selectname" style="border: none;width:60px; height:30px; background-color: #BFBFBF;"><option value="0"></option><option value="1">复</option></select></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:60px; height:30px; background-color: #BFBFBF;" class="text-center oneMaterial" /></td>'
+					 +'<td class="text-center edit selectCompany" style="padding: 2px 0px 2px 0px;></td>'
+					 +'<td class="text-center edit name"></td>'
 					 +'<td class="text-center edit name"></td>'
 					 +'<td class="text-center edit name"</td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"  style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center" /></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"  style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center manualLoss" /></td>'
 					 +'<td class="text-center edit unitPrice" ></td>'
 					 +'<td class="text-center edit unit"></td>'
 					 +'<td class="text-center edit name"> </td>'
 					 +'<td class="text-center edit name"> </td>'
-					 +'<td class="text-center edit name"></td>'
+					 +'<td class="text-center edit complexMaterielNumber"></td>'
 					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"    style="border: none;width:120px; height:30px; background-color: #BFBFBF;" class="text-center   complexMateriel"  /></td>'
 					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><select class="text-center " style="border: none;width:90px; height:30px; background-color: #BFBFBF;"><option value=""></option><option value="面料对复合">面料对复合</option></select></td>'
 					 +'<td class="text-center edit unitPricetw" ></td>'
