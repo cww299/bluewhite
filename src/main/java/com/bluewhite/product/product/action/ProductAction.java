@@ -93,14 +93,20 @@ public class ProductAction {
 	@RequestMapping(value = "/addProduct", method = RequestMethod.POST)
 	@ResponseBody
 	@SysLogAspectAnnotation(description = "产品新增操作", module = "产品管理", operateType = "增加", logType = SysLog.ADMIN_LOG_TYPE)
-	public CommonResponse addProduct(HttpServletRequest request,Product product) {
+	public CommonResponse addProduct(HttpServletRequest request,Product product,PageParameter page) {
 		CommonResponse cr = new CommonResponse();
 		if(StringUtils.isEmpty(product.getNumber()) && StringUtils.isEmpty(product.getName())){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品编号和产品名都不能为空");
 		}else{
-			productService.save(product);
-			cr.setMessage("添加成功");
+			List<Product> productList = productService.findPages(product,page).getRows();
+			if(productList.size()>0){
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				cr.setMessage("已有该产品编号和产品名的产品，请检查后再次添加");
+			}else{
+				productService.save(product);
+				cr.setMessage("添加成功");
+			}
 		}
 		return cr;
 	}
