@@ -22,11 +22,14 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneTimeDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseThreeDao;
+import com.bluewhite.product.primecostbasedata.dao.PrimeCoefficientDao;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.BaseOneTime;
 import com.bluewhite.product.primecostbasedata.entity.BaseThree;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
+import com.bluewhite.product.primecostbasedata.entity.PrimeCoefficient;
 import com.bluewhite.product.primecostbasedata.service.MaterielService;
+import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 
 @Controller
 public class BaseOneAction {
@@ -43,6 +46,14 @@ public class BaseOneAction {
 	
 	@Autowired
 	private MaterielService materielService;
+	
+	@Autowired
+	private PrimeCoefficientDao primeCoefficientDao;
+	
+	/**
+	 * 时间常量
+	 */
+	private final static Integer  TIME = 60;
 	
 	/**
 	 * 产品基础数据获取
@@ -138,6 +149,65 @@ public class BaseOneAction {
 		cr.setMessage("成功");
 		return cr;
 	}
+	
+	
+	/**
+	 * 修改 裁剪页面的基础系数
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/product/updatePrimeCoefficient", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updatePrimeCoefficient(HttpServletRequest request,PrimeCoefficient primeCoefficient) {
+		CommonResponse cr = new CommonResponse();
+		if(primeCoefficient.getId()!=null){
+			PrimeCoefficient oldPrimeCoefficient = primeCoefficientDao.findOne(primeCoefficient.getId());
+			//每CM 用时/秒
+			oldPrimeCoefficient.setTime(1/primeCoefficient.getPeripheralLaser());
+			//被/数
+			oldPrimeCoefficient.setQuilt(primeCoefficient.getQuilt());
+			//每秒设备折旧费用
+			oldPrimeCoefficient.setDepreciation(primeCoefficient.getWorth()/primeCoefficient.getShareDay()
+					/primeCoefficient.getWorkTime()/TIME/TIME);
+			//每秒激光管费用
+			oldPrimeCoefficient.setLaserTubePriceSecond(primeCoefficient.getLaserTubePrice()/primeCoefficient.getShareTime()/TIME/TIME);
+			//每秒维护费用
+			oldPrimeCoefficient.setMaintenanceChargeSecond(primeCoefficient.getMaintenanceCharge()/primeCoefficient.getShareTimeTwo()/TIME/TIME);
+			//每秒耗3费
+			oldPrimeCoefficient.setPerSecondPrice((primeCoefficient.getOmnHorElectric()+primeCoefficient.getOmnHorWater()+primeCoefficient.getOmnHorHouse())/TIME/TIME);
+			//每秒工价
+			oldPrimeCoefficient.setPerSecondMachinist(primeCoefficient.getOmnHorMachinist()/TIME/TIME);
+			//每秒管理费用
+			oldPrimeCoefficient.setPerSecondManage(primeCoefficient.getManagePrice()/primeCoefficient.getManageEquipmentNumber()/25/8/TIME/TIME);
+			primeCoefficientDao.save(oldPrimeCoefficient);
+			cr.setMessage("修改成功");
+		}else{
+			cr.setMessage("不能为空");
+		}
+		return cr;
+	}
+	
+	
+	
+	/**
+	 * 裁剪页面的基础系数
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/product/getPrimeCoefficient", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getPrimeCoefficient(HttpServletRequest request,String type) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(primeCoefficientDao.findByType(type));
+		return cr;
+	}
+	
+	
+	
 	
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {

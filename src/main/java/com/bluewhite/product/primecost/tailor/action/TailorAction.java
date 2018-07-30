@@ -19,6 +19,8 @@ import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
+import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
 
@@ -31,6 +33,8 @@ public class TailorAction {
 	
 	@Autowired
 	private TailorService tailorService;
+	
+	
 	
 	
 	/**
@@ -59,6 +63,24 @@ public class TailorAction {
 		}
 		return cr;
 	}
+	
+	
+	/**
+	 * 分页查看裁剪
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/product/getTailor", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getTailor(HttpServletRequest request,PageParameter page,Tailor tailor) {
+		CommonResponse cr = new CommonResponse(tailorService.findPages(tailor,page));
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	
 	
 	
 	@InitBinder

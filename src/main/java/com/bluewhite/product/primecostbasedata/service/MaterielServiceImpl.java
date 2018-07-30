@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneDao;
 import com.bluewhite.product.primecostbasedata.dao.MaterielDao;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
@@ -37,7 +38,7 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 					}
 		        	//按产品名称过滤
 		        	if (materiel.getName() != null) {
-						predicate.add(cb.like(root.get("name").as(String.class),"%"+materiel.getName()+"%"));
+						predicate.add(cb.like(root.get("name").as(String.class),"%"+StringUtil.specialStrKeyword(materiel.getName())+"%"));
 					}
 					Predicate[] pre = new Predicate[predicate.size()];
 					query.where(predicate.toArray(pre));
@@ -60,7 +61,7 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 				}
 	        	//按产品名称过滤
 	        	if (baseOne.getName() != null) {
-					predicate.add(cb.like(root.get("name").as(String.class),"%"+baseOne.getName()+"%"));
+					predicate.add(cb.like(root.get("name").as(String.class),"%"+StringUtil.specialStrKeyword(baseOne.getName())+"%"));
 				}
 				Predicate[] pre = new Predicate[predicate.size()];
 				query.where(predicate.toArray(pre));
