@@ -324,9 +324,11 @@
 					var leng = $(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').length;
 				for (var i = 0; i <leng; i++) {
 					var postData = {
+						productId:6017,
+						number:9000,
 						cutPartsName:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.cuttingName').val(),
 						cutPartsNumber:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.sliceNumber').val(),
-						sliceNumber:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.materielNumber').text(),
+						materielNumber:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.materielNumber').text(),
 						materielName:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.materiel').val(),
 						composite:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.selectname').val(),
 						oneMaterial:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.oneMaterial').val(),
@@ -338,20 +340,16 @@
 						complexMaterielNumber:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.complexMaterielNumber').text(),
 						bilayer:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.bilayer').val(),
 						complexProductCost:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unitPricetw').text(),			
+						complexProductRemark:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unittw').text(),
+						compositeManualLoss:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.compositeManualLoss').val(),
 					}
-					
-					console.log(postData)
-					
-						
-				}
-						
-					
 					var index;
-					 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
+					 index = layer.confirm('确定新增吗', {btn: ['确定', '取消']},function(){
+					console.log(postData)
 					$.ajax({
 						url:"${ctx}/product/addCutParts",
 						data:postData,
-						type:"GET",
+						type:"POST",
 						beforeSend:function(){
 							index = layer.load(1, {
 								  shade: [0.1,'#fff'] //0.1透明度的白色背景
@@ -360,17 +358,15 @@
 						
 						success:function(result){
 							if(0==result.code){
-							layer.msg("删除成功！", {icon: 1});
-							var _data={
+							layer.msg("新增成功！", {icon: 1});
+							/* var _data={
 									page:1,
 							  		size:13,
-									bacthId:self.getCache(),
-									type:3,
 							}
-							self.loadPaginationto(_data)
+							self.loadPaginationto(_data) */
 							layer.close(index);
 							}else{
-								layer.msg("删除失败！", {icon: 1});
+								layer.msg("新增失败！", {icon: 2});
 								layer.close(index);
 							}
 						},error:function(){
@@ -379,6 +375,12 @@
 						}
 					});
 					 })
+					
+						
+				}
+						
+					
+					
 		})
 				
 				
@@ -451,7 +453,7 @@
 					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><select class="text-center bilayer" style="border: none;width:90px; height:30px; background-color: #BFBFBF;"><option value="0"></option><option value="1">面料对复合</option></select></td>'
 					 +'<td class="text-center edit unitPricetw" ></td>'
 					 +'<td class="text-center edit unittw" ></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"  style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center" /></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"  style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center compositeManualLoss" /></td>'
 					 +'<td class="text-center edit name"> </td>'
 					 +'<td class="text-center edit name"> </td>'
 					 +'<td class="text-center edit name"> </td></tr>';
