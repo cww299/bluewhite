@@ -80,11 +80,12 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		double batchComplexMaterialPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchComplexMaterialPrice()!=null).mapToDouble(CutParts::getBatchComplexMaterialPrice).sum();
 		double batchComplexAddPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchComplexAddPrice()!=null).mapToDouble(CutParts::getBatchComplexAddPrice).sum();
 		PrimeCost primeCost = product.getPrimeCost();
-		if(primeCost==null){
+		if(primeCost.getId()==null){
 			 primeCost = new PrimeCost();
 		}
 		primeCost.setNumber(cutParts.getNumber());
 		primeCost.setCutPartsPrice((batchMaterialPrice+batchComplexMaterialPrice+batchComplexAddPrice)/cutParts.getNumber());
+		product.setPrimeCost(primeCost);
 		productdao.save(product);
 		return cutParts;
 	}
@@ -131,9 +132,9 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		}
 		///同时更新产品成本价格表(面料价格(含复合物料和加工费)
 		Product product =  productdao.findOne(cutParts.getProductId());
-		double batchMaterialPrice = cutPartsList.stream().mapToDouble(CutParts::getBatchMaterialPrice).sum();
-		double batchComplexMaterialPrice = cutPartsList.stream().mapToDouble(CutParts::getBatchComplexMaterialPrice).sum();
-		double batchComplexAddPrice = cutPartsList.stream().mapToDouble(CutParts::getBatchComplexAddPrice).sum();
+		double batchMaterialPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchMaterialPrice()!=null).mapToDouble(CutParts::getBatchMaterialPrice).sum();
+		double batchComplexMaterialPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchComplexMaterialPrice()!=null).mapToDouble(CutParts::getBatchComplexMaterialPrice).sum();
+		double batchComplexAddPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchComplexAddPrice()!=null).mapToDouble(CutParts::getBatchComplexAddPrice).sum();
 		product.getPrimeCost().setCutPartsPrice(batchMaterialPrice+batchComplexMaterialPrice+batchComplexAddPrice);
 		productdao.save(product);
 		dao.save(cutPartsList);
