@@ -41,7 +41,7 @@
 						<div class="col-xs-11 col-sm-11 col-md-11">
 							<div class="input-group"> 
 								<table><tr>
-								<td>产品名:</td><td><input type="text" name="name" id="productName" placeholder="请输入产品名称" class="form-control search-query name" data-provide="typeahead" autocomplete=off/></td>
+								<td>产品名:</td><td><input type="text" name="name" id="productName" placeholder="请输入产品名称" class="form-control search-query name" data-provide="typeahead" autocomplete="off"/ ></td>
 								<td>&nbsp&nbsp</td>
 								<td>默认数量:</td><td><input type="text" name="number" id="number" placeholder="请输入默认数量" class="form-control search-query number" /></td>
 									<td>&nbsp&nbsp</td>
@@ -84,13 +84,16 @@
                                             <th class="text-center">产品单价</th>
                                             <th class="text-center">产品单位</th>
                                             <th class="text-center">单片用料</th>
+                                            <th class="text-center">单片价格</th>
                                             <th class="text-center">复合物料编号</th>
                                             <th class="text-center">复合物料名称</th>
                                             <th class="text-center">是否双层对复</th>
+                                            <th class="text-center">复合物单价</th>
+                                            <th class="text-center">复合物备注</th>
                                             <th class="text-center">复合物料耗损比</th>
                                             <th class="text-center">复合物用料</th>
                                             <th class="text-center">复合单片价格</th>
-                                            <th class="text-center">符合加工费价格</th>
+                                            <th class="text-center">复合加工费价格</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent">
@@ -282,62 +285,33 @@
 								return item.name
 						},
 					});
-			
-				$(".materiel").on('click',function(){
-					
-					var that=$(this);
+				//选择单位
+				var data = {
+					type:"unit",
+				}
+				var index;
+			    var html = '';
+			    $.ajax({
+				      url:"${ctx}/product/getBaseOne",
+				      data:data,
+				      type:"GET",
+				     
+		      		  success: function (result) {
+		      			 $(result.data).each(function(i,o){
+		      				html +='<option value="'+o.id+'">'+o.name+'</option>'
+		      			}); 
+				       var htmlto='<select class="  selectgroupChange" style="border: none;width:50px; height:30px; background-color: #BFBFBF;"><option value=""></option>'+html+'</select>'
+					   	$(".selectCompany").html(htmlto); 
+				      },error:function(){
+							layer.msg("加载失败！", {icon: 2});
+							layer.close(index);
+					  }
+				  });
 				
-				//提示物料名
-				$(".materiel").typeahead({
-					//ajax 拿way数据
-					source : function(query, process) {
-							return $.ajax({
-								url : '${ctx}/product/getMateriel',
-								type : 'GET',
-								data : {
-									name:query,
-									type:"material",
-								},
-								success : function(result) {
-									//转换成 json集合
-									 var resultList = result.data.map(function (item) {
-										 	//转换成 json对象
-					                        var aItem = {name: item.name, number:item.number}
-					                        //处理 json对象为字符串
-					                        return JSON.stringify(aItem);
-					                    });
-									//提示框返回数据
-									 return process(resultList);
-								},
-							})
-							
-							//提示框显示
-						}, highlighter: function (item) {
-						    //转出成json对象
-							 var item = JSON.parse(item);
-							return item.name+"-"+item.number
-							//按条件匹配输出
-		                }, matcher: function (item) {
-		                	//转出成json对象
-					        var item = JSON.parse(item);
-					        that.parent().prev().find('.materielNumber').text(item.number);
-					    	return item.name
-					    },
-						//item是选中的数据
-						updater:function(item){
-							//转出成json对象
-							var item = JSON.parse(item);
-							that.parent().parent().find('.materielNumber').text(item.number);
-							console.log(that.parent().parent().find('.materielNumber').text(item.number))
-								return item.name
-						},
-						
-					});
-				})
+				
+			
 			}
 			this.events = function(){
-				
-				
 				//提示产品名
 				$("#productName").typeahead({
 					//ajax 拿way数据
@@ -361,7 +335,6 @@
 									 return process(resultList);
 								},
 							})
-							
 							//提示框显示
 						}, highlighter: function (item) {
 						    //转出成json对象
@@ -374,7 +347,6 @@
 					    	return item.name
 					    },
 						//item是选中的数据
-						
 						updater:function(item){
 							//转出成json对象
 							var item = JSON.parse(item);
@@ -384,11 +356,147 @@
 					});
 				
 				//新增裁片
+					
+					var html="";
 				$('#addCutting').on('click',function(){
-					var html='<tr><td  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:68px; height:30px;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" /></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit materielNumber" ></td><td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"    style="border: none;width:120px; height:30px;" class="text-center  materiel" /></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td><td class="text-center edit name" contentEditable="true"></td></tr>';
+					
+					 html='<tr><td  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:68px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" /></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center" /></td>'
+					 +'<td class="text-center edit materielNumber " ></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"    style="border: none;width:120px; height:30px; background-color: #BFBFBF;" class="text-center   materiel"  /></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><select class="text-center  selectname" style="border: none;width:60px; height:30px; background-color: #BFBFBF;"><option value=""></option><option value="复">复</option></select></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:60px; height:30px; background-color: #BFBFBF;" class="text-center" /></td>'
+					 +'<td class="text-center edit selectCompany" style="padding: 2px 0px 2px 0px;></td><td class="text-center edit name"></td>'
+					 +'<td class="text-center edit name"></td>'
+					 +'<td class="text-center edit name"</td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"  style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center" /></td>'
+					 +'<td class="text-center edit unitPrice" ></td>'
+					 +'<td class="text-center edit unit"></td>'
+					 +'<td class="text-center edit name"> </td>'
+					 +'<td class="text-center edit name"> </td>'
+					 +'<td class="text-center edit name"></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"    style="border: none;width:120px; height:30px; background-color: #BFBFBF;" class="text-center   complexMateriel"  /></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><select class="text-center " style="border: none;width:90px; height:30px; background-color: #BFBFBF;"><option value=""></option><option value="面料对复合">面料对复合</option></select></td>'
+					 +'<td class="text-center edit unitPricetw" ></td>'
+					 +'<td class="text-center edit unittw" ></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"  style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center" /></td>'
+					 +'<td class="text-center edit name"> </td>'
+					 +'<td class="text-center edit name"> </td>'
+					 +'<td class="text-center edit name"> </td></tr>';
 					$("#tablecontent").append(html);
 					self.mater();
 				})
+			
+				var that;
+				$(document).on('click','.materiel',function(){
+					 that=$(this)
+					//提示物料名
+					$(".materiel").typeahead({
+						//ajax 拿way数据
+						scrollHeight:1,
+						source : function(query, process) {
+								return $.ajax({
+									url : '${ctx}/product/getMateriel',
+									type : 'GET',
+									data : {
+										name:query,
+										type:"material",
+									},
+									success : function(result) {
+										//转换成 json集合
+										 var resultList = result.data.map(function (item) {
+											 	//转换成 json对象
+						                        var aItem = {name: item.name, number:item.number, price:item.price, unit:item.unit}
+						                        //处理 json对象为字符串
+						                        return JSON.stringify(aItem);
+						                    });
+										//提示框返回数据
+										 return process(resultList);
+									},
+								})
+								
+								//提示框显示
+							}, highlighter: function (item) {
+							    //转出成json对象
+								 var item = JSON.parse(item);
+								return item.name+"-"+item.number
+								//按条件匹配输出
+			                }, matcher: function (item) {
+			                	//转出成json对象
+						        var item = JSON.parse(item);
+						        that.parent().prev().text(item.number);
+						        that.parent().parent().find('.unitPrice').text(item.price);
+						        that.parent().parent().find('.unit').text(item.unit);
+						    	return item.name
+						    },
+							//item是选中的数据
+							updater:function(item){
+								//转出成json对象
+								var item = JSON.parse(item);
+								that.parent().prev().text(item.number);
+								that.parent().parent().find('.unitPrice').text(item.price);
+								that.parent().parent().find('.unit').text(item.unit);
+									return item.name
+							},
+							
+						});
+				});
+			
+				var thae;
+				$(document).on('click','.complexMateriel',function(){
+					 thae=$(this)
+					//提示复合物料名
+					$(".complexMateriel").typeahead({
+						//ajax 拿way数据
+						scrollHeight:1,
+						source : function(query, process) {
+								return $.ajax({
+									url : '${ctx}/product/getMateriel',
+									type : 'GET',
+									data : {
+										name:query,
+										type:"material",
+									},
+									success : function(result) {
+										//转换成 json集合
+										 var resultList = result.data.map(function (item) {
+											 	//转换成 json对象
+						                        var aItem = {name: item.name, number:item.number, price:item.price, unit:item.unit}
+						                        //处理 json对象为字符串
+						                        return JSON.stringify(aItem);
+						                    });
+										//提示框返回数据
+										 return process(resultList);
+									},
+								})
+								
+								//提示框显示
+							}, highlighter: function (item) {
+							    //转出成json对象
+								 var item = JSON.parse(item);
+								return item.name+"-"+item.number
+								//按条件匹配输出
+			                }, matcher: function (item) {
+			                	//转出成json对象
+						        var item = JSON.parse(item);
+						        thae.parent().prev().text(item.number);
+						        thae.parent().parent().find('.unitPricetw').text(item.price);
+						        thae.parent().parent().find('.unittw').text(item.unit);
+						    	return item.name
+						    },
+							//item是选中的数据
+							updater:function(item){
+								//转出成json对象
+								var item = JSON.parse(item);
+								thae.parent().prev().text(item.number);
+								thae.parent().parent().find('.unitPricetw').text(item.price);
+								thae.parent().parent().find('.unittw').text(item.unit);
+									return item.name
+							},
+							
+						});
+				});
+				
 			}
    	}
    			var login = new Login();
