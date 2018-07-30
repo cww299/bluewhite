@@ -336,6 +336,8 @@
 						productRemark:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unit').text(),
 						complexMaterielName:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.complexMateriel').val(),
 						complexMaterielNumber:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.complexMaterielNumber').text(),
+						bilayer:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.bilayer').val(),
+						complexProductCost:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unitPricetw').text(),			
 					}
 					
 					console.log(postData)
@@ -446,7 +448,7 @@
 					 +'<td class="text-center edit name"> </td>'
 					 +'<td class="text-center edit complexMaterielNumber"></td>'
 					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"    style="border: none;width:120px; height:30px; background-color: #BFBFBF;" class="text-center   complexMateriel"  /></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><select class="text-center " style="border: none;width:90px; height:30px; background-color: #BFBFBF;"><option value=""></option><option value="面料对复合">面料对复合</option></select></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><select class="text-center bilayer" style="border: none;width:90px; height:30px; background-color: #BFBFBF;"><option value="0"></option><option value="1">面料对复合</option></select></td>'
 					 +'<td class="text-center edit unitPricetw" ></td>'
 					 +'<td class="text-center edit unittw" ></td>'
 					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"  style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center" /></td>'
