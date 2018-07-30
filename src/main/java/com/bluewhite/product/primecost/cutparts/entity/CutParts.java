@@ -141,7 +141,7 @@ public class CutParts extends BaseEntity<Long>{
 	 * 产品备注
 	 */
 	@Column(name = "product_remark")
-    private Double productRemark;
+    private String productRemark;
 	
 	/**
 	 * 当批各单片用料
@@ -168,7 +168,7 @@ public class CutParts extends BaseEntity<Long>{
     private Double complexProductCost;
 	
 	/**
-	 * 产品备注
+	 * 复合物产品备注
 	 */
 	@Column(name = "complex_product_remark")
     private String complexProductRemark;
@@ -411,11 +411,11 @@ public class CutParts extends BaseEntity<Long>{
 		this.productCost = productCost;
 	}
 
-	public Double getProductRemark() {
+	public String getProductRemark() {
 		return productRemark;
 	}
 
-	public void setProductRemark(Double productRemark) {
+	public void setProductRemark(String productRemark) {
 		this.productRemark = productRemark;
 	}
 
