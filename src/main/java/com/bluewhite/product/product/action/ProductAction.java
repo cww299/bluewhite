@@ -73,7 +73,7 @@ public class ProductAction {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON
 				.get()
-				.addRetainTerm(Product.class,"id","primeCost")
+				.addRetainTerm(Product.class,"id","primeCost","name")
 				.addRetainTerm(PrimeCost.class,"number","cutPartsPrice","otherCutPartsPrice","cutPrice","machinistPrice","embroiderPrice"
 						,"embroiderPrice","needleworkPrice","packPrice","freightPrice","freightPrice","invoice","taxIncidence"
 						,"surplus","budget","budgetRate","actualCombat","actualCombatRate")
