@@ -131,9 +131,6 @@
 </div>
 </div>
  <!--隐藏框 产品新增结束  -->
-
-
-
 <div id="savegroup" style="display: none;">
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
@@ -183,6 +180,35 @@
 </div>
 </div>
 <!--隐藏框 工序加绩分配结束  -->
+
+
+
+<!--隐藏框 查看加价开始  -->
+<div id="savegrouptw" style="display: none;">
+<div class="modal fade" id="myModaltw" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					查看加价
+				</h4>
+			</div>
+			<div class="modal-body">
+				
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+</div>
+<!--隐藏框 查看加价结束  -->
+
     </section>
     
    
@@ -259,7 +285,7 @@
 		      				+'<td class="text-center ">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
 		      				+'<td class="text-center ">'+parseFloat((o.payB).toFixed(4))+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
-		      				+'<td class="text-center ">'+o.performance+'</td>'
+		      				+'<td class="text-center "><button class="btn btn-primary btn-trans btn-sm savemodePerformance" data-toggle="modal" data-target="#myModaltw" data-id="'+o.id+'")">查看加价</button></td>'
 		      				+'<td class="text-center ">'+parseFloat((o.performancePrice).toFixed(4))+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
@@ -426,7 +452,44 @@
 					
 				})
 				
-				
+				//查看加价
+				$('.savemodePerformance').on('click',function(){
+					var id=$(this).data('id')
+					 var display =$("#savegrouptw").css("display")
+					 if(display=='none'){
+							$("#savegrouptw").css("display","block");  
+						}
+					 var postData={
+							id:id,
+					}
+					 var arr=new Array();
+					var html="";
+					$.ajax({
+						url:"${ctx}/task/taskUser",
+						data:postData,
+						type:"GET",
+						beforeSend:function(){
+							index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+						},
+						
+						success:function(result){
+							$(result.data).each(function(i,o){
+							html+=o.userName+"&nbsp&nbsp&nbsp&nbsp"
+							})
+							$('.modal-body').html(html);
+							layer.close(index);
+							
+						},error:function(){
+							layer.msg("操作失败！", {icon: 2});
+							layer.close(index);
+						}
+					}); 
+					
+					
+					
+				})
 				
 			}
 			this.checkedd=function(){
@@ -515,7 +578,6 @@
 						  CheckCount++;
 						  arr=$(this).val();  
 						});
-					  console.log(CheckCount)
 					  if(CheckCount>1){
 							return layer.msg("只能选择一条任务", {icon: 2});
 						}
@@ -657,6 +719,7 @@
 						   end:function(){
 							  $('.addDictDivTypeFormtw')[0].reset(); 
 							  $("#addDictDivTypetw").hide();
+							  $('.select').text("");
 							  var date={
 										page:self.getCount(),
 								  		size:13,	
