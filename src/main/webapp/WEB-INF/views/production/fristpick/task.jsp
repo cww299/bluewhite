@@ -465,7 +465,7 @@
 					 var arr=new Array();
 					var html="";
 					$.ajax({
-						url:"${ctx}/task/taskUser",
+						url:"${ctx}/task/getUserPerformance",
 						data:postData,
 						type:"GET",
 						beforeSend:function(){
@@ -476,7 +476,7 @@
 						
 						success:function(result){
 							$(result.data).each(function(i,o){
-							html+=o.userName+"&nbsp&nbsp&nbsp&nbsp"
+							html+=o.username+":"+o.performance+"&nbsp&nbsp&nbsp&nbsp"
 							})
 							$('.modal-body').html(html);
 							layer.close(index);
