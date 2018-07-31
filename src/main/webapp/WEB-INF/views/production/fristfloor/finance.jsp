@@ -408,7 +408,7 @@
 		      				+'<td class="text-center ">'+o.allotTime+'</td>'
 		      				+'<td class="text-center edit workTime">'+o.workTime+'</td>'
 		      				+'<td class="text-center  ">'+o.workPrice+'</td>'
-		      				+'<td class="text-center  ">'+o.payNumber+'</td>'
+		      				+'<td class="text-center  ">'+parseFloat((o.payNumber).toFixed(2))+'</td>'
 		      				+'<td class="text-center"> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 		      			}); 
 				        //显示分页

@@ -270,7 +270,7 @@
 							var postData = {
 									ids:$(this).data('id'),
 							}
-							
+							var that=$(this);
 							var index;
 							 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
 							$.ajax({
@@ -286,7 +286,7 @@
 								success:function(result){
 									if(0==result.code){
 									layer.msg("删除成功！", {icon: 1});
-									self.loadPagination(data)
+									that.parent().parent().hide();
 									layer.close(index);
 									}else{
 										layer.msg("删除失败！", {icon: 1});

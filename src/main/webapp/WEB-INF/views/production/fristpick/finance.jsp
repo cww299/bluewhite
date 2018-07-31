@@ -294,8 +294,8 @@
 		      				+'<td class="text-center edit ">'+o.productName+'</td>'
 		      				+'<td class="text-center edit ">'+o.task.procedureName+'</td>'
 		      				+'<td class="text-center edit ">'+o.allotTime+'</td>'
-		      				+'<td class="text-center edit ">'+parseFloat((a).toFixed(3))+'</td>'
-		      				+'<td class="text-center edit ">'+parseFloat((o.payNumber).toFixed(3))+'</td></tr>'
+		      				+'<td class="text-center edit ">'+parseFloat((a).toFixed(4))+'</td>'
+		      				+'<td class="text-center edit ">'+parseFloat((o.payNumber).toFixed(4))+'</td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -350,8 +350,8 @@
 			      				+'<td class="text-center edit ">'+o.userName+'</td>'
 			      				+'<td class="text-center edit ">'+o.taskName+'</td>'
 			      				+'<td class="text-center edit ">'+o.allotTime+'</td>'
-			      				+'<td class="text-center edit ">'+parseFloat((o.performancePayNumber).toFixed(3))+'</td>'
-			      				+'<td class="text-center edit ">'+parseFloat((o.payNumber).toFixed(3))+'</td></tr>'
+			      				+'<td class="text-center edit ">'+parseFloat((o.performancePayNumber).toFixed(4))+'</td>'
+			      				+'<td class="text-center edit ">'+parseFloat((o.payNumber).toFixed(4))+'</td></tr>'
 								
 			      			}); 
 					        //显示分页
@@ -407,7 +407,7 @@
 		      				+'<td class="text-center ">'+o.allotTime+'</td>'
 		      				+'<td class="text-center edit workTime">'+o.workTime+'</td>'
 		      				+'<td class="text-center  ">'+o.workPrice+'</td>'
-		      				+'<td class="text-center  ">'+o.payNumber+'</td>'
+		      				+'<td class="text-center  ">'+parseFloat((o.payNumber).toFixed(4))+'</td>'
 		      				+'<td class="text-center"> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 		      			}); 
 				        //显示分页
