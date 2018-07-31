@@ -338,7 +338,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 		List<PayB> payBList = payBDao.findByTaskId(id);
 		List<Map<String,Object>> listMap = new ArrayList<Map<String,Object>>();
 		Map<String,Object> map = null;
-		Map<Object, List<PayB>> mapPayB = payBList.stream().filter(PayB->!PayB.getPerformancePayNumber().equals(null)).collect(Collectors.groupingBy(PayB::getPerformance,Collectors.toList()));
+		Map<Object, List<PayB>> mapPayB = payBList.stream().filter(PayB->PayB.getPerformance()!=null).collect(Collectors.groupingBy(PayB::getPerformance,Collectors.toList()));
 		for(Object ps : mapPayB.keySet()){
 			map = new HashMap<String, Object>();
 			List<PayB> psList= mapPayB.get(ps);
