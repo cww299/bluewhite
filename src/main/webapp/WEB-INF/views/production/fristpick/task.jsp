@@ -476,7 +476,7 @@
 						
 						success:function(result){
 							$(result.data).each(function(i,o){
-							html+=o.username+":"+o.performance+"&nbsp&nbsp&nbsp&nbsp"
+							html+=o.performance+":"+o.username+"&nbsp&nbsp&nbsp&nbsp"
 							})
 							$('.modal-body').html(html);
 							layer.close(index);
