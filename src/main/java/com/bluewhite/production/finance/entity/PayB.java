@@ -56,6 +56,18 @@ public class PayB extends BaseEntity<Long>{
 	private Double performancePayNumber;
 	
 	/**
+	 * 是否工序加价选择(任务加绩选项)
+	 */
+	@Column(name = "performance")
+	private String performance;
+	
+	/**
+	 * 要添加的分价值（任务加绩基础比值）
+	 */
+	@Column(name = "performance_number")
+	private Double performanceNumber;
+	
+	/**
 	 * 任务id
 	 */
 	@Column(name = "task_id")
@@ -132,6 +144,22 @@ public class PayB extends BaseEntity<Long>{
 	
 	
 	
+
+	public String getPerformance() {
+		return performance;
+	}
+
+	public void setPerformance(String performance) {
+		this.performance = performance;
+	}
+
+	public Double getPerformanceNumber() {
+		return performanceNumber;
+	}
+
+	public void setPerformanceNumber(Double performanceNumber) {
+		this.performanceNumber = performanceNumber;
+	}
 
 	public Task getTask() {
 		return task;
