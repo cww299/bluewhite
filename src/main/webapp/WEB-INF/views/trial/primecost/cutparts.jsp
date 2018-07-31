@@ -228,7 +228,7 @@
 		      				+'<td class="text-center edit name" >'+o.batchMaterialPrice+'</td>'
 		      				+'<td class="text-center edit name" >'+o.complexMaterielNumber+'</td>'
 		      				+'<td class="text-center edit name" >'+o.complexMaterielName+'</td>'
-		      				+'<td class="text-center edit name" >'+o.bilayer+'</td>'
+		      				+'<td class="text-center edit name" >'+o.doubleComposite+'</td>'
 		      				+'<td class="text-center edit name" >'+o.complexProductCost+'</td>'
 		      				+'<td class="text-center edit name" >'+o.complexProductRemark+'</td>'
 		      				+'<td class="text-center edit name" >'+o.compositeManualLoss+'</td>'
@@ -359,7 +359,7 @@
 						productRemark:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unit').text(),
 						complexMaterielName:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.complexMateriel').val(),
 						complexMaterielNumber:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.complexMaterielNumber').text(),
-						bilayer:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.bilayer').val(),
+						doubleComposite:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.bilayer').val(),
 						complexProductCost:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unitPricetw').text(),			
 						complexProductRemark:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unittw').text(),
 						compositeManualLoss:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.compositeManualLoss').val(),
