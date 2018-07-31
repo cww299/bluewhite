@@ -41,7 +41,13 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 		List<OrdinaryLaser> ordinaryLaserList = dao.findByProductId(oldOrdinaryLaser.getProductId());
 		double sum = ordinaryLaserList.stream().mapToDouble(OrdinaryLaser::getLabourCost).sum();
 		oldOrdinaryLaser.setStallPrice(sum*primeCoefficient.getEquipmentProfit());
-		return dao.save(oldOrdinaryLaser);
+		dao.save(oldOrdinaryLaser);
+		//更新裁剪页面数据（得到实验推算价格）
+		
+		
+		
+		
+		return ordinaryLaser;
 	}
 
 }
