@@ -67,6 +67,7 @@ public class UserAction {
 	
 	
 	
+	
 	/**
 	 * 新增一个用户
 	 * 
