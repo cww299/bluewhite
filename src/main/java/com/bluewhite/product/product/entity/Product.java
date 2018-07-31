@@ -13,6 +13,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
 import com.bluewhite.system.sys.entity.Files;
@@ -50,6 +53,7 @@ public class Product extends BaseEntity<Long>{
 	
     @OneToOne(fetch=FetchType.LAZY,cascade = CascadeType.ALL) 
     @JoinColumn(name="prime_cost_id",referencedColumnName="id",nullable=true)
+    @NotFound(action=NotFoundAction.IGNORE)
 	private PrimeCost primeCost;
     
     

@@ -80,7 +80,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		double batchComplexMaterialPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchComplexMaterialPrice()!=null).mapToDouble(CutParts::getBatchComplexMaterialPrice).sum();
 		double batchComplexAddPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchComplexAddPrice()!=null).mapToDouble(CutParts::getBatchComplexAddPrice).sum();
 		PrimeCost primeCost = product.getPrimeCost();
-		if(primeCost.getId()==null){
+		if(primeCost==null){
 			 primeCost = new PrimeCost();
 		}
 		primeCost.setNumber(cutParts.getNumber());
