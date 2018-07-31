@@ -307,8 +307,6 @@ private static final Log log = Log.getLog(TaskAction.class);
 		Task task = taskService.findOne(id);
 		task.setPerformanceNumber(performanceNumber);
 		double performancePrice = NumUtils.round(ProTypeUtils.sumtaskPerformancePrice(task), null);
-		task.setPerformancePrice(task.getPerformancePrice()==null ? 0.0 :task.getPerformancePrice() +performancePrice);
-		
 		if (!StringUtils.isEmpty(ids)) {
 			if (ids.length>0) {
 				for (int i = 0; i < ids.length; i++) {
@@ -321,6 +319,8 @@ private static final Log log = Log.getLog(TaskAction.class);
 					}
 				}
 			}
+		List<PayB> payBList = payBDao.findByTaskId(id);
+		task.setPerformancePrice(payBList.stream().mapToDouble(PayB::getPerformancePayNumber).sum());
 		taskService.save(task);
 		cr.setMessage("添加成功");
 		return cr;
@@ -336,20 +336,27 @@ private static final Log log = Log.getLog(TaskAction.class);
 	public CommonResponse getUserPerformance(HttpServletRequest request,Long id) {
 		CommonResponse cr = new CommonResponse();
 		List<PayB> payBList = payBDao.findByTaskId(id);
-		Map<Object, List<String>> map = new HashMap<Object, List<String>>();
-		Map<Object, List<PayB>> mapPayB = payBList.stream().filter(PayB->PayB.getPerformancePayNumber()!=null).collect(Collectors.groupingBy(PayB::getPerformance,Collectors.toList()));
+		List<Map<String,Object>> listMap = new ArrayList<Map<String,Object>>();
+		Map<String,Object> map = null;
+		Map<Object, List<PayB>> mapPayB = payBList.stream().filter(PayB->!PayB.getPerformancePayNumber().equals(null)).collect(Collectors.groupingBy(PayB::getPerformance,Collectors.toList()));
 		for(Object ps : mapPayB.keySet()){
+			map = new HashMap<String, Object>();
 			List<PayB> psList= mapPayB.get(ps);
 			List<String> userNameList = new ArrayList<String>();
 			for(PayB payB : psList){
 				userNameList.add(payB.getUserName());
 			}
-			map.put(ps, userNameList);
+			map.put("performance", ps);
+			map.put("username", userNameList);
+			listMap.add(map);
 		}
-		cr.setData(map);
+		cr.setData(listMap);
 		cr.setMessage("查询成功");
 		return cr;
 	}
+	
+	
+	
 	
 	/********二楼机工*********/
 	
