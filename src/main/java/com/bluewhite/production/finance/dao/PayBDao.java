@@ -11,5 +11,13 @@ public interface PayBDao extends BaseRepository<PayB, Long>{
 	 * @return
 	 */
 	List<PayB> findByTaskId(Long id);
+	
+	/**
+	 * 根据任务id和员工id查询工资
+	 * @param id
+	 * @param userid
+	 * @return
+	 */
+	PayB findByTaskIdAndUserId(Long id, Long userid);
 
 }

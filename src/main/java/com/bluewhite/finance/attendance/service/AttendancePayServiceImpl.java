@@ -19,6 +19,7 @@ import com.bluewhite.basedata.service.BaseDataService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 @Service
@@ -111,7 +112,7 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 	@Override
 	@Transactional
 	public void addAttendancePay(AttendancePay attendancePay) {
-		attendancePay.setPayNumber(attendancePay.getWorkPrice()*attendancePay.getWorkTime());
+		attendancePay.setPayNumber(NumUtils.round(attendancePay.getWorkPrice()*attendancePay.getWorkTime(),2));
 		dao.save(attendancePay);
 	}
 

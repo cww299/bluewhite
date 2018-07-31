@@ -2,8 +2,10 @@ package com.bluewhite.production.task.action;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,7 +27,11 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.production.farragotask.entity.FarragoTask;
+import com.bluewhite.production.finance.dao.PayBDao;
+import com.bluewhite.production.finance.entity.CollectPay;
+import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
@@ -43,6 +49,9 @@ private static final Log log = Log.getLog(TaskAction.class);
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private PayBDao payBDao;
 	
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -288,6 +297,61 @@ private static final Log log = Log.getLog(TaskAction.class);
 	}
 	
 	
+	/**
+	 * 通过任务id，重新分配人员的加绩工资
+	 */
+	@RequestMapping(value = "/task/giveTaskPerformance", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse giveTaskPerformance(HttpServletRequest request,Long id,String[] ids, String performance , Double performanceNumber) {
+		CommonResponse cr = new CommonResponse();
+		Task task = taskService.findOne(id);
+		double performancePrice = NumUtils.round(ProTypeUtils.sumtaskPerformancePrice(task), null);
+		if(task.getPerformancePrice()!=null){
+			task.setPerformancePrice(task.getPerformancePrice()+performancePrice);
+		}
+		task.setPerformanceNumber(performanceNumber);
+		
+		if (!StringUtils.isEmpty(ids)) {
+			if (ids.length>0) {
+				for (int i = 0; i < ids.length; i++) {
+					Long userid = Long.parseLong(ids[i]);
+					PayB payB = payBDao.findByTaskIdAndUserId(task.getId(),userid);
+					payB.setPerformance(performance);
+					payB.setPerformancePayNumber(performancePrice/ids.length);
+					payB.setPerformanceNumber(performanceNumber);
+					payBDao.save(payB);
+					}
+				}
+			}
+		taskService.save(task);
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * 通过任务id，获取人员的加绩工资
+	 * 
+	 */
+	@RequestMapping(value = "/task/getTaskPerformance", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getTaskPerformance(HttpServletRequest request,Long id) {
+		CommonResponse cr = new CommonResponse();
+		List<PayB> payBList = payBDao.findByTaskId(id);
+		Map<Object, List<String>> map = new HashMap<Object, List<String>>();
+		Map<Object, List<PayB>> mapPayB = payBList.stream().filter(PayB->PayB.getPerformancePayNumber()!=null).collect(Collectors.groupingBy(PayB::getPerformance,Collectors.toList()));
+		for(Object ps : mapPayB.keySet()){
+			List<PayB> psList= mapPayB.get(ps);
+			List<String> userNameList = new ArrayList<String>();
+			for(PayB payB : psList){
+				userNameList.add(payB.getUserName());
+			}
+			map.put(ps, userNameList);
+		}
+		cr.setData(map);
+		cr.setMessage("查询成功");
+		return cr;
+	}
 	
 	/********二楼机工*********/
 	
