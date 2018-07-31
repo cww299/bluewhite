@@ -36,7 +36,7 @@
                             </div>
                   <!--查询开始  -->
           <div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-12 col-sm-10 col-md-10">
+			<div class="col-xs-11 col-sm-11 col-md-11">
 				<form class="form-search" >
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 col-md-12">
@@ -62,6 +62,12 @@
 								<span class="input-group-btn"><button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">查&nbsp找</button></span>
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn"><button type="button" class="btn btn-default btn-danger btn-sm btn-3d attendance">一键删除</button>
+								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-success  btn-sm btn-3d addDict">
+									加绩
+									</button>
 								</span>
 							</div>
 						</div>
@@ -152,6 +158,31 @@
 </div>
 </div>
 <!--隐藏框 产品新增结束  -->
+
+ <!--隐藏框 工序加绩分配开始  -->
+        <div id="addDictDivTypetw" style="display: none;">
+			<div class=" col-xs-12  col-sm-12  col-md-12 ">
+				<div class="space-10"></div>
+				<div style="height: 30px"></div>
+				<form class="form-horizontal addDictDivTypeFormtw">
+					<div class="row col-xs-12  col-sm-12  col-md-12 ">
+                    	<div class="form-group">
+                           <label class="col-sm-2 control-label">加绩工序:</label>
+                              <div class="col-sm-3 workingtw">
+                              </div> 
+                            <label class="col-sm-1 control-label">完成人:</label>
+                                <div class="col-sm-2 complete">
+                                  <input type="text" class="form-control">
+                                </div>
+                                 <div class="col-sm-2 select"></div>
+                    	</div>
+                 </div>
+				</div>
+
+				</form>
+</div>
+</div>
+<!--隐藏框 工序加绩分配结束  -->
     </section>
     
    
@@ -179,6 +210,12 @@
 		  	}
 		  	this.getCache = function(){
 		  		return _cache;
+		  	}
+		  	this.getCount = function(){
+		  		return _count;
+		  	}
+		  	this.setCount = function(count){
+		  		_count=count;
 		  	}
 			 var data={
 						page:1,
@@ -228,6 +265,7 @@
 							+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
+		      			self.setCount(result.data.pageNum)
 				        //显示分页
 					   	 laypage({
 					      cont: 'pager', 
@@ -269,7 +307,7 @@
 							var postData = {
 									ids:$(this).data('id'),
 							}
-							
+							var that=$(this);
 							var index;
 							 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
 							$.ajax({
@@ -285,7 +323,7 @@
 								success:function(result){
 									if(0==result.code){
 									layer.msg("删除成功！", {icon: 1});
-									self.loadPagination(data)
+									that.parent().parent().hide();
 									layer.close(index);
 									}else{
 										layer.msg("删除失败！", {icon: 1});
@@ -389,6 +427,7 @@
 				})
 				
 				
+				
 			}
 			this.checkedd=function(){
 				
@@ -467,6 +506,169 @@
 				  })
 				
 				
+				//分配1
+				$('.addDict').on('click',function(){
+					var  thae=$(".table-hover");
+					var arr=""//员工id
+					var CheckCount=0;
+					  thae.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+						  CheckCount++;
+						  arr=$(this).val();  
+						});
+					  console.log(CheckCount)
+					  if(CheckCount>1){
+							return layer.msg("只能选择一条任务", {icon: 2});
+						}
+					if(arr==""){
+						return layer.msg("请选择一条任务", {icon: 2});
+					}
+					var that=$(this)
+					var productName=$(this).data('proname')
+					var _index
+					var index
+					var postData
+					//工序遍历  
+				    var indextwo;
+				    
+				    var htmlth = '';
+				    var htmlfr = '';
+					//遍历人名组别
+			      			  $('.complete').html("<select class='form-control selectcomplete'><option value="+0+">请选择</option><option value="+""+">全部</option></select>")
+							//改变事件
+			      			 $(".selectcomplete").change(function(){
+			      				var htmltwo = "";
+			      				var	id=$(this).val()
+								   var data={
+										  id:arr,
+								   }
+			      				$.ajax({
+									url:"${ctx}/task/taskUser",
+									data:data,
+									type:"GET",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									
+									success:function(result){
+										$(result.data).each(function(i,o){
+											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input></div>'
+										})
+										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
+										$('.select').html(s+htmltwo)
+										$(".checkall").on('click',function(){
+							                    if($(this).is(':checked')){ 
+										 			$('.stuCheckBox').each(function(){  
+							                    //此处如果用attr，会出现第三次失效的情况  
+							                     		$(this).prop("checked",true);
+										 			})
+							                    }else{
+							                    	$('.stuCheckBox').each(function(){ 
+							                    		$(this).prop("checked",false);
+							                    		
+							                    	})
+							                    }
+							                });
+										layer.close(index);
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								});
+							 }) 
+					//遍历杂工加绩比值
+					var html=""
+					$.ajax({
+						url:"${ctx}/task/pickTaskPerformance",
+						type:"GET",
+						beforeSend:function(){
+							index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+						},
+						
+						success:function(result){
+							$(result.data).each(function(i,o){
+							html+='<option value="'+o.number+'" data-name="'+o.name+'">'+o.name+'</option>'
+							})
+							$('.workingtw').html("<select class='form-control selectchangtw'><option value='0'></option>"+html+"</select>");
+							layer.close(index);
+							
+						},error:function(){
+							layer.msg("操作失败！", {icon: 2});
+							layer.close(index);
+						}
+					});
+				    
+					var postData
+					var dicDiv=$('#addDictDivTypetw');
+					_index = layer.open({
+						  type: 1,
+						  skin: 'layui-layer-rim', //加上边框
+						  area: ['60%', '60%'], 
+						  btnAlign: 'c',//宽高
+						  maxmin: true,
+						  title:productName,
+						  content: dicDiv,
+						  btn: ['确定', '取消'],
+						  yes:function(index, layero){
+							  var arry=new Array()
+								$(".stuCheckBox:checked").each(function() {   
+								    arry.push($(this).val());   
+								}); 
+								if(arr.length<=0){
+									return layer.msg("至少选择一个员工！", {icon: 2});
+								}
+								var performanceNumber=$(".selectchangtw").val();
+								
+								var performance=$(".selectchangtw option:selected").text();
+								var postData = {
+										id:arr,
+										ids:arry,
+										performanceNumber:performanceNumber,
+										performance:performance,
+								}
+							    $.ajax({
+									url:"${ctx}/task/giveTaskPerformance",
+									data:postData,
+						            traditional: true,
+									type:"post",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									
+									success:function(result){
+										if(0==result.code){
+										  $('.addDictDivTypeFormtw')[0].reset(); 
+											layer.msg("添加成功！", {icon: 1});
+										}else{
+											layer.msg("添加失败", {icon: 2});
+										}
+										layer.close(index);
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								});  
+							},
+						   end:function(){
+							  $('.addDictDivTypeFormtw')[0].reset(); 
+							  $("#addDictDivTypetw").hide();
+							  var date={
+										page:self.getCount(),
+								  		size:13,	
+								  		type:2,
+								} 
+							   self.loadPagination(date);
+							
+						  } 
+					});
+					
+					
+				})
 			}
    	}
    			var login = new Login();
