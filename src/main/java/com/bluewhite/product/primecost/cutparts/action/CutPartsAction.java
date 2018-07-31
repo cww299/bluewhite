@@ -41,7 +41,8 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 				.addRetainTerm(CutParts.class,"productId","cutPartsName","cutPartsNumber","allPerimeter","perimeter","materielNumber"
 						,"materielName","composite","doubleComposite","complexMaterielNumber","complexMaterielName","oneMaterial","unit"
 						,"scaleMaterial","addMaterial","manualLoss","productCost","productRemark","batchMaterial","batchMaterialPrice"
-						,"complexProductCost","complexBatchMaterial","batchComplexMaterialPrice","batchComplexAddPrice");
+						,"complexProductCost","complexBatchMaterial","batchComplexMaterialPrice","batchComplexAddPrice","compositeManualLoss"
+						,"complexProductRemark");
 	}
 	
 	/**
