@@ -300,7 +300,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 	/**
 	 * 通过任务id，重新分配人员的加绩工资
 	 */
-	@RequestMapping(value = "/task/giveTaskPerformance", method = RequestMethod.GET)
+	@RequestMapping(value = "/task/giveTaskPerformance", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse giveTaskPerformance(HttpServletRequest request,Long id,String[] ids, String performance , Double performanceNumber) {
 		CommonResponse cr = new CommonResponse();
@@ -333,9 +333,9 @@ private static final Log log = Log.getLog(TaskAction.class);
 	 * 通过任务id，获取人员的加绩工资
 	 * 
 	 */
-	@RequestMapping(value = "/task/getTaskPerformance", method = RequestMethod.GET)
+	@RequestMapping(value = "/task/getUserPerformance", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getTaskPerformance(HttpServletRequest request,Long id) {
+	public CommonResponse getUserPerformance(HttpServletRequest request,Long id) {
 		CommonResponse cr = new CommonResponse();
 		List<PayB> payBList = payBDao.findByTaskId(id);
 		Map<Object, List<String>> map = new HashMap<Object, List<String>>();
