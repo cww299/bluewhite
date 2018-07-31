@@ -305,11 +305,9 @@ private static final Log log = Log.getLog(TaskAction.class);
 	public CommonResponse giveTaskPerformance(HttpServletRequest request,Long id,String[] ids, String performance , Double performanceNumber) {
 		CommonResponse cr = new CommonResponse();
 		Task task = taskService.findOne(id);
-		double performancePrice = NumUtils.round(ProTypeUtils.sumtaskPerformancePrice(task), null);
-		if(task.getPerformancePrice()!=null){
-			task.setPerformancePrice(task.getPerformancePrice()+performancePrice);
-		}
 		task.setPerformanceNumber(performanceNumber);
+		double performancePrice = NumUtils.round(ProTypeUtils.sumtaskPerformancePrice(task), null);
+		task.setPerformancePrice(task.getPerformancePrice()==null ? 0.0 :task.getPerformancePrice() +performancePrice);
 		
 		if (!StringUtils.isEmpty(ids)) {
 			if (ids.length>0) {
@@ -324,7 +322,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 				}
 			}
 		taskService.save(task);
-		cr.setMessage("查询成功");
+		cr.setMessage("添加成功");
 		return cr;
 	}
 	

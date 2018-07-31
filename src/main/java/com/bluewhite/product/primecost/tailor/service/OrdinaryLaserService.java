@@ -14,6 +14,6 @@ public interface OrdinaryLaserService extends BaseCRUDService<OrdinaryLaser,Long
 	 * @param ordinaryLaser
 	 * @return
 	 */
-	public OrdinaryLaser saveordinaryLaser(OrdinaryLaser ordinaryLaser,PrimeCoefficient primeCoefficient);
+	public OrdinaryLaser saveOrdinaryLaser(OrdinaryLaser ordinaryLaser,PrimeCoefficient primeCoefficient);
 
 }
