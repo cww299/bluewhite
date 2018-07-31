@@ -320,7 +320,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 				}
 			}
 		List<PayB> payBList = payBDao.findByTaskId(id);
-		task.setPerformancePrice(payBList.stream().mapToDouble(PayB::getPerformancePayNumber).sum());
+		task.setPerformancePrice(payBList.stream().filter(PayB->PayB.getPerformancePayNumber()!=null).mapToDouble(PayB::getPerformancePayNumber).sum());
 		taskService.save(task);
 		cr.setMessage("添加成功");
 		return cr;
