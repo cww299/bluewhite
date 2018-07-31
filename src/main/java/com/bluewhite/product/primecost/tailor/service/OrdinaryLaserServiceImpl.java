@@ -16,9 +16,11 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 	private OrdinaryLaserDao  dao;
 	
 	@Override
-	public OrdinaryLaser saveordinaryLaser(OrdinaryLaser ordinaryLaser,PrimeCoefficient primeCoefficient) {
+	public OrdinaryLaser saveOrdinaryLaser(OrdinaryLaser ordinaryLaser,PrimeCoefficient primeCoefficient) {
 		OrdinaryLaser oldOrdinaryLaser = dao.findOne(ordinaryLaser.getId());
+		//得到理论(市场反馈）含管理价值
 		oldOrdinaryLaser.setManagePrice(primeCoefficient.getPeripheralLaser()*100*ordinaryLaser.getPerimeter());
+		//单片激光需要用净时
 		if(ordinaryLaser.getSingleDouble()==2){
 			oldOrdinaryLaser.setSingleLaserTime((ordinaryLaser.getPerimeter()*primeCoefficient.getTime()*ordinaryLaser.getStallPoint()*primeCoefficient.getPauseTime()/2)
 					+ ordinaryLaser.getRabbTime()+ordinaryLaser.getTime());
@@ -26,19 +28,19 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 			oldOrdinaryLaser.setSingleLaserTime((ordinaryLaser.getPerimeter()*primeCoefficient.getTime()*ordinaryLaser.getStallPoint()*primeCoefficient.getPauseTime())
 					+ ordinaryLaser.getRabbTime()+ordinaryLaser.getTime());
 		}
+		//单片激光放快手时间
 		oldOrdinaryLaser.setSingleLaserHandTime(oldOrdinaryLaser.getSingleLaserTime()*1.08*primeCoefficient.getQuickWorker());
-		
+		//工价（含快手)
 		oldOrdinaryLaser.setLabourCost(oldOrdinaryLaser.getSingleLaserHandTime()*primeCoefficient.getPerSecondMachinist());
-		
+		//设备折旧和房水电费
 		oldOrdinaryLaser.setEquipmentPrice((primeCoefficient.getDepreciation()+primeCoefficient.getLaserTubePriceSecond()+
 				primeCoefficient.getMaintenanceChargeSecond()+primeCoefficient.getPerSecondPrice())*oldOrdinaryLaser.getSingleLaserHandTime());
-		
+		//管理人员费用
 		oldOrdinaryLaser.setAdministrativeAtaff(primeCoefficient.getPerSecondManage()*oldOrdinaryLaser.getSingleLaserHandTime());
-		
+		//普通激光切割该裁片费用
 		List<OrdinaryLaser> ordinaryLaserList = dao.findByProductId(oldOrdinaryLaser.getProductId());
 		double sum = ordinaryLaserList.stream().mapToDouble(OrdinaryLaser::getLabourCost).sum();
 		oldOrdinaryLaser.setStallPrice(sum*primeCoefficient.getEquipmentProfit());
-		
 		return dao.save(oldOrdinaryLaser);
 	}
 

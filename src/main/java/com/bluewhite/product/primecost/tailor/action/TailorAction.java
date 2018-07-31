@@ -100,7 +100,7 @@ public class TailorAction {
 			cr.setMessage("产品不能为空");
 		}else{
 			try {
-				ordinaryLaserService.saveordinaryLaser(ordinaryLaser,primeCoefficient);
+				ordinaryLaserService.saveOrdinaryLaser(ordinaryLaser,primeCoefficient);
 			} catch (Exception e) {
 				cr.setMessage(e.getMessage());
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

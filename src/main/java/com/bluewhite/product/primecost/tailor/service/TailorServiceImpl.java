@@ -8,6 +8,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
@@ -40,6 +41,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 	
 	
 	@Override
+	@Transactional
 	public Tailor saveTailor(Tailor tailor) throws Exception {
 		if(StringUtils.isEmpty(tailor.getNumber())){
 			throw new ServiceException("批量产品数量或模拟批量数不能为空");

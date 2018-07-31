@@ -8,6 +8,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
@@ -28,6 +29,7 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 	private ProductDao productdao;
 	
 	@Override
+	@Transactional
 	public ProductMaterials saveProductMaterials(ProductMaterials productMaterials)
 			throws Exception {
 		if(StringUtils.isEmpty(productMaterials.getNumber())){
@@ -76,6 +78,7 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 
 
 	@Override
+	@Transactional
 	public void deleteProductMaterials(ProductMaterials productMaterials) {
 		//删除
 		dao.delete(productMaterials.getId());
