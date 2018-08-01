@@ -437,15 +437,15 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		}else if(monthlyProduction.getType()==4){
 			//当类型为机工时，产值和产量的计算方式变化
 			for(Bacth bac : bacthList){
-				 List<Procedure> procedureList = procedureDao.findByProductIdAndTypeAndFlag(bac.getProductId(), bac.getType(),0);
-				 //总工序数量
-				 double sumPro =  bac.getNumber()*procedureList.size();
+				//总工序完成用时
+				 double sumProTime = bac.getTime();
 				 //已完成的任务工序数量
 				 Task task1 = new Task();
 				 task1.setBacthId(bac.getId());
 				 List<Task> taskList = taskService.findPages(task1, page).getRows();
-				 double sunTask = taskList.stream().mapToDouble(Task::getNumber).sum();
-				 bac.setNumber(NumUtils.roundTwo(NumUtils.round((bac.getNumber()*(sunTask/sumPro)),0)));
+				 //工序完成用时
+				 double sunTaskTime = taskList.stream().mapToDouble(Task::getExpectTime).sum();
+				 bac.setNumber(NumUtils.roundTwo(NumUtils.round((bac.getNumber()*(sunTaskTime/sumProTime)),0)));
 				 productNumber+= bac.getNumber();
 			}
 			
