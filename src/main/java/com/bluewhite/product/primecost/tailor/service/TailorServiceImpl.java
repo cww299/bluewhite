@@ -98,7 +98,6 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			prams.setType(type);
 			prams.setRabbTime(prams.getTailorSize()*primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
 			ordinaryLaserDao.save(prams);
-			
 			break;
 		case 73://手工电烫
 			

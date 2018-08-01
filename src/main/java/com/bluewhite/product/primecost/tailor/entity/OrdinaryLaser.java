@@ -98,7 +98,13 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 	 * 其他未考虑时间2
 	 */
 	@Column(name = "other_time_two")
-    private Double otherTimeTwo;	
+    private Double otherTimeTwo;
+	
+	/**
+	 * 其他未考虑时间2
+	 */
+	@Column(name = "other_time_three")
+    private Double otherTimeThree;	
 	
 	/**
 	 * 拉布时间
@@ -151,6 +157,14 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 	
 	
 	
+
+	public Double getOtherTimeThree() {
+		return otherTimeThree;
+	}
+
+	public void setOtherTimeThree(Double otherTimeThree) {
+		this.otherTimeThree = otherTimeThree;
+	}
 
 	public String getType() {
 		return type;
