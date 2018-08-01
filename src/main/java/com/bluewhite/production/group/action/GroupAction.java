@@ -227,17 +227,17 @@ private static final Log log = Log.getLog(GroupAction.class);
 	 * @param request 请求
 	 * @return cr
 	 */
-	@RequestMapping(value = "/production/addTemporarily", method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse addTemporarily(HttpServletRequest request,String ids,Temporarily temporarily) {
+	public CommonResponse addTemporarily(HttpServletRequest request,String ids,Integer type) {
 		CommonResponse cr = new CommonResponse();
 		if(ids!=null){
 			String[] userIds = ids.split(",");
 			for (String id : userIds) {
+				Temporarily temporarily = new Temporarily();
 				Long userId = Long.parseLong(id);
 				User user = userService.findOne(userId);
 				temporarily.setUserId(userId);
 				temporarily.setUserName(user.getUserName());
+				temporarily.setType(type);
 				temporarilyDao.save(temporarily);
 			}
 		}
