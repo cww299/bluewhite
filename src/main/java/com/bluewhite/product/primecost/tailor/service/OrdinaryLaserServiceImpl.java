@@ -19,7 +19,11 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 	public OrdinaryLaser saveOrdinaryLaser(OrdinaryLaser ordinaryLaser,PrimeCoefficient primeCoefficient) {
 		OrdinaryLaser oldOrdinaryLaser = dao.findOne(ordinaryLaser.getId());
 		//得到理论(市场反馈）含管理价值
-		oldOrdinaryLaser.setManagePrice(primeCoefficient.getPeripheralLaser()*100*ordinaryLaser.getPerimeter());
+		if(oldOrdinaryLaser.getType()=="ordinarylaser"){
+			oldOrdinaryLaser.setManagePrice(primeCoefficient.getPeripheralLaser()*100*ordinaryLaser.getPerimeter());
+		}else{
+			
+		}
 		//单片激光需要用净时
 		if(ordinaryLaser.getSingleDouble()==2){
 			oldOrdinaryLaser.setSingleLaserTime((ordinaryLaser.getPerimeter()*primeCoefficient.getTime()*ordinaryLaser.getStallPoint()*primeCoefficient.getPauseTime()/2)
