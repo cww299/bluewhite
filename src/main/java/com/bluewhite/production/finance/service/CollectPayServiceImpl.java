@@ -15,6 +15,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONArray;
@@ -593,6 +594,8 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				map.put("sumBPay", sumBPay+sumfarragoTaskPay);
 				Double sum = (sumBPay+sumfarragoTaskPay)/sunTime;
 				map.put("specificValue", sum.isNaN()?0.0:sum);
+				map.put("price", attendancePayList.get(0).getWorkPrice());
+				
 				bPayAndTaskPay.add(map);
 			}
 		return bPayAndTaskPay;
@@ -701,6 +704,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	
 
 	@Override
+	@Transactional
 	public List<CollectPay> twoPerformancePay(CollectPay collectPay) {
 		PageParameter page  = new PageParameter();
 		page.setSize(Integer.MAX_VALUE);
@@ -712,7 +716,8 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		attendancePay.setUserName(collectPay.getUserName());
 		List<AttendancePay> attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
 		//将一个月考勤人员按员工id分组
-		Map<Long, List<AttendancePay>> mapCollectPay = attendancePayList.stream().filter(AttendancePay->AttendancePay.getWorkTime()!=0).collect(Collectors.groupingBy(AttendancePay::getUserId,Collectors.toList()));
+		Map<Long, List<AttendancePay>> mapCollectPay = attendancePayList.stream().filter(AttendancePay->AttendancePay.getWorkTime()!=0)
+				.collect(Collectors.groupingBy(AttendancePay::getUserId,Collectors.toList()));
 		CollectPay collect = null;
 		for(Object ps : mapCollectPay.keySet()){
 			collect = new CollectPay();
