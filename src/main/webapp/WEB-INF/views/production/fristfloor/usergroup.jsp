@@ -46,6 +46,8 @@
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
+                                    <button type="button" id="add" class="btn btn-success btn-sm btn-3d pull-right">外调人员</button>
+                                    <button type="button"  class=" pull-right">&nbsp&nbsp&nbsp&nbsp</button>
                                     <button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增小组</button>
                                 </table>
                                 <div id="pager" class="pull-right">
@@ -57,8 +59,8 @@
                 </div>
             </section>
         </section>
-        <!--隐藏框 产品新增开始  -->
-        <div id="addDictDivType" style="display: none;">
+<!--隐藏框 小组新增开始  -->
+       <div id="addDictDivType" style="display: none;">
 			<div class=" col-xs-12  col-sm-12  col-md-12 ">
 				<div class="space-10"></div>
 				<div style="height: 30px"></div>
@@ -72,9 +74,24 @@
 				</form>
 </div>
 </div>
- <!--隐藏框 产品新增结束  -->
+ <!--隐藏框 小组新增结束  -->
 
-
+<!--隐藏框 小组新增开始  -->
+       <div id="addDictDivTypetw" style="display: none;">
+			<div class=" col-xs-12  col-sm-12  col-md-12 ">
+				<div class="space-10"></div>
+				<div style="height: 30px"></div>
+				<form class="form-horizontal addDictDivTypeFormtw">
+				<div class="form-group">
+                                        <label class="col-sm-3 control-label">名称:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="groupNametw" class="form-control">
+                                        </div>
+                 </div>
+				</form>
+</div>
+</div>
+ <!--隐藏框 小组新增结束  -->
 
 <div id="savegroup" style="display: none;">
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -340,6 +357,66 @@
 							  $('#addDictDivType').hide();
 						
 							  $('.addDictDivTypeForm')[0].reset(); 
+							
+						  }
+					});
+				})
+				
+				
+				//外调人员
+				$('#add').on('click',function(){
+					
+					var _index
+					var index
+					var postData
+					var dicDiv=$('#addDictDivTypetw');
+					_index = layer.open({
+						  type: 1,
+						  skin: 'layui-layer-rim', //加上边框
+						  area: ['30%', '30%'], 
+						  btnAlign: 'c',//宽高
+						  maxmin: true,
+						  title:"新增小组",
+						  content: dicDiv,
+						  btn: ['确定', '取消'],
+						  yes:function(index, layero){
+							 
+							  postData={
+									  name:$("#groupNametw").val(),
+									  type:1,
+							  }
+							  $.ajax({
+									url:"${ctx}/production/addGroup",
+									data:postData,
+						            traditional: true,
+									type:"post",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									
+									success:function(result){
+										if(0==result.code){
+											layer.msg("添加成功！", {icon: 1});
+										 self.loadPagination(data); 
+											$('#addDictDivTypetw').hide();
+											
+										}else{
+											layer.msg("添加失败", {icon: 2});
+										}
+										
+										layer.close(index);
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								});
+							},
+						  end:function(){
+							  $('#addDictDivTypetw').hide();
+						
+							  $('.addDictDivTypeFormtw')[0].reset(); 
 							
 						  }
 					});
