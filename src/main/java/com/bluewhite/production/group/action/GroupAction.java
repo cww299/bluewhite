@@ -133,7 +133,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 				if(temporarilyList.size()>0){
 					Set<User> userlist  = groupAll.get(0).getUsers();
 					for(Temporarily temporarily : temporarilyList){
-						User user = userService.findOne(temporarily.getId());
+						User user = userService.findOne(temporarily.getUserId());
 						userlist.add(user);
 					}
 				}
