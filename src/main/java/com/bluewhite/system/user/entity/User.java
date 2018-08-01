@@ -358,9 +358,22 @@ public class User extends BaseEntity<Long> {
 	private String userIds;
 	
 	
+	/**
+	 * 分组员工ids
+	 */
+	@Transient
+	private Integer temporarily;
 	
 	
 	
+
+	public Integer getTemporarily() {
+		return temporarily;
+	}
+
+	public void setTemporarily(Integer temporarily) {
+		this.temporarily = temporarily;
+	}
 
 	public Double getSignature() {
 		return signature;

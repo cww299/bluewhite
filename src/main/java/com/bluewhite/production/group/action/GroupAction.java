@@ -21,7 +21,9 @@ import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
+import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Group;
+import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.production.group.service.GroupService;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
@@ -36,6 +38,10 @@ private static final Log log = Log.getLog(GroupAction.class);
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private TemporarilyDao temporarilyDao;
+	
 	
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -121,11 +127,26 @@ private static final Log log = Log.getLog(GroupAction.class);
 			groupAll.add(group);
 		}else{
 			groupAll = groupService.findList(group);
+			
+			if(group.getType()==1 || group.getType()==2){
+				List<Temporarily> temporarilyList =  temporarilyDao.findByType(group.getType());
+				if(temporarilyList.size()>0){
+					Set<User> userlist  = groupAll.get(0).getUsers();
+					for(Temporarily temporarily : temporarilyList){
+						User user = userService.findOne(temporarily.getId());
+						userlist.add(user);
+					}
+				}
+			}
 		}
 		for(Group gr : groupAll){
 			Set<User> users= gr.getUsers().stream().filter(u -> u.getStatus()!=1).collect(Collectors.toSet());
 			gr.setUsers(users);
 		}
+		
+	
+		
+		
 		cr.setData(clearCascadeJSON.format(groupAll).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
@@ -197,5 +218,62 @@ private static final Log log = Log.getLog(GroupAction.class);
 		}
 		return cr;
 	}
+	
+	
+	/**
+	 * 新增借调人员
+	 * 
+	 * (1=一楼质检，2=一楼包装)
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/production/addTemporarily", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse addTemporarily(HttpServletRequest request,String[] ids,Temporarily temporarily) {
+		CommonResponse cr = new CommonResponse();
+		for (String id : ids) {
+			Long userId = Long.parseLong(id);
+			User user = userService.findOne(userId);
+			temporarily.setUserId(userId);
+			temporarily.setUserName(user.getUserName());
+			temporarilyDao.save(temporarily);
+		}
+		cr.setMessage("添加成功");
+		return cr;
+	}
+	
+	/**
+	 * 查询借调人员
+	 * 
+	 * (1=一楼质检，2=一楼包装)
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/production/getTemporarily", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getTemporarily(HttpServletRequest request,Integer type) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(temporarilyDao.findByType(type));
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/**
+	 * 归还借调人员
+	 * 
+	 * (1=一楼质检，2=一楼包装)
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/production/deleteTemporarily", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse deleteTemporarily(HttpServletRequest request,Long id) {
+		CommonResponse cr = new CommonResponse();
+		temporarilyDao.delete(id);
+		cr.setMessage("删除成功");
+		return cr;
+	}
+
+
 
 }

@@ -85,49 +85,47 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	@Override
 	public PageResult<User> getPagedUser(PageParameter page, User user) {
 		CurrentUser cu = SessionManager.getUserSession();
-		//质检
-		if(cu.getRole().contains(Constants.PRODUCT_FRIST_QUALITY)){
-			 user.setOrgNameIds(Constants.QUALITY_ORGNAME);
-		}
-		//包装
-		if(cu.getRole().contains(Constants.PRODUCT_FRIST_PACK)){
-			 user.setOrgNameIds(Constants.PACK_ORGNAME);
-		}
-		//针工
-		if(cu.getRole().contains(Constants.PRODUCT_TWO_DEEDLE)){
-			 user.setOrgNameIds(Constants.DEEDLE_ORGNAME);
-		}
-		//机工
-		if(cu.getRole().contains(Constants.PRODUCT_TWO_MACHINIST)){
-			 user.setOrgNameIds(Constants.MACHINIST_ORGNAME);
-		}
-		//裁剪
-		if(cu.getRole().contains(Constants.PRODUCT_RIGHT_TAILOR)){
-			 user.setOrgNameIds(Constants.TAILOR_ORGNAME);
+		if(user.getTemporarily()==null){
+			//质检
+			if(cu.getRole().contains(Constants.PRODUCT_FRIST_QUALITY)){
+				user.setOrgNameIds(Constants.QUALITY_ORGNAME);
+			}
+			//包装
+			if(cu.getRole().contains(Constants.PRODUCT_FRIST_PACK)){
+				user.setOrgNameIds(Constants.PACK_ORGNAME);
+			}
+			//针工
+			if(cu.getRole().contains(Constants.PRODUCT_TWO_DEEDLE)){
+				user.setOrgNameIds(Constants.DEEDLE_ORGNAME);
+			}
+			//机工
+			if(cu.getRole().contains(Constants.PRODUCT_TWO_MACHINIST)){
+				user.setOrgNameIds(Constants.MACHINIST_ORGNAME);
+			}
+			//裁剪
+			if(cu.getRole().contains(Constants.PRODUCT_RIGHT_TAILOR)){
+				user.setOrgNameIds(Constants.TAILOR_ORGNAME);
+			}
 		}
 		
 		Page<User> pageUser = userDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			//按id查找
 			if (user.getId() != null) {
-				predicate.add(cb.equal(root.get("id").as(Long.class),
-						user.getId()));
+				predicate.add(cb.equal(root.get("id").as(Long.class),user.getId()));
 			}
 			//按分组查找
 			if (user.getGroupId() != null) {
-				predicate.add(cb.equal(root.get("groupId").as(Long.class),
-						user.getGroupId()));
+				predicate.add(cb.equal(root.get("groupId").as(Long.class),user.getGroupId()));
 			}
 			
 			//按姓名查找
 			if (!StringUtils.isEmpty(user.getUserName())) {
-				predicate.add(cb.like(root.get("userName").as(String.class),
-						"%" + user.getUserName() + "%"));
+				predicate.add(cb.like(root.get("userName").as(String.class),"%" + user.getUserName() + "%"));
 			}
 			//按员工编号
 			if (!StringUtils.isEmpty(user.getNumber())) {
-				predicate.add(cb.like(root.get("number").as(String.class),
-						"%" + user.getNumber() + "%"));
+				predicate.add(cb.like(root.get("number").as(String.class),"%" + user.getNumber() + "%"));
 			}
 			
 			//部门,多个
