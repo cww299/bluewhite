@@ -142,6 +142,23 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 	 */
 	@Column(name = "stall_price")
     private Double stallPrice;
+	
+	/**
+	 * 
+	 */
+	@Column(name = "type")
+    private String type;
+	
+	
+	
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 
 	public Long getProductId() {
 		return productId;

@@ -77,21 +77,27 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 	private void addcutPartsType(Tailor tailor) {
 		PrimeCoefficient primeCoefficient = null;
 		String type = null;
+		 OrdinaryLaser  prams = new  OrdinaryLaser();
+		 prams.setProductId(tailor.getProductId());
+		 prams.setTailorTypeId(tailor.getTailorTypeId());
+		 prams.setTailorType(tailor.getTailorType());
+		 prams.setTailorName(tailor.getTailorName());
+		 prams.setTailorNumber(tailor.getTailorNumber());
+		 prams.setTailorSize(tailor.getTailorSize());
 		switch (tailor.getTailorTypeId().intValue()) {
 		case 71://普通激光切割
 			type = "ordinarylaser";
 			primeCoefficient = primeCoefficientDao.findByType(type);
-			 OrdinaryLaser  ordinaryLaser = new  OrdinaryLaser();
-			 ordinaryLaser.setProductId(tailor.getProductId());
-			 ordinaryLaser.setTailorTypeId(tailor.getTailorTypeId());
-			 ordinaryLaser.setTailorType(tailor.getTailorType());
-			 ordinaryLaser.setTailorName(tailor.getTailorName());
-			 ordinaryLaser.setTailorNumber(tailor.getTailorNumber());
-			 ordinaryLaser.setTailorSize(tailor.getTailorSize());
-			 ordinaryLaser.setRabbTime(ordinaryLaser.getTailorSize()*primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
-			 ordinaryLaserDao.save(ordinaryLaser);
+			prams.setType(type);
+			prams.setRabbTime(prams.getTailorSize()*primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
+			 ordinaryLaserDao.save(prams);
 			break;
 		case 72://绣花激光切割
+			type = "embroideryLaser";
+			primeCoefficient = primeCoefficientDao.findByType(type);
+			prams.setType(type);
+			prams.setRabbTime(prams.getTailorSize()*primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
+			ordinaryLaserDao.save(prams);
 			
 			break;
 		case 73://手工电烫

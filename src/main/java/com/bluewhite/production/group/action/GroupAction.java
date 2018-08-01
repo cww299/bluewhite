@@ -229,14 +229,17 @@ private static final Log log = Log.getLog(GroupAction.class);
 	 */
 	@RequestMapping(value = "/production/addTemporarily", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addTemporarily(HttpServletRequest request,String[] ids,Temporarily temporarily) {
+	public CommonResponse addTemporarily(HttpServletRequest request,String ids,Temporarily temporarily) {
 		CommonResponse cr = new CommonResponse();
-		for (String id : ids) {
-			Long userId = Long.parseLong(id);
-			User user = userService.findOne(userId);
-			temporarily.setUserId(userId);
-			temporarily.setUserName(user.getUserName());
-			temporarilyDao.save(temporarily);
+		if(ids!=null){
+			String[] userIds = ids.split(",");
+			for (String id : userIds) {
+				Long userId = Long.parseLong(id);
+				User user = userService.findOne(userId);
+				temporarily.setUserId(userId);
+				temporarily.setUserName(user.getUserName());
+				temporarilyDao.save(temporarily);
+			}
 		}
 		cr.setMessage("添加成功");
 		return cr;
