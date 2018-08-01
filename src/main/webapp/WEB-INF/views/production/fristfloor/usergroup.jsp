@@ -46,10 +46,14 @@
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
+                                    
                                     <button type="button" id="add" class="btn btn-success btn-sm btn-3d pull-right">外调人员</button>
                                     <button type="button"  class=" pull-right">&nbsp&nbsp&nbsp&nbsp</button>
                                     <button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增小组</button>
                                 </table>
+                                <tbody id="tablecontenttw">
+                                111
+                                    </tbody>
                                 <div id="pager" class="pull-right">
                                 
                                 </div>
@@ -65,6 +69,7 @@
 				<div class="space-10"></div>
 				<div style="height: 30px"></div>
 				<form class="form-horizontal addDictDivTypeForm">
+				
 				<div class="form-group">
                                         <label class="col-sm-3 control-label">名称:</label>
                                         <div class="col-sm-6">
@@ -83,11 +88,19 @@
 				<div style="height: 30px"></div>
 				<form class="form-horizontal addDictDivTypeFormtw">
 				<div class="form-group">
-                                        <label class="col-sm-3 control-label">名称:</label>
+                                        <label class="col-sm-3 control-label">外调人员:</label>
+                                        <div class="col-sm-6 groupth">
+                                       
+                                        
+                                        </div>
+                 </div>
+				<div class="form-group">
+                                        <label class="col-sm-3 control-label">人员名称:</label>
                                         <div class="col-sm-6">
                                             <input type="text" id="groupNametw" class="form-control">
                                         </div>
                  </div>
+                  <div class="hidden grouptw"></div>
 				</form>
 </div>
 </div>
@@ -131,7 +144,7 @@
      <script src="${ctx }/static/js/laypage/laypage.js"></script> 
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-    
+    <script src="${ctx }/static/js/vendor/typeahead.js"></script>
     <script>
    jQuery(function($){
    	var Login = function(){
@@ -156,6 +169,7 @@
 				//注册绑定事件
 				self.events();
 				self.loadPagination(data);
+				self.loadPaginationtw(data);
 			}
 			//加载分页
 			  this.loadPagination = function(data){
@@ -207,6 +221,57 @@
 					  }
 				  });
 			}
+			
+			
+			  this.loadPaginationtw = function(data){
+				    var index;
+				    var html = '';
+				    $.ajax({
+					      url:"${ctx}/production/getGroup",
+					      data:data,
+					      type:"GET",
+					      beforeSend:function(){
+						 	  index = layer.load(1, {
+							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							  });
+						  }, 
+			      		  success: function (result) {
+			      			 $(result.data).each(function(i,o){
+			      				html +='<tr>'
+			      				+'<td class="text-center edit name">'+o.name+'</td>'
+			      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
+								+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button></td></tr>'
+								
+			      			}); 
+					        //显示分页
+						   	 laypage({
+						      cont: 'pager', 
+						      pages: result.data.totalPages, 
+						      curr:  result.data.pageNum || 1, 
+						      jump: function(obj, first){ 
+						    	  if(!first){ 
+						    		 
+							        	var _data = {
+							        			page:obj.curr,
+										  		size:13,
+										  		type:1,
+										  		name:$('#name').val(),
+									  	}
+							        
+							            self.loadPagination(_data);
+								     }
+						      }
+						    });  
+						   	layer.close(index);
+						   	 $("#tablecontenttw").html(html); 
+						   	self.loadEvents();
+						   
+					      },error:function(){
+								layer.msg("加载失败！", {icon: 2});
+								layer.close(index);
+						  }
+					  });
+				}
 			
 			this.loadEvents = function(){
 				//修改方法
@@ -373,20 +438,21 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '30%'], 
+						  area: ['30%', '45%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"新增小组",
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
-							 
+							 var t=$('.grouptw').text()
+							 ss = t.substring(0,t.length-1);
 							  postData={
-									  name:$("#groupNametw").val(),
+									  ids:ss,
 									  type:1,
 							  }
 							  $.ajax({
-									url:"${ctx}/production/addGroup",
+									url:"${ctx}/production/addTemporarily",
 									data:postData,
 						            traditional: true,
 									type:"post",
@@ -399,7 +465,7 @@
 									success:function(result){
 										if(0==result.code){
 											layer.msg("添加成功！", {icon: 1});
-										 self.loadPagination(data); 
+										 self.loadPaginationtw(data); 
 											$('#addDictDivTypetw').hide();
 											
 										}else{
@@ -421,6 +487,60 @@
 						  }
 					});
 				})
+				
+				
+				//提示人员姓名
+				$("#groupNametw").typeahead({
+					//ajax 拿way数据
+					source : function(query, process) {
+							return $.ajax({
+								url : '${ctx}/system/user/pages',
+								type : 'GET',
+								data : {
+									page:1,
+							  		size:10,								
+									userName:query,
+									temporarily:4,
+								},
+								success : function(result) {
+									//转换成 json集合
+									 var resultList = result.data.rows.map(function (item) {
+										 	//转换成 json对象
+					                        var aItem = {name: item.userName, id:item.id}
+					                        //处理 json对象为字符串
+					                        return JSON.stringify(aItem);
+					                    });
+									//提示框返回数据
+									 return process(resultList);
+								},
+							})
+							//提示框显示
+						}, highlighter: function (item) {
+						    //转出成json对象
+							 var item = JSON.parse(item);
+							return item.name
+							//按条件匹配输出
+		                }, matcher: function (item) {
+		                	//转出成json对象
+					        var item = JSON.parse(item);
+					       /*  $('.product').val(item.name); */
+					     self.setCache(item.id);
+					    	return item.name
+					    },
+						//item是选中的数据
+							
+						 updater:function(item){
+							//转出成json对象
+							var item = JSON.parse(item);
+							var html="";
+							html=item.name+" "
+							$('.grouptw').append(item.id+',');
+							$('.groupth').append(html);
+								return item.name
+						}, 
+
+						
+					});
 			}
    	}
    			var login = new Login();
