@@ -400,7 +400,7 @@
 				})
 				
 				//删除
-							$('.delete').on('click',function(){
+							$('#delete').on('click',function(){
 								var arr=new Array();
 								var that=$(this);
 								$(".stuCheckBoxt:checked").each(function() {   
@@ -409,12 +409,12 @@
 								var postData = {
 										ids:arr,
 								}
-								
 								var index;
 								 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
 								$.ajax({
 									url:"${ctx}/production/deleteTemporarily",
 									data:postData,
+									traditional: true,
 									type:"GET",
 									beforeSend:function(){
 										index = layer.load(1, {
@@ -425,6 +425,8 @@
 									success:function(result){
 										if(0==result.code){
 										layer.msg("删除成功！", {icon: 1});
+										$('.savemodetw').click();
+										layer.close(index);
 										}else{
 											layer.msg("删除失败！", {icon: 1});
 											layer.close(index);
