@@ -227,7 +227,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 	 * @param request 请求
 	 * @return cr
 	 */
-	@RequestMapping(value = "/production/addTemporarily", method = RequestMethod.GET)
+	@RequestMapping(value = "/production/addTemporarily", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse addTemporarily(HttpServletRequest request,String ids,Integer type) {
 		CommonResponse cr = new CommonResponse();
