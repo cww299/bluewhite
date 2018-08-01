@@ -227,6 +227,8 @@ private static final Log log = Log.getLog(GroupAction.class);
 	 * @param request 请求
 	 * @return cr
 	 */
+	@RequestMapping(value = "/production/addTemporarily", method = RequestMethod.GET)
+	@ResponseBody
 	public CommonResponse addTemporarily(HttpServletRequest request,String ids,Integer type) {
 		CommonResponse cr = new CommonResponse();
 		if(ids!=null){
@@ -268,7 +270,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 	 * @param request 请求
 	 * @return cr
 	 */
-	@RequestMapping(value = "/production/deleteTemporarily", method = RequestMethod.POST)
+	@RequestMapping(value = "/production/deleteTemporarily", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse deleteTemporarily(HttpServletRequest request,String[] ids) {
 		CommonResponse cr = new CommonResponse();
