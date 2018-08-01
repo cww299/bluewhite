@@ -46,14 +46,17 @@
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
-                                    
-                                    <button type="button" id="add" class="btn btn-success btn-sm btn-3d pull-right">外调人员</button>
-                                    <button type="button"  class=" pull-right">&nbsp&nbsp&nbsp&nbsp</button>
                                     <button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增小组</button>
-                                </table>
                                 <tbody id="tablecontenttw">
-                                111
+                                <thead>
+                                        <tr>
+                                        	<td class="text-center">外调组</td>
+                                            <td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemodetw" data-toggle="modal" data-target="#myModaltw")">查看人员</button></td>
+                                            <td class="text-center"><button type="button" id="add" class="btn btn-success btn-sm btn-3d">外调人员</button></td>
+                                        </tr>
+                                    </thead>
                                     </tbody>
+                                </table>
                                 <div id="pager" class="pull-right">
                                 
                                 </div>
@@ -104,7 +107,7 @@
 				</form>
 </div>
 </div>
- <!--隐藏框 小组新增结束  -->
+ <!--隐藏框 人员分组详情结束  -->
 
 <div id="savegroup" style="display: none;">
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -129,7 +132,36 @@
 	</div><!-- /.modal -->
 </div>
 </div>
-<!--隐藏框 产品新增结束  -->
+<!--隐藏框 人员分组详情结束  -->
+
+ <!--隐藏框 人员分组详情  -->
+
+<div id="savegrouptw" style="display: none;">
+<div class="modal fade" id="myModaltw" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					人员详情
+				</h4>
+			</div>
+			<div class="modal-body">
+				
+			</div>
+			<div class="modal-footer">
+			<button type="button" class="btn btn-danger" id="delete">删除
+				</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+</div>
+<!--人员分组详情 -->
     </section>
     
    
@@ -169,7 +201,6 @@
 				//注册绑定事件
 				self.events();
 				self.loadPagination(data);
-				self.loadPaginationtw(data);
 			}
 			//加载分页
 			  this.loadPagination = function(data){
@@ -223,55 +254,7 @@
 			}
 			
 			
-			  this.loadPaginationtw = function(data){
-				    var index;
-				    var html = '';
-				    $.ajax({
-					      url:"${ctx}/production/getGroup",
-					      data:data,
-					      type:"GET",
-					      beforeSend:function(){
-						 	  index = layer.load(1, {
-							  shade: [0.1,'#fff'] //0.1透明度的白色背景
-							  });
-						  }, 
-			      		  success: function (result) {
-			      			 $(result.data).each(function(i,o){
-			      				html +='<tr>'
-			      				+'<td class="text-center edit name">'+o.name+'</td>'
-			      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-								+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button></td></tr>'
-								
-			      			}); 
-					        //显示分页
-						   	 laypage({
-						      cont: 'pager', 
-						      pages: result.data.totalPages, 
-						      curr:  result.data.pageNum || 1, 
-						      jump: function(obj, first){ 
-						    	  if(!first){ 
-						    		 
-							        	var _data = {
-							        			page:obj.curr,
-										  		size:13,
-										  		type:1,
-										  		name:$('#name').val(),
-									  	}
-							        
-							            self.loadPagination(_data);
-								     }
-						      }
-						    });  
-						   	layer.close(index);
-						   	 $("#tablecontenttw").html(html); 
-						   	self.loadEvents();
-						   
-					      },error:function(){
-								layer.msg("加载失败！", {icon: 2});
-								layer.close(index);
-						  }
-					  });
-				}
+			
 			
 			this.loadEvents = function(){
 				//修改方法
@@ -366,6 +349,93 @@
 				})
 				
 				
+				
+				//人员详细显示方法
+				$('.savemodetw').on('click',function(){
+					 var display =$("#savegrouptw").css("display")
+					 if(display=='none'){
+							$("#savegrouptw").css("display","block");  
+						}
+					var postData={
+							type:1,
+					}
+					 var arr=new Array();
+					var html="";
+					$.ajax({
+						url:"${ctx}/production/getTemporarily",
+						data:postData,
+						type:"GET",
+						beforeSend:function(){
+							index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+						},
+						
+						success:function(result){
+							$(result.data).each(function(i,o){
+							html+='<input type="checkbox" class="stuCheckBoxt" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input>'
+							})
+							var s="<div class='input-group'><input type='checkbox' class='checkalls'>全选</input></div>"
+							$('.modal-body').html(s+html);
+							$(".checkalls").on('click',function(){
+			                    if($(this).is(':checked')){ 
+						 			$('.stuCheckBoxt').each(function(){  
+			                    //此处如果用attr，会出现第三次失效的情况  
+			                     		$(this).prop("checked",true);
+						 			})
+			                    }else{
+			                    	$('.stuCheckBoxt').each(function(){ 
+			                    		$(this).prop("checked",false);
+			                    		
+			                    	})
+			                    }
+			                });
+							layer.close(index);
+							
+						},error:function(){
+							layer.msg("操作失败！", {icon: 2});
+							layer.close(index);
+						}
+					});
+				})
+				
+				//删除
+							$('.delete').on('click',function(){
+								var arr=new Array();
+								var that=$(this);
+								$(".stuCheckBoxt:checked").each(function() {   
+								    arr.push($(this).val()); 
+								}); 
+								var postData = {
+										ids:arr,
+								}
+								
+								var index;
+								 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
+								$.ajax({
+									url:"${ctx}/production/deleteTemporarily",
+									data:postData,
+									type:"GET",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									
+									success:function(result){
+										if(0==result.code){
+										layer.msg("删除成功！", {icon: 1});
+										}else{
+											layer.msg("删除失败！", {icon: 1});
+											layer.close(index);
+										}
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								});
+								 })
+					})
 			}
 			this.events = function(){
 				//新增小组
