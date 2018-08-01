@@ -270,9 +270,11 @@ private static final Log log = Log.getLog(GroupAction.class);
 	 */
 	@RequestMapping(value = "/production/deleteTemporarily", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse deleteTemporarily(HttpServletRequest request,Long id) {
+	public CommonResponse deleteTemporarily(HttpServletRequest request,String[] ids) {
 		CommonResponse cr = new CommonResponse();
-		temporarilyDao.delete(id);
+		for (String id : ids) {
+			temporarilyDao.delete(Long.parseLong(id));
+		}
 		cr.setMessage("删除成功");
 		return cr;
 	}
