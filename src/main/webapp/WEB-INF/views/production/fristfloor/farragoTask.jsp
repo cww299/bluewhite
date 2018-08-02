@@ -416,7 +416,8 @@
 			      				var htmltwo = "";
 			      				var	id=$(this).val()
 								   var data={
-										  id:id
+										  id:id,
+										  type:1,
 								   }
 			      				$.ajax({
 									url:"${ctx}/production/allGroup",

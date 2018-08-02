@@ -225,6 +225,7 @@
 		      				 }
 		      				 
 		      				html +='<tr>'
+		      				+'<td  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:68px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" value="'+o.cutPartsName+'" /></td>'
 		      				+'<td class="text-center edit name" >'+o.cutPartsName+'</td>'
 		      				+'<td class="text-center edit name" >'+o.cutPartsNumber+'</td>'
 		      				+'<td class="text-center edit name" >'+o.materielNumber+'</td>'
@@ -238,7 +239,7 @@
 		      				+'<td class="text-center edit name" >'+parseFloat((o.productCost).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit name" >'+o.productRemark+'</td>'
 		      				+'<td class="text-center edit name" >'+parseFloat((o.batchMaterial).toFixed(3))+'</td>'
-		      				+'<td class="text-center edit name" >'+o.batchMaterialPrice+'</td>'
+		      				+'<td class="text-center edit name" >'+parseFloat((o.batchMaterialPrice).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit name" >'+o.complexMaterielNumber+'</td>'
 		      				+'<td class="text-center edit name" >'+o.complexMaterielName+'</td>'
 		      				+'<td class="text-center edit name" >'+b+'</td>'
