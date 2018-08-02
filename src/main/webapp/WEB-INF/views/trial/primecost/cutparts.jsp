@@ -45,7 +45,7 @@
 								<td>&nbsp&nbsp</td>
 								<td>默认数量:</td><td><input type="text" name="number" id="number" placeholder="请输入默认数量" class="form-control search-query number" /></td>
 									<td>&nbsp&nbsp</td>
-								<td>默认耗损:</td><td><input type="text" name="name" id="name" placeholder="请输入产品名称" class="form-control search-query name" /></td>
+								<td>默认耗损:</td><td><input type="text" name="name" id="loss" placeholder="请输入产品名称" class="form-control search-query name" /></td>
 								<!-- <td>&nbsp&nbsp</td> -->
 								<!-- <td>完成状态:</td><td><select class="form-control" id="selectstate"><option value=0>未完成</option><option value=1>已完成</option></select></td> -->
 								</tr></table> 
@@ -91,15 +91,16 @@
                                             <th class="text-center">产品单位</th>
                                             <th class="text-center">单片用料</th>
                                             <th class="text-center">单片价格</th>
-                                            <th class="text-center">复合物料编号</th>
-                                            <th class="text-center">复合物料名称</th>
-                                            <th class="text-center">是否双层对复</th>
-                                            <th class="text-center">复合物单价</th>
-                                            <th class="text-center">复合物备注</th>
-                                            <th class="text-center">复合物料耗损</th>
-                                            <th class="text-center">复合物用料</th>
-                                            <th class="text-center">复合单片价格</th>
-                                            <th class="text-center">复合加工费价格</th>
+                                            <th class="text-center">复物料编号</th>
+                                            <th class="text-center">复物料名</th>
+                                            <th class="text-center">是否对复</th>
+                                            <th class="text-center">复物单价</th>
+                                            <th class="text-center">复物备注</th>
+                                            <th class="text-center">复物料耗损</th>
+                                            <th class="text-center">复物用料</th>
+                                            <th class="text-center">复单片价格</th>
+                                            <th class="text-center">复加工费</th>
+                                            <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent">
@@ -186,9 +187,11 @@
 		  	this.getCache = function(){
 		  		return _cache;
 		  	}
+		  	
 			 var data={
 						page:1,
 				  		size:13,	
+				  		productId:"",
 				} 
 			this.init = function(){
 				
@@ -211,31 +214,42 @@
 					  }, 
 		      		  success: function (result) {
 		      			 $(result.data.rows).each(function(i,o){
+		      				 
+		      			 		var a="";
+		      				 if(o.composite==1){
+		      					 a="复合"
+		      				 }
+		      				var b="";
+		      				 if(o.doubleComposite==1){
+		      					 b="复合"
+		      				 }
+		      				 
 		      				html +='<tr>'
+		      				+'<td  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:68px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" value="'+o.cutPartsName+'" /></td>'
 		      				+'<td class="text-center edit name" >'+o.cutPartsName+'</td>'
 		      				+'<td class="text-center edit name" >'+o.cutPartsNumber+'</td>'
 		      				+'<td class="text-center edit name" >'+o.materielNumber+'</td>'
 		      				+'<td class="text-center edit name" >'+o.materielName+'</td>'
-		      				+'<td class="text-center edit name" >'+o.composite+'</td>'
+		      				+'<td class="text-center edit name" >'+a+'</td>'
 		      				+'<td class="text-center edit name" >'+o.oneMaterial+'</td>'
 		      				+'<td class="text-center edit name" >'+o.unit+'</td>'
-		      				+'<td class="text-center edit name" >'+o.scaleMaterial+'</td>'
+		      				+'<td class="text-center edit name" >'+parseFloat((o.scaleMaterial).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit name" >'+o.addMaterial+'</td>'
 		      				+'<td class="text-center edit name" >'+o.manualLoss+'</td>'
-		      				+'<td class="text-center edit name" >'+o.productCost+'</td>'
+		      				+'<td class="text-center edit name" >'+parseFloat((o.productCost).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit name" >'+o.productRemark+'</td>'
-		      				+'<td class="text-center edit name" >'+o.batchMaterial+'</td>'
-		      				+'<td class="text-center edit name" >'+o.batchMaterialPrice+'</td>'
+		      				+'<td class="text-center edit name" >'+parseFloat((o.batchMaterial).toFixed(3))+'</td>'
+		      				+'<td class="text-center edit name" >'+parseFloat((o.batchMaterialPrice).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit name" >'+o.complexMaterielNumber+'</td>'
 		      				+'<td class="text-center edit name" >'+o.complexMaterielName+'</td>'
-		      				+'<td class="text-center edit name" >'+o.doubleComposite+'</td>'
-		      				+'<td class="text-center edit name" >'+o.complexProductCost+'</td>'
+		      				+'<td class="text-center edit name" >'+b+'</td>'
+		      				+'<td class="text-center edit name" >'+parseFloat((o.complexProductCost*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit name" >'+o.complexProductRemark+'</td>'
-		      				+'<td class="text-center edit name" >'+o.compositeManualLoss+'</td>'
-		      				+'<td class="text-center edit name" >'+o.complexBatchMaterial+'</td>'
-		      				+'<td class="text-center edit name" >'+o.batchComplexMaterialPrice+'</td>'
-		      				+'<td class="text-center edit name" >'+o.batchComplexAddPrice+'</td>'
-							+'<td class="text-center edit" contentEditable="true"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button></td></tr>'
+		      				+'<td class="text-center edit name" >'+o.compositeManualLoss*1+'</td>'
+		      				+'<td class="text-center edit name" >'+parseFloat((o.complexBatchMaterial*1).toFixed(3))+'</td>'
+		      				+'<td class="text-center edit name" >'+parseFloat((o.batchComplexMaterialPrice*1).toFixed(3))+'</td>'
+		      				+'<td class="text-center edit name" >'+parseFloat((o.batchComplexAddPrice*1).toFixed(3))+'</td>'
+							+'<td class="text-center edit"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -268,7 +282,67 @@
 			}
 			
 			this.loadEvents = function(){
-				
+				//修改方法
+				$('.update').on('click',function(){
+					if($(this).text() == "编辑"){
+						$(this).text("保存")
+						
+						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
+				        });
+					}else{
+							$(this).text("编辑")
+						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+
+					       
+					                $(this).html(obj_text.val()); 
+									
+							});
+							
+							var postData = {
+									id:$(this).data('id'),
+									number:$(this).parent().parent('tr').find(".number").text(),
+									remarks:$(this).parent().parent('tr').find(".remarks").text(),
+									allotTime:$(this).parent().parent('tr').find(".allotTime").text(),
+							}
+							
+							var index;
+							$.ajax({
+								url:"${ctx}/bacth/addBacth",
+								data:postData,
+								type:"POST",
+								beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								
+								success:function(result){
+									if(0==result.code){
+									layer.msg("修改成功！", {icon: 1});
+									var data={
+											page:self.getCount(),
+									  		size:13,	
+									  		type:1,
+									  		flag:0,
+									  		status:$('#selectstate').val(),
+									} 
+								   self.loadPagination(data);
+									layer.close(index);
+									}else{
+										layer.msg("修改失败！", {icon: 1});
+										layer.close(index);
+									}
+								},error:function(){
+									layer.msg("操作失败！", {icon: 2});
+									layer.close(index);
+								}
+							});
+					}
+				})
 			} 
 			this.mater=function(){
 				//提示裁片名
@@ -298,17 +372,20 @@
 						}, highlighter: function (item) {
 						    //转出成json对象
 							 var item = JSON.parse(item);
+						    
 							return item.name
 							//按条件匹配输出
 		                }, matcher: function (item) {
 		                	//转出成json对象
 					        var item = JSON.parse(item);
+					     
 					    	return item.name
 					    },
 						//item是选中的数据
 						updater:function(item){
 							//转出成json对象
 							var item = JSON.parse(item);
+							
 								return item.name
 						},
 					});
@@ -339,14 +416,29 @@
 			
 			}
 			this.events = function(){
+				
+				//查询
+				$('.searchtask').on('click',function(){
+					var data = {
+				  			page:1,
+				  			size:13,
+				  			productId:self.getCache(),
+				  	}
+		            self.loadPagination(data);
+				});
 				/*保存  */
 				$('#save').on('click',function(){
-					
+					if($('#number').val()==""){
+						 return layer.msg("默认数量不能为空！", {icon: 2});
+					}
+					if($('#productName').val()==""){
+						 return layer.msg("产品名不能为空！", {icon: 2});
+					}
 					var leng = $(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').length;
 				for (var i = 0; i <leng; i++) {
 					var postData = {
-						productId:6017,
-						number:9000,
+						productId:self.getCache(),
+						number:$('#number').val(),
 						cutPartsName:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.cuttingName').val(),
 						cutPartsNumber:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.sliceNumber').val(),
 						materielNumber:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.materielNumber').text(),
@@ -378,11 +470,12 @@
 						success:function(result){
 							if(0==result.code){
 							layer.msg("新增成功！", {icon: 1});
-							/* var _data={
+							 var _data={
 									page:1,
 							  		size:13,
+							  		productId:self.getCache(),
 							}
-							self.loadPaginationto(_data) */
+							self.loadPagination(_data) 
 							layer.close(index);
 							}else{
 								layer.msg("新增失败！", {icon: 2});
@@ -409,7 +502,7 @@
 					//ajax 拿way数据
 					source : function(query, process) {
 							return $.ajax({
-								url : '${ctx}/productPages',
+								url : '${ctx}/getProductPages',
 								type : 'GET',
 								data : {
 									name:query,
@@ -419,7 +512,7 @@
 									//转换成 json集合
 									 var resultList = result.data.rows.map(function (item) {
 										 	//转换成 json对象
-					                        var aItem = {name: item.name, id:item.id}
+					                        var aItem = {name: item.name, id:item.id, number:item.primeCost==null ? "" : item.primeCost.number}
 					                        //处理 json对象为字符串
 					                        return JSON.stringify(aItem);
 					                    });
@@ -436,12 +529,16 @@
 		                }, matcher: function (item) {
 		                	//转出成json对象
 					        var item = JSON.parse(item);
+					        self.setCache(item.id)
+					        $('#number').val(item.number)
 					    	return item.name
 					    },
 						//item是选中的数据
 						updater:function(item){
 							//转出成json对象
 							var item = JSON.parse(item);
+							self.setCache(item.id)
+							 $('#number').val(item.number)
 								return item.name
 						},
 						
@@ -451,7 +548,7 @@
 					
 					var html="";
 				$('#addCutting').on('click',function(){
-					
+					var a=$('#loss').val();
 					 html='<tr><td  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:68px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" /></td>'
 					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center sliceNumber" /></td>'
 					 +'<td class="text-center edit materielNumber " ></td>'
@@ -462,7 +559,7 @@
 					 +'<td class="text-center edit name"></td>'
 					 +'<td class="text-center edit name"></td>'
 					 +'<td class="text-center edit name"</td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"  style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center manualLoss" /></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" value="'+a+'" style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center manualLoss" /></td>'
 					 +'<td class="text-center edit unitPrice" ></td>'
 					 +'<td class="text-center edit unit"></td>'
 					 +'<td class="text-center edit name"> </td>'
@@ -472,7 +569,7 @@
 					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><select class="text-center bilayer" style="border: none;width:90px; height:30px; background-color: #BFBFBF;"><option value="0"></option><option value="1">面料对复合</option></select></td>'
 					 +'<td class="text-center edit unitPricetw" ></td>'
 					 +'<td class="text-center edit unittw" ></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"  style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center compositeManualLoss" /></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" value="'+a+'" style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center compositeManualLoss" /></td>'
 					 +'<td class="text-center edit name"> </td>'
 					 +'<td class="text-center edit name"> </td>'
 					 +'<td class="text-center edit name"> </td></tr>';
