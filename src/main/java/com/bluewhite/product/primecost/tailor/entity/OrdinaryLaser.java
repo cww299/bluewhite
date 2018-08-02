@@ -150,13 +150,28 @@ public class OrdinaryLaser extends BaseEntity<Long>{
     private Double stallPrice;
 	
 	/**
-	 * 
+	 * 裁剪类型（普通激光=ordinarylaser，绣花激光=embroideryLaser，冲床 = puncher ）
 	 */
 	@Column(name = "type")
     private String type;
 	
+	/**
+	 * 叠片数量（冲床）
+	 * @return
+	 */
+	@Column(name = "lamination")
+    private Integer lamination;
 	
 	
+	
+
+	public Integer getLamination() {
+		return lamination;
+	}
+
+	public void setLamination(Integer lamination) {
+		this.lamination = lamination;
+	}
 
 	public Double getOtherTimeThree() {
 		return otherTimeThree;

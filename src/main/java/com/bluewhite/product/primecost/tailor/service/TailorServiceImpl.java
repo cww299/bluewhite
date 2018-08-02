@@ -90,16 +90,20 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			primeCoefficient = primeCoefficientDao.findByType(type);
 			prams.setType(type);
 			prams.setRabbTime(prams.getTailorSize()*primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
-			 ordinaryLaserDao.save(prams);
 			break;
 		case 72://绣花激光切割
 			type = "embroideryLaser";
 			primeCoefficient = primeCoefficientDao.findByType(type);
 			prams.setType(type);
 			prams.setRabbTime(prams.getTailorSize()*primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
-			ordinaryLaserDao.save(prams);
 			break;
 		case 73://手工电烫
+			type = "puncher";
+			primeCoefficient = primeCoefficientDao.findByType(type);
+			
+			
+			prams.setType(type);
+
 			
 			break;
 		case 74://设备电烫
@@ -120,7 +124,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		default:
 			break;
 		}
-		
+		ordinaryLaserDao.save(prams);
 		
 	}
 

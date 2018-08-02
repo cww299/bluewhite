@@ -53,7 +53,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		}
 		//当批各单片价格
 		if(cutParts.getComposite()==0){
-			cutParts.setBatchMaterialPrice(cutParts.getComposite()*cutParts.getProductCost());
+			cutParts.setBatchMaterialPrice(cutParts.getBatchMaterial()*cutParts.getProductCost());
 		}else{
 			cutParts.setBatchMaterialPrice(0.0);
 		}

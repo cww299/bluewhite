@@ -708,6 +708,11 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	public List<CollectPay> twoPerformancePay(CollectPay collectPay) {
 		PageParameter page  = new PageParameter();
 		page.setSize(Integer.MAX_VALUE);
+		//获取整个月的数据
+		collectPay.setOrderTimeBegin( DatesUtil.getFirstDayOfMonth(collectPay.getOrderTimeBegin()));
+		collectPay.setOrderTimeEnd( DatesUtil.getLastDayOfMonth(collectPay.getOrderTimeBegin()));
+		
+		
 		List<CollectPay> collectPayList = new ArrayList<CollectPay>();
 		AttendancePay attendancePay = new AttendancePay();
 		attendancePay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
@@ -723,6 +728,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			collect = new CollectPay();
 			List<AttendancePay> psList= mapCollectPay.get(ps);
 			collectPay.setUserId((Long)ps);
+			
 			//通过条件查找绩效是否已入库
 			List<CollectPay> list = this.findPages(collectPay, page).getRows();
 			if(list.size()>0){
@@ -949,7 +955,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			production.setFourNumber(fourNumber);
 			production.setSumNumber(sumNumber);
 			production.setOrderTimeBegin(groupProduction.getOrderTimeBegin());
-			production.setRemark(psList.get(0).getRemark());
+			production.setRemark(psList.get(0).getBacth().getRemarks());
 			groupProductionList.add(production);
 		}
 		return groupProductionList;
