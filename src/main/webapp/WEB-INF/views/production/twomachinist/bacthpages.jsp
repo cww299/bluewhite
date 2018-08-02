@@ -35,7 +35,7 @@
                                 </div>
                             </div>
         <div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-11 col-sm-11  col-md-11">
+			<div class="col-xs-12 col-sm-12  col-md-12">
 				<form class="form-search" >
 					<div class="row">
 						<div class="col-xs-11 col-sm-11 col-md-11">
@@ -55,8 +55,8 @@
 					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
              onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
-								<!-- <td>&nbsp&nbsp</td> -->
-								<!-- <td>完成状态:</td><td><select class="form-control" id="selectstate"><option value=0>未完成</option><option value=1>已完成</option></select></td> -->
+								 <td>&nbsp&nbsp</td>
+								 <td>完成状态:</td><td><select class="form-control" id="selectstate"><option value=0>未完成</option><option value=1>已完成</option></select></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
@@ -69,7 +69,12 @@
 									导出工序
 									</button>
 								</span> 
-								
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-success  btn-sm btn-3d start">
+									一键完成
+									</button>
+								</span>
 							</div>
 						</div>
 					</div>
@@ -719,7 +724,7 @@
 					var postData = {
 							id:$(this).data('id'),
 					}
-					
+					var that=$(this);
 					var index;
 					 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
 					$.ajax({
@@ -735,7 +740,7 @@
 						success:function(result){
 							if(0==result.code){
 							layer.msg("删除成功！", {icon: 1});
-							self.loadPagination(data)
+							that.parent().parent().hide();
 							layer.close(index);
 							}else{
 								layer.msg("删除失败！", {icon: 1});
@@ -1141,7 +1146,7 @@
 		            self.loadPagination(data);
 				});
 				/* 一键完成  */
-				/* $('.start').on('click',function(){
+				 $('.start').on('click',function(){
 					  var  that=$(".table-hover");
 					  var arr=new Array()//员工id
 					  that.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
@@ -1190,7 +1195,7 @@
 							}
 						});
 						 });
-				  }) */
+				  }) 
 				  
 				  
 				  /* 一键删除 */
