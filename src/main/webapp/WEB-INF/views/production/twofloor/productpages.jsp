@@ -40,7 +40,7 @@
 					<div class="row">
 						<div class="col-xs-8 col-sm-8 col-md-8">
 							<div class="input-group"> 
-								<table><tr><td>产品序号:</td><td><input type="text" name="number" id="number" class="form-control search-query number" /></td>
+								<table><tr><td>产品编号:</td><td><input type="text" name="number" id="number" class="form-control search-query number" /></td>
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<td>产品名称:</td><td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
 								</tr></table> 
@@ -293,7 +293,7 @@
 									  		size:13,
 									  		type:3,
 									  		name:$('#name').val(),
-								  			id:$('#number').val(),
+									  		number:$('#number').val(),
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -1098,7 +1098,7 @@
 				  			size:13,
 				  			type:3,
 				  			name:$('#name').val(),
-				  			id:$('#number').val(),
+				  			number:$('#number').val(),
 				  	}
 		            self.loadPagination(data);
 				});

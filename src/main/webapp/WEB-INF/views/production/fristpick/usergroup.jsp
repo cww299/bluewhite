@@ -48,6 +48,15 @@
                                         
                                     </tbody>
                                     <button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增小组</button>
+                                    <tbody id="tablecontenttw">
+                                <thead>
+                                        <tr>
+                                        	<td class="text-center">外调组</td>
+                                            <td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemodetw" data-toggle="modal" data-target="#myModaltw")">查看人员</button></td>
+                                            <td class="text-center"><button type="button" id="add" class="btn btn-success btn-sm btn-3d">外调人员</button></td>
+                                        </tr>
+                                    </thead>
+                                    </tbody>
                                 </table>
                                 <div id="pager" class="pull-right">
                                 
@@ -87,7 +96,30 @@
 </div>
  <!--隐藏框 产品新增结束  -->
 
-
+<!--隐藏框 小组新增开始  -->
+       <div id="addDictDivTypetw" style="display: none;">
+			<div class=" col-xs-12  col-sm-12  col-md-12 ">
+				<div class="space-10"></div>
+				<div style="height: 30px"></div>
+				<form class="form-horizontal addDictDivTypeFormtw">
+				<div class="form-group">
+                                        <label class="col-sm-3 control-label">外调人员:</label>
+                                        <div class="col-sm-6 groupth">
+                                       
+                                        
+                                        </div>
+                 </div>
+				<div class="form-group">
+                                        <label class="col-sm-3 control-label">人员名称:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="groupNametw" class="form-control">
+                                        </div>
+                 </div>
+                  <div class="hidden grouptw"></div>
+				</form>
+</div>
+</div>
+ <!--隐藏框 人员分组详情结束  -->
 
 <div id="savegroup" style="display: none;">
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -113,6 +145,35 @@
 </div>
 </div>
 <!--隐藏框 产品新增结束  -->
+
+<!--隐藏框 人员分组详情  -->
+
+<div id="savegrouptw" style="display: none;">
+<div class="modal fade" id="myModaltw" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					人员详情
+				</h4>
+			</div>
+			<div class="modal-body">
+				
+			</div>
+			<div class="modal-footer">
+			<button type="button" class="btn btn-danger" id="delete">删除
+				</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+</div>
+<!--人员分组详情 -->
     </section>
     
    
@@ -128,7 +189,7 @@
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
     <script src="${ctx }/static/js/vendor/typeahead.js"></script>
-    
+    <script src="${ctx }/static/js/vendor/typeahead.js"></script>
     <script>
    jQuery(function($){
    	var Login = function(){
@@ -336,7 +397,94 @@
 					
 					
 				})
+				//人员详细显示方法
+				$('.savemodetw').on('click',function(){
+					 var display =$("#savegrouptw").css("display")
+					 if(display=='none'){
+							$("#savegrouptw").css("display","block");  
+						}
+					var postData={
+							type:2,
+					}
+					 var arr=new Array();
+					var html="";
+					$.ajax({
+						url:"${ctx}/production/getTemporarily",
+						data:postData,
+						type:"GET",
+						beforeSend:function(){
+							index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+						},
+						
+						success:function(result){
+							$(result.data).each(function(i,o){
+							html+='<input type="checkbox" class="stuCheckBoxt" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input>'
+							})
+							var s="<div class='input-group'><input type='checkbox' class='checkalls'>全选</input></div>"
+							$('.modal-body').html(s+html);
+							$(".checkalls").on('click',function(){
+			                    if($(this).is(':checked')){ 
+						 			$('.stuCheckBoxt').each(function(){  
+			                    //此处如果用attr，会出现第三次失效的情况  
+			                     		$(this).prop("checked",true);
+						 			})
+			                    }else{
+			                    	$('.stuCheckBoxt').each(function(){ 
+			                    		$(this).prop("checked",false);
+			                    		
+			                    	})
+			                    }
+			                });
+							layer.close(index);
+							
+						},error:function(){
+							layer.msg("操作失败！", {icon: 2});
+							layer.close(index);
+						}
+					});
+				})
 				
+				//删除
+							$('#delete').on('click',function(){
+								var arr=new Array();
+								var that=$(this);
+								$(".stuCheckBoxt:checked").each(function() {   
+								    arr.push($(this).val()); 
+								}); 
+								var postData = {
+										ids:arr,
+								}
+								var index;
+								 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
+								$.ajax({
+									url:"${ctx}/production/deleteTemporarily",
+									data:postData,
+									traditional: true,
+									type:"GET",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									
+									success:function(result){
+										if(0==result.code){
+										layer.msg("删除成功！", {icon: 1});
+										$('.savemodetw').click();
+										layer.close(index);
+										}else{
+											layer.msg("删除失败！", {icon: 1});
+											layer.close(index);
+										}
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								});
+								 })
+					})
 				
 				//删除
 							$('.delete').on('click',function(){
@@ -634,6 +782,119 @@
 						  }
 					});
 				})
+				
+				//外调人员
+				$('#add').on('click',function(){
+					
+					var _index
+					var index
+					var postData
+					var dicDiv=$('#addDictDivTypetw');
+					_index = layer.open({
+						  type: 1,
+						  skin: 'layui-layer-rim', //加上边框
+						  area: ['30%', '45%'], 
+						  btnAlign: 'c',//宽高
+						  maxmin: true,
+						  title:"新增小组",
+						  content: dicDiv,
+						  btn: ['确定', '取消'],
+						  yes:function(index, layero){
+							 var t=$('.grouptw').text()
+							 ss = t.substring(0,t.length-1);
+							  postData={
+									  ids:ss,
+									  type:2,
+							  }
+							  $.ajax({
+									url:"${ctx}/production/addTemporarily",
+									data:postData,
+						            traditional: true,
+									type:"post",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									
+									success:function(result){
+										if(0==result.code){
+											layer.msg("添加成功！", {icon: 1});
+											$('#addDictDivTypetw').hide();
+											layer.close(index);
+										}else{
+											layer.msg("添加失败", {icon: 2});
+										}
+										
+										layer.close(index);
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								});
+							},
+						  end:function(){
+							  $('#addDictDivTypetw').hide();
+						
+							  $('.addDictDivTypeFormtw')[0].reset(); 
+							
+						  }
+					});
+				})
+				
+				
+				//提示人员姓名
+				$("#groupNametw").typeahead({
+					//ajax 拿way数据
+					source : function(query, process) {
+							return $.ajax({
+								url : '${ctx}/system/user/pages',
+								type : 'GET',
+								data : {
+									page:1,
+							  		size:10,								
+									userName:query,
+									temporarily:4,
+								},
+								success : function(result) {
+									//转换成 json集合
+									 var resultList = result.data.rows.map(function (item) {
+										 	//转换成 json对象
+					                        var aItem = {name: item.userName, id:item.id}
+					                        //处理 json对象为字符串
+					                        return JSON.stringify(aItem);
+					                    });
+									//提示框返回数据
+									 return process(resultList);
+								},
+							})
+							//提示框显示
+						}, highlighter: function (item) {
+						    //转出成json对象
+							 var item = JSON.parse(item);
+							return item.name
+							//按条件匹配输出
+		                }, matcher: function (item) {
+		                	//转出成json对象
+					        var item = JSON.parse(item);
+					       /*  $('.product').val(item.name); */
+					     self.setCache(item.id);
+					    	return item.name
+					    },
+						//item是选中的数据
+							
+						 updater:function(item){
+							//转出成json对象
+							var item = JSON.parse(item);
+							var html="";
+							html=item.name+" "
+							$('.grouptw').append(item.id+',');
+							$('.groupth').append(html);
+								return item.name
+						}, 
+
+						
+					});
 			}
    	}
    			var login = new Login();

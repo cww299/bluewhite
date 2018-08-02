@@ -86,6 +86,7 @@
                                         	<th class="text-center">考勤时间</th>
                                             <th class="text-center">B工资+杂工工资+返工工资</th>
                                             <th class="text-center">计算出的小时单价</th>
+                                            <th class="text-center">当月每小时单价</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontentth">
@@ -513,7 +514,8 @@
 		      				+'<td class="text-center  ">'+o.name+'</td>'
 		      				+'<td class="text-center ">'+o.sunTime+'</td>'
 		      				+'<td class="text-center ">'+o.sumBPay+'</td>'
-		      				+'<td class="text-center  ">'+o.specificValue+'</td></tr>'
+		      				+'<td class="text-center  ">'+o.specificValue+'</td>'
+		      				+'<td class="text-center  ">'+o.price+'</td></tr>'
 		      			}); 
 				          
 					   	layer.close(index);
