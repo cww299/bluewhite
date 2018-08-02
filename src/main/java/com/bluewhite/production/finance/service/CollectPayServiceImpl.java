@@ -942,13 +942,14 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				}
 			}
 		
-			production.setName(psList.get(0).getProductName());
+			production.setName(psList.get(0).getBacthNumber()+psList.get(0).getProductName());
 			production.setOneNumber(oneNumber);
 			production.setTwoNumber(twoNumber);
 			production.setThreeNumber(threeNumber);
 			production.setFourNumber(fourNumber);
 			production.setSumNumber(sumNumber);
 			production.setOrderTimeBegin(groupProduction.getOrderTimeBegin());
+			production.setRemark(psList.get(0).getRemark());
 			groupProductionList.add(production);
 		}
 		return groupProductionList;

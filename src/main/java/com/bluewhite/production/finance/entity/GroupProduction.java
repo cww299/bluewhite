@@ -35,40 +35,46 @@ public class GroupProduction {
 	private String name;
 	
 	/**
+	 * 加工点
+	 */
+	@Poi(name = "加工点", column = "C")
+	private String remark;
+	
+	/**
 	 * 总产量
 	 */
-	@Poi(name = "总数量", column = "C")
+	@Poi(name = "总数量", column = "D")
 	private Integer sumNumber;
 	
 	/**
 	 * 一组产量
 	 */
-	@Poi(name = "一组", column = "D")
+	@Poi(name = "一组", column = "E")
 	private Integer oneNumber;
 	
 	/**
 	 * 二组产量
 	 */
-	@Poi(name = "二组", column = "E")
+	@Poi(name = "二组", column = "F")
 	private Integer twoNumber;
 	
 	/**
 	 * 三组产量
 	 */
-	@Poi(name = "三组", column = "F")
+	@Poi(name = "三组", column = "G")
 	private Integer threeNumber;
 	
 	/**
 	 * 四组产量
 	 */
-	@Poi(name = "四组", column = "G")
+	@Poi(name = "四组", column = "H")
 	private Integer fourNumber;
 	
 	/**
 	 * 备注
 	 */
-	@Poi(name = "备注", column = "H")
-	private String remark;
+	@Poi(name = "备注", column = "I")
+	private String remarks;
 	
 	//工序部门类型
 	@Transient
@@ -77,6 +83,14 @@ public class GroupProduction {
 	
 	
 		
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+
 	public String getStartDate() {
 		return startDate;
 	}
