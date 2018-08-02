@@ -22,6 +22,29 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 	@Column(name = "type")
 	private String type;
 	
+	
+	/**
+	 * (绣花激光固定数值)
+	 * 绣花激光撕片/片
+	 */
+	@Column(name = "embroideryLaser_number")
+	private Double embroideryLaserNumber;
+	
+	/**
+	 * (绣花激光固定数值)
+	 * 周长小于左侧
+	 */
+	@Column(name = "perimeter_less")
+	private Double perimeterLess;
+	
+	/**
+	 * (绣花激光固定数值)
+	 * 周长小于左侧
+	 */
+	@Column(name = "perimeter_less_number")
+	private Double perimeterLessNumber;
+	
+	
 	/**
 	 *当下周边地区激光每米/元
 	 */
@@ -407,6 +430,30 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public Double getEmbroideryLaserNumber() {
+		return embroideryLaserNumber;
+	}
+
+	public void setEmbroideryLaserNumber(Double embroideryLaserNumber) {
+		this.embroideryLaserNumber = embroideryLaserNumber;
+	}
+
+	public Double getPerimeterLess() {
+		return perimeterLess;
+	}
+
+	public void setPerimeterLess(Double perimeterLess) {
+		this.perimeterLess = perimeterLess;
+	}
+
+	public Double getPerimeterLessNumber() {
+		return perimeterLessNumber;
+	}
+
+	public void setPerimeterLessNumber(Double perimeterLessNumber) {
+		this.perimeterLessNumber = perimeterLessNumber;
 	}
 	
 	

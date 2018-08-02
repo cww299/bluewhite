@@ -849,19 +849,19 @@ public  class ProTypeUtils {
 		default:
 			break;
 		}
-		if(usualConsume.getPeopleLogistics().equals(E7.getNumber())){
+		if(!usualConsume.getPeopleLogistics().equals(E7.getNumber())){
 			E7.setNumber(usualConsume.getPeopleLogistics());
 			proTypeUtils.service.save(E7);
 		}
-		if(usualConsume.getPeopleNumber().equals(E8.getNumber())){
+		if(!usualConsume.getPeopleNumber().equals(E8.getNumber())){
 			E8.setNumber(usualConsume.getPeopleNumber());
 			proTypeUtils.service.save(E8);
 		}
-		if(usualConsume.getMonthChummage().equals(E9.getNumber())){
+		if(!usualConsume.getMonthChummage().equals(E9.getNumber())){
 			E9.setNumber(usualConsume.getMonthChummage());
 			proTypeUtils.service.save(E9);
 		}
-		if(usualConsume.getMonthHydropower().equals(E10.getNumber())){
+		if(!usualConsume.getMonthHydropower().equals(E10.getNumber())){
 			E10.setNumber(usualConsume.getMonthHydropower());
 			proTypeUtils.service.save(E10);
 		}

@@ -22,7 +22,14 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 		if(oldOrdinaryLaser.getType()=="ordinarylaser"){
 			oldOrdinaryLaser.setManagePrice(primeCoefficient.getPeripheralLaser()*100*ordinaryLaser.getPerimeter());
 		}else{
+			if(ordinaryLaser.getPerimeter()<primeCoefficient.getPerimeterLess()){
+				oldOrdinaryLaser.setManagePrice(primeCoefficient.getPerimeterLessNumber()+primeCoefficient.getPerimeterLessNumber());
+			}else{
+				oldOrdinaryLaser.setManagePrice(primeCoefficient.getPeripheralLaser()*100*ordinaryLaser.getPerimeter()+primeCoefficient.getEmbroideryLaserNumber());
+			}
 			
+			
+			oldOrdinaryLaser.setManagePrice(primeCoefficient.getPeripheralLaser()*100*ordinaryLaser.getPerimeter());
 		}
 		//单片激光需要用净时
 		if(ordinaryLaser.getSingleDouble()==2){
