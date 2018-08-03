@@ -420,21 +420,14 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		bacth.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
 		bacth.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
 		bacth.setType(monthlyProduction.getType());
+		if(monthlyProduction.getType()==3){
+			bacth.setStatus(1);
+			bacth.setStatusTime(monthlyProduction.getOrderTimeBegin());
+		}
 		List<Bacth> bacthList = bacthService.findPages(bacth, page).getRows();
 		double productNumber = 0;
-		if(monthlyProduction.getType()==5){
-			Map<String, List<Bacth>> map = bacthList.stream().collect(Collectors.groupingBy(Bacth::getBacthNumber,Collectors.toList()));
-			for(Object ps : map.keySet()){
-				List<Bacth> psList= map.get(ps);
-				Map<Long, List<Bacth>> map1 = psList.stream().collect(Collectors.groupingBy(Bacth::getProductId,Collectors.toList()));
-					for(Object ps1 : map1.keySet()){
-						List<Bacth> psList1= map1.get(ps1);
-						if(psList1!=null && psList1.size()<=2){
-							productNumber+=psList1.get(0).getNumber();
-						}
-					}
-			}
-		}else if(monthlyProduction.getType()==4){
+		
+		if(monthlyProduction.getType()==4){
 			//当类型为机工时，产值和产量的计算方式变化
 			for(Bacth bac : bacthList){
 				//总工序完成用时
@@ -449,10 +442,28 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				 productNumber+= bac.getNumber();
 			}
 			
+		if(monthlyProduction.getType()==5){
+			Map<String, List<Bacth>> map = bacthList.stream().collect(Collectors.groupingBy(Bacth::getBacthNumber,Collectors.toList()));
+			for(Object ps : map.keySet()){
+				List<Bacth> psList= map.get(ps);
+				Map<Long, List<Bacth>> map1 = psList.stream().collect(Collectors.groupingBy(Bacth::getProductId,Collectors.toList()));
+					for(Object ps1 : map1.keySet()){
+						List<Bacth> psList1= map1.get(ps1);
+						if(psList1!=null && psList1.size()<=2){
+							productNumber+=psList1.get(0).getNumber();
+						}
+					}
+			}
+		} 
 			
-		}else{
+			
+		}
+		if(monthlyProduction.getType()==1 || monthlyProduction.getType()==2 ||monthlyProduction.getType()==3){
 			productNumber = bacthList.stream().mapToDouble(Bacth::getNumber).sum();
 		}
+		
+		
+		
 		monthlyProduction.setProductNumber(productNumber);
 		
 		//当天产值(外发单价乘以质检的个数)
@@ -709,8 +720,8 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		PageParameter page  = new PageParameter();
 		page.setSize(Integer.MAX_VALUE);
 		//获取整个月的数据
-		collectPay.setOrderTimeBegin( DatesUtil.getFirstDayOfMonth(collectPay.getOrderTimeBegin()));
-		collectPay.setOrderTimeEnd( DatesUtil.getLastDayOfMonth(collectPay.getOrderTimeBegin()));
+		collectPay.setOrderTimeBegin( DatesUtil.getfristDayOftime(DatesUtil.getFirstDayOfMonth(collectPay.getOrderTimeBegin())));
+		collectPay.setOrderTimeEnd( DatesUtil.getLastDayOftime(DatesUtil.getLastDayOfMonth(collectPay.getOrderTimeBegin())));
 		
 		
 		List<CollectPay> collectPayList = new ArrayList<CollectPay>();
@@ -831,6 +842,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 					task.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 					task.setOrderTimeEnd(collectPay.getOrderTimeEnd());
 					task.setType(collectPay.getType());
+					task.setProcedureTypeId((long)142);
 					List<Task> taskList = taskService.findPages(task, page).getRows();
 				
 					//遍历任务，组装出符合充棉的任务

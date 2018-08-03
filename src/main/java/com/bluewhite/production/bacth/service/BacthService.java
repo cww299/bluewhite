@@ -1,5 +1,7 @@
 package com.bluewhite.production.bacth.service;
 
+import java.util.Date;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -27,7 +29,7 @@ public interface BacthService extends BaseCRUDService<Bacth,Long>{
 	 * @param ids
 	 * @return
 	 */
-	public int statusBacth(String[] ids);
+	public int statusBacth(String[] ids,Date time);
 	
 	/**
 	 *  一键接收批次，改变批次的数量，重新变成批次到包装列表，type=2
