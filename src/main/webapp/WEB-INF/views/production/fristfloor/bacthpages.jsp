@@ -1514,11 +1514,17 @@
 						}
 						var index;
 						index = layer.confirm('<input type="text" id="some" class="tele form-control " placeholder="请输入时间" onClick=laydate({elem:"#some",istime:true,format:"YYYY-MM-DD"})>', {btn: ['确定', '取消']},function(){
-						var data={
+							var a="";
+							if($('#some').val()==""){
+								a="";
+							}else{
+								a=$('#some').val()+" "+"00:00:00"
+							}
+							var data={
 								status:1,
 								type:1,
 								ids:arr,
-								time:$('#some').val()+" "+"00:00:00",
+								time:a,
 						}
 						$.ajax({
 							url:"${ctx}/bacth/statusBacth",
