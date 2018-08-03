@@ -140,10 +140,12 @@
         	<div class="form-group">
 		    <input type="file" name="file" id="upfiletw"  style="display:inline">
 		    <button type="button" class="btn btn-success btn-sm" id="btntw"  style="display:inline">点击导入</button>
+		    <button class="btn btn-sm btn-danger" id="deleteproceduretw">一键删除</button>
  		</div>
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
+                                        <th class="text-center">全选</th>
                                         	<th class="text-center">工序名称</th>
                                             <th class="text-center">工序时间(秒)</th>
                                             <th class="text-center">工序类型</th>
@@ -646,23 +648,24 @@
 						      			
 						      			  $(result.data).each(function(i,o){
 						      				  
-						      				htmltwo +='<tr>'
+						      				htmltwo +='<tr><td class="text-center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 						      				+'<td class="text-center edit workingnametwotw id">'+o.name+'</td>'
 						      				+'<td class="text-center edit workingtimetwotw">'+o.workingTime+'</td>'
 						      				+'<td data-id="'+o.id+'" class="text-center" data-code="'+o.procedureType.id+'">'+htmlfr+'</td>' 
-											+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d updateworkingtw" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-danger btn-3d deleteproceduretw">删除</button></td></tr>'
+											+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d updateworkingtw" data-id='+o.id+'>编辑</button>  </td></tr>'
 											
 						      			});  
-									   	   
+						      			
 									   	layer.close(indextwo);
 									   	//新增时 查找工序类型
-								      			htmltwo="<tr><td class='text-center'><input type='text' class='input-large workingnametw'></td><td class='text-center'><input type='text' class='input-small workingtimetw' ></td><td class='text-center'>"+htmlfr+"</td><td class='text-center'><button class='btn btn-xs btn-primary btn-3d addtw' data-productid="+productId+">新增</button></td></tr>"+htmltwo;
+								      			htmltwo="<tr><td class='text-center'><label><input type='checkbox' class='ace checks' /><span class='lbl'></span></label></td><td class='text-center'><input type='text' class='input-large workingnametw'></td><td class='text-center'><input type='text' class='input-small workingtimetw' ></td><td class='text-center'>"+htmlfr+"</td><td class='text-center'><button class='btn btn-xs btn-primary btn-3d addtw' data-productid="+productId+">新增</button></td></tr>"+htmltwo;
 								      			$("#tableworkingtw").html(htmltwo); 
 								      			
 						      			
 						      			
 									   	  $("#tableworkingtw").html(htmltwo);  
 								      			self.loadevenstwo();
+								      			self.checkedd();
 									   	self.checked();
 								      },error:function(){
 											layer.msg("加载失败！", {icon: 2});
@@ -672,6 +675,24 @@
 					      }
 					  });
 				  
+				
+			}
+			this.checkedd=function(){
+				
+				$(".checks").on('click',function(){
+					
+                    if($(this).is(':checked')){ 
+			 			$('.checkboxId').each(function(){  
+                    //此处如果用attr，会出现第三次失效的情况  
+                     		$(this).prop("checked",true);
+			 			})
+                    }else{
+                    	$('.checkboxId').each(function(){ 
+                    		$(this).prop("checked",false);
+                    		
+                    	})
+                    }
+                }); 
 				
 			}
 			
@@ -717,40 +738,8 @@
 							layer.close(_indexx);
 						}
 					});
-					  });
+					  
 				})
-				//删除工序
-				$(".deleteproceduretw").on('click',function(){
-					var data={
-							id:$(this).parent().prev().data('id')
-							}
-					var _indexx;
-					var index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
-					$.ajax({
-						url:"${ctx}/production/delete",
-						data:data,
-						type:"GET",
-						beforeSend:function(){
-							_indexx = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								});
-						}, 
-						success:function(result){
-						if(result.code==0){
-							layer.msg(result.message, {icon: 1});
-							self.loadworkingtw();
-							layer.close(_indexx);
-						}else{
-							layer.msg(result.message, {icon: 2});
-							layer.close(_indexx);
-						}
-						},
-						error:function(){
-							layer.msg("删除失败！", {icon: 2});
-							layer.close(_indexx);
-						}
-					});
-					  });
 				})
 			//修改工序内容
 				 $(".updateworking").on('click',function(){
@@ -1005,7 +994,49 @@
 				})
 			}
 			this.events = function(){
-				
+				/* 一键删除返工工序 */
+				$('#deleteproceduretw').on('click',function(){
+					  var  that=$(this);
+					  var arr=new Array()//员工id
+						$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+							arr.push($(this).val());   
+						});
+					  if(arr.length<=0){
+							return layer.msg("至少选择一个！", {icon: 2});
+						}
+						var data={
+								ids:arr,
+						}
+						console.log(arr)
+						var _indexx;
+						var index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/production/delete",
+							data:data,
+							traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								_indexx = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							}, 
+							success:function(result){
+							if(result.code==0){
+								layer.msg(result.message, {icon: 1});
+								self.loadworkingtw();
+								layer.close(_indexx);
+							}else{
+								layer.msg(result.message, {icon: 2});
+								layer.close(_indexx);
+							}
+							},
+							error:function(){
+								layer.msg("删除失败！", {icon: 2});
+								layer.close(_indexx);
+							}
+						});
+						});
+				  })
 				//导入
 				$('#btn').on('click',function(){
 				
