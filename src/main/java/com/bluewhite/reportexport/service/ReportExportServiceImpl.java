@@ -215,7 +215,11 @@ public class ReportExportServiceImpl implements ReportExportService{
 				procedure.setName(procedurePoi.getName());
 				procedure.setWorkingTime(NumUtils.round(procedurePoi.getWorkingTime()*60, 2));
 				procedure.setType(type);
-				procedure.setProcedureTypeId(baseDataList.get(0).getId());
+				if(procedure.getFlag()==0){
+					procedure.setProcedureTypeId(baseDataList.get(0).getId());
+				}else{
+					procedure.setProcedureTypeId((long)100);
+				}
 				procedureList.add(procedure);
 				count++;
 			}

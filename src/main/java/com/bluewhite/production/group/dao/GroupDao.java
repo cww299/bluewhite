@@ -12,5 +12,12 @@ public interface GroupDao extends BaseRepository<Group, Long>{
 	 * @return
 	 */
 	List<Group> findByType(Integer type);
+	
+	/**
+	 * 根据名字查找分组
+	 * @param type
+	 * @return
+	 */
+	Group findByNameAndType(String group,Integer type);
 
 }
