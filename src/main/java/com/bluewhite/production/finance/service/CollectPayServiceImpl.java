@@ -427,20 +427,32 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		List<Bacth> bacthList = bacthService.findPages(bacth, page).getRows();
 		double productNumber = 0;
 		
+		double productPricethree = 0.0;
+		//当类型为机工时，产值和产量的计算方式变化
 		if(monthlyProduction.getType()==4){
-			//当类型为机工时，产值和产量的计算方式变化
-			for(Bacth bac : bacthList){
+			//已完成的任务
+			Task task1 = new Task();
+			task1.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
+			task1.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
+			task1.setType(monthlyProduction.getType());
+			List<Task> taskList = taskService.findPages(task1, page).getRows();
+			Map<Long, List<Task>> maptask = taskList.stream().collect(Collectors.groupingBy(Task::getBacthId,Collectors.toList()));
+
+			for(Long ps1 : maptask.keySet()){
+				List<Task> psList1= maptask.get(ps1);
+				Bacth bac = bacthService.findOne(ps1);
 				//总工序完成用时
-				 double sumProTime = bac.getTime();
-				 //已完成的任务工序数量
-				 Task task1 = new Task();
-				 task1.setBacthId(bac.getId());
-				 List<Task> taskList = taskService.findPages(task1, page).getRows();
-				 //工序完成用时
-				 double sunTaskTime = taskList.stream().mapToDouble(Task::getExpectTime).sum();
-				 bac.setNumber(NumUtils.roundTwo(NumUtils.round((bac.getNumber()*(sunTaskTime/sumProTime)),0)));
-				 productNumber+= bac.getNumber();
+				double sumProTime = bac.getTime();
+				//工序完成用时
+				double sunTaskTime = psList1.stream().mapToDouble(Task::getExpectTime).sum();
+				bac.setNumber(NumUtils.roundTwo(NumUtils.round((bac.getNumber()*(sunTaskTime/sumProTime)),0)));
+				productNumber+= bac.getNumber();
+				bac.setHairPrice(bac.getBacthHairPrice());
+				productPricethree += bacthList.stream().mapToDouble(Bacth::getProductPrice).sum();
 			}
+			
+			
+			
 			
 		if(monthlyProduction.getType()==5){
 			Map<String, List<Bacth>> map = bacthList.stream().collect(Collectors.groupingBy(Bacth::getBacthNumber,Collectors.toList()));
@@ -475,7 +487,11 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				}
 		}
 		double productPrice = bacthList.stream().mapToDouble(Bacth::getProductPrice).sum();
-		monthlyProduction.setProductPrice(productPrice);
+		if(monthlyProduction.getType()==4){
+			monthlyProduction.setProductPrice(NumUtils.round(productPricethree,2));
+		}else{
+			monthlyProduction.setProductPrice(NumUtils.round(productPrice, 2));
+		}
 		
 		
 	
@@ -805,10 +821,10 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		CollectPay	collect = dao.findOne(collectPay.getId());
 		if(collectPay.getTimePrice()!=null){
 			collectPay.setTimePay(collectPay.getTimePrice()+(collectPay.getAddSelfNumber()==null?0.0:collectPay.getAddSelfNumber()));
-			collectPay.setAddPerformancePay(collect.getTime()*collectPay.getTimePay());
+			collectPay.setAddPerformancePay(collect.getTime()*collectPay.getAddSelfNumber());
 			if(collectPay.getTimePrice()!=null && collectPay.getAddSelfNumber()!=null){
 				collectPay.setTimePay(collectPay.getTimePrice()+collectPay.getAddSelfNumber());
-				collectPay.setAddPerformancePay(collect.getTime()*collectPay.getTimePay());
+				collectPay.setAddPerformancePay(collect.getTime()*collectPay.getAddSelfNumber());
 			}
 		}
 		

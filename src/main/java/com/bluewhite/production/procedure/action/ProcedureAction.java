@@ -125,11 +125,13 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 	 */
 	@RequestMapping(value = "/production/delete", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse delete(HttpServletRequest request,Long id) {
+	public CommonResponse delete(HttpServletRequest request,String[] ids) {
 		CommonResponse cr = new CommonResponse();
-		if(id!=null){
+		if(ids!=null){
 			try {
-				procedureService.deleteProcedure(id);
+				for(String id : ids){
+					procedureService.deleteProcedure(Long.valueOf(id));
+				}
 				
 			} catch (Exception e) {
 				cr.setMessage(e.getMessage());
