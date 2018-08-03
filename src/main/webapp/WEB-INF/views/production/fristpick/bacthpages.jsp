@@ -1656,14 +1656,26 @@
 					  if(arr.length<=0){
 							return layer.msg("至少选择一个！", {icon: 2});
 						}
-						var data={
+					  var _datae={
 								status:0,
 								type:2,
 								ids:arr,
-								
+								flag:0,
 						}
 						var index;
-						 index = layer.confirm('确定一键完成吗', {btn: ['确定', '取消']},function(){
+						 index = layer.confirm('<input type="text" id="some" class="tele form-control " placeholder="请输入时间" onClick=laydate({elem:"#some",istime:true,format:"YYYY-MM-DD"})>', {btn: ['确定', '取消']},function(){
+							 var a="";
+								if($('#some').val()==""){
+									a="";
+								}else{
+									a=$('#some').val()+" "+"00:00:00"
+								}
+							 var data={
+								status:1,
+								type:2,
+								ids:arr,
+								time:a,
+						}
 						$.ajax({
 							url:"${ctx}/bacth/statusBacth",
 							data:data,
@@ -1678,7 +1690,7 @@
 							success:function(result){
 								if(0==result.code){
 									layer.msg(result.message, {icon: 1});
-									self.loadPagination(data);
+									self.loadPagination(_datae);
 								}else{
 									layer.msg(result.message, {icon: 2});
 								}
