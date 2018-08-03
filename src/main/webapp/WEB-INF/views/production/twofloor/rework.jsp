@@ -318,7 +318,12 @@
 		  	this.setIndex = function(index){
 		  		_index=index;
 		  	}
-		  	
+		  	this.setNum = function(num){
+		  		_num=num;
+		  	}
+		  	this.getNum = function(){
+		  		return _num;
+		  	}
 		  	this.getIndex = function(){
 		  		return _index;
 		  	}
@@ -890,6 +895,7 @@
 			      			$(".selectchang").change(function(){
 			      				var htmlfv="";
 			      				var	id=$(this).val()
+			      				self.setNum(id);
 			      				if(id==109 || id==""){
 			      					$('#dis').css("display","block")
 			      				}else{
@@ -1070,16 +1076,51 @@
 									},
 									
 									success:function(result){
-										if(0==result.code){
-										  $('.addDictDivTypeFormtw')[0].reset(); 
-										$('.checkworking').text("");
-										  $('.select').text("");
-											layer.msg("添加成功！", {icon: 1});
-											
-											
-										}else{
-											layer.msg("添加失败", {icon: 2});
-										}
+										var htmlfv="";
+										  var data={
+												   productId:productId,
+												   type:3,
+												   bacthId:bacthId,
+												   procedureTypeId:self.getNum(),
+												   flag:1,
+										   }
+					      				//查询各个工序的名称
+										   $.ajax({
+												url:"${ctx}/production/typeToProcedure",
+												data:data,
+												type:"GET",
+												beforeSend:function(){
+													index = layer.load(1, {
+														  shade: [0.1,'#fff'] //0.1透明度的白色背景
+														});
+												},
+												
+												success:function(result){
+													$(result.data).each(function(i,o){
+														htmlfv +='<div class="input-group"><input type="checkbox" class="checkWork" value="'+o.id+'" data-residualnumber="'+o.residualNumber+'">'+o.name+' 剩余:'+o.residualNumber+'</input></div>'
+													})
+													var s="<div class='input-group'><input type='checkbox' class='checkWorkAll'>全选</input></div>"
+													$('.checkworking').html(s+htmlfv);
+													$(".checkWorkAll").on('click',function(){
+									                    if($(this).is(':checked')){ 
+												 			$('.checkWork').each(function(){  
+									                    //此处如果用attr，会出现第三次失效的情况  
+									                     		$(this).prop("checked",true);
+												 			})
+									                    }else{
+									                    	$('.checkWork').each(function(){ 
+									                    		$(this).prop("checked",false);
+									                    		
+									                    	})
+									                    }
+									                });
+													layer.close(index);
+												},error:function(){
+													layer.msg("操作失败！", {icon: 2});
+													layer.close(index);
+												}
+											});
+										  $('.stuCheckBox').prop("checked",false);
 										
 										layer.close(index);
 									},error:function(){

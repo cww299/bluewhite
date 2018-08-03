@@ -1156,12 +1156,6 @@
 					  if(arr.length<=0){
 							return layer.msg("至少选择一个！", {icon: 2});
 						}
-						var data={
-								status:1,
-								type:4,
-								ids:arr,
-								flag:0,
-						}
 						var _datae={
 								status:0,
 								type:4,
@@ -1169,7 +1163,14 @@
 								flag:0,
 						}
 						var index;
-						 index = layer.confirm('确定一键完成吗', {btn: ['确定', '取消']},function(){
+						 index = layer.confirm('<input type="text" id="some" class="tele form-control " placeholder="请输入时间" onClick=laydate({elem:"#some",istime:true,format:"YYYY-MM-DD"})>', {btn: ['确定', '取消']},function(){
+						var data={
+								status:1,
+								type:4,
+								ids:arr,
+								flag:0,
+								time:$('#some').val()+" "+"00:00:00",
+						}
 						$.ajax({
 							url:"${ctx}/bacth/statusBacth",
 							data:data,

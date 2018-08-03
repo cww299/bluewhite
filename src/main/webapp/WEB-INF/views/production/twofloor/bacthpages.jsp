@@ -1031,7 +1031,7 @@
 									
 									success:function(result){
 										if(0==result.code){
-										  $('.addDictDivTypeForm')[0].reset();  
+										  /* $('.addDictDivTypeForm')[0].reset(); */  
 										  var htmlfv="";
 										  var data={
 												   productId:productId,
@@ -1077,7 +1077,7 @@
 												}
 											});
 										  $('.stuCheckBox').prop("checked",false);
-										  $('.select').text(""); 
+										  /* $('.select').text("");  */
 											layer.msg("添加成功！", {icon: 1});
 											
 											
@@ -1113,8 +1113,8 @@
 				
 			}
 			
-			
 			this.events = function(){
+			
 				
 				//查询
 				$('.searchtask').on('click',function(){
@@ -1142,21 +1142,26 @@
 					  if(arr.length<=0){
 							return layer.msg("至少选择一个！", {icon: 2});
 						}
-						var data={
-								status:1,
-								type:3,
-								ids:arr,
-								flag:0,
-						}
+						
 						var _datae={
 								status:0,
 								type:3,
 								ids:arr,
 								flag:0,
 						}
+							 
 						var index;
-						 index = layer.confirm('确定一键完成吗', {btn: ['确定', '取消']},function(){
-						$.ajax({
+						 index = layer.confirm('<input type="text" id="some" class="tele form-control " placeholder="请输入时间" onClick=laydate({elem:"#some",istime:true,format:"YYYY-MM-DD"})>', {btn: ['确定', '取消']},function(){
+							
+							
+							 var data={
+										status:1,
+										type:3,
+										ids:arr,
+										flag:0,
+										time:$('#some').val()+" "+"00:00:00",
+								}
+							 $.ajax({
 							url:"${ctx}/bacth/statusBacth",
 							data:data,
 				            traditional: true,
@@ -1183,7 +1188,7 @@
 						 });
 				  })
 				  
-				  
+				 
 				  /* 一键删除 */
 				$('.attendance').on('click',function(){
 					  var  that=$(this);
