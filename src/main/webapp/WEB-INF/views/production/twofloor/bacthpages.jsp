@@ -1124,10 +1124,11 @@
 				  			type:3,
 				  			name:$('#name').val(),
 				  			bacthNumber:$('#number').val(),
-				  			 orderTimeBegin:$("#startTime").val(),
+				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
 				  			status:$("#selectstate").val(),
 				  			flag:0,
+				  			statusTime:$("#startTime").val(),
 				  	}
 		            self.loadPagination(data);
 				});
