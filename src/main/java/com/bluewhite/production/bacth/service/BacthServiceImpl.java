@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.criteria.Predicate;
 
@@ -21,10 +22,14 @@ import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.PayB;
+import com.bluewhite.production.group.dao.GroupDao;
+import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
+import com.bluewhite.production.task.service.TaskService;
+import com.bluewhite.system.user.entity.User;
 @Service
 public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements BacthService{
 
@@ -33,8 +38,17 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 	
 	@Autowired
 	private PayBDao payBDao;
+	
 	@Autowired
 	private ProcedureDao procedureDao;
+	
+	@Autowired
+	private GroupDao groupDao;
+	
+	@Autowired
+	private TaskService taskService;
+	
+	private static String GROUP = "返工组";
 	
 	
 	@Override
@@ -128,6 +142,23 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 				for (int i = 0; i < ids.length; i++) {
 					Long id = Long.parseLong(ids[i]);
 					Bacth bacth = dao.findOne(id);
+					if(bacth.getType()==3){
+						Group group = groupDao.findByNameAndType(GROUP,bacth.getType());
+						Task task = new Task();
+						List<Procedure> procedure = procedureDao.findByProductIdAndProcedureTypeIdAndType(bacth.getProductId(), (long)101, bacth.getType());						
+						String [] pro = {procedure.get(0).getId().toString()};
+						String userIds = "";
+						for(User user :group.getUsers()){
+							userIds=user.getId()+","+userIds;
+						}
+						task.setNumber(bacth.getNumber());
+						task.setAllotTime(ProTypeUtils.countAllotTime(time, task.getType()));
+						task.setBacthId(bacth.getId());
+						task.setProcedureIds(pro);
+						task.setUserIds(userIds);
+						taskService.addTask(task);
+					}
+					
 					bacth.setStatus(1);
 					bacth.setStatusTime(time == null ? cal.getTime() :time);
 					dao.save(bacth);
