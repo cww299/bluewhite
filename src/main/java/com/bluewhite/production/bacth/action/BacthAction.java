@@ -1,6 +1,7 @@
 package com.bluewhite.production.bacth.action;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -119,9 +120,9 @@ private static final Log log = Log.getLog(BacthAction.class);
 	 */
 	@RequestMapping(value = "/bacth/statusBacth", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse statusBacth(HttpServletRequest request,String[] ids) {
+	public CommonResponse statusBacth(HttpServletRequest request,String[] ids, Date time ) {
 		CommonResponse cr = new CommonResponse();
-		int count = bacthService.statusBacth(ids);
+		int count = bacthService.statusBacth(ids,time);
 		cr.setMessage("成功完成"+count+"批次");
 		return cr;
 	}

@@ -1,6 +1,7 @@
 package com.bluewhite.production.bacth.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -77,13 +78,23 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 		        	if(!StringUtils.isEmpty(param.getFlag())){
 		        		predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
 		        	}
-		            //按时间过滤
-					if (!StringUtils.isEmpty(param.getOrderTimeBegin()) &&  !StringUtils.isEmpty(param.getOrderTimeEnd()) ) {
-						predicate.add(cb.between(root.get("allotTime").as(Date.class),
-								param.getOrderTimeBegin(),
-								param.getOrderTimeEnd()));
-					}
-			
+		        	if( !StringUtils.isEmpty(param.getStatusTime())){
+		        		//按完成时间过滤
+						if (!StringUtils.isEmpty(param.getOrderTimeBegin()) &&  !StringUtils.isEmpty(param.getOrderTimeEnd())  ) {
+							predicate.add(cb.between(root.get("statusTime").as(Date.class),
+									param.getOrderTimeBegin(),
+									param.getOrderTimeEnd()));
+						}
+		        	}else{
+		        		//按时间过滤
+		        		if (!StringUtils.isEmpty(param.getOrderTimeBegin()) &&  !StringUtils.isEmpty(param.getOrderTimeEnd()) ) {
+		        			predicate.add(cb.between(root.get("allotTime").as(Date.class),
+		        					param.getOrderTimeBegin(),
+		        					param.getOrderTimeEnd()));
+		        		}
+		        	}
+					
+				
 		        	
 					Predicate[] pre = new Predicate[predicate.size()];
 					query.where(predicate.toArray(pre));
@@ -108,15 +119,17 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 	}
 
 	@Override
-	public int statusBacth(String[] ids) {
+	public int statusBacth(String[] ids,Date time) {
 		int count = 0;
+		Calendar  cal = Calendar.getInstance();
+		cal.add(Calendar.DATE,-1);
 		if (!StringUtils.isEmpty(ids)) {
 			if (ids.length>0) {
 				for (int i = 0; i < ids.length; i++) {
 					Long id = Long.parseLong(ids[i]);
 					Bacth bacth = dao.findOne(id);
 					bacth.setStatus(1);
-					bacth.setStatusTime(new Date());
+					bacth.setStatusTime(time == null ? cal.getTime() :time);
 					dao.save(bacth);
 					count++;
 				}
