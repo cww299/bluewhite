@@ -436,7 +436,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			task1.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
 			task1.setType(monthlyProduction.getType());
 			List<Task> taskList = taskService.findPages(task1, page).getRows();
-			Map<Long, List<Task>> maptask = taskList.stream().collect(Collectors.groupingBy(Task::getBacthId,Collectors.toList()));
+			Map<Long, List<Task>> maptask = taskList.stream().filter(Task->Task.getBacth()!=null).collect(Collectors.groupingBy(Task::getBacthId,Collectors.toList()));
 
 			for(Long ps1 : maptask.keySet()){
 				List<Task> psList1= maptask.get(ps1);
@@ -519,20 +519,22 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 							if(attendancePayList.size()>0){
 								reworkTurnTime+=attendancePayList.get(0).getWorkTime();
 							}
-							if(monthlyProduction.getUserName()!=null){
-								monthlyProduction.setUserName(monthlyProduction.getUserName()+","+user.getUserName());
-							}else{
-								monthlyProduction.setUserName(user.getUserName());
-							}
+							monthlyProduction.setUserName(monthlyProduction.getUserName() == null ? user.getUserName() : monthlyProduction.getUserName()+","+user.getUserName());
 							userList.add(userid);
 						}
 					}
 				}
 			}
 		}
+		
 		//质检返工出勤时间
-		if(monthlyProduction.getType()==1 || monthlyProduction.getType()==2 ){
+		if(monthlyProduction.getType()==1 ){
+			
 			monthlyProduction.setReworkTurnTime(reworkTurnTime);
+			
+		}else if(monthlyProduction.getType()==2){
+			monthlyProduction.setReworkTurnTime(reworkTurnTime);
+			
 		//针工返工出勤时间
 		}else if((monthlyProduction.getType()==3 || monthlyProduction.getType()==4)){
 			reworkTurnTime = taskList.stream().mapToDouble(Task::getTaskTime).sum();
@@ -551,7 +553,10 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		//返工时间
 		double reworkTime = reworkTurnTime;
 		monthlyProduction.setReworkTime(reworkTime);
+		
 		if(monthlyProduction.getType()==1){
+			
+			
 			monthlyProduction.setPeopleNumber(peopleNumber-reworkNumber);
 			monthlyProduction.setTime(time-reworkTurnTime);
 		}
@@ -915,7 +920,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		List<GroupProduction> groupProductionList = new ArrayList<GroupProduction>();
 		
 		//将检验任务按产品id分组，统计出数量
-		Map<Object, List<Task>> mapTask = taskList.stream().collect(Collectors.groupingBy(Task::getProductId,Collectors.toList()));
+		Map<Object, List<Task>> mapTask = taskList.stream().collect(Collectors.groupingBy(Task::getBacthId,Collectors.toList()));
 		
 		Integer oneNumber = null;
 		Integer twoNumber = null;
