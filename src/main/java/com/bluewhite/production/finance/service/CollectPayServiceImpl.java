@@ -858,13 +858,13 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 					collect = new CollectPay();
 					double sumPayNumber = 0;
 					
-					//任务里没有充棉的类型，所以查出所有的任务
+					//任务里查出除了充棉的类型，以外的所有任务
 					Task task= new Task();
 					task.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 					task.setOrderTimeEnd(collectPay.getOrderTimeEnd());
 					task.setType(collectPay.getType());
-					task.setProcedureTypeId((long)142);
 					List<Task> taskList = taskService.findPages(task, page).getRows();
+					taskList = taskList.stream().filter(Task->Task.getProcedure().getProcedureTypeId()!=(long)142).collect(Collectors.toList());
 				
 					//遍历任务，组装出符合充棉的任务
 					for(Task ta : taskList){
