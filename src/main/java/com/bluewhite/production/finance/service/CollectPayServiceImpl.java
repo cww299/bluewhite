@@ -436,7 +436,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			task1.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
 			task1.setType(monthlyProduction.getType());
 			List<Task> taskList = taskService.findPages(task1, page).getRows();
-			Map<Long, List<Task>> maptask = taskList.stream().filter(Task->Task.getBacth()!=null).collect(Collectors.groupingBy(Task::getBacthId,Collectors.toList()));
+			Map<Long, List<Task>> maptask = taskList.stream().filter(Task->Task.getBacthId()!=null).collect(Collectors.groupingBy(Task::getBacthId,Collectors.toList()));
 
 			for(Long ps1 : maptask.keySet()){
 				List<Task> psList1= maptask.get(ps1);
@@ -446,9 +446,9 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				//工序完成用时
 				double sunTaskTime = psList1.stream().mapToDouble(Task::getExpectTime).sum();
 				bac.setNumber(NumUtils.roundTwo(NumUtils.round((bac.getNumber()*(sunTaskTime/sumProTime)),0)));
-				productNumber+= bac.getNumber();
 				bac.setHairPrice(bac.getBacthHairPrice());
-				productPricethree += bacthList.stream().mapToDouble(Bacth::getProductPrice).sum();
+				productNumber+= bac.getNumber();
+				productPricethree += bac.getProductPrice();
 			}
 			
 			
