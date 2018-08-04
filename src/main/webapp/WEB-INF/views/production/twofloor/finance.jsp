@@ -617,20 +617,21 @@
 					}
 				})
 			}
-			this.loadworking=function(){
-				$('.searchtaskfr').on('click',function(){
-				var data={
-						type:3,
-						page:1,
-				  		size:100,	
-				  		orderTimeBegin:$("#startTimefr").val(),
-			  			orderTimeEnd:$("#endTimefr").val(),
-				}
+			var datae={
+					type:3,
+					page:1,
+			  		size:100,	
+			  		orderTimeBegin:$("#startTimefr").val(),
+		  			orderTimeEnd:$("#endTimefr").val(),
+			}
+			this.loadworking=function(datae){
+				
+				
 				var index;
 			    var html = '';
 			    $.ajax({
 				      url:"${ctx}/finance/cottonOtherTask",
-				      data:data,
+				      data:datae,
 				      type:"GET",
 				      beforeSend:function(){
 					 	  index = layer.load(1, {
@@ -656,7 +657,7 @@
 					    		 
 						        	var _data = {
 						        			page:obj.curr,
-									  		size:13,
+									  		size:100,
 									  		type:3,
 								  			orderTimeBegin:$("#startTime").val(),
 								  			orderTimeEnd:$("#endTime").val(),
@@ -672,9 +673,19 @@
 							layer.close(index);
 					  }
 				  });
-				});
+				
 			}
 			this.events = function(){
+				$('.searchtaskfr').on('click',function(){
+					var datae={
+							type:3,
+							page:1,
+					  		size:100,	
+					  		orderTimeBegin:$("#startTimefr").val(),
+				  			orderTimeEnd:$("#endTimefr").val(),
+					}
+					self.loadworking(datae);
+				});
 				$('.searchtask').on('click',function(){
 					var data = {
 				  			page:1,
