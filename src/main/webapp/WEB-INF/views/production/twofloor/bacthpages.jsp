@@ -436,12 +436,10 @@
 							        	var _data = {
 							        			page:obj.curr,
 										  		size:13,
-										  		type:3,
-										  		productName:$('#name').val(),
-									  			bacthNumber:$('#number').val(),
-									  			orderTimeBegin:$("#startTime").val(),
-									  			orderTimeEnd:$("#endTime").val(),
-									  			flag:0,
+												bacthId:self.getCache(),
+												type:3,
+												flag:0,
+												status:$("#selectstate").val(),
 									  	}
 							        
 							            self.loadPaginationto(_data);
