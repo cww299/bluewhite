@@ -617,13 +617,7 @@
 					}
 				})
 			}
-			var datae={
-					type:3,
-					page:1,
-			  		size:100,	
-			  		orderTimeBegin:$("#startTimefr").val(),
-		  			orderTimeEnd:$("#endTimefr").val(),
-			}
+			
 			this.loadworking=function(datae){
 				
 				
@@ -751,8 +745,14 @@
 							
 						  }
 					});
-					
-					 self.loadworking(); 
+					var datae={
+							type:3,
+							page:1,
+					  		size:100,	
+					  		orderTimeBegin:$("#startTimefr").val(),
+				  			orderTimeEnd:$("#endTimefr").val(),
+					}
+					 self.loadworking(datae); 
 					
 					
 				})
