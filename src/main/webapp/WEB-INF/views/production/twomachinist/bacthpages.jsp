@@ -434,10 +434,7 @@
 							        			page:obj.curr,
 										  		size:13,
 										  		type:4,
-										  		productName:$('#name').val(),
-									  			bacthNumber:$('#number').val(),
-									  			orderTimeBegin:$("#startTime").val(),
-									  			orderTimeEnd:$("#endTime").val(),
+										  		bacthId:self.getCache(),
 									  			flag:0,
 									  	}
 							        
