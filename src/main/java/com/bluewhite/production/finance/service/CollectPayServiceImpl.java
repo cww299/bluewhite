@@ -555,10 +555,42 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		monthlyProduction.setReworkTime(reworkTime);
 		
 		if(monthlyProduction.getType()==1){
+			int count = 0;
+			String name = "";
+			double atttime = 0.0;
 			
+			attendancePay.setUserId((long)98);
+			attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
+			if(userList.contains((long)98)){
+				name = name+","+ attendancePayList.get(0).getUserName();
+				count = count+1;
+				atttime = atttime + attendancePayList.get(0).getWorkTime();
+			}
 			
-			monthlyProduction.setPeopleNumber(peopleNumber-reworkNumber);
-			monthlyProduction.setTime(time-reworkTurnTime);
+			attendancePay.setUserId((long)336);
+			attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
+			if(userList.contains((long)336)){
+				name =	attendancePayList.get(0).getUserName();		
+				count = count+1;
+				atttime = atttime + attendancePayList.get(0).getWorkTime();
+			}
+			
+			attendancePay.setUserId((long)337);
+			attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
+			if(userList.contains((long)337)){
+				name = name+","+ attendancePayList.get(0).getUserName();	
+				count = count+1;
+				atttime = atttime + attendancePayList.get(0).getWorkTime();
+			}
+			
+		
+			
+			monthlyProduction.setReworkNumber(count);
+			monthlyProduction.setUserName(name);
+			monthlyProduction.setPeopleNumber(peopleNumber-count);
+			monthlyProduction.setReworkTime(atttime);
+			monthlyProduction.setReworkTurnTime(atttime);
+			monthlyProduction.setTime(time-atttime);
 		}
 		
 		//杂工
@@ -858,13 +890,13 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 					collect = new CollectPay();
 					double sumPayNumber = 0;
 					
-					//任务里没有充棉的类型，所以查出所有的任务
+					//任务里查出除了充棉的类型，以外的所有任务
 					Task task= new Task();
 					task.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 					task.setOrderTimeEnd(collectPay.getOrderTimeEnd());
 					task.setType(collectPay.getType());
-					task.setProcedureTypeId((long)142);
 					List<Task> taskList = taskService.findPages(task, page).getRows();
+					taskList = taskList.stream().filter(Task->Task.getProcedure().getProcedureTypeId()!=(long)142).collect(Collectors.toList());
 				
 					//遍历任务，组装出符合充棉的任务
 					for(Task ta : taskList){
