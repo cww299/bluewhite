@@ -555,10 +555,42 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		monthlyProduction.setReworkTime(reworkTime);
 		
 		if(monthlyProduction.getType()==1){
+			int count = 0;
+			String name = "";
+			double atttime = 0.0;
 			
+			attendancePay.setUserId((long)98);
+			attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
+			if(userList.contains((long)98)){
+				name = name+","+ attendancePayList.get(0).getUserName();
+				count = count+1;
+				atttime = atttime + attendancePayList.get(0).getWorkTime();
+			}
 			
-			monthlyProduction.setPeopleNumber(peopleNumber-reworkNumber);
-			monthlyProduction.setTime(time-reworkTurnTime);
+			attendancePay.setUserId((long)336);
+			attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
+			if(userList.contains((long)336)){
+				name =	attendancePayList.get(0).getUserName();		
+				count = count+1;
+				atttime = atttime + attendancePayList.get(0).getWorkTime();
+			}
+			
+			attendancePay.setUserId((long)337);
+			attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
+			if(userList.contains((long)337)){
+				name = name+","+ attendancePayList.get(0).getUserName();	
+				count = count+1;
+				atttime = atttime + attendancePayList.get(0).getWorkTime();
+			}
+			
+		
+			
+			monthlyProduction.setReworkNumber(count);
+			monthlyProduction.setUserName(name);
+			monthlyProduction.setPeopleNumber(peopleNumber-count);
+			monthlyProduction.setReworkTime(atttime);
+			monthlyProduction.setReworkTurnTime(atttime);
+			monthlyProduction.setTime(time-atttime);
 		}
 		
 		//杂工
