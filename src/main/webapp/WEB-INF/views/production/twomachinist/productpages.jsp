@@ -172,6 +172,12 @@
                                         </div>
                  </div>
                  <div class="form-group">
+                                        <label class="col-sm-3 control-label">机工选择:</label>
+                                        <div class="col-sm-6">
+                                            <select class="form-control choice"><option value="0">二楼机工</option><option value="1">三楼机工</option></select>
+                                        </div>
+                 </div>
+                 <div class="form-group">
                                         <label class="col-sm-3 control-label">批次号:</label>
                                         <div class="col-sm-6">
                                             <input type="text" id="bacthNumber" class="form-control">
@@ -352,6 +358,7 @@
 									  bacthDeedlePrice:bacthDeedlePrice,
 									  type:4,
 									  allotTime:$('#Time').val(),
+									  machinist:$('.choice').val(),
 									  flag:0,
 							  }
 							   $.ajax({

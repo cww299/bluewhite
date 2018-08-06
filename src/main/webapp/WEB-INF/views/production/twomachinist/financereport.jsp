@@ -116,6 +116,9 @@
 								<input id="endTimetw" placeholder="请输入结束时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#endTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<td>机工选择:</td>
+								<td><select class="form-control"><option value="">请选择</option><option value="0">二楼机工</option><option value="1">三楼机工</option></select></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtasktw">
