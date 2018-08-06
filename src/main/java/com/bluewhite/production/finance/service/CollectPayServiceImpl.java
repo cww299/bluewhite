@@ -86,9 +86,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	@Autowired
 	private NonLineDao nonLineDao;
 	
-	@Autowired
-	private ProcedureDao procedureDao;
-	
 	private static String rework = "返工再验";
 	
 	
@@ -424,6 +421,9 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		if(monthlyProduction.getType()==3){
 			bacth.setStatus(1);
 			bacth.setStatusTime(monthlyProduction.getOrderTimeBegin());
+		}
+		if(monthlyProduction.getType()==4){
+			bacth.setMachinist(monthlyProduction.getMachinist());
 		}
 		List<Bacth> bacthList = bacthService.findPages(bacth, page).getRows();
 		double productNumber = 0;

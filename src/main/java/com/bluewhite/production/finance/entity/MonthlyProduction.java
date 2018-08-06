@@ -2,6 +2,8 @@ package com.bluewhite.production.finance.entity;
 
 import java.util.Date;
 
+import javax.persistence.Transient;
+
 import com.bluewhite.common.utils.excel.Poi;
 
 /**
@@ -110,9 +112,21 @@ public class MonthlyProduction {
 	
 	private Integer type;
 	
+    /**
+     * 机工区分字段（0=二楼，1=三楼）
+     */
+    private Integer machinist;
 	
 	
 	
+
+	public Integer getMachinist() {
+		return machinist;
+	}
+
+	public void setMachinist(Integer machinist) {
+		this.machinist = machinist;
+	}
 
 	public Double getReworkCount() {
 		return reworkCount;

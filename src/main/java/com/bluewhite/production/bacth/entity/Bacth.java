@@ -148,6 +148,14 @@ public class Bacth extends BaseEntity<Long>{
 	@Column(name ="time")
 	private Double time;
 	
+	
+    /**
+     * 机工区分字段（0=二楼，1=三楼）
+     */
+	@Column(name ="machinist")
+    private Integer machinist;
+	
+	
 	/**
 	 * 产品名称
 	 */
@@ -184,10 +192,18 @@ public class Bacth extends BaseEntity<Long>{
 	@Transient
     private Double hairPrice;
 	
+
 	
 	
 	
-	
+
+	public Integer getMachinist() {
+		return machinist;
+	}
+
+	public void setMachinist(Integer machinist) {
+		this.machinist = machinist;
+	}
 
 	public Integer getSign() {
 		return sign;
