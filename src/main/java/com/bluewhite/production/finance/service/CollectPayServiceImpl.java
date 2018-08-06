@@ -412,7 +412,8 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		monthlyProduction.setPeopleNumber(peopleNumber);
 		//考勤总时间
 		double time = list.stream().mapToDouble(AttendancePay::getWorkTime).sum();
-		monthlyProduction.setTime(time);
+		double overTime = list.stream().filter(AttendancePay->AttendancePay.getOverTime()!=null).mapToDouble(AttendancePay::getOverTime).sum();
+		monthlyProduction.setTime(time+overTime);
 		
 		
 		//当天产量
