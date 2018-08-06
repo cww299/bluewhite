@@ -92,6 +92,12 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 		        	if(!StringUtils.isEmpty(param.getFlag())){
 		        		predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
 		        	}
+		        	
+		        	//机工楼层区分
+		        	if(!StringUtils.isEmpty(param.getMachinist())){
+		        		predicate.add(cb.equal(root.get("machinist").as(Integer.class), param.getMachinist()));
+		        	}
+		        	
 		        	if( !StringUtils.isEmpty(param.getStatusTime())){
 		        		//按完成时间过滤
 						if (!StringUtils.isEmpty(param.getOrderTimeBegin()) &&  !StringUtils.isEmpty(param.getOrderTimeEnd())  ) {

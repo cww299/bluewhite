@@ -86,9 +86,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	@Autowired
 	private NonLineDao nonLineDao;
 	
-	@Autowired
-	private ProcedureDao procedureDao;
-	
 	private static String rework = "返工再验";
 	
 	
@@ -412,7 +409,8 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		monthlyProduction.setPeopleNumber(peopleNumber);
 		//考勤总时间
 		double time = list.stream().mapToDouble(AttendancePay::getWorkTime).sum();
-		monthlyProduction.setTime(time);
+		double overTime = list.stream().filter(AttendancePay->AttendancePay.getOverTime()!=null).mapToDouble(AttendancePay::getOverTime).sum();
+		monthlyProduction.setTime(time+overTime);
 		
 		
 		//当天产量
@@ -423,6 +421,9 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		if(monthlyProduction.getType()==3){
 			bacth.setStatus(1);
 			bacth.setStatusTime(monthlyProduction.getOrderTimeBegin());
+		}
+		if(monthlyProduction.getType()==4){
+			bacth.setMachinist(monthlyProduction.getMachinist());
 		}
 		List<Bacth> bacthList = bacthService.findPages(bacth, page).getRows();
 		double productNumber = 0;
