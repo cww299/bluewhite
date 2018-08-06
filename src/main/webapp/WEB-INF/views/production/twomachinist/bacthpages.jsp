@@ -38,7 +38,7 @@
 			<div class="col-xs-12 col-sm-12  col-md-12">
 				<form class="form-search" >
 					<div class="row">
-						<div class="col-xs-11 col-sm-11 col-md-11">
+						<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
 								<table><tr><td>批次号:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
 									<td>&nbsp&nbsp</td>
@@ -57,6 +57,8 @@
 								</td>
 								 <td>&nbsp&nbsp</td>
 								 <td>完成状态:</td><td><select class="form-control" id="selectstate"><option value=0>未完成</option><option value=1>已完成</option></select></td>
+								<td>机工选择:</td>
+								<td><select id="choice" class="form-control"><option value="">请选择</option><option value="0">二楼机工</option><option value="1">三楼机工</option></select></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
@@ -102,6 +104,7 @@
                                             <th class="text-center">当批用时</th>
                                             <th class="text-center">备注</th>
                                             <th class="text-center">完成状态</th>
+                                            <th class="text-center">机工</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -314,6 +317,15 @@
 		      				 }else{
 		      					strname="未完成";
 		      				 }
+		      				 var strnametw="";
+		      				 var a="";
+		      				if(o.machinist==0){
+		      					strnametw="二楼机工";
+		      					a=0;
+		      				 }else{
+		      					strnametw="三楼机工";
+		      					a=1;
+		      				 }
 		      				 html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="hidden batch">'+o.id+'</td>'
 		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
@@ -327,6 +339,7 @@
 		      				+'<td class="text-center ">'+parseFloat((o.time).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
 		      				+'<td class="text-center ">'+strname+'</td>'
+		      				+'<td class="text-center "><select class="text-center form-control choice"><option value="'+a+'">'+strnametw+'</option><option value="0">二楼机工</option><option value="1">三楼机工</option></select></td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button>  <button class="btn btn-sm btn-info  btn-trans updateremaketw" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
 							
 		      			}); 
@@ -349,6 +362,7 @@
 								  			orderTimeEnd:$("#endTime").val(),
 								  			flag:0,
 								  			status:$('#selectstate').val(),
+								  			machinist:$("#choice").val(),
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -777,6 +791,7 @@
 									bacthHairPrice:$(this).parent().parent('tr').find(".bacthHairPrice").text(),
 									bacthDeedlePrice:$(this).parent().parent('tr').find(".bacthDeedlePrice").text(),
 									allotTime:$(this).parent().parent('tr').find(".allotTime").text(),
+									machinist:$(this).parent().parent('tr').find(".choice").val(),
 							}
 							
 							var index;
@@ -799,6 +814,7 @@
 									  		type:4,
 									  		flag:0,
 									  		status:$('#selectstate').val(),
+									  		machinist:$("#choice").val(),
 									} 
 								   self.loadPagination(data);
 									layer.close(index);
@@ -1103,6 +1119,7 @@
 								  		type:4,
 								  		flag:0,
 								  		status:$('#selectstate').val(),
+								  		machinist:$("#choice").val(),
 								} 
 							   self.loadPagination(data);
 						  } 
@@ -1138,6 +1155,7 @@
 				  			 orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
 				  			status:$("#selectstate").val(),
+				  			machinist:$("#choice").val(),
 				  			flag:0,
 				  	}
 		            self.loadPagination(data);
@@ -1158,6 +1176,7 @@
 								type:4,
 								ids:arr,
 								flag:0,
+								machinist:$("#choice").val(),
 						}
 						var index;
 						 index = layer.confirm('<input type="text" id="some" class="tele form-control " placeholder="请输入时间" onClick=laydate({elem:"#some",istime:true,format:"YYYY-MM-DD"})>', {btn: ['确定', '取消']},function(){
