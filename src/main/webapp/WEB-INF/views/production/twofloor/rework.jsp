@@ -188,7 +188,7 @@
                     	
                     	
                     	<div class="form-group">
-                            <label class="col-sm-3 control-label">备注:</label>
+                            <label class="col-sm-3 control-label ">备注:</label>
                                 <div class="col-sm-6">
                                   <input type="text" class="form-control remarks">
                                 </div>
@@ -1165,7 +1165,7 @@
 									//转换成 json集合
 									 var resultList = result.data.rows.map(function (item) {
 										 	//转换成 json对象
-					                        var aItem = {name: item.bacthNumber, id:item.product.id,proname:item.product.name,number:item.number}
+					                        var aItem = {name: item.bacthNumber, id:item.product.id,proname:item.product.name,number:item.number,remarks:item.remarks}
 					                        //处理 json对象为字符串
 					                        return JSON.stringify(aItem);
 					                    });
@@ -1187,6 +1187,7 @@
 					        self.setName(item.name);
 					        $('.sumnumber').val(item.number);
 					        $('.productName').val(item.proname);
+					        $('.remarks').val(item.remarks);
 					    	return item.name
 					    },
 						//item是选中的数据
@@ -1197,6 +1198,7 @@
 						  	self.setName(item.name);
 						  	$('.sumnumber').val(item.number);
 						  	$('.productName').val(item.proname);
+						  	$('.remarks').val(item.remarks);
 								return item.name
 						},
 
