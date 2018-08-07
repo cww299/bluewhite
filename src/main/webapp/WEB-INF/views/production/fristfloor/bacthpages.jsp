@@ -1071,6 +1071,7 @@
 						   end:function(){
 							  $('.addDictDivTypeForm')[0].reset(); 
 							  $("#addDictDivType").hide();
+							  $('.checkworking').text(""); 
 							  var data={
 										page:self.getCount(),
 								  		size:13,	
@@ -1078,7 +1079,7 @@
 								  		flag:0,
 								  		status:$('#selectstate').val(),
 								} 
-							  /*  self.loadPagination(data); */
+							    self.loadPagination(data); 
 						  } 
 					});
 					
@@ -1424,7 +1425,8 @@
 						   end:function(){
 							  $('.addDictDivTypeFormtw')[0].reset(); 
 							  $("#addDictDivTypetw").hide();
-						
+							  $('.checkworkingtw').text("");
+							  $('.selecttw').text("");
 							
 						  } 
 					});
