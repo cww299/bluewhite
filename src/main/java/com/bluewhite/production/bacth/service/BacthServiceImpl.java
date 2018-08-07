@@ -136,10 +136,12 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 						 }
 				  }
 				  PageResultStat<Bacth> result = new PageResultStat<>(pages,page);
-				  result.setAutoStateField("packNumber", "sumTaskPrice");
+				  if(param.getType()==2){
+					  result.setAutoStateField("packNumber", "sumTaskPrice");
+				  }else{
+					  result.setAutoStateField("number", "sumTaskPrice");
+				  }
 				  result.count();
-//				  PageResult<Bacth> result = new PageResult<>(pages,page);
-			  
 			  return result;
 		    }
 
