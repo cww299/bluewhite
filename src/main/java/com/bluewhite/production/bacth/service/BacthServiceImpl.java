@@ -15,9 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.entity.PageResultStat;
+import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.dao.PayBDao;
@@ -113,15 +116,31 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 		        					param.getOrderTimeEnd()));
 		        		}
 		        	}
-					
-				
 		        	
 					Predicate[] pre = new Predicate[predicate.size()];
 					query.where(predicate.toArray(pre));
 		        	return null;
 		        }, page);
-		        PageResult<Bacth> result = new PageResult<>(pages,page);
-		        return result;
+		        
+				  if(param.getType()==2){
+					  if(pages.getSize()>0){
+						  for(Bacth bacth : pages.getContent()){
+							  int count = 0;
+							  for(Task ta : bacth.getTasks()){
+								  if(ta.getProcedureName().equals(Constants.BAGABOARD) || ta.getProcedureName().equals(Constants.BOXBOARD)){
+									  count=+ta.getNumber();
+								  }
+							  }
+							  bacth.setPackNumber(bacth.getNumber()-count);
+						  	}
+						 }
+				  }
+				  PageResultStat<Bacth> result = new PageResultStat<>(pages,page);
+				  result.setAutoStateField("packNumber", "sumTaskPrice");
+				  result.count();
+//				  PageResult<Bacth> result = new PageResult<>(pages,page);
+			  
+			  return result;
 		    }
 
 	@Override

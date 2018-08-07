@@ -37,7 +37,7 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 				}
 	        	//按编号过滤
 	        	if (!StringUtils.isEmpty(product.getNumber())) {
-					predicate.add(cb.like(root.get("number").as(String.class),"%"+product.getNumber()+"%"));
+					predicate.add(cb.equal(root.get("number").as(String.class),product.getNumber()));
 				}
 	        	//按产品名称过滤
 	        	if (!StringUtils.isEmpty(product.getName())) {

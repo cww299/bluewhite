@@ -26,10 +26,6 @@ import com.bluewhite.production.group.entity.Group;
  * @author zhangliang
  *
  */
-/**
- * @author LB-BY06
- *
- */
 @Entity
 @Table(name = "sys_user")
 // @Inheritance 的 strategy 属性是指定继承关系的生成策略，JOINED

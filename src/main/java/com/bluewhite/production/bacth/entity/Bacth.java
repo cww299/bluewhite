@@ -155,6 +155,12 @@ public class Bacth extends BaseEntity<Long>{
 	@Column(name ="machinist")
     private Integer machinist;
 	
+    /**
+     * （一楼包装）该批次数量
+     */
+	@Transient
+    private Integer packNumber;
+	
 	
 	/**
 	 * 产品名称
@@ -196,6 +202,14 @@ public class Bacth extends BaseEntity<Long>{
 	
 	
 	
+
+	public Integer getPackNumber() {
+		return packNumber;
+	}
+
+	public void setPackNumber(Integer packNumber) {
+		this.packNumber = packNumber;
+	}
 
 	public Integer getMachinist() {
 		return machinist;
