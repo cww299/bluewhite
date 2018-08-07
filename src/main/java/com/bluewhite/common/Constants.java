@@ -87,6 +87,11 @@ public class Constants {
     //包含的部门
     public static String TAILOR_ORGNAME = "72";
     
-
+    
+    /**
+     * 包装部
+     */
+    public static String  BAGABOARD = "大包上车";   
+    public static String  BOXBOARD= "箱上车";
 
 }
