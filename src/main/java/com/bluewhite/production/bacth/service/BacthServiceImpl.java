@@ -128,7 +128,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 							  int count = 0;
 							  for(Task ta : bacth.getTasks()){
 								  if(ta.getProcedureName().equals(Constants.BAGABOARD) || ta.getProcedureName().equals(Constants.BOXBOARD)){
-									  count=+ta.getNumber();
+									  count+=ta.getNumber();
 								  }
 							  }
 							  bacth.setPackNumber(bacth.getNumber()-count);
