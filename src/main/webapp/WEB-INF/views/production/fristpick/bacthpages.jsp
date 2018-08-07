@@ -106,6 +106,23 @@
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
+                                    <thead>
+                                        <tr>
+                                       	    <td class="center">合计</td>
+                                        	<td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center" id="total"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                        </tr>
+                                    </thead>
                                 </table>
                                 <div id="pager" class="pull-right">
                                 
@@ -344,7 +361,7 @@
 		  	}
 			 var data={
 						page:1,
-				  		size:13,	
+				  		size:12,	
 				  		type:2,
 				  		status:$('.selectchoice').val(),
 				} 
@@ -369,7 +386,7 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			  
+		      			  $("#total").text(result.data.statData.stateCount)
 		      			 $(result.data.rows).each(function(i,o){
 		      				var strname="";
 		      				 if(o.status==1){
@@ -386,7 +403,7 @@
 		      				+'<td class="text-center  bacthHairPrice">'+o.bacthHairPrice+'</td>'
 		      				+'<td class="text-center  sumTaskPrice">'+ parseFloat((o.sumTaskPrice*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center  regionalPrice">'+parseFloat((o.regionalPrice*1).toFixed(3))+'</td>'
-		      				+'<td class="text-center ">'+parseFloat((o.time).toFixed(3))+'</td>'
+		      				+'<td class="text-center ">'+parseFloat((o.time*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
 		      				+'<td class="text-center ">'+strname+'</td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button>  <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
@@ -403,7 +420,7 @@
 					    		 
 						        	var _data = {
 						        			page:obj.curr,
-									  		size:13,
+									  		size:12,
 									  		type:2,
 								  			name:$('#name').val(),
 								  			bacthNumber:$('#number').val(),
@@ -493,7 +510,7 @@
 						    		 
 							        	var _data = {
 							        			page:obj.curr,
-										  		size:13,
+										  		size:12,
 										  		type:2,
 										  		bacthId:self.getCache(),
 									  	}
@@ -637,7 +654,7 @@
 										layer.msg("删除成功！", {icon: 1});
 										var _data={
 												page:1,
-										  		size:13,
+										  		size:12,
 												bacthId:self.getCache(),
 												type:2,
 										}
@@ -704,7 +721,7 @@
 					var data={
 							bacthId:$(this).data('id'),
 							page:1,
-					  		size:13,	
+					  		size:12,	
 					  		type:2,
 					} 
 					self.loadPaginationto(data);
@@ -733,7 +750,7 @@
 							  $('#addwork').hide();
 							  data={
 									page:1,
-								  	size:13,	
+								  	size:12,	
 								  	type:2,
 								  	name:$('#name').val(),
 						  			number:$('#number').val(),
@@ -819,7 +836,7 @@
 									layer.msg("修改成功！", {icon: 1});
 									var data={
 											page:self.getCount(),
-									  		size:13,	
+									  		size:12,	
 									  		type:2,
 									  		flag:0,
 									  		status:$('.selectchoice').val(),
@@ -1103,7 +1120,7 @@
 							  $("#addDictDivType").hide();
 							  var date={
 										page:self.getCount(),
-								  		size:13,	
+								  		size:12,	
 								  		type:2,
 								  		flag:0,
 								  	status:$('.selectchoice').val(),
@@ -1458,7 +1475,7 @@
 							  $("#addDictDivTypetw").hide();
 							  var data={
 										page:self.getCount(),
-								  		size:13,	
+								  		size:12,	
 								  		type:2,
 								  		flag:0,
 								  		status:$('.selectchoice').val(),
@@ -1609,7 +1626,7 @@
 						}
 						var _data={
 								page:1,
-						  		size:13,
+						  		size:12,
 								bacthId:self.getCache(),
 								type:2,
 						}
@@ -1702,7 +1719,7 @@
 				$('.searchtask').on('click',function(){
 					var data = {
 				  			page:1,
-				  			size:13,
+				  			size:12,
 				  			type:2,
 				  			name:$('#name').val(),
 				  			bacthNumber:$('#number').val(),
@@ -1737,7 +1754,7 @@
 							  $('#addworking').hide();
 							  data={
 									page:1,
-								  	size:13,	
+								  	size:12,	
 								  	type:2,
 								  	name:$('#name').val(),
 						  			number:$('#number').val(),
