@@ -189,9 +189,9 @@
 		      			 $(result.data.rows).each(function(i,o){
 		      				html +='<tr>'
 		      				+'<td class="text-center edit name">'+o.consumeDate+'</td>'
-		      				+'<td class="text-center edit name">'+o.chummage*1+'</td>'
-		      				+'<td class="text-center edit name">'+o.hydropower*1+'</td>'
-		      				+'<td class="text-center edit name">'+o.logistics*1+'</td>'
+		      				+'<td class="text-center edit name">'+parseFloat((o.chummage*1).toFixed(2))+'</td>'
+		      				+'<td class="text-center edit name">'+parseFloat((o.hydropower*1).toFixed(2))+'</td>'
+		      				+'<td class="text-center edit name">'+parseFloat((o.logistics*1).toFixed(2))+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 		      			}); 
 				        //显示分页
