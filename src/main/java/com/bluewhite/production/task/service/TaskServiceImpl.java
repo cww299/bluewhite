@@ -148,19 +148,19 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		//查出该批次的所有任务
 		Bacth bacth = bacthDao.findOne(task.getBacthId());
 		//计算出该批次下所有人的实际成本总和
+		int count = 0;
 		for(Task ta : bacth.getTasks()){
 			sumTaskPrice+=ta.getTaskPrice();
 			if(task.getType()==2){
-				int count = 0;
 				if(ta.getProcedureName().equals(Constants.BAGABOARD) || ta.getProcedureName().equals(Constants.BOXBOARD)){
-					count=+ta.getNumber();
-				}
-				if(bacth.getNumber()==count){
-					bacth.setStatus(1);
-					bacth.setStatusTime(task.getAllotTime());
+					count+=ta.getNumber();
 				}
 			}
 		};
+		if(bacth.getNumber()==count){
+			bacth.setStatus(1);
+			bacth.setStatusTime(task.getAllotTime());
+		}
 		bacth.setSumTaskPrice(sumTaskPrice);
 		//计算出该批次的地区差价
 		if(bacth.getFlag()==0){
