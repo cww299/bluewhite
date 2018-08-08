@@ -28,6 +28,7 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.procedure.entity.Procedure;
@@ -107,6 +108,20 @@ private static final Log log = Log.getLog(TaskAction.class);
 	public CommonResponse upTask(HttpServletRequest request,Task task) {
 		CommonResponse cr = new CommonResponse();
 			if(!StringUtils.isEmpty(task.getId())){
+				int count = 0;
+				Task tk =  taskService.findOne(task.getId());
+				for(Task ta :tk.getBacth().getTasks()){
+					if(ta.getProcedureId().equals(tk.getProcedureId())){
+						count+=ta.getNumber();
+					}
+					
+				}
+				if((count-tk.getNumber()+task.getNumber())>tk.getBacth().getNumber()){
+					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+					cr.setMessage("修改数量不能超过该批次总数:"+tk.getBacth().getNumber());
+					return cr;
+				}
+				
 				taskService.upTask(task);
 				cr.setMessage("修改成功");
 			}else{

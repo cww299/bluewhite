@@ -437,8 +437,13 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		}
 		task.setAllotTime(allotTime);
 		task.setNumber(number);
+		
+		//预计时间
+		task.setExpectTime(NumUtils.round(ProTypeUtils.sumTaskTime(task.getProcedure().getWorkingTime(),task.getType(),number), null));
 		//实际时间
-		task.setTaskTime(NumUtils.round(ProTypeUtils.sumTaskTime(task.getExpectTime(),task.getType(),number), null));
+		task.setTaskTime(task.getExpectTime());
+		//预计完成价值
+		task.setExpectTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getExpectTime(), task.getType(),0,null), null));
 		//实际任务价值（通过实际完成时间得出）
 		task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskTime(), task.getType(),0,null), null));
 		//B工资净值

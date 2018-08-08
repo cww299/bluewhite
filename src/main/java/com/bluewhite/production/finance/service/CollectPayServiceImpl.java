@@ -411,6 +411,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		monthlyProduction.setPeopleNumber(peopleNumber);
 		//考勤总时间
 		double time = list.stream().mapToDouble(AttendancePay::getWorkTime).sum();
+		//
 		double overTime = list.stream().filter(AttendancePay->AttendancePay.getOverTime()!=null).mapToDouble(AttendancePay::getOverTime).sum();
 		monthlyProduction.setTime(time+overTime);
 		
@@ -635,6 +636,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				List<AttendancePay> list = attendancePayList.stream().filter(AttendancePay->AttendancePay.getWorkTime()!=0).collect(Collectors.toList());
 				//考勤总时间
 				double sunTime = list.stream().mapToDouble(AttendancePay::getWorkTime).sum();
+				double overTime = list.stream().filter(AttendancePay->AttendancePay.getOverTime()!=null).mapToDouble(AttendancePay::getOverTime).sum();
 				
 				//B工资
 				PayB payB = new PayB();
@@ -658,9 +660,9 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				
 				map.put("name", group.getName());
 				map.put("id", group.getId());
-				map.put("sunTime", sunTime);
+				map.put("sunTime", sunTime+overTime);
 				map.put("sumBPay", sumBPay+sumfarragoTaskPay);
-				Double sum = (sumBPay+sumfarragoTaskPay)/sunTime;
+				Double sum = (sumBPay+sumfarragoTaskPay)/(sunTime+overTime);
 				map.put("specificValue", sum.isNaN()?0.0:sum);
 				map.put("price", attendancePayList.get(0).getWorkPrice());
 				

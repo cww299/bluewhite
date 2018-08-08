@@ -101,7 +101,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 		        		predicate.add(cb.equal(root.get("machinist").as(Integer.class), param.getMachinist()));
 		        	}
 		        	
-		        	if( !StringUtils.isEmpty(param.getStatusTime())){
+		        	if(!StringUtils.isEmpty(param.getStatusTime())){
 		        		//按完成时间过滤
 						if (!StringUtils.isEmpty(param.getOrderTimeBegin()) &&  !StringUtils.isEmpty(param.getOrderTimeEnd())  ) {
 							predicate.add(cb.between(root.get("statusTime").as(Date.class),
