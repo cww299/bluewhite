@@ -104,6 +104,23 @@
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
+                                    <thead>
+                                        <tr>
+                                       	    <td class="center">合计</td>
+                                        	<td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center" id="total"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                        </tr>
+                                    </thead>
                                 </table>
                                 <div id="pager" class="pull-right">
                                 
@@ -189,6 +206,7 @@
                                     <tbody id="tablecontentto">
                                         
                                     </tbody>
+                                    
                                 </table>
                                 <div id="pagerr" class="pull-right">
                                 
@@ -297,7 +315,7 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			  
+		      			 $("#total").text(result.data.statData.stateCount)
 		      			 $(result.data.rows).each(function(i,o){
 		      				 if(o.bacthHairPrice==null){
 		      					o.bacthHairPrice=0;

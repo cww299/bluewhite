@@ -1118,6 +1118,7 @@
 						   end:function(){
 							  $('.addDictDivTypeForm')[0].reset(); 
 							  $("#addDictDivType").hide();
+							  $('.checkworking').text(""); 
 							  var date={
 										page:self.getCount(),
 								  		size:12,	
@@ -1473,6 +1474,7 @@
 						   end:function(){
 							  $('.addDictDivTypeFormtw')[0].reset(); 
 							  $("#addDictDivTypetw").hide();
+							  $('.checkworkingtw').text(""); 
 							  var data={
 										page:self.getCount(),
 								  		size:12,	
@@ -1481,6 +1483,7 @@
 								  		status:$('.selectchoice').val(),
 								} 
 							   self.loadPagination(data);
+							 
 							
 						  } 
 					});
