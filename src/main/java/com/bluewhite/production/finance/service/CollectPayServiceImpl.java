@@ -6,8 +6,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
@@ -419,6 +421,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		bacth.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
 		bacth.setType(monthlyProduction.getType());
 		if(monthlyProduction.getType()==3){
+			bacth.setFlag(0);
 			bacth.setStatus(1);
 			bacth.setStatusTime(monthlyProduction.getOrderTimeBegin());
 		}
@@ -948,11 +951,12 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		task.setOrderTimeEnd(groupProduction.getOrderTimeEnd());
 		task.setType(groupProduction.getType());
 		task.setProcedureTypeId((long)99);
+		task.setFlag(0);
 		List<Task> taskList = taskService.findPages(task, page).getRows();
 		
 		List<GroupProduction> groupProductionList = new ArrayList<GroupProduction>();
 		
-		//将检验任务按产品id分组，统计出数量
+		//将检验任务先按批次id分组，统计出数量
 		Map<Object, List<Task>> mapTask = taskList.stream().collect(Collectors.groupingBy(Task::getBacthId,Collectors.toList()));
 		
 		Integer oneNumber = null;
@@ -960,72 +964,107 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		Integer threeNumber = null;
 		Integer fourNumber = null;
 		GroupProduction production =null;
+		
 		for(Object ps : mapTask.keySet()){
-			production = new GroupProduction();
 			List<Task> psList= mapTask.get(ps);
-			//该产品检验组总数量
-			Integer sumNumber = psList.stream().mapToInt(Task::getNumber).sum();
-			 oneNumber = 0;
-			 twoNumber = 0;
-			 threeNumber = 0;
-			 fourNumber = 0;
-			//遍历任务，通过任务 的员工id和分组人员的员工id相匹配，相同则记录任务数
-			for(Task ta : psList){
-				Integer dex = null;
-				if (!StringUtils.isEmpty(ta.getUserIds())) {
-					String [] ids = ta.getUserIds().split(",");
-					if (ids.length>0) {
-						for (int i = 0; i < ids.length; i++) {
-							dex = 0;
-							Long id = Long.parseLong(ids[i]);
-								//遍历出每个组
-									for (int j = 0; j < groupList.size(); j++) {
-										dex = 1;
-										for(User us : groupList.get(j).getUsers()){
-											//当任务员工id等于检验分组员工id时，记录数值，并跳出当前循环人员id，同时，该组的任务数量已被记载，跳出分组循环
-											if(us.getId().equals(id)){
-												dex=2;
-												switch (j) {
-												case 0:
-													oneNumber+=ta.getNumber();
-													break;
-												case 1:
-													twoNumber+=ta.getNumber();
-													break;
-												case 2:
-													threeNumber+=ta.getNumber();
-													break;
-												case 3:
-													fourNumber+=ta.getNumber();
+			
+			//在按产品id分组
+			Map<Object, List<Task>> mapTaskProduct = psList.stream().collect(Collectors.groupingBy(Task::getProductId,Collectors.toList()));
+			for(Object ps1 : mapTaskProduct.keySet()){
+				production = new GroupProduction();
+				List<Task> psList1= mapTaskProduct.get(ps1);
+				//该产品检验组总数量
+				Integer sumNumber = psList1.get(0).getBacth().getNumber();
+				
+				Set<String> stringSet = new HashSet<String>();//用Set存放不同的字符串
+				Map<String, Integer> stringMap = new HashMap<String, Integer>();//用Map记录相同的元素的个数
+				String data = null;
+				for (int i = 0; i < psList1.size(); i++) {
+				    //取出数组中的数据
+				     data = psList1.get(i).getProcedureName();
+				     //如果Set集合里面有同样的数据，就用Map记录这个数据个数+1
+				     if (stringSet.contains(data)) {
+				          stringMap.put(data, stringMap.get(data) + 1);
+				     } else {
+				     //否则，如果Set里面没有相同的数据，就放进Set里面，然后用Map记录这个数据个数为1
+				             stringSet.add(data);//添加不同的数据
+				             stringMap.put(data, 1);//个数记录为1
+				     }
+				  }
+//				   因为Set中元素是不相同的Set 集合的大小就是不同元素的个数；Map存放的是每个元素在字符串数组的个数      
+//				   for (String s : stringSet) {
+//				       输出字符串数组中的每个元素的个数
+//				       System.out.println("相同的" + s + ":" + stringMap.get(s));
+//				   }
+//				   输出字符串数组中不同元素的个数
+//				    System.out.println("不同的：" + stringSet.size());
+				 int count = stringSet.size();
+				
+				 oneNumber = 0;
+				 twoNumber = 0;
+				 threeNumber = 0;
+				 fourNumber = 0;
+				//遍历任务，通过任务 的员工id和分组人员的员工id相匹配，相同则记录任务数
+				for(Task ta : psList1){
+					Integer dex = null;
+					if (!StringUtils.isEmpty(ta.getUserIds())) {
+						String [] ids = ta.getUserIds().split(",");
+						if (ids.length>0) {
+							for (int i = 0; i < ids.length; i++) {
+								dex = 0;
+								Long id = Long.parseLong(ids[i]);
+									//遍历出每个组
+										for (int j = 0; j < groupList.size(); j++) {
+											dex = 1;
+											for(User us : groupList.get(j).getUsers()){
+												//当任务员工id等于检验分组员工id时，记录数值，并跳出当前循环人员id，同时，该组的任务数量已被记载，跳出分组循环
+												if(us.getId().equals(id)){
+													dex=2;
+													switch (j) {
+													case 0:
+														oneNumber+=ta.getNumber();
+														break;
+													case 1:
+														twoNumber+=ta.getNumber();
+														break;
+													case 2:
+														threeNumber+=ta.getNumber();
+														break;
+													case 3:
+														fourNumber+=ta.getNumber();
+														break;
+													}
 													break;
 												}
-												break;
 											}
-										}
-									if(dex==2){
-										break;
-									}	
+										if(dex==2){
+											break;
+										}	
+								}
+								if(dex==2){
+									break;
+								}		
 							}
-							if(dex==2){
-								break;
-							}		
 						}
 					}
 				}
+				
+				production.setName(psList1.get(0).getBacthNumber()+psList1.get(0).getProductName());
+				production.setOneNumber(oneNumber/count);
+				production.setTwoNumber(twoNumber/count);
+				production.setThreeNumber(threeNumber/count);
+				production.setFourNumber(fourNumber/count);
+				production.setSumNumber(sumNumber);
+				production.setOrderTimeBegin(groupProduction.getOrderTimeBegin());
+				production.setRemark(psList1.get(0).getBacth().getRemarks());
+				groupProductionList.add(production);
+			
 			}
-		
-			production.setName(psList.get(0).getBacthNumber()+psList.get(0).getProductName());
-			production.setOneNumber(oneNumber);
-			production.setTwoNumber(twoNumber);
-			production.setThreeNumber(threeNumber);
-			production.setFourNumber(fourNumber);
-			production.setSumNumber(sumNumber);
-			production.setOrderTimeBegin(groupProduction.getOrderTimeBegin());
-			production.setRemark(psList.get(0).getBacth().getRemarks());
-			groupProductionList.add(production);
 		}
 		return groupProductionList;
 	}
+	
+	
 
 	@Override
 	public Object getMouthYields(Long id,String date) {

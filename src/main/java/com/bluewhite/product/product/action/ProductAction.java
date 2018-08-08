@@ -95,6 +95,7 @@ public class ProductAction {
 	@SysLogAspectAnnotation(description = "产品新增操作", module = "产品管理", operateType = "增加", logType = SysLog.ADMIN_LOG_TYPE)
 	public CommonResponse addProduct(HttpServletRequest request,Product product,PageParameter page) {
 		CommonResponse cr = new CommonResponse();
+		String name = product.getName();
 		if(StringUtils.isEmpty(product.getNumber()) || StringUtils.isEmpty(product.getName())){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品编号和产品名都不能为空");
@@ -105,6 +106,7 @@ public class ProductAction {
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 				cr.setMessage("已有该产品编号和产品名的产品，请检查后再次添加");
 			}else{
+				product.setName(name);
 				productService.save(product);
 				cr.setMessage("添加成功");
 			}
