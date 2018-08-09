@@ -250,7 +250,21 @@ public class Task  extends BaseEntity<Long>{
 	@Transient
 	private  Double AC5;
 	
+    /**
+     * 机工区分字段（0=二楼，1=三楼）
+     */
+	@Transient
+    private Integer machinist;
 	
+	
+
+	public Integer getMachinist() {
+		return machinist;
+	}
+
+	public void setMachinist(Integer machinist) {
+		this.machinist = machinist;
+	}
 
 	public Double getAC5() {
 		return AC5;

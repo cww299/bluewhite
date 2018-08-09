@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,9 +45,6 @@ import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.finance.entity.UsualConsume;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.service.GroupService;
-import com.bluewhite.production.procedure.dao.ProcedureDao;
-import com.bluewhite.production.procedure.entity.Procedure;
-import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.system.user.entity.User;
@@ -383,10 +379,12 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			//获取一天的结束时间
 			Date endTimes = DatesUtil.getLastDayOftime(beginTimes);
 			Integer type = monthlyProduction.getType();
+			Integer machinist = monthlyProduction.getMachinist();
 			monthlyProduction =	new MonthlyProduction();
 			monthlyProduction.setOrderTimeBegin(beginTimes);
 			monthlyProduction.setOrderTimeEnd(endTimes);
 			monthlyProduction.setType(type);
+			monthlyProduction.setMachinist(machinist);
 			
 				
 		
@@ -397,7 +395,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		List<AttendancePay> attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
 		//考勤人数
 		List<AttendancePay> list = attendancePayList.stream().filter(AttendancePay->AttendancePay.getWorkTime()!=0).collect(Collectors.toList());
-		if(monthlyProduction.getType()==3){
+		if(monthlyProduction.getType()==3 || monthlyProduction.getType()==4){
 			//去除管理组的员工
 			Group group= new Group();
 			group.setKindWorkId((long)116);
@@ -427,9 +425,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			bacth.setStatus(1);
 			bacth.setStatusTime(monthlyProduction.getOrderTimeBegin());
 		}
-		if(monthlyProduction.getType()==4){
-			bacth.setMachinist(monthlyProduction.getMachinist());
-		}
 		List<Bacth> bacthList = bacthService.findPages(bacth, page).getRows();
 		double productNumber = 0;
 		
@@ -441,6 +436,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			task1.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
 			task1.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
 			task1.setType(monthlyProduction.getType());
+			task1.setMachinist(machinist);
 			List<Task> taskList = taskService.findPages(task1, page).getRows();
 			Map<Long, List<Task>> maptask = taskList.stream().filter(Task->Task.getBacthId()!=null).collect(Collectors.groupingBy(Task::getBacthId,Collectors.toList()));
 
@@ -852,7 +848,8 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			
 			//汇总A工资
 			collect.setPayA(payA);
-			collect.setRatio(NumUtils.round(collect.getPayB()/collect.getPayA()*100,2));
+			Double sum = collect.getPayB()/collect.getPayA()*100;
+			collect.setRatio(NumUtils.round(sum.isNaN()?0.0:sum,2));
 			dao.save(collect);
 			collectPayList.add(collect);
 		}
@@ -1027,7 +1024,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 								}
 							}
 					 	}
-					 
 				 }
 				production.setName(psList1.get(0).getBacthNumber()+psList1.get(0).getProductName());
 				production.setOneNumber( map.get(groupList.get(0).getId())/count);

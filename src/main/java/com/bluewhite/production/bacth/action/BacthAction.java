@@ -122,7 +122,14 @@ private static final Log log = Log.getLog(BacthAction.class);
 	@ResponseBody
 	public CommonResponse statusBacth(HttpServletRequest request,String[] ids, Date time ) {
 		CommonResponse cr = new CommonResponse();
-		int count = bacthService.statusBacth(ids,time);
+		int count;
+		try {
+			count = bacthService.statusBacth(ids,time);
+		} catch (Exception e) {
+			cr.setMessage(e.getMessage());
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			return cr;
+		}
 		cr.setMessage("成功完成"+count+"批次");
 		return cr;
 	}
