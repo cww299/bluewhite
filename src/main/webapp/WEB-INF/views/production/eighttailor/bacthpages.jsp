@@ -420,7 +420,7 @@
 			      				+'<td class="text-center  name">'+parseFloat((o.payB).toFixed(4))+'</td>'
 			      				+'<td class="text-center edit number">'+o.number+'</td>'
 			      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-								+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
+								+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans deletetw" data-id='+o.id+'>删除</button></td></tr>'
 								
 			      			}); 
 					        //显示分页
@@ -588,7 +588,7 @@
 					
 					
 					//删除
-							$('.delete').on('click',function(){
+							$('.deletetw').on('click',function(){
 								var postData = {
 										ids:$(this).data('id'),
 								}
@@ -738,6 +738,17 @@
 						success:function(result){
 							if(0==result.code){
 							layer.msg("删除成功！", {icon: 1});
+							var data = {
+				        			page:1,
+							  		size:13,
+							  		type:5,
+						  			name:$('#name').val(),
+						  			bacthNumber:$('#number').val(),
+						  			orderTimeBegin:$("#startTime").val(),
+						  			orderTimeEnd:$("#endTime").val(),
+						  			flag:0,
+						  			status:$('#selectstate').val(),
+						  	}
 							self.loadPagination(data)
 							layer.close(index);
 							}else{
