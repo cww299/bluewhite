@@ -209,6 +209,12 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	        	if(!StringUtils.isEmpty(param.getFlag())){
 	        		predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
 	        	}
+	        	
+	         	//机工楼层区分
+	        	if(!StringUtils.isEmpty(param.getMachinist())){
+	        		predicate.add(cb.equal(root.get("bacth").get("machinist").as(Integer.class), param.getMachinist()));
+	        	}
+	        	
 	            //按时间过滤
 				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) &&  !StringUtils.isEmpty(param.getOrderTimeEnd()) ) {
 					predicate.add(cb.between(root.get("allotTime").as(Date.class),

@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
@@ -160,7 +161,8 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 	}
 
 	@Override
-	public int statusBacth(String[] ids,Date time) {
+	@Transactional
+	public int statusBacth(String[] ids,Date time) throws Exception {
 		int count = 0;
 		Calendar  cal = Calendar.getInstance();
 		cal.add(Calendar.DATE,-1);
@@ -169,25 +171,34 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 				for (int i = 0; i < ids.length; i++) {
 					Long id = Long.parseLong(ids[i]);
 					Bacth bacth = dao.findOne(id);
+					if(bacth.getStatus()==1){
+						throw new ServiceException("批次编号为"+bacth.getBacthNumber()+"的任务已经完成,无需再次完成");
+					}
 					if(bacth.getType()==3){
 						Group group = groupDao.findByNameAndType(GROUP,bacth.getType());
 						List<Procedure> procedure = procedureDao.findByProductIdAndProcedureTypeIdAndType(bacth.getProductId(), (long)101, bacth.getType());						
-						if(procedure.size()>0){
-							Task task = new Task();
-							String [] pro =  new String[]{String.valueOf (procedure.get(0).getId())};
-							String userIds = "";
-							for(User user :group.getUsers()){
-								userIds=userIds.equals("") ? String.valueOf(user.getId()) : userIds +","+user.getId();
+						List<Task> taskList = bacth.getTasks().stream().filter(Task->Task.getProcedureId().equals(procedure.get(0).getId())).collect(Collectors.toList());
+						if(taskList.size()==0){
+							if(procedure.size()>0){
+								Task task = new Task();
+								String [] pro =  new String[]{String.valueOf (procedure.get(0).getId())};
+								String userIds = "";
+								String userNames = "";
+								for(User user :group.getUsers()){
+									userIds=userIds.equals("") ? String.valueOf(user.getId()) : userIds +","+user.getId();
+									userNames=userNames.equals("") ? String.valueOf(user.getUserName()) : userNames +","+user.getUserName();
+								}
+								task.setNumber(bacth.getNumber());
+								task.setType(bacth.getType());
+								task.setAllotTime(ProTypeUtils.countAllotTime(time, task.getType()));
+								task.setBacthId(bacth.getId());
+								task.setProductName(bacth.getProduct().getName());
+								task.setBacthNumber(bacth.getBacthNumber());
+								task.setProcedureIds(pro);
+								task.setUserIds(userIds);
+								task.setUserNames(userNames);
+								taskService.addTask(task);
 							}
-							task.setNumber(bacth.getNumber());
-							task.setType(bacth.getType());
-							task.setAllotTime(ProTypeUtils.countAllotTime(time, task.getType()));
-							task.setBacthId(bacth.getId());
-							task.setProductName(bacth.getProduct().getName());
-							task.setBacthNumber(bacth.getBacthNumber());
-							task.setProcedureIds(pro);
-							task.setUserIds(userIds);
-							taskService.addTask(task);
 						}
 					}
 					
