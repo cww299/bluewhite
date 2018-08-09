@@ -994,7 +994,6 @@ this.checkeddd=function(){
 						var data={
 								ids:arr,
 						}
-						console.log(arr)
 						var _indexx;
 						var index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
 						$.ajax({

@@ -57,6 +57,7 @@
 								</td>
 								 <td>&nbsp&nbsp</td>
 								 <td>完成状态:</td><td><select class="form-control" id="selectstate"><option value=0>未完成</option><option value=1>已完成</option></select></td>
+								<td>&nbsp&nbsp</td>
 								<td>机工选择:</td>
 								<td><select id="choice" class="form-control"><option value="">请选择</option><option value="0">二楼机工</option><option value="1">三楼机工</option></select></td>
 								</tr></table> 
@@ -433,7 +434,7 @@
 			      				+'<td class="text-center  name">'+parseFloat((o.payB).toFixed(4))+'</td>'
 			      				+'<td class="text-center edit number">'+o.number+'</td>'
 			      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-								+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
+								+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans deletetw" data-id='+o.id+'>删除</button></td></tr>'
 								
 			      			}); 
 					        //显示分页
@@ -586,6 +587,15 @@
 									success:function(result){
 										if(0==result.code){
 										layer.msg("修改成功！", {icon: 1});
+										var _data = {
+							        			page:1,
+										  		size:13,
+										  		type:4,
+										  		bacthId:self.getCache(),
+									  			flag:0,
+									  	}
+							        
+							            self.loadPaginationto(_data);
 										layer.close(index);
 										}else{
 											layer.msg("修改失败！", {icon: 1});
@@ -601,7 +611,7 @@
 					
 					
 					//删除
-							$('.delete').on('click',function(){
+							$('.deletetw').on('click',function(){
 								var postData = {
 										ids:$(this).data('id'),
 								}

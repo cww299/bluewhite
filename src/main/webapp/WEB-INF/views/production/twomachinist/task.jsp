@@ -58,6 +58,8 @@
 								</td>
 								<td>&nbsp&nbsp</td>
 								<td class="hidden">工序:</td><td><select class="form-control selectchoice hidden"><option value="0">机工工序</option></select></td>
+								<td>机工选择:</td>
+								<td><select id="choice" class="form-control"><option value="">请选择</option><option value="0">二楼机工</option><option value="1">三楼机工</option></select></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
@@ -170,6 +172,12 @@
 		  	this.getCache = function(){
 		  		return _cache;
 		  	}
+		  	this.getCount = function(){
+		  		return _count;
+		  	}
+		  	this.setCount = function(count){
+		  		_count=count;
+		  	}
 			 var data={
 						page:1,
 				  		size:13,	
@@ -220,6 +228,7 @@
 							+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
+		      			self.setCount(result.data.pageNum)
 				        //显示分页
 					   	 laypage({
 					      cont: 'pager', 
@@ -237,6 +246,7 @@
 								  			orderTimeBegin:$("#startTime").val(),
 								  			orderTimeEnd:$("#endTime").val(),
 								  			flag:$('.selectchoice').val(),
+								  			machinist:$("#choice").val(),
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -356,6 +366,19 @@
 								success:function(result){
 									if(0==result.code){
 									layer.msg("修改成功！", {icon: 1});
+									var _data = {
+						        			page:self.getCount(),
+									  		size:13,
+									  		type:4,
+									  		productName:$('#name').val(),
+								  			bacthNumber:$('#number').val(),
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(),
+								  			flag:$('.selectchoice').val(),
+								  			machinist:$("#choice").val(),
+								  	}
+						        
+						            self.loadPagination(_data);
 									layer.close(index);
 									}else{
 										layer.msg("修改失败！", {icon: 1});
@@ -375,7 +398,7 @@
 							var postData = {
 									ids:$(this).data('id'),
 							}
-							
+							var that=$(this);
 							var index;
 							 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
 							$.ajax({
@@ -391,7 +414,19 @@
 								success:function(result){
 									if(0==result.code){
 									layer.msg("删除成功！", {icon: 1});
-									self.loadPagination(data)
+									var _data = {
+						        			page:self.getCount(),
+									  		size:13,
+									  		type:4,
+									  		productName:$('#name').val(),
+								  			bacthNumber:$('#number').val(),
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(),
+								  			flag:$('.selectchoice').val(),
+								  			machinist:$("#choice").val(),
+								  	}
+						        
+						            self.loadPagination(_data);
 									layer.close(index);
 									}else{
 										layer.msg("删除失败！", {icon: 2});
@@ -475,6 +510,7 @@
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
 				  			flag:$('.selectchoice').val(),
+				  			machinist:$("#choice").val(),
 				  	}
 		            self.loadPagination(data);
 				});
@@ -509,7 +545,19 @@
 							success:function(result){
 								if(0==result.code){
 									layer.msg(result.message, {icon: 1});
-									self.loadPagination(data);
+									var _data = {
+						        			page:self.getCount(),
+									  		size:13,
+									  		type:4,
+									  		productName:$('#name').val(),
+								  			bacthNumber:$('#number').val(),
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(),
+								  			flag:$('.selectchoice').val(),
+								  			machinist:$("#choice").val(),
+								  	}
+						        
+						            self.loadPagination(_data);
 								}else{
 									layer.msg(result.message, {icon: 2});
 								}

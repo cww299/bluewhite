@@ -57,7 +57,7 @@
             					 onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
 								<td>&nbsp&nbsp</td>
-							<td>工序:</td><td><select class="form-control selectchoice" ><option value="0">包装工序</option><option value="1">返工工序</option></select></td>
+							<td>工序:</td><td><select class="form-control selectchoice" ><option value="">请选择</option><option value="0">包装工序</option><option value="1">返工工序</option></select></td>
 								</tr></table> 
 								<span class="input-group-btn"><button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">查&nbsp找</button></span>
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
@@ -349,7 +349,17 @@
 								success:function(result){
 									if(0==result.code){
 									layer.msg("删除成功！", {icon: 1});
-									that.parent().parent().hide();
+									var _data = {
+						        			page:self.getCount(),
+									  		size:13,
+									  		type:2,
+									  		productName:$('#name').val(),
+								  			bacthNumber:$('#number').val(),
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(),
+								  			flag:$('.selectchoice').val(),
+								  	}
+									self.loadPagination(_data);
 									layer.close(index);
 									}else{
 										layer.msg("删除失败！", {icon: 1});
@@ -401,6 +411,17 @@
 								success:function(result){
 									if(0==result.code){
 									layer.msg(result.message, {icon: 1});
+									var _data = {
+						        			page:self.getCount(),
+									  		size:13,
+									  		type:2,
+									  		productName:$('#name').val(),
+								  			bacthNumber:$('#number').val(),
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(),
+								  			flag:$('.selectchoice').val(),
+								  	}
+									self.loadPagination(_data);
 									layer.close(index);
 									}else{
 										layer.msg(result.message, {icon: 1});
@@ -555,7 +576,18 @@
 							success:function(result){
 								if(0==result.code){
 									layer.msg(result.message, {icon: 1});
-									self.loadPagination(data);
+									var _data = {
+						        			page:self.getCount(),
+									  		size:13,
+									  		type:2,
+									  		productName:$('#name').val(),
+								  			bacthNumber:$('#number').val(),
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(),
+								  			flag:$('.selectchoice').val(),
+								  	}
+									self.loadPagination(_data);
+									layer.close(index);
 								}else{
 									layer.msg(result.message, {icon: 2});
 								}

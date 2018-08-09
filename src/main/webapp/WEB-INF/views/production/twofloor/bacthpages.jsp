@@ -87,7 +87,7 @@
 											</label>
 											</th>
                                         	<th class="text-center">批次号</th>
-                                            <th class="text-center">时间</th>
+                                            <th class="text-center">填写批次时间</th>
                                             <th class="text-center">产品名</th>
                                             <th class="text-center">数量</th>
                                             <th class="text-center">预计生产单价</th>
@@ -98,6 +98,7 @@
                                             <th class="text-center">当批用时</th>
                                             <th class="text-center">备注</th>
                                             <th class="text-center">完成状态</th>
+                                            <th class="text-center">已完成时间</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -111,6 +112,8 @@
                                             <td class="text-center"></td>
                                             <td class="text-center"></td>
                                             <td class="text-center" id="total"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
                                             <td class="text-center"></td>
                                             <td class="text-center"></td>
                                             <td class="text-center"></td>
@@ -332,6 +335,12 @@
 		      				 }else{
 		      					strname="未完成";
 		      				 }
+		      				 var s="";
+		      				if(o.statusTime==null){
+		      					s="";
+		      				 }else{
+		      					s=o.statusTime;
+		      				 }
 		      				 html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="hidden batch">'+o.id+'</td>'
 		      				+'<td class="text-center edit bacthNumber">'+o.bacthNumber+'</td>'
@@ -346,6 +355,7 @@
 		      				+'<td class="text-center ">'+parseFloat((o.time).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
 		      				+'<td class="text-center ">'+strname+'</td>'
+		      				+'<td class="text-center edit statusTime">'+s+'</td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button>  <button class="btn btn-sm btn-info  btn-trans updateremaketw" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
 							
 		      			}); 
@@ -441,7 +451,7 @@
 			      				+'<td class="text-center" data-id="'+o.id+'" data-status="'+o.status+'"><input type="radio"  class="rest" value="0">开始<input type="radio" class="rest" value="1">暂停</td>'
 			      				+'<td class="text-center edit name">'+o.taskActualTime+'</td>'
 			      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-								+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
+								+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans deletetw" data-id='+o.id+'>删除</button></td></tr>'
 								
 			      			}); 
 					        //显示分页
@@ -595,6 +605,16 @@
 									success:function(result){
 										if(0==result.code){
 										layer.msg("修改成功！", {icon: 1});
+										var _data = {
+							        			page:1,
+										  		size:13,
+												bacthId:self.getCache(),
+												type:3,
+												flag:0,
+												status:$("#selectstate").val(),
+									  	}
+							        
+							            self.loadPaginationto(_data);
 										layer.close(index);
 										}else{
 											layer.msg("修改失败！", {icon: 1});
@@ -610,7 +630,7 @@
 					
 					
 					//删除
-							$('.delete').on('click',function(){
+							$('.deletetw').on('click',function(){
 								var postData = {
 										ids:$(this).data('id'),
 								}
@@ -760,6 +780,18 @@
 						success:function(result){
 							if(0==result.code){
 							layer.msg("删除成功！", {icon: 1});
+							var data={
+									page:1,
+							  		size:13,	
+							  		type:3,
+							  		name:$('#name').val(),
+						  			bacthNumber:$('#number').val(),
+						  			orderTimeBegin:$("#startTime").val(),
+						  			orderTimeEnd:$("#endTime").val(),
+						  			flag:0,
+						  			status:$('#selectstate').val(),
+						  			statusTime:$("#startTime").val(),
+							} 
 							self.loadPagination(data)
 							layer.close(index);
 							}else{
@@ -780,7 +812,7 @@
 						
 						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
 
-				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
+				            $(this).html("<input class='input-mini' type='text' style='width:80px; height:30px;' value='"+$(this).text()+"'>");
 				        });
 					}else{
 							$(this).text("编辑")
@@ -801,6 +833,7 @@
 									bacthDeedlePrice:$(this).parent().parent('tr').find(".bacthDeedlePrice").text(),
 									bacthNumber:$(this).parent().parent('tr').find(".bacthNumber").text(),
 									allotTime:$(this).parent().parent('tr').find(".allotTimetw").text(),
+									statusTime:$(this).parent().parent('tr').find(".statusTime").text(),
 							}
 							
 							var index;

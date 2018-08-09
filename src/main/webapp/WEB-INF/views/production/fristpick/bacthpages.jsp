@@ -497,7 +497,7 @@
 			      				+'<td class="text-center ">'+o.performance+'</td>'
 			      				+'<td class="text-center ">'+parseFloat((o.performancePrice).toFixed(4))+'</td>'
 			      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-								+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremaketw" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
+								+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremaketw" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans deletetw" data-id='+o.id+'>删除</button></td></tr>'
 								
 			      			}); 
 					        //显示分页
@@ -617,6 +617,14 @@
 									success:function(result){
 										if(0==result.code){
 										layer.msg("修改成功！", {icon: 1});
+										var _data = {
+							        			page:1,
+										  		size:12,
+										  		type:2,
+										  		bacthId:self.getCache(),
+									  	}
+							        
+							            self.loadPaginationto(_data);
 										layer.close(index);
 										}else{
 											layer.msg("修改失败！", {icon: 1});
@@ -632,7 +640,7 @@
 					
 					
 					//删除
-							$('.delete').on('click',function(){
+							$('.deletetw').on('click',function(){
 								var postData = {
 										ids:$(this).data('id'),
 								}
@@ -780,6 +788,16 @@
 						success:function(result){
 							if(0==result.code){
 							layer.msg("删除成功！", {icon: 1});
+							var data = {
+				        			page:1,
+							  		size:12,
+							  		type:2,
+						  			name:$('#name').val(),
+						  			bacthNumber:$('#number').val(),
+						  			orderTimeBegin:$("#startTime").val(),
+						  			orderTimeEnd:$("#endTime").val(),
+						  			status:$('.selectchoice').val(),
+						  	}
 							self.loadPagination(data)
 							layer.close(index);
 							}else{
