@@ -67,6 +67,8 @@
 								<input id="endTimeth" placeholder="请输入结束时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#endTimeth', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
+								<td>&nbsp&nbsp</td>
+								<td>小组查询:</td><td id="groupp"></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtaskth">
@@ -513,6 +515,7 @@
 								  			bacth:$('#number').val(),
 								  			orderTimeBegin:$("#startTimeth").val(),
 								  			orderTimeEnd:$("#endTimeth").val(),
+								  			groupId:$('.selectcomplete').val(),
 								  	}
 						        
 						            self.loadPaginationth(_data);
@@ -670,6 +673,24 @@
 				
 			}
 			this.events = function(){
+				
+				//遍历人名组别
+				var htmlth="";
+				var data = {
+			  			type:3,
+			  	}
+			    $.ajax({
+				      url:"${ctx}/production/getGroup",
+				      data:data,
+				      type:"GET",
+		      		  success: function (result) {
+		      			  $(result.data).each(function(k,j){
+		      				htmlth +='<option value="'+j.id+'" emoney="'+j.kindWork.id+'">'+j.name+'</option>'
+		      			  });  
+		      			 $('#groupp').html("<select class='form-control selectcomplete'><option value="+""+">请选择&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>"+htmlth+"</select>") 
+				      }
+				  });
+				
 				$('.searchtaskfr').on('click',function(){
 					var datae={
 							type:3,
@@ -715,6 +736,7 @@
 				  			userName:$('#usernameth').val(),
 				  			orderTimeBegin:$("#startTimeth").val(),
 				  			orderTimeEnd:$("#endTimeth").val(), 
+				  			groupId:$('.selectcomplete').val(),
 				  	}
 			
 				self.loadPaginationth(data);

@@ -368,6 +368,7 @@
 								  			orderTimeEnd:$("#endTime").val(),
 								  			flag:0,
 								  			status:$('#selectstate').val(),
+								  			statusTime:$("#startTime").val(),
 								  	}
 						        
 						            self.loadPagination(_data);
