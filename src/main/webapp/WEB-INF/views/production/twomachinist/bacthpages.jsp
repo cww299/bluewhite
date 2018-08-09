@@ -57,6 +57,7 @@
 								</td>
 								 <td>&nbsp&nbsp</td>
 								 <td>完成状态:</td><td><select class="form-control" id="selectstate"><option value=0>未完成</option><option value=1>已完成</option></select></td>
+								<td>&nbsp&nbsp</td>
 								<td>机工选择:</td>
 								<td><select id="choice" class="form-control"><option value="">请选择</option><option value="0">二楼机工</option><option value="1">三楼机工</option></select></td>
 								</tr></table> 
