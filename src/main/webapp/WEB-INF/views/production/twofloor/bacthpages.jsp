@@ -595,6 +595,16 @@
 									success:function(result){
 										if(0==result.code){
 										layer.msg("修改成功！", {icon: 1});
+										var _data = {
+							        			page:1,
+										  		size:13,
+												bacthId:self.getCache(),
+												type:3,
+												flag:0,
+												status:$("#selectstate").val(),
+									  	}
+							        
+							            self.loadPaginationto(_data);
 										layer.close(index);
 										}else{
 											layer.msg("修改失败！", {icon: 1});
