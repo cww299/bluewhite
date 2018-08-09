@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -945,7 +946,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		Group group= new Group();
 		group.setKindWorkId((long)113);
 		List<Group> groupList = groupService.findList(group);
-	
 
 		//查出当日所有检验任务
 		Task task= new Task();
@@ -961,10 +961,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		//将检验任务先按批次id分组，统计出数量
 		Map<Object, List<Task>> mapTask = taskList.stream().collect(Collectors.groupingBy(Task::getBacthId,Collectors.toList()));
 		
-		Integer oneNumber = null;
-		Integer twoNumber = null;
-		Integer threeNumber = null;
-		Integer fourNumber = null;
 		GroupProduction production =null;
 		
 		for(Object ps : mapTask.keySet()){
@@ -1002,60 +998,42 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 //				    System.out.println("不同的：" + stringSet.size());
 				 int count = stringSet.size();
 				
-				 oneNumber = 0;
-				 twoNumber = 0;
-				 threeNumber = 0;
-				 fourNumber = 0;
 				//遍历任务，通过任务 的员工id和分组人员的员工id相匹配，相同则记录任务数
-				for(Task ta : psList1){
-					Integer dex = null;
-					if (!StringUtils.isEmpty(ta.getUserIds())) {
-						String [] ids = ta.getUserIds().split(",");
-						if (ids.length>0) {
-							for (int i = 0; i < ids.length; i++) {
-								dex = 0;
-								Long id = Long.parseLong(ids[i]);
-									//遍历出每个组
-										for (int j = 0; j < groupList.size(); j++) {
-											dex = 1;
-											for(User us : groupList.get(j).getUsers()){
-												//当任务员工id等于检验分组员工id时，记录数值，并跳出当前循环人员id，同时，该组的任务数量已被记载，跳出分组循环
-												if(us.getId().equals(id)){
-													dex=2;
-													switch (j) {
-													case 0:
-														oneNumber+=ta.getNumber();
-														break;
-													case 1:
-														twoNumber+=ta.getNumber();
-														break;
-													case 2:
-														threeNumber+=ta.getNumber();
-														break;
-													case 3:
-														fourNumber+=ta.getNumber();
-														break;
-													}
-													break;
-												}
-											}
-										if(dex==2){
-											break;
-										}	
+				 Map<Object,Integer> map = new HashMap<Object,Integer>(4);
+				 map.put(groupList.get(0).getId(), 0);
+				 map.put(groupList.get(1).getId(), 0);
+				 map.put(groupList.get(2).getId(), 0);
+				 map.put(groupList.get(3).getId(), 0);
+				 
+				 
+				 for(Task ta : psList1){
+					 if (!StringUtils.isEmpty(ta.getUserIds())) {
+							String [] ids = ta.getUserIds().split(",");
+							if (ids.length>0) {
+								int bre = 0;
+								for (int i = 0; i < ids.length; i++) {
+									Long id = Long.parseLong(ids[i]);
+									User user = userService.findOne(id);
+									for(Object groupId : map.keySet()){
+										if(user.getGroupId().equals(groupId)){
+											int num = map.get(groupId);
+											map.put(groupId, num+ta.getNumber());
+											bre=1;
+										}
+									}
+									if(bre==1){
+										break;
+									}
 								}
-								if(dex==2){
-									break;
-								}		
 							}
-						}
-					}
-				}
-				
+					 	}
+					 
+				 }
 				production.setName(psList1.get(0).getBacthNumber()+psList1.get(0).getProductName());
-				production.setOneNumber(oneNumber/count);
-				production.setTwoNumber(twoNumber/count);
-				production.setThreeNumber(threeNumber/count);
-				production.setFourNumber(fourNumber/count);
+				production.setOneNumber( map.get(groupList.get(0).getId())/count);
+				production.setTwoNumber(map.get(groupList.get(1).getId())/count);
+				production.setThreeNumber(map.get(groupList.get(2).getId())/count);
+				production.setFourNumber(map.get(groupList.get(3).getId())/count);
 				production.setSumNumber(sumNumber);
 				production.setOrderTimeBegin(groupProduction.getOrderTimeBegin());
 				production.setRemark(psList1.get(0).getBacth().getRemarks());
