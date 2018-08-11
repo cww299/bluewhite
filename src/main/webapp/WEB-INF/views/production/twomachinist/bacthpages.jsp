@@ -1125,11 +1125,15 @@
 							   $('.checkworking').text(""); 
 							   var data={
 										page:self.getCount(),
-								  		size:13,	
-								  		type:4,
-								  		flag:0,
-								  		status:$('#selectstate').val(),
-								  		machinist:$("#choice").val(),
+										size:13,
+							  			type:4,
+							  			name:$('#name').val(),
+							  			bacthNumber:$('#number').val(),
+							  			 orderTimeBegin:$("#startTime").val(),
+							  			orderTimeEnd:$("#endTime").val(), 
+							  			status:$("#selectstate").val(),
+							  			machinist:$("#choice").val(),
+							  			flag:0,
 								} 
 							   self.loadPagination(data);
 						  } 

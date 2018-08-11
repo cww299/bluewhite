@@ -1121,10 +1121,14 @@
 							   $('.checkworking').text(""); 
 							   var data={
 										page:self.getCount(),
-								  		size:13,	
-								  		type:5,
-								  		flag:0,
-								  		status:$('#selectstate').val(),
+										size:13,
+							  			type:5,
+							  			name:$('#name').val(),
+							  			bacthNumber:$('#number').val(),
+							  			 orderTimeBegin:$("#startTime").val(),
+							  			orderTimeEnd:$("#endTime").val(), 
+							  			status:$("#selectstate").val(),
+							  			flag:0,
 								} 
 							   self.loadPagination(data);
 							
