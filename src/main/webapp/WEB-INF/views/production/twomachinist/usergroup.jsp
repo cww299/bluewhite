@@ -40,6 +40,8 @@
                                         <tr>
                                         	<th class="text-center">组名</th>
                                             <th class="text-center">人员信息</th>
+                                            <th class="text-center">工种</th>
+                                            
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
