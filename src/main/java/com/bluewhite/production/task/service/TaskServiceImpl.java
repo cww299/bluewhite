@@ -1,5 +1,6 @@
 package com.bluewhite.production.task.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,10 +22,12 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.finance.attendance.dao.AttendancePayDao;
+import com.bluewhite.finance.attendance.entity.AttendancePay;
+import com.bluewhite.finance.attendance.service.AttendancePayService;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.dao.PayBDao;
-import com.bluewhite.production.finance.entity.FarragoTaskPay;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
@@ -47,14 +50,15 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	@Autowired
 	private PayBDao payBDao;
 
-	
+	@Autowired
+	private AttendancePayService attendancePayService;
 	
 	private final static String  QUALITY_STRING = "贴破洞";
 	
 	
 	@Override
 	@Transactional
-	public Task addTask(Task task) {
+	public Task addTask(Task task) throws Exception {
 		//将用户变成string类型储存
 		if (!StringUtils.isEmpty(task.getUserIds())) {
 			String[] idArr = task.getUserIds().split(",");
@@ -133,7 +137,35 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						payB.setAllotTime(newTask.getAllotTime());
 						payB.setFlag(newTask.getFlag());
 						//计算B工资数值
-						payB.setPayNumber(newTask.getPayB()/task.getUsersIds().length);
+						PageParameter page = new PageParameter();
+						AttendancePay param = new AttendancePay();
+						param.setOrderTimeBegin(DatesUtil.getfristDayOftime(task.getAllotTime()));
+						param.setOrderTimeEnd(DatesUtil.getLastDayOftime(task.getAllotTime()));
+						if(task.getType()==2){
+							SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
+							//总考勤时间
+							double sunTime = 0;
+							for(String userTypeId : task.getUsersIds()){
+								Long userId = Long.parseLong(userTypeId);
+								param.setUserId(userId);
+								List<AttendancePay> attendancePay = attendancePayService.findPages(param, page).getRows();
+								if(attendancePay.size()>0){
+									sunTime+=attendancePay.get(0).getWorkTime();
+								}
+							}
+							param.setUserId(userid);
+							List<AttendancePay> attendancePay = attendancePayService.findPages(param, page).getRows();
+							if(attendancePay.size()==0){
+								throw new ServiceException("员工"+user.getUserName()+"没有"+dateFormater.format(task.getAllotTime())+"的考勤记录");
+							}
+							//按考情时间占比分配B工资
+							payB.setPayNumber(newTask.getPayB()*attendancePay.get(0).getWorkTime()/sunTime);
+							
+						}else{
+							payB.setPayNumber(newTask.getPayB()/task.getUsersIds().length);
+						}
+						
+						
 						//当存在加绩时，计算加绩工资
 						if(newTask.getPerformanceNumber()!=null){
 							payB.setPerformancePayNumber(newTask.getPerformancePrice()/task.getUsersIds().length);
@@ -144,7 +176,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 			}
 		}
 		
-
 		//查出该批次的所有任务
 		Bacth bacth = bacthDao.findOne(task.getBacthId());
 		//计算出该批次下所有人的实际成本总和
@@ -169,6 +200,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		bacthDao.save(bacth);
 		return task;
 	}
+	
+	
+	
 	
 	@Override
 	public PageResult<Task> findPages(Task param, PageParameter page) {
@@ -214,6 +248,12 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	        	if(!StringUtils.isEmpty(param.getMachinist())){
 	        		predicate.add(cb.equal(root.get("bacth").get("machinist").as(Integer.class), param.getMachinist()));
 	        	}
+	        	
+	         	//按批次是否完成
+	        	if(!StringUtils.isEmpty(param.getStatus())){
+	        		predicate.add(cb.equal(root.get("bacth").get("status").as(Integer.class), param.getStatus()));
+	        	}
+	        	
 	        	
 	            //按时间过滤
 				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) &&  !StringUtils.isEmpty(param.getOrderTimeEnd()) ) {

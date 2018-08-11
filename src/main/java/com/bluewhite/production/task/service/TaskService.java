@@ -17,7 +17,7 @@ public interface TaskService extends BaseCRUDService<Task,Long>{
 	 * @param task
 	 * @return
 	 */
-	public Task addTask(Task task);
+	public Task addTask(Task task) throws Exception;
 	/**
 	 * 分页查询所有任务
 	 * @param task

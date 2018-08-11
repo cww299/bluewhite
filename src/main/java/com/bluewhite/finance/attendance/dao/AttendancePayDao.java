@@ -7,6 +7,6 @@ import com.bluewhite.finance.attendance.entity.AttendancePay;
 
 public interface AttendancePayDao extends BaseRepository<AttendancePay, Long>{
 
-	AttendancePay findByUserIdAndAllotTime(Long userId, Date allotTime);
+	AttendancePay findByUserIdAndAllotTimeLike(Long userId, Date allotTime);
 
 }

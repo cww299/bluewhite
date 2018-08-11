@@ -118,7 +118,7 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 
 	@Override
 	public AttendancePay findByUserIdAndAllotTime(AttendancePay attendancePay) {
-		return dao.findByUserIdAndAllotTime(attendancePay.getUserId(),attendancePay.getAllotTime());
+		return dao.findByUserIdAndAllotTimeLike(attendancePay.getUserId(),attendancePay.getAllotTime());
 	}
 
 }

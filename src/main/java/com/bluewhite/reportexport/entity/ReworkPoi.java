@@ -1,5 +1,7 @@
 package com.bluewhite.reportexport.entity;
 
+import java.util.Date;
+
 import com.bluewhite.common.utils.excel.Poi;
 
 public class ReworkPoi {
@@ -42,6 +44,43 @@ public class ReworkPoi {
 	 */
 	@Poi(name = "被返工单位名", column = "F")
 	private String remark;
+	
+	/**
+	 * 完成日期
+	 */
+	@Poi(name = "完成日期", column = "G")
+	private Date datetime;
+
+	/**
+	 * 返工人员
+	 */
+	@Poi(name = "完成人员", column = "H")
+	private String username;
+	
+
+
+
+
+
+
+	public String getUsername() {
+		return username;
+	}
+
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+
+	public Date getDatetime() {
+		return datetime;
+	}
+
+
+	public void setDatetime(Date datetime) {
+		this.datetime = datetime;
+	}
 
 
 	public String getBacthNumber() {

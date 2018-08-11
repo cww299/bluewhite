@@ -88,7 +88,13 @@ private static final Log log = Log.getLog(TaskAction.class);
 			//新增
 			if(!StringUtils.isEmpty(task.getUserIds())){
 				task.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime(), task.getType()));
-				taskService.addTask(task);
+				try {
+					taskService.addTask(task);
+				} catch (Exception e) {
+					cr.setMessage(e.getMessage());
+					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+					return cr;
+				}
 				cr.setMessage("任务分配成功");
 			}else{
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -135,11 +141,12 @@ private static final Log log = Log.getLog(TaskAction.class);
 	/**
 	 * 给批次添加任务(方式2)
 	 * 应业务要求，增加按时间占比，分配不同任务数量给不同的员工，进行新增任务
+	 * @throws Exception 
 	 * 
 	 */
 	@RequestMapping(value = "/task/addTaskTwo", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addTaskTwo(HttpServletRequest request,Task task) {
+	public CommonResponse addTaskTwo(HttpServletRequest request,Task task) throws Exception {
 		CommonResponse cr = new CommonResponse();
 			//根据时间占比，组装出新任务
 			List<Task> taskList = taskService.assembleTask(task);
