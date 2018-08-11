@@ -9,7 +9,7 @@
 <head>
      <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>杂工管理</title>
+    <title>返工管理</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
    
@@ -1144,7 +1144,7 @@
 						var index; 
 						var a=$("#startTime").val();
 						var c= $("#endTime").val();
-						location.href="${ctx}/excel/importExcel?startTime="+a+"&endTime="+c;
+						location.href="${ctx}/excel/importExcel?orderTimeBegin="+a+"&orderTimeEnd="+c;
 					})
 				
 			}
