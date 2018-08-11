@@ -1119,11 +1119,11 @@
 										  $('.addDictDivTypeForm')[0].reset(); 
 										$('.checkworking').text("");
 										  $('.select').text("");
-											layer.msg("添加成功！", {icon: 1});
+											layer.msg(result.message, {icon: 1});
 											
 											
 										}else{
-											layer.msg("添加失败", {icon: 2});
+											layer.msg(result.message, {icon: 2});
 										}
 										
 										layer.close(index);
@@ -1475,11 +1475,11 @@
 										  $('.addDictDivTypeFormtw')[0].reset(); 
 										$('.checkworkingtw').text("");
 										  $('.selecttw').text("");
-											layer.msg("添加成功！", {icon: 1});
+											layer.msg(result.message, {icon: 1});
 											
 											
 										}else{
-											layer.msg("添加失败", {icon: 2});
+											layer.msg(result.message, {icon: 2});
 										}
 										
 										layer.close(index);
