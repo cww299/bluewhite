@@ -1148,10 +1148,15 @@
 							   $('.checkworking').text(""); 
 							   var data={
 										page:self.getCount(),
-								  		size:13,	
-								  		type:3,
-								  		flag:0,
-								  		status:$('#selectstate').val(),
+										size:13,
+							  			type:3,
+							  			name:$('#name').val(),
+							  			bacthNumber:$('#number').val(),
+							  			orderTimeBegin:$("#startTime").val(),
+							  			orderTimeEnd:$("#endTime").val(), 
+							  			status:$("#selectstate").val(),
+							  			flag:0,
+							  			statusTime:$("#startTime").val(),
 								} 
 							   self.loadPagination(data);
 						  } 

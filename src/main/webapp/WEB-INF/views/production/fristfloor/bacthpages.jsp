@@ -1092,11 +1092,15 @@
 							  $("#addDictDivType").hide();
 							  $('.checkworking').text(""); 
 							  var data={
-										page:self.getCount(),
-								  		size:13,	
-								  		type:1,
-								  		flag:0,
-								  		status:$('#selectstate').val(),
+									  page:self.getCount(),
+										size:13,
+							  			type:1,
+							  			name:$('#name').val(),
+							  			bacthNumber:$('#number').val(),
+							  			 orderTimeBegin:$("#startTime").val(),
+							  			orderTimeEnd:$("#endTime").val(), 
+							  			status:$("#selectstate").val(),
+							  			flag:0,
 								} 
 							    self.loadPagination(data); 
 						  } 
@@ -1446,7 +1450,18 @@
 							  $("#addDictDivTypetw").hide();
 							  $('.checkworkingtw').text("");
 							  $('.selecttw').text("");
-							
+							  var data={
+										page:self.getCount(),
+										size:13,
+							  			type:1,
+							  			name:$('#name').val(),
+							  			bacthNumber:$('#number').val(),
+							  			 orderTimeBegin:$("#startTime").val(),
+							  			orderTimeEnd:$("#endTime").val(), 
+							  			status:$("#selectstate").val(),
+							  			flag:0,
+								} 
+							   self.loadPagination(data);
 						  } 
 					});
 					

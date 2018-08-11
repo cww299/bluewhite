@@ -1495,10 +1495,13 @@
 							  $('.checkworkingtw').text(""); 
 							  var data={
 										page:self.getCount(),
-								  		size:12,	
-								  		type:2,
-								  		flag:0,
-								  		status:$('.selectchoice').val(),
+										size:12,
+							  			type:2,
+							  			name:$('#name').val(),
+							  			bacthNumber:$('#number').val(),
+							  			 orderTimeBegin:$("#startTime").val(),
+							  			orderTimeEnd:$("#endTime").val(), 
+							  			status:$('.selectchoice').val(),
 								} 
 							   self.loadPagination(data);
 							 
