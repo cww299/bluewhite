@@ -235,6 +235,7 @@ public class ReportExportAction {
         //输出的实体与反射的实体相对应
         task.setType(3);
         task.setFlag(1);
+        task.setStatus(1);
         PageParameter page  = new PageParameter();
 		page.setSize(Integer.MAX_VALUE);
 	    List<Task> taskList  =taskService.findPages(task, page).getRows();
@@ -245,7 +246,10 @@ public class ReportExportAction {
 	    	reworkPoi.setName(tasks.getProductName());
 	    	reworkPoi.setNumber(tasks.getNumber());
 	    	reworkPoi.setPrice(tasks.getTaskPrice()/0.00621*0.003833333);
-	    	reworkPoi.setRemark(tasks.getRemark());
+	    	reworkPoi.setRemark(tasks.getBacth().getRemarks());
+	    	reworkPoi.setTime(tasks.getTaskTime()/60);
+	    	reworkPoi.setDatetime(tasks.getBacth().getStatusTime());
+	    	reworkPoi.setUsername(tasks.getUserNames());
 	    	reworkPoiList.add(reworkPoi);
 	    }
 	    Excelutil<ReworkPoi> util = new Excelutil<ReworkPoi>(ReworkPoi.class);
