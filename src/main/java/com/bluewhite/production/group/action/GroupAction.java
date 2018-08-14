@@ -28,6 +28,7 @@ import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
+import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.entity.Temporarily;
@@ -287,7 +288,10 @@ private static final Log log = Log.getLog(GroupAction.class);
 		if(type==1){
 			cr.setData(temporarilyDao.findByType(type));
 		}else{
-			cr.setData(temporarilyDao.findByTypeAndTemporarilyDate(type,temporarilyDate));
+			cr.setData(ClearCascadeJSON
+					.get()
+					.addRetainTerm(Temporarily.class,"UserId","userName","workTime","temporarilyDate"
+							).format(temporarilyDao.findByTypeAndTemporarilyDate(type,temporarilyDate)).toJSON());
 		}
 		cr.setMessage("查询成功");
 		return cr;
