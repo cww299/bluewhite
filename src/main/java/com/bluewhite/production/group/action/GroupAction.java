@@ -2,6 +2,7 @@ package com.bluewhite.production.group.action;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -261,8 +262,12 @@ private static final Log log = Log.getLog(GroupAction.class);
 	@ResponseBody
 	public CommonResponse addTemporarily(HttpServletRequest request,Temporarily temporarily) {
 		CommonResponse cr = new CommonResponse();
-		temporarilyDao.save(temporarily);
-		cr.setMessage("添加成功");
+		if(temporarilyDao.findByUserIdAndTemporarilyDate(temporarily.getUserId(), temporarily.getTemporarilyDate())!=null){
+			cr.setMessage("当日已添加过借调人员的工作时间,不必再次添加");
+		}else{
+			temporarilyDao.save(temporarily);
+			cr.setMessage("添加成功");
+		}
 		return cr;
 	}
 	
@@ -277,9 +282,13 @@ private static final Log log = Log.getLog(GroupAction.class);
 	 */
 	@RequestMapping(value = "/production/getTemporarily", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getTemporarily(HttpServletRequest request,Integer type) {
+	public CommonResponse getTemporarily(HttpServletRequest request,Integer type,Date temporarilyDate) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(temporarilyDao.findByType(type));
+		if(type==1){
+			cr.setData(temporarilyDao.findByType(type));
+		}else{
+			cr.setData(temporarilyDao.findByTypeAndTemporarilyDate(type,temporarilyDate));
+		}
 		cr.setMessage("查询成功");
 		return cr;
 	}
