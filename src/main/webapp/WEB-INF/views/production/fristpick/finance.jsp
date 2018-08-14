@@ -153,6 +153,17 @@
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
+                                    <thead>
+                                        <tr>
+                                       	    <td class="center">合计</td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center" id="total"></td>
+                                        </tr>
+                                    </thead>
                                 </table>
                                 <div id="pager" class="pull-right"></div>
                                  </div>
@@ -281,6 +292,7 @@
 						  });
 					  }, 
 		      		  success: function (result) {
+		      			 $("#total").text(result.data.statData.stateCount)
 		      			 $(result.data.rows).each(function(i,o){
 		      				 var a;
 		      				 if(o.performancePayNumber==null){
