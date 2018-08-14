@@ -1,5 +1,7 @@
 package com.bluewhite.production.group.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -27,12 +29,45 @@ public class Temporarily extends BaseEntity<Long>{
 	@Column(name = "user_name")
 	private String userName;
 	
+	/**
+	 * 工作时长
+	 */
+	@Column(name = "work_time")
+	private Double workTime;
+	
+	/**
+	 * 外调时间
+	 */
+	@Column(name = "temporarily_date")
+	private Date temporarilyDate;
+	
 	
 	/**
 	 * 分组所属部门类型 (1=一楼质检，2=一楼包装)
 	 */
 	@Column(name = "type")
 	private Integer type;
+	
+	
+
+	public Double getWorkTime() {
+		return workTime;
+	}
+
+
+	public void setWorkTime(Double workTime) {
+		this.workTime = workTime;
+	}
+
+
+	public Date getTemporarilyDate() {
+		return temporarilyDate;
+	}
+
+
+	public void setTemporarilyDate(Date temporarilyDate) {
+		this.temporarilyDate = temporarilyDate;
+	}
 
 
 	public Long getUserId() {

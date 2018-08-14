@@ -57,10 +57,40 @@ public class ReworkPoi {
 	@Poi(name = "完成人员", column = "H")
 	private String username;
 	
+	/**
+	 * 批次总数量
+	 */
+	@Poi(name = "批次总数量", column = "I")
+	private Integer sumNumber;
+
+	/**
+	 * 返工率
+	 */
+	@Poi(name = "返工率", column = "J")
+	private Double reworkRate;
 
 
 
+	
 
+	public Integer getSumNumber() {
+		return sumNumber;
+	}
+
+
+	public void setSumNumber(Integer sumNumber) {
+		this.sumNumber = sumNumber;
+	}
+
+
+	public Double getReworkRate() {
+		return reworkRate;
+	}
+
+
+	public void setReworkRate(Double reworkRate) {
+		this.reworkRate = reworkRate;
+	}
 
 
 	public String getUsername() {
