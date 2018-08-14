@@ -109,10 +109,23 @@
                                         
                                         </div>
                  </div>
+                 <div class="form-group">
+                                        <label class="col-sm-3 control-label">外调时间:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="startTime" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD 00:00:00'})">
+                                        </div>
+                 </div>
 				<div class="form-group">
                                         <label class="col-sm-3 control-label">人员名称:</label>
                                         <div class="col-sm-6">
                                             <input type="text" id="groupNametw" class="form-control">
+                                        </div>
+                 </div>
+                 <div class="form-group">
+                                        <label class="col-sm-3 control-label">工作时长:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="grouptime" class="form-control">
                                         </div>
                  </div>
                   <div class="hidden grouptw"></div>
@@ -190,6 +203,7 @@
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
     <script src="${ctx }/static/js/vendor/typeahead.js"></script>
     <script src="${ctx }/static/js/vendor/typeahead.js"></script>
+    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
     <script>
    jQuery(function($){
    	var Login = function(){
@@ -796,7 +810,7 @@
 						  area: ['30%', '45%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
-						  title:"新增小组",
+						  title:"新增人员",
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
