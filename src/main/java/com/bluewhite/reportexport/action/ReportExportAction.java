@@ -6,6 +6,8 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +34,7 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.excel.Excelutil;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.BaseOneTime;
@@ -240,18 +243,22 @@ public class ReportExportAction {
 		page.setSize(Integer.MAX_VALUE);
 	    List<Task> taskList  =taskService.findPages(task, page).getRows();
 	    List<ReworkPoi> reworkPoiList = new ArrayList<ReworkPoi>();
-	    for(Task tasks : taskList){
-	    	ReworkPoi reworkPoi = new ReworkPoi(); 
-	    	reworkPoi.setBacthNumber(tasks.getBacthNumber());
-	    	reworkPoi.setName(tasks.getProductName());
-	    	reworkPoi.setNumber(tasks.getNumber());
-	    	reworkPoi.setPrice(tasks.getTaskPrice()/0.00621*0.003833333);
-	    	reworkPoi.setRemark(tasks.getBacth().getRemarks());
-	    	reworkPoi.setTime(tasks.getTaskTime()/60);
-	    	reworkPoi.setDatetime(tasks.getBacth().getStatusTime());
-	    	reworkPoi.setUsername(tasks.getUserNames());
-	    	reworkPoiList.add(reworkPoi);
-	    }
+	    Map<Object, List<Task>> mapTask = taskList.stream().collect(Collectors.groupingBy(Task::getBacthId,Collectors.toList()));
+		for(Object ps : mapTask.keySet()){
+			List<Task> psList= mapTask.get(ps);
+			ReworkPoi reworkPoi = new ReworkPoi(); 
+	    	reworkPoi.setBacthNumber(psList.get(0).getBacthNumber());
+	    	reworkPoi.setName(psList.get(0).getProductName());
+	    	reworkPoi.setRemark(psList.get(0).getBacth().getRemarks());
+	    	reworkPoi.setDatetime(psList.get(0).getBacth().getStatusTime());
+	    	reworkPoi.setUsername(psList.get(0).getUserNames());
+		    reworkPoi.setNumber(psList.get(0).getNumber());
+		    reworkPoi.setTime((psList.stream().mapToDouble(Task::getTaskTime).sum())/60);
+			reworkPoi.setPrice((psList.stream().mapToDouble(Task::getTaskPrice).sum())/0.00621*0.003833333);
+			reworkPoi.setSumNumber(psList.get(0).getBacth().getNumber());
+			reworkPoi.setReworkRate( ((double)reworkPoi.getNumber()/(double)reworkPoi.getSumNumber()));
+		    reworkPoiList.add(reworkPoi);
+ 		}  
 	    Excelutil<ReworkPoi> util = new Excelutil<ReworkPoi>(ReworkPoi.class);
         util.exportExcel(reworkPoiList, "返工价值表", out);// 导出  
 	}

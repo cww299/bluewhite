@@ -22,13 +22,14 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.PayB;
+import com.bluewhite.production.group.dao.TemporarilyDao;
+import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
@@ -49,6 +50,8 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	private BacthDao bacthDao;
 	@Autowired
 	private PayBDao payBDao;
+	@Autowired
+	private TemporarilyDao temporarilyDao;
 
 	@Autowired
 	private AttendancePayService attendancePayService;
@@ -141,6 +144,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						AttendancePay param = new AttendancePay();
 						param.setOrderTimeBegin(DatesUtil.getfristDayOftime(task.getAllotTime()));
 						param.setOrderTimeEnd(DatesUtil.getLastDayOftime(task.getAllotTime()));
+						//包装分配任务，员工b工资根据考情占比分配，其他部门是均分
 						if(task.getType()==2){
 							SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
 							//总考勤时间
@@ -148,23 +152,29 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 							for(String userTypeId : task.getUsersIds()){
 								Long userId = Long.parseLong(userTypeId);
 								param.setUserId(userId);
-								List<AttendancePay> attendancePay = attendancePayService.findPages(param, page).getRows();
-								if(attendancePay.size()>0){
-									sunTime+=attendancePay.get(0).getWorkTime();
+								Temporarily  temporarily = temporarilyDao.findByUserIdAndTemporarilyDate(userId,DatesUtil.getfristDayOftime(task.getAllotTime()));
+								if(!StringUtils.isEmpty(temporarily)){
+									sunTime+=temporarily.getWorkTime();
+								}else{
+									List<AttendancePay> attendancePay = attendancePayService.findPages(param, page).getRows();
+									if(attendancePay.size()>0){
+										sunTime+=attendancePay.get(0).getWorkTime();
+									}
 								}
 							}
 							param.setUserId(userid);
+							Temporarily  temporarily = temporarilyDao.findByUserIdAndTemporarilyDate(userid,DatesUtil.getfristDayOftime(task.getAllotTime()));
 							List<AttendancePay> attendancePay = attendancePayService.findPages(param, page).getRows();
-							if(attendancePay.size()==0){
-								throw new ServiceException("员工"+user.getUserName()+"没有"+dateFormater.format(task.getAllotTime())+"的考勤记录");
+							if(StringUtils.isEmpty(temporarily) && attendancePay.size()==0){
+								throw new ServiceException("员工"+user.getUserName()+"没有"+dateFormater.format(task.getAllotTime())+"的考勤记录，无法分配任务");
 							}
-							//按考情时间占比分配B工资
-							payB.setPayNumber(newTask.getPayB()*attendancePay.get(0).getWorkTime()/sunTime);
 							
+							
+							//按考情时间占比分配B工资
+							payB.setPayNumber(newTask.getPayB() * (attendancePay.size()==0 ? temporarily.getWorkTime() : attendancePay.get(0).getWorkTime())/sunTime);
 						}else{
 							payB.setPayNumber(newTask.getPayB()/task.getUsersIds().length);
 						}
-						
 						
 						//当存在加绩时，计算加绩工资
 						if(newTask.getPerformanceNumber()!=null){

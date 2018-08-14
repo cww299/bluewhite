@@ -143,10 +143,6 @@ private static final Log log = Log.getLog(GroupAction.class);
 			Set<User> users= gr.getUsers().stream().filter(u -> u.getStatus()!=1).collect(Collectors.toSet());
 			gr.setUsers(users);
 		}
-		
-	
-		
-		
 		cr.setData(clearCascadeJSON.format(groupAll).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
@@ -223,7 +219,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 	/**
 	 * 新增借调人员
 	 * 
-	 * (1=一楼质检，2=一楼包装)
+	 * (1=一楼质检)
 	 * @param request 请求
 	 * @return cr
 	 */
@@ -246,6 +242,25 @@ private static final Log log = Log.getLog(GroupAction.class);
 		cr.setMessage("添加成功");
 		return cr;
 	}
+	
+	
+	/**
+	 * 新增借调人员
+	 * 
+	 * (2=一楼包装)
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/production/addTemporarilyTwo", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse addTemporarily(HttpServletRequest request,Temporarily temporarily) {
+		CommonResponse cr = new CommonResponse();
+		temporarilyDao.save(temporarily);
+		cr.setMessage("添加成功");
+		return cr;
+	}
+	
+	
 	
 	/**
 	 * 查询借调人员

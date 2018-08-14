@@ -174,7 +174,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 					if(bacth.getStatus()==1){
 						throw new ServiceException("批次编号为"+bacth.getBacthNumber()+"的任务已经完成,无需再次完成");
 					}
-					if(bacth.getType()==3){
+					if(bacth.getType()==3 && bacth.getFlag()==0){
 						Group group = groupDao.findByNameAndType(GROUP,bacth.getType());
 						List<Procedure> procedure = procedureDao.findByProductIdAndProcedureTypeIdAndType(bacth.getProductId(), (long)101, bacth.getType());						
 						List<Task> taskList = bacth.getTasks().stream().filter(Task->Task.getProcedureId().equals(procedure.get(0).getId())).collect(Collectors.toList());
@@ -249,6 +249,12 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 	@Override
 	public Bacth saveBacth(Bacth bacth) throws Exception {
 		bacth.setAllotTime(ProTypeUtils.countAllotTime(bacth.getAllotTime(), bacth.getType()));
+//		PageParameter page =new PageParameter();
+//		page.setSize(Integer.MAX_VALUE);
+//		if(this.findPages(bacth, page).getRows().size()>0){
+//			
+//		}
+		
 		bacth.setStatus(0);
 		bacth.setReceive(0);
 		List<Procedure> procedureList =procedureDao.findByProductIdAndTypeAndFlag(bacth.getProductId(), bacth.getType(), bacth.getFlag());
