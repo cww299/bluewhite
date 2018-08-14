@@ -166,8 +166,25 @@
 					人员详情
 				</h4>
 			</div>
-			<div class="modal-body">
-				
+			<div class="modal-bodytw">
+				<table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                        	<th>
+											<label> 
+											<input type="checkbox" class="checkalls" /> 
+											<span class="lbl"></span>
+											</label>
+											</th>
+                                            <th class="text-center">人名</th>
+                                            <th class="text-center">工作时长</th>
+                                            <th class="text-center">日期</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablecontentfv">
+                                        
+                                    </tbody>
+                                </table>
 			</div>
 			<div class="modal-footer">
 			<button type="button" class="btn btn-danger" id="delete">删除
@@ -427,10 +444,11 @@
 						
 						success:function(result){
 							$(result.data).each(function(i,o){
-							html+='<input type="checkbox" class="stuCheckBoxt" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input>'
+							html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace stuCheckBoxt" value="'+o.id+'"/><span class="lbl"></span></label></td>'
+			      				+'<td class="text-center  bacthNumber">'+o.userName+'</td>'
+			      				+'<td class="text-center edit allotTime">'+o.workTime+'</td></tr>'
 							})
-							var s="<div class='input-group'><input type='checkbox' class='checkalls'>全选</input></div>"
-							$('.modal-body').html(s+html);
+							 $('#tablecontentfv').html(html);
 							$(".checkalls").on('click',function(){
 			                    if($(this).is(':checked')){ 
 						 			$('.stuCheckBoxt').each(function(){  
@@ -814,7 +832,6 @@
 									  workTime:$('#grouptime').val(),
 									  type:2,
 							  }
-							  console.log(postData)
 							  $.ajax({
 									url:"${ctx}/production/addTemporarilyTwo",
 									data:postData,
