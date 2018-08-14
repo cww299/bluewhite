@@ -102,13 +102,6 @@
 				<div class="space-10"></div>
 				<div style="height: 30px"></div>
 				<form class="form-horizontal addDictDivTypeFormtw">
-				<div class="form-group">
-                                        <label class="col-sm-3 control-label">外调人员:</label>
-                                        <div class="col-sm-6 groupth">
-                                       
-                                        
-                                        </div>
-                 </div>
                  <div class="form-group">
                                         <label class="col-sm-3 control-label">外调时间:</label>
                                         <div class="col-sm-6">
@@ -814,14 +807,16 @@
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
-							 var t=$('.grouptw').text()
-							 ss = t.substring(0,t.length-1);
 							  postData={
-									  ids:ss,
+									  userName:$('#groupNametw').val(),
+									  userId:self.getCache(),
+									  temporarilyDate:$('#startTime').val(),
+									  workTime:$('#grouptime').val(),
 									  type:2,
 							  }
+							  console.log(postData)
 							  $.ajax({
-									url:"${ctx}/production/addTemporarily",
+									url:"${ctx}/production/addTemporarilyTwo",
 									data:postData,
 						            traditional: true,
 									type:"post",
@@ -900,10 +895,7 @@
 						 updater:function(item){
 							//转出成json对象
 							var item = JSON.parse(item);
-							var html="";
-							html=item.name+" "
-							$('.grouptw').append(item.id+',');
-							$('.groupth').append(html);
+							self.setCache(item.id);
 								return item.name
 						}, 
 
