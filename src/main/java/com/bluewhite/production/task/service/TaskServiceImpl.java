@@ -166,7 +166,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 							Temporarily  temporarily = temporarilyDao.findByUserIdAndTemporarilyDate(userid,DatesUtil.getfristDayOftime(task.getAllotTime()));
 							List<AttendancePay> attendancePay = attendancePayService.findPages(param, page).getRows();
 							if(StringUtils.isEmpty(temporarily) && attendancePay.size()==0){
-								throw new ServiceException("员工"+user.getUserName()+"没有"+dateFormater.format(task.getAllotTime())+"的考勤记录，无法分配任务");
+									throw new ServiceException("员工"+user.getUserName()+"没有"+dateFormater.format(task.getAllotTime())+"的考勤记录，无法分配任务");
 							}
 							
 							
