@@ -897,11 +897,12 @@
 									
 									success:function(result){
 										if(0==result.code){
-											layer.msg("添加成功！", {icon: 1});
+											layer.msg(result.message, {icon: 1});
+											
 											$('#addDictDivTypetw').hide();
 											layer.close(index);
 										}else{
-											layer.msg("添加失败", {icon: 2});
+											layer.msg(result.message, {icon: 2});
 										}
 										
 										layer.close(index);
