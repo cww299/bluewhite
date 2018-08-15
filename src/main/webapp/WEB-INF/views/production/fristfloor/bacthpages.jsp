@@ -133,7 +133,12 @@
                                 </div>
                                 </div>
                     	</div>
-                    	
+                    	<div class="form-group">
+                               <label class="col-sm-2 control-label">实际任务时间:</label>
+                                 <div class="col-sm-3">
+                                          <input type="text"   class="form-control actualtime">
+                                      </div>
+                		 </div>
                     	
                  		 <div class="form-group">
                                <label class="col-sm-2 control-label">任务分配:</label>
@@ -200,7 +205,12 @@
                                   <input type="text" placeholder="非返工任务不填写" class="form-control sumtimetw">
                                 </div>
                  	</div>
-                    	
+                    	<div class="form-group">
+                               <label class="col-sm-2 control-label">实际任务时间:</label>
+                                 <div class="col-sm-3">
+                                          <input type="text"   class="form-control actualtimetw">
+                                      </div>
+                		 </div>
                     <div class="form-group" >
                            <label class="col-sm-3 col-md-2 control-label">开始时间:</label>
                               <div class="col-sm-2 col-md-2">
@@ -1056,6 +1066,7 @@
 										allotTime:$('#Time').val(),
 										productId:productId,
 										holeNumber:holeNumber,
+										remark:$('.actualtime').val(),
 								}
 							    $.ajax({
 									url:"${ctx}/task/addTask",
@@ -1414,6 +1425,7 @@
 										expectTime:expectTime,
 										bacthNumber:bacthNumber,
 										allotTime:$('#Timet').val(),
+										remark:$('.actualtimetw').val(),
 								}
 							    $.ajax({
 									url:"${ctx}/task/addTaskTwo",
