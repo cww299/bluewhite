@@ -53,6 +53,7 @@
                                         <tr>
                                         	<td class="text-center">外调组</td>
                                             <td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemodetw" data-toggle="modal" data-target="#myModaltw")">查看人员</button></td>
+                                            <td class="text-center"></td>
                                             <td class="text-center"><button type="button" id="add" class="btn btn-success btn-sm btn-3d">外调人员</button></td>
                                         </tr>
                                     </thead>
@@ -102,17 +103,23 @@
 				<div class="space-10"></div>
 				<div style="height: 30px"></div>
 				<form class="form-horizontal addDictDivTypeFormtw">
-				<div class="form-group">
-                                        <label class="col-sm-3 control-label">外调人员:</label>
-                                        <div class="col-sm-6 groupth">
-                                       
-                                        
+                 <div class="form-group">
+                                        <label class="col-sm-3 control-label">外调时间:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="startTime" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD 00:00:00'})">
                                         </div>
                  </div>
 				<div class="form-group">
                                         <label class="col-sm-3 control-label">人员名称:</label>
                                         <div class="col-sm-6">
                                             <input type="text" id="groupNametw" class="form-control">
+                                        </div>
+                 </div>
+                 <div class="form-group">
+                                        <label class="col-sm-3 control-label">工作时长:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="grouptime" class="form-control">
                                         </div>
                  </div>
                   <div class="hidden grouptw"></div>
@@ -160,8 +167,49 @@
 					人员详情
 				</h4>
 			</div>
-			<div class="modal-body">
-				
+			<div class="modal-bodytw">
+			<div class="row" style="height: 30px; margin:15px 0 10px">
+			<div class="col-xs-11 col-sm-11  col-md-11">
+				<form class="form-search" >
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-12">
+							<div class="input-group"> 
+								<table><tr>
+								<td>开始时间:</td>
+								<td>
+								<input id="startTimetw" placeholder="请输入开始时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#startTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
+								</td>
+								<td>&nbsp&nbsp</td>
+								</tr></table> 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
+											查&nbsp找
+									</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+				<table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                        	<th>
+											<label> 
+											<input type="checkbox" class="checkalls" /> 
+											<span class="lbl"></span>
+											</label>
+											</th>
+                                            <th class="text-center">人名</th>
+                                            <th class="text-center">工作时长</th>
+                                            <th class="text-center">日期</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablecontentfv">
+                                        
+                                    </tbody>
+                                </table>
 			</div>
 			<div class="modal-footer">
 			<button type="button" class="btn btn-danger" id="delete">删除
@@ -190,6 +238,7 @@
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
     <script src="${ctx }/static/js/vendor/typeahead.js"></script>
     <script src="${ctx }/static/js/vendor/typeahead.js"></script>
+    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
     <script>
    jQuery(function($){
    	var Login = function(){
@@ -234,6 +283,24 @@
 				  		type:2,
 
 				} 
+			 var myDate = new Date(new Date().getTime() - 86400000);
+				//获取当前年
+				var year=myDate.getFullYear();
+				//获取当前月
+				var month=myDate.getMonth()+1;
+				//获取当前日
+				var date=myDate.getDate(); 
+				
+				var h=myDate.getHours();       //获取当前小时数(0-23)
+				var m=myDate.getMinutes();     //获取当前分钟数(0-59)
+				var s=myDate.getSeconds(); 
+				var day = new Date(year,month,0);  
+				var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
+				var getday = year + '-' + '0'+month + date+' '+'00:00:00';
+				var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
+				var a=year + '-' + '0'+month + '-' + date+' '+'00:00:00'
+				var b=year + '-' + '0'+month + '-' + date+' '+'23:59:59'
+				$('#startTimetw').val(a);
 			this.init = function(){
 				
 				//注册绑定事件
@@ -300,6 +367,48 @@
 					  }
 				  });
 			}
+			  this.loadworking=function(datae){
+				  var arr=new Array();
+					var html="";
+					$.ajax({
+						url:"${ctx}/production/getTemporarily",
+						data:datae,
+						type:"GET",
+						beforeSend:function(){
+							index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+						},
+						
+						success:function(result){
+							$(result.data).each(function(i,o){
+							html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace stuCheckBoxt" value="'+o.id+'"/><span class="lbl"></span></label></td>'
+			      				+'<td class="text-center  bacthNumber">'+o.userName+'</td>'
+			      				+'<td class="text-center edit allotTime">'+o.workTime+'</td>'
+			      				+'<td class="text-center edit allotTime">'+o.temporarilyDate+'</td></tr>'
+							})
+							 $('#tablecontentfv').html(html);
+							$(".checkalls").on('click',function(){
+			                    if($(this).is(':checked')){ 
+						 			$('.stuCheckBoxt').each(function(){  
+			                    //此处如果用attr，会出现第三次失效的情况  
+			                     		$(this).prop("checked",true);
+						 			})
+			                    }else{
+			                    	$('.stuCheckBoxt').each(function(){ 
+			                    		$(this).prop("checked",false);
+			                    		
+			                    	})
+			                    }
+			                });
+							layer.close(index);
+							
+						},error:function(){
+							layer.msg("操作失败！", {icon: 2});
+							layer.close(index);
+						}
+					});
+			  }
 			
 			this.loadEvents = function(){
 				//修改方法
@@ -403,47 +512,12 @@
 					 if(display=='none'){
 							$("#savegrouptw").css("display","block");  
 						}
-					var postData={
+					var datae={
+							
+							temporarilyDate:$('#startTimetw').val(),
 							type:2,
 					}
-					 var arr=new Array();
-					var html="";
-					$.ajax({
-						url:"${ctx}/production/getTemporarily",
-						data:postData,
-						type:"GET",
-						beforeSend:function(){
-							index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								});
-						},
-						
-						success:function(result){
-							$(result.data).each(function(i,o){
-							html+='<input type="checkbox" class="stuCheckBoxt" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input>'
-							})
-							var s="<div class='input-group'><input type='checkbox' class='checkalls'>全选</input></div>"
-							$('.modal-body').html(s+html);
-							$(".checkalls").on('click',function(){
-			                    if($(this).is(':checked')){ 
-						 			$('.stuCheckBoxt').each(function(){  
-			                    //此处如果用attr，会出现第三次失效的情况  
-			                     		$(this).prop("checked",true);
-						 			})
-			                    }else{
-			                    	$('.stuCheckBoxt').each(function(){ 
-			                    		$(this).prop("checked",false);
-			                    		
-			                    	})
-			                    }
-			                });
-							layer.close(index);
-							
-						},error:function(){
-							layer.msg("操作失败！", {icon: 2});
-							layer.close(index);
-						}
-					});
+					self.loadworking(datae);
 				})
 				
 				//删除
@@ -796,18 +870,19 @@
 						  area: ['30%', '45%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
-						  title:"新增小组",
+						  title:"新增人员",
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
-							 var t=$('.grouptw').text()
-							 ss = t.substring(0,t.length-1);
 							  postData={
-									  ids:ss,
+									  userName:$('#groupNametw').val(),
+									  userId:self.getCache(),
+									  temporarilyDate:$('#startTime').val(),
+									  workTime:$('#grouptime').val(),
 									  type:2,
 							  }
 							  $.ajax({
-									url:"${ctx}/production/addTemporarily",
+									url:"${ctx}/production/addTemporarilyTwo",
 									data:postData,
 						            traditional: true,
 									type:"post",
@@ -842,7 +917,14 @@
 					});
 				})
 				
-				
+				//查询
+				$('.searchtask').on('click',function(){
+						var datae={
+								type:2,
+								temporarilyDate:$("#startTimetw").val(),
+						}
+						self.loadworking(datae);
+				});
 				//提示人员姓名
 				$("#groupNametw").typeahead({
 					//ajax 拿way数据
@@ -886,10 +968,7 @@
 						 updater:function(item){
 							//转出成json对象
 							var item = JSON.parse(item);
-							var html="";
-							html=item.name+" "
-							$('.grouptw').append(item.id+',');
-							$('.groupth').append(html);
+							self.setCache(item.id);
 								return item.name
 						}, 
 
