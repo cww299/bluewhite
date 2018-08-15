@@ -1144,7 +1144,7 @@
 						var index; 
 						var a=$("#startTime").val();
 						var c= $("#endTime").val();
-						location.href="${ctx}/excel/importExcel?orderTimeBegin="+a+"&orderTimeEnd="+c;
+						location.href="${ctx}/excel/importExcel?orderTimeBegin="+a+"&orderTimeEnd="+c+"&type=3";
 					})
 				
 			}
