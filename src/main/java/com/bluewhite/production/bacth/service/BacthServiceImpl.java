@@ -123,7 +123,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 		        	return null;
 		        }, page);
 		        
-				  if(param.getType()==2){
+				  if(param.getType() !=null && param.getType()==2){
 					  if(pages.getSize()>0){
 						  for(Bacth bacth : pages.getContent()){
 							  int count = 0;
@@ -136,8 +136,9 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 						  	}
 						 }
 				  }
+				  
 				  PageResultStat<Bacth> result = new PageResultStat<>(pages,page);
-				  if(param.getType()==2){
+				  if(param.getType() !=null && param.getType()==2){
 					  result.setAutoStateField("packNumber", "sumTaskPrice");
 				  }else{
 					  result.setAutoStateField("number", "sumTaskPrice");
