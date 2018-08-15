@@ -260,10 +260,11 @@ private static final Log log = Log.getLog(GroupAction.class);
 	 */
 	@RequestMapping(value = "/production/addTemporarilyTwo", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addTemporarily(HttpServletRequest request,Temporarily temporarily) {
+	public CommonResponse addTemporarily(HttpServletRequest request,Temporarily temporarily){
 		CommonResponse cr = new CommonResponse();
 		if(temporarilyDao.findByUserIdAndTemporarilyDate(temporarily.getUserId(), temporarily.getTemporarilyDate())!=null){
 			cr.setMessage("当日已添加过借调人员的工作时间,不必再次添加");
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 		}else{
 			temporarilyDao.save(temporarily);
 			cr.setMessage("添加成功");
