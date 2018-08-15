@@ -289,7 +289,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 		}else{
 			cr.setData(ClearCascadeJSON
 					.get()
-					.addRetainTerm(Temporarily.class,"UserId","userName","workTime","temporarilyDate"
+					.addRetainTerm(Temporarily.class,"id","UserId","userName","workTime","temporarilyDate"
 							).format(temporarilyDao.findByTypeAndTemporarilyDate(type,temporarilyDate)).toJSON());
 		}
 		cr.setMessage("查询成功");
