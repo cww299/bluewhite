@@ -255,9 +255,12 @@ public class ReportExportAction {
 	    	reworkPoi.setDatetime(psList.get(0).getBacth().getStatusTime());
 	    	reworkPoi.setUsername(psList.get(0).getUserNames());
 	    	//去任务中最大值
-//	    	Optional<Task> mactask = psList.stream().max(Comparator.comparingInt(Task::getNumber));
-	    	IntSummaryStatistics summaryStatistics = psList.stream().collect(Collectors.summarizingInt(Task::getNumber));
-		    reworkPoi.setNumber(summaryStatistics.getMax());
+	    	Optional<Task> mactask = psList.stream().max(Comparator.comparingInt(Task::getNumber));
+//	    	IntSummaryStatistics summaryStatistics = psList.stream().collect(Collectors.summarizingInt(Task::getNumber));
+	    	if(task.getType()==1){
+	    		 reworkPoi.setRemarkTime(mactask.get().getRemark());
+	    	}
+		    reworkPoi.setNumber(mactask.get().getNumber());
 		    reworkPoi.setTime((psList.stream().mapToDouble(Task::getTaskTime).sum())/60);
 			reworkPoi.setPrice((psList.stream().mapToDouble(Task::getTaskPrice).sum())/0.00621*0.003833333);
 			reworkPoi.setSumNumber(psList.get(0).getBacth().getNumber());

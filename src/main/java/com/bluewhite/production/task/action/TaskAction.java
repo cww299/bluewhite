@@ -57,7 +57,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(Task.class,"id","userNames","bacthNumber","allotTime","productName","userIds","procedure","procedureName","number","status","expectTime"
+				.addRetainTerm(Task.class,"id","remark","userNames","bacthNumber","allotTime","productName","userIds","procedure","procedureName","number","status","expectTime"
 						,"expectTaskPrice","taskTime","payB","taskPrice","taskActualTime","type","createdAt","performance","performanceNumber","performancePrice","flag")
 				.addRetainTerm(Procedure.class,"id","procedureTypeId");
 	}
