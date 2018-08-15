@@ -348,7 +348,7 @@
 									id:$(this).data('id'),
 									number:$(this).parent().parent('tr').find(".number").text(),
 									allotTime:$(this).parent().parent('tr').find(".allotTime").text(),
-									remark:$(this).parent().parent('tr').find(".allotTime").text(),
+									remark:$(this).parent().parent('tr').find(".remark").text(),
 							}
 							var index;
 							$.ajax({
