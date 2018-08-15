@@ -69,9 +69,26 @@ public class ReworkPoi {
 	@Poi(name = "返工率", column = "J")
 	private Double reworkRate;
 
-
+	/**
+	 * 实际时间备注
+	 */
+	@Poi(name = "备注", column = "K" ,prompt="实际时间")
+	private String remarkTime;
 
 	
+
+
+
+
+	public String getRemarkTime() {
+		return remarkTime;
+	}
+
+
+	public void setRemarkTime(String remarkTime) {
+		this.remarkTime = remarkTime;
+	}
+
 
 	public Integer getSumNumber() {
 		return sumNumber;
