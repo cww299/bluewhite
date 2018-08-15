@@ -5,8 +5,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -236,7 +239,6 @@ public class ReportExportAction {
             e.printStackTrace();  
 		}  
         //输出的实体与反射的实体相对应
-        task.setType(3);
         task.setFlag(1);
         task.setStatus(1);
         PageParameter page  = new PageParameter();
@@ -252,7 +254,10 @@ public class ReportExportAction {
 	    	reworkPoi.setRemark(psList.get(0).getBacth().getRemarks());
 	    	reworkPoi.setDatetime(psList.get(0).getBacth().getStatusTime());
 	    	reworkPoi.setUsername(psList.get(0).getUserNames());
-		    reworkPoi.setNumber(psList.get(0).getNumber());
+	    	//去任务中最大值
+//	    	Optional<Task> mactask = psList.stream().max(Comparator.comparingInt(Task::getNumber));
+	    	IntSummaryStatistics summaryStatistics = psList.stream().collect(Collectors.summarizingInt(Task::getNumber));
+		    reworkPoi.setNumber(summaryStatistics.getMax());
 		    reworkPoi.setTime((psList.stream().mapToDouble(Task::getTaskTime).sum())/60);
 			reworkPoi.setPrice((psList.stream().mapToDouble(Task::getTaskPrice).sum())/0.00621*0.003833333);
 			reworkPoi.setSumNumber(psList.get(0).getBacth().getNumber());
