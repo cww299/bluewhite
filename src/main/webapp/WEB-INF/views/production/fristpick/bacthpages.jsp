@@ -85,7 +85,7 @@
                                         <tr>
                                         <th class="center">
 											<label> 
-											<input type="checkbox" class="ace checks" /> 
+											<input type="checkbox" class="ace checkstw" /> 
 											<span class="lbl"></span>
 											</label>
 											</th>
@@ -265,7 +265,7 @@
                                         <tr>
                                         <th class="center">
 											<label> 
-											<input type="checkbox" class="ace checks" /> 
+											<input type="checkbox" class="ace checksth" /> 
 											<span class="lbl"></span>
 											</label>
 											</th>
@@ -299,7 +299,7 @@
                                         <tr>
                                         	<th class="center">
 											<label> 
-											<input type="checkbox" class="ace checks" /> 
+											<input type="checkbox" class="ace checks"/> 
 											<span class="lbl"></span>
 											</label>
 											</th>
@@ -437,16 +437,16 @@
 					   	 $("#tablecontent").html(html); 
 					   	 
 					   	self.loadEvents();
-					   	self.checkedd();
+					   	self.checkeddd();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
 					  }
 				  });
 			}
-			  this.checkedd=function(){
+			  this.checkeddd=function(){
 					
-					$(".checks").on('click',function(){
+					$(".checkstw").on('click',function(){
 						
 	                    if($(this).is(':checked')){ 
 				 			$('.checkboxId').each(function(){  
@@ -523,12 +523,30 @@
 						   
 						   	 $("#tablecontentto").html(html); 
 						   	 self.loadEventss();
-						   	
+						   	self.checked();
 					      },error:function(){
 								layer.msg("加载失败！", {icon: 2});
 								layer.close(index);
 						  }
 					  });
+				}
+			  this.checked=function(){
+					
+					$(".checks").on('click',function(){
+						
+	                    if($(this).is(':checked')){ 
+				 			$('.checkboxIdto').each(function(){  
+	                    //此处如果用attr，会出现第三次失效的情况  
+	                     		$(this).prop("checked",true);
+				 			})
+	                    }else{
+	                    	$('.checkboxIdto').each(function(){ 
+	                    		$(this).prop("checked",false);
+	                    		
+	                    	})
+	                    }
+	                }); 
+					
 				}
 			  this.loadEventss = function(){
 					
@@ -1564,16 +1582,16 @@
 					   	layer.close(index);
 					   	 $("#tableworking").html(html); 
 					   	self.loadEventsth();
-					   	self.checkedd();
+					   	self.checkedddd();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
 					  }
 				  });
 			}
-			this.checkedd=function(){
+			this.checkedddd=function(){
 				
-				$(".checks").on('click',function(){
+				$(".checksth").on('click',function(){
 					
                     if($(this).is(':checked')){ 
 			 			$('.checkboxId').each(function(){  

@@ -292,7 +292,7 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			 $("#total").text(result.data.statData.stateCount)
+		      			 $("#total").text(result.data.statData.statAmount)
 		      			 $(result.data.rows).each(function(i,o){
 		      				 var a;
 		      				 if(o.performancePayNumber==null){
