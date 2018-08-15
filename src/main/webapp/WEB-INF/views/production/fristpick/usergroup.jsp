@@ -383,7 +383,7 @@
 						
 						success:function(result){
 							$(result.data).each(function(i,o){
-							html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace stuCheckBoxt" value="'+o.id+'"/><span class="lbl"></span></label></td>'
+							html +='<tr><td class="center reste"><label> <input type="checkbox" class="stuCheckBoxt" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 			      				+'<td class="text-center  bacthNumber">'+o.userName+'</td>'
 			      				+'<td class="text-center edit allotTime">'+o.workTime+'</td>'
 			      				+'<td class="text-center edit allotTime">'+o.temporarilyDate+'</td></tr>'
@@ -525,8 +525,10 @@
 							$('#delete').on('click',function(){
 								var arr=new Array();
 								var that=$(this);
+								console.log($(".stuCheckBoxt:checked"))
 								$(".stuCheckBoxt:checked").each(function() {   
 								    arr.push($(this).val()); 
+								    console.log($(this).val())
 								}); 
 								var postData = {
 										ids:arr,

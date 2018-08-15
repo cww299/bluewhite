@@ -85,7 +85,7 @@
                                         <tr>
                                         <th class="center">
 											<label> 
-											<input type="checkbox" class="ace checks" /> 
+											<input type="checkbox" class="ace checkstw" /> 
 											<span class="lbl"></span>
 											</label>
 											</th>
@@ -254,9 +254,45 @@
 
 <!--隐藏框已完成的批次开始  -->
         <div id="addworking" style="display: none;">
-        <table><tr>           
-                        <td><button type="button" class="btn btn-default btn-danger btn-xs btn-3d receive">一键接收</button>&nbsp&nbsp</td>
-                        </tr></table>
+			<div class="row" style="height: 30px; margin:15px 0 10px">
+			<div class="col-xs-12 col-sm-12  col-md-12">
+				<form class="form-search" >
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-12">
+							<div class="input-group"> 
+								<table><tr><td>批次号:</td><td><input type="text" name="number" id="numbertw" placeholder="请输入批次号" class="form-control search-query number" /></td>
+									<td>&nbsp&nbsp</td>
+								<td>产品名称:</td><td><input type="text" name="name" id="nametw" placeholder="请输入产品名称" class="form-control search-query name" /></td>
+									<td>&nbsp&nbsp</td>
+								<td>开始时间:</td>
+								<td>
+								<input id="startTimetw" placeholder="请输入开始时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#startTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
+								</td>
+									<td>&nbsp&nbsp</td>
+				<td>结束时间:</td>
+				<td>
+					<input id="endTimetw" placeholder="请输入结束时间" class="form-control laydate-icon"
+             onClick="laydate({elem: '#endTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+								</td>
+								<td>&nbsp&nbsp</td>
+								<td>完成状态:</td><td><select class="form-control selectchoicetw"><option value="0">未完成</option><option value="1">已完成</option></select></td>
+								</tr></table> 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtasktw">
+											查&nbsp找
+									</button>
+								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-default btn-danger btn-xs btn-3d receive">一键接收</button>&nbsp&nbsp</td>
+								</span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
 			<div class="panel-body">
  <div class="form-group">
   </div> 
@@ -265,7 +301,7 @@
                                         <tr>
                                         <th class="center">
 											<label> 
-											<input type="checkbox" class="ace checks" /> 
+											<input type="checkbox" class="ace checksth" /> 
 											<span class="lbl"></span>
 											</label>
 											</th>
@@ -280,7 +316,7 @@
                                     <tbody id="tableworking">
                                     </tbody>
                                 </table>
-                                 <div id="pager" class="pull-right">
+                                 <div id="pagerrtw" class="pull-right">
                             </div>
 </div>
 <!--隐藏框 已完成的批次结束  -->
@@ -299,7 +335,7 @@
                                         <tr>
                                         	<th class="center">
 											<label> 
-											<input type="checkbox" class="ace checks" /> 
+											<input type="checkbox" class="ace checks"/> 
 											<span class="lbl"></span>
 											</label>
 											</th>
@@ -437,16 +473,16 @@
 					   	 $("#tablecontent").html(html); 
 					   	 
 					   	self.loadEvents();
-					   	self.checkedd();
+					   	self.checkeddd();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
 					  }
 				  });
 			}
-			  this.checkedd=function(){
+			  this.checkeddd=function(){
 					
-					$(".checks").on('click',function(){
+					$(".checkstw").on('click',function(){
 						
 	                    if($(this).is(':checked')){ 
 				 			$('.checkboxId').each(function(){  
@@ -502,7 +538,7 @@
 			      			}); 
 					        //显示分页
 						   	 laypage({
-						      cont: 'pager', 
+						      cont: 'pagerr', 
 						      pages: result.data.totalPages, 
 						      curr:  result.data.pageNum || 1, 
 						      jump: function(obj, first){ 
@@ -523,12 +559,30 @@
 						   
 						   	 $("#tablecontentto").html(html); 
 						   	 self.loadEventss();
-						   	
+						   	self.checked();
 					      },error:function(){
 								layer.msg("加载失败！", {icon: 2});
 								layer.close(index);
 						  }
 					  });
+				}
+			  this.checked=function(){
+					
+					$(".checks").on('click',function(){
+						
+	                    if($(this).is(':checked')){ 
+				 			$('.checkboxIdto').each(function(){  
+	                    //此处如果用attr，会出现第三次失效的情况  
+	                     		$(this).prop("checked",true);
+				 			})
+	                    }else{
+	                    	$('.checkboxIdto').each(function(){ 
+	                    		$(this).prop("checked",false);
+	                    		
+	                    	})
+	                    }
+	                }); 
+					
 				}
 			  this.loadEventss = function(){
 					
@@ -1521,13 +1575,8 @@
 				
 				
 			}
-			this.loadworking=function(){
-				var data={
-						page:1,
-				  		status:1,
-				  		receive:0,
-				  		falg:0,
-				}
+			this.loadworking=function(data){
+				
 				var index;
 			    var html = '';
 			    $.ajax({
@@ -1550,7 +1599,7 @@
 		      				 if(o.type==3){
 		      					 c="二楼针工"
 		      				 }
-		      				 html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" data-number='+o.number+' value="'+o.id+'"/><span class="lbl"></span></label></td>'
+		      				 html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxIdtr" data-number='+o.number+' value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center  allotTime">'+o.statusTime+'</td>'
 		      				+'<td class="text-center  name">'+o.product.name+'</td>'
@@ -1559,29 +1608,50 @@
 		      				+'<td class="text-center edit numberfr"><input class="work"  value="'+a+'"></input></td><tr>'
 							
 		      			}); 
-				        
-					   	  
+		      			 laypage({
+						      cont: 'pagerrtw', 
+						      pages: result.data.totalPages, 
+						      curr:  result.data.pageNum || 1, 
+						      jump: function(obj, first){ 
+						    	  if(!first){ 
+						    		 
+							        	var _data = {
+							        			page:obj.curr,
+							        			size:12,
+									  			name:$('#nametw').val(),
+									  			bacthNumber:$('#numbertw').val(),
+									  			 orderTimeBegin:$("#startTimetw").val(),
+									  			orderTimeEnd:$("#endTimetw").val(),
+									  			statusTime:$("#startTimetw").val(),
+									  			receive:$('.selectchoicetw').val(),
+									  			status:1,
+										  		flag:0,
+									  	}
+							        
+								     }
+						      }
+						    }); 
 					   	layer.close(index);
 					   	 $("#tableworking").html(html); 
 					   	self.loadEventsth();
-					   	self.checkedd();
+					   	self.checkedddd();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
 					  }
 				  });
 			}
-			this.checkedd=function(){
+			this.checkedddd=function(){
 				
-				$(".checks").on('click',function(){
+				$(".checksth").on('click',function(){
 					
                     if($(this).is(':checked')){ 
-			 			$('.checkboxId').each(function(){  
+			 			$('.checkboxIdtr').each(function(){  
                     //此处如果用attr，会出现第三次失效的情况  
                      		$(this).prop("checked",true);
 			 			})
                     }else{
-                    	$('.checkboxId').each(function(){ 
+                    	$('.checkboxIdtr').each(function(){ 
                     		$(this).prop("checked",false);
                     		
                     	})
@@ -1593,7 +1663,8 @@
 				 $('.receive').on('click',function(){
 					 var numbers=new Array()
 					 var arr=new Array()//员工id
-						$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+					 var  that=$(".table-hover");
+						that.parent().parent().parent().parent().find(".checkboxIdtr:checked").each(function() {  
 							arr.push($(this).val()); 
 							numbers.push($(this).parent().parent().parent().find(".work").val());
 						});
@@ -1754,7 +1825,22 @@
 		            self.loadPagination(data);
 				});
 				
-				
+				//查询
+				$('.searchtasktw').on('click',function(){
+					var data = {
+				  			page:1,
+				  			size:12,
+				  			name:$('#nametw').val(),
+				  			bacthNumber:$('#numbertw').val(),
+				  			 orderTimeBegin:$("#startTimetw").val(),
+				  			orderTimeEnd:$("#endTimetw").val(),
+				  			statusTime:$("#startTimetw").val(),
+				  			receive:$('.selectchoicetw').val(),
+				  			status:1,
+					  		flag:0,
+				  	}
+		            self.loadworking(data);
+				});
 				//触发工序弹框 加载内容方法
 				$('#addprocedure').on('click',function(){
 					var _index
@@ -1765,7 +1851,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['60%', '60%'], 
+						  area: ['75%', '60%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:name,
@@ -1787,8 +1873,13 @@
 							self.loadPagination(data);
 						  }
 					});
-					
-					self.loadworking(); 
+					var data={
+							page:1,
+					  		status:1,
+					  		receive:0,
+					  		flag:0,
+					}
+					self.loadworking(data); 
 					
 					
 				})
