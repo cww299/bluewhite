@@ -285,7 +285,7 @@
 								</span>
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-default btn-danger btn-xs btn-3d receive">一键接收</button>&nbsp&nbsp</td>
+									<button type="button" class="btn btn-default btn-danger btn-sm btn-3d receive">一键接收</button>&nbsp&nbsp</td>
 								</span>
 							</div>
 						</div>
@@ -1617,7 +1617,7 @@
 						    		 
 							        	var _data = {
 							        			page:obj.curr,
-							        			size:12,
+							        			size:10,
 									  			name:$('#nametw').val(),
 									  			bacthNumber:$('#numbertw').val(),
 									  			 orderTimeBegin:$("#startTimetw").val(),
@@ -1627,7 +1627,7 @@
 									  			status:1,
 										  		flag:0,
 									  	}
-							        
+							        self.loadworking(_data);
 								     }
 						      }
 						    }); 
@@ -1829,7 +1829,7 @@
 				$('.searchtasktw').on('click',function(){
 					var data = {
 				  			page:1,
-				  			size:12,
+				  			size:10,
 				  			name:$('#nametw').val(),
 				  			bacthNumber:$('#numbertw').val(),
 				  			 orderTimeBegin:$("#startTimetw").val(),
@@ -1851,7 +1851,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['75%', '60%'], 
+						  area: ['75%', '70%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:name,
@@ -1875,6 +1875,7 @@
 					});
 					var data={
 							page:1,
+							size:10,
 					  		status:1,
 					  		receive:0,
 					  		flag:0,

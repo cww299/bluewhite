@@ -36,7 +36,7 @@
                             </div>
                   <!--查询开始  -->
           <div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-12 col-sm-10 col-md-10">
+			<div class="col-xs-12 col-sm-11 col-md-11">
 				<form class="form-search" >
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 col-md-12">
@@ -63,6 +63,12 @@
 								<span class="input-group-btn"><button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">查&nbsp找</button></span>
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn"><button type="button" class="btn btn-default btn-danger btn-sm btn-3d attendance">一键删除</button>
+								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-success  btn-sm btn-3d export">
+									导出返工价值
+									</button>
 								</span>
 							</div>
 						</div>
@@ -93,6 +99,7 @@
                                             <th class="text-center">工序加价</th>
                                             <th class="text-center">加绩工资</th>
                                             <th class="text-center">完成人</th>
+                                            <th class="text-center">备注（实际时间）</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -232,7 +239,8 @@
 		      				+'<td class="text-center  name">'+o.performance+'</td>'
 		      				+'<td class="text-center  name">'+parseFloat((o.performancePrice).toFixed(4))+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
+		      				+'<td class="text-center edit remark">'+o.remark+'</td>'
+		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
 		      			self.setCount(result.data.pageNum)
@@ -340,6 +348,7 @@
 									id:$(this).data('id'),
 									number:$(this).parent().parent('tr').find(".number").text(),
 									allotTime:$(this).parent().parent('tr').find(".allotTime").text(),
+									remark:$(this).parent().parent('tr').find(".allotTime").text(),
 							}
 							var index;
 							$.ajax({
@@ -438,6 +447,13 @@
 				
 			}
 			this.events = function(){
+				//导出返工价值
+				$('.export').on('click',function(){
+					var index; 
+					var a=$("#startTime").val();
+					var c= $("#endTime").val();
+					location.href="${ctx}/excel/importExcel?orderTimeBegin="+a+"&orderTimeEnd="+c+"&type=1";
+				})
 				$('.searchtask').on('click',function(){
 					var data = {
 				  			page:1,
