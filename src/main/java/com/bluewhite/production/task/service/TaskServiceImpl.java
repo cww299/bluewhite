@@ -485,6 +485,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	public Task upTask(Task task) {
 		Integer number = task.getNumber();
 		Date allotTime = task.getAllotTime();
+		String remark = task.getRemark();
 		task = dao.findOne(task.getId());
 		//查出该任务的所有b工资并删除
 		List<PayB> payBList = payBDao.findByTaskId(task.getId());
@@ -493,7 +494,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		}
 		task.setAllotTime(allotTime);
 		task.setNumber(number);
-		
+		task.setRemark(remark);
 		//预计时间
 		task.setExpectTime(NumUtils.round(ProTypeUtils.sumTaskTime(task.getProcedure().getWorkingTime(),task.getType(),number), null));
 		//实际时间
