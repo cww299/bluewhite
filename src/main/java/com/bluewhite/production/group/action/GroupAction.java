@@ -285,14 +285,10 @@ private static final Log log = Log.getLog(GroupAction.class);
 	@ResponseBody
 	public CommonResponse getTemporarily(HttpServletRequest request,Integer type,Date temporarilyDate) {
 		CommonResponse cr = new CommonResponse();
-		if(type==1){
-			cr.setData(temporarilyDao.findByType(type));
-		}else{
-			cr.setData(ClearCascadeJSON
-					.get()
-					.addRetainTerm(Temporarily.class,"id","UserId","userName","workTime","temporarilyDate"
-							).format(temporarilyDao.findByTypeAndTemporarilyDate(type,temporarilyDate)).toJSON());
-		}
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(Temporarily.class,"id","UserId","userName","workTime","temporarilyDate"
+						).format(temporarilyDao.findByTypeAndTemporarilyDate(type,temporarilyDate)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
