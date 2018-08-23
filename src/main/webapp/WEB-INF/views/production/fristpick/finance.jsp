@@ -434,10 +434,9 @@
 						        			page:obj.curr,
 									  		size:13,
 									  		type:2,
-									  		productName:$('#name').val(),
-								  			bacth:$('#number').val(),
-								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(),
+									  		userName:$('#usernameth').val(),
+								  			orderTimeBegin:$("#startTimeth").val(),
+								  			orderTimeEnd:$("#endTimeth").val(),
 								  	}
 						        
 						            self.loadPaginationth(_data);

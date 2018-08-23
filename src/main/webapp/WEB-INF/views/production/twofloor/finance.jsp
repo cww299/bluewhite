@@ -511,10 +511,9 @@
 									  		size:13,
 									  		type:3,
 									  		sign:1,
-									  		productName:$('#name').val(),
-								  			bacth:$('#number').val(),
+									  		userName:$('#usernameth').val(),
 								  			orderTimeBegin:$("#startTimeth").val(),
-								  			orderTimeEnd:$("#endTimeth").val(),
+								  			orderTimeEnd:$("#endTimeth").val(), 
 								  			groupId:$('.selectcomplete').val(),
 								  	}
 						        
