@@ -377,7 +377,7 @@
 			      				+'<td class="text-center  allotTime">'+o.allotTime+'</td>'
 			      				+'<td class="text-center  names" data-id='+o.id+'>'+o.product.name+'</td>'
 			      				+'<td class="text-center edit number">'+o.number+'</td>'
-			      				+'<td class="text-center  sumTaskPrice">'+ parseFloat((o.sumTaskPrice*1).toFixed(3))+'</td>'
+			      				+'<td class="text-center  sumTaskPrice">'+parseFloat((o.sumTaskPrice*1).toFixed(3))+'</td>'
 			      				+'<td class="text-center ">'+o.time+'</td>'
 			      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
 			      				+'<td class="text-center edit remarks">'+strname+'</td>'
