@@ -656,7 +656,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				map.put("sumBPay", sumBPay+sumfarragoTaskPay);
 				Double sum = (sumBPay+sumfarragoTaskPay)/(sunTime+overTime);
 				map.put("specificValue", sum.isNaN()?0.0:sum);
-				map.put("price", attendancePayList.get(0).getWorkPrice());
+				map.put("price", list.size()>0 ?list.get(0).getWorkPrice() : 0);
 				
 				bPayAndTaskPay.add(map);
 			}
@@ -795,6 +795,12 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			List<CollectPay> list = this.findPages(collectPay, page).getRows();
 			if(list.size()>0){
 				collect = list.get(0);
+			}else{
+				//确定绩效汇总时间
+				collect.setAllotTime(collectPay.getOrderTimeEnd());
+				collect.setType(collectPay.getType());
+				collect.setUserId(psList.get(0).getUserId());
+				collect.setUserName(psList.get(0).getUserName());
 			}
 			//分别统计出考勤总时间
 			double sunTime = psList.stream().mapToDouble(AttendancePay::getWorkTime).sum();
@@ -812,10 +818,9 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			//分组人员B工资总和
 			double sumBPay = payBList.stream().mapToDouble(PayB::getPayNumber).sum();
 			
+			//杂工工资
 			double sumfarragoTaskPay = 0;
 			if(collectPay.getType()==4){
-				
-				//杂工工资
 				FarragoTaskPay farragoTaskPay =new FarragoTaskPay();
 				farragoTaskPay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 				farragoTaskPay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
@@ -827,28 +832,21 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				
 			}
 			
-			
-			//确定绩效汇总时间
-			collect.setAllotTime(collectPay.getOrderTimeEnd());
-			collect.setType(collectPay.getType());
+			//汇总考勤总时间
 			collect.setTime(sunTime);
-			collect.setUserId(psList.get(0).getUserId());
-			collect.setUserName(psList.get(0).getUserName());
 			//汇总B工资
 			if(collectPay.getType()==4){
 				collect.setPayB(sumBPay+sumfarragoTaskPay);
 			}else{
 				collect.setPayB(sumBPay);
 			}
-			
 			//汇总A工资
 			collect.setPayA(payA);
 			Double sum = collect.getPayB()/collect.getPayA()*100;
 			collect.setRatio(NumUtils.round(sum.isNaN()?0.0:sum,2));
-			dao.save(collect);
 			collectPayList.add(collect);
 		}
-		
+		dao.save(collectPayList);
 		return collectPayList;
 	}
 

@@ -8,12 +8,16 @@ import org.springframework.stereotype.Service;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.product.primecost.tailor.dao.OrdinaryLaserDao;
 import com.bluewhite.product.primecost.tailor.entity.OrdinaryLaser;
+import com.bluewhite.product.primecostbasedata.dao.BaseThreeDao;
 import com.bluewhite.product.primecostbasedata.entity.PrimeCoefficient;
 @Service
 public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Long>  implements OrdinaryLaserService{
 
 	@Autowired
 	private OrdinaryLaserDao  dao;
+	@Autowired
+	private  BaseThreeDao baseThreeDao;
+	
 	
 	@Override
 	public OrdinaryLaser saveOrdinaryLaser(OrdinaryLaser ordinaryLaser,PrimeCoefficient primeCoefficient) {
@@ -21,16 +25,23 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 		//得到理论(市场反馈）含管理价值
 		if(oldOrdinaryLaser.getType()=="ordinarylaser"){
 			oldOrdinaryLaser.setManagePrice(primeCoefficient.getPeripheralLaser()*100*ordinaryLaser.getPerimeter());
-		}else{
+		}
+		
+		if(oldOrdinaryLaser.getType()=="embroideryLaser"){
 			if(ordinaryLaser.getPerimeter()<primeCoefficient.getPerimeterLess()){
 				oldOrdinaryLaser.setManagePrice(primeCoefficient.getPerimeterLessNumber()+primeCoefficient.getPerimeterLessNumber());
 			}else{
 				oldOrdinaryLaser.setManagePrice(primeCoefficient.getPeripheralLaser()*100*ordinaryLaser.getPerimeter()+primeCoefficient.getEmbroideryLaserNumber());
 			}
+		}
+		
+		if(oldOrdinaryLaser.getType()=="puncher"){
 			
+				
+		}
 			
 			oldOrdinaryLaser.setManagePrice(primeCoefficient.getPeripheralLaser()*100*ordinaryLaser.getPerimeter());
-		}
+		
 		
 		
 		//单片激光需要用净时
@@ -55,6 +66,7 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 		double sum = ordinaryLaserList.stream().mapToDouble(OrdinaryLaser::getLabourCost).sum();
 		oldOrdinaryLaser.setStallPrice(sum*primeCoefficient.getEquipmentProfit());
 		dao.save(oldOrdinaryLaser);
+		
 		//更新裁剪页面数据（得到实验推算价格）
 		
 		

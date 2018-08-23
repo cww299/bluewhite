@@ -21,6 +21,7 @@ import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.entity.PageResultStat;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
@@ -69,7 +70,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 		        	}
 		        	//按产品名称
 		        	if(!StringUtils.isEmpty(param.getName())){
-		        		predicate.add(cb.like(root.get("product").get("name").as(String.class), "%"+param.getName()+"%"));
+		        		predicate.add(cb.like(root.get("product").get("name").as(String.class), "%"+StringUtil.specialStrKeyword(param.getName())+"%"));
 		        	}
 		        	//按产品编号
 		        	if(!StringUtils.isEmpty(param.getProductNumber())){

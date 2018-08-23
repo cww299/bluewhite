@@ -8,6 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -24,7 +25,9 @@ import com.bluewhite.production.task.entity.Task;
  *
  */
 @Entity
-@Table(name = "pro_bacth")
+@Table(name = "pro_bacth" ,indexes = {	@Index(columnList = "type"),
+										@Index(columnList = "product_id"),
+										@Index(columnList = "allot_time")})
 public class Bacth extends BaseEntity<Long>{
 	
 	/**

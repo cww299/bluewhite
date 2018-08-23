@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -19,7 +20,8 @@ import com.bluewhite.production.procedure.entity.Procedure;
  *
  */
 @Entity
-@Table(name = "pro_task")
+@Table(name = "pro_task" ,indexes = {	@Index(columnList = "type"),
+										@Index(columnList = "allot_time")})
 public class Task  extends BaseEntity<Long>{
 	
 	/**
