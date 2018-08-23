@@ -48,7 +48,7 @@
                                         <div class="tab-pane active" id="home1">
                                         <!--查询开始  -->
           		 <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-8 col-sm-8  col-md-8">
+					<div class="col-xs-10 col-sm-10  col-md-10">
 						<form class="form-search" >
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
@@ -75,6 +75,10 @@
 										查&nbsp找
 									</button>
 								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+									<span class="input-group-btn">
+									<button type="button" id="export" class="btn btn-success btn-sm btn-3d pull-right">导出考勤</button>
+									</span>
 							</div>
 						</div>
 					</div>
@@ -334,6 +338,8 @@
 				var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
 				$('#startTimefr').val(firstdate);
 				$('#endTimefr').val(lastdate);
+				$('#startTimeth').val(firstdate);
+				$('#endTimeth').val(lastdate);
 			this.init = function(){
 				
 				//注册绑定事件
@@ -672,7 +678,13 @@
 				
 			}
 			this.events = function(){
-				
+				//导出考勤
+				$('#export').on('click',function(){
+					var index; 
+					var a=$("#startTimeth").val();
+					var c= $("#endTimeth").val();
+					location.href="${ctx}/excel/importExcel/DownAttendance?orderTimeBegin="+a+"&orderTimeEnd="+c+"&type=3";
+				})
 				//遍历人名组别
 				var htmlth="";
 				var data = {

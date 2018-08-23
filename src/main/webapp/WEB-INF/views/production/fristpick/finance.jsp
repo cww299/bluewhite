@@ -155,7 +155,7 @@
                                     </tbody>
                                     <thead>
                                         <tr>
-                                       	    <td class="center">合计</td>
+                                       	    <td class="text-center">合计</td>
                                             <td class="text-center"></td>
                                             <td class="text-center"></td>
                                             <td class="text-center"></td>
