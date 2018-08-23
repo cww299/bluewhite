@@ -272,8 +272,8 @@
 		      				html +='<tr>'
 		      				+'<td class="text-center edit ">'+o.userName+'</td>'
 		      				+'<td class="text-center edit ">'+o.time+'</td>'
-		      				+'<td class="text-center edit ">'+o.payA+'</td>'
-		      				+'<td class="text-center edit ">'+o.payB+'</td>'
+		      				+'<td class="text-center edit ">'+parseFloat((o.payA*1).toFixed(3))+'</td>'
+		      				+'<td class="text-center edit ">'+parseFloat((o.payB*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit ">'+o.ratio+c+'</td></tr>'
 		      				
 		      				

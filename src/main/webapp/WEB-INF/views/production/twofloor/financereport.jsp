@@ -331,11 +331,11 @@
 		      				html +='<tr>'
 		      				+'<td class="text-center edit ">'+o.userName+'</td>'
 		      				+'<td class="text-center edit ">'+o.time+'</td>'
-		      				+'<td class="text-center edit ">'+o.payA+'</td>'
-		      				+'<td class="text-center edit ">'+o.payB+'</td>'
-		      				+'<td class="text-center edit "><input class="work" data-id='+o.id+' value="'+o.timePrice+'"></input></td>'
+		      				+'<td class="text-center edit ">'+parseFloat((o.payA*1).toFixed(4))+'</td>'
+		      				+'<td class="text-center edit ">'+parseFloat((o.payB*1).toFixed(4))+'</td>'
+		      				+'<td class="text-center edit "><input class="work" data-id='+o.id+' value="'+parseFloat((o.timePrice*1).toFixed(4))+'"></input></td>'
 		      				+'<td class="text-center edit "><input class="worktw" data-id='+o.id+' value="'+o.addSelfNumber+'"></input></td>'
-		      				+'<td class="text-center edit ">'+o.timePay+'</td>'
+		      				+'<td class="text-center edit ">'+parseFloat((o.timePay*1).toFixed(4))+'</td>'
 		      				+'<td class="text-center edit ">'+o.addPerformancePay+'</td></tr>'
 							
 		      			}); 
@@ -513,8 +513,8 @@
 		      				htmlth +='<tr>'
 		      				+'<td class="text-center  ">'+o.name+'</td>'
 		      				+'<td class="text-center ">'+o.sunTime+'</td>'
-		      				+'<td class="text-center ">'+o.sumBPay+'</td>'
-		      				+'<td class="text-center  ">'+o.specificValue+'</td>'
+		      				+'<td class="text-center ">'+parseFloat((o.sumBPay*1).toFixed(3))+'</td>'
+		      				+'<td class="text-center  ">'+parseFloat((o.specificValue*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center  ">'+o.price+'</td></tr>'
 		      			}); 
 				          
