@@ -395,7 +395,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	}
 	
 	/**
-	 * 获取整个月分组人员的绩效
+	 * 获取整个月人员的绩效
 	 * 
 	 * @param binder
 	 */

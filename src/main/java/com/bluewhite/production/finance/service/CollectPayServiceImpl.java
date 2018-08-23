@@ -410,7 +410,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		monthlyProduction.setPeopleNumber(peopleNumber);
 		//考勤总时间
 		double time = list.stream().mapToDouble(AttendancePay::getWorkTime).sum();
-		//
+		//考勤加班总时间
 		double overTime = list.stream().filter(AttendancePay->AttendancePay.getOverTime()!=null).mapToDouble(AttendancePay::getOverTime).sum();
 		monthlyProduction.setTime(time+overTime);
 		
@@ -802,6 +802,9 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			}
 			//分别统计出考勤总时间
 			double sunTime = psList.stream().mapToDouble(AttendancePay::getWorkTime).sum();
+			//考勤加班总时间
+			double overTime = psList.stream().filter(AttendancePay->AttendancePay.getOverTime()!=null).mapToDouble(AttendancePay::getOverTime).sum();
+			
 			//统计出A工资
 			double payA = psList.stream().mapToDouble(AttendancePay::getPayNumber).sum();
 			
@@ -818,30 +821,32 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			
 			//杂工工资
 			double sumfarragoTaskPay = 0;
-			if(collectPay.getType()==4){
-				FarragoTaskPay farragoTaskPay =new FarragoTaskPay();
-				farragoTaskPay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
-				farragoTaskPay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
-				farragoTaskPay.setType(collectPay.getType());
-				farragoTaskPay.setUserId((Long)ps);
-				List<FarragoTaskPay> farragoTaskPayList = farragoTaskPayService.findPages(farragoTaskPay, page).getRows();
-				//分组人员杂工工资总和
-				sumfarragoTaskPay = farragoTaskPayList.stream().mapToDouble(FarragoTaskPay::getPayNumber).sum();
-				
-			}
+			FarragoTaskPay farragoTaskPay =new FarragoTaskPay();
+			farragoTaskPay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
+			farragoTaskPay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
+			farragoTaskPay.setType(collectPay.getType());
+			farragoTaskPay.setUserId((Long)ps);
+			List<FarragoTaskPay> farragoTaskPayList = farragoTaskPayService.findPages(farragoTaskPay, page).getRows();
+			//分组人员杂工工资总和
+			sumfarragoTaskPay = farragoTaskPayList.stream().mapToDouble(FarragoTaskPay::getPayNumber).sum();
 			
 			//汇总考勤总时间
-			collect.setTime(sunTime);
-			//汇总B工资
-			if(collectPay.getType()==4){
-				collect.setPayB(sumBPay+sumfarragoTaskPay);
-			}else{
-				collect.setPayB(sumBPay);
-			}
+			collect.setTime(sunTime+overTime);
+			//汇总B工资+杂工工资
+			collect.setPayB(NumUtils.round(sumBPay+sumfarragoTaskPay, null));
 			//汇总A工资
-			collect.setPayA(payA);
+			collect.setPayA(NumUtils.round(payA,null));
 			Double sum = collect.getPayB()/collect.getPayA()*100;
 			collect.setRatio(NumUtils.round(sum.isNaN()?0.0:sum,2));
+			//小时单价
+			collect.setTimePrice(NumUtils.round(collect.getPayB()/collect.getTime(),null));
+			//调节后的小时单价
+			if(collect.getTimePay()==null){
+				collect.setTimePay(collect.getTimePrice());
+			}
+			if(collect.getAddPerformancePay()==null){
+				collect.setAddPerformancePay(0.0);
+			}
 			collectPayList.add(collect);
 		}
 		dao.save(collectPayList);
@@ -852,18 +857,18 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	public CollectPay upadtePerformancePay(CollectPay collectPay) {
 		CollectPay	collect = dao.findOne(collectPay.getId());
 		if(collectPay.getTimePrice()!=null){
-			collectPay.setTimePay(collectPay.getTimePrice()+(collectPay.getAddSelfNumber()==null?0.0:collectPay.getAddSelfNumber()));
-			collectPay.setAddPerformancePay(collect.getTime()*collectPay.getAddSelfNumber());
+			collectPay.setTimePay(NumUtils.round(collectPay.getTimePrice()+(collectPay.getAddSelfNumber()==null?0.0:collectPay.getAddSelfNumber()),null));
+			collectPay.setAddPerformancePay(NumUtils.round(collect.getTime()*collectPay.getAddSelfNumber(),null));
 			if(collectPay.getTimePrice()!=null && collectPay.getAddSelfNumber()!=null){
-				collectPay.setTimePay(collectPay.getTimePrice()+collectPay.getAddSelfNumber());
-				collectPay.setAddPerformancePay(collect.getTime()*collectPay.getAddSelfNumber());
+				collectPay.setTimePay(NumUtils.round(collectPay.getTimePrice()+collectPay.getAddSelfNumber(),null));
+				collectPay.setAddPerformancePay(NumUtils.round(collect.getTime()*collectPay.getAddSelfNumber(),null));
 			}
 		}
 		
-		collect.setTimePrice(collectPay.getTimePrice());
-		collect.setTimePay(collectPay.getTimePay());
-		collect.setAddSelfNumber(collectPay.getAddSelfNumber());
-		collect.setAddPerformancePay(collectPay.getAddPerformancePay());
+		collect.setTimePrice(NumUtils.round(collectPay.getTimePrice(),null));
+		collect.setTimePay(NumUtils.round(collectPay.getTimePay(),null));
+		collect.setAddSelfNumber(NumUtils.round(collectPay.getAddSelfNumber(),null));
+		collect.setAddPerformancePay(NumUtils.round(collectPay.getAddPerformancePay(),null));
 		dao.save(collect);
 		return collect;
 	}
