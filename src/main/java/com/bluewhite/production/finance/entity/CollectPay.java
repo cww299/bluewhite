@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -15,7 +16,9 @@ import com.bluewhite.common.utils.excel.Poi;
  *
  */
 @Entity
-@Table(name = "pro_collect_pay")
+@Table(name = "pro_collect_pay",indexes = {	@Index(columnList = "type"),
+											@Index(columnList = "user_id"),
+											@Index(columnList = "allot_time")})
 public class CollectPay extends BaseEntity<Long> {
 	
 	/**

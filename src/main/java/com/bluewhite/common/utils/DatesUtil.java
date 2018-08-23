@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.sun.tools.extcheck.Main;
+
 public class DatesUtil {
 	
 	
@@ -193,6 +195,23 @@ public class DatesUtil {
         return calendar1.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR) && calendar1.get(Calendar.MONTH) == calendar2.get(Calendar.MONTH);
     } 
     
-    
+    /**
+     * 判断当前日期是星期几
+     * @param date1
+     * @param date2
+     * @return
+     */
+    public static String JudgeWeek (Date date) {
+        String week= "";
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int i =calendar.get(Calendar.DAY_OF_WEEK);
+        if(i == 1){
+        	week = "星期日";
+		}else{
+			week = "星期"+(i-1);
+		}
+        return week;
+    }
 
 }
