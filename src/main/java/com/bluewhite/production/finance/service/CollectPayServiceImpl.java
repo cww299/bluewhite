@@ -766,14 +766,12 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	
 
 	@Override
-	@Transactional
 	public List<CollectPay> twoPerformancePay(CollectPay collectPay) {
 		PageParameter page  = new PageParameter();
 		page.setSize(Integer.MAX_VALUE);
 		//获取整个月的数据
 		collectPay.setOrderTimeBegin( DatesUtil.getfristDayOftime(DatesUtil.getFirstDayOfMonth(collectPay.getOrderTimeBegin())));
 		collectPay.setOrderTimeEnd( DatesUtil.getLastDayOftime(DatesUtil.getLastDayOfMonth(collectPay.getOrderTimeBegin())));
-		
 		
 		List<CollectPay> collectPayList = new ArrayList<CollectPay>();
 		AttendancePay attendancePay = new AttendancePay();
