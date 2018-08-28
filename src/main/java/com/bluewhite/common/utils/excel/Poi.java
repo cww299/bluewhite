@@ -42,5 +42,10 @@ public @interface Poi {
      * @return
      */
     public abstract int width() default 20;
+    
+    /** 
+     * 设置由那些部门可以导出
+     */  
+    public abstract String department() default "";  
 
 }

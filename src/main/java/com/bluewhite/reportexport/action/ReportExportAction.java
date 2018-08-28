@@ -466,6 +466,29 @@ public class ReportExportAction {
 	}
 	
 	
+	/**
+	 * 导出机工绩效
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping("/importExcel/DownMachinistCollectPay")
+	public void DownMachinistCollectPay(HttpServletResponse response,CollectPay collectPay){
+		response.setContentType("octets/stream");
+	    response.addHeader("Content-Disposition", "attachment;filename=rework.xls");
+	    OutputStream out=null;
+        try {  
+            out = response.getOutputStream();  
+        } catch (IOException e) {  
+            e.printStackTrace();
+		}  
+        //输出的实体与反射的实体相对应
+        List<CollectPay> collectPayList = collectPayBService.twoPerformancePay(collectPay);
+        SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd"); 
+        collectPayList.stream().forEach(CollectPay->CollectPay.setStartDate(sdf.format(collectPay.getOrderTimeBegin())));
+	    Excelutil<CollectPay> util = new Excelutil<CollectPay>(CollectPay.class);
+        util.exportExcelTwo(collectPayList, "绩效报表", "machinist", out);// 导出  
+	}
+	
 
 	
 	/**
@@ -540,7 +563,7 @@ public class ReportExportAction {
 	
 	
 	/**
-	 * 机工导出批次任务工序详细
+	 * 针工导出考勤
 	 * @author zhangliang
 	 */
 	@RequestMapping("/importExcel/DownAttendance")
@@ -683,11 +706,6 @@ public class ReportExportAction {
 	        	}
 			l++;
 		}
-       
-  
-        
-        
-        
          
     try {	
     	OutputStream outputStream=response.getOutputStream();

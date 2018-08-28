@@ -211,12 +211,11 @@ public class Excelutil<T> {
             // 写入各个字段的列头名称  
             for (int i = 0; i < fields.size(); i++) {  
                 Field field = fields.get(i);  
-                Poi attr = field.getAnnotation(Poi.class);  
+                Poi attr = field.getAnnotation(Poi.class);
                 int col = getExcelCol(attr.column());// 获得列号  
                 cell = row.createCell(col);// 创建列  
                 cell.setCellType(HSSFCell.CELL_TYPE_STRING);// 设置列中写入内容为String类型  
                 cell.setCellValue(attr.name());// 写入列名  
-                
                 // 如果设置了提示信息则鼠标放上去提示.  
                 if (!attr.prompt().trim().equals("")) {  
                     setHSSFPrompt(sheet, "", attr.prompt(), 1, 100, col, col);// 这里默认设了2-101列提示.  
@@ -302,6 +301,145 @@ public class Excelutil<T> {
 
         return exportExcel(lists, sheetNames, output);  
     }  
+    
+    
+
+	/** 
+     * 对list数据源将其里面的数据导入到excel表单 
+     *  
+     * @param sheetName 
+     *            工作表的名称 
+     * @param sheetSize 
+     *            每个sheet中数据的行数,此数值必须小于65536 
+     * @param output 
+     *            java输出流 
+     */  
+    @SuppressWarnings("unchecked")
+    public boolean exportExcelTwo(List<T> list, String sheetName, String department, 
+            OutputStream output) {
+        //此处 对类型进行转换
+        List<T> ilist = new ArrayList<>();
+        for (T t : list) {
+            ilist.add(t);
+        }
+        List<T>[] lists = new ArrayList[1];  
+        lists[0] = ilist;  
+
+        String[] sheetNames = new String[1];  
+        sheetNames[0] = sheetName;  
+
+        return exportExcelTwo(lists, sheetNames, department ,output);  
+    }
+    
+    
+    
+    /** 
+     * 对list数据源将其里面的数据导入到excel表单 
+     *  
+     * @param sheetName 
+     *            工作表的名称 
+     * @param output 
+     *            java输出流 
+     */  
+    @SuppressWarnings("deprecation")
+	public boolean exportExcelTwo(List<T> lists[], String sheetNames[],  String department, 
+            OutputStream output) {  
+        if (lists.length != sheetNames.length) {  
+            System.out.println("数组长度不一致");  
+            return false;  
+        }  
+
+        @SuppressWarnings("resource")
+		HSSFWorkbook workbook = new HSSFWorkbook();// 产生工作薄对象  
+        HSSFCellStyle style = workbook.createCellStyle();
+        style.setFillForegroundColor(HSSFColor.SKY_BLUE.index); //设置背景色
+        style.setFillBackgroundColor(HSSFColor.GREY_40_PERCENT.index);
+        for (int ii = 0; ii < lists.length; ii++) {  
+            List<T> list = lists[ii];  
+            String sheetName = sheetNames[ii];  
+
+            List<Field> fields = getMappedFiled(clazz, null);  
+
+            HSSFSheet sheet = workbook.createSheet();// 产生工作表对象  
+            // 设置默认列宽
+            sheet.setDefaultColumnWidth(10);
+            workbook.setSheetName(ii, sheetName);  
+
+            HSSFRow row;  
+            HSSFCell cell = null;// 产生单元格  
+           
+            row = sheet.createRow(0);// 产生一行  
+            // 写入各个字段的列头名称  
+            for (int i = 0; i < fields.size(); i++) {  
+                Field field = fields.get(i);  
+                Poi attr = field.getAnnotation(Poi.class);
+                int col=0;
+                
+                if(department.equals(attr.department())){
+                	col = getExcelCol(attr.column());// 获得列号  
+                	cell = row.createCell(col);// 创建列  
+                	cell.setCellType(HSSFCell.CELL_TYPE_STRING);// 设置列中写入内容为String类型  
+                	cell.setCellValue(attr.name());// 写入列名  
+                }
+                
+                // 如果设置了提示信息则鼠标放上去提示.  
+                if (!attr.prompt().trim().equals("")) {  
+                    setHSSFPrompt(sheet, "", attr.prompt(), 1, 100, col, col);// 这里默认设了2-101列提示.  
+                }  
+                // 如果设置了combo属性则本列只能选择不能输入  
+                if (attr.combo().length > 0) {  
+                    setHSSFValidation(sheet, attr.combo(), 1, 100, col, col);// 这里默认设了2-101列只能选择不能输入.  
+                } 
+                if(attr.isStyle()==true){
+                	HSSFCellStyle cellStyle2 = workbook.createCellStyle();  
+                    HSSFDataFormat format = workbook.createDataFormat();  
+                    cellStyle2.setDataFormat(format.getFormat("@"));  
+                    sheet.setDefaultColumnStyle(col,cellStyle2);
+                }
+                cell.setCellStyle(style);  
+            }  
+
+            int startNo = 0;  
+            int endNo = list.size();  
+            // 写入各条记录,每条记录对应excel表中的一行  
+            for (int i = startNo; i < endNo; i++) {  
+                row = sheet.createRow(i + 1 - startNo);  
+                T vo = (T) list.get(i); // 得到导出对象.  
+                for (int j = 0; j < fields.size(); j++) {  
+                    Field field = fields.get(j);// 获得field.  
+                    field.setAccessible(true);// 设置实体类私有属性可访问  
+                    Poi attr = field .getAnnotation(Poi.class);  
+                    try {  
+                        // 根据poi中设置情况决定是否导出,有些情况需要保持为空,填写这一列.  
+                        if (attr.isExport()) {  
+                            cell = row.createCell(getExcelCol(attr.column()));// 创建cell
+                            cell.setCellValue(field.get(vo) == null ? ""  : String.valueOf(field.get(vo)));// 如果数据存在就填入,不存在填入空格.
+                            cell.setCellType(HSSFCell.CELL_TYPE_STRING);  
+                        }  
+                      
+                    } catch (IllegalArgumentException e) {  
+                        e.printStackTrace();   
+                    } catch (IllegalAccessException e) {  
+                        e.printStackTrace();  
+                    }  
+                }  
+            }  
+        }  
+
+        try {  
+            output.flush();  
+            workbook.write(output);  
+            output.close();  
+            return true;  
+        } catch (IOException e) {  
+            e.printStackTrace();  
+            System.out.println("Output is closed ");  
+            return false;  
+        }  
+
+    }  
+
+    
 
     /** 
      * 将EXCEL中A,B,C,D,E列映射成0,1,2,3 
@@ -407,8 +545,7 @@ public class Excelutil<T> {
                 fields.add(field);  
             }  
         }  
-        if (clazz.getSuperclass() != null  
-                && !clazz.getSuperclass().equals(Object.class)) {  
+        if (clazz.getSuperclass() != null  && !clazz.getSuperclass().equals(Object.class)) {  
             getMappedFiled(clazz.getSuperclass(), fields);  
         }  
 

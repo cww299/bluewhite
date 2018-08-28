@@ -31,11 +31,11 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 	@Autowired
 	private TailorDao dao;
 	@Autowired
+	private ProductDao productdao;
+	@Autowired
 	private CutPartsDao  cutPartsDao;
 	@Autowired
 	private OrdinaryLaserDao ordinaryLaserDao;
-	@Autowired
-	private ProductDao productdao;
 	@Autowired
 	private PrimeCoefficientDao primeCoefficientDao;
 	
@@ -98,9 +98,8 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			prams.setRabbTime(prams.getTailorSize()*primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
 			break;
 		case 73://手工电烫
-			type = "puncher";
+			type = "perm";
 			primeCoefficient = primeCoefficientDao.findByType(type);
-			
 			
 			prams.setType(type);
 
@@ -110,6 +109,9 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			
 			break;
 		case 75://冲床
+			type = "puncher";
+			
+			
 			
 			break;
 		case 76://电推

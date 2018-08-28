@@ -17,7 +17,6 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONArray;
@@ -778,6 +777,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		attendancePay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 		attendancePay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
 		attendancePay.setType(collectPay.getType());
+		attendancePay.setGroupId(collectPay.getGroupId());
 		attendancePay.setUserName(collectPay.getUserName());
 		List<AttendancePay> attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
 		//将一个月考勤人员按员工id分组
