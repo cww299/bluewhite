@@ -25,7 +25,7 @@ public class CollectPay extends BaseEntity<Long> {
 	 * 员工姓名
 	 */
 	@Column(name = "user_name")
-	@Poi(name = "员工姓名", column = "A")
+	@Poi(name = "员工姓名", column = "A"  ,department="machinist")
     private String userName;
 	
 	/**
@@ -44,7 +44,7 @@ public class CollectPay extends BaseEntity<Long> {
 	 * 考勤时间
 	 */
 	@Column(name = "time")
-	@Poi(name = "考勤时间", column = "B")
+	@Poi(name = "考勤时间", column = "B"  ,department="machinist")
 	private Double time;
 	
 	/**
@@ -64,12 +64,14 @@ public class CollectPay extends BaseEntity<Long> {
 	 * A工资数额
 	 */
 	@Column(name = "payA")
+	@Poi(name = "A工资数额", column = "C" , department="machinist")
 	private Double payA;
 	
 	/**
 	 * B工资数额
 	 */
 	@Column(name = "payB")
+	@Poi(name = "B工资数额", column = "D", department="machinist")
 	private Double payB;
 	
 	/**
@@ -151,6 +153,7 @@ public class CollectPay extends BaseEntity<Long> {
 	 * B工资比A工资
 	 */
 	@Column(name = "ratio")
+	@Poi(name = "考勤时间", column = "E", department="machinist")
 	private Double ratio;
 	
 	/**

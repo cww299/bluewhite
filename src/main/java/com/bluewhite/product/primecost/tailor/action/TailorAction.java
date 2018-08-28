@@ -85,7 +85,7 @@ public class TailorAction {
 	
 	
 	/**
-	 * 裁剪普通激光填写
+	 * (裁剪普通激光,绣花定位激光，冲床，电烫，电推，手工剪刀)填写
 	 * 
 	 * @param request 请求
 	 * @return cr
