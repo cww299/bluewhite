@@ -47,7 +47,7 @@
             <div class="tab-pane active" id="profile1">
                       <!--查询开始  -->
           		 <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-8 col-sm-8  col-md-8">
+					<div class="col-xs-9 col-sm-9  col-md-9">
 						<form class="form-search" >
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
@@ -66,11 +66,17 @@
 								<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
+								<td>&nbsp&nbsp</td>
+								<td>小组查询:</td><td id="groupp"></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
 										查&nbsp找
 									</button>
+								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button"  class="btn btn-success btn-sm btn-3d pull-right exportth">导出</button>
 								</span>
 							</div>
 						</div>
@@ -360,9 +366,8 @@
 							userName:$("#username").val(),
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
-				  			
+				  			groupId:$('.selectcomplete').val(),
 				  	}
-			
 				self.loadPagination(data);
 				});
 				$('.searchtasktw').on('click',function(){
@@ -374,10 +379,26 @@
 				  			orderTimeEnd:$("#endTimetw").val(), 
 				  			machinist:$("#choice").val(),
 				  	}
+					
 			
 				self.loadPaginationtw(data);
 				});
-				
+				//遍历人名组别
+				var htmlth="";
+				var data = {
+			  			type:4,
+			  	}
+			    $.ajax({
+				      url:"${ctx}/production/getGroup",
+				      data:data,
+				      type:"GET",
+		      		  success: function (result) {
+		      			  $(result.data).each(function(k,j){
+		      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
+		      			  });  
+		      			 $('#groupp').html("<select class='form-control selectcomplete'><option value="+""+">请选择&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>"+htmlth+"</select>") 
+				      }
+				  });
 				//导出
 				$('.export').on('click',function(){
 					var index; 
@@ -392,6 +413,14 @@
 					var d=$("#startTimetw").val();
 					var e= $("#endTimetw").val();
 					location.href="${ctx}/excel/importExcel/groupProduction?orderTimeBegin="+d+"&orderTimeEnd="+e+"&type="+4;
+				})
+				//导出
+				$('.exportth').on('click',function(){
+					var index; 
+					var d=$("#startTime").val();
+					var e= $("#endTime").val();
+					var y=$('.selectcomplete').val();
+					location.href="${ctx}/excel/importExcel/DownMachinistCollectPay?orderTimeBegin="+d+"&orderTimeEnd="+e+"&type="+4+"&groupId="+y;
 				})
 			}
    	}
