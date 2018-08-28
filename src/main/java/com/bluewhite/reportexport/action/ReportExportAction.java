@@ -483,8 +483,6 @@ public class ReportExportAction {
 		}  
         //输出的实体与反射的实体相对应
         List<CollectPay> collectPayList = collectPayBService.twoPerformancePay(collectPay);
-        SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd"); 
-        collectPayList.stream().forEach(CollectPay->CollectPay.setStartDate(sdf.format(collectPay.getOrderTimeBegin())));
 	    Excelutil<CollectPay> util = new Excelutil<CollectPay>(CollectPay.class);
         util.exportExcelTwo(collectPayList, "绩效报表", "machinist", out);// 导出  
 	}

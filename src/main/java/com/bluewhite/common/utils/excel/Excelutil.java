@@ -375,7 +375,7 @@ public class Excelutil<T> {
                 Poi attr = field.getAnnotation(Poi.class);
                 int col=0;
                 
-                if(department.equals(attr.department())){
+                if(attr.department()!=null && department.equals(attr.department())){
                 	col = getExcelCol(attr.column());// 获得列号  
                 	cell = row.createCell(col);// 创建列  
                 	cell.setCellType(HSSFCell.CELL_TYPE_STRING);// 设置列中写入内容为String类型  
@@ -411,11 +411,13 @@ public class Excelutil<T> {
                     Poi attr = field .getAnnotation(Poi.class);  
                     try {  
                         // 根据poi中设置情况决定是否导出,有些情况需要保持为空,填写这一列.  
-                        if (attr.isExport()) {  
-                            cell = row.createCell(getExcelCol(attr.column()));// 创建cell
-                            cell.setCellValue(field.get(vo) == null ? ""  : String.valueOf(field.get(vo)));// 如果数据存在就填入,不存在填入空格.
-                            cell.setCellType(HSSFCell.CELL_TYPE_STRING);  
-                        }  
+                    	if(attr.department()!=null && department.equals(attr.department())){
+	                        if (attr.isExport()) {  
+	                            cell = row.createCell(getExcelCol(attr.column()));// 创建cell
+	                            	cell.setCellValue(field.get(vo) == null ? ""  : String.valueOf(field.get(vo)));// 如果数据存在就填入,不存在填入空格.
+	                            cell.setCellType(HSSFCell.CELL_TYPE_STRING);  
+	                        }  
+                    	}
                       
                     } catch (IllegalArgumentException e) {  
                         e.printStackTrace();   
