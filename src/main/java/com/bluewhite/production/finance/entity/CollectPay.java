@@ -153,7 +153,7 @@ public class CollectPay extends BaseEntity<Long> {
 	 * B工资比A工资
 	 */
 	@Column(name = "ratio")
-	@Poi(name = "考勤时间", column = "E", department="machinist")
+	@Poi(name = "比值", column = "E", department="machinist")
 	private Double ratio;
 	
 	/**
