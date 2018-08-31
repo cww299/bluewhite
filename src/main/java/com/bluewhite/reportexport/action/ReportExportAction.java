@@ -586,9 +586,11 @@ public class ReportExportAction {
 	   
 	   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
 	   int count = 3;
+	   int sount = 3;
 	   Date starTime = attendancePay.getOrderTimeBegin();
 		for(int i=0 ; i<size ; i++){
 			count++;
+			sount++;
 			Date beginTimes = null;
 			if(i!=0){
 				//获取下一天的时间
@@ -598,15 +600,17 @@ public class ReportExportAction {
 			}
 			 
 			String week =DatesUtil.JudgeWeek(beginTimes);
-			String work = "出勤,加班";
-			String headnum = "0,0,"+count+","+(count+1);
-			String headnum1 = "1,1,"+count+","+(count+1);
+			String work = "出勤,加班,缺勤";
+//			(0,0,4,6) (0,0,7,9)
+			String headnum = "0,0,"+count+","+(++count+1);
+			String headnum1 = "1,1,"+sount+","+(++sount+1);
 			excelHeader0String = excelHeader0String+","+sdf.format(beginTimes);
 			headnum0String = headnum0String +"."+ headnum;
 			excelHeader1String = excelHeader1String+","+week;
 			headnum1String = headnum1String +"."+ headnum1;
 			excelHeader2String = excelHeader2String +","+work;
 			count++;
+			sount++;
 			starTime = beginTimes;
 		}
 		
@@ -633,7 +637,7 @@ public class ReportExportAction {
         int j = 0;
         for (int i = 0; i < excelHeader0.length; i++) {
         	if(i>4){
-        		j++;
+        		j=j+2;
         	}
         	int num = i>4 ? (i+j) : i;
             row.createCell(num).setCellValue(excelHeader0[i]);
@@ -656,7 +660,7 @@ public class ReportExportAction {
         j = 0;
         for (int i = 0; i < excelHeader1.length; i++) {
         	if(i>4){
-        		j++;
+        		j=j+2;
         	}
         	int num = i>4 ? (i+j) : i;
             row.createCell(num).setCellValue(excelHeader1[i]);
@@ -700,6 +704,7 @@ public class ReportExportAction {
 			for (int i = 0; i < psList.size(); i++){
             	row.createCell(k).setCellValue(psList.get(i).getWorkTime());
             	row.createCell(++k).setCellValue(psList.get(i).getOverTime()!=null ? psList.get(i).getOverTime() : 0.0);
+            	row.createCell(++k).setCellValue(psList.get(i).getDutyTime()!=null ? psList.get(i).getDutyTime() : 0.0);
             	k++;
 	        	}
 			l++;

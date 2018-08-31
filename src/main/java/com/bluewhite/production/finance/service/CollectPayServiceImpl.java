@@ -898,13 +898,15 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 					List<Task> taskList = taskService.findPages(task, page).getRows();
 					taskList = taskList.stream().filter(Task->Task.getProcedure().getProcedureTypeId()!=(long)142).collect(Collectors.toList());
 				
-					//遍历任务，组装出符合充棉的任务
+					//遍历任务，组装出符合不是充棉的任务
 					for(Task ta : taskList){
 						if (!StringUtils.isEmpty(ta.getUserIds())) {
+							//获取做任务的人员id
 							String [] ids = ta.getUserIds().split(",");
 							if (ids.length>0) {
 								for (int i = 0; i < ids.length; i++) {
 									Long id = Long.parseLong(ids[i]);
+									//当做任务的人员和充棉人员id匹配时，取得员工b工资
 										if(us.getId().equals(id)){
 											PayB payb =new PayB();
 											payb.setOrderTimeBegin(collectPay.getOrderTimeBegin());

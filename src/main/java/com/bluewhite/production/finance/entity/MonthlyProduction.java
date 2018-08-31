@@ -12,6 +12,13 @@ import com.bluewhite.common.utils.excel.Poi;
  *
  */
 public class MonthlyProduction {
+	
+	/**
+	 * 日期
+	 */
+	@Poi(name = "日期", column = "A")
+	private String startDate;
+	
 	/**
 	 * 考勤人数
 	 */
@@ -35,18 +42,6 @@ public class MonthlyProduction {
 	 */
 	@Poi(name = "当天产值", column = "E")
 	private Double productPrice;
-	
-	/**
-	 * 杂工总时间
-	 */
-	@Poi(name = "杂工时间", column = "J")
-	private Double  farragoTaskTime;
-	
-	/**
-	 * 杂工价值 
-	 */
-	@Poi(name = "杂工价值", column = "K")
-	private Double farragoTaskPrice;
 	
 	/**
 	 * 返工时间     
@@ -87,12 +82,17 @@ public class MonthlyProduction {
 	@Poi(name = "车间主任签名", column = "I")
 	private String  sign;
 	
+	/**
+	 * 杂工总时间
+	 */
+	@Poi(name = "杂工时间", column = "J")
+	private Double  farragoTaskTime;
 	
 	/**
-	 * 日期
+	 * 杂工价值 
 	 */
-	@Poi(name = "日期", column = "A")
-	private String startDate;
+	@Poi(name = "杂工价值", column = "K")
+	private Double farragoTaskPrice;
 	
 	/**
 	 * 返工再验个数
