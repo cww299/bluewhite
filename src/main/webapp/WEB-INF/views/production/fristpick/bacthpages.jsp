@@ -1128,12 +1128,15 @@
 								if(arr.length<=0){
 									return layer.msg("至少选择一个员工！", {icon: 2});
 								}
-								number=$(".sumnumber").val();
-								for (var i = 0; i < numberr.length; i++) {
+								 number=$(".sumnumber").val();
+								 if(number==""){
+									 number=0;
+								 }
+								 for (var i = 0; i < numberr.length; i++) {
 									if(numberr[i]-number<0){
 										return layer.msg("有工序剩余数量不足！", {icon: 2});
 									}
-								}
+								}  
 								expectTime=$(".sumtime").val();
 								var performanceNumber=$(".selectchangtw").val();
 								
