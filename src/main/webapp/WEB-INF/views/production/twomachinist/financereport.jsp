@@ -404,7 +404,8 @@
 					var index; 
 					var a=$("#startTimetw").val();
 					var c= $("#endTimetw").val();
-					location.href="${ctx}/excel/importExcel/monthlyProduction?orderTimeBegin="+a+"&orderTimeEnd="+c+"&type="+4;
+					var y=$("#choice").val();
+					location.href="${ctx}/excel/importExcel/monthlyProduction?orderTimeBegin="+a+"&orderTimeEnd="+c+"&type="+4+"&machinist="+y;
 				})
 				
 				//导出
