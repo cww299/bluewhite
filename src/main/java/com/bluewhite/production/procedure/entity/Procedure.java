@@ -3,6 +3,7 @@ package com.bluewhite.production.procedure.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -17,7 +18,9 @@ import com.bluewhite.basedata.entity.BaseData;
  *
  */
 @Entity
-@Table(name = "pro_procedure")
+@Table(name = "pro_procedure",indexes = {	@Index(columnList = "type"),
+											@Index(columnList = "product_id"),
+											@Index(columnList = "flag")})
 public class Procedure extends BaseEntity<Long> {
 	
 	/**

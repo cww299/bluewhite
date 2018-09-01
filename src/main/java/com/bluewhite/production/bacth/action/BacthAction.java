@@ -2,6 +2,7 @@ package com.bluewhite.production.bacth.action;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,6 +27,8 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.bacth.service.BacthService;
+import com.bluewhite.production.procedure.dao.ProcedureDao;
+import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 
 @Controller
@@ -35,6 +38,10 @@ private static final Log log = Log.getLog(BacthAction.class);
 	
 	@Autowired
 	private BacthService bacthService;
+	
+	@Autowired
+	private ProcedureDao procedureDao;
+	
 	
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -62,6 +69,11 @@ private static final Log log = Log.getLog(BacthAction.class);
 			if(bacth.getFlag()==0 && bacth.getRegionalPrice()!=null){
 				bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType()), null));
 			}
+			List<Procedure> procedureList =procedureDao.findByProductIdAndTypeAndFlag(bacth.getProductId(), bacth.getType(), bacth.getFlag());
+			double time = procedureList.stream().mapToDouble(Procedure::getWorkingTime).sum();
+			if(procedureList!=null && procedureList.size()>0){
+				bacth.setTime(time*bacth.getNumber()/60);
+				}
 			bacthService.update(bacth);
 			cr.setMessage("修改成功");
 		}else{
