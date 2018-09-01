@@ -446,13 +446,11 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				List<Task> psList1= maptask.get(ps1);
 				Bacth bac = bacthService.findOne(ps1);
 				List<Procedure> procedureList =procedureDao.findByProductIdAndTypeAndFlag(bac.getProductId(), bac.getType(), bac.getFlag());
+				double procedureTime = procedureList.stream().mapToDouble(Procedure::getWorkingTime).sum();
 				//总工序完成用时
-//				double sumProTime = bac.getTime();
-				//总工序数量
-				double sumProTime = procedureList.size()*bac.getNumber();
+				double sumProTime = (procedureTime*bac.getNumber())/60;
 				//工序完成用时
-				//工序完成数量
-				double sunTaskTime = psList1.stream().mapToDouble(Task::getNumber).sum();
+				double sunTaskTime = psList1.stream().mapToDouble(Task::getExpectTime).sum();
 				bac.setNumber(NumUtils.roundTwo(NumUtils.round((bac.getNumber()*(sunTaskTime/sumProTime)),0)));
 				bac.setHairPrice(bac.getBacthHairPrice()==0 ? bac.getBacthDepartmentPrice() : bac.getBacthHairPrice());
 				productNumber+= bac.getNumber();
