@@ -44,6 +44,8 @@ import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.finance.entity.UsualConsume;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.service.GroupService;
+import com.bluewhite.production.procedure.dao.ProcedureDao;
+import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.system.user.entity.User;
@@ -53,7 +55,8 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	
 	@Autowired
 	private CollectPayDao dao;
-	
+	@Autowired
+	private ProcedureDao  procedureDao;
 	@Autowired
 	private BacthService bacthService;
 	
@@ -442,10 +445,14 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			for(Long ps1 : maptask.keySet()){
 				List<Task> psList1= maptask.get(ps1);
 				Bacth bac = bacthService.findOne(ps1);
+				List<Procedure> procedureList =procedureDao.findByProductIdAndTypeAndFlag(bac.getProductId(), bac.getType(), bac.getFlag());
 				//总工序完成用时
-				double sumProTime = bac.getTime();
+//				double sumProTime = bac.getTime();
+				//总工序数量
+				double sumProTime = procedureList.size()*bac.getNumber();
 				//工序完成用时
-				double sunTaskTime = psList1.stream().mapToDouble(Task::getExpectTime).sum();
+				//工序完成数量
+				double sunTaskTime = psList1.stream().mapToDouble(Task::getNumber).sum();
 				bac.setNumber(NumUtils.roundTwo(NumUtils.round((bac.getNumber()*(sunTaskTime/sumProTime)),0)));
 				bac.setHairPrice(bac.getBacthHairPrice()==0 ? bac.getBacthDepartmentPrice() : bac.getBacthHairPrice());
 				productNumber+= bac.getNumber();
