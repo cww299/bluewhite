@@ -23,6 +23,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
@@ -688,7 +689,8 @@ public class ReportExportAction {
         
        //填充数据
         //将针工一整个月的考勤查询出来
-       List<AttendancePay> attendancePayList = attendancePayService.findPages(attendancePay, new PageParameter(0,Integer.MAX_VALUE)).getRows();
+        
+       List<AttendancePay> attendancePayList = attendancePayService.findPages(attendancePay, new PageParameter(0,Integer.MAX_VALUE,new Sort(Sort.Direction.ASC,"allotTime"))).getRows();
        //按人员分组
        Map<Long, List<AttendancePay>> mapAttendancePay = attendancePayList.stream().collect(Collectors.groupingBy(AttendancePay::getUserId,Collectors.toList()));
 		//循环出一整个月的每个人的人员考勤
