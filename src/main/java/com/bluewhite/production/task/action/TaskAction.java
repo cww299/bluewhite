@@ -327,7 +327,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 		if (!StringUtils.isEmpty(taskIds)) {
 			if (taskIds.length>0) {
 				for (int i = 0; i < taskIds.length; i++) {
-						Long id = Long.parseLong(ids[i]);
+						Long id = Long.parseLong(taskIds[i]);
 						Task task = taskService.findOne(id);
 						task.setPerformance(performance[i]);
 						task.setPerformanceNumber(performanceNumber[i]);
