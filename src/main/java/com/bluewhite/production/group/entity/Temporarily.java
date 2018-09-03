@@ -18,7 +18,7 @@ import com.bluewhite.base.BaseEntity;
 public class Temporarily extends BaseEntity<Long>{
 	
 	/**
-	 * id
+	 *借调人员id
 	 */
 	@Column(name = "user_id")
 	private Long userId;
@@ -48,7 +48,23 @@ public class Temporarily extends BaseEntity<Long>{
 	@Column(name = "type")
 	private Integer type;
 	
+	/**
+	 * 分组id
+	 */
+	@Column(name = "group_id")
+	private Long groupId;
+
 	
+	
+	public Long getGroupId() {
+		return groupId;
+	}
+
+
+	public void setGroupId(Long groupId) {
+		this.groupId = groupId;
+	}
+
 
 	public Double getWorkTime() {
 		return workTime;

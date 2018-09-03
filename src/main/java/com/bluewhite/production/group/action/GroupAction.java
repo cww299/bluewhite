@@ -139,8 +139,8 @@ private static final Log log = Log.getLog(GroupAction.class);
 			
 			if(group.getType()==1 || group.getType()==2){
 				List<Temporarily> temporarilyList = 
-						temporarilyDao.findByTypeAndTemporarilyDate(group.getType(),temporarilyDate !=null ? DatesUtil.getfristDayOftime(temporarilyDate) : 
-							DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(new Date(),group.getType())));
+						temporarilyDao.findByTypeAndTemporarilyDateAndGroupId(group.getType(),temporarilyDate !=null ? DatesUtil.getfristDayOftime(temporarilyDate) : 
+							DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(new Date(),group.getType())),group.getId());
 				if(temporarilyList.size()>0){
 					Set<User> userlist  = groupAll.get(0).getUsers();
 					for(Temporarily temporarily : temporarilyList){
@@ -150,6 +150,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 				}
 			}
 		}
+		
 		for(Group gr : groupAll){
 			Set<User> users= gr.getUsers().stream().filter(u -> u.getStatus()!=1).collect(Collectors.toSet());
 			gr.setUsers(users);
@@ -236,7 +237,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 	 */
 	@RequestMapping(value = "/production/addTemporarily", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addTemporarily(HttpServletRequest request,String ids,Integer type) {
+	public CommonResponse addTemporarily(HttpServletRequest request,String ids,Integer type,Long groupId) {
 		CommonResponse cr = new CommonResponse();
 		if(ids!=null){
 			String[] userIds = ids.split(",");
@@ -246,6 +247,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 				User user = userService.findOne(userId);
 				temporarily.setUserId(userId);
 				temporarily.setUserName(user.getUserName());
+				temporarily.setGroupId(groupId);
 				temporarily.setType(type);
 				temporarilyDao.save(temporarily);
 			}
