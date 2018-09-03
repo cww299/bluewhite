@@ -162,18 +162,17 @@
 				<div class="space-10"></div>
 				<div style="height: 30px"></div>
 				<form class="form-horizontal addDictDivTypeFormtw">
-					<div class="row col-xs-12  col-sm-12  col-md-12 ">
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">加绩工序:</label>
-                              <div class="col-sm-3 workingtw">
-                              </div> 
-                            <label class="col-sm-1 control-label">完成人:</label>
+					<div class="row col-xs-12  col-sm-12  col-md-12" id="type">
+                    	
+                 </div>
+                    	<div class="form-group" >
+                           
+                            <label class="col-sm-1 control-label" style="width: 17.1%;">完成人:</label>
                                 <div class="col-sm-2 complete">
                                   <input type="text" class="form-control">
                                 </div>
                                  <div class="col-sm-2 select"></div>
                     	</div>
-                 </div>
 				</div>
 
 				</form>
@@ -276,7 +275,7 @@
 		      				if(o.flag==1){
 		      					a="(返工)"
 		      				}
-		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
+		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'" data-procedurename="'+s+a+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center ">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center ">'+o.productName+'</td>'
 		      				+'<td class="text-center edit allotTime">'+o.allotTime+'</td>'
@@ -601,18 +600,23 @@
 				  })
 				
 				
-				//分配1
+				//加绩
 				$('.addDict').on('click',function(){
 					var  thae=$(".table-hover");
 					var arr=""//员工id
+					var arrytw=new Array()
+					var tasksId=new Array()
 					var CheckCount=0;
 					  thae.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
 						  CheckCount++;
 						  arr=$(this).val();  
+						  console.log($(this).val())
+						  tasksId.push($(this).val());  
+						  arrytw.push($(this).data('procedurename'));
 						});
-					  if(CheckCount>1){
+					 /*  if(CheckCount>1){
 							return layer.msg("只能选择一条任务", {icon: 2});
-						}
+						} */
 					if(arr==""){
 						return layer.msg("请选择一条任务", {icon: 2});
 					}
@@ -686,7 +690,13 @@
 							$(result.data).each(function(i,o){
 							html+='<option value="'+o.number+'" data-name="'+o.name+'">'+o.name+'</option>'
 							})
-							$('.workingtw').html("<select class='form-control selectchangtw'><option value='0'></option>"+html+"</select>");
+						var htm=""
+						for (var i = 0; i < arrytw.length; i++) {
+						var array_element = arrytw[i];
+						htm+="<label class='col-sm-2 control-label'>工序:</label><div class='col-sm-3 type'><input type='text' disabled='disabled' class='form-control' value="+array_element+"></div><div class='form-group'><label class='col-sm-2 control-label'>加绩工序:</label><div class='col-sm-3 workingtw'><select class='form-control selectchangtw'><option value='0'></option>"+html+"</select></div>"
+						+"</div>"
+						$('#type').html(htm)
+						}
 							layer.close(index);
 							
 						},error:function(){
@@ -714,11 +724,15 @@
 								if(arr.length<=0){
 									return layer.msg("至少选择一个员工！", {icon: 2});
 								}
-								var performanceNumber=$(".selectchangtw").val();
-								
-								var performance=$(".selectchangtw option:selected").text();
+								var performanceNumber=new Array()
+								var performance=new Array()
+								$(".selectchangtw option:selected").each(function() {
+									performanceNumber.push($(this).val());
+									performance.push($(this).text());
+								})
+								console.log(tasksId)
 								var postData = {
-										id:arr,
+										taskIds:tasksId,
 										ids:arry,
 										performanceNumber:performanceNumber,
 										performance:performance,
