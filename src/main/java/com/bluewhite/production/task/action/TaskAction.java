@@ -322,26 +322,43 @@ private static final Log log = Log.getLog(TaskAction.class);
 	 */
 	@RequestMapping(value = "/task/giveTaskPerformance", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse giveTaskPerformance(HttpServletRequest request,Long id,String[] ids, String performance , Double performanceNumber) {
+	public CommonResponse giveTaskPerformance(HttpServletRequest request,String taskIds[],String[] ids, String performance[] , Double performanceNumber[],Integer update) {
 		CommonResponse cr = new CommonResponse();
-		Task task = taskService.findOne(id);
-		task.setPerformanceNumber(performanceNumber);
-		double performancePrice = NumUtils.round(ProTypeUtils.sumtaskPerformancePrice(task), null);
-		if (!StringUtils.isEmpty(ids)) {
-			if (ids.length>0) {
-				for (int i = 0; i < ids.length; i++) {
-					Long userid = Long.parseLong(ids[i]);
-					PayB payB = payBDao.findByTaskIdAndUserId(task.getId(),userid);
-					payB.setPerformance(performance);
-					payB.setPerformancePayNumber(performancePrice/ids.length);
-					payB.setPerformanceNumber(performanceNumber);
-					payBDao.save(payB);
-					}
+		if (!StringUtils.isEmpty(taskIds)) {
+			if (taskIds.length>0) {
+				for (int i = 0; i < taskIds.length; i++) {
+						Long id = Long.parseLong(ids[i]);
+						Task task = taskService.findOne(id);
+						task.setPerformance(performance[i]);
+						task.setPerformanceNumber(performanceNumber[i]);
+						//任务加绩具体数值
+						double performancePrice = NumUtils.round(ProTypeUtils.sumtaskPerformancePrice(task), null);
+						task.setPerformancePrice(performancePrice);
+						if(update==1){
+							List<PayB> payBListO = payBDao.findByTaskId(id);
+							payBListO.stream().filter(PayB->PayB.getPerformancePayNumber()!=null).collect(Collectors.toList());
+							if(payBListO.size()>0){
+								payBDao.delete(payBListO);
+							}
+						}
+						if (!StringUtils.isEmpty(ids)) {
+							if (ids.length>0) {
+								for (int ii = 0; ii < ids.length; ii++) {
+									Long userid = Long.parseLong(ids[ii]);
+									PayB payB = payBDao.findByTaskIdAndUserId(task.getId(),userid);
+									payB.setPerformance(performance[i]);
+									payB.setPerformancePayNumber(performancePrice/ids.length);
+									payB.setPerformanceNumber(performanceNumber[i]);
+									payBDao.save(payB);
+									}
+								}
+							}
+						List<PayB> payBList = payBDao.findByTaskId(id);
+						task.setPerformancePrice(payBList.stream().filter(PayB->PayB.getPerformancePayNumber()!=null).mapToDouble(PayB::getPerformancePayNumber).sum());
+						taskService.save(task);
 				}
 			}
-		List<PayB> payBList = payBDao.findByTaskId(id);
-		task.setPerformancePrice(payBList.stream().filter(PayB->PayB.getPerformancePayNumber()!=null).mapToDouble(PayB::getPerformancePayNumber).sum());
-		taskService.save(task);
+		}
 		cr.setMessage("添加成功");
 		return cr;
 	}

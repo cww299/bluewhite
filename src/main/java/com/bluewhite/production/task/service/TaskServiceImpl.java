@@ -505,6 +505,8 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskTime(), task.getType(),0,null), null));
 		//B工资净值
 		task.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(task.getTaskPrice(),  task.getType()), null));
+		//更新加绩数据
+		
 		dao.save(task);
 		//将用户变成string类型储存
 		if (!StringUtils.isEmpty(task.getUserIds())) {
@@ -524,7 +526,46 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				payB.setAllotTime(task.getAllotTime());
 				payB.setFlag(task.getFlag());
 				//计算B工资数值
-				payB.setPayNumber(task.getPayB()/taskArr.length);
+				PageParameter page = new PageParameter();
+				AttendancePay param = new AttendancePay();
+				param.setOrderTimeBegin(DatesUtil.getfristDayOftime(task.getAllotTime()));
+				param.setOrderTimeEnd(DatesUtil.getLastDayOftime(task.getAllotTime()));
+				//包装分配任务，员工b工资根据考情占比分配，其他部门是均分
+				if(task.getType()==2){
+					SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
+					//总考勤时间
+					double sunTime = 0;
+					for(String userTypeId :taskArr){
+						Long userId = Long.parseLong(userTypeId);
+						param.setUserId(userId);
+						Temporarily  temporarily = temporarilyDao.findByUserIdAndTemporarilyDate(userId,DatesUtil.getfristDayOftime(task.getAllotTime()));
+						if(!StringUtils.isEmpty(temporarily)){
+							sunTime+=temporarily.getWorkTime();
+						}else{
+							List<AttendancePay> attendancePay = attendancePayService.findPages(param, page).getRows();
+							if(attendancePay.size()>0){
+								sunTime+=attendancePay.get(0).getWorkTime();
+							}
+						}
+					}
+					param.setUserId(userid);
+					Temporarily  temporarily = temporarilyDao.findByUserIdAndTemporarilyDate(userid,DatesUtil.getfristDayOftime(task.getAllotTime()));
+					List<AttendancePay> attendancePay = attendancePayService.findPages(param, page).getRows();
+					if(StringUtils.isEmpty(temporarily) && attendancePay.size()==0){
+							throw new ServiceException("员工"+user.getUserName()+"没有"+dateFormater.format(task.getAllotTime())+"的考勤记录，无法分配任务");
+					}
+					//按考情时间占比分配B工资
+					payB.setPayNumber(task.getPayB() * (attendancePay.size()==0 ? temporarily.getWorkTime() : attendancePay.get(0).getWorkTime())/sunTime);
+				}else{
+					payB.setPayNumber(task.getPayB()/taskArr.length);
+				}
+				//当存在加绩时，计算加绩工资
+				if(task.getPerformanceNumber()!=null){
+					payB.setPerformance(task.getPerformance());
+					payB.setPerformanceNumber(task.getPerformanceNumber());
+					payB.setPerformancePayNumber(task.getPerformancePrice()/taskArr.length);
+				}
+				
 				payBDao.save(payB);
 			}
 		
