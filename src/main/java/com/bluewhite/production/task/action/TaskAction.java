@@ -338,7 +338,12 @@ private static final Log log = Log.getLog(TaskAction.class);
 							List<PayB> payBListO = payBDao.findByTaskId(id);
 							payBListO.stream().filter(PayB->PayB.getPerformancePayNumber()!=null).collect(Collectors.toList());
 							if(payBListO.size()>0){
-								payBDao.delete(payBListO);
+								for(PayB pl : payBListO){
+									pl.setPerformance(null);
+									pl.setPerformancePayNumber(null);
+									pl.setPerformanceNumber(null);
+								}
+								payBDao.save(payBListO);
 							}
 						}
 						if (!StringUtils.isEmpty(ids)) {
