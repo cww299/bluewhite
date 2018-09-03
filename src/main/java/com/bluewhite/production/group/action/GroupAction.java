@@ -28,10 +28,12 @@ import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
+import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.production.group.service.GroupService;
+import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
@@ -120,7 +122,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 	 */
 	@RequestMapping(value = "/production/allGroup", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse allGroup(HttpServletRequest request,Group group) {
+	public CommonResponse allGroup(HttpServletRequest request,Group group,Date temporarilyDate) {
 		CommonResponse cr = new CommonResponse();
 		List<Group> groupAll = null;
 		if(group.getId()==null){
@@ -136,7 +138,9 @@ private static final Log log = Log.getLog(GroupAction.class);
 			groupAll = groupService.findList(group);
 			
 			if(group.getType()==1 || group.getType()==2){
-				List<Temporarily> temporarilyList =  temporarilyDao.findByType(group.getType());
+				List<Temporarily> temporarilyList = 
+						temporarilyDao.findByTypeAndTemporarilyDate(group.getType(),temporarilyDate !=null ? DatesUtil.getfristDayOftime(temporarilyDate) : 
+							DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(new Date(),group.getType())));
 				if(temporarilyList.size()>0){
 					Set<User> userlist  = groupAll.get(0).getUsers();
 					for(Temporarily temporarily : temporarilyList){
