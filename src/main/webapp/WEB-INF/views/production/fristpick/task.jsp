@@ -68,12 +68,12 @@
 									<button type="button" class="btn btn-success  btn-sm btn-3d addDict">
 									加绩
 									</button>
-									<!-- <td>&nbsp&nbsp&nbsp&nbsp</td>
+									 <td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-success  btn-sm btn-3d updatetw">
 									加绩修改
 									</button>
-								</span> -->
+								</span> 
 							</div>
 						</div>
 					</div>

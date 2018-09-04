@@ -123,6 +123,11 @@
                                             <input type="text" id="grouptime" class="form-control">
                                         </div>
                  </div>
+                 <div class="form-group">
+                                        <label class="col-sm-3 control-label">小组:</label>
+                                        <div class="col-sm-6" id="groupp">
+                                        </div>
+                 </div>
                   <div class="hidden grouptw"></div>
 				</form>
 </div>
@@ -860,6 +865,23 @@
 					});
 				})
 				
+				//遍历人名组别
+			var htmlth="";
+			var data = {
+		  			type:2,
+		  	}
+		    $.ajax({
+			      url:"${ctx}/production/getGroup",
+			      data:data,
+			      type:"GET",
+	      		  success: function (result) {
+	      			  $(result.data).each(function(k,j){
+	      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
+	      			  });  
+	      			 $('#groupp').html("<select class='form-control selectcomplete'><option value="+""+">请选择&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>"+htmlth+"</select>") 
+			      }
+			  });
+				
 				//外调人员
 				$('#add').on('click',function(){
 					
@@ -883,6 +905,7 @@
 									  temporarilyDate:$('#startTime').val(),
 									  workTime:$('#grouptime').val(),
 									  type:2,
+									  groupId:$('.selectcomplete').val(),
 							  }
 							  $.ajax({
 									url:"${ctx}/production/addTemporarilyTwo",
