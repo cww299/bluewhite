@@ -1028,6 +1028,7 @@
 								   var data={
 										  id:id,
 										  type:2,
+										  temporarilyDate:$('#Time').val(),
 								   }
 			      				$.ajax({
 									url:"${ctx}/production/allGroup",

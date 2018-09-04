@@ -143,11 +143,23 @@
 		      					 a=o.group.id
 		      				 }
 		      				 var order = i+1;
+		      				 var k;
+		      				 if(o.orgName==null){
+		      					 k=""
+		      				 }else{
+		      					 k=o.orgName.name
+		      				 }
+		      				 var l;
+		      				 if(o.position==null){
+		      					 l=""
+		      				 }else{
+		      					 l=o.position.name
+		      				 }
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center ">'+order+'</td>'
 		      				+'<td class="text-center ">'+o.userName+'</td>'
-		      				+'<td class="text-center ">'+o.orgName.name+'</td>'
-		      				+'<td class="text-center ">'+o.position.name+'</td>'
+		      				+'<td class="text-center ">'+k+'</td>'
+		      				+'<td class="text-center ">'+l+'</td>'
 		      				+'<td class="text-center "><input class="work"></input></td>'
 		      				+'<td class="text-center edit workPrice">'+o.price*1+'</td>'
 							+'<td class="text-center" data-status="'+o.status+'" data-id="'+o.id+'"><input type="radio"   class="rest" value="0">工作<input type="radio"   class="rest" value="1">休息 </td>'

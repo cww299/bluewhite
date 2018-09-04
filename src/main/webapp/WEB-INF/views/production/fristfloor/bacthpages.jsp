@@ -938,6 +938,7 @@
 								   var data={
 										  id:id,
 										  type:1,
+										  temporarilyDate:$('#Time').val(),
 								   }
 			      				$.ajax({
 									url:"${ctx}/production/allGroup",
@@ -1231,6 +1232,7 @@
 								   var data={
 										  id:id,
 										  type:1,
+										  temporarilyDate:$('#Time').val(),
 								   }
 			      				$.ajax({
 									url:"${ctx}/production/allGroup",
