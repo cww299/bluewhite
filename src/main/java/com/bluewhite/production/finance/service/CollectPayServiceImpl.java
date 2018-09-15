@@ -775,7 +775,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		page.setSize(Integer.MAX_VALUE);
 		if(collectPay.getDetail()!=null){
 			collectPay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
-			collectPay.setOrderTimeEnd(collectPay.getOrderTimeBegin());
+			collectPay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
 		}else{
 			//获取整个月的数据
 			collectPay.setOrderTimeBegin( DatesUtil.getfristDayOftime(DatesUtil.getFirstDayOfMonth(collectPay.getOrderTimeBegin())));
