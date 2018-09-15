@@ -154,15 +154,39 @@
 		      		  success: function (result) {
 		      			 $(result.data.rows).each(function(i,o){
 		      				 var order = i+1;
+		      				var k;
+		      				 if(o.orgName==null){
+		      					 k=""
+		      				 }else{
+		      					 k=o.orgName.name
+		      				 }
+		      				 var l;
+		      				 if(o.position==null){
+		      					 l=""
+		      				 }else{
+		      					 l=o.position.name
+		      				 }
+		      				 var z;
+		      				 if(o.orgName==null){
+		      					 z=""
+		      				 }else{
+		      					 z=o.orgName.id
+		      				 }
+		      				 var u;
+		      				if(o.position==null){
+		      					 u=""
+		      				 }else{
+		      					 u=o.position.id
+		      				 }
 		      				html +='<tr>'
 		      				+'<td class="edit price">'+order+'</td>'
 		      				+'<td class="edit price">'+o.number+'</td>'
 		      				+'<td class="edit price">'+o.userName+'</td>'
 		      				+'<td class="edit price">'+o.phone+'</td>'
 		      				+'<td class="edit price">'+o.idCard+'</td>'
-		      				+'<td class="edit price">'+o.orgName.name+'</td>'
-		      				+'<td class="edit price">'+o.position.name+'</td>'
-							+'<td><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+o.orgName.id+' data-postid='+o.position.id+'>修改</button></td></tr>'
+		      				+'<td class="edit price">'+k+'</td>'
+		      				+'<td class="edit price">'+l+'</td>'
+							+'<td><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>修改</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
