@@ -68,6 +68,8 @@
 								</td>
 								<td>&nbsp&nbsp</td>
 								<td>小组查询:</td><td id="groupp"></td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<td><input type="checkbox" id="check" value="1">详情</td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
@@ -361,12 +363,19 @@
 			
 			this.events = function(){
 				$('.searchtask').on('click',function(){
+					var detail;
+					if($("#check").is(':checked')==true){
+						detail=1
+					}else{
+						detail=""
+					}
 					var data = {
 							type:4,
 							userName:$("#username").val(),
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
 				  			groupId:$('.selectcomplete').val(),
+				  			detail:detail,
 				  	}
 				self.loadPagination(data);
 				});
@@ -421,7 +430,13 @@
 					var d=$("#startTime").val();
 					var e= $("#endTime").val();
 					var y=$('.selectcomplete').val();
-					location.href="${ctx}/excel/importExcel/DownMachinistCollectPay?orderTimeBegin="+d+"&orderTimeEnd="+e+"&type="+4+"&groupId="+y;
+					var detail;
+					if($("#check").is(':checked')==true){
+						detail=1
+					}else{
+						detail=""
+					}
+					location.href="${ctx}/excel/importExcel/DownMachinistCollectPay?orderTimeBegin="+d+"&orderTimeEnd="+e+"&type="+4+"&groupId="+y+"&detail="+detail;
 				})
 			}
    	}
