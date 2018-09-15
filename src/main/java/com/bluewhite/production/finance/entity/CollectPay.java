@@ -167,6 +167,11 @@ public class CollectPay extends BaseEntity<Long> {
 	@Transient
 	private Date orderTimeEnd;
 	
+	/**
+	 * 显示详细
+	 */
+	@Transient
+	private Integer detail;
 	
 	/**
 	 * 日期
@@ -177,6 +182,12 @@ public class CollectPay extends BaseEntity<Long> {
 	
 	
 
+	public Integer getDetail() {
+		return detail;
+	}
+	public void setDetail(Integer detail) {
+		this.detail = detail;
+	}
 	public String getStartDate() {
 		return startDate;
 	}

@@ -106,7 +106,7 @@ public  class ProTypeUtils {
 	 * 一楼打包
 	 * 当外发价格
 	 */
-	private final static double  FRIST_PACKTWO = 0.25;
+	private final static double  FRIST_PACKTWO = 0.20;
 	
 	
 	/**
