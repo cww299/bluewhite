@@ -33,10 +33,14 @@ public class PageResultStat<T> extends PageResult<T> {
      * @param pp
      */
     public PageResultStat(Page<T> pageResult, PageParameter page) {
-    	setRows(pageResult.getContent());
-		setTotal(pageResult.getTotalElements());
-		setTotalPages(pageResult.getTotalPages());
+        int endPosition = page.getOffset() + page.getPageSize();
+        if (endPosition > pageResult.getContent().size()) {
+            endPosition = pageResult.getContent().size();
+        }
+        setTotal(pageResult.getTotalElements());
+        setTotalPages((int) Math.ceil((double) pageResult.getTotalElements() / (double)page.getSize()));
 		setPageNum(page.getPage()+2);
+        setRows(  pageResult.getContent().size() <= page.getPageSize() ? pageResult.getContent() : pageResult.getContent().subList(page.getOffset(),endPosition));
         totalData = pageResult.getContent();
     }
 

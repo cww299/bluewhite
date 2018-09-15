@@ -773,9 +773,14 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	public List<CollectPay> twoPerformancePay(CollectPay collectPay) {
 		PageParameter page  = new PageParameter();
 		page.setSize(Integer.MAX_VALUE);
-		//获取整个月的数据
-		collectPay.setOrderTimeBegin( DatesUtil.getfristDayOftime(DatesUtil.getFirstDayOfMonth(collectPay.getOrderTimeBegin())));
-		collectPay.setOrderTimeEnd( DatesUtil.getLastDayOftime(DatesUtil.getLastDayOfMonth(collectPay.getOrderTimeBegin())));
+		if(collectPay.getDetail()!=null){
+			collectPay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
+			collectPay.setOrderTimeEnd(collectPay.getOrderTimeBegin());
+		}else{
+			//获取整个月的数据
+			collectPay.setOrderTimeBegin( DatesUtil.getfristDayOftime(DatesUtil.getFirstDayOfMonth(collectPay.getOrderTimeBegin())));
+			collectPay.setOrderTimeEnd( DatesUtil.getLastDayOftime(DatesUtil.getLastDayOfMonth(collectPay.getOrderTimeBegin())));
+		}
 		
 		List<CollectPay> collectPayList = new ArrayList<CollectPay>();
 		AttendancePay attendancePay = new AttendancePay();
@@ -794,17 +799,22 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			List<AttendancePay> psList= mapCollectPay.get(ps);
 			collectPay.setUserId((Long)ps);
 			
-			//通过条件查找绩效是否已入库
-			List<CollectPay> list = this.findPages(collectPay, page).getRows();
-			if(list.size()>0){
-				collect = list.get(0);
-			}else{
-				//确定绩效汇总时间
-				collect.setAllotTime(collectPay.getOrderTimeEnd());
-				collect.setType(collectPay.getType());
-				collect.setUserId(psList.get(0).getUserId());
-				collect.setUserName(psList.get(0).getUserName());
+			List<CollectPay> list = null;
+			if(collectPay.getDetail()== null){	
+				//通过条件查找绩效是否已入库
+				list = this.findPages(collectPay, page).getRows();
 			}
+				if(list !=null && list.size()>0){
+					collect = list.get(0);
+				}else{
+					//确定绩效汇总时间
+					collect.setAllotTime(collectPay.getOrderTimeEnd());
+					collect.setType(collectPay.getType());
+					collect.setUserId(psList.get(0).getUserId());
+					collect.setUserName(psList.get(0).getUserName());
+				}
+			
+			
 			//分别统计出考勤总时间
 			double sunTime = psList.stream().mapToDouble(AttendancePay::getWorkTime).sum();
 			//考勤加班总时间
@@ -854,7 +864,10 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			}
 			collectPayList.add(collect);
 		}
-		dao.save(collectPayList);
+		
+		if(collectPay.getDetail()==null){
+			dao.save(collectPayList);
+		}
 		return collectPayList;
 	}
 

@@ -140,7 +140,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 			if(group.getType()==1 || group.getType()==2){
 				List<Temporarily> temporarilyList = 
 						temporarilyDao.findByTypeAndTemporarilyDateAndGroupId(group.getType(),temporarilyDate !=null ? DatesUtil.getfristDayOftime(temporarilyDate) : 
-							DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(new Date(),group.getType())),group.getId());
+							DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(null,group.getType())),group.getId());
 				if(temporarilyList.size()>0){
 					Set<User> userlist  = groupAll.get(0).getUsers();
 					for(Temporarily temporarily : temporarilyList){

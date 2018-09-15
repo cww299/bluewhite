@@ -16,9 +16,9 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.entity.PageResultStat;
+import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
-import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.dao.CollectPayDao;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.CollectPay;
@@ -59,7 +59,7 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 		        		predicate.add(cb.equal(root.get("productId").as(Long.class),param.getProductId()));
 		        	}
 		        	//按id
-		        	if(param.getTaskId()!=null){
+		        	if(!StringUtils.isEmpty(param.getTaskId())){
 		        		predicate.add(cb.equal(root.get("taskId").as(Long.class),param.getTaskId()));
 		        	}
 		        	//按产品名称
@@ -87,13 +87,11 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 					Predicate[] pre = new Predicate[predicate.size()];
 					query.where(predicate.toArray(pre));
 		        	return null;
-		        }, page);
-			  
+		        }, SalesUtils.getQueryNoPageParameter());
 			  PageResultStat<PayB> result = new PageResultStat<>(pages,page);
 			  result.setAutoStateField(null, "payNumber");
 			  result.count();
-//		      PageResult<PayB> result = new PageResult<PayB>(pages,page);
-		        return result;
+		      return result;
 		    }
 
 	@Override
