@@ -365,7 +365,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 						}else{
 							task.setPerformance(null);
 							task.setPerformanceNumber(null);
-							task.setPerformancePrice(null);
+							task.setPerformancePrice(0.0);
 							List<PayB> payBListO = payBDao.findByTaskId(id);
 							payBListO.stream().filter(PayB->PayB.getPerformancePayNumber()!=null).collect(Collectors.toList());
 							if(payBListO.size()>0){

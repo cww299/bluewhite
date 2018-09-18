@@ -199,6 +199,7 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 								payBListO.stream().filter(PayB->PayB.getPerformancePayNumber()!=null).collect(Collectors.toList());
 								if(payBListO.size()>0){
 									for(FarragoTaskPay pl : payBListO){
+										pl.setPerformance(null);
 										pl.setPerformancePayNumber(null);
 									}
 									farragoTaskPayDao.save(payBListO);
@@ -209,6 +210,7 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 									for (int ii = 0; ii < ids.length; ii++) {
 										Long userid = Long.parseLong(ids[ii]);
 										FarragoTaskPay farragoTaskPay = farragoTaskPayDao.findByTaskIdAndUserId(farragoTask.getId(),userid);
+										farragoTaskPay.setPerformance(performance[i]);
 										farragoTaskPay.setPerformancePayNumber(performancePrice/ids.length);
 										farragoTaskPayDao.save(farragoTaskPay);
 									}
@@ -219,11 +221,12 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 						}else{
 							farragoTask.setPerformance(null);
 							farragoTask.setPerformanceNumber(null);
-							farragoTask.setPerformancePrice(null);
+							farragoTask.setPerformancePrice(0.0);
 							List<FarragoTaskPay> payBListO = farragoTaskPayDao.findByTaskId(id);
 							payBListO.stream().filter(PayB->PayB.getPerformancePayNumber()!=null).collect(Collectors.toList());
 							if(payBListO.size()>0){
 								for(FarragoTaskPay pl : payBListO){
+									pl.setPerformance(null);
 									pl.setPerformancePayNumber(null);
 								}
 								farragoTaskPayDao.save(payBListO);
@@ -249,7 +252,7 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 		List<FarragoTaskPay> payBList = farragoTaskPayDao.findByTaskId(id);
 		List<Map<String,Object>> listMap = new ArrayList<Map<String,Object>>();
 		Map<String,Object> map = null;
-		Map<Object, List<FarragoTaskPay>> mapPayB = payBList.stream().filter(FarragoTaskPay->FarragoTaskPay.getPerformancePayNumber()!=null).collect(Collectors.groupingBy(FarragoTaskPay::getPerformancePayNumber,Collectors.toList()));
+		Map<Object, List<FarragoTaskPay>> mapPayB = payBList.stream().filter(FarragoTaskPay->FarragoTaskPay.getPerformance()!=null).collect(Collectors.groupingBy(FarragoTaskPay::getPerformance,Collectors.toList()));
 		for(Object ps : mapPayB.keySet()){
 			map = new HashMap<String, Object>();
 			List<FarragoTaskPay> psList= mapPayB.get(ps);

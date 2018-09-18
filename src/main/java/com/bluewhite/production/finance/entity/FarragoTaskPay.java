@@ -48,6 +48,12 @@ public class FarragoTaskPay extends BaseEntity<Long> {
 	private Double payNumber;
 	
 	/**
+	 * 是否工序加价选择(杂工加绩选项)
+	 */
+	@Column(name = "performance")
+	private String performance;
+	
+	/**
 	 * 杂工加绩工资数额
 	 */
 	@Column(name = "performance_pay_number")
@@ -96,6 +102,13 @@ public class FarragoTaskPay extends BaseEntity<Long> {
 	
 	
 	
+	
+	public String getPerformance() {
+		return performance;
+	}
+	public void setPerformance(String performance) {
+		this.performance = performance;
+	}
 	public Long getGroupId() {
 		return groupId;
 	}
