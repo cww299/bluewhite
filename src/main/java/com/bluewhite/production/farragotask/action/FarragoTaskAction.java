@@ -2,8 +2,10 @@ package com.bluewhite.production.farragotask.action;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,9 +27,14 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.production.farragotask.entity.FarragoTask;
 import com.bluewhite.production.farragotask.service.FarragoTaskService;
+import com.bluewhite.production.finance.dao.FarragoTaskPayDao;
+import com.bluewhite.production.finance.entity.FarragoTaskPay;
+import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
+import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
@@ -38,9 +45,10 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 	
 	@Autowired
 	private FarragoTaskService farragoTaskService;
-	
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private FarragoTaskPayDao farragoTaskPayDao;
 	
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -161,6 +169,100 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("不能为空");
 		}
+		return cr;
+	}
+	
+	
+	
+	
+	/************包装********************/
+	/**
+	 * 通过任务id，重新分配人员的加绩工资
+	 */
+	@RequestMapping(value = "/farragoTask/giveTaskPerformance", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse giveTaskPerformance(HttpServletRequest request,String[] taskIds,String[] ids, String[] performance , Double[] performanceNumber,Integer update) {
+		CommonResponse cr = new CommonResponse();
+		if (!StringUtils.isEmpty(taskIds)) {
+			if (taskIds.length>0) {
+				for (int i = 0; i < taskIds.length; i++) {
+						Long id = Long.parseLong(taskIds[i]);
+						FarragoTask farragoTask = farragoTaskService.findOne(id);
+						if(!StringUtils.isEmpty(ids) && !StringUtils.isEmpty(performance) && !StringUtils.isEmpty(performanceNumber)){
+							farragoTask.setPerformance(performance[i]);
+							farragoTask.setPerformanceNumber(performanceNumber[i]);
+							//任务加绩具体数值
+							double performancePrice = NumUtils.round(ProTypeUtils.sumPerformancePrice(farragoTask), null);
+							farragoTask.setPerformancePrice(performancePrice);
+							if(update==1){
+								List<FarragoTaskPay> payBListO = farragoTaskPayDao.findByTaskId(id);
+								payBListO.stream().filter(PayB->PayB.getPerformancePayNumber()!=null).collect(Collectors.toList());
+								if(payBListO.size()>0){
+									for(FarragoTaskPay pl : payBListO){
+										pl.setPerformancePayNumber(null);
+									}
+									farragoTaskPayDao.save(payBListO);
+								}
+							}
+							if (!StringUtils.isEmpty(ids)) {
+								if (ids.length>0) {
+									for (int ii = 0; ii < ids.length; ii++) {
+										Long userid = Long.parseLong(ids[ii]);
+										FarragoTaskPay farragoTaskPay = farragoTaskPayDao.findByTaskIdAndUserId(farragoTask.getId(),userid);
+										farragoTaskPay.setPerformancePayNumber(performancePrice/ids.length);
+										farragoTaskPayDao.save(farragoTaskPay);
+									}
+								}
+							}
+							List<FarragoTaskPay> payBList = farragoTaskPayDao.findByTaskId(id);
+							farragoTask.setPerformancePrice(payBList.stream().filter(FarragoTaskPay->FarragoTaskPay.getPerformancePayNumber()!=null).mapToDouble(FarragoTaskPay::getPerformancePayNumber).sum());
+						}else{
+							farragoTask.setPerformance(null);
+							farragoTask.setPerformanceNumber(null);
+							farragoTask.setPerformancePrice(null);
+							List<FarragoTaskPay> payBListO = farragoTaskPayDao.findByTaskId(id);
+							payBListO.stream().filter(PayB->PayB.getPerformancePayNumber()!=null).collect(Collectors.toList());
+							if(payBListO.size()>0){
+								for(FarragoTaskPay pl : payBListO){
+									pl.setPerformancePayNumber(null);
+								}
+								farragoTaskPayDao.save(payBListO);
+							}
+						}
+						farragoTaskService.save(farragoTask);
+				}
+			}
+		}
+		cr.setMessage("添加成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * 通过任务id，获取人员的加绩工资
+	 * 
+	 */
+	@RequestMapping(value = "/farragoTask/getUserPerformance", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getUserPerformance(HttpServletRequest request,Long id) {
+		CommonResponse cr = new CommonResponse();
+		List<FarragoTaskPay> payBList = farragoTaskPayDao.findByTaskId(id);
+		List<Map<String,Object>> listMap = new ArrayList<Map<String,Object>>();
+		Map<String,Object> map = null;
+		Map<Object, List<FarragoTaskPay>> mapPayB = payBList.stream().filter(FarragoTaskPay->FarragoTaskPay.getPerformancePayNumber()!=null).collect(Collectors.groupingBy(FarragoTaskPay::getPerformancePayNumber,Collectors.toList()));
+		for(Object ps : mapPayB.keySet()){
+			map = new HashMap<String, Object>();
+			List<FarragoTaskPay> psList= mapPayB.get(ps);
+			List<String> userNameList = new ArrayList<String>();
+			for(FarragoTaskPay farragoTaskPay : psList){
+				userNameList.add(farragoTaskPay.getUserName());
+			}
+			map.put("performance", ps);
+			map.put("username", userNameList);
+			listMap.add(map);
+		}
+		cr.setData(listMap);
+		cr.setMessage("查询成功");
 		return cr;
 	}
 	

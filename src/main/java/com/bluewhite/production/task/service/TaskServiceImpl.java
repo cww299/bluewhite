@@ -168,8 +168,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 							if(StringUtils.isEmpty(temporarily) && attendancePay.size()==0){
 									throw new ServiceException("员工"+user.getUserName()+"没有"+dateFormater.format(task.getAllotTime())+"的考勤记录，无法分配任务");
 							}
-							
-							
 							//按考情时间占比分配B工资
 							payB.setPayNumber(newTask.getPayB() * (attendancePay.size()==0 ? temporarily.getWorkTime() : attendancePay.get(0).getWorkTime())/sunTime);
 						}else{
