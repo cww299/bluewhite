@@ -68,6 +68,7 @@
 									<button type="button" class="btn btn-success  btn-sm btn-3d addDict">
 									加绩
 									</button>
+									</span>
 									 <td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-success  btn-sm btn-3d updatetw">
