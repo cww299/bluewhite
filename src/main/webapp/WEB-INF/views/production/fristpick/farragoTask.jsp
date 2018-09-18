@@ -74,6 +74,7 @@
 									<button type="button" class="btn btn-success  btn-sm btn-3d addDict">
 									加绩
 									</button>
+									</span>
 									 <td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-success  btn-sm btn-3d updatetw">
@@ -292,6 +293,12 @@
 		  	this.getCache = function(){
 		  		return _cache;
 		  	}
+		  	this.getCount = function(){
+		  		return _count;
+		  	}
+		  	this.setCount = function(count){
+		  		_count=count;
+		  	}
 			 var data={
 						page:1,
 				  		size:13,	
@@ -334,6 +341,7 @@
 							+'<td class="text-center"><button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
+		      			self.setCount(result.data.pageNum)
 				        //显示分页
 					   	 laypage({
 					      cont: 'pager', 
