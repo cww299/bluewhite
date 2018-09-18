@@ -18,4 +18,6 @@ public interface FarragoTaskPayDao extends BaseRepository<FarragoTaskPay, Long>{
 	 */
 	List<FarragoTaskPay> findByTaskId(Long id);
 
+	FarragoTaskPay findByTaskIdAndUserId(Long id, Long userid);
+
 }
