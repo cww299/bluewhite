@@ -225,11 +225,11 @@
 		      				 }
 		      				 
 		      				html +='<tr>'
-		      				+'<td  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:68px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" value="'+o.cutPartsName+'" /></td>'
+		      				/* +'<td  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:68px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" value="'+o.cutPartsName+'" /></td>' */
 		      				+'<td class="text-center edit name" >'+o.cutPartsName+'</td>'
-		      				+'<td class="text-center edit name" >'+o.cutPartsNumber+'</td>'
-		      				+'<td class="text-center edit name" >'+o.materielNumber+'</td>'
-		      				+'<td class="text-center edit name" >'+o.materielName+'</td>'
+		      				+'<td class="text-center editt name" >'+o.cutPartsNumber+'</td>'
+		      				+'<td class="text-center" >'+o.materielNumber+'</td>'
+		      				+'<td class="text-center editmaterielName name" >'+o.materielName+'</td>'
 		      				+'<td class="text-center edit name" >'+a+'</td>'
 		      				+'<td class="text-center edit name" >'+o.oneMaterial+'</td>'
 		      				+'<td class="text-center edit name" >'+o.unit+'</td>'
@@ -289,7 +289,15 @@
 						
 						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
 
-				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
+				            $(this).html("<input class='input-mini' style='border: none;width:68px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				        })
+						$(this).parent().siblings(".editt").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini' style='border: none;width:40px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				        })
+						$(this).parent().siblings(".editmaterielName").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini' style='border: none;width:120px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
 				        });
 					}else{
 							$(this).text("编辑")
