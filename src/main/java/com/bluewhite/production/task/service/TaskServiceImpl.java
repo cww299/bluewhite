@@ -10,6 +10,7 @@ import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -214,6 +215,10 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	
 	@Override
 	public PageResult<Task> findPages(Task param, PageParameter page) {
+//	    List<Sort.Order> orders = new ArrayList<>();
+//	    orders.add(new Sort.Order(Sort.Direction.DESC,"createdAt"));
+//	    orders.add(new Sort.Order(Sort.Direction.ASC,"procedureId"));
+//		 page.setSort(new Sort(orders));
 		 Page<Task> pages = dao.findAll((root,query,cb) -> {
 	        	List<Predicate> predicate = new ArrayList<>();
 	        	//按id过滤

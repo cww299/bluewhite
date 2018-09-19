@@ -819,9 +819,8 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			double sunTime = psList.stream().mapToDouble(AttendancePay::getWorkTime).sum();
 			//考勤加班总时间
 			double overTime = psList.stream().filter(AttendancePay->AttendancePay.getOverTime()!=null).mapToDouble(AttendancePay::getOverTime).sum();
-			
 			//统计出A工资
-			double payA = psList.stream().mapToDouble(AttendancePay::getPayNumber).sum();
+			double payA = psList.stream().filter(AttendancePay->AttendancePay.getPayNumber()!=0.0).mapToDouble(AttendancePay::getPayNumber).sum();
 			
 			
 			//B工资
@@ -852,7 +851,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			//汇总A工资
 			collect.setPayA(NumUtils.round(payA,null));
 			Double sum = collect.getPayB()/collect.getPayA()*100;
-			collect.setRatio(NumUtils.round(sum.isNaN()?0.0:sum,2));
+			collect.setRatio(NumUtils.round(sum.isNaN() || sum.isInfinite() ?0.0:sum,2));
 			//小时单价
 			collect.setTimePrice(NumUtils.round(collect.getPayB()/collect.getTime(),null));
 			//调节后的小时单价
