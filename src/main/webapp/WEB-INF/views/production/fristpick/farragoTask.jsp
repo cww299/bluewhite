@@ -104,7 +104,6 @@
                                             <th class="text-center">工序名</th>
                                             <th class="text-center">现场管理时间</th>
                                             <th class="text-center">备注</th>
-                                            <th class="text-center">工序加绩选择</th>
                                             <th class="text-center">任务价值</th>
                                             <th class="text-center">B工资净值</th>
                                             <th class="text-center">添加工价</th>
@@ -199,10 +198,10 @@
                     	</div>
                     	<div class="form-group">
                             <label class="col-sm-3 control-label">完成人</label>
-                                <div class="col-sm-6 complete">
+                                <div class="col-sm-6 completetw">
                                   <input type="text" class="form-control">
                                 </div>
-                                 <div class="col-sm-2 select"></div>
+                                 <div class="col-sm-2 selecttw"></div>
                     	</div>
                     	<div class="form-group">
                             <label class="col-sm-3 control-label">备注</label>
@@ -332,7 +331,6 @@
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center edit name">'+o.time+'</td>'
 		      				+'<td class="text-center edit name">'+o.remarks+'</td>'
-		      				+'<td class="text-center edit name">'+o.performance+'</td>'
 		      				+'<td class="text-center edit name">'+parseFloat((o.price).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit name">'+parseFloat((o.payB).toFixed(3))+'</td>'
 		      				+'<td class="text-center "><button class="btn btn-primary btn-trans btn-sm savemodePerformance" data-toggle="modal" data-target="#myModaltw" data-id="'+o.id+'")">查看加价</button></td>'
@@ -459,7 +457,7 @@
 					 var arr=new Array();
 					var html="";
 					$.ajax({
-						url:"/farragoTask/getUserPerformance",
+						url:"${ctx}/farragoTask/getUserPerformance",
 						data:postData,
 						type:"GET",
 						beforeSend:function(){
@@ -550,18 +548,18 @@
 									
 									success:function(result){
 										$(result.data).each(function(i,o){
-											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input></div>'
+											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxee" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input></div>'
 										})
-										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
+										var s="<div class='input-group'><input type='checkbox' class='checkallee'>全选</input></div>"
 										$('.select').html(s+htmltwo)
-										$(".checkall").on('click',function(){
+										$(".checkallee").on('click',function(){
 							                    if($(this).is(':checked')){ 
-										 			$('.stuCheckBox').each(function(){  
+										 			$('.stuCheckBoxee').each(function(){  
 							                    //此处如果用attr，会出现第三次失效的情况  
 							                     		$(this).prop("checked",true);
 										 			})
 							                    }else{
-							                    	$('.stuCheckBox').each(function(){ 
+							                    	$('.stuCheckBoxee').each(function(){ 
 							                    		$(this).prop("checked",false);
 							                    		
 							                    	})
@@ -617,7 +615,7 @@
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
 							  var arry=new Array()
-								$(".stuCheckBox:checked").each(function() {   
+								$(".stuCheckBoxee:checked").each(function() {   
 								    arry.push($(this).val());   
 								}); 
 								if(arr.length<=0){
@@ -873,14 +871,14 @@
 			      			  $(result.data).each(function(k,j){
 			      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
 			      			  });  
-			      			 $('.complete').html("<select class='form-control selectcomplete'><option value="+0+">请选择</option><option value="+""+">全部</option>"+htmlth+"</select>") 
+			      			 $('.completetw').html("<select class='form-control selectcompletee'><option value="+0+">请选择</option><option value="+""+">全部</option>"+htmlth+"</select>") 
 							//改变事件
-			      			 $(".selectcomplete").change(function(){
+			      			 $(".selectcompletee").change(function(){
 			      				var htmltwo = "";
 			      				var	id=$(this).val()
 								   var data={
-			      						type:2,
-										  id:id,
+			      							type:2,
+										 	 id:id,
 								   }
 			      				$.ajax({
 									url:"${ctx}/production/allGroup",
@@ -896,19 +894,19 @@
 										$(result.data).each(function(i,o){
 										
 										$(o.users).each(function(i,o){
-											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input></div>'
+											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input></div>'
 										})
 										})
-										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
-										$('.select').html(s+htmltwo)
-										$(".checkall").on('click',function(){
+										var s="<div class='input-group'><input type='checkbox' class='checkalltt'>全选</input></div>"
+										$('.selecttw').html(s+htmltwo)
+										$(".checkalltt").on('click',function(){
 							                    if($(this).is(':checked')){ 
-										 			$('.stuCheckBox').each(function(){  
+										 			$('.stuCheckBoxtt').each(function(){  
 							                    //此处如果用attr，会出现第三次失效的情况  
 							                     		$(this).prop("checked",true);
 										 			})
 							                    }else{
-							                    	$('.stuCheckBox').each(function(){ 
+							                    	$('.stuCheckBoxtt').each(function(){ 
 							                    		$(this).prop("checked",false);
 							                    		
 							                    	})
@@ -962,8 +960,10 @@
 								 performance="";
 							 }
 							  var arr=new Array()
-								$(".stuCheckBox:checked").each(function() {   
+							  console.log($(".stuCheckBoxtt:checked").each(function() {}))
+								$(".stuCheckBoxtt:checked").each(function() {   
 								    arr.push($(this).val());   
+								    console.log($(this).val())
 								});
 							  if(arr.length<=0){
 								 return layer.msg("领取人不能为空", {icon:2 });
