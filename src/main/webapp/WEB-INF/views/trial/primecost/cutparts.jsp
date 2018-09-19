@@ -230,18 +230,18 @@
 		      				+'<td class="text-center editt name" >'+o.cutPartsNumber+'</td>'
 		      				+'<td class="text-center" >'+o.materielNumber+'</td>'
 		      				+'<td class="text-center editmaterielName name" >'+o.materielName+'</td>'
-		      				+'<td class="text-center edit name" >'+a+'</td>'
-		      				+'<td class="text-center edit name" >'+o.oneMaterial+'</td>'
-		      				+'<td class="text-center edit name" >'+o.unit+'</td>'
-		      				+'<td class="text-center edit name" >'+parseFloat((o.scaleMaterial).toFixed(3))+'</td>'
-		      				+'<td class="text-center edit name" >'+o.addMaterial+'</td>'
-		      				+'<td class="text-center edit name" >'+o.manualLoss+'</td>'
-		      				+'<td class="text-center edit name" >'+parseFloat((o.productCost).toFixed(3))+'</td>'
-		      				+'<td class="text-center edit name" >'+o.productRemark+'</td>'
-		      				+'<td class="text-center edit name" >'+parseFloat((o.batchMaterial).toFixed(3))+'</td>'
-		      				+'<td class="text-center edit name" >'+parseFloat((o.batchMaterialPrice).toFixed(3))+'</td>'
-		      				+'<td class="text-center edit name" >'+o.complexMaterielNumber+'</td>'
-		      				+'<td class="text-center edit name" >'+o.complexMaterielName+'</td>'
+		      				+'<td class="text-center doubleComposite name" >'+a+'</td>'
+		      				+'<td class="text-center oneMaterial name" >'+o.oneMaterial+'</td>'
+		      				+'<td class="text-center unit name" >'+o.unit+'</td>'
+		      				+'<td class="text-center  name" >'+parseFloat((o.scaleMaterial).toFixed(3))+'</td>'
+		      				+'<td class="text-center  name" >'+o.addMaterial+'</td>'
+		      				+'<td class="text-center manualLoss name" >'+o.manualLoss+'</td>'
+		      				+'<td class="text-center  name" >'+parseFloat((o.productCost).toFixed(3))+'</td>'
+		      				+'<td class="text-center  name" >'+o.productRemark+'</td>'
+		      				+'<td class="text-center  name" >'+parseFloat((o.batchMaterial).toFixed(3))+'</td>'
+		      				+'<td class="text-center  name" >'+parseFloat((o.batchMaterialPrice).toFixed(3))+'</td>'
+		      				+'<td class="text-center  name" >'+o.complexMaterielNumber+'</td>'
+		      				+'<td class="text-center complexMaterielName name" >'+o.complexMaterielName+'</td>'
 		      				+'<td class="text-center edit name" >'+b+'</td>'
 		      				+'<td class="text-center edit name" >'+parseFloat((o.complexProductCost*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit name" >'+o.complexProductRemark+'</td>'
@@ -249,7 +249,7 @@
 		      				+'<td class="text-center edit name" >'+parseFloat((o.complexBatchMaterial*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit name" >'+parseFloat((o.batchComplexMaterialPrice*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit name" >'+parseFloat((o.batchComplexAddPrice*1).toFixed(3))+'</td>'
-							+'<td class="text-center edit"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button></td></tr>'
+							+'<td class="text-center edit"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+' data-composite='+o.composite+' data-unit='+o.unit+'>编辑</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
@@ -283,13 +283,39 @@
 			
 			this.loadEvents = function(){
 				//修改方法
+				//选择单位
+				var data = {
+					type:"unit",
+				}
+				var index;
+			    var html = '';
+			    var htmlto= '';
+			    $.ajax({
+				      url:"${ctx}/product/getBaseOne",
+				      data:data,
+				      type:"GET",
+				     
+		      		  success: function (result) {
+		      			 $(result.data).each(function(i,o){
+		      				html +='<option value="'+o.name+'">'+o.name+'</option>'
+		      			}); 
+				       htmlto='<select class="selectunit" style="border: none;width:50px; height:30px; background-color: #BFBFBF;"><option value=""></option>'+html+'</select>'
+		      		  },error:function(){
+							layer.msg("加载失败！", {icon: 2});
+							layer.close(index);
+					  }
+				  });
+			    
 				$('.update').on('click',function(){
+					var aa=$(this).data("composite")
+					var cc=$(this).data("unit")
+					console.log(cc)
 					if($(this).text() == "编辑"){
 						$(this).text("保存")
 						
 						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
 
-				            $(this).html("<input class='input-mini' style='border: none;width:68px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				            $(this).html("<input class='input-mini cuttingName' style='border: none;width:68px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
 				        })
 						$(this).parent().siblings(".editt").each(function() {  // 获取当前行的其他单元格
 
@@ -297,8 +323,36 @@
 				        })
 						$(this).parent().siblings(".editmaterielName").each(function() {  // 获取当前行的其他单元格
 
+				            $(this).html("<input class='input-mini materiel' style='border: none;width:120px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				        })
+				        $(this).parent().siblings(".doubleComposite").each(function() {  // 获取当前行的其他单元格
+				        	 $(this).html("<select class='input-mini selectdoubleComposite' style='border: none;width:60px; height:30px; background-color: #BFBFBF;'><option value='0'></option><option value='1'>复</option></select>");
+				            /* $(this).html("<input class='input-mini' style='border: none;width:120px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>"); */
+				        })
+				        $(this).parent().siblings(".oneMaterial").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini' style='border: none;width:60px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				        })
+				        $(this).parent().siblings(".unit").each(function() {  // 获取当前行的其他单元格
+				        	 $(this).html(htmlto);
+				        })
+				        $(this).parent().siblings(".manualLoss").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini' style='border: none;width:40px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				        })
+				        $(this).parent().siblings(".complexMaterielName").each(function() {  // 获取当前行的其他单元格
+
 				            $(this).html("<input class='input-mini' style='border: none;width:120px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        });
+				        })
+				        $('.selectdoubleComposite').each(function(i,o){
+						var id=aa;
+						$(o).val(id);
+						})
+						$('.selectunit').each(function(i,o){
+						var cc=cc;
+						$(o).val(cc)
+						}) 
+						self.mater();
 					}else{
 							$(this).text("编辑")
 						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
