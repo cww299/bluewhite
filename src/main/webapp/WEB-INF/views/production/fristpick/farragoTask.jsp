@@ -104,7 +104,6 @@
                                             <th class="text-center">工序名</th>
                                             <th class="text-center">现场管理时间</th>
                                             <th class="text-center">备注</th>
-                                            <th class="text-center">工序加绩选择</th>
                                             <th class="text-center">任务价值</th>
                                             <th class="text-center">B工资净值</th>
                                             <th class="text-center">添加工价</th>
@@ -332,7 +331,6 @@
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center edit name">'+o.time+'</td>'
 		      				+'<td class="text-center edit name">'+o.remarks+'</td>'
-		      				+'<td class="text-center edit name">'+o.performance+'</td>'
 		      				+'<td class="text-center edit name">'+parseFloat((o.price).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit name">'+parseFloat((o.payB).toFixed(3))+'</td>'
 		      				+'<td class="text-center "><button class="btn btn-primary btn-trans btn-sm savemodePerformance" data-toggle="modal" data-target="#myModaltw" data-id="'+o.id+'")">查看加价</button></td>'
@@ -459,7 +457,7 @@
 					 var arr=new Array();
 					var html="";
 					$.ajax({
-						url:"/farragoTask/getUserPerformance",
+						url:"${ctx}/farragoTask/getUserPerformance",
 						data:postData,
 						type:"GET",
 						beforeSend:function(){
