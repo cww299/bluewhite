@@ -392,6 +392,12 @@
 						success:function(result){
 							if(0==result.code){
 							layer.msg("删除成功！", {icon: 1});
+							var _data = {
+				        			page:self.getCount(),
+							  		size:13,
+							  		type:2,
+							  		name:$('#name').val(),
+						  	}
 							self.loadPagination(data)
 							layer.close(index);
 							}else{
