@@ -34,5 +34,6 @@ public interface TemporarilyDao extends BaseRepository<Temporarily, Long>{
 	 * @return
 	 */
 	public List<Temporarily> findByTypeAndTemporarilyDateAndGroupId(Integer type, Date temporarilyDate, Long id);
+	
 
 }

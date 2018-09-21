@@ -23,6 +23,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
 import com.bluewhite.production.bacth.dao.BacthDao;
@@ -56,6 +57,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 
 	@Autowired
 	private AttendancePayService attendancePayService;
+	
+	@Autowired
+	private AttendancePayDao attendancePayDao;
 	
 	private final static String  QUALITY_STRING = "贴破洞";
 	
@@ -120,14 +124,38 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				if(task.getPerformanceNumber()!=null){
 					newTask.setPerformancePrice(NumUtils.round(ProTypeUtils.sumtaskPerformancePrice(newTask), null));
 				}
-				
 				dao.save(newTask);
+				
+				
+				
+				
+				//总考勤时间
+				double sunTime = 0;
+				Date orderTimeBegin = DatesUtil.getfristDayOftime(task.getAllotTime());
+				Date orderTimeEnd = DatesUtil.getLastDayOftime(task.getAllotTime());
+				if(task.getType()==2){
+					//总考勤时间
+					for(String userTypeId : task.getUsersIds()){
+						Long userId = Long.parseLong(userTypeId);
+						Temporarily temporarily = temporarilyDao.findByUserIdAndTemporarilyDate(userId,DatesUtil.getfristDayOftime(task.getAllotTime()));
+						if(!StringUtils.isEmpty(temporarily)){
+							sunTime+=temporarily.getWorkTime();
+						}else{
+							List<AttendancePay> 	attendancePay = attendancePayDao.findByUserIdAndAllotTimeBetween(userId,orderTimeBegin,orderTimeEnd);
+							if(attendancePay.size()>0){
+								sunTime+=attendancePay.get(0).getWorkTime();
+							}
+						}
+					}
+					
+				}
 				
 				///员工和任务形成多对多关系
 				if (task.getUsersIds().length>0) {
 					for (int j = 0; j < task.getUsersIds().length; j++) {
 						Long userid = Long.parseLong(task.getUsersIds()[j]);
 						User user = userDao.findOne(userid);
+						SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
 						//给予每个员工b工资
 						PayB payB  = new PayB();
 						payB.setUserId(userid);
@@ -140,35 +168,15 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						payB.setType(newTask.getType());
 						payB.setAllotTime(newTask.getAllotTime());
 						payB.setFlag(newTask.getFlag());
+						
+						Temporarily  temporarily = temporarilyDao.findByUserIdAndTemporarilyDate(userid,DatesUtil.getfristDayOftime(task.getAllotTime()));
+						List<AttendancePay> attendancePay = attendancePayDao.findByUserIdAndAllotTimeBetween(userid,orderTimeBegin,orderTimeEnd);
+						if(StringUtils.isEmpty(temporarily) && attendancePay.size()==0){
+								throw new ServiceException("员工"+user.getUserName()+"没有"+dateFormater.format(task.getAllotTime())+"的考勤记录，无法分配任务");
+						}
 						//计算B工资数值
-						PageParameter page = new PageParameter();
-						AttendancePay param = new AttendancePay();
-						param.setOrderTimeBegin(DatesUtil.getfristDayOftime(task.getAllotTime()));
-						param.setOrderTimeEnd(DatesUtil.getLastDayOftime(task.getAllotTime()));
 						//包装分配任务，员工b工资根据考情占比分配，其他部门是均分
 						if(task.getType()==2){
-							SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
-							//总考勤时间
-							double sunTime = 0;
-							for(String userTypeId : task.getUsersIds()){
-								Long userId = Long.parseLong(userTypeId);
-								param.setUserId(userId);
-								Temporarily  temporarily = temporarilyDao.findByUserIdAndTemporarilyDate(userId,DatesUtil.getfristDayOftime(task.getAllotTime()));
-								if(!StringUtils.isEmpty(temporarily)){
-									sunTime+=temporarily.getWorkTime();
-								}else{
-									List<AttendancePay> attendancePay = attendancePayService.findPages(param, page).getRows();
-									if(attendancePay.size()>0){
-										sunTime+=attendancePay.get(0).getWorkTime();
-									}
-								}
-							}
-							param.setUserId(userid);
-							Temporarily  temporarily = temporarilyDao.findByUserIdAndTemporarilyDate(userid,DatesUtil.getfristDayOftime(task.getAllotTime()));
-							List<AttendancePay> attendancePay = attendancePayService.findPages(param, page).getRows();
-							if(StringUtils.isEmpty(temporarily) && attendancePay.size()==0){
-									throw new ServiceException("员工"+user.getUserName()+"没有"+dateFormater.format(task.getAllotTime())+"的考勤记录，无法分配任务");
-							}
 							//按考情时间占比分配B工资
 							payB.setPayNumber(newTask.getPayB() * (attendancePay.size()==0 ? temporarily.getWorkTime() : attendancePay.get(0).getWorkTime())/sunTime);
 						}else{
