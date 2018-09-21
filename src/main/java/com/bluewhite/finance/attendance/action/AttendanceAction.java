@@ -172,13 +172,15 @@ public class AttendanceAction {
 		@ResponseBody
 		public CommonResponse updateAllAttendance(HttpServletRequest request,String[] ids) {
 			CommonResponse cr = new CommonResponse();
+			int count = 0;
 			if(!StringUtils.isEmpty(ids)){
 				for (int i = 0; i < ids.length; i++) {
 					Long id = Long.parseLong(ids[i]);
 					attendancePayService.delete(id);
+					count++;
 				}
 			}
-			cr.setMessage("删除成功");
+			cr.setMessage("成功删除"+count+"条");
 			return cr;
 		}
 		
