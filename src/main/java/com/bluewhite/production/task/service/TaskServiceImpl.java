@@ -169,14 +169,15 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						payB.setAllotTime(newTask.getAllotTime());
 						payB.setFlag(newTask.getFlag());
 						
-						Temporarily  temporarily = temporarilyDao.findByUserIdAndTemporarilyDate(userid,DatesUtil.getfristDayOftime(task.getAllotTime()));
-						List<AttendancePay> attendancePay = attendancePayDao.findByUserIdAndAllotTimeBetween(userid,orderTimeBegin,orderTimeEnd);
-						if(StringUtils.isEmpty(temporarily) && attendancePay.size()==0){
-								throw new ServiceException("员工"+user.getUserName()+"没有"+dateFormater.format(task.getAllotTime())+"的考勤记录，无法分配任务");
-						}
+				
 						//计算B工资数值
 						//包装分配任务，员工b工资根据考情占比分配，其他部门是均分
 						if(task.getType()==2){
+							Temporarily  temporarily = temporarilyDao.findByUserIdAndTemporarilyDate(userid,DatesUtil.getfristDayOftime(task.getAllotTime()));
+							List<AttendancePay> attendancePay = attendancePayDao.findByUserIdAndAllotTimeBetween(userid,orderTimeBegin,orderTimeEnd);
+							if(StringUtils.isEmpty(temporarily) && attendancePay.size()==0){
+									throw new ServiceException("员工"+user.getUserName()+"没有"+dateFormater.format(task.getAllotTime())+"的考勤记录，无法分配任务");
+							}
 							//按考情时间占比分配B工资
 							payB.setPayNumber(newTask.getPayB() * (attendancePay.size()==0 ? temporarily.getWorkTime() : attendancePay.get(0).getWorkTime())/sunTime);
 						}else{
