@@ -232,6 +232,12 @@
 				  		type:3,
 
 				} 
+				this.getCount = function(){
+			  		return _count;
+			  	}
+			  	this.setCount = function(count){
+			  		_count=count;
+			  	}
 			this.init = function(){
 				
 				//注册绑定事件
@@ -269,6 +275,7 @@
 							+'<td class="text-center"><button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
+		      			self.setCount(result.data.pageNum)
 				        //显示分页
 					   	 laypage({
 					      cont: 'pager', 
@@ -321,6 +328,12 @@
 						success:function(result){
 							if(0==result.code){
 							layer.msg("删除成功！", {icon: 1});
+							var _data = {
+				        			page:self.getCount(),
+							  		size:13,
+							  		type:3,
+							  		name:$('#name').val(),
+						  	}
 							self.loadPagination(data)
 							layer.close(index);
 							}else{

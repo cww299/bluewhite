@@ -227,6 +227,12 @@
 		  	this.getCache = function(){
 		  		return _cache;
 		  	}
+			this.getCount = function(){
+		  		return _count;
+		  	}
+		  	this.setCount = function(count){
+		  		_count=count;
+		  	}
 			 var data={
 						page:1,
 				  		size:13,	
@@ -268,6 +274,7 @@
 							+'<td class="text-center"><button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
+		      			self.setCount(result.data.pageNum)
 				        //显示分页
 					   	 laypage({
 					      cont: 'pager', 
@@ -320,6 +327,12 @@
 						success:function(result){
 							if(0==result.code){
 							layer.msg("删除成功！", {icon: 1});
+							var data = {
+				        			page:self.getCount(),
+							  		size:13,
+							  		type:1,
+							  		name:$('#name').val(),
+						  	}
 							self.loadPagination(data)
 							layer.close(index);
 							}else{

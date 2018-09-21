@@ -263,6 +263,12 @@
 		  	this.getCache = function(){
 		  		return _cache;
 		  	}
+		  	this.getCount = function(){
+		  		return _count;
+		  	}
+		  	this.setCount = function(count){
+		  		_count=count;
+		  	}
 			 var data={
 						page:1,
 				  		size:13,	
@@ -423,6 +429,7 @@
 		      				+'<td class="text-center  ">'+parseFloat((o.payNumber).toFixed(2))+'</td>'
 		      				+'<td class="text-center"> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 		      			}); 
+		      			self.setCount(result.data.pageNum)
 				        //显示分页
 					   	 laypage({
 					      cont: 'pagerth', 
@@ -475,6 +482,14 @@
 						success:function(result){
 							if(0==result.code){
 							layer.msg("删除成功！", {icon: 1});
+							var data = {
+				        			page:self.getCount(),
+							  		size:13,
+							  		type:1,
+							  		userName:$('#usernameth').val(),
+						  			orderTimeBegin:$("#startTimeth").val(),
+						  			orderTimeEnd:$("#endTimeth").val(),
+						  	}
 							self.loadPaginationth(data)
 							layer.close(index);
 							}else{
