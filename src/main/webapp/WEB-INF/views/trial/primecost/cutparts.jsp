@@ -450,7 +450,7 @@
 								
 								success:function(result){
 									if(0==result.code){
-									layer.msg("修改成功！", {icon: 1});
+									layer.msg(result.message, {icon: 1});
 									var data={
 											page:self.getCount(),
 									  		size:13,	
@@ -459,7 +459,7 @@
 								   self.loadPagination(data);
 									layer.close(index);
 									}else{
-										layer.msg("修改失败！", {icon: 1});
+										layer.msg(result.message, {icon: 2});
 										layer.close(index);
 									}
 								},error:function(){
