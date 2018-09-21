@@ -102,7 +102,6 @@ public class CollectPay extends BaseEntity<Long> {
 	 * 上浮后的加绩工资
 	 */
 	@Column(name = "add_performance_pay")
-	@Poi(name = "给予绩效", column = "C")
 	private Double addPerformancePay;
 	
 	/**
@@ -176,7 +175,6 @@ public class CollectPay extends BaseEntity<Long> {
 	/**
 	 * 日期
 	 */
-	@Poi(name = "日期", column = "D")
 	private String startDate;
 	
 	

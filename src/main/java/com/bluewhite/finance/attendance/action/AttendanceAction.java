@@ -170,9 +170,14 @@ public class AttendanceAction {
 		 */
 		@RequestMapping(value = "/finance/deleteAttendance", method = RequestMethod.GET)
 		@ResponseBody
-		public CommonResponse updateAllAttendance(HttpServletRequest request,Long id) {
+		public CommonResponse updateAllAttendance(HttpServletRequest request,String[] ids) {
 			CommonResponse cr = new CommonResponse();
-			attendancePayService.delete(id);
+			if(!StringUtils.isEmpty(ids)){
+				for (int i = 0; i < ids.length; i++) {
+					Long id = Long.parseLong(ids[i]);
+					attendancePayService.delete(id);
+				}
+			}
 			cr.setMessage("删除成功");
 			return cr;
 		}
