@@ -38,7 +38,7 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(CutParts.class,"productId","cutPartsName","cutPartsNumber","allPerimeter","perimeter","materielNumber"
+				.addRetainTerm(CutParts.class,"id","productId","cutPartsName","cutPartsNumber","allPerimeter","perimeter","materielNumber"
 						,"materielName","composite","doubleComposite","complexMaterielNumber","complexMaterielName","oneMaterial","unit"
 						,"scaleMaterial","addMaterial","manualLoss","productCost","productRemark","batchMaterial","batchMaterialPrice"
 						,"complexProductCost","complexBatchMaterial","batchComplexMaterialPrice","batchComplexAddPrice","compositeManualLoss"
