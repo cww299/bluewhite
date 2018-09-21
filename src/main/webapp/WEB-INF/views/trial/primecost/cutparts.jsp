@@ -187,7 +187,12 @@
 		  	this.getCache = function(){
 		  		return _cache;
 		  	}
-		  	
+		  	this.getCount = function(){
+		  		return _count;
+		  	}
+		  	this.setCount = function(count){
+		  		_count=count;
+		  	}
 			 var data={
 						page:1,
 				  		size:13,	
@@ -221,37 +226,38 @@
 		      				 }
 		      				var b="";
 		      				 if(o.doubleComposite==1){
-		      					 b="复合"
+		      					 b="面料对复合"
 		      				 }
 		      				 
 		      				html +='<tr>'
 		      				/* +'<td  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:68px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" value="'+o.cutPartsName+'" /></td>' */
-		      				+'<td class="text-center edit name" >'+o.cutPartsName+'</td>'
-		      				+'<td class="text-center editt name" >'+o.cutPartsNumber+'</td>'
-		      				+'<td class="text-center" >'+o.materielNumber+'</td>'
+		      				+'<td class="text-center edit cutPartsNametw" >'+o.cutPartsName+'</td>'
+		      				+'<td class="text-center editt cutPartsNumbertw" >'+o.cutPartsNumber+'</td>'
+		      				+'<td class="text-center materielNumbertw" >'+o.materielNumber+'</td>'
 		      				+'<td class="text-center editmaterielName name" >'+o.materielName+'</td>'
-		      				+'<td class="text-center edit name" >'+a+'</td>'
-		      				+'<td class="text-center edit name" >'+o.oneMaterial+'</td>'
-		      				+'<td class="text-center edit name" >'+o.unit+'</td>'
-		      				+'<td class="text-center edit name" >'+parseFloat((o.scaleMaterial).toFixed(3))+'</td>'
-		      				+'<td class="text-center edit name" >'+o.addMaterial+'</td>'
-		      				+'<td class="text-center edit name" >'+o.manualLoss+'</td>'
-		      				+'<td class="text-center edit name" >'+parseFloat((o.productCost).toFixed(3))+'</td>'
-		      				+'<td class="text-center edit name" >'+o.productRemark+'</td>'
-		      				+'<td class="text-center edit name" >'+parseFloat((o.batchMaterial).toFixed(3))+'</td>'
-		      				+'<td class="text-center edit name" >'+parseFloat((o.batchMaterialPrice).toFixed(3))+'</td>'
-		      				+'<td class="text-center edit name" >'+o.complexMaterielNumber+'</td>'
-		      				+'<td class="text-center edit name" >'+o.complexMaterielName+'</td>'
-		      				+'<td class="text-center edit name" >'+b+'</td>'
-		      				+'<td class="text-center edit name" >'+parseFloat((o.complexProductCost*1).toFixed(3))+'</td>'
-		      				+'<td class="text-center edit name" >'+o.complexProductRemark+'</td>'
-		      				+'<td class="text-center edit name" >'+o.compositeManualLoss*1+'</td>'
-		      				+'<td class="text-center edit name" >'+parseFloat((o.complexBatchMaterial*1).toFixed(3))+'</td>'
-		      				+'<td class="text-center edit name" >'+parseFloat((o.batchComplexMaterialPrice*1).toFixed(3))+'</td>'
-		      				+'<td class="text-center edit name" >'+parseFloat((o.batchComplexAddPrice*1).toFixed(3))+'</td>'
-							+'<td class="text-center edit"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button></td></tr>'
+		      				+'<td class="text-center composite name" >'+a+'</td>'
+		      				+'<td class="text-center oneMaterial name" >'+o.oneMaterial+'</td>'
+		      				+'<td class="text-center unite name" >'+o.unit+'</td>'
+		      				+'<td class="text-center  name" >'+parseFloat((o.scaleMaterial).toFixed(3))+'</td>'
+		      				+'<td class="text-center  name" >'+o.addMaterial+'</td>'
+		      				+'<td class="text-center manualLoss name" >'+o.manualLoss+'</td>'
+		      				+'<td class="text-center  unitPrice productCost" >'+parseFloat((o.productCost).toFixed(3))+'</td>'
+		      				+'<td class="text-center  unit productRemark" >'+o.productRemark+'</td>'
+		      				+'<td class="text-center  name" >'+parseFloat((o.batchMaterial).toFixed(3))+'</td>'
+		      				+'<td class="text-center  name" >'+parseFloat((o.batchMaterialPrice).toFixed(3))+'</td>'
+		      				+'<td class="text-center  name complexMaterielNumbertw" >'+o.complexMaterielNumber+'</td>'
+		      				+'<td class="text-center complexMaterielName name" >'+o.complexMaterielName+'</td>'
+		      				+'<td class="text-center doubleComposite name" >'+b+'</td>'
+		      				+'<td class="text-center  unitPricetw complexProductCost" >'+parseFloat((o.complexProductCost*1).toFixed(3))+'</td>'
+		      				+'<td class="text-center  unittw complexProductRemark" >'+o.complexProductRemark+'</td>'
+		      				+'<td class="text-center compositeManualLosstw name" >'+o.compositeManualLoss*1+'</td>'
+		      				+'<td class="text-center  name" >'+parseFloat((o.complexBatchMaterial*1).toFixed(3))+'</td>'
+		      				+'<td class="text-center  name" >'+parseFloat((o.batchComplexMaterialPrice*1).toFixed(3))+'</td>'
+		      				+'<td class="text-center  name" >'+parseFloat((o.batchComplexAddPrice*1).toFixed(3))+'</td>'
+							+'<td class="text-center "><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+' data-composite='+o.composite+' data-unit='+o.unitId+' data-doublecomposite='+o.doubleComposite+'>编辑</button></td></tr>'
 							
 		      			}); 
+		      			self.setCount(result.data.pageNum)
 				        //显示分页
 					   	 laypage({
 					      cont: 'pager', 
@@ -283,24 +289,90 @@
 			
 			this.loadEvents = function(){
 				//修改方法
+				//选择单位
+				var data = {
+					type:"unit",
+				}
+				var index;
+			    var html = '';
+			    var htmlto= '';
+			    $.ajax({
+				      url:"${ctx}/product/getBaseOne",
+				      data:data,
+				      type:"GET",
+				     
+		      		  success: function (result) {
+		      			 $(result.data).each(function(i,o){
+		      				html +='<option value="'+o.id+'">'+o.name+'</option>'
+		      			}); 
+				       htmlto='<select class="text-center selectunit"  style="border: none;width:50px; height:30px; background-color: #BFBFBF;text-align-last: center"><option value=""></option>'+html+'</select>'
+		      		  },error:function(){
+							layer.msg("加载失败！", {icon: 2});
+							layer.close(index);sa
+					  }
+				  });
+			    
 				$('.update').on('click',function(){
+					var aa=$(this).data("composite")
+					var cc=$(this).data("unit")
+					var dd=$(this).data("doublecomposite")
 					if($(this).text() == "编辑"){
 						$(this).text("保存")
 						
 						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
 
-				            $(this).html("<input class='input-mini' style='border: none;width:68px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				            $(this).html("<input class='input-mini text-center cuttingName' style='border: none;width:68px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
 				        })
 						$(this).parent().siblings(".editt").each(function() {  // 获取当前行的其他单元格
 
-				            $(this).html("<input class='input-mini' style='border: none;width:40px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				            $(this).html("<input class='input-mini text-center' style='border: none;width:40px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
 				        })
 						$(this).parent().siblings(".editmaterielName").each(function() {  // 获取当前行的其他单元格
 
-				            $(this).html("<input class='input-mini' style='border: none;width:120px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        });
+				            $(this).html("<input class='input-mini text-center materiel' style='border: none;width:120px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				        })
+				        $(this).parent().siblings(".composite").each(function() {  // 获取当前行的其他单元格
+				        	 $(this).html('<select   class="input-mini  selectdoubleComposite"  style="border: none;width:60px; height:30px; background-color: #BFBFBF;appearance:none;text-align-last: center"><option value="0"></option><option value="1">复合</option></select>');
+				        })
+				        $(this).parent().siblings(".oneMaterial").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini text-center' style='border: none;width:60px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				        })
+				        $(this).parent().siblings(".unite").each(function() {  // 获取当前行的其他单元格
+				        	 $(this).html(htmlto);
+				        })
+				        $(this).parent().siblings(".manualLoss").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini text-center' style='border: none;width:40px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				        })
+				        $(this).parent().siblings(".complexMaterielName").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini complexMateriel  text-center' style='border: none;width:120px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				        })
+				        $(this).parent().siblings(".doubleComposite").each(function() {  // 获取当前行的其他单元格
+				        	 $(this).html("<select  class='input-mini text-center selectdoubleCompositetw' style='border: none;width:90px; height:30px; background-color: #BFBFBF;text-align-last: center'><option value='0'></option><option value='1'>面料对复合</option></select>");
+				        })
+				        $(this).parent().siblings(".compositeManualLosstw").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini text-center' style='border: none;width:40px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				        })
+				       
+				        $('.selectdoubleComposite').each(function(i,o){
+						var id=aa;
+						$(o).val(id);
+						})
+						$('.selectunit').each(function(i,o){
+						
+						$(o).val(cc)
+						}) 
+						 $('.selectdoubleCompositetw').each(function(i,o){
+						$(o).val(dd);
+						})
+						self.mater();
 					}else{
 							$(this).text("编辑")
+							/* $(this).parent().parent().find(".composite").find(".selectdoubleComposite").attr("disabled",'disabled');
+						  $(this).parent().parent().find(".composite").find(".selectdoubleComposite").css('background','none'); */
 						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
 
 					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
@@ -308,18 +380,66 @@
 					       
 					                $(this).html(obj_text.val()); 
 									
-							});
-							
+							})
+							$(this).parent().siblings(".editt").each(function() {  // 获取当前行的其他单元格
+
+					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+					                $(this).html(obj_text.val()); 
+							})
+							$(this).parent().siblings(".editmaterielName").each(function() {  // 获取当前行的其他单元格
+
+					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+					                $(this).html(obj_text.val()); 
+							})
+							$(this).parent().siblings(".oneMaterial").each(function() {  // 获取当前行的其他单元格
+
+					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+					                $(this).html(obj_text.val()); 
+							})
+							$(this).parent().siblings(".manualLoss").each(function() {  // 获取当前行的其他单元格
+
+					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+					                $(this).html(obj_text.val()); 
+							})
+							$(this).parent().siblings(".complexMaterielName").each(function() {  // 获取当前行的其他单元格
+
+					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+					                $(this).html(obj_text.val()); 
+							})
+							$(this).parent().siblings(".compositeManualLosstw").each(function() {  // 获取当前行的其他单元格
+
+					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+					                $(this).html(obj_text.val()); 
+							})
+							/* $(this).parent().siblings(".doubleComposite").each(function() {  // 获取当前行的其他单元格
+
+								$(this).removeAttr("style");
+					            
+							}) */
 							var postData = {
 									id:$(this).data('id'),
-									number:$(this).parent().parent('tr').find(".number").text(),
-									remarks:$(this).parent().parent('tr').find(".remarks").text(),
-									allotTime:$(this).parent().parent('tr').find(".allotTime").text(),
+									cutPartsName:$(this).parent().parent('tr').find(".cutPartsNametw").text(),
+									cutPartsNumber:$(this).parent().parent('tr').find(".cutPartsNumbertw").text(),
+									materielNumber:$(this).parent().parent('tr').find(".materielNumbertw").text(),
+									materielName:$(this).parent().parent('tr').find(".editmaterielName").text(),
+									composite:$(this).parent().parent('tr').find(".composite").find(".selectdoubleComposite").val(),
+									oneMaterial:$(this).parent().parent('tr').find(".oneMaterial").text(),
+									unitId:$(this).parent().parent('tr').find(".unite").find(".selectunit").val(),
+									unit:$(this).parent().parent('tr').find(".unite option:selected").text(),
+									manualLoss:$(this).parent().parent('tr').find(".manualLoss").text(),
+									productCost:$(this).parent().parent('tr').find(".productCost").text(),
+									productRemark:$(this).parent().parent('tr').find(".productRemark").text(),
+									complexMaterielNumber:$(this).parent().parent('tr').find(".complexMaterielNumbertw").text(),
+									complexMaterielName:$(this).parent().parent('tr').find(".complexMaterielName").text(),
+									doubleComposite:$(this).parent().parent('tr').find(".doubleComposite").find(".selectdoubleCompositetw").val(),
+									complexProductCost:$(this).parent().parent('tr').find(".complexProductCost").text(),
+									complexProductRemark:$(this).parent().parent('tr').find(".complexProductRemark").text(),
+									compositeManualLoss:$(this).parent().parent('tr').find(".compositeManualLosstw").text(),
 							}
 							
 							var index;
 							$.ajax({
-								url:"${ctx}/bacth/addBacth",
+								url:"${ctx}/product/updateCutParts",
 								data:postData,
 								type:"POST",
 								beforeSend:function(){
@@ -330,18 +450,16 @@
 								
 								success:function(result){
 									if(0==result.code){
-									layer.msg("修改成功！", {icon: 1});
+									layer.msg(result.message, {icon: 1});
 									var data={
 											page:self.getCount(),
 									  		size:13,	
-									  		type:1,
-									  		flag:0,
-									  		status:$('#selectstate').val(),
+									  		
 									} 
 								   self.loadPagination(data);
 									layer.close(index);
 									}else{
-										layer.msg("修改失败！", {icon: 1});
+										layer.msg(result.message, {icon: 2});
 										layer.close(index);
 									}
 								},error:function(){
@@ -410,7 +528,7 @@
 				     
 		      		  success: function (result) {
 		      			 $(result.data).each(function(i,o){
-		      				html +='<option value="'+o.name+'">'+o.name+'</option>'
+		      				html +='<option value="'+o.id+'">'+o.name+'</option>'
 		      			}); 
 				       var htmlto='<select class="  selectgroupChange" style="border: none;width:50px; height:30px; background-color: #BFBFBF;"><option value=""></option>'+html+'</select>'
 					   	$(".selectCompany").html(htmlto); 
@@ -453,7 +571,8 @@
 						materielName:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.materiel').val(),
 						composite:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.selectname').val(),
 						oneMaterial:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.oneMaterial').val(),
-						unit:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.selectgroupChange').val(),
+						unit:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.selectgroupChange option:selected').text(),
+						unitId:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.selectgroupChange').val(),
 						manualLoss:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.manualLoss').val(),
 						productCost:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unitPrice').text(),
 						productRemark:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unit').text(),
