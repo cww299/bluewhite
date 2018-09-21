@@ -73,6 +73,12 @@
 										查&nbsp找
 									</button>
 								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-danger  btn-sm btn-3d start">
+									一键删除
+									</button>
+								</span>
 							</div>
 						</div>
 					</div>
@@ -84,6 +90,12 @@
                                             <table class="table table-hover">
                                     <thead>
                                         <tr>
+                                        <th class="center">
+											<label> 
+											<input type="checkbox" class="ace checks" /> 
+											<span class="lbl"></span>
+											</label>
+											</th>
                                         	<th class="text-center">姓名</th>
                                         	<th class="text-center">考勤日期</th>
                                             <th class="text-center">工作小时</th>
@@ -410,6 +422,24 @@
 					  });
 				  //杂工工资流水结束
 			  }
+			  this.checkedd=function(){
+					
+					$(".checks").on('click',function(){
+						
+	                    if($(this).is(':checked')){ 
+				 			$('.checkboxId').each(function(){  
+	                    //此处如果用attr，会出现第三次失效的情况  
+	                     		$(this).prop("checked",true);
+				 			})
+	                    }else{
+	                    	$('.checkboxId').each(function(){ 
+	                    		$(this).prop("checked",false);
+	                    		
+	                    	})
+	                    }
+	                }); 
+					
+				}
 			this.loadPaginationth=function(data){
 				//A工资
 				var index;
@@ -434,7 +464,7 @@
 		      				 }
 		      				
 		      				
-		      				htmlth +='<tr>'
+		      				htmlth +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center  ">'+o.userName+'</td>'
 		      				+'<td class="text-center ">'+o.allotTime+'</td>'
 		      				+'<td class="text-center edit workTime">'+o.workTime+'</td>'
@@ -444,7 +474,7 @@
 		      				+'<td class="text-center ">'+o.disparity+'</td>'
 		      				+'<td class="text-center  ">'+o.workPrice+'</td>'
 		      				+'<td class="text-center  ">'+o.payNumber+'</td>'
-		      				+'<td class="text-center"> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
+		      				+'<td class="text-center"> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> </td></tr>'
 		      			}); 
 		      			self.setCount(result.data.pageNum)
 				        //显示分页
@@ -472,6 +502,7 @@
 					   	layer.close(index);
 					   	 $("#tablecontentth").html(htmlth); 
 					   	self.loadEvents();
+					   	self.checkedd();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
@@ -479,49 +510,7 @@
 				  });
 			}
 			this.loadEvents = function(){
-				//删除
-				$('.delete').on('click',function(){
-					var postData = {
-							id:$(this).data('id'),
-					}
-					
-					var index;
-					 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
-					$.ajax({
-						url:"${ctx}/finance/deleteAttendance",
-						data:postData,
-						type:"GET",
-						beforeSend:function(){
-							index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								});
-						},
-						
-						success:function(result){
-							if(0==result.code){
-							layer.msg("删除成功！", {icon: 1});
-							var data = {
-				        			page:self.getCount(),
-							  		size:13,
-							  		type:5,
-							  		sign:1,
-							  		userName:$('#usernameth').val(),
-						  			orderTimeBegin:$("#startTimeth").val(),
-						  			orderTimeEnd:$("#endTimeth").val(),
-						  	}
-							self.loadPaginationth(data)
-							layer.close(index);
-							}else{
-								layer.msg("删除失败！", {icon: 1});
-								layer.close(index);
-							}
-						},error:function(){
-							layer.msg("操作失败！", {icon: 2});
-							layer.close(index);
-						}
-					});
-					 })
-				})
+				
 				
 				//修改方法
 				$('.updateremake').on('click',function(){
@@ -578,6 +567,54 @@
 				})
 			}
 			this.events = function(){
+				$('.start').on('click',function(){
+					  var  that=$(".table-hover");
+					  var arr=new Array()//员工id
+					  	that.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+							arr.push($(this).val());   
+						});
+					  var postData = {
+								ids:arr,
+						}
+						
+						var index;
+						 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/finance/deleteAttendance",
+							data:postData,
+							traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+								layer.msg("删除成功！", {icon: 1});
+								var data = {
+					        			page:self.getCount(),
+								  		size:13,
+								  		type:5,
+								  		sign:1,
+								  		userName:$('#usernameth').val(),
+							  			orderTimeBegin:$("#startTimeth").val(),
+							  			orderTimeEnd:$("#endTimeth").val(),
+							  	}
+								self.loadPaginationth(data)
+								layer.close(index);
+								}else{
+									layer.msg("删除失败！", {icon: 1});
+									layer.close(index);
+								}
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 })
+				})
 				$('.searchtask').on('click',function(){
 					var data = {
 				  			page:1,
