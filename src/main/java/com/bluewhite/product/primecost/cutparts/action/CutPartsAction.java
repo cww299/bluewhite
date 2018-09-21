@@ -84,9 +84,9 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 	@ResponseBody
 	public CommonResponse updateCutParts(HttpServletRequest request,CutParts cutParts) {
 		CommonResponse cr = new CommonResponse();
-		if(StringUtils.isEmpty(cutParts.getProductId()) || StringUtils.isEmpty(cutParts.getId())){
+		if(StringUtils.isEmpty(cutParts.getId())){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("产品或裁片不能为空");
+			cr.setMessage("裁片不能为空");
 		}else{
 			try {
 				CutParts oldCutParts = cutPartsService.findOne(cutParts.getId());
