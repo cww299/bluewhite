@@ -39,10 +39,16 @@ public class User extends BaseEntity<Long> {
 	private Boolean isAdmin = false;
 	
 	/**
+	 * 是否是外来人员（0=否，1=是）
+	 */
+	@Column(name = "foreign")
+	private Integer foreign = 0 ;
+	
+	/**
 	 * 是否锁定
 	 */
 	@Column(name = "del_flag")
-	private Integer delFlag = 1;
+	private Integer delFlag = 0;
 
 	/**
 	 * 登录 名
@@ -810,6 +816,15 @@ public class User extends BaseEntity<Long> {
 	public void setGroup(Group group) {
 		this.group = group;
 	}
+
+	public Integer getForeign() {
+		return foreign;
+	}
+
+	public void setForeign(Integer foreign) {
+		this.foreign = foreign;
+	}
+	
 	
 	
 	
