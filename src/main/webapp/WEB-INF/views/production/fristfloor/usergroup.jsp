@@ -704,14 +704,14 @@
 						}, highlighter: function (item) {
 						    //转出成json对象
 							 var item = JSON.parse(item);
-							 var name;
+							/*  var name;
 						      if(item.id==""){
 						    	  
 						    	  name=$('#groupNametw').val()
 						      }else{
 						    	  name=item.name
-						      }
-							return name
+						      } */
+							return item.name
 							//按条件匹配输出
 		                }, matcher: function (item) {
 		                	//转出成json对象
@@ -731,8 +731,15 @@
 						 updater:function(item){
 							//转出成json对象
 							var item = JSON.parse(item);
+							 var name;
+						      if(item.id==""){
+						    	  
+						    	  name=$('#groupNametw').val()
+						      }else{
+						    	  name=item.name
+						      }
 							self.setCache(item.id);
-								return item.name
+								return name
 						}, 
 
 						
