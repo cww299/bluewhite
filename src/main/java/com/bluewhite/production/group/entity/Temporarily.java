@@ -54,8 +54,24 @@ public class Temporarily extends BaseEntity<Long>{
 	@Column(name = "group_id")
 	private Long groupId;
 
+	/**
+	 * 是否是外来人员（0=否，1=是）
+	 */
+	@Column(name = "foreign")
+	private Integer foreign ;
 	
 	
+	
+	public Integer getForeign() {
+		return foreign;
+	}
+
+
+	public void setForeign(Integer foreign) {
+		this.foreign = foreign;
+	}
+
+
 	public Long getGroupId() {
 		return groupId;
 	}
