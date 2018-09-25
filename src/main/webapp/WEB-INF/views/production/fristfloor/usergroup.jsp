@@ -610,6 +610,13 @@
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
+							  var a;
+							  if(self.getCache()==""){
+								  a=1
+							  }else{
+								  a=0
+							  }
+							  console.log(self.getCache())
 							  postData={
 									  userName:$('#groupNametw').val(),
 									  userId:self.getCache(),
@@ -617,6 +624,7 @@
 									  workTime:$('#grouptime').val(),
 									  type:1,
 									  groupId:$('.selectcomplete').val(),
+									  foreign:a,
 							  }
 							  $.ajax({
 									url:"${ctx}/production/addTemporarilyTwo",
@@ -672,18 +680,23 @@
 								data : {
 									page:1,
 							  		size:10,								
-									userName:query,
+									userName:$.trim(query),
 									temporarily:4,
 								},
 								success : function(result) {
+									
 									//转换成 json集合
 									 var resultList = result.data.rows.map(function (item) {
 										 	//转换成 json对象
 					                        var aItem = {name: item.userName, id:item.id}
 					                        //处理 json对象为字符串
-					                        return JSON.stringify(aItem);
+					                         return JSON.stringify(aItem); 
 					                    });
 									//提示框返回数据
+									  if(resultList==""){
+											var aItemtw = {"name":"查无此人", "id":""}
+											resultList.push(JSON.stringify(aItemtw)); 
+										} 
 									 return process(resultList);
 								},
 							})
@@ -691,22 +704,42 @@
 						}, highlighter: function (item) {
 						    //转出成json对象
 							 var item = JSON.parse(item);
+							/*  var name;
+						      if(item.id==""){
+						    	  
+						    	  name=$('#groupNametw').val()
+						      }else{
+						    	  name=item.name
+						      } */
 							return item.name
 							//按条件匹配输出
 		                }, matcher: function (item) {
 		                	//转出成json对象
 					        var item = JSON.parse(item);
-					       /*  $('.product').val(item.name); */
-					     self.setCache(item.id);
-					    	return item.name
+					      /*    $('.product').val(item.name); */
+					      var name;
+					      if(item.id==""){
+					    	  
+					    	  name=$('#groupNametw').val()
+					      }else{
+					    	  name=item.name
+					      }
+					      self.setCache(item.id); 
+					    	 return  name;
 					    },
 						//item是选中的数据
-							
 						 updater:function(item){
 							//转出成json对象
 							var item = JSON.parse(item);
+							 var name;
+						      if(item.id==""){
+						    	  
+						    	  name=$('#groupNametw').val()
+						      }else{
+						    	  name=item.name
+						      }
 							self.setCache(item.id);
-								return item.name
+								return name
 						}, 
 
 						
