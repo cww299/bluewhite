@@ -41,8 +41,8 @@ public class User extends BaseEntity<Long> {
 	/**
 	 * 是否是外来人员（0=否，1=是）
 	 */
-	@Column(name = "foreign")
-	private Integer foreign = 0 ;
+	@Column(name = "foreigns")
+	private Integer foreigns = 0 ;
 	
 	/**
 	 * 是否锁定
@@ -817,13 +817,15 @@ public class User extends BaseEntity<Long> {
 		this.group = group;
 	}
 
-	public Integer getForeign() {
-		return foreign;
+	public Integer getForeigns() {
+		return foreigns;
 	}
 
-	public void setForeign(Integer foreign) {
-		this.foreign = foreign;
+	public void setForeigns(Integer foreigns) {
+		this.foreigns = foreigns;
 	}
+
+
 	
 	
 	

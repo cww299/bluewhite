@@ -57,18 +57,21 @@ public class Temporarily extends BaseEntity<Long>{
 	/**
 	 * 是否是外来人员（0=否，1=是）
 	 */
-	@Column(name = "foreign")
-	private Integer foreign ;
+	@Column(name = "foreigns")
+	private Integer foreigns ;
 	
 	
 	
-	public Integer getForeign() {
-		return foreign;
+
+
+
+	public Integer getForeigns() {
+		return foreigns;
 	}
 
 
-	public void setForeign(Integer foreign) {
-		this.foreign = foreign;
+	public void setForeigns(Integer foreigns) {
+		this.foreigns = foreigns;
 	}
 
 

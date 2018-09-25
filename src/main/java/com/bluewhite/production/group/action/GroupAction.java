@@ -268,14 +268,14 @@ private static final Log log = Log.getLog(GroupAction.class);
 	@ResponseBody
 	public CommonResponse addTemporarily(HttpServletRequest request,Temporarily temporarily){
 		CommonResponse cr = new CommonResponse();
-//		if(temporarily.getUserId()==null){
-//			User user = new User();
-//			user.setForeign(temporarily.getForeign());
-//			user.setLoginName(temporarily.getUserName());
-//			user.setUserName(temporarily.getUserName());
-//			userService.save(user);
-//			temporarily.setUserId(user.getId());
-//		}
+		if(temporarily.getUserId()==null){
+			User user = new User();
+			user.setForeign(temporarily.getForeign());
+			user.setLoginName(temporarily.getUserName());
+			user.setUserName(temporarily.getUserName());
+			userService.save(user);
+			temporarily.setUserId(user.getId());
+		}
 		if(temporarilyDao.findByUserIdAndTemporarilyDate(temporarily.getUserId(), temporarily.getTemporarilyDate())!=null){
 			cr.setMessage("当日已添加过借调人员的工作时间,不必再次添加");
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
