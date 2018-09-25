@@ -270,7 +270,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 		CommonResponse cr = new CommonResponse();
 		if(temporarily.getUserId()==null){
 			User user = new User();
-			user.setForeign(temporarily.getForeign());
+			user.setForeigns(temporarily.getForeigns());
 			user.setLoginName(temporarily.getUserName());
 			user.setUserName(temporarily.getUserName());
 			userService.save(user);
