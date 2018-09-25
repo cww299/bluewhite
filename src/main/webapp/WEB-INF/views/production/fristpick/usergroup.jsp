@@ -899,6 +899,12 @@
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
+							  var a;
+							  if(self.getCache()==""){
+								  a=1
+							  }else{
+								  a=0
+							  }
 							  postData={
 									  userName:$('#groupNametw').val(),
 									  userId:self.getCache(),
@@ -906,6 +912,7 @@
 									  workTime:$('#grouptime').val(),
 									  type:2,
 									  groupId:$('.selectcomplete').val(),
+									  foreign:a,
 							  }
 							  $.ajax({
 									url:"${ctx}/production/addTemporarilyTwo",
@@ -974,6 +981,10 @@
 					                        return JSON.stringify(aItem);
 					                    });
 									//提示框返回数据
+									 if(resultList==""){
+											var aItemtw = {"name":"查无此人", "id":""}
+											resultList.push(JSON.stringify(aItemtw)); 
+										} 
 									 return process(resultList);
 								},
 							})
@@ -986,9 +997,15 @@
 		                }, matcher: function (item) {
 		                	//转出成json对象
 					        var item = JSON.parse(item);
-					       /*  $('.product').val(item.name); */
-					     /* self.setCache(item.id); */
-					    	return item.name
+					        var name;
+						      if(item.id==""){
+						    	  
+						    	  name=$('#groupNametw').val()
+						      }else{
+						    	  name=item.name
+						      }
+						      self.setCache(item.id); 
+						    	 return  name;
 					    },
 						//item是选中的数据
 							
@@ -996,7 +1013,15 @@
 							//转出成json对象
 							var item = JSON.parse(item);
 							self.setCache(item.id);
-								return item.name
+							var name;
+						      if(item.id==""){
+						    	  
+						    	  name=$('#groupNametw').val()
+						      }else{
+						    	  name=item.name
+						      }
+						      self.setCache(item.id); 
+						    	 return  name;
 						}, 
 
 						
