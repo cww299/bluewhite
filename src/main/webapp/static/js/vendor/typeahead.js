@@ -245,7 +245,6 @@
             if (!items.length && !this.options.addItem) {
                 return this.shown ? this.hide() : this;
             }
-
             if (items.length > 0) {
                 this.$element.data('active', items[0]);
             } else {

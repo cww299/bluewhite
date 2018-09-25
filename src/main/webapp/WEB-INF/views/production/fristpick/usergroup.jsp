@@ -962,7 +962,7 @@
 								data : {
 									page:1,
 							  		size:10,								
-									userName:query,
+									userName:$.trim(query),
 									temporarily:4,
 								},
 								success : function(result) {
@@ -987,7 +987,7 @@
 		                	//转出成json对象
 					        var item = JSON.parse(item);
 					       /*  $('.product').val(item.name); */
-					     self.setCache(item.id);
+					     /* self.setCache(item.id); */
 					    	return item.name
 					    },
 						//item是选中的数据
