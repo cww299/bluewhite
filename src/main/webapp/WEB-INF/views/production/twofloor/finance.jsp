@@ -655,7 +655,7 @@
 									id:$(this).data('id'),
 									workTime:$(this).parent().parent('tr').find(".workTime").text(),
 									dutyTime:$(this).parent().parent('tr').find(".dutyTimes").text(),
-									overtime:$(this).parent().parent('tr').find(".overtimes").text(),
+									overTime:$(this).parent().parent('tr').find(".overtimes").text(),
 							}
 							var index;
 							
