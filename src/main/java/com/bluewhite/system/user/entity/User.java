@@ -48,7 +48,7 @@ public class User extends BaseEntity<Long> {
 	 * 是否锁定
 	 */
 	@Column(name = "del_flag")
-	private Integer delFlag = 0;
+	private Integer delFlag = 1;
 
 	/**
 	 * 登录 名
@@ -63,10 +63,10 @@ public class User extends BaseEntity<Long> {
 	private String pictureUrl;
 	
 	/**
-	 * 用户密码,加密后
+	 * 用户密码
 	 */
 	@Column(name = "password")
-	private String password;
+	private String password = "123456";
 
 	/**
 	 * 员工姓名
