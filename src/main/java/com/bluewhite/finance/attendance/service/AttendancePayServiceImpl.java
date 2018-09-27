@@ -9,7 +9,6 @@ import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -19,10 +18,13 @@ import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.basedata.service.BaseDataService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.entity.PageResultStat;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
+import com.bluewhite.production.bacth.entity.Bacth;
 @Service
 public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Long> implements AttendancePayService{
 	
@@ -72,11 +74,13 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 				Predicate[] pre = new Predicate[predicate.size()];
 				query.where(predicate.toArray(pre));
 	        	return null;
-	        }, page);
+	        }, SalesUtils.getQueryNoPageParameter());
 			 if(param.getSign()!=null){
 				 this.countMaxPay(pages.getContent(),param);
 			 }
-	        PageResult<AttendancePay> result = new PageResult<AttendancePay>(pages,page);
+			 PageResultStat<AttendancePay> result = new PageResultStat<>(pages,page);
+			  result.setAutoStateField("workTime", "payNumber");
+			  result.count();
 	        return result;
 	    }
 	
