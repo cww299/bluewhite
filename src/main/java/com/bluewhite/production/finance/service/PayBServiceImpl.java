@@ -40,7 +40,6 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 	private CollectPayService collectPayService;
 	
 	@Override
-//	@Transactional(readOnly = true,propagation = Propagation.NOT_SUPPORTED)
 	public PageResult<PayB> findPages(PayB param, PageParameter page) {
 		System.out.println(System.currentTimeMillis());
 			  Page<PayB> pages = dao.findAll((root,query,cb) -> {

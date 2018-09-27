@@ -247,12 +247,6 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 	@Override
 	public Bacth saveBacth(Bacth bacth) throws Exception {
 		bacth.setAllotTime(ProTypeUtils.countAllotTime(bacth.getAllotTime(), bacth.getType()));
-//		PageParameter page =new PageParameter();
-//		page.setSize(Integer.MAX_VALUE);
-//		if(this.findPages(bacth, page).getRows().size()>0){
-//			
-//		}
-		
 		bacth.setStatus(0);
 		bacth.setReceive(0);
 		List<Procedure> procedureList =procedureDao.findByProductIdAndTypeAndFlag(bacth.getProductId(), bacth.getType(), bacth.getFlag());
@@ -264,4 +258,8 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 		  }
 		return dao.save(bacth);
 	}
+	
+	
+	
+	
 }
