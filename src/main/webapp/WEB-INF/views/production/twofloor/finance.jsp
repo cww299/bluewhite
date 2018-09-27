@@ -346,12 +346,7 @@
 		  	this.setCount = function(count){
 		  		_count=count;
 		  	}
-			 var data={
-						page:1,
-				  		size:13,	
-				  		type:3,
-				  		sign:1,
-				} 
+			 
 			 var myDate = new Date(new Date().getTime() - 86400000);
 				//获取当前年
 				var year=myDate.getFullYear();
@@ -367,8 +362,20 @@
 				var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
 				$('#startTimefr').val(firstdate);
 				$('#endTimefr').val(lastdate);
+				$('#startTime').val(firstdate);
+				$('#endTime').val(lastdate);
+				$('#startTimetw').val(firstdate);
+				$('#endTimetw').val(lastdate);
 				$('#startTimeth').val(firstdate);
 				$('#endTimeth').val(lastdate);
+				var data={
+						page:1,
+				  		size:13,	
+				  		type:3,
+				  		sign:1,
+				  		orderTimeBegin:$("#startTimeth").val(),
+			  			orderTimeEnd:$("#endTimeth").val(),
+				} 
 			this.init = function(){
 				
 				//注册绑定事件
@@ -815,6 +822,7 @@
 							type:3,
 							page:1,
 					  		size:100,	
+					  		sign:1,
 					  		orderTimeBegin:$("#startTimefr").val(),
 				  			orderTimeEnd:$("#endTimefr").val(),
 					}
@@ -825,6 +833,7 @@
 				  			page:1,
 				  			size:13,
 				  			type:3,
+				  			sign:1,
 				  			productName:$('#name').val(),
 				  			userName:$('#username').val(),
 				  			bacth:$('#number').val(),
@@ -839,6 +848,7 @@
 				  			page:1,
 				  			size:13,
 				  			type:3,
+				  			sign:1,
 				  			userName:$('#usernametw').val(),
 				  			taskName:$('#numbertw').val(),
 				  			orderTimeBegin:$("#startTimetw").val(),
@@ -852,6 +862,7 @@
 				  			page:1,
 				  			size:13,
 				  			type:3,
+				  			sign:1,
 				  			userName:$('#usernameth').val(),
 				  			orderTimeBegin:$("#startTimeth").val(),
 				  			orderTimeEnd:$("#endTimeth").val(), 

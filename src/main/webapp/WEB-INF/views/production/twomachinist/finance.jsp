@@ -292,8 +292,20 @@
 				var day = new Date(year,month,0);  
 				var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
 				var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
-				$('#startTimefr').val(firstdate);
-				$('#endTimefr').val(lastdate);
+				$('#startTime').val(firstdate);
+				$('#endTime').val(lastdate);
+				$('#startTimetw').val(firstdate);
+				$('#endTimetw').val(lastdate);
+				$('#startTimeth').val(firstdate);
+				$('#endTimeth').val(lastdate);
+				 var data={
+							page:1,
+					  		size:13,	
+					  		type:4,
+					  		sign:1,
+					  		orderTimeBegin:$("#startTimeth").val(),
+				  			orderTimeEnd:$("#endTimeth").val(),
+					} 
 			this.init = function(){
 				
 				//注册绑定事件
@@ -662,6 +674,7 @@
 				  			page:1,
 				  			size:13,
 				  			type:4,
+				  			sign:1,
 				  			productName:$('#name').val(),
 				  			userName:$('#username').val(),
 				  			bacth:$('#number').val(),
@@ -676,6 +689,7 @@
 				  			page:1,
 				  			size:13,
 				  			type:4,
+				  			sign:1,
 				  			userName:$('#usernametw').val(),
 				  			taskName:$('#numbertw').val(),
 				  			orderTimeBegin:$("#startTimetw").val(),
@@ -689,6 +703,7 @@
 				  			page:1,
 				  			size:13,
 				  			type:4,
+				  			sign:1,
 				  			userName:$('#usernameth').val(),
 				  			orderTimeBegin:$("#startTimeth").val(),
 				  			orderTimeEnd:$("#endTimeth").val(), 
