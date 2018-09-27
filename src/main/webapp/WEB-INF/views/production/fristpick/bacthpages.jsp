@@ -115,7 +115,7 @@
                                             <td class="text-center" id="total"></td>
                                             <td class="text-center"></td>
                                             <td class="text-center"></td>
-                                            <td class="text-center"></td>
+                                            <td class="text-center" id="totaltw"></td>
                                             <td class="text-center"></td>
                                             <td class="text-center"></td>
                                             <td class="text-center"></td>
@@ -356,6 +356,25 @@
                                     <tbody id="tablecontentto">
                                         
                                     </tbody>
+                                    <thead>
+                                        <tr>
+                                       	    <td class="center">合计</td>
+                                        	<td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center" id="total"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                        </tr>
+                                    </thead>
                                 </table>
                                 <div id="pagerr" class="pull-right">
                                 
@@ -423,6 +442,7 @@
 					  }, 
 		      		  success: function (result) {
 		      			  $("#total").text(result.data.statData.stateCount)
+		      			  $("#totaltw").text(result.data.statData.statAmount)
 		      			 $(result.data.rows).each(function(i,o){
 		      				var strname="";
 		      				 if(o.status==1){
