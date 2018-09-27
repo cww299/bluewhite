@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
+import org.springframework.data.domain.Sort;
+
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 
@@ -27,7 +29,7 @@ public class SalesUtils {
      * @return
      */
     public static PageParameter getQueryNoPageParameter() {
-        return new PageParameter(0, Integer.MAX_VALUE);
+        return new PageParameter(0, Integer.MAX_VALUE,new Sort(Sort.Direction.DESC, "id"));
     }
 
     /**
