@@ -9,6 +9,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
@@ -39,7 +40,9 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 	private CollectPayService collectPayService;
 	
 	@Override
+//	@Transactional(readOnly = true,propagation = Propagation.NOT_SUPPORTED)
 	public PageResult<PayB> findPages(PayB param, PageParameter page) {
+		System.out.println(System.currentTimeMillis());
 			  Page<PayB> pages = dao.findAll((root,query,cb) -> {
 		        	List<Predicate> predicate = new ArrayList<>();
 		        	//按id过滤
@@ -88,6 +91,7 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 					query.where(predicate.toArray(pre));
 		        	return null;
 		        }, SalesUtils.getQueryNoPageParameter());
+			  System.out.println(System.currentTimeMillis());
 			  PageResultStat<PayB> result = new PageResultStat<>(pages,page);
 			  result.setAutoStateField(null, "payNumber");
 			  result.count();

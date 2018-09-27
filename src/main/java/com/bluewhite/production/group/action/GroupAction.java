@@ -273,6 +273,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 			user.setForeigns(temporarily.getForeigns());
 			user.setLoginName(temporarily.getUserName());
 			user.setUserName(temporarily.getUserName());
+			user.setStatus(0);
 			userService.save(user);
 			temporarily.setUserId(user.getId());
 		}

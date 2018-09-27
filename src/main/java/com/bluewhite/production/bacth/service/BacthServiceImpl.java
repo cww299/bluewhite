@@ -21,6 +21,7 @@ import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.entity.PageResultStat;
+import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.production.bacth.dao.BacthDao;
@@ -122,28 +123,23 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 					Predicate[] pre = new Predicate[predicate.size()];
 					query.where(predicate.toArray(pre));
 		        	return null;
-		        }, page);
+		        }, SalesUtils.getQueryNoPageParameter());
 		        
-				  if(param.getType() !=null && param.getType()==2){
-					  if(pages.getSize()>0){
-						  for(Bacth bacth : pages.getContent()){
-							  int count = 0;
-							  for(Task ta : bacth.getTasks()){
-								  if(ta.getProcedureName().equals(Constants.BAGABOARD) || ta.getProcedureName().equals(Constants.BOXBOARD)){
-									  count+=ta.getNumber();
-								  }
-							  }
-							  bacth.setPackNumber(bacth.getNumber()-count);
-						  	}
-						 }
-				  }
-				  
+//				  if(param.getType() !=null && param.getType()==2){
+//					  if(pages.getSize()>0){
+//						  for(Bacth bacth : pages.getContent()){
+//							  int count = 0;
+//							  for(Task ta : bacth.getTasks()){
+//								  if(ta.getProcedureName().equals(Constants.BAGABOARD) || ta.getProcedureName().equals(Constants.BOXBOARD)){
+//									  count+=ta.getNumber();
+//								  }
+//							  }
+//							  bacth.setPackNumber(bacth.getNumber()-count);
+//						  	}
+//						 }
+//				  }
 				  PageResultStat<Bacth> result = new PageResultStat<>(pages,page);
-				  if(param.getType() !=null && param.getType()==2){
-					  result.setAutoStateField("packNumber", "sumTaskPrice");
-				  }else{
-					  result.setAutoStateField("number", "sumTaskPrice");
-				  }
+				  result.setAutoStateField("number", "sumTaskPrice");
 				  result.count();
 			  return result;
 		    }

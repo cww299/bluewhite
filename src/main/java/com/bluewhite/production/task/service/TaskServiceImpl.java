@@ -201,6 +201,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		for(Task ta : bacth.getTasks()){
 			sumTaskPrice+=ta.getTaskPrice();
 			if(task.getType()==2){
+//				.substring(0,4)
 				if(ta.getProcedureName().equals(Constants.BAGABOARD) || ta.getProcedureName().equals(Constants.BOXBOARD)){
 					count+=ta.getNumber();
 				}
@@ -219,7 +220,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		return task;
 	}
 	
-	
+
 	
 	
 	@Override
