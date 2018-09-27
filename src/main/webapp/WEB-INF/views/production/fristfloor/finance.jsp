@@ -107,6 +107,19 @@
                                     <tbody id="tablecontentth">
                                         
                                     </tbody>
+                                    <thead>
+                                        <tr>
+                                       	    <td class="text-center">合计</td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center" id="totale"></td>
+                                            <td class="text-center" ></td>
+                                            <td class="text-center" id="totaltw"></td>
+                                            <td class="text-center" ></td>
+                                            <td class="text-center"></td>
+                                            
+                                        </tr>
+                                    </thead>
                                 </table>
                                 <div id="pagerth" class="pull-right"></div>
                                         </div>
@@ -231,6 +244,16 @@
                                     <tbody id="tablecontenttw">
                                         
                                     </tbody>
+                                    <thead>
+                                        <tr>
+                                       	    <td class="text-center">合计</td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center" ></td>
+                                            <td class="text-center" id="totaltr"></td>
+                                            
+                                        </tr>
+                                    </thead>
                                 </table>
                                 <div id="pagertw" class="pull-right"></div>
                                         </div>
@@ -376,6 +399,7 @@
 							  });
 						  }, 
 			      		  success: function (result) {
+			      			$("#totaltr").text(result.data.statData.statAmount)
 			      			 $(result.data.rows).each(function(i,o){
 			      				htmltw +='<tr>'
 			      				+'<td class="text-center edit ">'+o.userName+'</td>'
@@ -448,7 +472,8 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			 
+		      			$("#totale").text(result.data.statData.stateCount)
+		      			  $("#totaltw").text(result.data.statData.statAmount)
 		      			 $(result.data.rows).each(function(i,o){
 		      				htmlth +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center  ">'+o.userName+'</td>'
