@@ -1,6 +1,5 @@
 package com.bluewhite.production.finance.action;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -445,7 +444,17 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		cr.setMessage("查询成功");
 		return cr;
 	}
-
+	
+	
+	@RequestMapping(value = "/finance/all ", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse all(HttpServletRequest request) {
+		CommonResponse cr = new CommonResponse();
+		
+		payBService.findAll();
+		
+		return cr;
+	}
 	
 	
 	
