@@ -304,12 +304,33 @@
 		  	this.setCount = function(count){
 		  		_count=count;
 		  	}
-			 var data={
+			  
+			 var myDate = new Date(new Date().getTime() - 86400000);
+				//获取当前年
+				var year=myDate.getFullYear();
+				//获取当前月
+				var month=myDate.getMonth()+1;
+				//获取当前日
+				var date=myDate.getDate(); 
+				var h=myDate.getHours();       //获取当前小时数(0-23)
+				var m=myDate.getMinutes();     //获取当前分钟数(0-59)
+				var s=myDate.getSeconds(); 
+				var day = new Date(year,month,0);  
+				var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
+				var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
+				$('#startTime').val(firstdate);
+				$('#endTime').val(lastdate);
+				$('#startTimetw').val(firstdate);
+				$('#endTimetw').val(lastdate);
+				$('#startTimeth').val(firstdate);
+				$('#endTimeth').val(lastdate);
+				var data={
 						page:1,
 				  		size:13,	
 				  		type:1,
-
-				} 
+				  		orderTimeBegin:$("#startTimeth").val(),
+			  			orderTimeEnd:$("#endTimeth").val(),
+				}
 			this.init = function(){
 				
 				//注册绑定事件
