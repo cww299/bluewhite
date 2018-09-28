@@ -326,10 +326,15 @@
 			var self = this;
 			//表单jsonArray
 			//初始化js
+			this.getCount = function(){
+		  		return _count;
+		  	}
+		  	this.setCount = function(count){
+		  		_count=count;
+		  	}
 			 var data={
 						page:1,
 				  		size:13,	
-				  		
 				} 
 			this.init = function(){
 			//注册绑定事件
@@ -387,6 +392,7 @@
 							+'<td><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>修改</button></td></tr>'
 							
 		      			}); 
+		      			self.setCount(result.data.pageNum)
 				        //显示分页
 					  laypage({
 					      cont: 'pager', 
@@ -481,7 +487,7 @@
 							      			});  
 							      			var html='<select class="form-control  selectChange">'+htmltwo+'</select>'
 							      			$(".position").html(html);
-							      		
+							      			
 							      			layer.close(indextwo);
 									      },error:function(){
 												layer.msg("加载失败！", {icon: 2});
@@ -495,6 +501,106 @@
 						  });
 						
 						
+					    
+					  var data={
+							id:id		
+						}
+					    $.ajax({
+						      url:"${ctx}/system/user/pages",
+						      data:data,
+						      type:"GET",
+						      beforeSend:function(){
+							 	  index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								  });
+							  }, 
+				      		  success: function (result) {
+				      			 $(result.data.rows).each(function(i,o){
+				      				 var order = i+1;
+				      				var k;
+				      				 if(o.orgName==null){
+				      					 k=""
+				      				 }else{
+				      					 k=o.orgName.name
+				      				 }
+				      				 var l;
+				      				 if(o.position==null){
+				      					 l=""
+				      				 }else{
+				      					 l=o.position.name
+				      				 }
+				      				 var z;
+				      				 if(o.orgName==null){
+				      					 z=""
+				      				 }else{
+				      					 z=o.orgName.id
+				      				 }
+				      				 var u;
+				      				if(o.position==null){
+				      					 u=""
+				      				 }else{
+				      					 u=o.position.id
+				      				 }
+				      				$('.userName').val(o.userName);
+				      				$('.number').val(o.number);
+				      				$('.phone').val(o.phone);
+				      				$('.email').val(o.email);
+				      				$('#birthDate').val(o.birthDate);
+				      				$('.idCard').val(o.idCard);
+				      				$('.permanentAddress').val(o.permanentAddress);
+				      				$('.livingAddress').val(o.livingAddress);
+				      				$('.school').val(o.school);
+				      				$('.major').val(o.major);
+				      				$('.contacts').val(o.contacts);
+				      				$('.information').val(o.information);
+				      				$('#entry').val(o.entry);
+				      				$('#estimate').val(o.estimate);
+				      				$('#actua').val(o.actua);
+				      				$('#socialSecurity').val(o.socialSecurity);
+				      				$('.bankCard1').val(o.bankCard1);
+				      				$('.bankCard2').val(o.bankCard2);
+				      				$('.agreement').val(o.agreement);
+				      				$('.promise').val(o.promise);
+				      				$('.contract').val(o.contract);
+				      				$('#contractDate').val(o.contractDate);
+				      				$('.frequency').val(o.frequency);
+				      				$('#quitDate').val(o.quitDate);
+				      				$('.reason').val(o.reason);
+				      				$('.train').val(o.train);
+				      				$('.remark').val(o.remark);
+				      				var html='<input class="form-control" value="'+l+'" />'
+					      			$(".position").html(html);
+				      				$('.nation').each(function(j,k){
+										var id=o.nation;
+										$(k).val(id);
+									})
+									$('.gender').each(function(j,k){
+										var id=o.gender;
+										$(k).val(id);
+									})
+									$('.marriage').each(function(j,k){
+										var id=o.marriage;
+										$(k).val(id);
+									})
+									$('.procreate').each(function(j,k){
+										var id=o.procreate;
+										$(k).val(id);
+									})
+									$('.education').each(function(j,k){
+										var id=o.education;
+										$(k).val(id);
+									})
+									$('.quit').each(function(j,k){
+										var id=o.quit;
+										$(k).val(id);
+									})
+				      			}); 
+						      },error:function(){
+									layer.msg("加载失败！", {icon: 2});
+									layer.close(index);
+							  }
+						  });
+					    
 						_index = layer.open({
 							  type: 1,
 							  skin: 'layui-layer-rim', //加上边框
@@ -505,11 +611,43 @@
 							  content: dicDiv,
 							  btn: ['确定', '取消'],
 							  yes:function(index, layero){
-								 
 								  postData={
 										  id:id,
-										  orgNameId:$('.selectgroupChange').val(),
-										  positionId:$('.selectChange').val()
+										  userName:$('.userName').val(),
+											number:$('.number').val(),
+											nation:$('.nation').val(),
+											phone:$('.phone').val(),
+											email:$('.email').val(),
+											gender:$('.gender').val(),
+											birthDate:$('#birthDate').val(),
+											idCard:$('.idCard').val(),
+											permanentAddress:$('.permanentAddress').val(),
+											livingAddress:$('.livingAddress').val(),
+											marriage:$('.marriage').val(),
+											procreate:$('.procreate').val(),
+											education:$('.education').val(),
+											school:$('.school').val(),
+											major:$('.major').val(),
+											contacts:$('.contacts').val(),
+											information:$('.information').val(),
+											entry:$('#entry').val(),
+											estimate:$('#estimate').val(),
+											actua:$('#actua').val(),
+											socialSecurity:$('#socialSecurity').val(),
+											bankCard1:$('.bankCard1').val(),
+											bankCard2:$('.bankCard2').val(),
+											agreement:$('.agreement').val(),
+											promise:$('.promise').val(),
+											contract:$('.contract').val(),
+											contractDate:$('#contractDate').val(),
+											frequency:$('.frequency').val(),
+											quit:$('.quit').val(),
+											quitDate:$('#quitDate').val(),
+											reason:$('.reason').val(),
+											train:$('.train').val(),
+											remark:$('.remark').val(),
+											orgNameId:$('.selectgroupChange').val(),
+											positionId:$('.selectChange').val()
 								  }
 								   $.ajax({
 										url:"${ctx}/system/user/update",
@@ -525,15 +663,13 @@
 											if(0==result.code){
 												layer.msg("修改成功！", {icon: 1});
 												 
-												$('.addbatchForm')[0].reset(); 
-												$('#addbatch').hide();
 												var data = {
-											  			page:1,
+											  			page:self.getCount(),
 											  			size:13,
 											  			userName:$('#name').val(),
 											  	}
+												layer.close(index);
 												self.loadPagination(data);
-												
 											}else{
 												layer.msg("修改失败", {icon: 2});
 											}
@@ -546,8 +682,9 @@
 									}); 
 								},
 							  end:function(){
-								  $('.addbatchForm')[0].reset(); 
-								  $('#addbatch').hide();
+								  /*  $('.addbatchForm')[0].reset();  */
+								  /*  $("#addDictDivType").hide(); */
+								  layer.close(index);
 							  }
 						});
 					})
@@ -700,15 +837,12 @@
 										if(0==result.code){
 										  /* $('.addDictDivTypeForm')[0].reset(); */  
 										  var htmlfv="";
-										  var data={
-												   productId:productId,
-												   type:3,
-												   bacthId:bacthId,
-												   procedureTypeId:self.getNum(),
-												   flag:0,
-										   }
 											layer.msg("添加成功！", {icon: 1});
-											
+											var data = {
+										  			page:1,
+										  			size:13,
+										  	}
+											self.loadPagination(data);
 											
 										}else{
 											layer.msg("添加失败", {icon: 2});
