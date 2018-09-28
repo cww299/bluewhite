@@ -2,6 +2,7 @@ package com.bluewhite.production.finance.action;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -445,16 +446,6 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		return cr;
 	}
 	
-	
-	@RequestMapping(value = "/finance/all ", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse all(HttpServletRequest request) {
-		CommonResponse cr = new CommonResponse();
-		
-		payBService.findAll();
-		
-		return cr;
-	}
 	
 	
 	

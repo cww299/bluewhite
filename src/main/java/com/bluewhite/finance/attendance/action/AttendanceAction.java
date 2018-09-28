@@ -145,9 +145,12 @@ public class AttendanceAction {
 			if(!StringUtils.isEmpty(attendancePay.getUsersId())){
 				for (int i = 0; i < attendancePay.getUsersId().length; i++) {
 					Long userid = Long.parseLong(attendancePay.getUsersId()[i]);
+					User user = userService.findOne(userid);
+					user.setPrice(attendancePay.getWorkPrice());
+					userService.save(user);
 					attendancePay.setUserId(userid);
-					attendancePay.setOrderTimeBegin(DatesUtil.getFirstDayOfMonth(attendancePay.getAllotTime()));
-					attendancePay.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(attendancePay.getAllotTime()));
+					attendancePay.setOrderTimeBegin(DatesUtil.getfristDayOftime(DatesUtil.getFirstDayOfMonth(attendancePay.getAllotTime())));
+					attendancePay.setOrderTimeEnd(DatesUtil.getLastDayOftime(DatesUtil.getLastDayOfMonth(attendancePay.getAllotTime())));
 					//获取所有的工资流水
 					List<AttendancePay> attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
 					for(AttendancePay pay : attendancePayList){

@@ -234,6 +234,8 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		List<AttendancePay> attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
 		double sumAttendancePay = attendancePayList.stream().mapToDouble(AttendancePay::getPayNumber).sum();
 		collectInformation.setSumAttendancePay(sumAttendancePay);
+		
+		
 		//我们可以给予一线的
 		Task task = new Task();
 		task.setOrderTimeBegin(collectInformation.getOrderTimeBegin());
@@ -249,8 +251,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		collectInformation.setManage(sumManage);
 		//H和N相差天数
 		double days = 0;
-		//天数计算值
-//		double dayNumber = DatesUtil.getDaySub(collectInformation.getOrderTimeBegin(), collectInformation.getOrderTimeEnd());
 		//给予一线
 		double giveThread = collectInformation.getPriceCollect()-collectInformation.getRegionalPrice()-sumManage;
 		collectInformation.setGiveThread(giveThread);
@@ -876,11 +876,13 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	@Override
 	public CollectPay upadtePerformancePay(CollectPay collectPay) {
 		CollectPay	collect = dao.findOne(collectPay.getId());
+		User user = userService.findOne(collect.getUserId());
+		
 		if(collectPay.getTimePrice()!=null){
-			collectPay.setTimePay(NumUtils.round(collectPay.getTimePrice()+(collectPay.getAddSelfNumber()==null?0.0:collectPay.getAddSelfNumber()),null));
+			collectPay.setTimePay(NumUtils.round(user.getPrice()+(collectPay.getAddSelfNumber()==null?0.0:collectPay.getAddSelfNumber()),null));
 			collectPay.setAddPerformancePay(NumUtils.round(collect.getTime()*collectPay.getAddSelfNumber(),null));
 			if(collectPay.getTimePrice()!=null && collectPay.getAddSelfNumber()!=null){
-				collectPay.setTimePay(NumUtils.round(collectPay.getTimePrice()+collectPay.getAddSelfNumber(),null));
+				collectPay.setTimePay(NumUtils.round(user.getPrice()+collectPay.getAddSelfNumber(),null));
 				collectPay.setAddPerformancePay(NumUtils.round(collect.getTime()*collectPay.getAddSelfNumber(),null));
 			}
 		}
