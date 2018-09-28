@@ -119,6 +119,11 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				predicate.add(cb.equal(root.get("groupId").as(Long.class),user.getGroupId()));
 			}
 			
+			//是否外调
+			if (user.getForeigns() != null) {
+				predicate.add(cb.equal(root.get("foreigns").as(Long.class),user.getForeigns()));
+			}
+			
 			//按姓名查找
 			if (!StringUtils.isEmpty(user.getUserName())) {
 				predicate.add(cb.like(root.get("userName").as(String.class),"%" + user.getUserName() + "%"));
@@ -127,6 +132,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			if (!StringUtils.isEmpty(user.getNumber())) {
 				predicate.add(cb.like(root.get("number").as(String.class),"%" + user.getNumber() + "%"));
 			}
+			
+			
 			
 			//部门,多个
 			if (!StringUtils.isEmpty(user.getOrgNameIds())) {

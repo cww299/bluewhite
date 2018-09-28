@@ -141,7 +141,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						if(!StringUtils.isEmpty(temporarily)){
 							sunTime+=temporarily.getWorkTime();
 						}else{
-							List<AttendancePay> 	attendancePay = attendancePayDao.findByUserIdAndAllotTimeBetween(userId,orderTimeBegin,orderTimeEnd);
+							List<AttendancePay> attendancePay = attendancePayDao.findByUserIdAndAllotTimeBetween(userId,orderTimeBegin,orderTimeEnd);
 							if(attendancePay.size()>0){
 								sunTime+=attendancePay.get(0).getWorkTime();
 							}

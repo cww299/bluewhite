@@ -152,6 +152,8 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 				collect.setAddSelfPayB(collect.getPayB()*collect.getAddSelfNumber());
 				//上浮后的加绩
 				collect.setAddPerformancePay(collect.getAddSelfPayB()-collect.getPayA()>0 ? collect.getAddSelfPayB()-collect.getPayA() : 0.0);
+				//手动调节上浮后的加绩
+				collect.setHardAddPerformancePay(collectPay.getHardAddPerformancePay());
 				//上浮后无加绩固定给予(当没有考勤的员工无此加绩固定工资)
 				collect.setNoPerformanceNumber( collect.getPayA()!=0.0 ? collectPay.getNoPerformancePay() : 0.0);
 				//无绩效小时工资
@@ -200,6 +202,11 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 			collectPayList.add(collect);
 		}
 		return collectPayList;
+	}
+
+	@Override
+	public List<PayB> findPayB(PayB payB) {
+		return dao.findByUserIdAndTypeAndAllotTimeBetween(payB.getUserId(),payB.getType(),payB.getOrderTimeBegin(),payB.getOrderTimeEnd());
 	}
 
 }
