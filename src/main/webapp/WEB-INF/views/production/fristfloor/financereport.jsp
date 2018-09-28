@@ -94,6 +94,7 @@
                                             <th class="text-center">考虑个人调节上浮后的B</th>
                                             <th class="text-center">个人调节发放比例</th>
                                             <th class="text-center">上浮后的加绩</th>
+                                            <th class="text-center">手动调节加绩</th>
                                             <th class="text-center">上浮后无加绩固定给予</th>
                                             <th class="text-center">无绩效小时工资</th>
                                             <th class="text-center">有绩效小时工资</th>
@@ -457,6 +458,7 @@
 		      				+'<td class="text-center  ">'+parseFloat((o.addSelfPayB*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center  edit addSelfNumber">'+o.addSelfNumber+'</td>'
 		      				+'<td class="text-center  ">'+o.addPerformancePay+'</td>'
+		      				+'<td class="text-center  edit hardAddPerformancePay">'+o.hardAddPerformancePay+'</td>'
 		      				+'<td class="text-center  ">'+o.noPerformanceNumber+'</td>'
 		      				+'<td class="text-center  ">'+o.noTimePay+'</td>'
 		      				+'<td class="text-center  ">'+o.timePay+'</td>'
@@ -497,6 +499,7 @@
 							var postData = {
 									id:$(this).data('id'),
 									addSelfNumber:$(this).parent().parent('tr').find(".addSelfNumber").text(),
+									hardAddPerformancePay:$(this).parent().parent('tr').find(".hardAddPerformancePay").text(),
 							}
 							var index;
 							
