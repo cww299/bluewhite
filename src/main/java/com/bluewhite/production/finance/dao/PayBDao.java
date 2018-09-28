@@ -1,5 +1,6 @@
 package com.bluewhite.production.finance.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bluewhite.base.BaseRepository;
@@ -19,5 +20,16 @@ public interface PayBDao extends BaseRepository<PayB, Long>{
 	 * @return
 	 */
 	PayB findByTaskIdAndUserId(Long id, Long userid);
+	
+	/**
+	 * 根据条件查询b
+	 * @param userId
+	 * @param type
+	 * @param orderTimeBegin
+	 * @param orderTimeEnd
+	 * @return
+	 */
+	List<PayB> findByUserIdAndTypeAndAllotTimeBetween(Long userId, Integer type, Date orderTimeBegin,
+			Date orderTimeEnd);
 
 }

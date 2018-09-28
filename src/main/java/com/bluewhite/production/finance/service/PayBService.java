@@ -25,5 +25,14 @@ public interface PayBService extends BaseCRUDService<PayB,Long>{
 	 * @return
 	 */
 	public List<CollectPay> collectPay(CollectPay collectPay);
+	
+	
+	/**
+	 * 根据条件查询b工资流水
+	 * @param payB
+	 * @param page
+	 * @return
+	 */
+	public List<PayB> findPayB(PayB payB);
 
 }

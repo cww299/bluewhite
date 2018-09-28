@@ -794,26 +794,37 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		Map<Long, List<AttendancePay>> mapCollectPay = attendancePayList.stream().filter(AttendancePay->AttendancePay.getWorkTime()!=0)
 				.collect(Collectors.groupingBy(AttendancePay::getUserId,Collectors.toList()));
 		CollectPay collect = null;
+		
+		//b工资
+		PayB payB = new PayB();
+		payB.setOrderTimeBegin(collectPay.getOrderTimeBegin());
+		payB.setOrderTimeEnd(collectPay.getOrderTimeEnd());
+		payB.setType(collectPay.getType());
+		
+		//杂工工资
+		FarragoTaskPay farragoTaskPay =new FarragoTaskPay();
+		farragoTaskPay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
+		farragoTaskPay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
+		farragoTaskPay.setType(collectPay.getType());
+		
 		for(Object ps : mapCollectPay.keySet()){
 			collect = new CollectPay();
 			List<AttendancePay> psList= mapCollectPay.get(ps);
 			collectPay.setUserId((Long)ps);
 			
-			List<CollectPay> list = null;
 			if(collectPay.getDetail()== null){	
 				//通过条件查找绩效是否已入库
-				list = this.findPages(collectPay, page).getRows();
+				collect = this.findCollectPay(collectPay);
 			}
-				if(list !=null && list.size()>0){
-					collect = list.get(0);
-				}else{
+				if(collect == null ){
 					//确定绩效汇总时间
+					collect = new CollectPay();
 					collect.setAllotTime(collectPay.getOrderTimeEnd());
 					collect.setType(collectPay.getType());
 					collect.setUserId(psList.get(0).getUserId());
 					collect.setUserName(psList.get(0).getUserName());
+					collect.setTimePay(psList.get(0).getWorkPrice());
 				}
-			
 			
 			//分别统计出考勤总时间
 			double sunTime = psList.stream().mapToDouble(AttendancePay::getWorkTime).sum();
@@ -822,25 +833,17 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			//统计出A工资
 			double payA = psList.stream().filter(AttendancePay->AttendancePay.getPayNumber()!=0.0).mapToDouble(AttendancePay::getPayNumber).sum();
 			
-			
 			//B工资
-			PayB payB = new PayB();
-			payB.setOrderTimeBegin(collectPay.getOrderTimeBegin());
-			payB.setOrderTimeEnd(collectPay.getOrderTimeEnd());
-			payB.setType(collectPay.getType());
+			double sumBPay = 0;
 			payB.setUserId((Long)ps);
-			List<PayB> payBList = payBService.findPages(payB, page).getRows();
+			List<PayB> payBList = payBService.findPayB(payB);
 			//分组人员B工资总和
-			double sumBPay = payBList.stream().mapToDouble(PayB::getPayNumber).sum();
+			sumBPay = payBList.stream().mapToDouble(PayB::getPayNumber).sum();
 			
 			//杂工工资
 			double sumfarragoTaskPay = 0;
-			FarragoTaskPay farragoTaskPay =new FarragoTaskPay();
-			farragoTaskPay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
-			farragoTaskPay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
-			farragoTaskPay.setType(collectPay.getType());
 			farragoTaskPay.setUserId((Long)ps);
-			List<FarragoTaskPay> farragoTaskPayList = farragoTaskPayService.findPages(farragoTaskPay, page).getRows();
+			List<FarragoTaskPay> farragoTaskPayList = farragoTaskPayService.findFarragoTaskPay(farragoTaskPay);
 			//分组人员杂工工资总和
 			sumfarragoTaskPay = farragoTaskPayList.stream().mapToDouble(FarragoTaskPay::getPayNumber).sum();
 			
@@ -854,10 +857,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			collect.setRatio(NumUtils.round(sum.isNaN() || sum.isInfinite() ?0.0:sum,2));
 			//小时单价
 			collect.setTimePrice(NumUtils.round(collect.getPayB()/collect.getTime(),null));
-			//调节后的小时单价
-			if(collect.getTimePay()==null){
-				collect.setTimePay(collect.getTimePrice());
-			}
 			if(collect.getAddPerformancePay()==null){
 				collect.setAddPerformancePay(0.0);
 			}
@@ -868,6 +867,10 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			dao.save(collectPayList);
 		}
 		return collectPayList;
+	}
+
+	private CollectPay findCollectPay(CollectPay collectPay) {
+		return dao.findByUserIdAndTypeAndAllotTimeBetween(collectPay.getUserId(),collectPay.getType(),collectPay.getOrderTimeBegin(),collectPay.getOrderTimeEnd());
 	}
 
 	@Override

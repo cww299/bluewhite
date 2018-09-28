@@ -44,7 +44,9 @@ public class UserAction {
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
 				.addRetainTerm(User.class,"id","price","status","workTime","number","pictureUrl", "userName", "phone","position","orgName","idCard",
-						"nation","email","gender","birthDate","group")
+						"nation","email","gender","birthDate","group","idCard","permanentAddress","livingAddress","marriage","procreate","education"
+						,"school","major","contacts","information","entry","estimate","actua","socialSecurity","bankCard1","bankCard2","agreement"
+						,"promise","contract","contractDate","frequency","quitDate","quit","reason","train","remark","","","")
 				.addRetainTerm(Group.class, "id","name", "type", "price")
 				.addRetainTerm(Role.class, "name", "role", "description","id")
 				.addRetainTerm(BaseData.class, "id","name", "type");
@@ -80,6 +82,7 @@ public class UserAction {
 	public CommonResponse createUser(HttpServletRequest request, User user) {
 		CommonResponse cr = new CommonResponse();
 		user.setPassword("123456");
+		user.setLoginName(user.getUserName());
 		if(!StringUtils.isEmpty(user.getPhone())){
 			User u = userService.findByPhone(user.getPhone());
 			if(u != null){

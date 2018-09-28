@@ -105,6 +105,12 @@ public class CollectPay extends BaseEntity<Long> {
 	private Double addPerformancePay;
 	
 	/**
+	 * 手动上浮后的加绩工资
+	 */
+	@Column(name = "hard_add_performance_pay")
+	private Double hardAddPerformancePay;
+	
+	/**
 	 * 上浮后无加绩固定给予工资
 	 */
 	@Column(name = "no_performance_number")
@@ -167,7 +173,7 @@ public class CollectPay extends BaseEntity<Long> {
 	private Date orderTimeEnd;
 	
 	/**
-	 * 显示详细
+	 * 显示当日详细
 	 */
 	@Transient
 	private Integer detail;
@@ -180,6 +186,12 @@ public class CollectPay extends BaseEntity<Long> {
 	
 	
 
+	public Double getHardAddPerformancePay() {
+		return hardAddPerformancePay;
+	}
+	public void setHardAddPerformancePay(Double hardAddPerformancePay) {
+		this.hardAddPerformancePay = hardAddPerformancePay;
+	}
 	public Integer getDetail() {
 		return detail;
 	}

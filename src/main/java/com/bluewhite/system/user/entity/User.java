@@ -232,7 +232,7 @@ public class User extends BaseEntity<Long> {
 	@Column(name = "quit_date")
     private Date quitDate;
 	/**
-	 * 理由
+	 * 离职原因
 	 */
 	@Column(name = "reason")
     private String reason;
@@ -299,11 +299,6 @@ public class User extends BaseEntity<Long> {
 	
 	
 	
-	/**
-	 * 任务id (多对多员工任务关系，只存任务的id集合，减少数据表交互) 
-	 */
-	@Column(name = "task_ids")
-	private String taskIds;
 	
 	/**
 	 * 到岗小时预计收入
@@ -409,13 +404,6 @@ public class User extends BaseEntity<Long> {
 		this.status = status;
 	}
 
-	public String getTaskIds() {
-		return taskIds;
-	}
-
-	public void setTaskIds(String taskIds) {
-		this.taskIds = taskIds;
-	}
 
 	public String getUserIds() {
 		return userIds;
