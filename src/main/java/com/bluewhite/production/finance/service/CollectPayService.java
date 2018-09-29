@@ -24,14 +24,6 @@ public interface CollectPayService extends BaseCRUDService<CollectPay,Long>{
 	public List<CollectPay> collect(CollectPay collectPay);
 	
 	/**
-	 * 按条件汇总生产费用所有数据
-	 * @param collectPay
-	 * @return
-	 */
-	public CollectInformation collectInformation(CollectInformation collectInformation);
-	
-	
-	/**
 	 * 质检月产量报表
 	 * @param collectInformation
 	 * @return

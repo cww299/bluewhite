@@ -1,5 +1,7 @@
 package com.bluewhite.finance.attendance.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -14,5 +16,11 @@ public interface AttendancePayService  extends BaseCRUDService<AttendancePay,Lon
 	public void addAttendancePay(AttendancePay attendancePay);
 
 	public AttendancePay  findByUserIdAndAllotTime(AttendancePay attendancePay);
+	/**
+	 * 根据条件查询
+	 * @param attendancePay
+	 * @return
+	 */
+	public List<AttendancePay> findAttendancePay(AttendancePay attendancePay);
 
 }
