@@ -228,43 +228,15 @@ private static final Log log = Log.getLog(GroupAction.class);
 	}
 	
 	
+	
 	/**
 	 * 新增借调人员
 	 * 
-	 * (1=一楼质检)
+	 * (1=一楼质检,2=一楼包装)
 	 * @param request 请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/production/addTemporarily", method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse addTemporarily(HttpServletRequest request,String ids,Integer type,Long groupId) {
-		CommonResponse cr = new CommonResponse();
-		if(ids!=null){
-			String[] userIds = ids.split(",");
-			for (String id : userIds) {
-				Temporarily temporarily = new Temporarily();
-				Long userId = Long.parseLong(id);
-				User user = userService.findOne(userId);
-				temporarily.setUserId(userId);
-				temporarily.setUserName(user.getUserName());
-				temporarily.setGroupId(groupId);
-				temporarily.setType(type);
-				temporarilyDao.save(temporarily);
-			}
-		}
-		cr.setMessage("添加成功");
-		return cr;
-	}
-	
-	
-	/**
-	 * 新增借调人员
-	 * 
-	 * (2=一楼包装)
-	 * @param request 请求
-	 * @return cr
-	 */
-	@RequestMapping(value = "/production/addTemporarilyTwo", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse addTemporarily(HttpServletRequest request,Temporarily temporarily){
 		CommonResponse cr = new CommonResponse();
@@ -277,7 +249,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 			userService.save(user);
 			temporarily.setUserId(user.getId());
 		}
-		if(temporarilyDao.findByUserIdAndTemporarilyDate(temporarily.getUserId(), temporarily.getTemporarilyDate())!=null){
+		if(temporarilyDao.findByUserIdAndTemporarilyDateAndType(temporarily.getUserId(), temporarily.getTemporarilyDate(),temporarily.getType())!=null){
 			cr.setMessage("当日已添加过借调人员的工作时间,不必再次添加");
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 		}else{
@@ -300,10 +272,15 @@ private static final Log log = Log.getLog(GroupAction.class);
 	@ResponseBody
 	public CommonResponse getTemporarily(HttpServletRequest request,Integer type,Date temporarilyDate) {
 		CommonResponse cr = new CommonResponse();
+		List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndTemporarilyDate(type,temporarilyDate);
+		for(Temporarily tp : temporarilyList){
+			Group group = groupService.findOne(tp.getGroupId());
+			tp.setGroupName(group.getName());
+		}
 		cr.setData(ClearCascadeJSON
 				.get()
-				.addRetainTerm(Temporarily.class,"id","UserId","userName","workTime","temporarilyDate"
-						).format(temporarilyDao.findByTypeAndTemporarilyDate(type,temporarilyDate)).toJSON());
+				.addRetainTerm(Temporarily.class,"id","UserId","userName","workTime","temporarilyDate","groupName"
+						).format(temporarilyList).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}

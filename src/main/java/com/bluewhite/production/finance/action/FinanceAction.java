@@ -2,13 +2,13 @@ package com.bluewhite.production.finance.action;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +32,7 @@ import com.bluewhite.production.finance.entity.MonthlyProduction;
 import com.bluewhite.production.finance.entity.NonLine;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.finance.entity.UsualConsume;
+import com.bluewhite.production.finance.service.CollectInformationService;
 import com.bluewhite.production.finance.service.CollectPayService;
 import com.bluewhite.production.finance.service.FarragoTaskPayService;
 import com.bluewhite.production.finance.service.PayBService;
@@ -59,6 +60,8 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	private AttendancePayService attendancePayService;
 	@Autowired
 	private UsualConsumeService usualConsumeservice;
+	@Autowired
+	private CollectInformationService collectInformationService;
 	
 	
 	private ClearCascadeJSON clearCascadeJSON;
@@ -198,10 +201,17 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	 */
 	@RequestMapping(value = "/finance/delete", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse delete(HttpServletRequest request,UsualConsume usualConsume) {
+	public CommonResponse delete(HttpServletRequest request,String[] ids) {
 		CommonResponse cr = new CommonResponse();
-		usualConsumeservice.delete(usualConsume.getId());
-		cr.setMessage("删除成功");
+		int count = 0;
+		if(!StringUtils.isEmpty(ids)){
+			for (int i = 0; i < ids.length; i++) {
+				Long id = Long.parseLong(ids[i]);
+				usualConsumeservice.delete(id);
+				count++;
+			}
+		}
+		cr.setMessage("成功删除"+count+"条");
 		return cr;
 	}
 	
@@ -256,6 +266,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		pay.setAddSelfNumber(collectPay.getAddSelfNumber());
 		pay.setAddSelfPayB(collectPay.getAddSelfNumber()*pay.getPayB());
 		pay.setAddPerformancePay(pay.getAddSelfPayB()-pay.getPayA()>0 ? pay.getAddSelfPayB()-pay.getPayA() : 0.0);
+		pay.setHardAddPerformancePay(collectPay.getHardAddPerformancePay());
 		collectPayBService.save(pay);
 		cr.setMessage("修改成功");
 		return cr;
@@ -281,30 +292,23 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	
 	
 	/**
-	 * 生产成本数据汇总 0
+	 * 生产成本数据汇总 
 	 * 
-	 * 员工成本数据汇总 1
+	 * 员工成本数据汇总 
 	 * 
 	 */
 	@RequestMapping(value = "/finance/collectInformation", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse collectInformation(HttpServletRequest request,CollectInformation collectInformation) {
 		CommonResponse cr = new CommonResponse();
-		collectInformation = collectPayBService.collectInformation(collectInformation);
-		if(collectInformation.getStatus()==0){
+		collectInformation = collectInformationService.collectInformation(collectInformation);
 			cr.setData(ClearCascadeJSON
 					.get()
-					.addRetainTerm(CollectInformation.class,"regionalPrice","sumTask","sumTaskFlag","sumFarragoTask","priceCollect","proportion","overtop")
-					.format(collectInformation).toJSON());	
-		}else if(collectInformation.getStatus()==1){
-			cr.setData(ClearCascadeJSON
-					.get()
-					.addRetainTerm(CollectInformation.class,"sumAttendancePay","giveThread","surplusThread","manage",
+					.addRetainTerm(CollectInformation.class,"regionalPrice","sumTask","sumTaskFlag","sumFarragoTask","priceCollect","proportion","overtop","sumAttendancePay","giveThread","surplusThread","manage",
 							"deployPrice","analogDeployPrice","sumChummage","sumHydropower","sumLogistics",
 							"analogPerformance","surplusManage","manageProportion","managePerformanceProportion",
-							"analogTime","grant","giveSurplus","shareholderProportion","shareholder","workshopSurplus").format(collectInformation).toJSON());	
-		}
-				
+							"analogTime","grant","giveSurplus","shareholderProportion","shareholder","workshopSurplus")
+					.format(collectInformation).toJSON());	
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -442,6 +446,23 @@ private static final Log log = Log.getLog(FinanceAction.class);
 				.get()
 				.addRetainTerm(CollectPay.class,"payB","userName")
 				.format(collectPayBService.cottonOtherTask(collectPay)).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * 记录部门支出，存入数据汇总
+	 * 
+	 */
+	@RequestMapping(value = "/finance/departmentalExpenditure ", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse departmentalExpenditure(HttpServletRequest request,CollectInformation collectInformation) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(CollectInformation.class,"")
+				.format(collectInformationService.savaDepartmentalExpenditure(collectInformation)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}

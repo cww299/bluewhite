@@ -2,7 +2,20 @@ package com.bluewhite.production.finance.entity;
 
 import java.util.Date;
 
-public class CollectInformation {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import com.bluewhite.base.BaseEntity;
+
+/**
+ * 数据汇总表
+ * @author zhangliang
+ *
+ */
+@Entity
+@Table(name = "pro_collect_information")
+public class CollectInformation  extends BaseEntity<Long>{
 	
 	/**
 	 * 查询字段开始时间
@@ -16,6 +29,7 @@ public class CollectInformation {
 	/**
 	 * 工序所属部门类型 (1=一楼质检，2=一楼包装，3=二楼针工)
 	 */
+	@Column(name = "type")
 	private Integer type;
 
 	/**
@@ -26,36 +40,43 @@ public class CollectInformation {
 	/**
 	 * 各批次地区差价汇总(不予给付汇总)
 	 */
+	@Column(name = "regionalPrice")
 	private Double regionalPrice;
 	
 	/**
 	 * 全表加工费  汇总
 	 */
+	@Column(name = "sumTask")
 	private Double sumTask;
 
 	/**
 	 * 返工费 汇总
 	 */
+	@Column(name = "sumTaskFlag")
 	private Double sumTaskFlag;
 	
 	/**
 	 * 杂工费 汇总
 	 */
+	@Column(name = "sumFarragoTask")
 	private Double sumFarragoTask;
 	
 	/**
 	 * 全表加工费,返工费和杂工费汇总
 	 */
+	@Column(name = "priceCollect")
 	private Double priceCollect;
 	
 	/**
 	 * 不予给付汇总占比
 	 */
+	@Column(name = "proportion")
 	private Double proportion=0.0;
 	
 	/**
 	 * 预算多余在手部分
 	 */
+	@Column(name = "overtop")
 	private Double overtop;
 	
 	
@@ -63,31 +84,37 @@ public class CollectInformation {
 	 * 打算给予A汇总
 	 * @return
 	 */
+	@Column(name = "sumAttendancePay")
 	private Double sumAttendancePay;
 	
 	/**
 	 * 我们可以给予一线的
 	 */
+	@Column(name = "giveThread")
 	private Double giveThread;
 	
 	/**
 	 * 一线剩余给我们
 	 */
+	@Column(name = "surplusThread")
 	private Double surplusThread;
 	
 	/**
 	 * 考虑管理费，预留在手等。可调配资金
 	 */
+	@Column(name = "deployPrice")
 	private Double deployPrice;
 	
 	/**
 	 * 考虑管理费，预留在手等。可调配资金
 	 */
+	@Column(name = "manage")
 	private Double manage;
 	
 	/**
 	 * 模拟得出可调配资金
 	 */
+	@Column(name = "analogDeployPrice")
 	private Double analogDeployPrice;
 	
 	
@@ -95,18 +122,21 @@ public class CollectInformation {
 	/**
 	 * 从A考勤开始日期以消费的房租
 	 */
+	@Column(name = "sumChummage")
 	private Double sumChummage;
 	
 	
 	/**
 	 * 从A考勤开始日期以消费的水电
 	 */
+	@Column(name = "sumHydropower")
 	private Double sumHydropower;
 	
 	
 	/**
 	 * 从A考勤开始日期以消费的后勤
 	 */
+	@Column(name = "sumLogistics")
 	private Double sumLogistics;
 	
 	
@@ -114,6 +144,7 @@ public class CollectInformation {
 	/**
 	 * 模拟当月非一线人员发货绩效
 	 */
+	@Column(name = "analogPerformance")
 	private Double analogPerformance;
 	
 	
@@ -121,18 +152,21 @@ public class CollectInformation {
 	/**
 	 * 剩余净管理
 	 */
+	@Column(name = "surplusManage")
 	private Double surplusManage;
 	
 	
 	/**
 	 * 净管理费给付比→
 	 */
+	@Column(name = "manageProportion")
 	private Double manageProportion;
 	
 	
 	/**
 	 * 从开始日至今可发放管理费加绩比
 	 */
+	@Column(name = "managePerformanceProportion")
 	private Double managePerformanceProportion;
 	
 	
@@ -140,6 +174,7 @@ public class CollectInformation {
 	/**
 	 * 模拟当月非一线人员出勤小时
 	 */
+	@Column(name = "analogTime")
 	private Double analogTime;
 	
 	
@@ -147,36 +182,53 @@ public class CollectInformation {
 	/**
 	 * 每小时可发放
 	 */
+	@Column(name = "grant")
 	private Double grant;
+	
 	/**
 	 * 给付后车间剩余
 	 */
+	@Column(name = "giveSurplus")
 	private Double giveSurplus;
 	
 	/**
 	 * 其中股东占比
 	 */
+	@Column(name = "shareholderProportion")
 	private Double shareholderProportion = 0.0;
 	
 	/**
 	 * 其中股东收益
 	 */
+	@Column(name = "shareholder")
 	private Double shareholder;
 	
 	/**
 	 * 车间剩余 
 	 */
+	@Column(name = "workshopSurplus")
 	private Double workshopSurplus;
 	
 	/**
-	 * 根据类型返回不同的汇总数据
-	 * （0=生产成本数据汇总，1=员工成本数据汇总）
+	 * 部门支出
 	 */
-	private Integer status;
+	@Column(name = "departmental_expenditure")
+	private String departmentalExpenditure;
 	
 	
 	
 	
+	
+
+
+	public String getDepartmentalExpenditure() {
+		return departmentalExpenditure;
+	}
+
+	public void setDepartmentalExpenditure(String departmentalExpenditure) {
+		this.departmentalExpenditure = departmentalExpenditure;
+	}
+
 	public Double getManage() {
 		return manage;
 	}
@@ -305,13 +357,6 @@ public class CollectInformation {
 		this.grant = grant;
 	}
 
-	public Integer getStatus() {
-		return status;
-	}
-
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
 
 	public Double getSumAttendancePay() {
 		return sumAttendancePay;

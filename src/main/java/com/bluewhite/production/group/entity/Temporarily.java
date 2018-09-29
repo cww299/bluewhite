@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 
@@ -53,6 +54,7 @@ public class Temporarily extends BaseEntity<Long>{
 	 */
 	@Column(name = "group_id")
 	private Long groupId;
+	
 
 	/**
 	 * 是否是外来人员（0=否，1=是）
@@ -61,8 +63,23 @@ public class Temporarily extends BaseEntity<Long>{
 	private Integer foreigns ;
 	
 	
+	/**
+	 * 分组id
+	 */
+	@Transient
+	private String groupName;
+
+	
 	
 
+	public String getGroupName() {
+		return groupName;
+	}
+
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
 
 
 	public Integer getForeigns() {

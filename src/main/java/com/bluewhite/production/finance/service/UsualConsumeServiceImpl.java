@@ -8,6 +8,7 @@ import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -47,6 +48,7 @@ public class UsualConsumeServiceImpl extends BaseServiceImpl<UsualConsume, Long>
 
 	@Override
 	public PageResult<UsualConsume> findPages(UsualConsume param, PageParameter page) {
+		 page.setSort(new Sort(Sort.Direction.DESC, "consumeDate"));
 		 Page<UsualConsume> pages = dao.findAll((root,query,cb) -> {
 	        	List<Predicate> predicate = new ArrayList<>();
 	        	//按id过滤

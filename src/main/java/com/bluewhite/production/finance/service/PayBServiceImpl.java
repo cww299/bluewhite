@@ -108,7 +108,7 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 		attendancePay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 		attendancePay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
 		attendancePay.setType(collectPay.getType());
-		List<AttendancePay> attendancePayList = AttendancePayService.findPages(attendancePay, page).getRows();
+		List<AttendancePay> attendancePayList = AttendancePayService.findAttendancePay(attendancePay);
 		//B当天工资
 		PayB payB = new PayB();
 		payB.setOrderTimeBegin(collectPay.getOrderTimeBegin());
@@ -129,10 +129,10 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 			collect.setPayA(attendance.getPayNumber());
 			//个人b工资
 			payB.setUserId(attendance.getUserId());
-			List<PayB> payBList = this.findPages(payB, page).getRows();
+			List<PayB> payBList = this.findPayB(payB);
 			//个人杂工工资
 			farragoTaskPay.setUserId(attendance.getUserId());
-			List<FarragoTaskPay> farragoTaskPayList = farragoTaskPayService.findPages(farragoTaskPay, page).getRows();
+			List<FarragoTaskPay> farragoTaskPayList = farragoTaskPayService.findFarragoTaskPay(farragoTaskPay);
 			//b工资加上加绩工资，加上杂工和杂工绩效 。 一天的总工资
 			Double sumPayB = 0.0;
 			Double sumPayF = 0.0;

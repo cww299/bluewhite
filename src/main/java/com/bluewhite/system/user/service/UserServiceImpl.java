@@ -133,8 +133,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				predicate.add(cb.like(root.get("number").as(String.class),"%" + user.getNumber() + "%"));
 			}
 			
-			
-			
 			//部门,多个
 			if (!StringUtils.isEmpty(user.getOrgNameIds())) {
 				List<Long>  orgNameIdList = new ArrayList<Long>();

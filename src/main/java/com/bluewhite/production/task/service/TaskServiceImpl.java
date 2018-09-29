@@ -137,7 +137,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					//总考勤时间
 					for(String userTypeId : task.getUsersIds()){
 						Long userId = Long.parseLong(userTypeId);
-						Temporarily temporarily = temporarilyDao.findByUserIdAndTemporarilyDate(userId,DatesUtil.getfristDayOftime(task.getAllotTime()));
+						Temporarily temporarily = temporarilyDao.findByUserIdAndTemporarilyDateAndType(userId,DatesUtil.getfristDayOftime(task.getAllotTime()),task.getType());
 						if(!StringUtils.isEmpty(temporarily)){
 							sunTime+=temporarily.getWorkTime();
 						}else{
@@ -173,7 +173,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						//计算B工资数值
 						//包装分配任务，员工b工资根据考情占比分配，其他部门是均分
 						if(task.getType()==2){
-							Temporarily  temporarily = temporarilyDao.findByUserIdAndTemporarilyDate(userid,DatesUtil.getfristDayOftime(task.getAllotTime()));
+							Temporarily  temporarily = temporarilyDao.findByUserIdAndTemporarilyDateAndType(userid,DatesUtil.getfristDayOftime(task.getAllotTime()),task.getType());
 							List<AttendancePay> attendancePay = attendancePayDao.findByUserIdAndAllotTimeBetween(userid,orderTimeBegin,orderTimeEnd);
 							if(StringUtils.isEmpty(temporarily) && attendancePay.size()==0){
 									throw new ServiceException("员工"+user.getUserName()+"没有"+dateFormater.format(task.getAllotTime())+"的考勤记录，无法分配任务");
@@ -551,7 +551,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					for(String userTypeId :taskArr){
 						Long userId = Long.parseLong(userTypeId);
 						param.setUserId(userId);
-						Temporarily  temporarily = temporarilyDao.findByUserIdAndTemporarilyDate(userId,DatesUtil.getfristDayOftime(task.getAllotTime()));
+						Temporarily  temporarily = temporarilyDao.findByUserIdAndTemporarilyDateAndType(userId,DatesUtil.getfristDayOftime(task.getAllotTime()),task.getType());
 						if(!StringUtils.isEmpty(temporarily)){
 							sunTime+=temporarily.getWorkTime();
 						}else{
@@ -562,7 +562,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						}
 					}
 					param.setUserId(userid);
-					Temporarily  temporarily = temporarilyDao.findByUserIdAndTemporarilyDate(userid,DatesUtil.getfristDayOftime(task.getAllotTime()));
+					Temporarily  temporarily = temporarilyDao.findByUserIdAndTemporarilyDateAndType(userid,DatesUtil.getfristDayOftime(task.getAllotTime()),task.getType());
 					List<AttendancePay> attendancePay = attendancePayService.findPages(param, page).getRows();
 					if(StringUtils.isEmpty(temporarily) && attendancePay.size()==0){
 							throw new ServiceException("员工"+user.getUserName()+"没有"+dateFormater.format(task.getAllotTime())+"的考勤记录，无法分配任务");
