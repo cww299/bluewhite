@@ -209,6 +209,7 @@
 											</th>
                                             <th class="text-center">人名</th>
                                             <th class="text-center">工作时长</th>
+                                            <th class="text-center">小组名</th>
                                             <th class="text-center">日期</th>
                                         </tr>
                                     </thead>
@@ -391,6 +392,7 @@
 							html +='<tr><td class="center reste"><label> <input type="checkbox" class="stuCheckBoxt" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 			      				+'<td class="text-center  bacthNumber">'+o.userName+'</td>'
 			      				+'<td class="text-center edit allotTime">'+o.workTime+'</td>'
+			      				+'<td class="text-center edit allotTime">'+o.groupName+'</td>'
 			      				+'<td class="text-center edit allotTime">'+o.temporarilyDate+'</td></tr>'
 							})
 							 $('#tablecontentfv').html(html);
@@ -915,7 +917,7 @@
 									  foreign:a,
 							  }
 							  $.ajax({
-									url:"${ctx}/production/addTemporarilyTwo",
+									url:"${ctx}/production/addTemporarily",
 									data:postData,
 						            traditional: true,
 									type:"post",
