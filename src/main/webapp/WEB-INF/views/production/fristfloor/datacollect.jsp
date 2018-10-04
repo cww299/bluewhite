@@ -174,21 +174,17 @@
 				  		type:1,
 
 				} 
-			 var date={
-				  		type:1,
-
-				} 
 			this.init = function(){
 				
 				//注册绑定事件
 				self.events();
 				self.loadPagination(data);
-				self.loadPaginationth(date);
 			}
 			//加载分页
 			  this.loadPagination = function(data){
 			    var index;
 			    var html = '';
+			    var htmlth = '';
 			    //B工资流水开始
 			    $.ajax({
 				      url:"${ctx}/finance/collectInformation",
@@ -271,38 +267,37 @@
 			      				+'<td class="edit">车间剩余</td>'
 			      				+'<td class="edit">'+result.data.workshopSurplus+'</td>'
 			      				+'</tr>'
-					   	layer.close(index);
 					   	 $("#tablecontent").html(html); 
-					   	 htmlth +='<tr>'
-			      				+'<td class="edit">全表加工费  汇总</td>'
-			      				+'<td class="edit">'+result.data.sumTask+'</td>'
-			      				+'</tr>'
-			      				+'<tr>' 
-			      				+'<td class="edit">返工费 汇总</td>'
-			      				+'<td class="edit">'+result.data.sumTaskFlag+'</td>'
-			      				+'</tr>'
-			      				+'<tr>' 
-			      				+'<td class="edit">杂工费 汇总</td>'
-			      				+'<td class="edit">'+result.data.sumFarragoTask+'</td>'
-			      				+'</tr>'
-			      				+'<tr>' 
-			      				+'<td class="edit">全表加工费,返工费和杂工费汇总</td>'
-			      				+'<td class="edit">'+result.data.priceCollect+'</td>'
-			      				+'</tr>'
-			      				+'<tr>' 
-			      				+'<td class="edit">不予给付汇总占比</td>'
-			      				+'<td class="edit">'+result.data.proportion+'</td>'
-			      				+'</tr>'
-			      				+'<tr>' 
-			      				+'<td class="edit">预算多余在手部分</td>'
-			      				+'<td class="edit">'+result.data.overtop+'</td>'
-			      				+'</tr>'
-			      				+'<tr>' 
-			      				+'<td class="edit">各批次地区差价汇总(不予给付汇总)</td>'
-			      				+'<td class="edit">'+result.data.regionalPrice+'</td>'
-			      				+'</tr>'
-					   	layer.close(index);
-					   	 $("#tablecontentth").html(htmlth); 
+					   	htmlth +='<tr>'
+		      				+'<td class="edit">全表加工费  汇总</td>'
+		      				+'<td class="edit">'+result.data.sumTask+'</td>'
+		      				+'</tr>'
+		      				+'<tr>' 
+		      				+'<td class="edit">返工费 汇总</td>'
+		      				+'<td class="edit">'+result.data.sumTaskFlag+'</td>'
+		      				+'</tr>'
+		      				+'<tr>' 
+		      				+'<td class="edit">杂工费 汇总</td>'
+		      				+'<td class="edit">'+result.data.sumFarragoTask+'</td>'
+		      				+'</tr>'
+		      				+'<tr>' 
+		      				+'<td class="edit">全表加工费,返工费和杂工费汇总</td>'
+		      				+'<td class="edit">'+result.data.priceCollect+'</td>'
+		      				+'</tr>'
+		      				+'<tr>' 
+		      				+'<td class="edit">不予给付汇总占比</td>'
+		      				+'<td class="edit">'+result.data.proportion+'</td>'
+		      				+'</tr>'
+		      				+'<tr>' 
+		      				+'<td class="edit">预算多余在手部分</td>'
+		      				+'<td class="edit">'+result.data.overtop+'</td>'
+		      				+'</tr>'
+		      				+'<tr>' 
+		      				+'<td class="edit">各批次地区差价汇总(不予给付汇总)</td>'
+		      				+'<td class="edit">'+result.data.regionalPrice+'</td>'
+		      				+'</tr>'
+				   	layer.close(index);
+				   	 $("#tablecontentth").html(htmlth); 
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
@@ -310,64 +305,9 @@
 				  });
 			  //B工资流水结束
 			}
-			/* this.loadPaginationth=function(date){
-				//生产成本数据汇总
-				var index;
-			    var htmlth = '';
-			    $.ajax({
-				      url:"${ctx}/finance/collectInformation",
-				      data:date,
-				      type:"GET",
-				      beforeSend:function(){
-					 	  index = layer.load(1, {
-						  shade: [0.1,'#fff'] //0.1透明度的白色背景
-						  });
-					  }, 
-		      		  success: function (result) {
-		      			 
-		      				 htmlth +='<tr>'
-			      				+'<td class="edit">全表加工费  汇总</td>'
-			      				+'<td class="edit">'+result.data.sumTask+'</td>'
-			      				+'</tr>'
-			      				+'<tr>' 
-			      				+'<td class="edit">返工费 汇总</td>'
-			      				+'<td class="edit">'+result.data.sumTaskFlag+'</td>'
-			      				+'</tr>'
-			      				+'<tr>' 
-			      				+'<td class="edit">杂工费 汇总</td>'
-			      				+'<td class="edit">'+result.data.sumFarragoTask+'</td>'
-			      				+'</tr>'
-			      				+'<tr>' 
-			      				+'<td class="edit">全表加工费,返工费和杂工费汇总</td>'
-			      				+'<td class="edit">'+result.data.priceCollect+'</td>'
-			      				+'</tr>'
-			      				+'<tr>' 
-			      				+'<td class="edit">不予给付汇总占比</td>'
-			      				+'<td class="edit">'+result.data.proportion+'</td>'
-			      				+'</tr>'
-			      				+'<tr>' 
-			      				+'<td class="edit">预算多余在手部分</td>'
-			      				+'<td class="edit">'+result.data.overtop+'</td>'
-			      				+'</tr>'
-			      				+'<tr>' 
-			      				+'<td class="edit">各批次地区差价汇总(不予给付汇总)</td>'
-			      				+'<td class="edit">'+result.data.regionalPrice+'</td>'
-			      				+'</tr>'
-					   	layer.close(index);
-					   	 $("#tablecontentth").html(htmlth); 
-					   	self.loadEvents();
-				      },error:function(){
-							layer.msg("加载失败！", {icon: 2});
-							layer.close(index);
-					  }
-				  });
-			} */
-			this.loadEvents = function(){
-			}
 			this.events = function(){
 				$('.searchtask').on('click',function(){
 					var data = {
-							Status:1,	
 					  		type:1,
 				  			shareholderProportion:$('#number').val(),
 				  			orderTimeBegin:$("#startTime").val(),
@@ -377,14 +317,13 @@
 				self.loadPagination(data);
 				});
 				$('.searchtaskth').on('click',function(){
-					var date = {
-							Status:0,	
+					var data = {
 					  		type:1,
 				  			orderTimeBegin:$("#startTimeth").val(),
 				  			orderTimeEnd:$("#endTimeth").val(), 
 				  	}
 			
-				self.loadPaginationth(date);
+				self.loadPagination(data);
 				});
 			}
    	}
