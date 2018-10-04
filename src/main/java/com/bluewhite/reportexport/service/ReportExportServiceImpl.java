@@ -117,46 +117,34 @@ public class ReportExportServiceImpl implements ReportExportService{
 		if(excelUser.size()>0){
 			List<User> userList = new ArrayList<User>();
 			for(UserPoi proPoi :excelUser){
-				User user  = new User();
+				User user  = userDao.findByUserName(proPoi.getUserName());
+				
+				if(user==null){
+					user = new User();
+				}
+				
 				user.setUserName(proPoi.getUserName());
 				user.setLoginName(proPoi.getUserName());
 				user.setPassword("123456");
-				Date birthday = null;
-				Date entry = null;
-				try {
-					if(!StringUtils.isEmpty(proPoi.getBirthday())){
-						birthday = sdf.parse(proPoi.getBirthday());
-					}
-					if(!StringUtils.isEmpty(proPoi.getEntry())){
-						entry = sdf.parse(proPoi.getEntry());
-						}
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
-				user.setBirthDate(birthday);
-				user.setEntry(entry);
-				//导入用户同时更新基础字典表，对用户的部门和职位进行字典管理
-				//部门
-				BaseData baseOrgName  = baseDataDao.findByName(proPoi.getOrgName());
-				if(baseOrgName == null){
-					baseOrgName = new BaseData();
-					baseOrgName.setName(proPoi.getOrgName());
-					baseOrgName.setType("orgName");
-					baseOrgName.setParentId((long)0);
-					baseDataDao.save(baseOrgName);
-				}
-				//职位
-				BaseData basePosition  = baseDataDao.findByName(proPoi.getPosition());
-				if(basePosition == null){
-					basePosition = new BaseData();
-					basePosition.setName(proPoi.getPosition());
-					basePosition.setType("position");
-					basePosition.setParentId((long)0);
-					baseDataDao.save(basePosition);
-				}
-				//更新职位和部门的id
-				user.setOrgNameId(baseOrgName.getId());
-				user.setPositionId(basePosition.getId());
+				user.setTelephone(proPoi.getTelephone());
+				user.setPhone(proPoi.getPhone());
+				user.setIdCard(proPoi.getIdCard());
+				user.setPermanentAddress(proPoi.getPermanentAddress());
+				user.setLivingAddress(proPoi.getLivingAddress());
+//				Date birthday = null;
+//				Date entry = null;
+//				try {
+//					if(!StringUtils.isEmpty(proPoi.getBirthday())){
+//						birthday = sdf.parse(proPoi.getBirthday());
+//					}
+//					if(!StringUtils.isEmpty(proPoi.getEntry())){
+//						entry = sdf.parse(proPoi.getEntry());
+//					}
+//				} catch (ParseException e) {
+//					e.printStackTrace();
+//				}
+//				user.setBirthDate(birthday);
+//				user.setEntry(entry);
 				userList.add(user);
 				count++;
 			}

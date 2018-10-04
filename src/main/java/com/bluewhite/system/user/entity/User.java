@@ -42,7 +42,7 @@ public class User extends BaseEntity<Long> {
 	 * 是否是外来人员（0=否，1=是）
 	 */
 	@Column(name = "foreigns")
-	private Integer foreigns = 0 ;
+	private Integer foreigns;
 	
 	/**
 	 * 是否锁定
@@ -85,6 +85,12 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Column(name = "nation")
 	private String nation;
+	
+	/**
+	 * 固定电话
+	 */
+	@Column(name = "telephone")
+	private String telephone;
 	
 	/**
 	 * 手机
@@ -363,6 +369,14 @@ public class User extends BaseEntity<Long> {
 	
 	
 	
+
+	public String getTelephone() {
+		return telephone;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
 
 	public Integer getTemporarily() {
 		return temporarily;
