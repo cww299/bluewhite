@@ -301,7 +301,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	@ResponseBody
 	public CommonResponse collectInformation(HttpServletRequest request,CollectInformation collectInformation) {
 		CommonResponse cr = new CommonResponse();
-		collectInformation = collectInformationService.collectInformation(collectInformation);
+		collectInformation = collectInformationService.findByType(collectInformation);
 			cr.setData(ClearCascadeJSON
 					.get()
 					.addRetainTerm(CollectInformation.class,"regionalPrice","sumTask","sumTaskFlag","sumFarragoTask","priceCollect","proportion","overtop","sumAttendancePay","giveThread","surplusThread","manage",

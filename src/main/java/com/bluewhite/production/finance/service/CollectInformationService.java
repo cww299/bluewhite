@@ -20,5 +20,12 @@ public interface CollectInformationService extends BaseCRUDService<CollectInform
 	 * @return
 	 */
 	public CollectInformation savaDepartmentalExpenditure(CollectInformation collectInformation);
+	
+	/**
+	 * 根据类型查找
+	 * @param collectInformation
+	 * @return
+	 */
+	public CollectInformation findByType(CollectInformation collectInformation);
 
 }

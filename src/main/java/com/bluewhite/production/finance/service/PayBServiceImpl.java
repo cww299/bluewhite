@@ -9,7 +9,6 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
@@ -108,7 +107,7 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 		attendancePay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 		attendancePay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
 		attendancePay.setType(collectPay.getType());
-		List<AttendancePay> attendancePayList = AttendancePayService.findAttendancePay(attendancePay);
+		List<AttendancePay> attendancePayList = AttendancePayService.findPages(attendancePay, page).getRows();
 		//B当天工资
 		PayB payB = new PayB();
 		payB.setOrderTimeBegin(collectPay.getOrderTimeBegin());

@@ -29,4 +29,13 @@ public class NumUtils {
 	public static Integer roundInt(Double value) {
 		return new BigDecimal(value).setScale(10, BigDecimal.ROUND_HALF_UP).intValue();
 	}
+	
+	
+	/**
+	 * 处理除法结果问题sum.isNaN()?0.0:sum
+	 */
+	public static Double division(Double value) {
+		return value.isNaN() || value.isInfinite() ?0.0:value;
+	}
+	
 }

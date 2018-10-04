@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
 import com.bluewhite.production.bacth.entity.Bacth;
@@ -91,10 +92,10 @@ public class CollectInformationServiceImpl extends BaseServiceImpl<CollectInform
 		double priceCollect = sumTask+sumTaskFlag+sumFarragoTask;
 		collectInformation.setPriceCollect(priceCollect);
 		//不予给付汇总占比
-		double proportion = regionalPrice/sumTask;
+		double proportion = NumUtils.division(regionalPrice/sumTask);
 		collectInformation.setProportion(proportion);
 		//我们的表和小关的表差价不予给付
-		double priceDifferences = (sumTask-regionalPrice)*(regionalPrice/sumTask);
+		double priceDifferences = (sumTask-regionalPrice)*( NumUtils.division(regionalPrice/sumTask));
 		//预算多余在手部分
 		double overtop = 0;
 		if(collectInformation.getType()==1 || collectInformation.getType()==2){
@@ -196,8 +197,8 @@ public class CollectInformationServiceImpl extends BaseServiceImpl<CollectInform
 		collectInformation.setAnalogTime(analogTime);
 		
 		//每小时可发放
-		double grant =  managePerformanceProportion/analogTime;
-		collectInformation.setGrant(grant);
+		double grant =  NumUtils.division( managePerformanceProportion/analogTime );
+		collectInformation.setGrants(grant);
 		
 		//该车间事故损耗
 		//给付后车间剩余
@@ -212,9 +213,11 @@ public class CollectInformationServiceImpl extends BaseServiceImpl<CollectInform
 		//车间剩余
 		double workshopSurplus = giveSurplus - shareholder;
 		collectInformation.setWorkshopSurplus(workshopSurplus);
-		
-		
-		return collectInformation;
+		CollectInformation ct = dao.findByType(collectInformation.getType());
+		if(ct!=null){
+			dao.delete(ct);
+		}
+		return dao.save(collectInformation);
 	}
 	
 	//将之前的数据汇总到现在的数据中，作为起点
@@ -244,11 +247,14 @@ public class CollectInformationServiceImpl extends BaseServiceImpl<CollectInform
 
 	@Override
 	public CollectInformation savaDepartmentalExpenditure(CollectInformation collectInformation) {
-		
-		dao.findAll();
-		
-		
+		CollectInformation ct =	dao.findOne(collectInformation.getId());
+		ct.setDepartmentalExpenditure(collectInformation.getDepartmentalExpenditure());
 		return dao.save(collectInformation);
+	}
+
+	@Override
+	public CollectInformation findByType(CollectInformation collectInformation) {
+		return dao.findByType(collectInformation.getType());
 	}
 	
 

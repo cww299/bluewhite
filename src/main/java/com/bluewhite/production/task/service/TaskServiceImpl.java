@@ -141,7 +141,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						if(!StringUtils.isEmpty(temporarily)){
 							sunTime+=temporarily.getWorkTime();
 						}else{
-							List<AttendancePay> attendancePay = attendancePayDao.findByUserIdAndAllotTimeBetween(userId,orderTimeBegin,orderTimeEnd);
+							List<AttendancePay> attendancePay = attendancePayDao.findByUserIdAndTypeAndAllotTimeBetween(userId,task.getType(),orderTimeBegin,orderTimeEnd);
 							if(attendancePay.size()>0){
 								sunTime+=attendancePay.get(0).getWorkTime();
 							}
@@ -174,7 +174,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						//包装分配任务，员工b工资根据考情占比分配，其他部门是均分
 						if(task.getType()==2){
 							Temporarily  temporarily = temporarilyDao.findByUserIdAndTemporarilyDateAndType(userid,DatesUtil.getfristDayOftime(task.getAllotTime()),task.getType());
-							List<AttendancePay> attendancePay = attendancePayDao.findByUserIdAndAllotTimeBetween(userid,orderTimeBegin,orderTimeEnd);
+							List<AttendancePay> attendancePay = attendancePayDao.findByUserIdAndTypeAndAllotTimeBetween(userid,task.getType(),orderTimeBegin,orderTimeEnd);
 							if(StringUtils.isEmpty(temporarily) && attendancePay.size()==0){
 									throw new ServiceException("员工"+user.getUserName()+"没有"+dateFormater.format(task.getAllotTime())+"的考勤记录，无法分配任务");
 							}

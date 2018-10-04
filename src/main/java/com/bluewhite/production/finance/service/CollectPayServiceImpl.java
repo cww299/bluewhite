@@ -585,7 +585,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		//将一个月考勤人员按员工id分组
 		Map<Long, List<AttendancePay>> mapCollectPay = attendancePayList.stream().filter(AttendancePay->AttendancePay.getWorkTime()!=0)
 				.collect(Collectors.groupingBy(AttendancePay::getUserId,Collectors.toList()));
-		CollectPay collect = null;
+		
 		
 		//b工资
 		PayB payB = new PayB();
@@ -598,18 +598,15 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		farragoTaskPay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 		farragoTaskPay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
 		farragoTaskPay.setType(collectPay.getType());
-		
+		CollectPay collect = null;
 		for(Object ps : mapCollectPay.keySet()){
-			collect = new CollectPay();
 			List<AttendancePay> psList= mapCollectPay.get(ps);
-			collectPay.setUserId((Long)ps);
-			
-			if(collectPay.getDetail()== null){	
+			if(collectPay.getDetail() == null){	
+				collectPay.setUserId((Long)ps);
 				//通过条件查找绩效是否已入库
 				collect = this.findCollectPay(collectPay);
 			}
-				if(collect == null ){
-					//确定绩效汇总时间
+				if(collect == null || collect.getId() == null ){
 					collect = new CollectPay();
 					collect.setAllotTime(collectPay.getOrderTimeEnd());
 					collect.setType(collectPay.getType());
