@@ -171,12 +171,10 @@
 		  		return _cache;
 		  	}
 			 var data={
-					 Status:1,	
 				  		type:1,
 
 				} 
 			 var date={
-					 Status:0,	
 				  		type:1,
 
 				} 
@@ -275,7 +273,36 @@
 			      				+'</tr>'
 					   	layer.close(index);
 					   	 $("#tablecontent").html(html); 
-					   
+					   	 htmlth +='<tr>'
+			      				+'<td class="edit">全表加工费  汇总</td>'
+			      				+'<td class="edit">'+result.data.sumTask+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">返工费 汇总</td>'
+			      				+'<td class="edit">'+result.data.sumTaskFlag+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">杂工费 汇总</td>'
+			      				+'<td class="edit">'+result.data.sumFarragoTask+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">全表加工费,返工费和杂工费汇总</td>'
+			      				+'<td class="edit">'+result.data.priceCollect+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">不予给付汇总占比</td>'
+			      				+'<td class="edit">'+result.data.proportion+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">预算多余在手部分</td>'
+			      				+'<td class="edit">'+result.data.overtop+'</td>'
+			      				+'</tr>'
+			      				+'<tr>' 
+			      				+'<td class="edit">各批次地区差价汇总(不予给付汇总)</td>'
+			      				+'<td class="edit">'+result.data.regionalPrice+'</td>'
+			      				+'</tr>'
+					   	layer.close(index);
+					   	 $("#tablecontentth").html(htmlth); 
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
@@ -283,7 +310,7 @@
 				  });
 			  //B工资流水结束
 			}
-			this.loadPaginationth=function(date){
+			/* this.loadPaginationth=function(date){
 				//生产成本数据汇总
 				var index;
 			    var htmlth = '';
@@ -334,7 +361,7 @@
 							layer.close(index);
 					  }
 				  });
-			}
+			} */
 			this.loadEvents = function(){
 			}
 			this.events = function(){
