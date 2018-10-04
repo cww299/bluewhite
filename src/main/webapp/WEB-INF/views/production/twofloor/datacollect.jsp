@@ -171,12 +171,6 @@
 		  		return _cache;
 		  	}
 			 var data={
-					 status:1,	
-				  		type:3,
-
-				} 
-			 var date={
-					 status:0,	
 				  		type:3,
 
 				} 
@@ -185,12 +179,12 @@
 				//注册绑定事件
 				self.events();
 				self.loadPagination(data);
-				self.loadPaginationth(date);
 			}
 			//加载分页
 			  this.loadPagination = function(data){
 			    var index;
 			    var html = '';
+			    var htmlth = '';
 			    //B工资流水开始
 			    $.ajax({
 				      url:"${ctx}/finance/collectInformation",
@@ -273,32 +267,8 @@
 			      				+'<td class="edit">车间剩余</td>'
 			      				+'<td class="edit">'+result.data.workshopSurplus+'</td>'
 			      				+'</tr>'
-					   	layer.close(index);
 					   	 $("#tablecontent").html(html); 
-					   
-				      },error:function(){
-							layer.msg("加载失败！", {icon: 2});
-							layer.close(index);
-					  }
-				  });
-			  //B工资流水结束
-			}
-			this.loadPaginationth=function(date){
-				//生产成本数据汇总
-				var index;
-			    var htmlth = '';
-			    $.ajax({
-				      url:"${ctx}/finance/collectInformation",
-				      data:date,
-				      type:"GET",
-				      beforeSend:function(){
-					 	  index = layer.load(1, {
-						  shade: [0.1,'#fff'] //0.1透明度的白色背景
-						  });
-					  }, 
-		      		  success: function (result) {
-		      			 
-		      				 htmlth +='<tr>'
+		      			 htmlth +='<tr>'
 			      				+'<td class="edit">全表加工费  汇总</td>'
 			      				+'<td class="edit">'+result.data.sumTask+'</td>'
 			      				+'</tr>'
@@ -328,19 +298,16 @@
 			      				+'</tr>'
 					   	layer.close(index);
 					   	 $("#tablecontentth").html(htmlth); 
-					   	self.loadEvents();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
 					  }
 				  });
-			}
-			this.loadEvents = function(){
+			  //B工资流水结束
 			}
 			this.events = function(){
 				$('.searchtask').on('click',function(){
 					var data = {
-							status:1,	
 					  		type:3,
 				  			shareholderProportion:$('#number').val(),
 				  			orderTimeBegin:$("#startTime").val(),
@@ -350,14 +317,13 @@
 				self.loadPagination(data);
 				});
 				$('.searchtaskth').on('click',function(){
-					var date = {
-							status:0,	
+					var data = {
 					  		type:3,
 				  			orderTimeBegin:$("#startTimeth").val(),
 				  			orderTimeEnd:$("#endTimeth").val(), 
 				  	}
 			
-				self.loadPaginationth(date);
+				self.loadPagination(data);
 				});
 			}
    	}
