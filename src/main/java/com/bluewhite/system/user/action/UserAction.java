@@ -82,6 +82,7 @@ public class UserAction {
 	public CommonResponse createUser(HttpServletRequest request, User user) {
 		CommonResponse cr = new CommonResponse();
 		user.setPassword("123456");
+		user.setForeigns(0);
 		user.setLoginName(user.getUserName());
 		if(!StringUtils.isEmpty(user.getPhone())){
 			User u = userService.findByPhone(user.getPhone());
@@ -111,9 +112,8 @@ public class UserAction {
 			return cr;
 		}
 		User oldUser = userService.findOne(user.getId());
-		BeanCopyUtils.copyNullProperties(oldUser,user);
-		user.setCreatedAt(oldUser.getCreatedAt());
-		cr.setData(clearCascadeJSON.format(userService.save(user)).toJSON());
+		BeanCopyUtils.copyNotEmpty(user,oldUser);
+		cr.setData(clearCascadeJSON.format(userService.save(oldUser)).toJSON());
 		cr.setMessage("修改成功");
 		return cr;
 	}

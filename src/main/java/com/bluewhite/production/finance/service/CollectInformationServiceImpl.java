@@ -17,6 +17,7 @@ import com.bluewhite.production.farragotask.service.FarragoTaskService;
 import com.bluewhite.production.finance.dao.CollectInformationDao;
 import com.bluewhite.production.finance.dao.NonLineDao;
 import com.bluewhite.production.finance.entity.CollectInformation;
+import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.NonLine;
 import com.bluewhite.production.finance.entity.UsualConsume;
 import com.bluewhite.production.task.entity.Task;
@@ -40,13 +41,14 @@ public class CollectInformationServiceImpl extends BaseServiceImpl<CollectInform
 	@Autowired
 	private AttendancePayService attendancePayService;
 	
-	
 	@Autowired
 	private UsualConsumeService usualConsumeService;
 	
-	
 	@Autowired
 	private NonLineDao nonLineDao;
+	
+	@Autowired
+	private CollectPayService collectPayService;
 	
 	
 	
@@ -116,8 +118,17 @@ public class CollectInformationServiceImpl extends BaseServiceImpl<CollectInform
 		attendancePay.setType(collectInformation.getType());
 		List<AttendancePay> attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
 		double sumAttendancePay = attendancePayList.stream().mapToDouble(AttendancePay::getPayNumber).sum();
-		collectInformation.setSumAttendancePay(sumAttendancePay);
-		
+		//绩效奖励汇总
+		CollectPay collectPay = new CollectPay();
+		collectPay.setOrderTimeBegin(collectInformation.getOrderTimeBegin());
+		collectPay.setOrderTimeEnd(collectInformation.getOrderTimeEnd());
+		collectPay.setType(collectInformation.getType());
+		List<CollectPay>  collectPayList = collectPayService.findPages(collectPay, page).getRows();
+		double addPerformancePay = collectPayList.stream().mapToDouble(CollectPay::getHardAddPerformancePay).sum(); 
+		if(collectInformation.getType()==3 || collectInformation.getType()==4 || collectInformation.getType()==5){
+			   addPerformancePay = collectPayList.stream().mapToDouble(CollectPay::getAddPerformancePay).sum(); 
+		}
+		collectInformation.setSumAttendancePay(sumAttendancePay + addPerformancePay);
 		
 		//我们可以给予一线的
 		task.setFlag(null);
@@ -215,7 +226,7 @@ public class CollectInformationServiceImpl extends BaseServiceImpl<CollectInform
 		collectInformation.setWorkshopSurplus(workshopSurplus);
 		CollectInformation ct = dao.findByType(collectInformation.getType());
 		if(ct!=null){
-			dao.delete(ct);
+			collectInformation.setId(ct.getId());
 		}
 		return dao.save(collectInformation);
 	}
