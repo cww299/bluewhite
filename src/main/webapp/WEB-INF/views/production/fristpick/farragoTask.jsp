@@ -884,7 +884,8 @@
 			      				var	id=$(this).val()
 								   var data={
 			      							type:2,
-										 	 id:id,
+										 	id:id,
+										 	temporarilyDate:$('#Time').val(),
 								   }
 			      				$.ajax({
 									url:"${ctx}/production/allGroup",

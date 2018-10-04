@@ -240,9 +240,13 @@ private static final Log log = Log.getLog(GroupAction.class);
 	@ResponseBody
 	public CommonResponse addTemporarily(HttpServletRequest request,Temporarily temporarily){
 		CommonResponse cr = new CommonResponse();
+		if(temporarily.getGroupId()==null){
+			cr.setMessage("分组不能为空");
+			return cr;
+		}
 		if(temporarily.getUserId()==null){
 			User user = new User();
-			user.setForeigns(temporarily.getForeigns());
+			user.setForeigns(1);
 			user.setLoginName(temporarily.getUserName());
 			user.setUserName(temporarily.getUserName());
 			user.setStatus(0);
