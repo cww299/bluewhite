@@ -247,6 +247,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 		if(temporarily.getUserId()==null){
 			User user = new User();
 			user.setForeigns(1);
+			user.setPassword("123456");
 			user.setLoginName(temporarily.getUserName());
 			user.setUserName(temporarily.getUserName());
 			user.setStatus(0);

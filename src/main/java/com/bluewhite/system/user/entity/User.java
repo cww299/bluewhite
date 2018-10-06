@@ -19,6 +19,7 @@ import javax.persistence.Transient;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.common.utils.excel.Poi;
 import com.bluewhite.production.group.entity.Group;
 
 /**
@@ -51,7 +52,7 @@ public class User extends BaseEntity<Long> {
 	private Integer delFlag = 1;
 
 	/**
-	 * 登录 名
+	 * 登录名
 	 */
 	@Column(name = "login_name")
 	private String loginName;
@@ -66,7 +67,7 @@ public class User extends BaseEntity<Long> {
 	 * 用户密码
 	 */
 	@Column(name = "password")
-	private String password = "123456";
+	private String password; 
 
 	/**
 	 * 员工姓名
@@ -157,33 +158,44 @@ public class User extends BaseEntity<Long> {
      */
 	@Column(name = "major")
     private String major;
+	
+	
     /**
-     * 联系人
+     * 紧急联系人
      */
 	@Column(name = "contacts")
     private String contacts;
+	
     /**
-     * 联系方式
+     * 紧急联系人关系
+     */
+	@Column(name = "nexus")
+    private String nexus;
+	
+    /**
+     * 紧急联系方式
      */
 	@Column(name = "information")
     private String information;
     /**
-     *入职时间
+     * 入职时间
      */
 	@Column(name = "entry")
     private Date entry;
+	
     /**
-     *预计转正时间 
+     * 预计转正时间 
      */
 	@Column(name = "estimate")
     private Date estimate;
+	
     /**
      * 实际转正开始时间
      */
 	@Column(name = "actua")
     private Date actua;
 	/**
-	 *社保缴纳时间
+	 * 社保缴纳时间
 	 */
 	@Column(name = "social_security")
 	private Date socialSecurity;
@@ -207,21 +219,37 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Column(name = "agreement")
     private String agreement;
+	
 	/**
-	 * 承诺书
+	 * 保险情况
+	 *  0=未缴，1=已缴，
+	 */
+	@Column(name = "safe")
+	private Integer safe;
+	
+	/**
+	 * 是否签订承诺书
+	 *  0=未签，1=已签，
 	 */
 	@Column(name = "promise")
-    private String promise;
+    private Integer promise;
 	/**
-	 * 合同
+	 * 是否签订合同
+	 * 0=未签，1=已签，2=续签
 	 */
-	@Column(name = "contract")
-    private String contract;
+	@Column(name = "commitment")
+    private Integer commitment = 0;
 	/**
 	 * 合同签订开始日期
 	 */
 	@Column(name = "contract_date")
     private Date contractDate;
+	/**
+	 * 合同签订日期
+	 */
+	@Column(name = "contract_date_end")
+    private Date contractDateEnd;
+	
 	/**
 	 * 合同签订次数
 	 */
@@ -231,7 +259,7 @@ public class User extends BaseEntity<Long> {
 	 *工作状态(在职离职)
 	 */
 	@Column(name = "quit")
-    private String quit;
+    private Integer quit;
 	/**
 	 *离职时间
 	 */
@@ -294,17 +322,12 @@ public class User extends BaseEntity<Long> {
 	@JoinColumn(name = "group_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Group group;
 
-
-
 	/**
 	 * 角色集合
 	 */
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "sys_user_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 	private Set<Role> roles = new HashSet<Role>();
-	
-	
-	
 	
 	/**
 	 * 到岗小时预计收入
@@ -327,11 +350,10 @@ public class User extends BaseEntity<Long> {
 	private Double workTime;
 	
 	/**
-	 * 个人签名
+	 * 签订单位
 	 */
-	@Column(name = "signature")
-	private Double signature;
-	
+	@Column(name = "company")
+	private String company;
 
 	/**
 	 * 权限
@@ -362,13 +384,29 @@ public class User extends BaseEntity<Long> {
 	
 	
 	/**
-	 * 分组员工ids
+	 * 外来是否查询
 	 */
 	@Transient
 	private Integer temporarily;
 	
 	
 	
+
+	public Integer getSafe() {
+		return safe;
+	}
+
+	public void setSafe(Integer safe) {
+		this.safe = safe;
+	}
+
+	public Date getContractDateEnd() {
+		return contractDateEnd;
+	}
+
+	public void setContractDateEnd(Date contractDateEnd) {
+		this.contractDateEnd = contractDateEnd;
+	}
 
 	public String getTelephone() {
 		return telephone;
@@ -384,14 +422,6 @@ public class User extends BaseEntity<Long> {
 
 	public void setTemporarily(Integer temporarily) {
 		this.temporarily = temporarily;
-	}
-
-	public Double getSignature() {
-		return signature;
-	}
-
-	public void setSignature(Double signature) {
-		this.signature = signature;
 	}
 
 	public Double getWorkTime() {
@@ -547,20 +577,30 @@ public class User extends BaseEntity<Long> {
 		this.agreement = agreement;
 	}
 
-	public String getPromise() {
+
+
+	public Integer getPromise() {
 		return promise;
 	}
 
-	public void setPromise(String promise) {
+	public void setPromise(Integer promise) {
 		this.promise = promise;
 	}
 
-	public String getContract() {
-		return contract;
+	public String getNexus() {
+		return nexus;
 	}
 
-	public void setContract(String contract) {
-		this.contract = contract;
+	public void setNexus(String nexus) {
+		this.nexus = nexus;
+	}
+
+	public Integer getCommitment() {
+		return commitment;
+	}
+
+	public void setCommitment(Integer commitment) {
+		this.commitment = commitment;
 	}
 
 	public Integer getFrequency() {
@@ -571,12 +611,20 @@ public class User extends BaseEntity<Long> {
 		this.frequency = frequency;
 	}
 
-	public String getQuit() {
+	public Integer getQuit() {
 		return quit;
 	}
 
-	public void setQuit(String quit) {
+	public void setQuit(Integer quit) {
 		this.quit = quit;
+	}
+
+	public String getCompany() {
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
 	}
 
 	public String getReason() {

@@ -114,6 +114,8 @@ public class ReportExportServiceImpl implements ReportExportService{
 	public int importUserExcel(List<UserPoi> excelUser) {
 		int count = 0;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		
+
 		if(excelUser.size()>0){
 			List<User> userList = new ArrayList<User>();
 			for(UserPoi proPoi :excelUser){
@@ -123,26 +125,58 @@ public class ReportExportServiceImpl implements ReportExportService{
 					user = new User();
 				}
 				
-				user.setUserName(proPoi.getUserName());
-				user.setLoginName(proPoi.getUserName());
-				user.setPassword("123456");
-				user.setTelephone(proPoi.getTelephone());
-				user.setPhone(proPoi.getPhone());
-				user.setIdCard(proPoi.getIdCard());
-				user.setPermanentAddress(proPoi.getPermanentAddress());
-				user.setLivingAddress(proPoi.getLivingAddress());
-//				Date birthday = null;
-//				Date entry = null;
-//				try {
+				Date birthday = null;
+				Date entry = null;
+				Date contractDate = null;
+				Date contractDateEnd  = null;
+				try {
 //					if(!StringUtils.isEmpty(proPoi.getBirthday())){
 //						birthday = sdf.parse(proPoi.getBirthday());
 //					}
 //					if(!StringUtils.isEmpty(proPoi.getEntry())){
 //						entry = sdf.parse(proPoi.getEntry());
 //					}
-//				} catch (ParseException e) {
-//					e.printStackTrace();
-//				}
+					if(!StringUtils.isEmpty(proPoi.getOreTime())){
+						contractDate = sdf.parse(proPoi.getOreTime());
+					}
+					if(!StringUtils.isEmpty(proPoi.getOreTimeEnd())){
+						contractDate = sdf.parse(proPoi.getOreTimeEnd());
+					}
+					
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				
+				user.setUserName(proPoi.getUserName());
+				user.setLoginName(proPoi.getUserName());
+				user.setPassword("123456");
+				user.setGender( proPoi.getSex()=="男"?0:1);
+				//0=未签，1=已签，2=续签
+				int ore = 0;
+				
+				if(proPoi.getOre()=="已签"){
+					ore=1;
+				}else if(proPoi.getOre()=="续签"){
+					ore=2;
+				}
+				user.setCommitment(ore);
+				
+				
+				user.setContractDate(contractDate);
+				user.setContractDateEnd(contractDateEnd);
+				user.setCompany(proPoi.getCompany());
+				user.setSafe(proPoi.getSafe()=="已缴"?0:1);
+				user.setContacts(proPoi.getContacts());
+				user.setNexus(proPoi.getNexus());
+				user.setInformation(proPoi.getInformation());
+				
+				
+				
+//				user.setTelephone(proPoi.getTelephone());
+//				user.setPhone(proPoi.getPhone());
+//				user.setIdCard(proPoi.getIdCard());
+//				user.setPermanentAddress(proPoi.getPermanentAddress());
+//				user.setLivingAddress(proPoi.getLivingAddress());
 //				user.setBirthDate(birthday);
 //				user.setEntry(entry);
 				userList.add(user);
