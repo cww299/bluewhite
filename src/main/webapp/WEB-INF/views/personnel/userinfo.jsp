@@ -53,14 +53,14 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th>序号</th>
-                                            <th>编号</th>
-                                            <th>姓名</th>
-                                            <th>手机号</th>
-                                            <th>身份证号</th>
-                                            <th>部门</th>
-                                            <th>职位</th>
-                                            <th>操作</th>
+                                            <th class="text-center">序号</th>
+                                            <th class="text-center">编号</th>
+                                            <th class="text-center">姓名</th>
+                                            <th class="text-center">手机号</th>
+                                            <th class="text-center">身份证号</th>
+                                            <th class="text-center">部门</th>
+                                            <th class="text-center">职位</th>
+                                            <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent">
@@ -124,20 +124,27 @@
                               <div class="col-sm-2 col-md-2">
                                   <input type="text" class="form-control username">
                               </div>
-                               <label class="col-sm-3 control-label">员工编号:</label>
+                               <label class="col-sm-2 control-label">员工编号:</label>
                                  <div class="col-sm-2">
                                           <input type="text" class="form-control number">
                                       </div>
-                            
+                            <label class="col-sm-2 control-label">户籍地址:</label>
+                              <div class="col-sm-2 working">
+                              <input type="text" class="form-control permanentAddress">
+                              </div>
                     	</div>
                     	<div class="form-group">
                            <label class="col-sm-2 control-label">名族:</label>
                               <div class="col-sm-2 working">
                               <select class="form-control nation"><option value="汉">汉</option><option value="少数名族">少数名族</option></select>
                               </div>
-                              <label class="col-sm-3 control-label">手机号:</label>
+                              <label class="col-sm-2 control-label">手机号:</label>
                                  <div class="col-sm-2">
                                           <input type="text" class="form-control phone">
+                                      </div>
+                                      <label class="col-sm-2 control-label">现居住地址:</label>
+                                 <div class="col-sm-2">
+                                          <input type="text" class="form-control livingAddress">
                                       </div>
                     	</div>
                     	<div class="form-group">
@@ -145,40 +152,29 @@
                               <div class="col-sm-2 working">
                               <input type="text" class="form-control email">
                               </div>
-                              <label class="col-sm-3 control-label">性别:</label>
+                              <label class="col-sm-2 control-label">性别:</label>
                                  <div class="col-sm-2">
                                   <select class="form-control gender"><option value="1">男</option><option value="2">女</option></select>
                                       </div>
-                    	</div>
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">生日:</label>
+                                      <label class="col-sm-2 control-label">生日:</label>
                               <div class="col-sm-2 working">
                               <input id="birthDate" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#birthDate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                               </div>
-                              <label class="col-sm-3 control-label">身份证号:</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control idCard">
-                                      </div>
                     	</div>
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">户籍地址:</label>
-                              <div class="col-sm-2 working">
-                              <input type="text" class="form-control permanentAddress">
-                              </div>
-                              <label class="col-sm-3 control-label">现居住地址:</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control livingAddress">
-                                      </div>
-                    	</div>
+                    	
                     	<div class="form-group">
                            <label class="col-sm-2 control-label">婚姻状况:</label>
                               <div class="col-sm-2 working">
                                <select class="form-control marriage"><option value="已婚">已婚</option><option value="未婚">未婚</option></select>
                               </div>
-                              <label class="col-sm-3 control-label">生育状况:</label>
+                              <label class="col-sm-2 control-label">生育状况:</label>
                                  <div class="col-sm-2">
                                           <select class="form-control procreate"><option value="已育">已育</option><option value="未育">未育</option></select>
+                                      </div>
+                                      <label class="col-sm-2 control-label">身份证号:</label>
+                                 <div class="col-sm-2">
+                                          <input type="text" class="form-control idCard">
                                       </div>
                     	</div>
                     	<div class="form-group">
@@ -186,27 +182,25 @@
                               <div class="col-sm-2 working">
                               <select class="form-control education"><option value="本科">本科</option><option value="大专">大专</option><option value="高中">高中</option><option value="初中及以下">初中及以下</option></select>
                               </div>
-                              <label class="col-sm-3 control-label">毕业学校:</label>
+                              <label class="col-sm-2 control-label">毕业学校:</label>
                                  <div class="col-sm-2">
                                           <input type="text" class="form-control school">
                                       </div>
-                    	</div>
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">专业:</label>
+                                      <label class="col-sm-2 control-label">专业:</label>
                               <div class="col-sm-2 working">
                               <input type="text" class="form-control major">
                               </div>
-                              <label class="col-sm-3 control-label">联系人:</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control contacts">
-                                      </div>
                     	</div>
                     	<div class="form-group">
                            <label class="col-sm-2 control-label">联系方式:</label>
                               <div class="col-sm-2 working">
                               <input type="text" class="form-control information">
                               </div>
-                              <label class="col-sm-3 control-label">入职时间:</label>
+                              <label class="col-sm-2 control-label">联系人:</label>
+                                 <div class="col-sm-2">
+                                          <input type="text" class="form-control contacts">
+                                      </div>
+                              <label class="col-sm-2 control-label">入职时间:</label>
                                  <div class="col-sm-2">
                                           <input id="entry" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#entry', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
@@ -218,31 +212,29 @@
                              <input id="estimate" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#estimate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                               </div>
-                              <label class="col-sm-3 control-label">实际转正时间:</label>
+                              <label class="col-sm-2 control-label">实际转正时间:</label>
                                  <div class="col-sm-2">
                                           <input id="actua" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#actua', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                                       </div>
-                    	</div>
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">社保缴纳时间:</label>
+                                      <label class="col-sm-2 control-label">社保缴纳时间:</label>
                               <div class="col-sm-2 working">
                               <input id="socialSecurity" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#socialSecurity', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                               </div>
-                              <label class="col-sm-3 control-label">协议</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control agreement">
-                                      </div>
                     	</div>
                     	<div class="form-group">
                            <label class="col-sm-2 control-label">承诺书:</label>
                               <div class="col-sm-2 working">
                               <input type="text" class="form-control promise">
                               </div>
-                              <label class="col-sm-3 control-label">合同</label>
+                              <label class="col-sm-2 control-label">合同</label>
                                  <div class="col-sm-2">
                                           <input type="text" class="form-control contract">
+                                      </div>
+                                      <label class="col-sm-2 control-label">协议</label>
+                                 <div class="col-sm-2">
+                                          <input type="text" class="form-control agreement">
                                       </div>
                     	</div>
                     	<div class="form-group">
@@ -305,7 +297,7 @@
 				</form>
 </div>     
         
-        
+ </div>        
         
     </section>
  
@@ -382,14 +374,14 @@
 		      					 u=o.position.id
 		      				 }
 		      				html +='<tr>'
-		      				+'<td class="edit price">'+order+'</td>'
-		      				+'<td class="edit price">'+o.number+'</td>'
-		      				+'<td class="edit price">'+o.userName+'</td>'
-		      				+'<td class="edit price">'+o.phone+'</td>'
-		      				+'<td class="edit price">'+o.idCard+'</td>'
-		      				+'<td class="edit price">'+k+'</td>'
-		      				+'<td class="edit price">'+l+'</td>'
-							+'<td><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>修改</button></td></tr>'
+		      				+'<td class="text-center edit price">'+order+'</td>'
+		      				+'<td class="text-center edit price">'+o.number+'</td>'
+		      				+'<td class="text-center edit price">'+o.userName+'</td>'
+		      				+'<td class="text-center edit price">'+o.phone+'</td>'
+		      				+'<td class="text-center edit price">'+o.idCard+'</td>'
+		      				+'<td class="text-center edit price">'+k+'</td>'
+		      				+'<td class="text-center edit price">'+l+'</td>'
+							+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>修改</button></td></tr>'
 							
 		      			}); 
 		      			self.setCount(result.data.pageNum)
