@@ -129,12 +129,13 @@ public class ReportExportAction {
 	 * @param response
 	 * @param request
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/importUser",method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse importUser(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request){
+	public CommonResponse importUser(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request) throws Exception{
 		CommonResponse cr = new CommonResponse();
-		try {
+//		try {
 				List<UserPoi> excelUser = new ArrayList<UserPoi>();
 				InputStream in = file.getInputStream();
 				String filename = file.getOriginalFilename();
@@ -145,9 +146,9 @@ public class ReportExportAction {
 				if(count > 0){
 					cr.setMessage("成功导入"+count+"条数据");
 				}
-		} catch (Exception e) {
-			cr.setMessage("导入失败");
-		}
+//		} catch (Exception e) {
+//			cr.setMessage("导入失败");
+//		}
 		return cr;
 	}
 	
