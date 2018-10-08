@@ -22,24 +22,23 @@ FilesService {
 	@Override
 	public Files upFile(MultipartFile file, HttpServletRequest request) {
 		Files files = new Files();
-		String filePath = request.getSession().getServletContext().getRealPath("/") + "upload/"  
-                   + file.getOriginalFilename();  
 		String fileName = file.getOriginalFilename();
 		String type = file.getContentType();
 		long size = file.getSize() ;
+		String filePath = "D:/upload/img/";  
 		 File targetFile = new File(filePath);  
 		 if(!targetFile.exists()){  
 	            targetFile.mkdirs();  
 	        }  
 	        //保存  
 	        try {  
-	        	file.transferTo(targetFile);  
+	        	file.transferTo(new File(filePath+fileName));  
 	        } catch (Exception e) {  
 	            e.printStackTrace();  
 	        }  
 	        files.setName(fileName);
 	        files.setType(type);
-	        files.setUrl("upload/"+fileName);
+	        files.setUrl("/upload/img/"+fileName);
 	        files.setSize(size);
 	        filesDao.save(files);
 		return files;

@@ -62,6 +62,13 @@ public class User extends BaseEntity<Long> {
 	@Column(name = "login_name")
 	private String loginName;
 	
+	
+	/**
+	 * 照片id
+	 */
+	@Column(name = "file_id")
+	private Long fileId;
+	
 	/**
 	 * 照片url
 	 */

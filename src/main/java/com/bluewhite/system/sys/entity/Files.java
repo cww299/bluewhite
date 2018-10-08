@@ -49,10 +49,8 @@ public class Files extends BaseEntity<Long>{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id", referencedColumnName = "id", updatable = false, insertable = false)
 	private Product product;
+	
 
-	
-	
-	
 	public Long getProductId() {
 		return productId;
 	}

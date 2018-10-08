@@ -1,8 +1,5 @@
 package com.bluewhite.system.sys.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +10,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
-import com.bluewhite.common.entity.ErrorCode;
+import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.system.sys.entity.Files;
 import com.bluewhite.system.sys.service.FilesService;
+import com.bluewhite.system.user.entity.Role;
+import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.entity.UserContract;
 
 @Controller
 public class FilesAction {
@@ -26,11 +28,19 @@ public class FilesAction {
 	
 	@Autowired
 	private FilesService fileService;
+	
+	private ClearCascadeJSON clearCascadeJSON;
+
+	{
+		clearCascadeJSON = ClearCascadeJSON
+				.get()
+				.addRetainTerm(Files.class,"id","url");
+	}
 
 
 	
 	/**
-	 * 文件上传
+	 * 员工相片上传
 	 * @param files
 	 * @param request
 	 * @return
@@ -40,12 +50,10 @@ public class FilesAction {
 	public CommonResponse upload(@RequestParam(value = "file", required = true) MultipartFile files,
 			HttpServletRequest request) {
 		CommonResponse cr = new CommonResponse();
-		List<Files> filesList = new ArrayList<Files>();
 			// 循环获取file数组中得文件
 			Files fi = fileService.upFile(files, request);
-			filesList.add(fi);
 			cr.setMessage("成功上传");
-			cr.setData(filesList);
+			cr.setData(clearCascadeJSON.format(fi));
 		return cr;
 	}
 	
