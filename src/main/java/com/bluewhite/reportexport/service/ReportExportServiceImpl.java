@@ -39,8 +39,10 @@ import com.bluewhite.reportexport.entity.MachinistProcedurePoi;
 import com.bluewhite.reportexport.entity.ProcedurePoi;
 import com.bluewhite.reportexport.entity.ProductPoi;
 import com.bluewhite.reportexport.entity.UserPoi;
+import com.bluewhite.system.user.dao.UserContractDao;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.entity.UserContract;
 @Service
 public class ReportExportServiceImpl implements ReportExportService{
 	
@@ -73,6 +75,9 @@ public class ReportExportServiceImpl implements ReportExportService{
 	
 	@Autowired
 	private BaseOneTimeDao baseOneTimeDao;
+	
+	@Autowired
+	private UserContractDao userContractDao;
 
 	@Override
 	@Transactional
@@ -120,27 +125,24 @@ public class ReportExportServiceImpl implements ReportExportService{
 			List<User> userList = new ArrayList<User>();
 			for(UserPoi proPoi :excelUser){
 				User user  = userDao.findByUserName(proPoi.getUserName());
-				
+				UserContract userContract =null;
 				if(user==null){
 					user = new User();
+					userContract = new UserContract();
+					userContract.setNumber(proPoi.getNumber());
+					userContract.setUsername(proPoi.getUserName());
+//					userContract.setQuit(1);
+					userContractDao.save(userContract);
 				}
 				
-				Date birthday = null;
 				Date entry = null;
 				Date contractDate = null;
-				Date contractDateEnd  = null;
 				try {
-//					if(!StringUtils.isEmpty(proPoi.getBirthday())){
-//						birthday = sdf.parse(proPoi.getBirthday());
-//					}
-//					if(!StringUtils.isEmpty(proPoi.getEntry())){
-//						entry = sdf.parse(proPoi.getEntry());
-//					}
-					if(!StringUtils.isEmpty(proPoi.getOreTime())){
-						contractDate = sdf.parse(proPoi.getOreTime());
+					if(!StringUtils.isEmpty(proPoi.getEntry())){
+						entry = sdf.parse(proPoi.getEntry());
 					}
-					if(!StringUtils.isEmpty(proPoi.getOreTimeEnd())){
-						contractDate = sdf.parse(proPoi.getOreTimeEnd());
+					if(!StringUtils.isEmpty(proPoi.getQuitDate())){
+						contractDate = sdf.parse(proPoi.getQuitDate());
 					}
 					
 				} catch (ParseException e) {
@@ -150,39 +152,36 @@ public class ReportExportServiceImpl implements ReportExportService{
 				user.setUserName(proPoi.getUserName());
 				user.setLoginName(proPoi.getUserName());
 				user.setPassword("123456");
-				user.setGender( proPoi.getSex()=="男"?0:1);
-				//0=未签，1=已签，2=续签
-				int ore = 0;
-				
-				if(proPoi.getOre()=="已签"){
-					ore=1;
-				}else if(proPoi.getOre()=="续签"){
-					ore=2;
-				}
-				user.setCommitment(ore);
-				
-				
-				user.setContractDate(contractDate);
-				user.setContractDateEnd(contractDateEnd);
-				user.setCompany(proPoi.getCompany());
-				user.setSafe(proPoi.getSafe()=="已缴"?0:1);
-				user.setContacts(proPoi.getContacts());
-				user.setNexus(proPoi.getNexus());
-				user.setInformation(proPoi.getInformation());
-				
-				
-				
-//				user.setTelephone(proPoi.getTelephone());
-//				user.setPhone(proPoi.getPhone());
-//				user.setIdCard(proPoi.getIdCard());
-//				user.setPermanentAddress(proPoi.getPermanentAddress());
-//				user.setLivingAddress(proPoi.getLivingAddress());
-//				user.setBirthDate(birthday);
-//				user.setEntry(entry);
+				user.setQuit(1);
+				user.setQuitDate(contractDate);
+				user.setPhone(proPoi.getPhone());
+				user.setIdCard(proPoi.getIdCard());
+				user.setPermanentAddress(proPoi.getPermanentAddress());
+				user.setLivingAddress(proPoi.getLivingAddress());
+				user.setEntry(entry);
+				user.setUserContract(userContract);
 				userList.add(user);
 				count++;
 			}
 			userDao.save(userList);
+		}
+		return count;
+	}
+	
+	
+	@Override
+	public int importImportUserContract(List<UserContract> excelUser) {
+		
+		int count = 0;
+		if(excelUser.size()>0){
+			for(UserContract proPoi :excelUser){
+				UserContract user  = userContractDao.findByUsername(proPoi.getUsername());
+				if(user!=null){
+					user.setNumber(proPoi.getNumber());
+					userContractDao.save(user);
+					count++;
+				}
+			}
 		}
 		return count;
 	}
@@ -367,4 +366,6 @@ public class ReportExportServiceImpl implements ReportExportService{
 	public int importexcelBaseThreeExcel(List<BaseThree> excelBaseThree) {
 		return baseThreeDao.save(excelBaseThree).size();
 	}
+
+
 }

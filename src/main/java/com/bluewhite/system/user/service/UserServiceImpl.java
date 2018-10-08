@@ -20,10 +20,12 @@ import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.system.user.dao.UserContractDao;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.RoleMenuPermission;
 import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.entity.UserContract;
 @Service
 public class UserServiceImpl extends BaseServiceImpl<User, Long> implements UserService {
 	@Autowired
@@ -31,6 +33,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	
 	@Autowired
 	private PermissionService permissionService;
+	
+	@Autowired
+	private UserContractDao userContractDao;
 	
 	
 	private final static Log log = Log.getLog(UserServiceImpl.class);
@@ -196,6 +201,18 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		user.setPassword(user.getPassword());
 		userDao.save(user);
 		return true;
+	}
+
+	@Override
+	public void oooxxx() {
+		List<User> userList = userDao.findAll();
+		for(User user : userList ){
+			UserContract userContract  = userContractDao.findByUsername(user.getUserName());
+			user.setUserContract(userContract);
+			userDao.save(user);
+		}
+		
+		
 	}
 
 

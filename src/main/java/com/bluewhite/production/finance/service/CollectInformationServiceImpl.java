@@ -124,9 +124,11 @@ public class CollectInformationServiceImpl extends BaseServiceImpl<CollectInform
 		collectPay.setOrderTimeEnd(collectInformation.getOrderTimeEnd());
 		collectPay.setType(collectInformation.getType());
 		List<CollectPay>  collectPayList = collectPayService.findPages(collectPay, page).getRows();
-		double addPerformancePay = collectPayList.stream().mapToDouble(CollectPay::getHardAddPerformancePay).sum(); 
+		double addPerformancePay = 0;
 		if(collectInformation.getType()==3 || collectInformation.getType()==4 || collectInformation.getType()==5){
-			   addPerformancePay = collectPayList.stream().mapToDouble(CollectPay::getAddPerformancePay).sum(); 
+			   addPerformancePay = collectPayList.stream().filter(CollectPay->CollectPay.getAddPerformancePay()!=null).mapToDouble(CollectPay::getAddPerformancePay).sum(); 
+		}else{
+			addPerformancePay = collectPayList.stream().filter(CollectPay->CollectPay.getHardAddPerformancePay()!=null).mapToDouble(CollectPay::getHardAddPerformancePay).sum(); 
 		}
 		collectInformation.setSumAttendancePay(sumAttendancePay + addPerformancePay);
 		
@@ -224,11 +226,14 @@ public class CollectInformationServiceImpl extends BaseServiceImpl<CollectInform
 		//车间剩余
 		double workshopSurplus = giveSurplus - shareholder;
 		collectInformation.setWorkshopSurplus(workshopSurplus);
-		CollectInformation ct = dao.findByType(collectInformation.getType());
-		if(ct!=null){
-			collectInformation.setId(ct.getId());
+		if(collectInformation.getStatus()==null){
+			CollectInformation ct = dao.findByType(collectInformation.getType());
+			if(ct!=null){
+				collectInformation.setId(ct.getId());
+			}
+			dao.save(collectInformation);
 		}
-		return dao.save(collectInformation);
+		return collectInformation;
 	}
 	
 	//将之前的数据汇总到现在的数据中，作为起点
@@ -265,6 +270,10 @@ public class CollectInformationServiceImpl extends BaseServiceImpl<CollectInform
 
 	@Override
 	public CollectInformation findByType(CollectInformation collectInformation) {
+		
+		if(collectInformation.getStatus()!=null){
+		return	this.collectInformation(collectInformation);
+		}
 		return dao.findByType(collectInformation.getType());
 	}
 	
