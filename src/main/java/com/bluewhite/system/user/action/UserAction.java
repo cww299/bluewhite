@@ -44,7 +44,7 @@ public class UserAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(User.class,"id","price","status","workTime","number","pictureUrl", "userName", "phone","position","orgName","idCard",
+				.addRetainTerm(User.class,"id","fileId","price","status","workTime","number","pictureUrl", "userName", "phone","position","orgName","idCard",
 						"nation","email","gender","birthDate","group","idCard","permanentAddress","livingAddress","marriage","procreate","education"
 						,"school","major","contacts","information","entry","estimate","actua","socialSecurity","bankCard1","bankCard2","agreement"
 						,"promise","contract","contractDate","frequency","quitDate","quit","reason","train","remark","userContract")
@@ -197,6 +197,8 @@ public class UserAction {
 	}
 	
 	/**
+	 * 
+	 * 测试
 	 */
 	@RequestMapping(value = "/oooxxx", method = RequestMethod.GET)
 	@ResponseBody
