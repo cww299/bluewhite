@@ -27,6 +27,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.entity.UserContract;
 import com.bluewhite.system.user.service.UserService;
 
 @Controller
@@ -46,10 +47,12 @@ public class UserAction {
 				.addRetainTerm(User.class,"id","price","status","workTime","number","pictureUrl", "userName", "phone","position","orgName","idCard",
 						"nation","email","gender","birthDate","group","idCard","permanentAddress","livingAddress","marriage","procreate","education"
 						,"school","major","contacts","information","entry","estimate","actua","socialSecurity","bankCard1","bankCard2","agreement"
-						,"promise","contract","contractDate","frequency","quitDate","quit","reason","train","remark","","","")
+						,"promise","contract","contractDate","frequency","quitDate","quit","reason","train","remark","userContract")
 				.addRetainTerm(Group.class, "id","name", "type", "price")
 				.addRetainTerm(Role.class, "name", "role", "description","id")
-				.addRetainTerm(BaseData.class, "id","name", "type");
+				.addRetainTerm(BaseData.class, "id","name", "type")
+				.addRetainTerm(UserContract.class, "id","number", "username","archives","pic","IdCard","bankCard","physical",
+						"qualification","formalSchooling","agreement","secrecyAgreement","contract","remark","quit");
 	}
 	
 	/**
@@ -192,6 +195,18 @@ public class UserAction {
 		}
 		return cr;
 	}
+	
+	/**
+	 */
+	@RequestMapping(value = "/oooxxx", method = RequestMethod.GET)
+	@ResponseBody
+	private CommonResponse oooxxx(User user) {
+		CommonResponse cr = new CommonResponse();
+		userService.oooxxx();
+		return cr;
+	}
+	
+	
 	
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {

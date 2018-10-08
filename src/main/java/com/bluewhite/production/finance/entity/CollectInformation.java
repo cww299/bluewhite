@@ -215,6 +215,22 @@ public class CollectInformation extends BaseEntity<Long>{
 	@Transient
 	private Integer flag;
 	
+	/**
+	 * 是否
+	 */
+	@Transient
+	private Integer status;
+	
+	
+	
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
 	public Integer getType() {
 		return type;
 	}

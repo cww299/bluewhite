@@ -13,6 +13,7 @@ import com.bluewhite.reportexport.entity.MachinistProcedurePoi;
 import com.bluewhite.reportexport.entity.ProcedurePoi;
 import com.bluewhite.reportexport.entity.ProductPoi;
 import com.bluewhite.reportexport.entity.UserPoi;
+import com.bluewhite.system.user.entity.UserContract;
 
 @Service
 public interface ReportExportService {
@@ -82,5 +83,7 @@ public interface ReportExportService {
 	 * @return
 	 */
 	int importexcelBaseThreeExcel(List<BaseThree> excelBaseThree);
+
+	int importImportUserContract(List<UserContract> excelUser);
 
 }

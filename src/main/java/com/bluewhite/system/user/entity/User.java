@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,8 +14,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.bluewhite.base.BaseEntity;
@@ -200,11 +205,6 @@ public class User extends BaseEntity<Long> {
 	@Column(name = "social_security")
 	private Date socialSecurity;
 	/**
-	 * 出生日期
-	 */
-	@Column(name = "birthday")
-    private Date birthday;
-	/**
 	 * 银行卡1
 	 */
 	@Column(name = "bank_card1")
@@ -330,6 +330,14 @@ public class User extends BaseEntity<Long> {
 	private Set<Role> roles = new HashSet<Role>();
 	
 	/**
+	 * 
+	 */
+    @OneToOne(fetch=FetchType.LAZY,cascade = CascadeType.ALL) 
+    @JoinColumn(name="user_contract_id",referencedColumnName="id",nullable=true)
+    @NotFound(action=NotFoundAction.IGNORE)
+    private UserContract userContract;
+	
+	/**
 	 * 到岗小时预计收入
 	 */
 	@Column(name = "price")
@@ -391,6 +399,14 @@ public class User extends BaseEntity<Long> {
 	
 	
 	
+
+	public UserContract getUserContract() {
+		return userContract;
+	}
+
+	public void setUserContract(UserContract userContract) {
+		this.userContract = userContract;
+	}
 
 	public Integer getSafe() {
 		return safe;
@@ -819,13 +835,6 @@ public class User extends BaseEntity<Long> {
 		this.socialSecurity = socialSecurity;
 	}
 
-	public Date getBirthday() {
-		return birthday;
-	}
-
-	public void setBirthday(Date birthday) {
-		this.birthday = birthday;
-	}
 
 	public Date getContractDate() {
 		return contractDate;

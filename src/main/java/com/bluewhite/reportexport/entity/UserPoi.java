@@ -6,220 +6,98 @@ public class UserPoi {
 	
 	
 	/**
-	 * 姓名
+	 * weizhi
 	 */
 	@Poi(name = "", column = "A")
-	private String userName;
-	
+	private String number;
 	
 	/**
-	 * 性别
+	 * 姓名
 	 */
 	@Poi(name = "", column = "B")
-	private String sex;
-	
+	private String userName;
 	
 	/**
-	 * 是否签订合同
+	 * 联系方式
 	 */
 	@Poi(name = "", column = "C")
-	private String ore;
-	
+	private String phone;
 	
 	/**
-	 * 签订时间
+	 * 身份证号
 	 */
 	@Poi(name = "", column = "D")
-	private String oreTime;
-	
+	private String idCard;
 	
 	/**
-	 * 合同到期时间
+	 * 入职时间
 	 */
 	@Poi(name = "", column = "E")
-	private String oreTimeEnd;
-	
+	private String entry;
 	
 	/**
-	 * 签订单位
+	 *离职时间
 	 */
 	@Poi(name = "", column = "F")
-	private String company;
+    private String quitDate;
+	
 	
 	/**
-	 * 保险情况
+	 * 户籍地址
 	 */
 	@Poi(name = "", column = "G")
-	private String safe;
-	
+    private String permanentAddress;
 	
 	/**
-	 * 承诺书是否签订
+	 * 现居住地址
 	 */
 	@Poi(name = "", column = "H")
-	private String commitment;
+    private String livingAddress;
+
 	
-    /**
-     * 紧急联系人
-     */
-	@Poi(name = "", column = "I")
-    private String contacts;
-	
-	/**
-     * 紧急联系人关系
-     */
-	@Poi(name = "", column = "J")
-    private String nexus;
-    /**
-     * 紧急联系方式
-     */
-	@Poi(name = "", column = "K")
-    private String information;
-	
-	
-	
-	
-	
-	public String getSex() {
-		return sex;
+
+	public String getNumber() {
+		return number;
 	}
 
-	public void setSex(String sex) {
-		this.sex = sex;
+	public void setNumber(String number) {
+		this.number = number;
 	}
 
-	public String getOre() {
-		return ore;
+	public String getIdCard() {
+		return idCard;
 	}
 
-	public void setOre(String ore) {
-		this.ore = ore;
+	public void setIdCard(String idCard) {
+		this.idCard = idCard;
 	}
 
-	public String getOreTime() {
-		return oreTime;
+	public String getEntry() {
+		return entry;
 	}
 
-	public void setOreTime(String oreTime) {
-		this.oreTime = oreTime;
+	public void setEntry(String entry) {
+		this.entry = entry;
 	}
 
-	public String getOreTimeEnd() {
-		return oreTimeEnd;
+
+
+	public String getQuitDate() {
+		return quitDate;
 	}
 
-	public void setOreTimeEnd(String oreTimeEnd) {
-		this.oreTimeEnd = oreTimeEnd;
+	public void setQuitDate(String quitDate) {
+		this.quitDate = quitDate;
 	}
 
-	public String getCompany() {
-		return company;
+	public String getPhone() {
+		return phone;
 	}
 
-	public void setCompany(String company) {
-		this.company = company;
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
-	public String getSafe() {
-		return safe;
-	}
-
-	public void setSafe(String safe) {
-		this.safe = safe;
-	}
-
-	public String getCommitment() {
-		return commitment;
-	}
-
-	public void setCommitment(String commitment) {
-		this.commitment = commitment;
-	}
-
-	public String getContacts() {
-		return contacts;
-	}
-
-	public void setContacts(String contacts) {
-		this.contacts = contacts;
-	}
-
-	public String getNexus() {
-		return nexus;
-	}
-
-	public void setNexus(String nexus) {
-		this.nexus = nexus;
-	}
-
-	public String getInformation() {
-		return information;
-	}
-
-	public void setInformation(String information) {
-		this.information = information;
-	}
-
-	//	/**
-//	 * 固定电话
-//	 */
-//	@Poi(name = "", column = "B")
-//	private String telephone;
-//	
-//	/**
-//	 * 联系方式
-//	 */
-//	@Poi(name = "", column = "C")
-//	private String phone;
-//	
-//	/**
-//	 * 身份证号
-//	 */
-//	@Poi(name = "", column = "D")
-//	private String idCard;
-//	
-//	/**
-//	 * 入职时间
-//	 */
-//	@Poi(name = "", column = "E")
-//	private String entry;
-//	
-//	/**
-//	 * 出生日期
-//	 */
-//	@Poi(name = "", column = "F")
-//    private String birthday;
-//	
-//	/**
-//	 * 户籍地址
-//	 */
-//	@Poi(name = "", column = "G")
-//    private String permanentAddress;
-//	
-//	/**
-//	 * 现居住地址
-//	 */
-//	@Poi(name = "", column = "H")
-//    private String livingAddress;
-//
-//	
-//
-//	public String getTelephone() {
-//		return telephone;
-//	}
-//
-//	public void setTelephone(String telephone) {
-//		this.telephone = telephone;
-//	}
-//
-//	public String getPhone() {
-//		return phone;
-//	}
-//
-//	public void setPhone(String phone) {
-//		this.phone = phone;
-//	}
-//
 //	public String getIdCard() {
 //		return idCard;
 //	}
@@ -227,23 +105,23 @@ public class UserPoi {
 //	public void setIdCard(String idCard) {
 //		this.idCard = idCard;
 //	}
-//
-//	public String getPermanentAddress() {
-//		return permanentAddress;
-//	}
-//
-//	public void setPermanentAddress(String permanentAddress) {
-//		this.permanentAddress = permanentAddress;
-//	}
-//
-//	public String getLivingAddress() {
-//		return livingAddress;
-//	}
-//
-//	public void setLivingAddress(String livingAddress) {
-//		this.livingAddress = livingAddress;
-//	}
-//
+
+	public String getPermanentAddress() {
+		return permanentAddress;
+	}
+
+	public void setPermanentAddress(String permanentAddress) {
+		this.permanentAddress = permanentAddress;
+	}
+
+	public String getLivingAddress() {
+		return livingAddress;
+	}
+
+	public void setLivingAddress(String livingAddress) {
+		this.livingAddress = livingAddress;
+	}
+
 	public String getUserName() {
 		return userName;
 	}

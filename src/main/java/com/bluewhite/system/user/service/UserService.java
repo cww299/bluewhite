@@ -86,6 +86,9 @@ public interface UserService extends BaseCRUDService<User, Long> {
 	 */
 	public boolean resetPwdByDefault(Long userId);
 
+
+	public void oooxxx();
+
 	
 	
 	

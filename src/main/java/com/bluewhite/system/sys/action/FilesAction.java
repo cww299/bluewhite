@@ -35,29 +35,17 @@ public class FilesAction {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "upload", method = RequestMethod.POST)
+	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse upload(@RequestParam(value = "file", required = true) MultipartFile[] files,
+	public CommonResponse upload(@RequestParam(value = "file", required = true) MultipartFile files,
 			HttpServletRequest request) {
 		CommonResponse cr = new CommonResponse();
 		List<Files> filesList = new ArrayList<Files>();
-		// 判断file数组不能为空并且长度大于0
-		if (files != null && files.length > 0) {
 			// 循环获取file数组中得文件
-			for (int i = 0; i < files.length; i++) {
-				MultipartFile file = files[i];
-				// 保存文件
-				Files fi = fileService.upFile(file, request);
-				filesList.add(fi);
-			}
-		}
-		if(filesList.size()>0){
-			cr.setMessage("成功上传"+filesList.size()+"条");
+			Files fi = fileService.upFile(files, request);
+			filesList.add(fi);
+			cr.setMessage("成功上传");
 			cr.setData(filesList);
-		}else{
-			cr.setCode(ErrorCode.INTERNAL_SERVER_ERROR.getCode());
-			cr.setMessage("上传失败");
-		}
 		return cr;
 	}
 	

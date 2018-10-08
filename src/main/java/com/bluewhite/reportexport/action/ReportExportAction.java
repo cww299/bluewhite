@@ -66,6 +66,7 @@ import com.bluewhite.reportexport.entity.ProductPoi;
 import com.bluewhite.reportexport.entity.ReworkPoi;
 import com.bluewhite.reportexport.entity.UserPoi;
 import com.bluewhite.reportexport.service.ReportExportService;
+import com.bluewhite.system.user.entity.UserContract;
 
 @Controller
 @RequestMapping("excel")
@@ -152,6 +153,32 @@ public class ReportExportAction {
 		return cr;
 	}
 	
+	
+	
+	/**
+	 * 基础用户导入                          
+	 * @param residentmessage
+	 * @param response
+	 * @param request
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "/importUserContract",method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse importUserContract(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request) throws Exception{
+		CommonResponse cr = new CommonResponse();
+				List<UserContract> excelUser = new ArrayList<UserContract>();
+				InputStream in = file.getInputStream();
+				String filename = file.getOriginalFilename();
+				// 创建excel工具类
+				Excelutil<UserContract> util = new Excelutil<UserContract>(UserContract.class);
+				excelUser = util.importExcel(filename, in);// 导入
+				int count = reportExportService.importImportUserContract(excelUser);
+				if(count > 0){
+					cr.setMessage("成功导入"+count+"条数据");
+				}
+		return cr;
+	}
 	
 	/**
 	 * 工序导入
