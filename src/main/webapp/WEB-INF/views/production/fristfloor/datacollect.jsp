@@ -63,6 +63,8 @@
 								<input id="endTimeth" placeholder="请输入结束时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#endTimeth', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<td><input type="checkbox" id="check" value="1">详情</td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtaskth">
@@ -307,20 +309,34 @@
 			}
 			this.events = function(){
 				$('.searchtask').on('click',function(){
+					var status;
+					if($("#check").is(':checked')==true){
+						status=1
+					}else{
+						status=""
+					}
 					var data = {
 					  		type:1,
 				  			shareholderProportion:$('#number').val(),
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
+				  			status:status
 				  	}
 			
 				self.loadPagination(data);
 				});
 				$('.searchtaskth').on('click',function(){
+					var status;
+					if($("#check").is(':checked')==true){
+						status=1
+					}else{
+						status=""
+					}
 					var data = {
 					  		type:1,
 				  			orderTimeBegin:$("#startTimeth").val(),
 				  			orderTimeEnd:$("#endTimeth").val(), 
+				  			status:status
 				  	}
 			
 				self.loadPagination(data);

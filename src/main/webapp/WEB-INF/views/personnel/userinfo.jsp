@@ -226,11 +226,11 @@
                     	<div class="form-group">
                            <label class="col-sm-2 control-label">承诺书:</label>
                               <div class="col-sm-2 working">
-                              <input type="text" class="form-control promise">
+                               <select class="form-control promise"><option value="0">未签</option><option value="1">已签</option></select>
                               </div>
                               <label class="col-sm-2 control-label">合同</label>
                                  <div class="col-sm-2">
-                                          <input type="text" class="form-control contract">
+                                          <select class="form-control commitment"><option value="0">未签</option><option value="1">已签</option><option value="2">续签</option></select>
                                       </div>
                                       <label class="col-sm-2 control-label">协议</label>
                                  <div class="col-sm-2">
@@ -242,10 +242,14 @@
                               <div class="col-sm-2 working">
                               <input type="text" class="form-control bankCard1">
                               </div>
-                              <label class="col-sm-3 control-label">银行卡2</label>
+                              <label class="col-sm-2 control-label">银行卡2</label>
                                  <div class="col-sm-2">
                                           <input type="text" class="form-control bankCard2">
                                       </div>
+                                      <label class="col-sm-2 control-label">保险情况:</label>
+                              <div class="col-sm-2 working">
+                               <select class="form-control safe"><option value="0">未缴</option><option value="1">已缴</option></select>
+                              </div>
                     	</div>
                     	<div class="form-group">
                            <label class="col-sm-2 control-label">合同签订开始时间:</label>
@@ -253,15 +257,19 @@
                               <input id="contractDate" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#contractDate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                               </div>
-                              <label class="col-sm-3 control-label">合同签订次数</label>
+                              <label class="col-sm-2 control-label">合同签订次数</label>
                                  <div class="col-sm-2">
                                           <input type="text" class="form-control frequency">
                                       </div>
+                                      <label class="col-sm-2 control-label">签订单位:</label>
+                              <div class="col-sm-2 working">
+                               <input type="text" class="form-control company">
+                              </div>
                     	</div>
                     	<div class="form-group">
                            <label class="col-sm-2 control-label">工作状态:</label>
                               <div class="col-sm-2 working">
-                               <select class="form-control quit"><option value="在职">在职</option><option value="离职">离职</option></select>
+                               <select class="form-control quit"><option value="0">在职</option><option value="1">离职</option></select>
                               </div>
                               <label class="col-sm-3 control-label">离职时间</label>
                                  <div class="col-sm-2">
@@ -552,7 +560,7 @@
 				      				$('.bankCard1').val(o.bankCard1);
 				      				$('.bankCard2').val(o.bankCard2);
 				      				$('.agreement').val(o.agreement);
-				      				$('.promise').val(o.promise);
+				      				
 				      				$('.contract').val(o.contract);
 				      				$('#contractDate').val(o.contractDate);
 				      				$('.frequency').val(o.frequency);
@@ -584,6 +592,14 @@
 									})
 									$('.quit').each(function(j,k){
 										var id=o.quit;
+										$(k).val(id);
+									})
+									$('.safe').each(function(j,k){
+										var id=o.safe;
+										$(k).val(id);
+									})
+									$('.promise').each(function(j,k){
+										var id=o.promise;
 										$(k).val(id);
 									})
 				      			}); 
@@ -803,16 +819,18 @@
 										bankCard2:$('.bankCard2').val(),
 										agreement:$('.agreement').val(),
 										promise:$('.promise').val(),
-										contract:$('.contract').val(),
+										commitment:$('.commitment').val(),
 										contractDate:$('#contractDate').val(),
 										frequency:$('.frequency').val(),
+										company:$('.company').val(),
 										quit:$('.quit').val(),
 										quitDate:$('#quitDate').val(),
 										reason:$('.reason').val(),
 										train:$('.train').val(),
 										remark:$('.remark').val(),
 										orgNameId:$('.selectgroupChange').val(),
-										positionId:$('.selectChange').val()
+										positionId:$('.selectChange').val(),
+										safe:$('.safe').val()
 								}
 							    $.ajax({
 									url:"${ctx}/system/user/add",
