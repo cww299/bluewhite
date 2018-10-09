@@ -6,6 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="${ctx }/static/css/dropzone.css">
 <title>人员汇总</title>
 </head>
 <body>
@@ -115,6 +116,17 @@
 			<div class=" col-xs-12  col-sm-12  col-md-12 ">
 				<div class="space-10"></div>
 				<div style="height: 30px"></div>
+				
+                            <!-- <div><table><tr>
+								<td>图片类型:</td><td><select class="form-control" id="selecttype"><option value="introduce">产品</option><option value="details">产品描述</option><option value="bursting">爆款图片</option></select></td>
+								</tr></table></div> -->
+                            <div style="padding-left: 450px">
+                            <div class="panel-body">
+                                <form action="#" class="dropzone" style="widows: 150px" id="my-awesome-dropzone" enctype="multipart/form-data">
+                                </form>
+
+                            </div>
+                 </div>
 				<form class="form-horizontal addDictDivTypeForm">
 					<div class="row col-xs-12  col-sm-12  col-md-12 ">
 		
@@ -300,6 +312,12 @@
                                             
                                         </div>
                  </div>
+                 <div class="form-group hidden">
+                 <input type="text" id="productId" class="form-control">
+                 </div>
+                 <div class="form-group hidden">
+                 <input type="text" id="producturl" class="form-control">
+                 </div>
                  </div>
 
 				</form>
@@ -320,6 +338,7 @@
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
     <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+    <script src="${ctx }/static/js/vendor/dropzone.min.js"></script>
     <script>
    jQuery(function($){
    	var Login = function(){
@@ -830,7 +849,9 @@
 										remark:$('.remark').val(),
 										orgNameId:$('.selectgroupChange').val(),
 										positionId:$('.selectChange').val(),
-										safe:$('.safe').val()
+										safe:$('.safe').val(),
+										fileId:$('#productId').val(),
+										pictureUrl:$('#productIdurl').val(),
 								}
 							    $.ajax({
 									url:"${ctx}/system/user/add",
