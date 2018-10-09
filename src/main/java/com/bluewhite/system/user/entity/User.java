@@ -149,12 +149,12 @@ public class User extends BaseEntity<Long> {
      * 婚姻状况
      */
 	@Column(name = "marriage")
-    private String marriage;
+    private Integer marriage;
     /**
      * 生育状况
      */
 	@Column(name = "procreate")
-    private String procreate;
+    private Integer procreate;
     /**
      * 学历
      */
@@ -252,7 +252,7 @@ public class User extends BaseEntity<Long> {
 	@Column(name = "contract_date")
     private Date contractDate;
 	/**
-	 * 合同签订日期
+	 * 合同签订结束日期
 	 */
 	@Column(name = "contract_date_end")
     private Date contractDateEnd;
@@ -520,19 +520,27 @@ public class User extends BaseEntity<Long> {
 		this.livingAddress = livingAddress;
 	}
 
-	public String getMarriage() {
+	public Long getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(Long fileId) {
+		this.fileId = fileId;
+	}
+
+	public Integer getMarriage() {
 		return marriage;
 	}
 
-	public void setMarriage(String marriage) {
+	public void setMarriage(Integer marriage) {
 		this.marriage = marriage;
 	}
 
-	public String getProcreate() {
+	public Integer getProcreate() {
 		return procreate;
 	}
 
-	public void setProcreate(String procreate) {
+	public void setProcreate(Integer procreate) {
 		this.procreate = procreate;
 	}
 

@@ -190,20 +190,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 
 
 	@Override
-	public boolean resetPwdByDefault(Long userId) {
-		User user = userDao.findOne(userId);
-		if(user == null){
-			log.error("用户id对应的用户不存在。");
-			return false;
-		}
-		String username = user.getUserName();
-		//初始化密码为123456并加密存储
-		user.setPassword(user.getPassword());
-		userDao.save(user);
-		return true;
-	}
-
-	@Override
 	public void oooxxx() {
 		List<User> userList = userDao.findAll();
 		for(User user : userList ){

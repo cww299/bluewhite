@@ -78,14 +78,6 @@ public interface UserService extends BaseCRUDService<User, Long> {
 	 */
 	public List<User> getPagedUserForCount(PageParameter page, User user);
 
-	
-
-	/**
-	 * 恢复用户初始化密码为123456
-	 * @param user dai 
-	 */
-	public boolean resetPwdByDefault(Long userId);
-
 
 	public void oooxxx();
 

@@ -24,6 +24,7 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.utils.BankUtil;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
@@ -151,50 +152,23 @@ public class UserAction {
 		return cr;
 	}
 	
-	
 	/**
-	 * 重置密码
+	 * 通过银行卡号得到银行名称
 	 * @param request 请求
-	 * @param id 用户id
 	 * @return cr
 	 */
-	@RequestMapping(value = "/pwd/reset", method = RequestMethod.POST)
+	@RequestMapping(value = "/getbank", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse reset(HttpServletRequest request, Long id) {
+	public CommonResponse getbank(HttpServletRequest request,String idCard) {
 		CommonResponse cr = new CommonResponse();
-		boolean success = userService.resetPwdByDefault(id);
-		if(success){
-			cr.setCode(1500);
-			cr.setMessage("重置用户密码失败");
-		}else{
-			cr.setMessage("重置密码成功");
-		}
-		
+		String bankName = BankUtil.getNameOfBank(idCard);
+		cr.setMessage("查询成功");
+		cr.setData(bankName);
 		return cr;
 	}
+	
+	
 
-
-	/**
-	 * 判断username是否存在相同的
-	 * @param user 请求
-	 * @return cr
-	 */
-	@RequestMapping(value = "/usernameExist", method = RequestMethod.GET)
-	@ResponseBody
-	private CommonResponse exists(User user) {
-		CommonResponse cr = new CommonResponse();
-		if (user.getUserName() != null) {
-			if (userService.findByUserName(user.getUserName()) == null) {
-				cr.setData("用户名可以使用");
-			} else {
-				cr.setCode(ErrorCode.SYSTEM_USER_NAME_REPEAT.getCode());
-				cr.setData("用户名已存在");
-			}
-		} else {
-			cr.setData("没有传递必要的参数username");
-		}
-		return cr;
-	}
 	
 	/**
 	 * 

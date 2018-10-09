@@ -53,7 +53,7 @@ public class FilesAction {
 			// 循环获取file数组中得文件
 			Files fi = fileService.upFile(files, request);
 			cr.setMessage("成功上传");
-			cr.setData(clearCascadeJSON.format(fi));
+			cr.setData(clearCascadeJSON.format(fi).toJSON());
 		return cr;
 	}
 	
