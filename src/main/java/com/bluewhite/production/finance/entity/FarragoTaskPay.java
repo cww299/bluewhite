@@ -34,12 +34,12 @@ public class FarragoTaskPay extends BaseEntity<Long> {
 	@Column(name = "user_id")
     private Long userId;
 	
-//	/**
-//	 * 员工
-//	 */
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
-//	private User user;
+	/**
+	 * 员工
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User user;
 	
 	/**
 	 * 杂工工资数额
