@@ -166,7 +166,7 @@
                               </div>
                               <label class="col-sm-2 control-label">性别:</label>
                                  <div class="col-sm-2">
-                                  <select class="form-control gender"><option value="1">男</option><option value="2">女</option></select>
+                                  <select class="form-control gender"><option value="0">男</option><option value="1">女</option></select>
                                       </div>
                                       <label class="col-sm-2 control-label">生日:</label>
                               <div class="col-sm-2 working">
@@ -893,7 +893,7 @@
 										  remark:$('.remark').val(),
 								  }
 								   $.ajax({
-										url:"${ctx}/system/user/update",
+										url:"${ctx}/system/user/updateContract",
 										data:postData,
 										type:"POST",
 										beforeSend:function(){
