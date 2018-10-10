@@ -25,14 +25,11 @@ import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
-import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CommonResponse;
-import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.BankUtil;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.production.group.entity.Group;
-import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.system.user.dao.UserContractDao;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
@@ -133,6 +130,26 @@ public class UserAction {
 	}
 	
 	
+	/**
+	 * 修改用户合同信息
+	 * @param request 请求
+	 * @param user 用户实体类
+	 * @return cr
+	 */	
+	@RequestMapping(value = "/updateContract", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateContract(HttpServletRequest request, UserContract userContract) {
+		CommonResponse cr = new CommonResponse();
+		if(userContract.getId() == null){
+			cr.setMessage("id为空");
+			return cr;
+		}
+		UserContract oldUser = userContractDao.findOne(userContract.getId());
+		BeanCopyUtils.copyNotEmpty(userContract,oldUser);
+		cr.setData(clearCascadeJSON.format(userContractDao.save(oldUser)).toJSON());
+		cr.setMessage("修改成功");
+		return cr;
+	}
 	
 	/**
 	 * 查询用户详细信息
@@ -193,9 +210,13 @@ public class UserAction {
 		
 		Map<String , Object> map = new HashMap<String, Object>();
 		List<User> userList = 	userService.findAll();
-		//退休时间，过滤出生日
+		//退休时间，过滤出有生日的员工
 		List<Map<String,Object>> userBirthList = new ArrayList<Map<String,Object>>();
-		List<User> userBirth = userList.stream().filter(User->User.getBirthDate()!=null && DatesUtil.getfristDayOftime(new Date()).getTime() > DatesUtil.getfristDayOftime(DatesUtil.getdate(User.getBirthDate(), -10)).getTime()).collect(Collectors.toList());
+		List<User> userBirth = userList.stream().filter(User->User.getBirthDate()!=null ).collect(Collectors.toList());
+		//将生日差10天的女性年纪为55岁，男性年纪为60岁过滤出。
+//		&& DatesUtil.getfristDayOftime(new Date()).getTime() > DatesUtil.getfristDayOftime(DatesUtil.getdate(User.getBirthDate(), -10)).getTime()
+		
+		
 		for(User user : userBirth ){
 			Map<String,Object> us = new HashMap<String,Object>();
 			us.put("username", user.getUserName());
@@ -223,9 +244,9 @@ public class UserAction {
 	 * 
 	 * 测试
 	 */
-	@RequestMapping(value = "/oooxxx", method = RequestMethod.GET)
+	@RequestMapping(value = "/test", method = RequestMethod.GET)
 	@ResponseBody
-	private CommonResponse oooxxx(User user) {
+	private CommonResponse test(User user) {
 		CommonResponse cr = new CommonResponse();
 		userService.oooxxx();
 		return cr;
