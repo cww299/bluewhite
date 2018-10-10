@@ -213,5 +213,15 @@ public class DatesUtil {
 		}
         return week;
     }
+    
+    
+    
+   public static Date getdate( Date date ,int num){
+	   Calendar calendar = Calendar.getInstance();
+	   calendar.setTime(date); 
+	   calendar.add(Calendar.DATE, num);
+	   return calendar.getTime();
+
+   }
 
 }
