@@ -118,7 +118,7 @@ public class User extends BaseEntity<Long> {
 	private String email;
 
 	/**
-	 * 性别
+	 * 性别(0=男，1=女)
 	 */
 	@Column(name = "gender")
 	private Integer gender;
