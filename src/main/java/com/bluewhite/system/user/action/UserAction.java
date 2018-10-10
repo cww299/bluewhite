@@ -95,6 +95,10 @@ public class UserAction {
 		user.setPassword("123456");
 		user.setForeigns(0);
 		user.setLoginName(user.getUserName());
+		UserContract userContract = new UserContract();
+		userContract.setUsername(user.getUserName());
+		userContractDao.save(userContract);
+		user.setUserContract(userContract);
 		if(!StringUtils.isEmpty(user.getPhone())){
 			User u = userService.findByPhone(user.getPhone());
 			if(u != null){
@@ -216,8 +220,12 @@ public class UserAction {
 		//将生日差10天的女性年纪为55岁，男性年纪为60岁过滤出。
 //		&& DatesUtil.getfristDayOftime(new Date()).getTime() > DatesUtil.getfristDayOftime(DatesUtil.getdate(User.getBirthDate(), -10)).getTime()
 		
-		
 		for(User user : userBirth ){
+			int co = DatesUtil.getAgeByBirth(user.getBirthDate());
+			if(user.getGender()==0){
+				
+			}
+			
 			Map<String,Object> us = new HashMap<String,Object>();
 			us.put("username", user.getUserName());
 			us.put("birthDate", user.getBirthDate());
