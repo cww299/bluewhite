@@ -178,11 +178,11 @@
                     	<div class="form-group">
                            <label class="col-sm-2 control-label">婚姻状况:</label>
                               <div class="col-sm-2 working">
-                               <select class="form-control marriage"><option value="已婚">已婚</option><option value="未婚">未婚</option></select>
+                               <select class="form-control marriage"><option value="0">已婚</option><option value="1">未婚</option></select>
                               </div>
                               <label class="col-sm-2 control-label">生育状况:</label>
                                  <div class="col-sm-2">
-                                          <select class="form-control procreate"><option value="已育">已育</option><option value="未育">未育</option></select>
+                                          <select class="form-control procreate"><option value="0">已育</option><option value="1">未育</option></select>
                                       </div>
                                       <label class="col-sm-2 control-label">身份证号:</label>
                                  <div class="col-sm-2">
@@ -324,6 +324,77 @@
 </div>     
         
  </div>        
+       
+       <!--在职人员档案  -->
+       <div id="addDictDivTypetw" style="display: none;">
+			<div class=" col-xs-12  col-sm-12  col-md-12 ">
+				<div class="space-10"></div>
+				<div style="height: 30px"></div>
+				<form class="form-horizontal addDictDivTypeFormtw">
+					<div class="row col-xs-12  col-sm-12  col-md-12 ">
+						<div class="form-group">
+                           <label class="col-sm-2 col-md-2 control-label">员工姓名:</label>
+                              <div class="col-sm-2 col-md-2">
+                                  <input type="text" class="form-control username">
+                              </div>
+                               <label class="col-sm-2 control-label">员工档案:</label>
+                                 <div class="col-sm-2">
+                                          <input type="text" class="form-control archives">
+                                      </div>
+                            <label class="col-sm-2 control-label">照片数量:</label>
+                              <div class="col-sm-2 working">
+                              <input type="text" class="form-control pic">
+                              </div>
+                    	</div>
+                    	<div class="form-group">
+                           <label class="col-sm-2 control-label">身份证数量:</label>
+                              <div class="col-sm-2 working">
+                               <input type="text" class="form-control IdCardnumber">
+                              </div>
+                              <label class="col-sm-2 control-label">银行卡数量:</label>
+                                 <div class="col-sm-2">
+                                          <input type="text" class="form-control bankCard">
+                                      </div>
+                                      <label class="col-sm-2 control-label">体检:</label>
+                                 <div class="col-sm-2">
+                                          <input type="text" class="form-control physical">
+                                      </div>
+                    	</div>
+                    	<div class="form-group">
+                           <label class="col-sm-2 control-label">资格证书:</label>
+                              <div class="col-sm-2 working">
+                              <input type="text" class="form-control qualification">
+                              </div>
+                              <label class="col-sm-2 control-label">学历证书:</label>
+                                 <div class="col-sm-2">
+                                 <input type="text" class="form-control formalSchooling">
+                                      </div>
+                                      <label class="col-sm-2 control-label">协议:</label>
+                              <div class="col-sm-2 working">
+                             <input type="text" class="form-control agreementnumbernumber">
+                              </div>
+                    	</div>
+                    	
+                    	<div class="form-group">
+                           <label class="col-sm-2 control-label">保密协议:</label>
+                              <div class="col-sm-2 working">
+                              <input type="text" class="form-control secrecyAgreementnumber">
+                              </div>
+                              <label class="col-sm-2 control-label">合同数量:</label>
+                                 <div class="col-sm-2">
+                                  <input type="text" class="form-control contractnumber">
+                                      </div>
+                                      <label class="col-sm-2 control-label">其他资料:</label>
+                                 <div class="col-sm-2">
+                                          <input type="text" class="form-control remark">
+                                      </div>
+                    	</div>
+                 </div>
+
+				</form>
+</div>     
+        
+ </div> 
         
     </section>
  
@@ -408,8 +479,7 @@
 		      				+'<td class="text-center edit price">'+o.idCard+'</td>'
 		      				+'<td class="text-center edit price">'+k+'</td>'
 		      				+'<td class="text-center edit price">'+l+'</td>'
-							+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>修改</button></td></tr>'
-							
+							+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>修改</button> <button class="btn btn-xs btn-success btn-trans addbatchtw" data-id='+o.id+'>在职人员档案</button></td></tr>'
 		      			}); 
 		      			self.setCount(result.data.pageNum)
 				        //显示分页
@@ -537,6 +607,7 @@
 				      			 $(result.data.rows).each(function(i,o){
 				      				 var order = i+1;
 				      				var k;
+				      				var th;
 				      				 if(o.orgName==null){
 				      					 k=""
 				      				 }else{
@@ -560,6 +631,9 @@
 				      				 }else{
 				      					 u=o.position.id
 				      				 }
+				      			
+				      				th+='<div class="dz-preview dz-processing dz-image-preview dz-success"><div class="dz-details"><img data-dz-thumbnail  src='+o.pictureUrl+'></div><div class="dz-success-mark" data-id="'+o.id+'"></div></div>'
+				      				 $("#my-awesome-dropzone").html(th); 
 				      				$('.userName').val(o.userName);
 				      				$('.number').val(o.number);
 				      				$('.phone').val(o.phone);
@@ -715,6 +789,149 @@
 							  }
 						});
 					})
+					
+					/* 在职人员档案 */
+					$('.addbatchtw').on('click',function(){
+						var _index
+						var index
+						var postData   
+						var postId=$(this).data('postid');
+						var nameId=$(this).data('nameid');
+						var dicDiv=$('#addDictDivTypetw');
+						var userName=$(this).data('name');
+						var bacthDepartmentPrice=$(this).parent().parent().find('.departmentPrice').text();
+						var bacthHairPrice=$(this).parent().parent().find('.hairPrice').text();
+						$('#proName').val(userName);
+						var id=$(this).data('id');
+						var a="";
+						var c="";
+						//遍历工序类型
+				    var indextwo;
+				    var htmltwo = '';
+				    var htmlth = '';
+				    var htmlfr = '';
+				    var html = '';
+					  var data={
+							id:id		
+						}
+					    $.ajax({
+						      url:"${ctx}/system/user/pages",
+						      data:data,
+						      type:"GET",
+						      beforeSend:function(){
+							 	  index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								  });
+							  }, 
+				      		  success: function (result) {
+				      			 $(result.data.rows).each(function(i,o){
+				      				 var order = i+1;
+				      				var k;
+				      				 if(o.orgName==null){
+				      					 k=""
+				      				 }else{
+				      					 k=o.orgName.name
+				      				 }
+				      				 var l;
+				      				 if(o.position==null){
+				      					 l=""
+				      				 }else{
+				      					 l=o.position.name
+				      				 }
+				      				 var z;
+				      				 if(o.orgName==null){
+				      					 z=""
+				      				 }else{
+				      					 z=o.orgName.id
+				      				 }
+				      				 var u;
+				      				if(o.position==null){
+				      					 u=""
+				      				 }else{
+				      					 u=o.position.id
+				      				 }
+				      				$('.userName').val(o.userName);
+				      				$('.archives').val(o.userContract.archives);
+				      				$('.pic').val(o.userContract.pic);
+				      				$('.IdCardnumber').val(o.userContract.IdCard);
+				      				$('.bankCard').val(o.userContract.bankCard);
+				      				$('.physical').val(o.userContract.physical);
+				      				$('.qualification').val(o.userContract.qualification);
+				      				$('.formalSchooling').val(o.userContract.formalSchooling);
+				      				$('.agreementnumber').val(o.userContract.agreement);
+				      				$('.secrecyAgreementnumber').val(o.userContract.secrecyAgreement);
+				      				$('.remark').val(o.userContract.remark);
+				      			}); 
+						      },error:function(){
+									layer.msg("加载失败！", {icon: 2});
+									layer.close(index);
+							  }
+						  });
+					    
+						_index = layer.open({
+							  type: 1,
+							  skin: 'layui-layer-rim', //加上边框
+							  area: ['60%', '70%'], 
+							  btnAlign: 'c',//宽高
+							  maxmin: true,
+							  title:userName,
+							  content: dicDiv,
+							  btn: ['确定', '取消'],
+							  yes:function(index, layero){
+								  postData={
+										  id:id,
+										  userName:$('.userName').val(),
+										  archives:$('.archives').val(),
+										  pic:$('.pic').val(),
+										  IdCard:$('.IdCardnumber').val(),
+										  bankCard:$('.bankCard').val(),
+										  physical:$('.physical').val(),
+										  qualification:$('.qualification').val(),
+										  formalSchooling:$('.formalSchooling').val(),
+										  agreement:$('.agreementnumber').val(),
+										  secrecyAgreement:$('.secrecyAgreementnumber').val(),
+										  remark:$('.remark').val(),
+								  }
+								   $.ajax({
+										url:"${ctx}/system/user/update",
+										data:postData,
+										type:"POST",
+										beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'#fff'] //0.1透明度的白色背景
+												});
+										},
+										
+										success:function(result){
+											if(0==result.code){
+												layer.msg("修改成功！", {icon: 1});
+												 
+												var data = {
+											  			page:self.getCount(),
+											  			size:13,
+											  			userName:$('#name').val(),
+											  	}
+												layer.close(index);
+												self.loadPagination(data);
+											}else{
+												layer.msg("修改失败", {icon: 2});
+											}
+											
+											layer.close(index);
+										},error:function(){
+											layer.msg("操作失败！", {icon: 2});
+											layer.close(index);
+										}
+									}); 
+								},
+							  end:function(){
+								  /*  $('.addbatchForm')[0].reset();  */
+								  /*  $("#addDictDivType").hide(); */
+								  layer.close(index);
+							  }
+						});
+					})
+					
 			  }
 			  
 			this.events = function(){
@@ -851,7 +1068,7 @@
 										positionId:$('.selectChange').val(),
 										safe:$('.safe').val(),
 										fileId:$('#productId').val(),
-										pictureUrl:$('#productIdurl').val(),
+										pictureUrl:$('#producturl').val(),
 								}
 							    $.ajax({
 									url:"${ctx}/system/user/add",
