@@ -24,12 +24,6 @@ public class UserContract extends BaseEntity<Long>{
 	private String number;
 	
 	/**
-	 * 用户id
-	 */
-	@Column(name = "user_id")
-	private Long userId;
-	
-	/**
 	 * 姓名
 	 */
 	@Column(name = "username")
@@ -130,16 +124,6 @@ public class UserContract extends BaseEntity<Long>{
 
 	public void setQuit(Integer quit) {
 		this.quit = quit;
-	}
-
-
-	public Long getUserId() {
-		return userId;
-	}
-
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
 	}
 
 

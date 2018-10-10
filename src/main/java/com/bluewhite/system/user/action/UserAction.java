@@ -95,7 +95,10 @@ public class UserAction {
 		user.setPassword("123456");
 		user.setForeigns(0);
 		user.setLoginName(user.getUserName());
-		user.setUserContract(new UserContract());
+		UserContract userContract = new UserContract();
+		userContract.setUsername(user.getUserName());
+		userContractDao.save(userContract);
+		user.setUserContract(userContract);
 		if(!StringUtils.isEmpty(user.getPhone())){
 			User u = userService.findByPhone(user.getPhone());
 			if(u != null){
