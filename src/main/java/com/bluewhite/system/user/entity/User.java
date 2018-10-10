@@ -122,6 +122,8 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Column(name = "gender")
 	private Integer gender;
+	
+	
 
 	/**
 	 * 生日
@@ -195,6 +197,7 @@ public class User extends BaseEntity<Long> {
      */
 	@Column(name = "information")
     private String information;
+	
     /**
      * 入职时间
      */
@@ -212,11 +215,13 @@ public class User extends BaseEntity<Long> {
      */
 	@Column(name = "actua")
     private Date actua;
+	
 	/**
 	 * 社保缴纳时间
 	 */
 	@Column(name = "social_security")
 	private Date socialSecurity;
+	
 	/**
 	 * 银行卡1
 	 */
@@ -227,6 +232,7 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Column(name = "bank_card2")
     private String bankCard2;
+	
 	/**
 	 * 协议
 	 */
