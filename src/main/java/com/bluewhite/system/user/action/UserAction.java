@@ -1,6 +1,12 @@
 package com.bluewhite.system.user.action;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,10 +28,12 @@ import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
-import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.BankUtil;
+import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.production.group.entity.Group;
+import com.bluewhite.production.group.entity.Temporarily;
+import com.bluewhite.system.user.dao.UserContractDao;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.entity.UserContract;
@@ -39,6 +47,8 @@ public class UserAction {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private UserContractDao userContractDao;
 
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -48,11 +58,11 @@ public class UserAction {
 				.addRetainTerm(User.class,"id","fileId","price","status","workTime","number","pictureUrl", "userName", "phone","position","orgName","idCard",
 						"nation","email","gender","birthDate","group","idCard","permanentAddress","livingAddress","marriage","procreate","education"
 						,"school","major","contacts","information","entry","estimate","actua","socialSecurity","bankCard1","bankCard2","agreement"
-						,"promise","contract","contractDate","frequency","quitDate","quit","reason","train","remark","userContract")
+						,"promise","contract","contractDate","frequency","quitDate","quit","reason","train","remark","userContract","commitments","agreements")
 				.addRetainTerm(Group.class, "id","name", "type", "price")
 				.addRetainTerm(Role.class, "name", "role", "description","id")
 				.addRetainTerm(BaseData.class, "id","name", "type")
-				.addRetainTerm(UserContract.class, "id","number", "username","archives","pic","IdCard","bankCard","physical",
+				.addRetainTerm(UserContract.class, "id","number", "username","archives","pic","idCard","bankCard","physical",
 						"qualification","formalSchooling","agreement","secrecyAgreement","contract","remark","quit");
 	}
 	
@@ -139,16 +149,20 @@ public class UserAction {
 	
 
 	/**
-	 * 查询当前用户信息
+	 * 查询单个员工的合同信息
 	 * @param request 请求
 	 * @return cr
 	 */
-	@RequestMapping(value = "/info", method = RequestMethod.GET)
+	@RequestMapping(value = "/getUserContract", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getUser(HttpServletRequest request) {
-		CurrentUser cu = SessionManager.getUserSession();
-		User user = userService.findOne(cu.getId());
-		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(user).toJSON());
+	public CommonResponse getUser(HttpServletRequest request,Long id) {
+		CommonResponse cr = new CommonResponse();
+		UserContract userContract = userContractDao.findOne(id);
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(UserContract.class, "id","number", "username","archives","pic","IdCard","bankCard","physical",
+						"qualification","formalSchooling","agreement","secrecyAgreement","contract","remark","quit").format(userContract).toJSON());
+		cr.setMessage("查询成功");
 		return cr;
 	}
 	
@@ -167,7 +181,42 @@ public class UserAction {
 		return cr;
 	}
 	
-	
+	/**
+	 * 合同，退休时间到期提醒
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/remind", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse remind(HttpServletRequest request) {
+		CommonResponse cr = new CommonResponse();
+		
+		Map<String , Object> map = new HashMap<String, Object>();
+		List<User> userList = 	userService.findAll();
+		//退休时间，过滤出生日
+		List<Map<String,Object>> userBirthList = new ArrayList<Map<String,Object>>();
+		List<User> userBirth = userList.stream().filter(User->User.getBirthDate()!=null && DatesUtil.getfristDayOftime(new Date()).getTime() > DatesUtil.getfristDayOftime(DatesUtil.getdate(User.getBirthDate(), -10)).getTime()).collect(Collectors.toList());
+		for(User user : userBirth ){
+			Map<String,Object> us = new HashMap<String,Object>();
+			us.put("username", user.getUserName());
+			us.put("birthDate", user.getBirthDate());
+			userBirthList.add(us);
+		}
+		//合同到期时间
+		List<Map<String , Object>> userContractList = new ArrayList<Map<String , Object>>();
+		List<User> userContract = userList.stream().filter(User->User.getContractDateEnd()!=null && DatesUtil.getfristDayOftime(new Date()).getTime() > DatesUtil.getfristDayOftime( DatesUtil.getdate(User.getContractDateEnd(), -10)).getTime() ).collect(Collectors.toList());
+		for(User user : userContract ){
+			Map<String,Object> us = new HashMap<String,Object>();
+			us.put("username", user.getUserName());
+			us.put("contractDateEnd", user.getContractDateEnd());
+			userContractList.add(us);
+		}
+		map.put("userBirth", userBirthList);
+		map.put("userContract", userContractList);
+		cr.setMessage("查询成功");
+		cr.setData(map);
+		return cr;
+	}
 
 	
 	/**

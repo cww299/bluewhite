@@ -55,7 +55,7 @@ public class UserContract extends BaseEntity<Long>{
 	 */
 	@Column(name = "id_card")
 	@Poi(name = "", column = "E")
-	private String IdCard;
+	private String idCard;
 	
 	/**
 	 * 银行卡
@@ -184,12 +184,12 @@ public class UserContract extends BaseEntity<Long>{
 
 
 	public String getIdCard() {
-		return IdCard;
+		return idCard;
 	}
 
 
 	public void setIdCard(String idCard) {
-		IdCard = idCard;
+		this.idCard = idCard;
 	}
 
 

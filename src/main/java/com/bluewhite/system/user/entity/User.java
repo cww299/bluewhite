@@ -128,6 +128,12 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Column(name = "birth_date")
 	private Date birthDate;
+	
+	/**
+	 * 身份证到期时间
+	 */
+	@Column(name = "id_card_end")
+	private Date idCardEnd;
 
 	/**
 	 * idcard
@@ -287,6 +293,35 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Column(name = "remark")
 	private String remark;
+	
+	
+	/**
+	 * 合同id
+	 */
+	@Column(name = "commitment_id")
+	private Long commitmentId;
+	
+	/**
+	 * 合同
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "commitment_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData commitments;
+	
+	
+	/**
+	 * 协议id
+	 */
+	@Column(name = "agreement_id")
+	private Long agreementId;
+	
+	/**
+	 * 协议
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "agreement_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData agreements;
+	
 
 	/**
 	 * 职位id
@@ -337,7 +372,7 @@ public class User extends BaseEntity<Long> {
 	private Set<Role> roles = new HashSet<Role>();
 	
 	/**
-	 * 
+	 * 一对一的用户合同位置实体
 	 */
     @OneToOne(fetch=FetchType.LAZY,cascade = CascadeType.ALL) 
     @JoinColumn(name="user_contract_id",referencedColumnName="id",nullable=true)
@@ -406,6 +441,46 @@ public class User extends BaseEntity<Long> {
 	
 	
 	
+
+	public Long getCommitmentId() {
+		return commitmentId;
+	}
+
+	public void setCommitmentId(Long commitmentId) {
+		this.commitmentId = commitmentId;
+	}
+
+	public BaseData getCommitments() {
+		return commitments;
+	}
+
+	public void setCommitments(BaseData commitments) {
+		this.commitments = commitments;
+	}
+
+	public Long getAgreementId() {
+		return agreementId;
+	}
+
+	public void setAgreementId(Long agreementId) {
+		this.agreementId = agreementId;
+	}
+
+	public BaseData getAgreements() {
+		return agreements;
+	}
+
+	public void setAgreements(BaseData agreements) {
+		this.agreements = agreements;
+	}
+
+	public Date getIdCardEnd() {
+		return idCardEnd;
+	}
+
+	public void setIdCardEnd(Date idCardEnd) {
+		this.idCardEnd = idCardEnd;
+	}
 
 	public UserContract getUserContract() {
 		return userContract;
