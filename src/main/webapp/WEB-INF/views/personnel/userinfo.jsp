@@ -55,7 +55,7 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">序号</th>
-                                            <th class="text-center">编号</th>
+                                            <th class="text-center">位置编号</th>
                                             <th class="text-center">姓名</th>
                                             <th class="text-center">手机号</th>
                                             <th class="text-center">身份证号</th>
@@ -245,8 +245,8 @@
                                           <select class="form-control commitment"><option value="0">未签</option><option value="1">已签</option><option value="2">续签</option></select>
                                       </div>
                                       <label class="col-sm-2 control-label">协议</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control agreement">
+                                 <div class="col-sm-2 agreementtw" >
+                                          <!-- <input type="text" class="form-control agreement"> -->
                                       </div>
                     	</div>
                     	<div class="form-group">
@@ -254,9 +254,9 @@
                               <div class="col-sm-2 working">
                               <input type="text" class="form-control bankCard1">
                               </div>
-                              <label class="col-sm-2 control-label">银行卡2</label>
+                              <label class="col-sm-2 control-label">所属银行</label>
                                  <div class="col-sm-2">
-                                          <input type="text" class="form-control bankCard2">
+                                          <input type="text" class="form-control  bankCardtw" disabled="disabled">
                                       </div>
                                       <label class="col-sm-2 control-label">保险情况:</label>
                               <div class="col-sm-2 working">
@@ -283,10 +283,15 @@
                               <div class="col-sm-2 working">
                                <select class="form-control quit"><option value="0">在职</option><option value="1">离职</option></select>
                               </div>
-                              <label class="col-sm-3 control-label">离职时间</label>
+                              <label class="col-sm-2 control-label">离职时间</label>
                                  <div class="col-sm-2">
                                           <input id="quitDate" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#quitDate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                                      </div>
+                                       <label class="col-sm-2 control-label">身份证到期时间</label>
+                                 <div class="col-sm-2">
+                                          <input id="idCardEnd" placeholder="请输入时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#idCardEnd', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                                       </div>
                     	</div>
                     	<div class="form-group">
@@ -294,9 +299,14 @@
                               <div class="col-sm-2 working">
                               <input type="text" class="form-control reason">
                               </div>
-                              <label class="col-sm-3 control-label">简介</label>
+                              <label class="col-sm-2 control-label">备注</label>
+                                 <div class="col-sm-2 remarktw">
+                                          <!-- <input type="text" class="form-control remark"> -->
+                                      </div>
+                                      <label class="col-sm-2 control-label">合同到期时间</label>
                                  <div class="col-sm-2">
-                                          <input type="text" class="form-control remark">
+                                         <input id="contractDateEnd" placeholder="请输入时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#contractDateEnd', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                                       </div>
                     	</div>
                     	<div class="form-group">
@@ -335,7 +345,7 @@
 						<div class="form-group">
                            <label class="col-sm-2 col-md-2 control-label">员工姓名:</label>
                               <div class="col-sm-2 col-md-2">
-                                  <input type="text" class="form-control usernametw">
+                                  <input type="text" class="form-control usernametw" disabled="disabled">
                               </div>
                                <label class="col-sm-2 control-label">员工档案:</label>
                                  <div class="col-sm-2">
@@ -388,6 +398,12 @@
                                  <div class="col-sm-2">
                                           <input type="text" class="form-control remarktw">
                                       </div>
+                    	</div>
+                    	<div class="form-group">
+                           <label class="col-sm-2 control-label">位置编号:</label>
+                              <div class="col-sm-2">
+                              <input type="text" class="form-control numbertw">
+                              </div>
                     	</div>
                  </div>
 
@@ -472,15 +488,29 @@
 		      				 }else{
 		      					 u=o.position.id
 		      				 }
+		      				var m;
+		      				if(o.userContract.id==null){
+		      					 m=""
+		      				 }else{
+		      					 m=o.userContract.id
+		      				 }
+		      				var r;
+		      				 if(o.quit==0){
+		      					 r="在职"
+		      				 }else{
+		      					 r="离职"
+		      				 }
+		      				 
 		      				html +='<tr>'
 		      				+'<td class="text-center edit price">'+order+'</td>'
-		      				+'<td class="text-center edit price">'+o.number+'</td>'
+		      				+'<td class="text-center edit price">'+o.userContract.number+'</td>'
 		      				+'<td class="text-center edit price">'+o.userName+'</td>'
 		      				+'<td class="text-center edit price">'+o.phone+'</td>'
 		      				+'<td class="text-center edit price">'+o.idCard+'</td>'
 		      				+'<td class="text-center edit price">'+k+'</td>'
 		      				+'<td class="text-center edit price">'+l+'</td>'
-							+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>修改</button> <button class="btn btn-xs btn-success btn-trans addbatchtw" data-ids='+o.userContract.id+' data-id='+o.id+'>在职人员档案</button></td></tr>'
+		      				+'<td class="text-center edit price">'+r+'</td>'
+							+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>修改</button> <button class="btn btn-xs btn-success btn-trans addbatchtw" data-ids='+m+' data-id='+o.id+'>在职人员档案</button></td></tr>'
 		      			}); 
 		      			self.setCount(result.data.pageNum)
 				        //显示分页
@@ -494,6 +524,7 @@
 						        			page:obj.curr,
 									  		size:13,
 									  		userName:$('#name').val(),
+									  		foreigns:0,
 								  	}
 						            self.loadPagination(_data);
 							     }
@@ -595,6 +626,7 @@
 					  var data={
 							id:id		
 						}
+					  var idCard="";
 					    $.ajax({
 						      url:"${ctx}/system/user/pages",
 						      data:data,
@@ -608,7 +640,7 @@
 				      			 $(result.data.rows).each(function(i,o){
 				      				 var order = i+1;
 				      				var k;
-				      				var th;
+				      				var th='';
 				      				 if(o.orgName==null){
 				      					 k=""
 				      				 }else{
@@ -633,8 +665,13 @@
 				      					 u=o.position.id
 				      				 }
 				      			
-				      				th+='<div class="dz-preview dz-processing dz-image-preview dz-success"><div class="dz-details"><img data-dz-thumbnail  src='+o.pictureUrl+'></div><div class="dz-success-mark" data-id="'+o.id+'"></div></div>'
+				      				th='<div class="dz-preview dz-processing dz-image-preview dz-success"><div class="dz-details"><img data-dz-thumbnail  src='+o.pictureUrl+'></div><div class="dz-success-mark" ></div></div>'
 				      				 $("#my-awesome-dropzone").html(th); 
+				      				$('.dz-success-mark').on('click',function(){
+				      					var thate=$(this);
+				      					thate.parent().hide();
+				      				})
+				      				idCard=o.bankCard1	
 				      				$('.userName').val(o.userName);
 				      				$('.number').val(o.number);
 				      				$('.phone').val(o.phone);
@@ -654,7 +691,6 @@
 				      				$('.bankCard1').val(o.bankCard1);
 				      				$('.bankCard2').val(o.bankCard2);
 				      				$('.agreement').val(o.agreement);
-				      				
 				      				$('.contract').val(o.contract);
 				      				$('#contractDate').val(o.contractDate);
 				      				$('.frequency').val(o.frequency);
@@ -662,7 +698,9 @@
 				      				$('.reason').val(o.reason);
 				      				$('.train').val(o.train);
 				      				$('.remark').val(o.remark);
-				      				var html='<input class="form-control" value="'+l+'" />'
+					      			$("#idCardEnd").html(o.idCardEnd);
+					      			$("#contractDateEnd").html(o.contractDateEnd);
+					      			var html='<input class="form-control" value="'+l+'" />'
 					      			$(".position").html(html);
 				      				$('.nation').each(function(j,k){
 										var id=o.nation;
@@ -697,6 +735,28 @@
 										$(k).val(id);
 									})
 				      			}); 
+				      			 
+				      			var de={
+				      					idCard:idCard,
+				      			}
+				      			$.ajax({
+								      url:"${ctx}/system/user/getbank",
+								      data:de,
+								      type:"GET",
+								      beforeSend:function(){
+									 	  index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										  });
+									  }, 
+						      		  success: function (result) {
+						      				$('.bankCardtw').val(result.data)
+						      				layer.close(index);
+								      },error:function(){
+											layer.msg("加载失败！", {icon: 2});
+											layer.close(index);
+									  }
+								  });
+				      			 
 						      },error:function(){
 									layer.msg("加载失败！", {icon: 2});
 									layer.close(index);
@@ -715,7 +775,7 @@
 							  yes:function(index, layero){
 								  postData={
 										  id:id,
-										  userName:$('.userName').val(),
+										 	userName:$('.userName').val(),
 											number:$('.number').val(),
 											nation:$('.nation').val(),
 											phone:$('.phone').val(),
@@ -749,7 +809,11 @@
 											train:$('.train').val(),
 											remark:$('.remark').val(),
 											orgNameId:$('.selectgroupChange').val(),
-											positionId:$('.selectChange').val()
+											positionId:$('.selectChange').val(),
+											idCardEnd:$('#idCardEnd').val(),
+											contractDateEnd:$('#contractDateEnd').val(),
+											fileId:$('#productId').val(),
+											pictureUrl:$('#producturl').val(),
 								  }
 								   $.ajax({
 										url:"${ctx}/system/user/update",
@@ -764,11 +828,13 @@
 										success:function(result){
 											if(0==result.code){
 												layer.msg("修改成功！", {icon: 1});
-												 
+												$('.addDictDivTypeForm')[0].reset(); 
+												$("#my-awesome-dropzone").text("");
 												var data = {
 											  			page:self.getCount(),
 											  			size:13,
 											  			userName:$('#name').val(),
+											  			foreigns:0,
 											  	}
 												layer.close(index);
 												self.loadPagination(data);
@@ -784,7 +850,8 @@
 									}); 
 								},
 							  end:function(){
-								  /*  $('.addbatchForm')[0].reset();  */
+								  $('.addDictDivTypeForm')[0].reset(); 
+								  $("#my-awesome-dropzone").text("");
 								  /*  $("#addDictDivType").hide(); */
 								  layer.close(index);
 							  }
@@ -853,6 +920,7 @@
 				      					 u=o.position.id
 				      				 }
 				      				$('.userNametw').val(o.userName);
+				      				$('.numbertw').val(o.userContract.number);
 				      				$('.archives').val(o.userContract.archives);
 				      				$('.pic').val(o.userContract.pic);
 				      				$('.IdCardnumber').val(o.userContract.idCard);
@@ -894,6 +962,7 @@
 										  secrecyAgreement:$('.secrecyAgreementnumber').val(),
 										  remark:$('.remarktw').val(),
 										  contract:$('.contractnumber').val(),
+										  number:$('.numbertw').val(),
 								  }
 								   $.ajax({
 										url:"${ctx}/system/user/updateContract",
@@ -912,12 +981,15 @@
 												var data = {
 											  			page:self.getCount(),
 											  			size:13,
+											  			foreigns:0,
 											  			userName:$('#name').val(),
 											  	}
 												layer.close(index);
+												$("#productId").text("");
 												self.loadPagination(data);
 											}else{
 												layer.msg("修改失败", {icon: 2});
+												$("#productId").text("");
 											}
 											
 											layer.close(index);
@@ -928,8 +1000,7 @@
 									}); 
 								},
 							  end:function(){
-								  /*  $('.addbatchForm')[0].reset();  */
-								  /*  $("#addDictDivType").hide(); */
+								  
 								  layer.close(index);
 							  }
 						});
@@ -942,12 +1013,12 @@
 					var data = {
 				  			page:1,
 				  			size:13,
+				  			foreigns:0,
 				  			userName:$('#name').val(),
 				  	}
 					
 		            self.loadPagination(data);
 				});
-				
 				/* 新增员工 */
 				$('.addDict').on('click',function(){
 					
@@ -956,6 +1027,8 @@
 					    var htmlth = '';
 					    var htmlfr = '';
 					    var html = '';
+					    var htmlthh='';
+					    var htmlthhh='';
 						    var getdata={type:"orgName",}
 			      			$.ajax({
 							      url:"${ctx}/basedata/list",
@@ -1012,9 +1085,48 @@
 					      			})
 					      			
 					      			
+					      			
 							      }
 							  });
-					
+						    var getdataa={type:"agreements",}
+						    
+						    $.ajax({
+							      url:"${ctx}/basedata/list",
+							      data:getdataa,
+							      type:"GET",
+							      beforeSend:function(){
+							    	  indextwo = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									  });
+								  }, 
+					      		  success: function (result) {
+					      			  $(result.data).each(function(k,j){
+					      		htmlthh+='<input type="checkbox" class="checkWork" value="'+j.id+'">'+j.name+'</input>'
+					      			  });
+					      			$(".agreementtw").html(htmlthh);
+					      			layer.close(indextwo);
+							      }
+							  });
+						    
+							var getdataa={type:"commitments",}
+						    
+						    $.ajax({
+							      url:"${ctx}/basedata/list",
+							      data:getdataa,
+							      type:"GET",
+							      beforeSend:function(){
+							    	  indextwo = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									  });
+								  }, 
+					      		  success: function (result) {
+					      			  $(result.data).each(function(k,j){
+					      		htmlthhh+='<input type="checkbox" class="checkWork" value="'+j.id+'">'+j.name+'</input>'
+					      			  });
+					      			$(".remarktw").html(htmlthhh);
+					      			layer.close(indextwo);
+							      }
+							  });
 					var dicDiv=$('#addDictDivType');
 					_index = layer.open({
 						  type: 1,
@@ -1086,12 +1198,13 @@
 									
 									success:function(result){
 										if(0==result.code){
-										  /* $('.addDictDivTypeForm')[0].reset(); */  
+										   $('.addDictDivTypeForm')[0].reset(); 
 										  var htmlfv="";
 											layer.msg("添加成功！", {icon: 1});
 											var data = {
 										  			page:1,
 										  			size:13,
+										  			foreigns:0,
 										  	}
 											self.loadPagination(data);
 											
