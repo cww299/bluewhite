@@ -26,6 +26,7 @@ import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
+import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.BankUtil;
 import com.bluewhite.common.utils.DatesUtil;
@@ -55,8 +56,8 @@ public class UserAction {
 				.addRetainTerm(User.class,"id","fileId","price","status","workTime","number","pictureUrl", "userName", "phone","position","orgName","idCard",
 						"nation","email","gender","birthDate","group","idCard","permanentAddress","livingAddress","marriage","procreate","education"
 						,"school","major","contacts","information","entry","estimate","actua","socialSecurity","bankCard1","bankCard2","agreement"
-						,"promise","contract","contractDate","frequency","quitDate","quit","reason","train","remark","userContract","commitments","agreements")
-				.addRetainTerm(Group.class, "id","name", "type", "price")
+						,"promise","contract","contractDate","frequency","quitDate","quit","reason","train","remark","userContract","commitments","agreementId")
+				.addRetainTerm(Group.class, "id","name", "type", "price","contractDateEnd")
 				.addRetainTerm(Role.class, "name", "role", "description","id")
 				.addRetainTerm(BaseData.class, "id","name", "type")
 				.addRetainTerm(UserContract.class, "id","number", "username","archives","pic","idCard","bankCard","physical",
@@ -102,6 +103,7 @@ public class UserAction {
 		if(!StringUtils.isEmpty(user.getPhone())){
 			User u = userService.findByPhone(user.getPhone());
 			if(u != null){
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 				cr.setMessage("该用户手机号已存在");
 				return cr;
 			}
@@ -123,6 +125,7 @@ public class UserAction {
 	public CommonResponse changeUser(HttpServletRequest request, User user) {
 		CommonResponse cr = new CommonResponse();
 		if(user.getId() == null){
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("id为空");
 			return cr;
 		}
@@ -144,7 +147,17 @@ public class UserAction {
 	@ResponseBody
 	public CommonResponse updateContract(HttpServletRequest request, UserContract userContract) {
 		CommonResponse cr = new CommonResponse();
+		if(userContract.getNumber()!=null){
+			UserContract uc = userContractDao.findByNumber(userContract.getNumber());
+			if(uc!=null){
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				cr.setMessage("该合同编号已存在");
+				return cr;
+			}
+		}
+		
 		if(userContract.getId() == null){
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("id为空");
 			return cr;
 		}
@@ -203,7 +216,7 @@ public class UserAction {
 	}
 	
 	/**
-	 * 合同，退休时间到期提醒
+	 * 合同到期，退休时间到期提醒
 	 * @param request 请求
 	 * @return cr
 	 */
@@ -252,7 +265,6 @@ public class UserAction {
 
 	
 	/**
-	 * 
 	 * 测试
 	 */
 	@RequestMapping(value = "/test", method = RequestMethod.GET)

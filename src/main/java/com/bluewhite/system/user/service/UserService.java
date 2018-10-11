@@ -1,6 +1,5 @@
 package com.bluewhite.system.user.service;
 
-import java.util.List;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -69,14 +68,6 @@ public interface UserService extends BaseCRUDService<User, Long> {
 	 */
 	public boolean deleteUsers(String ids);
 	
-	
-	/**
-	 * 分页查询统计
-	 * @param page 分页参数
-	 * @param user 用户实体类
-	 * @return list
-	 */
-	public List<User> getPagedUserForCount(PageParameter page, User user);
 
 
 	public void oooxxx();

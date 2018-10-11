@@ -129,6 +129,16 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				predicate.add(cb.equal(root.get("foreigns").as(Integer.class),user.getForeigns()));
 			}
 			
+			//是否离职
+			if (user.getQuit() != null) {
+				predicate.add(cb.equal(root.get("quit").as(Integer.class),user.getQuit()));
+			}
+			
+			//按手机号查找
+			if (!StringUtils.isEmpty(user.getPhone())) {
+				predicate.add(cb.like(root.get("phone").as(String.class),"%" + user.getPhone() + "%"));
+			}
+			
 			//按姓名查找
 			if (!StringUtils.isEmpty(user.getUserName())) {
 				predicate.add(cb.like(root.get("userName").as(String.class),"%" + user.getUserName() + "%"));
@@ -159,18 +169,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	}
 	
 
-	
-	@Override
-	public List<User> getPagedUserForCount(PageParameter page, User user) {
-		Page<User> pagedArticles = userDao.findAll((root, query, cb) -> {
-			List<Predicate> predicate = new ArrayList<>();
-			Predicate[] pre = new Predicate[predicate.size()];
-			query.where(predicate.toArray(pre));
-			return null;
-		}, page);
-		List<User> users = pagedArticles.getContent();
-		return users;
-	}
+
 
 	@Override
 	public User findByPhone(String phone) {
