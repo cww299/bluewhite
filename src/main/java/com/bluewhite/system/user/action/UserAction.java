@@ -181,7 +181,7 @@ public class UserAction {
 		UserContract userContract = userContractDao.findOne(id);
 		cr.setData(ClearCascadeJSON
 				.get()
-				.addRetainTerm(UserContract.class, "id","number", "username","archives","pic","IdCard","bankCard","physical",
+				.addRetainTerm(UserContract.class, "id","number", "username","archives","pic","idCard","bankCard","physical",
 						"qualification","formalSchooling","agreement","secrecyAgreement","contract","remark","quit").format(userContract).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
@@ -217,28 +217,31 @@ public class UserAction {
 		//退休时间，过滤出有生日的员工
 		List<Map<String,Object>> userBirthList = new ArrayList<Map<String,Object>>();
 		List<User> userBirth = userList.stream().filter(User->User.getBirthDate()!=null ).collect(Collectors.toList());
-		//将生日差10天的女性年纪为55岁，男性年纪为60岁过滤出。
-//		&& DatesUtil.getfristDayOftime(new Date()).getTime() > DatesUtil.getfristDayOftime(DatesUtil.getdate(User.getBirthDate(), -10)).getTime()
 		
 		for(User user : userBirth ){
-			int co = DatesUtil.getAgeByBirth(user.getBirthDate());
-			if(user.getGender()==0){
-				
-			}
-			
 			Map<String,Object> us = new HashMap<String,Object>();
-			us.put("username", user.getUserName());
-			us.put("birthDate", user.getBirthDate());
+			int co = DatesUtil.getAgeByBirth(user.getBirthDate());
+			long co2 = DatesUtil.getDaySub( DatesUtil.getfristDayOftime(new Date()),DatesUtil.getfristDayOftime(user.getBirthDate()));
+			if(user.getGender()==0 && co==59 && co2<=10){
+				us.put("username", user.getUserName());
+				us.put("birthDate", user.getBirthDate());
+			}else if(user.getGender()==1 && co==55  && co2<=10){
+				us.put("username", user.getUserName());
+				us.put("birthDate", user.getBirthDate());
+			}
 			userBirthList.add(us);
 		}
 		//合同到期时间
 		List<Map<String , Object>> userContractList = new ArrayList<Map<String , Object>>();
-		List<User> userContract = userList.stream().filter(User->User.getContractDateEnd()!=null && DatesUtil.getfristDayOftime(new Date()).getTime() > DatesUtil.getfristDayOftime( DatesUtil.getdate(User.getContractDateEnd(), -10)).getTime() ).collect(Collectors.toList());
+		List<User> userContract = userList.stream().filter(User->User.getContractDateEnd()!=null).collect(Collectors.toList());
 		for(User user : userContract ){
 			Map<String,Object> us = new HashMap<String,Object>();
-			us.put("username", user.getUserName());
-			us.put("contractDateEnd", user.getContractDateEnd());
-			userContractList.add(us);
+			long co = DatesUtil.getDaySub( DatesUtil.getfristDayOftime(new Date()),DatesUtil.getfristDayOftime(user.getContractDateEnd()));
+			if(co<=10){
+				us.put("username", user.getUserName());
+				us.put("contractDateEnd", user.getContractDateEnd());
+				userContractList.add(us);
+			}
 		}
 		map.put("userBirth", userBirthList);
 		map.put("userContract", userContractList);
