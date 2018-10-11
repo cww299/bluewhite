@@ -39,6 +39,7 @@ import com.bluewhite.production.task.dao.TaskDao;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.entity.UserContract;
 @Service
 public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements TaskService{
 
@@ -201,8 +202,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		for(Task ta : bacth.getTasks()){
 			sumTaskPrice+=ta.getTaskPrice();
 			if(task.getType()==2){
-//				.substring(0,4)
-				if(ta.getProcedureName().equals(Constants.BAGABOARD) || ta.getProcedureName().equals(Constants.BOXBOARD)){
+				if(ta.getProcedureName().indexOf(Constants.BAGABOARD)!=-1 || ta.getProcedureName().indexOf(Constants.BOXBOARD)!=-1){
 					count+=ta.getNumber();
 				}
 			}
@@ -496,95 +496,118 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	@Override
 	@Transactional
 	public Task upTask(Task task) {
-		Integer number = task.getNumber();
-		Date allotTime = task.getAllotTime();
-		String remark = task.getRemark();
-		task = dao.findOne(task.getId());
+		
+		Task oldTask = dao.findOne(task.getId());
+		BeanCopyUtils.copyNotEmpty(task,oldTask);
+		
 		//查出该任务的所有b工资并删除
-		List<PayB> payBList = payBDao.findByTaskId(task.getId());
+		List<PayB> payBList = payBDao.findByTaskId(oldTask.getId());
 		if(payBList.size()>0){
 			payBDao.delete(payBList);
 		}
-		task.setAllotTime(allotTime);
-		task.setNumber(number);
-		task.setRemark(remark);
 		//预计时间
-		task.setExpectTime(NumUtils.round(ProTypeUtils.sumTaskTime(task.getProcedure().getWorkingTime(),task.getType(),number), null));
+		oldTask.setExpectTime(NumUtils.round(ProTypeUtils.sumTaskTime(oldTask.getProcedure().getWorkingTime(),oldTask.getType(),oldTask.getNumber()), null));
 		//实际时间
-		task.setTaskTime(task.getExpectTime());
+		oldTask.setTaskTime(oldTask.getExpectTime());
 		//预计完成价值
-		task.setExpectTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getExpectTime(), task.getType(),0,null), null));
+		oldTask.setExpectTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(oldTask.getExpectTime(), oldTask.getType(),0,null), null));
 		//实际任务价值（通过实际完成时间得出）
-		task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskTime(), task.getType(),0,null), null));
+		oldTask.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(oldTask.getTaskTime(), oldTask.getType(),0,null), null));
 		//B工资净值
-		task.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(task.getTaskPrice(),  task.getType()), null));
+		oldTask.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(oldTask.getTaskPrice(),  oldTask.getType()), null));
 		//更新加绩数据
+		dao.save(oldTask);
 		
-		dao.save(task);
-		//将用户变成string类型储存
-		if (!StringUtils.isEmpty(task.getUserIds())) {
-			String[] taskArr = task.getUserIds().split(",");
-			for (int j= 0; j < taskArr.length; j++) {
-				Long userid = Long.parseLong(taskArr[j]);
+		
+		//总考勤时间
+		double sunTime = 0;
+		Date orderTimeBegin = DatesUtil.getfristDayOftime(oldTask.getAllotTime());
+		Date orderTimeEnd = DatesUtil.getLastDayOftime(oldTask.getAllotTime());
+		if(oldTask.getType()==2){
+			//总考勤时间
+			for(String userTypeId : oldTask.getUsersIds()){
+				Long userId = Long.parseLong(userTypeId);
+				Temporarily temporarily = temporarilyDao.findByUserIdAndTemporarilyDateAndType(userId,DatesUtil.getfristDayOftime(oldTask.getAllotTime()),oldTask.getType());
+				if(!StringUtils.isEmpty(temporarily)){
+					sunTime+=temporarily.getWorkTime();
+				}else{
+					List<AttendancePay> attendancePay = attendancePayDao.findByUserIdAndTypeAndAllotTimeBetween(userId,oldTask.getType(),orderTimeBegin,orderTimeEnd);
+					if(attendancePay.size()>0){
+						sunTime+=attendancePay.get(0).getWorkTime();
+					}
+				}
+			}
+			
+		}
+		///员工和任务形成多对多关系
+		if (oldTask.getUsersIds().length>0) {
+			for (int j = 0; j < oldTask.getUsersIds().length; j++) {
+				Long userid = Long.parseLong(oldTask.getUsersIds()[j]);
 				User user = userDao.findOne(userid);
+				SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
 				//给予每个员工b工资
 				PayB payB  = new PayB();
 				payB.setUserId(userid);
 				payB.setUserName(user.getUserName());
-				payB.setBacth(task.getBacthNumber());
-				payB.setBacthId(task.getBacthId());
-				payB.setProductName(task.getProductName());
-				payB.setTaskId(task.getId());
-				payB.setType(task.getType());
-				payB.setAllotTime(task.getAllotTime());
-				payB.setFlag(task.getFlag());
+				payB.setBacth(oldTask.getBacthNumber());
+				payB.setBacthId(oldTask.getBacthId());
+				payB.setProductId(oldTask.getProductId());
+				payB.setProductName(oldTask.getProductName());
+				payB.setTaskId(oldTask.getId());
+				payB.setType(oldTask.getType());
+				payB.setAllotTime(oldTask.getAllotTime());
+				payB.setFlag(oldTask.getFlag());
+				
+		
 				//计算B工资数值
-				PageParameter page = new PageParameter();
-				AttendancePay param = new AttendancePay();
-				param.setOrderTimeBegin(DatesUtil.getfristDayOftime(task.getAllotTime()));
-				param.setOrderTimeEnd(DatesUtil.getLastDayOftime(task.getAllotTime()));
 				//包装分配任务，员工b工资根据考情占比分配，其他部门是均分
-				if(task.getType()==2){
-					SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
-					//总考勤时间
-					double sunTime = 0;
-					for(String userTypeId :taskArr){
-						Long userId = Long.parseLong(userTypeId);
-						param.setUserId(userId);
-						Temporarily  temporarily = temporarilyDao.findByUserIdAndTemporarilyDateAndType(userId,DatesUtil.getfristDayOftime(task.getAllotTime()),task.getType());
-						if(!StringUtils.isEmpty(temporarily)){
-							sunTime+=temporarily.getWorkTime();
-						}else{
-							List<AttendancePay> attendancePay = attendancePayService.findPages(param, page).getRows();
-							if(attendancePay.size()>0){
-								sunTime+=attendancePay.get(0).getWorkTime();
-							}
-						}
-					}
-					param.setUserId(userid);
-					Temporarily  temporarily = temporarilyDao.findByUserIdAndTemporarilyDateAndType(userid,DatesUtil.getfristDayOftime(task.getAllotTime()),task.getType());
-					List<AttendancePay> attendancePay = attendancePayService.findPages(param, page).getRows();
+				if(oldTask.getType()==2){
+					Temporarily  temporarily = temporarilyDao.findByUserIdAndTemporarilyDateAndType(userid,DatesUtil.getfristDayOftime(oldTask.getAllotTime()),oldTask.getType());
+					List<AttendancePay> attendancePay = attendancePayDao.findByUserIdAndTypeAndAllotTimeBetween(userid,oldTask.getType(),orderTimeBegin,orderTimeEnd);
 					if(StringUtils.isEmpty(temporarily) && attendancePay.size()==0){
-							throw new ServiceException("员工"+user.getUserName()+"没有"+dateFormater.format(task.getAllotTime())+"的考勤记录，无法分配任务");
+							throw new ServiceException("员工"+user.getUserName()+"没有"+dateFormater.format(oldTask.getAllotTime())+"的考勤记录，无法分配任务");
 					}
 					//按考情时间占比分配B工资
-					payB.setPayNumber(task.getPayB() * (attendancePay.size()==0 ? temporarily.getWorkTime() : attendancePay.get(0).getWorkTime())/sunTime);
+					payB.setPayNumber(oldTask.getPayB() * (attendancePay.size()==0 ? temporarily.getWorkTime() : attendancePay.get(0).getWorkTime())/sunTime);
 				}else{
-					payB.setPayNumber(task.getPayB()/taskArr.length);
-				}
-				//当存在加绩时，计算加绩工资
-				if(task.getPerformanceNumber()!=null){
-					payB.setPerformance(task.getPerformance());
-					payB.setPerformanceNumber(task.getPerformanceNumber());
-					payB.setPerformancePayNumber(task.getPerformancePrice()/taskArr.length);
+					payB.setPayNumber(oldTask.getPayB()/oldTask.getUsersIds().length);
 				}
 				
+				//当存在加绩时，计算加绩工资
+				if(oldTask.getPerformanceNumber()!=null){
+					payB.setPerformancePayNumber(oldTask.getPerformancePrice()/oldTask.getUsersIds().length);
+				}
 				payBDao.save(payB);
 			}
-		
 		}
-		return task;
-	}
+		
+				//查出该批次的所有任务
+				Bacth bacth = bacthDao.findOne(oldTask.getBacthId());
+				//计算出该批次下所有人的实际成本总和
+				int count = 0;
+				Double sumTaskPrice = 0.0;
+				for(Task ta : bacth.getTasks()){
+					sumTaskPrice +=ta.getTaskPrice();
+					if(oldTask.getType()==2){
+						if(ta.getProcedureName().indexOf(Constants.BAGABOARD)!=-1 || ta.getProcedureName().indexOf(Constants.BOXBOARD)!=-1){
+							count+=ta.getNumber();
+						}
+					}
+				};
+				if(bacth.getNumber()==count){
+					bacth.setStatus(1);
+					bacth.setStatusTime(oldTask.getAllotTime());
+				}
+				bacth.setSumTaskPrice(sumTaskPrice);
+				//计算出该批次的地区差价
+				if(bacth.getFlag()==0){
+					bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType()), null));
+				}
+				bacthDao.save(bacth);
+				return oldTask;
+}
+
+	
 
 	@Override
 	public Integer getTaskNumber(Task task) {

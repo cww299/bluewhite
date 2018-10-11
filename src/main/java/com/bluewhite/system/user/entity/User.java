@@ -295,7 +295,7 @@ public class User extends BaseEntity<Long> {
 	@Column(name = "train")
     private String train;
 	/**
-	 * 简介
+	 * 备注
 	 */
 	@Column(name = "remark")
 	private String remark;
@@ -319,14 +319,14 @@ public class User extends BaseEntity<Long> {
 	 * 协议id
 	 */
 	@Column(name = "agreement_id")
-	private Long agreementId;
+	private String agreementId;
 	
-	/**
-	 * 协议
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "agreement_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private BaseData agreements;
+//	/**
+//	 * 协议
+//	 */
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "agreement_id", referencedColumnName = "id", insertable = false, updatable = false)
+//	private BaseData agreements;
 	
 
 	/**
@@ -464,20 +464,14 @@ public class User extends BaseEntity<Long> {
 		this.commitments = commitments;
 	}
 
-	public Long getAgreementId() {
+
+
+	public String getAgreementId() {
 		return agreementId;
 	}
 
-	public void setAgreementId(Long agreementId) {
+	public void setAgreementId(String agreementId) {
 		this.agreementId = agreementId;
-	}
-
-	public BaseData getAgreements() {
-		return agreements;
-	}
-
-	public void setAgreements(BaseData agreements) {
-		this.agreements = agreements;
 	}
 
 	public Date getIdCardEnd() {
