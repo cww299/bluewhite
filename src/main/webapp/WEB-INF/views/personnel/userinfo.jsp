@@ -335,7 +335,7 @@
 						<div class="form-group">
                            <label class="col-sm-2 col-md-2 control-label">员工姓名:</label>
                               <div class="col-sm-2 col-md-2">
-                                  <input type="text" class="form-control username">
+                                  <input type="text" class="form-control usernametw">
                               </div>
                                <label class="col-sm-2 control-label">员工档案:</label>
                                  <div class="col-sm-2">
@@ -369,7 +369,7 @@
                                  <div class="col-sm-2">
                                  <input type="text" class="form-control formalSchooling">
                                       </div>
-                                      <label class="col-sm-2 control-label">协议:</label>
+                                      <label class="col-sm-2 control-label">其他协议:</label>
                               <div class="col-sm-2 working">
                              <input type="text" class="form-control agreementnumbernumber">
                               </div>
@@ -386,7 +386,7 @@
                                       </div>
                                       <label class="col-sm-2 control-label">其他资料:</label>
                                  <div class="col-sm-2">
-                                          <input type="text" class="form-control remark">
+                                          <input type="text" class="form-control remarktw">
                                       </div>
                     	</div>
                  </div>
@@ -424,7 +424,8 @@
 		  	}
 			 var data={
 						page:1,
-				  		size:13,	
+				  		size:13,
+				  		foreigns:0,
 				} 
 			this.init = function(){
 			//注册绑定事件
@@ -479,7 +480,7 @@
 		      				+'<td class="text-center edit price">'+o.idCard+'</td>'
 		      				+'<td class="text-center edit price">'+k+'</td>'
 		      				+'<td class="text-center edit price">'+l+'</td>'
-							+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>修改</button> <button class="btn btn-xs btn-success btn-trans addbatchtw" data-id='+o.id+'>在职人员档案</button></td></tr>'
+							+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>修改</button> <button class="btn btn-xs btn-success btn-trans addbatchtw" data-ids='+o.userContract.id+' data-id='+o.id+'>在职人员档案</button></td></tr>'
 		      			}); 
 		      			self.setCount(result.data.pageNum)
 				        //显示分页
@@ -803,6 +804,7 @@
 						var bacthHairPrice=$(this).parent().parent().find('.hairPrice').text();
 						$('#proName').val(userName);
 						var id=$(this).data('id');
+						var ids=$(this).data('ids');
 						var a="";
 						var c="";
 						//遍历工序类型
@@ -850,17 +852,18 @@
 				      				 }else{
 				      					 u=o.position.id
 				      				 }
-				      				$('.userName').val(o.userName);
+				      				$('.userNametw').val(o.userName);
 				      				$('.archives').val(o.userContract.archives);
 				      				$('.pic').val(o.userContract.pic);
-				      				$('.IdCardnumber').val(o.userContract.IdCard);
+				      				$('.IdCardnumber').val(o.userContract.idCard);
 				      				$('.bankCard').val(o.userContract.bankCard);
 				      				$('.physical').val(o.userContract.physical);
 				      				$('.qualification').val(o.userContract.qualification);
 				      				$('.formalSchooling').val(o.userContract.formalSchooling);
-				      				$('.agreementnumber').val(o.userContract.agreement);
 				      				$('.secrecyAgreementnumber').val(o.userContract.secrecyAgreement);
-				      				$('.remark').val(o.userContract.remark);
+				      				$('.agreementnumbernumber').val(o.userContract.agreement);
+				      				$('.remarktw').val(o.userContract.remark);
+				      				$('.contractnumber').val(o.userContract.contract);
 				      			}); 
 						      },error:function(){
 									layer.msg("加载失败！", {icon: 2});
@@ -879,18 +882,18 @@
 							  btn: ['确定', '取消'],
 							  yes:function(index, layero){
 								  postData={
-										  id:id,
-										  userName:$('.userName').val(),
+										  id:ids,
 										  archives:$('.archives').val(),
 										  pic:$('.pic').val(),
-										  IdCard:$('.IdCardnumber').val(),
+										  idCard:$('.IdCardnumber').val(),
 										  bankCard:$('.bankCard').val(),
 										  physical:$('.physical').val(),
 										  qualification:$('.qualification').val(),
 										  formalSchooling:$('.formalSchooling').val(),
-										  agreement:$('.agreementnumber').val(),
+										  agreement:$('.agreementnumbernumber').val(),
 										  secrecyAgreement:$('.secrecyAgreementnumber').val(),
-										  remark:$('.remark').val(),
+										  remark:$('.remarktw').val(),
+										  contract:$('.contractnumber').val(),
 								  }
 								   $.ajax({
 										url:"${ctx}/system/user/updateContract",
