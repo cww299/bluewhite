@@ -6,6 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="${ctx }/static/css/dropzone.css">
 <title>人员汇总</title>
 </head>
 <body>
@@ -53,14 +54,14 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th>序号</th>
-                                            <th>编号</th>
-                                            <th>姓名</th>
-                                            <th>手机号</th>
-                                            <th>身份证号</th>
-                                            <th>部门</th>
-                                            <th>职位</th>
-                                            <th>操作</th>
+                                            <th class="text-center">序号</th>
+                                            <th class="text-center">编号</th>
+                                            <th class="text-center">姓名</th>
+                                            <th class="text-center">手机号</th>
+                                            <th class="text-center">身份证号</th>
+                                            <th class="text-center">部门</th>
+                                            <th class="text-center">职位</th>
+                                            <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent">
@@ -115,6 +116,17 @@
 			<div class=" col-xs-12  col-sm-12  col-md-12 ">
 				<div class="space-10"></div>
 				<div style="height: 30px"></div>
+				
+                            <!-- <div><table><tr>
+								<td>图片类型:</td><td><select class="form-control" id="selecttype"><option value="introduce">产品</option><option value="details">产品描述</option><option value="bursting">爆款图片</option></select></td>
+								</tr></table></div> -->
+                            <div style="padding-left: 450px">
+                            <div class="panel-body">
+                                <form action="#" class="dropzone" style="widows: 150px" id="my-awesome-dropzone" enctype="multipart/form-data">
+                                </form>
+
+                            </div>
+                 </div>
 				<form class="form-horizontal addDictDivTypeForm">
 					<div class="row col-xs-12  col-sm-12  col-md-12 ">
 		
@@ -124,20 +136,27 @@
                               <div class="col-sm-2 col-md-2">
                                   <input type="text" class="form-control username">
                               </div>
-                               <label class="col-sm-3 control-label">员工编号:</label>
+                               <label class="col-sm-2 control-label">员工编号:</label>
                                  <div class="col-sm-2">
                                           <input type="text" class="form-control number">
                                       </div>
-                            
+                            <label class="col-sm-2 control-label">户籍地址:</label>
+                              <div class="col-sm-2 working">
+                              <input type="text" class="form-control permanentAddress">
+                              </div>
                     	</div>
                     	<div class="form-group">
                            <label class="col-sm-2 control-label">名族:</label>
                               <div class="col-sm-2 working">
                               <select class="form-control nation"><option value="汉">汉</option><option value="少数名族">少数名族</option></select>
                               </div>
-                              <label class="col-sm-3 control-label">手机号:</label>
+                              <label class="col-sm-2 control-label">手机号:</label>
                                  <div class="col-sm-2">
                                           <input type="text" class="form-control phone">
+                                      </div>
+                                      <label class="col-sm-2 control-label">现居住地址:</label>
+                                 <div class="col-sm-2">
+                                          <input type="text" class="form-control livingAddress">
                                       </div>
                     	</div>
                     	<div class="form-group">
@@ -145,40 +164,29 @@
                               <div class="col-sm-2 working">
                               <input type="text" class="form-control email">
                               </div>
-                              <label class="col-sm-3 control-label">性别:</label>
+                              <label class="col-sm-2 control-label">性别:</label>
                                  <div class="col-sm-2">
-                                  <select class="form-control gender"><option value="1">男</option><option value="2">女</option></select>
+                                  <select class="form-control gender"><option value="0">男</option><option value="1">女</option></select>
                                       </div>
-                    	</div>
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">生日:</label>
+                                      <label class="col-sm-2 control-label">生日:</label>
                               <div class="col-sm-2 working">
                               <input id="birthDate" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#birthDate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                               </div>
-                              <label class="col-sm-3 control-label">身份证号:</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control idCard">
-                                      </div>
                     	</div>
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">户籍地址:</label>
-                              <div class="col-sm-2 working">
-                              <input type="text" class="form-control permanentAddress">
-                              </div>
-                              <label class="col-sm-3 control-label">现居住地址:</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control livingAddress">
-                                      </div>
-                    	</div>
+                    	
                     	<div class="form-group">
                            <label class="col-sm-2 control-label">婚姻状况:</label>
                               <div class="col-sm-2 working">
-                               <select class="form-control marriage"><option value="已婚">已婚</option><option value="未婚">未婚</option></select>
+                               <select class="form-control marriage"><option value="0">已婚</option><option value="1">未婚</option></select>
                               </div>
-                              <label class="col-sm-3 control-label">生育状况:</label>
+                              <label class="col-sm-2 control-label">生育状况:</label>
                                  <div class="col-sm-2">
-                                          <select class="form-control procreate"><option value="已育">已育</option><option value="未育">未育</option></select>
+                                          <select class="form-control procreate"><option value="0">已育</option><option value="1">未育</option></select>
+                                      </div>
+                                      <label class="col-sm-2 control-label">身份证号:</label>
+                                 <div class="col-sm-2">
+                                          <input type="text" class="form-control idCard">
                                       </div>
                     	</div>
                     	<div class="form-group">
@@ -186,27 +194,25 @@
                               <div class="col-sm-2 working">
                               <select class="form-control education"><option value="本科">本科</option><option value="大专">大专</option><option value="高中">高中</option><option value="初中及以下">初中及以下</option></select>
                               </div>
-                              <label class="col-sm-3 control-label">毕业学校:</label>
+                              <label class="col-sm-2 control-label">毕业学校:</label>
                                  <div class="col-sm-2">
                                           <input type="text" class="form-control school">
                                       </div>
-                    	</div>
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">专业:</label>
+                                      <label class="col-sm-2 control-label">专业:</label>
                               <div class="col-sm-2 working">
                               <input type="text" class="form-control major">
                               </div>
-                              <label class="col-sm-3 control-label">联系人:</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control contacts">
-                                      </div>
                     	</div>
                     	<div class="form-group">
                            <label class="col-sm-2 control-label">联系方式:</label>
                               <div class="col-sm-2 working">
                               <input type="text" class="form-control information">
                               </div>
-                              <label class="col-sm-3 control-label">入职时间:</label>
+                              <label class="col-sm-2 control-label">联系人:</label>
+                                 <div class="col-sm-2">
+                                          <input type="text" class="form-control contacts">
+                                      </div>
+                              <label class="col-sm-2 control-label">入职时间:</label>
                                  <div class="col-sm-2">
                                           <input id="entry" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#entry', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
@@ -218,31 +224,29 @@
                              <input id="estimate" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#estimate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                               </div>
-                              <label class="col-sm-3 control-label">实际转正时间:</label>
+                              <label class="col-sm-2 control-label">实际转正时间:</label>
                                  <div class="col-sm-2">
                                           <input id="actua" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#actua', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                                       </div>
-                    	</div>
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">社保缴纳时间:</label>
+                                      <label class="col-sm-2 control-label">社保缴纳时间:</label>
                               <div class="col-sm-2 working">
                               <input id="socialSecurity" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#socialSecurity', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                               </div>
-                              <label class="col-sm-3 control-label">协议</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control agreement">
-                                      </div>
                     	</div>
                     	<div class="form-group">
                            <label class="col-sm-2 control-label">承诺书:</label>
                               <div class="col-sm-2 working">
-                              <input type="text" class="form-control promise">
+                               <select class="form-control promise"><option value="0">未签</option><option value="1">已签</option></select>
                               </div>
-                              <label class="col-sm-3 control-label">合同</label>
+                              <label class="col-sm-2 control-label">合同</label>
                                  <div class="col-sm-2">
-                                          <input type="text" class="form-control contract">
+                                          <select class="form-control commitment"><option value="0">未签</option><option value="1">已签</option><option value="2">续签</option></select>
+                                      </div>
+                                      <label class="col-sm-2 control-label">协议</label>
+                                 <div class="col-sm-2">
+                                          <input type="text" class="form-control agreement">
                                       </div>
                     	</div>
                     	<div class="form-group">
@@ -250,10 +254,14 @@
                               <div class="col-sm-2 working">
                               <input type="text" class="form-control bankCard1">
                               </div>
-                              <label class="col-sm-3 control-label">银行卡2</label>
+                              <label class="col-sm-2 control-label">银行卡2</label>
                                  <div class="col-sm-2">
                                           <input type="text" class="form-control bankCard2">
                                       </div>
+                                      <label class="col-sm-2 control-label">保险情况:</label>
+                              <div class="col-sm-2 working">
+                               <select class="form-control safe"><option value="0">未缴</option><option value="1">已缴</option></select>
+                              </div>
                     	</div>
                     	<div class="form-group">
                            <label class="col-sm-2 control-label">合同签订开始时间:</label>
@@ -261,15 +269,19 @@
                               <input id="contractDate" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#contractDate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                               </div>
-                              <label class="col-sm-3 control-label">合同签订次数</label>
+                              <label class="col-sm-2 control-label">合同签订次数</label>
                                  <div class="col-sm-2">
                                           <input type="text" class="form-control frequency">
                                       </div>
+                                      <label class="col-sm-2 control-label">签订单位:</label>
+                              <div class="col-sm-2 working">
+                               <input type="text" class="form-control company">
+                              </div>
                     	</div>
                     	<div class="form-group">
                            <label class="col-sm-2 control-label">工作状态:</label>
                               <div class="col-sm-2 working">
-                               <select class="form-control quit"><option value="在职">在职</option><option value="离职">离职</option></select>
+                               <select class="form-control quit"><option value="0">在职</option><option value="1">离职</option></select>
                               </div>
                               <label class="col-sm-3 control-label">离职时间</label>
                                  <div class="col-sm-2">
@@ -300,12 +312,89 @@
                                             
                                         </div>
                  </div>
+                 <div class="form-group hidden">
+                 <input type="text" id="productId" class="form-control">
+                 </div>
+                 <div class="form-group hidden">
+                 <input type="text" id="producturl" class="form-control">
+                 </div>
                  </div>
 
 				</form>
 </div>     
         
+ </div>        
+       
+       <!--在职人员档案  -->
+       <div id="addDictDivTypetw" style="display: none;">
+			<div class=" col-xs-12  col-sm-12  col-md-12 ">
+				<div class="space-10"></div>
+				<div style="height: 30px"></div>
+				<form class="form-horizontal addDictDivTypeFormtw">
+					<div class="row col-xs-12  col-sm-12  col-md-12 ">
+						<div class="form-group">
+                           <label class="col-sm-2 col-md-2 control-label">员工姓名:</label>
+                              <div class="col-sm-2 col-md-2">
+                                  <input type="text" class="form-control usernametw">
+                              </div>
+                               <label class="col-sm-2 control-label">员工档案:</label>
+                                 <div class="col-sm-2">
+                                          <input type="text" class="form-control archives">
+                                      </div>
+                            <label class="col-sm-2 control-label">照片数量:</label>
+                              <div class="col-sm-2 working">
+                              <input type="text" class="form-control pic">
+                              </div>
+                    	</div>
+                    	<div class="form-group">
+                           <label class="col-sm-2 control-label">身份证数量:</label>
+                              <div class="col-sm-2 working">
+                               <input type="text" class="form-control IdCardnumber">
+                              </div>
+                              <label class="col-sm-2 control-label">银行卡数量:</label>
+                                 <div class="col-sm-2">
+                                          <input type="text" class="form-control bankCard">
+                                      </div>
+                                      <label class="col-sm-2 control-label">体检:</label>
+                                 <div class="col-sm-2">
+                                          <input type="text" class="form-control physical">
+                                      </div>
+                    	</div>
+                    	<div class="form-group">
+                           <label class="col-sm-2 control-label">资格证书:</label>
+                              <div class="col-sm-2 working">
+                              <input type="text" class="form-control qualification">
+                              </div>
+                              <label class="col-sm-2 control-label">学历证书:</label>
+                                 <div class="col-sm-2">
+                                 <input type="text" class="form-control formalSchooling">
+                                      </div>
+                                      <label class="col-sm-2 control-label">其他协议:</label>
+                              <div class="col-sm-2 working">
+                             <input type="text" class="form-control agreementnumbernumber">
+                              </div>
+                    	</div>
+                    	
+                    	<div class="form-group">
+                           <label class="col-sm-2 control-label">保密协议:</label>
+                              <div class="col-sm-2 working">
+                              <input type="text" class="form-control secrecyAgreementnumber">
+                              </div>
+                              <label class="col-sm-2 control-label">合同数量:</label>
+                                 <div class="col-sm-2">
+                                  <input type="text" class="form-control contractnumber">
+                                      </div>
+                                      <label class="col-sm-2 control-label">其他资料:</label>
+                                 <div class="col-sm-2">
+                                          <input type="text" class="form-control remarktw">
+                                      </div>
+                    	</div>
+                 </div>
+
+				</form>
+</div>     
         
+ </div> 
         
     </section>
  
@@ -320,6 +409,7 @@
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
     <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+    <script src="${ctx }/static/js/vendor/dropzone.min.js"></script>
     <script>
    jQuery(function($){
    	var Login = function(){
@@ -334,7 +424,8 @@
 		  	}
 			 var data={
 						page:1,
-				  		size:13,	
+				  		size:13,
+				  		foreigns:0,
 				} 
 			this.init = function(){
 			//注册绑定事件
@@ -382,15 +473,14 @@
 		      					 u=o.position.id
 		      				 }
 		      				html +='<tr>'
-		      				+'<td class="edit price">'+order+'</td>'
-		      				+'<td class="edit price">'+o.number+'</td>'
-		      				+'<td class="edit price">'+o.userName+'</td>'
-		      				+'<td class="edit price">'+o.phone+'</td>'
-		      				+'<td class="edit price">'+o.idCard+'</td>'
-		      				+'<td class="edit price">'+k+'</td>'
-		      				+'<td class="edit price">'+l+'</td>'
-							+'<td><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>修改</button></td></tr>'
-							
+		      				+'<td class="text-center edit price">'+order+'</td>'
+		      				+'<td class="text-center edit price">'+o.number+'</td>'
+		      				+'<td class="text-center edit price">'+o.userName+'</td>'
+		      				+'<td class="text-center edit price">'+o.phone+'</td>'
+		      				+'<td class="text-center edit price">'+o.idCard+'</td>'
+		      				+'<td class="text-center edit price">'+k+'</td>'
+		      				+'<td class="text-center edit price">'+l+'</td>'
+							+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>修改</button> <button class="btn btn-xs btn-success btn-trans addbatchtw" data-ids='+o.userContract.id+' data-id='+o.id+'>在职人员档案</button></td></tr>'
 		      			}); 
 		      			self.setCount(result.data.pageNum)
 				        //显示分页
@@ -518,6 +608,7 @@
 				      			 $(result.data.rows).each(function(i,o){
 				      				 var order = i+1;
 				      				var k;
+				      				var th;
 				      				 if(o.orgName==null){
 				      					 k=""
 				      				 }else{
@@ -541,6 +632,9 @@
 				      				 }else{
 				      					 u=o.position.id
 				      				 }
+				      			
+				      				th+='<div class="dz-preview dz-processing dz-image-preview dz-success"><div class="dz-details"><img data-dz-thumbnail  src='+o.pictureUrl+'></div><div class="dz-success-mark" data-id="'+o.id+'"></div></div>'
+				      				 $("#my-awesome-dropzone").html(th); 
 				      				$('.userName').val(o.userName);
 				      				$('.number').val(o.number);
 				      				$('.phone').val(o.phone);
@@ -560,7 +654,7 @@
 				      				$('.bankCard1').val(o.bankCard1);
 				      				$('.bankCard2').val(o.bankCard2);
 				      				$('.agreement').val(o.agreement);
-				      				$('.promise').val(o.promise);
+				      				
 				      				$('.contract').val(o.contract);
 				      				$('#contractDate').val(o.contractDate);
 				      				$('.frequency').val(o.frequency);
@@ -592,6 +686,14 @@
 									})
 									$('.quit').each(function(j,k){
 										var id=o.quit;
+										$(k).val(id);
+									})
+									$('.safe').each(function(j,k){
+										var id=o.safe;
+										$(k).val(id);
+									})
+									$('.promise').each(function(j,k){
+										var id=o.promise;
 										$(k).val(id);
 									})
 				      			}); 
@@ -688,6 +790,151 @@
 							  }
 						});
 					})
+					
+					/* 在职人员档案 */
+					$('.addbatchtw').on('click',function(){
+						var _index
+						var index
+						var postData   
+						var postId=$(this).data('postid');
+						var nameId=$(this).data('nameid');
+						var dicDiv=$('#addDictDivTypetw');
+						var userName=$(this).data('name');
+						var bacthDepartmentPrice=$(this).parent().parent().find('.departmentPrice').text();
+						var bacthHairPrice=$(this).parent().parent().find('.hairPrice').text();
+						$('#proName').val(userName);
+						var id=$(this).data('id');
+						var ids=$(this).data('ids');
+						var a="";
+						var c="";
+						//遍历工序类型
+				    var indextwo;
+				    var htmltwo = '';
+				    var htmlth = '';
+				    var htmlfr = '';
+				    var html = '';
+					  var data={
+							id:id		
+						}
+					    $.ajax({
+						      url:"${ctx}/system/user/pages",
+						      data:data,
+						      type:"GET",
+						      beforeSend:function(){
+							 	  index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								  });
+							  }, 
+				      		  success: function (result) {
+				      			 $(result.data.rows).each(function(i,o){
+				      				 var order = i+1;
+				      				var k;
+				      				 if(o.orgName==null){
+				      					 k=""
+				      				 }else{
+				      					 k=o.orgName.name
+				      				 }
+				      				 var l;
+				      				 if(o.position==null){
+				      					 l=""
+				      				 }else{
+				      					 l=o.position.name
+				      				 }
+				      				 var z;
+				      				 if(o.orgName==null){
+				      					 z=""
+				      				 }else{
+				      					 z=o.orgName.id
+				      				 }
+				      				 var u;
+				      				if(o.position==null){
+				      					 u=""
+				      				 }else{
+				      					 u=o.position.id
+				      				 }
+				      				$('.userNametw').val(o.userName);
+				      				$('.archives').val(o.userContract.archives);
+				      				$('.pic').val(o.userContract.pic);
+				      				$('.IdCardnumber').val(o.userContract.idCard);
+				      				$('.bankCard').val(o.userContract.bankCard);
+				      				$('.physical').val(o.userContract.physical);
+				      				$('.qualification').val(o.userContract.qualification);
+				      				$('.formalSchooling').val(o.userContract.formalSchooling);
+				      				$('.secrecyAgreementnumber').val(o.userContract.secrecyAgreement);
+				      				$('.agreementnumbernumber').val(o.userContract.agreement);
+				      				$('.remarktw').val(o.userContract.remark);
+				      				$('.contractnumber').val(o.userContract.contract);
+				      			}); 
+						      },error:function(){
+									layer.msg("加载失败！", {icon: 2});
+									layer.close(index);
+							  }
+						  });
+					    
+						_index = layer.open({
+							  type: 1,
+							  skin: 'layui-layer-rim', //加上边框
+							  area: ['60%', '70%'], 
+							  btnAlign: 'c',//宽高
+							  maxmin: true,
+							  title:userName,
+							  content: dicDiv,
+							  btn: ['确定', '取消'],
+							  yes:function(index, layero){
+								  postData={
+										  id:ids,
+										  archives:$('.archives').val(),
+										  pic:$('.pic').val(),
+										  idCard:$('.IdCardnumber').val(),
+										  bankCard:$('.bankCard').val(),
+										  physical:$('.physical').val(),
+										  qualification:$('.qualification').val(),
+										  formalSchooling:$('.formalSchooling').val(),
+										  agreement:$('.agreementnumbernumber').val(),
+										  secrecyAgreement:$('.secrecyAgreementnumber').val(),
+										  remark:$('.remarktw').val(),
+										  contract:$('.contractnumber').val(),
+								  }
+								   $.ajax({
+										url:"${ctx}/system/user/updateContract",
+										data:postData,
+										type:"POST",
+										beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'#fff'] //0.1透明度的白色背景
+												});
+										},
+										
+										success:function(result){
+											if(0==result.code){
+												layer.msg("修改成功！", {icon: 1});
+												 
+												var data = {
+											  			page:self.getCount(),
+											  			size:13,
+											  			userName:$('#name').val(),
+											  	}
+												layer.close(index);
+												self.loadPagination(data);
+											}else{
+												layer.msg("修改失败", {icon: 2});
+											}
+											
+											layer.close(index);
+										},error:function(){
+											layer.msg("操作失败！", {icon: 2});
+											layer.close(index);
+										}
+									}); 
+								},
+							  end:function(){
+								  /*  $('.addbatchForm')[0].reset();  */
+								  /*  $("#addDictDivType").hide(); */
+								  layer.close(index);
+							  }
+						});
+					})
+					
 			  }
 			  
 			this.events = function(){
@@ -811,16 +1058,20 @@
 										bankCard2:$('.bankCard2').val(),
 										agreement:$('.agreement').val(),
 										promise:$('.promise').val(),
-										contract:$('.contract').val(),
+										commitment:$('.commitment').val(),
 										contractDate:$('#contractDate').val(),
 										frequency:$('.frequency').val(),
+										company:$('.company').val(),
 										quit:$('.quit').val(),
 										quitDate:$('#quitDate').val(),
 										reason:$('.reason').val(),
 										train:$('.train').val(),
 										remark:$('.remark').val(),
 										orgNameId:$('.selectgroupChange').val(),
-										positionId:$('.selectChange').val()
+										positionId:$('.selectChange').val(),
+										safe:$('.safe').val(),
+										fileId:$('#productId').val(),
+										pictureUrl:$('#producturl').val(),
 								}
 							    $.ajax({
 									url:"${ctx}/system/user/add",
