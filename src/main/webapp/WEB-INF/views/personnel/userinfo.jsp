@@ -27,10 +27,14 @@
 			<div class="col-xs-8 col-sm-8  col-md-8">
 				<form class="form-search" >
 					<div class="row">
-						<div class="col-xs-12 col-sm-12 col-md-7">
+						<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
 								<table><tr>
 								<td>员工姓名:</td><td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp</td>
+								<td>在离职:</td><td><select class="form-control" id="groupp"><option value="">请选择</option><option value="0">在职</option><option value="1">离职</option></select></td>
+									<td>&nbsp&nbsp</td>
+								<td>部门:</td><td id="orgName"></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default btn-square btn-sm btn-3d  searchtask">
@@ -43,6 +47,7 @@
 									新增员工
 									</button>
 								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-success  btn-sm btn-3d savemode" data-toggle="modal" data-target="#myModal" >
 									提示
@@ -65,7 +70,7 @@
                                             <th class="text-center">手机号</th>
                                             <th class="text-center">身份证号</th>
                                             <th class="text-center">部门</th>
-                                            <th class="text-center">职位</th>
+                                            <th class="text-center">是否在职</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -286,7 +291,7 @@
                     	<div class="form-group">
                            <label class="col-sm-2 control-label">工作状态:</label>
                               <div class="col-sm-2 working">
-                               <select class="form-control quit"><option value="0">在职:</option><option value="1">离职</option></select>
+                               <select class="form-control quit"><option value="0">在职</option><option value="1">离职</option></select>
                               </div>
                               <label class="col-sm-2 control-label">离职时间:</label>
                                  <div class="col-sm-2">
@@ -437,23 +442,27 @@
 				<table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th class="text-center">退休人员</th>
-                                            <th class="text-center">退休时间</th>
+                                            <th class="text-center">即将退休人员</th>
+                                            <th class="text-center">即将退休时间</th>
                                         </tr>
                                     </thead>
+                                    <thead>
                                     <tbody id="tablecontentfv">
                                         
                                     </tbody>
+                                   
                                 </table>
                                 </th>
-                                <th>
-			<table class="table table-hover">
+                                
+                                <th  style="vertical-align:top">
+								<table class="table table-hover">
                                     <thead>
                                         <tr>
                                             <th class="text-center">合同即将到期人员</th>
                                             <th class="text-center">合同即将到期时间</th>
                                         </tr>
                                     </thead>
+                                    <thead>
                                     <tbody id="tablecontentff">
                                         
                                     </tbody>
@@ -588,12 +597,20 @@
 		      				 }else{
 		      					 u=o.position.id
 		      				 }
-		      				var m;
+		      				var m="";
+		      				var v="";
+		      				if(o.userContract!=null){
 		      				if(o.userContract.id==null){
 		      					 m=""
 		      				 }else{
 		      					 m=o.userContract.id
 		      				 }
+		      				if(o.userContract.number==null){
+		      					 v=""
+		      				 }else{
+		      					 v=o.userContract.number
+		      				 }
+		      				}
 		      				var r;
 		      				 if(o.quit==0){
 		      					 r="在职"
@@ -603,12 +620,11 @@
 		      				 
 		      				html +='<tr>'
 		      				+'<td class="text-center edit price">'+order+'</td>'
-		      				+'<td class="text-center edit price">'+o.userContract.number+'</td>'
+		      				+'<td class="text-center edit price">'+v+'</td>'
 		      				+'<td class="text-center edit price">'+o.userName+'</td>'
 		      				+'<td class="text-center edit price">'+o.phone+'</td>'
 		      				+'<td class="text-center edit price">'+o.idCard+'</td>'
 		      				+'<td class="text-center edit price">'+k+'</td>'
-		      				+'<td class="text-center edit price">'+l+'</td>'
 		      				+'<td class="text-center edit price">'+r+'</td>'
 							+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>修改</button> <button class="btn btn-xs btn-success btn-trans addbatchtw" data-ids='+m+' data-id='+o.id+'>在职人员档案</button></td></tr>'
 		      			}); 
@@ -840,8 +856,10 @@
 				      				$('.train').val(o.train);
 				      				$('.remark').val(o.remark);
 				      				$('.company').val(o.company);
-					      			$("#idCardEnd").html(o.idCardEnd);
-					      			$("#contractDateEnd").html(o.contractDateEnd);
+					      			$("#idCardEnd").val(o.idCardEnd);
+					      			$("#contractDateEnd").val(o.contractDateEnd);
+					      			$('#productId').val(o.fileId);
+									$('#producturl').val(o.pictureUrl);
 					      			var html='<input class="form-control" value="'+l+'" />'
 					      			$(".position").html(html);
 				      				$('.nation').each(function(j,k){
@@ -1180,14 +1198,35 @@
 			  }
 			  
 			this.events = function(){
-				
-				
+				var getdataa={type:"orgName",}
+				var htmlfrn="";
+				var htmlthn="";
+			    $.ajax({
+				      url:"${ctx}/basedata/list",
+				      data:getdataa,
+				      type:"GET",
+				      beforeSend:function(){
+				    	  indextwo = layer.load(1, {
+						  shade: [0.1,'#fff'] //0.1透明度的白色背景
+						  });
+					  }, 
+		      		  success: function (result) {
+		      			  $(result.data).each(function(k,j){
+		      				htmlfrn +='<option value="'+j.id+'">'+j.name+'</option>'
+		      			  });
+		      			var htmlthn='<select class="form-control  sel"><option value="">请选择</option>'+htmlfrn+'</select>'
+		      			$("#orgName").html(htmlthn);
+		      			layer.close(indextwo);
+				      }
+				  });
 				$('.searchtask').on('click',function(){
 					var data = {
 				  			page:1,
 				  			size:13,
+				  			quit:$('#groupp').val(),
 				  			foreigns:0,
 				  			userName:$('#name').val(),
+				  			orgNameIds:$('.sel').val(),
 				  	}
 					
 		            self.loadPagination(data);
