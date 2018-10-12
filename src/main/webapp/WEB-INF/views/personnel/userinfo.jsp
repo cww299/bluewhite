@@ -43,6 +43,11 @@
 									新增员工
 									</button>
 								</span>
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-success  btn-sm btn-3d savemode" data-toggle="modal" data-target="#myModal" >
+									提示
+									</button>
+								</span>
 							</div>
 						</div>
 					</div>
@@ -413,7 +418,7 @@
  </div> 
       
       
-      <div id="savegroup" style="display: none;">
+ <div id="savegroup" style="display: none;">
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -426,7 +431,36 @@
 				</h4>
 			</div>
 			<div class="modal-body">
-				
+			<table>
+			<tr>
+			<th>
+				<table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">退休人员</th>
+                                            <th class="text-center">退休时间</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablecontentfv">
+                                        
+                                    </tbody>
+                                </table>
+                                </th>
+                                <th>
+			<table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">合同即将到期人员</th>
+                                            <th class="text-center">合同即将到期时间</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablecontentff">
+                                        
+                                    </tbody>
+                                </table>
+                                </th>
+                                </tr>
+                                </table>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
@@ -475,8 +509,15 @@
 			}
 			 
 			 this.loadPaginationtw = function(){
+				 $(".savemode").trigger("click")
 				 var index;
 				    var html ='';
+				    var htmlh ='';
+				    var display =$("#savegroup").css("display")
+					 if(display=='none'){
+							$("#savegroup").css("display","block");  
+						}
+				   
 				     $.ajax({
 					      url:"${ctx}/system/user/remind",
 					       /* data:data, */ 
@@ -487,18 +528,19 @@
 							  });
 						  }, 
 			      		  success: function (result) {
-			      			 $(result.data.rows).each(function(i,o){
+			      			 $(result.data.userBirth).each(function(i,o){
 			      				html +='<tr>'
-			      				+'<td class="text-center edit price">'+order+'</td>'
-			      				+'<td class="text-center edit price">'+o.userContract.number+'</td>'
-			      				+'<td class="text-center edit price">'+o.userName+'</td>'
-			      				+'<td class="text-center edit price">'+o.phone+'</td>'
-			      				+'<td class="text-center edit price">'+o.idCard+'</td>'
-			      				+'<td class="text-center edit price">'+k+'</td>'
-			      				+'<td class="text-center edit price">'+l+'</td>'
-			      				+'<td class="text-center edit price">'+r+'</td>'
-								+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>修改</button> <button class="btn btn-xs btn-success btn-trans addbatchtw" data-ids='+m+' data-id='+o.id+'>在职人员档案</button></td></tr>'
+			      				+'<td class="text-center edit price">'+o.username+'</td>'
+			      				+'<td class="text-center edit price">'+o.birthDate+'</td></tr>'
 			      			}); 
+			      			$("#tablecontentfv").html(html); 
+			      			$(result.data.userContract).each(function(i,o){
+			      				htmlh +='<tr>'
+			      				+'<td class="text-center edit price">'+o.username+'</td>'
+			      				+'<td class="text-center edit price">'+o.contractDateEnd+'</td></tr>'
+			      			});
+			      			   
+			      			$("#tablecontentff").html(htmlh);
 			      			layer.close(index);
 					      },error:function(){
 								layer.msg("加载失败！", {icon: 2});
@@ -1138,6 +1180,8 @@
 			  }
 			  
 			this.events = function(){
+				
+				
 				$('.searchtask').on('click',function(){
 					var data = {
 				  			page:1,
