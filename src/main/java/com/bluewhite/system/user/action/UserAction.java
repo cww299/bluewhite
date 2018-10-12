@@ -56,7 +56,7 @@ public class UserAction {
 				.addRetainTerm(User.class,"id","fileId","price","status","workTime","number","pictureUrl", "userName", "phone","position","orgName","idCard",
 						"nation","email","gender","birthDate","group","idCard","permanentAddress","livingAddress","marriage","procreate","education"
 						,"school","major","contacts","information","entry","estimate","actua","socialSecurity","bankCard1","bankCard2","agreement"
-						,"promise","contract","contractDate","frequency","quitDate","quit","reason","train","remark","userContract","commitments","agreementId")
+						,"promise","contract","contractDate","frequency","quitDate","quit","reason","train","remark","userContract","commitments","agreementId","company")
 				.addRetainTerm(Group.class, "id","name", "type", "price","contractDateEnd")
 				.addRetainTerm(Role.class, "name", "role", "description","id")
 				.addRetainTerm(BaseData.class, "id","name", "type")
@@ -238,11 +238,13 @@ public class UserAction {
 			if(user.getGender()==0 && co==59 && co2<=10){
 				us.put("username", user.getUserName());
 				us.put("birthDate", user.getBirthDate());
+				userBirthList.add(us);
 			}else if(user.getGender()==1 && co==55  && co2<=10){
 				us.put("username", user.getUserName());
 				us.put("birthDate", user.getBirthDate());
+				userBirthList.add(us);
 			}
-			userBirthList.add(us);
+			
 		}
 		//合同到期时间
 		List<Map<String , Object>> userContractList = new ArrayList<Map<String , Object>>();
