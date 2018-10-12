@@ -132,7 +132,7 @@
 								</tr></table></div> -->
                             <div style="padding-left: 450px">
                             <div class="panel-body">
-                                <form action="#" class="dropzone" style="widows: 150px" id="my-awesome-dropzone" enctype="multipart/form-data">
+                                <div style="font-size: 16px;"><b>员工照片:</b></div><form action="#" class="dropzone" style="widows: 150px" id="my-awesome-dropzone" enctype="multipart/form-data">
                                 </form>
 
                             </div>
@@ -432,7 +432,7 @@
 					&times;
 				</button>
 				<h4 class="modal-title" id="myModalLabel">
-					人员分组详情
+					提示
 				</h4>
 			</div>
 			<div class="modal-body">
@@ -443,7 +443,7 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">即将退休人员</th>
-                                            <th class="text-center">即将退休时间</th>
+                                            <th class="text-center">时间</th>
                                         </tr>
                                     </thead>
                                     <thead>
@@ -459,7 +459,7 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">合同即将到期人员</th>
-                                            <th class="text-center">合同即将到期时间</th>
+                                            <th class="text-center">时间</th>
                                         </tr>
                                     </thead>
                                     <thead>
@@ -1358,7 +1358,6 @@
 							  $(".checkWorktw:checked").each(function() {   
 								  numberr.push($(this).val());
 								}); 
-							  
 								var postData = {
 										agreementId:numberr,
 										commitmentId:values,
