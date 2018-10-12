@@ -240,11 +240,11 @@
                               <div class="col-sm-2 working">
                                <select class="form-control promise"><option value="0">未签</option><option value="1">已签</option></select>
                               </div>
-                              <label class="col-sm-2 control-label">合同</label>
+                              <label class="col-sm-2 control-label">合同:</label>
                                  <div class="col-sm-2">
                                           <select class="form-control commitment"><option value="0">未签</option><option value="1">已签</option><option value="2">续签</option></select>
                                       </div>
-                                      <label class="col-sm-2 control-label">协议</label>
+                                      <label class="col-sm-2 control-label">协议:</label>
                                  <div class="col-sm-2 agreementtw" >
                                           <!-- <input type="text" class="form-control agreement"> -->
                                       </div>
@@ -254,7 +254,7 @@
                               <div class="col-sm-2 working">
                               <input type="text" class="form-control bankCard1">
                               </div>
-                              <label class="col-sm-2 control-label">所属银行</label>
+                              <label class="col-sm-2 control-label">所属银行:</label>
                                  <div class="col-sm-2">
                                           <input type="text" class="form-control  bankCardtw" disabled="disabled">
                                       </div>
@@ -269,7 +269,7 @@
                               <input id="contractDate" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#contractDate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                               </div>
-                              <label class="col-sm-2 control-label">合同签订次数</label>
+                              <label class="col-sm-2 control-label">合同签订次数:</label>
                                  <div class="col-sm-2">
                                           <input type="text" class="form-control frequency">
                                       </div>
@@ -281,14 +281,14 @@
                     	<div class="form-group">
                            <label class="col-sm-2 control-label">工作状态:</label>
                               <div class="col-sm-2 working">
-                               <select class="form-control quit"><option value="0">在职</option><option value="1">离职</option></select>
+                               <select class="form-control quit"><option value="0">在职:</option><option value="1">离职</option></select>
                               </div>
-                              <label class="col-sm-2 control-label">离职时间</label>
+                              <label class="col-sm-2 control-label">离职时间:</label>
                                  <div class="col-sm-2">
                                           <input id="quitDate" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#quitDate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                                       </div>
-                                       <label class="col-sm-2 control-label">身份证到期时间</label>
+                                       <label class="col-sm-2 control-label">身份证到期时间:</label>
                                  <div class="col-sm-2">
                                           <input id="idCardEnd" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#idCardEnd', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
@@ -299,11 +299,11 @@
                               <div class="col-sm-2 working">
                               <input type="text" class="form-control reason">
                               </div>
-                              <label class="col-sm-2 control-label">合同</label>
+                              <label class="col-sm-2 control-label">合同:</label>
                                  <div class="col-sm-2 remarktww">
                                           <!-- <input type="text" class="form-control remark"> -->
                                       </div>
-                                      <label class="col-sm-2 control-label">合同到期时间</label>
+                                      <label class="col-sm-2 control-label">合同到期时间:</label>
                                  <div class="col-sm-2">
                                          <input id="contractDateEnd" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#contractDateEnd', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
@@ -411,7 +411,31 @@
 </div>     
         
  </div> 
-        
+      
+      
+      <div id="savegroup" style="display: none;">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					人员分组详情
+				</h4>
+			</div>
+			<div class="modal-body">
+				
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+</div>  
     </section>
  
     <!--Global JS-->
@@ -447,7 +471,41 @@
 			//注册绑定事件
 				self.events();
 				self.loadPagination(data);
+				self.loadPaginationtw();
 			}
+			 
+			 this.loadPaginationtw = function(){
+				 var index;
+				    var html ='';
+				     $.ajax({
+					      url:"${ctx}/system/user/remind",
+					       /* data:data, */ 
+					      type:"GET",
+					      beforeSend:function(){
+						 	  index = layer.load(1, {
+							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							  });
+						  }, 
+			      		  success: function (result) {
+			      			 $(result.data.rows).each(function(i,o){
+			      				html +='<tr>'
+			      				+'<td class="text-center edit price">'+order+'</td>'
+			      				+'<td class="text-center edit price">'+o.userContract.number+'</td>'
+			      				+'<td class="text-center edit price">'+o.userName+'</td>'
+			      				+'<td class="text-center edit price">'+o.phone+'</td>'
+			      				+'<td class="text-center edit price">'+o.idCard+'</td>'
+			      				+'<td class="text-center edit price">'+k+'</td>'
+			      				+'<td class="text-center edit price">'+l+'</td>'
+			      				+'<td class="text-center edit price">'+r+'</td>'
+								+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>修改</button> <button class="btn btn-xs btn-success btn-trans addbatchtw" data-ids='+m+' data-id='+o.id+'>在职人员档案</button></td></tr>'
+			      			}); 
+			      			layer.close(index);
+					      },error:function(){
+								layer.msg("加载失败！", {icon: 2});
+								layer.close(index);
+						  }
+					  }); 
+			 }
 			//加载分页
 			  this.loadPagination = function(data){
 			    var index;
@@ -739,6 +797,7 @@
 				      				$('.reason').val(o.reason);
 				      				$('.train').val(o.train);
 				      				$('.remark').val(o.remark);
+				      				$('.company').val(o.company);
 					      			$("#idCardEnd").html(o.idCardEnd);
 					      			$("#contractDateEnd").html(o.contractDateEnd);
 					      			var html='<input class="form-control" value="'+l+'" />'
@@ -882,6 +941,7 @@
 											contractDateEnd:$('#contractDateEnd').val(),
 											fileId:$('#productId').val(),
 											pictureUrl:$('#producturl').val(),
+											company:$('.company').val(),
 								  }
 								   $.ajax({
 										url:"${ctx}/system/user/update",
