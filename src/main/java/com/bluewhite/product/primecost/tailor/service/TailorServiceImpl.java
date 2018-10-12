@@ -102,6 +102,8 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			primeCoefficient = primeCoefficientDao.findByType(type);
 			
 			prams.setType(type);
+			
+//			prams.set
 
 			
 			break;

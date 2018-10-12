@@ -124,40 +124,34 @@ public class ReportExportServiceImpl implements ReportExportService{
 		if(excelUser.size()>0){
 			List<User> userList = new ArrayList<User>();
 			for(UserPoi proPoi :excelUser){
-				User user  = userDao.findByUserName(proPoi.getUserName());
+				User user  = userDao.findByUserName(proPoi.getLogin_name());
 				UserContract userContract =null;
 				if(user==null){
 					user = new User();
 					userContract = new UserContract();
-					userContract.setNumber(proPoi.getNumber());
-					userContract.setUsername(proPoi.getUserName());
-//					userContract.setQuit(1);
-					userContractDao.save(userContract);
+					userContract.setUsername(proPoi.getLogin_name());
 				}
 				
 				Date entry = null;
-				Date contractDate = null;
+				Date quitDate = null;
 				try {
 					if(!StringUtils.isEmpty(proPoi.getEntry())){
 						entry = sdf.parse(proPoi.getEntry());
 					}
-					if(!StringUtils.isEmpty(proPoi.getQuitDate())){
-						contractDate = sdf.parse(proPoi.getQuitDate());
+					if(!StringUtils.isEmpty(proPoi.getQuit_date())){
+						quitDate = sdf.parse(proPoi.getQuit_date());
 					}
 					
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
 				
-				user.setUserName(proPoi.getUserName());
-				user.setLoginName(proPoi.getUserName());
-				user.setPassword("123456");
-				user.setQuit(1);
-				user.setQuitDate(contractDate);
-				user.setPhone(proPoi.getPhone());
-				user.setIdCard(proPoi.getIdCard());
-				user.setPermanentAddress(proPoi.getPermanentAddress());
-				user.setLivingAddress(proPoi.getLivingAddress());
+				user.setQuit(proPoi.getQuit());
+				user.setQuitDate(quitDate);
+//				user.setPhone(proPoi.getPhone());
+//				user.setIdCard(proPoi.getIdCard());
+//				user.setPermanentAddress(proPoi.getPermanentAddress());
+//				user.setLivingAddress(proPoi.getLivingAddress());
 				user.setEntry(entry);
 				user.setUserContract(userContract);
 				userList.add(user);
