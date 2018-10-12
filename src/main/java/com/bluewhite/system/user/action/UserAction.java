@@ -130,7 +130,7 @@ public class UserAction {
 			return cr;
 		}
 		User oldUser = userService.findOne(user.getId());
-		BeanCopyUtils.copyNotEmpty(user,oldUser);
+		BeanCopyUtils.copyNotEmpty(user,oldUser,"");
 		cr.setData(clearCascadeJSON.format(userService.save(oldUser)).toJSON());
 		cr.setMessage("修改成功");
 		return cr;

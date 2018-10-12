@@ -299,8 +299,8 @@
                               <div class="col-sm-2 working">
                               <input type="text" class="form-control reason">
                               </div>
-                              <label class="col-sm-2 control-label">备注</label>
-                                 <div class="col-sm-2 remarktw">
+                              <label class="col-sm-2 control-label">合同</label>
+                                 <div class="col-sm-2 remarktww">
                                           <!-- <input type="text" class="form-control remark"> -->
                                       </div>
                                       <label class="col-sm-2 control-label">合同到期时间</label>
@@ -540,6 +540,7 @@
 					  }
 				  });
 			}
+			
 			  this.loadEvents = function(){
 				/*修改 */
 					$('.addbatch').on('click',function(){
@@ -562,6 +563,8 @@
 				    var htmlth = '';
 				    var htmlfr = '';
 				    var html = '';
+				    var htmlthh= '';
+				    var htmlthhh= '';
 					    var getdata={type:"orgName",}
 		      			$.ajax({
 						      url:"${ctx}/basedata/list",
@@ -621,7 +624,45 @@
 						      }
 						  });
 						
-						
+					    var getdataa={type:"agreements",}
+					    
+					    $.ajax({
+						      url:"${ctx}/basedata/list",
+						      data:getdataa,
+						      type:"GET",
+						      beforeSend:function(){
+						    	  indextwo = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								  });
+							  }, 
+				      		  success: function (result) {
+				      			  $(result.data).each(function(k,j){
+				      		htmlthh+='<input type="checkbox" class="checkWorktw" value="'+j.id+'">'+j.name+'</input>'
+				      			  });
+				      			$(".agreementtw").html(htmlthh);
+				      			layer.close(indextwo);
+						      }
+						  });
+					    
+						var getdataa={type:"commitments",}
+					    
+					    $.ajax({
+						      url:"${ctx}/basedata/list",
+						      data:getdataa,
+						      type:"GET",
+						      beforeSend:function(){
+						    	  indextwo = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								  });
+							  }, 
+				      		  success: function (result) {
+				      			  $(result.data).each(function(k,j){
+				      		htmlthhh+='<input type="radio" class="checkWork" name="cc" value="'+j.id+'">'+j.name+'</input>'
+				      			  });
+				      			$(".remarktww").html(htmlthhh);
+				      			layer.close(indextwo);
+						      }
+						  });
 					    
 					  var data={
 							id:id		
@@ -706,6 +747,20 @@
 										var id=o.nation;
 										$(k).val(id);
 									})
+										var id=o.commitments.id;
+									$('.checkWork').each(function(j,k){
+										if(id==$(k).val()){
+											$(k).attr("checked","true"); 
+											
+										}
+										
+									})
+										var id=o.agreementId;
+									 $('.checkWorktw').each(function(j,k){
+										 if(id.indexOf($(k).val())>=0){
+												$(k).attr("checked","true"); 
+											}
+									}) 
 									$('.gender').each(function(j,k){
 										var id=o.gender;
 										$(k).val(id);
@@ -763,6 +818,9 @@
 							  }
 						  });
 					    
+					    
+					    
+					    
 						_index = layer.open({
 							  type: 1,
 							  skin: 'layui-layer-rim', //加上边框
@@ -773,8 +831,18 @@
 							  content: dicDiv,
 							  btn: ['确定', '取消'],
 							  yes:function(index, layero){
+								  var values=new Array()
+								  var numberr=new Array()
+									$(".checkWork:checked").each(function() {   
+										values.push($(this).val());
+									}); 
+								  $(".checkWorktw:checked").each(function() {   
+									  numberr.push($(this).val());
+									}); 
 								  postData={
 										  id:id,
+										  	agreementId:numberr,
+											commitmentId:values,
 										 	userName:$('.userName').val(),
 											number:$('.number').val(),
 											nation:$('.nation').val(),
@@ -819,6 +887,7 @@
 										url:"${ctx}/system/user/update",
 										data:postData,
 										type:"POST",
+										traditional: true,
 										beforeSend:function(){
 											index = layer.load(1, {
 												  shade: [0.1,'#fff'] //0.1透明度的白色背景
@@ -1101,7 +1170,7 @@
 								  }, 
 					      		  success: function (result) {
 					      			  $(result.data).each(function(k,j){
-					      		htmlthh+='<input type="checkbox" class="checkWork" value="'+j.id+'">'+j.name+'</input>'
+					      		htmlthh+='<input type="checkbox" class="checkWorktw" value="'+j.id+'">'+j.name+'</input>'
 					      			  });
 					      			$(".agreementtw").html(htmlthh);
 					      			layer.close(indextwo);
@@ -1121,9 +1190,9 @@
 								  }, 
 					      		  success: function (result) {
 					      			  $(result.data).each(function(k,j){
-					      		htmlthhh+='<input type="checkbox" class="checkWork" value="'+j.id+'">'+j.name+'</input>'
+					      		htmlthhh+='<input type="radio" class="checkWork" name="cc" value="'+j.id+'">'+j.name+'</input>'
 					      			  });
-					      			$(".remarktw").html(htmlthhh);
+					      			$(".remarktww").html(htmlthhh);
 					      			layer.close(indextwo);
 							      }
 							  });
@@ -1142,9 +1211,14 @@
 							  var numberr=new Array()
 								$(".checkWork:checked").each(function() {   
 									values.push($(this).val());
-									numberr.push($(this).data('residualnumber'));
 								}); 
+							  $(".checkWorktw:checked").each(function() {   
+								  numberr.push($(this).val());
+								}); 
+							  
 								var postData = {
+										agreementId:numberr,
+										commitmentId:values,
 										userName:$('.userName').val(),
 										number:$('.number').val(),
 										nation:$('.nation').val(),
