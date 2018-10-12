@@ -345,7 +345,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		monthlyProduction.setRework(rework-reworkCount);
 		//返工时间
 		double reworkTime = reworkTurnTime;
-		monthlyProduction.setReworkTime(reworkTime);
+		monthlyProduction.setReworkTime(reworkTime/60);
 		
 		if(monthlyProduction.getType()==1){
 			int count = 0;
