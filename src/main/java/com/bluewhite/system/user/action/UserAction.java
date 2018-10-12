@@ -224,7 +224,7 @@ public class UserAction {
 	@ResponseBody
 	public CommonResponse remind(HttpServletRequest request) {
 		CommonResponse cr = new CommonResponse();
-		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Map<String , Object> map = new HashMap<String, Object>();
 		List<User> userList = 	userService.findAll();
 		//退休时间，过滤出有生日的员工
@@ -237,11 +237,11 @@ public class UserAction {
 			long co2 = DatesUtil.getDaySub( DatesUtil.getfristDayOftime(new Date()),DatesUtil.getfristDayOftime(user.getBirthDate()));
 			if(user.getGender()==0 && co==59 && co2<=10){
 				us.put("username", user.getUserName());
-				us.put("birthDate", user.getBirthDate());
+				us.put("birthDate",sdf.format(user.getBirthDate()));
 				userBirthList.add(us);
 			}else if(user.getGender()==1 && co==55  && co2<=10){
 				us.put("username", user.getUserName());
-				us.put("birthDate", user.getBirthDate());
+				us.put("birthDate", sdf.format(user.getBirthDate()));
 				userBirthList.add(us);
 			}
 			
@@ -254,7 +254,7 @@ public class UserAction {
 			long co = DatesUtil.getDaySub( DatesUtil.getfristDayOftime(new Date()),DatesUtil.getfristDayOftime(user.getContractDateEnd()));
 			if(co<=10){
 				us.put("username", user.getUserName());
-				us.put("contractDateEnd", user.getContractDateEnd());
+				us.put("contractDateEnd", sdf.format(user.getContractDateEnd()));
 				userContractList.add(us);
 			}
 		}
