@@ -229,7 +229,7 @@ public class UserAction {
 		List<User> userList = 	userService.findAll();
 		//退休时间，过滤出有生日的员工
 		List<Map<String,Object>> userBirthList = new ArrayList<Map<String,Object>>();
-		List<User> userBirth = userList.stream().filter(User->User.getBirthDate()!=null ).collect(Collectors.toList());
+		List<User> userBirth = userList.stream().filter(User->User.getBirthDate()!=null && User.getGender()!=null ).collect(Collectors.toList());
 		
 		for(User user : userBirth ){
 			Map<String,Object> us = new HashMap<String,Object>();
