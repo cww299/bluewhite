@@ -261,7 +261,7 @@ public class User extends BaseEntity<Long> {
 	 * 0=未签，1=已签，2=续签
 	 */
 	@Column(name = "commitment")
-    private Integer commitment = 0;
+    private Integer commitment;
 	/**
 	 * 合同签订开始日期
 	 */
