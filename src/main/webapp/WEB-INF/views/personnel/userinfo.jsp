@@ -202,11 +202,11 @@
                               </div>
                               <label class="col-sm-2 control-label">性别:</label>
                                  <div class="col-sm-2">
-                                  <select class="form-control gender"><option value="0">男</option><option value="1">女</option></select>
+                                  <select class="form-control gender" disabled="disabled"><option value="0">男</option><option value="1">女</option></select>
                                       </div>
                                       <label class="col-sm-2 control-label">出生日期:</label>
                               <div class="col-sm-2 working">
-                              <input id="birthDate" placeholder="请输入时间" class="form-control laydate-icon"
+                              <input id="birthDate" disabled="disabled" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#birthDate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                               </div>
                     	</div>
@@ -1004,6 +1004,38 @@
 												$(k).attr("checked","true"); 
 											}
 									}) ;
+									 
+									 
+									 $(".idCard").blur(function(){
+											var UUserCard = $(".idCard").val();
+											if(UUserCard != null && UUserCard != ''){
+												//获取出生日期 
+												var birthday = UUserCard.substring(6, 10) + "-" + UUserCard.substring(10, 12) + "-" + UUserCard.substring(12, 14); 
+												$('#birthDate').val(birthday+' '+'00:00:00');
+												//获取性别 
+												if (parseInt(UUserCard.substr(16, 1)) % 2 == 1) { 
+													$('.gender').each(function(j,k){
+														var id=0;//男
+														$(k).val(id);
+													});
+												} else { 
+													$('.gender').each(function(j,k){
+														var id=1;//女
+														$(k).val(id);
+													});
+												}
+												//获取年龄 
+												 var myDate = new Date(); 
+												var month = myDate.getMonth() + 1; 
+												var day = myDate.getDate();
+
+												var age = myDate.getFullYear() - UUserCard.substring(6, 10) - 1; 
+												if (UUserCard.substring(10, 12) < month || UUserCard.substring(10, 12) == month && UUserCard.substring(12, 14) <= day) { 
+												age++; 
+												} 
+												
+											}
+										})
 									
 				      			}); 
 				      			 
@@ -1438,6 +1470,38 @@
 					      			layer.close(indextwo);
 							      }
 							  });
+							
+							
+							$(".idCard").blur(function(){
+								var UUserCard = $(".idCard").val();
+								if(UUserCard != null && UUserCard != ''){
+									//获取出生日期 
+									var birthday = UUserCard.substring(6, 10) + "-" + UUserCard.substring(10, 12) + "-" + UUserCard.substring(12, 14); 
+									$('#birthDate').val(birthday+' '+'00:00:00');
+									//获取性别 
+									if (parseInt(UUserCard.substr(16, 1)) % 2 == 1) { 
+										$('.gender').each(function(j,k){
+											var id=0;//男
+											$(k).val(id);
+										});
+									} else { 
+										$('.gender').each(function(j,k){
+											var id=1;//女
+											$(k).val(id);
+										});
+									}
+									//获取年龄 
+									 var myDate = new Date(); 
+									var month = myDate.getMonth() + 1; 
+									var day = myDate.getDate();
+
+									var age = myDate.getFullYear() - UUserCard.substring(6, 10) - 1; 
+									if (UUserCard.substring(10, 12) < month || UUserCard.substring(10, 12) == month && UUserCard.substring(12, 14) <= day) { 
+									age++; 
+									} 
+									
+								}
+							})
 					var dicDiv=$('#addDictDivType');
 					_index = layer.open({
 						  type: 1,
