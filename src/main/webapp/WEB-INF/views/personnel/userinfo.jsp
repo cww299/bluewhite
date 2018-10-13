@@ -100,6 +100,9 @@
                                             <th class="text-center">合同</th>
                                             <th class="text-center">承诺书</th>
                                             <th class="text-center">保险</th>
+                                            <th class="text-center">入职时间</th>
+                                            <th class="text-center">预计转正时间</th>
+                                            <th class="text-center">实际转正时间</th>
                                             <th class="text-center">部门</th>
                                             <th class="text-center">是否在职</th>
                                             <th class="text-center">操作</th>
@@ -706,6 +709,9 @@
 		      				+'<td class="text-center edit price">'+commitment+'</td>'
 		      				+'<td class="text-center edit price">'+promise+'</td>'
 		      				+'<td class="text-center edit price">'+safe+'</td>'
+		      				+'<td class="text-center edit price">'+(o.entry!=null ? o.entry : "") +'</td>'
+		      				+'<td class="text-center edit price">'+(o.estimate!=null ? o.estimate: "")+'</td>'
+		      				+'<td class="text-center edit price">'+(o.actua!=null ? o.actua: "")+'</td>'
 		      				+'<td class="text-center edit price">'+k+'</td>'
 		      				+'<td class="text-center edit price">'+r+'</td>'
 							+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>员工详情</button> <button class="btn btn-xs btn-success btn-trans addbatchtw" data-ids='+m+' data-id='+o.id+'>档案位置详情</button></td></tr>'
@@ -1365,7 +1371,19 @@
 				      }
 				  });
 				$('.searchtask').on('click',function(){
-					var sss=$("#timesss").val();
+					var entry="";
+		  			var estimate="";
+		  			var actua="";
+						
+						if($("#timesss").val()=="entry"){
+							entry="2018-10-08 00:00:00"
+						}
+						if($("#timesss").val()=="estimate"){
+							estimate="2018-10-08 00:00:00"
+						}
+						if($("#timesss").val()=="actua"){
+							actua="2018-10-08 00:00:00"
+						}
 					var data = {
 				  			page:1,
 				  			size:13,
@@ -1379,7 +1397,9 @@
 				  			promise:$('#promise').val(),
 				  			safe:$('#safe').val(),
 				  			lotionNumber:$('#number').val(),
-				  			sss:"2018-10-08 00:00:00",
+				  			entry:entry,
+				  			estimate:estimate,
+				  			actua:actua,
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(),
 				  	}
