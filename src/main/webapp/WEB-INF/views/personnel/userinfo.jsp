@@ -30,7 +30,7 @@
 						<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
 								<table><tr>
-								<td>员工姓名:</td><td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
+								<td>员工姓名:</td><td><input type="text"  id="name" class="form-control name" /></td>
 								<td>&nbsp&nbsp</td>
 								<td>在离职:</td><td><select class="form-control" id="groupp"><option value="">请选择</option><option value="0">在职</option><option value="1">离职</option></select></td>
 									<td>&nbsp&nbsp</td>
@@ -41,11 +41,30 @@
 								<td>退休返聘:</td><td><select class="form-control" id="retire"><option value="">否</option><option value="0">是</option></select></td>
 								<td>&nbsp&nbsp</td>
 								<td>合同:</td><td><select class="form-control" id="commitment"><option value="">请选择</option><option value="0">未签</option><option value="1">已签</option><option value="2">续签</option></select></td>
+								</tr>
+								<tr><td><div style="height: 10px"></div></td></tr>
+								<tr>
+								<td>位置编号:</td><td><input type="text"  id="number" class="form-control" /></td>
 								<td>&nbsp&nbsp</td>
-								<td>承诺书:</td><td><select class="form-control" id="promise"><option value="">请选择</option><option value="0">未签</option><option value="1">已签</option></select></td>
+								<td>时间查询:</td><td><select class="form-control" id="timesss"><option value="">请选择</option><option value="entry">入职时间</option><option value="actua">实际转正时间</option><option value="estimate">预计转正时间</option></select></td>
+								<td>&nbsp&nbsp</td>
+								<td>开始:</td>
+								<td>
+								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
+								</td>
+								<td>&nbsp&nbsp</td>
+								<td>结束:</td>
+								<td>
+									<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
+             						onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+								</td>
 								<td>&nbsp&nbsp</td>
 								<td>保险详情:</td><td><select class="form-control" id="safe"><option value="">请选择</option><option value="0">未缴</option><option value="1">已缴</option></select></td>
-								</tr></table> 
+								<td>&nbsp&nbsp</td>
+								<td>承诺书:</td><td><select class="form-control" id="promise"><option value="">请选择</option><option value="0">未签</option><option value="1">已签</option></select></td>
+								</tr>
+								</table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default btn-square btn-sm btn-3d  searchtask">
 										查&nbsp找
@@ -465,7 +484,7 @@
 			<div class="modal-body">
 			<table>
 			<tr>
-			<th>
+			<th style="vertical-align:top">
 				<table class="table table-hover">
                                     <thead>
                                         <tr>
@@ -1346,6 +1365,7 @@
 				      }
 				  });
 				$('.searchtask').on('click',function(){
+					var sss=$("#timesss").val();
 					var data = {
 				  			page:1,
 				  			size:13,
@@ -1358,6 +1378,10 @@
 				  			commitment:$('#commitment').val(),
 				  			promise:$('#promise').val(),
 				  			safe:$('#safe').val(),
+				  			lotionNumber:$('#number').val(),
+				  			sss:"2018-10-08 00:00:00",
+				  			orderTimeBegin:$("#startTime").val(),
+				  			orderTimeEnd:$("#endTime").val(),
 				  	}
 					
 		            self.loadPagination(data);
