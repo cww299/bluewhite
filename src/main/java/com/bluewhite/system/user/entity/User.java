@@ -122,14 +122,18 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Column(name = "gender")
 	private Integer gender;
-	
-	
 
 	/**
 	 * 生日
 	 */
 	@Column(name = "birth_date")
 	private Date birthDate;
+	
+	/**
+	 * 年龄
+	 */
+	@Column(name = "age")
+	private Integer age;
 	
 	/**
 	 * 身份证到期时间
@@ -445,8 +449,30 @@ public class User extends BaseEntity<Long> {
 	@Transient
 	private Integer temporarily;
 	
+	/**
+	 * 是否退休返聘
+	 */
+	@Transient
+	private Integer retire;
 	
 	
+	
+
+	public Integer getRetire() {
+		return retire;
+	}
+
+	public void setRetire(Integer retire) {
+		this.retire = retire;
+	}
+
+	public Integer getAge() {
+		return age;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
+	}
 
 	public Long getCommitmentId() {
 		return commitmentId;
