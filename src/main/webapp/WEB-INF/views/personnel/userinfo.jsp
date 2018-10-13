@@ -24,7 +24,7 @@
                                 </div>
                             </div>
                             <div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-8 col-sm-8  col-md-8">
+			<div class="col-xs-12 col-sm-12  col-md-12">
 				<form class="form-search" >
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 col-md-12">
@@ -35,6 +35,16 @@
 								<td>在离职:</td><td><select class="form-control" id="groupp"><option value="">请选择</option><option value="0">在职</option><option value="1">离职</option></select></td>
 									<td>&nbsp&nbsp</td>
 								<td>部门:</td><td id="orgName"></td>
+								<td>&nbsp&nbsp</td>
+								<td>性别:</td><td><select class="form-control" id="gender"><option value="">请选择</option><option value="0">男</option><option value="1">女</option></select></td>
+								<td>&nbsp&nbsp</td>
+								<td>退休返聘:</td><td><select class="form-control" id="retire"><option value="">否</option><option value="0">是</option></select></td>
+								<td>&nbsp&nbsp</td>
+								<td>合同:</td><td><select class="form-control" id="commitment"><option value="">请选择</option><option value="0">未签</option><option value="1">已签</option><option value="2">续签</option></select></td>
+								<td>&nbsp&nbsp</td>
+								<td>承诺书:</td><td><select class="form-control" id="promise"><option value="">请选择</option><option value="0">未签</option><option value="1">已签</option></select></td>
+								<td>&nbsp&nbsp</td>
+								<td>保险详情:</td><td><select class="form-control" id="safe"><option value="">请选择</option><option value="0">未缴</option><option value="1">已缴</option></select></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default btn-square btn-sm btn-3d  searchtask">
@@ -50,7 +60,7 @@
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-success  btn-sm btn-3d savemode" data-toggle="modal" data-target="#myModal" >
-									提示
+									员工提示
 									</button>
 								</span>
 							</div>
@@ -64,11 +74,13 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th class="text-center">序号</th>
                                             <th class="text-center">位置编号</th>
                                             <th class="text-center">姓名</th>
                                             <th class="text-center">手机号</th>
-                                            <th class="text-center">身份证号</th>
+                                            <th class="text-center">年龄</th>
+                                            <th class="text-center">合同</th>
+                                            <th class="text-center">承诺书</th>
+                                            <th class="text-center">保险</th>
                                             <th class="text-center">部门</th>
                                             <th class="text-center">是否在职</th>
                                             <th class="text-center">操作</th>
@@ -76,6 +88,20 @@
                                     </thead>
                                     <tbody id="tablecontent">
                                     </tbody>
+                                    <thead>
+                                        <tr>
+                                       	    <td class="text-center">合计人数</td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center" id="total"></td>
+                                        </tr>
+                                    </thead>
                                 </table>
                                  <div id="pager">
                                 </div>
@@ -156,9 +182,9 @@
                               </div>
                     	</div>
                     	<div class="form-group">
-                           <label class="col-sm-2 control-label">名族:</label>
+                           <label class="col-sm-2 control-label">民族:</label>
                               <div class="col-sm-2 working">
-                              <select class="form-control nation"><option value="汉">汉</option><option value="少数名族">少数名族</option></select>
+                              <select class="form-control nation"><option value="汉">汉</option><option value="少数民族">少数民族</option></select>
                               </div>
                               <label class="col-sm-2 control-label">手机号:</label>
                                  <div class="col-sm-2">
@@ -178,7 +204,7 @@
                                  <div class="col-sm-2">
                                   <select class="form-control gender"><option value="0">男</option><option value="1">女</option></select>
                                       </div>
-                                      <label class="col-sm-2 control-label">生日:</label>
+                                      <label class="col-sm-2 control-label">出生日期:</label>
                               <div class="col-sm-2 working">
                               <input id="birthDate" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#birthDate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
@@ -214,11 +240,11 @@
                               </div>
                     	</div>
                     	<div class="form-group">
-                           <label class="col-sm-2 control-label">联系方式:</label>
+                           <label class="col-sm-2 control-label">紧急联系方式:</label>
                               <div class="col-sm-2 working">
                               <input type="text" class="form-control information">
                               </div>
-                              <label class="col-sm-2 control-label">联系人:</label>
+                              <label class="col-sm-2 control-label">紧急联系人:</label>
                                  <div class="col-sm-2">
                                           <input type="text" class="form-control contacts">
                                       </div>
@@ -357,10 +383,11 @@
                               <div class="col-sm-2 col-md-2">
                                   <input type="text" class="form-control usernametw" disabled="disabled">
                               </div>
-                               <label class="col-sm-2 control-label">员工档案:</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control archives">
-                                      </div>
+                               <label class="col-sm-2 control-label">位置编号:</label>
+                              <div class="col-sm-2">
+                              <input type="text" class="form-control numbertw">
+                              </div>
+                               
                             <label class="col-sm-2 control-label">照片数量:</label>
                               <div class="col-sm-2 working">
                               <input type="text" class="form-control pic">
@@ -410,10 +437,10 @@
                                       </div>
                     	</div>
                     	<div class="form-group">
-                           <label class="col-sm-2 control-label">位置编号:</label>
-                              <div class="col-sm-2">
-                              <input type="text" class="form-control numbertw">
-                              </div>
+                          <label class="col-sm-2 control-label">员工档案:</label>
+                                 <div class="col-sm-2">
+                                          <input type="text" class="form-control archives">
+                                      </div>
                     	</div>
                  </div>
 
@@ -571,6 +598,7 @@
 						  });
 					  }, 
 		      		  success: function (result) {
+		      			$("#total").text(result.data.total)
 		      			 $(result.data.rows).each(function(i,o){
 		      				 var order = i+1;
 		      				var k;
@@ -617,16 +645,51 @@
 		      				 }else{
 		      					 r="离职"
 		      				 }
+		      				
+		      				var commitment="";
+		      				 if(o.commitment==0){
+		      					commitment="未签"
+		      				 }else if(o.commitment==1){
+		      					commitment="已签"
+		      				 }else if(o.commitment==2){
+		      					commitment="续签"
+		      				 }else{
+		      					o.commitment=commitment
+		      				 }
 		      				 
+		      				 var promise="";
+		      				if(o.promise==0){
+		      					promise="未签"
+		      				 }else if(o.promise==1){
+		      					promise="已签"
+		      				 }else{
+		      					o.promise=promise
+		      				 }
+		      				var safe="";
+		      				if(o.safe==0){
+		      					safe="未缴"
+		      				 }else if(o.safe==1){
+		      					safe="已缴"
+		      				 }else{
+		      					o.safe=safe
+		      				 }
+		      				var age="";
+		      				if(o.age==null){
+		      					age=""
+		      				}else{
+		      					age=o.age
+		      				}
 		      				html +='<tr>'
-		      				+'<td class="text-center edit price">'+order+'</td>'
 		      				+'<td class="text-center edit price">'+v+'</td>'
 		      				+'<td class="text-center edit price">'+o.userName+'</td>'
 		      				+'<td class="text-center edit price">'+o.phone+'</td>'
-		      				+'<td class="text-center edit price">'+o.idCard+'</td>'
+		      				+'<td class="text-center edit price">'+age+'</td>'
+		      				+'<td class="text-center edit price">'+commitment+'</td>'
+		      				+'<td class="text-center edit price">'+promise+'</td>'
+		      				+'<td class="text-center edit price">'+safe+'</td>'
 		      				+'<td class="text-center edit price">'+k+'</td>'
 		      				+'<td class="text-center edit price">'+r+'</td>'
-							+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>修改</button> <button class="btn btn-xs btn-success btn-trans addbatchtw" data-ids='+m+' data-id='+o.id+'>在职人员档案</button></td></tr>'
+							+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>员工详情</button> <button class="btn btn-xs btn-success btn-trans addbatchtw" data-ids='+m+' data-id='+o.id+'>档案位置详情</button></td></tr>'
 		      			}); 
 		      			self.setCount(result.data.pageNum)
 				        //显示分页
@@ -639,8 +702,15 @@
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
-									  		userName:$('#name').val(),
-									  		foreigns:0,
+									  		quit:$('#groupp').val(),
+								  			foreigns:0,
+								  			userName:$('#name').val(),
+								  			orgNameIds:$('.sel').val(),
+								  			gender:$('#gender').val(),
+								  			retire:$('#retire').val(),
+								  			commitment:$('#commitment').val(),
+								  			promise:$('#promise').val(),
+								  			safe:$('#safe').val(),
 								  	}
 						            self.loadPagination(_data);
 							     }
@@ -829,6 +899,26 @@
 				      					thate.parent().hide();
 				      				})
 				      				idCard=o.bankCard1	
+				      				var de={
+					      					idCard:idCard,
+					      			}
+					      			$.ajax({
+									      url:"${ctx}/system/user/getbank",
+									      data:de,
+									      type:"GET",
+									      beforeSend:function(){
+										 	  index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											  });
+										  }, 
+							      		  success: function (result) {
+							      				$('.bankCardtw').val(result.data)
+							      				layer.close(index);
+									      },error:function(){
+												layer.msg("加载失败！", {icon: 2});
+												layer.close(index);
+										  }
+									  });
 				      				$('.userName').val(o.userName);
 				      				$('.number').val(o.number);
 				      				$('.phone').val(o.phone);
@@ -862,74 +952,62 @@
 									$('#producturl').val(o.pictureUrl);
 					      			var html='<input class="form-control" value="'+l+'" />'
 					      			$(".position").html(html);
+					      			$('.gender').each(function(j,k){
+										var id=o.gender;
+										$(k).val(id);
+									});
+									$('.marriage').each(function(j,k){
+										var id=o.marriage;
+										$(k).val(id);
+									});
+									$('.procreate').each(function(j,k){
+										var id=o.procreate;
+										$(k).val(id);
+									});
+									$('.education').each(function(j,k){
+										var id=o.education;
+										$(k).val(id);
+									});
+									$('.quit').each(function(j,k){
+										var id=o.quit;
+										$(k).val(id);
+									});
+									$('.safe').each(function(j,k){
+										var id=o.safe;
+										$(k).val(id);
+									});
+									$('.promise').each(function(j,k){
+										var id=o.promise;
+										$(k).val(id);
+									});
 				      				$('.nation').each(function(j,k){
 										var id=o.nation;
 										$(k).val(id);
-									})
-										var id=o.commitments.id;
+									});
+									$('.commitment').each(function(j,k){
+										var id=o.commitment;
+										$(k).val(id);
+									});
+									if(o.commitments!=null){
+									 	var ids=o.commitments.id;
 									$('.checkWork').each(function(j,k){
-										if(id==$(k).val()){
+										if(ids==$(k).val()){
 											$(k).attr("checked","true"); 
 											
 										}
 										
-									})
+									}); 
+									}
 										var id=o.agreementId;
 									 $('.checkWorktw').each(function(j,k){
 										 if(id.indexOf($(k).val())>=0){
 												$(k).attr("checked","true"); 
 											}
-									}) 
-									$('.gender').each(function(j,k){
-										var id=o.gender;
-										$(k).val(id);
-									})
-									$('.marriage').each(function(j,k){
-										var id=o.marriage;
-										$(k).val(id);
-									})
-									$('.procreate').each(function(j,k){
-										var id=o.procreate;
-										$(k).val(id);
-									})
-									$('.education').each(function(j,k){
-										var id=o.education;
-										$(k).val(id);
-									})
-									$('.quit').each(function(j,k){
-										var id=o.quit;
-										$(k).val(id);
-									})
-									$('.safe').each(function(j,k){
-										var id=o.safe;
-										$(k).val(id);
-									})
-									$('.promise').each(function(j,k){
-										var id=o.promise;
-										$(k).val(id);
-									})
+									}) ;
+									
 				      			}); 
 				      			 
-				      			var de={
-				      					idCard:idCard,
-				      			}
-				      			$.ajax({
-								      url:"${ctx}/system/user/getbank",
-								      data:de,
-								      type:"GET",
-								      beforeSend:function(){
-									 	  index = layer.load(1, {
-										  shade: [0.1,'#fff'] //0.1透明度的白色背景
-										  });
-									  }, 
-						      		  success: function (result) {
-						      				$('.bankCardtw').val(result.data)
-						      				layer.close(index);
-								      },error:function(){
-											layer.msg("加载失败！", {icon: 2});
-											layer.close(index);
-									  }
-								  });
+				      			
 				      			 
 						      },error:function(){
 									layer.msg("加载失败！", {icon: 2});
@@ -1002,6 +1080,8 @@
 											fileId:$('#productId').val(),
 											pictureUrl:$('#producturl').val(),
 											company:$('.company').val(),
+											commitment:$('.commitment').val(),
+											safe:$('.safe').val(),
 								  }
 								   $.ajax({
 										url:"${ctx}/system/user/update",
@@ -1017,13 +1097,20 @@
 										success:function(result){
 											if(0==result.code){
 												layer.msg("修改成功！", {icon: 1});
-												$('.addDictDivTypeForm')[0].reset(); 
-												$("#my-awesome-dropzone").text("");
+												/* $('.addDictDivTypeForm')[0].reset(); 
+												$("#my-awesome-dropzone").text(""); */
 												var data = {
 											  			page:self.getCount(),
 											  			size:13,
-											  			userName:$('#name').val(),
+											  			quit:$('#groupp').val(),
 											  			foreigns:0,
+											  			userName:$('#name').val(),
+											  			orgNameIds:$('.sel').val(),
+											  			gender:$('#gender').val(),
+											  			retire:$('#retire').val(),
+											  			commitment:$('#commitment').val(),
+											  			promise:$('#promise').val(),
+											  			safe:$('#safe').val(),
 											  	}
 												layer.close(index);
 												self.loadPagination(data);
@@ -1170,8 +1257,15 @@
 												var data = {
 											  			page:self.getCount(),
 											  			size:13,
+											  			quit:$('#groupp').val(),
 											  			foreigns:0,
 											  			userName:$('#name').val(),
+											  			orgNameIds:$('.sel').val(),
+											  			gender:$('#gender').val(),
+											  			retire:$('#retire').val(),
+											  			commitment:$('#commitment').val(),
+											  			promise:$('#promise').val(),
+											  			safe:$('#safe').val(),
 											  	}
 												layer.close(index);
 												$("#productId").text("");
@@ -1227,6 +1321,11 @@
 				  			foreigns:0,
 				  			userName:$('#name').val(),
 				  			orgNameIds:$('.sel').val(),
+				  			gender:$('#gender').val(),
+				  			retire:$('#retire').val(),
+				  			commitment:$('#commitment').val(),
+				  			promise:$('#promise').val(),
+				  			safe:$('#safe').val(),
 				  	}
 					
 		            self.loadPagination(data);
@@ -1400,6 +1499,8 @@
 										safe:$('.safe').val(),
 										fileId:$('#productId').val(),
 										pictureUrl:$('#producturl').val(),
+										idCardEnd:$('#idCardEnd').val(),
+										contractDateEnd:$('#contractDateEnd').val(),
 								}
 							    $.ajax({
 									url:"${ctx}/system/user/add",
@@ -1420,7 +1521,15 @@
 											var data = {
 										  			page:1,
 										  			size:13,
+										  			quit:$('#groupp').val(),
 										  			foreigns:0,
+										  			userName:$('#name').val(),
+										  			orgNameIds:$('.sel').val(),
+										  			gender:$('#gender').val(),
+										  			retire:$('#retire').val(),
+										  			commitment:$('#commitment').val(),
+										  			promise:$('#promise').val(),
+										  			safe:$('#safe').val(),
 										  	}
 											self.loadPagination(data);
 											
