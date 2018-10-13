@@ -241,7 +241,7 @@ public class User extends BaseEntity<Long> {
 	 * 协议
 	 */
 	@Column(name = "agreement")
-    private String agreement;
+    private Integer agreement;
 	
 	/**
 	 * 保险情况
@@ -261,7 +261,7 @@ public class User extends BaseEntity<Long> {
 	 * 0=未签，1=已签，2=续签
 	 */
 	@Column(name = "commitment")
-    private Integer commitment = 0;
+    private Integer commitment;
 	/**
 	 * 合同签订开始日期
 	 */
@@ -701,15 +701,14 @@ public class User extends BaseEntity<Long> {
 		this.bankCard2 = bankCard2;
 	}
 
-	public String getAgreement() {
+
+	public Integer getAgreement() {
 		return agreement;
 	}
 
-	public void setAgreement(String agreement) {
+	public void setAgreement(Integer agreement) {
 		this.agreement = agreement;
 	}
-
-
 
 	public Integer getPromise() {
 		return promise;
