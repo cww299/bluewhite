@@ -204,7 +204,7 @@
                                  <div class="col-sm-2">
                                   <select class="form-control gender"><option value="0">男</option><option value="1">女</option></select>
                                       </div>
-                                      <label class="col-sm-2 control-label">生日:</label>
+                                      <label class="col-sm-2 control-label">出生日期:</label>
                               <div class="col-sm-2 working">
                               <input id="birthDate" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#birthDate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
@@ -673,11 +673,17 @@
 		      				 }else{
 		      					o.safe=safe
 		      				 }
+		      				var age="";
+		      				if(o.age==null){
+		      					age=""
+		      				}else{
+		      					age=o.age
+		      				}
 		      				html +='<tr>'
 		      				+'<td class="text-center edit price">'+v+'</td>'
 		      				+'<td class="text-center edit price">'+o.userName+'</td>'
 		      				+'<td class="text-center edit price">'+o.phone+'</td>'
-		      				+'<td class="text-center edit price">'+o.age+'</td>'
+		      				+'<td class="text-center edit price">'+age+'</td>'
 		      				+'<td class="text-center edit price">'+commitment+'</td>'
 		      				+'<td class="text-center edit price">'+promise+'</td>'
 		      				+'<td class="text-center edit price">'+safe+'</td>'
