@@ -973,7 +973,7 @@
 								   var data={
 										  id:id,
 										  type:3,
-										 
+										  temporarilyDate:$('#Time').val(),
 								   }
 			      				$.ajax({
 									url:"${ctx}/production/allGroup",
