@@ -137,7 +137,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 		}else{
 			groupAll = groupService.findList(group);
 			
-			if(group.getType()==1 || group.getType()==2){
+			if(group.getType()==1 || group.getType()==2 || group.getType()==3){
 				List<Temporarily> temporarilyList = 
 						temporarilyDao.findByTypeAndTemporarilyDateAndGroupId(group.getType(),temporarilyDate !=null ? DatesUtil.getfristDayOftime(temporarilyDate) : 
 							DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(null,group.getType())),group.getId());
@@ -152,7 +152,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 		}
 		
 		for(Group gr : groupAll){
-			Set<User> users= gr.getUsers().stream().filter(u -> u.getStatus()!=1).collect(Collectors.toSet());
+			Set<User> users= gr.getUsers().stream().filter(u -> u.getStatus() !=null && u.getStatus()!=1).collect(Collectors.toSet());
 			gr.setUsers(users);
 		}
 		cr.setData(clearCascadeJSON.format(groupAll).toJSON());

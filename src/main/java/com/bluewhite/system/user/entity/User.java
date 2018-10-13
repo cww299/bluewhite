@@ -325,13 +325,6 @@ public class User extends BaseEntity<Long> {
 	@Column(name = "agreement_id")
 	private String agreementId;
 	
-//	/**
-//	 * 协议
-//	 */
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "agreement_id", referencedColumnName = "id", insertable = false, updatable = false)
-//	private BaseData agreements;
-	
 
 	/**
 	 * 职位id
@@ -455,8 +448,51 @@ public class User extends BaseEntity<Long> {
 	@Transient
 	private Integer retire;
 	
+	/**
+	 * 
+	 * 位置编号
+	 */
+	@Transient
+	private String lotionNumber;
 	
 	
+	/**
+	 * 时间查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 时间查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
+	
+	
+	
+
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
+
+	public String getLotionNumber() {
+		return lotionNumber;
+	}
+
+	public void setLotionNumber(String lotionNumber) {
+		this.lotionNumber = lotionNumber;
+	}
 
 	public Integer getRetire() {
 		return retire;
