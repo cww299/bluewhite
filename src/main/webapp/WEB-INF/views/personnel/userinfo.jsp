@@ -24,7 +24,7 @@
                                 </div>
                             </div>
                             <div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-8 col-sm-8  col-md-8">
+			<div class="col-xs-12 col-sm-12  col-md-12">
 				<form class="form-search" >
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 col-md-12">
@@ -37,6 +37,14 @@
 								<td>部门:</td><td id="orgName"></td>
 								<td>&nbsp&nbsp</td>
 								<td>性别:</td><td><select class="form-control" id="gender"><option value="">请选择</option><option value="0">男</option><option value="1">女</option></select></td>
+								<td>&nbsp&nbsp</td>
+								<td>退休返聘:</td><td><select class="form-control" id="retire"><option value="">否</option><option value="0">是</option></select></td>
+								<td>&nbsp&nbsp</td>
+								<td>合同:</td><td><select class="form-control" id="commitment"><option value="">请选择</option><option value="0">未签</option><option value="1">已签</option><option value="2">续签</option></select></td>
+								<td>&nbsp&nbsp</td>
+								<td>承诺书:</td><td><select class="form-control" id="promise"><option value="0">未签</option><option value="1">已签</option></select></td>
+								<td>&nbsp&nbsp</td>
+								<td>保险详情:</td><td><select class="form-control" id="safe"><option value="0">未缴</option><option value="1">已缴</option></select></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default btn-square btn-sm btn-3d  searchtask">
@@ -52,7 +60,7 @@
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-success  btn-sm btn-3d savemode" data-toggle="modal" data-target="#myModal" >
-									提示
+									员工提示
 									</button>
 								</span>
 							</div>
@@ -158,7 +166,7 @@
                               </div>
                     	</div>
                     	<div class="form-group">
-                           <label class="col-sm-2 control-label">名族:</label>
+                           <label class="col-sm-2 control-label">民族:</label>
                               <div class="col-sm-2 working">
                               <select class="form-control nation"><option value="汉">汉</option><option value="少数民族">少数民族</option></select>
                               </div>
@@ -216,11 +224,11 @@
                               </div>
                     	</div>
                     	<div class="form-group">
-                           <label class="col-sm-2 control-label">联系方式:</label>
+                           <label class="col-sm-2 control-label">紧急联系方式:</label>
                               <div class="col-sm-2 working">
                               <input type="text" class="form-control information">
                               </div>
-                              <label class="col-sm-2 control-label">联系人:</label>
+                              <label class="col-sm-2 control-label">紧急联系人:</label>
                                  <div class="col-sm-2">
                                           <input type="text" class="form-control contacts">
                                       </div>
@@ -359,10 +367,11 @@
                               <div class="col-sm-2 col-md-2">
                                   <input type="text" class="form-control usernametw" disabled="disabled">
                               </div>
-                               <label class="col-sm-2 control-label">员工档案:</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control archives">
-                                      </div>
+                               <label class="col-sm-2 control-label">位置编号:</label>
+                              <div class="col-sm-2">
+                              <input type="text" class="form-control numbertw">
+                              </div>
+                               
                             <label class="col-sm-2 control-label">照片数量:</label>
                               <div class="col-sm-2 working">
                               <input type="text" class="form-control pic">
@@ -412,10 +421,10 @@
                                       </div>
                     	</div>
                     	<div class="form-group">
-                           <label class="col-sm-2 control-label">位置编号:</label>
-                              <div class="col-sm-2">
-                              <input type="text" class="form-control numbertw">
-                              </div>
+                          <label class="col-sm-2 control-label">员工档案:</label>
+                                 <div class="col-sm-2">
+                                          <input type="text" class="form-control archives">
+                                      </div>
                     	</div>
                  </div>
 
@@ -628,7 +637,7 @@
 		      				+'<td class="text-center edit price">'+o.idCard+'</td>'
 		      				+'<td class="text-center edit price">'+k+'</td>'
 		      				+'<td class="text-center edit price">'+r+'</td>'
-							+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>修改</button> <button class="btn btn-xs btn-success btn-trans addbatchtw" data-ids='+m+' data-id='+o.id+'>在职人员档案</button></td></tr>'
+							+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>员工详情</button> <button class="btn btn-xs btn-success btn-trans addbatchtw" data-ids='+m+' data-id='+o.id+'>档案位置详情</button></td></tr>'
 		      			}); 
 		      			self.setCount(result.data.pageNum)
 				        //显示分页
@@ -645,6 +654,11 @@
 								  			foreigns:0,
 								  			userName:$('#name').val(),
 								  			orgNameIds:$('.sel').val(),
+								  			gender:$('#gender').val(),
+								  			retire:$('#retire').val(),
+								  			commitment:$('#commitment').val(),
+								  			promise:$('#promise').val(),
+								  			safe:$('#safe').val(),
 								  	}
 						            self.loadPagination(_data);
 							     }
@@ -1034,8 +1048,15 @@
 												var data = {
 											  			page:self.getCount(),
 											  			size:13,
-											  			userName:$('#name').val(),
+											  			quit:$('#groupp').val(),
 											  			foreigns:0,
+											  			userName:$('#name').val(),
+											  			orgNameIds:$('.sel').val(),
+											  			gender:$('#gender').val(),
+											  			retire:$('#retire').val(),
+											  			commitment:$('#commitment').val(),
+											  			promise:$('#promise').val(),
+											  			safe:$('#safe').val(),
 											  	}
 												layer.close(index);
 												self.loadPagination(data);
@@ -1182,8 +1203,15 @@
 												var data = {
 											  			page:self.getCount(),
 											  			size:13,
+											  			quit:$('#groupp').val(),
 											  			foreigns:0,
 											  			userName:$('#name').val(),
+											  			orgNameIds:$('.sel').val(),
+											  			gender:$('#gender').val(),
+											  			retire:$('#retire').val(),
+											  			commitment:$('#commitment').val(),
+											  			promise:$('#promise').val(),
+											  			safe:$('#safe').val(),
 											  	}
 												layer.close(index);
 												$("#productId").text("");
@@ -1240,6 +1268,10 @@
 				  			userName:$('#name').val(),
 				  			orgNameIds:$('.sel').val(),
 				  			gender:$('#gender').val(),
+				  			retire:$('#retire').val(),
+				  			commitment:$('#commitment').val(),
+				  			promise:$('#promise').val(),
+				  			safe:$('#safe').val(),
 				  	}
 					
 		            self.loadPagination(data);
@@ -1433,7 +1465,15 @@
 											var data = {
 										  			page:1,
 										  			size:13,
+										  			quit:$('#groupp').val(),
 										  			foreigns:0,
+										  			userName:$('#name').val(),
+										  			orgNameIds:$('.sel').val(),
+										  			gender:$('#gender').val(),
+										  			retire:$('#retire').val(),
+										  			commitment:$('#commitment').val(),
+										  			promise:$('#promise').val(),
+										  			safe:$('#safe').val(),
 										  	}
 											self.loadPagination(data);
 											
