@@ -1,6 +1,7 @@
 package com.bluewhite.system.user.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -148,6 +149,11 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				predicate.add(cb.like(root.get("number").as(String.class),"%" + user.getNumber() + "%"));
 			}
 			
+			//按位置编号
+			if (!StringUtils.isEmpty(user.getLotionNumber())) {
+				predicate.add(cb.like(root.get("userContract").get("number").as(String.class),"%" + user.getLotionNumber() + "%"));
+			}
+			
 			//是否签订合同
 			if (!StringUtils.isEmpty(user.getCommitment())) {
 				predicate.add(cb.equal(root.get("commitment").as(Integer.class), user.getCommitment() ));
@@ -171,10 +177,12 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			
 			//退休返聘（男age>60，女age>55,还在正常工作）
 			if (!StringUtils.isEmpty(user.getRetire())) {
-				if (user.getGender()==1) {
-				predicate.add(cb.greaterThan(root.get("age").as(Integer.class), 55 ));
-				}else{
-				predicate.add(cb.greaterThan(root.get("age").as(Integer.class), 60 ));
+				if(!StringUtils.isEmpty(user.getGender())){
+					if (user.getGender()==1) {
+						predicate.add(cb.greaterThan(root.get("age").as(Integer.class), 55 ));
+					}else{
+						predicate.add(cb.greaterThan(root.get("age").as(Integer.class), 60 ));
+					}
 				}
 			}
 			
@@ -188,6 +196,31 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 					}
 				predicate.add(cb.and(root.get("orgNameId").as(Long.class).in(orgNameIdList)));
 			}
+			
+			
+			//按时间过滤
+    		if (!StringUtils.isEmpty(user.getOrderTimeBegin()) &&  !StringUtils.isEmpty(user.getOrderTimeEnd()) ) {
+    			//按入职时间过滤
+    			if(!StringUtils.isEmpty(user.getEntry())){
+    				predicate.add(cb.between(root.get("entry").as(Date.class),
+    						user.getOrderTimeBegin(),
+    						user.getOrderTimeEnd()));
+    			}
+    			//按实际转正时间过滤
+    			if(!StringUtils.isEmpty(user.getEstimate())){
+    				predicate.add(cb.between(root.get("estimate").as(Date.class),
+    						user.getOrderTimeBegin(),
+    						user.getOrderTimeEnd()));
+    			}
+    			//按转正时间过滤
+    			if(!StringUtils.isEmpty(user.getActua())){
+    				predicate.add(cb.between(root.get("actua").as(Date.class),
+    						user.getOrderTimeBegin(),
+    						user.getOrderTimeEnd()));
+    			}
+    			
+    		}
+			
 			
 			
 			Predicate[] pre = new Predicate[predicate.size()];
