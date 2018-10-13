@@ -35,6 +35,8 @@
 								<td>在离职:</td><td><select class="form-control" id="groupp"><option value="">请选择</option><option value="0">在职</option><option value="1">离职</option></select></td>
 									<td>&nbsp&nbsp</td>
 								<td>部门:</td><td id="orgName"></td>
+								<td>&nbsp&nbsp</td>
+								<td>性别:</td><td><select class="form-control" id="gender"><option value="">请选择</option><option value="0">男</option><option value="1">女</option></select></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default btn-square btn-sm btn-3d  searchtask">
@@ -639,8 +641,10 @@
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
-									  		userName:$('#name').val(),
-									  		foreigns:0,
+									  		quit:$('#groupp').val(),
+								  			foreigns:0,
+								  			userName:$('#name').val(),
+								  			orgNameIds:$('.sel').val(),
 								  	}
 						            self.loadPagination(_data);
 							     }
@@ -829,6 +833,26 @@
 				      					thate.parent().hide();
 				      				})
 				      				idCard=o.bankCard1	
+				      				var de={
+					      					idCard:idCard,
+					      			}
+					      			$.ajax({
+									      url:"${ctx}/system/user/getbank",
+									      data:de,
+									      type:"GET",
+									      beforeSend:function(){
+										 	  index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											  });
+										  }, 
+							      		  success: function (result) {
+							      				$('.bankCardtw').val(result.data)
+							      				layer.close(index);
+									      },error:function(){
+												layer.msg("加载失败！", {icon: 2});
+												layer.close(index);
+										  }
+									  });
 				      				$('.userName').val(o.userName);
 				      				$('.number').val(o.number);
 				      				$('.phone').val(o.phone);
@@ -862,10 +886,42 @@
 									$('#producturl').val(o.pictureUrl);
 					      			var html='<input class="form-control" value="'+l+'" />'
 					      			$(".position").html(html);
+					      			$('.gender').each(function(j,k){
+										var id=o.gender;
+										$(k).val(id);
+									});
+									$('.marriage').each(function(j,k){
+										var id=o.marriage;
+										$(k).val(id);
+									});
+									$('.procreate').each(function(j,k){
+										var id=o.procreate;
+										$(k).val(id);
+									});
+									$('.education').each(function(j,k){
+										var id=o.education;
+										$(k).val(id);
+									});
+									$('.quit').each(function(j,k){
+										var id=o.quit;
+										$(k).val(id);
+									});
+									$('.safe').each(function(j,k){
+										var id=o.safe;
+										$(k).val(id);
+									});
+									$('.promise').each(function(j,k){
+										var id=o.promise;
+										$(k).val(id);
+									});
 				      				$('.nation').each(function(j,k){
 										var id=o.nation;
 										$(k).val(id);
-									})
+									});
+									$('.commitment').each(function(j,k){
+										var id=o.commitment;
+										$(k).val(id);
+									});
 										var id=o.commitments.id;
 									$('.checkWork').each(function(j,k){
 										if(id==$(k).val()){
@@ -873,63 +929,17 @@
 											
 										}
 										
-									})
+									});
 										var id=o.agreementId;
 									 $('.checkWorktw').each(function(j,k){
 										 if(id.indexOf($(k).val())>=0){
 												$(k).attr("checked","true"); 
 											}
-									}) 
-									$('.gender').each(function(j,k){
-										var id=o.gender;
-										$(k).val(id);
-									})
-									$('.marriage').each(function(j,k){
-										var id=o.marriage;
-										$(k).val(id);
-									})
-									$('.procreate').each(function(j,k){
-										var id=o.procreate;
-										$(k).val(id);
-									})
-									$('.education').each(function(j,k){
-										var id=o.education;
-										$(k).val(id);
-									})
-									$('.quit').each(function(j,k){
-										var id=o.quit;
-										$(k).val(id);
-									})
-									$('.safe').each(function(j,k){
-										var id=o.safe;
-										$(k).val(id);
-									})
-									$('.promise').each(function(j,k){
-										var id=o.promise;
-										$(k).val(id);
-									})
+									}) ;
+									
 				      			}); 
 				      			 
-				      			var de={
-				      					idCard:idCard,
-				      			}
-				      			$.ajax({
-								      url:"${ctx}/system/user/getbank",
-								      data:de,
-								      type:"GET",
-								      beforeSend:function(){
-									 	  index = layer.load(1, {
-										  shade: [0.1,'#fff'] //0.1透明度的白色背景
-										  });
-									  }, 
-						      		  success: function (result) {
-						      				$('.bankCardtw').val(result.data)
-						      				layer.close(index);
-								      },error:function(){
-											layer.msg("加载失败！", {icon: 2});
-											layer.close(index);
-									  }
-								  });
+				      			
 				      			 
 						      },error:function(){
 									layer.msg("加载失败！", {icon: 2});
@@ -1002,6 +1012,8 @@
 											fileId:$('#productId').val(),
 											pictureUrl:$('#producturl').val(),
 											company:$('.company').val(),
+											commitment:$('.commitment').val(),
+											safe:$('.safe').val(),
 								  }
 								   $.ajax({
 										url:"${ctx}/system/user/update",
@@ -1017,8 +1029,8 @@
 										success:function(result){
 											if(0==result.code){
 												layer.msg("修改成功！", {icon: 1});
-												$('.addDictDivTypeForm')[0].reset(); 
-												$("#my-awesome-dropzone").text("");
+												/* $('.addDictDivTypeForm')[0].reset(); 
+												$("#my-awesome-dropzone").text(""); */
 												var data = {
 											  			page:self.getCount(),
 											  			size:13,
@@ -1227,6 +1239,7 @@
 				  			foreigns:0,
 				  			userName:$('#name').val(),
 				  			orgNameIds:$('.sel').val(),
+				  			gender:$('#gender').val(),
 				  	}
 					
 		            self.loadPagination(data);
