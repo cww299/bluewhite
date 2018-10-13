@@ -32,6 +32,7 @@ import com.bluewhite.common.utils.BankUtil;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.system.user.dao.UserContractDao;
+import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.entity.UserContract;
@@ -47,6 +48,9 @@ public class UserAction {
 	
 	@Autowired
 	private UserContractDao userContractDao;
+	
+	@Autowired
+	private UserDao userDao;
 
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -55,7 +59,7 @@ public class UserAction {
 				.get()
 				.addRetainTerm(User.class,"id","fileId","price","status","workTime","number","pictureUrl", "userName", "phone","position","orgName","idCard",
 						"nation","email","gender","birthDate","group","idCard","permanentAddress","livingAddress","marriage","procreate","education"
-						,"school","major","contacts","information","entry","estimate","actua","socialSecurity","bankCard1","bankCard2","agreement"
+						,"school","major","contacts","information","entry","estimate","actua","socialSecurity","bankCard1","bankCard2","agreement","safe","commitment"
 						,"promise","contract","contractDate","frequency","quitDate","quit","reason","train","remark","userContract","commitments","agreementId","company")
 				.addRetainTerm(Group.class, "id","name", "type", "price","contractDateEnd")
 				.addRetainTerm(Role.class, "name", "role", "description","id")
@@ -130,7 +134,14 @@ public class UserAction {
 			return cr;
 		}
 		User oldUser = userService.findOne(user.getId());
-		BeanCopyUtils.copyNotEmpty(user,oldUser);
+		
+		if(oldUser.getUserContract()==null){
+			UserContract userContract = new UserContract();
+			userContract.setUsername(user.getUserName());
+			userContractDao.save(userContract);
+			oldUser.setUserContract(userContract);
+		}
+		BeanCopyUtils.copyNotEmpty(user,oldUser,"");
 		cr.setData(clearCascadeJSON.format(userService.save(oldUser)).toJSON());
 		cr.setMessage("修改成功");
 		return cr;
@@ -230,6 +241,12 @@ public class UserAction {
 		//退休时间，过滤出有生日的员工
 		List<Map<String,Object>> userBirthList = new ArrayList<Map<String,Object>>();
 		List<User> userBirth = userList.stream().filter(User->User.getBirthDate()!=null && User.getGender()!=null ).collect(Collectors.toList());
+		
+		for(User user : userBirth){
+			int age = DatesUtil.getAgeByBirth(user.getBirthDate());
+			user.setAge(age);
+		}
+		userDao.save(userBirth);
 		
 		for(User user : userBirth ){
 			Map<String,Object> us = new HashMap<String,Object>();

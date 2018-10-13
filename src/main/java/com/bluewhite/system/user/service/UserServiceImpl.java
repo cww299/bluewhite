@@ -148,6 +148,20 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				predicate.add(cb.like(root.get("number").as(String.class),"%" + user.getNumber() + "%"));
 			}
 			
+			//按性别查找
+			if (!StringUtils.isEmpty(user.getGender())) {
+				predicate.add(cb.equal(root.get("gender").as(Integer.class), user.getGender() ));
+			}
+			
+			//退休返聘（男age>60，女age>55,还在正常工作）
+			if (!StringUtils.isEmpty(user.getRetire())) {
+				if (user.getGender()==1) {
+				predicate.add(cb.greaterThan(root.get("age").as(Integer.class), 55 ));
+				}else{
+				predicate.add(cb.greaterThan(root.get("age").as(Integer.class), 60 ));
+				}
+			}
+			
 			//部门,多个
 			if (!StringUtils.isEmpty(user.getOrgNameIds())) {
 				List<Long>  orgNameIdList = new ArrayList<Long>();
