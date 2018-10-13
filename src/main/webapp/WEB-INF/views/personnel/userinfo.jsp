@@ -160,7 +160,7 @@
                     	<div class="form-group">
                            <label class="col-sm-2 control-label">名族:</label>
                               <div class="col-sm-2 working">
-                              <select class="form-control nation"><option value="汉">汉</option><option value="少数名族">少数名族</option></select>
+                              <select class="form-control nation"><option value="汉">汉</option><option value="少数民族">少数民族</option></select>
                               </div>
                               <label class="col-sm-2 control-label">手机号:</label>
                                  <div class="col-sm-2">
