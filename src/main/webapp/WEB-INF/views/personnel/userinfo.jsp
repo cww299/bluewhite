@@ -42,9 +42,9 @@
 								<td>&nbsp&nbsp</td>
 								<td>合同:</td><td><select class="form-control" id="commitment"><option value="">请选择</option><option value="0">未签</option><option value="1">已签</option><option value="2">续签</option></select></td>
 								<td>&nbsp&nbsp</td>
-								<td>承诺书:</td><td><select class="form-control" id="promise"><option value="0">未签</option><option value="1">已签</option></select></td>
+								<td>承诺书:</td><td><select class="form-control" id="promise"><option value="">请选择</option><option value="0">未签</option><option value="1">已签</option></select></td>
 								<td>&nbsp&nbsp</td>
-								<td>保险详情:</td><td><select class="form-control" id="safe"><option value="0">未缴</option><option value="1">已缴</option></select></td>
+								<td>保险详情:</td><td><select class="form-control" id="safe"><option value="">请选择</option><option value="0">未缴</option><option value="1">已缴</option></select></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default btn-square btn-sm btn-3d  searchtask">
@@ -74,11 +74,13 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th class="text-center">序号</th>
                                             <th class="text-center">位置编号</th>
                                             <th class="text-center">姓名</th>
                                             <th class="text-center">手机号</th>
-                                            <th class="text-center">身份证号</th>
+                                            <th class="text-center">年龄</th>
+                                            <th class="text-center">合同</th>
+                                            <th class="text-center">承诺书</th>
+                                            <th class="text-center">保险</th>
                                             <th class="text-center">部门</th>
                                             <th class="text-center">是否在职</th>
                                             <th class="text-center">操作</th>
@@ -86,6 +88,20 @@
                                     </thead>
                                     <tbody id="tablecontent">
                                     </tbody>
+                                    <thead>
+                                        <tr>
+                                       	    <td class="text-center">合计人数</td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center" id="total"></td>
+                                        </tr>
+                                    </thead>
                                 </table>
                                  <div id="pager">
                                 </div>
@@ -582,6 +598,7 @@
 						  });
 					  }, 
 		      		  success: function (result) {
+		      			$("#total").text(result.data.total)
 		      			 $(result.data.rows).each(function(i,o){
 		      				 var order = i+1;
 		      				var k;
@@ -628,13 +645,42 @@
 		      				 }else{
 		      					 r="离职"
 		      				 }
+		      				
+		      				var commitment="";
+		      				 if(o.commitment==0){
+		      					commitment="未签"
+		      				 }else if(o.commitment==1){
+		      					commitment="已签"
+		      				 }else if(o.commitment==2){
+		      					commitment="续签"
+		      				 }else{
+		      					o.commitment=commitment
+		      				 }
 		      				 
+		      				 var promise="";
+		      				if(o.promise==0){
+		      					promise="未签"
+		      				 }else if(o.promise==1){
+		      					promise="已签"
+		      				 }else{
+		      					o.promise=promise
+		      				 }
+		      				var safe="";
+		      				if(o.safe==0){
+		      					safe="未缴"
+		      				 }else if(o.safe==1){
+		      					safe="已缴"
+		      				 }else{
+		      					o.safe=safe
+		      				 }
 		      				html +='<tr>'
-		      				+'<td class="text-center edit price">'+order+'</td>'
 		      				+'<td class="text-center edit price">'+v+'</td>'
 		      				+'<td class="text-center edit price">'+o.userName+'</td>'
 		      				+'<td class="text-center edit price">'+o.phone+'</td>'
-		      				+'<td class="text-center edit price">'+o.idCard+'</td>'
+		      				+'<td class="text-center edit price">'+o.age+'</td>'
+		      				+'<td class="text-center edit price">'+commitment+'</td>'
+		      				+'<td class="text-center edit price">'+promise+'</td>'
+		      				+'<td class="text-center edit price">'+safe+'</td>'
 		      				+'<td class="text-center edit price">'+k+'</td>'
 		      				+'<td class="text-center edit price">'+r+'</td>'
 							+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>员工详情</button> <button class="btn btn-xs btn-success btn-trans addbatchtw" data-ids='+m+' data-id='+o.id+'>档案位置详情</button></td></tr>'
@@ -936,14 +982,16 @@
 										var id=o.commitment;
 										$(k).val(id);
 									});
-										var id=o.commitments.id;
+									if(o.commitments!=null){
+									 	var ids=o.commitments.id;
 									$('.checkWork').each(function(j,k){
-										if(id==$(k).val()){
+										if(ids==$(k).val()){
 											$(k).attr("checked","true"); 
 											
 										}
 										
-									});
+									}); 
+									}
 										var id=o.agreementId;
 									 $('.checkWorktw').each(function(j,k){
 										 if(id.indexOf($(k).val())>=0){
@@ -1445,6 +1493,8 @@
 										safe:$('.safe').val(),
 										fileId:$('#productId').val(),
 										pictureUrl:$('#producturl').val(),
+										idCardEnd:$('#idCardEnd').val(),
+										contractDateEnd:$('#contractDateEnd').val(),
 								}
 							    $.ajax({
 									url:"${ctx}/system/user/add",
