@@ -3,7 +3,6 @@ package com.bluewhite.product.primecost.cutparts.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Transient;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,7 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.cutparts.dao.CutPartsDao;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
+import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.product.dao.ProductDao;
 import com.bluewhite.product.product.entity.Product;
 
@@ -65,6 +65,11 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		}
 		
 		dao.save(cutParts);
+		
+		//从cc裁片填写后，自动增加到裁剪页面
+		Tailor tailor = new Tailor();
+		tailor.setBacthTailorNumber(cutParts.getCutPartsNumber()*tailor.getTailorNumber());
+		
 		//各单片比全套用料
 		List<CutParts> cutPartsList = dao.findByProductId(cutParts.getProductId());
 		double scaleMaterial = 0;
@@ -87,6 +92,8 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		primeCost.setCutPartsPrice((batchMaterialPrice+batchComplexMaterialPrice+batchComplexAddPrice)/cutParts.getNumber());
 		product.setPrimeCost(primeCost);
 		productdao.save(product);
+		
+		
 		return cutParts;
 	}
 

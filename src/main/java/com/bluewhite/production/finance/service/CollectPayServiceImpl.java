@@ -503,8 +503,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		NonLine nl = nonLineDao.findOne(nonLine.getId());
 		//将当月产量拼接到往月产量中
 		
-	
-		
 		//往月产量解析
 		if(nl.getYields()!=null){
 			JSONObject nlJsonObj = JSONObject.parseObject(nl.getYields());
@@ -518,9 +516,11 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				for (int j = 0; j < nonLineOn.size(); j++) {
 					String name1 =  nonLineOn.getJSONObject(j).getString("name");
 					String value1 =  nonLineOn.getJSONObject(j).getString("value");
+					String price1 = String.valueOf(Double.parseDouble( value1) * nonLine.getOnePay());
 					if(name.equals(name1)){
 						jo.put("name", name);
 						jo.put("value", value1);
+						jo.put("price", price1);
 					}
 				}
 			}
@@ -898,6 +898,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				JSONObject name = new JSONObject(); 
 				name.put("name",sdf.format(beginTimes));
 				name.put("value","");
+				name.put("price","");
 				gResTable.add(name);
 				
 				//当月产量字段中没有当月json数据是，将当月json数据拼接到，原产量数据中
@@ -910,9 +911,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 					nonLine.setYields(JSONObject.toJSONString(data));
 					nonLineDao.save(nonLine);
 				}
-			
-				
-				
 				
 			}
 			outData.put("data", gResTable);

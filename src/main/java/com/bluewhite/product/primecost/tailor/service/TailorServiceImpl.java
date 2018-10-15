@@ -54,6 +54,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		tailor.setAllCostPrice(tailor.getBacthTailorNumber()*tailor.getCostPrice());
 		
 		dao.save(tailor);
+		
 		//物料压价,通过cc裁片填写中该裁片该面料的价值 得到
 		List<CutParts> cutPartsList = cutPartsDao.findByProductId(tailor.getProductId());
 		for(CutParts cutParts : cutPartsList){
@@ -73,7 +74,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 	}
 
 	
-	
+	//根据裁剪类型进行计算出不同的价格
 	private void addcutPartsType(Tailor tailor) {
 		PrimeCoefficient primeCoefficient = null;
 		String type = null;
