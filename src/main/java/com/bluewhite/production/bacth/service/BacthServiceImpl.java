@@ -121,20 +121,6 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 					query.where(predicate.toArray(pre));
 		        	return null;
 		        }, SalesUtils.getQueryNoPageParameter());
-		        
-//				  if(param.getType() !=null && param.getType()==2){
-//					  if(pages.getSize()>0){
-//						  for(Bacth bacth : pages.getContent()){
-//							  int count = 0;
-//							  for(Task ta : bacth.getTasks()){
-//								  if(ta.getProcedureName().equals(Constants.BAGABOARD) || ta.getProcedureName().equals(Constants.BOXBOARD)){
-//									  count+=ta.getNumber();
-//								  }
-//							  }
-//							  bacth.setPackNumber(bacth.getNumber()-count);
-//						  	}
-//						 }
-//				  }
 				  PageResultStat<Bacth> result = new PageResultStat<>(pages,page);
 				  result.setAutoStateField("number", "sumTaskPrice");
 				  result.count();
