@@ -121,6 +121,9 @@
                                             <td class="text-center"></td>
                                             <td class="text-center"></td>
                                             <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
                                             <td class="text-center" id="total"></td>
                                         </tr>
                                     </thead>

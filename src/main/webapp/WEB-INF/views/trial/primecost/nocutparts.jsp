@@ -747,12 +747,9 @@
 					var html="";
 				$('#addCutting').on('click',function(){
 					var a=$('#loss').val();
-					 html='<tr><td  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:68px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" /></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center sliceNumber" /></td>'
-					 +'<td class="text-center edit materielNumber " ></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"    style="border: none;width:120px; height:30px; background-color: #BFBFBF;" class="text-center   materiel"  /></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><select class="text-center  selectname" style="border: none;width:60px; height:30px; background-color: #BFBFBF;"><option value="0"></option><option value="1">复</option></select></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:60px; height:30px; background-color: #BFBFBF;" class="text-center oneMaterial" /></td>'
+					 html='<tr><td></td><td  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" /></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;" class="text-center sliceNumber" /></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"    style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center   materiel"  /></td>'
 					 +'<td class="text-center edit selectCompany" style="padding: 2px 0px 2px 0px;></td>'
 					 +'<td class="text-center edit name"></td>'
 					 +'<td class="text-center edit name"></td>'
