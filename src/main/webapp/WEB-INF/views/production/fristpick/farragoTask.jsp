@@ -115,7 +115,22 @@
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
-                                
+                                <thead>
+                                        <tr>
+                                       	    <td class="text-center">合计</td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center" id="totale"></td>
+                                            <td class="text-center" id="totaltw"></td>
+                                            <td class="text-center" ></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                        </tr>
+                                    </thead>
                                 </table>
                                 <div id="pager" class="pull-right">
                                 
@@ -324,6 +339,8 @@
 						  });
 					  }, 
 		      		  success: function (result) {
+		      			$("#totaltw").text(result.data.statData.stateCount)
+		      			  $("#totale").text(result.data.statData.statAmount)
 		      			 $(result.data.rows).each(function(i,o){
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" data-procedurename="'+o.name+'" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center edit name">'+o.bacth+'</td>'

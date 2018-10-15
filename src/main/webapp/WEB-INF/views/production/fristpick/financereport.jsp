@@ -305,6 +305,7 @@
                                         <tr>
                                         	<th class="text-center">日期</th>
                                             <th class="text-center">数量</th>
+                                            <th class="text-center">奖励</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tableworking">
@@ -660,7 +661,8 @@
 								$(result.data.data).each(function(i,o){
 				      				html +='<tr>'
 				      				+'<td class="text-center edit sumname">'+o.name+'</td>'
-				      				+'<td class="text-center edit "><input class="sumva" value="'+o.value+'"></input></td></tr>'
+				      				+'<td class="text-center edit "><input class="sumva" value="'+o.value+'"></input></td>'
+				      				+'<td class="text-center edit "><input class="sumvatw" value="'+o.price+'"></input></td></tr>'
 				      			}); 
 								
 								
@@ -687,7 +689,9 @@
 							  $('.sumname').each(function(i,o){
 								var a= $(this).text();
 								var b= $(this).next().find('.sumva').val();
-								 c={"name":a,"value":b};
+								var d= $(this).next().next().find('.sumvatw').val();
+								console.log(d)
+								 c={"name":a,"value":b,"price":d};
 								 arr.push(c);
 							  })
 							  date={"data":arr};
