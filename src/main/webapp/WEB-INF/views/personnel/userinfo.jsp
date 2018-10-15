@@ -128,7 +128,7 @@
                                         </tr>
                                     </thead>
                                 </table>
-                                 <div id="pager">
+                                 <div id="pager" class="pull-right">
                                 </div>
                             </div>
                         </div>
@@ -1213,7 +1213,7 @@
 												layer.close(index);
 												self.loadPagination(data);
 											}else{
-												layer.msg("修改失败", {icon: 2});
+												layer.msg(result.message, {icon: 2});
 											}
 											
 											layer.close(index);
@@ -1387,7 +1387,7 @@
 												$("#productId").text("");
 												self.loadPagination(data);
 											}else{
-												layer.msg("修改失败", {icon: 2});
+												layer.msg(result.message, {icon: 2});
 												$("#productId").text("");
 											}
 											
@@ -1624,6 +1624,9 @@
 							  $(".checkWorktw:checked").each(function() {   
 								  numberr.push($(this).val());
 								}); 
+							  if($('.userName').val()==""){
+								  return layer.msg("姓名不能为空", {icon: 2});
+							  }
 								var postData = {
 										agreementId:numberr,
 										commitmentId:values,
