@@ -662,7 +662,7 @@
 				      				html +='<tr>'
 				      				+'<td class="text-center edit sumname">'+o.name+'</td>'
 				      				+'<td class="text-center edit "><input class="sumva" value="'+o.value+'"></input></td>'
-				      				+'<td class="text-center edit "><input class="sumvatw" value="'+o.price+'"></input></td></tr>'
+				      				+'<td class="text-center edit "><input class="sumvatw" disabled="disabled" value="'+o.price+'"></input></td></tr>'
 				      			}); 
 								
 								
