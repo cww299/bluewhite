@@ -724,6 +724,19 @@
 					      curr:  result.data.pageNum || 1, 
 					      jump: function(obj, first){ 
 					    	  if(!first){ 
+					    		  var entry="";
+						  			var estimate="";
+						  			var actua="";
+										
+										if($("#timesss").val()=="entry"){
+											entry="2018-10-08 00:00:00"
+										}
+										if($("#timesss").val()=="estimate"){
+											estimate="2018-10-08 00:00:00"
+										}
+										if($("#timesss").val()=="actua"){
+											actua="2018-10-08 00:00:00"
+										}
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
@@ -736,6 +749,12 @@
 								  			commitment:$('#commitment').val(),
 								  			promise:$('#promise').val(),
 								  			safe:$('#safe').val(),
+								  			lotionNumber:$('#number').val(),
+								  			entry:entry,
+								  			estimate:estimate,
+								  			actua:actua,
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(),
 								  	}
 						            self.loadPagination(_data);
 							     }
@@ -1156,6 +1175,19 @@
 												layer.msg("修改成功！", {icon: 1});
 												/* $('.addDictDivTypeForm')[0].reset(); 
 												$("#my-awesome-dropzone").text(""); */
+												var entry="";
+									  			var estimate="";
+									  			var actua="";
+													
+													if($("#timesss").val()=="entry"){
+														entry="2018-10-08 00:00:00"
+													}
+													if($("#timesss").val()=="estimate"){
+														estimate="2018-10-08 00:00:00"
+													}
+													if($("#timesss").val()=="actua"){
+														actua="2018-10-08 00:00:00"
+													}
 												var data = {
 											  			page:self.getCount(),
 											  			size:13,
@@ -1168,6 +1200,12 @@
 											  			commitment:$('#commitment').val(),
 											  			promise:$('#promise').val(),
 											  			safe:$('#safe').val(),
+											  			lotionNumber:$('#number').val(),
+											  			entry:entry,
+											  			estimate:estimate,
+											  			actua:actua,
+											  			orderTimeBegin:$("#startTime").val(),
+											  			orderTimeEnd:$("#endTime").val(),
 											  	}
 												layer.close(index);
 												self.loadPagination(data);
@@ -1310,7 +1348,19 @@
 										success:function(result){
 											if(0==result.code){
 												layer.msg("修改成功！", {icon: 1});
-												 
+												var entry="";
+									  			var estimate="";
+									  			var actua="";
+													
+													if($("#timesss").val()=="entry"){
+														entry="2018-10-08 00:00:00"
+													}
+													if($("#timesss").val()=="estimate"){
+														estimate="2018-10-08 00:00:00"
+													}
+													if($("#timesss").val()=="actua"){
+														actua="2018-10-08 00:00:00"
+													}
 												var data = {
 											  			page:self.getCount(),
 											  			size:13,
@@ -1323,6 +1373,12 @@
 											  			commitment:$('#commitment').val(),
 											  			promise:$('#promise').val(),
 											  			safe:$('#safe').val(),
+											  			lotionNumber:$('#number').val(),
+											  			entry:entry,
+											  			estimate:estimate,
+											  			actua:actua,
+											  			orderTimeBegin:$("#startTime").val(),
+											  			orderTimeEnd:$("#endTime").val(),
 											  	}
 												layer.close(index);
 												$("#productId").text("");
@@ -1629,7 +1685,7 @@
 											var data = {
 										  			page:1,
 										  			size:13,
-										  			quit:$('#groupp').val(),
+										  			/* quit:$('#groupp').val(),
 										  			foreigns:0,
 										  			userName:$('#name').val(),
 										  			orgNameIds:$('.sel').val(),
@@ -1637,7 +1693,7 @@
 										  			retire:$('#retire').val(),
 										  			commitment:$('#commitment').val(),
 										  			promise:$('#promise').val(),
-										  			safe:$('#safe').val(),
+										  			safe:$('#safe').val(), */
 										  	}
 											self.loadPagination(data);
 											
