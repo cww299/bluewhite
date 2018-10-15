@@ -103,12 +103,14 @@
                                        	    <td class="text-center">合计</td>
                                             <td class="text-center"></td>
                                             <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
                                             <td class="text-center" id="totale"></td>
-                                            <td class="text-center" ></td>
                                             <td class="text-center" id="totaltw"></td>
                                             <td class="text-center" ></td>
                                             <td class="text-center"></td>
-                                            
+                                            <td class="text-center"></td>
                                         </tr>
                                     </thead>
                                 </table>
@@ -271,8 +273,8 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			$("#totale").text(result.data.statData.stateCount)
-		      			  $("#totaltw").text(result.data.statData.statAmount)
+		      			$("#totaltw").text(result.data.statData.stateCount)
+		      			  $("#totale").text(result.data.statData.statAmount)
 		      			 $(result.data.rows).each(function(i,o){
 		      				html +='<tr>'
 		      				+'<td class="text-center edit name">'+o.bacth+'</td>'
