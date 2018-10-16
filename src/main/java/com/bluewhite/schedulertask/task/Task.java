@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.production.finance.entity.CollectInformation;
 import com.bluewhite.production.finance.service.CollectInformationService;
+import com.bluewhite.system.sys.entity.SysLog;
 
 @Component
 public class Task {
@@ -14,6 +16,7 @@ public class Task {
 	private CollectInformationService collectInformationService;
 	
 	 @Scheduled(cron="0 30 23 * * ?")   // 每晚23点30触发
+	 @SysLogAspectAnnotation(description = "定时任务数据汇总", module = "数据汇总", operateType = "更新", logType = SysLog.ADMIN_LOG_TYPE)
      public void aTask(){  
 		 CollectInformation collectInformation =  new CollectInformation();
 		 collectInformation.setType(1);

@@ -502,7 +502,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	public NonLine updateHeadmanPay(NonLine nonLine) {
 		NonLine nl = nonLineDao.findOne(nonLine.getId());
 		//将当月产量拼接到往月产量中
-		
 		//往月产量解析
 		if(nl.getYields()!=null){
 			JSONObject nlJsonObj = JSONObject.parseObject(nl.getYields());
@@ -516,7 +515,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				for (int j = 0; j < nonLineOn.size(); j++) {
 					String name1 =  nonLineOn.getJSONObject(j).getString("name");
 					String value1 =  nonLineOn.getJSONObject(j).getString("value");
-					String price1 = String.valueOf(Double.parseDouble( value1) * nonLine.getOnePay());
+					String price1 = String.valueOf(Double.parseDouble( value1.equals("") ? "0" : value1 ) * nonLine.getOnePay());
 					if(name.equals(name1)){
 						jo.put("name", name);
 						jo.put("value", value1);
@@ -526,6 +525,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			}
 			nonLine.setYields(JSONObject.toJSONString(nlJsonObj));
 		}
+		
 		nl.setYields(nonLine.getYields());
 		//产量
 		Integer accumulateYield = 0;
@@ -535,9 +535,14 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			for (int i = 0; i < on.size(); i++) {
 				JSONObject jo = on.getJSONObject(i); 
 		         String value =  jo.getString("value");
+		         String price1 = String.valueOf(Double.parseDouble( value.equals("") ? "0" : value ) * nonLine.getOnePay());
+		         jo.put("price", price1);
 		         value = value.equals("") ? "0" : value;  
+		         
 		         accumulateYield+=Integer.parseInt(value);
 			}
+			nl.setYields(JSONObject.toJSONString(jsonObj));
+			
 		}
 		//获取各组的产量
 		nl.setAccumulateYield(accumulateYield);
