@@ -6,7 +6,8 @@ import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
 /**
- * 裁剪普通激光
+ * (裁剪普通激光,绣花定位激光，冲床，电烫，电推，手工剪刀）
+ * 不同的裁剪方式，获取不同的成本价格
  * @author zhangliang
  *
  */
