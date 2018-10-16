@@ -331,7 +331,7 @@
 								  		type:3,
 								  		
 							  	}
-								self.loadPaginationth(data)
+								self.loadPagination(data)
 								layer.close(index);
 								}else{
 									layer.msg("删除失败！", {icon: 2});
