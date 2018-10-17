@@ -59,6 +59,9 @@
              					</td>
              					
              					<td> <button type="button" id="addgroup" class="btn btn-sm btn-success btn-3d pull-right">新增</button></td>
+								<td><button type="button" class="btn btn-danger  btn-sm btn-3d start">
+									删除
+									</button></td>
 								</tr>
 								</table> 
 							</div>
@@ -71,11 +74,16 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
+                                        <th class="center">
+											<label> 
+											<input type="checkbox" class="ace checks" /> 
+											<span class="lbl"></span>
+											</label>
+											</th>
                                         	<th class="text-center">日期</th>
                                             <th class="text-center">日消费房租选择</th>
                                             <th class="text-center">日消费水电折旧选择</th>
                                             <th class="text-center">日消费餐饮后勤选择</th>
-                                            <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent">
@@ -124,6 +132,12 @@
 		  	}
 		  	this.getCache = function(){
 		  		return _cache;
+		  	}
+		  	this.getCount = function(){
+		  		return _count;
+		  	}
+		  	this.setCount = function(count){
+		  		_count=count;
 		  	}
 			 var data={
 						page:1,
@@ -188,14 +202,14 @@
 					  }, 
 		      		  success: function (result) {
 		      			 $(result.data.rows).each(function(i,o){
-		      				html +='<tr>'
+		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center edit name">'+o.consumeDate+'</td>'
 		      				+'<td class="text-center edit name">'+o.chummage*1+'</td>'
 		      				+'<td class="text-center edit name">'+o.hydropower*1+'</td>'
-		      				+'<td class="text-center edit name">'+o.logistics*1+'</td>'
-		      				+'<td class="text-center"><button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
+		      				+'<td class="text-center edit name">'+o.logistics*1+'</td></tr>'
 		      			}); 
 				        //显示分页
+				        self.setCount(result.data.pageNum)
 					   	 laypage({
 					      cont: 'pager', 
 					      pages: result.data.totalPages, 
@@ -217,55 +231,83 @@
 					   	
 					   	 $("#tablecontent").html(html); 
 					   	self.loadEvents();
-					   
+						self.checkedd();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
 					  }
 				  });
 			}
-			
+			  this.checkedd=function(){
+					
+					$(".checks").on('click',function(){
+						
+	                    if($(this).is(':checked')){ 
+				 			$('.checkboxId').each(function(){  
+	                    //此处如果用attr，会出现第三次失效的情况  
+	                     		$(this).prop("checked",true);
+				 			})
+	                    }else{
+	                    	$('.checkboxId').each(function(){ 
+	                    		$(this).prop("checked",false);
+	                    		
+	                    	})
+	                    }
+	                }); 
+					
+				}
 			this.loadEvents = function(){
 				
-				//删除方法
-				$('.delete').on('click',function(){
-					var postData = {
-							id:$(this).data('id'),
-					}
-					var index;
-					 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
-					$.ajax({
-						url:"${ctx}/finance/delete",
-						data:postData,
-						type:"GET",
-						beforeSend:function(){
-							index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								});
-						},
-						
-						success:function(result){
-							if(0==result.code){
-							layer.msg("删除成功！", {icon: 1});
-							self.loadPagination(data)
-							layer.close(index);
-							}else{
-								layer.msg("删除失败！", {icon: 1});
-								layer.close(index);
-							}
-						},error:function(){
-							layer.msg("操作失败！", {icon: 2});
-							layer.close(index);
-						}
-					});
-					 })
-				})
 				
 				
 				
 			}
 			this.events = function(){
-				
+				$('.start').on('click',function(){
+					  var  that=$(".table-hover");
+					  var arr=new Array()//员工id
+					  	that.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+							arr.push($(this).val());   
+						});
+					  var postData = {
+								ids:arr,
+						}
+						
+						var index;
+						 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/finance/delete",
+							data:postData,
+							traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+								layer.msg("删除成功！", {icon: 1});
+								var data = {
+					        			page:self.getCount(),
+								  		size:10,
+								  		type:5,
+								  		
+							  	}
+								self.loadPagination(data)
+								layer.close(index);
+								}else{
+									layer.msg("删除失败！", {icon: 2});
+									layer.close(index);
+								}
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 })
+				})
 				$('.update').on('click',function(){
 					
 							
