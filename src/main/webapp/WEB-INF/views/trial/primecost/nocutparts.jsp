@@ -204,6 +204,12 @@
 		  	this.setCount = function(count){
 		  		_count=count;
 		  	}
+		  	this.getNum = function(){
+		  		return _num;
+		  	}
+		  	this.setNum = function(num){
+		  		_num=num;
+		  	}
 			 var data={
 						page:1,
 				  		size:13,	
@@ -560,6 +566,26 @@
 		      			}); 
 				       var htmlto='<select class="  selectgroupChange" style="border: none;width:50px; height:30px; background-color: #BFBFBF;"><option value=""></option>'+html+'</select>'
 					   	$(".selectCompany").html(htmlto); 
+				       var datae = {
+								type:"fill",
+								id:"5190",
+							}
+				       $(".selectgroupChange").change(function(){
+				    	   $.ajax({
+							      url:"${ctx}/product/getMateriel",
+							      data:datae,
+							      type:"GET",
+					      		  success: function (result) {
+					      			 $(result.data).each(function(i,o){
+					      				html +='<option value="'+o.id+'">'+o.name+'</option>'
+					      			}); 
+					      			layer.close(index)
+							      },error:function(){
+										layer.msg("加载失败！", {icon: 2});
+										layer.close(index);
+								  }
+							  }); 
+				       })
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
@@ -799,6 +825,7 @@
 						        var item = JSON.parse(item);
 						        that.parent().parent().find('.unitPrice').text(item.price);
 						        that.parent().parent().find('.unit').text(item.unit);
+						        
 						    	return item.name
 						    },
 							//item是选中的数据
@@ -812,62 +839,7 @@
 							
 						});
 				});
-			
-				/* var thae;
-				$(document).on('click','.complexMateriel',function(){
-					 thae=$(this)
-					//提示复合物料名
-					$(".complexMateriel").typeahead({
-						//ajax 拿way数据
-						scrollHeight:1,
-						source : function(query, process) {
-								return $.ajax({
-									url : '${ctx}/product/getMateriel',
-									type : 'GET',
-									data : {
-										name:query,
-										type:"material",
-									},
-									success : function(result) {
-										//转换成 json集合
-										 var resultList = result.data.map(function (item) {
-											 	//转换成 json对象
-						                        var aItem = {name: item.name, number:item.number, price:item.price, unit:item.unit}
-						                        //处理 json对象为字符串
-						                        return JSON.stringify(aItem);
-						                    });
-										//提示框返回数据
-										 return process(resultList);
-									},
-								})
-								
-								//提示框显示
-							}, highlighter: function (item) {
-							    //转出成json对象
-								 var item = JSON.parse(item);
-								return item.name+"-"+item.number
-								//按条件匹配输出
-			                }, matcher: function (item) {
-			                	//转出成json对象
-						        var item = JSON.parse(item);
-						        thae.parent().prev().text(item.number);
-						        thae.parent().parent().find('.unitPricetw').text(item.price);
-						        thae.parent().parent().find('.unittw').text(item.unit);
-						    	return item.name
-						    },
-							//item是选中的数据
-							updater:function(item){
-								//转出成json对象
-								var item = JSON.parse(item);
-								thae.parent().prev().text(item.number);
-								thae.parent().parent().find('.unitPricetw').text(item.price);
-								thae.parent().parent().find('.unittw').text(item.unit);
-									return item.name
-							},
-							
-						});
-				}); */
-				
+                                                                                                                                                                                                                                     				
 			}
    	}
    			var login = new Login();
