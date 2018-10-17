@@ -122,7 +122,7 @@ public class BaseOneAction {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON
 				.get()
-				.addRetainTerm(Materiel.class,"number","name","price","type","unit","changePrice","count","convertUnit","convertPrice")
+				.addRetainTerm(Materiel.class,"id","number","name","price","type","unit","changePrice","count","convertUnit","convertPrice")
 				.format(materielService.findPages(materiel)).toJSON());
 		cr.setMessage("成功");
 		return cr;
