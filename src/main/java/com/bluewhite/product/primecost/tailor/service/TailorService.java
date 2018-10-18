@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.product.primecost.tailor.entity.OrdinaryLaser;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 
 @Service
@@ -20,11 +21,25 @@ public interface TailorService extends BaseCRUDService<Tailor,Long> {
 	public Tailor  saveTailor(Tailor tailor) throws Exception;
 	
 	/**
-	 * 
+	 * 分页查询裁剪
 	 * @param tailor
 	 * @param page
 	 * @return
 	 */
-	public PageResult<Tailor> findPages(Tailor tailor, PageParameter page);;
+	public PageResult<Tailor> findPages(Tailor tailor, PageParameter page);
+	
+	
+	/**
+	 * 
+	 * @param tailor
+	 * @return
+	 */
+	public OrdinaryLaser getOrdinaryLaserDate(Tailor tailor);
+	/**
+	 * 
+	 * @param tailor
+	 * @return
+	 */
+	public Tailor getTailorDate(Tailor tailor,OrdinaryLaser ordinaryLaser);
 
 }

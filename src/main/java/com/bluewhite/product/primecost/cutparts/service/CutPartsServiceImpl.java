@@ -18,6 +18,7 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.cutparts.dao.CutPartsDao;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
+import com.bluewhite.product.primecost.tailor.dao.TailorDao;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.product.dao.ProductDao;
 import com.bluewhite.product.product.entity.Product;
@@ -29,6 +30,9 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 	private CutPartsDao dao;
 	@Autowired
 	private ProductDao productdao;
+	@Autowired
+	private TailorDao tailorDao;
+	
 
 	
 	@Override
@@ -68,7 +72,30 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		
 		//从cc裁片填写后，自动增加到裁剪页面
 		Tailor tailor = new Tailor();
-		tailor.setBacthTailorNumber(cutParts.getCutPartsNumber()*tailor.getTailorNumber());
+		
+		//增加和产品关联关系
+		tailor.setProductId(cutParts.getProductId());
+		//批量产品数量或模拟批量数
+		tailor.setNumber(cutParts.getNumber());
+		//裁剪部位名称
+		tailor.setTailorName(cutParts.getCutPartsName());
+		//裁剪片数
+		tailor.setTailorNumber(cutParts.getCutPartsNumber());
+		//当批片数
+		tailor.setBacthTailorNumber(cutParts.getCutPartsNumber()*cutParts.getNumber());
+		//物料压价,通过cc裁片填写中该裁片该面料的价值 得到
+		tailor.setPriceDown((cutParts.getBatchMaterialPrice()==null ? 0.0 : cutParts.getBatchMaterialPrice())
+				+(cutParts.getBatchComplexAddPrice()==null ? 0.0 :cutParts.getBatchComplexAddPrice()));
+		//不含绣花环节的为机工压价	
+		
+		
+		//含绣花环节的为机工压价
+		
+		//为机工准备的压价
+		
+		tailorDao.save(tailor);
+		
+		
 		
 		//各单片比全套用料
 		List<CutParts> cutPartsList = dao.findByProductId(cutParts.getProductId());

@@ -1,6 +1,7 @@
 package com.bluewhite.product.primecostbasedata.action;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,7 +20,6 @@ import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
-import com.bluewhite.product.primecostbasedata.dao.BaseOneDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneTimeDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseThreeDao;
 import com.bluewhite.product.primecostbasedata.dao.PrimeCoefficientDao;
@@ -29,7 +29,6 @@ import com.bluewhite.product.primecostbasedata.entity.BaseThree;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.product.primecostbasedata.entity.PrimeCoefficient;
 import com.bluewhite.product.primecostbasedata.service.MaterielService;
-import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 
 @Controller
 public class BaseOneAction {
@@ -95,7 +94,7 @@ public class BaseOneAction {
 	
 	
 	/**
-	 * 产品基础数据3获取
+	 * 产品基础数据3获取(手选该裁片的平方M)
 	 * @param request 请求
 	 * @return cr
 	 * @throws Exception
@@ -108,6 +107,58 @@ public class BaseOneAction {
 		cr.setMessage("成功");
 		return cr;
 	}
+	
+	/**
+	 * 产品基础数据3获取,将裁减类型和数据进行匹配
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/product/getBaseThreeOne", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getBaseThreeOne(HttpServletRequest request,Long typeId, Double number) {
+		CommonResponse cr = new CommonResponse();
+		List<BaseThree> baseThreeList = baseThreeDao.findAll();
+		BaseThree BaseThree = null;
+		for(BaseThree bt : baseThreeList){
+			if(bt.getOrdinaryLaser()==number){
+				BaseThree = bt;
+				break;
+			}
+		}
+		
+		double returnNumber = 0 ;
+		switch (typeId.intValue()) {
+		case 71://普通激光切割
+			returnNumber = BaseThree.getTextualOrdinaryLight();
+			break;
+		case 72://绣花激光切割
+			returnNumber = BaseThree.getTextualPositionLight();
+			break;
+		case 73://手工电烫
+			returnNumber = BaseThree.getTextualPerm();
+			break;
+		case 74://设备电烫
+			break;
+		case 75://冲床
+			returnNumber = BaseThree.getTextualPuncher();
+			break;
+		case 76://电推
+			returnNumber = BaseThree.getTextualClippers();
+			break;
+		case 77://手工剪刀
+			returnNumber = BaseThree.getTextualScissors();
+			break;
+		case 78://绣花领取
+			break;
+		default:
+			break;
+		}
+		cr.setData(returnNumber);
+		cr.setMessage("成功");
+		return cr;
+	}
+	
 	
 	/**
 	 * 物料产品基础数据获取

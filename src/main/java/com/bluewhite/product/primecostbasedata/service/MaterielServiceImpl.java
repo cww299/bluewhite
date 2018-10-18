@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneDao;
+import com.bluewhite.product.primecostbasedata.dao.BaseThreeDao;
 import com.bluewhite.product.primecostbasedata.dao.MaterielDao;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
+import com.bluewhite.product.primecostbasedata.entity.BaseThree;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 
 @Service
@@ -24,6 +26,9 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 	@Autowired
 	private BaseOneDao baseOneDao;
 
+	@Autowired
+	private BaseThreeDao baseThreeDao;
+	
 	@Override
 	public List<Materiel> findPages(Materiel materiel) {
 			  List<Materiel> pages = dao.findAll((root,query,cb) -> {
@@ -69,5 +74,50 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 	        });
 	        return pages;
 	}
+
+	@Override
+	public Double getBaseThreeOne(Long typeId, Double number) {
+		List<BaseThree> baseThreeList = baseThreeDao.findAll();
+		BaseThree BaseThree = null;
+		for(BaseThree bt : baseThreeList){
+			if(bt.getOrdinaryLaser()==number){
+				BaseThree = bt;
+				break;
+			}
+		}
+		
+		double returnNumber = 0 ;
+		switch (typeId.intValue()) {
+		case 71://普通激光切割
+			returnNumber = BaseThree.getTextualOrdinaryLight();
+			break;
+		case 72://绣花激光切割
+			returnNumber = BaseThree.getTextualPositionLight();
+			break;
+		case 73://手工电烫
+			returnNumber = BaseThree.getTextualPerm();
+			break;
+		case 74://设备电烫
+			break;
+		case 75://冲床
+			returnNumber = BaseThree.getTextualPuncher();
+			break;
+		case 76://电推
+			returnNumber = BaseThree.getTextualClippers();
+			break;
+		case 77://手工剪刀
+			returnNumber = BaseThree.getTextualScissors();
+			break;
+		case 78://绣花领取
+			break;
+		default:
+			break;
+		}
+		return returnNumber;
+	}
+	
+	
+	
+	
 
 }
