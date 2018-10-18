@@ -15,9 +15,7 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.product.primecost.cutparts.dao.CutPartsDao;
-import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.tailor.dao.OrdinaryLaserDao;
 import com.bluewhite.product.primecost.tailor.dao.TailorDao;
 import com.bluewhite.product.primecost.tailor.entity.OrdinaryLaser;
@@ -68,6 +66,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		 prams.setTailorName(tailor.getTailorName());
 		 prams.setTailorNumber(tailor.getTailorNumber());
 		 prams.setTailorSize(tailor.getTailorSize());
+		 prams.setTailorId(tailor.getId());
 		switch (tailor.getTailorTypeId().intValue()) {
 		case 71://普通激光切割
 			type = "ordinarylaser";

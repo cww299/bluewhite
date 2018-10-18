@@ -82,7 +82,7 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 	private Double quilt;
 	
 	/**
-	 *激光机放快手比
+	 *放快手比
 	 */
 	@Column(name = "quick_worker")
 	private Double quickWorker;
@@ -206,6 +206,154 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 	 */
 	@Column(name = "equipment_profit")
 	private Double equipmentProfit;
+	
+	
+	/**** 冲床固定系数 ****/
+	/**
+	 * 每层拉布时间/秒
+	 */
+	@Column(name = "puncher_one")
+	private Double puncherOne;
+	
+	/**
+	 * 默认最少冲量
+	 */
+	@Column(name = "puncher_two")
+	private Double puncherTwo;
+	
+	/**
+	 * 每层拉布宽度/米
+	 */
+	@Column(name = "puncher_three")
+	private Double puncherThree;
+	
+	/**
+	 * 默认批量少于冲量的叠布和冲压秒数
+	 */
+	@Column(name = "puncher_four")
+	private Double puncherFour;
+	
+	/** 
+	 * 冲压秒数
+	 *
+	 */
+	@Column(name = "puncher_five")
+	private Double puncherFive;
+	
+	/**** 电烫perm固定系数 ****/
+	/**
+	 * 每层拉布时间/秒
+	 */
+	@Column(name = "perm_one")
+	private Double permOne;
+	/**
+	 * 每层拉布宽度/米
+	 */
+	@Column(name = "perm_two")
+	private Double permTwo;
+	
+	/**
+	 * 电烫秒数
+	 */
+	@Column(name = "perm_three")
+	private Double permThree;
+
+	/**
+	 * 请选择撕片难易↓(0=易，1=难)
+	 */
+	@Column(name = "perm_four")
+	private Integer permFour;
+	
+	/**
+	 * 每层拉布宽度/米(ad7)
+	 */
+	@Column(name = "perm_five")
+	private Double permFive;
+	
+	
+	
+	
+
+	public Double getPermOne() {
+		return permOne;
+	}
+
+	public void setPermOne(Double permOne) {
+		this.permOne = permOne;
+	}
+
+	public Double getPermTwo() {
+		return permTwo;
+	}
+
+	public void setPermTwo(Double permTwo) {
+		this.permTwo = permTwo;
+	}
+
+	public Double getPermThree() {
+		return permThree;
+	}
+
+	public void setPermThree(Double permThree) {
+		this.permThree = permThree;
+	}
+
+	public Integer getPermFour() {
+		return permFour;
+	}
+
+	public void setPermFour(Integer permFour) {
+		this.permFour = permFour;
+	}
+
+	public Double getPermFive() {
+		return permFive;
+	}
+
+	public void setPermFive(Double permFive) {
+		this.permFive = permFive;
+	}
+
+	public Double getPuncherOne() {
+		return puncherOne;
+	}
+
+	public void setPuncherOne(Double puncherOne) {
+		this.puncherOne = puncherOne;
+	}
+
+	public Double getPuncherTwo() {
+		return puncherTwo;
+	}
+
+	public void setPuncherTwo(Double puncherTwo) {
+		this.puncherTwo = puncherTwo;
+	}
+
+
+	public Double getPuncherThree() {
+		return puncherThree;
+	}
+
+	public void setPuncherThree(Double puncherThree) {
+		this.puncherThree = puncherThree;
+	}
+
+	public Double getPuncherFour() {
+		return puncherFour;
+	}
+
+	public void setPuncherFour(Double puncherFour) {
+		this.puncherFour = puncherFour;
+	}
+
+	public Double getPuncherFive() {
+		return puncherFive;
+	}
+
+	public void setPuncherFive(Double puncherFive) {
+		this.puncherFive = puncherFive;
+	}
 
 	public Double getPeripheralLaser() {
 		return peripheralLaser;

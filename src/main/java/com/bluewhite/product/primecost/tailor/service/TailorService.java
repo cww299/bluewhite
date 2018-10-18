@@ -30,16 +30,17 @@ public interface TailorService extends BaseCRUDService<Tailor,Long> {
 	
 	
 	/**
-	 * 
+	 * 获取裁剪页面所需要的数据
 	 * @param tailor
 	 * @return
 	 */
 	public OrdinaryLaser getOrdinaryLaserDate(Tailor tailor);
 	/**
-	 * 
+	 * 获取各种裁剪方式页面所需要的数据
 	 * @param tailor
 	 * @return
 	 */
 	public Tailor getTailorDate(Tailor tailor,OrdinaryLaser ordinaryLaser);
+	
 
 }

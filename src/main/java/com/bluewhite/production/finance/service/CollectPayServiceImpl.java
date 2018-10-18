@@ -461,14 +461,11 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 
 	@Override
 	public List<NonLine> headmanPay(NonLine nonLine) {
-		PageParameter page  = new PageParameter();
-		page.setSize(Integer.MAX_VALUE);
 		//A工资
 		AttendancePay attendancePay = new AttendancePay();
 		attendancePay.setOrderTimeBegin(nonLine.getOrderTimeBegin());
 		attendancePay.setOrderTimeEnd(nonLine.getOrderTimeEnd());
 		attendancePay.setType(nonLine.getType());
-		
 		//B工资
 		PayB payB = new PayB();
 		payB.setOrderTimeBegin(nonLine.getOrderTimeBegin());
@@ -478,7 +475,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		List<NonLine> nonLineList = nonLineDao.findAll();
 		for(NonLine nl : nonLineList){
 			attendancePay.setUserId(nl.getUserId());
-			List<AttendancePay> manAttendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
+			List<AttendancePay> manAttendancePayList = attendancePayService.findAttendancePay(attendancePay);
 			List<AttendancePay> list = manAttendancePayList.stream().filter(AttendancePay->AttendancePay.getWorkTime()!=0).collect(Collectors.toList());
 			//产生考勤工作时间
 			double sunTime = list.stream().mapToDouble(AttendancePay::getWorkTime).sum();
@@ -487,7 +484,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			//A工资总和
 			double sumAPay = list.stream().mapToDouble(AttendancePay::getPayNumber).sum();
 			payB.setUserId(nl.getUserId());
-			List<PayB> payBList = payBService.findPages(payB, page).getRows();
+			List<PayB> payBList = payBService.findPayB(payB);
 			//B工资总和
 			double sumBPay = payBList.stream().mapToDouble(PayB::getPayNumber).sum();
 			//产生考勤工资和已发绩效
