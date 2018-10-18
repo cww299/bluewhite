@@ -505,50 +505,6 @@
 				})
 			} 
 			this.mater=function(){
-				/* //提示裁片名
-				$(".cuttingName").typeahead({
-					//ajax 拿way数据
-					source : function(query, process) {
-							return $.ajax({
-								url : '${ctx}/product/getBaseOne',
-								type : 'GET',
-								data : {
-									name:query,
-									type:"cutParts",
-								},
-								success : function(result) {
-									//转换成 json集合
-									 var resultList = result.data.map(function (item) {
-										 	//转换成 json对象
-					                        var aItem = {name: item.name, id:item.id}
-					                        //处理 json对象为字符串
-					                        return JSON.stringify(aItem);
-					                    });
-									//提示框返回数据
-									 return process(resultList);
-								},
-							})
-							//提示框显示
-						}, highlighter: function (item) {
-						    //转出成json对象
-							 var item = JSON.parse(item);
-						    
-							return item.name
-							//按条件匹配输出
-		                }, matcher: function (item) {
-		                	//转出成json对象
-					        var item = JSON.parse(item);
-					     
-					    	return item.name
-					    },
-						//item是选中的数据
-						updater:function(item){
-							//转出成json对象
-							var item = JSON.parse(item);
-							
-								return item.name
-						},
-					}); */
 				//选择单位
 				var data = {
 					type:"unit",
@@ -562,22 +518,34 @@
 				     
 		      		  success: function (result) {
 		      			 $(result.data).each(function(i,o){
-		      				html +='<option value="'+o.id+'">'+o.name+'</option>'
+		      				html +='<option value="'+o.id+'" data-name="'+o.name+'">'+o.name+'</option>'
 		      			}); 
 				       var htmlto='<select class="  selectgroupChange" style="border: none;width:50px; height:30px; background-color: #BFBFBF;"><option value=""></option>'+html+'</select>'
 					   	$(".selectCompany").html(htmlto); 
+				       $(".selectgroupChange").change(function(){
+				    	   that=$(this)
+				    	   var ccc
+				       if(self.getNum()==null){
+				    	   ccc=""
+				       }else{
+				    	   ccc=self.getNum()
+				       } 
 				       var datae = {
 								type:"fill",
-								id:"5190",
+								id:ccc,
 							}
-				       $(".selectgroupChange").change(function(){
 				    	   $.ajax({
 							      url:"${ctx}/product/getMateriel",
 							      data:datae,
 							      type:"GET",
 					      		  success: function (result) {
 					      			 $(result.data).each(function(i,o){
-					      				html +='<option value="'+o.id+'">'+o.name+'</option>'
+					      			var aaa=$(".selectgroupChange").find("option:selected").text();
+					      				if(aaa==o.convertUnit){
+					      					that.parent().parent().find('.selectprice').text(o.convertPrice);
+					      				}else if(aaa=o.unit){
+					      					that.parent().parent().find('.selectprice').text(o.price);
+					      				}
 					      			}); 
 					      			layer.close(index)
 							      },error:function(){
@@ -651,38 +619,29 @@
 				});
 				/*保存  */
 				$('#save').on('click',function(){
-					if($('#number').val()==""){
+					/* if($('#number').val()==""){
 						 return layer.msg("默认数量不能为空！", {icon: 2});
 					}
 					if($('#productName').val()==""){
 						 return layer.msg("产品名不能为空！", {icon: 2});
-					}
+					} */
 					var leng = $(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').length;
 				for (var i = 0; i <leng; i++) {
 					var postData = {
-						productId:self.getCache(),
-						number:$('#number').val(),
-						cutPartsName:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.cuttingName').val(),
-						cutPartsNumber:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.sliceNumber').val(),
-						materielNumber:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.materielNumber').text(),
-						materielName:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.materiel').val(),
-						composite:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.selectname').val(),
+						/* productId:self.getCache(),
+						number:$('#number').val(),  */
+						materialsName:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.materiel').val(),
 						oneMaterial:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.oneMaterial').val(),
 						unit:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.selectgroupChange option:selected').text(),
 						unitId:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.selectgroupChange').val(),
 						manualLoss:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.manualLoss').val(),
+						unitCost:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.selectprice').text(),
 						productCost:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unitPrice').text(),
-						productRemark:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unit').text(),
-						complexMaterielName:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.complexMateriel').val(),
-						complexMaterielNumber:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.complexMaterielNumber').text(),
-						doubleComposite:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.bilayer').val(),
-						complexProductCost:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unitPricetw').text(),			
-						complexProductRemark:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unittw').text(),
-						compositeManualLoss:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.compositeManualLoss').val(),
+						productUnit:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unit').text(),
 					}
 					var index;
 					$.ajax({
-						url:"${ctx}/product/addCutParts",
+						url:"${ctx}/product/addProductMaterials",
 						data:postData,
 						type:"POST",
 						beforeSend:function(){
@@ -774,15 +733,17 @@
 				$('#addCutting').on('click',function(){
 					var a=$('#loss').val();
 					 html='<tr><td></td><td  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" /></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;" class="text-center materiel" /></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"    style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center   "  /></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;"  class="text-center materiel" /></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"    style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center  oneMaterial"  /></td>'
 					 +'<td class="text-center edit selectCompany" style="padding: 2px 0px 2px 0px;></td>'
 					 +'<td class="text-center edit name"></td>'
-					 +'<td class="text-center edit name"></td>'
+					 +'<td class="text-center edit selectprice"></td>'
 					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" value="'+a+'" style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center manualLoss" /></td>'
 					 +'<td class="text-center edit unitPrice" ></td>'
 					 +'<td class="text-center edit unit"></td></tr>';
-					$("#tablecontent").append(html);
+					  /* $(html).insertBefore("#tablecontent"); */
+					/* $("#tablecontent").append(html); */
+					$("#tablecontent").prepend(html);
 					self.mater();
 				})
 			
@@ -805,7 +766,7 @@
 										//转换成 json集合
 										 var resultList = result.data.map(function (item) {
 											 	//转换成 json对象
-						                        var aItem = {name: item.name, number:item.number, price:item.price, unit:item.unit}
+						                        var aItem = {name: item.name, id:item.id, number:item.number, price:item.price, unit:item.unit}
 						                        //处理 json对象为字符串
 						                        return JSON.stringify(aItem);
 						                    });
@@ -825,7 +786,7 @@
 						        var item = JSON.parse(item);
 						        that.parent().parent().find('.unitPrice').text(item.price);
 						        that.parent().parent().find('.unit').text(item.unit);
-						        
+						        self.setNum(item.id)
 						    	return item.name
 						    },
 							//item是选中的数据
@@ -834,6 +795,7 @@
 								var item = JSON.parse(item);
 								that.parent().parent().find('.unitPrice').text(item.price);
 								that.parent().parent().find('.unit').text(item.unit);
+								self.setNum(item.id)
 									return item.name
 							},
 							
