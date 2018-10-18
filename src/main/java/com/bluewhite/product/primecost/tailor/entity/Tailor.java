@@ -62,7 +62,7 @@ public class Tailor extends BaseEntity<Long>{
 	
 	
 	/**
-	 * 手选裁剪方式(储存方式，？1.存实体加id， ？2存字符串)
+	 * 手选裁剪方式
 	 */
 	@Column(name = "tailor_Type")
     private String tailorType;

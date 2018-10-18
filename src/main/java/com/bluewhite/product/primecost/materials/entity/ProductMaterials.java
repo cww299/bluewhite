@@ -70,7 +70,7 @@ public class ProductMaterials extends BaseEntity<Long>{
 	 * 产品单位
 	 */
 	@Column(name = "product_unit")
-    private Double productUnit;
+    private String productUnit;
 	
 	
 	/**
@@ -152,11 +152,12 @@ public class ProductMaterials extends BaseEntity<Long>{
 		this.productCost = productCost;
 	}
 
-	public Double getProductUnit() {
+
+	public String getProductUnit() {
 		return productUnit;
 	}
 
-	public void setProductUnit(Double productUnit) {
+	public void setProductUnit(String productUnit) {
 		this.productUnit = productUnit;
 	}
 

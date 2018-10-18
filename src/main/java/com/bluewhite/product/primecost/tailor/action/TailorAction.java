@@ -25,7 +25,6 @@ import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.OrdinaryLaserService;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
 import com.bluewhite.product.primecostbasedata.entity.PrimeCoefficient;
-import com.bluewhite.product.primecostbasedata.service.MaterielService;
 
 @Controller
 public class TailorAction {
