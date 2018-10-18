@@ -619,17 +619,17 @@
 				});
 				/*保存  */
 				$('#save').on('click',function(){
-					/* if($('#number').val()==""){
+					 if($('#number').val()==""){
 						 return layer.msg("默认数量不能为空！", {icon: 2});
 					}
 					if($('#productName').val()==""){
 						 return layer.msg("产品名不能为空！", {icon: 2});
-					} */
+					} 
 					var leng = $(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').length;
 				for (var i = 0; i <leng; i++) {
 					var postData = {
-						/* productId:self.getCache(),
-						number:$('#number').val(),  */
+						productId:self.getCache(),
+						number:$('#number').val(),  
 						materialsName:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.materiel').val(),
 						oneMaterial:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.oneMaterial').val(),
 						unit:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.selectgroupChange option:selected').text(),
