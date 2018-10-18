@@ -78,7 +78,7 @@ public class OrdinaryLaser extends BaseEntity<Long>{
     private Double stallPoint;	
 	
 	/**
-	 * 单双激光头(单 = 1，双 =2， 0.5=3， 1=4)
+	 * 单双激光头(单 = 1，双 =2)
 	 */
 	@Column(name = "single_double")
     private Integer singleDouble;	

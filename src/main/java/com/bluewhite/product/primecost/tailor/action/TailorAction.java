@@ -25,6 +25,7 @@ import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.OrdinaryLaserService;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
 import com.bluewhite.product.primecostbasedata.entity.PrimeCoefficient;
+import com.bluewhite.product.primecostbasedata.service.MaterielService;
 
 @Controller
 public class TailorAction {
@@ -39,7 +40,7 @@ public class TailorAction {
 	@Autowired
 	private OrdinaryLaserService  ordinaryLaserService;
 	
-	
+
 	/**
 	 * 裁剪填写
 	 * 
@@ -112,7 +113,33 @@ public class TailorAction {
 	}
 	
 
-	
+	/**
+	 *(裁剪普通激光,绣花定位激光，冲床，电烫，电推，手工剪刀) 通过裁剪类型获取各种数据（  得到理论(市场反馈）含管理价值,得到实验推算价格  ）
+	 * @param 
+	 */
+	@RequestMapping(value = "/product/getOrdinaryLaserDate", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse getOrdinaryLaserDate(HttpServletRequest request,Tailor tailor) {
+		CommonResponse cr = new CommonResponse();
+		if(StringUtils.isEmpty(tailor.getTailorTypeId()) && StringUtils.isEmpty(tailor.getTailorSize())){
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("裁剪方式和该裁片的平方（m）不能为空");
+			return cr;
+		}
+		
+		
+		
+		OrdinaryLaser ordinaryLaser = tailorService.getOrdinaryLaserDate(tailor);
+		
+		tailor = tailorService.getTailorDate(tailor,ordinaryLaser);
+		
+		
+		
+		
+		cr.setData(tailor);
+		cr.setMessage("添加成功");
+		return cr;
+	}
 	
 	
 	

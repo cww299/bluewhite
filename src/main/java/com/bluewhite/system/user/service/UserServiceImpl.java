@@ -125,6 +125,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				predicate.add(cb.equal(root.get("groupId").as(Long.class),user.getGroupId()));
 			}
 			
+			//忽略管理员
+			predicate.add(cb.equal(root.get("isAdmin").as(Boolean.class),false));
+			
 			//是否外调
 			if (user.getForeigns() != null) {
 				predicate.add(cb.equal(root.get("foreigns").as(Integer.class),user.getForeigns()));

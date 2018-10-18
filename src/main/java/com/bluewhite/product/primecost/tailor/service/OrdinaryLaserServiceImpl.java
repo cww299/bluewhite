@@ -62,12 +62,10 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 		//管理人员费用
 		oldOrdinaryLaser.setAdministrativeAtaff(primeCoefficient.getPerSecondManage()*oldOrdinaryLaser.getSingleLaserHandTime());
 		//普通激光切割该裁片费用
-		List<OrdinaryLaser> ordinaryLaserList = dao.findByProductId(oldOrdinaryLaser.getProductId());
-		double sum = ordinaryLaserList.stream().mapToDouble(OrdinaryLaser::getLabourCost).sum();
-		oldOrdinaryLaser.setStallPrice(sum*primeCoefficient.getEquipmentProfit());
+		oldOrdinaryLaser.setStallPrice((oldOrdinaryLaser.getLabourCost()+oldOrdinaryLaser.getEquipmentPrice()+oldOrdinaryLaser.getAdministrativeAtaff())*primeCoefficient.getEquipmentProfit());
+		
 		dao.save(oldOrdinaryLaser);
 		
-		//更新裁剪页面数据（得到实验推算价格）
 		
 		
 		
