@@ -17,6 +17,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.materials.dao.ProductMaterialsDao;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
+import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
 import com.bluewhite.product.product.dao.ProductDao;
 import com.bluewhite.product.product.entity.Product;
 
@@ -46,7 +47,12 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 		List<ProductMaterials> productMaterialsList = dao.findByProductId(productMaterials.getProductId());
 		Product product =  productdao.findOne(productMaterials.getProductId());
 		double batchMaterialPrice = productMaterialsList.stream().mapToDouble(ProductMaterials::getBatchMaterialPrice).sum();
-		product.getPrimeCost().setOtherCutPartsPrice((batchMaterialPrice)/productMaterials.getNumber());
+		PrimeCost primeCost = product.getPrimeCost();
+		if(primeCost==null){
+			 primeCost = new PrimeCost();
+		} 
+		primeCost.setOtherCutPartsPrice((batchMaterialPrice)/productMaterials.getNumber());
+		product.setPrimeCost(primeCost);
 		productdao.save(product);
 		return productMaterials;
 	}
