@@ -39,10 +39,8 @@ public class ProductMaterialsAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(ProductMaterials.class,"productId","cutPartsName","cutPartsNumber","allPerimeter","perimeter","materielNumber"
-						,"materielName","composite","doubleComposite","complexMaterielNumber","complexMaterielName","oneMaterial","unit"
-						,"scaleMaterial","addMaterial","manualLoss","productCost","productRemark","batchMaterial","batchMaterialPrice"
-						,"complexProductCost","complexBatchMaterial","batchComplexMaterialPrice","batchComplexAddPrice");
+				.addRetainTerm(ProductMaterials.class,"productId","number","materialsName","oneMaterial","unit","unitCost"
+						,"manualLoss","productCost","productUnit","batchMaterial","batchMaterialPrice");
 	}
 	
 	/**

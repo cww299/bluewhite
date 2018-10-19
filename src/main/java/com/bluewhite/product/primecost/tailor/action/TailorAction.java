@@ -126,8 +126,7 @@ public class TailorAction {
 			return cr;
 		}
 		
-		
-		
+		//得到实验推算价格
 		OrdinaryLaser ordinaryLaser = tailorService.getOrdinaryLaserDate(tailor);
 		
 		tailor = tailorService.getTailorDate(tailor,ordinaryLaser);
