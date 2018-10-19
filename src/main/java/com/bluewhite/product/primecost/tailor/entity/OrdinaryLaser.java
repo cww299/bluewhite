@@ -153,6 +153,13 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 	
 	
 	/**
+	 * 电推秒数（含快手)
+	 */
+	@Column(name = "electric_seconds ")
+    private Double electricSeconds ;
+	
+	
+	/**
 	 * 单片激光需要用净时
 	 */
 	@Column(name = "single_laser_time")
@@ -176,6 +183,12 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 	 */
 	@Column(name = "tearing_seconds")
     private Double tearingSeconds;	
+	
+	/**
+	 * 手工秒数（含快手)
+	 */
+	@Column(name = "manual_seconds")
+    private Double manualSeconds;	
 	
 	/**
 	 * 电烫工价（含快手)
@@ -231,6 +244,22 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 	
 	
 	
+
+	public Double getManualSeconds() {
+		return manualSeconds;
+	}
+
+	public void setManualSeconds(Double manualSeconds) {
+		this.manualSeconds = manualSeconds;
+	}
+
+	public Double getElectricSeconds() {
+		return electricSeconds;
+	}
+
+	public void setElectricSeconds(Double electricSeconds) {
+		this.electricSeconds = electricSeconds;
+	}
 
 	public Double getTypesettingNumber() {
 		return typesettingNumber;

@@ -240,6 +240,8 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 	@Column(name = "puncher_five")
 	private Double puncherFive;
 	
+
+	
 	/**** 电烫perm固定系数 ****/
 	/**
 	 * 每层拉布时间/秒
@@ -271,8 +273,120 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 	private Double permFive;
 	
 	
+	/**** 电推electricPush固定系数 ****/
+	/**
+	 * 每层拉布时间/秒
+	 */
+	@Column(name = "electricPush_one")
+	private Double electricPushOne;
+	/**
+	 * 每层拉布宽度/米
+	 */
+	@Column(name = "electricPush_two")
+	private Double electricPushTwo;
 	
+	/**
+	 * 固定边缘/秒
+	 */
+	@Column(name = "electricPush_three")
+	private Double electricPushThree;
+
+	/**
+	 *画版时间/片/秒
+	 */
+	@Column(name = "electricPush_four")
+	private Integer electricPushFour;
 	
+	/**
+	 * 电推机秒走CM?
+	 */
+	@Column(name = "electricPush_five")
+	private Double electricPushFive;
+	
+	/**
+	 *每CM 用时/秒
+	 */
+	@Column(name = "electricPush_six")
+	private Double electricPushSix;
+	
+	/**** 手工剪刀manual固定系数 ****/
+	/**
+	 * 手剪每秒走CM?
+	 */
+	@Column(name = "manual_one")
+	private Double manualOne;
+	/**
+	 * 每CM 用时/秒
+	 */
+	@Column(name = "manual_two")
+	private Double manualTwo;
+	
+
+	
+
+	public Double getManualOne() {
+		return manualOne;
+	}
+
+	public void setManualOne(Double manualOne) {
+		this.manualOne = manualOne;
+	}
+
+	public Double getManualTwo() {
+		return manualTwo;
+	}
+
+	public void setManualTwo(Double manualTwo) {
+		this.manualTwo = manualTwo;
+	}
+
+	public Double getElectricPushOne() {
+		return electricPushOne;
+	}
+
+	public void setElectricPushOne(Double electricPushOne) {
+		this.electricPushOne = electricPushOne;
+	}
+
+	public Double getElectricPushTwo() {
+		return electricPushTwo;
+	}
+
+	public void setElectricPushTwo(Double electricPushTwo) {
+		this.electricPushTwo = electricPushTwo;
+	}
+
+	public Double getElectricPushThree() {
+		return electricPushThree;
+	}
+
+	public void setElectricPushThree(Double electricPushThree) {
+		this.electricPushThree = electricPushThree;
+	}
+
+	public Integer getElectricPushFour() {
+		return electricPushFour;
+	}
+
+	public void setElectricPushFour(Integer electricPushFour) {
+		this.electricPushFour = electricPushFour;
+	}
+
+	public Double getElectricPushFive() {
+		return electricPushFive;
+	}
+
+	public void setElectricPushFive(Double electricPushFive) {
+		this.electricPushFive = electricPushFive;
+	}
+
+	public Double getElectricPushSix() {
+		return electricPushSix;
+	}
+
+	public void setElectricPushSix(Double electricPushSix) {
+		this.electricPushSix = electricPushSix;
+	}
 
 	public Double getPermOne() {
 		return permOne;

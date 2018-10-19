@@ -143,9 +143,12 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			
 			break;
 		case 76://电推
+			type = "electricPush";
+			
 			
 			break;
 		case 77://手工剪刀
+			type = "manual";
 			
 			break;
 		case 78://绣花领取
@@ -272,8 +275,12 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			
 			
 			
+			
+			
+			
 			break;
 		case 76://电推
+			type = "electricPush";
 			
 			break;
 		case 77://手工剪刀
