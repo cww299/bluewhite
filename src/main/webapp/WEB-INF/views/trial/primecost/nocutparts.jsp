@@ -88,29 +88,16 @@
 											<span class="lbl"></span>
 											</label>
 											</th>
-                                        	<th class="text-center">裁片名</th>
-                                            <th class="text-center">片数</th>
-                                            <th class="text-center">编号</th>
-                                            <th class="text-center">名称</th>
-                                            <th class="text-center">是否复合</th>
-                                            <th class="text-center">单片用料</th>
-                                            <th class="text-center">单位</th>
-                                            <th class="text-center">全套比用料</th>
-                                            <th class="text-center">单只用料</th>
-                                            <th class="text-center">耗损</th>
-                                            <th class="text-center">产品单价</th>
-                                            <th class="text-center">产品单位</th>
-                                            <th class="text-center">单片用料</th>
-                                            <th class="text-center">单片价格</th>
-                                            <th class="text-center">复物料编号</th>
-                                            <th class="text-center">复物料名</th>
-                                            <th class="text-center">是否对复</th>
-                                            <th class="text-center">复物单价</th>
-                                            <th class="text-center">复物备注</th>
-                                            <th class="text-center">复物料耗损</th>
-                                            <th class="text-center">复物用料</th>
-                                            <th class="text-center">复单片价格</th>
-                                            <th class="text-center">复加工费</th>
+                                        	<th class="text-center">定性选择</th>
+                                            <th class="text-center">请选择物料名↓</th>
+                                            <th class="text-center">填写单只用料</th>
+                                            <th class="text-center">单位填写选择↓</th>
+                                            <th class="text-center">按选定单位产品单价</th>
+                                            <th class="text-center">手动损耗选择↓</th>
+                                            <th class="text-center">自动得到产品单价</th>
+                                            <th class="text-center">自动得到产品备注</th>
+                                            <th class="text-center">当批当品种用量(手选单位）</th>
+                                            <th class="text-center">当批当品种价格</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -237,41 +224,19 @@
 		      		  success: function (result) {
 		      			 $(result.data.rows).each(function(i,o){
 		      				 
-		      			 		var a="";
-		      				 if(o.composite==1){
-		      					 a="复合"
-		      				 }
-		      				var b="";
-		      				 if(o.doubleComposite==1){
-		      					 b="面料对复合"
-		      				 }
-		      				 
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				/* +'<td  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:68px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" value="'+o.cutPartsName+'" /></td>' */
-		      				+'<td class="text-center edit cutPartsNametw" >'+o.cutPartsName+'</td>'
-		      				+'<td class="text-center editt cutPartsNumbertw" >'+o.cutPartsNumber+'</td>'
-		      				+'<td class="text-center materielNumbertw" >'+o.materielNumber+'</td>'
-		      				+'<td class="text-center editmaterielName name" >'+o.materielName+'</td>'
-		      				+'<td class="text-center composite name" >'+a+'</td>'
-		      				+'<td class="text-center oneMaterial name" >'+o.oneMaterial+'</td>'
+		      				+'<td class="text-center edit " >'+o.materialsName+'</td>'
+		      				+'<td class="text-center editt" >'+o.materialsName+'</td>'
+		      				+'<td class="text-center materielNumbertw" >'+o.oneMaterial+'</td>'
 		      				+'<td class="text-center unite name" >'+o.unit+'</td>'
-		      				+'<td class="text-center  name" >'+parseFloat((o.scaleMaterial).toFixed(3))+'</td>'
-		      				+'<td class="text-center  name" >'+o.addMaterial+'</td>'
-		      				+'<td class="text-center manualLoss name" >'+o.manualLoss+'</td>'
-		      				+'<td class="text-center  unitPrice productCost" >'+parseFloat((o.productCost).toFixed(3))+'</td>'
-		      				+'<td class="text-center  unit productRemark" >'+o.productRemark+'</td>'
-		      				+'<td class="text-center  name" >'+parseFloat((o.batchMaterial).toFixed(3))+'</td>'
-		      				+'<td class="text-center  name" >'+parseFloat((o.batchMaterialPrice).toFixed(3))+'</td>'
-		      				+'<td class="text-center  name complexMaterielNumbertw" >'+o.complexMaterielNumber+'</td>'
-		      				+'<td class="text-center complexMaterielName name" >'+o.complexMaterielName+'</td>'
-		      				+'<td class="text-center doubleComposite name" >'+b+'</td>'
-		      				+'<td class="text-center  unitPricetw complexProductCost" >'+parseFloat((o.complexProductCost*1).toFixed(3))+'</td>'
-		      				+'<td class="text-center  unittw complexProductRemark" >'+o.complexProductRemark+'</td>'
-		      				+'<td class="text-center compositeManualLosstw name" >'+o.compositeManualLoss*1+'</td>'
-		      				+'<td class="text-center  name" >'+parseFloat((o.complexBatchMaterial*1).toFixed(3))+'</td>'
-		      				+'<td class="text-center  name" >'+parseFloat((o.batchComplexMaterialPrice*1).toFixed(3))+'</td>'
-		      				+'<td class="text-center  name" >'+parseFloat((o.batchComplexAddPrice*1).toFixed(3))+'</td>'
-							+'<td class="text-center "><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+' data-composite='+o.composite+' data-unit='+o.unitId+' data-doublecomposite='+o.doubleComposite+'>编辑</button></td></tr>'
+		      				+'<td class="text-center name" >'+parseFloat((o.unitCost).toFixed(4))+'</td>'
+		      				+'<td class="text-center manualLoss name" >'+(o.manualLoss!=null?o.manualLoss:"")+'</td>'
+		      				+'<td class="text-center  name" >'+parseFloat((o.productCost).toFixed(4))+'</td>'
+		      				+'<td class="text-center  name" >'+o.productUnit+'</td>'
+		      				+'<td class="text-center " >'+o.batchMaterial+'</td>'
+		      				+'<td class="text-center  name" >'+o.batchMaterialPrice+'</td>'
+							+'<td class="text-center "><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'  data-unit='+o.unit+' data-doublecomposite='+o.doubleComposite+'>编辑</button></td></tr>'
 							
 		      			}); 
 		      			self.setCount(result.data.pageNum)
@@ -355,22 +320,15 @@
 						
 						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
 
-				            $(this).html("<input class='input-mini text-center cuttingName' style='border: none;width:68px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				            $(this).html("<input class='input-mini text-center cuttingName' style='border: none;width:120px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
 				        })
 						$(this).parent().siblings(".editt").each(function() {  // 获取当前行的其他单元格
 
-				            $(this).html("<input class='input-mini text-center' style='border: none;width:40px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				            $(this).html("<input class='input-mini text-center materialsNamete' style='border: none;width:120px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
 				        })
-						$(this).parent().siblings(".editmaterielName").each(function() {  // 获取当前行的其他单元格
+						$(this).parent().siblings(".materielNumbertw").each(function() {  // 获取当前行的其他单元格
 
-				            $(this).html("<input class='input-mini text-center materiel' style='border: none;width:120px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        })
-				        $(this).parent().siblings(".composite").each(function() {  // 获取当前行的其他单元格
-				        	 $(this).html('<select   class="input-mini  selectdoubleComposite"  style="border: none;width:60px; height:30px; background-color: #BFBFBF;appearance:none;text-align-last: center"><option value="0"></option><option value="1">复合</option></select>');
-				        })
-				        $(this).parent().siblings(".oneMaterial").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini text-center' style='border: none;width:60px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				            $(this).html("<input class='input-mini text-center materiel' style='border: none;width:40px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
 				        })
 				        $(this).parent().siblings(".unite").each(function() {  // 获取当前行的其他单元格
 				        	 $(this).html(htmlto);
@@ -379,22 +337,6 @@
 
 				            $(this).html("<input class='input-mini text-center' style='border: none;width:40px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
 				        })
-				        $(this).parent().siblings(".complexMaterielName").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini complexMateriel  text-center' style='border: none;width:120px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        })
-				        $(this).parent().siblings(".doubleComposite").each(function() {  // 获取当前行的其他单元格
-				        	 $(this).html("<select  class='input-mini text-center selectdoubleCompositetw' style='border: none;width:90px; height:30px; background-color: #BFBFBF;text-align-last: center'><option value='0'></option><option value='1'>面料对复合</option></select>");
-				        })
-				        $(this).parent().siblings(".compositeManualLosstw").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini text-center' style='border: none;width:40px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        })
-				       
-				        $('.selectdoubleComposite').each(function(i,o){
-						var id=aa;
-						$(o).val(id);
-						})
 						$('.selectunit').each(function(i,o){
 						
 						$(o).val(cc)
@@ -505,6 +447,57 @@
 				})
 			} 
 			this.mater=function(){
+				
+				$(".materialsNamete").typeahead({
+					//ajax 拿way数据
+					scrollHeight:1,
+					source : function(query, process) {
+							return $.ajax({
+								url : '${ctx}/product/getMateriel',
+								type : 'GET',
+								data : {
+									name:query,
+									type:"fill",
+								},
+								success : function(result) {
+									//转换成 json集合
+									 var resultList = result.data.map(function (item) {
+										 	//转换成 json对象
+					                        var aItem = {name: item.name, id:item.id, number:item.number, price:item.price, unit:item.unit}
+					                        //处理 json对象为字符串
+					                        return JSON.stringify(aItem);
+					                    });
+									//提示框返回数据
+									 return process(resultList);
+								},
+							})
+							
+							//提示框显示
+						}, highlighter: function (item) {
+						    //转出成json对象
+							 var item = JSON.parse(item);
+							return item.name+"-"+item.number
+							//按条件匹配输出
+		                }, matcher: function (item) {
+		                	//转出成json对象
+					        var item = JSON.parse(item);
+					       /*  that.parent().parent().find('.unitPrice').text(item.price);
+					        that.parent().parent().find('.unit').text(item.unit);
+					        self.setNum(item.id) */
+					    	return item.name
+					    },
+						//item是选中的数据
+						updater:function(item){
+							//转出成json对象
+							var item = JSON.parse(item);
+							/* that.parent().parent().find('.unitPrice').text(item.price);
+							that.parent().parent().find('.unit').text(item.unit);
+							self.setNum(item.id) */
+								return item.name
+						},
+						
+					});
+				
 				//选择单位
 				var data = {
 					type:"unit",
