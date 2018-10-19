@@ -22,6 +22,14 @@ public class Tailor extends BaseEntity<Long>{
 	@Column(name = "product_id")
     private Long productId;
 	
+	
+	/**
+	 * 产品id
+	 */
+	@Column(name = "ordinaryLaser_id")
+    private Long ordinaryLaserId;
+	
+	
 	/**
 	 * 批量产品数量或模拟批量数
 	 */
@@ -86,7 +94,7 @@ public class Tailor extends BaseEntity<Long>{
     private Double ratePrice;
 	
 	/**
-	 * 	选择单个入成本价格
+	 * 选择单个入成本价格
 	 */
 	@Column(name = "cost_price")
     private Double costPrice;
@@ -126,6 +134,16 @@ public class Tailor extends BaseEntity<Long>{
 	 */
 	@Column(name = "machinist_price_down")
     private Double machinistPriceDown;
+	
+	
+
+	public Long getOrdinaryLaserId() {
+		return ordinaryLaserId;
+	}
+
+	public void setOrdinaryLaserId(Long ordinaryLaserId) {
+		this.ordinaryLaserId = ordinaryLaserId;
+	}
 
 	public Long getProductId() {
 		return productId;

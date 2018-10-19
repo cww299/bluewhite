@@ -77,38 +77,43 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 
 	@Override
 	public Double getBaseThreeOne(Long typeId, Double number) {
-		List<BaseThree> baseThreeList = baseThreeDao.findAll();
-		BaseThree BaseThree = null;
-		for(BaseThree bt : baseThreeList){
-			if(bt.getOrdinaryLaser()==number){
-				BaseThree = bt;
-				break;
-			}
-		}
+		BaseThree baseThree = baseThreeDao.findByOrdinaryLaser(number);
 		
 		double returnNumber = 0 ;
+		
+		
 		switch (typeId.intValue()) {
 		case 71://普通激光切割
-			returnNumber = BaseThree.getTextualOrdinaryLight();
+			returnNumber = baseThree.getTextualOrdinaryLight();
 			break;
 		case 72://绣花激光切割
-			returnNumber = BaseThree.getTextualPositionLight();
+			returnNumber = baseThree.getTextualPositionLight();
 			break;
 		case 73://手工电烫
-			returnNumber = BaseThree.getTextualPerm();
+			returnNumber = baseThree.getTextualPerm();
 			break;
 		case 74://设备电烫
 			break;
 		case 75://冲床
-			returnNumber = BaseThree.getTextualPuncher();
+			returnNumber = baseThree.getTextualPuncher();
 			break;
 		case 76://电推
-			returnNumber = BaseThree.getTextualClippers();
+			returnNumber = baseThree.getTextualClippers();
 			break;
 		case 77://手工剪刀
-			returnNumber = BaseThree.getTextualScissors();
+			returnNumber = baseThree.getTextualScissors();
 			break;
 		case 78://绣花领取
+			break;
+		case 79://考证过电烫捡片数片时间（秒）（容易）手填↓
+			returnNumber = baseThree.getTextualEasyTime();
+			break;
+		case 80://考证过电烫捡片数片时间（秒）（难）手填↓
+			returnNumber = baseThree.getTextualHardTime();
+			break;
+		case 81://
+			break;
+		case 82://
 			break;
 		default:
 			break;

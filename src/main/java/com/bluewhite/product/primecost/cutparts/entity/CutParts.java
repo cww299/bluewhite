@@ -102,10 +102,10 @@ public class CutParts extends BaseEntity<Long>{
 	
 	
 	/**
-	 * 单位填写选择
+	 * 单位填写选择id
 	 */
 	@Column(name = "unit_id")
-    private String unitId;
+    private Long unitId;
 	
 	
 	/**
@@ -429,13 +429,15 @@ public class CutParts extends BaseEntity<Long>{
 		this.batchMaterialPrice = batchMaterialPrice;
 	}
 
-	public String getUnitId() {
+	public Long getUnitId() {
 		return unitId;
 	}
 
-	public void setUnitId(String unitId) {
+	public void setUnitId(Long unitId) {
 		this.unitId = unitId;
 	}
+
+
 	
 	
 	

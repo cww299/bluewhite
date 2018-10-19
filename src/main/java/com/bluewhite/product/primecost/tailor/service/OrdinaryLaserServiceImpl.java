@@ -24,6 +24,9 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 	public OrdinaryLaser saveOrdinaryLaser(OrdinaryLaser ordinaryLaser,PrimeCoefficient primeCoefficient) {
 		OrdinaryLaser oldOrdinaryLaser = dao.findOne(ordinaryLaser.getId());
 		double managePrice = 0;
+		//在对裁剪方式页面的数据进行更新的时候，同步更新裁剪页面的数据
+		Tailor tailor = tailorService.findOne(oldOrdinaryLaser.getTailorId());
+		
 			switch (ordinaryLaser.getTailorTypeId().intValue()) {
 			case 71://普通激光切割
 				//得到理论(市场反馈）含管理价值
@@ -45,6 +48,8 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 						primeCoefficient.getMaintenanceChargeSecond()+primeCoefficient.getPerSecondPrice())*oldOrdinaryLaser.getSingleLaserHandTime());
 				//管理人员费用
 				oldOrdinaryLaser.setAdministrativeAtaff(primeCoefficient.getPerSecondManage()*oldOrdinaryLaser.getSingleLaserHandTime());
+				
+				
 				
 				break;
 			case 72://绣花激光切割
@@ -80,7 +85,15 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 				//电烫秒数（含快手)
 				oldOrdinaryLaser.setPermSeconds(primeCoefficient.getPermThree()/ordinaryLaser.getTypesettingNumber()*primeCoefficient.getQuickWorker());
 				//撕片秒数（含快手)
-//				oldOrdinaryLaser.setTearingSeconds(tearingSeconds);
+				double tearingSeconds = 0;
+				//易
+				if(primeCoefficient.getPermFour()==0){
+					tearingSeconds = materielService.getBaseThreeOne((long)79, ordinaryLaser.getTailorSize());
+				//难
+				}else if(primeCoefficient.getPermFour()==1){
+					tearingSeconds = materielService.getBaseThreeOne((long)80, ordinaryLaser.getTailorSize());
+				}
+				oldOrdinaryLaser.setTearingSeconds(tearingSeconds*primeCoefficient.getQuickWorker());
 				//拉布秒数（含快手)
 				oldOrdinaryLaser.setRabbTime((primeCoefficient.getPermOne()/1.5/oldOrdinaryLaser.getTailorSize())*primeCoefficient.getQuickWorker());
 				//电烫工价（含快手)
@@ -94,12 +107,8 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 				oldOrdinaryLaser.setAdministrativeAtaff(primeCoefficient.getPerSecondManage()*(oldOrdinaryLaser.getPermSeconds()+oldOrdinaryLaser.getTearingSeconds()+oldOrdinaryLaser.getRabbTime()));
 				break;
 			case 74://设备电烫
-				
-				
-				
 				break;
 			case 75://冲床
-				
 				managePrice = materielService.getBaseThreeOne(ordinaryLaser.getTailorTypeId(), ordinaryLaser.getTailorSize());
 				//得到理论(市场反馈）含管理价值
 				oldOrdinaryLaser.setManagePrice(managePrice);
@@ -127,15 +136,10 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 				
 				//管理人员费用
 				oldOrdinaryLaser.setAdministrativeAtaff((oldOrdinaryLaser.getOverlappedSeconds()+oldOrdinaryLaser.getPunchingSeconds())*primeCoefficient.getPerSecondManage());
-				//普通激光切割该裁片费用
-				oldOrdinaryLaser.setStallPrice((oldOrdinaryLaser.getLabourCost()+oldOrdinaryLaser.getEquipmentPrice()+oldOrdinaryLaser.getAdministrativeAtaff())*primeCoefficient.getEquipmentProfit());
-				//同时需要去更新裁剪页面的（得到实验推算价格）
-				Tailor tailor = tailorService.findOne(oldOrdinaryLaser.getTailorId());
-				tailor.setExperimentPrice(oldOrdinaryLaser.getStallPrice());
-				tailorService.save(tailor);
+			
+			
 				break;
 			case 76://电推
-				
 				managePrice = materielService.getBaseThreeOne(ordinaryLaser.getTailorTypeId(), ordinaryLaser.getTailorSize());
 				//得到理论(市场反馈）含管理价值
 				oldOrdinaryLaser.setManagePrice(managePrice);
@@ -155,7 +159,6 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 				oldOrdinaryLaser.setAdministrativeAtaff((oldOrdinaryLaser.getOverlappedSeconds()+oldOrdinaryLaser.getElectricSeconds())*oldOrdinaryLaser.getSingleLaserHandTime());
 				break;
 			case 77://手工剪刀
-				
 				managePrice = materielService.getBaseThreeOne(ordinaryLaser.getTailorTypeId(), ordinaryLaser.getTailorSize());
 				//得到理论(市场反馈）含管理价值
 				oldOrdinaryLaser.setManagePrice(managePrice);
@@ -169,15 +172,16 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 				oldOrdinaryLaser.setAdministrativeAtaff(primeCoefficient.getPerSecondManage()*oldOrdinaryLaser.getManualSeconds());
 				break;
 			case 78://绣花领取
-				
 				break;
 			default:
 				break;
 			}	
 		//普通激光切割该裁片费用
 		oldOrdinaryLaser.setStallPrice((oldOrdinaryLaser.getLabourCost()+oldOrdinaryLaser.getEquipmentPrice()+oldOrdinaryLaser.getAdministrativeAtaff())*primeCoefficient.getEquipmentProfit());
-		
+		//同时需要去更新裁剪页面的（得到实验推算价格）
+		tailor.setExperimentPrice(oldOrdinaryLaser.getStallPrice());
 		dao.save(oldOrdinaryLaser);
+		tailorService.save(tailor);
 		return ordinaryLaser;
 	}
 

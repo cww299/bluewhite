@@ -39,6 +39,11 @@ public class ProductMaterials extends BaseEntity<Long>{
 	@Column(name = "one_material")
     private Double oneMaterial;
 	
+	/**
+	 * 单位填写选择id
+	 */
+	@Column(name = "unit_id")
+    private Long unitId;
 	
 	/**
 	 * 单位填写选择
@@ -87,6 +92,14 @@ public class ProductMaterials extends BaseEntity<Long>{
 	
 	
 	
+
+	public Long getUnitId() {
+		return unitId;
+	}
+
+	public void setUnitId(Long unitId) {
+		this.unitId = unitId;
+	}
 
 	public Long getProductId() {
 		return productId;
