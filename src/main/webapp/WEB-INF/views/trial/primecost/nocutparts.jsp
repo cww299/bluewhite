@@ -226,7 +226,7 @@
 			    var index;
 			    var html = '';
 			    $.ajax({
-				      url:"${ctx}/product/getCutParts",
+				      url:"${ctx}/product/getProductMaterials",
 				      data:data,
 				      type:"GET",
 				      beforeSend:function(){
