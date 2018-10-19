@@ -73,7 +73,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			primeCoefficient = primeCoefficientDao.findByType(type);
 			prams.setType(type);
 			//拉布时间
-			prams.setRabbTime(prams.getTailorSize()*primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
+			prams.setRabbTime(prams.getTailorSize()/primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
 			//单片激光需要用净时
 			if(prams.getSingleDouble()==2){
 				prams.setSingleLaserTime((prams.getPerimeter()*primeCoefficient.getTime()*prams.getStallPoint()*primeCoefficient.getPauseTime()/2)
@@ -101,15 +101,22 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			type = "embroideryLaser";
 			primeCoefficient = primeCoefficientDao.findByType(type);
 			prams.setType(type);
+			
+			//得到理论(市场反馈）含管理价值
+			if(prams.getPerimeter()<primeCoefficient.getPerimeterLess()){
+				prams.setManagePrice(primeCoefficient.getPerimeterLessNumber()+primeCoefficient.getPerimeterLessNumber());
+			}else{
+				prams.setManagePrice(primeCoefficient.getPeripheralLaser()*100*prams.getPerimeter()+primeCoefficient.getEmbroideryLaserNumber());
+			}
 			//拉布时间
-			prams.setRabbTime(prams.getTailorSize()*primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
+			prams.setRabbTime(prams.getTailorSize()/primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
 			//单片激光需要用净时
 			if(prams.getSingleDouble()==2){
 				prams.setSingleLaserTime((prams.getPerimeter()*primeCoefficient.getTime()*prams.getStallPoint()*primeCoefficient.getPauseTime()/2)
-						+ prams.getRabbTime()+prams.getTime());
+						+ prams.getRabbTime()+prams.getTime()+prams.getOtherTimeTwo());
 			}else{
 				prams.setSingleLaserTime((prams.getPerimeter()*primeCoefficient.getTime()*prams.getStallPoint()*primeCoefficient.getPauseTime())
-						+ prams.getRabbTime()+prams.getTime());
+						+ prams.getRabbTime()+prams.getTime()+prams.getOtherTimeTwo());
 			}
 			//单片激光放快手时间
 			prams.setSingleLaserHandTime(prams.getSingleLaserTime()*1.08*primeCoefficient.getQuickWorker());
@@ -130,7 +137,10 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			primeCoefficient = primeCoefficientDao.findByType(type);
 			
 			prams.setType(type);
-
+			//撕片秒数（含快手)
+//			oldOrdinaryLaser.setTearingSeconds(tearingSeconds);
+			//拉布秒数（含快手)
+			prams.setRabbTime((primeCoefficient.getPermOne()/1.5/prams.getTailorSize())*primeCoefficient.getQuickWorker());
 			
 			break;
 		case 74://设备电烫
@@ -158,7 +168,9 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			break;
 		}
 		ordinaryLaserDao.save(prams);
-		
+		//将裁剪方式和裁剪页面数据进行关联，实现一对一的同步更新
+		tailor.setOrdinaryLaserId(prams.getId());
+		dao.save(tailor);
 	}
 
 
@@ -205,7 +217,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			PrimeCoefficient primeCoefficient = primeCoefficientDao.findByType(type);
 			prams.setType(type);
 			//拉布时间
-			prams.setRabbTime(prams.getTailorSize()*primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
+			prams.setRabbTime(prams.getTailorSize()/primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
 			//单片激光需要用净时
 			if(prams.getSingleDouble()==2){
 				prams.setSingleLaserTime((prams.getPerimeter()*primeCoefficient.getTime()*prams.getStallPoint()*primeCoefficient.getPauseTime()/2)
@@ -232,7 +244,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			type = "embroideryLaser";
 			primeCoefficient = primeCoefficientDao.findByType(type);
 			prams.setType(type);
-			prams.setRabbTime(prams.getTailorSize()*primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
+			prams.setRabbTime(prams.getTailorSize()/primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
 			//单片激光需要用净时
 			if(prams.getSingleDouble()==2){
 				prams.setSingleLaserTime((prams.getPerimeter()*primeCoefficient.getTime()*prams.getStallPoint()*primeCoefficient.getPauseTime()/2)
@@ -252,32 +264,17 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			prams.setAdministrativeAtaff(primeCoefficient.getPerSecondManage()*prams.getSingleLaserHandTime());
 			//普通激光切割该裁片费用
 			prams.setStallPrice((prams.getLabourCost()+prams.getEquipmentPrice()+prams.getAdministrativeAtaff())*primeCoefficient.getEquipmentProfit());
-			
-			
-			
-			
 			break;
 		case 73://手工电烫
 			type = "perm";
 			primeCoefficient = primeCoefficientDao.findByType(type);
-			
 			prams.setType(type);
-			
-//			prams.set
-
-			
 			break;
 		case 74://设备电烫
 			
 			break;
 		case 75://冲床
 			type = "puncher";
-			
-			
-			
-			
-			
-			
 			break;
 		case 76://电推
 			type = "electricPush";

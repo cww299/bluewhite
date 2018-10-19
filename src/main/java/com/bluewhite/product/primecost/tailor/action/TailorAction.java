@@ -113,6 +113,7 @@ public class TailorAction {
 	
 
 	/**
+	 * 在使用（手选裁剪方式，选择入成本价格↓）调用
 	 *(裁剪普通激光,绣花定位激光，冲床，电烫，电推，手工剪刀) 通过裁剪类型获取各种数据（  得到理论(市场反馈）含管理价值,得到实验推算价格  ）
 	 * @param 
 	 */
@@ -125,15 +126,9 @@ public class TailorAction {
 			cr.setMessage("裁剪方式和该裁片的平方（m）不能为空");
 			return cr;
 		}
-		
 		//得到实验推算价格
 		OrdinaryLaser ordinaryLaser = tailorService.getOrdinaryLaserDate(tailor);
-		
 		tailor = tailorService.getTailorDate(tailor,ordinaryLaser);
-		
-		
-		
-		
 		cr.setData(tailor);
 		cr.setMessage("添加成功");
 		return cr;

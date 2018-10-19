@@ -34,5 +34,7 @@ public interface MaterielService extends BaseCRUDService<Materiel,Long>{
 	 * @return
 	 */
 	public Double getBaseThreeOne(Long typeId, Double number);
+	
+	
 
 }
