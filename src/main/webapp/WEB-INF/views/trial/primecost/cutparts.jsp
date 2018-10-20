@@ -599,9 +599,9 @@
 								var data = {
 					        			page:self.getCount(),
 								  		size:13,
-								  		productId:"",
+								  		/* productId:"", */
 							  	}
-								self.loadPaginationth(data)
+								self.loadPagination(data)
 								layer.close(index);
 								}else{
 									layer.msg("删除失败！", {icon: 2});

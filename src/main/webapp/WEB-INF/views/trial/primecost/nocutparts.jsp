@@ -327,7 +327,7 @@
 				        })
 						$(this).parent().siblings(".materielNumbertw").each(function() {  // 获取当前行的其他单元格
 
-				            $(this).html("<input class='input-mini text-center materiel' style='border: none;width:40px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				            $(this).html("<input class='input-mini text-center' style='border: none;width:40px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
 				        })
 				        $(this).parent().siblings(".unite").each(function() {  // 获取当前行的其他单元格
 				        	 $(this).html(htmlto);
@@ -365,8 +365,10 @@
 					      			var aaa=$(".selectunit").find("option:selected").text();
 					      				if(aaa==o.convertUnit){
 					      					that.parent().parent().find('.unitCosttr').text(o.convertPrice);
-					      				}else if(aaa=o.unit){
+					      				}else if(aaa==o.unit){
 					      					that.parent().parent().find('.unitCosttr').text(o.price);
+					      				}else{
+					      					that.parent().parent().find('.unitCosttr').text("");
 					      				}
 					      			}); 
 					      			layer.close(index)
@@ -428,7 +430,7 @@
 							
 							var index;
 							$.ajax({
-								url:"${ctx}/product/updateCutParts",
+								url:"${ctx}/product/updateProductMaterials",
 								data:postData,
 								type:"POST",
 								beforeSend:function(){
@@ -498,8 +500,10 @@
 					      			var aaa=$(".selectgroupChange").find("option:selected").text();
 					      				if(aaa==o.convertUnit){
 					      					that.parent().parent().find('.selectprice').text(o.convertPrice);
-					      				}else if(aaa=o.unit){
+					      				}else if(aaa==o.unit){
 					      					that.parent().parent().find('.selectprice').text(o.price);
+					      				}else{
+					      					that.parent().parent().find('.selectprice').text("");
 					      				}
 					      			}); 
 					      			layer.close(index)
@@ -532,7 +536,7 @@
 						var index;
 						 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
 						$.ajax({
-							url:"${ctx}/product/deleteCutParts",
+							url:"${ctx}/product/deleteProductMaterials",
 							data:postData,
 							traditional: true,
 							type:"GET",
@@ -548,9 +552,9 @@
 								var data = {
 					        			page:self.getCount(),
 								  		size:13,
-								  		productId:"",
+								  		/* productId:"", */
 							  	}
-								self.loadPaginationth(data)
+								self.loadPagination(data)
 								layer.close(index);
 								}else{
 									layer.msg("删除失败！", {icon: 2});
