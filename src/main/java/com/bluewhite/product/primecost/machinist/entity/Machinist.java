@@ -82,6 +82,10 @@ public class Machinist extends BaseEntity<Long> {
 	 */
 	@Column(name = "machinist_price_down")
     private Double machinistPriceDown;
+	
+	
+	
+	
 
 	public Long getProductId() {
 		return productId;
