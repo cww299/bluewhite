@@ -30,6 +30,6 @@ public interface CutPartsService extends BaseCRUDService<CutParts,Long>{
 	 * 删除裁片
 	 * @param id
 	 */
-	public void deleteCutParts(CutParts cutParts);
+	public void deleteCutParts(Long id );
 
 }

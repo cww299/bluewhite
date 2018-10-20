@@ -129,15 +129,21 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 	 */
 	@RequestMapping(value = "/product/deleteCutParts", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteCutParts(HttpServletRequest request,CutParts cutParts) {
+	public CommonResponse deleteCutParts(HttpServletRequest request,String ids) {
 		CommonResponse cr = new CommonResponse();
-		if(cutParts.getId()!=null){
-			cutPartsService.deleteCutParts(cutParts);
-			cr.setMessage("删除成功");
-		}else{
-			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("裁片id不能为空");
-		}
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length>0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					cutPartsService.deleteCutParts(id);
+				}
+			}
+				cr.setMessage("删除成功");
+			}else{
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				cr.setMessage("裁片id不能为空");
+			}
 		return cr;
 	}
 	

@@ -85,7 +85,8 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 
 	@Override
 	@Transactional
-	public void deleteProductMaterials(ProductMaterials productMaterials) {
+	public void deleteProductMaterials(Long id) {
+		ProductMaterials productMaterials = dao.findOne(id);
 		//删除
 		dao.delete(productMaterials.getId());
 		//同时更新产品成本价格表(除面料以外的其他物料价格)
