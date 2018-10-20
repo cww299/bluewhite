@@ -383,6 +383,8 @@
 				$('#startTimetw').val(a);
 				$('#endTimetw').val(b);
 				$('#endTimefv').val(firstdate);
+				$('#startTimefr').val(a);
+				$('#endTimefr').val(b);
 			 var date={
 				  		type:2,
 				  		orderTimeBegin:firstdate,
