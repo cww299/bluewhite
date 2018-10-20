@@ -152,9 +152,10 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 
 	@Override
 	@Transactional
-	public void deleteCutParts(CutParts cutParts) {
+	public void deleteCutParts(Long id) {
+		CutParts cutParts = dao.findOne(id);
 		//删除
-		dao.delete(cutParts.getId());
+		dao.delete(cutParts);
 		//更新其他各单片比全套用料
 		List<CutParts> cutPartsList = dao.findByProductId(cutParts.getProductId());
 		double scaleMaterial = 0;
