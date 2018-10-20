@@ -39,7 +39,7 @@ public class ProductMaterialsAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(ProductMaterials.class,"productId","number","materialsName","oneMaterial","unit","unitId","unitCost"
+				.addRetainTerm(ProductMaterials.class,"id","productId","number","materialsName","oneMaterial","unit","unitId","unitCost"
 						,"manualLoss","productCost","productUnit","batchMaterial","batchMaterialPrice");
 	}
 	
