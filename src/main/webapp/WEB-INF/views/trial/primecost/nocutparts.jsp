@@ -417,22 +417,13 @@
 							var postData = {
 									id:$(this).data('id'),
 									materialsName:$(this).parent().parent('tr').find(".materialsNamett").text(),
-									cutPartsNumber:$(this).parent().parent('tr').find(".cutPartsNumbertw").text(),
-									materielNumber:$(this).parent().parent('tr').find(".materielNumbertw").text(),
-									materielName:$(this).parent().parent('tr').find(".editmaterielName").text(),
-									composite:$(this).parent().parent('tr').find(".composite").find(".selectdoubleComposite").val(),
-									oneMaterial:$(this).parent().parent('tr').find(".oneMaterial").text(),
+									oneMaterial:$(this).parent().parent('tr').find(".materielNumbertw").text(),
 									unitId:$(this).parent().parent('tr').find(".unite").find(".selectunit").val(),
 									unit:$(this).parent().parent('tr').find(".unite option:selected").text(),
 									manualLoss:$(this).parent().parent('tr').find(".manualLoss").text(),
-									productCost:$(this).parent().parent('tr').find(".productCost").text(),
-									productRemark:$(this).parent().parent('tr').find(".productRemark").text(),
-									complexMaterielNumber:$(this).parent().parent('tr').find(".complexMaterielNumbertw").text(),
-									complexMaterielName:$(this).parent().parent('tr').find(".complexMaterielName").text(),
-									doubleComposite:$(this).parent().parent('tr').find(".doubleComposite").find(".selectdoubleCompositetw").val(),
-									complexProductCost:$(this).parent().parent('tr').find(".complexProductCost").text(),
-									complexProductRemark:$(this).parent().parent('tr').find(".complexProductRemark").text(),
-									compositeManualLoss:$(this).parent().parent('tr').find(".compositeManualLosstw").text(),
+									unitCost:$(this).parent().parent('tr').find(".unitCosttr").text(),
+									productCost:$(this).parent().parent('tr').find(".unitPrice").text(),
+									productUnit:$(this).parent().parent('tr').find(".unit").text(),
 							}
 							
 							var index;
