@@ -63,6 +63,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		OrdinaryLaser  prams = null;
 		if(tailor.getOrdinaryLaserId()!=null){
 			prams = ordinaryLaserDao.findOne(tailor.getOrdinaryLaserId());
+			
 			//当裁减类型实体种没有数据
 			if(prams==null){
 				prams = new OrdinaryLaser();
