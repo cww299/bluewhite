@@ -91,23 +91,7 @@ public class MachinistAction {
 	
 	
 	
-	/**
-	 * 删除 机工填写
-	 * 
-	 */
-	@RequestMapping(value = "/product/deleteMachinist", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse deleteMachinist(HttpServletRequest request,Machinist machinist) {
-		CommonResponse cr = new CommonResponse();
-		if(machinist.getId()!=null){
-			machinistService.deleteProductMaterials(machinist);
-			cr.setMessage("删除成功");
-		}else{
-			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("id不能为空");
-		}
-		return cr;
-	}
+
 	
 	
 	@InitBinder
