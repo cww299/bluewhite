@@ -61,7 +61,7 @@ public class UserAction {
 						"nation","email","gender","birthDate","group","idCard","permanentAddress","livingAddress","marriage","procreate","education"
 						,"school","major","contacts","information","entry","estimate","actua","socialSecurity","bankCard1","bankCard2","agreement","safe","commitment"
 						,"promise","contract","contractDate","contractDateEnd","frequency","quitDate","quit","reason","train","remark","userContract","commitments"
-						,"agreementId","company","age")
+						,"agreementId","company","age","type")
 				.addRetainTerm(Group.class, "id","name", "type", "price")
 				.addRetainTerm(Role.class, "name", "role", "description","id")
 				.addRetainTerm(BaseData.class, "id","name", "type")

@@ -74,7 +74,7 @@ public class MachinistAction {
 	
 	
 	/**
-	 * 分页查看 dd除裁片以外的所有生产用料填写
+	 * 分页查看  机工填写
 	 * 
 	 * @param request 请求
 	 * @return cr
@@ -92,7 +92,7 @@ public class MachinistAction {
 	
 	
 	/**
-	 * 删除dd除裁片以外的所有生产用料填写
+	 * 删除 机工填写
 	 * 
 	 */
 	@RequestMapping(value = "/product/deleteMachinist", method = RequestMethod.GET)

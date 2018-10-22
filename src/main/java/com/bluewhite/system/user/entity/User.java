@@ -407,6 +407,12 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Column(name = "company")
 	private String company;
+	
+	/**
+	 * 归属车间类型（1=一楼质检，2=一楼包装，3=二楼针工,4=二楼机工,5=8号仓库）
+	 */
+	@Column(name = "type")
+	private Integer type;
 
 	/**
 	 * 权限
@@ -469,6 +475,14 @@ public class User extends BaseEntity<Long> {
 	
 	
 	
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
 
 	public Date getOrderTimeBegin() {
 		return orderTimeBegin;

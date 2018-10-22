@@ -21,6 +21,12 @@ public class CutParts extends BaseEntity<Long>{
     private Long productId;
 	
 	/**
+	 * 裁剪页面id
+	 */
+	@Column(name = "tailor_id")
+    private Long tailorId;
+	
+	/**
 	 * 批量产品数量或模拟批量数
 	 */
 	@Column(name = "number")
@@ -202,6 +208,14 @@ public class CutParts extends BaseEntity<Long>{
 
 	
 
+
+	public Long getTailorId() {
+		return tailorId;
+	}
+
+	public void setTailorId(Long tailorId) {
+		this.tailorId = tailorId;
+	}
 
 	public String getComplexProductRemark() {
 		return complexProductRemark;
