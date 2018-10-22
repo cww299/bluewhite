@@ -1991,7 +1991,7 @@ body.fullscreen-widget-active .panel .panel-heading .actions > .fa-times {
   color: #5D5F63;
 }
 .tab-wrapper > .nav-tabs > li.active > a {
-  border-top: 2px solid #556b8d;
+ /*  border-top: 2px solid #556b8d; */
   background-color: #ffffff;
 }
 .tab-wrapper.tab-left > .nav-tabs > li,
@@ -2045,7 +2045,8 @@ body.fullscreen-widget-active .panel .panel-heading .actions > .fa-times {
   border-bottom: 2px solid #556b8d;
 }
 .tab-primary.tab-wrapper > .nav-tabs > li.active > a {
-  border-top-color: #556b8d;
+  /* border-top-color: #556b8d; */
+  background-color: #b3bfc7;
 }
 .tab-primary.tab-wrapper.tab-left > .nav-tabs > li.active {
   border-left-color: #556b8d;
