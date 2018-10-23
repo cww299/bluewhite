@@ -122,10 +122,11 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			//拉布时间
 			prams.setRabbTime(prams.getTailorSize()/primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
 			//单片激光需要用净时
-			if(prams.getSingleDouble()!=null || prams.getSingleDouble()!=1){
+			prams.setSingleDouble(1);
+			if(prams.getSingleDouble()==2){
 				prams.setSingleLaserTime((prams.getPerimeter()*primeCoefficient.getTime()*prams.getStallPoint()*primeCoefficient.getPauseTime()/2)
 						+ prams.getRabbTime()+prams.getTime()+prams.getOtherTimeTwo());
-			}else{
+			}else {
 				prams.setSingleLaserTime((prams.getPerimeter()*primeCoefficient.getTime()*prams.getStallPoint()*primeCoefficient.getPauseTime())
 						+ prams.getRabbTime()+prams.getTime()+prams.getOtherTimeTwo());
 			}
@@ -257,7 +258,8 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			prams.setType(type);
 			prams.setRabbTime(prams.getTailorSize()/primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
 			//单片激光需要用净时
-			if(prams.getSingleDouble()!=null || prams.getSingleDouble()!=1){
+			prams.setSingleDouble(1);
+			if(prams.getSingleDouble()==2){
 				prams.setSingleLaserTime((prams.getPerimeter()*primeCoefficient.getTime()*prams.getStallPoint()*primeCoefficient.getPauseTime()/2)
 						+ prams.getRabbTime()+prams.getTime());
 			}else{
