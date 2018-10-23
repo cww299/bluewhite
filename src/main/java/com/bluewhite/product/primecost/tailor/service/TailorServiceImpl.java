@@ -77,6 +77,8 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		 prams.setTailorNumber(tailor.getTailorNumber());
 		 prams.setTailorSize(tailor.getTailorSize());
 		 prams.setTailorId(tailor.getId());
+		 prams.setSingleDouble(1);
+		 prams.setPerimeter(0.0);
 		switch (tailor.getTailorTypeId().intValue()) {
 		case 71://普通激光切割
 			type = "ordinarylaser";
@@ -85,7 +87,6 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			//拉布时间
 			prams.setRabbTime(prams.getTailorSize()/primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
 			//单片激光需要用净时
-			prams.setSingleDouble(1);
 			if(prams.getSingleDouble()==2){
 				prams.setSingleLaserTime((prams.getPerimeter()*primeCoefficient.getTime()*prams.getStallPoint()*primeCoefficient.getPauseTime()/2)
 						+ prams.getRabbTime());
@@ -122,7 +123,6 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			//拉布时间
 			prams.setRabbTime(prams.getTailorSize()/primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
 			//单片激光需要用净时
-			prams.setSingleDouble(1);
 			if(prams.getSingleDouble()==2){
 				prams.setSingleLaserTime((prams.getPerimeter()*primeCoefficient.getTime()*prams.getStallPoint()*primeCoefficient.getPauseTime()/2)
 						+ prams.getRabbTime());
