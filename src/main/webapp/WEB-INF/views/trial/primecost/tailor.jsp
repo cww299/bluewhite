@@ -39,7 +39,7 @@
                                     <ul class="nav nav-tabs col-md-12">
                                         <li class="active col-md-2" style="width: 14.285%"><a href="#home1" data-toggle="tab">裁剪页面</a>
                                         </li>
-                                        <li class="col-md-2"style="width: 14.285%;"><a href="#profile1" data-toggle="tab">裁剪普通激光</a>
+                                        <li class="col-md-2"style="width: 14.285%;"><a href="#profile1" class="profile1"  data-toggle="tab">裁剪普通激光</a>
                                         </li>
                                         <li class="col-md-2"style="width: 14.285%"><a href="#profile2" data-toggle="tab">绣花定位激光</a>
                                         </li>
@@ -138,7 +138,6 @@
                                         </tr>
                                     </thead>
                                 </table>
-                                <div id="pagerth" class="pull-right"></div>
                                         </div>
                      <!-- B工资流水开始 -->
             <div class="tab-pane" id="profile1">
@@ -150,22 +149,6 @@
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
 								<table><tr><td>批次:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>产品:</td><td><input type="text" name="name" id="name" placeholder="请输入产品名称" class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>姓名:</td><td><input type="text" name="name" id="username" placeholder="请输入姓名" class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>开始:</td>
-								<td>
-								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
-								</td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>结束:</td>
-								<td>
-								<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-								</td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
@@ -183,31 +166,27 @@
                                    <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                        	<th class="text-center">姓名</th>
-                                        	<th class="text-center">批次号</th>
-                                            <th class="text-center">产品名</th>
-                                            <th class="text-center">工序名</th>
-                                            <th class="text-center">时间</th>
-                                            <th class="text-center">加绩工资</th>
-                                            <th class="text-center">B工资</th>
+                                        	<th class="text-center">裁剪部位</th>
+                                        	<th class="text-center">手选裁剪方式</th>
+                                            <th class="text-center">裁片周长/CM(≈)</th>
+                                            <th class="text-center">激光停顿点</th>
+                                            <th class="text-center">单双激光头</th>
+                                            <th class="text-center">捡片时间</th>
+                                            <th class="text-center">其他未考虑时间1</th>
+                                            <th class="text-center">其他未考虑时间2</th>
+                                            <th class="text-center">拉布时间</th>
+                                            <th class="text-center">单片激光需要用净时</th>
+                                            <th class="text-center">单片激光放快手时间</th>
+                                            <th class="text-center">工价（含快手)</th>
+                                            <th class="text-center">设备折旧和房水电费</th>
+                                            <th class="text-center">管理人员费用</th>
+                                            <th class="text-center">普通激光切割该裁片费用</th>
                                         </tr>
                                     </thead>
-                                    <tbody >
+                                    <tbody id="tablecontent2">
                                         
                                     </tbody>
-                                    <thead>
-                                        <tr>
-                                       	    <td class="text-center">合计</td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center" id="total"></td>
-                                        </tr>
-                                    </thead>
                                 </table>
-                                <div id="pager" class="pull-right"></div>
                                  </div>
                                  <!-- B工资流水结束 -->
                  <div class="tab-pane" id="profile2">
@@ -339,7 +318,7 @@
 				$('#endTimeth').val(lastdate);
 				var data={
 						page:1,
-				  		size:13,	
+				  		size:100,	
 				  		productId:"",
 				}
 			this.init = function(){
@@ -347,12 +326,12 @@
 				//注册绑定事件
 				self.events();
 				self.loadPagination(data);
+				self.loadPagination2(data);
 			}
 			//加载分页
 			  this.loadPagination = function(data){
 			    var index;
 			    var html = '';
-			    //B工资流水开始
 			    $.ajax({
 				      url:"${ctx}/product/getTailor",
 				      data:data,
@@ -369,40 +348,15 @@
 		      				+'<td class="text-center edit ">'+o.tailorNumber+'</td>'
 		      				+'<td class="text-center edit ">'+o.bacthTailorNumber+'</td>'
 		      				+'<td class="text-center edit "><input class="form-control tailorSize" value='+(o.tailorSize!=null?o.tailorSize:"")+'></td>'
-		      				+'<td class="text-center edit tailorType"></td>'
+		      				+'<td class="text-center edit tailorType" data-tailortypeid='+o.tailorTypeId+'></td>'
 		      				+'<td class="text-center managePrice">'+(o.managePrice!=null?o.managePrice:"")+'</td>'
-		      				+'<td class="text-center experimentPrice">'+(o.experimentPrice!=null?o.experimentPrice:"")+'</td>'
+		      				+'<td class="text-center experimentPrice">'+parseFloat((o.experimentPrice*1).toFixed(5))+'</td>'
 		      				+'<td class="text-center edit ">'+(o.ratePrice!=null?o.ratePrice:"")+'</td>'
-		      				+'<td class="text-center edit "></td>'
-		      				+'<td class="text-center edit ">'+(o.experimentPrice!=null?o.experimentPrice:"")+'</td></tr>'
-							
+		      				+'<td class="text-center edit "></td></tr>'
 		      			}); 
-				        //显示分页
-					   	 laypage({
-					      cont: 'pager', 
-					      pages: result.data.totalPages, 
-					      curr:  result.data.pageNum || 1, 
-					      jump: function(obj, first){ 
-					    	  if(!first){ 
-					    		 
-						        	var _data = {
-						        			page:obj.curr,
-									  		size:13,
-									  		type:1,
-									  		type:1,
-								  			productName:$('#name').val(),
-								  			userName:$('#username').val(),
-								  			bacth:$('#number').val(),
-								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(), 
-								  	}
-						        
-						            self.loadPagination(_data);
-							     }
-					      }
-					    });  
 					   	layer.close(index);
 					   	 $("#tablecontent").html(html); 
+					   
 					   self.loadEvents()
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
@@ -410,6 +364,42 @@
 					  }
 				  });
 			}
+			  this.loadPagination2 = function(data){
+				  $(".profile1").on('click',function(){
+					  var index;
+					    var html = '';
+					    //B工资流水开始
+					    $.ajax({
+						      url:"${ctx}/product/getTailor",
+						      data:data,
+						      type:"GET",
+						      beforeSend:function(){
+							 	  index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								  });
+							  }, 
+				      		  success: function (result) {
+				      			 $(result.data.rows).each(function(i,o){
+				      				 html +='<tr>'
+				      				+'<td class="text-center edit ">'+o.tailorName+'</td>'
+				      				+'<td class="text-center edit ">'+o.tailorNumber+'</td>'
+				      				+'<td class="text-center edit ">'+o.bacthTailorNumber+'</td>'
+				      				+'<td class="text-center edit "><input class="form-control tailorSize" value='+(o.tailorSize!=null?o.tailorSize:"")+'></td>'
+				      				+'<td class="text-center edit tailorType" data-tailortypeid='+o.tailorTypeId+'></td>'
+				      				+'<td class="text-center managePrice">'+(o.managePrice!=null?o.managePrice:"")+'</td>'
+				      				+'<td class="text-center experimentPrice">'+parseFloat((o.experimentPrice*1).toFixed(5))+'</td>'
+				      				+'<td class="text-center edit ">'+(o.ratePrice!=null?o.ratePrice:"")+'</td>'
+				      				+'<td class="text-center edit "></td></tr>'
+				      			}); 
+							   	layer.close(index);
+							   	 $("#tablecontent2").html(html); 
+						      },error:function(){
+									layer.msg("加载失败！", {icon: 2});
+									layer.close(index);
+							  }
+						  });
+				  })
+			  }
 			this.loadEvents = function(){
 				//遍历裁剪方式
 				var data = {
@@ -429,6 +419,10 @@
 					       htmlto='<select class="text-center form-control selecttailorType"><option value="">请选择</option>'+html+'</select>'
 			      		  $(".tailorType").html(htmlto)
 			      		  //改变事件
+			      		  $(".selecttailorType").each(function(i,o){
+			      		var id=	$(o).parent().data("tailortypeid");
+								$(o).val(id)
+								}) 
 			      		  $(".selecttailorType").change(function(){
 			      			var that=$(this);
 			      			var a=$(this).parent().prev().find(".tailorSize").val();
@@ -461,6 +455,7 @@
 					    			tailorTypeId:that.val(),
 					    			managePrice:result.data.managePrice,
 					    			experimentPrice:result.data.experimentPrice,
+					    			ordinaryLaserId:that.val(),
 				      			}
 				      			$.ajax({
 								      url:"${ctx}/product/addTailor",
