@@ -1,9 +1,18 @@
 package com.bluewhite.product.primecost.tailor.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.criteria.Predicate;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.tailor.dao.OrdinaryLaserDao;
 import com.bluewhite.product.primecost.tailor.entity.OrdinaryLaser;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
@@ -184,5 +193,30 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 		tailorService.save(tailor);
 		return ordinaryLaser;
 	}
+
+
+	@Override
+	public PageResult<OrdinaryLaser> findPages(OrdinaryLaser param, PageParameter page) {
+			Page<OrdinaryLaser> pages = dao.findAll((root,query,cb) -> {
+	        	List<Predicate> predicate = new ArrayList<>();
+	        	//按id过滤
+	        	if (param.getId() != null) {
+					predicate.add(cb.equal(root.get("id").as(Long.class),param.getId()));
+				}
+	        	//按产品id过滤
+	        	if (param.getProductId() != null) {
+					predicate.add(cb.equal(root.get("productId").as(Long.class),param.getProductId()));
+				}
+	        	//按裁片名称过滤
+	        	if (!StringUtils.isEmpty(param.getTailorName())) {
+					predicate.add(cb.like(root.get("tailorName").as(String.class),"%"+param.getTailorName()+"%"));
+				}
+				Predicate[] pre = new Predicate[predicate.size()];
+				query.where(predicate.toArray(pre));
+	        	return null;
+	        }, page);
+		 PageResult<OrdinaryLaser> result = new PageResult<OrdinaryLaser>(pages,page);
+		return result;
+		}
 
 }

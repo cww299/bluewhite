@@ -82,6 +82,8 @@ public class TailorAction {
 		return cr;
 	}
 	
+
+	
 	
 	/**
 	 * (裁剪普通激光,绣花定位激光，冲床，电烫，电推，手工剪刀)填写
@@ -107,6 +109,21 @@ public class TailorAction {
 			}
 			cr.setMessage("添加成功");
 		}
+		return cr;
+	}
+	
+	/**
+	 * 分页查看裁减类型实体
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/product/getOrdinaryLaser", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getOrdinaryLaser(HttpServletRequest request,PageParameter page,OrdinaryLaser ordinaryLaser) {
+		CommonResponse cr = new CommonResponse(ordinaryLaserService.findPages(ordinaryLaser,page));
+		cr.setMessage("查询成功");
 		return cr;
 	}
 	
