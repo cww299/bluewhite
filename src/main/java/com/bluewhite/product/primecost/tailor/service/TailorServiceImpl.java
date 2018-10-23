@@ -79,6 +79,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		 prams.setTailorId(tailor.getId());
 		 prams.setSingleDouble(1);
 		 prams.setPerimeter(0.0);
+		 prams.setStallPoint(0.0);
 		switch (tailor.getTailorTypeId().intValue()) {
 		case 71://普通激光切割
 			type = "ordinarylaser";
