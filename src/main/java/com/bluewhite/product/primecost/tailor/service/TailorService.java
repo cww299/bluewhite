@@ -18,7 +18,7 @@ public interface TailorService extends BaseCRUDService<Tailor,Long> {
 	 * @param tailor
 	 * @return
 	 */
-	public Tailor  saveTailor(Tailor tailor) throws Exception;
+	public Tailor  saveTailor(Tailor tailor) ;
 	
 	/**
 	 * 分页查询裁剪

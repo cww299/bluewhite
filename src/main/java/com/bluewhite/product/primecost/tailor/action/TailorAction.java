@@ -57,17 +57,11 @@ public class TailorAction {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("裁剪不能为空");
 		}else{
-			try {
 				Tailor oldTailor = tailorService.findOne(tailor.getId());
 				BeanCopyUtils.copyNullProperties(oldTailor,tailor);
 				tailor.setCreatedAt(oldTailor.getCreatedAt());
 				tailorService.saveTailor(tailor);
-			} catch (Exception e) {
-				cr.setMessage(e.getMessage());
-				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				return cr;
-			}
-			cr.setMessage("添加成功");
+				cr.setMessage("添加成功");
 		}
 		return cr;
 	}

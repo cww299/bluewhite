@@ -45,7 +45,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 	
 	@Override
 	@Transactional
-	public Tailor saveTailor(Tailor tailor) throws Exception {
+	public Tailor saveTailor(Tailor tailor){
 		//当同一个裁剪页面实体，改变了类型，进行保存操作。同时删除之前关联的类型实体
 		OrdinaryLaser  prams = ordinaryLaserDao.findByTailorId(tailor.getId());
 		if(prams!=null && !prams.getId().equals(tailor.getOrdinaryLaserId())){
@@ -78,9 +78,10 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		 prams.setTailorNumber(tailor.getTailorNumber());
 		 prams.setTailorSize(tailor.getTailorSize());
 		 prams.setTailorId(tailor.getId());
-		 prams.setSingleDouble(1);
-		 prams.setPerimeter(0.0);
-		 prams.setStallPoint(0.0);
+		 NumUtils.setzro( prams.getPerimeter());
+		 NumUtils.setzro(prams.getSingleDouble());
+		 NumUtils.setzro(prams.getStallPoint());	
+		
 		switch (tailor.getTailorTypeId().intValue()) {
 		case 71://普通激光切割
 			type = "ordinarylaser";
