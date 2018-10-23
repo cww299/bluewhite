@@ -207,6 +207,10 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 	        	if (param.getProductId() != null) {
 					predicate.add(cb.equal(root.get("productId").as(Long.class),param.getProductId()));
 				}
+	        	//按类型id过滤
+	        	if (param.getTailorTypeId() != null) {
+					predicate.add(cb.equal(root.get("tailorTypeId").as(Long.class),param.getTailorTypeId()));
+				}
 	        	//按裁片名称过滤
 	        	if (!StringUtils.isEmpty(param.getTailorName())) {
 					predicate.add(cb.like(root.get("tailorName").as(String.class),"%"+param.getTailorName()+"%"));
