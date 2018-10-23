@@ -3,6 +3,7 @@ package com.bluewhite.product.primecost.tailor.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 /**
@@ -242,8 +243,21 @@ public class OrdinaryLaser extends BaseEntity<Long>{
     private Integer lamination;
 	
 	
+	/**
+	 * 是否保存
+	 * @return
+	 */
+	@Transient
+    private Integer save;
 	
-	
+
+	public Integer getSave() {
+		return save;
+	}
+
+	public void setSave(Integer save) {
+		this.save = save;
+	}
 
 	public Double getManualSeconds() {
 		return manualSeconds;
