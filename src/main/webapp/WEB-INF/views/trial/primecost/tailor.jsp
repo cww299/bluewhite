@@ -432,6 +432,7 @@
 			      		  $(".selecttailorType").change(function(){
 			      			var that=$(this);
 			      			var a=$(this).parent().prev().find(".tailorSize").val();
+			      			var id=$(this).parent().prevAll().find(".checkboxId").val();
 			      			  if(a==""){
 			      				$(that).each(function(i,o){
 									
@@ -442,6 +443,7 @@
 				    var	datae={
 				    			tailorSize:$(".tailorSize").val(),
 				    			tailorTypeId:$(".selecttailorType").val(),
+				    			id:id,
 				    	}
 				    	$.ajax({
 						      url:"${ctx}/product/getOrdinaryLaserDate",
