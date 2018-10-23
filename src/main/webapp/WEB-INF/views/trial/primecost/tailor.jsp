@@ -442,7 +442,6 @@
 				    var	datae={
 				    			tailorSize:$(".tailorSize").val(),
 				    			tailorTypeId:$(".selecttailorType").val(),
-				    			singleDouble:1,
 				    	}
 				    	$.ajax({
 						      url:"${ctx}/product/getOrdinaryLaserDate",
