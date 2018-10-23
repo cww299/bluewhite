@@ -430,6 +430,15 @@
 			      		  $(".tailorType").html(htmlto)
 			      		  //改变事件
 			      		  $(".selecttailorType").change(function(){
+			      			var that=$(this);
+			      			var a=$(this).parent().prev().find(".tailorSize").val();
+			      			  if(a==""){
+			      				$(that).each(function(i,o){
+									
+									$(o).val("")
+									}) 
+			      				  return layer.msg("请先填写裁片的平方M", {icon: 2});
+			      			  }
 				    var	datae={
 				    			tailorSize:$(".tailorSize").val(),
 				    			tailorTypeId:$(".selecttailorType").val(),
