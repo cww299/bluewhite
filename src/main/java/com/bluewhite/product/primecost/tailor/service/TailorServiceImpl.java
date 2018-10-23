@@ -15,6 +15,7 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.product.primecost.cutparts.dao.CutPartsDao;
 import com.bluewhite.product.primecost.tailor.dao.OrdinaryLaserDao;
 import com.bluewhite.product.primecost.tailor.dao.TailorDao;
@@ -224,17 +225,16 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		tailor.setManagePrice(managePrice);
 		//得到实验推算价格
 		tailor.setExperimentPrice(ordinaryLaser.getStallPrice());
-		
 		//入成本价格
-		tailor.setAllCostPrice(tailor.getBacthTailorNumber()*tailor.getCostPrice());
+		tailor.setAllCostPrice(tailor.getBacthTailorNumber()*NumUtils.setzro(tailor.getCostPrice()));
 		//得到市场价与实推价比
 		if(!StringUtils.isEmpty(tailor.getExperimentPrice())){
-			tailor.setRatePrice(tailor.getExperimentPrice()/tailor.getCostPrice());
+			tailor.setRatePrice(tailor.getExperimentPrice()/NumUtils.division(NumUtils.setzro(tailor.getCostPrice())));
 		}
 		//各单道比全套工价
 		List<Tailor> tailorList = dao.findByProductId(tailor.getProductId());
 		tailorList.add(tailor);
-		double scaleMaterial = tailor.getAllCostPrice()/(tailorList.stream().mapToDouble(Tailor::getAllCostPrice).sum());
+		double scaleMaterial = tailor.getAllCostPrice()/(tailorList.stream().filter(Tailor->Tailor.getAllCostPrice()!=null).mapToDouble(Tailor::getAllCostPrice).sum());
 		tailor.setScaleMaterial(scaleMaterial);
 		//不含绣花环节的为机工压价	
 		tailor.setNoeMbroiderPriceDown(tailor.getAllCostPrice()+tailor.getPriceDown());

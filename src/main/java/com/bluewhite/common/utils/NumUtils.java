@@ -38,4 +38,11 @@ public class NumUtils {
 		return value.isNaN() || value.isInfinite() ?0.0:value;
 	}
 	
+	
+	/**
+	 * 当传入字段为空，自动赋值为0；
+	 */
+	public static Double setzro(Double value) {
+		return value==null ?0.0:value;
+	}
 }
