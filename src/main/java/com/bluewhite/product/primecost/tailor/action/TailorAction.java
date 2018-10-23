@@ -130,6 +130,10 @@ public class TailorAction {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("裁剪方式和该裁片的平方（m）不能为空");
 			return cr;
+		}else{
+			Tailor oldTailor = tailorService.findOne(tailor.getId());
+			BeanCopyUtils.copyNullProperties(oldTailor,tailor);
+			tailor.setCreatedAt(oldTailor.getCreatedAt());
 		}
 		//得到实验推算价格
 		OrdinaryLaser  prams = new  OrdinaryLaser();
