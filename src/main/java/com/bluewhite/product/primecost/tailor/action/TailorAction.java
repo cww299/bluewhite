@@ -132,7 +132,9 @@ public class TailorAction {
 			return cr;
 		}
 		//得到实验推算价格
-		OrdinaryLaser ordinaryLaser = tailorService.getOrdinaryLaserDate(tailor);
+		OrdinaryLaser  prams = new  OrdinaryLaser();
+		prams.setSave(1);
+		OrdinaryLaser ordinaryLaser = tailorService.getOrdinaryLaserDate(tailor,prams);
 		tailor = tailorService.getTailorDate(tailor,ordinaryLaser);
 		cr.setData(tailor);
 		cr.setMessage("添加成功");

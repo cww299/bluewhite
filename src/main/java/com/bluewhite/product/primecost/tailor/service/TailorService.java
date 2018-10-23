@@ -34,7 +34,7 @@ public interface TailorService extends BaseCRUDService<Tailor,Long> {
 	 * @param tailor
 	 * @return
 	 */
-	public OrdinaryLaser getOrdinaryLaserDate(Tailor tailor);
+	public OrdinaryLaser getOrdinaryLaserDate(Tailor tailor,OrdinaryLaser  prams);
 	/**
 	 * 获取各种裁剪方式页面所需要的数据
 	 * @param tailor
