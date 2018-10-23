@@ -370,8 +370,8 @@
 		      				+'<td class="text-center edit ">'+o.bacthTailorNumber+'</td>'
 		      				+'<td class="text-center edit "><input class="form-control tailorSize" value='+(o.tailorSize!=null?o.tailorSize:"")+'></td>'
 		      				+'<td class="text-center edit tailorType"></td>'
-		      				+'<td class="text-center edit ">'+(o.managePrice!=null?o.managePrice:"")+'</td>'
-		      				+'<td class="text-center edit ">'+(o.experimentPrice!=null?o.experimentPrice:"")+'</td>'
+		      				+'<td class="text-center managePrice">'+(o.managePrice!=null?o.managePrice:"")+'</td>'
+		      				+'<td class="text-center experimentPrice">'+(o.experimentPrice!=null?o.experimentPrice:"")+'</td>'
 		      				+'<td class="text-center edit ">'+(o.ratePrice!=null?o.ratePrice:"")+'</td>'
 		      				+'<td class="text-center edit "></td>'
 		      				+'<td class="text-center edit ">'+(o.experimentPrice!=null?o.experimentPrice:"")+'</td></tr>'
@@ -441,8 +441,8 @@
 			      				  return layer.msg("请先填写裁片的平方M", {icon: 2});
 			      			  }
 				    var	datae={
-				    			tailorSize:$(".tailorSize").val(),
-				    			tailorTypeId:$(".selecttailorType").val(),
+				    			tailorSize:a,
+				    			tailorTypeId:$(this).val(),
 				    			id:id,
 				    	}
 				    	$.ajax({
@@ -451,9 +451,39 @@
 						      type:"POST",
 				      		  success: function (result) {
 				      			 $(result.data).each(function(i,o){
-				      			
-				      			}); 
+				      			that.parent().parent().find(".managePrice").text(o.managePrice);
+				      			that.parent().parent().find(".experimentPrice").text(parseFloat((o.experimentPrice).toFixed(5)));
+				      			 }); 
 				      			layer.close(index)
+				      			var datar={
+				      				id:id,
+				      				tailorSize:a,
+					    			tailorTypeId:that.val(),
+					    			managePrice:result.data.managePrice,
+					    			experimentPrice:result.data.experimentPrice,
+				      			}
+				      			$.ajax({
+								      url:"${ctx}/product/addTailor",
+								      data:datar,
+								      type:"POST",
+						      		  success: function (result) {
+						      			 $(result.data).each(function(i,o){
+						      				if(0==result.code){
+												layer.msg(result.message, {icon: 1});
+												layer.close(index);
+												}else{
+													layer.msg(result.message, {icon: 2});
+													layer.close(index);
+												}
+						      			 }); 
+						      			layer.close(index)
+						      			
+						      			
+								      },error:function(){
+											layer.msg("加载失败！", {icon: 2});
+											layer.close(index);
+									  }
+								  });
 						      },error:function(){
 									layer.msg("加载失败！", {icon: 2});
 									layer.close(index);
