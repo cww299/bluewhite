@@ -152,8 +152,8 @@ private static final Log log = Log.getLog(GroupAction.class);
 		}
 		
 		for(Group gr : groupAll){
-			Set<User> users= gr.getUsers().stream().filter(u -> u.getStatus() !=null && u.getStatus()!=1).collect(Collectors.toSet());
-			gr.setUsers(users);
+				Set<User> users= gr.getUsers().stream().filter(u -> u != null && u.getStatus() !=null && u.getStatus()!=1).collect(Collectors.toSet());
+				gr.setUsers(users);
 		}
 		cr.setData(clearCascadeJSON.format(groupAll).toJSON());
 		cr.setMessage("查询成功");
@@ -244,7 +244,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 			cr.setMessage("分组不能为空");
 			return cr;
 		}
-		if(temporarily.getUserId()==null){
+		if(StringUtils.isEmpty(temporarily.getUserId())){
 			User user = new User();
 			user.setForeigns(1);
 			user.setPassword("123456");

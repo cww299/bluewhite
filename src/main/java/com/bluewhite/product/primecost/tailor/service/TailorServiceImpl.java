@@ -45,10 +45,11 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 	@Override
 	@Transactional
 	public Tailor saveTailor(Tailor tailor) throws Exception {
-		if(StringUtils.isEmpty(tailor.getNumber())){
-			throw new ServiceException("批量产品数量或模拟批量数不能为空");
+		//当同一个裁剪页面实体，改变了类型，进行保存操作。同时删除之前关联的类型实体
+		OrdinaryLaser  prams = ordinaryLaserDao.findByTailorId(tailor.getId());
+		if(prams!=null && !prams.getId().equals(tailor.getOrdinaryLaserId())){
+			ordinaryLaserDao.delete(prams);
 		}
-		dao.save(tailor);
 		//根据裁剪类型进行新增
 		this.addcutPartsType(tailor);
 		return tailor;
@@ -59,7 +60,17 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 	private void addcutPartsType(Tailor tailor) {
 		PrimeCoefficient primeCoefficient = null;
 		String type = null;
-		 OrdinaryLaser  prams = new  OrdinaryLaser();
+		OrdinaryLaser  prams = null;
+		if(tailor.getOrdinaryLaserId()!=null){
+			prams = ordinaryLaserDao.findOne(tailor.getOrdinaryLaserId());
+			
+			//当裁减类型实体种没有数据
+			if(prams==null){
+				prams = new OrdinaryLaser();
+			}
+			
+		}
+		 
 		 prams.setProductId(tailor.getProductId());
 		 prams.setTailorTypeId(tailor.getTailorTypeId());
 		 prams.setTailorType(tailor.getTailorType());
@@ -111,7 +122,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			//拉布时间
 			prams.setRabbTime(prams.getTailorSize()/primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
 			//单片激光需要用净时
-			if(prams.getSingleDouble()==2){
+			if(prams.getSingleDouble()!=null || prams.getSingleDouble()!=1){
 				prams.setSingleLaserTime((prams.getPerimeter()*primeCoefficient.getTime()*prams.getStallPoint()*primeCoefficient.getPauseTime()/2)
 						+ prams.getRabbTime()+prams.getTime()+prams.getOtherTimeTwo());
 			}else{
@@ -246,7 +257,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			prams.setType(type);
 			prams.setRabbTime(prams.getTailorSize()/primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
 			//单片激光需要用净时
-			if(prams.getSingleDouble()==2){
+			if(prams.getSingleDouble()!=null || prams.getSingleDouble()!=1){
 				prams.setSingleLaserTime((prams.getPerimeter()*primeCoefficient.getTime()*prams.getStallPoint()*primeCoefficient.getPauseTime()/2)
 						+ prams.getRabbTime()+prams.getTime());
 			}else{

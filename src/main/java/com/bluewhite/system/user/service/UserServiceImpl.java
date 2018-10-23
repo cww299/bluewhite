@@ -133,6 +133,11 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				predicate.add(cb.equal(root.get("foreigns").as(Integer.class),user.getForeigns()));
 			}
 			
+			//数据员显示到部门考情
+			if (user.getType() != null) {
+				predicate.add(cb.equal(root.get("type").as(Integer.class),user.getType()));
+			}
+			
 			//是否离职
 			if (user.getQuit() != null) {
 				predicate.add(cb.equal(root.get("quit").as(Integer.class),user.getQuit()));

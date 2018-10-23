@@ -15,11 +15,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.tailor.entity.OrdinaryLaser;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.OrdinaryLaserService;
@@ -51,11 +53,14 @@ public class TailorAction {
 	@ResponseBody
 	public CommonResponse addTailor(HttpServletRequest request,Tailor tailor) {
 		CommonResponse cr = new CommonResponse();
-		if(StringUtils.isEmpty(tailor.getProductId())){
+		if(StringUtils.isEmpty(tailor.getId())){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("产品不能为空");
+			cr.setMessage("裁剪不能为空");
 		}else{
 			try {
+				Tailor oldTailor = tailorService.findOne(tailor.getId());
+				BeanCopyUtils.copyNullProperties(oldTailor,tailor);
+				tailor.setCreatedAt(oldTailor.getCreatedAt());
 				tailorService.saveTailor(tailor);
 			} catch (Exception e) {
 				cr.setMessage(e.getMessage());
@@ -133,6 +138,8 @@ public class TailorAction {
 		cr.setMessage("添加成功");
 		return cr;
 	}
+	
+
 	
 	
 	

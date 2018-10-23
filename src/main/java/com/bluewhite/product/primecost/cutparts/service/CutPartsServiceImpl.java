@@ -94,7 +94,8 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		//为机工准备的压价
 		
 		tailorDao.save(tailor);
-		
+		//更新裁剪页面id到裁片中
+		cutParts.setTailorId(tailor.getId());
 		
 		
 		//各单片比全套用料
