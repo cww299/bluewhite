@@ -1,6 +1,11 @@
 package com.bluewhite.common.utils;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
+
+import org.springframework.ui.Model;
+
+import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 
 public class NumUtils {
 	
@@ -52,4 +57,24 @@ public class NumUtils {
 	public static Integer setzro(Integer value) {
 		return value==null ?0:value;
 	}
+	
+	/**
+	 * 当传入字段为空，自动赋值为0；
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
+	 */
+	public static Object setzro(Object model ) throws IllegalArgumentException, IllegalAccessException {
+		Field[] fields = model.getClass().getDeclaredFields();
+		 for(Field field : fields){
+			 field.setAccessible(true);
+			 String type = field.getType().toString();// 得到此属性的类型
+			 if(type.endsWith("Double")){
+				 Object target =  field.getName();
+				 Object val = field.get(model);
+				 field.set(model,(Double)val == null ? (Double)0.0 : (Double)val); 
+			 } 
+		 }
+		 return model;
+	}
+	
 }
