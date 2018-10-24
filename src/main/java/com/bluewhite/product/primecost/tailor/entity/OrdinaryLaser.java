@@ -228,11 +228,6 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 	@Column(name = "stall_price")
     private Double stallPrice;
 	
-	/**
-	 * 裁剪类型（普通激光=ordinarylaser，绣花激光=embroideryLaser，冲床 = puncher ）
-	 */
-	@Column(name = "type")
-    private String type;
 	
 	
 	/**
@@ -369,14 +364,6 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 
 	public void setOtherTimeThree(Double otherTimeThree) {
 		this.otherTimeThree = otherTimeThree;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	public Long getProductId() {

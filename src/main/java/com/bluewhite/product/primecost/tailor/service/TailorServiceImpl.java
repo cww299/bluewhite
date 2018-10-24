@@ -49,7 +49,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		//当同一个裁剪页面实体，改变了类型，进行保存操作。同时删除之前关联的类型实体
 		OrdinaryLaser  prams = ordinaryLaserDao.findByTailorId(tailor.getId());
 		//不含绣花环节的为机工压价	
-		tailor.setNoeMbroiderPriceDown(tailor.getAllCostPrice()+tailor.getPriceDown());
+		tailor.setNoeMbroiderPriceDown(NumUtils.setzro(tailor.getAllCostPrice())+tailor.getPriceDown());
 		//含绣花环节的为机工压价
 		
 		
@@ -83,7 +83,6 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		String type = null;
 		 prams.setProductId(tailor.getProductId());
 		 prams.setTailorTypeId(tailor.getTailorTypeId());
-		 prams.setTailorType(tailor.getTailorType());
 		 prams.setTailorName(tailor.getTailorName());
 		 prams.setTailorNumber(tailor.getTailorNumber());
 		 prams.setTailorSize(tailor.getTailorSize());
@@ -96,7 +95,8 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		case 71://普通激光切割
 			type = "ordinarylaser";
 			primeCoefficient = primeCoefficientDao.findByType(type);
-			prams.setType(type);
+			prams.setTailorType(type);
+			tailor.setTailorType(type);
 			//拉布时间
 			prams.setRabbTime(prams.getTailorSize()/primeCoefficient.getRabbTime()*primeCoefficient.getQuilt());
 			//单片激光需要用净时
@@ -125,8 +125,8 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		case 72://绣花激光切割
 			type = "embroideryLaser";
 			primeCoefficient = primeCoefficientDao.findByType(type);
-			prams.setType(type);
-			
+			prams.setTailorType(type);
+			tailor.setTailorType(type);
 			//得到理论(市场反馈）含管理价值
 			if(prams.getPerimeter()<primeCoefficient.getPerimeterLess()){
 				prams.setManagePrice(primeCoefficient.getPerimeterLessNumber()+primeCoefficient.getPerimeterLessNumber());
@@ -160,8 +160,8 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		case 73://手工电烫
 			type = "perm";
 			primeCoefficient = primeCoefficientDao.findByType(type);
-			
-			prams.setType(type);
+			prams.setTailorType(type);
+			tailor.setTailorType(type);
 			//撕片秒数（含快手)
 //			oldOrdinaryLaser.setTearingSeconds(tearingSeconds);
 			//拉布秒数（含快手)
@@ -173,18 +173,19 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			break;
 		case 75://冲床
 			type = "puncher";
-			
-			
+			prams.setTailorType(type);
+			tailor.setTailorType(type);
 			
 			break;
 		case 76://电推
 			type = "electricPush";
-			
-			
+			prams.setTailorType(type);
+			tailor.setTailorType(type);
 			break;
 		case 77://手工剪刀
 			type = "manual";
-			
+			prams.setTailorType(type);
+			tailor.setTailorType(type);
 			break;
 		case 78://绣花领取
 			
