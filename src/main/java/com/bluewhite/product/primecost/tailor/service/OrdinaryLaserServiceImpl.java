@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.product.primecost.tailor.dao.OrdinaryLaserDao;
 import com.bluewhite.product.primecost.tailor.entity.OrdinaryLaser;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
@@ -33,11 +34,17 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 	
 	@Override
 	public OrdinaryLaser saveOrdinaryLaser(OrdinaryLaser ordinaryLaser) {
-		
+		try {
+			NumUtils.setzro(ordinaryLaser);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
 		double managePrice = 0;
 		//在对裁剪方式页面的数据进行更新的时候，同步更新裁剪页面的数据
 		Tailor tailor = tailorService.findOne(ordinaryLaser.getTailorId());
 		PrimeCoefficient primeCoefficient = primeCoefficientDao.findByType(ordinaryLaser.getTailorType());
+		
+		
 		
 			switch (ordinaryLaser.getTailorTypeId().intValue()) {
 			case 71://普通激光切割
