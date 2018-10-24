@@ -39,6 +39,12 @@ public class CutParts extends BaseEntity<Long>{
 	private Double loss;
 	
 	/**
+	 * 选择该样品的裁片id
+	 */
+	@Column(name = "base_id")
+    private Long baseId;
+	
+	/**
 	 * 选择该样品的裁片名字
 	 */
 	@Column(name = "cutparts_name")
@@ -208,6 +214,16 @@ public class CutParts extends BaseEntity<Long>{
 
 	
 
+
+	
+
+	public Long getBaseId() {
+		return baseId;
+	}
+
+	public void setBaseId(Long baseId) {
+		this.baseId = baseId;
+	}
 
 	public Long getTailorId() {
 		return tailorId;

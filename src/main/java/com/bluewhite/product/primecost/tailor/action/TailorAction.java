@@ -94,19 +94,16 @@ public class TailorAction {
 	 */
 	@RequestMapping(value = "/product/addOrdinaryLaser", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addOrdinaryLaser(HttpServletRequest request,OrdinaryLaser ordinaryLaser,PrimeCoefficient primeCoefficient) {
+	public CommonResponse addOrdinaryLaser(HttpServletRequest request,OrdinaryLaser ordinaryLaser) {
 		CommonResponse cr = new CommonResponse();
 		if(StringUtils.isEmpty(ordinaryLaser.getId())){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品不能为空");
 		}else{
-			try {
-				ordinaryLaserService.saveOrdinaryLaser(ordinaryLaser,primeCoefficient);
-			} catch (Exception e) {
-				cr.setMessage(e.getMessage());
-				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				return cr;
-			}
+				OrdinaryLaser oldOrdinaryLaser = ordinaryLaserService.findOne(ordinaryLaser.getId());
+				BeanCopyUtils.copyNullProperties(oldOrdinaryLaser,ordinaryLaser);
+				ordinaryLaser.setCreatedAt(oldOrdinaryLaser.getCreatedAt());
+				ordinaryLaserService.saveOrdinaryLaser(ordinaryLaser);
 			cr.setMessage("添加成功");
 		}
 		return cr;
