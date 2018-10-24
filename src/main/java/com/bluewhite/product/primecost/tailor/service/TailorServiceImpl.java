@@ -253,6 +253,12 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		return tailor;
 	}
 
+
+	@Override
+	public List<Tailor> findByProductId(Long productId) {
+		return dao.findByProductId(productId);
+	}
+
 	
 	
 	

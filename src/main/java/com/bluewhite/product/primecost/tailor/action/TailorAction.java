@@ -103,7 +103,7 @@ public class TailorAction {
 				OrdinaryLaser oldOrdinaryLaser = ordinaryLaserService.findOne(ordinaryLaser.getId());
 				BeanCopyUtils.copyNullProperties(oldOrdinaryLaser,ordinaryLaser);
 				ordinaryLaser.setCreatedAt(oldOrdinaryLaser.getCreatedAt());
-				ordinaryLaserService.saveOrdinaryLaser(ordinaryLaser);
+			cr.setData(ordinaryLaserService.saveOrdinaryLaser(ordinaryLaser));	
 			cr.setMessage("添加成功");
 		}
 		return cr;

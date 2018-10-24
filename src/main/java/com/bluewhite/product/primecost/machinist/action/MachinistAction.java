@@ -1,7 +1,10 @@
 package com.bluewhite.product.primecost.machinist.action;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,9 +27,10 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
-import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
 import com.bluewhite.product.primecost.machinist.entity.Machinist;
 import com.bluewhite.product.primecost.machinist.service.MachinistService;
+import com.bluewhite.product.primecost.tailor.entity.Tailor;
+import com.bluewhite.product.primecost.tailor.service.TailorService;
 
 @Controller 
 public class MachinistAction {
@@ -39,7 +43,7 @@ public class MachinistAction {
 	private MachinistService machinistService;
 	
 	@Autowired
-	private CutPartsService cutPartsService;
+	private TailorService tailorService;
 	
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -110,15 +114,27 @@ public class MachinistAction {
 	 */
 	@RequestMapping(value = "/product/getMachinistName", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getMachinistName(HttpServletRequest request,PageParameter page,Machinist machinist) {
+	public CommonResponse getMachinistName(HttpServletRequest request,PageParameter page,Long id) {
 		CommonResponse cr = new CommonResponse();
+		List<Map<String,Object>> mapList = new ArrayList<>();
+		Map<String,Object> map = null;
 		//获取（cc裁片）裁剪页面的所有选定的物料名
-		List<CutParts> cutPartsList  = cutPartsService.findByProductId(machinist.getProductId());
-		
+		List<Tailor> tailorList  = tailorService.findByProductId(id);
+		for(Tailor tailor : tailorList){
+			map =  new HashMap<String, Object>();
+			map.put("name", tailor.getTailorName());
+			map.put("price", tailor.getMachinistPriceDown());
+			mapList.add(map);
+		}
 		//获取机工页面所有选定的物料名
-		List<Machinist> machinistList = machinistService.findByProductId(machinist.getProductId());
-		
-		
+		List<Machinist> machinistList = machinistService.findByProductId(id);
+		for(Machinist machinist : machinistList){
+			map =  new HashMap<String, Object>();
+			map.put("name", machinist.getMachinistName());
+			map.put("price", null);
+			mapList.add(map);
+		}
+		cr.setData(mapList);
 		cr.setMessage("查询成功");
 		return cr;
 	}
