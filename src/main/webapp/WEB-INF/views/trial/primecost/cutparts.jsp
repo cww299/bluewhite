@@ -204,6 +204,12 @@
 		  	this.setCount = function(count){
 		  		_count=count;
 		  	}
+		  	this.getNum = function(){
+		  		return _num;
+		  	}
+		  	this.setNum = function(num){
+		  		_num=num;
+		  	}
 			 var data={
 						page:1,
 				  		size:13,	
@@ -519,6 +525,10 @@
 					                        return JSON.stringify(aItem);
 					                    });
 									//提示框返回数据
+									 if(resultList==""){
+											var aItemtw = {"name":"", "id":""}
+											resultList.push(JSON.stringify(aItemtw)); 
+										} 
 									 return process(resultList);
 								},
 							})
@@ -526,20 +536,19 @@
 						}, highlighter: function (item) {
 						    //转出成json对象
 							 var item = JSON.parse(item);
-						    
 							return item.name
 							//按条件匹配输出
 		                }, matcher: function (item) {
 		                	//转出成json对象
 					        var item = JSON.parse(item);
-					     
+					        self.setNum(item.id)
 					    	return item.name
 					    },
 						//item是选中的数据
 						updater:function(item){
 							//转出成json对象
 							var item = JSON.parse(item);
-							
+							self.setNum(item.id)
 								return item.name
 						},
 					});
@@ -636,6 +645,7 @@
 					var postData = {
 						productId:self.getCache(),
 						number:$('#number').val(),
+						baseId:self.getNum(),
 						cutPartsName:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.cuttingName').val(),
 						cutPartsNumber:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.sliceNumber').val(),
 						materielNumber:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.materielNumber').text(),

@@ -128,7 +128,7 @@
                                         <tr>
                                        	    <td class="text-center">合计</td>
                                             <td class="text-center"></td>
-                                            <td class="text-center"></td>
+                                            <td class="text-center" ></td>
                                             <td class="text-center" id="totale"></td>
                                             <td class="text-center" ></td>
                                             <td class="text-center" id="totaltw"></td>
@@ -321,12 +321,18 @@
 				  		size:100,	
 				  		productId:"",
 				}
+				var data2={
+						page:1,
+				  		size:100,	
+				  		productId:"",
+				  		tailorTypeId:71,
+				}
 			this.init = function(){
 				
 				//注册绑定事件
 				self.events();
 				self.loadPagination(data);
-				self.loadPagination2(data);
+				self.loadPagination2(data2);
 			}
 			//加载分页
 			  this.loadPagination = function(data){
@@ -347,7 +353,7 @@
 		      				+'<td class="text-center edit ">'+o.tailorName+'</td>'
 		      				+'<td class="text-center edit ">'+o.tailorNumber+'</td>'
 		      				+'<td class="text-center edit ">'+o.bacthTailorNumber+'</td>'
-		      				+'<td class="text-center edit "><input class="form-control tailorSize" value='+(o.tailorSize!=null?o.tailorSize:"")+'></td>'
+		      				+'<td class="text-center edit "><input class="form-control tailorSize"  value='+(o.tailorSize!=null?o.tailorSize:"")+'></td>'
 		      				+'<td class="text-center edit tailorType" data-tailortypeid='+o.tailorTypeId+'></td>'
 		      				+'<td class="text-center managePrice">'+(o.managePrice!=null?o.managePrice:"")+'</td>'
 		      				+'<td class="text-center experimentPrice">'+parseFloat((o.experimentPrice*1).toFixed(5))+'</td>'
@@ -364,14 +370,14 @@
 					  }
 				  });
 			}
-			  this.loadPagination2 = function(data){
+			  this.loadPagination2 = function(data2){
+				  //裁剪普通激光
 				  $(".profile1").on('click',function(){
 					  var index;
 					    var html = '';
-					    //B工资流水开始
 					    $.ajax({
-						      url:"${ctx}/product/getTailor",
-						      data:data,
+						      url:"${ctx}/product/getOrdinaryLaser",
+						      data:data2,
 						      type:"GET",
 						      beforeSend:function(){
 							 	  index = layer.load(1, {
@@ -382,23 +388,81 @@
 				      			 $(result.data.rows).each(function(i,o){
 				      				 html +='<tr>'
 				      				+'<td class="text-center edit ">'+o.tailorName+'</td>'
-				      				+'<td class="text-center edit ">'+o.tailorNumber+'</td>'
-				      				+'<td class="text-center edit ">'+o.bacthTailorNumber+'</td>'
-				      				+'<td class="text-center edit "><input class="form-control tailorSize" value='+(o.tailorSize!=null?o.tailorSize:"")+'></td>'
-				      				+'<td class="text-center edit tailorType" data-tailortypeid='+o.tailorTypeId+'></td>'
-				      				+'<td class="text-center managePrice">'+(o.managePrice!=null?o.managePrice:"")+'</td>'
-				      				+'<td class="text-center experimentPrice">'+parseFloat((o.experimentPrice*1).toFixed(5))+'</td>'
-				      				+'<td class="text-center edit ">'+(o.ratePrice!=null?o.ratePrice:"")+'</td>'
-				      				+'<td class="text-center edit "></td></tr>'
+				      				+'<td class="text-center tailorType2" data-tailortypeid2='+o.tailorTypeId+'></td>'
+				      				+'<td class="text-center"><input class="form-control perimeter2" data-id="'+o.id+'" style="width: 80px;" value='+(o.perimeter!=0?o.perimeter:"")+'></td>'
+				      				+'<td class="text-center edit"><input class="form-control stallPoint2" style="width: 50px;" value='+(o.stallPoint!=0?o.stallPoint:"")+'></td>'
+				      				+'<td class="text-center edit"><select class="form-control stallPoint" style="width: 100px;"><option value="">请选择</option><option value="1">单</option><option value="2">双</option></select></td>'
+				      				+'<td class="text-center"><input class="form-control time" style="width: 50px;"  value='+(o.time!=null?o.time:"")+'></td>'
+				      				+'<td class="text-center"><input class="form-control otherTimeOne" style="width: 80px;" value='+(o.otherTimeOne!=null?o.otherTimeOne:"")+'></td>'
+				      				+'<td class="text-center"><input class="form-control otherTimeTwo" style="width: 80px;" value='+(o.otherTimeTwo!=null?o.otherTimeTwo:"")+'></td>'
+				      				+'<td class="text-center edit ">'+parseFloat((o.rabbTime).toFixed(5))+'</td>'
+				      				+'<td class="text-center edit ">'+parseFloat((o.singleLaserTime).toFixed(5))+'</td>'
+				      				+'<td class="text-center edit ">'+parseFloat((o.singleLaserHandTime).toFixed(5))+'</td>'
+				      				+'<td class="text-center edit ">'+parseFloat((o.labourCost).toFixed(8))+'</td>'
+				      				+'<td class="text-center edit ">'+parseFloat((o.equipmentPrice).toFixed(5))+'</td>'
+				      				+'<td class="text-center edit ">'+parseFloat((o.administrativeAtaff).toFixed(5))+'</td>'
+				      				+'<td class="text-center edit ">'+parseFloat((o.stallPrice).toFixed(5))+'</td></tr>'
 				      			}); 
 							   	layer.close(index);
 							   	 $("#tablecontent2").html(html); 
+							   	 self.loadEvents2();
 						      },error:function(){
 									layer.msg("加载失败！", {icon: 2});
 									layer.close(index);
 							  }
 						  });
 				  })
+			  }
+			  this.loadEvents2 = function(){
+				  //遍历裁剪方式
+				  var data = {
+							type:"tailor",
+						}
+						var index;
+					    var html = '';
+					    var htmlto= '';
+					    $.ajax({
+						      url:"${ctx}/product/getBaseOne",
+						      data:data,
+						      type:"GET",
+				      		  success: function (result) {
+				      			 $(result.data).each(function(i,o){
+				      				html +='<option value="'+o.id+'">'+o.name+'</option>'
+				      			}); 
+						       htmlto='<select class="text-center form-control selecttailorType2" disabled="disabled"><option value="">请选择</option>'+html+'</select>'
+				      		  $(".tailorType2").html(htmlto)
+				      		  //改变事件
+				      		  $(".selecttailorType2").each(function(i,o){
+				      		var id=	$(o).parent().data("tailortypeid2");
+									$(o).val(id)
+									}) 
+				      		  },error:function(){
+									layer.msg("加载失败！", {icon: 2});
+									layer.close(index);sa
+							  }
+						  });
+					    
+					    $('.perimeter2').blur(function(){
+					    	var id=$(this).data("id");
+					    	var that=$(this);
+					    	var data={
+					    		id:id,
+					    		perimeter:$(this).val(),
+					    		stallPoint:$(this).parent().parent().find(".stallPoint2").val(),
+					    	}
+					    	$.ajax({
+							      url:"${ctx}/product/addOrdinaryLaser",
+							      data:data,
+							      type:"POST",
+					      		  success: function (result) {
+					      			 $(result.data).each(function(i,o){
+					      			}); 
+					      		  },error:function(){
+										layer.msg("加载失败！", {icon: 2});
+										layer.close(index);sa
+								  }
+							  });
+					    })
 			  }
 			this.loadEvents = function(){
 				//遍历裁剪方式
