@@ -54,7 +54,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		
 		
 		//为机工准备的压价
-		double MachinistPriceDown = tailor.getNoeMbroiderPriceDown() >= tailor.getEmbroiderPriceDown() ? tailor.getNoeMbroiderPriceDown() :tailor.getEmbroiderPriceDown();
+		double MachinistPriceDown = tailor.getNoeMbroiderPriceDown() >= NumUtils.setzro(tailor.getEmbroiderPriceDown()) ? tailor.getNoeMbroiderPriceDown() :tailor.getEmbroiderPriceDown();
 		tailor.setMachinistPriceDown(MachinistPriceDown);
 		
 		
