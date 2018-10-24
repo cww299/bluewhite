@@ -1,5 +1,7 @@
 package com.bluewhite.product.primecost.cutparts.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -31,5 +33,12 @@ public interface CutPartsService extends BaseCRUDService<CutParts,Long>{
 	 * @param id
 	 */
 	public void deleteCutParts(Long id );
+	
+	/**
+	 * 根据产品id查询
+	 * @param productId
+	 * @return
+	 */
+	public List<CutParts> findByProductId(Long productId);
 
 }

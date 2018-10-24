@@ -77,6 +77,8 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		tailor.setProductId(cutParts.getProductId());
 		//批量产品数量或模拟批量数
 		tailor.setNumber(cutParts.getNumber());
+		//裁片id
+		tailor.setBaseId(cutParts.getBaseId());
 		//裁剪部位名称
 		tailor.setTailorName(cutParts.getCutPartsName());
 		//裁剪片数
@@ -88,10 +90,11 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 				+(cutParts.getBatchComplexAddPrice()==null ? 0.0 :cutParts.getBatchComplexAddPrice()));
 		//不含绣花环节的为机工压价	
 		
-		
 		//含绣花环节的为机工压价
 		
 		//为机工准备的压价
+		
+		
 		
 		tailorDao.save(tailor);
 		//更新裁剪页面id到裁片中
@@ -174,6 +177,12 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		product.getPrimeCost().setCutPartsPrice(batchMaterialPrice+batchComplexMaterialPrice+batchComplexAddPrice);
 		productdao.save(product);
 		dao.save(cutPartsList);
+	}
+
+
+	@Override
+	public List<CutParts> findByProductId(Long productId) {
+		return dao.findByProductId(productId);
 	}
 
 }

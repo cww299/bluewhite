@@ -184,6 +184,12 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 	private Double perSecondMachinist;
 	
 	/**
+	 *每秒工价
+	 */
+	@Column(name = "per_second_machinist_two")
+	private Double perSecondMachinistTwo;
+	
+	/**
 	 *制版分配任务管理人员工资
 	 */
 	@Column(name = "manage_price")
@@ -202,7 +208,7 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 	private Double manageEquipmentNumber;
 	
 	/**
-	 *设置激光设备利润比
+	 *设置激光设备利润比（设置车间利润比）
 	 */
 	@Column(name = "equipment_profit")
 	private Double equipmentProfit;
@@ -321,8 +327,62 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 	@Column(name = "manual_two")
 	private Double manualTwo;
 	
+	
+	/*** 机缝时间   *****/	
+	/**
+	 * 黏片时间/片/秒
+	 */
+	@Column(name = "machinist_one")
+	private Double machinistOne;
+	
+	/**
+	 * 剪线时间/片/秒
+	 */
+	@Column(name = "machinist_two")
+	private Double machinisttwo;
+	
+	/**
+	 *回针时间/个/秒 
+	 */
+	@Column(name = "machinist_three")
+	private Double machinistThree;
+	
 
 	
+
+	
+
+	public Double getPerSecondMachinistTwo() {
+		return perSecondMachinistTwo;
+	}
+
+	public void setPerSecondMachinistTwo(Double perSecondMachinistTwo) {
+		this.perSecondMachinistTwo = perSecondMachinistTwo;
+	}
+
+	public Double getMachinistOne() {
+		return machinistOne;
+	}
+
+	public void setMachinistOne(Double machinistOne) {
+		this.machinistOne = machinistOne;
+	}
+
+	public Double getMachinisttwo() {
+		return machinisttwo;
+	}
+
+	public void setMachinisttwo(Double machinisttwo) {
+		this.machinisttwo = machinisttwo;
+	}
+
+	public Double getMachinistThree() {
+		return machinistThree;
+	}
+
+	public void setMachinistThree(Double machinistThree) {
+		this.machinistThree = machinistThree;
+	}
 
 	public Double getManualOne() {
 		return manualOne;

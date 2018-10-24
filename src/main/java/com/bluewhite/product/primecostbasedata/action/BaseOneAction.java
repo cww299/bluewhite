@@ -20,9 +20,11 @@ import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
+import com.bluewhite.product.primecostbasedata.dao.BaseFourDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneTimeDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseThreeDao;
 import com.bluewhite.product.primecostbasedata.dao.PrimeCoefficientDao;
+import com.bluewhite.product.primecostbasedata.entity.BaseFour;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.BaseOneTime;
 import com.bluewhite.product.primecostbasedata.entity.BaseThree;
@@ -35,7 +37,8 @@ public class BaseOneAction {
 	
 	private final static Log log = Log.getLog(BaseOneAction.class);
 	
-
+	@Autowired
+	private BaseFourDao baseFourDao;
 	
 	@Autowired
 	private BaseThreeDao baseThreeDao;
@@ -256,6 +259,55 @@ public class BaseOneAction {
 		cr.setData(primeCoefficientDao.findByType(type));
 		return cr;
 	}
+	
+	
+	/**
+	 * 获取机锋时间页面布料
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/product/getBaseFour", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getBaseFour(HttpServletRequest request) {
+		CommonResponse cr = new CommonResponse();
+		List<BaseFour> baseFour = baseFourDao.findAll();
+		cr.setMessage("获取成功");
+		cr.setData(baseFour);
+		return cr;
+	}
+	
+	
+	/**
+	 * 获取机锋时间页面布料对应的数据
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/product/getBaseFourDate", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getBaseFourDate(HttpServletRequest request,Long id,Integer type) {
+		CommonResponse cr = new CommonResponse();
+		BaseFour baseFour = baseFourDao.findOne(id);
+		Double baseFourDate = 0.0;
+		switch (type) {
+		case 2://普通激光切割
+			baseFourDate = baseFour.getNeedle56();
+			break;
+		case 3://普通激光切割
+			baseFourDate = baseFour.getNeedle45();
+			break;
+		case 4://普通激光切割
+			baseFourDate = baseFour.getNeedle34();
+			break;
+		}
+		cr.setMessage("获取成功");
+		cr.setData(baseFourDate);
+		return cr;
+	}
+	
 	
 	
 	

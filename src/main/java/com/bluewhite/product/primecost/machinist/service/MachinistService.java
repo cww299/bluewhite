@@ -1,5 +1,7 @@
 package com.bluewhite.product.primecost.machinist.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -28,5 +30,12 @@ public interface MachinistService extends BaseCRUDService<Machinist,Long>{
 	 * @param productMaterials
 	 */
 	public void deleteProductMaterials(Machinist machinist);
+	
+	/**
+	 * 根据产品id查询所有机工
+	 * @param productId
+	 * @return
+	 */
+	public List<Machinist> findByProductId(Long productId);
 
 }

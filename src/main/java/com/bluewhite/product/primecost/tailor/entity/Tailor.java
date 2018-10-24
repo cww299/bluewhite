@@ -45,6 +45,13 @@ public class Tailor extends BaseEntity<Long>{
 	private Integer number;
 	
 	
+	
+	/**
+	 * 选择该样品的裁片id
+	 */
+	@Column(name = "base_id")
+    private Long baseId;
+	
 	/**
 	 * 裁剪部位
 	 */
@@ -147,6 +154,14 @@ public class Tailor extends BaseEntity<Long>{
 	
 
 
+
+	public Long getBaseId() {
+		return baseId;
+	}
+
+	public void setBaseId(Long baseId) {
+		this.baseId = baseId;
+	}
 
 	public Long getOrdinaryLaserId() {
 		return ordinaryLaserId;

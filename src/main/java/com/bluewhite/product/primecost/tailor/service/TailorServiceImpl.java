@@ -48,6 +48,16 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 	public Tailor saveTailor(Tailor tailor){
 		//当同一个裁剪页面实体，改变了类型，进行保存操作。同时删除之前关联的类型实体
 		OrdinaryLaser  prams = ordinaryLaserDao.findByTailorId(tailor.getId());
+		//不含绣花环节的为机工压价	
+		tailor.setNoeMbroiderPriceDown(tailor.getAllCostPrice()+tailor.getPriceDown());
+		//含绣花环节的为机工压价
+		
+		
+		//为机工准备的压价
+		double MachinistPriceDown = tailor.getNoeMbroiderPriceDown() >= tailor.getEmbroiderPriceDown() ? tailor.getNoeMbroiderPriceDown() :tailor.getEmbroiderPriceDown();
+		tailor.setMachinistPriceDown(MachinistPriceDown);
+		
+		
 		if(prams!=null && !prams.getId().equals(tailor.getOrdinaryLaserId())){
 			ordinaryLaserDao.delete(prams);
 		}
