@@ -262,6 +262,65 @@
             </section>
         </section>
 
+
+<div id="addDictDivType" style="display: none;">
+			<div class=" col-xs-12  col-sm-12  col-md-12 ">
+				<div class="space-10"></div>
+				<div style="height: 30px"></div>
+				<form class="form-horizontal addDictDivTypeForm">
+					<div class="row col-xs-12  col-sm-12  col-md-12 ">
+		
+                 
+						<div class="form-group">
+                           <label class="col-sm-3 col-md-2 control-label">任务数量:</label>
+                              <div class="col-sm-3 col-md-3">
+                                  <input type="text" class="form-control sumnumber">
+                              </div>
+                               <div >
+                            <label class="col-sm-2 col-md-2 control-label" >预计完成时间:</label>
+                                <div class="col-sm-3 col-md-3">
+                                  <input type="text"   placeholder="非返工任务不填写"  class="form-control sumtime">
+                                </div>
+                                </div>
+                    	</div>
+                    	<div class="form-group">
+                               <label class="col-sm-2 control-label">实际任务时间:</label>
+                                 <div class="col-sm-3">
+                                          <input type="text"   class="form-control actualtime">
+                                      </div>
+                		 </div>
+                    	
+                 		 <div class="form-group">
+                               <label class="col-sm-2 control-label">任务分配:</label>
+                                 <div class="col-sm-3">
+                                          <input id="Time" placeholder="时间可不填" class="form-control laydate-icon"
+           									onClick="laydate({elem: '#Time', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                                      </div>
+                              <label class="col-sm-2 control-label">加绩工序:</label>
+                              <div class="col-sm-3 workingtw">
+                              </div> 
+                		 </div>
+                    	
+                    	
+                    	<div class="form-group">
+                           <label class="col-sm-2 control-label">选择工序:</label>
+                              <div class="col-sm-2 working">
+                              </div>
+                              <div class="col-sm-2 checkworking"></div>
+                            <label class="col-sm-1 control-label">完成人:</label>
+                                <div class="col-sm-2 complete">
+                                  <input type="text" class="form-control">
+                                </div>
+                                 <div class="col-sm-2 select"></div>
+                    	</div>
+                 </div>
+				</form>
+				</div>
+</div>
+
+
+
+
     </section>
     
    
@@ -277,6 +336,7 @@
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
     <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+    <script src="${ctx }/static/js/vendor/mSlider.min.js"></script>
     <script>
    jQuery(function($){
    	var Login = function(){
@@ -556,6 +616,30 @@
 					  });
 			}
 			this.events = function(){
+				
+				$(".searchtask").on('click',function(){
+				var demo = new mSlider({dom: ".searchtask"})
+				demo.open()
+					/* var dicDiv=$('#addDictDivType');
+					_index = layer.open({
+						  type: 1,
+						  skin: 'layui-layer-rim', //加上边框
+						  area: ['60%', '60%'], 
+						  btnAlign: 'c',//宽高
+						  maxmin: true,
+						  title:'',
+						  content: dicDiv,
+						  btn: ['确定', '取消'],
+						  yes:function(index, layero){
+							},
+						   end:function(){
+						  } 
+					}); */
+					
+					
+					
+					
+				})
 			}
    	}
    			var login = new Login();
