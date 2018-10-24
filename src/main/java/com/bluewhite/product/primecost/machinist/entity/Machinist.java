@@ -91,6 +91,11 @@ public class Machinist extends BaseEntity<Long> {
 	@Column(name = "cutparts")
     private String cutparts;
 	
+	/**
+	 * 用到裁片或上道的压价(多个，以逗号分隔)
+	 */
+	@Column(name = "cutparts_price")
+    private Double cutpartsPrice;
 	
 	/****机封时间 ***/
 	/**
@@ -269,6 +274,14 @@ public class Machinist extends BaseEntity<Long> {
 	
 	
 	
+	public Double getCutpartsPrice() {
+		return cutpartsPrice;
+	}
+
+	public void setCutpartsPrice(Double cutpartsPrice) {
+		this.cutpartsPrice = cutpartsPrice;
+	}
+
 	public String getBeeline() {
 		return beeline;
 	}

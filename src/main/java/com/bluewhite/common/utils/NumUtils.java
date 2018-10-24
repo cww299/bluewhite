@@ -59,19 +59,25 @@ public class NumUtils {
 	}
 	
 	/**
-	 * 当传入字段为空，自动赋值为0；
+	 * 当传入实体字段属性为空，自动赋值为0；
 	 * @throws IllegalAccessException 
 	 * @throws IllegalArgumentException 
 	 */
-	public static Object setzro(Object model ) throws IllegalArgumentException, IllegalAccessException {
+	public static Object setzro(Object model )  {
 		Field[] fields = model.getClass().getDeclaredFields();
 		 for(Field field : fields){
 			 field.setAccessible(true);
 			 String type = field.getType().toString();// 得到此属性的类型
 			 if(type.endsWith("Double")){
 				 Object target =  field.getName();
-				 Object val = field.get(model);
-				 field.set(model,(Double)val == null ? (Double)0.0 : (Double)val); 
+				 Object val;
+				try {
+					val = field.get(model);
+					field.set(model,(Double)val == null ? (Double)0.0 : (Double)val); 
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			 } 
 		 }
 		 return model;

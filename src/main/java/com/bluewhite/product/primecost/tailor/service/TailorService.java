@@ -1,5 +1,7 @@
 package com.bluewhite.product.primecost.tailor.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -41,6 +43,9 @@ public interface TailorService extends BaseCRUDService<Tailor,Long> {
 	 * @return
 	 */
 	public Tailor getTailorDate(Tailor tailor,OrdinaryLaser ordinaryLaser);
+
+	
+	public List<Tailor> findByProductId(Long productId);
 	
 
 }

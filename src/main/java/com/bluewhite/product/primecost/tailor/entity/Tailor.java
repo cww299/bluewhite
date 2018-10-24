@@ -1,18 +1,10 @@
 package com.bluewhite.product.primecost.tailor.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
-
 import com.bluewhite.base.BaseEntity;
-import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
 
 /**
  * 裁剪页面

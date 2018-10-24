@@ -34,11 +34,8 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 	
 	@Override
 	public OrdinaryLaser saveOrdinaryLaser(OrdinaryLaser ordinaryLaser) {
-		try {
-			NumUtils.setzro(ordinaryLaser);
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			e.printStackTrace();
-		}
+		//自动将类型为double为空的属性赋值为0
+		NumUtils.setzro(ordinaryLaser);
 		double managePrice = 0;
 		//在对裁剪方式页面的数据进行更新的时候，同步更新裁剪页面的数据
 		Tailor tailor = tailorService.findOne(ordinaryLaser.getTailorId());
