@@ -347,6 +347,13 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 	@Column(name = "machinist_three")
 	private Double machinistThree;
 	
+	/****   绣花页面   *****/
+	
+	/**
+	 * 薄膜每平价格
+	 */
+//	@Column(name = "machinist_three")
+//	private Double machinistThree;
 
 	
 

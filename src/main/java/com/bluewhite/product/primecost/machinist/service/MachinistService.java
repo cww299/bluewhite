@@ -29,7 +29,7 @@ public interface MachinistService extends BaseCRUDService<Machinist,Long>{
 	 * 删除机工
 	 * @param productMaterials
 	 */
-	public void deleteProductMaterials(Machinist machinist);
+	public void deleteProductMaterials(Long id);
 	
 	/**
 	 * 根据产品id查询所有机工

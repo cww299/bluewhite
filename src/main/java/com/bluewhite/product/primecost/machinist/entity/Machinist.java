@@ -54,11 +54,20 @@ public class Machinist extends BaseEntity<Long> {
 	@Column(name = "price_down")
     private Double priceDown;
 	
+	
+	/**
+	 * 机工的压价总和
+	 */
+	@Column(name = "sum_price_down_remark")
+    private Double sumPriceDownRemark;
+	
 	/**
 	 * 物料和上道压（裁剪,上道机工）价-(只有在当行机工环节单独发放给某个加工店，这个才起作用)
 	 */
 	@Column(name = "price_down_remark")
     private Double priceDownRemark;
+	
+	
 	
 	/**
 	 *为针工准备的压价
@@ -95,7 +104,7 @@ public class Machinist extends BaseEntity<Long> {
 	 * 用到裁片或上道的压价(多个，以逗号分隔)
 	 */
 	@Column(name = "cutparts_price")
-    private Double cutpartsPrice;
+    private String cutpartsPrice;
 	
 	/****机封时间 ***/
 	/**
@@ -274,11 +283,21 @@ public class Machinist extends BaseEntity<Long> {
 	
 	
 	
-	public Double getCutpartsPrice() {
+	
+
+	public Double getSumPriceDownRemark() {
+		return sumPriceDownRemark;
+	}
+
+	public void setSumPriceDownRemark(Double sumPriceDownRemark) {
+		this.sumPriceDownRemark = sumPriceDownRemark;
+	}
+
+	public String getCutpartsPrice() {
 		return cutpartsPrice;
 	}
 
-	public void setCutpartsPrice(Double cutpartsPrice) {
+	public void setCutpartsPrice(String cutpartsPrice) {
 		this.cutpartsPrice = cutpartsPrice;
 	}
 
