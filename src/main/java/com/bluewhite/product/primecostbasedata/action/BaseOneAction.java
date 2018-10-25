@@ -235,7 +235,7 @@ public class BaseOneAction {
 			oldPrimeCoefficient.setPerSecondMachinist(primeCoefficient.getOmnHorMachinist()/TIME/TIME);
 			//每秒管理费用
 			oldPrimeCoefficient.setPerSecondManage(primeCoefficient.getManagePrice()/primeCoefficient.getManageEquipmentNumber()/25/8/TIME/TIME);
-			primeCoefficientDao.save(oldPrimeCoefficient);
+			cr.setData(primeCoefficientDao.save(oldPrimeCoefficient));
 			cr.setMessage("修改成功");
 		}else{
 			cr.setMessage("不能为空");
