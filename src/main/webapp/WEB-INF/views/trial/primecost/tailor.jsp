@@ -869,7 +869,6 @@
 			      			var id=$(this).parent().prevAll().find(".checkboxId").val();
 			      			  if(a==""){
 			      				$(that).each(function(i,o){
-									
 									$(o).val("")
 									}) 
 			      				  return layer.msg("请先填写裁片的平方M", {icon: 2});
