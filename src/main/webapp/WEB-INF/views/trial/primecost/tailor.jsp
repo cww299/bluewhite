@@ -12,7 +12,7 @@
     <title>裁剪</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-   
+  
    
 </head>
 
@@ -263,63 +263,104 @@
         </section>
 
 
-<div id="addDictDivType" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
+<div class="wrap">
+<div class="layer-right" style="display: none;">
+           <div class=" col-xs-12  col-sm-12  col-md-12">
 				<div class="space-10"></div>
 				<div style="height: 30px"></div>
-				<form class="form-horizontal addDictDivTypeForm">
-					<div class="row col-xs-12  col-sm-12  col-md-12 ">
-		
-                 
-						<div class="form-group">
-                           <label class="col-sm-3 col-md-2 control-label">任务数量:</label>
-                              <div class="col-sm-3 col-md-3">
-                                  <input type="text" class="form-control sumnumber">
-                              </div>
-                               <div >
-                            <label class="col-sm-2 col-md-2 control-label" >预计完成时间:</label>
-                                <div class="col-sm-3 col-md-3">
-                                  <input type="text"   placeholder="非返工任务不填写"  class="form-control sumtime">
-                                </div>
-                                </div>
+				<form class="form-horizontal addDictDivTypeFormtw">
+					<div class="row col-xs-12  col-sm-12  col-md-12" >
+									<table>
+                                        <tr>
+                                       		<th class="text-center">当下周边地区激光每米/元:</th><td><input type="text" id="peripheralLaser"  class="form-control"></td>
+                                       		<td><input type="text" id="ordid" class="hidden"></td>
+                                       		<th><button type="button" class="btn btn-info  btn-sm  btn-trans updateord">修改</button></th>
+                                       </tr>
+                                       <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">激光机秒走CM?:</th><td><input type="text" id="extent"  class="form-control actualtimetw"></td>
+                                            <th class="text-center">每CM 用时/秒:</th><td><input type="text" disabled="disabled" id="time"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">激光片每个停顿点用秒？:</th><td><input type="text"  id="pauseTime" class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">1.5M*1M拉布平铺时间:</th><td><input type="text" id="rabbTime"  class="form-control actualtimetw"></td>
+                                            <th class="text-center">被/数:</th><td><input type="text" id="quilt"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">激光机放快手比:</th><td><input type="text"  id="quickWorker" class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">激光机设备价值:</th><td><input type="text"  id="worth" class="form-control actualtimetw"></td>
+                                            <th class="text-center">每秒设备折旧费用:</th><td><input type="text" disabled="disabled" id="depreciation"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">设置分摊天数:</th><td><input type="text" id="shareDay"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">每天机器工作时间设置/小时:</th><td><input type="text" id="workTime"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">激光管费用:</th><td><input type="text" id="laserTubePrice"  class="form-control actualtimetw"></td>
+                                            <th class="text-center">每秒激光管费用:</th><td><input type="text" disabled="disabled" id="laserTubePriceSecond"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">分摊小时:</th><td><input type="text" id="shareTime"  class="form-control actualtimetw"></td>
+                                            <th class="text-center">每秒维护费用:</th><td><input type="text" disabled="disabled" id="maintenanceChargeSecond"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">维护费用:</th><td><input type="text" id="maintenanceCharge"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">分摊小时:</th><td><input type="text" id="shareTimeTwo"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">每小时耗电/元:</th><td><input type="text" id="omnHorElectric"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">每小时耗水/元:</th><td><input type="text" id="omnHorWater"  class="form-control actualtimetw"></td>
+                                            <th class="text-center">每秒耗3费:</th><td><input type="text" disabled="disabled" id="perSecondPrice"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">每小时耗房租/元:</th><td><input type="text" id="omnHorHouse"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">每小时站机工价:</th><td><input type="text" id="omnHorMachinist"  class="form-control actualtimetw"></td>
+                                            <th class="text-center">每秒工价:</th><td><input type="text" disabled="disabled" id="perSecondMachinist"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">制版分配任务管理人员工资:</th><td><input type="text" id="managePrice"   class="form-control actualtimetw"></td>
+                                            <th class="text-center">每秒管理费用:</th><td><input type="text" disabled="disabled" id="perSecondManage"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">管理设备数量:</th><td><input type="text" id="manageEquipmentNumber"  class="form-control actualtimetw"></td>
+                                            <th class="text-center">设置激光设备利润比:</th><td><input type="text" id="equipmentProfit"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                    </table>
                     	</div>
-                    	<div class="form-group">
-                               <label class="col-sm-2 control-label">实际任务时间:</label>
-                                 <div class="col-sm-3">
-                                          <input type="text"   class="form-control actualtime">
-                                      </div>
-                		 </div>
-                    	
-                 		 <div class="form-group">
-                               <label class="col-sm-2 control-label">任务分配:</label>
-                                 <div class="col-sm-3">
-                                          <input id="Time" placeholder="时间可不填" class="form-control laydate-icon"
-           									onClick="laydate({elem: '#Time', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-                                      </div>
-                              <label class="col-sm-2 control-label">加绩工序:</label>
-                              <div class="col-sm-3 workingtw">
-                              </div> 
-                		 </div>
-                    	
-                    	
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">选择工序:</label>
-                              <div class="col-sm-2 working">
-                              </div>
-                              <div class="col-sm-2 checkworking"></div>
-                            <label class="col-sm-1 control-label">完成人:</label>
-                                <div class="col-sm-2 complete">
-                                  <input type="text" class="form-control">
-                                </div>
-                                 <div class="col-sm-2 select"></div>
-                    	</div>
-                 </div>
+                 		
 				</form>
+                 </div>
 				</div>
+  </div>
 </div>
-
-
-
 
     </section>
     
@@ -474,6 +515,88 @@
 				  })
 			  }
 			  this.loadEvents2 = function(){
+				  //调用基础数据
+				  var data2 = {
+							type:"ordinarylaser",
+						}
+				  var index;
+				  $.ajax({
+				      url:"${ctx}/product/getPrimeCoefficient",
+				      data:data2,
+				      type:"GET",
+		      		  success: function (result) {
+		      			 $(result.data).each(function(i,o){
+		      			$("#ordid").val(o.id)
+		      			$("#peripheralLaser").val(o.peripheralLaser)
+		      			$("#extent").val(o.extent)
+		      			$("#time").val(o.time)
+		      			$("#pauseTime").val(o.pauseTime)
+		      			$("#rabbTime").val(o.rabbTime)
+		      			$("#quilt").val(o.quilt)
+		      			$("#quickWorker").val(o.quickWorker)
+		      			$("#worth").val(o.worth)
+		      			$("#depreciation").val(o.depreciation)
+		      			$("#shareDay").val(o.shareDay)
+		      			$("#workTime").val(o.workTime)
+		      			$("#laserTubePrice").val(o.laserTubePrice)
+		      			$("#laserTubePriceSecond").val(o.laserTubePriceSecond)
+		      			$("#shareTime").val(o.shareTime)
+		      			$("#maintenanceChargeSecond").val(o.maintenanceChargeSecond)
+		      			$("#maintenanceCharge").val(o.maintenanceCharge)
+		      			$("#shareTimeTwo").val(o.shareTimeTwo)
+		      			$("#omnHorElectric").val(o.omnHorElectric)
+		      			$("#omnHorWater").val(o.omnHorWater)
+		      			$("#perSecondPrice").val(o.perSecondPrice)
+		      			$("#omnHorHouse").val(o.omnHorHouse)
+		      			$("#omnHorMachinist").val(o.omnHorMachinist)
+		      			$("#perSecondMachinist").val(o.perSecondMachinist)
+		      			$("#managePrice").val(o.managePrice)
+		      			$("#perSecondManage").val(o.perSecondManage)
+		      			$("#manageEquipmentNumber").val(o.manageEquipmentNumber)
+		      			$("#equipmentProfit").val(o.equipmentProfit)
+		      			 }); 
+		      		  },error:function(){
+							layer.msg("加载失败！", {icon: 2});
+							layer.close(index);sa
+					  }
+				  });
+				  $(".updateord").on('click',function(){
+					  var data={
+					  	id:$("#ordid").val(),
+					  	peripheralLaser:$("#peripheralLaser").val(),
+					  	extent:$("#extent").val(),
+					  	pauseTime:$("#pauseTime").val(),
+					  	rabbTime:$("#rabbTime").val(),
+					  	quilt:$("#quilt").val(),
+					  	quickWorker:$("#quickWorker").val(),
+					  	worth:$("#worth").val(),
+					  	shareDay:$("#shareDay").val(),
+					  	workTime:$("#workTime").val(),
+					  	laserTubePrice:$("#laserTubePrice").val(),
+					  	shareTime:$("#shareTime").val(),
+					  	maintenanceCharge:$("#maintenanceCharge").val(),
+					  	shareTimeTwo:$("#shareTimeTwo").val(),
+					  	omnHorElectric:$("#omnHorElectric").val(),
+					  	omnHorWater:$("#omnHorWater").val(),
+					  	omnHorHouse:$("#omnHorHouse").val(),
+					  	omnHorMachinist:$("#omnHorMachinist").val(),
+					  	managePrice:$("#managePrice").val(),
+					  	manageEquipmentNumber:$("#manageEquipmentNumber").val(),
+					  	equipmentProfit:$("#equipmentProfit").val(),
+					  }
+					  $.ajax({
+					      url:"${ctx}/product/updatePrimeCoefficient",
+					      data:data,
+					      type:"POST",
+			      		  success: function (result) {
+			      			 $(result.data).each(function(i,o){
+			      			}); 
+			      		  },error:function(){
+								layer.msg("加载失败！", {icon: 2});
+								layer.close(index);sa
+						  }
+					  });
+				  })
 				  //遍历裁剪方式
 				  var data = {
 							type:"tailor",
@@ -618,8 +741,18 @@
 			this.events = function(){
 				
 				$(".searchtask").on('click',function(){
-				var demo = new mSlider({dom: ".searchtask"})
-				demo.open()
+					$(".layer-right").css("display","block");
+					var demo = new mSlider({
+						dom:".layer-right",
+						direction: "right",
+						distance:"35%",
+						
+					})
+					demo.open()
+				/* var _right = new mSlider({
+                dom: "#addDictDivType",
+                direction: "right"
+            }); */
 					/* var dicDiv=$('#addDictDivType');
 					_index = layer.open({
 						  type: 1,
