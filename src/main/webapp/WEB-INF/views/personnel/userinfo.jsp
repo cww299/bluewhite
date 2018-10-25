@@ -723,7 +723,7 @@
 		      				+'<td class="text-center edit price">'+(o.actua!=null ? o.actua: "")+'</td>'
 		      				+'<td class="text-center edit price">'+k+'</td>'
 		      				+'<td class="text-center edit price">'+r+'</td>'
-							+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>员工详情</button> <button class="btn btn-xs btn-success btn-trans addbatchtw" data-ids='+m+' data-id='+o.id+'>档案位置详情</button></td></tr>'
+							+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>员工详情</button> <button class="btn btn-xs btn-success btn-trans addbatchtw" data-idd='+o.id+' data-ids='+m+' >档案位置详情</button></td></tr>'
 		      			}); 
 		      			self.setCount(result.data.pageNum)
 				        //显示分页
@@ -1125,7 +1125,7 @@
 									  numberr.push($(this).val());
 									}); 
 								  postData={
-										  id:id,
+										  	id:id,
 										  	agreementId:numberr,
 											commitmentId:values,
 										 	userName:$('.userName').val(),
@@ -1254,8 +1254,11 @@
 						var bacthDepartmentPrice=$(this).parent().parent().find('.departmentPrice').text();
 						var bacthHairPrice=$(this).parent().parent().find('.hairPrice').text();
 						$('#proName').val(userName);
-						var id=$(this).data('id');
+						var id=$(this).data('idd');
 						var ids=$(this).data('ids');
+						if(ids==""){
+							return layer.msg("该员工没有合同信息 请去员工信息中修改", {icon: 2});
+						}
 						var a="";
 						var c="";
 						//遍历工序类型
@@ -1267,6 +1270,7 @@
 					  var data={
 							id:id		
 						}
+					  
 					    $.ajax({
 						      url:"${ctx}/system/user/pages",
 						      data:data,

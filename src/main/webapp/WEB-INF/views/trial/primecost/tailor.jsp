@@ -12,7 +12,7 @@
     <title>裁剪</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-   
+  
    
 </head>
 
@@ -39,7 +39,7 @@
                                     <ul class="nav nav-tabs col-md-12">
                                         <li class="active col-md-2" style="width: 14.285%"><a href="#home1" data-toggle="tab">裁剪页面</a>
                                         </li>
-                                        <li class="col-md-2"style="width: 14.285%;"><a href="#profile1" data-toggle="tab">裁剪普通激光</a>
+                                        <li class="col-md-2"style="width: 14.285%;"><a href="#profile1" class="profile1"  data-toggle="tab">裁剪普通激光</a>
                                         </li>
                                         <li class="col-md-2"style="width: 14.285%"><a href="#profile2" data-toggle="tab">绣花定位激光</a>
                                         </li>
@@ -128,7 +128,7 @@
                                         <tr>
                                        	    <td class="text-center">合计</td>
                                             <td class="text-center"></td>
-                                            <td class="text-center"></td>
+                                            <td class="text-center" ></td>
                                             <td class="text-center" id="totale"></td>
                                             <td class="text-center" ></td>
                                             <td class="text-center" id="totaltw"></td>
@@ -138,7 +138,6 @@
                                         </tr>
                                     </thead>
                                 </table>
-                                <div id="pagerth" class="pull-right"></div>
                                         </div>
                      <!-- B工资流水开始 -->
             <div class="tab-pane" id="profile1">
@@ -150,22 +149,6 @@
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
 								<table><tr><td>批次:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>产品:</td><td><input type="text" name="name" id="name" placeholder="请输入产品名称" class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>姓名:</td><td><input type="text" name="name" id="username" placeholder="请输入姓名" class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>开始:</td>
-								<td>
-								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
-								</td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>结束:</td>
-								<td>
-								<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-								</td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
@@ -183,31 +166,27 @@
                                    <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                        	<th class="text-center">姓名</th>
-                                        	<th class="text-center">批次号</th>
-                                            <th class="text-center">产品名</th>
-                                            <th class="text-center">工序名</th>
-                                            <th class="text-center">时间</th>
-                                            <th class="text-center">加绩工资</th>
-                                            <th class="text-center">B工资</th>
+                                        	<th class="text-center">裁剪部位</th>
+                                        	<th class="text-center">手选裁剪方式</th>
+                                            <th class="text-center">裁片周长/CM(≈)</th>
+                                            <th class="text-center">激光停顿点</th>
+                                            <th class="text-center">单双激光头</th>
+                                            <th class="text-center">捡片时间</th>
+                                            <th class="text-center">其他未考虑时间1</th>
+                                            <th class="text-center">其他未考虑时间2</th>
+                                            <th class="text-center">拉布时间</th>
+                                            <th class="text-center">单片激光需要用净时</th>
+                                            <th class="text-center">单片激光放快手时间</th>
+                                            <th class="text-center">工价（含快手)</th>
+                                            <th class="text-center">设备折旧和房水电费</th>
+                                            <th class="text-center">管理人员费用</th>
+                                            <th class="text-center">普通激光切割该裁片费用</th>
                                         </tr>
                                     </thead>
-                                    <tbody >
+                                    <tbody id="tablecontent2">
                                         
                                     </tbody>
-                                    <thead>
-                                        <tr>
-                                       	    <td class="text-center">合计</td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center" id="total"></td>
-                                        </tr>
-                                    </thead>
                                 </table>
-                                <div id="pager" class="pull-right"></div>
                                  </div>
                                  <!-- B工资流水结束 -->
                  <div class="tab-pane" id="profile2">
@@ -283,6 +262,106 @@
             </section>
         </section>
 
+
+<div class="wrap">
+<div class="layer-right" style="display: none;">
+           <div class=" col-xs-12  col-sm-12  col-md-12">
+				<div class="space-10"></div>
+				<div style="height: 30px"></div>
+				<form class="form-horizontal addDictDivTypeFormtw">
+					<div class="row col-xs-12  col-sm-12  col-md-12" >
+									<table>
+                                        <tr>
+                                       		<th class="text-center">当下周边地区激光每米/元:</th><td><input type="text" id="peripheralLaser"  class="form-control"></td>
+                                       		<td><input type="text" id="ordid" class="hidden"></td>
+                                       		<th><button type="button" class="btn btn-info  btn-sm  btn-trans updateord">修改</button></th>
+                                       </tr>
+                                       <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">激光机秒走CM?:</th><td><input type="text" id="extent"  class="form-control actualtimetw"></td>
+                                            <th class="text-center">每CM 用时/秒:</th><td><input type="text" disabled="disabled" id="time"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">激光片每个停顿点用秒？:</th><td><input type="text"  id="pauseTime" class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">1.5M*1M拉布平铺时间:</th><td><input type="text" id="rabbTime"  class="form-control actualtimetw"></td>
+                                            <th class="text-center">被/数:</th><td><input type="text" id="quilt"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">激光机放快手比:</th><td><input type="text"  id="quickWorker" class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">激光机设备价值:</th><td><input type="text"  id="worth" class="form-control actualtimetw"></td>
+                                            <th class="text-center">每秒设备折旧费用:</th><td><input type="text" disabled="disabled" id="depreciation"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">设置分摊天数:</th><td><input type="text" id="shareDay"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">每天机器工作时间设置/小时:</th><td><input type="text" id="workTime"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">激光管费用:</th><td><input type="text" id="laserTubePrice"  class="form-control actualtimetw"></td>
+                                            <th class="text-center">每秒激光管费用:</th><td><input type="text" disabled="disabled" id="laserTubePriceSecond"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">分摊小时:</th><td><input type="text" id="shareTime"  class="form-control actualtimetw"></td>
+                                            <th class="text-center">每秒维护费用:</th><td><input type="text" disabled="disabled" id="maintenanceChargeSecond"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">维护费用:</th><td><input type="text" id="maintenanceCharge"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">分摊小时:</th><td><input type="text" id="shareTimeTwo"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">每小时耗电/元:</th><td><input type="text" id="omnHorElectric"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">每小时耗水/元:</th><td><input type="text" id="omnHorWater"  class="form-control actualtimetw"></td>
+                                            <th class="text-center">每秒耗3费:</th><td><input type="text" disabled="disabled" id="perSecondPrice"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">每小时耗房租/元:</th><td><input type="text" id="omnHorHouse"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">每小时站机工价:</th><td><input type="text" id="omnHorMachinist"  class="form-control actualtimetw"></td>
+                                            <th class="text-center">每秒工价:</th><td><input type="text" disabled="disabled" id="perSecondMachinist"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">制版分配任务管理人员工资:</th><td><input type="text" id="managePrice"   class="form-control actualtimetw"></td>
+                                            <th class="text-center">每秒管理费用:</th><td><input type="text" disabled="disabled" id="perSecondManage"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">管理设备数量:</th><td><input type="text" id="manageEquipmentNumber"  class="form-control actualtimetw"></td>
+                                            <th class="text-center">设置激光设备利润比:</th><td><input type="text" id="equipmentProfit"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                    </table>
+                    	</div>
+                 		
+				</form>
+                 </div>
+				</div>
+  </div>
+</div>
+
     </section>
     
    
@@ -298,6 +377,7 @@
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
     <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+    <script src="${ctx }/static/js/vendor/mSlider.min.js"></script>
     <script>
    jQuery(function($){
    	var Login = function(){
@@ -339,20 +419,26 @@
 				$('#endTimeth').val(lastdate);
 				var data={
 						page:1,
-				  		size:13,	
+				  		size:100,	
 				  		productId:"",
+				}
+				var data2={
+						page:1,
+				  		size:100,	
+				  		productId:"",
+				  		tailorTypeId:71,
 				}
 			this.init = function(){
 				
 				//注册绑定事件
 				self.events();
 				self.loadPagination(data);
+				self.loadPagination2(data2);
 			}
 			//加载分页
 			  this.loadPagination = function(data){
 			    var index;
 			    var html = '';
-			    //B工资流水开始
 			    $.ajax({
 				      url:"${ctx}/product/getTailor",
 				      data:data,
@@ -368,41 +454,16 @@
 		      				+'<td class="text-center edit ">'+o.tailorName+'</td>'
 		      				+'<td class="text-center edit ">'+o.tailorNumber+'</td>'
 		      				+'<td class="text-center edit ">'+o.bacthTailorNumber+'</td>'
-		      				+'<td class="text-center edit "><input class="form-control tailorSize" value='+(o.tailorSize!=null?o.tailorSize:"")+'></td>'
-		      				+'<td class="text-center edit tailorType"></td>'
-		      				+'<td class="text-center edit ">'+(o.managePrice!=null?o.managePrice:"")+'</td>'
-		      				+'<td class="text-center edit ">'+(o.experimentPrice!=null?o.experimentPrice:"")+'</td>'
+		      				+'<td class="text-center edit "><input class="form-control tailorSize"  value='+(o.tailorSize!=null?o.tailorSize:"")+'></td>'
+		      				+'<td class="text-center edit tailorType" data-tailortypeid='+o.tailorTypeId+'></td>'
+		      				+'<td class="text-center managePrice">'+(o.managePrice!=null?o.managePrice:"")+'</td>'
+		      				+'<td class="text-center experimentPrice">'+parseFloat((o.experimentPrice*1).toFixed(5))+'</td>'
 		      				+'<td class="text-center edit ">'+(o.ratePrice!=null?o.ratePrice:"")+'</td>'
-		      				+'<td class="text-center edit "></td>'
-		      				+'<td class="text-center edit ">'+(o.experimentPrice!=null?o.experimentPrice:"")+'</td></tr>'
-							
+		      				+'<td class="text-center edit "></td></tr>'
 		      			}); 
-				        //显示分页
-					   	 laypage({
-					      cont: 'pager', 
-					      pages: result.data.totalPages, 
-					      curr:  result.data.pageNum || 1, 
-					      jump: function(obj, first){ 
-					    	  if(!first){ 
-					    		 
-						        	var _data = {
-						        			page:obj.curr,
-									  		size:13,
-									  		type:1,
-									  		type:1,
-								  			productName:$('#name').val(),
-								  			userName:$('#username').val(),
-								  			bacth:$('#number').val(),
-								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(), 
-								  	}
-						        
-						            self.loadPagination(_data);
-							     }
-					      }
-					    });  
 					   	layer.close(index);
 					   	 $("#tablecontent").html(html); 
+					   
 					   self.loadEvents()
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
@@ -410,6 +471,375 @@
 					  }
 				  });
 			}
+			  this.loadPagination2 = function(data2){
+				  //裁剪普通激光
+				  $(".profile1").on('click',function(){
+					  var index;
+					    var html = '';
+					    $.ajax({
+						      url:"${ctx}/product/getOrdinaryLaser",
+						      data:data2,
+						      type:"GET",
+						      beforeSend:function(){
+							 	  index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								  });
+							  }, 
+				      		  success: function (result) {
+				      			 $(result.data.rows).each(function(i,o){
+				      				 html +='<tr>'
+				      				+'<td class="text-center edit ">'+o.tailorName+'</td>'
+				      				+'<td class="text-center tailorType2" data-tailortypeid2='+o.tailorTypeId+'></td>'
+				      				+'<td class="text-center"><input class="form-control perimeter2" data-id="'+o.id+'" style="width: 80px;" value='+(o.perimeter!=0?o.perimeter:"")+'></td>'
+				      				+'<td class="text-center edit"><input class="form-control stallPoint2" data-id="'+o.id+'" style="width: 50px;" value='+(o.stallPoint!=0?o.stallPoint:"")+'></td>'
+				      				+'<td class="text-center edit"><select class="form-control singleDouble2" data-id="'+o.id+'" data-singledouble="'+o.singleDouble+'" style="width: 100px;"><option value="">请选择</option><option value="1">单</option><option value="2">双</option></select></td>'
+				      				+'<td class="text-center"><input class="form-control time2" data-id="'+o.id+'" style="width: 50px;"  value='+(o.time!=null?o.time:"")+'></td>'
+				      				+'<td class="text-center"><input class="form-control otherTimeOne2" data-id="'+o.id+'" style="width: 80px;" value='+(o.otherTimeOne!=null?o.otherTimeOne:"")+'></td>'
+				      				+'<td class="text-center"><input class="form-control otherTimeTwo2" data-id="'+o.id+'" style="width: 80px;" value='+(o.otherTimeTwo!=null?o.otherTimeTwo:"")+'></td>'
+				      				+'<td class="text-center edit rabbTime2">'+parseFloat((o.rabbTime).toFixed(5))+'</td>'
+				      				+'<td class="text-center edit singleLaserTime2">'+parseFloat((o.singleLaserTime).toFixed(5))+'</td>'
+				      				+'<td class="text-center edit singleLaserHandTime2">'+parseFloat((o.singleLaserHandTime).toFixed(5))+'</td>'
+				      				+'<td class="text-center edit labourCost2">'+parseFloat((o.labourCost).toFixed(8))+'</td>'
+				      				+'<td class="text-center edit equipmentPrice2">'+parseFloat((o.equipmentPrice).toFixed(5))+'</td>'
+				      				+'<td class="text-center edit administrativeAtaff2">'+parseFloat((o.administrativeAtaff).toFixed(5))+'</td>'
+				      				+'<td class="text-center edit stallPrice2">'+parseFloat((o.stallPrice).toFixed(5))+'</td></tr>'
+				      			}); 
+							   	layer.close(index);
+							   	 $("#tablecontent2").html(html); 
+							   	 self.loadEvents2();
+						      },error:function(){
+									layer.msg("加载失败！", {icon: 2});
+									layer.close(index);
+							  }
+						  });
+				  })
+			  }
+			  this.loadEvents2 = function(){
+				  //调用基础数据
+				  var data2 = {
+							type:"ordinarylaser",
+						}
+				  var index;
+				  $.ajax({
+				      url:"${ctx}/product/getPrimeCoefficient",
+				      data:data2,
+				      type:"GET",
+		      		  success: function (result) {
+		      			 $(result.data).each(function(i,o){
+		      			$("#ordid").val(o.id)
+		      			$("#peripheralLaser").val(o.peripheralLaser)
+		      			$("#extent").val(o.extent)
+		      			$("#time").val(o.time)
+		      			$("#pauseTime").val(o.pauseTime)
+		      			$("#rabbTime").val(o.rabbTime)
+		      			$("#quilt").val(o.quilt)
+		      			$("#quickWorker").val(o.quickWorker)
+		      			$("#worth").val(o.worth)
+		      			$("#depreciation").val(o.depreciation)
+		      			$("#shareDay").val(o.shareDay)
+		      			$("#workTime").val(o.workTime)
+		      			$("#laserTubePrice").val(o.laserTubePrice)
+		      			$("#laserTubePriceSecond").val(o.laserTubePriceSecond)
+		      			$("#shareTime").val(o.shareTime)
+		      			$("#maintenanceChargeSecond").val(o.maintenanceChargeSecond)
+		      			$("#maintenanceCharge").val(o.maintenanceCharge)
+		      			$("#shareTimeTwo").val(o.shareTimeTwo)
+		      			$("#omnHorElectric").val(o.omnHorElectric)
+		      			$("#omnHorWater").val(o.omnHorWater)
+		      			$("#perSecondPrice").val(o.perSecondPrice)
+		      			$("#omnHorHouse").val(o.omnHorHouse)
+		      			$("#omnHorMachinist").val(o.omnHorMachinist)
+		      			$("#perSecondMachinist").val(o.perSecondMachinist)
+		      			$("#managePrice").val(o.managePrice)
+		      			$("#perSecondManage").val(o.perSecondManage)
+		      			$("#manageEquipmentNumber").val(o.manageEquipmentNumber)
+		      			$("#equipmentProfit").val(o.equipmentProfit)
+		      			 }); 
+		      		  },error:function(){
+							layer.msg("加载失败！", {icon: 2});
+							layer.close(index);
+					  }
+				  });
+				  $(".updateord").on('click',function(){
+					  var data={
+					  	id:$("#ordid").val(),
+					  	peripheralLaser:$("#peripheralLaser").val(),
+					  	extent:$("#extent").val(),
+					  	pauseTime:$("#pauseTime").val(),
+					  	rabbTime:$("#rabbTime").val(),
+					  	quilt:$("#quilt").val(),
+					  	quickWorker:$("#quickWorker").val(),
+					  	worth:$("#worth").val(),
+					  	shareDay:$("#shareDay").val(),
+					  	workTime:$("#workTime").val(),
+					  	laserTubePrice:$("#laserTubePrice").val(),
+					  	shareTime:$("#shareTime").val(),
+					  	maintenanceCharge:$("#maintenanceCharge").val(),
+					  	shareTimeTwo:$("#shareTimeTwo").val(),
+					  	omnHorElectric:$("#omnHorElectric").val(),
+					  	omnHorWater:$("#omnHorWater").val(),
+					  	omnHorHouse:$("#omnHorHouse").val(),
+					  	omnHorMachinist:$("#omnHorMachinist").val(),
+					  	managePrice:$("#managePrice").val(),
+					  	manageEquipmentNumber:$("#manageEquipmentNumber").val(),
+					  	equipmentProfit:$("#equipmentProfit").val(),
+					  }
+					  $.ajax({
+					      url:"${ctx}/product/updatePrimeCoefficient",
+					      data:data,
+					      type:"POST",
+			      		  success: function (result) {
+			      			 $(result.data).each(function(i,o){
+			      				$("#time").val(o.time)
+			      				$("#depreciation").val(o.depreciation)
+			      				$("#laserTubePriceSecond").val(o.laserTubePriceSecond)
+			      				$("#maintenanceChargeSecond").val(o.maintenanceChargeSecond)
+			      				$("#perSecondPrice").val(o.perSecondPrice)
+			      				$("#perSecondMachinist").val(o.perSecondMachinist)
+			      				$("#perSecondManage").val(o.perSecondManage)
+			      				if(0==result.code){
+									layer.msg(result.message, {icon: 1});
+									layer.close(index);
+									}else{
+										layer.msg(result.message, {icon: 2});
+										layer.close(index);
+									}
+			      			}); 
+			      		  },error:function(){
+								layer.msg("加载失败！", {icon: 2});
+								layer.close(index);sa
+						  }
+					  });
+				  })
+				  //遍历裁剪方式
+				  var data = {
+							type:"tailor",
+						}
+						var index;
+					    var html = '';
+					    var htmlto= '';
+					    $.ajax({
+						      url:"${ctx}/product/getBaseOne",
+						      data:data,
+						      type:"GET",
+				      		  success: function (result) {
+				      			 $(result.data).each(function(i,o){
+				      				html +='<option value="'+o.id+'">'+o.name+'</option>'
+				      			}); 
+						       htmlto='<select class="text-center form-control selecttailorType2" disabled="disabled"><option value="">请选择</option>'+html+'</select>'
+				      		  $(".tailorType2").html(htmlto)
+				      		  //改变事件
+				      		  $(".selecttailorType2").each(function(i,o){
+				      				var id=	$(o).parent().data("tailortypeid2");
+									$(o).val(id)
+								}) 
+				      		  },error:function(){
+									layer.msg("加载失败！", {icon: 2});
+									layer.close(index);sa
+							  }
+						  });
+					    $(".singleDouble2").each(function(j,k){
+					      	var id=$(k).data("singledouble")
+							$(k).val(id)
+					}) 
+					    $('.perimeter2').blur(function(){
+					    	var id=$(this).data("id");
+					    	var that=$(this);
+					    	var data={
+					    		id:id,
+					    		perimeter:$(this).val(),
+					    		stallPoint:$(this).parent().parent().find(".stallPoint2").val(),
+					    		singleDouble:$(this).parent().parent().find(".singleDouble2").val(),
+					    		time:$(this).parent().parent().find(".time2").val(),
+					    		otherTimeOne:$(this).parent().parent().find(".otherTimeOne2").val(),
+					    		otherTimeTwo:$(this).parent().parent().find(".otherTimeTwo2").val(),
+					    	}
+					    	$.ajax({
+							      url:"${ctx}/product/addOrdinaryLaser",
+							      data:data,
+							      type:"POST",
+					      		  success: function (result) {
+					      			 $(result.data).each(function(i,o){
+					      				that.parent().parent().find(".rabbTime2").text(parseFloat((o.rabbTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserTime2").text(parseFloat((o.singleLaserTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserHandTime2").text(parseFloat((o.singleLaserHandTime).toFixed(5)));
+					      				that.parent().parent().find(".labourCost2").text(parseFloat((o.labourCost).toFixed(8)));
+					      				that.parent().parent().find(".equipmentPrice2").text(parseFloat((o.equipmentPrice).toFixed(5)));
+					      				that.parent().parent().find(".administrativeAtaff2").text(parseFloat((o.administrativeAtaff).toFixed(5)));
+					      				that.parent().parent().find(".stallPrice2").text(parseFloat((o.stallPrice).toFixed(5)));
+					      			}); 
+					      		  },error:function(){
+										layer.msg("加载失败！", {icon: 2});
+										layer.close(index);
+								  }
+							  });
+					    })
+					    
+					    $('.stallPoint2').blur(function(){
+					    	var id=$(this).data("id");
+					    	var that=$(this);
+					    	var data={
+					    		id:id,
+					    		perimeter:$(this).parent().parent().find(".perimeter2").val(),
+					    		stallPoint:$(this).parent().parent().find(".stallPoint2").val(),
+					    		singleDouble:$(this).parent().parent().find(".singleDouble2").val(),
+					    		time:$(this).parent().parent().find(".time2").val(),
+					    		otherTimeOne:$(this).parent().parent().find(".otherTimeOne2").val(),
+					    		otherTimeTwo:$(this).parent().parent().find(".otherTimeTwo2").val(),
+					    	}
+					    	$.ajax({
+							      url:"${ctx}/product/addOrdinaryLaser",
+							      data:data,
+							      type:"POST",
+					      		  success: function (result) {
+					      			 $(result.data).each(function(i,o){
+					      				that.parent().parent().find(".rabbTime2").text(parseFloat((o.rabbTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserTime2").text(parseFloat((o.singleLaserTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserHandTime2").text(parseFloat((o.singleLaserHandTime).toFixed(5)));
+					      				that.parent().parent().find(".labourCost2").text(parseFloat((o.labourCost).toFixed(8)));
+					      				that.parent().parent().find(".equipmentPrice2").text(parseFloat((o.equipmentPrice).toFixed(5)));
+					      				that.parent().parent().find(".administrativeAtaff2").text(parseFloat((o.administrativeAtaff).toFixed(5)));
+					      				that.parent().parent().find(".stallPrice2").text(parseFloat((o.stallPrice).toFixed(5)));
+					      			}); 
+					      		  },error:function(){
+										layer.msg("加载失败！", {icon: 2});
+										layer.close(index);
+								  }
+							  });
+					    })
+					    
+					    $('.singleDouble2').blur(function(){
+					    	var id=$(this).data("id");
+					    	var that=$(this);
+					    	var data={
+					    		id:id,
+					    		perimeter:$(this).parent().parent().find(".perimeter2").val(),
+					    		stallPoint:$(this).parent().parent().find(".stallPoint2").val(),
+					    		singleDouble:$(this).parent().parent().find(".singleDouble2").val(),
+					    		time:$(this).parent().parent().find(".time2").val(),
+					    		otherTimeOne:$(this).parent().parent().find(".otherTimeOne2").val(),
+					    		otherTimeTwo:$(this).parent().parent().find(".otherTimeTwo2").val(),
+					    	}
+					    	$.ajax({
+							      url:"${ctx}/product/addOrdinaryLaser",
+							      data:data,
+							      type:"POST",
+					      		  success: function (result) {
+					      			 $(result.data).each(function(i,o){
+					      				that.parent().parent().find(".rabbTime2").text(parseFloat((o.rabbTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserTime2").text(parseFloat((o.singleLaserTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserHandTime2").text(parseFloat((o.singleLaserHandTime).toFixed(5)));
+					      				that.parent().parent().find(".labourCost2").text(parseFloat((o.labourCost).toFixed(8)));
+					      				that.parent().parent().find(".equipmentPrice2").text(parseFloat((o.equipmentPrice).toFixed(5)));
+					      				that.parent().parent().find(".administrativeAtaff2").text(parseFloat((o.administrativeAtaff).toFixed(5)));
+					      				that.parent().parent().find(".stallPrice2").text(parseFloat((o.stallPrice).toFixed(5)));
+					      			}); 
+					      		  },error:function(){
+										layer.msg("加载失败！", {icon: 2});
+										layer.close(index);
+								  }
+							  });
+					    })
+					    
+					    $('.time2').blur(function(){
+					    	var id=$(this).data("id");
+					    	var that=$(this);
+					    	var data={
+					    		id:id,
+					    		perimeter:$(this).parent().parent().find(".perimeter2").val(),
+					    		stallPoint:$(this).parent().parent().find(".stallPoint2").val(),
+					    		singleDouble:$(this).parent().parent().find(".singleDouble2").val(),
+					    		time:$(this).parent().parent().find(".time2").val(),
+					    		otherTimeOne:$(this).parent().parent().find(".otherTimeOne2").val(),
+					    		otherTimeTwo:$(this).parent().parent().find(".otherTimeTwo2").val(),
+					    	}
+					    	$.ajax({
+							      url:"${ctx}/product/addOrdinaryLaser",
+							      data:data,
+							      type:"POST",
+					      		  success: function (result) {
+					      			 $(result.data).each(function(i,o){
+					      				that.parent().parent().find(".rabbTime2").text(parseFloat((o.rabbTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserTime2").text(parseFloat((o.singleLaserTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserHandTime2").text(parseFloat((o.singleLaserHandTime).toFixed(5)));
+					      				that.parent().parent().find(".labourCost2").text(parseFloat((o.labourCost).toFixed(8)));
+					      				that.parent().parent().find(".equipmentPrice2").text(parseFloat((o.equipmentPrice).toFixed(5)));
+					      				that.parent().parent().find(".administrativeAtaff2").text(parseFloat((o.administrativeAtaff).toFixed(5)));
+					      				that.parent().parent().find(".stallPrice2").text(parseFloat((o.stallPrice).toFixed(5)));
+					      			}); 
+					      		  },error:function(){
+										layer.msg("加载失败！", {icon: 2});
+										layer.close(index);
+								  }
+							  });
+					    })
+					    
+					    $('.otherTimeOne2').blur(function(){
+					    	var id=$(this).data("id");
+					    	var that=$(this);
+					    	var data={
+					    		id:id,
+					    		perimeter:$(this).parent().parent().find(".perimeter2").val(),
+					    		stallPoint:$(this).parent().parent().find(".stallPoint2").val(),
+					    		singleDouble:$(this).parent().parent().find(".singleDouble2").val(),
+					    		time:$(this).parent().parent().find(".time2").val(),
+					    		otherTimeOne:$(this).parent().parent().find(".otherTimeOne2").val(),
+					    		otherTimeTwo:$(this).parent().parent().find(".otherTimeTwo2").val(),
+					    	}
+					    	$.ajax({
+							      url:"${ctx}/product/addOrdinaryLaser",
+							      data:data,
+							      type:"POST",
+					      		  success: function (result) {
+					      			 $(result.data).each(function(i,o){
+					      				that.parent().parent().find(".rabbTime2").text(parseFloat((o.rabbTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserTime2").text(parseFloat((o.singleLaserTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserHandTime2").text(parseFloat((o.singleLaserHandTime).toFixed(5)));
+					      				that.parent().parent().find(".labourCost2").text(parseFloat((o.labourCost).toFixed(8)));
+					      				that.parent().parent().find(".equipmentPrice2").text(parseFloat((o.equipmentPrice).toFixed(5)));
+					      				that.parent().parent().find(".administrativeAtaff2").text(parseFloat((o.administrativeAtaff).toFixed(5)));
+					      				that.parent().parent().find(".stallPrice2").text(parseFloat((o.stallPrice).toFixed(5)));
+					      			}); 
+					      		  },error:function(){
+										layer.msg("加载失败！", {icon: 2});
+										layer.close(index);
+								  }
+							  });
+					    })
+					    
+					    $('.otherTimeTwo2').blur(function(){
+					    	var id=$(this).data("id");
+					    	var that=$(this);
+					    	var data={
+					    		id:id,
+					    		perimeter:$(this).parent().parent().find(".perimeter2").val(),
+					    		stallPoint:$(this).parent().parent().find(".stallPoint2").val(),
+					    		singleDouble:$(this).parent().parent().find(".singleDouble2").val(),
+					    		time:$(this).parent().parent().find(".time2").val(),
+					    		otherTimeOne:$(this).parent().parent().find(".otherTimeOne2").val(),
+					    		otherTimeTwo:$(this).parent().parent().find(".otherTimeTwo2").val(),
+					    	}
+					    	$.ajax({
+							      url:"${ctx}/product/addOrdinaryLaser",
+							      data:data,
+							      type:"POST",
+					      		  success: function (result) {
+					      			 $(result.data).each(function(i,o){
+					      				that.parent().parent().find(".rabbTime2").text(parseFloat((o.rabbTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserTime2").text(parseFloat((o.singleLaserTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserHandTime2").text(parseFloat((o.singleLaserHandTime).toFixed(5)));
+					      				that.parent().parent().find(".labourCost2").text(parseFloat((o.labourCost).toFixed(8)));
+					      				that.parent().parent().find(".equipmentPrice2").text(parseFloat((o.equipmentPrice).toFixed(5)));
+					      				that.parent().parent().find(".administrativeAtaff2").text(parseFloat((o.administrativeAtaff).toFixed(5)));
+					      				that.parent().parent().find(".stallPrice2").text(parseFloat((o.stallPrice).toFixed(5)));
+					      			}); 
+					      		  },error:function(){
+										layer.msg("加载失败！", {icon: 2});
+										layer.close(index);
+								  }
+							  });
+					    })
+			  }
 			this.loadEvents = function(){
 				//遍历裁剪方式
 				var data = {
@@ -429,11 +859,24 @@
 					       htmlto='<select class="text-center form-control selecttailorType"><option value="">请选择</option>'+html+'</select>'
 			      		  $(".tailorType").html(htmlto)
 			      		  //改变事件
+			      		  $(".selecttailorType").each(function(i,o){
+			      		var id=	$(o).parent().data("tailortypeid");
+								$(o).val(id)
+								}) 
 			      		  $(".selecttailorType").change(function(){
+			      			var that=$(this);
+			      			var a=$(this).parent().prev().find(".tailorSize").val();
+			      			var id=$(this).parent().prevAll().find(".checkboxId").val();
+			      			  if(a==""){
+			      				$(that).each(function(i,o){
+									$(o).val("")
+									}) 
+			      				  return layer.msg("请先填写裁片的平方M", {icon: 2});
+			      			  }
 				    var	datae={
-				    			tailorSize:$(".tailorSize").val(),
-				    			tailorTypeId:$(".selecttailorType").val(),
-				    			singleDouble:1,
+				    			tailorSize:a,
+				    			tailorTypeId:$(this).val(),
+				    			id:id,
 				    	}
 				    	$.ajax({
 						      url:"${ctx}/product/getOrdinaryLaserDate",
@@ -441,9 +884,40 @@
 						      type:"POST",
 				      		  success: function (result) {
 				      			 $(result.data).each(function(i,o){
-				      			
-				      			}); 
+				      			that.parent().parent().find(".managePrice").text(o.managePrice);
+				      			that.parent().parent().find(".experimentPrice").text(parseFloat((o.experimentPrice).toFixed(5)));
+				      			 }); 
 				      			layer.close(index)
+				      			var datar={
+				      				id:id,
+				      				tailorSize:a,
+					    			tailorTypeId:that.val(),
+					    			managePrice:result.data.managePrice,
+					    			experimentPrice:result.data.experimentPrice,
+					    			ordinaryLaserId:that.val(),
+				      			}
+				      			$.ajax({
+								      url:"${ctx}/product/addTailor",
+								      data:datar,
+								      type:"POST",
+						      		  success: function (result) {
+						      			 $(result.data).each(function(i,o){
+						      				if(0==result.code){
+												layer.msg(result.message, {icon: 1});
+												layer.close(index);
+												}else{
+													layer.msg(result.message, {icon: 2});
+													layer.close(index);
+												}
+						      			 }); 
+						      			layer.close(index)
+						      			
+						      			
+								      },error:function(){
+											layer.msg("加载失败！", {icon: 2});
+											layer.close(index);
+									  }
+								  });
 						      },error:function(){
 									layer.msg("加载失败！", {icon: 2});
 									layer.close(index);
@@ -457,6 +931,40 @@
 					  });
 			}
 			this.events = function(){
+				
+				$(".searchtask").on('click',function(){
+					$(".layer-right").css("display","block");
+					var demo = new mSlider({
+						dom:".layer-right",
+						direction: "right",
+						distance:"35%",
+						
+					})
+					demo.open()
+				/* var _right = new mSlider({
+                dom: "#addDictDivType",
+                direction: "right"
+            }); */
+					/* var dicDiv=$('#addDictDivType');
+					_index = layer.open({
+						  type: 1,
+						  skin: 'layui-layer-rim', //加上边框
+						  area: ['60%', '60%'], 
+						  btnAlign: 'c',//宽高
+						  maxmin: true,
+						  title:'',
+						  content: dicDiv,
+						  btn: ['确定', '取消'],
+						  yes:function(index, layero){
+							},
+						   end:function(){
+						  } 
+					}); */
+					
+					
+					
+					
+				})
 			}
    	}
    			var login = new Login();
