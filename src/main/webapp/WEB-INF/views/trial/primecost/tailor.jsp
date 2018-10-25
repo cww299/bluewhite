@@ -491,18 +491,18 @@
 				      				+'<td class="text-center edit ">'+o.tailorName+'</td>'
 				      				+'<td class="text-center tailorType2" data-tailortypeid2='+o.tailorTypeId+'></td>'
 				      				+'<td class="text-center"><input class="form-control perimeter2" data-id="'+o.id+'" style="width: 80px;" value='+(o.perimeter!=0?o.perimeter:"")+'></td>'
-				      				+'<td class="text-center edit"><input class="form-control stallPoint2" style="width: 50px;" value='+(o.stallPoint!=0?o.stallPoint:"")+'></td>'
-				      				+'<td class="text-center edit"><select class="form-control stallPoint" style="width: 100px;"><option value="">请选择</option><option value="1">单</option><option value="2">双</option></select></td>'
-				      				+'<td class="text-center"><input class="form-control time" style="width: 50px;"  value='+(o.time!=null?o.time:"")+'></td>'
-				      				+'<td class="text-center"><input class="form-control otherTimeOne" style="width: 80px;" value='+(o.otherTimeOne!=null?o.otherTimeOne:"")+'></td>'
-				      				+'<td class="text-center"><input class="form-control otherTimeTwo" style="width: 80px;" value='+(o.otherTimeTwo!=null?o.otherTimeTwo:"")+'></td>'
-				      				+'<td class="text-center edit ">'+parseFloat((o.rabbTime).toFixed(5))+'</td>'
-				      				+'<td class="text-center edit ">'+parseFloat((o.singleLaserTime).toFixed(5))+'</td>'
-				      				+'<td class="text-center edit ">'+parseFloat((o.singleLaserHandTime).toFixed(5))+'</td>'
-				      				+'<td class="text-center edit ">'+parseFloat((o.labourCost).toFixed(8))+'</td>'
-				      				+'<td class="text-center edit ">'+parseFloat((o.equipmentPrice).toFixed(5))+'</td>'
-				      				+'<td class="text-center edit ">'+parseFloat((o.administrativeAtaff).toFixed(5))+'</td>'
-				      				+'<td class="text-center edit ">'+parseFloat((o.stallPrice).toFixed(5))+'</td></tr>'
+				      				+'<td class="text-center edit"><input class="form-control stallPoint2" data-id="'+o.id+'" style="width: 50px;" value='+(o.stallPoint!=0?o.stallPoint:"")+'></td>'
+				      				+'<td class="text-center edit"><select class="form-control singleDouble2" data-id="'+o.id+'" data-singledouble="'+o.singleDouble+'" style="width: 100px;"><option value="">请选择</option><option value="1">单</option><option value="2">双</option></select></td>'
+				      				+'<td class="text-center"><input class="form-control time2" data-id="'+o.id+'" style="width: 50px;"  value='+(o.time!=null?o.time:"")+'></td>'
+				      				+'<td class="text-center"><input class="form-control otherTimeOne2" data-id="'+o.id+'" style="width: 80px;" value='+(o.otherTimeOne!=null?o.otherTimeOne:"")+'></td>'
+				      				+'<td class="text-center"><input class="form-control otherTimeTwo2" data-id="'+o.id+'" style="width: 80px;" value='+(o.otherTimeTwo!=null?o.otherTimeTwo:"")+'></td>'
+				      				+'<td class="text-center edit rabbTime2">'+parseFloat((o.rabbTime).toFixed(5))+'</td>'
+				      				+'<td class="text-center edit singleLaserTime2">'+parseFloat((o.singleLaserTime).toFixed(5))+'</td>'
+				      				+'<td class="text-center edit singleLaserHandTime2">'+parseFloat((o.singleLaserHandTime).toFixed(5))+'</td>'
+				      				+'<td class="text-center edit labourCost2">'+parseFloat((o.labourCost).toFixed(8))+'</td>'
+				      				+'<td class="text-center edit equipmentPrice2">'+parseFloat((o.equipmentPrice).toFixed(5))+'</td>'
+				      				+'<td class="text-center edit administrativeAtaff2">'+parseFloat((o.administrativeAtaff).toFixed(5))+'</td>'
+				      				+'<td class="text-center edit stallPrice2">'+parseFloat((o.stallPrice).toFixed(5))+'</td></tr>'
 				      			}); 
 							   	layer.close(index);
 							   	 $("#tablecontent2").html(html); 
@@ -557,7 +557,7 @@
 		      			 }); 
 		      		  },error:function(){
 							layer.msg("加载失败！", {icon: 2});
-							layer.close(index);sa
+							layer.close(index);
 					  }
 				  });
 				  $(".updateord").on('click',function(){
@@ -590,6 +590,20 @@
 					      type:"POST",
 			      		  success: function (result) {
 			      			 $(result.data).each(function(i,o){
+			      				$("#time").val(o.time)
+			      				$("#depreciation").val(o.depreciation)
+			      				$("#laserTubePriceSecond").val(o.laserTubePriceSecond)
+			      				$("#maintenanceChargeSecond").val(o.maintenanceChargeSecond)
+			      				$("#perSecondPrice").val(o.perSecondPrice)
+			      				$("#perSecondMachinist").val(o.perSecondMachinist)
+			      				$("#perSecondManage").val(o.perSecondManage)
+			      				if(0==result.code){
+									layer.msg(result.message, {icon: 1});
+									layer.close(index);
+									}else{
+										layer.msg(result.message, {icon: 2});
+										layer.close(index);
+									}
 			      			}); 
 			      		  },error:function(){
 								layer.msg("加载失败！", {icon: 2});
@@ -616,15 +630,18 @@
 				      		  $(".tailorType2").html(htmlto)
 				      		  //改变事件
 				      		  $(".selecttailorType2").each(function(i,o){
-				      		var id=	$(o).parent().data("tailortypeid2");
+				      				var id=	$(o).parent().data("tailortypeid2");
 									$(o).val(id)
-									}) 
+								}) 
 				      		  },error:function(){
 									layer.msg("加载失败！", {icon: 2});
 									layer.close(index);sa
 							  }
 						  });
-					    
+					    $(".singleDouble2").each(function(j,k){
+					      	var id=$(k).data("singledouble")
+							$(k).val(id)
+					}) 
 					    $('.perimeter2').blur(function(){
 					    	var id=$(this).data("id");
 					    	var that=$(this);
@@ -632,6 +649,10 @@
 					    		id:id,
 					    		perimeter:$(this).val(),
 					    		stallPoint:$(this).parent().parent().find(".stallPoint2").val(),
+					    		singleDouble:$(this).parent().parent().find(".singleDouble2").val(),
+					    		time:$(this).parent().parent().find(".time2").val(),
+					    		otherTimeOne:$(this).parent().parent().find(".otherTimeOne2").val(),
+					    		otherTimeTwo:$(this).parent().parent().find(".otherTimeTwo2").val(),
 					    	}
 					    	$.ajax({
 							      url:"${ctx}/product/addOrdinaryLaser",
@@ -639,10 +660,182 @@
 							      type:"POST",
 					      		  success: function (result) {
 					      			 $(result.data).each(function(i,o){
+					      				that.parent().parent().find(".rabbTime2").text(parseFloat((o.rabbTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserTime2").text(parseFloat((o.singleLaserTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserHandTime2").text(parseFloat((o.singleLaserHandTime).toFixed(5)));
+					      				that.parent().parent().find(".labourCost2").text(parseFloat((o.labourCost).toFixed(8)));
+					      				that.parent().parent().find(".equipmentPrice2").text(parseFloat((o.equipmentPrice).toFixed(5)));
+					      				that.parent().parent().find(".administrativeAtaff2").text(parseFloat((o.administrativeAtaff).toFixed(5)));
+					      				that.parent().parent().find(".stallPrice2").text(parseFloat((o.stallPrice).toFixed(5)));
 					      			}); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
-										layer.close(index);sa
+										layer.close(index);
+								  }
+							  });
+					    })
+					    
+					    $('.stallPoint2').blur(function(){
+					    	var id=$(this).data("id");
+					    	var that=$(this);
+					    	var data={
+					    		id:id,
+					    		perimeter:$(this).parent().parent().find(".perimeter2").val(),
+					    		stallPoint:$(this).parent().parent().find(".stallPoint2").val(),
+					    		singleDouble:$(this).parent().parent().find(".singleDouble2").val(),
+					    		time:$(this).parent().parent().find(".time2").val(),
+					    		otherTimeOne:$(this).parent().parent().find(".otherTimeOne2").val(),
+					    		otherTimeTwo:$(this).parent().parent().find(".otherTimeTwo2").val(),
+					    	}
+					    	$.ajax({
+							      url:"${ctx}/product/addOrdinaryLaser",
+							      data:data,
+							      type:"POST",
+					      		  success: function (result) {
+					      			 $(result.data).each(function(i,o){
+					      				that.parent().parent().find(".rabbTime2").text(parseFloat((o.rabbTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserTime2").text(parseFloat((o.singleLaserTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserHandTime2").text(parseFloat((o.singleLaserHandTime).toFixed(5)));
+					      				that.parent().parent().find(".labourCost2").text(parseFloat((o.labourCost).toFixed(8)));
+					      				that.parent().parent().find(".equipmentPrice2").text(parseFloat((o.equipmentPrice).toFixed(5)));
+					      				that.parent().parent().find(".administrativeAtaff2").text(parseFloat((o.administrativeAtaff).toFixed(5)));
+					      				that.parent().parent().find(".stallPrice2").text(parseFloat((o.stallPrice).toFixed(5)));
+					      			}); 
+					      		  },error:function(){
+										layer.msg("加载失败！", {icon: 2});
+										layer.close(index);
+								  }
+							  });
+					    })
+					    
+					    $('.singleDouble2').blur(function(){
+					    	var id=$(this).data("id");
+					    	var that=$(this);
+					    	var data={
+					    		id:id,
+					    		perimeter:$(this).parent().parent().find(".perimeter2").val(),
+					    		stallPoint:$(this).parent().parent().find(".stallPoint2").val(),
+					    		singleDouble:$(this).parent().parent().find(".singleDouble2").val(),
+					    		time:$(this).parent().parent().find(".time2").val(),
+					    		otherTimeOne:$(this).parent().parent().find(".otherTimeOne2").val(),
+					    		otherTimeTwo:$(this).parent().parent().find(".otherTimeTwo2").val(),
+					    	}
+					    	$.ajax({
+							      url:"${ctx}/product/addOrdinaryLaser",
+							      data:data,
+							      type:"POST",
+					      		  success: function (result) {
+					      			 $(result.data).each(function(i,o){
+					      				that.parent().parent().find(".rabbTime2").text(parseFloat((o.rabbTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserTime2").text(parseFloat((o.singleLaserTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserHandTime2").text(parseFloat((o.singleLaserHandTime).toFixed(5)));
+					      				that.parent().parent().find(".labourCost2").text(parseFloat((o.labourCost).toFixed(8)));
+					      				that.parent().parent().find(".equipmentPrice2").text(parseFloat((o.equipmentPrice).toFixed(5)));
+					      				that.parent().parent().find(".administrativeAtaff2").text(parseFloat((o.administrativeAtaff).toFixed(5)));
+					      				that.parent().parent().find(".stallPrice2").text(parseFloat((o.stallPrice).toFixed(5)));
+					      			}); 
+					      		  },error:function(){
+										layer.msg("加载失败！", {icon: 2});
+										layer.close(index);
+								  }
+							  });
+					    })
+					    
+					    $('.time2').blur(function(){
+					    	var id=$(this).data("id");
+					    	var that=$(this);
+					    	var data={
+					    		id:id,
+					    		perimeter:$(this).parent().parent().find(".perimeter2").val(),
+					    		stallPoint:$(this).parent().parent().find(".stallPoint2").val(),
+					    		singleDouble:$(this).parent().parent().find(".singleDouble2").val(),
+					    		time:$(this).parent().parent().find(".time2").val(),
+					    		otherTimeOne:$(this).parent().parent().find(".otherTimeOne2").val(),
+					    		otherTimeTwo:$(this).parent().parent().find(".otherTimeTwo2").val(),
+					    	}
+					    	$.ajax({
+							      url:"${ctx}/product/addOrdinaryLaser",
+							      data:data,
+							      type:"POST",
+					      		  success: function (result) {
+					      			 $(result.data).each(function(i,o){
+					      				that.parent().parent().find(".rabbTime2").text(parseFloat((o.rabbTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserTime2").text(parseFloat((o.singleLaserTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserHandTime2").text(parseFloat((o.singleLaserHandTime).toFixed(5)));
+					      				that.parent().parent().find(".labourCost2").text(parseFloat((o.labourCost).toFixed(8)));
+					      				that.parent().parent().find(".equipmentPrice2").text(parseFloat((o.equipmentPrice).toFixed(5)));
+					      				that.parent().parent().find(".administrativeAtaff2").text(parseFloat((o.administrativeAtaff).toFixed(5)));
+					      				that.parent().parent().find(".stallPrice2").text(parseFloat((o.stallPrice).toFixed(5)));
+					      			}); 
+					      		  },error:function(){
+										layer.msg("加载失败！", {icon: 2});
+										layer.close(index);
+								  }
+							  });
+					    })
+					    
+					    $('.otherTimeOne2').blur(function(){
+					    	var id=$(this).data("id");
+					    	var that=$(this);
+					    	var data={
+					    		id:id,
+					    		perimeter:$(this).parent().parent().find(".perimeter2").val(),
+					    		stallPoint:$(this).parent().parent().find(".stallPoint2").val(),
+					    		singleDouble:$(this).parent().parent().find(".singleDouble2").val(),
+					    		time:$(this).parent().parent().find(".time2").val(),
+					    		otherTimeOne:$(this).parent().parent().find(".otherTimeOne2").val(),
+					    		otherTimeTwo:$(this).parent().parent().find(".otherTimeTwo2").val(),
+					    	}
+					    	$.ajax({
+							      url:"${ctx}/product/addOrdinaryLaser",
+							      data:data,
+							      type:"POST",
+					      		  success: function (result) {
+					      			 $(result.data).each(function(i,o){
+					      				that.parent().parent().find(".rabbTime2").text(parseFloat((o.rabbTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserTime2").text(parseFloat((o.singleLaserTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserHandTime2").text(parseFloat((o.singleLaserHandTime).toFixed(5)));
+					      				that.parent().parent().find(".labourCost2").text(parseFloat((o.labourCost).toFixed(8)));
+					      				that.parent().parent().find(".equipmentPrice2").text(parseFloat((o.equipmentPrice).toFixed(5)));
+					      				that.parent().parent().find(".administrativeAtaff2").text(parseFloat((o.administrativeAtaff).toFixed(5)));
+					      				that.parent().parent().find(".stallPrice2").text(parseFloat((o.stallPrice).toFixed(5)));
+					      			}); 
+					      		  },error:function(){
+										layer.msg("加载失败！", {icon: 2});
+										layer.close(index);
+								  }
+							  });
+					    })
+					    
+					    $('.otherTimeTwo2').blur(function(){
+					    	var id=$(this).data("id");
+					    	var that=$(this);
+					    	var data={
+					    		id:id,
+					    		perimeter:$(this).parent().parent().find(".perimeter2").val(),
+					    		stallPoint:$(this).parent().parent().find(".stallPoint2").val(),
+					    		singleDouble:$(this).parent().parent().find(".singleDouble2").val(),
+					    		time:$(this).parent().parent().find(".time2").val(),
+					    		otherTimeOne:$(this).parent().parent().find(".otherTimeOne2").val(),
+					    		otherTimeTwo:$(this).parent().parent().find(".otherTimeTwo2").val(),
+					    	}
+					    	$.ajax({
+							      url:"${ctx}/product/addOrdinaryLaser",
+							      data:data,
+							      type:"POST",
+					      		  success: function (result) {
+					      			 $(result.data).each(function(i,o){
+					      				that.parent().parent().find(".rabbTime2").text(parseFloat((o.rabbTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserTime2").text(parseFloat((o.singleLaserTime).toFixed(5)));
+					      				that.parent().parent().find(".singleLaserHandTime2").text(parseFloat((o.singleLaserHandTime).toFixed(5)));
+					      				that.parent().parent().find(".labourCost2").text(parseFloat((o.labourCost).toFixed(8)));
+					      				that.parent().parent().find(".equipmentPrice2").text(parseFloat((o.equipmentPrice).toFixed(5)));
+					      				that.parent().parent().find(".administrativeAtaff2").text(parseFloat((o.administrativeAtaff).toFixed(5)));
+					      				that.parent().parent().find(".stallPrice2").text(parseFloat((o.stallPrice).toFixed(5)));
+					      			}); 
+					      		  },error:function(){
+										layer.msg("加载失败！", {icon: 2});
+										layer.close(index);
 								  }
 							  });
 					    })
