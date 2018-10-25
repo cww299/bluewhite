@@ -70,18 +70,12 @@ public class MachinistAction {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品不能为空");
 		}else{
-			try {
-				if(machinist.getId()!=null){
-					Machinist oldMachinist = machinistService.findOne(machinist.getId());
-					BeanCopyUtils.copyNullProperties(oldMachinist,machinist);
-					machinist.setCreatedAt(oldMachinist.getCreatedAt());
-				}
-				machinistService.saveMachinist(machinist);
-			} catch (Exception e) {
-				cr.setMessage(e.getMessage());
-				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				return cr;
+			if(machinist.getId()!=null){
+				Machinist oldMachinist = machinistService.findOne(machinist.getId());
+				BeanCopyUtils.copyNullProperties(oldMachinist,machinist);
+				machinist.setCreatedAt(oldMachinist.getCreatedAt());
 			}
+			machinistService.saveMachinist(machinist);
 			cr.setMessage("添加成功");
 		}
 		return cr;
@@ -101,6 +95,31 @@ public class MachinistAction {
 		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(machinistService.findPages(machinist,page))
 				.toJSON());
 		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * 删除机工填写
+	 * 
+	 */
+	@RequestMapping(value = "/product/deleteMachinist", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteMachinist(HttpServletRequest request,String ids) {
+		CommonResponse cr = new CommonResponse();
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length>0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					machinistService.deleteProductMaterials(id);
+				}
+			}
+				cr.setMessage("删除成功");
+			}else{
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				cr.setMessage("裁片id不能为空");
+			}
 		return cr;
 	}
 	
@@ -131,7 +150,7 @@ public class MachinistAction {
 		for(Machinist machinist : machinistList){
 			map =  new HashMap<String, Object>();
 			map.put("name", machinist.getMachinistName());
-			map.put("price", null);
+			map.put("price", machinist.getSumPriceDownRemark());
 			mapList.add(map);
 		}
 		cr.setData(mapList);
