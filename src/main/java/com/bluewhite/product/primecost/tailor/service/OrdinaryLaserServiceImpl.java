@@ -49,10 +49,10 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 				ordinaryLaser.setManagePrice(primeCoefficient.getPeripheralLaser()*100*ordinaryLaser.getPerimeter());
 				//单片激光需要用净时
 				if(ordinaryLaser.getSingleDouble()==2){
-					ordinaryLaser.setSingleLaserTime((ordinaryLaser.getPerimeter()*primeCoefficient.getTime()*ordinaryLaser.getStallPoint()*primeCoefficient.getPauseTime()/2)
+					ordinaryLaser.setSingleLaserTime(((ordinaryLaser.getPerimeter()*primeCoefficient.getTime())+(ordinaryLaser.getStallPoint()*primeCoefficient.getPauseTime())/2)
 							+ ordinaryLaser.getRabbTime()+ordinaryLaser.getTime());
 				}else{
-					ordinaryLaser.setSingleLaserTime((ordinaryLaser.getPerimeter()*primeCoefficient.getTime()*ordinaryLaser.getStallPoint()*primeCoefficient.getPauseTime())
+					ordinaryLaser.setSingleLaserTime(((ordinaryLaser.getPerimeter()*primeCoefficient.getTime())+(ordinaryLaser.getStallPoint()*primeCoefficient.getPauseTime()))
 							+ ordinaryLaser.getRabbTime()+ordinaryLaser.getTime());
 				}
 				//单片激光放快手时间
@@ -77,10 +77,10 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 				}
 				//单片激光需要用净时
 				if(ordinaryLaser.getSingleDouble()==2){
-					ordinaryLaser.setSingleLaserTime((ordinaryLaser.getPerimeter()*primeCoefficient.getTime()*ordinaryLaser.getStallPoint()*primeCoefficient.getPauseTime()/2)
+					ordinaryLaser.setSingleLaserTime(((ordinaryLaser.getPerimeter()*primeCoefficient.getTime())+(ordinaryLaser.getStallPoint()*primeCoefficient.getPauseTime())/2)
 							+ ordinaryLaser.getRabbTime()+ordinaryLaser.getTime()+ordinaryLaser.getEmbroiderTime());
 				}else{
-					ordinaryLaser.setSingleLaserTime((ordinaryLaser.getPerimeter()*primeCoefficient.getTime()*ordinaryLaser.getStallPoint()*primeCoefficient.getPauseTime())
+					ordinaryLaser.setSingleLaserTime(((ordinaryLaser.getPerimeter()*primeCoefficient.getTime())+(ordinaryLaser.getStallPoint()*primeCoefficient.getPauseTime()))
 							+ ordinaryLaser.getRabbTime()+ordinaryLaser.getTime()+ordinaryLaser.getEmbroiderTime());
 				}
 				//单片激光放快手时间
