@@ -161,10 +161,12 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 	@Transactional
 	public void deleteCutParts(Long id) {
 		CutParts cutParts = dao.findOne(id);
-		//删除裁剪页面
-		tailorDao.delete(cutParts.getTailorId());
-		//删除裁减类型页面
-		ordinaryLaserDao.delete(ordinaryLaserDao.findByTailorId(cutParts.getTailorId()));
+		if(cutParts.getTailorId()!=null){
+			//删除裁剪页面
+			tailorDao.delete(cutParts.getTailorId());
+			//删除裁减类型页面
+			ordinaryLaserDao.delete(ordinaryLaserDao.findByTailorId(cutParts.getTailorId()));
+		}
 		//删除裁片
 		dao.delete(cutParts);
 		//更新其他各单片比全套用料
