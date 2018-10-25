@@ -219,7 +219,7 @@ public class BaseOneAction {
 		if(primeCoefficient.getId()!=null){
 			PrimeCoefficient oldPrimeCoefficient = primeCoefficientDao.findOne(primeCoefficient.getId());
 			//每CM 用时/秒
-			oldPrimeCoefficient.setTime(1/primeCoefficient.getPeripheralLaser());
+			oldPrimeCoefficient.setTime(1/primeCoefficient.getExtent());
 			//被/数
 			oldPrimeCoefficient.setQuilt(primeCoefficient.getQuilt());
 			//每秒设备折旧费用
