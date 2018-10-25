@@ -18,6 +18,7 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.cutparts.dao.CutPartsDao;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
+import com.bluewhite.product.primecost.tailor.dao.OrdinaryLaserDao;
 import com.bluewhite.product.primecost.tailor.dao.TailorDao;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.product.dao.ProductDao;
@@ -32,6 +33,8 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 	private ProductDao productdao;
 	@Autowired
 	private TailorDao tailorDao;
+	@Autowired
+	private OrdinaryLaserDao ordinaryLaserDao;
 	
 
 	
@@ -158,7 +161,11 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 	@Transactional
 	public void deleteCutParts(Long id) {
 		CutParts cutParts = dao.findOne(id);
-		//删除
+		//删除裁剪页面
+		tailorDao.delete(cutParts.getTailorId());
+		//删除裁减类型页面
+		ordinaryLaserDao.delete(ordinaryLaserDao.findByTailorId(cutParts.getTailorId()));
+		//删除裁片
 		dao.delete(cutParts);
 		//更新其他各单片比全套用料
 		List<CutParts> cutPartsList = dao.findByProductId(cutParts.getProductId());
