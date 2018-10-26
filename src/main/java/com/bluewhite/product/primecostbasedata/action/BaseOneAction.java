@@ -218,24 +218,25 @@ public class BaseOneAction {
 		CommonResponse cr = new CommonResponse();
 		if(primeCoefficient.getId()!=null){
 			PrimeCoefficient oldPrimeCoefficient = primeCoefficientDao.findOne(primeCoefficient.getId());
+			BeanCopyUtils.copyNullProperties(oldPrimeCoefficient,primeCoefficient);
 			//每CM 用时/秒
-			oldPrimeCoefficient.setTime(1/primeCoefficient.getExtent());
+			primeCoefficient.setTime(1/primeCoefficient.getExtent());
 			//被/数
-			oldPrimeCoefficient.setQuilt(primeCoefficient.getQuilt());
+			primeCoefficient.setQuilt(primeCoefficient.getQuilt());
 			//每秒设备折旧费用
-			oldPrimeCoefficient.setDepreciation(primeCoefficient.getWorth()/primeCoefficient.getShareDay()
+			primeCoefficient.setDepreciation(primeCoefficient.getWorth()/primeCoefficient.getShareDay()
 					/primeCoefficient.getWorkTime()/TIME/TIME);
 			//每秒激光管费用
-			oldPrimeCoefficient.setLaserTubePriceSecond(primeCoefficient.getLaserTubePrice()/primeCoefficient.getShareTime()/TIME/TIME);
+			primeCoefficient.setLaserTubePriceSecond(primeCoefficient.getLaserTubePrice()/primeCoefficient.getShareTime()/TIME/TIME);
 			//每秒维护费用
-			oldPrimeCoefficient.setMaintenanceChargeSecond(primeCoefficient.getMaintenanceCharge()/primeCoefficient.getShareTimeTwo()/TIME/TIME);
+			primeCoefficient.setMaintenanceChargeSecond(primeCoefficient.getMaintenanceCharge()/primeCoefficient.getShareTimeTwo()/TIME/TIME);
 			//每秒耗3费
-			oldPrimeCoefficient.setPerSecondPrice((primeCoefficient.getOmnHorElectric()+primeCoefficient.getOmnHorWater()+primeCoefficient.getOmnHorHouse())/TIME/TIME);
+			primeCoefficient.setPerSecondPrice((primeCoefficient.getOmnHorElectric()+primeCoefficient.getOmnHorWater()+primeCoefficient.getOmnHorHouse())/TIME/TIME);
 			//每秒工价
-			oldPrimeCoefficient.setPerSecondMachinist(primeCoefficient.getOmnHorMachinist()/TIME/TIME);
+			primeCoefficient.setPerSecondMachinist(primeCoefficient.getOmnHorMachinist()/TIME/TIME);
 			//每秒管理费用
-			oldPrimeCoefficient.setPerSecondManage(primeCoefficient.getManagePrice()/primeCoefficient.getManageEquipmentNumber()/25/8/TIME/TIME);
-			cr.setData(primeCoefficientDao.save(oldPrimeCoefficient));
+			primeCoefficient.setPerSecondManage(primeCoefficient.getManagePrice()/primeCoefficient.getManageEquipmentNumber()/25/8/TIME/TIME);
+			cr.setData(primeCoefficientDao.save(primeCoefficient));
 			cr.setMessage("修改成功");
 		}else{
 			cr.setMessage("不能为空");
