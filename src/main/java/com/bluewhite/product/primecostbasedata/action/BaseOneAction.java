@@ -219,6 +219,10 @@ public class BaseOneAction {
 		if(primeCoefficient.getId()!=null){
 			PrimeCoefficient oldPrimeCoefficient = primeCoefficientDao.findOne(primeCoefficient.getId());
 			BeanCopyUtils.copyNullProperties(oldPrimeCoefficient,primeCoefficient);
+			if(primeCoefficient.getExtent()!=null){
+				//每CM 用时/秒
+				primeCoefficient.setTime(1/primeCoefficient.getExtent());
+			}
 			//被/数
 			primeCoefficient.setQuilt(primeCoefficient.getQuilt());
 			//每秒设备折旧费用
