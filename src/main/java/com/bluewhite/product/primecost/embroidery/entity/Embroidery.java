@@ -3,6 +3,7 @@ package com.bluewhite.product.primecost.embroidery.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 
@@ -59,12 +60,21 @@ public class Embroidery extends BaseEntity<Long>{
 	 */
 	@Column(name = "size")
     private Double size;
-	
+	/**
+	 * 被选裁片2面积
+	 */
+	@Column(name = "size_two")
+    private Double sizeTwo;
 	/**
 	 *再次确认绣片面积
 	 */
 	@Column(name = "affirm_size")
     private Double affirmSize;
+	/**
+	 *再次确认绣片面积
+	 */
+	@Column(name = "affirm_size_two")
+    private Double affirmSizeTwo;
 	
 	/**
 	 * 选择蒙薄膜层数
@@ -112,11 +122,25 @@ public class Embroidery extends BaseEntity<Long>{
 	@Column(name = "embroidery_wiresize")
     private Integer embroideryWiresize;
 	
+	
+	/**
+	 * 请选择绣花线色(原excel种是多个，现整合为一个字段，将选择的线色用字符串储存，用逗号分隔)
+	 */
+	@Column(name = "embroidery_color")
+    private String embroideryColor;
+	
+	
+	/**
+	 * 请选择绣花线色(数量）
+	 */
+	@Column(name = "embroidery_color_number")
+    private Integer embroideryColorNumber;
+	
 	/**
 	 * 单片机走时间
 	 */
 	@Column(name = "singlechip_time")
-    private Double singlechip_applique;
+    private Double singlechipApplique;
 	
 	/**
 	 * 铺布或裁片秀贴布和上绷子时间
@@ -248,6 +272,64 @@ public class Embroidery extends BaseEntity<Long>{
 	@Column(name = "price_down_remark")
     private Double priceDownRemark;
 	
+
+	/**
+	 * 垫纸的价格
+	 */
+	@Transient
+    private Double paperPrice;
+	
+	
+	
+
+	public Double getPaperPrice() {
+		return paperPrice;
+	}
+
+
+	public void setPaperPrice(Double paperPrice) {
+		this.paperPrice = paperPrice;
+	}
+
+
+	public Double getSizeTwo() {
+		return sizeTwo;
+	}
+
+
+	public void setSizeTwo(Double sizeTwo) {
+		this.sizeTwo = sizeTwo;
+	}
+
+
+	public Double getAffirmSizeTwo() {
+		return affirmSizeTwo;
+	}
+
+
+	public void setAffirmSizeTwo(Double affirmSizeTwo) {
+		this.affirmSizeTwo = affirmSizeTwo;
+	}
+
+
+	public String getEmbroideryColor() {
+		return embroideryColor;
+	}
+
+
+	public void setEmbroideryColor(String embroideryColor) {
+		this.embroideryColor = embroideryColor;
+	}
+
+
+	public Integer getEmbroideryColorNumber() {
+		return embroideryColorNumber;
+	}
+
+
+	public void setEmbroideryColorNumber(Integer embroideryColorNumber) {
+		this.embroideryColorNumber = embroideryColorNumber;
+	}
 
 
 	public Long getProductId() {
@@ -419,14 +501,63 @@ public class Embroidery extends BaseEntity<Long>{
 		this.embroideryWiresize = embroideryWiresize;
 	}
 
-
-	public Double getSinglechip_applique() {
-		return singlechip_applique;
+	public Double getSinglechipApplique() {
+		return singlechipApplique;
 	}
 
 
-	public void setSinglechip_applique(Double singlechip_applique) {
-		this.singlechip_applique = singlechip_applique;
+	public void setSinglechipApplique(Double singlechipApplique) {
+		this.singlechipApplique = singlechipApplique;
+	}
+
+
+	public Double getCostPrice() {
+		return costPrice;
+	}
+
+
+	public void setCostPrice(Double costPrice) {
+		this.costPrice = costPrice;
+	}
+
+
+	public Double getAllCostPrice() {
+		return allCostPrice;
+	}
+
+
+	public void setAllCostPrice(Double allCostPrice) {
+		this.allCostPrice = allCostPrice;
+	}
+
+
+	public Double getScaleMaterial() {
+		return scaleMaterial;
+	}
+
+
+	public void setScaleMaterial(Double scaleMaterial) {
+		this.scaleMaterial = scaleMaterial;
+	}
+
+
+	public Double getPriceDown() {
+		return priceDown;
+	}
+
+
+	public void setPriceDown(Double priceDown) {
+		this.priceDown = priceDown;
+	}
+
+
+	public Double getPriceDownRemark() {
+		return priceDownRemark;
+	}
+
+
+	public void setPriceDownRemark(Double priceDownRemark) {
+		this.priceDownRemark = priceDownRemark;
 	}
 
 

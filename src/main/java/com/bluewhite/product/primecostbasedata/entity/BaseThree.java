@@ -134,6 +134,23 @@ public class BaseThree extends BaseEntity<Long>{
 	@Poi(name = "", column = "Q")
 	@Column(name = "hard_time")
 	private Double hardTime;
+	
+	/**
+	 * 贴布时间
+	 */
+	@Column(name = "time")
+	private Double time;
+	
+	
+	
+
+	public Double getTime() {
+		return time;
+	}
+
+	public void setTime(Double time) {
+		this.time = time;
+	}
 
 	public Double getOrdinaryLaser() {
 		return ordinaryLaser;
