@@ -541,12 +541,12 @@
                                         </tr>
                                         <tr><td><div style="height: 10px"></div></td></tr>
                                        <tr>
-                                        	<th class="text-center">激光管费用:</th><td><input type="text" id="laserTubePrice"  class="form-control actualtimetw"></td>
-                                            <th class="text-center">每秒激光管费用:</th><td><input type="text" disabled="disabled" id="laserTubePriceSecond3"  class="form-control actualtimetw"></td>
+                                        	<th class="text-center">刀模费用:</th><td><input type="text" id="laserTubePrice3"  class="form-control actualtimetw"></td>
+                                            <th class="text-center">每秒刀模费用:</th><td><input type="text" disabled="disabled" id="laserTubePriceSecond3"  class="form-control actualtimetw"></td>
                                         </tr>
                                         <tr><td><div style="height: 10px"></div></td></tr>
                                        <tr>
-                                        	<th class="text-center">分摊小时:</th><td><input type="text" id="shareTime"  class="form-control actualtimetw"></td>
+                                        	<th class="text-center">分摊小时:</th><td><input type="text" id="shareTime3"  class="form-control actualtimetw"></td>
                                             <th class="text-center">每秒维护费用:</th><td><input type="text" disabled="disabled" id="maintenanceChargeSecond3"  class="form-control actualtimetw"></td>
                                         </tr>
                                         <tr><td><div style="height: 10px"></div></td></tr>
@@ -836,9 +836,8 @@
 				      				+'<td class="text-center"><input class="form-control otherTimeOne4" data-id="'+o.id+'" style="width: 85px;" value='+(o.otherTimeOne!=null?o.otherTimeOne:"")+'></td>'
 				      				+'<td class="text-center"><input class="form-control otherTimeTwo4" data-id="'+o.id+'" style="width: 85px;" value='+(o.otherTimeTwo!=null?o.otherTimeTwo:"")+'></td>'
 				      				+'<td class="text-center"><input class="form-control otherTimeThree4" data-id="'+o.id+'" style="width: 85px;" value='+(o.otherTimeThree!=null?o.otherTimeThree:"")+'></td>'
-				      				+'<td class="text-center"><input class="form-control overlappedSeconds4" data-id="'+o.id+'" style="width: 85px;"  value='+(o.overlappedSeconds!=null?o.overlappedSeconds:"")+'></td>'
-				      				+'<td class="text-center"><input class="form-control punchingSeconds4" data-id="'+o.id+'" style="width: 85px;" value='+(o.punchingSeconds!=null?o.punchingSeconds:"")+'></td>'
-				      				
+				      				+'<td class="text-center edit overlappedSeconds3">'+parseFloat((o.overlappedSeconds*1).toFixed(8))+'</td>'
+				      				+'<td class="text-center edit punchingSeconds3">'+parseFloat((o.punchingSeconds*1).toFixed(8))+'</td>'
 				      				+'<td class="text-center edit labourCost3">'+parseFloat((o.labourCost*1).toFixed(8))+'</td>'
 				      				+'<td class="text-center edit equipmentPrice3">'+parseFloat((o.equipmentPrice*1).toFixed(5))+'</td>'
 				      				+'<td class="text-center edit administrativeAtaff3">'+parseFloat((o.administrativeAtaff*1).toFixed(5))+'</td>'
