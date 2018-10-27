@@ -236,6 +236,10 @@ public class BaseOneAction {
 			primeCoefficient.setPerSecondPrice((primeCoefficient.getOmnHorElectric()+primeCoefficient.getOmnHorWater()+primeCoefficient.getOmnHorHouse())/TIME/TIME);
 			//每秒工价
 			primeCoefficient.setPerSecondMachinist(primeCoefficient.getOmnHorMachinist()/TIME/TIME);
+			//每秒工价2
+			if(primeCoefficient.getOmnHorAuxiliary()!=null){
+				primeCoefficient.setPerSecondMachinistTwo(primeCoefficient.getOmnHorAuxiliary()/TIME/TIME);
+			}
 			//每秒管理费用
 			primeCoefficient.setPerSecondManage(primeCoefficient.getManagePrice()/primeCoefficient.getManageEquipmentNumber()/25/8/TIME/TIME);
 			cr.setData(primeCoefficientDao.save(primeCoefficient));

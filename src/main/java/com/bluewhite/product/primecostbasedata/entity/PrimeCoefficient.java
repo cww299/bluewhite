@@ -112,7 +112,7 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 	private Double workTime;
 	
 	/**
-	 *激光管费用
+	 *激光管费用(刀模费用)
 	 */
 	@Column(name = "laser_tube_price")
 	private Double laserTubePrice;
@@ -177,6 +177,14 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 	@Column(name = "omn_hor_machinist")
 	private Double omnHorMachinist;
 	
+	
+	/**
+	 *每小时辅助工价
+	 */
+	@Column(name = "omn_hor_auxiliary")
+	private Double omnHorAuxiliary;
+	
+
 	/**
 	 *每秒工价
 	 */
@@ -352,12 +360,212 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 	/**
 	 * 薄膜每平价格
 	 */
-//	@Column(name = "machinist_three")
-//	private Double machinistThree;
+	@Column(name = "embroidery_one")
+	private Double embroideryOne;
+	
+	/**
+	 * 每1000针机走时间/秒
+	 */
+	@Column(name = "embroidery_two")
+	private Double embroideryTwo;
+	
+	/**
+	 * 整布绣上绷子铺料铺薄膜时间/秒
+	 */
+	@Column(name = "embroidery_three")
+	private Double embroideryThree;
+	
+	/**
+	 * 裁片秀上绷子贴裁片时间/秒
+	 */
+	@Column(name = "embroidery_four")
+	private Double embroideryFour;
+	
+	/**
+	 *每一贴布/秒
+	 */
+	@Column(name = "embroidery_five")
+	private Double embroideryFive;
+	
+	/**
+	 *单个线头剪时间/秒
+	 */
+	@Column(name = "embroidery_six")
+	private Double embroiderySix;
+	
+	/**
+	 *绣花线每坨价格
+	 */
+	@Column(name = "embroidery_seven")
+	private Double embroiderySeven;
+	
+	/**
+	 *每坨米数
+	 */
+	@Column(name = "embroidery_eight")
+	private Double embroideryEight;
+	
+	/**
+	 *每米价格
+	 */
+	@Column(name = "embroidery_nine")
+	private Double embroideryNine;
+	
+	/**
+	 *每1000针用多少米？
+	 */
+	@Column(name = "embroidery_ten")
+	private Double embroideryTen;
+	
+	/**
+	 *每1针用米？
+	 */
+	@Column(name = "embroidery_eleven")
+	private Double embroideryEleven;
+	
+	/**
+	 *1000针价格
+	 */
+	@Column(name = "embroidery_twelve")
+	private Double embroideryTwelve;
+	
+	/**
+	 *1贴布价格
+	 */
+	@Column(name = "embroidery_thirteen")
+	private Double embroideryThirteen;
+
+	/**
+	 *每加一套线色价格
+	 */
+	@Column(name = "embroidery_fourteen")
+	private Double embroideryFourteen;
 
 	
 
 	
+	
+	
+
+	public Double getOmnHorAuxiliary() {
+		return omnHorAuxiliary;
+	}
+
+	public void setOmnHorAuxiliary(Double omnHorAuxiliary) {
+		this.omnHorAuxiliary = omnHorAuxiliary;
+	}
+
+	public Double getEmbroiderySeven() {
+		return embroiderySeven;
+	}
+
+	public void setEmbroiderySeven(Double embroiderySeven) {
+		this.embroiderySeven = embroiderySeven;
+	}
+
+	public Double getEmbroideryEight() {
+		return embroideryEight;
+	}
+
+	public void setEmbroideryEight(Double embroideryEight) {
+		this.embroideryEight = embroideryEight;
+	}
+
+	public Double getEmbroideryNine() {
+		return embroideryNine;
+	}
+
+	public void setEmbroideryNine(Double embroideryNine) {
+		this.embroideryNine = embroideryNine;
+	}
+
+	public Double getEmbroideryTen() {
+		return embroideryTen;
+	}
+
+	public void setEmbroideryTen(Double embroideryTen) {
+		this.embroideryTen = embroideryTen;
+	}
+
+	public Double getEmbroideryEleven() {
+		return embroideryEleven;
+	}
+
+	public void setEmbroideryEleven(Double embroideryEleven) {
+		this.embroideryEleven = embroideryEleven;
+	}
+
+	public Double getEmbroideryTwelve() {
+		return embroideryTwelve;
+	}
+
+	public void setEmbroideryTwelve(Double embroideryTwelve) {
+		this.embroideryTwelve = embroideryTwelve;
+	}
+
+	public Double getEmbroideryThirteen() {
+		return embroideryThirteen;
+	}
+
+	public void setEmbroideryThirteen(Double embroideryThirteen) {
+		this.embroideryThirteen = embroideryThirteen;
+	}
+
+	public Double getEmbroideryFourteen() {
+		return embroideryFourteen;
+	}
+
+	public void setEmbroideryFourteen(Double embroideryFourteen) {
+		this.embroideryFourteen = embroideryFourteen;
+	}
+
+	public Double getEmbroideryOne() {
+		return embroideryOne;
+	}
+
+	public void setEmbroideryOne(Double embroideryOne) {
+		this.embroideryOne = embroideryOne;
+	}
+
+	public Double getEmbroideryTwo() {
+		return embroideryTwo;
+	}
+
+	public void setEmbroideryTwo(Double embroideryTwo) {
+		this.embroideryTwo = embroideryTwo;
+	}
+
+	public Double getEmbroideryThree() {
+		return embroideryThree;
+	}
+
+	public void setEmbroideryThree(Double embroideryThree) {
+		this.embroideryThree = embroideryThree;
+	}
+
+	public Double getEmbroideryFour() {
+		return embroideryFour;
+	}
+
+	public void setEmbroideryFour(Double embroideryFour) {
+		this.embroideryFour = embroideryFour;
+	}
+
+	public Double getEmbroideryFive() {
+		return embroideryFive;
+	}
+
+	public void setEmbroideryFive(Double embroideryFive) {
+		this.embroideryFive = embroideryFive;
+	}
+
+	public Double getEmbroiderySix() {
+		return embroiderySix;
+	}
+
+	public void setEmbroiderySix(Double embroiderySix) {
+		this.embroiderySix = embroiderySix;
+	}
 
 	public Double getPerSecondMachinistTwo() {
 		return perSecondMachinistTwo;

@@ -14,14 +14,12 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.machinist.dao.MachinistDao;
 import com.bluewhite.product.primecost.machinist.entity.Machinist;
 import com.bluewhite.product.primecost.tailor.dao.TailorDao;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecostbasedata.dao.PrimeCoefficientDao;
 import com.bluewhite.product.primecostbasedata.entity.PrimeCoefficient;
-import com.bluewhite.system.user.entity.User;
 @Service
 public class MachinistServiceImpl extends BaseServiceImpl<Machinist, Long> implements MachinistService{
 	
@@ -30,6 +28,7 @@ public class MachinistServiceImpl extends BaseServiceImpl<Machinist, Long> imple
 	
 	@Autowired
 	private TailorDao tailorDao;
+	
 	@Autowired
 	private PrimeCoefficientDao primeCoefficientDao;
 	
