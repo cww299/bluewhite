@@ -52,7 +52,6 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		tailor.setNoeMbroiderPriceDown(NumUtils.setzro(tailor.getAllCostPrice())+tailor.getPriceDown());
 		//含绣花环节的为机工压价
 		
-		
 		//为机工准备的压价
 		double MachinistPriceDown = tailor.getNoeMbroiderPriceDown() >= NumUtils.setzro(tailor.getEmbroiderPriceDown()) ? tailor.getNoeMbroiderPriceDown() :NumUtils.setzro(tailor.getEmbroiderPriceDown());
 		tailor.setMachinistPriceDown(MachinistPriceDown);
@@ -162,8 +161,6 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			primeCoefficient = primeCoefficientDao.findByType(type);
 			prams.setTailorType(type);
 			tailor.setTailorType(type);
-			//撕片秒数（含快手)
-//			oldOrdinaryLaser.setTearingSeconds(tearingSeconds);
 			//拉布秒数（含快手)
 			prams.setRabbTime((primeCoefficient.getPermOne()/1.5/prams.getTailorSize())*primeCoefficient.getQuickWorker());
 			
@@ -175,17 +172,22 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			type = "puncher";
 			prams.setTailorType(type);
 			tailor.setTailorType(type);
-			
+			//得到理论(市场反馈）含管理价值
+			prams.setManagePrice(materielService.getBaseThreeOne(prams.getTailorTypeId(), prams.getTailorSize()));
 			break;
 		case 76://电推
 			type = "electricPush";
 			prams.setTailorType(type);
 			tailor.setTailorType(type);
+			//得到理论(市场反馈）含管理价值
+			prams.setManagePrice(materielService.getBaseThreeOne(prams.getTailorTypeId(), prams.getTailorSize()));
 			break;
 		case 77://手工剪刀
 			type = "manual";
 			prams.setTailorType(type);
 			tailor.setTailorType(type);
+			//得到理论(市场反馈）含管理价值
+			prams.setManagePrice(materielService.getBaseThreeOne(prams.getTailorTypeId(), prams.getTailorSize()));
 			break;
 		case 78://绣花领取
 			
