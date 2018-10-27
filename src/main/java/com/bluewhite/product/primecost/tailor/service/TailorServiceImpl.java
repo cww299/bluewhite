@@ -83,6 +83,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		 prams.setProductId(tailor.getProductId());
 		 prams.setTailorTypeId(tailor.getTailorTypeId());
 		 prams.setTailorName(tailor.getTailorName());
+		 prams.setNumber(tailor.getNumber());
 		 prams.setTailorNumber(tailor.getTailorNumber());
 		 prams.setTailorSize(tailor.getTailorSize());
 		 prams.setTailorId(tailor.getId());
