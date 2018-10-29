@@ -111,7 +111,7 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 				}
 				ordinaryLaser.setTearingSeconds(tearingSeconds*primeCoefficient.getQuickWorker());
 				//拉布秒数（含快手)
-				ordinaryLaser.setRabbTime((primeCoefficient.getPermOne()/1.5/ordinaryLaser.getTailorSize())*primeCoefficient.getQuickWorker());
+				ordinaryLaser.setRabbTime(primeCoefficient.getPermOne()/(1.5/ordinaryLaser.getTailorSize())*primeCoefficient.getQuickWorker());
 				//电烫工价（含快手)
 				ordinaryLaser.setPermPrice((ordinaryLaser.getPermSeconds()+ordinaryLaser.getRabbTime())*primeCoefficient.getPerSecondMachinist());
 				//撕片工价
@@ -160,8 +160,10 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 				//得到理论(市场反馈）含管理价值
 				ordinaryLaser.setManagePrice(managePrice);
 				//叠布秒数（含快手)
-				ordinaryLaser.setOverlappedSeconds((primeCoefficient.getElectricPushOne()*ordinaryLaser.getLayerNumber()+primeCoefficient.getElectricPushThree()+primeCoefficient.getElectricPushFour())
-						/(primeCoefficient.getElectricPushTwo()*1.5*ordinaryLaser.getLayerNumber())/ordinaryLaser.getTailorSize());
+				ordinaryLaser.setOverlappedSeconds((primeCoefficient.getElectricPushOne()*ordinaryLaser.getLayerNumber()
+						+primeCoefficient.getElectricPushThree()+primeCoefficient.getElectricPushFour())
+						/(primeCoefficient.getElectricPushTwo()*1.5*ordinaryLaser.getLayerNumber())
+						/ordinaryLaser.getTailorSize());
 				//电推秒数（含快手)
 				ordinaryLaser.setElectricSeconds((ordinaryLaser.getPerimeter()/primeCoefficient.getElectricPushFive()*primeCoefficient.getElectricPushSix())
 						/ordinaryLaser.getLayerNumber());

@@ -92,8 +92,8 @@ public class MachinistAction {
 	@RequestMapping(value = "/product/getMachinist", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse getMachinist(HttpServletRequest request,PageParameter page,Machinist machinist) {
-		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(machinistService.findPages(machinist,page))
-				.toJSON());
+		CommonResponse cr = new CommonResponse();
+		cr.setData(machinistService.findPages(machinist,page));
 		cr.setMessage("查询成功");
 		return cr;
 	}

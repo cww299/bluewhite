@@ -1,10 +1,6 @@
-package com.bluewhite.product.primecost.embroidery.action;
+package com.bluewhite.product.primecost.needlework.action;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,46 +20,45 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.product.primecost.embroidery.action.EmbroideryAction;
 import com.bluewhite.product.primecost.embroidery.entity.Embroidery;
 import com.bluewhite.product.primecost.embroidery.service.EmbroideryService;
-import com.bluewhite.product.primecost.machinist.entity.Machinist;
-import com.bluewhite.product.primecost.tailor.entity.Tailor;
+import com.bluewhite.product.primecost.needlework.entity.Needlework;
+import com.bluewhite.product.primecost.needlework.service.NeedleworkService;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
 
-public class EmbroideryAction {
+public class NeedleworkAction {
 	
-	private final static Log log = Log.getLog(EmbroideryAction.class);
+	
+private final static Log log = Log.getLog(NeedleworkAction.class);
 	
 	@Autowired
-	private EmbroideryService embroideryService;
+	private NeedleworkService needleworkService;
 	
 	@Autowired
 	private TailorService tailorService;
 	
 	
 	/**
-	 * 绣花填写
-	 * 
-	 * 其中面料数据通过裁剪页面获得，传入面料字符串的同时，将裁剪页面id传入
+	 * 针工填写
 	 * 
 	 * @param request 请求
 	 * @return cr
-	 * @throws Exception
 	 */
-	@RequestMapping(value = "/product/addEmbroidery", method = RequestMethod.POST)
+	@RequestMapping(value = "/product/addNeedlework", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addMachinist(HttpServletRequest request,Embroidery embroidery) {
+	public CommonResponse addMachinist(HttpServletRequest request,Needlework needlework) {
 		CommonResponse cr = new CommonResponse();
-		if(StringUtils.isEmpty(embroidery.getProductId())){
+		if(StringUtils.isEmpty(needlework.getProductId())){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品不能为空");
 		}else{
-			if(embroidery.getId()!=null){
-				Embroidery oldEmbroidery = embroideryService.findOne(embroidery.getId());
-				BeanCopyUtils.copyNullProperties(oldEmbroidery,embroidery);
-				embroidery.setCreatedAt(oldEmbroidery.getCreatedAt());
+			if(needlework.getId()!=null){
+				Needlework oldNeedlework = needleworkService.findOne(needlework.getId());
+				BeanCopyUtils.copyNullProperties(oldNeedlework,needlework);
+				needlework.setCreatedAt(oldNeedlework.getCreatedAt());
 			}
-			embroideryService.saveEmbroidery(embroidery);
+			needleworkService.saveNeedlework(needlework);
 			cr.setMessage("添加成功");
 		}
 		return cr;
@@ -71,24 +66,23 @@ public class EmbroideryAction {
 	
 	
 	/**
-	 * 分页查看 绣花填写
+	 * 分页查看 针工填写
 	 * 
 	 * @param request 请求
 	 * @return cr
-	 * @throws Exception
 	 */
-	@RequestMapping(value = "/product/getEmbroidery", method = RequestMethod.GET)
+	@RequestMapping(value = "/product/getNeedlework", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getEmbroidery(HttpServletRequest request,PageParameter page,Embroidery embroidery) {
+	public CommonResponse getEmbroidery(HttpServletRequest request,PageParameter page,Needlework needlework) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(embroideryService.findPages(embroidery,page));
+		cr.setData(needleworkService.findPages(needlework,page));
 		cr.setMessage("查询成功");
 		return cr;
 	}
 	
 	
 	/**
-	 * 删除绣花填写
+	 * 删除 针工填写
 	 * 
 	 */
 	@RequestMapping(value = "/product/deleteEmbroidery", method = RequestMethod.GET)
@@ -100,7 +94,7 @@ public class EmbroideryAction {
 			if (idArr.length>0) {
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
-					embroideryService.deleteEmbroidery(id);
+					needleworkService.deleteNeedlework(id);
 				}
 			}
 				cr.setMessage("删除成功");
@@ -113,21 +107,21 @@ public class EmbroideryAction {
 	
 	
 	
-	/**
-	 * 获取绣花填写面料值
-	 * 
-	 * @param request 请求
-	 * @return cr
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/product/getEmbroideryName", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse getMachinistName(HttpServletRequest request,Long productId) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(tailorService.findByProductId(productId));
-		cr.setMessage("查询成功");
-		return cr;
-	}
+//	/**
+//	 * 获取绣花填写面料值
+//	 * 
+//	 * @param request 请求
+//	 * @return cr
+//	 * @throws Exception
+//	 */
+//	@RequestMapping(value = "/product/getEmbroideryName", method = RequestMethod.GET)
+//	@ResponseBody
+//	public CommonResponse getMachinistName(HttpServletRequest request,Long productId) {
+//		CommonResponse cr = new CommonResponse();
+//		cr.setData(tailorService.findByProductId(productId));
+//		cr.setMessage("查询成功");
+//		return cr;
+//	}
 	
 	
 	
