@@ -7,6 +7,11 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 
+/**
+ * 绣花页面
+ * @author zhangliang
+ *
+ */
 @Entity
 @Table(name = "pro_product_embroidery")
 public class Embroidery extends BaseEntity<Long>{
@@ -17,7 +22,13 @@ public class Embroidery extends BaseEntity<Long>{
 	 */
 	@Column(name = "product_id")
 	private Long productId;
-
+	
+	/**
+	 * 裁剪页面id
+	 */
+	@Column(name = "tailor_id")
+	private Long tailorId;
+	
 	/**
 	 * 批量产品数量或模拟批量数
 	 */
@@ -48,12 +59,23 @@ public class Embroidery extends BaseEntity<Long>{
 	@Column(name = "wiresize")
     private String wiresize;
 	
-	
 	/**
 	 * 选择贴布数
 	 */
 	@Column(name = "applique")
     private Integer applique;
+	
+	/**
+	 * 选择贴布面积(原excel种是多个，现整合为一个字段，将选择的线色用字符串储存，用逗号分隔)
+	 */
+	@Column(name = "applique_size")
+    private String appliqueSize;
+	
+	/**
+	 * 选择贴布面积对应的贴布时间(原excel种是多个，现整合为一个字段，将选择的线色用字符串储存，用逗号分隔)
+	 */
+	@Column(name = "applique_time")
+    private String appliqueTime;
 	
 	/**
 	 * 被选裁片1面积
@@ -281,6 +303,38 @@ public class Embroidery extends BaseEntity<Long>{
 	
 	
 	
+	
+	
+
+	public String getAppliqueSize() {
+		return appliqueSize;
+	}
+
+
+	public void setAppliqueSize(String appliqueSize) {
+		this.appliqueSize = appliqueSize;
+	}
+
+
+	public String getAppliqueTime() {
+		return appliqueTime;
+	}
+
+
+	public void setAppliqueTime(String appliqueTime) {
+		this.appliqueTime = appliqueTime;
+	}
+
+
+	public Long getTailorId() {
+		return tailorId;
+	}
+
+
+	public void setTailorId(Long tailorId) {
+		this.tailorId = tailorId;
+	}
+
 
 	public Double getPaperPrice() {
 		return paperPrice;

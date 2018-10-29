@@ -37,6 +37,9 @@ public class MachinistServiceImpl extends BaseServiceImpl<Machinist, Long> imple
 		
 		PrimeCoefficient primeCoefficient = primeCoefficientDao.findByType("machinist");
 		
+		//自动将类型为null的属性赋值为0
+		NumUtils.setzro(machinist);
+		
 		//在填写机工名称时，同时将裁片或上到填写，第一次填写，此时裁片的压价可以显示，机工的压价没有，  在填完之后，同时保存更新技工的压价，也就是裁片的压价总和 .   原理，机工的压价是只能通过裁片的压价获取到
 		//当我第一次填写机工名称时，同时传入了裁片的压价，此时更新当前机工的压价
 		 double sumPrice = 0;
@@ -124,7 +127,7 @@ public class MachinistServiceImpl extends BaseServiceImpl<Machinist, Long> imple
 		 //物料和上道压（裁剪,上道机工）价-只有在当行机工环节单独发放给某个加工店，这个才起作用
 		 machinist.setPriceDownRemark(NumUtils.round((machinist.getAllCostPrice()+sumPrice+sumPriceDownRemark), 2));
 		 //为针工准备的压价
-		 machinist.setNeedlework(machinist.getAllCostPrice()+machinist.getPriceDown());
+		 machinist.setNeedleworkPriceDown(machinist.getAllCostPrice()+machinist.getPriceDown());
 		 //单独机工工序外发的压价
 		 machinist.setMachinistPriceDown(machinist.getAllCostPrice()+machinist.getPriceDownRemark());
 		

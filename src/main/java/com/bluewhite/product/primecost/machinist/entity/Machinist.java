@@ -7,6 +7,11 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 
+/**
+ * 机工页面
+ * @author zhangliang
+ *
+ */
 @Entity
 @Table(name = "pro_product_machinist")
 public class Machinist extends BaseEntity<Long> {
@@ -73,7 +78,7 @@ public class Machinist extends BaseEntity<Long> {
 	 *为针工准备的压价
 	 */
 	@Column(name = "needlework_price_down")
-    private Double needlework;
+    private Double needleworkPriceDown;
 	
 	/**
 	 * 单独机工工序外发的压价
@@ -625,12 +630,14 @@ public class Machinist extends BaseEntity<Long> {
 		this.priceDownRemark = priceDownRemark;
 	}
 
-	public Double getNeedlework() {
-		return needlework;
+
+
+	public Double getNeedleworkPriceDown() {
+		return needleworkPriceDown;
 	}
 
-	public void setNeedlework(Double needlework) {
-		this.needlework = needlework;
+	public void setNeedleworkPriceDown(Double needleworkPriceDown) {
+		this.needleworkPriceDown = needleworkPriceDown;
 	}
 
 	public Double getMachinistPriceDown() {

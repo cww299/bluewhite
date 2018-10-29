@@ -75,7 +75,16 @@ public class NumUtils {
 					val = field.get(model);
 					field.set(model,(Double)val == null ? (Double)0.0 : (Double)val); 
 				} catch (IllegalArgumentException | IllegalAccessException e) {
-					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			 } 
+			 if(type.endsWith("Integer")){
+				 Object target =  field.getName();
+				 Object val;
+				try {
+					val = field.get(model);
+					field.set(model,(Integer)val == null ? (Integer)0 : (Integer)val); 
+				} catch (IllegalArgumentException | IllegalAccessException e) {
 					e.printStackTrace();
 				}
 			 } 

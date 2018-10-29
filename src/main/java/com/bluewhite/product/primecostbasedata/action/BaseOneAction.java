@@ -69,28 +69,9 @@ public class BaseOneAction {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON
 				.get()
-				.addRetainTerm(BaseOne.class, "id","name","textualTime","time")
-				.format(materielService.findPagesBaseOne(baseOne)).toJSON());
-		cr.setMessage("成功");
-		return cr;
-	}
-	
-	
-	/**
-	 * 产品基础数据详细获取
-	 * 
-	 * @param request 请求
-	 * @return cr
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/product/getBaseOneTime", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse getBaseOneTime(HttpServletRequest request,Long id) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(ClearCascadeJSON
-				.get()
+				.addRetainTerm(BaseOne.class, "id","name","textualTime","time","baseOneTimes")
 				.addRetainTerm(BaseOneTime.class,"textualTime","time","categorySetting")
-				.format(baseOneTimeDao.findByBaseOneId(id)).toJSON());
+				.format(materielService.findPagesBaseOne(baseOne)).toJSON());
 		cr.setMessage("成功");
 		return cr;
 	}

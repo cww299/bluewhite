@@ -53,7 +53,7 @@ public class BaseOneTime extends BaseEntity<Long>{
 	 * 多对一
 	 */
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "baseOneId", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "baseone_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseOne baseOne;
 
 	public Double getTime() {

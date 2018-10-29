@@ -166,6 +166,12 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 	private Double perSecondPrice;
 	
 	/**
+	 *每秒耗3费(针工页面)
+	 */
+	@Column(name = "per_second_price_two")
+	private Double perSecondPriceTwo;
+	
+	/**
 	 *每小时耗房租/元
 	 */
 	@Column(name = "omn_hor_house")
@@ -446,6 +452,14 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 	
 	
 	
+
+	public Double getPerSecondPriceTwo() {
+		return perSecondPriceTwo;
+	}
+
+	public void setPerSecondPriceTwo(Double perSecondPriceTwo) {
+		this.perSecondPriceTwo = perSecondPriceTwo;
+	}
 
 	public Double getOmnHorAuxiliary() {
 		return omnHorAuxiliary;
