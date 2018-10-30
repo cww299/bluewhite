@@ -134,7 +134,7 @@ public class PackServiceImpl extends BaseServiceImpl<Pack, Long> implements Pack
 	}
 
 	@Override
-	public void deleteEmbroidery(Long id) {
+	public void deletePack(Long id) {
 		dao.delete(id);
 	}
 

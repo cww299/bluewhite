@@ -22,6 +22,30 @@ public class PrimeCost extends BaseEntity<Long>{
 	@Column(name = "number")
 	private Integer number;
 	
+	/**
+	 * 调整外发产量
+	 */
+	@Column(name = "adjust_number")
+	private Integer adjustNumber;
+	
+
+	/**
+	 * 产品id
+	 */
+	@Column(name = "product_id")
+	private Long productId;
+	
+	/**
+	 * 批成本
+	 */
+	@Column(name = "bacth_prime_cost")
+	private Double bacthPrimeCost;
+	
+	/**
+	 * 单只成本
+	 */
+	@Column(name = "one_prime_cost")
+	private Double onePrimeCost;
 	
 	/**
 	 * 面料价格(含复合物料和加工费）
@@ -29,6 +53,11 @@ public class PrimeCost extends BaseEntity<Long>{
 	@Column(name = "cut_parts_price")
     private Double cutPartsPrice;
 	
+	/**
+	 * 单只面料价格(含复合物料和加工费）
+	 */
+	@Column(name = "one_cut_parts_price")
+    private Double oneCutPartsPrice;
 	
 	/**
 	 * 除面料以外的其他物料价格
@@ -36,12 +65,23 @@ public class PrimeCost extends BaseEntity<Long>{
 	@Column(name = "other_cut_parts_price")
     private Double otherCutPartsPrice;
 	
+	/**
+	 * 单只除面料以外的其他物料价格
+	 */
+	@Column(name = "one_other_cut_parts_price")
+    private Double oneOtherCutPartsPrice;
 	
 	/**
 	 * 裁剪价格
 	 */
 	@Column(name = "cut_price")
     private Double cutPrice;
+	
+	/**
+	 * 单只裁剪价格
+	 */
+	@Column(name = "one_cut_price")
+    private Double oneCutPrice;
 	
 	
 	/**
@@ -51,10 +91,22 @@ public class PrimeCost extends BaseEntity<Long>{
     private Double machinistPrice;
 	
 	/**
+	 * 单只机工价格
+	 */
+	@Column(name = "one_machinist_price")
+    private Double oneMachinistPrice;
+	
+	/**
 	 * 绣花价格
 	 */
 	@Column(name = "embroider_price")
     private Double embroiderPrice;
+	
+	/**
+	 * 单只绣花价格
+	 */
+	@Column(name = "one_embroider_price")
+    private Double oneEmbroiderPrice;
 	
 	/**
 	 * 针工价格
@@ -63,17 +115,35 @@ public class PrimeCost extends BaseEntity<Long>{
     private Double needleworkPrice;
 	
 	/**
+	 * 单只针工价格
+	 */
+	@Column(name = "one_needlework_price")
+    private Double oneNeedleworkPrice;
+	
+	/**
 	 * 内外包装和出入库的价格
 	 */
 	@Column(name = "pack_price")
     private Double packPrice;
 	
 	/**
-	 *预计运费价格
+	 * 单只内外包装和出入库的价格
+	 */
+	@Column(name = "one_pack_price")
+    private Double onePackPrice;
+	
+	
+	/**
+	 * 预计运费价格
 	 */
 	@Column(name = "freight_price")
     private Double freightPrice;
 	
+	/**
+	 * 单只预计运费价格
+	 */
+	@Column(name = "one_freight_price")
+    private Double oneFreightPrice;
 
 	/**
 	 * 是否含开票
@@ -116,7 +186,248 @@ public class PrimeCost extends BaseEntity<Long>{
 	 */
 	@Column(name = "actualCombatRate")
 	private Double actualCombatRate;
+	
+	
+	
+	/**
+	 * 目前售价
+	 */
+	@Column(name = "sale")
+	private Double sale;
+	
+	
+	/**
+	 * 付上游开票点
+	 */
+	@Column(name = "upstream")
+	private Double upstream;
+	
+	/**
+	 * 预计多付国家的
+	 */
+	@Column(name = "expect_state")
+	private Double expectState;
+	
+	/**
+	 * 付国家的
+	 */
+	@Column(name = "state")
+	private Double state;
+	
+	/**
+	 * 考虑多付国家的不付需要的进项票点
+	 */
+	@Column(name = "no_state")
+	private Double noState;
+	
+	/**
+	 * 付返点和版权点
+	 */
+	@Column(name = "recidivate")
+	private Double recidivate;
+	
+	/**
+	 * 付运费
+	 */
+	@Column(name = "freight")
+	private Double freight;
+	
+	/**
+	 * 为目前得出综合税负加所得税负填写↓
+	 */
+	@Column(name = "taxes")
+	private Double taxes;
+	
+	/**
+	 * 实际加价率
+	 */
+	@Column(name = "make_rate")
+	private Double makeRate;
+	
+	/**
+	 * 目前综合税负加所得税负比
+	 */
+	@Column(name = "taxes_rate")
+	private Double taxesRate;
 
+	
+	
+
+	public Double getSale() {
+		return sale;
+	}
+
+	public void setSale(Double sale) {
+		this.sale = sale;
+	}
+
+	public Double getUpstream() {
+		return upstream;
+	}
+
+	public void setUpstream(Double upstream) {
+		this.upstream = upstream;
+	}
+
+	public Double getExpectState() {
+		return expectState;
+	}
+
+	public void setExpectState(Double expectState) {
+		this.expectState = expectState;
+	}
+
+	public Double getState() {
+		return state;
+	}
+
+	public void setState(Double state) {
+		this.state = state;
+	}
+
+	public Double getNoState() {
+		return noState;
+	}
+
+	public void setNoState(Double noState) {
+		this.noState = noState;
+	}
+
+	public Double getRecidivate() {
+		return recidivate;
+	}
+
+	public void setRecidivate(Double recidivate) {
+		this.recidivate = recidivate;
+	}
+
+	public Double getFreight() {
+		return freight;
+	}
+
+	public void setFreight(Double freight) {
+		this.freight = freight;
+	}
+
+	public Double getTaxes() {
+		return taxes;
+	}
+
+	public void setTaxes(Double taxes) {
+		this.taxes = taxes;
+	}
+
+	public Double getMakeRate() {
+		return makeRate;
+	}
+
+	public void setMakeRate(Double makeRate) {
+		this.makeRate = makeRate;
+	}
+
+	public Double getTaxesRate() {
+		return taxesRate;
+	}
+
+	public void setTaxesRate(Double taxesRate) {
+		this.taxesRate = taxesRate;
+	}
+
+	public Double getOneFreightPrice() {
+		return oneFreightPrice;
+	}
+
+	public void setOneFreightPrice(Double oneFreightPrice) {
+		this.oneFreightPrice = oneFreightPrice;
+	}
+
+	public Integer getAdjustNumber() {
+		return adjustNumber;
+	}
+
+	public void setAdjustNumber(Integer adjustNumber) {
+		this.adjustNumber = adjustNumber;
+	}
+
+	public Double getBacthPrimeCost() {
+		return bacthPrimeCost;
+	}
+
+	public void setBacthPrimeCost(Double bacthPrimeCost) {
+		this.bacthPrimeCost = bacthPrimeCost;
+	}
+
+	public Double getOnePrimeCost() {
+		return onePrimeCost;
+	}
+
+	public void setOnePrimeCost(Double onePrimeCost) {
+		this.onePrimeCost = onePrimeCost;
+	}
+
+	public Double getOneCutPartsPrice() {
+		return oneCutPartsPrice;
+	}
+
+	public void setOneCutPartsPrice(Double oneCutPartsPrice) {
+		this.oneCutPartsPrice = oneCutPartsPrice;
+	}
+
+	public Double getOneOtherCutPartsPrice() {
+		return oneOtherCutPartsPrice;
+	}
+
+	public void setOneOtherCutPartsPrice(Double oneOtherCutPartsPrice) {
+		this.oneOtherCutPartsPrice = oneOtherCutPartsPrice;
+	}
+
+	public Double getOneCutPrice() {
+		return oneCutPrice;
+	}
+
+	public void setOneCutPrice(Double oneCutPrice) {
+		this.oneCutPrice = oneCutPrice;
+	}
+
+	public Double getOneMachinistPrice() {
+		return oneMachinistPrice;
+	}
+
+	public void setOneMachinistPrice(Double oneMachinistPrice) {
+		this.oneMachinistPrice = oneMachinistPrice;
+	}
+
+	public Double getOneEmbroiderPrice() {
+		return oneEmbroiderPrice;
+	}
+
+	public void setOneEmbroiderPrice(Double oneEmbroiderPrice) {
+		this.oneEmbroiderPrice = oneEmbroiderPrice;
+	}
+
+	public Double getOneNeedleworkPrice() {
+		return oneNeedleworkPrice;
+	}
+
+	public void setOneNeedleworkPrice(Double oneNeedleworkPrice) {
+		this.oneNeedleworkPrice = oneNeedleworkPrice;
+	}
+
+	public Double getOnePackPrice() {
+		return onePackPrice;
+	}
+
+	public void setOnePackPrice(Double onePackPrice) {
+		this.onePackPrice = onePackPrice;
+	}
+
+	public Long getProductId() {
+		return productId;
+	}
+
+	public void setProductId(Long productId) {
+		this.productId = productId;
+	}
 
 	public Double getCutPartsPrice() {
 		return cutPartsPrice;

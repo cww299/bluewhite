@@ -1,5 +1,7 @@
 package com.bluewhite.product.primecost.materials.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -31,5 +33,8 @@ public interface ProductMaterialsService extends BaseCRUDService<ProductMaterial
 	 * @param productMaterials
 	 */
 	public void deleteProductMaterials(Long id);
+	
+
+	public List<ProductMaterials> findByProductIdAndOverstockId(Long productId, Long id);
 
 }

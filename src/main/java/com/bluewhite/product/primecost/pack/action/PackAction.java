@@ -33,9 +33,6 @@ private final static Log log = Log.getLog(PackAction.class);
 	@Autowired
 	private PackService packService;
 	
-	@Autowired
-	private TailorService tailorService;
-	
 	
 	/**
 	 * 内外包装和杂工填写
@@ -65,7 +62,7 @@ private final static Log log = Log.getLog(PackAction.class);
 	
 	
 	/**
-	 * 分页查看 绣花填写
+	 * 分页查看 内外包装和杂工
 	 * 
 	 * @param request 请求
 	 * @return cr
@@ -82,7 +79,7 @@ private final static Log log = Log.getLog(PackAction.class);
 	
 	
 	/**
-	 * 删除绣花填写
+	 * 删除内外包装和杂工
 	 * 
 	 */
 	@RequestMapping(value = "/product/deletePack", method = RequestMethod.GET)
@@ -94,13 +91,13 @@ private final static Log log = Log.getLog(PackAction.class);
 			if (idArr.length>0) {
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
-					packService.deleteEmbroidery(id);
+					packService.deletePack(id);
 				}
 			}
 				cr.setMessage("删除成功");
 			}else{
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				cr.setMessage("裁片id不能为空");
+				cr.setMessage("内外包装和杂工id不能为空");
 			}
 		return cr;
 	}

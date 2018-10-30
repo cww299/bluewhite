@@ -2,7 +2,9 @@ package com.bluewhite.product.primecost.needlework.action;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,14 +24,12 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.product.primecost.embroidery.action.EmbroideryAction;
-import com.bluewhite.product.primecost.embroidery.entity.Embroidery;
-import com.bluewhite.product.primecost.embroidery.service.EmbroideryService;
+import com.bluewhite.product.primecost.cutparts.entity.CutParts;
+import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
+import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
+import com.bluewhite.product.primecost.materials.service.ProductMaterialsService;
 import com.bluewhite.product.primecost.needlework.entity.Needlework;
 import com.bluewhite.product.primecost.needlework.service.NeedleworkService;
-import com.bluewhite.product.primecost.tailor.service.TailorService;
-
-import javassist.expr.NewArray;
 
 public class NeedleworkAction {
 	
@@ -38,9 +38,10 @@ private final static Log log = Log.getLog(NeedleworkAction.class);
 	
 	@Autowired
 	private NeedleworkService needleworkService;
-	
 	@Autowired
-	private TailorService tailorService;
+	private CutPartsService cutPartsService;
+	@Autowired
+	private ProductMaterialsService productMaterialsService;
 	
 	
 	/**
@@ -109,42 +110,68 @@ private final static Log log = Log.getLog(NeedleworkAction.class);
 		return cr;
 	}
 	
+	
+	
 	/**
 	 * 该工序有可能用到的物料(机工，针工，包装)
-
 	 * 
 	 * @param request 请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/product/getOverStock", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getNeedlework(HttpServletRequest request,String type) {
+	public CommonResponse getNeedlework(HttpServletRequest request,String type,Long productId) {
 		CommonResponse cr = new CommonResponse();
-		List<Object> overStock = new ArrayList<Object>();
-		switch (1) {
-		case 79://普通激光切割
+		Long id = null  ;
+		if(type.equals("machinist")){
+			id = (long) 81;
+		}
+		if(type.equals("needlework")){
+			id = (long) 82;
+		}
+		if(type.equals("pack")){
+			id = (long) 83;
+		}
+		List<Map<String,Object>> overStock = new ArrayList<Map<String,Object>>();
+		List<CutParts> cutPartsList = null;
+		List<ProductMaterials> productMaterialsList = null;
+		Map<String,Object> map =null;
+		switch (id.intValue()) {
+		case 79://裁剪
 			break;
-		case 80://绣花激光切割
+		case 80://绣花
 			break;
-		case 81://手工电烫
+		case 81://机工
+			cutPartsList = cutPartsService.findByProductIdAndOverstockId(productId,id);
+			productMaterialsList =productMaterialsService.findByProductIdAndOverstockId(productId,id);
 			break;
-		case 82://设备电烫
+		case 82://针工
+			cutPartsList = cutPartsService.findByProductIdAndOverstockId(productId,id);
+			productMaterialsList = productMaterialsService.findByProductIdAndOverstockId(productId,id);
 			break;
-		case 83://冲床
+		case 83://内包装 //外包装
+			cutPartsList = cutPartsService.findByProductIdAndOverstockId(productId,(long)83);
+			productMaterialsList = productMaterialsService.findByProductIdAndOverstockId(productId,(long)83);
+			List<CutParts> cutPartsList1 = cutPartsService.findByProductIdAndOverstockId(productId,(long)84);
+			List<ProductMaterials> productMaterialsList1 = productMaterialsService.findByProductIdAndOverstockId(productId,(long)84);
+			cutPartsList.addAll(cutPartsList1);
+			productMaterialsList.addAll(productMaterialsList1);
 			break;
-		case 84://电推
-			break;
-		case 85://手工剪刀
-			break;
-		case 86://绣花领取
+		case 85://库房出入
 			break;
 		default:
 			break;
 		}
-		
-		
-		
-		
+		for(CutParts ct : cutPartsList){
+			map = new HashMap<>();
+			map.put("name", ct.getCutPartsName());
+			overStock.add(map);
+		}
+		for(ProductMaterials pm : productMaterialsList){
+			map = new HashMap<>();
+			map.put("name", pm.getMaterialsName());
+			overStock.add(map);
+		}
 		cr.setData(overStock);
 		cr.setMessage("查询成功");
 		return cr;

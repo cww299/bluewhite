@@ -113,21 +113,6 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		cutParts.setScaleMaterial(cutParts.getAddMaterial()/scaleMaterial);
 		cutPartsList.add(cutParts);
 		dao.save(cutParts);
-		//同时更新产品成本价格表(面料价格(含复合物料和加工费)
-		Product product =  productdao.findOne(cutParts.getProductId());
-		double batchMaterialPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchMaterialPrice()!=null).mapToDouble(CutParts::getBatchMaterialPrice).sum();
-		double batchComplexMaterialPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchComplexMaterialPrice()!=null).mapToDouble(CutParts::getBatchComplexMaterialPrice).sum();
-		double batchComplexAddPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchComplexAddPrice()!=null).mapToDouble(CutParts::getBatchComplexAddPrice).sum();
-		PrimeCost primeCost = product.getPrimeCost();
-		if(primeCost==null){
-			 primeCost = new PrimeCost();
-		}
-		primeCost.setNumber(cutParts.getNumber());
-		primeCost.setCutPartsPrice((batchMaterialPrice+batchComplexMaterialPrice+batchComplexAddPrice)/cutParts.getNumber());
-		product.setPrimeCost(primeCost);
-		productdao.save(product);
-		
-		
 		return cutParts;
 	}
 
@@ -192,6 +177,12 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 	@Override
 	public List<CutParts> findByProductId(Long productId) {
 		return dao.findByProductId(productId);
+	}
+
+
+	@Override
+	public List<CutParts> findByProductIdAndOverstockId(Long productId, Long id) {
+		return dao.findByProductIdAndOverstockId( productId, id);
 	}
 
 }
