@@ -37,9 +37,9 @@
                              <div class="panel-body">
                                 <div class="tab-wrapper tab-primary">
                                     <ul class="nav nav-tabs col-md-12">
-                                        <li class="active col-md-2" style="width: 14.285%"><a href="#home1" class="home1" data-toggle="tab">裁剪页面</a>
+                                        <li class="active col-md-2" style="width: 50%"><a href="#home1" class="home1" data-toggle="tab">机工页面</a>
                                         </li>
-                                        <li class="col-md-2"style="width: 14.285%;"><a href="#profile1" class="profile1"  data-toggle="tab">裁剪普通激光</a>
+                                        <li class="col-md-2"style="width: 50%;"><a href="#profile1" class="profile1"  data-toggle="tab">机缝时间</a>
                                         </li>
                                     </ul>
                                     <div class="tab-content">
@@ -112,7 +112,6 @@
                                     </tbody>
                                 </table>
                                         </div>
-                     <!-- B工资流水开始 -->
             <div class="tab-pane" id="profile1">
                       <!--查询开始  -->
           		 <div class="row" style="height: 30px; margin:15px 0 10px">
@@ -139,21 +138,23 @@
                                    <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                        	<th class="text-center">裁剪部位</th>
-                                        	<th class="text-center">手选裁剪方式</th>
-                                            <th class="text-center">裁片周长/CM(≈)</th>
-                                            <th class="text-center">激光停顿点</th>
-                                            <th class="text-center">单双激光头</th>
-                                            <th class="text-center">捡片时间</th>
-                                            <th class="text-center">其他未考虑时间1</th>
-                                            <th class="text-center">其他未考虑时间2</th>
-                                            <th class="text-center">拉布时间</th>
-                                            <th class="text-center">单片激光需要用净时</th>
-                                            <th class="text-center">单片激光放快手时间</th>
-                                            <th class="text-center">工价（含快手)</th>
-                                            <th class="text-center">设备折旧和房水电费</th>
+                                        	<th class="text-center">机缝工序</th>
+                                        	<th class="text-center">选择针号</th>
+                                            <th class="text-center">选择线色或线号</th>
+                                            <th class="text-center">选择针距↓</th>
+                                            <th class="text-center">得到试制净快手时间</th>
+                                            <th class="text-center">手填该工序回针次数</th>
+                                            <th class="text-center">1请选直线机缝模式↓</th>
+                                            <th class="text-center">手填该工序满足G列的CM↓</th>
+                                            <th class="text-center">2请选弧线机缝模式↓</th>
+                                            <th class="text-center">手填该工序满足I列的CM↓</th>
+                                            <th class="text-center">3请选弯曲复杂机缝模式↓</th>
+                                            <th class="text-center">手填该工序满足K列的CM↓</th>
+                                            <th class="text-center">单一机缝需要时间/秒</th>
+                                             <th class="text-center">设备折旧和房水电费</th>
                                             <th class="text-center">管理人员费用</th>
-                                            <th class="text-center">普通激光切割该裁片费用</th>
+                                            <th class="text-center">电脑推算机缝该工序费用</th>
+                                            <th class="text-center">试制机缝该工序费用</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent2">
@@ -161,73 +162,6 @@
                                     </tbody>
                                 </table>
                                  </div>
-                                 <!-- B工资流水结束 -->
-                 <div class="tab-pane" id="profile2">
-                                     <!--查询开始  -->
-          		 <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-8 col-sm-8  col-md-8">
-						<form class="form-search" >
-							<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group"> 
-								<table><tr><td>工序:</td><td><input type="text" name="number" id="numbertw" placeholder="请输入工序名" class="form-control search-query number" /></td>
-								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask2">
-										查找
-										<i class="icon-search icon-on-right bigger-110"></i>
-									</button>
-								</span>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-            <!-- 查询结束 -->
-                                    
-                                            <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th class="text-center">裁剪部位</th>
-                                        	<th class="text-center">手选裁剪方式</th>
-                                            <th class="text-center">裁片周长/CM(≈)</th>
-                                            <th class="text-center">激光停顿点</th>
-                                            <th class="text-center">单双激光头</th>
-                                            <th class="text-center">捡片时间</th>
-                                            <th class="text-center">绣切的撕片时间</th>
-                                            <th class="text-center">其他考虑时间</th>
-                                            <th class="text-center">拉布时间</th>
-                                            <th class="text-center">单片激光需要用净时</th>
-                                            <th class="text-center">单片激光放快手时间</th>
-                                            <th class="text-center">工价（含快手)</th>
-                                            <th class="text-center">设备折旧和房水电费</th>
-                                            <th class="text-center">管理人员费用</th>
-                                            <th class="text-center">普通激光切割该裁片费用</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablecontent3">
-                                        
-                                    </tbody>
-                                </table>
-                               </div>
-                               
-                               
-                             
-                               
-                               
-                               
-                               
-                               
-                               
-                               
-                               
-                               
-                             
-                               
-                               
-                               
-                            
                                 </div>
                             </div>
                         </div>
@@ -319,12 +253,12 @@
 			  		size:100,	
 			  		productId:"",
 			} 
-			
 			this.init = function(){
 				
 				//注册绑定事件
 				self.events();
 				self.loadPagination(data);
+				self.loadPagination2(data);
 			}
 			//加载分页
 			  this.loadPagination = function(data){
@@ -342,21 +276,23 @@
 			      		  success: function (result) {
 			      			 $(result.data.rows).each(function(i,o){
 			      				 
-			      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
-			      				+'<td class="text-center edit " >'+o.machinistName+'</td>'
-			      				+'<td class="text-center editt materialsNamett" >'+o.materialsName+'</td>'
-			      				+'<td class="text-center materielNumbertw" >'+o.oneMaterial+'</td>'
-			      				+'<td class="text-center unite name" >'+o.unit+'</td>'
-			      				+'<td class="text-center unit name" >'+o.productUnit+'</td>'
-			      				+'<td class="text-center " >'+o.batchMaterial+'</td>'
-			      				+'<td class="text-center  name" >'+o.batchMaterialPrice+'</td>'
-								+'<td class="text-center "><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'  data-unit='+o.unitId+'>编辑</button></td></tr>'
+			      				html+='<tr><td  class="text-center"></td><td  class="text-center edit name"  style="padding: 2px 0px 2px 4px;"><input type="text" value="'+o.machinistName+'" style="border: none;width:120px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  machinistName" /></td>'
+			   					 +'<td class="text-center edit selectid hidden">'+o.id+'</td>'
+			   					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;"  class="text-center materiel" /></td>'
+			   					 +'<td class="text-center edit selectCompany" style="padding: 2px 0px 2px 0px;"></td>'
+			   					 +'<td class="text-center edit selectbody"></td>'
+			   					 +'<td class="text-center edit selectbody2 hidden">'+o.cutparts+','+'</td>'
+			   					 +'<td class="text-center edit selectprice2 hidden">'+o.cutpartsPrice+','+'</td>'
+			   					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"  style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center manualLoss" /></td>'
+			   					 +'<td class="text-center edit unitPrice" ></td>'
+			   					 +'<td class="text-center edit unit"></td></tr>';
 								
 			      			}); 
 			      			self.setCount(result.data.pageNum)
 					        //显示分页
 						   	layer.close(index);
 						   	 $("#tablecontent").html(html); 
+						   	 self.mater()
 					      },error:function(){
 								layer.msg("加载失败！", {icon: 2});
 								layer.close(index);
@@ -364,6 +300,263 @@
 					  });
 			}
 			  
+			  this.loadPagination2 = function(data){
+				  //机缝时间
+				  $(".profile1").on('click',function(){
+					  var index;
+					    var html = '';
+					    $.ajax({
+						      url:"${ctx}/product/getMachinist",
+						      data:data,
+						      type:"GET",
+						      beforeSend:function(){
+							 	  index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								  });
+							  }, 
+				      		  success: function (result) {
+				      			 $(result.data.rows).each(function(i,o){
+				      				 html +='<tr>'
+				      				+'<td class="text-center edit ">'+o.machinistName+'</td>'
+				      				+'<td class="text-center needlesize" data-needlesize='+o.needlesize+' style="width: 80px;"></td>'
+				      				+'<td class="text-center wiresize" data-wiresize='+o.wiresize+' style="width: 100px;"></td>'
+				      				+'<td class="text-center edit needlespur" data-needlespur='+o.needlespur+' style="width: 80px;"></td>'
+				      				+'<td class="text-center edit"><input class="form-control time"  style="width: 50px;"  value='+(o.time!=0?o.time:"")+'></td>'
+				      				+'<td class="text-center"><input class="form-control backStitchCount" data-id="'+o.id+'" style="width: 50px;"  value='+(o.backStitchCount!=0?o.backStitchCount:"")+'></td>'
+				      				+'<td class="text-center"><input class="form-control beeline" data-id="'+o.id+'"  data-provide="typeahead" autocomplete="off" style="width: 50px;" value='+(o.beeline!=null?o.beeline:"")+'></td>'
+				      				+'<td class="text-center"><input class="form-control beelineNumber" data-id="'+o.id+'" style="width: 80px;" value='+(o.beelineNumber!=0?o.beelineNumber:"")+'></td>'
+				      				+'<td class="text-center"><input class="form-control arc" data-id="'+o.id+'"  data-provide="typeahead" autocomplete="off" style="width: 50px;" value='+(o.arc!=null?o.arc:"")+'></td>'
+				      				+'<td class="text-center"><input class="form-control arcNumber" data-id="'+o.id+'" style="width: 80px;" value='+(o.arcNumber!=0?o.arcNumber:"")+'></td>'
+				      				+'<td class="text-center"><input class="form-control bend" data-id="'+o.id+'"  data-provide="typeahead" autocomplete="off" style="width: 50px;" value='+(o.bend!=null?o.bend:"")+'></td>'
+				      				+'<td class="text-center"><input class="form-control bendNumber" data-id="'+o.id+'" style="width: 80px;" value='+(o.bendNumber!=0?o.bendNumber:"")+'></td>'
+				      				+'<td class="text-center edit oneSewingTime">'+(o.oneSewingTime!=0?o.oneSewingTime:"")+'</td>'
+				      				+'<td class="text-center edit equipmentPrice">'+(o.equipmentPrice!=0?o.equipmentPrice:"")+'</td>'
+				      				+'<td class="text-center edit administrativeAtaff">'+(o.administrativeAtaff!=0?o.administrativeAtaff:"")+'</td>'
+				      				+'<td class="text-center edit reckoningSewingPrice">'+(o.reckoningSewingPrice!=0?o.reckoningSewingPrice:"")+'</td>'
+				      				+'<td class="text-center edit trialSewingPrice">'+(o.trialSewingPrice!=0?o.trialSewingPrice:"")+'</td></tr>'
+				      			}); 
+							   	layer.close(index);
+							   	 $("#tablecontent2").html(html); 
+							   	 self.loadEvents2();
+						      },error:function(){
+									layer.msg("加载失败！", {icon: 2});
+									layer.close(index);
+							  }
+						  });
+				  })
+			  }
+			  
+			  this.loadEvents2=function(){
+				//遍历裁剪方式
+				  var data = {
+							type:"needlesize",
+						}
+						var index;
+					    var html = '';
+					    var htmlto= '';
+					    $.ajax({
+						      url:"${ctx}/product/getBaseOne",
+						      data:data,
+						      type:"GET",
+				      		  success: function (result) {
+				      			 $(result.data).each(function(i,o){
+				      				html +='<option value="'+o.id+'">'+o.name+'</option>'
+				      			}); 
+						       htmlto='<select class="text-center form-control selecttailorType2" ><option value="">请选择</option>'+html+'</select>'
+				      		  $(".needlesize").html(htmlto)
+				      		  //改变事件
+				      		  $(".selecttailorType2").each(function(i,o){
+				      				var id=	$(o).parent().data("needlesize");
+									$(o).val(id)
+								}) 
+				      		  },error:function(){
+									layer.msg("加载失败！", {icon: 2});
+									layer.close(index);
+							  }
+						  });
+					    
+					    
+					    var datae = {
+								type:"wiresize",
+							}
+							var index;
+						    var html1 = '';
+						    var htmlto1= '';
+						    $.ajax({
+							      url:"${ctx}/product/getBaseOne",
+							      data:datae,
+							      type:"GET",
+					      		  success: function (result) {
+					      			 $(result.data).each(function(i,o){
+					      				html1 +='<option value="'+o.id+'">'+o.name+'</option>'
+					      			}); 
+							       htmlto1='<select class="text-center form-control selecttailorType3" ><option value="">请选择</option>'+html1+'</select>'
+					      		  $(".wiresize").html(htmlto1)
+					      		  //改变事件
+					      		  $(".selecttailorType3").each(function(i,o){
+					      				var id=	$(o).parent().data("wiresize");
+										$(o).val(id)
+									}) 
+					      		  },error:function(){
+										layer.msg("加载失败！", {icon: 2});
+										layer.close(index);sa
+								  }
+							  });
+				  
+						    var datae2 = {
+									type:"needlespur",
+								}
+								var index;
+							    var html2 = '';
+							    var htmlto2= '';
+							    $.ajax({
+								      url:"${ctx}/product/getBaseOne",
+								      data:datae2,
+								      type:"GET",
+						      		  success: function (result) {
+						      			 $(result.data).each(function(i,o){
+						      				html2 +='<option value="'+o.id+'">'+o.name+'</option>'
+						      			}); 
+								       htmlto2='<select class="text-center form-control selecttailorType4" ><option value="">请选择</option>'+html2+'</select>'
+						      		  $(".needlespur").html(htmlto2)
+						      		  //改变事件
+						      		  $(".selecttailorType4").each(function(i,o){
+						      				var id=	$(o).parent().data("needlespur");
+											$(o).val(id)
+										}) 
+						      		  },error:function(){
+											layer.msg("加载失败！", {icon: 2});
+											layer.close(index);sa
+									  }
+								  });
+							    
+							  //提示产品名
+								$(".beeline").typeahead({
+									//ajax 拿way数据
+									source : function(query, process) {
+											return $.ajax({
+												url : '${ctx}/product/getBaseFour',
+												type : 'GET',
+												data : {
+													sewingOrder:query,
+												},
+												
+												success : function(result) {
+													//转换成 json集合
+													 var resultList = result.data.rows.map(function (item) {
+														 	//转换成 json对象
+									                        var aItem = {name: item.sewingOrder, id:item.id}
+									                        //处理 json对象为字符串
+									                        return JSON.stringify(aItem);
+									                    });
+													//提示框返回数据
+													 return process(resultList);
+												},
+											})
+											//提示框显示
+										}, highlighter: function (item) {
+										    //转出成json对象
+											 var item = JSON.parse(item);
+											return item.name
+											//按条件匹配输出
+						                }, matcher: function (item) {
+						                	//转出成json对象
+									        var item = JSON.parse(item);
+									    	return item.name
+									    },
+										//item是选中的数据
+										updater:function(item){
+											//转出成json对象
+											var item = JSON.parse(item);
+												return item.name
+										},
+										
+									});
+							  
+								$(".arc").typeahead({
+									//ajax 拿way数据
+									source : function(query, process) {
+											return $.ajax({
+												url : '${ctx}/product/getBaseFour',
+												type : 'GET',
+												data : {
+													sewingOrder:query,
+												},
+												
+												success : function(result) {
+													//转换成 json集合
+													 var resultList = result.data.rows.map(function (item) {
+														 	//转换成 json对象
+									                        var aItem = {name: item.sewingOrder, id:item.id}
+									                        //处理 json对象为字符串
+									                        return JSON.stringify(aItem);
+									                    });
+													//提示框返回数据
+													 return process(resultList);
+												},
+											})
+											//提示框显示
+										}, highlighter: function (item) {
+										    //转出成json对象
+											 var item = JSON.parse(item);
+											return item.name
+											//按条件匹配输出
+						                }, matcher: function (item) {
+						                	//转出成json对象
+									        var item = JSON.parse(item);
+									    	return item.name
+									    },
+										//item是选中的数据
+										updater:function(item){
+											//转出成json对象
+											var item = JSON.parse(item);
+												return item.name
+										},
+										
+									});
+								
+								$(".bend").typeahead({
+									//ajax 拿way数据
+									source : function(query, process) {
+											return $.ajax({
+												url : '${ctx}/product/getBaseFour',
+												type : 'GET',
+												data : {
+													sewingOrder:query,
+												},
+												
+												success : function(result) {
+													//转换成 json集合
+													 var resultList = result.data.rows.map(function (item) {
+														 	//转换成 json对象
+									                        var aItem = {name: item.sewingOrder, id:item.id}
+									                        //处理 json对象为字符串
+									                        return JSON.stringify(aItem);
+									                    });
+													//提示框返回数据
+													 return process(resultList);
+												},
+											})
+											//提示框显示
+										}, highlighter: function (item) {
+										    //转出成json对象
+											 var item = JSON.parse(item);
+											return item.name
+											//按条件匹配输出
+						                }, matcher: function (item) {
+						                	//转出成json对象
+									        var item = JSON.parse(item);
+									    	return item.name
+									    },
+										//item是选中的数据
+										updater:function(item){
+											//转出成json对象
+											var item = JSON.parse(item);
+												return item.name
+										},
+										
+									});
+			  }
 			  
 			  this.mater=function(){
 					$(".machinistName").blur(function(){
@@ -468,7 +661,7 @@
 					
 					
 					$(".selectbody").on('click',function(){
-						var id=$(this).parent().parent().find('.selectid').text();
+						var id=$(this).parent().find('.selectid').text();
 						var postData={
 								id:id,
 						}
