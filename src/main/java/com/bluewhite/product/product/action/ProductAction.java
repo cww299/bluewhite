@@ -90,19 +90,19 @@ public class ProductAction {
 	 * @return cr
 	 * @throws Exception
 	 */
-//	@RequestMapping(value = "/getPrimeCost", method = RequestMethod.GET)
-//	@ResponseBody
-//	public CommonResponse getPrimeCost(HttpServletRequest request,PrimeCost primeCost) {
-//		CommonResponse cr = new CommonResponse();
-//		cr.setData(ClearCascadeJSON
-//				.get()
-//				.addRetainTerm(PrimeCost.class,"number","cutPartsPrice","otherCutPartsPrice","cutPrice","machinistPrice","embroiderPrice"
-//						,"embroiderPrice","needleworkPrice","packPrice","freightPrice","freightPrice","invoice","taxIncidence"
-//						,"surplus","budget","budgetRate","actualCombat","actualCombatRate")
-//				.format(productService.getPrimeCost(primeCost)).toJSON());
-//		cr.setMessage("查询成功");
-//		return cr;
-//	}
+	@RequestMapping(value = "/getPrimeCost", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getPrimeCost(HttpServletRequest request,PrimeCost primeCost) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(PrimeCost.class,"number","cutPartsPrice","otherCutPartsPrice","cutPrice","machinistPrice","embroiderPrice"
+						,"embroiderPrice","needleworkPrice","packPrice","freightPrice","freightPrice","invoice","taxIncidence"
+						,"surplus","budget","budgetRate","actualCombat","actualCombatRate")
+				.format(productService.getPrimeCost(primeCost)).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
 	
 	
 	/**

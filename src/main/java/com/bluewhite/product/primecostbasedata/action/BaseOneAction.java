@@ -258,9 +258,9 @@ public class BaseOneAction {
 	 */
 	@RequestMapping(value = "/product/getBaseFour", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getBaseFour(HttpServletRequest request) {
+	public CommonResponse getBaseFour(HttpServletRequest request,String sewingOrder) {
 		CommonResponse cr = new CommonResponse();
-		List<BaseFour> baseFour = baseFourDao.findAll();
+		List<BaseFour> baseFour = baseFourDao.findBySewingOrderLike(sewingOrder);
 		cr.setMessage("获取成功");
 		cr.setData(baseFour);
 		return cr;
