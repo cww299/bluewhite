@@ -48,6 +48,13 @@ public class PrimeCost extends BaseEntity<Long>{
 	private Double onePrimeCost;
 	
 	/**
+	 * 实战单只成本
+	 */
+	@Column(name = "one_actual_prime_cost")
+	private Double oneaAtualPrimeCost;
+	 
+	
+	/**
 	 * 面料价格(含复合物料和加工费）
 	 */
 	@Column(name = "cut_parts_price")
@@ -145,6 +152,119 @@ public class PrimeCost extends BaseEntity<Long>{
 	@Column(name = "one_freight_price")
     private Double oneFreightPrice;
 
+	
+	/**
+	 * 面料价格(含复合物料和加工费）(需要支付开票点)
+	 */
+	@Column(name = "cut_parts_price_invoice")
+    private Double cutPartsPriceInvoice;
+	
+	
+	/**
+	 * 除面料以外的其他物料价格(需要支付开票点)
+	 */
+	@Column(name = "other_cut_parts_price_invoice")
+    private Double otherCutPartsPriceInvoice;
+	
+	
+	/**
+	 * 裁剪价格(需要支付开票点)
+	 */
+	@Column(name = "cut_price_invoice")
+    private Double cutPriceInvoice;
+	
+	
+	/**
+	 * 机工价格(需要支付开票点)
+	 */
+	@Column(name = "machinist_price_invoice")
+    private Double machinistPriceInvoice;
+	
+	
+	/**
+	 * 绣花价格(需要支付开票点)
+	 */
+	@Column(name = "embroider_price_invoice")
+    private Double embroiderPriceInvoice;
+	/**
+	 * 针工价格(需要支付开票点)
+	 */
+	@Column(name = "needlework_price_invoice")
+    private Double needleworkPriceInvoice;
+	
+	
+	/**
+	 * 内外包装和出入库的价格(需要支付开票点)
+	 */
+	@Column(name = "pack_price_invoice")
+    private Double packPriceInvoice;
+	
+	
+	
+	/**
+	 * 预计运费价格(需要支付开票点)
+	 */
+	@Column(name = "freight_price_invoice")
+    private Double freightPriceInvoice;
+	
+	
+	
+	/**
+	 * (0=否，1=是)
+	 * 面料价格(含复合物料和加工费）(是否可开票)
+	 */
+	@Column(name = "cut_parts_invoice")
+    private Integer cutPartsInvoice;
+	
+	
+	/**
+	 * 除面料以外的其他物料价格(是否可开票)
+	 */
+	@Column(name = "other_cut_parts_invoice")
+    private Integer otherCutPartsInvoice;
+	
+	
+	/**
+	 * 裁剪价格(是否可开票))
+	 */
+	@Column(name = "cut_invoice")
+    private Integer cutInvoice;
+	
+	
+	/**
+	 * 机工价格(是否可开票)
+	 */
+	@Column(name = "machinist_invoice")
+    private Integer machinistInvoice;
+	
+	
+	/**
+	 * 绣花价格(是否可开票)
+	 */
+	@Column(name = "embroider_invoice")
+    private Integer embroiderInvoice;
+	/**
+	 * 针工价格(是否可开票)
+	 */
+	@Column(name = "needlework_invoice")
+    private Integer needleworkInvoice;
+	
+	
+	/**
+	 * 内外包装和出入库的价格(是否可开票)
+	 */
+	@Column(name = "pack_invoice")
+    private Integer packInvoice;
+	
+	
+	/**
+	 * 预计运费价格(是否可开票)
+	 */
+	@Column(name = "freight_invoice")
+    private Integer freightInvoice;
+	
+	
+	
 	/**
 	 * 是否含开票
 	 */
@@ -248,8 +368,202 @@ public class PrimeCost extends BaseEntity<Long>{
 	@Column(name = "taxes_rate")
 	private Double taxesRate;
 
+	/**
+	 * 是否有返点↓
+	 */
+	@Column(name = "rebate")
+	private Integer rebate;
+	
+	/**
+	 * 返点比↓
+	 */
+	@Column(name = "rebate_rate")
+	private Double rebateRate;
+	
+	/**
+	 * 是否有版权点↓
+	 */
+	@Column(name = "copyright")
+	private Integer copyright;
+	
+	/**
+	 * 版权点比↓
+	 */
+	@Column(name = "copyright_rate")
+	private Double copyrightRate;
 	
 	
+	
+
+	public Double getOneaAtualPrimeCost() {
+		return oneaAtualPrimeCost;
+	}
+
+	public void setOneaAtualPrimeCost(Double oneaAtualPrimeCost) {
+		this.oneaAtualPrimeCost = oneaAtualPrimeCost;
+	}
+
+	public Integer getRebate() {
+		return rebate;
+	}
+
+	public void setRebate(Integer rebate) {
+		this.rebate = rebate;
+	}
+
+	public Double getRebateRate() {
+		return rebateRate;
+	}
+
+	public void setRebateRate(Double rebateRate) {
+		this.rebateRate = rebateRate;
+	}
+
+	public Integer getCopyright() {
+		return copyright;
+	}
+
+	public void setCopyright(Integer copyright) {
+		this.copyright = copyright;
+	}
+
+	public Double getCopyrightRate() {
+		return copyrightRate;
+	}
+
+	public void setCopyrightRate(Double copyrightRate) {
+		this.copyrightRate = copyrightRate;
+	}
+
+	public Double getCutPartsPriceInvoice() {
+		return cutPartsPriceInvoice;
+	}
+
+	public void setCutPartsPriceInvoice(Double cutPartsPriceInvoice) {
+		this.cutPartsPriceInvoice = cutPartsPriceInvoice;
+	}
+
+	public Double getOtherCutPartsPriceInvoice() {
+		return otherCutPartsPriceInvoice;
+	}
+
+	public void setOtherCutPartsPriceInvoice(Double otherCutPartsPriceInvoice) {
+		this.otherCutPartsPriceInvoice = otherCutPartsPriceInvoice;
+	}
+
+	public Double getCutPriceInvoice() {
+		return cutPriceInvoice;
+	}
+
+	public void setCutPriceInvoice(Double cutPriceInvoice) {
+		this.cutPriceInvoice = cutPriceInvoice;
+	}
+
+	public Double getMachinistPriceInvoice() {
+		return machinistPriceInvoice;
+	}
+
+	public void setMachinistPriceInvoice(Double machinistPriceInvoice) {
+		this.machinistPriceInvoice = machinistPriceInvoice;
+	}
+
+	public Double getEmbroiderPriceInvoice() {
+		return embroiderPriceInvoice;
+	}
+
+	public void setEmbroiderPriceInvoice(Double embroiderPriceInvoice) {
+		this.embroiderPriceInvoice = embroiderPriceInvoice;
+	}
+
+	public Double getNeedleworkPriceInvoice() {
+		return needleworkPriceInvoice;
+	}
+
+	public void setNeedleworkPriceInvoice(Double needleworkPriceInvoice) {
+		this.needleworkPriceInvoice = needleworkPriceInvoice;
+	}
+
+	public Double getPackPriceInvoice() {
+		return packPriceInvoice;
+	}
+
+	public void setPackPriceInvoice(Double packPriceInvoice) {
+		this.packPriceInvoice = packPriceInvoice;
+	}
+
+	public Double getFreightPriceInvoice() {
+		return freightPriceInvoice;
+	}
+
+	public void setFreightPriceInvoice(Double freightPriceInvoice) {
+		this.freightPriceInvoice = freightPriceInvoice;
+	}
+
+
+
+	public Integer getCutPartsInvoice() {
+		return cutPartsInvoice;
+	}
+
+	public void setCutPartsInvoice(Integer cutPartsInvoice) {
+		this.cutPartsInvoice = cutPartsInvoice;
+	}
+
+	public Integer getOtherCutPartsInvoice() {
+		return otherCutPartsInvoice;
+	}
+
+	public void setOtherCutPartsInvoice(Integer otherCutPartsInvoice) {
+		this.otherCutPartsInvoice = otherCutPartsInvoice;
+	}
+
+	public Integer getCutInvoice() {
+		return cutInvoice;
+	}
+
+	public void setCutInvoice(Integer cutInvoice) {
+		this.cutInvoice = cutInvoice;
+	}
+
+	public Integer getMachinistInvoice() {
+		return machinistInvoice;
+	}
+
+	public void setMachinistInvoice(Integer machinistInvoice) {
+		this.machinistInvoice = machinistInvoice;
+	}
+
+	public Integer getEmbroiderInvoice() {
+		return embroiderInvoice;
+	}
+
+	public void setEmbroiderInvoice(Integer embroiderInvoice) {
+		this.embroiderInvoice = embroiderInvoice;
+	}
+
+	public Integer getNeedleworkInvoice() {
+		return needleworkInvoice;
+	}
+
+	public void setNeedleworkInvoice(Integer needleworkInvoice) {
+		this.needleworkInvoice = needleworkInvoice;
+	}
+
+	public Integer getPackInvoice() {
+		return packInvoice;
+	}
+
+	public void setPackInvoice(Integer packInvoice) {
+		this.packInvoice = packInvoice;
+	}
+
+	public Integer getFreightInvoice() {
+		return freightInvoice;
+	}
+
+	public void setFreightInvoice(Integer freightInvoice) {
+		this.freightInvoice = freightInvoice;
+	}
 
 	public Double getSale() {
 		return sale;
