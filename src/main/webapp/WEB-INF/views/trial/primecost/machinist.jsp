@@ -9,10 +9,10 @@
 <head>
      <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>机工页面</title>
+    <title>机工填写</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-   
+  
    
 </head>
 
@@ -34,7 +34,18 @@
                                     <i class="fa fa-chevron-down"></i>
                                 </div>
                             </div>
-                            <div class="row" style="height: 30px; margin:15px 0 10px">
+                             <div class="panel-body">
+                                <div class="tab-wrapper tab-primary">
+                                    <ul class="nav nav-tabs col-md-12">
+                                        <li class="active col-md-2" style="width: 14.285%"><a href="#home1" class="home1" data-toggle="tab">裁剪页面</a>
+                                        </li>
+                                        <li class="col-md-2"style="width: 14.285%;"><a href="#profile1" class="profile1"  data-toggle="tab">裁剪普通激光</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="home1">
+                                        <!--查询开始  -->
+          		 <div class="row" style="height: 30px; margin:15px 0 10px">
 			<div class="col-xs-11 col-sm-11  col-md-11">
 				<form class="form-search" >
 					<div class="row">
@@ -78,11 +89,12 @@
 				</form>
 			</div>
 		</div>
-                            <div class="panel-body">
-                                <table class="table table-hover">
+            <!-- 查询结束 -->
+                                        
+                                            <table class="table table-hover" >
                                     <thead>
                                         <tr>
-                                        	<th class="center">
+                                        <th class="text-center">
 											<label> 
 											<input type="checkbox" class="ace checks" /> 
 											<span class="lbl"></span>
@@ -99,58 +111,167 @@
                                         
                                     </tbody>
                                 </table>
-                                <div id="pager" class="pull-right">
-                                
+                                        </div>
+                     <!-- B工资流水开始 -->
+            <div class="tab-pane" id="profile1">
+                      <!--查询开始  -->
+          		 <div class="row" style="height: 30px; margin:15px 0 10px">
+					<div class="col-xs-10 col-sm-10  col-md-10">
+						<form class="form-search" >
+							<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12">
+							<div class="input-group"> 
+								<table><tr><td>批次:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
+								</tr></table> 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
+										查找
+										<i class="icon-search icon-on-right bigger-110"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+            <!-- 查询结束 -->  
+                                   <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                        	<th class="text-center">裁剪部位</th>
+                                        	<th class="text-center">手选裁剪方式</th>
+                                            <th class="text-center">裁片周长/CM(≈)</th>
+                                            <th class="text-center">激光停顿点</th>
+                                            <th class="text-center">单双激光头</th>
+                                            <th class="text-center">捡片时间</th>
+                                            <th class="text-center">其他未考虑时间1</th>
+                                            <th class="text-center">其他未考虑时间2</th>
+                                            <th class="text-center">拉布时间</th>
+                                            <th class="text-center">单片激光需要用净时</th>
+                                            <th class="text-center">单片激光放快手时间</th>
+                                            <th class="text-center">工价（含快手)</th>
+                                            <th class="text-center">设备折旧和房水电费</th>
+                                            <th class="text-center">管理人员费用</th>
+                                            <th class="text-center">普通激光切割该裁片费用</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablecontent2">
+                                        
+                                    </tbody>
+                                </table>
+                                 </div>
+                                 <!-- B工资流水结束 -->
+                 <div class="tab-pane" id="profile2">
+                                     <!--查询开始  -->
+          		 <div class="row" style="height: 30px; margin:15px 0 10px">
+					<div class="col-xs-8 col-sm-8  col-md-8">
+						<form class="form-search" >
+							<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12">
+							<div class="input-group"> 
+								<table><tr><td>工序:</td><td><input type="text" name="number" id="numbertw" placeholder="请输入工序名" class="form-control search-query number" /></td>
+								</tr></table> 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask2">
+										查找
+										<i class="icon-search icon-on-right bigger-110"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+            <!-- 查询结束 -->
+                                    
+                                            <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                        	<th class="text-center">裁剪部位</th>
+                                        	<th class="text-center">手选裁剪方式</th>
+                                            <th class="text-center">裁片周长/CM(≈)</th>
+                                            <th class="text-center">激光停顿点</th>
+                                            <th class="text-center">单双激光头</th>
+                                            <th class="text-center">捡片时间</th>
+                                            <th class="text-center">绣切的撕片时间</th>
+                                            <th class="text-center">其他考虑时间</th>
+                                            <th class="text-center">拉布时间</th>
+                                            <th class="text-center">单片激光需要用净时</th>
+                                            <th class="text-center">单片激光放快手时间</th>
+                                            <th class="text-center">工价（含快手)</th>
+                                            <th class="text-center">设备折旧和房水电费</th>
+                                            <th class="text-center">管理人员费用</th>
+                                            <th class="text-center">普通激光切割该裁片费用</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablecontent3">
+                                        
+                                    </tbody>
+                                </table>
+                               </div>
+                               
+                               
+                             
+                               
+                               
+                               
+                               
+                               
+                               
+                               
+                               
+                               
+                             
+                               
+                               
+                               
+                            
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    </div>
+                        </div>
             </section>
         </section>
-        <!--隐藏框 产品新增开始  -->
-        <div id="addDictDivType" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-				<div class="space-10"></div>
-				<div style="height: 30px"></div>
-				<form class="form-horizontal addDictDivTypeForm">
-				<div class="form-group">
-                                        <label class="col-sm-3 control-label">名称:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="groupName" class="form-control">
-                                        </div>
-                 </div>
-				</form>
-</div>
-</div>
- <!--隐藏框 产品新增结束  -->
 
 
 
-<div id="savegroup" style="display: none;">
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-					&times;
-				</button>
-				<h4 class="modal-title" id="myModalLabel">
-					人员分组详情
-				</h4>
-			</div>
-			<div class="modal-body">
-				
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
-				</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
+
+  
+  
+ 
+  
+<div id="addworking" style="display: none;">
+			<div class="panel-body">
+ <div class="form-group">
+  </div> 
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                        	<th class="text-center">用到裁片或上道</th>
+                                        	<th class="text-center">压价</th>
+                                        	<th class="text-center">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableworking2">
+                                    </tbody>
+                                </table>
+                                 <div id="pagerr" class="pull-right">
+                            </div>
 </div>
-</div>
-<!--隐藏框 产品新增结束  -->
+<!--隐藏框 已完成的批次结束  -->
+</div> 
+  
+  
+  
+ 
+
+  
+  
+  
     </section>
     
    
@@ -165,37 +286,40 @@
      <script src="${ctx }/static/js/laypage/laypage.js"></script> 
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
+    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+    <script src="${ctx }/static/js/vendor/mSlider.min.js"></script>
     <script src="${ctx }/static/js/vendor/typeahead.js"></script>
     <script>
    jQuery(function($){
    	var Login = function(){
-			var self = this;
-			//表单jsonArray
-			//初始化js
-			var _cache;
-			this.setCache = function(cache){
-		  		_cache=cache;
-		  	}
-		  	this.getCache = function(){
-		  		return _cache;
-		  	}
-		  	this.getCount = function(){
-		  		return _count;
-		  	}
-		  	this.setCount = function(count){
-		  		_count=count;
-		  	}
-		  	this.getNum = function(){
-		  		return _num;
-		  	}
-		  	this.setNum = function(num){
-		  		_num=num;
-		  	}
-			 var data={
-						page:1,
-				  		size:100,	
-				  		productId:"",
-				} 
+   		var self = this;
+		//表单jsonArray
+		//初始化js
+		var _cache;
+		this.setCache = function(cache){
+	  		_cache=cache;
+	  	}
+	  	this.getCache = function(){
+	  		return _cache;
+	  	}
+	  	this.getCount = function(){
+	  		return _count;
+	  	}
+	  	this.setCount = function(count){
+	  		_count=count;
+	  	}
+	  	this.getNum = function(){
+	  		return _num;
+	  	}
+	  	this.setNum = function(num){
+	  		_num=num;
+	  	}
+		 var data={
+					page:1,
+			  		size:100,	
+			  		productId:"",
+			} 
+			
 			this.init = function(){
 				
 				//注册绑定事件
@@ -204,367 +328,152 @@
 			}
 			//加载分页
 			  this.loadPagination = function(data){
-			    var index;
-			    var html = '';
-			    $.ajax({
-				      url:"${ctx}/product/getMachinist",
-				      data:data,
-				      type:"GET",
-				      beforeSend:function(){
-					 	  index = layer.load(1, {
-						  shade: [0.1,'#fff'] //0.1透明度的白色背景
-						  });
-					  }, 
-		      		  success: function (result) {
-		      			 $(result.data.rows).each(function(i,o){
-		      				 
-		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
-		      				/* +'<td  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:68px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" value="'+o.cutPartsName+'" /></td>' */
-		      				+'<td class="text-center edit " >'+o.machinistName+'</td>'
-		      				+'<td class="text-center editt materialsNamett" >'+o.materialsName+'</td>'
-		      				+'<td class="text-center materielNumbertw" >'+o.oneMaterial+'</td>'
-		      				+'<td class="text-center unite name" >'+o.unit+'</td>'
-		      				+'<td class="text-center unit name" >'+o.productUnit+'</td>'
-		      				+'<td class="text-center " >'+o.batchMaterial+'</td>'
-		      				+'<td class="text-center  name" >'+o.batchMaterialPrice+'</td>'
-							+'<td class="text-center "><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'  data-unit='+o.unitId+'>编辑</button></td></tr>'
-							
-		      			}); 
-		      			self.setCount(result.data.pageNum)
-				        //显示分页
-					   	 laypage({
-					      cont: 'pager', 
-					      pages: result.data.totalPages, 
-					      curr:  result.data.pageNum || 1, 
-					      jump: function(obj, first){ 
-					    	  if(!first){ 
-					    		 
-						        	var _data = {
-						        			page:obj.curr,
-									  		size:13,
-									  		name:$('#name').val(),
-								  	}
-						        
-						            self.loadPagination(_data);
-							     }
-					      }
-					    });  
-					   	layer.close(index);
-					   	 $("#tablecontent").html(html); 
-					   	self.loadEvents();
-					   self.checkedd();
-				      },error:function(){
-							layer.msg("加载失败！", {icon: 2});
-							layer.close(index);
-					  }
-				  });
-			}
-			  this.checkedd=function(){
-					
-					$(".checks").on('click',function(){
-						
-	                    if($(this).is(':checked')){ 
-				 			$('.checkboxId').each(function(){  
-	                    //此处如果用attr，会出现第三次失效的情况  
-	                     		$(this).prop("checked",true);
-				 			})
-	                    }else{
-	                    	$('.checkboxId').each(function(){ 
-	                    		$(this).prop("checked",false);
-	                    		
-	                    	})
-	                    }
-	                }); 
-					
-				}
-			this.loadEvents = function(){
-				//修改方法
-				//选择单位
-				var data = {
-					type:"unit",
-				}
-				var index;
-			    var html = '';
-			    var htmlto= '';
-			    $.ajax({
-				      url:"${ctx}/product/getBaseOne",
-				      data:data,
-				      type:"GET",
-		      		  success: function (result) {
-		      			 $(result.data).each(function(i,o){
-		      				html +='<option value="'+o.id+'">'+o.name+'</option>'
-		      			}); 
-				       htmlto='<select class="text-center selectunit"  style="border: none;width:50px; height:30px; background-color: #BFBFBF;text-align-last: center"><option value=""></option>'+html+'</select>'
-		      		  },error:function(){
-							layer.msg("加载失败！", {icon: 2});
-							layer.close(index);sa
-					  }
-				  });
-			    
-				$('.update').on('click',function(){
-					var aa=$(this).data("composite")
-					var cc=$(this).data("unit")
-					var dd=$(this).data("doublecomposite")
-					if($(this).text() == "编辑"){
-						$(this).text("保存")
-						
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini text-center cuttingName' style='border: none;width:120px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        })
-						$(this).parent().siblings(".editt").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini text-center materiel' style='border: none;width:120px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        })
-						$(this).parent().siblings(".materielNumbertw").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini text-center' style='border: none;width:40px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        })
-				        $(this).parent().siblings(".unite").each(function() {  // 获取当前行的其他单元格
-				        	 $(this).html(htmlto);
-				        })
-				        $(this).parent().siblings(".manualLoss").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini text-center' style='border: none;width:40px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        })
-						$('.selectunit').each(function(i,o){
-						
-						$(o).val(cc)
-						}) 
-						 $('.selectdoubleCompositetw').each(function(i,o){
-						$(o).val(dd);
-						})
-						   $(".selectunit").change(function(){
-				    	   console.log(1111)
-				    	   that=$(this)
-				    	   var ccc
-				       if(self.getNum()==null){
-				    	   ccc=""
-				       }else{
-				    	   ccc=self.getNum()
-				       } 
-				       var datae = {
-								type:"fill",
-								id:ccc,
-							}
-				    	   $.ajax({
-							      url:"${ctx}/product/getMateriel",
-							      data:datae,
-							      type:"GET",
-					      		  success: function (result) {
-					      			 $(result.data).each(function(i,o){
-					      			var aaa=$(".selectunit").find("option:selected").text();
-					      				if(aaa==o.convertUnit){
-					      					that.parent().parent().find('.unitCosttr').text(o.convertPrice);
-					      				}else if(aaa==o.unit){
-					      					that.parent().parent().find('.unitCosttr').text(o.price);
-					      				}else{
-					      					that.parent().parent().find('.unitCosttr').text("");
-					      				}
-					      			}); 
-					      			layer.close(index)
-							      },error:function(){
-										layer.msg("加载失败！", {icon: 2});
-										layer.close(index);
-								  }
-							  }); 
-				       })
-						self.mater();
-					}else{
-							$(this).text("编辑")
-							/* $(this).parent().parent().find(".composite").find(".selectdoubleComposite").attr("disabled",'disabled');
-						  $(this).parent().parent().find(".composite").find(".selectdoubleComposite").css('background','none'); */
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							})
-							$(this).parent().siblings(".editt").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-					                $(this).html(obj_text.val()); 
-							})
-							$(this).parent().siblings(".materielNumbertw").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-					                $(this).html(obj_text.val()); 
-							})
-							$(this).parent().siblings(".unite").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-					                $(this).html(obj_text.val()); 
-							})
-							$(this).parent().siblings(".manualLoss").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-					                $(this).html(obj_text.val()); 
-							})
-							/* $(this).parent().siblings(".doubleComposite").each(function() {  // 获取当前行的其他单元格
-
-								$(this).removeAttr("style");
-					            
-							}) */
-							var postData = {
-									id:$(this).data('id'),
-									materialsName:$(this).parent().parent('tr').find(".materialsNamett").text(),
-									oneMaterial:$(this).parent().parent('tr').find(".materielNumbertw").text(),
-									unitId:$(this).parent().parent('tr').find(".unite").find(".selectunit").val(),
-									unit:$(this).parent().parent('tr').find(".unite option:selected").text(),
-									manualLoss:$(this).parent().parent('tr').find(".manualLoss").text(),
-									unitCost:$(this).parent().parent('tr').find(".unitCosttr").text(),
-									productCost:$(this).parent().parent('tr').find(".unitPrice").text(),
-									productUnit:$(this).parent().parent('tr').find(".unit").text(),
-							}
-							
-							var index;
-							$.ajax({
-								url:"${ctx}/product/updateProductMaterials",
-								data:postData,
-								type:"POST",
-								beforeSend:function(){
-									index = layer.load(1, {
-										  shade: [0.1,'#fff'] //0.1透明度的白色背景
-										});
-								},
+				  var index;
+				    var html = '';
+				    $.ajax({
+					      url:"${ctx}/product/getMachinist",
+					      data:data,
+					      type:"GET",
+					      beforeSend:function(){
+						 	  index = layer.load(1, {
+							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							  });
+						  }, 
+			      		  success: function (result) {
+			      			 $(result.data.rows).each(function(i,o){
+			      				 
+			      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
+			      				+'<td class="text-center edit " >'+o.machinistName+'</td>'
+			      				+'<td class="text-center editt materialsNamett" >'+o.materialsName+'</td>'
+			      				+'<td class="text-center materielNumbertw" >'+o.oneMaterial+'</td>'
+			      				+'<td class="text-center unite name" >'+o.unit+'</td>'
+			      				+'<td class="text-center unit name" >'+o.productUnit+'</td>'
+			      				+'<td class="text-center " >'+o.batchMaterial+'</td>'
+			      				+'<td class="text-center  name" >'+o.batchMaterialPrice+'</td>'
+								+'<td class="text-center "><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'  data-unit='+o.unitId+'>编辑</button></td></tr>'
 								
-								success:function(result){
-									if(0==result.code){
-									layer.msg(result.message, {icon: 1});
-									var data={
-											page:self.getCount(),
-									  		size:13,	
-									  		
-									} 
-								   self.loadPagination(data);
-									layer.close(index);
-									}else{
-										layer.msg(result.message, {icon: 2});
-										layer.close(index);
-									}
-								},error:function(){
-									layer.msg("操作失败！", {icon: 2});
-									layer.close(index);
-								}
-							});
-					}
-				})
-			} 
-			this.mater=function(){
-				$(".machinistName").blur(function(){
-					if($(this).val()==""){
-					return	layer.msg("机缝名不能为空", {icon: 2});
-					}
-					var data={
-							productId: self.getCache(),
-							number:$('#number').val(),
-							machinistName:$(this).val()
-					}
-					$.ajax({
-						url:"${ctx}/product/addMachinist",
-						data:data,
-						traditional: true,
-						type:"POST",
-						beforeSend:function(){
-							index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								});
-						},
-						
-						success:function(result){
-							if(0==result.code){
+			      			}); 
+			      			self.setCount(result.data.pageNum)
+					        //显示分页
+						   	layer.close(index);
+						   	 $("#tablecontent").html(html); 
+					      },error:function(){
+								layer.msg("加载失败！", {icon: 2});
 								layer.close(index);
-								var data = {
-										id:"6956",//需要传产品id
-									}
-									var indexx;
-								    var html = '';
-								    $.ajax({
-									      url:"${ctx}/product/getMachinistName",
-									      data:data,
-									      type:"GET",
-									     
-							      		  success: function (result) {
-							      			 $(result.data).each(function(i,o){
-							      				html +='<option value="'+o.price+'">'+o.name+'</option>'
-							      			}); 
-									       var htmlto='<select class="selectmac" style="border: none;width:50px; height:30px; background-color: #BFBFBF;"><option value=""></option>'+html+'</select>'
-										   	$(".selectCompany").html(htmlto); 
-									      	  
-									       $(".selectmac").change(function(){
-									    		var thta=$(this)   
-									    	   thta.parent().parent().find('.selectbody').html(thta.find("option:selected").text())
-									    	    var values=new Array()
-									    	   	var name=new Array()
-									    		values.push(thta.val())
-									    		name.push(thta.find("option:selected").text())
-									    	   var postData={
-									    			cutparts:name,
-									    			cutpartsPrice:values
-									    		}
-									    	   $.ajax({
-													url:"${ctx}/product/addMachinist",
-													data:postData,
-													traditional: true,
-													type:"POST",
-													beforeSend:function(){
-														index = layer.load(1, {
-															  shade: [0.1,'#fff'] //0.1透明度的白色背景
-															});
-													},
-													
-													success:function(result){
-														if(0==result.code){
-														layer.msg("！", {icon: 1});
-														layer.close(index);
-														}else{
-															layer.msg("删除失败！", {icon: 2});
+						  }
+					  });
+			}
+			  
+			  
+			  this.mater=function(){
+					$(".machinistName").blur(function(){
+						var ttat=$(this)
+						if($(this).val()==""){
+						return	layer.msg("机缝名不能为空", {icon: 2});
+						}
+						var data={
+								id:ttat.parent().parent().find('.selectid').text(),
+								productId: self.getCache(),
+								number:$('#number').val(),
+								machinistName:$(this).val()
+						}
+						$.ajax({
+							url:"${ctx}/product/addMachinist",
+							data:data,
+							traditional: true,
+							type:"POST",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							success:function(result){
+								if(0==result.code){
+									layer.close(index);
+									var id=result.data.id
+									ttat.parent().parent().find('.selectid').text(id);
+									var data = {
+											id:self.getCache(),//需要传产品id
+										}
+										var indexx;
+									    var html = '';
+									    $.ajax({
+										      url:"${ctx}/product/getMachinistName",
+										      data:data,
+										      type:"GET",
+										     
+								      		  success: function (result) {
+								      			 $(result.data).each(function(i,o){
+								      				html +='<option value="'+o.price+'">'+o.name+'</option>'
+								      			}); 
+										       var htmlto='<select class="selectmac" style="border: none;width:50px; height:30px; background-color: #BFBFBF;"><option value=""></option>'+html+'</select>'
+											   	$(".selectCompany").html(htmlto); 
+										      	  
+										       $(".selectmac").change(function(){
+										    		var thta=$(this)   
+										    	   	thta.parent().parent().find('.selectbody').html(thta.find("option:selected").text())
+										    	   	thta.parent().parent().find('.selectbody2').append(thta.find("option:selected").text()+',')
+										    	   	thta.parent().parent().find('.selectprice2').append(thta.val()+',')
+										    	    var values=""
+										    	   	var name=""
+										    		name=thta.parent().parent().find('.selectbody2').text()
+										    		name = name.substr(0,name.length-1);
+										    		values=thta.parent().parent().find('.selectprice2').text()
+										    		values = values.substr(0,values.length-1);
+										    		var postData={
+										    			id:id,
+										    			productId:self.getCache(),
+										    			cutparts:name,
+										    			cutpartsPrice:values
+										    		}
+										    	   $.ajax({
+														url:"${ctx}/product/addMachinist",
+														data:postData,
+														traditional: true,
+														type:"POST",
+														beforeSend:function(){
+															index = layer.load(1, {
+																  shade: [0.1,'#fff'] //0.1透明度的白色背景
+																});
+														},
+														success:function(result){
+															if(0==result.code){
+															layer.close(index);
+															}else{
+																layer.msg("添加失败！", {icon: 2});
+																layer.close(index);
+															}
+														},error:function(){
+															layer.msg("操作失败！", {icon: 2});
 															layer.close(index);
 														}
-													},error:function(){
-														layer.msg("操作失败！", {icon: 2});
-														layer.close(index);
-													}
-												});
-									    	   
-									    	   
-									       })
-									       layer.close(indexx);
-									      },error:function(){
-												layer.msg("加载失败！", {icon: 2});
-												layer.close(index);
-										  }
-									  });
-							}else{
-								layer.msg(result.message, {icon: 2});
+													});
+										       })
+										       layer.close(indexx);
+										      },error:function(){
+													layer.msg("加载失败！", {icon: 2});
+													layer.close(index);
+											  }
+										  });
+								}else{
+									layer.msg(result.message, {icon: 2});
+									layer.close(index);
+								}
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
 								layer.close(index);
 							}
-						},error:function(){
-							layer.msg("操作失败！", {icon: 2});
-							layer.close(index);
-						}
-					});
-				})
-				
-				
-			}
-			this.events = function(){
-				//一键删除
-				$('.start').on('click',function(){
-					  var  that=$(".table-hover");
-					  var arr=new Array()//员工id
-					  	that.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
-							arr.push($(this).val());   
 						});
-					  var postData = {
-								ids:arr,
+					})
+					
+					
+					$(".selectbody").on('click',function(){
+						var id=$(this).parent().parent().find('.selectid').text();
+						var postData={
+								id:id,
 						}
-						var index;
-						 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
 						$.ajax({
-							url:"${ctx}/product/deleteProductMaterials",
+							url:"${ctx}/product/getMachinist",
 							data:postData,
 							traditional: true,
 							type:"GET",
@@ -573,37 +482,121 @@
 									  shade: [0.1,'#fff'] //0.1透明度的白色背景
 									});
 							},
-							
 							success:function(result){
-								if(0==result.code){
-								layer.msg("删除成功！", {icon: 1});
-								var data = {
-					        			page:self.getCount(),
-								  		size:13,
-								  		/* productId:"", */
-							  	}
-								self.loadPagination(data)
+							var name=result.data.rows[0].cutparts
+							var valey=result.data.rows[0].cutpartsPrice
+							var cutparts = name.split(",");
+							var cutpartsPrice= valey.split(",");
+							var html=""
+							for (var i = 0; i < cutparts.length; i++) {
+								var array_element = cutparts[i];
+								var array_element2 = cutpartsPrice[i];
+								html+='<tr><td class="text-center edit name1">'+array_element+'</td>'
+									+'<td class="text-center edit price1">'+array_element2+'</td>'
+									+'<td><button class="btn btn-sm btn-danger btn-trans delete" data-id='+i+'>删除</button></td></tr>'
+							}
+							$("#tableworking2").html(html)
 								layer.close(index);
-								}else{
-									layer.msg("删除失败！", {icon: 2});
-									layer.close(index);
-								}
+							 $(".delete").on('click',function(){
+								$(this).parent().parent().find(".name1").text("");
+								$(this).parent().parent().find(".price1").text("");
+								 var cutparts=new Array();
+								  var cutpartsPrice=new Array();
+								  $('.name1').each(function(i,o){
+										 var a=$(this).text()
+										 var c=$(this).parent().find('.price1').text();
+										if(a!=""){
+											cutparts.push(a)
+										}
+										if(c!=""){
+											cutpartsPrice.push(c)
+										}
+									 })
+									 var postData={
+						    			id:id,
+						    			productId:self.getCache(),
+						    			cutparts:cutparts,
+						    			cutpartsPrice:cutpartsPrice,
+						    		}
+						    	   $.ajax({
+										url:"${ctx}/product/addMachinist",
+										data:postData,
+										traditional: true,
+										type:"POST",
+										beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'#fff'] //0.1透明度的白色背景
+												});
+										},
+										success:function(result){
+											if(0==result.code){
+												layer.msg("删除成功！", {icon: 2});
+											layer.close(index);
+											}else{
+												layer.msg("添加失败！", {icon: 2});
+												layer.close(index);
+											}
+										},error:function(){
+											layer.msg("操作失败！", {icon: 2});
+											layer.close(index);
+										}
+									});
+								
+							}) 
+							
 							},error:function(){
 								layer.msg("操作失败！", {icon: 2});
 								layer.close(index);
 							}
 						});
-						 })
+						var dicDiv=$('#addworking');
+						_index = layer.open({
+							  type: 1,
+							  skin: 'layui-layer-rim', //加上边框
+							  area: ['30%', '70%'], 
+							  btnAlign: 'c',//宽高
+							  maxmin: true,
+							  title:name,
+							  content: dicDiv,
+							  btn: ['确定', '取消'],
+							  yes:function(index, layero){
+								 
+									 
+								},
+							  end:function(){
+								  
+							  }
+						});
+							
+					})
+					
+				}
+			
+			this.events = function(){
+			//新增
+				var html="";
+				$('#addCutting').on('click',function(){
+					for (var i = 0; i < 25; i++) {
+					var a=$('#loss').val();
+					 html='<tr><td  class="text-center"></td><td  class="text-center edit name"  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  machinistName" /></td>'
+					 +'<td class="text-center edit selectid hidden"></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;"  class="text-center materiel" /></td>'
+					 +'<td class="text-center edit selectCompany" style="padding: 2px 0px 2px 0px;"></td>'
+					 +'<td class="text-center edit selectbody"></td>'
+					 +'<td class="text-center edit selectbody2 hidden"></td>'
+					 +'<td class="text-center edit selectprice2 hidden"></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" value="'+a+'" style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center manualLoss" /></td>'
+					 +'<td class="text-center edit unitPrice" ></td>'
+					 +'<td class="text-center edit unit"></td></tr>';
+					  /* $(html).insertBefore("#tablecontent"); */
+					/* $("#tablecontent").append(html); */
+					$("#tablecontent").prepend(html);
+					}
+					self.mater();
 				})
-				//查询
-				$('.searchtask').on('click',function(){
-					var data = {
-				  			page:1,
-				  			size:13,
-				  			productId:self.getCache(),
-				  	}
-		            self.loadPagination(data);
-				});
+				
+				
+				
 				//提示产品名
 				$("#productName").typeahead({
 					//ajax 拿way数据
@@ -650,84 +643,6 @@
 						},
 						
 					});
-				
-				//新增裁片
-					
-					var html="";
-				$('#addCutting').on('click',function(){
-					for (var i = 0; i < 25; i++) {
-					var a=$('#loss').val();
-					 html='<tr><td  class="text-center"></td><td  class="text-center edit name"  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  machinistName" /></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;"  class="text-center materiel" /></td>'
-					 +'<td class="text-center edit selectCompany" style="padding: 2px 0px 2px 0px;></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center  oneMaterial"  /></td>'
-					 +'<td class="text-center edit selectbody"></td>'
-					 +'<td class="text-center edit selectprice"></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" value="'+a+'" style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center manualLoss" /></td>'
-					 +'<td class="text-center edit unitPrice" ></td>'
-					 +'<td class="text-center edit unit"></td></tr>';
-					  /* $(html).insertBefore("#tablecontent"); */
-					/* $("#tablecontent").append(html); */
-					$("#tablecontent").prepend(html);
-					}
-					self.mater();
-				})
-			
-				var that;
-				$(document).on('click','.materiel',function(){
-					 that=$(this)
-					//提示物料名
-					$(".materiel").typeahead({
-						//ajax 拿way数据
-						scrollHeight:1,
-						source : function(query, process) {
-								return $.ajax({
-									url : '${ctx}/product/getMateriel',
-									type : 'GET',
-									data : {
-										name:query,
-										type:"fill",
-									},
-									success : function(result) {
-										//转换成 json集合
-										 var resultList = result.data.map(function (item) {
-											 	//转换成 json对象
-						                        var aItem = {name: item.name, id:item.id, number:item.number, price:item.price, unit:item.unit}
-						                        //处理 json对象为字符串
-						                        return JSON.stringify(aItem);
-						                    });
-										//提示框返回数据
-										 return process(resultList);
-									},
-								})
-								
-								//提示框显示
-							}, highlighter: function (item) {
-							    //转出成json对象
-								 var item = JSON.parse(item);
-								return item.name+"-"+item.number
-								//按条件匹配输出
-			                }, matcher: function (item) {
-			                	//转出成json对象
-						        var item = JSON.parse(item);
-						        that.parent().parent().find('.unitPrice').text(item.price);
-						        that.parent().parent().find('.unit').text(item.unit);
-						        self.setNum(item.id)
-						    	return item.name
-						    },
-							//item是选中的数据
-							updater:function(item){
-								//转出成json对象
-								var item = JSON.parse(item);
-								that.parent().parent().find('.unitPrice').text(item.price);
-								that.parent().parent().find('.unit').text(item.unit);
-								self.setNum(item.id)
-									return item.name
-							},
-							
-						});
-				});
-                                                                                                                                                                                                                                     				
 			}
    	}
    			var login = new Login();
@@ -735,6 +650,7 @@
 			})
     
     </script>
+  
        
 </body>
 
