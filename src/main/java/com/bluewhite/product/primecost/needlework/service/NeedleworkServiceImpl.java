@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.product.primecost.machinist.entity.Machinist;
 import com.bluewhite.product.primecost.machinist.service.MachinistService;
 import com.bluewhite.product.primecost.needlework.dao.NeedleworkDao;
@@ -27,10 +28,8 @@ public class NeedleworkServiceImpl extends BaseServiceImpl<Needlework, Long> imp
 	private NeedleworkDao dao;
 	@Autowired
 	private PrimeCoefficientDao primeCoefficientDao;
-	
 	@Autowired
 	private MachinistService machinistService;
-	
 	@Autowired
 	private TailorService tailorService;
 	
@@ -39,6 +38,10 @@ public class NeedleworkServiceImpl extends BaseServiceImpl<Needlework, Long> imp
 
 	@Override
 	public Needlework saveNeedlework(Needlework needlework) {
+		
+		//自动将类型为null的属性赋值为0
+		NumUtils.setzro(needlework);
+		
 		PrimeCoefficient primeCoefficient = primeCoefficientDao.findByType("needlework");
 		// 单工序单只时间
 		needlework.setSingleTime(
