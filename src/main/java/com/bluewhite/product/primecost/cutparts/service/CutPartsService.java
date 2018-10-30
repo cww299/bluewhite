@@ -41,4 +41,11 @@ public interface CutPartsService extends BaseCRUDService<CutParts,Long>{
 	 */
 	public List<CutParts> findByProductId(Long productId);
 
+	/**
+	 * 根据产品id查询和压货类型id
+	 * @param productId
+	 * @return
+	 */
+	public  List<CutParts> findByProductIdAndOverstockId(Long productId, Long id);
+
 }

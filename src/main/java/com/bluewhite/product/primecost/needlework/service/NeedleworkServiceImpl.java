@@ -99,7 +99,7 @@ public class NeedleworkServiceImpl extends BaseServiceImpl<Needlework, Long> imp
 
 	@Override
 	public void deleteNeedlework(Long id) {
-		// TODO Auto-generated method stub
+		dao.delete(id);
 
 	}
 

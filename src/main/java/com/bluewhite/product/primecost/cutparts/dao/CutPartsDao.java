@@ -19,4 +19,6 @@ public interface CutPartsDao extends BaseRepository<CutParts, Long>{
 	 */
 	List<CutParts> findByProductId(Long productId);
 
+	List<CutParts> findByProductIdAndOverstockId(Long productId, Long id);
+
 }

@@ -13,6 +13,6 @@ public interface PackService extends BaseCRUDService<Pack,Long>{
 
 	public PageResult<Pack> findPages(Pack pack, PageParameter page);
 
-	public void deleteEmbroidery(Long id);
+	public void deletePack(Long id);
 
 }

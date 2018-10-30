@@ -84,6 +84,28 @@ public class ProductAction {
 	
 	
 	/**
+	 * 获取单个产品的成本报价
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getProductPages", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getProductPages(HttpServletRequest request,PrimeCost primeCost) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(PrimeCost.class,"number","cutPartsPrice","otherCutPartsPrice","cutPrice","machinistPrice","embroiderPrice"
+						,"embroiderPrice","needleworkPrice","packPrice","freightPrice","freightPrice","invoice","taxIncidence"
+						,"surplus","budget","budgetRate","actualCombat","actualCombatRate")
+				.format(productService.getPrimeCost(primeCost)).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	
+	/**
 	 * 添加产品
 	 * 
 	 * @param request 请求

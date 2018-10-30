@@ -43,17 +43,6 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 		}
 		productMaterials.setBatchMaterialPrice(productMaterials.getBatchMaterial()*productMaterials.getUnitCost());
 		dao.save(productMaterials);
-		//同时更新产品成本价格表(除面料以外的其他物料价格)
-		List<ProductMaterials> productMaterialsList = dao.findByProductId(productMaterials.getProductId());
-		Product product =  productdao.findOne(productMaterials.getProductId());
-		double batchMaterialPrice = productMaterialsList.stream().mapToDouble(ProductMaterials::getBatchMaterialPrice).sum();
-		PrimeCost primeCost = product.getPrimeCost();
-		if(primeCost==null){
-			 primeCost = new PrimeCost();
-		} 
-		primeCost.setOtherCutPartsPrice((batchMaterialPrice)/productMaterials.getNumber());
-		product.setPrimeCost(primeCost);
-		productdao.save(product);
 		return productMaterials;
 	}
 
@@ -95,6 +84,13 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 		double batchMaterialPrice = productMaterialsList.stream().mapToDouble(ProductMaterials::getBatchMaterialPrice).sum();
 		product.getPrimeCost().setOtherCutPartsPrice((batchMaterialPrice)/productMaterials.getNumber());
 		productdao.save(product);
+	}
+
+
+	@Override
+	public List<ProductMaterials> findByProductIdAndOverstockId(Long productId, Long id) {
+		
+		return dao.findByProductIdAndOverstockId(productId,id);
 	}
 
 }

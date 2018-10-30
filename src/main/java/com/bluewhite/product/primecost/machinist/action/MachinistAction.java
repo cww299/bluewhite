@@ -45,15 +45,6 @@ public class MachinistAction {
 	@Autowired
 	private TailorService tailorService;
 	
-	private ClearCascadeJSON clearCascadeJSON;
-
-	{
-		clearCascadeJSON = ClearCascadeJSON
-				.get()
-				.addRetainTerm(Machinist.class,"productId","number","materialsName","oneMaterial","unit","unitId","unitCost"
-						,"manualLoss","productCost","productUnit","batchMaterial","batchMaterialPrice");
-	}
-	
 	
 	/**
 	 * 机工填写
