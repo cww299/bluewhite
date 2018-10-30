@@ -193,7 +193,7 @@
 		  	}
 			 var data={
 						page:1,
-				  		size:13,	
+				  		size:100,	
 				  		productId:"",
 				} 
 			this.init = function(){
@@ -207,7 +207,7 @@
 			    var index;
 			    var html = '';
 			    $.ajax({
-				      url:"${ctx}/product/getProductMaterials",
+				      url:"${ctx}/product/getMachinist",
 				      data:data,
 				      type:"GET",
 				      beforeSend:function(){
@@ -220,13 +220,10 @@
 		      				 
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				/* +'<td  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:68px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" value="'+o.cutPartsName+'" /></td>' */
-		      				+'<td class="text-center edit " >'+o.materialsName+'</td>'
+		      				+'<td class="text-center edit " >'+o.machinistName+'</td>'
 		      				+'<td class="text-center editt materialsNamett" >'+o.materialsName+'</td>'
 		      				+'<td class="text-center materielNumbertw" >'+o.oneMaterial+'</td>'
 		      				+'<td class="text-center unite name" >'+o.unit+'</td>'
-		      				+'<td class="text-center unitCosttr name" >'+parseFloat((o.unitCost).toFixed(4))+'</td>'
-		      				+'<td class="text-center manualLoss name" >'+(o.manualLoss!=null?o.manualLoss:"")+'</td>'
-		      				+'<td class="text-center unitPrice name" >'+parseFloat((o.productCost).toFixed(4))+'</td>'
 		      				+'<td class="text-center unit name" >'+o.productUnit+'</td>'
 		      				+'<td class="text-center " >'+o.batchMaterial+'</td>'
 		      				+'<td class="text-center  name" >'+o.batchMaterialPrice+'</td>'
@@ -457,12 +454,14 @@
 			} 
 			this.mater=function(){
 				$(".machinistName").blur(function(){
+					if($(this).val()==""){
+					return	layer.msg("机缝名不能为空", {icon: 2});
+					}
 					var data={
 							productId: self.getCache(),
 							number:$('#number').val(),
 							machinistName:$(this).val()
 					}
-					
 					$.ajax({
 						url:"${ctx}/product/addMachinist",
 						data:data,
@@ -476,7 +475,68 @@
 						
 						success:function(result){
 							if(0==result.code){
-							
+								layer.close(index);
+								var data = {
+										id:"6956",//需要传产品id
+									}
+									var indexx;
+								    var html = '';
+								    $.ajax({
+									      url:"${ctx}/product/getMachinistName",
+									      data:data,
+									      type:"GET",
+									     
+							      		  success: function (result) {
+							      			 $(result.data).each(function(i,o){
+							      				html +='<option value="'+o.price+'">'+o.name+'</option>'
+							      			}); 
+									       var htmlto='<select class="selectmac" style="border: none;width:50px; height:30px; background-color: #BFBFBF;"><option value=""></option>'+html+'</select>'
+										   	$(".selectCompany").html(htmlto); 
+									      	  
+									       $(".selectmac").change(function(){
+									    		var thta=$(this)   
+									    	   thta.parent().parent().find('.selectbody').html(thta.find("option:selected").text())
+									    	    var values=new Array()
+									    	   	var name=new Array()
+									    		values.push(thta.val())
+									    		name.push(thta.find("option:selected").text())
+									    	   var postData={
+									    			cutparts:name,
+									    			cutpartsPrice:values
+									    		}
+									    	   $.ajax({
+													url:"${ctx}/product/addMachinist",
+													data:postData,
+													traditional: true,
+													type:"POST",
+													beforeSend:function(){
+														index = layer.load(1, {
+															  shade: [0.1,'#fff'] //0.1透明度的白色背景
+															});
+													},
+													
+													success:function(result){
+														if(0==result.code){
+														layer.msg("！", {icon: 1});
+														layer.close(index);
+														}else{
+															layer.msg("删除失败！", {icon: 2});
+															layer.close(index);
+														}
+													},error:function(){
+														layer.msg("操作失败！", {icon: 2});
+														layer.close(index);
+													}
+												});
+									    	   
+									    	   
+									       })
+									       layer.close(indexx);
+									      },error:function(){
+												layer.msg("加载失败！", {icon: 2});
+												layer.close(index);
+										  }
+									  });
 							}else{
 								layer.msg(result.message, {icon: 2});
 								layer.close(index);
@@ -488,7 +548,7 @@
 					});
 				})
 				
-			
+				
 			}
 			this.events = function(){
 				//一键删除
@@ -599,9 +659,9 @@
 					var a=$('#loss').val();
 					 html='<tr><td  class="text-center"></td><td  class="text-center edit name"  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  machinistName" /></td>'
 					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;"  class="text-center materiel" /></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"    style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center  oneMaterial"  /></td>'
 					 +'<td class="text-center edit selectCompany" style="padding: 2px 0px 2px 0px;></td>'
-					 +'<td class="text-center edit name"></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center  oneMaterial"  /></td>'
+					 +'<td class="text-center edit selectbody"></td>'
 					 +'<td class="text-center edit selectprice"></td>'
 					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" value="'+a+'" style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center manualLoss" /></td>'
 					 +'<td class="text-center edit unitPrice" ></td>'
@@ -609,8 +669,8 @@
 					  /* $(html).insertBefore("#tablecontent"); */
 					/* $("#tablecontent").append(html); */
 					$("#tablecontent").prepend(html);
-					self.mater();
 					}
+					self.mater();
 				})
 			
 				var that;

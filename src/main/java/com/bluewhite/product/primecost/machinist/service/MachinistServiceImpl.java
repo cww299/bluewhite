@@ -86,11 +86,11 @@ public class MachinistServiceImpl extends BaseServiceImpl<Machinist, Long> imple
 		//该工序涉及粘片次数时间/秒
 		machinist.setSticking(primeCoefficient.getMachinistOne()*machinist.getCutpartsNumber());
 		//1类模式可走（每CM时间/秒）
-		machinist.setModeOne(1/machinist.getBaseFourDate()*machinist.getBeelineNumber());
+		machinist.setModeOne(NumUtils.division(1/machinist.getBaseFourDate()*machinist.getBeelineNumber()));
 		//2类模式可走（每CM时间/秒）
-		machinist.setModeTwo(1/machinist.getBaseFourDate()*machinist.getArcNumber());
+		machinist.setModeTwo(NumUtils.division(1/machinist.getBaseFourDate()*machinist.getArcNumber()));
 		//3类模式可走（每CM时间/秒）
-		machinist.setModeThree(1/machinist.getBaseFourDate()*machinist.getBendNumber());
+		machinist.setModeThree(NumUtils.division(1/machinist.getBaseFourDate()*machinist.getBendNumber()));
 		
 		//单一机缝需要时间/秒
 		machinist.setOneSewingTime(machinist.getBackStitch()+machinist.getSticking()+machinist.getModeOne()+machinist.getModeTwo()+machinist.getModeThree());
@@ -122,7 +122,7 @@ public class MachinistServiceImpl extends BaseServiceImpl<Machinist, Long> imple
 		List<Machinist> machinistList = dao.findByProductId(machinist.getProductId());
 		machinistList.add(machinist);
 		double scaleMaterial = machinist.getAllCostPrice()/(machinistList.stream().filter(Machinist->Machinist.getAllCostPrice()!=null).mapToDouble(Machinist::getAllCostPrice).sum());
-		machinist.setScaleMaterial(scaleMaterial);
+		machinist.setScaleMaterial(NumUtils.division(scaleMaterial));
 		//物料和上道压（裁剪）价
 		 machinist.setPriceDown(NumUtils.round((machinist.getAllCostPrice()+sumPrice), 2));
 		 //物料和上道压（裁剪,上道机工）价-只有在当行机工环节单独发放给某个加工店，这个才起作用
