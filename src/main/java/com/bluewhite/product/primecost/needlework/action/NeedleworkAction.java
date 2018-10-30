@@ -1,6 +1,8 @@
 package com.bluewhite.product.primecost.needlework.action;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,6 +29,8 @@ import com.bluewhite.product.primecost.needlework.entity.Needlework;
 import com.bluewhite.product.primecost.needlework.service.NeedleworkService;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
 
+import javassist.expr.NewArray;
+
 public class NeedleworkAction {
 	
 	
@@ -47,7 +51,7 @@ private final static Log log = Log.getLog(NeedleworkAction.class);
 	 */
 	@RequestMapping(value = "/product/addNeedlework", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addMachinist(HttpServletRequest request,Needlework needlework) {
+	public CommonResponse addNeedlework(HttpServletRequest request,Needlework needlework) {
 		CommonResponse cr = new CommonResponse();
 		if(StringUtils.isEmpty(needlework.getProductId())){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -73,7 +77,7 @@ private final static Log log = Log.getLog(NeedleworkAction.class);
 	 */
 	@RequestMapping(value = "/product/getNeedlework", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getEmbroidery(HttpServletRequest request,PageParameter page,Needlework needlework) {
+	public CommonResponse getNeedlework(HttpServletRequest request,PageParameter page,Needlework needlework) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(needleworkService.findPages(needlework,page));
 		cr.setMessage("查询成功");
@@ -85,9 +89,9 @@ private final static Log log = Log.getLog(NeedleworkAction.class);
 	 * 删除 针工填写
 	 * 
 	 */
-	@RequestMapping(value = "/product/deleteEmbroidery", method = RequestMethod.GET)
+	@RequestMapping(value = "/product/deleteNeedlework", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteEmbroidery(HttpServletRequest request,String ids) {
+	public CommonResponse deleteNeedlework(HttpServletRequest request,String ids) {
 		CommonResponse cr = new CommonResponse();
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idArr = ids.split(",");
@@ -105,23 +109,46 @@ private final static Log log = Log.getLog(NeedleworkAction.class);
 		return cr;
 	}
 	
-	
-	
-//	/**
-//	 * 获取绣花填写面料值
-//	 * 
-//	 * @param request 请求
-//	 * @return cr
-//	 * @throws Exception
-//	 */
-//	@RequestMapping(value = "/product/getEmbroideryName", method = RequestMethod.GET)
-//	@ResponseBody
-//	public CommonResponse getMachinistName(HttpServletRequest request,Long productId) {
-//		CommonResponse cr = new CommonResponse();
-//		cr.setData(tailorService.findByProductId(productId));
-//		cr.setMessage("查询成功");
-//		return cr;
-//	}
+	/**
+	 * 该工序有可能用到的物料(机工，针工，包装)
+
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/product/getOverStock", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getNeedlework(HttpServletRequest request,String type) {
+		CommonResponse cr = new CommonResponse();
+		List<Object> overStock = new ArrayList<Object>();
+		switch (1) {
+		case 79://普通激光切割
+			break;
+		case 80://绣花激光切割
+			break;
+		case 81://手工电烫
+			break;
+		case 82://设备电烫
+			break;
+		case 83://冲床
+			break;
+		case 84://电推
+			break;
+		case 85://手工剪刀
+			break;
+		case 86://绣花领取
+			break;
+		default:
+			break;
+		}
+		
+		
+		
+		
+		cr.setData(overStock);
+		cr.setMessage("查询成功");
+		return cr;
+	}
 	
 	
 	

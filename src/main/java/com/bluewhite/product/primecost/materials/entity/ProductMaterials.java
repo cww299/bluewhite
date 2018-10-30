@@ -34,6 +34,18 @@ public class ProductMaterials extends BaseEntity<Long>{
 	
 	
 	/**
+	 * 压货环节id
+	 */
+	@Column(name = "overstock_id")
+	private Long overstockId;
+	
+	/**
+	 * 压货环节↓
+	 */
+	@Column(name = "overstock")
+	private String overstock;
+	
+	/**
 	 * 填写单片用料（单片的用料）
 	 */
 	@Column(name = "one_material")
@@ -92,6 +104,22 @@ public class ProductMaterials extends BaseEntity<Long>{
 	
 	
 	
+
+	public Long getOverstockId() {
+		return overstockId;
+	}
+
+	public void setOverstockId(Long overstockId) {
+		this.overstockId = overstockId;
+	}
+
+	public String getOverstock() {
+		return overstock;
+	}
+
+	public void setOverstock(String overstock) {
+		this.overstock = overstock;
+	}
 
 	public Long getUnitId() {
 		return unitId;

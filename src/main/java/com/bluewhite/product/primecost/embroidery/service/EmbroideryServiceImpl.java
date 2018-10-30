@@ -42,6 +42,9 @@ public class EmbroideryServiceImpl extends BaseServiceImpl<Embroidery, Long> imp
 
 	@Override
 	public Embroidery saveEmbroidery(Embroidery embroidery) {
+		
+		//自动将类型为null的属性赋值为0
+		NumUtils.setzro(embroidery);
 
 		PrimeCoefficient primeCoefficient = primeCoefficientDao.findByType("embroidery");
 		// 单片机走时间

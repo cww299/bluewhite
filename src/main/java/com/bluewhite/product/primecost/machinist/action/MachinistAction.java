@@ -75,7 +75,7 @@ public class MachinistAction {
 				BeanCopyUtils.copyNullProperties(oldMachinist,machinist);
 				machinist.setCreatedAt(oldMachinist.getCreatedAt());
 			}
-			machinistService.saveMachinist(machinist);
+			cr.setData(machinistService.saveMachinist(machinist));
 			cr.setMessage("添加成功");
 		}
 		return cr;

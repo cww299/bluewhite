@@ -33,6 +33,18 @@ public class CutParts extends BaseEntity<Long>{
 	private Integer number;
 	
 	/**
+	 * 压货环节id
+	 */
+	@Column(name = "overstock_id")
+	private Long overstockId;
+	
+	/**
+	 * 压货环节↓
+	 */
+	@Column(name = "overstock")
+	private String overstock;
+	
+	/**
 	 * 面料损耗默认值
 	 */
 	@Column(name = "loss")
@@ -216,6 +228,22 @@ public class CutParts extends BaseEntity<Long>{
 
 
 	
+
+	public Long getOverstockId() {
+		return overstockId;
+	}
+
+	public void setOverstockId(Long overstockId) {
+		this.overstockId = overstockId;
+	}
+
+	public String getOverstock() {
+		return overstock;
+	}
+
+	public void setOverstock(String overstock) {
+		this.overstock = overstock;
+	}
 
 	public Long getBaseId() {
 		return baseId;

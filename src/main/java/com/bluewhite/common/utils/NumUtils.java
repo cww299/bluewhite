@@ -59,7 +59,7 @@ public class NumUtils {
 	}
 	
 	/**
-	 * 当传入实体字段属性为空，自动赋值为0；
+	 * 当传入实体字段属性为空，自动赋值为0；避免空指针异常
 	 * @throws IllegalAccessException 
 	 * @throws IllegalArgumentException 
 	 */
