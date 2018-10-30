@@ -318,7 +318,7 @@
 				      			 $(result.data.rows).each(function(i,o){
 				      				 html +='<tr>'
 				      				+'<td class="text-center edit ">'+o.machinistName+'</td>'
-				      				+'<td class="text-center needlesize" data-needlesize='+o.needlesize+' style="width: 80px;"></td>'
+				      				+'<td class="text-center needlesize" data-needlesize='+o.needlesize+' data-id='+o.id+' data-productid='+o.productId+' style="width: 80px;"></td>'
 				      				+'<td class="text-center wiresize" data-wiresize='+o.wiresize+' style="width: 100px;"></td>'
 				      				+'<td class="text-center edit needlespur" data-needlespur='+o.needlespur+' style="width: 80px;"></td>'
 				      				+'<td class="text-center edit"><input class="form-control time"  style="width: 50px;"  value='+(o.time!=0?o.time:"")+'></td>'
@@ -329,11 +329,11 @@
 				      				+'<td class="text-center"><input class="form-control arcNumber" data-id="'+o.id+'" style="width: 80px;" value='+(o.arcNumber!=0?o.arcNumber:"")+'></td>'
 				      				+'<td class="text-center"><input class="form-control bend" data-id="'+o.id+'"  data-provide="typeahead" autocomplete="off" style="width: 50px;" value='+(o.bend!=null?o.bend:"")+'></td>'
 				      				+'<td class="text-center"><input class="form-control bendNumber" data-id="'+o.id+'" style="width: 80px;" value='+(o.bendNumber!=0?o.bendNumber:"")+'></td>'
-				      				+'<td class="text-center edit oneSewingTime">'+(o.oneSewingTime!=0?o.oneSewingTime:"")+'</td>'
-				      				+'<td class="text-center edit equipmentPrice">'+(o.equipmentPrice!=0?o.equipmentPrice:"")+'</td>'
-				      				+'<td class="text-center edit administrativeAtaff">'+(o.administrativeAtaff!=0?o.administrativeAtaff:"")+'</td>'
-				      				+'<td class="text-center edit reckoningSewingPrice">'+(o.reckoningSewingPrice!=0?o.reckoningSewingPrice:"")+'</td>'
-				      				+'<td class="text-center edit trialSewingPrice">'+(o.trialSewingPrice!=0?o.trialSewingPrice:"")+'</td></tr>'
+				      				+'<td class="text-center edit oneSewingTime">'+parseFloat((o.oneSewingTime).toFixed(5))+'</td>'
+				      				+'<td class="text-center edit equipmentPrice">'+parseFloat((o.equipmentPrice).toFixed(5))+'</td>'
+				      				+'<td class="text-center edit administrativeAtaff">'+parseFloat((o.administrativeAtaff).toFixed(5))+'</td>'
+				      				+'<td class="text-center edit reckoningSewingPrice">'+parseFloat((o.reckoningSewingPrice).toFixed(5))+'</td>'
+				      				+'<td class="text-center edit trialSewingPrice">'+parseFloat((o.trialSewingPrice).toFixed(5))+'</td></tr>'
 				      			}); 
 							   	layer.close(index);
 							   	 $("#tablecontent2").html(html); 
@@ -368,7 +368,48 @@
 				      		  $(".selecttailorType2").each(function(i,o){
 				      				var id=	$(o).parent().data("needlesize");
 									$(o).val(id)
-								}) 
+								})
+								$(".selecttailorType2").change(function(i,o){
+				      				var that=$(this);
+				      				var id=$(this).parent().parent().find(".needlesize").data('id');
+				      				var productId=$(this).parent().parent().find(".needlesize").data('productid');
+				      				var dataeee={
+				      						id:id,
+				      						productId:productId,
+				      						needlesize:$(this).parent().parent().find(".selecttailorType2").val(),
+				      						wiresize:$(this).parent().parent().find(".selecttailorType3").val(),
+				      						needlespur:$(this).parent().parent().find(".selecttailorType4").val(),
+				      				}
+				      				var index;
+				      				$.ajax({
+									      url:"${ctx}/product/addMachinist",
+									      data:dataeee,
+									      type:"POST",
+									      beforeSend:function(){
+												index = layer.load(1, {
+													  shade: [0.1,'#fff'] //0.1透明度的白色背景
+													});
+											},
+											success:function(result){
+												if(0==result.code){
+													$(result.data).each(function(i,o){
+														that.parent().parent().find(".oneSewingTime").text(parseFloat((o.oneSewingTime).toFixed(5)));
+										      			 that.parent().parent().find(".equipmentPrice").text(parseFloat((o.equipmentPrice).toFixed(5)));
+										      			 that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));  
+										      			that.parent().parent().find(".reckoningSewingPrice").text(parseFloat((o.reckoningSewingPrice).toFixed(5)));  
+										      			that.parent().parent().find(".trialSewingPrice").text(parseFloat((o.trialSewingPrice).toFixed(5)));
+										      			 });
+												layer.close(index);
+												}else{
+													layer.msg("添加失败！", {icon: 2});
+													layer.close(index);
+												}
+											},error:function(){
+												layer.msg("加载失败！", {icon: 2});
+												layer.close(index);sa
+										  }
+									  });
+								})
 				      		  },error:function(){
 									layer.msg("加载失败！", {icon: 2});
 									layer.close(index);
@@ -397,6 +438,51 @@
 					      				var id=	$(o).parent().data("wiresize");
 										$(o).val(id)
 									}) 
+									
+									
+									$(".selecttailorType3").change(function(i,o){
+				      				var that=$(this);
+				      				var id=$(this).parent().parent().find(".needlesize").data('id');
+				      				var productId=$(this).parent().parent().find(".needlesize").data('productid');
+				      				var dataeee={
+				      						id:id,
+				      						productId:productId,
+				      						needlesize:$(this).parent().parent().find(".selecttailorType2").val(),
+				      						wiresize:$(this).parent().parent().find(".selecttailorType3").val(),
+				      						needlespur:$(this).parent().parent().find(".selecttailorType4").val(),
+				      						backStitchCount:$(this).parent().parent().find(".backStitchCount").val(),
+				      						time:$(this).parent().parent().find(".time").val(),
+				      				}
+				      				var index;
+				      				$.ajax({
+									      url:"${ctx}/product/addMachinist",
+									      data:dataeee,
+									      type:"POST",
+									      beforeSend:function(){
+												index = layer.load(1, {
+													  shade: [0.1,'#fff'] //0.1透明度的白色背景
+													});
+											},
+											success:function(result){
+												$(result.data).each(function(i,o){
+													that.parent().parent().find(".oneSewingTime").text(parseFloat((o.oneSewingTime).toFixed(5)));
+									      			 that.parent().parent().find(".equipmentPrice").text(parseFloat((o.equipmentPrice).toFixed(5)));
+									      			 that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));  
+									      			that.parent().parent().find(".reckoningSewingPrice").text(parseFloat((o.reckoningSewingPrice).toFixed(5)));  
+									      			that.parent().parent().find(".trialSewingPrice").text(parseFloat((o.trialSewingPrice).toFixed(5)));
+									      			 });
+												if(0==result.code){
+												layer.close(index);
+												}else{
+													layer.msg("添加失败！", {icon: 2});
+													layer.close(index);
+												}
+											},error:function(){
+												layer.msg("加载失败！", {icon: 2});
+												layer.close(index);sa
+										  }
+									  });
+								})
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);sa
@@ -415,9 +501,171 @@
 								      type:"GET",
 						      		  success: function (result) {
 						      			 $(result.data).each(function(i,o){
-						      				html2 +='<option value="'+o.id+'">'+o.name+'</option>'
+						      				html2 +='<option value="'+o.id+'" data-time="'+o.time+'">'+o.name+'</option>'
 						      			}); 
-								       htmlto2='<select class="text-center form-control selecttailorType4" ><option value="">请选择</option>'+html2+'</select>'
+								       htmlto2='<select class="text-center form-control selecttailorType4"><option value="">请选择</option>'+html2+'</select>'
+						      		  $(".needlespur").html(htmlto2)
+						      		  //改变事件
+						      		  $(".selecttailorType4").each(function(i,o){
+						      				var id=	$(o).parent().data("needlespur");
+											$(o).val(id)
+										}) 
+										
+										$(".selecttailorType4").change(function(i,o){
+				      					var that=$(this);
+				      					var id=$(this).parent().parent().find(".needlesize").data('id');
+				      					var productId=$(this).parent().parent().find(".needlesize").data('productid');
+				      					var time=$(this).parent().parent().find(".selecttailorType4 option:selected").data('time');
+				      					var dataeee={
+				      						id:id,
+				      						productId:productId,
+				      						needlesize:$(this).parent().parent().find(".selecttailorType2").val(),
+				      						wiresize:$(this).parent().parent().find(".selecttailorType3").val(),
+				      						needlespur:$(this).parent().parent().find(".selecttailorType4").val(),
+				      						backStitchCount:$(this).parent().parent().find(".backStitchCount").val(),
+				      						time:$(this).parent().parent().find(".time").val(),
+				      				}
+				      				var index;
+				      				$.ajax({
+									      url:"${ctx}/product/addMachinist",
+									      data:dataeee,
+									      type:"POST",
+									      beforeSend:function(){
+												index = layer.load(1, {
+													  shade: [0.1,'#fff'] //0.1透明度的白色背景
+													});
+											},
+											success:function(result){
+												if(0==result.code){
+													$(result.data).each(function(i,o){
+														that.parent().parent().find(".oneSewingTime").text(parseFloat((o.oneSewingTime).toFixed(5)));
+										      			 that.parent().parent().find(".equipmentPrice").text(parseFloat((o.equipmentPrice).toFixed(5)));
+										      			 that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));  
+										      			that.parent().parent().find(".reckoningSewingPrice").text(parseFloat((o.reckoningSewingPrice).toFixed(5)));  
+										      			that.parent().parent().find(".trialSewingPrice").text(parseFloat((o.trialSewingPrice).toFixed(5)));
+										      			 });
+												layer.close(index);
+												}else{
+													layer.msg("添加失败！", {icon: 2});
+													layer.close(index);
+												}
+											},error:function(){
+												layer.msg("加载失败！", {icon: 2});
+												layer.close(index);sa
+										  }
+									  });
+								})
+						      		  },error:function(){
+											layer.msg("加载失败！", {icon: 2});
+											layer.close(index);sa
+									  }
+								  });
+							    $(".time").blur(function(){
+							    	var that=$(this);
+			      					var id=$(this).parent().parent().find(".needlesize").data('id');
+			      					var productId=$(this).parent().parent().find(".needlesize").data('productid');
+			      					var time=$(this).parent().parent().find(".selecttailorType4 option:selected").data('time');
+			      					var dataeee={
+			      						id:id,
+			      						productId:productId,
+			      						needlesize:$(this).parent().parent().find(".selecttailorType2").val(),
+			      						wiresize:$(this).parent().parent().find(".selecttailorType3").val(),
+			      						needlespur:$(this).parent().parent().find(".selecttailorType4").val(),
+			      						backStitchCount:$(this).parent().parent().find(".backStitchCount").val(),
+			      						time:$(this).parent().parent().find(".time").val(),
+			      				}
+			      				var index;
+			      				$.ajax({
+								      url:"${ctx}/product/addMachinist",
+								      data:dataeee,
+								      type:"POST",
+								      beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'#fff'] //0.1透明度的白色背景
+												});
+										},
+										success:function(result){
+											if(0==result.code){
+												$(result.data).each(function(i,o){
+													that.parent().parent().find(".oneSewingTime").text(parseFloat((o.oneSewingTime).toFixed(5)));
+									      			 that.parent().parent().find(".equipmentPrice").text(parseFloat((o.equipmentPrice).toFixed(5)));
+									      			 that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));  
+									      			that.parent().parent().find(".reckoningSewingPrice").text(parseFloat((o.reckoningSewingPrice).toFixed(5)));  
+									      			that.parent().parent().find(".trialSewingPrice").text(parseFloat((o.trialSewingPrice).toFixed(5)));
+									      			 });
+											layer.close(index);
+											}else{
+												layer.msg("添加失败！", {icon: 2});
+												layer.close(index);
+											}
+										},error:function(){
+											layer.msg("加载失败！", {icon: 2});
+											layer.close(index);sa
+									  }
+								  });
+							    })
+							   
+							    $(".backStitchCount").blur(function(){
+							    	var that=$(this);
+			      					var id=$(this).parent().parent().find(".needlesize").data('id');
+			      					var productId=$(this).parent().parent().find(".needlesize").data('productid');
+			      					var time=$(this).parent().parent().find(".selecttailorType4 option:selected").data('time');
+			      					var dataeee={
+			      						id:id,
+			      						productId:productId,
+			      						needlesize:$(this).parent().parent().find(".selecttailorType2").val(),
+			      						wiresize:$(this).parent().parent().find(".selecttailorType3").val(),
+			      						needlespur:$(this).parent().parent().find(".selecttailorType4").val(),
+			      						backStitchCount:$(this).parent().parent().find(".backStitchCount").val(),
+			      						time:$(this).parent().parent().find(".time").val(),
+			      				}
+			      				var index;
+			      				$.ajax({
+								      url:"${ctx}/product/addMachinist",
+								      data:dataeee,
+								      type:"POST",
+								      beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'#fff'] //0.1透明度的白色背景
+												});
+										},
+										success:function(result){
+											if(0==result.code){
+												$(result.data).each(function(i,o){
+													that.parent().parent().find(".oneSewingTime").text(parseFloat((o.oneSewingTime).toFixed(5)));
+									      			 that.parent().parent().find(".equipmentPrice").text(parseFloat((o.equipmentPrice).toFixed(5)));
+									      			 that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));  
+									      			that.parent().parent().find(".reckoningSewingPrice").text(parseFloat((o.reckoningSewingPrice).toFixed(5)));  
+									      			that.parent().parent().find(".trialSewingPrice").text(parseFloat((o.trialSewingPrice).toFixed(5)));
+									      			 });
+											layer.close(index);
+											}else{
+												layer.msg("添加失败！", {icon: 2});
+												layer.close(index);
+											}
+										},error:function(){
+											layer.msg("加载失败！", {icon: 2});
+											layer.close(index);sa
+									  }
+								  });
+							    })
+							    
+							    
+							    var datae2 = {
+									
+								}
+								var index;
+							    var html2 = '';
+							    var htmlto2= '';
+							    $.ajax({
+								      url:"${ctx}/product/getBaseFour",
+								      data:datae2,
+								      type:"GET",
+						      		  success: function (result) {
+						      			 $(result.data).each(function(i,o){
+						      				html2 +='<option value="'+o.id+'" data-time="'+o.time+'">'+o.name+'</option>'
+						      			}); 
+								       htmlto2='<select class="text-center form-control selecttailorType4"><option value="">请选择</option>'+html2+'</select>'
 						      		  $(".needlespur").html(htmlto2)
 						      		  //改变事件
 						      		  $(".selecttailorType4").each(function(i,o){
@@ -429,8 +677,8 @@
 											layer.close(index);sa
 									  }
 								  });
-							    
-							  //提示产品名
+							  
+							  /* //提示产品名
 								$(".beeline").typeahead({
 									//ajax 拿way数据
 									source : function(query, process) {
@@ -443,7 +691,7 @@
 												
 												success : function(result) {
 													//转换成 json集合
-													 var resultList = result.data.rows.map(function (item) {
+													 var resultList = result.data.map(function (item) {
 														 	//转换成 json对象
 									                        var aItem = {name: item.sewingOrder, id:item.id}
 									                        //处理 json对象为字符串
@@ -485,7 +733,7 @@
 												
 												success : function(result) {
 													//转换成 json集合
-													 var resultList = result.data.rows.map(function (item) {
+													 var resultList = result.data.map(function (item) {
 														 	//转换成 json对象
 									                        var aItem = {name: item.sewingOrder, id:item.id}
 									                        //处理 json对象为字符串
@@ -527,7 +775,7 @@
 												
 												success : function(result) {
 													//转换成 json集合
-													 var resultList = result.data.rows.map(function (item) {
+													 var resultList = result.data.map(function (item) {
 														 	//转换成 json对象
 									                        var aItem = {name: item.sewingOrder, id:item.id}
 									                        //处理 json对象为字符串
@@ -554,8 +802,9 @@
 											var item = JSON.parse(item);
 												return item.name
 										},
-										
 									});
+							     */
+								
 			  }
 			  
 			  this.mater=function(){
