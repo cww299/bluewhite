@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.product.primecostbasedata.dao.BaseFourDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneTimeDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseThreeDao;
@@ -260,7 +262,12 @@ public class BaseOneAction {
 	@ResponseBody
 	public CommonResponse getBaseFour(HttpServletRequest request,String sewingOrder) {
 		CommonResponse cr = new CommonResponse();
-		List<BaseFour> baseFour = baseFourDao.findBySewingOrderLike(sewingOrder);
+		List<BaseFour> baseFour=null;
+		if(!StringUtils.isEmpty(sewingOrder)){
+			 baseFour = baseFourDao.findBySewingOrderLike("%"+sewingOrder+"%");
+		}else{
+			 baseFour = baseFourDao.findAll();
+		}
 		cr.setMessage("获取成功");
 		cr.setData(baseFour);
 		return cr;
