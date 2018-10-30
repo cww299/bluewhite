@@ -165,7 +165,8 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		//预计运费价格
 		primeCost.setFreightPrice(primeCost.getAdjustNumber()*primeCost.getOneFreightPrice());
 		
-		//
+		//付上游开票点
+
 		
 		
 		
