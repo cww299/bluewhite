@@ -187,8 +187,6 @@ public class PrimeCost extends BaseEntity<Long>{
 	@Column(name = "actualCombatRate")
 	private Double actualCombatRate;
 	
-	
-	
 	/**
 	 * 目前售价
 	 */
