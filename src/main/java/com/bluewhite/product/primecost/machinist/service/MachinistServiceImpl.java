@@ -86,11 +86,11 @@ public class MachinistServiceImpl extends BaseServiceImpl<Machinist, Long> imple
 		//该工序涉及粘片次数时间/秒
 		machinist.setSticking(primeCoefficient.getMachinistOne()*machinist.getCutpartsNumber());
 		//1类模式可走（每CM时间/秒）
-		machinist.setModeOne(NumUtils.division(1/machinist.getBaseFourDate()*machinist.getBeelineNumber()));
+		machinist.setModeOne(NumUtils.division(1/machinist.getBaseFourDateOne()*machinist.getBeelineNumber()));
 		//2类模式可走（每CM时间/秒）
-		machinist.setModeTwo(NumUtils.division(1/machinist.getBaseFourDate()*machinist.getArcNumber()));
+		machinist.setModeTwo(NumUtils.division(1/machinist.getBaseFourDateTwo()*machinist.getArcNumber()));
 		//3类模式可走（每CM时间/秒）
-		machinist.setModeThree(NumUtils.division(1/machinist.getBaseFourDate()*machinist.getBendNumber()));
+		machinist.setModeThree(NumUtils.division(1/machinist.getBaseFourDateThree()*machinist.getBendNumber()));
 		
 		//单一机缝需要时间/秒
 		machinist.setOneSewingTime(machinist.getBackStitch()+machinist.getSticking()+machinist.getModeOne()+machinist.getModeTwo()+machinist.getModeThree());

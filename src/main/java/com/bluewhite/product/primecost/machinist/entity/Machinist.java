@@ -278,17 +278,51 @@ public class Machinist extends BaseEntity<Long> {
 	
 	
 	/**
-	 * 得到basefour中数据
+	 * 得到basefour中数据1
 	 */
 	@Transient
-	private Double baseFourDate;
+	private Double baseFourDateOne;
+	
+	/**
+	 * 得到basefour中数据2
+	 */
+	@Transient
+	private Double baseFourDateTwo;
 	
 	
+	/**
+	 * 得到basefour中数据3
+	 */
+	@Transient
+	private Double baseFourDateThree;
 	
 	
+
 	
 	
-	
+	public Double getBaseFourDateOne() {
+		return baseFourDateOne;
+	}
+
+	public void setBaseFourDateOne(Double baseFourDateOne) {
+		this.baseFourDateOne = baseFourDateOne;
+	}
+
+	public Double getBaseFourDateTwo() {
+		return baseFourDateTwo;
+	}
+
+	public void setBaseFourDateTwo(Double baseFourDateTwo) {
+		this.baseFourDateTwo = baseFourDateTwo;
+	}
+
+	public Double getBaseFourDateThree() {
+		return baseFourDateThree;
+	}
+
+	public void setBaseFourDateThree(Double baseFourDateThree) {
+		this.baseFourDateThree = baseFourDateThree;
+	}
 
 	public Double getSumPriceDownRemark() {
 		return sumPriceDownRemark;
@@ -354,13 +388,7 @@ public class Machinist extends BaseEntity<Long> {
 		this.bendNumber = bendNumber;
 	}
 
-	public Double getBaseFourDate() {
-		return baseFourDate;
-	}
 
-	public void setBaseFourDate(Double baseFourDate) {
-		this.baseFourDate = baseFourDate;
-	}
 
 	public Integer getBackStitchCount() {
 		return backStitchCount;
