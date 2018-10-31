@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -24,7 +25,7 @@ import com.bluewhite.product.primecost.embroidery.entity.Embroidery;
 import com.bluewhite.product.primecost.pack.entity.Pack;
 import com.bluewhite.product.primecost.pack.service.PackService;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
-
+@Controller
 public class PackAction {
 	
 	
