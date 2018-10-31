@@ -268,7 +268,7 @@
 				  var index;
 				    var html = '';
 				    $.ajax({
-					      url:"${ctx}/product/getMachinist",
+					      url:"${ctx}/product/getEmbroidery",
 					      data:data,
 					      type:"GET",
 					      beforeSend:function(){
@@ -284,7 +284,7 @@
 			      					o.costPrice=""
 			      				 }
 			      				html+='<tr><td class="text-center reste"><label> <input type="checkbox" class="ace checkboxId" data-productid='+o.productId+' value="'+o.id+'"/><span class="lbl"></span></label></td>'
-			      				 +'<td  class="text-center edit name"  style="padding: 2px 0px 2px 4px;"><input type="text" value="'+o.machinistName+'" style="border: none;width:120px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  machinistName" /></td>'
+			      				 +'<td  class="text-center edit name tailorName"  >'+tailorName+'</td>'
 			   					 +'<td class="text-center edit selectid hidden">'+o.id+'</td>'
 			   					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;"  class="text-center materiel" /></td>'
 			   					 +'<td class="text-center edit selectCompany" style="padding: 2px 0px 2px 0px;"></td>'
@@ -409,7 +409,7 @@
 			  this.mater=function(){
 					
 				  var data = {
-							productId:"6956",
+							productId:"6956",//传产品id
 						}
 						var index;
 					    var html = '';
@@ -420,10 +420,10 @@
 						      type:"GET",
 				      		  success: function (result) {
 				      			 $(result.data).each(function(i,o){
-				      				html +='<option value="'+o.id+'">'+o.name+'</option>'
+				      				html +='<option value="'+o.id+'">'+o.tailorName+'</option>'
 				      			}); 
 						       htmlto='<select class="text-center form-control selecttailorType2" ><option value="">请选择</option>'+html+'</select>'
-				      		  $(".needlesize").html(htmlto)
+				      		  $(".embroideryName").html(htmlto)
 				      		  //改变事件
 				      		  $(".selecttailorType2").each(function(i,o){
 				      				var id=	$(o).parent().data("needlesize");
@@ -431,18 +431,17 @@
 								})
 								$(".selecttailorType2").change(function(i,o){
 				      				var that=$(this);
-				      				var id=$(this).parent().parent().find(".needlesize").data('id');
-				      				var productId=$(this).parent().parent().find(".needlesize").data('productid');
+				      				var tailorId=$(this).parent().parent().find(".selecttailorType2").val();
+				      				var embroideryName=$(this).parent().parent().find(".selecttailorType2 option:selected").text();
 				      				var dataeee={
-				      						id:id,
-				      						productId:productId,
-				      						needlesize:$(this).parent().parent().find(".selecttailorType2").val(),
-				      						wiresize:$(this).parent().parent().find(".selecttailorType3").val(),
-				      						needlespur:$(this).parent().parent().find(".selecttailorType4").val(),
+				      						id:that.parent().parent().find('.selectid').text(),
+				      						embroideryName:embroideryName,
+				      						tailorId:tailorId,
+				      						productId: self.getCache(),
 				      				}
 				      				var index;
 				      				$.ajax({
-									      url:"${ctx}/product/addMachinist",
+									      url:"${ctx}/product/addEmbroidery",
 									      data:dataeee,
 									      type:"POST",
 									      beforeSend:function(){
@@ -453,8 +452,10 @@
 											success:function(result){
 												if(0==result.code){
 												layer.close(index);
+												var id=result.data.id
+												that.parent().parent().find('.selectid').text(id);
 												}else{
-													layer.msg("添加失败！", {icon: 2});
+													layer.msg(result.message, {icon: 2});
 													layer.close(index);
 												}
 											},error:function(){
@@ -489,6 +490,7 @@
 				var html="";
 				$('#addCutting').on('click',function(){
 					 html='<tr><td  class="text-center"></td><td  class="text-center edit embroideryName"></td>'
+					 +'<td class="text-center edit selectid hidden"></td>'
 					 +'<td class="text-center edit " ></td>'
 					 +'<td class="text-center edit " ></td>'
 					 +'<td class="text-center edit " ></td>'
@@ -503,6 +505,53 @@
 					$("#tablecontent").prepend(html);
 					self.mater();
 				})
+				
+				//提示产品名
+				$("#productName").typeahead({
+					//ajax 拿way数据
+					source : function(query, process) {
+							return $.ajax({
+								url : '${ctx}/getProductPages',
+								type : 'GET',
+								data : {
+									name:query,
+								},
+								
+								success : function(result) {
+									//转换成 json集合
+									 var resultList = result.data.rows.map(function (item) {
+										 	//转换成 json对象
+					                        var aItem = {name: item.name, id:item.id, number:item.primeCost==null ? "" : item.primeCost.number}
+					                        //处理 json对象为字符串
+					                        return JSON.stringify(aItem);
+					                    });
+									//提示框返回数据
+									 return process(resultList);
+								},
+							})
+							//提示框显示
+						}, highlighter: function (item) {
+						    //转出成json对象
+							 var item = JSON.parse(item);
+							return item.name+"-"+item.id
+							//按条件匹配输出
+		                }, matcher: function (item) {
+		                	//转出成json对象
+					        var item = JSON.parse(item);
+					        self.setCache(item.id)
+					        $('#number').val(item.number)
+					    	return item.name
+					    },
+						//item是选中的数据
+						updater:function(item){
+							//转出成json对象
+							var item = JSON.parse(item);
+							self.setCache(item.id)
+							 $('#number').val(item.number)
+								return item.name
+						},
+						
+					});
 			}
    	}
    			var login = new Login();
