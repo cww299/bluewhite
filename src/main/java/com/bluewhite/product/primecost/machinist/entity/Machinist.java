@@ -280,20 +280,20 @@ public class Machinist extends BaseEntity<Long> {
 	/**
 	 * 得到basefour中数据1
 	 */
-	@Transient
+	@Column(name = "base_four_date_one")
 	private Double baseFourDateOne;
 	
 	/**
 	 * 得到basefour中数据2
 	 */
-	@Transient
+	@Column(name = "base_four_date_two")
 	private Double baseFourDateTwo;
 	
 	
 	/**
 	 * 得到basefour中数据3
 	 */
-	@Transient
+	@Column(name = "base_four_date_three")
 	private Double baseFourDateThree;
 	
 	
