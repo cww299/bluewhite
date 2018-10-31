@@ -285,6 +285,11 @@ public class BaseOneAction {
 	@ResponseBody
 	public CommonResponse getBaseFourDate(HttpServletRequest request,Long id,Integer type) {
 		CommonResponse cr = new CommonResponse();
+		if(id==null || type==null){
+			cr.setData("");
+			cr.setMessage("无数据");
+			return cr;
+		}
 		BaseFour baseFour = baseFourDao.findOne(id);
 		Double baseFourDate = 0.0;
 		switch (type) {
