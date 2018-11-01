@@ -51,12 +51,14 @@ public class NeedleworkServiceImpl extends BaseServiceImpl<Needlework, Long> imp
 		// 工价/单只（含快手)
 		needlework.setLabourCost(needlework.getHelpWorkPrice() * needlework.getSingleQuickTime());
 		// 设备折旧和房水电费
-		needlework.setEquipmentPrice(needlework.getHelpWork().equals("冲棉技工")
-				? (primeCoefficient.getDepreciation() + primeCoefficient.getLaserTubePriceSecond()
-						+ primeCoefficient.getMaintenanceChargeSecond() + primeCoefficient.getPerSecondPrice())
-				: (primeCoefficient.getDepreciation() + primeCoefficient.getLaserTubePriceSecond()
-						+ primeCoefficient.getMaintenanceChargeSecond() + primeCoefficient.getPerSecondPriceTwo())
-						* needlework.getSingleQuickTime());
+		if(needlework.getHelpWork()!=null){
+			needlework.setEquipmentPrice(needlework.getHelpWork().equals("冲棉技工")
+					? (primeCoefficient.getDepreciation() + primeCoefficient.getLaserTubePriceSecond()
+					+ primeCoefficient.getMaintenanceChargeSecond() + primeCoefficient.getPerSecondPrice())
+							: (primeCoefficient.getDepreciation() + primeCoefficient.getLaserTubePriceSecond()
+							+ primeCoefficient.getMaintenanceChargeSecond() + primeCoefficient.getPerSecondPriceTwo())
+							* needlework.getSingleQuickTime());
+		}
 		// 管理人员费用
 		needlework.setAdministrativeAtaff(primeCoefficient.getPerSecondManage()
 				* needlework.getSingleQuickTime() );

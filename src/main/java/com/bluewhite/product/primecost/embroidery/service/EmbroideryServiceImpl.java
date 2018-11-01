@@ -48,8 +48,8 @@ public class EmbroideryServiceImpl extends BaseServiceImpl<Embroidery, Long> imp
 
 		PrimeCoefficient primeCoefficient = primeCoefficientDao.findByType("embroidery");
 		// 单片机走时间
-		embroidery.setSinglechipApplique(NumUtils.division(NumUtils.round(
-				(primeCoefficient.getEmbroideryTwo() / 1000) * embroidery.getNeedleNumber() / embroidery.getFew(), 1)));
+		embroidery.setSinglechipApplique(NumUtils.round(
+				NumUtils.division((primeCoefficient.getEmbroideryTwo() / 1000) * embroidery.getNeedleNumber() / embroidery.getFew()), 1));
 		// 铺布或裁片秀贴布和上绷子时间
 		embroidery.setTime(NumUtils.division(embroidery.getCloth() == null ? primeCoefficient.getEmbroideryFour()
 				: primeCoefficient.getEmbroideryThree() / embroidery.getEmbroiderySlice()));
@@ -125,7 +125,9 @@ public class EmbroideryServiceImpl extends BaseServiceImpl<Embroidery, Long> imp
 		cutPartsList.stream().filter(CutParts -> CutParts.getTailorId() == tailorList.get(0).getId())
 				.collect(Collectors.toList());
 		double zhengbu = cutPartsList.get(0).getBatchMaterialPrice();
-		embroidery.setPriceDown(embroidery.getEmbroideryMode().equals("整布绣") ? zhengbu : caipian);
+		if(!StringUtils.isEmpty(embroidery.getEmbroideryMode())){
+			embroidery.setPriceDown(embroidery.getEmbroideryMode().equals("整布绣") ? zhengbu : caipian);
+		}
 		embroidery.setPriceDownRemark(embroidery.getPriceDown() + embroidery.getAllCostPrice());
 
 		// 同时更新裁剪页面

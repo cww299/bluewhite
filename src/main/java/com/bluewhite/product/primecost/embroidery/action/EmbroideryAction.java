@@ -64,7 +64,7 @@ public class EmbroideryAction {
 				BeanCopyUtils.copyNullProperties(oldEmbroidery,embroidery);
 				embroidery.setCreatedAt(oldEmbroidery.getCreatedAt());
 			}
-			embroideryService.saveEmbroidery(embroidery);
+			cr.setData(embroideryService.saveEmbroidery(embroidery));
 			cr.setMessage("添加成功");
 		}
 		return cr;

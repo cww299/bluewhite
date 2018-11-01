@@ -64,7 +64,7 @@ private final static Log log = Log.getLog(NeedleworkAction.class);
 				BeanCopyUtils.copyNullProperties(oldNeedlework,needlework);
 				needlework.setCreatedAt(oldNeedlework.getCreatedAt());
 			}
-			needleworkService.saveNeedlework(needlework);
+			cr.setData(needleworkService.saveNeedlework(needlework));
 			cr.setMessage("添加成功");
 		}
 		return cr;

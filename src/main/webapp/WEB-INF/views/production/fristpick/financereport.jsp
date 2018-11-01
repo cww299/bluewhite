@@ -315,7 +315,7 @@
                             </div>
 </div>
 <!--隐藏框 已完成的批次结束  -->
-
+</div>
 
     </section>
     
@@ -692,7 +692,6 @@
 								var a= $(this).text();
 								var b= $(this).next().find('.sumva').val();
 								var d= $(this).next().next().find('.sumvatw').val();
-								console.log(d)
 								 c={"name":a,"value":b,"price":d};
 								 arr.push(c);
 							  })
