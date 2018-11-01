@@ -25,9 +25,11 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.embroidery.entity.Embroidery;
 import com.bluewhite.product.primecost.embroidery.service.EmbroideryService;
 import com.bluewhite.product.primecost.machinist.entity.Machinist;
+import com.bluewhite.product.primecost.needlework.entity.Needlework;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
 @Controller
@@ -82,7 +84,12 @@ public class EmbroideryAction {
 	@ResponseBody
 	public CommonResponse getEmbroidery(HttpServletRequest request,PageParameter page,Embroidery embroidery) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(embroideryService.findPages(embroidery,page));
+		PageResult<Embroidery>  embroideryList= new PageResult<>(); 
+		if(embroidery.getProductId()!=null){
+			embroideryList = embroideryService.findPages(embroidery,page);
+		
+		}
+		cr.setData(embroideryList);
 		cr.setMessage("查询成功");
 		return cr;
 	}

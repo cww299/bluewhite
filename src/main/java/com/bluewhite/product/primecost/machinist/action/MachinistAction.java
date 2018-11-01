@@ -26,9 +26,11 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.machinist.entity.Machinist;
 import com.bluewhite.product.primecost.machinist.service.MachinistService;
+import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
 
@@ -84,7 +86,12 @@ public class MachinistAction {
 	@ResponseBody
 	public CommonResponse getMachinist(HttpServletRequest request,PageParameter page,Machinist machinist) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(machinistService.findPages(machinist,page));
+		PageResult<Machinist>  machinistList= new PageResult<>(); 
+		if(machinist.getProductId()!=null){
+			machinistList = machinistService.findPages(machinist,page);
+		
+		}
+		cr.setData(machinistList);
 		cr.setMessage("查询成功");
 		return cr;
 	}

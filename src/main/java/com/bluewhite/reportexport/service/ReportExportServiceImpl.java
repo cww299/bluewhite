@@ -302,7 +302,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 	public int importexcelBaseOneTimeExcel(List<BaseOneTime> excelBaseOneTime) {
 		int count = 0;
 		BaseOne baseOne = new BaseOne();
-		baseOne.setName("绿编织袋90*110");
+		baseOne.setName("2楼送棉及叉车卸货");
 		baseOne.setType("endocyst");
 		baseOne = baseOneDao.save(baseOne);
 		for(BaseOneTime bot : excelBaseOneTime){

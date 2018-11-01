@@ -22,6 +22,7 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
 
@@ -115,8 +116,12 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 	@RequestMapping(value = "/product/getCutParts", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse getCutParts(HttpServletRequest request,PageParameter page,CutParts cutParts) {
-		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(cutPartsService.findPages(cutParts,page))
-				.toJSON());
+		CommonResponse cr = new CommonResponse();
+		PageResult<CutParts>  cutPartsList= new PageResult<>(); 
+		if(cutParts.getProductId()!=null){
+			cutPartsList = cutPartsService.findPages(cutParts,page);
+		}
+		cr.setData(cutPartsList);
 		cr.setMessage("查询成功");
 		return cr;
 	}
