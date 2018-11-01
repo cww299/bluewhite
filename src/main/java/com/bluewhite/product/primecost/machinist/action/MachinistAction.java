@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -88,6 +89,8 @@ public class MachinistAction {
 		CommonResponse cr = new CommonResponse();
 		PageResult<Machinist>  machinistList= new PageResult<>(); 
 		if(machinist.getProductId()!=null){
+			HttpSession session = request.getSession();
+			session.setAttribute("productId",machinist.getProductId());
 			machinistList = machinistService.findPages(machinist,page);
 		
 		}

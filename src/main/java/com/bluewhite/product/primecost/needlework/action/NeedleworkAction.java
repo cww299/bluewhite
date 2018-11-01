@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -85,6 +86,8 @@ private final static Log log = Log.getLog(NeedleworkAction.class);
 		CommonResponse cr = new CommonResponse();
 		PageResult<Needlework>  needleworkList= new PageResult<>(); 
 		if(needlework.getProductId()!=null){
+			HttpSession session = request.getSession();
+			session.setAttribute("productId",needlework.getProductId());
 			needleworkList = needleworkService.findPages(needlework,page);
 		
 		}
@@ -128,7 +131,7 @@ private final static Log log = Log.getLog(NeedleworkAction.class);
 	 */
 	@RequestMapping(value = "/product/getOverStock", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getNeedlework(HttpServletRequest request,String type,Long productId) {
+	public CommonResponse getOverStock(HttpServletRequest request,String type,Long productId) {
 		CommonResponse cr = new CommonResponse();
 		Long id = null  ;
 		if(type.equals("machinist")){

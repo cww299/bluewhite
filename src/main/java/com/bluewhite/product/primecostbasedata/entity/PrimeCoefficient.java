@@ -112,13 +112,13 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 	private Double workTime;
 	
 	/**
-	 *激光管费用(刀模费用)
+	 *激光管费用(刀模费用,电烫板费用,刀片费用，小零件费用)
 	 */
 	@Column(name = "laser_tube_price")
 	private Double laserTubePrice;
 	
 	/**
-	 *每秒激光管费用
+	 *每秒激光管费用(每秒刀模费用,每秒电烫费用,每秒刀片费用，每秒小零件费用)
 	 */
 	@Column(name = "laser_tube_price_second")
 	private Double laserTubePriceSecond;
@@ -160,22 +160,24 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 	private Double omnHorWater;
 	
 	/**
+	 *每小时耗房租/元
+	 */
+	@Column(name = "omn_hor_house")
+	private Double omnHorHouse;
+	
+	/**
 	 *每秒耗3费
 	 */
 	@Column(name = "per_second_price")
 	private Double perSecondPrice;
+	
 	
 	/**
 	 *每秒耗3费(针工页面)
 	 */
 	@Column(name = "per_second_price_two")
 	private Double perSecondPriceTwo;
-	
-	/**
-	 *每小时耗房租/元
-	 */
-	@Column(name = "omn_hor_house")
-	private Double omnHorHouse;
+
 	
 	/**
 	 *每小时站机工价
@@ -183,25 +185,25 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 	@Column(name = "omn_hor_machinist")
 	private Double omnHorMachinist;
 	
-	
-	/**
-	 *每小时辅助工价
-	 */
-	@Column(name = "omn_hor_auxiliary")
-	private Double omnHorAuxiliary;
-	
-
 	/**
 	 *每秒工价
 	 */
 	@Column(name = "per_second_machinist")
 	private Double perSecondMachinist;
 	
+	
 	/**
-	 *每秒工价
+	 *每小时辅助工价（电烫，机缝,绣花）
+	 */
+	@Column(name = "omn_hor_auxiliary")
+	private Double omnHorAuxiliary;
+	
+	/**
+	 *每秒工价（电烫，机缝，绣花）
 	 */
 	@Column(name = "per_second_machinist_two")
 	private Double perSecondMachinistTwo;
+	
 	
 	/**
 	 *制版分配任务管理人员工资
@@ -447,11 +449,121 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 	@Column(name = "embroidery_fourteen")
 	private Double embroideryFourteen;
 
+	/****针工*****/
+	/**
+	 *	设定同时参与冲棉人员数量
+	 */
+	@Column(name = "needlework_one")
+	private Double needleworkOne;
+	
+	/**
+	 *	冲棉间每小时耗电/元
+	 */
+	@Column(name = "needlework_two")
+	private Double needleworkTwo;
+	
+	/**
+	 *	冲棉间每小时耗水/元
+	 */
+	@Column(name = "needlework_three")
+	private Double needleworkThree;
+	
+	/**
+	 *	冲棉间每小时耗房租/元
+	 */
+	@Column(name = "needlework_four")
+	private Double needleworkFour;
+	
+	/**
+	 *	每小时高端针工工价（面部表情，绣鼻子等）
+	 */
+	@Column(name = "needlework_five")
+	private Double needleworkFive;
+	
+	/**
+	 *	每小时一般针工工价（普通工序）
+	 */
+	@Column(name = "needlework_six")
+	private Double needleworkSix;
+	
+	/**
+	 *	(每小时高端针工工价（面部表情，绣鼻子等）)每秒工价（1等技术工）
+	 */
+	@Column(name = "needlework_seven")
+	private Double needleworkSeven;
+	
+	/**
+	 *	(每小时一般针工工价（普通工序）)每秒工价（2等技术工）
+	 */
+	@Column(name = "needlework_eight")
+	private Double needleworkEight;
+	
 	
 
 	
-	
-	
+	public Double getNeedleworkFive() {
+		return needleworkFive;
+	}
+
+	public void setNeedleworkFive(Double needleworkFive) {
+		this.needleworkFive = needleworkFive;
+	}
+
+	public Double getNeedleworkSix() {
+		return needleworkSix;
+	}
+
+	public void setNeedleworkSix(Double needleworkSix) {
+		this.needleworkSix = needleworkSix;
+	}
+
+	public Double getNeedleworkSeven() {
+		return needleworkSeven;
+	}
+
+	public void setNeedleworkSeven(Double needleworkSeven) {
+		this.needleworkSeven = needleworkSeven;
+	}
+
+	public Double getNeedleworkEight() {
+		return needleworkEight;
+	}
+
+	public void setNeedleworkEight(Double needleworkEight) {
+		this.needleworkEight = needleworkEight;
+	}
+
+	public Double getNeedleworkOne() {
+		return needleworkOne;
+	}
+
+	public void setNeedleworkOne(Double needleworkOne) {
+		this.needleworkOne = needleworkOne;
+	}
+
+	public Double getNeedleworkTwo() {
+		return needleworkTwo;
+	}
+
+	public void setNeedleworkTwo(Double needleworkTwo) {
+		this.needleworkTwo = needleworkTwo;
+	}
+
+	public Double getNeedleworkThree() {
+		return needleworkThree;
+	}
+
+	public void setNeedleworkThree(Double needleworkThree) {
+		this.needleworkThree = needleworkThree;
+	}
+
+	public Double getNeedleworkFour() {
+		return needleworkFour;
+	}
+
+	public void setNeedleworkFour(Double needleworkFour) {
+		this.needleworkFour = needleworkFour;
+	}
 
 	public Double getPerSecondPriceTwo() {
 		return perSecondPriceTwo;

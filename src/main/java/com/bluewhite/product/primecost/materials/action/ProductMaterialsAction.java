@@ -3,6 +3,7 @@ package com.bluewhite.product.primecost.materials.action;
 import java.text.SimpleDateFormat;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -119,6 +120,8 @@ public class ProductMaterialsAction {
 		CommonResponse cr = new CommonResponse();
 		PageResult<ProductMaterials>  productMaterialsList= new PageResult<>(); 
 		if(productMaterials.getProductId()!=null){
+			HttpSession session = request.getSession();
+			session.setAttribute("productId",productMaterials.getProductId());
 			productMaterialsList = productMaterialsService.findPages(productMaterials,page);
 		
 		}

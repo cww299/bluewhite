@@ -127,7 +127,13 @@ public class TailorAction {
 	@RequestMapping(value = "/product/getOrdinaryLaser", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse getOrdinaryLaser(HttpServletRequest request,PageParameter page,OrdinaryLaser ordinaryLaser) {
-		CommonResponse cr = new CommonResponse(ordinaryLaserService.findPages(ordinaryLaser,page));
+		CommonResponse cr = new CommonResponse();
+		PageResult<OrdinaryLaser> ordinaryLaserList= new PageResult<>(); 
+		if(ordinaryLaser.getProductId()!=null){
+			ordinaryLaserList = ordinaryLaserService.findPages(ordinaryLaser,page);
+		
+		}
+		cr.setData(ordinaryLaserList);
 		cr.setMessage("查询成功");
 		return cr;
 	}

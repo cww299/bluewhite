@@ -3,6 +3,7 @@ package com.bluewhite.product.primecost.pack.action;
 import java.text.SimpleDateFormat;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -21,9 +22,11 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.embroidery.entity.Embroidery;
 import com.bluewhite.product.primecost.pack.entity.Pack;
 import com.bluewhite.product.primecost.pack.service.PackService;
+import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
 @Controller
 public class PackAction {
@@ -73,7 +76,14 @@ private final static Log log = Log.getLog(PackAction.class);
 	@ResponseBody
 	public CommonResponse getPack(HttpServletRequest request,PageParameter page,Pack pack) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(packService.findPages(pack,page));
+		PageResult<Pack>  packList= new PageResult<>(); 
+		if(pack.getProductId()!=null){
+			HttpSession session = request.getSession();
+			session.setAttribute("productId",pack.getProductId());
+			packList = packService.findPages(pack,page);
+		
+		}
+		cr.setData(packList);
 		cr.setMessage("查询成功");
 		return cr;
 	}
