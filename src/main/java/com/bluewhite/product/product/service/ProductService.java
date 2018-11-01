@@ -25,6 +25,7 @@ public interface ProductService extends BaseCRUDService<Product,Long>{
 	 * @param page
 	 * @return
 	 */
-	public Product getPrimeCost(PrimeCost primeCost);
+	public PrimeCost getPrimeCost(PrimeCost primeCost);
+	
 
 }
