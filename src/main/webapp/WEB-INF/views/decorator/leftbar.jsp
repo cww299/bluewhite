@@ -5,6 +5,8 @@
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 
 <c:set var="productId" value="${sessionScope.productId}"/>
+<c:set var="productNamexx" value="${sessionScope.productName}"/>
+<c:set var="productNumberxx" value="${sessionScope.number}"/>
 <!DOCTYPE html>
 <html class="no-js">
 <head>

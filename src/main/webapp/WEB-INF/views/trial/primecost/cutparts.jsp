@@ -212,6 +212,13 @@
 		  		_num=num;
 		  	}
 		  	var productIdAll="${productId}";
+		  	var productNameAll="${productNamexx}";
+		  	var productNumberAll="${productNumberxx}";
+		  	alert(productNameAll)
+		  	alert(productNumberAll)
+		  	self.setCache(productIdAll)
+		  	$("#productName").val(productNameAll);
+		  	$("#number").val(productNumberAll);
 			 var data={
 						page:1,
 				  		size:13,	
@@ -681,6 +688,8 @@
 				  			page:1,
 				  			size:13,
 				  			productId:self.getCache(),
+				  			primeCostNumber:$('#number').val(),
+				  			name: $('#name').val(),
 				  	}
 		            self.loadPagination(data);
 				});
