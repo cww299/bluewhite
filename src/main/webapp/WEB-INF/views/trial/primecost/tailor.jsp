@@ -54,56 +54,11 @@
                                     </ul>
                                     <div class="tab-content">
                                         <div class="tab-pane active" id="home1">
-                                        <!--查询开始  -->
-          		 <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-8 col-sm-8  col-md-8">
-						<form class="form-search" >
-							<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group"> 
-								<table><tr>
-								<td>员工姓名:</td><td><input type="text" name="name" id="usernameth" placeholder="请输入姓名" class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>开始时间:</td>
-								<td>
-								<input id="startTimeth" placeholder="请输入考勤开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTimeth', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
-								</td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>结束时间:</td>
-								<td>
-								<input id="endTimeth" placeholder="请输入考勤结束时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#endTimeth', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-								</td>
-								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtaskth">
-										查&nbsp找
-									</button>
-								</span>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-danger  btn-sm btn-3d start">
-									一键删除
-									</button>
-								</span>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
             <!-- 查询结束 -->
                                         
                                             <table class="table table-hover" >
                                     <thead>
                                         <tr>
-                                        <th class="text-center">
-											<label> 
-											<input type="checkbox" class="ace checks" /> 
-											<span class="lbl"></span>
-											</label>
-											</th>
                                         	<th class="text-center">裁剪部位</th>
                                         	<th class="text-center">裁剪片数</th>
                                             <th class="text-center">当批片数</th>
@@ -124,34 +79,19 @@
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
-                                    <thead>
-                                        <tr>
-                                       	    <td class="text-center">合计</td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center" ></td>
-                                            <td class="text-center" id="totale"></td>
-                                            <td class="text-center" ></td>
-                                            <td class="text-center" id="totaltw"></td>
-                                            <td class="text-center" ></td>
-                                            <td class="text-center"></td>
-                                            
-                                        </tr>
-                                    </thead>
                                 </table>
                                         </div>
                      <!-- B工资流水开始 -->
             <div class="tab-pane" id="profile1">
                       <!--查询开始  -->
           		 <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-10 col-sm-10  col-md-10">
+					<div class="col-xs-8 col-sm-8  col-md-8">
 						<form class="form-search" >
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
-								<table><tr><td>批次:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
-								</tr></table> 
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d navbar-right searchtask">
 										查找
 										<i class="icon-search icon-on-right bigger-110"></i>
 									</button>
@@ -197,10 +137,8 @@
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
-								<table><tr><td>工序:</td><td><input type="text" name="number" id="numbertw" placeholder="请输入工序名" class="form-control search-query number" /></td>
-								</tr></table> 
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask2">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d navbar-right searchtask2">
 										查找
 										<i class="icon-search icon-on-right bigger-110"></i>
 									</button>
@@ -248,10 +186,9 @@
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
-								<table><tr><td>工序:</td><td><input type="text" name="number" id="numbertw" placeholder="请输入工序名" class="form-control search-query number" /></td>
-								</tr></table> 
+								
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask3">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d navbar-right searchtask3">
 										查找
 										<i class="icon-search icon-on-right bigger-110"></i>
 									</button>
@@ -297,10 +234,9 @@
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
-								<table><tr><td>工序:</td><td><input type="text" name="number" id="numbertw" placeholder="请输入工序名" class="form-control search-query number" /></td>
-								</tr></table> 
+								
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask4">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d navbar-right searchtask4">
 										查找
 										<i class="icon-search icon-on-right bigger-110"></i>
 									</button>
@@ -346,10 +282,8 @@
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
-								<table><tr><td>工序:</td><td><input type="text" name="number" id="numbertw" placeholder="请输入工序名" class="form-control search-query number" /></td>
-								</tr></table> 
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask3">
+									<button type="button" class="btn btn-info btn-square navbar-right btn-sm btn-3d searchtask3">
 										查找
 										<i class="icon-search icon-on-right bigger-110"></i>
 									</button>
@@ -395,10 +329,8 @@
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
-								<table><tr><td>工序:</td><td><input type="text" name="number" id="numbertw" placeholder="请输入工序名" class="form-control search-query number" /></td>
-								</tr></table> 
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask5">
+									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask5">
 										查找
 										<i class="icon-search icon-on-right bigger-110"></i>
 									</button>
@@ -444,10 +376,8 @@
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
-								<table><tr><td>工序:</td><td><input type="text" name="number" id="numbertw" placeholder="请输入工序名" class="form-control search-query number" /></td>
-								</tr></table> 
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask6">
+									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask6">
 										查找
 										<i class="icon-search icon-on-right bigger-110"></i>
 									</button>
@@ -1081,65 +1011,48 @@
 		  	this.setCount = function(count){
 		  		_count=count;
 		  	}
-			  
-			 var myDate = new Date(new Date().getTime() - 86400000);
-				//获取当前年
-				var year=myDate.getFullYear();
-				//获取当前月
-				var month=myDate.getMonth()+1;
-				//获取当前日
-				var date=myDate.getDate(); 
-				var h=myDate.getHours();       //获取当前小时数(0-23)
-				var m=myDate.getMinutes();     //获取当前分钟数(0-59)
-				var s=myDate.getSeconds(); 
-				var day = new Date(year,month,0);  
-				var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
-				var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
-				$('#startTime').val(firstdate);
-				$('#endTime').val(lastdate);
-				$('#startTimetw').val(firstdate);
-				$('#endTimetw').val(lastdate);
-				$('#startTimeth').val(firstdate);
-				$('#endTimeth').val(lastdate);
+		  	var productIdAll="${productId}";
+		  	var productNameAll="${productNamexx}";
+		  	var productNumberAll="${productNumberxx}";
 				var data={
 						page:1,
 				  		size:100,	
-				  		productId:"",
+				  		productId:productIdAll,
 				}
 				var data2={
 						page:1,
 				  		size:100,	
-				  		productId:"",
+				  		productId:productIdAll,
 				  		tailorTypeId:71,
 				}
 				var data3={
 						page:1,
 				  		size:100,	
-				  		productId:"",
+				  		productId:productIdAll,
 				  		tailorTypeId:72,
 				}
 				var data4={
 						page:1,
 				  		size:100,	
-				  		productId:"",
+				  		productId:productIdAll,
 				  		tailorTypeId:75,
 				}
 				var data5={
 						page:1,
 				  		size:100,	
-				  		productId:"",
+				  		productId:productIdAll,
 				  		tailorTypeId:73,
 				}
 				var data6={
 						page:1,
 				  		size:100,	
-				  		productId:"",
+				  		productId:productIdAll,
 				  		tailorTypeId:76,
 				}
 				var data7={
 						page:1,
 				  		size:100,	
-				  		productId:"",
+				  		productId:productIdAll,
 				  		tailorTypeId:77,
 				}
 			this.init = function(){
@@ -1174,7 +1087,7 @@
 		      				 }else{
 		      					o.costPrice=""
 		      				 }
-		      				 html +='<tr><td class="text-center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
+		      				 html +='<tr>'
 		      				+'<td class="text-center edit ">'+o.tailorName+'</td>'
 		      				+'<td class="text-center edit ">'+o.tailorNumber+'</td>'
 		      				+'<td class="text-center edit ">'+o.bacthTailorNumber+'</td>'
@@ -3348,7 +3261,7 @@
 					var data={
 							page:1,
 					  		size:100,	
-					  		productId:"",
+					  		productId:productIdAll,
 					}
 					self.loadPagination(data);
 				})

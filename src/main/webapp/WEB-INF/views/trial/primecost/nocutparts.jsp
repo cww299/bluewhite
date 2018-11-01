@@ -198,10 +198,16 @@
 		  	this.setNum = function(num){
 		  		_num=num;
 		  	}
+		  	var productIdAll="${productId}";
+		  	var productNameAll="${productNamexx}";
+		  	var productNumberAll="${productNumberxx}";
+		  	self.setCache(productIdAll)
+		  	$("#productName").val(productNameAll);
+		  	$("#number").val(productNumberAll);
 			 var data={
 						page:1,
 				  		size:13,	
-				  		productId:"",
+				  		productId:productIdAll,
 				} 
 			this.init = function(){
 				

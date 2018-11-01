@@ -214,8 +214,6 @@
 		  	var productIdAll="${productId}";
 		  	var productNameAll="${productNamexx}";
 		  	var productNumberAll="${productNumberxx}";
-		  	alert(productNameAll)
-		  	alert(productNumberAll)
 		  	self.setCache(productIdAll)
 		  	$("#productName").val(productNameAll);
 		  	$("#number").val(productNumberAll);
