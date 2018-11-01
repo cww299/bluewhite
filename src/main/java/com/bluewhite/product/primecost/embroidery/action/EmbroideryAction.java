@@ -83,12 +83,14 @@ public class EmbroideryAction {
 	 */
 	@RequestMapping(value = "/product/getEmbroidery", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getEmbroidery(HttpServletRequest request,PageParameter page,Embroidery embroidery) {
+	public CommonResponse getEmbroidery(HttpServletRequest request,PageParameter page,Embroidery embroidery,String productName) {
 		CommonResponse cr = new CommonResponse();
 		PageResult<Embroidery>  embroideryList= new PageResult<>(); 
 		if(embroidery.getProductId()!=null){
 			HttpSession session = request.getSession();
 			session.setAttribute("productId",embroidery.getProductId());
+			session.setAttribute("number", embroidery.getNumber());
+			session.setAttribute("productName", productName);
 			embroideryList = embroideryService.findPages(embroidery,page);
 		
 		}

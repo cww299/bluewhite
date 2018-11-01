@@ -85,14 +85,15 @@ public class MachinistAction {
 	 */
 	@RequestMapping(value = "/product/getMachinist", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getMachinist(HttpServletRequest request,PageParameter page,Machinist machinist) {
+	public CommonResponse getMachinist(HttpServletRequest request,PageParameter page,Machinist machinist,String productName) {
 		CommonResponse cr = new CommonResponse();
 		PageResult<Machinist>  machinistList= new PageResult<>(); 
 		if(machinist.getProductId()!=null){
 			HttpSession session = request.getSession();
 			session.setAttribute("productId",machinist.getProductId());
+			session.setAttribute("number", machinist.getNumber());
+			session.setAttribute("productName", productName);
 			machinistList = machinistService.findPages(machinist,page);
-		
 		}
 		cr.setData(machinistList);
 		cr.setMessage("查询成功");

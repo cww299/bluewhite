@@ -74,12 +74,14 @@ private final static Log log = Log.getLog(PackAction.class);
 	 */
 	@RequestMapping(value = "/product/getPack", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getPack(HttpServletRequest request,PageParameter page,Pack pack) {
+	public CommonResponse getPack(HttpServletRequest request,PageParameter page,Pack pack,String productName) {
 		CommonResponse cr = new CommonResponse();
 		PageResult<Pack>  packList= new PageResult<>(); 
 		if(pack.getProductId()!=null){
 			HttpSession session = request.getSession();
 			session.setAttribute("productId",pack.getProductId());
+			session.setAttribute("number", pack.getNumber());
+			session.setAttribute("productName", productName);
 			packList = packService.findPages(pack,page);
 		
 		}

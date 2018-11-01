@@ -116,12 +116,14 @@ public class ProductMaterialsAction {
 	 */
 	@RequestMapping(value = "/product/getProductMaterials", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getProductMaterials(HttpServletRequest request,PageParameter page,ProductMaterials productMaterials) {
+	public CommonResponse getProductMaterials(HttpServletRequest request,PageParameter page,ProductMaterials productMaterials,String productName) {
 		CommonResponse cr = new CommonResponse();
 		PageResult<ProductMaterials>  productMaterialsList= new PageResult<>(); 
 		if(productMaterials.getProductId()!=null){
 			HttpSession session = request.getSession();
 			session.setAttribute("productId",productMaterials.getProductId());
+			session.setAttribute("number", productMaterials.getNumber());
+			session.setAttribute("productName", productName);
 			productMaterialsList = productMaterialsService.findPages(productMaterials,page);
 		
 		}

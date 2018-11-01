@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -112,7 +114,7 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 	    }
 
 	@Override
-	public PrimeCost getPrimeCost(PrimeCost primeCost) {
+	public PrimeCost getPrimeCost(PrimeCost primeCost,HttpServletRequest request) {
 		Product product = productDao.findOne(primeCost.getProductId());
 		if(product.getPrimeCost()!=null){
 			PrimeCost oldPrimeCost = product.getPrimeCost();
@@ -134,7 +136,7 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		
 		//除面料以外的其他物料价格
 		List<ProductMaterials> productMaterialsList = productMaterialsDao.findByProductId(primeCost.getProductId());
-		double batchMaterialPrice1 = productMaterialsList.stream().mapToDouble(ProductMaterials::getBatchMaterialPrice).sum();
+		double batchMaterialPrice1 = productMaterialsList.stream().filter(ProductMaterials->ProductMaterials.getBatchMaterialPrice()!=null).mapToDouble(ProductMaterials::getBatchMaterialPrice).sum();
 		primeCost.setOtherCutPartsPrice(batchMaterialPrice1);
 		primeCost.setOneOtherCutPartsPrice(NumUtils.division((batchMaterialPrice1)/primeCost.getNumber()));
 		double otherCutPartsPriceInvoice = primeCost.getOtherCutPartsPriceInvoice() == 1 ? (primeCost.getOtherCutPartsPriceInvoice()* primeCost.getOneOtherCutPartsPrice()) : 0;
@@ -142,14 +144,14 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		
 		// 裁剪
 		List<Tailor> tailorList = tailorDao.findByProductId(primeCost.getProductId());
-		double allCostPriceTailor = tailorList.stream().mapToDouble(Tailor::getAllCostPrice).sum();
+		double allCostPriceTailor = tailorList.stream().filter(Tailor->Tailor.getAllCostPrice()!=null).mapToDouble(Tailor::getAllCostPrice).sum();
 		primeCost.setCutPrice(allCostPriceTailor);
 		primeCost.setOneCutPrice(NumUtils.division((allCostPriceTailor)/primeCost.getNumber()));
 		double cutPriceInvoice = primeCost.getCutPriceInvoice() == 1 ? (primeCost.getCutPriceInvoice()* primeCost.getOneCutPrice()) : 0;
 
 		// 机工
 		List<Machinist> machinistList = machinistDao.findByProductId(primeCost.getProductId());
-		double allCostPriceMachinist = machinistList.stream().mapToDouble(Machinist::getAllCostPrice).sum();
+		double allCostPriceMachinist = machinistList.stream().filter(Machinist->Machinist.getAllCostPrice()!=null).mapToDouble(Machinist::getAllCostPrice).sum();
 		primeCost.setMachinistPrice(allCostPriceMachinist);
 		primeCost.setOneMachinistPrice(NumUtils.division((allCostPriceMachinist)/primeCost.getNumber()));
 		double machinistPriceInvoice = primeCost.getMachinistPriceInvoice() == 1 ? (primeCost.getMachinistPriceInvoice()* primeCost.getOneMachinistPrice()) : 0;
@@ -157,7 +159,7 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		
 		// 绣花
 		List<Embroidery> embroideryList = embroideryDao.findByProductId(primeCost.getProductId());
-		double allCostPriceEmbroidery = embroideryList.stream().mapToDouble(Embroidery::getAllCostPrice).sum();
+		double allCostPriceEmbroidery = embroideryList.stream().filter(Embroidery->Embroidery.getAllCostPrice()!=null).mapToDouble(Embroidery::getAllCostPrice).sum();
 		primeCost.setEmbroiderPrice(allCostPriceEmbroidery);
 		primeCost.setOneEmbroiderPrice(NumUtils.division((allCostPriceEmbroidery)/primeCost.getNumber()));
 		double embroiderPriceInvoice = primeCost.getEmbroiderPriceInvoice() == 1 ? (primeCost.getEmbroiderPriceInvoice()* primeCost.getOneEmbroiderPrice()) : 0;
@@ -165,7 +167,7 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		
 		// 针工
 		List<Needlework> needleworkList = needleworkDao.findByProductId(primeCost.getProductId());
-		double allCostPriceNeedlework = needleworkList.stream().mapToDouble(Needlework::getAllCostPrice).sum();
+		double allCostPriceNeedlework = needleworkList.stream().filter(Needlework->Needlework.getAllCostPrice()!=null).mapToDouble(Needlework::getAllCostPrice).sum();
 		primeCost.setNeedleworkPrice(allCostPriceNeedlework);
 		primeCost.setOneNeedleworkPrice(NumUtils.division((allCostPriceNeedlework)/primeCost.getNumber()));
 		double needleworkPriceInvoice = primeCost.getNeedleworkPriceInvoice() == 1 ? (primeCost.getNeedleworkPriceInvoice()* primeCost.getOneNeedleworkPrice()) : 0;
@@ -173,7 +175,7 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		
 		// 包装
 		List<Pack> packList = packDao.findByProductId(primeCost.getProductId());
-		double allCostPricePack = packList.stream().mapToDouble(Pack::getAllCostPrice).sum();
+		double allCostPricePack = packList.stream().filter(Pack->Pack.getAllCostPrice()!=null).mapToDouble(Pack::getAllCostPrice).sum();
 		primeCost.setPackPrice(allCostPricePack);
 		primeCost.setOnePackPrice(NumUtils.division((allCostPricePack)/primeCost.getNumber()));
 		double packPriceInvoice = primeCost.getPackPriceInvoice() == 1 ? (primeCost.getPackPriceInvoice()* primeCost.getOnePackPrice()) : 0;
@@ -220,6 +222,10 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		primeCost.setActualCombatRate(NumUtils.division(primeCost.getSurplus()/primeCost.getActualCombat()));
 		product.setPrimeCost(primeCost);
 		productDao.save(product);
+		HttpSession session = request.getSession();
+		session.setAttribute("productId", product.getId());
+		session.setAttribute("number", primeCost.getNumber());
+		session.setAttribute("productName", product.getName());
 		return primeCost;
 	}
 

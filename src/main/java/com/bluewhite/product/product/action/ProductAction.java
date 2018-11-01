@@ -74,11 +74,13 @@ public class ProductAction {
 	 */
 	@RequestMapping(value = "/getProductPages", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getProductPages(HttpServletRequest request,PageParameter page,Product product) {
+	public CommonResponse getProductPages(HttpServletRequest request,PageParameter page,Product product,Integer primeCostNumber) {
 		CommonResponse cr = new CommonResponse();
 		if(product.getId()!=null){
 			HttpSession session = request.getSession();
 			session.setAttribute("productId", product.getId());
+			session.setAttribute("number", primeCostNumber);
+			session.setAttribute("productName", product.getName());
 		}
 		cr.setData(ClearCascadeJSON
 				.get()
@@ -103,7 +105,7 @@ public class ProductAction {
 	@ResponseBody
 	public CommonResponse getPrimeCost(HttpServletRequest request,PrimeCost primeCost) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(productService.getPrimeCost(primeCost));
+		cr.setData(productService.getPrimeCost(primeCost,request));
 		cr.setMessage("查询成功");
 		return cr;
 	}
