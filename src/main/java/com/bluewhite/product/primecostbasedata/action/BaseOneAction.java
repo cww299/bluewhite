@@ -223,6 +223,18 @@ public class BaseOneAction {
 			if(primeCoefficient.getOmnHorAuxiliary()!=null){
 				primeCoefficient.setPerSecondMachinistTwo(primeCoefficient.getOmnHorAuxiliary()/TIME/TIME);
 			}
+			
+			//针工车间
+			if(primeCoefficient.getNeedleworkOne()!=null){
+				//每秒耗3费
+				primeCoefficient.setPerSecondPriceTwo(
+						(primeCoefficient.getNeedleworkTwo()+primeCoefficient.getNeedleworkThree()+primeCoefficient.getNeedleworkFour())
+						/primeCoefficient.getNeedleworkOne()
+						/TIME/TIME);
+				primeCoefficient.setNeedleworkSeven(primeCoefficient.getNeedleworkFive()/TIME/TIME);
+				primeCoefficient.setNeedleworkEight(primeCoefficient.getNeedleworkSix()/TIME/TIME);
+			}
+			
 			//每秒管理费用
 			primeCoefficient.setPerSecondManage(primeCoefficient.getManagePrice()/primeCoefficient.getManageEquipmentNumber()/25/8/TIME/TIME);
 			cr.setData(primeCoefficientDao.save(primeCoefficient));

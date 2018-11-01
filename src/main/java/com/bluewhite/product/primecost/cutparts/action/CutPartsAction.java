@@ -3,6 +3,7 @@ package com.bluewhite.product.primecost.cutparts.action;
 import java.text.SimpleDateFormat;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.bluewhite.common.BeanCopyUtils;
-import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
@@ -34,17 +34,6 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 	@Autowired
 	private CutPartsService cutPartsService;
 	
-	private ClearCascadeJSON clearCascadeJSON;
-
-	{
-		clearCascadeJSON = ClearCascadeJSON
-				.get()
-				.addRetainTerm(CutParts.class,"id","productId","cutPartsName","cutPartsNumber","allPerimeter","perimeter","materielNumber"
-						,"materielName","composite","doubleComposite","complexMaterielNumber","complexMaterielName","oneMaterial","unit"
-						,"scaleMaterial","addMaterial","manualLoss","productCost","productRemark","batchMaterial","batchMaterialPrice"
-						,"complexProductCost","complexBatchMaterial","batchComplexMaterialPrice","batchComplexAddPrice","compositeManualLoss"
-						,"complexProductRemark","unitId");
-	}
 	
 	/**
 	 * cc裁片填写
@@ -119,6 +108,8 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 		CommonResponse cr = new CommonResponse();
 		PageResult<CutParts>  cutPartsList= new PageResult<>(); 
 		if(cutParts.getProductId()!=null){
+			HttpSession session = request.getSession();
+			session.setAttribute("productId",cutParts.getProductId());
 			cutPartsList = cutPartsService.findPages(cutParts,page);
 		}
 		cr.setData(cutPartsList);

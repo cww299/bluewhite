@@ -76,12 +76,10 @@ public class ProductAction {
 	@ResponseBody
 	public CommonResponse getProductPages(HttpServletRequest request,PageParameter page,Product product) {
 		CommonResponse cr = new CommonResponse();
-		
 		if(product.getId()!=null){
 			HttpSession session = request.getSession();
 			session.setAttribute("productId", product.getId());
 		}
-		
 		cr.setData(ClearCascadeJSON
 				.get()
 				.addRetainTerm(Product.class,"id","primeCost","name","number")
