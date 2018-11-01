@@ -50,20 +50,19 @@
 							</div>
 						</div>
 						<div class="row" style="height: 30px; margin: 15px 0 10px">
-							<div class="col-xs-8 col-sm-8  col-md-8">
+							<div class="col-xs-10 col-sm-10  col-md-10">
 								<form class="form-search">
 									<div class="row">
-										<div class="col-xs-8 col-sm-8 col-md-8">
+										<div class="col-xs-10 col-sm-10 col-md-10">
 											<div class="input-group">
 												<table>
 													<tr>
+														<td>产品名:</td><td><input type="text" name="name" id="productName2" placeholder="请输入产品名称" class="form-control search-query name" data-provide="typeahead" autocomplete="off"/ ></td>
+														<td>&nbsp&nbsp&nbsp&nbsp</td>
 														<td>产品编号:</td>
 														<td><input type="text" name="number" id="number"
 															class="form-control search-query number" /></td>
-														<td>&nbsp&nbsp&nbsp&nbsp</td>
-														<td>产品名称:</td>
-														<td><input type="text" name="name" id="name"
-															class="form-control search-query name" /></td>
+													<td>默认数量:</td><td><input type="text" name="number" id="number2" placeholder="请输入默认数量" class="form-control search-query number" /></td>
 													</tr>
 												</table>
 												<span class="input-group-btn">
@@ -496,6 +495,7 @@
 	<script
 		src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
 	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+	<script src="${ctx }/static/js/vendor/typeahead.js"></script>
 	<script>
 		jQuery(function($) {
 			var Login = function() {
@@ -517,7 +517,14 @@
 				this.getIndex = function() {
 					return _index;
 				}
-
+			
+				this.setNum = function(num) {
+					_num = num;
+				}
+				this.getNum = function() {
+					return _num;
+				}
+				
 				var data = {
 					page : 1,
 					size : 13,
@@ -1032,10 +1039,57 @@
 							size: 13,
 							name: $('#name').val(),
 							number: $('#number').val(),
+							id:self.getNum(),
 						}
 						self.loadPagination(data);
 					});
 
+					//提示产品名
+					$("#productName2").typeahead({
+						//ajax 拿way数据
+						source : function(query, process) {
+								return $.ajax({
+									url : '${ctx}/getProductPages',
+									type : 'GET',
+									data : {
+										name:query,
+									},
+									
+									success : function(result) {
+										//转换成 json集合
+										 var resultList = result.data.rows.map(function (item) {
+											 	//转换成 json对象
+						                        var aItem = {name: item.name, id:item.id, number:item.primeCost==null ? "" : item.primeCost.number}
+						                        //处理 json对象为字符串
+						                        return JSON.stringify(aItem);
+						                    });
+										//提示框返回数据
+										 return process(resultList);
+									},
+								})
+								//提示框显示
+							}, highlighter: function (item) {
+							    //转出成json对象
+								 var item = JSON.parse(item);
+								return item.name+"-"+item.id
+								//按条件匹配输出
+			                }, matcher: function (item) {
+			                	//转出成json对象
+						        var item = JSON.parse(item);
+						        self.setNum(item.id)
+						        $('#number2').val(item.number)
+						    	return item.name
+						    },
+							//item是选中的数据
+							updater:function(item){
+								//转出成json对象
+								var item = JSON.parse(item);
+								self.setNum(item.id)
+								 $('#number2').val(item.number)
+									return item.name
+							},
+							
+						});
 					//新增产品
 					$('#addproduct')
 						.on(
