@@ -39,7 +39,7 @@
                                     <ul class="nav nav-tabs col-md-12">
                                         <li class="active col-md-2" style="width: 50%"><a href="#home1" class="home1" data-toggle="tab">内外包装和杂工</a>
                                         </li>
-                                        <li class="col-md-2"style="width: 50%;"><a href="#profile1" class="profile1"  data-toggle="tab">针工时间设定</a>
+                                        <li class="col-md-2"style="width: 50%;"><a href="#profile1" class="profile1"  data-toggle="tab">内外包装和杂工时间设定</a>
                                         </li>
                                     </ul>
                                     <div class="tab-content">
@@ -84,7 +84,7 @@
 			</div>
 		</div>
             <!-- 查询结束 -->
-                                        
+                                        <div style="width:50%;float:left;text-align:center;vertical-align:top">
                                             <table class="table table-hover" >
                                     		<thead>
                                         	<tr>
@@ -94,17 +94,39 @@
 												<span class="lbl"></span>
 												</label>
 												</th>
-                                           		<th class="text-center">请选择一个设定完毕的内外包装（有档位）工序</th>
+                                           		<th class="text-center">请选择一个设定完毕的内外包装sss（有档位）工序</th>
                                         		<th class="text-center">请选择在该工序下的分类</th>
                                             	<th class="text-center">自动跳出设定秒数</th>
                                             	<th class="text-center">手填该包装可装单品数量/只↓</th>
                                             	<th class="text-center">单只产品用时/秒</th>
                                        		 </tr>
                                     		</thead>
-                                    <tbody id="tablecontent">
+                                    		<tbody id="tablecontent">
                                         
-                                    </tbody>
-                                </table>
+                                    		</tbody>
+                                		</table>
+                                		</div >
+                                		<div style="width:50%;float:left;text-align:center;vertical-align:top">
+												<table class="table table-hover" >
+                                    		<thead>
+                                        	<tr>
+                                       		 	<th class="text-center">
+												<label> 
+												<input type="checkbox" class="ace checks2" /> 
+												<span class="lbl"></span>
+												</label>
+												</th>
+                                           		<th class="text-center">请选择一个设定完毕的内外包装      sss（无档位）工序</th>
+                                        		<th class="text-center">自动得到工序的用时/秒</th>
+                                            	<th class="text-center">手填该包装可装单品数量/只↓</th>
+                                            	<th class="text-center">单只产品用时/秒</th>
+                                       		 </tr>
+                                    		</thead>
+                                    		<tbody id="tablecontentt">
+                                        
+                                    		</tbody>
+                                		</table>
+										</div>
                                         </div>
             <div class="tab-pane" id="profile1">
                       <!--查询开始  -->
@@ -133,16 +155,17 @@
                                     <thead>
                                         <tr>
                                         	
-                                            <th class="text-center">针工步骤</th>
-                                            <th class="text-center">对工序大，辅工定性选择↓</th>
-                                            <th class="text-center">该步骤用时</th>
-                                            <th class="text-center">二次手动调整价格（有需要填写）</th>
-                                            <th class="text-center">单工序单只时间</th>
-                                            <th class="text-center">单工序单只放快手时间</th>
-                                            <th class="text-center">工价/单只（含快手)</th>
+                                            <th class="text-center">内外包装工序</th>
+                                            <th class="text-center">工种定性↓</th>
+                                            <th class="text-center">工种定性↓</th>
+                                            <th class="text-center">单只用时/秒</th>
+                                            <th class="text-center">批量用时/秒(含快手）</th>
+                                            <th class="text-center">单只时间（含快手）</th>
+                                            <th class="text-center">该工序有可能用到的物料</th>
                                              <th class="text-center">设备折旧和房水电费</th>
                                             <th class="text-center">管理人员费用</th>
-                                            <th class="text-center">针工工序费用</th>
+                                            <th class="text-center">入成本批量价格</th>
+                                            <th class="text-center">上道压价（整个成品）</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent2">
@@ -227,8 +250,9 @@
 			  this.loadPagination = function(data){
 				  var index;
 				    var html = '';
+				    var html2 = '';
 				    $.ajax({
-					      url:"${ctx}/product/getNeedlework",
+					      url:"${ctx}/product/getPack",
 					      data:data,
 					      type:"GET",
 					      beforeSend:function(){
@@ -238,28 +262,34 @@
 						  }, 
 			      		  success: function (result) {
 			      			 $(result.data.rows).each(function(i,o){
-			      				if(o.costPrice==o.reckoningEmbroideryPrice || o.costPrice==o.reckoningSewingPrice){
-			      					 
-			      				 }else{
-			      					o.costPrice=""
-			      				 }
+			      				if(o.gear==2){
 			      				html+='<tr><td class="text-center reste"><label> <input type="checkbox" class="ace checkboxId" data-productid='+o.productId+' value="'+o.id+'"/><span class="lbl"></span></label></td>'
-			      				 +'<td  class="text-center edit name needleworkName2" data-needlewor2='+o.needleworkName+' >'+o.needleworkName+'</td>'
+			      				 +'<td  class="text-center edit name packName2" data-packname='+o.packName+' ></td>'
 			      				+'<td class="text-center edit selectid3 hidden"  >'+o.productId+'</td>'
-			      				 +'<td class="text-center edit selectid hidden">'+o.id+'</td>'
-			   					 +'<td class="text-center edit classify2">'+o.classify+'</td>'
-			   					 +'<td class="text-center edit times2">'+o.seconds+'</td>'
-			   					 +'<td class="text-center edit selectCompany">'+o.needleworkName+o.classify+'</td>'
-			   					 +'<td class="text-center edit allCostPrice"></td>'
-			   					 +'<td class="text-center edit needleworkPrice">'+(o.needleworkPrice!=null?o.needleworkPrice:"")+'</td>'
-			   					 +'<td class="text-center edit allCostPrice">'+(o.allCostPrice!=null?o.allCostPrice:"")+'</td>'
-			   					 +'<td class="text-center edit priceDown">'+(o.priceDown!=null?o.priceDown:"")+'</td></tr>'
+			      				 +'<td class="text-center edit selectid9 hidden">'+o.id+'</td>'
+			   					 +'<td class="text-center edit classify2">'+o.type+'</td>'
+			   					 +'<td class="text-center edit times2">'+o.time+'</td>'
+			   					+'<td class="text-center edit "><input type="text" value='+o.packNumber+' style="border: none;width:68px; height:30px; background-color: #BFBFBF;" class="text-center  packNumber2" /></td>'
+			   					 +'<td class="text-center edit oneTime2">'+o.oneTime+'</td></tr>'
+			      				}
 			      			}); 
+			      			$(result.data.rows).each(function(i,o){
+			      				if(o.gear==1){
+			      				html2+='<tr><td class="text-center reste"><label> <input type="checkbox" class="ace checkboxIdtw" data-productid='+o.productId+' value="'+o.id+'"/><span class="lbl"></span></label></td>'
+			      				 +'<td  class="text-center edit name packName22" data-packname='+o.packName+' ></td>'
+			      				+'<td class="text-center edit selectid33 hidden"  >'+o.productId+'</td>'
+			      				 +'<td class="text-center edit selectid99 hidden">'+o.id+'</td>'
+			   					 +'<td class="text-center edit times22">'+o.time+'</td>'
+			   					+'<td class="text-center edit "><input type="text" value='+o.packNumber+' style="border: none;width:68px; height:30px; background-color: #BFBFBF;" class="text-center  packNumber22" /></td>'
+			   					 +'<td class="text-center edit oneTime22">'+o.oneTime+'</td></tr>'
+			      				}
+			      			});
 						   	layer.close(index);
 						   	 $("#tablecontent").html(html);
-						   	self.loadEvents()
+						   	$("#tablecontentt").html(html2);
 						   	 self.mater2()
 						   	 self.checkedd()
+						   	 self.checkeddd()
 					      },error:function(){
 								layer.msg("加载失败！", {icon: 2});
 								layer.close(index);
@@ -273,7 +303,7 @@
 					  var index;
 					    var html = '';
 					    $.ajax({
-						      url:"${ctx}/product/getNeedlework",
+						      url:"${ctx}${ctx}/product/getPack",
 						      data:data,
 						      type:"GET",
 						      beforeSend:function(){
@@ -283,19 +313,22 @@
 							  }, 
 				      		  success: function (result) {
 				      			 $(result.data.rows).each(function(i,o){
-				      				html+='<tr>'
-				      				 +'<td  class="text-center edit name tailorName2" data-productid='+o.productId+'>'+o.needleworkName+o.classify+'</td>'
+				      				 
+				      				 html+='<tr>'
+				      				 +'<td  class="text-center edit " data-productid='+o.productId+'>'+o.packName+'</td>'
+				      				+'<td class="text-center edit" data-kindwork='+o.kindWork+'><select class="text-center form-control kindWork"><option value="">请选择</option><option value="0">杂工</option><option value="1">力工</option></select></td>'
 				   					 +'<td class="text-center edit selectid2 hidden"  >'+o.id+'</td>'
-				   					+'<td class="text-center edit selectid5 hidden"  >'+o.productId+'</td>'
-				   					 +'<td class="text-center edit helpWork" data-helpwork='+o.helpWork+'></td>'
-				   					 +'<td class="text-center edit">'+o.seconds+'</td>'
-				   					 +'<td class="text-center edit"><input class="form-control secondaryPrice" data-id="'+o.id+'" value='+(o.secondaryPrice!=null?o.secondaryPrice:"")+'></td>'
-				   					 +'<td class="text-center singleTime">'+parseFloat((o.singleTime).toFixed(5))+'</td>'
-				   					 +'<td class="text-center edit singleQuickTime">'+parseFloat((o.singleQuickTime).toFixed(5))+'</td>'
-				   					 +'<td class="text-center edit labourCost">'+parseFloat((o.labourCost).toFixed(5))+'</td>'
-				   					 +'<td class="text-center edit equipmentPrice">'+parseFloat((o.equipmentPrice).toFixed(5))+'</td>'
-				   					 +'<td class="text-center edit administrativeAtaff">'+parseFloat((o.administrativeAtaff).toFixed(5))+'</td>'
-				   					 +'<td class="text-center edit needleworkPrice">'+parseFloat((o.needleworkPrice).toFixed(5))+'</td></tr>'
+				   					 +'<td class="text-center edit selectid5 hidden"  >'+o.productId+'</td>'
+				   					 +'<td class="text-center edit helpWork" data-helpwork='+o.exteriorInterior+'></td>'
+				   					 +'<td class="text-center oneTime">'+parseFloat((o.oneTime).toFixed(5))+'</td>'
+				   					+'<td class="text-center batchTime">'+parseFloat((o.batchTime).toFixed(5))+'</td>'
+				   					+'<td class="text-center onePackTime">'+parseFloat((o.onePackTime).toFixed(5))+'</td>'
+				   					+'<td class="text-center">'+o.materiel+'</td>'
+				   					+'<td class="text-center packPrice">'+parseFloat((o.packPrice).toFixed(5))+'</td>'
+				   					+'<td class="text-center equipmentPrice">'+parseFloat((o.equipmentPrice).toFixed(5))+'</td>'
+				   					+'<td class="text-center administrativeAtaff">'+parseFloat((o.administrativeAtaff).toFixed(5))+'</td>'
+				   					+'<td class="text-center allCostPrice">'+parseFloat((o.allCostPrice).toFixed(5))+'</td>'
+				   					+'<td class="text-center priceDown">'+parseFloat((o.priceDown).toFixed(5))+'</td></tr>'
 				      			 }); 
 							   	layer.close(index);
 							   	 $("#tablecontent2").html(html); 
@@ -308,8 +341,56 @@
 				  })
 			  }
 			  this.loadEvents2=function(){
+				  $(".kindWork").each(function(i,o){
+						var id=	$(o).parent().data("kindwork");
+						$(o).val(id)
+					})
+				  
+				  $('.kindWork').change(function(){
+					  var that=$(this)
+				  
+					  var date={
+							  id:that.parent().parent().find(".selectid2").text(),
+							  productId:that.parent().parent().find(".selectid5").text(),
+							  kindWork:that.parent().parent().find(".kindWork").val(),
+					  }
+					  var index;
+	      				$.ajax({
+						      url:"${ctx}/product/addPack",
+						      data:date,
+						      type:"POST",
+						      beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								success:function(result){
+									if(0==result.code){
+										$(result.data).each(function(i,o){
+							      			 that.parent().parent().find(".oneTime").text(parseFloat((o.oneTime).toFixed(5)));
+							      			 that.parent().parent().find(".batchTime").text(parseFloat((o.batchTime).toFixed(5)));  
+							      			that.parent().parent().find(".onePackTime").text(parseFloat((o.onePackTime).toFixed(5)));  
+							      			that.parent().parent().find(".packPrice").text(parseFloat((o.packPrice).toFixed(5)));
+							      			that.parent().parent().find(".equipmentPrice").text(parseFloat((o.equipmentPrice).toFixed(5)));
+							      			that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));
+							      			that.parent().parent().find(".allCostPrice").text(parseFloat((o.allCostPrice).toFixed(5)));
+							      			that.parent().parent().find(".priceDown").text(parseFloat((o.priceDown).toFixed(5)));
+							      			 })
+									layer.close(index);
+									}else{
+										layer.msg(result.message, {icon: 2});
+										layer.close(index);
+									}
+								},error:function(){
+									layer.msg("加载失败！", {icon: 2});
+									layer.close(index);
+							  }
+						  });
+				  })
+				  
+				  
 					 var data6 = {
-							type:"helpWork",
+							type:"overstock",
 						}
 						var index;
 						var html6 = '';
@@ -320,7 +401,7 @@
 						type:"GET",
 						success: function (result) {
 						$(result.data).each(function(i,o){
-							html6 +='<option value="'+o.id+'" data-textua='+o.textualTime+'>'+o.name+'</option>'
+							html6 +='<option value="'+o.id+'">'+o.name+'</option>'
 							}); 
 							htmlto6='<select class="text-center form-control selecttailorType8" ><option value="">请选择</option>'+html6+'</select>'
 							 $(".helpWork").html(htmlto6)
@@ -328,22 +409,20 @@
 									      		  //改变事件
 							 $(".selecttailorType8").each(function(i,o){
 								var id=	$(o).parent().data("helpwork");
-								$(o).find("option:selected").text(id)
+								$(o).val(id)
 							})
 									$(".selecttailorType8").change(function(i,o){
 									      				var that=$(this);
 									      				var tailorId=$(this).parent().parent().find(".selecttailorType8").val();
-									      				var helpWorkPrice=$(this).parent().parent().find(".selecttailorType8 option:selected").data('textua');
 									      				var name=$(this).parent().parent().find(".selecttailorType8 option:selected").text();
 									      				var dataeee={
-									      						id:that.parent().parent().find('.selectid2').text(),
-									      						helpWork:name,
-									      						helpWorkPrice:helpWorkPrice,
-									      						productId:that.parent().parent().find('.selectid5').text(),
+									      						 id:that.parent().parent().find(".selectid2").text(),
+																 productId:that.parent().parent().find(".selectid5").text(),
+																 exteriorInterior:tailorId,
 									      				}
 									      				var index;
 									      				 $.ajax({
-														      url:"${ctx}/product/addNeedlework",
+														      url:"${ctx}/product/addPack",
 														      data:dataeee,
 														      type:"POST",
 														      beforeSend:function(){
@@ -354,12 +433,14 @@
 																success:function(result){
 																	if(0==result.code){
 																	$(result.data).each(function(i,o){
-														      			 that.parent().parent().find(".singleTime").text(o.singleTime);
-														      			 that.parent().parent().find(".singleQuickTime").text(parseFloat((o.singleQuickTime).toFixed(5)));  
-														      			that.parent().parent().find(".labourCost").text(parseFloat((o.labourCost).toFixed(5)));  
+														      			 that.parent().parent().find(".oneTime").text(parseFloat((o.oneTime).toFixed(5)));
+														      			 that.parent().parent().find(".batchTime").text(parseFloat((o.batchTime).toFixed(5)));  
+														      			that.parent().parent().find(".onePackTime").text(parseFloat((o.onePackTime).toFixed(5)));  
+														      			that.parent().parent().find(".packPrice").text(parseFloat((o.packPrice).toFixed(5)));
 														      			that.parent().parent().find(".equipmentPrice").text(parseFloat((o.equipmentPrice).toFixed(5)));
 														      			that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));
-														      			that.parent().parent().find(".needleworkPrice").text(parseFloat((o.needleworkPrice).toFixed(5)));
+														      			that.parent().parent().find(".allCostPrice").text(parseFloat((o.allCostPrice).toFixed(5)));
+														      			that.parent().parent().find(".priceDown").text(parseFloat((o.priceDown).toFixed(5)));
 														      			 }); 
 																	layer.close(index);
 																	}else{
@@ -377,46 +458,6 @@
 														layer.close(index);
 												  }
 											  });
-						
-							$(".secondaryPrice").blur(function(){
-								var that=$(this);
-								var dataeee={
-			      						id:that.parent().parent().find('.selectid2').text(),
-			      						productId:that.parent().parent().find('.selectid5').text(),
-			      						secondaryPrice:that.parent().parent().find('.secondaryPrice').val(),
-			      				}
-								var index;
-			      				 $.ajax({
-								      url:"${ctx}/product/addNeedlework",
-								      data:dataeee,
-								      type:"POST",
-								      beforeSend:function(){
-											index = layer.load(1, {
-												  shade: [0.1,'#fff'] //0.1透明度的白色背景
-												});
-										},
-										success:function(result){
-											if(0==result.code){
-											layer.close(index);
-											$(result.data).each(function(i,o){
-								      			 that.parent().parent().find(".singleTime").text(o.singleTime);
-								      			 that.parent().parent().find(".singleQuickTime").text(parseFloat((o.singleQuickTime).toFixed(5)));  
-								      			that.parent().parent().find(".labourCost").text(parseFloat((o.labourCost).toFixed(5)));  
-								      			that.parent().parent().find(".equipmentPrice").text(parseFloat((o.equipmentPrice).toFixed(5)));
-								      			that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));
-								      			that.parent().parent().find(".needleworkPrice").text(parseFloat((o.needleworkPrice).toFixed(5)));
-								      			 });
-											}else{
-												layer.msg(result.message, {icon: 2});
-												layer.close(index);
-											}
-										},error:function(){
-											layer.msg("加载失败！", {icon: 2});
-											layer.close(index);sa
-									  }
-								  }); 
-							})
-												
 			  }
 			  this.loadEvents=function(){
 				 
@@ -444,16 +485,34 @@
 					
 				}
 			  
+			  this.checkeddd=function(){
+					
+					$(".checks2").on('click',function(){
+						
+	                    if($(this).is(':checked')){ 
+				 			$('.checkboxIdtw').each(function(){  
+	                    //此处如果用attr，会出现第三次失效的情况  
+	                     		$(this).prop("checked",true);
+				 			})
+	                    }else{
+	                    	$('.checkboxIdtw').each(function(){ 
+	                    		$(this).prop("checked",false);
+	                    		
+	                    	})
+	                    }
+	                }); 
+					
+				}
 			  this.mater2=function(){
 					
 				  var data = {
-							type:"needlework",//传产品id
+							type:"endocyst",//传产品id
 						}
 						var index;
 					    var html = '';
 					    var htmlto= '';
 					    var htmlto2= '';
-					    var html2 = '';
+					    
 					    $.ajax({
 						      url:"${ctx}/product/getBaseOne",
 						      data:data,
@@ -463,40 +522,42 @@
 				      				html +='<option value="'+o.id+'">'+o.name+'</option>'
 				      			}); 
 						       htmlto='<select class="text-center form-control selecttailorType2" ><option value="">请选择</option>'+html+'</select>'
-						       $(".needleworkName2").html(htmlto)	
+						       $(".packName2").html(htmlto)	
 						       $(".selecttailorType2").each(function(i,o){
-				      				var id=	$(o).parent().data("needlewor2");
-									$(o).find('option:selected').text(id)
-								})
+								var id=	$(o).parent().data("packname");
+								$(o).find("option:selected").text(id)
+							})
 						      $(".selecttailorType2").change(function(i,o){
+						    	  var thatt=$(this)
 						       var datae={
 						    		   id:$(this).parent().parent().find(".selecttailorType2").val(),
 						       }
+						       var html2 = '';
 						       $.ajax({
 								      url:"${ctx}/product/getBaseOne",
 								      data:datae,
 								      type:"GET",
 						      		  success: function (result) {
 						      			 $(result.data[0].baseOneTimes).each(function(j,k){
-						      				html2 +='<option value="'+k.time+'">'+k.categorySetting+'</option>'
+						      				html2 +='<option value="'+k.textualTime+'">'+k.categorySetting+'</option>'
 						      			}); 
 						      			 htmlto2='<select class="text-center form-control selecttailorTypee2" ><option value="">请选择</option>'+html2+'</select>'
-						      			 $(".classify2").html(htmlto2)
-						      			 
+						      			thatt.parent().parent().find(".classify2").html(htmlto2)
 						      			 $(".selecttailorTypee2").change(function(i,o){
-						      				$(".times2").text($(this).parent().parent().find(".selecttailorTypee2").val())
+						      				$(this).parent().parent().find(".times2").text($(this).parent().parent().find(".selecttailorTypee2").val())
 						      				var that=$(this)
 						      				var dataeee={
-					      						id:that.parent().parent().find('.selectid').text(),
-					      						needleworkName:that.parent().parent().find('.selecttailorType2 option:selected').text(),
-					      						classify:that.parent().parent().find(".selecttailorTypee2 option:selected").text(),
-					      						seconds:$(this).parent().parent().find(".selecttailorTypee2").val(),
+					      						id:that.parent().parent().find('.selectid9').text(),
+					      						packName:that.parent().parent().find('.selecttailorType2 option:selected').text(),
+					      						type:that.parent().parent().find(".selecttailorTypee2 option:selected").text(),
+					      						time:$(this).parent().parent().find(".selecttailorTypee2").val(),
 					      						productId: that.parent().parent().find('.selectid3').text(),
 					      						number:$('#number').val(),
+					      						gear:2
 					      				}
 					      				var index;
 					      				$.ajax({
-										      url:"${ctx}/product/addNeedlework",
+										      url:"${ctx}/product/addPack",
 										      data:dataeee,
 										      type:"POST",
 										      beforeSend:function(){
@@ -506,8 +567,8 @@
 												},
 												success:function(result){
 													if(0==result.code){
-														var id=result.data.id
-														ttat.parent().parent().find('.selectid').text(id);
+														var onetime=result.data.oneTime
+														that.parent().parent().find('.oneTime11').text(onetime);
 													layer.close(index);
 													}else{
 														layer.msg(result.message, {icon: 2});
@@ -515,7 +576,7 @@
 													}
 												},error:function(){
 													layer.msg("加载失败！", {icon: 2});
-													layer.close(index);sa
+													layer.close(index);
 											  }
 										  });
 						      			 })
@@ -531,6 +592,146 @@
 									layer.close(index);
 							  }
 						  });
+					    
+					    var data = {
+								type:"fixation",//传产品id
+							}
+							var index;
+						    var htmll = '';
+						    var htmltol= '';
+						    var htmlto2l= '';
+						    
+						    $.ajax({
+							      url:"${ctx}/product/getBaseOne",
+							      data:data,
+							      type:"GET",
+					      		  success: function (result) {
+					      			 $(result.data).each(function(i,o){
+					      				htmll +='<option value="'+o.textualTime+'">'+o.name+'</option>'
+					      			}); 
+							       htmltol='<select class="text-center form-control selecttailorType3" ><option value="">请选择</option>'+htmll+'</select>'
+							       $(".packName22").html(htmltol)
+							       $(".selecttailorType3").each(function(i,o){
+								var id=	$(o).parent().data("packname");
+								$(o).find("option:selected").text(id)
+							})
+							      $(".selecttailorType3").change(function(i,o){
+							    		   $($(this).parent().parent().find(".times22")).text($(this).parent().parent().find(".selecttailorType3").val())
+							       var html2l = '';
+							    		   var that=$(this)
+						      				var dataeee={
+					      						id:that.parent().parent().find('.selectid99').text(),
+					      						packName:that.parent().parent().find('.selecttailorType3 option:selected').text(),
+					      						time:$(this).parent().parent().find(".selecttailorType3").val(),
+					      						productId:that.parent().parent().find('.selectid33').text(),
+					      						number:$('#number').val(),
+					      						gear:1
+					      				}
+					      				var index;
+					      				$.ajax({
+										      url:"${ctx}/product/addPack",
+										      data:dataeee,
+										      type:"POST",
+										      beforeSend:function(){
+													index = layer.load(1, {
+														  shade: [0.1,'#fff'] //0.1透明度的白色背景
+														});
+												},
+												success:function(result){
+													if(0==result.code){
+													layer.close(index);
+													}else{
+														layer.msg(result.message, {icon: 2});
+														layer.close(index);
+													}
+												},error:function(){
+													layer.msg("加载失败！", {icon: 2});
+													layer.close(index);
+											  }
+										  });
+							      })
+					      		 
+					      		  },error:function(){
+										layer.msg("加载失败！", {icon: 2});
+										layer.close(index);
+								  }
+							  });
+					    
+						    $(".packNumber22").blur(function(){
+						    	var that=$(this)
+						    	if(that.parent().parent().find('.times22').text()==""){
+						    		return layer.msg("请先填写工序", {icon: 2});
+						    	}
+			      				var dataeee={
+		      						id:that.parent().parent().find('.selectid99').text(),
+		      						packNumber:that.parent().parent().find(".packNumber22").val(),
+		      						productId: that.parent().parent().find('.selectid33').text(),
+		      						number:$('#number').val(),
+		      						gear:1
+		      				}
+						    	var index;
+			      				$.ajax({
+								      url:"${ctx}/product/addPack",
+								      data:dataeee,
+								      type:"POST",
+								      beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'#fff'] //0.1透明度的白色背景
+												});
+										},
+										success:function(result){
+											if(0==result.code){
+												var onetime=result.data.oneTime
+												that.parent().parent().find('.oneTime22').text(onetime);
+											layer.close(index);
+											}else{
+												layer.msg(result.message, {icon: 2});
+												layer.close(index);
+											}
+										},error:function(){
+											layer.msg("加载失败！", {icon: 2});
+											layer.close(index);
+									  }
+								  });
+						    })
+						    
+					    $(".packNumber2").blur(function(){
+					    	var that=$(this)
+					    	if(that.parent().parent().find('.times2').text()==""){
+					    		return layer.msg("请先填写工序", {icon: 2});
+					    	}
+		      				var dataeee={
+	      						id:that.parent().parent().find('.selectid9').text(),
+	      						packNumber:that.parent().parent().find(".packNumber2").val(),
+	      						productId: that.parent().parent().find('.selectid3').text(),
+	      						number:$('#number').val(),
+	      						gear:2
+	      				}
+					    	var index;
+		      				$.ajax({
+							      url:"${ctx}/product/addPack",
+							      data:dataeee,
+							      type:"POST",
+							      beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									success:function(result){
+										if(0==result.code){
+											var onetime=result.data.oneTime
+											that.parent().parent().find('.oneTime2').text(onetime);
+										layer.close(index);
+										}else{
+											layer.msg(result.message, {icon: 2});
+											layer.close(index);
+										}
+									},error:function(){
+										layer.msg("加载失败！", {icon: 2});
+										layer.close(index);
+								  }
+							  });
+					    })
 				}
 			  
 			  
@@ -570,7 +771,7 @@
 						      			 htmlto2='<select class="text-center form-control selecttailorTypee2" ><option value="">请选择</option>'+html2+'</select>'
 						      			 $(".classify").html(htmlto2)
 						      			 $(".selecttailorTypee2").change(function(i,o){
-						      				$(".times").text($(this).parent().parent().find(".selecttailorTypee2").val())
+						      				$($(this).parent().parent().find(".times")).text($(this).parent().parent().find(".selecttailorTypee2").val())
 						      				var that=$(this)
 						      				var dataeee={
 					      						id:that.parent().parent().find('.selectid').text(),
@@ -619,9 +820,111 @@
 							  }
 						  });
 					    
+					    var data = {
+								type:"fixation",//传产品id
+							}
+							var index;
+						    var htmll = '';
+						    var htmltol= '';
+						    var htmlto2l= '';
+						    
+						    $.ajax({
+							      url:"${ctx}/product/getBaseOne",
+							      data:data,
+							      type:"GET",
+					      		  success: function (result) {
+					      			 $(result.data).each(function(i,o){
+					      				htmll +='<option value="'+o.textualTime+'">'+o.name+'</option>'
+					      			}); 
+							       htmltol='<select class="text-center form-control selecttailorType3" ><option value="">请选择</option>'+htmll+'</select>'
+							       $(".packName11").html(htmltol)	
+							      $(".selecttailorType3").change(function(i,o){
+							    		   $($(this).parent().parent().find(".times11")).text($(this).parent().parent().find(".selecttailorType3").val())
+							       var html2l = '';
+							    		   var that=$(this)
+						      				var dataeee={
+					      						id:that.parent().parent().find('.selectid11').text(),
+					      						packName:that.parent().parent().find('.selecttailorType3 option:selected').text(),
+					      						time:$(this).parent().parent().find(".selecttailorType3").val(),
+					      						productId: self.getCache(),
+					      						number:$('#number').val(),
+					      						gear:1
+					      				}
+					      				var index;
+					      				$.ajax({
+										      url:"${ctx}/product/addPack",
+										      data:dataeee,
+										      type:"POST",
+										      beforeSend:function(){
+													index = layer.load(1, {
+														  shade: [0.1,'#fff'] //0.1透明度的白色背景
+														});
+												},
+												success:function(result){
+													if(0==result.code){
+														var id=result.data.id
+														that.parent().parent().find('.selectid11').text(id);
+													layer.close(index);
+													}else{
+														layer.msg(result.message, {icon: 2});
+														layer.close(index);
+													}
+												},error:function(){
+													layer.msg("加载失败！", {icon: 2});
+													layer.close(index);
+											  }
+										  });
+							      })
+					      		 
+					      		  },error:function(){
+										layer.msg("加载失败！", {icon: 2});
+										layer.close(index);
+								  }
+							  });
 					    
+						    $(".packNumber11").blur(function(){
+						    	var that=$(this)
+						    	if(that.parent().parent().find('.times11').text()==""){
+						    		return layer.msg("请先填写工序", {icon: 2});
+						    	}
+			      				var dataeee={
+		      						id:that.parent().parent().find('.selectid11').text(),
+		      						packNumber:that.parent().parent().find(".packNumber11").val(),
+		      						productId: self.getCache(),
+		      						number:$('#number').val(),
+		      						gear:1
+		      				}
+						    	var index;
+			      				$.ajax({
+								      url:"${ctx}/product/addPack",
+								      data:dataeee,
+								      type:"POST",
+								      beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'#fff'] //0.1透明度的白色背景
+												});
+										},
+										success:function(result){
+											if(0==result.code){
+												var onetime=result.data.oneTime
+												that.parent().parent().find('.oneTime11').text(onetime);
+											layer.close(index);
+											}else{
+												layer.msg(result.message, {icon: 2});
+												layer.close(index);
+											}
+										},error:function(){
+											layer.msg("加载失败！", {icon: 2});
+											layer.close(index);
+									  }
+								  });
+						    })
+						    
 					    $(".packNumber").blur(function(){
 					    	var that=$(this)
+					    	if(that.parent().parent().find('.times').text()==""){
+					    		return layer.msg("请先填写工序", {icon: 2});
+					    	}
 		      				var dataeee={
 	      						id:that.parent().parent().find('.selectid').text(),
 	      						packNumber:that.parent().parent().find(".packNumber").val(),
@@ -673,6 +976,9 @@
 						$(this).parent().parent().parent().parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() { 
 							arr.push($(this).val());   
 						});
+					  $(this).parent().parent().parent().parent().parent().parent().parent().parent().find(".checkboxIdtw:checked").each(function() { 
+							arr.push($(this).val());   
+						});
 					   if(arr.length<=0){
 							return layer.msg("至少选择一个！", {icon: 2});
 						} 
@@ -683,7 +989,7 @@
 						var index;
 						 index = layer.confirm('确定一键删除吗', {btn: ['确定', '取消']},function(){
 						$.ajax({
-							url:"${ctx}/product/deleteNeedlework",
+							url:"${ctx}/product/deletePack",
 							data:data,
 				            traditional: true,
 							type:"GET",
@@ -716,20 +1022,21 @@
 				
 			//新增
 				var html="";
+				var htm2="";
 				$('#addCutting').on('click',function(){
 					 html='<tr><td  class="text-center"></td><td  class="text-center edit packName"></td>'
 					 +'<td class="text-center edit selectid hidden"></td>'
 					 +'<td class="text-center edit classify" ></td>'
 					 +'<td class="text-center edit times" ></td>'
 					 +'<td class="text-center edit " ><input type="text" style="border: none;width:68px; height:30px; background-color: #BFBFBF;" class="text-center  packNumber" /></td>'
-					 +'<td class="text-center edit oneTime" ></td>'
-					 +'<td class="text-center edit " ></td>'
-					 +'<td class="text-center edit " ></td>'
-					 +'<td class="text-center edit " ></td>'
-					 +'<td class="text-center edit "></td></tr>';
-					  /* $(html).insertBefore("#tablecontent"); */
-					/* $("#tablecontent").append(html); */
+					 +'<td class="text-center edit oneTime" ></td></tr>';
 					$("#tablecontent").prepend(html);
+					html2='<tr><td  class="text-center"></td><td  class="text-center edit packName11"></td>'
+						 +'<td class="text-center edit selectid11 hidden"></td>'
+						 +'<td class="text-center edit times11" ></td>'
+						 +'<td class="text-center edit " ><input type="text" style="border: none;width:68px; height:30px; background-color: #BFBFBF;" class="text-center  packNumber11" /></td>'
+						 +'<td class="text-center edit oneTime11" ></td></tr>';
+						 $("#tablecontentt").prepend(html2);
 					self.mater();
 				})
 				
