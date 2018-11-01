@@ -72,7 +72,7 @@ public class BaseOneAction {
 		cr.setData(ClearCascadeJSON
 				.get()
 				.addRetainTerm(BaseOne.class, "id","name","textualTime","time","baseOneTimes")
-				.addRetainTerm(BaseOneTime.class,"textualTime","time","categorySetting")
+				.addRetainTerm(BaseOneTime.class,"textualTime","time","categorySetting","baseOneId")
 				.format(materielService.findPagesBaseOne(baseOne)).toJSON());
 		cr.setMessage("成功");
 		return cr;

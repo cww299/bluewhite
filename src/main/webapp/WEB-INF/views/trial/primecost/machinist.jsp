@@ -1651,7 +1651,7 @@
 										},
 										success:function(result){
 											if(0==result.code){
-												layer.msg("删除成功！", {icon: 2});
+												layer.msg("删除成功！", {icon: 1});
 											layer.close(index);
 											}else{
 												layer.msg("添加失败！", {icon: 2});
@@ -1686,6 +1686,8 @@
 								},
 							  end:function(){
 								  $('#addworking').hide();
+								  $('.name1').text("")
+								  $('.price1').text("")
 								  layer.close(index);
 							  }
 						});

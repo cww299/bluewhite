@@ -80,6 +80,17 @@ public class Embroidery extends BaseEntity<Long>{
 	/**
 	 * 被选裁片1面积
 	 */
+	@Column(name = "size_name")
+    private String sizeName;
+	/**
+	 * 被选裁片2面积
+	 */
+	@Column(name = "size_two_name")
+    private String sizeTwoName;
+	
+	/**
+	 * 被选裁片1面积
+	 */
 	@Column(name = "size")
     private Double size;
 	/**
@@ -142,7 +153,7 @@ public class Embroidery extends BaseEntity<Long>{
 	 * 请选择绣花线号
 	 */
 	@Column(name = "embroidery_wiresize")
-    private Integer embroideryWiresize;
+    private String embroideryWiresize;
 	
 	
 	/**
@@ -546,14 +557,17 @@ public class Embroidery extends BaseEntity<Long>{
 	}
 
 
-	public Integer getEmbroideryWiresize() {
+	
+
+	public String getEmbroideryWiresize() {
 		return embroideryWiresize;
 	}
 
 
-	public void setEmbroideryWiresize(Integer embroideryWiresize) {
+	public void setEmbroideryWiresize(String embroideryWiresize) {
 		this.embroideryWiresize = embroideryWiresize;
 	}
+
 
 	public Double getSinglechipApplique() {
 		return singlechipApplique;
@@ -772,6 +786,26 @@ public class Embroidery extends BaseEntity<Long>{
 
 	public void setReckoningSewingPrice(Double reckoningSewingPrice) {
 		this.reckoningSewingPrice = reckoningSewingPrice;
+	}
+
+
+	public String getSizeName() {
+		return sizeName;
+	}
+
+
+	public void setSizeName(String sizeName) {
+		this.sizeName = sizeName;
+	}
+
+
+	public String getSizeTwoName() {
+		return sizeTwoName;
+	}
+
+
+	public void setSizeTwoName(String sizeTwoName) {
+		this.sizeTwoName = sizeTwoName;
 	}
 	
 	
