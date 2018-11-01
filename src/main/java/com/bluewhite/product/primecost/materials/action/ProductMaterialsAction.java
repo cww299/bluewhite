@@ -27,6 +27,8 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 import com.bluewhite.product.primecost.materials.service.ProductMaterialsService;
+import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.product.product.service.ProductService;
 
 @Controller 
 public class ProductMaterialsAction {
@@ -37,14 +39,9 @@ public class ProductMaterialsAction {
 	@Autowired
 	private ProductMaterialsService productMaterialsService;
 	
-	private ClearCascadeJSON clearCascadeJSON;
-
-	{
-		clearCascadeJSON = ClearCascadeJSON
-				.get()
-				.addRetainTerm(ProductMaterials.class,"id","productId","number","materialsName","oneMaterial","unit","unitId","unitCost"
-						,"manualLoss","productCost","productUnit","batchMaterial","batchMaterialPrice");
-	}
+	@Autowired
+	private ProductService productService;
+	
 	
 	/**
 	 * dd除裁片以外的所有生产用料填写
@@ -61,8 +58,6 @@ public class ProductMaterialsAction {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品不能为空");
 		}else{
-			
-			
 			try {
 				productMaterialsService.saveProductMaterials(productMaterials);
 			} catch (Exception e) {
@@ -116,14 +111,15 @@ public class ProductMaterialsAction {
 	 */
 	@RequestMapping(value = "/product/getProductMaterials", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getProductMaterials(HttpServletRequest request,PageParameter page,ProductMaterials productMaterials,String productName) {
+	public CommonResponse getProductMaterials(HttpServletRequest request,PageParameter page,ProductMaterials productMaterials) {
 		CommonResponse cr = new CommonResponse();
 		PageResult<ProductMaterials>  productMaterialsList= new PageResult<>(); 
 		if(productMaterials.getProductId()!=null){
 			HttpSession session = request.getSession();
-			session.setAttribute("productId",productMaterials.getProductId());
-			session.setAttribute("number", productMaterials.getNumber());
-			session.setAttribute("productName", productName);
+			Product product = productService.findOne(productMaterials.getProductId());
+			session.setAttribute("productId", product.getId());
+			session.setAttribute("number", product.getPrimeCost()!=null ? product.getPrimeCost().getNumber():null);
+			session.setAttribute("productName", product.getName());
 			productMaterialsList = productMaterialsService.findPages(productMaterials,page);
 		
 		}

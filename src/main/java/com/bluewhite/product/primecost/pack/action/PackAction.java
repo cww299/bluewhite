@@ -28,6 +28,8 @@ import com.bluewhite.product.primecost.pack.entity.Pack;
 import com.bluewhite.product.primecost.pack.service.PackService;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
+import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.product.product.service.ProductService;
 @Controller
 public class PackAction {
 	
@@ -36,7 +38,8 @@ private final static Log log = Log.getLog(PackAction.class);
 	
 	@Autowired
 	private PackService packService;
-	
+	@Autowired
+	private ProductService productService;
 	
 	/**
 	 * 内外包装和杂工填写
@@ -74,14 +77,15 @@ private final static Log log = Log.getLog(PackAction.class);
 	 */
 	@RequestMapping(value = "/product/getPack", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getPack(HttpServletRequest request,PageParameter page,Pack pack,String productName) {
+	public CommonResponse getPack(HttpServletRequest request,PageParameter page,Pack pack) {
 		CommonResponse cr = new CommonResponse();
 		PageResult<Pack>  packList= new PageResult<>(); 
 		if(pack.getProductId()!=null){
 			HttpSession session = request.getSession();
-			session.setAttribute("productId",pack.getProductId());
-			session.setAttribute("number", pack.getNumber());
-			session.setAttribute("productName", productName);
+			Product product = productService.findOne(pack.getProductId());
+			session.setAttribute("productId", product.getId());
+			session.setAttribute("number", product.getPrimeCost()!=null ? product.getPrimeCost().getNumber():null);
+			session.setAttribute("productName", product.getName());
 			packList = packService.findPages(pack,page);
 		
 		}

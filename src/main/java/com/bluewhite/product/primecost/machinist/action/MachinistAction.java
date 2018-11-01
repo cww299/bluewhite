@@ -34,6 +34,8 @@ import com.bluewhite.product.primecost.machinist.service.MachinistService;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
+import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.product.product.service.ProductService;
 
 @Controller 
 public class MachinistAction {
@@ -47,6 +49,9 @@ public class MachinistAction {
 	
 	@Autowired
 	private TailorService tailorService;
+	
+	@Autowired
+	private ProductService productService;
 	
 	
 	/**
@@ -85,14 +90,15 @@ public class MachinistAction {
 	 */
 	@RequestMapping(value = "/product/getMachinist", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getMachinist(HttpServletRequest request,PageParameter page,Machinist machinist,String productName) {
+	public CommonResponse getMachinist(HttpServletRequest request,PageParameter page,Machinist machinist) {
 		CommonResponse cr = new CommonResponse();
 		PageResult<Machinist>  machinistList= new PageResult<>(); 
 		if(machinist.getProductId()!=null){
 			HttpSession session = request.getSession();
-			session.setAttribute("productId",machinist.getProductId());
-			session.setAttribute("number", machinist.getNumber());
-			session.setAttribute("productName", productName);
+			Product product = productService.findOne(machinist.getProductId());
+			session.setAttribute("productId", product.getId());
+			session.setAttribute("number", product.getPrimeCost()!=null ? product.getPrimeCost().getNumber():null);
+			session.setAttribute("productName", product.getName());
 			machinistList = machinistService.findPages(machinist,page);
 		}
 		cr.setData(machinistList);

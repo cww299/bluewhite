@@ -30,8 +30,7 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 	
 	@Override
 	@Transactional
-	public ProductMaterials saveProductMaterials(ProductMaterials productMaterials)
-			throws Exception {
+	public ProductMaterials saveProductMaterials(ProductMaterials productMaterials) throws Exception {
 		if(StringUtils.isEmpty(productMaterials.getNumber())){
 			throw new ServiceException("批量产品数量或模拟批量数不能为空");
 		}
