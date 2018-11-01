@@ -3,6 +3,8 @@
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
     <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
+
+<c:set var="productId" value="${sessionScope.productId}"/>
 <!DOCTYPE html>
 <html class="no-js">
 <head>
@@ -44,9 +46,8 @@
 					self.events();
 					
 				}
-				
 				this.events = function(){
-					
+					var productId="${productId}"; 
 					var html = '';
 					var htmlto;
 					var htmlth;

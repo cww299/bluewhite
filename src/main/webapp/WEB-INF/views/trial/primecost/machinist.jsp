@@ -1698,6 +1698,15 @@
 			
 			this.events = function(){
 				
+				$('.searchtask').on('click',function(){
+					var data = {
+				  			page:1,
+				  			size:13,
+				  			productId:self.getCache(),
+				  	}
+		            self.loadPagination(data);
+				});
+				
 				$(".home1").on('click',function(){
 					var data={
 							page:1,

@@ -98,6 +98,7 @@
                                             <th class="text-center">自动得到产品备注</th>
                                             <th class="text-center">当批当品种用量(手选单位）</th>
                                             <th class="text-center">当批当品种价格</th>
+                                            <th class="text-center">压货环节</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -236,6 +237,7 @@
 		      				+'<td class="text-center unit name" >'+o.productUnit+'</td>'
 		      				+'<td class="text-center " >'+o.batchMaterial+'</td>'
 		      				+'<td class="text-center  name" >'+o.batchMaterialPrice+'</td>'
+		      				+'<td class="text-center  name helpWork" data-overstockid='+o.overstockId+'  data-id='+o.id+' data-productid='+o.productId+'></td>'
 							+'<td class="text-center "><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'  data-unit='+o.unitId+'>编辑</button></td></tr>'
 							
 		      			}); 
@@ -287,6 +289,70 @@
 					
 				}
 			this.loadEvents = function(){
+				
+				//压货环节
+				var data6 = {
+							type:"overstock",
+						}
+						var index;
+						var html6 = '';
+						var htmlto6= '';
+						$.ajax({
+						url:"${ctx}/product/getBaseOne",
+						data:data6,
+						type:"GET",
+						success: function (result) {
+						$(result.data).each(function(i,o){
+							html6 +='<option value="'+o.id+'">'+o.name+'</option>'
+							}); 
+							htmlto6='<select class="text-center form-control selecttailorType8" ><option value="">请选择</option>'+html6+'</select>'
+							 $(".helpWork").html(htmlto6)
+							 
+							 $(".selecttailorType8").each(function(i,o){
+								var id=	$(o).parent().data("overstockid");
+								$(o).val(id)
+							})
+									$(".selecttailorType8").change(function(i,o){
+									      				var that=$(this);
+									      				var overstockId=$(this).parent().parent().find(".selecttailorType8").val();
+									      				var name=$(this).parent().parent().find(".selecttailorType8 option:selected").text();
+									      				var dataeee={
+									      						 id:that.parent().data('id'),
+																 productId:that.parent().data('productid'),
+																 overstockId:overstockId,
+																 overstock:name,
+									      				}
+									      				var index;
+									      				 $.ajax({
+														      url:"${ctx}/product/updateProductMaterials",
+														      data:dataeee,
+														      type:"POST",
+														      beforeSend:function(){
+																	index = layer.load(1, {
+																		  shade: [0.1,'#fff'] //0.1透明度的白色背景
+																		});
+																},
+																success:function(result){
+																	if(0==result.code){
+																	$(result.data).each(function(i,o){
+														      			 }); 
+																	layer.close(index);
+																	}else{
+																		layer.msg(result.message, {icon: 2});
+																		layer.close(index);
+																	}
+																},error:function(){
+																	layer.msg("加载失败！", {icon: 2});
+																	layer.close(index);sa
+															  }
+														  }); 
+													})
+									      		  },error:function(){
+														layer.msg("加载失败！", {icon: 2});
+														layer.close(index);
+												  }
+											  });
+				
 				//修改方法
 				//选择单位
 				var data = {
@@ -344,7 +410,6 @@
 						$(o).val(dd);
 						})
 						   $(".selectunit").change(function(){
-				    	   console.log(1111)
 				    	   that=$(this)
 				    	   var ccc
 				       if(self.getNum()==null){
