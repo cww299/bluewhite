@@ -63,7 +63,7 @@ public class PackServiceImpl extends BaseServiceImpl<Pack, Long> implements Pack
 
 		PrimeCoefficient primeCoefficient = primeCoefficientDao.findByType("pack");
 		// 单只产品用时/秒
-		pack.setOneTime(pack.getTime() / pack.getPackNumber());
+		pack.setOneTime(NumUtils.division(pack.getTime() / pack.getPackNumber()));
 		// 批量用时/秒(含快手）
 		pack.setBatchTime(pack.getNumber() * pack.getOneTime() * primeCoefficient.getQuickWorker());
 		// 单只时间（含快手）
@@ -81,30 +81,30 @@ public class PackServiceImpl extends BaseServiceImpl<Pack, Long> implements Pack
 		// cc裁片
 		List<CutParts> cutPartsList = cutPartsDao.findByProductId(pack.getProductId());
 		// 当批各单片价格
-		double batchMaterialPrice = cutPartsList.stream().mapToDouble(CutParts::getBatchMaterialPrice).sum();
+		double batchMaterialPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchMaterialPrice()!=null).mapToDouble(CutParts::getBatchMaterialPrice).sum();
 		// 当批被复合物用料
-		double complexBatchMaterial = cutPartsList.stream().mapToDouble(CutParts::getComplexBatchMaterial).sum();
+		double complexBatchMaterial = cutPartsList.stream().filter(CutParts->CutParts.getComplexBatchMaterial()!=null).mapToDouble(CutParts::getComplexBatchMaterial).sum();
 		// 当批被复合各单片价格
-		double batchComplexMaterialPrice = cutPartsList.stream().mapToDouble(CutParts::getBatchComplexMaterialPrice)
+		double batchComplexMaterialPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchComplexMaterialPrice()!=null).mapToDouble(CutParts::getBatchComplexMaterialPrice)
 				.sum();
 		// 当批复合物加加工费价格
-		double batchComplexAddPrice = cutPartsList.stream().mapToDouble(CutParts::getBatchComplexAddPrice).sum();
+		double batchComplexAddPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchComplexAddPrice()!=null).mapToDouble(CutParts::getBatchComplexAddPrice).sum();
 		// dd物料
 		List<ProductMaterials> ProductMaterialsList = productMaterialsDao.findByProductId(pack.getProductId());
-		double materialsPrice = ProductMaterialsList.stream().mapToDouble(ProductMaterials::getBatchMaterialPrice)
+		double materialsPrice = ProductMaterialsList.stream().filter(ProductMaterials->ProductMaterials.getBatchMaterialPrice()!=null).mapToDouble(ProductMaterials::getBatchMaterialPrice)
 				.sum();
 		// 裁剪
 		List<Tailor> tailorList = tailorDao.findByProductId(pack.getProductId());
-		double allCostPriceTailor = tailorList.stream().mapToDouble(Tailor::getAllCostPrice).sum();
+		double allCostPriceTailor = tailorList.stream().filter(Tailor->Tailor.getAllCostPrice()!=null).mapToDouble(Tailor::getAllCostPrice).sum();
 		// 机工
 		List<Machinist> machinistList = machinistDao.findByProductId(pack.getProductId());
-		double allCostPriceMachinist = machinistList.stream().mapToDouble(Machinist::getAllCostPrice).sum();
+		double allCostPriceMachinist = machinistList.stream().filter(Machinist->Machinist.getAllCostPrice()!=null).mapToDouble(Machinist::getAllCostPrice).sum();
 		// 绣花
 		List<Embroidery> embroideryList = embroideryDao.findByProductId(pack.getProductId());
-		double allCostPriceEmbroidery = embroideryList.stream().mapToDouble(Embroidery::getAllCostPrice).sum();
+		double allCostPriceEmbroidery = embroideryList.stream().filter(Embroidery->Embroidery.getAllCostPrice()!=null).mapToDouble(Embroidery::getAllCostPrice).sum();
 		// 针工
 		List<Needlework> needleworkList = needleworkDao.findByProductId(pack.getProductId());
-		double allCostPriceNeedlework = needleworkList.stream().mapToDouble(Needlework::getAllCostPrice).sum();
+		double allCostPriceNeedlework = needleworkList.stream().filter(Needlework->Needlework.getAllCostPrice()!=null).mapToDouble(Needlework::getAllCostPrice).sum();
 		pack.setPriceDown(batchMaterialPrice + complexBatchMaterial + batchComplexMaterialPrice + batchComplexAddPrice
 				+ materialsPrice + allCostPriceTailor + allCostPriceMachinist + allCostPriceEmbroidery
 				+ allCostPriceNeedlework);
