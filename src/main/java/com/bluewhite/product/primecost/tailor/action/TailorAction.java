@@ -21,7 +21,9 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
+import com.bluewhite.product.primecost.embroidery.entity.Embroidery;
 import com.bluewhite.product.primecost.tailor.entity.OrdinaryLaser;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.OrdinaryLaserService;
@@ -77,7 +79,13 @@ public class TailorAction {
 	@RequestMapping(value = "/product/getTailor", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse getTailor(HttpServletRequest request,PageParameter page,Tailor tailor) {
-		CommonResponse cr = new CommonResponse(tailorService.findPages(tailor,page));
+		CommonResponse cr = new CommonResponse();
+		PageResult<Tailor>  tailorList= new PageResult<>(); 
+		if(tailor.getProductId()!=null){
+			tailorList = tailorService.findPages(tailor,page);
+		
+		}
+		cr.setData(tailorList);
 		cr.setMessage("查询成功");
 		return cr;
 	}

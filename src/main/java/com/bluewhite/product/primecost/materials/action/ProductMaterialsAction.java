@@ -22,6 +22,8 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 import com.bluewhite.product.primecost.materials.service.ProductMaterialsService;
 
@@ -114,8 +116,13 @@ public class ProductMaterialsAction {
 	@RequestMapping(value = "/product/getProductMaterials", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse getProductMaterials(HttpServletRequest request,PageParameter page,ProductMaterials productMaterials) {
-		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(productMaterialsService.findPages(productMaterials,page))
-				.toJSON());
+		CommonResponse cr = new CommonResponse();
+		PageResult<ProductMaterials>  productMaterialsList= new PageResult<>(); 
+		if(productMaterials.getProductId()!=null){
+			productMaterialsList = productMaterialsService.findPages(productMaterials,page);
+		
+		}
+		cr.setData(productMaterialsList);
 		cr.setMessage("查询成功");
 		return cr;
 	}

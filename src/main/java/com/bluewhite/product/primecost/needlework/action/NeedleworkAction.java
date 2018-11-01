@@ -25,8 +25,10 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
+import com.bluewhite.product.primecost.machinist.entity.Machinist;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 import com.bluewhite.product.primecost.materials.service.ProductMaterialsService;
 import com.bluewhite.product.primecost.needlework.entity.Needlework;
@@ -81,7 +83,12 @@ private final static Log log = Log.getLog(NeedleworkAction.class);
 	@ResponseBody
 	public CommonResponse getNeedlework(HttpServletRequest request,PageParameter page,Needlework needlework) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(needleworkService.findPages(needlework,page));
+		PageResult<Needlework>  needleworkList= new PageResult<>(); 
+		if(needlework.getProductId()!=null){
+			needleworkList = needleworkService.findPages(needlework,page);
+		
+		}
+		cr.setData(needleworkList);
 		cr.setMessage("查询成功");
 		return cr;
 	}
