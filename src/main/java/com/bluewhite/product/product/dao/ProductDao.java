@@ -9,5 +9,11 @@ import com.bluewhite.product.product.entity.Product;
  *
  */
 public interface ProductDao extends BaseRepository<Product, Long> {
+	
+	/**
+	 * 根据产品编号查询
+	 * @return
+	 */
+	public Product  findByNumber(String number);
 
 }

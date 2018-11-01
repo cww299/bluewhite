@@ -77,12 +77,6 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 		ProductMaterials productMaterials = dao.findOne(id);
 		//删除
 		dao.delete(productMaterials.getId());
-		//同时更新产品成本价格表(除面料以外的其他物料价格)
-		List<ProductMaterials> productMaterialsList = dao.findByProductId(productMaterials.getProductId());
-		Product product =  productdao.findOne(productMaterials.getProductId());
-		double batchMaterialPrice = productMaterialsList.stream().mapToDouble(ProductMaterials::getBatchMaterialPrice).sum();
-		product.getPrimeCost().setOtherCutPartsPrice((batchMaterialPrice)/productMaterials.getNumber());
-		productdao.save(product);
 	}
 
 

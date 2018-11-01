@@ -15,6 +15,7 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.product.primecost.cutparts.dao.CutPartsDao;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
@@ -111,29 +112,31 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 	    }
 
 	@Override
-	public Product getPrimeCost(PrimeCost primeCost) {
+	public PrimeCost getPrimeCost(PrimeCost primeCost) {
 		Product product = productDao.findOne(primeCost.getProductId());
 		if(product.getPrimeCost()!=null){
 			PrimeCost oldPrimeCost = product.getPrimeCost();
 			BeanCopyUtils.copyNullProperties(oldPrimeCost,primeCost);
 			primeCost.setCreatedAt(oldPrimeCost.getCreatedAt());
 		}
+		//自动将类型为null的属性赋值为0
+		NumUtils.setzro(primeCost);
 		
 		//面料价格(含复合物料和加工费)
 		List<CutParts> cutPartsList = cutPartsDao.findByProductId(primeCost.getProductId());
 		double batchMaterialPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchMaterialPrice()!=null).mapToDouble(CutParts::getBatchMaterialPrice).sum();
 		double batchComplexMaterialPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchComplexMaterialPrice()!=null).mapToDouble(CutParts::getBatchComplexMaterialPrice).sum();
 		double batchComplexAddPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchComplexAddPrice()!=null).mapToDouble(CutParts::getBatchComplexAddPrice).sum();
-		primeCost.setCutPartsPrice((batchMaterialPrice+batchComplexMaterialPrice+batchComplexAddPrice)/primeCost.getNumber());
+		primeCost.setCutPartsPrice(NumUtils.division((batchMaterialPrice+batchComplexMaterialPrice+batchComplexAddPrice)/primeCost.getNumber()));
 		//单只
-		primeCost.setOneCutPartsPrice(primeCost.getCutPartsPrice()/primeCost.getNumber());
+		primeCost.setOneCutPartsPrice(NumUtils.division(primeCost.getCutPartsPrice()/primeCost.getNumber()));
 		double cutPartsPriceInvoice = primeCost.getCutPartsInvoice() == 1 ? (primeCost.getCutPartsPriceInvoice()* primeCost.getOneCutPartsPrice()) : 0;
 		
 		//除面料以外的其他物料价格
 		List<ProductMaterials> productMaterialsList = productMaterialsDao.findByProductId(primeCost.getProductId());
 		double batchMaterialPrice1 = productMaterialsList.stream().mapToDouble(ProductMaterials::getBatchMaterialPrice).sum();
 		primeCost.setOtherCutPartsPrice(batchMaterialPrice1);
-		primeCost.setOneOtherCutPartsPrice((batchMaterialPrice1)/primeCost.getNumber());
+		primeCost.setOneOtherCutPartsPrice(NumUtils.division((batchMaterialPrice1)/primeCost.getNumber()));
 		double otherCutPartsPriceInvoice = primeCost.getOtherCutPartsPriceInvoice() == 1 ? (primeCost.getOtherCutPartsPriceInvoice()* primeCost.getOneOtherCutPartsPrice()) : 0;
 
 		
@@ -141,14 +144,14 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		List<Tailor> tailorList = tailorDao.findByProductId(primeCost.getProductId());
 		double allCostPriceTailor = tailorList.stream().mapToDouble(Tailor::getAllCostPrice).sum();
 		primeCost.setCutPrice(allCostPriceTailor);
-		primeCost.setOneCutPrice((allCostPriceTailor)/primeCost.getNumber());
+		primeCost.setOneCutPrice(NumUtils.division((allCostPriceTailor)/primeCost.getNumber()));
 		double cutPriceInvoice = primeCost.getCutPriceInvoice() == 1 ? (primeCost.getCutPriceInvoice()* primeCost.getOneCutPrice()) : 0;
 
 		// 机工
 		List<Machinist> machinistList = machinistDao.findByProductId(primeCost.getProductId());
 		double allCostPriceMachinist = machinistList.stream().mapToDouble(Machinist::getAllCostPrice).sum();
 		primeCost.setMachinistPrice(allCostPriceMachinist);
-		primeCost.setOneMachinistPrice((allCostPriceMachinist)/primeCost.getNumber());
+		primeCost.setOneMachinistPrice(NumUtils.division((allCostPriceMachinist)/primeCost.getNumber()));
 		double machinistPriceInvoice = primeCost.getMachinistPriceInvoice() == 1 ? (primeCost.getMachinistPriceInvoice()* primeCost.getOneMachinistPrice()) : 0;
 
 		
@@ -156,7 +159,7 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		List<Embroidery> embroideryList = embroideryDao.findByProductId(primeCost.getProductId());
 		double allCostPriceEmbroidery = embroideryList.stream().mapToDouble(Embroidery::getAllCostPrice).sum();
 		primeCost.setEmbroiderPrice(allCostPriceEmbroidery);
-		primeCost.setOneEmbroiderPrice((allCostPriceEmbroidery)/primeCost.getNumber());
+		primeCost.setOneEmbroiderPrice(NumUtils.division((allCostPriceEmbroidery)/primeCost.getNumber()));
 		double embroiderPriceInvoice = primeCost.getEmbroiderPriceInvoice() == 1 ? (primeCost.getEmbroiderPriceInvoice()* primeCost.getOneEmbroiderPrice()) : 0;
 
 		
@@ -164,7 +167,7 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		List<Needlework> needleworkList = needleworkDao.findByProductId(primeCost.getProductId());
 		double allCostPriceNeedlework = needleworkList.stream().mapToDouble(Needlework::getAllCostPrice).sum();
 		primeCost.setNeedleworkPrice(allCostPriceNeedlework);
-		primeCost.setOneNeedleworkPrice((allCostPriceNeedlework)/primeCost.getNumber());
+		primeCost.setOneNeedleworkPrice(NumUtils.division((allCostPriceNeedlework)/primeCost.getNumber()));
 		double needleworkPriceInvoice = primeCost.getNeedleworkPriceInvoice() == 1 ? (primeCost.getNeedleworkPriceInvoice()* primeCost.getOneNeedleworkPrice()) : 0;
 
 		
@@ -172,7 +175,7 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		List<Pack> packList = packDao.findByProductId(primeCost.getProductId());
 		double allCostPricePack = packList.stream().mapToDouble(Pack::getAllCostPrice).sum();
 		primeCost.setPackPrice(allCostPricePack);
-		primeCost.setOnePackPrice((allCostPricePack)/primeCost.getNumber());
+		primeCost.setOnePackPrice(NumUtils.division((allCostPricePack)/primeCost.getNumber()));
 		double packPriceInvoice = primeCost.getPackPriceInvoice() == 1 ? (primeCost.getPackPriceInvoice()* primeCost.getOnePackPrice()) : 0;
 
 		
@@ -181,22 +184,22 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 				primeCost.getCutPrice()+primeCost.getMachinistPrice()+primeCost.getEmbroiderPrice()
 				+primeCost.getNeedleworkPrice()+primeCost.getPackPrice());
 		//单只成本
-		primeCost.setOnePrimeCost(primeCost.getBacthPrimeCost()/primeCost.getNumber());
+		primeCost.setOnePrimeCost(NumUtils.division(primeCost.getBacthPrimeCost()/primeCost.getNumber()));
 		//实战单只成本
-		primeCost.setOneaAtualPrimeCost(primeCost.getBacthPrimeCost()/primeCost.getNumber());
+		primeCost.setOneaAtualPrimeCost(primeCost.getCutPartsPricePricing()+primeCost.getCutPricePricing()+primeCost.getEmbroiderPricePricing()+primeCost.getMachinistPricePricing()+primeCost.getEmbroiderPricePricing()+primeCost.getPackPricePricing()+primeCost.getFreightPricePricing());
 		//预计运费价
 		primeCost.setFreightPrice(primeCost.getAdjustNumber()*primeCost.getOneFreightPrice());
 		//付上游开票点()
 		primeCost.setUpstream(cutPartsPriceInvoice+otherCutPartsPriceInvoice+
 				cutPriceInvoice+machinistPriceInvoice+embroiderPriceInvoice+needleworkPriceInvoice+packPriceInvoice);
 		//付国家的
-		primeCost.setState(primeCost.getInvoice()==1 ? primeCost.getState()/1.17*0.17-(primeCost.getOneCutPartsPrice()+primeCost
+		primeCost.setState(NumUtils.division(primeCost.getInvoice()==1 ? primeCost.getState()/1.17*0.17-(primeCost.getOneCutPartsPrice()+primeCost
 		.getOneOtherCutPartsPrice()+primeCost.getOneCutPrice()+primeCost.getOneMachinistPrice()+
-		primeCost.getOneEmbroiderPrice()+primeCost.getOnePackPrice()+primeCost.getOneNeedleworkPrice()+primeCost.getOnePrimeCost()) : 0.0);
+		primeCost.getOneEmbroiderPrice()+primeCost.getOnePackPrice()+primeCost.getOneNeedleworkPrice()+primeCost.getOnePrimeCost()) : 0.0));
 		//预计多付国家的
 		primeCost.setExpectState(primeCost.getInvoice()==1 ? primeCost.getState()-(primeCost.getSale()*primeCost.getTaxes()) : 0.0);
 		//考虑多付国家的不付需要的进项票点
-		primeCost.setNoState(primeCost.getInvoice()==1 ? primeCost.getState()/0.17*1.17*0.08 : 0.0);
+		primeCost.setNoState(NumUtils.division(primeCost.getInvoice()==1 ? primeCost.getState()/0.17*1.17*0.08 : 0.0));
 		//付返点和版权点
 		primeCost.setRecidivate((primeCost.getSale()*primeCost.getRebateRate())+(primeCost.getSale()*primeCost.getRebateRate()));
 		//付运费
@@ -204,19 +207,20 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		//剩余到手的
 		primeCost.setSurplus(primeCost.getSale()-primeCost.getState()-primeCost.getUpstream()-primeCost.getRecidivate()-primeCost.getFreight()-primeCost.getNoState());
 		//实际加价率
-		primeCost.setMakeRate(primeCost.getSurplus()/primeCost.getOnePrimeCost());
+		primeCost.setMakeRate(NumUtils.division(primeCost.getSurplus()/primeCost.getOnePrimeCost()));
 		//目前综合税负加所得税负比
-		primeCost.setTaxesRate((primeCost.getState()-primeCost.getExpectState())/(primeCost.getSale()/1.17));
+		primeCost.setTaxesRate(NumUtils.division((primeCost.getState()-primeCost.getExpectState())/(primeCost.getSale()/1.17)));
 		//预算成本
 		primeCost.setBudget(primeCost.getOnePrimeCost()-primeCost.getFreight());
 		//预算成本加价率
-		primeCost.setBudgetRate(primeCost.getSurplus()/primeCost.getBudget());
+		primeCost.setBudgetRate(NumUtils.division(primeCost.getSurplus()/primeCost.getBudget()));
 		//实战成本
 		primeCost.setActualCombat(primeCost.getOneaAtualPrimeCost()-primeCost.getFreight());
 		//实战成本加价率
-		primeCost.setActualCombatRate(primeCost.getSurplus()/primeCost.getActualCombat());
+		primeCost.setActualCombatRate(NumUtils.division(primeCost.getSurplus()/primeCost.getActualCombat()));
 		product.setPrimeCost(primeCost);
-		return productDao.save(product);
+		productDao.save(product);
+		return primeCost;
 	}
 
 

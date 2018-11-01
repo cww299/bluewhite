@@ -151,7 +151,63 @@ public class PrimeCost extends BaseEntity<Long>{
 	 */
 	@Column(name = "one_freight_price")
     private Double oneFreightPrice;
+	
+	
+	/****当下生产放价填写****/
+	/**
+	 * 面料价格(含复合物料和加工费）(除面料以外的其他物料价格)
+	 */
+	@Column(name = "cut_parts_price_pricing")
+    private Double cutPartsPricePricing;
+	
+	
+	/**
+	 * 裁剪价格
+	 */
+	@Column(name = "cut_price_pricing")
+    private Double cutPricePricing;
+	
 
+	
+	/**
+	 * 机工价格
+	 */
+	@Column(name = "machinist_price_pricing")
+    private Double machinistPricePricing;
+	
+
+	
+	/**
+	 * 绣花价格
+	 */
+	@Column(name = "embroider_price_pricing")
+    private Double embroiderPricePricing;
+	
+	
+	/**
+	 * 针工价格
+	 */
+	@Column(name = "needlework_price_pricing")
+    private Double needleworkPricePricing;
+	
+	
+	/**
+	 * 内外包装和出入库的价格
+	 */
+	@Column(name = "pack_price_pricing")
+    private Double packPricePricing;
+	
+	/**
+	 * 预计运费价格
+	 */
+	@Column(name = "freight_price_pricing")
+    private Double freightPricePricing;
+	
+	/****当下生产放价填写****/
+	
+	
+	
+	
 	
 	/**
 	 * 面料价格(含复合物料和加工费）(需要支付开票点)
@@ -210,7 +266,7 @@ public class PrimeCost extends BaseEntity<Long>{
 	
 	
 	/**
-	 * (0=否，1=是)
+	 * (0=否，1=是)默认是否
 	 * 面料价格(含复合物料和加工费）(是否可开票)
 	 */
 	@Column(name = "cut_parts_invoice")
@@ -868,6 +924,63 @@ public class PrimeCost extends BaseEntity<Long>{
 	public void setNumber(Integer number) {
 		this.number = number;
 	}
+
+	public Double getCutPartsPricePricing() {
+		return cutPartsPricePricing;
+	}
+
+	public void setCutPartsPricePricing(Double cutPartsPricePricing) {
+		this.cutPartsPricePricing = cutPartsPricePricing;
+	}
+
+	public Double getCutPricePricing() {
+		return cutPricePricing;
+	}
+
+	public void setCutPricePricing(Double cutPricePricing) {
+		this.cutPricePricing = cutPricePricing;
+	}
+
+	public Double getMachinistPricePricing() {
+		return machinistPricePricing;
+	}
+
+	public void setMachinistPricePricing(Double machinistPricePricing) {
+		this.machinistPricePricing = machinistPricePricing;
+	}
+
+	public Double getEmbroiderPricePricing() {
+		return embroiderPricePricing;
+	}
+
+	public void setEmbroiderPricePricing(Double embroiderPricePricing) {
+		this.embroiderPricePricing = embroiderPricePricing;
+	}
+
+	public Double getNeedleworkPricePricing() {
+		return needleworkPricePricing;
+	}
+
+	public void setNeedleworkPricePricing(Double needleworkPricePricing) {
+		this.needleworkPricePricing = needleworkPricePricing;
+	}
+
+	public Double getPackPricePricing() {
+		return packPricePricing;
+	}
+
+	public void setPackPricePricing(Double packPricePricing) {
+		this.packPricePricing = packPricePricing;
+	}
+
+	public Double getFreightPricePricing() {
+		return freightPricePricing;
+	}
+
+	public void setFreightPricePricing(Double freightPricePricing) {
+		this.freightPricePricing = freightPricePricing;
+	}
+	
 	
 	
 	

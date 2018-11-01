@@ -253,10 +253,12 @@ public class UserAction {
 			Map<String,Object> us = new HashMap<String,Object>();
 			int co = DatesUtil.getAgeByBirth(user.getBirthDate());
 			long co2 = DatesUtil.getDaySub( DatesUtil.getfristDayOftime(new Date()),DatesUtil.getfristDayOftime(user.getBirthDate()));
-			if(user.getGender()==0 && co==59 && co2<=10){
+			//男
+			if(user.getGender()==0 && co==60 && co2<=10){
 				us.put("username", user.getUserName());
 				us.put("birthDate",sdf.format(user.getBirthDate()));
 				userBirthList.add(us);
+			//女
 			}else if(user.getGender()==1 && co==55  && co2<=10){
 				us.put("username", user.getUserName());
 				us.put("birthDate", sdf.format(user.getBirthDate()));
