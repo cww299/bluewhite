@@ -33,6 +33,8 @@ import com.bluewhite.product.primecost.machinist.entity.Machinist;
 import com.bluewhite.product.primecost.needlework.entity.Needlework;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
+import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.product.product.service.ProductService;
 @Controller
 public class EmbroideryAction {
 	
@@ -43,6 +45,9 @@ public class EmbroideryAction {
 	
 	@Autowired
 	private TailorService tailorService;
+	
+	@Autowired
+	private ProductService productService;
 	
 	
 	/**
@@ -83,14 +88,16 @@ public class EmbroideryAction {
 	 */
 	@RequestMapping(value = "/product/getEmbroidery", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getEmbroidery(HttpServletRequest request,PageParameter page,Embroidery embroidery,String productName) {
+	public CommonResponse getEmbroidery(HttpServletRequest request,PageParameter page,Embroidery embroidery) {
 		CommonResponse cr = new CommonResponse();
 		PageResult<Embroidery>  embroideryList= new PageResult<>(); 
 		if(embroidery.getProductId()!=null){
 			HttpSession session = request.getSession();
-			session.setAttribute("productId",embroidery.getProductId());
-			session.setAttribute("number", embroidery.getNumber());
-			session.setAttribute("productName", productName);
+			Product product = productService.findOne(embroidery.getProductId());
+			session.setAttribute("productId", product.getId());
+			session.setAttribute("number", product.getPrimeCost()!=null ? product.getPrimeCost().getNumber():null);
+			session.setAttribute("productName", product.getName());
+
 			embroideryList = embroideryService.findPages(embroidery,page);
 		
 		}

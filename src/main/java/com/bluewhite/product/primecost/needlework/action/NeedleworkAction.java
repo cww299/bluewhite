@@ -34,6 +34,8 @@ import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 import com.bluewhite.product.primecost.materials.service.ProductMaterialsService;
 import com.bluewhite.product.primecost.needlework.entity.Needlework;
 import com.bluewhite.product.primecost.needlework.service.NeedleworkService;
+import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.product.product.service.ProductService;
 @Controller
 public class NeedleworkAction {
 	
@@ -46,7 +48,8 @@ private final static Log log = Log.getLog(NeedleworkAction.class);
 	private CutPartsService cutPartsService;
 	@Autowired
 	private ProductMaterialsService productMaterialsService;
-	
+	@Autowired
+	private ProductService productService;
 	
 	/**
 	 * 针工填写
@@ -82,14 +85,15 @@ private final static Log log = Log.getLog(NeedleworkAction.class);
 	 */
 	@RequestMapping(value = "/product/getNeedlework", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getNeedlework(HttpServletRequest request,PageParameter page,Needlework needlework,String productName ) {
+	public CommonResponse getNeedlework(HttpServletRequest request,PageParameter page,Needlework needlework) {
 		CommonResponse cr = new CommonResponse();
 		PageResult<Needlework>  needleworkList= new PageResult<>(); 
 		if(needlework.getProductId()!=null){
 			HttpSession session = request.getSession();
-			session.setAttribute("productId",needlework.getProductId());
-			session.setAttribute("number", needlework.getNumber());
-			session.setAttribute("productName", productName);
+			Product product = productService.findOne(needlework.getProductId());
+			session.setAttribute("productId", product.getId());
+			session.setAttribute("number", product.getPrimeCost()!=null ? product.getPrimeCost().getNumber():null);
+			session.setAttribute("productName", product.getName());
 			needleworkList = needleworkService.findPages(needlework,page);
 		
 		}
