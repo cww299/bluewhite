@@ -78,9 +78,10 @@ public class ProductAction {
 		CommonResponse cr = new CommonResponse();
 		if(product.getId()!=null){
 			HttpSession session = request.getSession();
+			Product productOne = productService.findOne(product.getId());
 			session.setAttribute("productId", product.getId());
-			session.setAttribute("number", primeCostNumber);
-			session.setAttribute("productName", product.getName());
+			session.setAttribute("number", productOne.getPrimeCost()!=null ? productOne.getPrimeCost().getNumber():null);
+			session.setAttribute("productName", productOne.getName());
 		}
 		cr.setData(ClearCascadeJSON
 				.get()
