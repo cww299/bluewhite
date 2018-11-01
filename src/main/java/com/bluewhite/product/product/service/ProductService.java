@@ -1,5 +1,7 @@
 package com.bluewhite.product.product.service;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -25,7 +27,7 @@ public interface ProductService extends BaseCRUDService<Product,Long>{
 	 * @param page
 	 * @return
 	 */
-	public PrimeCost getPrimeCost(PrimeCost primeCost);
+	public PrimeCost getPrimeCost(PrimeCost primeCost,HttpServletRequest request);
 	
 
 }

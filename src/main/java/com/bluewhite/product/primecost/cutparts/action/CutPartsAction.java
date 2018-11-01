@@ -104,12 +104,14 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 	 */
 	@RequestMapping(value = "/product/getCutParts", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getCutParts(HttpServletRequest request,PageParameter page,CutParts cutParts) {
+	public CommonResponse getCutParts(HttpServletRequest request,PageParameter page,CutParts cutParts,String productName) {
 		CommonResponse cr = new CommonResponse();
 		PageResult<CutParts>  cutPartsList= new PageResult<>(); 
 		if(cutParts.getProductId()!=null){
 			HttpSession session = request.getSession();
 			session.setAttribute("productId",cutParts.getProductId());
+			session.setAttribute("number", cutParts.getNumber());
+			session.setAttribute("productName", productName);
 			cutPartsList = cutPartsService.findPages(cutParts,page);
 		}
 		cr.setData(cutPartsList);

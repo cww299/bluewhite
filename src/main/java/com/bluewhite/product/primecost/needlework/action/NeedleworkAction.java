@@ -82,12 +82,14 @@ private final static Log log = Log.getLog(NeedleworkAction.class);
 	 */
 	@RequestMapping(value = "/product/getNeedlework", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getNeedlework(HttpServletRequest request,PageParameter page,Needlework needlework) {
+	public CommonResponse getNeedlework(HttpServletRequest request,PageParameter page,Needlework needlework,String productName ) {
 		CommonResponse cr = new CommonResponse();
 		PageResult<Needlework>  needleworkList= new PageResult<>(); 
 		if(needlework.getProductId()!=null){
 			HttpSession session = request.getSession();
 			session.setAttribute("productId",needlework.getProductId());
+			session.setAttribute("number", needlework.getNumber());
+			session.setAttribute("productName", productName);
 			needleworkList = needleworkService.findPages(needlework,page);
 		
 		}
