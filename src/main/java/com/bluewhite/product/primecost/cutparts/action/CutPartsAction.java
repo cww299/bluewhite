@@ -25,6 +25,8 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
+import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.product.product.service.ProductService;
 
 @Controller
 public class CutPartsAction {
@@ -33,7 +35,8 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 	
 	@Autowired
 	private CutPartsService cutPartsService;
-	
+	@Autowired
+	private ProductService productService;
 	
 	/**
 	 * cc裁片填写
@@ -109,9 +112,10 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 		PageResult<CutParts>  cutPartsList= new PageResult<>(); 
 		if(cutParts.getProductId()!=null){
 			HttpSession session = request.getSession();
+			Product product = productService.findOne(cutParts.getProductId());
 			session.setAttribute("productId",cutParts.getProductId());
-			session.setAttribute("number", cutParts.getNumber());
-			session.setAttribute("productName", productName);
+			session.setAttribute("number", product.getPrimeCost()!=null ? product.getPrimeCost().getNumber():null);
+			session.setAttribute("productName", product.getName());
 			cutPartsList = cutPartsService.findPages(cutParts,page);
 		}
 		cr.setData(cutPartsList);
