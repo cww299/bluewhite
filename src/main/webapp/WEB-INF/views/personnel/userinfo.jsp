@@ -64,6 +64,8 @@
 								<td>&nbsp&nbsp</td>
 								<td>承诺书:</td><td><select class="form-control" id="promise"><option value="">请选择</option><option value="0">未签</option><option value="1">已签</option></select></td>
 								</tr>
+								<tr><td><div style="height: 10px"></div></td></tr>
+								<tr><td>所属银行:</td><td><input type="text"  id="bankCardtw" class="form-control" /></td></tr>
 								</table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default btn-square btn-sm btn-3d  searchtask">
@@ -1171,6 +1173,7 @@
 											commitment:$('.commitment').val(),
 											safe:$('.safe').val(),
 											type:$('#type4').val(),
+											ascriptionBank1:$('.bankCardtw').val(),
 								  }
 								   $.ajax({
 										url:"${ctx}/system/user/update",
@@ -1475,6 +1478,7 @@
 				  			actua:actua,
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(),
+				  			ascriptionBank1:$("#bankCardtw").val(),
 				  	}
 					
 		            self.loadPagination(data);
