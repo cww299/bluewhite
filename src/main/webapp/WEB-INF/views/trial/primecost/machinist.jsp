@@ -271,9 +271,9 @@
 			      					o.costPrice=""
 			      				 }
 			      				html+='<tr><td class="text-center reste"><label> <input type="checkbox" class="ace checkboxId" data-productid='+o.productId+' value="'+o.id+'"/><span class="lbl"></span></label></td>'
-			      				 +'<td  class="text-center edit name"  style="padding: 2px 0px 2px 4px;"><input type="text" value="'+o.machinistName+'" style="border: none;width:120px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  machinistName" /></td>'
+			      				 +'<td  class="text-center edit name"  style="padding: 9px 0px 2px 4px;"><input type="text" value="'+o.machinistName+'" style="border: none;width:120px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  machinistName" /></td>'
 			   					 +'<td class="text-center edit selectid hidden">'+o.id+'</td>'
-			   					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;"  class="text-center materiel" /></td>'
+			   					 +'<td class="text-center edit materialsr" data-materialsr='+o.materials+' data-id='+o.id+' data-productid='+o.productId+'></td>'
 			   					 +'<td class="text-center edit selectCompany" style="padding: 2px 0px 2px 0px;"></td>'
 			   					 +'<td class="text-center edit selectbody"><a>查看</a></td>'
 			   					 +'<td class="text-center edit selectbody2 hidden">'+o.cutparts+','+'</td>'
@@ -348,6 +348,80 @@
 				  })
 			  }
 			  this.loadEvents=function(){
+				  
+				  
+				  var dataeer={
+						  productId:productIdAll,
+						  type:"machinist",
+				  }
+				  var index;
+				  var htmli = '';
+				  var htmltoi= '';
+				  $.ajax({
+				      url:"${ctx}/product/getOverStock",
+				      data:dataeer,
+				      type:"GET",
+				      beforeSend:function(){
+							index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+						},
+		      		  success: function (result) {
+		      			$(result.data).each(function(i,o){
+		      				htmli +='<option value="'+o.name+'">'+o.name+'</option>'
+		      			}); 
+				       htmltoi='<select class="text-center form-control selecttailorTypey" ><option value="">请选择</option>'+htmli+'</select>'
+		      		  $(".materialsr").html(htmltoi)
+		      				layer.close(index);
+				       $(".selecttailorTypey").each(function(i,o){
+		      				var id=	$(o).parent().data("materialsr");
+							$(o).val(id)
+						})
+				       
+						$(".selecttailorTypey").change(function(i,o){
+				      				var that=$(this);
+				      				var id=$(this).parent().parent().find(".materialsr").data('id');
+				      				var productId=$(this).parent().parent().find(".materialsr").data('productid');
+				      				var dataeee={
+				      						id:id,
+				      						productId:productId,
+				      						materials:$(this).parent().parent().find(".selecttailorTypey").val(),
+				      						
+				      				}
+				      				var index;
+				      				$.ajax({
+									      url:"${ctx}/product/addMachinist",
+									      data:dataeee,
+									      type:"POST",
+									      beforeSend:function(){
+												index = layer.load(1, {
+													  shade: [0.1,'#fff'] //0.1透明度的白色背景
+													});
+											},
+											success:function(result){
+												if(0==result.code){
+												layer.close(index);
+												}else{
+													layer.msg("添加失败！", {icon: 2});
+													layer.close(index);
+												}
+											},error:function(){
+												layer.msg("加载失败！", {icon: 2});
+												layer.close(index);sa
+										  }
+									  });
+								})
+						
+						
+				      },error:function(){
+							layer.msg("加载失败！", {icon: 2});
+							layer.close(index);
+					  }
+				  });
+				  
+				  
+				  
+				  
 				  $(".costPrice").change(function(){
 				    	var that=$(this);
 		      			var id=$(this).parent().parent().find(".checkboxId").val();
@@ -1466,6 +1540,68 @@
 					
 				}
 			  this.mater=function(){
+				  
+				  var dataeer={
+						  productId:productIdAll,
+						  type:"machinist",
+				  }
+				  var index;
+				  var htmli = '';
+				  var htmltoi= '';
+				  $.ajax({
+				      url:"${ctx}/product/getOverStock",
+				      data:dataeer,
+				      type:"GET",
+				      beforeSend:function(){
+							index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+						},
+		      		  success: function (result) {
+		      			$(result.data).each(function(i,o){
+		      				htmli +='<option value="'+o.name+'">'+o.name+'</option>'
+		      			}); 
+				       htmltoi='<select class="text-center form-control selecttailorTypeye" ><option value="">请选择</option>'+htmli+'</select>'
+		      		  $(".materialstw").html(htmltoi)
+		      				layer.close(index);
+						$(".selecttailorTypeye").change(function(i,o){
+				      				var that=$(this);
+				      				var dataeee={
+				      						id:ttat.parent().parent().find('.selectid').text(),
+				      						productId:self.getCache(),
+				      						materials:$(this).parent().parent().find(".selecttailorTypeye").val(),
+				      				}
+				      				var index;
+				      				$.ajax({
+									      url:"${ctx}/product/addMachinist",
+									      data:dataeee,
+									      type:"POST",
+									      beforeSend:function(){
+												index = layer.load(1, {
+													  shade: [0.1,'#fff'] //0.1透明度的白色背景
+													});
+											},
+											success:function(result){
+												if(0==result.code){
+												layer.close(index);
+												}else{
+													layer.msg("添加失败！", {icon: 2});
+													layer.close(index);
+												}
+											},error:function(){
+												layer.msg("加载失败！", {icon: 2});
+												layer.close(index);sa
+										  }
+									  });
+								})
+						
+						
+				      },error:function(){
+							layer.msg("加载失败！", {icon: 2});
+							layer.close(index);
+					  }
+				  });
+				  
 					$(".machinistName").blur(function(){
 						var ttat=$(this)
 						if($(this).val()==""){
@@ -1752,9 +1888,9 @@
 				$('#addCutting').on('click',function(){
 					for (var i = 0; i < 25; i++) {
 					var a=$('#loss').val();
-					 html='<tr><td  class="text-center"></td><td  class="text-center edit name"  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  machinistName" /></td>'
+					 html='<tr><td  class="text-center"></td><td  class="text-center edit name"  style="padding: 9px 0px 2px 4px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  machinistName" /></td>'
 					 +'<td class="text-center edit selectid hidden"></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;"  class="text-center materiel" /></td>'
+					 +'<td class="text-center edit materialstw"></td>'
 					 +'<td class="text-center edit selectCompany" style="padding: 2px 0px 2px 0px;"></td>'
 					 +'<td class="text-center edit selectbody"></td>'
 					 +'<td class="text-center edit selectbody2 hidden"></td>'
