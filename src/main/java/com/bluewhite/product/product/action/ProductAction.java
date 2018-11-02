@@ -217,6 +217,9 @@ public class ProductAction {
 	@RequestMapping(value = "product/menusToUrl", method = RequestMethod.GET)
 	public String menusToJsp(HttpServletRequest request,String url, String paramNum) {
 		HttpSession session = request.getSession();
+		Product productOne = productService.findOne(Long.valueOf(paramNum));
+		session.setAttribute("number", productOne.getPrimeCost()!=null ? productOne.getPrimeCost().getNumber():null);
+		session.setAttribute("productName", productOne.getName());
 		session.setAttribute("productId", paramNum);
 		return url;
 	}

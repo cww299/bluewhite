@@ -15,7 +15,6 @@ import org.springframework.beans.BeanWrapperImpl;
 /**
  * 为简化开发，特提供bean拷贝类，将a bean中不为null的元素拷贝到b中。
  * <br/>可以增加过滤字段，为目标bean数据安全，优先不过滤原则。
- * @author ZhouYong
  *
  */
 public class BeanCopyUtils {
