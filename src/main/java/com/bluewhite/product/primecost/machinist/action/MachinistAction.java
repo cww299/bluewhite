@@ -150,7 +150,7 @@ public class MachinistAction {
 		for(Tailor tailor : tailorList){
 			map =  new HashMap<String, Object>();
 			map.put("name", tailor.getTailorName());
-			map.put("price", tailor.getMachinistPriceDown());
+			map.put("price", tailor.getMachinistPriceDown()!=null ? tailor.getMachinistPriceDown() :0);
 			mapList.add(map);
 		}
 		//获取机工页面所有选定的物料名
@@ -158,7 +158,7 @@ public class MachinistAction {
 		for(Machinist machinist : machinistList){
 			map =  new HashMap<String, Object>();
 			map.put("name", machinist.getMachinistName());
-			map.put("price", machinist.getSumPriceDownRemark());
+			map.put("price", machinist.getSumPriceDownRemark()!=null ? machinist.getSumPriceDownRemark():0);
 			mapList.add(map);
 		}
 		cr.setData(mapList);

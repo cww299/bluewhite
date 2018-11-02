@@ -231,6 +231,13 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Column(name = "bank_card1")
     private String bankCard1;
+	
+	/**
+	 * 所属银行1
+	 */
+	@Column(name = "ascription_bank1")
+    private String ascriptionBank1;
+	
 	/**
 	 * 银行卡2
 	 */
@@ -475,6 +482,16 @@ public class User extends BaseEntity<Long> {
 	
 	
 	
+	
+
+
+	public String getAscriptionBank1() {
+		return ascriptionBank1;
+	}
+
+	public void setAscriptionBank1(String ascriptionBank1) {
+		this.ascriptionBank1 = ascriptionBank1;
+	}
 
 	public Integer getType() {
 		return type;
