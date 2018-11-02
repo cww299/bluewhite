@@ -3,6 +3,7 @@ package com.bluewhite.product.primecost.tailor.action;
 import java.text.SimpleDateFormat;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -29,6 +30,8 @@ import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.OrdinaryLaserService;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
 import com.bluewhite.product.primecostbasedata.entity.PrimeCoefficient;
+import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.product.product.service.ProductService;
 
 @Controller
 public class TailorAction {
@@ -42,6 +45,8 @@ public class TailorAction {
 	
 	@Autowired
 	private OrdinaryLaserService  ordinaryLaserService;
+	@Autowired
+	private ProductService productService;
 	
 
 	/**
@@ -82,6 +87,11 @@ public class TailorAction {
 		CommonResponse cr = new CommonResponse();
 		PageResult<Tailor>  tailorList= new PageResult<>(); 
 		if(tailor.getProductId()!=null){
+				HttpSession session = request.getSession();
+				Product product = productService.findOne(tailor.getProductId());
+				session.setAttribute("productId", product.getId());
+				session.setAttribute("number", product.getPrimeCost()!=null ? product.getPrimeCost().getNumber():null);
+				session.setAttribute("productName", product.getName());
 			tailorList = tailorService.findPages(tailor,page);
 		
 		}
