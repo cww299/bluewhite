@@ -63,7 +63,7 @@
 								 <td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
 									<button type="button" id="addCutting" class="btn btn-success  btn-sm btn-3d export">
-									新增裁片
+									新增
 									</button>
 								</span> 
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
@@ -211,10 +211,16 @@
 		  	this.setNum = function(num){
 		  		_num=num;
 		  	}
+		  	var productIdAll="${productId}";
+		  	var productNameAll="${productNamexx}";
+		  	var productNumberAll="${productNumberxx}";
+		  	self.setCache(productIdAll)
+		  	$("#productName").val(productNameAll);
+		  	$("#number").val(productNumberAll);
 			 var data={
 						page:1,
 				  		size:13,	
-				  		productId:"",
+				  		productId:productIdAll,
 				} 
 			this.init = function(){
 				
@@ -539,7 +545,7 @@
 									var data={
 											page:self.getCount(),
 									  		size:13,	
-									  		
+									  		productId:productIdAll,
 									} 
 								   self.loadPagination(data);
 									layer.close(index);
@@ -678,8 +684,10 @@
 				$('.searchtask').on('click',function(){
 					var data = {
 				  			page:1,
-				  			size:13,
+				  			size:100,
 				  			productId:self.getCache(),
+				  			primeCostNumber:$('#number').val(),
+				  			name: $('#name').val(),
 				  	}
 		            self.loadPagination(data);
 				});
@@ -803,7 +811,7 @@
 						
 					});
 				
-				//新增裁片
+				//新增
 					
 					var html="";
 				$('#addCutting').on('click',function(){

@@ -1037,9 +1037,10 @@
 						var data = {
 							page: 1,
 							size: 13,
-							name: $('#name').val(),
-							number: $('#number').val(),
+							name: $('#productName2').val(),
+							number:$('#number').val(),
 							id:self.getNum(),
+							primeCostNumber:$('#number2').val(),
 						}
 						self.loadPagination(data);
 					});
