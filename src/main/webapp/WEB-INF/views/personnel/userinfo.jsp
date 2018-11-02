@@ -766,6 +766,7 @@
 								  			actua:actua,
 								  			orderTimeBegin:$("#startTime").val(),
 								  			orderTimeEnd:$("#endTime").val(),
+								  			ascriptionBank1:$("#bankCardtw").val(),
 								  	}
 						            self.loadPagination(_data);
 							     }
@@ -1222,6 +1223,7 @@
 											  			actua:actua,
 											  			orderTimeBegin:$("#startTime").val(),
 											  			orderTimeEnd:$("#endTime").val(),
+											  			ascriptionBank1:$("#bankCardtw").val(),
 											  	}
 												layer.close(index);
 												self.loadPagination(data);
@@ -1399,6 +1401,7 @@
 											  			actua:actua,
 											  			orderTimeBegin:$("#startTime").val(),
 											  			orderTimeEnd:$("#endTime").val(),
+											  			ascriptionBank1:$("#bankCardtw").val(),
 											  	}
 												layer.close(index);
 												$("#productId").text("");

@@ -338,8 +338,8 @@
 							})
 									$(".selecttailorType8").change(function(i,o){
 									      				var that=$(this);
-									      				var overstockId=$(this).parent().parent().find(".selecttailorType8").val();
-									      				var name=$(this).parent().parent().find(".selecttailorType8 option:selected").text();
+									      				var overstockId=that.parent().parent().find(".selecttailorType8").val();
+									      				var name=that.parent().parent().find(".selecttailorType8 option:selected").text();
 									      				var dataeee={
 									      						 id:that.parent().data('id'),
 																 productId:that.parent().data('productid'),
@@ -543,8 +543,8 @@
 									if(0==result.code){
 									layer.msg(result.message, {icon: 1});
 									var data={
-											page:self.getCount(),
-									  		size:13,	
+											page:1,
+									  		size:100,	
 									  		productId:productIdAll,
 									} 
 								   self.loadPagination(data);
