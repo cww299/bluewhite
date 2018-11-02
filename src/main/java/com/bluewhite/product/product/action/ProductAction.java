@@ -151,13 +151,6 @@ public class ProductAction {
 	@ResponseBody
 	public CommonResponse updateProduct(HttpServletRequest request,Product product) {
 		CommonResponse cr = new CommonResponse();
-		Product products = dao.findByNumber(product.getNumber());
-		if(products!=null){
-			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("已有该产品编号的产品，请检查后再次添加");
-			return cr;
-		}
-		
 		if(product.getId()!=null){
 			Product oldProduct = productService.findOne(product.getId());
 			BeanCopyUtils.copyNullProperties(oldProduct,product);
