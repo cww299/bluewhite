@@ -545,7 +545,7 @@
 									var data={
 											page:self.getCount(),
 									  		size:13,	
-									  		
+									  		productId:productIdAll,
 									} 
 								   self.loadPagination(data);
 									layer.close(index);

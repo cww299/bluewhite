@@ -1149,6 +1149,7 @@
 													var productId=$(this).parent().find('.selectid3').text();
 													var postData={
 															id:id,
+															productId:productIdAll,
 													}
 													$.ajax({
 														url:"${ctx}/product/getEmbroidery",
@@ -1322,6 +1323,7 @@
 													var productId=$(this).parent().find('.selectid3').text();
 													var postData={
 															id:id,
+															productId:productIdAll,
 													}
 													$.ajax({
 														url:"${ctx}/product/getEmbroidery",

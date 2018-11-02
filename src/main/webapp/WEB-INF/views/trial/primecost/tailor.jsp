@@ -1114,7 +1114,7 @@
 		      				 }else{
 		      					o.costPrice=""
 		      				 }
-		      				 html +='<tr>'
+		      				 html +='<tr><td class="center reste hidden"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center edit ">'+o.tailorName+'</td>'
 		      				+'<td class="text-center edit ">'+o.tailorNumber+'</td>'
 		      				+'<td class="text-center edit ">'+o.bacthTailorNumber+'</td>'

@@ -1571,6 +1571,7 @@
 						var id=$(this).parent().find('.selectid').text();
 						var postData={
 								id:id,
+								productId:productIdAll,
 						}
 						$.ajax({
 							url:"${ctx}/product/getMachinist",
