@@ -152,6 +152,12 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			if (!StringUtils.isEmpty(user.getUserName())) {
 				predicate.add(cb.like(root.get("userName").as(String.class),"%" + user.getUserName() + "%"));
 			}
+			
+			//按归属银行查找
+			if (!StringUtils.isEmpty(user.getAscriptionBank1())) {
+				predicate.add(cb.like(root.get("ascriptionBank1").as(String.class),"%" + user.getAscriptionBank1() + "%"));
+			}
+			
 			//按员工编号
 			if (!StringUtils.isEmpty(user.getNumber())) {
 				predicate.add(cb.like(root.get("number").as(String.class),"%" + user.getNumber() + "%"));

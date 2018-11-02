@@ -61,7 +61,7 @@ public class UserAction {
 						"nation","email","gender","birthDate","group","idCard","permanentAddress","livingAddress","marriage","procreate","education"
 						,"school","major","contacts","information","entry","estimate","actua","socialSecurity","bankCard1","bankCard2","agreement","safe","commitment"
 						,"promise","contract","contractDate","contractDateEnd","frequency","quitDate","quit","reason","train","remark","userContract","commitments"
-						,"agreementId","company","age","type")
+						,"agreementId","company","age","type","ascriptionBank1")
 				.addRetainTerm(Group.class, "id","name", "type", "price")
 				.addRetainTerm(Role.class, "name", "role", "description","id")
 				.addRetainTerm(BaseData.class, "id","name", "type")
@@ -293,7 +293,13 @@ public class UserAction {
 	@ResponseBody
 	private CommonResponse test(User user) {
 		CommonResponse cr = new CommonResponse();
-		userService.oooxxx();
+		List<User> userList = userService.findAll();
+		userList = userList.stream().filter(User->User.getBankCard1()!=null).collect(Collectors.toList());
+		for(User us : userList){
+			String bankName = BankUtil.getNameOfBank(us.getBankCard1());
+			us.setAscriptionBank1(bankName);
+		}
+		userDao.save(userList);
 		return cr;
 	}
 	
