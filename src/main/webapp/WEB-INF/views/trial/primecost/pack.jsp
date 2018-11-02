@@ -57,8 +57,6 @@
 								<td>默认数量:</td><td><input type="text" name="number" id="number" placeholder="请输入默认数量" class="form-control search-query number" /></td>
 									<td>&nbsp&nbsp</td>
 								<td>默认耗损:</td><td><input type="text" name="name" id="loss" placeholder="请输入产品名称" class="form-control search-query name" /></td>
-								<!-- <td>&nbsp&nbsp</td> -->
-								<!-- <td>完成状态:</td><td><select class="form-control" id="selectstate"><option value=0>未完成</option><option value=1>已完成</option></select></td> -->
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
@@ -68,7 +66,7 @@
 								 <td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
 									<button type="button" id="addCutting" class="btn btn-success  btn-sm btn-3d export">
-									新增裁片
+									新增
 									</button>
 								</span> 
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
@@ -129,28 +127,6 @@
 										</div>
                                         </div>
             <div class="tab-pane" id="profile1">
-                      <!--查询开始  -->
-          		 <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-10 col-sm-10  col-md-10">
-						<form class="form-search" >
-							<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group"> 
-								<table><tr><td>批次:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
-								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
-										查找
-										<i class="icon-search icon-on-right bigger-110"></i>
-									</button>
-								</span>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-            <!-- 查询结束 -->  
                                    <table class="table table-hover">
                                     <thead>
                                         <tr>
@@ -234,10 +210,16 @@
 	  	this.setNum = function(num){
 	  		_num=num;
 	  	}
+	  	var productIdAll="${productId}";
+	  	var productNameAll="${productNamexx}";
+	  	var productNumberAll="${productNumberxx}";
+	  	self.setCache(productIdAll)
+	  	$("#productName").val(productNameAll);
+	  	$("#number").val(productNumberAll);
 		 var data={
 					page:1,
 			  		size:100,	
-			  		productId:"",
+			  		productId:productIdAll,
 			} 
 			this.init = function(){
 				
@@ -965,11 +947,19 @@
 					var data={
 							page:1,
 					  		size:100,	
-					  		productId:"",
+					  		productId:productIdAll,
 					}
 					self.loadPagination(data);
 				})
 				
+				$('.searchtask').on('click',function(){
+					var data = {
+				  			page:1,
+				  			size:100,
+				  			productId:self.getCache(),
+				  	}
+		            self.loadPagination(data);
+				});
 				$('.start').on('click',function(){
 					  var  that=$(this);
 					  var arr=new Array()//员工id
@@ -1005,7 +995,7 @@
 									var data={
 											page:1,
 									  		size:100,	
-									  		productId:"",
+									  		productId:productIdAll,
 									}
 									self.loadPagination(data);
 								}else{

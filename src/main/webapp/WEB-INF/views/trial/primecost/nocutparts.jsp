@@ -63,7 +63,7 @@
 								 <td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
 									<button type="button" id="addCutting" class="btn btn-success  btn-sm btn-3d export">
-									新增裁片
+									新增
 									</button>
 								</span> 
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
@@ -642,7 +642,7 @@
 				$('.searchtask').on('click',function(){
 					var data = {
 				  			page:1,
-				  			size:13,
+				  			size:100,
 				  			productId:self.getCache(),
 				  	}
 		            self.loadPagination(data);
@@ -757,7 +757,7 @@
 						
 					});
 				
-				//新增裁片
+				//新增
 					
 					var html="";
 				$('#addCutting').on('click',function(){

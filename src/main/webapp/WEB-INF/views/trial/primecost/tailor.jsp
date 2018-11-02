@@ -55,7 +55,30 @@
                                     <div class="tab-content">
                                         <div class="tab-pane active" id="home1">
             <!-- 查询结束 -->
-                                        
+                                        <div class="row" style="height: 30px; margin:15px 0 10px">
+			<div class="col-xs-11 col-sm-11  col-md-11">
+				<form class="form-search" >
+					<div class="row">
+						<div class="col-xs-11 col-sm-11 col-md-11">
+							<div class="input-group"> 
+								<table><tr>
+								<td>产品名:</td><td><input type="text" name="name" id="productName" placeholder="请输入产品名称" class="form-control search-query name" data-provide="typeahead" autocomplete="off"/ ></td>
+								<td>&nbsp&nbsp</td>
+								<td>默认数量:</td><td><input type="text" name="number" id="number" placeholder="请输入默认数量" class="form-control search-query number" /></td>
+									<td>&nbsp&nbsp</td>
+								<td>默认耗损:</td><td><input type="text" name="name" id="loss" placeholder="请输入产品名称" class="form-control search-query name" /></td>
+								</tr></table> 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtaskks">
+											查&nbsp找
+									</button>
+								</span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
                                             <table class="table table-hover" >
                                     <thead>
                                         <tr>
@@ -992,6 +1015,7 @@
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
     <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
     <script src="${ctx }/static/js/vendor/mSlider.min.js"></script>
+    <script src="${ctx }/static/js/vendor/typeahead.js"></script>
     <script>
    jQuery(function($){
    	var Login = function(){
@@ -1014,6 +1038,9 @@
 		  	var productIdAll="${productId}";
 		  	var productNameAll="${productNamexx}";
 		  	var productNumberAll="${productNumberxx}";
+		  	self.setCache(productIdAll)
+		  	$("#productName").val(productNameAll);
+		  	$("#number").val(productNumberAll);
 				var data={
 						page:1,
 				  		size:100,	
@@ -3265,6 +3292,16 @@
 					}
 					self.loadPagination(data);
 				})
+				
+				$('.searchtaskks').on('click',function(){
+					var data = {
+				  			page:1,
+				  			size:100,
+				  			productId:self.getCache(),
+				  	}
+		            self.loadPagination(data);
+				});
+				
 				$(".searchtask").on('click',function(){
 					$(".layer-right").css("display","block");
 					var demo = new mSlider({
@@ -3327,6 +3364,53 @@
 					})
 					demo.open()
 				})
+				
+				//提示产品名
+				$("#productName").typeahead({
+					//ajax 拿way数据
+					source : function(query, process) {
+							return $.ajax({
+								url : '${ctx}/getProductPages',
+								type : 'GET',
+								data : {
+									name:query,
+								},
+								
+								success : function(result) {
+									//转换成 json集合
+									 var resultList = result.data.rows.map(function (item) {
+										 	//转换成 json对象
+					                        var aItem = {name: item.name, id:item.id, number:item.primeCost==null ? "" : item.primeCost.number}
+					                        //处理 json对象为字符串
+					                        return JSON.stringify(aItem);
+					                    });
+									//提示框返回数据
+									 return process(resultList);
+								},
+							})
+							//提示框显示
+						}, highlighter: function (item) {
+						    //转出成json对象
+							 var item = JSON.parse(item);
+							return item.name+"-"+item.id
+							//按条件匹配输出
+		                }, matcher: function (item) {
+		                	//转出成json对象
+					        var item = JSON.parse(item);
+					        self.setCache(item.id)
+					        $('#number').val(item.number)
+					    	return item.name
+					    },
+						//item是选中的数据
+						updater:function(item){
+							//转出成json对象
+							var item = JSON.parse(item);
+							self.setCache(item.id)
+							 $('#number').val(item.number)
+								return item.name
+						},
+						
+					});
 			}
    	}
    			var login = new Login();
