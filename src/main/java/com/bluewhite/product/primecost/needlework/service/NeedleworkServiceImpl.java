@@ -69,10 +69,10 @@ public class NeedleworkServiceImpl extends BaseServiceImpl<Needlework, Long> imp
 		//上道压价（整个皮壳）(从机工页面中获取所有为针工准备的压价  +  从裁剪页面中获取所有为机工准备的压价)
 		List<Machinist> machinistList = machinistService.findByProductId(needlework.getProductId());
 		//从机工页面中获取所有为针工准备的压价
-		double needleworkPriceDown = machinistList.stream().mapToDouble(Machinist::getNeedleworkPriceDown).sum();
+		double needleworkPriceDown = machinistList.stream().filter(Machinist->Machinist.getNeedleworkPriceDown()!=null).mapToDouble(Machinist::getNeedleworkPriceDown).sum();
 		List<Tailor> tailorList = tailorService.findByProductId(needlework.getProductId());
 		//从裁剪页面中获取所有为机工准备的压价
-		double machinistPriceDown = tailorList.stream().mapToDouble(Tailor::getMachinistPriceDown).sum();
+		double machinistPriceDown = tailorList.stream().filter(Tailor->Tailor.getMachinistPriceDown()!=null).mapToDouble(Tailor::getMachinistPriceDown).sum();
 		needlework.setPriceDown(machinistPriceDown+needleworkPriceDown);
 		return dao.save(needlework);
 

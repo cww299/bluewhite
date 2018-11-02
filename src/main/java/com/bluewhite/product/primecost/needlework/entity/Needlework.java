@@ -118,8 +118,20 @@ public class Needlework extends BaseEntity<Long>{
 	@Column(name = "price_down")
     private Double priceDown;
 	
+	/**
+	 * 该工序有可能用到的物料
+	 */
+	@Column(name = "materials")
+    private String materials;
 	
-	
+
+	public String getMaterials() {
+		return materials;
+	}
+
+	public void setMaterials(String materials) {
+		this.materials = materials;
+	}
 
 	public Double getHelpWorkPrice() {
 		return helpWorkPrice;

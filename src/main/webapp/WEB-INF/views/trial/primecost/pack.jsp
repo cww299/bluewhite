@@ -305,7 +305,7 @@
 				   					 +'<td class="text-center oneTime">'+parseFloat((o.oneTime).toFixed(5))+'</td>'
 				   					+'<td class="text-center batchTime">'+parseFloat((o.batchTime).toFixed(5))+'</td>'
 				   					+'<td class="text-center onePackTime">'+parseFloat((o.onePackTime).toFixed(5))+'</td>'
-				   					+'<td class="text-center">'+o.materiel+'</td>'
+				   					+'<td class="text-center edit materialsr" data-materialsr='+o.materiel+' data-id='+o.id+' data-productid='+o.productId+'></td>'
 				   					+'<td class="text-center packPrice">'+parseFloat((o.packPrice).toFixed(5))+'</td>'
 				   					+'<td class="text-center equipmentPrice">'+parseFloat((o.equipmentPrice).toFixed(5))+'</td>'
 				   					+'<td class="text-center administrativeAtaff">'+parseFloat((o.administrativeAtaff).toFixed(5))+'</td>'
@@ -323,6 +323,78 @@
 				  })
 			  }
 			  this.loadEvents2=function(){
+				  
+				  var dataeer={
+						  productId:productIdAll,
+						  type:"pack",
+				  }
+				  var index;
+				  var htmli = '';
+				  var htmltoi= '';
+				  $.ajax({
+				      url:"${ctx}/product/getOverStock",
+				      data:dataeer,
+				      type:"GET",
+				      beforeSend:function(){
+							index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+						},
+		      		  success: function (result) {
+		      			$(result.data).each(function(i,o){
+		      				htmli +='<option value="'+o.name+'">'+o.name+'</option>'
+		      			}); 
+				       htmltoi='<select class="text-center form-control selecttailorTypey" ><option value="">请选择</option>'+htmli+'</select>'
+		      		  $(".materialsr").html(htmltoi)
+		      				layer.close(index);
+				       $(".selecttailorTypey").each(function(i,o){
+		      				var id=	$(o).parent().data("materialsr");
+							$(o).val(id)
+						})
+				       
+						$(".selecttailorTypey").change(function(i,o){
+				      				var that=$(this);
+				      				var id=$(this).parent().parent().find(".materialsr").data('id');
+				      				var productId=$(this).parent().parent().find(".materialsr").data('productid');
+				      				var dataeee={
+				      						id:id,
+				      						productId:productId,
+				      						materiel:$(this).parent().parent().find(".selecttailorTypey").val(),
+				      						
+				      				}
+				      				var index;
+				      				$.ajax({
+									      url:"${ctx}/product/addPack",
+									      data:dataeee,
+									      type:"POST",
+									      beforeSend:function(){
+												index = layer.load(1, {
+													  shade: [0.1,'#fff'] //0.1透明度的白色背景
+													});
+											},
+											success:function(result){
+												if(0==result.code){
+												layer.close(index);
+												}else{
+													layer.msg("添加失败！", {icon: 2});
+													layer.close(index);
+												}
+											},error:function(){
+												layer.msg("加载失败！", {icon: 2});
+												layer.close(index);sa
+										  }
+									  });
+								})
+						
+						
+				      },error:function(){
+							layer.msg("加载失败！", {icon: 2});
+							layer.close(index);
+					  }
+				  });
+				  
+				  
+				  
 				  $(".kindWork").each(function(i,o){
 						var id=	$(o).parent().data("kindwork");
 						$(o).val(id)

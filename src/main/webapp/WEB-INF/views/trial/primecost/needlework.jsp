@@ -259,7 +259,7 @@
 			   					 +'<td class="text-center edit classify2">'+o.classify+'</td>'
 			   					 +'<td class="text-center edit times2">'+o.seconds+'</td>'
 			   					 +'<td class="text-center edit selectCompany">'+o.needleworkName+o.classify+'</td>'
-			   					 +'<td class="text-center edit allCostPrice"></td>'
+			   					+'<td class="text-center edit materialsr" data-materialsr='+o.materials+' data-id='+o.id+' data-productid='+o.productId+'></td>'
 			   					 +'<td class="text-center edit needleworkPrice">'+(o.needleworkPrice!=null?o.needleworkPrice:"")+'</td>'
 			   					 +'<td class="text-center edit allCostPrice">'+(o.allCostPrice!=null?o.allCostPrice:"")+'</td>'
 			   					 +'<td class="text-center edit priceDown">'+(o.priceDown!=null?o.priceDown:"")+'</td></tr>'
@@ -429,6 +429,76 @@
 			  }
 			  this.loadEvents=function(){
 				 
+				  var dataeer={
+						  productId:productIdAll,
+						  type:"needlework",
+				  }
+				  var index;
+				  var htmli = '';
+				  var htmltoi= '';
+				  $.ajax({
+				      url:"${ctx}/product/getOverStock",
+				      data:dataeer,
+				      type:"GET",
+				      beforeSend:function(){
+							index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+						},
+		      		  success: function (result) {
+		      			$(result.data).each(function(i,o){
+		      				htmli +='<option value="'+o.name+'">'+o.name+'</option>'
+		      			}); 
+				       htmltoi='<select class="text-center form-control selecttailorTypey" ><option value="">请选择</option>'+htmli+'</select>'
+		      		  $(".materialsr").html(htmltoi)
+		      				layer.close(index);
+				       $(".selecttailorTypey").each(function(i,o){
+		      				var id=	$(o).parent().data("materialsr");
+							$(o).val(id)
+						})
+				       
+						$(".selecttailorTypey").change(function(i,o){
+				      				var that=$(this);
+				      				var id=$(this).parent().parent().find(".materialsr").data('id');
+				      				var productId=$(this).parent().parent().find(".materialsr").data('productid');
+				      				var dataeee={
+				      						id:id,
+				      						productId:productId,
+				      						materials:$(this).parent().parent().find(".selecttailorTypey").val(),
+				      						
+				      				}
+				      				var index;
+				      				$.ajax({
+									      url:"${ctx}/product/addNeedlework",
+									      data:dataeee,
+									      type:"POST",
+									      beforeSend:function(){
+												index = layer.load(1, {
+													  shade: [0.1,'#fff'] //0.1透明度的白色背景
+													});
+											},
+											success:function(result){
+												if(0==result.code){
+												layer.close(index);
+												}else{
+													layer.msg("添加失败！", {icon: 2});
+													layer.close(index);
+												}
+											},error:function(){
+												layer.msg("加载失败！", {icon: 2});
+												layer.close(index);sa
+										  }
+									  });
+								})
+						
+						
+				      },error:function(){
+							layer.msg("加载失败！", {icon: 2});
+							layer.close(index);
+					  }
+				  });
+				  
+				  
 			  }
 			  
 							  

@@ -115,8 +115,24 @@
                                 </table>
                                         </div>
             <div class="tab-pane" id="profile1">
-                      <!--查询开始  -->
-            <!-- 查询结束 -->  
+                      <div class="row" style="height: 30px; margin:15px 0 10px">
+					<div class="col-xs-8 col-sm-8  col-md-8">
+						<form class="form-search" >
+							<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12">
+							<div class="input-group"> 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-info btn-square btn-sm btn-3d navbar-right searchtask2">
+										查找
+										<i class="icon-search icon-on-right bigger-110"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
                                    <table class="table table-hover">
                                     <thead>
                                         <tr>
@@ -182,7 +198,104 @@
 </div> 
   
   
-  
+ <div class="wrap">
+<div class="layer-right5" style="display: none;">
+           <div class=" col-xs-12  col-sm-12  col-md-12">
+				<div class="space-10"></div>
+				<div style="height: 30px"></div>
+				<form class="form-horizontal addDictDivTypeFormtw">
+					<div class="row col-xs-12  col-sm-12  col-md-12" >
+									<table>
+                                        
+                                       <tr>
+                                        	<th class="text-center">每层拉布时间/秒:</th><td><input type="text" id="electricPushOne5"  class="form-control actualtimetw"></td>
+                                        	<th class="text-center">每层拉布宽度/米:</th><td><input type="text" id="electricPushTwo5"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                       		<th class="text-center">固定边缘秒数:</th><td><input type="text" id="electricPushThree5"  class="form-control"></td>
+                                       		<td><input type="text" id="ordid5" class="hidden"></td>
+                                       		<th><button type="button" class="btn btn-info  btn-sm  btn-trans updateord">修改</button></th>
+                                       </tr>
+                                       <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">画版时间/片/秒:</th><td><input type="text" id="electricPushFour5"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                      	<tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">电推机秒走CM?:</th><td><input type="text"  id="electricPushFive5" class="form-control actualtimetw"></td>
+                                            <th class="text-center">每CM 用时/秒:</th><td><input type="text" disabled="disabled" id="time5"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                       <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">放快手比:</th><td><input type="text"  id="quickWorker5" class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">缝纫机设备价值:</th><td><input type="text"  id="worth5" class="form-control actualtimetw"></td>
+                                            <th class="text-center">每秒设备折旧费用:</th><td><input type="text" disabled="disabled" id="depreciation5"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">设置分摊天数:</th><td><input type="text" id="shareDay5"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">每天机器工作时间设置/小时:</th><td><input type="text" id="workTime5"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">小零件费用:</th><td><input type="text" id="laserTubePrice5"  class="form-control actualtimetw"></td>
+                                            <th class="text-center">每秒小零件费用:</th><td><input type="text" disabled="disabled" id="laserTubePriceSecond5"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">分摊小时:</th><td><input type="text" id="shareTime5"  class="form-control actualtimetw"></td>
+                                            <th class="text-center">每秒维护费用:</th><td><input type="text" disabled="disabled" id="maintenanceChargeSecond5"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">维护费用:</th><td><input type="text" id="maintenanceCharge5"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">分摊小时:</th><td><input type="text" id="shareTimeTwo5"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">每小时耗电/元:</th><td><input type="text" id="omnHorElectric5"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">每小时耗水/元:</th><td><input type="text" id="omnHorWater5"  class="form-control actualtimetw"></td>
+                                            <th class="text-center">每秒耗3费:</th><td><input type="text" disabled="disabled" id="perSecondPrice5"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">每小时耗房租/元:</th><td><input type="text" id="omnHorHouse5"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">每小时机工工价:</th><td><input type="text" id="omnHorMachinist5"  class="form-control actualtimetw"></td>
+                                            <th class="text-center">每秒工价:</th><td><input type="text" disabled="disabled" id="perSecondMachinist5"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">制版分配任务管理人员工资:</th><td><input type="text" id="managePrice5"   class="form-control actualtimetw"></td>
+                                            <th class="text-center">每秒管理费用:</th><td><input type="text" disabled="disabled" id="perSecondManage5"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                       <tr>
+                                        	<th class="text-center">管理设备数量:</th><td><input type="text" id="manageEquipmentNumber5"  class="form-control actualtimetw"></td>
+                                            <th class="text-center">设置激光设备利润比:</th><td><input type="text" id="equipmentProfit5"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                    </table>
+                    	</div>
+                 		
+				</form>
+                 </div>
+				</div>
+  </div>  
  
 
   
@@ -465,6 +578,121 @@
 				    })
 			  }
 			  this.loadEvents2=function(){
+				  
+				//调用基础数据
+				  var data2 = {
+							type:"machinist",
+						}
+				  var index;
+				  $.ajax({
+				      url:"${ctx}/product/getPrimeCoefficient",
+				      data:data2,
+				      type:"GET",
+		      		  success: function (result) {
+		      			 $(result.data).each(function(i,o){
+		      			$("#ordid5").val(o.id)
+		      			$("#electricPushOne5").val(o.electricPushOne)
+		      			$("#electricPushTwo5").val(o.electricPushTwo)
+		      			$("#electricPushThree5").val(o.electricPushThree)
+		      			$("#electricPushFour5").val(o.electricPushFour)
+		      			$("#electricPushFive5").val(o.electricPushFive)
+		      			$("#time5").val(o.time)
+		      			$("#quickWorker5").val(o.quickWorker)
+		      			$("#worth5").val(o.worth)
+		      			$("#depreciation5").val(o.depreciation)
+		      			$("#shareDay5").val(o.shareDay)
+		      			$("#workTime5").val(o.workTime)
+		      			$("#laserTubePrice5").val(o.laserTubePrice)
+		      			$("#laserTubePriceSecond5").val(o.laserTubePriceSecond)
+		      			$("#shareTime5").val(o.shareTime)
+		      			$("#maintenanceChargeSecond5").val(o.maintenanceChargeSecond)
+		      			$("#maintenanceCharge5").val(o.maintenanceCharge)
+		      			$("#shareTimeTwo5").val(o.shareTimeTwo)
+		      			$("#omnHorElectric5").val(o.omnHorElectric)
+		      			$("#omnHorWater5").val(o.omnHorWater)
+		      			$("#perSecondPrice5").val(o.perSecondPrice)
+		      			$("#omnHorHouse5").val(o.omnHorHouse)
+		      			$("#omnHorMachinist5").val(o.omnHorMachinist)
+		      			$("#perSecondMachinist5").val(o.perSecondMachinist)
+		      			$("#omnHorAuxiliary5").val(o.omnHorAuxiliary)
+		      			$("#perSecondMachinistTwo5").val(o.perSecondMachinistTwo)
+		      			$("#managePrice5").val(o.managePrice)
+		      			$("#perSecondManage5").val(o.perSecondManage)
+		      			$("#manageEquipmentNumber5").val(o.manageEquipmentNumber)
+		      			$("#equipmentProfit5").val(o.equipmentProfit)
+		      			$("#embroideryLaserNumber5").val(o.embroideryLaserNumber)
+		      			$("#perimeterLess5").val(o.perimeterLess)
+		      			$("#perimeterLessNumber5").val(o.perimeterLessNumber)
+		      			 }); 
+		      		  },error:function(){
+							layer.msg("加载失败！", {icon: 2});
+							layer.close(index);
+					  }
+				  });
+				  $(".updateord").on('click',function(){
+					  var data={
+					  	id:$("#ordid5").val(),
+					  	extent:12,
+					  	electricPushOne:$("#electricPushOne5").val(),
+					  	electricPushTwo:$("#electricPushTwo5").val(),
+					  	electricPushThree:$("#electricPushThree5").val(),
+					  	electricPushFour:$("#electricPushFour5").val(),
+					  	electricPushFour:$("#electricPushFour5").val(),
+					  	electricPushFive:$("#electricPushFive5").val(),
+					  	quickWorker:$("#quickWorker5").val(),
+					  	worth:$("#worth5").val(),
+					  	shareDay:$("#shareDay5").val(),
+					  	workTime:$("#workTime5").val(),
+					  	laserTubePrice:$("#laserTubePrice5").val(),
+					  	shareTime:$("#shareTime5").val(),
+					  	maintenanceCharge:$("#maintenanceCharge5").val(),
+					  	shareTimeTwo:$("#shareTimeTwo5").val(),
+					  	omnHorElectric:$("#omnHorElectric5").val(),
+					  	omnHorWater:$("#omnHorWater5").val(),
+					  	omnHorHouse:$("#omnHorHouse5").val(),
+					  	omnHorMachinist:$("#omnHorMachinist5").val(),
+					  	omnHorAuxiliary:$("#omnHorAuxiliary5").val(),
+					  	managePrice:$("#managePrice5").val(),
+					  	manageEquipmentNumber:$("#manageEquipmentNumber5").val(),
+					  	equipmentProfit:$("#equipmentProfit5").val(),
+					  	perimeterLessNumber:$("#perimeterLessNumber5").val(),
+					  	perimeterLess:$("#perimeterLess5").val(),
+					  	embroideryLaserNumber:$("#embroideryLaserNumber5").val(),
+					  }
+					  $.ajax({
+					      url:"${ctx}/product/updatePrimeCoefficient",
+					      data:data,
+					      type:"POST",
+			      		  success: function (result) {
+			      			 $(result.data).each(function(i,o){
+			      				$("#time5").val(o.time)
+			      				$("#depreciation5").val(o.depreciation)
+			      				$("#laserTubePriceSecond5").val(o.laserTubePriceSecond)
+			      				$("#maintenanceChargeSecond5").val(o.maintenanceChargeSecond)
+			      				$("#perSecondPrice5").val(o.perSecondPrice)
+			      				$("#perSecondMachinist5").val(o.perSecondMachinist)
+			      				$("#perSecondManage5").val(o.perSecondManage)
+			      				$("#perSecondMachinistTwo5").val(o.perSecondMachinistTwo)
+			      				$("#time5").val(o.time)
+			      				if(0==result.code){
+									layer.msg(result.message, {icon: 1});
+									layer.close(index);
+									}else{
+										layer.msg(result.message, {icon: 2});
+										layer.close(index);
+									}
+			      			}); 
+			      		  },error:function(){
+								layer.msg("加载失败！", {icon: 2});
+								layer.close(index);sa
+						  }
+					  });
+				  })
+				  
+				  
+				  
+				  
+				  
 				//遍历裁剪方式
 				  var data = {
 							type:"needlesize",
@@ -1540,8 +1768,8 @@
 					
 				}
 			  this.mater=function(){
-				  
-				  var dataeer={
+				  //用除裁片以外的物料
+				/*   var dataeer={
 						  productId:productIdAll,
 						  type:"machinist",
 				  }
@@ -1600,7 +1828,7 @@
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
 					  }
-				  });
+				  }); */
 				  
 					$(".machinistName").blur(function(){
 						var ttat=$(this)
@@ -1825,6 +2053,18 @@
 				  	}
 		            self.loadPagination(data);
 				});
+				
+				$(".searchtask2").on('click',function(){
+					$(".layer-right5").css("display","block");
+					var demo = new mSlider({
+						dom:".layer-right5",
+						direction: "right",
+						distance:"35%",
+						
+					})
+					demo.open()
+				})
+				
 				
 				$(".home1").on('click',function(){
 					var data={
