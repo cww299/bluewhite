@@ -137,19 +137,19 @@
                                     <thead>
                                         <tr>
                                         	<th class="text-center">机缝工序</th>
-                                        	<th class="text-center">选择针号</th>
-                                            <th class="text-center">选择线色或线号</th>
-                                            <th class="text-center">选择针距↓</th>
-                                            <th class="text-center">得到试制净快手时间</th>
-                                            <th class="text-center">手填该工序回针次数</th>
-                                            <th class="text-center">1请选直线机缝模式↓</th>
-                                            <th class="text-center">手填该工序满足G列的CM↓</th>
-                                            <th class="text-center">2请选弧线机缝模式↓</th>
-                                            <th class="text-center">手填该工序满足I列的CM↓</th>
-                                            <th class="text-center">3请选弯曲复杂机缝模式↓</th>
-                                            <th class="text-center">手填该工序满足K列的CM↓</th>
+                                        	<th class="text-center">针号</th>
+                                            <th class="text-center">线色或线号</th>
+                                            <th class="text-center">针距</th>
+                                            <th class="text-center">试制净快手时间</th>
+                                            <th class="text-center">该工序回针次数</th>
+                                            <th class="text-center">直线机缝模式</th>
+                                            <th class="text-center">该工序满足G列</th>
+                                            <th class="text-center">弧线机缝模式</th>
+                                            <th class="text-center">该工序满足I列</th>
+                                            <th class="text-center">弯曲复杂机缝模式</th>
+                                            <th class="text-center">该工序满足K列</th>
                                             <th class="text-center">单一机缝需要时间/秒</th>
-                                             <th class="text-center">设备折旧和房水电费</th>
+                                            <th class="text-center">设备折旧和房水电费</th>
                                             <th class="text-center">管理人员费用</th>
                                             <th class="text-center">电脑推算机缝该工序费用</th>
                                             <th class="text-center">试制机缝该工序费用</th>
@@ -432,7 +432,7 @@
 				      			 $(result.data.rows).each(function(i,o){
 				      				 html +='<tr>'
 				      				+'<td class="text-center edit ">'+o.machinistName+'</td>'
-				      				+'<td class="text-center needlesize" data-needlesize='+o.needlesize+' data-id='+o.id+' data-productid='+o.productId+' style="width: 80px;"></td>'
+				      				+'<td class="text-center needlesize"  data-id='+o.id+' data-productid='+o.productId+' data-needlesize='+o.needlesize+' style="width: 80px;"></td>'
 				      				+'<td class="text-center wiresize" data-wiresize='+o.wiresize+' style="width: 100px;"></td>'
 				      				+'<td class="text-center edit needlespur" data-needlespur='+o.needlespur+' style="width: 80px;"></td>'
 				      				+'<td class="text-center edit"><input class="form-control time"  style="width: 50px;"  value='+(o.time!=0?o.time:"")+'></td>'
@@ -732,8 +732,6 @@
 				      						id:id,
 				      						productId:productId,
 				      						needlesize:$(this).parent().parent().find(".selecttailorType2").val(),
-				      						wiresize:$(this).parent().parent().find(".selecttailorType3").val(),
-				      						needlespur:$(this).parent().parent().find(".selecttailorType4").val(),
 				      				}
 				      				var index;
 				      				$.ajax({
@@ -802,11 +800,7 @@
 				      				var dataeee={
 				      						id:id,
 				      						productId:productId,
-				      						needlesize:$(this).parent().parent().find(".selecttailorType2").val(),
 				      						wiresize:$(this).parent().parent().find(".selecttailorType3").val(),
-				      						needlespur:$(this).parent().parent().find(".selecttailorType4").val(),
-				      						backStitchCount:$(this).parent().parent().find(".backStitchCount").val(),
-				      						time:$(this).parent().parent().find(".time").val(),
 				      				}
 				      				var index;
 				      				$.ajax({
