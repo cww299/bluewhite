@@ -208,23 +208,17 @@
 									<table>
                                         
                                        <tr>
-                                        	<th class="text-center">每层拉布时间/秒:</th><td><input type="text" id="electricPushOne5"  class="form-control actualtimetw"></td>
-                                        	<th class="text-center">每层拉布宽度/米:</th><td><input type="text" id="electricPushTwo5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                       		<th class="text-center">固定边缘秒数:</th><td><input type="text" id="electricPushThree5"  class="form-control"></td>
                                        		<td><input type="text" id="ordid5" class="hidden"></td>
                                        		<th><button type="button" class="btn btn-info  btn-sm  btn-trans updateord">修改</button></th>
                                        </tr>
                                        <tr><td><div style="height: 10px"></div></td></tr>
                                        <tr>
-                                        	<th class="text-center">画版时间/片/秒:</th><td><input type="text" id="electricPushFour5"  class="form-control actualtimetw"></td>
+                                        	<th class="text-center">黏片时间/片/秒:</th><td><input type="text" id="machinistOne5"  class="form-control actualtimetw"></td>
                                         </tr>
                                       	<tr><td><div style="height: 10px"></div></td></tr>
                                        <tr>
-                                        	<th class="text-center">电推机秒走CM?:</th><td><input type="text"  id="electricPushFive5" class="form-control actualtimetw"></td>
-                                            <th class="text-center">每CM 用时/秒:</th><td><input type="text" disabled="disabled" id="time5"  class="form-control actualtimetw"></td>
+                                        	<th class="text-center">剪线时间/片/秒:</th><td><input type="text"  id="machinisttwo5" class="form-control actualtimetw"></td>
+                                            <th class="text-center">回针时间/个/秒:</th><td><input type="text"  id="machinistThree5"  class="form-control actualtimetw"></td>
                                         </tr>
                                        <tr><td><div style="height: 10px"></div></td></tr>
                                        <tr>
@@ -278,6 +272,11 @@
                                        <tr>
                                         	<th class="text-center">每小时机工工价:</th><td><input type="text" id="omnHorMachinist5"  class="form-control actualtimetw"></td>
                                             <th class="text-center">每秒工价:</th><td><input type="text" disabled="disabled" id="perSecondMachinist5"  class="form-control actualtimetw"></td>
+                                        </tr>
+                                        <tr><td><div style="height: 10px"></div></td></tr>
+                                        <tr>
+                                        	<th class="text-center">每小时辅工工价:</th><td><input type="text" id="omnHorAuxiliary5"  class="form-control actualtimetw"></td>
+                                            <th class="text-center">每秒工价:</th><td><input type="text" disabled="disabled" id="perSecondMachinistTwo5"  class="form-control actualtimetw"></td>
                                         </tr>
                                         <tr><td><div style="height: 10px"></div></td></tr>
                                        <tr>
@@ -623,6 +622,11 @@
 		      			$("#embroideryLaserNumber5").val(o.embroideryLaserNumber)
 		      			$("#perimeterLess5").val(o.perimeterLess)
 		      			$("#perimeterLessNumber5").val(o.perimeterLessNumber)
+		      			$("#omnHorAuxiliary5").val(o.omnHorAuxiliary)
+		      			$("#perSecondMachinistTwo5").val(o.perSecondMachinistTwo)
+		      			$("#machinistOne5").val(o.machinistOne)
+		      			$("#machinisttwo5").val(o.machinisttwo)
+		      			$("#machinistThree5").val(o.machinistThree)
 		      			 }); 
 		      		  },error:function(){
 							layer.msg("加载失败！", {icon: 2});
@@ -658,6 +662,11 @@
 					  	perimeterLessNumber:$("#perimeterLessNumber5").val(),
 					  	perimeterLess:$("#perimeterLess5").val(),
 					  	embroideryLaserNumber:$("#embroideryLaserNumber5").val(),
+					  	perSecondMachinistTwo:$("#perSecondMachinistTwo5").val(),
+					  	omnHorAuxiliary:$("#omnHorAuxiliary5").val(),
+					  	machinistOne:$("#machinistOne5").val(),
+					  	machinisttwo:$("#machinisttwo5").val(),
+					  	machinistThree:$("#machinistThree5").val(),
 					  }
 					  $.ajax({
 					      url:"${ctx}/product/updatePrimeCoefficient",

@@ -155,6 +155,7 @@
                             <label class="col-sm-2 control-label">单只成本:</label>
                               <div class="col-sm-2 ">
                               <input type="text" class="form-control onePrimeCost"  disabled="disabled">
+                              <input type="text" class="form-control onePrimeCost hidden" id="paramNum">
                               </div>
                     	</div>
                     	
@@ -186,7 +187,7 @@
                                                 </select>
                                                 </td>
                                                 <td class="cutPartsPriceInvoice" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td ><a style="color:#F00" href="${ctx}/menusToUrl?url=trial/primecost/cutparts&paramNum=6956">面料价格(含复合物料和加工费）</a></td>
+                                                <td id="doua"><a style="color:#F00">面料价格(含复合物料和加工费）</a></td>
                                                 <td class="cutPartsPrice" ></td>
                                                 <td class="oneCutPartsPrice" ></td>
                                                 <td class="cutPartsPricePricing" rowspan="2" contentEditable="true" style="background-color:#0d92f59c"></td>
@@ -200,7 +201,7 @@
 	                                             </select>
                                                 </td>
                                                 <td class="otherCutPartsPriceInvoice" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td  ><a style="color:#F00" href="http://localhost:8080/bluewhite/menusToUrl?url=trial/primecost/nocutparts">除面料以外的其他物料价格</a> </td>
+                                                <td  id="doua1"><a style="color:#F00">除面料以外的其他物料价格</a> </td>
                                                 <td class="otherCutPartsPrice" ></td>
                                                 <td class="oneOtherCutPartsPrice" ></td>
                                             </tr>
@@ -212,7 +213,7 @@
 	                                             </select>
                                                 </td>
                                                 <td class="cutPriceInvoice" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td  ><a style="color:#F00" href="http://localhost:8080/bluewhite/menusToUrl?url=trial/primecost/tailor">裁剪价格</a></td>
+                                                <td  id="doua2"><a style="color:#F00">裁剪价格</a></td>
                                                 <td class="cutPrice" ></td>
                                                 <td class="oneCutPrice" ></td>
                                                 <td class="cutPricePricing" contentEditable="true" style="background-color:#0d92f59c"></td>
@@ -226,7 +227,7 @@
 	                                             </select>
                                                 </td>
                                                 <td class="machinistPriceInvoice" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td  ><a style="color:#F00" href="http://localhost:8080/bluewhite/menusToUrl?url=trial/primecost/machinist">机工价格</a></td>
+                                                <td id="doua3" ><a style="color:#F00">机工价格</a></td>
                                                 <td class="machinistPrice" ></td>
                                                 <td class="oneMachinistPrice" ></td>
                                                 <td class="machinistPricePricing" contentEditable="true" style="background-color:#0d92f59c"></td>
@@ -240,7 +241,7 @@
 	                                             </select>
                                                 </td>
                                                 <td class="embroiderPriceInvoice" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td  ><a style="color:#F00" href="http://localhost:8080/bluewhite/menusToUrl?url=trial/primecost/embroidery">绣花价格</a></td>
+                                                <td  id="doua4"><a style="color:#F00">绣花价格</a></td>
                                                 <td class="embroiderPrice" ></td>
                                                 <td class="oneEmbroiderPrice" ></td>
                                                 <td class="embroiderPricePricing" contentEditable="true" style="background-color:#0d92f59c"></td>
@@ -254,7 +255,7 @@
 	                                             </select>
                                                 </td>
                                                 <td class="needleworkPriceInvoice" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td  ><a style="color:#F00" href="http://localhost:8080/bluewhite/menusToUrl?url=trial/primecost/needlework">针工价格</a></td>
+                                                <td  id="doua5"><a style="color:#F00">针工价格</a></td>
                                                 <td class="needleworkPrice" ></td>
                                                 <td class="oneNeedleworkPrice" ></td>
                                                 <td class="needleworkPricePricing" contentEditable="true" style="background-color:#0d92f59c"></td>
@@ -268,7 +269,7 @@
 	                                             </select>
                                                 </td>
                                                 <td class="packPriceInvoice" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td ><a style="color:#F00" href="http://localhost:8080/bluewhite/menusToUrl?url=trial/primecost/pack">内外包装和出入库的价格</a></td>
+                                                <td id="doua6"><a style="color:#F00">内外包装和出入库的价格</a></td>
                                                 <td class="packPrice" ></td>
                                                 <td class="onePackPrice" ></td>
                                                 <td class="packPricePricing" contentEditable="true" style="background-color:#0d92f59c"></td>
@@ -642,6 +643,35 @@
 					$('.addPrimeCost').on('click', function() {
 						var _index;
 						var productId = $(this).data('id');
+						$("#doua").on('click',function(){
+						/* var a=$(".third").attr("name")
+						var b="trial/primecost/cutparts"
+							var p= b;
+						if(p!="#"){
+							location.href = "${ctx}/menusToUrl?url="+p;
+						 $.cookie("navstation", $(this).html());//添加cookie 
+						 $.cookie("navstationtwo",null);
+						} */
+						location.href = "${ctx}/product/menusToUrl?url=trial/primecost/cutparts&paramNum="+productId+"";
+					})
+					$("#doua1").on('click',function(){
+						location.href = "${ctx}/product/menusToUrl?url=trial/primecost/nocutparts&paramNum="+productId+"";
+					})
+					$("#doua2").on('click',function(){
+						location.href = "${ctx}/product/menusToUrl?url=trial/primecost/tailor&paramNum="+productId+"";
+					})
+					$("#doua3").on('click',function(){
+						location.href = "${ctx}/product/menusToUrl?url=trial/primecost/machinist&paramNum="+productId+"";
+					})
+					$("#doua4").on('click',function(){
+						location.href = "${ctx}/product/menusToUrl?url=trial/primecost/embroidery&paramNum="+productId+"";
+					})
+					$("#doua5").on('click',function(){
+						location.href = "${ctx}/product/menusToUrl?url=trial/primecost/needlework&paramNum="+productId+"";
+					})
+					$("#doua6").on('click',function(){
+						location.href = "${ctx}/product/menusToUrl?url=trial/primecost/pack&paramNum="+productId+"";
+					})
 						var dicDiv = $('#addworking');
 						var postData;
 						//打开隐藏框
@@ -734,6 +764,8 @@
 						self.loadworking();
 					})
 
+					
+					
 					//修改方法
 					$('.update').on(
 							'click',

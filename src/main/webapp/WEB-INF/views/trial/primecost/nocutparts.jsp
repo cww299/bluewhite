@@ -237,9 +237,9 @@
 		      				+'<td class="text-center editt materialsNamett" >'+o.materialsName+'</td>'
 		      				+'<td class="text-center materielNumbertw" >'+o.oneMaterial+'</td>'
 		      				+'<td class="text-center unite name" >'+o.unit+'</td>'
-		      				+'<td class="text-center unitCosttr name" >'+parseFloat((o.unitCost).toFixed(4))+'</td>'
+		      				+'<td class="text-center unitCosttr name" >'+o.unitCost+'</td>'
 		      				+'<td class="text-center manualLoss name" >'+(o.manualLoss!=null?o.manualLoss:"")+'</td>'
-		      				+'<td class="text-center unitPrice name" >'+parseFloat((o.productCost).toFixed(4))+'</td>'
+		      				+'<td class="text-center unitPrice name" >'+o.productCost+'</td>'
 		      				+'<td class="text-center unit name" >'+o.productUnit+'</td>'
 		      				+'<td class="text-center " >'+o.batchMaterial+'</td>'
 		      				+'<td class="text-center  name" >'+o.batchMaterialPrice+'</td>'
@@ -657,6 +657,7 @@
 					} 
 					var leng = $(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').length;
 				for (var i = 0; i <leng; i++) {
+					if($(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.materiel').val()!=undefined){
 					var postData = {
 						productId:self.getCache(),
 						number:$('#number').val(),  
@@ -699,7 +700,7 @@
 							layer.close(index);
 						}
 					});
-					
+					}
 					
 						
 				}
@@ -762,7 +763,7 @@
 					var html="";
 				$('#addCutting').on('click',function(){
 					var a=$('#loss').val();
-					 html='<tr><td></td><td  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" /></td>'
+					 html='<tr><td></td><td  style="padding: 2px 0px 2px 4px;"></td>'
 					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;"  class="text-center materiel" /></td>'
 					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"    style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center  oneMaterial"  /></td>'
 					 +'<td class="text-center edit selectCompany" style="padding: 2px 0px 2px 0px;></td>'

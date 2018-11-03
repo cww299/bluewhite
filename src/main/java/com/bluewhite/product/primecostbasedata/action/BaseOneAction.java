@@ -210,13 +210,13 @@ public class BaseOneAction {
 			primeCoefficient.setQuilt(primeCoefficient.getQuilt());
 			//每秒设备折旧费用
 			primeCoefficient.setDepreciation(primeCoefficient.getWorth()/primeCoefficient.getShareDay()
-					/primeCoefficient.getWorkTime()/TIME/TIME);
+					/primeCoefficient.getWorkTime()/(primeCoefficient.getNeedleworkOne()!=null ? primeCoefficient.getNeedleworkOne() :1.0)/TIME/TIME);
 			//每秒激光管费用
-			primeCoefficient.setLaserTubePriceSecond(primeCoefficient.getLaserTubePrice()/primeCoefficient.getShareTime()/TIME/TIME);
+			primeCoefficient.setLaserTubePriceSecond(primeCoefficient.getLaserTubePrice()/primeCoefficient.getShareTime()/(primeCoefficient.getNeedleworkOne()!=null ? primeCoefficient.getNeedleworkOne() :1.0)/TIME/TIME);
 			//每秒维护费用
-			primeCoefficient.setMaintenanceChargeSecond(primeCoefficient.getMaintenanceCharge()/primeCoefficient.getShareTimeTwo()/TIME/TIME);
+			primeCoefficient.setMaintenanceChargeSecond(primeCoefficient.getMaintenanceCharge()/primeCoefficient.getShareTimeTwo()/(primeCoefficient.getNeedleworkOne()!=null ? primeCoefficient.getNeedleworkOne() :1.0)/TIME/TIME);
 			//每秒耗3费
-			primeCoefficient.setPerSecondPrice((primeCoefficient.getOmnHorElectric()+primeCoefficient.getOmnHorWater()+primeCoefficient.getOmnHorHouse())/TIME/TIME);
+			primeCoefficient.setPerSecondPrice((primeCoefficient.getOmnHorElectric()+primeCoefficient.getOmnHorWater()+primeCoefficient.getOmnHorHouse())/(primeCoefficient.getNeedleworkOne()!=null ? primeCoefficient.getNeedleworkOne() :1.0)/TIME/TIME);
 			//每秒工价
 			primeCoefficient.setPerSecondMachinist(primeCoefficient.getOmnHorMachinist()/TIME/TIME);
 			//每秒工价2
@@ -229,7 +229,7 @@ public class BaseOneAction {
 				//每秒耗3费
 				primeCoefficient.setPerSecondPriceTwo(
 						(primeCoefficient.getNeedleworkTwo()+primeCoefficient.getNeedleworkThree()+primeCoefficient.getNeedleworkFour())
-						/primeCoefficient.getNeedleworkOne()
+						/primeCoefficient.getManageEquipmentNumber()
 						/TIME/TIME);
 				primeCoefficient.setNeedleworkSeven(primeCoefficient.getNeedleworkFive()/TIME/TIME);
 				primeCoefficient.setNeedleworkEight(primeCoefficient.getNeedleworkSix()/TIME/TIME);
