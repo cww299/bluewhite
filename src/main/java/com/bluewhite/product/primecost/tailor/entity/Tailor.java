@@ -12,7 +12,7 @@ import com.bluewhite.base.BaseEntity;
  *
  */
 @Entity
-@Table(name = "pro_tailor")
+@Table(name = "pro_product_tailor")
 public class Tailor extends BaseEntity<Long>{
 	
 

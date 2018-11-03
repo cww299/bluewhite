@@ -259,7 +259,7 @@ public class UserAction {
 				us.put("birthDate",sdf.format(user.getBirthDate()));
 				userBirthList.add(us);
 			//女
-			}else if(user.getGender()==1 && co==55  && co2<=10){
+			}else if(user.getGender()==1 && co==50  && co2<=10){
 				us.put("username", user.getUserName());
 				us.put("birthDate", sdf.format(user.getBirthDate()));
 				userBirthList.add(us);

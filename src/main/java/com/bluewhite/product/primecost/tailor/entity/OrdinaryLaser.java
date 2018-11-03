@@ -13,7 +13,7 @@ import com.bluewhite.base.BaseEntity;
  *
  */
 @Entity
-@Table(name = "pro_ordinary_laser")
+@Table(name = "pro_product_ordinary_laser")
 public class OrdinaryLaser extends BaseEntity<Long>{
 	
 	/**
