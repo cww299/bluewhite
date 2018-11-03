@@ -363,7 +363,7 @@
 					  var index;
 					    var html = '';
 					    $.ajax({
-						      url:"${ctx}${ctx}/product/getPack",
+						      url:"${ctx}/product/getPack",
 						      data:data,
 						      type:"GET",
 						      beforeSend:function(){
