@@ -701,6 +701,11 @@
 					}
 					var leng = $(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').length;
 				for (var i = 0; i <leng; i++) {
+					if($(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.sliceNumber').val()==""){
+						return layer.msg("片数不能为空", {icon: 2});
+					}
+					var a=$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.cuttingName').val()
+					if(a!=undefined){
 					var postData = {
 						productId:self.getCache(),
 						number:$('#number').val(),
@@ -753,7 +758,7 @@
 							layer.close(index);
 						}
 					});
-					
+					}
 					
 						
 				}

@@ -498,9 +498,9 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 	@Column(name = "needlework_eight")
 	private Double needleworkEight;
 	
-	
 
-	
+
+
 	public Double getNeedleworkFive() {
 		return needleworkFive;
 	}
