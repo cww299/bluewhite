@@ -219,7 +219,7 @@
 		  	$("#number").val(productNumberAll);
 			 var data={
 						page:1,
-				  		size:13,	
+				  		size:100,	
 				  		productId:productIdAll,
 				} 
 			this.init = function(){
@@ -663,9 +663,9 @@
 								if(0==result.code){
 								layer.msg("删除成功！", {icon: 1});
 								var data = {
-					        			page:self.getCount(),
-								  		size:13,
-								  		/* productId:"", */
+					        			page:1,
+								  		size:100,
+								  		 productId:productIdAll, 
 							  	}
 								self.loadPagination(data)
 								layer.close(index);
@@ -744,7 +744,7 @@
 							layer.msg("新增成功！", {icon: 1});
 							 var _data={
 									page:1,
-							  		size:13,
+							  		size:100,
 							  		productId:self.getCache(),
 							}
 							self.loadPagination(_data) 
@@ -841,7 +841,7 @@
 					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><select class="text-center bilayer" style="border: none;width:90px; height:30px; background-color: #BFBFBF;"><option value="0"></option><option value="1">面料对复合</option></select></td>'
 					 +'<td class="text-center edit unitPricetw" ></td>'
 					 +'<td class="text-center edit unittw" ></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" value="'+a+'" style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center compositeManualLoss" /></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"  style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center compositeManualLoss" /></td>'
 					 +'<td class="text-center edit name"> </td>'
 					 +'<td class="text-center edit name"> </td>'
 					 +'<td class="text-center edit name"> </td></tr>';

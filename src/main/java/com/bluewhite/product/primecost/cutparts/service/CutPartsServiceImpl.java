@@ -17,12 +17,11 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.cutparts.dao.CutPartsDao;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
-import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
 import com.bluewhite.product.primecost.tailor.dao.OrdinaryLaserDao;
 import com.bluewhite.product.primecost.tailor.dao.TailorDao;
+import com.bluewhite.product.primecost.tailor.entity.OrdinaryLaser;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.product.dao.ProductDao;
-import com.bluewhite.product.product.entity.Product;
 
 @Service
 public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implements CutPartsService{
@@ -95,27 +94,22 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		tailor.setPriceDown((cutParts.getBatchMaterialPrice()==null ? 0.0 : cutParts.getBatchMaterialPrice())
 				+(cutParts.getBatchComplexAddPrice()==null ? 0.0 :cutParts.getBatchComplexAddPrice()));
 		//不含绣花环节的为机工压价	
-		
 		//含绣花环节的为机工压价
-		
 		//为机工准备的压价
-		
-		
-		
 		tailorDao.save(tailor);
+		
 		//更新裁剪页面id到裁片中
 		cutParts.setTailorId(tailor.getId());
-		
-		
 		//各单片比全套用料
 		List<CutParts> cutPartsList = dao.findByProductId(cutParts.getProductId());
 		double scaleMaterial = 0;
 		if(cutPartsList.size()>0){
 			scaleMaterial =  cutPartsList.stream().mapToDouble(CutParts::getAddMaterial).sum();
 		}
-		cutParts.setScaleMaterial(cutParts.getAddMaterial()/scaleMaterial);
-		cutPartsList.add(cutParts);
-		dao.save(cutParts);
+		for(CutParts cp : cutPartsList){
+			cp.setScaleMaterial(cp.getAddMaterial()/scaleMaterial);
+		}
+		dao.save(cutPartsList);
 		return cutParts;
 	}
 
@@ -150,10 +144,13 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 	public void deleteCutParts(Long id) {
 		CutParts cutParts = dao.findOne(id);
 		if(cutParts.getTailorId()!=null){
+			//删除裁减类型页面
+			OrdinaryLaser ordinaryLaser = ordinaryLaserDao.findByTailorId(cutParts.getTailorId());
+			if(ordinaryLaser!=null){
+				ordinaryLaserDao.delete(ordinaryLaser);
+			}
 			//删除裁剪页面
 			tailorDao.delete(cutParts.getTailorId());
-			//删除裁减类型页面
-			ordinaryLaserDao.delete(ordinaryLaserDao.findByTailorId(cutParts.getTailorId()));
 		}
 		//删除裁片
 		dao.delete(cutParts);

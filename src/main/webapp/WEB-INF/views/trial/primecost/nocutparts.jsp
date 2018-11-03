@@ -234,6 +234,7 @@
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				/* +'<td  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:68px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" value="'+o.cutPartsName+'" /></td>' */
 		      				+'<td class="text-center edit " >'+o.materialsName+'</td>'
+		      				+'<td class="text-center edit materialsId hidden" >'+o.materialsId+'</td>'
 		      				+'<td class="text-center editt materialsNamett" >'+o.materialsName+'</td>'
 		      				+'<td class="text-center materielNumbertw" >'+o.oneMaterial+'</td>'
 		      				+'<td class="text-center unite name" >'+o.unit+'</td>'
@@ -386,6 +387,7 @@
 					var aa=$(this).data("composite")
 					var cc=$(this).data("unit")
 					var dd=$(this).data("doublecomposite")
+					var ccc=$(this).parent().parent().find(".materialsId").text()
 					if($(this).text() == "编辑"){
 						$(this).text("保存")
 						
@@ -417,12 +419,6 @@
 						})
 						   $(".selectunit").change(function(){
 				    	   that=$(this)
-				    	   var ccc
-				       if(self.getNum()==null){
-				    	   ccc=""
-				       }else{
-				    	   ccc=self.getNum()
-				       } 
 				       var datae = {
 								type:"fill",
 								id:ccc,
@@ -433,7 +429,7 @@
 							      type:"GET",
 					      		  success: function (result) {
 					      			 $(result.data).each(function(i,o){
-					      			var aaa=$(".selectunit").find("option:selected").text();
+					      			var aaa=that.find("option:selected").text();
 					      				if(aaa==o.convertUnit){
 					      					that.parent().parent().find('.unitCosttr').text(o.convertPrice);
 					      				}else if(aaa==o.unit){
@@ -553,10 +549,10 @@
 				       $(".selectgroupChange").change(function(){
 				    	   that=$(this)
 				    	   var ccc
-				       if(self.getNum()==null){
+				       if(that.parent().parent().find('.namettw').text()==null){
 				    	   ccc=""
 				       }else{
-				    	   ccc=self.getNum()
+				    	   ccc=that.parent().parent().find('.namettw').text()
 				       } 
 				       var datae = {
 								type:"fill",
@@ -568,7 +564,7 @@
 							      type:"GET",
 					      		  success: function (result) {
 					      			 $(result.data).each(function(i,o){
-					      			var aaa=$(".selectgroupChange").find("option:selected").text();
+					      			var aaa=that.find("option:selected").text();
 					      				if(aaa==o.convertUnit){
 					      					that.parent().parent().find('.selectprice').text(o.convertPrice);
 					      				}else if(aaa==o.unit){
@@ -669,6 +665,7 @@
 						unitCost:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.selectprice').text(),
 						productCost:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unitPrice').text(),
 						productUnit:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unit').text(),
+						materialsId:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.namettw').text(),
 					}
 					var index;
 					$.ajax({
@@ -768,6 +765,7 @@
 					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"    style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center  oneMaterial"  /></td>'
 					 +'<td class="text-center edit selectCompany" style="padding: 2px 0px 2px 0px;></td>'
 					 +'<td class="text-center edit name"></td>'
+					 +'<td class="text-center edit namettw hidden"></td>'
 					 +'<td class="text-center edit selectprice"></td>'
 					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" value="'+a+'" style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center manualLoss" /></td>'
 					 +'<td class="text-center edit unitPrice" ></td>'
@@ -817,7 +815,8 @@
 						        var item = JSON.parse(item);
 						        that.parent().parent().find('.unitPrice').text(item.price);
 						        that.parent().parent().find('.unit').text(item.unit);
-						        self.setNum(item.id)
+						        that.parent().parent().find('.namettw').text(item.id);
+						        /* self.setNum(item.id) */
 						    	return item.name
 						    },
 							//item是选中的数据
@@ -826,7 +825,8 @@
 								var item = JSON.parse(item);
 								that.parent().parent().find('.unitPrice').text(item.price);
 								that.parent().parent().find('.unit').text(item.unit);
-								self.setNum(item.id)
+								that.parent().parent().find('.namettw').text(item.id);
+								/* self.setNum(item.id) */
 									return item.name
 							},
 							

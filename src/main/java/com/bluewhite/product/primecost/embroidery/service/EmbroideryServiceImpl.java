@@ -168,12 +168,14 @@ public class EmbroideryServiceImpl extends BaseServiceImpl<Embroidery, Long> imp
 		Tailor tailor = tailorDao.findOne(embroidery.getTailorId());
 		// 同时更新去除裁剪页面
 		// 含绣花环节的为机工压价
-		tailor.setEmbroiderPriceDown(null);
-		// 为机工准备的压价
-		double MachinistPriceDown = tailor.getNoeMbroiderPriceDown() >= NumUtils.setzro(tailor.getEmbroiderPriceDown())
-				? tailor.getNoeMbroiderPriceDown() : NumUtils.setzro(tailor.getEmbroiderPriceDown());
-		tailor.setMachinistPriceDown(MachinistPriceDown);
-		tailorDao.save(tailor);
+		if(tailor!=null){
+			tailor.setEmbroiderPriceDown(null);
+			// 为机工准备的压价
+			double MachinistPriceDown = tailor.getNoeMbroiderPriceDown() >= NumUtils.setzro(tailor.getEmbroiderPriceDown())
+					? tailor.getNoeMbroiderPriceDown() : NumUtils.setzro(tailor.getEmbroiderPriceDown());
+					tailor.setMachinistPriceDown(MachinistPriceDown);
+					tailorDao.save(tailor);
+		}
 		dao.delete(embroidery);
 	}
 }

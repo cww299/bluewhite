@@ -32,7 +32,11 @@ public class ProductMaterials extends BaseEntity<Long>{
 	@Column(name = "materials_name")
     private String materialsName;
 	
-	
+	/**
+	 * 物料名
+	 */
+	@Column(name = "materials_id")
+    private Long materialsId;
 	/**
 	 * 压货环节id
 	 */
@@ -104,6 +108,14 @@ public class ProductMaterials extends BaseEntity<Long>{
 	
 	
 	
+	
+	public Long getMaterialsId() {
+		return materialsId;
+	}
+
+	public void setMaterialsId(Long materialsId) {
+		this.materialsId = materialsId;
+	}
 
 	public Long getOverstockId() {
 		return overstockId;
