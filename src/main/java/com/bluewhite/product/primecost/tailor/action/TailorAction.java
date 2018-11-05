@@ -73,6 +73,7 @@ public class TailorAction {
 				primeCost.setProductId(tailor.getProductId());
 				productService.getPrimeCost(primeCost, request);
 				tailor.setOneCutPrice(primeCost.getOneCutPrice());
+				cr.setData(tailor);
 				cr.setMessage("添加成功");
 		}
 		return cr;
@@ -127,7 +128,12 @@ public class TailorAction {
 				OrdinaryLaser oldOrdinaryLaser = ordinaryLaserService.findOne(ordinaryLaser.getId());
 				BeanCopyUtils.copyNullProperties(oldOrdinaryLaser,ordinaryLaser);
 				ordinaryLaser.setCreatedAt(oldOrdinaryLaser.getCreatedAt());
-			cr.setData(ordinaryLaserService.saveOrdinaryLaser(ordinaryLaser));	
+				ordinaryLaserService.saveOrdinaryLaser(ordinaryLaser);
+				PrimeCost primeCost = new PrimeCost();
+				primeCost.setProductId(ordinaryLaser.getProductId());
+				productService.getPrimeCost(primeCost, request);
+				ordinaryLaser.setOneCutPrice(primeCost.getOneCutPrice());
+			cr.setData(ordinaryLaser);	
 			cr.setMessage("添加成功");
 		}
 		return cr;
