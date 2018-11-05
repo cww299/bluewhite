@@ -57,8 +57,8 @@
 								<td>默认数量:</td><td><input type="text" name="number" id="number" placeholder="请输入默认数量" class="form-control search-query number" /></td>
 									<td>&nbsp&nbsp</td>
 								<td>默认耗损:</td><td><input type="text" name="name" id="loss" placeholder="请输入产品名称" class="form-control search-query name" /></td>
-								<!-- <td>&nbsp&nbsp</td> -->
-								<!-- <td>完成状态:</td><td><select class="form-control" id="selectstate"><option value=0>未完成</option><option value=1>已完成</option></select></td> -->
+								<td>&nbsp&nbsp</td> 
+								<td>裁剪价格:</td><td><input type="text" name="name" id="ntwo" disabled="disabled"  class="form-control search-query name" /></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
@@ -121,6 +121,9 @@
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
+							<table><tr>
+								<td>裁剪价格:</td><td><input type="text" name="name" id="ntwo1" disabled="disabled"  class="form-control search-query name" /></td>
+								</tr></table>
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d navbar-right searchtask2">
 										查找
@@ -376,6 +379,7 @@
 							  });
 						  }, 
 			      		  success: function (result) {
+			      			$("#ntwo").val(result.data.rows[0].oneMachinistPrice)
 			      			 $(result.data.rows).each(function(i,o){
 			      				if(o.costPrice==o.reckoningSewingPrice || o.costPrice==o.trialSewingPrice){
 			      					 
@@ -429,6 +433,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
+				      			$("#ntwo1").val(result.data.rows[0].oneMachinistPrice)
 				      			 $(result.data.rows).each(function(i,o){
 				      				 html +='<tr>'
 				      				+'<td class="text-center edit ">'+o.machinistName+'</td>'
@@ -1891,7 +1896,13 @@
 										    			id:id,
 										    			productId:self.getCache(),
 										    			cutparts:name,
-										    			cutpartsPrice:values
+										    			cutpartsPrice:values,
+										    			needlesize:172,
+										    			wiresize:194,
+										    			needlespur:204,
+										    			beeline:28,
+										    			arc:29,
+										    			bend:30,
 										    		}
 										    	   $.ajax({
 														url:"${ctx}/product/addMachinist",

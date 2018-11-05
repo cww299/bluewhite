@@ -28,7 +28,7 @@
                     <div class="col-md-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">工资详情</h3>
+                                <h3 class="panel-title">裁剪详情</h3>
                                 <div class="actions pull-right">
                                     <i class="fa fa-expand"></i>
                                     <i class="fa fa-chevron-down"></i>
@@ -64,9 +64,11 @@
 								<table><tr>
 								<td>产品名:</td><td><input type="text" name="name" id="productName" placeholder="请输入产品名称" class="form-control search-query name" data-provide="typeahead" autocomplete="off"/ ></td>
 								<td>&nbsp&nbsp</td>
-								<td>默认数量:</td><td><input type="text" name="number" id="number" placeholder="请输入默认数量" class="form-control search-query number" /></td>
+								<td>默认数量:</td><td><input type="text" name="number" id="number" disabled="disabled" placeholder="请输入默认数量" class="form-control search-query number" /></td>
 									<td>&nbsp&nbsp</td>
 								<td>默认耗损:</td><td><input type="text" name="name" id="loss" placeholder="请输入产品名称" class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp</td>
+								<td>裁剪价格:</td><td><input type="text" name="name" id="ntwo" disabled="disabled"  class="form-control search-query name" /></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtaskks">
@@ -113,6 +115,9 @@
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
+							<table><tr>
+								<td>裁剪价格:</td><td><input type="text" name="name" id="ntwo1" disabled="disabled"  class="form-control search-query name" /></td>
+								</tr></table>
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d navbar-right searchtask">
 										查找
@@ -160,6 +165,9 @@
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
+								<table><tr>
+								<td>裁剪价格:</td><td><input type="text" name="name" id="ntwo2" disabled="disabled"  class="form-control search-query name" /></td>
+								</tr></table>
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d navbar-right searchtask2">
 										查找
@@ -209,7 +217,9 @@
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
-								
+								<table><tr>
+								<td>裁剪价格:</td><td><input type="text" name="name" id="ntwo3" disabled="disabled"  class="form-control search-query name" /></td>
+								</tr></table>
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d navbar-right searchtask3">
 										查找
@@ -257,7 +267,9 @@
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
-								
+								<table><tr>
+								<td>裁剪价格:</td><td><input type="text" name="name" id="ntwo4" disabled="disabled"  class="form-control search-query name" /></td>
+								</tr></table>
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d navbar-right searchtask4">
 										查找
@@ -297,50 +309,7 @@
                                         </div>
                                
                                
-                               <div class="tab-pane" id="profile3">
-                                     <!--查询开始  -->
-          		 <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-8 col-sm-8  col-md-8">
-						<form class="form-search" >
-							<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group"> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square navbar-right btn-sm btn-3d searchtask3">
-										查找
-										<i class="icon-search icon-on-right bigger-110"></i>
-									</button>
-								</span>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-            <!-- 查询结束 -->
-                                    
-                                            <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th class="text-center">裁剪部位</th>
-                                        	<th class="text-center">手选裁剪方式</th>
-                                            <th class="text-center">选择叠片层数</th>
-                                            <th class="text-center">其他未考虑时间1</th>
-                                            <th class="text-center">其他未考虑时间2</th>
-                                            <th class="text-center">其他未考虑时间3</th>
-                                            <th class="text-center">叠布秒数（含快手)</th>
-                                            <th class="text-center">冲压秒数（含快手)</th>
-                                            <th class="text-center">工价（含快手)</th>
-                                            <th class="text-center">设备折旧和房水电费</th>
-                                            <th class="text-center">管理人员费用</th>
-                                            <th class="text-center">普通激光切割该裁片费用</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablecontent4">
-                                        
-                                    </tbody>
-                                </table>
-                                        </div>
+                             
                                
                                
                                
@@ -352,6 +321,9 @@
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
+							<table><tr>
+								<td>裁剪价格:</td><td><input type="text" name="name" id="ntwo5" disabled="disabled"  class="form-control search-query name" /></td>
+								</tr></table>
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask5">
 										查找
@@ -398,7 +370,10 @@
 						<form class="form-search" >
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group"> 
+							<div class="input-group">
+							<table><tr>
+								<td>裁剪价格:</td><td><input type="text" name="name" id="ntwo6" disabled="disabled"  class="form-control search-query name" /></td>
+								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask6">
 										查找
@@ -1108,6 +1083,7 @@
 						  });
 					  }, 
 		      		  success: function (result) {
+		      			$("#ntwo").val(result.data.rows[0].oneCutPrice)
 		      			 $(result.data.rows).each(function(i,o){
 		      				 if(o.costPrice==o.managePrice || o.costPrice==o.experimentPrice){
 		      					 
@@ -1155,6 +1131,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
+				      			$("#ntwo1").val(result.data.rows[0].oneCutPrice)
 				      			 $(result.data.rows).each(function(i,o){
 				      				 html +='<tr>'
 				      				+'<td class="text-center edit ">'+o.tailorName+'</td>'
@@ -1199,6 +1176,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
+				      			$("#ntwo2").val(result.data.rows[0].oneCutPrice)
 				      			 $(result.data.rows).each(function(i,o){
 				      				 html +='<tr>'
 				      				+'<td class="text-center edit ">'+o.tailorName+'</td>'
@@ -1243,6 +1221,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
+				      			$("#ntwo3").val(result.data.rows[0].oneCutPrice)
 				      			 $(result.data.rows).each(function(i,o){
 				      				 html +='<tr>'
 				      				+'<td class="text-center edit ">'+o.tailorName+'</td>'
@@ -1284,6 +1263,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
+				      			$("#ntwo4").val(result.data.rows[0].oneCutPrice)
 				      			 $(result.data.rows).each(function(i,o){
 				      				 html +='<tr>'
 				      				+'<td class="text-center edit ">'+o.tailorName+'</td>'
@@ -1327,6 +1307,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
+				      			$("#ntwo5").val(result.data.rows[0].oneCutPrice)
 				      			 $(result.data.rows).each(function(i,o){
 				      				 html +='<tr>'
 				      				+'<td class="text-center edit ">'+o.tailorName+'</td>'
@@ -1368,6 +1349,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
+				      			$("#ntwo6").val(result.data.rows[0].oneCutPrice)
 				      			 $(result.data.rows).each(function(i,o){
 				      				 html +='<tr>'
 				      				+'<td class="text-center edit ">'+o.tailorName+'</td>'

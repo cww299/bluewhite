@@ -276,7 +276,7 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			$("#ntwo").val(result.data.rows[0].cutPartsPrice)
+		      			$("#ntwo").val(result.data.rows[0].oneCutPartsPrice)
 		      			$("#total2").text(result.data.statData.perimeter)
 		      			$("#total").text(result.data.statData.allPerimeter)
 		      			$("#totaltw").text(result.data.statData.addMaterial)
