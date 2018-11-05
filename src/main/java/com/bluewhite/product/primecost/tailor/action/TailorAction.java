@@ -93,7 +93,6 @@ public class TailorAction {
 				session.setAttribute("number", product.getPrimeCost()!=null ? product.getPrimeCost().getNumber():null);
 				session.setAttribute("productName", product.getName());
 			tailorList = tailorService.findPages(tailor,page);
-		
 		}
 		cr.setData(tailorList);
 		cr.setMessage("查询成功");

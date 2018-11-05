@@ -25,6 +25,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
+import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.product.product.service.ProductService;
 
@@ -37,6 +38,7 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 	private CutPartsService cutPartsService;
 	@Autowired
 	private ProductService productService;
+	
 	
 	/**
 	 * cc裁片填写
@@ -105,12 +107,13 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 		CommonResponse cr = new CommonResponse();
 		PageResult<CutParts>  cutPartsList= new PageResult<>(); 
 		if(cutParts.getProductId()!=null){
-			HttpSession session = request.getSession();
-			Product product = productService.findOne(cutParts.getProductId());
-			session.setAttribute("productId",product.getId());
-			session.setAttribute("number", product.getPrimeCost()!=null ? product.getPrimeCost().getNumber():null);
-			session.setAttribute("productName", product.getName());
 			cutPartsList = cutPartsService.findPages(cutParts,page);
+			PrimeCost primeCost = new PrimeCost();
+			primeCost.setProductId(cutParts.getProductId());
+			productService.getPrimeCost(primeCost, request);
+			for(CutParts cp : cutPartsList.getRows()){
+				cp.setCutPartsPrice(primeCost.getCutPartsPrice());
+			}
 		}
 		cr.setData(cutPartsList);
 		cr.setMessage("查询成功");

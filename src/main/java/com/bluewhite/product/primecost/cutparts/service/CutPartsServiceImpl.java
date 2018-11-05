@@ -15,6 +15,8 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.entity.PageResultStat;
+import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.product.primecost.cutparts.dao.CutPartsDao;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.tailor.dao.OrdinaryLaserDao;
@@ -22,6 +24,7 @@ import com.bluewhite.product.primecost.tailor.dao.TailorDao;
 import com.bluewhite.product.primecost.tailor.entity.OrdinaryLaser;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.product.dao.ProductDao;
+import com.bluewhite.production.bacth.entity.Bacth;
 
 @Service
 public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implements CutPartsService{
@@ -40,7 +43,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 	@Override
 	@Transactional
 	public CutParts saveCutParts(CutParts cutParts) {
-		
+		//该片在这个货中的单只用料（累加处）
 		cutParts.setAddMaterial(cutParts.getCutPartsNumber()*cutParts.getOneMaterial());
 		//当批各单片用料
 		if(cutParts.getComposite()==0){
@@ -60,6 +63,8 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 			cutParts.setBatchComplexMaterialPrice(cutParts.getComplexBatchMaterial()*cutParts.getProductCost());
 			cutParts.setBatchComplexAddPrice(cutParts.getComplexBatchMaterial()*cutParts.getComplexProductCost());
 		}
+		//使用片数周长
+		cutParts.setAllPerimeter(cutParts.getPerimeter()*cutParts.getCutPartsNumber());
 		
 		dao.save(cutParts);
 		
@@ -71,6 +76,8 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		
 		//增加和产品关联关系
 		tailor.setProductId(cutParts.getProductId());
+		//裁片和裁剪页面关联关系
+		tailor.setCutPartsId(cutParts.getId());
 		//批量产品数量或模拟批量数
 		tailor.setNumber(cutParts.getNumber());
 		//裁片id
@@ -124,8 +131,10 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 				Predicate[] pre = new Predicate[predicate.size()];
 				query.where(predicate.toArray(pre));
 	        	return null;
-	        }, page);
-		 PageResult<CutParts> result = new PageResult<CutParts>(pages,page);
+	        }, SalesUtils.getQueryNoPageParameter());
+		 	PageResultStat<CutParts> result = new PageResultStat<>(pages,page);
+			result.setAutoStateField("allPerimeter", "perimeter","addMaterial");
+			result.count();
 		return result;
 	}
 

@@ -17,6 +17,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.product.primecost.cutparts.dao.CutPartsDao;
+import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.tailor.dao.OrdinaryLaserDao;
 import com.bluewhite.product.primecost.tailor.dao.TailorDao;
 import com.bluewhite.product.primecost.tailor.entity.OrdinaryLaser;
@@ -80,6 +81,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 	public OrdinaryLaser getOrdinaryLaserDate(Tailor tailor,OrdinaryLaser  prams) {
 		PrimeCoefficient primeCoefficient = null;
 		String type = null;
+		CutParts cutParts = cutPartsDao.findOne(tailor.getCutPartsId());
 		 prams.setProductId(tailor.getProductId());
 		 prams.setTailorTypeId(tailor.getTailorTypeId());
 		 prams.setTailorName(tailor.getTailorName());
@@ -90,6 +92,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		 prams.setPerimeter(NumUtils.setzro( prams.getPerimeter())) ;
 		 prams.setSingleDouble(NumUtils.setzro(prams.getSingleDouble()));
 		 prams.setStallPoint(NumUtils.setzro(prams.getStallPoint())) ;	
+		 prams.setPerimeter(cutParts.getPerimeter());
 		
 		switch (tailor.getTailorTypeId().intValue()) {
 		case 71://普通激光切割
