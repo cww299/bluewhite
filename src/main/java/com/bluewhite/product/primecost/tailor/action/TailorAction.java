@@ -69,6 +69,10 @@ public class TailorAction {
 				BeanCopyUtils.copyNullProperties(oldTailor,tailor);
 				tailor.setCreatedAt(oldTailor.getCreatedAt());
 				tailorService.saveTailor(tailor);
+				PrimeCost primeCost = new PrimeCost();
+				primeCost.setProductId(tailor.getProductId());
+				productService.getPrimeCost(primeCost, request);
+				tailor.setOneCutPrice(primeCost.getOneCutPrice());
 				cr.setMessage("添加成功");
 		}
 		return cr;
@@ -143,6 +147,12 @@ public class TailorAction {
 		PageResult<OrdinaryLaser> ordinaryLaserList= new PageResult<>(); 
 		if(ordinaryLaser.getProductId()!=null){
 			ordinaryLaserList = ordinaryLaserService.findPages(ordinaryLaser,page);
+			PrimeCost primeCost = new PrimeCost();
+			primeCost.setProductId(ordinaryLaser.getProductId());
+			productService.getPrimeCost(primeCost, request);
+			for(OrdinaryLaser ol : ordinaryLaserList.getRows()){
+				ol.setOneCutPrice(primeCost.getOneCutPrice());
+			}
 		
 		}
 		cr.setData(ordinaryLaserList);
