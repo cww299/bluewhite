@@ -313,9 +313,23 @@ public class Embroidery extends BaseEntity<Long>{
     private Double paperPrice;
 	
 	
+	/**
+	 * 单只绣花价格
+	 */
+	@Transient
+    private Double oneEmbroiderPrice;
 	
 	
-	
+
+	public Double getOneEmbroiderPrice() {
+		return oneEmbroiderPrice;
+	}
+
+
+	public void setOneEmbroiderPrice(Double oneEmbroiderPrice) {
+		this.oneEmbroiderPrice = oneEmbroiderPrice;
+	}
+
 
 	public String getAppliqueSize() {
 		return appliqueSize;

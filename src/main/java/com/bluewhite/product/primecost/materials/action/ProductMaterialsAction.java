@@ -27,6 +27,8 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 import com.bluewhite.product.primecost.materials.service.ProductMaterialsService;
+import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
+import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.product.product.service.ProductService;
 
@@ -115,12 +117,13 @@ public class ProductMaterialsAction {
 		CommonResponse cr = new CommonResponse();
 		PageResult<ProductMaterials>  productMaterialsList= new PageResult<>(); 
 		if(productMaterials.getProductId()!=null){
-			HttpSession session = request.getSession();
-			Product product = productService.findOne(productMaterials.getProductId());
-			session.setAttribute("productId", product.getId());
-			session.setAttribute("number", product.getPrimeCost()!=null ? product.getPrimeCost().getNumber():null);
-			session.setAttribute("productName", product.getName());
 			productMaterialsList = productMaterialsService.findPages(productMaterials,page);
+			PrimeCost primeCost = new PrimeCost();
+			primeCost.setProductId(productMaterials.getProductId());
+			productService.getPrimeCost(primeCost, request);
+			for(ProductMaterials ps : productMaterialsList.getRows()){
+				ps.setOneOtherCutPartsPrice(primeCost.getOneOtherCutPartsPrice());
+			}
 		
 		}
 		cr.setData(productMaterialsList);

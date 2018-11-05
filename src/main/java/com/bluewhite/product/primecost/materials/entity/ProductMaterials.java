@@ -3,6 +3,7 @@ package com.bluewhite.product.primecost.materials.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 /**
@@ -106,9 +107,23 @@ public class ProductMaterials extends BaseEntity<Long>{
 	@Column(name = "batch_material_price")
     private Double batchMaterialPrice;
 	
+	/**
+	 * 单只除面料以外的其他物料价格
+	 */
+	@Transient
+    private Double oneOtherCutPartsPrice;
 	
 	
 	
+	
+	public Double getOneOtherCutPartsPrice() {
+		return oneOtherCutPartsPrice;
+	}
+
+	public void setOneOtherCutPartsPrice(Double oneOtherCutPartsPrice) {
+		this.oneOtherCutPartsPrice = oneOtherCutPartsPrice;
+	}
+
 	public Long getMaterialsId() {
 		return materialsId;
 	}

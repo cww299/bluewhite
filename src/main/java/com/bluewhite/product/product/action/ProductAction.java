@@ -8,7 +8,6 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,6 +20,8 @@ import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.product.primecost.cutparts.entity.CutParts;
+import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
 import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
 import com.bluewhite.product.product.dao.ProductDao;
 import com.bluewhite.product.product.entity.Product;
@@ -40,6 +41,10 @@ public class ProductAction {
 	private ProductService productService;
 	@Autowired
 	private ProcedureService  procedureService;
+	@Autowired
+	private CutPartsService cutPartsService;
+	
+	
 	
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -198,6 +203,31 @@ public class ProductAction {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品id不能为空");
 		}
+		return cr;
+	}
+	
+	
+	
+	
+	/**
+	 * (成本价格表中) 复制成本价格表中的所有
+	 * 
+	 */
+	@RequestMapping(value = "product/copyProduct", method = RequestMethod.GET)
+	public CommonResponse copyProduct(HttpServletRequest request,Long id, Long oldId) {
+		CommonResponse cr = new CommonResponse();
+		Product oldProduct  = productService.findOne(oldId);
+		
+		Product product  = productService.findOne(id);
+		
+		List<CutParts> cutPartsList = cutPartsService.findByProductId(oldId);
+		
+		for(CutParts cutParts : cutPartsList){
+			
+		}
+		
+		
+		
 		return cr;
 	}
 	

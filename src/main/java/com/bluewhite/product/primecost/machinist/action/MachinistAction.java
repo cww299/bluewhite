@@ -29,9 +29,11 @@ import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
+import com.bluewhite.product.primecost.embroidery.entity.Embroidery;
 import com.bluewhite.product.primecost.machinist.entity.Machinist;
 import com.bluewhite.product.primecost.machinist.service.MachinistService;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
+import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
 import com.bluewhite.product.product.entity.Product;
@@ -94,12 +96,13 @@ public class MachinistAction {
 		CommonResponse cr = new CommonResponse();
 		PageResult<Machinist>  machinistList= new PageResult<>(); 
 		if(machinist.getProductId()!=null){
-			HttpSession session = request.getSession();
-			Product product = productService.findOne(machinist.getProductId());
-			session.setAttribute("productId", product.getId());
-			session.setAttribute("number", product.getPrimeCost()!=null ? product.getPrimeCost().getNumber():null);
-			session.setAttribute("productName", product.getName());
 			machinistList = machinistService.findPages(machinist,page);
+			PrimeCost primeCost = new PrimeCost();
+			primeCost.setProductId(machinist.getProductId());
+			productService.getPrimeCost(primeCost, request);
+			for(Machinist mt : machinistList.getRows()){
+				mt.setOneMachinistPrice(primeCost.getOneMachinistPrice());
+			}
 		}
 		cr.setData(machinistList);
 		cr.setMessage("查询成功");
