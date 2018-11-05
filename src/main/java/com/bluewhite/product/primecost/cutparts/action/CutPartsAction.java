@@ -53,13 +53,7 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品不能为空");
 		}else{
-			try {
-				cutPartsService.saveCutParts(cutParts);
-			} catch (Exception e) {
-				cr.setMessage(e.getMessage());
-				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				return cr;
-			}
+			cutPartsService.saveCutParts(cutParts);
 			cr.setMessage("添加成功");
 		}
 		return cr;

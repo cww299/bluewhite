@@ -37,9 +37,9 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 		        	if (materiel.getId() != null) {
 						predicate.add(cb.equal(root.get("id").as(Long.class),materiel.getId()));
 					}
-		        	//按编号过滤
+		        	//按物料编号过滤
 		        	if (materiel.getNumber() != null) {
-						predicate.add(cb.like(root.get("type").as(String.class),"%"+materiel.getNumber()+"%"));
+						predicate.add(cb.like(root.get("number").as(String.class),"%"+StringUtil.specialStrKeyword(materiel.getNumber())+"%"));
 					}
 		        	//按产品名称过滤
 		        	if (materiel.getName() != null) {
