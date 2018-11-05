@@ -571,7 +571,8 @@
 						      			that.parent().parent().find(".needleworkPriceDown").text(parseFloat((o.needleworkPriceDown).toFixed(5)));  
 						      			that.parent().parent().find(".priceDownRemark").text(parseFloat((o.priceDownRemark).toFixed(5)));
 						      			that.parent().parent().find(".machinistPriceDown").text(parseFloat((o.machinistPriceDown).toFixed(5)));
-						      			 });
+						      			$("#ntwo").val(o.oneMachinistPrice)	 
+									});
 								layer.close(index);
 								}else{
 									layer.msg("添加失败！", {icon: 2});
@@ -760,7 +761,8 @@
 										      			 that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));  
 										      			that.parent().parent().find(".reckoningSewingPrice").text(parseFloat((o.reckoningSewingPrice).toFixed(5)));  
 										      			that.parent().parent().find(".trialSewingPrice").text(parseFloat((o.trialSewingPrice).toFixed(5)));
-										      			 });
+										      			$("#ntwo1").val(o.oneMachinistPrice)	
+													});
 												layer.close(index);
 												}else{
 													layer.msg("添加失败！", {icon: 2});
@@ -828,7 +830,8 @@
 									      			 that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));  
 									      			that.parent().parent().find(".reckoningSewingPrice").text(parseFloat((o.reckoningSewingPrice).toFixed(5)));  
 									      			that.parent().parent().find(".trialSewingPrice").text(parseFloat((o.trialSewingPrice).toFixed(5)));
-									      			 });
+									      			$("#ntwo1").val(o.oneMachinistPrice)	
+												});
 												if(0==result.code){
 												layer.close(index);
 												}else{
@@ -932,7 +935,8 @@
 															      			 that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));  
 															      			that.parent().parent().find(".reckoningSewingPrice").text(parseFloat((o.reckoningSewingPrice).toFixed(5)));  
 															      			that.parent().parent().find(".trialSewingPrice").text(parseFloat((o.trialSewingPrice).toFixed(5)));
-															      			 });
+															      			$("#ntwo1").val(o.oneMachinistPrice)	
+																		});
 																	layer.close(index);
 																	}else{
 																		layer.msg("添加失败！", {icon: 2});
@@ -995,7 +999,8 @@
 															      			 that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));  
 															      			that.parent().parent().find(".reckoningSewingPrice").text(parseFloat((o.reckoningSewingPrice).toFixed(5)));  
 															      			that.parent().parent().find(".trialSewingPrice").text(parseFloat((o.trialSewingPrice).toFixed(5)));
-															      			 });
+															      			$("#ntwo1").val(o.oneMachinistPrice)	
+																		});
 																	layer.close(index);
 																	}else{
 																		layer.msg("添加失败！", {icon: 2});
@@ -1058,7 +1063,8 @@
 															      			 that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));  
 															      			that.parent().parent().find(".reckoningSewingPrice").text(parseFloat((o.reckoningSewingPrice).toFixed(5)));  
 															      			that.parent().parent().find(".trialSewingPrice").text(parseFloat((o.trialSewingPrice).toFixed(5)));
-															      			 });
+															      			$("#ntwo1").val(o.oneMachinistPrice)	
+																		});
 																	layer.close(index);
 																	}else{
 																		layer.msg("添加失败！", {icon: 2});
@@ -1117,7 +1123,8 @@
 									      			 that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));  
 									      			that.parent().parent().find(".reckoningSewingPrice").text(parseFloat((o.reckoningSewingPrice).toFixed(5)));  
 									      			that.parent().parent().find(".trialSewingPrice").text(parseFloat((o.trialSewingPrice).toFixed(5)));
-									      			 });
+									      			$("#ntwo1").val(o.oneMachinistPrice)	
+												});
 											layer.close(index);
 											}else{
 												layer.msg("添加失败！", {icon: 2});
@@ -1162,7 +1169,8 @@
 									      			 that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));  
 									      			that.parent().parent().find(".reckoningSewingPrice").text(parseFloat((o.reckoningSewingPrice).toFixed(5)));  
 									      			that.parent().parent().find(".trialSewingPrice").text(parseFloat((o.trialSewingPrice).toFixed(5)));
-									      			 });
+									      			$("#ntwo1").val(o.oneMachinistPrice)	
+												});
 											layer.close(index);
 											}else{
 												layer.msg("添加失败！", {icon: 2});
@@ -1208,7 +1216,8 @@
 									      			 that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));  
 									      			that.parent().parent().find(".reckoningSewingPrice").text(parseFloat((o.reckoningSewingPrice).toFixed(5)));  
 									      			that.parent().parent().find(".trialSewingPrice").text(parseFloat((o.trialSewingPrice).toFixed(5)));
-									      			 });
+									      			$("#ntwo1").val(o.oneMachinistPrice)	 
+												});
 											layer.close(index);
 											}else{
 												layer.msg("添加失败！", {icon: 2});
@@ -1254,7 +1263,8 @@
 									      			 that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));  
 									      			that.parent().parent().find(".reckoningSewingPrice").text(parseFloat((o.reckoningSewingPrice).toFixed(5)));  
 									      			that.parent().parent().find(".trialSewingPrice").text(parseFloat((o.trialSewingPrice).toFixed(5)));
-									      			 });
+									      			$("#ntwo1").val(o.oneMachinistPrice)	
+												});
 											layer.close(index);
 											}else{
 												layer.msg("添加失败！", {icon: 2});
@@ -1300,7 +1310,8 @@
 									      			 that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));  
 									      			that.parent().parent().find(".reckoningSewingPrice").text(parseFloat((o.reckoningSewingPrice).toFixed(5)));  
 									      			that.parent().parent().find(".trialSewingPrice").text(parseFloat((o.trialSewingPrice).toFixed(5)));
-									      			 });
+									      			$("#ntwo1").val(o.oneMachinistPrice)	
+												});
 											layer.close(index);
 											}else{
 												layer.msg("添加失败！", {icon: 2});
@@ -1389,7 +1400,8 @@
 																      			 that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));  
 																      			that.parent().parent().find(".reckoningSewingPrice").text(parseFloat((o.reckoningSewingPrice).toFixed(5)));  
 																      			that.parent().parent().find(".trialSewingPrice").text(parseFloat((o.trialSewingPrice).toFixed(5)));
-																      			 });
+																      			$("#ntwo1").val(o.oneMachinistPrice)	
+																			});
 																		layer.close(index);
 																		}else{
 																			layer.msg("添加失败！", {icon: 2});
@@ -1497,7 +1509,8 @@
 																      			 that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));  
 																      			that.parent().parent().find(".reckoningSewingPrice").text(parseFloat((o.reckoningSewingPrice).toFixed(5)));  
 																      			that.parent().parent().find(".trialSewingPrice").text(parseFloat((o.trialSewingPrice).toFixed(5)));
-																      			 });
+																      			$("#ntwo1").val(o.oneMachinistPrice)	
+																			});
 																		layer.close(index);
 																		}else{
 																			layer.msg("添加失败！", {icon: 2});
@@ -1604,7 +1617,8 @@
 																      			 that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));  
 																      			that.parent().parent().find(".reckoningSewingPrice").text(parseFloat((o.reckoningSewingPrice).toFixed(5)));  
 																      			that.parent().parent().find(".trialSewingPrice").text(parseFloat((o.trialSewingPrice).toFixed(5)));
-																      			 });
+																      			$("#ntwo1").val(o.oneMachinistPrice)
+																			});
 																		layer.close(index);
 																		}else{
 																			layer.msg("添加失败！", {icon: 2});

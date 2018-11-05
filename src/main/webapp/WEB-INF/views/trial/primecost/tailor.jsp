@@ -1133,7 +1133,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
-				      			if(result.data.rows!=null){
+				      			if(result.data.rows[0]!=null){
 				      			$("#ntwo1").val(result.data.rows[0].oneCutPrice)
 				      			}
 				      			 $(result.data.rows).each(function(i,o){
@@ -1180,7 +1180,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
-				      			if(result.data.rows!=null){
+				      			if(result.data.rows[0]!=null){
 				      			$("#ntwo2").val(result.data.rows[0].oneCutPrice)
 				      			}
 				      			 $(result.data.rows).each(function(i,o){
@@ -1227,7 +1227,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
-				      			if(result.data.rows!=null){
+				      			if(result.data.rows[0]!=null){
 				      			$("#ntwo3").val(result.data.rows[0].oneCutPrice)
 				      			}
 				      			 $(result.data.rows).each(function(i,o){
@@ -1271,7 +1271,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
-				      			if(result.data.rows!=null){
+				      			if(result.data.rows[0]!=null){
 				      			$("#ntwo4").val(result.data.rows[0].oneCutPrice)
 				      			}
 				      			 $(result.data.rows).each(function(i,o){
@@ -1317,7 +1317,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
-				      			if(result.data.rows!=null){
+				      			if(result.data.rows[0]!=null){
 				      			$("#ntwo5").val(result.data.rows[0].oneCutPrice)
 				      			}
 				      			 $(result.data.rows).each(function(i,o){
@@ -1361,7 +1361,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
-				      			if(result.data.rows!=null){
+				      			if(result.data.rows[0]!=null){
 				      			$("#ntwo6").val(result.data.rows[0].oneCutPrice)
 				      			}
 				      			 $(result.data.rows).each(function(i,o){
@@ -1536,7 +1536,8 @@
 					      				that.parent().parent().find(".equipmentPrice7").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff7").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice7").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo6").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -1593,7 +1594,8 @@
 					      				that.parent().parent().find(".equipmentPrice7").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff7").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice7").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo4").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -1762,7 +1764,8 @@
 					      				that.parent().parent().find(".equipmentPrice6").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff6").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice6").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo5").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -1792,7 +1795,8 @@
 					      				that.parent().parent().find(".equipmentPrice6").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff6").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice6").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo4").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -1822,7 +1826,8 @@
 					      				that.parent().parent().find(".equipmentPrice6").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff6").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice6").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo4").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -1852,7 +1857,8 @@
 					      				that.parent().parent().find(".equipmentPrice6").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff6").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice6").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo4").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -2020,7 +2026,8 @@
 					      				that.parent().parent().find(".equipmentPrice5").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff5").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice5").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo4").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -2051,7 +2058,8 @@
 					      				that.parent().parent().find(".equipmentPrice5").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff5").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice5").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo4").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -2082,7 +2090,8 @@
 					      				that.parent().parent().find(".equipmentPrice5").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff5").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice5").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo4").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -2244,7 +2253,8 @@
 					      				that.parent().parent().find(".equipmentPrice4").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff4").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice4").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo3").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -2274,7 +2284,8 @@
 					      				that.parent().parent().find(".equipmentPrice4").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff4").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice4").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo3").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -2304,7 +2315,8 @@
 					      				that.parent().parent().find(".equipmentPrice4").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff4").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice4").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo3").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -2334,7 +2346,8 @@
 					      				that.parent().parent().find(".equipmentPrice4").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff4").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice4").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo3").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -2502,7 +2515,8 @@
 					      				that.parent().parent().find(".equipmentPrice3").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff3").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice3").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo2").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -2535,7 +2549,8 @@
 					      				that.parent().parent().find(".equipmentPrice3").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff3").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice3").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo2").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -2568,7 +2583,8 @@
 					      				that.parent().parent().find(".equipmentPrice3").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff3").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice3").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo2").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -2601,7 +2617,8 @@
 					      				that.parent().parent().find(".equipmentPrice3").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff3").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice3").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo2").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -2634,7 +2651,8 @@
 					      				that.parent().parent().find(".equipmentPrice3").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff3").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice3").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo2").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -2667,7 +2685,8 @@
 					      				that.parent().parent().find(".equipmentPrice3").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff3").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice3").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo2").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -2830,6 +2849,7 @@
 					      				that.parent().parent().find(".equipmentPrice2").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff2").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice2").text(parseFloat((o.stallPrice).toFixed(5)));
+					      				$("#ntwo1").val(o.oneCutPrice)
 					      			}); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
@@ -2863,6 +2883,7 @@
 					      				that.parent().parent().find(".equipmentPrice2").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff2").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice2").text(parseFloat((o.stallPrice).toFixed(5)));
+					      				$("#ntwo1").val(o.oneCutPrice)
 					      			}); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
@@ -2896,7 +2917,8 @@
 					      				that.parent().parent().find(".equipmentPrice2").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff2").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice2").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo1").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -2929,7 +2951,8 @@
 					      				that.parent().parent().find(".equipmentPrice2").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff2").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice2").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo1").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -2962,7 +2985,8 @@
 					      				that.parent().parent().find(".equipmentPrice2").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff2").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice2").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo1").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -2995,7 +3019,8 @@
 					      				that.parent().parent().find(".equipmentPrice2").text(parseFloat((o.equipmentPrice).toFixed(5)));
 					      				that.parent().parent().find(".administrativeAtaff2").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 					      				that.parent().parent().find(".stallPrice2").text(parseFloat((o.stallPrice).toFixed(5)));
-					      			}); 
+					      				$("#ntwo1").val(o.oneCutPrice)
+					      			 }); 
 					      		  },error:function(){
 										layer.msg("加载失败！", {icon: 2});
 										layer.close(index);
@@ -3066,7 +3091,9 @@
 						      		  success: function (result) {
 						      			 $(result.data).each(function(i,o){
 						      				if(0==result.code){
-												layer.msg(result.message, {icon: 1});
+						      					$(result.data).each(function(i,o){
+						      						$("#ntwo").val(o.oneCutPrice)
+									      			 });
 												layer.close(index);
 												}else{
 													layer.msg(result.message, {icon: 2});
@@ -3131,7 +3158,7 @@
 						      			 $(result.data).each(function(i,o){
 						      				if(0==result.code){
 						      					
-												layer.msg(result.message, {icon: 1});
+						      					$("#ntwo").val(o.oneCutPrice)
 												layer.close(index);
 												}else{
 													layer.msg(result.message, {icon: 2});
@@ -3194,8 +3221,9 @@
 						      		  success: function (result) {
 						      			 $(result.data).each(function(i,o){
 						      				if(0==result.code){
-						      					
-												layer.msg(result.message, {icon: 1});
+						      					$(result.data).each(function(i,o){
+						      						$("#ntwo").val(o.oneCutPrice)
+									      			 });
 												layer.close(index);
 												}else{
 													layer.msg(result.message, {icon: 2});
