@@ -379,7 +379,9 @@
 							  });
 						  }, 
 			      		  success: function (result) {
+			      			if(result.data.rows!=null){
 			      			$("#ntwo").val(result.data.rows[0].oneMachinistPrice)
+			      			}
 			      			 $(result.data.rows).each(function(i,o){
 			      				if(o.costPrice==o.reckoningSewingPrice || o.costPrice==o.trialSewingPrice){
 			      					 
@@ -433,7 +435,9 @@
 								  });
 							  }, 
 				      		  success: function (result) {
+				      			if(result.data.rows!=null){
 				      			$("#ntwo1").val(result.data.rows[0].oneMachinistPrice)
+				      			}
 				      			 $(result.data.rows).each(function(i,o){
 				      				 html +='<tr>'
 				      				+'<td class="text-center edit ">'+o.machinistName+'</td>'

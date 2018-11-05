@@ -229,7 +229,9 @@
 						  });
 					  }, 
 		      		  success: function (result) {
+		      			if(result.data.rows!=null){
 		      			$("#ntwo").val(result.data.rows[0].oneOtherCutPartsPrice)
+		      			}
 		      			 $(result.data.rows).each(function(i,o){
 		      				 
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'

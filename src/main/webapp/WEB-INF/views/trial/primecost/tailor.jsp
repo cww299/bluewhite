@@ -1083,7 +1083,9 @@
 						  });
 					  }, 
 		      		  success: function (result) {
+		      			if(result.data.rows!=null){
 		      			$("#ntwo").val(result.data.rows[0].oneCutPrice)
+		      			}
 		      			 $(result.data.rows).each(function(i,o){
 		      				 if(o.costPrice==o.managePrice || o.costPrice==o.experimentPrice){
 		      					 
@@ -1131,7 +1133,9 @@
 								  });
 							  }, 
 				      		  success: function (result) {
+				      			if(result.data.rows!=null){
 				      			$("#ntwo1").val(result.data.rows[0].oneCutPrice)
+				      			}
 				      			 $(result.data.rows).each(function(i,o){
 				      				 html +='<tr>'
 				      				+'<td class="text-center edit ">'+o.tailorName+'</td>'
@@ -1176,7 +1180,9 @@
 								  });
 							  }, 
 				      		  success: function (result) {
+				      			if(result.data.rows!=null){
 				      			$("#ntwo2").val(result.data.rows[0].oneCutPrice)
+				      			}
 				      			 $(result.data.rows).each(function(i,o){
 				      				 html +='<tr>'
 				      				+'<td class="text-center edit ">'+o.tailorName+'</td>'
@@ -1221,7 +1227,9 @@
 								  });
 							  }, 
 				      		  success: function (result) {
+				      			if(result.data.rows!=null){
 				      			$("#ntwo3").val(result.data.rows[0].oneCutPrice)
+				      			}
 				      			 $(result.data.rows).each(function(i,o){
 				      				 html +='<tr>'
 				      				+'<td class="text-center edit ">'+o.tailorName+'</td>'
@@ -1263,7 +1271,9 @@
 								  });
 							  }, 
 				      		  success: function (result) {
+				      			if(result.data.rows!=null){
 				      			$("#ntwo4").val(result.data.rows[0].oneCutPrice)
+				      			}
 				      			 $(result.data.rows).each(function(i,o){
 				      				 html +='<tr>'
 				      				+'<td class="text-center edit ">'+o.tailorName+'</td>'
@@ -1307,7 +1317,9 @@
 								  });
 							  }, 
 				      		  success: function (result) {
+				      			if(result.data.rows!=null){
 				      			$("#ntwo5").val(result.data.rows[0].oneCutPrice)
+				      			}
 				      			 $(result.data.rows).each(function(i,o){
 				      				 html +='<tr>'
 				      				+'<td class="text-center edit ">'+o.tailorName+'</td>'
@@ -1349,7 +1361,9 @@
 								  });
 							  }, 
 				      		  success: function (result) {
+				      			if(result.data.rows!=null){
 				      			$("#ntwo6").val(result.data.rows[0].oneCutPrice)
+				      			}
 				      			 $(result.data.rows).each(function(i,o){
 				      				 html +='<tr>'
 				      				+'<td class="text-center edit ">'+o.tailorName+'</td>'

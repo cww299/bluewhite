@@ -276,10 +276,12 @@
 						  });
 					  }, 
 		      		  success: function (result) {
+		      			  if(result.data.rows!=null){
 		      			$("#ntwo").val(result.data.rows[0].oneCutPartsPrice)
 		      			$("#total2").text(result.data.statData.perimeter)
 		      			$("#total").text(result.data.statData.allPerimeter)
 		      			$("#totaltw").text(result.data.statData.addMaterial)
+		      			  }
 		      			 $(result.data.rows).each(function(i,o){
 		      				 
 		      			 		var a="";
