@@ -3,6 +3,7 @@ package com.bluewhite.product.primecost.cutparts.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 /**
@@ -222,12 +223,24 @@ public class CutParts extends BaseEntity<Long>{
     private Double batchComplexAddPrice;
 	
 	
-
+	/**
+	 * 面料价格(含复合物料和加工费）
+	 */
+	@Transient
+	private Double cutPartsPrice;
 
 	
 
 
 	
+
+	public Double getCutPartsPrice() {
+		return cutPartsPrice;
+	}
+
+	public void setCutPartsPrice(Double cutPartsPrice) {
+		this.cutPartsPrice = cutPartsPrice;
+	}
 
 	public Long getOverstockId() {
 		return overstockId;

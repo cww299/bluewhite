@@ -1,5 +1,6 @@
 package com.bluewhite.common.entity;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,6 +83,25 @@ public class PageResultStat<T> extends PageResult<T> {
     public void addAutoStateField(String columnName, String field) {
         statisticsFields.put(columnName, field);
     }
+    
+    
+    /**
+     * 通过传入的字段，统计总数。可以传入多个字段
+     * @param statCountField 传NULL代表不统计该字段
+     * @param stateAmountField 传NULL代表不统计该字段
+     */
+    public void setAutoStateField(String...properties) {
+    	List<String> ignoreList = null;
+		if(properties != null){
+			ignoreList = Arrays.asList(properties);
+	    }
+		List<String> ignoreListRe = ignoreList;
+		for(String ignore : ignoreListRe){
+			addAutoStateField(ignore,ignore);
+		}
+    }
+    
+    
 
 
     /**
@@ -97,6 +117,9 @@ public class PageResultStat<T> extends PageResult<T> {
             addStateData(statisticsField,countValues[i++]);
         }
     }
+    
+    
+    
 
     /**
      * 添加统计数据，特定情况，指定key->value

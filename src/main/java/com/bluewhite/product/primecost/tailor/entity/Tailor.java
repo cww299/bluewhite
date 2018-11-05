@@ -24,6 +24,12 @@ public class Tailor extends BaseEntity<Long>{
 	
 	
 	/**
+	 * 裁片id
+	 */
+	@Column(name = "cutParts_id")
+    private Long cutPartsId;
+	
+	/**
 	 * 裁剪类型页面id
 	 */
 	@Column(name = "ordinaryLaser_id")
@@ -146,6 +152,14 @@ public class Tailor extends BaseEntity<Long>{
 	
 
 
+
+	public Long getCutPartsId() {
+		return cutPartsId;
+	}
+
+	public void setCutPartsId(Long cutPartsId) {
+		this.cutPartsId = cutPartsId;
+	}
 
 	public Long getBaseId() {
 		return baseId;
