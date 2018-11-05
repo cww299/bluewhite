@@ -43,11 +43,11 @@
 								<table><tr>
 								<td>产品名:</td><td><input type="text" name="name" id="productName" placeholder="请输入产品名称" class="form-control search-query name" data-provide="typeahead" autocomplete="off"/ ></td>
 								<td>&nbsp&nbsp</td>
-								<td>默认数量:</td><td><input type="text" name="number" id="number" placeholder="请输入默认数量" class="form-control search-query number" /></td>
+								<td>默认数量:</td><td><input type="text" name="number" id="number" disabled="disabled" placeholder="请输入默认数量" class="form-control search-query number" /></td>
 									<td>&nbsp&nbsp</td>
 								<td>默认耗损:</td><td><input type="text" name="name" id="loss" placeholder="请输入产品名称" class="form-control search-query name" /></td>
-								<!-- <td>&nbsp&nbsp</td> -->
-								<!-- <td>完成状态:</td><td><select class="form-control" id="selectstate"><option value=0>未完成</option><option value=1>已完成</option></select></td> -->
+								<td>&nbsp&nbsp</td>
+								<td>裁剪价格:</td><td><input type="text" name="name" id="ntwo" disabled="disabled"  class="form-control search-query name" /></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
@@ -120,6 +120,38 @@
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
+                                    <thead>
+                                        <tr>
+                                       	    <td class="center">合计</td>
+                                        	<td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center" id="total2"></td>
+                                            <td class="text-center" id="total"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center" id="totaltw"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                        </tr>
+                                    </thead>
                                 </table>
                                 <div id="pager" class="pull-right">
                                 
@@ -244,6 +276,10 @@
 						  });
 					  }, 
 		      		  success: function (result) {
+		      			$("#ntwo").val(result.data.rows[0].cutPartsPrice)
+		      			$("#total2").text(result.data.statData.perimeter)
+		      			$("#total").text(result.data.statData.allPerimeter)
+		      			$("#totaltw").text(result.data.statData.addMaterial)
 		      			 $(result.data.rows).each(function(i,o){
 		      				 
 		      			 		var a="";
