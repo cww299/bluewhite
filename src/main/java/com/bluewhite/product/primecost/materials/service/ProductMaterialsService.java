@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 
 @Service
@@ -36,5 +37,13 @@ public interface ProductMaterialsService extends BaseCRUDService<ProductMaterial
 	
 
 	public List<ProductMaterials> findByProductIdAndOverstockId(Long productId, Long id);
+	
+	
+	/**
+	 * 根据产品id查询
+	 * @param productId
+	 * @return
+	 */
+	public List<ProductMaterials> findByProductId(Long productId);
 
 }

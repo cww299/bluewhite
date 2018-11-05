@@ -62,10 +62,6 @@ public class ProductMaterialsAction {
 		}else{
 			try {
 				productMaterialsService.saveProductMaterials(productMaterials);
-				PrimeCost primeCost = new PrimeCost();
-				primeCost.setProductId(productMaterials.getProductId());
-				productService.getPrimeCost(primeCost, request);
-				productMaterials.setOneOtherCutPartsPrice(primeCost.getOneOtherCutPartsPrice());
 			} catch (Exception e) {
 				cr.setMessage(e.getMessage());
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

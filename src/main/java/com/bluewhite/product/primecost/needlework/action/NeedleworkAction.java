@@ -70,8 +70,8 @@ private final static Log log = Log.getLog(NeedleworkAction.class);
 				Needlework oldNeedlework = needleworkService.findOne(needlework.getId());
 				BeanCopyUtils.copyNullProperties(oldNeedlework,needlework);
 				needlework.setCreatedAt(oldNeedlework.getCreatedAt());
-				needleworkService.saveNeedlework(needlework);
 			}
+			needleworkService.saveNeedlework(needlework);
 			PrimeCost primeCost = new PrimeCost();
 			primeCost.setProductId(needlework.getProductId());
 			productService.getPrimeCost(primeCost, request);

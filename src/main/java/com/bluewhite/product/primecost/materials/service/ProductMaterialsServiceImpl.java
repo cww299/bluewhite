@@ -85,4 +85,10 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 		return dao.findByProductIdAndOverstockId(productId,id);
 	}
 
+
+	@Override
+	public List<ProductMaterials> findByProductId(Long productId) {
+		return dao.findByProductId(productId);
+	}
+
 }
