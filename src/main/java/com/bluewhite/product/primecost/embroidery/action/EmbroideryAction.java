@@ -73,8 +73,8 @@ public class EmbroideryAction {
 				Embroidery oldEmbroidery = embroideryService.findOne(embroidery.getId());
 				BeanCopyUtils.copyNullProperties(oldEmbroidery,embroidery);
 				embroidery.setCreatedAt(oldEmbroidery.getCreatedAt());
-				embroideryService.saveEmbroidery(embroidery);
 			}
+			embroideryService.saveEmbroidery(embroidery);
 			PrimeCost primeCost = new PrimeCost();
 			primeCost.setProductId(embroidery.getProductId());
 			productService.getPrimeCost(primeCost, request);

@@ -75,8 +75,8 @@ public class MachinistAction {
 				Machinist oldMachinist = machinistService.findOne(machinist.getId());
 				BeanCopyUtils.copyNullProperties(oldMachinist,machinist);
 				machinist.setCreatedAt(oldMachinist.getCreatedAt());
-				machinistService.saveMachinist(machinist);
 			}
+			machinistService.saveMachinist(machinist);
 			PrimeCost primeCost = new PrimeCost();
 			primeCost.setProductId(machinist.getProductId());
 			productService.getPrimeCost(primeCost, request);

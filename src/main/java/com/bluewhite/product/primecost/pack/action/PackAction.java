@@ -62,8 +62,8 @@ private final static Log log = Log.getLog(PackAction.class);
 				Pack oldPack = packService.findOne(pack.getId());
 				BeanCopyUtils.copyNullProperties(oldPack,pack);
 				pack.setCreatedAt(oldPack.getCreatedAt());
-				packService.savePack(pack);
 			}
+			packService.savePack(pack);
 			PrimeCost primeCost = new PrimeCost();
 			primeCost.setProductId(pack.getProductId());
 			productService.getPrimeCost(primeCost, request);
