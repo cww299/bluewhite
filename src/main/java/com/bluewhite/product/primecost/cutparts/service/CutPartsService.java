@@ -18,7 +18,7 @@ public interface CutPartsService extends BaseCRUDService<CutParts,Long>{
 	 * @return
 	 * @throws Exception
 	 */
-	public CutParts saveCutParts(CutParts cutParts) throws Exception;
+	public CutParts saveCutParts(CutParts cutParts);
 	
 	/**
 	 * 按条件查询cc裁片

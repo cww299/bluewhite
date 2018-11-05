@@ -39,16 +39,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 	
 	@Override
 	@Transactional
-	public CutParts saveCutParts(CutParts cutParts) throws Exception {
-		if(StringUtils.isEmpty(cutParts.getCutPartsNumber())){
-			throw new ServiceException("使用片数不能为空");
-		}
-		if(StringUtils.isEmpty(cutParts.getOneMaterial())){
-			throw new ServiceException("单片用料不能为空");
-		}
-		if(StringUtils.isEmpty(cutParts.getNumber())){
-			throw new ServiceException("批量产品数量或模拟批量数不能为空");
-		}
+	public CutParts saveCutParts(CutParts cutParts) {
 		
 		cutParts.setAddMaterial(cutParts.getCutPartsNumber()*cutParts.getOneMaterial());
 		//当批各单片用料
