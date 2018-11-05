@@ -3,6 +3,7 @@ package com.bluewhite.product.primecost.pack.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 
@@ -146,7 +147,21 @@ public class Pack extends BaseEntity<Long>{
 	@Column(name = "price_down")
     private Double priceDown;
 	
+	/**
+	 * 单只内外包装和出入库的价格
+	 */
+	@Transient
+    private Double onePackPrice;
 	
+
+	
+	public Double getOnePackPrice() {
+		return onePackPrice;
+	}
+
+	public void setOnePackPrice(Double onePackPrice) {
+		this.onePackPrice = onePackPrice;
+	}
 
 	public Integer getGear() {
 		return gear;

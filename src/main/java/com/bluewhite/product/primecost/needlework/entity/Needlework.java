@@ -3,6 +3,7 @@ package com.bluewhite.product.primecost.needlework.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 
@@ -124,6 +125,21 @@ public class Needlework extends BaseEntity<Long>{
 	@Column(name = "materials")
     private String materials;
 	
+	/**
+	 * 单只针工价格
+	 */
+	@Transient
+    private Double oneNeedleworkPrice;
+
+	
+	
+	public Double getOneNeedleworkPrice() {
+		return oneNeedleworkPrice;
+	}
+
+	public void setOneNeedleworkPrice(Double oneNeedleworkPrice) {
+		this.oneNeedleworkPrice = oneNeedleworkPrice;
+	}
 
 	public String getMaterials() {
 		return materials;

@@ -24,8 +24,10 @@ import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.embroidery.entity.Embroidery;
+import com.bluewhite.product.primecost.needlework.entity.Needlework;
 import com.bluewhite.product.primecost.pack.entity.Pack;
 import com.bluewhite.product.primecost.pack.service.PackService;
+import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
 import com.bluewhite.product.product.entity.Product;
@@ -81,12 +83,13 @@ private final static Log log = Log.getLog(PackAction.class);
 		CommonResponse cr = new CommonResponse();
 		PageResult<Pack>  packList= new PageResult<>(); 
 		if(pack.getProductId()!=null){
-			HttpSession session = request.getSession();
-			Product product = productService.findOne(pack.getProductId());
-			session.setAttribute("productId", product.getId());
-			session.setAttribute("number", product.getPrimeCost()!=null ? product.getPrimeCost().getNumber():null);
-			session.setAttribute("productName", product.getName());
 			packList = packService.findPages(pack,page);
+			PrimeCost primeCost = new PrimeCost();
+			primeCost.setProductId(pack.getProductId());
+			productService.getPrimeCost(primeCost, request);
+			for(Pack pk: packList.getRows()){
+				pk.setOnePackPrice(primeCost.getOnePackPrice());
+			}
 		
 		}
 		cr.setData(packList);

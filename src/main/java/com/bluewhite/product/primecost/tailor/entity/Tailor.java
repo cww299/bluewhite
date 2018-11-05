@@ -3,6 +3,7 @@ package com.bluewhite.product.primecost.tailor.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 
@@ -148,10 +149,22 @@ public class Tailor extends BaseEntity<Long>{
 	@Column(name = "machinist_price_down")
     private Double machinistPriceDown;
 	
-	
+	/**
+	 * 单只裁剪价格
+	 */
+	@Transient
+    private Double oneCutPrice;
 	
 
 
+
+	public Double getOneCutPrice() {
+		return oneCutPrice;
+	}
+
+	public void setOneCutPrice(Double oneCutPrice) {
+		this.oneCutPrice = oneCutPrice;
+	}
 
 	public Long getCutPartsId() {
 		return cutPartsId;

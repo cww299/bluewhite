@@ -34,6 +34,7 @@ import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 import com.bluewhite.product.primecost.materials.service.ProductMaterialsService;
 import com.bluewhite.product.primecost.needlework.entity.Needlework;
 import com.bluewhite.product.primecost.needlework.service.NeedleworkService;
+import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.product.product.service.ProductService;
 @Controller
@@ -89,13 +90,13 @@ private final static Log log = Log.getLog(NeedleworkAction.class);
 		CommonResponse cr = new CommonResponse();
 		PageResult<Needlework>  needleworkList= new PageResult<>(); 
 		if(needlework.getProductId()!=null){
-			HttpSession session = request.getSession();
-			Product product = productService.findOne(needlework.getProductId());
-			session.setAttribute("productId", product.getId());
-			session.setAttribute("number", product.getPrimeCost()!=null ? product.getPrimeCost().getNumber():null);
-			session.setAttribute("productName", product.getName());
 			needleworkList = needleworkService.findPages(needlework,page);
-		
+			PrimeCost primeCost = new PrimeCost();
+			primeCost.setProductId(needlework.getProductId());
+			productService.getPrimeCost(primeCost, request);
+			for(Needlework nw : needleworkList.getRows()){
+				nw.setOneNeedleworkPrice(primeCost.getOneNeedleworkPrice());
+			}
 		}
 		cr.setData(needleworkList);
 		cr.setMessage("查询成功");

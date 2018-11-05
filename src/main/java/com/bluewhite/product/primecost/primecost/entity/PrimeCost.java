@@ -3,6 +3,7 @@ package com.bluewhite.product.primecost.primecost.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 
@@ -448,8 +449,7 @@ public class PrimeCost extends BaseEntity<Long>{
 	@Column(name = "copyright_rate")
 	private Double copyrightRate;
 	
-	
-	
+
 
 	public Double getOneaAtualPrimeCost() {
 		return oneaAtualPrimeCost;

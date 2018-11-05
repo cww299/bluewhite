@@ -25,6 +25,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.embroidery.entity.Embroidery;
+import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
 import com.bluewhite.product.primecost.tailor.entity.OrdinaryLaser;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.OrdinaryLaserService;
@@ -87,12 +88,14 @@ public class TailorAction {
 		CommonResponse cr = new CommonResponse();
 		PageResult<Tailor>  tailorList= new PageResult<>(); 
 		if(tailor.getProductId()!=null){
-				HttpSession session = request.getSession();
-				Product product = productService.findOne(tailor.getProductId());
-				session.setAttribute("productId", product.getId());
-				session.setAttribute("number", product.getPrimeCost()!=null ? product.getPrimeCost().getNumber():null);
-				session.setAttribute("productName", product.getName());
-			tailorList = tailorService.findPages(tailor,page);
+				tailorList = tailorService.findPages(tailor,page);
+				PrimeCost primeCost = new PrimeCost();
+				primeCost.setProductId(tailor.getProductId());
+				productService.getPrimeCost(primeCost, request);
+				for(Tailor tl : tailorList.getRows()){
+					tl.setOneCutPrice(primeCost.getOneCutPrice());
+				}
+		
 		}
 		cr.setData(tailorList);
 		cr.setMessage("查询成功");

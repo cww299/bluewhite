@@ -227,19 +227,21 @@ public class CutParts extends BaseEntity<Long>{
 	 * 面料价格(含复合物料和加工费）
 	 */
 	@Transient
-	private Double cutPartsPrice;
+	private Double oneCutPartsPrice;
 
 	
 
 
 	
 
-	public Double getCutPartsPrice() {
-		return cutPartsPrice;
+	
+
+	public Double getOneCutPartsPrice() {
+		return oneCutPartsPrice;
 	}
 
-	public void setCutPartsPrice(Double cutPartsPrice) {
-		this.cutPartsPrice = cutPartsPrice;
+	public void setOneCutPartsPrice(Double oneCutPartsPrice) {
+		this.oneCutPartsPrice = oneCutPartsPrice;
 	}
 
 	public Long getOverstockId() {

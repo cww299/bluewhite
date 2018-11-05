@@ -112,7 +112,7 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 			primeCost.setProductId(cutParts.getProductId());
 			productService.getPrimeCost(primeCost, request);
 			for(CutParts cp : cutPartsList.getRows()){
-				cp.setCutPartsPrice(primeCost.getCutPartsPrice());
+				cp.setOneCutPartsPrice(primeCost.getOneCutPartsPrice());
 			}
 		}
 		cr.setData(cutPartsList);

@@ -296,10 +296,22 @@ public class Machinist extends BaseEntity<Long> {
 	@Column(name = "base_four_date_three")
 	private Double baseFourDateThree;
 	
+	/**
+	 * 单只机工价格
+	 */
+	@Transient
+    private Double oneMachinistPrice;
 	
+	
+	
+	public Double getOneMachinistPrice() {
+		return oneMachinistPrice;
+	}
 
-	
-	
+	public void setOneMachinistPrice(Double oneMachinistPrice) {
+		this.oneMachinistPrice = oneMachinistPrice;
+	}
+
 	public Double getBaseFourDateOne() {
 		return baseFourDateOne;
 	}
