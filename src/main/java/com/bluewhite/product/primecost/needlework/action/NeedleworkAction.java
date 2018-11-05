@@ -70,8 +70,13 @@ private final static Log log = Log.getLog(NeedleworkAction.class);
 				Needlework oldNeedlework = needleworkService.findOne(needlework.getId());
 				BeanCopyUtils.copyNullProperties(oldNeedlework,needlework);
 				needlework.setCreatedAt(oldNeedlework.getCreatedAt());
+				needleworkService.saveNeedlework(needlework);
 			}
-			cr.setData(needleworkService.saveNeedlework(needlework));
+			PrimeCost primeCost = new PrimeCost();
+			primeCost.setProductId(needlework.getProductId());
+			productService.getPrimeCost(primeCost, request);
+			needlework.setOneNeedleworkPrice(primeCost.getOneNeedleworkPrice());
+			cr.setData(needlework);
 			cr.setMessage("添加成功");
 		}
 		return cr;

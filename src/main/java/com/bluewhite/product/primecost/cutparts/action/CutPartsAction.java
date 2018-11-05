@@ -56,6 +56,10 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 			cr.setMessage("产品不能为空");
 		}else{
 			cutPartsService.saveCutParts(cutParts);
+			PrimeCost primeCost = new PrimeCost();
+			primeCost.setProductId(cutParts.getProductId());
+			productService.getPrimeCost(primeCost, request);
+			cutParts.setOneCutPartsPrice(primeCost.getOneCutPartsPrice());
 			cr.setMessage("添加成功");
 		}
 		return cr;
@@ -77,16 +81,10 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("裁片不能为空");
 		}else{
-			try {
-				CutParts oldCutParts = cutPartsService.findOne(cutParts.getId());
-				BeanCopyUtils.copyNullProperties(oldCutParts,cutParts);
-				cutParts.setCreatedAt(oldCutParts.getCreatedAt());
-				cutPartsService.saveCutParts(cutParts);
-			} catch (Exception e) {
-				cr.setMessage(e.getMessage());
-				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				return cr;
-			}
+			CutParts oldCutParts = cutPartsService.findOne(cutParts.getId());
+			BeanCopyUtils.copyNullProperties(oldCutParts,cutParts);
+			cutParts.setCreatedAt(oldCutParts.getCreatedAt());
+			cutPartsService.saveCutParts(cutParts);
 			cr.setMessage("修改成功");
 		}
 		return cr;

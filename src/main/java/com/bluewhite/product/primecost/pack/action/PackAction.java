@@ -62,8 +62,13 @@ private final static Log log = Log.getLog(PackAction.class);
 				Pack oldPack = packService.findOne(pack.getId());
 				BeanCopyUtils.copyNullProperties(oldPack,pack);
 				pack.setCreatedAt(oldPack.getCreatedAt());
+				packService.savePack(pack);
 			}
-			cr.setData(packService.savePack(pack));
+			PrimeCost primeCost = new PrimeCost();
+			primeCost.setProductId(pack.getProductId());
+			productService.getPrimeCost(primeCost, request);
+			pack.setOnePackPrice(primeCost.getOnePackPrice());
+			cr.setData(pack);
 			cr.setMessage("添加成功");
 		}
 		return cr;

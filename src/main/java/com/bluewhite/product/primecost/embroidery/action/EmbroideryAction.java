@@ -73,8 +73,13 @@ public class EmbroideryAction {
 				Embroidery oldEmbroidery = embroideryService.findOne(embroidery.getId());
 				BeanCopyUtils.copyNullProperties(oldEmbroidery,embroidery);
 				embroidery.setCreatedAt(oldEmbroidery.getCreatedAt());
+				embroideryService.saveEmbroidery(embroidery);
 			}
-			cr.setData(embroideryService.saveEmbroidery(embroidery));
+			PrimeCost primeCost = new PrimeCost();
+			primeCost.setProductId(embroidery.getProductId());
+			productService.getPrimeCost(primeCost, request);
+			embroidery.setOneEmbroiderPrice(primeCost.getOneEmbroiderPrice());
+			cr.setData(embroidery);
 			cr.setMessage("添加成功");
 		}
 		return cr;
@@ -101,9 +106,6 @@ public class EmbroideryAction {
 			for(Embroidery ey : embroideryList.getRows()){
 				ey.setOneEmbroiderPrice(primeCost.getOneEmbroiderPrice());
 			}
-
-		
-		
 		}
 		cr.setData(embroideryList);
 		cr.setMessage("查询成功");

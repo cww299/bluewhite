@@ -245,6 +245,21 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 	@Transient
     private Integer save;
 	
+	/**
+	 * 单只裁剪价格
+	 */
+	@Transient
+    private Double oneCutPrice;
+	
+	
+
+	public Double getOneCutPrice() {
+		return oneCutPrice;
+	}
+
+	public void setOneCutPrice(Double oneCutPrice) {
+		this.oneCutPrice = oneCutPrice;
+	}
 
 	public Integer getSave() {
 		return save;
