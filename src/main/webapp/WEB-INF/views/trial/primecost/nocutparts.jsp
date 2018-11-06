@@ -759,24 +759,58 @@
 					});
 				
 				//新增
-					
 					var html="";
 				$('#addCutting').on('click',function(){
-					var a=$('#loss').val();
-					 html='<tr><td></td><td  style="padding: 2px 0px 2px 4px;"></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;"  class="text-center materiel" /></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"    style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center  oneMaterial"  /></td>'
-					 +'<td class="text-center edit selectCompany" style="padding: 2px 0px 2px 0px;></td>'
-					 +'<td class="text-center edit name"></td>'
-					 +'<td class="text-center edit namettw hidden"></td>'
-					 +'<td class="text-center edit selectprice"></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" value="'+a+'" style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center manualLoss" /></td>'
-					 +'<td class="text-center edit unitPrice" ></td>'
-					 +'<td class="text-center edit unit"></td></tr>';
-					  /* $(html).insertBefore("#tablecontent"); */
-					/* $("#tablecontent").append(html); */
-					$("#tablecontent").prepend(html);
-					self.mater();
+					var arr = ["202机工线","棉线（大团）白色3#","抽真空内胆","大蓝包1.4*1.9","7D棉","7D棉","子弹","蓝白新款吊牌 DP-44","蓝白玩偶织标小SB-17","代码标"];
+					var arrtw = ["3489","3510","3776","3777","5188","5188","3550","2960","2989","4931"];
+					for (var i = 0; i < arr.length; i++) {
+						var s=arr[i]
+						var f=""
+						var d=arrtw[i]
+						var postData={
+								id:d,
+						}
+						var index;
+						$.ajax({
+							url:"${ctx}/product/getMateriel",
+							data:postData,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+									f=result.data[0].price
+									g=result.data[0].name
+									h=result.data[0].id
+									j=result.data[0].unit
+									var a=$('#loss').val();
+									 html='<tr><td></td><td  style="padding: 2px 0px 2px 4px;"></td>'
+									 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;" value='+g+'  class="text-center materiel" /></td>'
+									 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"    style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center  oneMaterial"  /></td>'
+									 +'<td class="text-center edit selectCompany" style="padding: 2px 0px 2px 0px;></td>'
+									 +'<td class="text-center edit name"></td>'
+									 +'<td class="text-center edit namettw hidden">'+h+'</td>'
+									 +'<td class="text-center edit selectprice"></td>'
+									 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" value="'+a+'" style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center manualLoss" /></td>'
+									 +'<td class="text-center edit unitPrice" >'+f+'</td>'
+									 +'<td class="text-center edit unit">'+j+'</td></tr>';
+									$("#tablecontent").prepend(html);
+									self.mater();
+								layer.close(index);
+								}else{
+									layer.msg("新增失败！", {icon: 2});
+									layer.close(index);
+								}
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+					}
 				})
 			
 				var that;
