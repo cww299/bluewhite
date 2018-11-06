@@ -449,7 +449,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
-				      			if(result.data.rows!=null){
+				      			if(result.data.rows!=null && result.data.rows!=""){
 					      			$("#ntwo1").val(result.data.rows[0].oneEmbroiderPrice)
 					      			}
 				      			 $(result.data.rows).each(function(i,o){

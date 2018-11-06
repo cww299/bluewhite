@@ -82,6 +82,11 @@ public class CutParts extends BaseEntity<Long>{
 	@Column(name = "perimeter")
     private Double perimeter;
 	
+	/**
+	 * 面料产品id
+	 */
+	@Column(name = "materiel_id")
+    private Long materielId;
 	
 	/**
 	 * 面料产品编号
@@ -235,6 +240,14 @@ public class CutParts extends BaseEntity<Long>{
 	
 
 	
+
+	public Long getMaterielId() {
+		return materielId;
+	}
+
+	public void setMaterielId(Long materielId) {
+		this.materielId = materielId;
+	}
 
 	public Double getOneCutPartsPrice() {
 		return oneCutPartsPrice;
