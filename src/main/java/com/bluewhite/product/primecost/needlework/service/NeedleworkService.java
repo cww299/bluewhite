@@ -1,5 +1,7 @@
 package com.bluewhite.product.primecost.needlework.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -22,5 +24,8 @@ public interface NeedleworkService extends BaseCRUDService<Needlework,Long>{
 
 
 	public void deleteNeedlework(Long id);
+
+
+	List<Needlework> findByProductId(Long productId);
 
 }

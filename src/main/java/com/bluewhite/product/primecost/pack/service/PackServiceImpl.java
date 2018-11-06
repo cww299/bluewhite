@@ -138,4 +138,9 @@ public class PackServiceImpl extends BaseServiceImpl<Pack, Long> implements Pack
 		dao.delete(id);
 	}
 
+	@Override
+	public List<Pack> findByProductId(Long productId) {
+		return dao.findByProductId(productId);
+	}
+
 }

@@ -321,6 +321,24 @@ public class BaseOneAction {
 	}
 	
 	
+	/**
+	 * 当物料被修改，自动更新裁片页面和dd页面相关值
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/product/updateMaterielAndOther", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse updateMaterielAndOther(HttpServletRequest request) {
+		CommonResponse cr = new CommonResponse();
+		
+		
+//		cr.setData();
+		return cr;
+	}
+	
+	
 	
 	
 	

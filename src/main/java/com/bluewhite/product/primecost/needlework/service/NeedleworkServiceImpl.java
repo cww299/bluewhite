@@ -105,4 +105,9 @@ public class NeedleworkServiceImpl extends BaseServiceImpl<Needlework, Long> imp
 
 	}
 
+	@Override
+	public List<Needlework> findByProductId(Long productId) {
+		return dao.findByProductId(productId);
+	}
+
 }

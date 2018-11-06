@@ -1,5 +1,7 @@
 package com.bluewhite.product.primecost.pack.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -14,5 +16,7 @@ public interface PackService extends BaseCRUDService<Pack,Long>{
 	public PageResult<Pack> findPages(Pack pack, PageParameter page);
 
 	public void deletePack(Long id);
+
+	public List<Pack> findByProductId(Long productId);
 
 }
