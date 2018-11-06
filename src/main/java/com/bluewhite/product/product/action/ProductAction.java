@@ -293,16 +293,11 @@ public class ProductAction {
 		
 	    //1.将新的裁片存起，这时，裁剪id还存在，同时根据裁剪id 查出所有，然后将裁剪页面的裁片id换成新的裁片id，同时制空裁剪id，组成新的裁剪实体,保存。在将裁片页面的裁剪id替换成新的  
 		List<Tailor>  tailorList =  new ArrayList<Tailor>();
-		List<OrdinaryLaser>  ordinaryLaserList =  new ArrayList<OrdinaryLaser>();
 		for(CutParts cp : cutPartsList){
 			Tailor tailor = tailorService.findOne(cp.getTailorId());
-			OrdinaryLaser ordinaryLaser = ordinaryLaserService.findByTailorId(cp.getTailorId());
-			ordinaryLaser.setId(null);
-			ordinaryLaser.setProductId(id);
 			tailor.setId(null);
 			tailor.setProductId(id);
 			tailor.setCutPartsId(cp.getId());
-			
 			for(Embroidery ed : embroideryList){
 				if(ed.getTailorId()==cp.getTailorId()){
 					tailor.setEmbroideryId(ed.getId());
@@ -310,20 +305,24 @@ public class ProductAction {
 				}
 			}
 			tailorList.add(tailor);
-			ordinaryLaserList.add(ordinaryLaser);
 		}
 		session.clear();//清除缓存	
 		tailorService.save(tailorList);
-		ordinaryLaserService.save(ordinaryLaserList);
+	
 		
 		for(Tailor tr : tailorList){
 			CutParts cutParts = cutPartsService.findOne(tr.getCutPartsId());
 			Embroidery  embroidery = embroideryService.findOne(tr.getEmbroideryId());
+			OrdinaryLaser ordinaryLaser = ordinaryLaserService.findOne(tr.getOrdinaryLaserId());
+			ordinaryLaser.setId(null);
+			ordinaryLaser.setProductId(id);
+			ordinaryLaser.setTailorId(tr.getId());
 			cutParts.setTailorId(tr.getId());
 			embroidery.setTailorId(tr.getId());
 			session.clear();//清除缓存	
 			cutPartsService.save(cutParts);
 			embroideryService.save(embroidery);
+			ordinaryLaserService.save(ordinaryLaser);
 		}
 		cr.setMessage("复制成功");
 		return cr;

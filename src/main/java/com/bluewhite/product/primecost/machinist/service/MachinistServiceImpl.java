@@ -8,6 +8,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
@@ -33,6 +34,7 @@ public class MachinistServiceImpl extends BaseServiceImpl<Machinist, Long> imple
 	private PrimeCoefficientDao primeCoefficientDao;
 	
 	@Override
+	@Transactional
 	public Machinist saveMachinist(Machinist machinist) {
 		
 		PrimeCoefficient primeCoefficient = primeCoefficientDao.findByType("machinist");
@@ -160,6 +162,7 @@ public class MachinistServiceImpl extends BaseServiceImpl<Machinist, Long> imple
 	}
 
 	@Override
+	@Transactional
 	public void deleteProductMaterials(Long id) {
 		dao.delete(id);
 	}

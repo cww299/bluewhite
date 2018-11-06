@@ -9,6 +9,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
@@ -41,6 +42,7 @@ public class EmbroideryServiceImpl extends BaseServiceImpl<Embroidery, Long> imp
 	private PrimeCoefficientDao primeCoefficientDao;
 
 	@Override
+	@Transactional
 	public Embroidery saveEmbroidery(Embroidery embroidery) {
 		
 		//自动将类型为null的属性赋值为0
@@ -167,6 +169,7 @@ public class EmbroideryServiceImpl extends BaseServiceImpl<Embroidery, Long> imp
 	}
 
 	@Override
+	@Transactional
 	public void deleteEmbroidery(Long id) {
 		Embroidery embroidery = dao.findOne(id);
 		Tailor tailor = tailorDao.findOne(embroidery.getTailorId());
