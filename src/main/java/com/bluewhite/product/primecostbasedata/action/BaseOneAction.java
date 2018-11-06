@@ -330,8 +330,11 @@ public class BaseOneAction {
 	 */
 	@RequestMapping(value = "/product/updateMaterielAndOther", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse updateMaterielAndOther(HttpServletRequest request) {
+	public CommonResponse updateMaterielAndOther(HttpServletRequest request,Long productId) {
 		CommonResponse cr = new CommonResponse();
+		
+		
+		
 		
 		
 //		cr.setData();

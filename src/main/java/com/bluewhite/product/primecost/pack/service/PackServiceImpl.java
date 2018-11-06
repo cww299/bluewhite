@@ -8,6 +8,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
@@ -57,6 +58,7 @@ public class PackServiceImpl extends BaseServiceImpl<Pack, Long> implements Pack
 	private NeedleworkDao needleworkDao;
 
 	@Override
+	@Transactional
 	public Pack savePack(Pack pack) {
 		// 自动将类型为null的属性赋值为0
 		NumUtils.setzro(pack);
@@ -134,6 +136,7 @@ public class PackServiceImpl extends BaseServiceImpl<Pack, Long> implements Pack
 	}
 
 	@Override
+	@Transactional
 	public void deletePack(Long id) {
 		dao.delete(id);
 	}

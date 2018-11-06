@@ -8,6 +8,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
@@ -37,6 +38,7 @@ public class NeedleworkServiceImpl extends BaseServiceImpl<Needlework, Long> imp
 	
 
 	@Override
+	@Transactional
 	public Needlework saveNeedlework(Needlework needlework) {
 		
 		//自动将类型为null的属性赋值为0
@@ -100,6 +102,7 @@ public class NeedleworkServiceImpl extends BaseServiceImpl<Needlework, Long> imp
 	}
 
 	@Override
+	@Transactional
 	public void deleteNeedlework(Long id) {
 		dao.delete(id);
 

@@ -1,13 +1,8 @@
 package com.bluewhite.product.primecost.embroidery.action;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -29,13 +24,8 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.embroidery.entity.Embroidery;
 import com.bluewhite.product.primecost.embroidery.service.EmbroideryService;
-import com.bluewhite.product.primecost.machinist.entity.Machinist;
-import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
-import com.bluewhite.product.primecost.needlework.entity.Needlework;
 import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
-import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
-import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.product.product.service.ProductService;
 @Controller
 public class EmbroideryAction {

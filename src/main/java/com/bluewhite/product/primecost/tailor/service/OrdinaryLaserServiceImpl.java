@@ -8,6 +8,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
@@ -33,6 +34,7 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 	private PrimeCoefficientDao primeCoefficientDao;
 	
 	@Override
+	@Transactional
 	public OrdinaryLaser saveOrdinaryLaser(OrdinaryLaser ordinaryLaser) {
 		//自动将类型为double为空的属性赋值为0
 		NumUtils.setzro(ordinaryLaser);
