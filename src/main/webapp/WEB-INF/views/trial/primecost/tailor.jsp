@@ -1083,7 +1083,7 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			if(result.data.rows!=null){
+		      			if(result.data.rows!=null && result.data.rows!=""){
 		      			$("#ntwo").val(result.data.rows[0].oneCutPrice)
 		      			}
 		      			 $(result.data.rows).each(function(i,o){

@@ -350,7 +350,7 @@
 							  });
 						  }, 
 			      		  success: function (result) {
-			      			if(result.data.rows!=null){
+			      			if(result.data.rows!=null && result.data.rows!=""){
 				      			$("#ntwo").val(result.data.rows[0].oneNeedleworkPrice)
 				      			}
 			      			 $(result.data.rows).each(function(i,o){
@@ -398,7 +398,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
-				      			if(result.data.rows!=null){
+				      			if(result.data.rows!=null && result.data.rows!=""){
 					      			$("#ntwo1").val(result.data.rows[0].oneNeedleworkPrice)
 					      			}
 				      			 $(result.data.rows).each(function(i,o){
