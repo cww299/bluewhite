@@ -1133,7 +1133,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
-				      			if(result.data.rows[0]!=null){
+				      			if(result.data.rows[0]!=null && result.data！=""){
 				      			$("#ntwo1").val(result.data.rows[0].oneCutPrice)
 				      			}
 				      			 $(result.data.rows).each(function(i,o){
@@ -1180,7 +1180,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
-				      			if(result.data.rows[0]!=null){
+				      			if(result.data.rows[0]!=null && result.data！=""){
 				      			$("#ntwo2").val(result.data.rows[0].oneCutPrice)
 				      			}
 				      			 $(result.data.rows).each(function(i,o){
@@ -1227,7 +1227,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
-				      			if(result.data.rows[0]!=null){
+				      			if(result.data.rows[0]!=null && result.data！=""){
 				      			$("#ntwo3").val(result.data.rows[0].oneCutPrice)
 				      			}
 				      			 $(result.data.rows).each(function(i,o){
@@ -1271,7 +1271,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
-				      			if(result.data.rows[0]!=null){
+				      			if(result.data.rows[0]!=null && result.data！=""){
 				      			$("#ntwo4").val(result.data.rows[0].oneCutPrice)
 				      			}
 				      			 $(result.data.rows).each(function(i,o){
@@ -1317,7 +1317,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
-				      			if(result.data.rows[0]!=null){
+				      			if(result.data.rows[0]!=null && result.data！=""){
 				      			$("#ntwo5").val(result.data.rows[0].oneCutPrice)
 				      			}
 				      			 $(result.data.rows).each(function(i,o){
@@ -1361,7 +1361,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
-				      			if(result.data.rows[0]!=null){
+				      			if(result.data.rows[0]!=null && result.data！=""){
 				      			$("#ntwo6").val(result.data.rows[0].oneCutPrice)
 				      			}
 				      			 $(result.data.rows).each(function(i,o){
