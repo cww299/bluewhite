@@ -402,7 +402,7 @@
 							  });
 						  }, 
 			      		  success: function (result) {
-			      			if(result.data.rows!=null){
+			      			if(result.data.rows!=null && result.data.rows!=""){
 				      			$("#ntwo").val(result.data.rows[0].oneEmbroiderPrice)
 				      			}
 			      			 $(result.data.rows).each(function(i,o){
@@ -640,7 +640,7 @@
 			      			}); 
 			      		  },error:function(){
 								layer.msg("加载失败！", {icon: 2});
-								layer.close(index);sa
+								layer.close(index);
 						  }
 					  });
 				  })
@@ -680,7 +680,7 @@
 								}
 							},error:function(){
 								layer.msg("加载失败！", {icon: 2});
-								layer.close(index);sa
+								layer.close(index);
 						  }
 					  });
 				  })
@@ -724,7 +724,7 @@
 								}
 							},error:function(){
 								layer.msg("加载失败！", {icon: 2});
-								layer.close(index);sa
+								layer.close(index);
 						  }
 					  });
 				    })
@@ -767,7 +767,7 @@
 								}
 							},error:function(){
 								layer.msg("加载失败！", {icon: 2});
-								layer.close(index);sa
+								layer.close(index);
 						  }
 					  });
 				    })
@@ -810,7 +810,7 @@
 								}
 							},error:function(){
 								layer.msg("加载失败！", {icon: 2});
-								layer.close(index);sa
+								layer.close(index);
 						  }
 					  });
 				    })
@@ -853,7 +853,7 @@
 								}
 							},error:function(){
 								layer.msg("加载失败！", {icon: 2});
-								layer.close(index);sa
+								layer.close(index);
 						  }
 					  });
 				    })
@@ -896,7 +896,7 @@
 								}
 							},error:function(){
 								layer.msg("加载失败！", {icon: 2});
-								layer.close(index);sa
+								layer.close(index);
 						  }
 					  });
 				    })
@@ -939,7 +939,7 @@
 								}
 							},error:function(){
 								layer.msg("加载失败！", {icon: 2});
-								layer.close(index);sa
+								layer.close(index);
 						  }
 					  });
 				    })
@@ -982,7 +982,7 @@
 								}
 							},error:function(){
 								layer.msg("加载失败！", {icon: 2});
-								layer.close(index);sa
+								layer.close(index);
 						  }
 					  });
 				    })
@@ -1025,7 +1025,7 @@
 								}
 							},error:function(){
 								layer.msg("加载失败！", {icon: 2});
-								layer.close(index);sa
+								layer.close(index);
 						  }
 					  });
 				    })
@@ -1148,7 +1148,7 @@
 													}
 												},error:function(){
 													layer.msg("加载失败！", {icon: 2});
-													layer.close(index);sa
+													layer.close(index);
 											  }
 										  }); 
 									})
@@ -1212,7 +1212,7 @@
 														}
 													},error:function(){
 														layer.msg("加载失败！", {icon: 2});
-														layer.close(index);sa
+														layer.close(index);
 												  }
 											  }); 
 										})
@@ -1278,7 +1278,7 @@
 															}
 														},error:function(){
 															layer.msg("加载失败！", {icon: 2});
-															layer.close(index);sa
+															layer.close(index);
 													  }
 												  }); 
 											})
@@ -1341,7 +1341,7 @@
 																}
 															},error:function(){
 																layer.msg("加载失败！", {icon: 2});
-																layer.close(index);sa
+																layer.close(index);
 														  }
 													  }); 
 												})
@@ -1404,7 +1404,7 @@
 																	}
 																},error:function(){
 																	layer.msg("加载失败！", {icon: 2});
-																	layer.close(index);sa
+																	layer.close(index);
 															  }
 														  }); 
 													})
@@ -1473,7 +1473,7 @@
 																		}
 																	},error:function(){
 																		layer.msg("加载失败！", {icon: 2});
-																		layer.close(index);sa
+																		layer.close(index);
 																  }
 															  }); 
 														})
@@ -1645,7 +1645,7 @@
 																		}
 																	},error:function(){
 																		layer.msg("加载失败！", {icon: 2});
-																		layer.close(index);sa
+																		layer.close(index);
 																  }
 															  }); 
 														})
@@ -1903,7 +1903,7 @@
 												}
 											},error:function(){
 												layer.msg("加载失败！", {icon: 2});
-												layer.close(index);sa
+												layer.close(index);
 										  }
 									  });
 								})

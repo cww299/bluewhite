@@ -232,4 +232,10 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 		return result;
 		}
 
+
+	@Override
+	public OrdinaryLaser findByTailorId(Long tailorId) {
+		return dao.findByTailorId(tailorId);
+	}
+
 }
