@@ -35,6 +35,9 @@ public interface MaterielService extends BaseCRUDService<Materiel,Long>{
 	 */
 	public Double getBaseThreeOne(Long typeId, Double number);
 	
+
+	public PageResult<Materiel> findMaterielPages(Materiel materiel, PageParameter page);
+	
 	
 
 }

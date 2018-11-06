@@ -21,7 +21,11 @@ import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
-import com.bluewhite.common.utils.StringUtil;
+import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.product.primecost.cutparts.entity.CutParts;
+import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
+import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
+import com.bluewhite.product.primecost.materials.service.ProductMaterialsService;
 import com.bluewhite.product.primecostbasedata.dao.BaseFourDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneTimeDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseThreeDao;
@@ -53,6 +57,11 @@ public class BaseOneAction {
 	
 	@Autowired
 	private PrimeCoefficientDao primeCoefficientDao;
+	
+	@Autowired
+	private CutPartsService cutPartsService;
+	@Autowired
+	private ProductMaterialsService productMaterialsService;
 	
 	/**
 	 * 时间常量
@@ -164,6 +173,27 @@ public class BaseOneAction {
 		cr.setMessage("成功");
 		return cr;
 	}
+	
+	
+	/**
+	 * 物料产品基础数据获取
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/product/getMaterielPage", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getMaterielPage(HttpServletRequest request,Materiel materiel,PageParameter page) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(Materiel.class,"id","number","name","price","type","unit","changePrice","count","convertUnit","convertPrice")
+				.format(materielService.findMaterielPages(materiel,page)).toJSON());
+		cr.setMessage("成功");
+		return cr;
+	}
+	
 	
 	/**
 	 * 新增修改物料产品基础数据
@@ -332,7 +362,23 @@ public class BaseOneAction {
 	@ResponseBody
 	public CommonResponse updateMaterielAndOther(HttpServletRequest request,Long productId) {
 		CommonResponse cr = new CommonResponse();
+		//裁片
+		List<CutParts> cutPartsList = cutPartsService.findByProductId(productId);
+		for(CutParts cp : cutPartsList){
+			Materiel materiel = materielService.findOne(cp.getMaterielId());
+			
+//			if(){
+//				
+//				
+//				
+//				
+//			}
+			
+		}
 		
+		
+		//除裁片
+		List<ProductMaterials>  productMaterialsList = productMaterialsService.findByProductId(productId);
 		
 		
 		
