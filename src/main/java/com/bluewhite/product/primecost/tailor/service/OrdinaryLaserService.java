@@ -27,4 +27,6 @@ public interface OrdinaryLaserService extends BaseCRUDService<OrdinaryLaser,Long
 	 */
 	public  PageResult<OrdinaryLaser> findPages(OrdinaryLaser ordinaryLaser, PageParameter page);
 
+	public OrdinaryLaser findByTailorId(Long tailorId);
+
 }

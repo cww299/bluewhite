@@ -43,7 +43,6 @@ public class TailorAction {
 	
 	@Autowired
 	private TailorService tailorService;
-	
 	@Autowired
 	private OrdinaryLaserService  ordinaryLaserService;
 	@Autowired
