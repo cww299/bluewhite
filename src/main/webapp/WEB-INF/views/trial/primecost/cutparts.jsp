@@ -276,7 +276,7 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			  if(result.data.rows!=null && result.data.rows!=""){
+		      			  if(result.data.rows!=null){
 		      			$("#ntwo").val(result.data.rows[0].oneCutPartsPrice)
 		      			$("#total2").text(result.data.statData.perimeter)
 		      			$("#total").text(result.data.statData.allPerimeter)
