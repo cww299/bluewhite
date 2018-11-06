@@ -54,11 +54,11 @@
 								<table><tr>
 								<td>产品名:</td><td><input type="text" name="name" id="productName" placeholder="请输入产品名称" class="form-control search-query name" data-provide="typeahead" autocomplete="off"/ ></td>
 								<td>&nbsp&nbsp</td>
-								<td>默认数量:</td><td><input type="text" name="number" id="number" placeholder="请输入默认数量" class="form-control search-query number" /></td>
+								<td>默认数量:</td><td><input type="text" name="number" id="number" disabled="disabled" placeholder="请输入默认数量" class="form-control search-query number" /></td>
 									<td>&nbsp&nbsp</td>
 								<td>默认耗损:</td><td><input type="text" name="name" id="loss" placeholder="请输入产品名称" class="form-control search-query name" /></td>
-								<!-- <td>&nbsp&nbsp</td> -->
-								<!-- <td>完成状态:</td><td><select class="form-control" id="selectstate"><option value=0>未完成</option><option value=1>已完成</option></select></td> -->
+								<td>&nbsp&nbsp</td> 
+								<td>裁剪价格:</td><td><input type="text" name="name" id="ntwo" disabled="disabled"  class="form-control search-query name" /></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
@@ -117,6 +117,9 @@
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group"> 
+							<table><tr>
+								<td>裁剪价格:</td><td><input type="text" name="name" id="ntwo1" disabled="disabled"  class="form-control search-query name" /></td>
+								</tr></table>
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d navbar-right searchtask2">
 										查找
@@ -347,6 +350,9 @@
 							  });
 						  }, 
 			      		  success: function (result) {
+			      			if(result.data.rows!=null){
+				      			$("#ntwo").val(result.data.rows[0].oneNeedleworkPrice)
+				      			}
 			      			 $(result.data.rows).each(function(i,o){
 			      				if(o.costPrice==o.reckoningEmbroideryPrice || o.costPrice==o.reckoningSewingPrice){
 			      					 
@@ -392,6 +398,9 @@
 								  });
 							  }, 
 				      		  success: function (result) {
+				      			if(result.data.rows!=null){
+					      			$("#ntwo1").val(result.data.rows[0].oneNeedleworkPrice)
+					      			}
 				      			 $(result.data.rows).each(function(i,o){
 				      				html+='<tr>'
 				      				 +'<td  class="text-center edit name tailorName2" data-productid='+o.productId+'>'+o.needleworkName+o.classify+'</td>'
@@ -645,7 +654,8 @@
 														      			that.parent().parent().find(".equipmentPrice").text(parseFloat((o.equipmentPrice).toFixed(5)));
 														      			that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 														      			that.parent().parent().find(".needleworkPrice").text(parseFloat((o.needleworkPrice).toFixed(5)));
-														      			 }); 
+														      			$("#ntwo1").val(o.oneNeedleworkPrice)	
+																	}); 
 																	layer.close(index);
 																	}else{
 																		layer.msg(result.message, {icon: 2});
@@ -690,7 +700,8 @@
 								      			that.parent().parent().find(".equipmentPrice").text(parseFloat((o.equipmentPrice).toFixed(5)));
 								      			that.parent().parent().find(".administrativeAtaff").text(parseFloat((o.administrativeAtaff).toFixed(5)));
 								      			that.parent().parent().find(".needleworkPrice").text(parseFloat((o.needleworkPrice).toFixed(5)));
-								      			 });
+								      			$("#ntwo1").val(o.oneNeedleworkPrice)	
+											});
 											}else{
 												layer.msg(result.message, {icon: 2});
 												layer.close(index);
