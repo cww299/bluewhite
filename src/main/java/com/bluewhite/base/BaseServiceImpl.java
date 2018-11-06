@@ -31,6 +31,17 @@ public abstract class BaseServiceImpl<T extends AbstractEntity<ID>, ID extends S
     public T save(T t) {
         return baseRepository.save(t);
     }
+    
+    /**
+     * 保存单个实体
+     *
+     * @param t 实体
+     * @return 返回保存的实体
+     */
+    public List<T> save(List<T> t) {
+        return baseRepository.save(t);
+    }
+    
 //
 //    public M saveAndFlush(M m) {
 //        m = save(m);

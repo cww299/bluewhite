@@ -11,6 +11,15 @@ public interface BaseCRUDService<T,ID> {
      */
     public T save(T t) ;
     
+    
+	/**
+     * 保存多个实体
+     *
+     * @param t 实体
+     * @return 返回保存的实体
+     */
+    public List<T> save( List<T> t) ;
+    
     /**
      * 更新单个实体
      *

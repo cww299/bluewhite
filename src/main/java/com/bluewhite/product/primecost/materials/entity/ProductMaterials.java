@@ -34,7 +34,7 @@ public class ProductMaterials extends BaseEntity<Long>{
     private String materialsName;
 	
 	/**
-	 * 物料名
+	 * 物料名id
 	 */
 	@Column(name = "materials_id")
     private Long materialsId;

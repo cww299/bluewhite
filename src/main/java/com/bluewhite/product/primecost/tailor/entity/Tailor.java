@@ -36,6 +36,12 @@ public class Tailor extends BaseEntity<Long>{
 	@Column(name = "ordinaryLaser_id")
     private Long ordinaryLaserId;
 	
+	/**
+	 * 绣花id
+	 */
+	@Column(name = "embroidery_id")
+    private Long embroideryId;
+	
 	
 	/**
 	 * 批量产品数量或模拟批量数
@@ -157,6 +163,14 @@ public class Tailor extends BaseEntity<Long>{
 	
 
 
+
+	public Long getEmbroideryId() {
+		return embroideryId;
+	}
+
+	public void setEmbroideryId(Long embroideryId) {
+		this.embroideryId = embroideryId;
+	}
 
 	public Double getOneCutPrice() {
 		return oneCutPrice;
