@@ -874,6 +874,7 @@
 					var html="";
 				$('#addCutting').on('click',function(){
 					var a=$('#loss').val();
+					for (var i = 0; i < 10; i++) {
 					 html='<tr><td></td><td  style="padding: 9px 0px 2px 4px;"><input type="text" style="border: none;width:68px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" /></td>'
 					 +'<td class="text-center edit name" style="padding: 9px 0px 2px 0px;"><input type="text" style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center sliceNumber" /></td>'
 					 +'<td class="text-center edit " ><input type="text"    style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center perimeter"  /></td>'
@@ -901,6 +902,7 @@
 					 +'<td class="text-center edit name"> </td>'
 					 +'<td class="text-center edit name"> </td></tr>';
 					$("#tablecontent").prepend(html);
+					}
 					self.mater();
 				})
 			

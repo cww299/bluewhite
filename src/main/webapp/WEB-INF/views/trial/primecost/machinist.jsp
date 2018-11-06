@@ -379,7 +379,7 @@
 							  });
 						  }, 
 			      		  success: function (result) {
-			      			if(result.data.rows!=null){
+			      			if(result.data.rows!=null && result.data.rows!=""){
 			      			$("#ntwo").val(result.data.rows[0].oneMachinistPrice)
 			      			}
 			      			 $(result.data.rows).each(function(i,o){
@@ -435,7 +435,7 @@
 								  });
 							  }, 
 				      		  success: function (result) {
-				      			if(result.data.rows!=null){
+				      			if(result.data.rows!=null && result.data.rows!=""){
 				      			$("#ntwo1").val(result.data.rows[0].oneMachinistPrice)
 				      			}
 				      			 $(result.data.rows).each(function(i,o){
@@ -2158,7 +2158,7 @@
 			//新增
 				var html="";
 				$('#addCutting').on('click',function(){
-					for (var i = 0; i < 25; i++) {
+					for (var i = 0; i < 10; i++) {
 					var a=$('#loss').val();
 					 html='<tr><td  class="text-center"></td><td  class="text-center edit name"  style="padding: 9px 0px 2px 4px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  machinistName" /></td>'
 					 +'<td class="text-center edit selectid hidden"></td>'
