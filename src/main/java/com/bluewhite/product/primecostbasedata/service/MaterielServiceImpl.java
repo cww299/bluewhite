@@ -135,11 +135,11 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 				}
 	        	//按物料编号过滤
 	        	if (!StringUtils.isEmpty(materiel.getNumber() )) {
-					predicate.add(cb.like(root.get("number").as(String.class),"%"+StringUtil.specialStrKeyword(materiel.getNumber())+"%"));
+					predicate.add(cb.like(root.get("number").as(String.class),"%"+materiel.getNumber()+"%"));
 				}
 	        	//按产品名称过滤
 	        	if (!StringUtils.isEmpty(materiel.getName())) {
-					predicate.add(cb.like(root.get("name").as(String.class),"%"+StringUtil.specialStrKeyword(materiel.getName())+"%"));
+					predicate.add(cb.like(root.get("name").as(String.class),"%"+materiel.getName()+"%"));
 				}
 				Predicate[] pre = new Predicate[predicate.size()];
 				query.where(predicate.toArray(pre));
