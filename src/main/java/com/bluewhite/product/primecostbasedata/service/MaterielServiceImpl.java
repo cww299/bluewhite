@@ -14,7 +14,6 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
-import com.bluewhite.product.primecost.embroidery.entity.Embroidery;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseThreeDao;
 import com.bluewhite.product.primecostbasedata.dao.MaterielDao;

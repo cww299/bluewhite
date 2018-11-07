@@ -19,7 +19,7 @@ public interface ProductMaterialsService extends BaseCRUDService<ProductMaterial
 	 * @return
 	 * @throws Exception
 	 */
-	public ProductMaterials saveProductMaterials(ProductMaterials productMaterials) throws Exception;
+	public ProductMaterials saveProductMaterials(ProductMaterials productMaterials);
 	
 	/**
 	 * dd除裁片以外的所有生产用料分页

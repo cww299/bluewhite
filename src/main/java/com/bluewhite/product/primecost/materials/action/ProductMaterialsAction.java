@@ -60,13 +60,7 @@ public class ProductMaterialsAction {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品不能为空");
 		}else{
-			try {
-				productMaterialsService.saveProductMaterials(productMaterials);
-			} catch (Exception e) {
-				cr.setMessage(e.getMessage());
-				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				return cr;
-			}
+			productMaterialsService.saveProductMaterials(productMaterials);
 			cr.setMessage("添加成功");
 		}
 		return cr;
@@ -88,22 +82,14 @@ public class ProductMaterialsAction {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("dd除裁片以外的所有生产用料不能为空");
 		}else{
-			try {
-				ProductMaterials oldProductMaterials = productMaterialsService.findOne(productMaterials.getId());
-				BeanCopyUtils.copyNullProperties(oldProductMaterials,productMaterials);
-				productMaterials.setCreatedAt(oldProductMaterials.getCreatedAt());
-				productMaterialsService.saveProductMaterials(productMaterials);
-				PrimeCost primeCost = new PrimeCost();
-				primeCost.setProductId(productMaterials.getProductId());
-				productService.getPrimeCost(primeCost, request);
-				productMaterials.setOneOtherCutPartsPrice(primeCost.getOneOtherCutPartsPrice());
-			
-				
-			} catch (Exception e) {
-				cr.setMessage(e.getMessage());
-				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				return cr;
-			}
+			ProductMaterials oldProductMaterials = productMaterialsService.findOne(productMaterials.getId());
+			BeanCopyUtils.copyNullProperties(oldProductMaterials,productMaterials);
+			productMaterials.setCreatedAt(oldProductMaterials.getCreatedAt());
+			productMaterialsService.saveProductMaterials(productMaterials);
+			PrimeCost primeCost = new PrimeCost();
+			primeCost.setProductId(productMaterials.getProductId());
+			productService.getPrimeCost(primeCost, request);
+			productMaterials.setOneOtherCutPartsPrice(primeCost.getOneOtherCutPartsPrice());
 			cr.setMessage("修改成功");
 		}
 		return cr;

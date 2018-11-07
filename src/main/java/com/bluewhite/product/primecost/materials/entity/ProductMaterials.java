@@ -36,8 +36,9 @@ public class ProductMaterials extends BaseEntity<Long>{
 	/**
 	 * 物料名id
 	 */
-	@Column(name = "materials_id")
-    private Long materialsId;
+	@Column(name = "materiel_id")
+    private Long materielId;
+	
 	/**
 	 * 压货环节id
 	 */
@@ -124,12 +125,12 @@ public class ProductMaterials extends BaseEntity<Long>{
 		this.oneOtherCutPartsPrice = oneOtherCutPartsPrice;
 	}
 
-	public Long getMaterialsId() {
-		return materialsId;
+	public Long getMaterielId() {
+		return materielId;
 	}
 
-	public void setMaterialsId(Long materialsId) {
-		this.materialsId = materialsId;
+	public void setMaterielId(Long materielId) {
+		this.materielId = materielId;
 	}
 
 	public Long getOverstockId() {
