@@ -301,6 +301,7 @@
 		      				+'<td class="text-center" >'+o.allPerimeter+'</td>'
 		      				+'<td class="text-center materielNumbertw" >'+o.materielNumber+'</td>'
 		      				+'<td class="text-center editmaterielName name" >'+o.materielName+'</td>'
+		      				+'<td class="text-center edit name materielIds hidden">'+o.materielId+'</td>'
 		      				+'<td class="text-center composite name" >'+a+'</td>'
 		      				+'<td class="text-center oneMaterial name" >'+o.oneMaterial+'</td>'
 		      				+'<td class="text-center unite name" >'+o.unit+'</td>'
@@ -564,6 +565,7 @@
 									cutPartsNumber:$(this).parent().parent('tr').find(".cutPartsNumbertw").text(),
 									materielNumber:$(this).parent().parent('tr').find(".materielNumbertw").text(),
 									materielName:$(this).parent().parent('tr').find(".editmaterielName").text(),
+									materialId:$(this).parent().parent('tr').find(".materielIds").text(),
 									composite:$(this).parent().parent('tr').find(".composite").find(".selectdoubleComposite").val(),
 									oneMaterial:$(this).parent().parent('tr').find(".oneMaterial").text(),
 									unitId:$(this).parent().parent('tr').find(".unite").find(".selectunit").val(),
@@ -781,6 +783,7 @@
 						cutPartsNumber:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.sliceNumber').val(),
 						materielNumber:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.materielNumber').val(),
 						materielName:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.materiel').text(),
+						materialId:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.materielId').text(),
 						composite:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.selectname').val(),
 						oneMaterial:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.oneMaterial').val(),
 						unit:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.selectgroupChange option:selected').text(),
@@ -896,6 +899,7 @@
 					 +'<td class="text-center edit " ></td>'
 					 +'<td class="text-center edit " ><input type="text"    style="border: none;width:70px; height:30px; background-color: #BFBFBF;" class="text-center materielNumber"  /></td>'
 					 +'<td class="text-center edit name materiel"></td>'
+					 +'<td class="text-center edit name materielId hidden"></td>'
 					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 4px;"><select class="text-center  selectname" style="border: none;width:60px; height:30px; background-color: #BFBFBF;"><option value="0"></option><option value="1">复</option></select></td>'
 					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:60px; height:30px; background-color: #BFBFBF;" class="text-center oneMaterial" /></td>'
 					 +'<td class="text-center edit selectCompany" style="padding: 2px 0px 2px 4px;></td>'
@@ -940,7 +944,7 @@
 										//转换成 json集合
 										 var resultList = result.data.map(function (item) {
 											 	//转换成 json对象
-						                        var aItem = {name: item.name, number:item.number, price:item.price, unit:item.unit}
+						                        var aItem = {name: item.name, number:item.number, price:item.price, unit:item.unit, id:item.id}
 						                        //处理 json对象为字符串
 						                        return JSON.stringify(aItem);
 						                    });
@@ -959,6 +963,7 @@
 			                	//转出成json对象
 						        var item = JSON.parse(item);
 						        that.parent().next().text(item.name);
+						        that.parent().next().next().text(item.id);
 						        that.parent().parent().find('.unitPrice').text(item.price);
 						        that.parent().parent().find('.unit').text(item.unit);
 						    	return item.number
@@ -968,6 +973,7 @@
 								//转出成json对象
 								var item = JSON.parse(item);
 								that.parent().next().text(item.name);
+								that.parent().next().next().text(item.id);
 								that.parent().parent().find('.unitPrice').text(item.price);
 								that.parent().parent().find('.unit').text(item.unit);
 									return item.number

@@ -600,7 +600,7 @@
 																+ (primeCost == null ? ""
 																		: primeCost.actualCombatRate)
 																+ '</td>'
-																+ '<td class="text-center"><button class="btn btn-xs btn-info  btn-trans update" data-id='+o.id+'>编辑</button><button class="btn btn-xs btn-primary btn-trans addPrimeCost" data-id='+o.id+'>查看成本价格</button></td></tr>'
+																+ '<td class="text-center"><button class="btn btn-xs btn-info  btn-trans update" data-id='+o.id+'>编辑</button><button class="btn btn-xs btn-primary btn-trans addPrimeCost" data-id='+o.id+'>查看成本价格</button> <button class="btn btn-xs btn-info  btn-trans updatecopy" data-id='+o.id+'>复制的产品</button> </td></tr>'
 
 													});
 									self.setIndex(result.data.pageNum);

@@ -237,7 +237,7 @@
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				/* +'<td  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:68px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" value="'+o.cutPartsName+'" /></td>' */
 		      				+'<td class="text-center edit " >'+o.materialsName+'</td>'
-		      				+'<td class="text-center edit materialsId hidden" >'+o.materialsId+'</td>'
+		      				+'<td class="text-center edit materialsId hidden" >'+o.materialId+'</td>'
 		      				+'<td class="text-center editt materialsNamett" >'+o.materialsName+'</td>'
 		      				+'<td class="text-center materielNumbertw" >'+o.oneMaterial+'</td>'
 		      				+'<td class="text-center unite name" >'+o.unit+'</td>'
@@ -672,7 +672,7 @@
 						unitCost:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.selectprice').text(),
 						productCost:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unitPrice').text(),
 						productUnit:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unit').text(),
-						materialsId:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.namettw').text(),
+						materialId:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.namettw').text(),
 					}
 					var index;
 					$.ajax({

@@ -220,6 +220,8 @@
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
+									  		number:$("#ntwo").val(),
+											name:$("#ntwo2").val(),
 								  	}
 						        
 						            self.loadPagination(_data);
