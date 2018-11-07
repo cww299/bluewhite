@@ -3083,6 +3083,9 @@
 					    			managePrice:result.data.managePrice,
 					    			experimentPrice:result.data.experimentPrice,
 					    			ordinaryLaserId:that.val(),
+					    			stallPoint:1,
+					    			singleDouble:2,
+					    			time:0.5
 				      			}
 				      			$.ajax({
 								      url:"${ctx}/product/addTailor",

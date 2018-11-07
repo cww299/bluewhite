@@ -677,7 +677,10 @@
 		      				html +='<option value="'+o.id+'">'+o.name+'</option>'
 		      			}); 
 				       var htmlto='<select class="  selectgroupChange" style="border: none;width:50px; height:30px; background-color: #BFBFBF;"><option value=""></option>'+html+'</select>'
-					   	$(".selectCompany").html(htmlto); 
+				       $(".selectCompany").html(htmlto); 
+				       $('.selectgroupChange').each(function(i,o){
+							$(o).val(154)
+								})	
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
@@ -753,11 +756,23 @@
 					}
 					var leng = $(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').length;
 				for (var i = 0; i <leng; i++) {
-					if($(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.sliceNumber').val()==""){
+					/* if($(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.sliceNumber').val()==""){
 						return layer.msg("片数不能为空", {icon: 2});
-					}
+					} */
 					var a=$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.cuttingName').val()
-					if(a!=undefined){
+					console.log(a)
+					if(a!=undefined && a!=""){
+					if($(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.cuttingName').val()!=""){
+						if($(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.sliceNumber').val()==""){
+							return layer.msg("片数不能为空", {icon: 2});
+						}
+						if($(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.manualLoss').val()==""){
+							return layer.msg("默认耗损不能为空", {icon: 2});
+						}
+						if($(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.oneMaterial').val()==""){
+							return layer.msg("单片用料不能为空", {icon: 2});
+						}
+					}
 					var postData = {
 						productId:self.getCache(),
 						number:$('#number').val(),
@@ -876,14 +891,14 @@
 					var a=$('#loss').val();
 					for (var i = 0; i < 10; i++) {
 					 html='<tr><td></td><td  style="padding: 9px 0px 2px 4px;"><input type="text" style="border: none;width:68px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" /></td>'
-					 +'<td class="text-center edit name" style="padding: 9px 0px 2px 0px;"><input type="text" style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center sliceNumber" /></td>'
+					 +'<td class="text-center edit name" style="padding: 9px 0px 2px 4px;"><input type="text" style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center sliceNumber" /></td>'
 					 +'<td class="text-center edit " ><input type="text"    style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center perimeter"  /></td>'
 					 +'<td class="text-center edit " ></td>'
 					 +'<td class="text-center edit " ><input type="text"    style="border: none;width:70px; height:30px; background-color: #BFBFBF;" class="text-center materielNumber"  /></td>'
 					 +'<td class="text-center edit name materiel"></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><select class="text-center  selectname" style="border: none;width:60px; height:30px; background-color: #BFBFBF;"><option value="0"></option><option value="1">复</option></select></td>'
-					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:60px; height:30px; background-color: #BFBFBF;" class="text-center oneMaterial" /></td>'
-					 +'<td class="text-center edit selectCompany" style="padding: 2px 0px 2px 0px;></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 4px;"><select class="text-center  selectname" style="border: none;width:60px; height:30px; background-color: #BFBFBF;"><option value="0"></option><option value="1">复</option></select></td>'
+					 +'<td class="text-center edit name" style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:60px; height:30px; background-color: #BFBFBF;" class="text-center oneMaterial" /></td>'
+					 +'<td class="text-center edit selectCompany" style="padding: 2px 0px 2px 4px;></td>'
 					 +'<td class="text-center edit name"></td>'
 					 +'<td class="text-center edit name"></td>'
 					 +'<td class="text-center edit name"</td>'

@@ -862,7 +862,7 @@
 								data : {
 									page:1,
 							  		size:10,								
-									userName:$.trim(query),
+							  		temporarilyName:$.trim(query),
 									temporarily:4,
 								},
 								success : function(result) {
