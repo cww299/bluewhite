@@ -693,6 +693,33 @@
 			
 			}
 			this.events = function(){
+				
+				var datttte={
+						productId:productIdAll,
+				}
+				$.ajax({
+					url:"${ctx}/product/updateMaterielAndOther",
+					data:datttte,
+					traditional: true,
+					type:"GET",
+					beforeSend:function(){
+						index = layer.load(1, {
+							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							});
+					},
+					
+					success:function(result){
+						if(0==result.code){
+							
+						}else{
+							layer.msg("失败！", {icon: 2});
+							layer.close(index);
+						}
+					},error:function(){
+						layer.msg("操作失败！", {icon: 2});
+						layer.close(index);
+					}
+				});
 				//一键删除
 				$('.start').on('click',function(){
 					  var  that=$(".table-hover");
