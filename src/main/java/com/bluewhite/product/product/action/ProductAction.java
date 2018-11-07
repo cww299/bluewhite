@@ -166,7 +166,6 @@ public class ProductAction {
 		CommonResponse cr = new CommonResponse();
 		CurrentUser cu = SessionManager.getUserSession();
 		
-		
 		//试制部
 		if(cu.getRole().contains(Constants.TRIALPRODUCT)){
 			
@@ -278,6 +277,7 @@ public class ProductAction {
 		CommonResponse cr = new CommonResponse();
 		HibernateEntityManager hEntityManager = (HibernateEntityManager)entityManager;
         Session session = hEntityManager.getSession();
+        
 		//裁片
 		List<CutParts> cutPartsList = cutPartsService.findByProductId(oldId);
 		cutPartsList.stream().forEach(CutParts->CutParts.setId(null));
@@ -325,7 +325,9 @@ public class ProductAction {
 			tailor.setId(null);
 			tailor.setProductId(id);
 			tailor.setCutPartsId(cp.getId());
+			//同时绣花页面和裁剪实体存在关联，将新的绣花页面的id同时赋值给新的裁剪
 			for(Embroidery ed : embroideryList){
+				//当新的绣花实体中的裁剪id等同于老的裁剪id时
 				if(ed.getTailorId()==cp.getTailorId()){
 					tailor.setEmbroideryId(ed.getId());
 					break;
