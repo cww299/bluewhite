@@ -20,6 +20,7 @@ import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
+import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
@@ -37,6 +38,7 @@ import com.bluewhite.product.primecostbasedata.entity.BaseThree;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.product.primecostbasedata.entity.PrimeCoefficient;
 import com.bluewhite.product.primecostbasedata.service.MaterielService;
+import com.bluewhite.system.sys.entity.SysLog;
 
 @Controller
 public class BaseOneAction {
@@ -360,6 +362,7 @@ public class BaseOneAction {
 	 */
 	@RequestMapping(value = "/product/updateMaterielAndOther", method = RequestMethod.GET)
 	@ResponseBody
+	@SysLogAspectAnnotation(description = "物料价格变动修改操作", module = "产品价格表", operateType = "修改", logType = SysLog.ADMIN_LOG_TYPE)
 	public CommonResponse updateMaterielAndOther(HttpServletRequest request,Long productId) {
 		CommonResponse cr = new CommonResponse();
 		//裁片
@@ -376,15 +379,17 @@ public class BaseOneAction {
 		List<ProductMaterials>  productMaterialsList = productMaterialsService.findByProductId(productId);
 		for(ProductMaterials pm: productMaterialsList){	
 			Materiel materiel = materielService.findOne(pm.getMaterielId());
-			if(materiel.getPrice()!=pm.getProductCost()){
-				pm.setProductCost(materiel.getPrice());
-				productMaterialsService.saveProductMaterials(pm);
-				}
+			Double unitCost = null;
+			if(pm.getUnit().equals(pm.getProductUnit())){
+				unitCost=materiel.getPrice();
+			}else{
+				unitCost=materiel.getConvertPrice();
 			}
-		
-		
-		
-//		cr.setData();
+			if(unitCost!=pm.getUnitCost()){
+				pm.setUnitCost(unitCost);
+				productMaterialsService.saveProductMaterials(pm);
+			}
+		}
 		return cr;
 	}
 	
