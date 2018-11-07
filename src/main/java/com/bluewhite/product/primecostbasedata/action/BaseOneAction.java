@@ -364,19 +364,23 @@ public class BaseOneAction {
 		CommonResponse cr = new CommonResponse();
 		//裁片
 		List<CutParts> cutPartsList = cutPartsService.findByProductId(productId);
-		for(CutParts cp : cutPartsList){
+		for(CutParts cp : cutPartsList){	
 			Materiel materiel = materielService.findOne(cp.getMaterielId());
-			
-//			if(materiel.get){
-//				
-//				}
-//			
-		}
-		
+			if(materiel.getPrice()!=cp.getProductCost()){
+				cp.setProductCost(materiel.getPrice());
+				cutPartsService.saveCutParts(cp);
+				}
+			}
 		
 		//除裁片
 		List<ProductMaterials>  productMaterialsList = productMaterialsService.findByProductId(productId);
-		
+		for(ProductMaterials pm: productMaterialsList){	
+			Materiel materiel = materielService.findOne(pm.getMaterielId());
+			if(materiel.getPrice()!=pm.getProductCost()){
+				pm.setProductCost(materiel.getPrice());
+				productMaterialsService.saveProductMaterials(pm);
+				}
+			}
 		
 		
 		
