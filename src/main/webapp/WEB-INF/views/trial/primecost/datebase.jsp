@@ -35,6 +35,34 @@
                                 </div>
                             </div>
                             <div class="panel-body">
+                            
+                            <div class="row" style="height: 30px; margin:15px 0 10px">
+					<div class="col-xs-8 col-sm-8  col-md-8">
+						<form class="form-search" >
+							<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12">
+							<div class="input-group">
+							<table><tr>
+								<td>物料编号:</td><td><input type="text" name="name" id="ntwo"   class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp</td>
+								<td>物料名:</td><td><input type="text" name="name" id="ntwo2"   class="form-control search-query name" /></td>
+								</tr></table> 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask">
+										查找
+										<i class="icon-search icon-on-right bigger-110"></i>
+									</button>
+								</span>
+								<button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增小组</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+                            
+                            
+                            
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
@@ -42,21 +70,16 @@
                                             <th class="text-center">物料名</th>
                                             <th class="text-center">物料最新价格</th>
                                             <th class="text-center">物料克重等备注</th>
+                                            <th class="text-center">物料换算单位</th>
+                                            <th class="text-center">物料换算后价格</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
-                                    <button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增小组</button>
+                                    
                                 <tbody id="tablecontenttw">
-                                <thead>
-                                        <tr>
-                                        	<td class="text-center">外调组</td>
-                                            <td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemodetw" data-toggle="modal" data-target="#myModaltw")">查看人员</button></td>
-                                            <td class="text-center"><button type="button" id="add" class="btn btn-success btn-sm btn-3d">外调人员</button></td>
-                                        </tr>
-                                    </thead>
                                     </tbody>
                                 </table>
                                 <div id="pager" class="pull-right">
@@ -76,9 +99,39 @@
 				<form class="form-horizontal addDictDivTypeForm">
 				
 				<div class="form-group">
-                                        <label class="col-sm-3 control-label">名称:</label>
+                                        <label class="col-sm-3 control-label">物料编号:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="groupnumber" class="form-control">
+                                        </div>
+                 </div>
+                 <div class="form-group">
+                                        <label class="col-sm-3 control-label">物料名:</label>
                                         <div class="col-sm-6">
                                             <input type="text" id="groupName" class="form-control">
+                                        </div>
+                 </div>
+                 <div class="form-group">
+                                        <label class="col-sm-3 control-label">物料最新价格:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="groupprice" class="form-control">
+                                        </div>
+                 </div>
+                 <div class="form-group">
+                                        <label class="col-sm-3 control-label">物料克重等备注:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="groupunit" class="form-control">
+                                        </div>
+                 </div>
+                 <div class="form-group">
+                                        <label class="col-sm-3 control-label">物料换算单位:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="groupconvertUnit" class="form-control">
+                                        </div>
+                 </div>
+                   <div class="form-group">
+                                        <label class="col-sm-3 control-label">物料换算后的价格:</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="groupconvertPrice" class="form-control">
                                         </div>
                  </div>
 				</form>
@@ -86,137 +139,6 @@
 </div>
  <!--隐藏框 小组新增结束  -->
 
-<!--隐藏框 小组新增开始  -->
-    <div id="addDictDivTypetw" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-				<div class="space-10"></div>
-				<div style="height: 30px"></div>
-				<form class="form-horizontal addDictDivTypeFormtw">
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">外调时间:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="startTime" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD 00:00:00'})">
-                                        </div>
-                 </div>
-				<div class="form-group">
-                                        <label class="col-sm-3 control-label">人员名称:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="groupNametw" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">工作时长:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="grouptime" class="form-control">
-                                        </div>
-                 </div>
-                  <div class="form-group">
-                                        <label class="col-sm-3 control-label">小组:</label>
-                                        <div class="col-sm-6" id="groupp">
-                                        </div>
-                 </div>
-                  <div class="hidden grouptw"></div>
-				</form>
-</div>
-</div>
- <!--隐藏框 人员分组详情结束  -->
-
-<div id="savegroup" style="display: none;">
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-					&times;
-				</button>
-				<h4 class="modal-title" id="myModalLabel">
-					人员分组详情
-				</h4>
-			</div>
-			<div class="modal-body">
-				
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
-				</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
-</div>
-</div>
-<!--隐藏框 人员分组详情结束  -->
-
- <!--隐藏框 人员分组详情  -->
-
-<div id="savegrouptw" style="display: none;">
-<div class="modal fade" id="myModaltw" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-					&times;
-				</button>
-				<h4 class="modal-title" id="myModalLabel">
-					人员详情
-				</h4>
-			</div>
-			<div class="modal-bodytw">
-			<div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-11 col-sm-11  col-md-11">
-				<form class="form-search" >
-					<div class="row">
-						<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group"> 
-								<table><tr>
-								<td>开始时间:</td>
-								<td>
-								<input id="startTimetw" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
-								</td>
-								<td>&nbsp&nbsp</td>
-								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
-											查&nbsp找
-									</button>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-				<table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th>
-											<label> 
-											<input type="checkbox" class="checkalls" /> 
-											<span class="lbl"></span>
-											</label>
-											</th>
-                                            <th class="text-center">人名</th>
-                                            <th class="text-center">工作时长</th>
-                                            <th class="text-center">小组名</th>
-                                            <th class="text-center">日期</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablecontentfv">
-                                        
-                                    </tbody>
-                                </table>
-			</div>
-			<div class="modal-footer">
-			<button type="button" class="btn btn-danger" id="delete">删除
-				</button>
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
-				</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
-</div>
-</div>
-<!--人员分组详情 -->
     </section>
     
    
@@ -246,11 +168,15 @@
 		  	this.getCache = function(){
 		  		return _cache;
 		  	}
+		  	this.getCount = function(){
+		  		return _count;
+		  	}
+		  	this.setCount = function(count){
+		  		_count=count;
+		  	}
 			 var data={
 						page:1,
 				  		size:13,	
-				  		type:1,
-
 				} 
 			this.init = function(){
 				
@@ -263,7 +189,7 @@
 			    var index;
 			    var html = '';
 			    $.ajax({
-				      url:"${ctx}/product/getMateriel",
+				      url:"${ctx}/product/getMaterielPage",
 				      data:data,
 				      type:"GET",
 				      beforeSend:function(){
@@ -272,16 +198,19 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			 $(result.data).each(function(i,o){
+		      			 $(result.data.rows).each(function(i,o){
 		      				html +='<tr>'
 		      				+'<td class="text-center">'+o.number+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
-		      				+'<td class="text-center edit name">'+o.price+'</td>'
-		      				+'<td class="text-center edit name">'+o.unit+'</td>'
+		      				+'<td class="text-center edit price">'+o.price+'</td>'
+		      				+'<td class="text-center edit unit">'+o.unit+'</td>'
+		      				+'<td class="text-center edit convertUnit">'+o.convertUnit+'</td>'
+		      				+'<td class="text-center edit convertPrice">'+(o.convertPrice!=null?o.convertPrice:"")+'</td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button></td></tr>'
 							
 		      			}); 
 				        //显示分页
+				        self.setCount(result.data.pageNum)
 					   	 laypage({
 					      cont: 'pager', 
 					      pages: result.data.totalPages, 
@@ -291,8 +220,8 @@
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
-									  		type:1,
-									  		name:$('#name').val(),
+									  		number:$("#ntwo").val(),
+											name:$("#ntwo2").val(),
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -336,12 +265,17 @@
 							
 							var postData = {
 									id:$(this).data('id'),
+									number:$(this).parent().parent('tr').find(".number").text(),
 									name:$(this).parent().parent('tr').find(".name").text(),
+									price:$(this).parent().parent('tr').find(".price").text(),
+									unit:$(this).parent().parent('tr').find(".unit").text(),
+									convertUnit:$(this).parent().parent('tr').find(".convertUnit").text(),
+									convertPrice:$(this).parent().parent('tr').find(".convertPrice").text(),
 							}
 							
 							var index;
 							$.ajax({
-								url:"${ctx}/production/addGroup",
+								url:"${ctx}/product/addMateriel",
 								data:postData,
 								type:"POST",
 								beforeSend:function(){
@@ -353,6 +287,14 @@
 								success:function(result){
 									if(0==result.code){
 									layer.msg("修改成功！", {icon: 1});
+									var _data = {
+						        			page:self.getCount(),
+									  		size:13,
+									  		number:$("#ntwo").val(),
+											name:$("#ntwo2").val(),
+								  	}
+						        
+						            self.loadPagination(_data);
 									layer.close(index);
 									}else{
 										layer.msg("修改失败！", {icon: 1});
@@ -366,144 +308,7 @@
 					}
 				})
 				
-				//人员详细显示方法
-				$('.savemode').on('click',function(){
-					var id=$(this).data('id')
-					 var display =$("#savegroup").css("display")
-					 if(display=='none'){
-							$("#savegroup").css("display","block");  
-						}
-					var postData={
-							id:id,
-					}
-					 var arr=new Array();
-					var html="";
-					$.ajax({
-						url:"${ctx}/production/getGroupOne",
-						data:postData,
-						type:"GET",
-						beforeSend:function(){
-							index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								});
-						},
-						
-						success:function(result){
-							$(result.data.users).each(function(i,o){
-							html+=o.userName+"&nbsp&nbsp&nbsp&nbsp"
-							})
-							$('.modal-body').html(html);
-							layer.close(index);
-							
-						},error:function(){
-							layer.msg("操作失败！", {icon: 2});
-							layer.close(index);
-						}
-					});
-					
-					
-					
-				})
-				
-				
-				
-				//人员详细显示方法
-				$('.savemodetw').on('click',function(){
-					 var display =$("#savegrouptw").css("display")
-					 if(display=='none'){
-							$("#savegrouptw").css("display","block");  
-						}
-					var datae={
-							
-							temporarilyDate:$('#startTimetw').val(),
-							type:1,
-					}
-					self.loadworking(datae);
-				})
-				
-				//删除
-							$('#delete').on('click',function(){
-								var arr=new Array();
-								var that=$(this);
-								$(".stuCheckBoxt:checked").each(function() {   
-								    arr.push($(this).val()); 
-								}); 
-								var postData = {
-										ids:arr,
-								}
-								var index;
-								 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
-								$.ajax({
-									url:"${ctx}/production/deleteTemporarily",
-									data:postData,
-									traditional: true,
-									type:"GET",
-									beforeSend:function(){
-										index = layer.load(1, {
-											  shade: [0.1,'#fff'] //0.1透明度的白色背景
-											});
-									},
-									
-									success:function(result){
-										if(0==result.code){
-										layer.msg("删除成功！", {icon: 1});
-										$('.savemodetw').click();
-										layer.close(index);
-										}else{
-											layer.msg("删除失败！", {icon: 1});
-											layer.close(index);
-										}
-									},error:function(){
-										layer.msg("操作失败！", {icon: 2});
-										layer.close(index);
-									}
-								});
-								 })
-					})
 			}
-			this.loadworking=function(datae){
-				  var arr=new Array();
-					var html="";
-					$.ajax({
-						url:"${ctx}/production/getTemporarily",
-						data:datae,
-						type:"GET",
-						beforeSend:function(){
-							index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								});
-						},
-						
-						success:function(result){
-							$(result.data).each(function(i,o){
-							html +='<tr><td class="center reste"><label> <input type="checkbox" class="stuCheckBoxt" value="'+o.id+'"/><span class="lbl"></span></label></td>'
-			      				+'<td class="text-center  bacthNumber">'+o.userName+'</td>'
-			      				+'<td class="text-center edit allotTime">'+o.workTime+'</td>'
-			      				+'<td class="text-center edit allotTime">'+o.groupName+'</td>'
-			      				+'<td class="text-center edit allotTime">'+o.temporarilyDate+'</td></tr>'
-							})
-							 $('#tablecontentfv').html(html);
-							$(".checkalls").on('click',function(){
-			                    if($(this).is(':checked')){ 
-						 			$('.stuCheckBoxt').each(function(){  
-			                    //此处如果用attr，会出现第三次失效的情况  
-			                     		$(this).prop("checked",true);
-						 			})
-			                    }else{
-			                    	$('.stuCheckBoxt').each(function(){ 
-			                    		$(this).prop("checked",false);
-			                    		
-			                    	})
-			                    }
-			                });
-							layer.close(index);
-							
-						},error:function(){
-							layer.msg("操作失败！", {icon: 2});
-							layer.close(index);
-						}
-					});
-			  }
 			this.events = function(){
 				//新增小组
 				$('#addgroup').on('click',function(){
@@ -515,7 +320,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '30%'], 
+						  area: ['30%', '50%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"新增小组",
@@ -525,10 +330,14 @@
 							 
 							  postData={
 									  name:$("#groupName").val(),
-									  type:1,
+									  number:$("#groupnumber").val(),
+									  price:$("#groupprice").val(),
+									  unit:$("#groupunit").val(),
+									  convertUnit:$("#groupconvertUnit").val(),
+									  convertPrice:$("#groupconvertPrice").val(),
 							  }
 							  $.ajax({
-									url:"${ctx}/production/addGroup",
+									url:"${ctx}/product/addMateriel",
 									data:postData,
 						            traditional: true,
 									type:"post",
@@ -563,174 +372,16 @@
 						  }
 					});
 				})
-				
-				//遍历人名组别
-			var htmlth="";
-			var data = {
-		  			type:1,
-		  	}
-		    $.ajax({
-			      url:"${ctx}/production/getGroup",
-			      data:data,
-			      type:"GET",
-	      		  success: function (result) {
-	      			  $(result.data).each(function(k,j){
-	      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
-	      			  });  
-	      			 $('#groupp').html("<select class='form-control selectcomplete'><option value="+""+">请选择&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>"+htmlth+"</select>") 
-			      }
-			  });
-				//外调人员
-				$('#add').on('click',function(){
-					
-					var _index
-					var index
-					var postData
-					var dicDiv=$('#addDictDivTypetw');
-					_index = layer.open({
-						  type: 1,
-						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '45%'], 
-						  btnAlign: 'c',//宽高
-						  maxmin: true,
-						  title:"新增人员",
-						  content: dicDiv,
-						  btn: ['确定', '取消'],
-						  yes:function(index, layero){
-							  var a;
-							  if(self.getCache()==""){
-								  a=1
-							  }else{
-								  a=0
-							  }
-							  console.log(self.getCache())
-							  postData={
-									  userName:$('#groupNametw').val(),
-									  userId:self.getCache(),
-									  temporarilyDate:$('#startTime').val(),
-									  workTime:$('#grouptime').val(),
-									  type:1,
-									  groupId:$('.selectcomplete').val(),
-									  foreign:a,
-							  }
-							  $.ajax({
-									url:"${ctx}/production/addTemporarily",
-									data:postData,
-						            traditional: true,
-									type:"post",
-									beforeSend:function(){
-										index = layer.load(1, {
-											  shade: [0.1,'#fff'] //0.1透明度的白色背景
-											});
-									},
-									
-									success:function(result){
-										if(0==result.code){
-											layer.msg(result.message, {icon: 1});
-											$('#addDictDivTypetw').hide();
-											layer.close(index);
-										}else{
-											layer.msg(result.message, {icon: 2});
-										}
-										
-										layer.close(index);
-									},error:function(){
-										layer.msg("操作失败！", {icon: 2});
-										layer.close(index);
-									}
-								});
-							},
-						  end:function(){
-							  $('#addDictDivTypetw').hide();
-						
-							  $('.addDictDivTypeFormtw')[0].reset(); 
-							
-						  }
-					});
-				})
 				//查询
 				$('.searchtask').on('click',function(){
 						var datae={
-								type:1,
-								temporarilyDate:$("#startTimetw").val(),
+								page:1,
+						  		size:13,
+								number:$("#ntwo").val(),
+								name:$("#ntwo2").val(),
 						}
-						self.loadworking(datae);
+						self.loadPagination(datae);
 				});
-				
-				//提示人员姓名
-				$("#groupNametw").typeahead({
-					//ajax 拿way数据
-					source : function(query, process) {
-							return $.ajax({
-								url : '${ctx}/system/user/pages',
-								type : 'GET',
-								data : {
-									page:1,
-							  		size:10,								
-									userName:$.trim(query),
-									temporarily:4,
-								},
-								success : function(result) {
-									
-									//转换成 json集合
-									 var resultList = result.data.rows.map(function (item) {
-										 	//转换成 json对象
-					                        var aItem = {name: item.userName, id:item.id}
-					                        //处理 json对象为字符串
-					                         return JSON.stringify(aItem); 
-					                    });
-									//提示框返回数据
-									  if(resultList==""){
-											var aItemtw = {"name":"查无此人", "id":""}
-											resultList.push(JSON.stringify(aItemtw)); 
-										} 
-									 return process(resultList);
-								},
-							})
-							//提示框显示
-						}, highlighter: function (item) {
-						    //转出成json对象
-							 var item = JSON.parse(item);
-							/*  var name;
-						      if(item.id==""){
-						    	  
-						    	  name=$('#groupNametw').val()
-						      }else{
-						    	  name=item.name
-						      } */
-							return item.name
-							//按条件匹配输出
-		                }, matcher: function (item) {
-		                	//转出成json对象
-					        var item = JSON.parse(item);
-					      /*    $('.product').val(item.name); */
-					      var name;
-					      if(item.id==""){
-					    	  
-					    	  name=$('#groupNametw').val()
-					      }else{
-					    	  name=item.name
-					      }
-					      self.setCache(item.id); 
-					    	 return  name;
-					    },
-						//item是选中的数据
-						 updater:function(item){
-							//转出成json对象
-							var item = JSON.parse(item);
-							 var name;
-						      if(item.id==""){
-						    	  
-						    	  name=$('#groupNametw').val()
-						      }else{
-						    	  name=item.name
-						      }
-							self.setCache(item.id);
-								return name
-						}, 
-
-						
-					});
 			}
    	}
    			var login = new Login();

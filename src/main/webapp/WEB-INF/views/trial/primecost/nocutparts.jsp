@@ -237,7 +237,7 @@
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				/* +'<td  style="padding: 2px 0px 2px 4px;"><input type="text" style="border: none;width:68px; height:30px; background-color: #BFBFBF;" data-provide="typeahead" autocomplete="off" class="text-center  cuttingName" value="'+o.cutPartsName+'" /></td>' */
 		      				+'<td class="text-center edit " >'+o.materialsName+'</td>'
-		      				+'<td class="text-center edit materialsId hidden" >'+o.materialsId+'</td>'
+		      				+'<td class="text-center edit materialsId hidden" >'+o.materielId+'</td>'
 		      				+'<td class="text-center editt materialsNamett" >'+o.materialsName+'</td>'
 		      				+'<td class="text-center materielNumbertw" >'+o.oneMaterial+'</td>'
 		      				+'<td class="text-center unite name" >'+o.unit+'</td>'
@@ -672,7 +672,7 @@
 						unitCost:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.selectprice').text(),
 						productCost:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unitPrice').text(),
 						productUnit:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unit').text(),
-						materialsId:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.namettw').text(),
+						materielId:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.namettw').text(),
 					}
 					var index;
 					$.ajax({
@@ -763,9 +763,9 @@
 					var html="";
 				$('#addCutting').on('click',function(){
 					var arr = ["202机工线","棉线（大团）白色3#","抽真空内胆","大蓝包1.4*1.9","7D棉","7D棉","子弹","蓝白新款吊牌 DP-44","蓝白玩偶织标小SB-17","代码标"];
-					var arrtw = ["3489","3510","3776","3777","5188","5188","3550","2960","2989","4931"];
-					var array = ["154","154","157","152","157","157","155","152","152","152"];
-					for (var i = 0; i < arr.length; i++) {
+					var arrtw = ["0","0","0","0","0","0","0","0","0","0","3489","3510","3776","3777","5188","5188","3550","2960","2989","4931"];
+					var array = ["0","0","0","0","0","0","0","0","0","0","154","154","157","152","157","157","155","152","152","152"];
+					for (var i = 0; i < 20; i++) {
 						var s=arr[i]
 						var f=""
 						var d=arrtw[i]
@@ -786,6 +786,13 @@
 							},
 							success:function(result){
 								if(0==result.code){
+									if(result.data==""){
+									f=""
+									g=""
+									h=""
+									j=""
+									k=""
+									}else{
 									f=result.data[0].price
 									g=result.data[0].name
 									h=result.data[0].id
@@ -796,9 +803,10 @@
 									}else{
 										k=result.data[0].convertPrice
 									}
+								}
 									var a=$('#loss').val();
 									 html='<tr><td></td><td  style="padding: 2px 0px 2px 4px;"></td>'
-									 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;" value='+g+'  class="text-center materiel" /></td>'
+									 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" style="border: none;width:120px; height:30px; background-color: #BFBFBF;" value="'+g+'"  class="text-center materiel" /></td>'
 									 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text"    style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center  oneMaterial"  /></td>'
 									 +'<td class="text-center edit selectCompany" data-t='+t+' style="padding: 2px 0px 2px 0px;></td>'
 									 +'<td class="text-center edit name"></td>'
