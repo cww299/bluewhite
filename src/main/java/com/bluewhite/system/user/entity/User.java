@@ -480,10 +480,24 @@ public class User extends BaseEntity<Long> {
 	@Transient
 	private Date orderTimeEnd;
 	
+	/**
+	 * 外调精确查找姓名
+	 */
+	@Transient
+	private String temporarilyName;
+	
+	
 	
 	
 	
 
+	public String getTemporarilyName() {
+		return temporarilyName;
+	}
+
+	public void setTemporarilyName(String temporarilyName) {
+		this.temporarilyName = temporarilyName;
+	}
 
 	public String getAscriptionBank1() {
 		return ascriptionBank1;

@@ -176,7 +176,7 @@ public class BaseOneAction {
 	
 	
 	/**
-	 * 物料产品基础数据获取
+	 * 物料产品基础数据获取分页
 	 * 
 	 * @param request 请求
 	 * @return cr
@@ -367,13 +367,10 @@ public class BaseOneAction {
 		for(CutParts cp : cutPartsList){
 			Materiel materiel = materielService.findOne(cp.getMaterielId());
 			
-//			if(){
+//			if(materiel.get){
 //				
-//				
-//				
-//				
-//			}
-			
+//				}
+//			
 		}
 		
 		

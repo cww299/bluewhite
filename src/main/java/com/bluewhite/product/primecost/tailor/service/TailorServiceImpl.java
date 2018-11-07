@@ -89,10 +89,10 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		 prams.setTailorNumber(tailor.getTailorNumber());
 		 prams.setTailorSize(tailor.getTailorSize());
 		 prams.setTailorId(tailor.getId());
-		 prams.setPerimeter(NumUtils.setzro( prams.getPerimeter())) ;
-		 prams.setSingleDouble(NumUtils.setzro(prams.getSingleDouble()));
-		 prams.setStallPoint(NumUtils.setzro(prams.getStallPoint())) ;	
-		 prams.setPerimeter(cutParts.getPerimeter());
+		 prams.setPerimeter(NumUtils.setzro(cutParts.getPerimeter()));
+		 prams.setSingleDouble(prams.getSingleDouble()!=null ? NumUtils.setzro(prams.getSingleDouble()) : 2);
+		 prams.setStallPoint( prams.getStallPoint() !=null ?NumUtils.setzro(prams.getStallPoint()) :1) ;	
+		 prams.setTime(prams.getTime()!=null ? NumUtils.setzro(prams.getTime()) : 0.5);
 		
 		switch (tailor.getTailorTypeId().intValue()) {
 		case 71://普通激光切割

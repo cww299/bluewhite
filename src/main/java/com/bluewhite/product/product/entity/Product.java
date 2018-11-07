@@ -160,29 +160,14 @@ public class Product extends BaseEntity<Long>{
 	@Column(name = "super_cost_id")
     private String superCostId;
 	
-    //面料价格
-	@Column(name = "fab_price")
-    private Double fabPrice;
+
 	
-    //除面料之外的价格
-	@Column(name = "all_price")
-    private Double allPrice;
+   /**
+    * 产品来源部门（）
+    */
+	@Column(name = "origin_department")
+    private String originDepartment;
 	
-    //裁剪价格
-	@Column(name = "cut_price")
-    private Double cutPrice;
-	
-    //默认生产数量
-	@Column(name = "default_number")
-    private Integer defaultNumber;
-	
-    //默认耗损值
-	@Column(name = "default_loss")
-    private Double defaultLoss;
-	
-    //给二级客户的价格
-	@Column(name = "bt_price")
-    private String btPrice;
 	
 	 //八号仓库特殊业务，同一种产品会有会有激光和冲床两种类型工序，同时会产生不同的外发单价（0=激光，1=冲床）
 	@Transient
@@ -218,6 +203,15 @@ public class Product extends BaseEntity<Long>{
 	
 	
 	
+	
+	public String getOriginDepartment() {
+		return originDepartment;
+	}
+
+	public void setOriginDepartment(String originDepartment) {
+		this.originDepartment = originDepartment;
+	}
+
 	public PrimeCost getPrimeCost() {
 		return primeCost;
 	}
@@ -488,54 +482,6 @@ public class Product extends BaseEntity<Long>{
 
 	public void setSuperCostId(String superCostId) {
 		this.superCostId = superCostId;
-	}
-
-	public Double getFabPrice() {
-		return fabPrice;
-	}
-
-	public void setFabPrice(Double fabPrice) {
-		this.fabPrice = fabPrice;
-	}
-
-	public Double getAllPrice() {
-		return allPrice;
-	}
-
-	public void setAllPrice(Double allPrice) {
-		this.allPrice = allPrice;
-	}
-
-	public Double getCutPrice() {
-		return cutPrice;
-	}
-
-	public void setCutPrice(Double cutPrice) {
-		this.cutPrice = cutPrice;
-	}
-
-	public Integer getDefaultNumber() {
-		return defaultNumber;
-	}
-
-	public void setDefaultNumber(Integer defaultNumber) {
-		this.defaultNumber = defaultNumber;
-	}
-
-	public Double getDefaultLoss() {
-		return defaultLoss;
-	}
-
-	public void setDefaultLoss(Double defaultLoss) {
-		this.defaultLoss = defaultLoss;
-	}
-
-	public String getBtPrice() {
-		return btPrice;
-	}
-
-	public void setBtPrice(String btPrice) {
-		this.btPrice = btPrice;
 	}
 
 	public String getUrl() {
