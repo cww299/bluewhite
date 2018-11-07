@@ -278,14 +278,28 @@ public class ReportExportServiceImpl implements ReportExportService{
 	public int importMaterielExcel(List<Materiel> excelMateriel) {
 		int count = 0;
 		for(Materiel materiel : excelMateriel){
-			Materiel mt  = materielDao.findByName(materiel.getName());
-			mt.setConvertPrice(mt.getPrice()/materiel.getConvertNumber());
-			mt.setConvertNumber(materiel.getConvertNumber());
-			mt.setConvertUnit(materiel.getConvertUnit());
-			materielDao.save(mt);
-			count++;
-			System.out.println(count);
-		}
+			Materiel mt  = materielDao.findByNumber(materiel.getNumber());
+				if(mt!=null){
+					mt.setName(materiel.getName());
+					mt.setPrice(materiel.getPrice());
+					materielDao.save(mt);
+				}else{
+					materiel.setType("accessories");
+					materielDao.save(materiel);
+					count++;
+				}
+			}
+		
+		
+//		for(Materiel materiel : excelMateriel){
+//			Materiel mt  = materielDao.findByName(materiel.getName());
+//			mt.setConvertPrice(mt.getPrice()/materiel.getConvertNumber());
+//			mt.setConvertNumber(materiel.getConvertNumber());
+//			mt.setConvertUnit(materiel.getConvertUnit());
+//			materielDao.save(mt);
+//			count++;
+//			System.out.println(count);
+//		}
 		return count;
 	}
 

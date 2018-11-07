@@ -19,9 +19,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
+import com.bluewhite.common.Constants;
 import com.bluewhite.common.Log;
+import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
@@ -161,6 +164,30 @@ public class ProductAction {
 	@SysLogAspectAnnotation(description = "产品新增操作", module = "产品管理", operateType = "增加", logType = SysLog.ADMIN_LOG_TYPE)
 	public CommonResponse addProduct(HttpServletRequest request,Product product) {
 		CommonResponse cr = new CommonResponse();
+		CurrentUser cu = SessionManager.getUserSession();
+		
+		
+		//试制部
+		if(cu.getRole().contains(Constants.TRIALPRODUCT)){
+			
+		}
+		//质检
+		if(cu.getRole().contains(Constants.PRODUCT_FRIST_QUALITY)){
+		}
+		//包装
+		if(cu.getRole().contains(Constants.PRODUCT_FRIST_PACK)){
+		}
+		//针工
+		if(cu.getRole().contains(Constants.PRODUCT_TWO_DEEDLE)){
+		}
+		//机工
+		if(cu.getRole().contains(Constants.PRODUCT_TWO_MACHINIST)){
+		}
+		//裁剪
+		if(cu.getRole().contains(Constants.PRODUCT_RIGHT_TAILOR)){
+			
+		}
+		
 		if(StringUtils.isEmpty(product.getNumber()) || StringUtils.isEmpty(product.getName())){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品编号和产品名都不能为空");

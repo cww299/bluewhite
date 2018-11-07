@@ -19,25 +19,28 @@ public class Materiel extends BaseEntity<Long>{
      * 物料编号
      */
 	@Column(name = "number")
+	@Poi(name = "", column = "A")
     private String number;
 	
 	/**
      * 物料名
      */
 	@Column(name = "name")
-	@Poi(name = "", column = "A")
+	@Poi(name = "", column = "B")
     private String name;
 	
 	/**
      * 物料最新价格
      */
 	@Column(name = "price")
+	@Poi(name = "", column = "C")
     private Double price;
 	
 	/**
      * 物料克重等备注
      */
 	@Column(name = "unit")
+	@Poi(name = "", column = "D")
     private String unit;
 	
 	/**
@@ -66,7 +69,6 @@ public class Materiel extends BaseEntity<Long>{
 	 * @return
 	 */
 	@Column(name = "convert_unit")
-	@Poi(name = "", column = "C")
     private String convertUnit;
 	
 	/**
@@ -81,7 +83,6 @@ public class Materiel extends BaseEntity<Long>{
 	 * @return
 	 */
 	@Column(name = "convert_number")
-	@Poi(name = "", column = "B")
     private Double convertNumber;
 	
 	

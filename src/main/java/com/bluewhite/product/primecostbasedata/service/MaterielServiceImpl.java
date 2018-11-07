@@ -8,6 +8,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
@@ -42,11 +43,11 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 						predicate.add(cb.equal(root.get("id").as(Long.class),materiel.getId()));
 					}
 		        	//按物料编号过滤
-		        	if (materiel.getNumber() != null) {
+		        	if (!StringUtils.isEmpty(materiel.getNumber() )) {
 						predicate.add(cb.like(root.get("number").as(String.class),"%"+StringUtil.specialStrKeyword(materiel.getNumber())+"%"));
 					}
 		        	//按产品名称过滤
-		        	if (materiel.getName() != null) {
+		        	if (!StringUtils.isEmpty(materiel.getName())) {
 						predicate.add(cb.like(root.get("name").as(String.class),"%"+StringUtil.specialStrKeyword(materiel.getName())+"%"));
 					}
 					Predicate[] pre = new Predicate[predicate.size()];
@@ -134,11 +135,11 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 					predicate.add(cb.equal(root.get("id").as(Long.class),materiel.getId()));
 				}
 	        	//按物料编号过滤
-	        	if (materiel.getNumber() != null) {
+	        	if (!StringUtils.isEmpty(materiel.getNumber() )) {
 					predicate.add(cb.like(root.get("number").as(String.class),"%"+StringUtil.specialStrKeyword(materiel.getNumber())+"%"));
 				}
 	        	//按产品名称过滤
-	        	if (materiel.getName() != null) {
+	        	if (!StringUtils.isEmpty(materiel.getName())) {
 					predicate.add(cb.like(root.get("name").as(String.class),"%"+StringUtil.specialStrKeyword(materiel.getName())+"%"));
 				}
 				Predicate[] pre = new Predicate[predicate.size()];

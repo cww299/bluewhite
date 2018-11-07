@@ -93,5 +93,10 @@ public class Constants {
      */
     public static String  BAGABOARD = "大包上车";   
     public static String  BOXBOARD= "箱上车";
+    
+    /**
+     *  试制部 
+     */
+    public static String TRIALPRODUCT = "trialProduce";
 
 }
