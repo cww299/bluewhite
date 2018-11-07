@@ -277,6 +277,16 @@ public class ProductAction {
 		CommonResponse cr = new CommonResponse();
 		HibernateEntityManager hEntityManager = (HibernateEntityManager)entityManager;
         Session session = hEntityManager.getSession();
+        Product oldIdProduct =  productService.findOne(oldId);
+        Product product =  productService.findOne(id);
+        PrimeCost  primeCost = new PrimeCost();
+        PrimeCost  oldprimeCost =  oldIdProduct.getPrimeCost();
+    	BeanCopyUtils.copyNotEmpty(oldprimeCost,primeCost,"");
+    	primeCost.setId(null);
+    	primeCost.setProductId(id);
+        product.setPrimeCost(primeCost);
+        session.clear();//清除缓存	
+        productService.save(product);
         
 		//裁片
 		List<CutParts> cutPartsList = cutPartsService.findByProductId(oldId);
