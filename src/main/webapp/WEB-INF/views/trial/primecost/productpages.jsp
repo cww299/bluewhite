@@ -87,7 +87,6 @@
 								<thead>
 									<tr>
 										<th class="text-center">产品序号</th>
-										<th class="text-center">产品编号</th>
 										<th class="text-center">产品名</th>
 										<th class="text-center">是否含开票</th>
 										<th class="text-center">综合税负加所得税负</th>
@@ -117,12 +116,6 @@
 			<form class="form-horizontal addDictDivTypeForm">
 				<div class="row col-xs-12  col-sm-12  col-md-12 ">
 					<div style="height: 30px"></div>
-					<div class="form-group">
-						<label class="col-sm-3 control-label">产品编号:</label>
-						<div class="col-sm-6">
-							<input type="text" id="productNumber" class="form-control">
-						</div>
-					</div>
 					<div class="form-group">
 						<label class="col-sm-3 control-label">产品名:</label>
 						<div class="col-sm-6">
@@ -479,6 +472,30 @@
 	
 	<!--隐藏框 成本价格表结束  -->
 	
+	
+	<!--隐藏框 产品新增开始  -->
+	<div id="addDictDivTypetw" style="display: none;">
+		<div class=" col-xs-12  col-sm-12  col-md-12 ">
+			<!-- PAGE CONTENT BEGINS -->
+			<form class="form-horizontal addDictDivTypeForm">
+				<div class="row col-xs-12  col-sm-12  col-md-12 ">
+					<div style="height: 30px"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">需要复制成:</label>
+						<div class="col-sm-6">
+							<input type="text" id="productNametw" class="form-control">
+						</div>
+						<div class="col-sm-6">
+							<input type="text" id="productNametw2" class="form-control hidden">
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<!--隐藏框 产品新增结束  -->
+	
+	
 	</section>
 
 
@@ -567,7 +584,7 @@
 																+ '<td class="text-center id">'
 																+ o.id
 																+ '</td>'
-																+ '<td class="text-center edit number">'
+																+ '<td class="text-center edit number hidden">'
 																+ o.number
 																+ '</td>'
 																+ '<td class="text-center edit name">'
@@ -638,7 +655,65 @@
 				}
 
 				this.loadEvents = function() {
-
+                    //复制的产品
+                    $('.updatecopy').on('click', function() {
+                    	var productId = $(this).data('id');
+                    	console.log(productId)
+                    	var _index;
+    					var index;
+    					var postData;
+    					var dicDiv=$('#addDictDivTypetw');
+    					_index = layer.open({
+    						  type: 1,
+    						  skin: 'layui-layer-rim', //加上边框
+    						  area: ['30%', '50%'], 
+    						  btnAlign: 'c',//宽高
+    						  maxmin: true,
+    						  title:"产品复制",
+    						  content: dicDiv,
+    						  btn: ['确定', '取消'],
+    						  yes:function(index, layero){
+    							 
+    							  postData={
+    									  oldId:$("#productNametw2").val(),
+    									  id:productId,
+    							  }
+    							  $.ajax({
+    									url:"${ctx}/product/copyProduct",
+    									data:postData,
+    						            traditional: true,
+    									type:"GET",
+    									beforeSend:function(){
+    										index = layer.load(1, {
+    											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+    											});
+    									},
+    									
+    									success:function(result){
+    										if(0==result.code){
+    											layer.msg("复制成功！", {icon: 1});
+    										 self.loadPagination(data); 
+    											$('#addDictDivType').hide();
+    											
+    										}else{
+    											layer.msg("复制失败", {icon: 2});
+    										}
+    										
+    										layer.close(index);
+    									},error:function(){
+    										layer.msg("操作失败！", {icon: 2});
+    										layer.close(index);
+    									}
+    								});
+    							},
+    						  end:function(){
+    							  $('#addDictDivType').hide();
+    						
+    							  $('.addDictDivTypeForm')[0].reset(); 
+    							
+    						  }
+    					});
+                    })
 					//触发工序弹框 加载内容方法
 					$('.addPrimeCost').on('click', function() {
 						var _index;
@@ -1123,6 +1198,54 @@
 							},
 							
 						});
+					
+					
+					$("#productNametw").typeahead({
+						//ajax 拿way数据
+						source : function(query, process) {
+								return $.ajax({
+									url : '${ctx}/getProductPages',
+									type : 'GET',
+									data : {
+										name:query,
+									},
+									
+									success : function(result) {
+										//转换成 json集合
+										 var resultList = result.data.rows.map(function (item) {
+											 	//转换成 json对象
+						                        var aItem = {name: item.name, id:item.id, number:item.primeCost==null ? "" : item.primeCost.number}
+						                        //处理 json对象为字符串
+						                        return JSON.stringify(aItem);
+						                    });
+										//提示框返回数据
+										 return process(resultList);
+									},
+								})
+								//提示框显示
+							}, highlighter: function (item) {
+							    //转出成json对象
+								 var item = JSON.parse(item);
+								return item.name
+								//按条件匹配输出
+			                }, matcher: function (item) {
+			                	//转出成json对象
+						        var item = JSON.parse(item);
+						        $('#productNametw2').val(item.id)
+						    	return item.name
+						    },
+							//item是选中的数据
+							updater:function(item){
+								//转出成json对象
+								var item = JSON.parse(item);
+								 $('#productNametw2').val(item.id)
+									return item.name
+							},
+							
+						});
+					
+					
+					
 					//新增产品
 					$('#addproduct')
 						.on(
@@ -1146,7 +1269,6 @@
 											layero) {
 
 											postData = {
-												number: $("#productNumber").val(),
 												name: $("#productName").val(),
 											}
 											$.ajax({
