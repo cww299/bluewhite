@@ -168,7 +168,8 @@ public class ProductAction {
 		
 		//试制部
 		if(cu.getRole().contains(Constants.TRIALPRODUCT)){
-			
+			product.setNumber("试制部");
+			product.setOriginDepartment(Constants.TRIALPRODUCT);
 		}
 		//质检
 		if(cu.getRole().contains(Constants.PRODUCT_FRIST_QUALITY)){
