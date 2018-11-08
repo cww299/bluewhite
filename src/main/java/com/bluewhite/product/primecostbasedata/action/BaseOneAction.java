@@ -206,6 +206,7 @@ public class BaseOneAction {
 	 */
 	@RequestMapping(value = "/product/addMateriel", method = RequestMethod.POST)
 	@ResponseBody
+	@SysLogAspectAnnotation(description = "基础数据新增操作", module = "新增管理", operateType = "新增", logType = SysLog.ADMIN_LOG_TYPE)
 	public CommonResponse addMateriel(HttpServletRequest request,Materiel materiel) {
 		CommonResponse cr = new CommonResponse();
 		if(materiel.getId()!=null){

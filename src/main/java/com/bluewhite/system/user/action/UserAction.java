@@ -25,12 +25,14 @@ import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
+import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.BankUtil;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.production.group.entity.Group;
+import com.bluewhite.system.sys.entity.SysLog;
 import com.bluewhite.system.user.dao.UserContractDao;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.Role;
@@ -96,6 +98,7 @@ public class UserAction {
 	 */
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	@ResponseBody
+	@SysLogAspectAnnotation(description = "员工新增操作", module = "员工管理", operateType = "增加", logType = SysLog.ADMIN_LOG_TYPE)
 	public CommonResponse createUser(HttpServletRequest request, User user) {
 		CommonResponse cr = new CommonResponse();
 		user.setPassword("123456");
@@ -127,6 +130,7 @@ public class UserAction {
 	 */	
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ResponseBody
+	@SysLogAspectAnnotation(description = "员工修改操作", module = "修改管理", operateType = "修改", logType = SysLog.ADMIN_LOG_TYPE)
 	public CommonResponse changeUser(HttpServletRequest request, User user) {
 		CommonResponse cr = new CommonResponse();
 		if(user.getId() == null){
