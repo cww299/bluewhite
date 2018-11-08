@@ -200,7 +200,7 @@
 		      		  success: function (result) {
 		      			 $(result.data.rows).each(function(i,o){
 		      				html +='<tr>'
-		      				+'<td class="text-center">'+o.number+'</td>'
+		      				+'<td class="text-center number">'+o.number+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center edit price">'+o.price+'</td>'
 		      				+'<td class="text-center edit unit">'+o.unit+'</td>'
