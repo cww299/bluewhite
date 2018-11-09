@@ -841,7 +841,11 @@ this.checkeddd=function(){
 						  yes:function(index, layero){
 							 var a=$("#productNumber").val();
 							 var b=$("#productNumbertw").val();
-							 var c=a+'-'+b
+							 var c=""
+							 if(b==""){
+								 c=b
+							 }else{
+							 c=a+'-'+b}
 							  postData={
 									  departmentNumber:c,
 									  name:$("#productName").val(),
@@ -866,7 +870,7 @@ this.checkeddd=function(){
 											$('#addDictDivType').hide();
 											
 										}else{
-											layer.msg("添加失败", {icon: 2});
+											layer.msg(result.message, {icon: 2});
 										}
 										
 										layer.close(index);
