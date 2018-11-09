@@ -15,6 +15,9 @@ import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.BeanCopyUtils;
+import com.bluewhite.common.Constants;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
@@ -66,12 +69,50 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 	
 	@Override
 	public PageResult<Product> findPages(Product product,PageParameter page) {
+		CurrentUser cu = SessionManager.getUserSession();
+		
+		//试制部
+		if(cu.getRole().contains(Constants.TRIALPRODUCT)){
+			product.setOriginDepartment(Constants.TRIALPRODUCT);
+		}
+		//质检
+		if(cu.getRole().contains(Constants.PRODUCT_FRIST_QUALITY)){
+			product.setOriginDepartment(Constants.PRODUCT_FRIST_QUALITY);
+		}
+		//包装
+		if(cu.getRole().contains(Constants.PRODUCT_FRIST_PACK)){
+			product.setOriginDepartment(Constants.PRODUCT_FRIST_PACK);
+		}
+		//针工
+		if(cu.getRole().contains(Constants.PRODUCT_TWO_DEEDLE)){
+			product.setOriginDepartment(Constants.PRODUCT_TWO_DEEDLE);
+		}
+		//机工
+		if(cu.getRole().contains(Constants.PRODUCT_TWO_MACHINIST)){
+			product.setOriginDepartment(Constants.PRODUCT_TWO_MACHINIST);
+		}
+		//裁剪
+		if(cu.getRole().contains(Constants.PRODUCT_RIGHT_TAILOR)){
+			product.setOriginDepartment(Constants.PRODUCT_RIGHT_TAILOR);
+			
+		}
+		
+		
 		  Page<Product> pages = productDao.findAll((root,query,cb) -> {
 	        	List<Predicate> predicate = new ArrayList<>();
 	        	//按id过滤
 	        	if (product.getId() != null) {
 					predicate.add(cb.equal(root.get("id").as(Long.class),product.getId()));
 				}
+	        	//按部门展示出共同的产品 和 自身部门添加的产品
+	        	//按编号过滤
+	        	if (!StringUtils.isEmpty(product.getOriginDepartment())) {
+	        		Predicate p1 =cb.isNotNull(root.get("number").as(String.class));
+	        		Predicate p2 = cb.equal(root.get("originDepartment").as(String.class),product.getOriginDepartment());
+					predicate.add(cb.or(p1,p2));
+				}
+	        	
+	        	
 	        	//按编号过滤
 	        	if (!StringUtils.isEmpty(product.getNumber())) {
 					predicate.add(cb.equal(root.get("number").as(String.class),product.getNumber()));
@@ -80,10 +121,14 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 	        	if (!StringUtils.isEmpty(product.getName())) {
 					predicate.add(cb.like(root.get("name").as(String.class),"%"+StringUtil.specialStrKeyword(product.getName())+"%"));
 				}
+	        	
+	        	
+	        	
 				Predicate[] pre = new Predicate[predicate.size()];
 				query.where(predicate.toArray(pre));
 	        	return null;
 	        }, page);
+		  
 		  		for(Product pro : pages.getContent()){
 		  			  List<Procedure> procedureList = procedureDao.findByProductIdAndTypeAndFlag(pro.getId(), product.getType(),0);
 		  				  if(procedureList!=null && procedureList.size()>0){

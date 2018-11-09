@@ -58,6 +58,12 @@ public class Product extends BaseEntity<Long>{
     @NotFound(action=NotFoundAction.IGNORE)
 	private PrimeCost primeCost;
 	
+    /**
+     * 各个部门自己的产品编号
+     */
+ 	@Column(name = "department_number")
+     private String departmentNumber;
+    
    /**
     * 产品来源部门（）
     */
@@ -111,6 +117,14 @@ public class Product extends BaseEntity<Long>{
 	
 	
 	
+	public String getDepartmentNumber() {
+		return departmentNumber;
+	}
+
+	public void setDepartmentNumber(String departmentNumber) {
+		this.departmentNumber = departmentNumber;
+	}
+
 	public String getOriginDepartment() {
 		return originDepartment;
 	}

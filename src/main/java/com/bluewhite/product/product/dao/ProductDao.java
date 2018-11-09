@@ -15,5 +15,8 @@ public interface ProductDao extends BaseRepository<Product, Long> {
 	 * @return
 	 */
 	public Product  findByNumber(String number);
+	
+
+	public Product findByNumberNotNullAndName(String name);
 
 }
