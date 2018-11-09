@@ -112,6 +112,10 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 					predicate.add(cb.or(p1,p2));
 				}
 	        	
+	        	//按部门产品编号过滤
+	        	if (!StringUtils.isEmpty(product.getDepartmentNumber())) {
+					predicate.add(cb.equal(root.get("departmentNumber").as(String.class),product.getDepartmentNumber()));
+				}
 	        	
 	        	//按编号过滤
 	        	if (!StringUtils.isEmpty(product.getNumber())) {
