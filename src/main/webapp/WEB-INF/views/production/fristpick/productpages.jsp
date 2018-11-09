@@ -837,7 +837,7 @@ this.checkeddd=function(){
 						  maxmin: true,
 						  title:"新增产品",
 						  content: dicDiv,
-						  btn: ['确定', '取消'],+
+						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
 							 var a=$("#productNumber").val();
 							 var b=$("#productNumbertw").val();
