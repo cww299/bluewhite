@@ -1,6 +1,7 @@
 package com.bluewhite.product.product.action;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,7 +87,7 @@ public class ProductAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(Product.class,"id","number","name","departmentPrice","hairPrice","deedlePrice","puncherHairPrice","puncherDepartmentPrice");
+				.addRetainTerm(Product.class,"id","number","departmentNumber","originDepartment","name","departmentPrice","hairPrice","deedlePrice","puncherHairPrice","puncherDepartmentPrice");
 	}
 	
 	/**
@@ -168,41 +169,68 @@ public class ProductAction {
 		
 		//试制部
 		if(cu.getRole().contains(Constants.TRIALPRODUCT)){
-			product.setNumber("试制部");
+			product.setDepartmentNumber( "试制"+new Date ().toString());
 			product.setOriginDepartment(Constants.TRIALPRODUCT);
 		}
 		//质检
 		if(cu.getRole().contains(Constants.PRODUCT_FRIST_QUALITY)){
+			product.setOriginDepartment(Constants.PRODUCT_FRIST_QUALITY);
 		}
 		//包装
 		if(cu.getRole().contains(Constants.PRODUCT_FRIST_PACK)){
+			product.setOriginDepartment(Constants.PRODUCT_FRIST_PACK);
 		}
 		//针工
 		if(cu.getRole().contains(Constants.PRODUCT_TWO_DEEDLE)){
+			product.setOriginDepartment(Constants.PRODUCT_TWO_DEEDLE);
 		}
 		//机工
 		if(cu.getRole().contains(Constants.PRODUCT_TWO_MACHINIST)){
+			product.setOriginDepartment(Constants.PRODUCT_TWO_MACHINIST);
 		}
 		//裁剪
 		if(cu.getRole().contains(Constants.PRODUCT_RIGHT_TAILOR)){
+			product.setOriginDepartment(Constants.PRODUCT_RIGHT_TAILOR);
 			
 		}
 		
-		if(StringUtils.isEmpty(product.getNumber()) || StringUtils.isEmpty(product.getName())){
+		if(StringUtils.isEmpty(product.getDepartmentNumber()) || StringUtils.isEmpty(product.getName())){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品编号和产品名都不能为空");
+			return cr;
+		}
+		
+		
+		//如果后期出现需求，一个产品在各个地方所用的所有费用，这个时候无法用产品编号进行查询
+		//产品名称在包装环境中不会变动
+		//所以可以通过产品名称来查询。同时保证在拥有产品编号的产品中 保证产品名称的唯一性
+		Product ps = dao.findByNumberNotNullAndName(product.getName());
+		if(ps!=null){
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("已有该产品，请检查后再次添加");
+			return cr;
+		}
+		
+		//通过传入的部门产品编号查询是否存在编号为此的产品。如果存在则不能添加。在这里控制产品共同编号的唯一性
+		Product products = dao.findByNumber(product.getDepartmentNumber());
+		
+		//下面存入各部门产品编号
+		if(products!=null){
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("已有该产品编号的产品，请检查后再次添加");
 		}else{
-			Product products = dao.findByNumber(product.getNumber());
-			if(products!=null){
-				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				cr.setMessage("已有该产品编号的产品，请检查后再次添加");
-			}else{
-				productService.save(product);
-				cr.setMessage("添加成功");
-			}
+			//同时判断各部门的编号是否和最终的产品编号位数相同，如果相同，则存入产品编号中，同时清空部门产品编号，让产品编号变成共同的集合
+			if(product.getDepartmentNumber().length()==7){
+				product.setNumber(product.getDepartmentNumber());
+			};
+			productService.save(product);
+			cr.setMessage("添加成功");
 		}
 		return cr;
 	}
+	
+	
+	
 	
 	/**
 	 * 修改产品
