@@ -206,7 +206,7 @@
 		  	$("#number").val(productNumberAll);
 			 var data={
 						page:1,
-				  		size:13,	
+				  		size:100,	
 				  		productId:productIdAll,
 				} 
 			this.init = function(){
@@ -253,23 +253,6 @@
 		      			}); 
 		      			self.setCount(result.data.pageNum)
 				        //显示分页
-					   	 laypage({
-					      cont: 'pager', 
-					      pages: result.data.totalPages, 
-					      curr:  result.data.pageNum || 1, 
-					      jump: function(obj, first){ 
-					    	  if(!first){ 
-					    		 
-						        	var _data = {
-						        			page:obj.curr,
-									  		size:13,
-									  		name:$('#name').val(),
-								  	}
-						        
-						            self.loadPagination(_data);
-							     }
-					      }
-					    });  
 					   	layer.close(index);
 					   	 $("#tablecontent").html(html); 
 					   	self.loadEvents();
@@ -514,7 +497,7 @@
 									layer.msg(result.message, {icon: 1});
 									var data={
 											page:self.getCount(),
-									  		size:13,	
+									  		size:100,	
 									  		productId:productIdAll,
 									} 
 								   self.loadPagination(data);
@@ -652,7 +635,7 @@
 								layer.msg("删除成功！", {icon: 1});
 								var data = {
 					        			page:self.getCount(),
-								  		size:13,
+								  		size:100,
 								  		/* productId:"", */
 							  	}
 								self.loadPagination(data)
@@ -687,7 +670,7 @@
 					} 
 					var leng = $(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').length;
 				for (var i = 0; i <leng; i++) {
-					if($(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.materiel').val()!=undefined){
+					if($(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.materiel').val()!="" && $(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.materiel').val()!=undefined){
 					var postData = {
 						productId:self.getCache(),
 						number:$('#number').val(),  
@@ -717,7 +700,7 @@
 							layer.msg("新增成功！", {icon: 1});
 							 var _data={
 									page:1,
-							  		size:13,
+							  		size:100,
 							  		productId:self.getCache(),
 							}
 							self.loadPagination(_data) 
