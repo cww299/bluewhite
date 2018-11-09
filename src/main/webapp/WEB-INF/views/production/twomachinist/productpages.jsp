@@ -281,7 +281,7 @@
 		      				}
 		      				html +='<tr>'
 		      				+'<td class="text-center id">'+o.id+'</td>'
-		      				+'<td class="text-center edit number">'+o.number+'</td>'
+		      				+'<td class="text-center edit number">'+o.departmentNumber+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center  departmentPrice">'+o.departmentPrice*1+'</td>'
 		      				+'<td class="text-center edit  workPrice">'+o.hairPrice+'</td>'
@@ -301,7 +301,7 @@
 									  		size:13,
 									  		type:4,
 									  		name:$('#name').val(),
-								  			number:$('#number').val(),
+									  		departmentNumber:$('#number').val(),
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -424,7 +424,7 @@
 								  	size:13,	
 								  	type:4,
 								  	name:$('#name').val(),
-						  			number:$('#number').val(),
+								  	departmentNumber:$('#number').val(),
 							  }
 							self.loadPagination(data);
 						  }
@@ -460,7 +460,7 @@
 								  	size:13,	
 								  	type:4,
 								  	name:$('#name').val(),
-						  			number:$('#number').val(),
+								  	departmentNumber:$('#number').val(),
 							  }
 							self.loadPagination(data);
 						  }
@@ -493,7 +493,7 @@
 							var postData = {
 									type:4,
 									id:$(this).data('id'),
-									number:$(this).parent().parent('tr').find(".number").text(),
+									departmentNumber:$(this).parent().parent('tr').find(".number").text(),
 									name:$(this).parent().parent('tr').find(".name").text(),
 									hairPrice:$(this).parent().parent('tr').find(".workPrice").text(),
 							}
@@ -1163,7 +1163,7 @@ this.checkeddd=function(){
 				  			size:13,
 				  			type:4,
 				  			name:$('#name').val(),
-				  			number:$('#number').val(),
+				  			departmentNumber:$('#number').val(),
 				  	}
 		            self.loadPagination(data);
 				});
@@ -1193,7 +1193,7 @@ this.checkeddd=function(){
 								  return  layer.msg("产品名！", {icon: 2});
 							  }
 							  postData={
-									  number:$("#productNumber").val(),
+									  departmentNumber:$("#productNumber").val(),
 									  name:$("#productName").val(),
 							  }
 							  $.ajax({

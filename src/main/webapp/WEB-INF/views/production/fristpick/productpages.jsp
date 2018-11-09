@@ -99,6 +99,9 @@
                                         <div class="col-sm-6">
                                             <input type="text" id="productNumber" class="form-control">
                                         </div>
+                                        <div class="col-sm-3">
+                                            <input type="text" id="productNumbertw" placeholder="备注" class="form-control">
+                                        </div>
                  </div>
                  <div class="form-group">
                                         <label class="col-sm-3 control-label">产品名:</label>
@@ -246,7 +249,7 @@
 		      				
 		      				html +='<tr>'
 		      				+'<td class="text-center id">'+o.id+'</td>'
-		      				+'<td class="text-center edit number">'+o.number+'</td>'
+		      				+'<td class="text-center edit number">'+o.departmentNumber+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center  departmentPrice">'+o.departmentPrice*1+'</td>'
 		      				+'<td class="text-center  hairPrice">'+o.hairPrice*1+'</td>'
@@ -267,7 +270,7 @@
 									  		size:13,
 									  		type:2,
 									  		name:$('#name').val(),
-								  			number:$('#number').val(),
+									  		departmentNumber:$('#number').val(),
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -387,7 +390,7 @@
 								  	size:13,	
 								  	type:2,
 								  	name:$('#name').val(),
-						  			number:$('#number').val(),
+								  	departmentNumber:$('#number').val(),
 							  }
 							self.loadPagination(data);
 						  }
@@ -420,7 +423,7 @@
 							var postData = {
 									type:2,
 									id:$(this).data('id'),
-									number:$(this).parent().parent('tr').find(".number").text(),
+									departmentNumber:$(this).parent().parent('tr').find(".number").text(),
 									name:$(this).parent().parent('tr').find(".name").text(),
 							}
 							
@@ -813,7 +816,7 @@ this.checkeddd=function(){
 				  			size:13,
 				  			type:2,
 				  			name:$('#name').val(),
-				  			number:$('#number').val(),
+				  			departmentNumber:$('#number').val(),
 				  	}
 		            self.loadPagination(data);
 				});
@@ -836,9 +839,11 @@ this.checkeddd=function(){
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
-							 
+							 var a=$("#productNumber").val();
+							 var b=$("#productNumbertw").val();
+							 var c=a+'-'+b
 							  postData={
-									  number:$("#productNumber").val(),
+									  departmentNumber:c,
 									  name:$("#productName").val(),
 									  
 							  }

@@ -246,7 +246,7 @@
 		      				
 		      				html +='<tr>'
 		      				+'<td class="text-center id">'+o.id+'</td>'
-		      				+'<td class="text-center edit number">'+o.number+'</td>'
+		      				+'<td class="text-center edit number">'+o.departmentNumber+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center  departmentPrice">'+o.departmentPrice*1+'</td>'
 		      				+'<td class="text-center  hairPrice">'+o.hairPrice*1+'</td>'
@@ -267,7 +267,7 @@
 									  		size:13,
 									  		type:1,
 									  		name:$('#name').val(),
-								  			number:$('#number').val(),
+									  		departmentNumber:$('#number').val(),
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -387,7 +387,7 @@
 								  	size:13,	
 								  	type:1,
 								  	name:$('#name').val(),
-						  			number:$('#number').val(),
+								  	departmentNumber:$('#number').val(),
 							  }
 							self.loadPagination(data);
 						  }
@@ -420,7 +420,7 @@
 							var postData = {
 									type:1,
 									id:$(this).data('id'),
-									number:$(this).parent().parent('tr').find(".number").text(),
+									departmentNumber:$(this).parent().parent('tr').find(".number").text(),
 									name:$(this).parent().parent('tr').find(".name").text(),
 							}
 							
@@ -814,7 +814,7 @@ this.checkeddd=function(){
 				  			size:13,
 				  			type:1,
 				  			name:$('#name').val(),
-				  			number:$('#number').val(),
+				  			departmentNumber:$('#number').val(),
 				  	}
 		            self.loadPagination(data);
 				});
@@ -839,7 +839,7 @@ this.checkeddd=function(){
 						  yes:function(index, layero){
 							 
 							  postData={
-									  number:$("#productNumber").val(),
+									  departmentNumber:$("#productNumber").val(),
 									  name:$("#productName").val(),
 									  
 							  }
