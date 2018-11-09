@@ -331,7 +331,6 @@ public class BaseOneAction {
 	public CommonResponse getBaseFourDate(HttpServletRequest request,Long id,Integer type) {
 		CommonResponse cr = new CommonResponse();
 		if(id==null || type==null){
-			cr.setData("");
 			cr.setMessage("无数据");
 			return cr;
 		}
