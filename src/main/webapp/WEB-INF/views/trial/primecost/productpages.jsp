@@ -1285,7 +1285,7 @@
 															self.loadPagination(data);
 															$('#addDictDivType').hide();
 														} else {
-															layer.msg("添加失败", {icon: 2});
+															layer.msg(result.message, {icon: 2});
 														}
 														layer.close(index);
 													},
