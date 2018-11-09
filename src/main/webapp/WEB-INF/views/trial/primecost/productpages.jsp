@@ -59,9 +59,6 @@
 													<tr>
 														<td>产品名:</td><td><input type="text" name="name" id="productName2" placeholder="请输入产品名称" class="form-control search-query name" data-provide="typeahead" autocomplete="off"/ ></td>
 														<td>&nbsp&nbsp&nbsp&nbsp</td>
-														<td>产品编号:</td>
-														<td><input type="text" name="number" id="number"
-															class="form-control search-query number" /></td>
 													<td>默认数量:</td><td><input type="text" name="number" id="number2" placeholder="请输入默认数量" class="form-control search-query number" /></td>
 													</tr>
 												</table>
