@@ -393,7 +393,7 @@
 			   					 +'<td class="text-center edit selectid hidden">'+o.id+'</td>'
 			   					 +'<td class="text-center edit materialsr" data-materialsr='+o.materials+' data-id='+o.id+' data-productid='+o.productId+'></td>'
 			   					 +'<td class="text-center edit selectCompany" style="padding: 2px 0px 2px 0px;"></td>'
-			   					 +'<td class="text-center edit selectbody"><a>查看</a></td>'
+			   					 +'<td class="text-center edit selectbodytw"><a>查看</a></td>'
 			   					 +'<td class="text-center edit selectbody2 hidden">'+o.cutparts+','+'</td>'
 			   					 +'<td class="text-center edit selectprice2 hidden">'+o.cutpartsPrice+','+'</td>'
 			   					 +'<td class="text-center edit name">'+o.reckoningSewingPrice+'</td>'
@@ -411,7 +411,7 @@
 						   	layer.close(index);
 						   	 $("#tablecontent").html(html);
 						   	self.loadEvents()
-						   	 self.mater()
+						   	 self.mater2()
 						   	 self.checkedd()
 					      },error:function(){
 								layer.msg("加载失败！", {icon: 2});
@@ -1793,69 +1793,230 @@
 	                }); 
 					
 				}
-			  this.mater=function(){
-				  //用除裁片以外的物料
-				/*   var dataeer={
-						  productId:productIdAll,
-						  type:"machinist",
-				  }
-				  var index;
-				  var htmli = '';
-				  var htmltoi= '';
-				  $.ajax({
-				      url:"${ctx}/product/getOverStock",
-				      data:dataeer,
-				      type:"GET",
-				      beforeSend:function(){
-							index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								});
-						},
-		      		  success: function (result) {
-		      			$(result.data).each(function(i,o){
-		      				htmli +='<option value="'+o.name+'">'+o.name+'</option>'
-		      			}); 
-				       htmltoi='<select class="text-center form-control selecttailorTypeye" ><option value="">请选择</option>'+htmli+'</select>'
-		      		  $(".materialstw").html(htmltoi)
-		      				layer.close(index);
-						$(".selecttailorTypeye").change(function(i,o){
-				      				var that=$(this);
-				      				var dataeee={
-				      						id:ttat.parent().parent().find('.selectid').text(),
-				      						productId:self.getCache(),
-				      						materials:$(this).parent().parent().find(".selecttailorTypeye").val(),
-				      				}
-				      				var index;
-				      				$.ajax({
-									      url:"${ctx}/product/addMachinist",
-									      data:dataeee,
-									      type:"POST",
-									      beforeSend:function(){
-												index = layer.load(1, {
-													  shade: [0.1,'#fff'] //0.1透明度的白色背景
+			  
+			  this.mater2=function(){
+					$(".machinistName").blur(function(){
+						var ttat=$(this)
+						if($(this).val()==""){
+						return	layer.msg("机缝名不能为空", {icon: 2});
+						}
+						var data={
+								id:ttat.parent().parent().find('.selectid').text(),
+								productId: self.getCache(),
+								number:$('#number').val(),
+								machinistName:$(this).val()
+						}
+						$.ajax({
+							url:"${ctx}/product/addMachinist",
+							data:data,
+							traditional: true,
+							type:"POST",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							success:function(result){
+								if(0==result.code){
+									layer.close(index);
+									var id=result.data.id
+									ttat.parent().parent().find('.selectid').text(id);
+									var data = {
+											id:self.getCache(),//需要传产品id
+										}
+										var indexx;
+									    var html = '';
+									    $.ajax({
+										      url:"${ctx}/product/getMachinistName",
+										      data:data,
+										      type:"GET",
+										     
+								      		  success: function (result) {
+								      			 $(result.data).each(function(i,o){
+								      				html +='<option value="'+o.price+'">'+o.name+'</option>'
+								      			}); 
+										       var htmlto='<select class="selectmac" style="border: none;width:50px; height:30px; background-color: #BFBFBF;"><option value=""></option>'+html+'</select>'
+											   	$(".selectCompany").html(htmlto); 
+										      	  
+										       $(".selectmac").change(function(){
+										    		var thta=$(this)   
+										    	   	thta.parent().parent().find('.selectbodytw').html(thta.find("option:selected").text())
+										    	   	thta.parent().parent().find('.selectbody2').append(thta.find("option:selected").text()+',')
+										    	   	thta.parent().parent().find('.selectprice2').append(thta.val()+',')
+										    	    var values=""
+										    	   	var name=""
+										    		name=thta.parent().parent().find('.selectbody2').text()
+										    		name = name.substr(0,name.length-1);
+										    		values=thta.parent().parent().find('.selectprice2').text()
+										    		values = values.substr(0,values.length-1);
+										    		var postData={
+										    			id:id,
+										    			productId:self.getCache(),
+										    			cutparts:name,
+										    			cutpartsPrice:values,
+										    			needlesize:172,
+										    			wiresize:194,
+										    			needlespur:204,
+										    			beeline:28,
+										    			arc:29,
+										    			bend:30,
+										    		}
+										    	   $.ajax({
+														url:"${ctx}/product/addMachinist",
+														data:postData,
+														traditional: true,
+														type:"POST",
+														beforeSend:function(){
+															index = layer.load(1, {
+																  shade: [0.1,'#fff'] //0.1透明度的白色背景
+																});
+														},
+														success:function(result){
+															if(0==result.code){
+															layer.close(index);
+															}else{
+																layer.msg("添加失败！", {icon: 2});
+																layer.close(index);
+															}
+														},error:function(){
+															layer.msg("操作失败！", {icon: 2});
+															layer.close(index);
+														}
 													});
-											},
-											success:function(result){
-												if(0==result.code){
-												layer.close(index);
-												}else{
-													layer.msg("添加失败！", {icon: 2});
+										       })
+										       layer.close(indexx);
+										      },error:function(){
+													layer.msg("加载失败！", {icon: 2});
 													layer.close(index);
-												}
-											},error:function(){
-												layer.msg("加载失败！", {icon: 2});
-												layer.close(index);sa
-										  }
-									  });
-								})
-						
-						
-				      },error:function(){
-							layer.msg("加载失败！", {icon: 2});
-							layer.close(index);
-					  }
-				  }); */
-				  
+											  }
+										  });
+								}else{
+									layer.msg(result.message, {icon: 2});
+									layer.close(index);
+								}
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+					})
+					
+					
+					$(".selectbodytw").on('click',function(){
+						var id=$(this).parent().find('.selectid').text();
+						var postData={
+								id:id,
+								productId:productIdAll,
+						}
+						$.ajax({
+							url:"${ctx}/product/getMachinist",
+							data:postData,
+							traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							success:function(result){
+							var name=result.data.rows[0].cutparts
+							var valey=result.data.rows[0].cutpartsPrice
+							if(name==null){
+								return ""
+							}
+							var cutparts = name.split(",");
+							var cutpartsPrice= valey.split(",");
+							var html=""
+							for (var i = 0; i < cutparts.length; i++) {
+								var array_element = cutparts[i];
+								var array_element2 = cutpartsPrice[i];
+								html+='<tr><td class="text-center edit name1">'+array_element+'</td>'
+									+'<td class="text-center edit price1">'+array_element2+'</td>'
+									+'<td><button class="btn btn-sm btn-danger btn-trans delete" data-id='+i+'>删除</button></td></tr>'
+							}
+							$("#tableworking2").html(html)
+								layer.close(index);
+							 $(".delete").on('click',function(){
+								$(this).parent().parent().find(".name1").text("");
+								$(this).parent().parent().find(".price1").text("");
+								 var cutparts=new Array();
+								  var cutpartsPrice=new Array();
+								  $('.name1').each(function(i,o){
+										 var a=$(this).text()
+										 var c=$(this).parent().find('.price1').text();
+										if(a!=""){
+											cutparts.push(a)
+										}
+										if(c!=""){
+											cutpartsPrice.push(c)
+										}
+									 })
+									 var postData={
+						    			id:id,
+						    			productId:self.getCache(),
+						    			cutparts:cutparts,
+						    			cutpartsPrice:cutpartsPrice,
+						    		}
+						    	   $.ajax({
+										url:"${ctx}/product/addMachinist",
+										data:postData,
+										traditional: true,
+										type:"POST",
+										beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'#fff'] //0.1透明度的白色背景
+												});
+										},
+										success:function(result){
+											if(0==result.code){
+												layer.msg("删除成功！", {icon: 1});
+											layer.close(index);
+											}else{
+												layer.msg("添加失败！", {icon: 2});
+												layer.close(index);
+											}
+										},error:function(){
+											layer.msg("操作失败！", {icon: 2});
+											layer.close(index);
+										}
+									});
+								
+							}) 
+							
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						var dicDiv=$('#addworking');
+						_index = layer.open({
+							  type: 1,
+							  skin: 'layui-layer-rim', //加上边框
+							  area: ['30%', '70%'], 
+							  btnAlign: 'c',//宽高
+							  maxmin: true,
+							  title:name,
+							  content: dicDiv,
+							  btn: ['确定', '取消'],
+							  yes:function(index, layero){
+								 
+									 
+								},
+							  end:function(){
+								  $('#addworking').hide();
+								  $('.name1').text("")
+								  $('.price1').text("")
+								  layer.close(index);
+							  }
+						});
+							
+					})
+					
+				}
+			  
+			  
+			  
+			  this.mater=function(){
 					$(".machinistName").blur(function(){
 						var ttat=$(this)
 						if($(this).val()==""){
