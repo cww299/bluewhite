@@ -19,4 +19,7 @@ public interface ProductDao extends BaseRepository<Product, Long> {
 
 	public Product findByNumberNotNullAndName(String name);
 
+
+	public Product findByDepartmentNumber(String departmentNumber);
+
 }
