@@ -23,6 +23,7 @@ import com.bluewhite.product.primecost.tailor.dao.OrdinaryLaserDao;
 import com.bluewhite.product.primecost.tailor.dao.TailorDao;
 import com.bluewhite.product.primecost.tailor.entity.OrdinaryLaser;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
+import com.bluewhite.product.primecost.tailor.service.TailorService;
 import com.bluewhite.product.product.dao.ProductDao;
 import com.bluewhite.production.bacth.entity.Bacth;
 
@@ -35,6 +36,8 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 	private ProductDao productdao;
 	@Autowired
 	private TailorDao tailorDao;
+	@Autowired
+	private TailorService tailorService;
 	@Autowired
 	private OrdinaryLaserDao ordinaryLaserDao;
 	
@@ -91,6 +94,11 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		//物料压价,通过cc裁片填写中该裁片该面料的价值 得到
 		tailor.setPriceDown((cutParts.getBatchMaterialPrice()==null ? 0.0 : cutParts.getBatchMaterialPrice())
 				+(cutParts.getBatchComplexAddPrice()==null ? 0.0 :cutParts.getBatchComplexAddPrice()));
+		
+		tailor.setTailorTypeId((long)71);
+		tailor.setTailorSize(0.01);
+		OrdinaryLaser prams = new OrdinaryLaser();
+		tailorService.getOrdinaryLaserDate(tailor, prams);
 		//不含绣花环节的为机工压价	
 		//含绣花环节的为机工压价
 		//为机工准备的压价

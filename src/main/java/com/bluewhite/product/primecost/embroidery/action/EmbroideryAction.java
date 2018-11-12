@@ -1,6 +1,7 @@
 package com.bluewhite.product.primecost.embroidery.action;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,6 +26,7 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.embroidery.entity.Embroidery;
 import com.bluewhite.product.primecost.embroidery.service.EmbroideryService;
 import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
+import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
 import com.bluewhite.product.product.service.ProductService;
 @Controller
@@ -140,7 +142,9 @@ public class EmbroideryAction {
 	@ResponseBody
 	public CommonResponse getEmbroideryName(HttpServletRequest request,Long productId) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(tailorService.findByProductId(productId));
+		List<Tailor> tailorList = tailorService.findByProductId(productId);
+		tailorList.stream().filter(Tailor->Tailor.getOrdinaryLaserId()!=null);
+		cr.setData(tailorList);
 		cr.setMessage("查询成功");
 		return cr;
 	}

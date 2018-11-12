@@ -200,28 +200,29 @@ public class ProductAction {
 			return cr;
 		}
 		
+		//通过传入的部门产品编号查询是否存在编号为此的产品。如果存在则不能添加。在这里控制产品共同编号的唯一性
+		Product products = dao.findByNumber(product.getDepartmentNumber());
+		Product products1 = dao.findByDepartmentNumber(product.getDepartmentNumber());
 		
 		//如果后期出现需求，一个产品在各个地方所用的所有费用，这个时候无法用产品编号进行查询
 		//产品名称在包装环境中不会变动
 		//所以可以通过产品名称来查询。同时保证在拥有产品编号的产品中 保证产品名称的唯一性
-		Product ps = dao.findByNumberNotNullAndName(product.getName());
-		if(ps!=null){
-			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("已有该产品，请检查后再次添加");
-			return cr;
-		}
-		
-		//通过传入的部门产品编号查询是否存在编号为此的产品。如果存在则不能添加。在这里控制产品共同编号的唯一性
-		Product products = dao.findByNumber(product.getDepartmentNumber());
+//			Product ps = dao.findByNumberNotNullAndName(product.getName());
+//			if(ps!=null){
+//				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+//				cr.setMessage("已有该产品，请检查后再次添加");
+//				return cr;
+//			}
 		
 		//下面存入各部门产品编号
-		if(products!=null){
+		if(products!=null && products1!=null){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("已有该产品编号的产品，请检查后再次添加");
 		}else{
-			//同时判断各部门的编号是否和最终的产品编号位数相同，如果相同，则存入产品编号中，同时清空部门产品编号，让产品编号变成共同的集合
+			//同时判断各部门的编号是否和最终的产品编号位数相同，如果相同，则存入产品编号中，同时清空来源部门，让产品变成共同的集合
 			if(product.getDepartmentNumber().length()==7){
 				product.setNumber(product.getDepartmentNumber());
+				product.setOriginDepartment(null);
 			};
 			productService.save(product);
 			cr.setMessage("添加成功");
@@ -245,6 +246,14 @@ public class ProductAction {
 		CommonResponse cr = new CommonResponse();
 		if(product.getId()!=null){
 			Product oldProduct = productService.findOne(product.getId());
+			//这里控制共同产品无法被修改，只能修改自己部门的产品
+			if(StringUtils.isEmpty(oldProduct.getOriginDepartment())){
+				if(!product.getName().equals(oldProduct.getName()) || !product.getDepartmentNumber().equals(oldProduct.getNumber())){
+					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+					cr.setMessage("该产品名和编号无权限修改");
+					return cr;
+				}
+			}
 			BeanCopyUtils.copyNullProperties(oldProduct,product);
 			product.setCreatedAt(oldProduct.getCreatedAt());
 			productService.update(product);
