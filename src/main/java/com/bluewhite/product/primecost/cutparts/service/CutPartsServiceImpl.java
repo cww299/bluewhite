@@ -16,6 +16,7 @@ import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.entity.PageResultStat;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.product.primecost.cutparts.dao.CutPartsDao;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
@@ -114,7 +115,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 			scaleMaterial =  cutPartsList.stream().mapToDouble(CutParts::getAddMaterial).sum();
 		}
 		for(CutParts cp : cutPartsList){
-			cp.setScaleMaterial(cp.getAddMaterial()/scaleMaterial);
+			cp.setScaleMaterial(NumUtils.division(cp.getAddMaterial()/scaleMaterial));
 		}
 		dao.save(cutPartsList);
 		return cutParts;
