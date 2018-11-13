@@ -375,7 +375,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 			if(sign==0){
 				procedure.setWorkingTime(NumUtils.round((et.getClothTime()+et.getLaserTime())*et.getNumber(), null));
 				procedure.setProcedureTypeId((long)140);
-				sumPrice += et.getNumber()*et.getPerimeter()*0.005;
+				sumPrice += et.getNumber()*et.getPerimeter()*0.005/10;
 			}else{
 				procedure.setWorkingTime(NumUtils.round(et.getNumber()*(et.getOverlay()+et.getStamping()+1), null));
 				procedure.setProcedureTypeId((long)141);
