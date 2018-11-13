@@ -457,19 +457,19 @@
 				      				 +'<td  class="text-center edit name tailorName2" data-productid='+o.productId+'>'+o.embroideryName+'</td>'
 				   					 +'<td class="text-center edit selectid2 hidden"  >'+o.id+'</td>'
 				   					+'<td class="text-center edit selectid3 hidden"  >'+o.productId+'</td>'
-				   					 +'<td class="text-center edit"><input class="form-control needleNumber" data-id="'+o.id+'" style="width: 45px;" value='+(o.needleNumber!=0?o.needleNumber:"")+'></td>'
+				   					 +'<td class="text-center edit"><input class="form-control needleNumber" data-id="'+o.id+'" style="width: 60px;" value='+(o.needleNumber!=0?o.needleNumber:"")+'></td>'
 				   					 +'<td class="text-center edit"><input class="form-control needlesize" data-id="'+o.id+'" style="width: 45px;" value='+(o.needlesize!=null?o.needlesize:"")+'></td>'
 				   					 +'<td class="text-center edit"><input class="form-control wiresize" data-id="'+o.id+'" style="width: 45px;" value='+(o.wiresize!=null?o.wiresize:"")+'></td>'
 				   					 +'<td class="text-center edit"><input class="form-control applique" data-id="'+o.id+'" style="width: 45px;" value='+(o.applique!=0?o.applique:"")+'></td>'
 				   					 +'<td class="text-center edit sizeName" data-sizename='+o.sizeName+'></td>'
 				   					 +'<td class="text-center edit sizeTwoName" data-sizetwoname='+o.sizeTwoName+'></td>'
 				   					 +'<td class="text-center edit size">'+o.size+'</td>'
-				   					 +'<td class="text-center edit "><input class="form-control affirmSize" data-id="'+o.id+'" style="width: 55px;" value='+(o.affirmSize!=0?o.affirmSize:"")+'></td>'
+				   					 +'<td class="text-center edit "><input class="form-control affirmSize" data-id="'+o.id+'" style="width: 70px;" value='+(o.affirmSize!=0?o.affirmSize:"")+'></td>'
 				   					 +'<td class="text-center edit sizeTwo">'+o.sizeTwo+'</td>'
-				   					 +'<td class="text-center edit"><input class="form-control affirmSizeTwo" data-id="'+o.id+'" style="width: 55px;" value='+(o.affirmSizeTwo!=0?o.affirmSizeTwo:"")+'></td>'
+				   					 +'<td class="text-center edit"><input class="form-control affirmSizeTwo" data-id="'+o.id+'" style="width: 70px;" value='+(o.affirmSizeTwo!=0?o.affirmSizeTwo:"")+'></td>'
 				   					 +'<td class="text-center edit"><input class="form-control membrane" data-id="'+o.id+'" style="width: 35px;" value='+(o.membrane!=0?o.membrane:"")+'></td>'
 				   					 +'<td class="text-center edit packingPaper" data-packingpaper='+o.packingPaper+'></td>'
-				   					 +'<td class="text-center edit"><select class="form-control embroideryMode"><option value="'+o.embroideryMode+'">'+(o.embroideryMode!=null?o.embroideryMode:"请选择")+'</option><option value="裁片绣">裁片绣</option><option value="整布绣">整布绣</option></select></td>'
+				   					 +'<td class="text-center edit"><select class="form-control embroideryMode" style="width: 85px;"><option value="'+o.embroideryMode+'">'+(o.embroideryMode!=null?o.embroideryMode:"请选择")+'</option><option value="裁片绣">裁片绣</option><option value="整布绣">整布绣</option></select></td>'
 				   					 +'<td class="text-center edit"><input class="form-control embroiderySlice" data-id="'+o.id+'" style="width: 55px;" value='+(o.embroiderySlice!=0?o.embroiderySlice:"")+'></td>'
 				   					 +'<td class="text-center edit few" data-few='+o.few+'></td>'
 				   					 +'<td class="text-center edit embroideryNeedlesize" data-embroideryneedlesize='+o.embroideryNeedlesize+'></td>'
@@ -1043,7 +1043,7 @@
 				      			 $(result.data).each(function(i,o){
 				      				html +='<option value="'+o.id+'" data-tailorsize='+o.tailorSize+'>'+o.tailorName+'</option>'
 				      			}); 
-						       htmlto='<select class="text-center form-control selecttailorType3" ><option value="">请选择</option>'+html+'</select>'
+						       htmlto='<select class="text-center form-control selecttailorType3" style="width: 65px;"><option value="">请选择</option>'+html+'</select>'
 				      		  $(".sizeName").html(htmlto)
 				      		 
 				      		  //改变事件
@@ -1054,7 +1054,8 @@
 								$(".selecttailorType3").change(function(i,o){
 				      				var that=$(this);
 									 $(that.parent().parent().find('.size')).text($(this).parent().parent().find(".selecttailorType3 option:selected").data('tailorsize'))
-				      				var tailorId=$(this).parent().parent().find(".selecttailorType3").val();
+				      				 $(that.parent().parent().find('.affirmSize')).val($(this).parent().parent().find(".selecttailorType3 option:selected").data('tailorsize')*1.03)
+									 var tailorId=$(this).parent().parent().find(".selecttailorType3").val();
 				      				var dataeee={
 				      						id:that.parent().parent().find('.selectid2').text(),
 				      						sizeName:tailorId,
@@ -1107,7 +1108,7 @@
 					      			 $(result.data).each(function(i,o){
 					      				html2 +='<option value="'+o.id+'" data-tailorsize='+o.tailorSize+'>'+o.tailorName+'</option>'
 					      			}); 
-							       htmlto2='<select class="text-center form-control selecttailorType4" ><option value="">请选择</option>'+html2+'</select>'
+							       htmlto2='<select class="text-center form-control selecttailorType4" style="width: 65px;"><option value="">请选择</option>'+html2+'</select>'
 					      		  $(".sizeTwoName").html(htmlto2)
 					      		 
 					      		  //改变事件
@@ -1118,7 +1119,8 @@
 									$(".selecttailorType4").change(function(i,o){
 					      				var that=$(this);
 										 $(that.parent().parent().find('.sizeTwo')).text($(this).parent().parent().find(".selecttailorType4 option:selected").data('tailorsize'))
-					      				var tailorId=$(this).parent().parent().find(".selecttailorType4").val();
+					      				 $(that.parent().parent().find('.affirmSizeTwo')).val($(this).parent().parent().find(".selecttailorType4 option:selected").data('tailorsize')*1.03)
+										 var tailorId=$(this).parent().parent().find(".selecttailorType4").val();
 					      				var embroideryName=$(this).parent().parent().find(".selecttailorType4 option:selected").text();
 					      				var dataeee={
 					      						id:that.parent().parent().find('.selectid2').text(),
@@ -1172,7 +1174,7 @@
 						      			 $(result.data).each(function(i,o){
 						      				html3 +='<option value="'+o.id+'" data-textualtime='+o.textualTime+'>'+o.name+'</option>'
 						      			}); 
-								       htmlto3='<select class="text-center form-control selecttailorType5" ><option value="">请选择</option>'+html3+'</select>'
+								       htmlto3='<select class="text-center form-control selecttailorType5" style="width: 65px;"><option value="">请选择</option>'+html3+'</select>'
 						      		  $(".packingPaper").html(htmlto3)
 						      		 
 						      		  //改变事件
@@ -1238,7 +1240,7 @@
 							      			 $(result.data).each(function(i,o){
 							      				html4 +='<option value="'+o.name+'">'+o.name+'</option>'
 							      			}); 
-									       htmlto4='<select class="text-center form-control selecttailorType6" ><option value="">请选择</option>'+html4+'</select>'
+									       htmlto4='<select class="text-center form-control selecttailorType6" style="width: 65px;"><option value="">请选择</option>'+html4+'</select>'
 							      		  $(".few").html(htmlto4)
 							      		 
 							      		  //改变事件
@@ -1302,7 +1304,7 @@
 								      			 $(result.data).each(function(i,o){
 								      				html5 +='<option value="'+o.name+'">'+o.name+'</option>'
 								      			}); 
-										       htmlto5='<select class="text-center form-control selecttailorType7" ><option value="">请选择</option>'+html5+'</select>'
+										       htmlto5='<select class="text-center form-control selecttailorType7" style="width: 65px;" ><option value="">请选择</option>'+html5+'</select>'
 								      		  $(".embroideryNeedlesize").html(htmlto5)
 								      		 
 								      		  //改变事件
@@ -1365,7 +1367,7 @@
 									      			 $(result.data).each(function(i,o){
 									      				html6 +='<option value="'+o.name+'">'+o.name+'</option>'
 									      			}); 
-											       htmlto6='<select class="text-center form-control selecttailorType8" ><option value="">请选择</option>'+html6+'</select>'
+											       htmlto6='<select class="text-center form-control selecttailorType8" style="width: 65px;"><option value="">请选择</option>'+html6+'</select>'
 									      		  $(".embroideryWiresize").html(htmlto6)
 									      		 
 									      		  //改变事件
@@ -1428,7 +1430,7 @@
 										      			 $(result.data).each(function(i,o){
 										      				html7 +='<option value="'+o.id+'">'+o.name+'</option>'
 										      			}); 
-												       htmlto7='<select class="text-center form-control selecttailorType9" ><option value="">请选择</option>'+html7+'</select>'
+												       htmlto7='<select class="text-center form-control selecttailorType9" style="width: 85px;"><option value="">请选择</option>'+html7+'</select>'
 										      		  $(".embroideryColor").html(htmlto7)
 														$(".selecttailorType9").change(function(i,o){
 										      				var that=$(this);
@@ -1598,7 +1600,7 @@
 										      			 $(result.data).each(function(i,o){
 										      				html8 +='<option value="'+o.time+'">'+o.ordinaryLaser+'</option>'
 										      			}); 
-												       htmlto8='<select class="text-center form-control selecttailorType10" ><option value="">请选择</option>'+html8+'</select>'
+												       htmlto8='<select class="text-center form-control selecttailorType10" style="width: 85px;"><option value="">请选择</option>'+html8+'</select>'
 										      		  $(".appliqueSize").html(htmlto8)
 														$(".selecttailorType10").change(function(i,o){
 										      				var that=$(this);
