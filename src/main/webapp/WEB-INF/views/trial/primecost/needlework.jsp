@@ -46,7 +46,7 @@
                                         <div class="tab-pane active" id="home1">
                                         <!--查询开始  -->
           		 <div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-11 col-sm-11  col-md-11">
+			<div class="col-xs-12 col-sm-12  col-md-12">
 				<form class="form-search" >
 					<div class="row">
 						<div class="col-xs-11 col-sm-11 col-md-11">
@@ -65,12 +65,24 @@
 											查&nbsp找
 									</button>
 								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button" id="addCutting3" class="btn btn-success  btn-sm btn-3d export">
+									默认工序
+									</button>
+								</span> 
 								 <td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
 									<button type="button" id="addCutting" class="btn btn-success  btn-sm btn-3d export">
 									新增
 									</button>
-								</span> 
+								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button" id="addCutting2" class="btn btn-success  btn-sm btn-3d export">
+									新增手动工序
+									</button>
+								</span>  
 								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-danger  btn-sm btn-3d start">
@@ -363,9 +375,9 @@
 			      				 +'<td  class="text-center edit name needleworkName2" data-needlewor2='+o.needleworkName+' >'+o.needleworkName+'</td>'
 			      				+'<td class="text-center edit selectid3 hidden"  >'+o.productId+'</td>'
 			      				 +'<td class="text-center edit selectid hidden">'+o.id+'</td>'
-			   					 +'<td class="text-center edit classify2">'+o.classify+'</td>'
+			   					 +'<td class="text-center edit classify2">'+(o.classify!=null?o.classify:"")+'</td>'
 			   					 +'<td class="text-center edit times2">'+o.seconds+'</td>'
-			   					 +'<td class="text-center edit selectCompany">'+o.needleworkName+o.classify+'</td>'
+			   					 +'<td class="text-center edit selectCompany">'+o.needleworkName+(o.classify!=null?o.classify:"")+'</td>'
 			   					+'<td class="text-center edit materialsr" data-materialsr='+o.materials+' data-id='+o.id+' data-productid='+o.productId+'></td>'
 			   					 +'<td class="text-center edit needleworkPrice">'+(o.needleworkPrice!=null?o.needleworkPrice:"")+'</td>'
 			   					 +'<td class="text-center edit allCostPrice">'+(o.allCostPrice!=null?o.allCostPrice:"")+'</td>'
@@ -403,7 +415,7 @@
 					      			}
 				      			 $(result.data.rows).each(function(i,o){
 				      				html+='<tr>'
-				      				 +'<td  class="text-center edit name tailorName2" data-productid='+o.productId+'>'+o.needleworkName+o.classify+'</td>'
+				      				 +'<td  class="text-center edit name tailorName2" data-productid='+o.productId+'>'+o.needleworkName+(o.classify!=null?o.classify:"")+'</td>'
 				   					 +'<td class="text-center edit selectid2 hidden"  >'+o.id+'</td>'
 				   					+'<td class="text-center edit selectid5 hidden"  >'+o.productId+'</td>'
 				   					 +'<td class="text-center edit helpWork" data-helpwork='+o.helpWork+'></td>'
@@ -985,7 +997,52 @@
 				}
 			
 			this.events = function(){
-				
+				$('#addCutting3').on('click',function(){
+				 var arr = ["验货","吹毛","打吊牌","剪线头","绞口","挑脸整形","整体冲棉","翻皮壳"];
+				var arr1 = ["20CM","25CM","2个","25CM","4CM以下","20CM","80克左右","25CM左右"];
+				var arr2 = ["9","3.5","7","4.5","32","20","19.8","11"];
+				for (var i = 0; i < 8; i++) {
+					var d=arr[i]
+					var t=arr1[i]
+					var o=arr2[i]
+					var dataeee={
+      						needleworkName:d,
+      						classify:t,
+      						seconds:o,
+      						productId:productIdAll,
+      						number:$('#number').val(),
+      				}
+					var index;
+      				$.ajax({
+					      url:"${ctx}/product/addNeedlework",
+					      data:dataeee,
+					      async:false,
+					      type:"POST",
+					      beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							success:function(result){
+								if(0==result.code){
+									var data = {
+								  			page:1,
+								  			size:100,
+								  			productId:productIdAll,
+								  	}
+						            self.loadPagination(data);
+								layer.close(index);
+								}else{
+									layer.msg(result.message, {icon: 2});
+									layer.close(index);
+								}
+							},error:function(){
+								layer.msg("加载失败！", {icon: 2});
+								layer.close(index);sa
+						  }
+					  });
+				} 
+				 })
 				$(".home1").on('click',function(){
 					var data={
 							page:1,
@@ -1081,7 +1138,61 @@
 					$("#tablecontent").prepend(html);
 					self.mater();
 				})
-				
+				$('#addCutting2').on('click',function(){
+					 html='<tr><td  class="text-center"></td><td  class="text-center edit "><input class="text-center form-control needleworkName22"/></td>'
+					 +'<td class="text-center edit selectid22 hidden"></td>'
+					 +'<td class="text-center edit classify22" ></td>'
+					 +'<td class="text-center edit " ><input class="text-center form-control times22"/></td>'
+					 +'<td class="text-center edit " ></td>'
+					 +'<td class="text-center edit " ></td>'
+					 +'<td class="text-center edit " ></td>'
+					 +'<td class="text-center edit " ></td>'
+					 +'<td class="text-center edit " ></td>'
+					 +'<td class="text-center edit " ></td>'
+					 +'<td class="text-center edit "></td></tr>';
+					  /* $(html).insertBefore("#tablecontent"); */
+					/* $("#tablecontent").append(html); */
+					$("#tablecontent").prepend(html);
+					$(".times22").blur(function(){
+						var ttat=$(this)
+						var a=$(this).val()
+						var b=$(this).parent().parent().find(".needleworkName22").val()
+						if(b==""){
+							return layer.msg("设定完毕的针工工序不能为空", {icon: 2});
+						}
+						var dataeee={
+								id:$(this).parent().parent().find(".selectid22").text(),
+	      						needleworkName:b,
+	      						seconds:a,
+	      						productId:productIdAll,
+	      						number:$('#number').val(),
+	      				}
+						var index;
+	      				$.ajax({
+						      url:"${ctx}/product/addNeedlework",
+						      data:dataeee,
+						      type:"POST",
+						      beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								success:function(result){
+									if(0==result.code){
+										var id=result.data.id
+										ttat.parent().parent().find('.selectid22').text(id);
+									layer.close(index);
+									}else{
+										layer.msg(result.message, {icon: 2});
+										layer.close(index);
+									}
+								},error:function(){
+									layer.msg("加载失败！", {icon: 2});
+									layer.close(index);sa
+							  }
+						  });
+					})
+				})
 				//提示产品名
 				$("#productName").typeahead({
 					//ajax 拿way数据

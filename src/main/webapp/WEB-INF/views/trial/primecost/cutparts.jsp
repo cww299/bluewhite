@@ -305,10 +305,10 @@
 		      				+'<td class="text-center composite name" >'+a+'</td>'
 		      				+'<td class="text-center oneMaterial name" >'+o.oneMaterial+'</td>'
 		      				+'<td class="text-center unite name" >'+o.unit+'</td>'
-		      				+'<td class="text-center  name" >'+parseFloat((o.scaleMaterial).toFixed(3))+'</td>'
-		      				+'<td class="text-center  name" >'+o.addMaterial+'</td>'
-		      				+'<td class="text-center manualLoss name" >'+o.manualLoss+'</td>'
-		      				+'<td class="text-center  unitPrice productCost" >'+parseFloat((o.productCost).toFixed(3))+'</td>'
+		      				+'<td class="text-center  name" style="background:yellow">'+parseFloat((o.scaleMaterial).toFixed(3))+'</td>'
+		      				+'<td class="text-center  name" style="background:yellow">'+o.addMaterial+'</td>'
+		      				+'<td class="text-center manualLoss name" style="background:yellow">'+o.manualLoss+'</td>'
+		      				+'<td class="text-center  unitPrice productCost" style="background:yellow">'+parseFloat((o.productCost).toFixed(3))+'</td>'
 		      				+'<td class="text-center  unit productRemark" >'+o.productRemark+'</td>'
 		      				+'<td class="text-center  name" >'+parseFloat((o.batchMaterial).toFixed(3))+'</td>'
 		      				+'<td class="text-center  name" >'+parseFloat((o.batchMaterialPrice).toFixed(3))+'</td>'
@@ -832,6 +832,7 @@
 						url:"${ctx}/product/addCutParts",
 						data:postData,
 						type:"POST",
+						async:false,
 						beforeSend:function(){
 							index = layer.load(1, {
 								  shade: [0.1,'#fff'] //0.1透明度的白色背景

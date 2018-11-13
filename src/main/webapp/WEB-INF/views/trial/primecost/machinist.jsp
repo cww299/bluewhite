@@ -352,12 +352,12 @@
 	  	self.setCache(productIdAll)
 	  	$("#productName").val(productNameAll);
 	  	$("#number").val(productNumberAll);
-	  	
 		 var data={
 					page:1,
 			  		size:100,	
 			  		productId:productIdAll,
-			} 
+			  		/* sort:{"keys":"id","sortType":"ASC"}, */
+		 } 
 			this.init = function(){
 				
 				//注册绑定事件

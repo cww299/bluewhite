@@ -65,6 +65,12 @@
 											查&nbsp找
 									</button>
 								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button" id="addCutting3" class="btn btn-success  btn-sm btn-3d export">
+									新增默认工序
+									</button>
+								</span>
 								 <td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
 									<button type="button" id="addCutting" class="btn btn-success  btn-sm btn-3d export">
@@ -84,7 +90,7 @@
 			</div>
 		</div>
             <!-- 查询结束 -->
-                                        <div style="width:50%;float:left;text-align:center;vertical-align:top">
+                                        <div style="width:40%;float:left;text-align:center;vertical-align:top">
                                             <table class="table table-hover" >
                                     		<thead>
                                         	<tr>
@@ -94,7 +100,7 @@
 												<span class="lbl"></span>
 												</label>
 												</th>
-                                           		<th class="text-center">请选择一个设定完毕的内外包装sss（有档位）工序</th>
+                                           		<th class="text-center">设定完毕的内外包装（有档位）工序</th>
                                         		<th class="text-center">请选择在该工序下的分类</th>
                                             	<th class="text-center">自动跳出设定秒数</th>
                                             	<th class="text-center">手填该包装可装单品数量/只↓</th>
@@ -106,7 +112,7 @@
                                     		</tbody>
                                 		</table>
                                 		</div >
-                                		<div style="width:50%;float:left;text-align:center;vertical-align:top">
+                                		<div style="width:40%;float:left;text-align:center;vertical-align:top">
 												<table class="table table-hover" >
                                     		<thead>
                                         	<tr>
@@ -116,13 +122,32 @@
 												<span class="lbl"></span>
 												</label>
 												</th>
-                                           		<th class="text-center">请选择一个设定完毕的内外包装      sss（无档位）工序</th>
+                                           		<th class="text-center">设定完毕的内外包装（无档位）工序</th>
                                         		<th class="text-center">自动得到工序的用时/秒</th>
                                             	<th class="text-center">手填该包装可装单品数量/只↓</th>
                                             	<th class="text-center">单只产品用时/秒</th>
                                        		 </tr>
                                     		</thead>
                                     		<tbody id="tablecontentt">
+                                        
+                                    		</tbody>
+                                		</table>
+										</div>
+										<div style="width:20%;float:left;text-align:center;vertical-align:top">
+												<table class="table table-hover" >
+                                    		<thead>
+                                        	<tr>
+                                       		 	<th class="text-center">
+												<label> 
+												<input type="checkbox" class="ace checks3" /> 
+												<span class="lbl"></span>
+												</label>
+												</th>
+                                           		<th class="text-center">手工输入一个不常见的工序</th>
+                                            	<th class="text-center">输入单只产品用时/秒</th>
+                                       		 </tr>
+                                    		</thead>
+                                    		<tbody id="tablecontentt2">
                                         
                                     		</tbody>
                                 		</table>
@@ -156,7 +181,7 @@
                                         	
                                             <th class="text-center">内外包装工序</th>
                                             <th class="text-center">工种定性↓</th>
-                                            <th class="text-center">工种定性↓</th>
+                                            <th class="text-center">内外包装定性↓</th>
                                             <th class="text-center">单只用时/秒</th>
                                             <th class="text-center">批量用时/秒(含快手）</th>
                                             <th class="text-center">单只时间（含快手）</th>
@@ -316,6 +341,7 @@
 				  var index;
 				    var html = '';
 				    var html2 = '';
+				    var html3 = '';
 				    $.ajax({
 					      url:"${ctx}/product/getPack",
 					      data:data,
@@ -352,12 +378,23 @@
 			   					 +'<td class="text-center edit oneTime22">'+o.oneTime+'</td></tr>'
 			      				}
 			      			});
+			      			$(result.data.rows).each(function(i,o){
+			      				if(o.gear==3){
+			      				html3+='<tr><td class="text-center reste"><label> <input type="checkbox" class="ace checkboxIdte" data-productid='+o.productId+' value="'+o.id+'"/><span class="lbl"></span></label></td>'
+			      				 +'<td  class="text-center edit name"><input class="text-center form-control packNamett2"value="'+o.packName+'" /></td>'
+			      				+'<td class="text-center edit productIdtw1 hidden"  >'+o.productId+'</td>'
+			      				 +'<td class="text-center edit idtw1 hidden">'+o.id+'</td>'
+			   					 +'<td class="text-center edit times22"><input class="text-center form-control timet2"value="'+o.time+'" /></td></tr>'
+			      				}
+			      			});
 						   	layer.close(index);
 						   	 $("#tablecontent").html(html);
 						   	$("#tablecontentt").html(html2);
+						   	$("#tablecontentt2").html(html3);
 						   	 self.mater2()
 						   	 self.checkedd()
 						   	 self.checkeddd()
+						   	 self.checkedddd()
 					      },error:function(){
 								layer.msg("加载失败！", {icon: 2});
 								layer.close(index);
@@ -764,6 +801,24 @@
 	                }); 
 					
 				}
+			  this.checkedddd=function(){
+					
+					$(".checks3").on('click',function(){
+						
+	                    if($(this).is(':checked')){ 
+				 			$('.checkboxIdte').each(function(){  
+	                    //此处如果用attr，会出现第三次失效的情况  
+	                     		$(this).prop("checked",true);
+				 			})
+	                    }else{
+	                    	$('.checkboxIdte').each(function(){ 
+	                    		$(this).prop("checked",false);
+	                    		
+	                    	})
+	                    }
+	                }); 
+					
+				}
 			  this.mater2=function(){
 					
 				  var data = {
@@ -1005,6 +1060,79 @@
 								  }
 							  });
 					    })
+					    
+					    
+					    $(".packNamett2").blur(function(){
+						    	var that=$(this)
+						    	if(that.parent().parent().find('.packNamett2').val()==""){
+						    		return layer.msg("请先填写工序", {icon: 2});
+						    	}
+			      				var dataeee={
+		      						id:that.parent().parent().find('.idtw1').text(),
+		      						packName:that.parent().parent().find(".packNamett2").val(),
+		      						productId:productIdAll,
+		      						number:$('#number').val(),
+		      						gear:3
+		      				}
+						    	var index;
+			      				$.ajax({
+								      url:"${ctx}/product/addPack",
+								      data:dataeee,
+								      type:"POST",
+								      beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'#fff'] //0.1透明度的白色背景
+												});
+										},
+										success:function(result){
+											if(0==result.code){
+											layer.close(index);
+											}else{
+												layer.msg(result.message, {icon: 2});
+												layer.close(index);
+											}
+										},error:function(){
+											layer.msg("加载失败！", {icon: 2});
+											layer.close(index);
+									  }
+								  });
+						    })
+						    
+						    $(".timet2").blur(function(){
+						    	var that=$(this)
+						    	if(that.parent().parent().find('.packNamett2').val()==""){
+						    		return layer.msg("请先填写工序", {icon: 2});
+						    	}
+			      				var dataeee={
+		      						id:that.parent().parent().find('.idtw1').text(),
+		      						time:that.val(),
+		      						productId:productIdAll,
+		      						number:$('#number').val(),
+		      						gear:3
+		      				}
+						    	var index;
+			      				$.ajax({
+								      url:"${ctx}/product/addPack",
+								      data:dataeee,
+								      type:"POST",
+								      beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'#fff'] //0.1透明度的白色背景
+												});
+										},
+										success:function(result){
+											if(0==result.code){
+											layer.close(index);
+											}else{
+												layer.msg(result.message, {icon: 2});
+												layer.close(index);
+											}
+										},error:function(){
+											layer.msg("加载失败！", {icon: 2});
+											layer.close(index);
+									  }
+								  });
+						    })
 				}
 			  
 			  
@@ -1230,9 +1358,149 @@
 								  }
 							  });
 					    })
+					    
+					    
+					    $(".timest2").blur(function(){
+						    	var that=$(this)
+						    	if(that.parent().parent().find('.packNamet1').val()==""){
+						    		return layer.msg("请填写手动工序", {icon: 2});
+						    	}
+			      				var dataeee={
+		      						id:that.parent().parent().find('.selectidt1').text(),
+		      						packName:that.parent().parent().find(".packNamet1").val(),
+		      						time:that.val(),
+		      						productId: self.getCache(),
+		      						number:$('#number').val(),
+		      						gear:3
+		      				}
+						    	var index;
+			      				$.ajax({
+								      url:"${ctx}/product/addPack",
+								      data:dataeee,
+								      type:"POST",
+								      beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'#fff'] //0.1透明度的白色背景
+												});
+										},
+										success:function(result){
+											if(0==result.code){
+												var id=result.data.id
+												that.parent().parent().find('.selectidt1').text(id);
+											layer.close(index);
+											}else{
+												layer.msg(result.message, {icon: 2});
+												layer.close(index);
+											}
+										},error:function(){
+											layer.msg("加载失败！", {icon: 2});
+											layer.close(index);
+									  }
+								  });
+						    })
+					    
+					    
+					    
 				}
 			
 			this.events = function(){
+				
+				$('#addCutting3').on('click',function(){
+					var arr = ["外加工皮壳卸货入库+过数+摆放","成品出库送待验货区","外加工成品下货点数入成品库","过检针机","点数","蓝包装货3人（压货摆整齐）","大包套大包卷袋（蓝包+编织）","大蓝包绞口","包推到发货位","大包上车+摆位","简化写编码（蓝包）"];
+					var arrtw = ["3600","200","1500","2","2","480","105","120","130","125","20"];
+					var array = ["300","300","200","1","1","300","300","300","300","300","300"];
+					var array1 = ["2楼送棉及叉车卸货","成品出入库过数及卸货","皮壳出入库过数及卸货","裁片绣片出入库及质量抽查","大蓝包装货","内胆装货"];
+					var array2 = ["1包","","","2200片和以上","",""];
+					var array3 = ["960","","","1400","",""];
+					var array4 = ["1000","","","2200","",""];
+					for (var i = 0; i < arr.length; i++) {
+						var d=arr[i]
+						var t=arrtw[i]
+						var o=array[i]
+						var dataeee={
+								packName:d,
+	      						time:t,
+	      						packNumber:o,
+	      						gear:1,
+	      						productId:productIdAll,
+	      						number:$('#number').val(),
+	      				}
+						var index;
+	      				$.ajax({
+						      url:"${ctx}/product/addPack",
+						      data:dataeee,
+						      type:"POST",
+						      async:false, 
+						      beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								success:function(result){
+									if(0==result.code){
+										var data = {
+									  			page:1,
+									  			size:100,
+									  			productId:productIdAll,
+									  	}
+							            self.loadPagination(data);
+									layer.close(index);
+									}else{
+										layer.msg(result.message, {icon: 2});
+										layer.close(index);
+									}
+								},error:function(){
+									layer.msg("加载失败！", {icon: 2});
+									layer.close(index);sa
+							  }
+						  });
+					}
+					
+					for (var i = 0; i < 6; i++) {
+						var j=array1[i]
+						var k=array2[i]
+						var l=array3[i]
+						var m=array4[i]
+						var dataeee={
+								packName:j,
+								type:k,
+	      						time:l,
+	      						packNumber:m,
+	      						gear:2,
+	      						productId:productIdAll,
+	      						number:$('#number').val(),
+	      				}
+						var index;
+	      				$.ajax({
+						      url:"${ctx}/product/addPack",
+						      data:dataeee,
+						      type:"POST",
+						      async:false, 
+						      beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								success:function(result){
+									if(0==result.code){
+										var data = {
+									  			page:1,
+									  			size:100,
+									  			productId:productIdAll,
+									  	}
+							            self.loadPagination(data);
+									layer.close(index);
+									}else{
+										layer.msg(result.message, {icon: 2});
+										layer.close(index);
+									}
+								},error:function(){
+									layer.msg("加载失败！", {icon: 2});
+									layer.close(index);sa
+							  }
+						  });
+					}
+				})
 				
 				$(".home1").on('click',function(){
 					var data={
@@ -1268,6 +1536,9 @@
 							arr.push($(this).val());   
 						});
 					  $(this).parent().parent().parent().parent().parent().parent().parent().parent().find(".checkboxIdtw:checked").each(function() { 
+							arr.push($(this).val());   
+						});
+					  $(this).parent().parent().parent().parent().parent().parent().parent().parent().find(".checkboxIdte:checked").each(function() { 
 							arr.push($(this).val());   
 						});
 					   if(arr.length<=0){
@@ -1313,7 +1584,8 @@
 				
 			//新增
 				var html="";
-				var htm2="";
+				var html2="";
+				var html3="";
 				$('#addCutting').on('click',function(){
 					 html='<tr><td  class="text-center"></td><td  class="text-center edit packName"></td>'
 					 +'<td class="text-center edit selectid hidden"></td>'
@@ -1328,6 +1600,10 @@
 						 +'<td class="text-center edit " ><input type="text" style="border: none;width:68px; height:30px; background-color: #BFBFBF;" class="text-center  packNumber11" /></td>'
 						 +'<td class="text-center edit oneTime11" ></td></tr>';
 						 $("#tablecontentt").prepend(html2);
+					html3='<tr><td  class="text-center"></td><td  class="text-center edit"><input class="text-center form-control packNamet1"/></td>'
+						+'<td class="text-center edit selectidt1 hidden"></td>'     
+					+'<td class="text-center edit" ><input class="text-center form-control timest2"/></td></tr>';
+							 $("#tablecontentt2").prepend(html3);
 					self.mater();
 				})
 				

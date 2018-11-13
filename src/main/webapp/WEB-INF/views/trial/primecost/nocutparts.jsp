@@ -683,6 +683,8 @@
 						productCost:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unitPrice').text(),
 						productUnit:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.unit').text(),
 						materielId:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.namettw').text(),
+						overstockId:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.namettw2').text(),
+						overstock:$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.namettw1').text(),
 					}
 					var index;
 					$.ajax({
@@ -775,11 +777,15 @@
 					var arr = ["202机工线","棉线（大团）白色3#","抽真空内胆","大蓝包1.4*1.9","7D棉","7D棉","子弹","蓝白新款吊牌 DP-44","蓝白玩偶织标小SB-17","代码标"];
 					var arrtw = ["0","0","0","0","0","0","0","0","0","0","3489","3510","3776","3777","5188","5188","3550","2960","2989","4931"];
 					var array = ["0","0","0","0","0","0","0","0","0","0","154","154","157","152","157","157","155","152","152","152"];
+					var array1 = ["","","","","","","","","","","机工","针工","内包装","外包装","针工","机工","针工","针工","机工","机工"];
+					var array2 = ["","","","","","","","","","","81","82","83","84","82","81","82","82","81","81"];
 					for (var i = 0; i < 20; i++) {
 						var s=arr[i]
 						var f=""
 						var d=arrtw[i]
 						var t=array[i]
+						var o=array1[i]
+						var p=array2[i]
 						var postData={
 								id:d,
 						}
@@ -821,6 +827,8 @@
 									 +'<td class="text-center edit selectCompany" data-t='+t+' style="padding: 2px 0px 2px 0px;></td>'
 									 +'<td class="text-center edit name"></td>'
 									 +'<td class="text-center edit namettw hidden">'+h+'</td>'
+									 +'<td class="text-center edit namettw1 hidden">'+o+'</td>'
+									 +'<td class="text-center edit namettw2 hidden">'+p+'</td>'
 									 +'<td class="text-center edit selectprice">'+k+'</td>'
 									 +'<td class="text-center edit name" style="padding: 2px 0px 2px 0px;"><input type="text" value="'+a+'" style="border: none;width:40px; height:30px; background-color: #BFBFBF;" class="text-center manualLoss" /></td>'
 									 +'<td class="text-center edit unitPrice" >'+f+'</td>'
