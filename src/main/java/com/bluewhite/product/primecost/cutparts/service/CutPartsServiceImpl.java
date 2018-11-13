@@ -102,6 +102,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		//不含绣花环节的为机工压价	
 		//含绣花环节的为机工压价
 		//为机工准备的压价
+		tailorService.getTailorDate(tailor,prams);
 		tailorDao.save(tailor);
 		
 		//更新裁剪页面id到裁片中
