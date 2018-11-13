@@ -247,13 +247,13 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		tailor.setAllCostPrice(tailor.getBacthTailorNumber()*NumUtils.setzro(tailor.getCostPrice()));
 		//得到市场价与实推价比
 		if(!StringUtils.isEmpty(tailor.getExperimentPrice())){
-			tailor.setRatePrice(tailor.getExperimentPrice()/NumUtils.division(NumUtils.setzro(tailor.getCostPrice())));
+			tailor.setRatePrice(NumUtils.division(tailor.getExperimentPrice()/NumUtils.setzro(tailor.getCostPrice())));
 		}
 		//各单道比全套工价
 		List<Tailor> tailorList = dao.findByProductId(tailor.getProductId());
 		tailorList.add(tailor);
 		double scaleMaterial = tailor.getAllCostPrice()/(tailorList.stream().filter(Tailor->Tailor.getAllCostPrice()!=null).mapToDouble(Tailor::getAllCostPrice).sum());
-		tailor.setScaleMaterial(scaleMaterial);
+		tailor.setScaleMaterial(NumUtils.division(scaleMaterial));
 		//不含绣花环节的为机工压价	
 		tailor.setNoeMbroiderPriceDown(tailor.getAllCostPrice()+tailor.getPriceDown());
 		return tailor;
