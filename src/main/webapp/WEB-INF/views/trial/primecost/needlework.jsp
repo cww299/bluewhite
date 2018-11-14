@@ -886,7 +886,7 @@
 												success:function(result){
 													if(0==result.code){
 														var id=result.data.id
-														ttat.parent().parent().find('.selectid').text(id);
+														that.parent().parent().find('.selectid').text(id);
 													layer.close(index);
 													}else{
 														layer.msg(result.message, {icon: 2});

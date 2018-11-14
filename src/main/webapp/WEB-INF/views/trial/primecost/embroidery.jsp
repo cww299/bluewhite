@@ -457,7 +457,7 @@
 				      				 +'<td  class="text-center edit name tailorName2" data-productid='+o.productId+'>'+o.embroideryName+'</td>'
 				   					 +'<td class="text-center edit selectid2 hidden"  >'+o.id+'</td>'
 				   					+'<td class="text-center edit selectid3 hidden"  >'+o.productId+'</td>'
-				   					 +'<td class="text-center edit"><input class="form-control needleNumber" data-id="'+o.id+'" style="width: 60px;" value='+(o.needleNumber!=0?o.needleNumber:"")+'></td>'
+				   					 +'<td class="text-center edit"><input class="form-control needleNumber" data-id="'+o.id+'" style="width: 65px;" value='+(o.needleNumber!=0?o.needleNumber:"")+'></td>'
 				   					 +'<td class="text-center edit"><input class="form-control needlesize" data-id="'+o.id+'" style="width: 45px;" value='+(o.needlesize!=null?o.needlesize:"")+'></td>'
 				   					 +'<td class="text-center edit"><input class="form-control wiresize" data-id="'+o.id+'" style="width: 45px;" value='+(o.wiresize!=null?o.wiresize:"")+'></td>'
 				   					 +'<td class="text-center edit"><input class="form-control applique" data-id="'+o.id+'" style="width: 45px;" value='+(o.applique!=0?o.applique:"")+'></td>'
