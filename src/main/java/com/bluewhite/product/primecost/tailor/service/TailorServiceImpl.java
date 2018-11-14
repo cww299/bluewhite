@@ -241,6 +241,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 		//得到理论(市场反馈）含管理价值
 		Double managePrice = materielService.getBaseThreeOne(tailor.getTailorTypeId(),tailor.getTailorSize());
 		tailor.setManagePrice(managePrice);
+		tailor.setCostPrice(managePrice);
 		//得到实验推算价格
 		tailor.setExperimentPrice(ordinaryLaser.getStallPrice());
 		//入成本价格
