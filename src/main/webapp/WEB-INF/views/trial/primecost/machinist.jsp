@@ -1800,6 +1800,8 @@
 						if($(this).val()==""){
 						return	layer.msg("机缝名不能为空", {icon: 2});
 						}
+						ttat.parent().parent().find('.selectbody2').text("")
+			    		ttat.parent().parent().find('.selectprice2').text("")
 						var data={
 								id:ttat.parent().parent().find('.selectid').text(),
 								productId: self.getCache(),
@@ -1843,7 +1845,9 @@
 										    	   	thta.parent().parent().find('.selectbodytw').html(thta.find("option:selected").text())
 										    	   	thta.parent().parent().find('.selectbody2').append(thta.find("option:selected").text()+',')
 										    	   	thta.parent().parent().find('.selectprice2').append(thta.val()+',')
-										    	    var values=""
+										    	    thta.find("option:selected").hide()
+										    	   
+										    	   	var values=""
 										    	   	var name=""
 										    		name=thta.parent().parent().find('.selectbody2').text()
 										    		name = name.substr(0,name.length-1);
@@ -1923,7 +1927,7 @@
 							var valey=result.data.rows[0].cutpartsPrice
 							if(name==null){
 								return ""
-							}
+							} 
 							var cutparts = name.split(",");
 							var cutpartsPrice= valey.split(",");
 							var html=""
@@ -1934,11 +1938,16 @@
 									+'<td class="text-center edit price1">'+array_element2+'</td>'
 									+'<td><button class="btn btn-sm btn-danger btn-trans delete" data-id='+i+'>删除</button></td></tr>'
 							}
+							if(cutparts==""){
+								html=""
+							}
 							$("#tableworking2").html(html)
 								layer.close(index);
 							 $(".delete").on('click',function(){
 								$(this).parent().parent().find(".name1").text("");
 								$(this).parent().parent().find(".price1").text("");
+								$(this).parent().parent().find(".price1").hide()
+								$(this).parent().parent().find(".name1").hide()
 								 var cutparts=new Array();
 								  var cutpartsPrice=new Array();
 								  $('.name1').each(function(i,o){
@@ -1951,6 +1960,12 @@
 											cutpartsPrice.push(c)
 										}
 									 })
+									 if(cutparts==""){
+										 cutparts=""
+									 }
+								  if(cutpartsPrice==""){
+									  cutpartsPrice=""
+								  }
 									 var postData={
 						    			id:id,
 						    			productId:self.getCache(),
@@ -2065,7 +2080,8 @@
 										    	   	thta.parent().parent().find('.selectbody').html(thta.find("option:selected").text())
 										    	   	thta.parent().parent().find('.selectbody2').append(thta.find("option:selected").text()+',')
 										    	   	thta.parent().parent().find('.selectprice2').append(thta.val()+',')
-										    	    var values=""
+										    	    thta.find("option:selected").hide()
+										    	   	var values=""
 										    	   	var name=""
 										    		name=thta.parent().parent().find('.selectbody2').text()
 										    		name = name.substr(0,name.length-1);
@@ -2173,6 +2189,12 @@
 											cutpartsPrice.push(c)
 										}
 									 })
+									 if(cutparts==""){
+										 cutparts=""
+									 }
+								  if(cutpartsPrice==""){
+									  cutpartsPrice=""
+								  }
 									 var postData={
 						    			id:id,
 						    			productId:self.getCache(),
@@ -2264,8 +2286,65 @@
 							page:1,
 					  		size:100,	
 					  		productId:productIdAll,
-					}
-					self.loadPagination(data);
+					  		/* sort:{"keys":"id","sortType":"ASC"}, */
+				 } 
+					$.ajax({
+					      url:"${ctx}/product/getMachinist",
+					      data:data,
+					      type:"GET",
+					      async:false, 
+					      beforeSend:function(){
+						 	  index = layer.load(1, {
+							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							  });
+						  }, 
+			      		  success: function (result) {
+			      			if(result.data.rows!=null && result.data.rows!=""){
+			      			$("#ntwo").val(result.data.rows[0].oneMachinistPrice)
+			      			}
+			      			 $(result.data.rows).each(function(i,o){
+			      				var	datae={
+						    			id:o.id,
+						    			costPrice:o.trialSewingPrice,
+						    			productId:productIdAll
+						    	}
+				      			var index;
+						    	$.ajax({
+								      url:"${ctx}/product/addMachinist",
+								      data:datae,
+								      type:"POST",
+								      beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'#fff'] //0.1透明度的白色背景
+												});
+										},
+						      		  success: function (result) {
+						      			if(0==result.code){
+						      				var data={
+													page:1,
+											  		size:100,	
+											  		productId:productIdAll,
+											}
+											self.loadPagination(data);
+										layer.close(index);
+										}else{
+											layer.msg("添加失败！", {icon: 2});
+											layer.close(index);
+										}
+						      			
+								      },error:function(){
+											layer.msg("加载失败！", {icon: 2});
+											layer.close(index);
+									  }
+								  });
+			      			}); 
+					      },error:function(){
+								layer.msg("加载失败！", {icon: 2});
+								layer.close(index);
+						  }
+					  });
+					
+					
 				})
 				
 				

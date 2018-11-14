@@ -790,7 +790,6 @@
 						return layer.msg("片数不能为空", {icon: 2});
 					} */
 					var a=$(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.cuttingName').val()
-					console.log(a)
 					if(a!=undefined && a!=""){
 					if($(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.cuttingName').val()!=""){
 						if($(this).parent().parent().parent().parent().parent().parent().parent().next().find('#tablecontent tr').eq(i).find('.sliceNumber').val()==""){
