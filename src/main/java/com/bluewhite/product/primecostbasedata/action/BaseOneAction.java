@@ -2,6 +2,7 @@ package com.bluewhite.product.primecostbasedata.action;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -367,6 +368,7 @@ public class BaseOneAction {
 		CommonResponse cr = new CommonResponse();
 		//裁片
 		List<CutParts> cutPartsList = cutPartsService.findByProductId(productId);
+		cutPartsList = 	cutPartsList.stream().filter(CutParts->CutParts.getMaterielId()!=null).collect(Collectors.toList());
 		for(CutParts cp : cutPartsList){	
 			Materiel materiel = materielService.findOne(cp.getMaterielId());
 			if(materiel.getPrice()!=cp.getProductCost()){
