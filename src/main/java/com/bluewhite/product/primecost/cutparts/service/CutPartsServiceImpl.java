@@ -46,6 +46,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 	@Override
 	@Transactional
 	public CutParts saveCutParts(CutParts cutParts) {
+		NumUtils.setzro(cutParts);
 		//该片在这个货中的单只用料（累加处）
 		cutParts.setAddMaterial(cutParts.getCutPartsNumber()*cutParts.getOneMaterial());
 		//当批各单片用料
