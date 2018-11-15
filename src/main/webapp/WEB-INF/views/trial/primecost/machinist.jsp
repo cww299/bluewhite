@@ -1838,9 +1838,9 @@
 								      				html +='<option value="'+o.price+'">'+o.name+'</option>'
 								      			}); 
 										       var htmlto='<select class="selectmac" style="border: none;width:50px; height:30px; background-color: #BFBFBF;"><option value=""></option>'+html+'</select>'
-											   	$(".selectCompany").html(htmlto); 
+										       ttat.parent().parent().find(".selectCompany").html(htmlto); 
 										      	  
-										       $(".selectmac").change(function(){
+										       ttat.parent().parent().find(".selectmac").change(function(){
 										    		var thta=$(this)   
 										    	   	thta.parent().parent().find('.selectbodytw').html(thta.find("option:selected").text())
 										    	   	thta.parent().parent().find('.selectbody2').append(thta.find("option:selected").text()+',')
@@ -2073,9 +2073,9 @@
 								      				html +='<option value="'+o.price+'">'+o.name+'</option>'
 								      			}); 
 										       var htmlto='<select class="selectmac" style="border: none;width:50px; height:30px; background-color: #BFBFBF;"><option value=""></option>'+html+'</select>'
-											   	$(".selectCompany").html(htmlto); 
+										       ttat.parent().parent().find(".selectCompany").html(htmlto); 
 										      	  
-										       $(".selectmac").change(function(){
+										       ttat.parent().parent().find(".selectmac").change(function(){
 										    		var thta=$(this)   
 										    	   	thta.parent().parent().find('.selectbody').html(thta.find("option:selected").text())
 										    	   	thta.parent().parent().find('.selectbody2').append(thta.find("option:selected").text()+',')
