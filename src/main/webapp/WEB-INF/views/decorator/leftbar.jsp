@@ -30,6 +30,7 @@
 <script src="${ctx }/static/js/vendor/jquery.cookie.js"></script>
  <script src="${ctx }/static/js/vendor/modernizr-2.6.2.min.js"></script>
  <script src="${ctx }/static/js/layer/layer.js"></script>
+ <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
 <script type="text/javascript">
         jQuery(function($){
         	var Login = function(){
