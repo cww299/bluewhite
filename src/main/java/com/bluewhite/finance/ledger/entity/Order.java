@@ -62,8 +62,8 @@ public class Order extends BaseEntity<Long>{
 	/**
 	 * 当批产品名
 	 */
-	@Column(name = "Product_name")
-    private String ProductName;
+	@Column(name = "product_name")
+    private String productName;
 	
 	
 	/**
@@ -154,13 +154,15 @@ public class Order extends BaseEntity<Long>{
 	}
 
 
+
+
 	public String getProductName() {
-		return ProductName;
+		return productName;
 	}
 
 
 	public void setProductName(String productName) {
-		ProductName = productName;
+		this.productName = productName;
 	}
 
 

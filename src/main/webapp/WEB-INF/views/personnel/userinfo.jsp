@@ -483,10 +483,10 @@
  </div> 
       
       
- <div id="savegroup" style="display: none;">
+ <div id="savegroup" style="display: none; width: 60%;" >
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content" style="width: 135%;">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 					&times;
@@ -524,6 +524,20 @@
                                     </thead>
                                     <thead>
                                     <tbody id="tablecontentff">
+                                        
+                                    </tbody>
+                                </table>
+                                </th>
+                                <th  style="vertical-align:top">
+								<table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">身份证即将到期人员</th>
+                                            <th class="text-center">时间</th>
+                                        </tr>
+                                    </thead>
+                                    <thead>
+                                    <tbody id="tablecontentff1">
                                         
                                     </tbody>
                                 </table>
@@ -582,6 +596,7 @@
 				 var index;
 				    var html ='';
 				    var htmlh ='';
+				    var htmlh1 ='';
 				    var display =$("#savegroup").css("display")
 					 if(display=='none'){
 							$("#savegroup").css("display","block");  
@@ -610,6 +625,13 @@
 			      			});
 			      			   
 			      			$("#tablecontentff").html(htmlh);
+			      			$(result.data.userCard).each(function(i,o){
+			      				htmlh1 +='<tr>'
+			      				+'<td class="text-center edit price">'+o.username+'</td>'
+			      				+'<td class="text-center edit price">'+o.idCardEnd+'</td></tr>'
+			      			});
+			      			   
+			      			$("#tablecontentff1").html(htmlh1);
 			      			layer.close(index);
 					      },error:function(){
 								layer.msg("加载失败！", {icon: 2});
