@@ -286,7 +286,7 @@ public class User extends BaseEntity<Long> {
 	@Column(name = "frequency")
 	private Integer frequency;
 	/**
-	 *工作状态(在职离职)
+	 *工作状态(0=在职1=离职)
 	 */
 	@Column(name = "quit")
     private Integer quit;

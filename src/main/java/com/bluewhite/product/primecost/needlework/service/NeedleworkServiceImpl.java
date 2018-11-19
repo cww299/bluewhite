@@ -47,7 +47,7 @@ public class NeedleworkServiceImpl extends BaseServiceImpl<Needlework, Long> imp
 		PrimeCoefficient primeCoefficient = primeCoefficientDao.findByType("needlework");
 		// 单工序单只时间
 		needlework.setSingleTime(
-				needlework.getSecondaryPrice() == null ? needlework.getSeconds() : needlework.getSecondaryPrice());
+				needlework.getSecondaryPrice() == 0 ? needlework.getSeconds() : needlework.getSecondaryPrice());
 		// 单工序单只放快手时间
 		needlework.setSingleQuickTime(needlework.getSingleTime() * 1.08 * 1.25);
 		// 工价/单只（含快手)
