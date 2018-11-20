@@ -34,15 +34,15 @@ public class Order extends BaseEntity<Long>{
 	/**
 	 * 甲方
 	 */
-	@Column(name = "a_name")
-    private String aName;
+	@Column(name = "first_names")
+    private String firstNames;
 	
 	
 	/**
 	 * 乙方
 	 */
-	@Column(name = "b_name")
-    private String bName;
+	@Column(name = "party_names")
+    private String partyNames;
 	
 	
 	/**
@@ -114,23 +114,25 @@ public class Order extends BaseEntity<Long>{
 	}
 
 
-	public String getaName() {
-		return aName;
+
+
+	public String getFirstNames() {
+		return firstNames;
 	}
 
 
-	public void setaName(String aName) {
-		this.aName = aName;
+	public void setFirstNames(String firstNames) {
+		this.firstNames = firstNames;
 	}
 
 
-	public String getbName() {
-		return bName;
+	public String getPartyNames() {
+		return partyNames;
 	}
 
 
-	public void setbName(String bName) {
-		this.bName = bName;
+	public void setPartyNames(String partyNames) {
+		this.partyNames = partyNames;
 	}
 
 

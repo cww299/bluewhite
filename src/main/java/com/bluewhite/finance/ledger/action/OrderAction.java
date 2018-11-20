@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
+import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
@@ -22,6 +23,8 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.finance.attendance.action.AttendanceAction;
 import com.bluewhite.finance.ledger.entity.Order;
 import com.bluewhite.finance.ledger.service.OrderService;
+import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.production.bacth.entity.Bacth;
 
 /**
  * 财务部  订单
@@ -34,6 +37,15 @@ public class OrderAction {
 	
 	@Autowired
 	private OrderService orderService;
+	
+	private ClearCascadeJSON clearCascadeJSON;
+
+	{
+		clearCascadeJSON = ClearCascadeJSON
+				.get()
+				.addRetainTerm(Order.class,"id","salesNumber","contractTime","batchNumber","planNumbers","productName","contractNumber","contractPrice","remarksPrice","firstNames","partyNames","price");
+	}
+	
 	/**
 	 * 分页查看订单
 	 * 
@@ -46,7 +58,7 @@ public class OrderAction {
 	public CommonResponse getOrder(HttpServletRequest request,PageParameter page,Order order) {
 		CommonResponse cr = new CommonResponse();
 		PageResult<Order>  orderList= orderService.findPages(order, page); 
-		cr.setData(orderList);
+		cr.setData(clearCascadeJSON.format(orderList).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -63,7 +75,7 @@ public class OrderAction {
 	@ResponseBody
 	public CommonResponse addOrder(HttpServletRequest request,Order order) {
 		CommonResponse cr = new CommonResponse();
-			orderService.save(order);
+			orderService.addOrder(order);
 			cr.setMessage("添加成功");
 		return cr;
 	}

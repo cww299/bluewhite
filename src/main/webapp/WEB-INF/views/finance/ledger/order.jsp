@@ -40,21 +40,40 @@
                                         <tr>
                                         	<th class="text-center">当月销售编号</th>
                                             <th class="text-center">合同签订日期</th>
-                                            <th class="text-center">合同签订日期</th>
-                                            <th class="text-center">合同签订日期</th>
-                                            <th class="text-center">合同签订日期</th>
-                                            <th class="text-center">合同签订日期</th>
-                                            <th class="text-center">合同签订日期</th>
-                                            <th class="text-center">合同签订日期</th>
-                                            <th class="text-center">合同签订日期</th>
-                                            <th class="text-center">合同签订日期</th>
+                                            <th class="text-center">甲方</th>
+                                            <th class="text-center">乙方</th>
+                                            <th class="text-center">当批批次号</th>
+                                            <th class="text-center">当批计划单号</th>
+                                            <th class="text-center">当批产品名</th>
+                                            <th class="text-center">当批合同数量</th>
+                                            <th class="text-center">当批合同总价（元）</th>
+                                            <th class="text-center">预付款备注</th>
+                                            <th class="text-center">手动填写当批单只价格</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
+                                    <thead>
+                                        <tr>
+                                        	<td class="text-center"></td>
+                                            <td class="text-center" style="padding: 9px 0px 2px 4px;"><input id="contractTime" placeholder="请输入时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#contractTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="border: none;width:90px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"><input type="text" id="aName" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"><input type="text" id="bName" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"><input type="text" id="batchNumber" style="border: none;width:105px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"><input type="text" id="planNumbers" placeholder="可不填" style="border: none;width:60px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"><input type="text" id="ProductName" style="border: none;width:150px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"><input type="text" id="contractNumber" style="border: none;width:50px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"><input type="text" id="remarksPrice" placeholder="可不填" style="border: none;width:80px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"><button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增订单</button></td>
+                                        </tr>
+                                    </thead>
+                                    
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
-                                    <button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增订单</button>
+                                    
                                 </table>
                                 <div id="pager" class="pull-right">
                                 
@@ -66,7 +85,7 @@
             </section>
         </section>
         <!--隐藏框 产品新增开始  -->
-        <div id="addDictDivType" style="display: none;">
+        <!-- <div id="addDictDivType" style="display: none;">
 			<div class=" col-xs-12  col-sm-12  col-md-12 ">
 				<div class="space-10"></div>
 				<div style="height: 30px"></div>
@@ -122,35 +141,8 @@
                  </div>
 				</form>
 </div>
-</div>
+</div> -->
  <!--隐藏框 产品新增结束  -->
-
-
-
-<div id="savegroup" style="display: none;">
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-					&times;
-				</button>
-				<h4 class="modal-title" id="myModalLabel">
-					人员分组详情
-				</h4>
-			</div>
-			<div class="modal-body">
-				
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
-				</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
-</div>
-</div>
-<!--隐藏框 产品新增结束  -->
     </section>
     
    
@@ -196,8 +188,6 @@
 			 var data={
 						page:1,
 				  		size:13,	
-				  		type:5,
-
 				} 
 			this.init = function(){
 				
@@ -210,7 +200,7 @@
 			    var index;
 			    var html = '';
 			    $.ajax({
-				      url:"${ctx}/production/getGroup",
+				      url:"${ctx}/fince/getOrder",
 				      data:data,
 				      type:"GET",
 				      beforeSend:function(){
@@ -219,17 +209,20 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			 $(result.data).each(function(i,o){
-		      				 var a;
-		      				 
-		      				 if(o.kindWork==null){
-		      					a=0
-		      				 }else{
-		      					 a=o.kindWork.id
-		      				 } 
+		      			 $(result.data.rows).each(function(i,o){
+		      				var newDate=/\d{4}-\d{1,2}-\d{1,2}/g.exec(o.contractTime)
 		      				html +='<tr>'
-		      				+'<td class="text-center edit name">'+o.name+'</td>'
-		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
+		      				+'<td class="text-center edit name">'+o.salesNumber+'</td>'
+		      				+'<td class="text-center edit name">'+newDate+'</td>'
+		      				+'<td class="text-center edit name">'+o.firstNames+'</td>'
+		      				+'<td class="text-center edit name">'+o.partyNames+'</td>'
+		      				+'<td class="text-center edit name">'+o.batchNumber+'</td>'
+		      				+'<td class="text-center edit name">'+o.planNumbers+'</td>'
+		      				+'<td class="text-center edit name">'+o.productName+'</td>'
+		      				+'<td class="text-center edit name">'+o.contractNumber+'</td>'
+		      				+'<td class="text-center edit name">'+o.contractPrice+'</td>'
+		      				+'<td class="text-center edit name">'+o.remarksPrice+'</td>'
+		      				+'<td class="text-center edit name">'+o.price+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
@@ -552,61 +545,59 @@
 					var _index;
 					var index;
 					var postData;
-					var dicDiv=$('#addDictDivType');
-					_index = layer.open({
-						  type: 1,
-						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '60%'], 
-						  btnAlign: 'c',//宽高
-						  maxmin: true,
-						  title:"新增小组",
-						  content: dicDiv,
-						  btn: ['确定', '取消'],
-						  yes:function(index, layero){
-							 
-							  postData={
-									  contractTime:$("#contractTime").val(),
-									  aName:$("#aName").val(),
-									  bName:$("#bName").val(),
-									  batchNumber:$("#batchNumber").val(),
-									  planNumbers:$("#planNumbers").val(),
-									  productName:$("#ProductName").val(),
-									  contractNumber:$("#contractNumber").val(),
-									  remarksPrice:$("#remarksPrice").val(),
-							  }
-							  $.ajax({
-									url:"${ctx}/fince/addOrder",
-									data:postData,
-						            traditional: true,
-									type:"post",
-									beforeSend:function(){
-										index = layer.load(1, {
-											  shade: [0.1,'#fff'] //0.1透明度的白色背景
-											});
-									},
-									
-									success:function(result){
-										if(0==result.code){
-											layer.msg("添加成功！", {icon: 1});
-										 self.loadPagination(data); 
-										}else{
-											layer.msg("添加失败", {icon: 2});
-										}
-										
-										layer.close(index);
-									},error:function(){
-										layer.msg("操作失败！", {icon: 2});
-										layer.close(index);
-									}
-								});
+					if($("#contractTime").val()==""){
+					return	layer.msg("请填写合同日期", {icon: 2});
+					}
+					if($("#aName").val()==""){
+						return	layer.msg("请填写甲方", {icon: 2});
+					}
+					if($("#bName").val()==""){
+						return	layer.msg("请填写乙方", {icon: 2});
+					}
+					if($("#batchNumber").val()==""){
+						return layer.msg("请填写批次号", {icon: 2});
+					}
+					if($("#ProductName").val()==""){
+						return layer.msg("请填写产品名", {icon: 2});
+					}
+					if($("#contractNumber").val()==""){
+						return layer.msg("请填写当批合同数量", {icon: 2});
+					}
+					  postData={
+							  contractTime:$("#contractTime").val(),
+							  firstNames:$("#aName").val(),
+							  partyNames:$("#bName").val(),
+							  batchNumber:$("#batchNumber").val(),
+							  planNumbers:$("#planNumbers").val(),
+							  productName:$("#ProductName").val(),
+							  contractNumber:$("#contractNumber").val(),
+							  remarksPrice:$("#remarksPrice").val(),
+					  }
+					  $.ajax({
+							url:"${ctx}/fince/addOrder",
+							data:postData,
+				            traditional: true,
+							type:"post",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
 							},
-						  end:function(){
-							  $('#addDictDivType').hide();
-						
-							  $('.addDictDivTypeForm')[0].reset(); 
 							
-						  }
-					});
+							success:function(result){
+								if(0==result.code){
+									layer.msg("添加成功！", {icon: 1});
+								 self.loadPagination(data); 
+								}else{
+									layer.msg("添加失败", {icon: 2});
+								}
+								
+								layer.close(index);
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
 				})
 			}
    	}
