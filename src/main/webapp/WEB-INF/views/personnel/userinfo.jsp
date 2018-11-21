@@ -65,7 +65,10 @@
 								<td>承诺书:</td><td><select class="form-control" id="promise"><option value="">请选择</option><option value="0">未签</option><option value="1">已签</option></select></td>
 								</tr>
 								<tr><td><div style="height: 10px"></div></td></tr>
-								<tr><td>所属银行:</td><td><input type="text"  id="bankCardtw" class="form-control" /></td></tr>
+								<tr><td>所属银行:</td><td><input type="text"  id="bankCardtw" class="form-control" /></td>
+								<td>&nbsp&nbsp</td>
+								<td>学历查询:</td><td><select id="education2" class="form-control"><option value="">请选择</option><option value="本科">本科</option><option value="大专">大专</option><option value="高中">高中</option><option value="初中及以下">初中及以下</option></select></td>
+								</tr>
 								</table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default btn-square btn-sm btn-3d  searchtask">
@@ -789,6 +792,7 @@
 								  			orderTimeBegin:$("#startTime").val(),
 								  			orderTimeEnd:$("#endTime").val(),
 								  			ascriptionBank1:$("#bankCardtw").val(),
+								  			education:$("#education2").val(),
 								  	}
 						            self.loadPagination(_data);
 							     }
@@ -1246,6 +1250,7 @@
 											  			orderTimeBegin:$("#startTime").val(),
 											  			orderTimeEnd:$("#endTime").val(),
 											  			ascriptionBank1:$("#bankCardtw").val(),
+											  			education:$("#education2").val(),
 											  	}
 												layer.close(index);
 												self.loadPagination(data);
@@ -1424,6 +1429,7 @@
 											  			orderTimeBegin:$("#startTime").val(),
 											  			orderTimeEnd:$("#endTime").val(),
 											  			ascriptionBank1:$("#bankCardtw").val(),
+											  			education:$("#education2").val(),
 											  	}
 												layer.close(index);
 												$("#productId").text("");
@@ -1504,6 +1510,7 @@
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(),
 				  			ascriptionBank1:$("#bankCardtw").val(),
+				  			education:$("#education2").val(),
 				  	}
 					
 		            self.loadPagination(data);
