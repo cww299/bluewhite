@@ -245,7 +245,7 @@ public class UserAction {
 		List<User> userList = 	userService.findAll();
 		//退休时间，过滤出有生日的员工
 		List<Map<String,Object>> userBirthList = new ArrayList<Map<String,Object>>();
-		List<User> userBirth = userList.stream().filter(User->User.getBirthDate()!=null && User.getGender()!=null ).collect(Collectors.toList());
+		List<User> userBirth = userList.stream().filter(User->User.getBirthDate()!=null && User.getGender()!=null && User.getQuit()!=1 && User.getQuit()!=null).collect(Collectors.toList());
 		
 		for(User user : userBirth){
 			int age = DatesUtil.getAgeByBirth(user.getBirthDate());
@@ -258,12 +258,12 @@ public class UserAction {
 			int co = DatesUtil.getAgeByBirth(user.getBirthDate());
 			long co2 = DatesUtil.getDaySub( DatesUtil.getfristDayOftime(new Date()),DatesUtil.getfristDayOftime(user.getBirthDate()));
 			//男
-			if(user.getGender()==0 && co==60 && co2<=10){
+			if(user.getGender()==0 && co==60 && co2<=60){
 				us.put("username", user.getUserName());
 				us.put("birthDate",sdf.format(user.getBirthDate()));
 				userBirthList.add(us);
 			//女
-			}else if(user.getGender()==1 && co==50  && co2<=10){
+			}else if(user.getGender()==1 && co==50  && co2<=60){
 				us.put("username", user.getUserName());
 				us.put("birthDate", sdf.format(user.getBirthDate()));
 				userBirthList.add(us);
@@ -272,7 +272,7 @@ public class UserAction {
 		}
 		//合同到期时间
 		List<Map<String , Object>> userContractList = new ArrayList<Map<String , Object>>();
-		List<User> userContract = userList.stream().filter(User->User.getContractDateEnd()!=null).collect(Collectors.toList());
+		List<User> userContract = userList.stream().filter(User->User.getContractDateEnd()!=null  && User.getQuit()!=1 && User.getQuit()!=null ).collect(Collectors.toList());
 		for(User user : userContract ){
 			Map<String,Object> us = new HashMap<String,Object>();
 			long co = DatesUtil.getDaySub( DatesUtil.getfristDayOftime(new Date()),DatesUtil.getfristDayOftime(user.getContractDateEnd()));
@@ -282,8 +282,23 @@ public class UserAction {
 				userContractList.add(us);
 			}
 		}
+		
+		//身份证到期
+		List<Map<String , Object>> userCardList = new ArrayList<Map<String , Object>>();
+		List<User> userrCard = userList.stream().filter(User->User.getIdCardEnd()!=null  && User.getQuit()!=1 && User.getQuit()!=null ).collect(Collectors.toList());
+		for(User user : userrCard ){
+			Map<String,Object> us = new HashMap<String,Object>();
+			long co = DatesUtil.getDaySub( DatesUtil.getfristDayOftime(new Date()),DatesUtil.getfristDayOftime(user.getIdCardEnd()));
+			if(co<=60){
+				us.put("username", user.getUserName());
+				us.put("idCardEnd", sdf.format(user.getContractDateEnd()));
+				userCardList.add(us);
+			}
+		}
+		
 		map.put("userBirth", userBirthList);
 		map.put("userContract", userContractList);
+		map.put("userCard", userCardList);
 		cr.setMessage("查询成功");
 		cr.setData(map);
 		return cr;

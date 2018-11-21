@@ -178,9 +178,10 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		double batchMaterialPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchMaterialPrice()!=null).mapToDouble(CutParts::getBatchMaterialPrice).sum();
 		double batchComplexMaterialPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchComplexMaterialPrice()!=null).mapToDouble(CutParts::getBatchComplexMaterialPrice).sum();
 		double batchComplexAddPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchComplexAddPrice()!=null).mapToDouble(CutParts::getBatchComplexAddPrice).sum();
-		primeCost.setCutPartsPrice(NumUtils.division((batchMaterialPrice+batchComplexMaterialPrice+batchComplexAddPrice)/primeCost.getNumber()));
+		primeCost.setCutPartsPrice(batchMaterialPrice+batchComplexMaterialPrice+batchComplexAddPrice);
 		//单只
 		primeCost.setOneCutPartsPrice(NumUtils.division(primeCost.getCutPartsPrice()/primeCost.getNumber()));
+		
 		double cutPartsPriceInvoice = primeCost.getCutPartsInvoice() == 1 ? (primeCost.getCutPartsPriceInvoice()* primeCost.getOneCutPartsPrice()) : 0;
 		
 		//除面料以外的其他物料价格
