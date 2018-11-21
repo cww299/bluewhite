@@ -245,7 +245,7 @@ public class UserAction {
 		List<User> userList = 	userService.findAll();
 		//退休时间，过滤出有生日的员工
 		List<Map<String,Object>> userBirthList = new ArrayList<Map<String,Object>>();
-		List<User> userBirth = userList.stream().filter(User->User.getBirthDate()!=null && User.getGender()!=null && User.getQuit()!=1 && User.getQuit()!=null).collect(Collectors.toList());
+		List<User> userBirth = userList.stream().filter(User->User.getBirthDate()!=null && User.getGender()!=null && User.getQuit()!=1 && User.getQuit()!=null && User.getCommitmentId()!=null && User.getCommitmentId() !=144).collect(Collectors.toList());
 		
 		for(User user : userBirth){
 			int age = DatesUtil.getAgeByBirth(user.getBirthDate());
@@ -272,7 +272,7 @@ public class UserAction {
 		}
 		//合同到期时间
 		List<Map<String , Object>> userContractList = new ArrayList<Map<String , Object>>();
-		List<User> userContract = userList.stream().filter(User->User.getContractDateEnd()!=null  && User.getQuit()!=1 && User.getQuit()!=null ).collect(Collectors.toList());
+		List<User> userContract = userList.stream().filter(User->User.getContractDateEnd()!=null  && User.getQuit()!=1 && User.getQuit()!=null  ).collect(Collectors.toList());
 		for(User user : userContract ){
 			Map<String,Object> us = new HashMap<String,Object>();
 			long co = DatesUtil.getDaySub( DatesUtil.getfristDayOftime(new Date()),DatesUtil.getfristDayOftime(user.getContractDateEnd()));
