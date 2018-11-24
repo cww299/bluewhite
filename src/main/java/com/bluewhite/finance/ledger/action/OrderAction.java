@@ -24,6 +24,7 @@ import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.finance.attendance.action.AttendanceAction;
+import com.bluewhite.finance.ledger.entity.Contact;
 import com.bluewhite.finance.ledger.entity.Order;
 import com.bluewhite.finance.ledger.service.OrderService;
 import com.bluewhite.product.primecost.embroidery.entity.Embroidery;
@@ -47,7 +48,8 @@ public class OrderAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(Order.class,"id","salesNumber","contractTime","batchNumber","planNumbers","productName","contractNumber","contractPrice","remarksPrice","firstNames","partyNames","price");
+				.addRetainTerm(Order.class,"id","salesNumber","contractTime","batchNumber","planNumbers","productName","contractNumber","contractPrice","remarksPrice","firstNames","partyNames","price","partyNamesId","contact")
+				.addRetainTerm(Contact.class,"id","conPartyNames","conPhone","conWechat");
 	}
 	
 	/**

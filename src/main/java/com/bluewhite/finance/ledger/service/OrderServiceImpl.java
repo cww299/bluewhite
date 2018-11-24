@@ -20,8 +20,10 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.finance.ledger.dao.ContactDao;
 import com.bluewhite.finance.ledger.dao.CustomerDao;
 import com.bluewhite.finance.ledger.dao.OrderDao;
+import com.bluewhite.finance.ledger.entity.Contact;
 import com.bluewhite.finance.ledger.entity.Customer;
 import com.bluewhite.finance.ledger.entity.Order;
 
@@ -32,7 +34,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	private OrderDao dao;
 	@Autowired
 	private CustomerDao customerDao;
-
+	@Autowired
+	private ContactDao contactDao;
 	@Override
 	public PageResult<Order> findPages(Order param, PageParameter page) {
 		if (!StringUtils.isEmpty(param.getContractTime())) {
@@ -76,7 +79,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			order.setSalesNumber(w + "-" + "#" + "1");
 		}
 		order.setContractPrice(order.getContractNumber() * order.getPrice());
-		dao.save(order);
+		
 		if (order.getId() != null && order.getPrice()!=0) {
 			List<Customer> customerList = customerDao
 					.findByCusProductNameAndCusPartyNames(order.getProductName().trim(), order.getPartyNames().trim());
@@ -93,6 +96,14 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				customerDao.save(customer);
 			}
 		}
+		Contact contact=null;
+		if(order.getPartyNamesId()==null){
+			contact=new Contact();
+			contact.setConPartyNames(order.getPartyNames());
+			contactDao.save(contact);
+			order.setPartyNamesId(contact.getId());
+		}
+		dao.save(order);
 	}
 
 	@Override

@@ -43,7 +43,7 @@ public class ContactAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(Customer.class,"id","conPartyNames","conPhone","conWechat");
+				.addRetainTerm(Contact.class,"id","conPartyNames","conPhone","conWechat");
 	}
 	
 	/**

@@ -9,9 +9,13 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.product.product.entity.Product;
 
 @Entity
 @Table(name = "fin_ledger_order" )
@@ -41,7 +45,7 @@ public class Order extends BaseEntity<Long>{
 	 * 甲方id
 	 */
 	@Column(name = "first_names_id")
-    private String firstNamesId;
+    private Long firstNamesId;
 	
 	
 	/**
@@ -54,9 +58,15 @@ public class Order extends BaseEntity<Long>{
 	 * 乙方Id
 	 */
 	@Column(name = "party_names_id")
-    private String partyNamesId;
+    private Long partyNamesId;
 	
 	
+	/**
+	 * 产品
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "party_names_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Contact contact;
 	/**
 	 * 当批 批次号
 	 */
@@ -106,22 +116,36 @@ public class Order extends BaseEntity<Long>{
     private Double price;
 
 
-	public String getFirstNamesId() {
+
+
+
+
+	public Contact getContact() {
+		return contact;
+	}
+
+
+	public void setContact(Contact contact) {
+		this.contact = contact;
+	}
+
+
+	public Long getFirstNamesId() {
 		return firstNamesId;
 	}
 
 
-	public void setFirstNamesId(String firstNamesId) {
+	public void setFirstNamesId(Long firstNamesId) {
 		this.firstNamesId = firstNamesId;
 	}
 
 
-	public String getPartyNamesId() {
+	public Long getPartyNamesId() {
 		return partyNamesId;
 	}
 
 
-	public void setPartyNamesId(String partyNamesId) {
+	public void setPartyNamesId(Long partyNamesId) {
 		this.partyNamesId = partyNamesId;
 	}
 
