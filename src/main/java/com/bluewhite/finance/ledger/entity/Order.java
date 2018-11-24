@@ -116,10 +116,43 @@ public class Order extends BaseEntity<Long>{
     private Double price;
 
 
+	/**
+	 * 手动填写到岸数量
+	 */
+	@Column(name = "ashore_number")
+    private Integer ashoreNumber;
 
 
+	/**
+	 * 到岸日期
+	 */
+	@Column(name = "ashore_time")
+    private Date ashoreTime;
 
-
+	/**
+	 * 核对完毕提示
+	 */
+	@Column(name = "ashore_check")
+    private Integer ashoreCheckr;
+	
+	
+	/**
+	 * 争议数量
+	 */
+	@Column(name = "dispute_number")
+    private Integer disputeNumber;
+	
+	/**
+	 * 在途数量
+	 */
+	@Column(name = "road_number")
+    private Integer roadNumber;
+	
+	/**
+	 * 争议价格
+	 */
+	@Column(name = "dispute_price")
+    private Double disputePrice;
 	public Contact getContact() {
 		return contact;
 	}
