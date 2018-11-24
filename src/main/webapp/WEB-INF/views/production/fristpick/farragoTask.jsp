@@ -370,6 +370,9 @@
 									  		size:13,
 									  		type:2,
 									  		name:$('#name').val(),
+								  			bacth:$('#number').val(),
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(), 
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -414,6 +417,9 @@
 							  		size:13,
 							  		type:2,
 							  		name:$('#name').val(),
+						  			bacth:$('#number').val(),
+						  			orderTimeBegin:$("#startTime").val(),
+						  			orderTimeEnd:$("#endTime").val(), 
 						  	}
 							self.loadPagination(data)
 							layer.close(index);
@@ -690,6 +696,10 @@
 										page:self.getCount(),
 								  		size:13,	
 								  		type:2,
+								  		name:$('#name').val(),
+							  			bacth:$('#number').val(),
+							  			orderTimeBegin:$("#startTime").val(),
+							  			orderTimeEnd:$("#endTime").val(), 
 								} 
 							   self.loadPagination(date);
 							
@@ -865,6 +875,10 @@
 										page:self.getCount(),
 								  		size:13,	
 								  		type:2,
+								  		name:$('#name').val(),
+							  			bacth:$('#number').val(),
+							  			orderTimeBegin:$("#startTime").val(),
+							  			orderTimeEnd:$("#endTime").val(), 
 								} 
 							   self.loadPagination(date);
 							

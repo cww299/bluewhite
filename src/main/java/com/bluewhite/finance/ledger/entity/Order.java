@@ -37,12 +37,24 @@ public class Order extends BaseEntity<Long>{
 	@Column(name = "first_names")
     private String firstNames;
 	
+	/**
+	 * 甲方id
+	 */
+	@Column(name = "first_names_id")
+    private String firstNamesId;
+	
 	
 	/**
 	 * 乙方
 	 */
 	@Column(name = "party_names")
     private String partyNames;
+	
+	/**
+	 * 乙方Id
+	 */
+	@Column(name = "party_names_id")
+    private String partyNamesId;
 	
 	
 	/**
@@ -92,6 +104,26 @@ public class Order extends BaseEntity<Long>{
 	 */
 	@Column(name = "price")
     private Double price;
+
+
+	public String getFirstNamesId() {
+		return firstNamesId;
+	}
+
+
+	public void setFirstNamesId(String firstNamesId) {
+		this.firstNamesId = firstNamesId;
+	}
+
+
+	public String getPartyNamesId() {
+		return partyNamesId;
+	}
+
+
+	public void setPartyNamesId(String partyNamesId) {
+		this.partyNamesId = partyNamesId;
+	}
 
 
 	public String getSalesNumber() {

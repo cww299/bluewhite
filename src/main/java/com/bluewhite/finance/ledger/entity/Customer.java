@@ -30,4 +30,30 @@ public class Customer extends BaseEntity<Long>{
 	 */
 	@Column(name = "cus_price")
     private Double cusPrice;
+
+	public String getCusProductName() {
+		return cusProductName;
+	}
+
+	public void setCusProductName(String cusProductName) {
+		this.cusProductName = cusProductName;
+	}
+
+	public String getCusPartyNames() {
+		return cusPartyNames;
+	}
+
+	public void setCusPartyNames(String cusPartyNames) {
+		this.cusPartyNames = cusPartyNames;
+	}
+
+	public Double getCusPrice() {
+		return cusPrice;
+	}
+
+	public void setCusPrice(Double cusPrice) {
+		this.cusPrice = cusPrice;
+	}
+	
+	
 }

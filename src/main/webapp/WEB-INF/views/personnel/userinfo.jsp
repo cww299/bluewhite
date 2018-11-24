@@ -394,6 +394,12 @@
                                             
                                         </div>
                  </div>
+                 <div class="form-group">
+                                        <label class="col-sm-4 control-label">是否为销售人员:</label>
+                                        <div class="col-sm-4" >
+                                            <select class="form-control" id="sale"><option value="">请选择</option><option value="1">是</option></select>
+                                        </div>
+                		 </div>
                  <div class="form-group hidden">
                  <input type="text" id="productId" class="form-control">
                  </div>
@@ -1074,6 +1080,10 @@
 										var id=o.type;
 										$(k).val(id);
 									});
+									$('#sale').each(function(j,k){
+										var id=o.sale;
+										$(k).val(id);
+									});
 									if(o.commitments!=null){
 									 	var ids=o.commitments.id;
 									$('.checkWork').each(function(j,k){
@@ -1200,6 +1210,7 @@
 											commitment:$('.commitment').val(),
 											safe:$('.safe').val(),
 											type:$('#type4').val(),
+											sale:$('#sale').val(),
 											ascriptionBank1:$('.bankCardtw').val(),
 								  }
 								   $.ajax({

@@ -12,15 +12,13 @@
     <title>订单管理</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-   
-   
+
 </head>
 
 <body>
     <section id="main-wrapper" class="theme-default">
         
         <%@include file="../../decorator/leftbar.jsp"%> 
-        
         <!--main content start-->
         
            <section id="main-content" class="animated fadeInUp">
@@ -34,10 +32,43 @@
                                     <i class="fa fa-chevron-down"></i>
                                 </div>
                             </div>
+                            <div class="row" style="height: 30px; margin:15px 0 10px">
+					<div class="col-xs-8 col-sm-8  col-md-8">
+						<form class="form-search" >
+							<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12">
+							<div class="input-group">
+							<table><tr>
+								<td>裁剪价格:</td><td><input type="text" name="name" id="ntwo6" disabled="disabled"  class="form-control search-query name" /></td>
+								</tr></table> 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask3">
+										查找
+										<i class="icon-search icon-on-right bigger-110"></i>
+									</button>
+								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-danger  btn-sm btn-3d start">
+									一键删除
+									</button>
+								</span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
                             <div class="panel-body">
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
+                                        	<th class="center">
+											<label> 
+											<input type="checkbox" class="ace checks" /> 
+											<span class="lbl"></span>
+											</label>
+											</th>
                                         	<th class="text-center">当月销售编号</th>
                                             <th class="text-center">合同签订日期</th>
                                             <th class="text-center">甲方</th>
@@ -52,13 +83,14 @@
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
-                                    <thead>
                                         <tr>
+                                    
+                                        	<td class="text-center"></td>
                                         	<td class="text-center"></td>
                                             <td class="text-center" style="padding: 9px 0px 2px 4px;"><input id="contractTime" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#contractTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="border: none;width:90px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="aName" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="bName" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"><input type="text" id="aName" class="aName2"  data-provide="typeahead" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"><input type="text" id="bName" class="bName2" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
                                             <td class="text-center"><input type="text" id="batchNumber" style="border: none;width:105px; height:30px; background-color: #BFBFBF;"></td>
                                             <td class="text-center"><input type="text" id="planNumbers" placeholder="可不填" style="border: none;width:60px; height:30px; background-color: #BFBFBF;"></td>
                                             <td class="text-center"><input type="text" id="ProductName" style="border: none;width:150px; height:30px; background-color: #BFBFBF;"></td>
@@ -67,8 +99,8 @@
                                             <td class="text-center"><input type="text" id="remarksPrice" placeholder="可不填" style="border: none;width:80px; height:30px; background-color: #BFBFBF;"></td>
                                             <td class="text-center"></td>
                                             <td class="text-center"><button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增订单</button></td>
+                                    
                                         </tr>
-                                    </thead>
                                     
                                     <tbody id="tablecontent">
                                         
@@ -143,6 +175,36 @@
 </div>
 </div> -->
  <!--隐藏框 产品新增结束  -->
+ 
+ 
+ <div class="wrap">
+<div class="layer-right3" style="display: none;">
+           <div class="panel-body">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">当批产品名</th>
+                                            <th class="text-center">乙方选择</th>
+                                            <th class="text-center">单只价格（元）</th>
+                                            <th class="text-center">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablecontent2">
+                                        
+                                    </tbody>
+                                    
+                                </table>
+                                <div id="pager2" class="pull-right">
+                                
+                                </div>
+                            </div>
+				</div>
+  </div>
+ 
+ 
+ 
+ 
+ 
     </section>
     
    
@@ -158,7 +220,7 @@
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
     <script src="${ctx }/static/js/vendor/typeahead.js"></script>
-    
+    <script src="${ctx }/static/js/vendor/mSlider.min.js"></script>
     <script>
    jQuery(function($){
    	var Login = function(){
@@ -185,6 +247,12 @@
 		  	this.getName = function(){
 		  		return _name;
 		  	}
+		  	this.getCount = function(){
+		  		return _count;
+		  	}
+		  	this.setCount = function(count){
+		  		_count=count;
+		  	}
 			 var data={
 						page:1,
 				  		size:13,	
@@ -194,6 +262,7 @@
 				//注册绑定事件
 				self.events();
 				self.loadPagination(data);
+				self.mater();
 			}
 			//加载分页
 			  this.loadPagination = function(data){
@@ -211,21 +280,23 @@
 		      		  success: function (result) {
 		      			 $(result.data.rows).each(function(i,o){
 		      				var newDate=/\d{4}-\d{1,2}-\d{1,2}/g.exec(o.contractTime)
-		      				html +='<tr>'
-		      				+'<td class="text-center edit name">'+o.salesNumber+'</td>'
-		      				+'<td class="text-center edit name">'+newDate+'</td>'
-		      				+'<td class="text-center edit name">'+o.firstNames+'</td>'
-		      				+'<td class="text-center edit name">'+o.partyNames+'</td>'
-		      				+'<td class="text-center edit name">'+o.batchNumber+'</td>'
-		      				+'<td class="text-center edit name">'+o.planNumbers+'</td>'
-		      				+'<td class="text-center edit name">'+o.productName+'</td>'
-		      				+'<td class="text-center edit name">'+o.contractNumber+'</td>'
-		      				+'<td class="text-center edit name">'+o.contractPrice+'</td>'
-		      				+'<td class="text-center edit name">'+o.remarksPrice+'</td>'
-		      				+'<td class="text-center edit name">'+o.price+'</td>'
-		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
+		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
+		      				+'<td class="hidden batch">'+o.id+'</td>'
+		      				+'<td class="text-center  salesNumber">'+o.salesNumber+'</td>'
+		      				+'<td class="text-center edit contractTime">'+newDate+'</td>'
+		      				+'<td class="text-center editt firstNames">'+o.firstNames+'</td>'
+		      				+'<td class="text-center editt partyNames">'+o.partyNames+'</td>'
+		      				+'<td class="text-center edit1 batchNumber">'+o.batchNumber+'</td>'
+		      				+'<td class="text-center edit2 planNumbers">'+o.planNumbers+'</td>'
+		      				+'<td class="text-center edit3 productName">'+o.productName+'</td>'
+		      				+'<td class="text-center edit4 contractNumber">'+(o.contractNumber!=null ? o.contractNumber : 0)+'</td>'
+		      				+'<td class="text-center  name contractPrice" style=" color:#c11f34">'+(o.contractPrice!=null ? o.contractPrice : 0)+'</td>'
+		      				+'<td class="text-center edit5 remarksPrice">'+(o.remarksPrice!=null ? o.remarksPrice : "")+'</td>'
+		      				+'<td class="text-center  name"><input type="text" class="price2" value="'+(o.price!=null ? o.price : "")+'" style="border: none;width:70px; height:30px; background-color: #BFBFBF;"></td>'
+		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans Tips"  data-id='+o.id+' data-productname='+o.productName+' data-partynames='+o.partyNames+'>提示</button></td></tr>'
 							
 		      			}); 
+		      			self.setCount(result.data.pageNum)
 				        //显示分页
 					   	 laypage({
 					      cont: 'pager', 
@@ -248,26 +319,66 @@
 					   	layer.close(index);
 					   	 $("#tablecontent").html(html); 
 					   	self.loadEvents();
-					   
+					   self.checkeddto();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
 					  }
 				  });
 			}
-			
+			  this.checkeddto=function(){
+					
+					$(".checks").on('click',function(){
+						
+	                    if($(this).is(':checked')){ 
+				 			$('.checkboxId').each(function(){  
+	                    //此处如果用attr，会出现第三次失效的情况  
+	                     		$(this).prop("checked",true);
+				 			})
+	                    }else{
+	                    	$('.checkboxId').each(function(){ 
+	                    		$(this).prop("checked",false);
+	                    		
+	                    	})
+	                    }
+	                }); 
+					
+				}
 			this.loadEvents = function(){
 				//修改方法
 				$('.update').on('click',function(){
-					
 					if($(this).text() == "编辑"){
+					self.mater();
 						$(this).text("保存")
 						
 						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
 
-				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
+				            $(this).html("<input class='input-mini'  style='border: none;width:90px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
 				        });
-						
+						$(this).parent().siblings(".editt").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini aName2'  style='border: none;width:68px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				        });
+						$(this).parent().siblings(".edit1").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini'  style='border: none;width:105px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				        });
+						$(this).parent().siblings(".edit2").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini'  style='border: none;width:60px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				        });
+						$(this).parent().siblings(".edit3").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini'  style='border: none;width:150px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				        });
+						$(this).parent().siblings(".edit4").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini'  style='border: none;width:50px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				        });
+						$(this).parent().siblings(".edit5").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini'  style='border: none;width:80px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				        });
 					}else{
 							$(this).text("编辑")
 						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
@@ -278,15 +389,69 @@
 					                $(this).html(obj_text.val()); 
 									
 							});
-							
+							$(this).parent().siblings(".editt").each(function() {  // 获取当前行的其他单元格
+
+					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+
+					       
+					                $(this).html(obj_text.val()); 
+									
+							});
+							$(this).parent().siblings(".edit1").each(function() {  // 获取当前行的其他单元格
+
+					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+
+					       
+					                $(this).html(obj_text.val()); 
+									
+							});
+							$(this).parent().siblings(".edit2").each(function() {  // 获取当前行的其他单元格
+
+					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+
+					       
+					                $(this).html(obj_text.val()); 
+									
+							});
+							$(this).parent().siblings(".edit3").each(function() {  // 获取当前行的其他单元格
+
+					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+
+					       
+					                $(this).html(obj_text.val()); 
+									
+							});
+							$(this).parent().siblings(".edit4").each(function() {  // 获取当前行的其他单元格
+
+					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+
+					       
+					                $(this).html(obj_text.val()); 
+									
+							});
+							$(this).parent().siblings(".edit5").each(function() {  // 获取当前行的其他单元格
+
+					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+
+					       
+					                $(this).html(obj_text.val()); 
+									
+							});
 							var postData = {
 									id:$(this).data('id'),
-									name:$(this).parent().parent('tr').find(".name").text(),
+									contractTime:$(this).parent().parent().find(".contractTime").text()+' '+'00:00:00',
+									firstNames:$(this).parent().parent().find(".firstNames").text(),
+									partyNames:$(this).parent().parent().find(".partyNames").text(),
+									batchNumber:$(this).parent().parent().find(".batchNumber").text(),
+									planNumbers:$(this).parent().parent().find(".planNumbers").text(),
+									productName:$(this).parent().parent().find(".productName").text(),
+									contractNumber:$(this).parent().parent().find(".contractNumber").text(),
+									remarksPrice:$(this).parent().parent().find(".remarksPrice").text(),
 							}
 							
 							var index;
 							$.ajax({
-								url:"${ctx}/production/addGroup",
+								url:"${ctx}/fince/addOrder",
 								data:postData,
 								type:"POST",
 								beforeSend:function(){
@@ -312,57 +477,59 @@
 				})
 				
 				
-				
-				
-				//人员详细显示方法
-				$('.savemode').on('click',function(){
-					var id=$(this).data('id')
-					 var display =$("#savegroup").css("display")
-					 if(display=='none'){
-							$("#savegroup").css("display","block");  
-						}
-					var postData={
-							id:id,
+				$(".price2").blur(function(){
+					var that=$(this)
+					var postData = {
+							id:$(this).parent().parent().find(".update").data('id'),
+							price:$(this).val(),
 					}
-					 var arr=new Array();
-					var html="";
+					var index;
 					$.ajax({
-						url:"${ctx}/production/getGroupOne",
+						url:"${ctx}/fince/addOrder",
 						data:postData,
-						type:"GET",
+						type:"POST",
 						beforeSend:function(){
 							index = layer.load(1, {
 								  shade: [0.1,'#fff'] //0.1透明度的白色背景
 								});
 						},
-						
 						success:function(result){
-							$(result.data.users).each(function(i,o){
-							html+=o.userName+"&nbsp&nbsp&nbsp&nbsp"
-							})
-							$('.modal-body').html(html);
+							if(0==result.code){
+							that.parent().parent().find(".contractPrice").text(result.data.contractPrice)
+							layer.msg("当批合同总价为"+result.data.contractPrice+"", {icon: 1});
 							layer.close(index);
-							
+							}else{
+								layer.msg("失败！", {icon: 1});
+								layer.close(index);
+							}
 						},error:function(){
 							layer.msg("操作失败！", {icon: 2});
 							layer.close(index);
 						}
 					});
-					
-					
-					
-				})
+				})				
 				
 				
-				//删除
-							$('.delete').on('click',function(){
+				
+				//提示
+							$('.Tips').on('click',function(){
+								var that=$(this)
+								var id=$(this).data('id')
+								var ids=that.data("id");
+							$(".batch").each(function(i,o){
+							var a=$(o).text();
+							if(a==ids){
+								$(o).parent().addClass("danger");
+								$(o).parent().siblings().removeClass("danger");
+							}
+							})
 								var postData = {
-										ids:$(this).data('id'),
+										productName:$(this).data('productname'),
+										partyNames:$(this).data('partynames')
 								}
 								var index;
-								 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
 								$.ajax({
-									url:"${ctx}/production/group/delete",
+									url:"${ctx}/fince/tipsCustomer",
 									data:postData,
 									type:"GET",
 									beforeSend:function(){
@@ -373,16 +540,58 @@
 									
 									success:function(result){
 										if(0==result.code){
-										layer.msg("删除成功！", {icon: 1});
-										var _data={
-												page:1,
-										  		size:13,
-												type:5,
-										}
-										self.loadPagination(_data)
+											$(".layer-right3").css("display","block");
+											var demo = new mSlider({
+												dom:".layer-right3",
+												direction: "right",
+												distance:"35%",
+												
+											})
+											demo.open()
+							var html1="";				
+						$(result.data).each(function(i,o){
+		      				html1 +='<tr>'
+		      				+'<td class="text-center edit name">'+o.cusProductName+'</td>'
+		      				+'<td class="text-center edit name">'+o.cusPartyNames+'</td>'
+		      				+'<td class="text-center edit cusPrice">'+o.cusPrice+'</td>'
+		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans choice" data-id='+o.id+'>选择</button></tr>'
+		      			}); 
+						$("#tablecontent2").html(html1); 
+						$(".choice").on('click',function(){
+							var thtt=$(this)
+							var postData = {
+									id:id,
+									price:$(this).parent().parent().find('.cusPrice').text(),
+							}
+							var index;
+							$.ajax({
+								url:"${ctx}/fince/addOrder",
+								data:postData,
+								type:"POST",
+								beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								success:function(result){
+									if(0==result.code){
+									that.parent().parent().find(".contractPrice").text(result.data.contractPrice)
+									that.parent().parent().find(".price2").val(result.data.price)
+									layer.msg("当批合同总价为"+result.data.contractPrice+"", {icon: 1});
+									layer.close(index);
+									}else{
+										layer.msg("失败！", {icon: 1});
 										layer.close(index);
+									}
+								},error:function(){
+									layer.msg("操作失败！", {icon: 2});
+									layer.close(index);
+								}
+							});
+						})
+											layer.close(index);
 										}else{
-											layer.msg("删除失败！", {icon: 1});
+											layer.msg("操作失败", {icon: 1});
 											layer.close(index);
 										}
 									},error:function(){
@@ -390,67 +599,23 @@
 										layer.close(index);
 									}
 								});
-								 })
 					})
 				
 				
 			}
-			this.selected=function(){
-				
-				$('.selectgroupChange').each(function(i,o){
-					var id=$(o).parent().data("groupid");
-					$(o).val(id);
-				})
-				
-			}
-			this.chang=function(){
-				$('.selectgroupChange').change(function(){
-					var that=$(this);
-					var data={
-							id:that.parent().data("id"),
-							kindWorkId:that.val(),
-						}
-					var _data={
-							page:1,
-					  		size:10,	
-					} 
-					$.ajax({
-						url:"${ctx}/production/addGroup",
-						data:data,
-						type:"POST",
-						success:function(result){
-							if(0==result.code){
-								layer.msg("分配工种成功！", {icon: 1});
-								
-							}else{
-								layer.msg("分配工种失败", {icon: 2});			
-							}
-							
-						},error:function(){
-							layer.msg("操作失败！", {icon: 2});
-						}
-					})
-					
-					
-				})
-			}
-			/* this.matertw=function(){
-				//提示人员姓名
-				
-					
-				
-				 $(".leadertw").typeahead({
+			this.mater=function(){
+				//提示甲方
+				$(".aName2").typeahead({
 					//ajax 拿way数据
-					
 					source : function(query, process) {
 							return $.ajax({
 								url : '${ctx}/system/user/pages',
 								type : 'GET',
 								data : {
-									userName:query
+									userName:query,
+									sale:1
 								},
 								success : function(result) {
-									alert(1)
 									//转换成 json集合
 									 var resultList = result.data.rows.map(function (item) {
 										 	//转换成 json对象
@@ -473,7 +638,6 @@
 		                	//转出成json对象
 					        var item = JSON.parse(item);
 					        self.setIndex(item.id);
-					        self.setName(item.name);
 					    	return item.id
 					    },
 						//item是选中的数据
@@ -481,24 +645,22 @@
 							//转出成json对象
 							var item = JSON.parse(item);
 							self.setIndex(item.id);
-						  	self.setName(item.name);
 								return item.name
 						},
 
 						
-					}); 
-			} */
-			
-			this.mater=function(){
-				//提示人员姓名
-				$("#leader").typeahead({
+					});
+				
+				//提示乙方
+				$(".bName2").typeahead({
 					//ajax 拿way数据
 					source : function(query, process) {
 							return $.ajax({
 								url : '${ctx}/system/user/pages',
 								type : 'GET',
 								data : {
-									userName:query
+									userName:query,
+									
 								},
 								success : function(result) {
 									//转换成 json集合
@@ -523,7 +685,6 @@
 		                	//转出成json对象
 					        var item = JSON.parse(item);
 					        self.setIndex(item.id);
-					        self.setName(item.name);
 					    	return item.id
 					    },
 						//item是选中的数据
@@ -531,7 +692,6 @@
 							//转出成json对象
 							var item = JSON.parse(item);
 							self.setIndex(item.id);
-						  	self.setName(item.name);
 								return item.name
 						},
 
@@ -587,7 +747,11 @@
 							success:function(result){
 								if(0==result.code){
 									layer.msg("添加成功！", {icon: 1});
+									
 								 self.loadPagination(data); 
+								 $("#batchNumber").val("")
+								 $("#ProductName").val("")
+								 $("#contractNumber").val("")
 								}else{
 									layer.msg("添加失败", {icon: 2});
 								}
@@ -598,6 +762,50 @@
 								layer.close(index);
 							}
 						});
+				})
+				//一键删除
+				$('.start').on('click',function(){
+					  var  that=$(".table-hover");
+					  var arr=new Array()//员工id
+					  	that.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+							arr.push($(this).val());   
+						});
+					  var postData = {
+								ids:arr,
+						}
+						
+						var index;
+						 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/fince/delete",
+							data:postData,
+							traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+								layer.msg("删除成功！", {icon: 1});
+								var data = {
+					        			page:self.getCount(),
+								  		size:13,
+							  	}
+								self.loadPagination(data)
+								layer.close(index);
+								}else{
+									layer.msg("删除失败！", {icon: 2});
+									layer.close(index);
+								}
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 })
 				})
 			}
    	}
