@@ -64,7 +64,6 @@
                                             <th class="text-center">甲方</th>
                                             <th class="text-center">乙方</th>
                                             <th class="text-center">当批批次号</th>
-                                            <th class="text-center">当批计划单号</th>
                                             <th class="text-center">当批产品名</th>
                                             <th class="text-center">当批合同数量</th>
                                             <th class="text-center">当批合同总价（元）</th>
@@ -192,12 +191,13 @@
 		      				var newDate=/\d{4}-\d{1,2}-\d{1,2}/g.exec(o.contractTime)
 		      				html +='<tr>'
 		      				+'<td class="hidden batch">'+o.id+'</td>'
+		      				+'<td class="text-center  salesNumber">'+o.contact.conPhone+'</td>'
+		      				+'<td class="text-center  salesNumber">'+o.contact.conWechat+'</td>'
 		      				+'<td class="text-center  salesNumber">'+o.salesNumber+'</td>'
 		      				+'<td class="text-center edit contractTime">'+newDate+'</td>'
 		      				+'<td class="text-center editt firstNames">'+o.firstNames+'</td>'
 		      				+'<td class="text-center editt partyNames">'+o.partyNames+'</td>'
 		      				+'<td class="text-center edit1 batchNumber">'+o.batchNumber+'</td>'
-		      				+'<td class="text-center edit2 planNumbers">'+o.planNumbers+'</td>'
 		      				+'<td class="text-center edit3 productName">'+o.productName+'</td>'
 		      				+'<td class="text-center edit4 contractNumber">'+(o.contractNumber!=null ? o.contractNumber : 0)+'</td>'
 		      				+'<td class="text-center  name contractPrice" style=" color:#c11f34">'+(o.contractPrice!=null ? o.contractPrice : 0)+'</td>'
