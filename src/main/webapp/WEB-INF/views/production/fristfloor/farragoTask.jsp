@@ -304,6 +304,9 @@
 									  		size:13,
 									  		type:1,
 									  		name:$('#name').val(),
+								  			bacth:$('#number').val(),
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(), 
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -348,6 +351,9 @@
 							  		size:13,
 							  		type:1,
 							  		name:$('#name').val(),
+						  			bacth:$('#number').val(),
+						  			orderTimeBegin:$("#startTime").val(),
+						  			orderTimeEnd:$("#endTime").val(), 
 						  	}
 							self.loadPagination(data)
 							layer.close(index);

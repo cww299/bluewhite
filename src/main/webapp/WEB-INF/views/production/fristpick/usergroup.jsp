@@ -1007,6 +1007,7 @@
 						    	  name=item.name
 						      }
 						      self.setCache(item.id); 
+						      console.log($(".dropdown-menu").parent().parent())
 						    	 return  name;
 					    },
 						//item是选中的数据

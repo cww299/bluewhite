@@ -47,12 +47,6 @@
 										<i class="icon-search icon-on-right bigger-110"></i>
 									</button>
 								</span>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-danger  btn-sm btn-3d start">
-									一键删除
-									</button>
-								</span>
 							</div>
 						</div>
 					</div>
@@ -63,12 +57,8 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                        	<th class="center">
-											<label> 
-											<input type="checkbox" class="ace checks" /> 
-											<span class="lbl"></span>
-											</label>
-											</th>
+                                        	<th class="text-center">乙方电话</th>
+                                        	<th class="text-center">乙方其他信息</th>
                                         	<th class="text-center">当月销售编号</th>
                                             <th class="text-center">合同签订日期</th>
                                             <th class="text-center">甲方</th>
@@ -83,25 +73,6 @@
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
-                                        <tr>
-                                    
-                                        	<td class="text-center"></td>
-                                        	<td class="text-center"></td>
-                                            <td class="text-center" style="padding: 9px 0px 2px 4px;"><input id="contractTime" placeholder="请输入时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#contractTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="border: none;width:90px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="aName" class="aName2"  data-provide="typeahead" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="bName" class="bName2" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="batchNumber" style="border: none;width:105px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="planNumbers" placeholder="可不填" style="border: none;width:60px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="ProductName" style="border: none;width:150px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="contractNumber" style="border: none;width:50px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"><input type="text" id="remarksPrice" placeholder="可不填" style="border: none;width:80px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"><button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增订单</button></td>
-                                    
-                                        </tr>
-                                    
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
@@ -116,67 +87,6 @@
                 </div>
             </section>
         </section>
-        <!--隐藏框 产品新增开始  -->
-        <!-- <div id="addDictDivType" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-				<div class="space-10"></div>
-				<div style="height: 30px"></div>
-				<form class="form-horizontal addDictDivTypeForm">
-				<div class="form-group">
-                                        <label class="col-sm-3 control-label">合同签订日期:</label>
-                                        <div class="col-sm-6">
-                                            <input id="contractTime" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#contractTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">甲方:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="aName" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">乙方:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="bName" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">当批批次号:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="batchNumber" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">当批产品名:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="ProductName" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">当批合同数量:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="contractNumber" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">预付款备注:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="remarksPrice" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">当批计划单号:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="planNumbers" class="form-control">
-                                        </div>
-                 </div>
-				</form>
-</div>
-</div> -->
- <!--隐藏框 产品新增结束  -->
- 
- 
  <div class="wrap">
 <div class="layer-right3" style="display: none;">
            <div class="panel-body">
@@ -280,7 +190,7 @@
 		      		  success: function (result) {
 		      			 $(result.data.rows).each(function(i,o){
 		      				var newDate=/\d{4}-\d{1,2}-\d{1,2}/g.exec(o.contractTime)
-		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
+		      				html +='<tr>'
 		      				+'<td class="hidden batch">'+o.id+'</td>'
 		      				+'<td class="text-center  salesNumber">'+o.salesNumber+'</td>'
 		      				+'<td class="text-center edit contractTime">'+newDate+'</td>'
@@ -292,7 +202,7 @@
 		      				+'<td class="text-center edit4 contractNumber">'+(o.contractNumber!=null ? o.contractNumber : 0)+'</td>'
 		      				+'<td class="text-center  name contractPrice" style=" color:#c11f34">'+(o.contractPrice!=null ? o.contractPrice : 0)+'</td>'
 		      				+'<td class="text-center edit5 remarksPrice">'+(o.remarksPrice!=null ? o.remarksPrice : "")+'</td>'
-		      				+'<td class="text-center  name"><input type="text" class="price2" value="'+(o.price!=null ? o.price : "")+'" style="border: none;width:70px; height:30px; background-color: #BFBFBF;"></td>'
+		      				+'<td class="text-center  name">'+(o.price!=null ? o.price : "")+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans Tips"  data-id='+o.id+' data-productname='+o.productName+' data-partynames='+o.partyNames+'>提示</button></td></tr>'
 							
 		      			}); 
@@ -319,31 +229,12 @@
 					   	layer.close(index);
 					   	 $("#tablecontent").html(html); 
 					   	self.loadEvents();
-					   self.checkeddto();
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
 					  }
 				  });
 			}
-			  this.checkeddto=function(){
-					
-					$(".checks").on('click',function(){
-						
-	                    if($(this).is(':checked')){ 
-				 			$('.checkboxId').each(function(){  
-	                    //此处如果用attr，会出现第三次失效的情况  
-	                     		$(this).prop("checked",true);
-				 			})
-	                    }else{
-	                    	$('.checkboxId').each(function(){ 
-	                    		$(this).prop("checked",false);
-	                    		
-	                    	})
-	                    }
-	                }); 
-					
-				}
 			this.loadEvents = function(){
 				//修改方法
 				$('.update').on('click',function(){
@@ -702,119 +593,7 @@
 					});
 			}
 			this.events = function(){
-				//新增小组
-				$('#addgroup').on('click',function(){
-					self.mater();
-					var _index;
-					var index;
-					var postData;
-					if($("#contractTime").val()==""){
-					return	layer.msg("请填写合同日期", {icon: 2});
-					}
-					if($("#aName").val()==""){
-						return	layer.msg("请填写甲方", {icon: 2});
-					}
-					if($("#bName").val()==""){
-						return	layer.msg("请填写乙方", {icon: 2});
-					}
-					if($("#batchNumber").val()==""){
-						return layer.msg("请填写批次号", {icon: 2});
-					}
-					if($("#ProductName").val()==""){
-						return layer.msg("请填写产品名", {icon: 2});
-					}
-					if($("#contractNumber").val()==""){
-						return layer.msg("请填写当批合同数量", {icon: 2});
-					}
-					if(self.getIndex()==""){
-						return layer.msg("甲方不是销售人员 请添加", {icon: 2});
-					}
-					  postData={
-							  contractTime:$("#contractTime").val(),
-							  firstNames:$("#aName").val(),
-							  partyNames:$("#bName").val(),
-							  batchNumber:$("#batchNumber").val(),
-							  planNumbers:$("#planNumbers").val(),
-							  productName:$("#ProductName").val(),
-							  contractNumber:$("#contractNumber").val(),
-							  remarksPrice:$("#remarksPrice").val(),
-							  firstNamesId:self.getIndex(),
-							  partyNamesId:self.getCache(),
-					  }
-					  $.ajax({
-							url:"${ctx}/fince/addOrder",
-							data:postData,
-				            traditional: true,
-							type:"post",
-							beforeSend:function(){
-								index = layer.load(1, {
-									  shade: [0.1,'#fff'] //0.1透明度的白色背景
-									});
-							},
-							
-							success:function(result){
-								if(0==result.code){
-									layer.msg("添加成功！", {icon: 1});
-									self.setCache(result.data.partyNamesId)
-								 self.loadPagination(data); 
-								 $("#batchNumber").val("")
-								 $("#ProductName").val("")
-								 $("#contractNumber").val("")
-								}else{
-									layer.msg("添加失败", {icon: 2});
-								}
-								
-								layer.close(index);
-							},error:function(){
-								layer.msg("操作失败！", {icon: 2});
-								layer.close(index);
-							}
-						});
-				})
-				//一键删除
-				$('.start').on('click',function(){
-					  var  that=$(".table-hover");
-					  var arr=new Array()//员工id
-					  	that.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
-							arr.push($(this).val());   
-						});
-					  var postData = {
-								ids:arr,
-						}
-						
-						var index;
-						 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
-						$.ajax({
-							url:"${ctx}/fince/delete",
-							data:postData,
-							traditional: true,
-							type:"GET",
-							beforeSend:function(){
-								index = layer.load(1, {
-									  shade: [0.1,'#fff'] //0.1透明度的白色背景
-									});
-							},
-							
-							success:function(result){
-								if(0==result.code){
-								layer.msg("删除成功！", {icon: 1});
-								var data = {
-					        			page:self.getCount(),
-								  		size:13,
-							  	}
-								self.loadPagination(data)
-								layer.close(index);
-								}else{
-									layer.msg("删除失败！", {icon: 2});
-									layer.close(index);
-								}
-							},error:function(){
-								layer.msg("操作失败！", {icon: 2});
-								layer.close(index);
-							}
-						});
-						 })
-				})
+			
 			}
    	}
    			var login = new Login();

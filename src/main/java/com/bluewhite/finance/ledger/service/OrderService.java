@@ -13,4 +13,6 @@ public interface OrderService extends BaseCRUDService<Order,Long>{
 	public PageResult<Order>  findPages(Order order, PageParameter page);
 
 	public void addOrder(Order order);
+	
+	public void deleteOrder(String ids);
 }

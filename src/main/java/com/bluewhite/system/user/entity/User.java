@@ -422,6 +422,13 @@ public class User extends BaseEntity<Long> {
 	private Integer type;
 
 	/**
+	 * 销售人员区分字段（1是销售人员）
+	 */
+	@Column(name = "sale")
+	private Integer sale;
+	
+	
+	/**
 	 * 权限
 	 */
 	@Transient
@@ -490,6 +497,14 @@ public class User extends BaseEntity<Long> {
 	
 	
 	
+
+	public Integer getSale() {
+		return sale;
+	}
+
+	public void setSale(Integer sale) {
+		this.sale = sale;
+	}
 
 	public String getTemporarilyName() {
 		return temporarilyName;
