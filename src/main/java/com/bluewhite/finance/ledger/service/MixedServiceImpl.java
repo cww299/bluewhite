@@ -9,16 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.finance.ledger.dao.ContactDao;
-import com.bluewhite.finance.ledger.dao.CustomerDao;
+import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.finance.ledger.dao.BillDao;
 import com.bluewhite.finance.ledger.dao.MixedDao;
-import com.bluewhite.finance.ledger.entity.Contact;
-import com.bluewhite.finance.ledger.entity.Customer;
+import com.bluewhite.finance.ledger.entity.Bill;
 import com.bluewhite.finance.ledger.entity.Mixed;
 
 @Service
@@ -26,6 +24,11 @@ public class MixedServiceImpl extends BaseServiceImpl<Mixed, Long> implements Mi
 	 
 	@Autowired
 	private MixedDao dao;
+	
+	@Autowired
+	private BillDao billdao;
+	
+	
 	@Override
 	public PageResult<Mixed> findPages(Mixed param, PageParameter page) {
 		Page<Mixed> pages = dao.findAll((root,query,cb) -> {
@@ -44,6 +47,14 @@ public class MixedServiceImpl extends BaseServiceImpl<Mixed, Long> implements Mi
 	@Override
 	@Transactional
 	public void addMixed(Mixed mixed) {
+		
+		Bill bill = billdao.findByPartyNamesIdAndBillDateBetween(mixed.getMixPartyNamesId(),DatesUtil.getFirstDayOfMonth(mixed.getMixtSubordinateTime()),	DatesUtil.getLastDayOfMonth(mixed.getMixtSubordinateTime()));
+		if(bill!=null){
+			List<Mixed> mixedList = dao.findByMixPartyNamesIdAndMixtSubordinateTimeBetween(mixed.getMixPartyNamesId(),DatesUtil.getFirstDayOfMonth(mixed.getMixtSubordinateTime()),DatesUtil.getLastDayOfMonth(mixed.getMixtSubordinateTime()));
+			double	acceptPayable = mixedList.stream().filter(Mixed->Mixed.getMixPartyNamesId()==mixed.getMixPartyNamesId()).mapToDouble(Mixed::getMixPrice).sum();
+			bill.setAcceptPayable(acceptPayable);
+			billdao.save(bill);
+		}
 		dao.save(mixed);
 	}
 

@@ -21,7 +21,7 @@ public interface BillService extends BaseCRUDService<Bill,Long>{
 	
 	
 	/**
-	 *  在新增订单时新增乙方订单，按月份进行对乙方分组
+	 *  在新增订单时新增乙方账单，按月份进行对乙方分组
 	 * @param bill
 	 * @param page
 	 * @return

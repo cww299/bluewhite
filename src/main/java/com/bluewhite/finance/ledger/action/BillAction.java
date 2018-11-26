@@ -1,7 +1,6 @@
 package com.bluewhite.finance.ledger.action;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,7 +21,6 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.finance.ledger.entity.Bill;
-import com.bluewhite.finance.ledger.entity.Contact;
 import com.bluewhite.finance.ledger.service.BillService;
 
 /**
