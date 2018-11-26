@@ -32,6 +32,12 @@ public class Mixed extends BaseEntity<Long>{
 	
 	
 	/**
+	 * 乙方
+	 */
+	@Column(name = "mix_party_names_id")
+    private Long mixPartyNamesId;
+	
+	/**
 	 * 来往日期
 	 */
 	@Column(name = "mix_time")
@@ -50,6 +56,16 @@ public class Mixed extends BaseEntity<Long>{
 	 */
 	@Column(name = "mix_price")
     private Double mixPrice;
+
+
+	public Long getMixPartyNamesId() {
+		return mixPartyNamesId;
+	}
+
+
+	public void setMixPartyNamesId(Long mixPartyNamesId) {
+		this.mixPartyNamesId = mixPartyNamesId;
+	}
 
 
 	public Date getMixtSubordinateTime() {

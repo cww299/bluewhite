@@ -99,7 +99,7 @@
             <div class="tab-pane" id="profile1">
                       <!--查询开始  -->
           		 <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-8 col-sm-8  col-md-8">
+					<div class="col-xs-10 col-sm-10  col-md-10">
 						<form class="form-search" >
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
@@ -118,8 +118,11 @@
 								<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
+								
 								<td>&nbsp&nbsp</td>
 								<td>小组查询:</td><td id="groupp"></td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<td><input type="checkbox" id="check" value="1">详情</td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
@@ -586,12 +589,19 @@
 			}
 			this.events = function(){
 				$('.searchtask').on('click',function(){
+					var detail;
+					if($("#check").is(':checked')==true){
+						detail=1
+					}else{
+						detail=""
+					}
 					var data = {
 							type:3,
 							userName:$("#username").val(),
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
 				  			groupId:$('.selectcomplete').val(),
+				  			detail:detail,
 				  	}
 			
 				self.loadPagination(data);
