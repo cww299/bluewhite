@@ -29,6 +29,9 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.finance.attendance.dao.AttendancePayDao;
+import com.bluewhite.finance.attendance.entity.AttendancePay;
+import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.entity.Temporarily;
@@ -51,6 +54,9 @@ private static final Log log = Log.getLog(GroupAction.class);
 	@Autowired
 	private TemporarilyDao temporarilyDao;
 	
+	@Autowired
+	private AttendancePayDao attendancePayDao;
+	
 	
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -58,7 +64,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
 				.addRetainTerm(Group.class,"id","name","price","type","users","userName","userId","kindWork","womanUserName","womanUserId","remark")
-				.addRetainTerm(User.class,"id","userName")
+				.addRetainTerm(User.class,"id","userName","adjustTime","temporarily")
 				.addRetainTerm(BaseData.class, "id","name", "type");
 	}
 	
@@ -145,15 +151,31 @@ private static final Log log = Log.getLog(GroupAction.class);
 					Set<User> userlist  = groupAll.get(0).getUsers();
 					for(Temporarily temporarily : temporarilyList){
 						User user = userService.findOne(temporarily.getUserId());
+						user.setAdjustTime(temporarily.getWorkTime());
+						user.setTemporarily(1);
 						userlist.add(user);
 					}
 				}
 			}
 		}
 		
-		for(Group gr : groupAll){
-				Set<User> users= gr.getUsers().stream().filter(u -> u != null && u.getStatus() !=null && u.getStatus()!=1).collect(Collectors.toSet());
-				gr.setUsers(users);
+		for (Group gr : groupAll) {
+			Set<User> users = gr.getUsers().stream()
+					.filter(u -> u != null && u.getStatus() != null && u.getStatus() != 1).collect(Collectors.toSet());
+			for (User u : users) {
+				List<AttendancePay> attendancePay = attendancePayDao.findByUserIdAndTypeAndAllotTimeBetween(u.getId(),
+						group.getType(),
+						(temporarilyDate != null ? DatesUtil.getfristDayOftime(temporarilyDate)
+								: DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(null, group.getType()))),
+						(temporarilyDate != null ? DatesUtil.getLastDayOftime(temporarilyDate)
+								: DatesUtil.getLastDayOftime(ProTypeUtils.countAllotTime(null, group.getType()))));
+				if (attendancePay.size() > 0) {
+					u.setAdjustTime(attendancePay.get(0).getGroupWorkTime() != null
+							? attendancePay.get(0).getGroupWorkTime() : attendancePay.get(0).getWorkTime());
+				}
+				u.setTemporarily(0);
+			}
+			gr.setUsers(users);
 		}
 		cr.setData(clearCascadeJSON.format(groupAll).toJSON());
 		cr.setMessage("查询成功");
@@ -265,6 +287,32 @@ private static final Log log = Log.getLog(GroupAction.class);
 	}
 	
 	
+	/**
+	 * 修改借调人员
+	 * 
+	 * (1=一楼质检,2=一楼包装)
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/production/updateTemporarily", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateTemporarily(HttpServletRequest request,Temporarily temporarily){
+		CommonResponse cr = new CommonResponse();
+		if(temporarily.getGroupId()==null){
+			cr.setMessage("分组不能为空");
+			return cr;
+		}
+		if(StringUtils.isEmpty(temporarily.getUserId())){
+			Temporarily oldtemporarily = temporarilyDao.findOne(temporarily.getId());
+			BeanCopyUtils.copyNullProperties(oldtemporarily,temporarily);
+			temporarily.setCreatedAt(oldtemporarily.getCreatedAt());
+			temporarilyDao.save(temporarily);
+			cr.setMessage("修改成功");
+		}
+		
+		return cr;
+	}
+	
 	
 	/**
 	 * 查询借调人员
@@ -284,7 +332,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 		}
 		cr.setData(ClearCascadeJSON
 				.get()
-				.addRetainTerm(Temporarily.class,"id","UserId","userName","workTime","temporarilyDate","groupName"
+				.addRetainTerm(Temporarily.class,"id","userId","userName","workTime","temporarilyDate","groupName","groupId"
 						).format(temporarilyList).toJSON());
 		cr.setMessage("查询成功");
 		return cr;

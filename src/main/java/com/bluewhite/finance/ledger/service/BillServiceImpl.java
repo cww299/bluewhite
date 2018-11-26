@@ -21,10 +21,8 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.finance.ledger.dao.BillDao;
-import com.bluewhite.finance.ledger.dao.MixedDao;
 import com.bluewhite.finance.ledger.dao.OrderDao;
 import com.bluewhite.finance.ledger.entity.Bill;
-import com.bluewhite.finance.ledger.entity.Mixed;
 import com.bluewhite.finance.ledger.entity.Order;
 @Service
 public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements BillService{
@@ -33,8 +31,8 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 	private BillDao dao;
 	@Autowired
 	private OrderDao orderdao;
-	@Autowired
-	private MixedDao mixedDao;
+
+
 	@Override
 	public PageResult<Bill> findPages(Bill param, PageParameter page) {
 		

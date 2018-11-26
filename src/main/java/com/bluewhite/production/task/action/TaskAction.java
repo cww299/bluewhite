@@ -28,6 +28,7 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.procedure.entity.Procedure;
@@ -127,7 +128,16 @@ private static final Log log = Log.getLog(TaskAction.class);
 					return cr;
 				}
 				
-				taskService.upTask(task);
+				Task oldTask = taskService.findOne(task.getId());
+				BeanCopyUtils.copyNullProperties(oldTask,task);
+				task.setCreatedAt(oldTask.getCreatedAt());
+				try {
+					taskService.addTask(task);
+				} catch (Exception e) {
+					cr.setMessage(e.getMessage());
+					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+					return cr;
+				}
 				cr.setMessage("修改成功");
 			}else{
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

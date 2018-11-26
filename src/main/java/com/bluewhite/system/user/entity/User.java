@@ -494,9 +494,23 @@ public class User extends BaseEntity<Long> {
 	private String temporarilyName;
 	
 	
+	/**
+	 * 当组分配任务的调整时间
+	 */
+	@Transient
+	private Double adjustTime;
 	
 	
 	
+	
+
+	public Double getAdjustTime() {
+		return adjustTime;
+	}
+
+	public void setAdjustTime(Double adjustTime) {
+		this.adjustTime = adjustTime;
+	}
 
 	public Integer getSale() {
 		return sale;
