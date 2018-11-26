@@ -1079,10 +1079,10 @@
 												groupWorkTime:$(this).val()
 											}
 												$.ajax({
-													url:"${ctx}/finance/addAttendance",
+													url:"${ctx}/finance/updateAttendance",
 													data:postData,
 										            traditional: true,
-													type:"post",
+													type:"GET",
 													beforeSend:function(){
 														index = layer.load(1, {
 															  shade: [0.1,'#fff'] //0.1透明度的白色背景
@@ -1102,7 +1102,7 @@
 											}else{
 												var postData={
 														id:id,
-														workTime:$(this).val()
+														groupWorkTime:$(this).val()
 													}
 												$.ajax({
 													url:"${ctx}/production/updateTemporarily",
