@@ -74,6 +74,12 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
+                                        <th class="center">
+											<label> 
+											<input type="checkbox" class="ace checks" /> 
+											<span class="lbl"></span>
+											</label>
+											</th>
                                         	<th class="text-center">日期</th>
                                             <th class="text-center">日消费房租选择</th>
                                             <th class="text-center">日消费水电选择</th>

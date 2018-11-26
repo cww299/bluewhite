@@ -45,7 +45,7 @@ public class MixedAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(Mixed.class,"id","mixtSubordinateTime","mixPartyNames","mixtTime","mixDetailed","mixPrice");
+				.addRetainTerm(Mixed.class,"id","mixtSubordinateTime","mixPartyNames","mixtTime","mixDetailed","mixPrice","mixPartyNamesId");
 	}
 	
 	/**

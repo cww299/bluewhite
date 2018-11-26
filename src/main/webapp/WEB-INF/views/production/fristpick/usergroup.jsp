@@ -392,10 +392,65 @@
 							html +='<tr><td class="center reste"><label> <input type="checkbox" class="stuCheckBoxt" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 			      				+'<td class="text-center  bacthNumber">'+o.userName+'</td>'
 			      				+'<td class="text-center edit allotTime">'+o.workTime+'</td>'
-			      				+'<td class="text-center edit allotTime">'+o.groupName+'</td>'
+			      				+'<td class="text-center edit allgroupName" data-id="'+o.id+'" data-groupid="'+o.groupId+'"></td>'
 			      				+'<td class="text-center edit allotTime">'+o.temporarilyDate+'</td></tr>'
 							})
 							 $('#tablecontentfv').html(html);
+							
+							var htmlth="";
+							var data = {
+						  			type:2,
+						  	}
+						    $.ajax({
+							      url:"${ctx}/production/getGroup",
+							      data:data,
+							      type:"GET",
+					      		  success: function (result) {
+					      			  $(result.data).each(function(k,j){
+					      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
+					      			  });  
+					      			 $('.allgroupName').html("<select class='form-control allselectcomplete'><option value="+""+">请选择&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>"+htmlth+"</select>") 
+							      $('.allselectcomplete').each(function(i,o){
+										var id=$(o).parent().data("groupid");
+										$(o).val(id);
+									})
+									 $(".allselectcomplete").change(function(){
+										var postData={
+												id:$(this).parent().data('id'),
+												groupId:$(this).val()
+										}
+										$.ajax({
+											url:"${ctx}/production/updateTemporarily",
+											data:postData,
+											type:"POST",
+											beforeSend:function(){
+												index = layer.load(1, {
+													  shade: [0.1,'#fff'] //0.1透明度的白色背景
+													});
+											},
+											
+											success:function(result){
+												if(0==result.code){
+												layer.msg("修改成功！", {icon: 1});
+												layer.close(index);
+												}else{
+													layer.msg("修改失败！", {icon: 1});
+													layer.close(index);
+												}
+											},error:function(){
+												layer.msg("操作失败！", {icon: 2});
+												layer.close(index);
+											}
+										});
+										
+										
+									})
+							      }
+							     
+							  });
+							
+							
+							
 							$(".checkalls").on('click',function(){
 			                    if($(this).is(':checked')){ 
 						 			$('.stuCheckBoxt').each(function(){  
