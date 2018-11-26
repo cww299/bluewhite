@@ -300,6 +300,12 @@ private static final Log log = Log.getLog(GroupAction.class);
 	@ResponseBody
 	public CommonResponse updateTemporarily(HttpServletRequest request,Temporarily temporarily){
 		CommonResponse cr = new CommonResponse();
+		
+		if(temporarily.getId()==null){
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("外调人员流水不能为空");
+			return cr;
+		}
 		if(StringUtils.isEmpty(temporarily.getUserId())){
 			Temporarily oldtemporarily = temporarilyDao.findOne(temporarily.getId());
 			BeanCopyUtils.copyNullProperties(oldtemporarily,temporarily);
