@@ -500,9 +500,23 @@ public class User extends BaseEntity<Long> {
 	@Transient
 	private Double adjustTime;
 	
+	/**
+	 * 当组分配任务的调整时间所在数据的id
+	 */
+	@Transient
+	private Long adjustTimeId;
 	
 	
-	
+
+
+
+	public Long getAdjustTimeId() {
+		return adjustTimeId;
+	}
+
+	public void setAdjustTimeId(Long adjustTimeId) {
+		this.adjustTimeId = adjustTimeId;
+	}
 
 	public Double getAdjustTime() {
 		return adjustTime;

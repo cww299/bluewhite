@@ -56,8 +56,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	@Autowired
 	private TemporarilyDao temporarilyDao;
 
-	@Autowired
-	private AttendancePayService attendancePayService;
 	
 	@Autowired
 	private AttendancePayDao attendancePayDao;
