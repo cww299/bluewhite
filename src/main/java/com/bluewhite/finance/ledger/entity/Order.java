@@ -130,7 +130,7 @@ public class Order extends BaseEntity<Long>{
     private Date ashoreTime;
 
 	/**
-	 * 核对完毕提示
+	 * 核对完毕提示(0 未核对 1已核对 ) 
 	 */
 	@Column(name = "ashore_check")
     private Integer ashoreCheckr;
@@ -155,8 +155,25 @@ public class Order extends BaseEntity<Long>{
     private Double disputePrice;
 	
 	
+	/**
+	 * 到岸合同价
+	 */
+	@Column(name = "ashore_price")
+    private Double ashorePrice;
 	
 	
+	
+	
+	public Double getAshorePrice() {
+		return ashorePrice;
+	}
+
+
+	public void setAshorePrice(Double ashorePrice) {
+		this.ashorePrice = ashorePrice;
+	}
+
+
 	public Integer getAshoreNumber() {
 		return ashoreNumber;
 	}

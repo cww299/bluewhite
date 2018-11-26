@@ -48,7 +48,7 @@ public class OrderAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(Order.class,"id","salesNumber","contractTime","batchNumber","planNumbers","productName","contractNumber","contractPrice","remarksPrice","firstNames","partyNames","price","partyNamesId","contact")
+				.addRetainTerm(Order.class,"id","salesNumber","contractTime","batchNumber","planNumbers","productName","contractNumber","contractPrice","remarksPrice","firstNames","partyNames","price","partyNamesId","contact","ashoreNumber","ashoreTime","ashoreCheckr","disputeNumber","roadNumber","disputePrice","ashorePrice")
 				.addRetainTerm(Contact.class,"id","conPartyNames","conPhone","conWechat");
 	}
 	

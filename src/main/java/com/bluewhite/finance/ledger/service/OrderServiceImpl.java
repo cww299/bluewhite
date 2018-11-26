@@ -48,7 +48,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
-
+			if (param.getAshoreCheckr() != null) {
+				predicate.add(cb.equal(root.get("ashoreCheckr").as(Long.class), param.getAshoreCheckr()));
+			}
 			if (!StringUtils.isEmpty(param.getContractTime())) {
 
 				predicate.add(cb.between(root.get("contractTime").as(Date.class),
@@ -100,6 +102,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		}
 		if(order.getId() != null && order.getAshoreNumber()!=null){
 			order.setRoadNumber(order.getContractNumber()-order.getAshoreNumber()-order.getDisputeNumber());
+			order.setAshorePrice(order.getAshoreNumber()*order.getPrice());
 		}
 		Contact contact=null;
 		if(order.getPartyNamesId()==null){

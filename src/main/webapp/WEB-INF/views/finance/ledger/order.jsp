@@ -740,6 +740,7 @@
 							  remarksPrice:$("#remarksPrice").val(),
 							  firstNamesId:self.getIndex(),
 							  partyNamesId:self.getCache(),
+							  ashoreCheckr:0,
 					  }
 					  $.ajax({
 							url:"${ctx}/fince/addOrder",
