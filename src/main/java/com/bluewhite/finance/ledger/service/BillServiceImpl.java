@@ -77,9 +77,6 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 		bill.setOffshorePay(OffshorePay);
 		double	acceptPay = orderList.stream().filter(Order->Order.getPartyNamesId()==order.getPartyNamesId()).mapToDouble(Order::getAshorePrice).sum();
 		bill.setAcceptPay(acceptPay);
-//		List<Mixed> mixedList = mixedDao.findByPartyNamesIdAndMixtSubordinateTimeBetween(order.getPartyNamesId(),DatesUtil.getFirstDayOfMonth(order.getContractTime()),DatesUtil.getLastDayOfMonth(order.getContractTime()));
-//		double	acceptPayable = mixedList.stream().filter(Mixed->Mixed.getPartyNamesId()==order.getPartyNamesId()).mapToDouble(Mixed::getMixPrice).sum();
-//		bill.setAcceptPayable(acceptPayable);
 		return dao.save(bill);
 	}
 	
