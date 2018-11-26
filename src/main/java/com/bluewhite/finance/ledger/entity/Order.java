@@ -153,6 +153,70 @@ public class Order extends BaseEntity<Long>{
 	 */
 	@Column(name = "dispute_price")
     private Double disputePrice;
+	
+	
+	
+	
+	public Integer getAshoreNumber() {
+		return ashoreNumber;
+	}
+
+
+	public void setAshoreNumber(Integer ashoreNumber) {
+		this.ashoreNumber = ashoreNumber;
+	}
+
+
+	public Date getAshoreTime() {
+		return ashoreTime;
+	}
+
+
+	public void setAshoreTime(Date ashoreTime) {
+		this.ashoreTime = ashoreTime;
+	}
+
+
+	public Integer getAshoreCheckr() {
+		return ashoreCheckr;
+	}
+
+
+	public void setAshoreCheckr(Integer ashoreCheckr) {
+		this.ashoreCheckr = ashoreCheckr;
+	}
+
+
+	public Integer getDisputeNumber() {
+		return disputeNumber;
+	}
+
+
+	public void setDisputeNumber(Integer disputeNumber) {
+		this.disputeNumber = disputeNumber;
+	}
+
+
+	public Integer getRoadNumber() {
+		return roadNumber;
+	}
+
+
+	public void setRoadNumber(Integer roadNumber) {
+		this.roadNumber = roadNumber;
+	}
+
+
+	public Double getDisputePrice() {
+		return disputePrice;
+	}
+
+
+	public void setDisputePrice(Double disputePrice) {
+		this.disputePrice = disputePrice;
+	}
+
+
 	public Contact getContact() {
 		return contact;
 	}

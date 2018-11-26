@@ -70,6 +70,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	public void addOrder(Order order) {
 		order.setPrice(NumUtils.setzro(order.getPrice()));
 		order.setContractNumber(NumUtils.setzro(order.getContractNumber()));
+		order.setAshoreNumber(NumUtils.setzro(order.getAshoreNumber()));
+		order.setDisputeNumber(NumUtils.setzro(order.getDisputeNumber()));
 		List<Order> orderList = this.findPages(order, new PageParameter()).getRows();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
 		String w = dateFormat.format(order.getContractTime());
@@ -95,6 +97,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				customer.setCusPrice(order.getPrice());
 				customerDao.save(customer);
 			}
+		}
+		if(order.getId() != null && order.getAshoreNumber()!=null){
+			order.setRoadNumber(order.getContractNumber()-order.getAshoreNumber()-order.getDisputeNumber());
 		}
 		Contact contact=null;
 		if(order.getPartyNamesId()==null){

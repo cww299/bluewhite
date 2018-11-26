@@ -68,7 +68,11 @@
                                             <th class="text-center">当批合同数量</th>
                                             <th class="text-center">当批合同总价（元）</th>
                                             <th class="text-center">预付款备注</th>
-                                            <th class="text-center">手动填写当批单只价格</th>
+                                            <th class="text-center">单只价格</th>
+                                            <th class="text-center">到岸数量</th>
+                                            <th class="text-center">预计到款日期</th>
+                                            <th class="text-center">争议数字</th>
+                                            <th class="text-center">争议单价</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -203,8 +207,8 @@
 		      				+'<td class="text-center  name contractPrice" style=" color:#c11f34">'+(o.contractPrice!=null ? o.contractPrice : 0)+'</td>'
 		      				+'<td class="text-center edit5 remarksPrice">'+(o.remarksPrice!=null ? o.remarksPrice : "")+'</td>'
 		      				+'<td class="text-center  name">'+(o.price!=null ? o.price : "")+'</td>'
+		      				
 		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans Tips"  data-id='+o.id+' data-productname='+o.productName+' data-partynames='+o.partyNames+'>提示</button></td></tr>'
-							
 		      			}); 
 		      			self.setCount(result.data.pageNum)
 				        //显示分页
