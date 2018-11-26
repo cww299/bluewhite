@@ -21,11 +21,11 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.finance.ledger.dao.BillDao;
+import com.bluewhite.finance.ledger.dao.MixedDao;
 import com.bluewhite.finance.ledger.dao.OrderDao;
 import com.bluewhite.finance.ledger.entity.Bill;
+import com.bluewhite.finance.ledger.entity.Mixed;
 import com.bluewhite.finance.ledger.entity.Order;
-import com.bluewhite.production.bacth.entity.Bacth;
-import com.bluewhite.production.finance.entity.NonLine;
 @Service
 public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements BillService{
 
@@ -33,7 +33,8 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 	private BillDao dao;
 	@Autowired
 	private OrderDao orderdao;
-	
+	@Autowired
+	private MixedDao mixedDao;
 	@Override
 	public PageResult<Bill> findPages(Bill param, PageParameter page) {
 		
@@ -74,9 +75,12 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 		List<Order> orderList = orderdao.findByPartyNamesIdAndContractTimeBetween(order.getPartyNamesId(),DatesUtil.getFirstDayOfMonth(order.getContractTime()),DatesUtil.getLastDayOfMonth(order.getContractTime()));
 		double	OffshorePay = orderList.stream().filter(Order->Order.getPartyNamesId()==order.getPartyNamesId()).mapToDouble(Order::getContractPrice).sum();
 		bill.setOffshorePay(OffshorePay);
-		
-		
-		return bill;
+		double	acceptPay = orderList.stream().filter(Order->Order.getPartyNamesId()==order.getPartyNamesId()).mapToDouble(Order::getAshorePrice).sum();
+		bill.setAcceptPay(acceptPay);
+//		List<Mixed> mixedList = mixedDao.findByPartyNamesIdAndMixtSubordinateTimeBetween(order.getPartyNamesId(),DatesUtil.getFirstDayOfMonth(order.getContractTime()),DatesUtil.getLastDayOfMonth(order.getContractTime()));
+//		double	acceptPayable = mixedList.stream().filter(Mixed->Mixed.getPartyNamesId()==order.getPartyNamesId()).mapToDouble(Mixed::getMixPrice).sum();
+//		bill.setAcceptPayable(acceptPayable);
+		return dao.save(bill);
 	}
 	
 	

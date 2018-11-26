@@ -44,6 +44,9 @@ public class MixedServiceImpl extends BaseServiceImpl<Mixed, Long> implements Mi
 	@Override
 	@Transactional
 	public void addMixed(Mixed mixed) {
+		
+		
+		
 		dao.save(mixed);
 	}
 
