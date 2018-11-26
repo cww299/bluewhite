@@ -153,6 +153,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 						User user = userService.findOne(temporarily.getUserId());
 						user.setAdjustTime(temporarily.getWorkTime());
 						user.setTemporarily(1);
+						user.setAdjustTimeId(temporarily.getId());
 						userlist.add(user);
 					}
 				}
@@ -173,6 +174,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 					u.setAdjustTime(attendancePay.get(0).getGroupWorkTime() != null
 							? attendancePay.get(0).getGroupWorkTime() : attendancePay.get(0).getWorkTime());
 				}
+				u.setAdjustTimeId(attendancePay.get(0).getId());
 				u.setTemporarily(0);
 			}
 			gr.setUsers(users);
