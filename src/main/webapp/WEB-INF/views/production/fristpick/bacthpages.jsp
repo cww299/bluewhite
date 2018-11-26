@@ -1064,11 +1064,70 @@
 										$(result.data).each(function(i,o){
 										
 										$(o.users).each(function(i,o){
-											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input>-<input style="width:80px;" value="" /></div>'
+											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input>-<input style="width:80px;" class="time2" data-id="'+o.adjustTimeId+'" data-temporarily="'+o.temporarily+'" value="'+(o.adjustTime!=null ? o.adjustTime : "")+'" /></div>'
 										})
 										})
 										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
 										$('.select').html(s+htmltwo)
+										
+										$(".time2").blur(function(){
+											var a=$(this).data('temporarily')
+											var id=$(this).data('id')
+											if(a==0){
+											var postData={
+												id:id,
+												groupWorkTime:$(this).val()
+											}
+												$.ajax({
+													url:"${ctx}/finance/addAttendance",
+													data:postData,
+										            traditional: true,
+													type:"post",
+													beforeSend:function(){
+														index = layer.load(1, {
+															  shade: [0.1,'#fff'] //0.1透明度的白色背景
+															});
+													},
+													success:function(result){
+														if(0==result.code){
+														}else{
+															layer.msg("失败", {icon: 2});
+														}
+														layer.close(index);
+													},error:function(){
+														layer.msg("操作失败！", {icon: 2});
+														layer.close(index);
+													}
+												}); 
+											}else{
+												var postData={
+														id:id,
+														workTime:$(this).val()
+													}
+												$.ajax({
+													url:"${ctx}/production/updateTemporarily",
+													data:postData,
+										            traditional: true,
+													type:"post",
+													beforeSend:function(){
+														index = layer.load(1, {
+															  shade: [0.1,'#fff'] //0.1透明度的白色背景
+															});
+													},
+													success:function(result){
+														if(0==result.code){
+														}else{
+															layer.msg("失败", {icon: 2});
+														}
+														layer.close(index);
+													},error:function(){
+														layer.msg("操作失败！", {icon: 2});
+														layer.close(index);
+													}
+												});
+											}
+										})
+										
 										$(".checkall").on('click',function(){
 							                    if($(this).is(':checked')){ 
 										 			$('.stuCheckBox').each(function(){  
