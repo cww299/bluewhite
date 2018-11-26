@@ -40,7 +40,7 @@ public class Temporarily extends BaseEntity<Long>{
 	 * 外调时间
 	 */
 	@Column(name = "temporarily_date")
-	private Date temporarilyDate;
+	private Date temporarilyDate;	
 	
 	
 	/**
