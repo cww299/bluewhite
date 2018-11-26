@@ -32,7 +32,7 @@ public class Mixed extends BaseEntity<Long>{
 	
 	
 	/**
-	 * 乙方
+	 * 乙方id
 	 */
 	@Column(name = "mix_party_names_id")
     private Long mixPartyNamesId;
