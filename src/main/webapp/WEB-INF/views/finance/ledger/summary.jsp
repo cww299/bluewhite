@@ -71,24 +71,15 @@
 											</label>
 											</th>
                                             <th class="text-center">乙方</th>
-                                            <th class="text-center">往来日期</th>
-                                            <th class="text-center">往来明细</th>
-                                            <th class="text-center">往来金额</th>
+                                            <th class="text-center">当表已确定离岸货款值</th>
+                                            <th class="text-center">当表经业务员跟进客户已认可的货款</th>
+                                            <th class="text-center">当表双方都认可的除货款以外的应付</th>
+                                            <th class="text-center">当表在途和有争议货款</th>
+                                            <th class="text-center">当月未到货款</th>
+                                            <th class="text-center">当月客户多付货款转下月应付</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
-                                        <tr>
-                                    
-                                        	<td class="text-center"></td>
-                                            <td class="text-center"><input type="text" id="bName" class="bName2 text-center" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center" style="padding: 9px 0px 2px 350px;"><input id="mixtTime" placeholder="请输入时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#mixtTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="border: none;width:90px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="mixDetailed"  style="border: none;width:150px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="mixPrice" style="border: none;width:60px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增</button></td>
-                                    
-                                        </tr>
-                                    
                                     <tbody id="tablecontent">
                                         
                                     </tbody>
@@ -208,7 +199,6 @@
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
     <script src="${ctx }/static/js/vendor/typeahead.js"></script>
     <script src="${ctx }/static/js/vendor/mSlider.min.js"></script>
-    <script src="${ctx }/static/plugins/bootstrap/js/autocomplete.js"></script>
     <script>
    jQuery(function($){
    	var Login = function(){
@@ -282,7 +272,7 @@
 			    var index;
 			    var html = '';
 			    $.ajax({
-				      url:"${ctx}/fince/getMixes",
+				      url:"${ctx}/fince/getBill",
 				      data:data,
 				      type:"GET",
 				      beforeSend:function(){
@@ -292,13 +282,15 @@
 					  }, 
 		      		  success: function (result) {
 		      			 $(result.data.rows).each(function(i,o){
-		      				var newDate=/\d{4}-\d{1,2}-\d{1,2}/g.exec(o.mixtTime)
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="hidden batch">'+o.id+'</td>'
-		      				+'<td class="text-center  mixPartyNames">'+o.mixPartyNames+'</td>'
-		      				+'<td class="text-center edit mixtTime">'+newDate+'</td>'
-		      				+'<td class="text-center editt mixDetailed">'+o.mixDetailed+'</td>'
-		      				+'<td class="text-center editt mixPrice">'+o.mixPrice+'</td>'
+		      				+'<td class="text-center  mixPartyNames">'+o.partyNames+'</td>'
+		      				+'<td class="text-center edit offshorePay">'+o.offshorePay+'</td>'
+		      				+'<td class="text-center editt acceptPay">'+o.acceptPay+'</td>'
+		      				+'<td class="text-center editt acceptPayable">'+o.acceptPayable+'</td>'
+		      				+'<td class="text-center editt disputePay">'+o.disputePay+'</td>'
+		      				+'<td class="text-center editt nonArrivalPay">'+o.nonArrivalPay+'</td>'
+		      				+'<td class="text-center editt overpaymentPay">'+o.overpaymentPay+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans Tips"  data-id='+o.id+' data-productname='+o.productName+' data-partynames='+o.partyNames+'>提示</button></td></tr>'
 							
 		      			}); 
@@ -610,21 +602,7 @@
 				
 			}
 			this.mater=function(){
-				
-				
-				var proposals = ['百度1', '百度2', '百度3', '百度4','a1','a2','a3','a4','b1','b2','b3','b4'];
-				$('.bName2').autocomplete({
-				    hints: proposals,
-				    width: 300,
-				    height: 30,
-				    onSubmit: function(text){
-				       /*  $('#message').html('Selected: <b>' + text + '</b>'); */
-				    }
-				});
-				
-				
-				
-			/* 	//提示乙方
+				//提示乙方
 				$(".bName2").typeahead({
 					//ajax 拿way数据
 					source : function(query, process) {
@@ -672,109 +650,9 @@
 						},
 
 						
-					}); */
+					});
 			}
 			this.events = function(){
-				//新增小组
-				$('#addgroup').on('click',function(){
-					self.mater();
-					var _index;
-					var index;
-					var postData;
-					if($("#bName").val()==""){
-						return	layer.msg("请填写乙方", {icon: 2});
-					}
-					if($("#mixPrice").val()==""){
-						return layer.msg("请填写来往价格", {icon: 2});
-					}
-					if($("#mixtTime").val()==""){
-						return layer.msg("请填写来往日期", {icon: 2});
-					}
-					if(self.getCache()==""){
-						return layer.msg("乙方不在客户表中 请添加", {icon: 2});
-					}
-					  postData={
-							  mixDetailed:$("#mixDetailed").val(),
-							  mixPrice:$("#mixPrice").val(),
-							  mixtTime:$("#mixtTime").val(),
-							  mixPartyNames:$("#bName").val(),
-							  mixPartyNamesId:self.getCache(),
-							  mixtSubordinateTime:$('#startTime').val(),
-					  }
-					  $.ajax({
-							url:"${ctx}/fince/addMixed",
-							data:postData,
-				            traditional: true,
-							type:"post",
-							beforeSend:function(){
-								index = layer.load(1, {
-									  shade: [0.1,'#fff'] //0.1透明度的白色背景
-									});
-							},
-							
-							success:function(result){
-								if(0==result.code){
-									layer.msg("添加成功！", {icon: 1});
-								 self.loadPagination(data); 
-									$("#mixPrice").val(""),
-									$("#mixDetailed").val("")
-									$("#mixtTime").val("")
-									$("#bName").val("")
-								}else{
-									layer.msg("添加失败", {icon: 2});
-								}
-								
-								layer.close(index);
-							},error:function(){
-								layer.msg("操作失败！", {icon: 2});
-								layer.close(index);
-							}
-						});
-				})
-				//一键删除
-				$('.start').on('click',function(){
-					  var  that=$(".table-hover");
-					  var arr=new Array()//员工id
-					  	that.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
-							arr.push($(this).val());   
-						});
-					  var postData = {
-								ids:arr,
-						}
-						
-						var index;
-						 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
-						$.ajax({
-							url:"${ctx}/fince/delete",
-							data:postData,
-							traditional: true,
-							type:"GET",
-							beforeSend:function(){
-								index = layer.load(1, {
-									  shade: [0.1,'#fff'] //0.1透明度的白色背景
-									});
-							},
-							
-							success:function(result){
-								if(0==result.code){
-								layer.msg("删除成功！", {icon: 1});
-								var data = {
-					        			page:self.getCount(),
-								  		size:13,
-							  	}
-								self.loadPagination(data)
-								layer.close(index);
-								}else{
-									layer.msg("删除失败！", {icon: 2});
-									layer.close(index);
-								}
-							},error:function(){
-								layer.msg("操作失败！", {icon: 2});
-								layer.close(index);
-							}
-						});
-						 })
-				})
 			}
    	}
    			var login = new Login();

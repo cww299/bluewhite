@@ -20,6 +20,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.finance.ledger.dao.BillDao;
 import com.bluewhite.finance.ledger.dao.ContactDao;
 import com.bluewhite.finance.ledger.dao.CustomerDao;
 import com.bluewhite.finance.ledger.dao.OrderDao;
@@ -36,6 +37,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	private CustomerDao customerDao;
 	@Autowired
 	private ContactDao contactDao;
+	@Autowired
+	private BillService billService;
 	@Override
 	public PageResult<Order> findPages(Order param, PageParameter page) {
 		if (!StringUtils.isEmpty(param.getContractTime())) {
@@ -103,6 +106,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		if(order.getId() != null && order.getAshoreNumber()!=null){
 			order.setRoadNumber(order.getContractNumber()-order.getAshoreNumber()-order.getDisputeNumber());
 			order.setAshorePrice(order.getAshoreNumber()*order.getPrice());
+			
+			billService.addBill(order);
+			
 		}
 		Contact contact=null;
 		if(order.getPartyNamesId()==null){

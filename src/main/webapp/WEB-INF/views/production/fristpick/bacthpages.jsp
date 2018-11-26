@@ -1064,7 +1064,7 @@
 										$(result.data).each(function(i,o){
 										
 										$(o.users).each(function(i,o){
-											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input></div>'
+											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input>-<input style="width:80px;" value="" /></div>'
 										})
 										})
 										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
