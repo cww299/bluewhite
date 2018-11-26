@@ -1,14 +1,22 @@
 package com.bluewhite.finance.ledger.action;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.bluewhite.common.ClearCascadeJSON;
+import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
@@ -35,7 +43,7 @@ private static final Log log = Log.getLog(BillAction.class);
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(Bill.class,"id","partyNames");
+				.addRetainTerm(Bill.class,"id","partyNames","partyNamesId","offshorePay","acceptPay","acceptPayable","disputePay","nonArrivalPay","overpaymentPay","dateToPay");
 	}
 	
 	
@@ -60,7 +68,7 @@ private static final Log log = Log.getLog(BillAction.class);
 	
 	
 	/**
-	 * 通过乙方账单，添加日期的金额和备注
+	 * 通过乙方账单，获取每天日期的金额和备注
 	 * 
 	 * @param request 请求
 	 * @return cr
@@ -68,13 +76,41 @@ private static final Log log = Log.getLog(BillAction.class);
 	 */
 	@RequestMapping(value = "/fince/addBillDate", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse addBillDate(HttpServletRequest request,long id) {
+	public CommonResponse addBillDate(HttpServletRequest request,Long id,String time) {
 		CommonResponse cr = new CommonResponse();
-		
+		Object obj = billService.addBillDate(id,time);
+		cr.setData(obj);
 		cr.setMessage("查询成功");
 		return cr;
 	}
 	
+	
+	/**
+	 * 通过乙方账单，修改每天日期的金额和备注
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/fince/updateBill", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse updateBill(HttpServletRequest request,Bill bill) {
+		CommonResponse cr = new CommonResponse();
+		bill = billService.updateBill(bill);
+		cr.setData(bill);
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	@InitBinder
+	protected void initBinder(WebDataBinder binder) {
+		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
+				DateTimePattern.DATEHMS.getPattern());
+		binder.registerCustomEditor(java.util.Date.class, null,
+				new CustomDateEditor(dateTimeFormat, true));
+		binder.registerCustomEditor(byte[].class,
+				new ByteArrayMultipartFileEditor());
+	}
 	
 	
 

@@ -1,5 +1,7 @@
 package com.bluewhite.finance.ledger.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -27,6 +29,12 @@ public class Bill extends BaseEntity<Long>{
 	 */
 	@Column(name = "party_names")
 	private String partyNames;
+	
+	/**
+	 * 账单日期
+	 */
+	@Column(name = "bill_date")
+	private Date billDate;
 
 	/**
 	 * 当表已确定离岸货款值
@@ -63,14 +71,39 @@ public class Bill extends BaseEntity<Long>{
 	 */
 	@Column(name = "overpayment_pay")
 	private Double overpaymentPay;
+	
+	
+	/**
+	 * 当月货款已到
+	 */
+	@Column(name = "arrival_pay")
+	private Double arrivalPay;
+	
 
 	/**
 	 * 所有日期,所对应的付款(以及对应的批注)
-	 * 
-	 * @return
 	 */
 	@Column(name = "date_to_pay")
 	private String dateToPay;
+	
+	
+	
+
+	public Double getArrivalPay() {
+		return arrivalPay;
+	}
+
+	public void setArrivalPay(Double arrivalPay) {
+		this.arrivalPay = arrivalPay;
+	}
+
+	public Date getBillDate() {
+		return billDate;
+	}
+
+	public void setBillDate(Date billDate) {
+		this.billDate = billDate;
+	}
 
 	public Long getPartyNamesId() {
 		return partyNamesId;

@@ -6,6 +6,7 @@ import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.finance.ledger.entity.Bill;
+import com.bluewhite.finance.ledger.entity.Order;
 
 @Service
 public interface BillService extends BaseCRUDService<Bill,Long>{
@@ -16,6 +17,31 @@ public interface BillService extends BaseCRUDService<Bill,Long>{
 	 * @param page
 	 * @return
 	 */
-	PageResult<Bill> findPages(Bill bill, PageParameter page);
+	public PageResult<Bill> findPages(Bill bill, PageParameter page);
+	
+	
+	/**
+	 *  在新增订单时新增乙方订单，按月份进行对乙方分组
+	 * @param bill
+	 * @param page
+	 * @return
+	 */
+	public Bill addBill(Order order);
+
+	/**
+	 * 
+	 * @param id
+	 * @param time
+	 * @return
+	 */
+	public Object addBillDate(Long id, String time);
+
+	/**
+	 * 修改账单每日详细
+	 * @param bill
+	 * @return
+	 */
+	public Bill updateBill(Bill bill);
+	
 
 }
