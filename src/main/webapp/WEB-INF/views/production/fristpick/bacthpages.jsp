@@ -1073,33 +1073,7 @@
 										$(".time2").blur(function(){
 											var a=$(this).data('temporarily')
 											var id=$(this).data('id')
-											if(a==0){
-											var postData={
-												id:id,
-												groupWorkTime:$(this).val()
-											}
-												$.ajax({
-													url:"${ctx}/finance/updateAttendance",
-													data:postData,
-										            traditional: true,
-													type:"GET",
-													beforeSend:function(){
-														index = layer.load(1, {
-															  shade: [0.1,'#fff'] //0.1透明度的白色背景
-															});
-													},
-													success:function(result){
-														if(0==result.code){
-														}else{
-															layer.msg("失败", {icon: 2});
-														}
-														layer.close(index);
-													},error:function(){
-														layer.msg("操作失败！", {icon: 2});
-														layer.close(index);
-													}
-												}); 
-											}else{
+											if(a==1){
 												var postData={
 														id:id,
 														groupWorkTime:$(this).val()
@@ -1121,10 +1095,36 @@
 														}
 														layer.close(index);
 													},error:function(){
-														layer.msg("操作失败！", {icon: 2});
+														layer.msg(result.message, {icon: 2});
 														layer.close(index);
 													}
 												});
+											}else{
+												var postData={
+														id:id,
+														groupWorkTime:$(this).val()
+													}
+														$.ajax({
+															url:"${ctx}/finance/updateAttendance",
+															data:postData,
+												            traditional: true,
+															type:"GET",
+															beforeSend:function(){
+																index = layer.load(1, {
+																	  shade: [0.1,'#fff'] //0.1透明度的白色背景
+																	});
+															},
+															success:function(result){
+																if(0==result.code){
+																}else{
+																	layer.msg(result.message, {icon: 2});
+																}
+																layer.close(index);
+															},error:function(){
+																layer.msg("操作失败！", {icon: 2});
+																layer.close(index);
+															}
+														});
 											}
 										})
 										
