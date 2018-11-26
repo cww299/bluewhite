@@ -63,16 +63,18 @@
                                             <th class="text-center">合同签订日期</th>
                                             <th class="text-center">甲方</th>
                                             <th class="text-center">乙方</th>
-                                            <th class="text-center">当批批次号</th>
-                                            <th class="text-center">当批产品名</th>
-                                            <th class="text-center">当批合同数量</th>
-                                            <th class="text-center">当批合同总价（元）</th>
+                                            <th class="text-center">批次号</th>
+                                            <th class="text-center">产品名</th>
+                                            <th class="text-center">合同数量</th>
+                                            <th class="text-center">合同总价（元）</th>
                                             <th class="text-center">预付款备注</th>
                                             <th class="text-center">单只价格</th>
-                                            <th class="text-center">未到岸</th>
+                                            <th class="text-center">在途数量</th>
                                             <th class="text-center">到岸数量</th>
                                             <th class="text-center">预计借款日期</th>
                                             <th class="text-center">争议数字</th>
+                                            <th class="text-center">到岸价格</th>
+                                            <th class="text-center">核对审核</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent">
@@ -89,6 +91,29 @@
                 </div>
             </section>
         </section>
+ <div class="wrap">
+<div class="layer-right3" style="display: none;">
+           <div class="panel-body">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">当批产品名</th>
+                                            <th class="text-center">乙方选择</th>
+                                            <th class="text-center">单只价格（元）</th>
+                                            <th class="text-center">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablecontent2">
+                                        
+                                    </tbody>
+                                    
+                                </table>
+                                <div id="pager2" class="pull-right">
+                                
+                                </div>
+                            </div>
+				</div>
+  </div>
  
  
  
@@ -145,7 +170,6 @@
 			 var data={
 						page:1,
 				  		size:13,
-				  		ashoreCheckr:0,
 				} 
 			this.init = function(){
 				
@@ -194,24 +218,33 @@
 		      				var dt = new Date(temper.replace(/-/,"/"))//转换成日期格式
 		      				var date2=dt.getDate();//获取天数
 							var now2=year2+'-'+p(month2)+"-"+p(date2);
+		      				
+		      				var a;
+		      				if(o.ashoreCheckr==0){
+		      					a="未核对"
+		      				}else{
+		      					a="已核对"
+		      				}
 		      				html +='<tr>'
 		      				+'<td class="hidden batch" data-id='+o.id+'>'+o.id+'</td>'
 		      				+'<td class="text-center  salesNumber">'+o.contact.conPhone+'</td>'
 		      				+'<td class="text-center  salesNumber">'+o.contact.conWechat+'</td>'
 		      				+'<td class="text-center  salesNumber">'+o.salesNumber+'</td>'
-		      				+'<td class="text-center edit contractTime">'+newDate+'</td>'
-		      				+'<td class="text-center editt firstNames">'+o.firstNames+'</td>'
-		      				+'<td class="text-center editt partyNames">'+o.partyNames+'</td>'
-		      				+'<td class="text-center edit1 batchNumber">'+o.batchNumber+'</td>'
-		      				+'<td class="text-center edit3 productName">'+o.productName+'</td>'
-		      				+'<td class="text-center edit4 contractNumber">'+(o.contractNumber!=null ? o.contractNumber : 0)+'</td>'
-		      				+'<td class="text-center  name contractPrice" style=" color:#c11f34">'+(o.contractPrice!=null ? o.contractPrice : 0)+'</td>'
-		      				+'<td class="text-center edit5 remarksPrice">'+(o.remarksPrice!=null ? o.remarksPrice : "")+'</td>'
+		      				+'<td class="text-center  contractTime">'+newDate+'</td>'
+		      				+'<td class="text-center  firstNames">'+o.firstNames+'</td>'
+		      				+'<td class="text-center  partyNames">'+o.partyNames+'</td>'
+		      				+'<td class="text-center  batchNumber" >'+o.batchNumber+'</td>'
+		      				+'<td class="text-center  productName">'+o.productName+'</td>'
+		      				+'<td class="text-center edit  contractNumber" style=" color:#c11f34">'+(o.contractNumber!=null ? o.contractNumber : 0)+'</td>'
+		      				+'<td class="text-center  name contractPrice" >'+(o.contractPrice!=null ? o.contractPrice : 0)+'</td>'
+		      				+'<td class="text-center  remarksPrice">'+(o.remarksPrice!=null ? o.remarksPrice : "")+'</td>'
 		      				+'<td class="text-center  name">'+(o.price!=null ? o.price : "")+'</td>'
-		      				+'<td class="text-center  roadNumber">'+(o.roadNumber!=null ? o.roadNumber : o.contractNumber)+'</td>'
-		      				+'<td class="text-center  name"><input type="text" class="ashoreNumber text-center" value="'+(o.ashoreNumber!=null ? o.ashoreNumber : "")+'" style="border: none;width:70px; height:30px; background-color: #BFBFBF;"></td>'
+		      				+'<td class="text-center  roadNumber" >'+(o.roadNumber!=null ? o.roadNumber : o.contractNumber)+'</td>'
+		      				+'<td class="text-center  name" style=" color:#c11f34">'+(o.ashoreNumber!=null ? o.ashoreNumber : "")+'</td>'
 		      				+'<td class="text-center  ashoreTime">'+now2+'</td>'
-		      				+'<td class="text-center  name"><input type="text" class="disputeNumber text-center" value="'+(o.disputeNumber!=null ? o.disputeNumber : "")+'" style="border: none;width:70px; height:30px; background-color: #BFBFBF;"></td></tr>'
+		      				+'<td class="text-center edit disputeNumber">'+(o.disputeNumber!=null ? o.disputeNumber : "")+'</td>'
+		      				+'<td class="text-center  ashorePrice">'+(o.ashorePrice!=null ? o.ashorePrice : "")+'</td>'
+		      				+'<td class="text-center  name"><button class="btn btn-sm btn-info  btn-danger Tips" data-id='+o.id+'>'+a+'</button> <button class="btn btn-sm btn-info  btn-trans update"  data-id='+o.id+'>编辑</button></td></tr>'
 		      			}); 
 		      			self.setCount(result.data.pageNum)
 				        //显示分页
@@ -247,47 +280,20 @@
 					var ttat=$(this)
 					laydate({elem:this, istime: true, format: 'YYYY-MM-DD hh:mm:ss'})
 				}) */
-				$(".ashoreNumber").blur(function(){
-					var that=$(this)
-					var postData = {
-							id:$(this).parent().parent().find(".batch").data('id'),
-							ashoreNumber:$(this).val(),
-							disputeNumber:$(this).parent().parent().find(".disputeNumber").val(),
-							ashoreTime:$(this).parent().parent().find(".ashoreTime").text()+' '+'00:00:00',
-					}
-					var index;
-					$.ajax({
-						url:"${ctx}/fince/addOrder",
-						data:postData,
-						type:"POST",
-						beforeSend:function(){
-							index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								});
-						},
-						success:function(result){
-							if(0==result.code){
-							that.parent().parent().find(".roadNumber").text(result.data.roadNumber)
-							layer.msg("当批还有"+result.data.roadNumber+"未到岸", {icon: 1});
-							layer.close(index);
-							}else{
-								layer.msg("失败！", {icon: 1});
-								layer.close(index);
-							}
-						},error:function(){
-							layer.msg("操作失败！", {icon: 2});
-							layer.close(index);
-						}
-					});
-				})				
 				
-				$(".disputeNumber").blur(function(){
-					var that=$(this)
+				//审核
+				$('.Tips').on('click',function(){
+					var a;
+					if($(this).text() == "未核对"){
+						$(this).text("已核对")
+						a=1
+					}else if($(this).text() == "已核对"){
+							$(this).text("未核对")
+							a=0
+					}
 					var postData = {
-							id:$(this).parent().parent().find(".batch").data('id'),
-							ashoreNumber:$(this).parent().parent().find(".ashoreNumber").val(),
-							disputeNumber:$(this).val(),
-							ashoreTime:$(this).parent().parent().find(".ashoreTime").text()+' '+'00:00:00',
+							id:$(this).data('id'),
+							ashoreCheckr:a,
 					}
 					var index;
 					$.ajax({
@@ -299,10 +305,10 @@
 								  shade: [0.1,'#fff'] //0.1透明度的白色背景
 								});
 						},
+						
 						success:function(result){
 							if(0==result.code){
-							that.parent().parent().find(".roadNumber").text(result.data.roadNumber)
-							layer.msg("当批还有"+result.data.roadNumber+"未到岸", {icon: 1});
+							layer.msg("核对完成", {icon: 1});
 							layer.close(index);
 							}else{
 								layer.msg("失败！", {icon: 1});
@@ -313,7 +319,65 @@
 							layer.close(index);
 						}
 					});
-				})	
+					
+				})
+				
+				//修改方法
+				$('.update').on('click',function(){
+					var that=$(this)
+					if($(this).text() == "编辑"){
+						$(this).text("保存")
+						
+						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini'  style='border: none;width:90px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				        });
+					}else{
+							$(this).text("编辑")
+						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+
+					       
+					                $(this).html(obj_text.val()); 
+									
+							});
+							var postData = {
+									id:$(this).data('id'),
+									contractNumber:$(this).parent().parent().find(".contractNumber").text(),
+									disputeNumber:$(this).parent().parent().find(".disputeNumber").text(),
+							}
+							
+							var index;
+							$.ajax({
+								url:"${ctx}/fince/addOrder",
+								data:postData,
+								type:"POST",
+								beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								
+								success:function(result){
+									if(0==result.code){
+										that.parent().parent().find(".roadNumber").text(result.data.roadNumber)
+										layer.msg("当批还有"+result.data.roadNumber+"未到岸", {icon: 1});
+									layer.close(index);
+									}else{
+										layer.msg("修改失败！", {icon: 1});
+										layer.close(index);
+									}
+								},error:function(){
+									layer.msg("操作失败！", {icon: 2});
+									layer.close(index);
+								}
+							});
+					}
+				})
+				
+				
+			
 				
 				
 			}
