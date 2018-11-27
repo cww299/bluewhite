@@ -14,6 +14,7 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.finance.ledger.dao.BillDao;
 import com.bluewhite.finance.ledger.dao.MixedDao;
 import com.bluewhite.finance.ledger.entity.Bill;
@@ -49,10 +50,15 @@ public class MixedServiceImpl extends BaseServiceImpl<Mixed, Long> implements Mi
 	public void addMixed(Mixed mixed) {
 		
 		Bill bill = billdao.findByPartyNamesIdAndBillDateBetween(mixed.getMixPartyNamesId(),DatesUtil.getFirstDayOfMonth(mixed.getMixtSubordinateTime()),	DatesUtil.getLastDayOfMonth(mixed.getMixtSubordinateTime()));
+		NumUtils.setzro(bill);
 		if(bill!=null){
 			List<Mixed> mixedList = dao.findByMixPartyNamesIdAndMixtSubordinateTimeBetween(mixed.getMixPartyNamesId(),DatesUtil.getFirstDayOfMonth(mixed.getMixtSubordinateTime()),DatesUtil.getLastDayOfMonth(mixed.getMixtSubordinateTime()));
 			double	acceptPayable = mixedList.stream().filter(Mixed->Mixed.getMixPartyNamesId()==mixed.getMixPartyNamesId()).mapToDouble(Mixed::getMixPrice).sum();
 			bill.setAcceptPayable(acceptPayable);
+			//当月货款未到
+			bill.setNonArrivalPay(bill.getAcceptPay()+bill.getAcceptPayable()-bill.getArrivalPay());
+			//当月客户多付货款转下月应付
+			bill.setOverpaymentPay(bill.getNonArrivalPay()<0 ?bill.getNonArrivalPay() :0.0);
 			billdao.save(bill);
 		}
 		dao.save(mixed);
