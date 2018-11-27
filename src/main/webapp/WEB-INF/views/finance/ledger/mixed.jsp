@@ -270,7 +270,7 @@
 					//获取当前年
 					var year2=myDate2.getFullYear();
 					//获取当前月
-					var month2=myDate2.getMonth();
+					var month2=myDate2.getMonth()+1;
 					//获取当前日
 					var date2=myDate2.getDate();
 					var now2=year2+'-'+p(month2)+"-"+p(date2)+' '+'00:00:00';
@@ -612,19 +612,19 @@
 			this.mater=function(){
 				
 				
-				var proposals = ['百度1', '百度2', '百度3', '百度4','a1','a2','a3','a4','b1','b2','b3','b4'];
+			/* 	var proposals = ['百度1', '百度2', '百度3', '百度4','a1','a2','a3','a4','b1','b2','b3','b4'];
 				$('.bName2').autocomplete({
 				    hints: proposals,
 				    width: 300,
 				    height: 30,
 				    onSubmit: function(text){
-				       /*  $('#message').html('Selected: <b>' + text + '</b>'); */
+				       /*  $('#message').html('Selected: <b>' + text + '</b>');
 				    }
-				});
+				}); */
 				
 				
 				
-			/* 	//提示乙方
+			 	//提示乙方
 				$(".bName2").typeahead({
 					//ajax 拿way数据
 					source : function(query, process) {
@@ -672,7 +672,7 @@
 						},
 
 						
-					}); */
+					}); 
 			}
 			this.events = function(){
 				//新增小组

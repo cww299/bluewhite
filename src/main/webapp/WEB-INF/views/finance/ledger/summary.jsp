@@ -94,94 +94,35 @@
                 </div>
             </section>
         </section>
-        <!--隐藏框 产品新增开始  -->
-        <!-- <div id="addDictDivType" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-				<div class="space-10"></div>
-				<div style="height: 30px"></div>
-				<form class="form-horizontal addDictDivTypeForm">
-				<div class="form-group">
-                                        <label class="col-sm-3 control-label">合同签订日期:</label>
-                                        <div class="col-sm-6">
-                                            <input id="contractTime" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#contractTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">甲方:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="aName" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">乙方:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="bName" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">当批批次号:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="batchNumber" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">当批产品名:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="ProductName" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">当批合同数量:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="contractNumber" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">预付款备注:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="remarksPrice" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">当批计划单号:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="planNumbers" class="form-control">
-                                        </div>
-                 </div>
-				</form>
-</div>
-</div> -->
- <!--隐藏框 产品新增结束  -->
- 
- 
- <div class="wrap">
-<div class="layer-right3" style="display: none;">
-           <div class="panel-body">
+        <!--隐藏框已完成的批次开始  -->
+        <div id="addworking" style="display: none;">
+			<div class="panel-body">
+ <div class="form-group">
+  </div> 
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th class="text-center">当批产品名</th>
-                                            <th class="text-center">乙方选择</th>
-                                            <th class="text-center">单只价格（元）</th>
+                                        	<th class="text-center">日期</th>
+                                            <th class="text-center">到账款</th>
+                                            <th class="text-center">批注</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tablecontent2">
-                                        
+                                    <tr>
+                                    <td class="text-center"><input id="contractTime" placeholder="请输入时间" class="form-control laydate-icon"
+             							onClick="laydate({elem: '#contractTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"></td>
+                                    	 <td class="text-center"><input type="text" class="form-control" id="planNumbers"></td>
+                                    	  <td class="text-center"><input type="text" class="form-control" id="planPrice"></td>
+                                    	  <td class="text-center"><button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增</button></td>
+                                    </tr>
+                                    <tbody id="tableworking">
                                     </tbody>
-                                    
                                 </table>
-                                <div id="pager2" class="pull-right">
-                                
-                                </div>
+                                 <div id="pagerr" class="pull-right">
                             </div>
-				</div>
-  </div>
- 
- 
- 
- 
+</div>
+<!--隐藏框 已完成的批次结束  -->
+</div>
  
     </section>
     
@@ -291,7 +232,7 @@
 		      				+'<td class="text-center editt disputePay">'+o.disputePay+'</td>'
 		      				+'<td class="text-center editt nonArrivalPay">'+o.nonArrivalPay+'</td>'
 		      				+'<td class="text-center editt overpaymentPay">'+o.overpaymentPay+'</td>'
-		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans Tips"  data-id='+o.id+' data-productname='+o.productName+' data-partynames='+o.partyNames+'>提示</button></td></tr>'
+		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans Tips"  data-id='+o.id+'>提示</button></td></tr>'
 							
 		      			}); 
 		      			self.setCount(result.data.pageNum)
@@ -473,133 +414,91 @@
 							});
 					}
 				})
-				
-				
-				$(".price2").blur(function(){
-					var that=$(this)
-					var postData = {
-							id:$(this).parent().parent().find(".update").data('id'),
-							price:$(this).val(),
-					}
-					var index;
-					$.ajax({
-						url:"${ctx}/fince/addOrder",
-						data:postData,
-						type:"POST",
-						beforeSend:function(){
-							index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								});
-						},
-						success:function(result){
-							if(0==result.code){
-							that.parent().parent().find(".contractPrice").text(result.data.contractPrice)
-							layer.msg("当批合同总价为"+result.data.contractPrice+"", {icon: 1});
-							layer.close(index);
-							}else{
-								layer.msg("失败！", {icon: 1});
-								layer.close(index);
-							}
-						},error:function(){
-							layer.msg("操作失败！", {icon: 2});
-							layer.close(index);
-						}
-					});
-				})				
-				
-				
-				
 				//提示
 							$('.Tips').on('click',function(){
-								var that=$(this)
 								var id=$(this).data('id')
-								var ids=that.data("id");
-							$(".batch").each(function(i,o){
-							var a=$(o).text();
-							if(a==ids){
-								$(o).parent().addClass("danger");
-								$(o).parent().siblings().removeClass("danger");
-							}
-							})
-								var postData = {
-										productName:$(this).data('productname'),
-										partyNames:$(this).data('partynames')
-								}
-								var index;
-								$.ajax({
-									url:"${ctx}/fince/tipsCustomer",
-									data:postData,
-									type:"GET",
-									beforeSend:function(){
-										index = layer.load(1, {
-											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								$("#addgroup").on('click',function(){
+									var html=""
+									var a=$("#contractTime").val()
+									var b=$("#planNumbers").val()
+									var c=$("#planPrice").val()
+									html='<tr><td class="sumname">'+a+'</td><td class="sumva">'+b+'</td><td class="sumvatw">'+c+'</td><td><button class="btn btn-sm btn-danger btn-trans delete">删除</button></td></tr>'
+									$("#tableworking").append(html)
+									$(".delete").on('click',function(){
+										$(this).parent().parent().remove();
+									})
+								})
+								var dicDiv=$('#addworking');
+								_index = layer.open({
+									  type: 1,
+									  skin: 'layui-layer-rim', //加上边框
+									  area: ['30%', '70%'], 
+									  btnAlign: 'c',//宽高
+									  maxmin: true,
+									  title:name,
+									  content: dicDiv,
+									  btn: ['确定', '取消'],
+									  yes:function(index, layero){
+										  var c;
+										  var arr= new Array();
+										  var date;
+										  $('.sumname').each(function(i,o){
+											var a= $(this).text();
+											var b= $(this).next().text();
+											var d= $(this).next().next().text();
+											 c={"name":a,"value":d,"price":b};
+											 arr.push(c);
+										  })
+										  date={"data":arr};
+										  var postData = {
+													id:id,
+													dateToPay:JSON.stringify(date),
+											}
+										  var index;
+											$.ajax({
+												url:"${ctx}/fince/updateBill",
+												data:postData,
+												traditional: true,
+												type:"Get",
+												beforeSend:function(){
+													index = layer.load(1, {
+														  shade: [0.1,'#fff'] //0.1透明度的白色背景
+														});
+												},
+												success:function(result){
+													if(0==result.code){
+														layer.msg("成功！", {icon: 1});
+													 	var _date={
+														  		type:2,
+														  		orderTimeBegin:firstdate,
+														  		orderTimeEnd:lastdate,	
+														}
+														self.loadPagination(_date);
+													layer.close(index);
+													}else{
+														layer.msg("修改失败！", {icon: 2});
+														layer.close(index);
+													}
+												},error:function(){
+													layer.msg("操作失败！", {icon: 2});
+													layer.close(index);
+												}
 											});
-									},
-									
-									success:function(result){
-										if(0==result.code){
-											$(".layer-right3").css("display","block");
-											var demo = new mSlider({
-												dom:".layer-right3",
-												direction: "right",
-												distance:"35%",
-												
-											})
-											demo.open()
-							var html1="";				
-						$(result.data).each(function(i,o){
-		      				html1 +='<tr>'
-		      				+'<td class="text-center edit name">'+o.cusProductName+'</td>'
-		      				+'<td class="text-center edit name">'+o.cusPartyNames+'</td>'
-		      				+'<td class="text-center edit cusPrice">'+o.cusPrice+'</td>'
-		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans choice" data-id='+o.id+'>选择</button></tr>'
-		      			}); 
-						$("#tablecontent2").html(html1); 
-						$(".choice").on('click',function(){
-							var thtt=$(this)
-							var postData = {
-									id:id,
-									price:$(this).parent().parent().find('.cusPrice').text(),
-							}
-							var index;
-							$.ajax({
-								url:"${ctx}/fince/addOrder",
-								data:postData,
-								type:"POST",
-								beforeSend:function(){
-									index = layer.load(1, {
-										  shade: [0.1,'#fff'] //0.1透明度的白色背景
-										});
-								},
-								success:function(result){
-									if(0==result.code){
-									that.parent().parent().find(".contractPrice").text(result.data.contractPrice)
-									that.parent().parent().find(".price2").val(result.data.price)
-									layer.msg("当批合同总价为"+result.data.contractPrice+"", {icon: 1});
-									layer.close(index);
-									}else{
-										layer.msg("失败！", {icon: 1});
-										layer.close(index);
-									}
-								},error:function(){
-									layer.msg("操作失败！", {icon: 2});
-									layer.close(index);
-								}
-							});
-						})
-											layer.close(index);
-										}else{
-											layer.msg("操作失败", {icon: 1});
-											layer.close(index);
-										}
-									},error:function(){
-										layer.msg("操作失败！", {icon: 2});
-										layer.close(index);
-									}
+										},
+									  end:function(){
+										  $('#addworking').hide();
+										  /* data={
+												page:1,
+											  	size:13,	
+											  	type:2,
+											  	name:$('#name').val(),
+									  			number:$('#number').val(),
+									  			status:$('.selectchoice').val(),
+										  }
+										self.loadPaginationfv(data); */
+									  }
 								});
-					})
-				
-				
+										})
 			}
 			this.mater=function(){
 				//提示乙方
