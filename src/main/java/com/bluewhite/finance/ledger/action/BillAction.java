@@ -41,7 +41,7 @@ private static final Log log = Log.getLog(BillAction.class);
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(Bill.class,"id","partyNames","partyNamesId","offshorePay","acceptPay","acceptPayable","disputePay","nonArrivalPay","overpaymentPay","dateToPay");
+				.addRetainTerm(Bill.class,"id","partyNames","partyNamesId","offshorePay","acceptPay","acceptPayable","disputePay","nonArrivalPay","overpaymentPay","arrivalPay","dateToPay");
 	}
 	
 	
@@ -74,9 +74,9 @@ private static final Log log = Log.getLog(BillAction.class);
 	 */
 	@RequestMapping(value = "/fince/getBillDate", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse addBillDate(HttpServletRequest request,Long id,String time) {
+	public CommonResponse addBillDate(HttpServletRequest request,Long id) {
 		CommonResponse cr = new CommonResponse();
-		Object obj = billService.getBillDate(id,time);
+		Object obj = billService.getBillDate(id);
 		cr.setData(obj);
 		cr.setMessage("查询成功");
 		return cr;

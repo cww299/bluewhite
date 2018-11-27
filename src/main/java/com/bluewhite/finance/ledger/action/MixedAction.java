@@ -77,8 +77,8 @@ public class MixedAction {
 	@ResponseBody
 	public CommonResponse addContact(HttpServletRequest request,Mixed mixed) {
 		CommonResponse cr = new CommonResponse();
-		mixedService.save(mixed);
-			cr.setMessage("添加成功");
+		mixedService.addMixed(mixed);
+		cr.setMessage("添加成功");
 		return cr;
 	}
 	
