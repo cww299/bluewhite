@@ -159,6 +159,7 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 	public Bill updateBill(Bill bill) {
 		Bill bl = dao.findOne(bill.getId());
 		bl.setDateToPay(bill.getDateToPay());
+		NumUtils.setzro(bl);
 //		总货款
 		Double arrivalPay = 0.0;
 		if(bl.getDateToPay()!=null){
