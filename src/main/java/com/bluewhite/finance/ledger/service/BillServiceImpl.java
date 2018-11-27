@@ -20,6 +20,7 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.finance.ledger.dao.BillDao;
 import com.bluewhite.finance.ledger.dao.OrderDao;
 import com.bluewhite.finance.ledger.entity.Bill;
@@ -64,6 +65,7 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 	@Override
 	public Bill addBill(Order order) {
 		Bill bill = dao.findByPartyNamesIdAndBillDateBetween(order.getPartyNamesId(),DatesUtil.getFirstDayOfMonth(order.getContractTime()),	DatesUtil.getLastDayOfMonth(order.getContractTime()));
+		NumUtils.setzro(bill);
 		if(bill==null){
 			bill = new Bill();
 			bill.setPartyNames(order.getPartyNames());
@@ -75,6 +77,10 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 		bill.setOffshorePay(OffshorePay);
 		double	acceptPay = orderList.stream().filter(Order->Order.getPartyNamesId()==order.getPartyNamesId()).mapToDouble(Order::getAshorePrice).sum();
 		bill.setAcceptPay(acceptPay);
+		//当月货款未到
+		bill.setNonArrivalPay(bill.getAcceptPay()+bill.getAcceptPayable()-bill.getArrivalPay());
+		//当月客户多付货款转下月应付
+		bill.setOverpaymentPay(bill.getNonArrivalPay()<0 ?bill.getNonArrivalPay() :0.0);
 		return dao.save(bill);
 	}
 	
