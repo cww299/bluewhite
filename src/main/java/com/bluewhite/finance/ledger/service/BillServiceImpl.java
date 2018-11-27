@@ -91,7 +91,7 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 	
 
 	@Override
-	public Object getBillDate(Long id, String date) {  
+	public Object getBillDate(Long id) {  
 		JSONObject outData = new JSONObject();
 		JSONArray gResTable = new JSONArray(); 
 		Bill bill = dao.findOne(id);
