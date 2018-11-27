@@ -1,8 +1,5 @@
 package com.bluewhite.finance.ledger.service;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -53,7 +50,14 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 			if (!StringUtils.isEmpty(param.getPartyNames())) {
 				predicate.add(cb.like(root.get("partyNames").as(String.class),"%" + param.getPartyNames() + "%"));
 			}
+			//按账单日期
+			if (!StringUtils.isEmpty(param.getBillDate())) {
+				predicate.add(cb.between(root.get("billDate").as(Date.class),
+						DatesUtil.getFirstDayOfMonth(param.getBillDate()),
+						DatesUtil.getLastDayOfMonth(param.getBillDate())));
+			}
 
+			
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
@@ -87,18 +91,9 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 	
 
 	@Override
-	public Object addBillDate(Long id, String date) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
-		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");   
-		long size = 0;
-		try {
-			size = DatesUtil.getDaySub(DatesUtil.getfristDayOftime(DatesUtil.getFirstDayOfMonth( format.parse(date))),DatesUtil.getLastDayOftime(DatesUtil.getLastDayOfMonth( format.parse(date))));
-		} catch (ParseException e1) {
-			e1.printStackTrace();
-		}
+	public Object getBillDate(Long id, String date) {  
 		JSONObject outData = new JSONObject();
 		JSONArray gResTable = new JSONArray(); 
-		Date beginTimes = null;
 		Bill bill = dao.findOne(id);
 		//当货款不为null时，将数据取出，返回前端
 		if(bill.getDateToPay()!=null){
@@ -106,47 +101,7 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 			JSONArray on = jsonObj.getJSONArray("data");
 			for (int i = 0; i < on.size(); i++) {
 				JSONObject jo = on.getJSONObject(i); 
-		         String value =  jo.getString("name");
-		         try {
-					if(DatesUtil.equalsDate(format.parse(value), format.parse(date))){
-						gResTable.add(jo);
-					 }
-				} catch (ParseException e) {
-				}
-			}
-			outData.put("data", gResTable);
-			
-			//当货款为null时，填充无数据json格式返回
-		}
-		if(bill.getDateToPay()==null || gResTable.size()==0){
-			for(int j=0 ; j<size ; j++){
-				if(j!=0){
-					//获取下一天的时间
-					beginTimes = DatesUtil.nextDay(beginTimes);
-				}else{
-					//获取第一天的开始时间
-					try {
-						beginTimes = DatesUtil.getfristDayOftime(DatesUtil.getFirstDayOfMonth(format.parse(date)));
-					} catch (ParseException e) {
-					}
-				}
-				JSONObject name = new JSONObject(); 
-				name.put("name",sdf.format(beginTimes));
-				name.put("value","");
-				name.put("price","");
-				gResTable.add(name);
-				
-				//当月货款字段中没有当月json数据是，将当月json数据拼接到，原货款数据中
-				if(bill.getDateToPay()!=null){
-					JSONObject jsonObj = JSONObject.parseObject(bill.getDateToPay());
-					JSONArray on = jsonObj.getJSONArray("data");
-					on.add(name);
-					JSONObject data = new JSONObject();
-					data.put("data", on);
-					bill.setDateToPay(JSONObject.toJSONString(data));
-					dao.save(bill);
-				}
-				
+		        gResTable.add(jo);	 	
 			}
 			outData.put("data", gResTable);
 		}

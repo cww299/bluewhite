@@ -34,7 +34,7 @@ public interface BillService extends BaseCRUDService<Bill,Long>{
 	 * @param time
 	 * @return
 	 */
-	public Object addBillDate(Long id, String time);
+	public Object getBillDate(Long id, String time);
 
 	/**
 	 * 修改账单每日详细
