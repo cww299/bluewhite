@@ -42,6 +42,13 @@ public interface BillService extends BaseCRUDService<Bill,Long>{
 	 * @return
 	 */
 	public Bill updateBill(Bill bill);
+
+	/**
+	 * 汇总账单
+	 * @param bill
+	 * @return
+	 */
+	public Bill collectBill(Bill bill);
 	
 
 }
