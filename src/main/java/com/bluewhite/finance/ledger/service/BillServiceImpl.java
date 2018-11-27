@@ -51,13 +51,12 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 				predicate.add(cb.like(root.get("partyNames").as(String.class),"%" + param.getPartyNames() + "%"));
 			}
 			//按账单日期
-			if (!StringUtils.isEmpty(param.getBillDate())) {
-				predicate.add(cb.between(root.get("billDate").as(Date.class),
-						DatesUtil.getFirstDayOfMonth(param.getBillDate()),
-						DatesUtil.getLastDayOfMonth(param.getBillDate())));
-			}
-
-			
+			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) &&  !StringUtils.isEmpty(param.getOrderTimeEnd()) ) {
+    			predicate.add(cb.between(root.get("billDate").as(Date.class),
+    					param.getOrderTimeBegin(),
+    					param.getOrderTimeEnd()));
+    		}
+		
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
@@ -68,7 +67,8 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 
 	@Override
 	public Bill addBill(Order order) {
-		Bill bill = dao.findByPartyNamesIdAndBillDateBetween(order.getPartyNamesId(),DatesUtil.getFirstDayOfMonth(order.getContractTime()),	DatesUtil.getLastDayOfMonth(order.getContractTime()));
+		List<Bill> billList = dao.findByPartyNamesIdAndBillDateBetween(order.getPartyNamesId(),DatesUtil.getFirstDayOfMonth(order.getContractTime()),	DatesUtil.getLastDayOfMonth(order.getContractTime()));
+		Bill bill =  billList.get(0);
 		NumUtils.setzro(bill);
 		if(bill==null){
 			bill = new Bill();
@@ -134,6 +134,18 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 		//当月客户多付货款转下月应付
 		bl.setOverpaymentPay(bl.getNonArrivalPay()<0 ?bl.getNonArrivalPay() :0.0);
 		return dao.save(bl);
+	}
+
+	@Override
+	public Bill collectBill(Bill bill) {
+		List<Bill> billList  = dao.findByPartyNamesIdAndBillDateBetween(bill.getPartyNamesId(), bill.getOrderTimeBegin(), bill.getOrderTimeEnd());
+		double	OffshorePay = billList.stream().filter(Bill->Bill.getPartyNamesId()==bill.getPartyNamesId()).mapToDouble(Bill::getOffshorePay).sum();
+		bill.setOffshorePay(OffshorePay);
+		double	acceptPay = billList.stream().filter(Bill->Bill.getPartyNamesId()==bill.getPartyNamesId()).mapToDouble(Bill::getAcceptPay).sum();
+		bill.setAcceptPay(acceptPay);
+		double	acceptPayable = billList.stream().filter(Bill->Bill.getPartyNamesId()==bill.getPartyNamesId()).mapToDouble(Bill::getAcceptPayable).sum();
+		bill.setAcceptPayable(acceptPayable);
+		return bill;
 	}
 
 }

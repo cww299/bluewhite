@@ -1,6 +1,7 @@
 package com.bluewhite.finance.ledger.dao;
 
 import java.util.Date;
+import java.util.List;
 
 import com.bluewhite.base.BaseRepository;
 import com.bluewhite.finance.ledger.entity.Bill;
@@ -14,6 +15,6 @@ public interface BillDao extends BaseRepository<Bill, Long>{
 	 * @param lastDayOfMonth
 	 * @return
 	 */
-	Bill findByPartyNamesIdAndBillDateBetween(Long partyNamesId, Date firstDayOfMonth, Date lastDayOfMonth);
+	List<Bill> findByPartyNamesIdAndBillDateBetween(Long partyNamesId, Date firstDayOfMonth, Date lastDayOfMonth);
 
 }

@@ -100,6 +100,23 @@ private static final Log log = Log.getLog(BillAction.class);
 		return cr;
 	}
 	
+	
+	/**
+	 * 通过日期汇总账单
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/fince/collectBill", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse collectBill(HttpServletRequest request,Bill bill) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(billService.collectBill(bill));
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
 		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(

@@ -49,7 +49,8 @@ public class MixedServiceImpl extends BaseServiceImpl<Mixed, Long> implements Mi
 	@Transactional
 	public void addMixed(Mixed mixed) {
 		
-		Bill bill = billdao.findByPartyNamesIdAndBillDateBetween(mixed.getMixPartyNamesId(),DatesUtil.getFirstDayOfMonth(mixed.getMixtSubordinateTime()),	DatesUtil.getLastDayOfMonth(mixed.getMixtSubordinateTime()));
+		List<Bill> billList = billdao.findByPartyNamesIdAndBillDateBetween(mixed.getMixPartyNamesId(),DatesUtil.getFirstDayOfMonth(mixed.getMixtSubordinateTime()),	DatesUtil.getLastDayOfMonth(mixed.getMixtSubordinateTime()));
+		Bill bill = billList.get(0);
 		NumUtils.setzro(bill);
 		if(bill!=null){
 			List<Mixed> mixedList = dao.findByMixPartyNamesIdAndMixtSubordinateTimeBetween(mixed.getMixPartyNamesId(),DatesUtil.getFirstDayOfMonth(mixed.getMixtSubordinateTime()),DatesUtil.getLastDayOfMonth(mixed.getMixtSubordinateTime()));
