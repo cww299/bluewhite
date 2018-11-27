@@ -72,11 +72,11 @@ private static final Log log = Log.getLog(BillAction.class);
 	 * @return cr
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/fince/addBillDate", method = RequestMethod.GET)
+	@RequestMapping(value = "/fince/getBillDate", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse addBillDate(HttpServletRequest request,Long id,String time) {
 		CommonResponse cr = new CommonResponse();
-		Object obj = billService.addBillDate(id,time);
+		Object obj = billService.getBillDate(id,time);
 		cr.setData(obj);
 		cr.setMessage("查询成功");
 		return cr;
