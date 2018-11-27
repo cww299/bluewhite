@@ -201,7 +201,7 @@
 					//获取当前年
 					var year2=myDate2.getFullYear();
 					//获取当前月
-					var month2=myDate2.getMonth();
+					var month2=myDate2.getMonth()+1;
 					//获取当前日
 					var date2=myDate2.getDate();
 					var now2=year2+'-'+p(month2)+"-"+p(date2)+' '+'00:00:00';
@@ -417,16 +417,51 @@
 				//提示
 							$('.Tips').on('click',function(){
 								var id=$(this).data('id')
+								var html2="";
+								var postData2={
+								
+										id:$(this).data('id'),
+								}  
+					$.ajax({
+							url:"${ctx}/fince/getBillDate",
+							data:postData2,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							success:function(result){
+								$(result.data.data).each(function(i,o){
+				      				html2 +='<tr>'
+				      				+'<td class="text-center edit sumname">'+o.name+'</td>'
+				      				+'<td class="text-center edit sumva">'+o.price+'</td>'
+				      				+'<td class="text-center edit sumvatw">'+o.value+'</td>'
+				      				+'<td><button class="btn btn-sm btn-danger btn-trans delete2">删除</button></td></tr>'
+				      			}); 
+								layer.close(index);
+							   	 $("#tableworking").html(html2);
+							   	$(".delete2").on('click',function(){
+									$(this).parent().parent().remove();
+								})
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+								
+								
+								
 								$("#addgroup").on('click',function(){
 									var html=""
 									var a=$("#contractTime").val()
 									var b=$("#planNumbers").val()
 									var c=$("#planPrice").val()
-									html='<tr><td class="sumname">'+a+'</td><td class="sumva">'+b+'</td><td class="sumvatw">'+c+'</td><td><button class="btn btn-sm btn-danger btn-trans delete">删除</button></td></tr>'
+									html='<tr><td class="text-center sumname">'+a+'</td><td class="text-center sumva">'+b+'</td><td class="text-center sumvatw">'+c+'</td><td><button class="btn btn-sm btn-danger btn-trans delete">删除</button></td></tr>'
 									$("#tableworking").append(html)
 									$(".delete").on('click',function(){
-										$(this).parent().parent().remove();
-									})
+									$(this).parent().parent().remove();
+								})
 								})
 								var dicDiv=$('#addworking');
 								_index = layer.open({
