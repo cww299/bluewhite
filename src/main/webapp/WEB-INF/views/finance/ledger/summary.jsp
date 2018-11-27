@@ -39,8 +39,17 @@
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group">
 							<table><tr>
-								<td>日期:</td><td><input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"></td>
+								<td>开始:</td>
+								<td>
+								<input id="startTimetw" placeholder="请输入开始时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#startTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
+								</td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<td>结束:</td>
+								<td>
+								<input id="endTimetw" placeholder="请输入结束时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#endTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+								</td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask3">
