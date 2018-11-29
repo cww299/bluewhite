@@ -51,11 +51,38 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
+			//按审核状态
 			if (param.getAshoreCheckr() != null) {
-				predicate.add(cb.equal(root.get("ashoreCheckr").as(Long.class), param.getAshoreCheckr()));
+				predicate.add(cb.equal(root.get("ashoreCheckr").as(Integer.class), param.getAshoreCheckr()));
 			}
+			//按争议状态
+			if (param.getType() != null) {
+				predicate.add(cb.isNotNull(root.get("disputeNumber").as(Integer.class)));
+				predicate.add(cb.notEqual(root.get("disputeNumber").as(Integer.class),0));
+			}
+			//按甲方
+        	if(!StringUtils.isEmpty(param.getFirstNames())){
+        		predicate.add(cb.like(root.get("firstNames").as(String.class), "%"+param.getFirstNames()+"%"));
+        	}
+        	//按乙方
+        	if(!StringUtils.isEmpty(param.getPartyNames())){
+        		predicate.add(cb.like(root.get("partyNames").as(String.class), "%"+param.getPartyNames()+"%"));
+        	}
+        	//按产品名
+        	if(!StringUtils.isEmpty(param.getProductName())){
+        		predicate.add(cb.like(root.get("productName").as(String.class), "%"+param.getProductName()+"%"));
+        	}
+        	//按批次号
+        	if(!StringUtils.isEmpty(param.getBatchNumber())){
+        		predicate.add(cb.like(root.get("batchNumber").as(String.class), "%"+param.getBatchNumber()+"%"));
+        	}
+        	//按合同签订日期
+			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) &&  !StringUtils.isEmpty(param.getOrderTimeEnd()) ) {
+    			predicate.add(cb.between(root.get("contractTime").as(Date.class),
+    					param.getOrderTimeBegin(),
+    					param.getOrderTimeEnd()));
+    		}
 			if (!StringUtils.isEmpty(param.getContractTime())) {
-
 				predicate.add(cb.between(root.get("contractTime").as(Date.class),
 						DatesUtil.getFirstDayOfMonth(param.getContractTime()),
 						DatesUtil.getLastDayOfMonth(param.getContractTime())));
@@ -71,19 +98,22 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	}
 
 	@Override
-	@Transactional
 	public void addOrder(Order order) {
 		order.setPrice(NumUtils.setzro(order.getPrice()));
 		order.setContractNumber(NumUtils.setzro(order.getContractNumber()));
 		order.setAshoreNumber(NumUtils.setzro(order.getAshoreNumber()));
 		order.setDisputeNumber(NumUtils.setzro(order.getDisputeNumber()));
+		if(order.getId()==null){
 		List<Order> orderList = this.findPages(order, new PageParameter()).getRows();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
 		String w = dateFormat.format(order.getContractTime());
 		if (orderList.size() > 0) {
-			order.setSalesNumber(w + "-" + "#" + (orderList.size() + 1));
+		String s=orderList.get(0).getSalesNumber();
+		String b= s.substring(9);
+			order.setSalesNumber(w + "-" + "#" + (Integer.parseInt(b) + 1));
 		} else {
 			order.setSalesNumber(w + "-" + "#" + "1");
+		}
 		}
 		order.setContractPrice(order.getContractNumber() * order.getPrice());
 		
@@ -103,13 +133,13 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				customerDao.save(customer);
 			}
 		}
+		
 		if(order.getId() != null && order.getAshoreNumber()!=null){
 			order.setRoadNumber(order.getContractNumber()-order.getAshoreNumber()-order.getDisputeNumber());
 			order.setAshorePrice(order.getAshoreNumber()*order.getPrice());
-			
 			billService.addBill(order);
-			
 		}
+		
 		Contact contact=null;
 		if(order.getPartyNamesId()==null){
 			contact=new Contact();

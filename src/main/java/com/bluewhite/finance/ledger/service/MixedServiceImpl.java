@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
@@ -46,23 +47,54 @@ public class MixedServiceImpl extends BaseServiceImpl<Mixed, Long> implements Mi
 	
 	
 	@Override
-	@Transactional
 	public void addMixed(Mixed mixed) {
-		
-		List<Bill> billList = billdao.findByPartyNamesIdAndBillDateBetween(mixed.getMixPartyNamesId(),DatesUtil.getFirstDayOfMonth(mixed.getMixtSubordinateTime()),	DatesUtil.getLastDayOfMonth(mixed.getMixtSubordinateTime()));
-		Bill bill = billList.get(0);
-		NumUtils.setzro(bill);
-		if(bill!=null){
-			List<Mixed> mixedList = dao.findByMixPartyNamesIdAndMixtSubordinateTimeBetween(mixed.getMixPartyNamesId(),DatesUtil.getFirstDayOfMonth(mixed.getMixtSubordinateTime()),DatesUtil.getLastDayOfMonth(mixed.getMixtSubordinateTime()));
-			double	acceptPayable = mixedList.stream().filter(Mixed->Mixed.getMixPartyNamesId()==mixed.getMixPartyNamesId()).mapToDouble(Mixed::getMixPrice).sum();
-			bill.setAcceptPayable(acceptPayable);
-			//当月货款未到
-			bill.setNonArrivalPay(bill.getAcceptPay()+bill.getAcceptPayable()-bill.getArrivalPay());
-			//当月客户多付货款转下月应付
-			bill.setOverpaymentPay(bill.getNonArrivalPay()<0 ?bill.getNonArrivalPay() :0.0);
-			billdao.save(bill);
-		}
 		dao.save(mixed);
+		List<Bill> billList = billdao.findByPartyNamesIdAndBillDateBetween(mixed.getMixPartyNamesId(),DatesUtil.getFirstDayOfMonth(mixed.getMixtSubordinateTime()),	DatesUtil.getLastDayOfMonth(mixed.getMixtSubordinateTime()));
+		if(billList.size()>0){
+			Bill bill = billList.get(0);
+			NumUtils.setzro(bill);
+			if(bill!=null){
+				List<Mixed> mixedList = dao.findByMixPartyNamesIdAndMixtSubordinateTimeBetween(mixed.getMixPartyNamesId(),DatesUtil.getFirstDayOfMonth(mixed.getMixtSubordinateTime()),DatesUtil.getLastDayOfMonth(mixed.getMixtSubordinateTime()));
+				double	acceptPayable = mixedList.stream().filter(Mixed->Mixed.getMixPartyNamesId()!= mixed.getMixPartyNamesId()).mapToDouble(Mixed::getMixPrice).sum();
+				bill.setAcceptPayable(acceptPayable);
+				//当月货款未到
+				bill.setNonArrivalPay(bill.getAcceptPay()+bill.getAcceptPayable()-bill.getArrivalPay());
+				//当月客户多付货款转下月应付
+				bill.setOverpaymentPay(bill.getNonArrivalPay()<0 ?bill.getNonArrivalPay() :0.0);
+				billdao.save(bill);
+			}
+		}
+		
 	}
 
+	
+	@Override
+	@Transactional
+	public void deleteMixed(String ids) {
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					
+					Mixed  mixed=dao.findOne(id);
+					List<Bill> billList = billdao.findByPartyNamesIdAndBillDateBetween(mixed.getMixPartyNamesId(),DatesUtil.getFirstDayOfMonth(mixed.getMixtSubordinateTime()),	DatesUtil.getLastDayOfMonth(mixed.getMixtSubordinateTime()));
+					if(billList.size()>0){
+						Bill bill = billList.get(0);
+						NumUtils.setzro(bill);
+						if(bill!=null){
+							bill.setAcceptPayable(bill.getAcceptPayable()-mixed.getMixPrice());
+							//当月货款未到
+							bill.setNonArrivalPay(bill.getAcceptPay()+bill.getAcceptPayable()-bill.getArrivalPay());
+							//当月客户多付货款转下月应付
+							bill.setOverpaymentPay(bill.getNonArrivalPay()<0 ?bill.getNonArrivalPay() :0.0);
+							billdao.save(bill);
+						}
+						dao.delete(id);
+					}
+				}
+			}
+		}
+
+	}
 }

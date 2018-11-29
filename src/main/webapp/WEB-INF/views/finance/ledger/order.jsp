@@ -33,16 +33,33 @@
                                 </div>
                             </div>
                             <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-8 col-sm-8  col-md-8">
+					<div class="col-xs-12 col-sm-12  col-md-12">
 						<form class="form-search" >
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group">
 							<table><tr>
-								<td>裁剪价格:</td><td><input type="text" name="name" id="ntwo6" disabled="disabled"  class="form-control search-query name" /></td>
+								<td>甲方:</td><td><input type="text" name="name" id="firstNames"  class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp</td>
+								<td>乙方:</td><td><input type="text" name="name" id="partyNames"  class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp</td>
+								<td>产品名:</td><td><input type="text" name="name" id="productName"  class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp</td>
+								<td>批次号:</td><td><input type="text" name="name" id="batchNumber2"  class="form-control search-query name" /></td>
+								<td>合同开始:</td>
+								<td>
+								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
+								</td>
+									<td>&nbsp&nbsp</td>
+				<td>合同结束:</td>
+				<td>
+					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
+             onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+								</td>
 								</tr></table> 
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask3">
+									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask">
 										查找
 										<i class="icon-search icon-on-right bigger-110"></i>
 									</button>
@@ -253,9 +270,40 @@
 		  	this.setCount = function(count){
 		  		_count=count;
 		  	}
+		  	self.setIndex(null)
+		  	self.setCache(null)
+		  	function p(s) {
+				return s < 10 ? '0' + s: s;
+				}
+			var myDate = new Date();
+				//获取当前年
+				var year=myDate.getFullYear();
+				//获取当前月
+				var month=myDate.getMonth()+1;
+				//获取当前日
+				var date=myDate.getDate(); 
+				var h=myDate.getHours();       //获取当前小时数(0-23)
+				var m=myDate.getMinutes();     //获取当前分钟数(0-59)
+				var s=myDate.getSeconds();  
+				var myDate2 = new Date();
+				//获取当前年
+				var year2=myDate2.getFullYear();
+				//获取当前月
+				var month2=myDate2.getMonth()+1;
+				//获取当前日
+				var date2=myDate2.getDate();
+				var now2=year2+'-'+p(month2)+"-"+p(date2)+' '+'00:00:00';
+				var day = new Date(year,month,0);
+				var firstdate = year + '-' + p(month) + '-01'+' '+'00:00:00';
+				var getday = year + '-' + p(month) + date+' '+'00:00:00';
+				var lastdate = year + '-' + p(month) + '-' + day.getDate() +' '+'23:59:59';
+				$('#startTime').val(firstdate);
+				$('#endTime').val(lastdate);
 			 var data={
 						page:1,
-				  		size:13,	
+				  		size:13,
+				  		orderTimeBegin:firstdate,
+				  		orderTimeEnd:lastdate,	
 				} 
 			this.init = function(){
 				
@@ -282,6 +330,8 @@
 		      				var newDate=/\d{4}-\d{1,2}-\d{1,2}/g.exec(o.contractTime)
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="hidden batch">'+o.id+'</td>'
+		      				+'<td class="hidden firstNamesId">'+o.firstNamesId+'</td>'
+		      				+'<td class="hidden partyNamesId">'+o.partyNamesId+'</td>'
 		      				+'<td class="text-center  salesNumber">'+o.salesNumber+'</td>'
 		      				+'<td class="text-center edit contractTime">'+newDate+'</td>'
 		      				+'<td class="text-center editt firstNames">'+o.firstNames+'</td>'
@@ -308,8 +358,12 @@
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
-									  		type:5,
-									  		name:$('#name').val(),
+									  		productName:$('#productName').val(),
+								  			firstNames:$('#firstNames').val(),
+								  			partyNames:$('#partyNames').val(),
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(),
+								  			batchNumber:$("#batchNumber2").val(),
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -348,7 +402,6 @@
 				//修改方法
 				$('.update').on('click',function(){
 					if($(this).text() == "编辑"){
-					self.mater();
 						$(this).text("保存")
 						
 						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
@@ -379,6 +432,7 @@
 
 				            $(this).html("<input class='input-mini'  style='border: none;width:80px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
 				        });
+						self.mater();
 					}else{
 							$(this).text("编辑")
 						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
@@ -437,6 +491,18 @@
 					                $(this).html(obj_text.val()); 
 									
 							});
+							var c;
+							var d;
+							if(self.getIndex()==null){
+								c=$(this).parent().parent().find(".firstNamesId").text();
+							}else{
+								c=self.getIndex();
+							}
+							if(self.getCache()==null){
+								d=$(this).parent().parent().find(".partyNamesId").text();
+							}else{
+								d=self.getCache();
+							}
 							var postData = {
 									id:$(this).data('id'),
 									contractTime:$(this).parent().parent().find(".contractTime").text()+' '+'00:00:00',
@@ -447,6 +513,8 @@
 									productName:$(this).parent().parent().find(".productName").text(),
 									contractNumber:$(this).parent().parent().find(".contractNumber").text(),
 									remarksPrice:$(this).parent().parent().find(".remarksPrice").text(),
+									firstNamesId:c,
+									partyNamesId:d,
 							}
 							
 							var index;
@@ -645,6 +713,7 @@
 							//转出成json对象
 							var item = JSON.parse(item);
 							self.setIndex(item.id);
+							
 								return item.name
 						},
 
@@ -688,6 +757,7 @@
 		                	//转出成json对象
 					        var item = JSON.parse(item);
 					        self.setCache(item.id);
+					       
 					    	return item.id
 					    },
 						//item是选中的数据
@@ -702,6 +772,22 @@
 					});
 			}
 			this.events = function(){
+				
+				$('.searchtask').on('click',function(){
+					var data = {
+				  			page:1,
+				  			size:13,
+				  			productName:$('#productName').val(),
+				  			firstNames:$('#firstNames').val(),
+				  			partyNames:$('#partyNames').val(),
+				  			orderTimeBegin:$("#startTime").val(),
+				  			orderTimeEnd:$("#endTime").val(), 
+				  			batchNumber:$("#batchNumber2").val(),
+				  	}
+		            self.loadPagination(data);
+				});
+				
+				
 				//新增小组
 				$('#addgroup').on('click',function(){
 					self.mater();
@@ -802,6 +888,12 @@
 								var data = {
 					        			page:self.getCount(),
 								  		size:13,
+								  		productName:$('#productName').val(),
+							  			firstNames:$('#firstNames').val(),
+							  			partyNames:$('#partyNames').val(),
+							  			orderTimeBegin:$("#startTime").val(),
+							  			orderTimeEnd:$("#endTime").val(),
+							  			batchNumber:$("#batchNumber2").val(),
 							  	}
 								self.loadPagination(data)
 								layer.close(index);

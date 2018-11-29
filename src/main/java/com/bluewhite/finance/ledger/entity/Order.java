@@ -13,6 +13,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.product.product.entity.Product;
@@ -162,8 +163,53 @@ public class Order extends BaseEntity<Long>{
     private Double ashorePrice;
 	
 	
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
 	
+	/**
+	 * 查询字段 争议数字
+	 */
+	@Transient
+	private Integer type;
 	
+	public Integer getType() {
+		return type;
+	}
+
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
+
+
 	public Double getAshorePrice() {
 		return ashorePrice;
 	}

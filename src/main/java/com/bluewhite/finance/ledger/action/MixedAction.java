@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,15 +16,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
+import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.finance.ledger.entity.Contact;
 import com.bluewhite.finance.ledger.entity.Customer;
 import com.bluewhite.finance.ledger.entity.Mixed;
+import com.bluewhite.finance.ledger.entity.Order;
 import com.bluewhite.finance.ledger.service.ContactService;
 import com.bluewhite.finance.ledger.service.CustomerService;
 import com.bluewhite.finance.ledger.service.MixedService;
@@ -77,12 +81,36 @@ public class MixedAction {
 	@ResponseBody
 	public CommonResponse addContact(HttpServletRequest request,Mixed mixed) {
 		CommonResponse cr = new CommonResponse();
+		if(mixed.getId()!=null){
+			Mixed oldMixed = mixedService.findOne(mixed.getId());
+			BeanCopyUtils.copyNullProperties(oldMixed,mixed);
+			mixed.setCreatedAt(mixed.getCreatedAt());
+		}
 		mixedService.addMixed(mixed);
 		cr.setMessage("添加成功");
 		return cr;
 	}
 	
-	
+	/**
+	 * 财务杂支删除
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/fince/deleteMixed", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteMixed(HttpServletRequest request,String ids) {
+		CommonResponse cr = new CommonResponse();
+		if(!StringUtils.isEmpty(ids)){
+			mixedService.deleteMixed(ids);
+			cr.setMessage("删除成功");
+		}else{
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("不能为空");
+		}
+		return cr;
+	}	
 	
 	
 	@InitBinder
