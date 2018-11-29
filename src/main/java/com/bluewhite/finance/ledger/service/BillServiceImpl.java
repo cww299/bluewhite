@@ -139,12 +139,14 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 
 	@Override
 	public Bill collectBill(Bill bill) {
-		List<Bill> billList  = dao.findByPartyNamesIdAndBillDateBetween(bill.getPartyNamesId(), bill.getOrderTimeBegin(), bill.getOrderTimeEnd());
-		double	OffshorePay = billList.stream().filter(Bill->Bill.getPartyNamesId()==bill.getPartyNamesId()).mapToDouble(Bill::getOffshorePay).sum();
+		PageParameter page = new PageParameter();
+		page.setSize(Integer.MAX_VALUE);
+		List<Bill> billList  = this.findPages(bill, page).getRows();
+		double	OffshorePay = billList.stream().mapToDouble(Bill::getOffshorePay).sum();
 		bill.setOffshorePay(OffshorePay);
-		double	acceptPay = billList.stream().filter(Bill->Bill.getPartyNamesId()==bill.getPartyNamesId()).mapToDouble(Bill::getAcceptPay).sum();
+		double	acceptPay = billList.stream().mapToDouble(Bill::getAcceptPay).sum();
 		bill.setAcceptPay(acceptPay);
-		double	acceptPayable = billList.stream().filter(Bill->Bill.getPartyNamesId()==bill.getPartyNamesId()).mapToDouble(Bill::getAcceptPayable).sum();
+		double	acceptPayable = billList.stream().mapToDouble(Bill::getAcceptPayable).sum();
 		bill.setAcceptPayable(acceptPayable);
 		return bill;
 	}
