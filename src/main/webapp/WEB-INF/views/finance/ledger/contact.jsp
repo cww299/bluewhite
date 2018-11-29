@@ -33,16 +33,31 @@
                                 </div>
                             </div>
                             <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-8 col-sm-8  col-md-8">
+					<div class="col-xs-10 col-sm-10  col-md-10">
 						<form class="form-search" >
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group">
 							<table><tr>
-								<td>裁剪价格:</td><td><input type="text" name="name" id="ntwo6" disabled="disabled"  class="form-control search-query name" /></td>
+								<td>乙方:</td><td><input type="text" name="name" id="partyNames"  class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp</td>
+								<td>产品名:</td><td><input type="text" name="name" id="productName"  class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp</td>
+								<td>批次号:</td><td><input type="text" name="name" id="batchNumber2"  class="form-control search-query name" /></td>
+								<td>合同开始:</td>
+								<td>
+								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
+								</td>
+									<td>&nbsp&nbsp</td>
+				<td>合同结束:</td>
+				<td>
+					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
+             onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+								</td>
 								</tr></table> 
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask3">
+									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask">
 										查找
 										<i class="icon-search icon-on-right bigger-110"></i>
 									</button>
@@ -142,10 +157,39 @@
 		  	this.setCount = function(count){
 		  		_count=count;
 		  	}
+		  	function p(s) {
+				return s < 10 ? '0' + s: s;
+				}
+			var myDate = new Date();
+				//获取当前年
+				var year=myDate.getFullYear();
+				//获取当前月
+				var month=myDate.getMonth()+1;
+				//获取当前日
+				var date=myDate.getDate(); 
+				var h=myDate.getHours();       //获取当前小时数(0-23)
+				var m=myDate.getMinutes();     //获取当前分钟数(0-59)
+				var s=myDate.getSeconds();  
+				var myDate2 = new Date();
+				//获取当前年
+				var year2=myDate2.getFullYear();
+				//获取当前月
+				var month2=myDate2.getMonth()+1;
+				//获取当前日
+				var date2=myDate2.getDate();
+				var now2=year2+'-'+p(month2)+"-"+p(date2)+' '+'00:00:00';
+				var day = new Date(year,month,0);
+				var firstdate = year + '-' + p(month) + '-01'+' '+'00:00:00';
+				var getday = year + '-' + p(month) + date+' '+'00:00:00';
+				var lastdate = year + '-' + p(month) + '-' + day.getDate() +' '+'23:59:59';
+				$('#startTime').val(firstdate);
+				$('#endTime').val(lastdate);
 			 var data={
 						page:1,
 				  		size:13,
 				  		ashoreCheckr:0,
+				  		orderTimeBegin:firstdate,
+				  		orderTimeEnd:lastdate,	
 				} 
 			this.init = function(){
 				
@@ -225,8 +269,13 @@
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
-									  		type:5,
-									  		name:$('#name').val(),
+									  		productName:$('#productName').val(),
+								  			firstNames:$('#firstNames').val(),
+								  			partyNames:$('#partyNames').val(),
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(), 
+								  			batchNumber:$("#batchNumber2").val(),
+								  			ashoreCheckr:0,
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -318,7 +367,20 @@
 				
 			}
 			this.events = function(){
-			
+				$('.searchtask').on('click',function(){
+					var data = {
+				  			page:1,
+				  			size:13,
+				  			productName:$('#productName').val(),
+				  			firstNames:$('#firstNames').val(),
+				  			partyNames:$('#partyNames').val(),
+				  			orderTimeBegin:$("#startTime").val(),
+				  			orderTimeEnd:$("#endTime").val(), 
+				  			batchNumber:$("#batchNumber2").val(),
+				  			ashoreCheckr:0,
+				  	}
+		            self.loadPagination(data);
+				});
 			}
    	}
    			var login = new Login();

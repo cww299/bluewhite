@@ -14,5 +14,6 @@ public interface MixedService extends BaseCRUDService<Mixed,Long>{
 	
 	
 	public void addMixed(Mixed mixed);
+	public void deleteMixed(String ids);
 	
 }

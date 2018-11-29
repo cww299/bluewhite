@@ -39,19 +39,22 @@
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group">
 							<table><tr>
-								<td>日期:</td><td><input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"></td>
+								<td>开始:</td>
+								<td>
+								<input id="startTimetw" placeholder="请输入开始时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#startTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
+								</td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<td>结束:</td>
+								<td>
+								<input id="endTimetw" placeholder="请输入结束时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#endTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+								</td>
 								</tr></table> 
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask3">
+									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask">
 										查找
 										<i class="icon-search icon-on-right bigger-110"></i>
-									</button>
-								</span>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-danger  btn-sm btn-3d start">
-									一键删除
 									</button>
 								</span>
 							</div>
@@ -77,6 +80,7 @@
                                             <th class="text-center">当表在途和有争议货款</th>
                                             <th class="text-center">当月未到货款</th>
                                             <th class="text-center">当月客户多付货款转下月应付</th>
+                                            <th class="text-center">已到货款</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -172,9 +176,38 @@
 		  	this.setCount = function(count){
 		  		_count=count;
 		  	}
+		  	function p(s) {
+				return s < 10 ? '0' + s: s;
+				}
+			var myDate = new Date();
+				//获取当前年
+				var year=myDate.getFullYear();
+				//获取当前月
+				var month=myDate.getMonth()+1;
+				//获取当前日
+				var date=myDate.getDate(); 
+				var h=myDate.getHours();       //获取当前小时数(0-23)
+				var m=myDate.getMinutes();     //获取当前分钟数(0-59)
+				var s=myDate.getSeconds();  
+				var myDate2 = new Date();
+				//获取当前年
+				var year2=myDate2.getFullYear();
+				//获取当前月
+				var month2=myDate2.getMonth()+1;
+				//获取当前日
+				var date2=myDate2.getDate();
+				var now2=year2+'-'+p(month2)+"-"+p(date2)+' '+'00:00:00';
+				var day = new Date(year,month,0);
+				var firstdate = year + '-' + p(month) + '-01'+' '+'00:00:00';
+				var getday = year + '-' + p(month) + date+' '+'00:00:00';
+				var lastdate = year + '-' + p(month) + '-' + day.getDate() +' '+'23:59:59';
+				$('#startTimetw').val(firstdate);
+				$('#endTimetw').val(lastdate);
 			 var data={
 						page:1,
-				  		size:13,	
+				  		size:13,
+				  		orderTimeBegin:firstdate,
+				  		orderTimeEnd:lastdate,	
 				} 
 			this.init = function(){
 				
@@ -183,30 +216,6 @@
 				self.loadPagination(data);
 				self.mater();
 			}
-			 
-			 function p(s) {
-					return s < 10 ? '0' + s: s;
-					}
-				var myDate = new Date();
-					//获取当前年
-					var year=myDate.getFullYear();
-					//获取当前月
-					var month=myDate.getMonth()+1;
-					//获取当前日
-					var date=myDate.getDate(); 
-					var h=myDate.getHours();       //获取当前小时数(0-23)
-					var m=myDate.getMinutes();     //获取当前分钟数(0-59)
-					var s=myDate.getSeconds();  
-					var myDate2 = new Date();
-					//获取当前年
-					var year2=myDate2.getFullYear();
-					//获取当前月
-					var month2=myDate2.getMonth();
-					//获取当前日
-					var date2=myDate2.getDate();
-					var now2=year2+'-'+p(month2)+"-"+p(date2)+' '+'00:00:00';
-					$('#startTime').val(now2);
-			 
 			 
 			//加载分页
 			  this.loadPagination = function(data){
@@ -232,7 +241,8 @@
 		      				+'<td class="text-center editt disputePay">'+o.disputePay+'</td>'
 		      				+'<td class="text-center editt nonArrivalPay">'+o.nonArrivalPay+'</td>'
 		      				+'<td class="text-center editt overpaymentPay">'+o.overpaymentPay+'</td>'
-		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans Tips"  data-id='+o.id+'>提示</button></td></tr>'
+		      				+'<td class="text-center editt overpaymentPay">'+o.arrivalPay+'</td>'
+		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans Tips"  data-id='+o.id+'>已到款明细</button></td></tr>'
 							
 		      			}); 
 		      			self.setCount(result.data.pageNum)
@@ -259,6 +269,28 @@
 					   	 $("#tablecontent").html(html); 
 					   	self.loadEvents();
 					   self.checkeddto();
+				      },error:function(){
+							layer.msg("加载失败！", {icon: 2});
+							layer.close(index);
+					  }
+				  });
+			    
+			    
+			   
+			    $.ajax({
+				      url:"${ctx}/fince/collectBill",
+				      data:data,
+				      type:"GET",
+				      beforeSend:function(){
+					 	  index = layer.load(1, {
+						  shade: [0.1,'#fff'] //0.1透明度的白色背景
+						  });
+					  }, 
+		      		  success: function (result) {
+		      			 $(result.data.rows).each(function(i,o){
+							
+		      			}); 
+					   	layer.close(index);
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
@@ -417,16 +449,51 @@
 				//提示
 							$('.Tips').on('click',function(){
 								var id=$(this).data('id')
+								var html2="";
+								var postData2={
+								
+										id:$(this).data('id'),
+								}  
+					$.ajax({
+							url:"${ctx}/fince/getBillDate",
+							data:postData2,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							success:function(result){
+								$(result.data.data).each(function(i,o){
+				      				html2 +='<tr>'
+				      				+'<td class="text-center edit sumname">'+o.name+'</td>'
+				      				+'<td class="text-center edit sumva">'+o.price+'</td>'
+				      				+'<td class="text-center edit sumvatw">'+o.value+'</td>'
+				      				+'<td><button class="btn btn-sm btn-danger btn-trans delete2">删除</button></td></tr>'
+				      			}); 
+								layer.close(index);
+							   	 $("#tableworking").html(html2);
+							   	$(".delete2").on('click',function(){
+									$(this).parent().parent().remove();
+								})
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+								
+								
+								
 								$("#addgroup").on('click',function(){
 									var html=""
 									var a=$("#contractTime").val()
 									var b=$("#planNumbers").val()
 									var c=$("#planPrice").val()
-									html='<tr><td class="sumname">'+a+'</td><td class="sumva">'+b+'</td><td class="sumvatw">'+c+'</td><td><button class="btn btn-sm btn-danger btn-trans delete">删除</button></td></tr>'
+									html='<tr><td class="text-center sumname">'+a+'</td><td class="text-center sumva">'+b+'</td><td class="text-center sumvatw">'+c+'</td><td><button class="btn btn-sm btn-danger btn-trans delete">删除</button></td></tr>'
 									$("#tableworking").append(html)
 									$(".delete").on('click',function(){
-										$(this).parent().parent().remove();
-									})
+									$(this).parent().parent().remove();
+								})
 								})
 								var dicDiv=$('#addworking');
 								_index = layer.open({
@@ -552,6 +619,14 @@
 					});
 			}
 			this.events = function(){
+				$('.searchtask').on('click',function(){
+					var data = {
+				  			orderTimeBegin:$("#startTimetw").val(),
+				  			orderTimeEnd:$("#endTimetw").val(),
+				  	}
+			
+				self.loadPagination(data);
+				});
 			}
    	}
    			var login = new Login();

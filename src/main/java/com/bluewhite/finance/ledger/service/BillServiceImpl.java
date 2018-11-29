@@ -67,6 +67,7 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 
 	@Override
 	public Bill addBill(Order order) {
+		orderdao.save(order);
 		List<Bill> billList = dao.findByPartyNamesIdAndBillDateBetween(order.getPartyNamesId(),DatesUtil.getFirstDayOfMonth(order.getContractTime()),	DatesUtil.getLastDayOfMonth(order.getContractTime()));
 		Bill bill =  billList.get(0);
 		NumUtils.setzro(bill);
@@ -79,7 +80,7 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 		List<Order> orderList = orderdao.findByPartyNamesIdAndContractTimeBetween(order.getPartyNamesId(),DatesUtil.getFirstDayOfMonth(order.getContractTime()),DatesUtil.getLastDayOfMonth(order.getContractTime()));
 		double	OffshorePay = orderList.stream().filter(Order->Order.getPartyNamesId()==order.getPartyNamesId()).mapToDouble(Order::getContractPrice).sum();
 		bill.setOffshorePay(OffshorePay);
-		double	acceptPay = orderList.stream().filter(Order->Order.getPartyNamesId()==order.getPartyNamesId()).mapToDouble(Order::getAshorePrice).sum();
+		double	acceptPay = orderList.stream().filter(Order->Order.getPartyNamesId()==order.getPartyNamesId() && Order.getAshorePrice()!=null).mapToDouble(Order::getAshorePrice).sum();
 		bill.setAcceptPay(acceptPay);
 		//当月货款未到
 		bill.setNonArrivalPay(bill.getAcceptPay()+bill.getAcceptPayable()-bill.getArrivalPay());

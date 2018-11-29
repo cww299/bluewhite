@@ -295,8 +295,9 @@
 		      				var newDate=/\d{4}-\d{1,2}-\d{1,2}/g.exec(o.mixtTime)
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="hidden batch">'+o.id+'</td>'
-		      				+'<td class="text-center  mixPartyNames">'+o.mixPartyNames+'</td>'
-		      				+'<td class="text-center edit mixtTime">'+newDate+'</td>'
+		      				+'<td class="text-center edit  mixPartyNames">'+o.mixPartyNames+'</td>'
+		      				+'<td class="text-center hidden  mixPartyNamesId">'+o.mixPartyNamesId+'</td>'
+		      				+'<td class="text-center editt mixtTime">'+newDate+'</td>'
 		      				+'<td class="text-center editt mixDetailed">'+o.mixDetailed+'</td>'
 		      				+'<td class="text-center editt mixPrice">'+o.mixPrice+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans Tips"  data-id='+o.id+' data-productname='+o.productName+' data-partynames='+o.partyNames+'>提示</button></td></tr>'
@@ -354,37 +355,18 @@
 				//修改方法
 				$('.update').on('click',function(){
 					if($(this).text() == "编辑"){
-					self.mater();
+					
 						$(this).text("保存")
 						
 						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
 
-				            $(this).html("<input class='input-mini'  style='border: none;width:90px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				            $(this).html("<input class='input-mini bName2'  style='border: none;width:90px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
 				        });
 						$(this).parent().siblings(".editt").each(function() {  // 获取当前行的其他单元格
 
 				            $(this).html("<input class='input-mini aName2'  style='border: none;width:68px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
 				        });
-						$(this).parent().siblings(".edit1").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini'  style='border: none;width:105px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        });
-						$(this).parent().siblings(".edit2").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini'  style='border: none;width:60px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        });
-						$(this).parent().siblings(".edit3").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini'  style='border: none;width:150px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        });
-						$(this).parent().siblings(".edit4").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini'  style='border: none;width:50px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        });
-						$(this).parent().siblings(".edit5").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini'  style='border: none;width:80px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        });
+						self.mater();
 					}else{
 							$(this).text("编辑")
 						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
@@ -403,61 +385,24 @@
 					                $(this).html(obj_text.val()); 
 									
 							});
-							$(this).parent().siblings(".edit1").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							$(this).parent().siblings(".edit2").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							$(this).parent().siblings(".edit3").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							$(this).parent().siblings(".edit4").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							$(this).parent().siblings(".edit5").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
+							var c;
+							if(self.getCache()==null){
+								c=$(this).parent().parent().find(".mixPartyNamesId").text();
+							}else{
+								c=self.getCache();
+							}
 							var postData = {
 									id:$(this).data('id'),
-									contractTime:$(this).parent().parent().find(".contractTime").text()+' '+'00:00:00',
-									firstNames:$(this).parent().parent().find(".firstNames").text(),
-									partyNames:$(this).parent().parent().find(".partyNames").text(),
-									batchNumber:$(this).parent().parent().find(".batchNumber").text(),
-									planNumbers:$(this).parent().parent().find(".planNumbers").text(),
-									productName:$(this).parent().parent().find(".productName").text(),
-									contractNumber:$(this).parent().parent().find(".contractNumber").text(),
-									remarksPrice:$(this).parent().parent().find(".remarksPrice").text(),
+									mixPartyNames:$(this).parent().parent().find(".mixPartyNames").text(),
+									mixtTime:$(this).parent().parent().find(".mixtTime").text()+' '+'00:00:00',
+									mixDetailed:$(this).parent().parent().find(".mixDetailed").text(),
+									mixPrice:$(this).parent().parent().find(".mixPrice").text(),
+									mixPartyNamesId:c,
 							}
 							
 							var index;
 							$.ajax({
-								url:"${ctx}/fince/addOrder",
+								url:"${ctx}/fince/addMixed",
 								data:postData,
 								type:"POST",
 								beforeSend:function(){
@@ -745,7 +690,7 @@
 						var index;
 						 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
 						$.ajax({
-							url:"${ctx}/fince/delete",
+							url:"${ctx}/fince/deleteMixed",
 							data:postData,
 							traditional: true,
 							type:"GET",
