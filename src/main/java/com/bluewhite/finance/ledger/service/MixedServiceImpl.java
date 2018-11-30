@@ -55,7 +55,7 @@ public class MixedServiceImpl extends BaseServiceImpl<Mixed, Long> implements Mi
 			NumUtils.setzro(bill);
 			if(bill!=null){
 				List<Mixed> mixedList = dao.findByMixPartyNamesIdAndMixtSubordinateTimeBetween(mixed.getMixPartyNamesId(),DatesUtil.getFirstDayOfMonth(mixed.getMixtSubordinateTime()),DatesUtil.getLastDayOfMonth(mixed.getMixtSubordinateTime()));
-				double	acceptPayable = mixedList.stream().filter(Mixed->Mixed.getMixPartyNamesId()!= mixed.getMixPartyNamesId()).mapToDouble(Mixed::getMixPrice).sum();
+				double	acceptPayable = mixedList.stream().mapToDouble(Mixed::getMixPrice).sum();
 				bill.setAcceptPayable(acceptPayable);
 				//当月货款未到
 				bill.setNonArrivalPay(bill.getAcceptPay()+bill.getAcceptPayable()-bill.getArrivalPay());
