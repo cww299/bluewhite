@@ -69,11 +69,10 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 	public Bill addBill(Order order) {
 		orderdao.save(order);
 		List<Bill> billList = dao.findByPartyNamesIdAndBillDateBetween(order.getPartyNamesId(),DatesUtil.getFirstDayOfMonth(order.getContractTime()),	DatesUtil.getLastDayOfMonth(order.getContractTime()));
-		Bill bill = null;
+		Bill bill = new Bill();
 		if(billList.size()>0){	
 		bill =  billList.get(0);
-		if(bill==null){
-			bill = new Bill();
+		}else{
 			bill.setPartyNames(order.getPartyNames());
 			bill.setPartyNamesId(order.getPartyNamesId());
 			bill.setBillDate(order.getContractTime());
@@ -88,9 +87,7 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 		bill.setNonArrivalPay(bill.getAcceptPay()+bill.getAcceptPayable()-bill.getArrivalPay());
 		//当月客户多付货款转下月应付
 		bill.setOverpaymentPay(bill.getNonArrivalPay()<0 ?bill.getNonArrivalPay() :0.0);
-		dao.save(bill);
-		}
-		return bill;
+		return dao.save(bill);
 	}
 	
 	
