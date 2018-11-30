@@ -39,15 +39,6 @@
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group">
 							<table><tr>
-								<td>日期开始:</td><td><input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"></td>
-             					<td>&nbsp&nbsp</td>
-								<td>日期结束:</td>
-								<td>
-								<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
-            					 onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-								</td>
-								<td>&nbsp&nbsp</td>
 								<td>乙方:</td><td><input type="text" name="name" id="partyNames"  class="form-control search-query name" /></td>
 								</tr></table> 
 								<span class="input-group-btn">
@@ -79,9 +70,8 @@
 											</label>
 											</th>
                                             <th class="text-center">乙方</th>
-                                            <th class="text-center">往来日期</th>
-                                            <th class="text-center">往来明细</th>
-                                            <th class="text-center">往来金额</th>
+                                            <th class="text-center">联系电话</th>
+                                            <th class="text-center">联系微信</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -89,10 +79,8 @@
                                     
                                         	<td class="text-center"></td>
                                             <td class="text-center"><input type="text" id="bName" class="bName2 text-center" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center" style="padding: 9px 0px 2px 350px;"><input id="mixtTime" placeholder="请输入时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#mixtTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="border: none;width:90px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="mixDetailed"  style="border: none;width:150px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="mixPrice" style="border: none;width:60px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"><input type="text" id="conPhone"  style="border: none;width:150px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"><input type="text" id="conWechat" style="border: none;width:60px; height:30px; background-color: #BFBFBF;"></td>
                                             <td class="text-center"><button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增</button></td>
                                     
                                         </tr>
@@ -249,38 +237,9 @@
 		  	this.setCount = function(count){
 		  		_count=count;
 		  	}
-		  	function p(s) {
-				return s < 10 ? '0' + s: s;
-				}
-			var myDate = new Date();
-				//获取当前年
-				var year=myDate.getFullYear();
-				//获取当前月
-				var month=myDate.getMonth()+1;
-				//获取当前日
-				var date=myDate.getDate(); 
-				var h=myDate.getHours();       //获取当前小时数(0-23)
-				var m=myDate.getMinutes();     //获取当前分钟数(0-59)
-				var s=myDate.getSeconds();  
-				var myDate2 = new Date();
-				//获取当前年
-				var year2=myDate2.getFullYear();
-				//获取当前月
-				var month2=myDate2.getMonth()+1;
-				//获取当前日
-				var date2=myDate2.getDate();
-				var now2=year2+'-'+p(month2)+"-"+p(date2)+' '+'00:00:00';
-				var day = new Date(year,month,0);
-				var firstdate = year + '-' + p(month) + '-01'+' '+'00:00:00';
-				var getday = year + '-' + p(month) + date+' '+'00:00:00';
-				var lastdate = year + '-' + p(month) + '-' + day.getDate() +' '+'23:59:59';
-				$('#startTime').val(firstdate);
-				$('#endTime').val(lastdate);
 			 	var data={
 						page:1,
 				  		size:13,
-				  		orderTimeBegin:firstdate,
-				  		orderTimeEnd:lastdate,	
 				} 
 			this.init = function(){
 				
@@ -294,7 +253,7 @@
 			    var index;
 			    var html = '';
 			    $.ajax({
-				      url:"${ctx}/fince/getMixes",
+				      url:"${ctx}/fince/getContact",
 				      data:data,
 				      type:"GET",
 				      beforeSend:function(){
@@ -304,14 +263,11 @@
 					  }, 
 		      		  success: function (result) {
 		      			 $(result.data.rows).each(function(i,o){
-		      				var newDate=/\d{4}-\d{1,2}-\d{1,2}/g.exec(o.mixtTime)
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="hidden batch">'+o.id+'</td>'
-		      				+'<td class="text-center edit  mixPartyNames">'+o.mixPartyNames+'</td>'
-		      				+'<td class="text-center hidden  mixPartyNamesId">'+o.mixPartyNamesId+'</td>'
-		      				+'<td class="text-center editt mixtTime">'+newDate+'</td>'
-		      				+'<td class="text-center editt mixDetailed">'+o.mixDetailed+'</td>'
-		      				+'<td class="text-center editt mixPrice">'+o.mixPrice+'</td>'
+		      				+'<td class="text-center edit  conPartyNames">'+o.conPartyNames+'</td>'
+		      				+'<td class="text-center editt conPhone">'+o.conPhone+'</td>'
+		      				+'<td class="text-center editt conWechat">'+o.conWechat+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button></td></tr>'
 							
 		      			}); 
@@ -398,24 +354,19 @@
 					                $(this).html(obj_text.val()); 
 									
 							});
-							var c;
-							if(self.getCache()==null){
-								c=$(this).parent().parent().find(".mixPartyNamesId").text();
-							}else{
-								c=self.getCache();
+							if(self.getCache()!=null){
+								return layer.msg("该客户已存在", {icon: 2});
 							}
 							var postData = {
 									id:$(this).data('id'),
-									mixPartyNames:$(this).parent().parent().find(".mixPartyNames").text(),
-									mixtTime:$(this).parent().parent().find(".mixtTime").text()+' '+'00:00:00',
-									mixDetailed:$(this).parent().parent().find(".mixDetailed").text(),
-									mixPrice:$(this).parent().parent().find(".mixPrice").text(),
-									mixPartyNamesId:c,
+									conPartyNames:$(this).parent().parent().find(".conPartyNames").text(),
+									conPhone:$(this).parent().parent().find(".conPhone").text(),
+									conWechat:$(this).parent().parent().find(".conWechat").text(),
 							}
 							
 							var index;
 							$.ajax({
-								url:"${ctx}/fince/addMixed",
+								url:"${ctx}/fince/addContact",
 								data:postData,
 								type:"POST",
 								beforeSend:function(){
@@ -510,9 +461,7 @@
 					var data = {
 				  			page:1,
 				  			size:13,
-				  			mixPartyNames:$('#partyNames').val(),
-				  			orderTimeEnd:$("#endTime").val(), 
-				  			batchNumber:$("#batchNumber2").val(),
+				  			conPartyNames:$('#partyNames').val(),
 				  	}
 		            self.loadPagination(data);
 				});
@@ -523,28 +472,25 @@
 					var _index;
 					var index;
 					var postData;
-					if($("#bName").val()==""){
-						return	layer.msg("请填写乙方", {icon: 2});
+					if($("#conPhone").val()==""){
+						return	layer.msg("请填写客户方电话", {icon: 2});
 					}
-					if($("#mixPrice").val()==""){
-						return layer.msg("请填写来往价格", {icon: 2});
+					if($("#conWechat").val()==""){
+						return layer.msg("请填写客户微信等信息", {icon: 2});
 					}
-					if($("#mixtTime").val()==""){
-						return layer.msg("请填写来往日期", {icon: 2});
+					if($("#conPartyNames").val()==""){
+						return layer.msg("请填写客户姓名", {icon: 2});
 					}
-					if(self.getCache()==""){
-						return layer.msg("乙方不在客户表中 请添加", {icon: 2});
+					if(self.getCache()!=""){
+						return layer.msg("该客户已存在", {icon: 2});
 					}
 					  postData={
-							  mixDetailed:$("#mixDetailed").val(),
-							  mixPrice:$("#mixPrice").val(),
-							  mixtTime:$("#mixtTime").val(),
-							  mixPartyNames:$("#bName").val(),
-							  mixPartyNamesId:self.getCache(),
-							  mixtSubordinateTime:$('#startTime').val(),
+							  conPhone:$("#conPhone").val(),
+							  conWechat:$("#conWechat").val(),
+							  conPartyNames:$("#bName").val(),
 					  }
 					  $.ajax({
-							url:"${ctx}/fince/addMixed",
+							url:"${ctx}/fince/addContact",
 							data:postData,
 				            traditional: true,
 							type:"post",
@@ -558,9 +504,8 @@
 								if(0==result.code){
 									layer.msg("添加成功！", {icon: 1});
 								 self.loadPagination(data); 
-									$("#mixPrice").val(""),
-									$("#mixDetailed").val("")
-									$("#mixtTime").val("")
+									$("#conPhone").val("")
+									$("#conWechat").val("")
 									$("#bName").val("")
 								}else{
 									layer.msg("添加失败", {icon: 2});
@@ -587,7 +532,7 @@
 						var index;
 						 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
 						$.ajax({
-							url:"${ctx}/fince/deleteMixed",
+							url:"${ctx}/fince/deleteContact",
 							data:postData,
 							traditional: true,
 							type:"GET",
@@ -603,9 +548,7 @@
 								var data = {
 					        			page:self.getCount(),
 								  		size:13,
-								  		mixPartyNames:$('#partyNames').val(),
-							  			orderTimeEnd:$("#endTime").val(), 
-							  			batchNumber:$("#batchNumber2").val(),
+								  		conPartyNames:$('#partyNames').val(),
 							  	}
 								self.loadPagination(data)
 								layer.close(index);

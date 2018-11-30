@@ -13,5 +13,5 @@ public interface ContactService extends BaseCRUDService<Contact,Long>{
 	
 	
 	public void addContact(Contact contact);
-	
+	public void deleteContact(String ids);
 }
