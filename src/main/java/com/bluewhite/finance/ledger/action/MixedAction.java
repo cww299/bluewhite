@@ -84,9 +84,9 @@ public class MixedAction {
 		if(mixed.getId()!=null){
 			Mixed oldMixed = mixedService.findOne(mixed.getId());
 			BeanCopyUtils.copyNullProperties(oldMixed,mixed);
-			mixed.setCreatedAt(mixed.getCreatedAt());
+			mixed.setCreatedAt(oldMixed.getCreatedAt());
+			mixedService.addMixed(mixed);
 		}
-		mixedService.addMixed(mixed);
 		cr.setMessage("添加成功");
 		return cr;
 	}
