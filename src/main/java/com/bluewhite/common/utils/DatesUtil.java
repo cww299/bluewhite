@@ -34,12 +34,16 @@ public class DatesUtil {
 	*/  
 	public static Date getFirstDayOfMonth(Date dates) {  
 			int month = DatesUtil.getDay(dates,1);
-			int year = DatesUtil.getDay(dates,2);
+			int year = DatesUtil.getDay(dates,2);	
 	        Calendar cal = Calendar.getInstance();  
 	        //设置年份  
 	        cal.set(Calendar.YEAR,year);  
 	        //设置月份  
-	        cal.set(Calendar.MONTH, month);  
+	        cal.set(Calendar.MONTH, month);     
+	        cal.set(Calendar.HOUR_OF_DAY, 0);//设置时为0点  
+	        cal.set(Calendar.MINUTE, 0);//设置分钟为0分  
+	        cal.set(Calendar.SECOND, 0);//设置秒为0秒  
+	        cal.set(Calendar.MILLISECOND, 000);//设置毫秒为000  
 	        //获取某月最小天数  
 	        int firstDay = cal.getActualMinimum(Calendar.DAY_OF_MONTH);  
 	        //设置日历中月份的最小天数  
@@ -63,6 +67,10 @@ public class DatesUtil {
 	        cal.set(Calendar.YEAR,year);  
 	        //设置月份  
 	        cal.set(Calendar.MONTH, month);  
+	        cal.set(Calendar.HOUR_OF_DAY, 23);  
+	        cal.set(Calendar.MINUTE, 59);  
+	        cal.set(Calendar.SECOND, 59);  
+	        cal.set(Calendar.MILLISECOND, 999); 
 	        //获取某月最大天数  
 	        int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);  
 	        //设置日历中月份的最大天数  
