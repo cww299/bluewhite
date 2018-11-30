@@ -50,7 +50,20 @@ public class ContactServiceImpl extends BaseServiceImpl<Contact, Long> implement
 	@Transactional
 	public void addContact(Contact customer) {
 		dao.save(customer);
-		
 	}
 
+	@Override
+	@Transactional
+	public void deleteContact(String ids) {
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					dao.delete(id);
+				}
+			}
+		}
+
+	}
 }

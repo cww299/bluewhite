@@ -33,7 +33,7 @@
                                 </div>
                             </div>
                             <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-8 col-sm-8  col-md-8">
+					<div class="col-xs-12 col-sm-12  col-md-12">
 						<form class="form-search" >
 							<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
@@ -50,6 +50,16 @@
 								<input id="endTimetw" placeholder="请输入结束时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#endTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
+								<td>&nbsp&nbsp</td>
+								<td>乙方:</td><td><input type="text" name="name" id="partyNames"  class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp</td>
+								<td>在途款:</td><td><input type="text" name="name" disabled="disabled" id="offshorePay"  class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp</td>
+								<td>已认可未到货款:</td><td><input type="text" name="name" disabled="disabled" id="acceptPay"  class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp</td>
+								<td>客户预付款:</td><td><input type="text" name="name" disabled="disabled" id="acceptPayable"  class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp</td>
+								<td>应收账款汇总:</td><td><input type="text" name="name" disabled="disabled" id="allprice"  class="form-control search-query name" /></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask">
@@ -207,7 +217,7 @@
 						page:1,
 				  		size:13,
 				  		orderTimeBegin:firstdate,
-				  		orderTimeEnd:lastdate,	
+				  		orderTimeEnd:lastdate,
 				} 
 			this.init = function(){
 				
@@ -257,8 +267,10 @@
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
-									  		type:5,
-									  		name:$('#name').val(),
+									  		orderTimeBegin:$("#startTimetw").val(),
+								  			orderTimeEnd:$("#endTimetw").val(),
+								  			partyNames:$("#partyNames").val(),
+								  			partyNamesId:self.getCache(),
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -287,8 +299,11 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			 $(result.data.rows).each(function(i,o){
-							
+		      			 $(result.data).each(function(i,o){
+		      				$("#offshorePay").val(o.offshorePay)
+		      				$("#acceptPay").val(o.acceptPay)
+		      				$("#acceptPayable").val(o.acceptPayable)
+		      				$("#allprice").val(o.offshorePay+o.acceptPay-o.acceptPayable)
 		      			}); 
 					   	layer.close(index);
 				      },error:function(){
@@ -536,9 +551,10 @@
 													if(0==result.code){
 														layer.msg("成功！", {icon: 1});
 													 	var _date={
-														  		type:2,
-														  		orderTimeBegin:firstdate,
-														  		orderTimeEnd:lastdate,	
+														  		orderTimeBegin:$("#startTimetw").val(),
+													  			orderTimeEnd:$("#endTimetw").val(),
+													  			partyNames:$("#partyNames").val(),
+													  			partyNamesId:self.getCache(),	
 														}
 														self.loadPagination(_date);
 													layer.close(index);
@@ -623,10 +639,63 @@
 					var data = {
 				  			orderTimeBegin:$("#startTimetw").val(),
 				  			orderTimeEnd:$("#endTimetw").val(),
+				  			partyNames:$("#partyNames").val(),
+				  			partyNamesId:self.getCache(),
 				  	}
 			
 				self.loadPagination(data);
 				});
+				
+				//提示乙方
+				$("#partyNames").typeahead({
+					//ajax 拿way数据
+					source : function(query, process) {
+							return $.ajax({
+								url : '${ctx}/fince/getContact',
+								type : 'GET',
+								data : {
+									conPartyNames:query,
+									
+								},
+								success : function(result) {
+									//转换成 json集合
+									 var resultList = result.data.rows.map(function (item) {
+										 	//转换成 json对象
+					                        var aItem = {name: item.conPartyNames, id:item.id}
+					                        //处理 json对象为字符串
+					                        return JSON.stringify(aItem);
+					                    });
+									if(result.data.rows==""){
+										 self.setCache("");
+									}
+									//提示框返回数据
+									 return process(resultList);
+								},
+							})
+						
+							//提示框显示
+						}, highlighter: function (item) {
+						    //转出成json对象
+							 var item = JSON.parse(item);
+							return item.name
+							//按条件匹配输出
+		                }, matcher: function (item) {
+		                	//转出成json对象
+					        var item = JSON.parse(item);
+					        self.setCache(item.id);
+					       
+					    	return item.id
+					    },
+						//item是选中的数据
+						updater:function(item){
+							//转出成json对象
+							var item = JSON.parse(item);
+							self.setCache(item.id);
+								return item.name
+						},
+
+						
+					});
 			}
    	}
    			var login = new Login();

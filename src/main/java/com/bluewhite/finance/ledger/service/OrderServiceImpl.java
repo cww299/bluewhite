@@ -51,6 +51,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
+			//按甲方Id过滤
+			if (param.getFirstNamesId() != null) {
+				predicate.add(cb.equal(root.get("firstNamesId").as(Long.class), param.getFirstNamesId()));
+			}
 			//按审核状态
 			if (param.getAshoreCheckr() != null) {
 				predicate.add(cb.equal(root.get("ashoreCheckr").as(Integer.class), param.getAshoreCheckr()));

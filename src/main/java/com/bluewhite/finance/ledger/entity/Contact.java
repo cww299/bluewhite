@@ -27,7 +27,7 @@ public class Contact extends BaseEntity<Long>{
 
 	
 	/**
-	 * 客户电话
+	 * 客户微信等
 	 */
 	@Column(name = "con_wechat")
     private String conWechat;
