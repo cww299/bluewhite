@@ -69,14 +69,16 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 	public Bill addBill(Order order) {
 		orderdao.save(order);
 		List<Bill> billList = dao.findByPartyNamesIdAndBillDateBetween(order.getPartyNamesId(),DatesUtil.getFirstDayOfMonth(order.getContractTime()),	DatesUtil.getLastDayOfMonth(order.getContractTime()));
-		Bill bill =  billList.get(0);
-		NumUtils.setzro(bill);
+		Bill bill = null;
+		if(billList.size()>0){	
+		bill =  billList.get(0);
 		if(bill==null){
 			bill = new Bill();
 			bill.setPartyNames(order.getPartyNames());
 			bill.setPartyNamesId(order.getPartyNamesId());
 			bill.setBillDate(order.getContractTime());
 		}
+		NumUtils.setzro(bill);
 		List<Order> orderList = orderdao.findByPartyNamesIdAndContractTimeBetween(order.getPartyNamesId(),DatesUtil.getFirstDayOfMonth(order.getContractTime()),DatesUtil.getLastDayOfMonth(order.getContractTime()));
 		double	OffshorePay = orderList.stream().filter(Order->Order.getPartyNamesId()==order.getPartyNamesId()).mapToDouble(Order::getContractPrice).sum();
 		bill.setOffshorePay(OffshorePay);
@@ -86,7 +88,9 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 		bill.setNonArrivalPay(bill.getAcceptPay()+bill.getAcceptPayable()-bill.getArrivalPay());
 		//当月客户多付货款转下月应付
 		bill.setOverpaymentPay(bill.getNonArrivalPay()<0 ?bill.getNonArrivalPay() :0.0);
-		return dao.save(bill);
+		dao.save(bill);
+		}
+		return bill;
 	}
 	
 	

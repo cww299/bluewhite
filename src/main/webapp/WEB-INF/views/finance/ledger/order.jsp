@@ -106,14 +106,14 @@
                                         	<td class="text-center"></td>
                                             <td class="text-center" style="padding: 9px 0px 2px 4px;"><input id="contractTime" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#contractTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="border: none;width:90px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="aName" class="aName2"  data-provide="typeahead" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="bName" class="bName2" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="batchNumber" style="border: none;width:105px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="planNumbers" placeholder="可不填" style="border: none;width:60px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="ProductName" style="border: none;width:150px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="contractNumber" style="border: none;width:50px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"><input type="text" id="aName" class="aName2 text-center"  data-provide="typeahead" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"><input type="text" id="bName" class="bName2 text-center" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"><input type="text" id="batchNumber" class="text-center" style="border: none;width:105px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"><input type="text" id="planNumbers" class="text-center" placeholder="可不填" style="border: none;width:60px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"><input type="text" id="ProductName" class="text-center" style="border: none;width:150px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"><input type="text" id="contractNumber" class="text-center" style="border: none;width:50px; height:30px; background-color: #BFBFBF;"></td>
                                             <td class="text-center"></td>
-                                            <td class="text-center"><input type="text" id="remarksPrice" placeholder="可不填" style="border: none;width:80px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"><input type="text" id="remarksPrice" class="text-center" placeholder="可不填" style="border: none;width:80px; height:30px; background-color: #BFBFBF;"></td>
                                             <td class="text-center"></td>
                                             <td class="text-center"><button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增订单</button></td>
                                     
