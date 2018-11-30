@@ -72,7 +72,7 @@ public class OrderAction {
 		CommonResponse cr = new CommonResponse();
 		HttpSession session = request.getSession();
 		CurrentUser user = (CurrentUser) session.getAttribute("user");
-		if(user.getIsAdmin()==false){
+		if(user.getRole().contains("sales")){
 			order.setFirstNamesId(user.getId());
 		}
 		PageResult<Order> orderList = orderService.findPages(order, page);
