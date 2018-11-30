@@ -85,10 +85,12 @@ public class OrderAction {
 					Order oldOrder = orderService.findOne(order.getId());
 					BeanCopyUtils.copyNullProperties(oldOrder,order);
 					order.setCreatedAt(oldOrder.getCreatedAt());
+					orderService.addOrder(order);
+					cr.setData(clearCascadeJSON.format(order).toJSON());
+					cr.setMessage("修改成功");
+				}else{
+					cr.setMessage("添加成功");
 				}
-				orderService.addOrder(order);
-				cr.setData(clearCascadeJSON.format(order).toJSON());
-			    cr.setMessage("添加成功");
 		return cr;
 	}
 	
