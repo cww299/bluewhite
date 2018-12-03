@@ -117,8 +117,15 @@ public class OrderAction {
 	public CommonResponse delete(HttpServletRequest request, String ids) {
 		CommonResponse cr = new CommonResponse();
 		if (!StringUtils.isEmpty(ids)) {
-			orderService.deleteOrder(ids);
-			cr.setMessage("删除成功");
+			int count = 0;
+			try {
+				count = orderService.deleteOrder(ids);
+			} catch (Exception e) {
+				cr.setMessage(e.getMessage());
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				return cr;
+			}
+			cr.setMessage("成功删除"+count+"条数据");
 		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("不能为空");

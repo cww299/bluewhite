@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
@@ -54,6 +55,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			//按甲方Id过滤
 			if (param.getFirstNamesId() != null) {
 				predicate.add(cb.equal(root.get("firstNamesId").as(Long.class), param.getFirstNamesId()));
+				predicate.add(cb.notEqual(root.get("price").as(Integer.class),0));
 			}
 			//按审核状态
 			if (param.getAshoreCheckr() != null) {
@@ -156,16 +158,25 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
 	@Override
 	@Transactional
-	public void deleteOrder(String ids) {
+	public int deleteOrder(String ids) throws Exception {
+		int count =0;
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idArr = ids.split(",");
 			if (idArr.length > 0) {
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
-					dao.delete(id);
+					Order order=dao.findOne(id);
+					if(order.getAshoreNumber()==0 || order.getAshoreNumber()==null){
+						dao.delete(id);
+						count++;
+					}else{
+						throw new ServiceException("销售编号为"+order.getSalesNumber()+"的任务已填写到岸数量无法删除");
+					}
+					
 				}
 			}
 		}
+		return count;
 
 	}
 

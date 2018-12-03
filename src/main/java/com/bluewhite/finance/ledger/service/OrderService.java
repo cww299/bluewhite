@@ -14,5 +14,5 @@ public interface OrderService extends BaseCRUDService<Order,Long>{
 
 	public void addOrder(Order order);
 	
-	public void deleteOrder(String ids);
+	public int deleteOrder(String ids) throws Exception;
 }
