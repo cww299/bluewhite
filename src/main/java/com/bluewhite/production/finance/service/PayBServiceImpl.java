@@ -97,7 +97,6 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 		    }
 
 	@Override
-	@Transactional
 	public List<CollectPay> collectPay(CollectPay collectPay) {
 		List<CollectPay> collectPayList = new ArrayList<CollectPay>();
 		PageParameter page  = new PageParameter();
