@@ -659,8 +659,9 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		}
 		return collectPayList;
 	}
-
-	private CollectPay findCollectPay(CollectPay collectPay) {
+	
+	@Override
+	public CollectPay findCollectPay(CollectPay collectPay) {
 		return dao.findByUserIdAndTypeAndAllotTimeBetween(collectPay.getUserId(),collectPay.getType(),collectPay.getOrderTimeBegin(),collectPay.getOrderTimeEnd());
 	}
 
