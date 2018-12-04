@@ -252,7 +252,7 @@
 		      				+'<td class="text-center editt nonArrivalPay">'+o.nonArrivalPay+'</td>'
 		      				+'<td class="text-center editt overpaymentPay">'+o.overpaymentPay+'</td>'
 		      				+'<td class="text-center editt overpaymentPay">'+o.arrivalPay+'</td>'
-		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans Tips"  data-id='+o.id+'>已到款明细</button></td></tr>'
+		      				+'<td class="text-center"> <button class="btn btn-sm btn-danger btn-trans Tips"  data-id='+o.id+'>已到款明细</button></td></tr>'
 							
 		      			}); 
 		      			self.setCount(result.data.pageNum)
@@ -331,136 +331,6 @@
 					
 				}
 			this.loadEvents = function(){
-				//修改方法
-				$('.update').on('click',function(){
-					if($(this).text() == "编辑"){
-					self.mater();
-						$(this).text("保存")
-						
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini'  style='border: none;width:90px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        });
-						$(this).parent().siblings(".editt").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini aName2'  style='border: none;width:68px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        });
-						$(this).parent().siblings(".edit1").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini'  style='border: none;width:105px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        });
-						$(this).parent().siblings(".edit2").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini'  style='border: none;width:60px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        });
-						$(this).parent().siblings(".edit3").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini'  style='border: none;width:150px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        });
-						$(this).parent().siblings(".edit4").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini'  style='border: none;width:50px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        });
-						$(this).parent().siblings(".edit5").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini'  style='border: none;width:80px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        });
-					}else{
-							$(this).text("编辑")
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							$(this).parent().siblings(".editt").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							$(this).parent().siblings(".edit1").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							$(this).parent().siblings(".edit2").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							$(this).parent().siblings(".edit3").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							$(this).parent().siblings(".edit4").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							$(this).parent().siblings(".edit5").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							var postData = {
-									id:$(this).data('id'),
-									contractTime:$(this).parent().parent().find(".contractTime").text()+' '+'00:00:00',
-									firstNames:$(this).parent().parent().find(".firstNames").text(),
-									partyNames:$(this).parent().parent().find(".partyNames").text(),
-									batchNumber:$(this).parent().parent().find(".batchNumber").text(),
-									planNumbers:$(this).parent().parent().find(".planNumbers").text(),
-									productName:$(this).parent().parent().find(".productName").text(),
-									contractNumber:$(this).parent().parent().find(".contractNumber").text(),
-									remarksPrice:$(this).parent().parent().find(".remarksPrice").text(),
-							}
-							
-							var index;
-							$.ajax({
-								url:"${ctx}/fince/addOrder",
-								data:postData,
-								type:"POST",
-								beforeSend:function(){
-									index = layer.load(1, {
-										  shade: [0.1,'#fff'] //0.1透明度的白色背景
-										});
-								},
-								
-								success:function(result){
-									if(0==result.code){
-									layer.msg("修改成功！", {icon: 1});
-									layer.close(index);
-									}else{
-										layer.msg("修改失败！", {icon: 1});
-										layer.close(index);
-									}
-								},error:function(){
-									layer.msg("操作失败！", {icon: 2});
-									layer.close(index);
-								}
-							});
-					}
-				})
 				//提示
 							$('.Tips').on('click',function(){
 								$('#addgroup').off('click');
