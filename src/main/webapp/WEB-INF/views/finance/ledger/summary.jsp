@@ -463,6 +463,7 @@
 				})
 				//提示
 							$('.Tips').on('click',function(){
+								$('#addgroup').off('click');
 								var id=$(this).data('id')
 								var html2="";
 								var postData2={
@@ -496,9 +497,6 @@
 								layer.close(index);
 							}
 						});
-								
-								
-								
 								$("#addgroup").on('click',function(){
 									var html=""
 									var a=$("#contractTime").val()
@@ -570,15 +568,6 @@
 										},
 									  end:function(){
 										  $('#addworking').hide();
-										  /* data={
-												page:1,
-											  	size:13,	
-											  	type:2,
-											  	name:$('#name').val(),
-									  			number:$('#number').val(),
-									  			status:$('.selectchoice').val(),
-										  }
-										self.loadPaginationfv(data); */
 									  }
 								});
 										})
