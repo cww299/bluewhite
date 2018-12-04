@@ -554,7 +554,7 @@
 													  			partyNames:$("#partyNames").val(),
 													  			partyNamesId:self.getCache(),	
 														}
-														self.loadPagination(_date);
+														self.loadPagination(_date) ;
 													layer.close(index);
 													}else{
 														layer.msg("修改失败！", {icon: 2});
