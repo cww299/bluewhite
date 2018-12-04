@@ -169,12 +169,12 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 			collect.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 			collect.setOrderTimeEnd(collectPay.getOrderTimeEnd());
 			collect.setType(collectPay.getType());
-			List<CollectPay> cpList = collectPayService.findPages(collect, page).getRows();
-			if(cpList.size()==1){
-				if(cpList.get(0).getPayA().equals(collect.getPayA())  && cpList.get(0).getPayB().equals(collect.getPayB())){
-					collect = cpList.get(0);
+			CollectPay cpList = collectPayService.findCollectPay(collect);
+			if(cpList!=null){
+				if(cpList.getPayA().equals(collect.getPayA())  && cpList.getPayB().equals(collect.getPayB())){
+					collect = cpList;
 				}else{
-					collect.setAddSelfNumber(cpList.get(0).getAddSelfNumber());
+					collect.setAddSelfNumber(cpList.getAddSelfNumber());
 					//考虑个人调节上浮后的B
 					collect.setAddSelfPayB(collect.getPayB()*collect.getAddSelfNumber());
 					//上浮后的加绩
@@ -190,7 +190,7 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 						timePay = (collect.getPayA()+collect.getNoPerformanceNumber())/collect.getTime();
 					}
 					collect.setTimePay(timePay);
-					collect.setId(cpList.get(0).getId());
+					collect.setId(cpList.getId());
 					collectPayDao.save(collect);
 				}
 			}else{

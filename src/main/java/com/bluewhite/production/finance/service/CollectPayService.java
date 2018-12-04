@@ -87,6 +87,11 @@ public interface CollectPayService extends BaseCRUDService<CollectPay,Long>{
 	 */
 	public Object getMouthYields(Long id,String date);
 	
+	
+	CollectPay findCollectPay(CollectPay collectPay);
+	
+
+	
 
 
 }
