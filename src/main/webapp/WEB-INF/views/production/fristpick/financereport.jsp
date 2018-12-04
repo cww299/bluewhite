@@ -550,11 +550,11 @@
 		      				+'<td class="text-center  ">'+parseFloat((o.addPayB*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center  ">'+parseFloat((o.addSelfPayB*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center  edit addSelfNumber">'+o.addSelfNumber+'</td>'
-		      				+'<td class="text-center  ">'+o.addPerformancePay+'</td>'
+		      				+'<td class="text-center  addPerformancePaytw">'+o.addPerformancePay+'</td>'
 		      				+'<td class="text-center  edit hardAddPerformancePay">'+o.hardAddPerformancePay+'</td>'
-		      				+'<td class="text-center  ">'+o.noPerformanceNumber+'</td>'
-		      				+'<td class="text-center  ">'+o.noTimePay+'</td>'
-		      				+'<td class="text-center  ">'+o.timePay+'</td>'
+		      				+'<td class="text-center  noPerformanceNumbertw">'+o.noPerformanceNumber+'</td>'
+		      				+'<td class="text-center  noTimePaytw">'+o.noTimePay+'</td>'
+		      				+'<td class="text-center  timePaytw">'+o.timePay+'</td>'
 		      				+'<td class="text-center"> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button></td></tr>'
 		      			}); 
 				          
@@ -763,6 +763,7 @@
 			this.loadEvents = function(){
 				//修改方法
 				$('.updateremake').on('click',function(){
+					var that=$(this)
 					if($(this).text() == "编辑"){
 						$(this).text("保存")
 						
@@ -801,7 +802,10 @@
 								success:function(result){
 									if(0==result.code){
 									layer.msg("修改成功！", {icon: 1});
-									$(".searchtaskth").click()
+									that.parent().parent().find('.addPerformancePaytw').text(result.data.addPerformancePay)
+									that.parent().parent().find('.noPerformanceNumbertw').text(result.data.noPerformanceNumber)
+									that.parent().parent().find('.noTimePaytw').text(result.data.noTimePay)
+									that.parent().parent().find('.timePaytw').text(result.data.timePay)
 									layer.close(index);
 									}else{
 										layer.msg("修改失败！", {icon: 1});
