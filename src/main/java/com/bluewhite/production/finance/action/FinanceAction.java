@@ -268,6 +268,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		pay.setAddPerformancePay(pay.getAddSelfPayB()-pay.getPayA()>0 ? pay.getAddSelfPayB()-pay.getPayA() : 0.0);
 		pay.setHardAddPerformancePay(collectPay.getHardAddPerformancePay());
 		collectPayBService.save(pay);
+		cr.setData(collectPayBService.save(pay));
 		cr.setMessage("修改成功");
 		return cr;
 	}
