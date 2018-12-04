@@ -83,6 +83,8 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 		bill.setOffshorePay(OffshorePay);
 		double	acceptPay = orderList.stream().filter(Order->Order.getPartyNamesId()==order.getPartyNamesId() && Order.getAshorePrice()!=null).mapToDouble(Order::getAshorePrice).sum();
 		bill.setAcceptPay(acceptPay);
+		//当表在途和有争议货款
+		bill.setDisputePay(OffshorePay-acceptPay);
 		//当月货款未到
 		bill.setNonArrivalPay(bill.getAcceptPay()+bill.getAcceptPayable()-bill.getArrivalPay());
 		//当月客户多付货款转下月应付
