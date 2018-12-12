@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
@@ -26,6 +27,15 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
 	public PageResult<Customer> findPages(Customer param, PageParameter page) {
 		Page<Customer> pages = dao.findAll((root,query,cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
+			
+			//按乙方姓名查找
+			if (!StringUtils.isEmpty(param.getCusPartyNames())) {
+				predicate.add(cb.like(root.get("cusPartyNames").as(String.class),"%" + param.getCusPartyNames() + "%"));
+			}
+			//按乙方姓名查找
+			if (!StringUtils.isEmpty(param.getCusProductName())) {
+				predicate.add(cb.like(root.get("cusProductName").as(String.class),"%" + param.getCusProductName() + "%"));
+			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			
 			query.where(predicate.toArray(pre));
