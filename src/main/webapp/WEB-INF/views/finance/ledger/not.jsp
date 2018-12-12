@@ -71,6 +71,12 @@
 										<i class="icon-search icon-on-right bigger-110"></i>
 									</button>
 								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+									 <button type="button" id="export" class="btn btn-success  btn-sm btn-3d pull-right">
+									 导出绩效
+									 </button>
+								</span>
 							</div>
 						</div>
 					</div>
@@ -83,6 +89,7 @@
                                         <tr>
                                         	<th class="text-center">乙方电话</th>
                                         	<th class="text-center">乙方其他信息</th>
+                                        	<th class="text-center">线上or线下</th>
                                         	<th class="text-center">当月销售编号</th>
                                             <th class="text-center">合同签订日期</th>
                                             <th class="text-center">甲方</th>
@@ -278,10 +285,15 @@
 		      				}else{
 		      					a="已核对"
 		      				}
+		      				var b="线下";
+		      				if(o.online==1){
+		      					b="线上"
+		      				}
 		      				html +='<tr>'
 		      				+'<td class="hidden batch" data-id='+o.id+'>'+o.id+'</td>'
 		      				+'<td class="text-center  salesNumber">'+o.contact.conPhone+'</td>'
 		      				+'<td class="text-center  salesNumber">'+o.contact.conWechat+'</td>'
+		      				+'<td class="text-center ">'+b+'</td>'
 		      				+'<td class="text-center  salesNumber">'+o.salesNumber+'</td>'
 		      				+'<td class="text-center  contractTime">'+newDate+'</td>'
 		      				+'<td class="text-center  firstNames">'+o.firstNames+'</td>'
@@ -435,6 +447,22 @@
 				
 			}
 			this.events = function(){
+				
+				//导出
+				$('#export').on('click',function(){
+					var index; 
+					var a=$("#startTime").val();
+					var c= $("#endTime").val();
+					var partyNames=$('#partyNames').val();
+					var firstNames=$('#firstNames').val();
+					var productName=$('#productName').val();
+					var batchNumber=$("#batchNumber2").val();
+		  			var ashoreCheckr=$("#ashoreCheckr").val();
+		  			var type=$("#type").val();
+					location.href="${ctx}/excel/importExcel/productionOrder?orderTimeBegin="+a+"&orderTimeEnd="+c+"&partyNames="+partyNames+"&firstNames="+firstNames+"&productName="+productName+"&batchNumber="+batchNumber+"&ashoreCheckr="+ashoreCheckr+"&type="+type;
+				})
+				
+				
 				$('.searchtask').on('click',function(){
 					var data = {
 				  			page:1,

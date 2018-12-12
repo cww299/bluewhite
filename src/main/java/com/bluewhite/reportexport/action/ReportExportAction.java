@@ -44,6 +44,9 @@ import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.excel.Excelutil;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
+import com.bluewhite.finance.ledger.dao.OrderDao;
+import com.bluewhite.finance.ledger.entity.Order;
+import com.bluewhite.finance.ledger.service.OrderService;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.BaseOneTime;
 import com.bluewhite.product.primecostbasedata.entity.BaseThree;
@@ -91,6 +94,9 @@ public class ReportExportAction {
 	
 	@Autowired
 	private ProcedureDao procedureDao;
+	
+	@Autowired
+	private OrderService orderService;
 	
 	@Autowired
 	private AttendancePayService attendancePayService;
@@ -750,7 +756,26 @@ public class ReportExportAction {
   		}
 }
 	
-	
+	/**
+	 * 导出月产量报表
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping("/importExcel/productionOrder")
+	public void DownProductionOrderExcel(HttpServletResponse response,Order order,PageParameter page){
+		response.setContentType("octets/stream");
+	    response.addHeader("Content-Disposition", "attachment;filename=rework.xls");
+	    OutputStream out=null;
+        try {  
+            out = response.getOutputStream();  
+        } catch (IOException e) {  
+            e.printStackTrace();  
+		}  
+        page.setSize(Integer.MAX_VALUE);
+        List<Order> orders= orderService.findPages(order, page).getRows();
+	    Excelutil<Order> util = new Excelutil<Order>(Order.class);
+        util.exportExcel(orders, "月产量报表", out);// 导出  
+	}
 	
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
