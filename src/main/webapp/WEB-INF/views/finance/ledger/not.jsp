@@ -323,8 +323,14 @@
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
-									  		type:5,
-									  		name:$('#name').val(),
+									  		productName:$('#productName').val(),
+								  			firstNames:$('#firstNames').val(),
+								  			partyNames:$('#partyNames').val(),
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(), 
+								  			batchNumber:$("#batchNumber2").val(),
+								  			ashoreCheckr:$("#ashoreCheckr").val(),
+								  			type:$("#type").val(),
 								  	}
 						        
 						            self.loadPagination(_data);
