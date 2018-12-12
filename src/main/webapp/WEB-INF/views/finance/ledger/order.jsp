@@ -198,6 +198,29 @@
  
  <div class="wrap">
 <div class="layer-right3" style="display: none;">
+<div class="row" style="height: 30px; margin:15px 0 10px">
+					<div class="col-xs-12 col-sm-12  col-md-12">
+						<form class="form-search" >
+							<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12">
+							<div class="input-group">
+							<table><tr>
+								<td>乙方:</td><td><input type="text" name="name" id="partyNames2"  class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp</td>
+								<td>产品名:</td><td><input type="text" name="name" id="productName2"  class="form-control search-query name" /></td>
+								</tr></table> 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask2">
+										查找
+										<i class="icon-search icon-on-right bigger-110"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
            <div class="panel-body">
                                 <table class="table table-hover">
                                     <thead>
@@ -271,6 +294,12 @@
 		  	}
 		  	this.setCount = function(count){
 		  		_count=count;
+		  	}
+		  	this.getCountall = function(){
+		  		return _countall;
+		  	}
+		  	this.setCountall = function(countall){
+		  		_countall=countall;
 		  	}
 		  	self.setIndex(null)
 		  	self.setCache(null)
@@ -599,6 +628,8 @@
 							$('.Tips').on('click',function(){
 								var that=$(this)
 								var id=$(this).data('id')
+								self.setName(id)
+								self.setCountall(that)
 								var ids=that.data("id");
 							$(".batch").each(function(i,o){
 							var a=$(o).text();
@@ -608,83 +639,111 @@
 							}
 							})
 								var postData = {
-										productName:$(this).data('productname'),
-										partyNames:$(this).data('partynames')
-								}
-								var index;
-								$.ajax({
-									url:"${ctx}/fince/tipsCustomer",
-									data:postData,
-									type:"GET",
-									beforeSend:function(){
-										index = layer.load(1, {
-											  shade: [0.1,'#fff'] //0.1透明度的白色背景
-											});
-									},
-									
-									success:function(result){
-										if(0==result.code){
-											$(".layer-right3").css("display","block");
-											var demo = new mSlider({
-												dom:".layer-right3",
-												direction: "right",
-												distance:"35%",
-												
-											})
-											demo.open()
-							var html1="";				
-						$(result.data).each(function(i,o){
-		      				html1 +='<tr>'
-		      				+'<td class="text-center edit name">'+o.cusProductName+'</td>'
-		      				+'<td class="text-center edit name">'+o.cusPartyNames+'</td>'
-		      				+'<td class="text-center edit cusPrice">'+o.cusPrice+'</td>'
-		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans choice" data-id='+o.id+'>选择</button></tr>'
-		      			}); 
-						$("#tablecontent2").html(html1); 
-						$(".choice").on('click',function(){
-							var thtt=$(this)
-							var postData = {
-									id:id,
-									price:$(this).parent().parent().find('.cusPrice').text(),
+								page:1,
+					  			size:10,
+								cusProductName:$(this).data('productname'),
+								cusPartyNames:$(this).data('partynames')
 							}
-							var index;
-							$.ajax({
-								url:"${ctx}/fince/addOrder",
-								data:postData,
-								type:"POST",
-								beforeSend:function(){
-									index = layer.load(1, {
-										  shade: [0.1,'#fff'] //0.1透明度的白色背景
-										});
-								},
-								success:function(result){
-									if(0==result.code){
-									that.parent().parent().find(".contractPrice").text(result.data.contractPrice)
-									that.parent().parent().find(".price2").val(result.data.price)
-									layer.msg("当批合同总价为"+result.data.contractPrice+"", {icon: 1});
-									layer.close(index);
-									}else{
-										layer.msg("失败！", {icon: 1});
-										layer.close(index);
-									}
-								},error:function(){
-									layer.msg("操作失败！", {icon: 2});
-									layer.close(index);
-								}
-							});
-						})
-											layer.close(index);
-										}else{
-											layer.msg("操作失败", {icon: 1});
-											layer.close(index);
-										}
-									},error:function(){
-										layer.msg("操作失败！", {icon: 2});
-										layer.close(index);
-									}
-								});
+								self.lodwork(postData,id,that)
 					})
 				
+				
+			}
+			
+			this.lodwork=function(postData,id,that,a){
+				var index;
+				$.ajax({
+					url:"${ctx}/fince/getCustomer",
+					data:postData,
+					type:"GET",
+					beforeSend:function(){
+						index = layer.load(1, {
+							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							});
+					},
+					
+					success:function(result){
+						if(0==result.code){
+							if(a!=1){
+							$(".layer-right3").css("display","block");
+							var demo = new mSlider({
+								dom:".layer-right3",
+								direction: "right",
+								distance:"35%",
+								
+							})
+							demo.open()
+							}
+			var html1="";				
+		$(result.data.rows).each(function(i,o){
+				html1 +='<tr>'
+				+'<td class="text-center edit name">'+o.cusProductName+'</td>'
+				+'<td class="text-center edit name">'+o.cusPartyNames+'</td>'
+				+'<td class="text-center edit cusPrice">'+o.cusPrice+'</td>'
+				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans choice" data-id='+o.id+'>选择</button></tr>'
+			}); 
+		laypage({
+		      cont: 'pager2', 
+		      pages: result.data.totalPages, 
+		      curr:  result.data.pageNum || 1, 
+		      jump: function(obj, first){ 
+		    	  if(!first){ 
+		    		 
+			        	var _data = {
+			        			page:obj.curr,
+						  		size:10,
+						  		cusProductName:$('#productName2').val(),
+					  			cusPartyNames:$('#partyNames2').val(),
+					  	}
+			        	var a=self.getCountall()
+						var b=self.getName()
+				       self.lodwork(_data,b,a,1);
+				     }
+		      }
+		    }); 
+		$("#tablecontent2").html(html1); 
+		$(".choice").on('click',function(){
+			var thtt=$(this)
+			var postData = {
+					id:id,
+					price:$(this).parent().parent().find('.cusPrice').text(),
+			}
+			var index;
+			$.ajax({
+				url:"${ctx}/fince/addOrder",
+				data:postData,
+				type:"POST",
+				beforeSend:function(){
+					index = layer.load(1, {
+						  shade: [0.1,'#fff'] //0.1透明度的白色背景
+						});
+				},
+				success:function(result){
+					if(0==result.code){
+					that.parent().parent().find(".contractPrice").text(result.data.contractPrice)
+					that.parent().parent().find(".price2").val(result.data.price)
+					layer.msg("当批合同总价为"+result.data.contractPrice+"", {icon: 1});
+					layer.close(index);
+					}else{
+						layer.msg("失败！", {icon: 1});
+						layer.close(index);
+					}
+				},error:function(){
+					layer.msg("操作失败！", {icon: 2});
+					layer.close(index);
+				}
+			});
+		})
+							layer.close(index);
+						}else{
+							layer.msg("操作失败", {icon: 1});
+							layer.close(index);
+						}
+					},error:function(){
+						layer.msg("操作失败！", {icon: 2});
+						layer.close(index);
+					}
+				});
 				
 			}
 			this.mater=function(){
@@ -803,7 +862,17 @@
 		            self.loadPagination(data);
 				});
 				
-				
+				$('.searchtask2').on('click',function(){
+					var data = {
+				  			page:1,
+				  			size:10,
+				  			cusProductName:$('#productName2').val(),
+				  			cusPartyNames:$('#partyNames2').val(),
+				  	}
+				var a=self.getCountall()
+				var b=self.getName()
+		            self.lodwork(data,b,a,1);
+				});
 				//新增小组
 				$('#addgroup').on('click',function(){
 					self.mater();
