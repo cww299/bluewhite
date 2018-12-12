@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.ledger.dao.CustomerDao;
 import com.bluewhite.finance.ledger.entity.Customer;
 
@@ -38,7 +39,7 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
 	@Override
 	public List<Customer> findByCusProductNameAndCusPartyNames(String productName, String partyNames) {
 		
-		return dao.findByCusProductNameAndCusPartyNames(productName, partyNames);
+		return dao.findByCusProductNameLikeAndCusPartyNames("%"+StringUtil.specialStrKeyword(productName)+"%", partyNames);
 	}
 	@Override
 	@Transactional

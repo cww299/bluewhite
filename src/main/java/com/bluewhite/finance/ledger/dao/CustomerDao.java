@@ -9,7 +9,7 @@ import com.bluewhite.finance.ledger.entity.Customer;
 public interface CustomerDao extends BaseRepository<Customer, Long>{
 	
 	
-  public List<Customer> findByCusProductNameAndCusPartyNames(String productName ,String partyNames);
+  public List<Customer> findByCusProductNameLikeAndCusPartyNames(String productName ,String partyNames);
 	
 
 }

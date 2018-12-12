@@ -54,7 +54,7 @@ public class OrderAction {
 				.addRetainTerm(Order.class, "id", "salesNumber", "contractTime", "batchNumber", "planNumbers",
 						"productName", "contractNumber", "contractPrice", "remarksPrice", "firstNames", "partyNames",
 						"price", "firstNamesId", "partyNamesId", "contact", "ashoreNumber", "ashoreTime",
-						"ashoreCheckr", "disputeNumber", "roadNumber", "disputePrice", "ashorePrice")
+						"ashoreCheckr", "disputeNumber", "roadNumber", "disputePrice", "ashorePrice","online")
 				.addRetainTerm(Contact.class, "id", "conPartyNames", "conPhone", "conWechat");
 	}
 

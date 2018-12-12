@@ -97,6 +97,7 @@
                                             <th class="text-center">当批合同总价（元）</th>
                                             <th class="text-center">预付款备注</th>
                                             <th class="text-center">手动填写当批单只价格</th>
+                                            <th class="text-center">线上or线下</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
@@ -115,7 +116,8 @@
                                             <td class="text-center"></td>
                                             <td class="text-center"><input type="text" id="remarksPrice" class="text-center" placeholder="可不填" style="border: none;width:80px; height:30px; background-color: #BFBFBF;"></td>
                                             <td class="text-center"></td>
-                                            <td class="text-center"><button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增订单</button></td>
+                                            <td class="text-center"><select class="text-center" id="online" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">线下</option><option value="1">线上</option></select></td>
+                                            <td class="text-center"><button type="button"  id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增订单</button></td>
                                     
                                         </tr>
                                     
@@ -299,6 +301,14 @@
 				var lastdate = year + '-' + p(month) + '-' + day.getDate() +' '+'23:59:59';
 				$('#startTime').val(firstdate);
 				$('#endTime').val(lastdate);
+				var myDate3 = new Date();
+				 myDate3.setMonth(month + 2);
+				//获取当前年
+				var year3=myDate3.getFullYear();
+				//获取当前月
+				var month3=myDate3.getMonth();
+				//获取当前日
+				var date3=myDate3.getDate(); 
 			 var data={
 						page:1,
 				  		size:13,
@@ -343,8 +353,8 @@
 		      				+'<td class="text-center  name contractPrice" style=" color:#c11f34">'+(o.contractPrice!=null ? o.contractPrice : 0)+'</td>'
 		      				+'<td class="text-center edit5 remarksPrice">'+(o.remarksPrice!=null ? o.remarksPrice : "")+'</td>'
 		      				+'<td class="text-center  name"><input type="text" class="price2" value="'+(o.price!=null ? o.price : "")+'" style="border: none;width:70px; height:30px; background-color: #BFBFBF;"></td>'
+		      				+'<td class="text-center" edit5 data-online='+o.online+'><select class="text-center checkWork" disabled="disabled" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">线下</option><option value="1">线上</option></select></td>'
 		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans Tips"  data-id='+o.id+' data-productname='+o.productName+' data-partynames='+o.partyNames+'>提示</button></td></tr>'
-							
 		      			}); 
 		      			self.setCount(result.data.pageNum)
 				        //显示分页
@@ -399,6 +409,10 @@
 					
 				}
 			this.loadEvents = function(){
+  				$('.checkWork').each(function(j,k){
+					var ids=$(this).parent().data('online')
+  					$(k).val(ids)
+				});
 				//修改方法
 				$('.update').on('click',function(){
 					if($(this).text() == "编辑"){
@@ -431,6 +445,7 @@
 						$(this).parent().siblings(".edit5").each(function() {  // 获取当前行的其他单元格
 
 				            $(this).html("<input class='input-mini'  style='border: none;width:80px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+						$(this).parent().parent().find(".checkWork").removeAttr("disabled")
 				        });
 						self.mater();
 					}else{
@@ -484,7 +499,7 @@
 									
 							});
 							$(this).parent().siblings(".edit5").each(function() {  // 获取当前行的其他单元格
-
+								$(this).parent().parent().find(".checkWork").attr('disabled','disabled');
 					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
 
 					       
@@ -513,6 +528,7 @@
 									productName:$(this).parent().parent().find(".productName").text(),
 									contractNumber:$(this).parent().parent().find(".contractNumber").text(),
 									remarksPrice:$(this).parent().parent().find(".remarksPrice").text(),
+									online:$(this).parent().parent().find(".checkWork").val(),
 									firstNamesId:c,
 									partyNamesId:d,
 							}
@@ -815,6 +831,10 @@
 					if(self.getIndex()==""){
 						return layer.msg("甲方不是销售人员 请添加", {icon: 2});
 					}
+					var temper=$("#contractTime").val()
+      				var dt = new Date(temper.replace(/-/,"/"))//转换成日期格式
+      				var date2=dt.getDate();//获取天数
+					var now2=year3+'-'+p(month3)+"-"+p(date2);
 					  postData={
 							  contractTime:$("#contractTime").val(),
 							  firstNames:$("#aName").val(),
@@ -824,9 +844,11 @@
 							  productName:$("#ProductName").val(),
 							  contractNumber:$("#contractNumber").val(),
 							  remarksPrice:$("#remarksPrice").val(),
+							  online:$("#online").val(),
 							  firstNamesId:self.getIndex(),
 							  partyNamesId:self.getCache(),
 							  ashoreCheckr:0,
+							  ashoreTime:now2+' '+'00:00:00',
 					  }
 					  $.ajax({
 							url:"${ctx}/fince/addOrder",

@@ -74,6 +74,7 @@
                                         <tr>
                                         	<th class="text-center">乙方电话</th>
                                         	<th class="text-center">乙方其他信息</th>
+                                        	<th class="text-center">线上or线下</th>
                                         	<th class="text-center">当月销售编号</th>
                                             <th class="text-center">合同签订日期</th>
                                             <th class="text-center">甲方</th>
@@ -238,10 +239,15 @@
 		      				var dt = new Date(temper.replace(/-/,"/"))//转换成日期格式
 		      				var date2=dt.getDate();//获取天数
 							var now2=year2+'-'+p(month2)+"-"+p(date2);
+		      				var a="线下";
+		      				if(o.online==1){
+		      					a="线上"
+		      				}
 		      				html +='<tr>'
 		      				+'<td class="hidden batch" data-id='+o.id+'>'+o.id+'</td>'
 		      				+'<td class="text-center  salesNumber">'+o.contact.conPhone+'</td>'
 		      				+'<td class="text-center  salesNumber">'+o.contact.conWechat+'</td>'
+		      				+'<td class="text-center  salesNumber">'+a+'</td>'
 		      				+'<td class="text-center  salesNumber">'+o.salesNumber+'</td>'
 		      				+'<td class="text-center edit contractTime">'+newDate+'</td>'
 		      				+'<td class="text-center editt firstNames">'+o.firstNames+'</td>'

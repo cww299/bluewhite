@@ -21,6 +21,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.ledger.dao.BillDao;
 import com.bluewhite.finance.ledger.dao.ContactDao;
 import com.bluewhite.finance.ledger.dao.CustomerDao;
@@ -76,7 +77,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
         	}
         	//按产品名
         	if(!StringUtils.isEmpty(param.getProductName())){
-        		predicate.add(cb.like(root.get("productName").as(String.class), "%"+param.getProductName()+"%"));
+        		predicate.add(cb.like(root.get("productName").as(String.class), "%"+StringUtil.specialStrKeyword(param.getProductName())+"%"));
         	}
         	//按批次号
         	if(!StringUtils.isEmpty(param.getBatchNumber())){
@@ -125,7 +126,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		
 		if (order.getId() != null && order.getPrice()!=0) {
 			List<Customer> customerList = customerDao
-					.findByCusProductNameAndCusPartyNames(order.getProductName().trim(), order.getPartyNames().trim());
+					.findByCusProductNameLikeAndCusPartyNames(order.getProductName().trim(), order.getPartyNames().trim());
 			if (customerList.size() > 0) {
 				for (Customer customer2 : customerList) {
 					customer2.setCusPrice(order.getPrice());
