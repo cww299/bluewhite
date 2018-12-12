@@ -99,14 +99,12 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 	@Override
 	public List<CollectPay> collectPay(CollectPay collectPay) {
 		List<CollectPay> collectPayList = new ArrayList<CollectPay>();
-		PageParameter page  = new PageParameter();
-		page.setSize(Integer.MAX_VALUE);
 		//A当天工资
 		AttendancePay attendancePay = new AttendancePay();
 		attendancePay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 		attendancePay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
 		attendancePay.setType(collectPay.getType());
-		List<AttendancePay> attendancePayList = AttendancePayService.findPages(attendancePay, page).getRows();
+		List<AttendancePay> attendancePayList = AttendancePayService.findAttendancePayNoId(attendancePay);
 		//B当天工资
 		PayB payB = new PayB();
 		payB.setOrderTimeBegin(collectPay.getOrderTimeBegin());
