@@ -23,4 +23,6 @@ public interface AttendancePayService  extends BaseCRUDService<AttendancePay,Lon
 	 */
 	public List<AttendancePay> findAttendancePay(AttendancePay attendancePay);
 
+	List<AttendancePay> findAttendancePayNoId(AttendancePay attendancePay);
+
 }

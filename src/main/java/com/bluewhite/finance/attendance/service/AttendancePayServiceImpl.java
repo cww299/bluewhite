@@ -131,5 +131,10 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 		return dao.findByUserIdAndTypeAndAllotTimeBetween(attendancePay.getUserId(),attendancePay.getType(),attendancePay.getOrderTimeBegin(),attendancePay.getOrderTimeEnd());
 	}
 
+	@Override
+	public List<AttendancePay> findAttendancePayNoId(AttendancePay attendancePay) {
+		return dao.findByTypeAndAllotTimeBetween(attendancePay.getType(),attendancePay.getOrderTimeBegin(),attendancePay.getOrderTimeEnd());
+	}
+
 }
 
