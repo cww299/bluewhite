@@ -21,6 +21,11 @@ import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.basedata.service.BaseDataService;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.finance.ledger.dao.ContactDao;
+import com.bluewhite.finance.ledger.dao.OrderDao;
+import com.bluewhite.finance.ledger.entity.Contact;
+import com.bluewhite.finance.ledger.entity.Order;
+import com.bluewhite.finance.ledger.service.BillService;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneTimeDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseThreeDao;
@@ -36,6 +41,7 @@ import com.bluewhite.production.procedure.service.ProcedureService;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.reportexport.entity.EightTailorPoi;
 import com.bluewhite.reportexport.entity.MachinistProcedurePoi;
+import com.bluewhite.reportexport.entity.OrderPoi;
 import com.bluewhite.reportexport.entity.ProcedurePoi;
 import com.bluewhite.reportexport.entity.ProductPoi;
 import com.bluewhite.reportexport.entity.UserPoi;
@@ -49,6 +55,10 @@ public class ReportExportServiceImpl implements ReportExportService{
 	@Autowired
 	private BaseDataDao baseDataDao;
 	
+	@Autowired
+	private BillService billService;
+	@Autowired
+	private ContactDao contactDao;
 	@Autowired
 	private BaseDataService baseDataService;
 	
@@ -79,6 +89,8 @@ public class ReportExportServiceImpl implements ReportExportService{
 	@Autowired
 	private UserContractDao userContractDao;
 
+	@Autowired
+	private OrderDao orderDao;
 	@Override
 	@Transactional
 	public int importProductExcel(List<ProductPoi> excelProduct) {
@@ -395,6 +407,54 @@ public class ReportExportServiceImpl implements ReportExportService{
 	@Override
 	public int importexcelBaseThreeExcel(List<BaseThree> excelBaseThree) {
 		return baseThreeDao.save(excelBaseThree).size();
+	}
+
+	@Override
+	public int importOrderExcel(List<OrderPoi> excelProduct) {
+		int count = 0;
+		if(excelProduct.size()>0){
+			List<Order> orders = new ArrayList<Order>();
+			for(OrderPoi order :excelProduct){
+				Order order2  = new Order();
+				order2.setSalesNumber(order.getSalesNumber());
+				order2.setFirstNames(order.getFirstNames());
+				order2.setPartyNames(order.getPartyNames());
+				order2.setBatchNumber(order.getBatchNumber());
+				order2.setProductName(order.getProductName());
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					try {
+						order2.setContractTime(sdf.parse(order.getContractTime() != null ? order.getContractTime() : ""));
+						/*order2.setAshoreTime(sdf.parse(order.getAshoreTime()!= null ? order.getAshoreTime() : ""));*/
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				User user=userDao.findByUserName(order.getFirstNames());
+				order2.setFirstNamesId(user.getId());
+				Contact contact=contactDao.findByConPartyNames(order.getPartyNames());
+				if(contact==null){
+					Contact contact2=new Contact();
+					contact2.setConPartyNames(order.getPartyNames());
+					contactDao.save(contact2);
+					order2.setPartyNamesId(contact2.getId());
+				}else{
+					order2.setPartyNamesId(contact.getId());
+				}
+				order2.setContractNumber(NumUtils.roundTwo(order.getContractNumber() != null ? order.getContractNumber() : 0));
+				order2.setContractPrice(order.getContractPrice());
+				order2.setRemarksPrice(order.getRemarksPrice());
+				order2.setPrice(order.getPrice());
+				/*order2.setAshoreNumber(NumUtils.roundTwo(order.getAshoreNumber() != null ? order.getAshoreNumber() : 0) );*/
+				order2.setOnline(NumUtils.roundTwo(order.getOnline() != null ? order.getOnline() : 0) );
+				order2.setAshoreCheckr(0);
+				order2.setAshorePrice(order.getContractPrice());
+				billService.addBill(order2);
+				orders.add(order2);
+				count++;
+			}
+			orderDao.save(orders);
+		}
+		return count;
 	}
 
 

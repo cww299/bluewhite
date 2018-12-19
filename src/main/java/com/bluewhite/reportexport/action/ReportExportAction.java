@@ -64,6 +64,7 @@ import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.reportexport.entity.EightTailorPoi;
 import com.bluewhite.reportexport.entity.MachinistProcedurePoi;
+import com.bluewhite.reportexport.entity.OrderPoi;
 import com.bluewhite.reportexport.entity.ProcedurePoi;
 import com.bluewhite.reportexport.entity.ProductPoi;
 import com.bluewhite.reportexport.entity.ReworkPoi;
@@ -775,6 +776,36 @@ public class ReportExportAction {
         List<Order> orders= orderService.findPages(order, page).getRows();
 	    Excelutil<Order> util = new Excelutil<Order>(Order.class);
         util.exportExcel(orders, "月产量报表", out);// 导出  
+	}
+	
+	
+	/**
+	 * 财务订单导入                          
+	 * @param residentmessage
+	 * @param response
+	 * @param request
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "/importOrder",method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse importOrder(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request) throws Exception{
+		CommonResponse cr = new CommonResponse();
+//		try {
+				List<OrderPoi> excelProduct = new ArrayList<OrderPoi>();
+				InputStream in = file.getInputStream();
+				String filename = file.getOriginalFilename();
+				// 创建excel工具类
+				Excelutil<OrderPoi> util = new Excelutil<OrderPoi>(OrderPoi.class);
+				excelProduct = util.importExcel(filename, in);// 导入
+				int count = reportExportService.importOrderExcel(excelProduct);
+				if(count > 0){
+					cr.setMessage("成功导入"+count+"条数据");
+				}
+//		} catch (Exception e) {
+//			cr.setMessage("导入失败");
+//		}
+		return cr;
 	}
 	
 	@InitBinder

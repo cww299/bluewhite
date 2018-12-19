@@ -110,14 +110,20 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		order.setContractNumber(NumUtils.setzro(order.getContractNumber()));
 		order.setAshoreNumber(NumUtils.setzro(order.getAshoreNumber()));
 		order.setDisputeNumber(NumUtils.setzro(order.getDisputeNumber()));
+		Order order2=new Order();
+		
+		order2.setOrderTimeBegin(DatesUtil.getFirstDayOfMonth(order.getContractTime()));
+		order2.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(order.getContractTime()));
 		if(order.getId()==null){
-		List<Order> orderList = this.findPages(order, new PageParameter()).getRows();
+		List<Order> orderList = this.findPages(order2, new PageParameter()).getRows();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
 		String w = dateFormat.format(order.getContractTime());
 		if (orderList.size() > 0) {
 		String s=orderList.get(0).getSalesNumber();
 		String b= s.substring(9);
-			order.setSalesNumber(w + "-" + "#" + (Integer.parseInt(b) + 1));
+		
+		int a=Integer.parseInt(b.trim());
+			order.setSalesNumber(w + "-" + "#" + ((a)+1));
 		} else {
 			order.setSalesNumber(w + "-" + "#" + "1");
 		}

@@ -118,7 +118,7 @@ public class Order extends BaseEntity<Long>{
 	 */
 	@Column(name = "remarks_price")
 	@Poi(name = "预付款备注", column = "K")
-    private Double remarksPrice;
+    private String remarksPrice;
 	
 	
 	/**
@@ -474,12 +474,15 @@ public class Order extends BaseEntity<Long>{
 	}
 
 
-	public Double getRemarksPrice() {
+	
+
+
+	public String getRemarksPrice() {
 		return remarksPrice;
 	}
 
 
-	public void setRemarksPrice(Double remarksPrice) {
+	public void setRemarksPrice(String remarksPrice) {
 		this.remarksPrice = remarksPrice;
 	}
 

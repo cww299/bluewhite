@@ -571,7 +571,12 @@ public class Excelutil<T> {
         case Cell.CELL_TYPE_NUMERIC:  
             if("General".equals(cell.getCellStyle().getDataFormatString())){  
                 value = df.format(cell.getNumericCellValue());  
-            }else if("m/d/yy".equals(cell.getCellStyle().getDataFormatString())){  
+            }else if("yyyy/m/d h:mm;@".equals(cell.getCellStyle().getDataFormatString()) 
+            		|| "m/d/yy".equals(cell.getCellStyle().getDataFormatString())
+                    || "yy/m/d".equals(cell.getCellStyle().getDataFormatString()) 
+                    || "mm/dd/yy".equals(cell.getCellStyle().getDataFormatString())
+                    || "dd-mmm-yy".equals(cell.getCellStyle().getDataFormatString())
+                    || "yyyy/m/d".equals(cell.getCellStyle().getDataFormatString())){  
                 value = sdf.format(cell.getDateCellValue());  
             }else{  
                 value = df2.format(cell.getNumericCellValue());  

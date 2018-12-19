@@ -328,7 +328,8 @@
 						        			page:obj.curr,
 									  		size:13,
 									  		mixPartyNames:$('#partyNames').val(),
-								  			orderTimeEnd:$("#endTime").val(), 
+									  		orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(),
 								  			batchNumber:$("#batchNumber2").val(),
 								  	}
 						        
@@ -511,7 +512,8 @@
 				  			page:1,
 				  			size:13,
 				  			mixPartyNames:$('#partyNames').val(),
-				  			orderTimeEnd:$("#endTime").val(), 
+				  			orderTimeBegin:$("#startTime").val(),
+				  			orderTimeEnd:$("#endTime").val(),
 				  			batchNumber:$("#batchNumber2").val(),
 				  	}
 		            self.loadPagination(data);
@@ -604,6 +606,7 @@
 					        			page:self.getCount(),
 								  		size:13,
 								  		mixPartyNames:$('#partyNames').val(),
+								  		orderTimeBegin:$("#startTime").val(),
 							  			orderTimeEnd:$("#endTime").val(), 
 							  			batchNumber:$("#batchNumber2").val(),
 							  	}

@@ -107,7 +107,7 @@
                                             <th class="text-center">保险</th>
                                             <th class="text-center">入职时间</th>
                                             <th class="text-center">预计转正时间</th>
-                                            <th class="text-center">实际转正时间</th>
+                                            <th class="text-center">合同到期时间</th>
                                             <th class="text-center">部门</th>
                                             <th class="text-center">是否在职</th>
                                             <th class="text-center">操作</th>
@@ -743,6 +743,9 @@
 		      				}else{
 		      					age=o.age
 		      				}
+		      				var newDate=/\d{4}-\d{1,2}-\d{1,2}/g.exec(o.contractDateEnd)
+		      				var newDate1=/\d{4}-\d{1,2}-\d{1,2}/g.exec(o.estimate)
+		      				var newDate2=/\d{4}-\d{1,2}-\d{1,2}/g.exec(o.estimate)
 		      				html +='<tr>'
 		      				+'<td class="text-center edit price">'+v+'</td>'
 		      				+'<td class="text-center edit price">'+o.userName+'</td>'
@@ -751,9 +754,9 @@
 		      				+'<td class="text-center edit price">'+commitment+'</td>'
 		      				+'<td class="text-center edit price">'+promise+'</td>'
 		      				+'<td class="text-center edit price">'+safe+'</td>'
-		      				+'<td class="text-center edit price">'+(o.entry!=null ? o.entry : "") +'</td>'
-		      				+'<td class="text-center edit price">'+(o.estimate!=null ? o.estimate: "")+'</td>'
-		      				+'<td class="text-center edit price">'+(o.actua!=null ? o.actua: "")+'</td>'
+		      				+'<td class="text-center edit price">'+(newDate2!=null ? newDate2 : "") +'</td>'
+		      				+'<td class="text-center edit price">'+(newDate1!=null ? newDate1: "")+'</td>'
+		      				+'<td class="text-center edit price">'+(newDate!=null ? newDate: "")+'</td>'
 		      				+'<td class="text-center edit price">'+k+'</td>'
 		      				+'<td class="text-center edit price">'+r+'</td>'
 							+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>员工详情</button> <button class="btn btn-xs btn-success btn-trans addbatchtw" data-idd='+o.id+' data-ids='+m+' >档案位置详情</button></td></tr>'
