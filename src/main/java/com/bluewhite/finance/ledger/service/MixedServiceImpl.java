@@ -60,8 +60,14 @@ public class MixedServiceImpl extends BaseServiceImpl<Mixed, Long> implements Mi
 	public void addMixed(Mixed mixed) {
 		dao.save(mixed);
 		List<Bill> billList = billdao.findByPartyNamesIdAndBillDateBetween(mixed.getMixPartyNamesId(),DatesUtil.getFirstDayOfMonth(mixed.getMixtSubordinateTime()),	DatesUtil.getLastDayOfMonth(mixed.getMixtSubordinateTime()));
-		if(billList.size()>0){
-			Bill bill = billList.get(0);
+		Bill bill = new Bill();
+		if(billList.size()>0){	
+		bill =  billList.get(0);
+		}else{
+			bill.setPartyNames(mixed.getMixPartyNames());
+			bill.setPartyNamesId(mixed.getMixPartyNamesId());
+			bill.setBillDate(mixed.getMixtSubordinateTime());
+		}
 			NumUtils.setzro(bill);
 			if(bill!=null){
 				List<Mixed> mixedList = dao.findByMixPartyNamesIdAndMixtSubordinateTimeBetween(mixed.getMixPartyNamesId(),DatesUtil.getFirstDayOfMonth(mixed.getMixtSubordinateTime()),DatesUtil.getLastDayOfMonth(mixed.getMixtSubordinateTime()));
@@ -73,7 +79,6 @@ public class MixedServiceImpl extends BaseServiceImpl<Mixed, Long> implements Mi
 				bill.setOverpaymentPay(bill.getNonArrivalPay()<0 ?bill.getNonArrivalPay() :0.0);
 				billdao.save(bill);
 			}
-		}
 		
 	}
 
