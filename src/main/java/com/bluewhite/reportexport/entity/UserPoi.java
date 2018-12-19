@@ -37,12 +37,12 @@ public class UserPoi {
 //	@Poi(name = "", column = "F")
 //    private Date contract_date;
 //	
-//	
-//	/**
-//	 */
-//	@Poi(name = "", column = "G")
-//    private Date entry;
-//	
+	
+	/**
+	 */
+	@Poi(name = "", column = "G")
+    private Date entry;
+	
 //	/**
 //	 */
 //	@Poi(name = "", column = "H")
@@ -137,6 +137,14 @@ public class UserPoi {
 
 	public void setQuit(Integer quit) {
 		this.quit = quit;
+	}
+
+	public Date getEntry() {
+		return entry;
+	}
+
+	public void setEntry(Date entry) {
+		this.entry = entry;
 	}
 
 	

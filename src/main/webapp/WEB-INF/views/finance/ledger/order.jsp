@@ -70,6 +70,13 @@
 									一键删除
 									</button>
 								</span>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
+								<span class="input-group-btn">
+								<input type="file" name="file" id="upfile"  style="display:inline">
+									 <button type="button" id="btn" class="btn btn-success  btn-sm btn-3d pull-right">
+									点击导入
+									 </button>
+								</span>
 							</div>
 						</div>
 					</div>
@@ -918,6 +925,8 @@
 							  partyNamesId:self.getCache(),
 							  ashoreCheckr:0,
 							  ashoreTime:now2+' '+'00:00:00',
+							  orderTimeBegin:$("#startTime").val(),
+					  		  orderTimeEnd:$("#endTime").val(),
 					  }
 					  $.ajax({
 							url:"${ctx}/fince/addOrder",
@@ -999,6 +1008,45 @@
 						});
 						 })
 				})
+				
+				
+				//导入
+				$('#btn').on('click',function(){
+				
+					if($('#upfile')[0].files[0]==null){
+						return layer.msg("请选择需要导入的文件", {icon: 2});
+					}
+					  var imageForm = new FormData();
+				
+				  			
+							imageForm.append("file",$('#upfile')[0].files[0]);
+					 $.ajax({
+							url:"${ctx}/excel/importOrder",
+							data:imageForm,
+							type:"post",
+							processData:false,
+							contentType: false,
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							success:function(result){
+								if(0==result.code){
+								layer.msg(result.message, {icon: 1});
+								}else{
+									layer.msg(result.message, {icon: 2});
+								}
+								layer.close(index);
+							},
+							error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						}); 
+		          
+					
+				});
 			}
    	}
    			var login = new Login();

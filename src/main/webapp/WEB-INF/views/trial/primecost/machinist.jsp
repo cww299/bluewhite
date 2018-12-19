@@ -2081,6 +2081,7 @@
 										    	   	thta.parent().parent().find('.selectbody2').append(thta.find("option:selected").text()+',')
 										    	   	thta.parent().parent().find('.selectprice2').append(thta.val()+',')
 										    	    thta.find("option:selected").hide()
+										    	    
 										    	   	var values=""
 										    	   	var name=""
 										    		name=thta.parent().parent().find('.selectbody2').text()
@@ -2303,11 +2304,18 @@
 			      			$("#ntwo").val(result.data.rows[0].oneMachinistPrice)
 			      			}
 			      			 $(result.data.rows).each(function(i,o){
+			      				 var a;
+			      				 if(o.costPrice==0){
+			      					 a=o.trialSewingPrice
+			      				 }else{
+			      					 a=o.costPrice
+			      				 }
 			      				var	datae={
 						    			id:o.id,
-						    			costPrice:o.trialSewingPrice,
+						    			costPrice:a,
 						    			productId:productIdAll
 						    	}
+			      				
 				      			var index;
 						    	$.ajax({
 								      url:"${ctx}/product/addMachinist",
