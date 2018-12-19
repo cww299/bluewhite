@@ -424,7 +424,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					try {
 						order2.setContractTime(sdf.parse(order.getContractTime() != null ? order.getContractTime() : ""));
-						order2.setAshoreTime(sdf.parse(order.getAshoreTime()!= null ? order.getAshoreTime() : ""));
+						/*order2.setAshoreTime(sdf.parse(order.getAshoreTime()!= null ? order.getAshoreTime() : ""));*/
 					} catch (ParseException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -444,9 +444,9 @@ public class ReportExportServiceImpl implements ReportExportService{
 				order2.setContractPrice(order.getContractPrice());
 				order2.setRemarksPrice(order.getRemarksPrice());
 				order2.setPrice(order.getPrice());
-				order2.setAshoreNumber(NumUtils.roundTwo(order.getAshoreNumber() != null ? order.getAshoreNumber() : 0) );
+				/*order2.setAshoreNumber(NumUtils.roundTwo(order.getAshoreNumber() != null ? order.getAshoreNumber() : 0) );*/
 				order2.setOnline(NumUtils.roundTwo(order.getOnline() != null ? order.getOnline() : 0) );
-				order2.setAshoreCheckr(1);
+				order2.setAshoreCheckr(0);
 				order2.setAshorePrice(order.getContractPrice());
 				billService.addBill(order2);
 				orders.add(order2);
