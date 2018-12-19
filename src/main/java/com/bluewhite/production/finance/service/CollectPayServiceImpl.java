@@ -669,7 +669,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	public CollectPay upadtePerformancePay(CollectPay collectPay) {
 		CollectPay	collect = dao.findOne(collectPay.getId());
 		User user = userService.findOne(collect.getUserId());
-		
 		if(collectPay.getTimePrice()!=null){
 			collectPay.setTimePay(NumUtils.round(user.getPrice()+(collectPay.getAddSelfNumber()==null?0.0:collectPay.getAddSelfNumber()),null));
 			collectPay.setAddPerformancePay(NumUtils.round(collect.getTime()*collectPay.getAddSelfNumber(),null));
@@ -678,7 +677,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				collectPay.setAddPerformancePay(NumUtils.round(collect.getTime()*collectPay.getAddSelfNumber(),null));
 			}
 		}
-		
 		collect.setTimePrice(NumUtils.round(collectPay.getTimePrice(),null));
 		collect.setTimePay(NumUtils.round(collectPay.getTimePay(),null));
 		collect.setAddSelfNumber(NumUtils.round(collectPay.getAddSelfNumber(),null));

@@ -84,9 +84,9 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 		double	acceptPay = orderList.stream().filter(Order->Order.getPartyNamesId()==order.getPartyNamesId() && Order.getAshorePrice()!=null).mapToDouble(Order::getAshorePrice).sum();
 		bill.setAcceptPay(acceptPay);
 		//当表在途和有争议货款
-		bill.setDisputePay(OffshorePay-acceptPay);
+		bill.setDisputePay(NumUtils.sub(OffshorePay,acceptPay));
 		//当月货款未到
-		bill.setNonArrivalPay(bill.getAcceptPay()+bill.getAcceptPayable()-bill.getArrivalPay());
+		bill.setNonArrivalPay(NumUtils.sub(NumUtils.sum(bill.getAcceptPay(),bill.getAcceptPayable()),bill.getArrivalPay()));
 		//当月客户多付货款转下月应付
 		bill.setOverpaymentPay(bill.getNonArrivalPay()<0 ?bill.getNonArrivalPay() :0.0);
 		return dao.save(bill);
@@ -134,7 +134,7 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 		//当月货款已到
 		bl.setArrivalPay(arrivalPay);
 		//当月货款未到
-		bl.setNonArrivalPay(bl.getAcceptPay()+bl.getAcceptPayable()-arrivalPay);
+		bl.setNonArrivalPay(NumUtils.sub(NumUtils.sum(bl.getAcceptPay(),bl.getAcceptPayable()),arrivalPay));
 		//当月客户多付货款转下月应付
 		bl.setOverpaymentPay(bl.getNonArrivalPay()<0 ?bl.getNonArrivalPay() :0.0);
 		return dao.save(bl);

@@ -276,7 +276,7 @@ public class UserAction {
 		for(User user : userContract ){
 			Map<String,Object> us = new HashMap<String,Object>();
 			long co = DatesUtil.getDaySub( DatesUtil.getfristDayOftime(new Date()),DatesUtil.getfristDayOftime(user.getContractDateEnd()));
-			if(co<=10){
+			if(co<=45){
 				us.put("username", user.getUserName());
 				us.put("contractDateEnd", sdf.format(user.getContractDateEnd()));
 				userContractList.add(us);

@@ -74,7 +74,7 @@ public class MixedServiceImpl extends BaseServiceImpl<Mixed, Long> implements Mi
 				double	acceptPayable = mixedList.stream().mapToDouble(Mixed::getMixPrice).sum();
 				bill.setAcceptPayable(acceptPayable);
 				//当月货款未到
-				bill.setNonArrivalPay(bill.getAcceptPay()+bill.getAcceptPayable()-bill.getArrivalPay());
+				bill.setNonArrivalPay(NumUtils.sub(NumUtils.sum(bill.getAcceptPay(),bill.getAcceptPayable()),bill.getArrivalPay()));
 				//当月客户多付货款转下月应付
 				bill.setOverpaymentPay(bill.getNonArrivalPay()<0 ?bill.getNonArrivalPay() :0.0);
 				billdao.save(bill);
@@ -98,9 +98,9 @@ public class MixedServiceImpl extends BaseServiceImpl<Mixed, Long> implements Mi
 						Bill bill = billList.get(0);
 						NumUtils.setzro(bill);
 						if(bill!=null){
-							bill.setAcceptPayable(bill.getAcceptPayable()-mixed.getMixPrice());
+							bill.setAcceptPayable(NumUtils.sub(bill.getAcceptPayable(),mixed.getMixPrice()));
 							//当月货款未到
-							bill.setNonArrivalPay(bill.getAcceptPay()+bill.getAcceptPayable()-bill.getArrivalPay());
+							bill.setNonArrivalPay(NumUtils.sub(NumUtils.sum(bill.getAcceptPay(),bill.getAcceptPayable()),bill.getArrivalPay()));
 							//当月客户多付货款转下月应付
 							bill.setOverpaymentPay(bill.getNonArrivalPay()<0 ?bill.getNonArrivalPay() :0.0);
 							billdao.save(bill);
