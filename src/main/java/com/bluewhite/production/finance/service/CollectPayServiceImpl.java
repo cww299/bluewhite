@@ -661,7 +661,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	}
 	
 	@Override
-	public CollectPay findCollectPay(CollectPay collectPay) {
+	public synchronized CollectPay findCollectPay(CollectPay collectPay) {
 		return dao.findByUserIdAndTypeAndAllotTimeBetween(collectPay.getUserId(),collectPay.getType(),collectPay.getOrderTimeBegin(),collectPay.getOrderTimeEnd());
 	}
 
