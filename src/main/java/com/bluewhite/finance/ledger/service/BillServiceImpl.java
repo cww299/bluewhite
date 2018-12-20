@@ -132,11 +132,12 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 		//当月货款已到
 		bl.setArrivalPay(NumUtils.round(arrivalPay,4));
 		//当月货款未到
-		bl.setNonArrivalPay(NumUtils.sub(NumUtils.sum(bl.getAcceptPay(),bl.getAcceptPayable()),arrivalPay));
+		bl.setNonArrivalPay(NumUtils.sub(NumUtils.sum(bl.getAcceptPay(),bl.getAcceptPayable()),NumUtils.round(arrivalPay,4)));
 		//当月客户多付货款转下月应付
 		bl.setOverpaymentPay(bl.getNonArrivalPay()<0 ?bl.getNonArrivalPay() :0.0);
 		return dao.save(bl);
 	}
+	
 
 	@Override
 	public Bill collectBill(Bill bill) {
