@@ -149,7 +149,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		
 		if(order.getId() != null && order.getAshoreNumber()!=null){
 			order.setRoadNumber(order.getContractNumber()-order.getAshoreNumber()-order.getDisputeNumber());
-			order.setAshorePrice(order.getAshoreNumber()*order.getPrice());
+			order.setAshorePrice( NumUtils.mul(Double.valueOf(String.valueOf((order.getAshoreNumber()))),order.getPrice()));
 			billService.addBill(order);
 		}
 		
