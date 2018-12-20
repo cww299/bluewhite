@@ -92,8 +92,6 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 		return dao.save(bill);
 	}
 	
-	
-
 	@Override
 	public Object getBillDate(Long id) {  
 		JSONObject outData = new JSONObject();
@@ -132,7 +130,7 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 			}
 		}
 		//当月货款已到
-		bl.setArrivalPay(arrivalPay);
+		bl.setArrivalPay(NumUtils.round(arrivalPay,4));
 		//当月货款未到
 		bl.setNonArrivalPay(NumUtils.sub(NumUtils.sum(bl.getAcceptPay(),bl.getAcceptPayable()),arrivalPay));
 		//当月客户多付货款转下月应付
