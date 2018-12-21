@@ -340,8 +340,6 @@
 			 var data={
 						page:1,
 				  		size:13,
-				  		orderTimeBegin:firstdate,
-				  		orderTimeEnd:lastdate,	
 				} 
 			this.init = function(){
 				
@@ -355,7 +353,7 @@
 			    var index;
 			    var html = '';
 			    $.ajax({
-				      url:"${ctx}/fince/getOrder",
+				      url:"${ctx}/fince/getExpenseAccount",
 				      data:data,
 				      type:"GET",
 				      beforeSend:function(){
@@ -366,12 +364,16 @@
 		      		  success: function (result) {
 		      			 $(result.data.rows).each(function(i,o){
 		      				var newDate=/\d{4}-\d{1,2}-\d{1,2}/g.exec(o.contractTime)
+		      				var k;
+		      				 if(o.user==null){
+		      					 k=""
+		      				 }else{
+		      					 k=o.user.userName
+		      				 }
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="hidden batch">'+o.id+'</td>'
-		      				+'<td class="hidden firstNamesId">'+o.firstNamesId+'</td>'
-		      				+'<td class="hidden partyNamesId">'+o.partyNamesId+'</td>'
-		      				+'<td class="text-center  salesNumber">'+o.salesNumber+'</td>'
-		      				+'<td class="text-center edit contractTime">'+newDate+'</td>'
+		      				+'<td class="text-center  content">'+o.content+'</td>'
+		      				+'<td class="text-center edit contractTime">'+k+'</td>'
 		      				+'<td class="text-center editt firstNames">'+o.firstNames+'</td>'
 		      				+'<td class="text-center editt partyNames">'+o.partyNames+'</td>'
 		      				+'<td class="text-center edit1 batchNumber">'+o.batchNumber+'</td>'
