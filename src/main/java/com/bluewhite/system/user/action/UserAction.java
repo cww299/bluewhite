@@ -259,11 +259,13 @@ public class UserAction {
 			long co2 = DatesUtil.getDaySub( DatesUtil.getfristDayOftime(new Date()),DatesUtil.getfristDayOftime(user.getBirthDate()));
 			//男
 			if(user.getGender()==0 && co==60 && co2<=60){
+				us.put("userId", user.getId());
 				us.put("username", user.getUserName());
 				us.put("birthDate",sdf.format(user.getBirthDate()));
 				userBirthList.add(us);
 			//女
 			}else if(user.getGender()==1 && co==50  && co2<=60){
+				us.put("userId", user.getId());
 				us.put("username", user.getUserName());
 				us.put("birthDate", sdf.format(user.getBirthDate()));
 				userBirthList.add(us);
@@ -277,6 +279,7 @@ public class UserAction {
 			Map<String,Object> us = new HashMap<String,Object>();
 			long co = DatesUtil.getDaySub( DatesUtil.getfristDayOftime(new Date()),DatesUtil.getfristDayOftime(user.getContractDateEnd()));
 			if(co<=45){
+				us.put("userId", user.getId());
 				us.put("username", user.getUserName());
 				us.put("contractDateEnd", sdf.format(user.getContractDateEnd()));
 				userContractList.add(us);
@@ -290,6 +293,7 @@ public class UserAction {
 			Map<String,Object> us = new HashMap<String,Object>();
 			long co = DatesUtil.getDaySub( DatesUtil.getfristDayOftime(new Date()),DatesUtil.getfristDayOftime(user.getIdCardEnd()));
 			if(co<=60){
+				us.put("userId", user.getId());
 				us.put("username", user.getUserName());
 				us.put("idCardEnd", sdf.format(user.getContractDateEnd()));
 				userCardList.add(us);

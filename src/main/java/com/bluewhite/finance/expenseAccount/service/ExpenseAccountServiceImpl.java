@@ -22,8 +22,6 @@ import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.expenseAccount.dao.ExpenseAccountDao;
 import com.bluewhite.finance.expenseAccount.entity.ExpenseAccount;
-import com.bluewhite.finance.ledger.entity.Order;
-import com.bluewhite.production.bacth.entity.Bacth;
 
 @Service
 public class ExpenseAccountServiceImpl extends BaseServiceImpl<ExpenseAccount, Long> implements ExpenseAccountService {
