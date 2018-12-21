@@ -72,7 +72,7 @@ public class MixedServiceImpl extends BaseServiceImpl<Mixed, Long> implements Mi
 			if(bill!=null){
 				List<Mixed> mixedList = dao.findByMixPartyNamesIdAndMixtSubordinateTimeBetween(mixed.getMixPartyNamesId(),DatesUtil.getFirstDayOfMonth(mixed.getMixtSubordinateTime()),DatesUtil.getLastDayOfMonth(mixed.getMixtSubordinateTime()));
 				double	acceptPayable = mixedList.stream().mapToDouble(Mixed::getMixPrice).sum();
-				bill.setAcceptPayable(acceptPayable);
+				bill.setAcceptPayable(NumUtils.round(acceptPayable,4));
 				//当月货款未到
 				bill.setNonArrivalPay(NumUtils.sub(NumUtils.sum(bill.getAcceptPay(),bill.getAcceptPayable()),bill.getArrivalPay()));
 				//当月客户多付货款转下月应付
@@ -91,7 +91,6 @@ public class MixedServiceImpl extends BaseServiceImpl<Mixed, Long> implements Mi
 			if (idArr.length > 0) {
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
-					
 					Mixed  mixed=dao.findOne(id);
 					List<Bill> billList = billdao.findByPartyNamesIdAndBillDateBetween(mixed.getMixPartyNamesId(),DatesUtil.getFirstDayOfMonth(mixed.getMixtSubordinateTime()),	DatesUtil.getLastDayOfMonth(mixed.getMixtSubordinateTime()));
 					if(billList.size()>0){
