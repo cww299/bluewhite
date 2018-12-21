@@ -9,7 +9,7 @@
 <head>
      <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>订单管理</title>
+    <title>报销申请</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
@@ -26,7 +26,7 @@
                     <div class="col-md-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">订单信息</h3>
+                                <h3 class="panel-title">报销申请</h3>
                                 <div class="actions pull-right">
                                     <i class="fa fa-expand"></i>
                                     <i class="fa fa-chevron-down"></i>
@@ -70,13 +70,13 @@
 									一键删除
 									</button>
 								</span>
-								<!-- <td>&nbsp&nbsp&nbsp&nbsp</td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
 								<input type="file" name="file" id="upfile"  style="display:inline">
 									 <button type="button" id="btn" class="btn btn-success  btn-sm btn-3d pull-right">
 									点击导入
 									 </button>
-								</span>  -->
+								</span> 
 							</div>
 						</div>
 					</div>
@@ -93,37 +93,29 @@
 											<span class="lbl"></span>
 											</label>
 											</th>
-                                        	<th class="text-center">当月销售编号</th>
-                                            <th class="text-center">合同签订日期</th>
-                                            <th class="text-center">甲方</th>
-                                            <th class="text-center">乙方</th>
-                                            <th class="text-center">当批批次号</th>
-                                            <th class="text-center">当批计划单号</th>
-                                            <th class="text-center">当批产品名</th>
-                                            <th class="text-center">当批合同数量</th>
-                                            <th class="text-center">当批合同总价（元）</th>
-                                            <th class="text-center">预付款备注</th>
-                                            <th class="text-center">手动填写当批单只价格</th>
-                                            <th class="text-center">线上or线下</th>
+                                        	<th class="text-center">报销内容</th>
+                                            <th class="text-center">报销人</th>
+                                            <th class="text-center">是否是预算</th>
+                                            <th class="text-center">付款日要付金额</th>
+                                            <th class="text-center">付款日期</th>
+                                            <th class="text-center">扣款事由</th>
+                                            <th class="text-center">扣款金额</th>
+                                            <th class="text-center">结款模式</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
                                         <tr>
                                     
                                         	<td class="text-center"></td>
-                                        	<td class="text-center"></td>
-                                            <td class="text-center" style="padding: 9px 0px 2px 4px;"><input id="contractTime" placeholder="请输入时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#contractTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="border: none;width:90px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="aName" class="aName2 text-center"  data-provide="typeahead" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="bName" class="bName2 text-center" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="batchNumber" class="text-center" style="border: none;width:105px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="planNumbers" class="text-center" placeholder="可不填" style="border: none;width:60px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="ProductName" class="text-center" style="border: none;width:150px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="contractNumber" class="text-center" style="border: none;width:50px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"><input type="text" id="remarksPrice" class="text-center" placeholder="可不填" style="border: none;width:80px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"><select class="text-center" id="online" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">线下</option><option value="1">线上</option></select></td>
+                                            <td class="text-center"><input type="text" id="content" class="text-center" style="border: none;width:150px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"><input type="text" id="user" class="aName2 text-center"  data-provide="typeahead" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"><select class="text-center" id="budget" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">请选择</option><option value="1">预算</option></select></td>
+                                            <td class="text-center"><input type="text" id="money" class="bName2 text-center" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center" style="padding: 9px 0px 2px 4px;"><input id="expenseDate" placeholder="请输入时间" class="form-control laydate-icon"
+             					onClick="laydate({elem: '#expenseDate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="border: none;width:90px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"><input type="text" id="withholdReason" class="text-center" style="border: none;width:105px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center"><input type="text" id="withholdMoney" class="text-center"  style="border: none;width:60px; height:30px; background-color: #BFBFBF;"></td>
+                                           <td class="text-center"><select class="text-center" id="settleAccountsMode" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">请选择</option><option value="1">现金</option><option value="2">月结</option></select></td>
                                             <td class="text-center"><button type="button"  id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增订单</button></td>
                                     
                                         </tr>
@@ -763,7 +755,6 @@
 								type : 'GET',
 								data : {
 									userName:query,
-									sale:1
 								},
 								success : function(result) {
 									//转换成 json集合
@@ -774,6 +765,11 @@
 					                        return JSON.stringify(aItem);
 					                    });
 									//提示框返回数据
+									//提示框返回数据
+									 if(resultList==""){
+											var aItemtw = {"name":"查无此人", "id":""}
+											resultList.push(JSON.stringify(aItemtw)); 
+										} 
 									 return process(resultList);
 								},
 							})
@@ -796,57 +792,6 @@
 							var item = JSON.parse(item);
 							self.setIndex(item.id);
 							
-								return item.name
-						},
-
-						
-					});
-				
-				//提示乙方
-				$(".bName2").typeahead({
-					//ajax 拿way数据
-					source : function(query, process) {
-							return $.ajax({
-								url : '${ctx}/fince/getContact',
-								type : 'GET',
-								data : {
-									conPartyNames:query,
-									
-								},
-								success : function(result) {
-									//转换成 json集合
-									 var resultList = result.data.rows.map(function (item) {
-										 	//转换成 json对象
-					                        var aItem = {name: item.conPartyNames, id:item.id}
-					                        //处理 json对象为字符串
-					                        return JSON.stringify(aItem);
-					                    });
-									if(result.data.rows==""){
-										 self.setCache("");
-									}
-									//提示框返回数据
-									 return process(resultList);
-								},
-							})
-						
-							//提示框显示
-						}, highlighter: function (item) {
-						    //转出成json对象
-							 var item = JSON.parse(item);
-							return item.name
-							//按条件匹配输出
-		                }, matcher: function (item) {
-		                	//转出成json对象
-					        var item = JSON.parse(item);
-					        self.setCache(item.id);
-					       
-					    	return item.id
-					    },
-						//item是选中的数据
-						updater:function(item){
-							//转出成json对象
-							var item = JSON.parse(item);
-							self.setCache(item.id);
 								return item.name
 						},
 
@@ -880,56 +825,31 @@
 				var b=self.getName()
 		            self.lodwork(data,b,a,1);
 				});
-				//新增小组
+				//新增
 				$('#addgroup').on('click',function(){
 					self.mater();
 					var _index;
 					var index;
 					var postData;
-					if($("#contractTime").val()==""){
-					return	layer.msg("请填写合同日期", {icon: 2});
+					if($("#content").val()==""){
+						return	layer.msg("请填报销内容", {icon: 2});
 					}
-					if($("#aName").val()==""){
-						return	layer.msg("请填写甲方", {icon: 2});
+					if($("#money").val()==""){
+						return layer.msg("请填写报销金额", {icon: 2});
 					}
-					if($("#bName").val()==""){
-						return	layer.msg("请填写乙方", {icon: 2});
-					}
-					if($("#batchNumber").val()==""){
-						return layer.msg("请填写批次号", {icon: 2});
-					}
-					if($("#ProductName").val()==""){
-						return layer.msg("请填写产品名", {icon: 2});
-					}
-					if($("#contractNumber").val()==""){
-						return layer.msg("请填写当批合同数量", {icon: 2});
-					}
-					if(self.getIndex()==""){
-						return layer.msg("甲方不是销售人员 请添加", {icon: 2});
-					}
-					var temper=$("#contractTime").val()
-      				var dt = new Date(temper.replace(/-/,"/"))//转换成日期格式
-      				var date2=dt.getDate();//获取天数
-					var now2=year3+'-'+p(month3)+"-"+p(date2);
+					console.log(self.getIndex())
 					  postData={
-							  contractTime:$("#contractTime").val(),
-							  firstNames:$("#aName").val(),
-							  partyNames:$("#bName").val(),
-							  batchNumber:$("#batchNumber").val(),
-							  planNumbers:$("#planNumbers").val(),
-							  productName:$("#ProductName").val(),
-							  contractNumber:$("#contractNumber").val(),
-							  remarksPrice:$("#remarksPrice").val(),
-							  online:$("#online").val(),
-							  firstNamesId:self.getIndex(),
-							  partyNamesId:self.getCache(),
-							  ashoreCheckr:0,
-							  ashoreTime:now2+' '+'00:00:00',
-							  orderTimeBegin:$("#startTime").val(),
-					  		  orderTimeEnd:$("#endTime").val(),
+						content:$("#content").val(),
+						budget:$("#budget").val(),
+						money:$("#money").val(),
+						expenseDate:$("#expenseDate").val(),
+						withholdReason:$("#withholdReason").val(),
+						withholdMoney:$("#withholdMoney").val(),
+						settleAccountsMode:$("#settleAccountsMode").val(),
+						userId:self.getIndex(),
 					  }
 					  $.ajax({
-							url:"${ctx}/fince/addOrder",
+							url:"${ctx}/fince/addExpenseAccount",
 							data:postData,
 				            traditional: true,
 							type:"post",
@@ -938,15 +858,17 @@
 									  shade: [0.1,'#fff'] //0.1透明度的白色背景
 									});
 							},
-							
 							success:function(result){
 								if(0==result.code){
 									layer.msg("添加成功！", {icon: 1});
-									self.setCache(result.data.partyNamesId)
-								 self.loadPagination(data); 
-								 $("#batchNumber").val("")
-								 $("#ProductName").val("")
-								 $("#contractNumber").val("")
+								 $("#content").val("")
+								 $("#user").val("")
+								 $("#budget").val("0")
+								 $("#money").val("")
+								 $("#expenseDate").val("")
+								 $("#withholdReason").val("")
+								 $("#withholdMoney").val("")
+								 $("#settleAccountsMode").val("0")
 								}else{
 									layer.msg("添加失败", {icon: 2});
 								}
@@ -1009,44 +931,6 @@
 						 })
 				})
 				
-				
-				//导入
-				$('#btn').on('click',function(){
-				
-					if($('#upfile')[0].files[0]==null){
-						return layer.msg("请选择需要导入的文件", {icon: 2});
-					}
-					  var imageForm = new FormData();
-				
-				  			
-							imageForm.append("file",$('#upfile')[0].files[0]);
-					 $.ajax({
-							url:"${ctx}/excel/importOrder",
-							data:imageForm,
-							type:"post",
-							processData:false,
-							contentType: false,
-							beforeSend:function(){
-								index = layer.load(1, {
-									  shade: [0.1,'#fff'] //0.1透明度的白色背景
-									});
-							},
-							success:function(result){
-								if(0==result.code){
-								layer.msg(result.message, {icon: 1});
-								}else{
-									layer.msg(result.message, {icon: 2});
-								}
-								layer.close(index);
-							},
-							error:function(){
-								layer.msg("操作失败！", {icon: 2});
-								layer.close(index);
-							}
-						}); 
-		          
-					
-				});
 			}
    	}
    			var login = new Login();

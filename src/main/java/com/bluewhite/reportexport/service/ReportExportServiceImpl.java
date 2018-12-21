@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.druid.sql.visitor.functions.Substring;
 import com.bluewhite.basedata.dao.BaseDataDao;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.basedata.service.BaseDataService;
@@ -417,6 +418,9 @@ public class ReportExportServiceImpl implements ReportExportService{
 			for(OrderPoi order :excelProduct){
 				Order order2  = new Order();
 				order2.setSalesNumber(order.getSalesNumber());
+				String a=order.getFirstNames();
+				String b=a.substring(a.length()-2);
+				
 				order2.setFirstNames(order.getFirstNames());
 				order2.setPartyNames(order.getPartyNames());
 				order2.setBatchNumber(order.getBatchNumber());
@@ -441,13 +445,13 @@ public class ReportExportServiceImpl implements ReportExportService{
 					order2.setPartyNamesId(contact.getId());
 				}
 				order2.setContractNumber(NumUtils.roundTwo(order.getContractNumber() != null ? order.getContractNumber() : 0));
-				order2.setContractPrice(order.getContractPrice());
+				/*order2.setContractPrice(order.getContractPrice());*/
 				order2.setRemarksPrice(order.getRemarksPrice());
-				order2.setPrice(order.getPrice());
+				/*order2.setPrice(order.getPrice());*/
 				/*order2.setAshoreNumber(NumUtils.roundTwo(order.getAshoreNumber() != null ? order.getAshoreNumber() : 0) );*/
 				order2.setOnline(NumUtils.roundTwo(order.getOnline() != null ? order.getOnline() : 0) );
 				order2.setAshoreCheckr(0);
-				order2.setAshorePrice(order.getContractPrice());
+				/*order2.setAshorePrice(order.getContractPrice());*/
 				billService.addBill(order2);
 				orders.add(order2);
 				count++;
@@ -455,6 +459,17 @@ public class ReportExportServiceImpl implements ReportExportService{
 			orderDao.save(orders);
 		}
 		return count;
+	}
+
+	private String Substring(int i, int j) {
+		return null;
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void Substring(String firstNames) {
+		// TODO Auto-generated method stub
+		
 	}
 
 
