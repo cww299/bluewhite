@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.imageio.metadata.IIOMetadataFormat;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -246,12 +247,16 @@ public class ProductAction {
 		CommonResponse cr = new CommonResponse();
 		if(product.getId()!=null){
 			Product oldProduct = productService.findOne(product.getId());
-			//这里控制共同产品无法被修改，只能修改自己部门的产品
+			//这里控制共同产品无法被修改，只能修改自己部门的产品名称和产品编号
+			//判断是否来源于部门
 			if(StringUtils.isEmpty(oldProduct.getOriginDepartment())){
-				if(!product.getName().equals(oldProduct.getName()) || !product.getDepartmentNumber().equals(oldProduct.getNumber())){
-					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-					cr.setMessage("该产品名和编号无权限修改");
-					return cr;
+				//需要修改产品编号和产品名称时
+				if(product.getName()!=null || product.getDepartmentNumber()!=null){
+					if(!product.getName().equals(oldProduct.getName()) || !product.getDepartmentNumber().equals(oldProduct.getNumber())){
+						cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+						cr.setMessage("该产品名和编号无权限修改");
+						return cr;
+					}
 				}
 			}
 			BeanCopyUtils.copyNullProperties(oldProduct,product);
