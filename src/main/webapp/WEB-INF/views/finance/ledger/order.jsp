@@ -70,13 +70,13 @@
 									一键删除
 									</button>
 								</span>
-								<!-- <td>&nbsp&nbsp&nbsp&nbsp</td>
+								<td>&nbsp&nbsp&nbsp&nbsp</td>
 								<span class="input-group-btn">
 								<input type="file" name="file" id="upfile"  style="display:inline">
 									 <button type="button" id="btn" class="btn btn-success  btn-sm btn-3d pull-right">
 									点击导入
 									 </button>
-								</span> -->
+								</span> 
 							</div>
 						</div>
 					</div>
