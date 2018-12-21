@@ -79,8 +79,8 @@ public class ExpenseAccountServiceImpl extends BaseServiceImpl<ExpenseAccount, L
 			return null;
 		}, SalesUtils.getQueryNoPageParameter());
 		PageResultStat<ExpenseAccount> result = new PageResultStat<>(pages, page);
-//		result.setAutoStateField("", "money");
-//		result.count();
+		result.setAutoStateField("", "money");
+		result.count();
 		return result;
 	}
 
