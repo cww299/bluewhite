@@ -623,30 +623,496 @@
 			      		  success: function (result) {
 			      			 $(result.data.userBirth).each(function(i,o){
 			      				html +='<tr>'
-			      				+'<td class="text-center edit price">'+o.username+'</td>'
+			      				+'<td class="text-center edit username2" data-id="'+o.userId+'">'+o.username+'</td>'
 			      				+'<td class="text-center edit price">'+o.birthDate+'</td></tr>'
 			      			}); 
 			      			$("#tablecontentfv").html(html); 
 			      			$(result.data.userContract).each(function(i,o){
 			      				htmlh +='<tr>'
-			      				+'<td class="text-center edit price">'+o.username+'</td>'
+			      				+'<td class="text-center edit username2" data-id="'+o.userId+'">'+o.username+'</td>'
 			      				+'<td class="text-center edit price">'+o.contractDateEnd+'</td></tr>'
 			      			});
 			      			   
 			      			$("#tablecontentff").html(htmlh);
 			      			$(result.data.userCard).each(function(i,o){
 			      				htmlh1 +='<tr>'
-			      				+'<td class="text-center edit price">'+o.username+'</td>'
+			      				+'<td class="text-center edit username2" data-id="'+o.userId+'">'+o.username+'</td>'
 			      				+'<td class="text-center edit price">'+o.idCardEnd+'</td></tr>'
 			      			});
-			      			   
 			      			$("#tablecontentff1").html(htmlh1);
+			      			self.select();
 			      			layer.close(index);
 					      },error:function(){
 								layer.msg("加载失败！", {icon: 2});
 								layer.close(index);
 						  }
 					  }); 
+			 }
+			 
+			 this.select=function(){
+				 $('.username2').on('click',function(){
+					 var _index
+						var index
+						var postData   
+						var postId=$(this).data('postid');
+						var nameId=$(this).data('nameid');
+						var dicDiv=$('#addDictDivType');
+						var userName=$(this).data('name');
+						var bacthDepartmentPrice=$(this).parent().parent().find('.departmentPrice').text();
+						var bacthHairPrice=$(this).parent().parent().find('.hairPrice').text();
+						$('#proName').val(userName);
+						var id=$(this).data('id');
+						var a="";
+						var c="";
+						//遍历工序类型
+				    var indextwo;
+				    var htmltwo = '';
+				    var htmlth = '';
+				    var htmlfr = '';
+				    var html = '';
+				    var htmlthh= '';
+				    var htmlthhh= '';
+					    var getdata={type:"orgName",}
+		      			$.ajax({
+						      url:"${ctx}/basedata/list",
+						      data:getdata,
+						      type:"GET",
+						      beforeSend:function(){
+						    	  indextwo = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								  });
+							  }, 
+				      		  success: function (result) {
+				      			  $(result.data).each(function(k,j){
+				      				htmlfr +='<option value="'+j.id+'">'+j.name+'</option>'
+				      			  });
+				      			var htmlth='<select class="form-control  selectgroupChange"><option value="">去除分组</option>'+htmlfr+'</select>'
+				      			
+				      			$(".department").html(htmlth); 
+				      			$('.selectgroupChange').each(function(i,o){
+				    				var id=nameId;
+				    				$(o).val(id);
+				    			})
+				      			layer.close(indextwo);
+				      			//查询工序
+				      			$(".selectgroupChange").change(function(){
+				      			  var htmltwo = '';
+				      				c=$(this).val();
+				      				var data={
+				    						id:c,
+				    					  }
+								     $.ajax({
+									      url:"${ctx}/basedata/children",
+									      data:data,
+									      type:"GET",
+									      beforeSend:function(){
+									    	  indextwo = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											  });
+										  }, 
+							      			 
+							      		  success: function (result) {
+							      			
+							      			  $(result.data).each(function(i,o){
+							      				htmltwo +='<option value="'+o.id+'">'+o.name+'</option>'
+							      			});  
+							      			var html='<select class="form-control  selectChange">'+htmltwo+'</select>'
+							      			$(".position").html(html);
+							      			
+							      			layer.close(indextwo);
+									      },error:function(){
+												layer.msg("加载失败！", {icon: 2});
+												layer.close(indextwo);
+										  }
+									  }); 
+				      			})
+				      			
+				      			
+						      }
+						  });
+						
+					    var getdataa={type:"agreements",}
+					    
+					    $.ajax({
+						      url:"${ctx}/basedata/list",
+						      data:getdataa,
+						      type:"GET",
+						      beforeSend:function(){
+						    	  indextwo = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								  });
+							  }, 
+				      		  success: function (result) {
+				      			  $(result.data).each(function(k,j){
+				      		htmlthh+='<input type="checkbox" class="checkWorktw" value="'+j.id+'">'+j.name+'</input>'
+				      			  });
+				      			$(".agreementtw").html(htmlthh);
+				      			layer.close(indextwo);
+						      }
+						  });
+					    
+						var getdataa={type:"commitments",}
+					    
+					    $.ajax({
+						      url:"${ctx}/basedata/list",
+						      data:getdataa,
+						      type:"GET",
+						      beforeSend:function(){
+						    	  indextwo = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								  });
+							  }, 
+				      		  success: function (result) {
+				      			  $(result.data).each(function(k,j){
+				      		htmlthhh+='<input type="radio" class="checkWork" name="cc" value="'+j.id+'">'+j.name+'</input>'
+				      			  });
+				      			$(".remarktww").html(htmlthhh);
+				      			layer.close(indextwo);
+						      }
+						  });
+					    
+					  var data={
+							id:id		
+						}
+					  var idCard="";
+					    $.ajax({
+						      url:"${ctx}/system/user/pages",
+						      data:data,
+						      type:"GET",
+						      beforeSend:function(){
+							 	  index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								  });
+							  }, 
+				      		  success: function (result) {
+				      			 $(result.data.rows).each(function(i,o){
+				      				 var order = i+1;
+				      				var k;
+				      				var th='';
+				      				 if(o.orgName==null){
+				      					 k=""
+				      				 }else{
+				      					 k=o.orgName.name
+				      				 }
+				      				 var l;
+				      				 if(o.position==null){
+				      					 l=""
+				      				 }else{
+				      					 l=o.position.name
+				      				 }
+				      				 var z;
+				      				 if(o.orgName==null){
+				      					 z=""
+				      				 }else{
+				      					 z=o.orgName.id
+				      				 }
+				      				 var u;
+				      				if(o.position==null){
+				      					 u=""
+				      				 }else{
+				      					 u=o.position.id
+				      				 }
+				      			
+				      				th='<div class="dz-preview dz-processing dz-image-preview dz-success"><div class="dz-details"><img data-dz-thumbnail  src='+o.pictureUrl+'></div><div class="dz-success-mark" ></div></div>'
+				      				 $("#my-awesome-dropzone").html(th); 
+				      				$('.dz-success-mark').on('click',function(){
+				      					var thate=$(this);
+				      					thate.parent().hide();
+				      				})
+				      				idCard=o.bankCard1	
+				      				var de={
+					      					idCard:idCard,
+					      			}
+					      			$.ajax({
+									      url:"${ctx}/system/user/getbank",
+									      data:de,
+									      type:"GET",
+									      beforeSend:function(){
+										 	  index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											  });
+										  }, 
+							      		  success: function (result) {
+							      				$('.bankCardtw').val(result.data)
+							      				layer.close(index);
+									      },error:function(){
+												layer.msg("加载失败！", {icon: 2});
+												layer.close(index);
+										  }
+									  });
+				      				$('.userName').val(o.userName);
+				      				$('.number').val(o.number);
+				      				$('.phone').val(o.phone);
+				      				$('.email').val(o.email);
+				      				$('#birthDate').val(o.birthDate);
+				      				$('.idCard').val(o.idCard);
+				      				$('.permanentAddress').val(o.permanentAddress);
+				      				$('.livingAddress').val(o.livingAddress);
+				      				$('.school').val(o.school);
+				      				$('.major').val(o.major);
+				      				$('.contacts').val(o.contacts);
+				      				$('.information').val(o.information);
+				      				$('#entry').val(o.entry);
+				      				$('#estimate').val(o.estimate);
+				      				$('#actua').val(o.actua);
+				      				$('#socialSecurity').val(o.socialSecurity);
+				      				$('.bankCard1').val(o.bankCard1);
+				      				$('.bankCard2').val(o.bankCard2);
+				      				$('.agreement').val(o.agreement);
+				      				$('.contract').val(o.contract);
+				      				$('#contractDate').val(o.contractDate);
+				      				$('.frequency').val(o.frequency);
+				      				$('#quitDate').val(o.quitDate);
+				      				$('.reason').val(o.reason);
+				      				$('.train').val(o.train);
+				      				$('.remark').val(o.remark);
+				      				$('.company').val(o.company);
+					      			$("#idCardEnd").val(o.idCardEnd);
+					      			$("#contractDateEnd").val(o.contractDateEnd);
+					      			$('#productId').val(o.fileId);
+									$('#producturl').val(o.pictureUrl);
+					      			var html='<input class="form-control" value="'+l+'" />'
+					      			$(".position").html(html);
+					      			$('.gender').each(function(j,k){
+										var id=o.gender;
+										$(k).val(id);
+									});
+									$('.marriage').each(function(j,k){
+										var id=o.marriage;
+										$(k).val(id);
+									});
+									$('.procreate').each(function(j,k){
+										var id=o.procreate;
+										$(k).val(id);
+									});
+									$('.education').each(function(j,k){
+										var id=o.education;
+										$(k).val(id);
+									});
+									$('.quit').each(function(j,k){
+										var id=o.quit;
+										$(k).val(id);
+									});
+									$('.safe').each(function(j,k){
+										var id=o.safe;
+										$(k).val(id);
+									});
+									$('.promise').each(function(j,k){
+										var id=o.promise;
+										$(k).val(id);
+									});
+				      				$('.nation').each(function(j,k){
+										var id=o.nation;
+										$(k).val(id);
+									});
+									$('.commitment').each(function(j,k){
+										var id=o.commitment;
+										$(k).val(id);
+									});
+									$('#type4').each(function(j,k){
+										var id=o.type;
+										$(k).val(id);
+									});
+									$('#sale').each(function(j,k){
+										var id=o.sale;
+										$(k).val(id);
+									});
+									if(o.commitments!=null){
+									 	var ids=o.commitments.id;
+									$('.checkWork').each(function(j,k){
+										if(ids==$(k).val()){
+											$(k).attr("checked","true"); 
+										}
+										
+									}); 
+									}
+										var id=o.agreementId;
+									 $('.checkWorktw').each(function(j,k){
+										 if(id.indexOf($(k).val())>=0){
+												$(k).attr("checked","true"); 
+											}
+									}) ;
+									 
+									 
+									 $(".idCard").blur(function(){
+											var UUserCard = $(".idCard").val();
+											if(UUserCard != null && UUserCard != ''){
+												//获取出生日期 
+												var birthday = UUserCard.substring(6, 10) + "-" + UUserCard.substring(10, 12) + "-" + UUserCard.substring(12, 14); 
+												$('#birthDate').val(birthday+' '+'00:00:00');
+												//获取性别 
+												if (parseInt(UUserCard.substr(16, 1)) % 2 == 1) { 
+													$('.gender').each(function(j,k){
+														var id=0;//男
+														$(k).val(id);
+													});
+												} else { 
+													$('.gender').each(function(j,k){
+														var id=1;//女
+														$(k).val(id);
+													});
+												}
+												//获取年龄 
+												 var myDate = new Date(); 
+												var month = myDate.getMonth() + 1; 
+												var day = myDate.getDate();
+
+												var age = myDate.getFullYear() - UUserCard.substring(6, 10) - 1; 
+												if (UUserCard.substring(10, 12) < month || UUserCard.substring(10, 12) == month && UUserCard.substring(12, 14) <= day) { 
+												age++; 
+												} 
+												
+											}
+										})
+									
+				      			}); 
+				      			 
+				      			
+				      			 
+						      },error:function(){
+									layer.msg("加载失败！", {icon: 2});
+									layer.close(index);
+							  }
+						  });
+						_index = layer.open({
+							  type: 1,
+							  skin: 'layui-layer-rim', //加上边框
+							  area: ['60%', '70%'], 
+							  btnAlign: 'c',//宽高
+							  maxmin: true,
+							  title:userName,
+							  content: dicDiv,
+							  btn: ['确定', '取消'],
+							  yes:function(index, layero){
+								  var values=new Array()
+								  var numberr=new Array()
+									$(".checkWork:checked").each(function() {   
+										values.push($(this).val());
+									}); 
+								  $(".checkWorktw:checked").each(function() {   
+									  numberr.push($(this).val());
+									}); 
+								  postData={
+										  	id:id,
+										  	agreementId:numberr,
+											commitmentId:values,
+										 	userName:$('.userName').val(),
+											number:$('.number').val(),
+											nation:$('.nation').val(),
+											phone:$('.phone').val(),
+											email:$('.email').val(),
+											gender:$('.gender').val(),
+											birthDate:$('#birthDate').val(),
+											idCard:$('.idCard').val(),
+											permanentAddress:$('.permanentAddress').val(),
+											livingAddress:$('.livingAddress').val(),
+											marriage:$('.marriage').val(),
+											procreate:$('.procreate').val(),
+											education:$('.education').val(),
+											school:$('.school').val(),
+											major:$('.major').val(),
+											contacts:$('.contacts').val(),
+											information:$('.information').val(),
+											entry:$('#entry').val(),
+											estimate:$('#estimate').val(),
+											actua:$('#actua').val(),
+											socialSecurity:$('#socialSecurity').val(),
+											bankCard1:$('.bankCard1').val(),
+											bankCard2:$('.bankCard2').val(),
+											agreement:$('.agreement').val(),
+											promise:$('.promise').val(),
+											contract:$('.contract').val(),
+											contractDate:$('#contractDate').val(),
+											frequency:$('.frequency').val(),
+											quit:$('.quit').val(),
+											quitDate:$('#quitDate').val(),
+											reason:$('.reason').val(),
+											train:$('.train').val(),
+											remark:$('.remark').val(),
+											orgNameId:$('.selectgroupChange').val(),
+											positionId:$('.selectChange').val(),
+											idCardEnd:$('#idCardEnd').val(),
+											contractDateEnd:$('#contractDateEnd').val(),
+											fileId:$('#productId').val(),
+											pictureUrl:$('#producturl').val(),
+											company:$('.company').val(),
+											commitment:$('.commitment').val(),
+											safe:$('.safe').val(),
+											type:$('#type4').val(),
+											sale:$('#sale').val(),
+											ascriptionBank1:$('.bankCardtw').val(),
+								  }
+								   $.ajax({
+										url:"${ctx}/system/user/update",
+										data:postData,
+										type:"POST",
+										traditional: true,
+										beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'#fff'] //0.1透明度的白色背景
+												});
+										},
+										
+										success:function(result){
+											if(0==result.code){
+												layer.msg("修改成功！", {icon: 1});
+												/* $('.addDictDivTypeForm')[0].reset(); 
+												$("#my-awesome-dropzone").text(""); */
+												var entry="";
+									  			var estimate="";
+									  			var actua="";
+													
+													if($("#timesss").val()=="entry"){
+														entry="2018-10-08 00:00:00"
+													}
+													if($("#timesss").val()=="estimate"){
+														estimate="2018-10-08 00:00:00"
+													}
+													if($("#timesss").val()=="actua"){
+														actua="2018-10-08 00:00:00"
+													}
+												var data = {
+											  			page:self.getCount(),
+											  			size:13,
+											  			quit:$('#groupp').val(),
+											  			foreigns:0,
+											  			userName:$('#name').val(),
+											  			orgNameIds:$('.sel').val(),
+											  			gender:$('#gender').val(),
+											  			retire:$('#retire').val(),
+											  			commitment:$('#commitment').val(),
+											  			promise:$('#promise').val(),
+											  			safe:$('#safe').val(),
+											  			lotionNumber:$('#number').val(),
+											  			entry:entry,
+											  			estimate:estimate,
+											  			actua:actua,
+											  			orderTimeBegin:$("#startTime").val(),
+											  			orderTimeEnd:$("#endTime").val(),
+											  			ascriptionBank1:$("#bankCardtw").val(),
+											  			education:$("#education2").val(),
+											  	}
+												layer.close(index);
+												self.loadPagination(data);
+											}else{
+												layer.msg(result.message, {icon: 2});
+											}
+											
+											layer.close(index);
+										},error:function(){
+											layer.msg("操作失败！", {icon: 2});
+											layer.close(index);
+										}
+									}); 
+								},
+							  end:function(){
+								  $('.addDictDivTypeForm')[0].reset(); 
+								  $("#my-awesome-dropzone").text("");
+								  /*  $("#addDictDivType").hide(); */
+								  layer.close(index);
+							  }
+						});
+				 })
 			 }
 			//加载分页
 			  this.loadPagination = function(data){
