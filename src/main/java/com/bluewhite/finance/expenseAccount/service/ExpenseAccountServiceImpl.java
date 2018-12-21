@@ -60,16 +60,19 @@ public class ExpenseAccountServiceImpl extends BaseServiceImpl<ExpenseAccount, L
 						"%" + StringUtil.specialStrKeyword(param.getContent()) + "%"));
 			}
 
-			// 按申请报销单日期
-			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
-				predicate.add(cb.between(root.get("expenseDate").as(Date.class), param.getOrderTimeBegin(),
-						param.getOrderTimeEnd()));
+			if (!StringUtils.isEmpty(param.getExpenseDate())) {
+				// 按申请报销单日期
+				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+					predicate.add(cb.between(root.get("expenseDate").as(Date.class), param.getOrderTimeBegin(),
+							param.getOrderTimeEnd()));
+				}
 			}
-
-			// 按财务付款日期
-			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
-				predicate.add(cb.between(root.get("paymentDate").as(Date.class), param.getOrderTimeBegin(),
-						param.getOrderTimeEnd()));
+			if (!StringUtils.isEmpty(param.getPaymentDate())) {
+				// 按财务付款日期
+				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+					predicate.add(cb.between(root.get("paymentDate").as(Date.class), param.getOrderTimeBegin(),
+							param.getOrderTimeEnd()));
+				}
 			}
 
 			Predicate[] pre = new Predicate[predicate.size()];
@@ -77,7 +80,7 @@ public class ExpenseAccountServiceImpl extends BaseServiceImpl<ExpenseAccount, L
 			return null;
 		}, SalesUtils.getQueryNoPageParameter());
 		PageResultStat<ExpenseAccount> result = new PageResultStat<>(pages, page);
-		result.setAutoStateField("", "money");
+		result.setAutoStateField(null, "money");
 		result.count();
 		return result;
 	}
