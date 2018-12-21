@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.context.MessageSource;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -29,26 +30,15 @@ import com.bluewhite.common.entity.ErrorCode;
  * 控制器异常处理，对表单提交返回的CommonResponse做了特殊处理。
  * 
  */
+@Component
 public class MyExceptionHandlerExceptionResolver extends
 		ExceptionHandlerExceptionResolver {
 	
 	private static Logger logger = Logger.getLogger(MyExceptionHandlerExceptionResolver.class);
 	
-	private String defaultErrorView = "/common/error/error.jsp";
-	
-//	private String unauthorizedErrorView = "/common/error/403.jsp";//没有权限的错误提示页面，统一用json，不需要定义页面
-
 	private FastJsonJsonView fastJsonView;
 	
 	private MessageSource messageSource;
-
-	public String getDefaultErrorView() {
-		return defaultErrorView;
-	}
-
-	public void setDefaultErrorView(String defaultErrorView) {
-		this.defaultErrorView = defaultErrorView;
-	}
 
 	public FastJsonJsonView getFastJsonView() {
 		return fastJsonView;
@@ -84,28 +74,11 @@ public class MyExceptionHandlerExceptionResolver extends
 				request, response, handlerMethod, exception);
 		ResponseBody responseBodyAnn = AnnotationUtils.findAnnotation(method,
 				ResponseBody.class);
-
-		//没有权限的异常判断，
-		if (exception instanceof UnauthorizedException) {
-//			String requestType = request.getHeader("X-Requested-With");
-//			if(requestType != null && "XMLHttpRequest".equals(requestType)) {
-			CommonResponse responseInfo = new CommonResponse();
-			responseInfo.setCode(ErrorCode.FORBIDDEN.getCode());
-			responseInfo.setMessage(messageSource.getMessage("user.no.authorization", null,null));
-			return new ModelAndView(getFastJsonView(),responseInfo.toMap());
-//			}
-//			else{
-//				setDefaultErrorView(unauthorizedErrorView);//设置重定向到403页面
-//				return getDefaultModelAndView(new Exception("没有权限"));
-//			}
-		}
-		
 		// 使用注解，需要输出JSON格式的
 		if (responseBodyAnn != null) {
 			// 对通用响应的处理。
 			CommonResponse responseInfo = new CommonResponse();
-			responseInfo.setCode(ErrorCode.INTERNAL_SERVER_ERROR
-					.getCode());
+			responseInfo.setCode(ErrorCode.INTERNAL_SERVER_ERROR.getCode());
 			if (exception instanceof ServiceException) {
 				ServiceException se = (ServiceException) exception;
 				responseInfo.setMessage(exception.getMessage());
@@ -117,31 +90,12 @@ public class MyExceptionHandlerExceptionResolver extends
 			}
 			return new ModelAndView(getFastJsonView(),responseInfo.toMap());
 			
-		}// end if( responseBodyAnn != null ) {
-		if (returnValue == null || returnValue.getViewName() == null) {
-			return getDefaultModelAndView(exception);
 		}
 		returnValue.addObject("error", getError(exception));
 		return returnValue;
 
-	}// end doResolveHandlerMethodException
-
-	
-
-	private ModelAndView getDefaultModelAndView(Exception exception) {
-		if (StringUtils.isBlank(getDefaultErrorView())) {
-			return null;
-		}
-		ModelAndView mv = null;
-		if (getDefaultErrorView().endsWith(".jsp")) {
-			// 需要重定向的页面
-			mv = new ModelAndView("redirect:" + getDefaultErrorView());
-		} else {
-			mv = new ModelAndView(getDefaultErrorView());
-		}
-		mv.addObject("error", getError(exception));
-		return mv;
 	}
+	
 
 	private Map<String, Object> getError(Exception exception) {
 		Map<String, Object> error = new HashMap<String, Object>();

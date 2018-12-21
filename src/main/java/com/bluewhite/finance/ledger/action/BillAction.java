@@ -58,8 +58,8 @@ private static final Log log = Log.getLog(BillAction.class);
 	@ResponseBody
 	public CommonResponse getBill(HttpServletRequest request,PageParameter page,Bill bill) {
 		CommonResponse cr = new CommonResponse();
-		PageResult<Bill>  orderList= billService.findPages(bill, page); 
-		cr.setData(clearCascadeJSON.format(orderList).toJSON());
+		PageResult<Bill>  billList= billService.findPages(bill, page); 
+		cr.setData(clearCascadeJSON.format(billList).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}

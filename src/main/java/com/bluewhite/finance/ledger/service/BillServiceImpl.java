@@ -80,9 +80,9 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 		NumUtils.setzro(bill);
 		List<Order> orderList = orderdao.findByPartyNamesIdAndContractTimeBetween(order.getPartyNamesId(),DatesUtil.getFirstDayOfMonth(order.getContractTime()),DatesUtil.getLastDayOfMonth(order.getContractTime()));
 		double	OffshorePay = orderList.stream().filter(Order->Order.getPartyNamesId()==order.getPartyNamesId()).mapToDouble(Order::getContractPrice).sum();
-		bill.setOffshorePay(OffshorePay);
+		bill.setOffshorePay(NumUtils.round(OffshorePay,4));
 		double	acceptPay = orderList.stream().filter(Order->Order.getPartyNamesId()==order.getPartyNamesId() && Order.getAshorePrice()!=null).mapToDouble(Order::getAshorePrice).sum();
-		bill.setAcceptPay(acceptPay);
+		bill.setAcceptPay(NumUtils.round(acceptPay,4));
 		//当表在途和有争议货款
 		bill.setDisputePay(NumUtils.sub(OffshorePay,acceptPay));
 		//当月货款未到

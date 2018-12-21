@@ -22,7 +22,6 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
-import com.bluewhite.finance.ledger.dao.BillDao;
 import com.bluewhite.finance.ledger.dao.ContactDao;
 import com.bluewhite.finance.ledger.dao.CustomerDao;
 import com.bluewhite.finance.ledger.dao.OrderDao;
