@@ -105,7 +105,6 @@
                                         </tr>
                                     </thead>
                                         <tr>
-                                    
                                         	<td class="text-center"></td>
                                             <td class="text-center"><input type="text" id="content" class="text-center" style="border: none;width:150px; height:30px; background-color: #BFBFBF;"></td>
                                             <td class="text-center"><input type="text" id="user" class="aName2 text-center"  data-provide="typeahead" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
@@ -363,28 +362,41 @@
 					  }, 
 		      		  success: function (result) {
 		      			 $(result.data.rows).each(function(i,o){
-		      				var newDate=/\d{4}-\d{1,2}-\d{1,2}/g.exec(o.contractTime)
+		      				var newDate=/\d{4}-\d{1,2}-\d{1,2}/g.exec(o.expenseDate)
 		      				var k;
 		      				 if(o.user==null){
 		      					 k=""
 		      				 }else{
 		      					 k=o.user.userName
 		      				 }
+		      				 var a="";
+		      				 if(o.budget==1){
+		      					 a="预算"
+		      				 }else{
+		      					 a="";
+		      				 }
+		      				 var b;
+		      				 if(o.settleAccountsMode==0){
+		      					 b=""
+		      				 }else if(o.settleAccountsMode==1){
+		      					 b="现金"
+		      				 }else if(o.settleAccountsMode==2){
+		      					 b="月结"
+		      				 }else{
+		      					 b=""
+		      				 }
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="hidden batch">'+o.id+'</td>'
-		      				+'<td class="text-center  content">'+o.content+'</td>'
+		      				+'<td class="hidden userId ">'+o.userId+'</td>'
+		      				+'<td class="text-center edit5  content">'+o.content+'</td>'
 		      				+'<td class="text-center edit contractTime">'+k+'</td>'
-		      				+'<td class="text-center editt firstNames">'+o.firstNames+'</td>'
-		      				+'<td class="text-center editt partyNames">'+o.partyNames+'</td>'
-		      				+'<td class="text-center edit1 batchNumber">'+o.batchNumber+'</td>'
-		      				+'<td class="text-center edit2 planNumbers">'+o.planNumbers+'</td>'
-		      				+'<td class="text-center edit3 productName">'+o.productName+'</td>'
-		      				+'<td class="text-center edit4 contractNumber">'+(o.contractNumber!=null ? o.contractNumber : 0)+'</td>'
-		      				+'<td class="text-center  name contractPrice" style=" color:#c11f34">'+(o.contractPrice!=null ? o.contractPrice : 0)+'</td>'
-		      				+'<td class="text-center edit5 remarksPrice">'+(o.remarksPrice!=null ? o.remarksPrice : "")+'</td>'
-		      				+'<td class="text-center  name"><input type="text" class="price2" value="'+(o.price!=null ? o.price : "")+'" style="border: none;width:70px; height:30px; background-color: #BFBFBF;"></td>'
-		      				+'<td class="text-center" edit5 data-online='+o.online+'><select class="text-center checkWork" disabled="disabled" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">线下</option><option value="1">线上</option></select></td>'
-		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans Tips"  data-id='+o.id+' data-productname='+o.productName+' data-partynames='+o.partyNames+'>提示</button></td></tr>'
+		      				+'<td class="text-center editt firstNames" data-online="'+o.budget+'"><select class="text-center checkWork" disabled="disabled" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">请选择</option><option value="1">预算</option></select></td>'
+		      				+'<td class="text-center edit3 partyNames">'+o.money+'</td>'
+		      				+'<td class="text-center edit1 batchNumber">'+newDate+'</td>'
+		      				+'<td class="text-center edit2 planNumbers">'+o.withholdReason+'</td>'
+		      				+'<td class="text-center edit3 productName">'+o.withholdMoney+'</td>'
+		      				+'<td class="text-center editt contractNumber" data-online2="'+o.settleAccountsMode+'"><select class="text-center checkWork2" disabled="disabled" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">请选择</option><option value="1">现金</option><option value="2">月结</option></select></td>'
+		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans Tips"  data-id='+o.id+'>提示</button></td></tr>'
 		      			}); 
 		      			self.setCount(result.data.pageNum)
 				        //显示分页
@@ -412,6 +424,14 @@
 					    });  
 					   	layer.close(index);
 					   	 $("#tablecontent").html(html); 
+					   	$('.checkWork').each(function(j,k){
+							var ids=$(this).parent().data('online')
+		  					$(k).val(ids)
+						});
+						$('.checkWork2').each(function(j,k){
+							var ids=$(this).parent().data('online2')
+		  					$(k).val(ids)
+						});
 					   	self.loadEvents();
 					   self.checkeddto();
 				      },error:function(){
@@ -447,35 +467,34 @@
 				$('.update').on('click',function(){
 					if($(this).text() == "编辑"){
 						$(this).text("保存")
-						
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+						$(this).parent().siblings(".edit5").each(function() {  // 获取当前行的其他单元格
 
-				            $(this).html("<input class='input-mini'  style='border: none;width:90px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				            $(this).html("<input class='input-mini'  style='border: none;width:150px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
 				        });
-						$(this).parent().siblings(".editt").each(function() {  // 获取当前行的其他单元格
+						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
 
 				            $(this).html("<input class='input-mini aName2'  style='border: none;width:68px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
 				        });
+						$(this).parent().siblings(".editt").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).parent().parent().find(".checkWork").removeAttr("disabled")
+				            $(this).parent().parent().find(".checkWork2").removeAttr("disabled")
+						});
 						$(this).parent().siblings(".edit1").each(function() {  // 获取当前行的其他单元格
 
 				            $(this).html("<input class='input-mini'  style='border: none;width:105px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
 				        });
 						$(this).parent().siblings(".edit2").each(function() {  // 获取当前行的其他单元格
 
-				            $(this).html("<input class='input-mini'  style='border: none;width:60px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				            $(this).html("<input class='input-mini'  style='border: none;width:105px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
 				        });
 						$(this).parent().siblings(".edit3").each(function() {  // 获取当前行的其他单元格
 
-				            $(this).html("<input class='input-mini'  style='border: none;width:150px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				            $(this).html("<input class='input-mini'  style='border: none;width:68px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
 				        });
 						$(this).parent().siblings(".edit4").each(function() {  // 获取当前行的其他单元格
 
 				            $(this).html("<input class='input-mini'  style='border: none;width:50px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        });
-						$(this).parent().siblings(".edit5").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini'  style='border: none;width:80px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-						$(this).parent().parent().find(".checkWork").removeAttr("disabled")
 				        });
 						self.mater();
 					}else{
@@ -539,17 +558,16 @@
 							var c;
 							var d;
 							if(self.getIndex()==null){
-								c=$(this).parent().parent().find(".firstNamesId").text();
+								alert(1)
+								c=$(this).parent().parent().find(".userId").text();
 							}else{
+								alert(2)
 								c=self.getIndex();
-							}
-							if(self.getCache()==null){
-								d=$(this).parent().parent().find(".partyNamesId").text();
-							}else{
-								d=self.getCache();
 							}
 							var postData = {
 									id:$(this).data('id'),
+									content:$(this).parent().parent().find(".content").text(),
+									userId:c,
 									contractTime:$(this).parent().parent().find(".contractTime").text()+' '+'00:00:00',
 									firstNames:$(this).parent().parent().find(".firstNames").text(),
 									partyNames:$(this).parent().parent().find(".partyNames").text(),
@@ -565,7 +583,7 @@
 							
 							var index;
 							$.ajax({
-								url:"${ctx}/fince/addOrder",
+								url:"${ctx}/fince/updateExpenseAccount",
 								data:postData,
 								type:"POST",
 								beforeSend:function(){
