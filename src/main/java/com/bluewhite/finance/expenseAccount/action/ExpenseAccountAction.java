@@ -36,7 +36,7 @@ public class ExpenseAccountAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(ExpenseAccount.class, "id", "user","content"
+				.addRetainTerm(ExpenseAccount.class, "id", "user","content","userId"
 				,"budget","money","expenseDate","paymentMoney","paymentDate","withholdReason","remark"
 				,"withholdMoney","settleAccountsMode","remark","flag")
 				.addRetainTerm(User.class, "userName");
