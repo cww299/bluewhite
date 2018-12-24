@@ -35,8 +35,8 @@ public class TaxAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(Tax.class, "id", "user","content"
-				,"budget","money","expenseDate","paymentMoney","paymentDate","withholdReason","remark"
+				.addRetainTerm(Tax.class, "id", "taxPoint","content"
+				,"money","expenseDate","paymentMoney","paymentDate","withholdReason","remark"
 				,"withholdMoney","settleAccountsMode","remark","flag");
 	}
 
