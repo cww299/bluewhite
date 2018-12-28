@@ -142,7 +142,7 @@ public class EmbroideryServiceImpl extends BaseServiceImpl<Embroidery, Long> imp
 		tailorList.get(0).setMachinistPriceDown(MachinistPriceDown);
 		tailorDao.save(tailorList);
 		
-		dao.save(embroidery);
+		dao.save((Embroidery)NumUtils.setzro(embroidery));
 		Tailor tr = tailorDao.findOne(embroidery.getTailorId());
 		tr.setEmbroideryId(embroidery.getId());
 		tailorDao.save(tr);

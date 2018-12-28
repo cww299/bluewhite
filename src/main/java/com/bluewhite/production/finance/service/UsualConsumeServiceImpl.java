@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.production.finance.dao.UsualConsumeDao;
 import com.bluewhite.production.finance.entity.UsualConsume;
 @Service
@@ -43,7 +44,7 @@ public class UsualConsumeServiceImpl extends BaseServiceImpl<UsualConsume, Long>
 			usualConsume.setHydropower((usualConsume.getMonthHydropower()/30)+usualConsume.getEquipment());
 		}
 		usualConsume.setLogistics(usualConsume.getMonthLogistics()/30);
-		return usualConsume;
+		return (UsualConsume)NumUtils.setzro(usualConsume);
 	}
 
 	@Override

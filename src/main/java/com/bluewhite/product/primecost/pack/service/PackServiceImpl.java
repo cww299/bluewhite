@@ -111,7 +111,7 @@ public class PackServiceImpl extends BaseServiceImpl<Pack, Long> implements Pack
 				+ materialsPrice + allCostPriceTailor + allCostPriceMachinist + allCostPriceEmbroidery
 				+ allCostPriceNeedlework);
 
-		return dao.save(pack);
+		return dao.save((Pack)NumUtils.setzro(pack));
 	}
 
 	@Override

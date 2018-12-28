@@ -94,7 +94,7 @@ public class ExpenseAccountAction {
 		CommonResponse cr = new CommonResponse();
 		expenseAccountService.updateExpenseAccount(expenseAccount);
 		cr.setData(clearCascadeJSON.format(expenseAccount).toJSON());
-		cr.setMessage("添加成功");
+		cr.setMessage("修改成功");
 		return cr;
 	}
 	
@@ -111,7 +111,7 @@ public class ExpenseAccountAction {
 		CommonResponse cr = new CommonResponse();
 		expenseAccountService.auditExpenseAccount(expenseAccount);
 		cr.setData(clearCascadeJSON.format(expenseAccount).toJSON());
-		cr.setMessage("添加成功");
+		cr.setMessage("审核成功");
 		return cr;
 	}
 

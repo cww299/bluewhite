@@ -202,7 +202,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements
 			ordinaryLaserDao.save(prams);
 			//将裁剪方式和裁剪页面数据进行关联，实现一对一的同步更新
 			tailor.setOrdinaryLaserId(prams.getId());
-			dao.save(tailor);
+			dao.save((Tailor)NumUtils.setzro(tailor));
 		}
 		return prams;
 	}

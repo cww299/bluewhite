@@ -54,9 +54,6 @@ public class AttendanceAction {
 		@ResponseBody
 		public CommonResponse allAttendancePay(HttpServletRequest request,AttendancePay attendancePay) {
 			CommonResponse cr = new CommonResponse();
-			
-		
-			
 				//新增考勤工资，一键增加考勤
 				if(!StringUtils.isEmpty(attendancePay.getUsersId())){
 					for (int i = 0; i < attendancePay.getUsersId().length; i++) {

@@ -70,7 +70,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		//使用片数周长
 		cutParts.setAllPerimeter(cutParts.getPerimeter()*cutParts.getCutPartsNumber());
 		
-		dao.save(cutParts);
+		dao.save((CutParts)NumUtils.setzro(cutParts));
 		
 		//从cc裁片填写后，自动增加到裁剪页面
 		Tailor tailor =  new Tailor();
