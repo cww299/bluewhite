@@ -15,6 +15,7 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.product.primecost.materials.dao.ProductMaterialsDao;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 import com.bluewhite.product.product.dao.ProductDao;
@@ -31,13 +32,14 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 	@Override
 	@Transactional
 	public ProductMaterials saveProductMaterials(ProductMaterials productMaterials) {
+		NumUtils.setzro(productMaterials);
 		if(StringUtils.isEmpty(productMaterials.getManualLoss())){
 			productMaterials.setBatchMaterial(productMaterials.getOneMaterial()*productMaterials.getNumber());
 		}else{
 			productMaterials.setBatchMaterial(productMaterials.getManualLoss()*productMaterials.getOneMaterial()*productMaterials.getNumber());
 		}
 		productMaterials.setBatchMaterialPrice(productMaterials.getBatchMaterial()*productMaterials.getUnitCost());
-		dao.save(productMaterials);
+		dao.save((ProductMaterials)NumUtils.setzro(productMaterials));
 		return productMaterials;
 	}
 

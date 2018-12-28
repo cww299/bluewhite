@@ -73,7 +73,7 @@ public class NumUtils {
 				 Object val;
 				try {
 					val = field.get(model);
-					field.set(model,(Double)val == null ? (Double)0.0 : (Double)val); 
+					field.set(model, (Double)val == null ? (Double)0.0 : round((Double)val,5)); 
 				} catch (IllegalArgumentException | IllegalAccessException e) {
 					e.printStackTrace();
 				}

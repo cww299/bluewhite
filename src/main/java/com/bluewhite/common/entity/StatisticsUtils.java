@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import org.springframework.util.ReflectionUtils;
 
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.utils.NumUtils;
 
 
 public class StatisticsUtils
@@ -120,7 +121,7 @@ public class StatisticsUtils
 			{
 				if (countNowValue == null)
 					countNowValue = Double.valueOf(0.0D);
-				countNowValue = Double.valueOf(((Double)countNowValue).doubleValue() + ((Double)value).doubleValue());
+				countNowValue =  NumUtils.round(Double.valueOf(((Double)countNowValue).doubleValue() + ((Double)value).doubleValue()),null);
 			} else
 			if (value instanceof Integer)
 			{

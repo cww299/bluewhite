@@ -134,7 +134,7 @@ public class MachinistServiceImpl extends BaseServiceImpl<Machinist, Long> imple
 		 //单独机工工序外发的压价
 		 machinist.setMachinistPriceDown(machinist.getAllCostPrice()+machinist.getPriceDownRemark());
 		
-		return dao.save(machinist);
+		return dao.save((Machinist)NumUtils.setzro(machinist));
 	}
 
 	@Override

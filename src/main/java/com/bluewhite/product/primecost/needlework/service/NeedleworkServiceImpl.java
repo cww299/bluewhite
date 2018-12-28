@@ -76,7 +76,7 @@ public class NeedleworkServiceImpl extends BaseServiceImpl<Needlework, Long> imp
 		//从裁剪页面中获取所有为机工准备的压价
 		double machinistPriceDown = tailorList.stream().filter(Tailor->Tailor.getMachinistPriceDown()!=null).mapToDouble(Tailor::getMachinistPriceDown).sum();
 		needlework.setPriceDown(machinistPriceDown+needleworkPriceDown);
-		return dao.save(needlework);
+		return dao.save((Needlework)NumUtils.setzro(needlework));
 
 	}
 

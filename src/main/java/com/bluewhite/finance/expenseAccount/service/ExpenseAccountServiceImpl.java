@@ -134,6 +134,9 @@ public class ExpenseAccountServiceImpl extends BaseServiceImpl<ExpenseAccount, L
 
 	@Override
 	public ExpenseAccount auditExpenseAccount(ExpenseAccount expenseAccount) {
+		if(expenseAccount.getPaymentDate() == null && expenseAccount.getPaymentMoney() == null){
+			throw new ServiceException("返款金额或放款时间不能为空");
+		}
 		ExpenseAccount oldExpenseAccount = dao.findOne(expenseAccount.getId());
 		if (oldExpenseAccount != null) {
 			oldExpenseAccount.setFlag(1);
