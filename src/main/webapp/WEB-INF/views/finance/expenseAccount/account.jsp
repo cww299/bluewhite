@@ -39,13 +39,10 @@
 							<div class="col-xs-12 col-sm-12 col-md-12">
 							<div class="input-group">
 							<table><tr>
-								<td>甲方:</td><td><input type="text" name="name" id="firstNames"  class="form-control search-query name" /></td>
+								<td>报销人:</td><td><input type="text" name="name" id="firstNames"  class="form-control search-query name" /></td>
 								<td>&nbsp&nbsp</td>
-								<td>乙方:</td><td><input type="text" name="name" id="partyNames"  class="form-control search-query name" /></td>
+								<td><select class="form-control" id="selectone"><option value="">请选择</option><option value="expenseDate">付款日期</option><option value="paymentDate">财务付款日期</option></select></td>
 								<td>&nbsp&nbsp</td>
-								<td>产品名:</td><td><input type="text" name="name" id="productName"  class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp</td>
-								<td>批次号:</td><td><input type="text" name="name" id="batchNumber2"  class="form-control search-query name" /></td>
 								<td>合同开始:</td>
 								<td>
 								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
@@ -57,7 +54,7 @@
 					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
              onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
-								</tr></table> 
+								</tr></table>
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask">
 										查找
@@ -70,13 +67,6 @@
 									一键删除
 									</button>
 								</span>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<span class="input-group-btn">
-								<input type="file" name="file" id="upfile"  style="display:inline">
-									 <button type="button" id="btn" class="btn btn-success  btn-sm btn-3d pull-right">
-									点击导入
-									 </button>
-								</span> 
 							</div>
 						</div>
 					</div>
@@ -110,7 +100,7 @@
                                             <td class="text-center"><input type="text" id="user" class="aName2 text-center"  data-provide="typeahead" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
                                             <td class="text-center"><select class="text-center" id="budget" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">请选择</option><option value="1">预算</option></select></td>
                                             <td class="text-center"><input type="text" id="money" class="bName2 text-center" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center" style="padding: 9px 0px 2px 4px;"><input id="expenseDate" placeholder="请输入时间" class="form-control laydate-icon"
+                                            <td class="text-center" style="padding: 9px 0px 2px 85px;"><input id="expenseDate" placeholder="请输入时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#expenseDate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="border: none;width:90px; height:30px; background-color: #BFBFBF;"></td>
                                             <td class="text-center"><input type="text" id="withholdReason" class="text-center" style="border: none;width:105px; height:30px; background-color: #BFBFBF;"></td>
                                             <td class="text-center"><input type="text" id="withholdMoney" class="text-center"  style="border: none;width:60px; height:30px; background-color: #BFBFBF;"></td>
@@ -339,6 +329,8 @@
 			 var data={
 						page:1,
 				  		size:13,
+				  		orderTimeBegin:$("#startTime").val(),
+			  			orderTimeEnd:$("#endTime").val(),
 				} 
 			this.init = function(){
 				
@@ -391,12 +383,12 @@
 		      				+'<td class="text-center edit5  content">'+o.content+'</td>'
 		      				+'<td class="text-center edit contractTime">'+k+'</td>'
 		      				+'<td class="text-center editt firstNames" data-online="'+o.budget+'"><select class="text-center checkWork" disabled="disabled" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">请选择</option><option value="1">预算</option></select></td>'
-		      				+'<td class="text-center edit3 partyNames">'+o.money+'</td>'
-		      				+'<td class="text-center edit1 batchNumber">'+newDate+'</td>'
-		      				+'<td class="text-center edit2 planNumbers">'+o.withholdReason+'</td>'
-		      				+'<td class="text-center edit3 productName">'+o.withholdMoney+'</td>'
+		      				+'<td class="text-center edit3 money">'+o.money+'</td>'
+		      				+'<td class="text-center edit1 expenseDate">'+newDate+'</td>'
+		      				+'<td class="text-center edit2 withholdReason">'+o.withholdReason+'</td>'
+		      				+'<td class="text-center edit3 withholdMoney">'+o.withholdMoney+'</td>'
 		      				+'<td class="text-center editt contractNumber" data-online2="'+o.settleAccountsMode+'"><select class="text-center checkWork2" disabled="disabled" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">请选择</option><option value="1">现金</option><option value="2">月结</option></select></td>'
-		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans Tips"  data-id='+o.id+'>提示</button></td></tr>'
+		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button></td></tr>'
 		      			}); 
 		      			self.setCount(result.data.pageNum)
 				        //显示分页
@@ -558,27 +550,20 @@
 							var c;
 							var d;
 							if(self.getIndex()==null){
-								alert(1)
 								c=$(this).parent().parent().find(".userId").text();
 							}else{
-								alert(2)
 								c=self.getIndex();
 							}
 							var postData = {
 									id:$(this).data('id'),
 									content:$(this).parent().parent().find(".content").text(),
 									userId:c,
-									contractTime:$(this).parent().parent().find(".contractTime").text()+' '+'00:00:00',
-									firstNames:$(this).parent().parent().find(".firstNames").text(),
-									partyNames:$(this).parent().parent().find(".partyNames").text(),
-									batchNumber:$(this).parent().parent().find(".batchNumber").text(),
-									planNumbers:$(this).parent().parent().find(".planNumbers").text(),
-									productName:$(this).parent().parent().find(".productName").text(),
-									contractNumber:$(this).parent().parent().find(".contractNumber").text(),
-									remarksPrice:$(this).parent().parent().find(".remarksPrice").text(),
-									online:$(this).parent().parent().find(".checkWork").val(),
-									firstNamesId:c,
-									partyNamesId:d,
+									budget:$(this).parent().parent().find(".checkWork").val(),
+									money:$(this).parent().parent().find(".money").text(),
+									expenseDate:$(this).parent().parent().find(".expenseDate").text()+' '+'00:00:00',
+									withholdReason:$(this).parent().parent().find(".withholdReason").text(),
+									withholdMoney:$(this).parent().parent().find(".withholdMoney").text(),
+									settleAccountsMode:$(this).parent().parent().find(".checkWork2").val(),
 							}
 							
 							var index;
@@ -641,130 +626,8 @@
 					});
 				})				
 				
-				
-				
-				//提示
-							$('.Tips').on('click',function(){
-								var that=$(this)
-								var id=$(this).data('id')
-								self.setName(id)
-								self.setCountall(that)
-								var ids=that.data("id");
-							$(".batch").each(function(i,o){
-							var a=$(o).text();
-							if(a==ids){
-								$(o).parent().addClass("danger");
-								$(o).parent().siblings().removeClass("danger");
-							}
-							})
-								var postData = {
-								page:1,
-					  			size:10,
-								cusProductName:$(this).data('productname'),
-								cusPartyNames:$(this).data('partynames')
-							}
-								self.lodwork(postData,id,that)
-					})
-				
-				
 			}
 			
-			this.lodwork=function(postData,id,that,a){
-				var index;
-				$.ajax({
-					url:"${ctx}/fince/getCustomer",
-					data:postData,
-					type:"GET",
-					beforeSend:function(){
-						index = layer.load(1, {
-							  shade: [0.1,'#fff'] //0.1透明度的白色背景
-							});
-					},
-					
-					success:function(result){
-						if(0==result.code){
-							if(a!=1){
-							$(".layer-right3").css("display","block");
-							var demo = new mSlider({
-								dom:".layer-right3",
-								direction: "right",
-								distance:"35%",
-								
-							})
-							demo.open()
-							}
-			var html1="";				
-		$(result.data.rows).each(function(i,o){
-				html1 +='<tr>'
-				+'<td class="text-center edit name">'+o.cusProductName+'</td>'
-				+'<td class="text-center edit name">'+o.cusPartyNames+'</td>'
-				+'<td class="text-center edit cusPrice">'+o.cusPrice+'</td>'
-				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans choice" data-id='+o.id+'>选择</button></tr>'
-			}); 
-		laypage({
-		      cont: 'pager2', 
-		      pages: result.data.totalPages, 
-		      curr:  result.data.pageNum || 1, 
-		      jump: function(obj, first){ 
-		    	  if(!first){ 
-		    		 
-			        	var _data = {
-			        			page:obj.curr,
-						  		size:10,
-						  		cusProductName:$('#productName2').val(),
-					  			cusPartyNames:$('#partyNames2').val(),
-					  	}
-			        	var a=self.getCountall()
-						var b=self.getName()
-				       self.lodwork(_data,b,a,1);
-				     }
-		      }
-		    }); 
-		$("#tablecontent2").html(html1); 
-		$(".choice").on('click',function(){
-			var thtt=$(this)
-			var postData = {
-					id:id,
-					price:$(this).parent().parent().find('.cusPrice').text(),
-			}
-			var index;
-			$.ajax({
-				url:"${ctx}/fince/addOrder",
-				data:postData,
-				type:"POST",
-				beforeSend:function(){
-					index = layer.load(1, {
-						  shade: [0.1,'#fff'] //0.1透明度的白色背景
-						});
-				},
-				success:function(result){
-					if(0==result.code){
-					that.parent().parent().find(".contractPrice").text(result.data.contractPrice)
-					that.parent().parent().find(".price2").val(result.data.price)
-					layer.msg("当批合同总价为"+result.data.contractPrice+"", {icon: 1});
-					layer.close(index);
-					}else{
-						layer.msg("失败！", {icon: 1});
-						layer.close(index);
-					}
-				},error:function(){
-					layer.msg("操作失败！", {icon: 2});
-					layer.close(index);
-				}
-			});
-		})
-							layer.close(index);
-						}else{
-							layer.msg("操作失败", {icon: 1});
-							layer.close(index);
-						}
-					},error:function(){
-						layer.msg("操作失败！", {icon: 2});
-						layer.close(index);
-					}
-				});
-				
-			}
 			this.mater=function(){
 				//提示甲方
 				$(".aName2").typeahead({
@@ -821,29 +684,24 @@
 			this.events = function(){
 				
 				$('.searchtask').on('click',function(){
+					var expenseDate=""
+					var paymentDate=""
+					if($("#selectone").val()=="expenseDate"){
+						expenseDate="2018-10-08 00:00:00"
+					}
+					if($("#selectone").val()=="paymentDate"){
+						paymentDate="2018-10-08 00:00:00"
+					}
 					var data = {
 				  			page:1,
 				  			size:13,
-				  			productName:$('#productName').val(),
-				  			firstNames:$('#firstNames').val(),
-				  			partyNames:$('#partyNames').val(),
+				  			Username:$('#firstNames').val(),
+				  			paymentDate:paymentDate,
+				  			expenseDate:expenseDate,
 				  			orderTimeBegin:$("#startTime").val(),
-				  			orderTimeEnd:$("#endTime").val(), 
-				  			batchNumber:$("#batchNumber2").val(),
+				  			orderTimeEnd:$("#endTime").val(),
 				  	}
 		            self.loadPagination(data);
-				});
-				
-				$('.searchtask2').on('click',function(){
-					var data = {
-				  			page:1,
-				  			size:10,
-				  			cusProductName:$('#productName2').val(),
-				  			cusPartyNames:$('#partyNames2').val(),
-				  	}
-				var a=self.getCountall()
-				var b=self.getName()
-		            self.lodwork(data,b,a,1);
 				});
 				//新增
 				$('#addgroup').on('click',function(){
@@ -914,7 +772,7 @@
 						var index;
 						 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
 						$.ajax({
-							url:"${ctx}/fince/delete",
+							url:"${ctx}/fince/deleteExpenseAccount",
 							data:postData,
 							traditional: true,
 							type:"GET",
