@@ -12,13 +12,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.UnauthorizedException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import com.alibaba.fastjson.support.spring.FastJsonJsonView;
 import com.bluewhite.common.entity.CommonResponse;
@@ -29,92 +32,33 @@ import com.bluewhite.common.entity.ErrorCode;
  * 
  */
 @Component
-public class MyExceptionHandlerExceptionResolver extends ExceptionHandlerExceptionResolver {
+public class MyExceptionHandlerExceptionResolver implements HandlerExceptionResolver {
 
 	private static Logger logger = Logger.getLogger(MyExceptionHandlerExceptionResolver.class);
 
-	private FastJsonJsonView fastJsonView;
-
-	private MessageSource messageSource;
-
-	public FastJsonJsonView getFastJsonView() {
-		return fastJsonView;
-	}
-
-	public void setFastJsonView(FastJsonJsonView fastJsonView) {
-		this.fastJsonView = fastJsonView;
-	}
-
-	public MessageSource getMessageSource() {
-		return messageSource;
-	}
-
-	public void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
 
 	@Override
-	public ModelAndView doResolveHandlerMethodException(HttpServletRequest request, HttpServletResponse response,
-			HandlerMethod handlerMethod, Exception exception) {
-		if (exception != null) {
-			logger.error(getDetailException(exception));
-		}
-		if (handlerMethod == null) {
-			return null;
-		}
-		Method method = handlerMethod.getMethod();
-		if (method == null) {
-			return null;
-		}
-		ModelAndView returnValue = super.doResolveHandlerMethodException(request, response, handlerMethod, exception);
-		ResponseBody responseBodyAnn = AnnotationUtils.findAnnotation(method, ResponseBody.class);
-		// 使用注解，需要输出JSON格式的
-		if (responseBodyAnn != null) {
-			// 对通用响应的处理。
-			CommonResponse responseInfo = new CommonResponse();
-			responseInfo.setCode(ErrorCode.INTERNAL_SERVER_ERROR.getCode());
-			if (exception instanceof ServiceException) {
-				ServiceException se = (ServiceException) exception;
-				responseInfo.setMessage(exception.getMessage());
-				if (se.getErrorCode() != null) {
-					responseInfo.setCode(se.getErrorCode().getCode());
-				}
-			} else {
-				responseInfo.setMessage("抱歉,服务器异常了,详情 ["
-						+ (exception == null ? "未知" : exception.getClass().getSimpleName().replace("Exception", ""))
-						+ "]");
+	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
+			Exception exception) {
+		// 输出错误Json
+		ModelAndView mav = new ModelAndView();
+		MappingJackson2JsonView view = new MappingJackson2JsonView();
+		// 对通用响应的处理。
+		CommonResponse responseInfo = new CommonResponse();
+		responseInfo.setCode(ErrorCode.INTERNAL_SERVER_ERROR.getCode());
+		if (exception instanceof ServiceException) {
+			ServiceException se = (ServiceException) exception;
+			responseInfo.setMessage(exception.getMessage());
+			if (se.getErrorCode() != null) {
+				responseInfo.setCode(se.getErrorCode().getCode());
 			}
-			return new ModelAndView(getFastJsonView(), responseInfo.toMap());
-
+		} else {
+			responseInfo.setMessage("抱歉,服务器异常了,详情 ["
+					+ (exception == null ? "未知" : exception.getClass().getSimpleName().replace("Exception", "")) + "]");
 		}
-		returnValue.addObject("error", getError(exception));
-		return returnValue;
-
-	}
-
-	private Map<String, Object> getError(Exception exception) {
-		Map<String, Object> error = new HashMap<String, Object>();
-		error.put("message", exception.getMessage());
-		return error;
-	}
-
-	private static Object getDetailException(Throwable e) {
-		if (!(e instanceof NullPointerException)) {
-			if (!(e instanceof ServiceException))
-				logger.error("", e);
-			return e;
-		}
-		try {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw, true);
-			e.printStackTrace(pw);
-			pw.flush();
-			sw.flush();
-			return sw.toString();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return "获取exception失败。";
-		}
+		view.setAttributesMap(responseInfo.toMap());
+		mav.setView(view);
+		return mav;
 	}
 
 }
