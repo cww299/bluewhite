@@ -61,6 +61,11 @@
         </property>  
     </bean>  
     
+    
+            <!-- 全局异常处理 
+    <bean id="exceptionHandler" class="com.bluewhite.common.MyExceptionHandlerExceptionResolver" />
+    -->
+    
    
     
 	<!-- SpringMVC在超出上传文件限制时，会抛出org.springframework.web.multipart.MaxUploadSizeExceededException

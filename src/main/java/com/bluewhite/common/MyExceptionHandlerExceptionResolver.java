@@ -24,20 +24,17 @@ import com.alibaba.fastjson.support.spring.FastJsonJsonView;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 
-
-
 /**
  * 控制器异常处理，对表单提交返回的CommonResponse做了特殊处理。
  * 
  */
 @Component
-public class MyExceptionHandlerExceptionResolver extends
-		ExceptionHandlerExceptionResolver {
-	
+public class MyExceptionHandlerExceptionResolver extends ExceptionHandlerExceptionResolver {
+
 	private static Logger logger = Logger.getLogger(MyExceptionHandlerExceptionResolver.class);
-	
+
 	private FastJsonJsonView fastJsonView;
-	
+
 	private MessageSource messageSource;
 
 	public FastJsonJsonView getFastJsonView() {
@@ -57,8 +54,7 @@ public class MyExceptionHandlerExceptionResolver extends
 	}
 
 	@Override
-	public ModelAndView doResolveHandlerMethodException(
-			HttpServletRequest request, HttpServletResponse response,
+	public ModelAndView doResolveHandlerMethodException(HttpServletRequest request, HttpServletResponse response,
 			HandlerMethod handlerMethod, Exception exception) {
 		if (exception != null) {
 			logger.error(getDetailException(exception));
@@ -70,10 +66,8 @@ public class MyExceptionHandlerExceptionResolver extends
 		if (method == null) {
 			return null;
 		}
-		ModelAndView returnValue = super.doResolveHandlerMethodException(
-				request, response, handlerMethod, exception);
-		ResponseBody responseBodyAnn = AnnotationUtils.findAnnotation(method,
-				ResponseBody.class);
+		ModelAndView returnValue = super.doResolveHandlerMethodException(request, response, handlerMethod, exception);
+		ResponseBody responseBodyAnn = AnnotationUtils.findAnnotation(method, ResponseBody.class);
 		// 使用注解，需要输出JSON格式的
 		if (responseBodyAnn != null) {
 			// 对通用响应的处理。
@@ -85,40 +79,42 @@ public class MyExceptionHandlerExceptionResolver extends
 				if (se.getErrorCode() != null) {
 					responseInfo.setCode(se.getErrorCode().getCode());
 				}
-			}else{
-				responseInfo.setMessage("抱歉,服务器异常了,详情 [" + (exception == null ? "未知" : exception.getClass().getSimpleName().replace("Exception", "")) + "]");
+			} else {
+				responseInfo.setMessage("抱歉,服务器异常了,详情 ["
+						+ (exception == null ? "未知" : exception.getClass().getSimpleName().replace("Exception", ""))
+						+ "]");
 			}
-			return new ModelAndView(getFastJsonView(),responseInfo.toMap());
-			
+			return new ModelAndView(getFastJsonView(), responseInfo.toMap());
+
 		}
 		returnValue.addObject("error", getError(exception));
 		return returnValue;
 
 	}
-	
 
 	private Map<String, Object> getError(Exception exception) {
 		Map<String, Object> error = new HashMap<String, Object>();
 		error.put("message", exception.getMessage());
 		return error;
 	}
-	
-	private static Object getDetailException(Throwable e){
-		if(!(e instanceof NullPointerException)){
-			if(!(e instanceof ServiceException)) logger.error("",e);
+
+	private static Object getDetailException(Throwable e) {
+		if (!(e instanceof NullPointerException)) {
+			if (!(e instanceof ServiceException))
+				logger.error("", e);
 			return e;
 		}
-		try{
-	        StringWriter sw = new StringWriter();   
-	        PrintWriter pw = new PrintWriter(sw, true);   
-	        e.printStackTrace(pw);   
-	        pw.flush();   
-	        sw.flush();   
-	        return sw.toString();
-		}catch(Exception ex){
+		try {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw, true);
+			e.printStackTrace(pw);
+			pw.flush();
+			sw.flush();
+			return sw.toString();
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			return "获取exception失败。";
 		}
-	} 
+	}
 
 }
