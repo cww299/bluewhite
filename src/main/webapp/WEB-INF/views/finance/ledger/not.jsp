@@ -417,6 +417,8 @@
 									id:$(this).data('id'),
 									contractNumber:$(this).parent().parent().find(".contractNumber").text(),
 									disputeNumber:$(this).parent().parent().find(".disputeNumber").text(),
+									orderTimeBegin:$("#startTime").val(),
+						  			orderTimeEnd:$("#endTime").val(), 
 							}
 							
 							var index;
