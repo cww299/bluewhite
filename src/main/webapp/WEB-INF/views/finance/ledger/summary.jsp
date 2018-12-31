@@ -269,7 +269,6 @@
 									  		size:13,
 									  		orderTimeBegin:$("#startTimetw").val(),
 								  			orderTimeEnd:$("#endTimetw").val(),
-								  			partyNames:$("#partyNames").val(),
 								  			partyNamesId:self.getCache(),
 								  	}
 						        
@@ -421,7 +420,6 @@
 													 	var _date={
 														  		orderTimeBegin:$("#startTimetw").val(),
 													  			orderTimeEnd:$("#endTimetw").val(),
-													  			partyNames:$("#partyNames").val(),
 													  			partyNamesId:self.getCache(),	
 														}
 														self.loadPagination(_date) ;
@@ -498,7 +496,7 @@
 					var data = {
 				  			orderTimeBegin:$("#startTimetw").val(),
 				  			orderTimeEnd:$("#endTimetw").val(),
-				  			partyNames:$("#partyNames").val(),
+				  			
 				  			partyNamesId:self.getCache(),
 				  	}
 			
