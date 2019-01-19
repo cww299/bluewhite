@@ -403,7 +403,7 @@
 				self.loadPagination(date);
 				self.loadPaginationtw(datatw);
 				self.loadPaginationth(data);
-				self.loadPaginationfv(date);
+				self.loadPaginationfv(datatw);
 			}
 			//加载分页
 			  this.loadPagination = function(date){
@@ -569,13 +569,13 @@
 			    })
 			}
 			
-			this.loadPaginationfv = function(date){
+			this.loadPaginationfv = function(datatw){
 			    var index;
 			    var html = '';
 			    //绩效汇总开始
 			    $.ajax({
 				      url:"${ctx}/finance/headmanPay",
-				      data:date,
+				      data:datatw,
 				      type:"POST",
 				      beforeSend:function(){
 					 	  index = layer.load(1, {
