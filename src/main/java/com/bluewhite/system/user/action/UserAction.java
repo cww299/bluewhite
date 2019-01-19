@@ -295,7 +295,7 @@ public class UserAction {
 			if(co<=60){
 				us.put("userId", user.getId());
 				us.put("username", user.getUserName());
-				us.put("idCardEnd", sdf.format(user.getContractDateEnd()));
+				us.put("idCardEnd", sdf.format(user.getIdCardEnd()));
 				userCardList.add(us);
 			}
 		}
