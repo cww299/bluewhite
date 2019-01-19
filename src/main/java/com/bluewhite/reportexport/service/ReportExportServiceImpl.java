@@ -418,40 +418,49 @@ public class ReportExportServiceImpl implements ReportExportService{
 			for(OrderPoi order :excelProduct){
 				Order order2  = new Order();
 				order2.setSalesNumber(order.getSalesNumber());
-				String a=order.getFirstNames();
+				String a=order.getFirstNames().trim();
 				String b=a.substring(a.length()-2);
-				
-				order2.setFirstNames(order.getFirstNames());
-				order2.setPartyNames(order.getPartyNames());
-				order2.setBatchNumber(order.getBatchNumber());
-				order2.setProductName(order.getProductName());
+				String c=a.substring(0,a.length()-2);
+				String d;
+				if(b.equals("线上")){
+					order2.setOnline(1);//在线状态（0==线下 1==线上）
+					order2.setFirstNames(c);
+					d=c;
+				}else{
+					order2.setFirstNames(order.getFirstNames());//甲方
+					order2.setOnline(0);
+					d=order.getFirstNames();
+				}
+				order2.setPartyNames(order.getPartyNames());//乙方
+				order2.setBatchNumber(order.getBatchNumber());//当批 批次号
+				order2.setProductName(order.getProductName());//当批产品名
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					try {
-						order2.setContractTime(sdf.parse(order.getContractTime() != null ? order.getContractTime() : ""));
-						/*order2.setAshoreTime(sdf.parse(order.getAshoreTime()!= null ? order.getAshoreTime() : ""));*/
+						order2.setContractTime(sdf.parse(order.getContractTime() != null ? order.getContractTime() : ""));//合同签订日期
+						order2.setAshoreTime(sdf.parse(order.getAshoreTime()!= null ? order.getAshoreTime() : ""));//到岸日期
 					} catch (ParseException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				User user=userDao.findByUserName(order.getFirstNames());
-				order2.setFirstNamesId(user.getId());
+				User user=userDao.findByUserName(d);
+				order2.setFirstNamesId(user.getId());//甲方Id
 				Contact contact=contactDao.findByConPartyNames(order.getPartyNames());
 				if(contact==null){
 					Contact contact2=new Contact();
-					contact2.setConPartyNames(order.getPartyNames());
+					contact2.setConPartyNames(order.getPartyNames());//乙方
 					contactDao.save(contact2);
-					order2.setPartyNamesId(contact2.getId());
+					order2.setPartyNamesId(contact2.getId());//乙方Id
 				}else{
 					order2.setPartyNamesId(contact.getId());
 				}
-				order2.setContractNumber(NumUtils.roundTwo(order.getContractNumber() != null ? order.getContractNumber() : 0));
-				/*order2.setContractPrice(order.getContractPrice());*/
-				order2.setRemarksPrice(order.getRemarksPrice());
-				/*order2.setPrice(order.getPrice());*/
-				/*order2.setAshoreNumber(NumUtils.roundTwo(order.getAshoreNumber() != null ? order.getAshoreNumber() : 0) );*/
-				order2.setOnline(NumUtils.roundTwo(order.getOnline() != null ? order.getOnline() : 0) );
-				order2.setAshoreCheckr(0);
-				/*order2.setAshorePrice(order.getContractPrice());*/
+				order2.setContractNumber(NumUtils.roundTwo(order.getContractNumber() != null ? order.getContractNumber() : 0));//当批合同数量
+				order2.setContractPrice(order.getContractPrice());//当批合同总价
+				order2.setRemarksPrice(order.getRemarksPrice());//预付款备注
+				order2.setPrice(order.getPrice());//手动填写单只价格
+				order2.setAshoreNumber(NumUtils.roundTwo(order.getAshoreNumber() != null ? order.getAshoreNumber() : 0) );//手动填写到岸数量
+				
+				order2.setAshoreCheckr(1);//核对完毕提示(0 未核对 1已核对 )
+				order2.setAshorePrice(order.getContractPrice());//到岸合同价
 				billService.addBill(order2);
 				orders.add(order2);
 				count++;
