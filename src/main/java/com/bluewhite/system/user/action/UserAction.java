@@ -1,7 +1,10 @@
 package com.bluewhite.system.user.action;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +34,7 @@ import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.BankUtil;
 import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.common.utils.ZkemUtils.ZkemSDKUtils;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.system.sys.entity.SysLog;
 import com.bluewhite.system.user.dao.UserContractDao;
@@ -314,15 +318,29 @@ public class UserAction {
 	 */
 	@RequestMapping(value = "/test", method = RequestMethod.GET)
 	@ResponseBody
-	private CommonResponse test(User user) {
-		CommonResponse cr = new CommonResponse();
-		List<User> userList = userService.findAll();
-		userList = userList.stream().filter(User->User.getBankCard1()!=null).collect(Collectors.toList());
-		for(User us : userList){
-			String bankName = BankUtil.getNameOfBank(us.getBankCard1());
-			us.setAscriptionBank1(bankName);
+	private CommonResponse test() {
+		CommonResponse cr = new CommonResponse();	
+		Calendar calendar = Calendar.getInstance();		
+		calendar.setTime(new Date());		
+		calendar.add(Calendar.DAY_OF_MONTH, -1);		
+		Date date = calendar.getTime();
+		ZkemSDKUtils sdk = new ZkemSDKUtils();
+		sdk.initSTA();
+		List<Map<String, Object>> map = null ;
+		List<User> user =null;
+		try{
+			boolean  flag = sdk.connect("192.168.1.204", 4370);
+//			boolean  flag2 = sdk.connect("192.168.1.205", 4370);
+//			boolean  flag3 = sdk.connect("192.168.1.250", 4370);
+//			map = sdk.readLastestLogData(0,date);//读取数据到缓存中
+//			user = sdk.getUserInfo();
+			System.out.println(flag);
+		}catch(Exception e){
+			e.printStackTrace();
 		}
-		userDao.save(userList);
+		sdk.disConnect();
+		sdk.release();
+		cr.setData(map);
 		return cr;
 	}
 	
