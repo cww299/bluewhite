@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
@@ -28,7 +29,9 @@ import com.bluewhite.common.utils.ZkemUtils.ZkemSDKUtils;
 import com.bluewhite.finance.ledger.entity.Bill;
 import com.bluewhite.personnel.attendance.dao.AttendanceDao;
 import com.bluewhite.personnel.attendance.entity.Attendance;
+import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 import com.mysql.fabric.xmlrpc.base.Array;
@@ -242,6 +245,52 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			Date endTimes = DatesUtil.getLastDayOftime(beginTimes);
 			List<Attendance> attendanceList = this.findPageAttendance(attendance, page).getRows();
 			if (attendanceList.size() > 0) {
+				Map<Object, List<Attendance>> mapAttendance = attendanceList.stream().collect(Collectors.groupingBy(Attendance::getUserId,Collectors.toList()));
+				
+				List<Attendance> list = new ArrayList<Attendance>();
+				for(Object ps : mapAttendance.keySet()){
+					//获取每个人当天的考勤记录
+					List<Attendance> attList= mapAttendance.get(ps);
+					//考情记录有三种情况。当一天的考勤记录条数等于2时。为正常的考勤
+					if(attList.size()==2){
+							AttendanceTime attendanceTime = new AttendanceTime();
+							attendanceTime.setUsername(attList.get(0).getUser().getUserName());
+							attendanceTime.setNumber(attList.get(0).getNumber());
+							attendanceTime.setCheckIn(attList.get(0).getTime());
+							attendanceTime.setCheckOut(attList.get(1).getTime());
+							
+							
+							
+//							attendanceTime.setTurnWorkTime();
+							
+						
+					}
+					//当一天的考勤记录条数小于2时。为异常的考勤
+					if(attList.size()<2){
+						for(Attendance attendance1 : attList){
+							AttendanceTime attendanceTime = new AttendanceTime();
+							attendanceTime.setUsername(attList.get(0).getUser().getUserName());
+							attendanceTime.setNumber(attList.get(0).getNumber());
+							attendanceTime.setCheckIn(attList.get(0).getTime());
+							attendanceTime.setCheckOut(attList.get(1).getTime());
+							
+						}
+					}
+					//当一天的考勤记录条数大于2时。为异常的考勤
+					if(attList.size()>2){
+						for(Attendance attendance1 : attList){
+							AttendanceTime attendanceTime = new AttendanceTime();
+							attendanceTime.setUsername(attList.get(0).getUser().getUserName());
+							attendanceTime.setNumber(attList.get(0).getNumber());
+							attendanceTime.setCheckIn(attList.get(0).getTime());
+							attendanceTime.setCheckOut(attList.get(1).getTime());
+							
+						}
+					}
+					
+					
+				}
+		
 				
 				
 				
@@ -251,6 +300,25 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		}
 
 		return null;
+	}
+	
+	
+	/**
+	 * 确认考勤签到时间在设定上班时间之前，
+	 * 
+	 * 确认考勤签出时间在设定上班时间之后，
+	 * 
+	 */
+	
+	private boolean flag (){
+		boolean flag = false;
+		
+		
+		
+		
+		
+		return flag;
+		
 	}
 
 	@Override
