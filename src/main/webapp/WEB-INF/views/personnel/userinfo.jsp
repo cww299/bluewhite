@@ -204,7 +204,7 @@
                               </div>
                                <label class="col-sm-2 control-label">员工编号:</label>
                                  <div class="col-sm-2">
-                                          <input type="text" class="form-control number">
+                                          <input type="text" disabled="disabled" class="form-control number">
                                       </div>
                             <label class="col-sm-2 control-label">户籍地址:</label>
                               <div class="col-sm-2 working">

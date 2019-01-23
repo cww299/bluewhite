@@ -35,9 +35,9 @@ import com.bluewhite.system.user.service.UserService;
  *
  */
 @Controller
-public class AttendanceAction {
+public class AttendancePayAction {
 	
-	private static final Log log = Log.getLog(AttendanceAction.class);
+	private static final Log log = Log.getLog(AttendancePayAction.class);
 	
 		@Autowired
 		private AttendancePayService attendancePayService;

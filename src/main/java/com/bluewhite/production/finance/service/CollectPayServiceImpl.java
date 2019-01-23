@@ -480,7 +480,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			//产生考勤工作时间
 			double sunTime = list.stream().mapToDouble(AttendancePay::getWorkTime).sum();
 			nl.setTime(sunTime);
-			
 			//A工资总和
 			double sumAPay = list.stream().mapToDouble(AttendancePay::getPayNumber).sum();
 			payB.setUserId(nl.getUserId());

@@ -88,7 +88,7 @@ public class User extends BaseEntity<Long> {
 	private String userName;
 	
 	/**
-	 * 员工编号
+	 * 员工编号（考勤机上的编号）
 	 */
 	@Column(name = "number")
 	private String number;
