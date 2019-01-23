@@ -23,6 +23,7 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.ZkemUtils.ZkemSDKUtils;
 import com.bluewhite.finance.ledger.entity.Bill;
 import com.bluewhite.personnel.attendance.dao.AttendanceDao;
@@ -34,13 +35,13 @@ import com.mysql.fabric.xmlrpc.base.Array;
 
 @Service
 public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> implements AttendanceService {
-	
+
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private AttendanceDao dao;
-	
+
 	@PersistenceContext
 	protected EntityManager entityManager;
 
@@ -57,7 +58,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		List<Map<String, Object>> userList = null;
 		if (flag) {
 			userList = sdk.getUserInfo();
-		} 
+		}
 		sdk.disConnect();
 		sdk.release();
 		return userList;
@@ -67,11 +68,11 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 	public int syncAttendanceUser(String address) {
 		int count = 0;
 		List<Map<String, Object>> userMapList = this.getAllUser(address);
-		List<User> userList =  new ArrayList<>();
-		for(Map<String, Object> map  : userMapList){
-			User user  = userService.findByUserName(map.get("name").toString());
-			if(user!=null){
-				if(!map.get("number").toString().equals(user.getNumber())){
+		List<User> userList = new ArrayList<>();
+		for (Map<String, Object> map : userMapList) {
+			User user = userService.findByUserName(map.get("name").toString());
+			if (user != null) {
+				if (!map.get("number").toString().equals(user.getNumber())) {
 					user.setNumber(map.get("number").toString());
 					userList.add(user);
 					count++;
@@ -83,7 +84,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 	}
 
 	@Override
-	public boolean updateUser(String address, String number ,String name, int isPrivilege, boolean enabled) {
+	public boolean updateUser(String address, String number, String name, int isPrivilege, boolean enabled) {
 		ZkemSDKUtils sdk = new ZkemSDKUtils();
 		sdk.initSTA();
 		boolean flag = false;
@@ -93,7 +94,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			throw new ServiceException("考勤机连接失败");
 		}
 		if (flag) {
-			flag = sdk.setUserInfo( number,  name, null,  isPrivilege,  enabled);
+			flag = sdk.setUserInfo(number, name, null, isPrivilege, enabled);
 		}
 		sdk.disConnect();
 		sdk.release();
@@ -135,8 +136,8 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		flag = sdk.readGeneralLogData(0);
 		if (flag) {
 			attendanceList = sdk.getGeneralLogData(0);
-		} 
-		for(Map<String, Object> attendance :attendanceList){
+		}
+		for (Map<String, Object> attendance : attendanceList) {
 			Attendance attendance1 = new Attendance();
 			attendance1.setNumber(attendance.get("EnrollNumber").toString());
 			try {
@@ -146,7 +147,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			}
 			attendance1.setVerifyMode(Integer.parseInt(String.valueOf(attendance.get("VerifyMode"))));
 			User user = userService.findByNumber(attendance.get("EnrollNumber").toString());
-			if(user!=null){
+			if (user != null) {
 				attendance1.setUserId(user.getId());
 				attendanceListAll.add(attendance1);
 			}
@@ -156,23 +157,24 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		sdk.release();
 		return attendanceListAll;
 	}
-	
+
 	/**
 	 * 考勤导入批处理
+	 * 
 	 * @param productList
 	 */
 	private void saveAllProduct(List<Attendance> attendanceListAll) {
 		entityManager.setFlushMode(FlushModeType.COMMIT);
-		 for (int i = 0; i < attendanceListAll.size(); i++){
-			 Attendance attendance = attendanceListAll.get(i);
-			 entityManager.merge(attendance);
-	            if (i % 1000 == 0 && i > 0) {
-	            	entityManager.flush();
-	            	entityManager.clear();
-	            }
-	        }
-		 entityManager.close();
-	    }
+		for (int i = 0; i < attendanceListAll.size(); i++) {
+			Attendance attendance = attendanceListAll.get(i);
+			entityManager.merge(attendance);
+			if (i % 1000 == 0 && i > 0) {
+				entityManager.flush();
+				entityManager.clear();
+			}
+		}
+		entityManager.close();
+	}
 
 	@Override
 	public PageResult<Attendance> findPageAttendance(Attendance param, PageParameter page) {
@@ -182,17 +184,23 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			if (param.getUserId() != null) {
 				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
 			}
-			
-			//按姓名查找
+
+			// 按姓名查找
 			if (!StringUtils.isEmpty(param.getUserName())) {
-				predicate.add(cb.like(root.get("user").get("userName").as(String.class),"%" + param.getUserName() + "%"));
+				predicate.add(
+						cb.like(root.get("user").get("userName").as(String.class), "%" + param.getUserName() + "%"));
 			}
-			//按考勤日期
-			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) &&  !StringUtils.isEmpty(param.getOrderTimeEnd()) ) {
-    			predicate.add(cb.between(root.get("time").as(Date.class),
-    					param.getOrderTimeBegin(),
-    					param.getOrderTimeEnd()));
-    		}
+			
+			// 按部门查找
+			if (!StringUtils.isEmpty(param.getOrgNameId())) {
+				predicate.add(cb.equal(root.get("user").get("orgNameId").as(Long.class),  param.getOrgNameId()));
+			}
+			
+			// 按考勤日期
+			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+				predicate.add(cb.between(root.get("time").as(Date.class), param.getOrderTimeBegin(),
+						param.getOrderTimeEnd()));
+			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
@@ -200,24 +208,70 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		PageResult<Attendance> result = new PageResult<>(pages, page);
 		return result;
 	}
-	
-	
-	public void regEvent (){
+
+	public void regEvent() {
 		ZkemSDKUtils sdk = new ZkemSDKUtils();
 		sdk.initSTA();
-		try{
+		try {
 			System.out.println("考勤机实时事件启动");
 			sdk.connect("192.168.1.204", 4370);
-//			sdk.connect("192.168.1.205", 4370);
-//			sdk.connect("192.168.1.250", 4370);
+			// sdk.connect("192.168.1.205", 4370);
+			// sdk.connect("192.168.1.250", 4370);
 			sdk.regEvent();
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	
 
-	
+	@Override
+	public List<Attendance> findAttendanceTime(Attendance attendance) {
+		PageParameter page = new PageParameter();
+		page.setSize(Integer.MAX_VALUE);
+
+		long size = DatesUtil.getDaySub(attendance.getOrderTimeBegin(), attendance.getOrderTimeEnd());
+		for (int i = 0; i < size; i++) {
+			Date beginTimes = null;
+			if (i != 0) {
+				// 获取下一天的时间
+				beginTimes = DatesUtil.nextDay(attendance.getOrderTimeBegin());
+			} else {
+				// 获取第一天的开始时间
+				beginTimes = attendance.getOrderTimeBegin();
+			}
+			// 获取一天的结束时间
+			Date endTimes = DatesUtil.getLastDayOftime(beginTimes);
+			List<Attendance> attendanceList = this.findPageAttendance(attendance, page).getRows();
+			if (attendanceList.size() > 0) {
+				
+				
+				
+				
+
+			}
+		}
+
+		return null;
+	}
+
+	@Override
+	public List<Map<String, Object>> getAllAttendance(String address) {
+		ZkemSDKUtils sdk = new ZkemSDKUtils();
+		sdk.initSTA();
+		boolean flag = false;
+		try {
+			flag = sdk.connect(address, 4370);
+		} catch (Exception e) {
+			throw new ServiceException("考勤机连接失败");
+		}
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		List<Map<String, Object>> attendanceList = null;
+		flag = sdk.readGeneralLogData(0);
+		if (flag) {
+			attendanceList = sdk.getGeneralLogData(0);
+		}
+		sdk.disConnect();
+		sdk.release();
+		return attendanceList;
+	}
 
 }

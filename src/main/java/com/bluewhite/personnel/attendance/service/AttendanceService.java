@@ -41,7 +41,7 @@ public interface AttendanceService  extends BaseCRUDService<Attendance,Long>{
 	public boolean deleteUser(String address, String number);
 	
 	/**
-	 * 查看考勤机中全部考勤记录
+	 * 同步考勤机中全部考勤记录
 	 * @param address
 	 */
 	public List<Attendance> allAttendance(String address);
@@ -53,5 +53,19 @@ public interface AttendanceService  extends BaseCRUDService<Attendance,Long>{
 	 * @return
 	 */
 	public PageResult<Attendance> findPageAttendance(Attendance attendance, PageParameter page);
+	
+	/**
+	 * 按条件查看考勤工作时长
+	 * @param attendance
+	 * @return
+	 */
+	public List<Attendance> findAttendanceTime(Attendance attendance);
+	
+	/**
+	 * 查看考勤机中全部考勤记录
+	 * @param address
+	 * @return
+	 */
+	public List<Map<String, Object>> getAllAttendance(String address);
 
 }

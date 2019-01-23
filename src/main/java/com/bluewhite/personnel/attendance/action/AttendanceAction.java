@@ -122,8 +122,26 @@ public class AttendanceAction {
 	
 	/***** 考勤记录  *******/
 	
+	
+	
 	/**
-	 * 查看考勤机中全部考勤记录
+	 * 获取考勤机中全部考勤记录
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/personnel/getAllAttendance", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getAllAttendance(HttpServletRequest request, String address) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSON.format(attendanceService.getAllAttendance(address)).toJSON());
+		cr.setMessage("同步成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * 同步考勤机中全部考勤记录
 	 * 
 	 * @param request 请求
 	 * @return cr
@@ -152,6 +170,24 @@ public class AttendanceAction {
 		cr.setMessage("同步成功");
 		return cr;
 	}
+	
+	
+	/**
+	 * 按条件查看考勤工作时长
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/personnel/findAttendanceTime", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse findAttendanceTime(HttpServletRequest request,Attendance attendance) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSON.format(attendanceService.findAttendanceTime(attendance)).toJSON());
+		cr.setMessage("同步成功");
+		return cr;
+	}
+	
+	
 
 
 	/**

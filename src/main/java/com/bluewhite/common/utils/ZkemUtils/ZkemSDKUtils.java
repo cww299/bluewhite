@@ -151,6 +151,7 @@ public class ZkemSDKUtils {
 						+ dwHour.getIntRef() + ":" + dwMinute.getIntRef() + ":" + dwSecond.getIntRef());
 				m.put("VerifyMode", dwVerifyMode.getIntRef());
 				m.put("InOutMode", dwInOutMode.getIntRef());
+				m.put("dwWorkCode", dwWorkCode.getIntRef());
 				strList.add(m);
 			}
 		} while (newresult == true);
