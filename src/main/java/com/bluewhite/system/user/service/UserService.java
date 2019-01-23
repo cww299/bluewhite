@@ -72,6 +72,13 @@ public interface UserService extends BaseCRUDService<User, Long> {
 
 	public void oooxxx();
 
+	/**
+	 * 通过用户编号查找
+	 * @param string
+	 * @return
+	 */
+	public User findByNumber(String number);
+
 	
 	
 	

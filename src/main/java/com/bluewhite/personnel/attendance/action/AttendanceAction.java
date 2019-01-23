@@ -20,9 +20,12 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.ZkemUtils.ZkemSDKUtils;
 import com.bluewhite.finance.tax.entity.Tax;
+import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.service.AttendanceService;
 import com.bluewhite.system.user.entity.User;
+
 
 @Controller
 public class AttendanceAction {
@@ -32,7 +35,11 @@ public class AttendanceAction {
 
 	private ClearCascadeJSON clearCascadeJSON;
 	{
-		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(User.class, "number", "userName");
+		clearCascadeJSON = ClearCascadeJSON
+				.get()
+				.addRetainTerm(Attendance.class, "number", "user","time","inOutMode","verifyMode")
+				.addRetainTerm(User.class, "id", "userName")
+				;
 	}
 
 	/***** 考勤机设置 */
@@ -125,7 +132,47 @@ public class AttendanceAction {
 	@ResponseBody
 	public CommonResponse allAttendance(HttpServletRequest request, String address) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(attendanceService.allAttendance(address));
+		cr.setData(clearCascadeJSON.format(attendanceService.allAttendance(address)).toJSON());
+		cr.setMessage("同步成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * 分页查看考勤
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/personnel/findPageAttendance", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse allAttendance(HttpServletRequest request,PageParameter page,Attendance attendance) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSON.format(attendanceService.findPageAttendance(attendance,page)).toJSON());
+		cr.setMessage("同步成功");
+		return cr;
+	}
+
+
+	/**
+	 * 启动考勤机实时监控
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/personnel/regEvent", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse regEvent(HttpServletRequest request) {
+		CommonResponse cr = new CommonResponse();
+		ZkemSDKUtils sdk = new ZkemSDKUtils();
+		sdk.initSTA();
+		try{
+			boolean  flag = sdk.connect("192.168.1.204", 4370);
+			System.out.println(flag);
+			sdk.regEvent();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		cr.setMessage("同步成功");
 		return cr;
 	}

@@ -63,10 +63,10 @@ public class ZkemSDKUtils {
 	 * 启动事件监听
 	 */
 	public static void regEvent() {
+		System.out.println("启动----------");
 		zkem.invoke("RegEvent", new Variant(1), new Variant(1));
 		zkem.invoke("ReadRTLog", new Variant(1));
 		zkem.invoke("GetRTLog", new Variant(1));
-
 		new DispatchEvents(zkem.getObject(), new SensorEvents());
 		new STA().doMessagePump();
 	}
@@ -117,7 +117,8 @@ public class ZkemSDKUtils {
 	 * 获取缓存中的考勤数据。配合readGeneralLogData / readLastestLogData使用。
 	 * 
 	 * @return 返回的map中，包含以下键值： "EnrollNumber" 人员编号 "Time" 考勤时间串，格式: yyyy-MM-dd
-	 *         HH:mm:ss "VerifyMode" 验证方式：0为密码验证，1为指纹验证，2为卡验 ... "InOutMode" 默认
+	 *         HH:mm:ss "VerifyMode" 验证方式：0 为密码验证，1 为指纹验证，2 为卡验证 ,15为 面部验证
+	 *         "InOutMode" 默认
 	 *         0—Check-In 1—Check-Out 2—Break-O 3—Break-In 4—OT-In 5—OT-Out
 	 */
 	public List<Map<String, Object>> getGeneralLogData(int machineNum) {

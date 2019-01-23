@@ -42,5 +42,12 @@ public interface UserDao extends BaseRepository<User, Long> {
 	 */
 	public List<User> findByIdIn(List<Long> ids);
 	
+	/**
+	 * 通过用户编号查找用户
+	 * @param number
+	 * @return
+	 */
+	public User findByNumber(String number);
+	
 
 }

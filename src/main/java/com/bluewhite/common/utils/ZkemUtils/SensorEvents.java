@@ -1,8 +1,25 @@
 package com.bluewhite.common.utils.ZkemUtils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.bluewhite.common.ServiceException;
+import com.bluewhite.personnel.attendance.dao.AttendanceDao;
+import com.bluewhite.personnel.attendance.entity.Attendance;
+import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.service.UserService;
 import com.jacob.com.Variant;
 
 public class SensorEvents {
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private AttendanceDao dao;
+	
 	
 	public void OnConnected(Variant[] arge){
 		System.out.println("当成功连接机器时触发该事件，无返回值====");
@@ -17,17 +34,25 @@ public class SensorEvents {
 	}
 
 	public void OnAttTransactionEx(Variant[] arge){
-		System.out.println("id:"+arge[0]); 
-		System.out.println("是否有效:0有效 1无效"+arge[1]);
-		System.out.println("考勤状态:0 上班 1下班 2外出 3外出返回 4 加班签到 5 加班签退...."+arge[2]);
-		System.out.println("验证方式 0:密码  1;指纹 15:刷脸认证"+arge[3]);
-		System.out.println("验证时间"+arge[4]+"-"+arge[5]+"-"+arge[6]+"-"+arge[7]+":"+arge[8]+":"+arge[9]+" "+arge[10]);
-		/*for (int i = 0; i < arge.length; i++) {
-			System.out.println(arge[i]);
-
-		}*/
-		//System.out.println(arge.toString());
-		System.out.println("当验证通过时触发该事件====**"+arge);
+		Attendance attendance = new Attendance(); 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		//验证时间
+		String time = arge[4]+"-"+arge[5]+"-"+arge[6]+"-"+arge[7]+":"+arge[8]+":"+arge[9]+" "+arge[10];
+		String enrollNumber = arge[0].getStringRef();
+		User user = userService.findByNumber(enrollNumber);
+		attendance.setUserId(user.getId());
+		attendance.setNumber(String.valueOf(arge[0]));
+		try {
+			attendance.setTime(sdf.parse(time));
+		} catch (ParseException e) {
+			throw new ServiceException("时间转换异常");
+		}
+		//考勤状态
+		attendance.setInOutMode(Integer.parseInt(String.valueOf(arge[2])));
+		//验证方式
+		attendance.setVerifyMode(Integer.parseInt(String.valueOf(arge[3])));
+		dao.save(attendance);
+		System.out.println("当验证通过时触发该事件====签到成功");
 	}
 
 	public void OnEnrollFingerEx(Variant[] arge){

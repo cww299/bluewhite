@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.bluewhite.base.BaseCRUDService;
+import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.finance.ledger.entity.Bill;
 import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.system.user.entity.User;
 
@@ -41,6 +44,14 @@ public interface AttendanceService  extends BaseCRUDService<Attendance,Long>{
 	 * 查看考勤机中全部考勤记录
 	 * @param address
 	 */
-	public List<Map<String, Object>> allAttendance(String address);
+	public List<Attendance> allAttendance(String address);
+	
+	/**
+	 * 分页查看考勤记录
+	 * @param attendance
+	 * @param page
+	 * @return
+	 */
+	public PageResult<Attendance> findPageAttendance(Attendance attendance, PageParameter page);
 
 }
