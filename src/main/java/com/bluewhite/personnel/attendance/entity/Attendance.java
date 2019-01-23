@@ -52,7 +52,7 @@ public class Attendance extends BaseEntity<Long> {
 	
 	/**
 	 * 
-	 * 签到状态   0—Check-In 1—Check-Out 2—Break-O 3—Break-In 4—OT-In 5—OT-Out
+	 * 签到状态  0 上班 1下班 2外出 3外出返回 4 加班签到 5 加班签退
 	 */
 	@Column(name = "inout_mode")
 	private Integer inOutMode;
@@ -80,9 +80,23 @@ public class Attendance extends BaseEntity<Long> {
 	@Transient
 	private Date orderTimeEnd;
 	
+	/**
+	 * 查询字段（部门）
+	 */
+	@Transient
+	private Long orgNameId;
 	
 	
 	
+	
+
+	public Long getOrgNameId() {
+		return orgNameId;
+	}
+
+	public void setOrgNameId(Long orgNameId) {
+		this.orgNameId = orgNameId;
+	}
 
 	public String getUserName() {
 		return userName;
