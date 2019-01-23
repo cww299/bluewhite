@@ -196,6 +196,7 @@
 									  		userName:$('#name').val(),
 								  			orderTimeBegin:$("#startTime").val(),
 								  			orderTimeEnd:$("#endTime").val(),
+								  			orgNameId:$(".selectgroupChange").val(),
 								  	}
 						        
 						            self.loadPagination(_data);
