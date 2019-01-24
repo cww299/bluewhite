@@ -173,6 +173,20 @@ public class DatesUtil {
         return day;
     }
     
+    
+	/**
+     * <li>功能描述：时间相减得到时间（小时）
+     * @param beginDateStr
+     * @param endDateStr
+     * @return
+     * long 
+     */
+    public static Double getTimeHour(Date beginDate,Date endDate){
+    	Long time =  (endDate.getTime()-beginDate.getTime())/60;
+    	Double day = time.doubleValue();    
+        return day;
+    }
+    
     /**
      * 获取某个日期的下一天
      * @param beginDate
@@ -250,6 +264,24 @@ public class DatesUtil {
            return 0;
         }
     }
+    
+    /**
+     * 日期转星期
+     * 
+     * @param datetime
+     * @return
+     */
+    public static String dateToWeek(Date datetime) {
+        String[] weekDays = { "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };
+        Calendar cal = Calendar.getInstance(); // 获得一个日历
+        cal.setTime(datetime);
+        int w = cal.get(Calendar.DAY_OF_WEEK) - 1; // 指示一个星期中的某天。
+        if (w < 0)
+            w = 0;
+        return weekDays[w];
+    }
+
+  
     
     
    public static Date getdate( Date date ,int num){

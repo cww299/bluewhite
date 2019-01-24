@@ -93,7 +93,7 @@ public class Attendance extends BaseEntity<Long> {
 	private Date workTimeBegin;
 	
 	/**
-	 *  工作间隔结束时间（下班）
+	 * 工作间隔结束时间（下班）
 	 */
 	@Transient
 	private Date workTimeEnd;
