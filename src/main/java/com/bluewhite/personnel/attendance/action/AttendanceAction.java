@@ -182,7 +182,7 @@ public class AttendanceAction {
 	@ResponseBody
 	public CommonResponse findAttendanceTime(HttpServletRequest request,Attendance attendance) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSON.format(attendanceService.findAttendanceTime(attendance)).toJSON());
+		cr.setData(attendanceService.findAttendanceTime(attendance));
 		cr.setMessage("同步成功");
 		return cr;
 	}
