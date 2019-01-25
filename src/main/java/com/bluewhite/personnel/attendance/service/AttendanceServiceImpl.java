@@ -25,6 +25,7 @@ import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.ZkemUtils.ZkemSDKUtils;
 import com.bluewhite.finance.ledger.entity.Bill;
 import com.bluewhite.personnel.attendance.dao.AttendanceDao;
@@ -193,12 +194,12 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 				predicate.add(
 						cb.like(root.get("user").get("userName").as(String.class), "%" + param.getUserName() + "%"));
 			}
-			
+
 			// 按部门查找
 			if (!StringUtils.isEmpty(param.getOrgNameId())) {
-				predicate.add(cb.equal(root.get("user").get("orgNameId").as(Long.class),  param.getOrgNameId()));
+				predicate.add(cb.equal(root.get("user").get("orgNameId").as(Long.class), param.getOrgNameId()));
 			}
-			
+
 			// 按考勤日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
 				predicate.add(cb.between(root.get("time").as(Date.class), param.getOrderTimeBegin(),
@@ -227,11 +228,11 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 	}
 
 	@Override
-	public List<Attendance> findAttendanceTime(Attendance attendance) {
+	public List<AttendanceTime> findAttendanceTime(Attendance attendance) {
 		PageParameter page = new PageParameter();
 		page.setSize(Integer.MAX_VALUE);
-
 		long size = DatesUtil.getDaySub(attendance.getOrderTimeBegin(), attendance.getOrderTimeEnd());
+		List<AttendanceTime> attendanceTimeList = new ArrayList<>();
 		for (int i = 0; i < size; i++) {
 			Date beginTimes = null;
 			if (i != 0) {
@@ -245,81 +246,54 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			Date endTimes = DatesUtil.getLastDayOftime(beginTimes);
 			List<Attendance> attendanceList = this.findPageAttendance(attendance, page).getRows();
 			if (attendanceList.size() > 0) {
-				Map<Object, List<Attendance>> mapAttendance = attendanceList.stream().collect(Collectors.groupingBy(Attendance::getUserId,Collectors.toList()));
-				
-				List<Attendance> list = new ArrayList<Attendance>();
-				for(Object ps : mapAttendance.keySet()){
-					//获取每个人当天的考勤记录
-					List<Attendance> attList= mapAttendance.get(ps);
-					//考情记录有三种情况。当一天的考勤记录条数等于2时。为正常的考勤
-					if(attList.size()==2){
-							AttendanceTime attendanceTime = new AttendanceTime();
-							attendanceTime.setUsername(attList.get(0).getUser().getUserName());
-							attendanceTime.setNumber(attList.get(0).getNumber());
-							attendanceTime.setCheckIn(attList.get(0).getTime());
-							attendanceTime.setCheckOut(attList.get(1).getTime());
-							
-							
-							
-//							attendanceTime.setTurnWorkTime();
-							
-						
-					}
-					//当一天的考勤记录条数小于2时。为异常的考勤
-					if(attList.size()<2){
-						for(Attendance attendance1 : attList){
-							AttendanceTime attendanceTime = new AttendanceTime();
-							attendanceTime.setUsername(attList.get(0).getUser().getUserName());
-							attendanceTime.setNumber(attList.get(0).getNumber());
-							attendanceTime.setCheckIn(attList.get(0).getTime());
-							attendanceTime.setCheckOut(attList.get(1).getTime());
-							
-						}
-					}
-					//当一天的考勤记录条数大于2时。为异常的考勤
-					if(attList.size()>2){
-						for(Attendance attendance1 : attList){
-							AttendanceTime attendanceTime = new AttendanceTime();
-							attendanceTime.setUsername(attList.get(0).getUser().getUserName());
-							attendanceTime.setNumber(attList.get(0).getNumber());
-							attendanceTime.setCheckIn(attList.get(0).getTime());
-							attendanceTime.setCheckOut(attList.get(1).getTime());
-							
-						}
-					}
-					
-					
-				}
-		
-				
-				
-				
-				
+				Map<Object, List<Attendance>> mapAttendance = attendanceList.stream()
+						.collect(Collectors.groupingBy(Attendance::getUserId, Collectors.toList()));
 
+				List<Attendance> list = new ArrayList<Attendance>();
+				for (Object ps : mapAttendance.keySet()) {
+					// 获取每个人当天的考勤记录
+					List<Attendance> attList = mapAttendance.get(ps);
+					AttendanceTime attendanceTime = new AttendanceTime();
+					attendanceTime.setUsername(attList.get(0).getUser().getUserName());
+					attendanceTime.setNumber(attList.get(0).getNumber());
+					attendanceTime.setWeek(DatesUtil.dateToWeek(attList.get(0).getTime()));
+					// 考情记录有三种情况。当一天的考勤记录条数等于大于2时,为正常的考勤
+					// 大于2时，取集合中的最后一条数据作为考勤记录 
+					if (attList.size() >= 2) {
+						if (attList.get(0).getTime().before(attList.get(attList.size() - 1).getTime())) {
+							// 上班
+							attendanceTime.setCheckIn(attList.get(0).getTime());
+							// 下班
+							attendanceTime.setCheckOut(attList.get(attList.size() - 1).getTime());
+						} else {
+							// 上班
+							attendanceTime.setCheckIn(attList.get(attList.size() - 1).getTime());
+							// 下班
+							attendanceTime.setCheckOut(attList.get(0).getTime());
+						}
+						// 出勤时长
+						attendanceTime.setTurnWorkTime(NumUtils.mul(
+								DatesUtil.getTimeHour(attendanceTime.getCheckOut(), attendanceTime.getCheckIn()),
+								attendance.getRestTime()));
+						// 加班时间
+						if (attendanceTime.getCheckOut().after(attendance.getWorkTimeEnd())) {
+							attendanceTime.setOvertime(
+									DatesUtil.getTimeHour(attendanceTime.getCheckOut(), attendance.getWorkTimeEnd()));
+						}
+					}
+					// 当一天的考勤记录条数小于2时。为异常的考勤
+					if (attList.size() < 2) {
+						// 上班
+						attendanceTime.setCheckIn(attList.get(0).getTime());
+					}
+					attendanceTimeList.add(attendanceTime);
+				}
 			}
 		}
-
-		return null;
+		return attendanceTimeList;
 	}
 	
 	
-	/**
-	 * 确认考勤签到时间在设定上班时间之前，
-	 * 
-	 * 确认考勤签出时间在设定上班时间之后，
-	 * 
-	 */
-	
-	private boolean flag (){
-		boolean flag = false;
-		
-		
-		
-		
-		
-		return flag;
-		
-	}
 
 	@Override
 	public List<Map<String, Object>> getAllAttendance(String address) {

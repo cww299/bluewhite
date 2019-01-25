@@ -6,9 +6,8 @@ import java.util.Map;
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.finance.ledger.entity.Bill;
 import com.bluewhite.personnel.attendance.entity.Attendance;
-import com.bluewhite.system.user.entity.User;
+import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 
 
 public interface AttendanceService  extends BaseCRUDService<Attendance,Long>{
@@ -59,7 +58,7 @@ public interface AttendanceService  extends BaseCRUDService<Attendance,Long>{
 	 * @param attendance
 	 * @return
 	 */
-	public List<Attendance> findAttendanceTime(Attendance attendance);
+	public List<AttendanceTime> findAttendanceTime(Attendance attendance);
 	
 	/**
 	 * 查看考勤机中全部考勤记录
