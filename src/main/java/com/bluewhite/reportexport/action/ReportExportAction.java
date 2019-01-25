@@ -47,6 +47,9 @@ import com.bluewhite.finance.attendance.service.AttendancePayService;
 import com.bluewhite.finance.ledger.dao.OrderDao;
 import com.bluewhite.finance.ledger.entity.Order;
 import com.bluewhite.finance.ledger.service.OrderService;
+import com.bluewhite.personnel.attendance.entity.Attendance;
+import com.bluewhite.personnel.attendance.entity.AttendanceTime;
+import com.bluewhite.personnel.attendance.service.AttendanceService;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.BaseOneTime;
 import com.bluewhite.product.primecostbasedata.entity.BaseThree;
@@ -101,6 +104,9 @@ public class ReportExportAction {
 	
 	@Autowired
 	private AttendancePayService attendancePayService;
+	
+	@Autowired
+	private AttendanceService attendanceService;
 	
 	/**
 	 * 基础产品导入                          
@@ -791,22 +797,230 @@ public class ReportExportAction {
 	@ResponseBody
 	public CommonResponse importOrder(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request) throws Exception{
 		CommonResponse cr = new CommonResponse();
-//		try {
-				List<OrderPoi> excelProduct = new ArrayList<OrderPoi>();
-				InputStream in = file.getInputStream();
-				String filename = file.getOriginalFilename();
-				// 创建excel工具类
-				Excelutil<OrderPoi> util = new Excelutil<OrderPoi>(OrderPoi.class);
-				excelProduct = util.importExcel(filename, in);// 导入
-				int count = reportExportService.importOrderExcel(excelProduct);
-				if(count > 0){
-					cr.setMessage("成功导入"+count+"条数据");
-				}
-//		} catch (Exception e) {
-//			cr.setMessage("导入失败");
-//		}
+		List<OrderPoi> excelProduct = new ArrayList<OrderPoi>();
+		InputStream in = file.getInputStream();
+		String filename = file.getOriginalFilename();
+		// 创建excel工具类
+		Excelutil<OrderPoi> util = new Excelutil<OrderPoi>(OrderPoi.class);
+		excelProduct = util.importExcel(filename, in);// 导入
+		int count = reportExportService.importOrderExcel(excelProduct);
+		if(count > 0){
+			cr.setMessage("成功导入"+count+"条数据");
+		}
 		return cr;
 	}
+	
+	
+	
+	
+	/**
+	 * 人事导出考勤
+	 * @author zhangliang
+	 */
+	@RequestMapping("/importExcel/personnel/DownAttendance")
+	public void DownPersonnelAttendance(HttpServletRequest request,HttpServletResponse response, Attendance attendance){
+		response.setContentType("octets/stream");
+	    response.addHeader("Content-Disposition", "attachment;filename=attendancePay.xlsx");
+	    
+	    
+	   Long size =  DatesUtil.getDaySub(attendance.getOrderTimeBegin(), attendance.getOrderTimeEnd());
+	    // 声明String数组，并初始化元素（表头名称）
+       //第一行表头字段，合并单元格时字段跨几列就将该字段重复几次
+	   String excelHeader0String = ""+","+""+","+""+","+"日期"; 
+	   //  “0,2,0,0”  ===>  “起始行，截止行，起始列，截止列”
+	   String headnum0String = "0,0,0,0" +"."+ "0,0,1,1"+"."+ "0,0,2,2"+"."+"0,0,3,3";
+	   
+	   //第二行表头字段，合并单元格时字段跨几列就将该字段重复几次
+	   String excelHeader1String = ""+","+""+","+""+","+"星期"; 
+	   //  “0,2,0,0”  ===>  “起始行，截止行，起始列，截止列”
+	   String headnum1String = "1,1,0,0" +"."+ "1,1,1,1"+"."+ "1,1,2,2"+"."+"1,1,3,3";
+	   
+	   //第三行表头字段，合并单元格时字段跨几列就将该字段重复几次
+	   String excelHeader2String = "该人员所在部"+","+"姓名"+","+"约定正常工作时间保底小时工资"+","+"约定加班小时工资"; 
+	   
+	   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
+	   int count = 3;
+	   int sount = 3;
+	   Date starTime = attendance.getOrderTimeBegin();
+		for(int i=0 ; i<size ; i++){
+			count++;
+			sount++;
+			Date beginTimes = null;
+			if(i!=0){
+				//获取下一天的时间
+				beginTimes = DatesUtil.nextDay(starTime);
+			}else{
+				beginTimes = starTime;
+			}
+			 
+			String week =DatesUtil.JudgeWeek(beginTimes);
+			String work = "出勤,加班,缺勤";
+//			(0,0,4,6) (0,0,7,9)
+			String headnum = "0,0,"+count+","+(++count+1);
+			String headnum1 = "1,1,"+sount+","+(++sount+1);
+			excelHeader0String = excelHeader0String+","+sdf.format(beginTimes);
+			headnum0String = headnum0String +"."+ headnum;
+			excelHeader1String = excelHeader1String+","+week;
+			headnum1String = headnum1String +"."+ headnum1;
+			excelHeader2String = excelHeader2String +","+work;
+			count++;
+			sount++;
+			starTime = beginTimes;
+		}
+		
+		String[] excelHeader0 = null;
+		String[] headnum0  = null;
+		String[] excelHeader1 = null;
+		String[] headnum1  = null;
+		String[] excelHeader2 = null;
+		if(!StringUtils.isEmpty(excelHeader0String) && !StringUtils.isEmpty(headnum0String)){
+			excelHeader0 = excelHeader0String.split(",");
+			headnum0 = headnum0String.split("\\.");
+			excelHeader1 = excelHeader1String.split(",");
+			headnum1 = headnum1String.split("\\.");
+			excelHeader2 = excelHeader2String.split(",");
+		}
+	    
+	    // 第一步，创建一个webbook，对应一个Excel文件  
+        XSSFWorkbook wb = new XSSFWorkbook();  
+        // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet  
+        XSSFSheet sheet = wb.createSheet("考勤报表"); 
+        sheet.setDefaultColumnWidth(10);
+        // 在sheet中添加表头第0行
+        XSSFRow row = sheet.createRow(0);
+        int j = 0;
+        for (int i = 0; i < excelHeader0.length; i++) {
+        	if(i>4){
+        		j=j+2;
+        	}
+        	int num = i>4 ? (i+j) : i;
+            row.createCell(num).setCellValue(excelHeader0[i]);
+        }
+
+        // 动态合并单元格
+        for (int i = 0; i < headnum0.length; i++) {
+            String[] temp = headnum0[i].split(",");
+            Integer startrow = Integer.parseInt(temp[0]);
+            Integer overrow = Integer.parseInt(temp[1]);
+            Integer startcol = Integer.parseInt(temp[2]);
+            Integer overcol = Integer.parseInt(temp[3]);
+            if (!(startrow.equals(overrow) && startcol.equals(overcol))) {  
+                sheet.addMergedRegion(new CellRangeAddress(startrow, overrow, startcol, overcol));  
+           }  
+        }
+        
+        // 第二行表头
+        row = sheet.createRow(1);
+        j = 0;
+        for (int i = 0; i < excelHeader1.length; i++) {
+        	if(i>4){
+        		j=j+2;
+        	}
+        	int num = i>4 ? (i+j) : i;
+            row.createCell(num).setCellValue(excelHeader1[i]);
+        }
+
+        // 动态合并单元格
+        for (int i = 0; i < headnum1.length; i++) {
+            String[] temp = headnum1[i].split(",");
+            Integer startrow = Integer.parseInt(temp[0]);
+            Integer overrow = Integer.parseInt(temp[1]);
+            Integer startcol = Integer.parseInt(temp[2]);
+            Integer overcol = Integer.parseInt(temp[3]);
+            if (!(startrow.equals(overrow) && startcol.equals(overcol))) {  
+                sheet.addMergedRegion(new CellRangeAddress(startrow, overrow, startcol, overcol));  
+           } 
+        }
+        
+        
+        // 第三行表头
+        row = sheet.createRow(2);
+        for (int i = 0; i < excelHeader2.length; i++) {
+            row.createCell(i).setCellValue(excelHeader2[i]);
+        }
+        
+        
+       //填充数据
+        //一整个月的考勤查询出来
+       List<AttendanceTime> attendanceList = attendanceService.findAttendanceTime(attendance);     //按人员分组
+       Map<String, List<AttendanceTime>> mapAttendancePay = attendanceList.stream().filter(AttendanceTime->AttendanceTime.getNumber()!=null).collect(Collectors.groupingBy(AttendanceTime::getNumber,Collectors.toList()));
+		//循环出一整个月的每个人的人员考勤
+       int l = 3;
+		for(Object ps : mapAttendancePay.keySet()){
+			List<AttendanceTime> psList= mapAttendancePay.get(ps);
+			row = sheet.createRow(l);
+			row.createCell(0).setCellValue(attendance.getOrgName()); 
+			row.createCell(1).setCellValue(psList.get(0).getUsername()); 
+			row.createCell(2).setCellValue(""); 
+			row.createCell(3).setCellValue(""); 
+			int k = 4; 
+			for (int i = 0; i < psList.size(); i++){
+            	row.createCell(k).setCellValue(psList.get(i).getTurnWorkTime()!=null ? psList.get(i).getTurnWorkTime() : 0.0);
+            	row.createCell(++k).setCellValue(psList.get(i).getOvertime()!=null ? psList.get(i).getOvertime() : 0.0);
+            	row.createCell(++k).setCellValue(psList.get(i).getDutytime()!=null ? psList.get(i).getDutytime() : 0.0);
+            	k++;
+	        	}
+			l++;
+		}
+         
+    try {	
+    	OutputStream outputStream=response.getOutputStream();
+    	wb.write(outputStream);
+    	outputStream.flush();
+    	outputStream.close(); 
+  		} catch (IOException e1) {
+  			e1.printStackTrace();
+  		}
+}
+	
+	
+	
+	/**
+	 * 人事导出打卡记录
+	 * @author zhangliang
+	 */
+	@RequestMapping("/importExcel/personnel/DownAttendanceSign")
+	public void DownAttendanceSign(HttpServletRequest request,HttpServletResponse response,Attendance attendance){
+		response.setContentType("octets/stream");
+	    response.addHeader("Content-Disposition", "attachment;filename=Attendance.xlsx");
+	    // 第一步，创建一个webbook，对应一个Excel文件  
+        XSSFWorkbook wb = new XSSFWorkbook();  
+        // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet  
+        XSSFSheet sheet = wb.createSheet("签到表"); 
+        //设置表格默认宽度为15个字节
+    	sheet.setDefaultColumnWidth(15);
+        // 在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short  
+        XSSFRow row = sheet.createRow(0);
+        // 第四步，创建单元格，并设置值表头 设置表头居中  
+        XSSFCellStyle style = wb.createCellStyle();  
+        XSSFCell cell = row.createCell(0);  
+        cell.setCellValue("员工编号");  
+        cell.setCellStyle(style);  
+        cell = row.createCell(1);  
+        cell.setCellValue("员工姓名");  
+        cell.setCellStyle(style);  
+        cell = row.createCell(2);  
+        cell.setCellValue("签到时间");  
+        cell.setCellStyle(style); 
+        List<Attendance> attendanceList = attendanceService.findPageAttendance(attendance,new PageParameter(0,Integer.MAX_VALUE)).getRows();
+        SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+    	for (int i = 0; i < attendanceList.size(); i++)  
+        {  
+            row = sheet.createRow( i + 1);  
+            // 第四步，创建单元格，并设置值  
+            row.createCell(0).setCellValue(attendanceList.get(i).getNumber());  
+            row.createCell(1).setCellValue(attendanceList.get(i).getUser().getUserName());
+            row.createCell(2).setCellValue(sdf.format(attendanceList.get(i).getTime()));  
+        } 
+    try {	
+    	OutputStream outputStream=response.getOutputStream();
+    	wb.write(outputStream);
+    	outputStream.flush();
+    	outputStream.close(); 
+  		} catch (IOException e1) {
+  			e1.printStackTrace();
+  		}
+}
 	
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {

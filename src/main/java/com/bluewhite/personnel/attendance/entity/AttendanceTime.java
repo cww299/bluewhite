@@ -39,6 +39,12 @@ public class AttendanceTime {
 	
 	/**
 	 * 
+	 * 工作时长
+	 */
+	private Double workTime;
+	
+	/**
+	 * 
 	 * 出勤时长
 	 */
 	private Double turnWorkTime;
@@ -50,10 +56,34 @@ public class AttendanceTime {
 	private Double overtime;
 	
 	/**
+	 * 缺勤时长
+	 * 
+	 */
+	private Double dutytime;
+	
+	/**
 	 * 星期
 	 * 
 	 */
 	private String week;
+	
+	
+
+	public Double getDutytime() {
+		return dutytime;
+	}
+
+	public void setDutytime(Double dutytime) {
+		this.dutytime = dutytime;
+	}
+
+	public Double getWorkTime() {
+		return workTime;
+	}
+
+	public void setWorkTime(Double workTime) {
+		this.workTime = workTime;
+	}
 
 	public Date getTime() {
 		return time;

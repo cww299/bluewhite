@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
@@ -7,329 +6,252 @@
 <!--<![endif]-->
 
 <head>
-     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>考勤总汇</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-   
-   
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>考勤总汇</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
 
 <body>
-    <section id="main-wrapper" class="theme-default">
-        
-        <%@include file="../decorator/leftbar.jsp"%> 
-        
-        <!--main content start-->
-        
-           <section id="main-content" class="animated fadeInUp">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">总汇信息</h3>
-                                <div class="actions pull-right">
-                                    <i class="fa fa-expand"></i>
-                                    <i class="fa fa-chevron-down"></i>
-                                </div>
-                            </div>
-                            <div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-12 col-sm-12  col-md-12">
-				<form class="form-search" >
-					<div class="row">
-						<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group"> 
-								<table><tr>
-								<td>员工姓名:</td><td><input type="text"  id="name" class="form-control name" /></td>
-								<td>&nbsp&nbsp</td>
-								<td>员工姓名:</td><td id="department"></td>
-								<td>&nbsp&nbsp</td>
-								<td>开始:</td>
-								<td>
-								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
-								</td>
-								<td>&nbsp&nbsp</td>
-								<td>结束:</td>
-								<td>
-									<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
-             						onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-								</td>
-								<td>&nbsp&nbsp</td>
-								<td>工作间隔开始:</td>
-								<td>
-								<input id="startTime1" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
-								</td>
-								<td>&nbsp&nbsp</td>
-								<td>工作间隔结束:</td>
-								<td>
-									<input id="endTime2" placeholder="请输入结束时间" class="form-control laydate-icon"
-             						onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-								</td>
-								<td>&nbsp&nbsp</td>
-								<td>休息时长:</td><td><input type="text"  id="restTime" class="form-control name" /></td>
-								</tr>
-								</table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-default btn-square btn-sm btn-3d  searchtask">
-										查&nbsp找
-									</button>
-								</span>
+
+	<section id="main-wrapper" class="theme-default">
+		<%@include file="../decorator/leftbar.jsp"%>
+		<!--main content start-->
+		<section id="main-content" class="animated fadeInUp">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">总汇信息</h3>
+							<div class="actions pull-right">
+								<i class="fa fa-expand"></i>
+								<i class="fa fa-chevron-down"></i>
 							</div>
 						</div>
+						<div class="row" style="height: 30px; margin: 15px 0 10px">
+							<div class="col-xs-12 col-sm-12  col-md-12">
+								<form class="form-search">
+									<div class="row">
+										<div class="col-xs-12 col-sm-12 col-md-12">
+											<div class="input-group">
+												<table>
+													<tr>
+														<td>员工姓名:</td>
+														<td>
+															<input type="text" id="name" class="form-control name" />
+														</td>
+														<td>&nbsp&nbsp</td>
+														<td>员工部门:</td>
+														<td id="department"></td>
+														<td>&nbsp&nbsp</td>
+														<td>签入签出时间:</td>
+														<td>
+															<input id="startTime" placeholder="请输入签到区间" class="form-control laydate-icon">
+														</td>
+														<td>&nbsp&nbsp</td>
+
+														<td>上班下班时间:</td>
+														<td>
+															<input id="startTime1" placeholder="请输入上班下班区间" class="form-control laydate-icon">
+														</td>
+
+														<td>&nbsp&nbsp</td>
+														<td>休息时长:</td>
+														<td>
+															<input type="text" id="restTime" class="form-control name" />
+														</td>
+													</tr>
+												</table>
+												<span class="input-group-btn">
+													<button type="button" class="btn btn-default btn-square btn-sm btn-3d  searchAtt">查&nbsp找</button>
+												</span>
+												&nbsp
+												<span class="input-group-btn">
+													<button type="button" id="export" class="btn btn-success btn-sm btn-3d pull-right">导出考勤</button>
+												</span>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="panel-body">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th class="text-center">员工考勤日期</th>
+										<th class="text-center">星期</th>
+										<th class="text-center">员工编号</th>
+										<th class="text-center">员工姓名</th>
+										<th class="text-center">上班签到时间</th>
+										<th class="text-center">下班签到时间</th>
+										<th class="text-center">出勤时长</th>
+										<th class="text-center">加班时长</th>
+										<th class="text-center">缺勤时长</th>
+									</tr>
+								</thead>
+								<tbody id="tablecontent">
+
+								</tbody>
+							</table>
+						</div>
 					</div>
-				</form>
+				</div>
 			</div>
-		</div>
-                            <div class="panel-body">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th class="text-center">员工姓名</th>
-                                        	<th class="text-center">员工编号</th>
-                                            <th class="text-center">员工考勤日期</th>
-                                            <th class="text-center">上班签到时间</th>
-                                            <th class="text-center">下班签到时间</th>
-                                            <th class="text-center">出勤时长</th>
-                                            <th class="text-center">加班时长</th>
-                                            <th class="text-center">星期</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablecontent">
-                                        
-                                    </tbody>
-                                </table>
-                                <div id="pager" class="pull-right">
-                                
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </section>
+		</section>
+	</section>
 
-    </section>
-    
-   
-   
-   <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
-    <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
-    <script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
-    <script src="${ctx }/static/plugins/pace/pace.min.js"></script>
-    <script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-    <script src="${ctx }/static/js/src/app.js"></script>
-     <script src="${ctx }/static/js/laypage/laypage.js"></script> 
-    <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
-    <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-    <script src="${ctx }/static/js/vendor/typeahead.js"></script>
-    
-    <script>
-   jQuery(function($){
-   	var Login = function(){
-			var self = this;
-			//表单jsonArray
-			//初始化js
-			var _cache;
-			this.setCache = function(cache){
-		  		_cache=cache;
-		  	}
-		  	this.getCache = function(){
-		  		return _cache;
-		  	}
-		  	this.setIndex = function(index){
-		  		_index=index;
-		  	}
-		  	
-		  	this.getIndex = function(){
-		  		return _index;
-		  	}
-		  	this.setName = function(name){
-		  		_name=name;
-		  	}
-		  	this.getName = function(){
-		  		return _name;
-		  	}
-			 var data={
-						page:1,
-				  		size:13,	
-				} 
-			this.init = function(){
-				
-				//注册绑定事件
-				self.events();
-				self.loadPagination(data);
-			}
-			//加载分页
-			  this.loadPagination = function(data){
-			    var index;
-			    var html = '';
-			    $.ajax({
-				      url:"${ctx}/personnel/findAttendanceTime",
-				      data:data,
-				      type:"GET",
-				      beforeSend:function(){
-					 	  index = layer.load(1, {
-						  shade: [0.1,'#fff'] //0.1透明度的白色背景
-						  });
-					  }, 
-		      		  success: function (result) {
-		      			 $(result.data.rows).each(function(i,o){
-		      				html +='<tr>'
-		      				+'<td class="text-center edit name">'+o.userName+'</td>'
-		      				+'<td class="text-center">'+o.number+'</td>'
-		      				+'<td class="text-center">'+o.time+'</td>'
-		      				+'<td class="text-center">'+o.checkIn+'</td>'
-		      				+'<td class="text-center">'+o.checkOut+'</td>'
-		      				+'<td class="text-center">'+o.turnWorkTime+'</td>'
-		      				+'<td class="text-center">'+o.overtime+'</td>'
-		      				+'<td class="text-center">'+o.week+'</td></tr>'
-		      			}); 
-				        //显示分页
-					   	 laypage({
-					      cont: 'pager', 
-					      pages: result.data.totalPages, 
-					      curr:  result.data.pageNum || 1, 
-					      jump: function(obj, first){ 
-					    	  if(!first){ 
-					    		 
-						        	var _data = {
-						        			page:obj.curr,
-									  		size:13,
-									  		userName:$('#name').val(),
-								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(),
-								  			orgNameId:$(".selectgroupChange").val(),
-								  			workTimeBegin:$("#startTime1").val(),
-								  			workTimeEnd:$("#endTime1").val(),
-								  			restTime:$("#restTime").val(),
-								  	}
-						        
-						            self.loadPagination(_data);
-							     }
-					      }
-					    });  
-					   	layer.close(index);
-					   	 $("#tablecontent").html(html); 
-					   	self.loadEvents();
-					   
-				      },error:function(){
-							layer.msg("加载失败！", {icon: 2});
-							layer.close(index);
-					  }
-				  });
-			}
-			
-			this.loadEvents = function(){
-				
-			}
-			this.chang=function(){
-			}
-			
-			this.mater=function(){
-				//提示人员姓名
-				$("#leader").typeahead({
-					//ajax 拿way数据
-					source : function(query, process) {
-							return $.ajax({
-								url : '${ctx}/system/user/pages',
-								type : 'GET',
-								data : {
-									userName:query
-								},
-								success : function(result) {
-									//转换成 json集合
-									 var resultList = result.data.rows.map(function (item) {
-										 	//转换成 json对象
-					                        var aItem = {name: item.userName, id:item.id}
-					                        //处理 json对象为字符串
-					                        return JSON.stringify(aItem);
-					                    });
-									//提示框返回数据
-									 return process(resultList);
-								},
-							})
-						
-							//提示框显示
-						}, highlighter: function (item) {
-						    //转出成json对象
-							 var item = JSON.parse(item);
-							return item.name
-							//按条件匹配输出
-		                }, matcher: function (item) {
-		                	//转出成json对象
-					        var item = JSON.parse(item);
-					        self.setIndex(item.id);
-					        self.setName(item.name);
-					    	return item.id
-					    },
-						//item是选中的数据
-						updater:function(item){
-							//转出成json对象
-							var item = JSON.parse(item);
-							self.setIndex(item.id);
-						  	self.setName(item.name);
-								return item.name
+	</section>
+
+
+
+	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+	<script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
+	<script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
+	<script src="${ctx }/static/plugins/pace/pace.min.js"></script>
+	<script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
+	<script src="${ctx }/static/js/src/app.js"></script>
+	<script src="${ctx }/static/js/laypage/laypage.js"></script>
+	<script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
+	<script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
+	<script src="${ctx }/static/js/vendor/typeahead.js"></script>
+	<script src="${ctx }/static/js/laydate/laydate.js"></script>
+	<script>
+		laydate.render({
+			elem : '#startTime',
+			type : 'datetime',
+			range : '~'
+		});
+
+		laydate.render({
+			elem : '#startTime1',
+			type : 'time',
+			range : '~'
+
+		});
+
+		jQuery(function($) {
+			var Login = function() {
+				var self = this;
+				//表单jsonArray
+				//初始化js
+				this.init = function() {
+					//注册绑定事件
+					self.events();
+				}
+				//加载分页
+				this.loadPagination = function(data) {
+					var index;
+					var html = '';
+					$.ajax({
+						url : "${ctx}/personnel/findAttendanceTime",
+						data : data,
+						type : "GET",
+						beforeSend : function() {
+							index = layer.load(1, {
+								shade : [ 0.1, '#fff' ]
+							//0.1透明度的白色背景
+							});
 						},
-
-						
+						success : function(result) {
+							
+							if(0==result.code){
+								$(result.data).each(
+										function(i, o) {
+											html += '<tr>' + '<td class="text-center">' + o.time + '</td>' + '<td class="text-center">' + o.week + '</td>' + '<td class="text-center">'
+													+ o.number + '</td>' + '<td class="text-center">' + o.username + '</td>' + '<td class="text-center">' + o.checkIn + '</td>'
+													+ '<td class="text-center">' + o.checkOut + '</td>' + '<td class="text-center">' + o.turnWorkTime + '</td>'
+													+ '<td class="text-center">' + o.overtime + '</td>'+ '<td class="text-center">' + o.dutytime + '</td></tr>'
+										});
+								$("#tablecontent").html(html);
+							}else{
+								layer.msg(result.message, {icon: 2});
+							}
+							layer.close(index);
+						},
+						error : function() {
+							layer.msg("加载失败！", {
+								icon : 2
+							});
+							layer.close(index);
+						}
 					});
-			}
-			this.events = function(){
-				$('.searchtask').on('click',function(){
+				}
+
+				//查找考勤
+				$('.searchAtt').on('click', function() {
+					var startTime = $("#startTime").val()
+					var arr = startTime.split("~");
+					var startTime1 = $("#startTime1").val()
+					var arr1 = startTime1.split("~");
 					var data = {
-				  			page:1,
-				  			size:13,
-				  			userName:$('#name').val(),
-				  			orderTimeBegin:$("#startTime").val(),
-				  			orderTimeEnd:$("#endTime").val(),
-				  			orgNameId:$(".selectgroupChange").val(),
-				  			workTimeBegin:$("#startTime1").val(),
-				  			workTimeEnd:$("#endTime1").val(),
-				  			restTime:$("#restTime").val(),
-				  	}
-		            self.loadPagination(data);
+						userName : $('#name').val(),
+						orgNameId : $(".selectgroupChange").val(),
+						orderTimeBegin : arr[0],
+						orderTimeEnd : arr[1],
+						workTimeBegin : arr1[0],
+						workTimeEnd : arr1[1],
+						restTime : $("#restTime").val(),
+					}
+					self.loadPagination(data);
 				});
-				
-				
-				var indextwo;
-			    var htmltwo = '';
-			    var htmlth = '';
-			    var htmlfr = '';
-			    var html = '';
-			    var htmlthh= '';
-			    var htmlthhh= '';
-				    var getdata={type:"orgName",}
-	      			$.ajax({
-					      url:"${ctx}/basedata/list",
-					      data:getdata,
-					      type:"GET",
-					      beforeSend:function(){
-					    	  indextwo = layer.load(1, {
-							  shade: [0.1,'#fff'] //0.1透明度的白色背景
-							  });
-						  }, 
-			      		  success: function (result) {
-			      			  $(result.data).each(function(k,j){
-			      				htmlfr +='<option value="'+j.id+'">'+j.name+'</option>'
-			      			  });
-			      			var htmlth='<select class="form-control  selectgroupChange"><option value="">请选择</option>'+htmlfr+'</select>'
-			      			
-			      			$("#department").html(htmlth); 
-					      }
-					  });
-				
+
+				//导出考勤
+				$('#export').on(
+						'click',
+						function() {
+							var startTime = $("#startTime").val()
+							var arr = startTime.split("~");
+							var startTime1 = $("#startTime1").val()
+							var arr1 = startTime1.split("~");
+							//参数
+							var userName = $('#name').val();
+							var orgNameId = $(".selectgroupChange").val();
+							var orgName =   $(".selectgroupChange").find("option:selected").text();
+							var orderTimeBegin = arr[0];
+							var orderTimeEnd = arr[1];
+							var workTimeBegin = arr1[0];
+							var workTimeEnd = arr1[1];
+							var restTime = $("#restTime").val();
+							location.href = "${ctx}/excel/importExcel/personnel/DownAttendance?userName=" + userName + "&orgNameId=" + orgNameId + "&orderTimeBegin=" + orderTimeBegin
+									+ "&orderTimeEnd=" + orderTimeEnd + "&workTimeBegin="+workTimeBegin+"&workTimeEnd="+workTimeEnd+" &restTime="+restTime+"&orgName="+orgName+"";
+						})
+
+				this.events = function() {
+					var indextwo;
+					var htmlth = '';
+					var htmlfr = '';
+					var getdata = {
+						type : "orgName",
+					}
+					$.ajax({
+						url : "${ctx}/basedata/list",
+						data : getdata,
+						type : "GET",
+						beforeSend : function() {
+							indextwo = layer.load(1, {
+								shade : [ 0.1, '#fff' ]
+							//0.1透明度的白色背景
+							});
+						},
+						success : function(result) {
+							$(result.data).each(function(k, j) {
+								htmlfr += '<option value="'+j.id+'">' + j.name + '</option>'
+							});
+							var htmlth = '<select class="form-control  selectgroupChange"><option value="">请选择</option>' + htmlfr + '</select>'
+							$("#department").html(htmlth);
+							layer.close(indextwo);
+						}
+					});
+				}
 			}
-   	}
-   			var login = new Login();
-				login.init();
-			})
-    
-    </script>
-       
+			var login = new Login();
+			login.init();
+		})
+	</script>
+
 </body>
 
 </html>

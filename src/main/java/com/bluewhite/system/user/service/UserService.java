@@ -1,5 +1,6 @@
 package com.bluewhite.system.user.service;
 
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -78,6 +79,14 @@ public interface UserService extends BaseCRUDService<User, Long> {
 	 * @return
 	 */
 	public User findByNumber(String number);
+
+
+	/**
+	 * 	按部门查找人员
+	 * @param string
+	 * @return
+	 */
+	public List<User> findByOrgNameId(Long orgNameId);
 
 	
 	

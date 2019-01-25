@@ -21,8 +21,10 @@ import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.ZkemUtils.ZkemSDKUtils;
+import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.tax.entity.Tax;
 import com.bluewhite.personnel.attendance.entity.Attendance;
+import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.service.AttendanceService;
 import com.bluewhite.system.user.entity.User;
 
@@ -182,8 +184,11 @@ public class AttendanceAction {
 	@ResponseBody
 	public CommonResponse findAttendanceTime(HttpServletRequest request,Attendance attendance) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(attendanceService.findAttendanceTime(attendance));
-		cr.setMessage("同步成功");
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(AttendanceTime.class,"time","number","username","checkIn","checkOut","turnWorkTime","overtime","week","dutytime")
+				.format(attendanceService.findAttendanceTime(attendance)).toJSON());
+		cr.setMessage("查询成功");
 		return cr;
 	}
 	
