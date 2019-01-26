@@ -48,12 +48,12 @@ public class Task {
 		 attendanceService.allAttendance("192.168.1.204");
      }   
 	 
-	 @Scheduled(cron="0 30 06 * * ?")   // 清晨6点30触发
+	 @Scheduled(cron="0 20 06 * * ?")   // 清晨6点20触发
      public void attendanceTask1(){  
 		 attendanceService.allAttendance("192.168.1.205");
      }
 	 
-	 @Scheduled(cron="0 50 06 * * ?")   // 清晨6点50触发
+	 @Scheduled(cron="0 40 06 * * ?")   // 清晨6点40触发
      public void attendanceTask2(){  
 		 attendanceService.allAttendance("192.168.1.250");
      }

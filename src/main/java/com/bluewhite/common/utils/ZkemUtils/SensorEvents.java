@@ -3,7 +3,11 @@ package com.bluewhite.common.utils.ZkemUtils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.personnel.attendance.dao.AttendanceDao;
@@ -11,7 +15,7 @@ import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 import com.jacob.com.Variant;
-
+@Component
 public class SensorEvents {
 	
 	@Autowired
@@ -19,6 +23,15 @@ public class SensorEvents {
 	
 	@Autowired
 	private AttendanceDao dao;
+	
+	public static SensorEvents sensorEvents;
+
+	@PostConstruct
+	public void init() {
+		sensorEvents = this;
+		sensorEvents.userService = this.userService; //步骤2 初使化时将已静态化的testService实例化
+		sensorEvents.dao = this.dao; //步骤2 初使化时将已静态化的testService实例化
+	}
 	
 	
 	public void OnConnected(Variant[] arge){
@@ -38,8 +51,7 @@ public class SensorEvents {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		//验证时间
 		String time = arge[4]+"-"+arge[5]+"-"+arge[6]+"-"+arge[7]+":"+arge[8]+":"+arge[9]+" "+arge[10];
-		String enrollNumber = arge[0].getStringRef();
-		User user = userService.findByNumber(enrollNumber);
+		User user = userService.findByNumber(arge[0].getStringRef());
 		attendance.setUserId(user.getId());
 		attendance.setNumber(String.valueOf(arge[0]));
 		try {

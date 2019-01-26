@@ -131,7 +131,6 @@
     <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
     
     <!-- 配置定时器开关 里面可以配置很多参数，这里只是简单的打开task,并支持@Scheduled -->        
-    <!-- 配置定时器注解开关 里面可以配置很多参数，这里只是简单的打开task,并支持@Scheduled -->    
     <task:scheduler id="Scheduler" pool-size="10"/>     
     <task:annotation-driven scheduler="Scheduler" proxy-target-class="true"/>
 

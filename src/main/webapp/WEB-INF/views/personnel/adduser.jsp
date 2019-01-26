@@ -65,7 +65,7 @@
 								</span>
 									&nbsp
 								<span class="input-group-btn">
-									<button type="button" id="export" class="btn btn-success btn-sm btn-3d pull-right">导出考勤</button>
+									<button type="button" id="export" class="btn btn-success btn-sm btn-3d pull-right">导出签到</button>
 								</span>
 							</div>
 						</div>
@@ -183,9 +183,10 @@
 		      				 }else{
 		      					 b="下班签到"
 		      				 }
+		      				 
 		      				html +='<tr>'
 		      				+'<td class="text-center">'+o.number+'</td>'
-		      				+'<td class="text-center edit name">'+o.user.userName+'</td>'
+		      				+'<td class="text-center edit name">'+(o.user == null ? "" : o.user.userName)+'</td>'
 		      				+'<td class="text-center">'+o.time+'</td>'
 		      				+'<td class="text-center">'+a+'</td>'
 		      				+'<td class="text-center">'+b+'</td></tr>'

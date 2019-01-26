@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +41,8 @@ import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 import com.mysql.fabric.xmlrpc.base.Array;
+
+import javassist.expr.NewArray;
 
 @Service
 public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> implements AttendanceService {
@@ -139,32 +142,18 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			throw new ServiceException("考勤机连接失败");
 		}
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		List<Map<String, Object>> attendanceList = null;
 		List<Attendance> attendanceListAll = new ArrayList<>();
 		flag = sdk.readGeneralLogData(0);
 		if (flag) {
-			attendanceList = sdk.getGeneralLogData(0);
+			attendanceListAll = sdk.getGeneralLogData(0);
 		}
-		for (Map<String, Object> attendance : attendanceList) {
-			Attendance attendance1 = new Attendance();
-			attendance1.setNumber(attendance.get("EnrollNumber").toString());
-			try {
-				attendance1.setTime(sdf.parse(attendance.get("Time").toString()));
-			} catch (ParseException e) {
-				throw new ServiceException("时间转换异常");
-			}
-			attendance1.setVerifyMode(Integer.parseInt(String.valueOf(attendance.get("VerifyMode"))));
-			User user = null;
-			try {
-				 user = userService.findByNumber(attendance.get("EnrollNumber").toString());
-			} catch (Exception e) {
-				throw new ServiceException("重复数据"+attendance.get("EnrollNumber").toString());
-			}
-			if (user != null) {
-				attendance1.setUserId(user.getId());
-				attendanceListAll.add(attendance1);
-			}
-		}
+		//获取昨天的日期
+		Calendar cal=Calendar.getInstance();
+		cal.add(Calendar.DATE,-1);
+		Date time =cal.getTime();
+		Date startTime = DatesUtil.getfristDayOftime(time);
+		Date endTime = DatesUtil.getLastDayOftime(time);
+		attendanceListAll = attendanceListAll.stream().filter(Attendance -> Attendance.getTime().before(endTime) && Attendance.getTime().after(startTime)).collect(Collectors.toList());
 		dao.save(attendanceListAll);
 		sdk.disConnect();
 		sdk.release();
@@ -369,7 +358,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		List<Map<String, Object>> attendanceList = null;
 		flag = sdk.readGeneralLogData(0);
 		if (flag) {
-			attendanceList = sdk.getGeneralLogData(0);
+//			attendanceList = sdk.getGeneralLogData(0);
 		}
 		sdk.disConnect();
 		sdk.release();
