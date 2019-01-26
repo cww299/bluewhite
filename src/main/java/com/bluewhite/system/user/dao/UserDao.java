@@ -49,5 +49,14 @@ public interface UserDao extends BaseRepository<User, Long> {
 	 */
 	public User findByNumber(String number);
 	
+	/**
+	 * 通过部门查找未离职用户
+	 * @param number
+	 * @return
+	 */
+	public List<User> findByOrgNameIdAndQuit(Long orgNameId, int quit);
+
+
+	
 
 }

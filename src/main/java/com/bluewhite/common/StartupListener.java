@@ -25,7 +25,6 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 //		} else {
 //			System.out.println("执行我最后2");
 //			regEvent();
-//
 //		}
 	}
 
@@ -36,7 +35,7 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 			public void run() {
 				attendanceServiceImpl.regEvent();
 			}
-		}, 30);
+		}, 60);
 	}
 
 }

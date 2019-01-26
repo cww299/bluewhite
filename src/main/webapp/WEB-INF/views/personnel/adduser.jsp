@@ -43,17 +43,17 @@
 								<table><tr>
 								<td>员工姓名:</td><td><input type="text"  id="name" class="form-control name" /></td>
 								<td>&nbsp&nbsp</td>
-								<td>员工姓名:</td><td id="department"></td>
+								<td>员工部门:</td><td id="department"></td>
 								<td>&nbsp&nbsp</td>
-								<td>开始:</td>
+								<td>开始时间:</td>
 								<td>
-								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
+								<input id="startTime" placeholder="请输入签到开始时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
 								</td>
 								<td>&nbsp&nbsp</td>
-								<td>结束:</td>
+								<td>结束时间:</td>
 								<td>
-									<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
+									<input id="endTime" placeholder="请输入签到结束时间" class="form-control laydate-icon"
              						onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
 								</tr>
@@ -62,6 +62,10 @@
 									<button type="button" class="btn btn-default btn-square btn-sm btn-3d  searchtask">
 										查&nbsp找
 									</button>
+								</span>
+									&nbsp
+								<span class="input-group-btn">
+									<button type="button" id="export" class="btn btn-success btn-sm btn-3d pull-right">导出签到</button>
 								</span>
 							</div>
 						</div>
@@ -73,6 +77,7 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
+                                        	<th class="text-center">员工编号</th>
                                         	<th class="text-center">员工姓名</th>
                                             <th class="text-center">签到时间</th>
                                             <th class="text-center">验证方式</th>
@@ -171,13 +176,17 @@
 		      					a="面部验证"
 		      				 }
 		      				 var b;
-		      				 if(o.inOutMode==0){
+		      				 if(o.inOutMode==null){
+		      					b="暂无"
+		      				 } else if(o.inOutMode==0){
 		      					 b="上班签到"
 		      				 }else{
 		      					 b="下班签到"
 		      				 }
+		      				 
 		      				html +='<tr>'
-		      				+'<td class="text-center edit name">'+o.user.userName+'</td>'
+		      				+'<td class="text-center">'+o.number+'</td>'
+		      				+'<td class="text-center edit name">'+(o.user == null ? "" : o.user.userName)+'</td>'
 		      				+'<td class="text-center">'+o.time+'</td>'
 		      				+'<td class="text-center">'+a+'</td>'
 		      				+'<td class="text-center">'+b+'</td></tr>'
@@ -189,7 +198,6 @@
 					      curr:  result.data.pageNum || 1, 
 					      jump: function(obj, first){ 
 					    	  if(!first){ 
-					    		 
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
@@ -198,13 +206,12 @@
 								  			orderTimeEnd:$("#endTime").val(),
 								  			orgNameId:$(".selectgroupChange").val(),
 								  	}
-						        
 						            self.loadPagination(_data);
 							     }
 					      }
 					    });  
 					   	layer.close(index);
-					   	 $("#tablecontent").html(html); 
+					   	$("#tablecontent").html(html); 
 					   	self.loadEvents();
 					   
 				      },error:function(){
@@ -220,55 +227,7 @@
 			this.chang=function(){
 			}
 			
-			this.mater=function(){
-				//提示人员姓名
-				$("#leader").typeahead({
-					//ajax 拿way数据
-					source : function(query, process) {
-							return $.ajax({
-								url : '${ctx}/system/user/pages',
-								type : 'GET',
-								data : {
-									userName:query
-								},
-								success : function(result) {
-									//转换成 json集合
-									 var resultList = result.data.rows.map(function (item) {
-										 	//转换成 json对象
-					                        var aItem = {name: item.userName, id:item.id}
-					                        //处理 json对象为字符串
-					                        return JSON.stringify(aItem);
-					                    });
-									//提示框返回数据
-									 return process(resultList);
-								},
-							})
-						
-							//提示框显示
-						}, highlighter: function (item) {
-						    //转出成json对象
-							 var item = JSON.parse(item);
-							return item.name
-							//按条件匹配输出
-		                }, matcher: function (item) {
-		                	//转出成json对象
-					        var item = JSON.parse(item);
-					        self.setIndex(item.id);
-					        self.setName(item.name);
-					    	return item.id
-					    },
-						//item是选中的数据
-						updater:function(item){
-							//转出成json对象
-							var item = JSON.parse(item);
-							self.setIndex(item.id);
-						  	self.setName(item.name);
-								return item.name
-						},
 
-						
-					});
-			}
 			this.events = function(){
 				$('.searchtask').on('click',function(){
 					var data = {
@@ -281,6 +240,19 @@
 				  	}
 		            self.loadPagination(data);
 				});
+				
+				//导出签到
+				$('#export').on(
+						'click',
+						function() {
+							//参数
+							var userName = $('#name').val();
+							var orgNameId = $(".selectgroupChange").val();
+							var orderTimeBegin = $("#startTime").val();
+							var orderTimeEnd = $("#endTime").val();
+							location.href = "${ctx}/excel/importExcel/personnel/DownAttendanceSign?userName=" + userName + "&orgNameId=" + orgNameId + "&orderTimeBegin=" + orderTimeBegin
+									+ "&orderTimeEnd=" + orderTimeEnd + "";
+						})
 				
 				
 				var indextwo;
@@ -305,8 +277,7 @@
 			      				htmlfr +='<option value="'+j.id+'">'+j.name+'</option>'
 			      			  });
 			      			var htmlth='<select class="form-control  selectgroupChange"><option value="">请选择</option>'+htmlfr+'</select>'
-			      			
-			      			$("#department").html(htmlth); 
+			      			$("#department").html(htmlth);
 					      }
 					  });
 				

@@ -1,5 +1,7 @@
 package com.bluewhite.common.utils.ZkemUtils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -8,7 +10,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.ContextLoader;
+import org.springframework.web.context.WebApplicationContext;
+
+import com.bluewhite.common.ServiceException;
+import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.service.UserService;
 import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.ComThread;
 import com.jacob.com.Dispatch;
@@ -16,7 +29,19 @@ import com.jacob.com.DispatchEvents;
 import com.jacob.com.STA;
 import com.jacob.com.Variant;
 
+@Component
 public class ZkemSDKUtils {
+	
+	@Autowired
+	private UserService userService;
+	
+	private static ZkemSDKUtils zkemSDKUtils;
+	
+	@PostConstruct
+	public void init() {
+		zkemSDKUtils = this;
+		zkemSDKUtils.userService = this.userService; // 初使化时将已静态化的testService实例化
+	}
 
 	private static ActiveXComponent zkem;
 
@@ -121,7 +146,7 @@ public class ZkemSDKUtils {
 	 *         "InOutMode" 默认
 	 *         0—Check-In 1—Check-Out 2—Break-O 3—Break-In 4—OT-In 5—OT-Out
 	 */
-	public List<Map<String, Object>> getGeneralLogData(int machineNum) {
+	public List<Attendance>  getGeneralLogData(int machineNum) {
 		Variant v0 = new Variant(machineNum);
 		Variant dwEnrollNumber = new Variant("", true);
 		Variant dwVerifyMode = new Variant(0, true);
@@ -133,28 +158,40 @@ public class ZkemSDKUtils {
 		Variant dwMinute = new Variant(0, true);
 		Variant dwSecond = new Variant(0, true);
 		Variant dwWorkCode = new Variant(0, true);
-		List<Map<String, Object>> strList = new ArrayList<Map<String, Object>>();
+		List<Attendance> strList = new ArrayList<>();
 		boolean newresult = false;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		do {
 			Variant vResult = Dispatch.call(zkem, "SSR_GetGeneralLogData", v0, dwEnrollNumber, dwVerifyMode,
 					dwInOutMode, dwYear, dwMonth, dwDay, dwHour, dwMinute, dwSecond, dwWorkCode);
 			newresult = vResult.getBoolean();
 			if (newresult) {
 				String enrollNumber = dwEnrollNumber.getStringRef();
-
 				// 如果没有编号，则跳过。
 				if (enrollNumber == null || enrollNumber.trim().length() == 0)
 					continue;
-				Map<String, Object> m = new HashMap<String, Object>();
-				m.put("EnrollNumber", enrollNumber);
-				m.put("Time", dwYear.getIntRef() + "-" + dwMonth.getIntRef() + "-" + dwDay.getIntRef() + " "
-						+ dwHour.getIntRef() + ":" + dwMinute.getIntRef() + ":" + dwSecond.getIntRef());
-				m.put("VerifyMode", dwVerifyMode.getIntRef());
-				m.put("InOutMode", dwInOutMode.getIntRef());
-				m.put("dwWorkCode", dwWorkCode.getIntRef());
-				strList.add(m);
+				Attendance attendance = new Attendance();
+				attendance.setNumber(enrollNumber);
+				try {
+					attendance.setTime(sdf.parse(dwYear.getIntRef() + "-" + dwMonth.getIntRef() + "-" + dwDay.getIntRef() + " "
+							+ dwHour.getIntRef() + ":" + dwMinute.getIntRef() + ":" + dwSecond.getIntRef()));
+				} catch (ParseException e) {
+					throw new ServiceException("时间转换异常");
+				}
+				attendance.setVerifyMode(dwVerifyMode.getIntRef());
+				User user = null;
+				try {
+//					user = userService.findByNumber(enrollNumber.trim());
+				} catch (Exception e) {
+					throw new ServiceException("重复数据"+enrollNumber);
+				}
+				if (user != null) {
+					attendance.setUserId(user.getId());
+				}
+				strList.add(attendance);
 			}
-		} while (newresult == true);
+		} 
+		while (newresult == true);
 		return strList;
 	}
 

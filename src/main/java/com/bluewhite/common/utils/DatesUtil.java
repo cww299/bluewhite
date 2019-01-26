@@ -5,8 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.sun.tools.extcheck.Main;
-
 public class DatesUtil {
 	
 	
@@ -175,17 +173,33 @@ public class DatesUtil {
     
     
 	/**
-     * <li>功能描述：时间相减得到时间（小时）
+     * <li>功能描述：考勤特殊处理时间方法
      * @param beginDateStr
      * @param endDateStr
      * @return
      * long 
      */
     public static Double getTimeHour(Date beginDate,Date endDate){
-    	Long time =  (endDate.getTime()-beginDate.getTime())/60;
-    	Double day = time.doubleValue();    
-        return day;
+    	Double day = getTime(beginDate,endDate);
+    	//获取整除60分钟之后的剩余分钟数
+    	double alltime = Math.floor(day/60);
+    	double timele = day % 60;
+    	double time =0.0; 
+    	if(day>0){
+    		if(timele<20){
+    			time=alltime;
+    		}
+    		if(20<=timele && timele<=50){
+    			time= NumUtils.sum(alltime,0.5);
+    		}
+    		if( timele>50){
+    			time= NumUtils.sum(alltime,1);
+    		}
+    	}
+		return time;
     }
+    
+
     
     /**
      * 获取某个日期的下一天
@@ -246,7 +260,6 @@ public class DatesUtil {
         try {
             Calendar now = Calendar.getInstance();
             now.setTime(new Date());// 当前时间
-
             Calendar birth = Calendar.getInstance();
             birth.setTime(birthday);
 
@@ -280,6 +293,36 @@ public class DatesUtil {
             w = 0;
         return weekDays[w];
     }
+    
+    /**
+     * 将某个日期转换成参数里需要的时间
+     * 
+     * @param datetime
+     * @return
+     */
+    public static Date dayTime(Date date,String time) {
+        Calendar cal = Calendar.getInstance(); // 获得一个日历
+        cal.setTime(date);
+        String[] timeArr =  time.trim().split(":");
+        cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(timeArr[0]));  
+        cal.set(Calendar.MINUTE, Integer.valueOf(timeArr[1]));  
+        cal.set(Calendar.SECOND, Integer.valueOf(timeArr[2]));  
+        return cal.getTime();
+    }
+    
+    
+    /**
+     * 将某个日期转换成需要的时间
+     * 
+     * @param datetime
+     * @return
+     */
+    public static Date getTime(Date date) {
+        Calendar cal = Calendar.getInstance(); // 获得一个日历
+        cal.setTime(date);
+        return cal.getTime();
+    }
+
 
   
     
@@ -291,5 +334,10 @@ public class DatesUtil {
 	   return calendar.getTime();
 
    }
+   
+  
+
+   
+
 
 }
