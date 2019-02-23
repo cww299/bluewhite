@@ -185,7 +185,7 @@
                                             <td class="text-center"></td>
                                             <td class="text-center"></td>
                                             <td class="text-center"></td>
-                                            <td class="text-center"></td>
+                                            <td class="text-center" id="total2"></td>
                                             <td class="text-center" id="total"></td>
                                         </tr>
                                     </thead>
@@ -355,6 +355,7 @@
 					  }, 
 		      		  success: function (result) {
 		      			 $("#total").text(result.data.statData.statAmount)
+		      			 $("#total2").text(result.data.statData.stateCount)
 		      			 $(result.data.rows).each(function(i,o){
 		      				 var a;
 		      				 if(o.performancePayNumber==null){
