@@ -136,7 +136,7 @@ public class StatisticsUtils
 				countNowValue = Long.valueOf(((Long)countNowValue).longValue() + ((Long)value).longValue());
 			}
 			if (countNowValue == null)
-				throw new ServiceException("ֵ�����쳣.");
+				throw new ServiceException("不能为null");
 			countCashMap.put(field, countNowValue);
 		}
 
