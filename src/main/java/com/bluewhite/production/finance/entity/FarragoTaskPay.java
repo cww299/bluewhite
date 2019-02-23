@@ -175,12 +175,7 @@ public class FarragoTaskPay extends BaseEntity<Long> {
 	public void setOrderTimeEnd(Date orderTimeEnd) {
 		this.orderTimeEnd = orderTimeEnd;
 	}
-//	public User getUser() {
-//		return user;
-//	}
-//	public void setUser(User user) {
-//		this.user = user;
-//	}
+
 	
 	
 	

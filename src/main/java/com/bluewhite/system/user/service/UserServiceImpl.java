@@ -10,6 +10,8 @@ import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -27,6 +29,8 @@ import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.RoleMenuPermission;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.entity.UserContract;
+
+import javassist.expr.NewArray;
 @Service
 public class UserServiceImpl extends BaseServiceImpl<User, Long> implements UserService {
 	@Autowired
@@ -198,7 +202,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				predicate.add(cb.equal(root.get("gender").as(Integer.class), user.getGender() ));
 			}
 			
-			//男女
+			//是否销售
 			if (!StringUtils.isEmpty(user.getSale())) {
 				predicate.add(cb.equal(root.get("sale").as(Integer.class), user.getSale()) );
 			}
@@ -247,8 +251,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     			}
     			
     		}
-			
-			
 			
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));

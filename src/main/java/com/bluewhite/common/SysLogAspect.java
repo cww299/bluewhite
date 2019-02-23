@@ -32,10 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * 系统日志处理切片类
- * 
- * @author long.xin
- * @since 2017-01-17 18:00
- * @version 1.0
+ * zhangliang
  */
 @Aspect
 @Component

@@ -91,7 +91,7 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 		        }, SalesUtils.getQueryNoPageParameter());
 			  System.out.println(System.currentTimeMillis());
 			  PageResultStat<PayB> result = new PageResultStat<>(pages,page);
-			  result.setAutoStateField(null, "payNumber");
+			  result.setAutoStateField("performancePayNumber", "payNumber");
 			  result.count();
 		      return result;
 		    }
