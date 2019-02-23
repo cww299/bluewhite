@@ -249,7 +249,7 @@
                                        	    <td class="text-center">合计</td>
                                             <td class="text-center"></td>
                                             <td class="text-center"></td>
-                                            <td class="text-center" ></td>
+                                            <td class="text-center" id="totaltr2"></td>
                                             <td class="text-center" id="totaltr"></td>
                                             
                                         </tr>
@@ -421,6 +421,7 @@
 						  }, 
 			      		  success: function (result) {
 			      			$("#totaltr").text(result.data.statData.statAmount)
+			      			$("#totaltr2").text(result.data.statData.stateCount)
 			      			 $(result.data.rows).each(function(i,o){
 			      				htmltw +='<tr>'
 			      				+'<td class="text-center edit ">'+o.userName+'</td>'
