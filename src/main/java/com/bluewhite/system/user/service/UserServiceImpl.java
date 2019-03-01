@@ -117,7 +117,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				user.setOrgNameIds(Constants.TAILOR_ORGNAME);
 			}
 		}
-		
+		page.setSort(new Sort(Direction.DESC, "lotionNumber"));
 		Page<User> pageUser = userDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			//按id查找
