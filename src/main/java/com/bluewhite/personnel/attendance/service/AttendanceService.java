@@ -66,5 +66,13 @@ public interface AttendanceService  extends BaseCRUDService<Attendance,Long>{
 	 * @return
 	 */
 	public List<Map<String, Object>> getAllAttendance(String address);
+	
+	/**
+	 * 按编号查询人员
+	 * @param address
+	 * @param number
+	 * @return
+	 */
+	public Map<String, Object> findUser(String address, String number);
 
 }

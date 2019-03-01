@@ -129,6 +129,26 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		sdk.release();
 		return flag;
 	}
+	
+	@Override
+	public Map<String, Object> findUser(String address, String number) {
+		ZkemSDKUtils sdk = new ZkemSDKUtils();
+		sdk.initSTA();
+		boolean flag = false;
+		Map<String, Object> user = null;
+		try {
+			flag = sdk.connect(address, 4370);
+		} catch (Exception e) {
+			throw new ServiceException("考勤机连接失败");
+		}
+		if (flag) {
+			 user = sdk.getUserInfoByNumber(number);
+		}
+		sdk.disConnect();
+		sdk.release();
+		return user;
+	}
+	
 
 	@Override
 	@Transactional

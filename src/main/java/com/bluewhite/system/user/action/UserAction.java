@@ -111,7 +111,6 @@ public class UserAction {
 		UserContract userContract = new UserContract();
 		userContract.setUsername(user.getUserName());
 		userContractDao.save(userContract);
-		user.setLotionNumber(Integer.valueOf(userContract.getNumber()));
 		user.setUserContract(userContract);
 		if(!StringUtils.isEmpty(user.getPhone())){
 			User u = userService.findByPhone(user.getPhone());

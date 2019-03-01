@@ -83,6 +83,7 @@ public class AttendanceAction {
 		return cr;
 	}
 	
+	
 	/**
 	 * 删除考勤机中的人员信息（包括指纹，脸，卡）
 	 * 
@@ -101,6 +102,24 @@ public class AttendanceAction {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("删除失败");
 		}
+		return cr;
+	}
+	
+	
+	
+	/**
+	 * 根据number人员信息（包括指纹，脸，卡）
+	 * 
+	 * @param request
+	 *            请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/personnel/findUser", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse findUser(HttpServletRequest request, String address, String number) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(attendanceService.findUser(address, number));
+		cr.setMessage("查询成功");
 		return cr;
 	}
 
