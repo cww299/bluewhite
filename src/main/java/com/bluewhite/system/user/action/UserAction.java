@@ -111,6 +111,7 @@ public class UserAction {
 		UserContract userContract = new UserContract();
 		userContract.setUsername(user.getUserName());
 		userContractDao.save(userContract);
+		user.setLotionNumber(Integer.valueOf(userContract.getNumber()));
 		user.setUserContract(userContract);
 		if(!StringUtils.isEmpty(user.getPhone())){
 			User u = userService.findByPhone(user.getPhone());
@@ -148,6 +149,7 @@ public class UserAction {
 			UserContract userContract = new UserContract();
 			userContract.setUsername(user.getUserName());
 			userContractDao.save(userContract);
+			oldUser.setLotionNumber(Integer.valueOf(userContract.getNumber()));
 			oldUser.setUserContract(userContract);
 		}
 		BeanCopyUtils.copyNotEmpty(user,oldUser,"");
@@ -319,28 +321,10 @@ public class UserAction {
 	@RequestMapping(value = "/test", method = RequestMethod.GET)
 	@ResponseBody
 	private CommonResponse test() {
-		CommonResponse cr = new CommonResponse();	
-		Calendar calendar = Calendar.getInstance();		
-		calendar.setTime(new Date());		
-		calendar.add(Calendar.DAY_OF_MONTH, -1);		
-		Date date = calendar.getTime();
-		ZkemSDKUtils sdk = new ZkemSDKUtils();
-		sdk.initSTA();
-		List<Map<String, Object>> map = null ;
-		List<User> user =null;
-		try{
-			boolean  flag = sdk.connect("192.168.1.204", 4370);
-//			boolean  flag2 = sdk.connect("192.168.1.205", 4370);
-//			boolean  flag3 = sdk.connect("192.168.1.250", 4370);
-//			map = sdk.readLastestLogData(0,date);//读取数据到缓存中
-//			user = sdk.getUserInfo();
-			System.out.println(flag);
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		sdk.disConnect();
-		sdk.release();
-		cr.setData(map);
+		CommonResponse cr = new CommonResponse();
+		List<User> userList = 	userService.findAll();
+	
+		userService.save(userList);
 		return cr;
 	}
 	

@@ -429,6 +429,13 @@ public class User extends BaseEntity<Long> {
 	
 	
 	/**
+	 * 
+	 * 位置编号
+	 */
+	@Column(name = "lotion_number")
+	private Integer lotionNumber;
+	
+	/**
 	 * 权限
 	 */
 	@Transient
@@ -467,14 +474,6 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Integer retire;
-	
-	/**
-	 * 
-	 * 位置编号
-	 */
-	@Transient
-	private String lotionNumber;
-	
 	
 	/**
 	 * 时间查询字段
@@ -574,11 +573,12 @@ public class User extends BaseEntity<Long> {
 		this.orderTimeEnd = orderTimeEnd;
 	}
 
-	public String getLotionNumber() {
+
+	public Integer getLotionNumber() {
 		return lotionNumber;
 	}
 
-	public void setLotionNumber(String lotionNumber) {
+	public void setLotionNumber(Integer lotionNumber) {
 		this.lotionNumber = lotionNumber;
 	}
 
