@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,9 +56,13 @@ public class AttendanceAction {
 	 */
 	@RequestMapping(value = "/personnel/getAllUser", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getAllUser(HttpServletRequest request, String address) {
+	public CommonResponse getAllUser(HttpServletRequest request, String address,String number) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(attendanceService.getAllUser(address));
+		if(!StringUtils.isEmpty(number)){
+			cr.setData(attendanceService.findUser(address, number));
+		}else{
+			cr.setData(attendanceService.getAllUser(address));
+		}
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -107,21 +112,7 @@ public class AttendanceAction {
 	
 	
 	
-	/**
-	 * 根据number人员信息（包括指纹，脸，卡）
-	 * 
-	 * @param request
-	 *            请求
-	 * @return cr
-	 */
-	@RequestMapping(value = "/personnel/findUser", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse findUser(HttpServletRequest request, String address, String number) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(attendanceService.findUser(address, number));
-		cr.setMessage("查询成功");
-		return cr;
-	}
+
 
 	/**
 	 * 同步考勤机中的人员信息到系统用户表
