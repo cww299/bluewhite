@@ -280,7 +280,7 @@ public class ZkemSDKUtils {
 	 *            考勤号码
 	 * @return
 	 */
-	public static Map<String, Object> getUserInfoByNumber(String number) {
+	public static List<Map<String, Object>>  getUserInfoByNumber(String number) {
 		Variant v0 = new Variant(1);
 		Variant sdwEnrollNumber = new Variant(number, true);
 		Variant sName = new Variant("", true);
@@ -289,16 +289,28 @@ public class ZkemSDKUtils {
 		Variant bEnabled = new Variant(false, true);
 		boolean result = zkem.invoke("SSR_GetUserInfo", v0, sdwEnrollNumber, sName, sPassword, iPrivilege, bEnabled)
 				.getBoolean();
+		List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
 		if (result) {
+			// 由于名字后面会产生乱码，所以这里采用了截取字符串的办法把后面的乱码去掉了，以后有待考察更好的办法。
+			// 只支持2位、3位、4位长度的中文名字。
+			String name = sName.getStringRef();
+			int index = name.indexOf("\0");
+			String newStr = "";
+			if (index > -1) {
+				name = name.substring(0, index);
+			}
+			if (sName.getStringRef().length() > 4) {
+				name = sName.getStringRef().substring(0, 4);
+			}
 			Map<String, Object> m = new HashMap<String, Object>();
 			m.put("EnrollNumber", number);
-			m.put("Name", sName.getStringRef());
+			m.put("Name", name.trim());
 			m.put("Password", sPassword.getStringRef());
 			m.put("Privilege", iPrivilege.getIntRef());
 			m.put("Enabled", bEnabled.getBooleanRef());
-			return m;
+			resultList.add(m);
 		}
-		return null;
+		return resultList;
 	}
 
 	/**

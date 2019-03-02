@@ -73,6 +73,6 @@ public interface AttendanceService  extends BaseCRUDService<Attendance,Long>{
 	 * @param number
 	 * @return
 	 */
-	public Map<String, Object> findUser(String address, String number);
+	public List<Map<String, Object>>  findUser(String address, String number);
 
 }
