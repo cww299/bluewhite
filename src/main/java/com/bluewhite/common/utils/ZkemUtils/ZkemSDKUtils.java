@@ -303,11 +303,10 @@ public class ZkemSDKUtils {
 				name = sName.getStringRef().substring(0, 4);
 			}
 			Map<String, Object> m = new HashMap<String, Object>();
-			m.put("EnrollNumber", number);
-			m.put("Name", name.trim());
-			m.put("Password", sPassword.getStringRef());
-			m.put("Privilege", iPrivilege.getIntRef());
-			m.put("Enabled", bEnabled.getBooleanRef());
+			m.put("number", number);
+			m.put("name", name.trim());
+			m.put("privilege", iPrivilege.getIntRef());
+			m.put("enabled", bEnabled.getBooleanRef());
 			resultList.add(m);
 		}
 		return resultList;
