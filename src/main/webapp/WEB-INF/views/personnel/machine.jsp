@@ -30,7 +30,14 @@
 							</div>
 						</div>
 						
-						<div class="panel-body">
+					<div class="panel-body">
+						<div class="demoTable">
+  							搜索ID：
+ 							 <div class="layui-inline">
+    						<input class="layui-input" name="id" id="demoReload" autocomplete="off">
+  							</div>
+  						<button class="layui-btn" data-type="reload">搜索</button>
+</div>
 							<table class="layui-hide"  lay-filter="test3" id="test">
 							
 							</table>
@@ -68,7 +75,7 @@
 		    ,where: {address:'192.168.1.204'} 
 		    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
 		    , method:'GET'
-		  ,parseData: function(res){ //res 即为原始返回的数据
+		  /* ,parseData: function(res){ //res 即为原始返回的数据
           	res.data.code=0
               return {
                 "code": res.data.code, //解析接口状态
@@ -76,7 +83,7 @@
                 "count": res.data.total, //解析数据长度
                 "data": res.data //解析数据列表
               };
-            }
+            } */
 		    ,cols: [[
 		      {field:'number', width:'25%', title: '编号', sort: true,align: 'center'}
 		      ,{field:'name', width:'25%', title: '用户名',align: 'center',edit: 'text'}
@@ -84,9 +91,10 @@
               	if(d.privilege=='3') return '管理员'; 
             	else if(d.privilege=='0') return '普通用户';}
 				}
-		      ,{field:'enabled', width:'17%',align: 'center', title: '是否启用'}
-		      ,{fixed: 'right', title:'操作', align: 'center', toolbar: '#barDemo', width:150}
+		      ,{field:'enabled', width:'20%',align: 'center', title: '是否启用'}
+		      ,{fixed: 'right', title:'操作', align: 'center', toolbar: '#barDemo', width:'5%'}
 		    ]]
+            ,id: 'testReload'
 		    ,page: false
 		  });
 		  
@@ -163,6 +171,28 @@
 			      });
 			    }
 		  });
+		  
+		  
+		  
+		  var $ = layui.$, active = {
+				    reload: function(){
+				      var demoReload = $('#demoReload');
+				      
+				      //执行重载
+				      table.reload('testReload', {
+				        where: {
+				          
+				            number: demoReload.val()
+				          
+				        }
+				      });
+				    }
+				  };
+		  
+		  $('.demoTable .layui-btn').on('click', function(){
+			    var type = $(this).data('type');
+			    active[type] ? active[type].call(this) : '';
+			  });
 		});
 	
 	
