@@ -40,6 +40,7 @@ import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
+import com.google.common.base.FinalizablePhantomReference;
 import com.mysql.fabric.xmlrpc.base.Array;
 
 import javassist.expr.NewArray;
@@ -55,10 +56,12 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 
 	@PersistenceContext
 	protected EntityManager entityManager;
+	
+	@Autowired
+	private ZkemSDKUtils sdk;
 
 	@Override
 	public List<Map<String, Object>> getAllUser(String address) {
-		ZkemSDKUtils sdk = new ZkemSDKUtils();
 		sdk.initSTA();
 		boolean flag = false;
 		try {
@@ -81,7 +84,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		List<Map<String, Object>> userMapList = this.getAllUser(address);
 		List<User> userList = new ArrayList<>();
 		for (Map<String, Object> map : userMapList) {
-			User user = userService.findByUserName(map.get("name").toString());
+			User user = userService.findByUserName(map.get("name").toString().trim());
 			if (user != null) {
 				if (!map.get("number").toString().equals(user.getNumber())) {
 					user.setNumber(map.get("number").toString());
@@ -96,7 +99,6 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 
 	@Override
 	public boolean updateUser(String address, String number, String name, int isPrivilege, boolean enabled) {
-		ZkemSDKUtils sdk = new ZkemSDKUtils();
 		sdk.initSTA();
 		boolean flag = false;
 		try {
@@ -114,7 +116,6 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 
 	@Override
 	public boolean deleteUser(String address, String number) {
-		ZkemSDKUtils sdk = new ZkemSDKUtils();
 		sdk.initSTA();
 		boolean flag = false;
 		try {
@@ -132,7 +133,6 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 	
 	@Override
 	public List<Map<String, Object>>  findUser(String address, String number) {
-		ZkemSDKUtils sdk = new ZkemSDKUtils();
 		sdk.initSTA();
 		boolean flag = false;
 		List<Map<String, Object>> user = null;
@@ -152,27 +152,20 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 
 	@Override
 	@Transactional
-	public List<Attendance> allAttendance(String address) {
-		ZkemSDKUtils sdk = new ZkemSDKUtils();
+	public List<Attendance> allAttendance(String address,Date startTime , Date endTime) {
 		sdk.initSTA();
+		
 		boolean flag = false;
 		try {
 			flag = sdk.connect(address, 4370);
 		} catch (Exception e) {
 			throw new ServiceException("考勤机连接失败");
 		}
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		List<Attendance> attendanceListAll = new ArrayList<>();
 		flag = sdk.readGeneralLogData(0);
 		if (flag) {
 			attendanceListAll = sdk.getGeneralLogData(0);
 		}
-		//获取昨天的日期
-		Calendar cal=Calendar.getInstance();
-		cal.add(Calendar.DATE,-1);
-		Date time =cal.getTime();
-		Date startTime = DatesUtil.getfristDayOftime(time);
-		Date endTime = DatesUtil.getLastDayOftime(time);
 		attendanceListAll = attendanceListAll.stream().filter(Attendance -> Attendance.getTime().before(endTime) && Attendance.getTime().after(startTime)).collect(Collectors.toList());
 		dao.save(attendanceListAll);
 		sdk.disConnect();
@@ -232,7 +225,6 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 	}
 
 	public void regEvent() {
-		ZkemSDKUtils sdk = new ZkemSDKUtils();
 		sdk.initSTA();
 		try {
 			System.out.println("考勤机实时事件启动");
@@ -366,7 +358,6 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 
 	@Override
 	public List<Map<String, Object>> getAllAttendance(String address) {
-		ZkemSDKUtils sdk = new ZkemSDKUtils();
 		sdk.initSTA();
 		boolean flag = false;
 		try {

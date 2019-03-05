@@ -1,5 +1,6 @@
 package com.bluewhite.personnel.attendance.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -40,10 +41,10 @@ public interface AttendanceService  extends BaseCRUDService<Attendance,Long>{
 	public boolean deleteUser(String address, String number);
 	
 	/**
-	 * 同步考勤机中全部考勤记录
+	 * 根据日期同步考勤机中全部考勤记录
 	 * @param address
 	 */
-	public List<Attendance> allAttendance(String address);
+	public List<Attendance> allAttendance(String address,Date startTime , Date endTime);
 	
 	/**
 	 * 分页查看考勤记录
