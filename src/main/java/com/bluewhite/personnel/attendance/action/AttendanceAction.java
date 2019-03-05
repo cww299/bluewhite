@@ -1,6 +1,7 @@
 package com.bluewhite.personnel.attendance.action;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -160,9 +161,9 @@ public class AttendanceAction {
 	 */
 	@RequestMapping(value = "/personnel/allAttendance", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse allAttendance(HttpServletRequest request, String address) {
+	public CommonResponse allAttendance(HttpServletRequest request, String address,Date startTime , Date endTime) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSON.format(attendanceService.allAttendance(address)).toJSON());
+		cr.setData(clearCascadeJSON.format(attendanceService.allAttendance(address,startTime,endTime)).toJSON());
 		cr.setMessage("同步成功");
 		return cr;
 	}

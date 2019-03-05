@@ -181,9 +181,10 @@ public class ZkemSDKUtils {
 				attendance.setVerifyMode(dwVerifyMode.getIntRef());
 				User user = null;
 				try {
-//					user = userService.findByNumber(enrollNumber.trim());
+					user = userService.findByNumber(enrollNumber.trim());
 				} catch (Exception e) {
-					throw new ServiceException("重复数据"+enrollNumber);
+					System.out.println(enrollNumber.trim());
+					throw new ServiceException(e.getMessage()+enrollNumber);
 				}
 				if (user != null) {
 					attendance.setUserId(user.getId());

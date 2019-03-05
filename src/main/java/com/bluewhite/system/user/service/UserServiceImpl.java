@@ -18,7 +18,6 @@ import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
-import com.bluewhite.common.Log;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
@@ -29,10 +28,9 @@ import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.RoleMenuPermission;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.entity.UserContract;
-
-import javassist.expr.NewArray;
 @Service
 public class UserServiceImpl extends BaseServiceImpl<User, Long> implements UserService {
+	
 	@Autowired
 	private UserDao dao;
 	
@@ -41,9 +39,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	
 	@Autowired
 	private UserContractDao userContractDao;
-	
-	
-	private final static Log log = Log.getLog(UserServiceImpl.class);
 
 	@Autowired
 	private UserDao userDao;
