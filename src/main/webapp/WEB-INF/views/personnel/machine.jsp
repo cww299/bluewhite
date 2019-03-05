@@ -31,13 +31,32 @@
 						</div>
 						
 					<div class="panel-body">
+					<table><tr><td>
 						<div class="demoTable">
-  							搜索ID：
+  							搜索编号：
  							 <div class="layui-inline">
     						<input class="layui-input" name="id" id="demoReload" autocomplete="off">
   							</div>
-  						<button class="layui-btn" data-type="reload">搜索</button>
-</div>
+  							
+  								</td>
+						<td>
+      <form class="layui-form" action="">
+      <select name="interest" id="select1" lay-filter="aiha">
+        <option value="192.168.1.204">三楼打卡机</option>
+        <option value="192.168.1.250">二楼打卡机</option>
+        <option value="192.168.1.205">一楼打卡机</option>
+      </select>
+      </form>
+  							</td>
+						<td>
+  						<button class="layui-btn" id="search" data-type="reload">搜索</button>
+						</div>
+					</td>
+					<td style="width: 63%;">
+					</td>
+						<td>
+						<button class="layui-btn" id="synchronization"  data-type="synchronization">同步</button>
+						</td></tr></table>
 							<table class="layui-hide"  lay-filter="test3" id="test">
 							
 							</table>
@@ -68,7 +87,7 @@
 	<script>
 	layui.use('table', function(){
 		  var table = layui.table;
-		  
+		  var form = layui.form;
 		  table.render({
 		    elem: '#test'
 		    ,url:'${ctx}/personnel/getAllUser'
@@ -106,7 +125,7 @@
 		    var postData={
 					number:data.number,
 					[field]:value,
-					address:'192.168.1.204',
+					address:$("#select1").val(),
 					isPrivilege:data.privilege,
 					enabled:data.enabled,
 			}
@@ -136,13 +155,15 @@
 		  });
 		
 		  table.on('tool(test3)', function(obj){
+			  
 			    var data = obj.data;
 			    //console.log(obj)
 			    if(obj.event === 'del'){
-			      layer.confirm('真的删除行么', function(index){
+			    	var index;
+			    	index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
 			    	  var postData={
 								number:data.number,
-								address:'192.168.1.204',
+								address:$("#select1").val(),
 						}
 			    	  $.ajax({
 							url:"${ctx}/personnel/deleteUser",
@@ -167,7 +188,6 @@
 								layer.close(index);
 							}
 						});
-			        layer.close(index);
 			      });
 			    }
 		  });
@@ -177,25 +197,50 @@
 		  var $ = layui.$, active = {
 				    reload: function(){
 				      var demoReload = $('#demoReload');
-				      
+				     
 				      //执行重载
 				      table.reload('testReload', {
 				        where: {
-				          
-				            number: demoReload.val()
-				          
+				            number: demoReload.val(),
+				            address:$("#select1").val()
 				        }
 				      });
 				    }
 				  };
 		  
-		  $('.demoTable .layui-btn').on('click', function(){
+		  $('#search').on('click', function(){
 			    var type = $(this).data('type');
 			    active[type] ? active[type].call(this) : '';
 			  });
 		});
 	
-	
+	$('#synchronization').on('click',function(){
+		var postData={
+				address:$("#select1").val(),
+		}
+	  $.ajax({
+			url:"${ctx}/personnel/syncAttendanceUser",
+			data:postData,
+			type:"GET",
+			beforeSend:function(){
+				index = layer.load(1, {
+					  shade: [0.1,'#fff'] //0.1透明度的白色背景
+					});
+			},
+			success:function(result){
+				if(0==result.code){
+					layer.msg(result.message, {icon: 1});
+				layer.close(index);
+				}else{
+					layer.msg(result.message, {icon: 2});
+					layer.close(index);
+				}
+			},error:function(){
+				layer.msg("操作失败！", {icon: 2});
+				layer.close(index);
+			}
+		});
+	})
 	</script>
 <script type="text/html" id="barDemo">
   <a class="layui-btn layui-btn-danger layui-btn-xs"  lay-event="del">删除</a>
