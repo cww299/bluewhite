@@ -75,5 +75,8 @@ public interface AttendanceService  extends BaseCRUDService<Attendance,Long>{
 	 * @return
 	 */
 	public List<Map<String, Object>>  findUser(String address, String number);
+	
+	
+	public int fixAttendance(Date startTime, Date endTime);
 
 }

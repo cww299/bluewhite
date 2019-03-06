@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 
@@ -159,6 +161,7 @@ public class ZkemSDKUtils {
 		Variant dwSecond = new Variant(0, true);
 		Variant dwWorkCode = new Variant(0, true);
 		List<Attendance> strList = new ArrayList<>();
+		List<User> userList = userService.findByNumberNotNull();
 		boolean newresult = false;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		do {
@@ -179,15 +182,11 @@ public class ZkemSDKUtils {
 					throw new ServiceException("时间转换异常");
 				}
 				attendance.setVerifyMode(dwVerifyMode.getIntRef());
-				User user = null;
-				try {
-					user = userService.findByNumber(enrollNumber.trim());
-				} catch (Exception e) {
-					System.out.println(enrollNumber.trim());
-					throw new ServiceException(e.getMessage()+enrollNumber);
-				}
-				if (user != null) {
-					attendance.setUserId(user.getId());
+				if(userList.size()>0){
+					Optional<User> user = userList.stream().filter(User->User.getNumber().equals(enrollNumber.trim())).findFirst();
+					if(user.isPresent()){
+						attendance.setUserId(user.get().getId());
+					}
 				}
 				strList.add(attendance);
 			}

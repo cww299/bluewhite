@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -37,7 +38,9 @@ import com.bluewhite.personnel.attendance.dao.AttendanceDao;
 import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.entity.CollectPay;
+import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 import com.google.common.base.FinalizablePhantomReference;
@@ -82,18 +85,24 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 	public int syncAttendanceUser(String address) {
 		int count = 0;
 		List<Map<String, Object>> userMapList = this.getAllUser(address);
-		List<User> userList = new ArrayList<>();
+		List<User> userListAll = userService.findByForeigns();
 		for (Map<String, Object> map : userMapList) {
-			User user = userService.findByUserName(map.get("name").toString().trim());
-			if (user != null) {
-				if (!map.get("number").toString().equals(user.getNumber())) {
-					user.setNumber(map.get("number").toString());
-					userList.add(user);
-					count++;
+			if(userListAll.size()>0){
+				List<User> user = userListAll.stream().filter(User->User.getUserName().equals(map.get("name").toString().trim())).collect(Collectors.toList());
+				if(user.size()>1){
+					throw new ServiceException("系统用户有相同名称的员工"+user.get(0).getUserName() +"，请检查是否重复");
 				}
+				if(user.size()>0){
+					if(user.get(0).getNumber() == null || !user.get(0).getNumber().equals(map.get("number").toString())){
+						user.get(0).setNumber(map.get("number").toString());
+						userService.save(user.get(0));
+						count++;
+						System.out.println(user.get(0).getNumber());
+					}
+				}
+				
 			}
 		}
-		userService.save(userList);
 		return count;
 	}
 
@@ -374,6 +383,32 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		sdk.disConnect();
 		sdk.release();
 		return attendanceList;
+	}
+	
+
+	@Override
+	@Transactional
+	public int fixAttendance(Date startTime, Date endTime) {
+		int count = 0;
+		Attendance attendance = new Attendance();
+		attendance.setOrderTimeBegin(startTime);
+		attendance.setOrderTimeEnd(endTime);
+		List<Attendance> attendanceList = this.findPageAttendance(attendance, new PageParameter(0, Integer.MAX_VALUE)).getRows();
+		if(attendanceList.size()>0){
+			Map<String, List<Attendance>> mapAttendance = attendanceList.stream().filter(Attendance->Attendance.getUserId()==null).collect(Collectors.groupingBy(Attendance::getNumber,Collectors.toList()));
+			for(String ps1 : mapAttendance.keySet()){
+				List<Attendance> psList1= mapAttendance.get(ps1);
+				User user = userService.findByNumber(ps1);
+				if(user!=null){
+					psList1.stream().forEach( item-> {
+						item.setUserId(user.getId());
+					});
+					count++;
+				}
+			}
+		}
+		dao.save(attendanceList);
+		return count;
 	}
 
 }
