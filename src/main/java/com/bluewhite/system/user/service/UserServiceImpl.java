@@ -291,10 +291,20 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	public User findByNumber(String number) {
 		return userDao.findByNumber(number);
 	}
+	
+	@Override
+	public List<User> findByNumberNotNull() {
+		return userDao.findByNumberNotNull();
+	}
 
 	@Override
 	public List<User> findByOrgNameId(Long orgNameId) {
 		return dao.findByOrgNameIdAndQuit(orgNameId,0);
+	}
+
+	@Override
+	public List<User> findByForeigns() {
+		return dao.findByForeigns(0);
 	}
 
 

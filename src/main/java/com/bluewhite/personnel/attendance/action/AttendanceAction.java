@@ -168,6 +168,21 @@ public class AttendanceAction {
 		return cr;
 	}
 	
+	/**
+	 * 手动修正未同步人员编号时，同步考勤记录而导致的人员姓名为null问题
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/personnel/fixAttendance", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse fixAttendance(HttpServletRequest request, Date startTime , Date endTime) {
+		CommonResponse cr = new CommonResponse();
+		int count = attendanceService.fixAttendance(startTime,endTime);
+		cr.setMessage("成功修正"+count+"名员工考勤记录");
+		return cr;
+	}
+	
 	
 	/**
 	 * 分页查看考勤

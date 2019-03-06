@@ -88,7 +88,19 @@ public interface UserService extends BaseCRUDService<User, Long> {
 	 */
 	public List<User> findByOrgNameId(Long orgNameId);
 
-	
+	/**
+	 * 查找出编号不为null的员工
+	 * @param string
+	 * @return
+	 */
+	public List<User> findByNumberNotNull();
+
+	/**
+	 * 查找所有不是外来人员的员工（本厂员工）
+	 * @param foreigns=0=否
+	 * @return
+	 */
+	public List<User> findByForeigns();
 	
 	
 	

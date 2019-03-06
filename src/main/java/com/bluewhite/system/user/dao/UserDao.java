@@ -50,13 +50,25 @@ public interface UserDao extends BaseRepository<User, Long> {
 	public User findByNumber(String number);
 	
 	/**
+	 * 查找出编号不为null的用户
+	 * @param number
+	 * @return
+	 */
+	public List<User> findByNumberNotNull();
+	
+	/**
 	 * 通过部门查找未离职用户
 	 * @param number
 	 * @return
 	 */
 	public List<User> findByOrgNameIdAndQuit(Long orgNameId, int quit);
 
-
+	/**
+	 * 查找所有不是外来人员的员工（本厂员工）
+	 * @param foreigns=0=否
+	 * @return
+	 */
+	public List<User> findByForeigns(Integer foreigns);
 	
 
 }

@@ -102,9 +102,8 @@
 	           	else if(d.privilege=='0') return '普通用户';}
 				}
 		      ,{field:'enabled', width:'20%',align: 'center', title: '是否启用'}
-		      ,{fixed: 'right', title:'操作', align: 'center', toolbar: '#barDemo', width:'5%'}
-		    ]]
-	           ,id: 'testReload'
+		      ,{fixed: 'right', title:'操作', align: 'center', toolbar: '#barDemo', width:'5%'}]]
+	          ,id: 'testReload'
 		    ,page: false
 		  });
 		  
