@@ -253,7 +253,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		}
 		PageParameter page = new PageParameter();
 		page.setSize(Integer.MAX_VALUE);
-		long size = DatesUtil.getDaySub(attendance.getOrderTimeBegin(), attendance.getOrderTimeEnd());
+		long size = DatesUtil.getDaySub(attendance.getOrderTimeBegin(),DatesUtil.getLastDayOftime(attendance.getOrderTimeEnd()));
 		List<AttendanceTime> attendanceTimeList = new ArrayList<>();
 		for (int i = 0; i < size; i++) {
 			Date beginTimes = null;
