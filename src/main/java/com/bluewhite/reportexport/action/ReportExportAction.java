@@ -822,8 +822,7 @@ public class ReportExportAction {
 		response.setContentType("octets/stream");
 	    response.addHeader("Content-Disposition", "attachment;filename=attendancePay.xlsx");
 	    
-	    
-	   Long size =  DatesUtil.getDaySub(attendance.getOrderTimeBegin(), attendance.getOrderTimeEnd());
+	   Long size =  DatesUtil.getDaySub(attendance.getOrderTimeBegin(), DatesUtil.getLastDayOftime(attendance.getOrderTimeEnd()));
 	    // 声明String数组，并初始化元素（表头名称）
        //第一行表头字段，合并单元格时字段跨几列就将该字段重复几次
 	   String excelHeader0String = ""+","+""+","+""+","+"日期"; 
