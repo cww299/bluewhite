@@ -2,7 +2,9 @@ package com.bluewhite.personnel.attendance.entity;
 
 import java.util.Date;
 
-import javax.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+
 
 public class AttendanceTime {
 	
@@ -11,6 +13,7 @@ public class AttendanceTime {
 	 * 员工考勤日期
 	 * 
 	 */
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	private Date time;
 	
 	/**
@@ -29,12 +32,14 @@ public class AttendanceTime {
 	 * 上班签到时间  0—Check-In 
 	 * 
 	 */
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	private Date checkIn ;
 	
 	/**
 	 * 下班签到时间 1—Check-Out
 	 * 
 	 */
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	private Date checkOut;
 	
 	/**
