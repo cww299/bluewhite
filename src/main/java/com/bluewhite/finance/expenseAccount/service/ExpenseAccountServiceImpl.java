@@ -139,7 +139,7 @@ public class ExpenseAccountServiceImpl extends BaseServiceImpl<ExpenseAccount, L
 		}
 		ExpenseAccount oldExpenseAccount = dao.findOne(expenseAccount.getId());
 		if (oldExpenseAccount != null) {
-			oldExpenseAccount.setFlag(1);
+			oldExpenseAccount.setFlag(expenseAccount.getFlag());
 			oldExpenseAccount.setPaymentMoney(expenseAccount.getPaymentMoney());
 			oldExpenseAccount.setPaymentDate(expenseAccount.getPaymentDate());
 			dao.save(oldExpenseAccount);

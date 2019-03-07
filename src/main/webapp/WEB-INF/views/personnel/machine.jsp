@@ -85,7 +85,7 @@
 		    ,where: {address:'192.168.1.204'} 
 		    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
 		    , method:'GET'
-		  /*,parseData: function(res){ //res 即为原始返回的数据
+		  ,parseData: function(res){ //res 即为原始返回的数据
 	         	res.data.code=0
 	             return {
 	               "code": res.data.code, //解析接口状态
@@ -93,8 +93,9 @@
 	               "count": res.data.total, //解析数据长度
 	               "data": res.data //解析数据列表
 	             };
-	           }*/
+	           }
 		    ,cols: [[
+		    	
 		      {field:'number', width:'25%', title: '编号', sort: true,align: 'center'}
 		      ,{field:'name', width:'25%', title: '用户名',align: 'center',edit: 'text'}
 		      ,{field:'privilege', width:'25%',align: 'center',  title: '权限', sort: true,templet:function(d){

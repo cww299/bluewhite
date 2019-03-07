@@ -43,13 +43,13 @@
 								<td>&nbsp&nbsp</td>
 								<td><select class="form-control" id="selectone"><option value="">请选择</option><option value="expenseDate">付款日期</option><option value="paymentDate">财务付款日期</option></select></td>
 								<td>&nbsp&nbsp</td>
-								<td>合同开始:</td>
+								<td>当月开始:</td>
 								<td>
 								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
 								</td>
 									<td>&nbsp&nbsp</td>
-				<td>合同结束:</td>
+				<td>当月结束:</td>
 				<td>
 					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
              onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
@@ -232,6 +232,7 @@
 			 var data={
 						page:1,
 				  		size:13,
+				  		flag:1,
 				} 
 			this.init = function(){
 				

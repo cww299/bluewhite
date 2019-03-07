@@ -11,6 +11,7 @@
 <title>考勤总汇</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 </head>
 
 <body>
@@ -77,23 +78,24 @@
 							</div>
 						</div>
 						<div class="panel-body">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th class="text-center">员工考勤日期</th>
-										<th class="text-center">星期</th>
-										<th class="text-center">员工编号</th>
-										<th class="text-center">员工姓名</th>
-										<th class="text-center">上班签到时间</th>
-										<th class="text-center">下班签到时间</th>
-										<th class="text-center">出勤时长</th>
-										<th class="text-center">加班时长</th>
-										<th class="text-center">缺勤时长</th>
-									</tr>
-								</thead>
-								<tbody id="tablecontent">
+							<!-- <table class="layui-table" lay-data="{width:800, url:'/test/table/demo2.json?v=2', page: true, limit: 6, limits:[6]}">
+  <thead>
+    <tr>
+      <th lay-data="{checkbox:true, fixed:'left'}" rowspan="2"></th>
+      <th lay-data="{field:'username', width:150}" rowspan="2">联系人</th>
+      <th lay-data="{align:'center'}" colspan="3">地址</th>
+      <th lay-data="{field:'amount', width:120}" rowspan="2">金额</th>
+      <th lay-data="{fixed: 'right', width: 160, align: 'center', toolbar: '#barDemo'}" rowspan="2">操作</th>
+    </tr>
+    <tr>
+      <th lay-data="{field:'province', width:120}">省</th>
+      <th lay-data="{field:'city', width:120}">市</th>
+      <th lay-data="{field:'zone', width:200}">区</th>
+    </tr>
+  </thead>
+</table> -->
+							<table class="layui-hide" lay-filter="test3" id="test">
 
-								</tbody>
 							</table>
 						</div>
 					</div>
@@ -118,6 +120,7 @@
 	<script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
 	<script src="${ctx }/static/js/vendor/typeahead.js"></script>
 	<script src="${ctx }/static/js/laydate/laydate.js"></script>
+	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
 	<script>
 		laydate.render({
 			elem : '#startTime',
@@ -132,7 +135,131 @@
 
 		});
 
-		jQuery(function($) {
+		
+		layui.use('table', function(){
+			  var table = layui.table;
+			  var form = layui.form;
+			  var startTime = '2019-03-01 00:00:00 ~ 2019-03-31 00:00:00';
+				var arr = startTime.split("~");
+				var startTime1 = '08:08:00 ~ 17:30:00';
+				var arr1 = startTime1.split("~");
+			  table.render({
+			    elem: '#test'
+			    ,url:'${ctx}/personnel/findAttendanceTime'
+			    ,where: {userName : '齐勇',
+					orgNameId : $(".selectgroupChange").val(),
+					orderTimeBegin : arr[0],
+					orderTimeEnd : arr[1],
+					workTimeBegin : arr1[0],
+					workTimeEnd : arr1[1],
+					restTime : 1,} 
+			    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+			    , method:'GET'
+			  ,parseData: function(res){ //res 即为原始返回的数据
+		         	res.data.code=0
+		             return {
+		               "code": res.data.code, //解析接口状态
+		               "msg": res.data.message, //解析提示文本
+		               "count": res.data.total, //解析数据长度
+		               "data": res.data //解析数据列表
+		             };
+		           }
+			    ,cols: [/* [
+			    	 //标题栏
+			    	    {field: 'username', title: '姓名', width: 80, rowspan: 3,} //rowspan即纵向跨越的单元格数
+			    	    ,{field: 'time',align: 'center',title: '日期',  colspan: 3} //colspan即横跨的单元格数，这种情况下不用设置field和width
+			    	  ], [
+			    		  
+			    	    {field: 'province', title: '星期', width: 80,colspan: 3}
+			    	   
+			    	  ],
+			    	  [
+				    	    { title: '状态', width: 80}
+				    	    ,{field: 'city', title: '市', width: 120}
+				    	    ,{field: 'county', title: '详细', width: 300}
+				    	  ] */]
+			     ,done: function(res, curr, count){
+			    	 var data = res.data;
+		                var list = [];
+		                var list1 = [];
+		                var list2=[];
+		                var list3=[];
+		                var a;
+		                var b;
+		                var c;
+			    	$.each(data,function(i,v){
+	                	list[i]={
+	                			align: 'center', title:v.time, colspan: 3
+	                	};
+	                	list1[i]={
+	                			align: 'center', title:v.week, colspan: 3
+		                	};
+	                	a={align: 'center',title: '出勤', }
+				    	b={align: 'center',title: '加班', };
+				    	 c={align: 'center',title: '缺勤', }
+			    	list3.push(a);
+				    list3.push(b);
+				    list3.push(c)
+	                });
+			    	list2.push(list)
+			    	list2.push(list1)
+			    	list2.push(list3)
+			    	table.init('test3', {
+	                	 cols:list2
+	                	,data:res.data
+	                	,limit:10
+	                });
+			      } 
+		          ,id: 'testReload'
+			    ,page: true
+			  });
+			  
+			//监听单元格编辑
+			  table.on('edit(test3)', function(obj){
+			    var value = obj.value //得到修改后的值
+			    ,data = obj.data //得到所在行所有键值
+			    ,field = obj.field; //得到字段
+			    var postData={
+						number:data.number,
+						[field]:value,
+						address:$("#select1").val(),
+						isPrivilege:data.privilege,
+						enabled:data.enabled
+				}
+			     $.ajax({
+					url:"${ctx}/personnel/updateUser",
+					data:postData,
+					type:"GET",
+					beforeSend:function(){
+						index = layer.load(1, {
+							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							});
+					},
+					success:function(result){
+						if(0==result.code){
+							layer.msg('[ID: '+ data.number +'] ' + field + ' 字段更改为：'+ value); 
+							layer.close(index);
+						}else{
+							layer.msg("修改失败！", {icon: 2});
+							layer.close(index);
+						}
+					},error:function(){
+						layer.msg("操作失败！", {icon: 2});
+						layer.close(index);
+					}
+				}); 
+			  });
+			
+		
+			  
+			$('#search').on('click', function(){
+				    var type = $(this).data('type');
+				    active[type] ? active[type].call(this) : '';
+				  });
+				});
+		
+		
+		/* jQuery(function($) {
 			var Login = function() {
 				var self = this;
 				//表单jsonArray
@@ -249,7 +376,7 @@
 			}
 			var login = new Login();
 			login.init();
-		})
+		}) */
 	</script>
 
 </body>

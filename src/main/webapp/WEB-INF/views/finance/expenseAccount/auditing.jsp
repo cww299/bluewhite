@@ -43,13 +43,13 @@
 								<td>&nbsp&nbsp</td>
 								<td><select class="form-control" id="selectone"><option value="">请选择</option><option value="expenseDate">付款日期</option><option value="paymentDate">财务付款日期</option></select></td>
 								<td>&nbsp&nbsp</td>
-								<td>合同开始:</td>
+								<td>当月开始:</td>
 								<td>
 								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
              					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
 								</td>
 									<td>&nbsp&nbsp</td>
-				<td>合同结束:</td>
+				<td>当月结束:</td>
 				<td>
 					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
              onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
@@ -206,6 +206,7 @@
 			 var data={
 						page:1,
 				  		size:13,
+				  		flag:0,
 				} 
 			this.init = function(){
 				
@@ -353,17 +354,24 @@
 				$('.Tips').on('click',function(){
 					var a;
 					var that=$(this);
-					if($(this).text() == "未核对"){
-						$(this).text("已核对")
-						a=1
-					}
 					if($(this).parent().parent().find('.paymentMoney').val()==""){
 						return	layer.msg("请填写支付金额", {icon: 2});
 					}
+					if($(this).parent().parent().find('.time').val()==""){
+						return	layer.msg("请填写支付时间", {icon: 2});
+					}
+					if($(this).text() == "未核对"){
+						$(this).text("已核对")
+						a=1
+					}else{
+						$(this).text("未核对")
+						a=0
+					}
   					var postData = {
 							id:$(this).data('id'),
-							paymentDate:now2,
+							paymentDate:$(this).parent().parent().find('.time').val()+' '+'00:00:00',
 							paymentMoney:$(this).parent().parent().find('.paymentMoney').val(),
+							flag:a
 					}
   					var index;
 					$.ajax({
@@ -378,8 +386,8 @@
 						success:function(result){
 							if(0==result.code){
 							layer.msg("核对成功", {icon: 1});
-							var newDate=/\d{4}-\d{1,2}-\d{1,2}/g.exec(now2)
-							that.parent().parent().find('.time').val(newDate)
+							/* var newDate=/\d{4}-\d{1,2}-\d{1,2}/g.exec(now2)
+							that.parent().parent().find('.time').val(newDate) */
 							layer.close(index);
 							}else{
 								layer.msg(result.message, {icon: 2});
@@ -406,9 +414,16 @@
   					laydate({elem: '#'+a+'', istime: true, format: 'YYYY-MM-DD',})
   				})
   				
+  				
+  	
+  				
+  				
   				$(".paymentMoney").blur(function(){
   					if($(this).val()==""){
 						return	layer.msg("请填写转账金额", {icon: 2});
+					}
+  					if($(this).parent().parent().find('.time').val()==""){
+						return	layer.msg("请填写支付时间", {icon: 2});
 					}
   					var postData = {
 							id:$(this).data('id'),
