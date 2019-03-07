@@ -337,7 +337,23 @@ public class DatesUtil {
 
    }
    
-  
+   /**
+    * 判断是否是weekend
+    *
+    * @param sdate
+    * @return
+    * @throws ParseException
+    */
+   public static boolean isWeekend(Date date){
+       Calendar cal = Calendar.getInstance();
+       cal.setTime(date);
+       if(cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
+           return true;
+       } else{
+           return false;
+       }
+
+   }
 
    
 

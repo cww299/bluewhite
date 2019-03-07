@@ -61,6 +61,14 @@ public interface AttendanceService  extends BaseCRUDService<Attendance,Long>{
 	 */
 	public List<AttendanceTime> findAttendanceTime(Attendance attendance);
 	
+	
+	/**
+	 * 按条件查看考勤工作时长的汇总
+	 * @param attendance
+	 * @return
+	 */
+	public List<Map<String, Object>> findAttendanceTimeCollect(Attendance attendance);
+	
 	/**
 	 * 查看考勤机中全部考勤记录
 	 * @param address

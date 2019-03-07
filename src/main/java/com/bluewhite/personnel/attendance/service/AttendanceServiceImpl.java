@@ -1,25 +1,21 @@
 package com.bluewhite.personnel.attendance.service;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.FlushModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.Predicate;
 
-import org.apache.poi.hssf.util.HSSFColor.TURQUOISE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -33,20 +29,12 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.ZkemUtils.ZkemSDKUtils;
-import com.bluewhite.finance.ledger.entity.Bill;
 import com.bluewhite.personnel.attendance.dao.AttendanceDao;
 import com.bluewhite.personnel.attendance.entity.Attendance;
+import com.bluewhite.personnel.attendance.entity.AttendanceCollect;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
-import com.bluewhite.product.product.entity.Product;
-import com.bluewhite.production.bacth.entity.Bacth;
-import com.bluewhite.production.finance.entity.CollectPay;
-import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
-import com.google.common.base.FinalizablePhantomReference;
-import com.mysql.fabric.xmlrpc.base.Array;
-
-import javassist.expr.NewArray;
 
 @Service
 public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> implements AttendanceService {
@@ -347,6 +335,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 				}else{
 					//当按人名查找没有签到记录时，将这一天的考情状态修改
 					AttendanceTime attendanceTime = new AttendanceTime();
+					SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd"); 
 					attendanceTime.setTime(beginTimes);
 					attendanceTime.setUsername(us.getUserName());
 					attendanceTime.setNumber(us.getNumber());
@@ -355,11 +344,56 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 				}
 			}
 		}
-		
+			//根据员工编号自然顺序
 	      List<AttendanceTime> attendanceTimeList1 =
-	    		  attendanceTimeList.stream().filter(AttendanceTime->AttendanceTime.getNumber()!=null).sorted(Comparator.comparing(AttendanceTime::getNumber)).collect(Collectors.toList());//根据年龄自然顺序
-		
+	    		  attendanceTimeList.stream().filter(AttendanceTime->AttendanceTime.getNumber()!=null).sorted(Comparator.comparing(AttendanceTime::getNumber)).collect(Collectors.toList());
 		return attendanceTimeList1;
+	}
+	
+	
+	
+	/**
+	 * 通过传入的工作情况，按人员汇总出考勤数据
+	 */
+	private List<Map<String, Object>> AttendanceCollect( List<AttendanceTime> attendanceTimeList){
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");  
+		//最外层循环人员list
+		List<Map<String, Object>> allList = new ArrayList<>();
+		//单向数据map
+		Map<String, Object> allMap = null;
+		//构建按日期存放人员考勤数据的map
+		Map<String, Object> attendanceTimeMap = null;
+		//构建按日期存放人员考勤数据的map的list
+		List<Map<String, Object>>attendanceTimeMapList = null;
+		//按人员分组
+		Map<String, List<AttendanceTime>> mapAttendance =
+	    		  attendanceTimeList.stream().filter(AttendanceTime->AttendanceTime.getNumber()!=null).collect(Collectors.groupingBy(AttendanceTime::getNumber,Collectors.toList()));
+		for(String ps1 : mapAttendance.keySet()){
+			allMap = new HashMap<>();
+			attendanceTimeMapList = new ArrayList<>();
+			//获取单一员工日期区间所有的考勤数据
+			List<AttendanceTime> psList1= mapAttendance.get(ps1);
+			//按日期自然排序
+			 List<AttendanceTime> attendanceTimeList1 =	psList1.stream().sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
+			 for(AttendanceTime att:attendanceTimeList1){
+				 attendanceTimeMap = new HashMap<>();
+				 attendanceTimeMap.put("time", formatter.format(att.getTime()));
+				 attendanceTimeMap.put("attendanceTime", att);
+				 attendanceTimeMapList.add(attendanceTimeMap);
+			 }
+			AttendanceCollect attendanceCollect = new AttendanceCollect(psList1);
+			allMap.put("name", attendanceTimeList1.get(0).getUsername());
+			allMap.put("attendanceTimeData", attendanceTimeMapList);
+			allMap.put("collect", attendanceCollect);
+			allList.add(allMap);
+		}
+		return allList;
+	}
+	
+	
+	@Override
+	public List<Map<String, Object>> findAttendanceTimeCollect(Attendance attendance) {
+		return this.AttendanceCollect(this.findAttendanceTime(attendance));
 	}
 	
 	
@@ -410,5 +444,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		dao.save(attendanceList);
 		return count;
 	}
+
+
 
 }

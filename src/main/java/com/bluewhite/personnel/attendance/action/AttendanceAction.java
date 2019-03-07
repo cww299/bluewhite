@@ -210,10 +210,12 @@ public class AttendanceAction {
 	@ResponseBody
 	public CommonResponse findAttendanceTime(HttpServletRequest request,Attendance attendance) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(ClearCascadeJSON
-				.get()
-				.addRetainTerm(AttendanceTime.class,"time","number","username","checkIn","checkOut","turnWorkTime","overtime","week","dutytime")
-				.format(attendanceService.findAttendanceTime(attendance)).toJSON());
+//		cr.setData(ClearCascadeJSON
+//				.get()
+//				.addRetainTerm(AttendanceTime.class,"time","number","username","checkIn","checkOut","turnWorkTime","overtime","week","dutytime")
+//				.format(attendanceService.findAttendanceTime(attendance)).toJSON());
+		cr.setData(attendanceService.findAttendanceTimeCollect(attendance));
+		
 		cr.setMessage("查询成功");
 		return cr;
 	}
