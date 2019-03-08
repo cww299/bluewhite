@@ -179,16 +179,16 @@
 			    		list[0]={align: 'center',title: '姓名',width:80,fixed: 'left',rowspan:3,templet:function(d){
 	                		return d.attendanceTimeData[i].username	
 	                	} }; 
-			    		list[length+1]={align: 'center',title:'出勤',fixed: 'right',width:80, rowspan:3,templet:function(d){
+			    		list[length+1]={align: 'center',title:'出勤',fixed: 'right',width:70, rowspan:3,templet:function(d){
 	                		return d.collect.turnWork	
 	                	} };
-			    		list[length+2]={align: 'center',title: '加班',fixed: 'right',width:80,rowspan:3,templet:function(d){
+			    		list[length+2]={align: 'center',title: '加班',fixed: 'right',width:70,rowspan:3,templet:function(d){
 	                		return d.collect.overtime	
 	                	} };
-			    		list[length+3]={align: 'center',title: '缺勤',fixed: 'right',width:80,rowspan:3,templet:function(d){
+			    		list[length+3]={align: 'center',title: '缺勤',fixed: 'right',width:70,rowspan:3,templet:function(d){
 	                		return d.collect.dutyWork	
 	                	} };
-			    		list[length+4]={align: 'center',title: '总出勤',fixed: 'right',width:80,rowspan:3,templet:function(d){
+			    		list[length+4]={align: 'center',title: '总出勤',fixed: 'right',width:70,rowspan:3,templet:function(d){
 	                		return d.collect.allWork	
 	                	} };
 	                	list[i+1]={
