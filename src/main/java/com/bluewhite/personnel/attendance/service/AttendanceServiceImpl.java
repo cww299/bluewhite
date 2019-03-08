@@ -361,29 +361,17 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		List<Map<String, Object>> allList = new ArrayList<>();
 		//单向数据map
 		Map<String, Object> allMap = null;
-		//构建按日期存放人员考勤数据的map
-		Map<String, Object> attendanceTimeMap = null;
-		//构建按日期存放人员考勤数据的map的list
-		List<Map<String, Object>>attendanceTimeMapList = null;
 		//按人员分组
 		Map<String, List<AttendanceTime>> mapAttendance =
 	    		  attendanceTimeList.stream().filter(AttendanceTime->AttendanceTime.getNumber()!=null).collect(Collectors.groupingBy(AttendanceTime::getNumber,Collectors.toList()));
 		for(String ps1 : mapAttendance.keySet()){
 			allMap = new HashMap<>();
-			attendanceTimeMapList = new ArrayList<>();
 			//获取单一员工日期区间所有的考勤数据
 			List<AttendanceTime> psList1= mapAttendance.get(ps1);
 			//按日期自然排序
 			 List<AttendanceTime> attendanceTimeList1 =	psList1.stream().sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
-			 for(AttendanceTime att:attendanceTimeList1){
-				 attendanceTimeMap = new HashMap<>();
-				 attendanceTimeMap.put("time", formatter.format(att.getTime()));
-				 attendanceTimeMap.put("attendanceTime", att);
-				 attendanceTimeMapList.add(attendanceTimeMap);
-			 }
 			AttendanceCollect attendanceCollect = new AttendanceCollect(psList1);
-			allMap.put("name", attendanceTimeList1.get(0).getUsername());
-			allMap.put("attendanceTimeData", attendanceTimeMapList);
+			allMap.put("attendanceTimeData", attendanceTimeList1);
 			allMap.put("collect", attendanceCollect);
 			allList.add(allMap);
 		}
