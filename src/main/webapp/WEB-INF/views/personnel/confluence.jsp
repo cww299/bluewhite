@@ -139,15 +139,15 @@
 		layui.use('table', function(){
 			  var table = layui.table;
 			  var form = layui.form;
-			  var startTime = '2019-03-01 00:00:00 ~ 2019-03-31 00:00:00';
+			  var startTime = '2019-01-01 00:00:00 ~ 2019-01-31 23:59:59';
 				var arr = startTime.split("~");
-				var startTime1 = '08:08:00 ~ 17:30:00';
+				var startTime1 = '08:30:00 ~ 17:30:00';
 				var arr1 = startTime1.split("~");
 			  table.render({
 			    elem: '#test'
 			    ,url:'${ctx}/personnel/findAttendanceTime'
-			    ,where: {userName : '齐勇',
-					orgNameId : $(".selectgroupChange").val(),
+			    ,where: {userName : '',
+					orgNameId : 10,
 					orderTimeBegin : arr[0],
 					orderTimeEnd : arr[1],
 					workTimeBegin : arr1[0],
@@ -164,21 +164,8 @@
 		               "data": res.data //解析数据列表
 		             };
 		           }
-			    ,cols: [/* [
-			    	 //标题栏
-			    	    {field: 'username', title: '姓名', width: 80, rowspan: 3,} //rowspan即纵向跨越的单元格数
-			    	    ,{field: 'time',align: 'center',title: '日期',  colspan: 3} //colspan即横跨的单元格数，这种情况下不用设置field和width
-			    	  ], [
-			    		  
-			    	    {field: 'province', title: '星期', width: 80,colspan: 3}
-			    	   
-			    	  ],
-			    	  [
-				    	    { title: '状态', width: 80}
-				    	    ,{field: 'city', title: '市', width: 120}
-				    	    ,{field: 'county', title: '详细', width: 300}
-				    	  ] */]
-			     ,done: function(res, curr, count){
+			    ,cols: []
+			    ,done: function(res, curr, count){
 			    	 var data = res.data;
 		                var list = [];
 		                var list1 = [];
@@ -187,16 +174,28 @@
 		                var a;
 		                var b;
 		                var c;
-			    	$.each(data,function(i,v){
-	                	list[i]={
+			    	$.each(data[0].attendanceTimeData,function(i,v){
+			    		list[0]={align: 'center',title: '姓名',fixed: 'left',rowspan:3,templet:function(d){
+	                		return d.attendanceTimeData[i].username	
+	                	} }; 
+	                	list[i+1]={
 	                			align: 'center', title:v.time, colspan: 3
 	                	};
 	                	list1[i]={
 	                			align: 'center', title:v.week, colspan: 3
 		                	};
-	                	a={align: 'center',title: '出勤', }
-				    	b={align: 'center',title: '加班', };
-				    	 c={align: 'center',title: '缺勤', }
+	                	a={align: 'center',title: '出勤',templet:function(d){
+	                		if(d.attendanceTimeData[i].turnWorkTime==null) return ''; 
+	                		else  return d.attendanceTimeData[i].turnWorkTime;
+	                	} }
+				    	b={align: 'center',title: '加班',templet:function(d){
+				    		if(d.attendanceTimeData[i].overtime==null) return ''; 
+	                		else  return d.attendanceTimeData[i].overtime;
+	                	} };
+				    	c={align: 'center',title: '缺勤',templet:function(d){
+				    		if(d.attendanceTimeData[i].dutytime==null) return ''; 
+	                		else  return d.attendanceTimeData[i].dutytime;
+	                	} }
 			    	list3.push(a);
 				    list3.push(b);
 				    list3.push(c)
