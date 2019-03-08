@@ -254,7 +254,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			}
 			//获取一天的签到结束时间,延后6个小时
 			Date endTimes = DatesUtil.dayTime(DatesUtil.getLastDayOftime(DatesUtil.nextDay(beginTimes)), "06:00:00");
-			//从5点开始新一天的签到
+			//从6点开始新一天的签到
 			Date beginTimes1 = DatesUtil.dayTime(beginTimes,"06:00:00");
 			attendance.setOrderTimeBegin(beginTimes1);
 			attendance.setOrderTimeEnd(endTimes);

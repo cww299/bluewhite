@@ -15,7 +15,11 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -48,6 +52,7 @@ import com.bluewhite.finance.ledger.dao.OrderDao;
 import com.bluewhite.finance.ledger.entity.Order;
 import com.bluewhite.finance.ledger.service.OrderService;
 import com.bluewhite.personnel.attendance.entity.Attendance;
+import com.bluewhite.personnel.attendance.entity.AttendanceCollect;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.service.AttendanceService;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
@@ -867,6 +872,8 @@ public class ReportExportAction {
 			starTime = beginTimes;
 		}
 		
+		excelHeader2String = excelHeader2String + ",出勤,加班,缺勤,总出勤";
+		
 		String[] excelHeader0 = null;
 		String[] headnum0  = null;
 		String[] excelHeader1 = null;
@@ -884,7 +891,19 @@ public class ReportExportAction {
         XSSFWorkbook wb = new XSSFWorkbook();  
         // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet  
         XSSFSheet sheet = wb.createSheet("考勤报表"); 
-        sheet.setDefaultColumnWidth(10);
+        
+        // 表头样式
+        XSSFCellStyle headStyle = wb.createCellStyle();
+        // 竖向居中
+        headStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        // 横向居中
+        headStyle.setAlignment(HorizontalAlignment.CENTER);
+        // 边框
+        headStyle.setBorderBottom(BorderStyle.THIN);
+        headStyle.setBorderLeft(BorderStyle.THIN);
+        headStyle.setBorderRight(BorderStyle.THIN);
+        headStyle.setBorderTop(BorderStyle.THIN);
+        sheet.setDefaultColumnWidth(5);
         // 在sheet中添加表头第0行
         XSSFRow row = sheet.createRow(0);
         int j = 0;
@@ -893,7 +912,9 @@ public class ReportExportAction {
         		j=j+2;
         	}
         	int num = i>4 ? (i+j) : i;
-            row.createCell(num).setCellValue(excelHeader0[i]);
+          	 XSSFCell cell = row.createCell(num);
+             cell.setCellValue(excelHeader0[i]);
+             cell.setCellStyle(headStyle);
         }
 
         // 动态合并单元格
@@ -904,19 +925,28 @@ public class ReportExportAction {
             Integer startcol = Integer.parseInt(temp[2]);
             Integer overcol = Integer.parseInt(temp[3]);
             if (!(startrow.equals(overrow) && startcol.equals(overcol))) {  
-                sheet.addMergedRegion(new CellRangeAddress(startrow, overrow, startcol, overcol));  
+            	CellRangeAddress cra = new CellRangeAddress(startrow, overrow, startcol, overcol);
+                sheet.addMergedRegion(cra); 
+                // 使用RegionUtil类为合并后的单元格添加边框
+        		RegionUtil.setBorderBottom(1, cra, sheet); // 下边框
+        		RegionUtil.setBorderLeft(1, cra, sheet); // 左边框
+        		RegionUtil.setBorderRight(1, cra, sheet); // 有边框
+        		RegionUtil.setBorderTop(1, cra, sheet); // 上边框
+
            }  
         }
         
         // 第二行表头
-        row = sheet.createRow(1);
+        XSSFRow  row1 = sheet.createRow(1);
         j = 0;
         for (int i = 0; i < excelHeader1.length; i++) {
         	if(i>4){
         		j=j+2;
         	}
         	int num = i>4 ? (i+j) : i;
-            row.createCell(num).setCellValue(excelHeader1[i]);
+		   	 XSSFCell cell = row1.createCell(num);
+		     cell.setCellValue(excelHeader1[i]);
+		     cell.setCellStyle(headStyle);
         }
 
         // 动态合并单元格
@@ -927,41 +957,60 @@ public class ReportExportAction {
             Integer startcol = Integer.parseInt(temp[2]);
             Integer overcol = Integer.parseInt(temp[3]);
             if (!(startrow.equals(overrow) && startcol.equals(overcol))) {  
-                sheet.addMergedRegion(new CellRangeAddress(startrow, overrow, startcol, overcol));  
+            	CellRangeAddress cra = new CellRangeAddress(startrow, overrow, startcol, overcol);
+                sheet.addMergedRegion(cra);   
+                // 使用RegionUtil类为合并后的单元格添加边框
+        		RegionUtil.setBorderBottom(1, cra, sheet); // 下边框
+        		RegionUtil.setBorderLeft(1, cra, sheet); // 左边框
+        		RegionUtil.setBorderRight(1, cra, sheet); // 有边框
+        		RegionUtil.setBorderTop(1, cra, sheet); // 上边框
+
            } 
         }
         
         
         // 第三行表头
-        row = sheet.createRow(2);
+        XSSFRow row2 = sheet.createRow(2);
         for (int i = 0; i < excelHeader2.length; i++) {
-            row.createCell(i).setCellValue(excelHeader2[i]);
+        	 XSSFCell cell = row2.createCell(i);
+             cell.setCellValue(excelHeader2[i]);
+             cell.setCellStyle(headStyle);
         }
         
         
        //填充数据
         //一整个月的考勤查询出来
-       List<AttendanceTime> attendanceList = attendanceService.findAttendanceTime(attendance);     //按人员分组
-       Map<String, List<AttendanceTime>> mapAttendancePay = attendanceList.stream().filter(AttendanceTime->AttendanceTime.getNumber()!=null).collect(Collectors.groupingBy(AttendanceTime::getNumber,Collectors.toList()));
-		//循环出一整个月的每个人的人员考勤
-       int l = 3;
-		for(Object ps : mapAttendancePay.keySet()){
-			List<AttendanceTime> psList= mapAttendancePay.get(ps);
-			row = sheet.createRow(l);
+       List<Map<String, Object>> mapList = attendanceService.findAttendanceTimeCollect(attendance);
+       int l = 2;
+       for (int p = 0; p < mapList.size(); p++) {
+    	   //获取人员考勤详细
+    	   List<AttendanceTime> psList =  (List<AttendanceTime>)mapList.get(p).get("attendanceTimeData");
+    	   //获取汇总
+    	   AttendanceCollect attendanceCollect  = (AttendanceCollect) mapList.get(p).get("collect");
+			//创建行，行初始是0，数据从第三行写入
+			row = sheet.createRow(++l);
 			row.createCell(0).setCellValue(attendance.getOrgName()); 
 			row.createCell(1).setCellValue(psList.get(0).getUsername()); 
 			row.createCell(2).setCellValue(""); 
 			row.createCell(3).setCellValue(""); 
-			int k = 4; 
+			//创建列，列初始是0，数据从第五列写入
+			int k = 3; 
 			for (int i = 0; i < psList.size(); i++){
-            	row.createCell(k).setCellValue(psList.get(i).getTurnWorkTime()!=null ? psList.get(i).getTurnWorkTime() : 0.0);
-            	row.createCell(++k).setCellValue(psList.get(i).getOvertime()!=null ? psList.get(i).getOvertime() : 0.0);
-            	row.createCell(++k).setCellValue(psList.get(i).getDutytime()!=null ? psList.get(i).getDutytime() : 0.0);
-            	k++;
-	        	}
-			l++;
-		}
-         
+	           	row.createCell(++k).setCellValue(psList.get(i).getTurnWorkTime()!=null ? psList.get(i).getTurnWorkTime() : 0.0);
+	           	row.createCell(++k).setCellValue(psList.get(i).getOvertime()!=null ? psList.get(i).getOvertime() : 0.0);
+	           	row.createCell(++k).setCellValue(psList.get(i).getDutytime()!=null ? psList.get(i).getDutytime() : 0.0);
+	        }
+			
+			//写入汇总数据，从基础数据写完后拼接
+			if(k == (psList.size()*3+3)){
+			int o = k ;
+				row.createCell(++o).setCellValue(attendanceCollect.getTurnWork()!=null ? attendanceCollect.getTurnWork() : 0.0);
+		       	row.createCell(++o).setCellValue(attendanceCollect.getOvertime()!=null ? attendanceCollect.getOvertime() : 0.0);
+		       	row.createCell(++o).setCellValue(attendanceCollect.getDutyWork()!=null ? attendanceCollect.getDutyWork() : 0.0);
+		       	row.createCell(++o).setCellValue(attendanceCollect.getAllWork()!=null ? attendanceCollect.getAllWork() : 0.0);
+			}
+		
+       }
     try {	
     	OutputStream outputStream=response.getOutputStream();
     	wb.write(outputStream);
