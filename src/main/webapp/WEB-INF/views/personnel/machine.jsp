@@ -82,6 +82,7 @@
 		  table.render({
 		    elem: '#test'
 		    ,url:'${ctx}/personnel/getAllUser'
+		    
 		    ,where: {address:'192.168.1.204'} 
 		    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
 		    , method:'GET'

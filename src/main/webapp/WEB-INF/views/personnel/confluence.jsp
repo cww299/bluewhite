@@ -134,27 +134,27 @@
 			range : '~'
 
 		});
-
-		
+		$('.searchAtt').on('click', function(){
 		layui.use('table', function(){
 			  var table = layui.table;
 			  var form = layui.form;
-			  var startTime = '2019-01-01 00:00:00 ~ 2019-01-31 23:59:59';
+			  var startTime = $("#startTime").val()
 				var arr = startTime.split("~");
-				var startTime1 = '08:30:00 ~ 17:30:00';
+				var startTime1 = $("#startTime1").val()
 				var arr1 = startTime1.split("~");
 			  table.render({
 			    elem: '#test'
 			    ,url:'${ctx}/personnel/findAttendanceTime'
-			    ,where: {userName : '',
-					orgNameId : 10,
+			    ,where: {userName : $('#name').val(),
+					orgNameId : $(".selectgroupChange").val(),
 					orderTimeBegin : arr[0],
 					orderTimeEnd : arr[1],
 					workTimeBegin : arr1[0],
 					workTimeEnd : arr1[1],
-					restTime : 1,} 
+					restTime : $("#restTime").val(),} 
 			    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
 			    , method:'GET'
+			    	
 			  ,parseData: function(res){ //res 即为原始返回的数据
 		         	res.data.code=0
 		             return {
@@ -174,10 +174,23 @@
 		                var a;
 		                var b;
 		                var c;
+		                var length=data[0].attendanceTimeData.length
 			    	$.each(data[0].attendanceTimeData,function(i,v){
-			    		list[0]={align: 'center',title: '姓名',fixed: 'left',rowspan:3,templet:function(d){
+			    		list[0]={align: 'center',title: '姓名',width:80,fixed: 'left',rowspan:3,templet:function(d){
 	                		return d.attendanceTimeData[i].username	
 	                	} }; 
+			    		list[length+1]={align: 'center',title:'出勤',fixed: 'right',width:80, rowspan:3,templet:function(d){
+	                		return d.collect.turnWork	
+	                	} };
+			    		list[length+2]={align: 'center',title: '加班',fixed: 'right',width:80,rowspan:3,templet:function(d){
+	                		return d.collect.overtime	
+	                	} };
+			    		list[length+3]={align: 'center',title: '缺勤',fixed: 'right',width:80,rowspan:3,templet:function(d){
+	                		return d.collect.dutyWork	
+	                	} };
+			    		list[length+4]={align: 'center',title: '总出勤',fixed: 'right',width:80,rowspan:3,templet:function(d){
+	                		return d.collect.allWork	
+	                	} };
 	                	list[i+1]={
 	                			align: 'center', title:v.time, colspan: 3
 	                	};
@@ -200,182 +213,92 @@
 				    list3.push(b);
 				    list3.push(c)
 	                });
+			    	
 			    	list2.push(list)
 			    	list2.push(list1)
 			    	list2.push(list3)
 			    	table.init('test3', {
 	                	 cols:list2
 	                	,data:res.data
-	                	,limit:10
+	                	,limit:500
 	                });
 			      } 
 		          ,id: 'testReload'
-			    ,page: true
+			    ,page: false
 			  });
 			  
-			//监听单元格编辑
-			  table.on('edit(test3)', function(obj){
-			    var value = obj.value //得到修改后的值
-			    ,data = obj.data //得到所在行所有键值
-			    ,field = obj.field; //得到字段
-			    var postData={
-						number:data.number,
-						[field]:value,
-						address:$("#select1").val(),
-						isPrivilege:data.privilege,
-						enabled:data.enabled
-				}
-			     $.ajax({
-					url:"${ctx}/personnel/updateUser",
-					data:postData,
-					type:"GET",
-					beforeSend:function(){
-						index = layer.load(1, {
-							  shade: [0.1,'#fff'] //0.1透明度的白色背景
-							});
-					},
-					success:function(result){
-						if(0==result.code){
-							layer.msg('[ID: '+ data.number +'] ' + field + ' 字段更改为：'+ value); 
-							layer.close(index);
-						}else{
-							layer.msg("修改失败！", {icon: 2});
-							layer.close(index);
-						}
-					},error:function(){
-						layer.msg("操作失败！", {icon: 2});
-						layer.close(index);
-					}
-				}); 
-			  });
-			
 		
-			  
-			$('#search').on('click', function(){
-				    var type = $(this).data('type');
-				    active[type] ? active[type].call(this) : '';
-				  });
-				});
-		
-		
-		/* jQuery(function($) {
-			var Login = function() {
-				var self = this;
-				//表单jsonArray
-				//初始化js
-				this.init = function() {
-					//注册绑定事件
-					self.events();
-				}
-				//加载分页
-				this.loadPagination = function(data) {
-					var index;
-					var html = '';
-					$.ajax({
-						url : "${ctx}/personnel/findAttendanceTime",
-						data : data,
-						type : "GET",
-						beforeSend : function() {
-							index = layer.load(1, {
-								shade : [ 0.1, '#fff' ]
-							//0.1透明度的白色背景
-							});
-						},
-						success : function(result) {
-							
-							if(0==result.code){
-								$(result.data).each(
-										function(i, o) {
-											html += '<tr>' + '<td class="text-center">' + o.time + '</td>' + '<td class="text-center">' + o.week + '</td>' + '<td class="text-center">'
-													+ o.number + '</td>' + '<td class="text-center">' + o.username + '</td>' + '<td class="text-center">' + o.checkIn + '</td>'
-													+ '<td class="text-center">' + o.checkOut + '</td>' + '<td class="text-center">' + o.turnWorkTime + '</td>'
-													+ '<td class="text-center">' + o.overtime + '</td>'+ '<td class="text-center">' + o.dutytime + '</td></tr>'
-										});
-								$("#tablecontent").html(html);
-							}else{
-								layer.msg(result.message, {icon: 2});
-							}
-							layer.close(index);
-						},
-						error : function() {
-							layer.msg("加载失败！", {
-								icon : 2
-							});
-							layer.close(index);
-						}
-					});
-				}
-
-				//查找考勤
-				$('.searchAtt').on('click', function() {
-					var startTime = $("#startTime").val()
+			  //查询
+			/* $('.searchAtt').on('click', function(){
+				//执行重载
+				var startTime = $("#startTime").val()
 					var arr = startTime.split("~");
 					var startTime1 = $("#startTime1").val()
 					var arr1 = startTime1.split("~");
-					var data = {
-						userName : $('#name').val(),
+					
+			      table.reload('testReload', {
+			        where: {
+			        	userName : $('#name').val(),
 						orgNameId : $(".selectgroupChange").val(),
 						orderTimeBegin : arr[0],
 						orderTimeEnd : arr[1],
 						workTimeBegin : arr1[0],
 						workTimeEnd : arr1[1],
 						restTime : $("#restTime").val(),
-					}
-					self.loadPagination(data);
+			        }
+			      });
+				  }); */
 				});
-
-				//导出考勤
-				$('#export').on(
-						'click',
-						function() {
-							var startTime = $("#startTime").val()
-							var arr = startTime.split("~");
-							var startTime1 = $("#startTime1").val()
-							var arr1 = startTime1.split("~");
-							//参数
-							var userName = $('#name').val();
-							var orgNameId = $(".selectgroupChange").val();
-							var orgName =   $(".selectgroupChange").find("option:selected").text();
-							var orderTimeBegin = arr[0];
-							var orderTimeEnd = arr[1];
-							var workTimeBegin = arr1[0];
-							var workTimeEnd = arr1[1];
-							var restTime = $("#restTime").val();
-							location.href = "${ctx}/excel/importExcel/personnel/DownAttendance?userName=" + userName + "&orgNameId=" + orgNameId + "&orderTimeBegin=" + orderTimeBegin
-									+ "&orderTimeEnd=" + orderTimeEnd + "&workTimeBegin="+workTimeBegin+"&workTimeEnd="+workTimeEnd+" &restTime="+restTime+"&orgName="+orgName+"";
-						})
-
-				this.events = function() {
-					var indextwo;
-					var htmlth = '';
-					var htmlfr = '';
-					var getdata = {
-						type : "orgName",
-					}
-					$.ajax({
-						url : "${ctx}/basedata/list",
-						data : getdata,
-						type : "GET",
-						beforeSend : function() {
-							indextwo = layer.load(1, {
-								shade : [ 0.1, '#fff' ]
-							//0.1透明度的白色背景
-							});
-						},
-						success : function(result) {
-							$(result.data).each(function(k, j) {
-								htmlfr += '<option value="'+j.id+'">' + j.name + '</option>'
-							});
-							var htmlth = '<select class="form-control  selectgroupChange"><option value="">请选择</option>' + htmlfr + '</select>'
-							$("#department").html(htmlth);
-							layer.close(indextwo);
-						}
-					});
-				}
+		});
+		
+		//部门遍历
+		var indextwo;
+		var htmlth = '';
+		var htmlfr = '';
+		var getdata = {
+			type : "orgName",
+		}
+		$.ajax({
+			url : "${ctx}/basedata/list",
+			data : getdata,
+			type : "GET",
+			beforeSend : function() {
+				indextwo = layer.load(1, {
+					shade : [ 0.1, '#fff' ]
+				//0.1透明度的白色背景
+				});
+			},
+			success : function(result) {
+				$(result.data).each(function(k, j) {
+					htmlfr += '<option value="'+j.id+'">' + j.name + '</option>'
+				});
+				var htmlth = '<select class="form-control  selectgroupChange"><option value="">请选择</option>' + htmlfr + '</select>'
+				$("#department").html(htmlth);
+				layer.close(indextwo);
 			}
-			var login = new Login();
-			login.init();
-		}) */
+		});
+		
+		//导出考勤
+		$('#export').on(
+				'click',
+				function() {
+					var startTime = $("#startTime").val()
+					var arr = startTime.split("~");
+					var startTime1 = $("#startTime1").val()
+					var arr1 = startTime1.split("~");
+					//参数
+					var userName = $('#name').val();
+					var orgNameId = $(".selectgroupChange").val();
+					var orgName =   $(".selectgroupChange").find("option:selected").text();
+					var orderTimeBegin = arr[0];
+					var orderTimeEnd = arr[1];
+					var workTimeBegin = arr1[0];
+					var workTimeEnd = arr1[1];
+					var restTime = $("#restTime").val();
+					location.href = "${ctx}/excel/importExcel/personnel/DownAttendance?userName=" + userName + "&orgNameId=" + orgNameId + "&orderTimeBegin=" + orderTimeBegin
+							+ "&orderTimeEnd=" + orderTimeEnd + "&workTimeBegin="+workTimeBegin+"&workTimeEnd="+workTimeEnd+" &restTime="+restTime+"&orgName="+orgName+"";
+				})
+		
 	</script>
 
 </body>

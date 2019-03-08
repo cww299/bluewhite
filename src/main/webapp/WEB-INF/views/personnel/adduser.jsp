@@ -252,6 +252,15 @@
 						success:function(result){
 							if(0==result.code){
 								layer.msg(result.message, {icon: 1});
+								var data = {
+							  			page:1,
+							  			size:13,
+							  			userName:$('#name').val(),
+							  			orderTimeBegin:$("#startTime").val(),
+							  			orderTimeEnd:$("#endTime").val(),
+							  			orgNameId:$(".selectgroupChange").val(),
+							  	}
+					            self.loadPagination(data);
 								layer.close(index);
 							}else{
 								layer.msg(result.message, {icon: 2});
