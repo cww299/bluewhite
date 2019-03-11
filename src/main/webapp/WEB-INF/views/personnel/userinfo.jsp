@@ -571,7 +571,7 @@
     <script src="${ctx }/static/plugins/pace/pace.min.js"></script>
     <script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
     <script src="${ctx }/static/js/src/app.js"></script>
-     <script src="${ctx }/static/js/laypage/laypage.js"></script> 
+    <script src="${ctx }/static/js/laypage/laypage.js"></script> 
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
     <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
@@ -1225,7 +1225,7 @@
 		      				+'<td class="text-center edit price">'+(newDate!=null ? newDate: "")+'</td>'
 		      				+'<td class="text-center edit price">'+k+'</td>'
 		      				+'<td class="text-center edit price">'+r+'</td>'
-							+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>员工详情</button> <button class="btn btn-xs btn-success btn-trans addbatchtw" data-idd='+o.id+' data-ids='+m+' >档案位置详情</button></td></tr>'
+							+'<td class="text-center edit price"><button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.userName+' data-nameid='+z+' data-postid='+u+'>员工详情</button> <button class="btn btn-xs btn-success btn-trans addbatchtw" data-idd='+o.id+' data-ids='+m+' >档案位置详情</button> <button class="btn btn-xs btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 		      			}); 
 		      			self.setCount(result.data.pageNum)
 				        //显示分页
@@ -1285,6 +1285,53 @@
 			}
 			
 			  this.loadEvents = function(){
+				  
+				  $('.delete').on('click',function(){
+						var postData = {
+								ids:$(this).data('id'),
+						}
+						
+						var index;
+						 index = layer.confirm('<div>输入密码:<input id="password" /></div>', {btn: ['确定', '取消']},function(){
+							 if($("#password").val()==3116){
+								 alert(1)
+						/* $.ajax({
+							url:"${ctx}/task/delete",
+							data:postData,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+								layer.msg("删除成功！", {icon: 1});
+								var _data={
+										page:1,
+								  		size:13,
+										bacthId:self.getCache(),
+										type:3,
+								}
+								self.loadPaginationto(_data)
+								layer.close(index);
+								}else{
+									layer.msg("删除失败！", {icon: 2});
+									layer.close(index);
+								}
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						}); */
+							 }else{
+								 return layer.msg("请填写正确密码", {icon: 2});
+							 }
+						 })
+			})
+				  
+				  
 				/*修改 */
 					$('.addbatch').on('click',function(){
 						var _index
