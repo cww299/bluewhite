@@ -1288,15 +1288,14 @@
 				  
 				  $('.delete').on('click',function(){
 						var postData = {
-								ids:$(this).data('id'),
+								id:$(this).data('id'),
 						}
 						
 						var index;
 						 index = layer.confirm('<div>输入密码:<input id="password" /></div>', {btn: ['确定', '取消']},function(){
 							 if($("#password").val()==3116){
-								 alert(1)
-						/* $.ajax({
-							url:"${ctx}/task/delete",
+						 $.ajax({
+							url:"${ctx}/system/user/deleteUser",
 							data:postData,
 							type:"GET",
 							beforeSend:function(){
@@ -1307,24 +1306,25 @@
 							
 							success:function(result){
 								if(0==result.code){
-								layer.msg("删除成功！", {icon: 1});
+								layer.msg(result.message, {icon: 1});
 								var _data={
-										page:1,
+										page:self.getCount(),
 								  		size:13,
-										bacthId:self.getCache(),
-										type:3,
 								}
-								self.loadPaginationto(_data)
+								self.loadPagination(_data)
 								layer.close(index);
+								}else if(1500==result.code){
+									layer.msg("该名人员无法删除 存在数据关联", {icon: 2});
+									layer.close(index);
 								}else{
-									layer.msg("删除失败！", {icon: 2});
+									layer.msg(result.message, {icon: 2});
 									layer.close(index);
 								}
 							},error:function(){
 								layer.msg("操作失败！", {icon: 2});
 								layer.close(index);
 							}
-						}); */
+						}); 
 							 }else{
 								 return layer.msg("请填写正确密码", {icon: 2});
 							 }
