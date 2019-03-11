@@ -176,19 +176,19 @@
 		                var c;
 		                var length=data[0].attendanceTimeData.length
 			    	$.each(data[0].attendanceTimeData,function(i,v){
-			    		list[0]={align: 'center',title: '姓名',width:80,fixed: 'left',rowspan:3,templet:function(d){
+			    		list[0]={align: 'center',title:'<span style="color:red">姓名</span>',width:80,fixed: 'left',style: 'background-color: #5FB878;color: #fff',rowspan:3,templet:function(d){
 	                		return d.attendanceTimeData[i].username	
 	                	} }; 
-			    		list[length+1]={align: 'center',title:'出勤',fixed: 'right',width:70, rowspan:3,templet:function(d){
+			    		list[length+1]={align: 'center',title:'<span style="color:red">出勤</span>',fixed: 'right',width:70,style: 'background-color: #5FB878;color: #fff', rowspan:3,templet:function(d){
 	                		return d.collect.turnWork	
 	                	} };
-			    		list[length+2]={align: 'center',title: '加班',fixed: 'right',width:70,rowspan:3,templet:function(d){
+			    		list[length+2]={align: 'center',title: '<span style="color:red">加班</span>',fixed: 'right',width:70,style: 'background-color: #5FB878;color: #fff',rowspan:3,templet:function(d){
 	                		return d.collect.overtime	
 	                	} };
-			    		list[length+3]={align: 'center',title: '缺勤',fixed: 'right',width:70,rowspan:3,templet:function(d){
+			    		list[length+3]={align: 'center',title: '<span style="color:red">缺勤</span>',fixed: 'right',width:70,style: 'background-color: #5FB878;color: #fff',rowspan:3,templet:function(d){
 	                		return d.collect.dutyWork	
 	                	} };
-			    		list[length+4]={align: 'center',title: '总出勤',fixed: 'right',width:70,rowspan:3,templet:function(d){
+			    		list[length+4]={align: 'center',title: '<span style="color:red">总出勤</span>',fixed: 'right',width:70,style: 'background-color: #5FB878;color: #fff',rowspan:3,templet:function(d){
 	                		return d.collect.allWork	
 	                	} };
 	                	list[i+1]={
