@@ -312,6 +312,24 @@ public class UserAction {
 		cr.setData(map);
 		return cr;
 	}
+	
+	
+	
+	/**
+	 * 删除人员信息
+	 * 
+	 * @param request
+	 *            请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/deleteUser", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteUser(HttpServletRequest request, String id) {
+		CommonResponse cr = new CommonResponse();
+		int count  = userService.deleteUser(id);
+		cr.setMessage("成功删除"+count+"名员工");
+		return cr;
+	}
 
 	
 	/**

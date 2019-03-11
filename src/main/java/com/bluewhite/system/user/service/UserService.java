@@ -101,6 +101,12 @@ public interface UserService extends BaseCRUDService<User, Long> {
 	 * @return
 	 */
 	public List<User> findByForeigns();
+
+	/**
+	 * 删除员工（支持批量）
+	 * @param ids
+	 */
+	public int deleteUser(String ids);
 	
 	
 	
