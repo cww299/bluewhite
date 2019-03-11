@@ -41,8 +41,7 @@ public class SysLogAspect {
 	@Autowired
 	private SysLogService logService;
 	// 本地异常日志记录对象
-	private static final Logger logger = LoggerFactory
-			.getLogger(SysLogAspect.class);
+	private static final Logger logger = LoggerFactory.getLogger(SysLogAspect.class);
 
 	@Autowired
 

@@ -307,6 +307,22 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		return dao.findByForeigns(0);
 	}
 
+	@Override
+	public int deleteUser(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length>0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					dao.delete(id);
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+
 
 
 

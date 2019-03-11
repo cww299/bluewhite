@@ -281,14 +281,14 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 						// 考情记录有三种情况。当一天的考勤记录条数等于大于2时,为正常的考勤
 						// 大于2时，取集合中的最后一条数据作为考勤记录 
 						if (attList.size() >= 2) {
-							if (attList.get(0).getTime().before(attList.get(attList.size() - 1).getTime())) {
+							if (attList.get(0).getTime().before(attList.get(attList.size()).getTime())) {
 								// 上班
 								attendanceTime.setCheckIn(attList.get(0).getTime());
 								// 下班
-								attendanceTime.setCheckOut(attList.get(attList.size() - 1).getTime());
+								attendanceTime.setCheckOut(attList.get(attList.size()).getTime());
 							} else {
 								// 上班
-								attendanceTime.setCheckIn(attList.get(attList.size() - 1).getTime());
+								attendanceTime.setCheckIn(attList.get(attList.size()).getTime());
 								// 下班
 								attendanceTime.setCheckOut(attList.get(0).getTime());
 							}
@@ -297,21 +297,24 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 							Date workTime =DatesUtil.dayTime(beginTimes, attendance.getWorkTimeBegin()) ;
 							Date workTimeEnd =DatesUtil.dayTime(beginTimes, attendance.getWorkTimeEnd()) ;
 							
+							
 							//工作总时长
 							attendanceTime.setWorkTime(
 									NumUtils.sub(
-											DatesUtil.getTimeHour( attendanceTime.getCheckIn(),attendanceTime.getCheckOut()),
+											DatesUtil.getTimeHour(attendanceTime.getCheckIn(),attendanceTime.getCheckOut()),
 											attendance.getRestTime()
 											));
-							// 出勤时长
+							
+							// 出勤时长（最大为设定的工作间隔时间段，超出的算加班）
 							Double turnWorkTime = NumUtils.sub(
 									DatesUtil.getTimeHour( workTime,workTimeEnd),
 									attendance.getRestTime()
 									);
 							attendanceTime.setTurnWorkTime(attendanceTime.getWorkTime()>=turnWorkTime ? turnWorkTime : attendanceTime.getWorkTime());
-							if(attendanceTime.getWorkTime()<turnWorkTime){
-								attendanceTime.setDutytime(NumUtils.sub(turnWorkTime,attendanceTime.getWorkTime()));
-							}
+							
+							//缺勤时间（公司未规定放假日期，所以当员工没有打卡记录时，统一算缺勤）
+							attendanceTime.setDutytime(NumUtils.sub(turnWorkTime,attendanceTime.getWorkTime()));
+							
 							// 加班时间
 							if (workTime.before(attendanceTime.getCheckOut())) {
 								attendanceTime.setOvertime( DatesUtil.getTimeHour(workTimeEnd,attendanceTime.getCheckOut()));
@@ -335,7 +338,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 				}else{
 					//当按人名查找没有签到记录时，将这一天的考情状态修改
 					AttendanceTime attendanceTime = new AttendanceTime();
-					SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd"); 
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
 					attendanceTime.setTime(beginTimes);
 					attendanceTime.setUsername(us.getUserName());
 					attendanceTime.setNumber(us.getNumber());

@@ -36,9 +36,10 @@ public class BeanCopyUtils {
 	    		 src
 	    	    .getPropertyDescriptors())
 	    		.filter(pd -> {
-	    			if(ignoreListRe != null && ignoreListRe.contains(pd.getName())) return true;
+	    			if(ignoreListRe != null && ignoreListRe.contains(pd.getName())) 
+	    				return true;
 	    			Object value = src.getPropertyValue(pd.getName());
-	    			return value == null || (value instanceof Collection && ((Collection<?>)value).size() == 0);
+	    			return value == null || (value instanceof Collection && ( (Collection<?>) value ).size() == 0);
 	    		 })
 	    		.flatMap(pd -> Arrays.asList(pd.getName()).stream())
 	    		.collect(Collectors.toList())

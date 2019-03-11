@@ -36,5 +36,16 @@ public class StringUtil {
 		String dou = "皮毛你说的";
 		System.out.println(specialStrKeyword(dou));
 	}
+	
+	/**
+	 * 传入字段数值为null，返回空字符串，否则返回原数据。
+	 */
+	
+	public static String keyToNull(Double str) {
+		if (str == null ) {
+			return "";
+		}
+		return  String.valueOf(str);
+	}
 
 }

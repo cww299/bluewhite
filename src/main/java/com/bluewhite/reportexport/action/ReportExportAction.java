@@ -45,6 +45,7 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.Excelutil;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
@@ -996,18 +997,18 @@ public class ReportExportAction {
 			//创建列，列初始是0，数据从第五列写入
 			int k = 3; 
 			for (int i = 0; i < psList.size(); i++){
-	           	row.createCell(++k).setCellValue(psList.get(i).getTurnWorkTime()!=null ? psList.get(i).getTurnWorkTime() : 0.0);
-	           	row.createCell(++k).setCellValue(psList.get(i).getOvertime()!=null ? psList.get(i).getOvertime() : 0.0);
-	           	row.createCell(++k).setCellValue(psList.get(i).getDutytime()!=null ? psList.get(i).getDutytime() : 0.0);
+
+	           	row.createCell(++k).setCellValue(StringUtil.keyToNull(psList.get(i).getTurnWorkTime()));
+	           	row.createCell(++k).setCellValue(StringUtil.keyToNull(psList.get(i).getOvertime()));
+	           	row.createCell(++k).setCellValue(StringUtil.keyToNull(psList.get(i).getDutytime()));
 	        }
-			
 			//写入汇总数据，从基础数据写完后拼接
 			if(k == (psList.size()*3+3)){
 			int o = k ;
-				row.createCell(++o).setCellValue(attendanceCollect.getTurnWork()!=null ? attendanceCollect.getTurnWork() : 0.0);
-		       	row.createCell(++o).setCellValue(attendanceCollect.getOvertime()!=null ? attendanceCollect.getOvertime() : 0.0);
-		       	row.createCell(++o).setCellValue(attendanceCollect.getDutyWork()!=null ? attendanceCollect.getDutyWork() : 0.0);
-		       	row.createCell(++o).setCellValue(attendanceCollect.getAllWork()!=null ? attendanceCollect.getAllWork() : 0.0);
+				row.createCell(++o).setCellValue(StringUtil.keyToNull(attendanceCollect.getTurnWork()));
+		       	row.createCell(++o).setCellValue(StringUtil.keyToNull( attendanceCollect.getOvertime()));
+		       	row.createCell(++o).setCellValue(StringUtil.keyToNull(attendanceCollect.getDutyWork()));
+		       	row.createCell(++o).setCellValue(StringUtil.keyToNull(attendanceCollect.getAllWork()));
 			}
 		
        }
