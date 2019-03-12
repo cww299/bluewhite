@@ -72,14 +72,30 @@ public class AttendanceTime {
 	 */
 	private String week;
 	
+	/**
+	 * 考勤状态(0=正常，1=异常)
+	 * 
+	 */
+	private Integer flag;
 	
+	
+	
+	
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
 
 	public Double getDutytime() {
 		return dutytime;
 	}
 
 	public void setDutytime(Double dutytime) {
-		this.dutytime = dutytime;
+		this.dutytime = Math.abs(dutytime);
 	}
 
 	public Double getWorkTime() {
@@ -87,7 +103,7 @@ public class AttendanceTime {
 	}
 
 	public void setWorkTime(Double workTime) {
-		this.workTime = workTime;
+		this.workTime = Math.abs(workTime);
 	}
 
 	public Date getTime() {
@@ -135,7 +151,7 @@ public class AttendanceTime {
 	}
 
 	public void setTurnWorkTime(Double turnWorkTime) {
-		this.turnWorkTime = turnWorkTime;
+		this.turnWorkTime = Math.abs(turnWorkTime);
 	}
 
 	public Double getOvertime() {
@@ -143,7 +159,7 @@ public class AttendanceTime {
 	}
 
 	public void setOvertime(Double overtime) {
-		this.overtime = overtime;
+		this.overtime = Math.abs(overtime);
 	}
 
 	public String getWeek() {

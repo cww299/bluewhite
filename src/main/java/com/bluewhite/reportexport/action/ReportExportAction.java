@@ -80,6 +80,7 @@ import com.bluewhite.reportexport.entity.ReworkPoi;
 import com.bluewhite.reportexport.entity.UserPoi;
 import com.bluewhite.reportexport.service.ReportExportService;
 import com.bluewhite.system.user.entity.UserContract;
+import com.google.common.collect.Table.Cell;
 
 @Controller
 @RequestMapping("excel")
@@ -996,21 +997,54 @@ public class ReportExportAction {
 			row.createCell(3).setCellValue(""); 
 			//创建列，列初始是0，数据从第五列写入
 			int k = 3; 
+		
 			for (int i = 0; i < psList.size(); i++){
-
-	           	row.createCell(++k).setCellValue(StringUtil.keyToNull(psList.get(i).getTurnWorkTime()));
+				row.createCell(++k).setCellValue(StringUtil.keyToNull(psList.get(i).getTurnWorkTime()));
 	           	row.createCell(++k).setCellValue(StringUtil.keyToNull(psList.get(i).getOvertime()));
 	           	row.createCell(++k).setCellValue(StringUtil.keyToNull(psList.get(i).getDutytime()));
 	        }
 			//写入汇总数据，从基础数据写完后拼接
+			//写入汇总公式,出勤，加班，缺勤，总出勤
+//			E4+H4+K4+N4+Q4+T4+W4+Z4+AC4+AF4+AI4+AL4+AO4+AR4 +AU4+AX4+BA4+BD4+BG4+BJ4+BM4+BP4+BS4+BV4+BY4+CB4+CE4+CH4+CK4+CN4+CQ4
+			String formula1 = "E"+p+"+H"+p+"+K"+p+"+N"+p+"+Q"+p+"+T"+p+"+W"+p+"+Z"+p+
+					"+AC"+p+"+AF"+p+"+AI"+p+"+AL"+p+"+AO"+p+"+AR"+p+"+AU"+p+"+AX"+p+
+					"+BA"+p+"+BD"+p+"+BG"+p+"+BJ"+p+"+BM"+p+"+BP"+p+"+BS"+p+"+BV"+p+"+BY"+p+
+					"+CB"+p+"+CE"+p+"+CH"+p+"+CK"+p+"+CN"+p+"+CQ"+p;
+//			F4+I4+L4+O4+R4+U4+X4+AA4+AD4+AG4+AJ4+AM4+AP4+AS4+AV4+AY4+BB4+BE4+BH4+BK4+BN4+BQ4+BT4+BW4+BZ4+CC4+CF4+CI4+CL4+CO4+CR4
+			String formula2 = "F"+p+"+I"+p+"+L"+p+"+O"+p+"+R"+p+"+U"+p+"+X"+p+
+					"+AA"+p+"+AD"+p+"+AG"+p+"+AJ"+p+"+AM"+p+"+AP"+p+"+AS"+p+"+AV"+p+"+AY"+p+
+					"+BB"+p+"+BE"+p+"+BH"+p+"+BK"+p+"+BN"+p+"+BQ"+p+"+BT"+p+"+BW"+p+"+BZ"+p+
+					"+CC"+p+"+CF"+p+"+CI"+p+"+CL"+p+"+CO"+p+"+CR"+p;
+//			G4+J4+M4+P4+S4+V4+Y4+AB4+AE4+AH4+AK4+AN4+AQ4+AT4+AW4+AZ4+BC4+BF4+BI4+BL4+BO4+BR4+BU4+BX4+CA4+CD4+CG4+CJ4+CM4+CP4+CS4
+			String formula3 ="G"+p+"+J"+p+"+M"+p+"+P"+p+"+S"+p+"+V"+p+"+Y"+p+
+					"+AB"+p+"+AE"+p+"+AH"+p+"+AK"+p+"+AN"+p+"+AQ"+p+"+AT"+p+"+AW"+p+"+AZ"+p+
+					"+BC"+p+"+BF"+p+"+BI"+p+"+BL"+p+"+BO"+p+"+BR"+p+"+BU"+p+"+BX"+p+
+					"+CA"+p+"+CD"+p+"+CG"+p+"+CJ"+p+"+CM"+p+"+CP"+p+"+CS"+p;
+			String formula4 = "CT"+p+"CU"+p;
+			
 			if(k == (psList.size()*3+3)){
 			int o = k ;
-				row.createCell(++o).setCellValue(StringUtil.keyToNull(attendanceCollect.getTurnWork()));
-		       	row.createCell(++o).setCellValue(StringUtil.keyToNull( attendanceCollect.getOvertime()));
-		       	row.createCell(++o).setCellValue(StringUtil.keyToNull(attendanceCollect.getDutyWork()));
-		       	row.createCell(++o).setCellValue(StringUtil.keyToNull(attendanceCollect.getAllWork()));
+			XSSFCell cell1 = row.createCell(++o);
+			cell1.setCellFormula(formula1);
+			cell1.setCellValue(StringUtil.keyToNull(attendanceCollect.getTurnWork()));
+			
+			XSSFCell cell2 = row.createCell(++o);
+			cell2.setCellFormula(formula2);
+			cell2.setCellValue(StringUtil.keyToNull(attendanceCollect.getOvertime()));
+			
+			XSSFCell cell3 = row.createCell(++o);
+			cell3.setCellFormula(formula3);
+			cell3.setCellValue(StringUtil.keyToNull(attendanceCollect.getDutyWork()));
+			
+			XSSFCell cell4 = row.createCell(++o);
+			cell4.setCellFormula(formula4);
+			cell4.setCellValue(StringUtil.keyToNull(attendanceCollect.getAllWork()));
+			
+//				row.createCell(++o).setCellValue(StringUtil.keyToNull(attendanceCollect.getTurnWork()));
+//		       	row.createCell(++o).setCellValue(StringUtil.keyToNull(attendanceCollect.getOvertime()));
+//		       	row.createCell(++o).setCellValue(StringUtil.keyToNull(attendanceCollect.getDutyWork()));
+//		       	row.createCell(++o).setCellValue(StringUtil.keyToNull(attendanceCollect.getAllWork()));
 			}
-		
        }
     try {	
     	OutputStream outputStream=response.getOutputStream();
