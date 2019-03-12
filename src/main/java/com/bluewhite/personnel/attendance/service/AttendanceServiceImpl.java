@@ -236,9 +236,6 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 
 	@Override
 	public List<AttendanceTime> findAttendanceTime(Attendance attendance) {
-		if(attendance.getRestTime()==null){
-			throw new ServiceException("休息时间不能为空");
-		}
 		PageParameter page = new PageParameter();
 		page.setSize(Integer.MAX_VALUE);
 		long size = DatesUtil.getDaySub(attendance.getOrderTimeBegin(),DatesUtil.getLastDayOftime(attendance.getOrderTimeEnd()));
@@ -281,6 +278,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 						// 考情记录有三种情况。当一天的考勤记录条数等于大于2时,为正常的考勤
 						// 大于2时，取集合中的最后一条数据作为考勤记录 
 						if (attList.size() >= 2) {
+							attendanceTime.setFlag(0);
 							if (attList.get(0).getTime().before(attList.get(attList.size()).getTime())) {
 								// 上班
 								attendanceTime.setCheckIn(attList.get(0).getTime());
@@ -293,22 +291,46 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 								attendanceTime.setCheckOut(attList.get(0).getTime());
 							}
 							
-							//将 工作间隔结束时间转换成当前日期的时间
+							//将 工作间隔开始结束时间转换成当前日期的时间
 							Date workTime =DatesUtil.dayTime(beginTimes, attendance.getWorkTimeBegin()) ;
 							Date workTimeEnd =DatesUtil.dayTime(beginTimes, attendance.getWorkTimeEnd()) ;
+							//将 休息间隔开始结束时间转换成当前日期的时间
+							Date restBeginTime =DatesUtil.dayTime(beginTimes, attendance.getRestBeginTime()) ;
+							Date restEndTime =DatesUtil.dayTime(beginTimes, attendance.getRestEndTime()) ;
+							//休息时长
+							Double restTime = DatesUtil.getTime(restBeginTime,restEndTime);
 							
-							
-							//工作总时长
-							attendanceTime.setWorkTime(
-									NumUtils.sub(
-											DatesUtil.getTimeHour(attendanceTime.getCheckIn(),attendanceTime.getCheckOut()),
-											attendance.getRestTime()
-											));
-							
+							//工作总时长(签到签出时间总和减去休息时间)
+							//多种情况 :1.当签到签出时间同时在休息时间之前 
+							//		 2.当签到签出时间都在休息时间之后
+							//当出现这种情况 , 均不用计算休息时间
+							//		 3.当签到签出时间（任一or全部）在休息时间之间		
+							//在上午同时签到签出
+							if(attendanceTime.getCheckIn().before(restBeginTime) && attendanceTime.getCheckOut().before(restBeginTime)){
+								attendanceTime.setWorkTime(DatesUtil.getTimeHour(attendanceTime.getCheckIn(),attendanceTime.getCheckOut()));
+							}else
+							//在下午同时签到签出
+							if(attendanceTime.getCheckIn().after(restEndTime) && attendanceTime.getCheckOut().after(restEndTime)){
+								attendanceTime.setWorkTime(DatesUtil.getTimeHour(attendanceTime.getCheckIn(),attendanceTime.getCheckOut()));
+							}else 
+							//当签出时间在休息时间之间	（从签出时间到休息时间开始）
+							if( attendanceTime.getCheckOut().after(restBeginTime) && attendanceTime.getCheckOut().before(restEndTime) ){
+								attendanceTime.setWorkTime(DatesUtil.getTimeHour(attendanceTime.getCheckIn(),restBeginTime));
+							}else
+							//当签入时间在休息时间之间	（从休息时间结束到签出时间）
+							if(attendanceTime.getCheckIn().after(restBeginTime) && attendanceTime.getCheckOut().before(restEndTime)){
+								attendanceTime.setWorkTime(DatesUtil.getTimeHour(restEndTime,attendanceTime.getCheckOut()));
+							}else{
+								attendanceTime.setWorkTime(
+										NumUtils.sub(
+												DatesUtil.getTimeHour(attendanceTime.getCheckIn(),attendanceTime.getCheckOut()),
+												restTime
+												));
+							}
 							// 出勤时长（最大为设定的工作间隔时间段，超出的算加班）
 							Double turnWorkTime = NumUtils.sub(
 									DatesUtil.getTimeHour( workTime,workTimeEnd),
-									attendance.getRestTime()
+									restTime
 									);
 							attendanceTime.setTurnWorkTime(attendanceTime.getWorkTime()>=turnWorkTime ? turnWorkTime : attendanceTime.getWorkTime());
 							
@@ -332,13 +354,14 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 								// 下班
 								attendanceTime.setCheckOut(attList.get(0).getTime());
 							}
+							attendanceTime.setFlag(1);
 						}
 						attendanceTimeList.add(attendanceTime);
 					
 				}else{
 					//当按人名查找没有签到记录时，将这一天的考情状态修改
 					AttendanceTime attendanceTime = new AttendanceTime();
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
+					attendanceTime.setFlag(0);
 					attendanceTime.setTime(beginTimes);
 					attendanceTime.setUsername(us.getUserName());
 					attendanceTime.setNumber(us.getNumber());

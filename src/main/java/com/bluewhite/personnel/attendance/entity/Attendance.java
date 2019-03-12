@@ -105,10 +105,16 @@ public class Attendance extends BaseEntity<Long> {
 	private String workTimeEnd;
 	
 	/**
-	 * 中午休息时长
+	 * 中午休息开始时间
 	 */
 	@Transient
-	private Double restTime;
+	private String restBeginTime;
+	
+	/**
+	 * 中午休息结束时间
+	 */
+	@Transient
+	private String restEndTime;
 	
 	
 	
@@ -140,12 +146,20 @@ public class Attendance extends BaseEntity<Long> {
 		this.workTimeEnd = workTimeEnd;
 	}
 
-	public Double getRestTime() {
-		return restTime;
+	public String getRestBeginTime() {
+		return restBeginTime;
 	}
 
-	public void setRestTime(Double restTime) {
-		this.restTime = restTime;
+	public void setRestBeginTime(String restBeginTime) {
+		this.restBeginTime = restBeginTime;
+	}
+
+	public String getRestEndTime() {
+		return restEndTime;
+	}
+
+	public void setRestEndTime(String restEndTime) {
+		this.restEndTime = restEndTime;
 	}
 
 	public Long getOrgNameId() {
