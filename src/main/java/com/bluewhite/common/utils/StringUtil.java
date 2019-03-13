@@ -42,7 +42,7 @@ public class StringUtil {
 	 */
 	
 	public static String keyToNull(Double str) {
-		if (str == null ) {
+		if (str == 0 ) {
 			return "";
 		}
 		return  String.valueOf(str);

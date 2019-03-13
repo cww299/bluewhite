@@ -15,16 +15,22 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.junit.Ignore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Sort;
@@ -997,53 +1003,110 @@ public class ReportExportAction {
 			row.createCell(3).setCellValue(""); 
 			//创建列，列初始是0，数据从第五列写入
 			int k = 3; 
-		
 			for (int i = 0; i < psList.size(); i++){
-				row.createCell(++k).setCellValue(StringUtil.keyToNull(psList.get(i).getTurnWorkTime()));
-	           	row.createCell(++k).setCellValue(StringUtil.keyToNull(psList.get(i).getOvertime()));
-	           	row.createCell(++k).setCellValue(StringUtil.keyToNull(psList.get(i).getDutytime()));
+				XSSFCell cell1 = row.createCell(++k);
+				cell1.setCellValue(psList.get(i).getTurnWorkTime());
+				cell1.setCellType(CellType.NUMERIC); 
+				XSSFCell cell2 = row.createCell(++k);
+				cell2.setCellValue(psList.get(i).getOvertime());
+				cell2.setCellType(CellType.NUMERIC); 
+				XSSFCell cell3 = row.createCell(++k);
+				cell3.setCellValue(psList.get(i).getDutytime());
+				cell3.setCellType(CellType.NUMERIC);
 	        }
+			
+			
 			//写入汇总数据，从基础数据写完后拼接
-			//写入汇总公式,出勤，加班，缺勤，总出勤
-//			E4+H4+K4+N4+Q4+T4+W4+Z4+AC4+AF4+AI4+AL4+AO4+AR4 +AU4+AX4+BA4+BD4+BG4+BJ4+BM4+BP4+BS4+BV4+BY4+CB4+CE4+CH4+CK4+CN4+CQ4
-			String formula1 = "E"+p+"+H"+p+"+K"+p+"+N"+p+"+Q"+p+"+T"+p+"+W"+p+"+Z"+p+
-					"+AC"+p+"+AF"+p+"+AI"+p+"+AL"+p+"+AO"+p+"+AR"+p+"+AU"+p+"+AX"+p+
-					"+BA"+p+"+BD"+p+"+BG"+p+"+BJ"+p+"+BM"+p+"+BP"+p+"+BS"+p+"+BV"+p+"+BY"+p+
-					"+CB"+p+"+CE"+p+"+CH"+p+"+CK"+p+"+CN"+p+"+CQ"+p;
-//			F4+I4+L4+O4+R4+U4+X4+AA4+AD4+AG4+AJ4+AM4+AP4+AS4+AV4+AY4+BB4+BE4+BH4+BK4+BN4+BQ4+BT4+BW4+BZ4+CC4+CF4+CI4+CL4+CO4+CR4
-			String formula2 = "F"+p+"+I"+p+"+L"+p+"+O"+p+"+R"+p+"+U"+p+"+X"+p+
-					"+AA"+p+"+AD"+p+"+AG"+p+"+AJ"+p+"+AM"+p+"+AP"+p+"+AS"+p+"+AV"+p+"+AY"+p+
-					"+BB"+p+"+BE"+p+"+BH"+p+"+BK"+p+"+BN"+p+"+BQ"+p+"+BT"+p+"+BW"+p+"+BZ"+p+
-					"+CC"+p+"+CF"+p+"+CI"+p+"+CL"+p+"+CO"+p+"+CR"+p;
-//			G4+J4+M4+P4+S4+V4+Y4+AB4+AE4+AH4+AK4+AN4+AQ4+AT4+AW4+AZ4+BC4+BF4+BI4+BL4+BO4+BR4+BU4+BX4+CA4+CD4+CG4+CJ4+CM4+CP4+CS4
-			String formula3 ="G"+p+"+J"+p+"+M"+p+"+P"+p+"+S"+p+"+V"+p+"+Y"+p+
-					"+AB"+p+"+AE"+p+"+AH"+p+"+AK"+p+"+AN"+p+"+AQ"+p+"+AT"+p+"+AW"+p+"+AZ"+p+
-					"+BC"+p+"+BF"+p+"+BI"+p+"+BL"+p+"+BO"+p+"+BR"+p+"+BU"+p+"+BX"+p+
-					"+CA"+p+"+CD"+p+"+CG"+p+"+CJ"+p+"+CM"+p+"+CP"+p+"+CS"+p;
-			String formula4 = "CT"+p+"CU"+p;
+			//写入汇总公式,出勤，加班，缺勤，总出勤,重新定义行数据
+			int rowCount = l+1;
+			String formula1 = "";
+			String formula2 = "";
+			String formula3 = "";
+			String formula4 = "";
+			
+			if(size==31){
+				 formula1 = "E"+rowCount+"+H"+rowCount+"+K"+rowCount+"+N"+rowCount+"+Q"+rowCount+"+T"+rowCount+"+W"+rowCount+"+Z"+rowCount+
+						"+AC"+rowCount+"+AF"+rowCount+"+AI"+rowCount+"+AL"+rowCount+"+AO"+rowCount+"+AR"+rowCount+"+AU"+rowCount+"+AX"+rowCount+
+						"+BA"+rowCount+"+BD"+rowCount+"+BG"+rowCount+"+BJ"+rowCount+"+BM"+rowCount+"+BP"+rowCount+"+BS"+rowCount+"+BV"+rowCount+"+BY"+rowCount+
+						"+CB"+rowCount+"+CE"+rowCount+"+CH"+rowCount+"+CK"+rowCount+"+CN"+rowCount+"+CQ"+rowCount;
+				 formula2 = "F"+rowCount+"+I"+rowCount+"+L"+rowCount+"+O"+rowCount+"+R"+rowCount+"+U"+rowCount+"+X"+rowCount+
+						"+AA"+rowCount+"+AD"+rowCount+"+AG"+rowCount+"+AJ"+rowCount+"+AM"+rowCount+"+AP"+rowCount+"+AS"+rowCount+"+AV"+rowCount+"+AY"+rowCount+
+						"+BB"+rowCount+"+BE"+rowCount+"+BH"+rowCount+"+BK"+rowCount+"+BN"+rowCount+"+BQ"+rowCount+"+BT"+rowCount+"+BW"+rowCount+"+BZ"+rowCount+
+						"+CC"+rowCount+"+CF"+rowCount+"+CI"+rowCount+"+CL"+rowCount+"+CO"+rowCount+"+CR"+rowCount;
+				 formula3 ="G"+rowCount+"+J"+rowCount+"+M"+rowCount+"+P"+rowCount+"+S"+rowCount+"+V"+rowCount+"+Y"+rowCount+
+						"+AB"+rowCount+"+AE"+rowCount+"+AH"+rowCount+"+AK"+rowCount+"+AN"+rowCount+"+AQ"+rowCount+"+AT"+rowCount+"+AW"+rowCount+"+AZ"+rowCount+
+						"+BC"+rowCount+"+BF"+rowCount+"+BI"+rowCount+"+BL"+rowCount+"+BO"+rowCount+"+BR"+rowCount+"+BU"+rowCount+"+BX"+rowCount+
+						"+CA"+rowCount+"+CD"+rowCount+"+CG"+rowCount+"+CJ"+rowCount+"+CM"+rowCount+"+CP"+rowCount+"+CS"+rowCount;
+				 formula4 = "CT"+rowCount+"+CU"+rowCount;
+			}
+			
+			if(size==30){
+				 formula1 = "E"+rowCount+"+H"+rowCount+"+K"+rowCount+"+N"+rowCount+"+Q"+rowCount+"+T"+rowCount+"+W"+rowCount+"+Z"+rowCount+
+						"+AC"+rowCount+"+AF"+rowCount+"+AI"+rowCount+"+AL"+rowCount+"+AO"+rowCount+"+AR"+rowCount+"+AU"+rowCount+"+AX"+rowCount+
+						"+BA"+rowCount+"+BD"+rowCount+"+BG"+rowCount+"+BJ"+rowCount+"+BM"+rowCount+"+BP"+rowCount+"+BS"+rowCount+"+BV"+rowCount+"+BY"+rowCount+
+						"+CB"+rowCount+"+CE"+rowCount+"+CH"+rowCount+"+CK"+rowCount+"+CN"+rowCount;
+				 formula2 = "F"+rowCount+"+I"+rowCount+"+L"+rowCount+"+O"+rowCount+"+R"+rowCount+"+U"+rowCount+"+X"+rowCount+
+						"+AA"+rowCount+"+AD"+rowCount+"+AG"+rowCount+"+AJ"+rowCount+"+AM"+rowCount+"+AP"+rowCount+"+AS"+rowCount+"+AV"+rowCount+"+AY"+rowCount+
+						"+BB"+rowCount+"+BE"+rowCount+"+BH"+rowCount+"+BK"+rowCount+"+BN"+rowCount+"+BQ"+rowCount+"+BT"+rowCount+"+BW"+rowCount+"+BZ"+rowCount+
+						"+CC"+rowCount+"+CF"+rowCount+"+CI"+rowCount+"+CL"+rowCount+"+CO"+rowCount;
+				 formula3 ="G"+rowCount+"+J"+rowCount+"+M"+rowCount+"+P"+rowCount+"+S"+rowCount+"+V"+rowCount+"+Y"+rowCount+
+						"+AB"+rowCount+"+AE"+rowCount+"+AH"+rowCount+"+AK"+rowCount+"+AN"+rowCount+"+AQ"+rowCount+"+AT"+rowCount+"+AW"+rowCount+"+AZ"+rowCount+
+						"+BC"+rowCount+"+BF"+rowCount+"+BI"+rowCount+"+BL"+rowCount+"+BO"+rowCount+"+BR"+rowCount+"+BU"+rowCount+"+BX"+rowCount+
+						"+CA"+rowCount+"+CD"+rowCount+"+CG"+rowCount+"+CJ"+rowCount+"+CM"+rowCount+"+CP"+rowCount;
+				 formula4 = "CQ"+rowCount+"+CR"+rowCount;
+			}
+			
+			if(size==29){
+				 formula1 = "E"+rowCount+"+H"+rowCount+"+K"+rowCount+"+N"+rowCount+"+Q"+rowCount+"+T"+rowCount+"+W"+rowCount+"+Z"+rowCount+
+						"+AC"+rowCount+"+AF"+rowCount+"+AI"+rowCount+"+AL"+rowCount+"+AO"+rowCount+"+AR"+rowCount+"+AU"+rowCount+"+AX"+rowCount+
+						"+BA"+rowCount+"+BD"+rowCount+"+BG"+rowCount+"+BJ"+rowCount+"+BM"+rowCount+"+BP"+rowCount+"+BS"+rowCount+"+BV"+rowCount+"+BY"+rowCount+
+						"+CB"+rowCount+"+CE"+rowCount+"+CH"+rowCount+"+CK"+rowCount;
+				 formula2 = "F"+rowCount+"+I"+rowCount+"+L"+rowCount+"+O"+rowCount+"+R"+rowCount+"+U"+rowCount+"+X"+rowCount+
+						"+AA"+rowCount+"+AD"+rowCount+"+AG"+rowCount+"+AJ"+rowCount+"+AM"+rowCount+"+AP"+rowCount+"+AS"+rowCount+"+AV"+rowCount+"+AY"+rowCount+
+						"+BB"+rowCount+"+BE"+rowCount+"+BH"+rowCount+"+BK"+rowCount+"+BN"+rowCount+"+BQ"+rowCount+"+BT"+rowCount+"+BW"+rowCount+"+BZ"+rowCount+
+						"+CC"+rowCount+"+CF"+rowCount+"+CI"+rowCount+"+CL"+rowCount;
+				 formula3 ="G"+rowCount+"+J"+rowCount+"+M"+rowCount+"+P"+rowCount+"+S"+rowCount+"+V"+rowCount+"+Y"+rowCount+
+						"+AB"+rowCount+"+AE"+rowCount+"+AH"+rowCount+"+AK"+rowCount+"+AN"+rowCount+"+AQ"+rowCount+"+AT"+rowCount+"+AW"+rowCount+"+AZ"+rowCount+
+						"+BC"+rowCount+"+BF"+rowCount+"+BI"+rowCount+"+BL"+rowCount+"+BO"+rowCount+"+BR"+rowCount+"+BU"+rowCount+"+BX"+rowCount+
+						"+CA"+rowCount+"+CD"+rowCount+"+CG"+rowCount+"+CJ"+rowCount+"+CM"+rowCount;
+				 formula4 = "CN"+rowCount+"+CO"+rowCount;
+			}
+			
+			if(size==28){
+				 formula1 = "E"+rowCount+"+H"+rowCount+"+K"+rowCount+"+N"+rowCount+"+Q"+rowCount+"+T"+rowCount+"+W"+rowCount+"+Z"+rowCount+
+						"+AC"+rowCount+"+AF"+rowCount+"+AI"+rowCount+"+AL"+rowCount+"+AO"+rowCount+"+AR"+rowCount+"+AU"+rowCount+"+AX"+rowCount+
+						"+BA"+rowCount+"+BD"+rowCount+"+BG"+rowCount+"+BJ"+rowCount+"+BM"+rowCount+"+BP"+rowCount+"+BS"+rowCount+"+BV"+rowCount+"+BY"+rowCount+
+						"+CB"+rowCount+"+CE"+rowCount+"+CH"+rowCount;
+				 formula2 = "F"+rowCount+"+I"+rowCount+"+L"+rowCount+"+O"+rowCount+"+R"+rowCount+"+U"+rowCount+"+X"+rowCount+
+						"+AA"+rowCount+"+AD"+rowCount+"+AG"+rowCount+"+AJ"+rowCount+"+AM"+rowCount+"+AP"+rowCount+"+AS"+rowCount+"+AV"+rowCount+"+AY"+rowCount+
+						"+BB"+rowCount+"+BE"+rowCount+"+BH"+rowCount+"+BK"+rowCount+"+BN"+rowCount+"+BQ"+rowCount+"+BT"+rowCount+"+BW"+rowCount+"+BZ"+rowCount+
+						"+CC"+rowCount+"+CF"+rowCount+"+CI"+rowCount;
+				 formula3 ="G"+rowCount+"+J"+rowCount+"+M"+rowCount+"+P"+rowCount+"+S"+rowCount+"+V"+rowCount+"+Y"+rowCount+
+						"+AB"+rowCount+"+AE"+rowCount+"+AH"+rowCount+"+AK"+rowCount+"+AN"+rowCount+"+AQ"+rowCount+"+AT"+rowCount+"+AW"+rowCount+"+AZ"+rowCount+
+						"+BC"+rowCount+"+BF"+rowCount+"+BI"+rowCount+"+BL"+rowCount+"+BO"+rowCount+"+BR"+rowCount+"+BU"+rowCount+"+BX"+rowCount+
+						"+CA"+rowCount+"+CD"+rowCount+"+CG"+rowCount+"+CJ"+rowCount;
+				 formula4 = "CK"+rowCount+"+CL"+rowCount;
+			}
+			
+			
 			
 			if(k == (psList.size()*3+3)){
 			int o = k ;
 			XSSFCell cell1 = row.createCell(++o);
 			cell1.setCellFormula(formula1);
-			cell1.setCellValue(StringUtil.keyToNull(attendanceCollect.getTurnWork()));
+			cell1.setCellValue(attendanceCollect.getTurnWork());
 			
 			XSSFCell cell2 = row.createCell(++o);
 			cell2.setCellFormula(formula2);
-			cell2.setCellValue(StringUtil.keyToNull(attendanceCollect.getOvertime()));
+			cell2.setCellValue(attendanceCollect.getOvertime());
 			
 			XSSFCell cell3 = row.createCell(++o);
 			cell3.setCellFormula(formula3);
-			cell3.setCellValue(StringUtil.keyToNull(attendanceCollect.getDutyWork()));
+			cell3.setCellValue(attendanceCollect.getDutyWork());
 			
 			XSSFCell cell4 = row.createCell(++o);
-			cell4.setCellFormula(formula4);
-			cell4.setCellValue(StringUtil.keyToNull(attendanceCollect.getAllWork()));
-			
-//				row.createCell(++o).setCellValue(StringUtil.keyToNull(attendanceCollect.getTurnWork()));
-//		       	row.createCell(++o).setCellValue(StringUtil.keyToNull(attendanceCollect.getOvertime()));
-//		       	row.createCell(++o).setCellValue(StringUtil.keyToNull(attendanceCollect.getDutyWork()));
-//		       	row.createCell(++o).setCellValue(StringUtil.keyToNull(attendanceCollect.getAllWork()));
+			cell4.setCellFormula(formula4);	
+			cell4.setCellValue(attendanceCollect.getAllWork());
 			}
        }
     try {	
