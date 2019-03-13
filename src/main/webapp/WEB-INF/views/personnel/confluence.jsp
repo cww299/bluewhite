@@ -207,15 +207,15 @@
 	                			align: 'center', title:v.week, colspan: 3
 		                	};
 	                	a={align: 'center',title: '出勤',templet:function(d){
-	                		if(d.attendanceTimeData[i].turnWorkTime==null) return ''; 
+	                		if(d.attendanceTimeData[i].turnWorkTime==0) return ''; 
 	                		else  return d.attendanceTimeData[i].turnWorkTime;
 	                	} }
 				    	b={align: 'center',title: '加班',templet:function(d){
-				    		if(d.attendanceTimeData[i].overtime==null) return ''; 
+				    		if(d.attendanceTimeData[i].overtime==0) return ''; 
 	                		else  return d.attendanceTimeData[i].overtime;
 	                	} };
 				    	c={align: 'center',title: '缺勤',templet:function(d){
-				    		if(d.attendanceTimeData[i].dutytime==null) return ''; 
+				    		if(d.attendanceTimeData[i].dutytime==0) return ''; 
 	                		else  return d.attendanceTimeData[i].dutytime;
 	                	} }
 			    	list3.push(a);
