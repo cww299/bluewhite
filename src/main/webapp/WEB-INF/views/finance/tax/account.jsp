@@ -97,13 +97,13 @@
 	           }
 		    ,cols: [[
 		    	
-		      {field:'number', width:'25%', title: '编号', sort: true,align: 'center'}
-		      ,{field:'name', width:'25%', title: '用户名',align: 'center',edit: 'text'}
-		      ,{field:'privilege', width:'25%',align: 'center',  title: '权限', sort: true,templet:function(d){
+		      {field:'number', width:'25%', title: '报销内容', sort: true,align: 'center'}
+		      ,{field:'name', width:'25%', title: '报销人',align: 'center',edit: 'text'}
+		      ,{field:'privilege', width:'25%',align: 'center',  title: '是否是预算', sort: true,templet:function(d){
 	             	if(d.privilege=='3') return '管理员'; 
 	           	else if(d.privilege=='0') return '普通用户';}
 				}
-		      ,{field:'enabled', width:'20%',align: 'center', title: '是否启用'}
+		      ,{field:'enabled', width:'20%',align: 'center', title: '付款日'}
 		      ,{fixed: 'right', title:'操作', align: 'center', toolbar: '#barDemo', width:'5%'}]]
 	          ,id: 'testReload'
 		    ,page: false

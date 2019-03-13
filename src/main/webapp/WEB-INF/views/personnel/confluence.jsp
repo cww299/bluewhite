@@ -48,13 +48,13 @@
 														<td>&nbsp&nbsp</td>
 														<td>签入签出时间:</td>
 														<td>
-															<input id="startTime" placeholder="请输入签到区间" class="form-control laydate-icon">
+															<input id="startTime"  placeholder="请输入签到区间" class="form-control laydate-icon">
 														</td>
 														<td>&nbsp&nbsp</td>
 
 														<td>上班下班时间:</td>
 														<td>
-															<input id="startTime1" placeholder="请输入上班下班区间" class="form-control laydate-icon">
+															<input id="startTime1" style="width: 160px;" placeholder="请输入上班下班区间" class="form-control laydate-icon">
 														</td>
 
 														<td>&nbsp&nbsp</td>
@@ -207,15 +207,15 @@
 	                			align: 'center', title:v.week, colspan: 3
 		                	};
 	                	a={align: 'center',title: '出勤',templet:function(d){
-	                		if(d.attendanceTimeData[i].turnWorkTime==null) return ''; 
+	                		if(d.attendanceTimeData[i].turnWorkTime==0) return ''; 
 	                		else  return d.attendanceTimeData[i].turnWorkTime;
 	                	} }
 				    	b={align: 'center',title: '加班',templet:function(d){
-				    		if(d.attendanceTimeData[i].overtime==null) return ''; 
+				    		if(d.attendanceTimeData[i].overtime==0) return ''; 
 	                		else  return d.attendanceTimeData[i].overtime;
 	                	} };
 				    	c={align: 'center',title: '缺勤',templet:function(d){
-				    		if(d.attendanceTimeData[i].dutytime==null) return ''; 
+				    		if(d.attendanceTimeData[i].dutytime==0) return ''; 
 	                		else  return d.attendanceTimeData[i].dutytime;
 	                	} }
 			    	list3.push(a);
@@ -303,9 +303,12 @@
 					var orderTimeEnd = arr[1];
 					var workTimeBegin = arr1[0];
 					var workTimeEnd = arr1[1];
-					var restTime = $("#restTime").val();
+					var restBeginTime1=$("#restBeginTime").val()
+					var arr2 = restBeginTime1.split("~");
+					var restBeginTime = arr2[0];
+					var restEndTime=arr2[1]
 					location.href = "${ctx}/excel/importExcel/personnel/DownAttendance?userName=" + userName + "&orgNameId=" + orgNameId + "&orderTimeBegin=" + orderTimeBegin
-							+ "&orderTimeEnd=" + orderTimeEnd + "&workTimeBegin="+workTimeBegin+"&workTimeEnd="+workTimeEnd+" &restTime="+restTime+"&orgName="+orgName+"";
+							+ "&orderTimeEnd=" + orderTimeEnd + "&workTimeBegin="+workTimeBegin+"&workTimeEnd="+workTimeEnd+" &restBeginTime="+restBeginTime+" &restEndTime="+restEndTime+"&orgName="+orgName+"";
 				})
 		
 	</script>
