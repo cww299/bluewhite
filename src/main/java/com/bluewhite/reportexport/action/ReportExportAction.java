@@ -993,8 +993,8 @@ public class ReportExportAction {
        for (int p = 0; p < mapList.size(); p++) {
     	   //获取人员考勤详细
     	   List<AttendanceTime> psList =  (List<AttendanceTime>)mapList.get(p).get("attendanceTimeData");
-    	   //获取汇总
-    	   AttendanceCollect attendanceCollect  = (AttendanceCollect) mapList.get(p).get("collect");
+//    	 	  获取汇总
+//    	   AttendanceCollect attendanceCollect  = (AttendanceCollect) mapList.get(p).get("collect");
 			//创建行，行初始是0，数据从第三行写入
 			row = sheet.createRow(++l);
 			row.createCell(0).setCellValue(attendance.getOrgName()); 
@@ -1094,19 +1094,19 @@ public class ReportExportAction {
 			int o = k ;
 			XSSFCell cell1 = row.createCell(++o);
 			cell1.setCellFormula(formula1);
-			cell1.setCellValue(attendanceCollect.getTurnWork());
+//			cell1.setCellValue(attendanceCollect.getTurnWork());
 			
 			XSSFCell cell2 = row.createCell(++o);
 			cell2.setCellFormula(formula2);
-			cell2.setCellValue(attendanceCollect.getOvertime());
+//			cell2.setCellValue(attendanceCollect.getOvertime());
 			
 			XSSFCell cell3 = row.createCell(++o);
 			cell3.setCellFormula(formula3);
-			cell3.setCellValue(attendanceCollect.getDutyWork());
+//			cell3.setCellValue(attendanceCollect.getDutyWork());
 			
 			XSSFCell cell4 = row.createCell(++o);
 			cell4.setCellFormula(formula4);	
-			cell4.setCellValue(attendanceCollect.getAllWork());
+//			cell4.setCellValue(attendanceCollect.getAllWork());
 			}
        }
     try {	
