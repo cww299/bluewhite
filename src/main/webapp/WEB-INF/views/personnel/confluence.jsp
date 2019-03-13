@@ -303,9 +303,12 @@
 					var orderTimeEnd = arr[1];
 					var workTimeBegin = arr1[0];
 					var workTimeEnd = arr1[1];
-					var restTime = $("#restTime").val();
+					var restBeginTime1=$("#restBeginTime").val()
+					var arr2 = restBeginTime1.split("~");
+					var restBeginTime = arr2[0],
+					var restEndTime=arr2[1]
 					location.href = "${ctx}/excel/importExcel/personnel/DownAttendance?userName=" + userName + "&orgNameId=" + orgNameId + "&orderTimeBegin=" + orderTimeBegin
-							+ "&orderTimeEnd=" + orderTimeEnd + "&workTimeBegin="+workTimeBegin+"&workTimeEnd="+workTimeEnd+" &restTime="+restTime+"&orgName="+orgName+"";
+							+ "&orderTimeEnd=" + orderTimeEnd + "&workTimeBegin="+workTimeBegin+"&workTimeEnd="+workTimeEnd+" &restBeginTime="+restBeginTime+" &restEndTime="+restEndTime+"&orgName="+orgName+"";
 				})
 		
 	</script>
