@@ -305,7 +305,7 @@
 					var workTimeEnd = arr1[1];
 					var restBeginTime1=$("#restBeginTime").val()
 					var arr2 = restBeginTime1.split("~");
-					var restBeginTime = arr2[0],
+					var restBeginTime = arr2[0];
 					var restEndTime=arr2[1]
 					location.href = "${ctx}/excel/importExcel/personnel/DownAttendance?userName=" + userName + "&orgNameId=" + orgNameId + "&orderTimeBegin=" + orderTimeBegin
 							+ "&orderTimeEnd=" + orderTimeEnd + "&workTimeBegin="+workTimeBegin+"&workTimeEnd="+workTimeEnd+" &restBeginTime="+restBeginTime+" &restEndTime="+restEndTime+"&orgName="+orgName+"";
