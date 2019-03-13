@@ -8,7 +8,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>考勤总汇</title>
+<title>报销申请</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
@@ -16,14 +16,14 @@
 
 <body>
 	<section id="main-wrapper" class="theme-default">
-		<%@include file="../decorator/leftbar.jsp"%>
+		<%@include file="../../decorator/leftbar.jsp"%>
 		<!--main content start-->
 		<section id="main-content" class="animated fadeInUp">
 			<div class="row">
 				<div class="col-md-12">
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h3 class="panel-title">总汇信息</h3>
+							<h3 class="panel-title">报销申请</h3>
 							<div class="actions pull-right">
 								<i class="fa fa-expand"></i>
 								<i class="fa fa-chevron-down"></i>
@@ -60,7 +60,7 @@
 								</tr>
 							</table>
 							<table class="layui-hide" lay-filter="test3" id="test">
-
+									
 							</table>
 						</div>
 					</div>
@@ -82,7 +82,7 @@
 		  table.render({
 		    elem: '#test'
 		    ,url:'${ctx}/personnel/getAllUser'
-		    	,toolbar: '#toolbarDemo'
+		    
 		    ,where: {address:'192.168.1.204'} 
 		    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
 		    , method:'GET'
@@ -108,7 +108,7 @@
 	          ,id: 'testReload'
 		    ,page: false
 		  });
-		  
+		 
 		//监听单元格编辑
 		  table.on('edit(test3)', function(obj){
 		    var value = obj.value //得到修改后的值
@@ -144,7 +144,8 @@
 				}
 			}); 
 		  });
-		
+
+		 
 		/*刪除 */
 		  table.on('tool(test3)', function(obj){
 			    var data = obj.data;
@@ -194,7 +195,14 @@
 				      });
 				    }
 				  };
-		  
+			       var tr=" <tr>"+
+			    	     "  <td class='text-center'><input type='text' id='content' class='text-center' style='border: none;width:150px; height:30px; background-color: #BFBFBF;'></td>"+
+			    	     "  <td>22</td>"+
+			    	     "  <td>33</td>"+
+			    	     "  <td>44</td>"+
+			    	     "  <td>55</td>"+
+			    	     "  </tr>";                  
+					$(".layui-table").append(tr);
 		$('#search').on('click', function(){
 			    var type = $(this).data('type');
 			    active[type] ? active[type].call(this) : '';
