@@ -46,25 +46,25 @@ public class AttendanceTime {
 	 * 
 	 * 工作时长
 	 */
-	private Double workTime;
+	private Double workTime = 0.0;
 	
 	/**
 	 * 
 	 * 出勤时长
 	 */
-	private Double turnWorkTime;
+	private Double turnWorkTime = 0.0;
 	
 	/**
 	 * 加班时长
 	 * 
 	 */
-	private Double overtime;
+	private Double overtime = 0.0;;
 	
 	/**
 	 * 缺勤时长
 	 * 
 	 */
-	private Double dutytime;
+	private Double dutytime = 0.0;;
 	
 	/**
 	 * 星期
