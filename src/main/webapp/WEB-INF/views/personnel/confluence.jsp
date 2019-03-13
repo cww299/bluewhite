@@ -58,9 +58,9 @@
 														</td>
 
 														<td>&nbsp&nbsp</td>
-														<td>休息时长:</td>
+														<td>休息区间:</td>
 														<td>
-															<input type="text" id="restTime" class="form-control name" />
+															<input id="restBeginTime" style="width: 160px;" placeholder="请输入休息区间" class="form-control laydate-icon">
 														</td>
 													</tr>
 												</table>
@@ -134,6 +134,12 @@
 			range : '~'
 
 		});
+		laydate.render({
+			elem : '#restBeginTime',
+			type : 'time',
+			range : '~'
+
+		});
 		$('.searchAtt').on('click', function(){
 		layui.use('table', function(){
 			  var table = layui.table;
@@ -142,6 +148,8 @@
 				var arr = startTime.split("~");
 				var startTime1 = $("#startTime1").val()
 				var arr1 = startTime1.split("~");
+				var restBeginTime=$("#restBeginTime").val()
+				var arr2 = restBeginTime.split("~");
 			  table.render({
 			    elem: '#test'
 			    ,url:'${ctx}/personnel/findAttendanceTime'
@@ -151,7 +159,8 @@
 					orderTimeEnd : arr[1],
 					workTimeBegin : arr1[0],
 					workTimeEnd : arr1[1],
-					restTime : $("#restTime").val(),} 
+					restBeginTime : arr2[0],
+					restEndTime:arr2[1],} 
 			    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
 			    , method:'GET'
 			    	

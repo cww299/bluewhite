@@ -956,7 +956,6 @@
 												 var myDate = new Date(); 
 												var month = myDate.getMonth() + 1; 
 												var day = myDate.getDate();
-
 												var age = myDate.getFullYear() - UUserCard.substring(6, 10) - 1; 
 												if (UUserCard.substring(10, 12) < month || UUserCard.substring(10, 12) == month && UUserCard.substring(12, 14) <= day) { 
 												age++; 
