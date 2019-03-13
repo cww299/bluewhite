@@ -48,13 +48,13 @@
 														<td>&nbsp&nbsp</td>
 														<td>签入签出时间:</td>
 														<td>
-															<input id="startTime" placeholder="请输入签到区间" class="form-control laydate-icon">
+															<input id="startTime"  placeholder="请输入签到区间" class="form-control laydate-icon">
 														</td>
 														<td>&nbsp&nbsp</td>
 
 														<td>上班下班时间:</td>
 														<td>
-															<input id="startTime1" placeholder="请输入上班下班区间" class="form-control laydate-icon">
+															<input id="startTime1" style="width: 160px;" placeholder="请输入上班下班区间" class="form-control laydate-icon">
 														</td>
 
 														<td>&nbsp&nbsp</td>
