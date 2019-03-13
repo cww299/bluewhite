@@ -267,38 +267,44 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			for(User us : userList){
 				attendance.setUserId(us.getId());
 				List<Attendance> attList = this.findPageAttendance(attendance, page).getRows();
-				if (attList.size() > 0) {
+					
 					List<Attendance> list = new ArrayList<Attendance>();
 						// 获取每个人当天的考勤记录
 						AttendanceTime attendanceTime = new AttendanceTime();
 						attendanceTime.setTime(beginTimes);
-						attendanceTime.setUsername(attList.get(0).getUser().getUserName());
-						attendanceTime.setNumber(attList.get(0).getNumber());
+						attendanceTime.setUsername(us.getUserName());
+						attendanceTime.setNumber(us.getNumber());
 						attendanceTime.setWeek(DatesUtil.dateToWeek(beginTimes));
+						
+						//将 工作间隔开始结束时间转换成当前日期的时间
+						Date workTime =DatesUtil.dayTime(beginTimes, attendance.getWorkTimeBegin()) ;
+						Date workTimeEnd =DatesUtil.dayTime(beginTimes, attendance.getWorkTimeEnd()) ;
+						//将 休息间隔开始结束时间转换成当前日期的时间
+						Date restBeginTime =DatesUtil.dayTime(beginTimes, attendance.getRestBeginTime()) ;
+						Date restEndTime =DatesUtil.dayTime(beginTimes, attendance.getRestEndTime()) ;
+						//休息时长(得到小时)
+						Double restTime = DatesUtil.getTime(restBeginTime,restEndTime)/60;
+						//出勤时长（最大为设定的工作间隔时间段，超出的算加班）
+						Double turnWorkTime = NumUtils.sub(
+								DatesUtil.getTimeHour(workTime,workTimeEnd),
+								restTime
+								);
+						
 						// 考情记录有三种情况。当一天的考勤记录条数等于大于2时,为正常的考勤
 						// 大于2时，取集合中的最后一条数据作为考勤记录 
 						if (attList.size() >= 2) {
 							attendanceTime.setFlag(0);
-							if (attList.get(0).getTime().before(attList.get(attList.size()).getTime())) {
+							if (attList.get(0).getTime().before(attList.get(attList.size()-1).getTime())) {
 								// 上班
 								attendanceTime.setCheckIn(attList.get(0).getTime());
 								// 下班
-								attendanceTime.setCheckOut(attList.get(attList.size()).getTime());
+								attendanceTime.setCheckOut(attList.get(attList.size()-1).getTime());
 							} else {
 								// 上班
-								attendanceTime.setCheckIn(attList.get(attList.size()).getTime());
+								attendanceTime.setCheckIn(attList.get(attList.size()-1).getTime());
 								// 下班
 								attendanceTime.setCheckOut(attList.get(0).getTime());
 							}
-							
-							//将 工作间隔开始结束时间转换成当前日期的时间
-							Date workTime =DatesUtil.dayTime(beginTimes, attendance.getWorkTimeBegin()) ;
-							Date workTimeEnd =DatesUtil.dayTime(beginTimes, attendance.getWorkTimeEnd()) ;
-							//将 休息间隔开始结束时间转换成当前日期的时间
-							Date restBeginTime =DatesUtil.dayTime(beginTimes, attendance.getRestBeginTime()) ;
-							Date restEndTime =DatesUtil.dayTime(beginTimes, attendance.getRestEndTime()) ;
-							//休息时长
-							Double restTime = DatesUtil.getTime(restBeginTime,restEndTime);
 							
 							//工作总时长(签到签出时间总和减去休息时间)
 							//多种情况 :1.当签到签出时间同时在休息时间之前 
@@ -327,47 +333,29 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 												restTime
 												));
 							}
-							// 出勤时长（最大为设定的工作间隔时间段，超出的算加班）
-							Double turnWorkTime = NumUtils.sub(
-									DatesUtil.getTimeHour( workTime,workTimeEnd),
-									restTime
-									);
+							//实际出勤
 							attendanceTime.setTurnWorkTime(attendanceTime.getWorkTime()>=turnWorkTime ? turnWorkTime : attendanceTime.getWorkTime());
+							//缺勤时间（公司未规定放假日期，所以当员工没有打卡记录时，统一算缺勤）（工作时间大于出勤时间时，没有缺勤时间）
+							attendanceTime.setDutytime(attendanceTime.getWorkTime() >= turnWorkTime ? 0.0 : NumUtils.sub(turnWorkTime,attendanceTime.getWorkTime()));
 							
-							//缺勤时间（公司未规定放假日期，所以当员工没有打卡记录时，统一算缺勤）
-							attendanceTime.setDutytime(NumUtils.sub(turnWorkTime,attendanceTime.getWorkTime()));
-							
-							// 加班时间
+							//加班时间
 							if (workTime.before(attendanceTime.getCheckOut())) {
-								attendanceTime.setOvertime( DatesUtil.getTimeHour(workTimeEnd,attendanceTime.getCheckOut()));
+								attendanceTime.setOvertime(DatesUtil.getTimeHour(workTimeEnd,attendanceTime.getCheckOut()));
 							}
 							
 						}
-						
 						// 当一天的考勤记录条数小于2时。为异常的考勤
 						if (attList.size() < 2) {
-							Date workTimeEnd =DatesUtil.dayTime(beginTimes, attendance.getWorkTimeEnd()) ;
-							if (attList.get(0).getTime().before(workTimeEnd)) {
-								// 上班
-								attendanceTime.setCheckIn(attList.get(0).getTime());
-							}else{
-								// 下班
-								attendanceTime.setCheckOut(attList.get(0).getTime());
-							}
+							//缺勤时间（公司未规定放假日期，所以当员工没有打卡记录时，统一算缺勤)
+							attendanceTime.setDutytime(NumUtils.sub(turnWorkTime,0));
 							attendanceTime.setFlag(1);
+							attendanceTime.setTurnWorkTime(0.0);
+							attendanceTime.setWorkTime(0.0);
+							attendanceTime.setOvertime(0.0);
 						}
 						attendanceTimeList.add(attendanceTime);
 					
-				}else{
-					//当按人名查找没有签到记录时，将这一天的考情状态修改
-					AttendanceTime attendanceTime = new AttendanceTime();
-					attendanceTime.setFlag(0);
-					attendanceTime.setTime(beginTimes);
-					attendanceTime.setUsername(us.getUserName());
-					attendanceTime.setNumber(us.getNumber());
-					attendanceTime.setWeek(DatesUtil.dateToWeek(beginTimes));
-					attendanceTimeList.add(attendanceTime);
-				}
+
 			}
 		}
 			//根据员工编号自然顺序
