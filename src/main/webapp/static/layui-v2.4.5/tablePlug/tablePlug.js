@@ -31,7 +31,6 @@ layui.define(['table'], function (exports) {
   //     return -1;
   //   };
   // }
-
   var $ = layui.$
     , laytpl = layui.laytpl
     , laypage = layui.laypage
