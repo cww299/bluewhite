@@ -1914,7 +1914,6 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
     delete data[table.config.indexName];
     return data;
   };
-
   // 把thisTable和Class透漏出去，方便拓展
   table.thisTable = thisTable;
   table.Class = Class;
@@ -1922,7 +1921,7 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
   //自动完成渲染
   table.init();
   
-  exports('tablePlug', table);
+  exports(MOD_NAME, table);
 });
 
  
