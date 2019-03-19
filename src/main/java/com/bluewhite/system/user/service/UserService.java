@@ -21,12 +21,6 @@ public interface UserService extends BaseCRUDService<User, Long> {
 	public User findByUserName(String userName);
 	
 	
-	/**
-	 * 通过用户名查找
-	 * @param username 用户名
-	 * @return user
-	 */
-	public User findByloginName(String userName);
 	
 	/**
 	 * 通过用户名密码验证登录

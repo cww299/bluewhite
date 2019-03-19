@@ -31,7 +31,6 @@ import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
-import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.entity.Temporarily;
@@ -43,7 +42,7 @@ import com.bluewhite.system.user.service.UserService;
 @Controller
 public class GroupAction {
 	
-private static final Log log = Log.getLog(GroupAction.class);
+	private static final Log log = Log.getLog(GroupAction.class);
 	
 	@Autowired
 	private GroupService groupService;
@@ -272,7 +271,6 @@ private static final Log log = Log.getLog(GroupAction.class);
 			User user = new User();
 			user.setForeigns(1);
 			user.setPassword("123456");
-			user.setLoginName(temporarily.getUserName());
 			user.setUserName(temporarily.getUserName());
 			user.setStatus(0);
 			userService.save(user);

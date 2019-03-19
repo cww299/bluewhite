@@ -142,7 +142,6 @@ public class ReportExportServiceImpl implements ReportExportService{
 				if(user==null){
 					user = new User();
 					user.setUserName(proPoi.getLogin_name());
-					user.setLoginName(proPoi.getLogin_name());
 					user.setForeigns(0);
 				}
 //				
@@ -202,16 +201,16 @@ public class ReportExportServiceImpl implements ReportExportService{
 	public int importImportUserContract(List<UserContract> excelUser) {
 		
 		int count = 0;
-		if(excelUser.size()>0){
-			for(UserContract proPoi :excelUser){
-				UserContract user  = userContractDao.findByUsername(proPoi.getUsername());
-				if(user!=null){
-					user.setNumber(proPoi.getNumber());
-					userContractDao.save(user);
-					count++;
-				}
-			}
-		}
+//		if(excelUser.size()>0){
+//			for(UserContract proPoi :excelUser){
+//				UserContract user  = userContractDao.findByUsername(proPoi.getUsername());
+//				if(user!=null){
+//					user.setNumber(proPoi.getNumber());
+//					userContractDao.save(user);
+//					count++;
+//				}
+//			}
+//		}
 		return count;
 	}
 
