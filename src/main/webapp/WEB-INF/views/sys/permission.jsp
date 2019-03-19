@@ -49,16 +49,7 @@
         </section>
     </section>
  
-    <!--Global JS-->
-    <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
-    <script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
-    <script src="${ctx }/static/plugins/pace/pace.min.js"></script>
-    <script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-    <script src="${ctx }/static/js/src/app.js"></script>
-     <script src="${ctx }/static/js/laypage/laypage.js"></script> 
-    <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
-    <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
+
     
     <script>
    jQuery(function($){

@@ -1210,7 +1210,7 @@
 		      				}
 		      				var newDate=/\d{4}-\d{1,2}-\d{1,2}/g.exec(o.contractDateEnd)
 		      				var newDate1=/\d{4}-\d{1,2}-\d{1,2}/g.exec(o.estimate)
-		      				var newDate2=/\d{4}-\d{1,2}-\d{1,2}/g.exec(o.estimate)
+		      				var newDate2=/\d{4}-\d{1,2}-\d{1,2}/g.exec(o.entry)
 		      				html +='<tr>'
 		      				+'<td class="text-center edit price">'+v+'</td>'
 		      				+'<td class="text-center edit price">'+o.userName+'</td>'

@@ -105,22 +105,23 @@ public class UserAction {
 	@SysLogAspectAnnotation(description = "员工新增操作", module = "员工管理", operateType = "增加", logType = SysLog.ADMIN_LOG_TYPE)
 	public CommonResponse createUser(HttpServletRequest request, User user) {
 		CommonResponse cr = new CommonResponse();
-		user.setPassword("123456");
-		user.setForeigns(0);
-		user.setLoginName(user.getUserName());
-		UserContract userContract = new UserContract();
-		userContract.setUsername(user.getUserName());
-		userContractDao.save(userContract);
-		user.setUserContract(userContract);
 		if(!StringUtils.isEmpty(user.getPhone())){
 			User u = userService.findByPhone(user.getPhone());
 			if(u != null){
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 				cr.setMessage("该用户手机号已存在");
-				return cr;
+			}else{
+				user.setPassword("123456");
+				user.setForeigns(0);
+				UserContract userContract = new UserContract();
+				userContractDao.save(userContract);
+				user.setUserContract(userContract);
+				cr.setData(clearCascadeJSON.format(userService.save(user)).toJSON());
 			}
+		}else{
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("手机号不能为空");
 		}
-		cr.setData(clearCascadeJSON.format(userService.save(user)).toJSON());
 		return cr;
 	}
 	
@@ -146,7 +147,6 @@ public class UserAction {
 		
 		if(oldUser.getUserContract()==null){
 			UserContract userContract = new UserContract();
-			userContract.setUsername(user.getUserName());
 			userContractDao.save(userContract);
 			if(userContract.getNumber()!=null){
 				oldUser.setLotionNumber(Integer.valueOf(userContract.getNumber()));

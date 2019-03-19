@@ -6,7 +6,6 @@ import com.bluewhite.system.user.entity.UserContract;
 
 public interface UserContractDao extends BaseRepository<UserContract, Long>{
 
-	UserContract findByUsername(String username);
 	
 	/**
 	 * 通过员工合同编号查找

@@ -20,84 +20,67 @@ public class UserContract extends BaseEntity<Long>{
 	 * 位置编号
 	 */
 	@Column(name = "number")
-	@Poi(name = "", column = "A")
 	private String number;
-	
-	/**
-	 * 姓名
-	 */
-	@Column(name = "username")
-	@Poi(name = "", column = "B")
-	private String username;
+
 	
 	/**
 	 * 档案
 	 */
 	@Column(name = "archives")
-	@Poi(name = "", column = "C")
 	private String archives;
 	
 	/**
 	 * 照片
 	 */
 	@Column(name = "pic")
-	@Poi(name = "", column = "D")
 	private String pic;
 	
 	/**
 	 * 身份证
 	 */
 	@Column(name = "id_card")
-	@Poi(name = "", column = "E")
 	private String idCard;
 	
 	/**
 	 * 银行卡
 	 */
 	@Column(name = "bank_card")
-	@Poi(name = "", column = "F")
 	private String bankCard;
 	
 	/**
 	 * 体检
 	 */
 	@Column(name = "physical")
-	@Poi(name = "", column = "G")
 	private String physical;
 	
 	/**
 	 * 资格证书
 	 */
 	@Column(name = "qualification")
-	@Poi(name = "", column = "H")
 	private String qualification;
 	
 	/**
 	 * 学历证书
 	 */
 	@Column(name = "formal_schooling")
-	@Poi(name = "", column = "I")
 	private String formalSchooling;
 	
 	/**
 	 * 其他协议
 	 */
 	@Column(name = "agreement")
-	@Poi(name = "", column = "J")
 	private String  agreement;
 	
 	/**
 	 * 保密协议
 	 */
 	@Column(name = "secrecy_agreement")
-	@Poi(name = "", column = "K")
 	private String secrecyAgreement;
 	
 	/**
 	 * 合同
 	 */
 	@Column(name = "contract")
-	@Poi(name = "", column = "L")
 	private String contract;
 	
 	
@@ -105,7 +88,6 @@ public class UserContract extends BaseEntity<Long>{
 	 * 其他资料
 	 */
 	@Column(name = "remark")
-	@Poi(name = "", column = "M")
 	private String remark;
 	
 	/**
@@ -136,15 +118,6 @@ public class UserContract extends BaseEntity<Long>{
 		this.number = number;
 	}
 
-
-	public String getUsername() {
-		return username;
-	}
-
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
 
 
 	public String getArchives() {

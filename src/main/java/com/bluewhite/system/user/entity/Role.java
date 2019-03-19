@@ -48,7 +48,7 @@ public class Role extends BaseEntity<Long> {
 	private String roleType;
 
 	/**
-	 *描述
+	 * 描述
 	 */
 	@Column(name = "description")
 	private String description;

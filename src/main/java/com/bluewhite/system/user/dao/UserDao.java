@@ -13,12 +13,6 @@ public interface UserDao extends BaseRepository<User, Long> {
 	 */
 	public User findByUserName(String userName);
 	
-	/**
-	 * 通过登录名查找用户
-	 * @param userName
-	 * @return
-	 */
-	public User findByLoginName(String userName);
 		
 	/**
 	 * 通过用户名及密码查询用户

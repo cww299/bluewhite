@@ -108,19 +108,9 @@
 
 
 
-	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
-	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
-	<script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
-	<script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
-	<script src="${ctx }/static/plugins/pace/pace.min.js"></script>
-	<script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-	<script src="${ctx }/static/js/src/app.js"></script>
-	<script src="${ctx }/static/js/laypage/laypage.js"></script>
-	<script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
-	<script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-	<script src="${ctx }/static/js/vendor/typeahead.js"></script>
 	<script src="${ctx }/static/js/laydate/laydate.js"></script>
 	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
+	
 	<script>
 		laydate.render({
 			elem : '#startTime',

@@ -82,10 +82,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         return result;
     }
 
-	@Override
-	public User findByloginName(String userName) {
-		return dao.findByLoginName(userName);
-	}
 	
 	@Override
 	public PageResult<User> getPagedUser(PageParameter page, User user) {
@@ -93,22 +89,27 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		if(user.getTemporarily()==null){
 			//质检
 			if(cu.getRole().contains(Constants.PRODUCT_FRIST_QUALITY)){
+				user.setQuit(0);
 				user.setOrgNameIds(Constants.QUALITY_ORGNAME);
 			}
 			//包装
 			if(cu.getRole().contains(Constants.PRODUCT_FRIST_PACK)){
+				user.setQuit(0);
 				user.setOrgNameIds(Constants.PACK_ORGNAME);
 			}
 			//针工
 			if(cu.getRole().contains(Constants.PRODUCT_TWO_DEEDLE)){
+				user.setQuit(0);
 				user.setOrgNameIds(Constants.DEEDLE_ORGNAME);
 			}
 			//机工
 			if(cu.getRole().contains(Constants.PRODUCT_TWO_MACHINIST)){
+				user.setQuit(0);
 				user.setOrgNameIds(Constants.MACHINIST_ORGNAME);
 			}
 			//裁剪
 			if(cu.getRole().contains(Constants.PRODUCT_RIGHT_TAILOR)){
+				user.setQuit(0);
 				user.setOrgNameIds(Constants.TAILOR_ORGNAME);
 			}
 		}
@@ -277,14 +278,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 
 	@Override
 	public void oooxxx() {
-		List<User> userList = userDao.findAll();
-		for(User user : userList ){
-			UserContract userContract  = userContractDao.findByUsername(user.getUserName());
-			user.setUserContract(userContract);
-			userDao.save(user);
-		}
-		
-		
 	}
 
 	@Override

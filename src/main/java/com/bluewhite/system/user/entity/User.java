@@ -45,7 +45,7 @@ public class User extends BaseEntity<Long> {
 	private Boolean isAdmin = false;
 	
 	/**
-	 * 是否是外来人员（0=否，1=是）
+	 * 是否是外来人员（0=否，1=是）(外来人员是指当生产线上业务繁忙聘请的临时人员)
 	 */
 	@Column(name = "foreigns")
 	private Integer foreigns;
@@ -56,12 +56,6 @@ public class User extends BaseEntity<Long> {
 	@Column(name = "del_flag")
 	private Integer delFlag = 1;
 
-	/**
-	 * 登录名
-	 */
-	@Column(name = "login_name")
-	private String loginName;
-	
 	
 	/**
 	 * 照片id
@@ -386,7 +380,7 @@ public class User extends BaseEntity<Long> {
 	 */
     @OneToOne(fetch=FetchType.LAZY,cascade = CascadeType.ALL) 
     @JoinColumn(name="user_contract_id",referencedColumnName="id",nullable=true)
-    @NotFound(action=NotFoundAction.IGNORE)
+    @NotFound(action=NotFoundAction.IGNORE)//找不到引用的外键数据时忽略
     private UserContract userContract;
 	
 	/**
@@ -922,13 +916,6 @@ public class User extends BaseEntity<Long> {
 		this.password = password;
 	}
 
-	public String getLoginName() {
-		return loginName;
-	}
-
-	public void setLoginName(String loginName) {
-		this.loginName = loginName;
-	}
 
 	public String getUserName() {
 		return userName;
