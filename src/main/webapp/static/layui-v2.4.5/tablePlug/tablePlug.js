@@ -843,7 +843,7 @@ layui.define(['table'], function (exports) {
 
     that.layBody.find('tr.layui-tablePlug-data-temp[data-index="' + numbers + '"]')
       .find('td:first-child')
-      .append('<div class="close_temp"></div>');
+      .append('<div class="close_temp" id="sos"></div>');
 
     that.layFixRight.find('.close_temp').remove();
 

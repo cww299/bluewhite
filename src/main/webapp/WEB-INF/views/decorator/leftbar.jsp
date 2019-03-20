@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="${ctx }/static/plugins/switchery/switchery.min.css">
     <link rel="stylesheet" href="${ctx }/static/css/main.css"> 
     <link rel="stylesheet" href="${ctx }/static/js/laypage/skin/laypage.css"> 
-    <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+    <%-- <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all"> --%>
     
     
 	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>

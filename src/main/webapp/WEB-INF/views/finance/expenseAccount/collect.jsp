@@ -82,13 +82,13 @@
                                         	<th class="text-center">报销内容</th>
                                             <th class="text-center">报销人</th>
                                             <th class="text-center">是否是预算</th>
-                                            <th class="text-center">付款日要付金额</th>
-                                            <th class="text-center">付款日期</th>
+                                            <th class="text-center">报销申请金额</th>
+                                            <th class="text-center">报销申请日期</th>
                                             <th class="text-center">扣款事由</th>
                                             <th class="text-center">扣款金额</th>
                                             <th class="text-center">结款模式</th>
-                                            <th class="text-center">请选择支付时间</th>
-                                            <th class="text-center">支出现金或转账现金/元</th>
+                                            <th class="text-center">实际付款时间</th>
+                                            <th class="text-center">实际付款金额</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent">
@@ -232,7 +232,7 @@
 			 var data={
 						page:1,
 				  		size:13,
-				  		flag:1,
+				  		flag:0,
 				} 
 			this.init = function(){
 				
@@ -480,6 +480,7 @@
 					var data = {
 				  			page:1,
 				  			size:13,
+				  			flag:0,
 				  			Username:$('#firstNames').val(),
 				  			paymentDate:paymentDate,
 				  			expenseDate:expenseDate,

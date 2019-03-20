@@ -41,6 +41,8 @@
 							<table><tr>
 								<td>报销人:</td><td><input type="text" name="name" id="firstNames"  class="form-control search-query name" /></td>
 								<td>&nbsp&nbsp</td>
+								<td>报销内容:</td><td><input type="text" name="name" id="contentt"  class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp</td>
 								<td><select class="form-control" id="selectone"><option value="">请选择</option><option value="expenseDate">付款日期</option><option value="paymentDate">财务付款日期</option></select></td>
 								<td>&nbsp&nbsp</td>
 								<td>合同开始:</td>
@@ -54,6 +56,8 @@
 					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
              onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
+								<td>&nbsp&nbsp</td>
+								<td>是否核对:<td><select class="form-control" id="flag"><option value="">请选择</option><option value="0">未核对</option><option value="1">已核对</option></select></td>
 								</tr></table>
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask">
@@ -86,18 +90,19 @@
                                         	<th class="text-center">报销内容</th>
                                             <th class="text-center">报销人</th>
                                             <th class="text-center">是否是预算</th>
-                                            <th class="text-center">付款日要付金额</th>
-                                            <th class="text-center">付款日期</th>
+                                            <th class="text-center">报销申请金额</th>
+                                            <th class="text-center">报销申请日期</th>
                                             <th class="text-center">扣款事由</th>
                                             <th class="text-center">扣款金额</th>
                                             <th class="text-center">结款模式</th>
+                                            <th class="text-center">状态</th>
                                             <th class="text-center">操作</th>
                                         </tr>
                                     </thead>
                                         <tr>
                                         	<td class="text-center"></td>
                                             <td class="text-center"><input type="text" id="content" class="text-center" style="border: none;width:150px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="user" class="aName2 text-center"  data-provide="typeahead" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
+                                            <td class="text-center" ><input type="text" id="user" class="aName2 text-center"  data-provide="typeahead" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
                                             <td class="text-center"><select class="text-center" id="budget" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">请选择</option><option value="1">预算</option></select></td>
                                             <td class="text-center"><input type="text" id="money" class="bName2 text-center" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
                                             <td class="text-center" style="padding: 9px 0px 2px 85px;"><input id="expenseDate" placeholder="请输入时间" class="form-control laydate-icon"
@@ -105,6 +110,7 @@
                                             <td class="text-center"><input type="text" id="withholdReason" class="text-center" style="border: none;width:105px; height:30px; background-color: #BFBFBF;"></td>
                                             <td class="text-center"><input type="text" id="withholdMoney" class="text-center"  style="border: none;width:60px; height:30px; background-color: #BFBFBF;"></td>
                                            <td class="text-center"><select class="text-center" id="settleAccountsMode" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">请选择</option><option value="1">现金</option><option value="2">月结</option></select></td>
+                                             <td class="text-center"></td>
                                             <td class="text-center"><button type="button"  id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增订单</button></td>
                                     
                                         </tr>
@@ -377,6 +383,12 @@
 		      				 }else{
 		      					 b=""
 		      				 }
+		      				var c;
+		      				if(o.flag==0){
+		      					c="未核对"
+		      				}else{
+		      					c="已核对"
+		      				}
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="hidden batch">'+o.id+'</td>'
 		      				+'<td class="hidden userId ">'+o.userId+'</td>'
@@ -388,6 +400,7 @@
 		      				+'<td class="text-center edit2 withholdReason">'+o.withholdReason+'</td>'
 		      				+'<td class="text-center edit3 withholdMoney">'+o.withholdMoney+'</td>'
 		      				+'<td class="text-center editt contractNumber" data-online2="'+o.settleAccountsMode+'"><select class="text-center checkWork2" disabled="disabled" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">请选择</option><option value="1">现金</option><option value="2">月结</option></select></td>'
+		      				+'<td class="text-center ">'+c+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button></td></tr>'
 		      			}); 
 		      			self.setCount(result.data.pageNum)
@@ -408,6 +421,8 @@
 								  			orderTimeBegin:$("#startTime").val(),
 								  			orderTimeEnd:$("#endTime").val(),
 								  			batchNumber:$("#batchNumber2").val(),
+								  			content:$("#contentt").val(),
+								  			flag:$("#flag").val(),
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -629,7 +644,6 @@
 			}
 			
 			this.mater=function(){
-				//提示甲方
 				$(".aName2").typeahead({
 					//ajax 拿way数据
 					source : function(query, process) {
@@ -700,6 +714,8 @@
 				  			expenseDate:expenseDate,
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(),
+				  			content:$("#contentt").val(),
+				  			flag:$("#flag").val(),
 				  	}
 		            self.loadPagination(data);
 				});
@@ -715,7 +731,6 @@
 					if($("#money").val()==""){
 						return layer.msg("请填写报销金额", {icon: 2});
 					}
-					console.log(self.getIndex())
 					  postData={
 						content:$("#content").val(),
 						budget:$("#budget").val(),
@@ -750,7 +765,19 @@
 								}else{
 									layer.msg("添加失败", {icon: 2});
 								}
-								
+								var data = {
+					        			page:self.getCount(),
+								  		size:13,
+								  		productName:$('#productName').val(),
+							  			firstNames:$('#firstNames').val(),
+							  			partyNames:$('#partyNames').val(),
+							  			orderTimeBegin:$("#startTime").val(),
+							  			orderTimeEnd:$("#endTime").val(),
+							  			batchNumber:$("#batchNumber2").val(),
+							  			content:$("#content").val(),
+							  			flag:$("#flag").val(),
+							  	}
+								self.loadPagination(data);
 								layer.close(index);
 							},error:function(){
 								layer.msg("操作失败！", {icon: 2});
@@ -794,6 +821,8 @@
 							  			orderTimeBegin:$("#startTime").val(),
 							  			orderTimeEnd:$("#endTime").val(),
 							  			batchNumber:$("#batchNumber2").val(),
+							  			content:$("#contentt").val(),
+							  			flag:$("#flag").val(),
 							  	}
 								self.loadPagination(data)
 								layer.close(index);
