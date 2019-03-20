@@ -147,11 +147,12 @@
 			    var data = obj.data;
 			    if(obj.event === 'del'){
 			    	var index;
-			    	index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
 			    	  var postData={
 								number:data.number,
 								address:$("#select1").val(),
 						}
+			    	index = layer.confirm('<div>输入密码:<input id="password" /></div>', {btn: ['确定', '取消']},function(){
+			    		if($("#password").val()==3116){
 			    	  $.ajax({
 							url:"${ctx}/personnel/deleteUser",
 							data:postData,
@@ -175,6 +176,7 @@
 								layer.close(index);
 							}
 						});
+			    		}
 			      });
 			    }
 		  });
