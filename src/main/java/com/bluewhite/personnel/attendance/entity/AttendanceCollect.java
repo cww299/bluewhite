@@ -1,14 +1,10 @@
 package com.bluewhite.personnel.attendance.entity;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.production.finance.entity.CollectPay;
 
 /**
  * 考勤汇总列表

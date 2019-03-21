@@ -11,11 +11,10 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
-import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.system.user.entity.User;
 
 /**
- * 考勤记录 
+ * 签到记录 
  * 
  * @author zhangliang
  *

@@ -998,7 +998,6 @@ public class ReportExportAction {
 			//创建行，行初始是0，数据从第三行写入
 			row = sheet.createRow(++l);
 			row.createCell(0).setCellValue(attendance.getOrgName()); 
-			row.createCell(1).setCellValue(psList.get(0).getUsername()); 
 			row.createCell(2).setCellValue(""); 
 			row.createCell(3).setCellValue(""); 
 			//创建列，列初始是0，数据从第五列写入

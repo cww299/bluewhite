@@ -201,7 +201,7 @@ public class AttendanceAction {
 	
 	
 	/**
-	 * 按条件查看考勤工作时长
+	 * 查看考勤工作时长
 	 * 
 	 * @param request 请求
 	 * @return cr
@@ -214,11 +214,18 @@ public class AttendanceAction {
 //				.get()
 //				.addRetainTerm(AttendanceTime.class,"time","number","username","checkIn","checkOut","turnWorkTime","overtime","week","dutytime")
 //				.format(attendanceService.findAttendanceTime(attendance)).toJSON());
+		
+		
+		
+		
 		cr.setData(attendanceService.findAttendanceTimeCollect(attendance));
 		
 		cr.setMessage("查询成功");
 		return cr;
 	}
+	
+	
+	
 	
 	
 

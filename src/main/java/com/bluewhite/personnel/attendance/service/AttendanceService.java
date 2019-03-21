@@ -55,7 +55,7 @@ public interface AttendanceService  extends BaseCRUDService<Attendance,Long>{
 	public PageResult<Attendance> findPageAttendance(Attendance attendance, PageParameter page);
 	
 	/**
-	 * 按条件查看考勤工作时长
+	 * 按日期初始化考勤详细
 	 * @param attendance
 	 * @return
 	 */
