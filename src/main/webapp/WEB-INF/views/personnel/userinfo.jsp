@@ -2264,7 +2264,7 @@
 										if(0==result.code){
 										   $('.addDictDivTypeForm')[0].reset(); 
 										  var htmlfv="";
-											layer.msg("添加成功！", {icon: 1});
+											layer.msg(result.message, {icon: 1});
 											var data = {
 										  			page:1,
 										  			size:13,
@@ -2281,7 +2281,7 @@
 											self.loadPagination(data);
 											
 										}else{
-											layer.msg("添加失败", {icon: 2});
+											layer.msg(result.message, {icon: 2});
 										}
 										
 										layer.close(index);

@@ -1079,17 +1079,17 @@ td, th {
 	content: "\e200"
 }
 
-* {
+ * {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box
-}
+} 
 
-:before, :after {
+/* :before, :after {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box
-}
+} */
 
 html {
 	font-size: 10px;
@@ -2394,17 +2394,17 @@ th {
 	background-color: #f5f5f5
 }
 
-table col[class*=col-] {
+ table col[class*=col-] {
 	position: static;
 	display: table-column;
 	float: none
-}
+} 
 
-table td[class*=col-], table th[class*=col-] {
-	position: static;
+ table td[class*=col-], table th[class*=col-] {
+	/* position: static; */
 	display: table-cell;
 	float: none
-}
+} 
 
 .table>thead>tr>td.active, .table>tbody>tr>td.active, .table>tfoot>tr>td.active,
 	.table>thead>tr>th.active, .table>tbody>tr>th.active, .table>tfoot>tr>th.active,
@@ -3374,14 +3374,14 @@ tbody.collapse.in {
 	outline: 0
 }
 
-.dropdown-menu {
-	position: absolute;
+.dropdown-menu{
+	/* position: absolute ; */
 	top: 100%;
 	left: 0;
 	z-index: 1000;
 	display: none;
-	float: left;
-	min-width: 160px;
+	/* float: left;
+	min-width: 160px; */
 	padding: 5px 0;
 	margin: 2px 0 0;
 	font-size: 14px;

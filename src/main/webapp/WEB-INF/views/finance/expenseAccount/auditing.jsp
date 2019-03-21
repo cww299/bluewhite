@@ -41,6 +41,8 @@
 							<table><tr>
 								<td>报销人:</td><td><input type="text" name="name" id="firstNames"  class="form-control search-query name" /></td>
 								<td>&nbsp&nbsp</td>
+								<td>报销内容:</td><td><input type="text" name="name" id="content"  class="form-control search-query name" /></td>
+								<td>&nbsp&nbsp</td>
 								<td><select class="form-control" id="selectone"><option value="">请选择</option><option value="expenseDate">付款日期</option><option value="paymentDate">财务付款日期</option></select></td>
 								<td>&nbsp&nbsp</td>
 								<td>当月开始:</td>
@@ -55,7 +57,7 @@
              onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 								</td>
 								<td>&nbsp&nbsp</td>
-								<td>是否核对:<td><select class="form-control" id="flag"><option value="">请选择</option><option value="0">未核对</option><option value="1">已核对</option></select></td>
+								<td>是否核对:<td><select class="form-control" id="flag"><option value="0">未核对</option><option value="1">已核对</option></select></td>
 								</tr></table> 
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask">
@@ -82,13 +84,13 @@
                                         	<th class="text-center">报销内容</th>
                                             <th class="text-center">报销人</th>
                                             <th class="text-center">是否是预算</th>
-                                            <th class="text-center">付款日要付金额</th>
-                                            <th class="text-center">付款日期</th>
+                                            <th class="text-center">报销申请金额</th>
+                                            <th class="text-center">报销申请日期</th>
                                             <th class="text-center">扣款事由</th>
                                             <th class="text-center">扣款金额</th>
                                             <th class="text-center">结款模式</th>
-                                            <th class="text-center">请选择支付时间</th>
-                                            <th class="text-center">支出现金或转账现金/元</th>
+                                            <th class="text-center">实际付款时间</th>
+                                            <th class="text-center">实际付款金额</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tablecontent">
@@ -307,6 +309,7 @@
 								  			orderTimeBegin:$("#startTime").val(),
 								  			orderTimeEnd:$("#endTime").val(),
 								  			flag:$("#flag").val(),
+								  			content:$("#content").val(),
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -432,7 +435,7 @@
 					}
   					var index;
 					$.ajax({
-						url:"${ctx}/fince/auditExpenseAccount",
+						url:"${ctx}/fince/updateExpenseAccount",
 						data:postData,
 						type:"POST",
 						beforeSend:function(){
@@ -531,10 +534,11 @@
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(),
 				  			flag:$("#flag").val(),
+				  			content:$("#content").val(),
 				  	}
 		            self.loadPagination(data);
 				});
-				//新增
+				/* //新增
 				$('#addgroup').on('click',function(){
 					self.mater();
 					var _index;
@@ -587,7 +591,7 @@
 								layer.close(index);
 							}
 						});
-				})
+				}) */
 				
 			}
    	}

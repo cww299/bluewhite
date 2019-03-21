@@ -5,6 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 <title>角色管理</title>
 </head>
 
@@ -24,7 +25,7 @@
 						</div>
 						<div class="panel-body">
 
-							<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+							<!-- <div class="layui-form layui-card-header layuiadmin-card-header-auto">
 								<div class="layui-form-item">
 									<div class="layui-inline">
 										<label class="layui-form-label">id</label>
@@ -46,12 +47,9 @@
 										</button>
 									</div>
 								</div>
-							</div>
+							</div> -->
 
-							<div class="layui-card-body">
-								<table class="layui-table" id="LAY-role-table" lay-filter="LAY-role-table"></table>
-								<div id="page"></div>
-							</div>
+								<div id="LAY-role-table" class="table_th_search" lay-filter="LAY-role-table"></div>
 						</div>
 					</div>
 				</div>
@@ -100,11 +98,7 @@
 					// 处理操作列
 					var fn1 = function(field) {
 						return function(data) {
-							return [ '<select name="city" lay-filter="city_select" lay-search="true">', 
-									'<option value="" >请选择或搜索</option>', 
-									'<option value="0" >超级管理员</option>',
-									'<option value="1" >管理员</option>', 
-									'<option value="2" >员工</option>',
+							return ['<select name="citye" lay-filter="city_selecte" lay-search="true">', 
 									'</select>' 
 									].join('');
 						};
@@ -120,14 +114,8 @@
 						page : {},
 						loading : true,
 						toolbar : '#toolbarDemo',//开启工具栏，此处显示默认图标，可以自定义模板，详见文档
-						totalRow : true ,//开启合计行
 						colFilterRecord : true,// 开启智能重载
 						smartReloadModel : true,// 设置开启部分选项不可选
-						primaryKey : 'id',// 设置表格的主键（主要用在记录选中状态还有不可操作记录的时候用
-						checkDisabled : {
-							enabled : true,
-							data : [ 10000, 10001, 10002, 10003, 10004, 10005, 10009 ]
-						},
 						done : function() {
 							var tableView = this.elem.next();
 							tableView.find('.layui-table-grid-down').remove();
@@ -167,8 +155,12 @@
 						},
 						checkStatus : {},
 						cols : [ 
-						[{type: 'checkbox', fixed: 'left', rowspan: 2}],
 						[  {
+							type: 'checkbox',
+							align : 'center',
+							fixed: 'left'
+							},
+							{
 							field : "id",
 							title : "ID",
 							width : 80,
@@ -185,7 +177,10 @@
 							field : "roleType",
 							title : "角色类型",
 							align : 'center',
-							templet : fn1('city')
+							search: true, 
+							edit: false, 
+							type: 'normal',
+							templet:fn1('citye')
 						}, {
 							field : "isShow",
 							title : "是否可用",
@@ -198,7 +193,8 @@
 					});
 
 					// 监听表格中的下拉选择将数据同步到table.cache中
-					form.on('select(city_select)', function(data) {
+					form.on('select(city_selecte)', function(data) {
+						console.log(data)
 						var selectElem = $(data.elem);
 						var tdElem = selectElem.closest('td');
 						var trElem = tdElem.closest('tr');
@@ -206,50 +202,118 @@
 						table.cache[tableView.attr('lay-id')][trElem.data('index')][tdElem.data('field')] = data.value;
 					});
 
-					//监听排序事件
-					table.on('sort(test)', function(obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
-						// console.log(obj.field); //当前排序的字段名
-						// console.log(obj.type); //当前排序类型：desc（降序）、asc（升序）、null（空对象，默认排序）
-						// console.log(this); //当前排序的 th 对象
+					
+					//监听头工具栏事件
+				    table.on('toolbar(LAY-role-table)', function (obj) {
+				      var config = obj.config;
+				      var btnElem = $(this);
+				      var tableId = config.id;
+				      // var tableView = config.elem.next();
+				      switch (obj.event) {
+				        case 'addTempData':
+				          table.addTemp(tableId, function (trElem) {
+				          });
+				          break;
+				        case 'getTempData':
+				          layer.alert('临时数据:' + JSON.stringify(table.getTemp(tableId).data));
+				          break;
+				        case 'cleanTempData':
+				          table.cleanTemp(tableId);
+				          layer.msg('临时数据已删除');
+				          break;
+				        case 'openSelect':
+				          layer.open({
+				            type: 1,
+				            title: '测试下拉效果单页面',
+				            area: ['3000px', '160px'],
+				            content: '<div class="layui-form" style="padding: 20px;"><select><option value="1">北京</option><option value="2">上海</option><option value="3">广州</option><option value="4">深圳</option></select></div>',
+				            success: function (layero, index) {
+				              form.render();
+				            }
+				          });
+				          break;
+				        case 'openIframeSelect':
+				          layer.open({
+				            type: 2,
+				            title: '测试下拉效果iframe',
+				            shade: false,
+				            area: ['300px', '160px'],
+				            content: 'testIframe.html?time=' + new Date().getTime(),
+				            success: function (layero, index) {
+				            }
+				          });
+				          break;
+				        case 'autoReload':
+				          if (!layui._autoReloadIndex) {
+				            layui._autoReloadIndex = setInterval(function () {
+				              table.reload(tableId, {});
+				            }, 300);
+				          } else {
+				            clearInterval(layui._autoReloadIndex);
+				            layui._autoReloadIndex = 0;
+				          }
+				          break;
+				        case 'LAYTABLE_EXPORT':
+				          // 点击导出图标的时候
+				          $(this).find('.layui-table-tool-panel li').unbind('click').click(function () {
+				            // 干掉了原始的事件了，自己定义需要的
+				            var dataTemp = table.cache[tableId];
+				            if (!dataTemp || !dataTemp.length) {
+				              // 处理如果没有数据的时候导出为空的excel，没有导出thead的问题
+				              dataTemp = [{}];
+				            }
+				            // 实际可以根据需要还可以直接请求导出全部，或者导出选中的数据而不是只导出当前的页的数据
+				            table.exportFile(tableId, dataTemp, $(this).data('type'));
+				          });
+				          break;
+				        case 'getChecked':
+				          layer.alert(JSON.stringify(table.checkStatus(tableId).data));
+				          break;
+				        case 'getCheckedStatus':
+				          var status = table.checkStatus(tableId).status;
+				          layer.alert('新增的：' + JSON.stringify(status[tablePlug.CHECK_TYPE_ADDITIONAL]) + '<br>'
+				            + '删除的：' + JSON.stringify(status[tablePlug.CHECK_TYPE_REMOVED]));
+				          break;
+				        case 'deleteSome':
+				          // 获得当前选中的，不管它的状态是什么？只要是选中的都会获得
+				          var checkedIds = tablePlug.tableCheck.getChecked(tableId);
+				          layer.confirm('您是否确定要删除选中的' + checkedIds.length + '条记录？', function () {
+				            layer.alert('do something with: ' + JSON.stringify(checkedIds));
+				          });
+				          break;
+				        case 'jump':
+				          var pageCurr = btnElem.data('page');
+				          table.reload(config.id, {url: 'json/data1' + pageCurr + '.json', page: {curr: pageCurr}});
+				          break;
+				        case 'reload':
+				          var options = {page: {curr: 1}};
+				          var urlTemp = btnElem.data('url');
+				          if (urlTemp) {
+				            options.url = 'json/' + urlTemp + '.json';
+				          }
+				          var optionTemp = eval('(' + (btnElem.data('option') || '{}') + ')');
 
-						//尽管我们的 table 自带排序功能，但并没有请求服务端。
-						//有些时候，你可能需要根据当前排序的字段，重新向服务端发送请求，从而实现服务端排序，如：
-						table.reload('LAY-role-table', {
-							initSort : obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
-							,
-							where : { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
-								field : obj.field,
-								order : obj.type
-							//排序方式
-							}
-						});
-					});
-
-					// 监听编辑如果评分负数给回滚到修改之前并且弹出提示信息并且重新获得焦点等待输入
-					table.on('edit(test)', function(obj) {
-						var tableId = obj.tr.closest('.layui-table-view').attr('lay-id');
-						var trIndex = obj.tr.data('index');
-						var that = this;
-						var tdElem = $(that).closest('td');
-
-						var field = obj.field;
-						var value = obj.value;
-						if (field === 'score') {
-							value = parseInt(value);
-							if (value < 0) {
-								setTimeout(function() {
-									// 小于0回滚再次获得焦点打开
-									obj.update({
-										score : table._dataTemp[tableId][trIndex][field]
-									});
-									layer.msg('评分不能为负数!', {
-										anim : 6
-									});
-									tdElem.click();
-								}, 100);
-							}
-						}
-					});
+				          table.reload(config.id, $.extend(true, options, optionTemp));
+				          break;
+				        case 'reloadIns':
+				          tablePlug.getIns(config.id).reload({
+				            // page: false
+				          });
+				          break;
+				        case 'setDisabled':
+				          // tablePlug.tableCheck.disabled(config.id, [10003, 10004, 10010]);
+				          // table.reload(tableId, {});
+				          tablePlug.disabledCheck(tableId, [10003, 10004, 10010]);
+				          break;
+				        case 'setDisabledNull':
+				          tablePlug.disabledCheck(tableId, false);
+				          break;
+				        case 'ranksConversion':
+				          // 表格行列转换
+				          break;
+				      }
+				    });
+					
 
 					// tr点击触发复选列点击
 					$(document).on('click', '.layui-table-view tbody tr', function(event) {
