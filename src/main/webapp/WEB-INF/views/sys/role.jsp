@@ -46,8 +46,8 @@
 											<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
 										</button>
 									</div>
-								</div>
-							</div> -->
+								</div>-->
+							</div> 
 
 								<div id="LAY-role-table" class="table_th_search" lay-filter="LAY-role-table"></div>
 						</div>
@@ -98,7 +98,9 @@
 					// 处理操作列
 					var fn1 = function(field) {
 						return function(data) {
-							return ['<select name="citye" lay-filter="city_selecte" lay-search="true">', 
+							return ['<select name="citye" lay-filter="city_selecte" lay-search="true">',
+								'<option value="管理员">管理员</option>',
+								'<option value="超级管理员">超级管理员</option>',
 									'</select>' 
 									].join('');
 						};

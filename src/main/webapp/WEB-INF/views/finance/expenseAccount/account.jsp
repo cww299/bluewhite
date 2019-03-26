@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
@@ -7,585 +6,415 @@
 <!--<![endif]-->
 
 <head>
-     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>报销申请</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>报销申请</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 </head>
 
 <body>
-    <section id="main-wrapper" class="theme-default">
-        
-        <%@include file="../../decorator/leftbar.jsp"%> 
-        <!--main content start-->
-        
-           <section id="main-content" class="animated fadeInUp">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">报销申请</h3>
-                                <div class="actions pull-right">
-                                    <i class="fa fa-expand"></i>
-                                    <i class="fa fa-chevron-down"></i>
-                                </div>
-                            </div>
-                            <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-12 col-sm-12  col-md-12">
-						<form class="form-search" >
-							<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group">
-							<table><tr>
-								<td>报销人:</td><td><input type="text" name="name" id="firstNames"  class="form-control search-query name" /></td>
+	<section id="main-wrapper" class="theme-default">
+		<%@include file="../../decorator/leftbar.jsp"%>
+		<section id="main-content" class="animated fadeInUp">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">报销申请</h3>
+							<div class="actions pull-right">
+								<i class="fa fa-expand"></i>
+								<i class="fa fa-chevron-down"></i>
+							</div>
+						</div>
+						<div class="panel-body">
+							<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+								<div class="layui-form-item">
+									<table><tr>
+								<td>报销人:</td><td><input type="text" name="Username" id="firstNames"  class="form-control search-query name" /></td>
 								<td>&nbsp&nbsp</td>
-								<td>报销内容:</td><td><input type="text" name="name" id="contentt"  class="form-control search-query name" /></td>
+								<td>报销内容:</td><td><input type="text" name="content"   class="form-control search-query" /></td>
 								<td>&nbsp&nbsp</td>
-								<td><select class="form-control" id="selectone"><option value="">请选择</option><option value="expenseDate">付款日期</option><option value="paymentDate">财务付款日期</option></select></td>
+								<td><select class="form-control" name="expenseDate" id="selectone"><option value="2018-10-08 00:00:00">付款日期</option></select></td>
 								<td>&nbsp&nbsp</td>
-								<td>合同开始:</td>
+								<td>开始:</td>
 								<td>
-								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
+								<input id="startTime" name="orderTimeBegin" placeholder="请输入开始时间" class="form-control laydate-icon"> 
 								</td>
 									<td>&nbsp&nbsp</td>
-				<td>合同结束:</td>
-				<td>
-					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
-             onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+								<td>结束:</td>
+								<td>
+								<input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="form-control laydate-icon">
 								</td>
 								<td>&nbsp&nbsp</td>
-								<td>是否核对:<td><select class="form-control" id="flag"><option value="">请选择</option><option value="0">未核对</option><option value="1">已核对</option></select></td>
-								</tr></table>
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask">
-										查找
-										<i class="icon-search icon-on-right bigger-110"></i>
-									</button>
-								</span>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-danger  btn-sm btn-3d start">
-									一键删除
-									</button>
-								</span>
+								<td>是否核对:<td><select class="form-control" name="flag"><option value="">请选择</option><option value="0">未核对</option><option value="1">已核对</option></select></td>
+									<td>&nbsp&nbsp</td>
+									<td>
+									<div class="layui-inline">
+										<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-search">
+											<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+										</button>
+									</div>
+									</td>
+									</tr></table>
+								</div>
 							</div>
+								<table id="demo" class="table_th_search" lay-filter="test"></table>	
+							</div> 
+
 						</div>
 					</div>
-				</form>
-			</div>
-		</div>
-                            <div class="panel-body">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th class="center">
-											<label> 
-											<input type="checkbox" class="ace checks" /> 
-											<span class="lbl"></span>
-											</label>
-											</th>
-                                        	<th class="text-center">报销内容</th>
-                                            <th class="text-center">报销人</th>
-                                            <th class="text-center">是否是预算</th>
-                                            <th class="text-center">报销申请金额</th>
-                                            <th class="text-center">报销申请日期</th>
-                                            <th class="text-center">扣款事由</th>
-                                            <th class="text-center">扣款金额</th>
-                                            <th class="text-center">结款模式</th>
-                                            <th class="text-center">状态</th>
-                                            <th class="text-center">操作</th>
-                                        </tr>
-                                    </thead>
-                                        <tr>
-                                        	<td class="text-center"></td>
-                                            <td class="text-center"><input type="text" id="content" class="text-center" style="border: none;width:150px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center" ><input type="text" id="user" class="aName2 text-center"  data-provide="typeahead" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><select class="text-center" id="budget" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">请选择</option><option value="1">预算</option></select></td>
-                                            <td class="text-center"><input type="text" id="money" class="bName2 text-center" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center" style="padding: 9px 0px 2px 85px;"><input id="expenseDate" placeholder="请输入时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#expenseDate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="border: none;width:90px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="withholdReason" class="text-center" style="border: none;width:105px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="withholdMoney" class="text-center"  style="border: none;width:60px; height:30px; background-color: #BFBFBF;"></td>
-                                           <td class="text-center"><select class="text-center" id="settleAccountsMode" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">请选择</option><option value="1">现金</option><option value="2">月结</option></select></td>
-                                             <td class="text-center"></td>
-                                            <td class="text-center"><button type="button"  id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增订单</button></td>
-                                    
-                                        </tr>
-                                    
-                                    <tbody id="tablecontent">
-                                        
-                                    </tbody>
-                                    
-                                </table>
-                                <div id="pager" class="pull-right">
-                                
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </section>
-        <!--隐藏框 产品新增开始  -->
-        <!-- <div id="addDictDivType" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-				<div class="space-10"></div>
-				<div style="height: 30px"></div>
-				<form class="form-horizontal addDictDivTypeForm">
-				<div class="form-group">
-                                        <label class="col-sm-3 control-label">合同签订日期:</label>
-                                        <div class="col-sm-6">
-                                            <input id="contractTime" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#contractTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">甲方:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="aName" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">乙方:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="bName" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">当批批次号:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="batchNumber" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">当批产品名:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="ProductName" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">当批合同数量:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="contractNumber" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">预付款备注:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="remarksPrice" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">当批计划单号:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="planNumbers" class="form-control">
-                                        </div>
-                 </div>
-				</form>
-</div>
-</div> -->
- <!--隐藏框 产品新增结束  -->
- 
- 
- <div class="wrap">
-<div class="layer-right3" style="display: none;">
-<div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-12 col-sm-12  col-md-12">
-						<form class="form-search" >
-							<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group">
-							<table><tr>
-								<td>乙方:</td><td><input type="text" name="name" id="partyNames2"  class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp</td>
-								<td>产品名:</td><td><input type="text" name="name" id="productName2"  class="form-control search-query name" /></td>
-								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask2">
-										查找
-										<i class="icon-search icon-on-right bigger-110"></i>
-									</button>
-								</span>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-           <div class="panel-body">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">当批产品名</th>
-                                            <th class="text-center">乙方选择</th>
-                                            <th class="text-center">单只价格（元）</th>
-                                            <th class="text-center">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablecontent2">
-                                        
-                                    </tbody>
-                                    
-                                </table>
-                                <div id="pager2" class="pull-right">
-                                
-                                </div>
-                            </div>
 				</div>
-  </div>
- 
- 
- 
- 
- 
-    </section>
-    
-   
-   
-   <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
-    <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
-    <script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
-    <script src="${ctx }/static/plugins/pace/pace.min.js"></script>
-    <script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-    <script src="${ctx }/static/js/src/app.js"></script>
-     <script src="${ctx }/static/js/laypage/laypage.js"></script> 
-    <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
-    <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-    <script src="${ctx }/static/js/vendor/typeahead.js"></script>
-    <script src="${ctx }/static/js/vendor/mSlider.min.js"></script>
-    <script>
-   jQuery(function($){
-   	var Login = function(){
-			var self = this;
-			//表单jsonArray
-			//初始化js
-			var _cache;
-			this.setCache = function(cache){
-		  		_cache=cache;
-		  	}
-		  	this.getCache = function(){
-		  		return _cache;
-		  	}
-		  	this.setIndex = function(index){
-		  		_index=index;
-		  	}
-		  	
-		  	this.getIndex = function(){
-		  		return _index;
-		  	}
-		  	this.setName = function(name){
-		  		_name=name;
-		  	}
-		  	this.getName = function(){
-		  		return _name;
-		  	}
-		  	this.getCount = function(){
-		  		return _count;
-		  	}
-		  	this.setCount = function(count){
-		  		_count=count;
-		  	}
-		  	this.getCountall = function(){
-		  		return _countall;
-		  	}
-		  	this.setCountall = function(countall){
-		  		_countall=countall;
-		  	}
-		  	self.setIndex(null)
-		  	self.setCache(null)
-		  	function p(s) {
-				return s < 10 ? '0' + s: s;
-				}
-			var myDate = new Date();
-				//获取当前年
-				var year=myDate.getFullYear();
-				//获取当前月
-				var month=myDate.getMonth()+1;
-				//获取当前日
-				var date=myDate.getDate(); 
-				var h=myDate.getHours();       //获取当前小时数(0-23)
-				var m=myDate.getMinutes();     //获取当前分钟数(0-59)
-				var s=myDate.getSeconds();  
-				var myDate2 = new Date();
-				//获取当前年
-				var year2=myDate2.getFullYear();
-				//获取当前月
-				var month2=myDate2.getMonth()+1;
-				//获取当前日
-				var date2=myDate2.getDate();
-				var now2=year2+'-'+p(month2)+"-"+p(date2)+' '+'00:00:00';
-				var day = new Date(year,month,0);
-				var firstdate = year + '-' + p(month) + '-01'+' '+'00:00:00';
-				var getday = year + '-' + p(month) + date+' '+'00:00:00';
-				var lastdate = year + '-' + p(month) + '-' + day.getDate() +' '+'23:59:59';
-				$('#startTime').val(firstdate);
-				$('#endTime').val(lastdate);
-				var myDate3 = new Date();
-				 myDate3.setMonth(month + 2);
-				//获取当前年
-				var year3=myDate3.getFullYear();
-				//获取当前月
-				var month3=myDate3.getMonth();
-				//获取当前日
-				var date3=myDate3.getDate(); 
-			 var data={
-						page:1,
-				  		size:13,
-				  		orderTimeBegin:$("#startTime").val(),
-			  			orderTimeEnd:$("#endTime").val(),
-				} 
-			this.init = function(){
-				
-				//注册绑定事件
-				self.events();
-				self.loadPagination(data);
-				self.mater();
-			}
-			//加载分页
-			  this.loadPagination = function(data){
-			    var index;
-			    var html = '';
-			    $.ajax({
-				      url:"${ctx}/fince/getExpenseAccount",
-				      data:data,
-				      type:"GET",
-				      beforeSend:function(){
-					 	  index = layer.load(1, {
-						  shade: [0.1,'#fff'] //0.1透明度的白色背景
-						  });
-					  }, 
-		      		  success: function (result) {
-		      			 $(result.data.rows).each(function(i,o){
-		      				var newDate=/\d{4}-\d{1,2}-\d{1,2}/g.exec(o.expenseDate)
-		      				var k;
-		      				 if(o.user==null){
-		      					 k=""
-		      				 }else{
-		      					 k=o.user.userName
-		      				 }
-		      				 var a="";
-		      				 if(o.budget==1){
-		      					 a="预算"
-		      				 }else{
-		      					 a="";
-		      				 }
-		      				 var b;
-		      				 if(o.settleAccountsMode==0){
-		      					 b=""
-		      				 }else if(o.settleAccountsMode==1){
-		      					 b="现金"
-		      				 }else if(o.settleAccountsMode==2){
-		      					 b="月结"
-		      				 }else{
-		      					 b=""
-		      				 }
-		      				var c;
-		      				if(o.flag==0){
-		      					c="未核对"
-		      				}else{
-		      					c="已核对"
-		      				}
-		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
-		      				+'<td class="hidden batch">'+o.id+'</td>'
-		      				+'<td class="hidden userId ">'+o.userId+'</td>'
-		      				+'<td class="text-center edit5  content">'+o.content+'</td>'
-		      				+'<td class="text-center edit contractTime">'+k+'</td>'
-		      				+'<td class="text-center editt firstNames" data-online="'+o.budget+'"><select class="text-center checkWork" disabled="disabled" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">请选择</option><option value="1">预算</option></select></td>'
-		      				+'<td class="text-center edit3 money">'+o.money+'</td>'
-		      				+'<td class="text-center edit1 expenseDate">'+newDate+'</td>'
-		      				+'<td class="text-center edit2 withholdReason">'+o.withholdReason+'</td>'
-		      				+'<td class="text-center edit3 withholdMoney">'+o.withholdMoney+'</td>'
-		      				+'<td class="text-center editt contractNumber" data-online2="'+o.settleAccountsMode+'"><select class="text-center checkWork2" disabled="disabled" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">请选择</option><option value="1">现金</option><option value="2">月结</option></select></td>'
-		      				+'<td class="text-center ">'+c+'</td>'
-		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button></td></tr>'
-		      			}); 
-		      			self.setCount(result.data.pageNum)
-				        //显示分页
-					   	 laypage({
-					      cont: 'pager', 
-					      pages: result.data.totalPages, 
-					      curr:  result.data.pageNum || 1, 
-					      jump: function(obj, first){ 
-					    	  if(!first){ 
-					    		 
-						        	var _data = {
-						        			page:obj.curr,
-									  		size:13,
-									  		productName:$('#productName').val(),
-								  			firstNames:$('#firstNames').val(),
-								  			partyNames:$('#partyNames').val(),
-								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(),
-								  			batchNumber:$("#batchNumber2").val(),
-								  			content:$("#contentt").val(),
-								  			flag:$("#flag").val(),
-								  	}
-						        
-						            self.loadPagination(_data);
-							     }
-					      }
-					    });  
-					   	layer.close(index);
-					   	 $("#tablecontent").html(html); 
-					   	$('.checkWork').each(function(j,k){
-							var ids=$(this).parent().data('online')
-		  					$(k).val(ids)
-						});
-						$('.checkWork2').each(function(j,k){
-							var ids=$(this).parent().data('online2')
-		  					$(k).val(ids)
-						});
-					   	self.loadEvents();
-					   self.checkeddto();
-				      },error:function(){
-							layer.msg("加载失败！", {icon: 2});
-							layer.close(index);
-					  }
-				  });
-			}
-			  this.checkeddto=function(){
-					
-					$(".checks").on('click',function(){
-						
-	                    if($(this).is(':checked')){ 
-				 			$('.checkboxId').each(function(){  
-	                    //此处如果用attr，会出现第三次失效的情况  
-	                     		$(this).prop("checked",true);
-				 			})
-	                    }else{
-	                    	$('.checkboxId').each(function(){ 
-	                    		$(this).prop("checked",false);
-	                    		
-	                    	})
-	                    }
-	                }); 
-					
-				}
-			this.loadEvents = function(){
-  				$('.checkWork').each(function(j,k){
-					var ids=$(this).parent().data('online')
-  					$(k).val(ids)
+		</section>
+	</section>
+	</section>
+
+
+
+<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
+<script>
+
+
+
+
+layui.config({
+	base : '${ctx}/static/layui-v2.4.5/'
+}).extend({
+	tablePlug : 'tablePlug/tablePlug'
+}).define(
+		[ 'tablePlug', 'laydate','element' ],function () {
+
+		      var $ = layui.jquery
+		        , layer = layui.layer //弹层
+		        , form = layui.form //弹层
+		        , table = layui.table //表格
+		        , laydate = layui.laydate //日期控件
+		        , tablePlug = layui.tablePlug //表格插件
+		        , element=layui.element;
+		      
+		      laydate.render({
+					elem : '#startTime',
+					type : 'datetime',
 				});
-				//修改方法
-				$('.update').on('click',function(){
-					if($(this).text() == "编辑"){
-						$(this).text("保存")
-						$(this).parent().siblings(".edit5").each(function() {  // 获取当前行的其他单元格
+		      laydate.render({
+					elem : '#endTime',
+					type : 'datetime',
+				});
+		        var htmls = '<option value="">请选择</option>'; //全局变量
+				var data={
+						page:1,
+				  		size:1000,
+				}
+	            $.ajax({
+					url:'${ctx}/system/user/pages',
+					data:data,
+					type:"GET",
+					async:false,
+					beforeSend:function(){
+					index = layer.load(1, {
+						shade: [0.1,'#fff'] //0.1透明度的白色背景
+					});
+						},
+					success:function(result){
+					$(result.data.rows).each(function(i,o){
+						htmls +='<option value='+o.id+'>'+o.userName+'</option>'
+						})
+					layer.close(index);
+						},error:function(){
+							layer.msg("操作失败！", {icon: 2});
+							layer.close(index);
+						}
+							});
+		     // 处理操作列
+		      var fn1 = function (field) {
+		          return function (d) {
+						 return [
+							'<select name="city" lay-filter="city_selecte" lay-search="true" data-value="' + d.userId + '">'
+							+htmls+
+							'</select>'
+				            ].join('');
+		            
+		          };
+		        };
+		        
+		        var fn2 = function (field) {
+			          return function (d) {
+			        	  return ['<select name="citye2" lay-filter="city_selecte" lay-search="true" data-value="' + d.budget + '">',
+								'<option value="0">请选择</option>',
+								'<option value="1">预算</option>',
+									'</select>' 
+									].join('');
+			            
+			          };
+			        }; 
+			        var fn3 = function (field) {
+				          return function (d) {
+				        	  return ['<select name="citye3" lay-filter="city_selecte" lay-search="true" data-value="' + d.settleAccountsMode + '">',
+									'<option value="0">请选择</option>',
+									'<option value="1">现金</option>',
+									'<option value="2">月结</option>',
+										'</select>' 
+										].join('');
+				            
+				          };
+				        }; 
+				  /* tablePlug.smartReload.enable(true);//智能重载 */
+		        table.render({
+		            elem: '#demo'
+		            // , height: 'full-120'
+		            , size: 'lg'
+		            , url: '${ctx}/fince/getExpenseAccount' //数据接口
+		            // , data: data
+		            , title: '用户表'
+		            , page: {
+		            	
+		            } //开启分页
+		            , loading: true
+		            , toolbar: '#toolbarDemo' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+		            /* , totalRow: true //开启合计行 */
+		            , cellMinWidth: 90
+		            // 是否开启字段筛选的记忆功能，支持true/false/'local'/'session'/其他 开启的情况下默认是session，除非显式的指定为'local'
+		            , colFilterRecord: true
+		            // 开启智能重载
+		            , smartReloadModel: true
+		            // 设置开启部分选项不可选
+		            // 设置表格的主键（主要用在记录选中状态还有不可操作记录的时候用
+		            , primaryKey: 'id'
+		            , checkDisabled: {
+		              enabled: true,
+		              data: [10000, 10001, 10002, 10003, 10004, 10005, 10009]
+		            }
+		            // , pageLanguage: 'zh-TW' // 需要自己定义对应的文本
+		            // , pageLanguage: 'en' // tablePlug里面已经定义了，如果觉得不满意可以用tablePlug.set去更新默认的配置;
+		            // , pageLanguage: true // 无效的设置方式，只支持字符串或者对象的
+		            // 也可以针对某个表格有特殊的配置如下面对象的设置方法,但是如果没有必要单独的自定义建议使用直接赋值成语言名称的字符串形式
+		            , done: function () {
+		              var tableView = this.elem.next();
 
-				            $(this).html("<input class='input-mini'  style='border: none;width:150px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        });
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini aName2'  style='border: none;width:68px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        });
-						$(this).parent().siblings(".editt").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).parent().parent().find(".checkWork").removeAttr("disabled")
-				            $(this).parent().parent().find(".checkWork2").removeAttr("disabled")
+		              tableView.find('.layui-table-grid-down').remove();
+		              var totalRow = tableView.find('.layui-table-total');
+		              var limit = this.page ? this.page.limit : this.limit;
+		              layui.each(totalRow.find('td'), function (index, tdElem) {
+		                tdElem = $(tdElem);
+		                var text = tdElem.text();
+		                if (text && !isNaN(text)) {
+		                  text = (parseFloat(text) / limit).toFixed(2);
+		                  tdElem.find('div.layui-table-cell').html(text);
+		                }
+		              });
+		            },
+		            parseData: function (ret) {
+		              return {
+		                code: ret.code,
+		                msg: ret.msg,
+		                count: ret.data ? (ret.data.total || 0) : 0,
+		                data: ret.data.rows
+		              }
+		            }
+		            , checkStatus: {}
+		            // , autoSort: false
+		            // , initSort: {
+		            //   field: 'id' //排序字段，对应 cols 设定的各字段名
+		            //   , type: 'asc' //排序方式  asc: 升序、desc: 降序、null: 默认排序
+		            // }
+		            , cols : [ 
+						[  {
+							type: 'checkbox',
+							align : 'center',
+							fixed: 'left'
+							}, {
+							field : "content",
+							title : "报销内容",
+							align : 'center',
+							edit : 'text'
+						}, {
+							field : "userId",
+							title : "报销人",
+							align : 'center',
+							search: true, 
+							edit: false, 
+							type: 'normal',
+							templet:fn1('city')
+						}, {
+							field : "budget",
+							title : "是否是预算",
+							align : 'center',
+							search: true, 
+							edit: false, 
+							type: 'normal',
+							templet:fn2('citye2')
+						}, {
+							field : "money",
+							title : "付款日要付金额",
+							edit : 'text'
+						}, {
+							field : "expenseDate",
+							title : "付款日期",
+							edit : 'text'
+						}, {
+							field : "withholdReason",
+							title : "扣款事由",
+							edit : 'text'
+						}, {
+							field : "withholdMoney",
+							title : "扣款金额",
+							edit : 'text'
+						}, {
+							field : "settleAccountsMode",
+							title : "结款模式",
+							search: true, 
+							edit: false, 
+							type: 'normal',
+							templet:fn3('citye3')
+						}   ] ]
+		            ,done : function(res, curr, count) {
+		            	 var tableView = this.elem.next();
+						var tableElem = this.elem.next('.layui-table-view');
+						layui.each(tableElem.find('select'), function(index, item) {
+							var elem = $(item);
+							elem.val(elem.data('value'));
 						});
-						$(this).parent().siblings(".edit1").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini'  style='border: none;width:105px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        });
-						$(this).parent().siblings(".edit2").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini'  style='border: none;width:105px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        });
-						$(this).parent().siblings(".edit3").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini'  style='border: none;width:68px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        });
-						$(this).parent().siblings(".edit4").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini'  style='border: none;width:50px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
-				        });
-						self.mater();
-					}else{
-							$(this).text("编辑")
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							$(this).parent().siblings(".editt").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							$(this).parent().siblings(".edit1").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							$(this).parent().siblings(".edit2").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							$(this).parent().siblings(".edit3").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							$(this).parent().siblings(".edit4").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							$(this).parent().siblings(".edit5").each(function() {  // 获取当前行的其他单元格
-								$(this).parent().parent().find(".checkWork").attr('disabled','disabled');
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							var c;
-							var d;
-							if(self.getIndex()==null){
-								c=$(this).parent().parent().find(".userId").text();
-							}else{
-								c=self.getIndex();
+						form.render();
+		     // 初始化laydate
+		   		  layui.each(tableView.find('td[data-field="expenseDate"]'), function (index, tdElem) {
+		            tdElem.onclick = function (event) {
+		              layui.stope(event)
+		            };
+		            laydate.render({
+		              elem: tdElem.children[0],
+		              // closeStop: tdElem,
+		              format: 'yyyy-MM-dd HH:mm:ss',
+		              done: function (value, date) {
+		            	var id=table.cache[tableView.attr('lay-id')][index].id
+		                var trElem = $(this.elem[0]).closest('tr');
+		                table.cache.demo[trElem.data('index')]['expenseDate'] = value;
+		                if(id!=undefined){
+							var postData={
+							    	id:id,
+							    	expenseDate:value,
+								}
+							        $.ajax({
+									url:"${ctx}/fince/updateExpenseAccount",
+									data:postData,
+									type:"POST",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									success:function(result){
+										if(0==result.code){
+											layer.msg(result.message, {icon: 1});
+											layer.close(index);
+										}else{
+											layer.msg(result.message, {icon: 2});
+											layer.close(index);
+										}
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								});
+		                }
+		              }
+		            })
+		            	  
+		          })
+		         
+					},
+		          
+		          });
+		        
+		        
+		        
+		     // 监听表格中的下拉选择将数据同步到table.cache中
+				form.on('select(city_selecte)', function(data) {
+					var selectElem = $(data.elem);
+					var tdElem = selectElem.closest('td');
+					var trElem = tdElem.closest('tr');
+					var tableView = trElem.closest('.layui-table-view');
+					table.cache[tableView.attr('lay-id')][trElem.data('index')][tdElem.data('field')] = data.value;
+					var id=table.cache[tableView.attr('lay-id')][trElem.data('index')].id
+					if(id!=undefined){
+					var postData={
+					    	id:id,
+					    	[tdElem.data('field')]:data.value,
+						}
+					        $.ajax({
+							url:"${ctx}/fince/updateExpenseAccount",
+							data:postData,
+							type:"POST",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							success:function(result){
+								if(0==result.code){
+									layer.msg(result.message, {icon: 1});
+									layer.close(index);
+								}else{
+									layer.msg(result.message, {icon: 2});
+									layer.close(index);
+								}
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
 							}
-							var postData = {
-									id:$(this).data('id'),
-									content:$(this).parent().parent().find(".content").text(),
-									userId:c,
-									budget:$(this).parent().parent().find(".checkWork").val(),
-									money:$(this).parent().parent().find(".money").text(),
-									expenseDate:$(this).parent().parent().find(".expenseDate").text()+' '+'00:00:00',
-									withholdReason:$(this).parent().parent().find(".withholdReason").text(),
-									withholdMoney:$(this).parent().parent().find(".withholdMoney").text(),
-									settleAccountsMode:$(this).parent().parent().find(".checkWork2").val(),
-							}
-							
-							var index;
-							$.ajax({
-								url:"${ctx}/fince/updateExpenseAccount",
+						}); 
+					}
+				});
+		      //监听头工具栏事件
+		        table.on('toolbar(test)', function (obj) {
+		          var config = obj.config;
+		          var btnElem = $(this);
+		          var tableId = config.id;
+		          console.log(obj)
+		          // var tableView = config.elem.next();
+		          switch (obj.event) {
+		            case 'addTempData':
+		              table.addTemp(tableId, function (trElem) {
+		                // 进入回调的时候this是当前的表格的config
+		                var that = this;
+		                // 初始化laydate
+		                layui.each(trElem.find('td[data-field="expenseDate"]'), function (index, tdElem) {
+		                  tdElem.onclick = function(event) {layui.stope(event)};
+		                  laydate.render({
+		                    elem: tdElem.children[0],
+		                    format: 'yyyy-MM-dd HH:mm:ss',
+		                    done: function (value, date) {
+		                      var trElem = $(this.elem[0]).closest('tr');
+		                      table.cache[that.id][trElem.data('index')]['expenseDate'] = value;
+		                    }
+		                  })
+		                })
+		              });
+		              break;
+		            case 'getTempData':
+		              $(table.getTemp(tableId).data).each(function(i,o){
+		            		 if(o.content==undefined){
+		            			return layer.msg("第"+i+"条数据请填写报销内容", {icon: 2});
+		            		 }
+		            		 if(o.money==undefined){
+		 						return layer.msg("第"+i+"条数据请填写报销金额", {icon: 2});
+		 					}
+		            	  var postData = {
+		            			content:o.content,
+		  						budget:o.budget,
+		  						money:o.money,
+		  						expenseDate:o.expenseDate,
+		  						withholdReason:o.withholdReason,
+		  						withholdMoney:o.withholdMoney,
+		  						settleAccountsMode:o.settleAccountsMode,
+		  						userId:o.userId,
+		            	  }
+		            	  var index;
+							  $.ajax({
+								url:"${ctx}/fince/addExpenseAccount",
 								data:postData,
 								type:"POST",
+								async:false,
 								beforeSend:function(){
 									index = layer.load(1, {
 										  shade: [0.1,'#fff'] //0.1透明度的白色背景
@@ -594,237 +423,51 @@
 								
 								success:function(result){
 									if(0==result.code){
-									layer.msg("修改成功！", {icon: 1});
+									layer.msg("新增成功！", {icon: 1});
+									layer.close(index);
+									table.reload('demo', {
+								           where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+								          }
+								        });
 									layer.close(index);
 									}else{
-										layer.msg(result.message, {icon: 2});
+										layer.msg("新增失败！", {icon: 2});
 										layer.close(index);
 									}
 								},error:function(){
 									layer.msg("操作失败！", {icon: 2});
 									layer.close(index);
 								}
-							});
-					}
-				})
-				
-				
-				$(".price2").blur(function(){
-					var that=$(this)
-					var postData = {
-							id:$(this).parent().parent().find(".update").data('id'),
-							price:$(this).val(),
-					}
-					var index;
-					$.ajax({
-						url:"${ctx}/fince/addOrder",
-						data:postData,
-						type:"POST",
-						beforeSend:function(){
-							index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								});
-						},
-						success:function(result){
-							if(0==result.code){
-							that.parent().parent().find(".contractPrice").text(result.data.contractPrice)
-							layer.msg("当批合同总价为"+result.data.contractPrice+"", {icon: 1});
-							layer.close(index);
-							}else{
-								layer.msg("失败！", {icon: 1});
-								layer.close(index);
-							}
-						},error:function(){
-							layer.msg("操作失败！", {icon: 2});
-							layer.close(index);
-						}
-					});
-				})				
-				
-			}
-			
-			this.mater=function(){
-				$(".aName2").typeahead({
-					//ajax 拿way数据
-					source : function(query, process) {
-							return $.ajax({
-								url : '${ctx}/system/user/pages',
-								type : 'GET',
-								data : {
-									userName:query,
-								},
-								success : function(result) {
-									//转换成 json集合
-									 var resultList = result.data.rows.map(function (item) {
-										 	//转换成 json对象
-					                        var aItem = {name: item.userName, id:item.id}
-					                        //处理 json对象为字符串
-					                        return JSON.stringify(aItem);
-					                    });
-									//提示框返回数据
-									//提示框返回数据
-									 if(resultList==""){
-											var aItemtw = {"name":"查无此人", "id":""}
-											resultList.push(JSON.stringify(aItemtw)); 
-										} 
-									 return process(resultList);
-								},
-							})
-						
-							//提示框显示
-						}, highlighter: function (item) {
-						    //转出成json对象
-							 var item = JSON.parse(item);
-							return item.name
-							//按条件匹配输出
-		                }, matcher: function (item) {
-		                	//转出成json对象
-					        var item = JSON.parse(item);
-					        self.setIndex(item.id);
-					    	return item.id
-					    },
-						//item是选中的数据
-						updater:function(item){
-							//转出成json对象
-							var item = JSON.parse(item);
-							self.setIndex(item.id);
-							
-								return item.name
-						},
-
-						
-					});
-			}
-			this.events = function(){
-				
-				$('.searchtask').on('click',function(){
-					var expenseDate=""
-					var paymentDate=""
-					if($("#selectone").val()=="expenseDate"){
-						expenseDate="2018-10-08 00:00:00"
-					}
-					if($("#selectone").val()=="paymentDate"){
-						paymentDate="2018-10-08 00:00:00"
-					}
-					var data = {
-				  			page:1,
-				  			size:13,
-				  			Username:$('#firstNames').val(),
-				  			paymentDate:paymentDate,
-				  			expenseDate:expenseDate,
-				  			orderTimeBegin:$("#startTime").val(),
-				  			orderTimeEnd:$("#endTime").val(),
-				  			content:$("#contentt").val(),
-				  			flag:$("#flag").val(),
-				  	}
-		            self.loadPagination(data);
-				});
-				//新增
-				$('#addgroup').on('click',function(){
-					self.mater();
-					var _index;
-					var index;
-					var postData;
-					if($("#content").val()==""){
-						return	layer.msg("请填报销内容", {icon: 2});
-					}
-					if($("#money").val()==""){
-						return layer.msg("请填写报销金额", {icon: 2});
-					}
-					  postData={
-						content:$("#content").val(),
-						budget:$("#budget").val(),
-						money:$("#money").val(),
-						expenseDate:$("#expenseDate").val(),
-						withholdReason:$("#withholdReason").val(),
-						withholdMoney:$("#withholdMoney").val(),
-						settleAccountsMode:$("#settleAccountsMode").val(),
-						userId:self.getIndex(),
-					  }
-					  $.ajax({
-							url:"${ctx}/fince/addExpenseAccount",
-							data:postData,
-				            traditional: true,
-							type:"post",
-							beforeSend:function(){
-								index = layer.load(1, {
-									  shade: [0.1,'#fff'] //0.1透明度的白色背景
-									});
-							},
-							success:function(result){
-								if(0==result.code){
-									layer.msg("添加成功！", {icon: 1});
-								 $("#content").val("")
-								 $("#user").val("")
-								 $("#budget").val("0")
-								 $("#money").val("")
-								 $("#expenseDate").val("")
-								 $("#withholdReason").val("")
-								 $("#withholdMoney").val("")
-								 $("#settleAccountsMode").val("0")
-								}else{
-									layer.msg("添加失败", {icon: 2});
-								}
-								var data = {
-					        			page:self.getCount(),
-								  		size:13,
-								  		productName:$('#productName').val(),
-							  			firstNames:$('#firstNames').val(),
-							  			partyNames:$('#partyNames').val(),
-							  			orderTimeBegin:$("#startTime").val(),
-							  			orderTimeEnd:$("#endTime").val(),
-							  			batchNumber:$("#batchNumber2").val(),
-							  			content:$("#content").val(),
-							  			flag:$("#flag").val(),
-							  	}
-								self.loadPagination(data);
-								layer.close(index);
-							},error:function(){
-								layer.msg("操作失败！", {icon: 2});
-								layer.close(index);
-							}
-						});
-				})
-				//一键删除
-				$('.start').on('click',function(){
-					  var  that=$(".table-hover");
-					  var arr=new Array()//员工id
-					  	that.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
-							arr.push($(this).val());   
-						});
-					  var postData = {
-								ids:arr,
-						}
-						
-						var index;
-						 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
-						$.ajax({
+							}); 
+		              })
+		              break;
+		            case 'getChecked':
+		              layer.alert(JSON.stringify(table.checkStatus(tableId).data));
+		              break;
+		            case 'deleteSome':
+		              // 获得当前选中的，不管它的状态是什么？只要是选中的都会获得
+		              var checkedIds = tablePlug.tableCheck.getChecked(tableId);
+		              
+		              layer.confirm('您是否确定要删除选中的' + checkedIds.length + '条记录？', function () {
+		                 var postData = {
+								ids:checkedIds,
+						} 
+		                 $.ajax({
 							url:"${ctx}/fince/deleteExpenseAccount",
 							data:postData,
-							traditional: true,
+							traditional:true,
 							type:"GET",
 							beforeSend:function(){
 								index = layer.load(1, {
 									  shade: [0.1,'#fff'] //0.1透明度的白色背景
 									});
 							},
-							
 							success:function(result){
 								if(0==result.code){
+									table.reload('demo', {
+										
+									});
 								layer.msg("删除成功！", {icon: 1});
-								var data = {
-					        			page:self.getCount(),
-								  		size:13,
-								  		productName:$('#productName').val(),
-							  			firstNames:$('#firstNames').val(),
-							  			partyNames:$('#partyNames').val(),
-							  			orderTimeBegin:$("#startTime").val(),
-							  			orderTimeEnd:$("#endTime").val(),
-							  			batchNumber:$("#batchNumber2").val(),
-							  			content:$("#contentt").val(),
-							  			flag:$("#flag").val(),
-							  	}
-								self.loadPagination(data)
 								layer.close(index);
 								}else{
 									layer.msg(result.message, {icon: 2});
@@ -834,18 +477,80 @@
 								layer.msg("操作失败！", {icon: 2});
 								layer.close(index);
 							}
-						});
-						 })
-				})
-				
-			}
-   	}
-   			var login = new Login();
-				login.init();
-			})
-    
-    </script>
-       
+						}); 
+		              });
+		              break;
+		          }
+		        });   
+		      
+		      //监听单元格编辑
+				  table.on('edit(test)', function(obj){
+				    var value = obj.value //得到修改后的值
+				    ,data = obj.data //得到所在行所有键值
+				    ,field = obj.field; //得到字段
+				    if(data.id!=undefined){
+				    var postData={
+				    	id:data.id,
+						content:data.content,
+						userId:data.userId,
+						budget:data.budget,
+						money:data.money,
+						expenseDate:data.expenseDate,
+						withholdReason:data.withholdReason,
+						withholdMoney:data.withholdMoney,
+						settleAccountsMode:data.settleAccountsMode,
+					}
+				       $.ajax({
+						url:"${ctx}/fince/updateExpenseAccount",
+						data:postData,
+						type:"POST",
+						beforeSend:function(){
+							index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+						},
+						success:function(result){
+							if(0==result.code){
+								layer.msg(result.message, {icon: 1});
+								layer.close(index);
+							}else{
+								layer.msg(result.message, {icon: 2});
+								layer.close(index);
+							}
+						},error:function(){
+							layer.msg("操作失败！", {icon: 2});
+							layer.close(index);
+						}
+					});  
+				    }
+				  });
+		      
+		      
+				//监听搜索
+					form.on('submit(LAY-role-search)', function(data) {
+						var field = data.field;
+							 $.ajax({
+								url : "${ctx}/fince/getExpenseAccount",
+								type : "get",
+								data : field,
+								dataType : "json",
+								success : function(result) {
+								 	table.reload('demo', {
+										 where:  field
+									}); 	
+								}
+							});
+					});
+		        
+		}
+		)
+</script>
+<script type="text/html" id="toolbarDemo">
+  <div class="layui-btn-container layui-inline">
+    <span class="layui-btn layui-btn-sm" lay-event="deleteSome">批量删除</span>
+    <span class="layui-btn layui-btn-sm" lay-event="addTempData">添加临时数据</span>
+<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="getTempData">保存</span>
+  </div>
+</script>
 </body>
-
 </html>
