@@ -833,9 +833,9 @@ layui.define(['table'], function (exports) {
     that.layMain.find('.' + NONE).remove();
     that.elem.removeClass('layui-table-none-overflow');
     // 追加到最后
-    that.layMain.find('tbody').append('<tr class="layui-tablePlug-data-temp" data-index="' + numbers + '">' + tds.join('') + '</tr>');
-    that.layFixLeft.find('tbody').append('<tr class="layui-tablePlug-data-temp" data-index="' + numbers + '">' + tds_fixed.join('') + '</tr>');
-    that.layFixRight.find('tbody').append('<tr class="layui-tablePlug-data-temp" data-index="' + numbers + '">' + tds_fixed_r.join('') + '</tr>');
+    that.layMain.find('tbody').prepend('<tr class="layui-tablePlug-data-temp" data-index="' + numbers + '">' + tds.join('') + '</tr>');
+    that.layFixLeft.find('tbody').prepend('<tr class="layui-tablePlug-data-temp" data-index="' + numbers + '">' + tds_fixed.join('') + '</tr>');
+    that.layFixRight.find('tbody').prepend('<tr class="layui-tablePlug-data-temp" data-index="' + numbers + '">' + tds_fixed_r.join('') + '</tr>');
     that.renderForm();
     that.resize();
     // 滚动到底部
@@ -1568,11 +1568,11 @@ layui.define(['table'], function (exports) {
           layero.width(titleElem.width());
           // 原本的做法在ie下获得的是auto其他的浏览器却是确定的值，目前简单处理，先自行计算出来，后面再调优
           // selectupFlag && (layero.css({top: 'auto', bottom: layero.css('bottom')}));
-          console.log('before', 'top', layero.css('top'), 'bottom', layero.css('bottom'));
+          /*console.log('before', 'top', layero.css('top'), 'bottom', layero.css('bottom'));*/
           var bottom_computed = top.window.innerHeight - layero.outerHeight() - parseFloat(layero.css('top'));
-          console.log('bottom_computed', bottom_computed);
+          /*console.log('bottom_computed', bottom_computed);*/
           selectupFlag && (layero.css({top: 'auto', bottom: bottom_computed + 'px'}));
-          console.log('after', 'top', layero.css('top'), 'bottom', layero.css('bottom'));
+         /* console.log('after', 'top', layero.css('top'), 'bottom', layero.css('bottom'));*/
           layero.find('dl dd').click(function () {
             top.layer.close(index);
           });
