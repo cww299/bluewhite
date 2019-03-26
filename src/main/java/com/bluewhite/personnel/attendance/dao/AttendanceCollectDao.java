@@ -12,6 +12,6 @@ public interface AttendanceCollectDao extends BaseRepository<AttendanceCollect, 
 	 * 根据日期和员工id查询汇总（有且仅有一条）
 	 * @return
 	 */
-	public AttendanceCollect findByUserIdAndTime(Date time);
+	public AttendanceCollect findByUserIdAndTime(Long userId , Date time);
 
 }

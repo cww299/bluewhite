@@ -1,17 +1,19 @@
 package com.bluewhite.personnel.attendance.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.personnel.attendance.dao.ApplicationLeaveDao;
 import com.bluewhite.personnel.attendance.entity.ApplicationLeave;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
-
+@Service
 public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeave, Long> implements ApplicationLeaveService {
 
 	@Autowired
 	private ApplicationLeaveDao dao;
+	
 	@Override
 	public ApplicationLeave updateApplicationLeave(ApplicationLeave applicationLeave) {
 		ApplicationLeave oldApplicationLeave = dao.findOne(applicationLeave.getId());
