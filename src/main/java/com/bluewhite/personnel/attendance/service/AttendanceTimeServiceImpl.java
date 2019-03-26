@@ -14,6 +14,7 @@ import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.druid.sql.visitor.functions.Now;
@@ -38,7 +39,7 @@ import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.entity.UserContract;
 import com.bluewhite.system.user.service.UserService;
-
+@Service
 public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, Long> implements AttendanceTimeService {
 
 	@Autowired
@@ -322,7 +323,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		for (User user : userList) {
 			try {
 				// 查询该月有没有初始化
-				attendanceCollectDao.findByUserIdAndTime(attendanceTime.getOrderTimeBegin());
+				attendanceCollectDao.findByUserIdAndTime(user.getId(),attendanceTime.getOrderTimeBegin());
 			} catch (Exception e) {
 				ex = ex + "员工" + user.getUserName() + ",";
 			}
