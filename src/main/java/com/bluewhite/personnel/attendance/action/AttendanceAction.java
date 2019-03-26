@@ -2,6 +2,7 @@ package com.bluewhite.personnel.attendance.action;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,14 +22,17 @@ import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.ZkemUtils.ZkemSDKUtils;
-import com.bluewhite.finance.attendance.entity.AttendancePay;
-import com.bluewhite.finance.tax.entity.Tax;
+import com.bluewhite.personnel.attendance.dao.AttendanceInitDao;
+import com.bluewhite.personnel.attendance.entity.ApplicationLeave;
 import com.bluewhite.personnel.attendance.entity.Attendance;
+import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
+import com.bluewhite.personnel.attendance.service.ApplicationLeaveService;
 import com.bluewhite.personnel.attendance.service.AttendanceService;
+import com.bluewhite.personnel.attendance.service.AttendanceTimeService;
 import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.service.UserService;
 
 
 @Controller
@@ -36,6 +40,14 @@ public class AttendanceAction {
 
 	@Autowired
 	private AttendanceService attendanceService;
+	@Autowired
+	private AttendanceInitDao attendanceInitDao;
+	@Autowired
+	private UserService UserService;
+	@Autowired
+	private AttendanceTimeService attendanceTimeService;
+	@Autowired
+	private ApplicationLeaveService applicationLeaveService;
 
 	private ClearCascadeJSON clearCascadeJSON;
 	{
@@ -201,21 +213,148 @@ public class AttendanceAction {
 	
 	
 	/**
-	 * 按条件查看考勤工作时长
+	 * 初始化考勤工作详情
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/personnel/addAttendanceTime", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse addAttendanceTime(HttpServletRequest request,AttendanceTime attendanceTime, Integer sign) {
+		CommonResponse cr = new CommonResponse();
+		switch (sign) {
+		case 1:
+			String ex  = attendanceTimeService.checkAttendanceTime(attendanceTime);
+			if(ex!=""){
+				//当code为2时，已有统计数据，返回前台，由前台确认是否再次统计，再次统计sign=2
+				cr.setCode(2);
+				cr.setMessage(ex);
+			}else{
+				cr.setData(attendanceTimeService.findAttendanceTimeCollect(attendanceTime));
+				cr.setMessage("初始化成功");
+			}
+			break;
+		case 2:
+			cr.setData(attendanceTimeService.findAttendanceTimeCollect(attendanceTime));
+			cr.setMessage("初始化成功");
+			break;
+		}
+		return cr;
+	}
+	
+	
+	/**
+	 * 查询考勤工作详情
 	 * 
 	 * @param request 请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/personnel/findAttendanceTime", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse findAttendanceTime(HttpServletRequest request,Attendance attendance) {
+	public CommonResponse findAttendanceTime(HttpServletRequest request,AttendanceTime attendanceTime) {
 		CommonResponse cr = new CommonResponse();
-//		cr.setData(ClearCascadeJSON
-//				.get()
-//				.addRetainTerm(AttendanceTime.class,"time","number","username","checkIn","checkOut","turnWorkTime","overtime","week","dutytime")
-//				.format(attendanceService.findAttendanceTime(attendance)).toJSON());
-		cr.setData(attendanceService.findAttendanceTimeCollect(attendance));
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(AttendanceTime.class,"time","number","user","checkIn","checkOut","turnWorkTime",
+						"overtime","week","dutytime","flag","leaveEarly","leaveEarlyTime","belate","belateTime")
+				.format(attendanceTimeService.findAttendanceTimePage(attendanceTime)).toJSON());
 		
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/**
+	 * 修改考勤工作详情
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/personnel/updateAttendanceTime", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse updateAttendanceTime(HttpServletRequest request,AttendanceTime attendanceTime) {
+		CommonResponse cr = new CommonResponse();
+		if(attendanceTime.getId() == null){
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("id为空");
+			return cr;
+		}
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(AttendanceTime.class,"time","number","user","checkIn","checkOut","turnWorkTime",
+						"overtime","week","dutytime","flag","leaveEarly","leaveEarlyTime","belate","belateTime")
+				.format(attendanceTimeService.updateAttendanceTime(attendanceTime)).toJSON());
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * 新增修改请假事项
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/personnel/addApplicationLeave", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse addApplicationLeave(HttpServletRequest request,ApplicationLeave applicationLeave) {
+		CommonResponse cr = new CommonResponse();
+		if(applicationLeave.getId() != null){
+			applicationLeave = applicationLeaveService.updateApplicationLeave(applicationLeave);
+			cr.setMessage("修改成功");
+		}else{
+			applicationLeave = applicationLeaveService.save(applicationLeave);
+			cr.setMessage("新增成功");
+		}
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(ApplicationLeave.class,"id","writeTime","beginTime","endTime","user","longTime",
+						"holidayType","type","applyOvertime")
+				.addRetainTerm(User.class, "id", "userName")
+				.format(applicationLeave).toJSON());
+		return cr;
+	}
+	
+	
+	/**
+	 * 删除请假事项
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/personnel/deleteApplicationLeave", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteApplicationLeave(HttpServletRequest request,String ids) {
+		CommonResponse cr = new CommonResponse();
+		if(!StringUtils.isEmpty(ids)){
+			int count = applicationLeaveService.deleteApplicationLeave(ids);
+			cr.setMessage("删除成功"+count+"条");
+		}else{
+			cr.setMessage("不能为空");
+		}
+		return cr;
+	}
+	
+	
+	
+	
+	/*************************************** *************************/
+	
+	/**
+	 * 初始化考勤表的初始数据人员
+	 * @return
+	 */
+	@RequestMapping(value = "/personnel/user", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse findAttendanceuser() {
+		CommonResponse cr = new CommonResponse();
+		List<AttendanceInit> list = attendanceInitDao.findAll();
+		for(AttendanceInit arr : list){
+			User user  = UserService.findByUserName(arr.getUsername());
+			if(user!=null){
+				arr.setUser(user);
+			}
+		}
+		attendanceInitDao.save(list);
 		cr.setMessage("查询成功");
 		return cr;
 	}

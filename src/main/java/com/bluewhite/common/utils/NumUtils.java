@@ -117,6 +117,7 @@ public class NumUtils {
         return bd1.subtract(bd2).doubleValue(); 
     } 
 
+    
     /** 
      * double 乘法 
      * @param d1 

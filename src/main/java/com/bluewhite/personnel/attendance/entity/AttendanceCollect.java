@@ -1,63 +1,116 @@
 package com.bluewhite.personnel.attendance.entity;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import com.bluewhite.base.BaseEntity;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.production.finance.entity.CollectPay;
+import com.bluewhite.system.user.entity.User;
 
 /**
- * 考勤汇总列表
+ * 考勤汇总列总表，按月按员工汇总（员工每月一条汇总数据）
  * @author zhangliang
  *
  */
-public class AttendanceCollect {
+@Entity
+@Table(name = "person_attendance_collect" )
+public class AttendanceCollect extends BaseEntity<Long>{
 	
 	/**
+	 * 考勤汇总日期
 	 * 
-	 * 出勤
 	 */
+	@Column(name = "time")
+	private Date time;
+	
+	/**
+	 * 员工id
+	 */
+	@Column(name = "user_id")
+	private Long userId;
+	
+	/**
+	 * 员工
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User user;
+	
+	/**
+	 * 出勤时长
+	 */
+	@Column(name = "turn_work")
 	private Double turnWork;
 	
 	/**
 	 * 
-	 * 加班
+	 * 加班时长
 	 */
+	@Column(name = "over_time")
 	private Double overtime;
 	
 	/**
 	 * 
-	 * 缺勤
+	 * 缺勤时长
 	 */
+	@Column(name = "duty_work")
 	private Double dutyWork;
 	
 	/**
 	 * 
-	 * 总出勤(出勤+加班)
+	 * 总出勤时长(出勤+加班)
 	 */
+	@Column(name = "all_work")
 	private Double allWork;
 	
 	/**
 	 * 
-	 * 工作日出勤
+	 * 工作日出勤时长
 	 */
+	@Column(name = "man_day")
 	private Double manDay;
 	
 	/**
 	 * 
-	 * 工作日加班
+	 * 工作日加班时长
 	 */
+	@Column(name = "man_day_dvertime")
 	private Double manDayOvertime;
 	
 	/**
 	 * 
-	 * 周末出勤
+	 * 周末出勤时长
 	 */
+	@Column(name = "weekend_turn_work")
 	private Double weekendTurnWork;
+	
+	/**
+	 * 请假详情
+	 */
+	@Column(name = "Leave_time")
+	private Double LeaveTime;
+	
+	/**
+	 * 请假详情
+	 */
+	@Column(name = "Leave_details")
+	private String LeaveDetails;
+	
+	/**
+	 * 备注
+	 */
+	@Column(name = "remarks")
+	private String remarks;
+	
 	
 	
     public  AttendanceCollect (){
@@ -91,6 +144,56 @@ public class AttendanceCollect {
     }
 	
 	
+    
+    
+
+	public Date getTime() {
+		return time;
+	}
+
+	public void setTime(Date time) {
+		this.time = time;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Double getLeaveTime() {
+		return LeaveTime;
+	}
+
+	public void setLeaveTime(Double leaveTime) {
+		LeaveTime = leaveTime;
+	}
+
+	public String getLeaveDetails() {
+		return LeaveDetails;
+	}
+
+	public void setLeaveDetails(String leaveDetails) {
+		LeaveDetails = leaveDetails;
+	}
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
 
 	public Double getTurnWork() {
 		return turnWork;

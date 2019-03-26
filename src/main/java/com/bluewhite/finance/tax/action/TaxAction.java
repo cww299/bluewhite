@@ -88,7 +88,7 @@ public class TaxAction {
 		CommonResponse cr = new CommonResponse();
 		taxService.updateTax(tax);
 		cr.setData(clearCascadeJSON.format(tax).toJSON());
-		cr.setMessage("添加成功");
+		cr.setMessage("修改成功");
 		return cr;
 	}
 	
@@ -104,7 +104,7 @@ public class TaxAction {
 		CommonResponse cr = new CommonResponse();
 		taxService.auditTax(tax);
 		cr.setData(clearCascadeJSON.format(tax).toJSON());
-		cr.setMessage("添加成功");
+		cr.setMessage("放款成功");
 		return cr;
 	}
 

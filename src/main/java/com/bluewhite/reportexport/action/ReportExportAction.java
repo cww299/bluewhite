@@ -62,6 +62,7 @@ import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.entity.AttendanceCollect;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.service.AttendanceService;
+import com.bluewhite.personnel.attendance.service.AttendanceTimeService;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.BaseOneTime;
 import com.bluewhite.product.primecostbasedata.entity.BaseThree;
@@ -120,6 +121,9 @@ public class ReportExportAction {
 	
 	@Autowired
 	private AttendanceService attendanceService;
+	
+	@Autowired
+	private AttendanceTimeService attendanceTimeService;
 	
 	/**
 	 * 基础产品导入                          
@@ -831,7 +835,7 @@ public class ReportExportAction {
 	 * @author zhangliang
 	 */
 	@RequestMapping("/importExcel/personnel/DownAttendance")
-	public void DownPersonnelAttendance(HttpServletRequest request,HttpServletResponse response, Attendance attendance){
+	public void DownPersonnelAttendance(HttpServletRequest request,HttpServletResponse response, AttendanceTime attendance){
 		response.setContentType("octets/stream");
 	    response.addHeader("Content-Disposition", "attachment;filename=attendancePay.xlsx");
 	    
@@ -988,7 +992,7 @@ public class ReportExportAction {
         
        //填充数据
         //一整个月的考勤查询出来
-       List<Map<String, Object>> mapList = attendanceService.findAttendanceTimeCollect(attendance);
+       List<Map<String, Object>> mapList = attendanceTimeService.findAttendanceTimeCollect(attendance);
        int l = 2;
        for (int p = 0; p < mapList.size(); p++) {
     	   //获取人员考勤详细
@@ -998,7 +1002,6 @@ public class ReportExportAction {
 			//创建行，行初始是0，数据从第三行写入
 			row = sheet.createRow(++l);
 			row.createCell(0).setCellValue(attendance.getOrgName()); 
-			row.createCell(1).setCellValue(psList.get(0).getUsername()); 
 			row.createCell(2).setCellValue(""); 
 			row.createCell(3).setCellValue(""); 
 			//创建列，列初始是0，数据从第五列写入

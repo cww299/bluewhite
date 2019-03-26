@@ -1,5 +1,6 @@
 package com.bluewhite.personnel.attendance.service;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -55,21 +56,6 @@ public interface AttendanceService  extends BaseCRUDService<Attendance,Long>{
 	public PageResult<Attendance> findPageAttendance(Attendance attendance, PageParameter page);
 	
 	/**
-	 * 按条件查看考勤工作时长
-	 * @param attendance
-	 * @return
-	 */
-	public List<AttendanceTime> findAttendanceTime(Attendance attendance);
-	
-	
-	/**
-	 * 按条件查看考勤工作时长的汇总
-	 * @param attendance
-	 * @return
-	 */
-	public List<Map<String, Object>> findAttendanceTimeCollect(Attendance attendance);
-	
-	/**
 	 * 查看考勤机中全部考勤记录
 	 * @param address
 	 * @return
@@ -84,7 +70,12 @@ public interface AttendanceService  extends BaseCRUDService<Attendance,Long>{
 	 */
 	public List<Map<String, Object>>  findUser(String address, String number);
 	
-	
+	/**
+	 *  手动修正未同步人员编号时，同步考勤记录而导致的人员姓名为null问题
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
 	public int fixAttendance(Date startTime, Date endTime);
 
 }
