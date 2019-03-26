@@ -35,6 +35,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.BankUtil;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.ZkemUtils.ZkemSDKUtils;
+import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.system.sys.entity.SysLog;
 import com.bluewhite.system.user.dao.UserContractDao;
@@ -332,6 +333,22 @@ public class UserAction {
 		return cr;
 	}
 
+	/**
+	 * 查询符合要求的人员信息
+	 * 
+	 * @param request请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/findAllUser", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse findAllUser(HttpServletRequest request, String id) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(User.class,"id","userName")
+				.format(userService.findAll()).toJSON());
+		return cr;
+	}
 	
 	/**
 	 * 测试
@@ -342,7 +359,6 @@ public class UserAction {
 		CommonResponse cr = new CommonResponse();
 		List<User> userList = 	userService.findAll();
 	
-		userService.save(userList);
 		return cr;
 	}
 	

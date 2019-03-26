@@ -258,7 +258,6 @@ public class AttendanceAction {
 				.addRetainTerm(AttendanceTime.class,"time","number","user","checkIn","checkOut","turnWorkTime",
 						"overtime","week","dutytime","flag","leaveEarly","leaveEarlyTime","belate","belateTime")
 				.format(attendanceTimeService.findAttendanceTimePage(attendanceTime)).toJSON());
-		
 		cr.setMessage("查询成功");
 		return cr;
 	}

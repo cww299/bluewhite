@@ -63,7 +63,9 @@ public class ExpenseAccountAction {
 
 	/**
 	 * 财务报销单新增
-	 * 
+	 * 财务报销单修改
+	 * （一）.未审核 1.填写页面可以修改报销单
+	 * （二）.已审核 1.填写页面和出纳均不可修改
 	 * @param request
 	 *            请求
 	 * @return cr
@@ -73,30 +75,16 @@ public class ExpenseAccountAction {
 	@ResponseBody
 	public CommonResponse addExpenseAccount(HttpServletRequest request, ExpenseAccount expenseAccount) {
 		CommonResponse cr = new CommonResponse();
-		expenseAccountService.addExpenseAccount(expenseAccount);
-		cr.setData(clearCascadeJSON.format(expenseAccount).toJSON());
-		cr.setMessage("添加成功");
+		if(expenseAccount.getId() != null){
+			expenseAccountService.updateExpenseAccount(expenseAccount);
+			cr.setMessage("修改成功");
+		}else{
+			expenseAccountService.addExpenseAccount(expenseAccount);
+			cr.setMessage("添加成功");
+		}
 		return cr;
 	}
 
-	/**
-	 * 财务报销单修改
-	 * （一）.未审核 1.填写页面可以修改报销单
-	 * （二）.已审核 1.填写页面和出纳均不可修改
-	 * @param request
-	 *            请求
-	 * @return cr
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/fince/updateExpenseAccount", method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse updateExpenseAccount(HttpServletRequest request, ExpenseAccount expenseAccount) {
-		CommonResponse cr = new CommonResponse();
-		expenseAccountService.updateExpenseAccount(expenseAccount);
-		cr.setData(clearCascadeJSON.format(expenseAccount).toJSON());
-		cr.setMessage("修改成功");
-		return cr;
-	}
 	
 	/**
 	 * 财务报销单审核放款
