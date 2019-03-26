@@ -28,8 +28,12 @@ public class AttendanceInit extends BaseEntity<Long> {
     private User user;
     
     
+	@Column(name = "username")
+	private String username;
+    
+    
 	/**
-	 * 约定休息方式（1.无到岗要求，2.周休一天，3.月休两天，其他周日算加班,4.全年无休，5.按到岗小时计算）
+	 * 约定休息方式（1.无到岗要求，2.周休一天，3.月休两天，其他周日算加班,4.全年无休，5.按到岗小时计算（类似全年无休，有自己的节假日休息））
 	 */
 	@Column(name = "rest_type")
 	private Integer restType;
@@ -95,15 +99,42 @@ public class AttendanceInit extends BaseEntity<Long> {
 	@Column(name = "rest_time_work")
 	private Integer restTimeWork;
 	
+	/**
+	 * 签到时间在下班时间之后是否合算加班（1.看加班申请2.按打卡正常核算加班）
+	 * 
+	 */
+	@Column(name = "over_time_type")
+	private Integer overTimeType;
 	
 	/**
-	 * 加班后默认到岗时间(1.第二天上班时间以超过24:00后的时间往后推, 2.超过24:30后默认休息7.5小时)
+	 * 加班后晚到岗类型(1.按点上班，2.第二天上班时间以超过24:00后的时间往后推,3.超过24:30后默认休息7.5小时)
 	 */
 	@Column(name = "come_work")
 	private Integer comeWork;
 
 
 	
+	
+
+
+	public String getUsername() {
+		return username;
+	}
+
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+
+	public Integer getOverTimeType() {
+		return overTimeType;
+	}
+
+
+	public void setOverTimeType(Integer overTimeType) {
+		this.overTimeType = overTimeType;
+	}
 
 
 	public String getWorkTimeSummer() {

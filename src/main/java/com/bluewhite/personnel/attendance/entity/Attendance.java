@@ -90,34 +90,6 @@ public class Attendance extends BaseEntity<Long> {
 	 */
 	@Transient
 	private String orgName;
-	
-	/**
-	 * 工作间隔开始时间（上班）
-	 */
-	@Transient
-	private String workTimeBegin;
-	
-	/**
-	 * 工作间隔结束时间（下班）
-	 */
-	@Transient
-	private String workTimeEnd;
-	
-	/**
-	 * 中午休息开始时间
-	 */
-	@Transient
-	private String restBeginTime;
-	
-	/**
-	 * 中午休息结束时间
-	 */
-	@Transient
-	private String restEndTime;
-	
-	
-	
-	
 
 	
 
@@ -129,37 +101,6 @@ public class Attendance extends BaseEntity<Long> {
 		this.orgName = orgName;
 	}
 
-	public String getWorkTimeBegin() {
-		return workTimeBegin;
-	}
-
-	public void setWorkTimeBegin(String workTimeBegin) {
-		this.workTimeBegin = workTimeBegin;
-	}
-
-	public String getWorkTimeEnd() {
-		return workTimeEnd;
-	}
-
-	public void setWorkTimeEnd(String workTimeEnd) {
-		this.workTimeEnd = workTimeEnd;
-	}
-
-	public String getRestBeginTime() {
-		return restBeginTime;
-	}
-
-	public void setRestBeginTime(String restBeginTime) {
-		this.restBeginTime = restBeginTime;
-	}
-
-	public String getRestEndTime() {
-		return restEndTime;
-	}
-
-	public void setRestEndTime(String restEndTime) {
-		this.restEndTime = restEndTime;
-	}
 
 	public Long getOrgNameId() {
 		return orgNameId;

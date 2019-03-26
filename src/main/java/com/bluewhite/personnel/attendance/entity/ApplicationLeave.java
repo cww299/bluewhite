@@ -22,18 +22,6 @@ import com.bluewhite.system.user.entity.User;
 public class ApplicationLeave extends BaseEntity<Long>  {
 	
 	/**
-	 * 	申请时间
-	 */
-	@Column(name = "write_time")
-	private Date writetime;
-	
-	/**
-	 * （请假条，调休，补签，加班）时间
-	 */
-	@Column(name = "time")
-	private Date time;
-	
-	/**
 	 * 员工id
 	 */
 	@Column(name = "user_id")
@@ -47,42 +35,118 @@ public class ApplicationLeave extends BaseEntity<Long>  {
 	private User user;
 	
 	/**
-	 * （请假条，调休，补签，加班）时长
+	 * 	申请时间
 	 */
-	@Column(name = "long_time")
-	private Double longTime;
-	
+	@Column(name = "write_time")
+	private Date writeTime;
 	
 	/**
-	 * （请假条，调休，补签，加班）类型
+	 * 请假类型(事假、病假、丧假、婚假、产假、护理假）
 	 */
-	@Column(name = "type")
-	private Integer type;
+	@Column(name = "holiday_type")
+	private Integer holidayType;
+	
+	/**
+	 * 是否请假(true=是)
+	 */
+	@Column(name = "holiday")
+	private boolean holiday;
+	
+	/**
+	 * 是否调休(true=是)
+	 */
+	@Column(name = "trade_days")
+	private boolean tradeDays;
+	
+	/**
+	 * 是否补签(true=是)
+	 */
+	@Column(name = "add_sign_in")
+	private boolean addSignIn;
+	
+	/**
+	 * 是否申请加班(true=是)
+	 */
+	@Column(name = "apply_overtime")
+	private boolean applyOvertime;
+	
+	/**
+	 * （请假，调休，补签，加班）时间(json格式传递（日期+时长）)
+	 */
+	@Column(name = "time")
+	private String time;
+	
+	/**
+	 * 	调休到的日期时间
+	 */
+	@Column(name = "tradeDays_time")
+	private Date tradeDaysTime;
+
 	
 	
 
-	public Integer getType() {
-		return type;
+	public Date getWriteTime() {
+		return writeTime;
 	}
 
-	public void setType(Integer type) {
-		this.type = type;
+	public void setWriteTime(Date writeTime) {
+		this.writeTime = writeTime;
 	}
 
-	public Date getWritetime() {
-		return writetime;
+	public boolean isHoliday() {
+		return holiday;
 	}
 
-	public void setWritetime(Date writetime) {
-		this.writetime = writetime;
+	public void setHoliday(boolean holiday) {
+		this.holiday = holiday;
 	}
 
-	public Date getTime() {
+	public String getTime() {
 		return time;
 	}
 
-	public void setTime(Date time) {
+	public void setTime(String time) {
 		this.time = time;
+	}
+
+	public Date getTradeDaysTime() {
+		return tradeDaysTime;
+	}
+
+	public void setTradeDaysTime(Date tradeDaysTime) {
+		this.tradeDaysTime = tradeDaysTime;
+	}
+
+	public boolean isTradeDays() {
+		return tradeDays;
+	}
+
+	public void setTradeDays(boolean tradeDays) {
+		this.tradeDays = tradeDays;
+	}
+
+	public boolean isAddSignIn() {
+		return addSignIn;
+	}
+
+	public void setAddSignIn(boolean addSignIn) {
+		this.addSignIn = addSignIn;
+	}
+
+	public boolean isApplyOvertime() {
+		return applyOvertime;
+	}
+
+	public void setApplyOvertime(boolean applyOvertime) {
+		this.applyOvertime = applyOvertime;
+	}
+
+	public Integer getHolidayType() {
+		return holidayType;
+	}
+
+	public void setHolidayType(Integer holidayType) {
+		this.holidayType = holidayType;
 	}
 
 	public Long getUserId() {
@@ -101,13 +165,7 @@ public class ApplicationLeave extends BaseEntity<Long>  {
 		this.user = user;
 	}
 
-	public Double getLongTime() {
-		return longTime;
-	}
-
-	public void setLongTime(Double longTime) {
-		this.longTime = longTime;
-	}
+	
 	
 	
 	

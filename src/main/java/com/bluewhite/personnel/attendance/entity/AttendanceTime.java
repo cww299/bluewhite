@@ -68,7 +68,7 @@ public class AttendanceTime extends BaseEntity<Long> {
 	
 	/**
 	 * 
-	 * 工作时长
+	 * 实际工作时长
 	 */
 	@Column(name = "workTime")
 	private Double workTime = 0.0;
@@ -106,14 +106,29 @@ public class AttendanceTime extends BaseEntity<Long> {
 	 * 
 	 */
 	@Column(name = "flag")
-	private Integer flag;
+	private Integer flag = 0;
 	
 	/**
-	 * 是否迟到(0=是，1=否)
+	 * 是否早退(0=否，1=是)
+	 * 
+	 */
+	@Column(name = "leave_early")
+	private Integer leaveEarly = 0;
+	
+	/**
+	 * 早退时长（超过30分钟算缺勤）
+	 * 
+	 */
+	@Column(name = "leave_early_time")
+	private Double leaveEarlyTime;
+	
+	/**
+	 * 是否迟到(0=否，1=是)
 	 * 
 	 */
 	@Column(name = "belate")
-	private Integer belate;
+	private Integer belate = 0;
+	
 	
 	/**
 	 * 迟到时长（超过30分钟算缺勤）
@@ -154,9 +169,22 @@ public class AttendanceTime extends BaseEntity<Long> {
 
 	
 	
-	
-	
-	
+
+	public Integer getLeaveEarly() {
+		return leaveEarly;
+	}
+
+	public void setLeaveEarly(Integer leaveEarly) {
+		this.leaveEarly = leaveEarly;
+	}
+
+	public Double getLeaveEarlyTime() {
+		return leaveEarlyTime;
+	}
+
+	public void setLeaveEarlyTime(Double leaveEarlyTime) {
+		this.leaveEarlyTime = leaveEarlyTime;
+	}
 
 	public String getUserName() {
 		return userName;
