@@ -1,5 +1,6 @@
 package com.bluewhite.personnel.attendance.service;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -23,8 +24,9 @@ public interface AttendanceTimeService extends BaseCRUDService<AttendanceTime,Lo
 	
 	/**
 	 * 按日期将出勤中需要核算的请假事项计算到考勤详细中
+	 * @throws ParseException 
 	 */
-	public List<AttendanceTime> attendanceTimeByApplication(AttendanceTime attendanceTime);
+	public List<AttendanceTime> attendanceTimeByApplication(AttendanceTime attendanceTime) throws ParseException;
 	
 	/**
 	 * 按条件查看考勤工作时长的汇总

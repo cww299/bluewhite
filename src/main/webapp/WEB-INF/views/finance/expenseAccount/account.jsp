@@ -16,7 +16,7 @@
 
 	<body>
 		<section id="main-wrapper" class="theme-default">
-			<%@include file="../../decorator/leftbar.jsp"%>
+			<%@include file="../../decorator/leftbar.jsp"%> 
 			<section id="main-content" class="animated fadeInUp">
 				<div class="row">
 					<div class="col-md-12">
@@ -70,7 +70,7 @@
 													<td>&nbsp&nbsp</td>
 													<td>
 														<div class="layui-inline">
-															<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-search">
+															<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
 														<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
 													</button>
 														</div>
@@ -116,7 +116,8 @@
 						tablePlug = layui.tablePlug //表格插件
 						,
 						element = layui.element;
-
+					//id
+					var ID;
 					//select全局变量
 					var htmls = '<option value="">请选择</option>';
 					var index = layer.load(1, {
@@ -187,7 +188,7 @@
 						};
 					};
 					
-				 	/* tablePlug.smartReload.enable(true);  */
+				 /* 	tablePlug.smartReload.enable(true);   */
 					table.render({
 						elem: '#tableData',
 						size: 'lg',
@@ -197,9 +198,8 @@
 							limitName: 'size' //每页数据量的参数名，默认：limit
 						},
 						page: {
-
-						} //开启分页
-						,
+							limit:15
+						},//开启分页
 						loading: true,
 						toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
 						/*totalRow: true //开启合计行 */
@@ -234,7 +234,7 @@
 								templet: fn1('selectOne')
 							}, {
 								field: "budget",
-								title: "是否是预算",
+								title: "是否预算",
 								align: 'center',
 								search: true,
 								edit: false,
@@ -242,11 +242,11 @@
 								templet: fn2('selectTwo')
 							}, {
 								field: "money",
-								title: "付款日要付金额",
+								title: "报销申请金额",
 								edit: 'text'
 							}, {
 								field: "expenseDate",
-								title: "付款日期",
+								title: "报销申请日期",
 								edit: 'text'
 							}, {
 								field: "withholdReason",
@@ -304,29 +304,27 @@
 											};
 											//调用新增修改
 											mainJs.fAdd(postData);
-									}
-								})
-
-							})
-
-						},
-
-					});
+												}
+											})
+										})
+									},
+								});
 
 					// 监听表格中的下拉选择将数据同步到table.cache中
 					form.on('select(lay_selecte)', function(data) {
-						console.log(data);
 						var selectElem = $(data.elem);
 						var tdElem = selectElem.closest('td');
 						var trElem = tdElem.closest('tr');
 						var tableView = trElem.closest('.layui-table-view');
 						var field = tdElem.data('field');
 						table.cache[tableView.attr('lay-id')][trElem.data('index')][tdElem.data('field')] = data.value;
-					/* 	table.cache[tableView.attr('lay-id')][trElem.data('index')][tdElem.data('id')] */
 						var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
+						if(id==undefined){
+							id=ID
+						}
 						var postData = {
 							id: id,
-							[field]:data.value,
+							[field]:data.value
 						}
 						//调用新增修改
 						mainJs.fAdd(postData);
@@ -340,6 +338,8 @@
 						switch(obj.event) {
 							case 'addTempData':
 								table.addTemp(tableId, function(trElem) {
+									//置空ID
+									ID=""
 									// 进入回调的时候this是当前的表格的config
 									var that = this;
 									// 初始化laydate
@@ -352,7 +352,17 @@
 											format: 'yyyy-MM-dd HH:mm:ss',
 											done: function(value, date) {
 												var trElem = $(this.elem[0]).closest('tr');
+												var tableView = trElem.closest('.layui-table-view');
 												table.cache[that.id][trElem.data('index')]['expenseDate'] = value;
+												var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
+												if(id==undefined){
+													id=ID
+												}
+												var postData = {
+													id: id,
+													expenseDate:value,
+												}
+												mainJs.fAdd(postData);
 											}
 										})
 									})
@@ -375,15 +385,27 @@
 										},
 										success: function(result) {
 											if(0 == result.code) {
-												table.reload('tableData');
+												var configTemp = tablePlug.getConfig("tableData");
+									            if (configTemp.page && configTemp.page.curr > 1) {
+									              table.reload("tableData", {
+									                page: {
+									                  curr: configTemp.page.curr - 1
+									                }
+									              })
+									            }else{
+									            	table.reload("tableData", {
+										                page: {
+										                }
+										              })
+									            };
 												layer.msg(result.message, {
 													icon: 1,
-													time:500
+													time:800
 												});
 											} else {
 												layer.msg(result.message, {
 													icon: 2,
-													time:500
+													time:800
 												});
 											}
 										},
@@ -401,12 +423,28 @@
 
 					//监听单元格编辑
 					table.on('edit(tableData)', function(obj) {
-						console.log(obj);
 						var value = obj.value ,//得到修改后的值
 							data = obj.data ,//得到所在行所有键值
-							field = obj.field; //得到字段
+							field = obj.field, //得到字段
+							id = data.id;
+				    		console.log(data);
+				    		
+				    		if(data.userId==""){
+					    		return layer.msg("请填写申请人", {
+									icon: 2,
+								});
+					    	}
+					    	if(data.money=="" || isNaN(data.money)){
+					    		return layer.msg("请填写申请金额（且必须为数字）", {
+									icon: 2,
+								});
+					    	}
+				    		
+							if(id==undefined){
+								id=ID
+							}
 							var postData = {
-								id:data.id,
+								id:id,
 								[field]:value
 							}
 							//调用新增修改
@@ -414,7 +452,7 @@
 					});
 
 					//监听搜索
-					form.on('submit(LAY-role-search)', function(data) {
+					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
 						$.ajax({
 							url: "${ctx}/fince/getExpenseAccount",
@@ -443,16 +481,20 @@
 								},
 								success: function(result) {
 									if(0 == result.code) {
-										/* table.reload('tableData');  */
+										ID = result.data.id;
+									 /* 	table.reload("tableData", {
+							                page: {
+							                }
+							              })  */
 										layer.msg(result.message, {
 											icon: 1,
-											time:500
+											time:800
 										});
 									
 									} else {
 										layer.msg(result.message, {
 											icon: 2,
-											time:500
+											time:800
 										});
 									}
 								},

@@ -346,7 +346,7 @@ public class UserAction {
 		cr.setData(ClearCascadeJSON
 				.get()
 				.addRetainTerm(User.class,"id","userName")
-				.format(userService.findAll()).toJSON());
+				.format(userService.findByForeigns()).toJSON());
 		return cr;
 	}
 	
@@ -357,8 +357,7 @@ public class UserAction {
 	@ResponseBody
 	private CommonResponse test() {
 		CommonResponse cr = new CommonResponse();
-		List<User> userList = 	userService.findAll();
-	
+		List<User> userList =userService.findByForeigns();
 		return cr;
 	}
 	

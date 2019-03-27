@@ -23,6 +23,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.finance.expenseAccount.entity.ExpenseAccount;
 import com.bluewhite.finance.expenseAccount.service.ExpenseAccountService;
+import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.system.user.entity.User;
 
 @Controller
@@ -82,6 +83,10 @@ public class ExpenseAccountAction {
 			expenseAccountService.addExpenseAccount(expenseAccount);
 			cr.setMessage("添加成功");
 		}
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(ExpenseAccount.class,"id")
+				.format(expenseAccount).toJSON());
 		return cr;
 	}
 
