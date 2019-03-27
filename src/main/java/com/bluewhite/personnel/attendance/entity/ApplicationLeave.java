@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.system.user.entity.User;
@@ -39,6 +40,12 @@ public class ApplicationLeave extends BaseEntity<Long>  {
 	 */
 	@Column(name = "write_time")
 	private Date writeTime;
+	
+	/**
+	 * 请假原因
+	 */
+	@Column(name = "content")
+	private String content;
 	
 	/**
 	 * 请假类型(事假、病假、丧假、婚假、产假、护理假）
@@ -82,15 +89,71 @@ public class ApplicationLeave extends BaseEntity<Long>  {
 	@Column(name = "tradeDays_time")
 	private Date tradeDaysTime;
 
+	/**
+	 * 员工姓名
+	 */
+	@Transient
+	private String userName;
+	
+	/**
+	 * 查询字段（部门）
+	 */
+	@Transient
+	private Long orgNameId;
+	
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
+	
+	
 	
 	
 
-	public Date getWriteTime() {
-		return writeTime;
+	public String getContent() {
+		return content;
 	}
 
-	public void setWriteTime(Date writeTime) {
-		this.writeTime = writeTime;
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public Long getOrgNameId() {
+		return orgNameId;
+	}
+
+	public void setOrgNameId(Long orgNameId) {
+		this.orgNameId = orgNameId;
+	}
+
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
 	}
 
 	public boolean isHoliday() {
@@ -99,6 +162,14 @@ public class ApplicationLeave extends BaseEntity<Long>  {
 
 	public void setHoliday(boolean holiday) {
 		this.holiday = holiday;
+	}
+
+	public Date getWriteTime() {
+		return writeTime;
+	}
+
+	public void setWriteTime(Date writeTime) {
+		this.writeTime = writeTime;
 	}
 
 	public String getTime() {

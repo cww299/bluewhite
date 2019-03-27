@@ -274,8 +274,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		return true;
 	}
 
-
-
 	@Override
 	public void oooxxx() {
 	}
@@ -297,7 +295,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 
 	@Override
 	public List<User> findByForeigns() {
-		return dao.findByForeigns(0);
+		return dao.findByForeignsAndIsAdminAndQuit(0,false,0);
 	}
 
 	@Override

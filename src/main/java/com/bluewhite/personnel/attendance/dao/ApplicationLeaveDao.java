@@ -7,22 +7,13 @@ import com.bluewhite.base.BaseRepository;
 import com.bluewhite.personnel.attendance.entity.ApplicationLeave;
 
 public interface ApplicationLeaveDao  extends BaseRepository<ApplicationLeave, Long>{
-	
 	/**
-	 * 根据用户ID和考勤统计时间查询有没有需要核算的请假事项
+	 * 根据员工查找
 	 * @param userId
-	 * @param time
 	 * @return
 	 */
-	public List<ApplicationLeave> findByUserIdAndTime(Long userId,Date time);
+	public List<ApplicationLeave> findByUserId(Long userId);
 	
-	/**
-	 * 根据日期获取所有的请假事项
-	 * @param beginTime
-	 * @param endTime
-	 * @return
-	 */
-	public List<ApplicationLeave> findByTimeBetween(Date beginTime,Date endTime);
 	
 	
 

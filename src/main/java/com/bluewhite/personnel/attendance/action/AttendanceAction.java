@@ -298,17 +298,15 @@ public class AttendanceAction {
 	public CommonResponse addApplicationLeave(HttpServletRequest request,ApplicationLeave applicationLeave) {
 		CommonResponse cr = new CommonResponse();
 		if(applicationLeave.getId() != null){
-			applicationLeave = applicationLeaveService.updateApplicationLeave(applicationLeave);
+			applicationLeaveService.updateApplicationLeave(applicationLeave);
 			cr.setMessage("修改成功");
 		}else{
-			applicationLeave = applicationLeaveService.save(applicationLeave);
+			applicationLeaveService.save(applicationLeave);
 			cr.setMessage("新增成功");
 		}
 		cr.setData(ClearCascadeJSON
 				.get()
-				.addRetainTerm(ApplicationLeave.class,"id","writeTime","beginTime","endTime","user","longTime",
-						"holidayType","type","applyOvertime")
-				.addRetainTerm(User.class, "id", "userName")
+				.addRetainTerm(ApplicationLeave.class,"id")
 				.format(applicationLeave).toJSON());
 		return cr;
 	}
@@ -330,6 +328,26 @@ public class AttendanceAction {
 		}else{
 			cr.setMessage("不能为空");
 		}
+		return cr;
+	}
+	
+	/**
+	 * 分页查看请假事项
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/personnel/getApplicationLeavePage", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getApplicationLeavePage(ApplicationLeave applicationLeave, PageParameter page) {
+		CommonResponse cr = new CommonResponse();
+		 cr.setData(ClearCascadeJSON
+					.get()
+					.addRetainTerm(ApplicationLeave.class,"id","writeTime","beginTime","endTime","user","longTime",
+							"holidayType","type","applyOvertime","content")
+					.addRetainTerm(User.class, "id", "userName")
+					.format( applicationLeaveService.findApplicationLeavePage(applicationLeave, page)).toJSON());
+		cr.setMessage("查询成功");
 		return cr;
 	}
 	

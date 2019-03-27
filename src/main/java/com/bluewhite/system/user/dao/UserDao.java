@@ -62,7 +62,7 @@ public interface UserDao extends BaseRepository<User, Long> {
 	 * @param foreigns=0=否
 	 * @return
 	 */
-	public List<User> findByForeigns(Integer foreigns);
+	public List<User> findByForeignsAndIsAdminAndQuit(Integer foreigns,boolean admin,Integer quit);
 	
 
 }

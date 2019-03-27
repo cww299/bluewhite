@@ -1,7 +1,13 @@
 package com.bluewhite.personnel.attendance.service;
 
+import java.util.List;
+
 import com.bluewhite.base.BaseCRUDService;
+import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.personnel.attendance.entity.ApplicationLeave;
+import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 
 public interface ApplicationLeaveService  extends BaseCRUDService<ApplicationLeave,Long>{
 	/**
@@ -15,5 +21,12 @@ public interface ApplicationLeaveService  extends BaseCRUDService<ApplicationLea
 	 * @return
 	 */
 	int deleteApplicationLeave(String ids);
+	
+	/**
+	 * 按条件查看考级统计后的记录
+	 * @param attendanceTime
+	 * @return
+	 */
+	public PageResult<ApplicationLeave> findApplicationLeavePage(ApplicationLeave applicationLeave, PageParameter page);
 
 }

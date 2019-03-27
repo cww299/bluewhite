@@ -361,38 +361,47 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	}
 	
 	@Override
-	public List<AttendanceTime> attendanceTimeByApplication(AttendanceTime attendanceTime) {
+	public List<AttendanceTime> attendanceTimeByApplication(AttendanceTime attendanceTime) throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		attendanceTime.setOrderTimeBegin(DatesUtil.getLastDayOfMonth(attendanceTime.getOrderTimeBegin()));
 		List<AttendanceTime> attendanceTimeList = this.findAttendanceTimePage(attendanceTime);
-		//获取到日期内所有的请假事项
-		List<ApplicationLeave> applicationLeaveList = 
-				applicationLeaveDao.findByTimeBetween(attendanceTime.getOrderTimeBegin(), DatesUtil.getLastDayOfMonth(attendanceTime.getOrderTimeBegin()));
 		// 按人员分组
-		Map<Long, List<ApplicationLeave>> mapApplicationLeave = applicationLeaveList.stream()
-				.collect(Collectors.groupingBy(ApplicationLeave::getUserId, Collectors.toList()));
-		
-		for (Long ps1 : mapApplicationLeave.keySet()) {
+		Map<Long, List<AttendanceTime>> mapAttendanceTime = attendanceTimeList.stream()
+				.collect(Collectors.groupingBy(AttendanceTime::getUserId, Collectors.toList()));
+		for (Long ps1 : mapAttendanceTime.keySet()) {
 			// 获取单一员工日期区间所有的请假事项
-			List<ApplicationLeave> psList1 = mapApplicationLeave.get(ps1);
+			List<AttendanceTime> psList1 = mapAttendanceTime.get(ps1);
 			// 按考勤数据日期自然排序
-			List<AttendanceTime> attendanceTimeListSort = attendanceTimeList.stream().filter(AttendanceTime->AttendanceTime.getUserId().equals(ps1))
+			List<AttendanceTime> attendanceTimeListSort = psList1.stream().filter(AttendanceTime->AttendanceTime.getUserId().equals(ps1))
 					.sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
-			for(AttendanceTime at: attendanceTimeListSort){
-				// 按日期查找符合的员工请假事项
-				List<ApplicationLeave> application = psList1.stream().filter(ApplicationLeave->ApplicationLeave.getTime().equals(at.getTime()))
-						.collect(Collectors.toList());
-				
+			for(AttendanceTime at: psList1){
+				// 检查当前月份属于夏令时或冬令时 flag=ture 为夏令时
+				boolean flag = false;
+				try {
+					flag = DatesUtil.belongCalendar(attendanceTime.getOrderTimeBegin());
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				// 获取员工考勤的初始化参数
+				AttendanceInit attendanceInit = attendanceInitDao.findByUserId(at.getUserId());
+				//通过考勤数据的日期，查找出请假事项中的所以符合该员工，当前日期的请假事项；
+				List<ApplicationLeave> applicationLeave = applicationLeaveDao.findByUserId(at.getUserId());
+				for(ApplicationLeave al :applicationLeave){
+					String time = al.getTime();
+					
+					
+					
+				}
 			
 				
 				
 			}
 		
 			
-			
+		}
 			
 			
 		
-		}
 		return null;
 	}
 
