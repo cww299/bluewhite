@@ -48,7 +48,7 @@ public class ApplicationLeave extends BaseEntity<Long>  {
 	private String content;
 	
 	/**
-	 * 请假类型(事假、病假、丧假、婚假、产假、护理假）
+	 * 请假类型(0=事假、1=病假、2=丧假、3=婚假、4=产假、5=护理假）
 	 */
 	@Column(name = "holiday_type")
 	private Integer holidayType;

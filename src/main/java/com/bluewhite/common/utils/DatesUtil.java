@@ -1,9 +1,12 @@
 package com.bluewhite.common.utils;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class DatesUtil {
 
@@ -143,7 +146,7 @@ public class DatesUtil {
 	 * @return
 	 */
 	public static boolean sameDate(Date d1, Date d2) {
-		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
 		// fmt.setTimeZone(new TimeZone()); // 如果需要设置时间区域，可以在这里设置
 		return fmt.format(d1).equals(fmt.format(d2));
 	}
@@ -404,5 +407,62 @@ public class DatesUtil {
 			return false;
 		}
 	}
+	
+	
+	/**
+	 * 获取某日期区间的所有日期  日期倒序
+	 *
+	 * @param startDate  开始日期
+	 * @param endDate    结束日期
+	 * @param dateFormat 日期格式
+	 * @return 区间内所有日期
+	 */
+	public static List<String> getPerDaysByStartAndEndDate(String startDate, String endDate, String dateFormat) {
+	    DateFormat format = new SimpleDateFormat(dateFormat);
+	    try {
+	        Date sDate = format.parse(startDate);
+	        Date eDate = format.parse(endDate);
+	        long start = sDate.getTime();
+	        long end = eDate.getTime();
+	        if (start > end) {
+	            return null;
+	        }
+	        Calendar calendar = Calendar.getInstance();
+	        calendar.setTime(eDate);
+	        List<String> res = new ArrayList<String>();
+	        while (end >= start) {
+	            res.add(format.format(calendar.getTime()));
+	            calendar.add(Calendar.DAY_OF_MONTH, -1);
+	            end = calendar.getTimeInMillis();
+	        }
+	        return res;
+	    } catch (ParseException e) {
+	    	
+	    }
+	    return null;
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }

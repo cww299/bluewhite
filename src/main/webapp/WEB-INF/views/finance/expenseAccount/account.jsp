@@ -91,7 +91,9 @@
 		<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
 				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增一行</span>
-				<span class="layui-btn layui-btn-sm" lay-event="deleteSome">批量删除</span>
+				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
+				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
+				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
 			</div>
 		</script>
 
@@ -116,8 +118,8 @@
 						tablePlug = layui.tablePlug //表格插件
 						,
 						element = layui.element;
-					//id
-					var ID;
+					//全部字段
+					var allField;
 					//select全局变量
 					var htmls = '<option value="">请选择</option>';
 					var index = layer.load(1, {
@@ -188,7 +190,7 @@
 						};
 					};
 					
-				 /* 	tablePlug.smartReload.enable(true);   */
+				   	tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
 						size: 'lg',
@@ -303,7 +305,7 @@
 												expenseDate: value,
 											};
 											//调用新增修改
-											mainJs.fAdd(postData);
+											mainJs.fUpdate(postData);
 												}
 											})
 										})
@@ -319,15 +321,12 @@
 						var field = tdElem.data('field');
 						table.cache[tableView.attr('lay-id')][trElem.data('index')][tdElem.data('field')] = data.value;
 						var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
-						if(id==undefined){
-							id=ID
-						}
 						var postData = {
 							id: id,
 							[field]:data.value
 						}
 						//调用新增修改
-						mainJs.fAdd(postData);
+						mainJs.fUpdate(postData);
 					});
 					
 					//监听头工具栏事件
@@ -337,9 +336,9 @@
 						var tableId = config.id;
 						switch(obj.event) {
 							case 'addTempData':
-								table.addTemp(tableId, function(trElem) {
-									//置空ID
-									ID=""
+								allField = {id: '', content: '', budget: '',userId:'',money: '', expenseDate: '', 
+									withholdReason: '',withholdMoney:'',settleAccountsMode:''};
+								table.addTemp(tableId,allField,function(trElem) {
 									// 进入回调的时候this是当前的表格的config
 									var that = this;
 									// 初始化laydate
@@ -355,19 +354,33 @@
 												var tableView = trElem.closest('.layui-table-view');
 												table.cache[that.id][trElem.data('index')]['expenseDate'] = value;
 												var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
-												if(id==undefined){
-													id=ID
-												}
 												var postData = {
 													id: id,
 													expenseDate:value,
 												}
-												mainJs.fAdd(postData);
+												mainJs.fUpdate(postData);
 											}
 										})
 									})
 								});
 								break;
+							case 'saveTempData':
+								var data = table.getTemp(tableId).data;
+								data.forEach(function(postData,i){
+								/* 	if(postData.userId==""){
+							    		return layer.msg("请填写申请人", {
+											icon: 2,
+										});
+							    	}
+							    	if(postData.money=="" || isNaN(postData.money)){
+							    		return layer.msg("请填写申请金额（且必须为数字）", {
+											icon: 2,
+										});
+							    	} */
+									mainJs.fAdd(postData);
+									})
+									table.cleanTemp(tableId);
+						          break;
 							case 'deleteSome':
 								// 获得当前选中的
 								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
@@ -418,6 +431,10 @@
 									layer.close(index);
 								});
 								break;
+								
+							case 'cleanTempData':	
+									table.cleanTemp(tableId);
+							break;
 						}
 					});
 
@@ -427,28 +444,12 @@
 							data = obj.data ,//得到所在行所有键值
 							field = obj.field, //得到字段
 							id = data.id;
-				    		console.log(data);
-				    		
-				    		if(data.userId==""){
-					    		return layer.msg("请填写申请人", {
-									icon: 2,
-								});
-					    	}
-					    	if(data.money=="" || isNaN(data.money)){
-					    		return layer.msg("请填写申请金额（且必须为数字）", {
-									icon: 2,
-								});
-					    	}
-				    		
-							if(id==undefined){
-								id=ID
-							}
 							var postData = {
 								id:id,
 								[field]:value
 							}
 							//调用新增修改
-							mainJs.fAdd(postData);
+							mainJs.fUpdate(postData);
 					});
 
 					//监听搜索
@@ -481,11 +482,10 @@
 								},
 								success: function(result) {
 									if(0 == result.code) {
-										ID = result.data.id;
-									 /* 	table.reload("tableData", {
+									 	 table.reload("tableData", {
 							                page: {
 							                }
-							              })  */
+							              })   
 										layer.msg(result.message, {
 											icon: 1,
 											time:800
@@ -505,7 +505,46 @@
 								},
 							});
 							layer.close(index);
-					    }
+					    },
+						
+					//修改							
+				    fUpdate : function(data){
+				    	if(data.id==""){
+				    		return;
+				    	}
+				    	$.ajax({
+							url: "${ctx}/fince/addExpenseAccount",
+							data: data,
+							type: "POST",
+							beforeSend: function() {
+								index;
+							},
+							success: function(result) {
+								if(0 == result.code) {
+								 	 table.reload("tableData", {
+						                page: {
+						                }
+						              })   
+									layer.msg(result.message, {
+										icon: 1,
+										time:800
+									});
+								
+								} else {
+									layer.msg(result.message, {
+										icon: 2,
+										time:800
+									});
+								}
+							},
+							error: function() {
+								layer.msg("操作失败！请重试", {
+									icon: 2
+								});
+							},
+						});
+						layer.close(index);
+				    }
 					}
 
 				}
