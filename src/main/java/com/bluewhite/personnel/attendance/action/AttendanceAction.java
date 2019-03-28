@@ -218,6 +218,22 @@ public class AttendanceAction {
 	 * @param request 请求
 	 * @return cr
 	 */
+	@RequestMapping(value = "/personnel/intAttendanceTime", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse intAttendanceTime(HttpServletRequest request,AttendanceTime attendanceTime) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(attendanceTimeService.findAttendanceTimeCollect(attendanceTime));
+		cr.setMessage("初始化成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * 初始化考勤工作详情
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
 	@RequestMapping(value = "/personnel/addAttendanceTime", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse addAttendanceTime(HttpServletRequest request,AttendanceTime attendanceTime, Integer sign) {
@@ -344,7 +360,7 @@ public class AttendanceAction {
 		 cr.setData(ClearCascadeJSON
 					.get()
 					.addRetainTerm(ApplicationLeave.class,"id","writeTime","beginTime","endTime","user","longTime",
-							"holidayType","type","applyOvertime","content","holiday","tradeDays","addSignIn","applyOvertime")
+							"holidayType","type","applyOvertime","content","holiday","tradeDays","addSignIn","applyOvertime","time")
 					.addRetainTerm(User.class, "id", "userName")
 					.format(applicationLeaveService.findApplicationLeavePage(applicationLeave, page)).toJSON());
 		cr.setMessage("查询成功");
