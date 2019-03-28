@@ -94,7 +94,7 @@
     <div class="layui-form-item">
       <label class="layui-form-label" style="width: 90px;">申请人</label>
       <div class="layui-input-inline">
-        <select name="selectOne" lay-filter="lay_selecte" id="selectOne" lay-search="true"></select>
+        <select name="userId" lay-filter="lay_selecte" id="selectOne" lay-search="true"></select>
       </div>
     </div>
     <div class="layui-form-item">
@@ -106,23 +106,29 @@
     <div class="layui-form-item">
       <label class="layui-form-label" style="width: 90px;">申请项</label>
       <div class="layui-input-inline" style="width: 325px;">
-      <input type="radio" name="sex" value="0" title="请假" checked="">
-      <input type="radio" name="sex" value="1" title="调休">
-      <input type="radio" name="sex" value="2" title="补签">
-      <input type="radio" name="sex" value="3" title="加班">
+      <input type="radio" name="variable" value="0" title="请假" checked="">
+      <input type="radio" name="variable" value="1" title="调休">
+      <input type="radio" name="variable" value="2" title="补签">
+      <input type="radio" name="variable" value="3" title="加班">
       </div>
     </div>
-    <div id="leave" style="display: none;">
+    <div id="leave" style="display: block;">
      <div class="layui-form-item">
      	<label class="layui-form-label" style="width: 90px;">请假类型</label>
      	<div class="layui-input-inline">
-        	<select name="selectOne" lay-filter="holidayType"  lay-search="true"><option value="0">请选择</option><option value="1">事假</option><option value="2">病假</option><option value="3">丧假</option><option value="4">婚假</option><option value="5">产假</option><option value="6">护理假</option></select>
+        	<select name="holidayType" lay-filter="holidayType"  lay-search="true"><option value="0">请选择</option><option value="1">事假</option><option value="2">病假</option><option value="3">丧假</option><option value="4">婚假</option><option value="5">产假</option><option value="6">护理假</option></select>
       	</div>
      </div>
      <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 90px;">请假时间</label>
+      <label class="layui-form-label" style="width: 90px;">请假原因</label>
       <div class="layui-input-inline">
-        <input type="text" name="leavetime" id="leavetime" lay-verify="leavetime" placeholder="请输入请假时间" class="form-control laydate-icon">
+        <input type="text" name="content" id="content" lay-verify="content" placeholder="请输入请假原因 " class="form-control">
+      </div>
+    </div>
+     <div class="layui-form-item">
+      <label class="layui-form-label" style="width: 90px;">请假日期</label>
+      <div class="layui-input-inline">
+        <input type="text" name="leavetime" id="leavetime" lay-verify="leavetime"  placeholder="请输入请假日期" class="form-control laydate-icon">
       </div>
     </div>
     <div class="layui-form-item">
@@ -132,8 +138,44 @@
       </div>
     </div>
     </div>
-    <div class="layui-form-item layui-hide">
-      <input type="button" lay-submit lay-filter="LAY-user-front-submit" id="LAY-user-back-submit" value="确认">
+   
+   <div id="Break" style="display: none;">
+    <div class="layui-form-item">
+      <label class="layui-form-label" style="width: 90px;">调休时长</label>
+      <div class="layui-input-inline">
+        <input type="text" name="breakduration" id="breakduration" lay-verify="breakduration" placeholder="请输入调休时长 " class="form-control">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label" style="width: 90px;">调休至时间</label>
+      <div class="layui-input-inline">
+        <input type="text" name="breaktime" id="breaktime" lay-verify="breaktime" placeholder="请输入调休到哪一天的时间" class="form-control laydate-icon">
+      </div>
+    </div>
+    </div>
+    
+    <div id="repair" style="display: none;">
+     <div class="layui-form-item">
+      <label class="layui-form-label" style="width: 90px;">补签日期</label>
+      <div class="layui-input-inline">
+        <input type="text" name="repairtime" id="repairtime" lay-verify="repairtime" placeholder="请输入补签日期" class="form-control laydate-icon">
+      </div>
+    </div>
+    </div>
+    
+    <div id="overtime" style="display: none;">
+     <div class="layui-form-item">
+      <label class="layui-form-label" style="width: 90px;">加班日期</label>
+      <div class="layui-input-inline">
+        <input type="text" name="overtime" id="overdurationtime" lay-verify="overtime" placeholder="请输入加班日期" class="form-control laydate-icon">
+      </div>
+      </div>
+      <div class="layui-form-item">
+      <label class="layui-form-label" style="width: 90px;">加班时长</label>
+      <div class="layui-input-inline">
+        <input type="text" name="overduration" id="overduration" lay-verify="overduration" placeholder="请输入加班时长 " class="form-control">
+      </div>
+    </div>
     </div>
   </div>	 
 		
@@ -172,14 +214,26 @@
 					var index = layer.load(1, {
 						shade: [0.1, '#fff'] //0.1透明度的白色背景
 					});
-					
+					laydate.render({
+						elem: '#overdurationtime',
+						type: 'datetime',
+					});
+					laydate.render({
+						elem: '#breaktime',
+						type: 'datetime',
+					});
+					laydate.render({
+						elem: '#repairtime',
+						type: 'datetime',
+					});
 					laydate.render({
 						elem: '#applytime',
 						type: 'datetime',
 					});
 					laydate.render({
 						elem: '#leavetime',
-						type: 'datetime',
+						range : '~',
+						format: 'yyyy-MM-dd',
 					});
 					laydate.render({
 						elem: '#startTime',
@@ -392,6 +446,27 @@
 					form.on("radio", function(data) {
 						if(data.value==0){
 							$("#leave").css("display","block")
+							$("#Break").css("display","none")
+							$("#repair").css("display","none")
+							$("#overtime").css("display","none")
+						}
+						if(data.value==1){
+							$("#Break").css("display","block")
+							$("#leave").css("display","none")
+							$("#repair").css("display","none")
+							$("#overtime").css("display","none")
+						}
+						if(data.value==2){
+							$("#repair").css("display","block")
+							$("#Break").css("display","none")
+							$("#leave").css("display","none")
+							$("#overtime").css("display","none")
+						}
+						if(data.value==3){
+							$("#overtime").css("display","block")
+							$("#leave").css("display","none")
+							$("#Break").css("display","none")
+							$("#repair").css("display","none")
 						}
 					});	
 					
@@ -484,8 +559,47 @@
 							        }
 							        ,yes: function(index, layero){
 							        	form.on('submit(addRole)', function(data) {
-							        		
-							        	console.log(data)
+							        		console.log(data)
+							        		var variable='';
+							        		var holidayType='';
+							        		var content='';
+							        		var leavetime='';
+							        		var leaveduration='';
+							        		var time='';
+							        		if(data.field.variable==0){
+							        			variable='holiday';
+							        			holidayType=data.field.holidayType;
+							        			content=data.field.content;
+							        			leavetime=data.field.leavetime;
+							        			leaveduration=data.field.leaveduration;
+							        			time={date:leavetime,time:leaveduration};
+							        		}
+							        		if(data.field.variable==1){
+							        			variable='tradeDays'
+							        			breaktime=data.field.breaktime;
+							        			breakduration=data.field.breakduration;
+							        			time={date:breaktime,time:breakduration};
+							        		}
+							        		if(data.field.variable==2){
+							        			variable='addSignIn' 
+							        			repairtime=data.field.repairtime;
+							        			time={date:repairtime,time:0};
+							        		}
+							        		if(data.field.variable==3){
+							        			variable='applyOvertime'
+							        			overtime=data.field.overtime;
+							        			overduration=data.field.overduration;
+							        			time={date:overtime,time:overduration};
+							        		}
+							        	var postData={
+							        			userId:data.field.userId,
+							        			writeTime:data.field.applytime,
+							        			[variable]:'true',
+							        			holidayType:holidayType,
+							        			content:content,
+							        			time:JSON.stringify(time)
+							        	}	
+							        	mainJs.fAdd(postData);
 										})
 
 							        }
@@ -504,7 +618,7 @@
 								id:data.id,
 								[field]:value
 							}
-							//调用新增修改
+							/* 调用新增修改 */
 							mainJs.fAdd(postData);
 					});
 
@@ -530,9 +644,9 @@
 						//新增							
 					    fAdd : function(data){
 					    	$.ajax({
-								url: "${ctx}/fince/addExpenseAccount",
+								url: "${ctx}/personnel/addApplicationLeave",
 								data: data,
-								type: "POST",
+								type: "GET",
 								beforeSend: function() {
 									index;
 								},
