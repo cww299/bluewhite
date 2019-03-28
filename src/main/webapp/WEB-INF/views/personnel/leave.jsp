@@ -220,7 +220,7 @@
 					});
 					laydate.render({
 						elem: '#breaktime',
-						type: 'datetime',
+						format: 'yyyy-MM-dd',
 					});
 					laydate.render({
 						elem: '#repairtime',
@@ -269,8 +269,10 @@
 					// 处理操作列
 					var fn1 = function(field) {
 						return function(d) {
+						var a=d.user.id
+						
 							return [
-								'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' + d.userId + '">' +
+								'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' +a+ '">' +
 								htmls +
 								'</select>'
 							].join('');
@@ -278,16 +280,7 @@
 						};
 					};
 
-					var fn2 = function(field) {
-						return function(d) {
-							return ['<select name="selectTwo" lay-filter="lay_selecte" lay-search="true" data-value="' + d.budget + '">',
-								'<option value="0">请选择</option>',
-								'<option value="1">预算</option>',
-								'</select>'
-							].join('');
-
-						};
-					};
+					
 					var fn3 = function(field) {
 						return function(d) {
 							return ['<select name="selectThree" lay-filter="lay_selecte" lay-search="true" data-value="' + d.settleAccountsMode + '">',
@@ -304,7 +297,7 @@
 					table.render({
 						elem: '#tableData',
 						size: 'lg',
-						url: '${ctx}/fince/getExpenseAccount' ,
+						url: '${ctx}/personnel/getApplicationLeavePage' ,
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
 							limitName: 'size' //每页数据量的参数名，默认：limit
@@ -333,34 +326,35 @@
 								align: 'center',
 								fixed: 'left'
 							}, {
-								field: "content",
-								title: "报销内容",
-								align: 'center',
-								edit: 'text'
-							}, {
 								field: "userId",
-								title: "报销人",
+								title: "申请人",
 								align: 'center',
 								search: true,
 								edit: false,
 								type: 'normal',
-								templet: fn1('selectOne')
+								templet: function(d){
+									return d.user.userName
+								}
 							}, {
-								field: "budget",
-								title: "是否是预算",
-								align: 'center',
-								search: true,
-								edit: false,
-								type: 'normal',
-								templet: fn2('selectTwo')
-							}, {
-								field: "money",
-								title: "付款日要付金额",
-								edit: 'text'
+								field: "writeTime",
+								title: "申请时间",
 							}, {
 								field: "expenseDate",
-								title: "付款日期",
-								edit: 'text'
+								title: "申请项",
+								templet: function(d){
+									if(d.holidayType==0){
+									return "请假"
+									}
+									if(d.holidayType==1){
+										return "调休"
+									}
+									if(d.holidayType==2){
+										return "补签"
+									}
+									if(d.holidayType==3){
+										return "加班"
+									}
+								}
 							}, {
 								field: "withholdReason",
 								title: "扣款事由",
