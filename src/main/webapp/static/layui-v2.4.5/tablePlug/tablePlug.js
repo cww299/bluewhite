@@ -9,28 +9,17 @@
 layui.define(['table'], function (exports) {
   "use strict";
 
+  var version = '0.1.5';
+
   var filePath = layui.cache.modules.tablePlug.substr(0, layui.cache.modules.tablePlug.lastIndexOf('/'));
   // 引入tablePlug.css
-  layui.link(filePath + '/tablePlug.css');
+  layui.link(filePath + '/tablePlug.css?v' + version);
   // 引入图标文件
-  layui.link(filePath + '/icon/iconfont.css');
+  layui.link(filePath + '/icon/iconfont.css?v' + version);
 
-  // 处理ie8不支持数组的indexOf的问题
-  // if (!Array.prototype.indexOf) {
-  //   Array.prototype.indexOf = function(elt /*, from*/ ) {
-  //     var len = this.length >>> 0;
-  //     var from = Number(arguments[1]) || 0;
-  //     from = (from < 0) ? Math.ceil(from) : Math.floor(from);
-  //     if (from < 0)
-  //       from += len;
-  //     for (; from < len; from++) {
-  //       if (from in this &&
-  //         this[from] === elt)
-  //         return from;
-  //     }
-  //     return -1;
-  //   };
-  // }
+  // 异步地将独立功能《优化layui的select的选项设置》引入
+  layui.extend({optimizeSelectOption: '{/}' + filePath + '/optimizeSelectOption/optimizeSelectOption'}).use('optimizeSelectOption');
+
   var $ = layui.$
     , laytpl = layui.laytpl
     , laypage = layui.laypage
@@ -55,13 +44,15 @@ layui.define(['table'], function (exports) {
       }
     })()
     , tablePlug = {
-      version: '0.1.1' // tablePlug的版本后面提交的时候会更新也好知道使用的是不是同一个版本
+      version: version // tablePlug的版本后面提交的时候会更新也好知道使用的是不是同一个版本
     }
     , tableIns = {}
     , CHECK_TYPE_ADDITIONAL = 'additional'  // 新增的
     , CHECK_TYPE_REMOVED = 'removed'  // 删除的
     , CHECK_TYPE_ORIGINAL = 'original' // 原有的
     , CHECK_TYPE_DISABLED = 'disabled' // 不可选的
+    , ELEM_BODY = '.layui-table-body'
+    , FIXED_SCROLL = 'layui-table-fixed-scroll'
     , NONE = 'layui-none'
     , HIDE = 'layui-hide'
     , LOADING = 'layui-tablePlug-loading-p'
@@ -267,17 +258,21 @@ layui.define(['table'], function (exports) {
     }
   });
 
-  // 获得某个节点的位置
-  function getPosition(elem, _window) {
+  // 获得某个节点的位置 offsetTop: 是否获得相对top window的位移
+  function getPosition(elem, _window, offsetTop) {
     _window = _window || window;
     var $ = _window.$ || _window.layui.$;
+    if (!$) {
+      console.log('该功能必须依赖jquery,请先为', _window, '窗口引入jquery先');
+    }
     var offsetTemp = {};
-    if (parent !== window) {
-      if (!parent.layui.tablePlug) {
-        console.log('该功能必须依赖tablePlug请先引入');
-      } else {
-        offsetTemp = parent.layui.tablePlug.getPosition($(window.frames.frameElement), parent);
-      }
+    if (offsetTop && _window.top !== _window.self) {
+      // if (!parent.layui.tablePlug) {
+      //   console.log('该功能必须依赖tablePlug请先引入');
+      // } else {
+      //   offsetTemp = parent.layui.tablePlug.getPosition($(window.frames.frameElement), _window.parent, offsetTop);
+      // }
+      offsetTemp = getPosition($(_window.frames.frameElement), _window.parent, offsetTop);
     }
     var bodyOffset = $('body').hasClass('layui-container') ? $('body').offset() : {top: 0, left: 0};
     return {
@@ -338,6 +333,10 @@ layui.define(['table'], function (exports) {
       that.layTotal.removeClass(HIDE);
       that.layFixLeft.removeClass(HIDE);
     }
+
+    layui.each(that.tempData, function (index, data) {
+      that.addTemp(index + 1, data, null, true);
+    })
   };
 
   //获得数据
@@ -353,13 +352,8 @@ layui.define(['table'], function (exports) {
     };
 
     var dataTemp = table.getTemp(that.key);
-    if (dataTemp.data.length) {
-      // 有临时数据
-      layer.alert('有未保存的临时数据，不可刷新表格！');
-      that.elem.addClass('has-data-temp-warn');
-      that.loading(true);
-      return;
-    }
+    // 存储临时数据
+    that.tempData = dataTemp.data;
 
     that.startTime = new Date().getTime(); //渲染开始时间
 
@@ -682,10 +676,10 @@ layui.define(['table'], function (exports) {
       // 只有有头部的高度的时候计算才有意义
       var heightTemp = that.layHeader.height();
       heightTemp = heightTemp / options.cols.length; // 每一个原子tr的高度
-      th.each(function (index, trCurr) {
-        trCurr = $(trCurr);
-        trCurr.height(heightTemp * (parseInt(trCurr.attr('rowspan') || 1))
-          - 1 - parseFloat(trCurr.css('padding-top')) - parseFloat(trCurr.css('padding-bottom')));
+      th.each(function (index, thCurr) {
+        thCurr = $(thCurr);
+        thCurr.height(heightTemp * (parseInt(thCurr.attr('rowspan') || 1))
+          - 1 - parseFloat(thCurr.css('padding-top')) - parseFloat(thCurr.css('padding-bottom')));
       });
     }
 
@@ -765,12 +759,12 @@ layui.define(['table'], function (exports) {
   };
 
   // 添加一条临时数据
-  table.Class.prototype.addTemp = function (numbers, callback) {
+  table.Class.prototype.addTemp = function (numbers, data, callback, notScroll) {
     var that = this;
     var tds_fixed = [], tds_fixed_r = [], tds = [];
-    var options = that.config, item1 = {};
+    var options = that.config, item1 = data || {};
     numbers = -numbers;
-    table.cache[that.key][numbers] = {};
+    table.cache[that.key][numbers] = item1;
     that.eachCols(function (i3, item3) {
       var field = item3.field || i3
         , key = options.index + '-' + item3.key
@@ -839,11 +833,11 @@ layui.define(['table'], function (exports) {
     that.renderForm();
     that.resize();
     // 滚动到底部
-    that.layBody.scrollTop(that.layBody[0].scrollHeight);
+    notScroll || that.layBody.scrollTop(that.layBody[0].scrollHeight);
 
     that.layBody.find('tr.layui-tablePlug-data-temp[data-index="' + numbers + '"]')
       .find('td:first-child')
-      .append('<div class="close_temp" id="sos"></div>');
+      .append('<div class="close_temp"></div>');
 
     that.layFixRight.find('.close_temp').remove();
 
@@ -852,9 +846,13 @@ layui.define(['table'], function (exports) {
   };
 
   // 对外提供添加临时数据的接口
-  table.addTemp = function (id, callback) {
+  table.addTemp = function (id, data, callback) {
     var ins = getIns(id);
-    ins && ins.addTemp(table.getTemp(id).numbers, callback);
+    if (typeof data === 'function') {
+      callback = data;
+      data = {};
+    }
+    ins && ins.addTemp(table.getTemp(id).numbers, (data && typeof data === 'object') ? data : {}, callback);
   };
 
   // 获得临时数据
@@ -1143,15 +1141,68 @@ layui.define(['table'], function (exports) {
     tableView.attr('lay-id') !== configTemp.id && tableView.attr('lay-id', configTemp.id);
 
     var insObj = getIns(configTemp.id); // 获得当前的table的实例，对实例内部的方法进行改造
-    insObj.layMain.scroll(function () {
-      top.layer._indexTemp && top.layer.close(top.layer._indexTemp.selectInTable);
-    });
-
     // 在render的时候就调整一下宽度，不要不显示或者拧成一团
     insTemp.setColsWidth();
 
     // 补充被初始化的时候设置宽度时候被关掉的loading，如果是data模式的实际不会走异步的，所以不需要重新显示loading
     insObj.config.url && insObj.loading();
+
+    // 同步滚动条
+    insObj.layMain.off('scroll') // 去掉layMain原始的事件
+      .on('scroll', function () {
+        var othis = $(this)
+          , scrollLeft = othis.scrollLeft()
+          , scrollTop = othis.scrollTop();
+
+        insObj.layHeader.scrollLeft(scrollLeft);
+        insObj.layTotal.scrollLeft(scrollLeft);
+        // 过滤掉鼠标滚动fixed区域而联动滚动main的情况
+        insObj.layFixed.find(ELEM_BODY + ':not(.' + FIXED_SCROLL + ')').scrollTop(scrollTop);
+
+        layer.close(insObj.tipsIndex);
+      });
+
+    // 监听ELEM_BODY的滚动
+    insObj.layFixed.find(ELEM_BODY).on('scroll', function () {
+      var elemBody = $(this);
+      if (elemBody.hasClass(FIXED_SCROLL)) {  // 只有当前鼠标的fixed区域才需要处理
+        // 同步两个fixed的滚动
+        insObj.layFixed.find(ELEM_BODY).scrollTop(elemBody.scrollTop());
+        // 联动main的滚动
+        insObj.layMain.scrollTop(elemBody.scrollTop());
+      }
+    }).on('mouseenter', function () {
+      $(this).addClass(FIXED_SCROLL);
+    }).on('mouseleave', function () {
+      $(this).removeClass(FIXED_SCROLL);
+      insObj.layFixed.removeClass(FIXED_SCROLL);
+    });
+
+    // 处理鼠标移入右侧
+    insObj.layFixRight.find(ELEM_BODY).on('mouseenter', function () {
+      var elemFixedR = insObj.layFixRight;
+      if (elemFixedR.css('right') !== '-1px') {
+        // 如果有滚动条的话
+        elemFixedR.addClass(FIXED_SCROLL);
+      } else {
+        setTimeout(function () {
+          if (elemFixedR.css('right') !== '-1px') {
+            console.log('出现了一开始还没有打滚动条补丁的时候就触发的情况');
+            elemFixedR.addClass(FIXED_SCROLL);
+          }
+        }, 50);
+      }
+    });
+
+    // 左侧鼠标移入目前会出现一个新的滚动条，这个目前认定是正常的效果，避免鼠标没有滚轮就无法滚动左侧固定的情况 和下面的两种情况哪种更好待定
+    // 下面的代码是为了处理掉左侧固定列的鼠标悬浮可以看不到滚动条，让它看着跟平时一样，但是如果需要用到鼠标拖动滚动条的情况就做不了，只能用滚轮滚动
+    insObj.layFixLeft.find(ELEM_BODY).on('mouseenter', function () {
+      var widthOut = insObj.layFixLeft.find(ELEM_HEADER).find('table').width();
+      var widthIn = insObj.layFixLeft.find(ELEM_HEADER).width() + 1;
+      insObj.layFixLeft.css({width: widthOut + 'px'}).find(ELEM_BODY).css({width: widthIn + 'px'});
+    }).on('mouseleave', function () {
+      insObj.layFixLeft.css({width: 'auto'}).find(ELEM_BODY).css({width: 'auto'});
+    });
 
     return tableIns[configTemp.id] = insTemp;
   };
@@ -1209,9 +1260,10 @@ layui.define(['table'], function (exports) {
 
   table.reload = function (tableId, config, shallowCopy) {
     var that = this;
+    config = config || {};
 
     var configOld = getConfig(tableId);
-    var configTemp = $.extend(true, {}, getConfig(tableId), config || {});
+    var configTemp = $.extend(true, {}, getConfig(tableId), config);
     // 如果不记录状态的话就重置目前的选中记录
     if (!configTemp.checkStatus) {
       tableCheck.reset(tableId);
@@ -1487,131 +1539,7 @@ layui.define(['table'], function (exports) {
     form.render('checkbox', 'LAY_TABLE_TOOL_COLS_FORM');
   });
 
-  // 保留一下原始的form.render
-  var formRender = form.render;
-  form.render = function (type, filter, jqObj) {
-    var that = this;
-    var retObj;
-    if (jqObj && jqObj.length) {
-      layui.each(jqObj, function (index, elem) {
-        elem = $(elem);
-        var elemP = elem.parent();
-        var formFlag = elemP.hasClass('layui-form');
-        var filterTemp = elemP.attr('lay-filter');
-        // mark一下当前的
-        formFlag ? '' : elemP.addClass('layui-form');
-        filterTemp ? '' : elemP.attr('lay-filter', 'tablePlug_form_filter_temp_' + new Date().getTime() + '_' + Math.floor(Math.random() * 100000));
-        // 将焦点集中到要渲染的这个的容器上
-        retObj = formRender.call(that, type, elemP.attr('lay-filter'));
-        // 恢复现场
-        formFlag ? '' : elemP.removeClass('layui-form');
-        filterTemp ? '' : elemP.attr('lay-filter', null);
-      });
-    } else {
-      retObj = formRender.call(that, type, filter);
-    }
-    return retObj;
-  };
-
-  // 记录弹窗的index的变量
-  top.layer._indexTemp = top.layer._indexTemp || {};
-  // 优化select的选项在某些场景下的显示问题
-  $(document).on('click'
-    , '.layui-table-view .layui-select-title, .layui-layer-content .layui-select-title, .select_option_in_layer .layui-select-title'
-    , function (event) {
-      layui.stope(event);
-      // return;
-      top.layer.close(top.layer._indexTemp['selectInTable']);
-      var titleElem = $(this);
-      if (!titleElem.parent().hasClass('layui-form-selected')) {
-        return;
-      }
-      var dlElem = titleElem.next();
-      var selectElem = titleElem.parent().prev();
-      var dlClone = dlElem.clone(true);
-      var selectupFlag = titleElem.parent().hasClass('layui-form-selectup');
-
-      function getDlPosition() {
-        var titleElemPosition = getPosition(titleElem);
-        var topTemp = titleElemPosition.top;
-        var leftTemp = titleElemPosition.left;
-        if (selectupFlag) {
-          topTemp = topTemp - dlElem.outerHeight() + titleElem.outerHeight() - parseFloat(dlElem.css('bottom'));
-        } else {
-          topTemp += parseFloat(dlElem.css('top'));
-        }
-        // console.log(topTemp, leftTemp);
-        return {
-          top: topTemp,
-          left: leftTemp
-        };
-      }
-
-      var dlPosition = getDlPosition();
-
-      titleElem.css({backgroundColor: 'transparent'});
-      top.layer._indexTemp['selectInTable'] = top.layer.open({
-        type: 1,
-        title: false,
-        closeBtn: 0,
-        shade: 0,
-        anim: -1,
-        fixed: top !== window,
-        isOutAnim: false,
-        // offset: [topTemp + 'px', leftTemp + 'px'],
-        offset: [dlPosition.top + 'px', dlPosition.left + 'px'],
-        // area: [dlElem.outerWidth() + 'px', dlElem.outerHeight() + 'px'],
-        area: dlElem.outerWidth() + 'px',
-        content: '<div class="layui-unselect layui-form-select layui-form-selected layui-table-select"></div>',
-        success: function (layero, index) {
-          dlElem.appendTo(layero.find('.layui-layer-content').css({overflow: 'hidden'}).find('.layui-form-selected'));
-          layero.width(titleElem.width());
-          // 原本的做法在ie下获得的是auto其他的浏览器却是确定的值，目前简单处理，先自行计算出来，后面再调优
-          // selectupFlag && (layero.css({top: 'auto', bottom: layero.css('bottom')}));
-          /*console.log('before', 'top', layero.css('top'), 'bottom', layero.css('bottom'));*/
-          var bottom_computed = top.window.innerHeight - layero.outerHeight() - parseFloat(layero.css('top'));
-          /*console.log('bottom_computed', bottom_computed);*/
-          selectupFlag && (layero.css({top: 'auto', bottom: bottom_computed + 'px'}));
-         /* console.log('after', 'top', layero.css('top'), 'bottom', layero.css('bottom'));*/
-          layero.find('dl dd').click(function () {
-            top.layer.close(index);
-          });
-        },
-        end: function () {
-          // 简单粗暴处理，直接form.render掉
-          form.render('select', null, selectElem);
-        }
-      });
-    });
-
-
-  // 点击document的时候如果不是下拉内部的就关掉该下拉框的弹窗
-  $(document).on('table.select.dl.hide', function (event, elem) {
-    // 只有在layui的table内部的选项的点击才需要阻止layer关闭
-    // if ($(elem).closest('.layui-form-select').length && $(elem).closest('.layui-table-view').length) {
-    // // if ($(elem).closest('.layui-form-select').length) {
-    //   return;
-    // }
-    top.layer.close(top.layer._indexTemp['selectInTable']);
-  });
-
-  // 点击document的时候触发
-  $(document).on('click', function (event) {
-    $(document).trigger('table.select.dl.hide', this.activeElement);
-  });
-
-  // 窗口resize的时候关掉表格中的下拉
-  $(window).on('resize', function (event) {
-    $(document).trigger('table.select.dl.hide', this.activeElement);
-  });
-
-  // 监听滚动在必要的时候关掉select的选项弹出（主要是在多级的父子页面的时候）
-  $(document).scroll(function () {
-    if (top !== window && parent.parent) {
-      // 多级嵌套的窗口就直接关掉了
-      top.layer.close(top.layer._indexTemp['selectInTable'])
-    }
-  });
+  // 逻辑移到另外的js里面去了
 
   // 阻止表格中lay-event的事件冒泡
   $(document).on('click', '.layui-table-view tbody [lay-event],.layui-table-view tbody tr [name="layTableCheckbox"]+', function (event) {

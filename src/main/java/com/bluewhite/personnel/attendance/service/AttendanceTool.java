@@ -51,9 +51,6 @@ public class AttendanceTool {
 			workTime = DatesUtil.getDaySum(workTime,1.0);
 			
 			
-			
-			
-			
 					//出勤时间 缺勤时间  会出现的状态
 					// 满足于：员工可以加班后晚到岗，签入时间在（初始化上班开始时间后的加班分钟数+30分钟）之前，签出时间在工作结束时间之后 没有缺勤出现（没缺勤）
 					flag = sign 
