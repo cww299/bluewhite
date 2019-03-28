@@ -135,7 +135,7 @@ public class AttendanceTime extends BaseEntity<Long> {
 	 * 
 	 */
 	@Column(name = "belate_time")
-	private Double belateTime;
+	private Double belateTime = 0.0;
 	
 	/**
 	 * 员工姓名
