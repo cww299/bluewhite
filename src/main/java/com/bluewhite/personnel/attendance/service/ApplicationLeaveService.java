@@ -28,5 +28,11 @@ public interface ApplicationLeaveService  extends BaseCRUDService<ApplicationLea
 	 * @return
 	 */
 	public PageResult<ApplicationLeave> findApplicationLeavePage(ApplicationLeave applicationLeave, PageParameter page);
+	
+	/**
+	 * 新增请假事项
+	 * @param applicationLeave
+	 */
+	ApplicationLeave saveApplicationLeave(ApplicationLeave applicationLeave);
 
 }

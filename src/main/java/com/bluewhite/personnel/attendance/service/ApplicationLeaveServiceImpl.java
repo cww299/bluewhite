@@ -75,4 +75,12 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 		return result;
 	}
 
+	@Override
+	public ApplicationLeave saveApplicationLeave(ApplicationLeave applicationLeave) {
+		
+		
+		
+		return null;
+	}
+
 }
