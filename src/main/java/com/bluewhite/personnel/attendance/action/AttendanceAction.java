@@ -301,7 +301,7 @@ public class AttendanceAction {
 			applicationLeaveService.updateApplicationLeave(applicationLeave);
 			cr.setMessage("修改成功");
 		}else{
-			applicationLeaveService.save(applicationLeave);
+			applicationLeaveService.saveApplicationLeave(applicationLeave);
 			cr.setMessage("新增成功");
 		}
 		cr.setData(ClearCascadeJSON
@@ -344,9 +344,9 @@ public class AttendanceAction {
 		 cr.setData(ClearCascadeJSON
 					.get()
 					.addRetainTerm(ApplicationLeave.class,"id","writeTime","beginTime","endTime","user","longTime",
-							"holidayType","type","applyOvertime","content")
+							"holidayType","type","applyOvertime","content","holiday","tradeDays","addSignIn","applyOvertime")
 					.addRetainTerm(User.class, "id", "userName")
-					.format( applicationLeaveService.findApplicationLeavePage(applicationLeave, page)).toJSON());
+					.format(applicationLeaveService.findApplicationLeavePage(applicationLeave, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
