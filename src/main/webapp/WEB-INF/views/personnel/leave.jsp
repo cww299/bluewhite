@@ -106,10 +106,10 @@
     <div class="layui-form-item">
       <label class="layui-form-label" style="width: 90px;">申请项</label>
       <div class="layui-input-inline" style="width: 325px;">
-      <input type="radio" name="variable" value="0" title="请假" checked="">
-      <input type="radio" name="variable" value="1" title="调休">
-      <input type="radio" name="variable" value="2" title="补签">
-      <input type="radio" name="variable" value="3" title="加班">
+      <input type="radio" lay-filter="variable" name="variable" value="0" title="请假" checked="">
+      <input type="radio" lay-filter="variable" name="variable" value="1" title="调休">
+      <input type="radio" lay-filter="variable" name="variable" value="2" title="补签">
+      <input type="radio" lay-filter="variable" name="variable" value="3" title="加班">
       </div>
     </div>
     <div id="leave" style="display: block;">
@@ -159,6 +159,13 @@
       <label class="layui-form-label" style="width: 90px;">补签日期</label>
       <div class="layui-input-inline">
         <input type="text" name="repairtime" id="repairtime" lay-verify="repairtime" placeholder="请输入补签日期" class="form-control laydate-icon">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label" style="width: 90px;">补签状态</label>
+      <div class="layui-input-inline" style="width: 325px;">
+      <input type="radio" name="Sign" value="0" title="签入" checked="">
+      <input type="radio" name="Sign" value="1" title="签出">
       </div>
     </div>
     </div>
@@ -342,17 +349,17 @@
 								field: "expenseDate",
 								title: "申请项",
 								templet: function(d){
-									if(d.holidayType==0){
-									return "请假"
+									if(d.addSignIn==true){
+									return "补签"
 									}
-									if(d.holidayType==1){
-										return "调休"
-									}
-									if(d.holidayType==2){
-										return "补签"
-									}
-									if(d.holidayType==3){
+									if(d.applyOvertime==true){
 										return "加班"
+									}
+									if(d.holiday==true){
+										return "请假"
+									}
+									if(d.tradeDays==true){
+										return "调休"
 									}
 								}
 							}, {
@@ -437,7 +444,7 @@
 						//调用新增修改
 						mainJs.fAdd(postData);
 					});
-					form.on("radio", function(data) {
+					form.on("radio(variable)", function(data) {
 						if(data.value==0){
 							$("#leave").css("display","block")
 							$("#Break").css("display","none")
@@ -577,7 +584,8 @@
 							        		if(data.field.variable==2){
 							        			variable='addSignIn' 
 							        			repairtime=data.field.repairtime;
-							        			time={date:repairtime,time:0};
+							        			Sign=data.field.Sign
+							        			time={date:repairtime,time:Sign};
 							        		}
 							        		if(data.field.variable==3){
 							        			variable='applyOvertime'
