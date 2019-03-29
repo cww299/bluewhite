@@ -3,6 +3,7 @@ package com.bluewhite.reportexport.action;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -833,9 +834,10 @@ public class ReportExportAction {
 	/**
 	 * 人事导出考勤
 	 * @author zhangliang
+	 * @throws ParseException 
 	 */
 	@RequestMapping("/importExcel/personnel/DownAttendance")
-	public void DownPersonnelAttendance(HttpServletRequest request,HttpServletResponse response, AttendanceTime attendance){
+	public void DownPersonnelAttendance(HttpServletRequest request,HttpServletResponse response, AttendanceTime attendance) throws ParseException{
 		response.setContentType("octets/stream");
 	    response.addHeader("Content-Disposition", "attachment;filename=attendancePay.xlsx");
 	    

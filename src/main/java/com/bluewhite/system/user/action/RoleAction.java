@@ -139,7 +139,7 @@ public class RoleAction {
 	@ResponseBody
 	public CommonResponse changeRole(HttpServletRequest request, Role role) {
 		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(
-				roleService.update(role)).toJSON());
+				roleService.save(role)).toJSON());
 		return cr;
 	}
 

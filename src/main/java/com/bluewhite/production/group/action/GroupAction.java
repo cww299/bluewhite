@@ -82,7 +82,7 @@ public class GroupAction {
 			Group oldGroup = groupService.findOne(group.getId());
 			BeanCopyUtils.copyNullProperties(oldGroup,group);
 			group.setCreatedAt(oldGroup.getCreatedAt());
-			groupService.update(group);
+			groupService.save(group);
 			cr.setMessage("工序修改成功");
 			
 		}else{
