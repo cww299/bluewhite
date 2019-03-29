@@ -87,17 +87,19 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 	}
 
 	private ApplicationLeave setApp(ApplicationLeave applicationLeave) throws ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		JSONObject jo = JSON.parseObject(applicationLeave.getTime());
 		String date = jo.getString("date");
 		String time = jo.getString("time");
 		  //获取时间区间
 		 String[] dateArr =  date.split("~");
 		 Date dateLeave =null;
+		 AttendanceTime attendanceTime = null;
         if(dateArr.length<2){
        	 	dateLeave = sdf.parse(date);
+       	 	attendanceTime = attendanceTimeDao.findByUserIdAndTime(applicationLeave.getUserId(), dateLeave);
         }
-        AttendanceTime attendanceTime = attendanceTimeDao.findByUserIdAndTime(applicationLeave.getUserId(), dateLeave);
+        
 		// 检查当前月份属于夏令时或冬令时 flag=ture 为夏令时
 		boolean flag = false;
 		try {
@@ -178,6 +180,9 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 			holidayDetail = date + (time == "0" ? "补签入" : "补签入");
 		}
 		if (applicationLeave.isApplyOvertime()) {
+			if(attendanceTime==null){
+				throw new ServiceException("该员工未初始化考勤，无法比对加班时长，请先初始化该员工考勤");
+			}
 			if(workTimeEnd.before(attendanceTime.getCheckOut())){
 				double actualOverTime = DatesUtil.getTimeHour(workTimeEnd, attendanceTime.getCheckOut());	
 				if(actualOverTime<Double.valueOf(time) ){
@@ -195,4 +200,9 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 
 	}
 
+	public static void main(String[] args) throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String xxString = "2019-03-02";
+		System.out.println(sdf.parse(xxString));
+	}
 }
