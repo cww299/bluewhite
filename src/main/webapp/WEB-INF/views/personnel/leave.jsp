@@ -516,7 +516,6 @@
 							        ,yes: function(index, layero){
 							        	
 							        	form.on('submit(addRole)', function(data) {
-							        		console.log(data)
 							        		var variable='';
 							        		var holidayType='';
 							        		var content='';
@@ -686,7 +685,6 @@
 						        }
 						        ,yes: function(index, layero){
 						        	form.on('submit(addRole)', function(data) {
-						        		console.log(data)
 						        		var variable='';
 						        		var holidayType='';
 						        		var content='';
