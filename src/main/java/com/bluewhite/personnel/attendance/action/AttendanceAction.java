@@ -383,12 +383,13 @@ public class AttendanceAction {
 				if(at!=null){
 					cr.setMessage("该员工已有考勤初始设定数据，请核对");
 					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				}else{
+					User user = userService.findOne(attendanceInit.getUserId());
+					attendanceInit.setUser(user);
+					attendanceInitService.save(attendanceInit);
+					cr.setMessage("新增成功");
 				}
 			}
-			User user = userService.findOne(attendanceInit.getUserId());
-			attendanceInit.setUser(user);
-			attendanceInitService.save(attendanceInit);
-			cr.setMessage("新增成功");
 		}
 		return cr;
 	}
