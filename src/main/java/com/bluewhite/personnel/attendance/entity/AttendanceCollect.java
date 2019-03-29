@@ -146,8 +146,6 @@ public class AttendanceCollect extends BaseEntity<Long>{
     	weekendTurnWork = weekendTurnWorkList.stream().filter(AttendanceTime->AttendanceTime.getTurnWorkTime()!=null).mapToDouble(AttendanceTime::getTurnWorkTime).sum();
     }
 	
-	
-    
     
 
 	public Date getTime() {

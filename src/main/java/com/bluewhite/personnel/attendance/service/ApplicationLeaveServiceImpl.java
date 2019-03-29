@@ -119,6 +119,9 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 		}
 		// 获取员工考勤的初始化参数
 		AttendanceInit attendanceInit = attendanceInitDao.findByUserId(applicationLeave.getUserId());
+		if(attendanceInit==null){
+			throw new ServiceException("该员工没有考勤初始化数据，无法申请，请先添加考勤初始数据");
+		}
 		// flag=ture 为夏令时
 		if (flag) {
 			String[] workTimeArr = attendanceInit.getWorkTimeSummer().split("-");
@@ -179,7 +182,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 		}
 		if (applicationLeave.isApplyOvertime()) {
 			if(attendanceTime==null){
-				throw new ServiceException("该员工未初始化考勤，无法比对加班时长，请先初始化该员工考勤");
+				throw new ServiceException("该员工未初始化考勤详细，无法比对加班时长，请先初始化该员工考勤");
 			}
 			if(workTimeEnd.before(attendanceTime.getCheckOut())){
 				double actualOverTime = DatesUtil.getTimeHour(workTimeEnd, attendanceTime.getCheckOut());	
