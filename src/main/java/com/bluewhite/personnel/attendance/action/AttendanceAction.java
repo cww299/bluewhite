@@ -418,7 +418,7 @@ public class AttendanceAction {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/personnel/deleteAttendanceInit", method = RequestMethod.POST)
+	@RequestMapping(value = "/personnel/deleteAttendanceInit", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse deleteAttendanceInit(String ids) {
 		CommonResponse cr = new CommonResponse();

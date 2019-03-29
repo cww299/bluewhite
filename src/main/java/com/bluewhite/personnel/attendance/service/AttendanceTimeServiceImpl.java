@@ -324,6 +324,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	public String checkAttendanceTime(AttendanceTime attendanceTime) {
 		//已统计的提示信息
 		String ex = "";
+		String usToString = "";
 		if(new Date().before(DatesUtil.getLastDayOfMonth(attendanceTime.getOrderTimeBegin()))){
 			throw new ServiceException("选择日期的签到记录未完成,无法统计");
 		};
@@ -336,13 +337,11 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			userList.add(user);
 		}
 		for (User user : userList) {
-			try {
 				// 查询该月有没有初始化
-				attendanceCollectDao.findByUserIdAndTime(user.getId(),attendanceTime.getOrderTimeBegin());
-			} catch (Exception e) {
-				ex = ex + "员工" + user.getUserName() + ",";
-			}
+				AttendanceCollect attendanceCollect = attendanceCollectDao.findByUserIdAndTime(user.getId(),attendanceTime.getOrderTimeBegin());
+				usToString +=  attendanceCollect != null  ?  user.getUserName()+"," : "";
 		}
+		ex = !usToString.equals("") ? ("员工"+usToString+"考勤已经汇总，是否覆盖") : ""; 
 		return ex;
 	}
 	
