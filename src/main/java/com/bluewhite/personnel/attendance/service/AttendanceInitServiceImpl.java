@@ -17,12 +17,15 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.personnel.attendance.dao.AttendanceInitDao;
 import com.bluewhite.personnel.attendance.entity.ApplicationLeave;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
+import com.bluewhite.system.user.dao.UserDao;
+import com.bluewhite.system.user.entity.User;
 
 @Service
 public class AttendanceInitServiceImpl extends BaseServiceImpl< AttendanceInit, Long> implements  AttendanceInitService{
 	
 	@Autowired
 	private AttendanceInitDao dao;
+
 
 
 	@Override
@@ -45,7 +48,7 @@ public class AttendanceInitServiceImpl extends BaseServiceImpl< AttendanceInit, 
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
-		}, new PageParameter());
+		}, page);
 		PageResult<AttendanceInit> result = new PageResult<>(pages, page);
 		return result;
 	}
@@ -54,6 +57,21 @@ public class AttendanceInitServiceImpl extends BaseServiceImpl< AttendanceInit, 
 	@Override
 	public AttendanceInit findByUserId(Long id) {
 		return dao.findByUserId(id);
+	}
+
+
+	@Override
+	public int deleteAttendanceInit(String ids) {
+    	int count = 0;
+		String[] arrIds = ids.split(",");
+		for (int i = 0; i < arrIds.length; i++) {
+			Long id = Long.valueOf(arrIds[i]);
+			AttendanceInit attendanceInit = dao.findOne(id);
+			attendanceInit.setUser(null);
+			dao.delete(attendanceInit);
+			count++;
+		}
+		return count;
 	}
 
 }

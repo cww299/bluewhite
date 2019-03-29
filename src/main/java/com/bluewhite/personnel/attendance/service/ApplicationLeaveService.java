@@ -23,6 +23,12 @@ public interface ApplicationLeaveService  extends BaseCRUDService<ApplicationLea
 	 * @param applicationLeave
 	 */
 	ApplicationLeave saveApplicationLeave(ApplicationLeave applicationLeave);
+	/**
+	 * 批量删除
+	 * @param ids
+	 * @return
+	 */
+	public int deleteApplicationLeave(String ids);
 ;
 
 }

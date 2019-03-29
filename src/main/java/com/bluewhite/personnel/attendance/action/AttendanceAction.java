@@ -220,7 +220,7 @@ public class AttendanceAction {
 	public CommonResponse intAttendanceTime(HttpServletRequest request, AttendanceTime attendanceTime)
 			throws ParseException {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(attendanceTimeService.findAttendanceTimeCollect(attendanceTime));
+		cr.setData(attendanceTimeService.findAttendanceTimeCollect(attendanceTime)); 
 		cr.setMessage("初始化成功");
 		return cr;
 	}
@@ -235,7 +235,7 @@ public class AttendanceAction {
 	 */
 	@RequestMapping(value = "/personnel/addAttendanceTime", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addAttendanceTime(HttpServletRequest request, AttendanceTime attendanceTime, Integer sign)
+	public CommonResponse addAttendanceTime(HttpServletRequest request, AttendanceTime attendanceTime, int sign)
 			throws ParseException {
 		CommonResponse cr = new CommonResponse();
 		switch (sign) {
@@ -246,12 +246,12 @@ public class AttendanceAction {
 				cr.setCode(2);
 				cr.setMessage(ex);
 			} else {
-				cr.setData(attendanceTimeService.findAttendanceTimeCollect(attendanceTime));
+				cr.setData(attendanceTimeService.findAttendanceTimeCollectAdd(attendanceTime));
 				cr.setMessage("初始化成功");
 			}
 			break;
 		case 2:
-			cr.setData(attendanceTimeService.findAttendanceTimeCollect(attendanceTime));
+			cr.setData(attendanceTimeService.findAttendanceTimeCollectAdd(attendanceTime));
 			cr.setMessage("初始化成功");
 			break;
 		}
@@ -333,7 +333,7 @@ public class AttendanceAction {
 	public CommonResponse deleteApplicationLeave(HttpServletRequest request, String ids) {
 		CommonResponse cr = new CommonResponse();
 		if (!StringUtils.isEmpty(ids)) {
-			int count = applicationLeaveService.delete(ids);
+			int count = applicationLeaveService.deleteApplicationLeave(ids);
 			cr.setMessage("删除成功" + count + "条");
 		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -342,30 +342,6 @@ public class AttendanceAction {
 		return cr;
 	}
 
-	/**
-	 * 根据id得到请假事项
-	 * 
-	 * @param request
-	 *            请求
-	 * @return cr
-	 */
-	@RequestMapping(value = "/personnel/getApplicationLeave", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse getApplicationLeave(HttpServletRequest request, Long id) {
-		CommonResponse cr = new CommonResponse();
-		if (!StringUtils.isEmpty(id)) {
-			cr.setData(ClearCascadeJSON.get()
-					.addRetainTerm(ApplicationLeave.class, "id", "writeTime", "beginTime", "endTime", "user",
-							"longTime", "holidayType", "type", "applyOvertime", "content", "holiday", "tradeDays",
-							"addSignIn", "applyOvertime", "time")
-					.addRetainTerm(User.class, "id", "userName").format(applicationLeaveService.findOne(id)).toJSON());
-			cr.setMessage("查询成功");
-		} else {
-			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("id不能为空");
-		}
-		return cr;
-	}
 
 	/**
 	 * 分页查看请假事项
@@ -402,6 +378,13 @@ public class AttendanceAction {
 			attendanceInitService.update(attendanceInit, ot);
 			cr.setMessage("修改成功");
 		} else {
+			if(attendanceInit.getUserId()!=null){
+				AttendanceInit at = attendanceInitService.findByUserId(attendanceInit.getUserId());
+				if(at!=null){
+					cr.setMessage("该员工已有考勤初始设定数据，请核对");
+					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				}
+			}
 			attendanceInitService.save(attendanceInit);
 			cr.setMessage("新增成功");
 		}
@@ -413,7 +396,7 @@ public class AttendanceAction {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/personnel/findAttendanceInit", method = RequestMethod.POST)
+	@RequestMapping(value = "/personnel/findAttendanceInit", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse findAttendanceInit(AttendanceInit attendanceInit, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
@@ -437,7 +420,7 @@ public class AttendanceAction {
 	public CommonResponse deleteAttendanceInit(String ids) {
 		CommonResponse cr = new CommonResponse();
 		if (!StringUtils.isEmpty(ids)) {
-			int count = attendanceInitService.delete(ids);
+			int count = attendanceInitService.deleteAttendanceInit(ids);
 			cr.setMessage("删除成功" + count + "条");
 		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
