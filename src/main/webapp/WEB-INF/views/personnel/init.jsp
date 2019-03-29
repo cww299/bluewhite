@@ -286,7 +286,6 @@
 						elem: '#tableData',
 						 size: 'lg',
 						url: '${ctx}/personnel/findAttendanceInit',
-						method:'POST',
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
 							limitName: 'size' //每页数据量的参数名，默认：limit
@@ -584,6 +583,8 @@
 								$(k).val(id);
 								form.render('select');
 							});
+							console.log(data.restTimeSummer)
+							$("#restTimeSummer").val(data.restTimeSummer)
 					    	$("#layuiadmin-form-admin").setForm({restDay:data.restDay,workTimeSummer:data.workTimeSummer,workTimeWinter:data.workTimeWinter,turnWorkTimeSummer:data.turnWorkTimeSummer,turnWorkTimeWinter:data.turnWorkTimeWinter,restTimeSummer:data.restTimeSummer,restTimeWinter:data.restTimeWinter,restSummer:data.restSummer,restWinter:data.restWinter});
 					    	
 					    	layer.open({
