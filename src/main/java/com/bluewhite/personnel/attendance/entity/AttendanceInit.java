@@ -1,11 +1,14 @@
 package com.bluewhite.personnel.attendance.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.system.user.entity.User;
@@ -112,9 +115,87 @@ public class AttendanceInit extends BaseEntity<Long> {
 	@Column(name = "come_work")
 	private Integer comeWork;
 
+	/**
+	 * 员工姓名
+	 */
+	@Transient
+	private String userName;
+	
+	/**
+	 * 查询字段（部门）
+	 */
+	@Transient
+	private Long orgNameId;
+	
+	/**
+	 * 查询字段（部门）
+	 */
+	@Transient
+	private String orgName;
+	
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
+	
+	
+	
 
-	
-	
+
+	public String getUserName() {
+		return userName;
+	}
+
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+
+	public Long getOrgNameId() {
+		return orgNameId;
+	}
+
+
+	public void setOrgNameId(Long orgNameId) {
+		this.orgNameId = orgNameId;
+	}
+
+
+	public String getOrgName() {
+		return orgName;
+	}
+
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+
+
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
 
 
 	public String getUsername() {

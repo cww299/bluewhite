@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import com.bluewhite.common.BeanCopyUtils;
+
 /**
  * <p>抽象service层基类 提供一些简便方法
  * <p/>
@@ -42,12 +44,6 @@ public abstract class BaseServiceImpl<T extends AbstractEntity<ID>, ID extends S
         return baseRepository.save(t);
     }
     
-//
-//    public M saveAndFlush(M m) {
-//        m = save(m);
-//        baseRepository.flush();
-//        return m;
-//    }
 
     /**
      * 更新单个实体
@@ -55,8 +51,9 @@ public abstract class BaseServiceImpl<T extends AbstractEntity<ID>, ID extends S
      * @param t 实体
      * @return 返回更新的实体
      */
-    public T update(T t) {
-        return baseRepository.save(t);
+    public T update(T t,T ot) {
+    	BeanCopyUtils.copyNotEmpty(t,ot,"");
+        return baseRepository.save(ot);
     }
 
     /**
@@ -67,6 +64,23 @@ public abstract class BaseServiceImpl<T extends AbstractEntity<ID>, ID extends S
     public void delete(ID id) {
         baseRepository.delete(id);
     }
+    
+    
+    /**
+     * 批量删除
+     *
+     * @param id 主键
+     */
+    public int delete(String ids) {
+    	int count = 0;
+		String[] arrIds = ids.split(",");
+		for (int i = 0; i < arrIds.length; i++) {
+			ID id = (ID)arrIds[i];
+			baseRepository.delete(id);
+			count++;
+		}
+		return count;
+    }
 
     /**
      * 删除实体
@@ -76,15 +90,6 @@ public abstract class BaseServiceImpl<T extends AbstractEntity<ID>, ID extends S
     public void delete(T t) {
         baseRepository.delete(t);
     }
-
-//    /**
-//     * 根据主键删除相应实体
-//     *
-//     * @param ids 实体
-//     */
-//    public void delete(ID[] ids) {
-//        baseRepository.delete(ids);
-//    }
 
 
     /**
@@ -145,49 +150,7 @@ public abstract class BaseServiceImpl<T extends AbstractEntity<ID>, ID extends S
         return baseRepository.findAll(pageable);
     }
 
-//    /**
-//     * 按条件分页并排序查询实体
-//     *
-//     * @param searchable 条件
-//     * @return
-//     */
-//    public Page<T> findAll(Searchable searchable) {
-//        return baseRepository.findAll(searchable);
-//    }
-//
-//    /**
-//     * 按条件不分页不排序查询实体
-//     *
-//     * @param searchable 条件
-//     * @return
-//     */
-//    public List<T> findAllWithNoPageNoSort(Searchable searchable) {
-//        searchable.removePageable();
-//        searchable.removeSort();
-//        return Lists.newArrayList(baseRepository.findAll(searchable).getContent());
-//    }
 
-//    /**
-//     * 按条件排序查询实体(不分页)
-//     *
-//     * @param searchable 条件
-//     * @return
-//     */
-//    public List<T> findAllWithSort(Searchable searchable) {
-//        searchable.removePageable();
-//        return Lists.newArrayList(baseRepository.findAll(searchable).getContent());
-//    }
-//
-//
-//    /**
-//     * 按条件分页并排序统计实体数量
-//     *
-//     * @param searchable 条件
-//     * @return
-//     */
-//    public Long count(Searchable searchable) {
-//        return baseRepository.count(searchable);
-//    }
 
 
 }

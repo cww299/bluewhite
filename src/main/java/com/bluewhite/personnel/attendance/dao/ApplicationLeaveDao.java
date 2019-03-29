@@ -12,7 +12,7 @@ public interface ApplicationLeaveDao  extends BaseRepository<ApplicationLeave, L
 	 * @param userId
 	 * @return
 	 */
-	public List<ApplicationLeave> findByUserId(Long userId);
+	public List<ApplicationLeave> findByUserIdAndWriteTimeBetween(Long userId,Date startTime,Date endTime);
 	
 	
 	

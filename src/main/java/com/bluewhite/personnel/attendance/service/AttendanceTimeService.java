@@ -26,14 +26,14 @@ public interface AttendanceTimeService extends BaseCRUDService<AttendanceTime,Lo
 	 * 按日期将出勤中需要核算的请假事项计算到考勤详细中
 	 * @throws ParseException 
 	 */
-	public List<AttendanceTime> attendanceTimeByApplication(AttendanceTime attendanceTime) throws ParseException;
+	public List<AttendanceTime> attendanceTimeByApplication(List<AttendanceTime> attendanceTimeList) throws ParseException;
 	
 	/**
 	 * 按条件查看考勤工作时长的汇总
 	 * @param attendance
 	 * @return
 	 */
-	public List<Map<String, Object>> findAttendanceTimeCollect(AttendanceTime attendanceTime);
+	public List<Map<String, Object>> findAttendanceTimeCollect(AttendanceTime attendanceTime)throws ParseException;
 	
 	/**
 	 * 手动修改考勤详细数据
