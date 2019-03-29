@@ -366,7 +366,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	
 	@Override
 	public List<AttendanceTime> attendanceTimeByApplication(List<AttendanceTime> attendanceTimeList) throws ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		// 按人员分组
 		Map<Long, List<AttendanceTime>> mapAttendanceTime = attendanceTimeList.stream()
 				.collect(Collectors.groupingBy(AttendanceTime::getUserId, Collectors.toList()));
