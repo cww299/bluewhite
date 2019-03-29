@@ -14,7 +14,7 @@ import com.bluewhite.base.BaseEntity;
 import com.bluewhite.system.user.entity.User;
 
 /**
- * 关于设定人员考勤汇总时，所需要的初始化数据
+ * 关于设定人员考勤汇总时，所需要的初始数据
  * @author zhangliang
  *
  */
