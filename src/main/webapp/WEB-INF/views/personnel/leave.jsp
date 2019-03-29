@@ -8,7 +8,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<title>报销申请</title>
+		<title>请假调休</title>
 		<meta name="description" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 		<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
@@ -22,7 +22,7 @@
 					<div class="col-md-12">
 						<div class="panel panel-default">
 							<div class="panel-heading">
-								<h3 class="panel-title">报销申请</h3>
+								<h3 class="panel-title">请假调休</h3>
 								<div class="actions pull-right">
 									<i class="fa fa-expand"></i>
 									<i class="fa fa-chevron-down"></i>
@@ -351,38 +351,8 @@
 									}
 								}
 							}, {
-								field: "withholdReason",
+								field: "holidayDetail",
 								title: "详情",
-								templet: function(d){
-									if(d.addSignIn==true){
-									return "补签"
-									}
-									if(d.applyOvertime==true){
-										return "加班"
-									}
-									if(d.holiday==true){
-										var a;
-										if(d.holidayType==1){
-											a='事假'
-										}
-										if(d.holidayType==2){
-											a='病假'
-										}
-										if(d.holidayType==3){
-											a='丧假'
-										}
-										if(d.holidayType==4){
-											a='婚假'
-										}
-										if(d.holidayType==5){
-											a='产假'
-										}
-										return "请假类型:"+a+"-请假原因:"+d.content+" -请假日期:"+JSON.parse(d.time).date+" -请假时长:"+JSON.parse(d.time).time+"小时";
-									}
-									if(d.tradeDays==true){
-										return "调休"
-									}
-								}
 							},{fixed:'right', title:'操作', align: 'center', toolbar: '#barDemo'}]
 						],
 						done: function() {
@@ -516,7 +486,6 @@
 							        ,yes: function(index, layero){
 							        	
 							        	form.on('submit(addRole)', function(data) {
-							        		console.log(data)
 							        		var variable='';
 							        		var holidayType='';
 							        		var content='';
@@ -686,7 +655,6 @@
 						        }
 						        ,yes: function(index, layero){
 						        	form.on('submit(addRole)', function(data) {
-						        		console.log(data)
 						        		var variable='';
 						        		var holidayType='';
 						        		var content='';
@@ -759,7 +727,10 @@
 						        	
 									})
 
-						        }
+						        },end:function(){
+						        	document.getElementById("layuiadmin-form-admin").reset();
+						        	layui.form.render();
+								  } 
 						       
 						      });
 					    	
@@ -800,13 +771,13 @@
 										table.reload('tableData');
 										layer.msg(result.message, {
 											icon: 1,
-											time:500
+											time:1000
 										});
 									
 									} else {
 										layer.msg(result.message, {
 											icon: 2,
-											time:500
+											time:3000
 										});
 									}
 								},

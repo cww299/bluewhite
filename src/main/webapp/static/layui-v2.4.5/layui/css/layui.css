@@ -2031,6 +2031,7 @@ a cite {
 }
 
 .layui-form-select dl {
+	margin-bottom: 0px;
 	display: none;
 	position: absolute;
 	left: 0;
@@ -2089,7 +2090,8 @@ a cite {
 }
 
 .layui-form-selected dl {
-	display: block
+	display: block;
+	
 }
 
 .layui-form-checkbox, .layui-form-checkbox *, .layui-form-switch {
