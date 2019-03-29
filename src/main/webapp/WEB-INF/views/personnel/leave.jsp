@@ -771,13 +771,13 @@
 										table.reload('tableData');
 										layer.msg(result.message, {
 											icon: 1,
-											time:500
+											time:1000
 										});
 									
 									} else {
 										layer.msg(result.message, {
 											icon: 2,
-											time:500
+											time:3000
 										});
 									}
 								},

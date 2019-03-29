@@ -73,7 +73,7 @@
     <div class="layui-form-item">
      	<label class="layui-form-label" style="width: 130px;">休息方式</label>
      	<div class="layui-input-inline">
-        	<select name="restType" lay-filter="restType" id="restType" lay-verify="required"  lay-search="true"><option value="0">请选择</option><option value="1">无到岗要求</option><option value="2">周休一天</option><option value="3">月休两天，其他周日算加班</option><option value="4">全年无休</option><option value="5">按到岗小时计算（类似全年无休，有自己的节假日休息））</option></select>
+        	<select name="restType" lay-filter="restType" id="restType" lay-verify="required"  lay-search="true"><option value="1">无到岗要求</option><option value="2">周休一天</option><option value="3">月休两天，其他周日算加班</option><option value="4">全年无休</option><option value="5">按到岗小时计算（类似全年无休，有自己的节假日休息））</option></select>
       	</div>
     </div>
     <div class="layui-form-item">
@@ -81,7 +81,9 @@
       <div class="layui-input-inline">
         <input type="text"  name="applytime" id="applytime"  placeholder="请输入申请时间" class="form-control laydate-icon">
         <td>&nbsp&nbsp</td>
-        <input type="text" name="restDay"  id="inputapplytime"   class="form-control">
+        <div>
+      		<textarea name="restDay"  id="inputapplytime" class="layui-textarea"></textarea>
+    	</div>
       </div>
     </div>
     
@@ -144,14 +146,14 @@
     <div class="layui-form-item">
      	<label class="layui-form-label" style="width: 130px;">午休状态</label>
      	<div class="layui-input-inline">
-        	<select name="restTimeWork" lay-filter="restTimeWork" id="restTimeWork" lay-verify="required"  lay-search="true"><option value="0">请选择</option><option value="1">默认休息</option><option value="2">出勤</option><option value="3">加班</option></select>
+        	<select name="restTimeWork" lay-filter="restTimeWork" id="restTimeWork" lay-verify="required"  lay-search="true"><option value="1">默认休息</option><option value="2">出勤</option><option value="3">加班</option></select>
       	</div>
     </div>
     
     <div class="layui-form-item">
      	<label class="layui-form-label" style="width: 130px;">核算加班</label>
      	<div class="layui-input-inline">
-        	<select name="overTimeType" id="overTimeType" lay-filter="overTimeType" lay-verify="required"  lay-search="true"><option value="0">请选择</option><option value="1">看加班申请</option><option value="2">打卡核算</option></select>
+        	<select name="overTimeType" id="overTimeType" lay-filter="overTimeType" lay-verify="required"  lay-search="true"><option value="1">看加班申请</option><option value="2">打卡核算</option></select>
       	</div>
     </div>
     
@@ -538,12 +540,14 @@
 							        	 mainJs.fAdd(data.field); 
 							        	document.getElementById("layuiadmin-form-admin").reset();
 							        	layui.form.render();
+							        	timeAll=""
 										})
 										
 							        }
 							        ,end:function(){
 							        	document.getElementById("layuiadmin-form-admin").reset();
 							        	layui.form.render();
+							        	timeAll=""
 									  } 
 							      });
 								break;
@@ -615,6 +619,7 @@
 						        ,end:function(){
 						        	document.getElementById("layuiadmin-form-admin").reset();
 						        	layui.form.render();
+						        	timeAll=""
 								  } 
 						       
 						      });
