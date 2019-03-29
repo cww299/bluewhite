@@ -312,14 +312,12 @@ public class AttendanceAction {
 	@ResponseBody
 	public CommonResponse addApplicationLeave(HttpServletRequest request, ApplicationLeave applicationLeave) {
 		CommonResponse cr = new CommonResponse();
-		applicationLeaveService.saveApplicationLeave(applicationLeave);
 		if (applicationLeave.getId() != null) {
 			cr.setMessage("修改成功");
 		} else {
 			cr.setMessage("新增成功");
 		}
-		cr.setData(
-				ClearCascadeJSON.get().addRetainTerm(ApplicationLeave.class, "id").format(applicationLeave).toJSON());
+		applicationLeaveService.saveApplicationLeave(applicationLeave);
 		return cr;
 	}
 

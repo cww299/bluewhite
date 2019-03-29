@@ -1028,7 +1028,7 @@
 					var postData
 					var dicDiv=$('#addDictDivType');
 					_index = layer.open({
-						  type: 1,
+						  type: 2,
 						  skin: 'layui-layer-rim', //加上边框
 						  area: ['60%', '60%'], 
 						  btnAlign: 'c',//宽高
