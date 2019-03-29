@@ -35,7 +35,9 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.BankUtil;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.ZkemUtils.ZkemSDKUtils;
+import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
+import com.bluewhite.personnel.attendance.service.AttendanceInitService;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.system.sys.entity.SysLog;
 import com.bluewhite.system.user.dao.UserContractDao;
@@ -52,12 +54,12 @@ public class UserAction {
 
 	@Autowired
 	private UserService userService;
-	
 	@Autowired
 	private UserContractDao userContractDao;
-	
 	@Autowired
 	private UserDao userDao;
+	@Autowired
+	private AttendanceInitService attendanceInitService;
 
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -118,6 +120,10 @@ public class UserAction {
 				userContractDao.save(userContract);
 				user.setUserContract(userContract);
 				cr.setData(clearCascadeJSON.format(userService.save(user)).toJSON());
+				AttendanceInit attendanceInit = attendanceInitService.findByUserId(user.getId());
+				if(attendanceInit==null){
+					cr.setCode(2);
+				}
 			}
 		}else{
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -155,6 +161,10 @@ public class UserAction {
 			oldUser.setUserContract(userContract);
 		}
 		BeanCopyUtils.copyNotEmpty(user,oldUser,"");
+		AttendanceInit attendanceInit = attendanceInitService.findByUserId(user.getId());
+		if(attendanceInit==null){
+			cr.setCode(2);
+		}
 		cr.setData(clearCascadeJSON.format(userService.save(oldUser)).toJSON());
 		cr.setMessage("修改成功");
 		return cr;
@@ -179,7 +189,6 @@ public class UserAction {
 				return cr;
 			}
 		}
-		
 		if(userContract.getId() == null){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("id为空");
