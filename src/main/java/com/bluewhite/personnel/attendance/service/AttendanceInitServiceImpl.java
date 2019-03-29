@@ -25,7 +25,8 @@ public class AttendanceInitServiceImpl extends BaseServiceImpl< AttendanceInit, 
 	
 	@Autowired
 	private AttendanceInitDao dao;
-
+	@Autowired
+	private UserDao userDao;
 
 
 	@Override
@@ -56,7 +57,8 @@ public class AttendanceInitServiceImpl extends BaseServiceImpl< AttendanceInit, 
 
 	@Override
 	public AttendanceInit findByUserId(Long id) {
-		return dao.findByUserId(id);
+		User user = userDao.findOne(id);
+		return dao.findByUser(user);
 	}
 
 

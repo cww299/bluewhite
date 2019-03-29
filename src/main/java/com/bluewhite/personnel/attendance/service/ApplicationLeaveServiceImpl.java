@@ -32,7 +32,8 @@ import com.bluewhite.system.user.entity.User;
 @Service
 public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeave, Long>
 		implements ApplicationLeaveService {
-
+	@Autowired
+	private AttendanceInitService attendanceInitService;
 	@Autowired
 	private ApplicationLeaveDao dao;
 	@Autowired
@@ -118,7 +119,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 			e.printStackTrace();
 		}
 		// 获取员工考勤的初始化参数
-		AttendanceInit attendanceInit = attendanceInitDao.findByUserId(applicationLeave.getUserId());
+		AttendanceInit attendanceInit = attendanceInitService.findByUserId(applicationLeave.getUserId());
 		if(attendanceInit==null){
 			throw new ServiceException("该员工没有考勤初始化数据，无法申请，请先添加考勤初始数据");
 		}

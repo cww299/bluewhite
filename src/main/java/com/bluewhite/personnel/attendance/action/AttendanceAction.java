@@ -45,7 +45,7 @@ public class AttendanceAction {
 	@Autowired
 	private AttendanceInitService attendanceInitService;
 	@Autowired
-	private UserService UserService;
+	private UserService userService;
 	@Autowired
 	private AttendanceTimeService attendanceTimeService;
 	@Autowired
@@ -385,6 +385,8 @@ public class AttendanceAction {
 					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 				}
 			}
+			User user = userService.findOne(attendanceInit.getUserId());
+			attendanceInit.setUser(user);
 			attendanceInitService.save(attendanceInit);
 			cr.setMessage("新增成功");
 		}
@@ -442,7 +444,7 @@ public class AttendanceAction {
 		CommonResponse cr = new CommonResponse();
 		List<AttendanceInit> list = attendanceInitService.findAll();
 		for (AttendanceInit arr : list) {
-			User user = UserService.findByUserName(arr.getUsername());
+			User user = userService.findByUserName(arr.getUsername());
 			if (user != null) {
 				arr.setUser(user);
 			}
