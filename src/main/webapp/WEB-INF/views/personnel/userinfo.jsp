@@ -1605,7 +1605,6 @@
 										if(ids==$(k).val()){
 											$(k).attr("checked","true"); 
 										}
-										
 									}); 
 									}
 										var id=o.agreementId;

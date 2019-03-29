@@ -89,8 +89,8 @@
 			</section>
 		</section>
 		</section>
-		
-	<div class="layui-form" lay-filter="layuiadmin-form-admin" id="layuiadmin-form-admin" style="padding: 20px 30px 0 60px; display: none; text-align: ">
+		<form action="" id="layuiadmin-form-admin" style="padding: 20px 30px 0 60px; display: none; text-align: ">
+	<div class="layui-form" lay-filter="layuiadmin-form-admin" >
     <div class="layui-form-item">
       <label class="layui-form-label" style="width: 90px;">申请人</label>
       <div class="layui-input-inline">
@@ -105,18 +105,18 @@
     </div>
     <div class="layui-form-item">
       <label class="layui-form-label" style="width: 90px;">申请项</label>
-      <div class="layui-input-inline" style="width: 325px;">
-      <input type="radio" lay-filter="variable" name="variable" value="0" title="请假" checked="">
-      <input type="radio" lay-filter="variable" name="variable" value="1" title="调休">
-      <input type="radio" lay-filter="variable" name="variable" value="2" title="补签">
-      <input type="radio" lay-filter="variable" name="variable" value="3" title="加班">
+      <div class="layui-input-inline" id="selectradio" style="width: 325px;">
+      <input type="radio" lay-filter="variable" id="qing" name="variable" value="0" title="请假" checked="">
+      <input type="radio" lay-filter="variable" id="tiao" name="variable" value="1" title="调休">
+      <input type="radio" lay-filter="variable" id="bu" name="variable" value="2" title="补签">
+      <input type="radio" lay-filter="variable" id="jia" name="variable" value="3" title="加班">
       </div>
     </div>
     <div id="leave" style="display: block;">
      <div class="layui-form-item">
      	<label class="layui-form-label" style="width: 90px;">请假类型</label>
      	<div class="layui-input-inline">
-        	<select name="holidayType" lay-filter="holidayType"  lay-search="true"><option value="0">请选择</option><option value="1">事假</option><option value="2">病假</option><option value="3">丧假</option><option value="4">婚假</option><option value="5">产假</option><option value="6">护理假</option></select>
+        	<select name="holidayType" lay-filter="holidayType" id="holidayType"  lay-search="true"><option value="0">请选择</option><option value="1">事假</option><option value="2">病假</option><option value="3">丧假</option><option value="4">婚假</option><option value="5">产假</option><option value="6">护理假</option></select>
       	</div>
      </div>
      <div class="layui-form-item">
@@ -164,8 +164,8 @@
     <div class="layui-form-item">
       <label class="layui-form-label" style="width: 90px;">补签状态</label>
       <div class="layui-input-inline" style="width: 325px;">
-      <input type="radio" name="Sign" value="0" title="签入" checked="">
-      <input type="radio" name="Sign" value="1" title="签出">
+      <input type="radio" name="Sign" id="qianru" value="0" title="签入" checked="">
+      <input type="radio" name="Sign" id="qianchu" value="1" title="签出">
       </div>
     </div>
     </div>
@@ -184,17 +184,22 @@
       </div>
     </div>
     </div>
-  </div>	 
-		
+    <div class="layui-form-item layui-hide">
+     <button type="submit" class="layui-btn layui-btn-primary">重置</button>
+    </div> 
+		</div>
+		</form>
 		<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
-				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增一行</span>
-				<span class="layui-btn layui-btn-sm" lay-event="notice">弹出</span>
+				<span class="layui-btn layui-btn-sm" lay-event="notice">新增</span>
 				<span class="layui-btn layui-btn-sm" lay-event="deleteSome">批量删除</span>
 			</div>
 		</script>
-
+<script type="text/html" id="barDemo">
+  		<a class="layui-btn layui-btn-trans layui-btn-xs"  lay-event="update">编辑</a>
+</script>
 		<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
+		<script src="${ctx }/static/js/shujuhuixian/sjhx.js"></script>
 		<script>
 			layui.config({
 				base: '${ctx}/static/layui-v2.4.5/'
@@ -273,32 +278,10 @@
 						}
 					});
 					
-					// 处理操作列
-					var fn1 = function(field) {
-						return function(d) {
-						var a=d.user.id
-						
-							return [
-								'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' +a+ '">' +
-								htmls +
-								'</select>'
-							].join('');
-
-						};
-					};
+			
 
 					
-					var fn3 = function(field) {
-						return function(d) {
-							return ['<select name="selectThree" lay-filter="lay_selecte" lay-search="true" data-value="' + d.settleAccountsMode + '">',
-								'<option value="0">请选择</option>',
-								'<option value="1">现金</option>',
-								'<option value="2">月结</option>',
-								'</select>'
-							].join('');
-
-						};
-					};
+					
 					
 				 	/* tablePlug.smartReload.enable(true);  */
 					table.render({
@@ -340,6 +323,7 @@
 								edit: false,
 								type: 'normal',
 								templet: function(d){
+									
 									return d.user.userName
 								}
 							}, {
@@ -364,20 +348,38 @@
 								}
 							}, {
 								field: "withholdReason",
-								title: "扣款事由",
-								edit: 'text'
-							}, {
-								field: "withholdMoney",
-								title: "扣款金额",
-								edit: 'text'
-							}, {
-								field: "settleAccountsMode",
-								title: "结款模式",
-								search: true,
-								edit: false,
-								type: 'normal',
-								templet: fn3('selectThree')
-							}]
+								title: "详情",
+								templet: function(d){
+									if(d.addSignIn==true){
+									return "补签"
+									}
+									if(d.applyOvertime==true){
+										return "加班"
+									}
+									if(d.holiday==true){
+										var a;
+										if(d.holidayType==1){
+											a='事假'
+										}
+										if(d.holidayType==2){
+											a='病假'
+										}
+										if(d.holidayType==3){
+											a='丧假'
+										}
+										if(d.holidayType==4){
+											a='婚假'
+										}
+										if(d.holidayType==5){
+											a='产假'
+										}
+										return "请假类型:"+a+"-请假原因:"+d.content+" -请假日期:"+JSON.parse(d.time).date+" -请假时长:"+JSON.parse(d.time).time+"小时";
+									}
+									if(d.tradeDays==true){
+										return "调休"
+									}
+								}
+							},{fixed:'right', title:'操作', align: 'center', toolbar: '#barDemo'}]
 						],
 						done: function() {
 							var tableView = this.elem.next();
@@ -427,23 +429,7 @@
 
 					});
 
-					// 监听表格中的下拉选择将数据同步到table.cache中
-					form.on('select(lay_selecte)', function(data) {
-						var selectElem = $(data.elem);
-						var tdElem = selectElem.closest('td');
-						var trElem = tdElem.closest('tr');
-						var tableView = trElem.closest('.layui-table-view');
-						var field = tdElem.data('field');
-						/* table.cache[tableView.attr('lay-id')][trElem.data('index')][tdElem.data('field')] = data.value; */
-					/* 	table.cache[tableView.attr('lay-id')][trElem.data('index')][tdElem.data('id')] */
-						var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
-						var postData = {
-							id: id,
-							[field]:data.value,
-						}
-						//调用新增修改
-						mainJs.fAdd(postData);
-					});
+					
 					form.on("radio(variable)", function(data) {
 						if(data.value==0){
 							$("#leave").css("display","block")
@@ -456,6 +442,7 @@
 							$("#leave").css("display","none")
 							$("#repair").css("display","none")
 							$("#overtime").css("display","none")
+							 
 						}
 						if(data.value==2){
 							$("#repair").css("display","block")
@@ -478,26 +465,6 @@
 						var btnElem = $(this);
 						var tableId = config.id;
 						switch(obj.event) {
-							case 'addTempData':
-								table.addTemp(tableId, function(trElem) {
-									// 进入回调的时候this是当前的表格的config
-									var that = this;
-									// 初始化laydate
-									layui.each(trElem.find('td[data-field="expenseDate"]'), function(index, tdElem) {
-										tdElem.onclick = function(event) {
-											layui.stope(event)
-										};
-										laydate.render({
-											elem: tdElem.children[0],
-											format: 'yyyy-MM-dd HH:mm:ss',
-											done: function(value, date) {
-												var trElem = $(this.elem[0]).closest('tr');
-												table.cache[that.id][trElem.data('index')]['expenseDate'] = value;
-											}
-										})
-									})
-								});
-								break;
 							case 'deleteSome':
 								// 获得当前选中的
 								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
@@ -506,7 +473,7 @@
 										ids: checkedIds,
 									}
 									$.ajax({
-										url: "${ctx}/fince/deleteExpenseAccount",
+										url: "${ctx}/personnel/deleteApplicationLeave",
 										data: postData,
 										traditional: true,
 										type: "GET",
@@ -602,26 +569,156 @@
 							        			time:JSON.stringify(time)
 							        	}	
 							        	mainJs.fAdd(postData);
+							        	table.reload('tableData', {
+										});
 										})
-
+										
 							        }
-							       
+							        ,end:function(){
+							        	document.getElementById("layuiadmin-form-admin").reset();
+							        	layui.form.render();
+									  } 
 							      });
 								break;
 						}
 					});
-
+					
 					//监听单元格编辑
-					table.on('edit(tableData)', function(obj) {
-						var value = obj.value ,//得到修改后的值
-							data = obj.data ,//得到所在行所有键值
-							field = obj.field; //得到字段
-							var postData = {
-								id:data.id,
-								[field]:value
-							}
-							/* 调用新增修改 */
-							mainJs.fAdd(postData);
+					table.on('tool(tableData)', function(obj) {
+						document.getElementById("layuiadmin-form-admin").reset();
+			        	layui.form.render();
+						var data = obj.data;
+						var id=data.id;
+					    if(obj.event === 'update'){
+					    	var dicDiv=$('#layuiadmin-form-admin');
+					    	$('#selectOne').each(function(j,k){
+								var id=data.user.id;
+								$(k).val(id);
+								form.render('select');
+							});
+					    	$('#holidayType').each(function(j,k){
+					    		var id=data.holidayType;
+								$(k).val(id);
+								form.render('select');
+							});
+					    	if(data.holiday==true){
+					    		$("#leave").css("display","block")
+								$("#Break").css("display","none")
+								$("#repair").css("display","none")
+								$("#overtime").css("display","none")
+					    	$("#qing").get(0).checked=true;
+					    	form.render('radio');
+					    	$("#layuiadmin-form-admin").setForm({content:data.content,applytime:data.writeTime,leavetime:JSON.parse(data.time).date,leaveduration:JSON.parse(data.time).time});
+					    	}
+					    	if(data.tradeDays==true){
+					    		$("#Break").css("display","block")
+								$("#leave").css("display","none")
+								$("#repair").css("display","none")
+								$("#overtime").css("display","none")
+					    		$("#tiao").get(0).checked=true;
+					    		form.render('radio');
+					    		$("#layuiadmin-form-admin").setForm({applytime:data.writeTime,breaktime:JSON.parse(data.time).date,breakduration:JSON.parse(data.time).time});
+					    	}
+					    	if(data.addSignIn==true){
+					    		$("#repair").css("display","block")
+								$("#Break").css("display","none")
+								$("#leave").css("display","none")
+								$("#overtime").css("display","none")
+					    		$("#bu").get(0).checked=true;
+					    		form.render('radio');
+					    		$("#layuiadmin-form-admin").setForm({applytime:data.writeTime,repairtime:JSON.parse(data.time).date});
+					    		if(JSON.parse(data.time).time==0){
+					    			$("#qianru").get(0).checked=true;
+						    		form.render('radio');
+					    		}
+					    		if(JSON.parse(data.time).time==1){
+					    			$("#qianchu").get(0).checked=true;
+						    		form.render('radio');
+					    		}
+					    	}
+					    	if(data.applyOvertime==true){
+					    		$("#overtime").css("display","block")
+								$("#leave").css("display","none")
+								$("#Break").css("display","none")
+								$("#repair").css("display","none")
+					    		$("#jia").get(0).checked=true;
+					    		form.render('radio');
+					    		$("#layuiadmin-form-admin").setForm({applytime:data.writeTime,overtime:JSON.parse(data.time).date,overduration:JSON.parse(data.time).time});
+					    	}
+					    	layer.open({
+						         type: 1
+						        ,title: "新增" //不显示标题栏
+						        ,closeBtn: false
+						        ,area:['540px', '60%']
+						        ,shade: 0.5
+						        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+						        ,btn: ['火速围观', '残忍拒绝']
+						        ,btnAlign: 'c'
+						        ,moveType: 1 //拖拽模式，0或者1
+						        ,content:dicDiv
+						        ,success : function(layero, index) {
+						        	layero.addClass('layui-form');
+									// 将保存按钮改变成提交按钮
+									layero.find('.layui-layer-btn0').attr({
+										'lay-filter' : 'addRole',
+										'lay-submit' : ''
+									})
+						        }
+						        ,yes: function(index, layero){
+						        	form.on('submit(addRole)', function(data) {
+						        		console.log(data)
+						        		var variable='';
+						        		var holidayType='';
+						        		var content='';
+						        		var leavetime='';
+						        		var leaveduration='';
+						        		var time='';
+						        		if(data.field.variable==0){
+						        			variable='holiday';
+						        			holidayType=data.field.holidayType;
+						        			content=data.field.content;
+						        			leavetime=data.field.leavetime;
+						        			leaveduration=data.field.leaveduration;
+						        			time={date:leavetime,time:leaveduration};
+						        		}
+						        		if(data.field.variable==1){
+						        			variable='tradeDays'
+						        			breaktime=data.field.breaktime;
+						        			breakduration=data.field.breakduration;
+						        			time={date:breaktime,time:breakduration};
+						        		}
+						        		if(data.field.variable==2){
+						        			variable='addSignIn' 
+						        			repairtime=data.field.repairtime;
+						        			Sign=data.field.Sign
+						        			time={date:repairtime,time:Sign};
+						        		}
+						        		if(data.field.variable==3){
+						        			variable='applyOvertime'
+						        			overtime=data.field.overtime;
+						        			overduration=data.field.overduration;
+						        			time={date:overtime,time:overduration};
+						        		}
+						        	var postData={
+						        			id:id,
+						        			userId:data.field.userId,
+						        			writeTime:data.field.applytime,
+						        			[variable]:'true',
+						        			holidayType:holidayType,
+						        			content:content,
+						        			time:JSON.stringify(time)
+						        	}	
+						        	mainJs.fAdd(postData);
+						        	table.reload('tableData', {
+									});
+									})
+
+						        }
+						       
+						      });
+					    	
+					    	
+					    }
 					});
 
 					//监听搜索
