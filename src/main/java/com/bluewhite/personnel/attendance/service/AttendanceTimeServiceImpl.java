@@ -12,9 +12,11 @@ import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
+import org.hibernate.id.enhanced.TableStructure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.druid.sql.visitor.functions.Now;
@@ -69,14 +71,13 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		}
 
 		long size = DatesUtil.getDaySub(attendance.getOrderTimeBegin(),
-				DatesUtil.getLastDayOftime(attendance.getOrderTimeEnd()));
+				DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin()));
 		List<AttendanceTime> attendanceTimeList = new ArrayList<>();
 		// 第一天的开始签到时间从6点开始新一天的签到
 		Date beginTimes = DatesUtil.dayTime(attendance.getOrderTimeBegin(), "06:00:00");
 		for (int i = 0; i < size; i++) {
 			// 获取一天的签到结束时间,第二天的6点之前
 			Date endTimes = DatesUtil.nextDay(beginTimes);
-
 			// 当部门不为null时，按部门查找出所有的人员
 			List<User> userList = new ArrayList<>();
 			if (!StringUtils.isEmpty(attendance.getOrgNameId())) {
@@ -162,7 +163,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 						}
 					}
 					if (rout) {
-						attendanceTime.setFlag(0);
+						attendanceTime.setFlag(3);
 						attendanceTimeList.add(attendanceTime);
 						continue;
 					}
@@ -269,14 +270,20 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	}
 
 	@Override
+	public List<Map<String, Object>> findAttendanceTimeCollectAdd(AttendanceTime attendanceTime) throws ParseException {
+		return attendanceCollect(attendanceTimeByApplication(findAttendanceTime(attendanceTime)),true);
+	}
+	
+	@Override
 	public List<Map<String, Object>> findAttendanceTimeCollect(AttendanceTime attendanceTime) throws ParseException {
-		return attendanceCollect(attendanceTimeByApplication(findAttendanceTime(attendanceTime)));
+		return attendanceCollect(findAttendanceTime(attendanceTime),false);
 	}
 
 	/**
 	 * 通过传入的工作情况，按人员汇总出考勤数据
 	 */
-	private List<Map<String, Object>> attendanceCollect(List<AttendanceTime> attendanceTimeList) {
+	@Transactional
+	private List<Map<String, Object>> attendanceCollect(List<AttendanceTime> attendanceTimeList,boolean sign) {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		// 最外层循环人员list
 		List<Map<String, Object>> allList = new ArrayList<>();
@@ -294,7 +301,9 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			List<AttendanceTime> attendanceTimeList1 = psList1.stream()
 					.sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
 			AttendanceCollect attendanceCollect = new AttendanceCollect(psList1);
-			attendanceCollectDao.save(attendanceCollect);
+			if(sign){
+				attendanceCollectDao.save(attendanceCollect);
+			}
 			allMap.put("attendanceTimeData", attendanceTimeList1);
 			allMap.put("collect", attendanceCollect);
 			allList.add(allMap);

@@ -96,14 +96,14 @@ public class AttendanceCollect extends BaseEntity<Long>{
 	/**
 	 * 请假时长
 	 */
-	@Column(name = "Leave_time")
-	private Double LeaveTime;
+	@Column(name = "leave_time")
+	private Double leaveTime;
 	
 	/**
 	 * 请假事项详情
 	 */
-	@Column(name = "Leave_details")
-	private String LeaveDetails;
+	@Column(name = "leave_details")
+	private String leaveDetails;
 	
 	/**
 	 * 备注
@@ -122,10 +122,10 @@ public class AttendanceCollect extends BaseEntity<Long>{
     	turnWork =  list.stream().filter(AttendanceTime->AttendanceTime.getTurnWorkTime()!=null).mapToDouble(AttendanceTime::getTurnWorkTime).sum();
     	overtime =  list.stream().filter(AttendanceTime->AttendanceTime.getOvertime()!=null).mapToDouble(AttendanceTime::getOvertime).sum();
     	dutyWork = list.stream().filter(AttendanceTime->AttendanceTime.getDutytime()!=null).mapToDouble(AttendanceTime::getDutytime).sum();
-    	LeaveTime = list.stream().filter(AttendanceTime->AttendanceTime.getLeaveTime()!=null).mapToDouble(AttendanceTime::getLeaveTime).sum();
+    	leaveTime = list.stream().filter(AttendanceTime->AttendanceTime.getLeaveTime()!=null).mapToDouble(AttendanceTime::getLeaveTime).sum();
     	allWork = NumUtils.sum(turnWork, overtime);
     	list.stream().forEach(at-> {
-    		LeaveDetails = LeaveDetails+","+at.getHolidayDetail();
+    		leaveDetails = leaveDetails == null ? leaveDetails :leaveDetails+","+at.getHolidayDetail();
     	});
     	//工作日AttendanceTime集合
 		List<AttendanceTime> manDayList = null;
@@ -172,20 +172,22 @@ public class AttendanceCollect extends BaseEntity<Long>{
 		this.user = user;
 	}
 
+	
+
 	public Double getLeaveTime() {
-		return LeaveTime;
+		return leaveTime;
 	}
 
 	public void setLeaveTime(Double leaveTime) {
-		LeaveTime = leaveTime;
+		this.leaveTime = leaveTime;
 	}
 
 	public String getLeaveDetails() {
-		return LeaveDetails;
+		return leaveDetails;
 	}
 
 	public void setLeaveDetails(String leaveDetails) {
-		LeaveDetails = leaveDetails;
+		this.leaveDetails = leaveDetails;
 	}
 
 	public String getRemarks() {

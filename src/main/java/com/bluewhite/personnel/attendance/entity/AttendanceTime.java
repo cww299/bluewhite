@@ -109,7 +109,7 @@ public class AttendanceTime extends BaseEntity<Long> {
 	private String week;
 	
 	/**
-	 * 考勤状态(0=正常，1=签到缺失，2=请假)
+	 * 考勤状态(0=正常，1=签到缺失，2=请假,3=默认休息日)
 	 * 
 	 */
 	@Column(name = "flag")

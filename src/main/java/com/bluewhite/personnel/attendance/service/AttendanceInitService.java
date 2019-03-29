@@ -21,6 +21,12 @@ public interface AttendanceInitService  extends BaseCRUDService<AttendanceInit,L
 	 * @return
 	 */
 	AttendanceInit findByUserId(Long id);
+	/**
+	 * 批量删除
+	 * @param ids
+	 * @return
+	 */
+	int deleteAttendanceInit(String ids);
 	
 
 }

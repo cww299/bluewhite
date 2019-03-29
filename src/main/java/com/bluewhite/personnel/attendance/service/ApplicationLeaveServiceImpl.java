@@ -64,7 +64,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
-		}, new PageParameter());
+		}, page);
 		PageResult<ApplicationLeave> result = new PageResult<>(pages, page);
 		return result;
 	}
@@ -201,9 +201,17 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 
 	}
 
-	public static void main(String[] args) throws ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String xxString = "2019-03-02";
-		System.out.println(sdf.parse(xxString));
+	@Override
+	public int deleteApplicationLeave(String ids) {
+		int count = 0;
+		String[] arrIds = ids.split(",");
+		for (int i = 0; i < arrIds.length; i++) {
+			Long id = Long.valueOf(arrIds[i]);
+			ApplicationLeave applicationLeave = dao.findOne(id);
+			applicationLeave.setUser(null);
+			dao.delete(applicationLeave);
+			count++;
+		}
+		return count;
 	}
 }

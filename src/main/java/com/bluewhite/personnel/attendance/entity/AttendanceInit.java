@@ -2,6 +2,7 @@ package com.bluewhite.personnel.attendance.entity;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,6 +23,11 @@ import com.bluewhite.system.user.entity.User;
 @Table(name = "person_attendance_init" )
 public class AttendanceInit extends BaseEntity<Long> {
 	
+	/**
+	 * 员工id
+	 */
+	@Column(name = "user_id")
+	private Long userId;
 	
 	/**
 	 * 一对一的用户
@@ -146,6 +152,16 @@ public class AttendanceInit extends BaseEntity<Long> {
 	
 	
 	
+	
+
+	public Long getUserId() {
+		return userId;
+	}
+
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
 
 
 	public String getUserName() {
