@@ -15,6 +15,12 @@ public interface AttendanceInitService  extends BaseCRUDService<AttendanceInit,L
 	 * @return
 	 */
 	PageResult<AttendanceInit> findAttendanceInitPage(AttendanceInit attendanceInit, PageParameter page);
+	/**
+	 * 根据员工id查询初始化考勤数据
+	 * @param id
+	 * @return
+	 */
+	AttendanceInit findByUserId(Long id);
 	
 
 }

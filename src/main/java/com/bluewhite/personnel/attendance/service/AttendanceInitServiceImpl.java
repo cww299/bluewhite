@@ -50,4 +50,10 @@ public class AttendanceInitServiceImpl extends BaseServiceImpl< AttendanceInit, 
 		return result;
 	}
 
+
+	@Override
+	public AttendanceInit findByUserId(Long id) {
+		return dao.findByUserId(id);
+	}
+
 }
