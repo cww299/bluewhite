@@ -8,7 +8,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<title>请假调休</title>
+		<title>考勤初始设定</title>
 		<meta name="description" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 		<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
@@ -22,7 +22,7 @@
 					<div class="col-md-12">
 						<div class="panel panel-default">
 							<div class="panel-heading">
-								<h3 class="panel-title">请假调休</h3>
+								<h3 class="panel-title">考勤初始设定</h3>
 								<div class="actions pull-right">
 									<i class="fa fa-expand"></i>
 									<i class="fa fa-chevron-down"></i>
@@ -76,101 +76,103 @@
 		<form action="" id="layuiadmin-form-admin" style="padding: 20px 30px 0 60px; display: none; text-align: ">
 	<div class="layui-form" lay-filter="layuiadmin-form-admin" >
     <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 90px;">申请人</label>
+      <label class="layui-form-label" style="width: 130px;">员工姓名</label>
       <div class="layui-input-inline">
         <select name="userId" lay-filter="lay_selecte" lay-verify="required" id="selectOne" lay-search="true"></select>
       </div>
     </div>
     <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 90px;">申请时间</label>
-      <div class="layui-input-inline">
-        <input type="text" name="applytime" id="applytime"  lay-verify="required" placeholder="请输入申请时间" class="form-control laydate-icon">
-      </div>
-    </div>
-    <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 90px;">申请项</label>
-      <div class="layui-input-inline" id="selectradio" style="width: 325px;">
-      <input type="radio" lay-filter="variable" id="qing" name="variable" value="0" title="请假" checked="">
-      <input type="radio" lay-filter="variable" id="tiao" name="variable" value="1" title="调休">
-      <input type="radio" lay-filter="variable" id="bu" name="variable" value="2" title="补签">
-      <input type="radio" lay-filter="variable" id="jia" name="variable" value="3" title="加班">
-      </div>
-    </div>
-    <div id="leave" style="display: block;">
-     <div class="layui-form-item">
-     	<label class="layui-form-label" style="width: 90px;">请假类型</label>
+     	<label class="layui-form-label" style="width: 130px;">休息方式</label>
      	<div class="layui-input-inline">
-        	<select name="holidayType" lay-filter="holidayType" id="holidayType"  lay-search="true"><option value="0">请选择</option><option value="1">事假</option><option value="2">病假</option><option value="3">丧假</option><option value="4">婚假</option><option value="5">产假</option><option value="6">护理假</option></select>
+        	<select name="restType" lay-filter="restType" lay-verify="required"  lay-search="true"><option value="0">请选择</option><option value="1">无到岗要求</option><option value="2">周休一天</option><option value="3">月休两天，其他周日算加班</option><option value="4">全年无休</option><option value="5">按到岗小时计算（类似全年无休，有自己的节假日休息））</option></select>
       	</div>
-     </div>
-     <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 90px;">请假原因</label>
-      <div class="layui-input-inline">
-        <input type="text" name="content" id="content" lay-verify="content" placeholder="请输入请假原因 " class="form-control">
-      </div>
-    </div>
-     <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 90px;">请假日期</label>
-      <div class="layui-input-inline">
-        <input type="text" name="leavetime" id="leavetime" lay-verify="leavetime"  placeholder="请输入请假日期" class="form-control laydate-icon">
-      </div>
     </div>
     <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 90px;">请假时长</label>
+      <label class="layui-form-label" style="width: 130px;">约定休息时间</label>
       <div class="layui-input-inline">
-        <input type="text" name="leaveduration" id="leaveduration" lay-verify="leaveduration" placeholder="请输入请假时长 " class="form-control">
+        <input type="text"  name="applytime" id="applytime"  placeholder="请输入申请时间" class="form-control laydate-icon">
+        <td>&nbsp&nbsp</td>
+        <input type="text" name="restDay"  id="inputapplytime"   class="form-control">
       </div>
     </div>
+    
+    <div class="layui-form-item">
+      <label class="layui-form-label" style="width: 130px;">夏令时工作区间</label>
+      <div class="layui-input-inline">
+        <input type="text"  name="workTimeSummer" id="workTimeSummer" lay-verify="required" placeholder="请输入夏令时工作区间" class="form-control laydate-icon">
+      </div>
+    </div>
+    
+    <div class="layui-form-item">
+      <label class="layui-form-label" style="width: 130px;">冬令时工作区间</label>
+      <div class="layui-input-inline">
+        <input type="text"  name="workTimeWinter" id="workTimeWinter" lay-verify="required" placeholder="请输入冬令时工作区间" class="form-control laydate-icon">
+      </div>
+    </div>
+    
+   <div class="layui-form-item">
+      <label class="layui-form-label" style="width: 130px;">夏令出勤时长</label>
+      <div class="layui-input-inline">
+        <input type="text" name="turnWorkTimeSummer" id="turnWorkTimeSummer" lay-verify="required" placeholder="请输入夏令出勤时长 " class="form-control">
+      </div>
     </div>
    
-   <div id="Break" style="display: none;">
-    <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 90px;">调休时长</label>
+   <div class="layui-form-item">
+      <label class="layui-form-label" style="width: 130px;">冬令出勤时长</label>
       <div class="layui-input-inline">
-        <input type="text" name="breakduration" id="breakduration" lay-verify="breakduration" placeholder="请输入调休时长 " class="form-control">
+        <input type="text" name="turnWorkTimeWinter" id="turnWorkTimeWinter" lay-verify="required" placeholder="请输入冬令出勤时长 " class="form-control">
       </div>
-    </div>
-    <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 90px;">调休至时间</label>
-      <div class="layui-input-inline">
-        <input type="text" name="breaktime" id="breaktime" lay-verify="breaktime" placeholder="请输入调休到哪一天的时间" class="form-control laydate-icon">
-      </div>
-    </div>
     </div>
     
-    <div id="repair" style="display: none;">
-     <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 90px;">补签日期</label>
-      <div class="layui-input-inline">
-        <input type="text" name="repairtime" id="repairtime" lay-verify="repairtime" placeholder="请输入补签日期" class="form-control laydate-icon">
-      </div>
-    </div>
     <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 90px;">补签状态</label>
-      <div class="layui-input-inline" style="width: 325px;">
-      <input type="radio" name="Sign" id="qianru" value="0" title="签入" checked="">
-      <input type="radio" name="Sign" id="qianchu" value="1" title="签出">
+      <label class="layui-form-label" style="width: 130px;">夏令时午休区间</label>
+      <div class="layui-input-inline">
+        <input type="text"  name="restTimeSummer" id="restTimeSummer" lay-verify="required" placeholder="请输入夏令时午休区间" class="form-control laydate-icon">
       </div>
-    </div>
     </div>
     
-    <div id="overtime" style="display: none;">
-     <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 90px;">加班日期</label>
+    <div class="layui-form-item">
+      <label class="layui-form-label" style="width: 130px;">冬令时午休区间</label>
       <div class="layui-input-inline">
-        <input type="text" name="overtime" id="overdurationtime" lay-verify="overtime" placeholder="请输入加班日期" class="form-control laydate-icon">
-      </div>
-      </div>
-      <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 90px;">加班时长</label>
-      <div class="layui-input-inline">
-        <input type="text" name="overduration" id="overduration" lay-verify="overduration" placeholder="请输入加班时长 " class="form-control">
+        <input type="text"  name="restTimeWinter" id="restTimeWinter" lay-verify="required" placeholder="请输入冬令时午休区间" class="form-control laydate-icon">
       </div>
     </div>
+    
+    <div class="layui-form-item">
+      <label class="layui-form-label" style="width: 130px;">夏令午休时长</label>
+      <div class="layui-input-inline">
+        <input type="text" name="restSummer" id="restSummer" lay-verify="required" placeholder="请输入夏令午休时长 " class="form-control">
+      </div>
     </div>
-    <div class="layui-form-item layui-hide">
-     <button type="submit" class="layui-btn layui-btn-primary">重置</button>
-    </div> 
+    
+    <div class="layui-form-item">
+      <label class="layui-form-label" style="width: 130px;">冬令午休时长</label>
+      <div class="layui-input-inline">
+        <input type="text" name="restWinter" id="restWinter" lay-verify="required" placeholder="请输入冬令午休时长" class="form-control">
+      </div>
+    </div>
+    
+    <div class="layui-form-item">
+     	<label class="layui-form-label" style="width: 130px;">午休状态</label>
+     	<div class="layui-input-inline">
+        	<select name="restTimeWork" lay-filter="restTimeWork" lay-verify="required"  lay-search="true"><option value="0">请选择</option><option value="1">默认休息</option><option value="2">出勤</option><option value="3">加班</option></select>
+      	</div>
+    </div>
+    
+    <div class="layui-form-item">
+     	<label class="layui-form-label" style="width: 130px;">核算加班</label>
+     	<div class="layui-input-inline">
+        	<select name="overTimeType" lay-filter="overTimeType" lay-verify="required"  lay-search="true"><option value="0">请选择</option><option value="1">看加班申请</option><option value="2">打卡核算</option></select>
+      	</div>
+    </div>
+    
+    <div class="layui-form-item">
+     	<label class="layui-form-label" style="width: 130px;">加班后到岗</label>
+     	<div class="layui-input-inline">
+        	<select name="comeWork" lay-filter="comeWork" lay-verify="required"  lay-search="true"><option value="0">请选择</option><option value="1">按点上班</option><option value="2">第二天上班时间以超过24:00后的时间往后推</option><option value="3">超过24:30后默认休息7.5小时</option></select>
+      	</div>
+    </div>
+    
 		</div>
 		</form>
 		<script type="text/html" id="toolbar">
@@ -211,34 +213,37 @@
 						shade: [0.1, '#fff'] //0.1透明度的白色背景
 					});
 					laydate.render({
-						elem: '#overdurationtime',
-						type: 'datetime',
+						elem: '#workTimeSummer',
+						range : '-',
+						type: 'time',
 					});
 					laydate.render({
-						elem: '#breaktime',
-						format: 'yyyy-MM-dd',
+						elem: '#workTimeWinter',
+						range : '-',
+						type: 'time',
 					});
 					laydate.render({
-						elem: '#repairtime',
-						type: 'datetime',
+						elem: '#restTimeSummer',
+						range : '-',
+						type: 'time',
 					});
+					laydate.render({
+						elem: '#restTimeWinter',
+						range : '-',
+						type: 'time',
+					});
+					var timeAll='';
 					laydate.render({
 						elem: '#applytime',
-						type: 'datetime',
-					});
-					laydate.render({
-						elem: '#leavetime',
-						range : '~',
 						format: 'yyyy-MM-dd',
+						done: function(value, date) {
+							timeAll=(timeAll==''? value:(timeAll+','+value));
+							$("#inputapplytime").val(timeAll)
+						}
 					});
-					laydate.render({
-						elem: '#startTime',
-						type: 'datetime',
-					});
-					laydate.render({
-						elem: '#endTime',
-						type: 'datetime',
-					});
+					
+					
+					
 				 
 					$.ajax({
 						url: '${ctx}/system/user/findAllUser',
@@ -290,14 +295,15 @@
 				 	/* tablePlug.smartReload.enable(true);  */
 					table.render({
 						elem: '#tableData',
-						size: 'lg',
-						url: '${ctx}/personnel/getApplicationLeavePage' ,
+						 size: 'lg',
+						url: '${ctx}/personnel/findAttendanceInit',
+						method:'POST',
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
 							limitName: 'size' //每页数据量的参数名，默认：limit
 						},
 						page: {
-
+							limit:15
 						} //开启分页
 						,
 						loading: true,
@@ -320,39 +326,127 @@
 								align: 'center',
 								fixed: 'left'
 							}, {
-								field: "userId",
-								title: "申请人",
+								field: "",
+								title: "员工姓名",
 								align: 'center',
+								fixed: 'left',
 								search: true,
 								edit: false,
-								type: 'normal',
 								templet: function(d){
+									return d.user.userName;
+								}
+							}, {
+								field: "",
+								title: "休息方式",
+								align: 'center',
+								edit: false,
+								templet: function(d){
+									if(d.restType==1){
+									return "无到岗要求";
+									}
+									if(d.restType==2){
+										return "周休一天";
+									}
+									if(d.restType==3){
+										return "月休两天,其他周日算加班";
+									}
+									if(d.restType==4){
+										return "全年无休";
+									}
+									if(d.restType==5){
+										return "按到岗小时计算(类似全年无休，有自己的节假日休息)";
+									}
+								}
+							},{
+								field: "restDay",
+								align: 'center',
+								title: "约定休息日",
+							},{
+								field: "workTimeSummer",
+								align: 'center',
+								width:170,
+								title: "夏令时工作区间",
+							},{
+								field: "workTimeWinter",
+								width:170,
+								align: 'center',
+								title: "冬令时工作区间",
+							},{
+								field: "turnWorkTimeSummer",
+								width:150,
+								align: 'center',
+								title: "夏令出勤时长",
+							},{
+								field: "turnWorkTimeWinter",
+								width:150,
+								align: 'center',
+								title: "冬令出勤时长",
+							},{
+								field: "restTimeSummer",
+								width:150,
+								align: 'center',
+								title: "夏令时午休区间",
+							},{
+								field: "restTimeWinter",
+								width:150,
+								align: 'center',
+								title: "冬令时午休区间",
+							},{
+								field: "restSummer",
+								width:150,
+								align: 'center',
+								title: "夏令时午休时长",
+							},{
+								field: "restWinter",
+								width:150,
+								align: 'center',
+								title: "冬令时午休时长",
+							},{
+								field: "restTimeWork",
+								align: 'center',
+								width:150,
+								title: "午休状态",
+								templet: function(d){
+									if(d.restTimeWork==1){
+									return "休息";
+									}
+									if(d.restTimeWork==2){
+										return "出勤";
+									}
+									if(d.restTimeWork==3){
+										return "加班";
+									}
+								}
+							},{
+								field: "overTimeType",
+								align: 'center',
+								title: "核算加班",
+								width:150,
+								templet: function(d){
+									if(d.overTimeType==1){
+									return "加班申请";
+									}
+									if(d.overTimeType==2){
+										return "打卡核算";
+									}
 									
-									return d.user.userName
 								}
-							}, {
-								field: "writeTime",
-								title: "申请时间",
-							}, {
-								field: "expenseDate",
-								title: "申请项",
+							},{
+								field: "comeWork",
+								align: 'center',
+								width:150,
+								title: "加班后到岗",
 								templet: function(d){
-									if(d.addSignIn==true){
-									return "补签"
+									if(d.comeWork==1){
+									return "按点上班";
 									}
-									if(d.applyOvertime==true){
-										return "加班"
+									if(d.comeWork==2){
+										return "第二天上班时间以超过24:00后的时间往后推";
 									}
-									if(d.holiday==true){
-										return "请假"
-									}
-									if(d.tradeDays==true){
-										return "调休"
+									if(d.comeWork==3){
+										return "超过24:30后默认休息7.5小时";
 									}
 								}
-							}, {
-								field: "holidayDetail",
-								title: "详情",
 							},{fixed:'right', title:'操作', align: 'center', toolbar: '#barDemo'}]
 						],
 						done: function() {
@@ -459,16 +553,12 @@
 							case 'notice':
 								var dicDiv=$('#layuiadmin-form-admin');
 								document.getElementById("layuiadmin-form-admin").reset();
-					        	$("#leave").css("display","block")
-								$("#Break").css("display","none")
-								$("#repair").css("display","none")
-								$("#overtime").css("display","none")
 					        	layui.form.render();
 								layer.open({
 							         type: 1
 							        ,title: "新增" //不显示标题栏
 							        ,closeBtn: false
-							        ,area:['540px', '60%']
+							        ,area:['540px', '99%']
 							        ,shade: 0.5
 							        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
 							        ,btn: ['确认', '取消']
@@ -484,81 +574,11 @@
 										})
 							        }
 							        ,yes: function(index, layero){
-							        	
 							        	form.on('submit(addRole)', function(data) {
-							        		var variable='';
-							        		var holidayType='';
-							        		var content='';
-							        		var leavetime='';
-							        		var leaveduration='';
-							        		var time='';
-							        		if(data.field.variable==0){
-							        			if(data.field.holidayType==0){
-							        				return layer.msg("请假类型不能为空", {icon: 2});
-							        			}
-							        			if(data.field.content==""){
-							        				return layer.msg("请假原因不能为空", {icon: 2});
-							        			}
-							        			if(data.field.leavetime==""){
-							        				return layer.msg("请假日期不能为空", {icon: 2});
-							        			}
-							        			if(data.field.leaveduration==""){
-							        				return layer.msg("请假时长不能为空", {icon: 2});
-							        			}
-							        			variable='holiday';
-							        			holidayType=data.field.holidayType;
-							        			content=data.field.content;
-							        			leavetime=data.field.leavetime;
-							        			leaveduration=data.field.leaveduration;
-							        			time={date:leavetime,time:leaveduration};
-							        		}
-							        		if(data.field.variable==1){
-							        			if(data.field.breaktime==""){
-							        				return layer.msg("调休日期不能为空", {icon: 2});
-							        			}
-							        			if(data.field.breakduration==""){
-							        				return layer.msg("调休时长不能为空", {icon: 2});
-							        			}
-							        			variable='tradeDays'
-							        			breaktime=data.field.breaktime;
-							        			breakduration=data.field.breakduration;
-							        			time={date:breaktime,time:breakduration};
-							        		}
-							        		if(data.field.variable==2){
-							        			if(data.field.repairtime==""){
-							        				return layer.msg("补签日期不能为空", {icon: 2});
-							        			}
-							        			variable='addSignIn' 
-							        			repairtime=data.field.repairtime;
-							        			Sign=data.field.Sign
-							        			time={date:repairtime,time:Sign};
-							        		}
-							        		if(data.field.variable==3){
-							        			if(data.field.overtime==""){
-							        				return layer.msg("加班日期不能为空", {icon: 2});
-							        			}
-							        			if(data.field.overduration==""){
-							        				return layer.msg("加班时长不能为空", {icon: 2});
-							        			}
-							        			variable='applyOvertime'
-							        			overtime=data.field.overtime;
-							        			overduration=data.field.overduration;
-							        			time={date:overtime,time:overduration};
-							        		}
-							        	var postData={
-							        			userId:data.field.userId,
-							        			writeTime:data.field.applytime,
-							        			[variable]:'true',
-							        			holidayType:holidayType,
-							        			content:content,
-							        			time:JSON.stringify(time)
-							        	}	
-							        	mainJs.fAdd(postData);
+							        		console.log(data)
+							        		
+							        	 mainJs.fAdd(data.field); 
 							        	document.getElementById("layuiadmin-form-admin").reset();
-							        	$("#leave").css("display","block")
-										$("#Break").css("display","none")
-										$("#repair").css("display","none")
-										$("#overtime").css("display","none")
 							        	layui.form.render();
 										})
 										
@@ -757,7 +777,7 @@
 						//新增							
 					    fAdd : function(data){
 					    	$.ajax({
-								url: "${ctx}/personnel/addApplicationLeave",
+								url: "${ctx}/personnel/addAttendanceInit",
 								data: data,
 								type: "Post",
 								beforeSend: function() {
