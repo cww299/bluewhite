@@ -56,6 +56,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	@Autowired
 	private AttendanceInitDao attendanceInitDao;
 	@Autowired
+	private AttendanceInitService attendanceInitService;
+	@Autowired
 	private AttendanceCollectDao attendanceCollectDao;
 	@Autowired
 	private ApplicationLeaveDao applicationLeaveDao;
@@ -100,7 +102,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				attendanceTime.setUserId(us.getId());
 
 				// 获取员工考勤的初始化参数
-				AttendanceInit attendanceInit = attendanceInitDao.findByUserId(us.getId());
+				AttendanceInit attendanceInit = attendanceInitService.findByUserId(us.getId());
 				// 上班开始时间
 				Date workTime = null;
 				// 上班结束时间
@@ -393,7 +395,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					e.printStackTrace();
 				}
 				// 获取员工考勤的初始化参数
-				AttendanceInit attendanceInit = attendanceInitDao.findByUserId(at.getUserId());
+				AttendanceInit attendanceInit = attendanceInitService.findByUserId(at.getUserId());
 				// 上班开始时间
 				Date workTime = null;
 				// 上班结束时间

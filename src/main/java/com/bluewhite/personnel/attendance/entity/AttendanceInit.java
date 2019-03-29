@@ -23,11 +23,7 @@ import com.bluewhite.system.user.entity.User;
 @Table(name = "person_attendance_init" )
 public class AttendanceInit extends BaseEntity<Long> {
 	
-	/**
-	 * 员工id
-	 */
-	@Column(name = "user_id")
-	private Long userId;
+
 	
 	/**
 	 * 一对一的用户
@@ -150,9 +146,16 @@ public class AttendanceInit extends BaseEntity<Long> {
 	@Transient
 	private Date orderTimeEnd;
 	
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Long userId;
+	
+
 	
 	
-	
+
 
 	public Long getUserId() {
 		return userId;
