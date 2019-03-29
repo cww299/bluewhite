@@ -261,7 +261,7 @@ public class ProductAction {
 			}
 			BeanCopyUtils.copyNullProperties(oldProduct,product);
 			product.setCreatedAt(oldProduct.getCreatedAt());
-			productService.update(product);
+			productService.save(product);
 			
 			//各部门修改产品不同处理方案
 			if(product.getType()!=null){

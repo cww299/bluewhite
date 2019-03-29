@@ -88,7 +88,7 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 			FarragoTask oldTask = farragoTaskService.findOne(farragoTask.getId());
 			BeanCopyUtils.copyNullProperties(oldTask,farragoTask);
 			farragoTask.setCreatedAt(oldTask.getCreatedAt());
-			farragoTaskService.update(farragoTask);
+			farragoTaskService.save(farragoTask);
 			cr.setMessage("新增成功");
 		}else{
 			//新增

@@ -51,12 +51,5 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements
 		return dao.findByName(name);
 	}
 
-	@Override
-	public Role update(Role role) {
-		Role originalRole = findOne(role.getId());
-		BeanCopyUtils.copyNotEmpty(role, originalRole, "");
-		save(originalRole);
-		return originalRole;
-	}
 
 }

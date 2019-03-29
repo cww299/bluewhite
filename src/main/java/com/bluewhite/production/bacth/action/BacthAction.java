@@ -74,7 +74,7 @@ private static final Log log = Log.getLog(BacthAction.class);
 			if(procedureList!=null && procedureList.size()>0){
 				bacth.setTime(time*bacth.getNumber()/60);
 				}
-			bacthService.update(bacth);
+			bacthService.save(bacth);
 			cr.setMessage("修改成功");
 		}else{
 			if(bacth.getProductId()!=null){

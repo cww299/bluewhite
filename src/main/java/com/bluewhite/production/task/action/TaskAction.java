@@ -443,7 +443,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 				Task oldTask = taskService.findOne(task.getId());
 				BeanCopyUtils.copyNullProperties(oldTask,task);
 				task.setCreatedAt(oldTask.getCreatedAt());
-				taskService.update(task);
+				taskService.save(task);
 				cr.setMessage("修改成功");
 			}else{
 				//新增
