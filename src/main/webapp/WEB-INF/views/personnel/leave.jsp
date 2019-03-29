@@ -33,9 +33,9 @@
 									<div class="layui-form-item">
 										<table>
 											<tr>
-												<td>报销人:</td>
+												<td>申请人:</td>
 												<td>
-													<input type="text" name="Username" id="firstNames" class="form-control search-query name" />
+												<select name="userId" class="form-control search-query name" lay-verify="required" id="firstNames" lay-search="true"></select>
 												</td>
 												<td>&nbsp&nbsp</td>
 												<td>报销内容:</td>
@@ -94,13 +94,13 @@
     <div class="layui-form-item">
       <label class="layui-form-label" style="width: 90px;">申请人</label>
       <div class="layui-input-inline">
-        <select name="userId" lay-filter="lay_selecte" id="selectOne" lay-search="true"></select>
+        <select name="userId" lay-filter="lay_selecte" lay-verify="required" id="selectOne" lay-search="true"></select>
       </div>
     </div>
     <div class="layui-form-item">
       <label class="layui-form-label" style="width: 90px;">申请时间</label>
       <div class="layui-input-inline">
-        <input type="text" name="applytime" id="applytime" lay-verify="applytime" placeholder="请输入申请时间" class="form-control laydate-icon">
+        <input type="text" name="applytime" id="applytime"  lay-verify="required" placeholder="请输入申请时间" class="form-control laydate-icon">
       </div>
     </div>
     <div class="layui-form-item">
@@ -269,6 +269,7 @@
 							})
 							layer.close(index);
 						$('#selectOne').html(htmls);
+						$("#firstNames").html(htmls);
 						},
 						error: function() {
 							layer.msg("操作失败！", {
@@ -278,7 +279,26 @@
 						}
 					});
 					
-			
+					var getdata = {
+							type : "orgName",
+						}
+					var htmlfr=""
+						$.ajax({
+							url : "${ctx}/basedata/list",
+							data : getdata,
+							type : "GET",
+							beforeSend : function() {
+								index;
+							},
+							success : function(result) {
+								$(result.data).each(function(k, j) {
+									htmlfr += '<option value="'+j.id+'">' + j.name + '</option>'
+								});
+								var htmlth = '<select name="orgNameId" class="form-control  selectgroupChange"><option value="">请选择</option>' + htmlfr + '</select>'
+								$("#department").html(htmlth);
+								layer.close(index);
+							}
+						});
 
 					
 					
@@ -513,7 +533,7 @@
 							        ,area:['540px', '60%']
 							        ,shade: 0.5
 							        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
-							        ,btn: ['火速围观', '残忍拒绝']
+							        ,btn: ['确认', '取消']
 							        ,btnAlign: 'c'
 							        ,moveType: 1 //拖拽模式，0或者1
 							        ,content:dicDiv
@@ -526,6 +546,7 @@
 										})
 							        }
 							        ,yes: function(index, layero){
+							        	
 							        	form.on('submit(addRole)', function(data) {
 							        		console.log(data)
 							        		var variable='';
@@ -535,6 +556,18 @@
 							        		var leaveduration='';
 							        		var time='';
 							        		if(data.field.variable==0){
+							        			if(data.field.holidayType==0){
+							        				return layer.msg("请假类型不能为空", {icon: 2});
+							        			}
+							        			if(data.field.content==""){
+							        				return layer.msg("请假原因不能为空", {icon: 2});
+							        			}
+							        			if(data.field.leavetime==""){
+							        				return layer.msg("请假日期不能为空", {icon: 2});
+							        			}
+							        			if(data.field.leaveduration==""){
+							        				return layer.msg("请假时长不能为空", {icon: 2});
+							        			}
 							        			variable='holiday';
 							        			holidayType=data.field.holidayType;
 							        			content=data.field.content;
@@ -543,18 +576,33 @@
 							        			time={date:leavetime,time:leaveduration};
 							        		}
 							        		if(data.field.variable==1){
+							        			if(data.field.breaktime==""){
+							        				return layer.msg("调休日期不能为空", {icon: 2});
+							        			}
+							        			if(data.field.breakduration==""){
+							        				return layer.msg("调休时长不能为空", {icon: 2});
+							        			}
 							        			variable='tradeDays'
 							        			breaktime=data.field.breaktime;
 							        			breakduration=data.field.breakduration;
 							        			time={date:breaktime,time:breakduration};
 							        		}
 							        		if(data.field.variable==2){
+							        			if(data.field.repairtime==""){
+							        				return layer.msg("补签日期不能为空", {icon: 2});
+							        			}
 							        			variable='addSignIn' 
 							        			repairtime=data.field.repairtime;
 							        			Sign=data.field.Sign
 							        			time={date:repairtime,time:Sign};
 							        		}
 							        		if(data.field.variable==3){
+							        			if(data.field.overtime==""){
+							        				return layer.msg("加班日期不能为空", {icon: 2});
+							        			}
+							        			if(data.field.overduration==""){
+							        				return layer.msg("加班时长不能为空", {icon: 2});
+							        			}
 							        			variable='applyOvertime'
 							        			overtime=data.field.overtime;
 							        			overduration=data.field.overduration;
@@ -647,12 +695,12 @@
 					    	}
 					    	layer.open({
 						         type: 1
-						        ,title: "新增" //不显示标题栏
+						        ,title: "修改" //不显示标题栏
 						        ,closeBtn: false
 						        ,area:['540px', '60%']
 						        ,shade: 0.5
 						        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
-						        ,btn: ['火速围观', '残忍拒绝']
+						        ,btn: ['确定', '取消']
 						        ,btnAlign: 'c'
 						        ,moveType: 1 //拖拽模式，0或者1
 						        ,content:dicDiv
@@ -674,6 +722,18 @@
 						        		var leaveduration='';
 						        		var time='';
 						        		if(data.field.variable==0){
+						        			if(data.field.holidayType==0){
+						        				return layer.msg("请假类型不能为空", {icon: 2});
+						        			}
+						        			if(data.field.content==""){
+						        				return layer.msg("请假原因不能为空", {icon: 2});
+						        			}
+						        			if(data.field.leavetime==""){
+						        				return layer.msg("请假日期不能为空", {icon: 2});
+						        			}
+						        			if(data.field.leaveduration==""){
+						        				return layer.msg("请假时长不能为空", {icon: 2});
+						        			}
 						        			variable='holiday';
 						        			holidayType=data.field.holidayType;
 						        			content=data.field.content;
@@ -682,18 +742,33 @@
 						        			time={date:leavetime,time:leaveduration};
 						        		}
 						        		if(data.field.variable==1){
+						        			if(data.field.breaktime==""){
+						        				return layer.msg("调休日期不能为空", {icon: 2});
+						        			}
+						        			if(data.field.breakduration==""){
+						        				return layer.msg("调休时长不能为空", {icon: 2});
+						        			}
 						        			variable='tradeDays'
 						        			breaktime=data.field.breaktime;
 						        			breakduration=data.field.breakduration;
 						        			time={date:breaktime,time:breakduration};
 						        		}
 						        		if(data.field.variable==2){
+						        			if(data.field.repairtime==""){
+						        				return layer.msg("补签日期不能为空", {icon: 2});
+						        			}
 						        			variable='addSignIn' 
 						        			repairtime=data.field.repairtime;
 						        			Sign=data.field.Sign
 						        			time={date:repairtime,time:Sign};
 						        		}
 						        		if(data.field.variable==3){
+						        			if(data.field.overtime==""){
+						        				return layer.msg("加班日期不能为空", {icon: 2});
+						        			}
+						        			if(data.field.overduration==""){
+						        				return layer.msg("加班时长不能为空", {icon: 2});
+						        			}
 						        			variable='applyOvertime'
 						        			overtime=data.field.overtime;
 						        			overduration=data.field.overduration;
@@ -745,7 +820,7 @@
 					    	$.ajax({
 								url: "${ctx}/personnel/addApplicationLeave",
 								data: data,
-								type: "GET",
+								type: "Post",
 								beforeSend: function() {
 									index;
 								},
