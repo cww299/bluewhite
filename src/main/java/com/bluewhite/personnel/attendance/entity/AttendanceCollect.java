@@ -94,13 +94,13 @@ public class AttendanceCollect extends BaseEntity<Long>{
 	private Double weekendTurnWork;
 	
 	/**
-	 * 请假详情
+	 * 请假时长
 	 */
 	@Column(name = "Leave_time")
 	private Double LeaveTime;
 	
 	/**
-	 * 请假详情
+	 * 请假事项详情
 	 */
 	@Column(name = "Leave_details")
 	private String LeaveDetails;
@@ -122,8 +122,11 @@ public class AttendanceCollect extends BaseEntity<Long>{
     	turnWork =  list.stream().filter(AttendanceTime->AttendanceTime.getTurnWorkTime()!=null).mapToDouble(AttendanceTime::getTurnWorkTime).sum();
     	overtime =  list.stream().filter(AttendanceTime->AttendanceTime.getOvertime()!=null).mapToDouble(AttendanceTime::getOvertime).sum();
     	dutyWork = list.stream().filter(AttendanceTime->AttendanceTime.getDutytime()!=null).mapToDouble(AttendanceTime::getDutytime).sum();
+    	LeaveTime = list.stream().filter(AttendanceTime->AttendanceTime.getLeaveTime()!=null).mapToDouble(AttendanceTime::getLeaveTime).sum();
     	allWork = NumUtils.sum(turnWork, overtime);
-    	
+    	list.stream().forEach(at-> {
+    		LeaveDetails = LeaveDetails+","+at.getHolidayDetail();
+    	});
     	//工作日AttendanceTime集合
 		List<AttendanceTime> manDayList = null;
 		//周末AttendanceTime集合

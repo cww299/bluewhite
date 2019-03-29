@@ -26,7 +26,7 @@ public interface BaseCRUDService<T,ID> {
      * @param t 实体
      * @return 返回更新的实体
      */
-    public T update(T t) ;
+    public T update(T t,T ot) ;
     
     /**
      * 根据主键删除相应实体
@@ -34,6 +34,13 @@ public interface BaseCRUDService<T,ID> {
      * @param id 主键
      */
     public void delete(ID id);
+    
+    /**
+     * 批量删除
+     *
+     * @param id 主键
+     */
+    public int delete(String ids);
     
     /**
      * 按照主键查询

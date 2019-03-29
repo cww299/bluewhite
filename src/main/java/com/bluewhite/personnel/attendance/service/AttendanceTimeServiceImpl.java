@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.druid.sql.visitor.functions.Now;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
@@ -264,18 +265,18 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			// 循环一次结束后，获取下一天的签到开始时间,6点开始
 			beginTimes = DatesUtil.nextDay(beginTimes);
 		}
-		return dao.save(attendanceTimeList);
+		return attendanceTimeList;
 	}
 
 	@Override
-	public List<Map<String, Object>> findAttendanceTimeCollect(AttendanceTime attendanceTime) {
-		return this.AttendanceCollect(this.findAttendanceTime(attendanceTime));
+	public List<Map<String, Object>> findAttendanceTimeCollect(AttendanceTime attendanceTime) throws ParseException {
+		return attendanceCollect(attendanceTimeByApplication(findAttendanceTime(attendanceTime)));
 	}
 
 	/**
 	 * 通过传入的工作情况，按人员汇总出考勤数据
 	 */
-	private List<Map<String, Object>> AttendanceCollect(List<AttendanceTime> attendanceTimeList) {
+	private List<Map<String, Object>> attendanceCollect(List<AttendanceTime> attendanceTimeList) {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		// 最外层循环人员list
 		List<Map<String, Object>> allList = new ArrayList<>();
@@ -293,6 +294,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			List<AttendanceTime> attendanceTimeList1 = psList1.stream()
 					.sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
 			AttendanceCollect attendanceCollect = new AttendanceCollect(psList1);
+			attendanceCollectDao.save(attendanceCollect);
 			allMap.put("attendanceTimeData", attendanceTimeList1);
 			allMap.put("collect", attendanceCollect);
 			allList.add(allMap);
@@ -363,10 +365,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	}
 	
 	@Override
-	public List<AttendanceTime> attendanceTimeByApplication(AttendanceTime attendanceTime) throws ParseException {
+	public List<AttendanceTime> attendanceTimeByApplication(List<AttendanceTime> attendanceTimeList) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		attendanceTime.setOrderTimeBegin(DatesUtil.getLastDayOfMonth(attendanceTime.getOrderTimeBegin()));
-		List<AttendanceTime> attendanceTimeList = this.findAttendanceTimePage(attendanceTime);
 		// 按人员分组
 		Map<Long, List<AttendanceTime>> mapAttendanceTime = attendanceTimeList.stream()
 				.collect(Collectors.groupingBy(AttendanceTime::getUserId, Collectors.toList()));
@@ -374,13 +374,12 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			// 获取单一员工日期区间所有的请假事项
 			List<AttendanceTime> psList1 = mapAttendanceTime.get(ps1);
 			// 按考勤数据日期自然排序
-			List<AttendanceTime> attendanceTimeListSort = psList1.stream().filter(AttendanceTime->AttendanceTime.getUserId().equals(ps1))
-					.sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
-			for(AttendanceTime at: psList1){
+			List<AttendanceTime> attendanceTimeListSort = psList1.stream().sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
+			for(AttendanceTime at: attendanceTimeListSort){
 				// 检查当前月份属于夏令时或冬令时 flag=ture 为夏令时
 				boolean flag = false;
 				try {
-					flag = DatesUtil.belongCalendar(attendanceTime.getOrderTimeBegin());
+					flag = DatesUtil.belongCalendar(at.getTime());
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
@@ -398,15 +397,11 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				Double turnWorkTime = null;
 				// 休息时长
 				Double restTime = null;
-			
-				
-				//通过考勤数据的日期，查找出请假事项中的所以符合该员工，当前日期的请假事项；
-				List<ApplicationLeave> applicationLeave = applicationLeaveDao.findByUserId(at.getUserId());
+				//查找出申请时间是当月的有符合该员工请假事项
+				List<ApplicationLeave> applicationLeave = applicationLeaveDao.findByUserIdAndWriteTimeBetween(at.getUserId(),
+						DatesUtil.getFirstDayOfMonth(at.getTime()),DatesUtil.getLastDayOfMonth(at.getTime()));
 				for(ApplicationLeave al :applicationLeave){
-					 String allTime = al.getTime();
-					 JSONArray jsonArray = JSONArray.parseArray(allTime);
-					 for (int i = 0; i < jsonArray.size(); i++) {
-							JSONObject jo = jsonArray.getJSONObject(i); 
+						  	 JSONObject jo = JSON.parseObject(al.getTime());
 					         String date =  jo.getString("date");
 					         Double time = Double.valueOf(jo.getString("time"));
 					         //获取时间区间
@@ -449,6 +444,9 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					        				 if(sdf.parse(dt).compareTo(at.getTime())==0){
 					        					 //变更为请假状态
 					        					 at.setFlag(2);
+					        					 time = time>=turnWorkTime ? turnWorkTime : NumUtils.sub(time,turnWorkTime);
+					        					 at.setLeaveTime(at.getLeaveTime()+time);
+					        					 at.setHolidayDetail(at.getHolidayDetail()+","+al.getHolidayDetail());
 					        				 }
 					        			 }
 					        	 }
@@ -484,17 +482,16 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 											sign = true;
 										}
 									}
-					        			// 进行出勤，加班，缺勤，迟到，早退的计算
+					        		// 进行出勤，加班，缺勤，迟到，早退的计算
 									AttendanceTime signAtt= AttendanceTool.attendanceIntTool(sign, workTime, workTimeEnd, minute, turnWorkTime, at,
 												attendanceInit, at.getUser());
-									at=signAtt;
+									at = signAtt;
 					        	 }
 					        	 
 					        	 //加班
 					        	 if(al.isApplyOvertime() && at.getTime().compareTo(dateLeave)==0){
 					        		 at.setOvertime(NumUtils.sum(at.getOvertime(),time));
 					        	 }
-					        	 
 					        	 //调休且员工出勤时间等于调休到的那一天
 								 if(al.isTradeDays()  && at.getTime().compareTo(dateLeave)==0){
 									 at.setTurnWorkTime(turnWorkTime);
@@ -502,16 +499,11 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 									 at.setBelate(0);	
 									 at.setBelateTime(0.0);
 								}
-					 	}
-					
-					 
+					 	
 					}
 				}
 			}
-			
-			
-		
-		return null;
+		return dao.save(attendanceTimeList);
 	}
 	
 

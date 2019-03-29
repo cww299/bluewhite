@@ -95,6 +95,13 @@ public class AttendanceTime extends BaseEntity<Long> {
 	private Double dutytime = 0.0;
 	
 	/**
+	 * 请假时长
+	 * 
+	 */
+	@Column(name = "leave_time")
+	private Double leaveTime = 0.0;
+	
+	/**
 	 * 星期
 	 * 
 	 */
@@ -138,6 +145,12 @@ public class AttendanceTime extends BaseEntity<Long> {
 	private Double belateTime = 0.0;
 	
 	/**
+	 * 详情
+	 */
+	@Column(name = "holiday_detail")
+	private String holidayDetail;
+	
+	/**
 	 * 员工姓名
 	 */
 	@Transient
@@ -169,6 +182,22 @@ public class AttendanceTime extends BaseEntity<Long> {
 
 	
 	
+
+	public String getHolidayDetail() {
+		return holidayDetail;
+	}
+
+	public void setHolidayDetail(String holidayDetail) {
+		this.holidayDetail = holidayDetail;
+	}
+
+	public Double getLeaveTime() {
+		return leaveTime;
+	}
+
+	public void setLeaveTime(Double leaveTime) {
+		this.leaveTime = leaveTime;
+	}
 
 	public Integer getLeaveEarly() {
 		return leaveEarly;

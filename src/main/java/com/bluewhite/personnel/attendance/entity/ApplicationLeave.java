@@ -60,6 +60,12 @@ public class ApplicationLeave extends BaseEntity<Long>  {
 	private boolean holiday;
 	
 	/**
+	 * 详情
+	 */
+	@Column(name = "holiday_detail")
+	private String holidayDetail;
+	
+	/**
 	 * 是否调休(true=是)
 	 */
 	@Column(name = "trade_days")
@@ -115,6 +121,14 @@ public class ApplicationLeave extends BaseEntity<Long>  {
 	
 	
 	
+
+	public String getHolidayDetail() {
+		return holidayDetail;
+	}
+
+	public void setHolidayDetail(String holidayDetail) {
+		this.holidayDetail = holidayDetail;
+	}
 
 	public String getContent() {
 		return content;
