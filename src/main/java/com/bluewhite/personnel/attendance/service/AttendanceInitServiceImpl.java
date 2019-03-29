@@ -34,8 +34,8 @@ public class AttendanceInitServiceImpl extends BaseServiceImpl< AttendanceInit, 
 		Page<AttendanceInit> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按姓名查找
-			if (!StringUtils.isEmpty(param.getUserName())) {
-				predicate.add(cb.equal(root.get("user").get("userName").as(String.class), param.getUserName()));
+			if (!StringUtils.isEmpty(param.getUserId())) {
+				predicate.add(cb.equal(root.get("user").get("id").as(String.class), param.getUserId()));
 			}
 			// 按部门查找
 			if (!StringUtils.isEmpty(param.getOrgNameId())) {

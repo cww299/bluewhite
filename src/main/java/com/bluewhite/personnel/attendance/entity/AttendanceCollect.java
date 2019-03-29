@@ -119,6 +119,8 @@ public class AttendanceCollect extends BaseEntity<Long>{
 	
 	//有参构造，直接传入AttendanceTime的list，计算出汇总后的数据
     public AttendanceCollect (List<AttendanceTime> list){
+    	time = list.get(0).getTime();
+    	userId = list.get(0).getUserId();
     	turnWork =  list.stream().filter(AttendanceTime->AttendanceTime.getTurnWorkTime()!=null).mapToDouble(AttendanceTime::getTurnWorkTime).sum();
     	overtime =  list.stream().filter(AttendanceTime->AttendanceTime.getOvertime()!=null).mapToDouble(AttendanceTime::getOvertime).sum();
     	dutyWork = list.stream().filter(AttendanceTime->AttendanceTime.getDutytime()!=null).mapToDouble(AttendanceTime::getDutytime).sum();
