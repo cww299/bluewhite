@@ -35,18 +35,11 @@
 											<tr>
 												<td>申请人:</td>
 												<td>
-												<select name="userId" class="form-control search-query name" lay-verify="required" id="firstNames" lay-search="true"></select>
+												<select name="userId" class="form-control search-query name"  id="firstNames" lay-search="true"></select>
 												</td>
 												<td>&nbsp&nbsp</td>
-												<td>报销内容:</td>
-												<td>
-													<input type="text" name="content" class="form-control search-query" />
-												</td>
-												<td>&nbsp&nbsp</td>
-												<td>
-													<select class="form-control" name="expenseDate" id="selectone">
-														<option value="2018-10-08 00:00:00">付款日期</option>
-													</select>
+												<td>部门:</td>
+												<td id="orgNameId">
 												</td>
 												<td>&nbsp&nbsp</td>
 												<td>开始:</td>
@@ -58,15 +51,6 @@
 												<td>
 													<input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="form-control laydate-icon">
 												</td>
-												<td>&nbsp&nbsp</td>
-												<td>是否核对:
-													<td>
-														<select class="form-control" name="flag">
-															<option value="">请选择</option>
-															<option value="0">未核对</option>
-															<option value="1">已核对</option>
-														</select>
-													</td>
 													<td>&nbsp&nbsp</td>
 													<td>
 														<div class="layui-inline">
@@ -294,8 +278,8 @@
 								$(result.data).each(function(k, j) {
 									htmlfr += '<option value="'+j.id+'">' + j.name + '</option>'
 								});
-								var htmlth = '<select name="orgNameId" class="form-control  selectgroupChange"><option value="">请选择</option>' + htmlfr + '</select>'
-								$("#department").html(htmlth);
+								var htmlth = '<select name="orgNameId" class="form-control"><option value="">请选择</option>' + htmlfr + '</select>'
+								$("#orgNameId").html(htmlth);
 								layer.close(index);
 							}
 						});
@@ -424,27 +408,6 @@
 								elem.val(elem.data('value'));
 							});
 							form.render();
-							// 初始化laydate
-							layui.each(tableView.find('td[data-field="expenseDate"]'), function(index, tdElem) {
-								tdElem.onclick = function(event) {
-									layui.stope(event)
-								};
-								laydate.render({
-									elem: tdElem.children[0],
-									format: 'yyyy-MM-dd HH:mm:ss',
-									done: function(value, date) {
-											var id = table.cache[tableView.attr('lay-id')][index].id
-											var postData = {
-												id: id,
-												expenseDate: value,
-											};
-											//调用新增修改
-											mainJs.fAdd(postData);
-									}
-								})
-
-							})
-
 						},
 
 					});
@@ -525,7 +488,12 @@
 								break;
 							case 'notice':
 								var dicDiv=$('#layuiadmin-form-admin');
-								
+								document.getElementById("layuiadmin-form-admin").reset();
+					        	$("#leave").css("display","block")
+								$("#Break").css("display","none")
+								$("#repair").css("display","none")
+								$("#overtime").css("display","none")
+					        	layui.form.render();
 								layer.open({
 							         type: 1
 							        ,title: "新增" //不显示标题栏
@@ -617,8 +585,12 @@
 							        			time:JSON.stringify(time)
 							        	}	
 							        	mainJs.fAdd(postData);
-							        	table.reload('tableData', {
-										});
+							        	document.getElementById("layuiadmin-form-admin").reset();
+							        	$("#leave").css("display","block")
+										$("#Break").css("display","none")
+										$("#repair").css("display","none")
+										$("#overtime").css("display","none")
+							        	layui.form.render();
 										})
 										
 							        }
@@ -784,8 +756,7 @@
 						        			time:JSON.stringify(time)
 						        	}	
 						        	mainJs.fAdd(postData);
-						        	table.reload('tableData', {
-									});
+						        	
 									})
 
 						        }
@@ -826,7 +797,7 @@
 								},
 								success: function(result) {
 									if(0 == result.code) {
-										/* table.reload('tableData');  */
+										table.reload('tableData');
 										layer.msg(result.message, {
 											icon: 1,
 											time:500

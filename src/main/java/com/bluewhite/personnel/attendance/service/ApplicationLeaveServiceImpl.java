@@ -91,24 +91,12 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 		JSONObject jo = JSON.parseObject(applicationLeave.getTime());
 		String date = jo.getString("date");
 		String time = jo.getString("time");
-		  //获取时间区间
-		 String[] dateArr =  date.split("~");
-		 Date dateLeave =null;
-		 AttendanceTime attendanceTime = null;
-        if(dateArr.length<2){
-       	 	dateLeave = sdf.parse(date);
-       	 	attendanceTime = attendanceTimeDao.findByUserIdAndTime(applicationLeave.getUserId(), dateLeave);
-        }
-        
+		//获取时间区间
+		String[] dateArr =  date.split("~");
+		Date dateLeave =null;
+		AttendanceTime attendanceTime = null;
 		// 检查当前月份属于夏令时或冬令时 flag=ture 为夏令时
 		boolean flag = false;
-		try {
-			flag = DatesUtil.belongCalendar(dateLeave);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		// 获取员工考勤的初始化参数
-		AttendanceInit attendanceInit = attendanceInitDao.findByUserId(applicationLeave.getUserId());
 		// 上班开始时间
 		Date workTime = null;
 		// 上班结束时间
@@ -121,6 +109,16 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 		Double turnWorkTime = null;
 		// 休息时长
 		Double restTime = null;
+        if(dateArr.length<2){
+       	 	dateLeave = sdf.parse(date);
+       	 	attendanceTime = attendanceTimeDao.findByUserIdAndTime(applicationLeave.getUserId(), dateLeave);
+		try {
+			flag = DatesUtil.belongCalendar(dateLeave);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		// 获取员工考勤的初始化参数
+		AttendanceInit attendanceInit = attendanceInitDao.findByUserId(applicationLeave.getUserId());
 		// flag=ture 为夏令时
 		if (flag) {
 			String[] workTimeArr = attendanceInit.getWorkTimeSummer().split("-");
@@ -146,7 +144,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 		restEndTime = DatesUtil.dayTime(dateLeave, restTimeArr[1]);
 		restTime = attendanceInit.getRestWinter();
 		turnWorkTime = attendanceInit.getTurnWorkTimeWinter();
-
+        }
 		String holidayDetail = "";
 		if (applicationLeave.isHoliday()) {
 			// (0=事假、1=病假、2=丧假、3=婚假、4=产假、5=护理假
