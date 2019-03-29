@@ -33,7 +33,7 @@
 									<div class="layui-form-item">
 										<table>
 											<tr>
-												<td>申请人:</td>
+												<td>人员:</td>
 												<td>
 												<select name="userId" class="form-control search-query name"  id="firstNames" lay-search="true"></select>
 												</td>
@@ -41,17 +41,6 @@
 												<td>部门:</td>
 												<td id="orgNameId">
 												</td>
-												<td>&nbsp&nbsp</td>
-												<td>开始:</td>
-												<td>
-													<input id="startTime" name="orderTimeBegin" placeholder="请输入开始时间" class="form-control laydate-icon">
-												</td>
-												<td>&nbsp&nbsp</td>
-												<td>结束:</td>
-												<td>
-													<input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="form-control laydate-icon">
-												</td>
-													<td>&nbsp&nbsp</td>
 													<td>
 														<div class="layui-inline">
 															<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-search">
@@ -84,7 +73,7 @@
     <div class="layui-form-item">
      	<label class="layui-form-label" style="width: 130px;">休息方式</label>
      	<div class="layui-input-inline">
-        	<select name="restType" lay-filter="restType" lay-verify="required"  lay-search="true"><option value="0">请选择</option><option value="1">无到岗要求</option><option value="2">周休一天</option><option value="3">月休两天，其他周日算加班</option><option value="4">全年无休</option><option value="5">按到岗小时计算（类似全年无休，有自己的节假日休息））</option></select>
+        	<select name="restType" lay-filter="restType" id="restType" lay-verify="required"  lay-search="true"><option value="0">请选择</option><option value="1">无到岗要求</option><option value="2">周休一天</option><option value="3">月休两天，其他周日算加班</option><option value="4">全年无休</option><option value="5">按到岗小时计算（类似全年无休，有自己的节假日休息））</option></select>
       	</div>
     </div>
     <div class="layui-form-item">
@@ -155,21 +144,21 @@
     <div class="layui-form-item">
      	<label class="layui-form-label" style="width: 130px;">午休状态</label>
      	<div class="layui-input-inline">
-        	<select name="restTimeWork" lay-filter="restTimeWork" lay-verify="required"  lay-search="true"><option value="0">请选择</option><option value="1">默认休息</option><option value="2">出勤</option><option value="3">加班</option></select>
+        	<select name="restTimeWork" lay-filter="restTimeWork" id="restTimeWork" lay-verify="required"  lay-search="true"><option value="0">请选择</option><option value="1">默认休息</option><option value="2">出勤</option><option value="3">加班</option></select>
       	</div>
     </div>
     
     <div class="layui-form-item">
      	<label class="layui-form-label" style="width: 130px;">核算加班</label>
      	<div class="layui-input-inline">
-        	<select name="overTimeType" lay-filter="overTimeType" lay-verify="required"  lay-search="true"><option value="0">请选择</option><option value="1">看加班申请</option><option value="2">打卡核算</option></select>
+        	<select name="overTimeType" id="overTimeType" lay-filter="overTimeType" lay-verify="required"  lay-search="true"><option value="0">请选择</option><option value="1">看加班申请</option><option value="2">打卡核算</option></select>
       	</div>
     </div>
     
     <div class="layui-form-item">
      	<label class="layui-form-label" style="width: 130px;">加班后到岗</label>
      	<div class="layui-input-inline">
-        	<select name="comeWork" lay-filter="comeWork" lay-verify="required"  lay-search="true"><option value="0">请选择</option><option value="1">按点上班</option><option value="2">第二天上班时间以超过24:00后的时间往后推</option><option value="3">超过24:30后默认休息7.5小时</option></select>
+        	<select name="comeWork" id="comeWork" lay-filter="comeWork" lay-verify="required"  lay-search="true"><option value="0">请选择</option><option value="1">按点上班</option><option value="2">第二天上班时间以超过24:00后的时间往后推</option><option value="3">超过24:30后默认休息7.5小时</option></select>
       	</div>
     </div>
     
@@ -477,34 +466,6 @@
 					});
 
 					
-					form.on("radio(variable)", function(data) {
-						if(data.value==0){
-							$("#leave").css("display","block")
-							$("#Break").css("display","none")
-							$("#repair").css("display","none")
-							$("#overtime").css("display","none")
-						}
-						if(data.value==1){
-							$("#Break").css("display","block")
-							$("#leave").css("display","none")
-							$("#repair").css("display","none")
-							$("#overtime").css("display","none")
-							 
-						}
-						if(data.value==2){
-							$("#repair").css("display","block")
-							$("#Break").css("display","none")
-							$("#leave").css("display","none")
-							$("#overtime").css("display","none")
-						}
-						if(data.value==3){
-							$("#overtime").css("display","block")
-							$("#leave").css("display","none")
-							$("#Break").css("display","none")
-							$("#repair").css("display","none")
-						}
-					});	
-					
 					
 					//监听头工具栏事件
 					table.on('toolbar(tableData)', function(obj) {
@@ -520,7 +481,7 @@
 										ids: checkedIds,
 									}
 									$.ajax({
-										url: "${ctx}/personnel/deleteApplicationLeave",
+										url: "${ctx}/personnel/deleteAttendanceInit",
 										data: postData,
 										traditional: true,
 										type: "GET",
@@ -575,8 +536,6 @@
 							        }
 							        ,yes: function(index, layero){
 							        	form.on('submit(addRole)', function(data) {
-							        		console.log(data)
-							        		
 							        	 mainJs.fAdd(data.field); 
 							        	document.getElementById("layuiadmin-form-admin").reset();
 							        	layui.form.render();
@@ -605,55 +564,28 @@
 								$(k).val(id);
 								form.render('select');
 							});
-					    	$('#holidayType').each(function(j,k){
-					    		var id=data.holidayType;
+					    	$('#restType').each(function(j,k){
+					    		var id=data.restType;
 								$(k).val(id);
 								form.render('select');
 							});
-					    	if(data.holiday==true){
-					    		$("#leave").css("display","block")
-								$("#Break").css("display","none")
-								$("#repair").css("display","none")
-								$("#overtime").css("display","none")
-					    	$("#qing").get(0).checked=true;
-					    	form.render('radio');
-					    	$("#layuiadmin-form-admin").setForm({content:data.content,applytime:data.writeTime,leavetime:JSON.parse(data.time).date,leaveduration:JSON.parse(data.time).time});
-					    	}
-					    	if(data.tradeDays==true){
-					    		$("#Break").css("display","block")
-								$("#leave").css("display","none")
-								$("#repair").css("display","none")
-								$("#overtime").css("display","none")
-					    		$("#tiao").get(0).checked=true;
-					    		form.render('radio');
-					    		$("#layuiadmin-form-admin").setForm({applytime:data.writeTime,breaktime:JSON.parse(data.time).date,breakduration:JSON.parse(data.time).time});
-					    	}
-					    	if(data.addSignIn==true){
-					    		$("#repair").css("display","block")
-								$("#Break").css("display","none")
-								$("#leave").css("display","none")
-								$("#overtime").css("display","none")
-					    		$("#bu").get(0).checked=true;
-					    		form.render('radio');
-					    		$("#layuiadmin-form-admin").setForm({applytime:data.writeTime,repairtime:JSON.parse(data.time).date});
-					    		if(JSON.parse(data.time).time==0){
-					    			$("#qianru").get(0).checked=true;
-						    		form.render('radio');
-					    		}
-					    		if(JSON.parse(data.time).time==1){
-					    			$("#qianchu").get(0).checked=true;
-						    		form.render('radio');
-					    		}
-					    	}
-					    	if(data.applyOvertime==true){
-					    		$("#overtime").css("display","block")
-								$("#leave").css("display","none")
-								$("#Break").css("display","none")
-								$("#repair").css("display","none")
-					    		$("#jia").get(0).checked=true;
-					    		form.render('radio');
-					    		$("#layuiadmin-form-admin").setForm({applytime:data.writeTime,overtime:JSON.parse(data.time).date,overduration:JSON.parse(data.time).time});
-					    	}
+					    	$('#restTimeWork').each(function(j,k){
+					    		var id=data.restTimeWork;
+								$(k).val(id);
+								form.render('select');
+							});
+							$('#overTimeType').each(function(j,k){
+					    		var id=data.overTimeType;
+								$(k).val(id);
+								form.render('select');
+							});
+							$('#comeWork').each(function(j,k){
+					    		var id=data.comeWork;
+								$(k).val(id);
+								form.render('select');
+							});
+					    	$("#layuiadmin-form-admin").setForm({restDay:data.restDay,workTimeSummer:data.workTimeSummer,workTimeWinter:data.workTimeWinter,turnWorkTimeSummer:data.turnWorkTimeSummer,turnWorkTimeWinter:data.turnWorkTimeWinter,restTimeSummer:data.restTimeSummer,restTimeWinter:data.restTimeWinter,restSummer:data.restSummer,restWinter:data.restWinter});
+					    	
 					    	layer.open({
 						         type: 1
 						        ,title: "修改" //不显示标题栏
@@ -675,79 +607,14 @@
 						        }
 						        ,yes: function(index, layero){
 						        	form.on('submit(addRole)', function(data) {
-						        		var variable='';
-						        		var holidayType='';
-						        		var content='';
-						        		var leavetime='';
-						        		var leaveduration='';
-						        		var time='';
-						        		if(data.field.variable==0){
-						        			if(data.field.holidayType==0){
-						        				return layer.msg("请假类型不能为空", {icon: 2});
-						        			}
-						        			if(data.field.content==""){
-						        				return layer.msg("请假原因不能为空", {icon: 2});
-						        			}
-						        			if(data.field.leavetime==""){
-						        				return layer.msg("请假日期不能为空", {icon: 2});
-						        			}
-						        			if(data.field.leaveduration==""){
-						        				return layer.msg("请假时长不能为空", {icon: 2});
-						        			}
-						        			variable='holiday';
-						        			holidayType=data.field.holidayType;
-						        			content=data.field.content;
-						        			leavetime=data.field.leavetime;
-						        			leaveduration=data.field.leaveduration;
-						        			time={date:leavetime,time:leaveduration};
-						        		}
-						        		if(data.field.variable==1){
-						        			if(data.field.breaktime==""){
-						        				return layer.msg("调休日期不能为空", {icon: 2});
-						        			}
-						        			if(data.field.breakduration==""){
-						        				return layer.msg("调休时长不能为空", {icon: 2});
-						        			}
-						        			variable='tradeDays'
-						        			breaktime=data.field.breaktime;
-						        			breakduration=data.field.breakduration;
-						        			time={date:breaktime,time:breakduration};
-						        		}
-						        		if(data.field.variable==2){
-						        			if(data.field.repairtime==""){
-						        				return layer.msg("补签日期不能为空", {icon: 2});
-						        			}
-						        			variable='addSignIn' 
-						        			repairtime=data.field.repairtime;
-						        			Sign=data.field.Sign
-						        			time={date:repairtime,time:Sign};
-						        		}
-						        		if(data.field.variable==3){
-						        			if(data.field.overtime==""){
-						        				return layer.msg("加班日期不能为空", {icon: 2});
-						        			}
-						        			if(data.field.overduration==""){
-						        				return layer.msg("加班时长不能为空", {icon: 2});
-						        			}
-						        			variable='applyOvertime'
-						        			overtime=data.field.overtime;
-						        			overduration=data.field.overduration;
-						        			time={date:overtime,time:overduration};
-						        		}
-						        	var postData={
-						        			id:id,
-						        			userId:data.field.userId,
-						        			writeTime:data.field.applytime,
-						        			[variable]:'true',
-						        			holidayType:holidayType,
-						        			content:content,
-						        			time:JSON.stringify(time)
-						        	}	
-						        	mainJs.fAdd(postData);
-						        	
+						        	 mainJs.fAdd(data.field); 
 									})
-
+									
 						        }
+						        ,end:function(){
+						        	document.getElementById("layuiadmin-form-admin").reset();
+						        	layui.form.render();
+								  } 
 						       
 						      });
 					    	

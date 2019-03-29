@@ -727,7 +727,10 @@
 						        	
 									})
 
-						        }
+						        },end:function(){
+						        	document.getElementById("layuiadmin-form-admin").reset();
+						        	layui.form.render();
+								  } 
 						       
 						      });
 					    	
