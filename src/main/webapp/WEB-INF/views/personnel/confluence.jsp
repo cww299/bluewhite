@@ -25,7 +25,12 @@
 				<div class="col-md-12">
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h3 class="panel-title">总汇信息</h3>
+							<table><tr>    
+							 <td><font size="8" style="background-color:#9e9e1f;color: #fff">迟到</font></td>
+							 <td><td>&nbsp&nbsp</td></td>
+							 <td><font size="8" style="background-color:red;color: #fff">缺勤</font></td>
+							 </tr></table>
+							  </div>
 							<div class="actions pull-right">
 								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
 							</div>
@@ -182,6 +187,7 @@
 							var even = function(url, data) {
 								table.render({
 											elem : '#test',
+											size:'sm',
 											url : url,
 											where : data,
 											cellMinWidth : 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
@@ -223,6 +229,7 @@
 												var a;
 												var b;
 												var c;
+												var d;
 												var length = data[0].attendanceTimeData.length
 												$.each(data[0].attendanceTimeData,
 														function(i, v) {
@@ -235,7 +242,7 @@
 																rowspan : 3,
 																templet : function(
 																		d) {
-																	return d.attendanceTimeData[i].username
+																	return d.attendanceTimeData[i].userName
 																}
 															};
 															list[length + 1] = {
@@ -289,19 +296,18 @@
 															list[i + 1] = {
 																align : 'center',
 																title : v.time,
-																colspan : 3
+																colspan : 4
 															};
 															list1[i] = {
 																align : 'center',
 																title : v.week,
-																colspan : 3
+																colspan : 4
 															};
 															a = {
 																align : 'center',
 																title : '出勤',
 																edit: 'text',
-																templet : function(
-																		d) {
+																templet : function(d) {
 																	if (d.attendanceTimeData[i].turnWorkTime == 0)
 																		return '';
 																	else
@@ -324,17 +330,34 @@
 																align : 'center',
 																title : '缺勤',
 																edit: 'text',
-																templet : function(
-																		d) {
+																templet : function(d) {
 																	if (d.attendanceTimeData[i].dutytime == 0)
 																		return '';
 																	else
-																		return '<div id="100">'+d.attendanceTimeData[i].dutytime+'</div>';
+																		var colo;
+																		if(d.attendanceTimeData[i].holidayType == 0){
+																			
+																		}
+																		return '<div style="background-color:'+colo+';color: #fff">'+d.attendanceTimeData[i].dutytime+'</div>';
 																}
 															}
+															d = {
+																	align : 'center',
+																	title : '迟到(M)',
+																	width : 80,
+																	edit: 'text',
+																	
+																	templet : function(d) {
+																		if (d.attendanceTimeData[i].belateTime == 0)
+																			return '';
+																		else
+																			return '<div style="background-color:#9e9e1f;color: #fff">'+d.attendanceTimeData[i].belateTime+'</div>';
+																	}
+																}
 															list3.push(a);
 															list3.push(b);
-															list3.push(c)
+															list3.push(c);
+															list3.push(d);
 														});
 
 												list2.push(list)
@@ -343,6 +366,7 @@
 												table.init('test3', {
 													cols : list2,
 													data : res.data,
+													
 												});
 											},
 											page : false
