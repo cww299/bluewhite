@@ -284,6 +284,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	
 	@Override
 	public List<Map<String, Object>> findAttendanceTimeCollectList(AttendanceTime attendanceTime) throws ParseException {
+		attendanceTime.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(attendanceTime.getOrderTimeBegin()));
 		// 最外层循环人员list
 		List<Map<String, Object>> allList = new ArrayList<>();
 		// 单向数据map
@@ -301,10 +302,15 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			List<AttendanceTime> attendanceTimeList1 = psList1.stream()
 					.sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
 			AttendanceCollect attendanceCollect = attendanceCollectDao.findByUserIdAndTime(ps1, attendanceTime.getOrderTimeBegin());
+			for(AttendanceTime at :attendanceTimeList1){
+				at.setUser(null);
+			}
+			attendanceCollect.setUser(null);
 			allMap.put("attendanceTimeData", attendanceTimeList1);
 			allMap.put("collect", attendanceCollect);
+			allList.add(allMap);
 		}
-		return attendanceCollect(findAttendanceTime(attendanceTime),false);
+		return allList;
 	}
 	
 
