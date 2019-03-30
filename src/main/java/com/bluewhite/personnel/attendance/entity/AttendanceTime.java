@@ -103,6 +103,12 @@ public class AttendanceTime extends BaseEntity<Long> {
 	private Double leaveTime = 0.0;
 	
 	/**
+	 * 请假类型(0=事假、1=病假、2=丧假、3=婚假、4=产假、5=护理假）
+	 */
+	@Column(name = "holiday_type")
+	private Integer holidayType;
+	
+	/**
 	 * 星期
 	 * 
 	 */
@@ -183,6 +189,14 @@ public class AttendanceTime extends BaseEntity<Long> {
 
 	
 	
+
+	public Integer getHolidayType() {
+		return holidayType;
+	}
+
+	public void setHolidayType(Integer holidayType) {
+		this.holidayType = holidayType;
+	}
 
 	public String getHolidayDetail() {
 		return holidayDetail;
