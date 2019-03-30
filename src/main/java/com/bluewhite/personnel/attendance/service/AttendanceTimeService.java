@@ -33,14 +33,28 @@ public interface AttendanceTimeService extends BaseCRUDService<AttendanceTime,Lo
 	 * @param attendance
 	 * @return
 	 */
-	public List<Map<String, Object>> findAttendanceTimeCollectAdd(AttendanceTime attendanceTime)throws ParseException;
+	public List<Map<String, Object>> findAttendanceTimeCollectAdd(AttendanceTime attendanceTime) throws ParseException;
 	
 	/**
 	 * 默认下考勤工作时长的汇总
 	 * @param attendance
 	 * @return
 	 */
-	public List<Map<String, Object>> findAttendanceTimeCollect(AttendanceTime attendanceTime)throws ParseException;
+	public List<Map<String, Object>> findAttendanceTimeCollect(AttendanceTime attendanceTime) throws ParseException;
+	
+	/**
+	 * 删除考勤工作汇总
+	 * @param attendance
+	 * @return
+	 */
+	public boolean deleteAttendanceTimeCollect(AttendanceTime attendanceTime);
+	
+	/**
+	 * 查找申请事项考勤工作
+	 * @param attendance
+	 * @return
+	 */
+	public List<Map<String, Object>> findAttendanceTimeCollectList(AttendanceTime attendanceTime) throws ParseException;
 	
 	/**
 	 * 手动修改考勤详细数据

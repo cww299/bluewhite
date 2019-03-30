@@ -28,6 +28,7 @@ public class AttendanceTime extends BaseEntity<Long> {
 	 * 员工考勤汇总日期
 	 * 
 	 */
+	@JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")
 	@Column(name = "time")
 	private Date time;
 	

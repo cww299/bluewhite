@@ -613,7 +613,6 @@
 				   
 				     $.ajax({
 					      url:"${ctx}/system/user/remind",
-					       /* data:data, */ 
 					      type:"GET",
 					      beforeSend:function(){
 						 	  index = layer.load(1, {

@@ -100,6 +100,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				attendanceTime.setNumber(us.getNumber());
 				attendanceTime.setWeek(DatesUtil.dateToWeek(beginTimes));
 				attendanceTime.setUserId(us.getId());
+				attendanceTime.setUserName(us.getUserName());
 
 				// 获取员工考勤的初始化参数
 				AttendanceInit attendanceInit = attendanceInitService.findByUserId(us.getId());
@@ -280,6 +281,53 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	public List<Map<String, Object>> findAttendanceTimeCollect(AttendanceTime attendanceTime) throws ParseException {
 		return attendanceCollect(findAttendanceTime(attendanceTime),false);
 	}
+	
+	@Override
+	public List<Map<String, Object>> findAttendanceTimeCollectList(AttendanceTime attendanceTime) throws ParseException {
+		// 最外层循环人员list
+		List<Map<String, Object>> allList = new ArrayList<>();
+		// 单向数据map
+		Map<String, Object> allMap = null;
+		List<AttendanceTime> attendanceTimeList = findAttendanceTimePage(attendanceTime);
+		// 按人员分组
+		Map<Long, List<AttendanceTime>> mapAttendance = attendanceTimeList.stream()
+				.filter(AttendanceTime -> AttendanceTime.getNumber() != null)
+				.collect(Collectors.groupingBy(AttendanceTime::getUserId, Collectors.toList()));
+		for (Long ps1 : mapAttendance.keySet()) {
+			allMap = new HashMap<>();
+			// 获取单一员工日期区间所有的考勤数据
+			List<AttendanceTime> psList1 = mapAttendance.get(ps1);
+			// 按日期自然排序
+			List<AttendanceTime> attendanceTimeList1 = psList1.stream()
+					.sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
+			AttendanceCollect attendanceCollect = attendanceCollectDao.findByUserIdAndTime(ps1, attendanceTime.getOrderTimeBegin());
+			allMap.put("attendanceTimeData", attendanceTimeList1);
+			allMap.put("collect", attendanceCollect);
+		}
+		return attendanceCollect(findAttendanceTime(attendanceTime),false);
+	}
+	
+
+	@Override
+	public boolean deleteAttendanceTimeCollect(AttendanceTime attendanceTime) {
+		List<AttendanceTime> attendanceTimeList = findAttendanceTimePage(attendanceTime);
+		// 按人员分组
+		Map<Long, List<AttendanceTime>> mapAttendance = attendanceTimeList.stream()
+				.filter(AttendanceTime -> AttendanceTime.getNumber() != null)
+				.collect(Collectors.groupingBy(AttendanceTime::getUserId, Collectors.toList()));
+		for (Long ps1 : mapAttendance.keySet()) {
+			// 获取单一员工日期区间所有的考勤数据
+			List<AttendanceTime> psList1 = mapAttendance.get(ps1);
+			// 按日期自然排序
+			List<AttendanceTime> attendanceTimeList1 = psList1.stream()
+					.sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
+			AttendanceCollect attendanceCollect = attendanceCollectDao.findByUserIdAndTime(ps1, attendanceTime.getOrderTimeBegin());
+			attendanceCollectDao.delete(attendanceCollect);
+		}
+		dao.delete(attendanceTimeList);
+		return true;
+	}
+	
 
 	/**
 	 * 通过传入的工作情况，按人员汇总出考勤数据
@@ -292,10 +340,10 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		// 单向数据map
 		Map<String, Object> allMap = null;
 		// 按人员分组
-		Map<String, List<AttendanceTime>> mapAttendance = attendanceTimeList.stream()
+		Map<Long, List<AttendanceTime>> mapAttendance = attendanceTimeList.stream()
 				.filter(AttendanceTime -> AttendanceTime.getNumber() != null)
-				.collect(Collectors.groupingBy(AttendanceTime::getNumber, Collectors.toList()));
-		for (String ps1 : mapAttendance.keySet()) {
+				.collect(Collectors.groupingBy(AttendanceTime::getUserId, Collectors.toList()));
+		for (Long ps1 : mapAttendance.keySet()) {
 			allMap = new HashMap<>();
 			// 获取单一员工日期区间所有的考勤数据
 			List<AttendanceTime> psList1 = mapAttendance.get(ps1);
@@ -348,15 +396,11 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
 	@Override
 	public List<AttendanceTime> findAttendanceTimePage(AttendanceTime param) {
-		Page<AttendanceTime> pages = dao.findAll((root, query, cb) -> {
+		List<AttendanceTime> list = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按用户 id过滤
 			if (param.getUserId() != null) {
 				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
-			}
-			// 按姓名查找
-			if (!StringUtils.isEmpty(param.getUserName())) {
-				predicate.add(cb.equal(root.get("user").get("userName").as(String.class), param.getUserName()));
 			}
 			// 按部门查找
 			if (!StringUtils.isEmpty(param.getOrgNameId())) {
@@ -370,8 +414,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
-		}, new PageParameter());
-		return pages.getContent();
+		});
+		return list;
 	}
 	
 	@Override
@@ -515,6 +559,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			}
 		return dao.save(attendanceTimeList);
 	}
+
 	
 
 

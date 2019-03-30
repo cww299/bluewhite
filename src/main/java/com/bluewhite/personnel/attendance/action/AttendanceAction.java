@@ -215,7 +215,7 @@ public class AttendanceAction {
 	 * @return cr
 	 * @throws ParseException
 	 */
-	@RequestMapping(value = "/personnel/intAttendanceTime", method = RequestMethod.GET)
+	@RequestMapping(value = "/personnel/intAttendanceTime", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse intAttendanceTime(HttpServletRequest request, AttendanceTime attendanceTime)
 			throws ParseException {
@@ -251,37 +251,34 @@ public class AttendanceAction {
 			}
 			break;
 		case 2:
+			attendanceTimeService.deleteAttendanceTimeCollect(attendanceTime);
 			cr.setData(attendanceTimeService.findAttendanceTimeCollectAdd(attendanceTime));
 			cr.setMessage("初始化成功");
 			break;
 		}
 		return cr;
 	}
-
+	
 	/**
 	 * 查询考勤工作详情
 	 * 
 	 * @param request
 	 *            请求
 	 * @return cr
+	 * @throws ParseException 
 	 */
-	@RequestMapping(value = "/personnel/findAttendanceTime", method = RequestMethod.GET)
+	@RequestMapping(value = "/personnel/findAttendanceTime", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse findAttendanceTime(HttpServletRequest request, AttendanceTime attendanceTime) {
+	public CommonResponse findAttendanceTime(HttpServletRequest request, AttendanceTime attendanceTime) throws ParseException {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(AttendanceTime.class, "time", "number", "user", "checkIn", "checkOut", "turnWorkTime",
-						"overtime", "week", "dutytime", "flag", "leaveEarly", "leaveEarlyTime", "belate", "belateTime")
-				.format(attendanceTimeService.findAttendanceTimePage(attendanceTime)).toJSON());
+		cr.setData(attendanceTimeService.findAttendanceTimeCollectList(attendanceTime)); 
 		cr.setMessage("查询成功");
 		return cr;
 	}
 
 	/**
 	 * 修改考勤工作详情
-	 * 
-	 * @param request
-	 *            请求
+	 * @param request 请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/personnel/updateAttendanceTime", method = RequestMethod.POST)

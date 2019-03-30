@@ -15,6 +15,7 @@ import com.bluewhite.base.BaseEntity;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.system.user.entity.User;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * 考勤汇总列总表，按月按员工汇总（员工每月一条汇总数据）
@@ -29,6 +30,7 @@ public class AttendanceCollect extends BaseEntity<Long>{
 	 * 考勤汇总日期
 	 * 
 	 */
+	@JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")
 	@Column(name = "time")
 	private Date time;
 	
