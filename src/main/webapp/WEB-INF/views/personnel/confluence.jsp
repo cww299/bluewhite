@@ -88,7 +88,7 @@
 							<table class="layui-hide" lay-filter="test3" id="test">
 
 							</table>
-							<div style="height: 700px;"></div>
+							
 						</div>
 					</div>
 				</div>
@@ -246,9 +246,7 @@
 												var length = data[0].attendanceTimeData.length
 												var ID;
 												$.each(data[0].attendanceTimeData,function(i, v) {
-													console.log(v)
 													ID = v.id;
-													console.log(ID)
 															list[0] = {
 																align : 'center',
 																title : '<span style="color:red">姓名</span>',
@@ -380,16 +378,13 @@
 																				colo='#1211e2';
 																			}
 																		}
-																		return '<div style="background-color:'+colo+';color: #fff">'+d.attendanceTimeData[i].dutytime+'</div>';
+																		return '<div id="'+ID+'" style="background-color:'+colo+';color: #fff">'+d.attendanceTimeData[i].dutytime+'</div>';
 																}
 															}
 															d = {
 																	align : 'center',
 																	title : '迟到(M)',
-																	field : ID,
 																	width : 80,
-																	edit: 'text',
-																	
 																	templet : function(d) {
 																		if (d.attendanceTimeData[i].belateTime == 0)
 																			return '';
@@ -422,8 +417,11 @@
 			                    });
 							
 							table.on('edit(test3)', function(obj) {
-								console.log(obj.field)
+								/* console.log(obj.field)
 								console.log(obj.value)
+								console.log(obj.data) */
+								var that=this
+								console.log( $(that).closest('td'))
 								var value = obj.value ,//得到修改后的值
 									data = obj.data ,//得到所在行所有键值
 									field = obj.field, //得到字段
