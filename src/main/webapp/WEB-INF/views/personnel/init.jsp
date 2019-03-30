@@ -537,6 +537,7 @@
 							        }
 							        ,yes: function(index, layero){
 							        	form.on('submit(addRole)', function(data) {
+							        		console.log(data.field)
 							        	 mainJs.fAdd(data.field); 
 							        	document.getElementById("layuiadmin-form-admin").reset();
 							        	layui.form.render();

@@ -25,16 +25,28 @@
 				<div class="col-md-12">
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<table><tr>    
-							 <td><font size="8" style="background-color:#9e9e1f;color: #fff">迟到</font></td>
+								<table><tr>    
+							 <td><font size="5" style="background-color:#9e9e1f;color: #fff">迟到</font></td>
 							 <td><td>&nbsp&nbsp</td></td>
-							 <td><font size="8" style="background-color:red;color: #fff">缺勤</font></td>
+							 <td><font size="5" style="background-color:#bf1515;color: #fff">缺勤</font></td>
+							 <td><td>&nbsp&nbsp</td></td>
+							 <td><font size="5" style="background-color:#00b0ff;color: #fff">事假</font></td>
+							 <td><td>&nbsp&nbsp</td></td>
+							 <td><font size="5" style="background-color:#13161c;color: #fff">病假</font></td>
+							 <td><td>&nbsp&nbsp</td></td>
+							 <td><font size="5" style="background-color:#b8c2d6;color: #fff">丧假</font></td>
+							 <td><td>&nbsp&nbsp</td></td>
+							 <td><font size="5" style="background-color:#da06af;color: #fff">婚假</font></td>
+							 <td><td>&nbsp&nbsp</td></td>
+							 <td><font size="5" style="background-color:#13a8bd;color: #fff">产假</font></td>
+							 <td><td>&nbsp&nbsp</td></td>
+							 <td><font size="5" style="background-color:#1211e2;color: #fff">护理假</font></td>
 							 </tr></table>
-							  </div>
-							<div class="actions pull-right">
-								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
+								<div class="actions pull-right">
+									<i class="fa fa-expand"></i>
+									<i class="fa fa-chevron-down"></i>
+								</div>
 							</div>
-						</div>
 						<div class="panel-body">
 							<div class="layui-form layui-card-header layuiadmin-card-header-auto">
 								<div class="layui-form-item">
@@ -76,6 +88,7 @@
 							<table class="layui-hide" lay-filter="test3" id="test">
 
 							</table>
+							<div style="height: 700px;"></div>
 						</div>
 					</div>
 				</div>
@@ -231,8 +244,11 @@
 												var c;
 												var d;
 												var length = data[0].attendanceTimeData.length
-												$.each(data[0].attendanceTimeData,
-														function(i, v) {
+												var ID;
+												$.each(data[0].attendanceTimeData,function(i, v) {
+													console.log(v)
+													ID = v.id;
+													console.log(ID)
 															list[0] = {
 																align : 'center',
 																title : '<span style="color:red">姓名</span>',
@@ -264,8 +280,7 @@
 																width : 70,
 																style : 'background-color: #5FB878;color: #fff',
 																rowspan : 3,
-																templet : function(
-																		d) {
+																templet : function(d) {
 																	return d.collect.overtime
 																}
 															};
@@ -276,8 +291,7 @@
 																width : 70,
 																style : 'background-color: #5FB878;color: #fff',
 																rowspan : 3,
-																templet : function(
-																		d) {
+																templet : function(d) {
 																	return d.collect.dutyWork
 																}
 															};
@@ -306,37 +320,65 @@
 															a = {
 																align : 'center',
 																title : '出勤',
+																field : ID,
 																edit: 'text',
 																templet : function(d) {
 																	if (d.attendanceTimeData[i].turnWorkTime == 0)
 																		return '';
 																	else
+																		
 																		return d.attendanceTimeData[i].turnWorkTime;
 																}
 															}
 															b = {
 																align : 'center',
 																title : '加班',
+																field : ID,
 																edit: 'text',
 																templet : function(
 																		d) {
 																	if (d.attendanceTimeData[i].overtime == 0)
 																		return '';
 																	else
+																		
 																		return d.attendanceTimeData[i].overtime;
 																}
 															};
 															c = {
 																align : 'center',
 																title : '缺勤',
+																field : ID,
 																edit: 'text',
 																templet : function(d) {
 																	if (d.attendanceTimeData[i].dutytime == 0)
 																		return '';
 																	else
 																		var colo;
-																		if(d.attendanceTimeData[i].holidayType == 0){
-																			
+																		if(d.attendanceTimeData[i].flag == 0){
+																			colo='#fff';
+																		}
+																		if(d.attendanceTimeData[i].flag ==1){
+																			colo='#bf1515';
+																		}
+																		if(d.attendanceTimeData[i].flag==2){
+																			if(d.attendanceTimeData[i].holidayType==0){
+																				colo='#00b0ff';
+																			}
+																			if(d.attendanceTimeData[i].holidayType==1){
+																				colo='#13161c';
+																			}
+																			if(d.attendanceTimeData[i].holidayType==2){
+																				colo='#b8c2d6';
+																			}
+																			if(d.attendanceTimeData[i].holidayType==3){
+																				colo='#da06af';
+																			}
+																			if(d.attendanceTimeData[i].holidayType==4){
+																				colo='#13a8bd';
+																			}
+																			if(d.attendanceTimeData[i].holidayType==5){
+																				colo='#1211e2';
+																			}
 																		}
 																		return '<div style="background-color:'+colo+';color: #fff">'+d.attendanceTimeData[i].dutytime+'</div>';
 																}
@@ -344,6 +386,7 @@
 															d = {
 																	align : 'center',
 																	title : '迟到(M)',
+																	field : ID,
 																	width : 80,
 																	edit: 'text',
 																	
@@ -380,12 +423,11 @@
 							
 							table.on('edit(test3)', function(obj) {
 								console.log(obj.field)
-								console.log(obj.data)
+								console.log(obj.value)
 								var value = obj.value ,//得到修改后的值
 									data = obj.data ,//得到所在行所有键值
 									field = obj.field, //得到字段
 									id = data.id;
-								console.log(data.parents())
 							});
 							
 							
