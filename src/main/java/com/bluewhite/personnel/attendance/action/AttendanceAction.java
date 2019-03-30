@@ -245,6 +245,7 @@ public class AttendanceAction {
 				// 当code为2时，已有统计数据，返回前台，由前台确认是否再次统计，再次统计sign=2
 				cr.setCode(2);
 				cr.setMessage(ex);
+				cr.setData(attendanceTimeService.findAttendanceTimeCollectList(attendanceTime));
 			} else {
 				cr.setData(attendanceTimeService.findAttendanceTimeCollectAdd(attendanceTime));
 				cr.setMessage("初始化成功");
