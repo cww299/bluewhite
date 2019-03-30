@@ -464,7 +464,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					         if(dateArr.length<2){
 					        	 dateLeave = sdf.parse(date);
 					         }
-					 		// flag=ture 为夏令时
+					 			// flag=ture 为夏令时
 				 				if (flag) {
 				 					String[] workTimeArr = attendanceInit.getWorkTimeSummer().split("-");
 				 					// 将 工作间隔开始结束时间转换成当前日期的时间
@@ -495,13 +495,19 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					        			 //获取请假所有日期
 					        			 List<String> dateList = DatesUtil.getPerDaysByStartAndEndDate(dateArr[0],dateArr[1],"yyyy-MM-dd");
 					        			 for(String dt : dateList){
-					        				 if(sdf.parse(dt).compareTo(at.getTime())==0){
-					        					 //变更为请假状态
-					        					 at.setFlag(2);
-					        					 time = time>=turnWorkTime ? turnWorkTime : NumUtils.sub(time,turnWorkTime);
-					        					 at.setLeaveTime(at.getLeaveTime()+time);
-					        					 at.setHolidayDetail(at.getHolidayDetail()+","+al.getHolidayDetail());
-					        				 }
+					        				 Date inTime = sdf.parse(dt);
+						        				List<AttendanceTime> oneAtList =  attendanceTimeListSort.stream().filter(AttendanceTime->(AttendanceTime.getTime().compareTo(inTime))==0)
+						        						.collect(Collectors.toList());
+						        				 if(oneAtList.size()>0){
+						        					 //变更为请假状态
+						        					 oneAtList.get(0).setFlag(2);
+						        					 oneAtList.get(0).setHolidayType(al.getHolidayType());
+						        					 oneAtList.get(0).setDutytime((time >= turnWorkTime) ? turnWorkTime : time);
+						        					 if(time >= turnWorkTime){
+						        						 time = NumUtils.sub(time,turnWorkTime);
+						        					 }
+						        					 oneAtList.get(0).setHolidayDetail(at.getHolidayDetail()+","+al.getHolidayDetail());
+						        				 }
 					        			 }
 					        	 }
 					        	 //补签
