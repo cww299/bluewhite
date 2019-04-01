@@ -89,7 +89,7 @@
 							    <div class="layui-tab-item layui-show">
 							      <table class="layui-hide" lay-filter="test3" id="test"></table>
 							    </div>
-							    <div class="layui-tab-item"><table class="layui-hide" lay-filter="test4" id="test5"></table></div>
+							    <div class="layui-tab-item"><table class="layui-hide" lay-filter="test5" id="test5"></table></div>
 							  </div>
 						</div>
 						
@@ -216,8 +216,8 @@
 							})
 							
 							var data={
-								orgNameId:43,
-								orderTimeBegin:'2019-02-01 00:00:00',
+								orgNameId:34,
+								orderTimeBegin:firstdate,
 							}
 							//修改考勤
 								table.render({
@@ -501,17 +501,7 @@
 									tdElem.find('div.layui-table-cell').html(text);
 								}
 							});
-						},
-						//下拉框回显赋值
-						done: function(res, curr, count) {
-							var tableView = this.elem.next();
-							var tableElem = this.elem.next('.layui-table-view');
-							layui.each(tableElem.find('select'), function(index, item) {
-								var elem = $(item);
-								elem.val(elem.data('value'));
-							});
-							form.render();
-						},
+						}
 
 					});
 							
