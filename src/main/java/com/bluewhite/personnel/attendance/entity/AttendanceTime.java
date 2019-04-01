@@ -72,35 +72,42 @@ public class AttendanceTime extends BaseEntity<Long> {
 	 * 实际工作时长
 	 */
 	@Column(name = "workTime")
-	private Double workTime = 0.0;
+	private Double workTime;
 	
 	/**
 	 * 
 	 * 出勤时长
 	 */
 	@Column(name = "turnWorkTime")
-	private Double turnWorkTime = 0.0;
+	private Double turnWorkTime;
 	
 	/**
 	 * 加班时长
 	 * 
 	 */
 	@Column(name = "overtime")
-	private Double overtime = 0.0;;
+	private Double overtime;
 	
 	/**
 	 * 缺勤时长
 	 * 
 	 */
 	@Column(name = "dutytime")
-	private Double dutytime = 0.0;
+	private Double dutytime;
 	
 	/**
 	 * 请假时长
 	 * 
 	 */
 	@Column(name = "leave_time")
-	private Double leaveTime = 0.0;
+	private Double leaveTime;
+	
+	/**
+	 * 调休时长
+	 * 
+	 */
+	@Column(name = "take_work")
+	private Double takeWork;
 	
 	/**
 	 * 请假类型(0=事假、1=病假、2=丧假、3=婚假、4=产假、5=护理假）
@@ -120,14 +127,14 @@ public class AttendanceTime extends BaseEntity<Long> {
 	 * 
 	 */
 	@Column(name = "flag")
-	private Integer flag = 0;
+	private Integer flag ;
 	
 	/**
 	 * 是否早退(0=否，1=是)
 	 * 
 	 */
 	@Column(name = "leave_early")
-	private Integer leaveEarly = 0;
+	private Integer leaveEarly ;
 	
 	/**
 	 * 早退时长（超过30分钟算缺勤）
@@ -141,7 +148,7 @@ public class AttendanceTime extends BaseEntity<Long> {
 	 * 
 	 */
 	@Column(name = "belate")
-	private Integer belate = 0;
+	private Integer belate ;
 	
 	
 	/**
@@ -149,7 +156,7 @@ public class AttendanceTime extends BaseEntity<Long> {
 	 * 
 	 */
 	@Column(name = "belate_time")
-	private Double belateTime = 0.0;
+	private Double belateTime ;
 	
 	/**
 	 * 详情
@@ -189,6 +196,14 @@ public class AttendanceTime extends BaseEntity<Long> {
 
 	
 	
+
+	public Double getTakeWork() {
+		return takeWork;
+	}
+
+	public void setTakeWork(Double takeWork) {
+		this.takeWork = takeWork;
+	}
 
 	public Integer getHolidayType() {
 		return holidayType;

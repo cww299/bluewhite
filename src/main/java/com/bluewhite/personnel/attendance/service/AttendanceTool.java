@@ -49,6 +49,7 @@ public class AttendanceTool {
 			double actualbelateTime = 0;
 			//将实际工作时间延长一分钟计算迟到
 			workTime = DatesUtil.getDaySum(workTime,1.0);
+		
 			
 			
 					//出勤时间 缺勤时间  会出现的状态

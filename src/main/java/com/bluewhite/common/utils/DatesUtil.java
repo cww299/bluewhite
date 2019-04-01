@@ -5,8 +5,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 
 public class DatesUtil {
 
@@ -417,7 +421,7 @@ public class DatesUtil {
 	 * @param dateFormat 日期格式
 	 * @return 区间内所有日期
 	 */
-	public static List<String> getPerDaysByStartAndEndDate(String startDate, String endDate, String dateFormat) {
+	public static List<Date> getPerDaysByStartAndEndDate(String startDate, String endDate, String dateFormat) {
 	    DateFormat format = new SimpleDateFormat(dateFormat);
 	    try {
 	        Date sDate = format.parse(startDate);
@@ -429,13 +433,14 @@ public class DatesUtil {
 	        }
 	        Calendar calendar = Calendar.getInstance();
 	        calendar.setTime(eDate);
-	        List<String> res = new ArrayList<String>();
+	        List<Date> res = new ArrayList<Date>();
 	        while (end >= start) {
-	            res.add(format.format(calendar.getTime()));
+	            res.add(calendar.getTime());
 	            calendar.add(Calendar.DAY_OF_MONTH, -1);
 	            end = calendar.getTimeInMillis();
 	        }
-	        return res;
+	        return res.stream()
+					.sorted(Comparator.comparing(Date::getTime)).collect(Collectors.toList());
 	    } catch (ParseException e) {
 	    	
 	    }
@@ -446,7 +451,14 @@ public class DatesUtil {
 	
 	
 	
-	
+	public static void main(String[] args) {
+		
+		List<Date> xx = getPerDaysByStartAndEndDate("2019-02-01","2019-02-03","yyyy-MM-dd");
+		for (int i = 0; i < xx.size(); i++) {
+			System.out.println(xx.get(i));
+		}
+		
+	}
 	
 	
 	

@@ -268,7 +268,7 @@ public class AttendanceAction {
 	 * @return cr
 	 * @throws ParseException 
 	 */
-	@RequestMapping(value = "/personnel/findAttendanceTime", method = RequestMethod.POST)
+	@RequestMapping(value = "/personnel/findAttendanceTime", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse findAttendanceTime(HttpServletRequest request, AttendanceTime attendanceTime) throws ParseException {
 		CommonResponse cr = new CommonResponse();
