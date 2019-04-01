@@ -181,6 +181,19 @@ public class DatesUtil {
 	}
 	
 	/**
+	 * <li>功能描述：时间相减得到时间（秒）
+	 * 
+	 * @param beginDateStr
+	 * @param endDateStr
+	 * @return long
+	 */
+	public static Double getTimeSec(Date beginDate, Date endDate) {
+		Long time = (endDate.getTime() - beginDate.getTime()) / 1000;
+		Double day = time.doubleValue();
+		return day;
+	}
+	
+	/**
 	 * <li>功能描述：日期加上分钟数返回一个新日期
 	 * 
 	 * @param beginDateStr
