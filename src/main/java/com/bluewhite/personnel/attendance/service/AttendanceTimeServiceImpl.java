@@ -105,6 +105,13 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				attendanceTime.setBelate(0);
 				attendanceTime.setFlag(0);
 				attendanceTime.setLeaveEarly(0);
+				attendanceTime.setBelateTime(0.0);
+				attendanceTime.setLeaveTime(0.0);
+				attendanceTime.setTurnWorkTime(0.0);
+				attendanceTime.setWorkTime(0.0);
+				attendanceTime.setOvertime(0.0);
+				attendanceTime.setLeaveEarlyTime(0.0);
+				attendanceTime.setDutytime(0.0);
 
 				// 获取员工考勤的初始化参数
 				AttendanceInit attendanceInit = attendanceInitService.findByUserId(us.getId());
