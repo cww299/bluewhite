@@ -100,7 +100,7 @@
      <div class="layui-form-item">
      	<label class="layui-form-label" style="width: 90px;">请假类型</label>
      	<div class="layui-input-inline">
-        	<select name="holidayType" lay-filter="holidayType" id="holidayType"  lay-search="true"><option value="0">请选择</option><option value="1">事假</option><option value="2">病假</option><option value="3">丧假</option><option value="4">婚假</option><option value="5">产假</option><option value="6">护理假</option></select>
+        	<select name="holidayType" lay-filter="holidayType" id="holidayType"  lay-search="true"><option value="">请选择</option><option value="0">事假</option><option value="1">病假</option><option value="2">丧假</option><option value="3">婚假</option><option value="4">产假</option><option value="5">护理假</option></select>
       	</div>
      </div>
      <div class="layui-form-item">
@@ -493,7 +493,7 @@
 							        		var leaveduration='';
 							        		var time='';
 							        		if(data.field.variable==0){
-							        			if(data.field.holidayType==0){
+							        			if(data.field.holidayType==""){
 							        				return layer.msg("请假类型不能为空", {icon: 2});
 							        			}
 							        			if(data.field.content==""){
@@ -662,7 +662,7 @@
 						        		var leaveduration='';
 						        		var time='';
 						        		if(data.field.variable==0){
-						        			if(data.field.holidayType==0){
+						        			if(data.field.holidayType==""){
 						        				return layer.msg("请假类型不能为空", {icon: 2});
 						        			}
 						        			if(data.field.content==""){
