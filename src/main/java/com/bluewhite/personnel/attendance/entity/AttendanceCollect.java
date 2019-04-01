@@ -1,5 +1,7 @@
 package com.bluewhite.personnel.attendance.entity;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -102,6 +104,13 @@ public class AttendanceCollect extends BaseEntity<Long>{
 	private Double leaveTime;
 	
 	/**
+	 * 调休时长
+	 * 
+	 */
+	@Column(name = "take_work")
+	private Double takeWork ;
+	
+	/**
 	 * 请假事项详情
 	 */
 	@Column(name = "leave_details")
@@ -121,16 +130,28 @@ public class AttendanceCollect extends BaseEntity<Long>{
 	
 	//有参构造，直接传入AttendanceTime的list，计算出汇总后的数据
     public AttendanceCollect (List<AttendanceTime> list){
+    	
     	time = list.get(0).getTime();
     	userId = list.get(0).getUserId();
     	turnWork =  list.stream().filter(AttendanceTime->AttendanceTime.getTurnWorkTime()!=null).mapToDouble(AttendanceTime::getTurnWorkTime).sum();
     	overtime =  list.stream().filter(AttendanceTime->AttendanceTime.getOvertime()!=null).mapToDouble(AttendanceTime::getOvertime).sum();
     	dutyWork = list.stream().filter(AttendanceTime->AttendanceTime.getDutytime()!=null).mapToDouble(AttendanceTime::getDutytime).sum();
     	leaveTime = list.stream().filter(AttendanceTime->AttendanceTime.getLeaveTime()!=null).mapToDouble(AttendanceTime::getLeaveTime).sum();
+    	takeWork =  list.stream().filter(AttendanceTime->AttendanceTime.getTakeWork()!=null).mapToDouble(AttendanceTime::getTakeWork).sum();
     	allWork = NumUtils.sum(turnWork, overtime);
-    	list.stream().forEach(at-> {
-    		leaveDetails = leaveDetails == null ? leaveDetails :leaveDetails+","+at.getHolidayDetail();
-    	});
+    	for (int i = 0; i < list.size(); i++) {
+    		if(i != 0){
+    			String hd = list.get(i-1).getHolidayDetail();
+    			if( list.get(i).getHolidayDetail() != null && list.get(i).getHolidayDetail().equals(hd)){
+    				hd = list.get(i).getHolidayDetail();
+    			}else  if(list.get(i).getHolidayDetail() != null){
+    				leaveDetails =leaveDetails+","+list.get(i).getHolidayDetail();
+    			}
+    		}else{
+    			leaveDetails = list.get(i).getHolidayDetail();
+    		}
+		}
+    	
     	//工作日AttendanceTime集合
 		List<AttendanceTime> manDayList = null;
 		//周末AttendanceTime集合
@@ -151,6 +172,15 @@ public class AttendanceCollect extends BaseEntity<Long>{
     }
 	
     
+    
+
+	public Double getTakeWork() {
+		return takeWork;
+	}
+
+	public void setTakeWork(Double takeWork) {
+		this.takeWork = takeWork;
+	}
 
 	public Date getTime() {
 		return time;
