@@ -68,7 +68,7 @@
 									</table>
 								</div>
 							</div>
-							<table class="layui-hide" lay-filter="test3" id="test">
+							<table class="layui-hide" lay-filter="tableData" id="tableData">
 
 							</table>
 						</div>
@@ -82,7 +82,6 @@
 
 
 
-	<script src="${ctx }/static/js/laydate/laydate.js"></script>
 	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
 
 	<script>
@@ -92,8 +91,7 @@
 				.extend({
 					tablePlug : 'tablePlug/tablePlug'
 				})
-				.define(
-						[ 'table', 'laydate', 'element', 'form' ],
+				.define([ 'table', 'laydate', 'element', 'form' ],
 						function() {
 							var $ = layui.jquery, layer = layui.layer //弹层
 							, form = layui.form //表单
@@ -144,46 +142,33 @@
 							}
 							var htmlfr = ""
 							$.ajax({
-										url : "${ctx}/basedata/list",
-										data : getdata,
-										type : "GET",
-										beforeSend : function() {
-											index;
-										},
-										success : function(result) {
-											$(result.data).each(
-												function(k, j) {
-													htmlfr += '<option value="'+j.id+'">'+ j.name+ '</option>'
-												});
-											var htmlth = '<select name="orgNameId" id="selectOrgNameId" class="form-control"><option value="">请选择</option>'
-														+ htmlfr + '</select>'
-											$("#orgNameId").html(htmlth);
-											form.render('select');
-											layer.close(index);
-										}
+									url : "${ctx}/basedata/list",
+									data : getdata,
+									type : "GET",
+									beforeSend : function() {
+										index;
+									},
+									success : function(result) {
+										$(result.data).each(
+											function(k, j) {
+												htmlfr += '<option value="'+j.id+'">'+ j.name+ '</option>'
+											});
+										var htmlth = '<select name="orgNameId" id="selectOrgNameId" class="form-control"><option value="">请选择</option>'
+													+ htmlfr + '</select>'
+										$("#orgNameId").html(htmlth);
+										form.render('select');
+										layer.close(index);
+									}
 									});
 							
-							form.on('submit(LAY-role-search)', function(data) {
-								var field=data.field
-								var postUrl='${ctx}/personnel/intAttendanceTime'
-								even(postUrl,field)
-							})
-							
-							form.on('submit(LAY-role-searche)', function(data) {
-								var field={
-										userId:data.field.userId,
-										orgNameId:data.field.orgNameId,
-										orderTimeBegin:data.field.orderTimeBegin,
-										sign:1,
-								}
-								var postUrl='${ctx}/personnel/addAttendanceTime'
-								even(postUrl,field)
-							})
-							var even = function(url, data) {
+								
 								table.render({
-											elem : '#test',
-											url : url,
-											where : data,
+											elem : '#tableData',
+											url : '${ctx}/personnel/findAttendanceTime',
+											where : {
+												userId:'473',
+												orderTimeBegin:"2019-02-01 00:00:00"
+											},
 											cellMinWidth : 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
 											method : 'POST',
 											parseData : function(res) { //res 即为原始返回的数据
@@ -197,24 +182,6 @@
 											},
 											cols : [],
 											done : function(res, curr, count) {
-												if(res.code==2){
-													layer.open({
-														   title: '在线调试'
-														  ,content:'考勤已经汇总，是否覆盖'
-														  ,btn: ['确认', '取消']
-														,yes: function(index, layero){
-															var field={
-																	userId:$('#firstNames').val(),
-																	orgNameId:$('#selectOrgNameId').val(),
-																	orderTimeBegin:$('#startTime').val(),
-																	sign:2,
-															}
-															var postUrl='${ctx}/personnel/addAttendanceTime'
-															even(postUrl,field)
-															layer.closeAll();
-											       			 }
-														}); 
-												}
 												var data = res.data;
 												var list = [];
 												var list1 = [];
@@ -226,67 +193,62 @@
 												var length = data[0].attendanceTimeData.length
 												$.each(data[0].attendanceTimeData,
 														function(i, v) {
-															list[0] = {
+															list2[0] = {
 																align : 'center',
 																title : '<span style="color:red">姓名</span>',
 																width : 80,
 																fixed : 'left',
 																style : 'background-color: #5FB878;color: #fff',
 																rowspan : 3,
-																templet : function(
-																		d) {
-																	return d.attendanceTimeData[i].username
+																templet : function(d) {
+																	return d.attendanceTimeData[i].userName
 																}
 															};
-															list[length + 1] = {
+															list2[length + 1] = {
 																align : 'center',
 																title : '<span style="color:red">出勤</span>',
 																fixed : 'right',
 																width : 70,
 																style : 'background-color: #5FB878;color: #fff',
 																rowspan : 3,
-																templet : function(
-																		d) {
+																templet : function(d) {
 																	return '<span id="1">'+d.collect.turnWork+'<span>'
 																}
 															};
-															list[length + 2] = {
+															list2[length + 2] = {
 																align : 'center',
 																title : '<span style="color:red">加班</span>',
 																fixed : 'right',
 																width : 70,
 																style : 'background-color: #5FB878;color: #fff',
 																rowspan : 3,
-																templet : function(
-																		d) {
+																templet : function(d) {
 																	return d.collect.overtime
 																}
 															};
-															list[length + 3] = {
+															list2[length + 3] = {
 																align : 'center',
 																title : '<span style="color:red">缺勤</span>',
 																fixed : 'right',
 																width : 70,
 																style : 'background-color: #5FB878;color: #fff',
 																rowspan : 3,
-																templet : function(
-																		d) {
+																templet : function(d) {
 																	return d.collect.dutyWork
 																}
 															};
-															list[length + 4] = {
+															list2[length + 4] = {
 																align : 'center',
 																title : '<span style="color:red">总出勤</span>',
 																fixed : 'right',
 																width : 70,
 																style : 'background-color: #5FB878;color: #fff',
 																rowspan : 3,
-																templet : function(
-																		d) {
+																templet : function(d) {
 																	return d.collect.allWork
 																}
 															};
-															list[i + 1] = {
+															list2[i + 1] = {
 																align : 'center',
 																title : v.time,
 																colspan : 3
@@ -300,36 +262,33 @@
 																align : 'center',
 																title : '出勤',
 																edit: 'text',
-																templet : function(
-																		d) {
+																templet : function(d) {
 																	if (d.attendanceTimeData[i].turnWorkTime == 0)
-																		return '';
+																		return '<input class="id" id="'+v.id+'" type="hidden" />';
 																	else
-																		return d.attendanceTimeData[i].turnWorkTime;
+																		return '<input class="id" id="'+v.id+'" type="hidden"/>'+d.attendanceTimeData[i].turnWorkTime;
 																}
 															}
 															b = {
 																align : 'center',
 																title : '加班',
 																edit: 'text',
-																templet : function(
-																		d) {
+																templet : function(d) {
 																	if (d.attendanceTimeData[i].overtime == 0)
-																		return '';
+																		return '<input class="id" id="'+v.id+'" type="hidden" />';
 																	else
-																		return d.attendanceTimeData[i].overtime;
+																		return '<input class="id" id="'+v.id+'" type="hidden" />'+d.attendanceTimeData[i].overtime;
 																}
 															};
 															c = {
 																align : 'center',
 																title : '缺勤',
 																edit: 'text',
-																templet : function(
-																		d) {
+																templet : function(d) {
 																	if (d.attendanceTimeData[i].dutytime == 0)
-																		return '';
+																		return '<input class="id" id="'+v.id+'" type="hidden" />';
 																	else
-																		return '<div id="100">'+d.attendanceTimeData[i].dutytime+'</div>';
+																		return '<input class="id" id="'+v.id+'" type="hidden" />'+d.attendanceTimeData[i].dutytime;
 																}
 															}
 															list3.push(a);
@@ -337,37 +296,61 @@
 															list3.push(c)
 														});
 
-												list2.push(list)
-												list2.push(list1)
-												list2.push(list3)
-												table.init('test3', {
-													cols : list2,
+													list.push(list2)
+													list.push(list1)
+													list.push(list3)
+												table.init('tableData', {
+													cols : list,
 													data : res.data,
 												});
 											},
-											page : false
 										});
-							}
-							 table.on('row(test3)', function (obj) {
-								 alert(1)
-			                        var index = $("tr").index(obj.tr);
-			                        console.log(index)
-			                    });
 							
-							table.on('edit(test3)', function(obj) {
-								console.log(obj.field)
-								console.log(obj.data)
-								var value = obj.value ,//得到修改后的值
-									data = obj.data ,//得到所在行所有键值
-									field = obj.field, //得到字段
-									id = data.id;
-								console.log(data.parents())
+							
+							table.on('edit(tableData)', function(obj) {
+								var that = this;
+								var tdElem = $(that).closest('td');
+								var trElem = tdElem.closest('tr');
+								var inputElem = tdElem.find('input[class="id"]');
+								var id = inputElem[0].id;
+								var value = obj.value ;//得到修改后的值
+								console.log(id)
+								console.log(obj)
+								var postData = {
+									id:id,
+									turnWorkTime:value
+								}
+								$.ajax({
+									url: "${ctx}/personnel/updateAttendanceTime",
+									data: postData,
+									type: "POST",
+									beforeSend: function() {
+										index;
+									},
+									success: function(result) {
+										table.reload("tableData")   
+										if(0 == result.code) {
+											layer.msg(result.message, {
+												icon: 1,
+												time:800
+											});
+										} else {
+											layer.msg(result.message, {
+												icon: 2,
+												time:800
+											});
+										}
+									},
+									error: function() {
+										layer.msg("操作失败！请重试", {
+											icon: 2
+										});
+									},
+								});
+								
 							});
-							
-							
-							
-							
-						})
+						}
+					)
 	</script>
 
 </body>
