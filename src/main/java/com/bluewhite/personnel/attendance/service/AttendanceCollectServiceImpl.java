@@ -41,6 +41,10 @@ public class AttendanceCollectServiceImpl extends BaseServiceImpl<AttendanceColl
 			query.where(predicate.toArray(pre));
 			return null;
 		});
+		result.stream().forEach( ac->{
+			ac.setUserName(ac.getUser().getUserName());
+			}
+		);
 		return result;
 	}
 

@@ -207,7 +207,7 @@ public class AttendanceCollect extends BaseEntity<Long>{
     
 
 	public String getUserName() {
-		return user.getUserName();
+		return userName;
 	}
 
 	public void setUserName(String userName) {
