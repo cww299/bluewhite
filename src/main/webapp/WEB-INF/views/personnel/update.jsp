@@ -79,9 +79,30 @@
 									</table>
 								</div>
 							</div>
-							<table class="layui-hide" lay-filter="test3" id="test">
+							
+							<div class="layui-tab">
+  <ul class="layui-tab-title">
+    <li class="layui-this">网站设置</li>
+    <li>用户管理</li>
+    <li>权限分配</li>
+    <li>商品管理</li>
+    <li>订单管理</li>
+  </ul>
+  <div class="layui-tab-content">
+   <table class="layui-hide" lay-filter="test3" id="test">
 
 							</table>
+    </div>
+    <div class="layui-tab-item">内容2</div>
+    <div class="layui-tab-item">内容3</div>
+    <div class="layui-tab-item">内容4</div>
+    <div class="layui-tab-item">内容5</div>
+  </div>
+</div>
+							
+							
+							
+							
 							<div style="height: 600px;"></div>
 						</div>
 					</div>
@@ -141,8 +162,7 @@
 									index;
 								},
 								success : function(result) {
-									$(result.data)
-											.each(
+									$(result.data).each(
 													function(i, o) {
 														htmls += '<option value=' + o.id + '>'
 																+ o.userName
@@ -187,12 +207,21 @@
 							
 							form.on('submit(LAY-role-searche)', function(data) {
 								var field={
-										userId:data.field.userId,
 										orgNameId:data.field.orgNameId,
 										orderTimeBegin:data.field.orderTimeBegin,
 								}
-								var postUrl='${ctx}/personnel/addAttendanceTime'
-								even(postUrl,field)
+								console.log(field)
+								$.ajax({
+									url: "${ctx}/personnel/findAttendanceTime",
+									type: "get",
+									data: field,
+									dataType: "json",
+									success: function(result) {
+										table.reload('test', {
+											where: field
+										});
+									}
+								});
 							})
 							
 							
@@ -200,8 +229,8 @@
 							
 							
 							var data={
-								orgNameId:30,
-								orderTimeBegin:firstdate,
+								orgNameId:43,
+								orderTimeBegin:'2019-02-01 00:00:00',
 							}
 							
 								table.render({
@@ -463,6 +492,7 @@
 									},
 									success:function(result){
 										if(0==result.code){
+											layer.msg("修改成功！", {icon: 1});
 											layer.close(index);
 										}else{
 											layer.msg("修改失败！", {icon: 2});
