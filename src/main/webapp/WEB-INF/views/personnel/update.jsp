@@ -81,26 +81,18 @@
 							</div>
 							
 							<div class="layui-tab">
-  <ul class="layui-tab-title">
-    <li class="layui-this">网站设置</li>
-    <li>用户管理</li>
-    <li>权限分配</li>
-    <li>商品管理</li>
-    <li>订单管理</li>
-  </ul>
-  <div class="layui-tab-content">
-   <table class="layui-hide" lay-filter="test3" id="test">
-
-							</table>
-    </div>
-    <div class="layui-tab-item">内容2</div>
-    <div class="layui-tab-item">内容3</div>
-    <div class="layui-tab-item">内容4</div>
-    <div class="layui-tab-item">内容5</div>
-  </div>
-</div>
-							
-							
+							  <ul class="layui-tab-title">
+							    <li class="layui-this">考勤修改</li>
+							    <li>考勤汇总</li>
+							  </ul>
+							  <div class="layui-tab-content">
+							    <div class="layui-tab-item layui-show">
+							      <table class="layui-hide" lay-filter="test3" id="test"></table>
+							    </div>
+							    <div class="layui-tab-item"><table class="layui-hide" lay-filter="test4" id="test5"></table></div>
+							  </div>
+						</div>
+						
 							
 							
 							<div style="height: 600px;"></div>
@@ -210,7 +202,6 @@
 										orgNameId:data.field.orgNameId,
 										orderTimeBegin:data.field.orderTimeBegin,
 								}
-								console.log(field)
 								$.ajax({
 									url: "${ctx}/personnel/findAttendanceTime",
 									type: "get",
@@ -224,15 +215,11 @@
 								});
 							})
 							
-							
-							
-							
-							
 							var data={
 								orgNameId:43,
 								orderTimeBegin:'2019-02-01 00:00:00',
 							}
-							
+							//修改考勤
 								table.render({
 											elem : '#test',
 											size:'sm',
@@ -251,24 +238,6 @@
 											},
 											cols : [],
 											done : function(res, curr, count) {
-												if(res.code==2){
-													layer.open({
-														   title: '在线调试'
-														  ,content:'考勤已经汇总，是否覆盖'
-														  ,btn: ['确认', '取消']
-														,yes: function(index, layero){
-															var field={
-																	userId:$('#firstNames').val(),
-																	orgNameId:$('#selectOrgNameId').val(),
-																	orderTimeBegin:$('#startTime').val(),
-																	sign:2,
-															}
-															var postUrl='${ctx}/personnel/addAttendanceTime'
-															even(postUrl,field)
-															layer.closeAll();
-											       			 }
-														}); 
-												}
 												var data = res.data;
 												var list = [];
 												var list1 = [];
@@ -451,6 +420,94 @@
 											},
 											page : false
 										});
+							
+							
+							//考勤汇总
+						 table.render({
+						elem: '#test5',
+						size: 'lg',
+						url: '${ctx}/personnel/intAttendanceTime' ,
+						where :data,
+						method : 'POST',
+						loading: true,
+						toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+						/*totalRow: true //开启合计行 */
+						cellMinWidth: 90,
+						colFilterRecord: true,
+						smartReloadModel: true,// 开启智能重载
+						parseData: function(ret) {
+							return {
+								code: ret.code,
+								msg: ret.message,
+								count:ret.data.total,
+								data: ret.data.rows
+							}
+						},
+						cols: [
+							[{
+								type: 'checkbox',
+								align: 'center',
+								fixed: 'left'
+							}, {
+								field: "time",
+								title: "考勤日期汇总",
+								align: 'center',
+								search: true,
+								edit: false,
+							}, {
+								field: "userName",
+								title: "人名",
+								align: 'center',
+							}, {
+								field: "expenseDate",
+								title: "申请项",
+								templet: function(d){
+									if(d.addSignIn==true){
+									return "补签"
+									}
+									if(d.applyOvertime==true){
+										return "加班"
+									}
+									if(d.holiday==true){
+										return "请假"
+									}
+									if(d.tradeDays==true){
+										return "调休"
+									}
+								}
+							}, {
+								field: "holidayDetail",
+								title: "详情",
+							},{fixed:'right', title:'操作', align: 'center', toolbar: '#barDemo'}]
+						],
+						done: function() {
+							var tableView = this.elem.next();
+							tableView.find('.layui-table-grid-down').remove();
+							var totalRow = tableView.find('.layui-table-total');
+							var limit = this.page ? this.page.limit : this.limit;
+							layui.each(totalRow.find('td'), function(index, tdElem) {
+								tdElem = $(tdElem);
+								var text = tdElem.text();
+								if(text && !isNaN(text)) {
+									text = (parseFloat(text) / limit).toFixed(2);
+									tdElem.find('div.layui-table-cell').html(text);
+								}
+							});
+						},
+						//下拉框回显赋值
+						done: function(res, curr, count) {
+							var tableView = this.elem.next();
+							var tableElem = this.elem.next('.layui-table-view');
+							layui.each(tableElem.find('select'), function(index, item) {
+								var elem = $(item);
+								elem.val(elem.data('value'));
+							});
+							form.render();
+						},
+
+					});
+							
+							
 							
 							table.on('edit(test3)', function(obj) {
 								var that=this

@@ -492,20 +492,7 @@
  </div> 
   
       
- <div id="savegroup" style="display: none; width: 60%;" >
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content" style="width: 135%;">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-					&times;
-				</button>
-				<h4 class="modal-title" id="myModalLabel">
-					提示
-				</h4>
-			</div>
-			<div class="modal-body">
-			<table>
+    <div id="savegroupp" ><table>
 			<tr>
 			<th style="vertical-align:top">
 				<table class="table table-hover">
@@ -552,16 +539,7 @@
                                 </table>
                                 </th>
                                 </tr>
-                                </table>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
-				</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
-</div>
-</div>  
+                                </table></div>
     </section>
  
     <!--Global JS-->
@@ -601,16 +579,41 @@
 			}
 			 
 			 this.loadPaginationtw = function(){
-				 $(".savemode").trigger("click")
+				 
 				 var index;
 				    var html ='';
 				    var htmlh ='';
 				    var htmlh1 ='';
-				    var display =$("#savegroup").css("display")
-					 if(display=='none'){
-							$("#savegroup").css("display","block");  
-						}
-				   
+				     var dicDiv=$('#savegroupp');
+				     _index = layer.open({
+						  type: 1,
+						  skin: 'layui-layer-rim', //加上边框
+						  area: ['40%', '80%'], 
+						  btnAlign: 'c',//宽高
+						  maxmin: true,
+						  title:"提示",
+						  content: dicDiv,
+						  end:function(){
+							  $("#savegroupp").css("display",'none')
+						  }
+					});
+				     $(".savemode").on('click',function(){
+				    	 
+				    
+				   		  _index = layer.open({
+						  type: 1,
+						  skin: 'layui-layer-rim', //加上边框
+						  area: ['40%', '80%'], 
+						  btnAlign: 'c',//宽高
+						  maxmin: true,
+						  title:"提示",
+						  content: dicDiv,
+						  end:function(){
+							  $("#savegroupp").css("display",'none')
+						  }
+					});
+				     })
+				     
 				     $.ajax({
 					      url:"${ctx}/system/user/remind",
 					      type:"GET",
