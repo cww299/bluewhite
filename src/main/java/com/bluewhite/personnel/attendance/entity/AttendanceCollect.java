@@ -123,6 +123,17 @@ public class AttendanceCollect extends BaseEntity<Long>{
 	@Column(name = "remarks")
 	private String remarks;
 	
+	/**
+	 * 姓名
+	 */
+	@Transient
+	private String  userName;
+	
+	/**
+	 * 签字
+	 */
+	@Transient
+	private String  sign;
 	
 	/**
 	 * 查询字段（部门）
@@ -194,6 +205,22 @@ public class AttendanceCollect extends BaseEntity<Long>{
 	
     
     
+
+	public String getUserName() {
+		return user.getUserName();
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getSign() {
+		return sign;
+	}
+
+	public void setSign(String sign) {
+		this.sign = sign;
+	}
 
 	public Long getOrgNameId() {
 		return orgNameId;

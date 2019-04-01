@@ -315,8 +315,7 @@ public class AttendanceAction {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(AttendanceCollect.class, "time", "turnWork", "user", "overtime", "dutyWork", "allWork",
-						"manDay", "manDayOvertime", "weekendTurnWork", "leaveTime", "takeWork", "leaveDetails", "remarks")
-				.addRetainTerm(User.class, "id", "userName")
+						"manDay", "manDayOvertime", "weekendTurnWork", "leaveTime", "takeWork", "leaveDetails", "remarks","userName","sign")
 				.format(attendanceCollectService.findAttendanceCollect(attendanceCollect)).toJSON());
 		cr.setMessage("查找成功");
 		return cr;
