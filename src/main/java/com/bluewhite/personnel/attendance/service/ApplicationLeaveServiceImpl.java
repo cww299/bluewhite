@@ -161,18 +161,15 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 				detail = "病假";
 				break;
 			case 2:
-				detail = "事假";
-				break;
-			case 3:
 				detail = "丧假";
 				break;
-			case 4:
+			case 3:
 				detail = "婚假";
 				break;
-			case 5:
+			case 4:
 				detail = "产假";
 				break;
-			case 6:
+			case 5:
 				detail = "护理假";
 				break;
 			}
