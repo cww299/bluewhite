@@ -64,6 +64,7 @@
 		</section>
 		<form action="" id="layuiadmin-form-admin" style="padding: 20px 30px 0 60px; display: none; text-align: ">
 	<div class="layui-form" lay-filter="layuiadmin-form-admin" >
+	<input type="text"  name="id" id="usID"  class="hide">
     <div class="layui-form-item">
       <label class="layui-form-label" style="width: 130px;">员工姓名</label>
       <div class="layui-input-inline">
@@ -537,7 +538,6 @@
 							        }
 							        ,yes: function(index, layero){
 							        	form.on('submit(addRole)', function(data) {
-							        		console.log(data.field)
 							        	 mainJs.fAdd(data.field); 
 							        	document.getElementById("layuiadmin-form-admin").reset();
 							        	layui.form.render();
@@ -560,7 +560,10 @@
 						document.getElementById("layuiadmin-form-admin").reset();
 			        	layui.form.render();
 						var data = obj.data;
+						var value = obj.value
 						var id=data.id;
+						var val=obj.field
+						$("#usID").val(id)
 					    if(obj.event === 'update'){
 					    	var dicDiv=$('#layuiadmin-form-admin');
 					    	$('#selectOne').each(function(j,k){

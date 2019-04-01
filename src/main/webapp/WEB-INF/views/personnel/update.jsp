@@ -426,7 +426,7 @@
 						 table.render({
 						elem: '#test5',
 						size: 'lg',
-						url: '${ctx}/personnel/intAttendanceTime' ,
+						url: '${ctx}/personnel/findAttendanceCollect',
 						where :data,
 						method : 'POST',
 						loading: true,
@@ -440,7 +440,7 @@
 								code: ret.code,
 								msg: ret.message,
 								count:ret.data.total,
-								data: ret.data.rows
+								data: ret.data
 							}
 						},
 						cols: [
@@ -455,30 +455,38 @@
 								search: true,
 								edit: false,
 							}, {
-								field: "userName",
+								field: "",
 								title: "人名",
 								align: 'center',
-							}, {
-								field: "expenseDate",
-								title: "申请项",
 								templet: function(d){
-									if(d.addSignIn==true){
-									return "补签"
-									}
-									if(d.applyOvertime==true){
-										return "加班"
-									}
-									if(d.holiday==true){
-										return "请假"
-									}
-									if(d.tradeDays==true){
-										return "调休"
-									}
+									console.log(d)
+									return d.user.userName
 								}
+							},{
+								field: "leaveTime",
+								title: "请假时长",
+								align: 'center',
+							},{
+								field: "turnWork",
+								title: "出勤时长",
+								align: 'center',
 							}, {
-								field: "holidayDetail",
-								title: "详情",
-							},{fixed:'right', title:'操作', align: 'center', toolbar: '#barDemo'}]
+								field: "overtime",
+								title: "加班时长",
+								align: 'center',
+							}
+							, {
+								field: "remarks",
+								title: "备注",
+								align: 'center',
+								edit:'text'
+							}
+							, {
+								field: "55",
+								title: "签字",
+								align: 'center',
+							}
+							]
 						],
 						done: function() {
 							var tableView = this.elem.next();
@@ -507,7 +515,37 @@
 
 					});
 							
-							
+						 table.on('edit(test5)', function(obj) {
+							 var value = obj.value
+							 var id=obj.data.id
+							 var field=obj.field
+							 var postData={
+										id:id,
+										[field]:value,
+								}
+							     $.ajax({
+									url:"${ctx}/personnel/updateAttendanceCollect",
+									data:postData,
+									type:"POST",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									success:function(result){
+										if(0==result.code){
+											layer.msg("修改成功！", {icon: 1});
+											layer.close(index);
+										}else{
+											layer.msg("修改失败！", {icon: 2});
+											layer.close(index);
+										}
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								}); 
+						 })	
 							
 							table.on('edit(test3)', function(obj) {
 								var that=this
