@@ -98,7 +98,7 @@ public class AttendanceTool {
 					if(flag){
 						actualTurnWorkTime = turnWorkTime;
 						attendanceTime.setBelate(1);
-						actualbelateTime = DatesUtil.getTime(DatesUtil.getDaySum(workTime, NumUtils.sum(minute, LATERMIN)),attendanceTime.getCheckIn());
+						actualbelateTime = setActualbelateTime(DatesUtil.getDaySum(workTime, NumUtils.sum(minute, LATERMIN)),attendanceTime.getCheckIn());
 						flag = false;
 					}
 			
@@ -247,10 +247,6 @@ public class AttendanceTool {
 						actualLeaveEarly = DatesUtil.getTime(workTimeEnd, attendanceTime.getCheckOut());
 						flag = false;
 					}
-			
-					
-					
-					
 					
 					//加班
 					// 满足于：员工不可以加班后晚到岗 ，签出时间在默认工作时间之后，中午休息时间默认加班，工作时间结束后签到加班	
@@ -294,13 +290,11 @@ public class AttendanceTool {
 	
 
 	private static Double setActualbelateTime(Date beginTime,Date endTime ){
+		double  actualbelateTime = 0; 
 		double sec = DatesUtil.getTimeSec( beginTime,endTime);
-		
-		
-		
-		return null;
-		
-		
+		double alltime = Math.floor(sec / 60);
+		actualbelateTime = alltime + 1 ;
+		return actualbelateTime;
 	}
 		
 	
