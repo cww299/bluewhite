@@ -69,14 +69,8 @@
 											<td>&nbsp&nbsp</td>
 											<td>
 												<div class="layui-inline">
-													<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-search">
-													 初始化考勤机
-														<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-													</button>
-												</div>
-												<div class="layui-inline">
 													<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-searche">
-													计算后的考勤
+													查找考勤
 														<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
 													</button>
 												</div>
@@ -119,11 +113,20 @@
 							, laydate = layui.laydate //日期控件
 							, tablePlug = layui.tablePlug //表格插件
 							, element = layui.element;
-
+							function p(s) {
+								return s < 10 ? '0' + s: s;
+							}
+							var myDate = new Date();
+							//获取当前年
+							var year=myDate.getFullYear();
+							//获取当前月
+							var month=myDate.getMonth();
+							var firstdate = year + '-' + p(month) + '-01'+' '+'00:00:00';
 							laydate.render({
 								elem : '#startTime',
 								type : 'month',
-								format:'yyyy-MM-01 HH:mm:ss'
+								format:'yyyy-MM-01 HH:mm:ss',
+								value:firstdate,
 							});
 							var htmls = '<option value="">请选择</option>';
 							var index = layer.load(1, {
@@ -181,30 +184,33 @@
 										}
 									});
 							
-							form.on('submit(LAY-role-search)', function(data) {
-								var field=data.field
-								var postUrl='${ctx}/personnel/intAttendanceTime'
-								even(postUrl,field)
-							})
 							
 							form.on('submit(LAY-role-searche)', function(data) {
 								var field={
 										userId:data.field.userId,
 										orgNameId:data.field.orgNameId,
 										orderTimeBegin:data.field.orderTimeBegin,
-										sign:1,
 								}
 								var postUrl='${ctx}/personnel/addAttendanceTime'
 								even(postUrl,field)
 							})
-							var even = function(url, data) {
+							
+							
+							
+							
+							
+							var data={
+								orgNameId:30,
+								orderTimeBegin:firstdate,
+							}
+							
 								table.render({
 											elem : '#test',
 											size:'sm',
-											url : url,
-											where : data,
+											url : '${ctx}/personnel/findAttendanceTime',
+											where :data,
 											cellMinWidth : 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-											method : 'POST',
+											method : 'GET',
 											parseData : function(res) { //res 即为原始返回的数据
 												return {
 													"code" : res.code, //解析接口状态
@@ -306,7 +312,7 @@
 																};
 															list[length + 5] = {
 																align : 'center',
-																title : '<span style="color:red">出勤</span>',
+																title : '<span style="color:red">总出勤</span>',
 																fixed : 'right',
 																width : 70,
 																style : 'background-color: #5FB878;color: #fff',
@@ -329,6 +335,7 @@
 															a = {
 																align : 'center',
 																title : '出勤',
+																edit: 'text',
 																templet : function(d) {
 																	if (d.attendanceTimeData[i].turnWorkTime == 0)
 																		return '';
@@ -340,6 +347,7 @@
 															b = {
 																align : 'center',
 																title : '加班',
+																edit: 'text',
 																templet : function(
 																		d) {
 																	if (d.attendanceTimeData[i].overtime == 0)
@@ -351,6 +359,7 @@
 															c = {
 																align : 'center',
 																title : '缺勤',
+																edit: 'text',
 																templet : function(d) {
 																	if (d.attendanceTimeData[i].dutytime == 0)
 																		return '';
@@ -413,9 +422,8 @@
 											},
 											page : false
 										});
-							}
 							
-							/* table.on('edit(test3)', function(obj) {
+							table.on('edit(test3)', function(obj) {
 								var that=this
 								var tde = $(that).closest('td')
 								var key=tde[0].dataset.key
@@ -466,7 +474,7 @@
 									}
 								}); 
 									
-							}); */
+							});
 							
 							
 							

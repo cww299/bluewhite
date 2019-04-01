@@ -493,7 +493,7 @@
 							        		var leaveduration='';
 							        		var time='';
 							        		if(data.field.variable==0){
-							        			if(data.field.holidayType==0){
+							        			if(data.field.holidayType==""){
 							        				return layer.msg("请假类型不能为空", {icon: 2});
 							        			}
 							        			if(data.field.content==""){
@@ -662,7 +662,7 @@
 						        		var leaveduration='';
 						        		var time='';
 						        		if(data.field.variable==0){
-						        			if(data.field.holidayType==0){
+						        			if(data.field.holidayType==""){
 						        				return layer.msg("请假类型不能为空", {icon: 2});
 						        			}
 						        			if(data.field.content==""){
