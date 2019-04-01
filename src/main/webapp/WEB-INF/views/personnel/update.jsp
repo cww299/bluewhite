@@ -79,9 +79,22 @@
 									</table>
 								</div>
 							</div>
-							<table class="layui-hide" lay-filter="test3" id="test">
-
-							</table>
+							
+							<div class="layui-tab">
+							  <ul class="layui-tab-title">
+							    <li class="layui-this">考勤修改</li>
+							    <li>考勤汇总</li>
+							  </ul>
+							  <div class="layui-tab-content">
+							    <div class="layui-tab-item layui-show">
+							      <table class="layui-hide" lay-filter="test3" id="test"></table>
+							    </div>
+							    <div class="layui-tab-item"><table class="layui-hide" lay-filter="test5" id="test5"></table></div>
+							  </div>
+						</div>
+						
+							
+							
 							<div style="height: 600px;"></div>
 						</div>
 					</div>
@@ -141,8 +154,7 @@
 									index;
 								},
 								success : function(result) {
-									$(result.data)
-											.each(
+									$(result.data).each(
 													function(i, o) {
 														htmls += '<option value=' + o.id + '>'
 																+ o.userName
@@ -187,23 +199,27 @@
 							
 							form.on('submit(LAY-role-searche)', function(data) {
 								var field={
-										userId:data.field.userId,
 										orgNameId:data.field.orgNameId,
 										orderTimeBegin:data.field.orderTimeBegin,
 								}
-								var postUrl='${ctx}/personnel/addAttendanceTime'
-								even(postUrl,field)
+								$.ajax({
+									url: "${ctx}/personnel/findAttendanceTime",
+									type: "get",
+									data: field,
+									dataType: "json",
+									success: function(result) {
+										table.reload('test', {
+											where: field
+										});
+									}
+								});
 							})
 							
-							
-							
-							
-							
 							var data={
-								orgNameId:30,
+								orgNameId:34,
 								orderTimeBegin:firstdate,
 							}
-							
+							//修改考勤
 								table.render({
 											elem : '#test',
 											size:'sm',
@@ -222,24 +238,6 @@
 											},
 											cols : [],
 											done : function(res, curr, count) {
-												if(res.code==2){
-													layer.open({
-														   title: '在线调试'
-														  ,content:'考勤已经汇总，是否覆盖'
-														  ,btn: ['确认', '取消']
-														,yes: function(index, layero){
-															var field={
-																	userId:$('#firstNames').val(),
-																	orgNameId:$('#selectOrgNameId').val(),
-																	orderTimeBegin:$('#startTime').val(),
-																	sign:2,
-															}
-															var postUrl='${ctx}/personnel/addAttendanceTime'
-															even(postUrl,field)
-															layer.closeAll();
-											       			 }
-														}); 
-												}
 												var data = res.data;
 												var list = [];
 												var list1 = [];
@@ -423,6 +421,122 @@
 											page : false
 										});
 							
+							
+							//考勤汇总
+						 table.render({
+						elem: '#test5',
+						size: 'lg',
+						url: '${ctx}/personnel/findAttendanceCollect',
+						where :data,
+						method : 'POST',
+						loading: true,
+						toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+						/*totalRow: true //开启合计行 */
+						cellMinWidth: 90,
+						colFilterRecord: true,
+						smartReloadModel: true,// 开启智能重载
+						parseData: function(ret) {
+							return {
+								code: ret.code,
+								msg: ret.message,
+								count:ret.data.total,
+								data: ret.data
+							}
+						},
+						cols: [
+							[{
+								type: 'checkbox',
+								align: 'center',
+								fixed: 'left'
+							}, {
+								field: "time",
+								title: "考勤日期汇总",
+								align: 'center',
+								search: true,
+								edit: false,
+							}, {
+								field: "",
+								title: "人名",
+								align: 'center',
+								templet: function(d){
+									console.log(d)
+									return d.user.userName
+								}
+							},{
+								field: "leaveTime",
+								title: "请假时长",
+								align: 'center',
+							},{
+								field: "turnWork",
+								title: "出勤时长",
+								align: 'center',
+							}, {
+								field: "overtime",
+								title: "加班时长",
+								align: 'center',
+							}
+							, {
+								field: "remarks",
+								title: "备注",
+								align: 'center',
+								edit:'text'
+							}
+							, {
+								field: "55",
+								title: "签字",
+								align: 'center',
+							}
+							]
+						],
+						done: function() {
+							var tableView = this.elem.next();
+							tableView.find('.layui-table-grid-down').remove();
+							var totalRow = tableView.find('.layui-table-total');
+							var limit = this.page ? this.page.limit : this.limit;
+							layui.each(totalRow.find('td'), function(index, tdElem) {
+								tdElem = $(tdElem);
+								var text = tdElem.text();
+								if(text && !isNaN(text)) {
+									text = (parseFloat(text) / limit).toFixed(2);
+									tdElem.find('div.layui-table-cell').html(text);
+								}
+							});
+						}
+
+					});
+							
+						 table.on('edit(test5)', function(obj) {
+							 var value = obj.value
+							 var id=obj.data.id
+							 var field=obj.field
+							 var postData={
+										id:id,
+										[field]:value,
+								}
+							     $.ajax({
+									url:"${ctx}/personnel/updateAttendanceCollect",
+									data:postData,
+									type:"POST",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									success:function(result){
+										if(0==result.code){
+											layer.msg("修改成功！", {icon: 1});
+											layer.close(index);
+										}else{
+											layer.msg("修改失败！", {icon: 2});
+											layer.close(index);
+										}
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								}); 
+						 })	
+							
 							table.on('edit(test3)', function(obj) {
 								var that=this
 								var tde = $(that).closest('td')
@@ -463,6 +577,7 @@
 									},
 									success:function(result){
 										if(0==result.code){
+											layer.msg("修改成功！", {icon: 1});
 											layer.close(index);
 										}else{
 											layer.msg("修改失败！", {icon: 2});
