@@ -332,7 +332,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		List<AttendanceTime> attendanceTimeList = findAttendanceTimePage(attendanceTime);
 		// 按人员分组
 		Map<Long, List<AttendanceTime>> mapAttendance = attendanceTimeList.stream()
-				.filter(AttendanceTime -> AttendanceTime.getNumber() != null)
+				.filter(AttendanceTime -> AttendanceTime.getUserId() != null)
 				.collect(Collectors.groupingBy(AttendanceTime::getUserId, Collectors.toList()));
 		for (Long ps1 : mapAttendance.keySet()) {
 			// 获取单一员工日期区间所有的考勤数据
@@ -340,8 +340,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			// 按日期自然排序
 			List<AttendanceTime> attendanceTimeList1 = psList1.stream()
 					.sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
-			AttendanceCollect attendanceCollect = attendanceCollectDao.findByUserIdAndTime(ps1,
-					attendanceTime.getOrderTimeBegin());
+			AttendanceCollect attendanceCollect = attendanceCollectDao.findByUserIdAndTime(ps1,attendanceTime.getOrderTimeBegin());
 			attendanceCollectDao.delete(attendanceCollect);
 		}
 		dao.delete(attendanceTimeList);
@@ -360,7 +359,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		Map<String, Object> allMap = null;
 		// 按人员分组
 		Map<Long, List<AttendanceTime>> mapAttendance = attendanceTimeList.stream()
-				.filter(AttendanceTime -> AttendanceTime.getNumber() != null)
+				.filter(AttendanceTime -> AttendanceTime.getUserId() != null)
 				.collect(Collectors.groupingBy(AttendanceTime::getUserId, Collectors.toList()));
 		for (Long ps1 : mapAttendance.keySet()) {
 			allMap = new HashMap<>();
@@ -384,7 +383,10 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	public AttendanceTime updateAttendanceTime(AttendanceTime attendanceTime) {
 		AttendanceTime oldAttendanceTime = dao.findOne(attendanceTime.getId());
 		BeanCopyUtils.copyNotEmpty(attendanceTime, oldAttendanceTime, "");
-		return dao.save(oldAttendanceTime);
+		dao.save(oldAttendanceTime);
+		List<AttendanceTime> attendanceTimeList = findAttendanceTimePage(attendanceTime);
+		attendanceCollectDao.save(new AttendanceCollect(attendanceTimeList));
+		return attendanceTime;
 	}
 
 	@Override

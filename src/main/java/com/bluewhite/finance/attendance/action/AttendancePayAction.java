@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -52,6 +53,7 @@ public class AttendancePayAction {
 		 */
 		@RequestMapping(value = "/finance/addAttendance", method = RequestMethod.POST)
 		@ResponseBody
+		@Transactional
 		public CommonResponse allAttendancePay(HttpServletRequest request,AttendancePay attendancePay) {
 			CommonResponse cr = new CommonResponse();
 				//新增考勤工资，一键增加考勤
@@ -68,16 +70,20 @@ public class AttendancePayAction {
 						attendance.setOrderTimeBegin(DatesUtil.getfristDayOftime(attendance.getAllotTime()));
 						attendance.setOrderTimeEnd(DatesUtil.getLastDayOftime(attendance.getAllotTime()));
 						attendance.setType(attendancePay.getType());
-						if(attendancePayService.findPages(attendance, page).getRows().size()>0){
+						if(attendancePayService.findPages(attendance, new PageParameter(0,Integer.MAX_VALUE) ).getRows().size()>0){
 							cr.setMessage(user.getUserName()+"该天已存在考情记录，无需再次添加，请重新选择");
 							cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 							return cr;
 						}else{
 							attendance.setWorkTime(attendancePay.getWorkTimes()[i]);
-							
 							if(attendance.getType()==1 || attendance.getType()==2){
 								if(attendance.getWorkTime()==0){
 									cr.setMessage("考勤时间不能为0");
+									cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+									return cr;
+								}
+								if(!StringUtils.isEmpty(attendance.getWorkPrice())){
+									cr.setMessage(user.getUserName()+"没有到岗小时预计收入，请添加");
 									cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 									return cr;
 								}
