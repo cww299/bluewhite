@@ -25,11 +25,28 @@
 				<div class="col-md-12">
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h3 class="panel-title">总汇信息</h3>
-							<div class="actions pull-right">
-								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
+								<table><tr>    
+							 <td><font size="5" style="background-color:#9e9e1f;color: #fff">迟到</font></td>
+							 <td><td>&nbsp&nbsp</td></td>
+							 <td><font size="5" style="background-color:#bf1515;color: #fff">缺勤</font></td>
+							 <td><td>&nbsp&nbsp</td></td>
+							 <td><font size="5" style="background-color:#00b0ff;color: #fff">事假</font></td>
+							 <td><td>&nbsp&nbsp</td></td>
+							 <td><font size="5" style="background-color:#13161c;color: #fff">病假</font></td>
+							 <td><td>&nbsp&nbsp</td></td>
+							 <td><font size="5" style="background-color:#b8c2d6;color: #fff">丧假</font></td>
+							 <td><td>&nbsp&nbsp</td></td>
+							 <td><font size="5" style="background-color:#da06af;color: #fff">婚假</font></td>
+							 <td><td>&nbsp&nbsp</td></td>
+							 <td><font size="5" style="background-color:#13a8bd;color: #fff">产假</font></td>
+							 <td><td>&nbsp&nbsp</td></td>
+							 <td><font size="5" style="background-color:#1211e2;color: #fff">护理假</font></td>
+							 </tr></table>
+								<div class="actions pull-right">
+									<i class="fa fa-expand"></i>
+									<i class="fa fa-chevron-down"></i>
+								</div>
 							</div>
-						</div>
 						<div class="panel-body">
 							<div class="layui-form layui-card-header layuiadmin-card-header-auto">
 								<div class="layui-form-item">
@@ -71,6 +88,7 @@
 							<table class="layui-hide" lay-filter="test3" id="test">
 
 							</table>
+							
 						</div>
 					</div>
 				</div>
@@ -182,6 +200,7 @@
 							var even = function(url, data) {
 								table.render({
 											elem : '#test',
+											size:'sm',
 											url : url,
 											where : data,
 											cellMinWidth : 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
@@ -223,9 +242,11 @@
 												var a;
 												var b;
 												var c;
+												var d;
 												var length = data[0].attendanceTimeData.length
-												$.each(data[0].attendanceTimeData,
-														function(i, v) {
+												var ID;
+												$.each(data[0].attendanceTimeData,function(i, v) {
+													ID = v.id;
 															list[0] = {
 																align : 'center',
 																title : '<span style="color:red">姓名</span>',
@@ -235,7 +256,7 @@
 																rowspan : 3,
 																templet : function(
 																		d) {
-																	return d.attendanceTimeData[i].username
+																	return d.attendanceTimeData[i].userName
 																}
 															};
 															list[length + 1] = {
@@ -257,8 +278,7 @@
 																width : 70,
 																style : 'background-color: #5FB878;color: #fff',
 																rowspan : 3,
-																templet : function(
-																		d) {
+																templet : function(d) {
 																	return d.collect.overtime
 																}
 															};
@@ -269,8 +289,7 @@
 																width : 70,
 																style : 'background-color: #5FB878;color: #fff',
 																rowspan : 3,
-																templet : function(
-																		d) {
+																templet : function(d) {
 																	return d.collect.dutyWork
 																}
 															};
@@ -289,52 +308,94 @@
 															list[i + 1] = {
 																align : 'center',
 																title : v.time,
-																colspan : 3
+																colspan : 4
 															};
 															list1[i] = {
 																align : 'center',
 																title : v.week,
-																colspan : 3
+																colspan : 4
 															};
 															a = {
 																align : 'center',
 																title : '出勤',
+																field : ID,
 																edit: 'text',
-																templet : function(
-																		d) {
+																templet : function(d) {
 																	if (d.attendanceTimeData[i].turnWorkTime == 0)
 																		return '';
 																	else
+																		
 																		return d.attendanceTimeData[i].turnWorkTime;
 																}
 															}
 															b = {
 																align : 'center',
 																title : '加班',
+																field : ID,
 																edit: 'text',
 																templet : function(
 																		d) {
 																	if (d.attendanceTimeData[i].overtime == 0)
 																		return '';
 																	else
+																		
 																		return d.attendanceTimeData[i].overtime;
 																}
 															};
 															c = {
 																align : 'center',
 																title : '缺勤',
+																field : ID,
 																edit: 'text',
-																templet : function(
-																		d) {
+																templet : function(d) {
 																	if (d.attendanceTimeData[i].dutytime == 0)
 																		return '';
 																	else
-																		return '<div id="100">'+d.attendanceTimeData[i].dutytime+'</div>';
+																		var colo;
+																		if(d.attendanceTimeData[i].flag == 0){
+																			colo='#fff';
+																		}
+																		if(d.attendanceTimeData[i].flag ==1){
+																			colo='#bf1515';
+																		}
+																		if(d.attendanceTimeData[i].flag==2){
+																			if(d.attendanceTimeData[i].holidayType==0){
+																				colo='#00b0ff';
+																			}
+																			if(d.attendanceTimeData[i].holidayType==1){
+																				colo='#13161c';
+																			}
+																			if(d.attendanceTimeData[i].holidayType==2){
+																				colo='#b8c2d6';
+																			}
+																			if(d.attendanceTimeData[i].holidayType==3){
+																				colo='#da06af';
+																			}
+																			if(d.attendanceTimeData[i].holidayType==4){
+																				colo='#13a8bd';
+																			}
+																			if(d.attendanceTimeData[i].holidayType==5){
+																				colo='#1211e2';
+																			}
+																		}
+																		return '<div id="'+ID+'" style="background-color:'+colo+';color: #fff">'+d.attendanceTimeData[i].dutytime+'</div>';
 																}
 															}
+															d = {
+																	align : 'center',
+																	title : '迟到(M)',
+																	width : 80,
+																	templet : function(d) {
+																		if (d.attendanceTimeData[i].belateTime == 0)
+																			return '';
+																		else
+																			return '<div style="background-color:#9e9e1f;color: #fff">'+d.attendanceTimeData[i].belateTime+'</div>';
+																	}
+																}
 															list3.push(a);
 															list3.push(b);
-															list3.push(c)
+															list3.push(c);
+															list3.push(d);
 														});
 
 												list2.push(list)
@@ -343,6 +404,7 @@
 												table.init('test3', {
 													cols : list2,
 													data : res.data,
+													
 												});
 											},
 											page : false
@@ -355,13 +417,15 @@
 			                    });
 							
 							table.on('edit(test3)', function(obj) {
-								console.log(obj.field)
-								console.log(obj.data)
+								/* console.log(obj.field)
+								console.log(obj.value)
+								console.log(obj.data) */
+								var that=this
+								console.log( $(that).closest('td'))
 								var value = obj.value ,//得到修改后的值
 									data = obj.data ,//得到所在行所有键值
 									field = obj.field, //得到字段
 									id = data.id;
-								console.log(data.parents())
 							});
 							
 							
