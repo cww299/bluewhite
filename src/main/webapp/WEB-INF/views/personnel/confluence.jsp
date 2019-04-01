@@ -88,7 +88,7 @@
 							<table class="layui-hide" lay-filter="test3" id="test">
 
 							</table>
-							
+							<div style="height: 600px;"></div>
 						</div>
 					</div>
 				</div>
@@ -173,7 +173,7 @@
 												function(k, j) {
 													htmlfr += '<option value="'+j.id+'">'+ j.name+ '</option>'
 												});
-											var htmlth = '<select name="orgNameId" id="selectOrgNameId" class="form-control"><option value="">请选择</option>'
+											var htmlth = '<select name="orgNameId" id="selectOrgNameId" class="form-control" lay-search="true"><option value="">请选择</option>'
 														+ htmlfr + '</select>'
 											$("#orgNameId").html(htmlth);
 											form.render('select');
@@ -318,7 +318,6 @@
 															a = {
 																align : 'center',
 																title : '出勤',
-																field : ID,
 																edit: 'text',
 																templet : function(d) {
 																	if (d.attendanceTimeData[i].turnWorkTime == 0)
@@ -331,21 +330,18 @@
 															b = {
 																align : 'center',
 																title : '加班',
-																field : ID,
 																edit: 'text',
 																templet : function(
 																		d) {
 																	if (d.attendanceTimeData[i].overtime == 0)
 																		return '';
 																	else
-																		
 																		return d.attendanceTimeData[i].overtime;
 																}
 															};
 															c = {
 																align : 'center',
 																title : '缺勤',
-																field : ID,
 																edit: 'text',
 																templet : function(d) {
 																	if (d.attendanceTimeData[i].dutytime == 0)
@@ -378,7 +374,7 @@
 																				colo='#1211e2';
 																			}
 																		}
-																		return '<div id="'+ID+'" style="background-color:'+colo+';color: #fff">'+d.attendanceTimeData[i].dutytime+'</div>';
+																		return '<div style="background-color:'+colo+';color: #fff">'+d.attendanceTimeData[i].dutytime+'</div>';
 																}
 															}
 															d = {
@@ -410,22 +406,58 @@
 											page : false
 										});
 							}
-							 table.on('row(test3)', function (obj) {
-								 alert(1)
-			                        var index = $("tr").index(obj.tr);
-			                        console.log(index)
-			                    });
 							
 							table.on('edit(test3)', function(obj) {
-								/* console.log(obj.field)
-								console.log(obj.value)
-								console.log(obj.data) */
 								var that=this
-								console.log( $(that).closest('td'))
-								var value = obj.value ,//得到修改后的值
-									data = obj.data ,//得到所在行所有键值
-									field = obj.field, //得到字段
-									id = data.id;
+								var tde = $(that).closest('td')
+								var key=tde[0].dataset.key
+								var s=key.lastIndexOf("-")+1
+								var indexoff= key.substring(s,key.length)//为了得到是第几个数组
+								var indexof=parseInt(indexoff)+1
+								var a;
+								if((indexof)/4<1){
+									a=0
+								}else if((indexof)/4>=1){
+									a=parseInt((indexof)/4)
+								}
+								var id=obj.data.attendanceTimeData[a].id
+								var value = obj.value 
+								var field;
+								if(obj.field==0){
+									field='turnWorkTime'
+								}
+								if(obj.field==1){
+									field='overtime'
+								}
+								if(obj.field==2){
+									field='dutytime'
+								}
+								var postData={
+										id:id,
+										[field]:value,
+								}
+							     $.ajax({
+									url:"${ctx}/personnel/updateAttendanceTime",
+									data:postData,
+									type:"POST",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									success:function(result){
+										if(0==result.code){
+											layer.close(index);
+										}else{
+											layer.msg("修改失败！", {icon: 2});
+											layer.close(index);
+										}
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								}); 
+									
 							});
 							
 							
