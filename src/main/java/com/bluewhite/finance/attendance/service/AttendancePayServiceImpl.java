@@ -117,7 +117,8 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 	@Override
 	@Transactional
 	public void addAttendancePay(AttendancePay attendancePay) {
-		attendancePay.setPayNumber(NumUtils.round(attendancePay.getWorkPrice()*attendancePay.getWorkTime(),2));
+		attendancePay.setPayNumber(NumUtils.round(attendancePay.getWorkPrice()*
+				( NumUtils.sum(attendancePay.getWorkTime(), attendancePay.getOverTime()==null ? 0 :attendancePay.getOverTime())),2));
 		dao.save(attendancePay);
 	}
 

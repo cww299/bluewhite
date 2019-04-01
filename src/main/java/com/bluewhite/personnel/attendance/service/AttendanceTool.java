@@ -8,6 +8,8 @@ import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.system.user.entity.User;
 
+import sun.tools.tree.ThisExpression;
+
 /**
  * 用于计算考勤数据的工具方法
  * 
@@ -211,7 +213,7 @@ public class AttendanceTool {
 					}
 			
 			
-					// 满足于：员工可以加班后晚到岗 ，签入时间在默认上班开始时间之后，签出时间在工作结束时间之前  出现缺勤 (早退时间过长出现缺勤)
+					// 满足于：员工可以不加班后晚到岗 ，签入时间在默认上班开始时间之后，签出时间在工作结束时间之前  出现缺勤 (早退时间过长出现缺勤)
 					flag = !sign
 							&& attendanceTime.getCheckOut().before(workTimeEnd)
 							&& DatesUtil.getTime(attendanceTime.getCheckOut(),workTimeEnd)>DUTYMIN;
@@ -222,20 +224,20 @@ public class AttendanceTool {
 					}
 					
 					//迟到状态
-					// 满足于：员工可以加班后晚到岗 ，签入时间在（默认上班开始时间后1到30分钟）之间
+					// 满足于：员工不可以加班后晚到岗 ，签入时间在（默认上班开始时间后1到30分钟）之间
 					flag = !sign 
-							&& attendanceTime.getCheckIn().after(DatesUtil.getDaySum(workTime, NumUtils.sum(minute, 1))) 
-							&& attendanceTime.getCheckIn().before(DatesUtil.getDaySum(workTime, NumUtils.sum(minute, DUTYMIN)));
+							&& attendanceTime.getCheckIn().after(workTime) 
+							&& attendanceTime.getCheckIn().before(DatesUtil.getDaySum(workTime, DUTYMIN));
 					if(flag){
 						actualTurnWorkTime = turnWorkTime;
 						attendanceTime.setBelate(1);
-						actualbelateTime = DatesUtil.getTime(workTime,attendanceTime.getCheckIn());
+						actualbelateTime = setActualbelateTime(workTime,attendanceTime.getCheckIn());
 						flag = false;
 					}
 			
 			
 					//早退状态
-					// 满足于：员工可以加班后晚到岗，签出时间在工作结束时间小于等于30 （有早退）
+					// 满足于：员工不可以加班后晚到岗，签出时间在工作结束时间小于等于30 （有早退）
 					flag = !sign 
 							&& attendanceTime.getCheckOut().before(workTimeEnd)
 							&& DatesUtil.getTime(attendanceTime.getCheckOut(),workTimeEnd)<=DUTYMIN;
@@ -291,6 +293,15 @@ public class AttendanceTool {
 	}
 	
 
+	private static Double setActualbelateTime(Date beginTime,Date endTime ){
+		double sec = DatesUtil.getTimeSec( beginTime,endTime);
+		
+		
+		
+		return null;
+		
+		
+	}
 		
 	
 	

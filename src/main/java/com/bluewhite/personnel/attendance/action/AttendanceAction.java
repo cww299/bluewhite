@@ -7,9 +7,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.jdbc.object.UpdatableSqlQuery;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
@@ -25,12 +25,13 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.ZkemUtils.ZkemSDKUtils;
-import com.bluewhite.personnel.attendance.dao.AttendanceInitDao;
 import com.bluewhite.personnel.attendance.entity.ApplicationLeave;
 import com.bluewhite.personnel.attendance.entity.Attendance;
+import com.bluewhite.personnel.attendance.entity.AttendanceCollect;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.service.ApplicationLeaveService;
+import com.bluewhite.personnel.attendance.service.AttendanceCollectService;
 import com.bluewhite.personnel.attendance.service.AttendanceInitService;
 import com.bluewhite.personnel.attendance.service.AttendanceService;
 import com.bluewhite.personnel.attendance.service.AttendanceTimeService;
@@ -50,7 +51,11 @@ public class AttendanceAction {
 	private AttendanceTimeService attendanceTimeService;
 	@Autowired
 	private ApplicationLeaveService applicationLeaveService;
-
+	@Autowired
+	private AttendanceCollectService attendanceCollectService;
+	
+	
+	
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
@@ -298,6 +303,43 @@ public class AttendanceAction {
 		cr.setMessage("修改成功");
 		return cr;
 	}
+	
+	/**
+	 * 查看考勤汇总（打印）
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/personnel/findAttendanceCollect", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse findAttendanceCollect(HttpServletRequest request, AttendanceCollect attendanceCollect) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON.get()
+				.addRetainTerm(AttendanceCollect.class, "time", "turnWork", "user", "overtime", "dutyWork", "allWork",
+						"manDay", "manDayOvertime", "weekendTurnWork", "leaveTime", "takeWork", "leaveDetails", "remarks")
+				.addRetainTerm(User.class, "id", "userName")
+				.format(attendanceCollectService.findAttendanceCollect(attendanceCollect)).toJSON());
+		cr.setMessage("查找成功");
+		return cr;
+	}
+	
+	/**
+	 * 查看考勤汇总（打印）
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/personnel/updateAttendanceCollect", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateAttendanceCollect(HttpServletRequest request, AttendanceCollect attendanceCollect) {
+		CommonResponse cr = new CommonResponse();
+		AttendanceCollect ot = null;
+		if(attendanceCollect.getId()!=null){
+			ot = attendanceCollectService.findOne(attendanceCollect.getId());
+		}
+		attendanceCollectService.update(attendanceCollect, ot);
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
 
 	/**
 	 * 新增修改请假事项

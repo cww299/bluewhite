@@ -12,7 +12,7 @@ import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 public interface ApplicationLeaveService  extends BaseCRUDService<ApplicationLeave,Long>{
 	
 	/**
-	 * 按条件查看考级统计后的记录
+	 * 按条件查看的请假事项记录
 	 * @param attendanceTime
 	 * @return
 	 */
