@@ -119,6 +119,7 @@ public class UserAction {
 				UserContract userContract = new UserContract();
 				userContractDao.save(userContract);
 				user.setUserContract(userContract);
+				cr.setMessage("新增成功");
 				cr.setData(clearCascadeJSON.format(userService.save(user)).toJSON());
 				AttendanceInit attendanceInit = attendanceInitService.findByUserId(user.getId());
 				if(attendanceInit==null){
