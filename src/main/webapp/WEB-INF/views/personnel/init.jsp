@@ -74,7 +74,13 @@
     <div class="layui-form-item">
      	<label class="layui-form-label" style="width: 130px;">休息方式</label>
      	<div class="layui-input-inline">
-        	<select name="restType" lay-filter="restType" id="restType" lay-verify="required"  lay-search="true"><option value="1">无到岗要求</option><option value="2">周休一天</option><option value="3">月休两天，其他周日算加班</option><option value="4">全年无休</option><option value="5">按到岗小时计算（类似全年无休，有自己的节假日休息））</option></select>
+        	<select name="restType" lay-filter="restType" id="restType" lay-verify="required"  lay-search="true"><option value="1">周休一天</option><option value="2">月休两天，其他周日算加班</option><option value="3">全年无休</option></select>
+      	</div>
+    </div>
+    <div class="layui-form-item">
+     	<label class="layui-form-label" style="width: 130px;">出勤方式</label>
+     	<div class="layui-input-inline">
+        	<select name="workType" lay-filter="workType" id="workType" lay-verify="required"  lay-search="true"><option value="0">请选择</option><option value="1">无到岗要求</option><option value="2">无打卡要求</option><option value="3">按到岗小时计算</option></select>
       	</div>
     </div>
     <div class="layui-form-item">
@@ -333,22 +339,36 @@
 								edit: false,
 								templet: function(d){
 									if(d.restType==1){
-									return "无到岗要求";
-									}
-									if(d.restType==2){
 										return "周休一天";
 									}
-									if(d.restType==3){
+									if(d.restType==2){
 										return "月休两天,其他周日算加班";
 									}
-									if(d.restType==4){
+									if(d.restType==3){
 										return "全年无休";
 									}
-									if(d.restType==5){
-										return "按到岗小时计算(类似全年无休，有自己的节假日休息)";
+								}
+							}, {
+								field: "",
+								title: "出勤方式",
+								align: 'center',
+								edit: false,
+								templet: function(d){
+									if(d.workType==0){
+									return "";
+									}
+									if(d.workType==1){
+										return "无到岗要求";
+									}
+									if(d.workType==2){
+										return "无打卡要求";
+									}
+									if(d.workType==3){
+										return "按到岗小时计算";
 									}
 								}
-							},{
+							},
+							{
 								field: "restDay",
 								align: 'center',
 								title: "约定休息日",
@@ -579,6 +599,11 @@
 							});
 					    	$('#restType').each(function(j,k){
 					    		var id=data.restType;
+								$(k).val(id);
+								form.render('select');
+							});
+					    	$('#workType').each(function(j,k){
+					    		var id=data.workType;
 								$(k).val(id);
 								form.render('select');
 							});
