@@ -430,7 +430,7 @@
 						if(0==result.code){
 							layer.msg("修改成功！", {icon: 1});
 						}else{
-							layer.msg("添加失败", {icon: 2});
+							layer.msg("修改", {icon: 2});
 						}
 						layer.close(index);
 					},error:function(){

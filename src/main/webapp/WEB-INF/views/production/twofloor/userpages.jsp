@@ -284,7 +284,7 @@
 							},
 							
 							success:function(result){
-								if(0==result.code){
+								if(0==result.code || 2==result.code){
 								layer.msg("修改成功！", {icon: 1});
 								layer.close(index);
 								}else{
