@@ -87,7 +87,7 @@
 							  </ul>
 							  <div class="layui-tab-content">
 							    <div class="layui-tab-item layui-show">
-							      <table class="layui-hide" lay-filter="test3" id="test"></table>
+							      <table class="layui-hide" lay-filter="test3" id="test3"></table>
 							    </div>
 							    <div class="layui-tab-item"><table class="layui-hide" lay-filter="test5" id="test5"></table></div>
 							  </div>
@@ -201,27 +201,21 @@
 								var field={
 										orgNameId:data.field.orgNameId,
 										orderTimeBegin:data.field.orderTimeBegin,
+										page:1,
+										limit:15,
 								}
-								$.ajax({
-									url: "${ctx}/personnel/findAttendanceTime",
-									type: "get",
-									data: field,
-									dataType: "json",
-									success: function(result) {
-										table.reload('test', {
-											where: field
-										});
-									}
-								});
+								even(field)
+								event(field)
 							})
 							
-							var data={
-								orgNameId:34,
+							/* var data={
+								orgNameId:30,
 								orderTimeBegin:firstdate,
-							}
+							} */
 							//修改考勤
+							var even = function(data) {
 								table.render({
-											elem : '#test',
+											elem : '#test3',
 											size:'sm',
 											url : '${ctx}/personnel/findAttendanceTime',
 											where :data,
@@ -258,8 +252,8 @@
 																fixed : 'left',
 																style : 'background-color: #5FB878;color: #fff',
 																rowspan : 3,
-																templet : function(
-																		d) {
+																templet : function(d) {
+																	console.log(d)
 																	return d.attendanceTimeData[i].userName
 																}
 															};
@@ -415,14 +409,14 @@
 												table.init('test3', {
 													cols : list2,
 													data : res.data,
-													
 												});
 											},
 											page : false
 										});
-							
+							}
 							
 							//考勤汇总
+					var event = function(data) {
 						 table.render({
 						elem: '#test5',
 						size: 'lg',
@@ -482,7 +476,7 @@
 								edit:'text'
 							}
 							, {
-								field: "55",
+								field: "sign",
 								title: "签字",
 								align: 'center',
 							}
@@ -504,7 +498,7 @@
 						}
 
 					});
-							
+							}		
 						 table.on('edit(test5)', function(obj) {
 							 var value = obj.value
 							 var id=obj.data.id

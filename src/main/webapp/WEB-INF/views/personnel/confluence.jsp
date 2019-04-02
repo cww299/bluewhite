@@ -63,7 +63,7 @@
 											<td>&nbsp&nbsp</td>
 											<td>考勤汇总月份:</td>
 											<td>
-												<input name="orderTimeBegin" id="startTime" style="width: 200px;" placeholder="请输入考勤汇总月份"
+												<input name="orderTimeBegin" id="startTime" lay-verify="required" style="width: 200px;" placeholder="请输入考勤汇总月份"
 													class="form-control laydate-icon">
 											</td>
 											<td>&nbsp&nbsp</td>
@@ -182,12 +182,22 @@
 									});
 							
 							form.on('submit(LAY-role-search)', function(data) {
+								if($("#firstNames").val()==""){
+									if($("#selectOrgNameId").val()==""){
+										return layer.msg("请输入人员 或者 部门", {icon: 2});
+									}
+								}
 								var field=data.field
 								var postUrl='${ctx}/personnel/intAttendanceTime'
 								even(postUrl,field)
 							})
 							
 							form.on('submit(LAY-role-searche)', function(data) {
+								if($("#firstNames").val()==""){
+									if($("#selectOrgNameId").val()==""){
+										return layer.msg("请输入人员 或者 部门", {icon: 2});
+									}
+								}
 								var field={
 										userId:data.field.userId,
 										orgNameId:data.field.orgNameId,
@@ -410,7 +420,7 @@
 													loading: true,
 													cols : list2,
 													data : res.data,
-													
+													limit:500,
 												});
 											},
 											page : false
