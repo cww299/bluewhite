@@ -1961,6 +1961,15 @@
 												layer.close(index);
 												$("#productId").text("");
 												self.loadPagination(data);
+											}else if (2==result.code) {
+												layer.open({
+													   title: '提示'
+													  ,content:res.msg
+													  ,btn: ['确认', '取消']
+													,yes: function(index, layero){
+														window.location.href = "http://localhost:8080/ERPlanning/menusToUrl?url=personnel/init"
+										       			 }
+													}); 
 											}else{
 												layer.msg(result.message, {icon: 2});
 												$("#productId").text("");
@@ -2281,7 +2290,14 @@
 										  	}
 											self.loadPagination(data);
 										}else if (2==result.code) {
-											window.location.href = "http://localhost:8080/ERPlanning/menusToUrl?url=personnel/init"
+											layer.open({
+												   title: '提示'
+												  ,content:res.msg
+												  ,btn: ['确认', '取消']
+												,yes: function(index, layero){
+													window.location.href = "http://localhost:8080/ERPlanning/menusToUrl?url=personnel/init"
+									       			 }
+												});
 										}else{
 											layer.msg(result.message, {icon: 2});
 										}

@@ -161,7 +161,7 @@
     <div class="layui-form-item">
      	<label class="layui-form-label" style="width: 130px;">加班后到岗</label>
      	<div class="layui-input-inline">
-        	<select name="comeWork" id="comeWork" lay-filter="comeWork" lay-verify="required"  lay-search="true"><option value="0">请选择</option><option value="1">按点上班</option><option value="2">第二天上班时间以超过24:00后的时间往后推</option><option value="3">超过24:30后默认休息7.5小时</option></select>
+        	<select name="comeWork" id="comeWork" lay-filter="comeWork" lay-verify="required"  lay-search="true"><option value="1">按点上班</option><option value="2">第二天上班时间以超过24:00后的时间往后推</option><option value="3">超过24:30后默认休息7.5小时</option></select>
       	</div>
     </div>
     
@@ -538,7 +538,13 @@
 							        }
 							        ,yes: function(index, layero){
 							        	form.on('submit(addRole)', function(data) {
-							        	 mainJs.fAdd(data.field); 
+							        		var key=data.field.restDay
+							        		var s=key.charAt(key.length-1)
+							        		if(s==","){
+							        			return layer.msg("约定休息日末尾不能是,号", {icon: 2});
+							        		}else{
+							        	 mainJs.fAdd(data.field);
+							        	 }
 							        	document.getElementById("layuiadmin-form-admin").reset();
 							        	layui.form.render();
 							        	timeAll=""
@@ -615,7 +621,13 @@
 						        }
 						        ,yes: function(index, layero){
 						        	form.on('submit(addRole)', function(data) {
+						        		var key=data.field.restDay
+						        		var s=key.charAt(key.length-1)
+						        		if(s==","){
+						        			return layer.msg("约定休息日末尾不能是,号", {icon: 2});
+						        		}else{
 						        	 mainJs.fAdd(data.field); 
+						        		}
 									})
 									
 						        }
