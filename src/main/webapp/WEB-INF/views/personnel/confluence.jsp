@@ -205,6 +205,7 @@
 											where : data,
 											cellMinWidth : 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
 											method : 'POST',
+											loading:true,
 											parseData : function(res) { //res 即为原始返回的数据
 												return {
 													"code" : res.code, //解析接口状态
@@ -218,8 +219,8 @@
 											done : function(res, curr, count) {
 												if(res.code==2){
 													layer.open({
-														   title: '在线调试'
-														  ,content:'考勤已经汇总，是否覆盖'
+														   title: '提示'
+														  ,content:res.msg
 														  ,btn: ['确认', '取消']
 														,yes: function(index, layero){
 															var field={
@@ -406,6 +407,7 @@
 												list2.push(list1)
 												list2.push(list3)
 												table.init('test3', {
+													loading: true,
 													cols : list2,
 													data : res.data,
 													
