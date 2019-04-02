@@ -161,7 +161,7 @@ public class GroupAction {
 		
 		for (Group gr : groupAll) {
 			Set<User> users = gr.getUsers().stream()
-					.filter(u -> u != null && u.getStatus() != null && u.getStatus() != 1 && u.getQuit() != 1).collect(Collectors.toSet());
+					.filter(u -> u != null && u.getStatus() != null && u.getStatus() != 1).collect(Collectors.toSet());
 			for (User u : users) {
 				List<AttendancePay> attendancePay = attendancePayDao.findByUserIdAndTypeAndAllotTimeBetween(u.getId(),
 						group.getType(),

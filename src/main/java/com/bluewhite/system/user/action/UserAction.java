@@ -1,10 +1,7 @@
 package com.bluewhite.system.user.action;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -34,11 +31,10 @@ import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.BankUtil;
 import com.bluewhite.common.utils.DatesUtil;
-import com.bluewhite.common.utils.ZkemUtils.ZkemSDKUtils;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
-import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.service.AttendanceInitService;
 import com.bluewhite.production.group.entity.Group;
+import com.bluewhite.production.group.service.GroupService;
 import com.bluewhite.system.sys.entity.SysLog;
 import com.bluewhite.system.user.dao.UserContractDao;
 import com.bluewhite.system.user.dao.UserDao;
@@ -60,6 +56,8 @@ public class UserAction {
 	private UserDao userDao;
 	@Autowired
 	private AttendanceInitService attendanceInitService;
+	@Autowired
+	private GroupService groupService;
 
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -152,7 +150,6 @@ public class UserAction {
 			return cr;
 		}
 		User oldUser = userService.findOne(user.getId());
-		
 		if(oldUser.getUserContract()==null){
 			UserContract userContract = new UserContract();
 			userContractDao.save(userContract);
@@ -160,6 +157,11 @@ public class UserAction {
 				oldUser.setLotionNumber(Integer.valueOf(userContract.getNumber()));
 			}
 			oldUser.setUserContract(userContract);
+		}
+		//离职去除分组信息
+		if(user.getQuit()==1){
+			user.setGroupId(null);;
+			user.setGroup(null);
 		}
 		BeanCopyUtils.copyNotEmpty(user,oldUser,"");
 		AttendanceInit attendanceInit = attendanceInitService.findByUserId(user.getId());
