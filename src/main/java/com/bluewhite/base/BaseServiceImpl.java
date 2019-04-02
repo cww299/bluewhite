@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import com.bluewhite.common.BeanCopyUtils;
+import com.bluewhite.common.entity.SpecificationUtil;
 
 /**
  * <p>抽象service层基类 提供一些简便方法
@@ -18,10 +20,17 @@ import com.bluewhite.common.BeanCopyUtils;
 public abstract class BaseServiceImpl<T extends AbstractEntity<ID>, ID extends Serializable> {
 
     protected BaseRepository<T, ID> baseRepository;
+    
+    protected SpecificationUtil specificationUtil;
 
     @Autowired
     public void setBaseRepository(BaseRepository<T, ID> baseRepository) {
         this.baseRepository = baseRepository;
+    }
+    
+    @Autowired
+    public void setSpecificationUtil(SpecificationUtil specificationUtil) {
+        this.specificationUtil = specificationUtil;
     }
 
     /**
@@ -32,6 +41,7 @@ public abstract class BaseServiceImpl<T extends AbstractEntity<ID>, ID extends S
      */
     public T save(T t) {
         return baseRepository.save(t);
+        
     }
     
     /**
@@ -150,7 +160,21 @@ public abstract class BaseServiceImpl<T extends AbstractEntity<ID>, ID extends S
         return baseRepository.findAll(pageable);
     }
 
+    /**
+     * 根据实体中的字段查询
+     *
+     */
+    public List<T> findByBean(T t) {
+    	System.out.println(1111);
+        return baseRepository.findAll(specificationUtil.getSpec(t));
+    }
 
-
+    /**
+     * 根据实体中的字段查询
+     *
+     */
+    public List<T> findAll(Specification<T> t) {
+        return baseRepository.findAll(t);
+    }
 
 }

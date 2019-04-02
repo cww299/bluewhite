@@ -38,10 +38,16 @@ public class AttendanceInit extends BaseEntity<Long> {
     
     
 	/**
-	 * 约定休息方式（1.无到岗要求，2.周休一天，3.月休两天，其他周日算加班,4.全年无休，5.按到岗小时计算（类似全年无休，有自己的节假日休息））
+	 * 约定休息方式（1.周休一天，2.月休两天，其他周日算加班,3.全年无休）
 	 */
 	@Column(name = "rest_type")
 	private Integer restType;
+	
+	/**
+	 * 出勤方式（1.无到岗要求，2，打卡，3.按到岗小时计算）
+	 */
+	@Column(name = "work_type")
+	private Integer workType;
     
 	/**
 	 * 约定休息日
@@ -155,6 +161,16 @@ public class AttendanceInit extends BaseEntity<Long> {
 
 	
 	
+
+
+	public Integer getWorkType() {
+		return workType;
+	}
+
+
+	public void setWorkType(Integer workType) {
+		this.workType = workType;
+	}
 
 
 	public Long getUserId() {

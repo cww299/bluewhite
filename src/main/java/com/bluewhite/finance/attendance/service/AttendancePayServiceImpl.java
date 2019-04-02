@@ -75,10 +75,10 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 				query.where(predicate.toArray(pre));
 	        	return null;
 	        }, SalesUtils.getQueryNoPageParameter());
-			 if(param.getSign()!=null){
-				 this.countMaxPay(pages.getContent(),param);
-			 }
-			 PageResultStat<AttendancePay> result = new PageResultStat<>(pages,page);
+			  if(param.getSign()!=null){
+			 	 this.countMaxPay(pages.getContent(),param);
+			  }
+			  PageResultStat<AttendancePay> result = new PageResultStat<>(pages,page);
 			  result.setAutoStateField("workTime", "payNumber");
 			  result.count();
 	        return result;
