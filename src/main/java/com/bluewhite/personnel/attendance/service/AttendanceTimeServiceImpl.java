@@ -115,6 +115,9 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
 				// 获取员工考勤的初始化参数
 				AttendanceInit attendanceInit = attendanceInitService.findByUserId(us.getId());
+				
+				
+				
 				// 上班开始时间
 				Date workTime = null;
 				// 上班结束时间
@@ -153,7 +156,10 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				restTime = attendanceInit.getRestWinter();
 				turnWorkTime = attendanceInit.getTurnWorkTimeWinter();
 
-				// 全年无休，满勤
+				
+				
+				
+				// 无到岗要求
 				if (attendanceInit.getRestType() == 1) {
 					attendanceTime.setFlag(0);
 					attendanceTime.setTurnWorkTime(turnWorkTime);
@@ -161,7 +167,10 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					continue;
 				}
 
+				
 				// 2.周休一天，3.月休两天，其他周日算加班,4.全年无休，5.按到岗小时计算（类似全年无休，有自己的节假日休息）。
+				
+				
 				// 获取休息的日期，不计算出勤
 				// 当循环日期不等于休息日，进行考勤的记录,休息日无签到记录，无出勤数据
 				String[] restDayArr = null;
@@ -182,6 +191,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 						continue;
 					}
 				}
+				
 
 				boolean sign = false;
 				Double minute = 0.0;

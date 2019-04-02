@@ -2,6 +2,8 @@ package com.bluewhite.base;
 
 import java.util.List;
 
+import org.springframework.data.jpa.domain.Specification;
+
 public interface BaseCRUDService<T,ID> {
 	/**
      * 保存单个实体
@@ -63,4 +65,13 @@ public interface BaseCRUDService<T,ID> {
      * @return 实体总数
      */
     public long count() ;
+    
+    
+    /**
+     * 根据实体中的字段查询
+     *
+     */
+    public List<T> findByBean(T t);
+    
+    public List<T> findAll(Specification<T> t);
 }

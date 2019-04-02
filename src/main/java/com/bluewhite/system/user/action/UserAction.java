@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
@@ -29,6 +30,7 @@ import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.SpecificationUtil;
 import com.bluewhite.common.utils.BankUtil;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
@@ -159,7 +161,7 @@ public class UserAction {
 			oldUser.setUserContract(userContract);
 		}
 		//离职去除分组信息
-		if(user.getQuit()==1){
+		if(user.getQuit()!=null && user.getQuit()==1){
 			user.setGroupId(null);;
 			user.setGroup(null);
 		}
@@ -367,9 +369,15 @@ public class UserAction {
 	 */
 	@RequestMapping(value = "/test", method = RequestMethod.GET)
 	@ResponseBody
-	private CommonResponse test() {
+	private CommonResponse test(User user) {
 		CommonResponse cr = new CommonResponse();
-		List<User> userList =userService.findByForeigns();
+		Specification<User> xx = SpecificationUtil.getSpec(user);
+		List<User> userList =userService.findAll(SpecificationUtil.getSpec(user));
+//		List<User> userList =userService.findByBean(user);
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(User.class,"id","userName")
+				.format(userList).toJSON());
 		return cr;
 	}
 	
