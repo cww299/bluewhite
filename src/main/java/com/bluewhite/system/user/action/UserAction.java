@@ -159,7 +159,7 @@ public class UserAction {
 			oldUser.setUserContract(userContract);
 		}
 		//离职去除分组信息
-		if(user.getQuit()==1){
+		if(user.getQuit()!=null && user.getQuit()==1){
 			user.setGroupId(null);;
 			user.setGroup(null);
 		}
