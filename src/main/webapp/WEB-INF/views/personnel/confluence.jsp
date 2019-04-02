@@ -219,8 +219,8 @@
 											done : function(res, curr, count) {
 												if(res.code==2){
 													layer.open({
-														   title: '在线调试'
-														  ,content:'考勤已经汇总，是否覆盖'
+														   title: '提示'
+														  ,content:res.msg
 														  ,btn: ['确认', '取消']
 														,yes: function(index, layero){
 															var field={

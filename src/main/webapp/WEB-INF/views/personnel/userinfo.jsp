@@ -2280,7 +2280,8 @@
 										  			safe:$('#safe').val(), */
 										  	}
 											self.loadPagination(data);
-											
+										}else if (2==result.code) {
+											window.location.href = "http://localhost:8080/ERPlanning/menusToUrl?url=personnel/init"
 										}else{
 											layer.msg(result.message, {icon: 2});
 										}
