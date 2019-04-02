@@ -181,7 +181,6 @@
                                  <div class="col-sm-2 select"></div>
                     	</div>
                  </div>
-				</div>
 
 				</form>
 </div>
@@ -1028,7 +1027,7 @@
 					var postData
 					var dicDiv=$('#addDictDivType');
 					_index = layer.open({
-						  type: 2,
+						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
 						  area: ['60%', '60%'], 
 						  btnAlign: 'c',//宽高
