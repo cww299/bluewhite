@@ -1095,6 +1095,15 @@
 											  	}
 												layer.close(index);
 												self.loadPagination(data);
+											}else if (2==result.code) {
+												layer.open({
+													   title: '提示'
+													  ,content:'该员工没有初始化设定,请点击添加'
+													  ,btn: ['确认', '取消']
+													,yes: function(index, layero){
+														window.location.href = "${ctx}/menusToUrl?url=personnel/init"
+										       			 }
+													}); 
 											}else{
 												layer.msg(result.message, {icon: 2});
 											}
@@ -1781,6 +1790,15 @@
 											  	}
 												layer.close(index);
 												self.loadPagination(data);
+											}else if (2==result.code) {
+												layer.open({
+													   title: '提示'
+													  ,content:'该员工没有初始化设定,请点击添加'
+													  ,btn: ['确认', '取消']
+													,yes: function(index, layero){
+														window.location.href = "${ctx}/menusToUrl?url=personnel/init"
+										       			 }
+													}); 
 											}else{
 												layer.msg(result.message, {icon: 2});
 											}
@@ -1967,7 +1985,7 @@
 													  ,content:'该员工没有初始化设定,请点击添加'
 													  ,btn: ['确认', '取消']
 													,yes: function(index, layero){
-														window.location.href = "http://localhost:8080/ERPlanning/menusToUrl?url=personnel/init"
+														window.location.href = "${ctx}/menusToUrl?url=personnel/init"
 										       			 }
 													}); 
 											}else{
@@ -2289,13 +2307,15 @@
 										  			safe:$('#safe').val(), */
 										  	}
 											self.loadPagination(data);
-										}else if (2==result.code) {
+										}
+										
+										if (2==result.code) {
 											layer.open({
 												   title: '提示'
 												  ,content:'该员工没有初始化设定,请点击添加'
 												  ,btn: ['确认', '取消']
 												,yes: function(index, layero){
-													window.location.href = "http://localhost:8080/ERPlanning/menusToUrl?url=personnel/init"
+													window.location.href = "${ctx}/menusToUrl?url=personnel/init"
 									       			 }
 												});
 										}else{
