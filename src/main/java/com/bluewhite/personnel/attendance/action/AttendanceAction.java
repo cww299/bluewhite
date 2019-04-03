@@ -19,17 +19,20 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.ZkemUtils.ZkemSDKUtils;
+import com.bluewhite.personnel.attendance.dao.RestTypeDao;
 import com.bluewhite.personnel.attendance.entity.ApplicationLeave;
 import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.entity.AttendanceCollect;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
+import com.bluewhite.personnel.attendance.entity.RestType;
 import com.bluewhite.personnel.attendance.service.ApplicationLeaveService;
 import com.bluewhite.personnel.attendance.service.AttendanceCollectService;
 import com.bluewhite.personnel.attendance.service.AttendanceInitService;
@@ -53,7 +56,8 @@ public class AttendanceAction {
 	private ApplicationLeaveService applicationLeaveService;
 	@Autowired
 	private AttendanceCollectService attendanceCollectService;
-	
+	@Autowired
+	private RestTypeDao restTypeDao;
 	
 	
 	private ClearCascadeJSON clearCascadeJSON;
@@ -467,6 +471,45 @@ public class AttendanceAction {
 		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("员工不能为空");
+		}
+		return cr;
+	}
+	
+	
+	/**
+	 * 查找休息方式数据
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/personnel/findRestType", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse findRestType() {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON.get()
+				.addRetainTerm(RestType.class, "id", "weeklyRestDate", "monthRestDate")
+				.format(restTypeDao.findAll()).toJSON());
+		return cr;
+	}
+	
+	/**
+	 * 修改休息方式数据
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/personnel/updateRestType", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateRestType(RestType restType) {
+		CommonResponse cr = new CommonResponse();
+		if(restType.getId()!=null){
+			RestType ot = restTypeDao.findOne(restType.getId());
+			BeanCopyUtils.copyNotEmpty(restType,ot,"");
+			cr.setData(ClearCascadeJSON.get()
+					.addRetainTerm(RestType.class, "id", "weeklyRestDate", "monthRestDate")
+					.format(restTypeDao.save(ot) ).toJSON());
+			cr.setMessage("修改成功");
+		}else{
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("不能为空");
 		}
 		return cr;
 	}
