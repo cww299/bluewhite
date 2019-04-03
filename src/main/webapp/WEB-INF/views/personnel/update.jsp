@@ -126,20 +126,10 @@
 							, laydate = layui.laydate //日期控件
 							, tablePlug = layui.tablePlug //表格插件
 							, element = layui.element;
-							function p(s) {
-								return s < 10 ? '0' + s: s;
-							}
-							var myDate = new Date();
-							//获取当前年
-							var year=myDate.getFullYear();
-							//获取当前月
-							var month=myDate.getMonth();
-							var firstdate = year + '-' + p(month) + '-01'+' '+'00:00:00';
 							laydate.render({
 								elem : '#startTime',
 								type : 'month',
 								format:'yyyy-MM-01 HH:mm:ss',
-								value:firstdate,
 							});
 							var htmls = '<option value="">请选择</option>';
 							var index = layer.load(1, {
