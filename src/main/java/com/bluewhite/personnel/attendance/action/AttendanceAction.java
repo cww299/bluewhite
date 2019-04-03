@@ -314,7 +314,7 @@ public class AttendanceAction {
 	public CommonResponse findAttendanceCollect(HttpServletRequest request, AttendanceCollect attendanceCollect) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(AttendanceCollect.class,"id","time", "turnWork", "user", "overtime", "dutyWork", "allWork",
+				.addRetainTerm(AttendanceCollect.class,"id","time", "turnWork","overtime", "dutyWork", "allWork",
 						"manDay", "manDayOvertime", "weekendTurnWork", "leaveTime", "takeWork", "leaveDetails", "remarks","userName","sign")
 				.format(attendanceCollectService.findAttendanceCollect(attendanceCollect)).toJSON());
 		cr.setMessage("查找成功");
@@ -445,7 +445,7 @@ public class AttendanceAction {
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(AttendanceInit.class, "id", "restType", "restDay", "workTimeSummer", "user",
 						"workTimeWinter", "turnWorkTimeSummer", "turnWorkTimeWinter", "restTimeSummer",
-						"restTimeWinter", "restSummer", "restWinter", "restTimeWork", "overTimeType", "comeWork")
+						"restTimeWinter", "restSummer", "restWinter", "restTimeWork", "overTimeType", "comeWork","workType")
 				.addRetainTerm(User.class, "id", "userName")
 				.format(attendanceInitService.findAttendanceInitPage(attendanceInit, page)).toJSON());
 		cr.setMessage("查询成功");

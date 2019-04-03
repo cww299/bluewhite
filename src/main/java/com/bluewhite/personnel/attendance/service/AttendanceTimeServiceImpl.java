@@ -163,7 +163,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				List<RestType> restType = restTypeDao.findAll();
 				// 1.周休一天，
 				if (attendanceInit.getRestType() == 1) {
-					String[] weeklyRestDate = restType.get(0).getMonthRestDate().split(",");
+					String[] weeklyRestDate = restType.get(0).getWeeklyRestDate().split(",");
 					if (weeklyRestDate.length > 0) {
 						for (int j = 0; j < weeklyRestDate.length; j++) {
 							if (DatesUtil.getfristDayOftime(beginTimes).compareTo(sdf.parse(weeklyRestDate[j]))==0) {
