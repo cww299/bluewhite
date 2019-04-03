@@ -119,6 +119,9 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
 				// 获取员工考勤的初始化参数
 				AttendanceInit attendanceInit = attendanceInitService.findByUserId(us.getId());
+				if(attendanceInit==null){
+					throw new ServiceException(us.getUserName()+"没有考勤初始设定数据，请填写后操作");
+				}
 
 				// 上班开始时间
 				Date workTime = null;
@@ -478,6 +481,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	}
 
 	@Override
+	@Transactional
 	public List<AttendanceTime> attendanceTimeByApplication(List<AttendanceTime> attendanceTimeList)
 			throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -582,6 +586,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 							restEndTime = DatesUtil.dayTime(inTime, restTimeArr[1]);
 							restTime = attendanceInit.getRestWinter();
 							turnWorkTime = attendanceInit.getTurnWorkTimeWinter();
+							
 							List<AttendanceTime> oneAtList = attendanceTimeListSort.stream()
 									.filter(AttendanceTime -> (AttendanceTime.getTime().compareTo(inTime)) == 0)
 									.collect(Collectors.toList());
@@ -597,44 +602,80 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 							}
 						}
 					}
+					
+					// 获取时间区间
+					String[] dateAddArr = date.split(",");
 					// 补签
-					if (al.isAddSignIn() && at.getTime().compareTo(DatesUtil.getfristDayOftime(dateLeave)) == 0) {
-						if (time == 0) {
-							at.setCheckIn(dateLeave);
-						} else {
-							at.setCheckOut(dateLeave);
-						}
+					if (al.isAddSignIn() && dateAddArr.length > 0 ) {
 						boolean sign = false;
 						Double minute = 0.0;
 						List<Attendance> afterAttendance = null;
 						Date beginTimes = at.getTime();
-						if (attendanceInit.getComeWork() == 2) {
-							afterAttendance = attendanceDao.findByUserIdAndTimeBetween(at.getUserId(),
-									DatesUtil.dayTime(beginTimes, "00:00:00"),
-									DatesUtil.dayTime(beginTimes, "06:00:00"));
-							if (afterAttendance.size() > 0) {
-								// 得到最后一次签到记录离24：00相差分钟数
-								minute = DatesUtil.getTime(DatesUtil.dayTime(beginTimes, "00:00:00"),
-										afterAttendance.get(afterAttendance.size() - 1).getTime());
-								sign = true;
+						for(String addDate : dateAddArr){
+							Date ad = sdf.parse(addDate);
+							// flag=ture 为夏令时
+							if (flag) {
+								String[] workTimeArr = attendanceInit.getWorkTimeSummer().split(" - ");
+								// 将 工作间隔开始结束时间转换成当前日期的时间
+								workTime = DatesUtil.dayTime(ad, workTimeArr[0]);
+								workTimeEnd = DatesUtil.dayTime(ad, workTimeArr[1]);
+								String[] restTimeArr = attendanceInit.getRestTimeSummer().split(" - ");
+								// 将 休息间隔开始结束时间转换成当前日期的时间
+								restBeginTime = DatesUtil.dayTime(ad, restTimeArr[0]);
+								restEndTime = DatesUtil.dayTime(ad, restTimeArr[1]);
+								restTime = attendanceInit.getRestSummer();
+								turnWorkTime = attendanceInit.getTurnWorkTimeSummer();
+							}
+							// 冬令时
+							String[] workTimeArr = attendanceInit.getWorkTimeWinter().split(" - ");
+							// 将 工作间隔开始结束时间转换成当前日期的时间
+							workTime = DatesUtil.dayTime(ad, workTimeArr[0]);
+							workTimeEnd = DatesUtil.dayTime(ad, workTimeArr[1]);
+							// 将 休息间隔开始结束时间转换成当前日期的时间
+							String[] restTimeArr = attendanceInit.getRestTimeSummer().split(" - ");
+							// 将 休息间隔开始结束时间转换成当前日期的时间
+							restBeginTime = DatesUtil.dayTime(ad, restTimeArr[0]);
+							restEndTime = DatesUtil.dayTime(ad, restTimeArr[1]);
+							restTime = attendanceInit.getRestWinter();
+							turnWorkTime = attendanceInit.getTurnWorkTimeWinter();
+							
+							if(at.getTime().compareTo(DatesUtil.getfristDayOftime(ad)) == 0){
+								if (time == 0) {
+									at.setCheckIn(ad);
+								} else {
+									at.setCheckOut(ad);
+								}
+								
+								if (attendanceInit.getComeWork() == 2) {
+									afterAttendance = attendanceDao.findByUserIdAndTimeBetween(at.getUserId(),
+											DatesUtil.dayTime(beginTimes, "00:00:00"),
+											DatesUtil.dayTime(beginTimes, "06:00:00"));
+									if (afterAttendance!=null && afterAttendance.size() > 0) {
+										// 得到最后一次签到记录离24：00相差分钟数
+										minute = DatesUtil.getTime(DatesUtil.dayTime(beginTimes, "00:00:00"),
+												afterAttendance.get(afterAttendance.size() - 1).getTime());
+										sign = true;
+									}
+								}
+								// 2.超过24:30后默认休息7.5小时
+								if (attendanceInit.getComeWork() == 3) {
+									afterAttendance = attendanceDao.findByUserIdAndTimeBetween(at.getUserId(),
+											DatesUtil.dayTime(beginTimes, "00:30:00"),
+											DatesUtil.dayTime(beginTimes, "06:00:00"));
+									if (afterAttendance!=null && afterAttendance.size() > 0) {
+										// 得到最后一次签到记录离24：30相差分钟数
+										minute = DatesUtil.getTime(DatesUtil.dayTime(beginTimes, "00:30:00"),
+												afterAttendance.get(afterAttendance.size() - 1).getTime());
+										sign = true;
+									}
+								}
+								
+								// 进行出勤，加班，缺勤，迟到，早退的计算
+								AttendanceTime signAtt = AttendanceTool.attendanceIntTool(sign, workTime, workTimeEnd, minute,
+										turnWorkTime, at, attendanceInit, at.getUser());
+								at = signAtt;
 							}
 						}
-						// 2.超过24:30后默认休息7.5小时
-						if (attendanceInit.getComeWork() == 3) {
-							afterAttendance = attendanceDao.findByUserIdAndTimeBetween(at.getUserId(),
-									DatesUtil.dayTime(beginTimes, "00:30:00"),
-									DatesUtil.dayTime(beginTimes, "06:00:00"));
-							if (afterAttendance.size() > 0) {
-								// 得到最后一次签到记录离24：30相差分钟数
-								minute = DatesUtil.getTime(DatesUtil.dayTime(beginTimes, "00:30:00"),
-										afterAttendance.get(afterAttendance.size() - 1).getTime());
-								sign = true;
-							}
-						}
-						// 进行出勤，加班，缺勤，迟到，早退的计算
-						AttendanceTime signAtt = AttendanceTool.attendanceIntTool(sign, workTime, workTimeEnd, minute,
-								turnWorkTime, at, attendanceInit, at.getUser());
-						at = signAtt;
 					}
 
 					// 加班

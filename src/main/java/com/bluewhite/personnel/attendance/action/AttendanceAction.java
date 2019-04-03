@@ -319,7 +319,7 @@ public class AttendanceAction {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(AttendanceCollect.class,"id","time", "turnWork","overtime", "dutyWork", "allWork",
-						"manDay", "manDayOvertime", "weekendTurnWork", "leaveTime", "takeWork", "leaveDetails", "remarks","userName","sign")
+						"manDay", "manDayOvertime", "weekendTurnWork", "leaveTime", "takeWork", "leaveDetails", "remarks","userName","sign","belateDetails")
 				.format(attendanceCollectService.findAttendanceCollect(attendanceCollect)).toJSON());
 		cr.setMessage("查找成功");
 		return cr;

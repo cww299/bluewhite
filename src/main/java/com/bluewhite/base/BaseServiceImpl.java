@@ -10,7 +10,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.bluewhite.common.BeanCopyUtils;
-import com.bluewhite.common.entity.SpecificationUtil;
 
 /**
  * <p>抽象service层基类 提供一些简便方法
@@ -21,17 +20,12 @@ public abstract class BaseServiceImpl<T extends AbstractEntity<ID>, ID extends S
 
     protected BaseRepository<T, ID> baseRepository;
     
-    protected SpecificationUtil specificationUtil;
 
     @Autowired
     public void setBaseRepository(BaseRepository<T, ID> baseRepository) {
         this.baseRepository = baseRepository;
     }
-    
-    @Autowired
-    public void setSpecificationUtil(SpecificationUtil specificationUtil) {
-        this.specificationUtil = specificationUtil;
-    }
+   
 
     /**
      * 保存单个实体
@@ -161,19 +155,11 @@ public abstract class BaseServiceImpl<T extends AbstractEntity<ID>, ID extends S
     }
 
     /**
-     * 根据实体中的字段查询
+     * 查询实体
      *
+     * @return 返回分页实体
      */
-    public List<T> findByBean(T t) {
-    	System.out.println(1111);
-        return baseRepository.findAll(specificationUtil.getSpec(t));
-    }
-
-    /**
-     * 根据实体中的字段查询
-     *
-     */
-    public List<T> findAll(Specification<T> t) {
+    public List<T> findAll( Specification<T> t) {
         return baseRepository.findAll(t);
     }
 
