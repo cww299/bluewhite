@@ -170,13 +170,37 @@
         	<select name="comeWork" id="comeWork" lay-filter="comeWork" lay-verify="required"  lay-search="true"><option value="1">按点上班</option><option value="2">第二天上班时间以超过24:00后的时间往后推</option><option value="3">超过24:30后默认休息7.5小时</option></select>
       	</div>
     </div>
-    
 		</div>
+		</form>
+		
+		<form action=""id="layuiadmin-form-admin2" style="padding: 20px 30px 0 15px; display: none; text-align: ">
+			<div class="layui-form-item">
+      <label class="layui-form-label" style="width: 130px;">周休一天</label>
+      <input type="text"  name="id" value="1"  class="hide">
+      <div class="layui-input-inline">
+        <input type="text"   id="weekly"  placeholder="请输入周休一天的设定时间" class="form-control laydate-icon">
+        <td>&nbsp&nbsp</td>
+        <div>
+      		<textarea name="weeklyRestDate"  id="weeklyRestDate" class="layui-textarea"></textarea>
+    	</div>
+      </div>
+    	</div>
+		<div class="layui-form-item">
+      <label class="layui-form-label" style="width: 130px;">月休2天</label>
+      <div class="layui-input-inline">
+        <input type="text"  name="applytime" id="month"  placeholder="请输入月休2天的设定时间" class="form-control laydate-icon">
+        <td>&nbsp&nbsp</td>
+        <div>
+      		<textarea name="monthRestDate"  id="monthRestDate" class="layui-textarea"></textarea>
+    	</div>
+      </div>
+    	</div>
 		</form>
 		<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
 				<span class="layui-btn layui-btn-sm" lay-event="notice">新增</span>
 				<span class="layui-btn layui-btn-sm" lay-event="deleteSome">批量删除</span>
+				<span class="layui-btn layui-btn-sm" lay-event="set">设定休息时间</span>
 			</div>
 		</script>
 <script type="text/html" id="barDemo">
@@ -239,8 +263,24 @@
 							$("#inputapplytime").val(timeAll)
 						}
 					});
-					
-					
+					var timeAll2='';
+					laydate.render({
+						elem: '#weekly',
+						format: 'yyyy-MM-dd',
+						done: function(value, date) {
+							timeAll2=(timeAll2==''? value:(timeAll2+','+value));
+							$("#weeklyRestDate").val(timeAll2)
+						}
+					});
+					var timeAll3='';
+					laydate.render({
+						elem: '#month',
+						format: 'yyyy-MM-dd',
+						done: function(value, date) {
+							timeAll3=(timeAll3==''? value:(timeAll3+','+value));
+							$("#monthRestDate").val(timeAll3)
+						}
+					});
 					
 				 
 					$.ajax({
@@ -575,6 +615,96 @@
 							        	document.getElementById("layuiadmin-form-admin").reset();
 							        	layui.form.render();
 							        	timeAll=""
+									  } 
+							      });
+								break;
+							case 'set':
+								
+								$.ajax({
+									url: "${ctx}/personnel/findRestType",
+									type: "GET",
+									beforeSend: function() {
+										index;
+									},
+									success: function(result) {
+										$("#layuiadmin-form-admin2").setForm({weeklyRestDate:result.data[0].weeklyRestDate,monthRestDate:result.data[0].monthRestDate});
+									},
+									error: function() {
+										layer.msg("操作失败！请重试", {
+											icon: 2
+										});
+									},
+								});
+								var dicDiv=$('#layuiadmin-form-admin2');
+								layer.open({
+							         type: 1
+							        ,title: "新增" //不显示标题栏
+							        ,closeBtn: false
+							        ,area:['440px', '99%']
+							        ,shade: 0.5
+							        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+							        ,btn: ['确认', '取消']
+							        ,btnAlign: 'c'
+							        ,moveType: 1 //拖拽模式，0或者1
+							        ,content:dicDiv
+							        ,success : function(layero, index) {
+							        	layero.addClass('layui-form');
+										// 将保存按钮改变成提交按钮
+										layero.find('.layui-layer-btn0').attr({
+											'lay-filter' : 'addRole2',
+											'lay-submit' : ''
+										})
+							        }
+							        ,yes: function(index, layero){
+							        	form.on('submit(addRole2)', function(data) {
+							        		var data=data.field
+							        		var key=data.weeklyRestDate
+							        		var s=key.charAt(key.length-1)
+							        		var key2=data.monthRestDate
+							        		var s2=key2.charAt(key2.length-1)
+							        		if(s=="," ||s2==","){
+							        			return layer.msg("周休一天或月休两天的末尾不能是,号", {icon: 2});
+							        		}else{
+							        		$.ajax({
+												url: "${ctx}/personnel/updateRestType",
+												data: data,
+												type: "Post",
+												beforeSend: function() {
+													index;
+												},
+												success: function(result) {
+													if(0 == result.code) {
+														layer.msg(result.message, {
+															icon: 1,
+															time:500
+														});
+													
+													} else {
+														layer.msg(result.message, {
+															icon: 2,
+															time:500
+														});
+													}
+												},
+												error: function() {
+													layer.msg("操作失败！请重试", {
+														icon: 2
+													});
+												},
+											});
+							        		}
+							        	  document.getElementById("layuiadmin-form-admin2").reset();
+							        	layui.form.render();
+							        	timeAll2="" 
+							        	timeAll3="" 
+										})  
+										
+							        }
+							        ,end:function(){
+							        	 document.getElementById("layuiadmin-form-admin2").reset();
+							        	layui.form.render();
+							        	timeAll2=""
+							        	timeAll3=""
 									  } 
 							      });
 								break;
