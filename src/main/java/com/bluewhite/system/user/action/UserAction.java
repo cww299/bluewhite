@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
@@ -371,15 +372,11 @@ public class UserAction {
 	@ResponseBody
 	private CommonResponse test(User user) {
 		CommonResponse cr = new CommonResponse();
-		List<User> userList = userService.findAll((root, query, cb) -> {
-					Field[] fields =  user.getClass().getDeclaredFields();
-	        		List<Predicate> predicates = new ArrayList<>();
-	        		for (int i = 0; i < fields.length; i++) {
-	        			fields[i].setAccessible(true);
-	        			String name = fields[i].getName();
-	        			predicates.add(cb.equal(root.get(name), name));
-	        		}
-	        		return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+		List<User> userList = userDao.findAll((root, query, cb) -> {
+			List<Predicate> predicate = new ArrayList<>();
+	        		Predicate[] pre = new Predicate[predicate.size()];
+	    			query.where(predicate.toArray(pre));
+	    			return null;
 				});
 		
 		cr.setData(ClearCascadeJSON

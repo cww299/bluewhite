@@ -2,6 +2,7 @@ package com.bluewhite.personnel.attendance.entity;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.common.utils.DatesUtil;
@@ -109,13 +112,19 @@ public class AttendanceCollect extends BaseEntity<Long>{
 	 * 
 	 */
 	@Column(name = "take_work")
-	private Double takeWork ;
+	private Double takeWork;
 	
 	/**
 	 * 请假事项详情
 	 */
 	@Column(name = "leave_details")
 	private String leaveDetails;
+	
+	/**
+	 * 迟到事项详情
+	 */
+	@Column(name = "belate_details")
+	private String belateDetails;
 	
 	/**
 	 * 备注
@@ -162,6 +171,7 @@ public class AttendanceCollect extends BaseEntity<Long>{
 	
 	//有参构造，直接传入AttendanceTime的list，计算出汇总后的数据
     public AttendanceCollect (List<AttendanceTime> list){
+    	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     	time = list.get(0).getTime();
     	userId = list.get(0).getUserId();
     	turnWork =  list.stream().filter(AttendanceTime->AttendanceTime.getTurnWorkTime()!=null).mapToDouble(AttendanceTime::getTurnWorkTime).sum();
@@ -170,19 +180,25 @@ public class AttendanceCollect extends BaseEntity<Long>{
     	leaveTime = list.stream().filter(AttendanceTime->AttendanceTime.getLeaveTime()!=null).mapToDouble(AttendanceTime::getLeaveTime).sum();
     	takeWork =  list.stream().filter(AttendanceTime->AttendanceTime.getTakeWork()!=null).mapToDouble(AttendanceTime::getTakeWork).sum();
     	allWork = NumUtils.sum(turnWork, overtime);
+    	String bd ="";
+    	int count = 0;
     	for (int i = 0; i < list.size(); i++) {
     		if(i != 0){
+    			if(list.get(i).getBelate() == 1){
+    				bd =  StringUtils.isEmpty(bd) ? bd : bd +","+formatter.format(list.get(i).getTime())+"迟到"+ list.get(i).getBelateTime().intValue()+"分钟";
+    				count++;
+    			}
     			String hd = list.get(i-1).getHolidayDetail();
-    			if( list.get(i).getHolidayDetail() != null && list.get(i).getHolidayDetail().equals(hd)){
+    			if(!StringUtils.isEmpty(list.get(i).getHolidayDetail()) && list.get(i).getHolidayDetail().equals(hd)){
     				hd = list.get(i).getHolidayDetail();
-    			}else  if(list.get(i).getHolidayDetail() != null){
-    				leaveDetails =leaveDetails+","+list.get(i).getHolidayDetail();
+    			}else if( !StringUtils.isEmpty(list.get(i).getHolidayDetail())){
+    				leaveDetails = leaveDetails+","+list.get(i).getHolidayDetail();
     			}
     		}else{
     			leaveDetails = list.get(i).getHolidayDetail();
     		}
 		}
-    	
+    	belateDetails = "共迟到"+count+"次："+bd;
     	//工作日AttendanceTime集合
 		List<AttendanceTime> manDayList = null;
 		//周末AttendanceTime集合
@@ -205,6 +221,14 @@ public class AttendanceCollect extends BaseEntity<Long>{
 	
     
     
+
+	public String getBelateDetails() {
+		return belateDetails;
+	}
+
+	public void setBelateDetails(String belateDetails) {
+		this.belateDetails = belateDetails;
+	}
 
 	public String getUserName() {
 		return userName;
