@@ -20,7 +20,7 @@ public interface AttendanceTimeService extends BaseCRUDService<AttendanceTime,Lo
 	 * @param attendance
 	 * @return
 	 */
-	public List<AttendanceTime> findAttendanceTime(AttendanceTime attendanceTime);
+	public List<AttendanceTime> findAttendanceTime(AttendanceTime attendanceTime) throws ParseException;
 	
 	/**
 	 * 按日期将出勤中需要核算的请假事项计算到考勤详细中

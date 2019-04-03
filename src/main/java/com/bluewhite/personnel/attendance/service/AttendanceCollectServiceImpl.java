@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.personnel.attendance.dao.AttendanceCollectDao;
 import com.bluewhite.personnel.attendance.entity.AttendanceCollect;
 @Service
@@ -22,6 +23,7 @@ public class AttendanceCollectServiceImpl extends BaseServiceImpl<AttendanceColl
 
 	@Override
 	public List<AttendanceCollect> findAttendanceCollect(AttendanceCollect param) {
+		param.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(param.getOrderTimeBegin()));
 		List<AttendanceCollect> result = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按用户 id过滤

@@ -44,7 +44,7 @@ public class AttendanceInit extends BaseEntity<Long> {
 	private Integer restType;
 	
 	/**
-	 * 出勤方式（1.无到岗要求，2，打卡，3.按到岗小时计算）
+	 * 出勤方式（1.无到岗要求，2，无打卡要求，3.按到岗小时计算）
 	 */
 	@Column(name = "work_type")
 	private Integer workType;

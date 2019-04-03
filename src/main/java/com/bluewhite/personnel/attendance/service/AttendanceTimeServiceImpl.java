@@ -36,11 +36,13 @@ import com.bluewhite.personnel.attendance.dao.AttendanceCollectDao;
 import com.bluewhite.personnel.attendance.dao.AttendanceDao;
 import com.bluewhite.personnel.attendance.dao.AttendanceInitDao;
 import com.bluewhite.personnel.attendance.dao.AttendanceTimeDao;
+import com.bluewhite.personnel.attendance.dao.RestTypeDao;
 import com.bluewhite.personnel.attendance.entity.ApplicationLeave;
 import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.entity.AttendanceCollect;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
+import com.bluewhite.personnel.attendance.entity.RestType;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.entity.UserContract;
 import com.bluewhite.system.user.service.UserService;
@@ -48,6 +50,8 @@ import com.bluewhite.system.user.service.UserService;
 @Service
 public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, Long> implements AttendanceTimeService {
 
+	@Autowired
+	private RestTypeDao restTypeDao;
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -64,7 +68,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	private ApplicationLeaveDao applicationLeaveDao;
 
 	@Override
-	public List<AttendanceTime> findAttendanceTime(AttendanceTime attendance) {
+	public List<AttendanceTime> findAttendanceTime(AttendanceTime attendance) throws ParseException {
 		// 检查当前月份属于夏令时或冬令时 flag=ture 为夏令时
 		boolean flag = false;
 		try {
@@ -115,9 +119,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
 				// 获取员工考勤的初始化参数
 				AttendanceInit attendanceInit = attendanceInitService.findByUserId(us.getId());
-				
-				
-				
+
 				// 上班开始时间
 				Date workTime = null;
 				// 上班结束时间
@@ -155,43 +157,64 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				restEndTime = DatesUtil.dayTime(beginTimes, restTimeArr[1]);
 				restTime = attendanceInit.getRestWinter();
 				turnWorkTime = attendanceInit.getTurnWorkTimeWinter();
-
 				
-				
-				
-				// 无到岗要求
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				boolean rout = false;
+				List<RestType> restType = restTypeDao.findAll();
+				// 1.周休一天，
 				if (attendanceInit.getRestType() == 1) {
-					attendanceTime.setFlag(0);
-					attendanceTime.setTurnWorkTime(turnWorkTime);
-					attendanceTimeList.add(attendanceTime);
-					continue;
-				}
-
-				
-				// 2.周休一天，3.月休两天，其他周日算加班,4.全年无休，5.按到岗小时计算（类似全年无休，有自己的节假日休息）。
-				
-				
-				// 获取休息的日期，不计算出勤
-				// 当循环日期不等于休息日，进行考勤的记录,休息日无签到记录，无出勤数据
-				String[] restDayArr = null;
-				if (attendanceInit.getRestDay() != null) {
-					restDayArr = attendanceInit.getRestDay().split(",");
-					boolean rout = false;
-					if (restDayArr.length > 0) {
-						for (int j = 0; j < restDayArr.length; j++) {
-							if (DatesUtil.getfristDayOftime(beginTimes).equals(restDayArr[j])) {
+					String[] weeklyRestDate = restType.get(0).getWeeklyRestDate().split(",");
+					if (weeklyRestDate.length > 0) {
+						for (int j = 0; j < weeklyRestDate.length; j++) {
+							if (DatesUtil.getfristDayOftime(beginTimes).compareTo(sdf.parse(weeklyRestDate[j]))==0) {
 								rout = true;
 								break;
 							}
 						}
 					}
-					if (rout) {
-						attendanceTime.setFlag(3);
-						attendanceTimeList.add(attendanceTime);
-						continue;
+				}
+				
+				//2.月休两天
+				if (attendanceInit.getRestType() == 2) {
+					String[] monthRestDate = restType.get(0).getMonthRestDate().split(",");
+					if (monthRestDate.length > 0) {
+						for (int j = 0; j < monthRestDate.length; j++) {
+							if (DatesUtil.getfristDayOftime(beginTimes).compareTo(sdf.parse(monthRestDate[j]))==0) {
+								rout = true;
+								break;
+							}
+						}
+					}
+				}
+
+				// 获取休息的日期，不计算出勤
+				// 当循环日期不等于休息日，进行考勤的记录,休息日无签到记录，无出勤数据
+				String[] restDayArr = null;
+				if (attendanceInit.getRestDay() != null) {
+					restDayArr = attendanceInit.getRestDay().split(",");
+					if (restDayArr.length > 0) {
+						for (int j = 0; j < restDayArr.length; j++) {
+							if (DatesUtil.getfristDayOftime(beginTimes).compareTo(sdf.parse(restDayArr[j]))==0) {
+								rout = true;
+								break;
+							}
+						}
 					}
 				}
 				
+				if (rout) {
+					attendanceTime.setFlag(3);
+					attendanceTimeList.add(attendanceTime);
+					continue;
+				}
+
+				// 无到岗要求和无打卡要求
+				if (attendanceInit.getWorkType() == 1 || attendanceInit.getWorkType() == 2) {
+					attendanceTime.setFlag(0);
+					attendanceTime.setTurnWorkTime(turnWorkTime);
+					attendanceTimeList.add(attendanceTime);
+					continue;
+				}
 
 				boolean sign = false;
 				Double minute = 0.0;
@@ -292,6 +315,9 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		}
 		return attendanceTimeList;
 	}
+	
+	
+
 
 	@Override
 	public List<Map<String, Object>> findAttendanceTimeCollectAdd(AttendanceTime attendanceTime) throws ParseException {
@@ -350,7 +376,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			// 按日期自然排序
 			List<AttendanceTime> attendanceTimeList1 = psList1.stream()
 					.sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
-			AttendanceCollect attendanceCollect = attendanceCollectDao.findByUserIdAndTime(ps1,attendanceTime.getOrderTimeBegin());
+			AttendanceCollect attendanceCollect = attendanceCollectDao.findByUserIdAndTime(ps1,
+					attendanceTime.getOrderTimeBegin());
 			attendanceCollectDao.delete(attendanceCollect);
 		}
 		dao.delete(attendanceTimeList);
