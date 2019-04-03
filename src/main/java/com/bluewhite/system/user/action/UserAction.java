@@ -1,5 +1,6 @@
 package com.bluewhite.system.user.action;
 
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,11 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.persistence.criteria.Predicate;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
@@ -30,7 +31,6 @@ import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.common.entity.SpecificationUtil;
 import com.bluewhite.common.utils.BankUtil;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
@@ -371,9 +371,17 @@ public class UserAction {
 	@ResponseBody
 	private CommonResponse test(User user) {
 		CommonResponse cr = new CommonResponse();
-		Specification<User> xx = SpecificationUtil.getSpec(user);
-		List<User> userList =userService.findAll(SpecificationUtil.getSpec(user));
-//		List<User> userList =userService.findByBean(user);
+		List<User> userList = userService.findAll((root, query, cb) -> {
+					Field[] fields =  user.getClass().getDeclaredFields();
+	        		List<Predicate> predicates = new ArrayList<>();
+	        		for (int i = 0; i < fields.length; i++) {
+	        			fields[i].setAccessible(true);
+	        			String name = fields[i].getName();
+	        			predicates.add(cb.equal(root.get(name), name));
+	        		}
+	        		return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+				});
+		
 		cr.setData(ClearCascadeJSON
 				.get()
 				.addRetainTerm(User.class,"id","userName")

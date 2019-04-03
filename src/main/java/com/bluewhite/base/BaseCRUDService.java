@@ -64,14 +64,14 @@ public interface BaseCRUDService<T,ID> {
      *
      * @return 实体总数
      */
-    public long count() ;
-    
+    public long count();
     
     /**
-     * 根据实体中的字段查询
+     * 查询实体
      *
+     * @return 返回分页实体
      */
-    public List<T> findByBean(T t);
+    public List<T> findAll( Specification<T> t);
     
-    public List<T> findAll(Specification<T> t);
+    
 }
