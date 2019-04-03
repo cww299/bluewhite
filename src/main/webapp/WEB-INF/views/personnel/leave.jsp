@@ -141,9 +141,14 @@
     <div id="repair" style="display: none;">
      <div class="layui-form-item">
       <label class="layui-form-label" style="width: 90px;">补签日期</label>
-      <div class="layui-input-inline">
-        <input type="text" name="repairtime" id="repairtime" lay-verify="repairtime" placeholder="请输入补签日期" class="form-control laydate-icon">
+      <div class="layui-input-inline" >
+        <input type="text"   id="repairtime" lay-verify="repairtime" placeholder="请输入补签日期" class="form-control laydate-icon">
       </div>
+        <input type="checkbox" id="moren" name="like[write]" title="默认" checked=true>
+        <td>&nbsp&nbsp</td>
+        <div>
+      		<textarea name="repairtime"  id="inputapplytime" class="layui-textarea"></textarea>
+    	</div>
     </div>
     <div class="layui-form-item">
       <label class="layui-form-label" style="width: 90px;">补签状态</label>
@@ -218,9 +223,31 @@
 						elem: '#breaktime',
 						format: 'yyyy-MM-dd',
 					});
+					var timeAll=""
 					laydate.render({
 						elem: '#repairtime',
 						type: 'datetime',
+						done: function(value, date) {
+							var time=/\d{4}-\d{1,2}-\d{1,2}/g.exec(value)
+							console.log(time[0])
+							console.log($("#qianru").get(0).checked)
+							console.log($("#qianchu").get(0).checked)
+							console.log($("#moren").get(0).checked)
+							if($("#moren").get(0).checked==true){
+								var a='';
+								if($("#qianru").get(0).checked==true){
+									a = time[0]+' '+'08:30:00'
+									timeAll=(timeAll==''? a:(timeAll+','+a));
+								}
+								if($("#qianchu").get(0).checked==true){
+									a=time[0]+' '+'17:30:00'
+									timeAll=(timeAll==''? a:(timeAll+','+a));
+								}
+							}else{
+								timeAll=(timeAll==''? value:(timeAll+','+value));
+							}
+							$("#inputapplytime").val(timeAll)
+						}
 					});
 					laydate.render({
 						elem: '#applytime',
@@ -278,7 +305,7 @@
 								$(result.data).each(function(k, j) {
 									htmlfr += '<option value="'+j.id+'">' + j.name + '</option>'
 								});
-								var htmlth = '<select name="orgNameId" class="form-control"><option value="">请选择</option>' + htmlfr + '</select>'
+								var htmlth = '<select name="orgNameId" class="form-control" lay-search="true"><option value="">请选择</option>' + htmlfr + '</select>'
 								$("#orgNameId").html(htmlth);
 								layer.close(index);
 							}
@@ -560,12 +587,14 @@
 										$("#repair").css("display","none")
 										$("#overtime").css("display","none")
 							        	layui.form.render();
+							        	timeAll=""
 										})
 										
 							        }
 							        ,end:function(){
 							        	document.getElementById("layuiadmin-form-admin").reset();
 							        	layui.form.render();
+							        	timeAll=""
 									  } 
 							      });
 								break;
@@ -730,6 +759,7 @@
 						        },end:function(){
 						        	document.getElementById("layuiadmin-form-admin").reset();
 						        	layui.form.render();
+						        	timeAll=""
 								  } 
 						       
 						      });

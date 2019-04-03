@@ -1964,7 +1964,7 @@
 											}else if (2==result.code) {
 												layer.open({
 													   title: '提示'
-													  ,content:res.msg
+													  ,content:'该员工没有初始化设定,请点击添加'
 													  ,btn: ['确认', '取消']
 													,yes: function(index, layero){
 														window.location.href = "http://localhost:8080/ERPlanning/menusToUrl?url=personnel/init"
@@ -2292,7 +2292,7 @@
 										}else if (2==result.code) {
 											layer.open({
 												   title: '提示'
-												  ,content:res.msg
+												  ,content:'该员工没有初始化设定,请点击添加'
 												  ,btn: ['确认', '取消']
 												,yes: function(index, layero){
 													window.location.href = "http://localhost:8080/ERPlanning/menusToUrl?url=personnel/init"
