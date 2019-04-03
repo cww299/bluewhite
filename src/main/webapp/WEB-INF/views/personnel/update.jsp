@@ -243,7 +243,6 @@
 																style : 'background-color: #5FB878;color: #fff',
 																rowspan : 3,
 																templet : function(d) {
-																	console.log(d)
 																	return d.attendanceTimeData[i].userName
 																}
 															};
@@ -399,6 +398,7 @@
 												table.init('test3', {
 													cols : list2,
 													data : res.data,
+													limit:500,
 												});
 											},
 											page : false
@@ -439,13 +439,9 @@
 								search: true,
 								edit: false,
 							}, {
-								field: "",
+								field: "userName",
 								title: "人名",
 								align: 'center',
-								templet: function(d){
-									console.log(d)
-									return d.user.userName
-								}
 							},{
 								field: "leaveTime",
 								title: "请假时长",
