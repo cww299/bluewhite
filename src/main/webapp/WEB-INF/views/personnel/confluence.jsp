@@ -130,6 +130,7 @@
 								shade : [ 0.1, '#fff' ]
 							//0.1透明度的白色背景
 							});
+							var loading;
 							$.ajax({
 								url : '${ctx}/system/user/findAllUser',
 								type : "GET",
@@ -182,6 +183,9 @@
 									});
 							
 							form.on('submit(LAY-role-search)', function(data) {
+								 loading = layer.load(0, {
+				                    shade: false,
+				                });
 								if($("#firstNames").val()==""){
 									if($("#selectOrgNameId").val()==""){
 										return layer.msg("请输入人员 或者 部门", {icon: 2});
@@ -190,9 +194,13 @@
 								var field=data.field
 								var postUrl='${ctx}/personnel/intAttendanceTime'
 								even(postUrl,field)
+								
 							})
 							
 							form.on('submit(LAY-role-searche)', function(data) {
+								loading = layer.load(0, {
+				                    shade: false,
+				                });
 								if($("#firstNames").val()==""){
 									if($("#selectOrgNameId").val()==""){
 										return layer.msg("请输入人员 或者 部门", {icon: 2});
@@ -228,11 +236,12 @@
 											cols : [],
 											done : function(res, curr, count) {
 												if(res.code==2){
-													layer.open({
+												layer.open({
 														   title: '提示'
 														  ,content:res.msg
 														  ,btn: ['确认', '取消']
 														,yes: function(index, layero){
+															
 															var field={
 																	userId:$('#firstNames').val(),
 																	orgNameId:$('#selectOrgNameId').val(),
@@ -241,10 +250,14 @@
 															}
 															var postUrl='${ctx}/personnel/addAttendanceTime'
 															even(postUrl,field)
-															layer.closeAll();
+															 layer.closeAll();
+															loading = layer.load(0, {
+											                    shade: false,
+											                });
 											       			 }
 														}); 
 												}
+												layer.close(loading)
 												var data = res.data;
 												var list = [];
 												var list1 = [];
@@ -417,10 +430,12 @@
 												list2.push(list1)
 												list2.push(list3)
 												table.init('test3', {
-													loading: true,
+													
+											
 													cols : list2,
 													data : res.data,
 													limit:500,
+													loading:true,
 												});
 											},
 											page : false

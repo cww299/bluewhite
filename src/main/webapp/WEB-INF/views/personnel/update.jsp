@@ -443,6 +443,14 @@
 								title: "人名",
 								align: 'center',
 							},{
+								field: "leaveDetails",
+								title: "请假详情",
+								align: 'center',
+							},{
+								field: "belateDetails",
+								title: "迟到详情",
+								align: 'center',
+							},{
 								field: "leaveTime",
 								title: "请假时长",
 								align: 'center',
