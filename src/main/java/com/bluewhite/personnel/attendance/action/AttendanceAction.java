@@ -167,20 +167,24 @@ public class AttendanceAction {
 	}
 
 	/**
-	 * 同步考勤机中全部考勤记录
+	 * 按日期重置考勤机中全部考勤记录
 	 * 
 	 * @param request
 	 *            请求
 	 * @return cr
 	 */
-	@RequestMapping(value = "/personnel/allAttendance", method = RequestMethod.GET)
+	@RequestMapping(value = "/personnel/restAttendance", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse allAttendance(HttpServletRequest request, String address, Date startTime, Date endTime) {
+	public CommonResponse restAttendance(HttpServletRequest request, String address, Date startTime, Date endTime) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSON.format(attendanceService.allAttendance(address, startTime, endTime)).toJSON());
-		cr.setMessage("同步成功");
+		attendanceService.restAttendance(address, startTime, endTime);
+//		attendanceService.allAttendance(address, startTime, endTime)
+		cr.setMessage("重置成功");
 		return cr;
 	}
+	
+	
+	
 
 	/**
 	 * 手动修正未同步人员编号时，同步考勤记录而导致的人员姓名为null问题
@@ -210,7 +214,7 @@ public class AttendanceAction {
 	public CommonResponse allAttendance(HttpServletRequest request, PageParameter page, Attendance attendance) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(clearCascadeJSON.format(attendanceService.findPageAttendance(attendance, page)).toJSON());
-		cr.setMessage("同步成功");
+		cr.setMessage("查找成功");
 		return cr;
 	}
 

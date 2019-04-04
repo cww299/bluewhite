@@ -183,12 +183,12 @@ public class AttendanceCollect extends BaseEntity<Long>{
     	String bd ="";
     	int count = 0;
     	for (int i = 0; i < list.size(); i++) {
+    		if(list.get(i).getBelate() == 1){
+				bd =  StringUtils.isEmpty(bd) ? formatter.format(list.get(i).getTime())+"迟到"+ list.get(i).getBelateTime().intValue()+"分钟" :
+					bd +","+formatter.format(list.get(i).getTime())+"迟到"+ list.get(i).getBelateTime().intValue()+"分钟";
+				count++;
+			}
     		if(i != 0){
-    			if(list.get(i).getBelate() == 1){
-    				bd =  StringUtils.isEmpty(bd) ? formatter.format(list.get(i).getTime())+"迟到"+ list.get(i).getBelateTime().intValue()+"分钟" :
-    					bd +","+formatter.format(list.get(i).getTime())+"迟到"+ list.get(i).getBelateTime().intValue()+"分钟";
-    				count++;
-    			}
     			String hd = list.get(i-1).getHolidayDetail();
     			if(!StringUtils.isEmpty(list.get(i).getHolidayDetail()) && list.get(i).getHolidayDetail().equals(hd)){
     				hd = list.get(i).getHolidayDetail();

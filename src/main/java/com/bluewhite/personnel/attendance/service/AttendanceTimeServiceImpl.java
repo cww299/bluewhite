@@ -426,8 +426,9 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		dao.save(oldAttendanceTime);
 		attendanceTime.setOrderTimeBegin(DatesUtil.getFirstDayOfMonth(oldAttendanceTime.getTime()));
 		attendanceTime.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(oldAttendanceTime.getTime()));
+		attendanceTime.setUserId(oldAttendanceTime.getUserId());
 		List<AttendanceTime> attendanceTimeList = findAttendanceTimePage(attendanceTime);
-		AttendanceCollect attendanceCollect = attendanceCollectDao.findByUserIdAndTime(attendanceTime.getId(),
+		AttendanceCollect attendanceCollect = attendanceCollectDao.findByUserIdAndTime(attendanceTime.getUserId(),
 					DatesUtil.getFirstDayOfMonth(oldAttendanceTime.getTime()));
 		if(attendanceCollect!=null){
 			attendanceCollectDao.delete(attendanceCollect);
