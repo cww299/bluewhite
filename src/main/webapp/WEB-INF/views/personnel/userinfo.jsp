@@ -1126,6 +1126,48 @@
 			 }
 			//加载分页
 			  this.loadPagination = function(data){
+				$(".quit").change(function(){
+					if($(".quit").val()==1){
+						layer.open({
+							   title: '提示'
+							  ,content:'确定删除考勤机上的指纹吗？'
+							  ,btn: ['确认', '取消']
+							,yes: function(index, layero){
+								var arr = ['192.168.1.204','192.168.1.250','192.168.1.205']
+								var index;
+								for (var i = 0; i < arr.length; i++) {
+						    	  var postData={
+											number:$('.number').val(),
+											address:arr[i],
+									}
+								  $.ajax({
+									url:"${ctx}/personnel/deleteUser",
+									data:postData,
+									async: false,
+									type:"GET",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									success:function(result){
+										if(0==result.code){
+											layer.close(index);
+											layer.closeAll();
+										}else{
+											layer.close(index);
+										}
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								});  
+									
+								}
+				       			 }
+							}); 
+					}
+				})
 			    var index;
 			    var html ='';
 			    $.ajax({
@@ -2265,7 +2307,6 @@
 										agreementId:numberr,
 										commitmentId:values,
 										userName:$('.userName').val(),
-										number:$('.number').val(),
 										nation:$('.nation').val(),
 										phone:$('.phone').val(),
 										email:$('.email').val(),
