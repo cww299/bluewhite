@@ -299,4 +299,18 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		return count;
 	}
 
+	@Override
+	public int restAttendance(String address, Date startTime, Date endTime) {
+		Attendance attendance  =  new Attendance();
+		attendance.setOrderTimeBegin(startTime);
+		attendance.setOrderTimeEnd(endTime);
+		List<Attendance> attendanceList = findPageAttendance(attendance, new PageParameter(0, Integer.MAX_VALUE))
+				.getRows();
+		dao.delete(attendanceList);
+		allAttendance("192.168.1.204", startTime, endTime);
+		allAttendance("192.168.1.205", startTime, endTime);
+		allAttendance("192.168.1.250", startTime, endTime);
+		return attendanceList.size();
+	}
+
 }

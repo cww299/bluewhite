@@ -77,5 +77,14 @@ public interface AttendanceService  extends BaseCRUDService<Attendance,Long>{
 	 * @return
 	 */
 	public int fixAttendance(Date startTime, Date endTime);
+	
+	
+	/**
+	 * 按日期重置考勤机中全部考勤记录
+	 * @param address
+	 * @param startTime
+	 * @param endTime
+	 */
+	public int restAttendance(String address, Date startTime, Date endTime);
 
 }
