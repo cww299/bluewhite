@@ -176,7 +176,7 @@
 		      					 a="打卡验证"
 		      				 }else if(o.verifyMode==0){
 		      					 a="密码验证"
-		      				 }else if(o.verifyMode==""){
+		      				 }else if(o.verifyMode==null){
 		      					 a=""
 		      				 }else{
 		      					a="面部验证"

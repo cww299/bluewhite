@@ -288,7 +288,7 @@
 																align : 'center',
 																title : '<span style="color:red">总出勤</span>',
 																fixed : 'right',
-																width : 70,
+																width : 90,
 																style : 'background-color: #5FB878;color: #fff',
 																rowspan : 3,
 																templet : function(
