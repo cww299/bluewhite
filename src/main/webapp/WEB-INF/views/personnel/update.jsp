@@ -25,23 +25,16 @@
 				<div class="col-md-12">
 					<div class="panel panel-default">
 						<div class="panel-heading">
-								<table><tr>    
-							 <td><font size="5" style="background-color:#9e9e1f;color: #fff">迟到</font></td>
-							 <td><td>&nbsp&nbsp</td></td>
-							 <td><font size="5" style="background-color:#bf1515;color: #fff">缺勤</font></td>
-							 <td><td>&nbsp&nbsp</td></td>
-							 <td><font size="5" style="background-color:#00b0ff;color: #fff">事假</font></td>
-							 <td><td>&nbsp&nbsp</td></td>
-							 <td><font size="5" style="background-color:#13161c;color: #fff">病假</font></td>
-							 <td><td>&nbsp&nbsp</td></td>
-							 <td><font size="5" style="background-color:#b8c2d6;color: #fff">丧假</font></td>
-							 <td><td>&nbsp&nbsp</td></td>
-							 <td><font size="5" style="background-color:#da06af;color: #fff">婚假</font></td>
-							 <td><td>&nbsp&nbsp</td></td>
-							 <td><font size="5" style="background-color:#13a8bd;color: #fff">产假</font></td>
-							 <td><td>&nbsp&nbsp</td></td>
-							 <td><font size="5" style="background-color:#1211e2;color: #fff">护理假</font></td>
-							 </tr></table>
+                                        <ul >
+                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#9e9e1f"></i>迟到</li>
+                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#bf1515"></i>缺勤</li>
+                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#00b0ff"></i>事假</li>
+                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#13161c"></i>病假</li>
+                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#b8c2d6"></i>丧假</li>
+                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#da06af"></i>婚假</li>
+                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#13a8bd"></i>产假</li>
+                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#1211e2"></i>护理假</li>
+                                        </ul>
 								<div class="actions pull-right">
 									<i class="fa fa-expand"></i>
 									<i class="fa fa-chevron-down"></i>
@@ -428,17 +421,7 @@
 							}
 						},
 						cols: [
-							[{
-								type: 'checkbox',
-								align: 'center',
-								fixed: 'left'
-							}, {
-								field: "time",
-								title: "考勤日期汇总",
-								align: 'center',
-								search: true,
-								edit: false,
-							}, {
+							[ {
 								field: "userName",
 								title: "人名",
 								align: 'center',

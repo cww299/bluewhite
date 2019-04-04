@@ -176,6 +176,8 @@
 		      					 a="打卡验证"
 		      				 }else if(o.verifyMode==0){
 		      					 a="密码验证"
+		      				 }else if(o.verifyMode==""){
+		      					 a=""
 		      				 }else{
 		      					a="面部验证"
 		      				 }
@@ -184,8 +186,10 @@
 		      					b="暂无"
 		      				 } else if(o.inOutMode==0){
 		      					 b="上班签到"
-		      				 }else{
+		      				 }else if(o.inOutMode==1){
 		      					 b="下班签到"
+		      				 }else{
+		      					b="补签"
 		      				 }
 		      				 
 		      				html +='<tr>'
