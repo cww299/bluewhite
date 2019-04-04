@@ -63,6 +63,7 @@
 										查&nbsp找
 									</button>
 								</span>
+								
 								&nbsp
 								<span class="input-group-btn">
 									<button type="button" id="synchronization" class="btn btn-success btn-sm btn-3d pull-right">人员同步</button>
@@ -70,6 +71,10 @@
 									&nbsp
 								<span class="input-group-btn">
 									<button type="button" id="export" class="btn btn-success btn-sm btn-3d pull-right">导出签到</button>
+								</span>
+								&nbsp
+								<span class="input-group-btn">
+									<button type="button" id="synchronization2" class="btn btn-danger btn-sm btn-3d pull-right">考勤重置</button>
 								</span>
 							</div>
 						</div>
@@ -276,8 +281,44 @@
 						}
 					});
 				})
-				
-				
+				//考勤重置
+				$('#synchronization2').on('click',function(){
+					var postData={
+							startTime:$("#startTime").val(),
+							endTime: $("#endTime").val(),
+					}
+				  $.ajax({
+						url:"${ctx}/personnel/restAttendance",
+						data:postData,
+						type:"GET",
+						beforeSend:function(){
+							index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+						},
+						success:function(result){
+							if(0==result.code){
+								layer.msg(result.message, {icon: 1});
+								var data = {
+							  			page:1,
+							  			size:13,
+							  			userName:$('#name').val(),
+							  			orderTimeBegin:$("#startTime").val(),
+							  			orderTimeEnd:$("#endTime").val(),
+							  			orgNameId:$(".selectgroupChange").val(),
+							  	}
+					            self.loadPagination(data);
+								layer.close(index);
+							}else{
+								layer.msg(result.message, {icon: 2});
+								layer.close(index);
+							}
+						},error:function(){
+							layer.msg("操作失败！", {icon: 2});
+							layer.close(index);
+						}
+					});
+				})
 				
 				$('.searchtask').on('click',function(){
 					var data = {
