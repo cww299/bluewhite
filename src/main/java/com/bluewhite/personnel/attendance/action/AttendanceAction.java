@@ -214,7 +214,7 @@ public class AttendanceAction {
 	public CommonResponse allAttendance(HttpServletRequest request, PageParameter page, Attendance attendance) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(clearCascadeJSON.format(attendanceService.findPageAttendance(attendance, page)).toJSON());
-		cr.setMessage("同步成功");
+		cr.setMessage("查找成功");
 		return cr;
 	}
 

@@ -20,6 +20,8 @@ import javax.persistence.criteria.Predicate;
 import org.hibernate.id.enhanced.TableStructure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -92,14 +94,14 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		for (Map<String, Object> map : userMapList) {
 			if (userListAll.size() > 0) {
 				List<User> user = userListAll.stream()
-						.filter(User ->User.getNumber()!=null && User.getUserName().equals(map.get("name").toString().trim()))
+						.filter(User ->User.getNumber() == null && User.getUserName().trim().equals(map.get("name").toString().trim()))
 						.collect(Collectors.toList());
+				
 				if (user.size() > 1) {
 					throw new ServiceException("系统用户有相同名称的员工" + user.get(0).getUserName() + "，请检查是否重复");
 				}
 				if (user.size() > 0) {
-					if (user.get(0).getNumber() == null
-							|| !user.get(0).getNumber().equals(map.get("number").toString())) {
+					if (user.get(0).getNumber() == null || !user.get(0).getNumber().equals(map.get("number").toString())) {
 						user.get(0).setNumber(map.get("number").toString());
 						userService.save(user.get(0));
 						count++;
@@ -208,6 +210,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 
 	@Override
 	public PageResult<Attendance> findPageAttendance(Attendance param, PageParameter page) {
+		page.setSort(new Sort(Direction.DESC,"time"));
 		Page<Attendance> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按用户 id过滤
@@ -300,6 +303,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 	}
 
 	@Override
+	@Transactional
 	public int restAttendance(String address, Date startTime, Date endTime) {
 		Attendance attendance  =  new Attendance();
 		attendance.setOrderTimeBegin(startTime);
