@@ -424,7 +424,14 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		AttendanceTime oldAttendanceTime = dao.findOne(attendanceTime.getId());
 		BeanCopyUtils.copyNotEmpty(attendanceTime, oldAttendanceTime, "");
 		dao.save(oldAttendanceTime);
+		attendanceTime.setOrderTimeBegin(DatesUtil.getFirstDayOfMonth(oldAttendanceTime.getTime()));
+		attendanceTime.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(oldAttendanceTime.getTime()));
 		List<AttendanceTime> attendanceTimeList = findAttendanceTimePage(attendanceTime);
+		AttendanceCollect attendanceCollect = attendanceCollectDao.findByUserIdAndTime(attendanceTime.getId(),
+					DatesUtil.getFirstDayOfMonth(oldAttendanceTime.getTime()));
+		if(attendanceCollect!=null){
+			attendanceCollectDao.delete(attendanceCollect);
+		}
 		attendanceCollectDao.save(new AttendanceCollect(attendanceTimeList));
 		return attendanceTime;
 	}
