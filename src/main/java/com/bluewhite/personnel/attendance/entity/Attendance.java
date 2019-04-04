@@ -51,7 +51,7 @@ public class Attendance extends BaseEntity<Long> {
 	
 	/**
 	 * 
-	 * 签到状态  0 上班 1下班 2外出 3外出返回 4 加班签到 5 加班签退
+	 * 签到状态  0 上班 1下班 2补签
 	 */
 	@Column(name = "inout_mode")
 	private Integer inOutMode;

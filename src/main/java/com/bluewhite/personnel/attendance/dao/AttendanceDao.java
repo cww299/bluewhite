@@ -16,5 +16,14 @@ public interface AttendanceDao extends BaseRepository<Attendance, Long>{
 	 * @return
 	 */
 	public List<Attendance> findByUserIdAndTimeBetween(Long userId,Date beginDate, Date endDate);
+	
+	/**
+	 * 按签到时间和员工id查询
+	 * @param userId
+	 * @param beginDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<Attendance> findByUserIdAndTime(Long userId,Date time);
 
 }
