@@ -283,41 +283,49 @@
 				})
 				//考勤重置
 				$('#synchronization2').on('click',function(){
+					layer.open({
+						   title: '提示'
+						  ,content:'确定重置考勤吗？'
+						  ,btn: ['确认', '取消']
+						,yes: function(index, layero){
 					var postData={
 							startTime:$("#startTime").val(),
 							endTime: $("#endTime").val(),
 					}
-				  $.ajax({
-						url:"${ctx}/personnel/restAttendance",
-						data:postData,
-						type:"GET",
-						beforeSend:function(){
-							index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							 $.ajax({
+									url:"${ctx}/personnel/restAttendance",
+									data:postData,
+									type:"GET",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									success:function(result){
+										if(0==result.code){
+											layer.msg(result.message, {icon: 1});
+											var data = {
+										  			page:1,
+										  			size:13,
+										  			userName:$('#name').val(),
+										  			orderTimeBegin:$("#startTime").val(),
+										  			orderTimeEnd:$("#endTime").val(),
+										  			orgNameId:$(".selectgroupChange").val(),
+										  	}
+								            self.loadPagination(data);
+											layer.close(index);
+										}else{
+											layer.msg(result.message, {icon: 2});
+											layer.close(index);
+										}
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
 								});
-						},
-						success:function(result){
-							if(0==result.code){
-								layer.msg(result.message, {icon: 1});
-								var data = {
-							  			page:1,
-							  			size:13,
-							  			userName:$('#name').val(),
-							  			orderTimeBegin:$("#startTime").val(),
-							  			orderTimeEnd:$("#endTime").val(),
-							  			orgNameId:$(".selectgroupChange").val(),
-							  	}
-					            self.loadPagination(data);
-								layer.close(index);
-							}else{
-								layer.msg(result.message, {icon: 2});
-								layer.close(index);
-							}
-						},error:function(){
-							layer.msg("操作失败！", {icon: 2});
-							layer.close(index);
-						}
-					});
+			       			 }
+						}); 
+				 
 				})
 				
 				$('.searchtask').on('click',function(){
