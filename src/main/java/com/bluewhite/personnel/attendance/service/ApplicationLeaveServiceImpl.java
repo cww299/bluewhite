@@ -22,12 +22,13 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.personnel.attendance.dao.ApplicationLeaveDao;
+import com.bluewhite.personnel.attendance.dao.AttendanceDao;
 import com.bluewhite.personnel.attendance.dao.AttendanceInitDao;
 import com.bluewhite.personnel.attendance.dao.AttendanceTimeDao;
 import com.bluewhite.personnel.attendance.entity.ApplicationLeave;
+import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
-import com.bluewhite.system.user.entity.User;
 
 @Service
 public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeave, Long>
@@ -40,6 +41,8 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 	private AttendanceTimeDao attendanceTimeDao;
 	@Autowired
 	private AttendanceInitDao attendanceInitDao;
+	@Autowired
+	private AttendanceDao attendanceDao;
 
 	@Override
 	public PageResult<ApplicationLeave> findApplicationLeavePage(ApplicationLeave param, PageParameter page) {
@@ -71,10 +74,27 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 	}
 
 	@Override
-	public ApplicationLeave saveApplicationLeave(ApplicationLeave applicationLeave) {
+	public ApplicationLeave saveApplicationLeave(ApplicationLeave applicationLeave) throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		ApplicationLeave oldApplicationLeave = null;
 		if (applicationLeave.getId() != null) {
 			oldApplicationLeave = dao.findOne(applicationLeave.getId());
+			if (applicationLeave.isAddSignIn()) {
+				JSONObject jo = JSON.parseObject(applicationLeave.getTime());
+				String date = jo.getString("date");
+				String time = jo.getString("time");
+				// 获取时间区间
+				String[] addDate = date.split(",");
+				if (addDate.length > 0) {
+					for (String ad : addDate) {
+						List<Attendance> attendance = attendanceDao.findByUserIdAndTime(applicationLeave.getUserId(),
+								sdf.parse(ad));
+						if(attendance.size()>0){
+							attendanceDao.delete(attendance);
+						}
+					}
+				}
+			}
 			BeanCopyUtils.copyNotEmpty(applicationLeave, oldApplicationLeave, "");
 		} else {
 			oldApplicationLeave = applicationLeave;
@@ -92,9 +112,9 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 		JSONObject jo = JSON.parseObject(applicationLeave.getTime());
 		String date = jo.getString("date");
 		String time = jo.getString("time");
-		//获取时间区间
-		String[] dateArr =  date.split("~");
-		Date dateLeave =null;
+		// 获取时间区间
+		String[] dateArr = date.split("~");
+		Date dateLeave = null;
 		AttendanceTime attendanceTime = null;
 		// 检查当前月份属于夏令时或冬令时 flag=ture 为夏令时
 		boolean flag = false;
@@ -110,45 +130,45 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 		Double turnWorkTime = null;
 		// 休息时长
 		Double restTime = null;
-        if(dateArr.length<2){
-       	 	dateLeave = sdf.parse(date);
-       	 	attendanceTime = attendanceTimeDao.findByUserIdAndTime(applicationLeave.getUserId(), dateLeave);
-		try {
-			flag = DatesUtil.belongCalendar(dateLeave);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		// 获取员工考勤的初始化参数
-		AttendanceInit attendanceInit = attendanceInitService.findByUserId(applicationLeave.getUserId());
-		if(attendanceInit==null){
-			throw new ServiceException("该员工没有考勤初始化数据，无法申请，请先添加考勤初始数据");
-		}
-		// flag=ture 为夏令时
-		if (flag) {
-			String[] workTimeArr = attendanceInit.getWorkTimeSummer().split("-");
+		if (dateArr.length < 2) {
+			dateLeave = sdf.parse(date);
+			attendanceTime = attendanceTimeDao.findByUserIdAndTime(applicationLeave.getUserId(), dateLeave);
+			try {
+				flag = DatesUtil.belongCalendar(dateLeave);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			// 获取员工考勤的初始化参数
+			AttendanceInit attendanceInit = attendanceInitService.findByUserId(applicationLeave.getUserId());
+			if (attendanceInit == null) {
+				throw new ServiceException("该员工没有考勤初始化数据，无法申请，请先添加考勤初始数据");
+			}
+			// flag=ture 为夏令时
+			if (flag) {
+				String[] workTimeArr = attendanceInit.getWorkTimeSummer().split("-");
+				// 将 工作间隔开始结束时间转换成当前日期的时间
+				workTime = DatesUtil.dayTime(dateLeave, workTimeArr[0]);
+				workTimeEnd = DatesUtil.dayTime(dateLeave, workTimeArr[1]);
+				String[] restTimeArr = attendanceInit.getRestTimeSummer().split("-");
+				// 将 休息间隔开始结束时间转换成当前日期的时间
+				restBeginTime = DatesUtil.dayTime(dateLeave, restTimeArr[0]);
+				restEndTime = DatesUtil.dayTime(dateLeave, restTimeArr[1]);
+				restTime = attendanceInit.getRestSummer();
+				turnWorkTime = attendanceInit.getTurnWorkTimeSummer();
+			}
+			// 冬令时
+			String[] workTimeArr = attendanceInit.getWorkTimeWinter().split("-");
 			// 将 工作间隔开始结束时间转换成当前日期的时间
 			workTime = DatesUtil.dayTime(dateLeave, workTimeArr[0]);
 			workTimeEnd = DatesUtil.dayTime(dateLeave, workTimeArr[1]);
+			// 将 休息间隔开始结束时间转换成当前日期的时间
 			String[] restTimeArr = attendanceInit.getRestTimeSummer().split("-");
 			// 将 休息间隔开始结束时间转换成当前日期的时间
 			restBeginTime = DatesUtil.dayTime(dateLeave, restTimeArr[0]);
 			restEndTime = DatesUtil.dayTime(dateLeave, restTimeArr[1]);
-			restTime = attendanceInit.getRestSummer();
-			turnWorkTime = attendanceInit.getTurnWorkTimeSummer();
+			restTime = attendanceInit.getRestWinter();
+			turnWorkTime = attendanceInit.getTurnWorkTimeWinter();
 		}
-		// 冬令时
-		String[] workTimeArr = attendanceInit.getWorkTimeWinter().split("-");
-		// 将 工作间隔开始结束时间转换成当前日期的时间
-		workTime = DatesUtil.dayTime(dateLeave, workTimeArr[0]);
-		workTimeEnd = DatesUtil.dayTime(dateLeave, workTimeArr[1]);
-		// 将 休息间隔开始结束时间转换成当前日期的时间
-		String[] restTimeArr = attendanceInit.getRestTimeSummer().split("-");
-		// 将 休息间隔开始结束时间转换成当前日期的时间
-		restBeginTime = DatesUtil.dayTime(dateLeave, restTimeArr[0]);
-		restEndTime = DatesUtil.dayTime(dateLeave, restTimeArr[1]);
-		restTime = attendanceInit.getRestWinter();
-		turnWorkTime = attendanceInit.getTurnWorkTimeWinter();
-        }
 		String holidayDetail = "";
 		if (applicationLeave.isHoliday()) {
 			// (0=事假、1=病假、2=丧假、3=婚假、4=产假、5=护理假
@@ -177,15 +197,27 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 		}
 		if (applicationLeave.isAddSignIn()) {
 			holidayDetail = date + (time == "0" ? "补签入" : "补签入");
+			SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			// 获取时间区间
+			String[] addDate = date.split(",");
+			if (addDate.length > 0) {
+				for (String ad : addDate) {
+					Attendance attendance = new Attendance();
+					attendance.setTime(sdf1.parse(ad));
+					attendance.setUserId(applicationLeave.getUserId());
+					attendance.setInOutMode(2);
+					attendanceDao.save(attendance);
+				}
+			}
 		}
 		if (applicationLeave.isApplyOvertime()) {
-			if(attendanceTime==null){
+			if (attendanceTime == null) {
 				throw new ServiceException("该员工未初始化考勤详细，无法比对加班时长，请先初始化该员工考勤");
 			}
-			if(workTimeEnd.before(attendanceTime.getCheckOut())){
-				double actualOverTime = DatesUtil.getTimeHour(workTimeEnd, attendanceTime.getCheckOut());	
-				if(actualOverTime<Double.valueOf(time) ){
-					throw new ServiceException("根据签到时间当日该员工加班时间为"+actualOverTime+"小时，加班申请时间有误请重新核对");
+			if (workTimeEnd.before(attendanceTime.getCheckOut())) {
+				double actualOverTime = DatesUtil.getTimeHour(workTimeEnd, attendanceTime.getCheckOut());
+				if (actualOverTime < Double.valueOf(time)) {
+					throw new ServiceException("根据签到时间当日该员工加班时间为" + actualOverTime + "小时，加班申请时间有误请重新核对");
 				}
 			}
 			holidayDetail = date + "申请加班" + time + "小时";
@@ -194,22 +226,40 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 			holidayDetail = date + "调休" + time + "小时";
 		}
 		applicationLeave.setHolidayDetail(holidayDetail);
-
 		return applicationLeave;
 
 	}
 
 	@Override
-	public int deleteApplicationLeave(String ids) {
+	public int deleteApplicationLeave(String ids) throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		int count = 0;
 		String[] arrIds = ids.split(",");
 		for (int i = 0; i < arrIds.length; i++) {
 			Long id = Long.valueOf(arrIds[i]);
 			ApplicationLeave applicationLeave = dao.findOne(id);
 			applicationLeave.setUser(null);
-			dao.delete(applicationLeave);
-			count++;
+			if (applicationLeave.isAddSignIn()) {
+				JSONObject jo = JSON.parseObject(applicationLeave.getTime());
+				String date = jo.getString("date");
+				String time = jo.getString("time");
+				// 获取时间区间
+				String[] addDate = date.split(",");
+				if (addDate.length > 0) {
+					for (String ad : addDate) {
+						List<Attendance> attendance = attendanceDao.findByUserIdAndTime(applicationLeave.getUserId(),
+								sdf.parse(ad));
+						if(attendance.size()>0){
+							attendanceDao.delete(attendance);
+						}
+					}
+				}
+
+				dao.delete(applicationLeave);
+				count++;
+			}
 		}
 		return count;
 	}
+	
 }

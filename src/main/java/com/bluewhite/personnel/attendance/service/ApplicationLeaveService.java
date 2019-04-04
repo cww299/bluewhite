@@ -1,5 +1,6 @@
 package com.bluewhite.personnel.attendance.service;
 
+import java.text.ParseException;
 import java.util.List;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -22,13 +23,13 @@ public interface ApplicationLeaveService  extends BaseCRUDService<ApplicationLea
 	 * 新增修改请假事项
 	 * @param applicationLeave
 	 */
-	ApplicationLeave saveApplicationLeave(ApplicationLeave applicationLeave);
+	ApplicationLeave saveApplicationLeave(ApplicationLeave applicationLeave) throws ParseException;
 	/**
 	 * 批量删除
 	 * @param ids
 	 * @return
 	 */
-	public int deleteApplicationLeave(String ids);
+	public int deleteApplicationLeave(String ids) throws ParseException;
 ;
 
 }

@@ -350,10 +350,11 @@ public class AttendanceAction {
 	 * @param request
 	 *            请求
 	 * @return cr
+	 * @throws ParseException 
 	 */
 	@RequestMapping(value = "/personnel/addApplicationLeave", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addApplicationLeave(HttpServletRequest request, ApplicationLeave applicationLeave) {
+	public CommonResponse addApplicationLeave(HttpServletRequest request, ApplicationLeave applicationLeave) throws ParseException {
 		CommonResponse cr = new CommonResponse();
 		if (applicationLeave.getId() != null) {
 			cr.setMessage("修改成功");
@@ -370,10 +371,11 @@ public class AttendanceAction {
 	 * @param request
 	 *            请求
 	 * @return cr
+	 * @throws ParseException 
 	 */
 	@RequestMapping(value = "/personnel/deleteApplicationLeave", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteApplicationLeave(HttpServletRequest request, String ids) {
+	public CommonResponse deleteApplicationLeave(HttpServletRequest request, String ids) throws ParseException {
 		CommonResponse cr = new CommonResponse();
 		if (!StringUtils.isEmpty(ids)) {
 			int count = applicationLeaveService.deleteApplicationLeave(ids);
