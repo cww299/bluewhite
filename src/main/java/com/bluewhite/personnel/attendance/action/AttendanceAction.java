@@ -326,7 +326,7 @@ public class AttendanceAction {
 	}
 	
 	/**
-	 * 查看考勤汇总（打印）
+	 * 修改考勤汇总（打印）
 	 * @param request 请求
 	 * @return cr
 	 */
