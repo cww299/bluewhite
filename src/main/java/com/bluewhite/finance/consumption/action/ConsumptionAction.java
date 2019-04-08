@@ -1,4 +1,4 @@
-package com.bluewhite.finance.tax.action;
+package com.bluewhite.finance.consumption.action;
 
 import java.text.SimpleDateFormat;
 
@@ -21,109 +21,109 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.finance.tax.entity.Tax;
-import com.bluewhite.finance.tax.service.TaxService;
+import com.bluewhite.finance.consumption.entity.Consumption;
+import com.bluewhite.finance.consumption.service.ConsumptionService;
+import com.bluewhite.system.user.entity.User;
 
 @Controller
-public class TaxAction {
+public class ConsumptionAction {
 
 	@Autowired
-	private TaxService taxService;
+	private ConsumptionService consumptionService;
 
 	private ClearCascadeJSON clearCascadeJSON;
 
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(Tax.class, "id", "taxPoint","content"
-				,"money","expenseDate","paymentMoney","paymentDate","withholdReason","remark"
-				,"withholdMoney","settleAccountsMode","remark","flag");
+				.addRetainTerm(Consumption.class, "id", "user","content","userId"
+				,"budget","money","expenseDate","paymentMoney","paymentDate","withholdReason","remark"
+				,"withholdMoney","settleAccountsMode","remark","flag")
+				.addRetainTerm(User.class, "userName");
 	}
 
 	/**
-	 * 分页查看税点单
+	 * 分页查看
 	 * 
 	 * @param request
 	 *            请求
 	 * @return cr
+	 * @throws Exception
 	 */
-	@RequestMapping(value = "/fince/getTax", method = RequestMethod.GET)
+	@RequestMapping(value = "/fince/getConsumption", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getTax(HttpServletRequest request, PageParameter page,
-			Tax tax) {
+	public CommonResponse getConsumption(HttpServletRequest request, PageParameter page,
+			Consumption consumption) {
 		CommonResponse cr = new CommonResponse();
-		PageResult<Tax> list = taxService.findPages(tax, page);
+		PageResult<Consumption> list = consumptionService.findPages(consumption, page);
 		cr.setData(clearCascadeJSON.format(list).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
 
 	/**
-	 * 财务税点单新增
-	 * @param request
-	 *            请求
-	 * @return cr
-	 */
-	@RequestMapping(value = "/fince/addTax", method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse addTax(HttpServletRequest request,Tax tax) {
-		CommonResponse cr = new CommonResponse();
-		taxService.addTax(tax);
-		cr.setData(clearCascadeJSON.format(tax).toJSON());
-		cr.setMessage("添加成功");
-		return cr;
-	}
-
-	/**
-	 * 财务税点单修改
-	 * （一）.未审核 1.填写页面可以修改税点单
+	 * 财务新增
+	 * 财务修改
+	 * （一）.未审核 1.填写页面可以修改
 	 * （二）.已审核 1.填写页面和出纳均不可修改
 	 * @param request
 	 *            请求
 	 * @return cr
+	 * @throws Exception
 	 */
-	@RequestMapping(value = "/fince/updateTax", method = RequestMethod.POST)
+	@RequestMapping(value = "/fince/addConsumption", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse updateTax(HttpServletRequest request, Tax tax) {
+	public CommonResponse addConsumption(HttpServletRequest request, Consumption consumption) {
 		CommonResponse cr = new CommonResponse();
-		taxService.updateTax(tax);
-		cr.setData(clearCascadeJSON.format(tax).toJSON());
-		cr.setMessage("修改成功");
+		if(consumption.getId() != null){
+			consumptionService.updateConsumption(consumption);
+			cr.setMessage("修改成功");
+		}else{
+			consumptionService.addConsumption(consumption);
+			cr.setMessage("添加成功");
+		}
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(Consumption.class,"id")
+				.format(consumption).toJSON());
 		return cr;
 	}
+
 	
 	/**
-	 * 财务税点单审核放款
+	 * 财务审核放款
 	 * @param request
 	 *            请求
 	 * @return cr
+	 * @throws Exception
 	 */
-	@RequestMapping(value = "/fince/auditTax", method = RequestMethod.POST)
+	@RequestMapping(value = "/fince/auditConsumption", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse auditTax(HttpServletRequest request, Tax tax) {
+	public CommonResponse auditConsumption(HttpServletRequest request, Consumption consumption) {
 		CommonResponse cr = new CommonResponse();
-		taxService.auditTax(tax);
-		cr.setData(clearCascadeJSON.format(tax).toJSON());
-		cr.setMessage("放款成功");
+		consumptionService.auditConsumption(consumption);
+		cr.setData(clearCascadeJSON.format(consumption).toJSON());
+		cr.setMessage("审核成功");
 		return cr;
 	}
 
 	/**
-	 * 财务税点单删除
+	 * 财务删除
 	 * @param request
 	 *            请求
 	 * @return cr
+	 * @throws Exception
 	 */
-	@RequestMapping(value = "/fince/deleteTax", method = RequestMethod.GET)
+	@RequestMapping(value = "/fince/deleteConsumption", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteTax(HttpServletRequest request, String ids) {
+	public CommonResponse deleteConsumption(HttpServletRequest request, String ids) {
 		CommonResponse cr = new CommonResponse();
 		if (!StringUtils.isEmpty(ids)) {
-			int count = taxService.deleteTax(ids);
+			int count = consumptionService.deleteConsumption(ids);
 			cr.setMessage("成功删除" + count + "条数据");
 		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("税点单不能为空");
+			cr.setMessage("报销单不能为空");
 		}
 		return cr;
 	}
