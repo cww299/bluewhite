@@ -70,13 +70,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	@Override
 	public List<AttendanceTime> findAttendanceTime(AttendanceTime attendance) throws ParseException {
 		// 检查当前月份属于夏令时或冬令时 flag=ture 为夏令时
-		boolean flag = false;
-		try {
-			flag = DatesUtil.belongCalendar(attendance.getOrderTimeBegin());
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
+		boolean flag = DatesUtil.belongCalendar(attendance.getOrderTimeBegin());
 		long size = DatesUtil.getDaySub(attendance.getOrderTimeBegin(),
 				DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin()));
 		List<AttendanceTime> attendanceTimeList = new ArrayList<>();
@@ -489,8 +483,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
 	@Override
 	@Transactional
-	public List<AttendanceTime> attendanceTimeByApplication(List<AttendanceTime> attendanceTimeList)
-			throws ParseException {
+	public List<AttendanceTime> attendanceTimeByApplication(List<AttendanceTime> attendanceTimeList) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		// 按人员分组
 		Map<Long, List<AttendanceTime>> mapAttendanceTime = attendanceTimeList.stream()
@@ -503,12 +496,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					.sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
 			for (AttendanceTime at : attendanceTimeListSort) {
 				// 检查当前月份属于夏令时或冬令时 flag=ture 为夏令时
-				boolean flag = false;
-				try {
-					flag = DatesUtil.belongCalendar(at.getTime());
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
+				boolean flag = DatesUtil.belongCalendar(at.getTime());
+				
 				// 获取员工考勤的初始化参数
 				AttendanceInit attendanceInit = attendanceInitService.findByUserId(at.getUserId());
 				// 上班开始时间
@@ -528,101 +517,106 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 						at.getUserId(), DatesUtil.getFirstDayOfMonth(at.getTime()),
 						DatesUtil.getLastDayOfMonth(at.getTime()));
 				for (ApplicationLeave al : applicationLeave) {
-					JSONObject jo = JSON.parseObject(al.getTime());
-					String date = jo.getString("date");
-					Double time = Double.valueOf(jo.getString("time"));
-					// 获取时间区间
-					String[] dateArr = date.split("~");
-					Date dateLeave = null;
-					if (dateArr.length < 2) {
-						dateLeave = sdf.parse(date);
-						// flag=ture 为夏令时
-						if (flag) {
-							String[] workTimeArr = attendanceInit.getWorkTimeSummer().split(" - ");
-							// 将 工作间隔开始结束时间转换成当前日期的时间
-							workTime = DatesUtil.dayTime(dateLeave, workTimeArr[0]);
-							workTimeEnd = DatesUtil.dayTime(dateLeave, workTimeArr[1]);
-							String[] restTimeArr = attendanceInit.getRestTimeSummer().split(" - ");
-							// 将 休息间隔开始结束时间转换成当前日期的时间
-							restBeginTime = DatesUtil.dayTime(dateLeave, restTimeArr[0]);
-							restEndTime = DatesUtil.dayTime(dateLeave, restTimeArr[1]);
-							restTime = attendanceInit.getRestSummer();
-							turnWorkTime = attendanceInit.getTurnWorkTimeSummer();
-						}
-						// 冬令时
-						String[] workTimeArr = attendanceInit.getWorkTimeWinter().split(" - ");
-						// 将 工作间隔开始结束时间转换成当前日期的时间
-						workTime = DatesUtil.dayTime(dateLeave, workTimeArr[0]);
-						workTimeEnd = DatesUtil.dayTime(dateLeave, workTimeArr[1]);
-						// 将 休息间隔开始结束时间转换成当前日期的时间
-						String[] restTimeArr = attendanceInit.getRestTimeSummer().split(" - ");
-						// 将 休息间隔开始结束时间转换成当前日期的时间
-						restBeginTime = DatesUtil.dayTime(dateLeave, restTimeArr[0]);
-						restEndTime = DatesUtil.dayTime(dateLeave, restTimeArr[1]);
-						restTime = attendanceInit.getRestWinter();
-						turnWorkTime = attendanceInit.getTurnWorkTimeWinter();
-					}
-					// 请假
-					if (al.isHoliday() && dateArr.length >= 2) {
-						// 获取请假所有日期
-						List<Date> dateList = DatesUtil.getPerDaysByStartAndEndDate(dateArr[0], dateArr[1],
-								"yyyy-MM-dd");
-						for (Date inTime : dateList) {
+					JSONArray jsonArray = JSON.parseArray(al.getTime());
+					for (int i = 0; i < jsonArray.size(); i++) {
+						JSONObject jsonObject = jsonArray.getJSONObject(i); 
+						String date = jsonObject.getString("date");
+						Double time = Double.valueOf(jsonObject.getString("time"));
+						
+						//获取时间区间
+						String[] dateArr = date.split("~");
+						Date dateLeave = null;
+						if (dateArr.length < 2) {
+							dateLeave = sdf.parse(date);
 							// flag=ture 为夏令时
 							if (flag) {
 								String[] workTimeArr = attendanceInit.getWorkTimeSummer().split(" - ");
 								// 将 工作间隔开始结束时间转换成当前日期的时间
-								workTime = DatesUtil.dayTime(inTime, workTimeArr[0]);
-								workTimeEnd = DatesUtil.dayTime(inTime, workTimeArr[1]);
+								workTime = DatesUtil.dayTime(dateLeave, workTimeArr[0]);
+								workTimeEnd = DatesUtil.dayTime(dateLeave, workTimeArr[1]);
 								String[] restTimeArr = attendanceInit.getRestTimeSummer().split(" - ");
 								// 将 休息间隔开始结束时间转换成当前日期的时间
-								restBeginTime = DatesUtil.dayTime(inTime, restTimeArr[0]);
-								restEndTime = DatesUtil.dayTime(inTime, restTimeArr[1]);
+								restBeginTime = DatesUtil.dayTime(dateLeave, restTimeArr[0]);
+								restEndTime = DatesUtil.dayTime(dateLeave, restTimeArr[1]);
 								restTime = attendanceInit.getRestSummer();
 								turnWorkTime = attendanceInit.getTurnWorkTimeSummer();
 							}
 							// 冬令时
 							String[] workTimeArr = attendanceInit.getWorkTimeWinter().split(" - ");
 							// 将 工作间隔开始结束时间转换成当前日期的时间
-							workTime = DatesUtil.dayTime(inTime, workTimeArr[0]);
-							workTimeEnd = DatesUtil.dayTime(inTime, workTimeArr[1]);
+							workTime = DatesUtil.dayTime(dateLeave, workTimeArr[0]);
+							workTimeEnd = DatesUtil.dayTime(dateLeave, workTimeArr[1]);
 							// 将 休息间隔开始结束时间转换成当前日期的时间
 							String[] restTimeArr = attendanceInit.getRestTimeSummer().split(" - ");
 							// 将 休息间隔开始结束时间转换成当前日期的时间
-							restBeginTime = DatesUtil.dayTime(inTime, restTimeArr[0]);
-							restEndTime = DatesUtil.dayTime(inTime, restTimeArr[1]);
+							restBeginTime = DatesUtil.dayTime(dateLeave, restTimeArr[0]);
+							restEndTime = DatesUtil.dayTime(dateLeave, restTimeArr[1]);
 							restTime = attendanceInit.getRestWinter();
 							turnWorkTime = attendanceInit.getTurnWorkTimeWinter();
-							
-							List<AttendanceTime> oneAtList = attendanceTimeListSort.stream()
-									.filter(AttendanceTime -> (AttendanceTime.getTime().compareTo(inTime)) == 0)
-									.collect(Collectors.toList());
-							if (oneAtList.size() > 0) {
-								// 变更为请假状态
-								oneAtList.get(0).setFlag(2);
-								oneAtList.get(0).setHolidayType(al.getHolidayType());
-								oneAtList.get(0).setDutytime((time >= turnWorkTime) ? turnWorkTime : time);
-								if (time >= turnWorkTime) {
-									time = NumUtils.sub(time, turnWorkTime);
+						}
+						
+						// 请假
+						if (al.isHoliday() && dateArr.length >= 2) {
+							// 获取请假所有日期
+							List<Date> dateList = DatesUtil.getPerDaysByStartAndEndDate(dateArr[0], dateArr[1],
+									"yyyy-MM-dd");
+							for (Date inTime : dateList) {
+								// flag=ture 为夏令时
+								if (flag) {
+									String[] workTimeArr = attendanceInit.getWorkTimeSummer().split(" - ");
+									// 将 工作间隔开始结束时间转换成当前日期的时间
+									workTime = DatesUtil.dayTime(inTime, workTimeArr[0]);
+									workTimeEnd = DatesUtil.dayTime(inTime, workTimeArr[1]);
+									String[] restTimeArr = attendanceInit.getRestTimeSummer().split(" - ");
+									// 将 休息间隔开始结束时间转换成当前日期的时间
+									restBeginTime = DatesUtil.dayTime(inTime, restTimeArr[0]);
+									restEndTime = DatesUtil.dayTime(inTime, restTimeArr[1]);
+									restTime = attendanceInit.getRestSummer();
+									turnWorkTime = attendanceInit.getTurnWorkTimeSummer();
 								}
-								oneAtList.get(0).setHolidayDetail(al.getHolidayDetail());
+								// 冬令时
+								String[] workTimeArr = attendanceInit.getWorkTimeWinter().split(" - ");
+								// 将 工作间隔开始结束时间转换成当前日期的时间
+								workTime = DatesUtil.dayTime(inTime, workTimeArr[0]);
+								workTimeEnd = DatesUtil.dayTime(inTime, workTimeArr[1]);
+								// 将 休息间隔开始结束时间转换成当前日期的时间
+								String[] restTimeArr = attendanceInit.getRestTimeSummer().split(" - ");
+								// 将 休息间隔开始结束时间转换成当前日期的时间
+								restBeginTime = DatesUtil.dayTime(inTime, restTimeArr[0]);
+								restEndTime = DatesUtil.dayTime(inTime, restTimeArr[1]);
+								restTime = attendanceInit.getRestWinter();
+								turnWorkTime = attendanceInit.getTurnWorkTimeWinter();
+								
+								List<AttendanceTime> oneAtList = attendanceTimeListSort.stream()
+										.filter(AttendanceTime -> (AttendanceTime.getTime().compareTo(inTime)) == 0)
+										.collect(Collectors.toList());
+								if (oneAtList.size() > 0) {
+									// 变更为请假状态
+									oneAtList.get(0).setFlag(2);
+									oneAtList.get(0).setHolidayType(al.getHolidayType());
+									oneAtList.get(0).setDutytime((time >= turnWorkTime) ? turnWorkTime : time);
+									if (time >= turnWorkTime) {
+										time = NumUtils.sub(time, turnWorkTime);
+									}
+									oneAtList.get(0).setHolidayDetail(al.getHolidayDetail());
+								}
 							}
 						}
+			
+						// 加班
+						if (al.isApplyOvertime() && at.getTime().compareTo(dateLeave) == 0) {
+							at.setOvertime(NumUtils.sum(at.getOvertime(), time));
+						}
+						// 调休且员工出勤时间等于调休到的那一天
+						if (al.isTradeDays() && at.getTime().compareTo(dateLeave) == 0) {
+							at.setTakeWork(time);
+							at.setTurnWorkTime(time);
+							at.setDutytime(NumUtils.sub(turnWorkTime, time));
+							at.setBelate(0);
+							at.setBelateTime(0.0);
+						}
+						
 					}
-		
-					// 加班
-					if (al.isApplyOvertime() && at.getTime().compareTo(dateLeave) == 0) {
-						at.setOvertime(NumUtils.sum(at.getOvertime(), time));
-					}
-					// 调休且员工出勤时间等于调休到的那一天
-					if (al.isTradeDays() && at.getTime().compareTo(dateLeave) == 0) {
-						at.setTakeWork(time);
-						at.setTurnWorkTime(time);
-						at.setDutytime(NumUtils.sub(turnWorkTime, time));
-						at.setBelate(0);
-						at.setBelateTime(0.0);
-					}
-
 				}
 			}
 		}

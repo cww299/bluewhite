@@ -15,6 +15,8 @@ import com.bluewhite.system.user.entity.User;
 
 
 /**
+ * 
+ * 
  * 财务 报销单(正常模式，由申请人自己申请，同时经过上级审核，审核成功后转到财务，进行报销，同时系统记录报销申请人和经办人以及财务同意放款人id)
  * （在这里目前只作为一个记账功能）
  * @author zhangliang
