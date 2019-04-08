@@ -633,12 +633,7 @@
 							        			time:JSON.stringify(myArray)
 							        	}	
 							        	mainJs.fAdd(postData); 
-							        	document.getElementById("layuiadmin-form-admin").reset();
-							        	$("#leave").css("display","block")
-										$("#Break").css("display","none")
-										$("#repair").css("display","none")
-										$("#overtime").css("display","none")
-							        	layui.form.render();
+							        	
 							        	timeAll=""
 										})
 										
@@ -883,11 +878,16 @@
 											icon: 1,
 											time:1000
 										});
-									
+										document.getElementById("layuiadmin-form-admin").reset();
+							        	$("#leave").css("display","block")
+										$("#Break").css("display","none")
+										$("#repair").css("display","none")
+										$("#overtime").css("display","none")
+							        	layui.form.render();
 									} else {
 										layer.msg(result.message, {
 											icon: 2,
-											time:2000
+											time:5000
 										});
 									}
 								},
