@@ -1,4 +1,4 @@
-package com.bluewhite.finance.expenseAccount.service;
+package com.bluewhite.finance.consumption.service;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,22 +20,32 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.entity.PageResultStat;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
-import com.bluewhite.finance.expenseAccount.dao.ExpenseAccountDao;
-import com.bluewhite.finance.expenseAccount.entity.ExpenseAccount;
+import com.bluewhite.finance.consumption.dao.ConsumptionDao;
+import com.bluewhite.finance.consumption.dao.CustomerDao;
+import com.bluewhite.finance.consumption.entity.Consumption;
+import com.bluewhite.finance.consumption.entity.Customer;
 
 @Service
-public class ExpenseAccountServiceImpl extends BaseServiceImpl<ExpenseAccount, Long> implements ExpenseAccountService {
+public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> implements ConsumptionService {
 
 	@Autowired
-	private ExpenseAccountDao dao;
+	private ConsumptionDao dao;
+	
+	@Autowired
+	private CustomerDao customerDao;
 
 	@Override
-	public PageResult<ExpenseAccount> findPages(ExpenseAccount param, PageParameter page) {
-		Page<ExpenseAccount> pages = dao.findAll((root, query, cb) -> {
+	public PageResult<Consumption> findPages(Consumption param, PageParameter page) {
+		Page<Consumption> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
+			}
+			
+			// 按消费类型过滤
+			if (param.getType() != null) {
+				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
 			}
 
 			// 按是否已付款报销过滤
@@ -59,6 +69,12 @@ public class ExpenseAccountServiceImpl extends BaseServiceImpl<ExpenseAccount, L
 				predicate.add(cb.like(root.get("content").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getContent()) + "%"));
 			}
+			
+			// 按客户查找
+			if (!StringUtils.isEmpty(param.getCustomerId())) {
+				predicate.add(
+						cb.equal(root.get("customerId").as(String.class), param.getCustomerId()));
+			}
 
 			if (!StringUtils.isEmpty(param.getExpenseDate())) {
 				// 按申请报销单日期
@@ -79,34 +95,41 @@ public class ExpenseAccountServiceImpl extends BaseServiceImpl<ExpenseAccount, L
 			query.where(predicate.toArray(pre));
 			return null;
 		}, SalesUtils.getQueryNoPageParameter());
-		PageResultStat<ExpenseAccount> result = new PageResultStat<>(pages, page);
+		PageResultStat<Consumption> result = new PageResultStat<>(pages, page);
 		result.setAutoStateField(null, "money");
 		result.count();
 		return result;
 	}
 
 	@Override
-	public ExpenseAccount addExpenseAccount(ExpenseAccount expenseAccount) {
-		expenseAccount.setFlag(0);
-		dao.save(expenseAccount);
-		return expenseAccount;
+	public Consumption addConsumption(Consumption consumption) {
+		consumption.setFlag(0);
+		if(consumption.getCustomerId()==null){
+			Customer customer = new Customer();
+			customer.setName(consumption.getCustomerName());
+			customer.setType(consumption.getType());
+			customerDao.save(customer);
+			consumption.setCustomerId(customer.getId());
+		}
+		dao.save(consumption);
+		return consumption;
 	}
 
 	@Override
 	@Transactional
-	public int deleteAccountService(String ids) {
+	public int deleteConsumption(String ids) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idArr = ids.split(",");
 			if (idArr.length > 0) {
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
-					ExpenseAccount expenseAccount = dao.findOne(id);
-					if (expenseAccount.getFlag() == 0) {
+					Consumption consumption = dao.findOne(id);
+					if (consumption.getFlag() == 0) {
 						dao.delete(id);
 						count++;
 					} else {
-						throw new ServiceException(expenseAccount.getContent() + "的报销单已经审核放款无法删除");
+						throw new ServiceException(consumption.getContent() + "的报销单已经审核放款无法删除");
 					}
 
 				}
@@ -117,36 +140,36 @@ public class ExpenseAccountServiceImpl extends BaseServiceImpl<ExpenseAccount, L
 
 	@Override
 	@Transactional
-	public ExpenseAccount updateExpenseAccount(ExpenseAccount expenseAccount) {
-		ExpenseAccount oldExpenseAccount = dao.findOne(expenseAccount.getId());
-		if (oldExpenseAccount != null) {
-			if (oldExpenseAccount.getFlag() == 1) {
+	public Consumption updateConsumption(Consumption consumption) {
+		Consumption oldConsumption = dao.findOne(consumption.getId());
+		if (oldConsumption != null) {
+			if (oldConsumption.getFlag() == 1) {
 				throw new ServiceException("该报销单已放款，无法修改");
 			}
-			BeanCopyUtils.copyNullProperties(oldExpenseAccount, expenseAccount);
-			expenseAccount.setCreatedAt(oldExpenseAccount.getCreatedAt());
-			dao.save(expenseAccount);
+			BeanCopyUtils.copyNullProperties(oldConsumption, consumption);
+			consumption.setCreatedAt(oldConsumption.getCreatedAt());
+			dao.save(consumption);
 		} else {
 			throw new ServiceException("该报销单不存在，查证后修改");
 		}
-		return expenseAccount;
+		return consumption;
 	}
 
 	@Override
-	public ExpenseAccount auditExpenseAccount(ExpenseAccount expenseAccount) {
-		if(expenseAccount.getPaymentDate() == null && expenseAccount.getPaymentMoney() == null){
+	public Consumption auditConsumption(Consumption consumption) {
+		if(consumption.getPaymentDate() == null && consumption.getPaymentMoney() == null){
 			throw new ServiceException("返款金额或放款时间不能为空");
 		}
-		ExpenseAccount oldExpenseAccount = dao.findOne(expenseAccount.getId());
-		if (oldExpenseAccount != null) {
-			oldExpenseAccount.setFlag(expenseAccount.getFlag());
-			oldExpenseAccount.setPaymentMoney(expenseAccount.getPaymentMoney());
-			oldExpenseAccount.setPaymentDate(expenseAccount.getPaymentDate());
-			dao.save(oldExpenseAccount);
+		Consumption oldConsumption = dao.findOne(consumption.getId());
+		if (oldConsumption != null) {
+			oldConsumption.setFlag(consumption.getFlag());
+			oldConsumption.setPaymentMoney(consumption.getPaymentMoney());
+			oldConsumption.setPaymentDate(consumption.getPaymentDate());
+			dao.save(oldConsumption);
 		} else {
 			throw new ServiceException("该报销单不存在，查证后修改");
 		}
-		return expenseAccount;
+		return consumption;
 	}
 
 }

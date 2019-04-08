@@ -1,4 +1,4 @@
-package com.bluewhite.finance.expenseAccount.entity;
+package com.bluewhite.finance.consumption.entity;
 
 import java.util.Date;
 
@@ -15,16 +15,28 @@ import com.bluewhite.system.user.entity.User;
 
 
 /**
+ * 通用财务消费记账实体
+ * 
+ * 1.报销，2采购应付和预算，3工资，4税点应付和预算，5物流，6应付借款本金，7应付社保和税费，8，应入库周转的材料，9应收周转中的资金
+ * 
+ * 报销单(正常模式，由申请人自己申请，同时经过上级审核，审核成功后转到财务，进行报销，同时系统记录报销申请人和经办人以及财务同意放款人id)
+ * 采购应付和预算
+ * 工资
  * 
  * 
- * 财务 报销单(正常模式，由申请人自己申请，同时经过上级审核，审核成功后转到财务，进行报销，同时系统记录报销申请人和经办人以及财务同意放款人id)
  * （在这里目前只作为一个记账功能）
  * @author zhangliang
  *
  */
 @Entity
-@Table(name = "fin_expense_account" )
-public class ExpenseAccount  extends BaseEntity<Long>{
+@Table(name = "fin_consumption" )
+public class Consumption  extends BaseEntity<Long>{
+	
+	/**
+	 * 消费类型
+	 */
+	@Column(name = "type")
+    private Integer type;
 	
 	
 	/**
@@ -42,10 +54,30 @@ public class ExpenseAccount  extends BaseEntity<Long>{
 	private User user;
 	
 	/**
+	 * 消费对象Id
+	 */
+	@Column(name = "customer_id")
+    private Long customerId;
+	
+	
+	/**
+	 * 消费对象
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Customer customer;
+	
+	/**
 	 * 报销内容
 	 */
 	@Column(name = "content")
     private String content;
+	
+	/**
+	 * 税点
+	 */
+	@Column(name = "tax_point")
+    private Double taxPoint;
 	
 	
 	/**
@@ -55,19 +87,19 @@ public class ExpenseAccount  extends BaseEntity<Long>{
     private Integer budget;
 	
 	/**
-	 * (申请人申请时)报销金额
+	 * (申请人申请时)金额
 	 */
 	@Column(name = "money")
     private Double money;
 	
 	/**
-	 * (申请人申请时)申请报销日期
+	 * (申请人申请时)申请日期
 	 */
 	@Column(name = "expense_date")
     private Date  expenseDate;
 	
 	/**
-	 * （财务付款）报销金额
+	 * （财务付款）金额
 	 */
 	@Column(name = "payment_money")
     private Double paymentMoney;
@@ -105,7 +137,7 @@ public class ExpenseAccount  extends BaseEntity<Long>{
     private String remark;
 	
 	/**
-	 * 该报销单是否已付款报销（0=否，1=是）
+	 * 是否已付款（0=否，1=是）
 	 */
 	@Column(name = "flag")
     private Integer flag;
@@ -115,6 +147,15 @@ public class ExpenseAccount  extends BaseEntity<Long>{
 	 */
 	@Transient
     private String username;
+	
+	
+	/**
+	 * 过滤参数(消费对象)
+	 */
+	@Transient
+    private String customerName;
+	
+	
 	
 	/**
 	 * 查询字段
@@ -130,6 +171,57 @@ public class ExpenseAccount  extends BaseEntity<Long>{
 
 	
 	
+	
+	public String getCustomerName() {
+		return customerName;
+	}
+
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+
+	public Long getCustomerId() {
+		return customerId;
+	}
+
+
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
+	}
+
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
+
+	public Integer getType() {
+		return type;
+	}
+
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+
+	public Double getTaxPoint() {
+		return taxPoint;
+	}
+
+
+	public void setTaxPoint(Double taxPoint) {
+		this.taxPoint = taxPoint;
+	}
+
+
 	public Date getOrderTimeBegin() {
 		return orderTimeBegin;
 	}
