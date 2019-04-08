@@ -96,7 +96,6 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 				List<User> user = userListAll.stream()
 						.filter(User ->User.getNumber() == null && User.getUserName().trim().equals(map.get("name").toString().trim()))
 						.collect(Collectors.toList());
-				
 				if (user.size() > 1) {
 					throw new ServiceException("系统用户有相同名称的员工" + user.get(0).getUserName() + "，请检查是否重复");
 				}

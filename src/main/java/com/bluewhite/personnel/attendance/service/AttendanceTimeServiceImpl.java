@@ -444,8 +444,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		String usToString = "";
 		if (new Date().before(DatesUtil.getLastDayOfMonth(attendanceTime.getOrderTimeBegin()))) {
 			throw new ServiceException("选择日期的签到记录未完成,无法统计");
-		}
-		;
+		};
 		List<User> userList = new ArrayList<>();
 		if (!StringUtils.isEmpty(attendanceTime.getOrgNameId())) {
 			userList = userService.findByOrgNameId(attendanceTime.getOrgNameId());
