@@ -259,7 +259,8 @@
 						elem: '#applytime',
 						format: 'yyyy-MM-dd',
 						done: function(value, date) {
-							timeAll=(timeAll==''? value:(timeAll+','+value));
+							var c=$('#inputapplytime').val()
+							timeAll=(timeAll==''? value:(c+','+value));
 							$("#inputapplytime").val(timeAll)
 						}
 					});
@@ -605,8 +606,6 @@
 							        		}else{
 							        	 mainJs.fAdd(data.field);
 							        	 }
-							        	document.getElementById("layuiadmin-form-admin").reset();
-							        	layui.form.render();
 							        	timeAll=""
 										})
 										
@@ -833,7 +832,8 @@
 											icon: 1,
 											time:500
 										});
-									
+										document.getElementById("layuiadmin-form-admin").reset();
+							        	layui.form.render();
 									} else {
 										layer.msg(result.message, {
 											icon: 2,
