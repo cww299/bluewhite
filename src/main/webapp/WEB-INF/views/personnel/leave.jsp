@@ -110,15 +110,17 @@
       </div>
     </div>
      <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 90px;">请假日期</label>
-      <div class="layui-input-inline">
-        <input type="text" name="leavetime" id="leavetime" lay-verify="leavetime"  placeholder="请输入请假日期" class="form-control laydate-icon">
+      <label class="layui-form-label" style="width: 90px;">日期时长</label>
+      <div class="layui-input-inline" >
+        <input type="text" style="width: 190px; position:absolute; float: left;" name="leavetime" id="leavetime" lay-verify="leavetime"  placeholder="请输入请假日期" class="form-control laydate-icon">
+     	<input type="text" style="width: 90px; position:absolute; float: left; margin-left: 210px;" name="leaveduration" id="leaveduration" lay-verify="leaveduration" placeholder="时长 " class="form-control">
+      
       </div>
     </div>
-    <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 90px;">请假时长</label>
-      <div class="layui-input-inline">
-        <input type="text" name="leaveduration" id="leaveduration" lay-verify="leaveduration" placeholder="请输入请假时长 " class="form-control">
+    <div class="layui-form-item" >
+      <label class="layui-form-label" style="width: 90px;">显示</label>
+      <div class="layui-input-inline" style="width: 230px;">
+       <textarea name="inputapplytime2"   id="inputapplytime2" class="layui-textarea"></textarea>
       </div>
     </div>
     </div>
@@ -161,15 +163,16 @@
     
     <div id="overtime" style="display: none;">
      <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 90px;">加班日期</label>
+      <label class="layui-form-label" style="width: 90px;">加班</label>
       <div class="layui-input-inline">
-        <input type="text" name="overtime" id="overdurationtime" lay-verify="overtime" placeholder="请输入加班日期" class="form-control laydate-icon">
+        <input type="text" name="overtime" style="width: 190px;position:absolute; float: left;"id="overdurationtime" lay-verify="overtime" placeholder="请输入加班日期" class="form-control laydate-icon">
+        <input type="text" name="overduration" style="width: 90px;position:absolute; float: left;margin-left: 210px;" id="overduration" lay-verify="overduration" placeholder="加班时长 " class="form-control">
       </div>
       </div>
-      <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 90px;">加班时长</label>
-      <div class="layui-input-inline">
-        <input type="text" name="overduration" id="overduration" lay-verify="overduration" placeholder="请输入加班时长 " class="form-control">
+      <div class="layui-form-item" >
+      <label class="layui-form-label" style="width: 90px;">显示</label>
+      <div class="layui-input-inline" style="width: 230px;">
+       <textarea name="inputapplytime4"   id="inputapplytime4" class="layui-textarea"></textarea>
       </div>
     </div>
     </div>
@@ -215,9 +218,18 @@
 					var index = layer.load(1, {
 						shade: [0.1, '#fff'] //0.1透明度的白色背景
 					});
+					timeAll4='';
 					laydate.render({
 						elem: '#overdurationtime',
 						type: 'datetime',
+						done: function(value, date) {
+							var c= $("#inputapplytime4").val()
+							var a=$("#overduration").val();
+							if(a!=""){
+							timeAll4=(timeAll4==''? value+','+a:(c+'\n'+value+','+a));
+							$("#inputapplytime4").val(timeAll4)
+							}
+						}
 					});
 					laydate.render({
 						elem: '#breaktime',
@@ -229,10 +241,6 @@
 						type: 'datetime',
 						done: function(value, date) {
 							var time=/\d{4}-\d{1,2}-\d{1,2}/g.exec(value)
-							console.log(time[0])
-							console.log($("#qianru").get(0).checked)
-							console.log($("#qianchu").get(0).checked)
-							console.log($("#moren").get(0).checked)
 							if($("#moren").get(0).checked==true){
 								var a='';
 								if($("#qianru").get(0).checked==true){
@@ -253,10 +261,19 @@
 						elem: '#applytime',
 						type: 'datetime',
 					});
+					var timeAll2='';
 					laydate.render({
 						elem: '#leavetime',
 						range : '~',
 						format: 'yyyy-MM-dd',
+						done: function(value, date) {
+							var c= $("#inputapplytime2").val()
+							var a=$("#leaveduration").val();
+							if(a!=""){
+							timeAll2=(timeAll2==''? value+','+a:(c+'\n'+value+','+a));
+							$("#inputapplytime2").val(timeAll2)
+							}
+						}
 					});
 					laydate.render({
 						elem: '#startTime',
@@ -266,7 +283,24 @@
 						elem: '#endTime',
 						type: 'datetime',
 					});
-				 
+					$("#leaveduration").blur(function(){
+						var c= $("#inputapplytime2").val()
+						var b=$("#leavetime").val();
+						var a=$("#leaveduration").val();
+						if(b!=""){
+							timeAll2=(timeAll2==''? b+','+a:(c+'\n'+b+','+a));
+							$("#inputapplytime2").val(timeAll2)
+							}
+					})
+					$("#overduration").blur(function(){
+						var c= $("#inputapplytime4").val()
+						var b=$("#overdurationtime").val();
+						var a=$("#overduration").val();
+						if(b!=""){
+							timeAll4=(timeAll4==''? b+','+a:(c+'\n'+b+','+a));
+							$("#inputapplytime4").val(timeAll4)
+							}
+					})
 					$.ajax({
 						url: '${ctx}/system/user/findAllUser',
 						type: "GET",
@@ -519,6 +553,9 @@
 							        		var leavetime='';
 							        		var leaveduration='';
 							        		var time='';
+							        		var myArray = [];
+							        		
+												
 							        		if(data.field.variable==0){
 							        			if(data.field.holidayType==""){
 							        				return layer.msg("请假类型不能为空", {icon: 2});
@@ -537,7 +574,16 @@
 							        			content=data.field.content;
 							        			leavetime=data.field.leavetime;
 							        			leaveduration=data.field.leaveduration;
-							        			time={date:leavetime,time:leaveduration};
+							        			var a=(data.field.inputapplytime2)
+								        		ss = a.split("\n")
+								        		for (var i = 0; i < ss.length; i++) {
+								        			if(ss[i] != ""){  
+													var b=ss[i]
+													cc = b.split(",")
+													time={"date":cc[0],"time":cc[1]};
+													myArray.push(time)
+								                    } 
+												}
 							        		}
 							        		if(data.field.variable==1){
 							        			if(data.field.breaktime==""){
@@ -550,6 +596,7 @@
 							        			breaktime=data.field.breaktime;
 							        			breakduration=data.field.breakduration;
 							        			time={date:breaktime,time:breakduration};
+							        			myArray.push(time)
 							        		}
 							        		if(data.field.variable==2){
 							        			if(data.field.repairtime==""){
@@ -559,6 +606,7 @@
 							        			repairtime=data.field.repairtime;
 							        			Sign=data.field.Sign
 							        			time={date:repairtime,time:Sign};
+							        			myArray.push(time)
 							        		}
 							        		if(data.field.variable==3){
 							        			if(data.field.overtime==""){
@@ -570,7 +618,16 @@
 							        			variable='applyOvertime'
 							        			overtime=data.field.overtime;
 							        			overduration=data.field.overduration;
-							        			time={date:overtime,time:overduration};
+							        			var a=(data.field.inputapplytime4)
+								        		ss = a.split("\n")
+								        		for (var i = 0; i < ss.length; i++) {
+								        			if(ss[i] != ""){  
+														var b=ss[i]
+														cc = b.split(",")
+														time={"date":cc[0],"time":cc[1]};
+														myArray.push(time)
+									                    } 
+												}
 							        		}
 							        	var postData={
 							        			userId:data.field.userId,
@@ -578,9 +635,10 @@
 							        			[variable]:'true',
 							        			holidayType:holidayType,
 							        			content:content,
-							        			time:JSON.stringify(time)
+							        			time:JSON.stringify(myArray)
 							        	}	
-							        	mainJs.fAdd(postData);
+							        	console.log(postData)
+							        /* 	mainJs.fAdd(postData); */
 							        	document.getElementById("layuiadmin-form-admin").reset();
 							        	$("#leave").css("display","block")
 										$("#Break").css("display","none")
@@ -690,6 +748,7 @@
 						        		var leavetime='';
 						        		var leaveduration='';
 						        		var time='';
+						        		console.log()
 						        		if(data.field.variable==0){
 						        			if(data.field.holidayType==""){
 						        				return layer.msg("请假类型不能为空", {icon: 2});
@@ -752,7 +811,7 @@
 						        			content:content,
 						        			time:JSON.stringify(time)
 						        	}	
-						        	mainJs.fAdd(postData);
+						        	/* mainJs.fAdd(postData); */
 						        	
 									})
 
