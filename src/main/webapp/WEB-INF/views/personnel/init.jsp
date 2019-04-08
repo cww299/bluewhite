@@ -259,7 +259,8 @@
 						elem: '#applytime',
 						format: 'yyyy-MM-dd',
 						done: function(value, date) {
-							timeAll=(timeAll==''? value:(timeAll+','+value));
+							var c=$('#inputapplytime').val()
+							timeAll=(timeAll==''? value:(c+','+value));
 							$("#inputapplytime").val(timeAll)
 						}
 					});

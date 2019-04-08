@@ -223,7 +223,7 @@
 						elem: '#overdurationtime',
 						type: 'datetime',
 						done: function(value, date) {
-							var c= $("#inputapplytime4").val()
+							var c=$("#inputapplytime4").val()
 							var a=$("#overduration").val();
 							if(a!=""){
 							timeAll4=(timeAll4==''? value+','+a:(c+'\n'+value+','+a));
@@ -240,19 +240,20 @@
 						elem: '#repairtime',
 						type: 'datetime',
 						done: function(value, date) {
+							var c=$("#inputapplytime").val()
 							var time=/\d{4}-\d{1,2}-\d{1,2}/g.exec(value)
 							if($("#moren").get(0).checked==true){
 								var a='';
 								if($("#qianru").get(0).checked==true){
 									a = time[0]+' '+'08:30:00'
-									timeAll=(timeAll==''? a:(timeAll+','+a));
+									timeAll=(timeAll==''? a:(c+','+a));
 								}
 								if($("#qianchu").get(0).checked==true){
 									a=time[0]+' '+'17:30:00'
-									timeAll=(timeAll==''? a:(timeAll+','+a));
+									timeAll=(timeAll==''? a:(c+','+a));
 								}
 							}else{
-								timeAll=(timeAll==''? value:(timeAll+','+value));
+								timeAll=(timeAll==''? value:(c+','+value));
 							}
 							$("#inputapplytime").val(timeAll)
 						}
@@ -563,12 +564,6 @@
 							        			if(data.field.content==""){
 							        				return layer.msg("请假原因不能为空", {icon: 2});
 							        			}
-							        			if(data.field.leavetime==""){
-							        				return layer.msg("请假日期不能为空", {icon: 2});
-							        			}
-							        			if(data.field.leaveduration==""){
-							        				return layer.msg("请假时长不能为空", {icon: 2});
-							        			}
 							        			variable='holiday';
 							        			holidayType=data.field.holidayType;
 							        			content=data.field.content;
@@ -637,8 +632,7 @@
 							        			content:content,
 							        			time:JSON.stringify(myArray)
 							        	}	
-							        	console.log(postData)
-							        /* 	mainJs.fAdd(postData); */
+							        	mainJs.fAdd(postData); 
 							        	document.getElementById("layuiadmin-form-admin").reset();
 							        	$("#leave").css("display","block")
 										$("#Break").css("display","none")
@@ -685,6 +679,13 @@
 					    	$("#qing").get(0).checked=true;
 					    	form.render('radio');
 					    	$("#layuiadmin-form-admin").setForm({content:data.content,applytime:data.writeTime,leavetime:JSON.parse(data.time).date,leaveduration:JSON.parse(data.time).time});
+					    	
+					    	var arr=JSON.parse(JSON.parse(JSON.stringify(data.time)))
+					    	var html="";
+					    	for (var i = 0; i < arr.length; i++) {
+					    		html+=arr[i].date+','+arr[i].time+'\n'
+							}
+					    	 $("#inputapplytime2").val(html)
 					    	}
 					    	if(data.tradeDays==true){
 					    		$("#Break").css("display","block")
@@ -719,7 +720,13 @@
 								$("#repair").css("display","none")
 					    		$("#jia").get(0).checked=true;
 					    		form.render('radio');
-					    		$("#layuiadmin-form-admin").setForm({applytime:data.writeTime,overtime:JSON.parse(data.time).date,overduration:JSON.parse(data.time).time});
+					    		$("#layuiadmin-form-admin").setForm({applytime:data.writeTime});
+					    		var arr=JSON.parse(JSON.parse(JSON.stringify(data.time)))
+						    	var html="";
+						    	for (var i = 0; i < arr.length; i++) {
+						    		html+=arr[i].date+','+arr[i].time+'\n'
+								}
+						    	 $("#inputapplytime4").val(html)
 					    	}
 					    	layer.open({
 						         type: 1
@@ -748,7 +755,7 @@
 						        		var leavetime='';
 						        		var leaveduration='';
 						        		var time='';
-						        		console.log()
+						        		var myArray = [];
 						        		if(data.field.variable==0){
 						        			if(data.field.holidayType==""){
 						        				return layer.msg("请假类型不能为空", {icon: 2});
@@ -756,18 +763,21 @@
 						        			if(data.field.content==""){
 						        				return layer.msg("请假原因不能为空", {icon: 2});
 						        			}
-						        			if(data.field.leavetime==""){
-						        				return layer.msg("请假日期不能为空", {icon: 2});
-						        			}
-						        			if(data.field.leaveduration==""){
-						        				return layer.msg("请假时长不能为空", {icon: 2});
-						        			}
 						        			variable='holiday';
 						        			holidayType=data.field.holidayType;
 						        			content=data.field.content;
 						        			leavetime=data.field.leavetime;
 						        			leaveduration=data.field.leaveduration;
-						        			time={date:leavetime,time:leaveduration};
+						        			var a=(data.field.inputapplytime2)
+							        		ss = a.split("\n")
+							        		for (var i = 0; i < ss.length; i++) {
+							        			if(ss[i] != ""){  
+												var b=ss[i]
+												cc = b.split(",")
+												time={"date":cc[0],"time":cc[1]};
+												myArray.push(time)
+							                    } 
+											}
 						        		}
 						        		if(data.field.variable==1){
 						        			if(data.field.breaktime==""){
@@ -780,6 +790,7 @@
 						        			breaktime=data.field.breaktime;
 						        			breakduration=data.field.breakduration;
 						        			time={date:breaktime,time:breakduration};
+						        			myArray.push(time)
 						        		}
 						        		if(data.field.variable==2){
 						        			if(data.field.repairtime==""){
@@ -789,6 +800,7 @@
 						        			repairtime=data.field.repairtime;
 						        			Sign=data.field.Sign
 						        			time={date:repairtime,time:Sign};
+						        			myArray.push(time)
 						        		}
 						        		if(data.field.variable==3){
 						        			if(data.field.overtime==""){
@@ -800,7 +812,16 @@
 						        			variable='applyOvertime'
 						        			overtime=data.field.overtime;
 						        			overduration=data.field.overduration;
-						        			time={date:overtime,time:overduration};
+						        			var a=(data.field.inputapplytime4)
+							        		ss = a.split("\n")
+							        		for (var i = 0; i < ss.length; i++) {
+							        			if(ss[i] != ""){  
+													var b=ss[i]
+													cc = b.split(",")
+													time={"date":cc[0],"time":cc[1]};
+													myArray.push(time)
+								                    } 
+											}
 						        		}
 						        	var postData={
 						        			id:id,
@@ -809,9 +830,9 @@
 						        			[variable]:'true',
 						        			holidayType:holidayType,
 						        			content:content,
-						        			time:JSON.stringify(time)
+						        			time:JSON.stringify(myArray)
 						        	}	
-						        	/* mainJs.fAdd(postData); */
+						        	 mainJs.fAdd(postData); 
 						        	
 									})
 
@@ -866,7 +887,7 @@
 									} else {
 										layer.msg(result.message, {
 											icon: 2,
-											time:3000
+											time:2000
 										});
 									}
 								},
