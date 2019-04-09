@@ -178,7 +178,6 @@ public class AttendanceAction {
 	public CommonResponse restAttendance(HttpServletRequest request, String address, Date startTime, Date endTime) {
 		CommonResponse cr = new CommonResponse();
 		attendanceService.restAttendance(address, startTime, endTime);
-//		attendanceService.allAttendance(address, startTime, endTime)
 		cr.setMessage("重置成功");
 		return cr;
 	}
