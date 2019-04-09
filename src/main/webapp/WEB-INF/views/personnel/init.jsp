@@ -801,7 +801,7 @@
 					form.on('submit(LAY-role-search)', function(data) {
 						var field = data.field;
 						$.ajax({
-							url: "${ctx}/fince/getExpenseAccount",
+							url: "${ctx}/personnel/findAttendanceInit",
 							type: "get",
 							data: field,
 							dataType: "json",
