@@ -137,9 +137,9 @@ public class ConsumptionAction {
 	 * @return cr
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/fince/findCustom", method = RequestMethod.GET)
+	@RequestMapping(value = "/fince/findCustomPage", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse findCustom( PageParameter page,Custom custom) {
+	public CommonResponse findCustomPage( PageParameter page,Custom custom) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(Custom.class, "id", "name","type")
