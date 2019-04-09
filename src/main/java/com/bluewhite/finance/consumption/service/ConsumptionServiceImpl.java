@@ -76,7 +76,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			}
 
 			if (!StringUtils.isEmpty(param.getExpenseDate())) {
-				// 按申请报销单日期
+				// 按申请日期
 				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
 					predicate.add(cb.between(root.get("expenseDate").as(Date.class), param.getOrderTimeBegin(),
 							param.getOrderTimeEnd()));
