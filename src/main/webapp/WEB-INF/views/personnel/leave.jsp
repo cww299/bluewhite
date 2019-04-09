@@ -564,6 +564,9 @@
 							        			if(data.field.content==""){
 							        				return layer.msg("请假原因不能为空", {icon: 2});
 							        			}
+							        			if(data.field.inputapplytime2==""){
+							        				return layer.msg("请假日期跟内容不能为空", {icon: 2});
+							        			}
 							        			variable='holiday';
 							        			holidayType=data.field.holidayType;
 							        			content=data.field.content;
@@ -609,6 +612,9 @@
 							        			}
 							        			if(data.field.overduration==""){
 							        				return layer.msg("加班时长不能为空", {icon: 2});
+							        			}
+							        			if(data.field.inputapplytime4==""){
+							        				return layer.msg("加班日期跟内容不能为空", {icon: 2});
 							        			}
 							        			variable='applyOvertime'
 							        			overtime=data.field.overtime;
@@ -689,7 +695,7 @@
 								$("#overtime").css("display","none")
 					    		$("#tiao").get(0).checked=true;
 					    		form.render('radio');
-					    		$("#layuiadmin-form-admin").setForm({applytime:data.writeTime,breaktime:JSON.parse(data.time).date,breakduration:JSON.parse(data.time).time});
+					    		$("#layuiadmin-form-admin").setForm({applytime:data.writeTime,breaktime:JSON.parse(data.time)[0].date,breakduration:JSON.parse(data.time)[0].time});
 					    	}
 					    	if(data.addSignIn==true){
 					    		$("#repair").css("display","block")
@@ -698,7 +704,7 @@
 								$("#overtime").css("display","none")
 					    		$("#bu").get(0).checked=true;
 					    		form.render('radio');
-					    		$("#layuiadmin-form-admin").setForm({applytime:data.writeTime,repairtime:JSON.parse(data.time).date});
+					    		$("#layuiadmin-form-admin").setForm({applytime:data.writeTime,repairtime:JSON.parse(data.time)[0].date});
 					    		if(JSON.parse(data.time).time==0){
 					    			$("#qianru").get(0).checked=true;
 						    		form.render('radio');
