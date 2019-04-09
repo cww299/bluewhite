@@ -194,6 +194,9 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 				}
 				holidayDetail = holidayDetail.equals("") ? (date + detail + time + "小时")
 						: (holidayDetail+"," + date + detail + time + "小时");
+				
+				
+				
 			}
 			//补签
 			if (applicationLeave.isAddSignIn()) {
@@ -206,7 +209,6 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 						Attendance attendance = new Attendance();
 						attendance.setTime(sdf1.parse(ad));
 						attendance.setUserId(applicationLeave.getUserId());
-						attendance.setNumber(applicationLeave.getUser().getNumber());
 						attendance.setInOutMode(2);
 						attendanceDao.save(attendance);
 					}
@@ -214,15 +216,12 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 			}
 			
 			if (applicationLeave.isApplyOvertime()) {
-				
 				if (attendanceTime == null) {
 					throw new ServiceException("该员工未初始化考勤详细，无法比对加班时长，请先初始化该员工考勤");
 				}
-				
 				if(attendanceTime.getCheckIn()==null || attendanceTime.getCheckOut()==null){
 					throw new ServiceException("该员工在"+date+"无签到记录，不能进行加班申请");
 				}
-				
 				if (workTimeEnd.before(attendanceTime.getCheckOut())) {
 					double actualOverTime = DatesUtil.getTimeHour(workTimeEnd, attendanceTime.getCheckOut());
 					if (actualOverTime < Double.valueOf(time)) {
@@ -239,7 +238,6 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 		}
 		applicationLeave.setHolidayDetail(holidayDetail);
 		return applicationLeave;
-
 	}
 
 	@Override

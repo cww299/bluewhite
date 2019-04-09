@@ -595,6 +595,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 									oneAtList.get(0).setFlag(2);
 									oneAtList.get(0).setHolidayType(al.getHolidayType());
 									oneAtList.get(0).setDutytime((time >= turnWorkTime) ? turnWorkTime : time);
+									oneAtList.get(0).setTurnWorkTime(NumUtils.sub(turnWorkTime,oneAtList.get(0).getDutytime()));
 									if (time >= turnWorkTime) {
 										time = NumUtils.sub(time, turnWorkTime);
 									}
@@ -610,10 +611,15 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 						// 调休且员工出勤时间等于调休到的那一天
 						if (al.isTradeDays() && at.getTime().compareTo(dateLeave) == 0) {
 							at.setTakeWork(time);
-							at.setTurnWorkTime(time);
-							at.setDutytime(NumUtils.sub(turnWorkTime, time));
-							at.setBelate(0);
-							at.setBelateTime(0.0);
+							if(at.getDutytime()!=0){
+								at.setTurnWorkTime(NumUtils.sum(at.getTurnWorkTime(),time));
+								at.setDutytime(NumUtils.sub(at.getDutytime(), time));
+							}
+							//当调休时间大于或等于迟到时间，
+							if((time*60)>=at.getBelateTime()){
+								at.setBelate(0);
+								at.setBelateTime(0.0);
+							}
 						}
 						
 					}

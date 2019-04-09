@@ -63,7 +63,7 @@ public class AttendanceTool {
 					// 满足于：员工可以加班后晚到岗，签入时间在（初始化上班开始时间后的加班分钟数+30分钟）之前，签出时间在工作结束时间之后 没有缺勤出现（没缺勤）
 					flag = sign 
 							&& attendanceTime.getCheckIn().before(DatesUtil.getDaySum(workTime, NumUtils.sum(minute, DUTYMIN))) 
-							&& attendanceTime.getCheckOut().after(workTimeEnd);
+							&& (attendanceTime.getCheckOut().after(workTimeEnd) || attendanceTime.getCheckOut().compareTo(workTimeEnd) == 0);
 					if(flag){
 						actualTurnWorkTime = turnWorkTime;
 						flag = false;
@@ -198,7 +198,7 @@ public class AttendanceTool {
 					//满足于：员工不可以加班后晚到岗，签入时间在默认上班开始时间之前，签出时间在工作结束时间之后 没有缺勤出现（没缺勤）
 					flag = !sign
 							&& attendanceTime.getCheckIn().before(workTime)
-							&& attendanceTime.getCheckOut().after(workTimeEnd);
+							&& (attendanceTime.getCheckOut().after(workTimeEnd) || attendanceTime.getCheckOut().compareTo(workTimeEnd) == 0 );
 					if(flag){
 						actualTurnWorkTime = turnWorkTime;
 						flag = false;
