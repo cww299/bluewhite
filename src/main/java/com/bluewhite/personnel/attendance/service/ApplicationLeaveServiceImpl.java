@@ -205,6 +205,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 						Attendance attendance = new Attendance();
 						attendance.setTime(sdf1.parse(ad));
 						attendance.setUserId(applicationLeave.getUserId());
+						attendance.setNumber(applicationLeave.getUser().getNumber());
 						attendance.setInOutMode(2);
 						attendanceDao.save(attendance);
 					}

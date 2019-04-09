@@ -22,14 +22,19 @@ import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.finance.consumption.entity.Consumption;
+import com.bluewhite.finance.consumption.entity.Custom;
 import com.bluewhite.finance.consumption.service.ConsumptionService;
+import com.bluewhite.finance.consumption.service.CustomService;
 import com.bluewhite.system.user.entity.User;
+import com.graphbuilder.math.func.CeilFunction;
 
 @Controller
 public class ConsumptionAction {
 
 	@Autowired
 	private ConsumptionService consumptionService;
+	@Autowired
+	private CustomService customService;
 
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -76,16 +81,11 @@ public class ConsumptionAction {
 	public CommonResponse addConsumption(HttpServletRequest request, Consumption consumption) {
 		CommonResponse cr = new CommonResponse();
 		if(consumption.getId() != null){
-			consumptionService.updateConsumption(consumption);
 			cr.setMessage("修改成功");
 		}else{
-			consumptionService.addConsumption(consumption);
 			cr.setMessage("添加成功");
 		}
-		cr.setData(ClearCascadeJSON
-				.get()
-				.addRetainTerm(Consumption.class,"id")
-				.format(consumption).toJSON());
+		consumptionService.addConsumption(consumption);
 		return cr;
 	}
 
@@ -127,6 +127,60 @@ public class ConsumptionAction {
 		}
 		return cr;
 	}
+	
+	
+	
+	/**
+	 * 分頁获取客户
+	 * @param request
+	 *            请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/fince/findCustom", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse findCustom( PageParameter page,Custom custom) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON.get()
+				.addRetainTerm(Custom.class, "id", "name","type")
+				.format(customService.findPages(custom, page)).toJSON());
+		return cr;
+	}
+	
+	/**
+	 * 根据类型获取客户
+	 * @param request
+	 *            请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/fince/findCustom", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse findCustom(HttpServletRequest request,Integer type) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON.get()
+				.addRetainTerm(Custom.class, "id", "name")
+				.format(customService.findCustom(type)).toJSON());
+		return cr;
+	}
+	
+	/**
+	 * 删除客户
+	 * @param request
+	 *            请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/fince/deleteCustom", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteCustom(HttpServletRequest request,String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = customService.delete(ids);
+		cr.setMessage("成功删除"+count+"条");
+		return cr;
+	}
+	
+	
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {

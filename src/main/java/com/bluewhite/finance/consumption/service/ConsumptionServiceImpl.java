@@ -30,7 +30,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 
 	@Autowired
 	private ConsumptionDao dao;
-	
+
 	@Autowired
 	private CustomDao customDao;
 
@@ -42,7 +42,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
-			
+
 			// 按消费类型过滤
 			if (param.getType() != null) {
 				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
@@ -69,11 +69,10 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 				predicate.add(cb.like(root.get("content").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getContent()) + "%"));
 			}
-			
+
 			// 按客户查找
 			if (!StringUtils.isEmpty(param.getCustomId())) {
-				predicate.add(
-						cb.equal(root.get("customerId").as(String.class), param.getCustomId()));
+				predicate.add(cb.equal(root.get("customerId").as(String.class), param.getCustomId()));
 			}
 
 			if (!StringUtils.isEmpty(param.getExpenseDate())) {
@@ -102,16 +101,49 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	}
 
 	@Override
+	@Transactional
 	public Consumption addConsumption(Consumption consumption) {
-		consumption.setFlag(0);
-		if(consumption.getCustomId()==null){
-			Custom custom = new Custom();
-			custom.setName(consumption.getCustomerName());
-			custom.setType(consumption.getType());
-			customDao.save(custom);
-			consumption.setCustomId(custom.getId());
+		if (consumption.getId() != null) {
+			Consumption ot = dao.findOne(consumption.getId());
+			if (ot.getFlag() == 1) {
+				throw new ServiceException("已放款，无法修改");
+			}
+			this.update(consumption, ot);
+		} else {
+			consumption.setFlag(0);
+			boolean flag = true;
+			switch (consumption.getType()) {
+			case 1:
+				flag = false;
+				break;
+			case 2:
+				break;
+			case 3:
+				flag = false;
+				break;
+			case 4:
+				break;
+			case 5:
+				break;
+			case 6:
+				break;
+			case 7:
+				break;
+			case 8:
+				break;
+			case 9:
+				flag = false;
+				break;
+			}
+			if (flag && consumption.getCustomId() == null) {
+				Custom custom = new Custom();
+				custom.setName(consumption.getCustomerName());
+				custom.setType(consumption.getType());
+				customDao.save(custom);
+				consumption.setCustomId(custom.getId());
+			}
+			dao.save(consumption);
 		}
-		dao.save(consumption);
 		return consumption;
 	}
 
@@ -129,7 +161,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 						dao.delete(id);
 						count++;
 					} else {
-						throw new ServiceException(consumption.getContent() + "的报销单已经审核放款无法删除");
+						throw new ServiceException(consumption.getContent() + "已经审核放款无法删除");
 					}
 
 				}
@@ -139,25 +171,8 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	}
 
 	@Override
-	@Transactional
-	public Consumption updateConsumption(Consumption consumption) {
-		Consumption oldConsumption = dao.findOne(consumption.getId());
-		if (oldConsumption != null) {
-			if (oldConsumption.getFlag() == 1) {
-				throw new ServiceException("该报销单已放款，无法修改");
-			}
-			BeanCopyUtils.copyNullProperties(oldConsumption, consumption);
-			consumption.setCreatedAt(oldConsumption.getCreatedAt());
-			dao.save(consumption);
-		} else {
-			throw new ServiceException("该报销单不存在，查证后修改");
-		}
-		return consumption;
-	}
-
-	@Override
 	public Consumption auditConsumption(Consumption consumption) {
-		if(consumption.getPaymentDate() == null && consumption.getPaymentMoney() == null){
+		if (consumption.getPaymentDate() == null && consumption.getPaymentMoney() == null) {
 			throw new ServiceException("返款金额或放款时间不能为空");
 		}
 		Consumption oldConsumption = dao.findOne(consumption.getId());
