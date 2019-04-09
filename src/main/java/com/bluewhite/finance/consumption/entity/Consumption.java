@@ -56,16 +56,16 @@ public class Consumption  extends BaseEntity<Long>{
 	/**
 	 * 消费对象Id
 	 */
-	@Column(name = "customer_id")
-    private Long customerId;
+	@Column(name = "custom_id")
+    private Long customId;
 	
 	
 	/**
 	 * 消费对象
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Customer customer;
+	@JoinColumn(name = "custom_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Custom custom;
 	
 	/**
 	 * 报销内容
@@ -182,23 +182,26 @@ public class Consumption  extends BaseEntity<Long>{
 	}
 
 
-	public Long getCustomerId() {
-		return customerId;
+	
+
+
+	public Long getCustomId() {
+		return customId;
 	}
 
 
-	public void setCustomerId(Long customerId) {
-		this.customerId = customerId;
+	public void setCustomId(Long customId) {
+		this.customId = customId;
 	}
 
 
-	public Customer getCustomer() {
-		return customer;
+	public Custom getCustom() {
+		return custom;
 	}
 
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
+	public void setCustom(Custom custom) {
+		this.custom = custom;
 	}
 
 

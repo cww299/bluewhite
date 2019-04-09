@@ -13,7 +13,7 @@ import com.bluewhite.base.BaseEntity;
  */
 @Entity
 @Table(name = "fin_customer" )
-public class Customer extends BaseEntity<Long>{
+public class Custom extends BaseEntity<Long>{
 	
 	/**
 	 * 消费对象类型

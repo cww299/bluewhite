@@ -258,9 +258,9 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 							}
 						}
 					}
-					count++;
 				}
 			}
+			count++;
 			dao.delete(applicationLeave);
 		}
 		return count;

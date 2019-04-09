@@ -21,9 +21,9 @@ import com.bluewhite.common.entity.PageResultStat;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.consumption.dao.ConsumptionDao;
-import com.bluewhite.finance.consumption.dao.CustomerDao;
+import com.bluewhite.finance.consumption.dao.CustomDao;
 import com.bluewhite.finance.consumption.entity.Consumption;
-import com.bluewhite.finance.consumption.entity.Customer;
+import com.bluewhite.finance.consumption.entity.Custom;
 
 @Service
 public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> implements ConsumptionService {
@@ -32,7 +32,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	private ConsumptionDao dao;
 	
 	@Autowired
-	private CustomerDao customerDao;
+	private CustomDao customDao;
 
 	@Override
 	public PageResult<Consumption> findPages(Consumption param, PageParameter page) {
@@ -71,9 +71,9 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			}
 			
 			// 按客户查找
-			if (!StringUtils.isEmpty(param.getCustomerId())) {
+			if (!StringUtils.isEmpty(param.getCustomId())) {
 				predicate.add(
-						cb.equal(root.get("customerId").as(String.class), param.getCustomerId()));
+						cb.equal(root.get("customerId").as(String.class), param.getCustomId()));
 			}
 
 			if (!StringUtils.isEmpty(param.getExpenseDate())) {
@@ -104,12 +104,12 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	@Override
 	public Consumption addConsumption(Consumption consumption) {
 		consumption.setFlag(0);
-		if(consumption.getCustomerId()==null){
-			Customer customer = new Customer();
-			customer.setName(consumption.getCustomerName());
-			customer.setType(consumption.getType());
-			customerDao.save(customer);
-			consumption.setCustomerId(customer.getId());
+		if(consumption.getCustomId()==null){
+			Custom custom = new Custom();
+			custom.setName(consumption.getCustomerName());
+			custom.setType(consumption.getType());
+			customDao.save(custom);
+			consumption.setCustomId(custom.getId());
 		}
 		dao.save(consumption);
 		return consumption;
