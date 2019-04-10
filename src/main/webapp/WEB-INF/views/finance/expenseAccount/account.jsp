@@ -45,7 +45,7 @@
 												<td>&nbsp&nbsp</td>
 												<td>
 													<select class="form-control" name="expenseDate" id="selectone">
-														<option value="2018-10-08 00:00:00">付款日期</option>
+														<option value="2018-10-08 00:00:00">申请日期</option>
 													</select>
 												</td>
 												<td>&nbsp&nbsp</td>
@@ -455,16 +455,8 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
-						$.ajax({
-							url: "${ctx}/fince/getConsumption",
-							type: "get",
-							data: field,
-							dataType: "json",
-							success: function(result) {
-								table.reload('tableData', {
-									where: field
-								});
-							}
+						table.reload('tableData', {
+							where: field
 						});
 					});
 					

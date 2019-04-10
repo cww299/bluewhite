@@ -44,10 +44,9 @@
 												</td>
 												<td>&nbsp&nbsp</td>
 												<td>
-													<select class="form-control"  id="selectone">
-														<option  value="">请选择</option>
-														<option name="expenseDate" value="2018-10-08 00:00:00">报销申请日期</option>
-														<option name="paymentDate" value="2018-10-08 00:00:00">付款日期</option>
+													<select class="form-control" name="selectone"  id="selectone">
+														<option name="expenseDate" value="2018-10-08 00:00:00">申请日期</option>
+														<option name="paymentDate" value="2018-11-08 00:00:00">付款日期</option>
 													</select>
 												</td>
 												<td>&nbsp&nbsp</td>
@@ -91,7 +90,7 @@
 		</section>
 		<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
-				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="audit">审核</span>
+				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="audit">审核</span>
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="noAudit">取消审核</span>
 			</div>
 		</script>
@@ -398,18 +397,19 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
-					 	/* table.reload('tableData', {
-							where: field
-						});  */
-						console.log(field)
-						 $.ajax({
-							url: "${ctx}/fince/getConsumption",
-							type: "get",
-							data:field,
-							success: function(result) {
-								
-							}
-						}); 
+						var a=data.field.selectone;
+						var data={
+								username:data.field.username,
+								content:data.field.content,
+								orderTimeBegin:data.field.orderTimeBegin,
+								orderTimeEnd:data.field.orderTimeEnd,
+								flag:data.field.flag,
+								[a]:"2018-11-08 00:00:00",
+						}
+					 	 table.reload('tableData', {
+							where: data
+						});  
+						 
 					});
 					
 					
