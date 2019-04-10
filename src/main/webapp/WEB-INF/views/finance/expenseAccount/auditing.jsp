@@ -35,7 +35,7 @@
 											<tr>
 												<td>报销人:</td>
 												<td>
-													<input type="text" name="Username" id="firstNames" class="form-control search-query name" />
+													<input type="text" name="username" id="firstNames" class="form-control search-query name" />
 												</td>
 												<td>&nbsp&nbsp</td>
 												<td>报销内容:</td>
@@ -44,8 +44,10 @@
 												</td>
 												<td>&nbsp&nbsp</td>
 												<td>
-													<select class="form-control" name="expenseDate" id="selectone">
-														<option value="2018-10-08 00:00:00">付款日期</option>
+													<select class="form-control"  id="selectone">
+														<option  value="">请选择</option>
+														<option name="expenseDate" value="2018-10-08 00:00:00">报销申请日期</option>
+														<option name="paymentDate" value="2018-10-08 00:00:00">付款日期</option>
 													</select>
 												</td>
 												<td>&nbsp&nbsp</td>
@@ -62,9 +64,8 @@
 												<td>是否核对:
 													<td>
 														<select class="form-control" name="flag">
-															<option value="">请选择</option>
-															<option value="0">未核对</option>
-															<option value="1">已核对</option>
+															<option value="0">未审核</option>
+															<option value="1">已审核</option>
 														</select>
 													</td>
 													<td>&nbsp&nbsp</td>
@@ -193,6 +194,9 @@
 						elem: '#tableData',
 						size: 'lg',
 						url: '${ctx}/fince/getConsumption' ,
+						where:{
+							flag:0
+						},
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
 							limitName: 'size' //每页数据量的参数名，默认：limit
@@ -354,57 +358,26 @@
 							case 'audit':
 								// 获得当前选中的
 								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
-								layer.confirm('您是否确定要删除选中的' + checkedIds.length + '条记录？', function() {
+								layer.confirm('您是否确定要审核选中的' + checkedIds.length + '条记录？', function() {
 									var postData = {
-										ids: checkedIds,
+										ids:checkedIds,
+										flag:1,
 									}
-									$.ajax({
-										url: "${ctx}/fince/deleteExpenseAccount",
-										data: postData,
-										traditional: true,
-										type: "GET",
-										beforeSend: function() {
-											index;
-										},
-										success: function(result) {
-											if(0 == result.code) {
-												var configTemp = tablePlug.getConfig("tableData");
-									            if (configTemp.page && configTemp.page.curr > 1) {
-									              table.reload("tableData", {
-									                page: {
-									                  curr: configTemp.page.curr - 1
-									                }
-									              })
-									            }else{
-									            	table.reload("tableData", {
-										                page: {
-										                }
-										              })
-									            };
-												layer.msg(result.message, {
-													icon: 1,
-													time:800
-												});
-											} else {
-												layer.msg(result.message, {
-													icon: 2,
-													time:800
-												});
-											}
-										},
-										error: function() {
-											layer.msg("操作失败！", {
-												icon: 2
-											});
-										}
-									});
-									layer.close(index);
+									mainJs.fAudit(postData);
 								});
 								break;
-								
-							case 'cleanTempData':	
-									table.cleanTemp(tableId);
-							break;
+							case 'noAudit':
+								// 获得当前选中的
+								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
+								layer.confirm('您是否确定取消审核选中的' + checkedIds.length + '条记录？', function() {
+									console.log(checkedIds)
+									var postData = {
+										ids:checkedIds,
+										flag:0,
+									}
+									mainJs.fAudit(postData);
+								});
+								break;
 						}
 					});
 
@@ -425,17 +398,18 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
-						$.ajax({
+					 	/* table.reload('tableData', {
+							where: field
+						});  */
+						console.log(field)
+						 $.ajax({
 							url: "${ctx}/fince/getConsumption",
 							type: "get",
-							data: field,
-							dataType: "json",
+							data:field,
 							success: function(result) {
-								table.reload('tableData', {
-									where: field
-								});
+								
 							}
-						});
+						}); 
 					});
 					
 					
@@ -480,10 +454,11 @@
 						layer.close(index);
 				    },
 					
-					fAudit : function(data){
+					fAudit : function(postData){
 				    	$.ajax({
 							url: "${ctx}/fince/auditConsumption",
-							data: data,
+							data: postData,
+							traditional: true,
 							type: "POST",
 							beforeSend: function() {
 								index;

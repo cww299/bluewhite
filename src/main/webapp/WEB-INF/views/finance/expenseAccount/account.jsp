@@ -389,7 +389,7 @@
 										ids: checkedIds,
 									}
 									$.ajax({
-										url: "${ctx}/fince/deleteExpenseAccount",
+										url: "${ctx}/fince/deleteConsumption",
 										data: postData,
 										traditional: true,
 										type: "GET",
