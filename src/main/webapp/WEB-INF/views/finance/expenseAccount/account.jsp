@@ -366,20 +366,35 @@
 								break;
 							case 'saveTempData':
 								var data = table.getTemp(tableId).data;
+								var flag=false;
+								var a=0;
 								data.forEach(function(postData,i){
-								/* 	if(postData.userId==""){
-							    		return layer.msg("请填写申请人", {
+								 	if(postData.userId==""){
+							    		return layer.msg("请填写报销申请人", {
 											icon: 2,
 										});
 							    	}
 							    	if(postData.money=="" || isNaN(postData.money)){
-							    		return layer.msg("请填写申请金额（且必须为数字）", {
+							    		return layer.msg("请填写报销申请金额（且必须为数字）", {
 											icon: 2,
 										});
-							    	} */
-									mainJs.fAdd(postData);
+							    	} 
+							    	if(postData.expenseDate==""){
+							    		return layer.msg("请填写报销申请日期", {
+											icon: 2,
+										});
+							    	}
+							    	a++;
+							    	if(a==data.length){
+							    		flag=true
+							    	}
 									})
+								if(flag==true){
+								data.forEach(function(postData,i){
+									 mainJs.fAdd(postData);
 									table.cleanTemp(tableId);
+									})	
+								}
 						          break;
 							case 'deleteSome':
 								// 获得当前选中的

@@ -247,6 +247,9 @@
 									if(d.budget==0){
 										return "";
 									}
+									if(d.budget==null){
+										return "";
+									}
 									if(d.budget==1){
 										return "预算";
 									}
@@ -270,6 +273,9 @@
 								edit: false,
 								templet:  function(d){
 									if(d.settleAccountsMode==0){
+										return "";
+									}
+									if(d.settleAccountsMode==null){
 										return "";
 									}
 									if(d.settleAccountsMode==1){
