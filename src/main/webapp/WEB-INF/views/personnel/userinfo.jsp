@@ -2156,6 +2156,7 @@
 							      url:"${ctx}/basedata/list",
 							      data:getdata,
 							      type:"GET",
+							      async:false,
 							      beforeSend:function(){
 							    	  indextwo = layer.load(1, {
 									  shade: [0.1,'#fff'] //0.1透明度的白色背景
@@ -2184,6 +2185,7 @@
 										      url:"${ctx}/basedata/children",
 										      data:data,
 										      type:"GET",
+										      async:false,
 										      beforeSend:function(){
 										    	  indextwo = layer.load(1, {
 												  shade: [0.1,'#fff'] //0.1透明度的白色背景
@@ -2216,6 +2218,7 @@
 							      url:"${ctx}/basedata/list",
 							      data:getdataa,
 							      type:"GET",
+							      async:false,
 							      beforeSend:function(){
 							    	  indextwo = layer.load(1, {
 									  shade: [0.1,'#fff'] //0.1透明度的白色背景
@@ -2236,6 +2239,7 @@
 							      url:"${ctx}/basedata/list",
 							      data:getdataa,
 							      type:"GET",
+							      async:false,
 							      beforeSend:function(){
 							    	  indextwo = layer.load(1, {
 									  shade: [0.1,'#fff'] //0.1透明度的白色背景

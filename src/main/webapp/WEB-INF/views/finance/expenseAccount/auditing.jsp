@@ -35,7 +35,7 @@
 											<tr>
 												<td>报销人:</td>
 												<td>
-													<input type="text" name="Username" id="firstNames" class="form-control search-query name" />
+													<input type="text" name="username" id="firstNames" class="form-control search-query name" />
 												</td>
 												<td>&nbsp&nbsp</td>
 												<td>报销内容:</td>
@@ -44,8 +44,10 @@
 												</td>
 												<td>&nbsp&nbsp</td>
 												<td>
-													<select class="form-control" name="expenseDate" id="selectone">
-														<option value="2018-10-08 00:00:00">付款日期</option>
+													<select class="form-control"  id="selectone">
+														<option  value="">请选择</option>
+														<option name="expenseDate" value="2018-10-08 00:00:00">报销申请日期</option>
+														<option name="paymentDate" value="2018-10-08 00:00:00">付款日期</option>
 													</select>
 												</td>
 												<td>&nbsp&nbsp</td>
@@ -62,9 +64,8 @@
 												<td>是否核对:
 													<td>
 														<select class="form-control" name="flag">
-															<option value="">请选择</option>
-															<option value="0">未核对</option>
-															<option value="1">已核对</option>
+															<option value="0">未审核</option>
+															<option value="1">已审核</option>
 														</select>
 													</td>
 													<td>&nbsp&nbsp</td>
@@ -90,10 +91,8 @@
 		</section>
 		<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
-				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增一行</span>
-				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
-				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
-				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
+				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="audit">审核</span>
+				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="noAudit">取消审核</span>
 			</div>
 		</script>
 
@@ -194,7 +193,10 @@
 					table.render({
 						elem: '#tableData',
 						size: 'lg',
-						url: '${ctx}/fince/getExpenseAccount' ,
+						url: '${ctx}/fince/getConsumption' ,
+						where:{
+							flag:0
+						},
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
 							limitName: 'size' //每页数据量的参数名，默认：limit
@@ -225,7 +227,6 @@
 								field: "content",
 								title: "报销内容",
 								align: 'center',
-								edit: 'text'
 							}, {
 								field: "userId",
 								title: "报销人",
@@ -282,10 +283,23 @@
 							}, {
 								field: "paymentDate",
 								title: "付款时间",
+								style:'background-color: #d8fe83',
 							}, {
 								field: "paymentMoney",
 								title: "付款金额",
 								edit: 'text',
+								style:'background-color: #d8fe83',
+							}, {
+								field: "flag",
+								title: "审核状态",
+								templet:  function(d){
+									if(d.flag==0){
+										return "未审核";
+									}
+									if(d.flag==1){
+										return "已审核";
+									}
+								}
 							}]
 						],
 						done: function() {
@@ -323,7 +337,7 @@
 											var id = table.cache[tableView.attr('lay-id')][index].id
 											var postData = {
 												id: id,
-												expenseDate: value,
+												paymentDate: value,
 											};
 											//调用新增修改
 											mainJs.fUpdate(postData);
@@ -341,106 +355,29 @@
 						var btnElem = $(this);
 						var tableId = config.id;
 						switch(obj.event) {
-							case 'addTempData':
-								allField = {id: '', content: '', budget: '',userId:'',money: '', expenseDate: '', 
-									withholdReason: '',withholdMoney:'',settleAccountsMode:''};
-								table.addTemp(tableId,allField,function(trElem) {
-									// 进入回调的时候this是当前的表格的config
-									var that = this;
-									// 初始化laydate
-									layui.each(trElem.find('td[data-field="paymentDate"]'), function(index, tdElem) {
-										tdElem.onclick = function(event) {
-											layui.stope(event)
-										};
-										laydate.render({
-											elem: tdElem.children[0],
-											format: 'yyyy-MM-dd HH:mm:ss',
-											done: function(value, date) {
-												var trElem = $(this.elem[0]).closest('tr');
-												var tableView = trElem.closest('.layui-table-view');
-												table.cache[that.id][trElem.data('index')]['expenseDate'] = value;
-												var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
-												var postData = {
-													id: id,
-													expenseDate:value,
-												}
-												mainJs.fUpdate(postData);
-											}
-										})
-									})
-								});
-								break;
-							case 'saveTempData':
-								var data = table.getTemp(tableId).data;
-								data.forEach(function(postData,i){
-								/* 	if(postData.userId==""){
-							    		return layer.msg("请填写申请人", {
-											icon: 2,
-										});
-							    	}
-							    	if(postData.money=="" || isNaN(postData.money)){
-							    		return layer.msg("请填写申请金额（且必须为数字）", {
-											icon: 2,
-										});
-							    	} */
-									mainJs.fAdd(postData);
-									})
-									table.cleanTemp(tableId);
-						          break;
-							case 'deleteSome':
+							case 'audit':
 								// 获得当前选中的
 								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
-								layer.confirm('您是否确定要删除选中的' + checkedIds.length + '条记录？', function() {
+								layer.confirm('您是否确定要审核选中的' + checkedIds.length + '条记录？', function() {
 									var postData = {
-										ids: checkedIds,
+										ids:checkedIds,
+										flag:1,
 									}
-									$.ajax({
-										url: "${ctx}/fince/deleteExpenseAccount",
-										data: postData,
-										traditional: true,
-										type: "GET",
-										beforeSend: function() {
-											index;
-										},
-										success: function(result) {
-											if(0 == result.code) {
-												var configTemp = tablePlug.getConfig("tableData");
-									            if (configTemp.page && configTemp.page.curr > 1) {
-									              table.reload("tableData", {
-									                page: {
-									                  curr: configTemp.page.curr - 1
-									                }
-									              })
-									            }else{
-									            	table.reload("tableData", {
-										                page: {
-										                }
-										              })
-									            };
-												layer.msg(result.message, {
-													icon: 1,
-													time:800
-												});
-											} else {
-												layer.msg(result.message, {
-													icon: 2,
-													time:800
-												});
-											}
-										},
-										error: function() {
-											layer.msg("操作失败！", {
-												icon: 2
-											});
-										}
-									});
-									layer.close(index);
+									mainJs.fAudit(postData);
 								});
 								break;
-								
-							case 'cleanTempData':	
-									table.cleanTemp(tableId);
-							break;
+							case 'noAudit':
+								// 获得当前选中的
+								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
+								layer.confirm('您是否确定取消审核选中的' + checkedIds.length + '条记录？', function() {
+									console.log(checkedIds)
+									var postData = {
+										ids:checkedIds,
+										flag:0,
+									}
+									mainJs.fAudit(postData);
+								});
+								break;
 						}
 					});
 
@@ -461,66 +398,67 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
-						$.ajax({
-							url: "${ctx}/fince/getExpenseAccount",
+					 	/* table.reload('tableData', {
+							where: field
+						});  */
+						console.log(field)
+						 $.ajax({
+							url: "${ctx}/fince/getConsumption",
 							type: "get",
-							data: field,
-							dataType: "json",
+							data:field,
 							success: function(result) {
-								table.reload('tableData', {
-									where: field
-								});
+								
 							}
-						});
+						}); 
 					});
 					
 					
 					//封装ajax主方法
 					var mainJs = {
-						//新增							
-					    fAdd : function(data){
-					    	$.ajax({
-								url: "${ctx}/fince/addExpenseAccount",
-								data: data,
-								type: "POST",
-								beforeSend: function() {
-									index;
-								},
-								success: function(result) {
-									if(0 == result.code) {
-									 	 table.reload("tableData", {
-							                page: {
-							                }
-							              })   
-										layer.msg(result.message, {
-											icon: 1,
-											time:800
-										});
-									
-									} else {
-										layer.msg(result.message, {
-											icon: 2,
-											time:800
-										});
-									}
-								},
-								error: function() {
-									layer.msg("操作失败！请重试", {
-										icon: 2
-									});
-								},
-							});
-							layer.close(index);
-					    },
-						
 					//修改							
 				    fUpdate : function(data){
 				    	if(data.id==""){
 				    		return;
 				    	}
 				    	$.ajax({
-							url: "${ctx}/fince/addExpenseAccount",
+							url: "${ctx}/fince/addConsumption",
 							data: data,
+							type: "POST",
+							beforeSend: function() {
+								index;
+							},
+							success: function(result) {
+								if(0 == result.code) {
+								 	 table.reload("tableData", {
+						                page: {
+						                }
+						              })   
+									layer.msg(result.message, {
+										icon: 1,
+										time:800
+									});
+								
+								} else {
+									layer.msg(result.message, {
+										icon: 2,
+										time:800
+									});
+								}
+							},
+							error: function() {
+								layer.msg("操作失败！请重试", {
+									icon: 2
+								});
+							},
+						});
+						layer.close(index);
+				    },
+					
+					fAudit : function(postData){
+				    	$.ajax({
+							url: "${ctx}/fince/auditConsumption",
+							data: postData,
+							traditional: true,
 							type: "POST",
 							beforeSend: function() {
 								index;

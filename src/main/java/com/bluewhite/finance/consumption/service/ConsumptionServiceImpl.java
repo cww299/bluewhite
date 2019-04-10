@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
-import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -42,7 +41,6 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
-
 			// 按消费类型过滤
 			if (param.getType() != null) {
 				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
@@ -57,7 +55,6 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			if (param.getBudget() != null) {
 				predicate.add(cb.equal(root.get("budget").as(Integer.class), param.getBudget()));
 			}
-
 			// 按报销人姓名查找
 			if (!StringUtils.isEmpty(param.getUsername())) {
 				predicate.add(
