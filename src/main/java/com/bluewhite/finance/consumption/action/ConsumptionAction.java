@@ -102,7 +102,7 @@ public class ConsumptionAction {
 	public CommonResponse auditConsumption(HttpServletRequest request, String ids, Integer flag) {
 		CommonResponse cr = new CommonResponse();
 		int count = consumptionService.auditConsumption(ids,flag);
-		cr.setMessage("审核成功"+count+"条");
+		cr.setMessage("操作成功"+count+"条");
 		return cr;
 	}
 
@@ -122,7 +122,7 @@ public class ConsumptionAction {
 			cr.setMessage("成功删除" + count + "条数据");
 		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("报销单不能为空");
+			cr.setMessage("不能为空");
 		}
 		return cr;
 	}

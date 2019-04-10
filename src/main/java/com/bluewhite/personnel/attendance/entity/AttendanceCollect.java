@@ -1,11 +1,14 @@
 package com.bluewhite.personnel.attendance.entity;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,8 +17,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.common.utils.DatesUtil;
@@ -118,13 +119,13 @@ public class AttendanceCollect extends BaseEntity<Long>{
 	 * 请假事项详情
 	 */
 	@Column(name = "leave_details")
-	private String leaveDetails;
+	private String leaveDetails="";
 	
 	/**
 	 * 迟到事项详情
 	 */
 	@Column(name = "belate_details")
-	private String belateDetails;
+	private String belateDetails="";
 	
 	/**
 	 * 备注
@@ -169,6 +170,12 @@ public class AttendanceCollect extends BaseEntity<Long>{
     	
     }
 	
+	private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Map<Object,Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+    }
+
+    
 	//有参构造，直接传入AttendanceTime的list，计算出汇总后的数据
     public AttendanceCollect (List<AttendanceTime> list){
     	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -179,27 +186,6 @@ public class AttendanceCollect extends BaseEntity<Long>{
     	dutyWork = list.stream().filter(AttendanceTime->AttendanceTime.getDutytime()!=null).mapToDouble(AttendanceTime::getDutytime).sum();
     	leaveTime = list.stream().filter(AttendanceTime->AttendanceTime.getLeaveTime()!=null).mapToDouble(AttendanceTime::getLeaveTime).sum();
     	takeWork =  list.stream().filter(AttendanceTime->AttendanceTime.getTakeWork()!=null).mapToDouble(AttendanceTime::getTakeWork).sum();
-    	allWork = NumUtils.sum(turnWork, overtime);
-    	String bd ="";
-    	int count = 0;
-    	for (int i = 0; i < list.size(); i++) {
-    		if(list.get(i).getBelate() == 1){
-				bd =  StringUtils.isEmpty(bd) ? formatter.format(list.get(i).getTime())+"迟到"+ list.get(i).getBelateTime().intValue()+"分钟" :
-					bd +","+formatter.format(list.get(i).getTime())+"迟到"+ list.get(i).getBelateTime().intValue()+"分钟";
-				count++;
-			}
-    		if(i != 0){
-    			String hd = list.get(i-1).getHolidayDetail();
-    			if(!StringUtils.isEmpty(list.get(i).getHolidayDetail()) && list.get(i).getHolidayDetail().equals(hd)){
-    				hd = list.get(i).getHolidayDetail();
-    			}else if( !StringUtils.isEmpty(list.get(i).getHolidayDetail())){
-    				leaveDetails = leaveDetails+","+list.get(i).getHolidayDetail();
-    			}
-    		}else{
-    			leaveDetails = list.get(i).getHolidayDetail();
-    		}
-		}
-    	belateDetails = "共迟到"+count+"次："+bd;
     	//工作日AttendanceTime集合
 		List<AttendanceTime> manDayList = null;
 		//周末AttendanceTime集合
@@ -218,6 +204,18 @@ public class AttendanceCollect extends BaseEntity<Long>{
     	manDayOvertime =  manDayList.stream().filter(AttendanceTime->AttendanceTime.getOvertime()!=null).mapToDouble(AttendanceTime::getOvertime).sum();
     	weekendTurnWork = weekendTurnWorkList.stream().filter(AttendanceTime->AttendanceTime.getTurnWorkTime()!=null).mapToDouble(AttendanceTime::getTurnWorkTime).sum();
     	overtime = overtime-takeWork;
+    	
+    	List<AttendanceTime> belateAttendanceTime = list.stream().filter(AttendanceTime->AttendanceTime.getBelate()==1).collect(Collectors.toList());
+    	belateAttendanceTime.forEach(at->{
+    					belateDetails += formatter.format(at.getTime())+"迟到"+ at.getBelateTime().intValue()+"分钟,";
+    				}
+    			);
+    	list.stream().filter(AttendanceTime->AttendanceTime.getHolidayDetail()!=null).collect(Collectors.toList())
+    	.stream().filter(distinctByKey(b -> b.getHolidayDetail())).forEach(at->{
+    					leaveDetails += at.getHolidayDetail()+",";
+    	});
+    	belateDetails = "共迟到"+belateAttendanceTime.size()+"次："+belateDetails;
+    	allWork = NumUtils.sum(turnWork, overtime);
     }
 	
     

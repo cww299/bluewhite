@@ -219,10 +219,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 				if (attendanceTime == null) {
 					throw new ServiceException("该员工未初始化考勤详细，无法比对加班时长，请先初始化该员工考勤");
 				}
-				if(attendanceTime.getCheckIn()==null || attendanceTime.getCheckOut()==null){
-					throw new ServiceException("该员工在"+date+"无签到记录，不能进行加班申请");
-				}
-				if (workTimeEnd.before(attendanceTime.getCheckOut())) {
+				if (attendanceTime.getCheckOut()!=null && workTimeEnd.before(attendanceTime.getCheckOut())) {
 					double actualOverTime = DatesUtil.getTimeHour(workTimeEnd, attendanceTime.getCheckOut());
 					if (actualOverTime < Double.valueOf(time)) {
 						throw new ServiceException("根据签到时间当日该员工加班时间为" + actualOverTime + "小时，加班申请时间有误请重新核对");
