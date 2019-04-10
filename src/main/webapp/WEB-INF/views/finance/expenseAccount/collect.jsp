@@ -44,10 +44,9 @@
 												</td>
 												<td>&nbsp&nbsp</td>
 												<td>
-													<select class="form-control"  id="selectone">
-														<option  value="">请选择</option>
-														<option name="expenseDate" value="2018-10-08 00:00:00">报销申请日期</option>
-														<option name="paymentDate" value="2018-10-08 00:00:00">付款日期</option>
+													<select class="form-control" name="selectone" id="selectone">
+														<option  value="expenseDate">申请日期</option>
+														<option  value="paymentDate">付款日期</option>
 													</select>
 												</td>
 												<td>&nbsp&nbsp</td>
@@ -63,7 +62,7 @@
 												<td>&nbsp&nbsp</td>
 												<td>需要支付总额:
 													<td>
-														<input type="text" id="allPrice" class="form-control search-query" />
+														<input type="text" id="allPrice" disabled="disabled" class="form-control search-query" />
 													</td>
 													<td>&nbsp&nbsp</td>
 													<td>
@@ -207,6 +206,9 @@
 									if(d.budget==0){
 										return "";
 									}
+									if(d.budget==null){
+										return "";
+									}
 									if(d.budget==1){
 										return "预算";
 									}
@@ -232,6 +234,9 @@
 									if(d.settleAccountsMode==0){
 										return "";
 									}
+									if(d.settleAccountsMode==null){
+										return "";
+									}
 									if(d.settleAccountsMode==1){
 										return "现金";
 									}
@@ -239,12 +244,6 @@
 										return "月结";
 									}
 								}
-							}, {
-								field: "paymentDate",
-								title: "付款时间",
-							}, {
-								field: "paymentMoney",
-								title: "付款金额",
 							}, {
 								field: "flag",
 								title: "审核状态",
@@ -297,18 +296,18 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
-						console.log(field)
-						$.ajax({
-							url: "${ctx}/fince/getConsumption",
-							type: "get",
-							data: field,
-							dataType: "json",
-							success: function(result) {
-								table.reload('tableData', {
-									where: field
-								});
+						var a=data.field.selectone
+							var data={
+									username:data.field.username,
+									content:data.field.content,
+									orderTimeBegin:data.field.orderTimeBegin,
+									orderTimeEnd:data.field.orderTimeEnd,
+									flag:data.field.flag,
+									[a]:"2018-11-08 00:00:00",
 							}
-						});
+						 	 table.reload('tableData', {
+								where: data
+							}); 
 					});
 					
 
