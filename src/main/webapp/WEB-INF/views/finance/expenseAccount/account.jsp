@@ -194,7 +194,7 @@
 					table.render({
 						elem: '#tableData',
 						size: 'lg',
-						url: '${ctx}/fince/getExpenseAccount' ,
+						url: '${ctx}/fince/getConsumption' ,
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
 							limitName: 'size' //每页数据量的参数名，默认：limit
@@ -337,7 +337,7 @@
 						switch(obj.event) {
 							case 'addTempData':
 								allField = {id: '', content: '', budget: '',userId:'',money: '', expenseDate: '', 
-									withholdReason: '',withholdMoney:'',settleAccountsMode:''};
+									withholdReason: '',withholdMoney:'',settleAccountsMode:'',type:'1'};
 								table.addTemp(tableId,allField,function(trElem) {
 									// 进入回调的时候this是当前的表格的config
 									var that = this;
@@ -456,7 +456,7 @@
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
 						$.ajax({
-							url: "${ctx}/fince/getExpenseAccount",
+							url: "${ctx}/fince/getConsumption",
 							type: "get",
 							data: field,
 							dataType: "json",
@@ -474,7 +474,7 @@
 						//新增							
 					    fAdd : function(data){
 					    	$.ajax({
-								url: "${ctx}/fince/addExpenseAccount",
+								url: "${ctx}/fince/addConsumption",
 								data: data,
 								type: "POST",
 								beforeSend: function() {
@@ -513,7 +513,7 @@
 				    		return;
 				    	}
 				    	$.ajax({
-							url: "${ctx}/fince/addExpenseAccount",
+							url: "${ctx}/fince/addConsumption",
 							data: data,
 							type: "POST",
 							beforeSend: function() {
