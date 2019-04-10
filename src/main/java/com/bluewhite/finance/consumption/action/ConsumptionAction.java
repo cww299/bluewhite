@@ -99,11 +99,10 @@ public class ConsumptionAction {
 	 */
 	@RequestMapping(value = "/fince/auditConsumption", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse auditConsumption(HttpServletRequest request, Consumption consumption) {
+	public CommonResponse auditConsumption(HttpServletRequest request, String ids, Integer flag) {
 		CommonResponse cr = new CommonResponse();
-		consumptionService.auditConsumption(consumption);
-		cr.setData(clearCascadeJSON.format(consumption).toJSON());
-		cr.setMessage("审核成功");
+		int count = consumptionService.auditConsumption(ids,flag);
+		cr.setMessage("审核成功"+count+"条");
 		return cr;
 	}
 

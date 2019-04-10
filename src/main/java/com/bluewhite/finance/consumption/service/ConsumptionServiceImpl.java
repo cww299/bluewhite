@@ -171,20 +171,24 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	}
 
 	@Override
-	public Consumption auditConsumption(Consumption consumption) {
-		if (consumption.getPaymentDate() == null && consumption.getPaymentMoney() == null) {
-			throw new ServiceException("返款金额或放款时间不能为空");
+	public int auditConsumption(String ids, Integer flag) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					Consumption consumption = dao.findOne(id);
+					if (consumption.getPaymentDate() == null && consumption.getPaymentMoney() == null) {
+						throw new ServiceException("返款金额或放款时间不能为空");
+					}
+					consumption.setFlag(flag);
+					dao.save(consumption);
+					count++;
+				}
+			}
 		}
-		Consumption oldConsumption = dao.findOne(consumption.getId());
-		if (oldConsumption != null) {
-			oldConsumption.setFlag(consumption.getFlag());
-			oldConsumption.setPaymentMoney(consumption.getPaymentMoney());
-			oldConsumption.setPaymentDate(consumption.getPaymentDate());
-			dao.save(oldConsumption);
-		} else {
-			throw new ServiceException("该报销单不存在，查证后修改");
-		}
-		return consumption;
+		return count;
 	}
 
 }
