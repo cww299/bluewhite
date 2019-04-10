@@ -40,6 +40,6 @@ public interface ConsumptionService extends BaseCRUDService<Consumption, Long> {
 	 * @param expenseAccount
 	 * @return
 	 */
-	public Consumption auditConsumption(Consumption consumption);
+	public int auditConsumption( String ids, Integer flag);
 
 }
