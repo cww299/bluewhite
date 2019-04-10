@@ -91,7 +91,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
 			// 开始汇总每个人的考勤
 			for (User us : userList) {
-				List<Attendance> attList = attendanceDao.findByUserIdAndTimeBetween(us.getId(), beginTimes, endTimes);
+				List<Attendance> attList = attendanceDao.findByUserIdAndTimeBetween(us.getId(), beginTimes, endTimes)
+						.stream().sorted(Comparator.comparing(Attendance::getTime)).collect(Collectors.toList());
 				// 获取每个人当天的考勤记录
 				AttendanceTime attendanceTime = new AttendanceTime();
 				// 考勤汇总当天的日期
@@ -187,7 +188,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				// 获取休息的日期，不计算出勤
 				// 当循环日期不等于休息日，进行考勤的记录,休息日无签到记录，无出勤数据
 				String[] restDayArr = null;
-				if (attendanceInit.getRestDay() != null) {
+				if (!StringUtils.isEmpty(attendanceInit.getRestDay())) {
 					restDayArr = attendanceInit.getRestDay().split(",");
 					if (restDayArr.length > 0) {
 						for (int j = 0; j < restDayArr.length; j++) {

@@ -54,28 +54,10 @@ public class Task {
 		Date startTime = DatesUtil.getfristDayOftime(time);
 		Date endTime = DatesUtil.getLastDayOftime(time);
 		attendanceService.allAttendance("192.168.1.204", startTime, endTime);
-	}
-
-	@Scheduled(cron = "0 20 06 * * ?") // 清晨6点20触发
-	public void attendanceTask1() {
-		// 获取昨天的日期
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DATE, -1);
-		Date time = cal.getTime();
-		Date startTime = DatesUtil.getfristDayOftime(time);
-		Date endTime = DatesUtil.getLastDayOftime(time);
 		attendanceService.allAttendance("192.168.1.205", startTime, endTime);
-	}
-
-	@Scheduled(cron = "0 40 06 * * ?") // 清晨6点40触发
-	public void attendanceTask2() {
-		// 获取昨天的日期
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DATE, -1);
-		Date time = cal.getTime();
-		Date startTime = DatesUtil.getfristDayOftime(time);
-		Date endTime = DatesUtil.getLastDayOftime(time);
 		attendanceService.allAttendance("192.168.1.250", startTime, endTime);
 	}
+
+
 
 }
