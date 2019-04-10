@@ -111,6 +111,9 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			boolean flag = true;
 			switch (consumption.getType()) {
 			case 1:
+				if(consumption.getUserId()==null){
+					throw new ServiceException("申请人不能为空");
+				}
 				flag = false;
 				break;
 			case 2:
@@ -132,6 +135,13 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 				flag = false;
 				break;
 			}
+			if(consumption.getExpenseDate()==null){
+				throw new ServiceException("申请时间不能为空");
+			}
+			if(consumption.getMoney()==null){
+				throw new ServiceException("申请金额不能为空");
+			}
+			
 			if (flag && consumption.getCustomId() == null) {
 				Custom custom = new Custom();
 				custom.setName(consumption.getCustomerName());
