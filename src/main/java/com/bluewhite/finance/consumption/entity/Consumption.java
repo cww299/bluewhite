@@ -64,7 +64,7 @@ public class Consumption extends BaseEntity<Long> {
 	private Custom custom;
 
 	/**
-	 * 报销内容
+	 * 消费内容
 	 */
 	@Column(name = "content")
 	private String content;

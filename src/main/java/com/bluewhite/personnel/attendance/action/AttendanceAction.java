@@ -64,7 +64,7 @@ public class AttendanceAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
 				.addRetainTerm(Attendance.class, "number", "user", "time", "inOutMode", "verifyMode")
-				.addRetainTerm(User.class, "id", "userName");
+				.addRetainTerm(User.class, "id", "userName","number");
 	}
 
 	/***** 考勤机设置 */
@@ -167,7 +167,7 @@ public class AttendanceAction {
 	}
 
 	/**
-	 * 按日期重置考勤机中全部考勤记录
+	 * 按条件重置考勤机中考勤记录
 	 * 
 	 * @param request
 	 *            请求

@@ -19,7 +19,7 @@ import com.bluewhite.base.BaseEntity;
 public class Temporarily extends BaseEntity<Long>{
 	
 	/**
-	 *借调人员id
+	 * 借调人员id
 	 */
 	@Column(name = "user_id")
 	private Long userId;
@@ -44,7 +44,7 @@ public class Temporarily extends BaseEntity<Long>{
 	
 	
 	/**
-	 * 分组所属部门类型 (1=一楼质检，2=一楼包装)
+	 * 分组所属部门类型 (1=一楼质检，2=一楼包装3.二楼针工)
 	 */
 	@Column(name = "type")
 	private Integer type;

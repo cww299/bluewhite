@@ -121,7 +121,6 @@ public class UserAction {
 				userContractDao.save(userContract);
 				user.setUserContract(userContract);
 				cr.setMessage("新增成功");
-				cr.setData(clearCascadeJSON.format(userService.save(user)).toJSON());
 				AttendanceInit attendanceInit = attendanceInitService.findByUserId(user.getId());
 				if(attendanceInit==null){
 					cr.setCode(2);
@@ -145,7 +144,7 @@ public class UserAction {
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ResponseBody
 	@SysLogAspectAnnotation(description = "员工修改操作", module = "修改管理", operateType = "修改", logType = SysLog.ADMIN_LOG_TYPE)
-	public CommonResponse changeUser(HttpServletRequest request, User user) {
+	public CommonResponse updateUser(HttpServletRequest request, User user) {
 		CommonResponse cr = new CommonResponse();
 		if(user.getId() == null){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -172,6 +171,28 @@ public class UserAction {
 			cr.setCode(2);
 		}
 		cr.setData(clearCascadeJSON.format(userService.save(oldUser)).toJSON());
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * 修改特急人员信息
+	 * @param request 请求
+	 * @param user 用户实体类
+	 * @return cr
+	 */	
+	@RequestMapping(value = "/updateForeigns", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateForeigns(HttpServletRequest request, User user) {
+		CommonResponse cr = new CommonResponse();
+		if(user.getId() == null){
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("id为空");
+			return cr;
+		}
+		User oldUser = userService.findOne(user.getId());
+		userService.update(user,oldUser);
 		cr.setMessage("修改成功");
 		return cr;
 	}

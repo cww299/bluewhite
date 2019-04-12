@@ -200,19 +200,6 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					}
 				}
 				
-				if (rout) {
-					attendanceTime.setFlag(3);
-					attendanceTimeList.add(attendanceTime);
-					continue;
-				}
-
-				// 无到岗要求和无打卡要求
-				if (attendanceInit.getWorkType() == 1 || attendanceInit.getWorkType() == 2) {
-					attendanceTime.setFlag(0);
-					attendanceTime.setTurnWorkTime(turnWorkTime);
-					attendanceTimeList.add(attendanceTime);
-					continue;
-				}
 
 				boolean sign = false;
 				Double minute = 0.0;
@@ -263,47 +250,77 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					// :1.当签到签出时间同时在休息时间之前2.当签到签出时间都在休息时间之后3.当签到签出时间（任一or全部）在休息时间之间（当出现这种情况
 					// , 均不用计算休息时间）
 					// 在上午同时签到签出
-					if (attendanceTime.getCheckIn().before(restBeginTime)
-							&& attendanceTime.getCheckOut().before(restBeginTime)) {
+					if (attendanceTime.getCheckIn().before(restBeginTime) && attendanceTime.getCheckOut().before(restBeginTime)) {
 						attendanceTime.setWorkTime(
 								DatesUtil.getTimeHour(attendanceTime.getCheckIn(), attendanceTime.getCheckOut()));
 					} else
 					// 在下午同时签到签出
-					if (attendanceTime.getCheckIn().after(restEndTime)
-							&& attendanceTime.getCheckOut().after(restEndTime)) {
+					if (attendanceTime.getCheckIn().after(restEndTime) && attendanceTime.getCheckOut().after(restEndTime)) {
 						attendanceTime.setWorkTime(
 								DatesUtil.getTimeHour(attendanceTime.getCheckIn(), attendanceTime.getCheckOut()));
 					} else
 					// 当签出时间在休息时间之间 （从签出时间到休息时间开始）
-					if (attendanceTime.getCheckOut().after(restBeginTime)
-							&& attendanceTime.getCheckOut().before(restEndTime)) {
+					if (attendanceTime.getCheckOut().after(restBeginTime) && attendanceTime.getCheckOut().before(restEndTime)) {
 						attendanceTime.setWorkTime(DatesUtil.getTimeHour(attendanceTime.getCheckIn(), restBeginTime));
 					} else
 					// 当签入时间在休息时间之间 （从休息时间结束到签出时间）
-					if (attendanceTime.getCheckIn().after(restBeginTime)
-							&& attendanceTime.getCheckOut().before(restEndTime)) {
+					if (attendanceTime.getCheckIn().after(restBeginTime) && attendanceTime.getCheckOut().before(restEndTime)) {
 						attendanceTime.setWorkTime(DatesUtil.getTimeHour(restEndTime, attendanceTime.getCheckOut()));
 					} else {
 						// 实际工作时长
-						if (attendanceInit.getRestTimeWork() != 2) {
+						if(attendanceTime.getCheckOut().after(workTimeEnd)){
+							attendanceTime.setWorkTime(NumUtils.sub(
+									DatesUtil.getTimeHour(attendanceTime.getCheckIn(), workTimeEnd),
+									restTime));
+						}else{
 							attendanceTime.setWorkTime(NumUtils.sub(
 									DatesUtil.getTimeHour(attendanceTime.getCheckIn(), attendanceTime.getCheckOut()),
 									restTime));
-						} else {
-							attendanceTime.setWorkTime(
-									DatesUtil.getTimeHour(attendanceTime.getCheckIn(), attendanceTime.getCheckOut()));
 						}
+					
+					}
+					
+					if (rout) {
+						attendanceTime.setFlag(3);
+						if(attendanceInit.getOverTimeType()==2 && attendanceTime.getCheckIn()!=null && attendanceTime.getCheckOut()!=null){
+							if (attendanceInit.getRestTimeWork() == 3) {
+								attendanceTime.setOvertime(
+										DatesUtil.getTimeHour(workTime, attendanceTime.getCheckOut())
+										);
+							}else{
+								attendanceTime.setOvertime(NumUtils.sub(
+										DatesUtil.getTimeHour(workTime, attendanceTime.getCheckOut()),
+										restTime));
+							}
+						}
+						attendanceTimeList.add(attendanceTime);
+						continue;
 					}
 
 					// 进行出勤，加班，缺勤，迟到，早退的计算
-					AttendanceTool.attendanceIntTool(sign, workTime, workTimeEnd, minute, turnWorkTime, attendanceTime,
+					AttendanceTool.attendanceIntTool(sign, workTime, workTimeEnd, restBeginTime,restEndTime,minute, turnWorkTime, attendanceTime,
 							attendanceInit, us);
 				}
 				// 当一天的考勤记录条数小于2时。为异常的考勤
 				if (attList.size() < 2) {
+					if (rout) {
+						attendanceTime.setFlag(3);
+						attendanceTimeList.add(attendanceTime);
+						continue;
+					}
+					// 无到岗要求和无打卡要求
+					if (attendanceInit.getWorkType() == 1 || attendanceInit.getWorkType() == 2) {
+						attendanceTime.setFlag(0);
+						attendanceTime.setTurnWorkTime(turnWorkTime);
+						attendanceTimeList.add(attendanceTime);
+						continue;
+					}
+					
 					// 缺勤时间（公司未规定放假日期，所以当员工没有打卡记录时，统一算缺勤)
 					attendanceTime.setDutytime(NumUtils.sub(turnWorkTime, 0));
 					attendanceTime.setFlag(1);
+					
+					
 				}
 				attendanceTimeList.add(attendanceTime);
 
