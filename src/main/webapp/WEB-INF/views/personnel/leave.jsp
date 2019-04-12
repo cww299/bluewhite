@@ -184,7 +184,7 @@
 		<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
 				<span class="layui-btn layui-btn-sm" lay-event="notice">新增</span>
-				<span class="layui-btn layui-btn-sm" lay-event="deleteSome">批量删除</span>
+				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
 			</div>
 		</script>
 <script type="text/html" id="barDemo">
@@ -607,12 +607,7 @@
 							        			myArray.push(time)
 							        		}
 							        		if(data.field.variable==3){
-							        			if(data.field.overtime==""){
-							        				return layer.msg("加班日期不能为空", {icon: 2});
-							        			}
-							        			if(data.field.overduration==""){
-							        				return layer.msg("加班时长不能为空", {icon: 2});
-							        			}
+							        			
 							        			if(data.field.inputapplytime4==""){
 							        				return layer.msg("加班日期跟内容不能为空", {icon: 2});
 							        			}
@@ -764,6 +759,9 @@
 						        			if(data.field.content==""){
 						        				return layer.msg("请假原因不能为空", {icon: 2});
 						        			}
+						        			if(data.field.inputapplytime2==""){
+						        				return layer.msg("请假日期跟内容不能为空", {icon: 2});
+						        			}
 						        			variable='holiday';
 						        			holidayType=data.field.holidayType;
 						        			content=data.field.content;
@@ -804,11 +802,8 @@
 						        			myArray.push(time)
 						        		}
 						        		if(data.field.variable==3){
-						        			if(data.field.overtime==""){
-						        				return layer.msg("加班日期不能为空", {icon: 2});
-						        			}
-						        			if(data.field.overduration==""){
-						        				return layer.msg("加班时长不能为空", {icon: 2});
+						        			if(data.field.inputapplytime4==""){
+						        				return layer.msg("加班日期跟内容不能为空", {icon: 2});
 						        			}
 						        			variable='applyOvertime'
 						        			overtime=data.field.overtime;
