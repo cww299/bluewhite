@@ -268,7 +268,7 @@
 								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
 								layer.confirm('您是否确定要删除选中的' + checkedIds.length + '条记录？', function() {
 									var postData = {
-										ids: checkedIds,
+										id: checkedIds,
 									}
 									$.ajax({
 										url: "${ctx}/system/user/deleteUser",
