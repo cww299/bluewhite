@@ -199,7 +199,7 @@
 		<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
 				<span class="layui-btn layui-btn-sm" lay-event="notice">新增</span>
-				<span class="layui-btn layui-btn-sm" lay-event="deleteSome">批量删除</span>
+				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
 				<span class="layui-btn layui-btn-sm" lay-event="set">设定休息时间</span>
 			</div>
 		</script>
