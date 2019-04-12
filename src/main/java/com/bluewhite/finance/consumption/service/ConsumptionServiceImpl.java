@@ -100,12 +100,6 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	@Override
 	@Transactional
 	public Consumption addConsumption(Consumption consumption) {
-		if(consumption.getExpenseDate()==null){
-			throw new ServiceException("申请时间不能为空");
-		}
-		if(consumption.getMoney()==null){
-			throw new ServiceException("申请金额不能为空");
-		}
 		if (consumption.getId() != null) {
 			Consumption ot = dao.findOne(consumption.getId());
 			if (ot.getFlag() == 1) {
@@ -113,6 +107,12 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			}
 			this.update(consumption, ot);
 		} else {
+			if(consumption.getExpenseDate()==null){
+				throw new ServiceException("申请时间不能为空");
+			}
+			if(consumption.getMoney()==null){
+				throw new ServiceException("申请金额不能为空");
+			}
 			consumption.setFlag(0);
 			boolean flag = true;
 			switch (consumption.getType()) {

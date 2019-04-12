@@ -40,7 +40,6 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 	
 	@Override
 	public PageResult<PayB> findPages(PayB param, PageParameter page) {
-		System.out.println(System.currentTimeMillis());
 			  Page<PayB> pages = dao.findAll((root,query,cb) -> {
 		        	List<Predicate> predicate = new ArrayList<>();
 		        	//按id过滤
@@ -89,7 +88,6 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 					query.where(predicate.toArray(pre));
 		        	return null;
 		        }, SalesUtils.getQueryNoPageParameter());
-			  System.out.println(System.currentTimeMillis());
 			  PageResultStat<PayB> result = new PageResultStat<>(pages,page);
 			  result.setAutoStateField("performancePayNumber", "payNumber");
 			  result.count();

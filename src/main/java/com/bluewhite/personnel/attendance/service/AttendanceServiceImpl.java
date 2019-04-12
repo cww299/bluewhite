@@ -216,6 +216,11 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			if (param.getUserId() != null) {
 				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
 			}
+			
+			// 按签到类型过滤
+			if (param.getInOutMode() != null) {
+				predicate.add(cb.equal(root.get("inOutMode").as(Integer.class), param.getInOutMode()));
+			}
 
 			// 按姓名查找
 			if (!StringUtils.isEmpty(param.getUserName())) {

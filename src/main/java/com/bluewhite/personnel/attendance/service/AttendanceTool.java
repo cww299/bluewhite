@@ -41,7 +41,7 @@ public class AttendanceTool {
 	 * @param user  员工实体
 	 * @return
 	 */
-	public static AttendanceTime attendanceIntTool(boolean sign, Date workTime,  Date workTimeEnd, double minute,
+	public static AttendanceTime attendanceIntTool(boolean sign, Date workTime,  Date workTimeEnd,Date restBeginTime,Date restEndTime, double minute,
 			Double turnWorkTime, AttendanceTime attendanceTime, AttendanceInit attendanceInit, User user) {
 			boolean flag = false;
 			//实际出勤，加班，缺勤,早退时间
@@ -79,7 +79,7 @@ public class AttendanceTool {
 						//等于默认出勤-实际出勤
 						actualDutyTime =NumUtils.sub(turnWorkTime, actualTurnWorkTime);
 						flag = false;
-						
+						attendanceTime.setFlag(1);
 					}
 					
 					// 满足于：员工可以加班后晚到岗 ，签入时间在（初始化上班开始时间后的加班分钟数+30分钟）之后，签出时间在工作结束时间之后  出现缺勤 (早退时间过长出现缺勤)
@@ -88,12 +88,10 @@ public class AttendanceTool {
 							&& DatesUtil.getTime(attendanceTime.getCheckOut(),workTimeEnd)>DUTYMIN;
 					if(flag){
 						actualTurnWorkTime = NumUtils.sum(attendanceTime.getWorkTime(), NumUtils.div(minute, 60, 2));
-						actualDutyTime = NumUtils.sub(turnWorkTime, attendanceTime.getTurnWorkTime());
+						actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);
 						flag = false;
+						attendanceTime.setFlag(1);
 					}
-			
-					
-					
 					
 					//迟到状态
 					// 满足于：员工可以加班后晚到岗 ，签入时间在（初始化上班开始时间后的加班分钟数10到30分钟）之间，签出时间在工作结束时间之后  出现迟到 
@@ -121,74 +119,35 @@ public class AttendanceTool {
 					}
 			
 					//加班
-					// 满足于：员工可以加班后晚到岗 ，属于包装部，签入时间在（初始化上班开始时间后的加班分钟数）之前，中午休息默认加班，工作时间结束后签到加班	
+					// 满足于：员工可以加班后晚到岗 ，属于包装部，签入时间在（初始化上班开始时间后的加班分钟数）之前，工作时间结束后签到加班	
 					//早到时间 ,包装部员工的签入时间早于实际上班时间超过30分钟后算0.5个加班，超过60分钟算1个加班		
 					double earlyTime = Math.floor(DatesUtil.getTime(attendanceTime.getCheckIn(),DatesUtil.getDaySum(workTime, NumUtils.sum(minute, 0))) / 60) * 0.5;
 					flag = sign
 							&& user.getOrgNameId() == 79 
 							&& attendanceTime.getCheckIn().before(DatesUtil.getDaySum(workTime, NumUtils.sum(minute, 0))) 
-							&& attendanceInit.getRestTimeWork()==3
-							&& attendanceInit.getOverTimeType()==2;
-					if(flag){
-						actualOverTime = NumUtils.sum(DatesUtil.getTimeHour(workTimeEnd, attendanceTime.getCheckOut()),earlyTime+1);
-						flag = false;
-					}
-			
-			
-					// 满足于：员工可以加班后晚到岗 ，属于包装部，签入时间在（初始化上班开始时间后的加班分钟数）之前，中午休息默认出勤或者休息，工作时间结束后签到加班	
-					flag = sign
-							&& user.getOrgNameId() == 79 
-							&& attendanceTime.getCheckIn().before(DatesUtil.getDaySum(workTime, NumUtils.sum(minute, 0))) 
-							&& attendanceInit.getRestTimeWork()!=3
 							&& attendanceInit.getOverTimeType()==2;
 					if(flag){
 						actualOverTime = NumUtils.sum(DatesUtil.getTimeHour(workTimeEnd, attendanceTime.getCheckOut()),earlyTime);
 						flag = false;
 					}
-			
 					
-					// 满足于：员工可以加班后晚到岗 ，属于包装部，签入时间在（初始化上班开始时间后的加班分钟数）之前，中午休息默认加班，工作时间结束后签到不算加班加班	
+					// 满足于：员工可以加班后晚到岗 ，属于包装部，签入时间在（初始化上班开始时间后的加班分钟数）之前，工作时间结束后签到不算加班加班	
 					flag = sign
 							&& user.getOrgNameId() == 79 
 							&& attendanceTime.getCheckIn().before(DatesUtil.getDaySum(workTime, NumUtils.sum(minute, 0)))
-							&& attendanceInit.getRestTimeWork()==3
 							&& attendanceInit.getOverTimeType()==1;
 					if(flag){
-						actualOverTime = earlyTime+1.0;
+						actualOverTime = earlyTime;
 						flag = false;
 					}
 					
-					// 满足于：员工可以加班后晚到岗 ，不属于包装部，签入时间在（初始化上班开始时间后的加班分钟数）之前，中午休息默认加班，工作时间结束后签到加班
+					// 满足于：员工可以加班后晚到岗 ，不属于包装部，签入时间在（初始化上班开始时间后的加班分钟数）之前，工作时间结束后签到加班
 					flag = sign
 							&& user.getOrgNameId() != 79 
 							&& workTimeEnd.before(attendanceTime.getCheckOut()) 
-							&& attendanceInit.getRestTimeWork()==3
-							&& attendanceInit.getOverTimeType()==2;
-					if(flag){
-						actualOverTime = NumUtils.sum(DatesUtil.getTimeHour(workTimeEnd, attendanceTime.getCheckOut()),1);
-						flag = false;
-					}
-			
-					// 满足于：员工可以加班后晚到岗 ，不属于包装部，签入时间在（初始化上班开始时间后的加班分钟数）之前，中午休息默认出勤或者休息，工作时间结束后签到加班	
-					flag = sign
-							&& user.getOrgNameId() != 79 
-							&& workTimeEnd.before(attendanceTime.getCheckOut()) 
-							&& attendanceInit.getRestTimeWork()!=3
 							&& attendanceInit.getOverTimeType()==2;
 					if(flag){
 						actualOverTime = DatesUtil.getTimeHour(workTimeEnd, attendanceTime.getCheckOut());
-						flag = false;
-					}
-			
-			
-					// 满足于：员工可以加班后晚到岗 ，属于包装部，签入时间在（初始化上班开始时间后的加班分钟数）之前，中午休息默认加班，工作时间结束后签到不算加班加班	
-					flag = sign
-							&& user.getOrgNameId() != 79 
-							&& workTimeEnd.before(attendanceTime.getCheckOut()) 
-							&& attendanceInit.getRestTimeWork()==3
-							&& attendanceInit.getOverTimeType()==1;
-					if(flag){
-						actualOverTime = 1.0;
 						flag = false;
 					}
 			
@@ -214,6 +173,7 @@ public class AttendanceTool {
 						actualTurnWorkTime = attendanceTime.getWorkTime();
 						//等于默认出勤-实际出勤
 						actualDutyTime =NumUtils.sub(turnWorkTime, actualTurnWorkTime);
+						attendanceTime.setFlag(1);
 						flag = false;
 					}
 			
@@ -224,8 +184,9 @@ public class AttendanceTool {
 							&& DatesUtil.getTime(attendanceTime.getCheckOut(),workTimeEnd)>DUTYMIN;
 					if(flag){
 						actualTurnWorkTime = attendanceTime.getWorkTime();
-						actualDutyTime = NumUtils.sub(turnWorkTime, attendanceTime.getTurnWorkTime());
+						actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);
 						flag = false;
+						attendanceTime.setFlag(1);
 					}
 					
 					//迟到状态
@@ -254,34 +215,21 @@ public class AttendanceTool {
 					}
 					
 					//加班
-					// 满足于：员工不可以加班后晚到岗 ，签出时间在默认工作时间之后，中午休息时间默认加班，工作时间结束后签到加班	
-					flag = !sign
-							&& workTimeEnd.before(attendanceTime.getCheckOut())
-							&& attendanceInit.getRestTimeWork()==3
-							&& attendanceInit.getOverTimeType()==2;
-					if(flag){
-						actualOverTime = NumUtils.sum(DatesUtil.getTimeHour(workTimeEnd, attendanceTime.getCheckOut()),1);
-						flag = false;
-					}
-			
-					// 满足于：员工不可以加班后晚到岗 ，签出时间在默认工作时间之后，中午休息时间默认不加班，工作时间结束后签到加班	
+					// 满足于：员工不可以加班后晚到岗 ，签出时间在默认工作时间之后，工作时间结束后签到加班	
 					flag = !sign
 							&& workTimeEnd.before(attendanceTime.getCheckOut()) 
-							&& attendanceInit.getRestTimeWork()!=3
 							&& attendanceInit.getOverTimeType()==2;
 					if(flag){
 						actualOverTime = DatesUtil.getTimeHour(workTimeEnd, attendanceTime.getCheckOut());	
 						flag = false;
 					}
-			
-					// 满足于：员工不可以加班后晚到岗 ，签出时间在默认工作时间之后，中午休息时间默认加班，工作时间结束后签到不算加班	
-					flag = !sign
-							&& workTimeEnd.before(attendanceTime.getCheckOut()) 
-							&& attendanceInit.getRestTimeWork()==3
-							&& attendanceInit.getOverTimeType()==1;
-					if(flag){
-						actualOverTime = 1.0;
-						flag = false;
+					
+					
+					if(attendanceTime.getCheckOut().after(restEndTime) && attendanceInit.getRestTimeWork()==3){
+						actualOverTime += 1.0;
+					}
+					if(attendanceTime.getCheckOut().after(restEndTime) && attendanceInit.getRestTimeWork()==2){
+						actualTurnWorkTime += 1.0;
 					}
 					
 					attendanceTime.setTurnWorkTime(actualTurnWorkTime);
@@ -301,8 +249,7 @@ public class AttendanceTool {
 		actualbelateTime = alltime + 1 ;
 		return actualbelateTime;
 	}
-		
-	
+
 	
 
 }
