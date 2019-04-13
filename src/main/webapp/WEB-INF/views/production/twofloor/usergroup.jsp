@@ -12,7 +12,7 @@
     <title>员工分组</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-   
+   <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
    
 </head>
 
@@ -120,8 +120,7 @@
                  <div class="form-group">
                                         <label class="col-sm-3 control-label">外调时间:</label>
                                         <div class="col-sm-6">
-                                            <input type="text" id="startTime" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD 00:00:00'})">
+                                            <input type="text" id="startTime" class="form-control laydate-icon"/>
                                         </div>
                  </div>
 				<div class="form-group">
@@ -231,7 +230,26 @@
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
     <script src="${ctx }/static/js/vendor/typeahead.js"></script>
     <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+    <script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
     <script>
+    layui.config({
+		base: '${ctx}/static/layui-v2.4.5/'
+	}).extend({
+		tablePlug: 'tablePlug/tablePlug'
+	}).define(
+		['tablePlug', 'laydate', 'element','form'],
+		function() {
+			var $ = layui.jquery,
+				laydate = layui.laydate //日期控件
+				,
+				element = layui.element;
+			laydate.render({
+				elem: '#startTime',
+				range : '~',
+				format: 'yyyy-MM-dd',
+			});
+		}
+			)
    jQuery(function($){
    	var Login = function(){
 			var self = this;
@@ -804,13 +822,13 @@
 							  postData={
 									  userName:$('#groupNametw').val(),
 									  userId:self.getCache(),
-									  temporarilyDate:$('#startTime').val(),
+									  temporarilyDates:$('#startTime').val(),
 									  workTime:$('#grouptime').val(),
 									  type:3,
 									  groupId:$('.selectcomplete').val(),
 									  foreign:a,
 							  }
-							  $.ajax({
+							   $.ajax({
 									url:"${ctx}/production/addTemporarily",
 									data:postData,
 						            traditional: true,
@@ -835,7 +853,7 @@
 										layer.msg("操作失败！", {icon: 2});
 										layer.close(index);
 									}
-								});
+								}); 
 							},
 						  end:function(){
 							  $('#addDictDivTypetw').hide();
