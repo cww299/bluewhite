@@ -12,7 +12,7 @@
     <title>员工分组</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-   
+   <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
    
 </head>
 
@@ -120,8 +120,7 @@
                  <div class="form-group">
                                         <label class="col-sm-3 control-label">外调时间:</label>
                                         <div class="col-sm-6">
-                                            <input type="text" id="startTime" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD 00:00:00'})">
+                                            <input type="text" id="startTime" class="form-control laydate-icon"/>
                                         </div>
                  </div>
 				<div class="form-group">
@@ -205,7 +204,7 @@
                                 </table>
 			</div>
 			<div class="modal-footer">
-			<button type="button" class="btn btn-danger" id="delete">删除
+			<button type="button" class="btn btn-danger" id="delete2">删除
 				</button>
 				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
 				</button>
@@ -231,7 +230,26 @@
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
     <script src="${ctx }/static/js/vendor/typeahead.js"></script>
     <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+    <script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
     <script>
+    layui.config({
+		base: '${ctx}/static/layui-v2.4.5/'
+	}).extend({
+		tablePlug: 'tablePlug/tablePlug'
+	}).define(
+		['tablePlug', 'laydate', 'element','form'],
+		function() {
+			var $ = layui.jquery,
+				laydate = layui.laydate //日期控件
+				,
+				element = layui.element;
+			laydate.render({
+				elem: '#startTime',
+				range : '~',
+				format: 'yyyy-MM-dd',
+			});
+		}
+			)
    jQuery(function($){
    	var Login = function(){
 			var self = this;
@@ -362,11 +380,42 @@
 							$(result.data).each(function(i,o){
 							html +='<tr><td class="center reste"><label> <input type="checkbox" class="stuCheckBoxt" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 			      				+'<td class="text-center  bacthNumber">'+o.userName+'</td>'
-			      				+'<td class="text-center edit allotTime">'+o.workTime+'</td>'
-			      				+'<td class="text-center edit allotTime">'+o.groupName+'</td>'
+			      				+'<td class="text-center edit allotTime workTime2" data-id='+o.id+' contenteditable="true">'+o.workTime+'</td>'
+			      				+'<td class="text-center edit allotTime" >'+o.groupName+'</td>'
 			      				+'<td class="text-center edit allotTime">'+o.temporarilyDate+'</td></tr>'
 							})
 							 $('#tablecontentfv').html(html);
+							$(".workTime2").blur(function(){
+								$(this).text()
+								var postData = {
+									id:$(this).data('id'),
+									workTime:$(this).text(),
+							}
+								var index;
+								$.ajax({
+									url:"${ctx}/production/updateTemporarily",
+									data:postData,
+									type:"POST",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									
+									success:function(result){
+										if(0==result.code){
+										layer.msg("修改成功！", {icon: 1});
+										layer.close(index);
+										}else{
+											layer.msg("修改失败！", {icon: 1});
+											layer.close(index);
+										}
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								});
+							})
 							$(".checkalls").on('click',function(){
 			                    if($(this).is(':checked')){ 
 						 			$('.stuCheckBoxt').each(function(){  
@@ -381,7 +430,49 @@
 			                    }
 			                });
 							layer.close(index);
-							
+							$("#delete2").on('click',function(){
+							var  that=$(this);
+							  var arr=new Array()//员工id
+								$(this).parent().parent().parent().parent().parent().find(".stuCheckBoxt:checked").each(function() { 
+									console.log($(this).val())
+									arr.push($(this).val());   
+								});
+							var postData = {
+									ids:arr,
+							}
+							var index;
+							 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
+							 $.ajax({
+								url:"${ctx}/production/deleteTemporarily",
+								data:postData,
+								traditional: true,
+								type:"GET",
+								beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								
+								success:function(result){
+									if(0==result.code){
+									layer.msg("删除成功！", {icon: 1});
+									var _data={
+											temporarilyDate:$('#startTimetw').val(),
+											type:3,
+									}
+									self.loadworking(datae)
+									layer.close(index);
+									}else{
+										layer.msg("删除失败！", {icon: 1});
+										layer.close(index);
+									}
+								},error:function(){
+									layer.msg("操作失败！", {icon: 2});
+									layer.close(index);
+								}
+							}); 
+							 });
+							})
 						},error:function(){
 							layer.msg("操作失败！", {icon: 2});
 							layer.close(index);
@@ -389,6 +480,7 @@
 					});
 			  }
 			this.loadEvents = function(){
+				
 				//修改方法
 				$('.update').on('click',function(){
 					
@@ -804,13 +896,13 @@
 							  postData={
 									  userName:$('#groupNametw').val(),
 									  userId:self.getCache(),
-									  temporarilyDate:$('#startTime').val(),
+									  temporarilyDates:$('#startTime').val(),
 									  workTime:$('#grouptime').val(),
 									  type:3,
 									  groupId:$('.selectcomplete').val(),
 									  foreign:a,
 							  }
-							  $.ajax({
+							   $.ajax({
 									url:"${ctx}/production/addTemporarily",
 									data:postData,
 						            traditional: true,
@@ -835,7 +927,7 @@
 										layer.msg("操作失败！", {icon: 2});
 										layer.close(index);
 									}
-								});
+								}); 
 							},
 						  end:function(){
 							  $('#addDictDivTypetw').hide();
