@@ -269,7 +269,7 @@ public class GroupAction {
 		}
 		List<Date> dateList = new ArrayList<>();
 		if(!StringUtils.isEmpty(temporarily.getTemporarilyDates())){
-			String [] dateArr = temporarily.getTemporarilyDates().split("~");
+			String [] dateArr = temporarily.getTemporarilyDates().split(" ~ ");
 			// 获取所有日期
 			dateList = DatesUtil.getPerDaysByStartAndEndDate(dateArr[0], dateArr[1],
 					"yyyy-MM-dd");
