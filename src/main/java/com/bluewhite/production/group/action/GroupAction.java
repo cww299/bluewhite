@@ -267,25 +267,41 @@ public class GroupAction {
 			cr.setMessage("分组不能为空");
 			return cr;
 		}
-		if(StringUtils.isEmpty(temporarily.getUserId())){
-			User user = new User();
-			user.setForeigns(1);
-			user.setPassword("123456");
-			user.setUserName(temporarily.getUserName());
-			user.setStatus(0);
-			userService.save(user);
-			temporarily.setUserId(user.getId());
-		}
-		if(temporarilyDao.findByUserIdAndTemporarilyDateAndType(temporarily.getUserId(), temporarily.getTemporarilyDate(),temporarily.getType())!=null){
-			cr.setMessage("当日已添加过借调人员的工作时间,不必再次添加");
-			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+		List<Date> dateList = new ArrayList<>();
+		if(!StringUtils.isEmpty(temporarily.getTemporarilyDates())){
+			String [] dateArr = temporarily.getTemporarilyDates().split("~");
+			// 获取所有日期
+			dateList = DatesUtil.getPerDaysByStartAndEndDate(dateArr[0], dateArr[1],
+					"yyyy-MM-dd");
 		}else{
-			temporarilyDao.save(temporarily);
-			cr.setMessage("添加成功");
+			dateList.add(temporarily.getTemporarilyDate());
+		}
+		
+		for (Date date : dateList) {
+			temporarily.setTemporarilyDate(date);
+			if (StringUtils.isEmpty(temporarily.getUserId())) {
+				User user = new User();
+				user.setForeigns(1);
+				user.setPassword("123456");
+				user.setUserName(temporarily.getUserName());
+				user.setStatus(0);
+				userService.save(user);
+				temporarily.setUserId(user.getId());
+			}
+			if (temporarilyDao.findByUserIdAndTemporarilyDateAndType(temporarily.getUserId(),
+					temporarily.getTemporarilyDate(), temporarily.getType()) != null) {
+				cr.setMessage("当日已添加过借调人员的工作时间,不必再次添加");
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			} else {
+				temporarilyDao.save(temporarily);
+				cr.setMessage("添加成功");
+			}
 		}
 		return cr;
 	}
 	
+	
+
 	
 	/**
 	 * 修改借调人员
@@ -298,12 +314,12 @@ public class GroupAction {
 	@ResponseBody
 	public CommonResponse updateTemporarily(HttpServletRequest request,Temporarily temporarily){
 		CommonResponse cr = new CommonResponse();
-		
 		if(temporarily.getId()==null){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("外调人员流水不能为空");
 			return cr;
 		}
+		
 		if(StringUtils.isEmpty(temporarily.getUserId())){
 			Temporarily oldtemporarily = temporarilyDao.findOne(temporarily.getId());
 			BeanCopyUtils.copyNullProperties(oldtemporarily,temporarily);
@@ -316,7 +332,6 @@ public class GroupAction {
 			temporarilyDao.save(temporarily);
 			cr.setMessage("修改成功");
 		}
-		
 		return cr;
 	}
 	

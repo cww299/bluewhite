@@ -162,8 +162,9 @@ public class UserAction {
 		}
 		//离职去除分组信息
 		if(user.getQuit()!=null && user.getQuit()==1){
-			user.setGroupId(null);;
+			user.setGroupId(null);
 			user.setGroup(null);
+			user.setNumber(null);
 		}
 		BeanCopyUtils.copyNotEmpty(user,oldUser,"");
 		AttendanceInit attendanceInit = attendanceInitService.findByUserId(user.getId());
