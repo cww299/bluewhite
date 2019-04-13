@@ -279,23 +279,24 @@ public class GroupAction {
 		
 		for (Date date : dateList) {
 			temporarily.setTemporarilyDate(date);
-			if (StringUtils.isEmpty(temporarily.getUserId())) {
+			Temporarily temporarily1 = new Temporarily();
+			BeanCopyUtils.copyNullProperties(temporarily,temporarily1);
+			if (StringUtils.isEmpty(temporarily1.getUserId())) {
 				User user = new User();
 				user.setForeigns(1);
 				user.setPassword("123456");
-				user.setUserName(temporarily.getUserName());
+				user.setUserName(temporarily1.getUserName());
 				user.setStatus(0);
 				userService.save(user);
-				temporarily.setUserId(user.getId());
+				temporarily1.setUserId(user.getId());
 			}
-			if (temporarilyDao.findByUserIdAndTemporarilyDateAndType(temporarily.getUserId(),
-					temporarily.getTemporarilyDate(), temporarily.getType()) != null) {
+			if (temporarilyDao.findByUserIdAndTemporarilyDateAndType(temporarily1.getUserId(),
+					temporarily1.getTemporarilyDate(), temporarily1.getType()) != null) {
 				cr.setMessage("当日已添加过借调人员的工作时间,不必再次添加");
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			} else {
-				temporarilyDao.save(temporarily);
-				cr.setMessage("添加成功");
+				return cr;
 			}
+			temporarilyDao.save(temporarily1);
 		}
 		return cr;
 	}

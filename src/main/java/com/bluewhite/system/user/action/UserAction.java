@@ -394,17 +394,7 @@ public class UserAction {
 	@ResponseBody
 	private CommonResponse test(User user) {
 		CommonResponse cr = new CommonResponse();
-		List<User> userList = userDao.findAll((root, query, cb) -> {
-			List<Predicate> predicate = new ArrayList<>();
-	        		Predicate[] pre = new Predicate[predicate.size()];
-	    			query.where(predicate.toArray(pre));
-	    			return null;
-				});
-		
-		cr.setData(ClearCascadeJSON
-				.get()
-				.addRetainTerm(User.class,"id","userName")
-				.format(userList).toJSON());
+
 		return cr;
 	}
 	
