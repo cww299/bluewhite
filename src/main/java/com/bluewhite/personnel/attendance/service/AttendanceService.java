@@ -20,7 +20,7 @@ public interface AttendanceService  extends BaseCRUDService<Attendance,Long>{
 	 */
 	public List<Map<String, Object>> getAllUser(String address);
 	/**
-	 * 同步人员信息到系统
+	 * 同步打卡机人员编号到系统
 	 * @param address
 	 * @return
 	 */

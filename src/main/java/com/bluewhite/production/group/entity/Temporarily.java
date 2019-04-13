@@ -70,7 +70,23 @@ public class Temporarily extends BaseEntity<Long>{
 	private String groupName;
 
 	
+	/**
+	 * 外调时间批量
+	 */
+	@Transient
+	private String temporarilyDates;
 	
+	
+
+	public String getTemporarilyDates() {
+		return temporarilyDates;
+	}
+
+
+	public void setTemporarilyDates(String temporarilyDates) {
+		this.temporarilyDates = temporarilyDates;
+	}
+
 
 	public String getGroupName() {
 		return groupName;

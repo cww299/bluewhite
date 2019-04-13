@@ -355,7 +355,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		List<AttendanceTime> attendanceTimeList = findAttendanceTimePage(attendanceTime);
 		// 按人员分组
 		Map<Long, List<AttendanceTime>> mapAttendance = attendanceTimeList.stream()
-				.filter(AttendanceTime -> AttendanceTime.getNumber() != null)
+				.filter(AttendanceTime -> AttendanceTime.getUserId() != null)
 				.collect(Collectors.groupingBy(AttendanceTime::getUserId, Collectors.toList()));
 		for (Long ps1 : mapAttendance.keySet()) {
 			allMap = new HashMap<>();
