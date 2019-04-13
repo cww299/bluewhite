@@ -18,6 +18,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.Predicate;
 
 import org.hibernate.id.enhanced.TableStructure;
+import org.jsoup.select.Collector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -100,7 +101,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 					throw new ServiceException("系统用户有相同名称的员工" + user.get(0).getUserName() + "，请检查是否重复");
 				}
 				if (user.size() > 0) {
-					if (user.get(0).getNumber() == null || !user.get(0).getNumber().equals(map.get("number").toString())) {
+					if (!user.get(0).getNumber().equals(map.get("number").toString())) {
 						user.get(0).setNumber(map.get("number").toString());
 						userService.save(user.get(0));
 						count++;
@@ -313,7 +314,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		attendance.setOrderTimeBegin(startTime);
 		attendance.setOrderTimeEnd(endTime);
 		List<Attendance> attendanceList = findPageAttendance(attendance, new PageParameter(0, Integer.MAX_VALUE))
-				.getRows();
+				.getRows().stream().filter(Attendance->Attendance.getInOutMode()!=2).collect(Collectors.toList());
 		dao.delete(attendanceList);
 		allAttendance("192.168.1.204", startTime, endTime);
 		allAttendance("192.168.1.205", startTime, endTime);

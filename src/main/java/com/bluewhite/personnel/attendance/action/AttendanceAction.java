@@ -144,7 +144,8 @@ public class AttendanceAction {
 	public CommonResponse syncAttendanceUser(HttpServletRequest request, String address) {
 		CommonResponse cr = new CommonResponse();
 		int count = attendanceService.syncAttendanceUser(address);
-		cr.setMessage("成功同步" + count + "人员");
+		int count1 = attendanceService.fixAttendance(null, null);
+		cr.setMessage("成功同步" + count + "人员,同时成功修正" + count1 + "名员工考勤记录");
 		return cr;
 	}
 
