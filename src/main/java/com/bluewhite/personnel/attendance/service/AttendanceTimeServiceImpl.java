@@ -323,12 +323,9 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 						attendanceTimeList.add(attendanceTime);
 						continue;
 					}
-					
 					// 缺勤时间（公司未规定放假日期，所以当员工没有打卡记录时，统一算缺勤)
 					attendanceTime.setDutytime(NumUtils.sub(turnWorkTime, 0));
 					attendanceTime.setFlag(1);
-					
-					
 				}
 				attendanceTimeList.add(attendanceTime);
 

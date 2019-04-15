@@ -232,6 +232,9 @@ public class AttendanceTool {
 						actualTurnWorkTime += 1.0;
 					}
 					
+					if(attendanceInit.isEarthWork() && DatesUtil.getTime(attendanceTime.getCheckIn(),workTime)>=20){
+						actualOverTime += 0.5;
+					}
 					attendanceTime.setTurnWorkTime(actualTurnWorkTime);
 					attendanceTime.setOvertime(actualOverTime);
 					attendanceTime.setDutytime(actualDutyTime);

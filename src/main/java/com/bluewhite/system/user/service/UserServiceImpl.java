@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.criteria.Predicate;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,10 +19,13 @@ import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
+import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.system.user.dao.UserContractDao;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.Role;
@@ -312,6 +316,26 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			}
 		}
 		return count;
+	}
+
+	@Override
+	@Transactional
+	public User addUser(User user) {
+		if(!StringUtils.isEmpty(user.getPhone())){
+			User u = findByPhone(user.getPhone());
+			if(u != null){
+				throw  new ServiceException("该用户手机号已存在");
+			}else{
+				user.setPassword("123456");
+				user.setForeigns(0);
+				UserContract userContract = new UserContract();
+				userContractDao.save(userContract);
+				user.setUserContract(userContract);
+			}
+		}else{
+			throw  new ServiceException("手机号不能为空");
+		}
+		return save(user);
 	}
 
 

@@ -109,27 +109,8 @@ public class UserAction {
 	@SysLogAspectAnnotation(description = "员工新增操作", module = "员工管理", operateType = "增加", logType = SysLog.ADMIN_LOG_TYPE)
 	public CommonResponse createUser(HttpServletRequest request, User user) {
 		CommonResponse cr = new CommonResponse();
-		if(!StringUtils.isEmpty(user.getPhone())){
-			User u = userService.findByPhone(user.getPhone());
-			if(u != null){
-				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				cr.setMessage("该用户手机号已存在");
-			}else{
-				user.setPassword("123456");
-				user.setForeigns(0);
-				UserContract userContract = new UserContract();
-				userContractDao.save(userContract);
-				user.setUserContract(userContract);
-				cr.setMessage("新增成功");
-				AttendanceInit attendanceInit = attendanceInitService.findByUserId(user.getId());
-				if(attendanceInit==null){
-					cr.setCode(2);
-				}
-			}
-		}else{
-			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("手机号不能为空");
-		}
+		userService.addUser(user);
+		cr.setCode(2);
 		return cr;
 	}
 	

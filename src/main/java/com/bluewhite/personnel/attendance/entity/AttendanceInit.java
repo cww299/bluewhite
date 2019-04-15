@@ -122,6 +122,12 @@ public class AttendanceInit extends BaseEntity<Long> {
 	 */
 	@Column(name = "come_work")
 	private Integer comeWork;
+	
+	/**
+	 * 设定此参数后，早于默认上班时间前15分钟，进行加班0.5计算。
+	 */
+	@Column(name = "earth_work")
+	private boolean earthWork;
 
 	/**
 	 * 员工姓名
@@ -161,6 +167,16 @@ public class AttendanceInit extends BaseEntity<Long> {
 
 	
 	
+
+
+	public boolean isEarthWork() {
+		return earthWork;
+	}
+
+
+	public void setEarthWork(boolean earthWork) {
+		this.earthWork = earthWork;
+	}
 
 
 	public Integer getWorkType() {
