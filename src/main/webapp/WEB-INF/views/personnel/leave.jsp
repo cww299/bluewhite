@@ -292,6 +292,8 @@
 							timeAll2=(timeAll2==''? b+','+a:(c+'\n'+b+','+a));
 							$("#inputapplytime2").val(timeAll2)
 							}
+						$("#leavetime").val("");
+						$("#leaveduration").val("");
 					})
 					$("#overduration").blur(function(){
 						var c= $("#inputapplytime4").val()
@@ -301,6 +303,8 @@
 							timeAll4=(timeAll4==''? b+','+a:(c+'\n'+b+','+a));
 							$("#inputapplytime4").val(timeAll4)
 							}
+						$("#overdurationtime").val("");
+						$("#overduration").val("");
 					})
 					$.ajax({
 						url: '${ctx}/system/user/findAllUser',
