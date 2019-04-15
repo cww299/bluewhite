@@ -102,6 +102,13 @@ public interface UserService extends BaseCRUDService<User, Long> {
 	 */
 	public int deleteUser(String ids);
 	
+	/**
+	 * 新增员工
+	 * @param user
+	 * @return
+	 */
+	public User addUser(User user);
+	
 	
 	
 	

@@ -199,9 +199,6 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 				}
 				holidayDetail = holidayDetail.equals("") ? (date + detail + time + "小时")
 						: (holidayDetail+"," + date + detail + time + "小时");
-				
-				
-				
 			}
 			//补签
 			if (applicationLeave.isAddSignIn()) {
