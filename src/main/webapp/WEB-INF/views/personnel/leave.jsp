@@ -879,12 +879,14 @@
 											icon: 1,
 											time:1000
 										});
+										if(data.id==null){
 										document.getElementById("layuiadmin-form-admin").reset();
 							        	$("#leave").css("display","block")
 										$("#Break").css("display","none")
 										$("#repair").css("display","none")
 										$("#overtime").css("display","none")
 							        	layui.form.render();
+										}
 									} else {
 										layer.msg(result.message, {
 											icon: 2,
