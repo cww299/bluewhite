@@ -84,6 +84,12 @@
       	</div>
     </div>
     <div class="layui-form-item">
+    <label class="layui-form-label" style="width: 130px;">早上加班</label>
+    <div class="layui-input-block">
+      <input type="checkbox" name="earthWork" value="true" lay-skin="switch">
+    </div>
+  </div>
+    <div class="layui-form-item">
       <label class="layui-form-label" style="width: 130px;">约定休息时间</label>
       <div class="layui-input-inline">
         <input type="text"  name="applytime" id="applytime"  placeholder="请输入申请时间" class="form-control laydate-icon">
@@ -604,7 +610,7 @@
 							        		if(s==","){
 							        			return layer.msg("约定休息日末尾不能是,号", {icon: 2});
 							        		}else{
-							        	 mainJs.fAdd(data.field);
+							        	  mainJs.fAdd(data.field); 
 							        	 }
 							        	timeAll=""
 										})
