@@ -123,7 +123,7 @@
                                             <td class="text-center"></td>
                                             <td class="text-center"><input type="text" id="remarksPrice" class="text-center" placeholder="可不填" style="border: none;width:80px; height:30px; background-color: #BFBFBF;"></td>
                                             <td class="text-center"></td>
-                                            <td class="text-center"><select class="text-center" id="online" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">线下</option><option value="1">线上</option></select></td>
+                                            <td class="text-center"><select class="text-center" id="online" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">线下</option><option value="1">线上</option><option value="2">批发</option></select></td>
                                             <td class="text-center"><button type="button"  id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增订单</button></td>
                                     
                                         </tr>
@@ -389,7 +389,7 @@
 		      				+'<td class="text-center  name contractPrice" style=" color:#c11f34">'+(o.contractPrice!=null ? o.contractPrice : 0)+'</td>'
 		      				+'<td class="text-center edit5 remarksPrice">'+(o.remarksPrice!=null ? o.remarksPrice : "")+'</td>'
 		      				+'<td class="text-center  name"><input type="text" class="price2" value="'+(o.price!=null ? o.price : "")+'" style="border: none;width:70px; height:30px; background-color: #BFBFBF;"></td>'
-		      				+'<td class="text-center" edit5 data-online='+o.online+'><select class="text-center checkWork" disabled="disabled" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">线下</option><option value="1">线上</option></select></td>'
+		      				+'<td class="text-center" edit5 data-online='+o.online+'><select class="text-center checkWork" disabled="disabled" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">线下</option><option value="1">线上</option><option value="2">批发</option></select></td>'
 		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans Tips"  data-id='+o.id+' data-productname='+o.productName+' data-partynames='+o.partyNames+'>提示</button></td></tr>'
 		      			}); 
 		      			self.setCount(result.data.pageNum)
