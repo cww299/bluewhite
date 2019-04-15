@@ -84,9 +84,9 @@
       	</div>
     </div>
     <div class="layui-form-item">
-    <label class="layui-form-label" style="width: 130px;">早上加班</label>
+    <label class="layui-form-label" style="width: 130px;">早到加班</label>
     <div class="layui-input-block">
-      <input type="checkbox" name="earthWork" value="true" id="kai" lay-text="加班|不加" lay-skin="switch">
+      <input type="checkbox" name="earthWork" value="true" id="kai" lay-text="是|否" lay-skin="switch">
     </div>
   </div>
     <div class="layui-form-item">
@@ -479,13 +479,13 @@
 								field: "restTimeWork",
 								align: 'center',
 								width:150,
-								title: "早上加班",
+								title: "早到加班",
 								templet: function(d){
 									if(d.earthWork==false){
-									return "不加班";
+									return "否";
 									}
 									if(d.restTimeWork==true){
-										return "加班";
+										return "是";
 									}
 								}
 							},{
