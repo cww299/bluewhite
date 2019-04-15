@@ -229,7 +229,6 @@
     <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
     <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
     <script src="${ctx }/static/js/vendor/typeahead.js"></script>
-    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
     <script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
     <script>
     layui.config({
@@ -288,7 +287,7 @@
 				var month=myDate.getMonth()+1;
 				//获取当前日
 				var date=myDate.getDate(); 
-				
+				var indexe;
 				var h=myDate.getHours();       //获取当前小时数(0-23)
 				var m=myDate.getMinutes();     //获取当前分钟数(0-59)
 				var s=myDate.getSeconds(); 
@@ -434,14 +433,13 @@
 							var  that=$(this);
 							  var arr=new Array()//员工id
 								$(this).parent().parent().parent().parent().parent().find(".stuCheckBoxt:checked").each(function() { 
-									console.log($(this).val())
 									arr.push($(this).val());   
 								});
 							var postData = {
 									ids:arr,
 							}
-							var index;
-							 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
+							
+							 indexe = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
 							 $.ajax({
 								url:"${ctx}/production/deleteTemporarily",
 								data:postData,
@@ -461,7 +459,7 @@
 											type:3,
 									}
 									self.loadworking(datae)
-									layer.close(index);
+									layer.close(indexe);
 									}else{
 										layer.msg("删除失败！", {icon: 1});
 										layer.close(index);

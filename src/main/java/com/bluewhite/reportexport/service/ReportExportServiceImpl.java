@@ -3,7 +3,6 @@ package com.bluewhite.reportexport.service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -14,9 +13,7 @@ import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
-import com.alibaba.druid.sql.visitor.functions.Substring;
 import com.bluewhite.basedata.dao.BaseDataDao;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.basedata.service.BaseDataService;
@@ -425,6 +422,10 @@ public class ReportExportServiceImpl implements ReportExportService{
 					order2.setOnline(1);//在线状态（0==线下 1==线上）
 					order2.setFirstNames(c);
 					d=c;
+				}else if (b.equals("批发")) {
+					order2.setOnline(2);//在线状态（0==线下 1==线上）
+					order2.setFirstNames(c);
+					d=c;
 				}else{
 					order2.setFirstNames(order.getFirstNames());//甲方
 					order2.setOnline(0);
@@ -457,9 +458,12 @@ public class ReportExportServiceImpl implements ReportExportService{
 				order2.setRemarksPrice(order.getRemarksPrice());//预付款备注
 				order2.setPrice(order.getPrice());//手动填写单只价格
 				order2.setAshoreNumber(NumUtils.roundTwo(order.getAshoreNumber() != null ? order.getAshoreNumber() : 0) );//手动填写到岸数量
-				
+				if(order.getAshoreNumber()==0){
+					order2.setAshoreCheckr(0);//核对完毕提示(0 未核对 1已核对 )
+				}else{
 				order2.setAshoreCheckr(1);//核对完毕提示(0 未核对 1已核对 )
-				order2.setAshorePrice(order.getContractPrice());//到岸合同价
+				}
+				order2.setAshorePrice(order.getPrice()*order.getAshoreNumber());//到岸合同价
 				billService.addBill(order2);
 				orders.add(order2);
 				count++;
