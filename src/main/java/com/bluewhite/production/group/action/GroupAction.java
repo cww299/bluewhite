@@ -265,6 +265,7 @@ public class GroupAction {
 		CommonResponse cr = new CommonResponse();
 		if(temporarily.getGroupId()==null){
 			cr.setMessage("分组不能为空");
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			return cr;
 		}
 		List<Date> dateList = new ArrayList<>();
@@ -287,6 +288,7 @@ public class GroupAction {
 				user.setPassword("123456");
 				user.setUserName(temporarily1.getUserName());
 				user.setStatus(0);
+				user.setType(temporarily1.getType());
 				userService.save(user);
 				temporarily1.setUserId(user.getId());
 			}
@@ -297,6 +299,7 @@ public class GroupAction {
 				return cr;
 			}
 			temporarilyDao.save(temporarily1);
+			cr.setMessage("添加成功");
 		}
 		return cr;
 	}

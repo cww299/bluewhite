@@ -280,6 +280,14 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					
 					}
 					
+					// 无到岗要求和无打卡要求
+					if (attendanceInit.getWorkType() == 1 || attendanceInit.getWorkType() == 2) {
+						attendanceTime.setFlag(0);
+						attendanceTime.setTurnWorkTime(turnWorkTime);
+						attendanceTimeList.add(attendanceTime);
+						continue;
+					}
+					
 					if (rout) {
 						attendanceTime.setFlag(3);
 						if(attendanceInit.getOverTimeType()==2 && attendanceTime.getCheckIn()!=null && attendanceTime.getCheckOut()!=null){
