@@ -196,7 +196,6 @@
 
 					// 监听表格中的下拉选择将数据同步到table.cache中
 					form.on('select(city_selecte)', function(data) {
-						console.log(data)
 						var selectElem = $(data.elem);
 						var tdElem = selectElem.closest('td');
 						var trElem = tdElem.closest('tr');

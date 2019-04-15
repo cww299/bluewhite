@@ -201,6 +201,21 @@
 								align: 'center',
 								edit: 'text',
 							}, {
+								field: "phone",
+								title: "手机号",
+								align: 'center',
+								edit: 'text',
+							}, {
+								field: "idCard",
+								title: "身份证",
+								align: 'center',
+								edit: 'text',
+							}, {
+								field: "bankCard1",
+								title: "银行卡号",
+								align: 'center',
+								edit: 'text',
+							}, {
 								field: "type",
 								title: "归属车间",
 								align: 'center',
