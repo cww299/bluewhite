@@ -127,7 +127,7 @@ public class AttendanceInit extends BaseEntity<Long> {
 	 * 设定此参数后，早于默认上班时间前15分钟，进行加班0.5计算。
 	 */
 	@Column(name = "earth_work")
-	private boolean earthWork;
+	private boolean earthWork = false;
 
 	/**
 	 * 员工姓名
