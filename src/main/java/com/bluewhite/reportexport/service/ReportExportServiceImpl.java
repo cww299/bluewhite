@@ -437,7 +437,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					try {
 						order2.setContractTime(sdf.parse(order.getContractTime() != null ? order.getContractTime() : ""));//合同签订日期
-						order2.setAshoreTime(sdf.parse(order.getAshoreTime()!= null ? order.getAshoreTime() : ""));//到岸日期
+					// order2.setAshoreTime(sdf.parse(order.getAshoreTime()!= null ? order.getAshoreTime() : ""));//到岸日期
 					} catch (ParseException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -454,18 +454,18 @@ public class ReportExportServiceImpl implements ReportExportService{
 					order2.setPartyNamesId(contact.getId());
 				}
 				order2.setContractNumber(NumUtils.roundTwo(order.getContractNumber() != null ? order.getContractNumber() : 0));//当批合同数量
-				/*order2.setContractPrice(order.getContractPrice());//当批合同总价
-*/				order2.setRemarksPrice(order.getRemarksPrice());//预付款备注
-				/*order2.setPrice(order.getPrice());//手动填写单只价格
-*/				/*order2.setAshoreNumber(NumUtils.roundTwo(order.getAshoreNumber() != null ? order.getAshoreNumber() : 0) );//手动填写到岸数量
-*/				order2.setAshoreCheckr(0);//核对完毕提示(0 未核对 1已核对 )
-				/*if(order.getAshoreNumber()==0){
-					order2.setAshoreCheckr(0);//核对完毕提示(0 未核对 1已核对 )
-				}else{
-				order2.setAshoreCheckr(1);//核对完毕提示(0 未核对 1已核对 )
-				}*/
-				/*order2.setAshorePrice(order.getPrice()*order.getAshoreNumber());//到岸合同价
-*/				billService.addBill(order2);
+				// order2.setContractPrice(order.getContractPrice());//当批合同总价
+			order2.setRemarksPrice(order.getRemarksPrice());//预付款备注
+				// order2.setPrice(order.getPrice());//手动填写单只价格
+				// order2.setAshoreNumber(NumUtils.roundTwo(order.getAshoreNumber() != null ? order.getAshoreNumber() : 0) );//手动填写到岸数量
+				order2.setAshoreCheckr(0);//核对完毕提示(0 未核对 1已核对 )
+				// if(order.getAshoreNumber()==0){
+				//	order2.setAshoreCheckr(0);//核对完毕提示(0 未核对 1已核对 )
+				//}else{
+				//order2.setAshoreCheckr(1);//核对完毕提示(0 未核对 1已核对 )
+				//}
+				// order2.setAshorePrice(order.getPrice()*order.getAshoreNumber());//到岸合同价
+				/*billService.addBill(order2);*/
 				orders.add(order2);
 				count++;
 			}

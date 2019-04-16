@@ -67,7 +67,6 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 
 	@Override
 	public Bill addBill(Order order) {
-		orderdao.save(order);
 		List<Bill> billList = dao.findByPartyNamesIdAndBillDateBetween(order.getPartyNamesId(),DatesUtil.getFirstDayOfMonth(order.getContractTime()),	DatesUtil.getLastDayOfMonth(order.getContractTime()));
 		Bill bill = new Bill();
 		if(billList.size()>0){	
@@ -79,7 +78,7 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 		}
 		NumUtils.setzro(bill);
 		List<Order> orderList = orderdao.findByPartyNamesIdAndContractTimeBetween(order.getPartyNamesId(),DatesUtil.getFirstDayOfMonth(order.getContractTime()),DatesUtil.getLastDayOfMonth(order.getContractTime()));
-		double	OffshorePay = orderList.stream().filter(Order->Order.getPartyNamesId().equals(order.getPartyNamesId())).mapToDouble(Order::getContractPrice).sum();
+		double	OffshorePay = orderList.stream().filter(Order->Order.getPartyNamesId().equals(order.getPartyNamesId()) && Order.getContractPrice()!=null).mapToDouble(Order::getContractPrice).sum();
 		bill.setOffshorePay(NumUtils.round(OffshorePay,4));
 		double	acceptPay = orderList.stream().filter(Order->Order.getPartyNamesId().equals(order.getPartyNamesId()) && Order.getAshorePrice()!=null).mapToDouble(Order::getAshorePrice).sum();
 		bill.setAcceptPay(NumUtils.round(acceptPay,4));

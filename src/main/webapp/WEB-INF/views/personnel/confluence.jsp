@@ -81,7 +81,7 @@
 							<table class="layui-hide" lay-filter="test3" id="test">
 
 							</table>
-							<div style="height: 600px;"></div>
+							<div style="height: 120px;"></div>
 						</div>
 					</div>
 				</div>
@@ -215,6 +215,7 @@
 											url : url,
 											where : data,
 											cellMinWidth : 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+											height:500,
 											method : 'POST',
 											loading:true,
 											parseData : function(res) { //res 即为原始返回的数据
@@ -424,7 +425,7 @@
 												list2.push(list3)
 												table.init('test3', {
 													
-											
+													height:600,
 													cols : list2,
 													data : res.data,
 													limit:500,
