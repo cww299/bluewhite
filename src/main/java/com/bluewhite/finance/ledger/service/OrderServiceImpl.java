@@ -149,6 +149,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		if(order.getId() != null && order.getAshoreNumber()!=null){
 			order.setRoadNumber(order.getContractNumber()-order.getAshoreNumber()-order.getDisputeNumber());
 			order.setAshorePrice( NumUtils.mul(Double.valueOf(String.valueOf((order.getAshoreNumber()))),order.getPrice()));
+			dao.save(order);
 			billService.addBill(order);
 		}
 		
@@ -172,9 +173,14 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Order order=dao.findOne(id);
+					
 					if(order.getAshoreNumber()==0 || order.getAshoreNumber()==null){
 						dao.delete(id);
 						count++;
+						Order order2=new Order();
+						order2.setPartyNamesId(order.getPartyNamesId());
+						order2.setContractTime(order.getContractTime());
+						billService.addBill(order2);
 					}else{
 						throw new ServiceException("销售编号为"+order.getSalesNumber()+"的任务已填写到岸数量无法删除");
 					}
@@ -183,6 +189,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 		}
 		return count;
+		
 
 	}
 
