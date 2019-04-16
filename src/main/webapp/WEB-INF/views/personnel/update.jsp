@@ -88,7 +88,7 @@
 						
 							
 							
-							<div style="height: 600px;"></div>
+							<div style="height: 90px;"></div>
 						</div>
 					</div>
 				</div>
@@ -389,6 +389,7 @@
 												list2.push(list1)
 												list2.push(list3)
 												table.init('test3', {
+													height:550,
 													cols : list2,
 													data : res.data,
 													limit:500,
