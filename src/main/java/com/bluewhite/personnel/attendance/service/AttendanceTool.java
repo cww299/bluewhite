@@ -10,7 +10,6 @@ import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.system.user.entity.User;
 
-import sun.tools.tree.ThisExpression;
 
 /**
  * 用于计算考勤数据的工具方法
