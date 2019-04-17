@@ -127,15 +127,16 @@
    
    <div id="Break" style="display: none;">
     <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 90px;">调休时长</label>
+      <label class="layui-form-label" style="width: 90px;">调休时间</label>
       <div class="layui-input-inline">
-        <input type="text" name="breakduration" id="breakduration" lay-verify="breakduration" placeholder="请输入调休时长 " class="form-control">
+        <input type="text" name="breaktime" id="breaktime" style="width: 190px; position:absolute; float: left;" lay-verify="breaktime" placeholder="请输入调休到哪一天的时间" class="form-control laydate-icon">
+      	<input type="text" style="width: 90px; position:absolute; float: left; margin-left: 210px;" name="breakduration" id="breakduration" lay-verify="breakduration" placeholder="时长 " class="form-control">
       </div>
     </div>
-    <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 90px;">调休至时间</label>
-      <div class="layui-input-inline">
-        <input type="text" name="breaktime" id="breaktime" lay-verify="breaktime" placeholder="请输入调休到哪一天的时间" class="form-control laydate-icon">
+    <div class="layui-form-item" >
+      <label class="layui-form-label" style="width: 90px;">显示</label>
+      <div class="layui-input-inline" style="width: 230px;">
+       <textarea name="inputapplytime3"   id="inputapplytime3" class="layui-textarea"></textarea>
       </div>
     </div>
     </div>
@@ -231,9 +232,18 @@
 							}
 						}
 					});
+					timeAll5=""
 					laydate.render({
 						elem: '#breaktime',
 						format: 'yyyy-MM-dd',
+						done: function(value, date) {
+							var c=$("#inputapplytime3").val()
+							var a=$("#breakduration").val();
+							if(a!=""){
+							timeAll5=(timeAll5==''? value+','+a:(c+'\n'+value+','+a));
+							$("#inputapplytime3").val(timeAll5)
+							}
+						}
 					});
 					var timeAll=""
 					laydate.render({
@@ -305,6 +315,17 @@
 							}
 						$("#overdurationtime").val("");
 						$("#overduration").val("");
+					})
+					$("#breakduration").blur(function(){
+						var c= $("#inputapplytime3").val()
+						var b=$("#breaktime").val();
+						var a=$("#breakduration").val();
+						if(b!=""){
+							timeAll5=(timeAll5==''? b+','+a:(c+'\n'+b+','+a));
+							$("#inputapplytime3").val(timeAll5)
+							}
+						$("#breaktime").val("");
+						$("#breakduration").val("");
 					})
 					$.ajax({
 						url: '${ctx}/system/user/findAllUser',
@@ -588,17 +609,22 @@
 												}
 							        		}
 							        		if(data.field.variable==1){
-							        			if(data.field.breaktime==""){
-							        				return layer.msg("调休日期不能为空", {icon: 2});
-							        			}
-							        			if(data.field.breakduration==""){
+							        			if(data.field.inputapplytime3==""){
 							        				return layer.msg("调休时长不能为空", {icon: 2});
 							        			}
 							        			variable='tradeDays'
 							        			breaktime=data.field.breaktime;
 							        			breakduration=data.field.breakduration;
-							        			time={date:breaktime,time:breakduration};
-							        			myArray.push(time)
+							        			var a=(data.field.inputapplytime3)
+								        		ss = a.split("\n")
+								        		for (var i = 0; i < ss.length; i++) {
+								        			if(ss[i] != ""){  
+														var b=ss[i]
+														cc = b.split(",")
+														time={"date":cc[0],"time":cc[1]};
+														myArray.push(time)
+									                    } 
+												}
 							        		}
 							        		if(data.field.variable==2){
 							        			if(data.field.repairtime==""){
@@ -637,7 +663,7 @@
 							        			content:content,
 							        			time:JSON.stringify(myArray)
 							        	}	
-							        	mainJs.fAdd(postData); 
+							        	 mainJs.fAdd(postData);
 							        	
 							        	timeAll=""
 										})
@@ -694,7 +720,13 @@
 								$("#overtime").css("display","none")
 					    		$("#tiao").get(0).checked=true;
 					    		form.render('radio');
-					    		$("#layuiadmin-form-admin").setForm({applytime:data.writeTime,breaktime:JSON.parse(data.time)[0].date,breakduration:JSON.parse(data.time)[0].time});
+					    		$("#layuiadmin-form-admin").setForm({applytime:data.writeTime});
+					    		var arr=JSON.parse(JSON.parse(JSON.stringify(data.time)))
+						    	var html="";
+						    	for (var i = 0; i < arr.length; i++) {
+						    		html+=arr[i].date+','+arr[i].time+'\n'
+								}
+						    	 $("#inputapplytime3").val(html)
 					    	}
 					    	if(data.addSignIn==true){
 					    		$("#repair").css("display","block")
