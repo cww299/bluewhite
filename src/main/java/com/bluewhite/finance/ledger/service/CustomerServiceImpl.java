@@ -32,7 +32,7 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
 			if (!StringUtils.isEmpty(param.getCusPartyNames())) {
 				predicate.add(cb.like(root.get("cusPartyNames").as(String.class),"%" + param.getCusPartyNames() + "%"));
 			}
-			//按乙方姓名查找
+			//按产品姓名查找
 			if (!StringUtils.isEmpty(param.getCusProductName())) {
 				predicate.add(cb.like(root.get("cusProductName").as(String.class),"%" + param.getCusProductName() + "%"));
 			}
