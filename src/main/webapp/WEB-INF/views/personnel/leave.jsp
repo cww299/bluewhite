@@ -815,11 +815,8 @@
 											}
 						        		}
 						        		if(data.field.variable==1){
-						        			if(data.field.breaktime==""){
-						        				return layer.msg("调休日期不能为空", {icon: 2});
-						        			}
-						        			if(data.field.breakduration==""){
-						        				return layer.msg("调休时长不能为空", {icon: 2});
+						        			if(data.field.inputapplytime3==""){
+						        				return layer.msg("调休时长跟日期不能为空", {icon: 2});
 						        			}
 						        			variable='tradeDays'
 						        			breaktime=data.field.breaktime;
