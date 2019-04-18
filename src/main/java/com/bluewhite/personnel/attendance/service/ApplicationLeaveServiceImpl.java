@@ -263,7 +263,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 						: (holidayDetail+"," + date + "申请加班" + time + "小时");
 			}
 			if (applicationLeave.isTradeDays()) {
-				holidayDetail = date + "调休" + time + "小时";
+				holidayDetail =  holidayDetail.equals("") ? (date + "调休" + time + "小时") : holidayDetail+","+date + "调休" + time + "小时";
 			}
 		}
 		applicationLeave.setHolidayDetail(holidayDetail);
