@@ -16,6 +16,7 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
+import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.system.user.entity.Menu;
 import com.bluewhite.system.user.service.MenuService;
 
@@ -73,16 +74,13 @@ public class MenuAction {
 	 * @param request 请求
 	 * @return cr
 	 */
-	
-	@RequestMapping(value = "/menuAll", method = RequestMethod.GET)
+	@RequestMapping(value = "/getMenuPage", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse menuAll(HttpServletRequest request) {
-		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(menuService.findAll())
+	public CommonResponse getMenuPage(HttpServletRequest request,PageParameter page, Menu menu) {
+		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(menuService.getPage(page, menu))
 				.toJSON());
 		return cr;
 	}
-
-	
 
 
 }

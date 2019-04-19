@@ -290,16 +290,17 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 						continue;
 					}
 					
+					//当休息日有打卡记录时，不需要申请加班的人自动算加班时长
 					if (rout) {
 						attendanceTime.setFlag(3);
 						if(attendanceInit.getOverTimeType()==2 && attendanceTime.getCheckIn()!=null && attendanceTime.getCheckOut()!=null){
 							if (attendanceInit.getRestTimeWork() == 3) {
 								attendanceTime.setOvertime(
-										DatesUtil.getTimeHour(workTime, attendanceTime.getCheckOut())
+										DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime) ? workTime : attendanceTime.getCheckIn(), attendanceTime.getCheckOut())
 										);
 							}else{
 								attendanceTime.setOvertime(NumUtils.sub(
-										DatesUtil.getTimeHour(workTime, attendanceTime.getCheckOut()),
+										DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime) ? workTime : attendanceTime.getCheckIn(), attendanceTime.getCheckOut()),
 										restTime));
 							}
 						}
