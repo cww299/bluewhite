@@ -7,155 +7,162 @@
 <!--<![endif]-->
 
 <head>
-     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>基础数据库</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-   
-   
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>基础数据库</title>
+<meta name="description" content="">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+
 </head>
 
 <body>
-    <section id="main-wrapper" class="theme-default">
-        
-        <%@include file="../../decorator/leftbar.jsp"%> 
-        
-        <!--main content start-->
-        
-           <section id="main-content" class="animated fadeInUp">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">基础数据库</h3>
-                                <div class="actions pull-right">
-                                    <i class="fa fa-expand"></i>
-                                    <i class="fa fa-chevron-down"></i>
-                                </div>
-                            </div>
-                            <div class="panel-body">
-                            
-                            <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-8 col-sm-8  col-md-8">
-						<form class="form-search" >
-							<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group">
-							<table><tr>
-								<td>物料编号:</td><td><input type="text" name="name" id="ntwo"   class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp</td>
-								<td>物料名:</td><td><input type="text" name="name" id="ntwo2"   class="form-control search-query name" /></td>
-								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask">
-										查找
-										<i class="icon-search icon-on-right bigger-110"></i>
-									</button>
-								</span>
-								<button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增小组</button>
+	<section id="main-wrapper" class="theme-default">
+
+		<%@include file="../../decorator/leftbar.jsp"%>
+
+		<!--main content start-->
+
+		<section id="main-content" class="animated fadeInUp">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">基础数据库</h3>
+							<div class="actions pull-right">
+								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
 							</div>
 						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-                            
-                            
-                            
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th class="text-center">物料编号</th>
-                                            <th class="text-center">物料名</th>
-                                            <th class="text-center">物料最新价格</th>
-                                            <th class="text-center">物料克重等备注</th>
-                                            <th class="text-center">物料换算单位</th>
-                                            <th class="text-center">物料换算后价格</th>
-                                            <th class="text-center">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablecontent">
-                                        
-                                    </tbody>
-                                    
-                                <tbody id="tablecontenttw">
-                                    </tbody>
-                                </table>
-                                <div id="pager" class="pull-right">
-                                
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </section>
-<!--隐藏框 小组新增开始  -->
-       <div id="addDictDivType" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-				<div class="space-10"></div>
-				<div style="height: 30px"></div>
-				<form class="form-horizontal addDictDivTypeForm">
-				
-				<div class="form-group">
-                                        <label class="col-sm-3 control-label">物料编号:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="groupnumber" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">物料名:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="groupName" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">物料最新价格:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="groupprice" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">物料克重等备注:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="groupunit" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">物料换算单位:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="groupconvertUnit" class="form-control">
-                                        </div>
-                 </div>
-                   <div class="form-group">
-                                        <label class="col-sm-3 control-label">物料换算后的价格:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="groupconvertPrice" class="form-control">
-                                        </div>
-                 </div>
-				</form>
-</div>
-</div>
- <!--隐藏框 小组新增结束  -->
+						<div class="panel-body">
 
-    </section>
-    
-   
-   
-   <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
-    <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
-    <script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
-    <script src="${ctx }/static/plugins/pace/pace.min.js"></script>
-    <script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-    <script src="${ctx }/static/js/src/app.js"></script>
-     <script src="${ctx }/static/js/laypage/laypage.js"></script> 
-    <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
-    <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-    <script src="${ctx }/static/js/vendor/typeahead.js"></script>
-    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
-    <script>
+							<div class="row" style="height: 30px; margin: 15px 0 10px">
+								<div class="col-xs-8 col-sm-8  col-md-8">
+									<form class="form-search">
+										<div class="row">
+											<div class="col-xs-12 col-sm-12 col-md-12">
+												<div class="input-group">
+													<table>
+														<tr>
+															<td>物料编号:</td>
+															<td><input type="text" name="name" id="ntwo"
+																class="form-control search-query name" /></td>
+															<td>&nbsp&nbsp</td>
+															<td>物料名:</td>
+															<td><input type="text" name="name" id="ntwo2"
+																class="form-control search-query name" /></td>
+														</tr>
+													</table>
+													<span class="input-group-btn">
+														<button type="button"
+															class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask">
+															查找 <i class="icon-search icon-on-right bigger-110"></i>
+														</button>
+													</span>
+													<button type="button" id="addgroup"
+														class="btn btn-success btn-sm btn-3d pull-right">新增小组</button>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+
+
+
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th class="text-center">物料编号</th>
+										<th class="text-center">物料名</th>
+										<th class="text-center">物料最新价格</th>
+										<th class="text-center">物料克重等备注</th>
+										<th class="text-center">物料换算单位</th>
+										<th class="text-center">物料换算后价格</th>
+										<th class="text-center">操作</th>
+									</tr>
+								</thead>
+								<tbody id="tablecontent">
+
+								</tbody>
+
+								<tbody id="tablecontenttw">
+								</tbody>
+							</table>
+							<div id="pager" class="pull-right"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</section>
+	<!--隐藏框 小组新增开始  -->
+	<div id="addDictDivType" style="display: none;">
+		<div class=" col-xs-12  col-sm-12  col-md-12 ">
+			<div class="space-10"></div>
+			<div style="height: 30px"></div>
+			<form class="form-horizontal addDictDivTypeForm">
+
+				<div class="form-group">
+					<label class="col-sm-3 control-label">物料编号:</label>
+					<div class="col-sm-6">
+						<input type="text" id="groupnumber" class="form-control">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">物料名:</label>
+					<div class="col-sm-6">
+						<input type="text" id="groupName" class="form-control">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">物料最新价格:</label>
+					<div class="col-sm-6">
+						<input type="text" id="groupprice" class="form-control">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">物料克重等备注:</label>
+					<div class="col-sm-6">
+						<input type="text" id="groupunit" class="form-control">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">物料换算单位:</label>
+					<div class="col-sm-6">
+						<input type="text" id="groupconvertUnit" class="form-control">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">物料换算后的价格:</label>
+					<div class="col-sm-6">
+						<input type="text" id="groupconvertPrice" class="form-control">
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<!--隐藏框 小组新增结束  -->
+
+	</section>
+
+
+
+	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+	<script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
+	<script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
+	<script src="${ctx }/static/plugins/pace/pace.min.js"></script>
+	<script
+		src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
+	<script src="${ctx }/static/js/src/app.js"></script>
+	<script src="${ctx }/static/js/laypage/laypage.js"></script>
+	<script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
+	<script
+		src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
+	<script src="${ctx }/static/js/vendor/typeahead.js"></script>
+	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+	<script>
    jQuery(function($){
    	var Login = function(){
 			var self = this;
@@ -389,7 +396,7 @@
 			})
     
     </script>
-       
+
 </body>
 
 </html>

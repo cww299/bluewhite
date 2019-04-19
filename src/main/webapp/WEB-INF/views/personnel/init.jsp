@@ -1,220 +1,249 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html class="no-js">
-	<!--<![endif]-->
 
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<title>考勤初始设定</title>
-		<meta name="description" content="">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-		<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
-	</head>
+<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+<script src="${ctx }/static/js/shujuhuixian/sjhx.js"></script> 
+<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
 
-	<body>
-		<section id="main-wrapper" class="theme-default">
-			<%@include file="../decorator/leftbar.jsp"%>
-			<section id="main-content" class="animated fadeInUp">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h3 class="panel-title">考勤初始设定</h3>
-								<div class="actions pull-right">
-									<i class="fa fa-expand"></i>
-									<i class="fa fa-chevron-down"></i>
-								</div>
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>考勤初始设定</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+</head>
+
+<body>
+
+<div class="layui-card">
+	<div class="layui-card-body">
+		<div
+			class="layui-form">
+			<div class="layui-form-item">
+				<table>
+					<tr>
+						<td>人员:</td>
+						<td><select name="userId" class="layui-input" id="firstNames" lay-search="true"></select></td>
+						<td>&nbsp&nbsp</td>
+						<td>部门:</td>
+						<td id="orgNameId"></td>
+						<td>
+							<div class="layui-inline">
+								<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-search">
+									<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+								</button>
 							</div>
-							<div class="panel-body">
-								<div class="layui-form layui-card-header layuiadmin-card-header-auto">
-									<div class="layui-form-item">
-										<table>
-											<tr>
-												<td>人员:</td>
-												<td>
-												<select name="userId" class="form-control search-query name"  id="firstNames" lay-search="true"></select>
-												</td>
-												<td>&nbsp&nbsp</td>
-												<td>部门:</td>
-												<td id="orgNameId">
-												</td>
-													<td>
-														<div class="layui-inline">
-															<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-search">
-														<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-													</button>
-														</div>
-													</td>
-											</tr>
-										</table>
-									</div>
-								</div>
-								
-								<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
-							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
 
-						</div>
+		<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
+	</div>
+
+</div>
+	
+	<form action="" id="layuiadmin-form-admin"
+		style="padding: 20px 30px 0 60px; display: none; text-align:">
+		<div class="layui-form" lay-filter="layuiadmin-form-admin">
+			<input type="text" name="id" id="usID" style="display:none;">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">员工姓名</label>
+				<div class="layui-input-inline">
+					<select name="userId" lay-filter="lay_selecte"
+						lay-verify="required" id="selectOne" lay-search="true"></select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">休息方式</label>
+				<div class="layui-input-inline">
+					<select name="restType" lay-filter="restType" id="restType"
+						lay-verify="required" lay-search="true"><option value="1">周休一天</option>
+						<option value="2">月休两天，其他周日算加班</option>
+						<option value="3">全年无休</option></select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">出勤方式</label>
+				<div class="layui-input-inline">
+					<select name="workType" lay-filter="workType" id="workType"
+						lay-verify="required" lay-search="true"><option value="0">请选择</option>
+						<option value="1">无到岗要求</option>
+						<option value="2">无打卡要求</option>
+						<option value="3">按到岗小时计算</option></select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">早到加班</label>
+				<div class="layui-input-block">
+					<input type="checkbox" name="earthWork" value="true" id="kai"
+						lay-text="是|否" lay-skin="switch">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">约定休息时间</label>
+				<div class="layui-input-inline">
+					<input type="text" name="applytime" id="applytime"
+						placeholder="请输入申请时间" class="layui-input laydate-icon">
+					<td>&nbsp&nbsp</td>
+					<div>
+						<textarea name="restDay" id="inputapplytime"
+							class="layui-textarea"></textarea>
 					</div>
 				</div>
-			</section>
-		</section>
-		</section>
-		<form action="" id="layuiadmin-form-admin" style="padding: 20px 30px 0 60px; display: none; text-align: ">
-	<div class="layui-form" lay-filter="layuiadmin-form-admin" >
-	<input type="text"  name="id" id="usID"  class="hide">
-    <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 130px;">员工姓名</label>
-      <div class="layui-input-inline">
-        <select name="userId" lay-filter="lay_selecte" lay-verify="required" id="selectOne" lay-search="true"></select>
-      </div>
-    </div>
-    <div class="layui-form-item">
-     	<label class="layui-form-label" style="width: 130px;">休息方式</label>
-     	<div class="layui-input-inline">
-        	<select name="restType" lay-filter="restType" id="restType" lay-verify="required"  lay-search="true"><option value="1">周休一天</option><option value="2">月休两天，其他周日算加班</option><option value="3">全年无休</option></select>
-      	</div>
-    </div>
-    <div class="layui-form-item">
-     	<label class="layui-form-label" style="width: 130px;">出勤方式</label>
-     	<div class="layui-input-inline">
-        	<select name="workType" lay-filter="workType" id="workType" lay-verify="required"  lay-search="true"><option value="0">请选择</option><option value="1">无到岗要求</option><option value="2">无打卡要求</option><option value="3">按到岗小时计算</option></select>
-      	</div>
-    </div>
-    <div class="layui-form-item">
-    <label class="layui-form-label" style="width: 130px;">早到加班</label>
-    <div class="layui-input-block">
-      <input type="checkbox" name="earthWork" value="true" id="kai" lay-text="是|否" lay-skin="switch">
-    </div>
-  </div>
-    <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 130px;">约定休息时间</label>
-      <div class="layui-input-inline">
-        <input type="text"  name="applytime" id="applytime"  placeholder="请输入申请时间" class="form-control laydate-icon">
-        <td>&nbsp&nbsp</td>
-        <div>
-      		<textarea name="restDay"  id="inputapplytime" class="layui-textarea"></textarea>
-    	</div>
-      </div>
-    </div>
-    
-    <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 130px;">夏令时工作区间</label>
-      <div class="layui-input-inline">
-        <input type="text"  name="workTimeSummer" id="workTimeSummer" lay-verify="required" placeholder="请输入夏令时工作区间" class="form-control laydate-icon">
-      </div>
-    </div>
-    
-    <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 130px;">冬令时工作区间</label>
-      <div class="layui-input-inline">
-        <input type="text"  name="workTimeWinter" id="workTimeWinter" lay-verify="required" placeholder="请输入冬令时工作区间" class="form-control laydate-icon">
-      </div>
-    </div>
-    
-   <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 130px;">夏令出勤时长</label>
-      <div class="layui-input-inline">
-        <input type="text" name="turnWorkTimeSummer" id="turnWorkTimeSummer" lay-verify="required" placeholder="请输入夏令出勤时长 " class="form-control">
-      </div>
-    </div>
-   
-   <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 130px;">冬令出勤时长</label>
-      <div class="layui-input-inline">
-        <input type="text" name="turnWorkTimeWinter" id="turnWorkTimeWinter" lay-verify="required" placeholder="请输入冬令出勤时长 " class="form-control">
-      </div>
-    </div>
-    
-    <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 130px;">夏令时午休区间</label>
-      <div class="layui-input-inline">
-        <input type="text"  name="restTimeSummer" id="restTimeSummer" lay-verify="required" placeholder="请输入夏令时午休区间" class="form-control laydate-icon">
-      </div>
-    </div>
-    
-    <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 130px;">冬令时午休区间</label>
-      <div class="layui-input-inline">
-        <input type="text"  name="restTimeWinter" id="restTimeWinter" lay-verify="required" placeholder="请输入冬令时午休区间" class="form-control laydate-icon">
-      </div>
-    </div>
-    
-    <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 130px;">夏令午休时长</label>
-      <div class="layui-input-inline">
-        <input type="text" name="restSummer" id="restSummer" lay-verify="required" placeholder="请输入夏令午休时长 " class="form-control">
-      </div>
-    </div>
-    
-    <div class="layui-form-item">
-      <label class="layui-form-label" style="width: 130px;">冬令午休时长</label>
-      <div class="layui-input-inline">
-        <input type="text" name="restWinter" id="restWinter" lay-verify="required" placeholder="请输入冬令午休时长" class="form-control">
-      </div>
-    </div>
-    
-    <div class="layui-form-item">
-     	<label class="layui-form-label" style="width: 130px;">午休状态</label>
-     	<div class="layui-input-inline">
-        	<select name="restTimeWork" lay-filter="restTimeWork" id="restTimeWork" lay-verify="required"  lay-search="true"><option value="1">默认休息</option><option value="2">出勤</option><option value="3">加班</option></select>
-      	</div>
-    </div>
-    
-    <div class="layui-form-item">
-     	<label class="layui-form-label" style="width: 130px;">核算加班</label>
-     	<div class="layui-input-inline">
-        	<select name="overTimeType" id="overTimeType" lay-filter="overTimeType" lay-verify="required"  lay-search="true"><option value="1">看加班申请</option><option value="2">打卡核算</option></select>
-      	</div>
-    </div>
-    
-    <div class="layui-form-item">
-     	<label class="layui-form-label" style="width: 130px;">加班后到岗</label>
-     	<div class="layui-input-inline">
-        	<select name="comeWork" id="comeWork" lay-filter="comeWork" lay-verify="required"  lay-search="true"><option value="1">按点上班</option><option value="2">第二天上班时间以超过24:00后的时间往后推</option><option value="3">超过24:30后默认休息7.5小时</option></select>
-      	</div>
-    </div>
-		</div>
-		</form>
-		
-		<form action=""id="layuiadmin-form-admin2" style="padding: 20px 30px 0 15px; display: none; text-align: ">
+			</div>
+
 			<div class="layui-form-item">
-      <label class="layui-form-label" style="width: 130px;">周休一天</label>
-      <input type="text"  name="id" value="1"  class="hide">
-      <div class="layui-input-inline">
-        <input type="text"   id="weekly"  placeholder="请输入周休一天的设定时间" class="form-control laydate-icon">
-        <td>&nbsp&nbsp</td>
-        <div>
-      		<textarea name="weeklyRestDate"  id="weeklyRestDate" class="layui-textarea"></textarea>
-    	</div>
-      </div>
-    	</div>
+				<label class="layui-form-label" style="width: 130px;">夏令时工作区间</label>
+				<div class="layui-input-inline">
+					<input type="text" name="workTimeSummer" id="workTimeSummer"
+						lay-verify="required" placeholder="请输入夏令时工作区间"
+						class="layui-input laydate-icon">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">冬令时工作区间</label>
+				<div class="layui-input-inline">
+					<input type="text" name="workTimeWinter" id="workTimeWinter"
+						lay-verify="required" placeholder="请输入冬令时工作区间"
+						class="layui-input laydate-icon">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">夏令出勤时长</label>
+				<div class="layui-input-inline">
+					<input type="text" name="turnWorkTimeSummer"
+						id="turnWorkTimeSummer" lay-verify="required"
+						placeholder="请输入夏令出勤时长 " class="layui-input">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">冬令出勤时长</label>
+				<div class="layui-input-inline">
+					<input type="text" name="turnWorkTimeWinter"
+						id="turnWorkTimeWinter" lay-verify="required"
+						placeholder="请输入冬令出勤时长 " class="layui-input">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">夏令时午休区间</label>
+				<div class="layui-input-inline">
+					<input type="text" name="restTimeSummer" id="restTimeSummer"
+						lay-verify="required" placeholder="请输入夏令时午休区间"
+						class="layui-input laydate-icon">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">冬令时午休区间</label>
+				<div class="layui-input-inline">
+					<input type="text" name="restTimeWinter" id="restTimeWinter"
+						lay-verify="required" placeholder="请输入冬令时午休区间"
+						class="layui-input laydate-icon">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">夏令午休时长</label>
+				<div class="layui-input-inline">
+					<input type="text" name="restSummer" id="restSummer"
+						lay-verify="required" placeholder="请输入夏令午休时长 "
+						class="layui-input">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">冬令午休时长</label>
+				<div class="layui-input-inline">
+					<input type="text" name="restWinter" id="restWinter"
+						lay-verify="required" placeholder="请输入冬令午休时长" class="layui-input">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">午休状态</label>
+				<div class="layui-input-inline">
+					<select name="restTimeWork" lay-filter="restTimeWork"
+						id="restTimeWork" lay-verify="required" lay-search="true"><option
+							value="1">默认休息</option>
+						<option value="2">出勤</option>
+						<option value="3">加班</option></select>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">核算加班</label>
+				<div class="layui-input-inline">
+					<select name="overTimeType" id="overTimeType"
+						lay-filter="overTimeType" lay-verify="required" lay-search="true"><option
+							value="1">看加班申请</option>
+						<option value="2">打卡核算</option></select>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">加班后到岗</label>
+				<div class="layui-input-inline">
+					<select name="comeWork" id="comeWork" lay-filter="comeWork"
+						lay-verify="required" lay-search="true"><option value="1">按点上班</option>
+						<option value="2">第二天上班时间以超过24:00后的时间往后推</option>
+						<option value="3">超过24:30后默认休息7.5小时</option></select>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<form action="" id="layuiadmin-form-admin2"
+		style="padding: 20px 30px 0 15px; display: none; text-align:">
 		<div class="layui-form-item">
-      <label class="layui-form-label" style="width: 130px;">月休2天</label>
-      <div class="layui-input-inline">
-        <input type="text"  name="applytime" id="month"  placeholder="请输入月休2天的设定时间" class="form-control laydate-icon">
-        <td>&nbsp&nbsp</td>
-        <div>
-      		<textarea name="monthRestDate"  id="monthRestDate" class="layui-textarea"></textarea>
-    	</div>
-      </div>
-    	</div>
-		</form>
-		<script type="text/html" id="toolbar">
+			<label class="layui-form-label" style="width: 130px;">周休一天</label> <input
+				type="text" name="id" value="1" style="display:none;">
+			<div class="layui-input-inline">
+				<input type="text" id="weekly" placeholder="请输入周休一天的设定时间"
+					class="layui-input laydate-icon">
+				<td>&nbsp&nbsp</td>
+				<div>
+					<textarea name="weeklyRestDate" id="weeklyRestDate"
+						class="layui-textarea"></textarea>
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label" style="width: 130px;">月休2天</label>
+			<div class="layui-input-inline">
+				<input type="text" name="applytime" id="month"
+					placeholder="请输入月休2天的设定时间" class="layui-input laydate-icon">
+				<td>&nbsp&nbsp</td>
+				<div>
+					<textarea name="monthRestDate" id="monthRestDate"
+						class="layui-textarea"></textarea>
+				</div>
+			</div>
+		</div>
+	</form>
+	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
 				<span class="layui-btn layui-btn-sm" lay-event="notice">新增</span>
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
 				<span class="layui-btn layui-btn-sm" lay-event="set">设定休息时间</span>
 			</div>
 		</script>
-<script type="text/html" id="barDemo">
+	<script type="text/html" id="barDemo">
   		<a class="layui-btn layui-btn-trans layui-btn-xs"  lay-event="update">编辑</a>
 </script>
-		<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
-		<script src="${ctx }/static/js/shujuhuixian/sjhx.js"></script>
-		<script>
+	
+	<script>
 			layui.config({
 				base: '${ctx}/static/layui-v2.4.5/'
 			}).extend({
@@ -882,6 +911,6 @@
 				}
 			)
 		</script>
-	</body>
+</body>
 
 </html>

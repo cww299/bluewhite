@@ -7,218 +7,253 @@
 <!--<![endif]-->
 
 <head>
-     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>杂工管理</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-   
-   
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>杂工管理</title>
+<meta name="description" content="">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<link rel="shortcut icon" href="${ctx }/static/images/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/autocomplete.css">
+<link rel="stylesheet" href="${ctx }/static/css/font-awesome.min.css">
+<link rel="stylesheet" href="${ctx }/static/css/simple-line-icons.css">
+<link rel="stylesheet" href="${ctx }/static/css/animate.css">
+<link rel="stylesheet" href="${ctx }/static/plugins/daterangepicker/daterangepicker-bs3.css">
+<link rel="stylesheet" href="${ctx }/static/plugins/switchery/switchery.min.css">
+<link rel="stylesheet" href="${ctx }/static/css/main.css">
+<link rel="stylesheet" href="${ctx }/static/js/laypage/skin/laypage.css">
+<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+<script src="${ctx }/static/js/vendor/jquery.cookie.js"></script>
+<script src="${ctx }/static/js/vendor/modernizr-2.6.2.min.js"></script>
+<script src="${ctx }/static/js/layer/layer.js"></script>
+<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+<!-- 主框架js文件 -->
+<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
+<script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
+<script src="${ctx }/static/plugins/pace/pace.min.js"></script>
+<script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
+<script src="${ctx }/static/js/src/app.js"></script>
+<script src="${ctx }/static/js/laypage/laypage.js"></script>
+<script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
+<script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
+<script src="${ctx }/static/js/vendor/typeahead.js"></script>
+
 </head>
 
 <body>
-    <section id="main-wrapper" class="theme-default">
-        
-        <%@include file="../../decorator/leftbar.jsp"%> 
-        
-        <!--main content start-->
-        
-           <section id="main-content" class="animated fadeInUp">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">返工详情</h3>
-                                <div class="actions pull-right">
-                                    <i class="fa fa-expand"></i>
-                                    <i class="fa fa-chevron-down"></i>
-                                </div>
-                            </div>
-                             <!--查询开始  -->
-          <div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-9 col-sm-9  col-md-9">
-				<form class="form-search" >
-					<div class="row">
-						<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group"> 
-								<table><tr><td>批次名:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>产品名称:</td><td><input type="text" name="name" id="name" placeholder="请输入产品名称" class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>开始时间:</td>
-								<td>
-								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
-								</td>
-				<td>&nbsp&nbsp&nbsp&nbsp</td>
-				<td>结束时间:</td>
-				<td>
-					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
-             onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-								</td>
-								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
-										查&nbsp找
-									</button>
-								</span>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<span class="input-group-btn">
-									<button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增返工</button>
-								</span>
+	<section id="main-wrapper" class="theme-default">
+
+		<%-- <%@include file="../../decorator/leftbar.jsp"%> --%>
+
+		<!--main content start-->
+
+		<section id="main-content" class="animated fadeInUp">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">返工详情</h3>
+							<div class="actions pull-right">
+								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
 							</div>
 						</div>
+						<!--查询开始  -->
+						<div class="row" style="height: 30px; margin: 15px 0 10px">
+							<div class="col-xs-9 col-sm-9  col-md-9">
+								<form class="form-search">
+									<div class="row">
+										<div class="col-xs-12 col-sm-12 col-md-12">
+											<div class="input-group">
+												<table>
+													<tr>
+														<td>批次名:</td>
+														<td><input type="text" name="number" id="number"
+															placeholder="请输入批次号"
+															class="form-control search-query number" /></td>
+														<td>&nbsp&nbsp&nbsp&nbsp</td>
+														<td>产品名称:</td>
+														<td><input type="text" name="name" id="name"
+															placeholder="请输入产品名称"
+															class="form-control search-query name" /></td>
+														<td>&nbsp&nbsp&nbsp&nbsp</td>
+														<td>开始时间:</td>
+														<td><input id="startTime" placeholder="请输入开始时间"
+															class="form-control laydate-icon"
+															onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+														</td>
+														<td>&nbsp&nbsp&nbsp&nbsp</td>
+														<td>结束时间:</td>
+														<td><input id="endTime" placeholder="请输入结束时间"
+															class="form-control laydate-icon"
+															onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+														</td>
+													</tr>
+												</table>
+												<span class="input-group-btn">
+													<button type="button"
+														class="btn btn-info btn-square btn-sm btn-3d searchtask">
+														查&nbsp找</button>
+												</span>
+												<td>&nbsp&nbsp&nbsp&nbsp</td> <span class="input-group-btn">
+													<button type="button" id="addgroup"
+														class="btn btn-success btn-sm btn-3d pull-right">新增返工</button>
+												</span>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<!-- 查询结束 -->
+						<div class="panel-body">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th class="text-center">任务编号</th>
+										<th class="text-center">批次号</th>
+										<th class="text-center">产品名</th>
+										<th class="text-center">时间</th>
+										<th class="text-center">工序</th>
+										<th class="text-center">任务时间</th>
+										<th class="text-center">任务价值</th>
+										<th class="text-center">b工资净值</th>
+										<th class="text-center">完成人</th>
+										<th class="text-center">操作</th>
+									</tr>
+								</thead>
+								<tbody id="tablecontent">
+
+								</tbody>
+
+							</table>
+							<div id="pager" class="pull-right"></div>
+						</div>
 					</div>
-				</form>
-			</div>
-		</div>
-            <!-- 查询结束 -->
-                            <div class="panel-body">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th class="text-center">任务编号</th>
-                                        	<th class="text-center">批次号</th>
-                                            <th class="text-center">产品名</th>
-                                            <th class="text-center">时间</th>
-                                            <th class="text-center">工序</th>
-                                            <th class="text-center">任务时间</th>
-                                            <th class="text-center">任务价值</th>
-                                            <th class="text-center">b工资净值</th>
-                                            <th class="text-center">完成人</th>
-                                            <th class="text-center">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablecontent">
-                                        
-                                    </tbody>
-                              
-                                </table>
-                                <div id="pager" class="pull-right">
-                                
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </section>
-
-
-
-<div id="savegroup" style="display: none;">
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-					&times;
-				</button>
-				<h4 class="modal-title" id="myModalLabel">
-					人员分组详情
-				</h4>
-			</div>
-			<div class="modal-body">
-				
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-info" data-dismiss="modal">关闭
-				</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
-</div>
-</div>
-<!--隐藏框 产品新增结束  -->
-<!--隐藏框 新增返工开始  -->
-        <div id="addDictDivType" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-				<div class="space-10"></div>
-				<div style="height: 30px"></div>
-				<form class="form-horizontal addDictDivTypeForm">
-					<div class="row col-xs-12  col-sm-12  col-md-12 ">
-					<div class="form-group">
-                                        <label class="col-sm-3 control-label">日期:</label>
-                                        <div class="col-sm-6">
-                                            <input id="Time" placeholder="时间可不填" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#Time', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-                                        </div>
-                 </div>
-                 	<div class="form-group">
-						
-                           <label class="col-sm-3 control-label">返工小时工价:</label>
-                              <div class="col-sm-6">
-                                  <input type="text" class="form-control hourly">
-                              </div>
-                    	</div>
-                 	
-                	 <div class="form-group">
-						
-                           <label class="col-sm-3 control-label">批次名:</label>
-                              <div class="col-sm-6">
-                                  <input type="text" class="form-control bacth">
-                              </div>
-                    	</div>
-                    	
-                    	<div class="form-group">
-						
-                           <label class="col-sm-3 control-label">产品名:</label>
-                              <div class="col-sm-6">
-                                  <input type="text" class="form-control product">
-                              </div>
-                    	</div>
-                    	
-						<div class="form-group">
-						
-                           <label class="col-sm-3 control-label">工序名:</label>
-                              <div class="col-sm-6">
-                                  <input type="text" class="form-control sumnumber">
-                              </div>
-                    	</div>
-                    	
-                    	<div class="form-group">
-                            <label class="col-sm-3 control-label">现场管理时间:</label>
-                                <div class="col-sm-6 ">
-                                  <input type="text" placeholder="可不填" class="form-control timedata">
-                                </div>
-                    	</div>
-                    	<div class="form-group">
-                            <label class="col-sm-3 control-label">备注:</label>
-                                <div class="col-sm-6">
-                                  <input type="text" class="form-control remarks">
-                                </div>
-                    	</div>
-                    	<div class="form-group">
-                            <label class="col-sm-3 control-label">完成人:</label>
-                                <div class="col-sm-6 complete">
-                                  <input type="text" class="form-control">
-                                </div>
-                                 <div class="col-sm-2 select"></div>
-                    	</div>
-                 </div>
 				</div>
+			</div>
+		</section>
+	</section>
 
-				</form>
-</div>
-</div>
-<!--隐藏框 新增结束  -->
-    </section>
-    
-   
-   
-   <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
-    <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
-    <script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
-    <script src="${ctx }/static/plugins/pace/pace.min.js"></script>
-    <script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-    <script src="${ctx }/static/js/src/app.js"></script>
-     <script src="${ctx }/static/js/laypage/laypage.js"></script> 
-    <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
-    <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
-    <script src="${ctx }/static/js/vendor/typeahead.js"></script>
-    <script>
+
+
+	<div id="savegroup" style="display: none;">
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+			aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="myModalLabel">人员分组详情</h4>
+					</div>
+					<div class="modal-body"></div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-info" data-dismiss="modal">关闭
+						</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal -->
+		</div>
+	</div>
+	<!--隐藏框 产品新增结束  -->
+	<!--隐藏框 新增返工开始  -->
+	<div id="addDictDivType" style="display: none;">
+		<div class=" col-xs-12  col-sm-12  col-md-12 ">
+			<div class="space-10"></div>
+			<div style="height: 30px"></div>
+			<form class="form-horizontal addDictDivTypeForm">
+				<div class="row col-xs-12  col-sm-12  col-md-12 ">
+					<div class="form-group">
+						<label class="col-sm-3 control-label">日期:</label>
+						<div class="col-sm-6">
+							<input id="Time" placeholder="时间可不填"
+								class="form-control laydate-icon"
+								onClick="laydate({elem: '#Time', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+						</div>
+					</div>
+					<div class="form-group">
+
+						<label class="col-sm-3 control-label">返工小时工价:</label>
+						<div class="col-sm-6">
+							<input type="text" class="form-control hourly">
+						</div>
+					</div>
+
+					<div class="form-group">
+
+						<label class="col-sm-3 control-label">批次名:</label>
+						<div class="col-sm-6">
+							<input type="text" class="form-control bacth">
+						</div>
+					</div>
+
+					<div class="form-group">
+
+						<label class="col-sm-3 control-label">产品名:</label>
+						<div class="col-sm-6">
+							<input type="text" class="form-control product">
+						</div>
+					</div>
+
+					<div class="form-group">
+
+						<label class="col-sm-3 control-label">工序名:</label>
+						<div class="col-sm-6">
+							<input type="text" class="form-control sumnumber">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-sm-3 control-label">现场管理时间:</label>
+						<div class="col-sm-6 ">
+							<input type="text" placeholder="可不填"
+								class="form-control timedata">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">备注:</label>
+						<div class="col-sm-6">
+							<input type="text" class="form-control remarks">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">完成人:</label>
+						<div class="col-sm-6 complete">
+							<input type="text" class="form-control">
+						</div>
+						<div class="col-sm-2 select"></div>
+					</div>
+				</div>
+		</div>
+
+		</form>
+	</div>
+	</div>
+	<!--隐藏框 新增结束  -->
+	</section>
+
+
+
+	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+	<script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
+	<script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
+	<script src="${ctx }/static/plugins/pace/pace.min.js"></script>
+	<script
+		src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
+	<script src="${ctx }/static/js/src/app.js"></script>
+	<script src="${ctx }/static/js/laypage/laypage.js"></script>
+	<script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
+	<script
+		src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
+	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+	<script src="${ctx }/static/js/vendor/typeahead.js"></script>
+	<script>
    jQuery(function($){
    	var Login = function(){
 			var self = this;
@@ -619,7 +654,7 @@
 			})
     
     </script>
-       
+
 </body>
 
 </html>

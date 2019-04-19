@@ -1,90 +1,139 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="${ctx }/static/css/dropzone.css">
+
 <title>人员汇总</title>
+
+<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>  <!-- 时间插件 -->
+<script src="${ctx }/static/js/layer/layer.js"></script>
+<script src="${ctx }/static/js/laypage/laypage.js"></script> 
+<link rel="stylesheet" href="${ctx }/static/css/main.css">
+
+
+
 </head>
 <body>
-    <section id="main-wrapper" class="theme-default">
-		<%@include file="../decorator/leftbar.jsp"%> 
-            <section id="main-content" class="animated fadeInUp">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">人员信息</h3>
-                                <div class="actions pull-right">
-                                    <i class="fa fa-expand"></i>
-                                    <i class="fa fa-chevron-down"></i>
-                                </div>
-                            </div>
-                            <div class="row" style="height: 30px; margin:15px 0 10px">
+
+	
+	<div class="panel panel-default">
+		<div class="panel-heading">
+		</div>
+		<div class="row" style="height: 30px; margin: 15px 0 10px">
 			<div class="col-xs-12 col-sm-12  col-md-12">
-				<form class="form-search" >
+				<form class="form-search">
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group"> 
-								<table><tr>
-								<td>员工姓名:</td><td><input type="text"  id="name" class="form-control name" /></td>
-								<td>&nbsp&nbsp</td>
-								<td>在离职:</td><td><select class="form-control" id="groupp"><option value="">请选择</option><option value="0">在职</option><option value="1">离职</option></select></td>
-									<td>&nbsp&nbsp</td>
-								<td>部门:</td><td id="orgName"></td>
-								<td>&nbsp&nbsp</td>
-								<td>性别:</td><td><select class="form-control" id="gender"><option value="">请选择</option><option value="0">男</option><option value="1">女</option></select></td>
-								<td>&nbsp&nbsp</td>
-								<td>退休返聘:</td><td><select class="form-control" id="retire"><option value="">否</option><option value="0">是</option></select></td>
-								<td>&nbsp&nbsp</td>
-								<td>合同:</td><td><select class="form-control" id="commitment"><option value="">请选择</option><option value="0">未签</option><option value="1">已签</option><option value="2">续签</option></select></td>
-								</tr>
-								<tr><td><div style="height: 10px"></div></td></tr>
-								<tr>
-								<td>位置编号:</td><td><input type="text"  id="number" class="form-control" /></td>
-								<td>&nbsp&nbsp</td>
-								<td>时间查询:</td><td><select class="form-control" id="timesss"><option value="">请选择</option><option value="entry">入职时间</option><option value="actua">实际转正时间</option><option value="estimate">预计转正时间</option></select></td>
-								<td>&nbsp&nbsp</td>
-								<td>开始:</td>
-								<td>
-								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
-								</td>
-								<td>&nbsp&nbsp</td>
-								<td>结束:</td>
-								<td>
-									<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
-             						onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-								</td>
-								<td>&nbsp&nbsp</td>
-								<td>保险详情:</td><td><select class="form-control" id="safe"><option value="">请选择</option><option value="0">未缴</option><option value="1">已缴</option></select></td>
-								<td>&nbsp&nbsp</td>
-								<td>承诺书:</td><td><select class="form-control" id="promise"><option value="">请选择</option><option value="0">未签</option><option value="1">已签</option></select></td>
-								</tr>
-								<tr><td><div style="height: 10px"></div></td></tr>
-								<tr><td>所属银行:</td><td><input type="text"  id="bankCardtw" class="form-control" /></td>
-								<td>&nbsp&nbsp</td>
-								<td>学历查询:</td><td><select id="education2" class="form-control"><option value="">请选择</option><option value="本科">本科</option><option value="大专">大专</option><option value="高中">高中</option><option value="初中及以下">初中及以下</option></select></td>
-								</tr>
-								</table> 
+							<div class="input-group">
+								<table>
+									<tr>
+										<td>员工姓名:</td>
+										<td><input type="text" id="name"
+											class="form-control name" /></td>
+										<td>&nbsp&nbsp</td>
+										<td>在离职:</td>
+										<td><select class="form-control" id="groupp"><option
+													value="">请选择</option>
+												<option value="0">在职</option>
+												<option value="1">离职</option></select></td>
+										<td>&nbsp&nbsp</td>
+										<td>部门:</td>
+										<td id="orgName"></td>
+										<td>&nbsp&nbsp</td>
+										<td>性别:</td>
+										<td><select class="form-control" id="gender"><option
+													value="">请选择</option>
+												<option value="0">男</option>
+												<option value="1">女</option></select></td>
+										<td>&nbsp&nbsp</td>
+										<td>退休返聘:</td>
+										<td><select class="form-control" id="retire"><option
+													value="">否</option>
+												<option value="0">是</option></select></td>
+										<td>&nbsp&nbsp</td>
+										<td>合同:</td>
+										<td><select class="form-control" id="commitment"><option
+													value="">请选择</option>
+												<option value="0">未签</option>
+												<option value="1">已签</option>
+												<option value="2">续签</option></select></td>
+									</tr>
+									<tr>
+										<td><div style="height: 10px"></div></td>
+									</tr>
+									<tr>
+										<td>位置编号:</td>
+										<td><input type="text" id="number"
+											class="form-control" /></td>
+										<td>&nbsp&nbsp</td>
+										<td>时间查询:</td>
+										<td><select class="form-control" id="timesss"><option
+													value="">请选择</option>
+												<option value="entry">入职时间</option>
+												<option value="actua">实际转正时间</option>
+												<option value="estimate">预计转正时间</option></select></td>
+										<td>&nbsp&nbsp</td>
+										<td>开始:</td>
+										<td><input id="startTime" placeholder="请输入开始时间"
+											class="form-control laydate-icon"
+											onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+										</td>
+										<td>&nbsp&nbsp</td>
+										<td>结束:</td>
+										<td><input id="endTime" placeholder="请输入结束时间"
+											class="form-control laydate-icon"
+											onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+										</td>
+										<td>&nbsp&nbsp</td>
+										<td>保险详情:</td>
+										<td><select class="form-control" id="safe"><option
+													value="">请选择</option>
+												<option value="0">未缴</option>
+												<option value="1">已缴</option></select></td>
+										<td>&nbsp&nbsp</td>
+										<td>承诺书:</td>
+										<td><select class="form-control" id="promise"><option
+													value="">请选择</option>
+												<option value="0">未签</option>
+												<option value="1">已签</option></select></td>
+									</tr>
+									<tr>
+										<td><div style="height: 10px"></div></td>
+									</tr>
+									<tr>
+										<td>所属银行:</td>
+										<td><input type="text" id="bankCardtw"
+											class="form-control" /></td>
+										<td>&nbsp&nbsp</td>
+										<td>学历查询:</td>
+										<td><select id="education2" class="form-control"><option
+													value="">请选择</option>
+												<option value="本科">本科</option>
+												<option value="大专">大专</option>
+												<option value="高中">高中</option>
+												<option value="初中及以下">初中及以下</option></select></td>
+									</tr>
+								</table>
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-default btn-square btn-sm btn-3d  searchtask">
-										查&nbsp找
-									</button>
+									<button type="button"
+										class="btn btn-default btn-square btn-sm btn-3d  searchtask">
+										查&nbsp找</button>
 								</span>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-success  btn-sm btn-3d addDict">
-									新增员工
-									</button>
+								<td>&nbsp&nbsp&nbsp&nbsp</td> <span class="input-group-btn">
+									<button type="button"
+										class="btn btn-success  btn-sm btn-3d addDict">
+										新增员工</button>
 								</span>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-success  btn-sm btn-3d savemode" data-toggle="modal" data-target="#myModal" >
-									员工提示
+								<td>&nbsp&nbsp&nbsp&nbsp</td> <span class="input-group-btn">
+									<button type="button"
+										class="btn btn-success  btn-sm btn-3d savemode"
+										data-toggle="modal" data-target="#myModal">员工提示
 									</button>
 								</span>
 							</div>
@@ -93,468 +142,459 @@
 				</form>
 			</div>
 		</div>
-                            
-                            <div class="panel-body">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">位置编号</th>
-                                            <th class="text-center">姓名</th>
-                                            <th class="text-center">手机号</th>
-                                            <th class="text-center">年龄</th>
-                                            <th class="text-center">合同</th>
-                                            <th class="text-center">承诺书</th>
-                                            <th class="text-center">保险</th>
-                                            <th class="text-center">入职时间</th>
-                                            <th class="text-center">预计转正时间</th>
-                                            <th class="text-center">合同到期时间</th>
-                                            <th class="text-center">部门</th>
-                                            <th class="text-center">是否在职</th>
-                                            <th class="text-center">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablecontent">
-                                    </tbody>
-                                    <thead>
-                                        <tr>
-                                       	    <td class="text-center">合计人数</td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center" id="total"></td>
-                                        </tr>
-                                    </thead>
-                                </table>
-                                 <div id="pager" class="pull-right">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </section>
-        
-        
-        
-        
-        
-        
-         <!--隐藏框 修改开始  -->
- <!-- <div id="addbatch" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-				<div class="space-10"></div>
-				<div style="height: 30px"></div>
-				<form class="form-horizontal addbatchForm">
-				<div class="form-group">
-                                        <label class="col-sm-3 control-label">姓名:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="proName" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">部门:</label>
-                                        <div class="col-sm-6 department">
-                                            
-                                        </div>
-                 </div>
-                
-                <div class="form-group">
-                                        <label class="col-sm-3 control-label">职位:</label>
-                                        <div class="col-sm-6 position">
-                                            
-                                        </div>
-                 </div>
-				</form>
-</div>
-</div> -->       
-    <!--隐藏框 修改结束  -->
-        
-          <!--隐藏框 新增  -->
-   <div id="addDictDivType" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-				<div class="space-10"></div>
-				<div style="height: 30px"></div>
-				
-                            <!-- <div><table><tr>
+
+		<div class="panel-body">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th class="text-center">位置编号</th>
+						<th class="text-center">姓名</th>
+						<th class="text-center">手机号</th>
+						<th class="text-center">年龄</th>
+						<th class="text-center">合同</th>
+						<th class="text-center">承诺书</th>
+						<th class="text-center">保险</th>
+						<th class="text-center">入职时间</th>
+						<th class="text-center">预计转正时间</th>
+						<th class="text-center">合同到期时间</th>
+						<th class="text-center">部门</th>
+						<th class="text-center">是否在职</th>
+						<th class="text-center">操作</th>
+					</tr>
+				</thead>
+				<tbody id="tablecontent">
+				</tbody>
+				<thead>
+					<tr>
+						<td class="text-center">合计人数</td>
+						<td class="text-center"></td>
+						<td class="text-center"></td>
+						<td class="text-center"></td>
+						<td class="text-center"></td>
+						<td class="text-center"></td>
+						<td class="text-center"></td>
+						<td class="text-center"></td>
+						<td class="text-center"></td>
+						<td class="text-center"></td>
+						<td class="text-center"></td>
+						<td class="text-center"></td>
+						<td class="text-center" id="total"></td>
+					</tr>
+				</thead>
+			</table>
+			<div id="pager" class="pull-right"></div>
+		</div>
+	</div>
+
+
+
+	<!--隐藏框 新增  -->
+	<div id="addDictDivType" style="display: none;">
+		<div class=" col-xs-12  col-sm-12  col-md-12 ">
+			<div class="space-10"></div>
+			<div style="height: 30px"></div>
+
+			<!-- <div><table><tr>
 								<td>图片类型:</td><td><select class="form-control" id="selecttype"><option value="introduce">产品</option><option value="details">产品描述</option><option value="bursting">爆款图片</option></select></td>
 								</tr></table></div> -->
-                            <div style="padding-left: 450px">
-                            <div class="panel-body">
-                                <div style="font-size: 16px;"><b>员工照片:</b></div><form action="#" class="dropzone" style="widows: 150px" id="my-awesome-dropzone" enctype="multipart/form-data">
-                                </form>
+			<div style="padding-left: 450px">
+				<div class="panel-body">
+					<div style="font-size: 16px;">
+						<b>员工照片:</b>
+					</div>
+					<form action="#" class="dropzone" style="widows: 150px"
+						id="my-awesome-dropzone" enctype="multipart/form-data"></form>
 
-                            </div>
-                 </div>
-				<form class="form-horizontal addDictDivTypeForm">
-					<div class="row col-xs-12  col-sm-12  col-md-12 ">
-		
-                 
-						<div class="form-group">
-                           <label class="col-sm-2 col-md-2 control-label">员工姓名:</label>
-                              <div class="col-sm-2 col-md-2">
-                                  <input type="text" class="form-control username">
-                              </div>
-                               <label class="col-sm-2 control-label">员工编号:</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" disabled="disabled" class="form-control number">
-                                      </div>
-                            <label class="col-sm-2 control-label">户籍地址:</label>
-                              <div class="col-sm-2 working">
-                              <input type="text" class="form-control permanentAddress">
-                              </div>
-                    	</div>
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">民族:</label>
-                              <div class="col-sm-2 working">
-                              <select class="form-control nation"><option value="汉">汉</option><option value="少数民族">少数民族</option></select>
-                              </div>
-                              <label class="col-sm-2 control-label">手机号:</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control phone">
-                                      </div>
-                                      <label class="col-sm-2 control-label">现居住地址:</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control livingAddress">
-                                      </div>
-                    	</div>
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">邮箱:</label>
-                              <div class="col-sm-2 working">
-                              <input type="text" class="form-control email">
-                              </div>
-                              <label class="col-sm-2 control-label">性别:</label>
-                                 <div class="col-sm-2">
-                                  <select class="form-control gender" disabled="disabled"><option value="0">男</option><option value="1">女</option></select>
-                                      </div>
-                                      <label class="col-sm-2 control-label">出生日期:</label>
-                              <div class="col-sm-2 working">
-                              <input id="birthDate" disabled="disabled" placeholder="请输入时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#birthDate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-                              </div>
-                    	</div>
-                    	
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">婚姻状况:</label>
-                              <div class="col-sm-2 working">
-                               <select class="form-control marriage"><option value="0">已婚</option><option value="1">未婚</option></select>
-                              </div>
-                              <label class="col-sm-2 control-label">生育状况:</label>
-                                 <div class="col-sm-2">
-                                          <select class="form-control procreate"><option value="0">已育</option><option value="1">未育</option></select>
-                                      </div>
-                                      <label class="col-sm-2 control-label">身份证号:</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control idCard">
-                                      </div>
-                    	</div>
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">学历:</label>
-                              <div class="col-sm-2 working">
-                              <select class="form-control education"><option value="本科">本科</option><option value="大专">大专</option><option value="高中">高中</option><option value="初中及以下">初中及以下</option></select>
-                              </div>
-                              <label class="col-sm-2 control-label">毕业学校:</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control school">
-                                      </div>
-                                      <label class="col-sm-2 control-label">专业:</label>
-                              <div class="col-sm-2 working">
-                              <input type="text" class="form-control major">
-                              </div>
-                    	</div>
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">紧急联系方式:</label>
-                              <div class="col-sm-2 working">
-                              <input type="text" class="form-control information">
-                              </div>
-                              <label class="col-sm-2 control-label">紧急联系人:</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control contacts">
-                                      </div>
-                              <label class="col-sm-2 control-label">入职时间:</label>
-                                 <div class="col-sm-2">
-                                          <input id="entry" placeholder="请输入时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#entry', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-                                      </div>
-                    	</div>
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">预计转正时间:</label>
-                              <div class="col-sm-2 working">
-                             <input id="estimate" placeholder="请输入时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#estimate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-                              </div>
-                              <label class="col-sm-2 control-label">实际转正时间:</label>
-                                 <div class="col-sm-2">
-                                          <input id="actua" placeholder="请输入时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#actua', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-                                      </div>
-                                      <label class="col-sm-2 control-label">社保缴纳时间:</label>
-                              <div class="col-sm-2 working">
-                              <input id="socialSecurity" placeholder="请输入时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#socialSecurity', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-                              </div>
-                    	</div>
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">承诺书:</label>
-                              <div class="col-sm-2 working">
-                               <select class="form-control promise"><option value="0">未签</option><option value="1">已签</option></select>
-                              </div>
-                              <label class="col-sm-2 control-label">合同:</label>
-                                 <div class="col-sm-2">
-                                          <select class="form-control commitment"><option value="0">未签</option><option value="1">已签</option><option value="2">续签</option></select>
-                                      </div>
-                                      <label class="col-sm-2 control-label">协议:</label>
-                                 <div class="col-sm-2 agreementtw" >
-                                          <!-- <input type="text" class="form-control agreement"> -->
-                                      </div>
-                    	</div>
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">银行卡1:</label>
-                              <div class="col-sm-2 working">
-                              <input type="text" class="form-control bankCard1">
-                              </div>
-                              <label class="col-sm-2 control-label">所属银行:</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control  bankCardtw" disabled="disabled">
-                                      </div>
-                                      <label class="col-sm-2 control-label">保险情况:</label>
-                              <div class="col-sm-2 working">
-                               <select class="form-control safe"><option value="0">未缴</option><option value="1">已缴</option></select>
-                              </div>
-                    	</div>
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">合同签订开始时间:</label>
-                              <div class="col-sm-2 working">
-                              <input id="contractDate" placeholder="请输入时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#contractDate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-                              </div>
-                              <label class="col-sm-2 control-label">合同签订次数:</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control frequency">
-                                      </div>
-                                      <label class="col-sm-2 control-label">签订单位:</label>
-                              <div class="col-sm-2 working">
-                               <input type="text" class="form-control company">
-                              </div>
-                    	</div>
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">工作状态:</label>
-                              <div class="col-sm-2 working">
-                               <select class="form-control quit"><option value="0">在职</option><option value="1">离职</option></select>
-                              </div>
-                              <label class="col-sm-2 control-label">离职时间:</label>
-                                 <div class="col-sm-2">
-                                          <input id="quitDate" placeholder="请输入时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#quitDate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-                                      </div>
-                                       <label class="col-sm-2 control-label">身份证到期时间:</label>
-                                 <div class="col-sm-2">
-                                          <input id="idCardEnd" placeholder="请输入时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#idCardEnd', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-                                      </div>
-                    	</div>
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">离职理由:</label>
-                              <div class="col-sm-2 working">
-                              <input type="text" class="form-control reason">
-                              </div>
-                              <label class="col-sm-2 control-label">合同:</label>
-                                 <div class="col-sm-2 remarktww">
-                                          <!-- <input type="text" class="form-control remark"> -->
-                                      </div>
-                                      <label class="col-sm-2 control-label">合同到期时间:</label>
-                                 <div class="col-sm-2">
-                                         <input id="contractDateEnd" placeholder="请输入时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#contractDateEnd', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-                                      </div>
-                    	</div>
-                    	<div class="form-group">
-                                        <label class="col-sm-4 control-label">归属车间:</label>
-                                        <div class="col-sm-4" >
-                                            <select class="form-control" id="type4"><option value="">请选择</option><option value="1">质检</option><option value="2">包装</option><option value="3">针工</option><option value="4">机工</option><option value="5">8号仓库</option></select>
-                                        </div>
-                		 </div>
-                    	<div class="form-group">
-                                        <label class="col-sm-4 control-label">部门:</label>
-                                        <div class="col-sm-4 department">
-                                            
-                                        </div>
-                		 </div>
-                
-                <div class="form-group">
-                                        <label class="col-sm-4 control-label">职位:</label>
-                                        <div class="col-sm-4 position">
-                                            
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-4 control-label">是否为销售人员:</label>
-                                        <div class="col-sm-4" >
-                                            <select class="form-control" id="sale"><option value="">请选择</option><option value="1">是</option></select>
-                                        </div>
-                		 </div>
-                 <div class="form-group hidden">
-                 <input type="text" id="productId" class="form-control">
-                 </div>
-                 <div class="form-group hidden">
-                 <input type="text" id="producturl" class="form-control">
-                 </div>
-                 </div>
+				</div>
+			</div>
+			<form class="form-horizontal addDictDivTypeForm">
+				<div class="row col-xs-12  col-sm-12  col-md-12 ">
 
-				</form>
-</div>     
-        
- </div>        
-       
-       <!--在职人员档案  -->
-       <div id="addDictDivTypetw" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-				<div class="space-10"></div>
-				<div style="height: 30px"></div>
-				<form class="form-horizontal addDictDivTypeFormtw">
-					<div class="row col-xs-12  col-sm-12  col-md-12 ">
-						<div class="form-group">
-                           <label class="col-sm-2 col-md-2 control-label">员工姓名:</label>
-                              <div class="col-sm-2 col-md-2">
-                                  <input type="text" class="form-control usernametw" disabled="disabled">
-                              </div>
-                               <label class="col-sm-2 control-label">位置编号:</label>
-                              <div class="col-sm-2">
-                              <input type="text" class="form-control numbertw">
-                              </div>
-                               
-                            <label class="col-sm-2 control-label">照片数量:</label>
-                              <div class="col-sm-2 working">
-                              <input type="text" class="form-control pic">
-                              </div>
-                    	</div>
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">身份证数量:</label>
-                              <div class="col-sm-2 working">
-                               <input type="text" class="form-control IdCardnumber">
-                              </div>
-                              <label class="col-sm-2 control-label">银行卡数量:</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control bankCard">
-                                      </div>
-                                      <label class="col-sm-2 control-label">体检:</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control physical">
-                                      </div>
-                    	</div>
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">资格证书:</label>
-                              <div class="col-sm-2 working">
-                              <input type="text" class="form-control qualification">
-                              </div>
-                              <label class="col-sm-2 control-label">学历证书:</label>
-                                 <div class="col-sm-2">
-                                 <input type="text" class="form-control formalSchooling">
-                                      </div>
-                                      <label class="col-sm-2 control-label">其他协议:</label>
-                              <div class="col-sm-2 working">
-                             <input type="text" class="form-control agreementnumbernumber">
-                              </div>
-                    	</div>
-                    	
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">保密协议:</label>
-                              <div class="col-sm-2 working">
-                              <input type="text" class="form-control secrecyAgreementnumber">
-                              </div>
-                              <label class="col-sm-2 control-label">合同数量:</label>
-                                 <div class="col-sm-2">
-                                  <input type="text" class="form-control contractnumber">
-                                      </div>
-                                      <label class="col-sm-2 control-label">其他资料:</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control remarktw">
-                                      </div>
-                    	</div>
-                    	<div class="form-group">
-                          <label class="col-sm-2 control-label">员工档案:</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control archives">
-                                      </div>
-                    	</div>
-                 </div>
 
-				</form>
-</div>     
-        
- </div> 
-  
-      
-    <div id="savegroupp" ><table>
+					<div class="form-group">
+						<label class="col-sm-2 col-md-2 control-label">员工姓名:</label>
+						<div class="col-sm-2 col-md-2">
+							<input type="text" class="form-control username">
+						</div>
+						<label class="col-sm-2 control-label">员工编号:</label>
+						<div class="col-sm-2">
+							<input type="text" disabled="disabled"
+								class="form-control number">
+						</div>
+						<label class="col-sm-2 control-label">户籍地址:</label>
+						<div class="col-sm-2 working">
+							<input type="text" class="form-control permanentAddress">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">民族:</label>
+						<div class="col-sm-2 working">
+							<select class="form-control nation"><option value="汉">汉</option>
+								<option value="少数民族">少数民族</option></select>
+						</div>
+						<label class="col-sm-2 control-label">手机号:</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control phone">
+						</div>
+						<label class="col-sm-2 control-label">现居住地址:</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control livingAddress">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">邮箱:</label>
+						<div class="col-sm-2 working">
+							<input type="text" class="form-control email">
+						</div>
+						<label class="col-sm-2 control-label">性别:</label>
+						<div class="col-sm-2">
+							<select class="form-control gender" disabled="disabled"><option
+									value="0">男</option>
+								<option value="1">女</option></select>
+						</div>
+						<label class="col-sm-2 control-label">出生日期:</label>
+						<div class="col-sm-2 working">
+							<input id="birthDate" disabled="disabled" placeholder="请输入时间"
+								class="form-control laydate-icon"
+								onClick="laydate({elem: '#birthDate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-sm-2 control-label">婚姻状况:</label>
+						<div class="col-sm-2 working">
+							<select class="form-control marriage"><option value="0">已婚</option>
+								<option value="1">未婚</option></select>
+						</div>
+						<label class="col-sm-2 control-label">生育状况:</label>
+						<div class="col-sm-2">
+							<select class="form-control procreate"><option value="0">已育</option>
+								<option value="1">未育</option></select>
+						</div>
+						<label class="col-sm-2 control-label">身份证号:</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control idCard">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">学历:</label>
+						<div class="col-sm-2 working">
+							<select class="form-control education"><option
+									value="本科">本科</option>
+								<option value="大专">大专</option>
+								<option value="高中">高中</option>
+								<option value="初中及以下">初中及以下</option></select>
+						</div>
+						<label class="col-sm-2 control-label">毕业学校:</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control school">
+						</div>
+						<label class="col-sm-2 control-label">专业:</label>
+						<div class="col-sm-2 working">
+							<input type="text" class="form-control major">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">紧急联系方式:</label>
+						<div class="col-sm-2 working">
+							<input type="text" class="form-control information">
+						</div>
+						<label class="col-sm-2 control-label">紧急联系人:</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control contacts">
+						</div>
+						<label class="col-sm-2 control-label">入职时间:</label>
+						<div class="col-sm-2">
+							<input id="entry" placeholder="请输入时间"
+								class="form-control laydate-icon"
+								onClick="laydate({elem: '#entry', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">预计转正时间:</label>
+						<div class="col-sm-2 working">
+							<input id="estimate" placeholder="请输入时间"
+								class="form-control laydate-icon"
+								onClick="laydate({elem: '#estimate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+						</div>
+						<label class="col-sm-2 control-label">实际转正时间:</label>
+						<div class="col-sm-2">
+							<input id="actua" placeholder="请输入时间"
+								class="form-control laydate-icon"
+								onClick="laydate({elem: '#actua', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+						</div>
+						<label class="col-sm-2 control-label">社保缴纳时间:</label>
+						<div class="col-sm-2 working">
+							<input id="socialSecurity" placeholder="请输入时间"
+								class="form-control laydate-icon"
+								onClick="laydate({elem: '#socialSecurity', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">承诺书:</label>
+						<div class="col-sm-2 working">
+							<select class="form-control promise"><option value="0">未签</option>
+								<option value="1">已签</option></select>
+						</div>
+						<label class="col-sm-2 control-label">合同:</label>
+						<div class="col-sm-2">
+							<select class="form-control commitment"><option
+									value="0">未签</option>
+								<option value="1">已签</option>
+								<option value="2">续签</option></select>
+						</div>
+						<label class="col-sm-2 control-label">协议:</label>
+						<div class="col-sm-2 agreementtw">
+							<!-- <input type="text" class="form-control agreement"> -->
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">银行卡1:</label>
+						<div class="col-sm-2 working">
+							<input type="text" class="form-control bankCard1">
+						</div>
+						<label class="col-sm-2 control-label">所属银行:</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control  bankCardtw"
+								disabled="disabled">
+						</div>
+						<label class="col-sm-2 control-label">保险情况:</label>
+						<div class="col-sm-2 working">
+							<select class="form-control safe"><option value="0">未缴</option>
+								<option value="1">已缴</option></select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">合同签订开始时间:</label>
+						<div class="col-sm-2 working">
+							<input id="contractDate" placeholder="请输入时间"
+								class="form-control laydate-icon"
+								onClick="laydate({elem: '#contractDate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+						</div>
+						<label class="col-sm-2 control-label">合同签订次数:</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control frequency">
+						</div>
+						<label class="col-sm-2 control-label">签订单位:</label>
+						<div class="col-sm-2 working">
+							<input type="text" class="form-control company">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">工作状态:</label>
+						<div class="col-sm-2 working">
+							<select class="form-control quit"><option value="0">在职</option>
+								<option value="1">离职</option></select>
+						</div>
+						<label class="col-sm-2 control-label">离职时间:</label>
+						<div class="col-sm-2">
+							<input id="quitDate" placeholder="请输入时间"
+								class="form-control laydate-icon"
+								onClick="laydate({elem: '#quitDate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+						</div>
+						<label class="col-sm-2 control-label">身份证到期时间:</label>
+						<div class="col-sm-2">
+							<input id="idCardEnd" placeholder="请输入时间"
+								class="form-control laydate-icon"
+								onClick="laydate({elem: '#idCardEnd', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">离职理由:</label>
+						<div class="col-sm-2 working">
+							<input type="text" class="form-control reason">
+						</div>
+						<label class="col-sm-2 control-label">合同:</label>
+						<div class="col-sm-2 remarktww">
+							<!-- <input type="text" class="form-control remark"> -->
+						</div>
+						<label class="col-sm-2 control-label">合同到期时间:</label>
+						<div class="col-sm-2">
+							<input id="contractDateEnd" placeholder="请输入时间"
+								class="form-control laydate-icon"
+								onClick="laydate({elem: '#contractDateEnd', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">归属车间:</label>
+						<div class="col-sm-4">
+							<select class="form-control" id="type4"><option value="">请选择</option>
+								<option value="1">质检</option>
+								<option value="2">包装</option>
+								<option value="3">针工</option>
+								<option value="4">机工</option>
+								<option value="5">8号仓库</option></select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">部门:</label>
+						<div class="col-sm-4 department"></div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-sm-4 control-label">职位:</label>
+						<div class="col-sm-4 position"></div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">是否为销售人员:</label>
+						<div class="col-sm-4">
+							<select class="form-control" id="sale"><option value="">请选择</option>
+								<option value="1">是</option></select>
+						</div>
+					</div>
+					<div class="form-group hidden">
+						<input type="text" id="productId" class="form-control">
+					</div>
+					<div class="form-group hidden">
+						<input type="text" id="producturl" class="form-control">
+					</div>
+				</div>
+
+			</form>
+		</div>
+
+	</div>
+
+	<!--在职人员档案  -->
+	<div id="addDictDivTypetw" style="display: none;">
+		<div class=" col-xs-12  col-sm-12  col-md-12 ">
+			<div class="space-10"></div>
+			<div style="height: 30px"></div>
+			<form class="form-horizontal addDictDivTypeFormtw">
+				<div class="row col-xs-12  col-sm-12  col-md-12 ">
+					<div class="form-group">
+						<label class="col-sm-2 col-md-2 control-label">员工姓名:</label>
+						<div class="col-sm-2 col-md-2">
+							<input type="text" class="form-control usernametw"
+								disabled="disabled">
+						</div>
+						<label class="col-sm-2 control-label">位置编号:</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control numbertw">
+						</div>
+
+						<label class="col-sm-2 control-label">照片数量:</label>
+						<div class="col-sm-2 working">
+							<input type="text" class="form-control pic">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">身份证数量:</label>
+						<div class="col-sm-2 working">
+							<input type="text" class="form-control IdCardnumber">
+						</div>
+						<label class="col-sm-2 control-label">银行卡数量:</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control bankCard">
+						</div>
+						<label class="col-sm-2 control-label">体检:</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control physical">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">资格证书:</label>
+						<div class="col-sm-2 working">
+							<input type="text" class="form-control qualification">
+						</div>
+						<label class="col-sm-2 control-label">学历证书:</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control formalSchooling">
+						</div>
+						<label class="col-sm-2 control-label">其他协议:</label>
+						<div class="col-sm-2 working">
+							<input type="text" class="form-control agreementnumbernumber">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-sm-2 control-label">保密协议:</label>
+						<div class="col-sm-2 working">
+							<input type="text" class="form-control secrecyAgreementnumber">
+						</div>
+						<label class="col-sm-2 control-label">合同数量:</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control contractnumber">
+						</div>
+						<label class="col-sm-2 control-label">其他资料:</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control remarktw">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">员工档案:</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control archives">
+						</div>
+					</div>
+				</div>
+
+			</form>
+		</div>
+
+	</div>
+
+
+	<div id="savegroupp">
+		<table>
 			<tr>
-			<th style="vertical-align:top">
-				<table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">即将退休人员</th>
-                                            <th class="text-center">时间</th>
-                                        </tr>
-                                    </thead>
-                                    <thead>
-                                    <tbody id="tablecontentfv">
-                                        
-                                    </tbody>
-                                   
-                                </table>
-                                </th>
-                                
-                                <th  style="vertical-align:top">
-								<table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">合同即将到期人员</th>
-                                            <th class="text-center">时间</th>
-                                        </tr>
-                                    </thead>
-                                    <thead>
-                                    <tbody id="tablecontentff">
-                                        
-                                    </tbody>
-                                </table>
-                                </th>
-                                <th  style="vertical-align:top">
-								<table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">身份证即将到期人员</th>
-                                            <th class="text-center">时间</th>
-                                        </tr>
-                                    </thead>
-                                    <thead>
-                                    <tbody id="tablecontentff1">
-                                        
-                                    </tbody>
-                                </table>
-                                </th>
-                                </tr>
-                                </table></div>
-    </section>
- 
-    <!--Global JS-->
-    <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
-    <script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
-    <script src="${ctx }/static/plugins/pace/pace.min.js"></script>
-    <script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-    <script src="${ctx }/static/js/src/app.js"></script>
-    <script src="${ctx }/static/js/laypage/laypage.js"></script> 
-    <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
-    <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
-    <script src="${ctx }/static/js/vendor/dropzone.min.js"></script>
-    <script>
+				<th style="vertical-align: top">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th class="text-center">即将退休人员</th>
+								<th class="text-center">时间</th>
+							</tr>
+						</thead>
+						<thead>
+						<tbody id="tablecontentfv">
+
+						</tbody>
+
+					</table>
+				</th>
+
+				<th style="vertical-align: top">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th class="text-center">合同即将到期人员</th>
+								<th class="text-center">时间</th>
+							</tr>
+						</thead>
+						<thead>
+						<tbody id="tablecontentff">
+
+						</tbody>
+					</table>
+				</th>
+				<th style="vertical-align: top">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th class="text-center">身份证即将到期人员</th>
+								<th class="text-center">时间</th>
+							</tr>
+						</thead>
+						<thead>
+						<tbody id="tablecontentff1">
+
+						</tbody>
+					</table>
+				</th>
+			</tr>
+		</table>
+	</div>
+	</section>
+	
+
+	
+	
+	
+	
+	
+
+	<script>	
    jQuery(function($){
    	var Login = function(){
 			var self = this;
@@ -2442,8 +2482,8 @@
 	  login.init();
 })
     </script>
-    
-    
-        
+
+
+
 </body>
 </html>

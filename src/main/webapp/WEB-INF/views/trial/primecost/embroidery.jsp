@@ -7,345 +7,474 @@
 <!--<![endif]-->
 
 <head>
-     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>绣花填写</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  
-   
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>绣花填写</title>
+<meta name="description" content="">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+
 </head>
 
 <body>
-    <section id="main-wrapper" class="theme-default">
-        
-        <%@include file="../../decorator/leftbar.jsp"%> 
-        
-        <!--main content start-->
-        
-           <section id="main-content" class="animated fadeInUp">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">绣花填写页面</h3>
-                                <div class="actions pull-right">
-                                    <i class="fa fa-expand"></i>
-                                    <i class="fa fa-chevron-down"></i>
-                                </div>
-                            </div>
-                             <div class="panel-body">
-                                <div class="tab-wrapper tab-primary">
-                                    <ul class="nav nav-tabs col-md-12">
-                                        <li class="active col-md-2" style="width: 50%"><a href="#home1" class="home1" data-toggle="tab">绣花页面</a>
-                                        </li>
-                                        <li class="col-md-2"style="width: 50%;"><a href="#profile1" class="profile1"  data-toggle="tab">绣花时间设定</a>
-                                        </li>
-                                    </ul>
-                                    <div class="tab-content">
-                                        <div class="tab-pane active" id="home1">
-                                        <!--查询开始  -->
-          		 <div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-11 col-sm-11  col-md-11">
-				<form class="form-search" >
-					<div class="row">
-						<div class="col-xs-11 col-sm-11 col-md-11">
-							<div class="input-group"> 
-								<table><tr>
-								<td>产品名:</td><td><input type="text" name="name" id="productName" placeholder="请输入产品名称" class="form-control search-query name" data-provide="typeahead" autocomplete="off"/ ></td>
-								<td>&nbsp&nbsp</td>
-								<td>默认数量:</td><td><input type="text" name="number" id="number" disabled="disabled" placeholder="请输入默认数量" class="form-control search-query number" /></td>
-									<td>&nbsp&nbsp</td>
-								<td>默认耗损:</td><td><input type="text" name="name" id="loss" placeholder="请输入产品名称" class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp</td> 
-								<td>裁剪价格:</td><td><input type="text" name="name" id="ntwo" disabled="disabled"  class="form-control search-query name" /></td>
-								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
-											查&nbsp找
-									</button>
-								</span>
-								 <td>&nbsp&nbsp&nbsp&nbsp</td>
-								<span class="input-group-btn">
-									<button type="button" id="addCutting" class="btn btn-success  btn-sm btn-3d export">
-									新增
-									</button>
-								</span> 
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-danger  btn-sm btn-3d start">
-									一键删除
-									</button>
-								</span>
+	<section id="main-wrapper" class="theme-default">
+
+		<%@include file="../../decorator/leftbar.jsp"%>
+
+		<!--main content start-->
+
+		<section id="main-content" class="animated fadeInUp">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">绣花填写页面</h3>
+							<div class="actions pull-right">
+								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
+							</div>
+						</div>
+						<div class="panel-body">
+							<div class="tab-wrapper tab-primary">
+								<ul class="nav nav-tabs col-md-12">
+									<li class="active col-md-2" style="width: 50%"><a
+										href="#home1" class="home1" data-toggle="tab">绣花页面</a></li>
+									<li class="col-md-2" style="width: 50%;"><a
+										href="#profile1" class="profile1" data-toggle="tab">绣花时间设定</a>
+									</li>
+								</ul>
+								<div class="tab-content">
+									<div class="tab-pane active" id="home1">
+										<!--查询开始  -->
+										<div class="row" style="height: 30px; margin: 15px 0 10px">
+											<div class="col-xs-11 col-sm-11  col-md-11">
+												<form class="form-search">
+													<div class="row">
+														<div class="col-xs-11 col-sm-11 col-md-11">
+															<div class="input-group">
+																<table>
+																	<tr>
+																		<td>产品名:</td>
+																		<td><input type="text" name="name"
+																			id="productName" placeholder="请输入产品名称"
+																			class="form-control search-query name"
+																			data-provide="typeahead" autocomplete="off"/ ></td>
+																		<td>&nbsp&nbsp</td>
+																		<td>默认数量:</td>
+																		<td><input type="text" name="number" id="number"
+																			disabled="disabled" placeholder="请输入默认数量"
+																			class="form-control search-query number" /></td>
+																		<td>&nbsp&nbsp</td>
+																		<td>默认耗损:</td>
+																		<td><input type="text" name="name" id="loss"
+																			placeholder="请输入产品名称"
+																			class="form-control search-query name" /></td>
+																		<td>&nbsp&nbsp</td>
+																		<td>裁剪价格:</td>
+																		<td><input type="text" name="name" id="ntwo"
+																			disabled="disabled"
+																			class="form-control search-query name" /></td>
+																	</tr>
+																</table>
+																<span class="input-group-btn">
+																	<button type="button"
+																		class="btn btn-info btn-square btn-sm btn-3d searchtask">
+																		查&nbsp找</button>
+																</span>
+																<td>&nbsp&nbsp&nbsp&nbsp</td> <span
+																	class="input-group-btn">
+																	<button type="button" id="addCutting"
+																		class="btn btn-success  btn-sm btn-3d export">
+																		新增</button>
+																</span>
+																<td>&nbsp&nbsp&nbsp&nbsp</td> <span
+																	class="input-group-btn">
+																	<button type="button"
+																		class="btn btn-danger  btn-sm btn-3d start">
+																		一键删除</button>
+																</span>
+															</div>
+														</div>
+													</div>
+												</form>
+											</div>
+										</div>
+										<!-- 查询结束 -->
+
+										<table class="table table-hover">
+											<thead>
+												<tr>
+													<th class="text-center"><label> <input
+															type="checkbox" class="ace checks" /> <span class="lbl"></span>
+													</label></th>
+													<th class="text-center">绣花步骤</th>
+													<th class="text-center">电脑推算绣花价格</th>
+													<th class="text-center">目前市场价格</th>
+													<th class="text-center">选择入成本价格↓</th>
+													<th class="text-center">入成本价格</th>
+													<th class="text-center">各单道比全套工价</th>
+													<th class="text-center">物料压价</th>
+													<th class="text-center">为机工准备的压价</th>
+												</tr>
+											</thead>
+											<tbody id="tablecontent">
+
+											</tbody>
+										</table>
+									</div>
+									<div class="tab-pane" id="profile1">
+										<div class="row" style="height: 30px; margin: 15px 0 10px">
+											<div class="col-xs-8 col-sm-8  col-md-8">
+												<form class="form-search">
+													<div class="row">
+														<div class="col-xs-12 col-sm-12 col-md-12">
+															<div class="input-group">
+																<table>
+																	<tr>
+																		<td>裁剪价格:</td>
+																		<td><input type="text" name="name" id="ntwo1"
+																			disabled="disabled"
+																			class="form-control search-query name" /></td>
+																	</tr>
+																</table>
+																<span class="input-group-btn">
+																	<button type="button"
+																		class="btn btn-info btn-square btn-sm btn-3d navbar-right searchtask2">
+																		查找 <i class="icon-search icon-on-right bigger-110"></i>
+																	</button>
+																</span>
+															</div>
+														</div>
+													</div>
+												</form>
+											</div>
+										</div>
+										<table class="table table-hover">
+											<thead>
+												<tr>
+													<th class="text-center">绣花步骤</th>
+													<th class="text-center">针数</th>
+													<th class="text-center">针号</th>
+													<th class="text-center">线粗细号</th>
+													<th class="text-center">贴布数</th>
+													<th class="text-center">绣花要用裁片1</th>
+													<th class="text-center">绣花要用裁片2</th>
+													<th class="text-center">裁片1面积</th>
+													<th class="text-center">确认绣片面积</th>
+													<th class="text-center">裁片2面积</th>
+													<th class="text-center">确认绣片面积</th>
+													<th class="text-center">蒙薄膜层数</th>
+													<th class="text-center">垫纸性质</th>
+													<th class="text-center">绣花模式</th>
+													<th class="text-center">手填可绣多少片</th>
+													<th class="text-center">几头操作</th>
+													<th class="text-center">绣花针号</th>
+													<th class="text-center">绣花线号</th>
+													<th class="text-center">请选绣花线色</th>
+													<th class="text-center">绣花线色</th>
+													<th class="text-center">请选贴布面积</th>
+													<th class="text-center">贴布面积</th>
+												</tr>
+											</thead>
+											<tbody id="tablecontent2">
+
+											</tbody>
+										</table>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
-				</form>
+				</div>
 			</div>
+		</section>
+	</section>
+
+	<div id="addworking" style="display: none;">
+		<div class="panel-body">
+			<div class="form-group"></div>
+			<form id="form1">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th class="text-center">绣花线色</th>
+							<th class="text-center">操作</th>
+						</tr>
+					</thead>
+					<tbody id="tableworking2">
+					</tbody>
+				</table>
+			</form>
 		</div>
-            <!-- 查询结束 -->
-                                        
-                                            <table class="table table-hover" >
-                                    <thead>
-                                        <tr>
-                                        <th class="text-center">
-											<label> 
-											<input type="checkbox" class="ace checks" /> 
-											<span class="lbl"></span>
-											</label>
-											</th>
-                                            <th class="text-center">绣花步骤</th>
-                                            <th class="text-center">电脑推算绣花价格</th>
-                                            <th class="text-center">目前市场价格</th>
-                                            <th class="text-center">选择入成本价格↓</th>
-                                            <th class="text-center">入成本价格</th>
-                                            <th class="text-center">各单道比全套工价</th>
-                                            <th class="text-center">物料压价</th>
-                                            <th class="text-center">为机工准备的压价</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablecontent">
-                                        
-                                    </tbody>
-                                </table>
-                                        </div>
-            <div class="tab-pane" id="profile1">
-                      <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-8 col-sm-8  col-md-8">
-						<form class="form-search" >
-							<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group"> 
-							<table><tr>
-								<td>裁剪价格:</td><td><input type="text" name="name" id="ntwo1" disabled="disabled"  class="form-control search-query name" /></td>
-								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d navbar-right searchtask2">
-										查找
-										<i class="icon-search icon-on-right bigger-110"></i>
-									</button>
-								</span>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>  
-                                   <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th class="text-center">绣花步骤</th>
-                                        	<th class="text-center">针数</th>
-                                            <th class="text-center">针号</th>
-                                            <th class="text-center">线粗细号</th>
-                                            <th class="text-center">贴布数</th>
-                                            <th class="text-center">绣花要用裁片1</th>
-                                            <th class="text-center">绣花要用裁片2	</th>
-                                            <th class="text-center">裁片1面积</th>
-                                            <th class="text-center">确认绣片面积</th>
-                                            <th class="text-center">裁片2面积</th>
-                                            <th class="text-center">确认绣片面积</th>
-                                            <th class="text-center">蒙薄膜层数</th>
-                                            <th class="text-center">垫纸性质</th>
-                                             <th class="text-center">绣花模式</th>
-                                            <th class="text-center">手填可绣多少片</th>
-                                            <th class="text-center">几头操作</th>
-                                            <th class="text-center">绣花针号</th>
-                                            <th class="text-center">绣花线号</th>
-                                            <th class="text-center">请选绣花线色</th>
-                                            <th class="text-center">绣花线色</th>
-                                            <th class="text-center">请选贴布面积</th>
-                                            <th class="text-center">贴布面积</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablecontent2">
-                                        
-                                    </tbody>
-                                </table>
-                                 </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    </div>
-                        </div>
-            </section>
-        </section>
+		<!--隐藏框 已完成的批次结束  -->
+	</div>
 
-<div id="addworking" style="display: none;">
-			<div class="panel-body">
- <div class="form-group">
-  </div> 
-  <form id="form1">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th class="text-center">绣花线色</th>
-                                        	<th class="text-center">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tableworking2">
-                                    </tbody>
-                                </table>
-   </form>                             
-</div>
-<!--隐藏框 已完成的批次结束  -->
-</div> 
-  
 
-<div id="addworking2" style="display: none;">
-			<div class="panel-body">
- <div class="form-group">
-  </div> 
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th class="text-center">贴布面积</th>
-                                        	<th class="text-center">贴布时间</th>
-                                        	<th class="text-center">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tableworking3">
-                                    </tbody>
-                                </table>
-</div>
-<!--隐藏框 已完成的批次结束  -->
-</div>  
-  
- 
+	<div id="addworking2" style="display: none;">
+		<div class="panel-body">
+			<div class="form-group"></div>
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th class="text-center">贴布面积</th>
+						<th class="text-center">贴布时间</th>
+						<th class="text-center">操作</th>
+					</tr>
+				</thead>
+				<tbody id="tableworking3">
+				</tbody>
+			</table>
+		</div>
+		<!--隐藏框 已完成的批次结束  -->
+	</div>
 
-<div class="wrap">
-<div class="layer-right5" style="display: none;">
-           <div class=" col-xs-12  col-sm-12  col-md-12">
+
+
+	<div class="wrap">
+		<div class="layer-right5" style="display: none;">
+			<div class=" col-xs-12  col-sm-12  col-md-12">
 				<div class="space-10"></div>
 				<div style="height: 30px"></div>
 				<form class="form-horizontal addDictDivTypeFormtw">
-					<div class="row col-xs-12  col-sm-12  col-md-12" >
-									<table>
-                                        
-                                       <tr>
-                                       <th class="text-center">每坨米数:</th><td><input type="text" id="embroideryEight5"  class="form-control actualtimetw"></td>
-                                       		<td><input type="text" id="ordid5" class="hidden"></td>
-                                       		<th><button type="button" class="btn btn-info  btn-sm  btn-trans updateord">修改</button></th>
-                                       </tr>
-                                       <tr><td><div style="height: 10px"></div></td></tr>
-                                        <tr>
-                                        	<th class="text-center">每加一套线色价格:</th><td><input type="text" id="embroideryFourteen5"  class="form-control actualtimetw"></td>
-                                        	<th class="text-center">1贴布价格:</th><td><input type="text" id="embroideryThirteen5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                      	<tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">1000针价格:</th><td><input type="text" id="embroideryTwelve5"  class="form-control actualtimetw"></td>
-                                        	<th class="text-center">每1针用米？:</th><td><input type="text" id="embroideryEleven5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                      	<tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">每1000针用多少米？:</th><td><input type="text"  id="embroideryTen5" class="form-control actualtimetw"></td>
-                                            <th class="text-center">每米价格:</th><td><input type="text"  id="embroideryNine5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                       <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">放快手比:</th><td><input type="text"  id="quickWorker5" class="form-control actualtimetw"></td>
-                                        	<th class="text-center">绣花线每坨价格:</th><td><input type="text"  id="embroiderySeven5" class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">缝纫机设备价值:</th><td><input type="text"  id="worth5" class="form-control actualtimetw"></td>
-                                            <th class="text-center">每秒设备折旧费用:</th><td><input type="text" disabled="disabled" id="depreciation5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">设置分摊天数:</th><td><input type="text" id="shareDay5"  class="form-control actualtimetw"></td>
-                                        	<th class="text-center">每一贴布/秒:</th><td><input type="text" id="embroideryFive5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">每天机器工作时间设置/小时:</th><td><input type="text" id="workTime5"  class="form-control actualtimetw"></td>
-                                        	<th class="text-center">裁片秀上绷子贴裁片时间/秒:</th><td><input type="text" id="embroideryFour5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">小零件费用:</th><td><input type="text" id="laserTubePrice5"  class="form-control actualtimetw"></td>
-                                            <th class="text-center">每秒小零件费用:</th><td><input type="text" disabled="disabled" id="laserTubePriceSecond5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">分摊小时:</th><td><input type="text" id="shareTime5"  class="form-control actualtimetw"></td>
-                                            <th class="text-center">每秒维护费用:</th><td><input type="text" disabled="disabled" id="maintenanceChargeSecond5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">维护费用:</th><td><input type="text" id="maintenanceCharge5"  class="form-control actualtimetw"></td>
-                                        	<th class="text-center">整布绣上绷子铺料铺薄膜时间/秒:</th><td><input type="text" id="embroideryThree5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">分摊小时:</th><td><input type="text" id="shareTimeTwo5"  class="form-control actualtimetw"></td>
-                                        	<th class="text-center">每1000针机走时间/秒:</th><td><input type="text" id="embroideryTwo5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">每小时耗电/元:</th><td><input type="text" id="omnHorElectric5"  class="form-control actualtimetw"></td>
-                                        	<th class="text-center">薄膜每平价格:</th><td><input type="text" id="embroideryOne5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">每小时耗水/元:</th><td><input type="text" id="omnHorWater5"  class="form-control actualtimetw"></td>
-                                            <th class="text-center">每秒耗3费:</th><td><input type="text" disabled="disabled" id="perSecondPrice5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">每小时耗房租/元:</th><td><input type="text" id="omnHorHouse5"  class="form-control actualtimetw"></td>
-                                        	<th class="text-center">单个线头剪时间/秒:</th><td><input type="text" id="embroiderySix5"  class="form-control"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">每小时机工工价:</th><td><input type="text" id="omnHorMachinist5"  class="form-control actualtimetw"></td>
-                                            <th class="text-center">每秒工价:</th><td><input type="text" disabled="disabled" id="perSecondMachinist5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                        <tr>
-                                        	<th class="text-center">每小时辅工工价:</th><td><input type="text" id="omnHorAuxiliary5"  class="form-control actualtimetw"></td>
-                                            <th class="text-center">每秒工价:</th><td><input type="text" disabled="disabled" id="perSecondMachinistTwo5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">制版分配任务管理人员工资:</th><td><input type="text" id="managePrice5"   class="form-control actualtimetw"></td>
-                                            <th class="text-center">每秒管理费用:</th><td><input type="text" disabled="disabled" id="perSecondManage5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">管理设备数量:</th><td><input type="text" id="manageEquipmentNumber5"  class="form-control actualtimetw"></td>
-                                            <th class="text-center">设置激光设备利润比:</th><td><input type="text" id="equipmentProfit5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                    </table>
-                    	</div>
-                 		
+					<div class="row col-xs-12  col-sm-12  col-md-12">
+						<table>
+
+							<tr>
+								<th class="text-center">每坨米数:</th>
+								<td><input type="text" id="embroideryEight5"
+									class="form-control actualtimetw"></td>
+								<td><input type="text" id="ordid5" class="hidden"></td>
+								<th><button type="button"
+										class="btn btn-info  btn-sm  btn-trans updateord">修改</button></th>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">每加一套线色价格:</th>
+								<td><input type="text" id="embroideryFourteen5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">1贴布价格:</th>
+								<td><input type="text" id="embroideryThirteen5"
+									class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">1000针价格:</th>
+								<td><input type="text" id="embroideryTwelve5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">每1针用米？:</th>
+								<td><input type="text" id="embroideryEleven5"
+									class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">每1000针用多少米？:</th>
+								<td><input type="text" id="embroideryTen5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">每米价格:</th>
+								<td><input type="text" id="embroideryNine5"
+									class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">放快手比:</th>
+								<td><input type="text" id="quickWorker5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">绣花线每坨价格:</th>
+								<td><input type="text" id="embroiderySeven5"
+									class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">缝纫机设备价值:</th>
+								<td><input type="text" id="worth5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">每秒设备折旧费用:</th>
+								<td><input type="text" disabled="disabled"
+									id="depreciation5" class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">设置分摊天数:</th>
+								<td><input type="text" id="shareDay5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">每一贴布/秒:</th>
+								<td><input type="text" id="embroideryFive5"
+									class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">每天机器工作时间设置/小时:</th>
+								<td><input type="text" id="workTime5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">裁片秀上绷子贴裁片时间/秒:</th>
+								<td><input type="text" id="embroideryFour5"
+									class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">小零件费用:</th>
+								<td><input type="text" id="laserTubePrice5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">每秒小零件费用:</th>
+								<td><input type="text" disabled="disabled"
+									id="laserTubePriceSecond5" class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">分摊小时:</th>
+								<td><input type="text" id="shareTime5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">每秒维护费用:</th>
+								<td><input type="text" disabled="disabled"
+									id="maintenanceChargeSecond5" class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">维护费用:</th>
+								<td><input type="text" id="maintenanceCharge5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">整布绣上绷子铺料铺薄膜时间/秒:</th>
+								<td><input type="text" id="embroideryThree5"
+									class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">分摊小时:</th>
+								<td><input type="text" id="shareTimeTwo5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">每1000针机走时间/秒:</th>
+								<td><input type="text" id="embroideryTwo5"
+									class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">每小时耗电/元:</th>
+								<td><input type="text" id="omnHorElectric5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">薄膜每平价格:</th>
+								<td><input type="text" id="embroideryOne5"
+									class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">每小时耗水/元:</th>
+								<td><input type="text" id="omnHorWater5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">每秒耗3费:</th>
+								<td><input type="text" disabled="disabled"
+									id="perSecondPrice5" class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">每小时耗房租/元:</th>
+								<td><input type="text" id="omnHorHouse5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">单个线头剪时间/秒:</th>
+								<td><input type="text" id="embroiderySix5"
+									class="form-control"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">每小时机工工价:</th>
+								<td><input type="text" id="omnHorMachinist5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">每秒工价:</th>
+								<td><input type="text" disabled="disabled"
+									id="perSecondMachinist5" class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">每小时辅工工价:</th>
+								<td><input type="text" id="omnHorAuxiliary5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">每秒工价:</th>
+								<td><input type="text" disabled="disabled"
+									id="perSecondMachinistTwo5" class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">制版分配任务管理人员工资:</th>
+								<td><input type="text" id="managePrice5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">每秒管理费用:</th>
+								<td><input type="text" disabled="disabled"
+									id="perSecondManage5" class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">管理设备数量:</th>
+								<td><input type="text" id="manageEquipmentNumber5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">设置激光设备利润比:</th>
+								<td><input type="text" id="equipmentProfit5"
+									class="form-control actualtimetw"></td>
+							</tr>
+						</table>
+					</div>
+
 				</form>
-                 </div>
-				</div>
-  </div>
-  
-  
-  
-    </section>
-    
-   
-   
-   <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
-    <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
-    <script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
-    <script src="${ctx }/static/plugins/pace/pace.min.js"></script>
-    <script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-    <script src="${ctx }/static/js/src/app.js"></script>
-     <script src="${ctx }/static/js/laypage/laypage.js"></script> 
-    <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
-    <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
-    <script src="${ctx }/static/js/vendor/mSlider.min.js"></script>
-    <script src="${ctx }/static/js/vendor/typeahead.js"></script>
-    <script>
+			</div>
+		</div>
+	</div>
+
+
+
+	</section>
+
+
+
+	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+	<script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
+	<script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
+	<script src="${ctx }/static/plugins/pace/pace.min.js"></script>
+	<script
+		src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
+	<script src="${ctx }/static/js/src/app.js"></script>
+	<script src="${ctx }/static/js/laypage/laypage.js"></script>
+	<script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
+	<script
+		src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
+	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+	<script src="${ctx }/static/js/vendor/mSlider.min.js"></script>
+	<script src="${ctx }/static/js/vendor/typeahead.js"></script>
+	<script>
    jQuery(function($){
    	var Login = function(){
    		var self = this;
@@ -2071,8 +2200,8 @@
 			})
     
     </script>
-  
-       
+
+
 </body>
 
 </html>

@@ -1,83 +1,94 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html class="no-js">
-	<!--<![endif]-->
 
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<title>报销申请</title>
-		<meta name="description" content="">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-		<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
-	</head>
+<%-- <link rel="shortcut icon" href="${ctx }/static/images/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/autocomplete.css">
+<link rel="stylesheet" href="${ctx }/static/css/font-awesome.min.css">
+<link rel="stylesheet" href="${ctx }/static/css/simple-line-icons.css">
+<link rel="stylesheet" href="${ctx }/static/css/animate.css">
+<link rel="stylesheet" href="${ctx }/static/plugins/daterangepicker/daterangepicker-bs3.css">
+<link rel="stylesheet" href="${ctx }/static/plugins/switchery/switchery.min.css">
+<link rel="stylesheet" href="${ctx }/static/css/main.css">
+<link rel="stylesheet" href="${ctx }/static/js/laypage/skin/laypage.css">
+<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+<script src="${ctx }/static/js/vendor/jquery.cookie.js"></script>
+<script src="${ctx }/static/js/vendor/modernizr-2.6.2.min.js"></script>
+<script src="${ctx }/static/js/layer/layer.js"></script>
+<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
+<script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
+<script src="${ctx }/static/plugins/pace/pace.min.js"></script>
+<script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
+<script src="${ctx }/static/js/src/app.js"></script>
+<script src="${ctx }/static/js/laypage/laypage.js"></script>
+<script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
+<script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
+<script src="${ctx }/static/js/vendor/typeahead.js"></script> --%>
 
-	<body>
-		<section id="main-wrapper" class="theme-default">
-			<%@include file="../decorator/leftbar.jsp"%> 
-			<section id="main-content" class="animated fadeInUp">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h3 class="panel-title">报销申请</h3>
-								<div class="actions pull-right">
-									<i class="fa fa-expand"></i>
-									<i class="fa fa-chevron-down"></i>
-								</div>
+<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>报销申请</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+</head>
+
+<body>
+	
+<div class="layui-card">
+	<div class="layui-card-body">
+		<div class="layui-form">
+			<div class="layui-form-item">
+				<table>
+					<tr>
+						<td>姓名:</td>
+						<td><input type="text" name="userName" id="firstNames"
+							class="layui-input search-query name" /></td>
+						<td>&nbsp&nbsp</td>
+						<td>归属车间:
+						<td><select class="layui-input" name="type">
+								<option value="">请选择</option>
+								<option value="1">一楼质检</option>
+								<option value="2">一楼包装</option>
+								<option value="3">二楼针工</option>
+								<option value="4">二楼机工</option>
+								<option value="5">8号仓库</option>
+						</select></td>
+						<td>&nbsp;&nbsp;</td>
+						<td>
+							<div class="layui-inline">
+								<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
+									<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+								</button>
 							</div>
-							<div class="panel-body">
-								<div class="layui-form layui-card-header layuiadmin-card-header-auto">
-									<div class="layui-form-item">
-										<table>
-											<tr>
-												<td>姓名:</td>
-												<td>
-													<input type="text" name="userName" id="firstNames" class="form-control search-query name" />
-												</td>
-												<td>&nbsp&nbsp</td>
-												<td>归属车间:
-													<td>
-														<select class="form-control" name="type">
-															<option value="">请选择</option>
-															<option value="1">一楼质检</option>
-															<option value="2">一楼包装</option>
-															<option value="3">二楼针工</option>
-															<option value="4">二楼机工</option>
-															<option value="5">8号仓库</option>
-														</select>
-													</td>	
-													<td>&nbsp&nbsp</td>
-													<td>
-														<div class="layui-inline">
-															<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
-														<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-													</button>
-														</div>
-													</td>
-											</tr>
-										</table>
-									</div>
-								</div>
-								<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
-							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
+	</div>
 
-						</div>
-					</div>
-				</div>
-			</section>
-		</section>
-		</section>
-		<script type="text/html" id="toolbar">
+</div>
+
+	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
 			</div>
 		</script>
 
-		<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
-		<script>
+	<script>
 			layui.config({
 				base: '${ctx}/static/layui-v2.4.5/'
 			}).extend({
@@ -403,6 +414,6 @@
 				}
 			)
 		</script>
-	</body>
+</body>
 
 </html>

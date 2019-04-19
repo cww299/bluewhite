@@ -1,107 +1,98 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html class="no-js">
-<!--<![endif]-->
-
+	<link rel="stylesheet" href="${ctx }/static/css/font-awesome.min.css">
+	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>   
+	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 <head>
+
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>考勤总汇</title>
 <meta name="description" content="">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
 </head>
 
 <body>
+<div class="layui-card">
+	<div class="layui-card-header">
+		<ul>
+			<li style="display: inline;"><i class="fa fa-circle"
+				style="color: #9e9e1f"></i>迟到</li>
+			<li style="display: inline;"><i class="fa fa-circle"
+				style="color: #bf1515"></i>缺勤</li>
+			<li style="display: inline;"><i class="fa fa-circle"
+				style="color: #00b0ff"></i>事假</li>
+			<li style="display: inline;"><i class="fa fa-circle"
+				style="color: #13161c"></i>病假</li>
+			<li style="display: inline;"><i class="fa fa-circle"
+				style="color: #b8c2d6"></i>丧假</li>
+			<li style="display: inline;"><i class="fa fa-circle"
+				style="color: #da06af"></i>婚假</li>
+			<li style="display: inline;"><i class="fa fa-circle"
+				style="color: #13a8bd"></i>产假</li>
+			<li style="display: inline;"><i class="fa fa-circle"
+				style="color: #1211e2"></i>护理假</li>
+		</ul>
+	</div>
+	<div class="layui-card-body">
+		<div
+			class="layui-form">
+			<div class="layui-form-item">
+				<table>
+					<tr>
+						<td>人员:</td>
+						<td><select name="userId"
+							class="form-control search-query name" id="firstNames"
+							lay-search="true"></select></td>
+						<td>&nbsp;&nbsp;</td>
+						<td>部门:</td>
+						<td id="orgNameId"></td>
+						<td>&nbsp;&nbsp;</td>
+						<td>考勤汇总月份:</td>
+						<td><input name="orderTimeBegin" id="startTime" style="width: 200px;" placeholder="请输入考勤汇总月份" class="layui-input laydate-icon"></td>
+						<td>&nbsp;&nbsp;</td>
+						<td>
+							<div class="layui-inline">
+								<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-searche">
+									查找考勤 <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+								</button>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
 
-	<section id="main-wrapper" class="theme-default">
-		<%@include file="../decorator/leftbar.jsp"%>
-		<!--main content start-->
-		<section id="main-content" class="animated fadeInUp">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-                                        <ul >
-                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#9e9e1f"></i>迟到</li>
-                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#bf1515"></i>缺勤</li>
-                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#00b0ff"></i>事假</li>
-                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#13161c"></i>病假</li>
-                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#b8c2d6"></i>丧假</li>
-                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#da06af"></i>婚假</li>
-                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#13a8bd"></i>产假</li>
-                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#1211e2"></i>护理假</li>
-                                        </ul>
-								<div class="actions pull-right">
-									<i class="fa fa-expand"></i>
-									<i class="fa fa-chevron-down"></i>
-								</div>
-							</div>
-						<div class="panel-body">
-							<div class="layui-form layui-card-header layuiadmin-card-header-auto">
-								<div class="layui-form-item">
-									<table>
-										<tr>
-											<td>人员:</td>
-											<td>
-												<select name="userId" class="form-control search-query name" id="firstNames"
-													lay-search="true"></select>
-											</td>
-											<td>&nbsp&nbsp</td>
-											<td>部门:</td>
-											<td id="orgNameId"></td>
-											<td>&nbsp&nbsp</td>
-											<td>考勤汇总月份:</td>
-											<td>
-												<input name="orderTimeBegin" id="startTime" style="width: 200px;" placeholder="请输入考勤汇总月份"
-													class="form-control laydate-icon">
-											</td>
-											<td>&nbsp&nbsp</td>
-											<td>
-												<div class="layui-inline">
-													<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-searche">
-													查找考勤
-														<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-													</button>
-												</div>
-											</td>
-										</tr>
-									</table>
-								</div>
-							</div>
-							
-							<div class="layui-tab">
-							  <ul class="layui-tab-title">
-							    <li class="layui-this">考勤修改</li>
-							    <li>考勤汇总</li>
-							  </ul>
-							  <div class="layui-tab-content">
-							    <div class="layui-tab-item layui-show">
-							      <table class="layui-hide" lay-filter="test3" id="test3"></table>
-							    </div>
-							    <div class="layui-tab-item"><table class="layui-hide" lay-filter="test5" id="test5"></table></div>
-							  </div>
-						</div>
-						
-							
-							
-							<div style="height: 90px;"></div>
-						</div>
-					</div>
+		<div class="layui-tab">
+			<ul class="layui-tab-title">
+				<li class="layui-this">考勤修改</li>
+				<li>考勤汇总</li>
+			</ul>
+			<div class="layui-tab-content">
+				<div class="layui-tab-item layui-show">
+					<table class="layui-hide" lay-filter="test3" id="test3"></table>
+				</div>
+				<div class="layui-tab-item">
+					<table class="layui-hide" lay-filter="test5" id="test5"></table>
 				</div>
 			</div>
-		</section>
-	</section>
-
-	</section>
+		</div>
 
 
 
-	<script src="${ctx }/static/js/laydate/laydate.js"></script>
-	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
+		<div style="height: 900px;"></div>
+	</div>
+</div>
+
+
+
+
+	
 
 	<script>
 		layui.config({

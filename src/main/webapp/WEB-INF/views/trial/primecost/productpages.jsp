@@ -15,20 +15,18 @@
 	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <style type="text/css">
 .selectotb {
-  	border: 0;
+	border: 0;
 	display: block;
 	position: relative;
 	white-space: nowrap;
 	width: 100%;
 	overflow: hidden;
 	background-color: #eee;
-  	background: transparent;
-  	appearance:none;
-	-moz-appearance:none; /* Firefox */
-	-webkit-appearance:none; /* Safari 和 Chrome */
+	background: transparent;
+	appearance: none;
+	-moz-appearance: none; /* Firefox */
+	-webkit-appearance: none; /* Safari 和 Chrome */
 }
-
-
 </style>
 </head>
 
@@ -57,9 +55,16 @@
 											<div class="input-group">
 												<table>
 													<tr>
-														<td>产品名:</td><td><input type="text" name="name" id="productName2" placeholder="请输入产品名称" class="form-control search-query name" data-provide="typeahead" autocomplete="off"/ ></td>
+														<td>产品名:</td>
+														<td><input type="text" name="name" id="productName2"
+															placeholder="请输入产品名称"
+															class="form-control search-query name"
+															data-provide="typeahead" autocomplete="off"/ ></td>
 														<td>&nbsp&nbsp&nbsp&nbsp</td>
-													<td>默认数量:</td><td><input type="text" name="number" id="number2" placeholder="请输入默认数量" class="form-control search-query number" /></td>
+														<td>默认数量:</td>
+														<td><input type="text" name="number" id="number2"
+															placeholder="请输入默认数量"
+															class="form-control search-query number" /></td>
 													</tr>
 												</table>
 												<span class="input-group-btn">
@@ -124,298 +129,313 @@
 		</div>
 	</div>
 	<!--隐藏框 产品新增结束  -->
-	
-	
-	
+
+
+
 	<!--隐藏框 成本价格表开始  -->
-	
+
 	<div id="addworking" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-					<div class="row col-xs-12  col-sm-12  col-md-12 ">
-						<div style="height: 40px"></div>
-						<div class="form-group">
-                           <label class="col-sm-2 col-md-2 control-label" >当批产量:</label>
-                              <div class="col-sm-2 col-md-2">
-                                  <input type="text" class="form-control primecostnumber" style="background-color:#0d92f59c">
-                              </div>
-                               <label class="col-sm-2 control-label">批成本:</label>
-                                 <div class="col-sm-2">
-                                          <input type="text" class="form-control bacthPrimeCost"  disabled="disabled">
-                                      </div>
-                            <label class="col-sm-2 control-label">单只成本:</label>
-                              <div class="col-sm-2 ">
-                              <input type="text" class="form-control onePrimeCost"  disabled="disabled">
-                              <input type="text" class="form-control onePrimeCost hidden" id="paramNum">
-                              </div>
-                    	</div>
-                    	
-                    	
-                    	
-           		<div class="row">
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-striped ">
-                                        <thead>
-                                            <tr>
-		                                        <th class="text-center">是否可开票</th>
+		<div class=" col-xs-12  col-sm-12  col-md-12 ">
+			<div class="row col-xs-12  col-sm-12  col-md-12 ">
+				<div style="height: 40px"></div>
+				<div class="form-group">
+					<label class="col-sm-2 col-md-2 control-label">当批产量:</label>
+					<div class="col-sm-2 col-md-2">
+						<input type="text" class="form-control primecostnumber"
+							style="background-color: #0d92f59c">
+					</div>
+					<label class="col-sm-2 control-label">批成本:</label>
+					<div class="col-sm-2">
+						<input type="text" class="form-control bacthPrimeCost"
+							disabled="disabled">
+					</div>
+					<label class="col-sm-2 control-label">单只成本:</label>
+					<div class="col-sm-2 ">
+						<input type="text" class="form-control onePrimeCost"
+							disabled="disabled"> <input type="text"
+							class="form-control onePrimeCost hidden" id="paramNum">
+					</div>
+				</div>
+
+
+
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default">
+							<div class="panel-body">
+								<div class="table-responsive">
+									<table class="table table-bordered table-striped ">
+										<thead>
+											<tr>
+												<th class="text-center">是否可开票</th>
 												<th class="text-center">需要支付开票点</th>
 												<th class="text-center">产品的大类分解</th>
 												<th class="text-center">各环节的批价格</th>
 												<th class="text-center">单只价格</th>
 												<th class="text-center">当下生产放价填写</th>
 												<th class="text-center">与实战差价</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td class="" style="background-color:#0d92f59c"> 
-                                                <select class="selectotb cutPartsInvoice" >
-                                                <option value="0">否</option>
-                                                <option value="1">是</option>
-                                                </select>
-                                                </td>
-                                                <td class="cutPartsPriceInvoice" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td id="doua"><a style="color:#F00">面料价格(含复合物料和加工费）</a></td>
-                                                <td class="cutPartsPrice" ></td>
-                                                <td class="oneCutPartsPrice" ></td>
-                                                <td class="cutPartsPricePricing" rowspan="2" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td class="cutPartsD" rowspan="2" ></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="" style="background-color:#0d92f59c">
-                                                 <select class="selectotb otherCutPartsInvoice" >
-	                                                <option value="0">否</option>
-	                                                <option value="1">是</option>
-	                                             </select>
-                                                </td>
-                                                <td class="otherCutPartsPriceInvoice" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td  id="doua1"><a style="color:#F00">除面料以外的其他物料价格</a> </td>
-                                                <td class="otherCutPartsPrice" ></td>
-                                                <td class="oneOtherCutPartsPrice" ></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="" style="background-color:#0d92f59c">
-                                                <select class="selectotb cutInvoice"  >
-	                                                <option value="0">否</option>
-	                                                <option value="1">是</option>
-	                                             </select>
-                                                </td>
-                                                <td class="cutPriceInvoice" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td  id="doua2"><a style="color:#F00">裁剪价格</a></td>
-                                                <td class="cutPrice" ></td>
-                                                <td class="oneCutPrice" ></td>
-                                                <td class="cutPricePricing" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td class="cutPriceD" ></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="" style="background-color:#0d92f59c">
-                                                 <select class="selectotb machinistInvoice" >
-	                                                <option value="0">否</option>
-	                                                <option value="1">是</option>
-	                                             </select>
-                                                </td>
-                                                <td class="machinistPriceInvoice" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td id="doua3" ><a style="color:#F00">机工价格</a></td>
-                                                <td class="machinistPrice" ></td>
-                                                <td class="oneMachinistPrice" ></td>
-                                                <td class="machinistPricePricing" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td class="machinistPriceD" ></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="" style="background-color:#0d92f59c">
-                                                <select class="selectotb embroiderInvoice" >
-	                                                <option value="0">否</option>
-	                                                <option value="1">是</option>
-	                                             </select>
-                                                </td>
-                                                <td class="embroiderPriceInvoice" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td  id="doua4"><a style="color:#F00">绣花价格</a></td>
-                                                <td class="embroiderPrice" ></td>
-                                                <td class="oneEmbroiderPrice" ></td>
-                                                <td class="embroiderPricePricing" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td class="embroiderPriceD" ></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="" style="background-color:#0d92f59c">
-                                                 <select class="selectotb needleworkInvoice" >
-	                                                <option value="0">否</option>
-	                                                <option value="1">是</option>
-	                                             </select>
-                                                </td>
-                                                <td class="needleworkPriceInvoice" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td  id="doua5"><a style="color:#F00">针工价格</a></td>
-                                                <td class="needleworkPrice" ></td>
-                                                <td class="oneNeedleworkPrice" ></td>
-                                                <td class="needleworkPricePricing" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td class="needleworkPriceD" ></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="" style="background-color:#0d92f59c">
-                                                <select class="selectotb packInvoice" >
-	                                                <option value="0">否</option>
-	                                                <option value="1">是</option>
-	                                             </select>
-                                                </td>
-                                                <td class="packPriceInvoice" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td id="doua6"><a style="color:#F00">内外包装和出入库的价格</a></td>
-                                                <td class="packPrice" ></td>
-                                                <td class="onePackPrice" ></td>
-                                                <td class="packPricePricing" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td class="packPriceD" ></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="" style="background-color:#0d92f59c">
-                                                <select class="selectotb freightInvoice" >
-	                                                <option value="0">否</option>
-	                                                <option value="1">是</option>
-	                                             </select>
-                                                </td>
-                                                <td class="freightPriceInvoice" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td >预计运费价格</td>
-                                                <td class="freightPrice"  ></td>
-                                                <td class="oneFreightPrice"  ></td>
-                                                <td class="freightPricePricing" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td class="freightPriceD"  ></td>
-                                            </tr>
-                                        </tbody>
-                                        
-                                        
-                                        
-                                         <thead>
-                                            <tr>
-		                                        <th class="text-center">是否有返点</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td class="" style="background-color: #0d92f59c"><select
+													class="selectotb cutPartsInvoice">
+														<option value="0">否</option>
+														<option value="1">是</option>
+												</select></td>
+												<td class="cutPartsPriceInvoice" contentEditable="true"
+													style="background-color: #0d92f59c"></td>
+												<td id="doua"><a style="color: #F00">面料价格(含复合物料和加工费）</a></td>
+												<td class="cutPartsPrice"></td>
+												<td class="oneCutPartsPrice"></td>
+												<td class="cutPartsPricePricing" rowspan="2"
+													contentEditable="true" style="background-color: #0d92f59c"></td>
+												<td class="cutPartsD" rowspan="2"></td>
+											</tr>
+											<tr>
+												<td class="" style="background-color: #0d92f59c"><select
+													class="selectotb otherCutPartsInvoice">
+														<option value="0">否</option>
+														<option value="1">是</option>
+												</select></td>
+												<td class="otherCutPartsPriceInvoice" contentEditable="true"
+													style="background-color: #0d92f59c"></td>
+												<td id="doua1"><a style="color: #F00">除面料以外的其他物料价格</a>
+												</td>
+												<td class="otherCutPartsPrice"></td>
+												<td class="oneOtherCutPartsPrice"></td>
+											</tr>
+											<tr>
+												<td class="" style="background-color: #0d92f59c"><select
+													class="selectotb cutInvoice">
+														<option value="0">否</option>
+														<option value="1">是</option>
+												</select></td>
+												<td class="cutPriceInvoice" contentEditable="true"
+													style="background-color: #0d92f59c"></td>
+												<td id="doua2"><a style="color: #F00">裁剪价格</a></td>
+												<td class="cutPrice"></td>
+												<td class="oneCutPrice"></td>
+												<td class="cutPricePricing" contentEditable="true"
+													style="background-color: #0d92f59c"></td>
+												<td class="cutPriceD"></td>
+											</tr>
+											<tr>
+												<td class="" style="background-color: #0d92f59c"><select
+													class="selectotb machinistInvoice">
+														<option value="0">否</option>
+														<option value="1">是</option>
+												</select></td>
+												<td class="machinistPriceInvoice" contentEditable="true"
+													style="background-color: #0d92f59c"></td>
+												<td id="doua3"><a style="color: #F00">机工价格</a></td>
+												<td class="machinistPrice"></td>
+												<td class="oneMachinistPrice"></td>
+												<td class="machinistPricePricing" contentEditable="true"
+													style="background-color: #0d92f59c"></td>
+												<td class="machinistPriceD"></td>
+											</tr>
+											<tr>
+												<td class="" style="background-color: #0d92f59c"><select
+													class="selectotb embroiderInvoice">
+														<option value="0">否</option>
+														<option value="1">是</option>
+												</select></td>
+												<td class="embroiderPriceInvoice" contentEditable="true"
+													style="background-color: #0d92f59c"></td>
+												<td id="doua4"><a style="color: #F00">绣花价格</a></td>
+												<td class="embroiderPrice"></td>
+												<td class="oneEmbroiderPrice"></td>
+												<td class="embroiderPricePricing" contentEditable="true"
+													style="background-color: #0d92f59c"></td>
+												<td class="embroiderPriceD"></td>
+											</tr>
+											<tr>
+												<td class="" style="background-color: #0d92f59c"><select
+													class="selectotb needleworkInvoice">
+														<option value="0">否</option>
+														<option value="1">是</option>
+												</select></td>
+												<td class="needleworkPriceInvoice" contentEditable="true"
+													style="background-color: #0d92f59c"></td>
+												<td id="doua5"><a style="color: #F00">针工价格</a></td>
+												<td class="needleworkPrice"></td>
+												<td class="oneNeedleworkPrice"></td>
+												<td class="needleworkPricePricing" contentEditable="true"
+													style="background-color: #0d92f59c"></td>
+												<td class="needleworkPriceD"></td>
+											</tr>
+											<tr>
+												<td class="" style="background-color: #0d92f59c"><select
+													class="selectotb packInvoice">
+														<option value="0">否</option>
+														<option value="1">是</option>
+												</select></td>
+												<td class="packPriceInvoice" contentEditable="true"
+													style="background-color: #0d92f59c"></td>
+												<td id="doua6"><a style="color: #F00">内外包装和出入库的价格</a></td>
+												<td class="packPrice"></td>
+												<td class="onePackPrice"></td>
+												<td class="packPricePricing" contentEditable="true"
+													style="background-color: #0d92f59c"></td>
+												<td class="packPriceD"></td>
+											</tr>
+											<tr>
+												<td class="" style="background-color: #0d92f59c"><select
+													class="selectotb freightInvoice">
+														<option value="0">否</option>
+														<option value="1">是</option>
+												</select></td>
+												<td class="freightPriceInvoice" contentEditable="true"
+													style="background-color: #0d92f59c"></td>
+												<td>预计运费价格</td>
+												<td class="freightPrice"></td>
+												<td class="oneFreightPrice"></td>
+												<td class="freightPricePricing" contentEditable="true"
+													style="background-color: #0d92f59c"></td>
+												<td class="freightPriceD"></td>
+											</tr>
+										</tbody>
+
+
+
+										<thead>
+											<tr>
+												<th class="text-center">是否有返点</th>
 												<th class="text-center">返点比</th>
 												<th class="text-center">调整外发产量</th>
 												<th class="text-center">批成本</th>
 												<th class="text-center">单只成本</th>
 												<th class="text-center">单只实战成本</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td class=""  style="background-color:#0d92f59c">
-                                                  <select class="selectotb rebate" >
-	                                                <option value="0">否</option>
-	                                                <option value="1">是</option>
-	                                             </select>
-                                                
-                                                </td>
-                                                <td class="rebateRate" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td class="adjustNumber" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td class="bacthPrimeCostAdjustNumber" ></td>
-                                                <td class="onePrimeCost"></td>
-                                                <td class="oneaAtualPrimeCost" ></td>
-                                            </tr>
-                                           
-                                        </tbody>
-                                        
-                                       
-                                       <thead>
-                                            <tr>
-		                                        <th class="text-center">是否有版权点</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td class="" style="background-color: #0d92f59c"><select
+													class="selectotb rebate">
+														<option value="0">否</option>
+														<option value="1">是</option>
+												</select></td>
+												<td class="rebateRate" contentEditable="true"
+													style="background-color: #0d92f59c"></td>
+												<td class="adjustNumber" contentEditable="true"
+													style="background-color: #0d92f59c"></td>
+												<td class="bacthPrimeCostAdjustNumber"></td>
+												<td class="onePrimeCost"></td>
+												<td class="oneaAtualPrimeCost"></td>
+											</tr>
+
+										</tbody>
+
+
+										<thead>
+											<tr>
+												<th class="text-center">是否有版权点</th>
 												<th class="text-center">版权点比</th>
 												<th class="text-center">产品的大类分解</th>
 												<th class="text-center">各环节的批价格</th>
 												<th class="text-center">单只价格</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td class="" style="background-color:#0d92f59c">
-                                                <select class="selectotb copyright" >
-	                                                <option value="0">否</option>
-	                                                <option value="1">是</option>
-	                                             </select>
-                                                </td>
-                                                <td class="copyrightRate" contentEditable="true" style="background-color:#0d92f59c"></td>
-                                                <td >面料价格(含复合物料和加工费）</td>
-                                                <td class="oneCutPartsPriceBacth"></td>
-                                                <td class="oneCutPartsPrice" ></td>
-                                            </tr>
-                                            <tr>
-                                                <td ></td>
-                                                <td ></td>
-                                                <td  >除面料以外的其他物料价格 </td>
-                                                <td class="oneOtherCutPartsPriceBacth" ></td>
-                                                <td class="oneOtherCutPartsPrice" ></td>
-                                            </tr>
-                                            <tr>
-                                                <td ></td>
-                                                <td ></td>
-                                                <td  >裁剪价格</td>
-                                                <td class="oneCutPriceBacth" ></td>
-                                                <td class="oneCutPrice" ></td>
-                                            </tr>
-                                            <tr>
-                                                <td></td>
-                                                <td ></td>
-                                                <td  >机工价格</td>
-                                                <td class="oneMachinistPriceBacth" ></td>
-                                                <td class="oneMachinistPrice" ></td>
-                                            </tr>
-                                            <tr>
-                                                <td ></td>
-                                                <td ></td>
-                                                <td  >绣花价格</td>
-                                                <td class="oneEmbroiderPriceBacth" ></td>
-                                                <td class="oneEmbroiderPrice" ></td>
-                                            </tr>
-                                            <tr>
-                                                <td ></td>
-                                                <td ></td>
-                                                <td  >针工价格</td>
-                                                <td class="oneNeedleworkPriceBacth" ></td>
-                                                <td class="oneNeedleworkPrice" ></td>
-                                            </tr>
-                                            <tr>
-                                                <td ></td>
-                                                <td ></td>
-                                                <td >内外包装和出入库的价格</td>
-                                                <td class="onePackPriceBacth" ></td>
-                                                <td class="onePackPrice" ></td>
-                                            </tr>
-                                            <tr>
-                                                <td ></td>
-                                                <td ></td>
-                                                <td  >预计运费价格</td>
-                                                <td class="oneFreightPriceBacth" ></td>
-                                                <td class="oneFreightPrice" ></td>
-                                            </tr>
-                                        </tbody>
-                                         
-                                    </table>
-                                </div>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td class="" style="background-color: #0d92f59c"><select
+													class="selectotb copyright">
+														<option value="0">否</option>
+														<option value="1">是</option>
+												</select></td>
+												<td class="copyrightRate" contentEditable="true"
+													style="background-color: #0d92f59c"></td>
+												<td>面料价格(含复合物料和加工费）</td>
+												<td class="oneCutPartsPriceBacth"></td>
+												<td class="oneCutPartsPrice"></td>
+											</tr>
+											<tr>
+												<td></td>
+												<td></td>
+												<td>除面料以外的其他物料价格</td>
+												<td class="oneOtherCutPartsPriceBacth"></td>
+												<td class="oneOtherCutPartsPrice"></td>
+											</tr>
+											<tr>
+												<td></td>
+												<td></td>
+												<td>裁剪价格</td>
+												<td class="oneCutPriceBacth"></td>
+												<td class="oneCutPrice"></td>
+											</tr>
+											<tr>
+												<td></td>
+												<td></td>
+												<td>机工价格</td>
+												<td class="oneMachinistPriceBacth"></td>
+												<td class="oneMachinistPrice"></td>
+											</tr>
+											<tr>
+												<td></td>
+												<td></td>
+												<td>绣花价格</td>
+												<td class="oneEmbroiderPriceBacth"></td>
+												<td class="oneEmbroiderPrice"></td>
+											</tr>
+											<tr>
+												<td></td>
+												<td></td>
+												<td>针工价格</td>
+												<td class="oneNeedleworkPriceBacth"></td>
+												<td class="oneNeedleworkPrice"></td>
+											</tr>
+											<tr>
+												<td></td>
+												<td></td>
+												<td>内外包装和出入库的价格</td>
+												<td class="onePackPriceBacth"></td>
+												<td class="onePackPrice"></td>
+											</tr>
+											<tr>
+												<td></td>
+												<td></td>
+												<td>预计运费价格</td>
+												<td class="oneFreightPriceBacth"></td>
+												<td class="oneFreightPrice"></td>
+											</tr>
+										</tbody>
 
-                            </div>
-                        </div>
-                    </div>
-                </div>
+									</table>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
 
 
 				<div class="form-group1">
 					<label class="col-sm-2 col-md-2 control-label">目前售价:</label>
 					<div class="col-sm-2 col-md-2">
-						<input type="text" class="form-control sale"  style="background-color:#0d92f59c">
+						<input type="text" class="form-control sale"
+							style="background-color: #0d92f59c">
 					</div>
 					<label class="col-sm-2 control-label">是否含开票:</label>
-					<div class="col-sm-2" >
-						  	<select class="form-control invoice" style="background-color:#0d92f59c" >
-	                            <option value="0">否</option>
-	                            <option value="1">是</option>
-	                         </select>
+					<div class="col-sm-2">
+						<select class="form-control invoice"
+							style="background-color: #0d92f59c">
+							<option value="0">否</option>
+							<option value="1">是</option>
+						</select>
 					</div>
 					<label class="col-sm-2 control-label">付上游开票点:</label>
 					<div class="col-sm-2 ">
-						<input type="text" class="form-control upstream" disabled="disabled">
+						<input type="text" class="form-control upstream"
+							disabled="disabled">
 					</div>
 				</div>
 
 				<div class="form-group2">
 					<label class="col-sm-2 col-md-2 control-label">预计多付国家的:</label>
 					<div class="col-sm-2 col-md-2">
-						<input type="text" class="form-control expectState" disabled="disabled">
+						<input type="text" class="form-control expectState"
+							disabled="disabled">
 					</div>
 					<label class="col-sm-2 control-label">付国家的:</label>
 					<div class="col-sm-2">
@@ -423,37 +443,44 @@
 					</div>
 					<label class="col-sm-2 control-label">考虑多付国家的不付需要的进项票点:</label>
 					<div class="col-sm-2 ">
-						<input type="text" class="form-control noState" disabled="disabled">
+						<input type="text" class="form-control noState"
+							disabled="disabled">
 					</div>
 				</div>
 
 				<div class="form-group3">
 					<label class="col-sm-2 col-md-2 control-label">付返点和版权点:</label>
 					<div class="col-sm-2 col-md-2">
-						<input type="text" class="form-control recidivate" disabled="disabled">
+						<input type="text" class="form-control recidivate"
+							disabled="disabled">
 					</div>
 					<label class="col-sm-2 control-label">付运费:</label>
 					<div class="col-sm-2">
-						<input type="text" class="form-control freight" disabled="disabled">
+						<input type="text" class="form-control freight"
+							disabled="disabled">
 					</div>
 					<label class="col-sm-2 control-label">为目前得出综合税负加所得税负填写:</label>
 					<div class="col-sm-2 ">
-						<input type="text" class="form-control taxes" style="background-color:#0d92f59c">
+						<input type="text" class="form-control taxes"
+							style="background-color: #0d92f59c">
 					</div>
 				</div>
 
 				<div class="form-group4">
 					<label class="col-sm-2 col-md-2 control-label">剩余到手的:</label>
 					<div class="col-sm-2 col-md-2">
-						<input type="text" class="form-control surplus" disabled="disabled">
+						<input type="text" class="form-control surplus"
+							disabled="disabled">
 					</div>
 					<label class="col-sm-2 control-label">实际加价率:</label>
 					<div class="col-sm-2">
-						<input type="text" class="form-control makeRate" disabled="disabled">
+						<input type="text" class="form-control makeRate"
+							disabled="disabled">
 					</div>
 					<label class="col-sm-2 control-label">目前综合税负加所得税负比:</label>
 					<div class="col-sm-2 ">
-						<input type="text" class="form-control taxesRate" disabled="disabled">
+						<input type="text" class="form-control taxesRate"
+							disabled="disabled">
 					</div>
 				</div>
 
@@ -463,13 +490,13 @@
 
 
 			</div>
-		</div>     
-        
-</div>        
-	
+		</div>
+
+	</div>
+
 	<!--隐藏框 成本价格表结束  -->
-	
-	
+
+
 	<!--隐藏框 产品新增开始  -->
 	<div id="addDictDivTypetw" style="display: none;">
 		<div class=" col-xs-12  col-sm-12  col-md-12 ">
@@ -483,7 +510,8 @@
 							<input type="text" id="productNametw" class="form-control">
 						</div>
 						<div class="col-sm-6">
-							<input type="text" id="productNametw2" class="form-control hidden">
+							<input type="text" id="productNametw2"
+								class="form-control hidden">
 						</div>
 					</div>
 				</div>
@@ -491,8 +519,8 @@
 		</div>
 	</div>
 	<!--隐藏框 产品新增结束  -->
-	
-	
+
+
 	</section>
 
 

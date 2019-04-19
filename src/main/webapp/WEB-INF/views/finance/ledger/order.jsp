@@ -7,143 +7,171 @@
 <!--<![endif]-->
 
 <head>
-     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>订单管理</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>订单管理</title>
+<meta name="description" content="">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
 </head>
 
 <body>
-    <section id="main-wrapper" class="theme-default">
-        
-        <%@include file="../../decorator/leftbar.jsp"%> 
-        <!--main content start-->
-        
-           <section id="main-content" class="animated fadeInUp">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">订单信息</h3>
-                                <div class="actions pull-right">
-                                    <i class="fa fa-expand"></i>
-                                    <i class="fa fa-chevron-down"></i>
-                                </div>
-                            </div>
-                            <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-12 col-sm-12  col-md-12">
-						<form class="form-search" >
-							<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group">
-							<table><tr>
-								<td>甲方:</td><td><input type="text" name="name" id="firstNames"  class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp</td>
-								<td>乙方:</td><td><input type="text" name="name" id="partyNames"  class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp</td>
-								<td>产品名:</td><td><input type="text" name="name" id="productName"  class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp</td>
-								<td>批次号:</td><td><input type="text" name="name" id="batchNumber2"  class="form-control search-query name" /></td>
-								<td>合同开始:</td>
-								<td>
-								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
-								</td>
-									<td>&nbsp&nbsp</td>
-				<td>合同结束:</td>
-				<td>
-					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
-             onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-								</td>
-								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask">
-										查找
-										<i class="icon-search icon-on-right bigger-110"></i>
-									</button>
-								</span>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-danger  btn-sm btn-3d start">
-									一键删除
-									</button>
-								</span>
-								 <td>&nbsp&nbsp&nbsp&nbsp</td>
-								<span class="input-group-btn">
-								<input type="file" name="file" id="upfile"  style="display:inline">
-									 <button type="button" id="btn" class="btn btn-success  btn-sm btn-3d pull-right">
-									点击导入
-									 </button>
-								</span>  
+	<section id="main-wrapper" class="theme-default">
+
+		<%@include file="../../decorator/leftbar.jsp"%>
+		<!--main content start-->
+
+		<section id="main-content" class="animated fadeInUp">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">订单信息</h3>
+							<div class="actions pull-right">
+								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
 							</div>
 						</div>
+						<div class="row" style="height: 30px; margin: 15px 0 10px">
+							<div class="col-xs-12 col-sm-12  col-md-12">
+								<form class="form-search">
+									<div class="row">
+										<div class="col-xs-12 col-sm-12 col-md-12">
+											<div class="input-group">
+												<table>
+													<tr>
+														<td>甲方:</td>
+														<td><input type="text" name="name" id="firstNames"
+															class="form-control search-query name" /></td>
+														<td>&nbsp&nbsp</td>
+														<td>乙方:</td>
+														<td><input type="text" name="name" id="partyNames"
+															class="form-control search-query name" /></td>
+														<td>&nbsp&nbsp</td>
+														<td>产品名:</td>
+														<td><input type="text" name="name" id="productName"
+															class="form-control search-query name" /></td>
+														<td>&nbsp&nbsp</td>
+														<td>批次号:</td>
+														<td><input type="text" name="name" id="batchNumber2"
+															class="form-control search-query name" /></td>
+														<td>合同开始:</td>
+														<td><input id="startTime" placeholder="请输入开始时间"
+															class="form-control laydate-icon"
+															onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+														</td>
+														<td>&nbsp&nbsp</td>
+														<td>合同结束:</td>
+														<td><input id="endTime" placeholder="请输入结束时间"
+															class="form-control laydate-icon"
+															onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+														</td>
+													</tr>
+												</table>
+												<span class="input-group-btn">
+													<button type="button"
+														class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask">
+														查找 <i class="icon-search icon-on-right bigger-110"></i>
+													</button>
+												</span>
+												<td>&nbsp&nbsp&nbsp&nbsp</td> <span class="input-group-btn">
+													<button type="button"
+														class="btn btn-danger  btn-sm btn-3d start">一键删除
+													</button>
+												</span>
+												<td>&nbsp&nbsp&nbsp&nbsp</td> <span class="input-group-btn">
+													<input type="file" name="file" id="upfile"
+													style="display: inline">
+													<button type="button" id="btn"
+														class="btn btn-success  btn-sm btn-3d pull-right">
+														点击导入</button>
+												</span>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="panel-body">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th class="center"><label> <input type="checkbox"
+												class="ace checks" /> <span class="lbl"></span>
+										</label></th>
+										<th class="text-center">当月销售编号</th>
+										<th class="text-center">合同签订日期</th>
+										<th class="text-center">甲方</th>
+										<th class="text-center">乙方</th>
+										<th class="text-center">当批批次号</th>
+										<th class="text-center">当批计划单号</th>
+										<th class="text-center">当批产品名</th>
+										<th class="text-center">当批合同数量</th>
+										<th class="text-center">当批合同总价（元）</th>
+										<th class="text-center">预付款备注</th>
+										<th class="text-center">手动填写当批单只价格</th>
+										<th class="text-center">线上or线下</th>
+										<th class="text-center">操作</th>
+									</tr>
+								</thead>
+								<tr>
+
+									<td class="text-center"></td>
+									<td class="text-center"></td>
+									<td class="text-center" style="padding: 9px 0px 2px 4px;"><input
+										id="contractTime" placeholder="请输入时间"
+										class="form-control laydate-icon"
+										onClick="laydate({elem: '#contractTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+										style="border: none; width: 90px; height: 30px; background-color: #BFBFBF;"></td>
+									<td class="text-center"><input type="text" id="aName"
+										class="aName2 text-center" data-provide="typeahead"
+										style="border: none; width: 68px; height: 30px; background-color: #BFBFBF;"></td>
+									<td class="text-center"><input type="text" id="bName"
+										class="bName2 text-center"
+										style="border: none; width: 68px; height: 30px; background-color: #BFBFBF;"></td>
+									<td class="text-center"><input type="text"
+										id="batchNumber" class="text-center"
+										style="border: none; width: 105px; height: 30px; background-color: #BFBFBF;"></td>
+									<td class="text-center"><input type="text"
+										id="planNumbers" class="text-center" placeholder="可不填"
+										style="border: none; width: 60px; height: 30px; background-color: #BFBFBF;"></td>
+									<td class="text-center"><input type="text"
+										id="ProductName" class="text-center"
+										style="border: none; width: 150px; height: 30px; background-color: #BFBFBF;"></td>
+									<td class="text-center"><input type="text"
+										id="contractNumber" class="text-center"
+										style="border: none; width: 50px; height: 30px; background-color: #BFBFBF;"></td>
+									<td class="text-center"></td>
+									<td class="text-center"><input type="text"
+										id="remarksPrice" class="text-center" placeholder="可不填"
+										style="border: none; width: 80px; height: 30px; background-color: #BFBFBF;"></td>
+									<td class="text-center"></td>
+									<td class="text-center"><select class="text-center"
+										id="online"
+										style="border: none; width: 68px; height: 30px; background-color: #BFBFBF;"><option
+												value="0">线下</option>
+											<option value="1">线上</option>
+											<option value="2">批发</option></select></td>
+									<td class="text-center"><button type="button"
+											id="addgroup"
+											class="btn btn-success btn-sm btn-3d pull-right">新增订单</button></td>
+
+								</tr>
+
+								<tbody id="tablecontent">
+
+								</tbody>
+
+							</table>
+							<div id="pager" class="pull-right"></div>
+						</div>
 					</div>
-				</form>
+				</div>
 			</div>
-		</div>
-                            <div class="panel-body">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th class="center">
-											<label> 
-											<input type="checkbox" class="ace checks" /> 
-											<span class="lbl"></span>
-											</label>
-											</th>
-                                        	<th class="text-center">当月销售编号</th>
-                                            <th class="text-center">合同签订日期</th>
-                                            <th class="text-center">甲方</th>
-                                            <th class="text-center">乙方</th>
-                                            <th class="text-center">当批批次号</th>
-                                            <th class="text-center">当批计划单号</th>
-                                            <th class="text-center">当批产品名</th>
-                                            <th class="text-center">当批合同数量</th>
-                                            <th class="text-center">当批合同总价（元）</th>
-                                            <th class="text-center">预付款备注</th>
-                                            <th class="text-center">手动填写当批单只价格</th>
-                                            <th class="text-center">线上or线下</th>
-                                            <th class="text-center">操作</th>
-                                        </tr>
-                                    </thead>
-                                        <tr>
-                                    
-                                        	<td class="text-center"></td>
-                                        	<td class="text-center"></td>
-                                            <td class="text-center" style="padding: 9px 0px 2px 4px;"><input id="contractTime" placeholder="请输入时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#contractTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="border: none;width:90px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="aName" class="aName2 text-center"  data-provide="typeahead" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="bName" class="bName2 text-center" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="batchNumber" class="text-center" style="border: none;width:105px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="planNumbers" class="text-center" placeholder="可不填" style="border: none;width:60px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="ProductName" class="text-center" style="border: none;width:150px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"><input type="text" id="contractNumber" class="text-center" style="border: none;width:50px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"><input type="text" id="remarksPrice" class="text-center" placeholder="可不填" style="border: none;width:80px; height:30px; background-color: #BFBFBF;"></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"><select class="text-center" id="online" style="border: none;width:68px; height:30px; background-color: #BFBFBF;"><option value="0">线下</option><option value="1">线上</option><option value="2">批发</option></select></td>
-                                            <td class="text-center"><button type="button"  id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增订单</button></td>
-                                    
-                                        </tr>
-                                    
-                                    <tbody id="tablecontent">
-                                        
-                                    </tbody>
-                                    
-                                </table>
-                                <div id="pager" class="pull-right">
-                                
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </section>
-        <!--隐藏框 产品新增开始  -->
-        <!-- <div id="addDictDivType" style="display: none;">
+		</section>
+	</section>
+	<!--隐藏框 产品新增开始  -->
+	<!-- <div id="addDictDivType" style="display: none;">
 			<div class=" col-xs-12  col-sm-12  col-md-12 ">
 				<div class="space-10"></div>
 				<div style="height: 30px"></div>
@@ -200,77 +228,83 @@
 				</form>
 </div>
 </div> -->
- <!--隐藏框 产品新增结束  -->
- 
- 
- <div class="wrap">
-<div class="layer-right3" style="display: none;">
-<div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-12 col-sm-12  col-md-12">
-						<form class="form-search" >
-							<div class="row">
+	<!--隐藏框 产品新增结束  -->
+
+
+	<div class="wrap">
+		<div class="layer-right3" style="display: none;">
+			<div class="row" style="height: 30px; margin: 15px 0 10px">
+				<div class="col-xs-12 col-sm-12  col-md-12">
+					<form class="form-search">
+						<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group">
-							<table><tr>
-								<td>乙方:</td><td><input type="text" name="name" id="partyNames2"  class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp</td>
-								<td>产品名:</td><td><input type="text" name="name" id="productName2"  class="form-control search-query name" /></td>
-								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask2">
-										查找
-										<i class="icon-search icon-on-right bigger-110"></i>
-									</button>
-								</span>
+								<div class="input-group">
+									<table>
+										<tr>
+											<td>乙方:</td>
+											<td><input type="text" name="name" id="partyNames2"
+												class="form-control search-query name" /></td>
+											<td>&nbsp&nbsp</td>
+											<td>产品名:</td>
+											<td><input type="text" name="name" id="productName2"
+												class="form-control search-query name" /></td>
+										</tr>
+									</table>
+									<span class="input-group-btn">
+										<button type="button"
+											class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask2">
+											查找 <i class="icon-search icon-on-right bigger-110"></i>
+										</button>
+									</span>
+								</div>
 							</div>
 						</div>
-					</div>
-				</form>
+					</form>
+				</div>
+			</div>
+			<div class="panel-body">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th class="text-center">当批产品名</th>
+							<th class="text-center">乙方选择</th>
+							<th class="text-center">单只价格（元）</th>
+							<th class="text-center">操作</th>
+						</tr>
+					</thead>
+					<tbody id="tablecontent2">
+
+					</tbody>
+
+				</table>
+				<div id="pager2" class="pull-right"></div>
 			</div>
 		</div>
-           <div class="panel-body">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">当批产品名</th>
-                                            <th class="text-center">乙方选择</th>
-                                            <th class="text-center">单只价格（元）</th>
-                                            <th class="text-center">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablecontent2">
-                                        
-                                    </tbody>
-                                    
-                                </table>
-                                <div id="pager2" class="pull-right">
-                                
-                                </div>
-                            </div>
-				</div>
-  </div>
- 
- 
- 
- 
- 
-    </section>
-    
-   
-   
-   <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
-    <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
-    <script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
-    <script src="${ctx }/static/plugins/pace/pace.min.js"></script>
-    <script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-    <script src="${ctx }/static/js/src/app.js"></script>
-     <script src="${ctx }/static/js/laypage/laypage.js"></script> 
-    <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
-    <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-    <script src="${ctx }/static/js/vendor/typeahead.js"></script>
-    <script src="${ctx }/static/js/vendor/mSlider.min.js"></script>
-    <script>
+	</div>
+
+
+
+
+
+	</section>
+
+
+
+	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+	<script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
+	<script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
+	<script src="${ctx }/static/plugins/pace/pace.min.js"></script>
+	<script
+		src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
+	<script src="${ctx }/static/js/src/app.js"></script>
+	<script src="${ctx }/static/js/laypage/laypage.js"></script>
+	<script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
+	<script
+		src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
+	<script src="${ctx }/static/js/vendor/typeahead.js"></script>
+	<script src="${ctx }/static/js/vendor/mSlider.min.js"></script>
+	<script>
    jQuery(function($){
    	var Login = function(){
 			var self = this;
@@ -1054,7 +1088,7 @@
 			})
     
     </script>
-       
+
 </body>
 
 </html>
