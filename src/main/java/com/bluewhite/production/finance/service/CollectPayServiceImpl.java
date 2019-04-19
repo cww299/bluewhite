@@ -795,15 +795,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				             stringMap.put(data, 1);//个数记录为1
 				     }
 				  }
-//				   因为Set中元素是不相同的Set 集合的大小就是不同元素的个数；Map存放的是每个元素在字符串数组的个数      
-//				   for (String s : stringSet) {
-//				       输出字符串数组中的每个元素的个数
-//				       System.out.println("相同的" + s + ":" + stringMap.get(s));
-//				   }
-//				   输出字符串数组中不同元素的个数
-//				    System.out.println("不同的：" + stringSet.size());
 				 int count = stringSet.size();
-				
 				//遍历任务，通过任务 的员工id和分组人员的员工id相匹配，相同则记录任务数
 				 Map<Object,Integer> map = new HashMap<Object,Integer>(4);
 				 map.put(groupList.get(0).getId(), 0);
@@ -821,7 +813,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 									Long id = Long.parseLong(ids[i]);
 									User user = userService.findOne(id);
 									for(Object groupId : map.keySet()){
-										if(user.getGroupId().equals(groupId)){
+										if(user.getGroupId() != null && user.getGroupId().equals(groupId)){
 											int num = map.get(groupId);
 											map.put(groupId, num+ta.getNumber());
 											bre=1;

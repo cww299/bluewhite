@@ -89,6 +89,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				userList.add(user);
 			}
 
+			String exUser = "";
 			// 开始汇总每个人的考勤
 			for (User us : userList) {
 				List<Attendance> attList = attendanceDao.findByUserIdAndTimeBetween(us.getId(), beginTimes, endTimes)
@@ -115,7 +116,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				// 获取员工考勤的初始化参数
 				AttendanceInit attendanceInit = attendanceInitService.findByUserId(us.getId());
 				if(attendanceInit==null){
-					throw new ServiceException(us.getUserName()+"没有考勤初始设定数据，请填写后操作");
+					exUser += exUser.equals("") ? us.getUserName() : ","+us.getUserName();
+					continue;
 				}
 
 				// 上班开始时间
@@ -288,16 +290,17 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 						continue;
 					}
 					
+					//当休息日有打卡记录时，不需要申请加班的人自动算加班时长
 					if (rout) {
 						attendanceTime.setFlag(3);
 						if(attendanceInit.getOverTimeType()==2 && attendanceTime.getCheckIn()!=null && attendanceTime.getCheckOut()!=null){
 							if (attendanceInit.getRestTimeWork() == 3) {
 								attendanceTime.setOvertime(
-										DatesUtil.getTimeHour(workTime, attendanceTime.getCheckOut())
+										DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime) ? workTime : attendanceTime.getCheckIn(), attendanceTime.getCheckOut())
 										);
 							}else{
 								attendanceTime.setOvertime(NumUtils.sub(
-										DatesUtil.getTimeHour(workTime, attendanceTime.getCheckOut()),
+										DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime) ? workTime : attendanceTime.getCheckIn(), attendanceTime.getCheckOut()),
 										restTime));
 							}
 						}
@@ -329,6 +332,9 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				}
 				attendanceTimeList.add(attendanceTime);
 
+			}
+			if(!exUser.equals("")){
+				throw new ServiceException(exUser+"没有考勤初始设定数据，请填写后操作");
 			}
 			// 循环一次结束后，获取下一天的签到开始时间,6点开始
 			beginTimes = DatesUtil.nextDay(beginTimes);

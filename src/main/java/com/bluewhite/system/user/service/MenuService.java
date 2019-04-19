@@ -7,7 +7,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
+import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.system.user.entity.Menu;
+import com.bluewhite.system.user.entity.Role;
 
 @Service
 public interface MenuService extends BaseCRUDService<Menu,Long>{
@@ -26,4 +29,10 @@ public interface MenuService extends BaseCRUDService<Menu,Long>{
 	 * @return list
 	 */
 	public List<Menu> findHasPermissionMenusByUsernameNew(String username);
+	
+	/**
+	 * 分页查询
+	 * @param page 分页参数
+	 */
+	public PageResult<Menu> getPage(PageParameter page, Menu menu);
 }

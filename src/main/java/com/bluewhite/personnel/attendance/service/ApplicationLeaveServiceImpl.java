@@ -256,14 +256,14 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 						};
 					}
 					if (actualOverTime < Double.valueOf(time)) {
-						throw new ServiceException("根据签到时间当日该员工加班时间为" + actualOverTime + "小时，加班申请时间有误请重新核对");
+						throw new ServiceException("根据"+date+"的签到时间该员工加班时间为" + actualOverTime + "小时，加班申请时间有误请重新核对");
 					}
 				}
 				holidayDetail = holidayDetail.equals("") ? (date + "申请加班" + time + "小时")
 						: (holidayDetail+"," + date + "申请加班" + time + "小时");
 			}
 			if (applicationLeave.isTradeDays()) {
-				holidayDetail = date + "调休" + time + "小时";
+				holidayDetail =  holidayDetail.equals("") ? (date + "调休" + time + "小时") : holidayDetail+","+date + "调休" + time + "小时";
 			}
 		}
 		applicationLeave.setHolidayDetail(holidayDetail);
