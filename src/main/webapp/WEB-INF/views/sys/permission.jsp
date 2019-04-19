@@ -36,15 +36,14 @@
 		<div id="pager"></div>  -->
 	
 		
-		
-		<div id="LAY-permission-table" class="table_th_search" lay-filter="LAY-permission-table"></div>
+		<table id="demo" lay-filter="test"></table>
+		<!-- <div id="LAY-permission-table" class="table_th_search" lay-filter="LAY-permission-table"></div> -->
 	</div>
 </div>
 
 
-<table id="demo" lay-filter="test"></table>
+
  
-<script src="/layui/layui.js"></script>
 <script>
 layui.use('table', function(){
   var table = layui.table;
