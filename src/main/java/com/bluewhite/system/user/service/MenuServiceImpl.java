@@ -8,13 +8,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.criteria.Predicate;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
+import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.system.user.dao.MenuDao;
 import com.bluewhite.system.user.entity.Menu;
 import com.bluewhite.system.user.entity.Role;
@@ -113,5 +119,28 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 		}
 		return result;
 	}
+
+	@Override
+	public PageResult<Menu> getPage(PageParameter page, Menu param) {
+			Page<Menu> pageData = menuDao.findAll((root, query, cb) -> {
+				List<Predicate> predicate = new ArrayList<>();
+				if (param.getId() != null) {
+					predicate.add(cb.equal(root.get("id").as(Long.class),
+							param.getId()));
+				}
+				if (!StringUtils.isEmpty(param.getName())) {
+					predicate.add(cb.like(root.get("name").as(String.class), "%"
+							+ param.getName() + "%"));
+				}
+				Predicate[] pre = new Predicate[predicate.size()];
+				query.where(predicate.toArray(pre));
+				return null;
+			}, page);
+			PageResult<Menu> result = new PageResult<>(pageData,page);
+			return result;
+		}
+	
+	
+	
 
 }
