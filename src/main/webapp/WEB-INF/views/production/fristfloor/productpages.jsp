@@ -4,194 +4,192 @@
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html class="no-js">
-<!--<![endif]-->
-
 <head>
-     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>产品总汇</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-   
-   
+	<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>  <!-- 时间插件 -->
+	<script src="${ctx }/static/js/layer/layer.js"></script>
+	<script src="${ctx }/static/js/laypage/laypage.js"></script> 
+	<link rel="stylesheet" href="${ctx }/static/css/main.css">
+
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>产品总汇</title>
+<meta name="description" content="">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+
 </head>
 
 <body>
-    <section id="main-wrapper" class="theme-default">
-        
-        <%@include file="../../decorator/leftbar.jsp"%> 
-        
-        <!--main content start-->
-        
-           <section id="main-content" class="animated fadeInUp">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">产品信息</h3>
-                                <div class="actions pull-right">
-                                    <i class="fa fa-expand"></i>
-                                    <i class="fa fa-chevron-down"></i>
-                                </div>
-                            </div>
-      <div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-8 col-sm-8  col-md-8">
-				<form class="form-search" >
-					<div class="row">
-						<div class="col-xs-8 col-sm-8 col-md-8">
-							<div class="input-group"> 
-								<table><tr><td>产品编号:</td><td><input type="text" name="number" id="number" class="form-control search-query number" /></td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>产品名称:</td><td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
-								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
-										查&nbsp找
-									</button>
-								</span>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<span class="input-group-btn">
-									 <button type="button" id="addproduct" class="btn btn-success  btn-sm btn-3d pull-right">
-									 新增产品
-									 </button>
-								</span>
-								  
+	<section id="main-wrapper" class="theme-default">
+
+		<section id="main-content" class="animated fadeInUp">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">产品信息</h3>
+							<div class="actions pull-right">
+								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
 							</div>
 						</div>
+						<div class="row" style="height: 30px; margin: 15px 0 10px">
+							<div class="col-xs-8 col-sm-8  col-md-8">
+								<form class="form-search">
+									<div class="row">
+										<div class="col-xs-8 col-sm-8 col-md-8">
+											<div class="input-group">
+												<table>
+													<tr>
+														<td>产品编号:</td>
+														<td><input type="text" name="number" id="number"
+															class="form-control search-query number" /></td>
+														<td>&nbsp&nbsp&nbsp&nbsp</td>
+														<td>产品名称:</td>
+														<td><input type="text" name="name" id="name"
+															class="form-control search-query name" /></td>
+													</tr>
+												</table>
+												<span class="input-group-btn">
+													<button type="button"
+														class="btn btn-info btn-square btn-sm btn-3d searchtask">
+														查&nbsp找</button>
+												</span>
+												<td>&nbsp&nbsp&nbsp&nbsp</td> <span class="input-group-btn">
+													<button type="button" id="addproduct"
+														class="btn btn-success  btn-sm btn-3d pull-right">
+														新增产品</button>
+												</span>
+
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="panel-body">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th class="text-center">产品序号</th>
+										<th class="text-center">产品编号</th>
+										<th class="text-center">产品名</th>
+										<th class="text-center">生产预计单价</th>
+										<th class="text-center">外发价格</th>
+										<th class="text-center">操作</th>
+									</tr>
+								</thead>
+								<tbody id="tablecontent">
+
+								</tbody>
+							</table>
+							<div id="pager" class="pull-right"></div>
+						</div>
 					</div>
-				</form>
+				</div>
 			</div>
-		</div>
-                            <div class="panel-body">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th class="text-center">产品序号</th>
-                                            <th class="text-center">产品编号</th>
-                                            <th class="text-center">产品名</th>
-                                            <th class="text-center">生产预计单价</th>
-                                            <th class="text-center">外发价格</th>
-                                            <th class="text-center">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablecontent">
-                                        
-                                    </tbody>
-                                </table>
-                                <div id="pager" class="pull-right">
-                                
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </section>
-        <!--隐藏框 产品新增开始  -->
-        <div id="addDictDivType" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-				<!-- PAGE CONTENT BEGINS -->
-				<form class="form-horizontal addDictDivTypeForm">
+		</section>
+	</section>
+	<!--隐藏框 产品新增开始  -->
+	<div id="addDictDivType" style="display: none;">
+		<div class=" col-xs-12  col-sm-12  col-md-12 ">
+			<!-- PAGE CONTENT BEGINS -->
+			<form class="form-horizontal addDictDivTypeForm">
 				<div class="row col-xs-12  col-sm-12  col-md-12 ">
-				<div style="height: 30px"></div>
+					<div style="height: 30px"></div>
 					<div class="form-group">
-                                        <label class="col-sm-3 control-label">产品编号:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="productNumber" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">产品名:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="productName" class="form-control">
-                                        </div>
-                 </div>
-</div>
-</form>
-</div>
-</div>
-<!--隐藏框 产品新增结束  -->
-<!--隐藏框 产品工序开始  -->
-        <div id="addworking" style="display: none;">
-			<div class="panel-body">
-        	<div class="form-group">
-		    <input type="file" name="file" id="upfile"  style="display:inline">
-		    <button type="button" class="btn btn-success btn-sm" id="btn"  style="display:inline">点击导入</button>
-		    <button class="btn btn-sm btn-danger  " id="deleteprocedure">一键删除</button>
- 		</div>
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        <th class="text-center">全选</th>
-                                        	<th class="text-center">工序名称</th>
-                                            <th class="text-center">工序时间(秒)</th>
-                                            <th class="text-center">工序类型</th>
-                                            <th class="text-center">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tableworking">
-                                    </tbody>
-                                </table>
-                            </div>
-</div>
-<!--隐藏框 产品工序结束  -->
-   <!--隐藏框 批次填写开始  -->
- <div id="addbatch" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-				<div class="space-10"></div>
-				<div style="height: 30px"></div>
-				<form class="form-horizontal addbatchForm">
+						<label class="col-sm-3 control-label">产品编号:</label>
+						<div class="col-sm-6">
+							<input type="text" id="productNumber" class="form-control">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">产品名:</label>
+						<div class="col-sm-6">
+							<input type="text" id="productName" class="form-control">
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<!--隐藏框 产品新增结束  -->
+	<!--隐藏框 产品工序开始  -->
+	<div id="addworking" style="display: none;">
+		<div class="panel-body">
+			<div class="form-group">
+				<input type="file" name="file" id="upfile" style="display: inline">
+				<button type="button" class="btn btn-success btn-sm" id="btn"
+					style="display: inline">点击导入</button>
+				<button class="btn btn-sm btn-danger  " id="deleteprocedure">一键删除</button>
+			</div>
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th class="text-center">全选</th>
+						<th class="text-center">工序名称</th>
+						<th class="text-center">工序时间(秒)</th>
+						<th class="text-center">工序类型</th>
+						<th class="text-center">操作</th>
+					</tr>
+				</thead>
+				<tbody id="tableworking">
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<!--隐藏框 产品工序结束  -->
+	<!--隐藏框 批次填写开始  -->
+	<div id="addbatch" style="display: none;">
+		<div class=" col-xs-12  col-sm-12  col-md-12 ">
+			<div class="space-10"></div>
+			<div style="height: 30px"></div>
+			<form class="form-horizontal addbatchForm">
 				<div class="form-group">
-                                        <label class="col-sm-3 control-label">产品名称:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="proName" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">批次号:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="bacthNumber" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">数量:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="prosum" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">备注:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="remarks" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">批次时间:</label>
-                                        <div class="col-sm-6">
-                                            <input id="Time" placeholder="时间可不填" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#Time', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-                                        </div>
-                 </div>
-				</form>
-</div>
-</div>       
-    <!--隐藏框 批次填写结束  -->   
-    </section>
-    
-   
-   
-   <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
-    <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
-    <script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
-    <script src="${ctx }/static/plugins/pace/pace.min.js"></script>
-    <script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-    <script src="${ctx }/static/js/src/app.js"></script>
-     <script src="${ctx }/static/js/laypage/laypage.js"></script> 
-    <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
-    <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
-    <script>
+					<label class="col-sm-3 control-label">产品名称:</label>
+					<div class="col-sm-6">
+						<input type="text" id="proName" class="form-control">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">批次号:</label>
+					<div class="col-sm-6">
+						<input type="text" id="bacthNumber" class="form-control">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">数量:</label>
+					<div class="col-sm-6">
+						<input type="text" id="prosum" class="form-control">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">备注:</label>
+					<div class="col-sm-6">
+						<input type="text" id="remarks" class="form-control">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">批次时间:</label>
+					<div class="col-sm-6">
+						<input id="Time" placeholder="时间可不填"
+							class="form-control laydate-icon"
+							onClick="laydate({elem: '#Time', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<!--隐藏框 批次填写结束  -->
+	</section>
+
+
+
+	
+	<script>
  
   /*  $(document).ready(function() {
         $('#example').dataTable();
@@ -886,7 +884,7 @@ this.checkeddd=function(){
 			})
     
     </script>
-       
+
 </body>
 
 </html>

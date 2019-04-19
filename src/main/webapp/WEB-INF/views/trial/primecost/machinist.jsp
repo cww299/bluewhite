@@ -7,320 +7,424 @@
 <!--<![endif]-->
 
 <head>
-     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>机工填写</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  
-   
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>机工填写</title>
+<meta name="description" content="">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+
 </head>
 
 <body>
-    <section id="main-wrapper" class="theme-default">
-        
-        <%@include file="../../decorator/leftbar.jsp"%> 
-        
-        <!--main content start-->
-        
-           <section id="main-content" class="animated fadeInUp">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">机工填写页面</h3>
-                                <div class="actions pull-right">
-                                    <i class="fa fa-expand"></i>
-                                    <i class="fa fa-chevron-down"></i>
-                                </div>
-                            </div>
-                             <div class="panel-body">
-                                <div class="tab-wrapper tab-primary">
-                                    <ul class="nav nav-tabs col-md-12">
-                                        <li class="active col-md-2" style="width: 50%"><a href="#home1" class="home1" data-toggle="tab">机工页面</a>
-                                        </li>
-                                        <li class="col-md-2"style="width: 50%;"><a href="#profile1" class="profile1"  data-toggle="tab">机缝时间</a>
-                                        </li>
-                                    </ul>
-                                    <div class="tab-content">
-                                        <div class="tab-pane active" id="home1">
-                                        <!--查询开始  -->
-          		 <div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-11 col-sm-11  col-md-11">
-				<form class="form-search" >
-					<div class="row">
-						<div class="col-xs-11 col-sm-11 col-md-11">
-							<div class="input-group"> 
-								<table><tr>
-								<td>产品名:</td><td><input type="text" name="name" id="productName" placeholder="请输入产品名称" class="form-control search-query name" data-provide="typeahead" autocomplete="off"/ ></td>
-								<td>&nbsp&nbsp</td>
-								<td>默认数量:</td><td><input type="text" name="number" id="number" placeholder="请输入默认数量" class="form-control search-query number" /></td>
-									<td>&nbsp&nbsp</td>
-								<td>默认耗损:</td><td><input type="text" name="name" id="loss" placeholder="请输入产品名称" class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp</td> 
-								<td>裁剪价格:</td><td><input type="text" name="name" id="ntwo" disabled="disabled"  class="form-control search-query name" /></td>
-								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
-											查&nbsp找
-									</button>
-								</span>
-								 <td>&nbsp&nbsp&nbsp&nbsp</td>
-								<span class="input-group-btn">
-									<button type="button" id="addCutting" class="btn btn-success  btn-sm btn-3d export">
-									新增
-									</button>
-								</span> 
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-danger  btn-sm btn-3d start">
-									一键删除
-									</button>
-								</span>
+	<section id="main-wrapper" class="theme-default">
+
+		<%@include file="../../decorator/leftbar.jsp"%>
+
+		<!--main content start-->
+
+		<section id="main-content" class="animated fadeInUp">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">机工填写页面</h3>
+							<div class="actions pull-right">
+								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
+							</div>
+						</div>
+						<div class="panel-body">
+							<div class="tab-wrapper tab-primary">
+								<ul class="nav nav-tabs col-md-12">
+									<li class="active col-md-2" style="width: 50%"><a
+										href="#home1" class="home1" data-toggle="tab">机工页面</a></li>
+									<li class="col-md-2" style="width: 50%;"><a
+										href="#profile1" class="profile1" data-toggle="tab">机缝时间</a></li>
+								</ul>
+								<div class="tab-content">
+									<div class="tab-pane active" id="home1">
+										<!--查询开始  -->
+										<div class="row" style="height: 30px; margin: 15px 0 10px">
+											<div class="col-xs-11 col-sm-11  col-md-11">
+												<form class="form-search">
+													<div class="row">
+														<div class="col-xs-11 col-sm-11 col-md-11">
+															<div class="input-group">
+																<table>
+																	<tr>
+																		<td>产品名:</td>
+																		<td><input type="text" name="name"
+																			id="productName" placeholder="请输入产品名称"
+																			class="form-control search-query name"
+																			data-provide="typeahead" autocomplete="off"/ ></td>
+																		<td>&nbsp&nbsp</td>
+																		<td>默认数量:</td>
+																		<td><input type="text" name="number" id="number"
+																			placeholder="请输入默认数量"
+																			class="form-control search-query number" /></td>
+																		<td>&nbsp&nbsp</td>
+																		<td>默认耗损:</td>
+																		<td><input type="text" name="name" id="loss"
+																			placeholder="请输入产品名称"
+																			class="form-control search-query name" /></td>
+																		<td>&nbsp&nbsp</td>
+																		<td>裁剪价格:</td>
+																		<td><input type="text" name="name" id="ntwo"
+																			disabled="disabled"
+																			class="form-control search-query name" /></td>
+																	</tr>
+																</table>
+																<span class="input-group-btn">
+																	<button type="button"
+																		class="btn btn-info btn-square btn-sm btn-3d searchtask">
+																		查&nbsp找</button>
+																</span>
+																<td>&nbsp&nbsp&nbsp&nbsp</td> <span
+																	class="input-group-btn">
+																	<button type="button" id="addCutting"
+																		class="btn btn-success  btn-sm btn-3d export">
+																		新增</button>
+																</span>
+																<td>&nbsp&nbsp&nbsp&nbsp</td> <span
+																	class="input-group-btn">
+																	<button type="button"
+																		class="btn btn-danger  btn-sm btn-3d start">
+																		一键删除</button>
+																</span>
+															</div>
+														</div>
+													</div>
+												</form>
+											</div>
+										</div>
+										<!-- 查询结束 -->
+
+										<table class="table table-hover">
+											<thead>
+												<tr>
+													<th class="text-center"><label> <input
+															type="checkbox" class="ace checks" /> <span class="lbl"></span>
+													</label></th>
+													<th class="text-center">填写机缝名</th>
+													<th class="text-center">用除裁片以外的物料</th>
+													<th class="text-center">选择用到裁片</th>
+													<th class="text-center">用到裁片或上道</th>
+													<th class="text-center">电脑推算机缝工序费用</th>
+													<th class="text-center">试制机缝工序费用</th>
+													<th class="text-center">选择入行成本价</th>
+													<th class="text-center">入成本价格</th>
+													<th class="text-center">各单道比全套工价</th>
+													<th class="text-center">物料和上道压（裁剪）价</th>
+													<th class="text-center">物料和上道压（裁剪,上道机工价</th>
+													<th class="text-center">为针工准备的压价</th>
+													<th class="text-center">单独机工工序外发的压价</th>
+												</tr>
+											</thead>
+											<tbody id="tablecontent">
+
+											</tbody>
+										</table>
+									</div>
+									<div class="tab-pane" id="profile1">
+										<div class="row" style="height: 30px; margin: 15px 0 10px">
+											<div class="col-xs-8 col-sm-8  col-md-8">
+												<form class="form-search">
+													<div class="row">
+														<div class="col-xs-12 col-sm-12 col-md-12">
+															<div class="input-group">
+																<table>
+																	<tr>
+																		<td>裁剪价格:</td>
+																		<td><input type="text" name="name" id="ntwo1"
+																			disabled="disabled"
+																			class="form-control search-query name" /></td>
+																	</tr>
+																</table>
+																<span class="input-group-btn">
+																	<button type="button"
+																		class="btn btn-info btn-square btn-sm btn-3d navbar-right searchtask2">
+																		查找 <i class="icon-search icon-on-right bigger-110"></i>
+																	</button>
+																</span>
+															</div>
+														</div>
+													</div>
+												</form>
+											</div>
+										</div>
+										<table class="table table-hover">
+											<thead>
+												<tr>
+													<th class="text-center">机缝工序</th>
+													<th class="text-center">针号</th>
+													<th class="text-center">线色或线号</th>
+													<th class="text-center">针距</th>
+													<th class="text-center">试制净快手时间</th>
+													<th class="text-center">该工序回针次数</th>
+													<th class="text-center">直线机缝模式</th>
+													<th class="text-center">该工序满足G列</th>
+													<th class="text-center">弧线机缝模式</th>
+													<th class="text-center">该工序满足I列</th>
+													<th class="text-center">弯曲复杂机缝模式</th>
+													<th class="text-center">该工序满足K列</th>
+													<th class="text-center">单一机缝需要时间/秒</th>
+													<th class="text-center">设备折旧和房水电费</th>
+													<th class="text-center">管理人员费用</th>
+													<th class="text-center">电脑推算机缝该工序费用</th>
+													<th class="text-center">试制机缝该工序费用</th>
+												</tr>
+											</thead>
+											<tbody id="tablecontent2">
+
+											</tbody>
+										</table>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
-				</form>
+				</div>
 			</div>
+		</section>
+	</section>
+
+
+
+
+
+
+
+
+	<div id="addworking" style="display: none;">
+		<div class="panel-body">
+			<div class="form-group"></div>
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th class="text-center">用到裁片或上道</th>
+						<th class="text-center">压价</th>
+						<th class="text-center">操作</th>
+					</tr>
+				</thead>
+				<tbody id="tableworking2">
+				</tbody>
+			</table>
+			<div id="pagerr" class="pull-right"></div>
 		</div>
-            <!-- 查询结束 -->
-                                        
-                                            <table class="table table-hover" >
-                                    <thead>
-                                        <tr>
-                                        <th class="text-center">
-											<label> 
-											<input type="checkbox" class="ace checks" /> 
-											<span class="lbl"></span>
-											</label>
-											</th>
-                                            <th class="text-center">填写机缝名</th>
-                                            <th class="text-center">用除裁片以外的物料</th>
-                                            <th class="text-center">选择用到裁片</th>
-                                            <th class="text-center">用到裁片或上道</th>
-                                            <th class="text-center">电脑推算机缝工序费用</th>
-                                            <th class="text-center">试制机缝工序费用</th>
-                                            <th class="text-center">选择入行成本价</th>
-                                            <th class="text-center">入成本价格</th>
-                                            <th class="text-center">各单道比全套工价</th>
-                                            <th class="text-center">物料和上道压（裁剪）价</th>
-                                            <th class="text-center">物料和上道压（裁剪,上道机工价</th>
-                                            <th class="text-center">为针工准备的压价</th>
-                                            <th class="text-center">单独机工工序外发的压价</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablecontent">
-                                        
-                                    </tbody>
-                                </table>
-                                        </div>
-            <div class="tab-pane" id="profile1">
-                      <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-8 col-sm-8  col-md-8">
-						<form class="form-search" >
-							<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group"> 
-							<table><tr>
-								<td>裁剪价格:</td><td><input type="text" name="name" id="ntwo1" disabled="disabled"  class="form-control search-query name" /></td>
-								</tr></table>
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d navbar-right searchtask2">
-										查找
-										<i class="icon-search icon-on-right bigger-110"></i>
-									</button>
-								</span>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-                                   <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th class="text-center">机缝工序</th>
-                                        	<th class="text-center">针号</th>
-                                            <th class="text-center">线色或线号</th>
-                                            <th class="text-center">针距</th>
-                                            <th class="text-center">试制净快手时间</th>
-                                            <th class="text-center">该工序回针次数</th>
-                                            <th class="text-center">直线机缝模式</th>
-                                            <th class="text-center">该工序满足G列</th>
-                                            <th class="text-center">弧线机缝模式</th>
-                                            <th class="text-center">该工序满足I列</th>
-                                            <th class="text-center">弯曲复杂机缝模式</th>
-                                            <th class="text-center">该工序满足K列</th>
-                                            <th class="text-center">单一机缝需要时间/秒</th>
-                                            <th class="text-center">设备折旧和房水电费</th>
-                                            <th class="text-center">管理人员费用</th>
-                                            <th class="text-center">电脑推算机缝该工序费用</th>
-                                            <th class="text-center">试制机缝该工序费用</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablecontent2">
-                                        
-                                    </tbody>
-                                </table>
-                                 </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    </div>
-                        </div>
-            </section>
-        </section>
+		<!--隐藏框 已完成的批次结束  -->
+	</div>
 
 
-
-
-  
-  
- 
-  
-<div id="addworking" style="display: none;">
-			<div class="panel-body">
- <div class="form-group">
-  </div> 
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th class="text-center">用到裁片或上道</th>
-                                        	<th class="text-center">压价</th>
-                                        	<th class="text-center">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tableworking2">
-                                    </tbody>
-                                </table>
-                                 <div id="pagerr" class="pull-right">
-                            </div>
-</div>
-<!--隐藏框 已完成的批次结束  -->
-</div> 
-  
-  
- <div class="wrap">
-<div class="layer-right5" style="display: none;">
-           <div class=" col-xs-12  col-sm-12  col-md-12">
+	<div class="wrap">
+		<div class="layer-right5" style="display: none;">
+			<div class=" col-xs-12  col-sm-12  col-md-12">
 				<div class="space-10"></div>
 				<div style="height: 30px"></div>
 				<form class="form-horizontal addDictDivTypeFormtw">
-					<div class="row col-xs-12  col-sm-12  col-md-12" >
-									<table>
-                                        
-                                       <tr>
-                                       		<td><input type="text" id="ordid5" class="hidden"></td>
-                                       		<th><button type="button" class="btn btn-info  btn-sm  btn-trans updateord">修改</button></th>
-                                       </tr>
-                                       <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">黏片时间/片/秒:</th><td><input type="text" id="machinistOne5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                      	<tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">剪线时间/片/秒:</th><td><input type="text"  id="machinisttwo5" class="form-control actualtimetw"></td>
-                                            <th class="text-center">回针时间/个/秒:</th><td><input type="text"  id="machinistThree5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                       <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">放快手比:</th><td><input type="text"  id="quickWorker5" class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">缝纫机设备价值:</th><td><input type="text"  id="worth5" class="form-control actualtimetw"></td>
-                                            <th class="text-center">每秒设备折旧费用:</th><td><input type="text" disabled="disabled" id="depreciation5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">设置分摊天数:</th><td><input type="text" id="shareDay5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">每天机器工作时间设置/小时:</th><td><input type="text" id="workTime5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">小零件费用:</th><td><input type="text" id="laserTubePrice5"  class="form-control actualtimetw"></td>
-                                            <th class="text-center">每秒小零件费用:</th><td><input type="text" disabled="disabled" id="laserTubePriceSecond5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">分摊小时:</th><td><input type="text" id="shareTime5"  class="form-control actualtimetw"></td>
-                                            <th class="text-center">每秒维护费用:</th><td><input type="text" disabled="disabled" id="maintenanceChargeSecond5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">维护费用:</th><td><input type="text" id="maintenanceCharge5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">分摊小时:</th><td><input type="text" id="shareTimeTwo5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">每小时耗电/元:</th><td><input type="text" id="omnHorElectric5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">每小时耗水/元:</th><td><input type="text" id="omnHorWater5"  class="form-control actualtimetw"></td>
-                                            <th class="text-center">每秒耗3费:</th><td><input type="text" disabled="disabled" id="perSecondPrice5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">每小时耗房租/元:</th><td><input type="text" id="omnHorHouse5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">每小时机工工价:</th><td><input type="text" id="omnHorMachinist5"  class="form-control actualtimetw"></td>
-                                            <th class="text-center">每秒工价:</th><td><input type="text" disabled="disabled" id="perSecondMachinist5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                        <tr>
-                                        	<th class="text-center">每小时辅工工价:</th><td><input type="text" id="omnHorAuxiliary5"  class="form-control actualtimetw"></td>
-                                            <th class="text-center">每秒工价:</th><td><input type="text" disabled="disabled" id="perSecondMachinistTwo5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">制版分配任务管理人员工资:</th><td><input type="text" id="managePrice5"   class="form-control actualtimetw"></td>
-                                            <th class="text-center">每秒管理费用:</th><td><input type="text" disabled="disabled" id="perSecondManage5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                        <tr><td><div style="height: 10px"></div></td></tr>
-                                       <tr>
-                                        	<th class="text-center">管理设备数量:</th><td><input type="text" id="manageEquipmentNumber5"  class="form-control actualtimetw"></td>
-                                            <th class="text-center">设置激光设备利润比:</th><td><input type="text" id="equipmentProfit5"  class="form-control actualtimetw"></td>
-                                        </tr>
-                                    </table>
-                    	</div>
-                 		
-				</form>
-                 </div>
-				</div>
-  </div>  
- 
+					<div class="row col-xs-12  col-sm-12  col-md-12">
+						<table>
 
-  
-  
-  
-    </section>
-    
-   
-   
-   <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
-    <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
-    <script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
-    <script src="${ctx }/static/plugins/pace/pace.min.js"></script>
-    <script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-    <script src="${ctx }/static/js/src/app.js"></script>
-     <script src="${ctx }/static/js/laypage/laypage.js"></script> 
-    <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
-    <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
-    <script src="${ctx }/static/js/vendor/mSlider.min.js"></script>
-    <script src="${ctx }/static/js/vendor/typeahead.js"></script>
-    <script>
+							<tr>
+								<td><input type="text" id="ordid5" class="hidden"></td>
+								<th><button type="button"
+										class="btn btn-info  btn-sm  btn-trans updateord">修改</button></th>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">黏片时间/片/秒:</th>
+								<td><input type="text" id="machinistOne5"
+									class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">剪线时间/片/秒:</th>
+								<td><input type="text" id="machinisttwo5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">回针时间/个/秒:</th>
+								<td><input type="text" id="machinistThree5"
+									class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">放快手比:</th>
+								<td><input type="text" id="quickWorker5"
+									class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">缝纫机设备价值:</th>
+								<td><input type="text" id="worth5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">每秒设备折旧费用:</th>
+								<td><input type="text" disabled="disabled"
+									id="depreciation5" class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">设置分摊天数:</th>
+								<td><input type="text" id="shareDay5"
+									class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">每天机器工作时间设置/小时:</th>
+								<td><input type="text" id="workTime5"
+									class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">小零件费用:</th>
+								<td><input type="text" id="laserTubePrice5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">每秒小零件费用:</th>
+								<td><input type="text" disabled="disabled"
+									id="laserTubePriceSecond5" class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">分摊小时:</th>
+								<td><input type="text" id="shareTime5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">每秒维护费用:</th>
+								<td><input type="text" disabled="disabled"
+									id="maintenanceChargeSecond5" class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">维护费用:</th>
+								<td><input type="text" id="maintenanceCharge5"
+									class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">分摊小时:</th>
+								<td><input type="text" id="shareTimeTwo5"
+									class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">每小时耗电/元:</th>
+								<td><input type="text" id="omnHorElectric5"
+									class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">每小时耗水/元:</th>
+								<td><input type="text" id="omnHorWater5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">每秒耗3费:</th>
+								<td><input type="text" disabled="disabled"
+									id="perSecondPrice5" class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">每小时耗房租/元:</th>
+								<td><input type="text" id="omnHorHouse5"
+									class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">每小时机工工价:</th>
+								<td><input type="text" id="omnHorMachinist5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">每秒工价:</th>
+								<td><input type="text" disabled="disabled"
+									id="perSecondMachinist5" class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">每小时辅工工价:</th>
+								<td><input type="text" id="omnHorAuxiliary5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">每秒工价:</th>
+								<td><input type="text" disabled="disabled"
+									id="perSecondMachinistTwo5" class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">制版分配任务管理人员工资:</th>
+								<td><input type="text" id="managePrice5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">每秒管理费用:</th>
+								<td><input type="text" disabled="disabled"
+									id="perSecondManage5" class="form-control actualtimetw"></td>
+							</tr>
+							<tr>
+								<td><div style="height: 10px"></div></td>
+							</tr>
+							<tr>
+								<th class="text-center">管理设备数量:</th>
+								<td><input type="text" id="manageEquipmentNumber5"
+									class="form-control actualtimetw"></td>
+								<th class="text-center">设置激光设备利润比:</th>
+								<td><input type="text" id="equipmentProfit5"
+									class="form-control actualtimetw"></td>
+							</tr>
+						</table>
+					</div>
+
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+	</section>
+
+
+
+	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+	<script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
+	<script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
+	<script src="${ctx }/static/plugins/pace/pace.min.js"></script>
+	<script
+		src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
+	<script src="${ctx }/static/js/src/app.js"></script>
+	<script src="${ctx }/static/js/laypage/laypage.js"></script>
+	<script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
+	<script
+		src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
+	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+	<script src="${ctx }/static/js/vendor/mSlider.min.js"></script>
+	<script src="${ctx }/static/js/vendor/typeahead.js"></script>
+	<script>
    jQuery(function($){
    	var Login = function(){
    		var self = this;
@@ -2486,8 +2590,8 @@
 			})
     
     </script>
-  
-       
+
+
 </body>
 
 </html>

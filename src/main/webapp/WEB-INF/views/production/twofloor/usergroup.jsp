@@ -7,230 +7,225 @@
 <!--<![endif]-->
 
 <head>
-     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>员工分组</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-   <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
-   
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>员工分组</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	
+	<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+	<script src="${ctx }/static/js/layer/layer.js"></script>	
+	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+	<link rel="stylesheet" href="${ctx }/static/css/main.css">
+	<script src="${ctx }/static/js/laypage/laypage.js"></script>
+	<script src="${ctx }/static/js/vendor/typeahead.js"></script>
+	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>  <!-- 使用layui 因此需要引入 -->
+	
 </head>
 
 <body>
-    <section id="main-wrapper" class="theme-default">
-        
-        <%@include file="../../decorator/leftbar.jsp"%> 
-        
-        <!--main content start-->
-        
-           <section id="main-content" class="animated fadeInUp">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">分组信息</h3>
-                                <div class="actions pull-right">
-                                    <i class="fa fa-expand"></i>
-                                    <i class="fa fa-chevron-down"></i>
-                                </div>
-                            </div>
-                            <div class="panel-body">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th class="text-center">组名</th>
-                                            <th class="text-center">人员信息</th>
-                                            <th class="text-center">选择工种</th>
-                                            <th class="text-center">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablecontent">
-                                        
-                                    </tbody>
-                                    <button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增小组</button>
-                                <tbody id="tablecontenttw">
-                                <thead>
-                                        <tr>
-                                        	<td class="text-center">外调组</td>
-                                            <td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemodetw" data-toggle="modal" data-target="#myModaltw")">查看人员</button></td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center"><button type="button" id="add" class="btn btn-success btn-sm btn-3d">外调人员</button></td>
-                                        </tr>
-                                    </thead>
-                                    </tbody>
-                                </table>
-                                <div id="pager" class="pull-right">
-                                
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </section>
-        <!--隐藏框 产品新增开始  -->
-        <div id="addDictDivType" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-				<div class="space-10"></div>
-				<div style="height: 30px"></div>
-				<form class="form-horizontal addDictDivTypeForm">
-				<div class="form-group">
-                                        <label class="col-sm-3 control-label">小组名称:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="groupName" class="form-control">
-                                        </div>
-                 </div>
-				</form>
-</div>
-</div>
- <!--隐藏框 产品新增结束  -->
+	<section id="main-wrapper" class="theme-default">
+		<!--main content start-->
 
-
-
-<div id="savegroup" style="display: none;">
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-					&times;
-				</button>
-				<h4 class="modal-title" id="myModalLabel">
-					人员分组详情
-				</h4>
-			</div>
-			<div class="modal-body">
-				
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
-				</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
-</div>
-</div>
-
-<!--隐藏框 小组新增开始  -->
-    <div id="addDictDivTypetw" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-				<div class="space-10"></div>
-				<div style="height: 30px"></div>
-				<form class="form-horizontal addDictDivTypeFormtw">
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">外调时间:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="startTime" class="form-control laydate-icon"/>
-                                        </div>
-                 </div>
-				<div class="form-group">
-                                        <label class="col-sm-3 control-label">人员名称:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="groupNametw" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">工作时长:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="grouptime" class="form-control">
-                                        </div>
-                 </div>
-                  <div class="form-group">
-                                        <label class="col-sm-3 control-label">小组:</label>
-                                        <div class="col-sm-6" id="groupp">
-                                        </div>
-                 </div>
-                  <div class="hidden grouptw"></div>
-				</form>
-</div>
-</div>
- <!--隐藏框 人员分组详情结束  -->
-<!--隐藏框 产品新增结束  -->
-<div id="savegrouptw" style="display: none;">
-<div class="modal fade" id="myModaltw" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-					&times;
-				</button>
-				<h4 class="modal-title" id="myModalLabel">
-					人员详情
-				</h4>
-			</div>
-			<div class="modal-bodytw">
-			<div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-11 col-sm-11  col-md-11">
-				<form class="form-search" >
-					<div class="row">
-						<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group"> 
-								<table><tr>
-								<td>开始时间:</td>
-								<td>
-								<input id="startTimetw" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
-								</td>
-								<td>&nbsp&nbsp</td>
-								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
-											查&nbsp找
-									</button>
+		<section id="main-content" class="animated fadeInUp">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">分组信息</h3>
+							<div class="actions pull-right">
+								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
 							</div>
 						</div>
+						<div class="panel-body">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th class="text-center">组名</th>
+										<th class="text-center">人员信息</th>
+										<th class="text-center">选择工种</th>
+										<th class="text-center">操作</th>
+									</tr>
+								</thead>
+								<tbody id="tablecontent">
+
+								</tbody>
+								<button type="button" id="addgroup"
+									class="btn btn-success btn-sm btn-3d pull-right">新增小组</button>
+								<tbody id="tablecontenttw">
+								<thead>
+									<tr>
+										<td class="text-center">外调组</td>
+										<td class="text-center"><button
+												class="btn btn-primary btn-trans btn-sm savemodetw"
+												data-toggle="modal" data-target="#myModaltw")">查看人员</button></td>
+										<td class="text-center"></td>
+										<td class="text-center"><button type="button" id="add"
+												class="btn btn-success btn-sm btn-3d">外调人员</button></td>
+									</tr>
+								</thead>
+								</tbody>
+							</table>
+							<div id="pager" class="pull-right"></div>
+						</div>
 					</div>
-				</form>
+				</div>
 			</div>
+		</section>
+	</section>
+	<!--隐藏框 产品新增开始  -->
+	<div id="addDictDivType" style="display: none;">
+		<div class=" col-xs-12  col-sm-12  col-md-12 ">
+			<div class="space-10"></div>
+			<div style="height: 30px"></div>
+			<form class="form-horizontal addDictDivTypeForm">
+				<div class="form-group">
+					<label class="col-sm-3 control-label">小组名称:</label>
+					<div class="col-sm-6">
+						<input type="text" id="groupName" class="form-control">
+					</div>
+				</div>
+			</form>
 		</div>
-				<table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th>
-											<label> 
-											<input type="checkbox" class="checkalls" /> 
-											<span class="lbl"></span>
-											</label>
-											</th>
-                                            <th class="text-center">人名</th>
-                                            <th class="text-center">工作时长</th>
-                                            <th class="text-center">小组名</th>
-                                            <th class="text-center">日期</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablecontentfv">
-                                        
-                                    </tbody>
-                                </table>
+	</div>
+	<!--隐藏框 产品新增结束  -->
+
+
+
+	<div id="savegroup" style="display: none;">
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+			aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="myModalLabel">人员分组详情</h4>
+					</div>
+					<div class="modal-body"></div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+						</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
 			</div>
-			<div class="modal-footer">
-			<button type="button" class="btn btn-danger" id="delete2">删除
-				</button>
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
-				</button>
+			<!-- /.modal -->
+		</div>
+	</div>
+
+	<!--隐藏框 小组新增开始  -->
+	<div id="addDictDivTypetw" style="display: none;">
+		<div class=" col-xs-12  col-sm-12  col-md-12 ">
+			<div class="space-10"></div>
+			<div style="height: 30px"></div>
+			<form class="form-horizontal addDictDivTypeFormtw">
+				<div class="form-group">
+					<label class="col-sm-3 control-label">外调时间:</label>
+					<div class="col-sm-6">
+						<input type="text" id="startTime"
+							class="form-control laydate-icon" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">人员名称:</label>
+					<div class="col-sm-6">
+						<input type="text" id="groupNametw" class="form-control">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">工作时长:</label>
+					<div class="col-sm-6">
+						<input type="text" id="grouptime" class="form-control">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">小组:</label>
+					<div class="col-sm-6" id="groupp"></div>
+				</div>
+				<div class="hidden grouptw"></div>
+			</form>
+		</div>
+	</div>
+	<!--隐藏框 人员分组详情结束  -->
+	<!--隐藏框 产品新增结束  -->
+	<div id="savegrouptw" style="display: none;">
+		<div class="modal fade" id="myModaltw" tabindex="-1" role="dialog"
+			aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="myModalLabel">人员详情</h4>
+					</div>
+					<div class="modal-bodytw">
+						<div class="row" style="height: 30px; margin: 15px 0 10px">
+							<div class="col-xs-11 col-sm-11  col-md-11">
+								<form class="form-search">
+									<div class="row">
+										<div class="col-xs-12 col-sm-12 col-md-12">
+											<div class="input-group">
+												<table>
+													<tr>
+														<td>开始时间:</td>
+														<td><input id="startTimetw" placeholder="请输入开始时间"
+															class="form-control laydate-icon"
+															onClick="laydate({elem: '#startTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+														</td>
+														<td>&nbsp&nbsp</td>
+													</tr>
+												</table>
+												<span class="input-group-btn">
+													<button type="button"
+														class="btn btn-info btn-square btn-sm btn-3d searchtask">
+														查&nbsp找</button>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th><label> <input type="checkbox"
+											class="checkalls" /> <span class="lbl"></span>
+									</label></th>
+									<th class="text-center">人名</th>
+									<th class="text-center">工作时长</th>
+									<th class="text-center">小组名</th>
+									<th class="text-center">日期</th>
+								</tr>
+							</thead>
+							<tbody id="tablecontentfv">
+
+							</tbody>
+						</table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger" id="delete2">删除
+						</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+						</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
 			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
-</div>
-</div>
-<!--人员分组详情 -->
-    </section>
-    
-   
-   
-   <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
-    <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
-    <script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
-    <script src="${ctx }/static/plugins/pace/pace.min.js"></script>
-    <script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-    <script src="${ctx }/static/js/src/app.js"></script>
-     <script src="${ctx }/static/js/laypage/laypage.js"></script> 
-    <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
-    <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-    <script src="${ctx }/static/js/vendor/typeahead.js"></script>
-    <script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
-    <script>
+			<!-- /.modal -->
+		</div>
+	</div>
+	<!--人员分组详情 -->
+	</section>
+
+
+
+	
+	<script>
     layui.config({
 		base: '${ctx}/static/layui-v2.4.5/'
 	}).extend({
@@ -248,7 +243,7 @@
 				format: 'yyyy-MM-dd',
 			});
 		}
-			)
+			) 
    jQuery(function($){
    	var Login = function(){
 			var self = this;
@@ -1023,7 +1018,7 @@
 			})
     
     </script>
-       
+
 </body>
 
 </html>

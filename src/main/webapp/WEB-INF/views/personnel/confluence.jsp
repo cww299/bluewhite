@@ -1,100 +1,79 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
-<html class="no-js">
-<!--<![endif]-->
 
+<html class="no-js">
+	<link rel="stylesheet" href="${ctx }/static/css/font-awesome.min.css">
+	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>   
+	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+	
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>考勤总汇</title>
 <meta name="description" content="">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
 </head>
 
 <body>
 
-	<section id="main-wrapper" class="theme-default">
-		<%@include file="../decorator/leftbar.jsp"%>
-		<!--main content start-->
-		<section id="main-content" class="animated fadeInUp">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-								<ul >
-                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#9e9e1f"></i>迟到</li>
-                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#bf1515"></i>缺勤</li>
-                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#00b0ff"></i>事假</li>
-                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#13161c"></i>病假</li>
-                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#b8c2d6"></i>丧假</li>
-                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#da06af"></i>婚假</li>
-                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#13a8bd"></i>产假</li>
-                                            <li style="display: inline;"><i class="fa fa-circle" style="color:#1211e2"></i>护理假</li>
-                                        </ul>
-								<div class="actions pull-right">
-									<i class="fa fa-expand"></i>
-									<i class="fa fa-chevron-down"></i>
-								</div>
+<div class="layui-card">
+	<div class="layui-card-header">
+		<ul>
+			<li style="display: inline;"><i class="fa fa-circle" style="color: #9e9e1f"></i>迟到</li>
+			<li style="display: inline;"><i class="fa fa-circle" style="color: #bf1515"></i>缺勤</li>
+			<li style="display: inline;"><i class="fa fa-circle" style="color: #00b0ff"></i>事假</li>
+			<li style="display: inline;"><i class="fa fa-circle" style="color: #13161c"></i>病假</li>
+			<li style="display: inline;"><i class="fa fa-circle" style="color: #b8c2d6"></i>丧假</li>
+			<li style="display: inline;"><i class="fa fa-circle" style="color: #da06af"></i>婚假</li>
+			<li style="display: inline;"><i class="fa fa-circle" style="color: #13a8bd"></i>产假</li>
+			<li style="display: inline;"><i class="fa fa-circle" style="color: #1211e2"></i>护理假</li>
+		</ul>
+	</div>
+	<div class="layui-card-body">
+		<div class="layui-form ">
+			<div class="layui-form-item">
+				<table>
+					<tr>
+						<td>人员:</td>
+						<td id="firstNames"></td>
+						<td>&nbsp&nbsp</td>
+						<td>部门:</td>
+						<td id="orgNameId"></td>
+						<td>&nbsp&nbsp</td>
+						<td>考勤汇总月份:</td>
+						<td><input name="orderTimeBegin" id="startTime" lay-verify="required" style="width: 200px;" placeholder="请输入考勤汇总月份" class="layui-input laydate-icon">
+						</td>
+						<td>&nbsp&nbsp</td>
+						<td>
+							<div class="layui-inline">
+								<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-search">
+									初始化考勤机 <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+								</button>
 							</div>
-						<div class="panel-body">
-							<div class="layui-form layui-card-header layuiadmin-card-header-auto">
-								<div class="layui-form-item">
-									<table>
-										<tr>
-											<td>人员:</td>
-											<td>
-												<select name="userId" class="form-control search-query name" id="firstNames"
-													lay-search="true"></select>
-											</td>
-											<td>&nbsp&nbsp</td>
-											<td>部门:</td>
-											<td id="orgNameId"></td>
-											<td>&nbsp&nbsp</td>
-											<td>考勤汇总月份:</td>
-											<td>
-												<input name="orderTimeBegin" id="startTime" lay-verify="required" style="width: 200px;" placeholder="请输入考勤汇总月份"
-													class="form-control laydate-icon">
-											</td>
-											<td>&nbsp&nbsp</td>
-											<td>
-												<div class="layui-inline">
-													<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-search">
-													 初始化考勤机
-														<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-													</button>
-												</div>
-												<div class="layui-inline">
-													<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-searche">
-													计算后的考勤
-														<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-													</button>
-												</div>
-											</td>
-										</tr>
-									</table>
-								</div>
+							<div class="layui-inline">
+								<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-searche">
+									计算后的考勤 <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+								</button>
 							</div>
-							<table class="layui-hide" lay-filter="test3" id="test">
-
-							</table>
-							<div style="height: 120px;"></div>
-						</div>
-					</div>
-				</div>
+						</td>
+					</tr>
+				</table>
 			</div>
-		</section>
-	</section>
+		</div>
+		<table class="layui-hide" lay-filter="test3" id="test">
 
-	</section>
+		</table>
+	</div>
+</div>
+	
 
 
 
-	<script src="${ctx }/static/js/laydate/laydate.js"></script>
-	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
+	
 
 	<script>
 		layui.config({
@@ -132,14 +111,14 @@
 									index;
 								},
 								success : function(result) {
+									htmls='<select name="userId" class="layui-input"  lay-search="true"><option value="">请选择</option>';
 									$(result.data)
 											.each(
 													function(i, o) {
-														htmls += '<option value=' + o.id + '>'
-																+ o.userName
-																+ '</option>'
+														htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
 													})
 									layer.close(index);
+									htmls+='</select>';
 									$("#firstNames").html(htmls);
 									form.render();
 								},
@@ -167,7 +146,7 @@
 												function(k, j) {
 													htmlfr += '<option value="'+j.id+'">'+ j.name+ '</option>'
 												});
-											var htmlth = '<select name="orgNameId" id="selectOrgNameId" class="form-control" lay-search="true"><option value="">请选择</option>'
+											var htmlth = '<select name="orgNameId" id="selectOrgNameId" class="layui-input" lay-search="true" ><option value="">请选择</option>'
 														+ htmlfr + '</select>'
 											$("#orgNameId").html(htmlth);
 											form.render('select');
@@ -176,9 +155,6 @@
 									});
 							
 							form.on('submit(LAY-role-search)', function(data) {
-								 loading = layer.load(0, {
-				                    shade: false,
-				                });
 								if($("#firstNames").val()==""){
 									if($("#selectOrgNameId").val()==""){
 										return layer.msg("请输入人员 或者 部门", {icon: 2});
@@ -191,9 +167,6 @@
 							})
 							
 							form.on('submit(LAY-role-searche)', function(data) {
-								loading = layer.load(0, {
-				                    shade: false,
-				                });
 								if($("#firstNames").val()==""){
 									if($("#selectOrgNameId").val()==""){
 										return layer.msg("请输入人员 或者 部门", {icon: 2});
@@ -435,62 +408,7 @@
 											page : false
 										});
 							}
-							
-							/* table.on('edit(test3)', function(obj) {
-								var that=this
-								var tde = $(that).closest('td')
-								var key=tde[0].dataset.key
-								var s=key.lastIndexOf("-")+1
-								var indexoff= key.substring(s,key.length)//为了得到是第几个数组
-								var indexof=parseInt(indexoff)+1
-								var a;
-								if((indexof)/4<1){
-									a=0
-								}else if((indexof)/4>=1){
-									a=parseInt((indexof)/4)
-								}
-								var id=obj.data.attendanceTimeData[a].id
-								var value = obj.value 
-								var field;
-								if(obj.field==0){
-									field='turnWorkTime'
-								}
-								if(obj.field==1){
-									field='overtime'
-								}
-								if(obj.field==2){
-									field='dutytime'
-								}
-								var postData={
-										id:id,
-										[field]:value,
-								}
-							     $.ajax({
-									url:"${ctx}/personnel/updateAttendanceTime",
-									data:postData,
-									type:"POST",
-									beforeSend:function(){
-										index = layer.load(1, {
-											  shade: [0.1,'#fff'] //0.1透明度的白色背景
-											});
-									},
-									success:function(result){
-										if(0==result.code){
-											layer.close(index);
-										}else{
-											layer.msg("修改失败！", {icon: 2});
-											layer.close(index);
-										}
-									},error:function(){
-										layer.msg("操作失败！", {icon: 2});
-										layer.close(index);
-									}
-								}); 
-									
-							}); */
-							
-							
-							
+						
 							
 						})
 	</script>

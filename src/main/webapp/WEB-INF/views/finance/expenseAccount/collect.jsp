@@ -1,93 +1,70 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html class="no-js">
-	<!--<![endif]-->
 
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<title>财务审核</title>
-		<meta name="description" content="">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-		<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
-	</head>
+<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
+<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 
-	<body>
-		<section id="main-wrapper" class="theme-default">
-			<%@include file="../../decorator/leftbar.jsp"%> 
-			<section id="main-content" class="animated fadeInUp">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h3 class="panel-title">财务审核</h3>
-								<div class="actions pull-right">
-									<i class="fa fa-expand"></i>
-									<i class="fa fa-chevron-down"></i>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>财务审核</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+</head>
+
+<body>
+	<div class="layui-card">
+		<div class="layui-card-body">
+			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+				<div class="layui-form-item">
+					<table>
+						<tr>
+							<td>报销人:</td>
+							<td><input type="text" name="username" id="firstNames" class="layui-input" /></td>
+							<td>&nbsp&nbsp</td>
+							<td>报销内容:</td>
+							<td><input type="text" name="content" class="layui-input" /></td>
+							<td>&nbsp&nbsp</td>
+							<td><select class="layui-input" name="selectone" id="selectone">
+									<option value="expenseDate">申请日期</option>
+									<option value="paymentDate">付款日期</option>
+							</select></td>
+							<td>&nbsp&nbsp</td>
+							<td>开始:</td>
+							<td><input id="startTime" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							</td>
+							<td>&nbsp&nbsp</td>
+							<td>结束:</td>
+							<td><input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="layui-input laydate-icon">
+							</td>
+							<td>&nbsp&nbsp</td>
+							<td>需要支付总额:
+							<td><input type="text" id="allPrice" disabled class="layui-input"  /></td>
+							<td>&nbsp&nbsp</td>
+							<td>
+								<div class="layui-inline">
+									<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
+										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+									</button>
 								</div>
-							</div>
-							<div class="panel-body">
-								<div class="layui-form layui-card-header layuiadmin-card-header-auto">
-									<div class="layui-form-item">
-										<table>
-											<tr>
-												<td>报销人:</td>
-												<td>
-													<input type="text" name="username" id="firstNames" class="form-control search-query name" />
-												</td>
-												<td>&nbsp&nbsp</td>
-												<td>报销内容:</td>
-												<td>
-													<input type="text" name="content" class="form-control search-query" />
-												</td>
-												<td>&nbsp&nbsp</td>
-												<td>
-													<select class="form-control" name="selectone" id="selectone">
-														<option  value="expenseDate">申请日期</option>
-														<option  value="paymentDate">付款日期</option>
-													</select>
-												</td>
-												<td>&nbsp&nbsp</td>
-												<td>开始:</td>
-												<td>
-													<input id="startTime" name="orderTimeBegin" placeholder="请输入开始时间" class="form-control laydate-icon">
-												</td>
-												<td>&nbsp&nbsp</td>
-												<td>结束:</td>
-												<td>
-													<input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="form-control laydate-icon">
-												</td>
-												<td>&nbsp&nbsp</td>
-												<td>需要支付总额:
-													<td>
-														<input type="text" id="allPrice" disabled="disabled" class="form-control search-query" />
-													</td>
-													<td>&nbsp&nbsp</td>
-													<td>
-														<div class="layui-inline">
-															<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
-														<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-													</button>
-														</div>
-													</td>
-											</tr>
-										</table>
-									</div>
-								</div>
-								<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
-							</div>
-
-						</div>
-					</div>
+							</td>
+						</tr>
+					</table>
 				</div>
-			</section>
-		</section>
-		</section>
+			</div>
+			<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
+		</div>
 
-		<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
-		<script>
+	</div>
+
+
+	
+	<script>
 			layui.config({
 				base: '${ctx}/static/layui-v2.4.5/'
 			}).extend({
@@ -314,6 +291,6 @@
 				}
 			)
 		</script>
-	</body>
+</body>
 
 </html>

@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
@@ -10,8 +11,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>报销申请</title>
 <meta name="description" content="">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<link rel="stylesheet"
+	href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 </head>
 
 <body>
@@ -24,56 +27,69 @@
 						<div class="panel-heading">
 							<h3 class="panel-title">报销申请</h3>
 							<div class="actions pull-right">
-								<i class="fa fa-expand"></i>
-								<i class="fa fa-chevron-down"></i>
+								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
 							</div>
 						</div>
 						<div class="panel-body">
-							<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+							<div
+								class="layui-form layui-card-header layuiadmin-card-header-auto">
 								<div class="layui-form-item">
-									<table><tr>
-								<td>报销人:</td><td><input type="text" name="Username" id="firstNames"  class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp</td>
-								<td>报销内容:</td><td><input type="text" name="content"   class="form-control search-query" /></td>
-								<td>&nbsp&nbsp</td>
-								<td><select class="form-control" name="expenseDate" id="selectone"><option value="2018-10-08 00:00:00">付款日期</option></select></td>
-								<td>&nbsp&nbsp</td>
-								<td>开始:</td>
-								<td>
-								<input id="startTime" name="orderTimeBegin" placeholder="请输入开始时间" class="form-control laydate-icon"> 
-								</td>
-									<td>&nbsp&nbsp</td>
-								<td>结束:</td>
-								<td>
-								<input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="form-control laydate-icon">
-								</td>
-								<td>&nbsp&nbsp</td>
-								<td>是否核对:<td><select class="form-control" name="flag"><option value="">请选择</option><option value="0">未核对</option><option value="1">已核对</option></select></td>
-									<td>&nbsp&nbsp</td>
-									<td>
-									<div class="layui-inline">
-										<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-search">
-											<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-										</button>
-									</div>
-									</td>
-									</tr></table>
+									<table>
+										<tr>
+											<td>报销人:</td>
+											<td><input type="text" name="Username" id="firstNames"
+												class="form-control search-query name" /></td>
+											<td>&nbsp&nbsp</td>
+											<td>报销内容:</td>
+											<td><input type="text" name="content"
+												class="form-control search-query" /></td>
+											<td>&nbsp&nbsp</td>
+											<td><select class="form-control" name="expenseDate"
+												id="selectone"><option value="2018-10-08 00:00:00">付款日期</option></select></td>
+											<td>&nbsp&nbsp</td>
+											<td>开始:</td>
+											<td><input id="startTime" name="orderTimeBegin"
+												placeholder="请输入开始时间" class="form-control laydate-icon">
+											</td>
+											<td>&nbsp&nbsp</td>
+											<td>结束:</td>
+											<td><input id="endTime" name="orderTimeEnd"
+												placeholder="请输入结束时间" class="form-control laydate-icon">
+											</td>
+											<td>&nbsp&nbsp</td>
+											<td>是否核对:
+											<td><select class="form-control" name="flag"><option
+														value="">请选择</option>
+													<option value="0">未核对</option>
+													<option value="1">已核对</option></select></td>
+											<td>&nbsp&nbsp</td>
+											<td>
+												<div class="layui-inline">
+													<button class="layui-btn layuiadmin-btn-admin" lay-submit
+														lay-filter="LAY-role-search">
+														<i
+															class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+													</button>
+												</div>
+											</td>
+										</tr>
+									</table>
 								</div>
 							</div>
-								<table id="demo" class="table_th_search" lay-filter="test"></table>	
-							</div> 
-
+							<table id="demo" class="table_th_search" lay-filter="test"></table>
 						</div>
+
 					</div>
 				</div>
+			</div>
 		</section>
 	</section>
 	</section>
 
 
 
-<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
-<script>
+	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
+	<script>
 
 
 
@@ -545,7 +561,7 @@ layui.config({
 		}
 		)
 </script>
-<script type="text/html" id="toolbarDemo">
+	<script type="text/html" id="toolbarDemo">
   <div class="layui-btn-container layui-inline">
     <span class="layui-btn layui-btn-sm" lay-event="deleteSome">批量删除</span>
     <span class="layui-btn layui-btn-sm" lay-event="addTempData">添加临时数据</span>

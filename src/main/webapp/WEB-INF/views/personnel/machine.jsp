@@ -1,9 +1,14 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html class="no-js">
-<!--<![endif]-->
+
+<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script> 
+<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>  
+<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+
 
 <head>
 <meta charset="utf-8">
@@ -11,72 +16,48 @@
 <title>考勤总汇</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 </head>
 
 <body>
-	<section id="main-wrapper" class="theme-default">
-		<%@include file="../decorator/leftbar.jsp"%>
-		<!--main content start-->
-		<section id="main-content" class="animated fadeInUp">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h3 class="panel-title">总汇信息</h3>
-							<div class="actions pull-right">
-								<i class="fa fa-expand"></i>
-								<i class="fa fa-chevron-down"></i>
-							</div>
-						</div>
 
-						<div class="panel-body">
-							<table>
-								<tr>
-									<td>
-										<div class="demoTable">
-											搜索编号：
-											<div class="layui-inline">
-												<input class="layui-input" name="id" id="demoReload" autocomplete="off">
-											</div>
-									</td>
-									<td>
-										<form class="layui-form" action="">
-											<select name="interest" id="select1" lay-filter="aiha">
-												<option value="192.168.1.204">三楼打卡机</option>
-												<option value="192.168.1.250">二楼打卡机</option>
-												<option value="192.168.1.205">一楼打卡机</option>
-											</select>
-										</form>
-									</td>
-									<td>
-										<button class="layui-btn" id="search" data-type="reload">搜索</button>
-										</div>
-									</td>
-									<td style="width: 63%;"></td>
-									<td>
-										<button class="layui-btn" id="synchronization" data-type="synchronization">同步</button>
-									</td>
-								</tr>
-							</table>
-							<table class="layui-hide" lay-filter="test3" id="test">
-
-							</table>
-						</div>
+<div class="layui-card">
+	<div class="layui-card-body">
+	<form class="layui-form" action="">
+		<table>
+			<tr>
+				<td>搜索编号：</td>
+				<td>
+					<div class="layui-inline">
+						<input class="layui-input" name="id" id="demoReload" autocomplete="off">
 					</div>
-				</div>
-			</div>
-		</section>
-	</section>
-
-	</section>
-
-
-
-<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
-<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
-<script>
+				</td>
+				<td>&nbsp;卡机选择：</td>
+				<td>
+					<select name="interest" id="select1" lay-filter="aiha" class="layui-inline">
+						<option value="192.168.1.204">三楼打卡机</option>
+						<option value="192.168.1.250">二楼打卡机</option>
+						<option value="192.168.1.205">一楼打卡机</option>
+					</select>
+				</td>
+				<td>&nbsp;</td>
+				<td>
+					<button type="button" class="layui-btn" id="search" data-type="reload" >搜索</button>
+				</td>
+				<td style="width:58%;"></td>
+				<td>
+					<button class="layui-btn" id="synchronization" data-type="synchronization">同步</button>
+				</td>
+			</tr>
+		</table>
+		</form>
+		<table class="layui-hide" lay-filter="test3" id="test"> 
+		</table>
+	</div>
+</div>
+	
+	<script>
 	layui.use('table', function(){
+		 var $ = layui.$;
 		  var table = layui.table;
 		  var form = layui.form;
 		  table.render({
@@ -183,7 +164,7 @@
 			    }
 		  });
 		/*搜索*/
-		  var $ = layui.$, 
+		  
 		  	active = {
 				    reload: function(){
 				      var demoReload = $('#demoReload');
@@ -232,7 +213,7 @@
 			});
 		})
 </script>
-<script type="text/html" id="barDemo">
+	<script type="text/html" id="barDemo">
   		<a class="layui-btn layui-btn-danger layui-btn-xs"  lay-event="del">删除</a>
 </script>
 </body>
