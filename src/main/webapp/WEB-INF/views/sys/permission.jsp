@@ -6,18 +6,20 @@
 <html>
 <head>
 
-<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
-<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
-<script src="${ctx }/static/js/layer/layer.js"></script>
+	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+	<script src="${ctx }/static/js/layer/layer.js"></script>
+	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
+
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>权限控制</title>
 </head>
 <body>
-	
+<!-- 	
 <div class="layui-card">
 	<div class="layui-card-body" style="padding:0;">
-		<!--  <table class="layui-table" >
+	 <table class="layui-table" >
 			<thead>
 				<tr>
 					<th>序号</th>
@@ -33,15 +35,15 @@
 			<tbody id="tablecontent">
 			</tbody>
 		</table>
-		<div id="pager"></div>  -->
+		<div id="pager"></div>  
 	
 		
-		<table id="demo" lay-filter="test"></table>
-		<!-- <div id="LAY-permission-table" class="table_th_search" lay-filter="LAY-permission-table"></div> -->
+		
+		<div id="LAY-permission-table" class="table_th_search" lay-filter="LAY-permission-table"></div>
 	</div>
-</div>
+</div> -->
 
-
+<table id="demo" lay-filter="test"></table>
 
  
 <script>
@@ -51,11 +53,11 @@ layui.use('table', function(){
   //第一个实例
   table.render({
     elem: '#demo'
-    ,height: 312
-    ,url: "${ctx}/menuAll",//数据接口
-    ,page: true //开启分页
+    ,height: 500
+    ,url: "${ctx}/menuAll" //数据接口
+    ,page: true  //开启分页
     ,cols: [[ //表头
-      {field: 'id', title: 'ID', width:80, sort: true, fixed: 'left'}
+      {field: 'chil', title: 'ID', width:80, sort: true, fixed: 'left'}
       ,{field: 'username', title: '用户名', width:80}
       ,{field: 'sex', title: '性别', width:80, sort: true}
       ,{field: 'city', title: '城市', width:80} 
