@@ -17,7 +17,7 @@
 	<script src="${ctx }/static/js/layer/layer.js"></script>
 	<script src="${ctx }/static/js/laypage/laypage.js"></script> 
 	<link rel="stylesheet" href="${ctx }/static/css/main.css">
-
+	<script src="${ctx}/static/js/common/autoheight.js"></script>  
 </head>
 
 <body>
@@ -106,7 +106,6 @@
 
 	</section>
 
-	
 
 	<script>
    jQuery(function($){
@@ -370,9 +369,16 @@
    			var login = new Login();
 				login.init();
 			})
-    
     </script>
-
 </body>
-
+<script type="text/javascript">
+$(function(){
+	  var height = $(document).height();
+		window.parent.changeHeight(height);
+		$("body").bind('resize',function(){
+		    var height = $(document).height();
+			window.parent.changeHeight(height);
+		});
+}); 
+</script>
 </html>

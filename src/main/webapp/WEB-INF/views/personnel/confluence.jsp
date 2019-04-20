@@ -6,13 +6,15 @@
 
 <html class="no-js">
 	<link rel="stylesheet" href="${ctx }/static/css/font-awesome.min.css">
-	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>   
+	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script> 
+	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
+	<script src="${ctx}/static/js/common/autoheight.js"></script>   
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>考勤总汇</title>
+<title>考勤详细</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
@@ -397,8 +399,7 @@
 												list2.push(list1)
 												list2.push(list3)
 												table.init('test3', {
-													
-													height:600,
+													height:750,
 													cols : list2,
 													data : res.data,
 													limit:500,
@@ -412,7 +413,15 @@
 							
 						})
 	</script>
-
 </body>
-
+<script type="text/javascript">
+$(function(){
+	  var height = $(document).height();
+		window.parent.changeHeight(height);
+		$("body").bind('resize',function(){
+		    var height = $(document).height();
+			window.parent.changeHeight(height);
+		});
+}); 
+</script>
 </html>

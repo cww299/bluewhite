@@ -5,7 +5,9 @@
 <!DOCTYPE html>
 <html class="no-js">
 	<link rel="stylesheet" href="${ctx }/static/css/font-awesome.min.css">
+	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script> 
 	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>   
+	<script src="${ctx}/static/js/common/autoheight.js"></script> 
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 <head>
 
@@ -17,7 +19,7 @@
 
 </head>
 
-<body>
+<body class="layui-app">
 <div class="layui-card">
 	<div class="layui-card-header">
 		<ul>
@@ -82,16 +84,8 @@
 				</div>
 			</div>
 		</div>
-
-
-
-		<div style="height: 900px;"></div>
 	</div>
 </div>
-
-
-
-
 	
 
 	<script>
@@ -182,10 +176,6 @@
 								event(field)
 							})
 							
-							/* var data={
-								orgNameId:30,
-								orderTimeBegin:firstdate,
-							} */
 							//修改考勤
 							var even = function(data) {
 								table.render({
@@ -380,7 +370,7 @@
 												list2.push(list1)
 												list2.push(list3)
 												table.init('test3', {
-													height:550,
+													height:750,
 													cols : list2,
 													data : res.data,
 													limit:500,
@@ -553,13 +543,17 @@
 								}); 
 									
 							});
-							
-							
-							
-							
 						})
 	</script>
-
 </body>
-
+<script type="text/javascript">
+$(function(){
+	  var height = $(document).height();
+		window.parent.changeHeight(height);
+		$("body").bind('resize',function(){
+		    var height = $(document).height();
+			window.parent.changeHeight(height);
+		});
+}); 
+</script>
 </html>

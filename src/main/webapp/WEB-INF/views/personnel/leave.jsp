@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 <script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
 <script src="${ctx }/static/js/shujuhuixian/sjhx.js"></script>
-
+<script src="${ctx}/static/js/common/autoheight.js"></script>  
 
 <head>
 <meta charset="utf-8">
@@ -404,7 +404,6 @@
 							limitName: 'size' //每页数据量的参数名，默认：limit
 						},
 						page: {
-
 						} //开启分页
 						,
 						loading: true,
@@ -961,5 +960,14 @@
 			)
 		</script>
 </body>
-
+<script type="text/javascript">
+$(function(){
+	  var height = $(document).height();
+		window.parent.changeHeight(height);
+		$("body").bind('resize',function(){
+		    var height = $(document).height();
+			window.parent.changeHeight(height);
+		});
+}); 
+</script>
 </html>

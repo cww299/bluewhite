@@ -8,12 +8,12 @@
 <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script> 
 <script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>  
 <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
-
+<script src="${ctx}/static/js/common/autoheight.js"></script>  
 
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>考勤总汇</title>
+<title>考勤机设置</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
@@ -65,7 +65,6 @@
 		    ,url:'${ctx}/personnel/getAllUser'
 		    ,toolbar: '#toolbarDemo'
 		    ,where: {address:'192.168.1.204'} 
-		    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
 		    ,method:'GET'
 		  ,parseData: function(res){ //res 即为原始返回的数据
 	             return {
@@ -76,14 +75,15 @@
 	             };
 	           }
 		    ,cols: [[
-		      {field:'number', width:'25%', title: '编号', sort: true,align: 'center'}
-		      ,{field:'name', width:'25%', title: '用户名',align: 'center',edit: 'text'}
-		      ,{field:'privilege', width:'25%',align: 'center',  title: '权限', sort: true,templet:function(d){
+		      {field:'number', title: '编号', sort: true,align: 'center'}
+		      ,{field:'name', title: '用户名',align: 'center',edit: 'text'}
+		      ,{field:'privilege',align: 'center',  title: '权限', sort: true,templet:function(d){
 	             	if(d.privilege=='3') return '管理员'; 
 	           	else if(d.privilege=='0') return '普通用户';}
 				}
-		      ,{field:'enabled', width:'20%',align: 'center', title: '是否启用'}
-		      ,{fixed: 'right', title:'操作', align: 'center', toolbar: '#barDemo', width:'5%'}]]
+		      ,{field:'enabled',align: 'center', title: '是否启用'}
+		      ,{fixed: 'right', title:'操作', align: 'center', toolbar: '#barDemo'}
+		      ]]
 	          ,id: 'testReload'
 		    ,page: false
 		  });
@@ -217,4 +217,14 @@
   		<a class="layui-btn layui-btn-danger layui-btn-xs"  lay-event="del">删除</a>
 </script>
 </body>
+<script type="text/javascript">
+$(function(){
+	  var height = $(document).height();
+		window.parent.changeHeight(height);
+		$("body").bind('resize',function(){
+		    var height = $(document).height();
+			window.parent.changeHeight(height);
+		});
+}); 
+</script>
 </html>
