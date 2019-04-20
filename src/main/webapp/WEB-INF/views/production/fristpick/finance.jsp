@@ -20,6 +20,7 @@
 	<link rel="stylesheet" href="${ctx }/static/css/main.css">
 	<script src="${ctx }/static/js/laypage/laypage.js"></script>
 	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+	<script src="${ctx}/static/js/common/autoheight.js"></script>  
 </head>
 
 <body>
@@ -708,5 +709,14 @@
 
 
 </body>
-
+<script type="text/javascript">
+$(function(){
+	  var height = $(document).height();
+		window.parent.changeHeight(height);
+		$("body").bind('resize',function(){
+		    var height = $(document).height();
+			window.parent.changeHeight(height);
+		});
+}); 
+</script>
 </html>

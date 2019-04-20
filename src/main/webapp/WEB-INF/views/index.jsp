@@ -60,11 +60,12 @@ function openPage(name,show,url){
 		 open.push({"name":name,"show":show,"url":url});
 		 element.tabAdd('myTab',{            
 			title:name,
-			content:'<iframe src="${ctx}/menusToUrl?url='+url+'" width="100%" height="100%" frameborder="no"  scrolling="yes" id="'+url+'" name="'+url+'" onload="iframeHeight()"></iframe>',		
+			content:'<iframe src="${ctx}/menusToUrl?url='+url+'" width="100%" height="100%" frameborder="no"  scrolling="yes" id="'+url+'" name="'+url+'"></iframe>',		
 			id:url
 			
 		}); 
-		 element.tabChange('myTab',url); 
+		 element.tabChange('myTab',url);
+		 changeHeight();//动态改变iframe高度
  	}
  	leftNavChange(url);     //切换菜单栏位置
  	
@@ -82,19 +83,27 @@ function openPage(name,show,url){
 			}
 		}
 	})
-	
-	
 }
-function iframeHeight(){ 
+
+ function changeHeight(height){
+	console.log(height);
 	var ifm= document.getElementById(newUrl);
-	//  console.log(ifm.contentWindow.document.getElementById("main-content"));
-	//	console.log(ifm.contentWindow.document.getElementById("main-content").scrollHeight);  
-	//ifm.height=ifm.contentWindow.document.getElementById("main-content").scrollHeight;
-	ifm.height="1000px";
+	if(height==undefined){
+		alert(1)
+		ifm.height=$(document).height();
+	}else{
+		ifm.height=height;
+	}
 }
+ 
 </script>
-
-
 </body>
+
+<script type="text/javascript">
+
+
+
+
+</script>
 
 </html>

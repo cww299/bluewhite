@@ -144,9 +144,6 @@
 				login.init();
 				
         }) 
-       
-
-        
         </script>
 </head>
 <body>

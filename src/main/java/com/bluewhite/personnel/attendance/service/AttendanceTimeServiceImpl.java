@@ -266,20 +266,13 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 						attendanceTime.setWorkTime(DatesUtil.getTimeHour(attendanceTime.getCheckIn(), restBeginTime));
 					} else
 					// 当签入时间在休息时间之间 （从休息时间结束到签出时间）
-					if (attendanceTime.getCheckIn().after(restBeginTime) && attendanceTime.getCheckOut().before(restEndTime)) {
-						attendanceTime.setWorkTime(DatesUtil.getTimeHour(restEndTime, attendanceTime.getCheckOut()));
+					if (attendanceTime.getCheckIn().after(restBeginTime) && attendanceTime.getCheckIn().before(restEndTime)) {
+						attendanceTime.setWorkTime(DatesUtil.getTimeHour(restEndTime, attendanceTime.getCheckOut().after(workTimeEnd)?workTimeEnd:attendanceTime.getCheckOut()));
 					} else {
 						// 实际工作时长
-						if(attendanceTime.getCheckOut().after(workTimeEnd)){
-							attendanceTime.setWorkTime(NumUtils.sub(
-									DatesUtil.getTimeHour(attendanceTime.getCheckIn(), workTimeEnd),
-									restTime));
-						}else{
-							attendanceTime.setWorkTime(NumUtils.sub(
-									DatesUtil.getTimeHour(attendanceTime.getCheckIn(), attendanceTime.getCheckOut()),
-									restTime));
-						}
-					
+						attendanceTime.setWorkTime(NumUtils.sub(
+								DatesUtil.getTimeHour(attendanceTime.getCheckIn(), attendanceTime.getCheckOut().after(workTimeEnd)?workTimeEnd:attendanceTime.getCheckOut()),
+								restTime));
 					}
 					
 					// 无到岗要求和无打卡要求

@@ -224,10 +224,10 @@ public class AttendanceTool {
 					}
 					
 					
-					if(attendanceTime.getCheckOut().after(restEndTime) && attendanceInit.getRestTimeWork()==3){
+					if(attendanceTime.getCheckIn().before(restBeginTime) && attendanceTime.getCheckOut().after(restEndTime) && attendanceInit.getRestTimeWork()==3){
 						actualOverTime += 1.0;
 					}
-					if(attendanceTime.getCheckOut().after(restEndTime) && attendanceInit.getRestTimeWork()==2){
+					if(attendanceTime.getCheckIn().before(restBeginTime) && attendanceTime.getCheckOut().after(restEndTime) && attendanceInit.getRestTimeWork()==2){
 						actualTurnWorkTime += 1.0;
 					}
 					
