@@ -9,8 +9,14 @@
 <script src="${ctx }/static/js/layer/layer.js"></script>
 <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
 <script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
+<script src="${ctx}/static/js/common/iframeResizer.min.js"></script>  
 <head>
-
+<style>
+  iframe {
+    width: 1px;
+    min-width: 100%;
+  }
+</style>
 </head>
 
 <body>
@@ -36,7 +42,6 @@
 		
 <script>
 var open=[];
-var newUrl;
 layui.use('element', function(){  
 	 var element = layui.element; 		
 });
@@ -56,16 +61,17 @@ function openPage(name,show,url){
 		}
 	} 	
  	if(index>=open.length){                //打开新的页面
- 		newUrl=url;
 		 open.push({"name":name,"show":show,"url":url});
 		 element.tabAdd('myTab',{            
 			title:name,
-			content:'<iframe src="${ctx}/menusToUrl?url='+url+'" width="100%" height="100%" frameborder="no"  scrolling="yes" id="'+url+'" name="'+url+'"></iframe>',		
+			content:'<iframe src="${ctx}/menusToUrl?url='+url+'"  frameborder="no"  scrolling="no" id="personnel" name="'+url+'"></iframe>',		
 			id:url
 			
 		}); 
 		 element.tabChange('myTab',url);
-		 changeHeight();//动态改变iframe高度
+		 var iframeId = "#"+url;
+		 console.log(iframeId);
+		 iFrameResize({autoResize:true, resizeFrom:'child'},'#personnel');
  	}
  	leftNavChange(url);     //切换菜单栏位置
  	
@@ -84,26 +90,6 @@ function openPage(name,show,url){
 		}
 	})
 }
-
- function changeHeight(height){
-	console.log(height);
-	var ifm= document.getElementById(newUrl);
-	if(height==undefined){
-		alert(1)
-		ifm.height=$(document).height();
-	}else{
-		ifm.height=height;
-	}
-}
- 
 </script>
 </body>
-
-<script type="text/javascript">
-
-
-
-
-</script>
-
 </html>
