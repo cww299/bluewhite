@@ -115,7 +115,7 @@
 							}
 			      			$('#informatic').append("<li class='active'><a href='${ctx }/' class='index'   title='首页'><i class='fa  fa-fw fa-tachometer'></i> 首页</a></li>"+html); 
 						
-				//在每个菜单的跳转的超链接a中，href均为#，title属性存放的是该菜单的菜单名,name存放的是该超链接指向的url
+							//在每个菜单的跳转的超链接a中，href均为#，title属性存放的是该菜单的菜单名,name存放的是该超链接指向的url
 							 $('a').on('click',function(){
 								 var display =$(this).next().css("display")    //菜单下级菜单隐藏显示的切换
 								 if(display=='none'){
@@ -125,7 +125,7 @@
 									} 
 								 var p= $(this).attr("name");
 								 if(p!=null && p!="" && p!="#"){  //如果为null或者空则为1级菜单，如果为#则表示为有下级的二级菜单，则不发生打开新页面或定位新页面即只切换菜单栏的下级菜单
-									openPage($(this).attr("title"),true,p);
+									//openPage($(this).attr("title"),true,p);
 								 }
 							 })
 						  },error:function(){
