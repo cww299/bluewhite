@@ -22,49 +22,32 @@
 	<script src="${ctx }/static/js/laypage/laypage.js"></script>
 	<script src="${ctx }/static/js/vendor/typeahead.js"></script>
 	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 </head>
 
 <body>
-	<section id="main-wrapper" class="theme-default">
 
-		<%-- <%@include file="../../decorator/leftbar.jsp"%> --%>
+<div class="panel panel-default">
+	<div class="panel-body">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th class="text-center">组名</th>
+					<th class="text-center">人员信息</th>
+					<th class="text-center">工种</th>
 
-		<!--main content start-->
+					<th class="text-center">操作</th>
+				</tr>
+			</thead>
+			<tbody id="tablecontent">
 
-		<section id="main-content" class="animated fadeInUp">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h3 class="panel-title">分组信息</h3>
-							<div class="actions pull-right">
-								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
-							</div>
-						</div>
-						<div class="panel-body">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th class="text-center">组名</th>
-										<th class="text-center">人员信息</th>
-										<th class="text-center">工种</th>
+			</tbody>
+			<button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增小组</button>
+		</table>
+		<div id="pager" class="pull-right"></div>
+	</div>
+</div>
 
-										<th class="text-center">操作</th>
-									</tr>
-								</thead>
-								<tbody id="tablecontent">
-
-								</tbody>
-								<button type="button" id="addgroup"
-									class="btn btn-success btn-sm btn-3d pull-right">新增小组</button>
-							</table>
-							<div id="pager" class="pull-right"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-	</section>
 	<!--隐藏框 产品新增开始  -->
 	<div id="addDictDivType" style="display: none;">
 		<div class=" col-xs-12  col-sm-12  col-md-12 ">

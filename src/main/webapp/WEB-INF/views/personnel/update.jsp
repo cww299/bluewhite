@@ -48,12 +48,10 @@
 				<table>
 					<tr>
 						<td>人员:</td>
-						<td><select name="userId"
-							class="form-control search-query name" id="firstNames"
-							lay-search="true"></select></td>
+						<td><select id="userId" class="form-control search-query name"  lay-search="true"><option value="">请选择</option></select></td>
 						<td>&nbsp;&nbsp;</td>
 						<td>部门:</td>
-						<td id="orgNameId"></td>
+						<td><select id="orgNameId" class="form-control search-query name" lay-search="true"><option value="">请选择</option></select></td>
 						<td>&nbsp;&nbsp;</td>
 						<td>考勤汇总月份:</td>
 						<td><input name="orderTimeBegin" id="startTime" style="width: 200px;" placeholder="请输入考勤汇总月份" class="layui-input laydate-icon"></td>

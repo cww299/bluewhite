@@ -28,10 +28,11 @@
 				<table>
 					<tr>
 						<td>人员:</td>
-						<td><select name="userId" class="layui-input" id="firstNames" lay-search="true"></select></td>
-						<td>&nbsp&nbsp</td>
+						<td><select id="userId" class="layui-input"  lay-search="true"><option>请选择人员</option></select></td>
+						<td>&nbsp;&nbsp;</td>
 						<td>部门:</td>
-						<td id="orgNameId"></td>
+						<td>
+							<select  id="orgNameId"" class="layui-input" lay-search="true"><option value="">请选择部门</option></select></td>
 						<td>
 							<div class="layui-inline">
 								<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-search">
@@ -57,7 +58,7 @@
 				<label class="layui-form-label" style="width: 130px;">员工姓名</label>
 				<div class="layui-input-inline">
 					<select name="userId" lay-filter="lay_selecte"
-						lay-verify="required" id="selectOne" lay-search="true"></select>
+						lay-verify="required" id="selectOne" lay-search="true"><option value="">请选择</option></select>
 				</div>
 			</div>
 			<div class="layui-form-item">
@@ -91,7 +92,7 @@
 				<div class="layui-input-inline">
 					<input type="text" name="applytime" id="applytime"
 						placeholder="请输入申请时间" class="layui-input laydate-icon">
-					<td>&nbsp&nbsp</td>
+					<td>&nbsp;&nbsp;</td>
 					<div>
 						<textarea name="restDay" id="inputapplytime"
 							class="layui-textarea"></textarea>
@@ -211,7 +212,7 @@
 			<div class="layui-input-inline">
 				<input type="text" id="weekly" placeholder="请输入周休一天的设定时间"
 					class="layui-input laydate-icon">
-				<td>&nbsp&nbsp</td>
+				<td>&nbsp;&nbsp;</td>
 				<div>
 					<textarea name="weeklyRestDate" id="weeklyRestDate"
 						class="layui-textarea"></textarea>
@@ -223,7 +224,7 @@
 			<div class="layui-input-inline">
 				<input type="text" name="applytime" id="month"
 					placeholder="请输入月休2天的设定时间" class="layui-input laydate-icon">
-				<td>&nbsp&nbsp</td>
+				<td>&nbsp;&nbsp;</td>
 				<div>
 					<textarea name="monthRestDate" id="monthRestDate"
 						class="layui-textarea"></textarea>
@@ -331,7 +332,7 @@
 							})
 							layer.close(index);
 						$('#selectOne').html(htmls);
-						$("#firstNames").html(htmls);
+						$("#userId").append(htmls);
 						},
 						error: function() {
 							layer.msg("操作失败！", {
@@ -357,7 +358,7 @@
 									htmlfr += '<option value="'+j.id+'">' + j.name + '</option>'
 								});
 								var htmlth = '<select name="orgNameId" class="form-control"><option value="">请选择</option>' + htmlfr + '</select>'
-								$("#orgNameId").html(htmlth);
+								$("#orgNameId").append(htmlth);
 								layer.close(index);
 							}
 						});
@@ -910,92 +911,5 @@
 				}
 			)
 		</script>
-		
-			<script type="text/javascript">
-		//用于自动调节子页面iframe的高度
-     (function ($, window, undefined) {
-                var elems = $([]),
-                    jq_resize = $.resize = $.extend($.resize, {}),
-                    timeout_id,
-                    str_setTimeout = 'setTimeout',
-                    str_resize = 'resize',
-                    str_data = str_resize + '-special-event',
-                    str_delay = 'delay',
-                    str_throttle = 'throttleWindow';
-                jq_resize[str_delay] = 250;
-                jq_resize[str_throttle] = true;
-                $.event.special[str_resize] = {
-                    setup: function () {
-                        if (!jq_resize[str_throttle] && this[str_setTimeout]) {
-                            return false;
-                        }
-                        var elem = $(this);
-                        elems = elems.add(elem);
-                        $.data(this, str_data, {
-                            w: elem.width(),
-                            h: elem.height()
-                        });
-                        if (elems.length === 1) {
-                            loopy();
-                        }
-                    },
-                    teardown: function () {
-                        if (!jq_resize[str_throttle] && this[str_setTimeout]) {
-                            return false;
-                        }
-                        var elem = $(this);
-                        elems = elems.not(elem);
-                        elem.removeData(str_data);
-                        if (!elems.length) {
-                            clearTimeout(timeout_id);
-                        }
-                    },
-                    add: function (handleObj) {
-                        if (!jq_resize[str_throttle] && this[str_setTimeout]) {
-                            return false;
-                        }
-                        var old_handler;
- 
-                        function new_handler(e, w, h) {
-                            var elem = $(this),
-                                data = $.data(this, str_data);
-                            data.w = w !== undefined ? w : elem.width();
-                            data.h = h !== undefined ? h : elem.height();
-                            old_handler.apply(this, arguments);
-                        }
- 
-                        if ($.isFunction(handleObj)) {
-                            old_handler = handleObj;
-                            return new_handler;
-                        } else {
-                            old_handler = handleObj.handler;
-                            handleObj.handler = new_handler;
-                        }
-                    }
-                };
- 
-                function loopy() {
-                    timeout_id = window[str_setTimeout](function () {
-                        elems.each(function () {
-                            var elem = $(this),
-                                width = elem.width(),
-                                height = elem.height(),
-                                data = $.data(this, str_data);
-                            if (width !== data.w || height !== data.h) {
-                                elem.trigger(str_resize, [data.w = width, data.h = height]);
-                            }
-                        });
-                        loopy();
-                    }, jq_resize[str_delay]);
-                }
-            })(jQuery, this);
-     
-      	$(function(){
-     		$("body").bind('resize',function(){
-     		    var height = $(document).height();
-				window.parent.changeWid(height);
-     		});
-    		}); 
-	</script>
 </body>
 </html>

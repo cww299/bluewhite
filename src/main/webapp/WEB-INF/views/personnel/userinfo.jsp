@@ -19,8 +19,7 @@
 </head>
 <body>
 	<div class="panel panel-default">
-		<div class="panel-heading">
-		</div>
+		<div class="panel-body">
 		<div class="row" style="height: 30px; margin: 15px 0 10px">
 			<div class="col-xs-12 col-sm-12  col-md-12">
 				<form class="form-search">
@@ -32,27 +31,27 @@
 										<td>员工姓名:</td>
 										<td><input type="text" id="name"
 											class="form-control name" /></td>
-										<td>&nbsp&nbsp</td>
+										<td>&nbsp;&nbsp;</td>
 										<td>在离职:</td>
 										<td><select class="form-control" id="groupp"><option
 													value="">请选择</option>
 												<option value="0">在职</option>
 												<option value="1">离职</option></select></td>
-										<td>&nbsp&nbsp</td>
+										<td>&nbsp;&nbsp;</td>
 										<td>部门:</td>
 										<td id="orgName"></td>
-										<td>&nbsp&nbsp</td>
+										<td>&nbsp;&nbsp;</td>
 										<td>性别:</td>
 										<td><select class="form-control" id="gender"><option
 													value="">请选择</option>
 												<option value="0">男</option>
 												<option value="1">女</option></select></td>
-										<td>&nbsp&nbsp</td>
+										<td>&nbsp;&nbsp;</td>
 										<td>退休返聘:</td>
 										<td><select class="form-control" id="retire"><option
 													value="">否</option>
 												<option value="0">是</option></select></td>
-										<td>&nbsp&nbsp</td>
+										<td>&nbsp;&nbsp;</td>
 										<td>合同:</td>
 										<td><select class="form-control" id="commitment"><option
 													value="">请选择</option>
@@ -67,32 +66,32 @@
 										<td>位置编号:</td>
 										<td><input type="text" id="number"
 											class="form-control" /></td>
-										<td>&nbsp&nbsp</td>
+										<td>&nbsp;&nbsp;</td>
 										<td>时间查询:</td>
 										<td><select class="form-control" id="timesss"><option
 													value="">请选择</option>
 												<option value="entry">入职时间</option>
 												<option value="actua">实际转正时间</option>
 												<option value="estimate">预计转正时间</option></select></td>
-										<td>&nbsp&nbsp</td>
+										<td>&nbsp;&nbsp;</td>
 										<td>开始:</td>
 										<td><input id="startTime" placeholder="请输入开始时间"
 											class="form-control laydate-icon"
 											onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 										</td>
-										<td>&nbsp&nbsp</td>
+										<td>&nbsp;&nbsp;</td>
 										<td>结束:</td>
 										<td><input id="endTime" placeholder="请输入结束时间"
 											class="form-control laydate-icon"
 											onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 										</td>
-										<td>&nbsp&nbsp</td>
+										<td>&nbsp;&nbsp;</td>
 										<td>保险详情:</td>
 										<td><select class="form-control" id="safe"><option
 													value="">请选择</option>
 												<option value="0">未缴</option>
 												<option value="1">已缴</option></select></td>
-										<td>&nbsp&nbsp</td>
+										<td>&nbsp;&nbsp;</td>
 										<td>承诺书:</td>
 										<td><select class="form-control" id="promise"><option
 													value="">请选择</option>
@@ -106,7 +105,7 @@
 										<td>所属银行:</td>
 										<td><input type="text" id="bankCardtw"
 											class="form-control" /></td>
-										<td>&nbsp&nbsp</td>
+										<td>&nbsp;&nbsp;</td>
 										<td>学历查询:</td>
 										<td><select id="education2" class="form-control"><option
 													value="">请选择</option>
@@ -119,14 +118,14 @@
 								<span class="input-group-btn">
 									<button type="button"
 										class="btn btn-default btn-square btn-sm btn-3d  searchtask">
-										查&nbsp找</button>
+										查&nbsp;找</button>
 								</span>
-								<td>&nbsp&nbsp&nbsp&nbsp</td> <span class="input-group-btn">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> <span class="input-group-btn">
 									<button type="button"
 										class="btn btn-success  btn-sm btn-3d addDict">
 										新增员工</button>
 								</span>
-								<td>&nbsp&nbsp&nbsp&nbsp</td> <span class="input-group-btn">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> <span class="input-group-btn">
 									<button type="button"
 										class="btn btn-success  btn-sm btn-3d savemode"
 										data-toggle="modal" data-target="#myModal">员工提示
@@ -138,8 +137,8 @@
 				</form>
 			</div>
 		</div>
-
-		<div class="panel-body">
+		<h1 class="page-header"></h1>
+		
 			<table class="table table-hover">
 				<thead>
 					<tr>
@@ -190,9 +189,7 @@
 			<div class="space-10"></div>
 			<div style="height: 30px"></div>
 
-			<!-- <div><table><tr>
-								<td>图片类型:</td><td><select class="form-control" id="selecttype"><option value="introduce">产品</option><option value="details">产品描述</option><option value="bursting">爆款图片</option></select></td>
-								</tr></table></div> -->
+		
 			<div style="padding-left: 450px">
 				<div class="panel-body">
 					<div style="font-size: 16px;">
@@ -530,7 +527,7 @@
 
 	</div>
 
-
+	<!-- 到期人员信息 -->
 	<div id="savegroupp">
 		<table>
 			<tr>
@@ -581,7 +578,7 @@
 			</tr>
 		</table>
 	</div>
-	</section>
+
 	
 
 	
@@ -624,7 +621,7 @@
 				     _index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['40%', '80%'], 
+						  area: ['45%', '80%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"提示",
@@ -634,12 +631,10 @@
 						  }
 					});
 				     $(".savemode").on('click',function(){
-				    	 
-				    
 				   		  _index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['40%', '80%'], 
+						  area: ['45%', '80%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"提示",

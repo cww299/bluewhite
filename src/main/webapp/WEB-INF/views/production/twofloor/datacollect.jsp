@@ -12,6 +12,7 @@
 	<script src="${ctx }/static/js/laypage/laypage.js"></script>
 	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -26,7 +27,6 @@
 <body>
 	<section id="main-wrapper" class="theme-default">
 
-		<%-- <%@include file="../../decorator/leftbar.jsp"%> --%>
 
 		<!--main content start-->
 
@@ -34,12 +34,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h3 class="panel-title">数据汇总详细</h3>
-							<div class="actions pull-right">
-								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
-							</div>
-						</div>
+						
 						<div class="panel-body">
 							<div class="tab-wrapper tab-primary">
 								<ul class="nav nav-tabs col-md-12">

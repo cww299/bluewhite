@@ -20,7 +20,7 @@
 	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
 	<link rel="stylesheet" href="${ctx }/static/css/main.css">
 	<script src="${ctx }/static/js/laypage/laypage.js"></script>
-
+	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 </head>
 
 <body>
@@ -34,12 +34,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h3 class="panel-title">工资详情</h3>
-							<div class="actions pull-right">
-								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
-							</div>
-						</div>
+						
 						<div class="panel-body">
 							<div class="tab-wrapper tab-primary">
 								<ul class="nav nav-tabs col-md-12">

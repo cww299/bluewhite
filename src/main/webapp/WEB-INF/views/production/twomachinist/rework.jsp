@@ -40,102 +40,77 @@
 <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
 <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
 <script src="${ctx }/static/js/vendor/typeahead.js"></script>
-
+<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 </head>
 
 <body>
-	<section id="main-wrapper" class="theme-default">
 
-		<%-- <%@include file="../../decorator/leftbar.jsp"%> --%>
+<div class="panel panel-default">
+	<div class="panel-body">
+		<!--查询开始  -->
+		<table>
+			<tr>
+				<td>批次名:</td>
+				<td><input type="text" name="number" id="number"
+					placeholder="请输入批次号"
+					class="form-control search-query number" /></td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td>产品名称:</td>
+				<td><input type="text" name="name" id="name"
+					placeholder="请输入产品名称"
+					class="form-control search-query name" /></td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td>开始时间:</td>
+				<td><input id="startTime" placeholder="请输入开始时间"
+					class="form-control laydate-icon"
+					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td>结束时间:</td>
+				<td><input id="endTime" placeholder="请输入结束时间"
+					class="form-control laydate-icon"
+					onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td><span class="input-group-btn">
+					<button type="button"
+						class="btn btn-info btn-square btn-sm btn-3d searchtask">
+						查&nbsp;找</button>
+				</span></td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
+				<td><span class="input-group-btn">
+					<button type="button" id="addgroup"
+						class="btn btn-success btn-sm btn-3d pull-right">新增返工</button>
+				</span></td>
+			</tr>
+		</table>
+						
+	<!-- 查询结束 -->
+		<h1 class="page-header"></h1>
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th class="text-center">任务编号</th>
+					<th class="text-center">批次号</th>
+					<th class="text-center">产品名</th>
+					<th class="text-center">时间</th>
+					<th class="text-center">工序</th>
+					<th class="text-center">任务时间</th>
+					<th class="text-center">任务价值</th>
+					<th class="text-center">b工资净值</th>
+					<th class="text-center">完成人</th>
+					<th class="text-center">操作</th>
+				</tr>
+			</thead>
+			<tbody id="tablecontent">
 
-		<!--main content start-->
+			</tbody>
 
-		<section id="main-content" class="animated fadeInUp">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h3 class="panel-title">返工详情</h3>
-							<div class="actions pull-right">
-								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
-							</div>
-						</div>
-						<!--查询开始  -->
-						<div class="row" style="height: 30px; margin: 15px 0 10px">
-							<div class="col-xs-9 col-sm-9  col-md-9">
-								<form class="form-search">
-									<div class="row">
-										<div class="col-xs-12 col-sm-12 col-md-12">
-											<div class="input-group">
-												<table>
-													<tr>
-														<td>批次名:</td>
-														<td><input type="text" name="number" id="number"
-															placeholder="请输入批次号"
-															class="form-control search-query number" /></td>
-														<td>&nbsp&nbsp&nbsp&nbsp</td>
-														<td>产品名称:</td>
-														<td><input type="text" name="name" id="name"
-															placeholder="请输入产品名称"
-															class="form-control search-query name" /></td>
-														<td>&nbsp&nbsp&nbsp&nbsp</td>
-														<td>开始时间:</td>
-														<td><input id="startTime" placeholder="请输入开始时间"
-															class="form-control laydate-icon"
-															onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-														</td>
-														<td>&nbsp&nbsp&nbsp&nbsp</td>
-														<td>结束时间:</td>
-														<td><input id="endTime" placeholder="请输入结束时间"
-															class="form-control laydate-icon"
-															onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-														</td>
-													</tr>
-												</table>
-												<span class="input-group-btn">
-													<button type="button"
-														class="btn btn-info btn-square btn-sm btn-3d searchtask">
-														查&nbsp找</button>
-												</span>
-												<td>&nbsp&nbsp&nbsp&nbsp</td> <span class="input-group-btn">
-													<button type="button" id="addgroup"
-														class="btn btn-success btn-sm btn-3d pull-right">新增返工</button>
-												</span>
-											</div>
-										</div>
-									</div>
-								</form>
-							</div>
-						</div>
-						<!-- 查询结束 -->
-						<div class="panel-body">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th class="text-center">任务编号</th>
-										<th class="text-center">批次号</th>
-										<th class="text-center">产品名</th>
-										<th class="text-center">时间</th>
-										<th class="text-center">工序</th>
-										<th class="text-center">任务时间</th>
-										<th class="text-center">任务价值</th>
-										<th class="text-center">b工资净值</th>
-										<th class="text-center">完成人</th>
-										<th class="text-center">操作</th>
-									</tr>
-								</thead>
-								<tbody id="tablecontent">
+		</table>
+		<div id="pager" class="pull-right"></div>
+	</div>
+</div>
 
-								</tbody>
-
-							</table>
-							<div id="pager" class="pull-right"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-	</section>
 
 
 
@@ -231,11 +206,7 @@
 				</div>
 		</div>
 
-		</form>
-	</div>
-	</div>
-	<!--隐藏框 新增结束  -->
-	</section>
+	
 
 
 
@@ -405,7 +376,7 @@
 						
 						success:function(result){
 							$(result.data).each(function(i,o){
-							html+=o.userName+"&nbsp&nbsp&nbsp&nbsp"
+							html+=o.userName+"&nbsp;&nbsp;&nbsp;&nbsp;"
 							})
 							$('.modal-body').html(html);
 							layer.close(index);

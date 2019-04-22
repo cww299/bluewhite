@@ -20,120 +20,65 @@
 	<script src="${ctx }/static/js/layer/layer.js"></script>
 	<script src="${ctx }/static/js/laypage/laypage.js"></script> 
 	<link rel="stylesheet" href="${ctx }/static/css/main.css">
-
+	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 
 
 </head>
 
 <body>
-	<section id="main-wrapper" class="theme-default">
-
-		<%-- <%@include file="../../decorator/leftbar.jsp"%> --%>
-
-		<!--main content start-->
-
-		<section id="main-content" class="animated fadeInUp">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h3 class="panel-title">日常消费</h3>
-							<div class="actions pull-right">
-								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
-							</div>
-						</div>
-						<div class="row" style="height: 30px; margin: 15px 0 10px">
-							<div class="col-xs-12 col-sm-12  col-md-12">
-								<form class="form-search">
-									<div class="row">
-										<div class="col-xs-12 col-sm-12 col-md-12">
-											<div class="input-group">
-												<table>
-													<tr>
-														<td>最近人消费后勤:</td>
-														<td><input type="text" name="number" id="number"
-															class="form-control search-query numberth" /></td>
-														<td>最近包装车间人数:</td>
-														<td><input type="text" name="name" id="sum"
-															class="form-control search-query name numberth" /></td>
-														<td>当月房租设定:</td>
-														<td><input type="text" name="name" id="rent"
-															class="form-control search-query name numberth" /></td>
-														<td>当月水电:</td>
-														<td><input type="text" name="name" id="price"
-															class="form-control search-query name numberth" /></td>
-														<td>当月后勤餐饮保障:</td>
-														<td><input type="text" name="number" id="numbertw"
-															class="form-control search-query number numberth" /></td>
-														<td><div style="width: 15px"></div></td>
-														<td><button type="button"
-																class="btn btn-sm btn-info btn-3d update">修改</button></td>
-													</tr>
-													<tr>
-														<td><div style="height: 10px"></div></td>
-													</tr>
-													<tr>
-														<td>日消费房租:</td>
-														<td><input type="text" name="name" id="sumtw"
-															class="form-control search-query name numberth" /></td>
-														<td>日消费水电:</td>
-														<td><input type="text" name="name" id="renttw"
-															class="form-control search-query name numberth" /></td>
-														<td>日消费餐饮后勤:</td>
-														<td><input type="text" name="name" id="pricetw"
-															class="form-control search-query name numberth" /></td>
-														<td>消费日期：</td>
-														<td><input id="startTime" placeholder="请输入日期"
-															class="form-control laydate-icon"
-															onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-														</td>
-														<td>
-															<button type="button" id="addgroup"
-																class="btn btn-sm btn-success btn-3d pull-right">新增</button>
-														</td>
-														<td><div style="width: 15px"></div></td>
-														<td><button type="button"
-																class="btn btn-danger  btn-sm btn-3d start">删除
-															</button></td>
-													</tr>
-												</table>
-											</div>
-										</div>
-									</div>
-								</form>
-							</div>
-						</div>
-						<div class="panel-body">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th class="center"><label> <input type="checkbox"
-												class="ace checks" /> <span class="lbl"></span>
-										</label></th>
-										<th class="text-center">日期</th>
-										<th class="text-center">日消费房租选择</th>
-										<th class="text-center">日消费水电选择</th>
-										<th class="text-center">日消费餐饮后勤选择</th>
-									</tr>
-								</thead>
-								<tbody id="tablecontent">
-
-								</tbody>
-
-							</table>
-							<div id="pager" class="pull-right"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-	</section>
-
-
-
-
-
-	</section>
+<div class="panel panel-default">					
+	<div class="panel-body">
+		<table>
+			<tr>
+				<td>最近人消费后勤:</td>
+				<td><input type="text" name="number" id="number" class="form-control search-query numberth" /></td>
+				<td>最近包装车间人数:</td>
+				<td><input type="text" name="name" id="sum" class="form-control search-query name numberth" /></td>
+				<td>当月房租设定:</td>
+				<td><input type="text" name="name" id="rent" class="form-control search-query name numberth" /></td>
+				<td>当月水电:</td>
+				<td><input type="text" name="name" id="price" class="form-control search-query name numberth" /></td>
+				<td>当月后勤餐饮保障:</td>
+				<td><input type="text" name="number" id="numbertw" class="form-control search-query number numberth" /></td>
+				<td>&nbsp;&nbsp;</td>
+				<td><button type="button" class="btn btn-sm btn-info btn-3d update">修改</button></td>
+			</tr>
+			<tr>
+				<td><div style="height: 10px"></div></td>
+			</tr>
+			<tr>
+				<td>日消费房租:</td>
+				<td><input type="text" name="name" id="sumtw" class="form-control search-query name numberth" /></td>
+				<td>日消费水电:</td>
+				<td><input type="text" name="name" id="renttw" class="form-control search-query name numberth" /></td>
+				<td>日消费餐饮后勤:</td>
+				<td><input type="text" name="name" id="pricetw" class="form-control search-query name numberth" /></td>
+				<td>消费日期：</td>
+				<td><input id="startTime" placeholder="请输入日期" class="form-control laydate-icon"
+					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"></td>
+				<td>
+					&nbsp;&nbsp;<button type="button" id="addgroup" class="btn btn-sm btn-success btn-3d">新增</button></td>
+				<td><button type="button" class="btn btn-danger  btn-sm btn-3d start">删除</button></td>
+			</tr>
+		</table>
+		<h1 class="page-header"></h1>
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th class="center"><label> <input type="checkbox" class="ace checks" /> <span class="lbl"></span>
+					</label></th>
+					<th class="text-center">日期</th>
+					<th class="text-center">日消费房租选择</th>
+					<th class="text-center">日消费水电选择</th>
+					<th class="text-center">日消费餐饮后勤选择</th>
+				</tr>
+			</thead>
+			<tbody id="tablecontent">
+			</tbody>
+		</table>
+		<div id="pager" class="pull-right"></div>
+	</div>
+</div>
 
 
 

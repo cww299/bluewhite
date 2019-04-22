@@ -14,100 +14,71 @@
 	<script src="${ctx }/static/js/layer/layer.js"></script>
 	<script src="${ctx }/static/js/laypage/laypage.js"></script> 
 	<link rel="stylesheet" href="${ctx }/static/css/main.css">
-	
+	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 </head>
 <body>
-	<section id="main-wrapper" class="theme-default">
-		<%-- <%@include file="../../decorator/leftbar.jsp"%> --%>
-		<section id="main-content" class="animated fadeInUp">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h3 class="panel-title">人员信息</h3>
-							<div class="actions pull-right">
-								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
-							</div>
-						</div>
-						<div class="row" style="height: 30px; margin: 15px 0 10px">
-							<div class="col-xs-8 col-sm-8  col-md-8">
-								<form class="form-search">
-									<div class="row">
-										<div class="col-xs-12 col-sm-12 col-md-7">
-											<div class="input-group">
-												<table>
-													<tr>
-														<td>员工姓名:</td>
-														<td><input type="text" name="name" id="name"
-															class="form-control search-query name" /></td>
-														<td>&nbsp&nbsp</td>
-														<td>小组查询:</td>
-														<td id="groupp"></td>
-													</tr>
-												</table>
-												<span class="input-group-btn">
-													<button type="button"
-														class="btn btn-info btn-square btn-sm btn-3d  searchtask">
-														查&nbsp找</button>
-												</span>
-											</div>
-										</div>
-									</div>
-								</form>
-							</div>
-						</div>
-						<h1 class="page-header"></h1>
-						<table>
-							<tr>
-								<td><button type="button"
-										class="btn btn-info btn-square btn-sm btn-3d attendance">一键添加考勤</button>&nbsp&nbsp</td>
-								<td><input id="startTime" placeholder="请输入考勤日期"
-									class="form-control laydate-icon"
-									onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-								</td>
-								<td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
-								<td><button type="button"
-										class="btn btn-info btn-square btn-sm btn-3d position">修改到岗预计小时收入</button>&nbsp&nbsp</td>
-								<td><input id="endTime" placeholder="请输入时间"
-									class="form-control laydate-icon"
-									onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-								</td>
-								<td>&nbsp&nbsp</td>
-								<td><input type="text" name="name" id="workPrice"
-									class="form-control search-query" placeholder="预计收入" /></td>
-							</tr>
-						</table>
+<div class="panel panel-default">
+	<div class="panel-body">	
+		<table>
+			<tr>
+				<td>员工姓名:</td>
+				<td><input type="text" name="name" id="name" class="form-control search-query name" /></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>小组查询:</td>
+				<td id="groupp"></td>
+				<td>&nbsp;&nbsp;</td>
+				<td><span class="input-group-btn">
+					<button type="button" class="btn btn-info btn-square btn-sm btn-3d  searchtask">查&nbsp;找</button></span></td>
+			</tr>
+		</table>		
+		<h1 class="page-header"></h1>
+		<table>
+			<tr>
+				<td><button type="button"
+						class="btn btn-info btn-square btn-sm btn-3d attendance">一键添加考勤</button>&nbsp;&nbsp;</td>
+				<td><input id="startTime" placeholder="请输入考勤日期"
+					class="form-control laydate-icon"
+					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td><button type="button"
+						class="btn btn-info btn-square btn-sm btn-3d position">修改到岗预计小时收入</button>&nbsp;&nbsp;</td>
+				<td><input id="endTime" placeholder="请输入时间"
+					class="form-control laydate-icon"
+					onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</td>
+				<td>&nbsp;&nbsp;</td>
+				<td><input type="text" name="name" id="workPrice"
+					class="form-control search-query" placeholder="预计收入" /></td>
+			</tr>
+		</table>
+		<h1 class="page-header"></h1>
+		
+		<table class="table table-hover">
+			<thead>
+				<tr style="font-size: 14px">
+					<th class="center"><label> <input type="checkbox"
+							class="ace checks" /> <span class="lbl"></span>
+					</label></th>
+					<th class="text-center">序号</th>
+					<th class="text-center">姓名</th>
+					<th class="text-center">部门</th>
+					<th class="text-center">工作时长</th>
+					<th class="text-center hidden overtimet ">加班时间</th>
+					<th class="text-center">缺勤时间</th>
+					<th class="text-center">当月预计收入</th>
+					<th class="text-center">工作状态</th>
+					<th class="text-center">员工分组</th>
+					<th class="text-center">操作</th>
+				</tr>
+			</thead>
+			<tbody id="tablecontent" style="font-size: 14px">
+			</tbody>
+		</table>
+		<div id="pager" class="pull-right"></div>
+	</div>
+</div>
 
-						<div class="panel-body">
-							<table class="table table-hover">
-								<thead>
-									<tr style="font-size: 14px">
-										<th class="center"><label> <input type="checkbox"
-												class="ace checks" /> <span class="lbl"></span>
-										</label></th>
-										<th class="text-center">序号</th>
-										<th class="text-center">姓名</th>
-										<th class="text-center">部门</th>
-										<th class="text-center">工作时长</th>
-										<th class="text-center hidden overtimet ">加班时间</th>
-										<th class="text-center">缺勤时间</th>
-										<th class="text-center">当月预计收入</th>
-										<th class="text-center">工作状态</th>
-										<th class="text-center">员工分组</th>
-										<th class="text-center">操作</th>
-									</tr>
-								</thead>
-								<tbody id="tablecontent" style="font-size: 14px">
-								</tbody>
-							</table>
-							<div id="pager" class="pull-right"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-	</section>
-	</section>
 
 	
 	<script>
@@ -532,7 +503,7 @@
 	      			  $(result.data).each(function(k,j){
 	      				htmlth +='<option value="'+j.id+'" emoney="'+j.kindWork.id+'">'+j.name+'</option>'
 	      			  });  
-	      			 $('#groupp').html("<select class='form-control selectcomplete'><option value="+""+">请选择&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>"+htmlth+"</select>") 
+	      			 $('#groupp').html("<select class='form-control selectcomplete'><option value="+""+">请选择&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>"+htmlth+"</select>") 
 			      }
 			  });
 			

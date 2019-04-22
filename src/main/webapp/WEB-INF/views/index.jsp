@@ -36,8 +36,6 @@
 			</div>
 		</section>
 	</section>
-	
-	
 	<!--main content end-->
 		
 <script>
@@ -47,48 +45,46 @@ layui.use('element', function(){
 });
 
 //判断是否需要打开新的页面，或者定位到已打开的页面
-function openPage(name,show,url){   
+function openPage(title,show,url,id){       //title当前iframe页名，show是否显示，url iframe的url，id唯一标识
 	 var element = layui.element; 
 	 var index=0;
-	// var iheight;
 	for(index=0;index<open.length;index++){     //定位到已打开的页面
 		if(open[index].url==url){
 			open[index].show=true;
 			if(open[index].show==true)
-			    element.tabChange('myTab', open[index].url); //切换到 lay-id="yyy" 的这一项
-			leftNavChange(open[index].url);
+			    element.tabChange('myTab', open[index].id); //切换到 lay-id="yyy" 的这一项
+			leftNavChange(open[index].id);
 			break;
 		}
 	} 	
  	if(index>=open.length){                //打开新的页面
-		 open.push({"name":name,"show":show,"url":url});
+		 open.push({"title":title,"show":show,"url":url,"id":id});
 		 element.tabAdd('myTab',{            
-			title:name,
-			content:'<iframe src="${ctx}/menusToUrl?url='+url+'"  frameborder="no"  scrolling="no" id="personnel" name="'+url+'"></iframe>',		
-			id:url
-			
+			title:title,  
+			content:'<iframe src="${ctx}/menusToUrl?url='+url+'"  frameborder="no"  scrolling="no" id="'+id+'"></iframe>',		
+			id:id
 		}); 
-		 element.tabChange('myTab',url);
-		 var iframeId = "#"+url;
-		 console.log(iframeId);
-		 iFrameResize({autoResize:true, resizeFrom:'child'},'#personnel');
+		 element.tabChange('myTab',id);
+		 var newid='#'+id;
+		 iFrameResize({autoResize:true, resizeFrom:'child'});
  	}
- 	leftNavChange(url);     //切换菜单栏位置
  	
- 	element.on('tab(myTab)', function(data){  //tab选项绑定点击事件
+ 	leftNavChange(id);     //切换菜单栏位置
+ 	
+  	element.on('tab(myTab)', function(data){  //tab选项绑定点击事件
  		leftNavChange($(this).attr("lay-id"));
  	});
  
  	$(".layui-tab").on("click",function(e){   //关闭事件删除数组元素
 		if($(e.target).is(".layui-tab-close")){
-			var closeUrl=$(e.target).parent().attr("lay-id");
+			var closeId=$(e.target).parent().attr("lay-id");
 			for(var i=0;i<open.length;i++){
-				if(open[i].url==closeUrl){
+				if(open[i].id==closeId){
 					open.splice(i,1);  
 				}
 			}
 		}
-	})
+	}) 
 }
 </script>
 </body>

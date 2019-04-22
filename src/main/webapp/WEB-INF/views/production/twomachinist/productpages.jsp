@@ -19,82 +19,58 @@
 	<script src="${ctx }/static/js/layer/layer.js"></script>
 	<script src="${ctx }/static/js/laypage/laypage.js"></script> 
 	<link rel="stylesheet" href="${ctx }/static/css/main.css">
+	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 </head>
 
 <body>
-	<section id="main-wrapper" class="theme-default">
 
-		<%-- <%@include file="../../decorator/leftbar.jsp"%> --%>
+<div class="panel panel-default">
+	<div class="panel-body">
+	
+		<table>
+			<tr>
+				<td>产品编号:</td>
+				<td><input type="text" name="number" id="number"
+					class="form-control search-query number" /></td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td>产品名称:</td>
+				<td><input type="text" name="name" id="name"
+					class="form-control search-query name" /></td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td><span class="input-group-btn">
+					<button type="button"
+						class="btn btn-info btn-square btn-sm btn-3d searchtask">
+						查&nbsp;找</button>
+				</span></td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td> <span class="input-group-btn">
+					<button type="button" id="addproduct"
+						class="btn btn-success  btn-sm btn-3d pull-right">
+						新增产品</button>
+				</span></td>
+			</tr>
+		</table>
 
-		<!--main content start-->
+		<h1 class="page-header"></h1>
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th class="text-center">产品序号</th>
+					<th class="text-center">产品编号</th>
+					<th class="text-center">产品名</th>
+					<th class="text-center">生产预计单价</th>
+					<th class="text-center">外发价格</th>
+					<th class="text-center">操作</th>
+				</tr>
+			</thead>
+			<tbody id="tablecontent">
 
-		<section id="main-content" class="animated fadeInUp">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h3 class="panel-title">产品信息</h3>
-							<div class="actions pull-right">
-								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
-							</div>
-						</div>
-						<div class="row" style="height: 30px; margin: 15px 0 10px">
-							<div class="col-xs-8 col-sm-8  col-md-8">
-								<form class="form-search">
-									<div class="row">
-										<div class="col-xs-8 col-sm-8 col-md-8">
-											<div class="input-group">
-												<table>
-													<tr>
-														<td>产品编号:</td>
-														<td><input type="text" name="number" id="number"
-															class="form-control search-query number" /></td>
-														<td>&nbsp&nbsp&nbsp&nbsp</td>
-														<td>产品名称:</td>
-														<td><input type="text" name="name" id="name"
-															class="form-control search-query name" /></td>
-													</tr>
-												</table>
-												<span class="input-group-btn">
-													<button type="button"
-														class="btn btn-info btn-square btn-sm btn-3d searchtask">
-														查&nbsp找</button>
-												</span>
-												<td>&nbsp&nbsp&nbsp&nbsp</td> <span class="input-group-btn">
-													<button type="button" id="addproduct"
-														class="btn btn-success  btn-sm btn-3d pull-right">
-														新增产品</button>
-												</span>
+			</tbody>
+		</table>
+		<div id="pager" class="pull-right"></div>
+	</div>
+</div>
 
-											</div>
-										</div>
-									</div>
-								</form>
-							</div>
-						</div>
-						<div class="panel-body">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th class="text-center">产品序号</th>
-										<th class="text-center">产品编号</th>
-										<th class="text-center">产品名</th>
-										<th class="text-center">生产预计单价</th>
-										<th class="text-center">外发价格</th>
-										<th class="text-center">操作</th>
-									</tr>
-								</thead>
-								<tbody id="tablecontent">
-
-								</tbody>
-							</table>
-							<div id="pager" class="pull-right"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-	</section>
 	<!--隐藏框 产品新增开始  -->
 	<div id="addDictDivType" style="display: none;">
 		<div class=" col-xs-12  col-sm-12  col-md-12 ">
@@ -218,7 +194,7 @@
 		</div>
 	</div>
 	<!--隐藏框 批次填写结束  -->
-	</section>
+	
 
 
 

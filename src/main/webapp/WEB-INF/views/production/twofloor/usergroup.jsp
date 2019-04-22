@@ -24,59 +24,44 @@
 	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
 
 	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>  <!-- 使用layui 因此需要引入 -->
-	
+	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 </head>
 
 <body>
-	<section id="main-wrapper" class="theme-default">
-		<!--main content start-->
+<div class="panel panel-default">
+	<div class="panel-body">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th class="text-center">组名</th>
+					<th class="text-center">人员信息</th>
+					<th class="text-center">选择工种</th>
+					<th class="text-center">操作</th>
+				</tr>
+			</thead>
+			<tbody id="tablecontent">
 
-		<section id="main-content" class="animated fadeInUp">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h3 class="panel-title">分组信息</h3>
-							<div class="actions pull-right">
-								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
-							</div>
-						</div>
-						<div class="panel-body">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th class="text-center">组名</th>
-										<th class="text-center">人员信息</th>
-										<th class="text-center">选择工种</th>
-										<th class="text-center">操作</th>
-									</tr>
-								</thead>
-								<tbody id="tablecontent">
-
-								</tbody>
-								<button type="button" id="addgroup"
-									class="btn btn-success btn-sm btn-3d pull-right">新增小组</button>
-								<tbody id="tablecontenttw">
-								<thead>
-									<tr>
-										<td class="text-center">外调组</td>
-										<td class="text-center"><button
-												class="btn btn-primary btn-trans btn-sm savemodetw"
-												data-toggle="modal" data-target="#myModaltw")">查看人员</button></td>
-										<td class="text-center"></td>
-										<td class="text-center"><button type="button" id="add"
-												class="btn btn-success btn-sm btn-3d">外调人员</button></td>
-									</tr>
-								</thead>
-								</tbody>
-							</table>
-							<div id="pager" class="pull-right"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-	</section>
+			</tbody>
+			<button type="button" id="addgroup"
+				class="btn btn-success btn-sm btn-3d pull-right">新增小组</button>
+			<tbody id="tablecontenttw">
+			<thead>
+				<tr>
+					<td class="text-center">外调组</td>
+					<td class="text-center"><button
+							class="btn btn-primary btn-trans btn-sm savemodetw"
+							data-toggle="modal" data-target="#myModaltw")">查看人员</button></td>
+					<td class="text-center"></td>
+					<td class="text-center"><button type="button" id="add"
+							class="btn btn-success btn-sm btn-3d">外调人员</button></td>
+				</tr>
+			</thead>
+			</tbody>
+		</table>
+		<div id="pager" class="pull-right"></div>
+	</div>
+</div>
+				
 	<!--隐藏框 产品新增开始  -->
 	<div id="addDictDivType" style="display: none;">
 		<div class=" col-xs-12  col-sm-12  col-md-12 ">
