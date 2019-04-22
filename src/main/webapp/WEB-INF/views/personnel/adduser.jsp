@@ -27,13 +27,8 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h3 class="panel-title">考勤信息</h3>
-							<div class="actions pull-right">
-								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
-							</div>
-						</div>
-						<div class="row" style="height: 30px; margin: 15px 0 10px">
+						<div class="panel-body">
+						<div class="row">
 							<div class="col-xs-12 col-sm-12  col-md-12">
 								<form class="form-search">
 									<div class="row">
@@ -81,7 +76,7 @@
 								</form>
 							</div>
 						</div>
-						<div class="panel-body">
+						<h1 class="page-header"></h1>
 							<table class="table table-hover">
 								<thead>
 									<tr>

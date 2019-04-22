@@ -40,15 +40,19 @@
 				<table>
 					<tr>
 						<td>人员:</td>
-						<td id="firstNames"></td>
-						<td>&nbsp&nbsp</td>
+						<td >
+							<select class="layui-input"  lay-search="true" id="userId">
+								<option value="">请选择</option></select></td>
+						<td>&nbsp;&nbsp;</td>
 						<td>部门:</td>
-						<td id="orgNameId"></td>
-						<td>&nbsp&nbsp</td>
+						<td>
+							<select  id="orgNameId" class="layui-input"  lay-search="true">
+								<option value="">请选择</option></select></td>
+						<td>&nbsp;&nbsp;</td>
 						<td>考勤汇总月份:</td>
 						<td><input name="orderTimeBegin" id="startTime" lay-verify="required" style="width: 200px;" placeholder="请输入考勤汇总月份" class="layui-input laydate-icon">
 						</td>
-						<td>&nbsp&nbsp</td>
+						<td>&nbsp;&nbsp;</td>
 						<td>
 							<div class="layui-inline">
 								<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-search">
@@ -112,15 +116,14 @@
 									index;
 								},
 								success : function(result) {
-									htmls='<select name="userId" class="layui-input"  lay-search="true"><option value="">请选择</option>';
+									htmls='';
 									$(result.data)
 											.each(
 													function(i, o) {
 														htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
 													})
 									layer.close(index);
-									htmls+='</select>';
-									$("#firstNames").html(htmls);
+									$("#userId").append(htmls);
 									form.render();
 								},
 								error : function() {
@@ -147,9 +150,7 @@
 												function(k, j) {
 													htmlfr += '<option value="'+j.id+'">'+ j.name+ '</option>'
 												});
-											var htmlth = '<select name="orgNameId" id="selectOrgNameId" class="layui-input" lay-search="true" ><option value="">请选择</option>'
-														+ htmlfr + '</select>'
-											$("#orgNameId").html(htmlth);
+											$("#orgNameId").append(htmlfr);
 											form.render('select');
 											layer.close(index);
 										}

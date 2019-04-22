@@ -25,135 +25,80 @@
 </head>
 
 <body>
-	<section id="main-wrapper" class="theme-default">
+	
+<div class="panel panel-default">
+	<div class="panel-body">
+		<div class="tab-wrapper tab-primary">
+			<ul class="nav nav-tabs col-md-12">
+				<li class="active col-md-6"><a href="#home1" data-toggle="tab">生产成本数据汇总</a></li>
+				<li class="col-md-6"><a href="#profile1" data-toggle="tab">员工成本数据汇总</a></li>
+			</ul>
+			<div class="tab-content">
+				<!-- 生产成本汇总 -->
+				<div class="tab-pane active" id="home1">
+					<!--查询开始  -->
+					<table>
+						<tr>
+							<td>开始时间:</td>
+							<td><input id="startTimeth" placeholder="请输入开始时间" class="form-control laydate-icon"
+								onClick="laydate({elem: '#startTimeth', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+							</td>
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td>结束时间:</td>
+							<td><input id="endTimeth" placeholder="请输入结束时间" class="form-control laydate-icon"
+								onClick="laydate({elem: '#endTimeth', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+							</td>
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td><input type="checkbox" id="check" value="1">详情</td>
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td><span class="input-group-btn">
+								<button type="button"class="btn btn-info btn-square btn-sm btn-3d searchtaskth">查&nbsp;找</button></span></td>
+						</tr>
+					</table>
+											
+					<h1 class="page=header"></h1>
+					<table class="table table-hover">
+						<tbody id="tablecontentth"></tbody>
+					</table>
+					<div id="pagerth" class="pull-right"></div>
+				</div>
+				<!-- 员工成本汇总 -->
+				<div class="tab-pane" id="profile1">
+					<!--查询开始  -->
+					<table>
+						<tr>
+							<td>股东占比:</td>
+							<td><input type="text" name="number" id="number" placeholder="请输入批次号"
+								class="form-control search-query number" /></td>
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td>开始时间:</td>
+							<td><input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
+								onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+							</td>
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td>结束时间:</td>
+							<td><input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
+								onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+							</td>
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td><span class="input-group-btn">
+								<button type="button"class="btn btn-info btn-square btn-sm btn-3d searchtask">查&nbsp;找</button></span></td>
+						</tr>
+					</table>
+					<h1 class="page-header"></h1>
+					<table class="table table-hover">
 
-		<%-- <%@include file="../../decorator/leftbar.jsp"%> --%>
+						<tbody id="tablecontent">
 
-		<!--main content start-->
-
-		<section id="main-content" class="animated fadeInUp">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h3 class="panel-title">数据汇总详细</h3>
-							<div class="actions pull-right">
-								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
-							</div>
-						</div>
-						<div class="panel-body">
-							<div class="tab-wrapper tab-primary">
-								<ul class="nav nav-tabs col-md-12">
-									<li class="active col-md-6"><a href="#home1"
-										data-toggle="tab">生产成本数据汇总</a></li>
-									<li class="col-md-6"><a href="#profile1" data-toggle="tab">员工成本数据汇总</a>
-									</li>
-								</ul>
-								<div class="tab-content">
-									<div class="tab-pane active" id="home1">
-										<!--查询开始  -->
-										<div class="row" style="height: 30px; margin: 15px 0 10px">
-											<div class="col-xs-8 col-sm-8  col-md-8">
-												<form class="form-search">
-													<div class="row">
-														<div class="col-xs-12 col-sm-12 col-md-12">
-															<div class="input-group">
-																<table>
-																	<tr>
-																		<td>开始时间:</td>
-																		<td><input id="startTimeth" placeholder="请输入开始时间"
-																			class="form-control laydate-icon"
-																			onClick="laydate({elem: '#startTimeth', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-																		</td>
-																		<td>&nbsp&nbsp&nbsp&nbsp</td>
-																		<td>结束时间:</td>
-																		<td><input id="endTimeth" placeholder="请输入结束时间"
-																			class="form-control laydate-icon"
-																			onClick="laydate({elem: '#endTimeth', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-																		</td>
-																		<td>&nbsp&nbsp&nbsp&nbsp</td>
-																		<td><input type="checkbox" id="check" value="1">详情</td>
-																	</tr>
-																</table>
-																<span class="input-group-btn">
-																	<button type="button"
-																		class="btn btn-info btn-square btn-sm btn-3d searchtaskth">
-																		查&nbsp找</button>
-																</span>
-															</div>
-														</div>
-													</div>
-												</form>
-											</div>
-										</div>
-										<!-- 查询结束 -->
-
-										<table class="table table-hover">
-
-											<tbody id="tablecontentth">
-
-											</tbody>
-										</table>
-										<div id="pagerth" class="pull-right"></div>
-									</div>
-									<!-- B工资流水开始 -->
-									<div class="tab-pane" id="profile1">
-										<!--查询开始  -->
-										<div class="row" style="height: 30px; margin: 15px 0 10px">
-											<div class="col-xs-8 col-sm-8  col-md-8">
-												<form class="form-search">
-													<div class="row">
-														<div class="col-xs-12 col-sm-12 col-md-12">
-															<div class="input-group">
-																<table>
-																	<tr>
-																		<td>股东占比:</td>
-																		<td><input type="text" name="number" id="number"
-																			placeholder="请输入批次号"
-																			class="form-control search-query number" /></td>
-																		<td>&nbsp&nbsp&nbsp&nbsp</td>
-																		<td>开始时间:</td>
-																		<td><input id="startTime" placeholder="请输入开始时间"
-																			class="form-control laydate-icon"
-																			onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-																		</td>
-																		<td>&nbsp&nbsp&nbsp&nbsp</td>
-																		<td>结束时间:</td>
-																		<td><input id="endTime" placeholder="请输入结束时间"
-																			class="form-control laydate-icon"
-																			onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-																		</td>
-																	</tr>
-																</table>
-																<span class="input-group-btn">
-																	<button type="button"
-																		class="btn btn-info btn-square btn-sm btn-3d searchtask">
-																		查&nbsp找</button>
-																</span>
-															</div>
-														</div>
-													</div>
-												</form>
-											</div>
-										</div>
-										<!-- 查询结束 -->
-										<table class="table table-hover">
-
-											<tbody id="tablecontent">
-
-											</tbody>
-										</table>
-										<div id="pager" class="pull-right"></div>
-									</div>
-									<!-- B工资流水结束 -->
-								</div>
-							</div>
-						</div>
-					</div>
+						</tbody>
+					</table>
+					<div id="pager" class="pull-right"></div>
 				</div>
 			</div>
-		</section>
-	</section>
+		</div>
+	</div>
+</div>
+			
 
 
 

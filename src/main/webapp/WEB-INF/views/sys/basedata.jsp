@@ -5,26 +5,18 @@
 <!DOCTYPE>
 <html>
 <head>
-<link rel="stylesheet"
-	href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
-	
+<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>基础数据</title>
 </head>
 <body>
 	<section id="main-wrapper" class="theme-default">
-		<%-- <%@include file="../decorator/leftbar.jsp"%> --%>
 		<section id="main-content" class="animated fadeInUp">
 			<div class="row">
 				<div class="col-md-12">
 					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h3 class="panel-title">字典表</h3>
-							<div class="actions pull-right">
-								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
-							</div>
-						</div>
 						<div class="panel-body">
 							<table class="table table-hover">
 								<thead>

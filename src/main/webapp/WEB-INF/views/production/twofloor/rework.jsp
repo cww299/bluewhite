@@ -40,119 +40,78 @@
 <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
 <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
 <script src="${ctx }/static/js/vendor/typeahead.js"></script>
-
+<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 </head>
 
 <body>
-	<section id="main-wrapper" class="theme-default">
 
-		<%-- <%@include file="../../decorator/leftbar.jsp"%> --%>
 
-		<!--main content start-->
+<div class="panel panel-default">
+	<div class="panel-body">
+	<!--查询开始  -->
+	
+		<table>
+			<tr>
+				<td>批次名:</td>
+				<td><input type="text" name="number" id="number" placeholder="请输入批次号"
+					class="form-control search-query number" /></td>
+				<td>&nbsp&nbsp&nbsp&nbsp</td>
+				<td>产品名称:</td>
+				<td><input type="text" name="name" id="name"
+					placeholder="请输入产品名称" class="form-control search-query name" /></td>
+				<td>&nbsp&nbsp&nbsp&nbsp</td>
+				<td>开始时间:</td>
+				<td><input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
+					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</td>
+				<td>&nbsp&nbsp&nbsp&nbsp</td>
+				<td>结束时间:</td>
+				<td><input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
+					onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</td>
+				<td>&nbsp&nbsp</td>
+				<td>完成状态:</td>
+				<td><select class="form-control" id="selectstate"><option value=0>未完成</option>
+						<option value=1>已完成</option></select></td>
+				<td><span class="input-group-btn">
+					<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">查&nbsp找</button></span></td>
+				<td>&nbsp&nbsp&nbsp&nbsp</td> 
+				<td><span class="input-group-btn">
+					<button type="button"class="btn btn-success  btn-sm btn-3d start">一键完成</button></span></td>
+				<td>&nbsp&nbsp&nbsp&nbsp</td> 
+				<td><span class="input-group-btn">
+					<button type="button" id="addgroup"class="btn btn-success btn-sm btn-3d pull-right">新增返工</button></span></td>
+				<td>&nbsp&nbsp&nbsp&nbsp</td>
+				<td><span class="input-group-btn">
+					<button type="button" class="btn btn-success  btn-sm btn-3d export">导出返工价值</button></span></td>
+			</tr>
+		</table>
+		<h1 class="page-header"></h1>
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th class="center"><label> <input type="checkbox"
+							class="ace checks" /> <span class="lbl"></span>
+					</label></th>
+					<th class="text-center">批次号</th>
+					<th class="text-center">时间</th>
+					<th class="text-center">产品名</th>
+					<th class="text-center">数量</th>
+					<th class="text-center">任务价值</th>
+					<th class="text-center">当批用时</th>
+					<th class="text-center">备注</th>
+					<th class="text-center">完成状态</th>
+					<th class="text-center">操作</th>
+				</tr>
+			</thead>
+			<tbody id="tablecontent">
 
-		<section id="main-content" class="animated fadeInUp">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h3 class="panel-title">返工详情</h3>
-							<div class="actions pull-right">
-								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
-							</div>
-						</div>
-						<!--查询开始  -->
-						<div class="row" style="height: 30px; margin: 15px 0 10px">
-							<div class="col-xs-12 col-sm-12 col-md-12">
-								<form class="form-search">
-									<div class="row">
-										<div class="col-xs-12 col-sm-12 col-md-12">
-											<div class="input-group">
-												<table>
-													<tr>
-														<td>批次名:</td>
-														<td><input type="text" name="number" id="number"
-															placeholder="请输入批次号"
-															class="form-control search-query number" /></td>
-														<td>&nbsp&nbsp&nbsp&nbsp</td>
-														<td>产品名称:</td>
-														<td><input type="text" name="name" id="name"
-															placeholder="请输入产品名称"
-															class="form-control search-query name" /></td>
-														<td>&nbsp&nbsp&nbsp&nbsp</td>
-														<td>开始时间:</td>
-														<td><input id="startTime" placeholder="请输入开始时间"
-															class="form-control laydate-icon"
-															onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-														</td>
-														<td>&nbsp&nbsp&nbsp&nbsp</td>
-														<td>结束时间:</td>
-														<td><input id="endTime" placeholder="请输入结束时间"
-															class="form-control laydate-icon"
-															onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-														</td>
-														<td>&nbsp&nbsp</td>
-														<td>完成状态:</td>
-														<td><select class="form-control" id="selectstate"><option
-																	value=0>未完成</option>
-																<option value=1>已完成</option></select></td>
-													</tr>
-												</table>
-												<span class="input-group-btn">
-													<button type="button"
-														class="btn btn-info btn-square btn-sm btn-3d searchtask">
-														查&nbsp找</button>
-												</span>
-												<td>&nbsp&nbsp&nbsp&nbsp</td> <span class="input-group-btn">
-													<button type="button"
-														class="btn btn-success  btn-sm btn-3d start">
-														一键完成</button>
-												</span>
-												<td>&nbsp&nbsp&nbsp&nbsp</td> <span class="input-group-btn">
-													<button type="button" id="addgroup"
-														class="btn btn-success btn-sm btn-3d pull-right">新增返工</button>
-												</span>
-												<td>&nbsp&nbsp&nbsp&nbsp</td> <span class="input-group-btn">
-													<button type="button"
-														class="btn btn-success  btn-sm btn-3d export">
-														导出返工价值</button>
-												</span>
-											</div>
-										</div>
-									</div>
-								</form>
-							</div>
-						</div>
-						<!-- 查询结束 -->
-						<div class="panel-body">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th class="center"><label> <input type="checkbox"
-												class="ace checks" /> <span class="lbl"></span>
-										</label></th>
-										<th class="text-center">批次号</th>
-										<th class="text-center">时间</th>
-										<th class="text-center">产品名</th>
-										<th class="text-center">数量</th>
-										<th class="text-center">任务价值</th>
-										<th class="text-center">当批用时</th>
-										<th class="text-center">备注</th>
-										<th class="text-center">完成状态</th>
-										<th class="text-center">操作</th>
-									</tr>
-								</thead>
-								<tbody id="tablecontent">
+			</tbody>
 
-								</tbody>
-
-							</table>
-							<div id="pager" class="pull-right"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-	</section>
+		</table>
+		<div id="pager" class="pull-right"></div>
+	</div>
+</div>
 
 
 

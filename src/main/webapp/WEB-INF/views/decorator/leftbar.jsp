@@ -26,14 +26,14 @@
 
 <script type="text/javascript">
 		//菜单栏的定位
-		function leftNavChange(url){ 
+		function leftNavChange(id){ 
 			//清空所有二、三级菜单的激活
 			  $('#informatic li ul li  a').each(function(){
 				  $(this).parent().removeClass("active");
 				  $(this).parent().siblings().removeClass("active");
 			  })  
 			  $('#informatic li ul li a').each(function(){ 
-				  if($(this).attr("name") == url){  
+				  if($(this).attr("id") == id){  
 					$(this).parent().addClass("active");   //本菜单激活
 					$(this).parent().parent().parent().addClass("active")   //点击二级菜单时，其父元素（上级菜单激活）
 					$(this).parent().parent().parent().siblings().removeClass("active") 
@@ -98,24 +98,37 @@
 				      					d=arrTo[k].url  //第二层次的链接
 				      					secondicon=arrTo[k].icon //第二层次的图标
 				      					arrTh=arrTo[k].children //第三层次的数组
-				      					htmlto +='<li><a href="#"  name='+d+' title='+c+'><i class="fa  fa-fw '+secondicon+'"></i>'+c+'</a></li>' //拼接第二层
+				      					
+				      					
+				      					
+				      					var identy=arrTo[k].identity;    //每一个url存放属性：url指向id   title 当前菜单名   id 唯一标志identy
+				      				
+				      					
+				      					
+				      					htmlto +='<li><a href="#"  url='+d+' title='+c+' id='+identy+'><i class="fa  fa-fw '+secondicon+'"></i>'+c+'</a></li>' //拼接第二层
 				      					htmlth = "";
 					      				if(arrTh!=null){
 					      					for (var j = 0; j < arrTh.length; j++) {
 												e=arrTh[j].name //第三层次的命名
 												f=arrTh[j].url  //第三层次的链接
 												Thirdicon=arrTh[j].icon //第三层次的图标
-												htmlth +='<li><a href="#" name='+f+' class="third" title='+e+'><i class="fa   fa-fw '+Thirdicon+'" ></i>'+e+'</a></li>' //拼接第三层
+												
+												
+												var identy=arrTh[j].identity;
+												
+												
+												htmlth +='<li><a href="#" url='+f+' title='+e+' id='+identy+' class="third"><i class="fa   fa-fw '+Thirdicon+'" ></i>'+e+'</a></li>' //拼接第三层
 											}
 				      					}
-					      				htmltr +='<li class="nav-dropdown"><a href="#" name='+d+' class="onclic" title='+c+'><i class="fa   fa-fw '+secondicon+'"></i>'+c+'</a><ul class="nav-sub" style="display:none;">'+htmlth+'</ul></li>'
+					      				htmltr +='<li class="nav-dropdown"><a href="#" url='+d+' id='+identy+' class="onclic" title='+c+'><i class="fa   fa-fw '+secondicon+'"></i>'+c+'</a><ul class="nav-sub" style="display:none;">'+htmlth+'</ul></li>'
 									} 
 			      			    }
 			      				html +='<li class="nav-dropdown"><a href="#" class="sele"><i class="fa  fa-fw '+fristicon+'"></i>'+a+'</a><ul class="nav-sub" style="display:none;">'+htmltr+'</ul></li>'
 							}
 			      			$('#informatic').append("<li class='active'><a href='${ctx }/' class='index'   title='首页'><i class='fa  fa-fw fa-tachometer'></i> 首页</a></li>"+html); 
 						
-							//在每个菜单的跳转的超链接a中，href均为#，title属性存放的是该菜单的菜单名,name存放的是该超链接指向的url
+						
+			      			//在每个菜单的跳转的超链接a中，href均为#，title属性存放的是该菜单的菜单名,url存放的是该超链接指向的url
 							 $('a').on('click',function(){
 								 var display =$(this).next().css("display")    //菜单下级菜单隐藏显示的切换
 								 if(display=='none'){
@@ -123,9 +136,10 @@
 									}else{
 										$(this).next().css("display","none"); 
 									} 
-								 var p= $(this).attr("name");
+								 var p= $(this).attr("url");
 								 if(p!=null && p!="" && p!="#"){  //如果为null或者空则为1级菜单，如果为#则表示为有下级的二级菜单，则不发生打开新页面或定位新页面即只切换菜单栏的下级菜单
-									//openPage($(this).attr("title"),true,p);
+									//console.log($(this).attr("id"))
+									 openPage($(this).attr("title"),true,$(this).attr("url"),$(this).attr("id"));
 								 }
 							 })
 						  },error:function(){

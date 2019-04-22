@@ -21,118 +21,93 @@
 	<script src="${ctx }/static/js/laypage/laypage.js"></script>
 	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
-
+	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 </head>
 
 <body>
-	<section id="main-wrapper" class="theme-default">
+	
+<div class="panel panel-default">
+	<div class="panel-body">
+	<!--查询开始  -->
+		<table>
+			<tr>
+				<td>批次号:</td>
+				<td><input type="text" name="number" id="number"
+					placeholder="请输入批次号"
+					class="form-control search-query number" /></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>产品名称:</td>
+				<td><input type="text" name="name" id="name"
+					placeholder="请输入产品名称"
+					class="form-control search-query name" /></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>开始时间:</td>
+				<td><input id="startTime" placeholder="请输入开始时间"
+					class="form-control laydate-icon"
+					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</td>
+				<td>&nbsp;&nbsp;</td>
+				<td>结束时间:</td>
+				<td><input id="endTime" placeholder="请输入结束时间"
+					class="form-control laydate-icon"
+					onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</td>
+				<td>&nbsp;&nbsp;</td>
+				<td class="hidden">工序:</td>
+				<td><select class="form-control selectchoice hidden"><option
+							value="0">机工工序</option></select></td>
+				<td>机工选择:</td>
+				<td><select id="choice" class="form-control"><option
+							value="">请选择</option>
+						<option value="0">二楼机工</option>
+						<option value="1">三楼机工</option></select></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>
+				<span class="input-group-btn">
+					<button type="button"
+						class="btn btn-info btn-square btn-sm btn-3d searchtask">
+						查找 <i class="icon-search icon-on-right bigger-110"></i>
+					</button>
+				</span></td>
+			</tr>
+		</table>
+						
+		<h1 class="page-header"></h1>
+		<table>
+			<tr>
+				<td><button type="button"
+						class="btn btn-default btn-danger btn-sm btn-3d attendance">一键删除</button>&nbsp;&nbsp;</td>
+			</tr>
+		</table>
+		
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th class="center"><label> <input type="checkbox"
+								class="ace checks" /> <span class="lbl"></span>
+						</label></th>
+						<th class="text-center">任务编号</th>
+						<th class="text-center">批次号</th>
+						<th class="text-center">产品名</th>
+						<th class="text-center">时间</th>
+						<th class="text-center">工序</th>
+						<th class="text-center">预计时间</th>
+						<th class="text-center">任务价值</th>
+						<th class="text-center">b工资净值</th>
+						<th class="text-center">数量</th>
+						<th class="text-center">完成人</th>
+						<th class="text-center">操作</th>
+					</tr>
+				</thead>
+				<tbody id="tablecontent">
 
-		<%-- <%@include file="../../decorator/leftbar.jsp"%> --%>
-
-		<!--main content start-->
-
-		<section id="main-content" class="animated fadeInUp">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h3 class="panel-title">任务信息</h3>
-							<div class="actions pull-right">
-								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
-							</div>
-						</div>
-						<!--查询开始  -->
-						<div class="row" style="height: 30px; margin: 15px 0 10px">
-							<div class="col-xs-10 col-sm-10 col-md-10">
-								<form class="form-search">
-									<div class="row">
-										<div class="col-xs-12 col-sm-12 col-md-12">
-											<div class="input-group">
-												<table>
-													<tr>
-														<td>批次号:</td>
-														<td><input type="text" name="number" id="number"
-															placeholder="请输入批次号"
-															class="form-control search-query number" /></td>
-														<td>&nbsp&nbsp</td>
-														<td>产品名称:</td>
-														<td><input type="text" name="name" id="name"
-															placeholder="请输入产品名称"
-															class="form-control search-query name" /></td>
-														<td>&nbsp&nbsp</td>
-														<td>开始时间:</td>
-														<td><input id="startTime" placeholder="请输入开始时间"
-															class="form-control laydate-icon"
-															onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-														</td>
-														<td>&nbsp&nbsp</td>
-														<td>结束时间:</td>
-														<td><input id="endTime" placeholder="请输入结束时间"
-															class="form-control laydate-icon"
-															onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-														</td>
-														<td>&nbsp&nbsp</td>
-														<td class="hidden">工序:</td>
-														<td><select class="form-control selectchoice hidden"><option
-																	value="0">机工工序</option></select></td>
-														<td>机工选择:</td>
-														<td><select id="choice" class="form-control"><option
-																	value="">请选择</option>
-																<option value="0">二楼机工</option>
-																<option value="1">三楼机工</option></select></td>
-													</tr>
-												</table>
-												<span class="input-group-btn">
-													<button type="button"
-														class="btn btn-info btn-square btn-sm btn-3d searchtask">
-														查找 <i class="icon-search icon-on-right bigger-110"></i>
-													</button>
-												</span>
-											</div>
-										</div>
-									</div>
-								</form>
-							</div>
-						</div>
-						<!-- 查询结束 -->
-						<h1 class="page-header"></h1>
-						<table>
-							<tr>
-								<td><button type="button"
-										class="btn btn-default btn-danger btn-sm btn-3d attendance">一键删除</button>&nbsp&nbsp</td>
-							</tr>
-						</table>
-						<div class="panel-body">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th class="center"><label> <input type="checkbox"
-												class="ace checks" /> <span class="lbl"></span>
-										</label></th>
-										<th class="text-center">任务编号</th>
-										<th class="text-center">批次号</th>
-										<th class="text-center">产品名</th>
-										<th class="text-center">时间</th>
-										<th class="text-center">工序</th>
-										<th class="text-center">预计时间</th>
-										<th class="text-center">任务价值</th>
-										<th class="text-center">b工资净值</th>
-										<th class="text-center">数量</th>
-										<th class="text-center">完成人</th>
-										<th class="text-center">操作</th>
-									</tr>
-								</thead>
-								<tbody id="tablecontent">
-
-								</tbody>
-							</table>
-							<div id="pager" class="pull-right"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-	</section>
+				</tbody>
+			</table>
+			<div id="pager" class="pull-right"></div>
+		</div>
+	</div>
+</div>
+			
 
 
 
@@ -467,7 +442,7 @@
 						
 						success:function(result){
 							$(result.data).each(function(i,o){
-							html+=o.userName+"&nbsp&nbsp&nbsp&nbsp"
+							html+=o.userName+"&nbsp;&nbsp;&nbsp;&nbsp;"
 							})
 							$('.modal-body').html(html);
 							layer.close(index);

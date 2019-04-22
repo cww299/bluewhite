@@ -27,17 +27,18 @@
 					<table>
 						<tr>
 							<td>申请人:</td>
-							<td><select name="userId" class="layui-input " id="firstNames" lay-search="true"></select></td>
-							<td>&nbsp&nbsp</td>
+							<td><select name="userId" class="layui-input " lay-search="true"></select></td>
+							<td>&nbsp;&nbsp;</td>
 							<td>部门:</td>
-							<td id="orgNameId"></td>
-							<td>&nbsp&nbsp</td>
+							<td >
+								<select id="orgNameId" class="layui-input "  lay-search="true"></select></td>
+							<td>&nbsp;&nbsp;</td>
 							<td>开始:</td>
 							<td><input id="startTime" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon"></td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td>结束:</td>
 							<td><input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="layui-input laydate-icon"> </td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td> <div class="layui-inline">
 									<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-search">
 										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
@@ -153,7 +154,7 @@
 						<input type="text" id="repairtime" lay-verify="repairtime" placeholder="请输入补签日期" class="layui-input laydate-icon">
 					</div>
 					<input type="checkbox" id="moren" name="like[write]" title="默认" checked="true">
-					<td>&nbsp&nbsp</td>
+					<td>&nbsp;&nbsp;</td>
 				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label" style="width: 90px;">显示</label>
@@ -384,8 +385,7 @@
 								$(result.data).each(function(k, j) {
 									htmlfr += '<option value="'+j.id+'">' + j.name + '</option>'
 								});
-								var htmlth = '<select name="orgNameId" class="form-control" lay-search="true"><option value="">请选择</option>' + htmlfr + '</select>'
-								$("#orgNameId").html(htmlth);
+								$("#orgNameId").append(htmlfr);
 								layer.close(index);
 							}
 						});
