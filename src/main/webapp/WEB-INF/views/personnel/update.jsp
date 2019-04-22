@@ -113,7 +113,7 @@
 							//0.1透明度的白色背景
 							});
 							$.ajax({
-								url : '${ctx}/system/user/findAllUser',
+								url : '${ctx}/system/user/findAllUser', 
 								type : "GET",
 								async : false,
 								beforeSend : function() {

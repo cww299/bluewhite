@@ -66,7 +66,7 @@ function openPage(title,show,url,id){       //title当前iframe页名，show是�
 		}); 
 		 element.tabChange('myTab',id);
 		 var newid='#'+id;
-		 iFrameResize({autoResize:true, resizeFrom:'child'});
+		 iFrameResize({autoResize:true});
  	}
  	
  	leftNavChange(id);     //切换菜单栏位置
