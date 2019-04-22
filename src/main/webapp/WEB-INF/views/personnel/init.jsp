@@ -28,11 +28,11 @@
 				<table>
 					<tr>
 						<td>人员:</td>
-						<td><select id="userId" class="layui-input"  lay-search="true"><option>请选择人员</option></select></td>
+						<td><select id="userId" class="layui-input"  lay-search="true" name="userId"></select></td>
 						<td>&nbsp;&nbsp;</td>
 						<td>部门:</td>
 						<td>
-							<select  id="orgNameId"" class="layui-input" lay-search="true"><option value="">请选择部门</option></select></td>
+							<select  id="orgNameId" class="layui-input" lay-search="true" name="orgNameId"></select></td>
 						<td>
 							<div class="layui-inline">
 								<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-search">
@@ -357,8 +357,8 @@
 								$(result.data).each(function(k, j) {
 									htmlfr += '<option value="'+j.id+'">' + j.name + '</option>'
 								});
-								var htmlth = '<select name="orgNameId" class="form-control"><option value="">请选择</option>' + htmlfr + '</select>'
-								$("#orgNameId").append(htmlth);
+								
+								$("#orgNameId").append(htmlfr);
 								layer.close(index);
 							}
 						});

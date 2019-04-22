@@ -41,17 +41,17 @@
 				style="color: #1211e2"></i>护理假</li>
 		</ul>
 	</div>
-	<div class="layui-card-body">
+	<div class="layui-card-body" style="height:700px;">
 		<div
 			class="layui-form">
 			<div class="layui-form-item">
 				<table>
 					<tr>
 						<td>人员:</td>
-						<td><select id="userId" class="form-control search-query name"  lay-search="true"><option value="">请选择</option></select></td>
+						<td><select id="userId" class="form-control search-query name"  lay-search="true" name="userId"><option value="">请选择</option></select></td>
 						<td>&nbsp;&nbsp;</td>
 						<td>部门:</td>
-						<td><select id="orgNameId" class="form-control search-query name" lay-search="true"><option value="">请选择</option></select></td>
+						<td><select id="orgNameId" class="form-control search-query name" lay-search="true" name="orgNameId"><option value="">请选择</option></select></td>
 						<td>&nbsp;&nbsp;</td>
 						<td>考勤汇总月份:</td>
 						<td><input name="orderTimeBegin" id="startTime" style="width: 200px;" placeholder="请输入考勤汇总月份" class="layui-input laydate-icon"></td>
@@ -127,7 +127,7 @@
 																+ '</option>'
 													})
 									layer.close(index);
-									$("#firstNames").html(htmls);
+									$("#userId").append(htmls);
 									form.render();
 								},
 								error : function() {
