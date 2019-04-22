@@ -30,7 +30,7 @@
  	 	<input type="checkbox" name="isShow" value="{{d.isShow}}" lay-skin="switch" lay-text="显示|不显示" lay-filter="isShow" {{ d.isShow == true ? 'checked' : '' }} >
 </script>
 <script type="text/html" id="templ-aboutPerson">
- 	 	<button type="button" class="layui-btn layui-btn-sm" value="{{d.url}}">查看人员</button>
+ 	 	<button type="button" class="layui-btn layui-btn-sm" value="{{d.url}}" onclick="aboutPerson" >查看人员</button>
 </script>
 
 <script type="text/html" id="permission-toolbar">
@@ -108,10 +108,11 @@ layui.config({
      
       } */ 
     });
-	  function aboutPerson(){
-		  alert(this.value);
-	  }
+  
 });
+function aboutPerson(){
+	  alert("12");
+}
 </script>
 
 	

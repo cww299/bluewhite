@@ -27,7 +27,7 @@
 					<table>
 						<tr>
 							<td>申请人:</td>
-							<td><select name="userId" class="layui-input " lay-search="true"></select></td>
+							<td><select id="userId" class="layui-input " lay-search="true"></select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>部门:</td>
 							<td >
@@ -359,8 +359,8 @@
 								htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
 							})
 							layer.close(index);
-						$('#selectOne').html(htmls);
-						$("#firstNames").html(htmls);
+						$('#selectOne').append(htmls);
+						$("#userId").append(htmls);
 						},
 						error: function() {
 							layer.msg("操作失败！", {

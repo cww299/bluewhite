@@ -34,19 +34,19 @@
 			<li style="display: inline;"><i class="fa fa-circle" style="color: #1211e2"></i>护理假</li>
 		</ul>
 	</div>
-	<div class="layui-card-body">
+	<div class="layui-card-body" style="height:750px;">
 		<div class="layui-form ">
 			<div class="layui-form-item">
 				<table>
 					<tr>
 						<td>人员:</td>
 						<td >
-							<select class="layui-input"  lay-search="true" id="userId">
+							<select class="layui-input"  lay-search="true" id="userId" name="userId" >  
 								<option value="">请选择</option></select></td>
 						<td>&nbsp;&nbsp;</td>
 						<td>部门:</td>
 						<td>
-							<select  id="orgNameId" class="layui-input"  lay-search="true">
+							<select  id="orgNameId" class="layui-input"  lay-search="true" name="orgNameId">
 								<option value="">请选择</option></select></td>
 						<td>&nbsp;&nbsp;</td>
 						<td>考勤汇总月份:</td>
@@ -70,7 +70,7 @@
 			</div>
 		</div>
 		<table class="layui-hide" lay-filter="test3" id="test">
-
+			
 		</table>
 	</div>
 </div>
@@ -399,7 +399,7 @@
 												list2.push(list1)
 												list2.push(list3)
 												table.init('test3', {
-													height:750,
+													height:700,
 													cols : list2,
 													data : res.data,
 													limit:500,
