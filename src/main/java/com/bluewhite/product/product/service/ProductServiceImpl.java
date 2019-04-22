@@ -97,7 +97,6 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 			
 		}
 		
-		
 		  Page<Product> pages = productDao.findAll((root,query,cb) -> {
 	        	List<Predicate> predicate = new ArrayList<>();
 	        	//按id过滤
@@ -125,9 +124,6 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 	        	if (!StringUtils.isEmpty(product.getName())) {
 					predicate.add(cb.like(root.get("name").as(String.class),"%"+StringUtil.specialStrKeyword(product.getName())+"%"));
 				}
-	        	
-	        	
-	        	
 				Predicate[] pre = new Predicate[predicate.size()];
 				query.where(predicate.toArray(pre));
 	        	return null;
