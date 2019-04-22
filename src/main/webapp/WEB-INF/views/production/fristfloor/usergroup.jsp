@@ -36,8 +36,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="panel panel-default">
-						
-						<div class="panel-body">
+						<div class="panel-body" style="height:750px;">
 							<table class="table table-hover">
 								<thead>
 									<tr>
@@ -49,8 +48,7 @@
 								<tbody id="tablecontent">
 
 								</tbody>
-								<button type="button" id="addgroup"
-									class="btn btn-success btn-sm btn-3d pull-right">新增小组</button>
+								<button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增小组</button>
 								<tbody id="tablecontenttw">
 								<thead>
 									<tr>
@@ -77,7 +75,6 @@
 			<div class="space-10"></div>
 			<div style="height: 30px"></div>
 			<form class="form-horizontal addDictDivTypeForm">
-
 				<div class="form-group">
 					<label class="col-sm-3 control-label">名称:</label>
 					<div class="col-sm-6">

@@ -190,37 +190,20 @@
 	<!-- 任务详情结束-->
 
 	<!--隐藏框 人员信息开始  -->
-	<div id="savegroup"
-		style="display: none; position: relative; z-index: 5;">
-		<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
-			aria-labelledby="myModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-hidden="true">&times;</button>
-						<h4 class="modal-title" id="myModalLabel">人员分组详情</h4>
-					</div>
-					<div class="modal-body"></div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">关闭
-						</button>
+	<div id="userInformation" style="display: none;">
+		<div class=" col-xs-12  col-sm-12  col-md-12 ">
+			<div class="space-10"></div>
+			<div style="height: 30px"></div>
+			<form class="form-horizontal addDictDivTypeForm">
+				<div class="form-group">
+					<div   id="modal-body" style="text-align:center">
+						
 					</div>
 				</div>
-				<!-- /.modal-content -->
-			</div>
-			<!-- /.modal -->
+			</form>
 		</div>
 	</div>
 	<!--隐藏框 人员信息结束  -->
-
-
-
-
-
-
-	</section>
-
 
 
 
@@ -629,39 +612,50 @@
 					//人员详细显示方法
 					$('.savemode').on('click',function(){
 						var id=$(this).data('id')
-						 var display =$("#savegroup").css("display")
-						 if(display=='none'){
-								$("#savegroup").css("display","block");  
-							}
-						 var postData={
-								id:id,
-						}
-						 var arr=new Array();
+						var arr=new Array();
 						var html="";
-						$.ajax({
-							url:"${ctx}/task/taskUser",
-							data:postData,
-							type:"GET",
-							beforeSend:function(){
-								index = layer.load(1, {
-									  shade: [0.1,'#fff'] //0.1透明度的白色背景
-									});
-							},
-							
-							success:function(result){
-								$(result.data).each(function(i,o){
-								html+=o.userName+"&nbsp;&nbsp;&nbsp;&nbsp;"
-								})
-								$('.modal-body').html(html);
-								layer.close(index);
-								
-							},error:function(){
-								layer.msg("操作失败！", {icon: 2});
-								layer.close(index);
+						var dicDiv=$('#userInformation');
+						 var postData={
+									id:id,
 							}
-						}); 
-						
-						
+						  $.ajax({
+								url:"${ctx}/task/taskUser",
+								data:postData,
+								type:"GET",
+								beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								
+								success:function(result){
+									$(result.data).each(function(i,o){
+									html+=o.userName+"&nbsp;&nbsp;&nbsp;&nbsp;"
+									})
+									$('#modal-body').html(html);
+									layer.close(index);
+									
+								},error:function(){
+									layer.msg("操作失败！", {icon: 2});
+									layer.close(index);
+								}
+							});
+						_index = layer.open({
+							  type: 1,
+							  skin: 'layui-layer-rim', //加上边框
+							  area: ['30%', '30%'], 
+							  btnAlign: 'c',//宽高
+							  maxmin: true,
+							  title:"人员信息",
+							  content: dicDiv,
+							  btn: ['关闭'],
+							  end:function(){
+								  $('#addDictDivType').hide();
+							
+								  $('.addDictDivTypeForm')[0].reset(); 
+								
+							  }
+						});
 						
 					})
 					
@@ -693,7 +687,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['70%', '60%'], 
+						  area: ['80%', '100%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:name,
