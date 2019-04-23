@@ -12,7 +12,8 @@
 <title>返工管理</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+	<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
 	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
 	<script src="${ctx }/static/js/layer/layer.js"></script>	
 	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
@@ -21,6 +22,10 @@
 	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
+	<script src="${ctx }/static/js/vendor/typeahead.js"></script>
+
+
+
 </head>
 
 <body>
@@ -35,33 +40,33 @@
 				<td>批次名:</td>
 				<td><input type="text" name="number" id="number" placeholder="请输入批次号"
 					class="form-control search-query number" /></td>
-				<td>&nbsp&nbsp&nbsp&nbsp</td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 				<td>产品名称:</td>
 				<td><input type="text" name="name" id="name"
 					placeholder="请输入产品名称" class="form-control search-query name" /></td>
-				<td>&nbsp&nbsp&nbsp&nbsp</td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 				<td>开始时间:</td>
 				<td><input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
 					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 				</td>
-				<td>&nbsp&nbsp&nbsp&nbsp</td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 				<td>结束时间:</td>
 				<td><input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
 					onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 				</td>
-				<td>&nbsp&nbsp</td>
+				<td>&nbsp;&nbsp;</td>
 				<td>完成状态:</td>
 				<td><select class="form-control" id="selectstate"><option value=0>未完成</option>
 						<option value=1>已完成</option></select></td>
 				<td><span class="input-group-btn">
-					<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">查&nbsp找</button></span></td>
-				<td>&nbsp&nbsp&nbsp&nbsp</td> 
+					<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">查&nbsp;找</button></span></td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
 				<td><span class="input-group-btn">
 					<button type="button"class="btn btn-success  btn-sm btn-3d start">一键完成</button></span></td>
-				<td>&nbsp&nbsp&nbsp&nbsp</td> 
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
 				<td><span class="input-group-btn">
 					<button type="button" id="addgroup"class="btn btn-success btn-sm btn-3d pull-right">新增返工</button></span></td>
-				<td>&nbsp&nbsp&nbsp&nbsp</td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 				<td><span class="input-group-btn">
 					<button type="button" class="btn btn-success  btn-sm btn-3d export">导出返工价值</button></span></td>
 			</tr>
@@ -218,11 +223,11 @@
 		<table>
 			<tr>
 				<td><button type="button"
-						class="btn btn-default btn-danger btn-xs btn-3d attendance">一键删除</button>&nbsp&nbsp</td>
+						class="btn btn-default btn-danger btn-xs btn-3d attendance">一键删除</button>&nbsp;&nbsp;</td>
 				<td><button type="button"
-						class="btn btn-info  btn-xs btn-3d startto">一键开始</button>&nbsp&nbsp</td>
+						class="btn btn-info  btn-xs btn-3d startto">一键开始</button>&nbsp;&nbsp;</td>
 				<td><button type="button"
-						class="btn btn-default btn-success btn-xs btn-3d suspend">一键暂停</button>&nbsp&nbsp</td>
+						class="btn btn-default btn-success btn-xs btn-3d suspend">一键暂停</button>&nbsp;&nbsp;</td>
 			</tr>
 		</table>
 		<div class="panel-body">
@@ -663,7 +668,7 @@
 							
 							success:function(result){
 								$(result.data).each(function(i,o){
-								html+=o.userName+"&nbsp&nbsp&nbsp&nbsp"
+								html+=o.userName+"&nbsp;&nbsp;&nbsp;&nbsp;"
 								})
 								$('.modal-body').html(html);
 								layer.close(index);
@@ -705,10 +710,11 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['70%', '60%'], 
+						  area: ['80%', '600px'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:name,
+						  offset:(parent.document.documentElement.scrollTop)+'px',
 						  content: dicDiv,
 						  
 						  yes:function(index, layero){
@@ -973,10 +979,11 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['60%', '60%'], 
+						  area: ['60%', '400px'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:productName,
+						  offset:(parent.document.documentElement.scrollTop)+'px',
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
@@ -1296,8 +1303,9 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '60%'], 
+						  area: ['40%', '400px'], 
 						  btnAlign: 'c',//宽高
+						  offset:(parent.document.documentElement.scrollTop)+'px',
 						  maxmin: true,
 						  title:"新增返工工",
 						  content: dicDiv,

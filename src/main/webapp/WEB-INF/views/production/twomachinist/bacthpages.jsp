@@ -643,8 +643,9 @@
 						_index = layer.open({
 							  type: 1,
 							  skin: 'layui-layer-rim', //加上边框
-							  area: ['30%', '30%'], 
+							  area: ['30%', '300px'], 
 							  btnAlign: 'c',//宽高
+							  offset:(parent.document.documentElement.scrollTop)+'px',
 							  maxmin: true,
 							  title:"人员信息",
 							  content: dicDiv,
@@ -967,7 +968,8 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['60%', '60%'], 
+						  area: ['60%', '400px'],
+						  offset:(parent.document.documentElement.scrollTop+20)+'px',
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:productName,

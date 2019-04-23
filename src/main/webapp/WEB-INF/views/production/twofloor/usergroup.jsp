@@ -784,9 +784,10 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '50%'], 
+						  area: ['30%', '250px'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
+						  offset:(parent.document.documentElement.scrollTop+30)+'px',
 						  title:"新增小组",
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
@@ -859,9 +860,10 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '45%'], 
+						  area: ['40%', '400px'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
+						  offset:(parent.document.documentElement.scrollTop+30)+'px',
 						  title:"新增外调人员",
 						  content: dicDiv,
 						  btn: ['确定', '取消'],

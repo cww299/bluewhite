@@ -34,12 +34,8 @@
   	<div class="layui-btn-container layui-inline layui-form">
     	<table>
 			<tbody>
-				<tr><td>一级菜单：</td><td><select class="layui-input" id="first-menus" lay-event="first-menus">
+				<tr><td>一级菜单：</td><td><select class="layui-input" id="first-menus" lay-event="first-menus" style="width:150px;">
 												<option value="" >请选择一级菜单</option></select></td><td>&nbsp;&nbsp;</td>
-					<td>二级菜单：</td><td><select class="layui-input" id="second-menus" lay-event="second-menus" disabled>
-												<option value="">请选择二级菜单</option></select></td><td>&nbsp;&nbsp;</td>
-					<td>三级菜单：</td><td><select class="layui-input" id="third-menus"  lay-event="third-menus" disabled>
-												<option value="">请选择三级菜单</option></select></td><td>&nbsp;&nbsp;</td>
 					<td><span class="layui-btn layui-btn-sm" lay-event="sure">确定</span></td></tr>								
 			</tbody>
 		</table>
@@ -124,6 +120,9 @@ layui.config({
 					 });
 				}
 				table.on('tool(permission-info)', function (obj) {
+					layer.alert(JSON.stringify(obj.data));    
+				});
+				table.on('tool(permission-toolbar)', function (obj) {
 					layer.alert(JSON.stringify(obj.data));    
 				});
 				form.on('switch(cb)', function(obj){

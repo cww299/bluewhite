@@ -198,7 +198,7 @@
 				<div class="layui-input-inline">
 					<select name="comeWork" id="comeWork" lay-filter="comeWork"
 						lay-verify="required" lay-search="true"><option value="1">按点上班</option>
-						<option value="2">第二天上班时间以超过24:00后的时间往后推</option>
+						<option value="2">第二天上班时间超过24:00往后推</option>
 						<option value="3">超过24:30后默认休息7.5小时</option></select>
 				</div>
 			</div>
@@ -377,7 +377,6 @@
 							limitName: 'size' //每页数据量的参数名，默认：limit
 						},
 						page: {
-							limit:15
 						} //开启分页
 						,
 						loading: true,
@@ -542,7 +541,7 @@
 									return "按点上班";
 									}
 									if(d.comeWork==2){
-										return "第二天上班时间以超过24:00后的时间往后推";
+										return "第二天上班时间超过24:00往后推";
 									}
 									if(d.comeWork==3){
 										return "超过24:30后默认休息7.5小时";
