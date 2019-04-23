@@ -32,7 +32,8 @@
 						<td>&nbsp;&nbsp;</td>
 						<td>部门:</td>
 						<td>
-							<select  id="orgNameId" class="layui-input" lay-search="true" name="orgNameId"></select></td>
+							<select  id="orgNameId" class="layui-input" lay-search="true" name="orgNameId">
+								<option value="">请选择</select></td>
 						<td>
 							<div class="layui-inline">
 								<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-search">

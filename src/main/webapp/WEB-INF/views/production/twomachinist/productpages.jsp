@@ -312,7 +312,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '50%'], 
+						  area: ['30%', '68%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"填写批次",
@@ -353,8 +353,8 @@
 											layer.msg("添加成功！", {icon: 1});
 											 
 											$('.addbatchForm')[0].reset(); 
-											$('#addbatch').hide();
-											
+											//$('#addbatch').hide();
+											layer.close(_index);
 										}else{
 											layer.msg(result.message, {icon: 2});
 										}
@@ -1156,7 +1156,7 @@ this.checkeddd=function(){
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '30%'], 
+						  area: ['30%', '40%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"新增产品",
@@ -1189,7 +1189,8 @@ this.checkeddd=function(){
 											layer.msg("添加成功！", {icon: 1});
 											$(".addDictDivTypeForm")[0].reset();
 											self.loadPagination(data);
-											$('#addDictDivType').hide();
+											//$('#addDictDivType').hide();
+											layer.close(_index);
 											
 										}else{
 											layer.msg(result.message, {icon: 2});

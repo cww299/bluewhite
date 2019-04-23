@@ -1050,7 +1050,7 @@
 									                    	})
 									                    }
 									                });
-													layer.close(index);
+													layer.close(_index);
 												},error:function(){
 													layer.msg("操作失败！", {icon: 2});
 													layer.close(index);

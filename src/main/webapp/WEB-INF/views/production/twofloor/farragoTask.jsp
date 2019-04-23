@@ -453,7 +453,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '60%'], 
+						  area: ['35%', '68%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"新增杂工",
@@ -505,8 +505,9 @@
 									success:function(result){
 										if(0==result.code){
 											layer.msg("添加成功！", {icon: 1});
-										 self.loadPagination(data); 
-										 $('.addDictDivTypeForm')[0].reset();
+											layer.close(_index);
+											 self.loadPagination(data); 
+											 $('.addDictDivTypeForm')[0].reset();
 											
 										}else{
 											layer.msg("添加失败", {icon: 2});

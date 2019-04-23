@@ -31,7 +31,8 @@
 							<td>&nbsp;&nbsp;</td>
 							<td>部门:</td>
 							<td >
-								<select id="orgNameId" class="layui-input "  lay-search="true"></select></td>
+								<select id="orgNameId" class="layui-input "  lay-search="true">
+									<option value=""></option></select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>开始:</td>
 							<td><input id="startTime" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon"></td>
@@ -58,6 +59,7 @@
 	
 	<form action="" id="layuiadmin-form-admin" style="padding: 20px 0px 0 60px; display: none; text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
+			
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 90px;">申请人</label>
 				<div class="layui-input-inline">
@@ -128,24 +130,24 @@
 				</div>
 			</div>
 
-			<div id="Break" style="display: none;">
-				<div class="layui-form-item">
-					<label class="layui-form-label" style="width: 90px;">调休时长</label>
-					<div class="layui-input-inline">
-						<input type="text" name="breakduration" id="breakduration"
-							lay-verify="breakduration" placeholder="请输入调休时长 "
-							class="layui-input">
-					</div>
-				</div>
-				<div class="layui-form-item">
-					<label class="layui-form-label" style="width: 90px;">调休至时间</label>
-					<div class="layui-input-inline">
-						<input type="text" name="breaktime" id="breaktime"
-							lay-verify="breaktime" placeholder="请输入调休到哪一天的时间"
-							class="layui-input laydate-icon">
-					</div>
-				</div>
-			</div>
+			
+
+		   <div id="Break" style="display: none;">
+			    <div class="layui-form-item">
+			      <label class="layui-form-label" style="width: 90px;">调休时间</label>
+			      <div class="layui-input-inline">
+			        <input type="text" name="breaktime" id="breaktime" style="width: 190px; position:absolute; float: left;" lay-verify="breaktime" placeholder="请输入调休到哪一天的时间" class="layui-input laydate-icon">
+			      	<input type="text" style="width: 90px; position:absolute; float: left; margin-left: 210px;" name="breakduration" id="breakduration" lay-verify="breakduration" placeholder="时长 " class="layui-input">
+			      </div>
+			    </div>
+			    
+			    <div class="layui-form-item" >
+				      <label class="layui-form-label" style="width: 90px;">显示</label>
+				      <div class="layui-input-inline" style="width: 230px;">
+				      <textarea name="inputapplytime3"   id="inputapplytime3" class="layui-textarea"></textarea>
+			      </div>
+			    </div>
+		    </div>
 
 			<div id="repair" style="display: none;">
 				<div class="layui-form-item">
@@ -573,7 +575,7 @@
 							         type: 1
 							        ,title: "新增" //不显示标题栏
 							        ,closeBtn: false
-							        ,area:['540px', '60%']
+							        ,area:['540px', '70%']
 							        ,shade: 0.5
 							        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
 							        ,btn: ['确认', '取消']

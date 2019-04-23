@@ -64,17 +64,12 @@
 						查找 <i class="icon-search icon-on-right bigger-110"></i>
 					</button>
 				</span></td>
-		
+				<td>&nbsp;&nbsp;</td>
+				<td><button type="button"
+					class="btn btn-default btn-danger btn-sm btn-3d attendance">一键删除</button>&nbsp;&nbsp;</td>
 			</tr>
 		</table>
 
-		<h1 class="page-header"></h1>
-		<table>
-			<tr>
-				<td><button type="button"
-						class="btn btn-default btn-danger btn-sm btn-3d attendance">一键删除</button>&nbsp;&nbsp;</td>
-			</tr>
-		</table>
 		<h1 class="page-header"></h1>
 		<table class="table table-hover">
 			<thead>

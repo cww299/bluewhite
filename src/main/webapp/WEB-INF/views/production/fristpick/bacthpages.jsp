@@ -148,7 +148,7 @@
 						<div class="col-sm-2 complete">
 							<input type="text" class="form-control">
 						</div>
-						<div class="col-sm-2 select"></div>
+						<div class="col-sm-3 select"></div>
 					</div>
 				</div>
 		</div>
@@ -1061,7 +1061,7 @@
 										$(result.data).each(function(i,o){
 										
 										$(o.users).each(function(i,o){
-											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input>-<input style="width:80px;" class="time2" data-id="'+o.adjustTimeId+'" data-temporarily="'+o.temporarily+'" value="'+(o.adjustTime!=null ? o.adjustTime : "")+'" /></div>'
+											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'" data-username="'+o.userName+'"><label style="width:70px;text-align:center;color:gray;">'+o.userName+'</label>-<input style="width:100px;" class="time2" data-id="'+o.adjustTimeId+'" data-temporarily="'+o.temporarily+'" value="'+(o.adjustTime!=null ? o.adjustTime : "")+'" /></div>'
 										})
 										})
 										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
@@ -1177,7 +1177,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['60%', '60%'], 
+						  area: ['90%', '80%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:productName,
@@ -1254,8 +1254,7 @@
 										$('.checkworking').text("");
 										  $('.select').text("");
 											layer.msg(result.message, {icon: 1});
-											
-											
+											layer.close(_index);
 										}else{
 											layer.msg(result.message, {icon: 2});
 										}

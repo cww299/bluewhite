@@ -810,8 +810,9 @@
 									success:function(result){
 										if(0==result.code){
 											layer.msg("添加成功！", {icon: 1});
-										 self.loadPagination(data); 
-											$('#addDictDivType').hide();
+										 	self.loadPagination(data); 
+										 	layer.close(_index);
+											//$('#addDictDivType').hide();
 											
 										}else{
 											layer.msg("添加失败", {icon: 2});
@@ -894,8 +895,8 @@
 									success:function(result){
 										if(0==result.code){
 											layer.msg(result.message, {icon: 1});
-											$('#addDictDivTypetw').hide();
-											layer.close(index);
+											//$('#addDictDivTypetw').hide();
+											layer.close(_index);
 										}else{
 											layer.msg(result.message, {icon: 2});
 										}

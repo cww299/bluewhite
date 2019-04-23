@@ -11,9 +11,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>任务管理</title>
 <meta name="description" content="">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
 	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
 	<script src="${ctx }/static/js/layer/layer.js"></script>	
 	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
@@ -62,17 +61,9 @@
 				<td><span class="input-group-btn">
 					<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">查找 
 					<i class="icon-search icon-on-right bigger-110"></i></button></span></td>
-			</tr>
-		</table>
-		<h1 class="page-header"></h1>
-		<table>
-			<tr>
+				<td>&nbsp;&nbsp;</td>
 				<td><button type="button"
-						class="btn btn-default btn-danger btn-sm btn-3d attendance">一键删除</button>&nbsp;&nbsp;</td>
-				<td><button type="button"
-						class="btn btn-info  btn-sm btn-3d start">一键开始</button>&nbsp;&nbsp;</td>
-				<td><button type="button"
-						class="btn btn-default btn-success btn-sm btn-3d suspend">一键暂停</button>&nbsp;&nbsp;</td>
+					class="btn btn-default btn-danger btn-sm btn-3d attendance">一键删除</button>&nbsp;&nbsp;</td>
 			</tr>
 		</table>
 		<h1 class="page-header"></h1>
@@ -91,8 +82,7 @@
 					<th class="text-center">任务价值</th>
 					<th class="text-center">b工资净值</th>
 					<th class="text-center">数量</th>
-					<th class="text-center">开始结束</th>
-					<th class="text-center">实际用时</th>
+				
 					<th class="text-center">完成人</th>
 					<th class="text-center">操作</th>
 				</tr>
@@ -131,7 +121,6 @@
 		</div>
 	</div>
 	<!--隐藏框 人员信息结束  -->
-	</section>
 
 
 
@@ -201,7 +190,6 @@
 		      				+'<td class="text-center  name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
 		      				+'<td class="text-center  name">'+parseFloat((o.payB).toFixed(4))+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
-		      				+'<td class="text-center" data-id="'+o.id+'" data-status="'+o.status+'"><input type="radio"  class="rest" value="0">开始<input type="radio" class="rest" value="1">暂停</td>'
 		      				+'<td class="text-center edit name">'+o.taskActualTime+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'

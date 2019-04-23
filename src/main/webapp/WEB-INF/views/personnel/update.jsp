@@ -41,7 +41,7 @@
 				style="color: #1211e2"></i>护理假</li>
 		</ul>
 	</div>
-	<div class="layui-card-body" style="height:700px;">
+	<div class="layui-card-body">
 		<div
 			class="layui-form">
 			<div class="layui-form-item">
@@ -368,7 +368,7 @@
 												list2.push(list1)
 												list2.push(list3)
 												table.init('test3', {
-													height:750,
+													height:650,
 													cols : list2,
 													data : res.data,
 													limit:500,
