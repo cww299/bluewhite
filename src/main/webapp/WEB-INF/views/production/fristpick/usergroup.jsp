@@ -236,25 +236,25 @@
 		  	}
 		  	
 		  	this.getIndex = function(){
-		  		return _index;
+		  		return this._index;
 		  	}
 		  	this.setName = function(name){
 		  		_name=name;
 		  	}
 		  	this.getName = function(){
-		  		return _name;
+		  		return this._name;
 		  	}
 		  	this.setNum = function(num){
 		  		_num=num;
 		  	}
 		  	this.getNum = function(){
-		  		return _num;
+		  		return this._num;
 		  	}
 		  	this.setData = function(data){
 		  		_data=data;
 		  	}
 		  	this.getData = function(){
-		  		return _data;
+		  		return this._data;
 		  	}
 			 var data={
 						page:1,
@@ -848,7 +848,6 @@
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
-							 
 							  postData={
 									  name:$("#groupName").val(),
 									  userId:self.getIndex(),
@@ -871,8 +870,9 @@
 									success:function(result){
 										if(0==result.code){
 											layer.msg("添加成功！", {icon: 1});
-										 self.loadPagination(data); 
-											$('#addDictDivType').hide();
+										 	self.loadPagination(data);
+										 	layer.close(_index);       
+											//$('#addDictDivType').hide();
 											
 										}else{
 											layer.msg("添加失败", {icon: 2});
@@ -921,7 +921,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '45%'], 
+						  area: ['30%', '50%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"新增人员",
@@ -963,8 +963,8 @@
 										}else{
 											layer.msg(result.message, {icon: 2});
 										}
-										
-										layer.close(index);
+										//layer.close(index);
+										layer.close(_index);
 									},error:function(){
 										layer.msg("操作失败！", {icon: 2});
 										layer.close(index);

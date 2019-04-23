@@ -1032,7 +1032,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['60%', '60%'], 
+						  area: ['80%', '60%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:productName,
@@ -1107,7 +1107,7 @@
 										$('.checkworking').text("");
 										  $('.select').text("");
 											layer.msg("添加成功！", {icon: 1});
-											
+											layer.close(_index);
 											
 										}else{
 											layer.msg("添加失败", {icon: 2});
@@ -1394,7 +1394,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['60%', '60%'], 
+						  area: ['80%', '60%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:productName,
@@ -1467,7 +1467,7 @@
 										$('.checkworkingtw').text("");
 										  $('.selecttw').text("");
 											layer.msg("添加成功！", {icon: 1});
-											
+											layer.close(_index);
 											
 										}else{
 											layer.msg("添加失败", {icon: 2});

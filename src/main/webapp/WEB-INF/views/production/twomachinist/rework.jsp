@@ -11,36 +11,16 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>杂工管理</title>
 <meta name="description" content="">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<link rel="shortcut icon" href="${ctx }/static/images/favicon.ico" type="image/x-icon">
-<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
-<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/autocomplete.css">
-<link rel="stylesheet" href="${ctx }/static/css/font-awesome.min.css">
-<link rel="stylesheet" href="${ctx }/static/css/simple-line-icons.css">
-<link rel="stylesheet" href="${ctx }/static/css/animate.css">
-<link rel="stylesheet" href="${ctx }/static/plugins/daterangepicker/daterangepicker-bs3.css">
-<link rel="stylesheet" href="${ctx }/static/plugins/switchery/switchery.min.css">
-<link rel="stylesheet" href="${ctx }/static/css/main.css">
-<link rel="stylesheet" href="${ctx }/static/js/laypage/skin/laypage.css">
-<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
-<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
-<script src="${ctx }/static/js/vendor/jquery.cookie.js"></script>
-<script src="${ctx }/static/js/vendor/modernizr-2.6.2.min.js"></script>
-<script src="${ctx }/static/js/layer/layer.js"></script>
-<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
-<!-- 主框架js文件 -->
-<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
-<script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
-<script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
-<script src="${ctx }/static/plugins/pace/pace.min.js"></script>
-<script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-<script src="${ctx }/static/js/src/app.js"></script>
-<script src="${ctx }/static/js/laypage/laypage.js"></script>
-<script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
-<script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-<script src="${ctx }/static/js/vendor/typeahead.js"></script>
-<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+	<script src="${ctx }/static/js/layer/layer.js"></script>	
+	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+	<link rel="stylesheet" href="${ctx }/static/css/main.css">
+	<script src="${ctx }/static/js/laypage/laypage.js"></script>
+	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 </head>
 
 <body>
@@ -210,20 +190,6 @@
 
 
 
-	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
-	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
-	<script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
-	<script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
-	<script src="${ctx }/static/plugins/pace/pace.min.js"></script>
-	<script
-		src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-	<script src="${ctx }/static/js/src/app.js"></script>
-	<script src="${ctx }/static/js/laypage/laypage.js"></script>
-	<script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
-	<script
-		src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
-	<script src="${ctx }/static/js/vendor/typeahead.js"></script>
 	<script>
    jQuery(function($){
    	var Login = function(){
@@ -536,7 +502,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '60%'], 
+						  area: ['35%', '65%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"新增返工",
@@ -596,6 +562,7 @@
 													type:4,
 													flag:1,
 											}
+											layer.close(_index);
 										 self.loadPagination(date); 
 										 $('.addDictDivTypeForm')[0].reset();
 											

@@ -505,8 +505,9 @@
 									success:function(result){
 										if(0==result.code){
 											layer.msg("添加成功！", {icon: 1});
-										 self.loadPagination(data); 
-											$('#addDictDivType').hide();
+										 	self.loadPagination(data); 
+										 	layer.close(_index);
+											//$('#addDictDivType').hide();
 											
 										}else{
 											layer.msg("添加失败", {icon: 2});

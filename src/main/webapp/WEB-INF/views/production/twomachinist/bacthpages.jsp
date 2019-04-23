@@ -1075,7 +1075,7 @@
 										  $('.stuCheckBox').prop("checked",false);
 										  /* $('.select').text(""); */
 											layer.msg("添加成功！", {icon: 1});
-											
+											layer.close(_index);
 											
 										}else{
 											layer.msg("添加失败", {icon: 2});

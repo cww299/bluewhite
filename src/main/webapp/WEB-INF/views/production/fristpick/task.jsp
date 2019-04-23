@@ -243,7 +243,7 @@
 		      				if(o.flag==1){
 		      					a="(返工)"
 		      				}
-		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'" data-procedurename="'+s+a+'"/><span class="lbl"></span></label></td>'
+		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'" data-procedurename="'+s+a+'" data-proname="'+o.productName+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center ">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center ">'+o.productName+'</td>'
 		      				+'<td class="text-center edit allotTime">'+o.allotTime+'</td>'
@@ -575,11 +575,13 @@
 					var arrytw=new Array()
 					var tasksId=new Array()
 					var CheckCount=0;
+					var productNam;
 					  thae.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
 						  CheckCount++;
 						  arr=$(this).val();  
 						  tasksId.push($(this).val());  
 						  arrytw.push($(this).data('procedurename'));
+						  productName=$(this).data('proname')
 						});
 					 /*  if(CheckCount>1){
 							return layer.msg("只能选择一条任务", {icon: 2});
@@ -588,7 +590,7 @@
 						return layer.msg("请选择一条任务", {icon: 2});
 					}
 					var that=$(this)
-					var productName=$(this).data('proname')
+					
 					var _index
 					var index
 					var postData
@@ -719,6 +721,7 @@
 										if(0==result.code){
 										  $('.addDictDivTypeFormtw')[0].reset(); 
 											layer.msg("添加成功！", {icon: 1});
+											layer.close(_index);
 										}else{
 											layer.msg("添加失败", {icon: 2});
 										}
@@ -752,11 +755,13 @@
 					var arrytw=new Array()
 					var tasksId=new Array()
 					var CheckCount=0;
+					var productName;
 					  thae.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
 						  CheckCount++;
 						  arr=$(this).val();  
 						  tasksId.push($(this).val());  
 						  arrytw.push($(this).data('procedurename'));
+						  productName=$(this).data('proname');
 						});
 					 /*  if(CheckCount>1){
 							return layer.msg("只能选择一条任务", {icon: 2});
@@ -765,7 +770,7 @@
 						return layer.msg("请选择一条任务", {icon: 2});
 					}
 					var that=$(this)
-					var productName=$(this).data('proname')
+					
 					var _index
 					var index
 					var postData
@@ -896,6 +901,7 @@
 										if(0==result.code){
 										  $('.addDictDivTypeFormtw')[0].reset(); 
 											layer.msg("添加成功！", {icon: 1});
+											layer.close(_index);
 										}else{
 											layer.msg("添加失败", {icon: 2});
 										}

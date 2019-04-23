@@ -1594,7 +1594,7 @@ a cite {
 
 .layui-card-body {
 	position: relative;
-	padding: 10px 15px;
+	padding: 5px;
 	line-height: 24px
 }
 
@@ -1943,7 +1943,7 @@ a cite {
 }
 
 .layui-form-item {
-	margin-bottom: 15px;
+	margin-bottom: 5px;
 	clear: both;
 	*zoom: 1
 }
@@ -3823,7 +3823,7 @@ body .layui-table-tips .layui-layer-content {
 }
 
 .layui-tab-content {
-	padding: 10px
+	padding: 0px
 }
 
 .layui-tab-title li .layui-tab-close {

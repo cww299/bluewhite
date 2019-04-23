@@ -19,18 +19,15 @@
 
 <div class="layui-card">
 	<div class="layui-card-body">
-		<div class="layui-form">
-		
-		</div>
-		<table id="permission-info" class="table_th_search"></table>
+		<table id="permission-info" class="table_th_search" lay-filter="permission-info"></table>
 	</div>
 </div> 
 
 <script type="text/html" id="templ-isShow">
- 	 	<input type="checkbox" name="isShow" value="{{d.isShow}}" lay-skin="switch" lay-text="显示|不显示" lay-filter="isShow" {{ d.isShow == true ? 'checked' : '' }} >
+ 	 	<input type="checkbox" name="isShow" value="{{d.isShow}}" lay-skin="switch" lay-text="显示|不显示" lay-filter="cb" {{ d.isShow == true ? 'checked' : '' }}  >
 </script>
 <script type="text/html" id="templ-aboutPerson">
- 	 	<button type="button" class="layui-btn layui-btn-sm" value="{{d.url}}" onclick="aboutPerson" >查看人员</button>
+ 	 	<button type="button" class="layui-btn layui-btn-sm" value="{{d.url}}" lay-event="aaa">查看人员</button>
 </script>
 
 <script type="text/html" id="permission-toolbar">
@@ -39,9 +36,9 @@
 			<tbody>
 				<tr><td>一级菜单：</td><td><select class="layui-input" id="first-menus" lay-event="first-menus">
 												<option value="" >请选择一级菜单</option></select></td><td>&nbsp;&nbsp;</td>
-					<td>二级菜单：</td><td><select class="layui-input" id="second-menus" lay-event="second-menus">
+					<td>二级菜单：</td><td><select class="layui-input" id="second-menus" lay-event="second-menus" disabled>
 												<option value="">请选择二级菜单</option></select></td><td>&nbsp;&nbsp;</td>
-					<td>三级菜单：</td><td><select class="layui-input" id="third-menus"  lay-event="third-menus">
+					<td>三级菜单：</td><td><select class="layui-input" id="third-menus"  lay-event="third-menus" disabled>
 												<option value="">请选择三级菜单</option></select></td><td>&nbsp;&nbsp;</td>
 					<td><span class="layui-btn layui-btn-sm" lay-event="sure">确定</span></td></tr>								
 			</tbody>
@@ -63,56 +60,77 @@ layui.config({
 			, table = layui.table //表格
 			, laydate = layui.laydate //日期控件
 			, tablePlug = layui.tablePlug; //表格插件
-  
-  //第一个实例
-  table.render({
-    elem: '#permission-info'
-    ,cellMinWidth: 90
-    ,url: "${ctx}/getMenuPage" //数据接口
-    ,page: true  //开启分页
-    ,size:'lg'
-    ,toolbar:'#permission-toolbar'
-    ,request:{           
-		pageName: 'page', //页码的参数名称，默认：page
-		limitName: 'size' //每页数据量的参数名，默认：limit
-	}
-    ,page: {
-		limit:10
-	}
-    ,parseData : function(ret) {    //
-		return {
-			code : ret.code,
-			msg : ret.msg,
-			count : ret.data.total, 
-			data : ret.data.rows
-		}
-	}
-    ,cols: [[ //表头
-      {field: 'name', title: '身份',templet:'<span>{{d.name}}管理员</span>'}
-      ,{field: 'isShow', title: '菜单是否显示',templet:'#templ-isShow'} 
-      ,{field: 'name', title: '菜单名字', }
-      ,{field: 'parentId', title: '所属菜单',  sort: true}
-      ,{field: 'url', title: '页面跳转',templet:'' }
-      ,	{title : '具体人员',templet:'#templ-aboutPerson'} 
-    ]]
-  });
-	
-  table.on('toolbar(permission-info)', function (obj) {
-      var config = obj.config;
-      var btnElem = $(this);
-      var tableId = config.id;
-      alert(config+" "+btnElem+"  "+tableId);
-     /*   switch (obj.event) {
-        case 'addTempData':  table.addTemp(tableId, function (trElem) { });
-         					 break;
-     
-      } */ 
-    });
-  
+				var allMenu=[];   //存放所有菜单
+				var first=[];		//存放一级菜单
+				var second=[];	//存放二级菜单
+				var third=[];		//存放三级菜单
+				table.render({
+					elem: '#permission-info'
+				    ,cellMinWidth: 90
+				    ,url: "${ctx}/getMenuPage" //数据接口
+				    ,page: true  //开启分页
+				    ,size:'lg'
+				    ,toolbar:'#permission-toolbar'
+				    ,request:{           
+						pageName: 'page', //页码的参数名称，默认：page
+						limitName: 'size' //每页数据量的参数名，默认：limit
+					}
+				    ,page: {
+						limit:10
+					}
+				    ,parseData : function(ret) {    //
+						return {
+							code : ret.code,
+							msg : ret.msg,
+							count : ret.data.total, 
+							data : ret.data.rows
+						}
+					}
+				    ,done:function(obj){
+				     	initToolBar();
+				    }
+				    ,cols: [[ //表头
+				      {field: 'name', title: '身份',templet:'<span>{{d.name}}管理员</span>'}
+				      ,{field: 'isShow', title: '菜单是否显示',templet:'#templ-isShow'} 
+				      ,{field: 'name', title: '菜单名字', }
+				      ,{field: 'parentId', title: '所属菜单',  sort: true}
+				      ,{field: 'url', title: '页面跳转',templet:'' }
+				      ,	{title : '具体人员',templet:'#templ-aboutPerson'} 
+				    ]]
+				});
+				function initToolBar(){
+					 $.ajax({
+						url : "${ctx}/getMenuPage?size=1000",
+						type : "get",
+						success : function(result) {
+							var rows=result.data.rows;  
+							for(var i=0;i<rows.length;i++){
+								allMenu.push(rows[i]);
+								if(rows[i].parentId==0)    //父id为0 为1级菜单
+									first.push(rows[i]);
+								else if(rows[i].url=="#"){  //父id不为0，url为#为2级菜单
+									second.push(rows[i]);
+								}
+								else {   					//其他为三级菜单
+									third.push(rows[i]);
+								}
+							}
+							var html='';
+							for(var i=0;i<first.length;i++){  //拼接一级菜单
+								html+=('<option value="'+first[i].identity+'">'+first[i].name+'</option>');
+							}
+							$('#first-menus').append(html);
+						} 
+					 });
+				}
+				table.on('tool(permission-info)', function (obj) {
+					layer.alert(JSON.stringify(obj.data));    
+				});
+				form.on('switch(cb)', function(obj){
+				   layer.tips(this.value=='true'?'显示已开启':'显示已关闭', obj.othis);
+				});
+
 });
-function aboutPerson(){
-	  alert("12");
-}
 </script>
 
 	

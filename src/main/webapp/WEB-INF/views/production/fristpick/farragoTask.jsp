@@ -477,11 +477,13 @@
 					var arrytw=new Array()
 					var tasksId=new Array()
 					var CheckCount=0;
+					var productName;
 					  thae.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
 						  CheckCount++;
 						  arr=$(this).val();  
 						  tasksId.push($(this).val());  
 						  arrytw.push($(this).data('procedurename'));
+						  productName=$(this).data('procedurename');
 						});
 					 /*  if(CheckCount>1){
 							return layer.msg("只能选择一条任务", {icon: 2});
@@ -656,11 +658,13 @@
 					var arrytw=new Array()
 					var tasksId=new Array()
 					var CheckCount=0;
+					var productName;
 					  thae.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
 						  CheckCount++;
 						  arr=$(this).val();  
 						  tasksId.push($(this).val());  
 						  arrytw.push($(this).data('procedurename'));
+						  productName=$(this).data('procedurename');
 						});
 					 /*  if(CheckCount>1){
 							return layer.msg("只能选择一条任务", {icon: 2});
@@ -669,7 +673,6 @@
 						return layer.msg("请选择一条任务", {icon: 2});
 					}
 					var that=$(this)
-					var productName=$(this).data('proname')
 					var _index
 					var index
 					var postData
@@ -928,7 +931,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '60%'], 
+						  area: ['40%', '60%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"新增杂工",
@@ -979,8 +982,9 @@
 									
 									success:function(result){
 										if(0==result.code){
-											layer.msg("添加成功！", {icon: 1});
+										layer.msg("添加成功！", {icon: 1});
 										 self.loadPagination(data); 
+										 layer.close(_index);
 										 $('.addDictDivTypeForm')[0].reset();
 											
 										}else{
