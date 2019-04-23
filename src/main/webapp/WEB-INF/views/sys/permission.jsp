@@ -34,7 +34,7 @@
   	<div class="layui-btn-container layui-inline layui-form">
     	<table>
 			<tbody>
-				<tr><td>一级菜单：</td><td><select class="layui-input" id="first-menus" lay-event="first-menus" style="width:150px;">
+				<tr id="tr-select"><td>一级菜单：</td><td><select class="layui-input" id="first-menus" lay-filter="first-menus">
 												<option value="" >请选择一级菜单</option></select></td><td>&nbsp;&nbsp;</td>
 					<td><span class="layui-btn layui-btn-sm" lay-event="sure">确定</span></td></tr>								
 			</tbody>
@@ -60,6 +60,7 @@ layui.config({
 				var first=[];		//存放一级菜单
 				var second=[];	//存放二级菜单
 				var third=[];		//存放三级菜单
+				initToolBar();
 				table.render({
 					elem: '#permission-info'
 				    ,cellMinWidth: 90
@@ -83,7 +84,7 @@ layui.config({
 						}
 					}
 				    ,done:function(obj){
-				     	initToolBar();
+				     	
 				    }
 				    ,cols: [[ //表头
 				      {field: 'name', title: '身份',templet:'<span>{{d.name}}管理员</span>'}
@@ -93,6 +94,18 @@ layui.config({
 				      ,{field: 'url', title: '页面跳转',templet:'' }
 				      ,	{title : '具体人员',templet:'#templ-aboutPerson'} 
 				    ]]
+				});
+				table.on('tool(permission-info)', function (obj) {
+					layer.alert(JSON.stringify(obj.data));    
+				});
+				form.on('select', function (obj) {
+					if(obj.value!=null && obj.value!='')
+						showNextLeavel(obj.value);
+					else
+						hideNextLeavel(obj.value);
+				});
+				form.on('switch(cb)', function(obj){
+				   layer.tips(this.value=='true'?'显示已开启':'显示已关闭', obj.othis);
 				});
 				function initToolBar(){
 					 $.ajax({
@@ -119,17 +132,11 @@ layui.config({
 						} 
 					 });
 				}
-				table.on('tool(permission-info)', function (obj) {
-					layer.alert(JSON.stringify(obj.data));    
-				});
-				table.on('tool(permission-toolbar)', function (obj) {
-					layer.alert(JSON.stringify(obj.data));    
-				});
-				form.on('switch(cb)', function(obj){
-				   layer.tips(this.value=='true'?'显示已开启':'显示已关闭', obj.othis);
-				});
-
-});
+				function showNextLeavel(identity){
+					
+				}
+	}
+);
 </script>
 
 	

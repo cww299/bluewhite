@@ -976,8 +976,8 @@
 					  });
 					var postData
 					var dicDiv=$('#addDictDivTypetw');
-					_index = layer.open({
-						  type: 1,
+					_index = layer.open({    //分配
+						  type: 1, 
 						  skin: 'layui-layer-rim', //加上边框
 						  area: ['60%', '400px'], 
 						  btnAlign: 'c',//宽高
@@ -1079,7 +1079,8 @@
 									                    	})
 									                    }
 									                });
-													layer.close(_index);
+													layer.msg("添加成功！", {icon: 1});
+													//layer.close(_index);
 													//layer.close(index);
 												},error:function(){
 													layer.msg("操作失败！", {icon: 2});

@@ -650,7 +650,7 @@
 									layer.close(index);
 								}
 							});
-						_index = layer.open({
+						_index = layer.open({    //查看人员信息框
 							  type: 1,
 							  skin: 'layui-layer-rim', //加上边框
 							  area: ['40%', '300px'], 
@@ -695,7 +695,7 @@
 							}
 						})
 				var dicDiv=$('#addworking');
-					_index = layer.open({
+					_index = layer.open({     //查看商品
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
 						  area: ['80%', '100%'], 
@@ -979,7 +979,7 @@
 					  });
 					var postData
 					var dicDiv=$('#addDictDivType');
-					_index = layer.open({
+					_index = layer.open({       //分配框
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
 						  area: ['80%', '400px'], 
@@ -1083,7 +1083,7 @@
 									                    }
 									                });
 													//layer.close(index);
-													layer.close(_index);
+													//layer.close(_index);
 												},error:function(){
 													layer.msg("操作失败！", {icon: 2});
 													layer.close(index);
