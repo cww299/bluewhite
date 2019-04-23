@@ -1172,7 +1172,7 @@
 							layer.close(index);
 						}
 					});
-				    
+				     
 					var postData
 					var dicDiv=$('#addDictDivType');
 					_index = layer.open({
