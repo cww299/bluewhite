@@ -87,8 +87,8 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 
 	@Override
 	public List<Menu> findHasPermissionMenusByUsernameNew(String username) {
-		List<Menu> validMenus = findHasPermissionMenusByUsername(username);
 		CurrentUser currentUser = SessionManager.getUserSession();
+		List<Menu> validMenus = findHasPermissionMenusByUsername(username);
 		Set<String> filterMenus = getFilterMenus(currentUser);
 		return validMenus.stream().filter(m -> {
 			boolean isContain = !filterMenus.contains(m.getIdentity());
