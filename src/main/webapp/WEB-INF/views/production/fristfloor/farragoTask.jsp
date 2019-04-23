@@ -486,6 +486,7 @@
 						  area: ['40%', '60%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
+						  offset:'50px',
 						  title:"新增杂工",
 						  content: dicDiv,
 						  btn: ['确定', '取消'],

@@ -92,6 +92,10 @@
 						elem : '#LAY-role-table',
 						size : 'lg',
 						url : '${ctx}/roles/page' ,
+						request:{
+							pageName: 'page' ,//页码的参数名称，默认：page
+							limitName: 'size' //每页数据量的参数名，默认：limit
+						},
 						page : {},        //开启分页
 						loading : true,     //开启加载动画
 						toolbar : '#toolbarDemo',//开启工具栏，此处显示默认图标

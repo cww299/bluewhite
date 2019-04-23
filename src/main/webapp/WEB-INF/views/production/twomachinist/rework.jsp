@@ -21,6 +21,7 @@
 	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
+	<script src="${ctx }/static/js/vendor/typeahead.js"></script>
 </head>
 
 <body>
@@ -502,9 +503,10 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['35%', '65%'], 
+						  area: ['40%', '600px'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
+						  offset:(parent.document.documentElement.scrollTop+20)+'px',
 						  title:"新增返工",
 						  content: dicDiv,
 						  btn: ['确定', '取消'],

@@ -54,6 +54,7 @@
 			</td>
 			<td>&nbsp;&nbsp;</td>
 			<td>完成状态:</td>
+			
 			<td><select class="form-control" id="selectstate"><option
 						value=0>未完成</option>
 					<option value=1>已完成</option></select></td>
@@ -300,9 +301,6 @@
 		</div>
 	</div>
 	<!--隐藏框 人员信息结束  -->
-
-	</section>
-
 
 
 	
@@ -682,9 +680,10 @@
 						_index = layer.open({
 							  type: 1,
 							  skin: 'layui-layer-rim', //加上边框
-							  area: ['30%', '30%'], 
+							  area: ['40%', '200px'], 
 							  btnAlign: 'c',//宽高
 							  maxmin: true,
+							  offset:(parent.document.documentElement.scrollTop+100)+'px',
 							  title:"人员信息",
 							  content: dicDiv,
 							  btn: ['关闭'],
@@ -726,6 +725,7 @@
 						  skin: 'layui-layer-rim', //加上边框
 						  area: ['80%', '100%'], 
 						  btnAlign: 'c',//宽高
+						  offset:(parent.document.documentElement.scrollTop+50)+'px',
 						  maxmin: true,
 						  title:name,
 						  content: dicDiv,
@@ -1029,14 +1029,16 @@
 				    
 					var postData
 					var dicDiv=$('#addDictDivType');
+					//var scrollHeight=;
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['80%', '60%'], 
+						  area: ['80%', '400px'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:productName,
 						  content: dicDiv,
+						  offset:(parent.document.documentElement.scrollTop+50)+'px',
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
 							  var values=new Array()
@@ -1394,10 +1396,11 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['80%', '60%'], 
+						  area: ['80%', '400px'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:productName,
+						  offset:(parent.document.documentElement.scrollTop+50)+'px',
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){

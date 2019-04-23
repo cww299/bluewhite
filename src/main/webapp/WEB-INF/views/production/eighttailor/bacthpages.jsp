@@ -169,7 +169,7 @@
 			<div style="height: 30px"></div>
 			<form class="form-horizontal addDictDivTypeForm">
 				<div class="form-group">
-					<div   id="modal-body">
+					<div   id="modal-body" style="text-align:center;">
 						
 					</div>
 				</div>
@@ -617,15 +617,15 @@
 						_index = layer.open({
 							  type: 1,
 							  skin: 'layui-layer-rim', //加上边框
-							  area: ['30%', '30%'], 
+							  area: ['30%', '200px'], 
 							  btnAlign: 'c',//宽高
+							  offset:(parent.document.documentElement.scrollTop+20)+'px',
 							  maxmin: true,
 							  title:"人员信息",
 							  content: dicDiv,
 							  btn: ['关闭'],
 							  end:function(){
 								  $('#addDictDivType').hide();
-							
 								  $('.addDictDivTypeForm')[0].reset(); 
 								
 							  }
@@ -951,9 +951,10 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['60%', '60%'], 
+						  area: ['60%', '400px'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
+						  offset:(parent.document.documentElement.scrollTop+20)+'px',
 						  title:productName,
 						  content: dicDiv,
 						  btn: ['确定', '取消'],

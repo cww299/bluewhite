@@ -774,9 +774,10 @@
 						_index = layer.open({
 							  type: 1,
 							  skin: 'layui-layer-rim', //加上边框
-							  area: ['30%', '30%'], 
+							  area: ['60%', '300px'], 
 							  btnAlign: 'c',//宽高
 							  maxmin: true,
+							  offset:'100px',
 							  title:"人员信息",
 							  content: dicDiv,
 							  btn: ['关闭'],
@@ -1177,10 +1178,11 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['90%', '80%'], 
+						  area: ['85%', '500px'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:productName,
+						  offset:(parent.document.documentElement.scrollTop+50)+'px',
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){

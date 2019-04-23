@@ -679,9 +679,10 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['60%', '60%'], 
+						  area: ['60%', '400px'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
+						  offset:(parent.document.documentElement.scrollTop+100)+'px',
 						  title:productName,
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
@@ -863,6 +864,7 @@
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:productName,
+						  offset:(parent.document.documentElement.scrollTop+100)+'px',
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
