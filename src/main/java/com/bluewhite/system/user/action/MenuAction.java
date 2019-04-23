@@ -42,7 +42,7 @@ public class MenuAction {
 	private ClearCascadeJSON clearCascadeJSON;
 
 	{
-		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(Menu.class,
+		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(Menu.class,"id",
 				"identity","span", "url", "icon", "name","children","isHighLight","isShow","parentId");
 	}
 
