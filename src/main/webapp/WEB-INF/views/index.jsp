@@ -66,7 +66,7 @@ function openPage(title,show,url,id){       //title当前iframe页名，show是�
 		}); 
 		// console.log(id);
 		 element.tabChange('myTab','lay-iframe-'+id);
-		 iFrameResize({autoResize:true,heightCalculationMethod:'lowestElement'},'#iframe-'+id);
+		 iFrameResize({autoResize:true},'#iframe-'+id);
 		
  	}
  	

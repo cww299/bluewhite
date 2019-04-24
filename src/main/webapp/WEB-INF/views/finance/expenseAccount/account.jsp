@@ -166,13 +166,13 @@
 					table.render({
 						elem: '#tableData',
 						size: 'lg',
+						height:'700px',
 						url: '${ctx}/fince/getConsumption' ,
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
 							limitName: 'size' //每页数据量的参数名，默认：limit
 						},
 						page: {
-							limit:15
 						},//开启分页
 						loading: true,
 						toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档

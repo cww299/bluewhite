@@ -21,7 +21,7 @@
 
 <body>
 
-<div class="layui-card">
+<div class="layui-card" style="height:800px;">
 	<div class="layui-card-header">
 		<ul>
 			<li style="display: inline;"><i class="fa fa-circle" style="color: #9e9e1f"></i>迟到</li>
@@ -32,6 +32,7 @@
 			<li style="display: inline;"><i class="fa fa-circle" style="color: #da06af"></i>婚假</li>
 			<li style="display: inline;"><i class="fa fa-circle" style="color: #13a8bd"></i>产假</li>
 			<li style="display: inline;"><i class="fa fa-circle" style="color: #1211e2"></i>护理假</li>
+			<li style="display: inline;"><i class="fa fa-circle" style="color: #ff5b00"></i>抵消迟到</li>
 		</ul>
 	</div>
 	<div class="layui-card-body">
@@ -368,6 +369,9 @@
 																			}
 																			if(d.attendanceTimeData[i].holidayType==5){
 																				colo='#1211e2';
+																			}
+																			if(d.attendanceTimeData[i].holidayType==6){
+																				colo='#ff5b00';
 																			}
 																		}
 																		return '<div style="background-color:'+colo+';color: #fff">'+d.attendanceTimeData[i].dutytime+'</div>';
