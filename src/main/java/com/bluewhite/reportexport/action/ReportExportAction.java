@@ -16,9 +16,6 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -27,11 +24,9 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.junit.Ignore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Sort;
@@ -52,15 +47,13 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.DatesUtil;
-import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.Excelutil;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
-import com.bluewhite.finance.ledger.dao.OrderDao;
+import com.bluewhite.finance.ledger.entity.Actualprice;
 import com.bluewhite.finance.ledger.entity.Order;
 import com.bluewhite.finance.ledger.service.OrderService;
 import com.bluewhite.personnel.attendance.entity.Attendance;
-import com.bluewhite.personnel.attendance.entity.AttendanceCollect;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.service.AttendanceService;
 import com.bluewhite.personnel.attendance.service.AttendanceTimeService;
@@ -88,7 +81,6 @@ import com.bluewhite.reportexport.entity.ReworkPoi;
 import com.bluewhite.reportexport.entity.UserPoi;
 import com.bluewhite.reportexport.service.ReportExportService;
 import com.bluewhite.system.user.entity.UserContract;
-import com.google.common.collect.Table.Cell;
 
 @Controller
 @RequestMapping("excel")
@@ -828,7 +820,30 @@ public class ReportExportAction {
 		return cr;
 	}
 	
-	
+	/**
+	 * 财务实战成本导入                         
+	 * @param residentmessage
+	 * @param response
+	 * @param request
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "/importActualprice",method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse importActualPrice(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request,Date currentMonth) throws Exception{
+		CommonResponse cr = new CommonResponse();
+		List<Actualprice> excelActualprices = new ArrayList<Actualprice>();
+		InputStream in = file.getInputStream();
+		String filename = file.getOriginalFilename();
+		// 创建excel工具类
+		Excelutil<Actualprice> util = new Excelutil<Actualprice>(Actualprice.class);
+		excelActualprices = util.importExcel(filename, in);// 导入
+		int count = reportExportService.importActualprice(excelActualprices,currentMonth);
+		if(count > 0){
+			cr.setMessage("成功导入"+count+"条数据");
+		}
+		return cr;
+	}	
 	
 	
 	/**

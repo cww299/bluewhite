@@ -1,10 +1,11 @@
 package com.bluewhite.reportexport.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.bluewhite.finance.ledger.entity.Order;
+import com.bluewhite.finance.ledger.entity.Actualprice;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.BaseOneTime;
 import com.bluewhite.product.primecostbasedata.entity.BaseThree;
@@ -94,5 +95,13 @@ public interface ReportExportService {
 	 * @return
 	 */
 	int importOrderExcel(List<OrderPoi> excelProduct);
+	
+	/**
+	 * 导入财务实战数据
+	 * @param excelUser
+	 * @return
+	 */
+	int importActualprice(List<Actualprice> excelActualprices,Date currentMonth);
+
 
 }

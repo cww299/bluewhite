@@ -5,14 +5,9 @@ package com.bluewhite.reportexport.entity;
  *
  */
 
-import java.util.Date;
-
 import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+
 import com.bluewhite.common.utils.excel.Poi;
-import com.bluewhite.finance.ledger.entity.Contact;
 
 
 public class OrderPoi{
@@ -88,16 +83,23 @@ public class OrderPoi{
 	/**
 	 * 当批合同总价
 	 */
-	@Poi(name = "当批合同总价", column = "H")
+	/*@Poi(name = "当批合同总价", column = "H")*/
     private Double contractPrice;
 	
 	
 	/**
 	 * 预付款备注
 	 */
-	@Poi(name = "预付款备注", column = "I")
+	@Poi(name = "预付款备注", column = "H")
     private String remarksPrice;
 	
+	
+	/**
+	 * 当批产品编号
+	 */
+	@Column(name = "product_number")
+	@Poi(name = "产品编号", column = "I")
+    private String productNumber;
 	
 	/**
 	 * 手动填写单只价格
@@ -144,6 +146,14 @@ public class OrderPoi{
 	}
 
 	
+
+	public String getProductNumber() {
+		return productNumber;
+	}
+
+	public void setProductNumber(String productNumber) {
+		this.productNumber = productNumber;
+	}
 
 	public String getContractTime() {
 		return contractTime;

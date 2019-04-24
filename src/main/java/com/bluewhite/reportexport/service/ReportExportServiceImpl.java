@@ -3,6 +3,7 @@ package com.bluewhite.reportexport.service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -18,12 +19,16 @@ import com.bluewhite.basedata.dao.BaseDataDao;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.basedata.service.BaseDataService;
 import com.bluewhite.common.Constants;
+import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.finance.ledger.dao.ActualpriceDao;
 import com.bluewhite.finance.ledger.dao.ContactDao;
 import com.bluewhite.finance.ledger.dao.OrderDao;
+import com.bluewhite.finance.ledger.entity.Actualprice;
 import com.bluewhite.finance.ledger.entity.Contact;
 import com.bluewhite.finance.ledger.entity.Order;
-import com.bluewhite.finance.ledger.service.BillService;
+import com.bluewhite.finance.ledger.service.ActualpriceService;
+import com.bluewhite.finance.ledger.service.OrderService;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneTimeDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseThreeDao;
@@ -32,6 +37,7 @@ import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.BaseOneTime;
 import com.bluewhite.product.primecostbasedata.entity.BaseThree;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
+import com.bluewhite.product.product.dao.ProductDao;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
@@ -54,7 +60,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 	private BaseDataDao baseDataDao;
 	
 	@Autowired
-	private BillService billService;
+	private ActualpriceService actualpriceService;
 	@Autowired
 	private ContactDao contactDao;
 	@Autowired
@@ -89,6 +95,15 @@ public class ReportExportServiceImpl implements ReportExportService{
 
 	@Autowired
 	private OrderDao orderDao;
+	
+	@Autowired
+	private OrderService orderService;
+	
+	@Autowired
+	private ActualpriceDao actualpriceDao;
+	
+	@Autowired
+	private ProductDao productDao;
 	
 	@Override
 	@Transactional
@@ -432,6 +447,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 					order2.setOnline(0);
 					d=order.getFirstNames();
 				}
+				order2.setProductNumber(order.getProductNumber());//产品编号
 				order2.setPartyNames(order.getPartyNames());//乙方
 				order2.setBatchNumber(order.getBatchNumber());//当批 批次号
 				order2.setProductName(order.getProductName());//当批产品名
@@ -467,6 +483,12 @@ public class ReportExportServiceImpl implements ReportExportService{
 				//}
 				// order2.setAshorePrice(order.getPrice()*order.getAshoreNumber());//到岸合同价
 				/*billService.addBill(order2);*/
+				if(order.getProductName()!=null){
+					Product product=productDao.findByNumber(order.getProductNumber());
+					if(product!=null){
+						order2.setProductId(product.getId());
+					}
+				}
 				orders.add(order2);
 				count++;
 			}
@@ -474,7 +496,59 @@ public class ReportExportServiceImpl implements ReportExportService{
 		}
 		return count;
 	}
+	@Override
+	public int importActualprice(List<Actualprice> excelActualprices, Date currentMonth) {
+		int count = 0;
+		if(excelActualprices.size()>0){
+			List<Actualprice> actualprices = new ArrayList<Actualprice>();
+			for (Actualprice actualprice : excelActualprices) {
+				Date firstDayOfMonth=DatesUtil.getFirstDayOfMonth(currentMonth);
+				Date lastDayOfMonth=DatesUtil.getLastDayOfMonth(currentMonth);
+			List<Actualprice> list2=actualpriceDao.findByCurrentMonthBetween(firstDayOfMonth, lastDayOfMonth);//查询出当前月份的数据
+			for (Actualprice actualprice2 : list2) {
+				actualpriceDao.delete(actualprice2.getId());
+			}
+			List<Order> list=orderDao.findByBatchNumberAndProductNameAndContractTimeBetween(actualprice.getBatchNumber(), actualprice.getProductName(), firstDayOfMonth, lastDayOfMonth);//查询出数据 进行比对修改
+			for (Order order : list) {
+					User user=	userDao.findOne(order.getFirstNamesId());
+						if(user.getOrgNameId()==35 || user.getOrgNameId()==10){
+							if(order.getPrice()!=actualprice.getCombatPrice()){
+								Double a;
+								Integer c;
+								if (actualprice.getCombatPrice()==null) {
+								a=actualprice.getBudgetPrice();
+								c=1;
+								}else{
+									a=actualprice.getCombatPrice();
+									c=2;
+								}
+								order.setPrice(NumUtils.mul((a!= null ? a : 0.0),1.20));
+								order.setDispute(c);
+								orderService.addOrder(order);
+							}
+						}
+				}
+				Actualprice actualprice2=new Actualprice();
+				actualprice2.setBatchNumber(actualprice.getBatchNumber());
+				actualprice2.setProductName(actualprice.getProductName());
+				actualprice2.setBudgetPrice(actualprice.getBudgetPrice());
+				actualprice2.setCombatPrice(actualprice.getCombatPrice());
+				actualprice2.setCurrentMonth(currentMonth);
+				actualprice2.setProductNumber(actualprice.getProductNumber());
+				actualprices.add(actualprice2);
+				count++;
+			}
+			actualpriceService.save(actualprices);
+		}
+		return count;
+	}
 
+	
+	
+	
+	
+	
+	
 	private String Substring(int i, int j) {
 		return null;
 		// TODO Auto-generated method stub
@@ -485,6 +559,8 @@ public class ReportExportServiceImpl implements ReportExportService{
 		// TODO Auto-generated method stub
 		
 	}
+
+
 
 
 }

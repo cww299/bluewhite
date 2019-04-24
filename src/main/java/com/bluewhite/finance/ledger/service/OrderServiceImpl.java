@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,8 @@ import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
@@ -28,6 +33,10 @@ import com.bluewhite.finance.ledger.dao.OrderDao;
 import com.bluewhite.finance.ledger.entity.Contact;
 import com.bluewhite.finance.ledger.entity.Customer;
 import com.bluewhite.finance.ledger.entity.Order;
+import com.bluewhite.product.product.dao.ProductDao;
+import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.service.UserService;
 
 @Service
 public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements OrderService {
@@ -40,8 +49,15 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	private ContactDao contactDao;
 	@Autowired
 	private BillService billService;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private ProductDao productDao;
+	@PersistenceContext
+	protected EntityManager entityManager;
 	@Override
 	public PageResult<Order> findPages(Order param, PageParameter page) {
+		CurrentUser cu = SessionManager.getUserSession();
 		if (!StringUtils.isEmpty(param.getContractTime())) {
 			Sort sort = new Sort(Direction.DESC, "createdAt");
 			page.setSort(sort);
@@ -52,14 +68,22 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
+			//按登录账户查询
+			/*if(cu.getOrgNameId()==10 || cu.getOrgNameId()==35){
+				predicate.add(cb.equal(root.get("firstNamesId").as(Long.class), cu.getId()));
+			}*/
 			//按甲方Id过滤
 			if (param.getFirstNamesId() != null) {
 				predicate.add(cb.equal(root.get("firstNamesId").as(Long.class), param.getFirstNamesId()));
 				predicate.add(cb.notEqual(root.get("price").as(Integer.class),0));
 			}
-			//按审核状态
+			//按审核状态dispute
 			if (param.getAshoreCheckr() != null) {
 				predicate.add(cb.equal(root.get("ashoreCheckr").as(Integer.class), param.getAshoreCheckr()));
+			}
+			//按实战预算过滤
+			if (param.getDispute() != null) {
+				predicate.add(cb.equal(root.get("dispute").as(Integer.class), param.getDispute()));
 			}
 			//按争议状态
 			if (param.getType() != null) {
@@ -103,6 +127,48 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		return result;
 	}
 
+	@Transactional
+	public String  Downloaded(){
+		String ex = "";
+		List<Order> list = dao.findAll();
+		for (Order order2 : list) {
+		if(order2.getProductName()!=null){
+			try {
+				Product product=productDao.findByNameAndOriginDepartmentIsNull(order2.getProductName());
+				if(product!=null){
+					order2.setProductId(product.getId());
+				}
+			} catch (Exception e) {
+				ex+=order2.getProductName()+',';
+			}
+		}else{
+			try {
+				String[] y=order2.getProductName().split("（");
+				Product product=productDao.findByNameAndOriginDepartmentIsNull(y[0]);
+				if(product!=null){
+					order2.setProductId(product.getId());
+				}
+			} catch (Exception e) {
+				ex+=order2.getProductName()+',';
+			}
+			}
+		}
+		saveAll(list);
+		return ex;
+	}
+	
+	private void saveAll(List<Order> list) {
+		entityManager.setFlushMode(FlushModeType.COMMIT);
+		 for (int i = 0; i < list.size(); i++){
+			 Order courtsResident = list.get(i);
+			 entityManager.merge(courtsResident);
+	            if (i % 1000 == 0 && i > 0) {
+	            	entityManager.flush();
+	            	entityManager.clear();
+	            }
+	        }
+		 entityManager.close();
+	    }	
 	@Override
 	public void addOrder(Order order) {
 		order.setPrice(NumUtils.setzro(order.getPrice()));
@@ -128,21 +194,23 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		}
 		}
 		order.setContractPrice(order.getContractNumber() * order.getPrice());
-		
-		if (order.getId() != null && order.getPrice()!=0) {
-			List<Customer> customerList = customerDao
-					.findByCusProductNameLikeAndCusPartyNames(order.getProductName().trim(), order.getPartyNames().trim());
-			if (customerList.size() > 0) {
-				for (Customer customer2 : customerList) {
-					customer2.setCusPrice(order.getPrice());
+		User user = userService.findOne(order.getFirstNamesId());
+		if(user.getOrgNameId() != 10 && user.getOrgNameId() != 35){
+			if (order.getId() != null && order.getPrice()!=0) {
+				List<Customer> customerList = customerDao
+						.findByCusProductNameLikeAndCusPartyNames(order.getProductName().trim(), order.getPartyNames().trim());
+				if (customerList.size() > 0) {
+					for (Customer customer2 : customerList) {
+						customer2.setCusPrice(order.getPrice());
+					}
+					customerDao.save(customerList);
+				} else {
+					Customer customer = new Customer();
+					customer.setCusPartyNames(order.getPartyNames());
+					customer.setCusProductName(order.getProductName());
+					customer.setCusPrice(order.getPrice());
+					customerDao.save(customer);
 				}
-				customerDao.save(customerList);
-			} else {
-				Customer customer = new Customer();
-				customer.setCusPartyNames(order.getPartyNames());
-				customer.setCusProductName(order.getProductName());
-				customer.setCusPrice(order.getPrice());
-				customerDao.save(customer);
 			}
 		}
 		
@@ -192,5 +260,6 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		
 
 	}
+
 
 }

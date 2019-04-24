@@ -16,8 +16,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
-import com.bluewhite.common.utils.excel.Poi;
-import com.bluewhite.product.product.entity.Product;
 
 @Entity
 @Table(name = "fin_ledger_order" )
@@ -26,7 +24,6 @@ public class Order extends BaseEntity<Long>{
 	 * 当月销售编号
 	 */
 	@Column(name = "sales_number")
-	@Poi(name = "当月销售编号", column = "C")
     private String salesNumber;
 	
 	
@@ -35,7 +32,6 @@ public class Order extends BaseEntity<Long>{
 	 * 合同签订日期
 	 */
 	@Column(name = "contract_time")
-	@Poi(name = "合同签订日期", column = "D")
     private Date contractTime;
 	
 	
@@ -43,7 +39,6 @@ public class Order extends BaseEntity<Long>{
 	 * 甲方
 	 */
 	@Column(name = "first_names")
-	@Poi(name = "甲方", column = "E")
     private String firstNames;
 	
 	/**
@@ -57,7 +52,6 @@ public class Order extends BaseEntity<Long>{
 	 * 乙方
 	 */
 	@Column(name = "party_names")
-	@Poi(name = "乙方", column = "F")
     private String partyNames;
 	
 	/**
@@ -78,7 +72,6 @@ public class Order extends BaseEntity<Long>{
 	 * 当批 批次号
 	 */
 	@Column(name = "batch_number")
-	@Poi(name = "当批 批次号", column = "G")
     private String batchNumber;
 	
 	
@@ -93,15 +86,24 @@ public class Order extends BaseEntity<Long>{
 	 * 当批产品名
 	 */
 	@Column(name = "product_name")
-	@Poi(name = "产品名", column = "H")
     private String productName;
 	
+	/**
+	 * 产品Id
+	 */
+	@Column(name = "product_id")
+    private Long productId;
+	
+	/**
+	 * 当批产品编号
+	 */
+	@Column(name = "product_number")
+    private String productNumber;
 	
 	/**
 	 * 当批合同数量
 	 */
 	@Column(name = "contract_number")
-	@Poi(name = "当批合同数量", column = "I")
     private Integer contractNumber;
 	
 	
@@ -109,7 +111,6 @@ public class Order extends BaseEntity<Long>{
 	 * 当批合同总价
 	 */
 	@Column(name = "contract_price")
-	@Poi(name = "当批合同总价", column = "J")
     private Double contractPrice;
 	
 	
@@ -117,7 +118,6 @@ public class Order extends BaseEntity<Long>{
 	 * 预付款备注
 	 */
 	@Column(name = "remarks_price")
-	@Poi(name = "预付款备注", column = "K")
     private String remarksPrice;
 	
 	
@@ -125,7 +125,6 @@ public class Order extends BaseEntity<Long>{
 	 * 手动填写单只价格
 	 */
 	@Column(name = "price")
-	@Poi(name = "单只价格", column = "L")
     private Double price;
 
 
@@ -133,7 +132,6 @@ public class Order extends BaseEntity<Long>{
 	 * 手动填写到岸数量
 	 */
 	@Column(name = "ashore_number")
-	@Poi(name = "到岸数量", column = "N")
     private Integer ashoreNumber;
 
 
@@ -141,7 +139,6 @@ public class Order extends BaseEntity<Long>{
 	 * 到岸日期
 	 */
 	@Column(name = "ashore_time")
-	@Poi(name = "预计到岸日期", column = "O")
     private Date ashoreTime;
 
 	/**
@@ -155,14 +152,12 @@ public class Order extends BaseEntity<Long>{
 	 * 争议数量
 	 */
 	@Column(name = "dispute_number")
-	@Poi(name = "争议数量", column = "P")
     private Integer disputeNumber;
 	
 	/**
 	 * 在途数量
 	 */
 	@Column(name = "road_number")
-	@Poi(name = "在途数量", column = "M")
     private Integer roadNumber;
 	
 	/**
@@ -176,9 +171,13 @@ public class Order extends BaseEntity<Long>{
 	 * 到岸合同价
 	 */
 	@Column(name = "ashore_price")
-	@Poi(name = "到岸合同价", column = "Q")
     private Double ashorePrice;
 	
+	/**
+	 * (1.预算成本 2.实战成本)
+	 */
+	@Column(name = "dispute")
+    private Integer dispute;
 	
 	/**
 	 * 查询字段
@@ -201,7 +200,6 @@ public class Order extends BaseEntity<Long>{
 	 * 客户电话
 	 */
 	@Column(name = "con_phone")
-	@Poi(name = "乙方电话", column = "A")
 	@Transient
     private String conPhone;
 	
@@ -209,7 +207,6 @@ public class Order extends BaseEntity<Long>{
 	 * 客户微信等
 	 */
 	@Column(name = "con_wechat")
-	@Poi(name = "乙方其他信息", column = "B")
 	@Transient
     private String conWechat;
 	
@@ -220,9 +217,39 @@ public class Order extends BaseEntity<Long>{
     private Integer online;
 	
 	
+	public String getProductNumber() {
+		return productNumber;
+	}
+
+
+
+
+	public void setProductNumber(String productNumber) {
+		this.productNumber = productNumber;
+	}
+
+
+
+
 	public Integer getOnline() {
 		return online;
 	}
+
+
+	
+
+	public Long getProductId() {
+		return productId;
+	}
+
+
+
+
+	public void setProductId(Long productId) {
+		this.productId = productId;
+	}
+
+
 
 
 	public void setOnline(Integer online) {
@@ -475,6 +502,16 @@ public class Order extends BaseEntity<Long>{
 
 
 	
+
+
+	public Integer getDispute() {
+		return dispute;
+	}
+
+
+	public void setDispute(Integer dispute) {
+		this.dispute = dispute;
+	}
 
 
 	public String getRemarksPrice() {
