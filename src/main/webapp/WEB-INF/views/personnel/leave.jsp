@@ -97,7 +97,8 @@
 							<option value="2">丧假</option>
 							<option value="3">婚假</option>
 							<option value="4">产假</option>
-							<option value="5">护理假</option></select>
+							<option value="5">护理假</option>
+							<option value="6">抵消迟到</option></select>
 					</div>
 				</div>
 				<div class="layui-form-item">
@@ -174,6 +175,14 @@
 			</div>
 
 			<div id="overtime" style="display: none;">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 90px;">加班类型</label>
+					<div class="layui-input-inline">
+						<select name="overtime_type" lay-filter="overtime_type" id="overtime_type" lay-search="true">
+							<option value="1">正常加班</option>
+							<option value="2">撤销加班</option></select>
+					</div>
+				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label" style="width: 90px;">加班</label>
 					<div class="layui-input-inline">
@@ -575,7 +584,7 @@
 							         type: 1
 							        ,title: "新增" //不显示标题栏
 							        ,closeBtn: false
-							        ,area:['540px', '70%']
+							        ,area:['540px', '550px']
 							        ,shade: 0.5
 							        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
 							        ,btn: ['确认', '取消']
@@ -600,7 +609,7 @@
 							        		var leaveduration='';
 							        		var time='';
 							        		var myArray = [];
-							        		
+							        		var overtime_type='';
 												
 							        		if(data.field.variable==0){
 							        			if(data.field.holidayType==""){
@@ -632,9 +641,11 @@
 							        			if(data.field.inputapplytime3==""){
 							        				return layer.msg("调休时长不能为空", {icon: 2});
 							        			}
+							        			
 							        			variable='tradeDays'
 							        			breaktime=data.field.breaktime;
 							        			breakduration=data.field.breakduration;
+							        			overtime_type=data.field.overtime_type;
 							        			var a=(data.field.inputapplytime3)
 								        		ss = a.split("\n")
 								        		for (var i = 0; i < ss.length; i++) {
@@ -645,6 +656,7 @@
 														myArray.push(time)
 									                    } 
 												}
+							        			
 							        		}
 							        		if(data.field.variable==2){
 							        			if(data.field.repairtime==""){
@@ -680,6 +692,7 @@
 							        			writeTime:data.field.applytime,
 							        			[variable]:'true',
 							        			holidayType:holidayType,
+							        			overtime_type:overtime_type,
 							        			content:content,
 							        			time:JSON.stringify(myArray)
 							        	}	
@@ -689,7 +702,7 @@
 										})
 										
 							        }
-							        ,end:function(){
+							        ,end:function(){ 
 							        	document.getElementById("layuiadmin-form-admin").reset();
 							        	layui.form.render();
 							        	timeAll=""
@@ -808,6 +821,7 @@
 						        		var leaveduration='';
 						        		var time='';
 						        		var myArray = [];
+						        		var overtime_type='';
 						        		if(data.field.variable==0){
 						        			if(data.field.holidayType==""){
 						        				return layer.msg("请假类型不能为空", {icon: 2});
@@ -839,10 +853,16 @@
 						        				return layer.msg("调休时长跟日期不能为空", {icon: 2});
 						        			}
 						        			variable='tradeDays'
-						        			breaktime=data.field.breaktime;
-						        			breakduration=data.field.breakduration;
-						        			time={date:breaktime,time:breakduration};
-						        			myArray.push(time)
+						        			var a=(data.field.inputapplytime3)
+						        			ss = a.split("\n")
+							        		for (var i = 0; i < ss.length; i++) {
+							        			if(ss[i] != ""){  
+												var b=ss[i]
+												cc = b.split(",")
+												time={"date":cc[0],"time":cc[1]};
+												myArray.push(time)
+							                    } 
+											}
 						        		}
 						        		if(data.field.variable==2){
 						        			if(data.field.repairtime==""){
@@ -852,7 +872,8 @@
 						        			repairtime=data.field.repairtime;
 						        			Sign=data.field.Sign
 						        			time={date:repairtime,time:Sign};
-						        			myArray.push(time)
+						        			myArray.push(time);
+						        			console.log(JSON.stringify(myArray));
 						        		}
 						        		if(data.field.variable==3){
 						        			if(data.field.inputapplytime4==""){
@@ -861,6 +882,7 @@
 						        			variable='applyOvertime'
 						        			overtime=data.field.overtime;
 						        			overduration=data.field.overduration;
+						        			overtime_type=data.field.overtime_type;
 						        			var a=(data.field.inputapplytime4)
 							        		ss = a.split("\n")
 							        		for (var i = 0; i < ss.length; i++) {
@@ -878,6 +900,7 @@
 						        			writeTime:data.field.applytime,
 						        			[variable]:'true',
 						        			holidayType:holidayType,
+						        			overtime_type:overtime_type,
 						        			content:content,
 						        			time:JSON.stringify(myArray)
 						        	}	
@@ -917,8 +940,8 @@
 					//封装ajax主方法
 					var mainJs = {
 						//新增							
-					    fAdd : function(data){
-					    	$.ajax({
+					    fAdd : function(data){console.log(data);
+					    	$.ajax({  
 								url: "${ctx}/personnel/addApplicationLeave",
 								data: data,
 								type: "Post",
