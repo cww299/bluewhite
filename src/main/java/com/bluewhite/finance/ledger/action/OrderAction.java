@@ -28,6 +28,7 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.finance.ledger.entity.Contact;
 import com.bluewhite.finance.ledger.entity.Order;
 import com.bluewhite.finance.ledger.service.OrderService;
+import com.bluewhite.product.product.dao.ProductDao;
 
 /**
  * 财务部 订单
@@ -41,7 +42,9 @@ public class OrderAction {
 
 	@Autowired
 	private OrderService orderService;
-
+	
+	@Autowired
+	private ProductDao productDao;
 	private ClearCascadeJSON clearCascadeJSON;
 
 	{
@@ -49,7 +52,7 @@ public class OrderAction {
 				.addRetainTerm(Order.class, "id", "salesNumber", "contractTime", "batchNumber", "planNumbers",
 						"productName", "contractNumber", "contractPrice", "remarksPrice", "firstNames", "partyNames",
 						"price", "firstNamesId", "partyNamesId", "contact", "ashoreNumber", "ashoreTime",
-						"ashoreCheckr", "disputeNumber", "roadNumber", "disputePrice", "ashorePrice","online")
+						"ashoreCheckr", "disputeNumber", "roadNumber", "disputePrice", "ashorePrice","online","dispute")
 				.addRetainTerm(Contact.class, "id", "conPartyNames", "conPhone", "conWechat");
 	}
 
@@ -68,13 +71,15 @@ public class OrderAction {
 		HttpSession session = request.getSession();
 		CurrentUser user = (CurrentUser) session.getAttribute("user");
 		if(user.getRole().contains("sales")){
-			order.setFirstNamesId(user.getId());
+		order.setFirstNamesId(user.getId());
 		}
 		PageResult<Order> orderList = orderService.findPages(order, page);
+		/*String ex=orderService.Downloaded();*/
 		cr.setData(clearCascadeJSON.format(orderList).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
+
 
 	/**
 	 * 财务订单新增

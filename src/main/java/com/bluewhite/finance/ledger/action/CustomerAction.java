@@ -21,21 +21,29 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.finance.ledger.entity.Actualprice;
 import com.bluewhite.finance.ledger.entity.Customer;
+import com.bluewhite.finance.ledger.service.ActualpriceService;
 import com.bluewhite.finance.ledger.service.CustomerService;
+import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.service.UserService;
 
 /**
  * 财务部  客户
  * @author qiyong
  *
  */
+
 @Controller
 public class CustomerAction {
 	private static final Log log = Log.getLog(CustomerAction.class);
 	
 	@Autowired
 	private CustomerService customerService;
-	
+	@Autowired
+	private ActualpriceService actualpriceService;
+	@Autowired
+	private UserService userService;
 	private ClearCascadeJSON clearCascadeJSON;
 
 	{
@@ -53,11 +61,26 @@ public class CustomerAction {
 	 */
 	@RequestMapping(value = "/fince/getCustomer", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getOrder(HttpServletRequest request,PageParameter page,Customer customer) {
+	public CommonResponse getOrder(HttpServletRequest request,PageParameter page,Customer customer,Long firstNamesId,String batchNumber) {
 		CommonResponse cr = new CommonResponse();
+		User user=userService.findOne(firstNamesId);
+		if(user.getOrgNameId()==35 || user.getOrgNameId()==10){
+			String a=batchNumber.trim();
+			String	s=a.substring(0,2);
+			if((s.equals("往期"))){
+				batchNumber=null;
+			}
+			Actualprice actualprice=new Actualprice();
+			actualprice.setBatchNumber(batchNumber);
+			actualprice.setProductName(customer.getCusProductName());
+		List<Actualprice> actualpricesList=actualpriceService.findPages(actualprice);
+		cr.setData(clearCascadeJSON.format(actualpricesList).toJSON());
+		cr.setMessage("查询成功");
+		}else{
 		PageResult<Customer>  customerrList= customerService.findPages(customer, page); 
 		cr.setData(clearCascadeJSON.format(customerrList).toJSON());
 		cr.setMessage("查询成功");
+		}
 		return cr;
 	}
 	
