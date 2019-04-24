@@ -88,6 +88,7 @@ public class AttendanceTime extends BaseEntity<Long> {
 	@Column(name = "overtime")
 	private Double overtime;
 	
+	
 	/**
 	 * 缺勤时长
 	 * 
@@ -110,7 +111,7 @@ public class AttendanceTime extends BaseEntity<Long> {
 	private Double takeWork;
 	
 	/**
-	 * 请假类型(0=事假、1=病假、2=丧假、3=婚假、4=产假、5=护理假）
+	 * 请假类型(0=事假、1=病假、2=丧假、3=婚假、4=产假、5=护理假、6=抵消迟到）
 	 */
 	@Column(name = "holiday_type")
 	private Integer holidayType;
@@ -196,6 +197,7 @@ public class AttendanceTime extends BaseEntity<Long> {
 
 	
 	
+
 
 	public Double getTakeWork() {
 		return takeWork;

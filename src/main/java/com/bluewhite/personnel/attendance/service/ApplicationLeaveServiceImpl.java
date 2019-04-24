@@ -23,6 +23,7 @@ import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.personnel.attendance.dao.ApplicationLeaveDao;
 import com.bluewhite.personnel.attendance.dao.AttendanceDao;
 import com.bluewhite.personnel.attendance.dao.AttendanceInitDao;
@@ -175,7 +176,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 			}
 
 			if (applicationLeave.isHoliday()) {
-				// (0=事假、1=病假、2=丧假、3=婚假、4=产假、5=护理假
+				// (0=事假、1=病假、2=丧假、3=婚假、4=产假、5=护理假、6=抵消迟到
 				String detail = "";
 				switch (applicationLeave.getHolidayType()) {
 				case 0:
@@ -195,6 +196,9 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 					break;
 				case 5:
 					detail = "护理假";
+					break;
+				case 6:
+					detail = "抵消迟到";
 					break;
 				}
 				holidayDetail = holidayDetail.equals("") ? (date + detail + time + "小时")
@@ -247,7 +251,15 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 						if(allArr.contains(date.substring(0, 10))){
 							actualOverTime = DatesUtil.getTimeHour(attendanceTime.getCheckIn(), attendanceTime.getCheckOut());
 							if(attendanceInit.getRestTimeWork()!=3){
-								actualOverTime -= 1; 
+								double one = 0;
+								double two = 0;
+								if(attendanceTime.getCheckIn().before(restBeginTime)){
+									one = DatesUtil.getTime(attendanceTime.getCheckIn(), restBeginTime);
+								}
+								if(restEndTime.before(attendanceTime.getCheckOut())){
+									two = DatesUtil.getTime(restEndTime,attendanceTime.getCheckOut());
+								}
+								actualOverTime = DatesUtil.getTimeHour(NumUtils.sum(one, two));
 							}
 						}else{
 							if(workTimeEnd.before(attendanceTime.getCheckOut())){
