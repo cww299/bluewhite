@@ -364,7 +364,7 @@
 												list2.push(list1)
 												list2.push(list3)
 												table.init('test3', {
-													height:650,
+													height:'600px',
 													cols : list2,
 													data : res.data,
 													limit:500,
@@ -381,7 +381,7 @@
 						size: 'lg',
 						url: '${ctx}/personnel/findAttendanceCollect',
 						where :data,
-						height:'620px',
+						height:'600px',
 						method : 'POST',
 						loading: true,
 						toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
