@@ -147,7 +147,8 @@
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
-						size: 'lg',
+						height:'700px',
+						size:'lg',
 						url: '${ctx}/system/user/pages',
 						where:{
 							foreigns:1,
@@ -157,7 +158,7 @@
 							limitName: 'size' //每页数据量的参数名，默认：limit
 						},
 						page: {
-							limit:15
+							
 						},//开启分页
 						loading: true,
 						toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档

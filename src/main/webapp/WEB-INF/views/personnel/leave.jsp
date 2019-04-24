@@ -408,6 +408,7 @@
 					table.render({
 						elem: '#tableData',
 						size: 'lg',
+						height:'700px',
 						url: '${ctx}/personnel/getApplicationLeavePage' ,
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
@@ -797,7 +798,7 @@
 						         type: 1
 						        ,title: "修改" //不显示标题栏
 						        ,closeBtn: false
-						        ,area:['540px', '60%']
+						        ,area:['540px', '550px']
 						        ,shade: 0.5
 						        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
 						        ,btn: ['确定', '取消']
