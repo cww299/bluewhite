@@ -151,7 +151,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				workTime = DatesUtil.dayTime(beginTimes, workTimeArr[0]);
 				workTimeEnd = DatesUtil.dayTime(beginTimes, workTimeArr[1]);
 				// 将 休息间隔开始结束时间转换成当前日期的时间
-				String[] restTimeArr = attendanceInit.getRestTimeSummer().split(" - ");
+				String[] restTimeArr = attendanceInit.getRestTimeWinter().split(" - ");
 				// 将 休息间隔开始结束时间转换成当前日期的时间
 				restBeginTime = DatesUtil.dayTime(beginTimes, restTimeArr[0]);
 				restEndTime = DatesUtil.dayTime(beginTimes, restTimeArr[1]);
@@ -275,12 +275,15 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 								restTime));
 					}
 					
-					// 无到岗要求和无打卡要求
-					if (attendanceInit.getWorkType() == 1 || attendanceInit.getWorkType() == 2) {
-						attendanceTime.setFlag(0);
-						attendanceTime.setTurnWorkTime(turnWorkTime);
-						attendanceTimeList.add(attendanceTime);
-						continue;
+					//当外协部或者物流部有打卡记录时，按打开记录核算考勤
+					if(us.getOrgNameId()!=45 && us.getOrgNameId()!=23){
+						// 无到岗要求和无打卡要求
+						if (attendanceInit.getWorkType() == 1 || attendanceInit.getWorkType() == 2) {
+							attendanceTime.setFlag(0);
+							attendanceTime.setTurnWorkTime(turnWorkTime);
+							attendanceTimeList.add(attendanceTime);
+							continue;
+						}
 					}
 					
 					//当休息日有打卡记录时，不需要申请加班的人自动算加班时长
@@ -300,7 +303,6 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 						attendanceTimeList.add(attendanceTime);
 						continue;
 					}
-
 					// 进行出勤，加班，缺勤，迟到，早退的计算
 					AttendanceTool.attendanceIntTool(sign, workTime, workTimeEnd, restBeginTime,restEndTime,minute, turnWorkTime, attendanceTime,
 							attendanceInit, us);
@@ -613,6 +615,13 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 										.filter(AttendanceTime -> (AttendanceTime.getTime().compareTo(inTime)) == 0)
 										.collect(Collectors.toList());
 								if (oneAtList.size() > 0) {
+									if(al.getHolidayType()==6){
+										//当请假时间大于或等于迟到时间
+										if((time*60)>=oneAtList.get(0).getBelateTime()){
+											oneAtList.get(0).setBelate(0);
+											oneAtList.get(0).setBelateTime(0.0);
+										}
+									}
 									// 变更为请假状态
 									oneAtList.get(0).setFlag(2);
 									oneAtList.get(0).setHolidayType(al.getHolidayType());
@@ -628,7 +637,11 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			
 						// 加班
 						if (al.isApplyOvertime() && at.getTime().compareTo(dateLeave) == 0) {
-							at.setOvertime(NumUtils.sum(at.getOvertime(), time));
+							if(al.getOvertimeType()==2){
+								at.setOvertime(NumUtils.sub(at.getOvertime(), time));
+							}else{
+								at.setOvertime(NumUtils.sum(at.getOvertime(), time));
+							}
 						}
 						// 调休且员工出勤时间等于调休到的那一天
 						if (al.isTradeDays() && at.getTime().compareTo(dateLeave) == 0) {

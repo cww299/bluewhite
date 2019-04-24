@@ -235,6 +235,32 @@ public class DatesUtil {
 		return time;
 	}
 	
+	/**
+	 * <li>功能描述：考勤特殊处理时间方法
+	 * 
+	 * @param beginDateStr
+	 * @param endDateStr
+	 * @return long
+	 */
+	public static Double getTimeHour(double day) {
+		// 获取整除60分钟之后的剩余分钟数
+		double alltime = Math.floor(day / 60);
+		double timele = day % 60;
+		double time = 0.0;
+		if (day > 0) {
+			if (timele < 20) {
+				time = alltime;
+			}
+			if (20 <= timele && timele <= 50) {
+				time = NumUtils.sum(alltime, 0.5);
+			}
+			if (timele > 50) {
+				time = NumUtils.sum(alltime, 1);
+			}
+		}
+		return time;
+	}
+	
 	
 	/**
 	 * 获取某个日期的下一天

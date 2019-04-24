@@ -17,7 +17,7 @@ import com.bluewhite.base.BaseEntity;
 public class Custom extends BaseEntity<Long> {
 
 	/**
-	 * 消费对象类型(1采购应付和预算，2税点应付和预算，3物流，4应付借款本金，5应付社保和税费，6应入库周转的材料)
+	 * 消费对象类型(1.报销，2采购应付和预算，4税点应付和预算，5物流，6应付借款本金，7应付社保和税费，8应入库周转的材料)
 	 */
 	@Column(name = "type")
 	private Integer type;

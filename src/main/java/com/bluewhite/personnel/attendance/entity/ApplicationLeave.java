@@ -48,7 +48,7 @@ public class ApplicationLeave extends BaseEntity<Long>  {
 	private String content;
 	
 	/**
-	 * 请假类型(0=事假、1=病假、2=丧假、3=婚假、4=产假、5=护理假）
+	 * 请假类型(0=事假、1=病假、2=丧假、3=婚假、4=产假、5=护理假、6=抵消迟到）
 	 */
 	@Column(name = "holiday_type")
 	private Integer holidayType;
@@ -82,6 +82,12 @@ public class ApplicationLeave extends BaseEntity<Long>  {
 	 */
 	@Column(name = "apply_overtime")
 	private boolean applyOvertime;
+	
+	/**
+	 * 加班类型(默认1=正常加班，2=撤销加班)
+	 */
+	@Column(name = "overtime_type")
+	private Double overtimeType;
 	
 	/**
 	 * （请假，调休，补签，加班）时间(json格式传递（日期+时长）)
@@ -121,6 +127,14 @@ public class ApplicationLeave extends BaseEntity<Long>  {
 	
 	
 	
+
+	public Double getOvertimeType() {
+		return overtimeType;
+	}
+
+	public void setOvertimeType(Double overtimeType) {
+		this.overtimeType = overtimeType;
+	}
 
 	public String getHolidayDetail() {
 		return holidayDetail;

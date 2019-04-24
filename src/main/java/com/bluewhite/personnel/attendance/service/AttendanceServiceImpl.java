@@ -101,7 +101,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 					throw new ServiceException("系统用户有相同名称的员工" + user.get(0).getUserName() + "，请检查是否重复");
 				}
 				if (user.size() > 0) {
-					if (!user.get(0).getNumber().equals(map.get("number").toString())) {
+					if (user.get(0).getNumber() == null || !user.get(0).getNumber().equals(map.get("number").toString())) {	
 						user.get(0).setNumber(map.get("number").toString());
 						userService.save(user.get(0));
 						count++;
