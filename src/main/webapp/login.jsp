@@ -44,9 +44,9 @@
 					</h1>
 				</header>
 				<P class="mb-5">
-					<a>A sign-up letter template with three background images
-						shuffling by fade in out movements. Thank you for visiting our
-						site!</a>
+					希望你永远有一颗少女心不一定要喜欢粉红色 不一定要有一大堆玩偶 不一定要在打雷的时候尖叫着躲回被子
+					里而是不管你懂得多少成人世界的规则不管你被这个世界伤害了多少回 第二天早上太阳升起来的时候你依旧愿
+					意去好奇 去拥抱 去相信 去等待像一个少女一样去爱
 				</P>
 
 				<form id="form" action="##" onsubmit="return false" method="post"

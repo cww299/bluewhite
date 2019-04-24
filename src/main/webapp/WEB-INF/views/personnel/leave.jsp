@@ -27,11 +27,11 @@
 					<table>
 						<tr>
 							<td>申请人:</td>
-							<td><select id="userId" class="layui-input " lay-search="true"></select></td>
+							<td><select id="userId" class="layui-input " lay-search="true" name="userId"></select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>部门:</td>
 							<td >
-								<select id="orgNameId" class="layui-input "  lay-search="true">
+								<select id="orgNameId" class="layui-input "  lay-search="true" name="orgNameId">
 									<option value=""></option></select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>开始:</td>

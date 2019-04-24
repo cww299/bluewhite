@@ -34,7 +34,7 @@
 			<li style="display: inline;"><i class="fa fa-circle" style="color: #1211e2"></i>护理假</li>
 		</ul>
 	</div>
-	<div class="layui-card-body" style="height:750px;">
+	<div class="layui-card-body">
 		<div class="layui-form ">
 			<div class="layui-form-item">
 				<table>
@@ -107,7 +107,6 @@
 								shade : [ 0.1, '#fff' ]
 							//0.1透明度的白色背景
 							});
-							var loading;
 							$.ajax({
 								url : '${ctx}/system/user/findAllUser',
 								type : "GET",
@@ -209,24 +208,20 @@
 														   title: '提示'
 														  ,content:res.msg
 														  ,btn: ['确认', '取消']
-														,yes: function(index, layero){
-															
+														  ,yes: function(index, layero){
 															var field={
-																	userId:$('#firstNames').val(),
-																	orgNameId:$('#selectOrgNameId').val(),
+																	userId:$('#userId').val(),
+																	orgNameId:$('#orgNameId').val(),
 																	orderTimeBegin:$('#startTime').val(),
 																	sign:2,
 															}
+															console.log(field)
 															var postUrl='${ctx}/personnel/addAttendanceTime'
 															even(postUrl,field)
 															 layer.closeAll();
-															loading = layer.load(0, {
-											                    shade: false,
-											                });
 											       			 }
 														}); 
 												}
-												layer.close(loading)
 												var data = res.data;
 												var list = [];
 												var list1 = [];

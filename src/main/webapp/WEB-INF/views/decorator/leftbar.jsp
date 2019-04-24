@@ -33,7 +33,7 @@
 				  $(this).parent().siblings().removeClass("active");
 			  })  
 			  $('#informatic li ul li a').each(function(){ 
-				  if($(this).attr("id") == id){  
+				  if('lay-iframe-'+$(this).attr("id") == id){  
 					$(this).parent().addClass("active");   //本菜单激活
 					$(this).parent().parent().parent().addClass("active")   //点击二级菜单时，其父元素（上级菜单激活）
 					$(this).parent().parent().parent().siblings().removeClass("active") 

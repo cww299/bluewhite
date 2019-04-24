@@ -19,7 +19,7 @@
 
 <div class="layui-card">
 	<div class="layui-card-body">
-		<table id="permission-info" class="table_th_search" lay-filter="permission-info"></table>
+		<table id="permission-info-table" class="table_th_search" lay-filter="permission-info-table"></table>
 	</div>
 </div> 
 
@@ -34,11 +34,11 @@
   	<div class="layui-btn-container layui-inline layui-form">
     	<table>
 			<tbody>
-				<tr id="tr-select"><td>一级菜单：</td><td><select class="layui-input" id="first-menus" lay-filter="first-menus">
-												<option value="" >请选择一级菜单</option></select></td><td>&nbsp;&nbsp;</td>
-					<td><span class="layui-btn layui-btn-sm" lay-event="sure">确定</span></td></tr>								
+				<tr id="tr-select"><td>选择菜单：</td><td style="width:150px;"><select class="layui-input" id="first-menus" lay-filter="first-menus">
+												<option value="" >选择菜单</option></select></td><td>&nbsp;&nbsp;</td>
+					</tr>								
 			</tbody>
-		</table>
+		</table><span class="layui-btn layui-btn-sm" lay-event="sure">确定</span>
 	</div>
 </script>
  
@@ -62,7 +62,7 @@ layui.config({
 				var third=[];		//存放三级菜单
 				initToolBar();
 				table.render({
-					elem: '#permission-info'
+					elem: '#permission-info-table'
 				    ,cellMinWidth: 90
 				    ,url: "${ctx}/getMenuPage" //数据接口
 				    ,page: true  //开启分页
@@ -84,10 +84,10 @@ layui.config({
 						}
 					}
 				    ,done:function(obj){
-				     	
+				    	
 				    }
 				    ,cols: [[ //表头
-				      {field: 'name', title: '身份',templet:'<span>{{d.name}}管理员</span>'}
+				      {field: 'identity', title: '身份'}
 				      ,{field: 'isShow', title: '菜单是否显示',templet:'#templ-isShow'} 
 				      ,{field: 'name', title: '菜单名字', }
 				      ,{field: 'parentId', title: '所属菜单',  sort: true}
@@ -95,17 +95,25 @@ layui.config({
 				      ,	{title : '具体人员',templet:'#templ-aboutPerson'} 
 				    ]]
 				});
-				table.on('tool(permission-info)', function (obj) {
-					layer.alert(JSON.stringify(obj.data));    
+				table.on('tool(permission-info-table)', function (obj) {
+					//layer.alert(JSON.stringify(obj.data));    
+					alert(obj);
+				});
+				table.on('toolbar(permission-info-table)', function (obj) {
+					//layer.alert(JSON.stringify(obj.data));   
+					 switch (obj.event) {
+						 case 'sure':	console.log(obj);
+					 					break;
+									 	
+						 		
+					 }
 				});
 				form.on('select', function (obj) {
-					if(obj.value!=null && obj.value!='')
-						showNextLeavel(obj.value);
-					else
-						hideNextLeavel(obj.value);
+					showSelect(obj);
 				});
 				form.on('switch(cb)', function(obj){
-				   layer.tips(this.value=='true'?'显示已开启':'显示已关闭', obj.othis);
+				
+				  // layer.tips(this.value=='true'?'显示已开启':'显示已关闭', obj.othis);
 				});
 				function initToolBar(){
 					 $.ajax({
@@ -126,15 +134,59 @@ layui.config({
 							}
 							var html='';
 							for(var i=0;i<first.length;i++){  //拼接一级菜单
-								html+=('<option value="'+first[i].identity+'">'+first[i].name+'</option>');
+								html+=('<option value="'+first[i].id+'">'+first[i].name+'</option>');
 							}
 							$('#first-menus').append(html);
+							form.render();
 						} 
 					 });
 				}
-				function showNextLeavel(identity){
-					
-				}
+				function showSelect(obj){
+					console.log($('#dsadkjaaskjd').elem);
+					var id=obj.value; 						//当前菜单id					
+					var selectId;				//存放当前菜单子菜单select id
+					if(obj.elem!=null)
+						selectId=obj.elem.id+"-child";		//如果传值为jquer对象
+					else
+						selectId=obj.id;					//为dom对象
+					var tdSelectId='td-'+selectId;          //存放当前菜单子菜单select的td 的id
+					if(id==null||id==''){				//如果id为空即取消当前菜单的选择
+						if(document.getElementById(selectId+'-child')!=null){   //如果子菜单下存在子菜单
+							document.getElementById(selectId+'-child').value='';  
+							showSelect(document.getElementById(selectId+'-child'));
+						}
+						document.getElementById(tdSelectId).innerHTML='';
+					}else{
+						for(var i=0;i<allMenu.length;i++){
+							if(allMenu[i].id==id){   
+								if(allMenu[i].parentId==0 ||allMenu[i].url=="#") {    //有下级菜单时
+									if(document.getElementById(tdSelectId)!=null){  //如果存放select的td存在则清空内容
+										document.getElementById(tdSelectId).innerHTML='';
+									}else{  											//不存在，则拼接存放子菜单列表的td
+										$('#tr-select').append('<td id="'+tdSelectId+'" style="width:150px;"></td><td>&nbsp;&nbsp;</td>');
+									}
+									var html='<select id="'+selectId+'"><option value="">请选择</option>';
+									for(var j=0;j<allMenu.length;j++){                //拼接子菜单内容
+										if(allMenu[j].parentId==id)
+											html+=('<option value="'+allMenu[j].id+'">'+allMenu[j].name+'</optopn>');
+									}
+									html+='</select>';
+									$('#td-'+selectId).append(html);
+									if(document.getElementById(selectId+'-child')!=null){  //如果子子菜单存在
+										document.getElementById(selectId+'-child').value='';  
+										showSelect(document.getElementById(selectId+'-child'));
+									}
+									form.render();
+									return;
+								}
+								else {   					//其他无下级菜单
+									return;
+								}
+							}//end id=allMenu[i].id
+						}//end for i<allMenu.length
+					}//end else id!=null
+				} //end showSelect
+			
 	}
 );
 </script>

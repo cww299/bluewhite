@@ -52,24 +52,25 @@ function openPage(title,show,url,id){       //title当前iframe页名，show是�
 		if(open[index].url==url){
 			open[index].show=true;
 			if(open[index].show==true)
-			    element.tabChange('myTab', open[index].id); //切换到 lay-id="yyy" 的这一项
+			    element.tabChange('myTab',open[index].id); //切换到 lay-id="yyy" 的这一项
 			leftNavChange(open[index].id);
 			break;
 		}
 	} 	
  	if(index>=open.length){                //打开新的页面
-		 open.push({"title":title,"show":show,"url":url,"id":id});
+		 open.push({"title":title,"show":show,"url":url,"id":'lay-iframe-'+id});
 		 element.tabAdd('myTab',{            
 			title:title,  
-			content:'<iframe src="${ctx}/menusToUrl?url='+url+'"  frameborder="no"  scrolling="no" id="'+id+'"></iframe>',		
-			id:id
+			content:'<iframe src="${ctx}/menusToUrl?url='+url+'"  frameborder="no"  scrolling="no" id="iframe-'+id+'"/>',		
+			id:'lay-iframe-'+id
 		}); 
-		 element.tabChange('myTab',id);
-		 var newid='#'+id;
-		 iFrameResize({autoResize:true});
+		// console.log(id);
+		 element.tabChange('myTab','lay-iframe-'+id);
+		 iFrameResize({autoResize:true,heightCalculationMethod:'lowestElement'},'#iframe-'+id);
+		
  	}
  	
- 	leftNavChange(id);     //切换菜单栏位置
+ 	leftNavChange('lay-iframe-'+id);     //切换菜单栏位置
  	
   	element.on('tab(myTab)', function(data){  //tab选项绑定点击事件
  		leftNavChange($(this).attr("lay-id"));
