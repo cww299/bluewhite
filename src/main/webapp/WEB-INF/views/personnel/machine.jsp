@@ -185,6 +185,7 @@
 	
 		/*同步*/
 		$('#synchronization').on('click',function(){
+			
 			var postData={
 					address:$("#select1").val(),
 			}
@@ -193,16 +194,15 @@
 				data:postData,
 				type:"GET",
 				beforeSend:function(){
-					index = layer.load(1, {
-						  shade: [0.1,'#fff'] //0.1透明度的白色背景
-						});
+					index = layer.load(
+							1, {shade: [0.1,'black'], offset:'150px'})
 				},
 				success:function(result){
 					if(0==result.code){
-						layer.msg(result.message, {icon: 1});
+						layer.msg(result.message, {icon: 1,offset:'150px'});
 						layer.close(index);
 					}else{
-						layer.msg(result.message, {icon: 2});
+						layer.msg(result.message, {icon: 2,offset:'150px'});
 						layer.close(index);
 					}
 				},error:function(){

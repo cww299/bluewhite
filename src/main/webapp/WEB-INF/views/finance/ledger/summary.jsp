@@ -9,116 +9,84 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>各类杂支</title>
+<title>汇总</title>
 <meta name="description" content="">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
+	<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="${ctx }/static/css/main.css">  <!-- 界面样式 -->
+ 
+ 	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+    <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="${ctx }/static/js/layer/layer.js"></script>	
+    <script src="${ctx }/static/js/vendor/typeahead.js"></script>
+    <script src="${ctx }/static/js/laypage/laypage.js"></script> 
+    <script src="${ctx }/static/js/vendor/mSlider.min.js"></script>
+    <script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 </head>
 
 <body>
-	<section id="main-wrapper" class="theme-default">
+	
+<div class="panel panel-default">
+	<div class="panel-body">					
+		<table>
+			<tr>
+				<td>开始:</td>
+				<td><input id="startTimetw" placeholder="请输入开始时间" class="form-control laydate-icon"
+					onClick="laydate({elem: '#startTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"></td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td>结束:</td>
+				<td><input id="endTimetw" placeholder="请输入结束时间" class="form-control laydate-icon"
+					onClick="laydate({elem: '#endTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>乙方:</td>
+				<td><input type="text" name="name" id="partyNames" class="form-control search-query name" /></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>在途款:</td>
+				<td><input type="text" name="name" disabled="disabled" id="offshorePay" class="form-control search-query name" /></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>已认可未到货款:</td>
+				<td><input type="text" name="name" disabled="disabled" id="acceptPay" class="form-control search-query name" /></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>客户预付款:</td>
+				<td><input type="text" name="name" disabled="disabled" id="acceptPayable" class="form-control search-query name" /></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>应收账款汇总:</td>
+				<td><input type="text" name="name" disabled="disabled" id="allprice" class="form-control search-query name" /></td>
+				<td>&nbsp;&nbsp;</td>
+				<td><span class="input-group-btn"><button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask">
+						查找 <i class="icon-search icon-on-right bigger-110"></i></button></span></td>
+			</tr>
+		</table>
+		<h1 class="page-header"></h1>
+					
+						
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th class="center"><label> <input type="checkbox"
+							class="ace checks" /> <span class="lbl"></span>
+					</label></th>
+					<th class="text-center">乙方</th>
+					<th class="text-center">当表已确定离岸货款值</th>
+					<th class="text-center">当表经业务员跟进客户已认可的货款</th>
+					<th class="text-center">当表双方都认可的除货款以外的应付</th>
+					<th class="text-center">当表在途和有争议货款</th>
+					<th class="text-center">当月未到货款</th>
+					<th class="text-center">当月客户多付货款转下月应付</th>
+					<th class="text-center">已到货款</th>
+					<th class="text-center">操作</th>
+				</tr>
+			</thead>
+			<tbody id="tablecontent">
 
-		<%@include file="../../decorator/leftbar.jsp"%>
-		<!--main content start-->
+			</tbody>
 
-		<section id="main-content" class="animated fadeInUp">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h3 class="panel-title">订单信息</h3>
-							<div class="actions pull-right">
-								<i class="fa fa-expand"></i> <i class="fa fa-chevron-down"></i>
-							</div>
-						</div>
-						<div class="row" style="height: 30px; margin: 15px 0 10px">
-							<div class="col-xs-12 col-sm-12  col-md-12">
-								<form class="form-search">
-									<div class="row">
-										<div class="col-xs-12 col-sm-12 col-md-12">
-											<div class="input-group">
-												<table>
-													<tr>
-														<td>开始:</td>
-														<td><input id="startTimetw" placeholder="请输入开始时间"
-															class="form-control laydate-icon"
-															onClick="laydate({elem: '#startTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-														</td>
-														<td>&nbsp&nbsp&nbsp&nbsp</td>
-														<td>结束:</td>
-														<td><input id="endTimetw" placeholder="请输入结束时间"
-															class="form-control laydate-icon"
-															onClick="laydate({elem: '#endTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-														</td>
-														<td>&nbsp&nbsp</td>
-														<td>乙方:</td>
-														<td><input type="text" name="name" id="partyNames"
-															class="form-control search-query name" /></td>
-														<td>&nbsp&nbsp</td>
-														<td>在途款:</td>
-														<td><input type="text" name="name"
-															disabled="disabled" id="offshorePay"
-															class="form-control search-query name" /></td>
-														<td>&nbsp&nbsp</td>
-														<td>已认可未到货款:</td>
-														<td><input type="text" name="name"
-															disabled="disabled" id="acceptPay"
-															class="form-control search-query name" /></td>
-														<td>&nbsp&nbsp</td>
-														<td>客户预付款:</td>
-														<td><input type="text" name="name"
-															disabled="disabled" id="acceptPayable"
-															class="form-control search-query name" /></td>
-														<td>&nbsp&nbsp</td>
-														<td>应收账款汇总:</td>
-														<td><input type="text" name="name"
-															disabled="disabled" id="allprice"
-															class="form-control search-query name" /></td>
-													</tr>
-												</table>
-												<span class="input-group-btn">
-													<button type="button"
-														class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask">
-														查找 <i class="icon-search icon-on-right bigger-110"></i>
-													</button>
-												</span>
-											</div>
-										</div>
-									</div>
-								</form>
-							</div>
-						</div>
-						<div class="panel-body">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th class="center"><label> <input type="checkbox"
-												class="ace checks" /> <span class="lbl"></span>
-										</label></th>
-										<th class="text-center">乙方</th>
-										<th class="text-center">当表已确定离岸货款值</th>
-										<th class="text-center">当表经业务员跟进客户已认可的货款</th>
-										<th class="text-center">当表双方都认可的除货款以外的应付</th>
-										<th class="text-center">当表在途和有争议货款</th>
-										<th class="text-center">当月未到货款</th>
-										<th class="text-center">当月客户多付货款转下月应付</th>
-										<th class="text-center">已到货款</th>
-										<th class="text-center">操作</th>
-									</tr>
-								</thead>
-								<tbody id="tablecontent">
+		</table>
+		<div id="pager" class="pull-right"></div>
+	</div>
+</div>
 
-								</tbody>
-
-							</table>
-							<div id="pager" class="pull-right"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-	</section>
 	<!--隐藏框已完成的批次开始  -->
 	<div id="addworking" style="display: none;">
 		<div class="panel-body">
@@ -151,24 +119,10 @@
 		<!--隐藏框 已完成的批次结束  -->
 	</div>
 
-	</section>
 
 
 
-	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
-	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
-	<script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
-	<script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
-	<script src="${ctx }/static/plugins/pace/pace.min.js"></script>
-	<script
-		src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-	<script src="${ctx }/static/js/src/app.js"></script>
-	<script src="${ctx }/static/js/laypage/laypage.js"></script>
-	<script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
-	<script
-		src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-	<script src="${ctx }/static/js/vendor/typeahead.js"></script>
-	<script src="${ctx }/static/js/vendor/mSlider.min.js"></script>
+	
 	<script>
    jQuery(function($){
    	var Login = function(){

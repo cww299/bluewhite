@@ -575,7 +575,7 @@
 							         type: 1
 							        ,title: "新增" //不显示标题栏
 							        ,closeBtn: false
-							        ,area:['540px', '70%']
+							        ,area:['540px', '550px']
 							        ,shade: 0.5
 							        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
 							        ,btn: ['确认', '取消']

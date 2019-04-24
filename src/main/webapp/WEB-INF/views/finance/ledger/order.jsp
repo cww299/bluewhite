@@ -4,269 +4,144 @@
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html class="no-js">
-<!--<![endif]-->
 
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>订单管理</title>
 <meta name="description" content="">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+ 
+ 	<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="${ctx }/static/css/main.css">  <!-- 界面样式 -->
+ 
+ 	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+    <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="${ctx }/static/js/layer/layer.js"></script>	
+    <script src="${ctx }/static/js/vendor/typeahead.js"></script>
+    <script src="${ctx }/static/js/laypage/laypage.js"></script> 
+    <script src="${ctx }/static/js/vendor/mSlider.min.js"></script>
+    <script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
+ 		<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
+    
 </head>
 
 <body>
-    <section id="main-wrapper" class="theme-default">
-        
-        <%@include file="../../decorator/leftbar.jsp"%> 
-        <!--main content start-->
-        
-           <section id="main-content" class="animated fadeInUp">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">订单信息</h3>
-                                <div class="actions pull-right">
-                                    <i class="fa fa-expand"></i>
-                                    <i class="fa fa-chevron-down"></i>
-                                </div>
-                            </div>
-                            <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-12 col-sm-12  col-md-12">
-						<form class="form-search" >
-							<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group">
-							<table><tr>
-								<td>甲方:</td><td><input type="text" name="name" id="firstNames"  class="form-control search-query name" /></td>
-								<td>乙方:</td><td><input type="text" name="name" id="partyNames"  class="form-control search-query name" /></td>
-								<td>实战预算成本：</td><td><select id="dispute" class="form-control"><option value="">请选择</option><option value="1">预算成本</option><option value="2">实战成本</option></select></td>
-								<td>&nbsp;&nbsp;&nbsp;</td>
-								<td><input type="file" name="file" id="upfile"  style="display:inline; width: 75px;"></td>
-								</tr>
-								<td>&nbsp&nbsp</td>
-								<tr>
-								<td>批次号:</td><td><input type="text" name="name" id="batchNumber2"  class="form-control search-query name" /></td>
-								<td>合同开始:</td>
-								<td>
-								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
-								</td>
-								<td>合同结束:</td>
-								<td>
-									<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
-				             onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-								</td>
-								<td>&nbsp;&nbsp;</td>
-								<td><button type="button" id="btn" class="btn btn-success  btn-sm btn-3d pull-right">
-									点击导入
-									 </button></td>
-								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask">
-										查找
-										<i class="icon-search icon-on-right bigger-110"></i>
-									</button>
-								</span>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-danger  btn-sm btn-3d start">
-									一键删除
-									</button>
-								</span>
-				</div>
-										</div>
-									</div>
-								</form>
-							</div>
-						</div>
-						<div class="panel-body">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th class="center"><label> <input type="checkbox"
-												class="ace checks" /> <span class="lbl"></span>
-										</label></th>
-										<th class="text-center">当月销售编号</th>
-										<th class="text-center">合同签订日期</th>
-										<th class="text-center">甲方</th>
-										<th class="text-center">乙方</th>
-										<th class="text-center">当批批次号</th>
-										<th class="text-center">当批计划单号</th>
-										<th class="text-center">当批产品名</th>
-										<th class="text-center">当批合同数量</th>
-										<th class="text-center">当批合同总价（元）</th>
-										<th class="text-center">预付款备注</th>
-										<th class="text-center">手动填写当批单只价格</th>
-										<th class="text-center">线上or线下</th>
-										<th class="text-center">操作</th>
-									</tr>
-								</thead>
-								<tr>
+ 
+<div class="panel panel-default">
+    <div class="panel-body">  
+		<table>
+			<tr>
+				<td>甲方:</td><td>&nbsp;&nbsp;</td><td><input type="text" name="name" id="firstNames"  class="form-control search-query name" /></td><td>&nbsp;&nbsp;</td>
+				<td>乙方:</td><td><input type="text" name="name" id="partyNames"  class="form-control search-query name" /></td><td>&nbsp;&nbsp;</td>
+				<td>实战预算成本：</td><td><select id="dispute" class="form-control"><option value="">请选择</option><option value="1">预算成本</option><option value="2">实战成本</option></select></td>
+				<td>&nbsp;&nbsp;</td>
+				<td><span class="input-group-btn"><button type="button" class="btn btn-danger  btn-sm btn-3d start">一键删除</button></span></td>
+				<td style="width:45%"></td>
+				<td><button type="button" class="btn btn-success  btn-sm btn-3d pull-right" onclick='$("#upfile").click()'>选择文件 </button>
+						<input type="file" name="file" id="upfile"  style="display:none;"  /></td>
+			</tr>
+			<tr>
+				<td>批次号:</td><td>&nbsp;&nbsp;</td><td><input type="text" name="name" id="batchNumber2"  class="form-control search-query name" /></td><td>&nbsp;&nbsp;</td>
+				<td>合同开始:</td>
+				<td><input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
+		       					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"></td><td>&nbsp;&nbsp;</td>
+				<td>合同结束:</td>
+				<td><input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
+		           		onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"></td>
+				<td>&nbsp;&nbsp;</td>
+				<td><span class="input-group-btn"><button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask">查找
+						<i class="icon-search icon-on-right bigger-110"></i></button></span></td>
+				<td></td>
+				<td><button type="button" id="btn" class="btn btn-success  btn-sm btn-3d pull-right">点击导入 </button></td>
+			</tr>
+		</table> 
+		<h1 class="page-header"></h1>			
+								
+				
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th class="center"><label> <input type="checkbox" class="ace checks" /> <span class="lbl"></span></label></th>
+					<th class="text-center">当月销售编号</th>
+					<th class="text-center">合同签订日期</th>
+					<th class="text-center">甲方</th>
+					<th class="text-center">乙方</th>
+					<th class="text-center">当批批次号</th>
+					<th class="text-center">当批计划单号</th>
+					<th class="text-center">当批产品名</th>
+					<th class="text-center">当批合同数量</th>
+					<th class="text-center">当批合同总价（元）</th>
+					<th class="text-center">预付款备注</th>
+					<th class="text-center">手动填写当批单只价格</th>
+					<th class="text-center">线上or线下</th>
+					<th class="text-center">操作</th>
+				</tr>
+			</thead>
+			<tr>
+				<td class="text-center"></td>
+				<td class="text-center"></td>
+				<td class="text-center" style="padding: 9px 0px 2px 4px;"><input id="contractTime" placeholder="请输入时间" class="form-control laydate-icon"
+					onClick="laydate({elem: '#contractTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="border: none; width: 90px; height: 30px; background-color: #BFBFBF;"></td>
+				<td class="text-center"><input type="text" id="aName" class="aName2 text-center" data-provide="typeahead"
+					style="border: none; width: 68px; height: 30px; background-color: #BFBFBF;"></td>
+				<td class="text-center"><input type="text" id="bName" class="bName2 text-center"
+					style="border: none; width: 68px; height: 30px; background-color: #BFBFBF;"></td>
+				<td class="text-center"><input type="text" id="batchNumber" class="text-center"
+					style="border: none; width: 105px; height: 30px; background-color: #BFBFBF;"></td>
+				<td class="text-center"><input type="text" id="planNumbers" class="text-center" placeholder="可不填"
+					style="border: none; width: 60px; height: 30px; background-color: #BFBFBF;"></td>
+				<td class="text-center"><input type="text" id="ProductName" class="text-center"
+					style="border: none; width: 150px; height: 30px; background-color: #BFBFBF;"></td>
+				<td class="text-center"><input type="text" id="contractNumber" class="text-center"
+					style="border: none; width: 50px; height: 30px; background-color: #BFBFBF;"></td>
+				<td class="text-center"></td>
+				<td class="text-center"><input type="text" id="remarksPrice" class="text-center" placeholder="可不填"
+					style="border: none; width: 80px; height: 30px; background-color: #BFBFBF;"></td>
+				<td class="text-center"></td>
+				<td class="text-center"><select class="text-center" id="online" style="border: none; width: 68px; height: 30px; background-color: #BFBFBF;"><option value="0">线下</option>
+						<option value="1">线上</option>
+						<option value="2">批发</option></select></td>
+				<td class="text-center"><button type="button" id="addgroup" class="btn btn-success btn-sm btn-3d pull-right">新增订单</button></td>
+			</tr>
+			<tbody id="tablecontent">
+			</tbody>
 
-									<td class="text-center"></td>
-									<td class="text-center"></td>
-									<td class="text-center" style="padding: 9px 0px 2px 4px;"><input
-										id="contractTime" placeholder="请输入时间"
-										class="form-control laydate-icon"
-										onClick="laydate({elem: '#contractTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
-										style="border: none; width: 90px; height: 30px; background-color: #BFBFBF;"></td>
-									<td class="text-center"><input type="text" id="aName"
-										class="aName2 text-center" data-provide="typeahead"
-										style="border: none; width: 68px; height: 30px; background-color: #BFBFBF;"></td>
-									<td class="text-center"><input type="text" id="bName"
-										class="bName2 text-center"
-										style="border: none; width: 68px; height: 30px; background-color: #BFBFBF;"></td>
-									<td class="text-center"><input type="text"
-										id="batchNumber" class="text-center"
-										style="border: none; width: 105px; height: 30px; background-color: #BFBFBF;"></td>
-									<td class="text-center"><input type="text"
-										id="planNumbers" class="text-center" placeholder="可不填"
-										style="border: none; width: 60px; height: 30px; background-color: #BFBFBF;"></td>
-									<td class="text-center"><input type="text"
-										id="ProductName" class="text-center"
-										style="border: none; width: 150px; height: 30px; background-color: #BFBFBF;"></td>
-									<td class="text-center"><input type="text"
-										id="contractNumber" class="text-center"
-										style="border: none; width: 50px; height: 30px; background-color: #BFBFBF;"></td>
-									<td class="text-center"></td>
-									<td class="text-center"><input type="text"
-										id="remarksPrice" class="text-center" placeholder="可不填"
-										style="border: none; width: 80px; height: 30px; background-color: #BFBFBF;"></td>
-									<td class="text-center"></td>
-									<td class="text-center"><select class="text-center"
-										id="online"
-										style="border: none; width: 68px; height: 30px; background-color: #BFBFBF;"><option
-												value="0">线下</option>
-											<option value="1">线上</option>
-											<option value="2">批发</option></select></td>
-									<td class="text-center"><button type="button"
-											id="addgroup"
-											class="btn btn-success btn-sm btn-3d pull-right">新增订单</button></td>
-
-								</tr>
-
-								<tbody id="tablecontent">
-
-								</tbody>
-
-							</table>
-							<div id="pager" class="pull-right"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-	</section>
-	<!--隐藏框 产品新增开始  -->
-	<!-- <div id="addDictDivType" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-				<div class="space-10"></div>
-				<div style="height: 30px"></div>
-				<form class="form-horizontal addDictDivTypeForm">
-				<div class="form-group">
-                                        <label class="col-sm-3 control-label">合同签订日期:</label>
-                                        <div class="col-sm-6">
-                                            <input id="contractTime" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#contractTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">甲方:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="aName" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">乙方:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="bName" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">当批批次号:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="batchNumber" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">当批产品名:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="ProductName" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">当批合同数量:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="contractNumber" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">预付款备注:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="remarksPrice" class="form-control">
-                                        </div>
-                 </div>
-                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">当批计划单号:</label>
-                                        <div class="col-sm-6">
-                                            <input type="text" id="planNumbers" class="form-control">
-                                        </div>
-                 </div>
-				</form>
-</div>
-</div> -->
+		</table>
+		<div id="pager" class="pull-right"></div>
+	</div>
+</div>					
+	
+	<div class="wrap" style="display:none;" id="tips">
+		<div class="layer-right3">
+	         <div class="panel-body">
+	              <table class="table table-hover">
+	                  <thead>
+	                      <tr>
+	                          <th class="text-center">当批产品名</th>
+	                          <th class="text-center">乙方选择</th>
+	                          <th class="text-center">批次号</th>
+	                          <th class="text-center">单只价格</th>
+	                          <th class="text-center">预算成本</th>
+	                          <th class="text-center">实战成本</th>
+	                          <th class="text-center">操作</th>
+	                      </tr>
+	                  </thead>
+	                  <tbody id="tablecontent2">
+	                      
+	                  </tbody>
+	                  
+	              </table>
+	              <div id="pager2" class="pull-right">
+	              
+	              </div>
+	           </div>
+		</div> 
+	</div> 
+  
  
- 
- <div class="wrap">
-<div class="layer-right3" style="display: none;">
-           <div class="panel-body">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">当批产品名</th>
-                                            <th class="text-center">乙方选择</th>
-                                            <th class="text-center">批次号</th>
-                                            <th class="text-center">单只价格</th>
-                                            <th class="text-center">预算成本</th>
-                                            <th class="text-center">实战成本</th>
-                                            <th class="text-center">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablecontent2">
-                                        
-                                    </tbody>
-                                    
-                                </table>
-                                <div id="pager2" class="pull-right">
-                                
-                                </div>
-                            </div>
-				</div>
-  </div>
- 
- 
- 
- 
- 
-    </section>
-    
    
-   
-   <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
-    <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
-    <script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
-    <script src="${ctx }/static/plugins/pace/pace.min.js"></script>
-    <script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-    <script src="${ctx }/static/js/src/app.js"></script>
-     <script src="${ctx }/static/js/laypage/laypage.js"></script> 
-    <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
-    <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-    <script src="${ctx }/static/js/vendor/typeahead.js"></script>
-    <script src="${ctx }/static/js/vendor/mSlider.min.js"></script>
+  
     <script>
    jQuery(function($){
    	var Login = function(){
@@ -636,13 +511,13 @@
 								self.setName(id)
 								self.setCountall(that)
 								var ids=that.data("id");
-							$(".batch").each(function(i,o){
-							var a=$(o).text();
-							if(a==ids){
-								$(o).parent().addClass("danger");
-								$(o).parent().siblings().removeClass("danger");
-							}
-							})
+								$(".batch").each(function(i,o){
+								var a=$(o).text();
+								if(a==ids){
+									$(o).parent().addClass("danger");
+									$(o).parent().siblings().removeClass("danger");
+								}
+								})
 								var postData = {
 								page:1,
 					  			size:10,
@@ -672,134 +547,145 @@
 					success:function(result){
 						if(0==result.code){
 							if(a!=1){
-							$(".layer-right3").css("display","block");
-							var demo = new mSlider({
-								dom:".layer-right3",
-								direction: "right",
-								distance:"40%",
-							})
-							demo.open()
+								/* $(".layer-right3").css("display","block");
+								var demo = new mSlider({
+									dom:".layer-right3",
+									direction: "right",
+									distance:"40%",
+								})
+								demo.open() */
+								var tips=$('#tips');
+								var _index=layer.open({
+									type: 1,
+									  skin: 'layui-layer-rim', //加上边框
+									  area: ['40%', '100%'], 
+									  btnAlign: 'c',//宽高
+									  maxmin: true,
+									  offset:'r',
+									  shadeClose:true,
+									  content:tips
+								})
 							}
-					var html1="";		
-					if(result.data.rows!=undefined){
-					$(result.data.rows).each(function(i,o){
-						html1 +='<tr>'
-						+'<td class="text-center edit name">'+o.cusProductName+'</td>'
-						+'<td class="text-center edit name">'+o.cusPartyNames+'</td>'
-						+'<td class="text-center edit name"></td>'
-						+'<td class="text-center edit cusPrice">'+o.cusPrice+'</td>'
-						+'<td class="text-center edit name"></td>'
-						+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans choice" data-id='+o.id+'>选择</button></tr>'
-						
-					});
-					}else{
-					$(result.data).each(function(i,o){
-						html1 +='<tr>'
-						+'<td class="text-center edit name">'+o.productName+'</td>'
-						+'<td class="text-center edit name"></td>'
-						+'<td class="text-center edit name">'+o.batchNumber+'</td>'
-						+'<td class="text-center edit name"></td>'
-						+'<td class="text-center edit budgetPrice">'+o.budgetPrice+'</td>'
-						+'<td class="text-center edit combatPrice">'+(o.combatPrice !=null ? o.combatPrice : "")+'</td>'
-						+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans choice2" data-id='+o.id+'>选择</button></tr>'
-						
-					});
-					}
-		laypage({
-		      cont: 'pager2', 
-		      pages: result.data.totalPages, 
-		      curr:  result.data.pageNum || 1, 
-		      jump: function(obj, first){ 
-		    	  if(!first){ 
-		    		 
-			        	var _data = {
-			        			page:obj.curr,
-						  		size:10,
-						  		cusProductName:$('#productName2').val(),
-					  			cusPartyNames:$('#partyNames2').val(),
-					  	}
-			        	var a=self.getCountall()
-						var b=self.getName()
-				       self.lodwork(_data,b,a,1);
-				     }
-		      }
-		    }); 
-		$("#tablecontent2").html(html1); 
-		$(".choice").on('click',function(){
-			var thtt=$(this)
-			var postData = {
-					id:id,
-					price:$(this).parent().parent().find('.cusPrice').text(),
-			}
-			var index;
-			$.ajax({
-				url:"${ctx}/fince/addOrder",
-				data:postData,
-				type:"POST",
-				beforeSend:function(){
-					index = layer.load(1, {
-						  shade: [0.1,'#fff'] //0.1透明度的白色背景
-						});
-				},
-				success:function(result){
-					if(0==result.code){
-					that.parent().parent().find(".contractPrice").text(result.data.contractPrice)
-					that.parent().parent().find(".price2").val(result.data.price)
-					layer.msg("当批合同总价为"+result.data.contractPrice+"", {icon: 1});
-					layer.close(index);
-					}else{
-						layer.msg("失败！", {icon: 1});
-						layer.close(index);
-					}
-				},error:function(){
-					layer.msg("操作失败！", {icon: 2});
-					layer.close(index);
-				}
-			});
-		})
+						var html1="";		
+						if(result.data.rows!=undefined){
+							$(result.data.rows).each(function(i,o){
+								html1 +='<tr>'
+								+'<td class="text-center edit name">'+o.cusProductName+'</td>'
+								+'<td class="text-center edit name">'+o.cusPartyNames+'</td>'
+								+'<td class="text-center edit name"></td>'
+								+'<td class="text-center edit cusPrice">'+o.cusPrice+'</td>'
+								+'<td class="text-center edit name"></td>'
+								+'<td class="text-center edit name"></td>'
+								+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans choice" data-id='+o.id+'>选择</button></tr>'
+								
+							});
+						}else{
+							$(result.data).each(function(i,o){
+								html1 +='<tr>'
+								+'<td class="text-center edit name">'+o.productName+'</td>'
+								+'<td class="text-center edit name"></td>'
+								+'<td class="text-center edit name">'+o.batchNumber+'</td>'
+								+'<td class="text-center edit name"></td>'
+								+'<td class="text-center edit budgetPrice">'+o.budgetPrice+'</td>'
+								+'<td class="text-center edit combatPrice">'+(o.combatPrice !=null ? o.combatPrice : "")+'</td>'
+								+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans choice2" data-id='+o.id+'>选择</button></tr>'
+							});
+						}
+						laypage({
+						      cont: 'pager2', 
+						      pages: result.data.totalPages, 
+						      curr:  result.data.pageNum || 1, 
+						      jump: function(obj, first){ 
+						    	  if(!first){ 
+						    		 
+							        	var _data = {
+							        			page:obj.curr,
+										  		size:10,
+										  		cusProductName:$('#productName2').val(),
+									  			cusPartyNames:$('#partyNames2').val(),
+									  	}
+							        	var a=self.getCountall()
+										var b=self.getName()
+								       self.lodwork(_data,b,a,1);
+								     }
+						      }
+						    }); 
+						$("#tablecontent2").html(html1); 
+						$(".choice").on('click',function(){
+							var thtt=$(this)
+							var postData = {
+									id:id,
+									price:$(this).parent().parent().find('.cusPrice').text(),
+							}
+							var index;
+							$.ajax({
+								url:"${ctx}/fince/addOrder",
+								data:postData,
+								type:"POST",
+								beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								success:function(result){
+									if(0==result.code){
+									that.parent().parent().find(".contractPrice").text(result.data.contractPrice)
+									that.parent().parent().find(".price2").val(result.data.price)
+									layer.msg("当批合同总价为"+result.data.contractPrice+"", {icon: 1});
+									layer.close(index);
+									}else{
+										layer.msg("失败！", {icon: 1});
+										layer.close(index);
+									}
+								},error:function(){
+									layer.msg("操作失败！", {icon: 2});
+									layer.close(index);
+								}
+							});
+						})
 		
-		$(".choice2").on('click',function(){
-			var thtt=$(this)
-			var a;
-			var c;
-			if($(this).parent().parent().find('.combatPrice').text()==""){
-				a=$(this).parent().parent().find('.budgetPrice').text();
-				c=1
-			}else{
-				a=$(this).parent().parent().find('.combatPrice').text();
-				c=2
-			}
-			var postData = {
-					id:id,
-					price:a*1.2,
-					dispute:c
-			}
-			var index;
-			$.ajax({
-				url:"${ctx}/fince/addOrder",
-				data:postData,
-				type:"POST",
-				beforeSend:function(){
-					index = layer.load(1, {
-						  shade: [0.1,'#fff'] //0.1透明度的白色背景
-						});
-				},
-				success:function(result){
-					if(0==result.code){
-					that.parent().parent().find(".contractPrice").text(result.data.contractPrice)
-					that.parent().parent().find(".price2").val(result.data.price)
-					layer.msg("当批合同总价为"+result.data.contractPrice+"", {icon: 1});
-					layer.close(index);
-					}else{
-						layer.msg("失败！", {icon: 1});
-						layer.close(index);
-					}
-				},error:function(){
-					layer.msg("操作失败！", {icon: 2});
-					layer.close(index);
-				}
-			});
-		})
+						$(".choice2").on('click',function(){
+							var thtt=$(this)
+							var a;
+							var c;
+							if($(this).parent().parent().find('.combatPrice').text()==""){
+								a=$(this).parent().parent().find('.budgetPrice').text();
+								c=1
+							}else{
+								a=$(this).parent().parent().find('.combatPrice').text();
+								c=2
+							}
+							var postData = {
+									id:id,
+									price:a*1.2,
+									dispute:c
+							}
+							var index;
+							$.ajax({
+								url:"${ctx}/fince/addOrder",
+								data:postData,
+								type:"POST",
+								beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								success:function(result){
+									if(0==result.code){
+									that.parent().parent().find(".contractPrice").text(result.data.contractPrice)
+									that.parent().parent().find(".price2").val(result.data.price)
+									layer.msg("当批合同总价为"+result.data.contractPrice+"", {icon: 1});
+									layer.close(index);
+									}else{
+										layer.msg("失败！", {icon: 1});
+										layer.close(index);
+									}
+								},error:function(){
+									layer.msg("操作失败！", {icon: 2});
+									layer.close(index);
+								}
+							});
+						})
 							layer.close(index);
 						}else{
 							layer.msg("操作失败", {icon: 1});
