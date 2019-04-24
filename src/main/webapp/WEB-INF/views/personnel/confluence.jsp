@@ -190,7 +190,7 @@
 											url : url,
 											where : data,
 											cellMinWidth : 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-											height:500,
+											height:'600px',
 											method : 'POST',
 											loading:true,
 											parseData : function(res) { //res 即为原始返回的数据
@@ -398,7 +398,7 @@
 												list2.push(list1)
 												list2.push(list3)
 												table.init('test3', {
-													height:700,
+													height:'600px',
 													cols : list2,
 													data : res.data,
 													limit:500,
