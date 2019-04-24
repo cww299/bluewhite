@@ -44,7 +44,7 @@
 				</td>
 				<td style="width:58%;"></td>
 				<td>
-					<button class="layui-btn" id="synchronization" data-type="synchronization">同步</button>
+					<button type="button" class="layui-btn" id="synchronization" data-type="synchronization">同步</button>
 				</td>
 			</tr>
 		</table>

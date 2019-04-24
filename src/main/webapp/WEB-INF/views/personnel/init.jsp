@@ -630,7 +630,8 @@
 							         type: 1
 							        ,title: "新增" //不显示标题栏
 							        ,closeBtn: false
-							        ,area:['540px', '99%']
+							        ,zindex:-1
+							        ,area:['30%', '100%']
 							        ,shade: 0.5
 							        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
 							        ,btn: ['确认', '取消']
@@ -685,9 +686,9 @@
 								var dicDiv=$('#layuiadmin-form-admin2');
 								layer.open({
 							         type: 1
-							        ,title: "新增" //不显示标题栏
+							        ,title: "设定休息时间" //不显示标题栏
 							        ,closeBtn: false
-							        ,area:['440px', '99%']
+							        ,area:['30%', '500px']
 							        ,shade: 0.5
 							        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
 							        ,btn: ['确认', '取消']
