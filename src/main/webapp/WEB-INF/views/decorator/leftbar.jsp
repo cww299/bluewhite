@@ -139,7 +139,7 @@
 								 var p= $(this).attr("url");
 								 if(p!=null && p!="" && p!="#"){  //如果为null或者空则为1级菜单，如果为#则表示为有下级的二级菜单，则不发生打开新页面或定位新页面即只切换菜单栏的下级菜单
 									//console.log($(this).attr("id"))
-									 openPage($(this).attr("title"),true,$(this).attr("url"),$(this).attr("id"));
+									 openPage($(this).attr("title"),$(this).attr("url"),$(this).attr("id"));
 								 }
 							 })
 						  },error:function(){

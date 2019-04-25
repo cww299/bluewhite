@@ -17,11 +17,13 @@
 </head>
 <body>
 
-<div class="layui-card">
+<div class="layui-card" style="height:800px;">
 	<div class="layui-card-body">
-		<table id="permission-info-table" class="table_th_search" lay-filter="permission-info-table"></table>
+		<table id="permission-info-table" class="table_th_search"  lay-filter="permission-info-table"></table>
 	</div>
-</div> 
+</div>
+</body>
+
 
 <script type="text/html" id="templ-isShow">
  	 	<input type="checkbox" name="isShow" value="{{d.isShow}}" lay-skin="switch" lay-text="显示|不显示" lay-filter="cb" {{ d.isShow == true ? 'checked' : '' }}  >
@@ -67,6 +69,7 @@ layui.config({
 				    ,url: "${ctx}/getMenuPage" //数据接口
 				    ,page: true  //开启分页
 				    ,size:'lg'
+				    ,height:'700px'
 				    ,toolbar:'#permission-toolbar'
 				    ,request:{           
 						pageName: 'page', //页码的参数名称，默认：page
@@ -190,8 +193,4 @@ layui.config({
 	}
 );
 </script>
-
-	
-
-</body>
 </html>
