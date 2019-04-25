@@ -46,7 +46,6 @@ import com.bluewhite.personnel.attendance.entity.RestType;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.entity.UserContract;
 import com.bluewhite.system.user.service.UserService;
-import com.sun.tools.doclint.Checker.Flag;
 
 @Service
 public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, Long> implements AttendanceTimeService {
