@@ -347,6 +347,20 @@ public class AttendanceAction {
 		return cr;
 	}
 	
+	/**
+	 * 存档考勤汇总
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/personnel/sealAttendanceCollect", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse sealAttendanceCollect(AttendanceCollect attendanceCollect) {
+		CommonResponse cr = new CommonResponse();
+		attendanceCollectService.sealAttendanceCollect(attendanceCollect);
+		cr.setMessage("存档成功");
+		return cr;
+	}
+	
 
 	/**
 	 * 新增修改请假事项

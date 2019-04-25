@@ -46,6 +46,7 @@ import com.bluewhite.personnel.attendance.entity.RestType;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.entity.UserContract;
 import com.bluewhite.system.user.service.UserService;
+import com.sun.tools.doclint.Checker.Flag;
 
 @Service
 public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, Long> implements AttendanceTimeService {
@@ -275,16 +276,6 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 								restTime));
 					}
 					
-					//当外协部或者物流部有打卡记录时，按打开记录核算考勤
-					if(us.getOrgNameId()!=45 && us.getOrgNameId()!=23){
-						// 无到岗要求和无打卡要求
-						if (attendanceInit.getWorkType() == 1 || attendanceInit.getWorkType() == 2) {
-							attendanceTime.setFlag(0);
-							attendanceTime.setTurnWorkTime(turnWorkTime);
-							attendanceTimeList.add(attendanceTime);
-							continue;
-						}
-					}
 					
 					//当休息日有打卡记录时，不需要申请加班的人自动算加班时长
 					if (rout) {
@@ -303,6 +294,18 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 						attendanceTimeList.add(attendanceTime);
 						continue;
 					}
+					
+					//当外协部或者物流部有打卡记录时，按打开记录核算考勤
+					if(us.getOrgNameId()!=45 && us.getOrgNameId()!=23){
+						// 无到岗要求和无打卡要求
+						if (attendanceInit.getWorkType() == 1 || attendanceInit.getWorkType() == 2) {
+							attendanceTime.setFlag(0);
+							attendanceTime.setTurnWorkTime(turnWorkTime);
+							attendanceTimeList.add(attendanceTime);
+							continue;
+						}
+					}
+					
 					// 进行出勤，加班，缺勤，迟到，早退的计算
 					AttendanceTool.attendanceIntTool(sign, workTime, workTimeEnd, restBeginTime,restEndTime,minute, turnWorkTime, attendanceTime,
 							attendanceInit, us);
@@ -385,6 +388,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	}
 
 	@Override
+	@Transactional
 	public boolean deleteAttendanceTimeCollect(AttendanceTime attendanceTime) {
 		List<AttendanceTime> attendanceTimeList = findAttendanceTimePage(attendanceTime);
 		// 按人员分组
@@ -457,9 +461,11 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
 	@Override
 	public String checkAttendanceTime(AttendanceTime attendanceTime) {
+		
 		// 已统计的提示信息
 		String ex = "";
 		String usToString = "";
+		String exTwo = "";
 		if (new Date().before(DatesUtil.getLastDayOfMonth(attendanceTime.getOrderTimeBegin()))) {
 			throw new ServiceException("选择日期的签到记录未完成,无法统计");
 		};
@@ -475,9 +481,16 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			// 查询该月有没有初始化
 			AttendanceCollect attendanceCollect = attendanceCollectDao.findByUserIdAndTime(user.getId(),
 					attendanceTime.getOrderTimeBegin());
-			usToString += attendanceCollect != null ? user.getUserName() + "," : "";
+			//已封存
+			if(attendanceCollect != null ){
+				exTwo += attendanceCollect.getSeal()==1 ? user.getUserName() + "," : "";
+				usToString += attendanceCollect.getSeal()==0 ? user.getUserName() + "," : "";
+			}
 		}
-		ex = !usToString.equals("") ? ("员工" + usToString + "考勤已经汇总，是否覆盖") : "";
+		if(!exTwo.equals("")){
+			throw new ServiceException( "员工" + exTwo + "在"+ (new SimpleDateFormat("yyyy-MM")).format(attendanceTime.getOrderTimeBegin()) +"月份的考勤已经存档，不能重新计算");
+		}
+			ex = !usToString.equals("") ? ("员工" + usToString + "考勤已经汇总，是否覆盖") : "";
 		return ex;
 	}
 
@@ -656,7 +669,6 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 								at.setBelateTime(0.0);
 							}
 						}
-						
 					}
 				}
 			}
