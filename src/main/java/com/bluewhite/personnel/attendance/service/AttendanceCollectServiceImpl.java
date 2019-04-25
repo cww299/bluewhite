@@ -50,4 +50,15 @@ public class AttendanceCollectServiceImpl extends BaseServiceImpl<AttendanceColl
 		return result;
 	}
 
+	@Override
+	public void sealAttendanceCollect(AttendanceCollect attendanceCollect) {
+		List<AttendanceCollect> attendanceCollectList = findAttendanceCollect(attendanceCollect);
+		if(attendanceCollectList.size()>0){
+			attendanceCollectList.stream().forEach( ac->{
+				ac.setSeal(1);
+				});
+		}
+		dao.save(attendanceCollectList);
+	}
+
 }

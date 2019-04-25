@@ -134,6 +134,12 @@ public class AttendanceCollect extends BaseEntity<Long>{
 	private String remarks;
 	
 	/**
+	 * 封存（0=否，1=是）
+	 */
+	@Column(name = "seal")
+	private Integer seal=0;
+	
+	/**
 	 * 姓名
 	 */
 	@Transient
@@ -220,6 +226,15 @@ public class AttendanceCollect extends BaseEntity<Long>{
 	
     
     
+    
+
+	public Integer getSeal() {
+		return seal;
+	}
+
+	public void setSeal(Integer seal) {
+		this.seal = seal;
+	}
 
 	public String getBelateDetails() {
 		return belateDetails;

@@ -16,5 +16,11 @@ public interface AttendanceCollectService  extends BaseCRUDService<AttendanceCol
 	 * @return
 	 */
 	public List<AttendanceCollect> findAttendanceCollect(AttendanceCollect attendanceCollect);
+	
+	/**
+	 * 存档考勤数据
+	 * @param attendanceCollect
+	 */
+	public void sealAttendanceCollect(AttendanceCollect attendanceCollect);
 
 }
