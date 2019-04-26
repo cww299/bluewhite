@@ -22,6 +22,7 @@
     <script src="${ctx }/static/js/vendor/typeahead.js"></script>
     <script src="${ctx }/static/js/laypage/laypage.js"></script> 
     <script src="${ctx }/static/js/vendor/mSlider.min.js"></script>
+    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script> 
     <script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 </head>
 

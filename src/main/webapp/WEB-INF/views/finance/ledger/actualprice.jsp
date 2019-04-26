@@ -18,8 +18,8 @@
 
 <body>
 
-	<div class="panel panel-default">
-		<div class="panel-body">
+	<div class="layui-card">
+		<div class="layui-card-body">
 			<table>
 				<tr>
 					<td><button type="button" class="layui-btn" name="file" id="test1"> <i class="layui-icon">&#xe67c;</i>上传文件 </button> </td>
