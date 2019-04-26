@@ -47,19 +47,21 @@
 						<td><select id="orgNameId" class="form-control search-query name" lay-search="true" name="orgNameId"><option value="">请选择</option></select></td>
 						<td>&nbsp;&nbsp;</td>
 						<td>考勤汇总月份:</td>
-						<td><input name="orderTimeBegin" id="startTime" style="width: 200px;" placeholder="请输入考勤汇总月份" class="layui-input laydate-icon"></td>
+						<td><input name="orderTimeBegin" id="startTime" style="width: 200px;" placeholder="请输入考勤汇总月份" lay-verify="required" class="layui-input laydate-icon"></td>
 						<td>&nbsp;&nbsp;</td>
 						<td>
 							<div class="layui-inline">
 								<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-searche">
 									查找考勤 <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
 								</button>
+								<button type="button" class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-sealAttendanceCollect" id="sealAttendanceCollect">存档</button>
 							</div>
 						</td>
 					</tr>
 				</table>
 			</div>
 		</div>
+		
 
 		<div class="layui-tab">
 			<ul class="layui-tab-title">
@@ -67,10 +69,10 @@
 				<li>考勤汇总</li>
 			</ul>
 			<div class="layui-tab-content">
-				<div class="layui-tab-item layui-show">
+				<div class="layui-tab-item layui-show" id="div-test3">
 					<table class="layui-hide" lay-filter="test3" id="test3"></table>
 				</div>
-				<div class="layui-tab-item">
+				<div class="layui-tab-item" id="div-test5">
 					<table class="layui-hide" lay-filter="test5" id="test5"></table>
 				</div>
 			</div>
@@ -155,9 +157,14 @@
 										}
 									});
 							
-							
+							var field={
+										orgNameId:'',
+										orderTimeBegin:'',
+										page:1,
+										limit:15,
+									};
 							form.on('submit(LAY-role-searche)', function(data) {
-								var field={
+								field={
 										orgNameId:data.field.orgNameId,
 										orderTimeBegin:data.field.orderTimeBegin,
 										page:1,
@@ -165,6 +172,29 @@
 								}
 								even(field)
 								event(field)
+							})
+							form.on('submit(LAY-sealAttendanceCollect)', function() {  //进行存档
+								 $.ajax({
+										url:"${ctx}/personnel/sealAttendanceCollect",
+										data:field,
+										type:"POST",
+										beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'black'] //0.1透明度的黑色背景
+												});
+										},
+										success:function(result){
+											if(0==result.code){
+												layer.msg("存档成功！", {icon: 1});
+											}else{
+												layer.msg("存档失败！", {icon: 2});
+											}
+											layer.close(index);
+										},error:function(){
+											layer.msg("操作失败！", {icon: 2});
+											layer.close(index);
+										}
+									}); 
 							})
 							
 							//修改考勤
@@ -363,6 +393,8 @@
 												list2.push(list)
 												list2.push(list1)
 												list2.push(list3)
+												
+												
 												table.init('test3', {
 													height:'600px',
 													cols : list2,
