@@ -39,27 +39,23 @@
 	<!--main content end-->
 		
 <script>
-var open=[];   //存入已打开页面的信息title当前iframe页名，url iframe的url，id为超链接a拼接lay-iframe-a.id即为选项卡的id
+var open=[];   //存入已打开页面的信息title当前iframe页名，url iframe的url，id为超链接a拼接lay-iframe-a.id即为选项卡的id,isShow为当前选项卡是否显示
 layui.use('element', function(){  
-	 var element = layui.element; 		
+	 var element = layui.element
+	 	,layer=layui.layer; 		
 }); 
- 
-/* function closeIt()
-{
-  return "Any string value here forces a dialog box to \n" + 
-       "appear before closing the window.";
-}
-window.onbeforeunload = closeIt; 
-  */
- 
+
 //判断是否需要打开新的页面，或者定位到已打开的页面
 function openPage(title,url,id){       //title当前iframe页名，url iframe的url，id唯一标识超链接a的id，由点击leffbar中菜单触发并传参
 	
 	 var element = layui.element; 
 	 var index=0;   //遍历open的索引
 	for(index=0;index<open.length;index++){     //如果点击的菜单已打开则定位到已打开的页面
-		 if(open[index].url==url){ 
-			 element.tabChange('myTab',open[index].id);  //切换到 lay-id="yyy" 的这一项
+		 if(open[index].url==url){
+			 checkIsUpdate();    //检查当前被切换的是否为考勤汇总
+			    //切换到当前选项卡,isShow为true
+			 element.tabChange('myTab',open[index].id);  //切换到 lay-id=open[index].id 的这一项			 
+			 open[index].isShow=true;
 			 var ifm=document.getElementById('iframe-'+id);
 			 if(ifm.style.height=='0px'){        //如果ifm高度为0px的bug
 				 ifm.style.height=ifm.contentDocument.body.scrollHeight+'px';    //重新对ifm高度赋值
@@ -67,11 +63,11 @@ function openPage(title,url,id){       //title当前iframe页名，url iframe的
 			 break;
 		 }
 	} 	
- 	if(index>=open.length){                //打开新的页面
-		 open.push({"title":title,"url":url,"id":'lay-iframe-'+id});   //擦入已经打开的页面数组
+ 	if(index>=open.length){             //打开新的页面
+ 		checkIsUpdate();
 		 element.tabAdd('myTab',{            
 			title:title,  
-			content:'<iframe src="${ctx}/menusToUrl?url='+url+'"  frameborder="no"  scrolling="no" id="iframe-'+id+'"/>',		
+			content:'<iframe src="${ctx}/menusToUrl?url='+url+'"  frameborder="no"  scrolling="no" id="iframe-'+id+'" name="iframe-'+id+'"/>',		
 			id:'lay-iframe-'+id
 		}); 
 		element.tabChange('myTab','lay-iframe-'+id);     //切换到当前新打开的页面
@@ -79,6 +75,11 @@ function openPage(title,url,id){       //title当前iframe页名，url iframe的
 		 
 		element.on('tab(myTab)', function(data){  //tab选项绑定点击事件  用于点击切换选项卡时保证leftbar中菜单位置的一致
 		 	 leftNavChange($(this).attr("lay-id"));
+		 	 checkIsUpdate();
+		 	 for(var i=0;i<open.length;i++){
+		 		 if(open[i].id==$(this).attr("lay-id"))
+		 			 open[i].isShow=true;
+		 	 }
 			 var id=$(this).attr("lay-id").substring(4);	//切割前4位，保留为iframe的id
 			 var ifm=document.getElementById(id);
 			 if(ifm.style.height=='0px'){       
@@ -86,26 +87,66 @@ function openPage(title,url,id){       //title当前iframe页名，url iframe的
 			 }
 		 });
 		
-	 	 $(".layui-tab").on("click",function(e){   //关闭事件删除数组元素
-			if($(e.target).is(".layui-tab-close")){ 
-			
-			
-				var closeId=$(e.target).parent().attr("lay-id");
-				
+	 	  $(".layui-tab").on("click",function(e){   //关闭事件删除数组元素，tab删除之后
+	 		if($(e.target).is(".layui-tab-close")){  
+				var closeId=$(e.target).parent().attr("lay-id"); 
 				for(var i=0;i<open.length;i++){
-					if(open[i].id==closeId){
-						if(closeId.substring(4)=='iframe-personnelCollect')
-							if(confirm("是否保存考情总汇"))
-								alert("调用接口");
-							else
-								alert("dsa");
+					if(open[i].id==closeId){ 
+						open.isShow=false;
 						open.splice(i,1);  
 					}
 				}
-			}
-		}) 
+			}  
+		  }) 
+	
+		 open.push({"title":title,"url":url,"id":'lay-iframe-'+id,"isShow":true});   //擦入已经打开的页面数组
  	}
  	leftNavChange('lay-iframe-'+id);     //调用leftbar中的函数,切换菜单栏位置
+}
+$(document).on('mousedown', '.layui-tab-close', function (event) {   //监听关闭点击事件  tab删除之前
+	if($(event.target).parent().attr("lay-id")=='lay-iframe-personnelCollect'){
+		for(var i=0;i<open.length;i++){
+			if(open[i].id=="lay-iframe-personnelCollect")
+				open[i].isShow=false;
+		}
+		var closeBtn=$(this);
+		 if($(window.frames["iframe-personnelCollect"].document).find("#div-test3").text().length>100){ 
+			layer.confirm("考勤汇总是否存档",{
+				btn:['确认','取消']}
+				,function(index){
+					$(window.frames["iframe-personnelCollect"].document).find("#sealAttendanceCollect").click();
+					layer.close(index);
+					setTimeout(function () {
+						closeBtn.click();
+					}, 100);
+					}
+				,function(index){layer.close(index);
+					closeBtn.click();
+				});
+		} 
+		
+	}
+});
+function checkIsUpdate(){    //检查切换的是否是考勤汇总
+	for(var i=0;i<open.length;i++){
+		if(open[i].id=="lay-iframe-personnelCollect" && open[i].isShow==true){  //被切换的tab为考勤汇总
+			if($(window.frames["iframe-personnelCollect"].document).find("#div-test3").text().length<100){ //查看是否有内容
+				open[i].isShow=false;
+				return;
+			} 
+			open[i].isShow=false;
+			layer.confirm("考勤汇总是否存档",{
+				btn:['确认','取消']},
+				function(index){
+						$(window.frames["iframe-personnelCollect"].document).find("#sealAttendanceCollect").click();//对存档按钮进行点击
+						layer.close(index);
+					},
+				function(index){
+					layer.close(index);
+				});
+		}
+		open[i].isShow=false;
+	}
 }
 </script>
 </body>
