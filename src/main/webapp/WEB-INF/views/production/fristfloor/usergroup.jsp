@@ -469,7 +469,7 @@
 					var html="";
 					$.ajax({
 						url:"${ctx}/production/getTemporarily",
-						data:datae,
+						data:datae, 
 						type:"GET",
 						beforeSend:function(){
 							index = layer.load(1, { 
