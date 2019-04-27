@@ -360,8 +360,9 @@ public class GroupAction {
 		}
 		cr.setData(ClearCascadeJSON
 				.get()
-				.addRetainTerm(Temporarily.class,"id","userId","userName","workTime","temporarilyDate","groupName","groupId"
-						).format(temporarilyList).toJSON());
+				.addRetainTerm(Temporarily.class,"id","userId","workTime","temporarilyDate","groupName","groupId","user")
+				.addRetainTerm(User.class,"userName")
+				.format(temporarilyList).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
