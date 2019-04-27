@@ -38,41 +38,41 @@
 			</table>
 		</div>
 		
-	
-	
 		<div id="LAY-role-table" class="table_th_search" lay-filter="LAY-role-table"></div>
 	</div>
-
-	
 </div>
 
+<!-- 添加角色隐藏框 -->
+<div class="layui-form" id="addRoleDiv" style="display:none;">
+		<table class="layui-table" lay-skin="line" style="text-align:center;">
+			<thead></thead>
+			<tbody>
+				<tr><td>角色名：</td>
+					<td><input type="text" class="layui-input" lay-verify="required" name="name"></td></tr>
+				<tr><td>英文名称：</td>
+					<td><input type="text"  class="layui-input" name="role"></td></tr>
+				<tr><td>具体描述：</td>
+					<td><input type="text" class="layui-input" name="description"></td></tr>
+				<tr><td colspan="2"><button type="button" lay-filter="addRoleSure" lay-submit class="layui-btn layui-btn-sm">确定</button></td></tr>
+			</tbody>
 
-
-<div class="layui-btn-container layui-inline layui-form" style="display:none" id="addPermission">
-   	<table>
-		<tbody>
-			<tr id="tr-select"><td>选择菜单：</td><td style="width:150px;"><select class="layui-input" id="first-menus" lay-filter="first-menus">
-											<option value="" >选择菜单</option></select></td><td>&nbsp;&nbsp;</td>
-			</tr>	
-			<tr><td><span class="layui-btn layui-btn-sm" lay-event="">确定</span></td></tr>							
-		</tbody>
 	</table>
 </div>
-	
+
+
+
+      
 
 			
 <!-- 选择框组件 -->
 <script type="text/html" id="switchTpl">
- 	 	<input type="checkbox" name="isShow" value="{{d.isShow}}" lay-skin="switch" lay-text="可用|不可用" lay-filter="isShow" {{ d.isShow == true ? 'checked' : '' }} >
-	</script>
+	<input type="checkbox" name="isShow" value="{{d.isShow}}" lay-skin="switch" lay-text="可用|不可用" lay-filter="isShow" {{ d.isShow == true ? 'checked' : '' }} >
+</script>
 
 <script type="text/html" id="toolbarDemo">
   	<div class="layui-btn-container layui-inline">
-    	<span class="layui-btn layui-btn-sm" lay-event="getChecked">获得选中的数据</span>
-   		<span class="layui-btn layui-btn-sm" lay-event="deleteSome">批量删除</span>
+   		<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteRole">批量删除</span>
     	<span class="layui-btn layui-btn-sm" lay-event="addRole">添加角色</span>
-    	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveAddRole">保存角色添加</span>
-    	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanAddRole">清空添加角色</span>
 	</div>
 </script>
 
@@ -86,79 +86,43 @@
 <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script> 
 <script>
 
+var allMenu=[];
+var choosePermission=[];
+function getMenu(){
+	 $.ajax({
+		url : "${ctx}/menus",
+		type : "get",
+		success : function(result) {
+			var html='';
+			var rows=result.data[0];  
+			for(var i=0;i<rows.length;i++){  
+				allMenu.push(rows[i]);
+				html+=('<option value="'+rows[i].id+'">'+rows[i].name+'</option>');
+			}
+			$('#first-menus').append(html);
+		} 
+	 });
+}
+
 function removePermission(id){  //删除某一角色中的权限,删除权限只需要删除表中的某一条数据，因此只需要传该数据的id
-		//layer.msg("修改成功！", {icon: 1});
 		layer.msg("删除失败！", {icon: 2});
 }	
-function addPermission(roleId){    //给某一角色添加权限，需要该角色的id，和相关权限信息
-	//$('#addPermission').show();
-	var addPer=layer.open({
-		 title: '添加权限'
-		   ,type:1
-		   ,area: ['30%', '80%']
-		   ,content:$('#addPermission')
-	})
-	
-	function showSelect(obj){
-		console.log($('#dsadkjaaskjd').elem);
-		var id=obj.value; 						//当前菜单id					
-		var selectId;				//存放当前菜单子菜单select id
-		if(obj.elem!=null)
-			selectId=obj.elem.id+"-child";		//如果传值为jquer对象
-		else
-			selectId=obj.id;					//为dom对象
-		var tdSelectId='td-'+selectId;          //存放当前菜单子菜单select的td 的id
-		if(id==null||id==''){				//如果id为空即取消当前菜单的选择
-			if(document.getElementById(selectId+'-child')!=null){   //如果子菜单下存在子菜单
-				document.getElementById(selectId+'-child').value='';  
-				showSelect(document.getElementById(selectId+'-child'));
-			}
-			document.getElementById(tdSelectId).innerHTML='';
-		}else{
-			for(var i=0;i<allMenu.length;i++){
-				if(allMenu[i].id==id){   
-					if(allMenu[i].parentId==0 ||allMenu[i].url=="#") {    //有下级菜单时
-						if(document.getElementById(tdSelectId)!=null){  //如果存放select的td存在则清空内容
-							document.getElementById(tdSelectId).innerHTML='';
-						}else{  											//不存在，则拼接存放子菜单列表的td
-							$('#tr-select').append('<td id="'+tdSelectId+'" style="width:150px;"></td><td>&nbsp;&nbsp;</td>');
-						}
-						var html='<select id="'+selectId+'"><option value="">请选择</option>';
-						for(var j=0;j<allMenu.length;j++){                //拼接子菜单内容
-							if(allMenu[j].parentId==id)
-								html+=('<option value="'+allMenu[j].id+'">'+allMenu[j].name+'</optopn>');
-						}
-						html+='</select>';
-						$('#td-'+selectId).append(html);
-						if(document.getElementById(selectId+'-child')!=null){  //如果子子菜单存在
-							document.getElementById(selectId+'-child').value='';  
-							showSelect(document.getElementById(selectId+'-child'));
-						}
-						form.render();
-						return;
-					}
-					else {   					//其他无下级菜单
-						return;
-					}
-				}//end id=allMenu[i].id
-			}//end for i<allMenu.length
-		}//end else id!=null
-	} //end showSelect
-}
+
+
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	tablePlug : 'tablePlug/tablePlug'
 }).define(
-	[ 'tablePlug', 'laydate' ],
+	[ 'tablePlug', 'laydate','element' ],
 	function() {
 		var $ = layui.jquery
 		, layer = layui.layer //弹层
+		, element = layui.element
 		, form = layui.form //表单
 		, table = layui.table //表格
 		, laydate = layui.laydate //日期控件
 		, tablePlug = layui.tablePlug; //表格插件
-		
 		// 处理操作列
 		var fn1 = function(field) {
 			return function(data) {
@@ -169,7 +133,7 @@ layui.config({
 						].join('');
 			};
 		};
-		
+		getMenu();   //获取菜单，添加权限级联时使用
 		table.render({
 			elem : '#LAY-role-table',
 			size : 'lg',
@@ -240,13 +204,13 @@ layui.config({
 			var tableView = trElem.closest('.layui-table-view');
 			table.cache[tableView.attr('lay-id')][trElem.data('index')][tdElem.data('field')] = data.value;
 		});
-		
-		table.on('tool(LAY-role-table)',function(obj){   //监听查看权限按钮
-			var data=obj.data;  
-			var rp=data.resourcePermission;
-			var permissionTable='<table class="layui-table" style="text-align:center"><thead><th>创建时间</th><th>菜单id</th><th>id</th><th>权限等级</th><th>'+
+		table.on('tool(LAY-role-table)',function(obj){   //监听查看权限按钮,obj为监听该行的对象
+			var data=obj.data;           
+			var rp=data.resourcePermission;   //拥有的权限
+			var permissionTable='<p>&nbsp;<button class="layui-btn layui-btn-sm" lay-filter="addPermission" lay-submit value="'+obj.id+'">新增权限</button></p>'+
+								'<table class="layui-table" style="text-align:center"><thead><th>创建时间</th><th>菜单id</th><th>id</th><th>权限等级</th><th>'+
 								'更新时间</th><th>移除</th></head><tbody>';
-			if(rp.length>0){         //拼接权限的表格内容
+			if(rp.length>0){         //如果拥有权限，拼接权限的表格内容
 				for(var i=0;i<rp.length;i++){
 					var p=rp[i];
 					permissionTable+=('<tr><td>'+p.createdAt+'</td><td>'+p.menuId+'</td><td>'+p.id+'</td><td>'+p.permissionIds[0]+'</td><td>'
@@ -256,7 +220,13 @@ layui.config({
 			else{
 				permissionTable+='<tr><td colspan="6" style="text-align:center">该角色还没有权限</td></tr>';
 			}
-			permissionTable+='<tr><td colspan="6"><button class="layui-btn layui-btn-sm" onclick="addPermission('+data.id+')">新增权限</button></td></tr></tbody></table>';
+			permissionTable+='</tbody></table>';
+
+			
+			form.on('submit(addPermission)',function(obj){  //监听添加权限按钮
+				addPermission(obj.id);
+			});
+			form.render();
 			
 			var aboutPermission=layer.open({     //打开查看权限内容的弹窗
 				   title: '查看角色权限：'+data.name
@@ -265,6 +235,123 @@ layui.config({
 				   ,content:permissionTable
 			}); 
 			
+			
+			function addPermission(roleId){    //给某一角色添加权限，需要该角色的id，和相关权限信息
+				choosePermission=[];   //每次打开添加权限的按钮，对之前所添加的权限清空
+				var html='';       //打开添加权限窗口的内容
+				html+='<div style="width:40%;float:left;border:1px solid gray;height:400px;overflow:auto;margin:10px;padding:10px;" id="menuDiv">';    //左侧存放联级菜单的div
+				for(var i=0;i<allMenu.length;i++){    //拼接菜单级联
+					html+='<div><p><a href="javascript:;" value="'+allMenu[i].id+'" url="'+allMenu[i].url+'" parent="'+allMenu[i].parentId+'">'+allMenu[i].name+'</a></p>';
+					if(allMenu[i].children!=null)   //如果有下级菜单，进行递归拼接 creatHtml(子菜单,'相对于父菜单所使用的缩进')
+						html+=creatHtml(allMenu[i].children,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+					html+='</div>';
+				}
+				html+='</div>'+   //左侧菜单链接div结束
+						'<div style="margin:auto;margin-top:150px;float:left;width:5%;text-align:center;"><p><i class="layui-icon layui-icon-next" ></i></p>'+	 
+						'<p>选择添加权限</p></div>'+	   //中间存放添加菜单按钮的div
+						'<div style="float:right;width:40%;height:400px;border:1px solid gray;margin:10px;padding:10px;overflow:auto;" id="choosedDiv"></div>'+    //右侧存放选中菜单的div
+						'<div style="float:right;width:100%;text-align:center;"><button type="button" lay-submit lay-filter="addPermissionSure" class="layui-btn layui-btn-sm">确定</button></div>'; //确定按钮
+				
+				function creatHtml(menu,nbsp){   //对多级菜单进行递归拼接
+					var str='<div style="display:none;">';
+					for(var i=0;i<menu.length;i++){
+						str+='<p>'+nbsp+'<a href="javascript:;" value="'+menu[i].id+'" url="'+menu[i].url+'" name="'+menu[i].name+'" parent="'+menu[i].parentId+'">|-'+menu[i].name+'</a>';
+						if(menu[i].children!=null){
+							str+=creatHtml(menu[i].children,nbsp+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+						}
+						str+='</p>';
+					}
+					return str+'</div>';
+				}
+				var addPer=layer.open({    //打开添加权限的窗口
+					 title: '添加权限'
+					   ,type:1
+					   ,area: ['40%', '80%']
+					   ,content:html
+				})
+				form.on('submit(addPermissionSure)',function(){
+					alert("添加失败");
+				})
+				
+				 $('#menuDiv').find('a').on('click',function(){   //监听菜单级联中 a 的点击操作
+					 var p= $(this).attr("url");
+					 if(p=="#"){                    //如果为#,则只切换下级菜单栏的显示、隐藏。不做其他操作 return
+						 var display =$(this).parent().next().css("display")    //菜单下级菜单隐藏显示的切换
+						 if(display=='none'){
+							$(this).parent().next().css("display","block");  
+						}else{
+							$(this).parent().next().css("display","none"); 
+						}  
+					 	return;
+					 }  
+					//以下是选中权限的操作，通过背景颜色判断是选中还是取消操作         
+					 var bg=$(this).parent().css("background-color");
+					 if(bg=="rgb(204, 255, 255)"){         //如果有背景颜色,则该点击为取消选中操作
+					 	$(this).parent().css("background-color","");
+					 	for(var i=0;i<choosePermission.length;i++){    //从选中数组中去除该对象
+					 		if(choosePermission[i].id==$(this).attr("value"))
+					 				choosePermission.splice(i,1);
+					 	}
+					 }
+					 else{					//如果没有颜色，则该点击为选中操作
+					 	$(this).parent().css("background-color","#CCFFFF");   //CCFFFF对应rgb(204, 255, 255)
+					 	var perm={
+					 			id:$(this).attr("value"),
+					 			name:$(this).attr("name"),
+					 	}
+					 	choosePermission.push(perm);console.log('选中：'+choosePermission.length);  //添加到选中数组
+					 }
+					 var html='';       //对选中数组在选中div中的显示
+					 for(var i=0;i<choosePermission.length;i++){
+						//子菜单选中对父级菜单的级联反应，选中子菜单，父菜单默认选中
+							parentChoose($(this));
+						html+='<p>&nbsp;<a href="javascript:;" value="'+choosePermission[i].id+'">'+choosePermission[i].name+'<a></p>';
+					 }
+					 $('#choosedDiv').html("已选中："+choosePermission.length+"条权限"+html);
+					 
+					 function parentChoose(a){
+						// alert(a.attr("parent"));
+					 }
+				 })
+						
+			
+			}
+			
+			
+			
+			
+		
+			
+			
+			
+		})
+		//监听表格编辑，修改
+		table.on('edit(LAY-role-table)',function(obj){
+			var load=layer.load(1);
+			var id=obj.data.id;
+			var field=obj.field;
+			var value=obj.value;
+			var data={
+					id:id,
+					[field]:value
+			}
+			$.ajax({
+				url:'${ctx}/roles/update',
+				type:"post",
+				data:data,
+				success:function(result){
+					if(0==result.code){
+						layer.msg('修改成功！',{icon:1});
+					}
+					else
+						layer.msg(result.message,{icon:2});
+					layer.close(load);
+				},
+				error:function(){
+					layer.msg('ajax error,',{icon:2});
+					layer.close(load);
+				}
+			})
 		})
 		
 		//监听头工具栏事件
@@ -274,100 +361,75 @@ layui.config({
 	      var tableId = config.id;
 	      // var tableView = config.elem.next();
 	      switch (obj.event) {
-	        case 'addRole':  table.addTemp(tableId, function (trElem) { });
-	         					 break;
-	        case 'saveAddRole':
-						          layer.alert('临时数据:' + JSON.stringify(table.getTemp(tableId).data));
-						          break;
-	        case 'cleanAddRole':
-						          table.cleanTemp(tableId);  layer.msg('临时数据已删除');
-						          break;
-	        case 'openSelect':
-					          layer.open({
-					            type: 1,
-					            title: '测试下拉效果单页面',
-					            area: ['3000px', '160px'],
-					            content: '<div class="layui-form" style="padding: 20px;"><select><option value="1">北京</option><option value="2">上海</option><option value="3">广州</option><option value="4">深圳</option></select></div>',
-					            success: function (layero, index) {
-					              form.render();
-					            }
-					          });
-	          					break;
-	        case 'openIframeSelect':
-					          layer.open({
-					            type: 2,
-					            title: '测试下拉效果iframe',
-					            shade: false,
-					            area: ['300px', '160px'],
-					            content: 'testIframe.html?time=' + new Date().getTime(),
-					            success: function (layero, index) {
-					            }
-					          });
-					          break;
-	        case 'autoReload':
-					          if (!layui._autoReloadIndex) {
-					            layui._autoReloadIndex = setInterval(function () {
-					              table.reload(tableId, {});
-					            }, 300);
-					          } else {
-					            clearInterval(layui._autoReloadIndex);
-					            layui._autoReloadIndex = 0;
-					          }
-					          break;
-	        case 'LAYTABLE_EXPORT':  // 点击导出图标的时候
-	          
-					          $(this).find('.layui-table-tool-panel li').unbind('click').click(function () {
-					            var dataTemp = table.cache[tableId];  // 干掉了原始的事件了，自己定义需要的
-					            if (!dataTemp || !dataTemp.length) 
-					              dataTemp = [{}];   // 处理如果没有数据的时候导出为空的excel，没有导出thead的问题
-					            table.exportFile(tableId, dataTemp, $(this).data('type'));// 实际可以根据需要还可以直接请求导出全部，或者导出选中的数据而不是只导出当前的页的数据
-					          });
-					          break;
-	        case 'getChecked':
-					          layer.alert(JSON.stringify(table.checkStatus(tableId).data));
-					          break;
-	        case 'getCheckedStatus':
-					          var status = table.checkStatus(tableId).status;
-					          layer.alert('新增的：' + JSON.stringify(status[tablePlug.CHECK_TYPE_ADDITIONAL]) + '<br>'
-					            + '删除的：' + JSON.stringify(status[tablePlug.CHECK_TYPE_REMOVED]));
-					          break;
-	        case 'deleteSome':
-					          // 获得当前选中的，不管它的状态是什么？只要是选中的都会获得
-					          var checkedIds = tablePlug.tableCheck.getChecked(tableId);
-					          layer.confirm('您是否确定要删除选中的' + checkedIds.length + '条记录？', function () {
-					            layer.alert('do something with: ' + JSON.stringify(checkedIds));
-					          });
-					          break;
-	        case 'jump':
-					          var pageCurr = btnElem.data('page');
-					          table.reload(config.id, {url: 'json/data1' + pageCurr + '.json', page: {curr: pageCurr}});
-					          break;
-	        case 'reload':
-				          var options = {page: {curr: 1}};
-				          var urlTemp = btnElem.data('url');
-				          if (urlTemp) {
-				            options.url = 'json/' + urlTemp + '.json';
-				          }
-				          var optionTemp = eval('(' + (btnElem.data('option') || '{}') + ')');
-
-				          table.reload(config.id, $.extend(true, options, optionTemp));
-				          break;
-	        case 'reloadIns':
-				          tablePlug.getIns(config.id).reload({
-				            // page: false
-				          });
-				          break;
-	        case 'setDisabled':
-				          // tablePlug.tableCheck.disabled(config.id, [10003, 10004, 10010]);
-				          // table.reload(tableId, {});
-				          tablePlug.disabledCheck(tableId, [10003, 10004, 10010]);
-				          break;
-	        case 'setDisabledNull':
-				          tablePlug.disabledCheck(tableId, false);
-				          break;
-	        case 'ranksConversion':
-				          // 表格行列转换
-				          break;
+	        case 'addRole': 
+	        	var addRole=layer.open({
+	        		type: 1,
+		            title: '添加角色',
+		            area: ['500px', '300px'],
+		            content:$('#addRoleDiv')
+	  					})
+  					form.on('submit(addRoleSure)',function(obj){
+  						var load=layer.load(1);
+  						$.ajax({
+  							url:"${ctx}/roles/exists?name="+obj.field.name,
+  							type:"get",
+  							success:function(result){
+  								if(result.code==0){
+  									$.ajax({
+  			  							url:"${ctx}/roles/add",
+  			  							type:"post",
+  			  							data:obj.field,
+  			  							success:function(result){
+  			  								if(0==result.code){
+  			  									layer.msg('添加成功' ,{icon: 1});
+  			  								}else
+  			  									layer.msg(result.message, {icon: 2});
+  			  								
+  			  							},
+  			  							error:function(){
+  			  								layer.msg("操作失败！", {icon: 2});
+  			  								layer.close(load);
+  			  								layer.close(addRole);
+  			  							}
+  			  						}) 
+  								}
+  								else{
+  									layer.msg('该角色名已存在',{icon:2});
+  								}
+  								layer.close(load);		//关闭加载
+	  							layer.close(addRole);	//关闭添加角色的窗口
+  							}
+  						})
+  					});
+   					break;
+	         					
+	        case 'deleteRole':  // 获得当前选中的，不管它的状态是什么？只要是选中的都会获得
+	        	  var deleteData={    //设置要删除的id集合
+	        			  ids: tablePlug.tableCheck.getChecked(tableId)
+	        	  }
+		          layer.confirm('您是否确定要删除选中的条记录？', function () {
+		        	  	var load=layer.load(1);   //打开加载层
+		            	$.ajax({
+		            		url:"${ctx}/roles/delete",
+		            		type:"get",
+		            		data:deleteData,
+		            		traditional:true,     //阻止深度序列化参数对象
+		            		suceess:function(result){
+		            			if(result.code==0)
+		            				layer.msg('删除成功' ,{icon: 1});
+		            			else
+		            				layer.msg(result.message,{icon:2});
+		            			layer.close(load);
+		            		},
+		            		error:function(){
+		            			layer.msg(result.message,{icon:2});
+		            			layer.close(load);
+		            		}
+		            	})
+		        	  
+		          });
+		          break;
+	       
 	      }
 	    });
 		

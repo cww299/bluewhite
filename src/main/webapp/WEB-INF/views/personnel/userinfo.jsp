@@ -16,6 +16,25 @@
 <script src="${ctx }/static/js/laypage/laypage.js"></script> 
 <link rel="stylesheet" href="${ctx }/static/css/main.css">
 <script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
+ <!-- Drop Zone-->
+    <link rel="stylesheet" href="${ctx }/static/css/dropzone.css">
+    <script src="${ctx }/static/js/vendor/dropzone.min.js"></script>
+    
+    	<%-- <link rel="stylesheet" href="${ctx }/static/css/main.css">
+	<link rel="stylesheet" type="text/css" href="${ctx }/static/css/dropzone.css">
+	<script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
+	<script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
+	<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/autocomplete.css">
+	<script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
+	<script src="${ctx }/static/plugins/pace/pace.min.js"></script>
+	<script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
+	<script src="${ctx }/static/js/src/app.js"></script> 
+	<script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
+	<script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
+	<script src="${ctx }/static/js/vendor/dropzone.min.js"></script>
+     --%>
+    
+    
 </head>
 <body>
 	<div class="panel panel-default">
@@ -190,13 +209,12 @@
 			<div style="height: 30px"></div>
 
 		
-			<div style="padding-left: 450px">
+			<div style="padding-left: 550px">
 				<div class="panel-body">
 					<div style="font-size: 16px;">
 						<b>员工照片:</b>
 					</div>
-					<form action="#" class="dropzone" style="widows: 150px"
-						id="my-awesome-dropzone" enctype="multipart/form-data"></form>
+					<form action="#" class="dropzone" style="height: 160px;width:140px;" id="my-awesome-dropzone" enctype="multipart/form-data"></form>
 
 				</div>
 			</div>
@@ -1015,7 +1033,7 @@
 						_index = layer.open({
 							  type: 1,
 							  skin: 'layui-layer-rim', //加上边框
-							  area: ['60%', '70%'], 
+							  area: ['80%', '90%'], 
 							  btnAlign: 'c',//宽高
 							  maxmin: true,
 							  title:userName,
@@ -1783,7 +1801,7 @@
 						_index = layer.open({
 							  type: 1,
 							  skin: 'layui-layer-rim', //加上边框
-							  area: ['60%', '70%'], 
+							  area: ['80%', '90%'], 
 							  btnAlign: 'c',//宽高
 							  maxmin: true,
 							  title:userName,
@@ -2018,7 +2036,7 @@
 						_index = layer.open({
 							  type: 1,
 							  skin: 'layui-layer-rim', //加上边框
-							  area: ['60%', '70%'], 
+							  area: ['80%', '90%'], 
 							  btnAlign: 'c',//宽高
 							  maxmin: true,
 							  title:userName,
@@ -2329,7 +2347,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['60%', '70%'], 
+						  area: ['80%', '90%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"信息",
