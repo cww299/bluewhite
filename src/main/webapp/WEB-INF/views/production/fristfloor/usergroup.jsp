@@ -469,10 +469,10 @@
 					var html="";
 					$.ajax({
 						url:"${ctx}/production/getTemporarily",
-						data:datae,
+						data:datae, 
 						type:"GET",
 						beforeSend:function(){
-							index = layer.load(1, {
+							index = layer.load(1, { 
 								  shade: [0.1,'#fff'] //0.1透明度的白色背景
 								});
 						},
@@ -480,7 +480,7 @@
 						success:function(result){
 							$(result.data).each(function(i,o){
 							html +='<tr><td class="center reste"><label> <input type="checkbox" class="stuCheckBoxt" value="'+o.id+'"/><span class="lbl"></span></label></td>'
-			      				+'<td class="text-center  bacthNumber">'+o.userName+'</td>'
+			      				+'<td class="text-center  bacthNumber">'+o.user.userName+'</td>'
 			      				+'<td class="text-center edit allotTime">'+o.workTime+'</td>'
 			      				+'<td class="text-center edit allotTime">'+o.groupName+'</td>'
 			      				+'<td class="text-center edit allotTime">'+o.temporarilyDate+'</td></tr>'
