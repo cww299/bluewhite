@@ -86,17 +86,18 @@
 <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script> 
 <script>
 
-var allMenu=[];
-var choosePermission=[];
+var allMenu=[];    //所有的menus接口菜单
+var choosePermission=[];  //链接菜单中被选中的三级菜单
+var parentMenu=[];		//用于联级子菜单点击父菜单的显示功能,id存放的本身id，name存放菜单名，choosed子菜单是否有被选中,choosedNum子菜单有多少个被选中
 function getMenu(){
 	 $.ajax({
-		url : "${ctx}/menus",
+		url : "${ctx}/getTreeMenuPage",
 		type : "get",
 		success : function(result) {
 			var html='';
-			var rows=result.data[0];  
+			var rows=result.data;  
 			for(var i=0;i<rows.length;i++){  
-				allMenu.push(rows[i]);
+				allMenu.push(rows[i]);   
 				html+=('<option value="'+rows[i].id+'">'+rows[i].name+'</option>');
 			}
 			$('#first-menus').append(html);
@@ -241,7 +242,7 @@ layui.config({
 				var html='';       //打开添加权限窗口的内容
 				html+='<div style="width:40%;float:left;border:1px solid gray;height:400px;overflow:auto;margin:10px;padding:10px;" id="menuDiv">';    //左侧存放联级菜单的div
 				for(var i=0;i<allMenu.length;i++){    //拼接菜单级联
-					html+='<div><p><a href="javascript:;" value="'+allMenu[i].id+'" url="'+allMenu[i].url+'" parent="'+allMenu[i].parentId+'">'+allMenu[i].name+'</a></p>';
+					html+='<div><p><a href="javascript:;" value="'+allMenu[i].id+'" url="'+allMenu[i].url+'" parent="'+allMenu[i].parentId+'" name="'+allMenu[i].name+'">'+allMenu[i].name+'</a></p>';
 					if(allMenu[i].children!=null)   //如果有下级菜单，进行递归拼接 creatHtml(子菜单,'相对于父菜单所使用的缩进')
 						html+=creatHtml(allMenu[i].children,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
 					html+='</div>';
@@ -282,6 +283,19 @@ layui.config({
 						}else{
 							$(this).parent().next().css("display","none"); 
 						}  
+					 	//将该菜单存于父parent菜单数组中
+					 	var i=0;
+					 	for(;i<parentMenu.length;i++){
+					 		if(parentMenu[i].id==$(this).attr("value"))
+					 			break;
+					 	}
+					 	if(!(i<parentMenu.length)){
+					 		var par={ id:$(this).attr("value"),
+			 						name:$(this).attr("name"),
+			 						choosed:false,
+			 						choosedNum:0};
+					 		parentMenu.push(par); 
+					 	}
 					 	return;
 					 }  
 					//以下是选中权限的操作，通过背景颜色判断是选中还是取消操作         
@@ -298,21 +312,52 @@ layui.config({
 					 	var perm={
 					 			id:$(this).attr("value"),
 					 			name:$(this).attr("name"),
+					 			parent:$(this).attr("parent"),
 					 	}
-					 	choosePermission.push(perm);console.log('选中：'+choosePermission.length);  //添加到选中数组
+					 	choosePermission.push(perm);  //添加到选中数组
 					 }
 					 var html='';       //对选中数组在选中div中的显示
 					 for(var i=0;i<choosePermission.length;i++){
-						//子菜单选中对父级菜单的级联反应，选中子菜单，父菜单默认选中
-							parentChoose($(this));
 						html+='<p>&nbsp;<a href="javascript:;" value="'+choosePermission[i].id+'">'+choosePermission[i].name+'<a></p>';
 					 }
 					 $('#choosedDiv').html("已选中："+choosePermission.length+"条权限"+html);
-					 
-					 function parentChoose(a){
-						// alert(a.attr("parent"));
+					 parentChoose();  	//子菜单选中对父级菜单的级联反应，选中子菜单，父菜单默认选中
+					 function parentChoose(){
+						for(var i=0;i<parentMenu.length;i++){  //对父菜单数据初始化，便于重新计算
+							parentMenu[i].choosed=false;
+							parentMenu[i].choosedNum=0;
+						}
+						for(var i=0;i<choosePermission.length;i++){   //重新计算父菜单中子菜单选中的个数
+							var c=choosePermission[i];
+							for(var j=0;j<parentMenu.length;j++){ 
+								if(c.parent==parentMenu[j].id){
+									if(parentMenu[j].choosed==false){
+										parentMenu[j].choosed=true;
+										parentMenu[j].choosedNum=1;
+									}
+									else 
+										parentMenu[j].choosedNum+=1;
+								}
+							}
+						}
+						for(var i=0;i<parentMenu.length;i++){
+							$('#menuDiv').find('a').each(function(){  
+							    //对父菜单
+								if($(this).attr("value")==parentMenu[i].id){ 
+									if(parentMenu[i].choosed==false){
+										$(this).html(parentMenu[i].name);
+										$(this).parent().css("background-color","");
+									}else{
+										$(this).parent().css("background-color",'#CCFFFF');
+										$(this).html(parentMenu[i].name+' '+'<span class="layui-badge">'+parentMenu[i].choosedNum+'</span>')
+									}
+								}
+							})
+						}
+						
+						
 					 }
-				 })
+				 })//end a.click
 						
 			
 			}
