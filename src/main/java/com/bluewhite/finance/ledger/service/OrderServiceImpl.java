@@ -242,7 +242,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 					Long id = Long.parseLong(idArr[i]);
 					Order order=dao.findOne(id);
 					
-					if(order.getAshoreNumber()==0 || order.getAshoreNumber()==null){
+					if(order.getAshoreNumber()==null || order.getAshoreNumber()==0){
 						dao.delete(id);
 						count++;
 						Order order2=new Order();

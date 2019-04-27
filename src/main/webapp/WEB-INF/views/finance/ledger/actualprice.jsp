@@ -61,13 +61,18 @@
 				format:'yyyy-MM-01 HH:mm:ss',
 				done: function(value, date) {
 					a=value;
+					var index
 					upload.render({
 					   	  elem: '#test1'
 					   	  ,url: '${ctx}/excel/importActualprice'
 					   	  ,data: {
 					   		currentMonth:a
 					   		}
+					 		,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+					 			index = layer.load(3); //上传loading
+						  }
 					   	  ,done: function(res, index, upload){ //上传后的回调
+					   		layer.closeAll();
 					   		layer.msg(res.message, {icon: 1});
 					   		table.reload('tableData', {
 							});

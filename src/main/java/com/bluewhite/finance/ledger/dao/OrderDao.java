@@ -22,5 +22,6 @@ public interface OrderDao extends BaseRepository<Order, Long>{
   public List<Order> findByPartyNamesIdAndContractTimeBetween(Long partyNamesId, Date firstDayOfMonth,
 		Date lastDayOfMonth);
 	
-  public List<Order> findByBatchNumberAndProductNameAndContractTimeBetween(String batchNumber,String productName,Date firstDayOfMonth,Date lastDayOfMonth);
+  public List<Order> findByBatchNumberAndContractTimeBetween(String batchNumber,Date firstDayOfMonth,Date lastDayOfMonth);
+  public List<Order> findByProductNameAndContractTimeBetween(String productName,Date firstDayOfMonth,Date lastDayOfMonth);
 }
