@@ -2,10 +2,20 @@ package com.bluewhite.common.utils;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.print.attribute.standard.MediaName;
 
 import org.springframework.ui.Model;
 
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
+import com.bluewhite.production.bacth.entity.Bacth;
+
+import javassist.expr.NewArray;
 
 public class NumUtils {
 	
@@ -92,6 +102,19 @@ public class NumUtils {
 		 return model;
 	}
 	
+	/**
+	 * 将传入的多个参数转换成Double集合
+	 */
+	 private static List<Double> reTypeList(Double...properties){
+		 List<Double> ignoreList = null;
+			if(properties != null){
+				ignoreList = Arrays.asList(properties);
+		    }
+			List<Double> ignoreListRe = ignoreList;
+		return ignoreList;
+		 
+	 }
+	
 	 /** 
      * double 相加 
      * @param d1 
@@ -103,7 +126,24 @@ public class NumUtils {
         BigDecimal bd2 = new BigDecimal(Double.toString(d2)); 
         return bd1.add(bd2).doubleValue(); 
     } 
-
+    
+    /** 
+     * 多个 double 相加 
+     * @param d1 
+     * @param d2 
+     * @return 
+     */ 
+    public static double sum(Double...properties){ 
+    	List<Double> ignoreList = reTypeList(properties);
+    	List<BigDecimal> bigDecimalList = new ArrayList<>();
+    	for(Double d : ignoreList){
+    		 BigDecimal bd1 = new BigDecimal(Double.toString(d)); 
+    		 bigDecimalList.add(bd1);
+    	}
+		return bigDecimalList.stream().reduce((a,b)->a.add(b)).get().doubleValue();
+    }
+    
+  
 
     /** 
      * double 相减 
@@ -116,6 +156,23 @@ public class NumUtils {
         BigDecimal bd2 = new BigDecimal(Double.toString(d2)); 
         return bd1.subtract(bd2).doubleValue(); 
     } 
+    
+	/**
+	 * 多个 double 相减
+	 * 
+	 * @param d1
+	 * @param d2
+	 * @return
+	 */
+	public static double sub(Double... properties) {
+		List<Double> ignoreList = reTypeList(properties);
+    	List<BigDecimal> bigDecimalList = new ArrayList<>();
+    	for(Double d : ignoreList){
+    		 BigDecimal bd1 = new BigDecimal(Double.toString(d)); 
+    		 bigDecimalList.add(bd1);
+    	}
+		return bigDecimalList.stream().reduce((a,b)->a.subtract(b)).get().doubleValue();
+	}
 
     
     /** 
@@ -129,8 +186,23 @@ public class NumUtils {
         BigDecimal bd2 = new BigDecimal(Double.toString(d2)); 
         return bd1.multiply(bd2).doubleValue(); 
     } 
-
-
+    
+    /** 
+     * 多个 double 乘法 
+     * @param d1 
+     * @param d2 
+     * @return 
+     */ 
+    public static double mul(Double...properties){
+    	List<Double> ignoreList = reTypeList(properties);
+    	List<BigDecimal> bigDecimalList = new ArrayList<>();
+    	for(Double d : ignoreList){
+    		 BigDecimal bd1 = new BigDecimal(Double.toString(d)); 
+    		 bigDecimalList.add(bd1);
+    	}
+		return bigDecimalList.stream().reduce((a,b)->a.multiply(b)).get().doubleValue();
+    } 
+    
     /** 
      * double 除法 
      * @param d1 

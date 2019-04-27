@@ -222,13 +222,13 @@ public class DatesUtil {
 		double timele = day % 60;
 		double time = 0.0;
 		if (day > 0) {
-			if (timele < 20) {
+			if (timele < 25) {
 				time = alltime;
 			}
-			if (20 <= timele && timele <= 50) {
+			if (25 <= timele && timele <= 55) {
 				time = NumUtils.sum(alltime, 0.5);
 			}
-			if (timele > 50) {
+			if (timele > 55) {
 				time = NumUtils.sum(alltime, 1);
 			}
 		}

@@ -268,6 +268,17 @@ public class GroupAction {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			return cr;
 		}
+		if (StringUtils.isEmpty(temporarily.getUserId())) {
+			User user = new User();
+			user.setForeigns(1);
+			user.setPassword("123456");
+			user.setUserName(temporarily.getUserName());
+			user.setStatus(0);
+			user.setType(temporarily.getType());
+			userService.save(user);
+			temporarily.setUserId(user.getId());
+		}
+		
 		List<Date> dateList = new ArrayList<>();
 		if(!StringUtils.isEmpty(temporarily.getTemporarilyDates())){
 			String [] dateArr = temporarily.getTemporarilyDates().split(" ~ ");
@@ -282,16 +293,7 @@ public class GroupAction {
 			temporarily.setTemporarilyDate(date);
 			Temporarily temporarily1 = new Temporarily();
 			BeanCopyUtils.copyNullProperties(temporarily,temporarily1);
-			if (StringUtils.isEmpty(temporarily1.getUserId())) {
-				User user = new User();
-				user.setForeigns(1);
-				user.setPassword("123456");
-				user.setUserName(temporarily1.getUserName());
-				user.setStatus(0);
-				user.setType(temporarily1.getType());
-				userService.save(user);
-				temporarily1.setUserId(user.getId());
-			}
+	
 			if (temporarilyDao.findByUserIdAndTemporarilyDateAndType(temporarily1.getUserId(),
 					temporarily1.getTemporarilyDate(), temporarily1.getType()) != null) {
 				cr.setMessage("当日已添加过借调人员的工作时间,不必再次添加");

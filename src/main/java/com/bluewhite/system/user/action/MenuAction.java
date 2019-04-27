@@ -59,7 +59,7 @@ public class MenuAction {
 	public CommonResponse getMenus(HttpServletRequest request) {
 		List<Object> result = new ArrayList<Object>();
 		CurrentUser cu = SessionManager.getUserSession();
-		List<Menu> menus = menuService.findHasPermissionMenusByUsernameNew(cu
+		List<Menu> menus = menuService.findHasPermissionMenusByUsername(cu
 				.getUserName());
 		result.add(menus);
 		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(result)
@@ -78,6 +78,21 @@ public class MenuAction {
 	@ResponseBody
 	public CommonResponse getMenuPage(HttpServletRequest request,PageParameter page, Menu menu) {
 		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(menuService.getPage(page, menu))
+				.toJSON());
+		return cr;
+	}
+	
+	
+	/**
+	 * 树型查询所有菜单
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/getTreeMenuPage", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getTreeMenuPage() {
+		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(menuService.getTreeMenuPage())
 				.toJSON());
 		return cr;
 	}

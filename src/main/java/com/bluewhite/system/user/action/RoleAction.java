@@ -128,6 +128,25 @@ public class RoleAction {
 		}
 		return cr;
 	}
+	
+	
+	/**
+	 * 角色新增(菜单-权限)
+	 * @param request 请求
+	 * @param role 角色实体类
+	 * @return cr
+	 */
+	@RequestMapping(value = "/roles/changeRole", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse changeRole(HttpServletRequest request, Role role) {
+		CommonResponse cr = new CommonResponse();
+		
+		
+		
+		
+		
+		return cr;
+	}
 
 	/**
 	 * 修改角色信息
@@ -135,11 +154,15 @@ public class RoleAction {
 	 * @param role 角色实体类
 	 * @return cr
 	 */
-	@RequestMapping(value = "/roles/update", method = RequestMethod.PUT)
+	@RequestMapping(value = "/roles/update", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse changeRole(HttpServletRequest request, Role role) {
-		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(
-				roleService.save(role)).toJSON());
+	public CommonResponse updateRole(HttpServletRequest request, Role role) {
+		CommonResponse cr = new CommonResponse();
+		
+		
+		
+		
+		
 		return cr;
 	}
 
@@ -149,11 +172,11 @@ public class RoleAction {
 	 * @param id roleid
 	 * @return cr
 	 */
-	@RequestMapping(value = "/roles/delete", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/roles/delete", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse changeTeacher(HttpServletRequest request, long id) {
+	public CommonResponse changeTeacher(HttpServletRequest request, String ids) {
 		CommonResponse cr = new CommonResponse();
-		roleService.delete(id);
+		roleService.delete(ids);
 		cr.setMessage("删除成功");
 		return cr;
 	}

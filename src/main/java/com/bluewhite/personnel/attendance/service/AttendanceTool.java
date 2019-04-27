@@ -74,9 +74,9 @@ public class AttendanceTool {
 							&& attendanceTime.getCheckOut().after(workTimeEnd);
 					if(flag){
 						//等于实际工作时间+前一天的加班时间
-						actualTurnWorkTime = NumUtils.sum(attendanceTime.getWorkTime(), NumUtils.div(minute, 60, 2));
+						actualTurnWorkTime = NumUtils.sum(attendanceTime.getWorkTime(), NumUtils.div(minute, 60, 1));
 						//等于默认出勤-实际出勤
-						actualDutyTime =NumUtils.sub(turnWorkTime, actualTurnWorkTime);
+						actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);
 						flag = false;
 						attendanceTime.setFlag(1);
 					}
@@ -86,7 +86,7 @@ public class AttendanceTool {
 							&& attendanceTime.getCheckOut().before(workTimeEnd)
 							&& DatesUtil.getTime(attendanceTime.getCheckOut(),workTimeEnd)>DUTYMIN;
 					if(flag){
-						actualTurnWorkTime = NumUtils.sum(attendanceTime.getWorkTime(), NumUtils.div(minute, 60, 2));
+						actualTurnWorkTime = NumUtils.sum(attendanceTime.getWorkTime(), NumUtils.div(minute, 60, 1));
 						actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);
 						flag = false;
 						attendanceTime.setFlag(1);
