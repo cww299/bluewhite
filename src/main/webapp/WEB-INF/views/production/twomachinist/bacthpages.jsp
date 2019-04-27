@@ -105,6 +105,25 @@
 				<tbody id="tablecontent">
 
 				</tbody>
+				<thead>
+				<tr>
+					<td class="center">合计</td>
+					<td class="text-center"></td>
+					<td class="text-center"></td>
+					<td class="text-center"></td>
+					<td class="text-center" id="total">1</td>
+					<td class="text-center"></td>
+					<td class="text-center"></td>
+					<td class="text-center" id="tota2">1</td>
+					<td class="text-center"></td>
+					<td class="text-center" id="tota3">1</td>
+					<td class="text-center"></td>
+					<td class="text-center"></td>
+					<td class="text-center"></td>
+					<td class="text-center"></td>
+					<td class="text-center"></td>
+				</tr>
+			</thead>
 			</table>
 			<div id="pager" class="pull-right"></div>
 	</div>
@@ -259,7 +278,9 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			  
+		      			$("#total").text(result.data.statData.number)
+		      			$("#tota2").text(result.data.statData.sumTaskPrice)
+		      			$("#tota3").text(result.data.statData.time)
 		      			 $(result.data.rows).each(function(i,o){
 		      				 if(o.bacthHairPrice==null){
 		      					o.bacthHairPrice=0;

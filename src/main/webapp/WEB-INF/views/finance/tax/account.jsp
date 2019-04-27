@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html class="no-js">
 
+<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/autocomplete.css" media="all">
 <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 <script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
 <script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
@@ -81,7 +82,7 @@
 			}).extend({
 				tablePlug: 'tablePlug/tablePlug'
 			}).define(
-				['tablePlug', 'laydate', 'element','form'],
+				['tablePlug', 'laydate', 'element','form','autocomplete'],
 				function() {
 					var $ = layui.jquery
 						,layer = layui.layer //弹层
@@ -89,7 +90,8 @@
 						,table = layui.table //表格
 						,laydate = layui.laydate //日期控件
 						,tablePlug = layui.tablePlug //表格插件
-						,element = layui.element;
+						,element = layui.element
+						,autocomplete = layui.autocomplete; 
 					//全部字段
 					var allField;
 					//select全局变量
@@ -107,12 +109,19 @@
 						type: 'datetime',
 					});
 				 
+					autocomplete.render({
+			            elem: $('#example')[0],
+			            url: 'example_request_url',
+			            template_val: '{{d.consignee}}',
+			            template_txt: '{{d.consignee}} <span class=\'layui-badge layui-bg-gray\'>{{d.phone_number}}</span>',
+			            onselect: function (resp) {
+			                
+			            }
+			        })
+					
 					$.ajax({
 						url: '${ctx}/system/user/findAllUser',
 						type: "GET",
-						data:{
-							type:4
-						},
 						async: false,
 						beforeSend: function() {
 							index;
@@ -132,17 +141,17 @@
 					});
 					
 					// 处理操作列
-					var fn1 = function(field) {
+					/* var fn1 = function(field) {
 						return function(d) {
 							return [
 								/* '<input type="text" name="HandoverCompany" id="HandoverCompany" class="layui-input" style="position:absolute;z-index:2;width:70%;" lay-verify="required" value="" onkeyup="search()" autocomplete="off">' */
-								'<div id="test"><select name="selectOne" id="hc_select" lay-filter="lay_selecte" lay-search="true" autocomplete="off"   data-value="' + d.userId + '">' +
+							/* 	'<div id="test"><select name="selectOne" selected = "selected" id="hc_select" lay-filter="lay_selecte" lay-search="true" autocomplete="off"   data-value="' + d.userId + '">' +
 								htmls +
 								'</select></div>'
 							].join('');
 
 						};
-					};
+					}; */ 
 					
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
@@ -156,6 +165,9 @@
 						page: {
 							limit:15
 						},//开启分页
+						where:{
+							type:4
+						},
 						loading: true,
 						toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
 						/*totalRow: true //开启合计行 */
@@ -180,9 +192,7 @@
 								title: "供应商名称",
 								align: 'center',
 								search: true,
-								edit: false,
-								type: 'normal',
-								templet: fn1('selectOne')
+								edit: 'text',
 							}, {
 								field: "money",
 								title: "票面金额",
@@ -400,7 +410,7 @@
 					});
 					
 					
-					var dl = $("#hc_select").next().find("dl").children();
+					/* var dl = $("#hc_select").next().find("dl").children();
 					$('#test input').on('keydown', function () {
 						alert(1)
 						var valuee=$("#hc_select").next().find("input").val()
@@ -417,8 +427,8 @@
 			            	 if (j == dl.length-1) {
 			                    }
 			                }
-					});
-					var dl = $("#hc_select").next().find("dl").children();
+					}); */
+					/* var dl = $("#hc_select").next().find("dl").children(); */
 					
 					/* form.on('select(lay_selecte)', function (data) {   //选择移交单位 赋值给input框
 						console.log(data)
@@ -427,7 +437,7 @@
 		               console.log($("#hc_select").next().find("dl"))
 		                form.render();
 		            }); */
-					 window.search = function () {
+					/*  window.search = function () {
 		            	alert(1)
 		                var value = $("#HandoverCompany").val();
 		                $("#hc_select").val(value);
@@ -447,7 +457,7 @@
 		                    } 
 		                }
 		                
-		            } 
+		            }  */
 					
 					
 					//监听单元格编辑

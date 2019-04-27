@@ -12,7 +12,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>工资申请</title>
+<title>周转申请</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
@@ -24,14 +24,14 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>报销人:</td>
+							<td>申请人:</td>
 							<td><input type="text" name="Username" id="firstNames" class="layui-input" /></td>
 							<td>&nbsp&nbsp</td>
-							<td>报销内容:</td>
+							<td>申请内容:</td>
 							<td><input type="text" name="content" class="layui-input" /></td>
 							<td>&nbsp&nbsp</td>
 							<td><select class="form-control" name="expenseDate" id="selectone">
-									<option value="2018-10-08 00:00:00">申请日期</option>
+									<option value="2018-10-08 00:00:00">回款日期</option>
 								</select></td>
 							<td>&nbsp&nbsp</td>
 							<td>开始:</td>
@@ -140,27 +140,6 @@
 						};
 					};
 
-					var fn2 = function(field) {
-						return function(d) {
-							return ['<select name="selectTwo" lay-filter="lay_selecte" lay-search="true" data-value="' + d.budget + '">',
-								'<option value="0">请选择</option>',
-								'<option value="1">预算</option>',
-								'</select>'
-							].join('');
-
-						};
-					};
-					var fn3 = function(field) {
-						return function(d) {
-							return ['<select name="selectThree" lay-filter="lay_selecte" lay-search="true" data-value="' + d.settleAccountsMode + '">',
-								'<option value="0">请选择</option>',
-								'<option value="1">现金</option>',
-								'<option value="2">月结</option>',
-								'</select>'
-							].join('');
-
-						};
-					};
 					
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
@@ -169,7 +148,7 @@
 						height:'700px',
 						url: '${ctx}/fince/getConsumption' ,
 						where:{
-							type:3
+							type:9
 						},
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
@@ -197,20 +176,25 @@
 								align: 'center',
 								fixed: 'left'
 							}, {
+								field: "content",
+								title: "申请内容",
+								align: 'center',
+								edit: 'text'
+							}, {
 								field: "userId",
-								title: "姓名",
+								title: "申请人",
 								align: 'center',
 								search: true,
 								edit: false,
 								type: 'normal',
 								templet: fn1('selectOne')
-							}, {
+							},{
 								field: "money",
-								title: "工资申请金额",
+								title: "申请金额",
 								edit: 'text'
 							}, {
 								field: "expenseDate",
-								title: "工资申请日期",
+								title: "回款日期",
 								edit: 'text'
 							}, {
 								field: "withholdReason",
@@ -292,7 +276,7 @@
 						switch(obj.event) {
 							case 'addTempData':
 								allField = {id: '', content: '', budget: '',userId:'',money: '', expenseDate: '', 
-									withholdReason: '',withholdMoney:'',settleAccountsMode:'',type:'3'};
+									withholdReason: '',withholdMoney:'',settleAccountsMode:'',type:'9'};
 								table.addTemp(tableId,allField,function(trElem) {
 									// 进入回调的时候this是当前的表格的config
 									var that = this;

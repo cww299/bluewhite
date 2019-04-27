@@ -11,7 +11,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>财务汇总</title>
+<title>工资汇总</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
@@ -131,7 +131,7 @@
 						url: '${ctx}/fince/getConsumption' ,
 						where:{
 							flag:0,
-							type:1
+							type:3
 						},
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
@@ -161,10 +161,6 @@
 								align: 'center',
 								fixed: 'left'
 							}, {
-								field: "content",
-								title: "报销内容",
-								align: 'center',
-							}, {
 								field: "userId",
 								title: "报销人",
 								align: 'center',
@@ -175,54 +171,17 @@
 									return d.user.userName;
 								}
 							}, {
-								field: "budget",
-								title: "是否预算",
-								align: 'center',
-								search: true,
-								edit: false,
-								type: 'normal',
-								templet: function(d){
-									if(d.budget==0){
-										return "";
-									}
-									if(d.budget==null){
-										return "";
-									}
-									if(d.budget==1){
-										return "预算";
-									}
-								}
-							}, {
 								field: "money",
-								title: "报销申请金额",
+								title: "工资申请金额",
 							}, {
 								field: "expenseDate",
-								title: "报销申请日期",
+								title: "工资申请日期",
 							}, {
 								field: "withholdReason",
 								title: "扣款事由",
 							}, {
 								field: "withholdMoney",
 								title: "扣款金额",
-							}, {
-								field: "settleAccountsMode",
-								title: "结款模式",
-								search: true,
-								edit: false,
-								templet:  function(d){
-									if(d.settleAccountsMode==0){
-										return "";
-									}
-									if(d.settleAccountsMode==null){
-										return "";
-									}
-									if(d.settleAccountsMode==1){
-										return "现金";
-									}
-									if(d.settleAccountsMode==2){
-										return "月结";
-									}
-								}
 							}, {
 								field: "flag",
 								title: "审核状态",

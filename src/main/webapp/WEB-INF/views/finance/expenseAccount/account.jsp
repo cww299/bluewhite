@@ -168,6 +168,9 @@
 						size: 'lg',
 						height:'700px',
 						url: '${ctx}/fince/getConsumption' ,
+						where:{
+							type:1
+						},
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
 							limitName: 'size' //每页数据量的参数名，默认：limit

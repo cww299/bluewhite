@@ -33,12 +33,8 @@
 							<td>报销人:</td>
 							<td><input type="text" name="username" id="firstNames" class="layui-input" /></td>
 							<td>&nbsp&nbsp</td>
-							<td>报销内容:</td>
-							<td><input type="text" name="content" class="layui-input" /></td>
-							<td>&nbsp&nbsp</td>
-							<td><select class="layui-input" name="selectone" id="selectone">
-									<option name="expenseDate" value="2018-10-08 00:00:00">申请日期</option>
-									<option name="paymentDate" value="2018-11-08 00:00:00">付款日期</option>
+							<td><select class="layui-input" name="expenseDate" id="selectone">
+									<option value="2018-10-08 00:00:00">申请日期</option>
 							</select></td>
 							<td>&nbsp&nbsp</td>
 							<td>开始:</td>
@@ -148,7 +144,7 @@
 						url: '${ctx}/fince/getConsumption' ,
 						where:{
 							flag:0,
-							type:1
+							type:3
 						},
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
@@ -177,10 +173,6 @@
 								align: 'center',
 								fixed: 'left'
 							}, {
-								field: "content",
-								title: "报销内容",
-								align: 'center',
-							}, {
 								field: "userId",
 								title: "报销人",
 								align: 'center',
@@ -191,54 +183,17 @@
 									return d.user.userName;
 								}
 							}, {
-								field: "budget",
-								title: "是否预算",
-								align: 'center',
-								search: true,
-								edit: false,
-								type: 'normal',
-								templet: function(d){
-									if(d.budget==0){
-										return "";
-									}
-									if(d.budget==null){
-										return "";
-									}
-									if(d.budget==1){
-										return "预算";
-									}
-								}
-							}, {
 								field: "money",
-								title: "报销申请金额",
+								title: "工资申请金额",
 							}, {
 								field: "expenseDate",
-								title: "报销申请日期",
+								title: "工资申请日期",
 							}, {
 								field: "withholdReason",
 								title: "扣款事由",
 							}, {
 								field: "withholdMoney",
 								title: "扣款金额",
-							}, {
-								field: "settleAccountsMode",
-								title: "结款模式",
-								search: true,
-								edit: false,
-								templet:  function(d){
-									if(d.settleAccountsMode==0){
-										return "";
-									}
-									if(d.settleAccountsMode==null){
-										return "";
-									}
-									if(d.settleAccountsMode==1){
-										return "现金";
-									}
-									if(d.settleAccountsMode==2){
-										return "月结";
-									}
-								}
 							}, {
 								field: "paymentDate",
 								title: "付款时间",
@@ -357,19 +312,9 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
-						var a=data.field.selectone;
-						var data={
-								username:data.field.username,
-								content:data.field.content,
-								orderTimeBegin:data.field.orderTimeBegin,
-								orderTimeEnd:data.field.orderTimeEnd,
-								flag:data.field.flag,
-								[a]:"2018-11-08 00:00:00",
-						}
-					 	 table.reload('tableData', {
-							where: data
-						});  
-						 
+						table.reload('tableData', {
+							where: field
+						});
 					});
 					
 					

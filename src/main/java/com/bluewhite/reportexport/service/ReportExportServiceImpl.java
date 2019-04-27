@@ -447,13 +447,14 @@ public class ReportExportServiceImpl implements ReportExportService{
 					order2.setOnline(0);
 					d=order.getFirstNames();
 				}
-				order2.setProductNumber(order.getProductNumber());//产品编号
+				
 				order2.setPartyNames(order.getPartyNames());//乙方
 				order2.setBatchNumber(order.getBatchNumber());//当批 批次号
 				order2.setProductName(order.getProductName());//当批产品名
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					try {
 						order2.setContractTime(sdf.parse(order.getContractTime() != null ? order.getContractTime() : ""));//合同签订日期
+						order2.setProductNumber(order.getProductNumber());//产品编号
 					// order2.setAshoreTime(sdf.parse(order.getAshoreTime()!= null ? order.getAshoreTime() : ""));//到岸日期
 					} catch (ParseException e) {
 						// TODO Auto-generated catch block
@@ -483,12 +484,12 @@ public class ReportExportServiceImpl implements ReportExportService{
 				//}
 				// order2.setAshorePrice(order.getPrice()*order.getAshoreNumber());//到岸合同价
 				/*billService.addBill(order2);*/
-				if(order.getProductName()!=null){
+				/*if(order.getProductName()!=null){
 					Product product=productDao.findByNumber(order.getProductNumber());
 					if(product!=null){
 						order2.setProductId(product.getId());
 					}
-				}
+				}*/
 				orders.add(order2);
 				count++;
 			}
@@ -508,7 +509,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 			for (Actualprice actualprice2 : list2) {
 				actualpriceDao.delete(actualprice2.getId());
 			}
-			List<Order> list=orderDao.findByBatchNumberAndProductNameAndContractTimeBetween(actualprice.getBatchNumber(), actualprice.getProductName(), firstDayOfMonth, lastDayOfMonth);//查询出数据 进行比对修改
+			List<Order> list=orderDao.findByBatchNumberAndContractTimeBetween(actualprice.getBatchNumber().trim(), firstDayOfMonth, lastDayOfMonth);//查询出数据 进行比对修改
 			for (Order order : list) {
 					User user=	userDao.findOne(order.getFirstNamesId());
 						if(user.getOrgNameId()==35 || user.getOrgNameId()==10){
@@ -528,9 +529,32 @@ public class ReportExportServiceImpl implements ReportExportService{
 							}
 						}
 				}
+			if(list.size()<0){
+			List<Order> list3=orderDao.findByProductNameAndContractTimeBetween(actualprice.getProductName(), firstDayOfMonth, lastDayOfMonth);
+				for (Order order : list3) {
+					User user=	userDao.findOne(order.getFirstNamesId());
+					if(user.getOrgNameId()==35 || user.getOrgNameId()==10){
+						if(order.getPrice()!=actualprice.getCombatPrice()){
+							Double a;
+							Integer c;
+							if (actualprice.getCombatPrice()==null) {
+							a=actualprice.getBudgetPrice();
+							c=1;
+							}else{
+								a=actualprice.getCombatPrice();
+								c=2;
+							}
+							order.setPrice(NumUtils.mul((a!= null ? a : 0.0),1.20));
+							order.setDispute(c);
+							orderService.addOrder(order);
+						}
+					}
+				}
+				
+			}
 				Actualprice actualprice2=new Actualprice();
-				actualprice2.setBatchNumber(actualprice.getBatchNumber());
-				actualprice2.setProductName(actualprice.getProductName());
+				actualprice2.setBatchNumber(actualprice.getBatchNumber().trim());
+				actualprice2.setProductName(actualprice.getProductName().trim());
 				actualprice2.setBudgetPrice(actualprice.getBudgetPrice());
 				actualprice2.setCombatPrice(actualprice.getCombatPrice());
 				actualprice2.setCurrentMonth(currentMonth);
