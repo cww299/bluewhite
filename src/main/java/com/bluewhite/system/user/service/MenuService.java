@@ -35,4 +35,7 @@ public interface MenuService extends BaseCRUDService<Menu,Long>{
 	 * @param page 分页参数
 	 */
 	public PageResult<Menu> getPage(PageParameter page, Menu menu);
+
+
+	public List<Menu> getTreeMenuPage();
 }

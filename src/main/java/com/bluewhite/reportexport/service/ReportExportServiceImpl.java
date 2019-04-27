@@ -366,7 +366,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 			procedure.setFlag(flag);
 			procedure.setProductId(productId);
 			procedure.setName(machinistProcedurePoi.getName());
-			procedure.setWorkingTime(NumUtils.round(machinistProcedurePoi.getOneTime()+(machinistProcedurePoi.getScissorsTime()==null ? 0.0 : machinistProcedurePoi.getScissorsTime()/12*1.08*1.25),4));
+			procedure.setWorkingTime(NumUtils.sum(machinistProcedurePoi.getOneTime(), machinistProcedurePoi.getScissorsTime()==null ? 0.0 : machinistProcedurePoi.getScissorsTime()/12*1.08*1.25));
 			procedure.setType(type);
 			if(flag==0){
 				procedure.setProcedureTypeId(baseDataList.get(0).getId());
@@ -398,13 +398,14 @@ public class ReportExportServiceImpl implements ReportExportService{
 			procedure.setType(type);
 			procedure.setSign(sign);
 			if(sign==0){
-				procedure.setWorkingTime(NumUtils.round((et.getClothTime()+et.getLaserTime())*et.getNumber(), null));
+				procedure.setWorkingTime(NumUtils.mul(NumUtils.sum(et.getClothTime(),et.getLaserTime()),et.getNumber()));
 				procedure.setProcedureTypeId((long)140);
 				sumPrice += et.getNumber()*et.getPerimeter()*0.005/10;
 			}else{
-				procedure.setWorkingTime(NumUtils.round(et.getNumber()*(et.getOverlay()+et.getStamping()+1), null));
+				
+				procedure.setWorkingTime(NumUtils.mul(et.getNumber(),NumUtils.sum(et.getOverlay(),et.getStamping(),1.0)));
 				procedure.setProcedureTypeId((long)141);
-				sumPrice+=et.getNumber()*0.012;
+				sumPrice += et.getNumber()*0.012;
 			}
 			procedureList.add(procedure);
 			count++;

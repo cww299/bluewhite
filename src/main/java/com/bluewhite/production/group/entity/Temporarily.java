@@ -4,10 +4,14 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.system.user.entity.User;
 
 /**
  * 借调人员
@@ -25,10 +29,11 @@ public class Temporarily extends BaseEntity<Long>{
 	private Long userId;
 	
 	/**
-	 * 姓名
+	 * 借调人员
 	 */
-	@Column(name = "user_name")
-	private String userName;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User user;
 	
 	/**
 	 * 工作时长
@@ -76,7 +81,33 @@ public class Temporarily extends BaseEntity<Long>{
 	@Transient
 	private String temporarilyDates;
 	
+	/**
+	 * 员工姓名
+	 */
+	@Transient
+	private String userName;
 	
+	
+
+	public User getUser() {
+		return user;
+	}
+
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+
+	public String getUserName() {
+		return userName;
+	}
+
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
 
 	public String getTemporarilyDates() {
 		return temporarilyDates;
@@ -146,17 +177,6 @@ public class Temporarily extends BaseEntity<Long>{
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
-
-
-	public String getUserName() {
-		return userName;
-	}
-
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
 
 	public Integer getType() {
 		return type;

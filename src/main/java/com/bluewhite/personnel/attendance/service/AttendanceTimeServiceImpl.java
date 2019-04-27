@@ -214,7 +214,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 							DatesUtil.dayTime(beginTimes, "00:00:00"), DatesUtil.dayTime(beginTimes, "06:00:00"));
 					if (afterAttendance.size() > 0) {
 						// 得到最后一次签到记录离24：00相差分钟数
-						minute = DatesUtil.getTime(DatesUtil.dayTime(beginTimes, "00:00:00"),
+						minute = DatesUtil.getTimeHour(DatesUtil.dayTime(beginTimes, "00:00:00"),
 								afterAttendance.get(afterAttendance.size() - 1).getTime());
 						sign = true;
 					}
@@ -225,7 +225,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 							DatesUtil.dayTime(beginTimes, "00:30:00"), DatesUtil.dayTime(beginTimes, "06:00:00"));
 					if (afterAttendance.size() > 0) {
 						// 得到最后一次签到记录离24：30相差分钟数
-						minute = DatesUtil.getTime(DatesUtil.dayTime(beginTimes, "00:30:00"),
+						minute = DatesUtil.getTimeHour(DatesUtil.dayTime(beginTimes, "00:30:00"),
 								afterAttendance.get(afterAttendance.size() - 1).getTime());
 						sign = true;
 					}
@@ -306,7 +306,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					}
 					
 					// 进行出勤，加班，缺勤，迟到，早退的计算
-					AttendanceTool.attendanceIntTool(sign, workTime, workTimeEnd, restBeginTime,restEndTime,minute, turnWorkTime, attendanceTime,
+					AttendanceTool.attendanceIntTool(sign, workTime, workTimeEnd, restBeginTime,restEndTime,NumUtils.mul(minute,60), turnWorkTime, attendanceTime,
 							attendanceInit, us);
 				}
 				// 当一天的考勤记录条数小于2时。为异常的考勤
