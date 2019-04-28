@@ -1,12 +1,12 @@
 package com.bluewhite.system.user.action;
 
+import static org.hamcrest.CoreMatchers.is;
+
 import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.shiro.crypto.hash.Hash;
-import org.omg.CORBA.PRIVATE_MEMBER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -26,9 +26,7 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.system.user.dao.RoleMenuPermissionDao;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.RoleMenuPermission;
-import com.bluewhite.system.user.service.PermissionService;
 import com.bluewhite.system.user.service.RoleService;
-import com.sun.tools.classfile.Opcode.Set;
 
 @Controller
 public class RoleAction {
@@ -151,7 +149,7 @@ public class RoleAction {
 	 */
 	@RequestMapping(value = "/roles/changeRole", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse changeRole(HttpServletRequest request, Long roleId, String permissions ) {
+	public CommonResponse changeRole(HttpServletRequest request, Long id , Long roleId, String permissions ) {
 		CommonResponse cr = new CommonResponse();
 		Role role = roleService.findOne(roleId);
 		if(!StringUtils.isEmpty(permissions)){
@@ -162,6 +160,9 @@ public class RoleAction {
 				Long menuId = Long.valueOf(jsonObject.getString("menuId"));
 				String permissionIds = jsonObject.getString("permissionIds");
 				RoleMenuPermission roleMenuPermission = new RoleMenuPermission();
+				if(id!=null){
+					roleMenuPermission = roleMenuPermissionDao.findOne(id);
+				}
 				String[] pers = permissionIds.split(",");
 				for(String idString : pers){
 					permissionIdsLong.add(Long.valueOf(idString));
@@ -172,6 +173,22 @@ public class RoleAction {
 				roleMenuPermissionDao.save(roleMenuPermission);
 			}
 		}
+		return cr;
+	}
+	
+	
+	/**
+	 * 角色删除(菜单-权限)
+	 * @param request 请求
+	 * @param role 角色实体类
+	 * @return cr
+	 */
+	@RequestMapping(value = "/roles/deleteRole", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse deleteRole(Long id) {
+		CommonResponse cr = new CommonResponse();
+		roleMenuPermissionDao.delete(id);
+		cr.setMessage("删除成功");
 		return cr;
 	}
 
@@ -185,11 +202,9 @@ public class RoleAction {
 	@ResponseBody
 	public CommonResponse updateRole(HttpServletRequest request, Role role) {
 		CommonResponse cr = new CommonResponse();
-		
-		
-		
-		
-		
+		Role oldRole = roleService.findOne(role.getId());
+		roleService.update(role,oldRole);
+		cr.setMessage("修改成功");
 		return cr;
 	}
 
@@ -203,8 +218,23 @@ public class RoleAction {
 	@ResponseBody
 	public CommonResponse changeTeacher(HttpServletRequest request, String ids) {
 		CommonResponse cr = new CommonResponse();
-		roleService.delete(ids);
-		cr.setMessage("删除成功");
+		int count = 0;
+		String[] arrIds = ids.split(",");
+		for (int i = 0; i < arrIds.length; i++) {
+			Long id = Long.valueOf(arrIds[i]);
+			Role role = roleService.findOne(id);
+			List<RoleMenuPermission> resourcePermissionList = role.getResourcePermission();
+			if(resourcePermissionList.size()>0){
+				for(RoleMenuPermission rp: resourcePermissionList){
+					roleMenuPermissionDao.delete(rp);
+				}
+			}
+			role.setUsers(null);
+			role.setResourcePermission(null);
+			roleService.delete(id);
+			count++;
+		}
+		cr.setMessage("删除成功"+count+"个角色");
 		return cr;
 	}
 
