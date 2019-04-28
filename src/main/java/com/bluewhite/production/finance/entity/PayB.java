@@ -78,7 +78,7 @@ public class PayB extends BaseEntity<Long>{
 	private Long taskId;
 	
 	/**
-	 * 批次   任务多对一批次
+	 * 任务
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "task_id", referencedColumnName = "id", insertable = false, updatable = false)
