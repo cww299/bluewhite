@@ -50,7 +50,7 @@ public class NumUtils {
 	 * 处理除法结果问题sum.isNaN()?0.0:sum
 	 */
 	public static Double division(Double value) {
-		return value.isNaN() || value.isInfinite() ?0.0:value;
+		return value.isNaN() || value.isInfinite() ? 0.0 : value;
 	}
 	
 	

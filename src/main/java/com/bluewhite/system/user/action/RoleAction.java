@@ -1,24 +1,34 @@
 package com.bluewhite.system.user.action;
 
+import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.crypto.hash.Hash;
+import org.omg.CORBA.PRIVATE_MEMBER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.system.user.dao.RoleMenuPermissionDao;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.RoleMenuPermission;
+import com.bluewhite.system.user.service.PermissionService;
 import com.bluewhite.system.user.service.RoleService;
+import com.sun.tools.classfile.Opcode.Set;
 
 @Controller
 public class RoleAction {
@@ -26,6 +36,9 @@ public class RoleAction {
 	
 	@Autowired
 	private RoleService roleService;
+	
+	@Autowired
+	private RoleMenuPermissionDao roleMenuPermissionDao;
 
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -138,13 +151,27 @@ public class RoleAction {
 	 */
 	@RequestMapping(value = "/roles/changeRole", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse changeRole(HttpServletRequest request, Role role) {
+	public CommonResponse changeRole(HttpServletRequest request, Long roleId, String permissions ) {
 		CommonResponse cr = new CommonResponse();
-		
-		
-		
-		
-		
+		Role role = roleService.findOne(roleId);
+		if(!StringUtils.isEmpty(permissions)){
+			JSONArray jsonArray = JSON.parseArray(permissions);
+			for (int i = 0; i < jsonArray.size(); i++) {
+				HashSet<Long> permissionIdsLong = new HashSet<>();
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				Long menuId = Long.valueOf(jsonObject.getString("menuId"));
+				String permissionIds = jsonObject.getString("permissionIds");
+				RoleMenuPermission roleMenuPermission = new RoleMenuPermission();
+				String[] pers = permissionIds.split(",");
+				for(String idString : pers){
+					permissionIdsLong.add(Long.valueOf(idString));
+				}
+				roleMenuPermission.setRole(role);
+				roleMenuPermission.setMenuId(menuId);
+				roleMenuPermission.setPermissionIds(permissionIdsLong);
+				roleMenuPermissionDao.save(roleMenuPermission);
+			}
+		}
 		return cr;
 	}
 
