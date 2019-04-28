@@ -74,10 +74,10 @@ public class Actualprice extends BaseEntity<Long>{
 	
 	
 	public String getProductNumber() {
-		return productNumber;
+		return productNumber.trim();
 	}
 	public void setProductNumber(String productNumber) {
-		this.productNumber = productNumber;
+		this.productNumber = productNumber.trim();
 	}
 	public Date getCurrentMonth() {
 		return currentMonth;
@@ -92,10 +92,10 @@ public class Actualprice extends BaseEntity<Long>{
 		this.batchNumber = batchNumber;
 	}
 	public String getProductName() {
-		return productName;
+		return productName.trim();
 	}
 	public void setProductName(String productName) {
-		this.productName = productName;
+		this.productName = productName.trim();
 	}
 	public Double getBudgetPrice() {
 		return budgetPrice;

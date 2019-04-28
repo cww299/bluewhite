@@ -5,12 +5,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.FlushModeType;
 import javax.persistence.PersistenceContext;
 
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +19,7 @@ import com.bluewhite.basedata.dao.BaseDataDao;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.basedata.service.BaseDataService;
 import com.bluewhite.common.Constants;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.finance.ledger.dao.ActualpriceDao;
@@ -499,93 +500,67 @@ public class ReportExportServiceImpl implements ReportExportService{
 		return count;
 	}
 	@Override
+	@Transactional
 	public int importActualprice(List<Actualprice> excelActualprices, Date currentMonth) {
 		int count = 0;
 		if(excelActualprices.size()>0){
-			List<Actualprice> actualprices = new ArrayList<Actualprice>();
-			for (Actualprice actualprice : excelActualprices) {
-				Date firstDayOfMonth=DatesUtil.getFirstDayOfMonth(currentMonth);
-				Date lastDayOfMonth=DatesUtil.getLastDayOfMonth(currentMonth);
-			List<Actualprice> list2=actualpriceDao.findByCurrentMonthBetween(firstDayOfMonth, lastDayOfMonth);//查询出当前月份的数据
-			for (Actualprice actualprice2 : list2) {
-				actualpriceDao.delete(actualprice2.getId());
+			Date firstDayOfMonth=DatesUtil.getFirstDayOfMonth(currentMonth);
+			Date lastDayOfMonth=DatesUtil.getLastDayOfMonth(currentMonth);
+			List<Actualprice> list2 = actualpriceDao.findByCurrentMonthBetween(firstDayOfMonth, lastDayOfMonth);//查询出当前月份的数据
+			if(list2.size()>0){
+				actualpriceDao.delete(list2);
 			}
-			List<Order> list=orderDao.findByBatchNumberAndContractTimeBetween(actualprice.getBatchNumber().trim(), firstDayOfMonth, lastDayOfMonth);//查询出数据 进行比对修改
-			for (Order order : list) {
-					User user=	userDao.findOne(order.getFirstNamesId());
-						if(user.getOrgNameId()==35 || user.getOrgNameId()==10){
-							if(order.getPrice()!=actualprice.getCombatPrice()){
-								Double a;
-								Integer c;
-								if (actualprice.getCombatPrice()==null) {
-								a=actualprice.getBudgetPrice();
-								c=1;
-								}else{
-									a=actualprice.getCombatPrice();
-									c=2;
-								}
-								order.setPrice(NumUtils.mul((a!= null ? a : 0.0),1.20));
-								order.setDispute(c);
+			List<Order> listOrder = orderDao.findByContractTimeBetween(firstDayOfMonth, lastDayOfMonth);
+			for (Actualprice actualprice : excelActualprices) {
+				Double exlRealPrice = 0.0;
+				Double realPrice = 0.0;
+				Integer priceType = 0;
+				List<Order> list = listOrder.stream().filter(Order->Order.getBatchNumber().equals(actualprice.getBatchNumber())).collect(Collectors.toList());
+				
+				if(list.size()>0){
+					for (Order order : list) {
+						User user=	userDao.findOne(order.getFirstNamesId());
+						if(user.getOrgNameId()!=null && user.getOrgNameId()==35 || user.getOrgNameId()==10){
+							exlRealPrice =  actualprice.getCombatPrice() == null || actualprice.getCombatPrice() == 0.0  ? actualprice.getBudgetPrice(): actualprice.getCombatPrice();
+							realPrice = order.getPrice() == null ? realPrice : order.getPrice();
+							priceType = actualprice.getCombatPrice() == null ? 1: 2;
+							if(!exlRealPrice.equals(order.getPrice())){
+								order.setPrice(NumUtils.mul(exlRealPrice,1.2));
+								order.setDispute(priceType);
 								orderService.addOrder(order);
 							}
 						}
 				}
-			if(list.size()<0){
-			List<Order> list3=orderDao.findByProductNameAndContractTimeBetween(actualprice.getProductName(), firstDayOfMonth, lastDayOfMonth);
-				for (Order order : list3) {
-					User user=	userDao.findOne(order.getFirstNamesId());
-					if(user.getOrgNameId()==35 || user.getOrgNameId()==10){
-						if(order.getPrice()!=actualprice.getCombatPrice()){
-							Double a;
-							Integer c;
-							if (actualprice.getCombatPrice()==null) {
-							a=actualprice.getBudgetPrice();
-							c=1;
-							}else{
-								a=actualprice.getCombatPrice();
-								c=2;
+					continue;
+				}
+				
+				List<Order> list3 = listOrder.stream().filter(Order->Order.getProductName().equals(actualprice.getProductName())).collect(Collectors.toList());
+				if(list3.size()>0){
+						for (Order order : list3) {
+							User user=	userDao.findOne(order.getFirstNamesId());
+							if(user.getOrgNameId()!=null){
+							if(user.getOrgNameId()==35 || user.getOrgNameId()==10){
+								//对比excel的实战成本和订单的单只价格
+								//确定excel的实际价格
+								//确定是excel的实战成本还是预算成本
+								exlRealPrice =  actualprice.getCombatPrice() == null || actualprice.getCombatPrice() == 0.0  ? actualprice.getBudgetPrice(): actualprice.getCombatPrice();
+								realPrice = order.getPrice() == null ? realPrice : order.getPrice();
+								priceType = actualprice.getCombatPrice() == null ? 1: 2;
+								if(!exlRealPrice.equals(order.getPrice())){
+									order.setPrice(NumUtils.mul(exlRealPrice,1.2));
+									order.setDispute(priceType);
+									orderService.addOrder(order);
+								}
 							}
-							order.setPrice(NumUtils.mul((a!= null ? a : 0.0),1.20));
-							order.setDispute(c);
-							orderService.addOrder(order);
 						}
 					}
 				}
-				
+			
 			}
-				Actualprice actualprice2=new Actualprice();
-				actualprice2.setBatchNumber(actualprice.getBatchNumber().trim());
-				actualprice2.setProductName(actualprice.getProductName().trim());
-				actualprice2.setBudgetPrice(actualprice.getBudgetPrice());
-				actualprice2.setCombatPrice(actualprice.getCombatPrice());
-				actualprice2.setCurrentMonth(currentMonth);
-				actualprice2.setProductNumber(actualprice.getProductNumber());
-				actualprices.add(actualprice2);
-				count++;
-			}
-			actualpriceService.save(actualprices);
+			actualpriceService.save(excelActualprices);
 		}
 		return count;
 	}
-
-	
-	
-	
-	
-	
-	
-	private String Substring(int i, int j) {
-		return null;
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void Substring(String firstNames) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
 
 
 }

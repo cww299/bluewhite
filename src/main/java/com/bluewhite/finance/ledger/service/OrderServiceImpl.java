@@ -175,27 +175,25 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		order.setContractNumber(NumUtils.setzro(order.getContractNumber()));
 		order.setAshoreNumber(NumUtils.setzro(order.getAshoreNumber()));
 		order.setDisputeNumber(NumUtils.setzro(order.getDisputeNumber()));
-		Order order2=new Order();
 		
-		order2.setOrderTimeBegin(DatesUtil.getFirstDayOfMonth(order.getContractTime()));
-		order2.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(order.getContractTime()));
 		if(order.getId()==null){
-		List<Order> orderList = this.findPages(order2, new PageParameter()).getRows();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
-		String w = dateFormat.format(order.getContractTime());
-		if (orderList.size() > 0) {
-		String s=orderList.get(0).getSalesNumber();
-		String b= s.substring(9);
+			Order order2 = new Order();
+			order2.setOrderTimeBegin(DatesUtil.getFirstDayOfMonth(order.getContractTime()));
+			order2.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(order.getContractTime()));
+			List<Order> orderList = this.findPages(order2, new PageParameter()).getRows();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
+				if (orderList.size() > 0) {
+					int a = Integer.valueOf(orderList.get(0).getSalesNumber().substring(9).trim());
+					order.setSalesNumber(dateFormat.format(order.getContractTime()) + "-" + "#" + (a+1));
+				} else {
+					order.setSalesNumber(dateFormat.format(order.getContractTime()) + "-" + "#" + "1");
+				}
+		}
 		
-		int a=Integer.parseInt(b.trim());
-			order.setSalesNumber(w + "-" + "#" + ((a)+1));
-		} else {
-			order.setSalesNumber(w + "-" + "#" + "1");
-		}
-		}
-		order.setContractPrice(order.getContractNumber() * order.getPrice());
+		
+		order.setContractPrice(NumUtils.mul(order.getContractNumber(),order.getPrice()));
 		User user = userService.findOne(order.getFirstNamesId());
-		if(user.getOrgNameId() != 10 && user.getOrgNameId() != 35){
+		if(user.getOrgNameId()!=null && user.getOrgNameId() != 10 && user.getOrgNameId() != 35){
 			if (order.getId() != null && order.getPrice()!=0) {
 				List<Customer> customerList = customerDao
 						.findByCusProductNameLikeAndCusPartyNames(order.getProductName().trim(), order.getPartyNames().trim());
@@ -213,6 +211,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				}
 			}
 		}
+		
 		
 		if(order.getId() != null && order.getAshoreNumber()!=null){
 			order.setRoadNumber(order.getContractNumber()-order.getAshoreNumber()-order.getDisputeNumber());
