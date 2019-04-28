@@ -18,7 +18,10 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.system.user.entity.Menu;
+import com.bluewhite.system.user.entity.Permission;
+import com.bluewhite.system.user.entity.UserContract;
 import com.bluewhite.system.user.service.MenuService;
+import com.bluewhite.system.user.service.PermissionService;
 
 
 /**
@@ -36,6 +39,9 @@ public class MenuAction {
 	
 	@Autowired
 	private MenuService menuService;
+	
+	@Autowired
+	private PermissionService permissionService;
 
 	
 
@@ -97,5 +103,36 @@ public class MenuAction {
 		return cr;
 	}
 
+	
+	/**
+	 * 查询所有权限分页
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+//	@RequestMapping(value = "/getPermissionPage", method = RequestMethod.GET)
+//	@ResponseBody
+//	public CommonResponse getPermission(HttpServletRequest request,PageParameter page, Permission permission) {
+//		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(menuService.getPage(page, permission))
+//				.toJSON());
+//		return cr;
+//	}
+	
+	/**
+	 * 查询所有权限
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/getPermission", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getPermission(Permission permission) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(Permission.class, "id","name", "permission","description","show").format(permissionService.findAll()).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
 
 }
