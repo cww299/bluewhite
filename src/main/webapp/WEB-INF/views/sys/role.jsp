@@ -124,7 +124,7 @@ function getPermissionLevel(){   //获取相关的权限等级
 </select> */
 function getPermissionLevelSelect(menu){   //获取选中菜单的下拉框
 	var html='<select name="permissionLevelSelect" xm-select="selectId'+menu.id+'" xm-select-show-count="3">';  //xm-select-show-count="2", 超出后隐藏
-	console.log("selectId"+menu.id)
+	
 	for(var i=0;i<permissionLevel.length;i++){   
 		var selected='';
 		if(i==0)   //默认选中某一列
@@ -238,14 +238,26 @@ layui.config({
 		table.on('tool(LAY-role-table)',function(obj){   //监听查看权限按钮,obj为监听该行的对象
 			var data=obj.data;           
 			var rp=data.resourcePermission;   //拥有的权限
-			var permissionTable='<p>&nbsp;<button class="layui-btn layui-btn-sm" lay-filter="addPermission" lay-submit value="'+data.id+'">新增权限</button></p>'+
+			var permissionTable='<p>&nbsp;<button class="layui-btn layui-btn-sm" data-type="addPermission"  value="'+data.id+'">新增权限</button></p>'+
 								'<table class="layui-table" style="text-align:center"><thead><th>创建时间</th><th>菜单id</th><th>id</th><th>权限等级</th><th>'+
-								'更新时间</th><th>移除</th></head><tbody>';
+								'更新时间</th><th>移除</th><th>编辑</th></head><tbody>';
 			if(rp.length>0){         //如果拥有权限，拼接权限的表格内容
 				for(var i=0;i<rp.length;i++){
 					var p=rp[i];
-					permissionTable+=('<tr><td>'+p.createdAt+'</td><td>'+p.menuId+'</td><td>'+p.id+'</td><td>'+p.permissionIds[0]+'</td><td>'
-										+p.updatedAt+'</td><td><button class="layui-btn layui-btn-sm" onclick="removePermission('+p.id+')">移除</button></td></tr>');
+					permissionTable+=('<tr><td>'+p.createdAt+'</td><td>'+p.menuId+'</td><td>'+p.id+'</td><td>'+getIds(p.permissionIds)+'</td><td>'
+										+p.updatedAt+'</td><td><button class="layui-btn layui-btn-sm" data-type="removePermission" value="'+p.id+'">移除</button></td>'+
+										'<td><button class="layui-btn layui-btn-sm" data-type="editPermission">编辑</button></td></tr>');
+				}
+				function getIds(ids){
+					var html='';
+					for(var i=0;i<ids.length;i++){
+						for(var j=0;j<permissionLevel.length;j++){
+							if(ids[i]==permissionLevel[j].id){
+								html+='<span value="'+ids[i]+'" class="layui-badge layui-bg-green">'+permissionLevel[j].name+'</span>&nbsp;&nbsp;';
+							}
+						}
+					}
+					return html;
 				}
 			}
 			else{
@@ -253,10 +265,6 @@ layui.config({
 			}
 			permissionTable+='</tbody></table>';
 
-			
-			form.on('submit(addPermission)',function(obj){  //监听添加权限按钮
-				addPermission(obj.elem.value);
-			});
 			form.render();
 			
 			var aboutPermission=layer.open({     //打开查看权限内容的弹窗
@@ -265,8 +273,26 @@ layui.config({
 				   ,area: ['80%', '80%']
 				   ,content:permissionTable
 			}); 
-			
-			
+
+			$('.layui-btn.layui-btn-sm').on('click', function(){  //监听添加权限按钮
+				var type = $(this).data('type');
+				switch(type){
+					case 'addPermission':addPermission($(this).val());break;
+					case 'removePermission':removePermission();break;
+					case 'editPermission':addPermission();break;
+				}
+				
+			});
+			function editPermission(){
+				
+			}
+			function removePermission(){
+				layer.confirm("确定删除吗？",function(){
+					$.ajax({
+						url:''
+					})
+				})
+			}
 			function addPermission(roleId){    //给某一角色添加权限，需要该角色的id，和相关权限信息
 				choosePermission=[];   //每次打开添加权限的按钮，对之前所添加的权限清空
 				var html='';       //打开添加权限窗口的内容
@@ -328,7 +354,7 @@ layui.config({
 							};
 				 	var load=layer.load(1);
 					 $.ajax({
-						url:"${ctx}/roles/exists",
+						url:"${ctx}/roles/changeRole",
 						type:"POST",
 						data:data,
 						success:function(result){
@@ -396,19 +422,6 @@ layui.config({
 						 $('#choosedDiv').append(html);
 						 formSelects.render('selectId'+perm.id);  //无参数时，自动渲染所有
 					 }
-					 
-					
-					
-					/*  $('select[name=permissionLevelSelect]').change(function(obj){
-						 var id=$(this).attr('id');
-						 for(var i=0;i<choosePermission.length;i++){
-							 if(id==choosePermission[i].id){
-								 choosePermission[i].level=$(this).val();
-							 }
-						 }
-					}) */
-					 
-					 
 					 
 					 parentChoose();  	//子菜单选中对父级菜单的级联反应，选中子菜单，父菜单默认选中
 					 function parentChoose(){
