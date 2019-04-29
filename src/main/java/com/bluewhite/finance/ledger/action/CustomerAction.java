@@ -64,7 +64,7 @@ public class CustomerAction {
 	public CommonResponse getOrder(HttpServletRequest request,PageParameter page,Customer customer,Long firstNamesId,String batchNumber) {
 		CommonResponse cr = new CommonResponse();
 		User user=userService.findOne(firstNamesId);
-		if(user.getOrgNameId()==35 || user.getOrgNameId()==10){
+		if(user.getOrgNameId()!=null && user.getOrgNameId()==35 || user.getOrgNameId()==10){
 			String a=batchNumber.trim();
 			String	s=a.substring(0,2);
 			if((s.equals("往期"))){

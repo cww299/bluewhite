@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html class="no-js">
 
-<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/autocomplete.css" media="all">
+<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/autocomplete.css" media="all">
 <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 <script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
 <script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
@@ -80,7 +80,8 @@
 			layui.config({
 				base: '${ctx}/static/layui-v2.4.5/'
 			}).extend({
-				tablePlug: 'tablePlug/tablePlug'
+				tablePlug: 'tablePlug/tablePlug',
+				autocomplete:'autocomplete/autocomplete',
 			}).define(
 				['tablePlug', 'laydate', 'element','form','autocomplete'],
 				function() {

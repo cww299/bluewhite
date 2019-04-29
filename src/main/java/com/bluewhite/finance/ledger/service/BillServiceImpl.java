@@ -70,7 +70,7 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 		List<Bill> billList = dao.findByPartyNamesIdAndBillDateBetween(order.getPartyNamesId(),DatesUtil.getFirstDayOfMonth(order.getContractTime()),	DatesUtil.getLastDayOfMonth(order.getContractTime()));
 		Bill bill = new Bill();
 		if(billList.size()>0){	
-		bill =  billList.get(0);
+			bill =  billList.get(0);
 		}else{
 			bill.setPartyNames(order.getPartyNames());
 			bill.setPartyNamesId(order.getPartyNamesId());
@@ -90,6 +90,7 @@ public class BillServiceImpl extends BaseServiceImpl<Bill, Long> implements Bill
 		bill.setOverpaymentPay(bill.getNonArrivalPay()<0 ?bill.getNonArrivalPay() :0.0);
 		return dao.save(bill);
 	}
+	
 	
 	@Override
 	public Object getBillDate(Long id) {  

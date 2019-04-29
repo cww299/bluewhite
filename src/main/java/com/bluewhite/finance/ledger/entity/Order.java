@@ -10,6 +10,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -18,7 +19,7 @@ import javax.persistence.Transient;
 import com.bluewhite.base.BaseEntity;
 
 @Entity
-@Table(name = "fin_ledger_order" )
+@Table(name = "fin_ledger_order"  ,indexes = {	@Index(columnList = "party_names_id")})
 public class Order extends BaseEntity<Long>{
 	/**
 	 * 当月销售编号
