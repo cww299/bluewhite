@@ -22,7 +22,7 @@
 
 	<div class="layui-card">
 		<div class="layui-card-body">
-			<div class="layui-form ">
+			<div class="layui-form "> 
 				<div class="layui-form-item">
 					<table>
 						<tr>
