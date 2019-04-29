@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -16,7 +17,8 @@ import com.bluewhite.base.BaseEntity;
  *
  */
 @Entity
-@Table(name = "fin_ledger_bill")
+@Table(name = "fin_ledger_bill" ,indexes = {	@Index(columnList = "party_names_id")
+												})
 public class Bill extends BaseEntity<Long>{
 
 	/**

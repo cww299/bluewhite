@@ -212,24 +212,24 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 		}
 		
-		
 		if(order.getId() != null && order.getAshoreNumber()!=null){
 			order.setRoadNumber(order.getContractNumber()-order.getAshoreNumber()-order.getDisputeNumber());
-			order.setAshorePrice( NumUtils.mul(Double.valueOf(String.valueOf((order.getAshoreNumber()))),order.getPrice()));
+			order.setAshorePrice(NumUtils.mul(order.getAshoreNumber(),order.getPrice()));
 			dao.save(order);
 			billService.addBill(order);
 		}
 		
-		Contact contact=null;
 		if(order.getPartyNamesId()==null){
-			contact=new Contact();
+			Contact contact = new Contact();
 			contact.setConPartyNames(order.getPartyNames());
 			contactDao.save(contact);
 			order.setPartyNamesId(contact.getId());
 		}
+		
 		dao.save(order);
 	}
 
+	
 	@Override
 	@Transactional
 	public int deleteOrder(String ids) throws Exception {

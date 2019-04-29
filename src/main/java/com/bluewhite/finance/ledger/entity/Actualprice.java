@@ -74,7 +74,7 @@ public class Actualprice extends BaseEntity<Long>{
 	
 	
 	public String getProductNumber() {
-		return productNumber.trim();
+		return productNumber!=null ? productNumber.trim() : productNumber;
 	}
 	public void setProductNumber(String productNumber) {
 		this.productNumber = productNumber.trim();
@@ -92,7 +92,7 @@ public class Actualprice extends BaseEntity<Long>{
 		this.batchNumber = batchNumber;
 	}
 	public String getProductName() {
-		return productName.trim();
+		return productName!=null ? productName.trim() : productName;
 	}
 	public void setProductName(String productName) {
 		this.productName = productName.trim();

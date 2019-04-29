@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -29,6 +30,7 @@ import com.bluewhite.finance.ledger.entity.Actualprice;
 import com.bluewhite.finance.ledger.entity.Contact;
 import com.bluewhite.finance.ledger.entity.Order;
 import com.bluewhite.finance.ledger.service.ActualpriceService;
+import com.bluewhite.finance.ledger.service.BillService;
 import com.bluewhite.finance.ledger.service.OrderService;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneTimeDao;
@@ -105,6 +107,9 @@ public class ReportExportServiceImpl implements ReportExportService{
 	
 	@Autowired
 	private ProductDao productDao;
+	
+	@Autowired
+	private BillService billService;
 	
 	@Override
 	@Transactional
@@ -502,65 +507,77 @@ public class ReportExportServiceImpl implements ReportExportService{
 	@Override
 	@Transactional
 	public int importActualprice(List<Actualprice> excelActualprices, Date currentMonth) {
-		int count = 0;
-		if(excelActualprices.size()>0){
-			Date firstDayOfMonth=DatesUtil.getFirstDayOfMonth(currentMonth);
-			Date lastDayOfMonth=DatesUtil.getLastDayOfMonth(currentMonth);
-			List<Actualprice> list2 = actualpriceDao.findByCurrentMonthBetween(firstDayOfMonth, lastDayOfMonth);//查询出当前月份的数据
-			if(list2.size()>0){
-				actualpriceDao.delete(list2);
+			Date firstDayOfMonth = DatesUtil.getFirstDayOfMonth(currentMonth);
+			Date lastDayOfMonth = DatesUtil.getLastDayOfMonth(currentMonth);
+			if(excelActualprices.size()>0){
+				List<Actualprice> list2 = actualpriceDao.findByCurrentMonthBetween(firstDayOfMonth, lastDayOfMonth);//查询出当前月份的数据
+				if(list2.size()>0){
+					actualpriceDao.delete(list2);
+				}	
 			}
 			List<Order> listOrder = orderDao.findByContractTimeBetween(firstDayOfMonth, lastDayOfMonth);
 			for (Actualprice actualprice : excelActualprices) {
+				actualprice.setCurrentMonth(currentMonth);
 				Double exlRealPrice = 0.0;
 				Double realPrice = 0.0;
 				Integer priceType = 0;
-				List<Order> list = listOrder.stream().filter(Order->Order.getBatchNumber().equals(actualprice.getBatchNumber())).collect(Collectors.toList());
-				
-				if(list.size()>0){
-					for (Order order : list) {
+				List<Order> listBatchNumber = listOrder.stream().filter(Order->Order.getBatchNumber().equals(actualprice.getBatchNumber())).collect(Collectors.toList());
+				/*List<Order> listProductName=null;
+				String a=actualprice.getBatchNumber().trim();
+				String	s=a.substring(0,2);
+				if((s.equals("往期"))){
+					listProductName = listOrder.stream().filter(Order->Order.getProductName().equals(actualprice.getProductName())).collect(Collectors.toList());.size() > 0 ? listBatchNumber : listProductName;
+				}*/
+				List<Order> allOrder = listBatchNumber;
+				if(allOrder.size()>0){
+					for (Order order : allOrder) {
 						User user=	userDao.findOne(order.getFirstNamesId());
-						if(user.getOrgNameId()!=null && user.getOrgNameId()==35 || user.getOrgNameId()==10){
+						if(user.getOrgNameId()!=null && (user.getOrgNameId()==35 || user.getOrgNameId()==10)){
+							//对比excel的实战成本和订单的单只价格
+							//确定excel的实际价格
+							//确定是excel的实战成本还是预算成本
 							exlRealPrice =  actualprice.getCombatPrice() == null || actualprice.getCombatPrice() == 0.0  ? actualprice.getBudgetPrice(): actualprice.getCombatPrice();
 							realPrice = order.getPrice() == null ? realPrice : order.getPrice();
 							priceType = actualprice.getCombatPrice() == null ? 1: 2;
-							if(!exlRealPrice.equals(order.getPrice())){
+							if(!exlRealPrice.equals(order.getPrice()) ){
 								order.setPrice(NumUtils.mul(exlRealPrice,1.2));
 								order.setDispute(priceType);
-								orderService.addOrder(order);
-							}
-						}
-				}
-					continue;
-				}
-				
-				List<Order> list3 = listOrder.stream().filter(Order->Order.getProductName().equals(actualprice.getProductName())).collect(Collectors.toList());
-				if(list3.size()>0){
-						for (Order order : list3) {
-							User user=	userDao.findOne(order.getFirstNamesId());
-							if(user.getOrgNameId()!=null){
-							if(user.getOrgNameId()==35 || user.getOrgNameId()==10){
-								//对比excel的实战成本和订单的单只价格
-								//确定excel的实际价格
-								//确定是excel的实战成本还是预算成本
-								exlRealPrice =  actualprice.getCombatPrice() == null || actualprice.getCombatPrice() == 0.0  ? actualprice.getBudgetPrice(): actualprice.getCombatPrice();
-								realPrice = order.getPrice() == null ? realPrice : order.getPrice();
-								priceType = actualprice.getCombatPrice() == null ? 1: 2;
-								if(!exlRealPrice.equals(order.getPrice())){
-									order.setPrice(NumUtils.mul(exlRealPrice,1.2));
-									order.setDispute(priceType);
-									orderService.addOrder(order);
-								}
+								order.setContractPrice(NumUtils.mul(order.getContractNumber(),order.getPrice()));
+								order.setAshorePrice(NumUtils.mul(NumUtils.setzro(order.getAshoreNumber()),order.getPrice()));
 							}
 						}
 					}
+					saveAllOrder(allOrder);
 				}
-			
+			}
+			listOrder = orderDao.findByContractTimeBetween(firstDayOfMonth, lastDayOfMonth);
+			Map<Long, List<Order>> mapOrder = listOrder.stream().filter(Order->Order.getPartyNamesId()!=null).collect(Collectors.groupingBy(Order::getPartyNamesId,Collectors.toList()));
+			for(Long ps : mapOrder.keySet()){
+				Order or = new Order();
+				or.setPartyNamesId(ps);
+				or.setContractTime(currentMonth);
+				billService.addBill(or);
 			}
 			actualpriceService.save(excelActualprices);
-		}
-		return count;
+		return excelActualprices.size();
 	}
+	
+	/**
+	 * 财务订单批处理
+	 * @param orderList
+	 */
+	private void saveAllOrder(List<Order> orderList) {
+		entityManager.setFlushMode(FlushModeType.COMMIT);
+		 for (int i = 0; i < orderList.size(); i++){
+			 Order courtsResident = orderList.get(i);
+			 entityManager.merge(courtsResident);
+	            if (i % 1000 == 0 && i > 0) {
+	            	entityManager.flush();
+	            	entityManager.clear();
+	            }
+	        }
+		 entityManager.close();
+	    }
 
 
 }
