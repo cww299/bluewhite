@@ -65,7 +65,7 @@
 </div> 
 
 <!-- 修改角色隐藏框 -->
-<div class="layui-form" id="editRoleDiv" style="padding:20px;display:none;"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+<!-- <div class="layui-form" id="editRoleDiv" style="padding:20px;display:none;"> 提示：如果你不想用form，你可以换成div等任何一个普通元素
   <div class="layui-form-item">
   <input type="hidden" id="editRoleId" placeholder="请输入" autocomplete="off" lay-verify="required" class="layui-input">
   </div>
@@ -102,13 +102,58 @@
       <textarea placeholder="请输入内容" class="layui-textarea" id="editDescription" id="editDescription"></textarea>
     </div>
   </div>
-</div>
+</div> -->
       
-
+<script type="text/html" id="editRoleTempl">
+<div class="layui-form" id="editRoleDiv" style="padding:20px;display:none;"> 
+  <div class="layui-form-item">
+  <input type="hidden" id="editRoleId" placeholder="请输入" autocomplete="off" lay-verify="required" value="{{ d.id }}" class="layui-input">
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">角色名</label>
+    <div class="layui-input-block">
+      <input type="text" id="editRoleName" placeholder="请输入" autocomplete="off" lay-verify="required" value="{{ d.name }}" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">英文名称</label>
+    <div class="layui-input-block">
+      <input type="text" id="editRole" placeholder="请输入" autocomplete="off" lay-verify="required" value="{{ d.role }} class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">角色类型</label>
+    <div class="layui-input-block">
+      <select id="editRoleType" lay-filter="aihao">
+      	<option value="管理员">管理员</option>
+		<option value="超级管理员">超级管理员</option>
+      </select>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">是否可用</label>
+    <div class="layui-input-block">
+      <input type="checkbox" lay-skin="switch" id="editIsShow" lay-text="可用|不可用" {{ d.isShow==true?'checked':'' }} >
+    </div>
+  </div>
+  <div class="layui-form-item layui-form-text">
+    <label class="layui-form-label">请填写描述</label>
+    <div class="layui-input-block">
+      <textarea placeholder="请输入内容" class="layui-textarea" id="editDescription" id="editDescription" value="{{ d.description }}"></textarea>
+    </div>
+  </div>
+</div>
+</script>
 			
 <!-- 选择框组件 -->
 <script type="text/html" id="switchTpl">
 	<p>{{ d.isShow == true ? '是' : '否' }} </p>
+</script>
+
+<script type="text/html" id="permissionLevelDiv">
+	{{# layui.each(d.permissionIds, function(index, item){  }}
+		<span class="layui-badge layui-bg-green">{{item}}</span>&nbsp;&nbsp;
+	{{# }); }}
 </script>
 
 <script type="text/html" id="toolbarDemo">
@@ -152,8 +197,8 @@ layui.config({
 		, form = layui.form //表单
 		, table = layui.table //表格
 		, laydate = layui.laydate //日期控件
-		, tablePlug = layui.tablePlug; //表格插件
-
+		, tablePlug = layui.tablePlug //表格插件
+		, laytpl = layui.laytpl;
 		getMenu();   //获取菜单，添加权限级联时使用
 		getPermissionLevel();   //获取权限等级
 		table.render({
@@ -277,21 +322,33 @@ layui.config({
 		            }
   				})
    		}
-		function editRole(data){  //修改角色方法
+		function editRole(data){  //修改角色
 			console.log(data)
-			var html=$('#editRoleDiv');
-			$('#editRoleId').val(data.id);
+			//var html=$('#editRoleDiv');
+		var html='';
+		var tpl=editRoleTempl.innerHTML;
+		laytpl(tpl).render(data,function(h){
+			html=h;
+			console.log(h);
+		})
+			/*$('#editRoleId').val(data.id);
 			$('#editRoleName').val(data.name);
 			$('#editRole').val(data.role);
 			if(data.isShow==true)
-				$('#editIsShow').prop("checked",'true');
-			$('#editDescription').val(data.description);
+				$('#editIsShow').prop("checked",'false');
+			else
+				$('#editIsShow').prop("checked",'false');
+			$('#editDescription').val(data.description);*/
+			
 			var edit=layer.open({
 				title:'编辑角色信息'
 				,type:1
 				,btn:['确定','取消']
 				,area:['30%','60%']
 				,content:html
+				,success:function(){
+					form.render();
+				}
 				,yes:function(){
 					var load=layer.load(1);
 					/* if(data.name!=$('#editRoleName').val()){  //判断角色名是否进行了修改
@@ -322,6 +379,7 @@ layui.config({
 						isShow:$('#editIsShow').val()=='on'?1:0,
 						description:$('#editDescription').val()
 					};
+					console.log(role.isShow)
 					$.ajax({
 						url:"${ctx}/roles/update",
 						type:"post",
@@ -344,6 +402,7 @@ layui.config({
 					//
 				}
 			})
+			
 			form.render();
 		}
 		function deleteRole(tableId){    //删除角色方法
@@ -385,16 +444,16 @@ layui.config({
 					   $('#'+DivId).css("display","none");
 				   }
 			});
+			
 			table.render({     //查看权限的表格
 				elem:'#'+DivId,
 				toolbar:'<div class="layui-btn-container layui-inline"><span class="layui-btn layui-btn-sm" lay-event="add" data-roleid="'+data.id+'">添加权限</span></div>',
 				cols:[[
-				       {field:'id',title:'id'},
-				       {field:'createdAt',title:'创建时间'},
-				       {field:'menuId',title:'菜单id'},
-				       {field:'permissionIds',title:'权限等级'},
-				       {field:'updatedAt',title:'更新时间'},
-				       {title:'操作',templet:"#removeAndEdit"},
+					       {field:'id',title:'id',align:'center'},
+					       {field:'createdAt',title:'创建时间',align:'center'},
+					       {field:'menuId',title:'菜单id',align:'center'},
+					       {field:'permissionIds',title:'权限等级',templet:'#permissionLevelDiv',align:'center'},
+					       {field:'updatedAt',title:'更新时间',align:'center'},
 				       ]],
 				data:data.resourcePermission,
 				id:DivId
