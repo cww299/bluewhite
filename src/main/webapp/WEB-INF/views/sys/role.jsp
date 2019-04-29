@@ -13,11 +13,8 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/formSelect/formSelects-v4.css" />
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
+	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script> 
 <title>角色管理</title>
-
-
-
-
 
 </head>
 
@@ -25,20 +22,6 @@
 	
 <div class="layui-card">
 	<div class="layui-card-body" style="height:800px"">
-		<div class="layui-form layui-card-header layuiadmin-card-header-auto">
-			<table>
-				<tr>
-					<td>用户名：</td>
-					<td><input type="text" class="layui-input" placeholder="请输入用户名"></td>
-					<td>角色名：</td>
-					<td><select name="city" lay-verify="required">
-						        <option value=""></option>
-						        <option value="0">北京</option>
-						      </select></td>
-				</tr>
-			</table>
-		</div>
-		
 		<div id="LAY-role-table" class="table_th_search" lay-filter="LAY-role-table"></div>
 	</div>
 </div>
@@ -59,53 +42,9 @@
 		</table>
 </div>
 
-<!-- 查看权限隐藏框 -->
-<div style="display:none;" class="table_th_search" lay-filter="LAY-lookOver-Permission" id="LAY-lookOver-Permission">
-	
-</div> 
-
-<!-- 修改角色隐藏框 -->
-<!-- <div class="layui-form" id="editRoleDiv" style="padding:20px;display:none;"> 提示：如果你不想用form，你可以换成div等任何一个普通元素
-  <div class="layui-form-item">
-  <input type="hidden" id="editRoleId" placeholder="请输入" autocomplete="off" lay-verify="required" class="layui-input">
-  </div>
-  <div class="layui-form-item">
-    <label class="layui-form-label">角色名</label>
-    <div class="layui-input-block">
-      <input type="text" id="editRoleName" placeholder="请输入" autocomplete="off" lay-verify="required" class="layui-input">
-    </div>
-  </div>
-  <div class="layui-form-item">
-    <label class="layui-form-label">英文名称</label>
-    <div class="layui-input-block">
-      <input type="text" id="editRole" placeholder="请输入" autocomplete="off" lay-verify="required" class="layui-input">
-    </div>
-  </div>
-  <div class="layui-form-item">
-    <label class="layui-form-label">角色类型</label>
-    <div class="layui-input-block">
-      <select id="editRoleType" lay-filter="aihao">
-      	<option value="管理员">管理员</option>
-		<option value="超级管理员">超级管理员</option>
-      </select>
-    </div>
-  </div>
-  <div class="layui-form-item">
-    <label class="layui-form-label">是否可用</label>
-    <div class="layui-input-block">
-      <input type="checkbox" lay-skin="switch" id="editIsShow" lay-text="可用|不可用" >
-    </div>
-  </div>
-  <div class="layui-form-item layui-form-text">
-    <label class="layui-form-label">请填写描述</label>
-    <div class="layui-input-block">
-      <textarea placeholder="请输入内容" class="layui-textarea" id="editDescription" id="editDescription"></textarea>
-    </div>
-  </div>
-</div> -->
-      
+<!-- 编辑角色模板  -->
 <script type="text/html" id="editRoleTempl">
-<div class="layui-form" id="editRoleDiv" style="padding:20px;display:none;"> 
+<div class="layui-form" id="editRoleDiv" style="padding:20px;"> 
   <div class="layui-form-item">
   <input type="hidden" id="editRoleId" placeholder="请输入" autocomplete="off" lay-verify="required" value="{{ d.id }}" class="layui-input">
   </div>
@@ -118,7 +57,7 @@
   <div class="layui-form-item">
     <label class="layui-form-label">英文名称</label>
     <div class="layui-input-block">
-      <input type="text" id="editRole" placeholder="请输入" autocomplete="off" lay-verify="required" value="{{ d.role }} class="layui-input">
+      <input type="text" id="editRole" placeholder="请输入" autocomplete="off" lay-verify="required" value="{{ d.role }}" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">
@@ -144,37 +83,62 @@
   </div>
 </div>
 </script>
-			
-<!-- 选择框组件 -->
-<script type="text/html" id="switchTpl">
-	<p>{{ d.isShow == true ? '是' : '否' }} </p>
-</script>
-
+<!-- 权限等级样式模板 -->
 <script type="text/html" id="permissionLevelDiv">
 	{{# layui.each(d.permissionIds, function(index, item){  }}
 		<span class="layui-badge layui-bg-green">{{item}}</span>&nbsp;&nbsp;
 	{{# }); }}
 </script>
-
+<!-- 角色表格工具栏  -->
 <script type="text/html" id="toolbarDemo">
   	<div class="layui-btn-container layui-inline">
    		<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteRole">批量删除</span>
     	<span class="layui-btn layui-btn-sm" lay-event="addRole">添加角色</span>
 	</div>
 </script>
+<!-- 角色表格工具 -->
 <script type="text/html" id="aboutPermission">
 	<button type="button" class="layui-btn layui-btn-sm" lay-event="lookOverPermission">查看权限</button>
 	<button type="button" class="layui-btn layui-btn-sm" lay-event="editRole">编辑</button>
 </script>
-<script type="text/html" id="toolbar-addPermission">
-    	<span class="layui-btn layui-btn-sm" lay-event="add">添加权限</span>
-</script>
-<script type="text/html" id="removeAndEdit">
-	<button type="button" class="layui-btn layui-btn-sm" lay-event="remove">删除</button>
-	<button type="button" class="layui-btn layui-btn-sm" lay-event="edit">编辑</button>
+
+<!-- 添加权限窗口模板 -->
+<script type="text/html" id="addPermissionTpl">
+
+<div style="width:40%;float:left;border:1px solid gray;height:400px;overflow:auto;margin:10px;padding:10px;" id="menuDiv"> //左侧存放联级菜单的div
+{{# layui.each(d,function(index,item){   }}
+	<div>
+		<p><a href="javascript:;" value="{{item.id}}" url="{{item.url}}" parent="{{item.parentId}}" name="{{item.name}}">{{item.name}}</a></p>
+		{{  }}
+	</div>
+{{# }); }}
+{{# 
+	var fn=function(menu,nbsp){  }}
+	<div style="display:none;">
+	{{# for(var i=0;i<menu.length;i++){  }}
+			<p>{{ nbsp }}
+				<a href="javascript:;" value="{{menu[i].id}}" url="{{menu[i].url}}" name="{{menu[i].name}}" parent="{{menu[i].parentId}}">|-{{menu[i].name}}</a>
+			{{# if(menu[i].children!=null){ }}
+				{{ fn(menu[i].children,nbsp+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;') }}
+			{{ } }}
+			</p>
+		{{ } }}
+	</div>
+	{{ } }}
+}}
+</div>
+<div style="margin:auto;margin-top:150px;float:left;width:5%;text-align:center;">
+	<p><i class="layui-icon layui-icon-next" ></i></p><p>选择添加权限</p>
+</div>
+<div style="float:right;width:40%;height:400px;border:1px solid gray;margin:10px;padding:10px;overflow:auto;" id="choosedDiv"></div>
+
+<div style="float:right;width:100%;text-align:center;">
+	<button type="button" lay-submit lay-filter="addPermissionSure"' value="'+roleId+'" class="layui-btn layui-btn-sm" >确定</button>
+</div>
+
+	
 </script>
 
-<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script> 
 <script>
 
 var allMenu=[];    //所有的menus接口菜单
@@ -201,10 +165,12 @@ layui.config({
 		, laytpl = layui.laytpl;
 		getMenu();   //获取菜单，添加权限级联时使用
 		getPermissionLevel();   //获取权限等级
+		formSelects.btns('select1', ['select', 'remove', 'reverse']);
 		table.render({
 			elem : '#LAY-role-table',
 			size : 'lg',
 			url : '${ctx}/roles/page' ,
+			height:'700px',
 			request:{
 				pageName: 'page' ,//页码的参数名称，默认：page
 				limitName: 'size' //每页数据量的参数名，默认：limit
@@ -245,7 +211,7 @@ layui.config({
 		})
 
 	    table.on('toolbar(LAY-role-table)', function (obj) { //监听头工具栏事件
-			var tableId = obj.config.id;
+			var tableId = obj.config.id;  //用于获取复选框按钮选中，用于删除事件
 			switch (obj.event) {
 			  case 'addRole': addRole();
 								break;
@@ -323,32 +289,17 @@ layui.config({
   				})
    		}
 		function editRole(data){  //修改角色
-			console.log(data)
-			//var html=$('#editRoleDiv');
-		var html='';
-		var tpl=editRoleTempl.innerHTML;
-		laytpl(tpl).render(data,function(h){
-			html=h;
-			console.log(h);
-		})
-			/*$('#editRoleId').val(data.id);
-			$('#editRoleName').val(data.name);
-			$('#editRole').val(data.role);
-			if(data.isShow==true)
-				$('#editIsShow').prop("checked",'false');
-			else
-				$('#editIsShow').prop("checked",'false');
-			$('#editDescription').val(data.description);*/
-			
+			var html='';
+			var tpl=editRoleTempl.innerHTML;     //进行模板渲染，将渲染的结果作为弹出窗的内容
+			laytpl(tpl).render(data,function(h){
+				html=h;
+			})
 			var edit=layer.open({
 				title:'编辑角色信息'
 				,type:1
 				,btn:['确定','取消']
 				,area:['30%','60%']
 				,content:html
-				,success:function(){
-					form.render();
-				}
 				,yes:function(){
 					var load=layer.load(1);
 					/* if(data.name!=$('#editRoleName').val()){  //判断角色名是否进行了修改
@@ -371,15 +322,15 @@ layui.config({
 						})
 						if(res==0)return;
 					} */
+					console.log()
 					var role={
-						id:$('#editRoleId').val(),
-						name:$('#editRoleName').val(),
-						role:$('#editRole').val(),
-						roleType:$('#editRoleType').val(),
-						isShow:$('#editIsShow').val()=='on'?1:0,
-						description:$('#editDescription').val()
+						id:$('#editRoleId').val(),			//当前角色id
+						name:$('#editRoleName').val(),		//角色名
+						role:$('#editRole').val(),			//角色英文名
+						roleType:$('#editRoleType').val(),	//角色类型
+						isShow:document.getElementById("editIsShow").checked?1:0,  //是否有用
+						description:$('#editDescription').val()	//具体描述
 					};
-					console.log(role.isShow)
 					$.ajax({
 						url:"${ctx}/roles/update",
 						type:"post",
@@ -399,10 +350,8 @@ layui.config({
 							layer.close(load);
 						}
 					})
-					//
 				}
 			})
-			
 			form.render();
 		}
 		function deleteRole(tableId){    //删除角色方法
@@ -454,6 +403,9 @@ layui.config({
 					       {field:'menuId',title:'菜单id',align:'center'},
 					       {field:'permissionIds',title:'权限等级',templet:'#permissionLevelDiv',align:'center'},
 					       {field:'updatedAt',title:'更新时间',align:'center'},
+					       {title:'操作',align:'center',templet:'<div class="layui-btn-container layui-inline">'+
+					    	   									'<span class="layui-btn layui-btn-sm" lay-event="edit">编辑</span>&nbsp;&nbsp;'+
+					    	   									'<span class="layui-btn layui-btn-sm" lay-event="remove">删除</span></div>'}
 				       ]],
 				data:data.resourcePermission,
 				id:DivId
@@ -745,7 +697,7 @@ function getPermissionLevel(){   //获取相关的权限等级
 }
 
 function getPermissionLevelSelect(menu){   //获取选中菜单的下拉框
-	var html='<select name="permissionLevelSelect" xm-select="selectId'+menu.id+'" xm-select-show-count="3">';  //xm-select-show-count="2", 超出后隐藏
+	var html='<select name="permissionLevelSelect" xm-select="selectId'+menu.id+'" xm-select-show-count="3" >';  //xm-select-show-count="2", 超出后隐藏
 	
 	for(var i=0;i<permissionLevel.length;i++){   
 		var selected='';

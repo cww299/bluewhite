@@ -36,13 +36,18 @@
 						<option value="192.168.1.204">三楼打卡机</option>
 						<option value="192.168.1.250">二楼打卡机</option>
 						<option value="192.168.1.205">一楼打卡机</option>
+						<option value="192.168.3.133">八号卡机</option>
 					</select>
 				</td>
 				<td>&nbsp;</td>
 				<td>
 					<button type="button" class="layui-btn" id="search" data-type="reload" >搜索</button>
 				</td>
-				<td style="width:58%;"></td>
+				<td>&nbsp;</td>
+				<td>
+					<button type="button" class="layui-btn" id="add">新增</button>
+				</td>
+				<td style="width:50%;"></td>
 				<td>
 					<button type="button" class="layui-btn" id="synchronization" data-type="synchronization">同步</button>
 				</td>
@@ -53,6 +58,29 @@
 		</table>
 	</div>
 </div>
+	
+<!-- 新增窗口 -->
+<div class="layui-form" id="addDiv" style="display:none;margin-top:10px;margin-right:35px;">
+	<div class="layui-form-item">
+		<label class="layui-form-label">编号：</label>
+		<div class="layui-input-block">
+			<input type="text" class="layui-input" id="addNum">
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">姓名：</label>
+		<div class="layui-input-block">
+			<input type="text" class="layui-input" id="addName">
+		</div>
+	</div>
+</div>	
+	
+	
+	
+
+	
+	
+	
 	
 	<script>
 	layui.use('table', function(){
@@ -99,7 +127,7 @@
 					isPrivilege:data.privilege,
 					enabled:data.enabled
 			}
-		     $.ajax({
+		     $.ajax({                      //修改用户信息
 				url:"${ctx}/personnel/updateUser",
 				data:postData,
 				type:"GET",
@@ -181,7 +209,78 @@
 			    var type = $(this).data('type');
 			    active[type] ? active[type].call(this) : '';
 			  });
-			});
+			
+		$('#add').on('click', function(){
+		    var add=layer.open({
+		    	title:"新增",
+		    	type:1,
+		    	btn:['确定','取消'],
+		    	offset:'50px',
+		    	area:['400px','200px'],
+		    	content:$('#addDiv'),
+		    	yes:function(){
+		    		if($("#addNum").val()==''){
+		    			layer.msg("用户编号不能为空！",{icon:2,offset:"200px"});
+						return;		    			
+		    		}
+		    		if($("#addName").val()==''){
+		    			layer.msg("用户姓名不能为空！",{icon:2,offset:"200px"});
+		    			return;
+		    		}
+		  		    var postData={
+		  					number:$("#addNum").val(),		//获取新增输入框的编号
+		  					name:$("#addName").val(),    //获取新增输入框的姓名
+		  					address:$("#select1").val(), //获取下拉框的值
+		  					isPrivilege:0,     			//默认为普通用户0
+		  					enabled:true				//默认为启用
+		  			};
+		  		    console.log(postData)
+		  		      $.ajax({                            //新增用户   
+		  				url:"${ctx}/personnel/updateUser",    
+		  				data:postData,
+		  				type:"GET",
+		  				beforeSend:function(){
+		  					index = layer.load(1, {
+		  						  shade: [0.1,'black'] //0.1透明度的白色背景
+		  						});
+		  				},
+		  				success:function(result){
+		  					if(0==result.code){
+		  						layer.msg('新增成功',{icon:1}); 
+		  						table.reload('testReload');
+		  						layer.close(index);
+		  						layer.close(add);
+		  					}else{
+		  						layer.msg(result.code+' '+result.message, {icon: 2});
+		  						layer.close(index);
+		  						layer.close(add);
+		  					}
+		  				},error:function(){
+		  					layer.msg("操作失败！", {icon: 2});
+		  					layer.close(index);
+		  					layer.close(add);
+		  				}
+		  			});   
+		    	}
+		    })
+		  });
+	
+	
+	
+	
+	
+	});
+	
+	
+	
+	
+	
+		  
+		  
+	
+	
+	
+	
 	
 		/*同步*/
 		$('#synchronization').on('click',function(){
