@@ -47,7 +47,7 @@ public class RoleAction {
 	}
 
 	/**
-	 * 查询全部的角色
+	 * 查询全部的角色 
 	 * @param request 请求
 	 * @param role 角色
 	 * @return cr
