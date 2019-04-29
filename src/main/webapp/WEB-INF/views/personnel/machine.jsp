@@ -73,6 +73,15 @@
 			<input type="text" class="layui-input" id="addName">
 		</div>
 	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">权限：</label>
+		<div class="layui-input-block">
+			<select name="holidayType" id="isPrivilege" lay-filter="isPrivilege">
+							<option value="0">普通用户</option>
+							<option value="3">管理员</option>
+							</select>
+		</div>
+	</div>
 </div>	
 	
 	
@@ -216,7 +225,7 @@
 		    	type:1,
 		    	btn:['确定','取消'],
 		    	offset:'50px',
-		    	area:['400px','200px'],
+		    	area:['400px','400px'],
 		    	content:$('#addDiv'),
 		    	yes:function(){
 		    		if($("#addNum").val()==''){
@@ -231,10 +240,9 @@
 		  					number:$("#addNum").val(),		//获取新增输入框的编号
 		  					name:$("#addName").val(),    //获取新增输入框的姓名
 		  					address:$("#select1").val(), //获取下拉框的值
-		  					isPrivilege:0,     			//默认为普通用户0
+		  					isPrivilege:$("#isPrivilege").val(),     			//默认为普通用户0
 		  					enabled:true				//默认为启用
 		  			};
-		  		    console.log(postData)
 		  		      $.ajax({                            //新增用户   
 		  				url:"${ctx}/personnel/updateUser",    
 		  				data:postData,
@@ -247,7 +255,12 @@
 		  				success:function(result){
 		  					if(0==result.code){
 		  						layer.msg('新增成功',{icon:1}); 
-		  						table.reload('testReload');
+		  							var address={
+		  								address:$("#select1").val(),
+		  						}
+		  						table.reload('testReload', {
+		  							where:address
+								});
 		  						layer.close(index);
 		  						layer.close(add);
 		  					}else{

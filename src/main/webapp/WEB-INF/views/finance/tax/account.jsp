@@ -6,10 +6,15 @@
 
 <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/autocomplete.css" media="all">
 <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+<%-- <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/autocomplete/jquery-ui.css" media="all"> --%>
+<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
 <script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
 <script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
-
-
+<%-- <script src="${ctx }/static/layui-v2.4.5/autocomplete/jquery-ui.js"></script> --%>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+ <!--  <link rel="stylesheet" href="/resources/demos/style.css"> -->
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -81,9 +86,8 @@
 				base: '${ctx}/static/layui-v2.4.5/'
 			}).extend({
 				tablePlug: 'tablePlug/tablePlug',
-				autocomplete:'autocomplete/autocomplete',
 			}).define(
-				['tablePlug', 'laydate', 'element','form','autocomplete'],
+				['tablePlug', 'laydate', 'element','form'],
 				function() {
 					var $ = layui.jquery
 						,layer = layui.layer //弹层
@@ -92,7 +96,6 @@
 						,laydate = layui.laydate //日期控件
 						,tablePlug = layui.tablePlug //表格插件
 						,element = layui.element
-						,autocomplete = layui.autocomplete; 
 					//全部字段
 					var allField;
 					//select全局变量
@@ -110,16 +113,8 @@
 						type: 'datetime',
 					});
 				 
-					autocomplete.render({
-			            elem: $('#example')[0],
-			            url: 'example_request_url',
-			            template_val: '{{d.consignee}}',
-			            template_txt: '{{d.consignee}} <span class=\'layui-badge layui-bg-gray\'>{{d.phone_number}}</span>',
-			            onselect: function (resp) {
-			                
-			            }
-			        })
-					
+				
+					var mycars=new Array()
 					$.ajax({
 						url: '${ctx}/system/user/findAllUser',
 						type: "GET",
@@ -129,9 +124,10 @@
 						},
 						success: function(result) {
 							$(result.data).each(function(i, o) {
-								htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
+								mycars.push(o.userName)
 							})
 							layer.close(index);
+							console.log(mycars)
 						},
 						error: function() {
 							layer.msg("操作失败！", {
@@ -153,6 +149,8 @@
 
 						};
 					}; */ 
+					
+					
 					
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
@@ -194,6 +192,7 @@
 								align: 'center',
 								search: true,
 								edit: 'text',
+								style:"class"
 							}, {
 								field: "money",
 								title: "票面金额",
@@ -202,7 +201,7 @@
 							}, {
 								field: "taxPoint",
 								title: "税点",
-								edit: 'text'
+								edit: 'text',
 							}, {
 								field: "paymentMoney",
 								title: "付款日要付金额",
@@ -411,54 +410,7 @@
 					});
 					
 					
-					/* var dl = $("#hc_select").next().find("dl").children();
-					$('#test input').on('keydown', function () {
-						alert(1)
-						var valuee=$("#hc_select").next().find("input").val()
-						console.log(valuee)
-			             var j = -1;
-			             for (var i = 0; i < dl.length; i++) {
-			            	 console.log(dl[i].innerHTML)
-			               if (dl[i].innerHTML.indexOf(value) <= -1) {
-			            	   console.log(dl[i].innerHTML.indexOf(value))
-			            	   j++;
-			               }
-			            	 console.log(j)
-			            	   $("#hc_select").append("<option value='"+6666+"'>"+66666+"</option>");
-			            	 if (j == dl.length-1) {
-			                    }
-			                }
-					}); */
-					/* var dl = $("#hc_select").next().find("dl").children(); */
-					
-					/* form.on('select(lay_selecte)', function (data) {   //选择移交单位 赋值给input框
-						console.log(data)
-		                $("#HandoverCompany").val(data.value);
-		                $("#hc_select").next().find("dl").css("display","none");
-		               console.log($("#hc_select").next().find("dl"))
-		                form.render();
-		            }); */
-					/*  window.search = function () {
-		            	alert(1)
-		                var value = $("#HandoverCompany").val();
-		                $("#hc_select").val(value);
-		                form.render();
-		                $("#hc_select").next().find("dl").css("display","block");
-		                $("#hc_select").next().find("dl").css("display","block");
-		                var dl = $("#hc_select").next().find("dl").children();
-		                console.log(dl)
-		                var j = -1;
-		                for (var i = 0; i < dl.length; i++) {
-		                    if (dl[i].innerHTML.indexOf(value) <= -1) {
-		                        dl[i].style.display = "none";
-		                        j++;
-		                    }
-		                    if (j == dl.length-1) {
-		                        $("#hc_select").next().find("dl").css({ "display": "none" }); 
-		                    } 
-		                }
-		                
-		            }  */
+			
 					
 					
 					//监听单元格编辑
@@ -483,7 +435,11 @@
 						});
 					});
 					
-					
+					table.on('focus','[data-field="userId"]', function (event) {
+				        $(this).autocomplete({
+				          source: mycars
+				        });
+				      })
 					//封装ajax主方法
 					var mainJs = {
 						//新增							
@@ -521,7 +477,6 @@
 							});
 							layer.close(index);
 					    },
-						
 					//修改							
 				    fUpdate : function(data){
 				    	if(data.id==""){

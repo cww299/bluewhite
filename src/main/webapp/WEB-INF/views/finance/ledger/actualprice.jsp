@@ -97,7 +97,6 @@
 				page: {
 					limit:15
 				},//开启分页
-				loading: true,
 				toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
 				/*totalRow: true //开启合计行 */
 				cellMinWidth: 90,
