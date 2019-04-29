@@ -111,12 +111,12 @@
 					});
 				 
 					autocomplete.render({
-			            elem: $('#example')[0],
-			            url: 'example_request_url',
+			            elem: $('#firstNames')[0],
+			            url: '${ctx}/system/user/findAllUser',
 			            template_val: '{{d.consignee}}',
 			            template_txt: '{{d.consignee}} <span class=\'layui-badge layui-bg-gray\'>{{d.phone_number}}</span>',
 			            onselect: function (resp) {
-			                
+			                console.log(resp)
 			            }
 			        })
 					
