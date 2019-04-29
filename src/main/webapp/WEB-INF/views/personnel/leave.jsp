@@ -694,7 +694,7 @@
 							        			writeTime:data.field.applytime,
 							        			[variable]:'true',
 							        			holidayType:holidayType,
-							        			overtime_type:overtime_type,
+							        			overtimeType:overtime_type,
 							        			content:content,
 							        			time:JSON.stringify(myArray)
 							        	}	
