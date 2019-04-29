@@ -60,16 +60,9 @@ public class Temporarily extends BaseEntity<Long>{
 	@Column(name = "group_id")
 	private Long groupId;
 	
-
-	/**
-	 * 是否是外来人员（0=否，1=是）
-	 */
-	@Column(name = "foreigns")
-	private Integer foreigns ;
-	
 	
 	/**
-	 * 分组id
+	 * 分组
 	 */
 	@Transient
 	private String groupName;
@@ -127,17 +120,6 @@ public class Temporarily extends BaseEntity<Long>{
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
 	}
-
-
-	public Integer getForeigns() {
-		return foreigns;
-	}
-
-
-	public void setForeigns(Integer foreigns) {
-		this.foreigns = foreigns;
-	}
-
 
 	public Long getGroupId() {
 		return groupId;

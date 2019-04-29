@@ -271,7 +271,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					} else {
 						// 实际工作时长
 						attendanceTime.setWorkTime(NumUtils.sub(
-								DatesUtil.getTimeHour(attendanceTime.getCheckIn(), attendanceTime.getCheckOut().after(workTimeEnd)?workTimeEnd:attendanceTime.getCheckOut()),
+								DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime)?workTime:attendanceTime.getCheckIn(), 
+													  attendanceTime.getCheckOut().after(workTimeEnd)?workTimeEnd:attendanceTime.getCheckOut()),
 								restTime));
 					}
 					

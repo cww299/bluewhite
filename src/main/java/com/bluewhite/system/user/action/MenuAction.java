@@ -110,13 +110,12 @@ public class MenuAction {
 	 * @param request 请求
 	 * @return cr
 	 */
-//	@RequestMapping(value = "/getPermissionPage", method = RequestMethod.GET)
-//	@ResponseBody
-//	public CommonResponse getPermission(HttpServletRequest request,PageParameter page, Permission permission) {
-//		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(menuService.getPage(page, permission))
-//				.toJSON());
-//		return cr;
-//	}
+	@RequestMapping(value = "/getPermissionPage", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getPermission(HttpServletRequest request,PageParameter page, Permission permission) {
+		CommonResponse cr = new CommonResponse();
+		return cr;
+	}
 	
 	/**
 	 * 查询所有权限
