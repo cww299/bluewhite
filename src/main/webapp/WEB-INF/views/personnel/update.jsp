@@ -157,21 +157,21 @@
 										}
 									});
 							
-							var field={
+							var onlyField={
 										orgNameId:'',
 										orderTimeBegin:'',
 										page:1,
 										limit:15,
 									};
 							form.on('submit(LAY-role-searche)', function(data) {
-								field={
+								onlyField={
 										orgNameId:data.field.orgNameId,
 										orderTimeBegin:data.field.orderTimeBegin,
 										page:1,
 										limit:15,
 								}
-								even(field)
-								event(field)
+								even(onlyField)
+								event(onlyField)
 							})
 							form.on('submit(LAY-sealAttendanceCollect)', function() {  //进行存档
 								 $.ajax({
@@ -484,7 +484,8 @@
 						}
 
 					});
-							}		
+				}		
+							
 						 table.on('edit(test5)', function(obj) {
 							 var value = obj.value
 							 var id=obj.data.id
@@ -558,6 +559,7 @@
 									success:function(result){
 										if(0==result.code){
 											layer.msg("修改成功！", {icon: 1});
+											even(onlyField);
 											layer.close(index);
 										}else{
 											layer.msg("修改失败！", {icon: 2});

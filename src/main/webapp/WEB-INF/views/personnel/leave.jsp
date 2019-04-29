@@ -178,7 +178,7 @@
 				<div class="layui-form-item">
 					<label class="layui-form-label" style="width: 90px;">加班类型</label>
 					<div class="layui-input-inline">
-						<select name="overtime_type" lay-filter="overtime_type" id="overtime_type" lay-search="true">
+						<select name="overtime_type" lay-filter="overtime_type" id="overtime_type" lay-search="true" value="1">
 							<option value="1">正常加班</option>
 							<option value="2">撤销加班</option></select>
 					</div>
@@ -610,7 +610,7 @@
 							        		var leaveduration='';
 							        		var time='';
 							        		var myArray = [];
-							        		var overtime_type='';
+							        		var overtime_type='1';
 												
 							        		if(data.field.variable==0){
 							        			if(data.field.holidayType==""){
@@ -676,6 +676,7 @@
 							        			}
 							        			variable='applyOvertime'
 							        			overtime=data.field.overtime;
+							        			overtime_type=data.field.overtime_type;
 							        			overduration=data.field.overduration;
 							        			var a=(data.field.inputapplytime4)
 								        		ss = a.split("\n")
