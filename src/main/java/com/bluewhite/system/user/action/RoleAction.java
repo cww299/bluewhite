@@ -47,7 +47,7 @@ public class RoleAction {
 	}
 
 	/**
-	 * 查询全部的角色
+	 * 查询全部的角色 
 	 * @param request 请求
 	 * @param role 角色
 	 * @return cr
@@ -187,7 +187,11 @@ public class RoleAction {
 	@ResponseBody
 	public CommonResponse deleteRole(Long id) {
 		CommonResponse cr = new CommonResponse();
-		roleMenuPermissionDao.delete(id);
+		RoleMenuPermission roleMenuPermission = roleMenuPermissionDao.findOne(id);
+		if(roleMenuPermission!=null){
+			roleMenuPermission.setRole(null);
+			roleMenuPermissionDao.delete(roleMenuPermission);
+		}
 		cr.setMessage("删除成功");
 		return cr;
 	}
@@ -226,6 +230,7 @@ public class RoleAction {
 			List<RoleMenuPermission> resourcePermissionList = role.getResourcePermission();
 			if(resourcePermissionList.size()>0){
 				for(RoleMenuPermission rp: resourcePermissionList){
+					rp.setRole(null);
 					roleMenuPermissionDao.delete(rp);
 				}
 			}

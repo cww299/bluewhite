@@ -10,6 +10,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/formSelect/formSelects-v4.css" />
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 <title>角色管理</title>
@@ -80,44 +81,71 @@
 		<button type="button" class="layui-btn layui-btn-sm" lay-event="aaa">查看权限</button>
 </script>
 
-<script type="text/html" id="addPermission">
-  	
-</script>
+
 <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script> 
 <script>
 
 var allMenu=[];    //所有的menus接口菜单
-var choosePermission=[];  //链接菜单中被选中的三级菜单
-var parentMenu=[];		//用于联级子菜单点击父菜单的显示功能,id存放的本身id，name存放菜单名，choosed子菜单是否有被选中,choosedNum子菜单有多少个被选中
+var choosePermission=[];  //链接菜单中被选中的三级菜单，id存放本身id，name存放菜单名，parent存放父id
+var parentMenu=[];		//用于联级子菜单点击父菜单的显示功能,id存放的本身id，name存放菜单名，parent存放父id，choosed子菜单是否有被选中,choosedNum子菜单有多少个被选中
+var permissionLevel=[];   //用于存放相关的权限等级
 function getMenu(){
 	 $.ajax({
 		url : "${ctx}/getTreeMenuPage",
 		type : "get",
 		success : function(result) {
-			var html='';
-			var rows=result.data;  
-			for(var i=0;i<rows.length;i++){  
-				allMenu.push(rows[i]);   
-				html+=('<option value="'+rows[i].id+'">'+rows[i].name+'</option>');
+			if(0==result.code){
+				var rows=result.data;  
+				for(var i=0;i<rows.length;i++){  
+					allMenu.push(rows[i]);   
+				}
 			}
-			$('#first-menus').append(html);
 		} 
 	 });
 }
+function getPermissionLevel(){   //获取相关的权限等级
+	$.ajax({
+		url:"${ctx }/getPermission",
+		type:"get",
+		success:function(result){
+			if(0==result.code){
+				var data=result.data;
+				for(var i=0;i<data.length;i++){
+					permissionLevel.push(data[i]);
+				}
+			}
+		}
+	})
+}
 
-function removePermission(id){  //删除某一角色中的权限,删除权限只需要删除表中的某一条数据，因此只需要传该数据的id
-		layer.msg("删除失败！", {icon: 2});
-}	
+/* <select name="city" xm-select="selectId">
+<option value="2" selected>上海</option>
+<option value="3">广州</option>
+</select> */
+function getPermissionLevelSelect(menu){   //获取选中菜单的下拉框
+	var html='<select name="permissionLevelSelect" xm-select="selectId'+menu.id+'" xm-select-show-count="3">';  //xm-select-show-count="2", 超出后隐藏
+	
+	for(var i=0;i<permissionLevel.length;i++){   
+		var selected='';
+		if(i==0)   //默认选中某一列
+			selected='selected';
+		html+='<option '+selected+' value="'+permissionLevel[i].id+'">'+permissionLevel[i].name+'</option>';
+	}
+	html+="</select>";
+	return html;
+}
 
 
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
-	tablePlug : 'tablePlug/tablePlug'
+	tablePlug : 'tablePlug/tablePlug',
+	formSelects : 'formSelect/formSelects-v4'
 }).define(
-	[ 'tablePlug', 'laydate','element' ],
+	[ 'tablePlug', 'laydate','jquery','formSelects'],
 	function() {
 		var $ = layui.jquery
+		, formSelects = layui.formSelects
 		, layer = layui.layer //弹层
 		, element = layui.element
 		, form = layui.form //表单
@@ -125,6 +153,7 @@ layui.config({
 		, laydate = layui.laydate //日期控件
 		, tablePlug = layui.tablePlug; //表格插件
 		// 处理操作列
+		
 		var fn1 = function(field) {
 			return function(data) {
 				return ['<select name="citye" lay-filter="city_selecte" lay-search="true">',
@@ -135,6 +164,7 @@ layui.config({
 			};
 		};
 		getMenu();   //获取菜单，添加权限级联时使用
+		getPermissionLevel();   //获取权限等级
 		table.render({
 			elem : '#LAY-role-table',
 			size : 'lg',
@@ -208,14 +238,26 @@ layui.config({
 		table.on('tool(LAY-role-table)',function(obj){   //监听查看权限按钮,obj为监听该行的对象
 			var data=obj.data;           
 			var rp=data.resourcePermission;   //拥有的权限
-			var permissionTable='<p>&nbsp;<button class="layui-btn layui-btn-sm" lay-filter="addPermission" lay-submit value="'+obj.id+'">新增权限</button></p>'+
+			var permissionTable='<p>&nbsp;<button class="layui-btn layui-btn-sm" data-type="addPermission"  value="'+data.id+'">新增权限</button></p>'+
 								'<table class="layui-table" style="text-align:center"><thead><th>创建时间</th><th>菜单id</th><th>id</th><th>权限等级</th><th>'+
-								'更新时间</th><th>移除</th></head><tbody>';
+								'更新时间</th><th>移除</th><th>编辑</th></head><tbody>';
 			if(rp.length>0){         //如果拥有权限，拼接权限的表格内容
 				for(var i=0;i<rp.length;i++){
 					var p=rp[i];
-					permissionTable+=('<tr><td>'+p.createdAt+'</td><td>'+p.menuId+'</td><td>'+p.id+'</td><td>'+p.permissionIds[0]+'</td><td>'
-										+p.updatedAt+'</td><td><button class="layui-btn layui-btn-sm" onclick="removePermission('+p.id+')">移除</button></td></tr>');
+					permissionTable+=('<tr><td>'+p.createdAt+'</td><td>'+p.menuId+'</td><td>'+p.id+'</td><td>'+getIds(p.permissionIds)+'</td><td>'
+										+p.updatedAt+'</td><td><button class="layui-btn layui-btn-sm" data-type="removePermission" value="'+p.id+'">移除</button></td>'+
+										'<td><button class="layui-btn layui-btn-sm" data-type="editPermission">编辑</button></td></tr>');
+				}
+				function getIds(ids){
+					var html='';
+					for(var i=0;i<ids.length;i++){
+						for(var j=0;j<permissionLevel.length;j++){
+							if(ids[i]==permissionLevel[j].id){
+								html+='<span value="'+ids[i]+'" class="layui-badge layui-bg-green">'+permissionLevel[j].name+'</span>&nbsp;&nbsp;';
+							}
+						}
+					}
+					return html;
 				}
 			}
 			else{
@@ -223,10 +265,6 @@ layui.config({
 			}
 			permissionTable+='</tbody></table>';
 
-			
-			form.on('submit(addPermission)',function(obj){  //监听添加权限按钮
-				addPermission(obj.id);
-			});
 			form.render();
 			
 			var aboutPermission=layer.open({     //打开查看权限内容的弹窗
@@ -235,8 +273,26 @@ layui.config({
 				   ,area: ['80%', '80%']
 				   ,content:permissionTable
 			}); 
-			
-			
+
+			$('.layui-btn.layui-btn-sm').on('click', function(){  //监听添加权限按钮
+				var type = $(this).data('type');
+				switch(type){
+					case 'addPermission':addPermission($(this).val());break;
+					case 'removePermission':removePermission();break;
+					case 'editPermission':addPermission();break;
+				}
+				
+			});
+			function editPermission(){
+				
+			}
+			function removePermission(){
+				layer.confirm("确定删除吗？",function(){
+					$.ajax({
+						url:''
+					})
+				})
+			}
 			function addPermission(roleId){    //给某一角色添加权限，需要该角色的id，和相关权限信息
 				choosePermission=[];   //每次打开添加权限的按钮，对之前所添加的权限清空
 				var html='';       //打开添加权限窗口的内容
@@ -244,21 +300,21 @@ layui.config({
 				for(var i=0;i<allMenu.length;i++){    //拼接菜单级联
 					html+='<div><p><a href="javascript:;" value="'+allMenu[i].id+'" url="'+allMenu[i].url+'" parent="'+allMenu[i].parentId+'" name="'+allMenu[i].name+'">'+allMenu[i].name+'</a></p>';
 					if(allMenu[i].children!=null)   //如果有下级菜单，进行递归拼接 creatHtml(子菜单,'相对于父菜单所使用的缩进')
-						html+=creatHtml(allMenu[i].children,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+						html+=creatHtml(allMenu[i].children,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
 					html+='</div>';
 				}
 				html+='</div>'+   //左侧菜单链接div结束
 						'<div style="margin:auto;margin-top:150px;float:left;width:5%;text-align:center;"><p><i class="layui-icon layui-icon-next" ></i></p>'+	 
 						'<p>选择添加权限</p></div>'+	   //中间存放添加菜单按钮的div
 						'<div style="float:right;width:40%;height:400px;border:1px solid gray;margin:10px;padding:10px;overflow:auto;" id="choosedDiv"></div>'+    //右侧存放选中菜单的div
-						'<div style="float:right;width:100%;text-align:center;"><button type="button" lay-submit lay-filter="addPermissionSure" class="layui-btn layui-btn-sm">确定</button></div>'; //确定按钮
-				
+						'<div style="float:right;width:100%;text-align:center;"><button type="button" lay-submit lay-filter="addPermissionSure"'+
+						' value="'+roleId+'" class="layui-btn layui-btn-sm" >确定</button></div>'; //确定按钮
 				function creatHtml(menu,nbsp){   //对多级菜单进行递归拼接
 					var str='<div style="display:none;">';
 					for(var i=0;i<menu.length;i++){
 						str+='<p>'+nbsp+'<a href="javascript:;" value="'+menu[i].id+'" url="'+menu[i].url+'" name="'+menu[i].name+'" parent="'+menu[i].parentId+'">|-'+menu[i].name+'</a>';
 						if(menu[i].children!=null){
-							str+=creatHtml(menu[i].children,nbsp+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+							str+=creatHtml(menu[i].children,nbsp+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
 						}
 						str+='</p>';
 					}
@@ -269,12 +325,53 @@ layui.config({
 					   ,type:1
 					   ,area: ['40%', '80%']
 					   ,content:html
+				}) 
+				form.on('submit(addPermissionSure)',function(obj){   //添加权限中，确定按钮的监听
+					//传递数据初始化
+					var roleId=obj.elem.value;
+					var permissions=[]; 
+					for(var i=0;i<choosePermission.length;i++){   //将所有的select的选择赋值给choosePermission
+						var t={"menuId":''+choosePermission[i].id,
+								"permissionIds":formSelects.value('selectId'+choosePermission[i].id, 'valStr') }; 
+						permissions.push(t);
+					}
+					var PLids=[];
+					for(var i=0;i<permissionLevel.length;i++){
+						PLids.push(permissionLevel[i].id);
+					}
+					var ids=PLids.join(',');
+					for(var i=0;i<parentMenu.length;i++){
+						if(parentMenu[i].choosed==true){
+							var t={"menuId":''+parentMenu[i].id,
+									"permissionIds":ids }; 
+							permissions.push(t);
+						}
+					}
+				 	//传递数据准备结束
+					var data={
+								roleId:roleId,
+								permissions:JSON.stringify(permissions)
+							};
+				 	var load=layer.load(1);
+					 $.ajax({
+						url:"${ctx}/roles/changeRole",
+						type:"POST",
+						data:data,
+						success:function(result){
+							if(result.code==0)
+								layer.msg("添加成功",{icon:1});
+							else
+								layer.msg(result.code+''+result.message,{icon:2});
+							layer.close(load);
+						},
+						error:function(result){
+							layer.close(load);
+							layer,msg(result.message,{icon:2});
+						}
+					})
 				})
-				form.on('submit(addPermissionSure)',function(){
-					alert("添加失败");
-				})
-				
-				 $('#menuDiv').find('a').on('click',function(){   //监听菜单级联中 a 的点击操作
+				//监听添加权限中菜单级联中 a 的点击操作
+				$('#menuDiv').find('a').on('click',function(){   
 					 var p= $(this).attr("url");
 					 if(p=="#"){                    //如果为#,则只切换下级菜单栏的显示、隐藏。不做其他操作 return
 						 var display =$(this).parent().next().css("display")    //菜单下级菜单隐藏显示的切换
@@ -292,7 +389,9 @@ layui.config({
 					 	if(!(i<parentMenu.length)){
 					 		var par={ id:$(this).attr("value"),
 			 						name:$(this).attr("name"),
+			 						parent:$(this).attr("parent"),
 			 						choosed:false,
+			 						level:1,
 			 						choosedNum:0};
 					 		parentMenu.push(par); 
 					 	}
@@ -303,8 +402,10 @@ layui.config({
 					 if(bg=="rgb(204, 255, 255)"){         //如果有背景颜色,则该点击为取消选中操作
 					 	$(this).parent().css("background-color","");
 					 	for(var i=0;i<choosePermission.length;i++){    //从选中数组中去除该对象
-					 		if(choosePermission[i].id==$(this).attr("value"))
-					 				choosePermission.splice(i,1);
+					 		if(choosePermission[i].id==$(this).attr("value")){
+					 			$('#p-'+$(this).attr("value")).remove();
+					 			choosePermission.splice(i,1);
+					 		}
 					 	}
 					 }
 					 else{					//如果没有颜色，则该点击为选中操作
@@ -313,14 +414,15 @@ layui.config({
 					 			id:$(this).attr("value"),
 					 			name:$(this).attr("name"),
 					 			parent:$(this).attr("parent"),
+					 			level:''
 					 	}
 					 	choosePermission.push(perm);  //添加到选中数组
+					 	 var html='';       //对选中数组在选中div中的显示
+						 html+='<p id="p-'+perm.id+'">&nbsp;<a href="javascript:;" value="'+perm.id+'">'+perm.name+'</a>'+getPermissionLevelSelect(perm)+'</p>';
+						 $('#choosedDiv').append(html);
+						 formSelects.render('selectId'+perm.id);  //无参数时，自动渲染所有
 					 }
-					 var html='';       //对选中数组在选中div中的显示
-					 for(var i=0;i<choosePermission.length;i++){
-						html+='<p>&nbsp;<a href="javascript:;" value="'+choosePermission[i].id+'">'+choosePermission[i].name+'<a></p>';
-					 }
-					 $('#choosedDiv').html("已选中："+choosePermission.length+"条权限"+html);
+					 
 					 parentChoose();  	//子菜单选中对父级菜单的级联反应，选中子菜单，父菜单默认选中
 					 function parentChoose(){
 						for(var i=0;i<parentMenu.length;i++){  //对父菜单数据初始化，便于重新计算
@@ -329,7 +431,7 @@ layui.config({
 						}
 						for(var i=0;i<choosePermission.length;i++){   //重新计算父菜单中子菜单选中的个数
 							var c=choosePermission[i];
-							for(var j=0;j<parentMenu.length;j++){ 
+							for(var j=0;j<parentMenu.length;j++){     //如果选中的菜单数组中父id等于父数组中的id
 								if(c.parent==parentMenu[j].id){
 									if(parentMenu[j].choosed==false){
 										parentMenu[j].choosed=true;
@@ -339,28 +441,44 @@ layui.config({
 										parentMenu[j].choosedNum+=1;
 								}
 							}
-						}
-						for(var i=0;i<parentMenu.length;i++){
-							$('#menuDiv').find('a').each(function(){  
-							    //对父菜单
+						}  //for end
+						for(var i=0;i<parentMenu.length;i++){      //对父菜单的父菜单的计算
+							if(parentMenu[i].parent!=0 && parentMenu[i].choosedNum!=0 ){//parentMenu[i]父id不为0，表示该菜单有上级菜单,且该菜单中有子菜单被选中
+								for(var j=0;j<parentMenu.length;j++){    
+									if(parentMenu[i].parent==parentMenu[j].id ){  	//找出该菜单的父菜单parentMenu[j]
+										if(parentMenu[j].choosed==false){
+											parentMenu[j].choosed=true;
+											parentMenu[j].choosedNum=parentMenu[i].choosedNum;
+										}
+										else
+											parentMenu[j].choosedNum+=parentMenu[i].choosedNum;
+									}
+								}
+							}
+						}  // for end
+						for(var i=0;i<parentMenu.length;i++){      //对父菜单的渲染
+							$('#menuDiv').find('a').each(function(){
 								if($(this).attr("value")==parentMenu[i].id){ 
+									var prefix='';
+									if($(this).text().indexOf("|-")>=0)
+										prefix="|-";
 									if(parentMenu[i].choosed==false){
-										$(this).html(parentMenu[i].name);
+										$(this).html(prefix+parentMenu[i].name);
 										$(this).parent().css("background-color","");
 									}else{
 										$(this).parent().css("background-color",'#CCFFFF');
-										$(this).html(parentMenu[i].name+' '+'<span class="layui-badge">'+parentMenu[i].choosedNum+'</span>')
+										$(this).html(prefix+parentMenu[i].name+' '+'<span class="layui-badge">'+parentMenu[i].choosedNum+'</span>')
 									}
 								}
-							})
-						}
+							}) //('a').each() end
+						} // for end
 						
 						
-					 }
-				 })//end a.click
-						
+					 }//子菜单选中，父菜单默认选中结束
+				 })
+				//监听a点击事件结束		
 			
-			}
+			}//添加权限函数功能结束（窗口的弹出、逻辑的判断。。）
 			
 			
 			

@@ -278,9 +278,9 @@
 				</form>
 			</div>
 		</div>
-		</div>
 		
-		<div class="panel-body" style="display: none;">
+		
+		<div class="panel-body" >
 			<div class="form-group"></div>
 			<table class="table table-hover">
 				<thead>
@@ -300,6 +300,7 @@
 				</tbody>
 			</table>
 			<div id="pagerrtw" class="pull-right"></div>
+		</div>
 		</div>
 		<!--隐藏框 已完成的批次结束  -->
 
@@ -1713,7 +1714,7 @@
 						      }
 						    }); 
 					   	layer.close(index);
-					   	 $("#tableworking").html(html); 
+					   	 document.getElementById("tableworking").innerHTML=html;
 					   	self.loadEventsth();
 					   	self.checkedddd();
 				      },error:function(){
@@ -1932,7 +1933,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['75%', '70%'], 
+						  area: ['85%', '90%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:name,

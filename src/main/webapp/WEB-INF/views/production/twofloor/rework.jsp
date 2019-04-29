@@ -31,7 +31,7 @@
 <body>
 
 
-<div class="panel panel-default">
+<div class="panel panel-default" style="height:800px;">
 	<div class="panel-body">
 	<!--查询开始  -->
 	
@@ -76,7 +76,7 @@
 			<thead>
 				<tr>
 					<th class="center"><label> <input type="checkbox"
-							class="ace checks" /> <span class="lbl"></span>
+							class="ace checks" id="allChecks"/> <span class="lbl"></span>
 					</label></th>
 					<th class="text-center">批次号</th>
 					<th class="text-center">时间</th>
@@ -887,7 +887,7 @@
 											$(result.data).each(function(i,o){
 												htmlfv +='<div class="input-group"><input type="checkbox" class="checkWork" value="'+o.id+'" data-residualnumber="'+o.residualNumber+'">'+o.name+' 剩余:'+o.residualNumber+'</input></div>'
 											})
-											var s="<div class='input-group'><input type='checkbox' class='checkWorkAll'>全选</input></div>"
+											var s="<div class='input-group'><input type='checkbox' class='checkWorkAll' id='checkWorkAll'>全选</input></div>"
 											$('.checkworking').html(s+htmlfv);
 											$(".checkWorkAll").on('click',function(){
 							                    if($(this).is(':checked')){ 
@@ -1213,6 +1213,8 @@
 								if(0==result.code){
 									layer.msg(result.message, {icon: 1});
 									self.loadPagination(_datae);
+									//document.getElementById("allChecks").checked=false;
+									$('#allChecks').prop("checked",false);
 								}else{
 									layer.msg(result.message, {icon: 2});
 								}
