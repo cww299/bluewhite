@@ -4,7 +4,11 @@ package com.bluewhite.common.utils;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.springframework.data.domain.Sort;
 
@@ -81,5 +85,13 @@ public class SalesUtils {
      */
     public static String formatBigDouble(Double value) {
         return new BigDecimal(value.toString()).toPlainString();
+    }
+    
+    /**
+     * 去重
+     */
+    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Map<Object,Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 }
