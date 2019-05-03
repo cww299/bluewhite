@@ -5,7 +5,6 @@
 <!DOCTYPE>
 <html>
 <head>
-
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
 	<script src="${ctx }/static/js/layer/layer.js"></script>
@@ -17,34 +16,116 @@
 </head>
 <body>
 
-<div class="layui-card" style="height:800px;">
-	<div class="layui-card-body">
-		<table id="permission-info-table" class="table_th_search"  lay-filter="permission-info-table"></table>
+	<div class="layui-card" >
+		<div class="layui-card-body" style="height:800px;">
+			<div style="float:left;" id="table1">
+				<table id="permission-info-table1" class="table_th_search"  lay-filter="permission-info-table1" ></table>
+			</div>
+			<div style="float:left;" id="table2">
+				<table id="permission-info-table2" class="table_th_search"  lay-filter="permission-info-table2" ></table>
+			</div>
+			<div style="float:left;" id="table3">
+				<table id="permission-info-table3" class="table_th_search"  lay-filter="permission-info-table3"></table>
+			</div>
+		</div> 
 	</div>
-</div>
+	
 </body>
 
 
-<script type="text/html" id="templ-isShow">
- 	 	<input type="checkbox" name="isShow" value="{{d.isShow}}" lay-skin="switch" lay-text="显示|不显示" lay-filter="cb" {{ d.isShow == true ? 'checked' : '' }}  >
-</script>
+<!-- 表格操作按钮  -->
 <script type="text/html" id="templ-aboutPerson">
- 	 	<button type="button" class="layui-btn layui-btn-sm" value="{{d.url}}" lay-event="aaa">查看人员</button>
+	<button type="button" class="layui-btn layui-btn-sm" value="{{d.url}}" lay-event="lookoverRole">查看角色</button>
+	<button type="button" class="layui-btn layui-btn-sm" value="{{d.url}}" lay-event="edit">编辑</button>
+	<button type="button" class="layui-btn layui-btn-sm" value="{{d.url}}" lay-event="lookoverChild">查看下级菜单</button>
 </script>
 
+<!-- 表格工具栏按钮  -->
 <script type="text/html" id="permission-toolbar">
   	<div class="layui-btn-container layui-inline layui-form">
-    	<table>
-			<tbody>
-				<tr id="tr-select"><td>选择菜单：</td><td style="width:150px;"><select class="layui-input" id="first-menus" lay-filter="first-menus">
-												<option value="" >选择菜单</option></select></td><td>&nbsp;&nbsp;</td>
-					</tr>								
-			</tbody>
-		</table><span class="layui-btn layui-btn-sm" lay-event="sure">确定</span>
+		<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">删除菜单</span>
+		<span class="layui-btn layui-btn-sm" lay-event="add">新增菜单</span>
 	</div>
 </script>
- 
+
+<!-- 编辑菜单模板 -->
+<script type="text/html" id="templEditMenu">
+<div class="layui-form" id="editRoleDiv" style="padding:20px;"> 
+<div class="layui-form-item">
+	<input type="hidden" id="editRoleId" placeholder="请输入" autocomplete="off" lay-verify="required" value="{{ d.id }}" class="layui-input"></div>
+<div class="layui-form-item">
+	<label class="layui-form-label">身份</label>
+	<div class="layui-input-block">
+		<input type="text" id="editRoleName" placeholder="请输入" autocomplete="off" lay-verify="required" value="{{ d.identity }}" class="layui-input"></div>
+</div>
+<div class="layui-form-item">
+	<label class="layui-form-label">菜单名称</label>
+	<div class="layui-input-block">
+    	<input type="text" id="editRole" placeholder="请输入" autocomplete="off" lay-verify="required" value="{{ d.name }}" class="layui-input"></div>
+</div>
+<div class="layui-form-item">
+  <label class="layui-form-label">是否显示</label>
+  <div class="layui-input-block">
+    <input type="checkbox" lay-skin="switch" id="isShow" lay-text="可用|不可用" {{ d.isShow==true?'checked':'' }} ></div>
+</div>
+<div class="layui-form-item layui-form-text">
+	<label class="layui-form-label">图标</label>
+	<div class="layui-input-block">
+		<input type="text" id="editRole" placeholder="请输入" autocomplete="off" lay-verify="required" value="{{ d.icon }}" class="layui-input"></div>
+</div>
+<div class="layui-form-item layui-form-text">
+	<label class="layui-form-label">父菜单id</label>
+	<div class="layui-input-block">
+		<input type="text" id="editRole" placeholder="请输入" autocomplete="off" lay-verify="required" value="{{ d.parentId }}" class="layui-input"></div>
+</div>
+<div class="layui-form-item layui-form-text">
+	<label class="layui-form-label">url</label>
+	<div class="layui-input-block">
+		<input type="text" id="editRole" placeholder="请输入" autocomplete="off" lay-verify="required" value="{{ d.url }}" class="layui-input"></div>
+</div>
+<div class="layui-form-item layui-form-text">
+	<label class="layui-form-label">span</label>
+	<div class="layui-input-block">
+		<input type="text" id="editRole" placeholder="请输入" autocomplete="off" lay-verify="required" value="{{ d.span }}" class="layui-input"></div>
+</div>
+</div>
+</script>
+
+<!-- 新增菜单模板 -->
+
+<!-- 查看角色模板 -->
+
+<!-- <table>
+	<tbody>
+		<tr id="tr-select"><td>选择菜单：</td><td style="width:150px;"><select class="layui-input" id="first-menus" lay-filter="first-menus">
+										<option value="" >选择菜单</option></select></td><td>&nbsp;&nbsp;</td>
+			</tr>								
+	</tbody>
+</table><span class="layui-btn layui-btn-sm" lay-event="sure">确定</span> -->
+
+
 <script>
+
+var allMenu=[];
+
+function getMenu(){
+	 $.ajax({
+		url : "${ctx}/getTreeMenuPage",
+		type : "get",
+		success : function(result) {
+			if(0==result.code){
+				var rows=result.data;  
+				for(var i=0;i<rows.length;i++){  
+					allMenu.push(rows[i]);   
+				}
+			}
+		} 
+	 });
+	 
+}
+$(function(){  //菜单初始化应放在页面加载完成后，否则表格的渲染会快于异步获取的数据，导致表格渲染出的数据为空
+	getMenu();
+})
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
@@ -57,68 +138,167 @@ layui.config({
 			, form = layui.form //表单
 			, table = layui.table //表格
 			, laydate = layui.laydate //日期控件
-			, tablePlug = layui.tablePlug; //表格插件
-				var allMenu=[];   //存放所有菜单
+			, tablePlug = layui.tablePlug //表格插件
+			, laytpl = layui.laytpl;
+			/* 	var allMenu=[];   //存放所有菜单
 				var first=[];		//存放一级菜单
 				var second=[];	//存放二级菜单
-				var third=[];		//存放三级菜单
-				initToolBar();
+				var third=[];		//存放三级菜单 */
+				//initToolBar();
 				table.render({
-					elem: '#permission-info-table'
-				    ,cellMinWidth: 90
-				    ,url: "${ctx}/getMenuPage" //数据接口
+					elem: '#permission-info-table1'
 				    ,page: true  //开启分页
 				    ,size:'lg'
-				    ,height:'700px'
+				    ,height:'700'
+				    ,width:'500'
 				    ,toolbar:'#permission-toolbar'
-				    ,request:{           
-						pageName: 'page', //页码的参数名称，默认：page
-						limitName: 'size' //每页数据量的参数名，默认：limit
-					}
-				    ,page: {
-						limit:10
-					}
-				    ,parseData : function(ret) {    //
-						return {
-							code : ret.code,
-							msg : ret.msg,
-							count : ret.data.total, 
-							data : ret.data.rows
-						}
-					}
+				    ,data:allMenu
 				    ,done:function(obj){
 				    	
 				    }
 				    ,cols: [[ //表头
-				      {field: 'identity', title: '身份'}
-				      ,{field: 'isShow', title: '菜单是否显示',templet:'#templ-isShow'} 
-				      ,{field: 'name', title: '菜单名字', }
-				      ,{field: 'parentId', title: '所属菜单',  sort: true}
-				      ,{field: 'url', title: '页面跳转',templet:'' }
-				      ,	{title : '具体人员',templet:'#templ-aboutPerson'} 
+				      {field: 'name', title: '菜单名字', width:'180'}
+				      ,	{title : '相关操作',templet:'#templ-aboutPerson',width:'316'} 
 				    ]]
 				});
-				table.on('tool(permission-info-table)', function (obj) {
-					//layer.alert(JSON.stringify(obj.data));    
-					alert(obj);
+				
+				table.on('tool(permission-info-table1)', function (obj) {  //对第一级表格的监听
+					switch(obj.event){
+					case 'lookoverRole':break;
+					case 'edit': editMenu(obj); break;
+					case 'lookoverChild':lookoverChild(obj);break;
+					}
 				});
-				table.on('toolbar(permission-info-table)', function (obj) {
-					//layer.alert(JSON.stringify(obj.data));   
+				table.on('toolbar(permission-info-table1)', function (obj) {
 					 switch (obj.event) {
-						 case 'sure':	console.log(obj);
-					 					break;
-									 	
+						 case 'sure':	console.log(obj);break;
+						 case 'add':	addMenu();	break;
+						 case 'delete':break;
 						 		
 					 }
 				});
-				form.on('select', function (obj) {
-					showSelect(obj);
-				});
-				form.on('switch(cb)', function(obj){
 				
-				  // layer.tips(this.value=='true'?'显示已开启':'显示已关闭', obj.othis);
-				});
-				function initToolBar(){
+				function lookoverChild(obj){	//这是监听第一个表格的下级菜单按钮
+					$("#table3").hide();
+					table.render({
+						elem: '#permission-info-table2'
+					    ,page: true  //开启分页
+					    ,size:'lg'
+					    ,height:'700'
+					    ,width:'500'
+					    ,toolbar:'#permission-toolbar'
+					    ,data:obj.data.children
+					    ,cols: [[ //表头
+					      {field: 'name', title: '菜单名字', width:'180'}
+					      ,	{title : '相关操作',templet:'#templ-aboutPerson',width:'316'} 
+					    ]]
+					});
+					table.on('toolbar(permission-info-table2)', function (obj) {	//对第二级表格的监听
+						 switch (obj.event) {
+							 case 'sure':	break;
+							 case 'add':break;
+							 case 'delete':break;
+						 }
+					});
+					table.on('tool(permission-info-table2)', function (obj) {
+						switch(obj.event){
+						case 'lookoverRole':break;
+						case 'edit': editMenu(obj); break;
+						case 'lookoverChild':if(obj.data.children==null)
+												layer.msg("该菜单没有下级菜单",{icon:2});
+											else lookoverChild2(obj);break;
+						}
+					});
+					
+					function lookoverChild2(obj){	//这是监听第二个表格的下级菜单按钮
+						$("#table3").show();
+						table.render({
+							elem: '#permission-info-table3'
+						    ,page: true  //开启分页
+						    ,size:'lg'
+						    ,height:'700'
+						    ,width:'500'
+						    ,toolbar:'#permission-toolbar'
+						    ,data:obj.data.children
+						    ,cols: [[ //表头
+						      {field: 'name', title: '菜单名字', width:'180'}
+						      ,	{title : '相关操作',templet:'#templ-aboutPerson',width:'316'} 
+						    ]]
+						});
+						table.on('toolbar(permission-info-table3)', function (obj) {	//对第三级表格的监听
+							switch (obj.event) {
+								 case 'sure':	break;
+								 case 'add':break;
+								 case 'delete':break;
+							 }
+						});
+						table.on('tool(permission-info-table3)', function (obj) {
+							switch(obj.event){
+							case 'lookoverRole':break;
+							case 'edit': editMenu(obj); break;
+							case 'lookoverChild':lookoverChild3(obj);break;
+							}
+						});
+					}
+				}
+
+				function lookoverRole(obj){
+					
+				}
+				function editMenu(obj){
+					var html="";
+					var tpl=templEditMenu.innerHTML;
+					laytpl(tpl).render(obj.data,function(h){	//渲染模板内容
+						html=h;
+					});
+					console.log(obj.data)
+					layer.open({
+						title:'编辑菜单信息'
+						,type:1
+						,btn:['确定','取消']
+						,area:['30%','60%']
+						,content:html
+						,yes:function(){
+							
+						}
+					});
+					form.render();	//渲染表单，否则开关按钮不显示
+				}
+				function addMenu(){
+					var html="";
+					var tpl=templEditMenu.innerHTML;
+					var data={
+							icon:'',
+							id:'',
+							identity:'',
+							isShow: false,
+							name: "",
+							parentId: '',
+							span: "",
+							url: ""
+					};
+					laytpl(tpl).render(data,function(h){	//渲染模板内容
+						html=h;
+					});
+					layer.open({
+						title:'新增菜单信息'
+						,type:1
+						,btn:['确定','取消']
+						,area:['30%','60%']
+						,content:html
+						,yes:function(){
+							
+						}
+					});
+					form.render();	//渲染表单，否则开关按钮不显示
+				}
+				function deleteMenu(){
+					
+				}
+				
+				
+				
+			/* 	function initToolBar(){
 					 $.ajax({
 						url : "${ctx}/getMenuPage?size=1000",
 						type : "get",
@@ -143,7 +323,7 @@ layui.config({
 							form.render();
 						} 
 					 });
-				}
+				}//end initToolBar
 				function showSelect(obj){
 					console.log($('#dsadkjaaskjd').elem);
 					var id=obj.value; 						//当前菜单id					
@@ -188,9 +368,9 @@ layui.config({
 							}//end id=allMenu[i].id
 						}//end for i<allMenu.length
 					}//end else id!=null
-				} //end showSelect
+				} //end showSelect */
 			
-	}
+	}//end defind
 );
 </script>
 </html>

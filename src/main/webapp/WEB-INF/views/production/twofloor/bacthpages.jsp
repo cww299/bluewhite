@@ -95,9 +95,9 @@
 					<td class="text-center" id="total"></td>
 					<td class="text-center"></td>
 					<td class="text-center"></td>
+					<td class="text-center" id="tota2">1</td>	<!-- 修改此处 -->
 					<td class="text-center"></td>
-					<td class="text-center"></td>
-					<td class="text-center"></td>
+					<td class="text-center" id="tota3">1</td>	<!-- 修改此处 -->
 					<td class="text-center"></td>
 					<td class="text-center"></td>
 					<td class="text-center"></td>
@@ -267,8 +267,16 @@
 						  shade: [0.1,'#fff'] //0.1透明度的白色背景
 						  });
 					  }, 
-		      		  success: function (result) {
-		      			 $("#total").text(result.data.statData.stateCount)
+		      		  success: function (result) { 
+		      			  	//修改合计
+		      			$("#total").text(result.data.statData.number)
+		      			$("#tota2").text(result.data.statData.sumTaskPrice)
+		      			$("#tota3").text(result.data.statData.time)
+		      			//修改此处
+		      			
+		      			
+		      			
+		      			 //$("#total").text(result.data.statData.stateCount)
 		      			 $(result.data.rows).each(function(i,o){
 		      				 if(o.bacthHairPrice==null){
 		      					o.bacthHairPrice=0;
