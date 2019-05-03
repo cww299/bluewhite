@@ -939,7 +939,6 @@ jQuery(function($){
 				      				$('#socialSecurity').val(o.socialSecurity);
 				      				$('.bankCard1').val(o.bankCard1);
 				      				$('.bankCard2').val(o.bankCard2);
-				      				$('.agreement').val(o.agreement);
 				      				$('.contract').val(o.contract);
 				      				$('#contractDate').val(o.contractDate);
 				      				$('.frequency').val(o.frequency);
@@ -1099,7 +1098,6 @@ jQuery(function($){
 											socialSecurity:$('#socialSecurity').val(),
 											bankCard1:$('.bankCard1').val(),
 											bankCard2:$('.bankCard2').val(),
-											agreement:$('.agreement').val(),
 											promise:$('.promise').val(),
 											contract:$('.contract').val(),
 											contractDate:$('#contractDate').val(),
@@ -1703,7 +1701,6 @@ jQuery(function($){
 				      				$('#socialSecurity').val(o.socialSecurity);
 				      				$('.bankCard1').val(o.bankCard1);
 				      				$('.bankCard2').val(o.bankCard2);
-				      				$('.agreement').val(o.agreement);
 				      				$('.contract').val(o.contract);
 				      				$('#contractDate').val(o.contractDate);
 				      				$('.frequency').val(o.frequency);
@@ -1867,7 +1864,6 @@ jQuery(function($){
 											socialSecurity:$('#socialSecurity').val(),
 											bankCard1:$('.bankCard1').val(),
 											bankCard2:$('.bankCard2').val(),
-											agreement:$('.agreement').val(),
 											promise:$('.promise').val(),
 											contract:$('.contract').val(),
 											contractDate:$('#contractDate').val(),
@@ -1942,7 +1938,7 @@ jQuery(function($){
 											  	}
 												layer.close(index);
 												self.loadPagination(data);
-											}else if (2==result.code) {
+											}else if (2==result.code && $(".quit").val()!=1) {
 												var init=layer.open({
 													   title: '提示'
 													  ,content:'该员工没有初始化设定,请点击添加'
@@ -1953,6 +1949,8 @@ jQuery(function($){
 															layer.close(init); 
 														}
 													}); 
+											}else if($(".quit").val()==1){
+												layer.msg(result.message, {icon: 1});
 											}else{
 												layer.msg(result.message, {icon: 2});
 											}
@@ -2206,7 +2204,7 @@ jQuery(function($){
 				  			size:13,
 				  			quit:$('#groupp').val(),
 				  			foreigns:0,
-				  			agreements:$('#agreementsSelect').val(),
+				  			agreementId:$('#agreementsSelect').val(),
 				  			userName:$('#name').val(),
 				  			orgNameIds:$('.sel').val(),
 				  			gender:$('#gender').val(),
@@ -2417,7 +2415,6 @@ jQuery(function($){
 										socialSecurity:$('#socialSecurity').val(),
 										bankCard1:$('.bankCard1').val(),
 										bankCard2:$('.bankCard2').val(),
-										agreement:$('.agreement').val(),
 										promise:$('.promise').val(),
 										commitment:$('.commitment').val(),
 										contractDate:$('#contractDate').val(),
