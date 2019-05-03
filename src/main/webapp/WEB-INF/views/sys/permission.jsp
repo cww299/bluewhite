@@ -163,7 +163,7 @@ layui.config({
 				    	
 				    }
 				    ,cols: [[ //表头
-				      {type: 'radio' ,align : 'center',fixed: 'left'},
+				      {type: 'radio' ,align : 'center',unresize:true},
 				      {field: 'name', title: '菜单名字', width:'180'}
 				      ,	{title : '相关操作',templet:'#templ-aboutPerson',width:'316'} 
 				    ]]
