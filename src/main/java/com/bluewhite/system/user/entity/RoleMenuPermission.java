@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -45,6 +46,36 @@ public class RoleMenuPermission extends BaseEntity<Long> {
 	@Column(name = "permission_ids")
 	@Type(type = "SetToStringUserType")
 	private Set<Long> permissionIds;
+	
+	/**
+	 * 菜单名称（回显）
+	 */
+	@Transient
+	private String menuName;
+	
+	/**
+	 * 权限id列表（回显）
+	 */
+	@Transient
+	private String permissionNames;
+	
+	
+	
+	public String getMenuName() {
+		return menuName;
+	}
+
+	public void setMenuName(String menuName) {
+		this.menuName = menuName;
+	}
+
+	public String getPermissionNames() {
+		return permissionNames;
+	}
+
+	public void setPermissionNames(String permissionNames) {
+		this.permissionNames = permissionNames;
+	}
 
 	public Role getRole() {
 		return role;

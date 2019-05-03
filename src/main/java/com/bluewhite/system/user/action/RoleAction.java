@@ -1,16 +1,16 @@
 package com.bluewhite.system.user.action;
 
-import static org.hamcrest.CoreMatchers.is;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,8 +24,12 @@ import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.system.user.dao.RoleMenuPermissionDao;
+import com.bluewhite.system.user.entity.Menu;
+import com.bluewhite.system.user.entity.Permission;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.RoleMenuPermission;
+import com.bluewhite.system.user.service.MenuService;
+import com.bluewhite.system.user.service.PermissionService;
 import com.bluewhite.system.user.service.RoleService;
 
 @Controller
@@ -37,13 +41,19 @@ public class RoleAction {
 	
 	@Autowired
 	private RoleMenuPermissionDao roleMenuPermissionDao;
+	
+	@Autowired
+	private MenuService menuService;
+	
+	@Autowired
+	private PermissionService permissionService;
 
 	private ClearCascadeJSON clearCascadeJSON;
 
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addFilterTerm(Role.class, "users","resourcePermissions")
-				.addFilterTerm(RoleMenuPermission.class, "role");
+				.addFilterTerm(Role.class,"resourcePermissions")
+				.addFilterTerm(RoleMenuPermission.class, "id","role","menuName","permissionNames");
 	}
 
 	/**
@@ -79,17 +89,30 @@ public class RoleAction {
 	}
 
 	/**
-	 * 根据id查询一个角色
+	 * 根据id查询一个角色所拥有的菜单权限
 	 * 
 	 * @param id 角色id
 	 * @return cr
 	 */
-	@RequestMapping(value = "/roles/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getRole", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getRole(@PathVariable("id") long id) {
+	public CommonResponse getRole(Long id) {
+		CommonResponse cr = new CommonResponse();
 		Role role = roleService.findOne(id);
-		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(role)
-				.toJSON());
+		role.getResourcePermission().stream().forEach(rmp->{
+			Menu menu = menuService.findOne(rmp.getMenuId());
+			rmp.setMenuName(menu.getName());
+			List<Permission> listPermission = new ArrayList<>();
+			rmp.getPermissionIds().stream().forEach(pi->{
+				Permission permission = permissionService.findOne(pi);
+				listPermission.add(permission);
+			});
+			rmp.setPermissionNames(listPermission.stream().map(Permission::getName).collect(Collectors.joining(",")));
+		});
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(RoleMenuPermission.class, "id","menuName", "permissionNames","createdAt","updatedAt").format(role.getResourcePermission()).toJSON());
+		cr.setMessage("查询成功");
 		return cr;
 	}
 
@@ -103,33 +126,9 @@ public class RoleAction {
 	@ResponseBody
 	public CommonResponse addRole(HttpServletRequest request, Role role) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(roleService.save(role));
-		return cr;
-	}
-
-	/**
-	 * 角色名是否存在
-	 * @param request 请求
-	 * @param role 角色实体类
-	 * @return cr
-	 */
-	@RequestMapping(value = "/roles/exists", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse checkRole(HttpServletRequest request, Role role) {
-		return exists(role);
-	}
-
-	/**
-	 * 判断角色的name是否存在相同的
-	 * 
-	 * @param role 角色实体类
-	 * @return cr
-	 */
-	private CommonResponse exists(Role role) {
-		CommonResponse cr = new CommonResponse();
 		if (role.getName() != null) {
 			if (roleService.findByName(role.getName()) == null) {
-				cr.setData("角色名可以使用");
+				cr.setData(roleService.save(role));
 			} else {
 				cr.setCode(ErrorCode.SYSTEM_USER_NAME_REPEAT.getCode());
 				cr.setData("角色名已存在");
@@ -139,6 +138,9 @@ public class RoleAction {
 		}
 		return cr;
 	}
+
+
+
 	
 	
 	/**
