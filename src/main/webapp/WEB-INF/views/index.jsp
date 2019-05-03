@@ -26,8 +26,8 @@
 		<section id="main-content" class="animated fadeInUp"  style="padding:0">
 			<div id="decoroll2" class="imgfocus">
 				<div>
-					<div class="layui-tab layui-tab-brief" lay-allowClose="true" lay-filter="myTab">
-						<ul class="layui-tab-title">
+					<div class="layui-tab layui-tab-brief" lay-allowClose="true" lay-filter="myTab" style="margin:0px;">
+						<ul class="layui-tab-title" style="margin-bottom:5px;">
 						</ul>
 						<div class="layui-tab-content" style="padding:0;">
 						</div>
