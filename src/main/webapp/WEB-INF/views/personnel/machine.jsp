@@ -86,7 +86,9 @@
 	
 	
 	
-
+<script type="text/html" id="enabled">
+	<input type="checkbox" lay-skin="switch" lay-text="可用|不可用" {{ d.enabled==true?"checked":"" }}>
+</script>
 	
 	
 	
@@ -96,6 +98,8 @@
 		 var $ = layui.$;
 		  var table = layui.table;
 		  var form = layui.form;
+		  var address='192.168.1.204';	//默认为三楼打卡机
+		  
 		  table.render({
 		    elem: '#test'
 		    ,url:'${ctx}/personnel/getAllUser'
@@ -115,17 +119,51 @@
 		      ,{field:'name', title: '用户名',align: 'center',edit: 'text'}
 		      ,{field:'privilege',align: 'center',  title: '权限', sort: true,templet:function(d){
 	             	if(d.privilege=='3') return '管理员'; 
-	           	else if(d.privilege=='0') return '普通用户';}
-				}
-		      ,{field:'enabled',align: 'center', title: '是否启用'}
+	           		else if(d.privilege=='0') return '普通用户';}}
+		      ,{align: 'center',field:'enabled', title: '是否启用',templet:'#enabled'}
 		      ,{fixed: 'right', title:'操作', align: 'center', toolbar: '#barDemo'}
 		      ]]
 	          ,id: 'testReload'
 		    ,page: false
 		  });
+		  form.render();
+		  form.on('switch()', function(data){	//监听所有开关
+			  	
+			  	var selectElem = $(data.elem);	//获取当前开关所在行的行信息
+				var tdElem = selectElem.closest('td');
+				var trElem = tdElem.closest('tr');
+				var tableView = trElem.closest('.layui-table-view');
+				var field = tdElem.data('field');
+				var row=table.cache[tableView.attr('lay-id')][trElem.data('index')];  //row为当前所在行的信息
+					
+				var postData={
+						number:row.number,
+						name:row.name,
+						isPrivilege:row.privilege,
+						enabled:data.elem.checked,
+						address:address
+				};
+			  $.ajax({                      //修改用户信息
+					url:"${ctx}/personnel/updateUser",
+					data:postData,
+					type:"GET",
+					beforeSend:function(){
+						index = layer.load(1, {
+							  shade: [0.1,'black'] //0.1透明度的白色背景
+							});
+					},
+					success:function(result){
+						if(0==result.code)
+							layer.msg('修改成功',{icon:1,offset:'150px'}); 
+						else
+							layer.msg("修改失败！", {icon: 2,offset:'150px'});
+						layer.close(index);
+					}
+				}); 
+		  });  
 		  
 		//监听单元格编辑
-		  table.on('edit(test3)', function(obj){
+		  table.on('edit(test3)', function(obj){		console.log("1")
 		    var value = obj.value //得到修改后的值
 		    ,data = obj.data //得到所在行所有键值
 		    ,field = obj.field; //得到字段
@@ -142,19 +180,19 @@
 				type:"GET",
 				beforeSend:function(){
 					index = layer.load(1, {
-						  shade: [0.1,'#fff'] //0.1透明度的白色背景
+						  shade: [0.1,'black'] //0.1透明度的白色背景
 						});
 				},
 				success:function(result){
 					if(0==result.code){
-						layer.msg('[ID: '+ data.number +'] ' + field + ' 字段更改为：'+ value); 
+						layer.msg('[ID: '+ data.number +'] ' + field + ' 字段更改为：'+ value,{icon:1,offset:'150px'}); 
 						layer.close(index);
 					}else{
-						layer.msg("修改失败！", {icon: 2});
+						layer.msg("修改失败！", {icon: 2,offset:'150px'});
 						layer.close(index);
 					}
 				},error:function(){
-					layer.msg("操作失败！", {icon: 2});
+					layer.msg("操作失败！", {icon: 2,offset:'150px'});
 					layer.close(index);
 				}
 			}); 
@@ -178,20 +216,20 @@
 							type:"GET",
 							beforeSend:function(){
 								index = layer.load(1, {
-									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									  shade: [0.1,'black'] //0.1透明度的白色背景
 									});
 							},
 							success:function(result){
 								if(0==result.code){
-									layer.msg("删除成功！", {icon: 1});
+									layer.msg("删除成功！", {icon: 1,offset:'150px'});
 									obj.del();
 									layer.close(index);
 								}else{
-									layer.msg("删除失败！", {icon: 2});
+									layer.msg("删除失败！", {icon: 2,offset:'150px'});
 									layer.close(index);
 								}
 							},error:function(){
-								layer.msg("操作失败！", {icon: 2});
+								layer.msg("操作失败！", {icon: 2,offset:'150px'});
 								layer.close(index);
 							}
 						});
@@ -216,6 +254,7 @@
 		  
 		$('#search').on('click', function(){
 			    var type = $(this).data('type');
+			    address=$("#select1").val();
 			    active[type] ? active[type].call(this) : '';
 			  });
 			
@@ -264,12 +303,12 @@
 		  						layer.close(index);
 		  						layer.close(add);
 		  					}else{
-		  						layer.msg(result.code+' '+result.message, {icon: 2});
+		  						layer.msg(result.code+' '+result.message, {icon: 2,offset:'150px'});
 		  						layer.close(index);
 		  						layer.close(add);
 		  					}
 		  				},error:function(){
-		  					layer.msg("操作失败！", {icon: 2});
+		  					layer.msg("操作失败！", {icon: 2,offset:'150px'});
 		  					layer.close(index);
 		  					layer.close(add);
 		  				}
@@ -318,7 +357,7 @@
 						layer.close(index);
 					}
 				},error:function(){
-					layer.msg("操作失败！", {icon: 2});
+					layer.msg("操作失败！", {icon: 2,offset:'150px'});
 					layer.close(index);
 				}
 			});

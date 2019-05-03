@@ -1149,7 +1149,7 @@ jQuery(function($){
 													if($("#timesss").val()=="actua"){
 														actua="2018-10-08 00:00:00"
 													}
-												var data = {
+												var data = {	
 											  			page:self.getCount(),
 											  			size:13,
 											  			quit:$('#groupp').val(),
@@ -1371,10 +1371,11 @@ jQuery(function($){
 										}
 										if($("#timesss").val()=="actua"){
 											actua="2018-10-08 00:00:00"
-										}
+										}	
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
+									  		agreementId:$('#agreementsSelect').val(),
 									  		quit:$('#groupp').val(),
 								  			foreigns:0,
 								  			userName:$('#name').val(),
