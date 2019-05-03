@@ -78,6 +78,22 @@
 				<tbody id="tablecontent">
 
 				</tbody>
+				<thead>    <!--  此处修改：加入合计  -->
+					<tr>
+						<td class="center">合计</td>
+						<td class="text-center"></td>
+						<td class="text-center"></td>
+						<td class="text-center"></td>
+						<td class="text-center" id="total"></td>
+						<td class="text-center"></td>
+						<td class="text-center"></td>
+						<td class="text-center" id="tota2"></td>
+						<td class="text-center"></td>
+						<td class="text-center" id="tota3"></td>
+						<td class="text-center"></td>
+						<td class="text-center"></td>
+					</tr>
+				</thead>
 		</table>
 		<div id="pager" class="pull-right"></div>
 	</div>
@@ -155,6 +171,7 @@
 				<tbody id="tablecontentto">
 
 				</tbody>
+				
 			</table>
 			<div id="pagerr" class="pull-right"></div>
 		</div>
@@ -238,7 +255,11 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			  
+		      			//修改合计
+			      			$("#total").text(result.data.statData.number)
+			      			$("#tota2").text(result.data.statData.sumTaskPrice)
+			      			$("#tota3").text(result.data.statData.time)
+			      			//修改此处
 		      			 $(result.data.rows).each(function(i,o){
 		      				 if(o.bacthHairPrice==null){
 		      					o.bacthHairPrice=0;

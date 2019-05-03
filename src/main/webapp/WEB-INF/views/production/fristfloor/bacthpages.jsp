@@ -99,10 +99,11 @@
 				<td class="text-center" id="total"></td>
 				<td class="text-center"></td>
 				<td class="text-center"></td>
-				<td class="text-center" id="totaltw"></td>
+				<!-- <td class="text-center" id="totaltw"></td> --> <!-- 修改此处 -->
+				<td class="text-center" id="tota2">1</td>
 				<td class="text-center"></td>
-				<td class="text-center"></td>
-				<td class="text-center"></td>
+				<td class="text-center" id="tota3">1</td>
+				
 				<td class="text-center"></td>
 				<td class="text-center"></td>
 			</tr>
@@ -350,6 +351,14 @@
 						  });
 					  }, 
 		      		  success: function (result) {
+		      			  //修改合计
+			      			$("#total").text(result.data.statData.number)
+			      			$("#tota2").text(result.data.statData.sumTaskPrice)
+			      			$("#tota3").text(result.data.statData.time)
+			      			//修改此处
+		      			  
+		      			  
+		      			  
 		      			 $("#total").text(result.data.statData.stateCount)
 		      			  $("#totaltw").text(result.data.statData.statAmount)
 		      			 $(result.data.rows).each(function(i,o){
