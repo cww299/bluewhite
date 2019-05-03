@@ -239,12 +239,6 @@ public class User extends BaseEntity<Long> {
     private String bankCard2;
 	
 	/**
-	 * 协议
-	 */
-	@Column(name = "agreement")
-    private Integer agreement;
-	
-	/**
 	 * 保险情况
 	 *  0=未缴，1=已缴，
 	 */
@@ -280,12 +274,12 @@ public class User extends BaseEntity<Long> {
 	@Column(name = "frequency")
 	private Integer frequency;
 	/**
-	 *工作状态(0=在职1=离职)
+	 * 工作状态(0=在职1=离职)
 	 */
 	@Column(name = "quit")
     private Integer quit;
 	/**
-	 *离职时间
+	 * 离职时间
 	 */
 	@Column(name = "quit_date")
     private Date quitDate;
@@ -817,15 +811,6 @@ public class User extends BaseEntity<Long> {
 
 	public void setBankCard2(String bankCard2) {
 		this.bankCard2 = bankCard2;
-	}
-
-
-	public Integer getAgreement() {
-		return agreement;
-	}
-
-	public void setAgreement(Integer agreement) {
-		this.agreement = agreement;
 	}
 
 	public Integer getPromise() {

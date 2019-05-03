@@ -2,6 +2,7 @@ package com.bluewhite.system.user.action;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,7 +20,6 @@ import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.system.user.entity.Menu;
 import com.bluewhite.system.user.entity.Permission;
-import com.bluewhite.system.user.entity.UserContract;
 import com.bluewhite.system.user.service.MenuService;
 import com.bluewhite.system.user.service.PermissionService;
 
@@ -133,5 +133,36 @@ public class MenuAction {
 		cr.setMessage("查询成功");
 		return cr;
 	}
+	
+	
+	/**
+	 * 新增（修改）菜单
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/saveMenu", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getPermission(Menu menu) {
+		CommonResponse cr = new CommonResponse();
+		if(menu.getId()!=null){
+			Menu oldMenu = menuService.findOne(menu.getId());
+			menuService.update(menu, oldMenu);
+			cr.setMessage("修改成功");
+		}else{
+			Optional<Menu> mu = menuService.findByIdentity(menu.getIdentity());
+			if(mu.isPresent()){
+				menuService.save(menu);
+				cr.setMessage("新增成功");
+			}else{
+				cr.setMessage("已有该身份的菜单，不能重复添加");
+			}
+		}
+		cr.setData(clearCascadeJSON.format(menu).toJSON());
+		return cr;
+	}
+	
+	
+	
 
 }

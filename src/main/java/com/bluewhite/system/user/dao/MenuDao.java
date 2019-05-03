@@ -4,6 +4,7 @@ package com.bluewhite.system.user.dao;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import com.bluewhite.base.BaseRepository;
@@ -47,4 +48,11 @@ public interface MenuDao extends BaseRepository<Menu, Long> {
 	 * @return menu
 	 */
 	public Menu findByName(String name);
+	
+	/**
+	 * 通过身份查找
+	 * @param name 菜单名字
+	 * @return menu
+	 */
+	public Optional<Menu> findByIdentity(String identity);
 }

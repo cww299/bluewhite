@@ -3,6 +3,7 @@ package com.bluewhite.system.user.service;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -10,7 +11,6 @@ import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.system.user.entity.Menu;
-import com.bluewhite.system.user.entity.Role;
 
 @Service
 public interface MenuService extends BaseCRUDService<Menu,Long>{
@@ -38,4 +38,7 @@ public interface MenuService extends BaseCRUDService<Menu,Long>{
 
 
 	public List<Menu> getTreeMenuPage();
+
+	
+	public Optional<Menu> findByIdentity(String identity);
 }

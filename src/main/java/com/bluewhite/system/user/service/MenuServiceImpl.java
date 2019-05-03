@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -167,6 +168,11 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 			} // end else
 		} // end for
 		return topTree;
+	}
+
+	@Override
+	public Optional<Menu> findByIdentity(String identity) {
+		return menuDao.findByIdentity(identity);
 	}
 	
 	

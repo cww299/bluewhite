@@ -1,13 +1,8 @@
 package com.bluewhite.personnel.attendance.service;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -17,8 +12,6 @@ import javax.persistence.FlushModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.Predicate;
 
-import org.hibernate.id.enhanced.TableStructure;
-import org.jsoup.select.Collector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -31,17 +24,12 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.utils.DatesUtil;
-import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.ZkemUtils.ZkemSDKUtils;
 import com.bluewhite.personnel.attendance.dao.ApplicationLeaveDao;
 import com.bluewhite.personnel.attendance.dao.AttendanceDao;
 import com.bluewhite.personnel.attendance.dao.AttendanceInitDao;
 import com.bluewhite.personnel.attendance.dao.AttendanceTimeDao;
 import com.bluewhite.personnel.attendance.entity.Attendance;
-import com.bluewhite.personnel.attendance.entity.AttendanceCollect;
-import com.bluewhite.personnel.attendance.entity.AttendanceInit;
-import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
