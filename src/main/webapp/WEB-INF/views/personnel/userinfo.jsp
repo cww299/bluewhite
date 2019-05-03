@@ -132,6 +132,10 @@
 												<option value="大专">大专</option>
 												<option value="高中">高中</option>
 												<option value="初中及以下">初中及以下</option></select></td>
+										<td>&nbsp;&nbsp;</td>    <!-- 修改此处 -->
+										<td>协议:</td>
+										<td><select id="agreementsSelect" class="form-control">
+												<option value="">请选择</option></select>
 									</tr>
 								</table>
 								<span class="input-group-btn">
@@ -605,8 +609,28 @@
 	
 	
 
-	<script>	
-   jQuery(function($){
+<script>	
+jQuery(function($){
+	//修改此处，初始化协议的下拉框选择
+	 
+	 $.ajax({
+		  url:"${ctx}/basedata/list",
+		  data:{type:"agreements"},
+		  type:"GET",
+		  async:false,
+  		  success: function (result) {
+  			  	var html='';
+	  			  $(result.data).each(function(index,item){
+	  				html+='<option value="'+item.id+'">'+item.name+'</option>'
+	  			  });
+	  			$("#agreementsSelect").append(html);
+	    	}
+	});
+	   
+	   
+	   
+	   
+	   
    	var Login = function(){
 			var self = this;
 			//表单jsonArray
@@ -1798,7 +1822,7 @@
 					    
 					    
 					    
-						_index = layer.open({
+						_index = layer.open({	//员工信息框
 							  type: 1,
 							  skin: 'layui-layer-rim', //加上边框
 							  area: ['80%', '90%'], 
@@ -1919,13 +1943,15 @@
 												layer.close(index);
 												self.loadPagination(data);
 											}else if (2==result.code) {
-												layer.open({
+												var init=layer.open({
 													   title: '提示'
 													  ,content:'该员工没有初始化设定,请点击添加'
 													  ,btn: ['确认', '取消']
 													,yes: function(index, layero){
-														window.location.href = "${ctx}/menusToUrl?url=personnel/init"
-										       			 }
+														//window.location.href = "${ctx}/menusToUrl?url=personnel/init"
+															$('#personnelInit', window.parent.document)[0].click();	//从父窗口中找到超链接并产生点击事件，[0]不能省略，因为超链接a中有子元素，点击的是子元素
+															layer.close(init); 
+														}
 													}); 
 											}else{
 												layer.msg(result.message, {icon: 2});
@@ -2180,6 +2206,7 @@
 				  			size:13,
 				  			quit:$('#groupp').val(),
 				  			foreigns:0,
+				  			agreements:$('#agreementsSelect').val(),
 				  			userName:$('#name').val(),
 				  			orgNameIds:$('.sel').val(),
 				  			gender:$('#gender').val(),
@@ -2491,5 +2518,7 @@
 	login.init();
 })
 </script>
+
+
 </body>
 </html>
