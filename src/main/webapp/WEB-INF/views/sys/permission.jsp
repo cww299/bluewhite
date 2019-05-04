@@ -13,6 +13,17 @@
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>权限控制</title>
+<style>
+.layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
+  top: 50%;
+  transform: translateY(-50%);
+}
+.layui-table-view .layui-form-radio>i {		/*单选框按钮垂直居中   */
+    margin-top: 20px;
+    font-size: 20px;
+}
+</style>
+
 </head>
 <body>
 
@@ -129,7 +140,6 @@ function getMenu(){
 			}
 		} 
 	 });
-	 
 }
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
@@ -151,6 +161,7 @@ layui.config({
 				var third=[];		//存放三级菜单 */
 				//initToolBar();
 				getMenu();
+				
 				table.render({
 					elem: '#permission-info-table1'
 				    ,page: true  //开启分页
@@ -163,32 +174,34 @@ layui.config({
 				    	
 				    }
 				    ,cols: [[ //表头
-				      {type: 'radio' ,align : 'center',unresize:true},
-				      {field: 'name', title: '菜单名字', width:'180'}
-				      ,	{title : '相关操作',templet:'#templ-aboutPerson',width:'316'} 
+				      {type: 'radio' ,align : 'center'},
+				      {field: 'name', title: '菜单名字',},
+				      {field: 'identity', title: '身份', },
+				      {field: 'isShow', title: '是否显示', }
 				    ]]
 				});
-				
-				table.on('tool(permission-info-table1)', function (obj) {  //对第一级表格的监听
-					switch(obj.event){
-					case 'lookoverRole':break;
-					case 'edit': editMenu(obj); break;
-					case 'lookoverChild':lookoverChild(obj);break;
-					}
-				});
-				table.on('toolbar(permission-info-table1)', function (obj) {
+				var radioObj1;  //用于记录单选框选中的对象
+				table.on('toolbar(permission-info-table1)', function (obj) {	//监听工具栏
 					 switch (obj.event) {
-						 case 'sure':	console.log(obj);break;
+						 case 'sure':	break;
 						 case 'add':	addMenu(0);	break;		//如果为添加一级菜单，则父id为0
 						 case 'delete':break;
-						 		
+						 case 'edit': editMenu(radioObj1); break;
+						 case 'lookoverChild':  if(radioObj1==null ||radioObj1=="")
+		 											layer.msg("请选择菜单",{icon:2});
+						 						else lookoverChild(radioObj1);break;
 					 }
 				});
-				
+				table.on('radio(permission-info-table1)',function(obj){	//监听单选按钮
+					radioObj1=obj;
+				}) 
+				table.on('row(permission-info-table1)', function(obj){	//监听行点击事件
+					$(this).children()[0].getElementsByTagName("i")[0].click();
+				});
 				function lookoverChild(obj){	//这是监听第一个表格的下级菜单按钮
 					$("#table3").hide();
 					var parentId=obj.data.id;	//记录当前对象的id。用于新增菜单时，记录其父菜单的id
-					table.render({
+					table.render({			//2级菜单表格
 						elem: '#permission-info-table2'
 					    ,page: true  //开启分页
 					    ,size:'lg'
@@ -197,27 +210,30 @@ layui.config({
 					    ,toolbar:'#permission-toolbar'
 					    ,data:obj.data.children
 					    ,cols: [[ //表头
-					        {type: 'checkbox',align : 'center',fixed: 'left',align:'center'},
-					      {field: 'name', title: '菜单名字', width:'180'}
-					      ,	{title : '相关操作',templet:'#templ-aboutPerson',width:'316'} 
+					        {type: 'radio',align : 'center',fixed: 'left',align:'center'},
+					        {field: 'name', title: '菜单名字', },
+					        {field: 'identity', title: '身份', },
+						      {field: 'isShow', title: '是否显示', }
 					    ]]
 					});
+					form.render();
+					var radioObj2;	//用于记录单选框选中的
 					table.on('toolbar(permission-info-table2)', function (obj) {	//对第二级表格的监听
 						 switch (obj.event) {
 							 case 'sure':	break;
 							 case 'add':	addMenu(parentId); break;
 							 case 'delete':break;
+							 case 'edit': editMenu(radioObj2); break;
+							 case 'lookoverChild':  if(radioObj2==null ||radioObj2=="")
+							 							layer.msg("请选择菜单",{icon:2});
+							 						else if(radioObj2.data.children==null)
+														layer.msg("该菜单没有下级菜单",{icon:2});
+													else lookoverChild2(radioObj2);break;
 						 }
 					});
-					table.on('tool(permission-info-table2)', function (obj) {
-						switch(obj.event){
-						case 'lookoverRole':break;
-						case 'edit': editMenu(obj); break;
-						case 'lookoverChild':if(obj.data.children==null)
-												layer.msg("该菜单没有下级菜单",{icon:2});
-											else lookoverChild2(obj);break;
-						}
-					});
+					table.on('radio(permission-info-table2)',function(obj){
+						radioObj2=obj;
+					}) ;
 					
 					function lookoverChild2(obj){	//这是监听第二个表格的下级菜单按钮
 						$("#table3").show();
@@ -231,56 +247,35 @@ layui.config({
 						    ,toolbar:'#permission-toolbar'
 						    ,data:obj.data.children
 						    ,cols: [[ //表头
-						              {type: 'checkbox',align : 'center',fixed: 'left'},
-						      {field: 'name', title: '菜单名字', width:'180'}
-						      ,	{title : '相关操作',templet:'#templ-aboutPerson',width:'316'} 
+						              {type: 'radio',align : 'center',fixed: 'left'},
+						      		{field: 'name', title: '菜单名字', },
+						              {field: 'identity', title: '身份', },
+								      {field: 'isShow', title: '是否显示', }
 						    ]]
 						});
+						var radioObj3;
 						table.on('toolbar(permission-info-table3)', function (obj) {	//对第三级表格的监听
 							switch (obj.event) {
 								 case 'sure':	break;
 								 case 'add':	addMenu(parentId);	break;
 								 case 'delete':break;
+								 case 'edit': editMenu(radioObj3); break;
+								 case 'lookoverChild':layer.msg("该菜单没有下级菜单",{icon:2});break;
 							 }
 						});
-						table.on('tool(permission-info-table3)', function (obj) {
-							switch(obj.event){
-							case 'lookoverRole':break;
-							case 'edit': editMenu(obj); break;
-							case 'lookoverChild':layer.msg("该菜单没有下级菜单",{icon:2});;break;
-							}
-						});
+						table.on('radio(permission-info-table3)',function(obj){
+							radioObj3=obj;
+						})
 					}
 				}
 
-				function lookoverRole(obj){		//查看某权限的角色
-					$.ajax({
-						url:"",
-						type:"",
-						data:"",
-						success:function(result){
-							var data=result.data;
-							var html='';
-							var tpl=templLookoverRole;
-							laytpl(tpl).render(data,function(h){
-								html=h;
-							});
-							var role=layer.open({
-								title:'查看权限角色',
-								type:1,
-								area:['30%',"60%"],
-								content:html
-							})
-						}
-					})
-				}
+				
 				function editMenu(obj){		//编辑菜单信息
 					var html="";
 					var tpl=templEditMenu.innerHTML;
 					laytpl(tpl).render(obj.data,function(h){	//渲染模板内容
 						html=h;
 					});
-					console.log(obj.data)
 					layer.open({
 						title:'编辑菜单信息'
 						,type:1
@@ -396,7 +391,6 @@ layui.config({
 					 });
 				}//end initToolBar
 				function showSelect(obj){
-					console.log($('#dsadkjaaskjd').elem);
 					var id=obj.value; 						//当前菜单id					
 					var selectId;				//存放当前菜单子菜单select id
 					if(obj.elem!=null)
