@@ -160,7 +160,7 @@
 				</form>
 			</div>
 		</div>
-		<h1 class="page-header"></h1>
+		
 		
 			<table class="table table-hover">
 				<thead>
