@@ -36,9 +36,23 @@ public interface MenuService extends BaseCRUDService<Menu,Long>{
 	 */
 	public PageResult<Menu> getPage(PageParameter page, Menu menu);
 
+	/**
+	 * 查询所有菜单
+	 * @return
+	 */
+	public List<Menu> getTreeMenuPage();
 
-	public List<Menu> getTreeMenuPage(Long id);
-
-	
+	/**
+	 * 根据身份查询菜单
+	 * @param identity
+	 * @return
+	 */
 	public Optional<Menu> findByIdentity(String identity);
+
+	/**
+	 *  根据父id查询所有菜单
+	 * @param id
+	 * @return
+	 */
+	public  List<Menu> getTreeMenuParent(Long id);
 }

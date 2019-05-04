@@ -98,8 +98,22 @@ public class MenuAction {
 	 */
 	@RequestMapping(value = "/getTreeMenuPage", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getTreeMenuPage(Long id) {
-		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(menuService.getTreeMenuPage(id))
+	public CommonResponse getTreeMenuPage() {
+		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(menuService.getTreeMenuPage())
+				.toJSON());
+		return cr;
+	}
+	
+	/**
+	 * 根据父id查询所有菜单
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/getTreeMenuParent", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getTreeMenuParent(Long id) {
+		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(menuService.getTreeMenuParent(id))
 				.toJSON());
 		return cr;
 	}
