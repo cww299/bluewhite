@@ -115,6 +115,29 @@ public class RoleAction {
 		cr.setMessage("查询成功");
 		return cr;
 	}
+	
+	
+	
+	
+	/**
+	 * 判断角色是否存在
+	 * @param request 请求
+	 * @param role 角色
+	 * @return cr
+	 */
+	@RequestMapping(value = "/roles/exists", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse exists(HttpServletRequest request, String name) {
+		CommonResponse cr = new CommonResponse();
+		Role role = roleService.findByName(name); 
+		if(role!=null){
+			cr.setCode(ErrorCode.SYSTEM_USER_NAME_REPEAT.getCode());
+			cr.setData("角色名已存在");
+		}else{
+			cr.setData("可使用");
+		}
+		return cr;
+	}
 
 	/**
 	 * 添加一个角色

@@ -22,6 +22,7 @@ import com.bluewhite.system.user.entity.Menu;
 import com.bluewhite.system.user.entity.Permission;
 import com.bluewhite.system.user.service.MenuService;
 import com.bluewhite.system.user.service.PermissionService;
+import com.graphbuilder.math.func.CeilFunction;
 
 
 /**
@@ -159,6 +160,22 @@ public class MenuAction {
 			}
 		}
 		cr.setData(clearCascadeJSON.format(menu).toJSON());
+		return cr;
+	}
+	
+	
+	/**
+	 * 删除菜单
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/deleteMenu", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteMenu(String ids) {
+		CommonResponse cr = new CommonResponse();
+		menuService.delete(ids);
+		cr.setMessage("删除成功");
 		return cr;
 	}
 	
