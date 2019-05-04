@@ -73,9 +73,6 @@
 
 					</div>
 				</form>
-
-
-
 			</div>
 		</div>
 
@@ -90,7 +87,6 @@
 			var Login = function(){
 				var self = this;
 				//表单jsonArray
-				
 				//初始化js
 				this.init = function(){
 					//注册绑定事件
@@ -109,15 +105,10 @@
 				      		  success: function (result) {
 				      			  if(result.code==0){
 					      				location.href = "${ctx}/";
-					      				$.cookie("navstation", null);
-										$.cookie("navstationtwo",null)
 				      			  }else{
 				      				layer.close(index);
 				      				layer.msg(result.message, {icon: 2}); 
 				      			  }
-					      			
-					      			  
-					      			  
 							      },error:function(){
 										layer.msg("登入失败", {icon: 2});
 										layer.close(index);
