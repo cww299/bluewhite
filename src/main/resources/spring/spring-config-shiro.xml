@@ -105,7 +105,6 @@
 					/static/**=anon <!--设置静态资源文件为游客可访问-->
 					/views/common/**=anon
 				 	/**=authc  <!--	 默认系统用户请求过滤  -->
-				 <!--	/**=anon   默认系统用户请求过滤  -->
 					/logout=logout<!-- 退出登录 -->
 			</value>
 		</property>

@@ -142,15 +142,8 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 		}
 
 	@Override
-	public List<Menu> getTreeMenuPage(Long id) {
-		List<Menu> result = new ArrayList<>();
-		if(id!=null){
-			List<Menu> 	result1 = menuDao.findAll();
-			result.addAll(result1);
-		}else{
-			Menu result1 = menuDao.findOne(id);
-			result.add(result1);
-		}
+	public List<Menu> getTreeMenuPage() {
+		List<Menu> result  = menuDao.findAll();
 		// 为分类建立键值对
 		Map mapNodes = new HashMap(result.size());
 		for (Menu treeNode : result) {
@@ -180,6 +173,36 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 	@Override
 	public Optional<Menu> findByIdentity(String identity) {
 		return menuDao.findByIdentity(identity);
+	}
+
+	
+	@Override
+	public List<Menu> getTreeMenuParent(Long id) {
+		List<Menu> result  = menuDao.findByParentIdLessThanOrderByOrderNo(id);
+		// 为分类建立键值对
+		Map mapNodes = new HashMap(result.size());
+		for (Menu treeNode : result) {
+			mapNodes.put(treeNode.getId(), treeNode);
+		}
+		// 初始化多叉树信息，里面只保存顶级分类信息
+		List<Menu> topTree = new ArrayList<Menu>();// 多叉树
+		for (Menu treeNode : result) {
+			if (treeNode.getParentId() != null && treeNode.getParentId() == 0) {// 添加根节点（顶级分类）
+				Menu rootNode = (Menu) mapNodes.get(treeNode.getId());
+				topTree.add(rootNode);
+			} // end if
+			else {
+				Menu parentNode = (Menu) mapNodes.get(treeNode.getParentId());
+				if (parentNode != null) {
+					if (parentNode.getChildren() == null) {
+						parentNode.setChildren(new ArrayList<Menu>());
+					}
+					List<Menu> children = parentNode.getChildren();
+					children.add(treeNode);
+				}
+			} // end else
+		} // end for
+		return topTree;
 	}
 	
 	
