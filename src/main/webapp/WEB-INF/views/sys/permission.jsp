@@ -107,7 +107,7 @@
 var allMenu=[];
 
 function getMenu(){
-	 $.ajax({
+	$.ajax({
 		url : "${ctx}/getTreeMenuPage",
 		type : "get",
 		async:false,
@@ -119,7 +119,7 @@ function getMenu(){
 				}
 			}
 		} 
-	 });
+	});
 }
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
@@ -158,7 +158,7 @@ layui.config({
 				table.on('toolbar(permission-info-table1)', function (obj) {		//监听工具栏
 					 switch (obj.event) {
 						 case 'add':	addMenu(0);	break;							//如果为添加一级菜单，则父id为0
-						 case 'delete':break;
+						 case 'delete': deleteMenu(radioObj1); break;
 						 case 'edit': editMenu(radioObj1); break;
 						 case 'lookoverChild':  if(radioObj1==null ||radioObj1=="")	//如果单选框没有选中任何行
 		 											layer.msg("请选择菜单",{icon:2});
@@ -194,7 +194,7 @@ layui.config({
 					table.on('toolbar(permission-info-table2)', function (obj) {	//对第二级表格的监听
 						 switch (obj.event) {
 							 case 'add':	addMenu(parentId); break;
-							 case 'delete':break;
+							 case 'delete':	deleteMenu(radioObj2);  break;
 							 case 'edit': editMenu(radioObj2); break;
 							 case 'lookoverChild':  if(radioObj2==null ||radioObj2=="")
 							 							layer.msg("请选择菜单",{icon:2});
@@ -228,7 +228,7 @@ layui.config({
 						table.on('toolbar(permission-info-table3)', function (obj) {	//对第三级表格的监听
 							switch (obj.event) {
 								 case 'add':	addMenu(parentId);	break;
-								 case 'delete':break;
+								 case 'delete': deleteMenu(radioObj3); break;
 								 case 'edit': editMenu(radioObj3); break;
 								 case 'lookoverChild':layer.msg("该菜单没有下级菜单",{icon:2});break;
 							 }
@@ -279,8 +279,23 @@ layui.config({
 					});
 					form.render();	
 				}
-				function deleteMenu(){
-					
+				function deleteMenu(obj){
+					layer.confirm("是否确认删除？",function(index){
+						var load=layer.load(1);
+						$.ajax({
+							url:"${ctx }/deleteMenu",
+							data:{ids:""+obj.data.id},
+							success:function(result){
+								if(0==result.code){
+									layer.closeAll();
+									layer.msg(result.message,{icon:1});
+								}
+								else
+									layer.msg(result.code+" "+result.message,{icon:2});
+								layer.close(load);
+							}
+						})
+					})
 				}
 				function save(){					//用于修改和新增菜单的方法
 					var data;
