@@ -377,6 +377,7 @@ layui.config({
 							layer.msg("权限类型不能为空",{icon:2});
 							return;
 						}
+
 						var data={
 							id:	obj.data.id,
 							permissionIds:ids,
