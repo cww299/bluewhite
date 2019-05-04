@@ -17,6 +17,7 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
+import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.system.user.entity.Menu;
 import com.bluewhite.system.user.entity.Permission;
@@ -171,6 +172,7 @@ public class MenuAction {
 				cr.setMessage("新增成功");
 			}else{
 				cr.setMessage("已有该身份的菜单，不能重复添加");
+				cr.setCode(ErrorCode.SYSTEM_ROLE_NAME_REPEAT.getCode());
 			}
 		}
 		cr.setData(clearCascadeJSON.format(menu).toJSON());

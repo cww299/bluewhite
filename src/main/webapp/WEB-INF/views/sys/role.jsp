@@ -311,6 +311,7 @@ layui.config({
 			});
         }
 		function lookOverPermission(data){  		//查看角色权限方法
+			var roleId=data.id;						//角色id
 			var aboutPermission=layer.open({     	//打开查看权限内容的弹窗
 				   title: '查看角色权限：'+data.name
 				   ,type:1
@@ -364,7 +365,7 @@ layui.config({
 					html+='<option '+selected+' value="'+permissionLevel[i].id+'" >'+permissionLevel[i].name+'</option>';
 				}
 				html+="</select>"; 
-				layer.open({
+				var editPer=layer.open({
 					title:'编辑权限'
 					,type:1
 				 	,area: ['40%', '40%']
@@ -376,9 +377,11 @@ layui.config({
 							layer.msg("权限类型不能为空",{icon:2});
 							return;
 						}
+
 						var data={
 							id:	obj.data.id,
-							permissionIds:ids
+							permissionIds:ids,
+							roleId:roleId
 						};
 						var load=layer.load(1);
 						$.ajax({
@@ -388,7 +391,7 @@ layui.config({
 							success:function(result){
 								if(result.code==0){
 									layer.msg("修改成功",{icon:1});
-									layer.close(addPer);
+									layer.close(editPer);
 								}
 								else
 									layer.msg(result.code+''+result.message,{icon:2});

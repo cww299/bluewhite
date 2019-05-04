@@ -32,7 +32,7 @@ public interface MenuDao extends BaseRepository<Menu, Long> {
 	 * @param parentId 父级id
 	 * @return list
 	 */
-	public List<Menu> findByParentIdLessThanOrderByOrderNo(Long parentId);
+	public List<Menu> findByParentIdOrderByOrderNo(Long parentId);
 
 	/**
 	 * 取出ids菜单
