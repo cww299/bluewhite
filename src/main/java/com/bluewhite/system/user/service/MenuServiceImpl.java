@@ -178,7 +178,7 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 	
 	@Override
 	public List<Menu> getTreeMenuParent(Long id) {
-		List<Menu> result  = menuDao.findByParentIdLessThanOrderByOrderNo(id);
+		List<Menu> result  = menuDao.findByParentIdOrderByOrderNo(id);
 		// 为分类建立键值对
 		Map mapNodes = new HashMap(result.size());
 		for (Menu treeNode : result) {
@@ -187,7 +187,7 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 		// 初始化多叉树信息，里面只保存顶级分类信息
 		List<Menu> topTree = new ArrayList<Menu>();// 多叉树
 		for (Menu treeNode : result) {
-			if (treeNode.getParentId() != null && treeNode.getParentId() == 0) {// 添加根节点（顶级分类）
+			if (treeNode.getParentId() != null) {// 添加根节点（顶级分类）
 				Menu rootNode = (Menu) mapNodes.get(treeNode.getId());
 				topTree.add(rootNode);
 			} // end if

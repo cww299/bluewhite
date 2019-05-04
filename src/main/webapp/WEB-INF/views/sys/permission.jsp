@@ -65,12 +65,12 @@
 <div class="layui-form-item">
 	<label class="layui-form-label">身份</label>
 	<div class="layui-input-block">
-		<input type="text" id="menuIdentity" placeholder="请输入" lay-verify="required" value="{{ d.identity }}" class="layui-input"></div>
+		<input type="text" id="menuIdentity" placeholder="请输入" value="{{ d.identity }}" class="layui-input"></div>
 </div>
 <div class="layui-form-item">
 	<label class="layui-form-label">菜单名称</label>
 	<div class="layui-input-block">
-    	<input type="text" id="menuName" placeholder="请输入" lay-verify="required" value="{{ d.name }}" class="layui-input"></div>
+    	<input type="text" id="menuName" placeholder="请输入" value="{{ d.name }}" class="layui-input"></div>
 </div>
 <div class="layui-form-item">
   <label class="layui-form-label">是否显示</label>
@@ -80,22 +80,22 @@
 <div class="layui-form-item layui-form-text">
 	<label class="layui-form-label">图标</label>
 	<div class="layui-input-block">
-		<input type="text" id="menuIcon" placeholder="请输入" autocomplete="off" lay-verify="required" value="{{ d.icon }}" class="layui-input"></div>
+		<input type="text" id="menuIcon" placeholder="请输入" autocomplete="off" value="{{ d.icon }}" class="layui-input"></div>
 </div>
 <div class="layui-form-item layui-form-text">
 	<label class="layui-form-label">父菜单id</label>
 	<div class="layui-input-block">
-		<input type="text" id="menuParentId" placeholder="请输入" autocomplete="off" lay-verify="required" value="{{ d.parentId }}" class="layui-input"></div>
+		<input type="text" id="menuParentId" placeholder="请输入" readonly autocomplete="off" value="{{ d.parentId }}" class="layui-input"></div>
 </div>
 <div class="layui-form-item layui-form-text">
 	<label class="layui-form-label">url</label>
 	<div class="layui-input-block">
-		<input type="text" id="menuUrl" placeholder="请输入" autocomplete="off" lay-verify="required" value="{{ d.url }}" class="layui-input"></div>
+		<input type="text" id="menuUrl" placeholder="请输入" autocomplete="off" value="{{ d.url }}" class="layui-input"></div>
 </div>
 <div class="layui-form-item layui-form-text">
 	<label class="layui-form-label">span</label>
 	<div class="layui-input-block">
-		<input type="text" id="menuSpan" placeholder="请输入" autocomplete="off" lay-verify="required" value="{{ d.span }}" class="layui-input"></div>
+		<input type="text" id="menuSpan" placeholder="请输入" autocomplete="off" value="{{ d.span }}" class="layui-input"></div>
 </div>
 </div>
 </script>
@@ -104,23 +104,6 @@
 
 <script>
 
-var allMenu=[];
-
-function getMenu(){
-	$.ajax({
-		url : "${ctx}/getTreeMenuPage",
-		type : "get",
-		async:false,
-		success : function(result) {
-			if(0==result.code){
-				var rows=result.data;  
-				for(var i=0;i<rows.length;i++){  
-					allMenu.push(rows[i]);   
-				}
-			}
-		} 
-	});
-}
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
@@ -134,24 +117,10 @@ layui.config({
 			, table = layui.table 			//表格
 			, tablePlug = layui.tablePlug 	//表格插件
 			, laytpl = layui.laytpl;
-				getMenu();
-				
-				table.render({
-					elem: '#permission-info-table1'
-				    ,page: true  //开启分页
-				    ,size:'lg'
-				    ,height:'700'
-				    ,width:'550'
-				    ,toolbar:'#permission-toolbar'
-				    ,data:allMenu
-				    ,cols: [[  
-				      {type: 'radio' ,align : 'center'},
-				      {field: 'name', title: '菜单名字',},
-				      {field: 'identity', title: '身份', },
-				      {field: 'isShow', title: '是否显示', }
-				    ]]
-				});
-				var radioObj1;  													//用于记录单选框选中的对象
+				var isTable2Render=false;		//记录表格2是否渲染了，作用于表格重载时，判断此表格有没有被渲染出来，如果该表格没有被渲染出来，则忽略，否则对表格重载
+				var isTable3Render=false;		//记录表格3是否渲染了
+				var radioObj1;  				//用于记录单选框选中的对象
+				tableRender('#permission-info-table1',0);							//渲染table1
 				table.on('toolbar(permission-info-table1)', function (obj) {		//监听工具栏
 					 switch (obj.event) {
 						 case 'add':	addMenu(0);	break;							//如果为添加一级菜单，则父id为0
@@ -164,32 +133,21 @@ layui.config({
 				});
 				table.on('radio(permission-info-table1)',function(obj){				//监听单选按钮
 					radioObj1=obj;
+				//console.log($(this))
 				}) 
 				table.on('row(permission-info-table1)', function(obj){				//监听行点击事件
-					$(this).children()[0].getElementsByTagName("i")[0].click();
+					//$(this).children()[0].getElementsByTagName("i")[0].click();
+				
+					//$(this).children()[0]).getElementsByTagName("div")[1].click();
 				}); 
 				
 				
 				function lookoverChild(obj){			//这是监听第一个表格的下级菜单按钮
 					$("#table3").hide();
+					isTable2Render=true;				//table2渲染
 					var parentId=obj.data.id;			//记录当前对象的id。用于新增菜单时，记录其父菜单的id
-					table.render({						//2级菜单表格
-						elem: '#permission-info-table2'
-					    ,page: true  
-					    ,size:'lg'
-					    ,height:'700'
-					    ,width:'550'
-					    ,toolbar:'#permission-toolbar'
-					    ,data:obj.data.children
-					    ,cols: [[ 
-					        {type: 'radio',align : 'center',fixed: 'left',align:'center'},
-					        {field: 'name', title: '菜单名字', },
-					        {field: 'identity', title: '身份', },
-						      {field: 'isShow', title: '是否显示', }
-					    ]]
-					});
-					form.render();
-					var radioObj2;													//用于记录单选框选中的
+					var radioObj2;						//记录当前单选框选中的
+					tableRender('#permission-info-table2',parentId);				//渲染table2
 					table.on('toolbar(permission-info-table2)', function (obj) {	//对第二级表格的监听
 						 switch (obj.event) {
 							 case 'add':	addMenu(parentId); break;
@@ -197,9 +155,7 @@ layui.config({
 							 case 'edit': editMenu(radioObj2); break;
 							 case 'lookoverChild':  if(radioObj2==null ||radioObj2=="")
 							 							layer.msg("请选择菜单",{icon:2});
-							 						else if(radioObj2.data.children==null)
-														layer.msg("该菜单没有下级菜单",{icon:2});
-													else lookoverChild2(radioObj2);break;
+													else  lookoverChild2(radioObj2);break;
 						 }
 					});
 					table.on('radio(permission-info-table2)',function(obj){
@@ -208,23 +164,10 @@ layui.config({
 					
 					
 					function lookoverChild2(obj){								//这是监听第二个表格的下级菜单按钮
+						isTable3Render=true;
 						$("#table3").show();
 						var parentId=obj.data.id; 
-						table.render({
-							elem: '#permission-info-table3'
-						    ,page: true 
-						    ,size:'lg'
-						    ,height:'700'
-						    ,width:'550'
-						    ,toolbar:'#permission-toolbar'
-						    ,data:obj.data.children
-						    ,cols: [[ 
-						              {type: 'radio',align : 'center',fixed: 'left'},
-						      		{field: 'name', title: '菜单名字', },
-						              {field: 'identity', title: '身份', },
-								      {field: 'isShow', title: '是否显示', }
-						    ]]
-						});
+						tableRender('#permission-info-table3',parentId);				//渲染table3
 						var radioObj3;
 						table.on('toolbar(permission-info-table3)', function (obj) {	//对第三级表格的监听
 							switch (obj.event) {
@@ -281,6 +224,10 @@ layui.config({
 					form.render();	
 				}
 				function deleteMenu(obj){
+					if(obj==null || obj==''){
+						layer.msg("请选择菜单",{icon:2});
+						return;
+					}
 					layer.confirm("是否确认删除？",function(index){
 						var load=layer.load(1);
 						$.ajax({
@@ -289,6 +236,7 @@ layui.config({
 							success:function(result){
 								if(0==result.code){
 									layer.closeAll();
+									reloadTable();
 									layer.msg(result.message,{icon:1});
 								}
 								else
@@ -297,8 +245,41 @@ layui.config({
 							}
 						})
 					})
+					
+				}
+				function tableRender(elem,parentId){		//渲染表格，elem被渲染的table容器，parentId接口的父id
+					table.render({							//2级菜单表格
+						elem: ''+elem
+					    ,page: false 
+					    ,url:"${ctx }/getTreeMenuParent?id="+parentId
+						,parseData:function(res){ 			//res 即为原始返回的数据
+						        return {
+						            "code": res.code, 		//解析接口状态
+						            "msg": res.message, 	//解析提示文本
+						            "data": res.data 		//解析数据列表
+						          }; }
+					    ,size:'lg'
+					    ,height:'700'
+					    ,width:'550'
+					    ,toolbar:'#permission-toolbar'
+					    ,cols: [[ 
+					        {type: 'radio',align : 'center',fixed: 'left',align:'center'},
+					        {field: 'name', title: '菜单名字', },
+					        {field: 'identity', title: '身份', },
+						      {field: 'isShow', title: '是否显示', }
+					    ]]
+					});
+					form.render();
 				}
 				function save(){					//用于修改和新增菜单的方法
+					if($('#menuName').val()==''){
+						layer.msg('菜单名不能为空',{icon:2});
+						return;
+					}
+					if($('#menuIdentity').val()==''){
+						layer.msg('菜单身份不能为空',{icon:2});
+						return;
+					}
 					var data;
 					if($('#menuId').val()=='')		//判断id是否有值。区别于修改还是新增
 						data={
@@ -321,7 +302,6 @@ layui.config({
 							url:$('#menuUrl').val(),
 							span:$('#menuSpan').val()
 						};
-					console.log(data);
 					var load=layer.load(1);
 					$.ajax({
 						url:'${ctx}/saveMenu',
@@ -329,13 +309,21 @@ layui.config({
 						success:function(result){
 							if(0==result.code){
 								layer.msg(result.message,{icon:1});
+								reloadTable();
+								layer.closeAll();
 							}else{
 								layer.msg(result.code+' '+result.message,{icon:2});
 							}
-							
+							layer.close(load);
 						}
 					});
-					layer.close(load);
+				}
+				function reloadTable(){				//表格的重载
+					table.reload('permission-info-table1');
+					if(isTable2Render)
+						table.reload('permission-info-table2');
+					if(isTable3Render)
+						table.reload('permission-info-table3');
 				}
 	}//end defind
 );
