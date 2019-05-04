@@ -142,8 +142,15 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 		}
 
 	@Override
-	public List<Menu> getTreeMenuPage() {
-		List<Menu> result = menuDao.findAll();
+	public List<Menu> getTreeMenuPage(Long id) {
+		List<Menu> result = new ArrayList<>();
+		if(id!=null){
+			List<Menu> 	result1 = menuDao.findAll();
+			result.addAll(result1);
+		}else{
+			Menu result1 = menuDao.findOne(id);
+			result.add(result1);
+		}
 		// 为分类建立键值对
 		Map mapNodes = new HashMap(result.size());
 		for (Menu treeNode : result) {
