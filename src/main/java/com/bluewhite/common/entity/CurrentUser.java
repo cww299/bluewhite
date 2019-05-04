@@ -8,7 +8,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 /**
  * 当前登录用户信息
  * 
- * @author long.xin
+ * @author zhangliang
  *
  */
 public class CurrentUser {

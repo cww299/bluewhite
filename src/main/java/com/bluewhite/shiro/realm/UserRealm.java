@@ -14,8 +14,6 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.bluewhite.common.ServiceException;
@@ -31,9 +29,6 @@ public class UserRealm extends AuthorizingRealm {
 	
 	@Autowired
     private UserService userService;
-	
-
-	private static final Logger log = LoggerFactory.getLogger("user-error");
 	
 	//AuthorizationInfo:角色的权限信息集合
     @Override

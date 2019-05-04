@@ -162,10 +162,6 @@ public class RoleAction {
 		return cr;
 	}
 
-
-
-	
-	
 	/**
 	 * 角色新增(菜单-权限)
 	 * @param request 请求
@@ -198,6 +194,31 @@ public class RoleAction {
 				roleMenuPermissionDao.save(roleMenuPermission);
 			}
 		}
+		return cr;
+	}
+	
+	
+	/**
+	 * 修改(菜单-权限)
+	 * @param request 请求
+	 * @param role 角色实体类
+	 * @return cr
+	 */
+	@RequestMapping(value = "/roles/updatePermission", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updatePermission(HttpServletRequest request, Long id , String permissionIds ) {
+		CommonResponse cr = new CommonResponse();
+		RoleMenuPermission roleMenuPermission = roleMenuPermissionDao.findOne(id);
+		if(!StringUtils.isEmpty(permissionIds)){
+				HashSet<Long> permissionIdsLong = new HashSet<>();
+				String[] pers = permissionIds.split(",");
+				for(String idString : pers){
+					permissionIdsLong.add(Long.valueOf(idString));
+				}
+				roleMenuPermission.setPermissionIds(permissionIdsLong);
+				roleMenuPermissionDao.save(roleMenuPermission);
+		}
+		cr.setMessage("修改成功");
 		return cr;
 	}
 	
