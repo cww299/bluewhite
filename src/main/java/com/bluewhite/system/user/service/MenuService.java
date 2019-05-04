@@ -37,7 +37,7 @@ public interface MenuService extends BaseCRUDService<Menu,Long>{
 	public PageResult<Menu> getPage(PageParameter page, Menu menu);
 
 
-	public List<Menu> getTreeMenuPage();
+	public List<Menu> getTreeMenuPage(Long id);
 
 	
 	public Optional<Menu> findByIdentity(String identity);

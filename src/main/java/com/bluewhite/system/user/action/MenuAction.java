@@ -98,8 +98,8 @@ public class MenuAction {
 	 */
 	@RequestMapping(value = "/getTreeMenuPage", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getTreeMenuPage() {
-		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(menuService.getTreeMenuPage())
+	public CommonResponse getTreeMenuPage(Long id) {
+		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(menuService.getTreeMenuPage(id))
 				.toJSON());
 		return cr;
 	}
@@ -172,7 +172,7 @@ public class MenuAction {
 	 */
 	@RequestMapping(value = "/deleteMenu", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteMenu(String ids) {
+	public CommonResponse deleteMenu(Long ids) {
 		CommonResponse cr = new CommonResponse();
 		menuService.delete(ids);
 		cr.setMessage("删除成功");
