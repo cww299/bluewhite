@@ -56,6 +56,7 @@ public class Task {
 		attendanceService.allAttendance("192.168.1.204", startTime, endTime);
 		attendanceService.allAttendance("192.168.1.205", startTime, endTime);
 		attendanceService.allAttendance("192.168.1.250", startTime, endTime);
+		attendanceService.allAttendance("192.168.3.133", startTime, endTime);
 	}
 
 
