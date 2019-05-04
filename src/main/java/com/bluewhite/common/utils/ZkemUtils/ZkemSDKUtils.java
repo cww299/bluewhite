@@ -257,13 +257,13 @@ public class ZkemSDKUtils {
 	 */
 	public static boolean setUserInfo(String number, String name, String password, int isPrivilege, boolean enabled) {
 		Variant v0 = new Variant(1);
-		Variant sdwEnrollNumber = new Variant(number, true);
-		Variant sName = new Variant(name, true);
-		Variant sPassword = new Variant(password, true);
-		Variant iPrivilege = new Variant(isPrivilege, true);
-		Variant bEnabled = new Variant(enabled, true);
+		Variant dwEnrollNumber = new Variant(number, true);
+		Variant Name = new Variant(name, true);
+		Variant Password = new Variant(password, true);
+		Variant Privilege = new Variant(isPrivilege, true);
+		Variant Enabled = new Variant(enabled, true);
 
-		boolean result = zkem.invoke("SSR_SetUserInfo", v0, sdwEnrollNumber, sName, sPassword, iPrivilege, bEnabled)
+		boolean result = zkem.invoke("SSR_SetUserInfo", v0, dwEnrollNumber, Name, Password, Privilege, Enabled)
 				.getBoolean();
 		return result;
 	}

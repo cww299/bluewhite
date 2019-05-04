@@ -52,8 +52,8 @@ public class RoleAction {
 
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addFilterTerm(Role.class,"resourcePermissions")
-				.addFilterTerm(RoleMenuPermission.class, "id","role","menuName","permissionNames");
+				.addFilterTerm(Role.class,"users","resourcePermissions")
+				.addFilterTerm(RoleMenuPermission.class, "id","role");
 	}
 
 	/**
