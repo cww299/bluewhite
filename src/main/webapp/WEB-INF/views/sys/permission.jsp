@@ -144,9 +144,6 @@ layui.config({
 				    ,width:'550'
 				    ,toolbar:'#permission-toolbar'
 				    ,data:allMenu
-				    ,done:function(obj){
-				    	
-				    }
 				    ,cols: [[  
 				      {type: 'radio' ,align : 'center'},
 				      {field: 'name', title: '菜单名字',},
@@ -171,6 +168,8 @@ layui.config({
 				table.on('row(permission-info-table1)', function(obj){				//监听行点击事件
 					$(this).children()[0].getElementsByTagName("i")[0].click();
 				}); 
+				
+				
 				function lookoverChild(obj){			//这是监听第一个表格的下级菜单按钮
 					$("#table3").hide();
 					var parentId=obj.data.id;			//记录当前对象的id。用于新增菜单时，记录其父菜单的id
@@ -206,6 +205,8 @@ layui.config({
 					table.on('radio(permission-info-table2)',function(obj){
 						radioObj2=obj;
 					}) ;
+					
+					
 					function lookoverChild2(obj){								//这是监听第二个表格的下级菜单按钮
 						$("#table3").show();
 						var parentId=obj.data.id; 
@@ -336,9 +337,6 @@ layui.config({
 					});
 					layer.close(load);
 				}
-				
-				
-			
 	}//end defind
 );
 </script>
