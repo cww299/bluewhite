@@ -152,7 +152,7 @@ public class MenuAction {
 			cr.setMessage("修改成功");
 		}else{
 			Optional<Menu> mu = menuService.findByIdentity(menu.getIdentity());
-			if(mu.isPresent()){
+			if(!mu.isPresent()){
 				menuService.save(menu);
 				cr.setMessage("新增成功");
 			}else{
