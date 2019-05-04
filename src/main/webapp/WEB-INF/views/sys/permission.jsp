@@ -18,6 +18,7 @@
 .layui-table-view .layui-form-radio>i {		/*单选框按钮垂直居中   */
     margin-top: 20px;
     font-size: 20px;
+    
 }
 </style>
 
