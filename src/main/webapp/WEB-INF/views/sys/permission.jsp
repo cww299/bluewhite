@@ -312,9 +312,9 @@ layui.config({
 						data:data,
 						success:function(result){
 							if(0==result.code){
-								layer.msg(result.msg,{icon:1});
+								layer.msg(result.message,{icon:1});
 							}else{
-								layer.msg(result.code+' '+result.msg,{icon:2});
+								layer.msg(result.code+' '+result.message,{icon:2});
 							}
 							
 						}

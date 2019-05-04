@@ -240,9 +240,11 @@ layui.config({
 					if(data.name!=$('#editRoleName').val()){ 	//判断角色名是否进行了修改
 						var res=$.ajax({  						//判断角色名是否存在
 							url:'${ctx}/roles/exists?name='+$('#editRoleName').val(),
+							type:"post",
+							async:false,
 							success:function(result){
-								if(0!=result.code){  
-									updateName=true;	//修改了角色名，且与其他角色名冲突
+								if(3000==result.code){
+									updateName=true;
 								}
 							}
 						})
