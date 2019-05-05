@@ -30,7 +30,7 @@ import com.bluewhite.common.entity.CommonResponse;
 public class BaseDataAction{
 	
 	private final static ClearCascadeJSON ccj = 
-			ClearCascadeJSON.get().addRetainTerm(BaseData.class, "id", "name", "type", "parentId", "ord", "remark");
+			ClearCascadeJSON.get().addRetainTerm(BaseData.class, "id", "name", "type", "parentId", "ord", "remark","flag");
 	@Autowired
 	BaseDataService service;
 	
@@ -145,7 +145,4 @@ public class BaseDataAction{
 		cr.setData(ccj.format(baseDatas).toJSON());
 		return cr;
 	}
-	
-	
-
 }
