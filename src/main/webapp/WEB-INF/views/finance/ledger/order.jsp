@@ -22,8 +22,8 @@
     <script src="${ctx }/static/js/laypage/laypage.js"></script> 
     <script src="${ctx }/static/js/vendor/mSlider.min.js"></script>
     <script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
- 		<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
- 		<script src="${ctx }/static/js/laydate-icon/laydate.js"></script> 
+	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
+	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script> 
     
 </head>
 
