@@ -11,7 +11,7 @@
 		<property name="cachingEnabled" value="false"></property>
 	</bean>
 	
-	   <!-- 凭证匹配器 
+	<!-- 凭证匹配器 
     <bean id="credentialsMatcher" class="com.bluewhite.shiro.credentials.MyCredentialsMatcher">
     </bean>
 	-->
@@ -92,11 +92,11 @@
 		 <!-- 登录成功后要跳转的连接(也可以根据实际要求登录后登录到被拒绝的页面，登录成功后的处理逻辑可以在LoginController里编写) 
          <property name="successUrl" value="" /> -->  
         <!-- 用户访问未对其授权的资源时,所显示的连接(此配置 要求登录) -->  
-		<property name="unauthorizedUrl" value="/500.jsp"/>
+		<property name="unauthorizedUrl" value="/common/500"/>
 		  <!-- Shiro过滤器的定义 -->  
 		<property name="filters"> 
             <util:map>
-            	 <entry key="sysUserFilter" value-ref="sysUserFilter"/>
+            	<entry key="sysUserFilter" value-ref="sysUserFilter"/>
                 <entry key="logout" value-ref="logoutFilter"/>
             </util:map>
         </property>

@@ -75,12 +75,13 @@ public class UserRealm extends AuthorizingRealm {
         User user = userService.findByUserName(username);
         if (user == null) {
             // 用户名不存在抛出异常
-            throw new UnknownAccountException();
+        	throw new ServiceException("用户名不存在！");
         }
         if (user.getDelFlag() == 0) {
             // 用户被管理员锁定抛出异常
-            throw new LockedAccountException();
+        	throw new ServiceException("用户名被锁定！");
         }
+        //交给AuthenticatingRealm使用CredentialsMatcher进行密码匹配
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
         		user.getUserName(),
                 user.getPassword(), 

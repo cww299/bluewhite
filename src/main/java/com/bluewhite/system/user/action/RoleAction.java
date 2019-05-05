@@ -4,10 +4,12 @@ package com.bluewhite.system.user.action;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.aspectj.weaver.patterns.IfPointcut.IfFalsePointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -28,9 +30,11 @@ import com.bluewhite.system.user.entity.Menu;
 import com.bluewhite.system.user.entity.Permission;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.RoleMenuPermission;
+import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.MenuService;
 import com.bluewhite.system.user.service.PermissionService;
 import com.bluewhite.system.user.service.RoleService;
+import com.bluewhite.system.user.service.UserService;
 
 @Controller
 public class RoleAction {
@@ -38,18 +42,16 @@ public class RoleAction {
 	
 	@Autowired
 	private RoleService roleService;
-	
+	@Autowired
+	private UserService userService;
 	@Autowired
 	private RoleMenuPermissionDao roleMenuPermissionDao;
-	
 	@Autowired
 	private MenuService menuService;
-	
 	@Autowired
 	private PermissionService permissionService;
 
 	private ClearCascadeJSON clearCascadeJSON;
-
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
 				.addFilterTerm(Role.class,"users","resourcePermissions")
@@ -70,6 +72,29 @@ public class RoleAction {
 				.toJSON());
 		return cr;
 	}
+	
+	
+	/**
+	 * 分页查询全部的角色和人员 
+	 * @param request 请求
+	 * @param role 角色
+	 * @return cr
+	 */
+	@RequestMapping(value = "/allRoleUser", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse allRoleUser(HttpServletRequest request, PageParameter pp, User user) {
+		CommonResponse cr = new CommonResponse();
+		Set<String> role = new HashSet<>();
+		role.add("admin");
+		user.setRole(role);
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(User.class, "id","userName","roles")
+				.addRetainTerm(Role.class, "id","name")
+				.format(userService.getPagedUser(pp,user)).toJSON());
+		return cr;
+	}
+	
 
 	/**
 	 * 分页查询全部的角色
@@ -193,6 +218,36 @@ public class RoleAction {
 				roleMenuPermission.setPermissionIds(permissionIdsLong);
 				roleMenuPermissionDao.save(roleMenuPermission);
 			}
+		}
+		return cr;
+	}
+	
+	/**
+	 * 用户分配角色
+	 * @param request 请求
+	 * @param role 角色实体类
+	 * @return cr
+	 */
+	@RequestMapping(value = "/roles/saveUserRole", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse changeRole(String ids,Long userId) {
+		CommonResponse cr = new CommonResponse();
+		User user = userService.findOne(userId);
+		if(!StringUtils.isEmpty(ids)){
+			String[] pers = ids.split(",");
+			if(pers.length>0){
+				Set<Role> roleSet = new HashSet<>();
+				for(String idString : pers){
+					Role role = roleService.findOne(Long.valueOf(idString));
+					roleSet.add(role);
+				}
+				user.setRoles(roleSet);
+				userService.save(user);
+				cr.setMessage("分配成功");
+			}
+		}else{
+			cr.setMessage("角色不能为空");
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 		}
 		return cr;
 	}
