@@ -6,7 +6,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.SetJoin;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,8 +133,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			}
 			
 			//忽略管理员
+			if (user.getRole().size() == 0) {
 			predicate.add(cb.equal(root.get("isAdmin").as(Boolean.class),false));
-			
+			}
 			//是否外调
 			if (user.getForeigns() != null) {
 				predicate.add(cb.equal(root.get("foreigns").as(Integer.class),user.getForeigns()));
@@ -210,6 +214,13 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			if (!StringUtils.isEmpty(user.getSale())) {
 				predicate.add(cb.equal(root.get("sale").as(Integer.class), user.getSale()) );
 			}
+			
+			// 角色不为null
+			if (user.getRole().size()>0) {
+				SetJoin<User,Role> join = root.join(root.getModel().getSet("roles", Role.class),JoinType.LEFT);
+				predicate.add(cb.isNotNull(join.get("id").as(Long.class)));
+			}
+			
 			//退休返聘（男age>60，女age>55,还在正常工作）
 			if (!StringUtils.isEmpty(user.getRetire())) {
 				if(!StringUtils.isEmpty(user.getGender())){
@@ -255,7 +266,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     			}
     			
     		}
-			
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
