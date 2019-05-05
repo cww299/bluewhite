@@ -51,7 +51,7 @@ public class MenuAction {
 
 	{
 		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(Menu.class,"id",
-				"identity","span", "url", "icon", "name","children","isHighLight","isShow","parentId");
+				"identity","span", "url", "icon", "name","children","isHighLight","isShow","parentId","orderNo");
 	}
 
 	/**
@@ -65,12 +65,10 @@ public class MenuAction {
 	@RequestMapping(value = "/menus", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse getMenus(HttpServletRequest request) {
-		List<Object> result = new ArrayList<Object>();
 		CurrentUser cu = SessionManager.getUserSession();
 		List<Menu> menus = menuService.findHasPermissionMenusByUsername(cu
 				.getUserName());
-		result.add(menus);
-		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(result)
+		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(menus)
 				.toJSON());
 		return cr;
 	}

@@ -385,7 +385,7 @@ layui.config({
 						};
 						var load=layer.load(1);
 						$.ajax({
-							url:"${ctx}/roles/changeRole",
+							url:"${ctx}/roles/updatePermission",
 							type:"POST",
 							data:data,
 							success:function(result){
