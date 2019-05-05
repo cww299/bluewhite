@@ -63,7 +63,6 @@ public interface UserService extends BaseCRUDService<User, Long> {
 	 */
 	public boolean deleteUsers(String ids);
 
-	public void oooxxx();
 
 	/**
 	 * 通过用户编号查找

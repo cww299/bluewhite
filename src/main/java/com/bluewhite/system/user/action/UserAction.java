@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.persistence.criteria.Predicate;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Page;
@@ -45,6 +46,7 @@ import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.entity.UserContract;
 import com.bluewhite.system.user.service.UserService;
+import com.graphbuilder.math.func.CeilFunction;
 
 @Controller
 @RequestMapping("/system/user")
@@ -368,17 +370,21 @@ public class UserAction {
 		return cr;
 	}
 	
+	
 	/**
-	 * 测试
+	 * 修改密码
 	 */
-	@RequestMapping(value = "/test", method = RequestMethod.GET)
+	@RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
 	@ResponseBody
-	private CommonResponse test(User user) {
+	private CommonResponse updatePassword(Long id, String password) {
 		CommonResponse cr = new CommonResponse();
-
+		String newPassword = new SimpleHash("md5", password).toHex();
+	  	User user = userService.findOne(id);
+	  	user.setPassword(newPassword);
+	  	userService.save(user);
+	  	cr.setMessage("修改成功");
 		return cr;
 	}
-	
 	
 	
 	@InitBinder
