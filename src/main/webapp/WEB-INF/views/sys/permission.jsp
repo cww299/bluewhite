@@ -8,7 +8,8 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
-
+	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/formSelect/formSelects-v4.css" />
+	
 <title>权限管理</title>
 </head>
 <body>
@@ -25,7 +26,10 @@
 		<div class="layui-form-item">
 			<label class="layui-form-label">用户名</label>
 			<div class="layui-input-block">
-				<select id="userIdSelect" lay-search>
+				{{# var isDisabled='' ;
+					if(d.userId!='') isDisabled='disabled';
+				}}
+				<select id="userIdSelect" lay-search {{isDisabled}} >
 					<option value="">请选择</option>
 				{{# var isSelect='';
 					layui.each(allUser,function(index,item){
@@ -37,17 +41,20 @@
 				</select>
 			</div>
 		</div>
-
 		<div class="layui-form-item">
 			<label class="layui-form-label">角色</label>
 			<div class="layui-input-block">
-				<select id="roleIdSelect" lay-search>
+				<select id="roleIdSelect" lay-search  xm-select="roleIdSelect" xm-select-show-count="3">
 					<option value="">请选择</option>
-				{{# var isSelect='';
+				{{#
+					var ids=d.ids.split(',');
+					var isSelect='';
 					layui.each(allRole,function(index,item){ 
 						isSelect='';
-						if(d.roleId==item.id) 
-							isSelect='selected'; }}
+						for(var i=0;i<ids.length;i++){
+							if(ids[i]==item.id)
+								isSelect='selected';
+						}  }}
 					<option value="{{ item.id }}" {{ isSelect }} >{{ item.name }}</option>
 				{{# }); }}
 				</select>
@@ -55,6 +62,13 @@
 		</div>
 	</div>
 </script>
+<!-- 用户所拥有的角色 -->
+<script id="roles" type="text/html">
+	{{# layui.each(d.roles,function(index,item){  }}
+		<span class="layui-badge layui-bg-green">{{item.name}}</span>&nbsp;&nbsp;
+	{{# }); }}
+</script>
+
 
 <!-- 表格工具栏 -->
 <script type="text/html" id="userRoleToolBar">
@@ -71,19 +85,22 @@ layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	tablePlug : 'tablePlug/tablePlug',
+	formSelects : 'formSelect/formSelects-v4'
 }).define(
-	[ 'tablePlug'],
+	[ 'tablePlug','formSelects'],
 	function() {
 		var $ = layui.jquery
 		, tablePlug = layui.tablePlug
 		, table = layui.table
 		, laytpl = layui.laytpl
+		, formSelects = layui.formSelects
 		, form = layui.form; 		
 		ajaxGetData();
+		var choosed=[];							//存放复选框选中的对象，用于删除、编辑
 		table.render({
 			elem : '#userRoleTable',
 			size : 'lg',
-			url : "${ctx}/roles/page",
+			url : "${ctx}/allRoleUser",
 			height : '700',
 			request:{
 				pageName: 'page' ,				//页码的参数名称，默认：page
@@ -102,11 +119,14 @@ layui.config({
 			toolbar : "#userRoleToolBar",
 			cols:[[
 			       {type: 'checkbox',align : 'center',fixed: 'left'},
-					{field : "id",title : "角色id",sort : true,align : 'center'},
-					//{field : "userId",title : "用户id",sort : true,align : 'center'}, 
-			      ]]
+					{field : "id",title : "用户id",sort : true,align : 'center'},
+					{field : "userName",title : "用户名",sort : true,align : 'center'},
+					{field : "roles",title : "角色",align : 'center',templet:'#roles'},
+			      ]],
+			done:function(){
+				choosed=[];						//每次翻页后，清空选中的对象
+			}
 		});
-		var choosed=[];											//存放复选框选中的对象，用于删除、编辑
 		table.on('checkbox(userRoleTable)', function(obj){
 			if(obj.type=='all' ){ 
 				if(obj.checked){
@@ -141,12 +161,32 @@ layui.config({
 				layer.msg("请选择至少一个对象删除",{icon:2});
 				return;
 			}
+			var load=layer.load(1);
+			for(var i=0;i<choosed.length;i++){
+				var data={
+						userId:choosed[i].id,
+						ids:''
+				};
+				 $.ajax({
+						url:'${ctx}/roles/saveUserRole',
+						type:"post",
+						data:data,
+						success:function(result){
+							if(result.code!=0)
+								layer.msg(result.code+' '+result.message,{icon:2});
+						}
+				})  
+			}
+			layer.msg("成功删除"+choosed.length+'天记录',{icon:1});
+			choosed=[];
+			table.reload('userRoleTable');
+			layer.close(load);
 		}
 		
 		function addEdit(type){							//编辑或者添加
 			var html='';								//渲染后的html，作为弹窗的内容
 			var tpl=addEditUserRoleTpl.innerHTML;		//还未渲染的模板
-			var data={roleId:'',userId:''};				//渲染模板的数据
+			var data={ids:'',userId:''};				//渲染模板的数据
 			var title="添加新用户角色";					//弹窗的标题
 			if(type=='edit'){							
 				if(choosed.length!=1){
@@ -154,9 +194,14 @@ layui.config({
 					return;
 				}
 				title="修改用户角色";
+				var arrIds=[];
+				for(var i=0;i<choosed[0].roles.length;i++){
+					arrIds.push(choosed[0].roles[i].id);
+				}
+				var ids=arrIds.join(',');
 				data={
-						roleId:choosed[0].roleId,
-						userId:choosed[0].userId
+						userId:choosed[0].id,
+						ids:ids
 				};
 			}
 			laytpl(tpl).render(data,function(h){		
@@ -166,35 +211,33 @@ layui.config({
 				title:title
 				,type:1
 				,btn:['确定','取消']
-				,area:['30%','50%']
+				,area:['30%','65%']
 				,content:html
 				,success:function(){
 					form.render('select');
+					formSelects.render();
 				}
 				,yes:function(){
 					var data={
 							userId:$('#userIdSelect').val(),
-							roleId:$('#roleIdSelect').val()
+							ids:formSelects.value('roleIdSelect', 'valStr')
 					}
-					if(data.userId=='' || data.roleId==''){
-						layer.msg("用户名或角色名不能为空",{icon:2});
-						return;
-					}
-					layer.msg("还未添加接口",{icon:2});	
-					/* var load=layer.load(1);
+					var load=layer.load(1);
 					$.ajax({
-						url:"",
-						type:"",
+						url:'${ctx}/roles/saveUserRole',
+						type:"post",
+						data:data,
 						success:function(result){
 							if(result.code==0){
 								layer.closeAll();
 								layer.msg(result.message,{icon:1});
+								table.reload('userRoleTable');
 							}
 							else
 								layer.msg(result.code+' '+result.message,{icon:2});
 							layer.close(load);
 						}
-					}) */
+					}) 
 				}
 			})
 		}
