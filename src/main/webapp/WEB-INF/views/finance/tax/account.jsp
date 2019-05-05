@@ -12,8 +12,11 @@
 <script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 <%-- <script src="${ctx }/static/layui-v2.4.5/autocomplete/jquery-ui.js"></script> --%>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="${ctx }/static/css/main.css">  <!-- 界面样式 -->
   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <script src="${ctx }/static/js/vendor/typeahead.js"></script>
  <!--  <link rel="stylesheet" href="/resources/demos/style.css"> -->
 <head>
 <meta charset="utf-8">
@@ -24,7 +27,7 @@
 </head>
 
 <body>
-	<div class="layui-card">
+	<div class="layui-card" style="height: 800px;">
 		<div class="layui-card-body">
 			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
 				<div class="layui-form-item">
@@ -69,7 +72,76 @@
 			<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
 		</div>
 	</div>
-	
+
+<form action="" id="layuiadmin-form-admin"
+		style="padding: 20px 30px 0 60px; display: none; text-align:">
+		<div class="layui-form" lay-filter="layuiadmin-form-admin">
+			<input type="text" name="id" id="usID" style="display:none;">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">供应商名称</label>
+				<div class="layui-input-inline">
+						<input type="text" name="customerName" id="userId"
+						placeholder="请输入供应商名称"
+						class="layui-input laydate-icon" data-provide="typeahead">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">票面金额</label>
+				<div class="layui-input-inline">
+					<input type="text" name="money" id="money"
+						lay-verify="required" placeholder="请输入票面金额"
+						class="layui-input laydate-icon">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">税点</label>
+				<div class="layui-input-inline">
+					<input type="text" name="taxPoint" id="taxPoint"
+						lay-verify="required" placeholder="请输入税点"
+						class="layui-input laydate-icon">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">付款日要付金额</label>
+				<div class="layui-input-inline">
+					<input type="text" name="paymentMoney"
+						id="paymentMoney" lay-verify="required"
+						placeholder="请输入付款日要付金额 " class="layui-input">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">付款日期</label>
+				<div class="layui-input-inline">
+					<input type="text" name="paymentDate"
+						id="paymentDate" lay-verify="required"
+						placeholder="请输入付款日期 " class="layui-input">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">扣款原因</label>
+				<div class="layui-input-inline">
+					<input type="text" name="withholdReason" id="withholdReason"
+						lay-verify="required" placeholder="请输入付款日期"
+						class="layui-input">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">扣款金额</label>
+				<div class="layui-input-inline">
+					<input type="text" name="withholdMoney" id="withholdMoney"
+						lay-verify="required" placeholder="请输入扣款金额"
+						class="layui-input">
+				</div>
+			</div>
+
+		</div>
+	</form>	
 	
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
@@ -98,12 +170,24 @@
 						,element = layui.element
 					//全部字段
 					var allField;
+					var self = this;
+					this.setIndex = function(index){
+				  		_index=index;
+				  	}
+				  	
+				  	this.getIndex = function(){
+				  		return _index;
+				  	}
 					//select全局变量
 					var htmls = '<option value="">请选择</option>';
 					var index = layer.load(1, {
 						shade: [0.1, '#fff'] //0.1透明度的白色背景
 					});
 					
+					laydate.render({
+						elem: '#paymentDate',
+						type: 'datetime',
+					});
 					laydate.render({
 						elem: '#startTime',
 						type: 'datetime',
@@ -127,7 +211,6 @@
 								mycars.push(o.userName)
 							})
 							layer.close(index);
-							console.log(mycars)
 						},
 						error: function() {
 							layer.msg("操作失败！", {
@@ -192,7 +275,7 @@
 								align: 'center',
 								search: true,
 								edit: 'text',
-								style:"class"
+								event:'ssss'
 							}, {
 								field: "money",
 								title: "票面金额",
@@ -235,36 +318,6 @@
 							});
 							
 						},
-						//下拉框回显赋值
-						done: function(res, curr, count) {
-							
-							var tableView = this.elem.next();
-							var tableElem = this.elem.next('.layui-table-view');
-							layui.each(tableElem.find('select'), function(index, item) {
-								var elem = $(item);
-								elem.val(elem.data('value'));
-							});
-							form.render();
-							// 初始化laydate
-							layui.each(tableView.find('td[data-field="paymentDate"]'), function(index, tdElem) {
-								tdElem.onclick = function(event) {
-									layui.stope(event)
-								};
-								laydate.render({
-									elem: tdElem.children[0],
-									format: 'yyyy-MM-dd HH:mm:ss',
-									done: function(value, date) {
-											var id = table.cache[tableView.attr('lay-id')][index].id
-											var postData = {
-												id: id,
-												paymentDate: value,
-											};
-											//调用新增修改
-											mainJs.fUpdate(postData);
-												}
-											})
-										})
-									},
 								});
 
 					// 监听表格中的下拉选择将数据同步到table.cache中
@@ -291,40 +344,60 @@
 						var tableId = config.id;
 						switch(obj.event) {
 							case 'addTempData':
-								allField = {id: '', content: '', budget: '',userId:'',money: '', paymentDate: '', 
-									withholdReason: '',withholdMoney:'',settleAccountsMode:'',type:'4'};
-								table.addTemp(tableId,allField,function(trElem) {
-									// 进入回调的时候this是当前的表格的config
-									var that = this;
-									// 初始化laydate
-									layui.each(trElem.find('td[data-field="paymentDate"]'), function(index, tdElem) {
-										tdElem.onclick = function(event) {
-											layui.stope(event)
-										};
-										laydate.render({
-											elem: tdElem.children[0],
-											format: 'yyyy-MM-dd HH:mm:ss',
-											done: function(value, date) {
-												var trElem = $(this.elem[0]).closest('tr');
-												var tableView = trElem.closest('.layui-table-view');
-												table.cache[that.id][trElem.data('index')]['paymentDate'] = value;
-												var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
-												var postData = {
-													id: id,
-													paymentDate:value,
-												}
-												mainJs.fUpdate(postData);
-											}
+								var dicDiv=$('#layuiadmin-form-admin');
+								document.getElementById("layuiadmin-form-admin").reset();
+					        	layui.form.render();
+								layer.open({
+							         type: 1
+							        ,title: "新增" //不显示标题栏
+							        ,closeBtn: false
+							        ,zindex:-1
+							        ,area:['30%', '70%']
+							        ,shade: 0.5
+							        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+							        ,btn: ['确认', '取消']
+							        ,btnAlign: 'c'
+							        ,moveType: 1 //拖拽模式，0或者1
+							        ,content:dicDiv
+							        ,success : function(layero, index) {
+							        	layero.addClass('layui-form');
+										// 将保存按钮改变成提交按钮
+										layero.find('.layui-layer-btn0').attr({
+											'lay-filter' : 'addRole',
+											'lay-submit' : ''
 										})
-									})
-								});
+							        }
+							        ,yes: function(index, layero){
+							        	form.on('submit(addRole)', function(data) {
+							        		console.log(self.getIndex())
+							        		console.log(data)
+							        	var	field={
+							        			customerName:data.field.customerName,
+							        			money:data.field.money,
+							        			customId:self.getIndex(),
+							        			expenseDate:data.field.paymentDate,
+							        			money:data.field.paymentMoney,
+							        			taxPoint:data.field.taxPoint,
+							        			withholdMoney:data.field.withholdMoney,
+							        			withholdReason:data.field.withholdReason,
+							        			type:4
+							        		}
+							        	  mainJs.fAdd(field); 
+										})
+										
+							        }
+							        ,end:function(){
+							        	document.getElementById("layuiadmin-form-admin").reset();
+							        	layui.form.render();
+							        	timeAll=""
+									  } 
+							      });
 								break;
 							case 'saveTempData':
 								var data = table.getTemp(tableId).data;
 								var flag=false;
 								var a=0;
 								data.forEach(function(postData,i){
-									console.log(postData)
 								 	if(postData.userId==""){
 							    		return layer.msg("请填写报销申请人", {
 											icon: 2,
@@ -434,12 +507,49 @@
 							where: field
 						});
 					});
-					
-					table.on('focus','[data-field="userId"]', function (event) {
-				        $(this).autocomplete({
-				          source: mycars
-				        });
-				      })
+				      $("#userId").typeahead({
+						source : function(query, process) {
+							return $.ajax({
+								url : '${ctx}/system/user/findAllUser',
+								type : 'GET',
+								data : {
+									userName:query,
+								},
+								success : function(result) {
+									//转换成 json集合
+									console.log(result)
+									 var resultList = result.data.map(function (item) {
+										 	//转换成 json对象
+					                        var aItem = {name: item.userName, id:item.id}
+					                        //处理 json对象为字符串
+					                        return JSON.stringify(aItem);
+					                    });
+									//提示框返回数据
+									 return process(resultList);
+								},
+							})
+							//提示框显示
+						}, highlighter: function (item) {
+						    //转出成json对象
+							 var item = JSON.parse(item);
+							return item.name
+							//按条件匹配输出
+		                }, matcher: function (item) {
+		                	//转出成json对象
+					        var item = JSON.parse(item);
+					        self.setIndex(item.id);
+					    	return item.id
+					    },
+						//item是选中的数据
+						updater:function(item){
+							//转出成json对象
+							var item = JSON.parse(item);
+							self.setIndex(item.id);
+								return item.name
+						},
+
+						
+					});
 					//封装ajax主方法
 					var mainJs = {
 						//新增							

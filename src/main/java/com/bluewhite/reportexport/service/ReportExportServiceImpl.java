@@ -428,7 +428,17 @@ public class ReportExportServiceImpl implements ReportExportService{
 	public int importexcelBaseThreeExcel(List<BaseThree> excelBaseThree) {
 		return baseThreeDao.save(excelBaseThree).size();
 	}
-
+		public static void main(String[] args) {
+			 String test = "咱们裸熊抱枕-熊猫-35CM";
+			        
+			        if (test.indexOf("裸熊")!=-1){
+			            //"只要test.indexOf('This')返回的值不是-1说明test字符串中包含字符串'This',相反如果包含返回的值必定是-1"
+			           System.out.println("存在包含关系，因为返回的值不等于-1");
+			        }else{
+			             
+			            System.out.println("不存在包含关系，因为返回的值等于-1");
+			        }
+		}
 	@Override
 	public int importOrderExcel(List<OrderPoi> excelProduct) {
 		int count = 0;
@@ -454,10 +464,15 @@ public class ReportExportServiceImpl implements ReportExportService{
 					order2.setOnline(0);
 					d=order.getFirstNames();
 				}
-				
+				 String test=order.getProductName();
+				 if (test.indexOf("裸熊")!=-1 || test.indexOf("KT")!=-1 || test.indexOf("漫威")!=-1 || test.indexOf("老皮")!=-1 || test.indexOf("阿宝")!=-1 || test.indexOf("哔莫")!=-1){
+					 order2.setProductName(order.getProductName()+"(版权)");//当批产品名
+			        }else{
+			        	order2.setProductName(order.getProductName());//当批产品名
+			        }
 				order2.setPartyNames(order.getPartyNames());//乙方
 				order2.setBatchNumber(order.getBatchNumber());//当批 批次号
-				order2.setProductName(order.getProductName());//当批产品名
+				
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					try {
 						order2.setContractTime(sdf.parse(order.getContractTime() != null ? order.getContractTime() : ""));//合同签订日期

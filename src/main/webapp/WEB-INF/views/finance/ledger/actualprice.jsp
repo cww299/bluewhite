@@ -95,7 +95,7 @@
 					limitName: 'size' //每页数据量的参数名，默认：limit
 				},
 				page: {
-					limit:15
+					limit:10
 				},//开启分页
 				toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
 				/*totalRow: true //开启合计行 */
