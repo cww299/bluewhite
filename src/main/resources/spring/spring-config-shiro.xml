@@ -7,14 +7,15 @@
 
 	 <!-- 继承自AuthorizingRealm的自定义Realm,即指定Shiro验证用户登录的类为自定义的 继承 AuthorizingRealm -->  
 	<bean id="userRealm" class="com.bluewhite.shiro.realm.UserRealm">
-	  <!-- 	<property name="credentialsMatcher" ref="credentialsMatcher" /> -->
+	  	<property name="credentialsMatcher" ref="credentialsMatcher" /> 
 		<property name="cachingEnabled" value="false"></property>
 	</bean>
 	
-	<!-- 凭证匹配器 
+	<!-- 凭证匹配器  -->
     <bean id="credentialsMatcher" class="com.bluewhite.shiro.credentials.MyCredentialsMatcher">
+    
     </bean>
-	-->
+	
 	<!-- shiro缓存管理器 
 	<bean id="shiroCacheManager" class="com.bluewhite.shiro.cache.spring.SpringCacheManagerWrapper">
         <property name="cacheManager" ref="springCacheManager"/>
@@ -30,6 +31,8 @@
         <property name="httpOnly" value="true"/>
         <property name="maxAge" value="-1"/>
     </bean>
+    
+    
 	<!--<bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
         <constructor-arg value="rememberMe"/>
         <property name="httpOnly" value="true"/>

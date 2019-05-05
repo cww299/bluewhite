@@ -85,7 +85,9 @@ public class IndexAction {
 			try {
 				subject.login(new UsernamePasswordToken(username, password));
 			} catch (Exception e) {
-				throw new ServiceException(e);
+				cr.setCode(1500);
+				cr.setMessage(e.getMessage());
+				return cr;
 			}
 			cr.setMessage("用户登录成功");
 		}

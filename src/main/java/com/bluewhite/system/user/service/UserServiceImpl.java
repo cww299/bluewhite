@@ -268,6 +268,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     		}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
+			query.distinct(true);
 			return null;
 		}, page);
 		PageResult<User> result = new PageResult<>(pageUser,page);
@@ -292,9 +293,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		return true;
 	}
 
-	@Override
-	public void oooxxx() {
-	}
 
 	@Override
 	public User findByNumber(String number) {
