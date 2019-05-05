@@ -117,20 +117,20 @@ layui.config({
 		[ 'tablePlug', 'laydate' ],
 		function() {
 			var $ = layui.jquery
-			, layer = layui.layer 			//弹层
-			, form = layui.form 			//表单
-			, table = layui.table 			//表格
-			, tablePlug = layui.tablePlug 	//表格插件
+			, layer = layui.layer 				
+			, form = layui.form 				
+			, table = layui.table 			
+			, tablePlug = layui.tablePlug 	
 			, laytpl = layui.laytpl;
-				var isTable2Render=false;		//记录表格2是否渲染了，作用于表格重载时，判断此表格有没有被渲染出来，如果该表格没有被渲染出来，则忽略，否则对表格重载
-				var isTable3Render=false;		//记录表格3是否渲染了
+				var isTable2Render=false;		//记录表格2,3是否渲染了，作用于表格重载时，判断此表格有没有被渲染出来，如果该表格没有被渲染出来，则忽略，否则对表格重载
+				var isTable3Render=false;		
 				var radioObj1;  				//用于记录单选框选中的对象
 				tableRender('#permission-info-table1',0);							//渲染table1
 				table.on('toolbar(permission-info-table1)', function (obj) {		//监听工具栏
 					 switch (obj.event) {
 						 case 'add':	addMenu(0);	break;							//如果为添加一级菜单，则父id为0
 						 case 'delete': deleteMenu(radioObj1); break;
-						 case 'edit': editMenu(radioObj1); break;
+						 case 'edit':   editMenu(radioObj1);   break;
 						 case 'lookoverChild':  if(radioObj1==null ||radioObj1=="")	//如果单选框没有选中任何行
 		 											layer.msg("请选择菜单",{icon:2});
 						 						else lookoverChild(radioObj1);break;
@@ -138,14 +138,11 @@ layui.config({
 				});
 				table.on('radio(permission-info-table1)',function(obj){				//监听单选按钮
 					radioObj1=obj;
-				//console.log($(this))
 				}) 
 				table.on('row(permission-info-table1)', function(obj){				//监听行点击事件
 					//$(this).children()[0].getElementsByTagName("i")[0].click();
-				
 					//$(this).children()[0]).getElementsByTagName("div")[1].click();
 				}); 
-				
 				
 				function lookoverChild(obj){			//这是监听第一个表格的下级菜单按钮
 					$("#table3").hide();
@@ -153,11 +150,11 @@ layui.config({
 					var parentId=obj.data.id;			//记录当前对象的id。用于新增菜单时，记录其父菜单的id
 					var radioObj2;						//记录当前单选框选中的
 					tableRender('#permission-info-table2',parentId);				//渲染table2
-					table.on('toolbar(permission-info-table2)', function (obj) {	//对第二级表格的监听
+					table.on('toolbar(permission-info-table2)', function (obj) {
 						 switch (obj.event) {
-							 case 'add':	addMenu(parentId); break;
+							 case 'add':	addMenu(parentId);      break;
 							 case 'delete':	deleteMenu(radioObj2);  break;
-							 case 'edit': editMenu(radioObj2); break;
+							 case 'edit':   editMenu(radioObj2);    break;
 							 case 'lookoverChild':  if(radioObj2==null ||radioObj2=="")
 							 							layer.msg("请选择菜单",{icon:2});
 													else  lookoverChild2(radioObj2);break;
@@ -166,8 +163,6 @@ layui.config({
 					table.on('radio(permission-info-table2)',function(obj){
 						radioObj2=obj;
 					}) ;
-					
-					
 					function lookoverChild2(obj){								//这是监听第二个表格的下级菜单按钮
 						isTable3Render=true;
 						$("#table3").show();
@@ -176,9 +171,9 @@ layui.config({
 						var radioObj3;
 						table.on('toolbar(permission-info-table3)', function (obj) {	//对第三级表格的监听
 							switch (obj.event) {
-								 case 'add':	addMenu(parentId);	break;
+								 case 'add':	addMenu(parentId);	   break;
 								 case 'delete': deleteMenu(radioObj3); break;
-								 case 'edit': editMenu(radioObj3); break;
+								 case 'edit':   editMenu(radioObj3);   break;
 								 case 'lookoverChild':layer.msg("该菜单没有下级菜单",{icon:2});break;
 							 }
 						});

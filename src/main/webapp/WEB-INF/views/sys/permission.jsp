@@ -37,7 +37,6 @@
 				</select>
 			</div>
 		</div>
-
 		<div class="layui-form-item">
 			<label class="layui-form-label">角色</label>
 			<div class="layui-input-block">
@@ -80,6 +79,7 @@ layui.config({
 		, laytpl = layui.laytpl
 		, form = layui.form; 		
 		ajaxGetData();
+		var choosed=[];							//存放复选框选中的对象，用于删除、编辑
 		table.render({
 			elem : '#userRoleTable',
 			size : 'lg',
@@ -104,9 +104,11 @@ layui.config({
 			       {type: 'checkbox',align : 'center',fixed: 'left'},
 					{field : "id",title : "角色id",sort : true,align : 'center'},
 					//{field : "userId",title : "用户id",sort : true,align : 'center'}, 
-			      ]]
+			      ]],
+			done:function(){
+				choosed=[];						//每次翻页后，清空选中的对象
+			}
 		});
-		var choosed=[];											//存放复选框选中的对象，用于删除、编辑
 		table.on('checkbox(userRoleTable)', function(obj){
 			if(obj.type=='all' ){ 
 				if(obj.checked){
@@ -141,6 +143,14 @@ layui.config({
 				layer.msg("请选择至少一个对象删除",{icon:2});
 				return;
 			}
+			layer.msg("还未编写接口",{icon:2});
+			/* $.ajax({
+				url:"",
+				type:"",
+				success:function(){
+					
+				}
+			}) */
 		}
 		
 		function addEdit(type){							//编辑或者添加
