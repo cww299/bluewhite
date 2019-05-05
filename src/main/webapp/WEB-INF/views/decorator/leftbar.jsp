@@ -191,8 +191,8 @@
 				</span>
 			</a>
 				<ul class="dropdown-menu animated fadeInRight" role="menu">
-					<li><a href="#" id="login"> <span class="icon"><i class="fa fa-sign-out"></i> </span>退出
-					</a></li>
+					<li><a href="#" id="login"> <span class="icon"><i class="fa fa-sign-out"></i> </span>退出</a></li>
+					<li><a href="#" id="login"> <span class="icon"><i class="fa fa-user"></i> </span>个人中心</a></li>
 				</ul></li>
 			<li class="toggle-fullscreen hidden-xs">
 				<button type="button" class="btn btn-default expand"
