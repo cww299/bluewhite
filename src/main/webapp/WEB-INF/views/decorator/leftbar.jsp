@@ -84,7 +84,7 @@
 					      url:"${ctx}/menus",
 					      type:"GET", 
 			      		  success: function (result) {
-			      			arr=result.data[0]
+			      			arr=result.data
 			      			for (var i = 0; i < arr.length; i++) {
 			      			 	a=arr[i].name //第一层次的命名
 			      				b= arr[i].url //第一层次的链接

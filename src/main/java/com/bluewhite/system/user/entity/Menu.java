@@ -87,7 +87,7 @@ public class Menu extends BaseEntity<Long> {
 	}
 
 	public int getOrderNo() {
-		return orderNo;
+		return orderNo == null ?  0 : orderNo;
 	}
 
 	public void setOrderNo(int orderNo) {
