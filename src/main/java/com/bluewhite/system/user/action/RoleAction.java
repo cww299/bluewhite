@@ -233,22 +233,19 @@ public class RoleAction {
 	public CommonResponse changeRole(String ids,Long userId) {
 		CommonResponse cr = new CommonResponse();
 		User user = userService.findOne(userId);
+		Set<Role> roleSet = new HashSet<>();
 		if(!StringUtils.isEmpty(ids)){
 			String[] pers = ids.split(",");
 			if(pers.length>0){
-				Set<Role> roleSet = new HashSet<>();
 				for(String idString : pers){
 					Role role = roleService.findOne(Long.valueOf(idString));
 					roleSet.add(role);
 				}
-				user.setRoles(roleSet);
-				userService.save(user);
-				cr.setMessage("分配成功");
 			}
-		}else{
-			cr.setMessage("角色不能为空");
-			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 		}
+		user.setRoles(roleSet);
+		userService.save(user);
+		cr.setMessage("分配成功");
 		return cr;
 	}
 	
