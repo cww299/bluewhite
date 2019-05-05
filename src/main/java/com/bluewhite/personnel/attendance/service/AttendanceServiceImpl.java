@@ -157,7 +157,6 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 	@Transactional
 	public List<Attendance> allAttendance(String address, Date startTime, Date endTime) {
 		sdk.initSTA();
-
 		boolean flag = false;
 		try {
 			flag = sdk.connect(address, 4370);
@@ -307,6 +306,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		allAttendance("192.168.1.204", startTime, endTime);
 		allAttendance("192.168.1.205", startTime, endTime);
 		allAttendance("192.168.1.250", startTime, endTime);
+		allAttendance("192.168.3.133", startTime, endTime);
 		return attendanceList.size();
 	}
 

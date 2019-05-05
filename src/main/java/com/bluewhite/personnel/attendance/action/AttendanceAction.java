@@ -159,9 +159,9 @@ public class AttendanceAction {
 	 */
 	@RequestMapping(value = "/personnel/getAllAttendance", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getAllAttendance(HttpServletRequest request, String address) {
+	public CommonResponse getAllAttendance(HttpServletRequest request, String address,Date startTime, Date endTime) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSON.format(attendanceService.getAllAttendance(address)).toJSON());
+		cr.setData(clearCascadeJSON.format(attendanceService.allAttendance(address,startTime,endTime)).toJSON());
 		cr.setMessage("同步成功");
 		return cr;
 	}
