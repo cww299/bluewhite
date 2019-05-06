@@ -26,7 +26,6 @@ import com.bluewhite.finance.consumption.entity.Custom;
 import com.bluewhite.finance.consumption.service.ConsumptionService;
 import com.bluewhite.finance.consumption.service.CustomService;
 import com.bluewhite.system.user.entity.User;
-import com.graphbuilder.math.func.CeilFunction;
 
 @Controller
 public class ConsumptionAction {
@@ -43,7 +42,7 @@ public class ConsumptionAction {
 				.get()
 				.addRetainTerm(Consumption.class, "id", "user","content","userId"
 				,"budget","money","expenseDate","paymentMoney","paymentDate","withholdReason","remark"
-				,"withholdMoney","settleAccountsMode","remark","flag")
+				,"withholdMoney","settleAccountsMode","remark","flag","taxPoint","custom","user")
 				.addRetainTerm(User.class, "userName");
 	}
 
