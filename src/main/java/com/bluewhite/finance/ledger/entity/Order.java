@@ -197,19 +197,6 @@ public class Order extends BaseEntity<Long>{
 	@Transient
 	private Integer type;
 	
-	/**
-	 * 客户电话
-	 */
-	@Column(name = "con_phone")
-	@Transient
-    private String conPhone;
-	
-	/**
-	 * 客户微信等
-	 */
-	@Column(name = "con_wechat")
-	@Transient
-    private String conWechat;
 	
 	/**
 	 * 在线状态（0==线下 1==线上） 
@@ -258,24 +245,7 @@ public class Order extends BaseEntity<Long>{
 	}
 
 
-	public String getConPhone() {
-		return conPhone;
-	}
 
-
-	public void setConPhone(String conPhone) {
-		this.conPhone = conPhone;
-	}
-
-
-	public String getConWechat() {
-		return conWechat;
-	}
-
-
-	public void setConWechat(String conWechat) {
-		this.conWechat = conWechat;
-	}
 
 
 	public Integer getType() {
