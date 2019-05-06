@@ -39,7 +39,6 @@ public class BaseDataServiceImpl  extends BaseServiceImpl<BaseData, Long> implem
 		List<BaseData> baseDatas = baseDataDao.findAll((root, query, cb)->{
 			List<Predicate> predicates = new ArrayList<Predicate>();
 			predicates.add(cb.equal(root.get("type").as(String.class), type));
-			predicates.add(cb.equal(root.get("flag").as(Integer.class), 1));//启用状态
 			Predicate[] preArr = new Predicate[predicates.size()];
 			predicates.toArray(preArr);
 			query.where(preArr);
@@ -69,7 +68,6 @@ public class BaseDataServiceImpl  extends BaseServiceImpl<BaseData, Long> implem
 		List<BaseData> baseDatas = baseDataDao.findAll((root, query, cb)->{
 			List<Predicate> predicates = new ArrayList<Predicate>();
 			predicates.add(cb.equal(root.get("parentId").as(String.class), dataId));
-			predicates.add(cb.equal(root.get("flag").as(Integer.class), 1));//启用状态
 			Predicate[] preArr = new Predicate[predicates.size()];
 			predicates.toArray(preArr);
 			query.where(preArr);
@@ -84,7 +82,6 @@ public class BaseDataServiceImpl  extends BaseServiceImpl<BaseData, Long> implem
 		Sort sort = new Sort(Direction.ASC, "ord");
 		List<BaseData> baseDatas = baseDataDao.findAll((root, query, cb)->{
 			List<Predicate> predicates = new ArrayList<Predicate>();
-			predicates.add(cb.equal(root.get("flag").as(Integer.class), 1));//启用状态
 			Predicate[] preArr = new Predicate[predicates.size()];
 			predicates.toArray(preArr);
 			query.where(preArr);
