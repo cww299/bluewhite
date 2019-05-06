@@ -449,7 +449,17 @@
 								break;
 							case 'openBudget':
 								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
+									if(checkedIds.length>1){
+										return layer.msg("只能选择一条数据", {
+											icon: 2
+										});
+									}
 								var str = checkedIds.join(',');
+								if(str==""){
+									return layer.msg("请选择一条数据", {
+										icon: 2
+									});
+								}
 								self.setIndex(str)
 								table.render({
 									elem: '#tableBudget',
@@ -517,13 +527,13 @@
 										}, {
 											field: "expenseDate",
 											title: "报销申请日期",
-											width:'220',
+											width:'210',
 											align: 'center',
 											edit: 'text'
 										}, {
 											field: "withholdReason",
 											title: "扣款事由",
-											width:'165',
+											width:'160',
 											align: 'center',
 											edit: 'text'
 										}, {

@@ -21,7 +21,7 @@ public class Actualprice extends BaseEntity<Long>{
 	/**
 	 * 批次号
 	 */
-	@Poi(name = "", column = "E")
+	@Poi(name = "", column = "A")
 	@Column(name = "batch_number")
     private String batchNumber;
 	
@@ -30,7 +30,7 @@ public class Actualprice extends BaseEntity<Long>{
 	 * 产品名
 	 */
 	@Column(name = "product_name")
-	@Poi(name = "", column = "G")
+	@Poi(name = "", column = "B")
     private String productName;
 	
 	
@@ -45,7 +45,7 @@ public class Actualprice extends BaseEntity<Long>{
 	 * 预算成本价
 	 */
 	@Column(name = "budget_price")
-	@Poi(name = "", column = "L")
+	@Poi(name = "", column = "C")
     private Double budgetPrice;
 	
 	
@@ -53,7 +53,7 @@ public class Actualprice extends BaseEntity<Long>{
 	 * 实战成本
 	 */
 	@Column(name = "combat_price")
-	@Poi(name = "", column = "N")
+	@Poi(name = "", column = "D")
     private Double combatPrice;
 	
 	/**
