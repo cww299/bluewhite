@@ -86,10 +86,9 @@ public class BaseDataAction{
 	 * @param response 返回
 	 * @return cr 
 	 */
-	@RequestMapping(value = "delete", method = RequestMethod.DELETE)
+	@RequestMapping(value = "delete", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse insertBaseData(HttpServletRequest request, HttpServletResponse response
-			, @RequestParam(value = "id", required = true) Long id){
+	public CommonResponse insertBaseData(Long id){
 		CommonResponse cr = new CommonResponse();
 		service.deleteBaseDataType(id);
 		return cr;

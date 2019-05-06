@@ -11,15 +11,23 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>基础数据</title>
 </head>
+<style>
+.layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
+     top: 50%;
+     transform: translateY(-50%);
+}
+</style>
 <body>
 	
 <div class="layui-card">
 	<div class="layui-card-body" style="height:800px;">
 		<table class="layui-form">
 			<tr><td>数据类型：</td><td>&nbsp;&nbsp;</td>
-				<td id="tdSelect"><select><option value="">请选择</option></select></td>			<!-- 此处select的作用仅仅是为了页面加载时，保证页面不出现延迟加载，真正的select会在获取数据后渲染模板，重新填充 -->
+				<td id="tdSelect">
+					<select><option value="">请选择</option></select><!-- 此处select的作用仅仅是为了页面加载时，保证页面不出现延迟加载，真正的select会在获取数据后渲染模板，重新填充 -->
+				</td>
 				<td>&nbsp;&nbsp;</td>
-				<td><button type="button" lay-submit class="layui-btn layui-btn-sm">查找</button></td>
+				<td><button type="button" lay-submit class="layui-btn layui-btn-sm" lay-filter="find">查找</button></td>
 				<td>&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-sm" id="addDataType">添加数据类型</button></td>
 			</tr>
@@ -27,7 +35,33 @@
 		<table class="table_th_search" id="baseDataTable" lay-filter="baseDataTable"></table>
 	</div>
 </div>
-			
+
+</body>
+<!-- 新增类型弹窗 -->
+<div id="addTypeDiv" style="display:none;padding:20px;" class="layui-form">
+	<div class="layui-form-item">
+		<label class="layui-form-label">备注remark</label>
+		<div class="layui-input-block">
+			<input type="text" palceholder="请输入" lay-verify="required" class="layui-input" name="remark">
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">类型type</label>
+		<div class="layui-input-block">
+			<input type="text" palceholder="请输入" lay-verify="required" class="layui-input" name="type">
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">数据名name</label>
+		<div class="layui-input-block">
+			<input type="text" palceholder="请输入" lay-verify="required" class="layui-input" name="name">
+		</div>
+	</div>
+	<!-- 以下为默认值，不需要显示，作为默认参数传参 -->
+	<input type="hidden" name="flag" value="1">
+	<input type="hidden" name="parentId" value="0">
+	<p align="center"><button lay-submit class="layui-btn layui-btn-sm" lay-filter="addType">确定</button></p>
+</div>
 <!-- select选择的模板 -->
 <script type="text/html" id="selectTpl">
 	<select id="selectId" lay-verify="required" name="baseDataType">
@@ -48,73 +82,52 @@
 </script>
 <!-- 添加、编辑基础数据的弹窗模板 -->
 <script type="text/html" id="addEditTpl">
-	<div class="layui-form" >
-		<div class="layui-form-item">
-			<label class="layui-form-label">数据ID</label>
-			<div class="layui-input-block">
-				<input type="text" readonly value="{{ d.id }}" id="baseDateId"  class="layui-input">
-			</div>
-		</div>
+	<div class="layui-form" style="padding:20px;">
 		<div class="layui-form-item">
 			<label class="layui-form-label">数据名称</label>
 			<div class="layui-input-block">
-				<input type="text" value="{{ d.name }}" id="baseDataName" placeholder="请输入" class="layui-input">
+				<input type="text" value="{{ d.name }}" name="name" placeholder="请输入" class="layui-input" lay-verify="required">
 			</div>
 		</div>
 		<div class="layui-form-item">
 			<label class="layui-form-label">是否可用</label>
 			<div class="layui-input-block">
-				<input type="checkbox" lay-skin="switch" id="baseDataFlag" lay-text="可用|不可用" {{ d.flag==1?'checked':'' }} >
-			</div>
-		</div>
-		<div class="layui-form-item">
-			<label class="layui-form-label">类型</label>
-			<div class="layui-input-block">
-				<input type="text" value="{{ d.type }}" id="baseDataType" placeholder="请输入" class="layui-input">
+				<input type="hidden" name="flag" value="0">
+				<input type="checkbox" lay-skin="switch" name="flag" value="1" lay-text="可用|不可用" {{ d.flag==1?'checked':'' }}  >
 			</div>
 		</div>
 		<div class="layui-form-item">
 			<label class="layui-form-label">排序</label>
 			<div class="layui-input-block">
-				<input type="text" value="{{ d.ord }}" id="baseDataOrd" placeholder="请输入" class="layui-input">
+				<input type="text" value="{{ d.ord }}" name="ord" placeholder="请输入" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">类型</label>
+			<div class="layui-input-block">
+				<input type="text" value="{{ d.type }}" name="type" class="layui-input" lay-verify="required">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">备注remark</label>
+			<div class="layui-input-block">
+				<input type="text" value="{{ d.remark }}" name="remark" class="layui-input" lay-verify="required">
 			</div>
 		</div>
 		<div class="layui-form-item">
 			<label class="layui-form-label">父ID</label>
 			<div class="layui-input-block">
-				<input type="text" value="{{ d.parentId }}" id="baseDataParentId" readonly class="layui-input">
+				<input type="text" value="{{ d.parentId }}" readonly name="parentId" readonly class="layui-input">
 			</div>
 		</div>
-		<div class="layui-form-item">
-			<label class="layui-form-label">remark</label>
-			<div class="layui-input-block">
-				<input type="text" value="{{ d.remark }}" id="baseDataRemark" placeholder="请输入" class="layui-input">
-			</div>
-		</div>
+		<input type="hidden" name="id" value="{{ d.id }}">
+		<p align="center"><button type="button" lay-submit lay-filter="addData" class="layui-btn layui-btn-sm">添加</button></p>
 	</div>
 </script>
-<!-- 查看下级数据模板 -->
-<script type="text/html" id="moreTpl">
-	<div>
-		<table class="layui-table" lay-data="{height:315, url:'${ctx}/basedata/children?id={{d}}', page:false, id:'children1' }" lay-filter="children1">
- 		 <thead>
-    		<tr>
-     		 <th lay-data="{field:'id', width:80, sort: true}">数据ID</th>
-     		 <th lay-data="{field:'name', width:80}">名称</th>
-     		 <th lay-data="{field:'ord', width:80, sort: true}">排序</th>
-      		 <th lay-data="{field:'parentId'}">父id</th>
-      		 <th lay-data="{field:'remark'}">remark</th>
-      		 <th lay-data="{field:'flag', sort: true}">是否可用</th>
-     		 <th lay-data="{field:'type', sort: true}">类型</th>
-    		</tr>
- 		 </thead>
-		</table>
-	</div>
-</script>
+
+
+
 <script>
-var allType=[];
-
-
 layui.config({
 	base: '${ctx}/static/layui-v2.4.5/'
 }).extend({
@@ -126,9 +139,209 @@ layui.config({
 		, table = layui.table
 		, laytpl = layui.laytpl
 		, form = layui.form
-		, tablePlug = layui.tablePlug; 		//表格插件
-		form.render();
-		function getDataType(){ 
+		, tablePlug = layui.tablePlug; 							
+		form.render();									//渲染表单
+		getDataType();									//渲染下拉框
+		renderTable('#baseDataTable','700');			//渲染表格
+		var parent={type:'',remark:'',id:0};					//用于记录当前下拉框的选中的值，用于标识type用于记录下拉框的文本，用于标识remark,id
+		form.on('submit(find)',function(obj){					//表单监听，查找按钮
+			table.reload('baseDataTable',{
+				url:"${ctx}/basedata/list?type="+obj.field.baseDataType
+			})
+			parent.type=obj.field.baseDataType;
+			parent.remark=$('#selectId').find("option:selected").text();
+		});
+		$('#addDataType').on('click',function(obj){		
+			var addType=layer.open({
+				title:"新增数据类型",
+				area:['30%','35%'],
+				type:1,
+				content:$('#addTypeDiv')
+			});
+			form.on('submit(addType)',function(obj){
+				var load=layer.load(1);
+				$.ajax({
+					url:"${ctx}/basedata/add",
+					data:obj.field,
+					type:"post",
+					success:function(result){
+						if(0==result.code){
+							getDataType();			//重新获取下拉框内容
+							layer.closeAll();
+							layer.msg("添加成功",{icon:1});
+						}
+						else
+							layer.msg(result.code+'添加异常',{icon:2});
+						layer.close(load);
+					}
+				}) 
+			})
+		});
+		
+		table.on('toolbar(baseDataTable)',function(obj){ //函数参数说明：(type,parent,thisTable)作用类型、父类、获取哪个表格的选中数据
+			switch(obj.event){
+			case 'add': addEidt('add',parent,'baseDataTable'); 	break;
+			case 'edit': addEidt('edit',parent,'baseDataTable'); break;
+			case 'delete': deletes('baseDataTable');	break;
+			case 'more': more('baseDataTable'); 		break;
+			}
+		});
+		
+		function more(thisTable){					//查看子数据
+			var choosedData=layui.table.checkStatus(thisTable).data;
+			if(choosedData.length>1){
+				layer.msg("不能同时查看多条数据",{icon:2});
+				return;
+			}
+			if(choosedData.length==0){
+				layer.msg("至少选中一条数据进行查看",{icon:2});
+				return;
+			}
+			var parent={id:choosedData[0].id,remark:'',type:''};
+			layer.open({
+				title:'子数据',
+				type:1,
+				area:['90%','90%'],
+				content:'<div class="table_th_search" lay-filter="childrenTable" id="childrenTable"></div>' ,
+			})
+			renderTable('#childrenTable','400');
+			table.reload('childrenTable',{
+				url:"${ctx}/basedata/children?id="+parent.id
+			})
+			table.on('toolbar(childrenTable)',function(obj){ 
+				
+				switch(obj.event){
+				case 'add': addEidt('add',parent,'childrenTable');   break;
+				case 'edit': addEidt('edit',parent,'childrenTable'); break;
+				case 'delete':deletes('childrenTable'); 			break;
+				case 'more': layer.msg("该数据没有子数据",{icon:2}); break;
+				}
+			});
+			
+		}
+		function addEidt(type,parent,thisTable){ //新增、修改数据。type区分新增或修改，parent作用于新增时的父id,type,remark，thisTable监听表格（parentId,thisTable复用函数而加入的参数）
+			var choosedData=layui.table.checkStatus(thisTable).data;
+			var data={id:'',name:'',ord:'',parentId:parent.id,remark:parent.remark,type:parent.type,flag:0};
+			var title="新增数据";
+			var html="";
+			var tpl=addEditTpl.innerHTML;
+			if(type=='edit'){
+				if(choosedData.length>1){
+					layer.msg("不能同时编辑多条数据",{icon:2});
+					return;
+				}
+				if(choosedData.length<1){
+					layer.msg("至少选中一条数据进行编辑",{icon:2});
+					return;
+				}
+				data=choosedData[0];
+			}
+			laytpl(tpl).render(data,function(h){
+				html=h;
+			})
+			var open=layer.open({
+				title:title,
+				area:['30%','60%'],
+				type:1,
+				content:html,
+			})
+			form.render();
+			form.on('submit(addData)',function(obj){
+				var load=layer.load(1);
+				$.ajax({
+					url:"${ctx}/basedata/add",
+					data:obj.field,
+					type:"post",
+					success:function(result){
+						if(0==result.code){
+							layer.close(open);
+							table.reload(thisTable);
+							if(type=='add')
+								layer.msg("添加成功",{icon:1});
+							else if(type=='edit')
+								layer.msg("修改成功",{icon:1});
+						}
+						else
+							layer.msg(result.code+'添加异常',{icon:2});
+						layer.close(load);
+					}
+				})
+			});
+		}
+		
+		function deletes(thisTable){
+			var choosedData=layui.table.checkStatus(thisTable).data;
+			if(choosedData.length<1){
+				layer.msg("请至少选中一条数据删除",{icon:2});
+				return;
+			}
+			layer.confirm("是否确认删除"+choosedData.length+"条数据",function(){
+				var load=layer.load(1);
+				var i=0;
+				for(i=0;i<choosedData.length;i++){ 
+					$.ajax({
+						url:"${ctx}/basedata/delete",
+						async:false,
+						data:{id:choosedData[i].id},
+						success:function(result){
+							if(0!=result.code){
+							}
+						},
+						error:function(result){
+							layer.msg("服务器异常",{icon:2});
+						}
+					})
+				}
+				layer.close(load);
+				if(i<choosedData.length){
+					layer.msg("删除第"+i+"条数据时发生异常",{icon:2});
+				}else{
+					layer.msg("成功删除"+choosedData.length+"条数据",{icon:1});
+					table.reload(thisTable);
+				}
+				
+			})
+		}
+		
+		// tr点击触发复选列点击
+		$(document).on('click', '.layui-table-view tbody tr', function(event) {
+			var elemTemp = $(this);
+			var tableView = elemTemp.closest('.layui-table-view');
+			var trIndex = elemTemp.data('index');
+			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
+		})
+		function renderTable(elem,height){									//表格渲染，要渲染的表格元素，以及高度设置，不设置的话不会出现滚动条（与子数据列表复用函数）
+			table.render({
+				elem : elem,
+				size : 'lg',
+				page : false,
+				height : height,
+				loading : true,  
+				toolbar : "#baseDataToolBar",
+				parseData : function(ret) {    		
+					return {
+						code : ret.code,
+						msg : ret.message,
+						data : ret.data,
+					}
+				},
+				cols:[[
+				       {type: 'checkbox',align : 'center',fixed: 'left'},
+						{field : "id",title : "数据id",sort : true,align : 'center'},
+						{field : "name",title : "名称",align : 'center'},
+						{field : "ord",title : "排序",align : 'center',sort : true},
+						{field : "parentId",title : "父id",align : 'center'},
+						{field : "remark",title : "remark",align : 'center'},
+						{field : "flag",title : "是否可用",align : 'center',sort : true},
+						{field : "type",title : "类型",align : 'center'}
+				      ]],
+				 done:function(){
+					 choosed=[];
+					 childChoosed=[];
+				 }
+			});
+		}
+		function getDataType(){ 											//异步获取数据，用于渲染下拉框模板
 			$.ajax({
 				url:"${ctx}/basedata/types",
 				async:false,
@@ -147,134 +360,6 @@ layui.config({
 				}
 			})
 		}
-		form.on('submit',function(obj){
-			table.reload('baseDataTable',{
-				url:"${ctx}/basedata/list?type="+obj.field.baseDataType
-			})
-		});
-		$('#addDataType').on('click',function(){
-			layer.msg("该功能还没有完善",{icon:2});
-		});
-		getDataType();
-		table.on('toolbar(baseDataTable)',function(obj){ 
-			switch(obj.event){
-			case 'add': addEidt(null); break;
-			case 'edit': addEidt('edit'); break;
-			case 'delete': break;
-			case 'more': more(); break;
-			}
-		});
-		var choosed=[];							//存放复选框选中的对象，用于删除、编辑
-		table.on('checkbox(baseDataTable)', function(obj){
-			if(obj.type=='all' ){ 
-				if(obj.checked){
-					var row=layui.table.cache.baseDataTable;
-					choosed=[];
-					for(var i=0;i<row.length;i++){
-						choosed.push(row[i]);
-					}
-				}else
-					choosed=[];
-			}else{ 
-				if(obj.checked)
-					choosed.push(obj.data);
-				else
-					for(var i=0;i<choosed.length;i++){
-						if(choosed[i].id==obj.data.id)
-							choosed.splice(i,1);
-					}
-			}
-		});
-		function more(){
-			if(choosed.length>1){
-				layer.msg("无法同时查看多条信息",{icon:2});
-				return;
-			}
-			var html="";
-			var tpl=moreTpl.innerHTML;
-			laytpl(tpl).render(choosed[0].id,function(h){
-				html=h;
-				table.render();
-				table.reload('children1');
-			})
-			layer.open({
-				title:'子数据',
-				area:['80%','80%'],
-				content:html
-			})
-			
-			/* $.ajax({
-				url:"${ctx}/basedata/children?id="+choosed[0].id,
-				success:function(result){
-					console.log(result.data)
-				}
-			}) */
-		}
-		function addEidt(type){
-			var data={id:'',name:'',ord:'',parentId:'',remark:'',type:'',flag:0};
-			var title="新增数据";
-			var html="";
-			var tpl=addEditTpl.innerHTML;
-			if(type=='edit'){
-				if(choosed.length>1){
-					layer.msg("无法同时编辑多条信息",{icon:2});
-					return;
-				}
-				data=choosed[0];
-			}
-			laytpl(tpl).render(data,function(h){
-				html=h;
-			})
-			layer.open({
-				title:title,
-				area:['30%','60%'],
-				btn:['确认','取消'],
-				content:html,
-				yes:function(){
-					
-				}
-			})
-			form.render();
-		}
-		function deletes(){
-			
-		}
-		// tr点击触发复选列点击
-		$(document).on('click', '.layui-table-view tbody tr', function(event) {
-			var elemTemp = $(this);
-			var tableView = elemTemp.closest('.layui-table-view');
-			var trIndex = elemTemp.data('index');
-			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
-		})
-		
-		table.render({
-			elem : '#baseDataTable',
-			size : 'lg',
-			page : false,
-			height : '700',
-			loading : true,  
-			toolbar : "#baseDataToolBar",
-			parseData : function(ret) {    		
-				return {
-					code : ret.code,
-					msg : ret.message,
-					data : ret.data,
-				}
-			},
-			cols:[[
-			       {type: 'checkbox',align : 'center',fixed: 'left'},
-					{field : "id",title : "数据id",sort : true,align : 'center'},
-					{field : "name",title : "名称",sort : true,align : 'center'},
-					{field : "ord",title : "排序",align : 'center'},
-					{field : "parentId",title : "父id",align : 'center'},
-					{field : "remark",title : "remark",align : 'center'},
-					{field : "flag",title : "是否可用",align : 'center'},
-					{field : "type",title : "类型",align : 'center'}
-			      ]],
-			 done:function(){
-				 choosed=[];
-			 }
-		});
 		
 		
 	}//end function
@@ -282,7 +367,4 @@ layui.config({
 
 </script>
 
-
-
-</body>
 </html>
