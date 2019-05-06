@@ -105,16 +105,7 @@
 			</div>
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">付款日要付金额</label>
-				<div class="layui-input-inline">
-					<input type="text" name="paymentMoney"
-						id="paymentMoney" lay-verify="required"
-						placeholder="请输入付款日要付金额 " class="layui-input">
-				</div>
-			</div>
-
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">付款日期</label>
+				<label class="layui-form-label" style="width: 130px;">申请日期</label>
 				<div class="layui-input-inline">
 					<input type="text" name="paymentDate"
 						id="paymentDate" lay-verify="required"
@@ -286,12 +277,8 @@
 								title: "税点",
 								edit: 'text',
 							}, {
-								field: "paymentMoney",
-								title: "付款日要付金额",
-								edit: 'text'
-							}, {
-								field: "paymentDate",
-								title: "付款日期",
+								field: "expenseDate",
+								title: "申请日期",
 								edit: 'text'
 							}, {
 								field: "withholdReason",
@@ -376,13 +363,14 @@
 							        			money:data.field.money,
 							        			customId:self.getIndex(),
 							        			expenseDate:data.field.paymentDate,
-							        			money:data.field.paymentMoney,
 							        			taxPoint:data.field.taxPoint,
 							        			withholdMoney:data.field.withholdMoney,
 							        			withholdReason:data.field.withholdReason,
 							        			type:4
 							        		}
 							        	  mainJs.fAdd(field); 
+							        	document.getElementById("layuiadmin-form-admin").reset();
+							        	layui.form.render();
 										})
 										
 							        }
@@ -510,20 +498,23 @@
 				      $("#userId").typeahead({
 						source : function(query, process) {
 							return $.ajax({
-								url : '${ctx}/system/user/findAllUser',
+								url : '${ctx}/system/user/pages',
 								type : 'GET',
 								data : {
 									userName:query,
 								},
 								success : function(result) {
 									//转换成 json集合
-									console.log(result)
-									 var resultList = result.data.map(function (item) {
+									 var resultList = result.data.rows.map(function (item) {
 										 	//转换成 json对象
 					                        var aItem = {name: item.userName, id:item.id}
 					                        //处理 json对象为字符串
 					                        return JSON.stringify(aItem);
 					                    });
+									
+									if(result.data.rows==""){
+										 self.setIndex("");
+									}
 									//提示框返回数据
 									 return process(resultList);
 								},
