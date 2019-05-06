@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.aspectj.weaver.patterns.IfPointcut.IfFalsePointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -340,5 +340,55 @@ public class RoleAction {
 		cr.setMessage("删除成功"+count+"个角色");
 		return cr;
 	}
+	
+	/**
+	 * 查询全部的权限 
+	 * @param request 请求
+	 * @param role 角色
+	 * @return cr
+	 */
+	@RequestMapping(value = "/permission", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse permission() {
+		CommonResponse cr = new CommonResponse();
+		List<Permission> permission = permissionService.findAll();
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(Permission.class, "id","name", "permission","description","show").format(permission).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/**
+	 * 新增修改角色 
+	 * @param request 请求
+	 * @param role 角色
+	 * @return cr
+	 */
+	@RequestMapping(value = "/savePermission", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse savePermission(Permission permission) {
+		CommonResponse cr = new CommonResponse();
+		permissionService.save(permission);
+		cr.setMessage("成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * 删除角色 
+	 * @param request 请求
+	 * @param role 角色
+	 * @return cr
+	 */
+	@RequestMapping(value = "/deletePermission", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deletePermission(Long id) {
+		CommonResponse cr = new CommonResponse();
+		permissionService.delete(id);
+		cr.setMessage("删除成功");
+		return cr;
+	}
+	
 
 }
