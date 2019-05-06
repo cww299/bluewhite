@@ -49,7 +49,6 @@ public class IndexAction {
 	@RequestMapping(value="/")
 	public String index() {
 		return "index";
-		
 	}
 	
 	/**
