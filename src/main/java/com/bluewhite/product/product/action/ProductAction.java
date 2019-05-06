@@ -195,7 +195,7 @@ public class ProductAction {
 			
 		}
 		
-		if(StringUtils.isEmpty(product.getDepartmentNumber()) || StringUtils.isEmpty(product.getName())){
+		if(StringUtils.isEmpty(product.getDepartmentNumber()) && StringUtils.isEmpty(product.getName())){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品编号和产品名都不能为空");
 			return cr;
@@ -307,6 +307,22 @@ public class ProductAction {
 		return cr;
 	}
 	
+	
+	/**
+	 * 删除产品
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/deleteProduct", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteProduct(Long id) {
+		CommonResponse cr = new CommonResponse();
+		productService.delete(id);
+		cr.setMessage("删除成功");
+		return cr;
+	}
 	
 	
 	

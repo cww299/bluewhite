@@ -344,7 +344,6 @@ public class RoleAction {
 	/**
 	 * 查询全部的权限 
 	 * @param request 请求
-	 * @param role 角色
 	 * @return cr
 	 */
 	@RequestMapping(value = "/permission", method = RequestMethod.GET)
@@ -360,9 +359,8 @@ public class RoleAction {
 	}
 	
 	/**
-	 * 新增修改角色 
+	 * 新增修改权限 
 	 * @param request 请求
-	 * @param role 角色
 	 * @return cr
 	 */
 	@RequestMapping(value = "/savePermission", method = RequestMethod.POST)
@@ -376,9 +374,8 @@ public class RoleAction {
 	
 	
 	/**
-	 * 删除角色 
+	 * 删除权限 
 	 * @param request 请求
-	 * @param role 角色
 	 * @return cr
 	 */
 	@RequestMapping(value = "/deletePermission", method = RequestMethod.GET)
