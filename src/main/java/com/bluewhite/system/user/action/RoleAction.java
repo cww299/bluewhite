@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.aspectj.weaver.patterns.IfPointcut.IfFalsePointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -340,5 +339,25 @@ public class RoleAction {
 		cr.setMessage("删除成功"+count+"个角色");
 		return cr;
 	}
+	
+	/**
+	 * 查询全部的角色 
+	 * @param request 请求
+	 * @param role 角色
+	 * @return cr
+	 */
+	@RequestMapping(value = "/permission", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse permission() {
+		CommonResponse cr = new CommonResponse();
+		List<Permission> permission = permissionService.findAll();
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(Permission.class, "id","name", "permission","description","show").format(permission).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	
 
 }

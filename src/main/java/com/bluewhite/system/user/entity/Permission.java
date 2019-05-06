@@ -36,7 +36,7 @@ public class Permission extends BaseEntity<Long> {
 	 * 是否显示 也表示是否可用 为了统一 都使用这个
 	 */
 	@Column(name = "is_show")
-	private Boolean show = Boolean.FALSE;
+	private Boolean show ;
 
 	public String getName() {
 		return name;
