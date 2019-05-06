@@ -64,6 +64,9 @@
 		</div>
 	</div>
 	
+	<div style="display: none;" id="layuiOpen">
+			<table id="tableBudget" class="table_th_search" lay-filter="tableBudget"></table>
+		</div>
 	
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
@@ -71,9 +74,18 @@
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
 				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
+				<span class="layui-btn layui-btn-sm" lay-event="openBudget">预算</span>
 			</div>
-		</script>
+	</script>
 
+<script type="text/html" id="toolbar2">
+			<div class="layui-btn-container layui-inline">
+				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增一行</span>
+				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
+				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
+				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
+			</div>
+	</script>
 	
 	<script>
 			layui.config({
@@ -92,6 +104,14 @@
 						,element = layui.element;
 					//全部字段
 					var allField;
+					var self = this;
+					this.setIndex = function(index){
+				  		_index=index;
+				  	}
+				  	
+				  	this.getIndex = function(){
+				  		return _index;
+				  	}
 					//select全局变量
 					var htmls = '<option value="">请选择</option>';
 					var index = layer.load(1, {
@@ -286,7 +306,13 @@
 										})
 									},
 								});
-
+					
+					
+					
+					
+					
+					
+					
 					// 监听表格中的下拉选择将数据同步到table.cache中
 					form.on('select(lay_selecte)', function(data) {
 						var selectElem = $(data.elem);
@@ -421,13 +447,304 @@
 									layer.close(index);
 								});
 								break;
-								
+							case 'openBudget':
+								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
+								var str = checkedIds.join(',');
+								self.setIndex(str)
+								table.render({
+									elem: '#tableBudget',
+									size: 'lg',
+									url: '${ctx}/fince/getConsumption' ,
+									where:{
+										type:1,
+										parentId:str
+									},
+									request:{
+										pageName: 'page' ,//页码的参数名称，默认：page
+										limitName: 'size' //每页数据量的参数名，默认：limit
+									},
+									page: {
+									},//开启分页
+									loading: true,
+									toolbar: '#toolbar2', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+									/*totalRow: true //开启合计行 */
+									cellMinWidth: 90,
+									colFilterRecord: true,
+									smartReloadModel: true,// 开启智能重载
+									parseData: function(ret) {
+										return {
+											code: ret.code,
+											msg: ret.message,
+											count:ret.data.total,
+											data: ret.data.rows
+										}
+									},
+									cols: [
+										[{
+											type: 'checkbox',
+											align: 'center',
+											fixed: 'left'
+										}, {
+											field: "content",
+											title: "报销内容",
+											align: 'center',
+											width:'150',
+											edit: 'text'
+										}, {
+											field: "userId",
+											title: "报销人",
+											align: 'center',
+											width:'150',
+											search: true,
+											edit: false,
+											type: 'normal',
+											templet: fn1('selectOne')
+										}, {
+											field: "budget",
+											title: "是否预算",
+											width:'150',
+											align: 'center',
+											search: true,
+											edit: false,
+											type: 'normal',
+											templet: fn2('selectTwo')
+										}, {
+											field: "money",
+											title: "报销申请金额",
+											width:'150',
+											align: 'center',
+											edit: 'text'
+										}, {
+											field: "expenseDate",
+											title: "报销申请日期",
+											width:'220',
+											align: 'center',
+											edit: 'text'
+										}, {
+											field: "withholdReason",
+											title: "扣款事由",
+											width:'165',
+											align: 'center',
+											edit: 'text'
+										}, {
+											field: "withholdMoney",
+											title: "扣款金额",
+											width:'150',
+											align: 'center',
+											edit: 'text'
+										}, {
+											field: "settleAccountsMode",
+											title: "结款模式",
+											align: 'center',
+											width:'150',
+											search: true,
+											edit: false,
+											type: 'normal',
+											templet: fn3('selectThree')
+										}]
+									],
+									done: function() {
+										var tableView = this.elem.next();
+										tableView.find('.layui-table-grid-down').remove();
+										var totalRow = tableView.find('.layui-table-total');
+										var limit = this.page ? this.page.limit : this.limit;
+										layui.each(totalRow.find('td'), function(index, tdElem) {
+											tdElem = $(tdElem);
+											var text = tdElem.text();
+											if(text && !isNaN(text)) {
+												text = (parseFloat(text) / limit).toFixed(2);
+												tdElem.find('div.layui-table-cell').html(text);
+											}
+										});
+									},
+									//下拉框回显赋值
+									done: function(res, curr, count) {
+										var tableView = this.elem.next();
+										var tableElem = this.elem.next('.layui-table-view');
+										layui.each(tableElem.find('select'), function(index, item) {
+											var elem = $(item);
+											elem.val(elem.data('value'));
+										});
+										form.render();
+										// 初始化laydate
+										layui.each(tableView.find('td[data-field="expenseDate"]'), function(index, tdElem) {
+											tdElem.onclick = function(event) {
+												layui.stope(event)
+											};
+											laydate.render({
+												elem: tdElem.children[0],
+												format: 'yyyy-MM-dd HH:mm:ss',
+												done: function(value, date) {
+														var id = table.cache[tableView.attr('lay-id')][index].id
+														var postData = {
+															id: id,
+															expenseDate: value,
+														};
+														//调用新增修改
+														mainJs.fUpdate(postData);
+															}
+														})
+													})
+												},
+											});
+								var dicDiv=$('#layuiOpen');
+								layer.open({
+							         type: 1
+							        ,title: "预算" //不显示标题栏
+							        ,closeBtn: false
+							        ,zindex:-1
+							        ,area:['80%', '60%']
+							        ,shade: 0.5
+							        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+							        ,btn: ['取消']
+							        ,btnAlign: 'c'
+							        ,moveType: 1 //拖拽模式，0或者1
+							        ,content:dicDiv
+							        ,success : function(layero, index) {
+							        	layero.addClass('layui-form');
+										// 将保存按钮改变成提交按钮
+										layero.find('.layui-layer-btn0').attr({
+											'lay-filter' : 'addRole',
+											'lay-submit' : ''
+										})
+							        }
+							        ,end:function(){
+									  } 
+							      });
+								break;
 							case 'cleanTempData':	
 									table.cleanTemp(tableId);
 							break;
 						}
 					});
 
+					
+					
+					table.on('toolbar(tableBudget)', function(obj) {
+						var config = obj.config;
+						var btnElem = $(this);
+						var tableId = config.id;
+						switch(obj.event) {
+							case 'addTempData':
+								allField = {id: '', content: '', budget: '',userId:'',money: '', expenseDate: '', 
+									withholdReason: '',withholdMoney:'',settleAccountsMode:'',type:'1',parentId:self.getIndex()};
+								table.addTemp(tableId,allField,function(trElem) {
+									// 进入回调的时候this是当前的表格的config
+									var that = this;
+									// 初始化laydate
+									layui.each(trElem.find('td[data-field="expenseDate"]'), function(index, tdElem) {
+										tdElem.onclick = function(event) {
+											layui.stope(event)
+										};
+										laydate.render({
+											elem: tdElem.children[0],
+											format: 'yyyy-MM-dd HH:mm:ss',
+											done: function(value, date) {
+												var trElem = $(this.elem[0]).closest('tr');
+												var tableView = trElem.closest('.layui-table-view');
+												table.cache[that.id][trElem.data('index')]['expenseDate'] = value;
+												var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
+												var postData = {
+													id: id,
+													expenseDate:value,
+												}
+												mainJs.fUpdate(postData);
+											}
+										})
+									})
+								});
+								break;
+							case 'saveTempData':
+								var data = table.getTemp(tableId).data;
+								var flag=false;
+								var a=0;
+								data.forEach(function(postData,i){
+								 	if(postData.userId==""){
+							    		return layer.msg("请填写报销申请人", {
+											icon: 2,
+										});
+							    	}
+							    	if(postData.money=="" || isNaN(postData.money)){
+							    		return layer.msg("请填写报销申请金额（且必须为数字）", {
+											icon: 2,
+										});
+							    	} 
+							    	if(postData.expenseDate==""){
+							    		return layer.msg("请填写报销申请日期", {
+											icon: 2,
+										});
+							    	}
+							    	a++;
+							    	if(a==data.length){
+							    		flag=true
+							    	}
+									})
+								if(flag==true){
+								data.forEach(function(postData,i){
+									  mainJs.fAdd(postData);
+									table.cleanTemp(tableId);
+									})	
+								}
+						          break;
+							case 'deleteSome':
+								// 获得当前选中的
+								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
+								layer.confirm('您是否确定要删除选中的' + checkedIds.length + '条记录？', function() {
+									var postData = {
+										ids: checkedIds,
+									}
+									$.ajax({
+										url: "${ctx}/fince/deleteConsumption",
+										data: postData,
+										traditional: true,
+										type: "GET",
+										beforeSend: function() {
+											index;
+										},
+										success: function(result) {
+											if(0 == result.code) {
+												var configTemp = tablePlug.getConfig("tableData");
+									            if (configTemp.page && configTemp.page.curr > 1) {
+									              table.reload("tableData", {
+									                page: {
+									                  curr: configTemp.page.curr - 1
+									                }
+									              })
+									            }else{
+									            	table.reload("tableData", {
+										                page: {
+										                }
+										              })
+									            };
+												layer.msg(result.message, {
+													icon: 1,
+													time:800
+												});
+											} else {
+												layer.msg(result.message, {
+													icon: 2,
+													time:800
+												});
+											}
+										},
+										error: function() {
+											layer.msg("操作失败！", {
+												icon: 2
+											});
+										}
+									});
+									layer.close(index);
+								});
+								break;
+							case 'cleanTempData':	
+								table.cleanTemp(tableId);
+						break;
+						}
+					})
+					
+					
+					
+					
 					//监听单元格编辑
 					table.on('edit(tableData)', function(obj) {
 						var value = obj.value ,//得到修改后的值
@@ -441,7 +758,22 @@
 							//调用新增修改
 							mainJs.fUpdate(postData);
 					});
-
+					
+					//监听单元格编辑
+					table.on('edit(tableBudget)', function(obj) {
+						var value = obj.value ,//得到修改后的值
+							data = obj.data ,//得到所在行所有键值
+							field = obj.field, //得到字段
+							id = data.id;
+							var postData = {
+								id:id,
+								[field]:value
+							}
+							//调用新增修改
+							mainJs.fUpdate(postData);
+					});
+					
+					
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
@@ -467,7 +799,11 @@
 									 	 table.reload("tableData", {
 							                page: {
 							                }
-							              })   
+							              }) 
+							              table.reload("tableBudget", {
+							                page: {
+							                }
+							              }) 
 										layer.msg(result.message, {
 											icon: 1,
 											time:800
@@ -506,7 +842,11 @@
 								 	 table.reload("tableData", {
 						                page: {
 						                }
-						              })   
+						              }) 
+						              table.reload("tableBudget", {
+							                page: {
+							                }
+							              }) 
 									layer.msg(result.message, {
 										icon: 1,
 										time:800

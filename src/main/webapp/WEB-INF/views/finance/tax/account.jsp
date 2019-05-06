@@ -73,6 +73,9 @@
 		</div>
 	</div>
 
+		
+
+
 <form action="" id="layuiadmin-form-admin"
 		style="padding: 20px 30px 0 60px; display: none; text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
@@ -266,7 +269,9 @@
 								align: 'center',
 								search: true,
 								edit: 'text',
-								event:'ssss'
+								templet: function(d){
+									return d.custom.name
+								}
 							}, {
 								field: "money",
 								title: "票面金额",
