@@ -119,12 +119,55 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	@Override
 	@Transactional
 	public Consumption addConsumption(Consumption consumption) {
+		
+		boolean flag = true;
+		switch (consumption.getType()) {
+		case 1:
+			flag = false;
+			if(consumption.getParentId()!=null){
+				Consumption parentConsumption = dao.findOne(consumption.getParentId());
+				if(consumption.getId()!=null){
+					Consumption ot = dao.findOne(consumption.getId());
+					parentConsumption.setMoney(NumUtils.sum(parentConsumption.getMoney(),NumUtils.sub(consumption.getMoney(),ot.getMoney())));
+				}else{
+					parentConsumption.setMoney(NumUtils.sub(parentConsumption.getMoney(), consumption.getMoney()));
+				}
+				dao.save(parentConsumption);
+			}
+			break;
+		case 2:
+			break;
+		case 3:
+			flag = false;
+			break;
+		case 4:
+			break;
+		case 5:
+			break;
+		case 6:
+			break;
+		case 7:
+			break;
+		case 8:
+			break;
+		case 9:
+			flag = false;
+			break;
+		}
+		if (flag && consumption.getCustomId() == null) {
+			Custom custom = new Custom();
+			custom.setName(consumption.getCustomerName());
+			custom.setType(consumption.getType());
+			customDao.save(custom);
+			consumption.setCustomId(custom.getId());
+		}
+		
 		if (consumption.getId() != null) {
 			Consumption ot = dao.findOne(consumption.getId());
 			if (ot.getFlag() == 1) {
 				throw new ServiceException("已放款，无法修改");
 			}
-			this.update(consumption, ot);
+			update(consumption, ot);
 		} else {
 			if(consumption.getExpenseDate()==null){
 				throw new ServiceException("申请时间不能为空");
@@ -135,42 +178,6 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			CurrentUser cu = SessionManager.getUserSession();
 			consumption.setOrgNameId(cu.getOrgNameId());
 			consumption.setFlag(0);
-			boolean flag = true;
-			switch (consumption.getType()) {
-			case 1:
-				flag = false;
-				if(consumption.getParentId()!=null){
-					Consumption parentConsumption = dao.findOne(consumption.getParentId());
-					parentConsumption.setMoney(NumUtils.sub(parentConsumption.getMoney(), consumption.getMoney()));
-					dao.save(parentConsumption);
-				}
-				break;
-			case 2:
-				break;
-			case 3:
-				flag = false;
-				break;
-			case 4:
-				break;
-			case 5:
-				break;
-			case 6:
-				break;
-			case 7:
-				break;
-			case 8:
-				break;
-			case 9:
-				flag = false;
-				break;
-			}
-			if (flag && consumption.getCustomId() == null) {
-				Custom custom = new Custom();
-				custom.setName(consumption.getCustomerName());
-				custom.setType(consumption.getType());
-				customDao.save(custom);
-				consumption.setCustomId(custom.getId());
-			}
 			dao.save(consumption);
 		}
 		return consumption;
