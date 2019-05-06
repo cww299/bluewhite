@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -341,7 +342,7 @@ public class RoleAction {
 	}
 	
 	/**
-	 * 查询全部的角色 
+	 * 查询全部的权限 
 	 * @param request 请求
 	 * @param role 角色
 	 * @return cr
@@ -358,6 +359,36 @@ public class RoleAction {
 		return cr;
 	}
 	
+	/**
+	 * 新增修改角色 
+	 * @param request 请求
+	 * @param role 角色
+	 * @return cr
+	 */
+	@RequestMapping(value = "/savePermission", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse savePermission(Permission permission) {
+		CommonResponse cr = new CommonResponse();
+		permissionService.save(permission);
+		cr.setMessage("成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * 删除角色 
+	 * @param request 请求
+	 * @param role 角色
+	 * @return cr
+	 */
+	@RequestMapping(value = "/deletePermission", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deletePermission(Long id) {
+		CommonResponse cr = new CommonResponse();
+		permissionService.delete(id);
+		cr.setMessage("删除成功");
+		return cr;
+	}
 	
 
 }
