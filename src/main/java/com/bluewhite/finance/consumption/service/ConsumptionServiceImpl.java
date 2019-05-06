@@ -14,9 +14,12 @@ import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.entity.PageResultStat;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.consumption.dao.ConsumptionDao;
@@ -35,11 +38,27 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 
 	@Override
 	public PageResult<Consumption> findPages(Consumption param, PageParameter page) {
+		CurrentUser cu = SessionManager.getUserSession();
+		if(cu!=null && !cu.getIsAdmin() && cu.getOrgNameId() != 6 ){
+			param.setOrgNameId(cu.getOrgNameId());
+		}
 		Page<Consumption> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
+			}
+			// 按部门id过滤
+			if (param.getOrgNameId() != null) {
+				if (param.getParentId() == null) {
+					predicate.add(cb.isNotNull(root.get("parentId").as(Long.class)));
+				}
+				predicate.add(cb.equal(root.get("orgNameId").as(Long.class), param.getOrgNameId()));
+			}
+			
+			// 按父类id过滤
+			if (param.getParentId() != null) {
+				predicate.add(cb.equal(root.get("parentId").as(Long.class), param.getParentId()));
 			}
 			// 按消费类型过滤
 			if (param.getType() != null) {
@@ -113,11 +132,18 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			if(consumption.getMoney()==null){
 				throw new ServiceException("申请金额不能为空");
 			}
+			CurrentUser cu = SessionManager.getUserSession();
+			consumption.setOrgNameId(cu.getOrgNameId());
 			consumption.setFlag(0);
 			boolean flag = true;
 			switch (consumption.getType()) {
 			case 1:
 				flag = false;
+				if(consumption.getParentId()!=null){
+					Consumption parentConsumption = dao.findOne(consumption.getParentId());
+					parentConsumption.setMoney(NumUtils.sub(parentConsumption.getMoney(), consumption.getMoney()));
+					dao.save(parentConsumption);
+				}
 				break;
 			case 2:
 				break;
@@ -161,6 +187,9 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 					Long id = Long.parseLong(idArr[i]);
 					Consumption consumption = dao.findOne(id);
 					if (consumption.getFlag() == 0) {
+						List<Consumption> consumptionList= dao.findByParentId(id);
+						consumptionList.stream().forEach(co->co.setParentId(null));
+						dao.save(consumptionList);
 						dao.delete(id);
 						count++;
 					} else {

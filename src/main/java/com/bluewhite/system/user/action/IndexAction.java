@@ -45,7 +45,7 @@ public class IndexAction {
 	 * 跳转首页
 	 * @return
 	 */
-	@RequiresPermissions( "sys:index" )  
+	@RequiresPermissions( "sys:*" ) 
 	@RequestMapping(value="/")
 	public String index() {
 		return "index";

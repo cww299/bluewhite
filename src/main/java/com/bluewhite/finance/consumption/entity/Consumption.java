@@ -30,6 +30,19 @@ import com.bluewhite.system.user.entity.User;
 @Entity
 @Table(name = "fin_consumption")
 public class Consumption extends BaseEntity<Long> {
+	
+	
+	/**
+	 * 来源部门
+	 */
+	@Column(name = "orgName_id")
+	private Long orgNameId;
+	
+	/**
+	 * 父id
+	 */
+	@Column(name = "parent_id")
+	private Long parentId;
 
 	/**
 	 * 消费类型(1.报销，2采购应付和预算，3工资，4税点应付和预算，5物流，6应付借款本金，7应付社保和税费，8应入库周转的材料，9应收周转中的资金)
@@ -157,6 +170,25 @@ public class Consumption extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Date orderTimeEnd;
+	
+	
+	
+
+	public Long getOrgNameId() {
+		return orgNameId;
+	}
+
+	public void setOrgNameId(Long orgNameId) {
+		this.orgNameId = orgNameId;
+	}
+
+	public Long getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
+	}
 
 	public String getCustomerName() {
 		return customerName;

@@ -13,7 +13,6 @@
 	
 	<!-- 凭证匹配器  -->
     <bean id="credentialsMatcher" class="com.bluewhite.shiro.credentials.MyCredentialsMatcher">
-    
     </bean>
 	
 	<!-- shiro缓存管理器 

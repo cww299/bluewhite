@@ -47,7 +47,6 @@ public class UserRealm extends AuthorizingRealm {
          authorizationInfo.setRoles(roleNames);
          // 将权限名称提供给info
          authorizationInfo.setStringPermissions(permissions);
-         
          CurrentUser currentUser = SessionManager.getUserSession();
  		if (currentUser == null || currentUser.getId().equals(user.getId())) {
 			currentUser = new CurrentUser();
