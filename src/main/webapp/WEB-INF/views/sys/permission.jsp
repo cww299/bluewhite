@@ -20,6 +20,52 @@
 	</div> 
 </div>
 
+<!-- 权限类型管理隐藏框 -->
+<div style="padding:5px;display:none;" id="permissionTypeDiv">
+	<table class="layui-table" id="permissionTypeTable" lay-filter="permissionTypeTable"></table>
+</div>
+<!-- 权限类型管理工具栏 -->
+<script type="text/html" id="permissionTypeTableToolbar">
+	<div class="layui-btn-container layui-inline layui-form">
+		<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">删除权限类型</span>
+		<span class="layui-btn layui-btn-sm" lay-event="add">新增权限类型</span>
+		<span class="layui-btn layui-btn-sm" lay-event="edit">编辑</span>
+	</div>
+</script>
+<!-- 权限类型编辑、添加模板 -->
+<script type="text/html" id="permissionTypeTpl">
+	<div class="layui-form" style="padding:20px">
+		<input type="hidden" name="id" value="{{ d.id }}">
+		<div class="layui-form-item">
+			<label class="layui-form-label">名称</label>
+			<div class="layui-input-block">
+				<input type="text" name="name" class="layui-input" value="{{ d.name }}" lay-verify="required">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">是否可用</label>
+			<div class="layui-input-block">
+				<input type="hidden" name="show" value="0">
+				<input type="checkbox" name="show" lay-skin="switch" value="1" lay-text="是|否"{{ d.show==true?'checked':'' }} name="isShow">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">权限类型</label>
+			<div class="layui-input-block">
+				<input type="text" name="permission" class="layui-input" value="{{ d.permission }}" lay-verify="required">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">说明</label>
+			<div class="layui-input-block">
+				<input type="text" name="description" class="layui-input" value="{{ d.description }}">
+			</div>
+		</div>
+		<p align="center"><button type="button" lay-submit lay-filter="sure" class="layui-btn layui-btn-sm">确定</button></p>
+	</div>	
+</script>
+
+
 <!-- 添加、编辑角色弹窗 -->
 <script type="text/html" id="addEditUserRoleTpl">
 	<div class="layui-form" style="padding:20px">
@@ -76,6 +122,7 @@
 		<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">删除用户角色</span>
 		<span class="layui-btn layui-btn-sm" lay-event="add">新增用户角色</span>
 		<span class="layui-btn layui-btn-sm" lay-event="edit">编辑</span>
+		<span class="layui-btn layui-btn-sm" lay-event="permissionTypeManager">权限类型管理</span>
 	</div>
 </script>
 <script>
@@ -154,8 +201,118 @@ layui.config({
 			case 'add':		addEdit('add');   break;
 			case 'edit':	addEdit('edit');  break;
 			case 'delete':	deleteUserRole(); break;
+			case 'permissionTypeManager':	permissionTypeManager(); break;
 			}
 		})
+		function permissionTypeManager(){
+			layer.open({
+				type:1,
+				title:"权限类型管理",
+				area:['80%','80%'],
+				content:$('#permissionTypeDiv')
+			})
+			table.render({
+				elem:'#permissionTypeTable',
+				url:"${ctx}/permission",
+				page:false,
+				size:'lg',
+				loading:true,
+				toolbar:'#permissionTypeTableToolbar',
+				cols:[[
+				       {type:'checkbox',align:'center'},
+				       {field:'id',title:'ID',align:'center'},
+				       {field:'name',title:'名称',align:'center'},
+				       {field:'show',title:'是否可用',align:'center'},
+				       {field:'permission',title:'权限类型',align:'center'},
+				       {field:'description',title:'说明',align:'center'},
+				       ]]
+			})
+			table.on('toolbar(permissionTypeTable)',function(obj){
+				switch(obj.event){
+					case 'add':		addEditPermissionType('add');   break;
+					case 'edit':	addEditPermissionType('edit');  break;
+					case 'delete':	deletePermissionType(); break;
+					case 'permissionTypeManager': layer.msg("无该功能"); break;
+				}
+			})
+			function addEditPermissionType(type){
+				var data={id:'',name:'',show:false,permission:'',description:''}
+					,html=''
+					,tpl=permissionTypeTpl.innerHTML
+					,choosed=layui.table.checkStatus('permissionTypeTable').data
+					,typeName='新增';
+				if('edit'==type){
+					if(choosed.length>1){
+						layer.msg("无法同时编辑多条信息",{icon:2});
+						return;
+					}
+					if(choosed.length<1){
+						layer.msg("至少选择一条信息编辑",{icon:2});
+						return;
+					}
+					typeName="修改";
+					data=choosed[0];
+				}
+				laytpl(tpl).render(data,function(h){
+					html=h;
+				})
+				var addEditWindow=layer.open({
+					type:1,
+					title:typeName+'信息',
+					content:html,
+					area:['30%','40%']
+				})
+				form.render();
+				form.on('submit(sure)',function(obj){
+					var load=layer.load(1);
+					$.ajax({
+						url:"${ctx}/savePermission",
+						type:"post",
+						data:obj.field,
+						success:function(result){
+							if(0==result.code){
+								table.reload('permissionTypeTable');
+								layer.close(addEditWindow);
+								layer.msg(result.message,{icon:1});
+							}
+							else
+								layer.msg(result.code+result.message,{icon:2});
+							layer.close(load);
+						}
+					})
+				})
+			}
+					
+			function deletePermissionType(){
+				var choosed=layui.table.checkStatus('permissionTypeTable').data;
+				if(choosed.length<1){
+					layer.msg("请至少选择一条数据删除",{icon:2});
+					return;
+				}
+				var targetDel=choosed.length;
+				var successDel=0;
+				var load=layer.load(1);
+				for(var i=0;i<targetDel;i++){
+					$.ajax({
+						url:"${ctx}/deletePermission",
+						data:{id:choosed[i].id},
+						async:false,
+						success:function(result){
+							if(0==result.code){
+								successDel++;
+							}
+						}
+					})
+				}
+				layer.close(load);
+				table.reload('permissionTypeTable');
+				if(successDel==targetDel){
+					layer.msg('成功删除'+successDel+'条数据',{icon:1});
+				}
+				else
+					layer.msg('删除发生异常，目标删除：'+targetDel+'条数据，实际删除：'+successDel,{icon:2});
+			}
+		}
 		function deleteUserRole(){						//删除用户角色
 			if(choosed.length==0){
 				layer.msg("请选择至少一个对象删除",{icon:2});
