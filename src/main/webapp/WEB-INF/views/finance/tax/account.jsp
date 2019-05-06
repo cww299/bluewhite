@@ -266,7 +266,9 @@
 								align: 'center',
 								search: true,
 								edit: 'text',
-								event:'ssss'
+								templet: function(d){
+									return d.custom.name
+								}
 							}, {
 								field: "money",
 								title: "票面金额",
