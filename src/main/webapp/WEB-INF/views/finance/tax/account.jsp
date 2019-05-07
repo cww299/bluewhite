@@ -146,7 +146,9 @@
 			</div>
 		</script>
 
-	
+	<script type="text/html" id="barDemo">
+  		<a class="layui-btn layui-btn-trans layui-btn-xs"  lay-event="update">编辑</a>
+</script>
 	<script>
 			layui.config({
 				base: '${ctx}/static/layui-v2.4.5/'
@@ -293,7 +295,7 @@
 								field: "withholdMoney",
 								title: "扣款金额",
 								edit: 'text'
-							}]
+							},{fixed:'right', title:'操作', align: 'center', toolbar: '#barDemo'}]
 						],
 						done: function() {
 							var tableView = this.elem.next();
@@ -475,24 +477,105 @@
 						}
 					});
 					
+					//编辑
+					table.on('tool(tableData)', function(obj) {
+						document.getElementById("layuiadmin-form-admin").reset();
+			        	layui.form.render();
+						var data = obj.data;
+						var value = obj.value
+						var id=data.id;
+						var val=obj.field
+						$("#usID").val(id)
+					    if(obj.event === 'update'){
+					    	
+					    	var dicDiv=$('#layuiadmin-form-admin');
+					    	$('#selectOne').each(function(j,k){
+								var id=data.user.id;
+								$(k).val(id);
+								form.render('select');
+							});
+					    	$('#restType').each(function(j,k){
+					    		var id=data.restType;
+								$(k).val(id);
+								form.render('select');
+							});
+					    	$('#workType').each(function(j,k){
+					    		var id=data.workType;
+								$(k).val(id);
+								form.render('select');
+							});
+					    	$('#restTimeWork').each(function(j,k){
+					    		var id=data.restTimeWork;
+								$(k).val(id);
+								form.render('select');
+							});
+							$('#overTimeType').each(function(j,k){
+					    		var id=data.overTimeType;
+								$(k).val(id);
+								form.render('select');
+							});
+							$('#comeWork').each(function(j,k){
+					    		var id=data.comeWork;
+								$(k).val(id);
+								form.render('select');
+							});
+							if(data.earthWork==true){
+							$("#kai").attr("checked","checked");
+					    	form.render();
+					       }else{
+					    	   $("#kai").attr("checked",false);
+						    	form.render();
+					       }
+							$("#restTimeSummer").val(data.restTimeSummer)
+					    	$("#layuiadmin-form-admin").setForm({restDay:data.restDay,workTimeSummer:data.workTimeSummer,workTimeWinter:data.workTimeWinter,turnWorkTimeSummer:data.turnWorkTimeSummer,turnWorkTimeWinter:data.turnWorkTimeWinter,restTimeSummer:data.restTimeSummer,restTimeWinter:data.restTimeWinter,restSummer:data.restSummer,restWinter:data.restWinter});
+					    	layer.open({
+						         type: 1
+						        ,title: "修改" //不显示标题栏
+						        ,closeBtn: false
+						        ,area:['30%', '100%']
+						        ,shade: 0.5
+						        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+						        ,btn: ['确定', '取消']
+						        ,btnAlign: 'c'
+						        ,moveType: 1 //拖拽模式，0或者1
+						        ,content:dicDiv
+						        ,success : function(layero, index) {
+						        	layero.addClass('layui-form');
+									// 将保存按钮改变成提交按钮
+									layero.find('.layui-layer-btn0').attr({
+										'lay-filter' : 'addRole',
+										'lay-submit' : ''
+									})
+						        }
+						        ,yes: function(index, layero){
+						        	form.on('submit(addRole)', function(data) {
+						        		var key=data.field.restDay
+						        		var s=key.charAt(key.length-1)
+						        		if(s==","){
+						        			return layer.msg("约定休息日末尾不能是,号", {icon: 2});
+						        		}else{
+						        	 mainJs.fAdd(data.field); 
+						        		}
+									})
+									
+						        }
+						        ,end:function(){
+						        	document.getElementById("layuiadmin-form-admin").reset();
+						        	layui.form.render();
+						        	timeAll=""
+								  } 
+						       
+						      });
+					    	
+					    	
+					    }
+					});
+					
 					
 			
 					
 					
-					//监听单元格编辑
-					table.on('edit(tableData)', function(obj) {
-						var value = obj.value ,//得到修改后的值
-							data = obj.data ,//得到所在行所有键值
-							field = obj.field, //得到字段
-							id = data.id;
-							var postData = {
-								id:id,
-								[field]:value
-							}
-							//调用新增修改
-							mainJs.fUpdate(postData);
-					});
-
+				
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;

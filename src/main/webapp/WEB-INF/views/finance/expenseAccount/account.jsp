@@ -74,7 +74,7 @@
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
 				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
-				<span class="layui-btn layui-btn-sm" lay-event="openBudget">预算</span>
+				<span class="layui-btn layui-btn-sm" lay-event="openBudget">预算报销单</span>
 			</div>
 	</script>
 
@@ -498,55 +498,39 @@
 											field: "content",
 											title: "报销内容",
 											align: 'center',
-											width:'150',
 											edit: 'text'
 										}, {
 											field: "userId",
 											title: "报销人",
 											align: 'center',
-											width:'150',
 											search: true,
 											edit: false,
 											type: 'normal',
 											templet: fn1('selectOne')
 										}, {
-											field: "budget",
-											title: "是否预算",
-											width:'150',
-											align: 'center',
-											search: true,
-											edit: false,
-											type: 'normal',
-											templet: fn2('selectTwo')
-										}, {
 											field: "money",
 											title: "报销申请金额",
-											width:'150',
 											align: 'center',
 											edit: 'text'
 										}, {
 											field: "expenseDate",
 											title: "报销申请日期",
-											width:'210',
 											align: 'center',
 											edit: 'text'
 										}, {
 											field: "withholdReason",
 											title: "扣款事由",
-											width:'160',
 											align: 'center',
 											edit: 'text'
 										}, {
 											field: "withholdMoney",
 											title: "扣款金额",
-											width:'150',
 											align: 'center',
 											edit: 'text'
 										}, {
 											field: "settleAccountsMode",
 											title: "结款模式",
 											align: 'center',
-											width:'150',
 											search: true,
 											edit: false,
 											type: 'normal',
@@ -600,10 +584,10 @@
 								var dicDiv=$('#layuiOpen');
 								layer.open({
 							         type: 1
-							        ,title: "预算" //不显示标题栏
+							        ,title: "预算报销单" //不显示标题栏
 							        ,closeBtn: false
 							        ,zindex:-1
-							        ,area:['80%', '60%']
+							        ,area:['80%', '90%']
 							        ,shade: 0.5
 							        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
 							        ,btn: ['取消']
