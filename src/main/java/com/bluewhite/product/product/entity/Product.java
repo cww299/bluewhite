@@ -65,12 +65,16 @@ public class Product extends BaseEntity<Long>{
      private String departmentNumber;
     
    /**
-    * 产品来源部门（）
+    * 产品来源部门
     */
 	@Column(name = "origin_department")
     private String originDepartment;
 	
-	
+   /**
+    * 产品分类
+    */
+	@Column(name = "product_type")
+    private Integer productType;
 	 
 	/**
 	 * 八号仓库特殊业务，同一种产品会有会有激光和冲床两种类型工序，同时会产生不同的外发单价（0=激光，1=冲床）
@@ -117,6 +121,14 @@ public class Product extends BaseEntity<Long>{
 	
 	
 	
+	public Integer getProductType() {
+		return productType;
+	}
+
+	public void setProductType(Integer productType) {
+		this.productType = productType;
+	}
+
 	public String getDepartmentNumber() {
 		return departmentNumber;
 	}
