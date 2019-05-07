@@ -29,7 +29,7 @@
 	
 		<table>
 			<tr>
-				<td>产品编号:</td>
+				<td>产品编号:</td> 
 				<td><input type="text" name="number" id="number"
 					class="form-control search-query number" /></td>
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
