@@ -117,7 +117,7 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 				}
 	        	
 	        	//人事查看不显示部门自己添加的产品
-	    		if(cu.getOrgNameId()==30){
+	    		if(cu.getOrgNameId()!=null && cu.getOrgNameId()==30){
 	    			predicate.add(cb.isNotNull(root.get("number").as(String.class)));
 	    		}
 	    		
