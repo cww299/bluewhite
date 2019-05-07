@@ -76,6 +76,9 @@ layui.config({
 		form.on('submit(find)',function(obj){
 			table.reload('productTable',{
 				url:"${ctx}/productPages?name="+obj.field.productName,
+				where:{
+					page:1
+				}
 			});
 		})
 		

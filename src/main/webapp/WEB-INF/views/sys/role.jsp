@@ -21,7 +21,7 @@
 <body>
 	
 <div class="layui-card">
-	<div class="layui-card-body" style="height:800px"">
+	<div class="layui-card-body" style="height:800px">
 		<div id="LAY-role-table" class="table_th_search" lay-filter="LAY-role-table"></div>
 	</div>
 </div>

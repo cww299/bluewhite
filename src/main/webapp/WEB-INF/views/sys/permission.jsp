@@ -424,7 +424,7 @@ layui.config({
 				}
 			})
 			$.ajax({
-				url:'${ctx}/system/user/findAllUser' ,							//获取全部用户
+				url:'${ctx}/system/user/findUserList',	//获取全部用户
 				success:function(result){
 					if(result.code==0){
 						var row=result.data;
