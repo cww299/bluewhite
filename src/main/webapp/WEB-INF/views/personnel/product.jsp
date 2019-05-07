@@ -168,11 +168,11 @@ layui.config({
 					success:function(result){
 						if(result.code==0){
 							layer.closeAll();
-							layer.msg(typeName+'成功',{icon:1});
+							layer.msg(result.message,{icon:1});
 							table.reload('productTable');
 						}
 						else
-							layer.msg(result.code+' '+typeName+'失败',{icon:2});
+							layer.msg(result.code+' '+result.message,{icon:2});
 						layer.close(load);
 					}
 				})
@@ -199,10 +199,10 @@ layui.config({
 								successDel++;
 							}	
 							else
-								layer.msg("删除发生错误",{icon:2});
+								layer.msg(result.code+' '+result.message,{icon:2});
 						},
 						error:function(result){
-							layer.msg("删除发生错误",{icon:2});
+							layer.msg(result.message,{icon:2});
 						}
 					})
 				}
