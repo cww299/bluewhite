@@ -110,5 +110,12 @@ public interface UserService extends BaseCRUDService<User, Long> {
 	 * @return
 	 */
 	public User addUser(User user);
+	
+	/**
+	 * 按条件查找人员
+	 * @param foreigns=0=否
+	 * @return
+	 */
+	public List<User> findUserList(User user);
 
 }

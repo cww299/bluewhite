@@ -50,8 +50,9 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			}
 			// 按部门id过滤
 			if (param.getOrgNameId() != null) {
-				if (param.getParentId() == null) {
-					predicate.add(cb.isNotNull(root.get("parentId").as(Long.class)));
+				//当部门id不为null，过滤掉存在父id的数据
+				if(param.getParentId() == null){
+					predicate.add(cb.isNull(root.get("parentId").as(Long.class)));
 				}
 				predicate.add(cb.equal(root.get("orgNameId").as(Long.class), param.getOrgNameId()));
 			}

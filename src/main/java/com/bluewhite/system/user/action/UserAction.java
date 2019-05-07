@@ -1,6 +1,5 @@
 package com.bluewhite.system.user.action;
 
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,15 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.persistence.criteria.Predicate;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,8 +25,10 @@ import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
+import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.BankUtil;
@@ -46,7 +44,6 @@ import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.entity.UserContract;
 import com.bluewhite.system.user.service.UserService;
-import com.graphbuilder.math.func.CeilFunction;
 
 @Controller
 @RequestMapping("/system/user")
@@ -361,7 +358,7 @@ public class UserAction {
 	 */
 	@RequestMapping(value = "/findAllUser", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse findAllUser(HttpServletRequest request, String id) {
+	public CommonResponse findAllUser() {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON
 				.get()
@@ -372,14 +369,54 @@ public class UserAction {
 	
 	
 	/**
+	 * 查询符合要求的人员信息
+	 * 
+	 * @param request请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/findUserList", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse findUserList(User user) {
+		CommonResponse cr = new CommonResponse();
+		user.setForeigns(0);
+		user.setQuit(0);
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(User.class,"id","userName")
+				.format(userService.findUserList(user)).toJSON());
+		return cr;
+	}
+	
+	
+	/**
+	 * 验证密码
+	 */
+	@RequestMapping(value = "/checkPassword", method = RequestMethod.POST)
+	@ResponseBody
+	private CommonResponse checkPassword(String password) {
+		CommonResponse cr = new CommonResponse();
+		CurrentUser cu = SessionManager.getUserSession();
+		String newPassword = new SimpleHash("md5", password).toHex();
+	  	User user = userService.findOne(cu.getId());
+	  	if(newPassword.equals(user.getPassword())){
+	  		cr.setMessage("密码正确");
+	  	}else{
+	  		cr.setCode(ErrorCode.SYSTEM_USER_PASSWORD_WRONG.getCode());
+	  		cr.setMessage("密码错误");
+	  	}
+		return cr;
+	}
+	
+	/**
 	 * 修改密码
 	 */
 	@RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
 	@ResponseBody
-	private CommonResponse updatePassword(Long id, String password) {
+	private CommonResponse updatePassword(String password) {
 		CommonResponse cr = new CommonResponse();
+		CurrentUser cu = SessionManager.getUserSession();
 		String newPassword = new SimpleHash("md5", password).toHex();
-	  	User user = userService.findOne(id);
+	  	User user = userService.findOne(cu.getId());
 	  	user.setPassword(newPassword);
 	  	userService.save(user);
 	  	cr.setMessage("修改成功");
