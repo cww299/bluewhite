@@ -82,12 +82,14 @@ public class CurrentUser {
 	
 
 
+
+
 	public Long getId() {
 		return id;
 	}
 
-	public void setId(Serializable id) {
-		this.id = (Long)id;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getUserName() {

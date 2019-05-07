@@ -12,7 +12,11 @@
 	</bean>
 	
 	<!-- 凭证匹配器  -->
-    <bean id="credentialsMatcher" class="com.bluewhite.shiro.credentials.MyCredentialsMatcher">
+    <bean id="credentialsMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+		 <!-- 加密算法为MD5 -->
+        <property name="hashAlgorithmName" value="MD5"></property>
+          <!-- 加密次数 -->
+        <property name="hashIterations" value="1"></property>
     </bean>
 	
 	<!-- shiro缓存管理器 

@@ -118,4 +118,6 @@ public interface UserService extends BaseCRUDService<User, Long> {
 	 */
 	public List<User> findUserList(User user);
 
+	public boolean checkPassword(String password);
+
 }

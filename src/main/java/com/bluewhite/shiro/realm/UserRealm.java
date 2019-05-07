@@ -50,8 +50,8 @@ public class UserRealm extends AuthorizingRealm {
          CurrentUser currentUser = SessionManager.getUserSession();
  		if (currentUser == null || currentUser.getId().equals(user.getId())) {
 			currentUser = new CurrentUser();
-			currentUser.setIsAdmin(user.getIsAdmin());
 			currentUser.setId(user.getId());
+			currentUser.setIsAdmin(user.getIsAdmin());
 			currentUser.setUserName(user.getUserName());
 			currentUser.setOrgNameId(user.getOrgNameId());
 			currentUser.setPositionId(user.getPositionId());
@@ -84,7 +84,6 @@ public class UserRealm extends AuthorizingRealm {
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
         		user.getUserName(),
                 user.getPassword(), 
-                ByteSource.Util.bytes(user.getUserName()), 
                 getName());
         return authenticationInfo;
     }

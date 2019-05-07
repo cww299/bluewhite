@@ -12,6 +12,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.SetJoin;
 import javax.transaction.Transactional;
 
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -338,7 +339,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			if(u != null){
 				throw  new ServiceException("该用户手机号已存在");
 			}else{
-				user.setPassword("123456");
+				user.setPassword( new SimpleHash("md5", "123456").toHex());
 				user.setForeigns(0);
 				UserContract userContract = new UserContract();
 				userContractDao.save(userContract);
@@ -402,6 +403,14 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			return null;
 		});
 		return result;
+	}
+
+	@Override
+	public boolean checkPassword(String password) {
+		CurrentUser cu = SessionManager.getUserSession();
+		String newPassword = new SimpleHash("md5", password).toHex();
+		User user = dao.findOne(cu.getId());
+		return user.getPassword().equals(newPassword);
 	}
 
 }
