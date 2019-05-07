@@ -203,15 +203,15 @@ public class ProductAction {
 		//如果后期出现需求，一个产品在各个地方所用的所有费用，这个时候无法用产品编号进行查询
 		//产品名称在包装环境中不会变动
 		//所以可以通过产品名称来查询。同时保证在拥有产品编号的产品中 保证产品名称的唯一性
-//			Product ps = dao.findByNumberNotNullAndName(product.getName());
-//			if(ps!=null){
-//				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-//				cr.setMessage("已有该产品，请检查后再次添加");
-//				return cr;
-//			}
+//		Product ps = dao.findByNumberNotNullAndName(product.getName());
+//		if(ps!=null){
+//			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+//			cr.setMessage("已有该产品，请检查后再次添加");
+//			return cr;
+//		}
 		
 		//下面存入各部门产品编号
-		if(products!=null && products1!=null){
+		if(products!=null || products1!=null){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("已有该产品编号的产品，请检查后再次添加");
 		}else{
@@ -255,6 +255,7 @@ public class ProductAction {
 				}
 			}
 			BeanCopyUtils.copyNullProperties(oldProduct,product);
+			product.setNumber(product.getDepartmentNumber());
 			product.setCreatedAt(oldProduct.getCreatedAt());
 			productService.save(product);
 			
@@ -293,7 +294,6 @@ public class ProductAction {
 					}
 				}
 			}
-			
 			cr.setMessage("修改成功");
 		}else{
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
