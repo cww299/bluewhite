@@ -311,7 +311,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 
 	@Override
 	public List<User> findByForeigns() {
-		return dao.findByForeignsAndIsAdminAndQuit(0,false,0);
+		return  dao.findByForeignsAndIsAdminAndQuit(0,false,0);
 	}
 
 	@Override
@@ -350,26 +350,58 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		return save(user);
 	}
 
-
-
-
-
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	@Override
+	public List<User> findUserList(User user) {
+		List<User> result = userDao.findAll((root, query, cb) -> {
+			List<Predicate> predicate = new ArrayList<>();
+			//按id查找
+			if (user.getId() != null) {
+				predicate.add(cb.equal(root.get("id").as(Long.class),user.getId()));
+			}
+			//管理员
+			if (user.getIsAdmin()!=null) {
+				predicate.add(cb.equal(root.get("isAdmin").as(Boolean.class),user.getIsAdmin()));
+			}
+			
+			//是否外调
+			if (user.getForeigns() != null) {
+				predicate.add(cb.equal(root.get("foreigns").as(Integer.class),user.getForeigns()));
+			}
+			
+			//是否离职
+			if (user.getQuit() != null) {
+				predicate.add(cb.equal(root.get("quit").as(Integer.class),user.getQuit()));
+			}
+			
+			//按手机号查找
+			if (!StringUtils.isEmpty(user.getPhone())) {
+				predicate.add(cb.like(root.get("phone").as(String.class),"%" + user.getPhone() + "%"));
+			}
+			
+			//按姓名查找
+			if (!StringUtils.isEmpty(user.getUserName())) {
+				predicate.add(cb.like(root.get("userName").as(String.class),"%" + user.getUserName() + "%"));
+			}
+			
+			//按学历查找
+			if (!StringUtils.isEmpty(user.getEducation())) {
+				predicate.add(cb.like(root.get("education").as(String.class),"%" + user.getEducation() + "%"));
+			}
+			
+			//按员工编号
+			if (!StringUtils.isEmpty(user.getNumber())) {
+				predicate.add(cb.like(root.get("number").as(String.class),"%" + user.getNumber() + "%"));
+			}
+			
+			//按位置编号
+			if (!StringUtils.isEmpty(user.getLotionNumber())) {
+				predicate.add(cb.like(root.get("userContract").get("number").as(String.class),"%" + user.getLotionNumber() + "%"));
+			}
+			Predicate[] pre = new Predicate[predicate.size()];
+			query.where(predicate.toArray(pre));
+			return null;
+		});
+		return result;
+	}
 
 }
