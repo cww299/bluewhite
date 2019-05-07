@@ -112,8 +112,9 @@
 					<p><label>原密码：</label><input type="password" class="form-control" id="oldPwd"></p>
 					<div class="alert alert-danger" role="alert" id="oldPwdError" style="display:none;">原密码错误</div>
 				    <p><label>修改密码：</label><input type="password" class="form-control" id="newPwd"></p>
-				    <p><label>确认密码：</label><input type="password" class="form-control" id="againPwd"></p>
 				    <div class="alert alert-danger" role="alert" id="againPwdError" style="display:none;">两次输入的密码不一致</div>
+				    <p><label>确认密码：</label><input type="password" class="form-control" id="againPwd"></p>
+				    <div class="alert alert-danger" role="alert" id="emptyPwdError" style="display:none;">密码不能为空</div>
 				</div>
 				<div class="modal-footer">
 					<button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
@@ -153,12 +154,17 @@ jQuery(function($){
 	$('#primaryUpdate').on('click',function(){
 		$('#oldPwdError').hide();
 		$('#againPwdError').hide();
+		$('#emptyPwdError').hide();
+		if($('#newPwd').val()=='' || $('#againPwd').val()=='' || $('#oldPwd').val==''){
+			$('#emptyPwdError').show();
+			return;
+		}
 		if($('#newPwd').val()!=$('#againPwd').val()){
 			$('#againPwdError').show();
 			return;
 		}
-		$.ajax({
-			url:"${ctx}/login",
+	 	$.ajax({
+			url:"${ctx}/system/user/checkPassword",
 			data:{
 				password:$('#oldPwd').val()
 			},
@@ -166,7 +172,7 @@ jQuery(function($){
 			success:function(result){
 				if(result.code==0){
 					$.ajax({
-						url:"${ctx}/updatePassword",
+						url:"${ctx}/system/user/updatePassword",
 						type:"post",
 						data:{password:$('#newPwd').val()},
 						success:function(result){
@@ -178,13 +184,14 @@ jQuery(function($){
 							}
 						}
 					})
-				}
+				 }
 				else{
+					console.log(result)
 					$('#oldPwdError').show();
 				}
 			}
 		}) 
-	})
+	})//修改密码结束
 	var Login = function(){
 	var self = this;
 	//表单jsonArray

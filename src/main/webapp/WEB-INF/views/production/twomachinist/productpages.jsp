@@ -29,7 +29,7 @@
 	
 		<table>
 			<tr>
-				<td>产品编号:</td>
+				<td>产品编号:</td> 
 				<td><input type="text" name="number" id="number"
 					class="form-control search-query number" /></td>
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -43,11 +43,11 @@
 						查&nbsp;找</button>
 				</span></td>
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-				<td> <span class="input-group-btn">
+				<!-- <td> <span class="input-group-btn">
 					<button type="button" id="addproduct"
 						class="btn btn-success  btn-sm btn-3d pull-right">
 						新增产品</button>
-				</span></td>
+				</span></td> -->
 			</tr>
 		</table>
 

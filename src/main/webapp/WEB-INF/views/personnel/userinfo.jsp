@@ -19,21 +19,7 @@
  <!-- Drop Zone-->
     <link rel="stylesheet" href="${ctx }/static/css/dropzone.css">
     <script src="${ctx }/static/js/vendor/dropzone.min.js"></script>
-    
-    	<%-- <link rel="stylesheet" href="${ctx }/static/css/main.css">
-	<link rel="stylesheet" type="text/css" href="${ctx }/static/css/dropzone.css">
-	<script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-	<script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
-	<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/autocomplete.css">
-	<script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
-	<script src="${ctx }/static/plugins/pace/pace.min.js"></script>
-	<script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-	<script src="${ctx }/static/js/src/app.js"></script> 
-	<script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
-	<script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-	<script src="${ctx }/static/js/vendor/dropzone.min.js"></script>
-     --%>
-    
+ 
     
 </head>
 <body>
@@ -723,9 +709,10 @@ jQuery(function($){
 						  }
 					  }); 
 			 }
-			 
 			 this.select=function(){
-				 $('.username2').on('click',function(){
+				 
+				 //------------------修改---------------------------------------------------------
+				 $('.username2').on('click',function(){					
 					 var _index
 						var index
 						var postData   
@@ -1053,7 +1040,7 @@ jQuery(function($){
 									layer.close(index);
 							  }
 						  });
-						_index = layer.open({
+						_index = layer.open({				//修改用户
 							  type: 1,
 							  skin: 'layui-layer-rim', //加上边框
 							  area: ['80%', '90%'], 
@@ -1487,13 +1474,13 @@ jQuery(function($){
 			})
 				  
 				  
-				/*修改 */
-					$('.addbatch').on('click',function(){
+				//-------------员工详情 -----------------------------------------------	//修改此处
+					$('.addbatch').on('click',function(){		//员工详情弹窗
 						var _index
 						var index
-						var postData   
-						var postId=$(this).data('postid');
-						var nameId=$(this).data('nameid');
+						var postData ;							//发送的数据  
+						var postId=$(this).data('postid');		//当前员工职位？
+						var nameId=$(this).data('nameid');		//当前员工？
 						var dicDiv=$('#addDictDivType');
 						var userName=$(this).data('name');
 						var bacthDepartmentPrice=$(this).parent().parent().find('.departmentPrice').text();
@@ -1507,11 +1494,11 @@ jQuery(function($){
 				    var htmltwo = '';
 				    var htmlth = '';
 				    var htmlfr = '';
-				    var html = '';
+				    var html = '';					
 				    var htmlthh= '';
 				    var htmlthhh= '';
 					    var getdata={type:"orgName",}
-		      			$.ajax({
+		      			$.ajax({								//获取部门列表数据，部门下拉框的填充
 						      url:"${ctx}/basedata/list",
 						      data:getdata,
 						      type:"GET",
@@ -1521,26 +1508,28 @@ jQuery(function($){
 								  shade: [0.1,'#fff'] //0.1透明度的白色背景
 								  });
 							  }, 
-				      		  success: function (result) {
+				      		  success: function (result) {				//初始填充部门
 				      			  $(result.data).each(function(k,j){
 				      				htmlfr +='<option value="'+j.id+'">'+j.name+'</option>'
 				      			  });
 				      			var htmlth='<select class="form-control  selectgroupChange"><option value="">去除分组</option>'+htmlfr+'</select>'
 				      			
-				      			$(".department").html(htmlth); 
+				      			$(".department").html(htmlth); 			//填充部门
 				      			$('.selectgroupChange').each(function(i,o){
 				    				var id=nameId;
 				    				$(o).val(id);
 				    			})
 				      			layer.close(indextwo);
+				      			
+				      	
 				      			//查询工序
-				      			$(".selectgroupChange").change(function(){
+				      			$(".selectgroupChange").change(function(){		//监听部门下拉框改变时，二级联改变
 				      			  var htmltwo = '';
 				      				c=$(this).val();
 				      				var data={
 				    						id:c,
 				    					  }
-								     $.ajax({
+								     $.ajax({								//获取当前部门下拉框选择的子数据：职位
 									      url:"${ctx}/basedata/children",
 									      data:data,
 									      type:"GET",
@@ -1551,12 +1540,12 @@ jQuery(function($){
 											  });
 										  }, 
 							      			 
-							      		  success: function (result) {
-							      			
+							      		  success: function (result) {				//填充职位下拉框
 							      			  $(result.data).each(function(i,o){
 							      				htmltwo +='<option value="'+o.id+'">'+o.name+'</option>'
 							      			});  
 							      			var html='<select class="form-control  selectChange">'+htmltwo+'</select>'
+							      			console.log("1:"+html)
 							      			$(".position").html(html);
 							      			
 							      			layer.close(indextwo);
@@ -1714,8 +1703,36 @@ jQuery(function($){
 					      			$("#contractDateEnd").val(o.contractDateEnd);
 					      			$('#productId').val(o.fileId);
 									$('#producturl').val(o.pictureUrl);
-					      			var html='<input class="form-control" value="'+l+'" />'
-					      			$(".position").html(html);
+									
+									
+									//原始代码
+					      			/* var html='<input class="form-control" value="'+l+'" />'
+					      			$(".position").html(html); */
+					      			//修改如下：
+					      			//----------------------------------------------------------------------
+					      			function getSelect(l){
+					      				var html='<select class="form-control  selectChange"><option value="">请选择</option>';
+						      			$.ajax({								//获取当前部门下拉框选择的子数据：职位
+										      url:"${ctx}/basedata/children",
+										      data:{id:$(".selectgroupChange").val()},
+										      type:"GET",
+										      async:false,
+								      		  success: function (result) {				//填充职位下拉框
+								      			  	$(result.data).each(function(i,o){
+									      				  var isChecked=o.name==l?'selected':'';
+									      				  html +='<option value="'+o.id+'"'+ isChecked +'>'+o.name+'</option>'
+								      				});  
+								      				html+='</select>';
+										      }
+										  }); 
+						      			return html;
+					      			}
+					      			$(".position").html(getSelect(l));
+					      			//---------------------------------------------------------------------------------------------
+					      			
+					      			
+					      			
+					      			
 					      			$('.gender').each(function(j,k){
 										var id=o.gender;
 										$(k).val(id);
