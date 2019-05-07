@@ -1,5 +1,7 @@
 package com.bluewhite.reportexport.service;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -117,12 +119,18 @@ public class ReportExportServiceImpl implements ReportExportService{
 		int count = 0;
 		if(excelProduct.size()>0){
 			List<Product> productList = new ArrayList<Product>();
+			List<Product> productList1 = productDao.findAll();
 			for(ProductPoi proPoi :excelProduct){
-				Product product  = new Product();
-				product.setNumber(proPoi.getNumber());
-				product.setName(proPoi.getName());
-				productList.add(product);
-				count++;
+				List<Product> product = productList1.stream()
+						.filter(Product ->Product.getNumber() != null && Product.getNumber().equals(proPoi.getNumber()) )
+						.collect(Collectors.toList());
+				if(product.size()==0){
+					Product product1  = new Product();
+					product1.setNumber(proPoi.getNumber());
+					product1.setName(proPoi.getName());
+					productList.add(product1);
+					count++;
+				}
 			}
 			this.saveAllProduct(productList);
 		}

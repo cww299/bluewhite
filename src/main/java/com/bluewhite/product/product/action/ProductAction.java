@@ -168,11 +168,6 @@ public class ProductAction {
 		CommonResponse cr = new CommonResponse();
 		CurrentUser cu = SessionManager.getUserSession();
 		
-		//试制部
-		if(cu.getRole().contains(Constants.TRIALPRODUCT)){
-			product.setDepartmentNumber( "试制"+new Date ().toString());
-			product.setOriginDepartment(Constants.TRIALPRODUCT);
-		}
 		//质检
 		if(cu.getRole().contains(Constants.PRODUCT_FRIST_QUALITY)){
 			product.setOriginDepartment(Constants.PRODUCT_FRIST_QUALITY);
