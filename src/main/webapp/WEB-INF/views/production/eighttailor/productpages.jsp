@@ -240,8 +240,8 @@
 		      				}
 		      				html +='<tr>'
 		      				+'<td class="text-center id">'+o.id+'</td>'
-		      				+'<td class="text-center edit number">'+o.departmentNumber+'</td>'
-		      				+'<td class="text-center edit name">'+o.name+'</td>'
+		      				+'<td class="text-center number">'+o.departmentNumber+'</td>'
+		      				+'<td class="text-center name">'+o.name+'</td>'
 		      				+'<td class="text-center  departmentPrice">'+o.departmentPrice*1+'</td>'
 		      				+'<td class="text-center edit  workPrice">'+o.hairPrice+'</td>'
 		      				+'<td class="text-center  puncherDepartmentPrice">'+o.puncherDepartmentPrice*1+'</td>'

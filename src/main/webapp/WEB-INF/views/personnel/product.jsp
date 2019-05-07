@@ -26,7 +26,7 @@
 				<td><input type="text" class="layui-input" name="name" ></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>产品编号：</td>
-				<td><input type="text" class="layui-input" name="number" ></td>
+				<td><input type="text" class="layui-input" name="departmentNumber" ></td>
 				<td>&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-sm" lay-filter="find" lay-submit>查找</button></td>
 		</table>
@@ -77,12 +77,13 @@ layui.config({
 		, tablePlug = layui.tablePlug; 		
 
 		form.on('submit(find)',function(obj){
+			console.log(obj.field)
 			table.reload('productTable',{
 				url:"${ctx}/productPages?",
 				where:{
 					page:1,
 					name:obj.field.name,
-					number:obj.field.number
+					departmentNumber:obj.field.departmentNumber
 				}
 			});
 		})
@@ -111,7 +112,7 @@ layui.config({
 			cols : [[  
 			            {type: 'checkbox',align : 'center',fixed: 'left'},
 						{field : "id",title : "ID",align : 'center',sort : true}, 
-						{field : "number",title : "产品编号",align : 'center',sort : true}, 
+						{field : "departmentNumber",title : "产品编号",align : 'center',sort : true}, 
 						{field : "name",title : "产品名",align : 'center'}, 
 						{field : "url",title : "图片",align : 'center'}, 
 					]] 
@@ -153,6 +154,7 @@ layui.config({
 			})
 			form.render();
 			
+			var url=type=='add'?'addProduct':'updateProduct';
 			
 			form.on('submit(sure)',function(obj){
 				//去除空格
@@ -160,17 +162,17 @@ layui.config({
 				obj.field.departmentNumber=obj.field.departmentNumber.replace(/\s*/g,"");
 				var load=layer.load(1);
 				$.ajax({
-					url:"${ctx}/addProduct",
+					url:"${ctx}/"+url,
 					type:"post",
 					data:obj.field,
 					success:function(result){
 						if(result.code==0){
 							layer.closeAll();
-							layer.msg(typeName+'成功',{icon:1});
+							layer.msg(result.message,{icon:1});
 							table.reload('productTable');
 						}
 						else
-							layer.msg(result.code+' '+typeName+'失败',{icon:2});
+							layer.msg(result.code+' '+result.message,{icon:2});
 						layer.close(load);
 					}
 				})
@@ -197,10 +199,10 @@ layui.config({
 								successDel++;
 							}	
 							else
-								layer.msg("删除发生错误",{icon:2});
+								layer.msg(result.code+' '+result.message,{icon:2});
 						},
 						error:function(result){
-							layer.msg("删除发生错误",{icon:2});
+							layer.msg(result.message,{icon:2});
 						}
 					})
 				}
