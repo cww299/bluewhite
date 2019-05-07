@@ -22,7 +22,8 @@
 	<script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
 	<script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
 	<script src="${ctx }/static/js/src/app.js"></script>
-
+	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 </head>
 <body>
 	<header id="header">
@@ -178,9 +179,9 @@ jQuery(function($){
 						success:function(result){
 							if(0==result.code){
 								 $("#myModal").modal('hide');
-								 alert("修改密码成功！");
+								 layer.msg("修改成功",{icon:1});
 							}else{
-								alert("服务器异常");
+								layer.msg("修改发生服务器异常",{icon:2});
 							}
 						}
 					})
