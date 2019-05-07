@@ -55,8 +55,6 @@ public class UserAction {
 	@Autowired
 	private UserContractDao userContractDao;
 	@Autowired
-	private UserDao userDao;
-	@Autowired
 	private AttendanceInitService attendanceInitService;
 	@Autowired
 	private GroupService groupService;
@@ -275,7 +273,7 @@ public class UserAction {
 			int age = DatesUtil.getAgeByBirth(user.getBirthDate());
 			user.setAge(age);
 		}
-		userDao.save(userBirth1);
+		userService.save(userBirth1);
 		List<User> userBirth = userList.stream().filter(User->User.getBirthDate()!=null && User.getGender()!=null && User.getQuit()!=1 && User.getQuit()!=null && User.getCommitmentId()!=null && User.getCommitmentId() !=144).collect(Collectors.toList());
 		for(User user : userBirth ){
 			Map<String,Object> us = new HashMap<String,Object>();
@@ -380,6 +378,7 @@ public class UserAction {
 		CommonResponse cr = new CommonResponse();
 		user.setForeigns(0);
 		user.setQuit(0);
+		user.setIsAdmin(null);
 		cr.setData(ClearCascadeJSON
 				.get()
 				.addRetainTerm(User.class,"id","userName")
@@ -393,12 +392,9 @@ public class UserAction {
 	 */
 	@RequestMapping(value = "/checkPassword", method = RequestMethod.POST)
 	@ResponseBody
-	private CommonResponse checkPassword(String password) {
+	public CommonResponse checkPassword(String password) {
 		CommonResponse cr = new CommonResponse();
-		CurrentUser cu = SessionManager.getUserSession();
-		String newPassword = new SimpleHash("md5", password).toHex();
-	  	User user = userService.findOne(cu.getId());
-	  	if(newPassword.equals(user.getPassword())){
+	  	if(userService.checkPassword(password)){
 	  		cr.setMessage("密码正确");
 	  	}else{
 	  		cr.setCode(ErrorCode.SYSTEM_USER_PASSWORD_WRONG.getCode());
@@ -412,7 +408,7 @@ public class UserAction {
 	 */
 	@RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
 	@ResponseBody
-	private CommonResponse updatePassword(String password) {
+	public CommonResponse updatePassword(String password) {
 		CommonResponse cr = new CommonResponse();
 		CurrentUser cu = SessionManager.getUserSession();
 		String newPassword = new SimpleHash("md5", password).toHex();

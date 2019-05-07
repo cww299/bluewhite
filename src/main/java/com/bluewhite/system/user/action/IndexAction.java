@@ -9,8 +9,10 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -83,11 +85,15 @@ public class IndexAction {
 			//用户未登录
 			try {
 				subject.login(new UsernamePasswordToken(username, password));
-			} catch (Exception e) {
-				cr.setCode(1500);
+			} catch (ServiceException e) {
+				cr.setCode(ErrorCode.FORBIDDEN.getCode());
 				cr.setMessage(e.getCause().getMessage());
 				return cr;
-			}
+			} catch (IncorrectCredentialsException e1) {
+				cr.setCode(ErrorCode.SYSTEM_USER_PASSWORD_WRONG.getCode());
+                cr.setMessage("密码错误");
+                return cr;
+            }
 			cr.setMessage("用户登录成功");
 		}
 		return cr;
@@ -105,5 +111,6 @@ public class IndexAction {
 		 SecurityUtils.getSubject().logout();  
 		return "redirect:login.jsp";
 	}
+	
 
 }
