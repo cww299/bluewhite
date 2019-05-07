@@ -23,7 +23,10 @@
 		<table class="layui-form">
 			<tr>
 				<td>产品名：</td>
-				<td><input type="text" class="layui-input" name="productName" ></td>
+				<td><input type="text" class="layui-input" name="name" ></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>产品编号：</td>
+				<td><input type="text" class="layui-input" name="number" ></td>
 				<td>&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-sm" lay-filter="find" lay-submit>查找</button></td>
 		</table>
@@ -75,9 +78,11 @@ layui.config({
 
 		form.on('submit(find)',function(obj){
 			table.reload('productTable',{
-				url:"${ctx}/productPages?name="+obj.field.productName,
+				url:"${ctx}/productPages?",
 				where:{
-					page:1
+					page:1,
+					name:obj.field.name,
+					number:obj.field.number
 				}
 			});
 		})
@@ -106,7 +111,7 @@ layui.config({
 			cols : [[  
 			            {type: 'checkbox',align : 'center',fixed: 'left'},
 						{field : "id",title : "ID",align : 'center',sort : true}, 
-						{field : "departmentNumber",title : "产品编号",align : 'center',sort : true}, 
+						{field : "number",title : "产品编号",align : 'center',sort : true}, 
 						{field : "name",title : "产品名",align : 'center'}, 
 						{field : "url",title : "图片",align : 'center'}, 
 					]] 
