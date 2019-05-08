@@ -132,12 +132,10 @@ layui.config({
 	    });
 
 		
-		
-		
 		table.render({
 			elem:'#onlineOrder',
 			height:'780',
-			//url:'',
+			url:'${ctx}/inventory/onlineOrderPage',
 			loading:true,
 			page:true,
 			request:{
@@ -148,21 +146,19 @@ layui.config({
 				return{
 					code:ret.code,
 					msg:ret.message,
-					data:ret.data,
+					data:ret.rows,
 					count:ret.total
-					/* count : ret.data.total, 
-					data : ret.data.rows, */
 				}
 			},
 			cols:[[
 			       {type:'checkbox',align:'center',fixed:'left'},
 			      // {filed:'',            title:'下单时间',   align:'center'},
-			       {filed:'number',        title:'订单号',     align:'center'},
+			       {filed:'tid',        title:'订单号',     align:'center'},
 			      // {filed:'',            title:'客户名称',   align:'center'},
-			       {filed:'buyerRemarks',  title:'买家留言',   align:'center'},
-			       {filed:'sellerRemarks', title:'卖家备注',   align:'center'},
-			       {filed:'franking',      title:'邮费',       align:'center'},
-			       {filed:'amountMoney',   title:'实收金额',   align:'center'},
+			       {filed:'buyerMessage',  title:'买家留言',   align:'center'},
+			       {filed:'sellerMemo', title:'卖家备注',   align:'center'},
+			       {filed:'postFee',       title:'邮费',       align:'center'},
+			       {filed:'receivedPayment',title:'实收金额',   align:'center'},
 			       {filed:'countable',     title:'件数',       align:'center'},
 			       {filed:'trackingNumber',title:'运单号',     align:'center'},
 			       {filed:'status',        title:'状态',       align:'center'},
@@ -182,7 +178,6 @@ layui.config({
 		
 		
 		function searchToolInit(){
-			console.log(1)
 			var sinceHourHtml='';
 			for(var i=0;i<24;i++){
 				sinceHourHtml+='<option value="'+i+'">'+i+'</option>';

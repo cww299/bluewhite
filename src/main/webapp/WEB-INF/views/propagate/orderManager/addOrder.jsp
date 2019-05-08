@@ -130,6 +130,35 @@ td{
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">删除商品</span>
 </div>
 </script>
+
+<!-- 添加商品模板 -->
+<script type="text/html" id="addProductTpl">
+<table class="layui-form layui-table">
+	<tr><td>商品名称</td>
+		<td><input type="text" class="layui-input" lay-verify="required" name="name"></td>
+		<td>商品重量</td>
+		<td><input type="text" class="layui-input" name="weight"></td></tr>
+	<tr><td>商品材质</td>
+		<td><input type="text" class="layui-input" name="material"></td>
+		<td>商品规格</td>
+		<td><input type="text" class="layui-input" lay-verify="required" name="size"></td></tr>
+	<tr><td>商品填充物</td>
+		<td><input type="text" class="layui-input" name="fillers"></td>
+		<td>商品成本</td>
+		<td><input type="text" class="layui-input" name="cost"></td></tr>
+	<tr><td>库存数量</td>
+		<td><input type="text" class="layui-input" name="quantity"></td>
+		<td>仓库类型</td>
+		<td><input type="text" class="layui-input" name="warehouse"></td></tr>
+	<tr><td>商品单价</td>
+		<td><input type="text" class="layui-input" lay-verify="required" name="price"></td>
+		<td>广宣成本</td>
+		<td><input type="text" class="layui-input" name="propagandaCost"></td></tr>
+	<tr><td>备注</td>
+		<td colspan="3"><textarea type="text" class="layui-input" name="remark"></textarea></td></tr>
+	<tr><td colspan="4"><button lay-submit class="layui-btn layui-btn-sm">确定</button></td></tr>
+</table>
+</script>
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
@@ -141,7 +170,8 @@ layui.config({
 		var $ = layui.jquery
 		, layer = layui.layer 				
 		, form = layui.form			 		
-		, table = layui.table 				
+		, table = layui.table 
+		, laytpl = layui.laytpl
 		, tablePlug = layui.tablePlug;
 		
 		$('#headerTool').find("td:even").css({backgroundColor:"rgba(65, 161, 210, 0.45)",padding:"1px"}); 
@@ -211,6 +241,7 @@ layui.config({
 			table.render({
 				elem:'#productListTable',
 				size:'lg',
+				url:'${ctx}/inventory/commodityPage',
 				loading:true,
 				page:true,
 				height:'600',
@@ -228,12 +259,12 @@ layui.config({
 				},
 				cols:[[
 					       {type:'checkbox', align:'center', fixed:'left'},
-					       {align:'center', title:'商品名称', field:'',},
-					       {align:'center', title:'销售属性', field:'',},
-					       {align:'center', title:'商家编码', field:'',},
-					       {align:'center', title:'总库存',   field:'',},
-					       {align:'center', title:'销售价',   field:'',},
-					       {align:'center', title:'参考进价', field:'',},
+					       {align:'center', title:'商品名称', field:'name',},
+					       {align:'center', title:'成本', 	  field:'cost',},
+					       {align:'center', title:'仓库类型', field:'warehouse',},
+					       {align:'center', title:'总库存',   field:'quantity',},
+					       {align:'center', title:'销售价',   field:'price',},
+					       {align:'center', title:'备注', 	  field:'remark',},
 				       ]]
 				
 			});
@@ -242,8 +273,46 @@ layui.config({
 				layer.msg("搜索");
 			});
 			$('#add').on('click',function(){
-				layer.msg("添加商品");
+				//layer.msg("添加商品");
+				var html='';
+				var tpl=addProductTpl.innerHTML;
+				laytpl(tpl).render({},function(h){
+					html=h;
+				})
+				var addPorduct = layer.open({
+					type:1,
+					title:'添加产品',
+					content:html,
+					area:['60%','50%']
+				})
+				form.render();
+				form.on('submit',function(obj){
+					var load=layer.load(1);
+					$.ajax({
+						url:'${ctx}/inventory/addCommodity',
+						type:"post",
+						data:obj.field,
+						success:function(result){
+							if(0==result.code){
+								table.reload('productListTable');
+								layer.close(addPorduct);
+								layer.msg(result.message,{icon:1});
+							}
+							else
+								layer.msg(result.message,{icon:2});
+							layer.close(load);
+						},
+						error:function(result){
+							layer.msg('发生未知错误',{icon:2});
+							layer.close(load);
+						}
+					})
+				
+				})
 			})
+			
+			
+			
 			$('#refresh').on('click',function(){
 				layer.msg('刷新');
 			})
