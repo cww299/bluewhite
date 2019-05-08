@@ -14,9 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
-import com.bluewhite.basedata.entity.BaseData;
-import com.bluewhite.system.user.entity.Role;
-import com.bluewhite.system.user.entity.User;
 
 /**
  * 电商销售单实体
