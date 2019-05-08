@@ -244,7 +244,7 @@ public class ProductAction {
 			Product oldProduct = productService.findOne(product.getId());
 			//这里控制共同产品无法被修改，只能修改自己部门的产品名称和产品编号
 			//判断是否来源于部门
-			if(!StringUtils.isEmpty(oldProduct.getOriginDepartment())){
+			if(oldProduct.getOriginDepartment()!=null){
 				//需要修改产品编号和产品名称时
 				if(product.getName()!=null || product.getDepartmentNumber()!=null){
 					if(!product.getName().equals(oldProduct.getName()) || !product.getDepartmentNumber().equals(oldProduct.getNumber())){

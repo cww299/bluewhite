@@ -59,9 +59,23 @@ public class OnlineCustomer extends BaseEntity<Long>{
 	@Column(name = "phone")
 	private String phone;
 	
-	
+	/**
+	 * 邮编
+	 */
+	@Column(name = "zip_code")
+	private String zipCode;
 
 	
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
+
 
 	public String getAddressee() {
 		return addressee;

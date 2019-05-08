@@ -95,11 +95,6 @@ public class OnlineOrder extends BaseEntity<Long>{
 	@Column(name = "tracking_number")
 	private String trackingNumber;
 	
-	/**
-	 * 邮编
-	 */
-	@Column(name = "zip_code")
-	private String zipCode;
 	
 	/**
 	 * 买家留言
@@ -221,13 +216,6 @@ public class OnlineOrder extends BaseEntity<Long>{
 		this.trackingNumber = trackingNumber;
 	}
 
-	public String getZipCode() {
-		return zipCode;
-	}
-
-	public void setZipCode(String zipCode) {
-		this.zipCode = zipCode;
-	}
 
 	public String getBuyerRemarks() {
 		return buyerRemarks;
