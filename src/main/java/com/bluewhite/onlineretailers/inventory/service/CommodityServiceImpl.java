@@ -2,11 +2,11 @@ package com.bluewhite.onlineretailers.inventory.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.support.DaoSupport;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -15,21 +15,18 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
-import com.bluewhite.onlineretailers.inventory.dao.OnlineOrderDao;
+import com.bluewhite.onlineretailers.inventory.dao.CommodityDao;
+import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
-import com.bluewhite.product.product.entity.Product;
-import com.bluewhite.production.procedure.entity.Procedure;
-
 @Service
-public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> implements  OnlineOrderService{
+public class CommodityServiceImpl  extends BaseServiceImpl<Commodity, Long> implements  CommodityService{
 	
 	@Autowired
-	private OnlineOrderDao dao;
-	
+	private CommodityDao dao;
 
 	@Override
-	public PageResult<OnlineOrder> findPage(OnlineOrder param, PageParameter page) {
-		 Page<OnlineOrder> pages = dao.findAll((root,query,cb) -> {
+	public PageResult<Commodity> findPage(Commodity param, PageParameter page) {
+		 Page<Commodity> pages = dao.findAll((root,query,cb) -> {
 	        	List<Predicate> predicate = new ArrayList<>();
 	        	//按id过滤
 	        	if (param.getId() != null) {
@@ -37,8 +34,13 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				}
 	        	
 	        	//按编号过滤
-	        	if (!StringUtils.isEmpty(param.getNum())) {
-					predicate.add(cb.equal(root.get("num").as(String.class),param.getNum()));
+	        	if (!StringUtils.isEmpty(param.getNumber())) {
+					predicate.add(cb.equal(root.get("number").as(String.class),param.getNumber()));
+				}
+	        	
+	        	//按产品名称过滤
+	        	if (!StringUtils.isEmpty(param.getName())) {
+					predicate.add(cb.like(root.get("name").as(String.class),"%"+StringUtil.specialStrKeyword(param.getName())+"%"));
 				}
 	        	
 				Predicate[] pre = new Predicate[predicate.size()];
@@ -46,18 +48,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	        	return null;
 	        }, page);
 
-	        PageResult<OnlineOrder> result = new PageResult<>(pages,page);
+	        PageResult<Commodity> result = new PageResult<>(pages,page);
 	        return result;
 	    }
-
-
-	@Override
-	public int deleteOnlineOrder(String ids) {
-		int count = 0;
-		
-		
-		return count;
-	}
-
-
 }
