@@ -49,7 +49,7 @@ public class FilesAction {
 	@ResponseBody
 	public CommonResponse upload(@RequestParam(value = "file", required = true) MultipartFile files,
 			HttpServletRequest request) {
-		CommonResponse cr = new CommonResponse();
+			CommonResponse cr = new CommonResponse();
 			// 循环获取file数组中得文件
 			Files fi = fileService.upFile(files, request);
 			cr.setMessage("成功上传");

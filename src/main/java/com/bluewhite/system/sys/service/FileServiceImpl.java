@@ -13,8 +13,7 @@ import com.bluewhite.system.sys.dao.FilesDao;
 import com.bluewhite.system.sys.entity.Files;
 
 @Service
-public class FileServiceImpl extends BaseServiceImpl<Files, Long> implements
-FilesService {
+public class FileServiceImpl extends BaseServiceImpl<Files, Long> implements FilesService {
 	
 	@Autowired
 	private FilesDao filesDao;

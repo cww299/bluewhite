@@ -5,22 +5,18 @@ import org.springframework.stereotype.Service;
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
 @Service
-public interface OnlineOrderService extends BaseCRUDService<OnlineOrder,Long>{
+public interface CommodityService  extends BaseCRUDService<Commodity,Long>{
+	
 	
 	/**
-	 * 分页查看销售单
+	 * 分页查看商品
 	 * @param onlineOrder
 	 * @param page
 	 * @return
 	 */
-	public PageResult<OnlineOrder> findPage(OnlineOrder onlineOrder, PageParameter page);
-	
-	/**
-	 * 批量删除
-	 * @param ids
-	 */
-	public int deleteOnlineOrder(String ids);
+	public PageResult<Commodity> findPage(Commodity commodity, PageParameter page);
 
 }

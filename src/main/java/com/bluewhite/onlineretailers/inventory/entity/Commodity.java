@@ -23,6 +23,12 @@ public class Commodity extends BaseEntity<Long>{
 	private String number;
 	
 	/**
+     * 产品图片地址
+     */
+	@Column(name = "pic_url")
+    private String picUrl;
+	
+	/**
 	 * 商品名称
 	 * 
 	 */
