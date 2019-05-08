@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.finance.ledger.entity.Contact;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -117,7 +118,26 @@ public class Consumption extends BaseEntity<Long> {
 	 */
 	@Column(name = "payment_date")
 	private Date paymentDate;
-
+	
+	/**
+	 * (物流订单日期)
+	 */
+	@Column(name = "logistics_date")
+	private Date logisticsDate;
+	
+	/**
+	 * 客户Id
+	 */
+	@Column(name = "contact_id")
+	private Long contactId;
+	
+	/**
+	 * 客户对象
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "contact_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Contact contact;
+	
 	/**
 	 * 扣款事由填写
 	 */
@@ -159,7 +179,13 @@ public class Consumption extends BaseEntity<Long> {
 	 */
 	@Transient
 	private String customerName;
-
+	
+	/**
+	 * (客户对象)
+	 */
+	@Transient
+	private String contactName;
+	
 	/**
 	 * 查询字段
 	 */
@@ -173,6 +199,38 @@ public class Consumption extends BaseEntity<Long> {
 	
 	
 	
+	
+	public Contact getContact() {
+		return contact;
+	}
+
+	public void setContact(Contact contact) {
+		this.contact = contact;
+	}
+
+	public String getContactName() {
+		return contactName;
+	}
+
+	public void setContactName(String contactName) {
+		this.contactName = contactName;
+	}
+
+	public Date getLogisticsDate() {
+		return logisticsDate;
+	}
+
+	public void setLogisticsDate(Date logisticsDate) {
+		this.logisticsDate = logisticsDate;
+	}
+
+	public Long getContactId() {
+		return contactId;
+	}
+
+	public void setContactId(Long contactId) {
+		this.contactId = contactId;
+	}
 
 	public Long getOrgNameId() {
 		return orgNameId;

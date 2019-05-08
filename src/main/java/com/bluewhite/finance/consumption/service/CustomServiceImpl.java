@@ -1,13 +1,11 @@
 package com.bluewhite.finance.consumption.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.support.DaoSupport;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -17,7 +15,6 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.finance.consumption.dao.CustomDao;
 import com.bluewhite.finance.consumption.entity.Custom;
-import com.bluewhite.personnel.attendance.entity.ApplicationLeave;
 
 @Service
 public class CustomServiceImpl extends BaseServiceImpl<Custom, Long> implements CustomService {
@@ -26,8 +23,8 @@ public class CustomServiceImpl extends BaseServiceImpl<Custom, Long> implements 
 	private CustomDao dao;
 
 	@Override
-	public List<Custom> findCustom(Integer type) {
-		return dao.findByType(type);
+	public List<Custom> findCustom(Integer type,String name) {
+		return dao.findByTypeAndNameLike(type,"%"+name+"%");
 	}
 
 	@Override

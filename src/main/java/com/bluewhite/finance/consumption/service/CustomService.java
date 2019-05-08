@@ -5,7 +5,6 @@ import java.util.List;
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.entity.Custom;
 
 public interface CustomService  extends BaseCRUDService<Custom, Long> {
@@ -15,7 +14,7 @@ public interface CustomService  extends BaseCRUDService<Custom, Long> {
 	 * @param type
 	 * @return
 	 */
-	List<Custom> findCustom(Integer type);
+	List<Custom> findCustom(Integer type,String name);
 	
 	/**
 	 * 分页查看
