@@ -20,6 +20,8 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineCustomer;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
+import com.bluewhite.onlineretailers.inventory.service.CommodityService;
+import com.bluewhite.onlineretailers.inventory.service.OnlineCustomerService;
 import com.bluewhite.onlineretailers.inventory.service.OnlineOrderService;
 import com.bluewhite.system.sys.entity.RegionAddress;
 import com.bluewhite.system.user.entity.User;
@@ -32,6 +34,10 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	
 	@Autowired
 	private OnlineOrderService onlineOrderService;
+	@Autowired
+	private OnlineCustomerService onlineCustomerService;
+	@Autowired
+	private CommodityService commodityService;
 	
 	private ClearCascadeJSON clearCascadeJSON;
 	{
@@ -42,7 +48,7 @@ private static final Log log = Log.getLog(InventoryAction.class);
 					,"receivedPayment","tid","buyerRemarks","num","payTime"
 					,"endTime","status","documentNumber","commoditys","allBillPreferential","trackingNumber"
 					,"buyerMessage","buyerMemo","buyerFlag","sellerMemo","sellerFlag","buyerRate","systemPreferential"
-					,"sellerReadjustPrices","actualSum","warehouse","shippingType")
+					,"sellerReadjustPrices","actualSum","warehouse","shippingType","createdAt","updatedAt")
 			.addRetainTerm(User.class,"id","userName")
 			.addRetainTerm(OnlineCustomer.class,"id","name","addressee","grade","type",
 					"address","phone","account","zipCode","buyerName","provinces","city","county")
@@ -104,10 +110,9 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	@RequestMapping(value = "/inventory/commodityPage", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse commodityPage(Commodity commodity , PageParameter page) {
-		CommonResponse cr = new CommonResponse();
-		
-		
-		
+		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(commodityService.findPage(commodity,page))
+				.toJSON());
+		cr.setMessage("查询成功");
 		return cr;
 	}
 	
@@ -119,9 +124,8 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	@ResponseBody
 	public CommonResponse addCommodity(Commodity commodity) {
 		CommonResponse cr = new CommonResponse();
-		
-		
-		
+		commodityService.save(commodity);
+		cr.setMessage("新增成功");
 		return cr;
 	}
 	
@@ -150,10 +154,9 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	@RequestMapping(value = "/inventory/onlineCustomerPage", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse onlineCustomerPage(OnlineCustomer onlineCustomer , PageParameter page) {
-		CommonResponse cr = new CommonResponse();
-		
-		
-		
+		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(onlineCustomerService.findPage(onlineCustomer,page))
+				.toJSON());
+		cr.setMessage("查询成功");
 		return cr;
 	}
 	
@@ -165,9 +168,8 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	@ResponseBody
 	public CommonResponse addOnlineCustomer(OnlineCustomer onlineCustomer) {
 		CommonResponse cr = new CommonResponse();
-		
-		
-		
+		onlineCustomerService.save(onlineCustomer);
+		cr.setMessage("新增成功");
 		return cr;
 	}
 	

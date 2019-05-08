@@ -43,7 +43,7 @@ public class Commodity extends BaseEntity<Long>{
 	private Double weight;
 	
 	/**
-	 * 商品尺寸
+	 * 商品销售属性
 	 * 
 	 */
 	@Column(name = "size")
