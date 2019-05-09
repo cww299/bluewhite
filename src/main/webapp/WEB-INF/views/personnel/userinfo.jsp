@@ -1839,7 +1839,7 @@ jQuery(function($){
 					    
 					    
 					    
-						_index = layer.open({	//员工信息框
+						_index = layer.open({	//修改员工信息框
 							  type: 1,
 							  skin: 'layui-layer-rim', //加上边框
 							  area: ['80%', '90%'], 
@@ -1920,6 +1920,7 @@ jQuery(function($){
 										success:function(result){
 											if(0==result.code){
 												layer.msg("修改成功！", {icon: 1});
+												layer.close(_index);
 												/* $('.addDictDivTypeForm')[0].reset(); 
 												$("#my-awesome-dropzone").text(""); */
 												var entry="";

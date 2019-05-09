@@ -29,64 +29,71 @@ td{
 <div class="layui-card">
 	<div class="layui-card-body" style="height:850px">	<!-- 主页面内容 -->
 		<table class="layui-form" style="width:100%" id="headerTool">
+			
 			<tr>
-				<td><a style="color:blue" href="#"  id="customName">客户名称：</a></td>			
-				<td><input type="text" class="layui-input" name="sellerNick" id="customNames"></td>
-				<td>订单编号：</td>			
-				<td><input type="text" class="layui-input" name="tid"></td>
+				<td>操作</td>
+				<td colspan="3" style="text-align:left;">
+					<button class="layui-btn layui-btn-sm" lay-submit lay-filter="sureAdd">确定添加</button>
+					<button class="layui-btn layui-btn-sm">刷新</button>
+					<input type="hidden" name="onlineCustomerId" id="customId">
+				</td>
 				<td>订单状态：</td>			
 				<td><input type="text" class="layui-input" name="status"></td>
 			</tr>
 			<tr>
-				<td>收货人：</td>			
-				<td><input type="text" class="layui-input" name="" id="customRealName"></td>
-				<td>收款金额：</td>			
-				<td><input type="text" class="layui-input" name="payment"></td>
+				<td><a style="color:blue" href="#"  id="customName">客户名称：</a></td>	
+				<td><input type="text" class="layui-input" name="name" id="customNames" lay-verify="required" readonly ></td>
+				<td>订单编号：</td>			
+				<td><input type="text" class="layui-input" name="tid"></td>
+				
+				
 				<td>所属客服：</td>			
-				<td><input type="text" class="layui-input"></td>
+				<td><select name="userId"><option value="">请选择</option></select></td>
 			</tr>
 			<tr>
-				<td>手机：</td>			
-				<td><input type="text" class="layui-input" id="customPhone"></td>
-				<td>整单优惠：</td>			
-				<td><input type="text" class="layui-input" name="allBillPreferential"></td>
+				<td>收货人：</td>			
+				<td><input type="text" class="layui-input" id="customRealName" name="buyerName"></td>
+				<td>收款金额：</td>			
+				<td><input type="text" class="layui-input" name="payment"></td>
+				
 				<td>发货仓库：</td>			
 				<td><input type="text" class="layui-input" name="warehouse"></td>
 			</tr>
 			<tr>
-				<td>客户类别：</td>			
-				<td><input type="text" class="layui-input" id="customType"></td>
+				<td>手机：</td>			
+				<td><input type="text" class="layui-input" id="customPhone" name="phone"></td>
+				<td>整单优惠：</td>			
+				<td><input type="text" class="layui-input" name="allBillPreferential"></td>
 				<td>邮费：</td>			
 				<td><input type="text" class="layui-input" name="postFee"></td>
-				<td>电话：</td>			
-				<td><input type="text" class="layui-input"></td>
 			</tr>
 			<tr>
 				<td>所在地：</td>			
 				<td colspan="3">
 						<div class="layui-form-item">
-								<div class="layui-input-inline"><select lay-search id="province"></select></div>
-								<div class="layui-input-inline"><select lay-search id="city"></select></div>
-								<div class="layui-input-inline"><select lay-search id="area"></select></div>
+								<div class="layui-input-inline"><select lay-search id="province" name="provincesId"></select></div>
+								<div class="layui-input-inline"><select lay-search id="city" name="cityId"></select></div>
+								<div class="layui-input-inline"><select lay-search id="area" name="countyId"></select></div>
 								</div></td>
 				<td>物流方式：</td>			
 				<td><input type="text" class="layui-input" name="shippingType"></td>
 			</tr>
 			<tr>
 				<td>详细地址：</td>			
-				<td colspan="3"><input type="text" class="layui-input" id="customAddress" placeholder="您可以直接黏贴淘宝或拼多多的收货地址,会自动提取省市区和收货人信息"></td>
+				<td colspan="3"><input type="text" class="layui-input" id="customAddress" name="address"
+								placeholder="您可以直接黏贴淘宝或拼多多的收货地址,会自动提取省市区和收货人信息"></td>
 				<td>邮编：</td>			
-				<td><input type="text" class="layui-input" id="customZipCode"></td>
+				<td><input type="text" class="layui-input" id="customZipCode" name="zipCode"></td>
 			</tr>
 			<tr>
 				<td>卖家备注：</td>			
 				<td colspan="3"><input type="text" class="layui-input" placeholder="" name="sellerMemo"></td>
 				<td rowspan="2">旗帜：</td>			
-				<td rowspan="2"><button class="layui-btn" lay-submit lay-filter="sureAdd">确定添加</button></td>
+				<td rowspan="2"></td>
 			</tr>
 			<tr>
-				<td>内部备注：</td>			
-				<td colspan="3"><input type="text" class="layui-input" placeholder=""></td>
+				<td>买家备注：</td>			
+				<td colspan="3"><input type="text" class="layui-input" name="buyerMemo"></td>
 			</tr>
 		</table>
 		<table class="layui-table" id="productTable" lay-filter="productTable"></table>	<!-- 已选中的产品列表  -->
@@ -104,7 +111,8 @@ td{
 			<td><select><option value="">按淘宝宝贝分类	</option></select></td>			<td>&nbsp;</td>
 			<td><select><option value="">按产品名称		</option></select></td>			<td>&nbsp;</td>
 			<td><input type="text" class="layui-input"></td>							<td>&nbsp;</td>
-			<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProduct" >搜索</button></td><td>&nbsp;</td>
+			<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProduct" >
+					<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i></button></td><td>&nbsp;</td>
 			<td><button type="button" class="layui-btn layui-btn-sm" id="addNewProduct" >添加新商品</button></td>			 <td>&nbsp;</td>
 			<td><button type="button" class="layui-btn layui-btn-sm" id="refreshProduct" >刷新</button></td>					 <td>&nbsp;</td>
 			<td><button type="button" class="layui-btn layui-btn-sm" id="sure" >确定添加</button></td>
@@ -120,7 +128,8 @@ td{
 			<td><select name=""><option value="">按来往单位分类</option></select></td>			<td>&nbsp;</td>
 			<td><select name=""><option value="">按单位名称</option></select></td>				<td>&nbsp;</td>
 			<td><input type="text" class="layui-input"></td>									<td>&nbsp;</td>
-			<td><button lay-submit 	lay-filter="searchCustom"	type="button" class="layui-btn layui-btn-sm">搜索</button>				<td>&nbsp;</td>
+			<td><button lay-submit 	lay-filter="searchCustom"	type="button" class="layui-btn layui-btn-sm">
+					<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i></button>				<td>&nbsp;</td>
 			<td><button id="addCustom"	type="button" class="layui-btn layui-btn-sm">添加新客户</button>		<td>&nbsp;</td>
 			<td><button id="refreshCustom"	type="button" class="layui-btn layui-btn-sm">刷新</button>			<td>&nbsp;</td>
 			<td><span class="layui-badge">小提示：双击选中客户对象</span></td>
@@ -195,6 +204,8 @@ td{
 </div>
 </script>
 
+<!-- 字体颜色模板 -->
+
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
@@ -216,8 +227,8 @@ layui.config({
 			,addNewProductWin
 			,addNewCustomWin;
 		
-		getdataOfSelect(0,'province');	//渲染province地址下拉框
-		getdataOfSelect(0,'addProvince');
+		rederSelect();	//渲染下拉框
+		
 		$('#headerTool').find("td:even").css({backgroundColor:"rgba(65, 161, 210, 0.45)",padding:"1px"}); 
 		form.render();
 		
@@ -231,32 +242,65 @@ layui.config({
 			page:false,
 			cols:[[
 			       {type:'checkbox',align:'center',fixed:'left'},
-			       {field:'number',	title:'商品编号',	align:'center'},
-			       {field:'name',	title:'商品名称',	align:'center'},
-			       {field:'num',	title:'数量',       align:'center',		edit:'text',},
-			       {field:'price',   title:'单价',   	align:'center',		edit:'text',},
-			       {field:'price',   title:'金额',   	align:'center'},
-			       {field:'price',   title:'系统优惠',   align:'center',		edit:'text',},
-			       {field:'price',   title:'卖家调价',   align:'center',		edit:'text',},
-			       {field:'price',   title:'实际金额',   align:'center',	},
-			       /* 
-			       {field:'price',   title:'金额',   		align:'center'},
-			       {field:'cost',	title:'商品成本',	align:'center'},
-			       {field:'warehouse',	title:'仓库类型',	align:'center'},
-			       {field:'remark',	title:'备注', 	align:'center'},  */
+			       {field:'number',		title:'商品编号',	align:'center'},
+			       {field:'name',		title:'商品名称',	align:'center'},
+			       {field:'num',		title:'数量',       align:'center',		edit:'text', totalRow:true,},
+			       {field:'price',   	title:'单价',   		align:'center',		edit:'text',},
+			       {field:'sumPrice',   title:'单价总金额', align:'center', totalRow:true},
+			       {field:'systemPreferential',   	title:'系统优惠',   align:'center',	edit:'text', templet:''},//{{# var color="red" if(d.systemPreferential>0) color="green"}}<span style="color:{{color}};">{{d.systemPreferential}}</span>
+			       {field:'sellerReadjustPrices',   title:'卖家调价',   align:'center',	edit:'text',},
+			       {field:'actualSum',  title:'实际金额',   align:'center',	totalRow:true},
 			       ]]
-			
 		})
-		
-		table.on('edit(productTable)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
-		  console.log(obj.value); //得到修改后的值
-		  console.log(obj.field); //当前编辑的字段名
-		  console.log(obj.data); //所在行的所有相关数据  
+		table.on('edit(productTable)', function(obj){ 			//监听编辑表格单元
+			if(isNaN(obj.value))
+				layer.msg("修改无效！请输入正确的数字",{icon:2});
+			else
+				for(var i=0;i<choosedProduct.length;i++){
+					if(choosedProduct[i].id==obj.data.id){
+						var choosed=choosedProduct[i];
+						choosed[obj.field]=obj.value;
+						choosed.sumPrice=choosed.num*choosed.price;
+						choosed.actualSum=(choosed.price-(-choosed.sellerReadjustPrices)-choosed.systemPreferential)*choosed.num;
+						choosedProduct[i][obj.field]=obj.value;
+						choosedProduct[i].sumPrice=choosed.sumPrice;
+						choosedProduct[i].actualSum=choosed.actualSum;
+						break;
+					}
+				}
+			table.reload('productTable',{
+				data:choosedProduct
+			})
 		});
+		
+		
+		
 		//主页面一个四个按钮。确定添加、新增、删除、客户名分别进行绑定
 		form.on('submit(sureAdd)',function(obj){					//确定添加按钮
-			layer.msg('确定添加');
-			console.log(obj.field)
+			var data=obj.field;
+			if(choosedProduct.length==0){
+				layer.msg("请选择商品",{icon:2});
+				return;
+			}
+			data.childOrder=JSON.stringify(choosedProduct);
+			var load=layer.load(1);
+			$.ajax({
+				url:"${ctx}/inventory/addOnlineOrder",
+				type:"post",
+				data:data,
+				success:function(result){
+					if(0==result.code){
+						layer.msg(result.message,{icon:1});
+					}
+					else
+						layer.msg(result.message,{icon:2});
+					layer.close(load);
+				},
+				error:function(result){
+					layer.msg("发生异常错误",{icon:2});
+					layer.close(load);
+				}
+			})
 		})
 		
 		table.on('toolbar(productTable)',function(obj){				//新增、删除按钮
@@ -388,6 +432,7 @@ layui.config({
 			$('#customType').val(obj.data.type);
 			$('#customAddress').val(obj.data.address);
 			$('#customZipCode').val(obj.data.zipCode);
+			$('#customId').val(obj.data.id);
 			$('#province').val('');
 			$('#city').val('');
 			$('#area').val('');
@@ -482,15 +527,27 @@ layui.config({
 			}
 			for(var i=0;i<choosed.length;i++){
 				var j=0;
-				for(var j=0;j<choosedProduct.length;j++){
-					if(choosedProduct[j].number==choosed[i].number)	{			//判断选择的商品是否已存在选择列表
+				for(var j=0;j<choosedProduct.length;j++){	
+					if(choosedProduct[j].commodityId==choosed[i].id)	{			//判断选择的商品是否已存在选择列表
 						choosedProduct[j].num++;
+						choosedProduct[j].sumPrice=choosedProduct[j].num*choosedProduct[j].price;
+						choosedProduct[j].actualSum=(choosedProduct[j].price-choosedProduct[j].sellerReadjustPrices-choosedProduct[j].systemPreferential)*choosedProduct[j].num;
 						break;
 					}
 				}
 				if(!(j<choosedProduct.length) || choosedProduct.length==0){				//如果不存在
-					choosed[i].num=1;
-					choosedProduct.push(choosed[i]);
+					var orderChild={
+							number:choosed[i].number,		//商品编号
+							name:choosed[i].name,			//商品名称
+							commodityId:choosed[i].id,		//商品id
+							num:1,							//商品数量
+							price:choosed[i].price,			//商品单价
+							sumPrice:choosed[i].price,		//单价总金额
+							systemPreferential:0,			//系统优惠
+							sellerReadjustPrices:0,			//卖家调价
+							actualSum:choosed[i].price,		//实际金额
+					}
+					choosedProduct.push(orderChild);
 				}
 			}
 			table.reload('productTable',{
@@ -502,7 +559,7 @@ layui.config({
 		
 		form.on('select', function(data){					//监听地址下拉框的选择
 			var select='';
-			var html="<option value=''>请选择</option>";
+			var html="";
 			switch(data.elem.id){
 			case 'province': select='city'; $('#city').html(html);$('#area').html(html);break;
 			case 'city':	select='area';	$('#area').html(html);break;
@@ -520,7 +577,14 @@ layui.config({
 			var trIndex = elemTemp.data('index');
 			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
 		})
-		
+		function rederSelect(){					//渲染下拉框
+			getdataOfSelect(0,'province');
+			getdataOfSelect('110000','city');
+			getdataOfSelect('110100','area');
+			getdataOfSelect(0,'addProvince');
+			getdataOfSelect('110000','addCity');
+			getdataOfSelect('110100','addArea');
+		}
 		function getdataOfSelect(parentId,select){
 			var child=[];
 			$.ajax({
@@ -529,7 +593,7 @@ layui.config({
 				async:false,
 				success:function(result){
 					if(0==result.code){
-						var html='<option value="">请选择</option>';
+						var html='';
 						var data=result.data;	
 						for(var i=0;i<data.length;i++){
 							html+='<option value="'+data[i].id+'">'+data[i].regionName+'</option>';
