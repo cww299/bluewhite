@@ -1165,7 +1165,9 @@ jQuery(function($){
 													  ,content:'该员工没有初始化设定,请点击添加'
 													  ,btn: ['确认', '取消']
 													,yes: function(index, layero){
-														window.location.href = "${ctx}/menusToUrl?url=personnel/init"
+														//此处也是不知道什么的修改
+														$('#personnelInit', window.parent.document)[0].click();
+														//window.location.href = "${ctx}/menusToUrl?url=personnel/init"
 										       			 }
 													}); 
 											}else{
@@ -1963,6 +1965,7 @@ jQuery(function($){
 													  ,btn: ['确认', '取消']
 													,yes: function(index, layero){
 														//window.location.href = "${ctx}/menusToUrl?url=personnel/init"
+														//此处是修改员工后的询问
 															$('#personnelInit', window.parent.document)[0].click();	//从父窗口中找到超链接并产生点击事件，[0]不能省略，因为超链接a中有子元素，点击的是子元素
 															layer.close(init); 
 														}
@@ -2153,10 +2156,12 @@ jQuery(function($){
 											}else if (2==result.code) {
 												layer.open({
 													   title: '提示'
-													  ,content:'该员工没有初始化设定,请点击添加'
+													  ,content:''
 													  ,btn: ['确认', '取消']
 													,yes: function(index, layero){
-														window.location.href = "${ctx}/menusToUrl?url=personnel/init"
+														//此处是不知什么的修改
+														$('#personnelInit', window.parent.document)[0].click();	
+														//window.location.href = "${ctx}/menusToUrl?url=personnel/init"
 										       			 }
 													}); 
 											}else{
@@ -2485,14 +2490,22 @@ jQuery(function($){
 										}
 										
 										if (2==result.code) {
-											layer.open({
+											//修改如下：
+											var con=layer.confirm('新增员工成功！是否前往初始化',function(){
+												$('#personnelInit', window.parent.document)[0].click();
+												layer.close(con);
+											});
+												
+											/* layer.open({
 												   title: '提示'
 												  ,content:'该员工没有初始化设定,请点击添加'
 												  ,btn: ['确认', '取消']
 												,yes: function(index, layero){
-													window.location.href = "${ctx}/menusToUrl?url=personnel/init"
+													//此处是新增用户的修改
+													
+													//window.location.href = "${ctx}/menusToUrl?url=personnel/init"
 									       			 }
-												});
+												}); */
 										}else{
 											layer.msg(result.message, {icon: 2});
 										}
