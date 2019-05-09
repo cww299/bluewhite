@@ -20,6 +20,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineCustomer;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
+import com.bluewhite.onlineretailers.inventory.entity.OnlineOrderChild;
 import com.bluewhite.onlineretailers.inventory.service.CommodityService;
 import com.bluewhite.onlineretailers.inventory.service.OnlineCustomerService;
 import com.bluewhite.onlineretailers.inventory.service.OnlineOrderService;
@@ -46,16 +47,17 @@ private static final Log log = Log.getLog(InventoryAction.class);
 			.addRetainTerm(OnlineOrder.class,"id","user","sellerNick","picPath","payment"
 					,"sellerRate","postFee","onlineCustomer","consignTime"
 					,"receivedPayment","tid","buyerRemarks","num","payTime"
-					,"endTime","status","documentNumber","commoditys","allBillPreferential","trackingNumber"
-					,"buyerMessage","buyerMemo","buyerFlag","sellerMemo","sellerFlag","buyerRate","systemPreferential"
-					,"sellerReadjustPrices","actualSum","warehouse","shippingType","createdAt","updatedAt")
-			.addRetainTerm(User.class,"id","userName")
-			.addRetainTerm(OnlineCustomer.class,"id","name","addressee","grade","type",
-					"address","phone","account","zipCode","buyerName","provinces","city","county")
-			.addRetainTerm(RegionAddress.class,"id","regionName","parentId")
+					,"endTime","status","documentNumber","allBillPreferential","trackingNumber"
+					,"buyerMessage","buyerMemo","buyerFlag","sellerMemo","sellerFlag","buyerRate"
+					,"warehouse","shippingType","createdAt","updatedAt","onlineOrder Child"
+					,"address","phone","zipCode","buyerName","provinces","city","county")
+			.addRetainTerm(OnlineOrderChild.class,"id","number","commodity","price",
+					"sumPrice","systemPreferential","sellerReadjustPrices","actualSum")
 			.addRetainTerm(Commodity.class,"id","number","name","weight","size",
 					"material","fillers","cost","propagandaCost","remark","remark","price","quantity",
-					"warehouse");
+					"warehouse")
+			.addRetainTerm(User.class,"id","userName")
+			.addRetainTerm(RegionAddress.class,"id","regionName","parentId");
 	}
 	
 	
