@@ -1,5 +1,7 @@
 package com.bluewhite.finance.consumption.service;
 
+import java.util.Map;
+
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -32,8 +34,6 @@ public interface ConsumptionService extends BaseCRUDService<Consumption, Long> {
 	 */
 	public int deleteConsumption(String ids);
 
-
-
 	/**
 	 * 财务审核放款
 	 * 
@@ -41,5 +41,15 @@ public interface ConsumptionService extends BaseCRUDService<Consumption, Long> {
 	 * @return
 	 */
 	public int auditConsumption( String ids, Integer flag);
+	
+	/**
+	 * 人事部汇总报销金额
+	 * 
+	 * @param request
+	 *            请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	Map<String,Object> countConsumptionMoney();
 
 }

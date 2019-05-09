@@ -87,6 +87,24 @@ public class OnlineOrderChild  extends BaseEntity<Long> {
 	 */
 	@Column(name = "actual_sum")
 	private Double actualSum;
+	
+	
+
+	public Long getOnlineOrderId() {
+		return onlineOrderId;
+	}
+
+	public void setOnlineOrderId(Long onlineOrderId) {
+		this.onlineOrderId = onlineOrderId;
+	}
+
+	public OnlineOrder getOnlineOrder() {
+		return onlineOrder;
+	}
+
+	public void setOnlineOrder(OnlineOrder onlineOrder) {
+		this.onlineOrder = onlineOrder;
+	}
 
 	public Long getCommodityId() {
 		return commodityId;

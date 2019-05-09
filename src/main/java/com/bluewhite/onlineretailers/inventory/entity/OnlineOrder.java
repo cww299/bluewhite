@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -46,8 +47,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 	private User user;
 	
 	
-	
-	
 	/**
 	 * 客户id
 	 * 
@@ -70,6 +69,20 @@ public class OnlineOrder extends BaseEntity<Long> {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
 	@JoinColumn(name = "online_order_id")
 	private List<OnlineOrderChild> onlineOrderChilds;
+	
+	
+	/**
+	 * 客户昵称
+	 * 
+	 */
+	@Column(name = "name")
+	private String name;
+	
+	/**
+	 * 客户真实姓名
+	 */
+	@Column(name = "buyer_name")
+	private String buyerName;
 	
 	
 	/**
@@ -306,10 +319,47 @@ public class OnlineOrder extends BaseEntity<Long> {
 	private String zipCode;
 
 	
-	
+	/**
+	 * 新增子订单json数据
+	 */
+	@Transient
+	private String childOrder;
 
 	
 	
+	
+
+	public String getChildOrder() {
+		return childOrder;
+	}
+
+	public void setChildOrder(String childOrder) {
+		this.childOrder = childOrder;
+	}
+
+	public List<OnlineOrderChild> getOnlineOrderChilds() {
+		return onlineOrderChilds;
+	}
+
+	public void setOnlineOrderChilds(List<OnlineOrderChild> onlineOrderChilds) {
+		this.onlineOrderChilds = onlineOrderChilds;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getBuyerName() {
+		return buyerName;
+	}
+
+	public void setBuyerName(String buyerName) {
+		this.buyerName = buyerName;
+	}
 
 	public Long getProvincesId() {
 		return provincesId;

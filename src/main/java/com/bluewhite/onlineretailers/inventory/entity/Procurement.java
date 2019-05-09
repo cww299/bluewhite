@@ -65,8 +65,8 @@ public class Procurement extends BaseEntity<Long>{
 	/**
 	 * 采购单状态(0=入库单，1=退库单，2=出库单,3=生产单，4=针工单)
 	 */
-	@Column(name = "seller_nick")
-	private Integer sellerNick;
+	@Column(name = "status")
+	private Integer status;
 	
 	/**
 	 * 发货仓库类型（0=主仓库，1=客供仓库，2=次品）
@@ -82,14 +82,29 @@ public class Procurement extends BaseEntity<Long>{
 	@Column(name = "remark")
 	private String remark;
 	
-	
 
-	public Integer getSellerNick() {
-		return sellerNick;
+	public String getCommodityNumber() {
+		return commodityNumber;
 	}
 
-	public void setSellerNick(Integer sellerNick) {
-		this.sellerNick = sellerNick;
+	public void setCommodityNumber(String commodityNumber) {
+		this.commodityNumber = commodityNumber;
+	}
+
+	public Integer getNumber() {
+		return number;
+	}
+
+	public void setNumber(Integer number) {
+		this.number = number;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 	public Long getUserId() {

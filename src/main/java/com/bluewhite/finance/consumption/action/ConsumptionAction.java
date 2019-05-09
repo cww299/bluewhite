@@ -64,6 +64,25 @@ public class ConsumptionAction {
 		cr.setMessage("查询成功");
 		return cr;
 	}
+	
+	
+	/**
+	 * 人事部汇总报销金额
+	 * 
+	 * @param request
+	 *            请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/fince/countConsumptionMoney", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse countConsumptionMoney(HttpServletRequest request) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(consumptionService.countConsumptionMoney());
+		cr.setMessage("统计成功");
+		return cr;
+	}
+	
 
 	/**
 	 * 财务新增

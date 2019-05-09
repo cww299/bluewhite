@@ -21,9 +21,11 @@ import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineCustomer;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrderChild;
+import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 import com.bluewhite.onlineretailers.inventory.service.CommodityService;
 import com.bluewhite.onlineretailers.inventory.service.OnlineCustomerService;
 import com.bluewhite.onlineretailers.inventory.service.OnlineOrderService;
+import com.bluewhite.onlineretailers.inventory.service.ProcurementService;
 import com.bluewhite.system.sys.entity.RegionAddress;
 import com.bluewhite.system.user.entity.User;
 
@@ -39,6 +41,8 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	private OnlineCustomerService onlineCustomerService;
 	@Autowired
 	private CommodityService commodityService;
+	@Autowired
+	private ProcurementService procurementService;
 	
 	private ClearCascadeJSON clearCascadeJSON;
 	{
@@ -183,6 +187,50 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	@RequestMapping(value = "/inventory/deleteOnlineCustomer", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse deleteOnlineCustomer(String ids) {
+		CommonResponse cr = new CommonResponse();
+		
+		return cr;
+	}
+	
+	
+	/**** 采购  ***/
+	
+	/**
+	 * 分页查看采购单
+	 * @param onlineCustomer
+	 * @param page
+	 * @return
+	 */
+	@RequestMapping(value = "/inventory/procurementPage", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse procurementPage(Procurement procurement , PageParameter page) {
+		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(procurementService.findPage(procurement,page))
+				.toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/** 
+	 * 新增采购
+	 * 
+	 */
+	@RequestMapping(value = "/inventory/addProcurement", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse addProcurement(Procurement procurement) {
+		CommonResponse cr = new CommonResponse();
+		procurementService.saveProcurement(procurement);
+		cr.setMessage("新增成功");
+		return cr;
+	}
+	
+	
+	/** 
+	 * 删除采购
+	 * 
+	 */
+	@RequestMapping(value = "/inventory/deleteProcurement", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteProcurement(String ids) {
 		CommonResponse cr = new CommonResponse();
 		
 		return cr;
