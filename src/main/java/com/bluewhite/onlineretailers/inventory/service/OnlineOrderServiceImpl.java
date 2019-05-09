@@ -72,17 +72,10 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 
 	@Override
 	public OnlineOrder addOnlineOrder(OnlineOrder onlineOrder) {
-		Set<Commodity> commoditySet = new HashSet<>();
-		if(!StringUtils.isEmpty(onlineOrder.getCommoditysIds())){
-			String[] pers = onlineOrder.getCommoditysIds().split(",");
-			if(pers.length>0){
-				for(String idString : pers){
-					Commodity commodity = commodityDao.findOne(Long.valueOf(idString));
-					commoditySet.add(commodity);
-				}
-			}
-		}
-		onlineOrder.setCommoditys(commoditySet);
+		
+		
+		
+
 		
 		//当订单状态是下单，减少库存
 		if(onlineOrder.getStatus().equals(Constants.ONLINEORDER_4)){

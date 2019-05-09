@@ -1,20 +1,25 @@
 package com.bluewhite.onlineretailers.inventory.entity;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.system.sys.entity.RegionAddress;
+import com.bluewhite.system.user.entity.RoleMenuPermission;
+import com.bluewhite.system.user.entity.User;
 
 /**
  * 电商销售单实体
@@ -26,19 +31,46 @@ import com.bluewhite.base.BaseEntity;
 @Table(name = "online_order")
 public class OnlineOrder extends BaseEntity<Long> {
 
-//	/**
-//	 * 销售人员id
-//	 * 
-//	 */
-//	@Column(name = "user_id")
-//	private Long userId;
-//
-//	/**
-//	 * 销售人员
-//	 */
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
-//	private User user;
+	/**
+	 * 销售人员id
+	 * 
+	 */
+	@Column(name = "user_id")
+	private Long userId;
+
+	/**
+	 * 销售人员
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User user;
+	
+	
+	
+	
+	/**
+	 * 客户id
+	 * 
+	 */
+	@Column(name = "online_customer_id")
+	private Long onlineCustomerId;
+	
+
+	/**
+	 * 客户
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "online_customer_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private OnlineCustomer onlineCustomer;
+	
+	
+	/**
+	 * 子订单list
+	 */
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+	@JoinColumn(name = "online_order_id")
+	private List<OnlineOrderChild> onlineOrderChilds;
+	
 	
 	/**
 	 * 卖家昵称
@@ -69,21 +101,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 	 */
 	@Column(name = "post_fee")
 	private Double postFee;
-	
-	
-	/**
-	 * 客户id
-	 * 
-	 */
-	@Column(name = "online_customer_id")
-	private Long onlineCustomerId;
-
-	/**
-	 * 客户
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "online_customer_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private OnlineCustomer onlineCustomer;
 	
 	/**
 	 * 卖家发货时间
@@ -147,14 +164,7 @@ public class OnlineOrder extends BaseEntity<Long> {
 	@Column(name = "document_number")
 	private String documentNumber;
 	
-
-	/**
-	 * 商品集合 （一个订单可以有多个商品）
-	 */
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "online_order_commodity", joinColumns = @JoinColumn(name = "online_order_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "commodity_id", referencedColumnName = "id"))
-	private Set<Commodity> commoditys = new HashSet<Commodity>();
-
+	
 	/**
 	 * 整单优惠
 	 */
@@ -176,7 +186,7 @@ public class OnlineOrder extends BaseEntity<Long> {
 	private String buyerMessage;
 	
 	/**
-	 *	买家备注（与淘宝网上订单的买家备注对应，只有买家才能查看该字段）
+	 * 买家备注（与淘宝网上订单的买家备注对应，只有买家才能查看该字段）
 	 * 
 	 */
 	@Column(name = "buyer_memo")
@@ -214,24 +224,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 	
 
 	/**
-	 * 系统优惠
-	 */
-	@Column(name = "system_preferential")
-	private Double systemPreferential;
-
-	/**
-	 * 卖家调价
-	 */
-	@Column(name = "seller_readjust_prices")
-	private Double sellerReadjustPrices;
-
-	/**
-	 * 实际金额
-	 */
-	@Column(name = "actual_sum")
-	private Double actualSum;
-
-	/**
 	 * 发货仓库类型（0=主仓库，1=客供仓库，2=次品）
 	 * 
 	 */
@@ -239,28 +231,172 @@ public class OnlineOrder extends BaseEntity<Long> {
 	private Integer warehouse;
 
 	/**
-	 * 创建交易时的物流方式（交易完成前，物流方式有可能改变，但系统里的这个字段一直不变）。可选值：free(卖家包邮),post(平邮),express(快递),ems(EMS),virtual(虚拟发货)，25(次日必达)，26(预约配送)
+	 * 创建交易时的物流方式（交易完成前，物流方式有可能改变，但系统里的这个字段一直不变）。可
+	 * 选值：free(卖家包邮),post(平邮),express(快递),ems(EMS),virtual(虚拟发货)，25(次日必达)，26(预约配送)
 	 * 
 	 * @return
 	 */
 	@Column(name = "shipping_type")
 	private String shippingType;
-
+	
+	
 	/**
-	 * 
+	 * 收货人的所在省份
 	 * 
 	 */
-	@Transient
-	private String commoditysIds;
+	@Column(name = "provinces_id")
+	private Long provincesId;
+	
+	/**
+	 * 省份
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "provinces_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private RegionAddress provinces;
+	
+	
+	
+	/**
+	 * 收货人的所在市
+	 * 
+	 */
+	@Column(name = "city_id")
+	private Long cityId;
+	/**
+	 * 市
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "city_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private RegionAddress city;
+	
+	
+	/**
+	 * 收货人的所在县
+	 * 
+	 */
+	@Column(name = "county_id")
+	private Long countyId;
+	
+	/**
+	 * 市
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "county_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private RegionAddress county;
+	
+	
+	/**
+	 * 收货人的详细地址
+	 * 
+	 */
+	@Column(name = "address")
+	private String address;
+	
+	/**
+	 * 买家手机号
+	 * 
+	 */
+	@Column(name = "phone")
+	private String phone;
+	
+	/**
+	 * 邮编
+	 */
+	@Column(name = "zip_code")
+	private String zipCode;
+
 	
 	
 
-	public String getCommoditysIds() {
-		return commoditysIds;
+	
+	
+
+	public Long getProvincesId() {
+		return provincesId;
 	}
 
-	public void setCommoditysIds(String commoditysIds) {
-		this.commoditysIds = commoditysIds;
+	public void setProvincesId(Long provincesId) {
+		this.provincesId = provincesId;
+	}
+
+	public RegionAddress getProvinces() {
+		return provinces;
+	}
+
+	public void setProvinces(RegionAddress provinces) {
+		this.provinces = provinces;
+	}
+
+	public Long getCityId() {
+		return cityId;
+	}
+
+	public void setCityId(Long cityId) {
+		this.cityId = cityId;
+	}
+
+	public RegionAddress getCity() {
+		return city;
+	}
+
+	public void setCity(RegionAddress city) {
+		this.city = city;
+	}
+
+	public Long getCountyId() {
+		return countyId;
+	}
+
+	public void setCountyId(Long countyId) {
+		this.countyId = countyId;
+	}
+
+	public RegionAddress getCounty() {
+		return county;
+	}
+
+	public void setCounty(RegionAddress county) {
+		this.county = county;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public String getSellerNick() {
@@ -407,22 +543,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 		this.shippingType = shippingType;
 	}
 
-//	public Long getUserId() {
-//		return userId;
-//	}
-//
-//	public void setUserId(Long userId) {
-//		this.userId = userId;
-//	}
-//
-//	public User getUser() {
-//		return user;
-//	}
-//
-//	public void setUser(User user) {
-//		this.user = user;
-//	}
-
 	public Integer getWarehouse() {
 		return warehouse;
 	}
@@ -445,14 +565,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 
 	public void setStatus(String status) {
 		this.status = status;
-	}
-
-	public Set<Commodity> getCommoditys() {
-		return commoditys;
-	}
-
-	public void setCommoditys(Set<Commodity> commoditys) {
-		this.commoditys = commoditys;
 	}
 
 	public Long getOnlineCustomerId() {
@@ -487,28 +599,5 @@ public class OnlineOrder extends BaseEntity<Long> {
 		this.allBillPreferential = allBillPreferential;
 	}
 
-	public Double getSystemPreferential() {
-		return systemPreferential;
-	}
-
-	public void setSystemPreferential(Double systemPreferential) {
-		this.systemPreferential = systemPreferential;
-	}
-
-	public Double getSellerReadjustPrices() {
-		return sellerReadjustPrices;
-	}
-
-	public void setSellerReadjustPrices(Double sellerReadjustPrices) {
-		this.sellerReadjustPrices = sellerReadjustPrices;
-	}
-
-	public Double getActualSum() {
-		return actualSum;
-	}
-
-	public void setActualSum(Double actualSum) {
-		this.actualSum = actualSum;
-	}
 
 }
