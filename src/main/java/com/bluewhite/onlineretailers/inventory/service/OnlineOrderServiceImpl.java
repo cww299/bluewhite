@@ -1,8 +1,9 @@
 package com.bluewhite.onlineretailers.inventory.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 import javax.persistence.criteria.Predicate;
 
@@ -12,13 +13,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.Constants;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.utils.StringUtil;
+import com.bluewhite.onlineretailers.inventory.dao.CommodityDao;
 import com.bluewhite.onlineretailers.inventory.dao.OnlineOrderDao;
+import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
-import com.bluewhite.product.product.entity.Product;
-import com.bluewhite.production.procedure.entity.Procedure;
 
 @Service
 public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> implements  OnlineOrderService{
@@ -26,6 +27,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	@Autowired
 	private OnlineOrderDao dao;
 	
+	@Autowired
+	private CommodityDao commodityDao;
 
 	@Override
 	public PageResult<OnlineOrder> findPage(OnlineOrder param, PageParameter page) {
@@ -54,9 +57,41 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	@Override
 	public int deleteOnlineOrder(String ids) {
 		int count = 0;
-		
-		
+		if(!StringUtils.isEmpty(ids)){
+			String[] pers = ids.split(",");
+			if(pers.length>0){
+				for(String idString : pers){
+					dao.delete(Long.valueOf(idString));
+					count++;
+				}
+			}
+		}
 		return count;
+	}
+
+
+	@Override
+	public OnlineOrder addOnlineOrder(OnlineOrder onlineOrder) {
+		Set<Commodity> commoditySet = new HashSet<>();
+		if(!StringUtils.isEmpty(onlineOrder.getCommoditysIds())){
+			String[] pers = onlineOrder.getCommoditysIds().split(",");
+			if(pers.length>0){
+				for(String idString : pers){
+					Commodity commodity = commodityDao.findOne(Long.valueOf(idString));
+					commoditySet.add(commodity);
+				}
+			}
+		}
+		onlineOrder.setCommoditys(commoditySet);
+		
+		//当订单状态是下单，减少库存
+		if(onlineOrder.getStatus().equals(Constants.ONLINEORDER_4)){
+			
+			
+		}
+		
+		
+		return dao.save(onlineOrder);
 	}
 
 

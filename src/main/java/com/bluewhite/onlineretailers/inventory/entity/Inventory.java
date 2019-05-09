@@ -8,8 +8,8 @@ import javax.persistence.Table;
  * @author zhangliang
  *
  */
-@Entity
-@Table(name = "online_inventory")
+//@Entity
+//@Table(name = "online_inventory")
 public class Inventory {
 	
 	

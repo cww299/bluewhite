@@ -16,7 +16,7 @@ import com.bluewhite.base.BaseEntity;
 public class Commodity extends BaseEntity<Long>{
 	
 	/**
-	 * 商品编号
+	 * 商品编号（sku）
 	 * 
 	 */
 	@Column(name = "number")
@@ -47,7 +47,7 @@ public class Commodity extends BaseEntity<Long>{
 	 * 
 	 */
 	@Column(name = "size")
-	private Double size;
+	private String size;
 	
 	
 	/**
@@ -55,14 +55,14 @@ public class Commodity extends BaseEntity<Long>{
 	 * 
 	 */
 	@Column(name = "material")
-	private Double material;
+	private String  material;
 	
 	/**
 	 * 商品填充物
 	 * 
 	 */
 	@Column(name = "fillers")
-	private Double fillers;
+	private String fillers;
 	
 	/**
 	 * 商品成本
@@ -138,33 +138,42 @@ public class Commodity extends BaseEntity<Long>{
 		this.weight = weight;
 	}
 
+	public String getPicUrl() {
+		return picUrl;
+	}
 
-	public Double getSize() {
+
+	public void setPicUrl(String picUrl) {
+		this.picUrl = picUrl;
+	}
+
+
+	public String getSize() {
 		return size;
 	}
 
 
-	public void setSize(Double size) {
+	public void setSize(String size) {
 		this.size = size;
 	}
 
 
-	public Double getMaterial() {
+	public String getMaterial() {
 		return material;
 	}
 
 
-	public void setMaterial(Double material) {
+	public void setMaterial(String material) {
 		this.material = material;
 	}
 
 
-	public Double getFillers() {
+	public String getFillers() {
 		return fillers;
 	}
 
 
-	public void setFillers(Double fillers) {
+	public void setFillers(String fillers) {
 		this.fillers = fillers;
 	}
 

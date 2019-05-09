@@ -133,9 +133,6 @@ public class UserAction {
 		if(oldUser.getUserContract()==null){
 			UserContract userContract = new UserContract();
 			userContractDao.save(userContract);
-			if(userContract.getNumber()!=null){
-				oldUser.setLotionNumber(Integer.valueOf(userContract.getNumber()));
-			}
 			oldUser.setUserContract(userContract);
 		}
 		//离职去除分组信息
@@ -418,6 +415,7 @@ public class UserAction {
 	  	cr.setMessage("修改成功");
 		return cr;
 	}
+	
 	
 	
 	@InitBinder

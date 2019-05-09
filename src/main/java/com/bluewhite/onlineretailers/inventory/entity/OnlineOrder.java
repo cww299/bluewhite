@@ -12,6 +12,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 
@@ -245,8 +246,22 @@ public class OnlineOrder extends BaseEntity<Long> {
 	@Column(name = "shipping_type")
 	private String shippingType;
 
+	/**
+	 * 
+	 * 
+	 */
+	@Transient
+	private String commoditysIds;
 	
 	
+
+	public String getCommoditysIds() {
+		return commoditysIds;
+	}
+
+	public void setCommoditysIds(String commoditysIds) {
+		this.commoditysIds = commoditysIds;
+	}
 
 	public String getSellerNick() {
 		return sellerNick;

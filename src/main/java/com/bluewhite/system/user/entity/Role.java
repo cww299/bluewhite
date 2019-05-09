@@ -68,9 +68,9 @@ public class Role extends BaseEntity<Long> {
 	/**
 	 * 角色菜单权限类
 	 */
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, targetEntity = RoleMenuPermission.class, mappedBy = "role", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = RoleMenuPermission.class, mappedBy = "role", orphanRemoval = true)
 	@Fetch(FetchMode.SELECT)
-	@Basic(optional = true, fetch = FetchType.EAGER)
+	@Basic(optional = true, fetch = FetchType.LAZY)
 	private List<RoleMenuPermission> resourcePermission;
 
 	public String getName() {
