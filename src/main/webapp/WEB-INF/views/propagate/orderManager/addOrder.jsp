@@ -75,8 +75,8 @@ td{
 			<tr>
 				<td>详细地址：</td>			
 				<td colspan="3"><input type="text" class="layui-input" id="customAddress" placeholder="您可以直接黏贴淘宝或拼多多的收货地址,会自动提取省市区和收货人信息"></td>
-				<td>邮箱：</td>			
-				<td><input type="text" class="layui-input" ></td>
+				<td>邮编：</td>			
+				<td><input type="text" class="layui-input" id="customZipCode"></td>
 			</tr>
 			<tr>
 				<td>卖家备注：</td>			
@@ -121,7 +121,7 @@ td{
 			<td><select name=""><option value="">按单位名称</option></select></td>				<td>&nbsp;</td>
 			<td><input type="text" class="layui-input"></td>									<td>&nbsp;</td>
 			<td><button lay-submit 	lay-filter="searchCustom"	type="button" class="layui-btn layui-btn-sm">搜索</button>				<td>&nbsp;</td>
-			<td><button id="addCustom"	type="button" class="layui-btn layui-btn-sm">添加来往单位</button>		<td>&nbsp;</td>
+			<td><button id="addCustom"	type="button" class="layui-btn layui-btn-sm">添加新客户</button>		<td>&nbsp;</td>
 			<td><button id="refreshCustom"	type="button" class="layui-btn layui-btn-sm">刷新</button>			<td>&nbsp;</td>
 			<td><span class="layui-badge">小提示：双击选中客户对象</span></td>
 		</tr>
@@ -232,17 +232,27 @@ layui.config({
 			cols:[[
 			       {type:'checkbox',align:'center',fixed:'left'},
 			       {field:'number',	title:'商品编号',	align:'center'},
-			       {field:'size',	title:'销售属性',	align:'center'}, 
 			       {field:'name',	title:'商品名称',	align:'center'},
-			       {field:'num',	title:'数量',       align:'center'},
+			       {field:'num',	title:'数量',       align:'center',		edit:'text',},
+			       {field:'price',   title:'单价',   	align:'center',		edit:'text',},
+			       {field:'price',   title:'金额',   	align:'center'},
+			       {field:'price',   title:'系统优惠',   align:'center',		edit:'text',},
+			       {field:'price',   title:'卖家调价',   align:'center',		edit:'text',},
+			       {field:'price',   title:'实际金额',   align:'center',	},
+			       /* 
 			       {field:'price',   title:'金额',   		align:'center'},
 			       {field:'cost',	title:'商品成本',	align:'center'},
 			       {field:'warehouse',	title:'仓库类型',	align:'center'},
-			       {field:'remark',	title:'备注', 	align:'center'}, 
+			       {field:'remark',	title:'备注', 	align:'center'},  */
 			       ]]
 			
 		})
 		
+		table.on('edit(productTable)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+		  console.log(obj.value); //得到修改后的值
+		  console.log(obj.field); //当前编辑的字段名
+		  console.log(obj.data); //所在行的所有相关数据  
+		});
 		//主页面一个四个按钮。确定添加、新增、删除、客户名分别进行绑定
 		form.on('submit(sureAdd)',function(obj){					//确定添加按钮
 			layer.msg('确定添加');
@@ -377,6 +387,7 @@ layui.config({
 			$('#customPhone').val(obj.data.phone);
 			$('#customType').val(obj.data.type);
 			$('#customAddress').val(obj.data.address);
+			$('#customZipCode').val(obj.data.zipCode);
 			$('#province').val('');
 			$('#city').val('');
 			$('#area').val('');
