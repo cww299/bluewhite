@@ -143,6 +143,21 @@ public class NumUtils {
 		return bigDecimalList.stream().reduce((a,b)->a.add(b)).get().doubleValue();
     }
     
+    /** 
+     * List double 相加 
+     * @param d1 
+     * @param d2 
+     * @return 
+     */ 
+    public static double sum(List<Double> ignoreList){ 
+    	List<BigDecimal> bigDecimalList = new ArrayList<>();
+    	for(Double d : ignoreList){
+    		 BigDecimal bd1 = new BigDecimal(Double.toString(d)); 
+    		 bigDecimalList.add(bd1);
+    	}
+		return bigDecimalList.stream().reduce((a,b)->a.add(b)).get().doubleValue();
+    }
+    
   
 
     /** 

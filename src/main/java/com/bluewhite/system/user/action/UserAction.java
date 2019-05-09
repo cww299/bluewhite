@@ -271,7 +271,7 @@ public class UserAction {
 			user.setAge(age);
 		}
 		userService.save(userBirth1);
-		List<User> userBirth = userList.stream().filter(User->User.getBirthDate()!=null && User.getGender()!=null && User.getQuit()!=1 && User.getQuit()!=null && User.getCommitmentId()!=null && User.getCommitmentId() !=144).collect(Collectors.toList());
+		List<User> userBirth = userList.stream().filter(User->User.getBirthDate()!=null && User.getGender()!=null && User.getQuit()!=null && User.getQuit()!=1  && User.getCommitmentId()!=null && User.getCommitmentId() !=144).collect(Collectors.toList());
 		for(User user : userBirth ){
 			Map<String,Object> us = new HashMap<String,Object>();
 			int co = DatesUtil.getAgeByBirth(user.getBirthDate());

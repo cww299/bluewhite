@@ -1,9 +1,7 @@
 package com.bluewhite.onlineretailers.inventory.service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.criteria.Predicate;
 
@@ -12,14 +10,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.onlineretailers.inventory.dao.CommodityDao;
 import com.bluewhite.onlineretailers.inventory.dao.OnlineOrderDao;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
+import com.bluewhite.onlineretailers.inventory.entity.OnlineOrderChild;
 
 @Service
 public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> implements  OnlineOrderService{
@@ -29,6 +32,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	
 	@Autowired
 	private CommodityDao commodityDao;
+	
 
 	@Override
 	public PageResult<OnlineOrder> findPage(OnlineOrder param, PageParameter page) {
@@ -72,17 +76,30 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 
 	@Override
 	public OnlineOrder addOnlineOrder(OnlineOrder onlineOrder) {
-		
-		
-		
-
-		
-		//当订单状态是下单，减少库存
-		if(onlineOrder.getStatus().equals(Constants.ONLINEORDER_4)){
-			
-			
+		//新增子订单
+		if(!StringUtils.isEmpty(onlineOrder.getChildOrder())){
+			JSONArray jsonArray = JSON.parseArray(onlineOrder.getChildOrder());
+			for (int i = 0; i < jsonArray.size(); i++) {
+				OnlineOrderChild onlineOrderChild = new OnlineOrderChild();
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				onlineOrderChild.setCommodityId(jsonObject.getLong("commodityId"));
+				onlineOrderChild.setNumber(jsonObject.getInteger("number"));
+				onlineOrderChild.setPrice(jsonObject.getDouble("price"));
+				onlineOrderChild.setSumPrice(jsonObject.getDouble("sumPrice"));
+				onlineOrderChild.setSystemPreferential(jsonObject.getDouble("systemPreferential"));
+				onlineOrderChild.setSellerReadjustPrices(jsonObject.getDouble("sellerReadjustPrices"));
+				onlineOrderChild.setActualSum(jsonObject.getDouble("actualSum"));
+				onlineOrderChild.setOnlineOrderId(onlineOrder.getId());
+				onlineOrder.getOnlineOrderChilds().add(onlineOrderChild);
+				
+				//当订单状态是下单，减少库存
+				if(onlineOrder.getStatus().equals(Constants.ONLINEORDER_4)){
+					Commodity commodity = commodityDao.findOne(onlineOrderChild.getCommodityId());
+					commodity.setQuantity(commodity.getQuantity()-onlineOrderChild.getNumber());
+					commodityDao.save(commodity);
+				}
+			}
 		}
-		
 		
 		return dao.save(onlineOrder);
 	}

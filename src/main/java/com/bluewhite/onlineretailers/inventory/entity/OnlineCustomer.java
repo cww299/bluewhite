@@ -20,18 +20,19 @@ import com.bluewhite.system.sys.entity.RegionAddress;
 public class OnlineCustomer extends BaseEntity<Long>{
 	
 	
-	/**
-	 * 买家姓名
-	 */
-	@Column(name = "buyer_name")
-	private String buyerName;
 	
 	/**
-	 * 客户名称
+	 * 客户昵称
 	 * 
 	 */
 	@Column(name = "name")
 	private String name;
+	
+	/**
+	 * 客户真实姓名
+	 */
+	@Column(name = "buyer_name")
+	private String buyerName;
 	
 	/**
 	 * 收件人地址

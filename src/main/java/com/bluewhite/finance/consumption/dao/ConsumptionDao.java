@@ -13,5 +13,13 @@ public interface ConsumptionDao extends BaseRepository<Consumption, Long>{
 	 * @return
 	 */
 	public List<Consumption> findByParentId(Long id);
+	
+	
+	/**
+	 * 是否预算
+	 * @param id
+	 * @return
+	 */
+	public List<Consumption> findByBudgetAndOrgNameId(Integer budget,Long id);
 
 }

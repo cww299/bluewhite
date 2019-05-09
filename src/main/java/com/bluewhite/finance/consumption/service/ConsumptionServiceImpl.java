@@ -2,7 +2,10 @@ package com.bluewhite.finance.consumption.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
@@ -229,6 +232,28 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			}
 		}
 		return count;
+	}
+
+	@Override
+	public Map<String, Object> countConsumptionMoney() {
+		Map<String, Object>  map = new HashMap<>();
+		CurrentUser cu = SessionManager.getUserSession();
+	    List<Consumption> consumptionList =  dao.findByBudgetAndOrgNameId(0,cu.getOrgNameId());
+	    List<Consumption> consumptionList1 =  dao.findByBudgetAndOrgNameId(1,cu.getOrgNameId());
+	    List<Double> listDouble = new ArrayList<>();
+	    consumptionList.stream().forEach(c->{
+	    	listDouble.add(c.getMoney());
+	    });
+	    List<Double> listDouble1 = new ArrayList<>();
+	    consumptionList1.stream().forEach(c->{
+	    	listDouble1.add(c.getMoney());
+	    });
+	    Double budget =  NumUtils.sum(listDouble);
+	    Double nonBudget =  NumUtils.sum(listDouble1);
+	    map.put("budget", budget);
+	    map.put("nonBudget", nonBudget);
+	    map.put("sumBudget", NumUtils.sum(budget, nonBudget));
+		return map;
 	}
 
 }
