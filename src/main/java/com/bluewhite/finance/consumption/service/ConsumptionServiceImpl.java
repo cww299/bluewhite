@@ -241,14 +241,13 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	    List<Consumption> consumptionList =  dao.findByBudgetAndOrgNameId(0,cu.getOrgNameId());
 	    List<Consumption> consumptionList1 =  dao.findByBudgetAndOrgNameId(1,cu.getOrgNameId());
 	    List<Double> listDouble = new ArrayList<>();
-	    if(listDouble.size()>0){
+	    if(consumptionList.size()>0){
 	    	consumptionList.stream().forEach(c->{
 	    		listDouble.add(c.getMoney());
 	    	});
 	    }
 	    List<Double> listDouble1 = new ArrayList<>();
-	    if(listDouble1.size()>0){
-	    	
+	    if(consumptionList1.size()>0){
 	    	consumptionList1.stream().forEach(c->{
 	    		listDouble1.add(c.getMoney());
 	    	});
