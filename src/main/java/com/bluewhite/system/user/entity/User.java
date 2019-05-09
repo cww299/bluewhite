@@ -365,7 +365,7 @@ public class User extends BaseEntity<Long> {
 	/**
 	 * 角色集合
 	 */
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "sys_user_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 	private Set<Role> roles = new HashSet<Role>();
 	
@@ -374,7 +374,6 @@ public class User extends BaseEntity<Long> {
 	 */
     @OneToOne(fetch=FetchType.LAZY,cascade = CascadeType.ALL) 
     @JoinColumn(name="user_contract_id",referencedColumnName="id",nullable=true)
-    @NotFound(action=NotFoundAction.IGNORE)//找不到引用的外键数据时忽略
     private UserContract userContract;
 	
 	/**
@@ -420,7 +419,7 @@ public class User extends BaseEntity<Long> {
 	 * 
 	 * 位置编号
 	 */
-	@Column(name = "lotion_number")
+	@Transient
 	private Integer lotionNumber;
 	
 	/**

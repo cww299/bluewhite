@@ -121,7 +121,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				user.setOrgNameIds(Constants.TAILOR_ORGNAME);
 			}
 		}
-		page.setSort(new Sort(Direction.DESC, "lotionNumber"));
+		page.setSort(null);
 		Page<User> pageUser = userDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			//按id查找
@@ -265,10 +265,10 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     						user.getOrderTimeBegin(),
     						user.getOrderTimeEnd()));
     			}
-    			
     		}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
+			query.orderBy(cb.desc(root.get("userContract").get("number").as(Integer.class)));
 			query.distinct(true);
 			return null;
 		}, page);

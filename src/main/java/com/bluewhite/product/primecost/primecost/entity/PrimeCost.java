@@ -1,11 +1,15 @@
 package com.bluewhite.product.primecost.primecost.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.product.product.entity.Product;
 
 /**
  * 成本价格实体
@@ -35,6 +39,13 @@ public class PrimeCost extends BaseEntity<Long>{
 	 */
 	@Column(name = "product_id")
 	private Long productId;
+	
+	/**
+	 * 一对一user
+	 */
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "productId" ,referencedColumnName = "id", insertable = false, updatable = false)
+	private Product product; 
 	
 	/**
 	 * 批成本
@@ -449,7 +460,16 @@ public class PrimeCost extends BaseEntity<Long>{
 	@Column(name = "copyright_rate")
 	private Double copyrightRate;
 	
+	
+	
 
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
 
 	public Double getOneaAtualPrimeCost() {
 		return oneaAtualPrimeCost;

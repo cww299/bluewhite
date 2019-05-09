@@ -84,7 +84,7 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	@ResponseBody
 	public CommonResponse addOnlineOrder(OnlineOrder onlineOrder) {
 		CommonResponse cr = new CommonResponse();
-		onlineOrderService.save(onlineOrder);
+		onlineOrderService.addOnlineOrder(onlineOrder);
 		return cr;
 	}
 	

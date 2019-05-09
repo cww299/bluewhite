@@ -22,5 +22,12 @@ public interface OnlineOrderService extends BaseCRUDService<OnlineOrder,Long>{
 	 * @param ids
 	 */
 	public int deleteOnlineOrder(String ids);
+	
+	
+	/**
+	 * 新增销售单
+	 * @param onlineOrder
+	 */
+	public OnlineOrder addOnlineOrder(OnlineOrder onlineOrder);
 
 }
