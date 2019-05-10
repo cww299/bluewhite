@@ -87,7 +87,7 @@
 					<label class="layui-form-label">至</label>
 					<div class="layui-input-inline"  style="width:60px;"><input class="layui-input" value="0"></div>
 					<div class="layui-input-inline"><select><option value="">订单数</option></select></div>
-				</div>
+				</div> 
 			</div>
 		<table class="laui-table" id="onlineOrder" filter="onlineOrder" ></table>
 	</div>
