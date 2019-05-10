@@ -90,7 +90,7 @@ public class Consumption extends BaseEntity<Long> {
 	private Double taxPoint;
 
 	/**
-	 * 	
+	 * 是否是预算 0 = 否 1 =是
 	 */
 	@Column(name = "budget")
 	private Integer budget;
