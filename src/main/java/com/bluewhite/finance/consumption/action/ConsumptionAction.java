@@ -43,7 +43,7 @@ public class ConsumptionAction {
 				.get()
 				.addRetainTerm(Consumption.class, "id", "user","content","userId"
 				,"budget","money","expenseDate","paymentMoney","paymentDate","withholdReason","remark"
-				,"withholdMoney","settleAccountsMode","remark","flag","taxPoint","custom","user","contact","logisticsDate")
+				,"withholdMoney","settleAccountsMode","remark","flag","taxPoint","custom","user","contact","logisticsDate","contactName")
 				.addRetainTerm(User.class, "userName")
 				.addRetainTerm(Contact.class, "conPartyNames");
 	}

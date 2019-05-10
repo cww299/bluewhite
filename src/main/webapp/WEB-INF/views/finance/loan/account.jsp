@@ -77,35 +77,35 @@
 			<input type="text" name="id" id="usID" style="display:none;">
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">物流订单日期</label>
+				<label class="layui-form-label" style="width: 130px;">借款方</label>
 				<div class="layui-input-inline">
-					<input type="text" value="{{d.logisticsDate }}" name="logisticsDate"
-						id="logisticsDate" lay-verify="required"
-						placeholder="请输入物流订单日期 " class="layui-input">
+						<input type="text" value="{{d.custom.name }}" name="customerName" id="userId"
+						placeholder="请输入借款方名称"
+						class="layui-input laydate-icon" data-provide="typeahead">
 				</div>
 			</div>
 			
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">客户</label>
+				<label class="layui-form-label" style="width: 130px;">内容</label>
 				<div class="layui-input-inline">
-						<input type="text" value="{{d.contact.conPartyNames }}" name="contactName" id="logisticsId"
-						placeholder="请输入供应商名称"
-						class="layui-input laydate-icon" data-provide="typeahead">
+					<input type="text" value="{{d.content }}" name="content" id="content"
+						lay-verify="required" placeholder="请输入内容"
+						class="layui-input laydate-icon">
 				</div>
 			</div>
-
+			
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">物流点名称</label>
-				<div class="layui-input-inline">
-						<input type="text" value="{{d.custom.name }}" name="customerName" id="userId"
-						placeholder="请输入供应商名称"
-						class="layui-input laydate-icon" data-provide="typeahead">
+					<label class="layui-form-label" style="width: 130px;">是否是预算</label>
+					<div class="layui-input-inline">
+						<select name="budget" id="budget" >
+							<option value="0">是</option>
+							<option value="1">否</option>
+							</select>
+					</div>
 				</div>
-			</div>
-		
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">支付金额</label>
+				<label class="layui-form-label" style="width: 130px;">借款金额</label>
 				<div class="layui-input-inline">
 					<input type="text" value="{{d.money }}" name="money" id="money"
 						lay-verify="required" placeholder="请输入支付金额"
@@ -239,7 +239,7 @@
 							limit:15
 						},//开启分页
 						where:{
-							type:5
+							type:6
 						},
 						loading: true,
 						toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
@@ -260,24 +260,30 @@
 								type: 'checkbox',
 								align: 'center',
 								fixed: 'left'
-							}, {
-								field: "logisticsDate",
-								title: "物流订单日期",
-							}, {
-								field: "userId",
-								title: "客户名称",
-								align: 'center',
-								search: true,
-								templet: function(d){
-									return d.contact.conPartyNames
-								}
-							}, {
+							},{
 								field: "withholdReason",
-								title: "物流点名称",
+								title: "借款方",
 								templet: function(d){
 									return d.custom.name
 								}
-							}, {
+							},{
+								field: "content",
+								title: "内容",
+								align: 'center',
+							},{
+								field: "budget",
+								title: "是否预算",
+								align: 'center',
+								search: true,
+								edit: false,
+								templet: function(d){
+									if(d.budget==0){
+										return "是"
+									}else{
+									return "否"
+									}
+								}
+							},{
 								field: "money",
 								title: "支付金额",
 								align: 'center',
@@ -388,7 +394,7 @@
 					
 					
 					function addEidt(type){
-						var data={custom:{name:''},contact:{conPartyNames:''},logisticsDate:'',money:'',customerName:'',contactName:'',expenseDate:'',content:'',withholdMoney:'',withholdReason:''};
+						var data={custom:{name:''},money:'',contactName:'',expenseDate:'',content:'',withholdMoney:'',withholdReason:''};
 						var title="新增数据";
 						var html="";
 						var tpl=addEditTpl.innerHTML;
@@ -428,14 +434,14 @@
 									console.log(self.getCache())
 						        	var	field={
 						        			id:id,
-						        			logisticsDate:data.field.logisticsDate,
 						        			customerName:data.field.customerName,
+						        			content:data.field.content,
 						        			money:data.field.money,
+						        			budget:data.field.budget,
 						        			customId:self.getIndex(),
-						        			contactId:self.getCache(),
 						        			contactName:data.field.contactName,
 						        			expenseDate:data.field.expenseDate,
-						        			type:5
+						        			type:6
 						        		}
 						        	  mainJs.fAdd(field);
 						        	if(id==""){
@@ -462,7 +468,7 @@
 										type : 'GET',
 										data : {
 											name:query,
-											type:5
+											type:6
 										},
 										success : function(result) {
 											//转换成 json集合
@@ -497,53 +503,6 @@
 									//转出成json对象
 									var item = JSON.parse(item);
 									self.setIndex(item.id);
-										return item.name
-								},
-
-								
-							});
-						
-						 $("#logisticsId").typeahead({
-								source : function(query, process) {
-									return $.ajax({
-										url : '${ctx}/fince/getContact',
-										type : 'GET',
-										data : {
-											conPartyNames:query,
-										},
-										success : function(result) {
-											//转换成 json集合
-											 var resultList = result.data.rows.map(function (item) {
-												 	//转换成 json对象
-							                        var aItem = {name: item.conPartyNames, id:item.id}
-							                        //处理 json对象为字符串
-							                        return JSON.stringify(aItem);
-							                    });
-											console.log(result.data.rows)
-											if(result.data.rows=="" || result.data.rows=="undefined"){
-												 self.setCache("");
-											}
-											//提示框返回数据
-											 return process(resultList);
-										},
-									})
-									//提示框显示
-								}, highlighter: function (item) {
-								    //转出成json对象
-									 var item = JSON.parse(item);
-									return item.name
-									//按条件匹配输出
-				                }, matcher: function (item) {
-				                	//转出成json对象
-							        var item = JSON.parse(item);
-							        self.setCache(item.id);
-							    	return item.id
-							    },
-								//item是选中的数据
-								updater:function(item){
-									//转出成json对象
-									var item = JSON.parse(item);
-									self.setCache(item.id);
 										return item.name
 								},
 
@@ -598,7 +557,7 @@
 							        			taxPoint:data.field.taxPoint,
 							        			withholdMoney:data.field.withholdMoney,
 							        			withholdReason:data.field.withholdReason,
-							        			type:5
+							        			type:6
 							        		}
 						        	 mainJs.fAdd(field); 
 									})
