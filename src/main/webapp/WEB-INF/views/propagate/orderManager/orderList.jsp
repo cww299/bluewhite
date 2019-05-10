@@ -59,9 +59,9 @@
 					<div class="layui-input-inline"><select><option value="">正常发货</option></select></div>
 					<div class="layui-input-inline"><select><option value="">成交时间</option></select></div>
 					<label class="layui-form-label">从</label>
-					<div class="layui-input-inline" style="width:80px;"><select lay-search id="sinceHour"><option value="">00</option></select></div>
+					<div class="layui-input-inline" style="width:80px;"><select lay-search id="sinceHour"><option value="">0</option></select></div>
 					<label class="layui-form-label">时</label>
-					<div class="layui-input-inline" style="width:80px;"><select lay-search id="sinceMin"><option value="">00</option></select></div>
+					<div class="layui-input-inline" style="width:80px;"><select lay-search id="sinceMin"><option value="">0</option></select></div>
 					<label class="layui-form-label">分</label>
 					<label class="layui-form-label">到</label>
 					<div class="layui-input-inline" style="width:80px;"><select lay-search id="forHour"><option value="">23</option></select></div>
@@ -87,7 +87,7 @@
 					<label class="layui-form-label">至</label>
 					<div class="layui-input-inline"  style="width:60px;"><input class="layui-input" value="0"></div>
 					<div class="layui-input-inline"><select><option value="">订单数</option></select></div>
-				</div> 
+				</div>
 			</div>
 		<table class="laui-table" id="onlineOrder" filter="onlineOrder" ></table>
 	</div>
@@ -100,6 +100,8 @@
 </div>	
 		
 </body>
+
+
 
 
 <script>
@@ -134,7 +136,7 @@ layui.config({
 		
 		table.render({
 			elem:'#onlineOrder',
-			height:'780',
+			height:'680',
 			url:'${ctx}/inventory/onlineOrderPage',
 			loading:true,
 			page:true,
@@ -146,23 +148,23 @@ layui.config({
 				return{
 					code:ret.code,
 					msg:ret.message,
-					data:ret.rows,
-					count:ret.total
+					data:ret.data.rows,
+					count:ret.data.total
 				}
 			},
 			cols:[[
 			       {type:'checkbox',align:'center',fixed:'left'},
-			      // {filed:'',            title:'下单时间',   align:'center'},
-			       {filed:'tid',        title:'订单号',     align:'center'},
-			      // {filed:'',            title:'客户名称',   align:'center'},
-			       {filed:'buyerMessage',  title:'买家留言',   align:'center'},
-			       {filed:'sellerMemo', title:'卖家备注',   align:'center'},
-			       {filed:'postFee',       title:'邮费',       align:'center'},
-			       {filed:'receivedPayment',title:'实收金额',   align:'center'},
-			       {filed:'countable',     title:'件数',       align:'center'},
-			       {filed:'trackingNumber',title:'运单号',     align:'center'},
-			       {filed:'status',        title:'状态',       align:'center'},
-			    //   {filed:'',            title:'收货地址',   align:'center'},
+			       {field:'createdAt',	title:'下单时间',   align:'center', width:'15%'},
+			       {field:'tid',        title:'订单号',     align:'center'},
+			      // {field:'',            title:'客户名称',   align:'center'},
+			       {field:'buyerMemo',  title:'买家留言',   align:'center'},
+			       {field:'sellerMemo', title:'卖家备注',   align:'center'},
+			       {field:'postFee',       title:'邮费',       align:'center'},
+			       {field:'receivedPayment',title:'实收金额',   align:'center'},
+			       {field:'num',     title:'件数',       align:'center'},
+			       {field:'trackingNumber',title:'运单号',     align:'center'},
+			       {field:'status',        title:'状态',       align:'center'},
+			       {field:'address',            title:'收货地址',   align:'center'},
 			       ]]
 		}) 
 		
