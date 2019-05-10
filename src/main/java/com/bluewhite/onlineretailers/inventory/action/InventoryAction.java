@@ -131,7 +131,11 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	public CommonResponse addCommodity(Commodity commodity) {
 		CommonResponse cr = new CommonResponse();
 		commodityService.save(commodity);
-		cr.setMessage("新增成功");
+		if(commodity.getId()!=null){
+			cr.setMessage("修改成功");
+		}else{
+			cr.setMessage("新增成功");
+		}
 		return cr;
 	}
 	
@@ -175,7 +179,11 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	public CommonResponse addOnlineCustomer(OnlineCustomer onlineCustomer) {
 		CommonResponse cr = new CommonResponse();
 		onlineCustomerService.save(onlineCustomer);
-		cr.setMessage("新增成功");
+		if(onlineCustomer.getId()!=null){
+			cr.setMessage("修改成功");
+		}else{
+			cr.setMessage("新增成功");
+		}
 		return cr;
 	}
 	

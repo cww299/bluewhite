@@ -61,12 +61,20 @@ public class Procurement extends BaseEntity<Long>{
 	@Column(name = "number")
 	private Integer number;
 	
-	
 	/**
-	 * 采购单状态(0=入库单，1=退库单，2=出库单,3=生产单，4=针工单)
+	 * 库存状态有两种，第一种是入库单的订单状态，第二种是出库单的订单状态
+	 * （ ）
+	 * （ ）
 	 */
 	@Column(name = "status")
 	private Integer status;
+	
+	
+	/**
+	 *  库存类型(0=入库单，1=出库单,2=生产单，3=针工单)
+	 */
+	@Column(name = "type")
+	private Integer type;
 	
 	/**
 	 * 发货仓库类型（0=主仓库，1=客供仓库，2=次品）
@@ -82,6 +90,24 @@ public class Procurement extends BaseEntity<Long>{
 	@Column(name = "remark")
 	private String remark;
 	
+	
+	
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
 
 	public String getCommodityNumber() {
 		return commodityNumber;
@@ -97,14 +123,6 @@ public class Procurement extends BaseEntity<Long>{
 
 	public void setNumber(Integer number) {
 		this.number = number;
-	}
-
-	public Integer getStatus() {
-		return status;
-	}
-
-	public void setStatus(Integer status) {
-		this.status = status;
 	}
 
 	public Long getUserId() {

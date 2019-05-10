@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
@@ -127,20 +128,42 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	@Override
 	@Transactional
 	public Consumption addConsumption(Consumption consumption) {
+		Consumption ot = null;
+		if (consumption.getId() != null) {
+			ot = dao.findOne(consumption.getId());
+			if (ot.getFlag() == 1) {
+				throw new ServiceException("已放款，无法修改");
+			}
+			BeanCopyUtils.copyNotEmpty(consumption,ot,"");
+			consumption = ot;
+		} 
 		
 		boolean flag = true;
 		switch (consumption.getType()) {
 		case 1:
 			flag = false;
 			if(consumption.getParentId()!=null){
+				//获取报销单的父id实体
 				Consumption parentConsumption = dao.findOne(consumption.getParentId());
-				if(consumption.getId()!=null){
-					Consumption ot = dao.findOne(consumption.getId());
+				//表示为修改
+				if(consumption.getId() != null){
 					parentConsumption.setMoney(NumUtils.sum(parentConsumption.getMoney(),NumUtils.sub(consumption.getMoney(),ot.getMoney())));
 				}else{
 					parentConsumption.setMoney(NumUtils.sub(parentConsumption.getMoney(), consumption.getMoney()));
 				}
 				dao.save(parentConsumption);
+			}
+			
+			if(consumption.getId() != null && consumption.getBudget()==1){
+				//获取父类报销单的全部子类
+				List<Consumption> consumptionList = dao.findByParentId(consumption.getId());
+				if(consumptionList.size()>0){
+					 List<Double> listDouble = new ArrayList<>();
+					    consumptionList.stream().forEach(c->{
+					    	listDouble.add(c.getMoney());
+					    });
+					consumption.setMoney(NumUtils.sub(consumption.getMoney(),NumUtils.sum(listDouble)));
+				}
 			}
 			break;
 		case 2:
@@ -151,8 +174,8 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		case 4:
 			break;
 		case 5:
-			if (consumption.getContactId()==null) {
-				Contact contact=new Contact();
+			if (consumption.getContactId() == null) {
+				Contact contact = new Contact();
 				contact.setConPartyNames(consumption.getContactName());
 				contactDao.save(contact);
 				consumption.setContactId(contact.getId());
@@ -176,25 +199,17 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			consumption.setCustomId(custom.getId());
 		}
 		
-		if (consumption.getId() != null) {
-			Consumption ot = dao.findOne(consumption.getId());
-			if (ot.getFlag() == 1) {
-				throw new ServiceException("已放款，无法修改");
-			}
-			update(consumption, ot);
-		} else {
-			if(consumption.getExpenseDate()==null){
-				throw new ServiceException("申请时间不能为空");
-			}
-			if(consumption.getMoney()==null){
-				throw new ServiceException("申请金额不能为空");
-			}
-			CurrentUser cu = SessionManager.getUserSession();
-			consumption.setOrgNameId(cu.getOrgNameId());
-			consumption.setFlag(0);
-			dao.save(consumption);
+		if(consumption.getExpenseDate()==null){
+			throw new ServiceException("申请时间不能为空");
 		}
-		return consumption;
+		if(consumption.getMoney()==null){
+			throw new ServiceException("申请金额不能为空");
+		}
+		CurrentUser cu = SessionManager.getUserSession();
+		consumption.setOrgNameId(cu.getOrgNameId());
+		consumption.setFlag(0);
+		
+		return dao.save(consumption);
 	}
 
 	@Override

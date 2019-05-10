@@ -35,13 +35,6 @@ public class OnlineCustomer extends BaseEntity<Long>{
 	private String buyerName;
 	
 	/**
-	 * 收件人地址
-	 * 
-	 */
-	@Column(name = "addressee")
-	private String addressee;
-	
-	/**
 	 * 客户等级
 	 * 
 	 */
@@ -221,17 +214,6 @@ public class OnlineCustomer extends BaseEntity<Long>{
 	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
 	}
-
-
-	public String getAddressee() {
-		return addressee;
-	}
-
-
-	public void setAddressee(String addressee) {
-		this.addressee = addressee;
-	}
-
 
 	public String getPhone() {
 		return phone;
