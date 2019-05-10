@@ -13,6 +13,6 @@ public interface CustomDao extends BaseRepository<Custom, Long>{
 	 * @param name
 	 * @return
 	 */
-	public List<Custom> findByType(Integer type);
+	public List<Custom> findByTypeAndNameLike(Integer type,String name);
 
 }

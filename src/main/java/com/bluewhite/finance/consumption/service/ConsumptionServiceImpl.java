@@ -29,6 +29,8 @@ import com.bluewhite.finance.consumption.dao.ConsumptionDao;
 import com.bluewhite.finance.consumption.dao.CustomDao;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.entity.Custom;
+import com.bluewhite.finance.ledger.dao.ContactDao;
+import com.bluewhite.finance.ledger.entity.Contact;
 
 @Service
 public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> implements ConsumptionService {
@@ -38,7 +40,9 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 
 	@Autowired
 	private CustomDao customDao;
-
+	
+	@Autowired
+	private ContactDao contactDao;
 	@Override
 	public PageResult<Consumption> findPages(Consumption param, PageParameter page) {
 		CurrentUser cu = SessionManager.getUserSession();
@@ -147,6 +151,12 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		case 4:
 			break;
 		case 5:
+			if (consumption.getContactId()==null) {
+				Contact contact=new Contact();
+				contact.setConPartyNames(consumption.getContactName());
+				contactDao.save(contact);
+				consumption.setContactId(contact.getId());
+			}
 			break;
 		case 6:
 			break;

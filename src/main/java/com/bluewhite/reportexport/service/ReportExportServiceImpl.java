@@ -1,7 +1,5 @@
 package com.bluewhite.reportexport.service;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -473,7 +471,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 					d=order.getFirstNames();
 				}
 				 String test=order.getProductName();
-				 if (test.indexOf("裸熊")!=-1 || test.indexOf("KT")!=-1 || test.indexOf("漫威")!=-1 || test.indexOf("老皮")!=-1 || test.indexOf("阿宝")!=-1 || test.indexOf("哔莫")!=-1){
+				 if (test.indexOf("裸熊")!=-1 || test.indexOf("KT")!=-1 || test.indexOf("漫威")!=-1 || test.indexOf("老皮")!=-1 || test.indexOf("阿宝")!=-1 || test.indexOf("哔莫")!=-1 || test.indexOf("熊熊遇见你午睡枕")!=-1 || test.indexOf("芝麻街")!=-1){
 					 order2.setProductName(order.getProductName()+"(版权)");//当批产品名
 			        }else{
 			        	order2.setProductName(order.getProductName());//当批产品名

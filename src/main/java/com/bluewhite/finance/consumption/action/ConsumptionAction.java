@@ -25,6 +25,7 @@ import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.entity.Custom;
 import com.bluewhite.finance.consumption.service.ConsumptionService;
 import com.bluewhite.finance.consumption.service.CustomService;
+import com.bluewhite.finance.ledger.entity.Contact;
 import com.bluewhite.system.user.entity.User;
 
 @Controller
@@ -42,8 +43,9 @@ public class ConsumptionAction {
 				.get()
 				.addRetainTerm(Consumption.class, "id", "user","content","userId"
 				,"budget","money","expenseDate","paymentMoney","paymentDate","withholdReason","remark"
-				,"withholdMoney","settleAccountsMode","remark","flag","taxPoint","custom","user")
-				.addRetainTerm(User.class, "userName");
+				,"withholdMoney","settleAccountsMode","remark","flag","taxPoint","custom","user","contact","logisticsDate","contactName")
+				.addRetainTerm(User.class, "userName")
+				.addRetainTerm(Contact.class, "conPartyNames");
 	}
 
 	/**
@@ -173,11 +175,11 @@ public class ConsumptionAction {
 	 */
 	@RequestMapping(value = "/fince/findCustom", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse findCustom(HttpServletRequest request,Integer type) {
+	public CommonResponse findCustom(HttpServletRequest request,Integer type,String name) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(Custom.class, "id", "name")
-				.format(customService.findCustom(type)).toJSON());
+				.format(customService.findCustom(type,name)).toJSON());
 		return cr;
 	}
 	
