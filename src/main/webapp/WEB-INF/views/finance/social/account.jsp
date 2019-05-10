@@ -15,11 +15,10 @@
 <link rel="stylesheet" href="${ctx }/static/css/bootstrap.min.css"> 
 <link rel="stylesheet" href="${ctx }/static/css/main.css">  <!-- 界面样式 -->
   <script src="${ctx }/static/js/vendor/typeahead.js"></script>
- <!--  <link rel="stylesheet" href="/resources/demos/style.css"> -->
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>报销申请</title>
+<title>物流申请</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
@@ -68,69 +67,64 @@
 		</div>
 	</div>
 
-		
-
+<!--新增  -->
 <script type="text/html" id="addEditTpl">
-<form action="" id="layuiadmin-form-admin"
-		style="padding: 20px 30px 0 60px;  text-align:">
+	<form action="" id="layuiadmin-form-admin"
+		style="padding: 20px 30px 0 60px; text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
 			<input type="text" name="id" id="usID" style="display:none;">
+
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">供应商名称</label>
+				<label class="layui-form-label" style="width: 130px;">报销人</label>
 				<div class="layui-input-inline">
-						<input type="text" value="{{d.custom.name}}" name="customerName" id="userId"
-						placeholder="请输入供应商名称"
+						<input type="text" value="{{d.custom.name }}" name="customerName" id="userId"
+						placeholder="请输入借款方名称"
 						class="layui-input laydate-icon" data-provide="typeahead">
 				</div>
 			</div>
+			
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">内容</label>
+				<div class="layui-input-inline">
+					<input type="text" value="{{d.content }}" name="content" id="content"
+						lay-verify="required" placeholder="请输入内容"
+						class="layui-input laydate-icon">
+				</div>
+			</div>
+			
+			<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 130px;">是否是预算</label>
+					<div class="layui-input-inline">
+						<select name="budget" id="budget">
+							<option value="0" {{ d.budget==0?'selected':'' }}>是</option>
+							<option value="1" {{ d.budget==1?'selected':'' }}>否</option>
+							</select>
+					</div>
+				</div>
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">票面金额</label>
+				<label class="layui-form-label" style="width: 130px;">借款金额</label>
 				<div class="layui-input-inline">
 					<input type="text" value="{{d.money }}" name="money" id="money"
-						lay-verify="required" placeholder="请输入票面金额"
+						lay-verify="required" placeholder="请输入支付金额"
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">税点</label>
+				<label class="layui-form-label" style="width: 130px;">预计付款日期</label>
 				<div class="layui-input-inline">
-					<input type="text" value="{{d.taxPoint}}" name="taxPoint" id="taxPoint"
-						lay-verify="required" placeholder="请输入税点"
-						class="layui-input laydate-icon">
-				</div>
-			</div>
-
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">申请日期</label>
-				<div class="layui-input-inline">
-					<input type="text" value="{{d.expenseDate}}"  name="expenseDate"
+					<input type="text" value="{{d.expenseDate }}" name="expenseDate"
 						id="expenseDate" lay-verify="required"
-						placeholder="请输入付款日期 " class="layui-input">
+						placeholder="请输入预计付款日期 " class="layui-input">
 				</div>
 			</div>
 
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">扣款原因</label>
-				<div class="layui-input-inline">
-					<input type="text" value="{{d.withholdReason}}" name="withholdReason" id="withholdReason"
-						lay-verify="required" placeholder="请输入付款日期"
-						class="layui-input">
-				</div>
-			</div>
 
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">扣款金额</label>
-				<div class="layui-input-inline">
-					<input type="text" value="{{d.withholdMoney}}" name="withholdMoney" id="withholdMoney"
-						lay-verify="required" placeholder="请输入扣款金额"
-						class="layui-input">
-				</div>
-			</div>
-
+			
 		</div>
 	</form>	
+
 </script>	
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
@@ -163,9 +157,15 @@
 					this.setIndex = function(index){
 				  		_index=index;
 				  	}
-				  	
 				  	this.getIndex = function(){
 				  		return _index;
+				  	}
+				  	var _cache;
+					this.setCache = function(cache){
+				  		_cache=cache;
+				  	}
+				  	this.getCache = function(){
+				  		return _cache;
 				  	}
 					//select全局变量
 					var htmls = '<option value="">请选择</option>';
@@ -192,6 +192,9 @@
 						url: '${ctx}/system/user/findAllUser',
 						type: "GET",
 						async: false,
+						beforeSend: function() {
+							index;
+						},
 						success: function(result) {
 							$(result.data).each(function(i, o) {
 								mycars.push(o.userName)
@@ -206,6 +209,18 @@
 						}
 					});
 					
+					// 处理操作列
+					/* var fn1 = function(field) {
+						return function(d) {
+							return [
+								/* '<input type="text" name="HandoverCompany" id="HandoverCompany" class="layui-input" style="position:absolute;z-index:2;width:70%;" lay-verify="required" value="" onkeyup="search()" autocomplete="off">' */
+							/* 	'<div id="test"><select name="selectOne" selected = "selected" id="hc_select" lay-filter="lay_selecte" lay-search="true" autocomplete="off"   data-value="' + d.userId + '">' +
+								htmls +
+								'</select></div>'
+							].join('');
+
+						};
+					}; */ 
 					
 					
 					
@@ -222,7 +237,7 @@
 							limit:15
 						},//开启分页
 						where:{
-							type:4
+							type:7
 						},
 						loading: true,
 						toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
@@ -243,30 +258,36 @@
 								type: 'checkbox',
 								align: 'center',
 								fixed: 'left'
-							}, {
-								field: "userId",
-								title: "供应商名称",
-								align: 'center',
-								search: true,
+							},{
+								field: "withholdReason",
+								title: "报销人",
 								templet: function(d){
 									return d.custom.name
 								}
-							}, {
+							},{
+								field: "content",
+								title: "内容",
+								align: 'center',
+							},{
+								field: "budget",
+								title: "是否预算",
+								align: 'center',
+								search: true,
+								edit: false,
+								templet: function(d){
+									if(d.budget==0){
+										return "是"
+									}else{
+									return "否"
+									}
+								}
+							},{
 								field: "money",
-								title: "票面金额",
+								title: "支付金额",
 								align: 'center',
 							}, {
-								field: "taxPoint",
-								title: "税点",
-							}, {
 								field: "expenseDate",
-								title: "申请日期",
-							}, {
-								field: "withholdReason",
-								title: "扣款原因",
-							}, {
-								field: "withholdMoney",
-								title: "扣款金额",
+								title: "预计付款日期",
 							}]
 						],
 						done: function() {
@@ -370,15 +391,15 @@
 					});
 					
 					
-					
 					function addEidt(type){
-						var data={custom:{name:''},contact:{conPartyNames:''},taxPoint:'',logisticsDate:'',money:'',customerName:'',contactName:'',expenseDate:'',content:'',withholdMoney:'',withholdReason:''};
+						var data={custom:{name:''},money:'',contactName:'',expenseDate:'',content:'',withholdMoney:'',withholdReason:''};
 						var title="新增数据";
 						var html="";
 						var tpl=addEditTpl.innerHTML;
 						var choosed=layui.table.checkStatus("tableData").data;
 						var id="";
 						if(type=='edit'){
+							title="编辑数据"
 							if(choosed.length>1){
 								layer.msg("无法同时编辑多条信息",{icon:2});
 								return;
@@ -408,16 +429,18 @@
 					        },
 							yes:function(){
 								form.on('submit(addRole)', function(data) {
+									console.log(self.getIndex())
+									console.log(self.getCache())
 						        	var	field={
 						        			id:id,
 						        			customerName:data.field.customerName,
+						        			content:data.field.content,
 						        			money:data.field.money,
+						        			budget:data.field.budget,
 						        			customId:self.getIndex(),
+						        			contactName:data.field.contactName,
 						        			expenseDate:data.field.expenseDate,
-						        			taxPoint:data.field.taxPoint,
-						        			withholdMoney:data.field.withholdMoney,
-						        			withholdReason:data.field.withholdReason,
-						        			type:4
+						        			type:7
 						        		}
 						        	  mainJs.fAdd(field);
 						        	if(id==""){
@@ -432,6 +455,10 @@
 							elem: '#expenseDate',
 							type: 'datetime',
 						});
+						laydate.render({
+							elem: '#logisticsDate',
+							type: 'datetime',
+						});
 						//提示查询
 						 $("#userId").typeahead({
 								source : function(query, process) {
@@ -440,7 +467,7 @@
 										type : 'GET',
 										data : {
 											name:query,
-											type:4
+											type:7
 										},
 										success : function(result) {
 											//转换成 json集合
@@ -450,7 +477,6 @@
 							                        //处理 json对象为字符串
 							                        return JSON.stringify(aItem);
 							                    });
-											console.log(result.data.rows)
 											if(result.data.rows=="" || result.data.rows=="undefined"){
 												 self.setIndex("");
 											}
@@ -480,12 +506,11 @@
 
 								
 							});
-						
-					 
 					}
 					
 					
 					
+				
 				
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
@@ -494,53 +519,7 @@
 							where: field
 						});
 					});
-				      $("#userId").typeahead({
-						source : function(query, process) {
-							return $.ajax({
-								url : '${ctx}/fince/findCustom',
-								type : 'GET',
-								data : {
-									name:query,
-									type:4
-								},
-								success : function(result) {
-									//转换成 json集合
-									 var resultList = result.data.map(function (item) {
-										 	//转换成 json对象
-					                        var aItem = {name: item.name, id:item.id}
-					                        //处理 json对象为字符串
-					                        return JSON.stringify(aItem);
-					                    });
-									
-									if(result.data.rows==""){
-										 self.setIndex("");
-									}
-									//提示框返回数据
-									 return process(resultList);
-								},
-							})
-							//提示框显示
-						}, highlighter: function (item) {
-						    //转出成json对象
-							 var item = JSON.parse(item);
-							return item.name
-							//按条件匹配输出
-		                }, matcher: function (item) {
-		                	//转出成json对象
-					        var item = JSON.parse(item);
-					        self.setIndex(item.id);
-					    	return item.id
-					    },
-						//item是选中的数据
-						updater:function(item){
-							//转出成json对象
-							var item = JSON.parse(item);
-							self.setIndex(item.id);
-								return item.name
-						},
-
-						
-					});
+					
 					//封装ajax主方法
 					var mainJs = {
 						//新增							

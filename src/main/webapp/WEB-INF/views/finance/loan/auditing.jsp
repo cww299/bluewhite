@@ -144,7 +144,7 @@
 						url: '${ctx}/fince/getConsumption' ,
 						where:{
 							flag:0,
-							type:9
+							type:6
 						},
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
@@ -173,34 +173,38 @@
 								align: 'center',
 								fixed: 'left'
 							},{
+								field: "withholdReason",
+								title: "借款方",
+								templet: function(d){
+									return d.custom.name
+								}
+							},{
 								field: "content",
-								title: "申请内容",
+								title: "内容",
 								align: 'center',
-							}, {
-								field: "userId",
-								title: "申请人",
+							},{
+								field: "budget",
+								title: "是否预算",
 								align: 'center',
 								search: true,
 								edit: false,
-								type: 'normal',
 								templet: function(d){
-									return d.user.userName;
+									if(d.budget==0){
+										return "是"
+									}else{
+									return "否"
+									}
 								}
 							}, {
 								field: "money",
-								title: "申请金额",
+								title: "支付金额",
+								align: 'center',
 							}, {
 								field: "expenseDate",
-								title: "回款日期",
-							}, {
-								field: "withholdReason",
-								title: "扣款事由",
-							}, {
-								field: "withholdMoney",
-								title: "扣款金额",
+								title: "预计付款日期",
 							}, {
 								field: "paymentDate",
-								title: "实际回款时间",
+								title: "实际付款时间",
 								style:'background-color: #d8fe83',
 							}, {
 								field: "paymentMoney",

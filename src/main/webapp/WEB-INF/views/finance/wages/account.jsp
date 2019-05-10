@@ -408,19 +408,6 @@
 						}
 					});
 
-					//监听单元格编辑
-					table.on('edit(tableData)', function(obj) {
-						var value = obj.value ,//得到修改后的值
-							data = obj.data ,//得到所在行所有键值
-							field = obj.field, //得到字段
-							id = data.id;
-							var postData = {
-								id:id,
-								[field]:value
-							}
-							//调用新增修改
-							mainJs.fUpdate(postData);
-					});
 
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {

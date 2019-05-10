@@ -12,10 +12,9 @@
 <script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 <%-- <script src="${ctx }/static/layui-v2.4.5/autocomplete/jquery-ui.js"></script> --%>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="${ctx }/static/css/bootstrap.min.css"> 
 <link rel="stylesheet" href="${ctx }/static/css/main.css">  <!-- 界面样式 -->
   <script src="${ctx }/static/js/vendor/typeahead.js"></script>
-  <script src="${ctx }/static/js/shujuhuixian/sjhx.js"></script> 
  <!--  <link rel="stylesheet" href="/resources/demos/style.css"> -->
 <head>
 <meta charset="utf-8">
@@ -519,7 +518,6 @@
 							                        //处理 json对象为字符串
 							                        return JSON.stringify(aItem);
 							                    });
-											console.log(result.data.rows)
 											if(result.data.rows=="" || result.data.rows=="undefined"){
 												 self.setCache("");
 											}
@@ -554,67 +552,7 @@
 					
 					
 					
-					//编辑
-					table.on('tool(tableData)', function(obj) {
-						document.getElementById("layuiadmin-form-admin").reset();
-			        	layui.form.render();
-						var data = obj.data;
-						var value = obj.value
-						var id=data.id;
-						var val=obj.field
-						var id=data.id
-						self.setIndex(data.custom.id)
-					    if(obj.event === 'update'){
-					    	var dicDiv=$('#layuiadmin-form-admin');
-							$("#restTimeSummer").val(data.restTimeSummer)
-					    	$("#layuiadmin-form-admin").setForm({customerName:data.custom.name,money:data.money,taxPoint:data.taxPoint,paymentDate:data.expenseDate,withholdReason:data.withholdReason,withholdMoney:data.withholdMoney});
-					    	layer.open({
-						         type: 1
-						        ,title: "修改" //不显示标题栏
-						        ,closeBtn: false
-						        ,area:['30%', '70%']
-						        ,shade: 0.5
-						        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
-						        ,btn: ['确定', '取消']
-						        ,btnAlign: 'c'
-						        ,moveType: 1 //拖拽模式，0或者1
-						        ,content:dicDiv
-						        ,success : function(layero, index) {
-						        	layero.addClass('layui-form');
-									// 将保存按钮改变成提交按钮
-									layero.find('.layui-layer-btn0').attr({
-										'lay-filter' : 'addRole',
-										'lay-submit' : ''
-									})
-						        }
-						        ,yes: function(index, layero){
-						        	form.on('submit(addRole)', function(data) {
-						        		var	field={
-						        				id:id,
-							        			customerName:data.field.customerName,
-							        			money:data.field.money,
-							        			customId:self.getIndex(),
-							        			expenseDate:data.field.paymentDate,
-							        			taxPoint:data.field.taxPoint,
-							        			withholdMoney:data.field.withholdMoney,
-							        			withholdReason:data.field.withholdReason,
-							        			type:5
-							        		}
-						        	 mainJs.fAdd(field); 
-									})
-									
-						        }
-						        ,end:function(){
-						        	document.getElementById("layuiadmin-form-admin").reset();
-						        	layui.form.render();
-						        	timeAll=""
-								  } 
-						       
-						      });
-					    	
-					    	
-					    }
-					});
+					
 				
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
