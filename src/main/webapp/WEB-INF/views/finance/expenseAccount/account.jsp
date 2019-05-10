@@ -3,6 +3,7 @@
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html class="no-js">
+<%@ taglib uri="http://shiro.apache.org/tags" prefix="shiro" %>
 
 <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 <script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
@@ -26,29 +27,37 @@
 						<tr>
 							<td>报销人:</td>
 							<td><input type="text" name="Username" id="firstNames" class="layui-input" /></td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td>报销内容:</td>
 							<td><input type="text" name="content" class="layui-input" /></td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td><select class="form-control" name="expenseDate" id="selectone">
 									<option value="2018-10-08 00:00:00">申请日期</option>
 								</select></td>
-							<td>&nbsp&nbsp</td>
-							<td>开始:</td>
+							<td>&nbsp;&nbsp;</td>
 							<td><input id="startTime" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
 							</td>
-							<td>&nbsp&nbsp</td>
-							<td>结束:</td>
+							<td>&nbsp;&nbsp;</td>
+							<!-- <td>结束:</td>
 							<td><input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="layui-input laydate-icon">
-							</td>
-							<td>&nbsp&nbsp</td>
+							</td> -->
+							<!-- 修改如下 -->
+							<td>&nbsp;&nbsp;</td>
+							<td>是否预算:
+							<td><select class="form-control" name="budget">
+									<option value="">请选择</option>
+									<option value="1">是</option>
+									<option value="0">否</option>
+							</select></td>
+							
+							<td>&nbsp;&nbsp;</td>
 							<td>是否核对:
 							<td><select class="form-control" name="flag">
 									<option value="">请选择</option>
 									<option value="0">未核对</option>
 									<option value="1">已核对</option>
 							</select></td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
 									<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
@@ -61,6 +70,11 @@
 				</div>
 			</div>
 			<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
+			
+			<shiro:hasAnyRoles name="personnel">
+   				 <p id="totalAll" style="text-align:center;"></p>
+			</shiro:hasAnyRoles>
+			
 		</div>
 	</div>
 	
@@ -102,6 +116,38 @@
 						,laydate = layui.laydate //日期控件
 						,tablePlug = layui.tablePlug //表格插件
 						,element = layui.element;
+					
+					
+					//预算报销总计、报销总计、共计。数据获取
+					function getDate(){
+						if(document.getElementById("totalAll")!=null){
+							$.ajax({
+								url:"${ctx}/fince/countConsumptionMoney",
+								success:function(result){
+									if(0==result.code){
+										return;
+										var html="";
+										var data=result.data;
+										html+='<label>预算报销总计:'+data+'<label>'
+											+'<label>报销总计：'+data+'</label>'
+											+'<label>共计：'+data+'</label>';
+										$('#total').append(html);
+									}else{
+										$('#total').append('<label style="color:red;">获取数据异常</label>');
+									}
+								}
+							})
+						}
+					}
+					
+					
+					
+					
+					
+					
+					
+					
+					
 					//全部字段
 					var allField;
 					var self = this;
@@ -121,11 +167,12 @@
 					laydate.render({
 						elem: '#startTime',
 						type: 'datetime',
+						range: '~',
 					});
-					laydate.render({
+					/* laydate.render({
 						elem: '#endTime',
 						type: 'datetime',
-					});
+					}); */
 				 
 					$.ajax({
 						url: '${ctx}/system/user/findAllUser',
@@ -199,7 +246,7 @@
 						},//开启分页
 						loading: true,
 						toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
-						/*totalRow: true //开启合计行 */
+						//totalRow: true,		 //开启合计行 */
 						cellMinWidth: 90,
 						colFilterRecord: true,
 						smartReloadModel: true,// 开启智能重载
@@ -769,11 +816,15 @@
 					
 					
 					//监听搜索
-					form.on('submit(LAY-search)', function(data) {
-						var field = data.field;
+					form.on('submit(LAY-search)', function(obj) {		//修改此处
+						var field = obj.field;
+						var orderTime=field.orderTimeBegin.split('~');
+						field.orderTimeBegin=orderTime[0];
+						field.orderTimeEnd=orderTime[1];
+						console.log(field)
 						table.reload('tableData', {
 							where: field
-						});
+						});  
 					});
 					
 					
