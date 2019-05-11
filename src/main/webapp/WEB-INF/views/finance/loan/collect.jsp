@@ -24,11 +24,8 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>报销人:</td>
-							<td><input type="text" name="username" id="firstNames" class="layui-input" /></td>
-							<td>&nbsp&nbsp</td>
-							<td>报销内容:</td>
-							<td><input type="text" name="content" class="layui-input" /></td>
+							<td>借款方:</td>
+							<td><input type="text" name="customerName" id="firstNames" class="layui-input" /></td>
 							<td>&nbsp&nbsp</td>
 							<td><select class="layui-input" name="selectone" id="selectone">
 									<option value="expenseDate">申请日期</option>
@@ -241,18 +238,24 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
-						var a=data.field.selectone
-							var data={
-									username:data.field.username,
-									content:data.field.content,
-									orderTimeBegin:data.field.orderTimeBegin,
-									orderTimeEnd:data.field.orderTimeEnd,
-									flag:data.field.flag,
-									[a]:"2018-11-08 00:00:00",
-							}
-						 	 table.reload('tableData', {
-								where: data
-							}); 
+						var a="";
+						var b="";
+						if($("#selectone").val()=="expenseDate"){
+							a="2019-05-08 00:00:00"
+						}else{
+							b="2019-05-08 00:00:00"
+						}
+						var post={
+							customerName:field.customerName,
+							flag:field.flag,
+							orderTimeBegin:field.orderTimeBegin,
+							orderTimeEnd:field.orderTimeEnd,
+							expenseDate:a,
+							paymentDate:b,
+						}
+						table.reload('tableData', {
+							where: post
+						});
 					});
 					
 

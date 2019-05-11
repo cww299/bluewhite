@@ -285,6 +285,7 @@
 							}, {
 								field: "expenseDate",
 								title: "预计付款日期",
+								align: 'center',
 							}]
 						],
 						done: function() {

@@ -321,7 +321,6 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
-						console.log(field);
 						var a="";
 						var b="";
 						if($("#selectone").val()=="expenseDate"){

@@ -237,18 +237,24 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
-						var a=data.field.selectone
-							var data={
-									username:data.field.username,
-									content:data.field.content,
-									orderTimeBegin:data.field.orderTimeBegin,
-									orderTimeEnd:data.field.orderTimeEnd,
-									flag:data.field.flag,
-									[a]:"2018-11-08 00:00:00",
-							}
-						 	 table.reload('tableData', {
-								where: data
-							}); 
+						var a="";
+						var b="";
+						if($("#selectone").val()=="expenseDate"){
+							a="2019-05-08 00:00:00"
+						}else{
+							b="2019-05-08 00:00:00"
+						}
+						var post={
+							customerName:field.customerName,
+							flag:field.flag,
+							orderTimeBegin:field.orderTimeBegin,
+							orderTimeEnd:field.orderTimeEnd,
+							expenseDate:a,
+							paymentDate:b,
+						}
+						table.reload('tableData', {
+							where: post
+						});
 					});
 					
 

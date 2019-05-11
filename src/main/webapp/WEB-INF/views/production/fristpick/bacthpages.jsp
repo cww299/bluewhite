@@ -60,7 +60,7 @@
 			</tr>
 		</table>
 		<h1 class="page-header"></h1>
-		<table class="table table-hover">
+		<table class="table table-condensed table-hover">
 			<thead>
 				<tr>
 					<th class="center"><label> <input type="checkbox"
@@ -68,7 +68,7 @@
 					</label></th>
 					<th class="text-center">批次号</th>
 					<th class="text-center">时间</th>
-					<th class="text-center">产品名</th>
+					<th class="text-center" style="width: 250px;">产品名</th>
 					<th class="text-center">数量</th>
 					<th class="text-center">预计生产单价</th>
 					<th class="text-center">外发价格</th>

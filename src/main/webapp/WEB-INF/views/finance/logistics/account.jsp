@@ -31,11 +31,11 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>供应商名称:</td>
+							<td>物流点名称:</td>
 							<td><input type="text" name="customerName" id="firstNames" class="layui-input" /></td>
 							<td>&nbsp&nbsp</td>
 							<td><select class="form-control" name="expenseDate" id="selectone">
-									<option value="2018-10-08 00:00:00">申请日期</option>
+									<option value="2018-10-08 00:00:00">预计付款日期</option>
 								</select></td>
 							<td>&nbsp&nbsp</td>
 							<td>开始:</td>
@@ -262,6 +262,7 @@
 							}, {
 								field: "logisticsDate",
 								title: "物流订单日期",
+								align: 'center',
 							}, {
 								field: "userId",
 								title: "客户名称",

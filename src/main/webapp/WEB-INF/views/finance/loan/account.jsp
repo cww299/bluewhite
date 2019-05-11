@@ -430,8 +430,6 @@
 					        },
 							yes:function(){
 								form.on('submit(addRole)', function(data) {
-									console.log(self.getIndex())
-									console.log(self.getCache())
 						        	var	field={
 						        			id:id,
 						        			customerName:data.field.customerName,
@@ -478,7 +476,6 @@
 							                        //处理 json对象为字符串
 							                        return JSON.stringify(aItem);
 							                    });
-											console.log(result.data.rows)
 											if(result.data.rows=="" || result.data.rows=="undefined"){
 												 self.setIndex("");
 											}

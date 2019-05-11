@@ -55,7 +55,7 @@
 			</tr>
 		</table>
 		<h1 class="page-header"></h1>
-		<table class="table table-hover" style="padding:0px">
+		<table class="table table-condensed table-hover" style="padding:0px">
 				<thead>
 					<tr>
 						<th class="center"><label> <input type="checkbox"
@@ -63,7 +63,7 @@
 						</label></th>
 						<th class="text-center">批次号</th>
 						<th class="text-center">时间</th>
-						<th class="text-center">产品名</th>
+						<th class="text-center" style="width: 250px;">产品名</th>
 						<th class="text-center">数量</th>
 						<th class="text-center">预计生产单价</th>
 						<th class="text-center">外发价格</th>
@@ -149,7 +149,7 @@
 			</tr>
 		</table>
 		<div class="panel-body">
-			<table class="table table-hover">
+			<table class="table table-condensed table-hover">
 				<thead>
 					<tr>
 						<th class="center"><label> <input type="checkbox"
@@ -1140,7 +1140,7 @@
 				});
 				/* 一键完成  */
 				/* $('.start').on('click',function(){
-					  var  that=$(".table-hover");
+					  var  that=$(".table-condensed table-hover");
 					  var arr=new Array()//员工id
 					  that.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
 							arr.push($(this).val());   
