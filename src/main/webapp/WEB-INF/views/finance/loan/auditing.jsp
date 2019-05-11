@@ -30,11 +30,12 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>申请人:</td>
-							<td><input type="text" name="username" id="firstNames" class="layui-input" /></td>
+							<td>借款方:</td>
+							<td><input type="text" name="customerName" id="firstNames" class="layui-input" /></td>
 							<td>&nbsp&nbsp</td>
-							<td><select class="layui-input" name="expenseDate" id="selectone">
-									<option value="2018-10-08 00:00:00">回款日期</option>
+							<td><select class="layui-input" id="selectone">
+									<option value="expenseDate">预计付款日期</option>
+									<option value="paymentDate">实际付款日期</option>
 							</select></td>
 							<td>&nbsp&nbsp</td>
 							<td>开始:</td>
@@ -144,7 +145,7 @@
 						url: '${ctx}/fince/getConsumption' ,
 						where:{
 							flag:0,
-							type:9
+							type:6
 						},
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
@@ -173,34 +174,38 @@
 								align: 'center',
 								fixed: 'left'
 							},{
+								field: "withholdReason",
+								title: "借款方",
+								templet: function(d){
+									return d.custom.name
+								}
+							},{
 								field: "content",
-								title: "申请内容",
+								title: "内容",
 								align: 'center',
-							}, {
-								field: "userId",
-								title: "申请人",
+							},{
+								field: "budget",
+								title: "是否预算",
 								align: 'center',
 								search: true,
 								edit: false,
-								type: 'normal',
 								templet: function(d){
-									return d.user.userName;
+									if(d.budget==0){
+										return "是"
+									}else{
+									return "否"
+									}
 								}
 							}, {
 								field: "money",
-								title: "申请金额",
+								title: "支付金额",
+								align: 'center',
 							}, {
 								field: "expenseDate",
-								title: "回款日期",
-							}, {
-								field: "withholdReason",
-								title: "扣款事由",
-							}, {
-								field: "withholdMoney",
-								title: "扣款金额",
+								title: "预计付款日期",
 							}, {
 								field: "paymentDate",
-								title: "实际回款时间",
+								title: "实际付款时间",
 								style:'background-color: #d8fe83',
 							}, {
 								field: "paymentMoney",
@@ -316,8 +321,23 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
+						var a="";
+						var b="";
+						if($("#selectone").val()=="expenseDate"){
+							a="2019-05-08 00:00:00"
+						}else{
+							b="2019-05-08 00:00:00"
+						}
+						var post={
+							customerName:field.customerName,
+							flag:field.flag,
+							orderTimeBegin:field.orderTimeBegin,
+							orderTimeEnd:field.orderTimeEnd,
+							expenseDate:a,
+							paymentDate:b,
+						}
 						table.reload('tableData', {
-							where: field
+							where: post
 						});
 					});
 					

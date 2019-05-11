@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
@@ -88,7 +87,11 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 				predicate.add(
 						cb.like(root.get("user").get("userName").as(String.class), "%" + param.getUsername() + "%"));
 			}
-
+			// 按报销人姓名查找
+			if (!StringUtils.isEmpty(param.getCustomerName())) {
+				predicate.add(
+						cb.like(root.get("custom").get("name").as(String.class), "%" + param.getCustomerName() + "%"));
+			}
 			// 按报销內容查找
 			if (!StringUtils.isEmpty(param.getContent())) {
 				predicate.add(cb.like(root.get("content").as(String.class),

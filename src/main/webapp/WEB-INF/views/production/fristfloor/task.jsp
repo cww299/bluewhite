@@ -58,14 +58,14 @@
 			</tr>
 		</table>
 		<h1 class="page-header"></h1>
-		<table class="table table-hover">
+		<table class="table table-condensed table-condensed table-hover">
 			<thead>
 				<tr>
 					<th class="center"><label> <input type="checkbox"
 							class="ace checks" /> <span class="lbl"></span>
 					</label></th>
 					<th class="text-center">批次号</th>
-					<th class="text-center">产品名</th>
+					<th class="text-center" style="width: 250px;">产品名</th>
 					<th class="text-center">时间</th>
 					<th class="text-center">工序</th>
 					<th class="text-center">预计时间</th>

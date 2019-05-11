@@ -67,7 +67,7 @@
 		</tr>
 	</table>
 	<h1 class="page-header"></h1>		
-	<table class="table table-hover">
+	<table class="table table-condensed table-hover">
 		<thead>
 			<tr>
 				<th class="center"><label> <input type="checkbox"
@@ -75,7 +75,7 @@
 				</label></th>
 				<th class="text-center">批次号</th>
 				<th class="text-center">时间</th>
-				<th class="text-center">产品名</th>
+				<th class="text-center" style="width: 250px;">产品名</th>
 				<th class="text-center">数量</th>
 				<th class="text-center">预计生产单价</th>
 				<th class="text-center">外发价格</th>
@@ -1592,7 +1592,7 @@
 								ids:arr,
 						}
 						var index;
-						index = layer.confirm('<input type="text" id="some" class="tele form-control " placeholder="请输入时间" onClick=laydate({elem:"#some",istime:true,format:"YYYY-MM-DD"})>', {btn: ['确定', '取消']},function(){
+						index = top.layer.confirm('<input type="text" id="some" class="tele form-control " placeholder="请输入时间" onClick=laydate({elem:"#some",istime:true,format:"YYYY-MM-DD"})>', {btn: ['确定', '取消']},function(){
 							var a="";
 							if($('#some').val()==""){
 								a="";

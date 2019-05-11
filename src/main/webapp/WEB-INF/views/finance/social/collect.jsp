@@ -11,7 +11,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>物流汇总</title>
+<title>财务汇总</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
@@ -24,11 +24,11 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>物流点名称:</td>
+							<td>报销人:</td>
 							<td><input type="text" name="customerName" id="firstNames" class="layui-input" /></td>
 							<td>&nbsp&nbsp</td>
 							<td><select class="layui-input" name="selectone" id="selectone">
-									<option value="expenseDate">申请日期</option>
+									<option value="expenseDate">预计付款日期</option>
 							</select></td>
 							<td>&nbsp&nbsp</td>
 							<td>开始:</td>
@@ -127,7 +127,7 @@
 						url: '${ctx}/fince/getConsumption' ,
 						where:{
 							flag:0,
-							type:5
+							type:7
 						},
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
@@ -157,30 +157,35 @@
 								align: 'center',
 								fixed: 'left'
 							},{
-								field: "logisticsDate",
-								title: "物流订单日期",
-							},{
-								field: "userId",
-								title: "客户名称",
-								align: 'center',
-								search: true,
-								templet: function(d){
-									return d.contact.conPartyNames
-								}
-							}, {
 								field: "withholdReason",
-								title: "物流点名称",
+								title: "报销人",
 								templet: function(d){
 									return d.custom.name
 								}
-							}, {
-								field: "money",
-								title: "支付金额",
+							},{
+								field: "content",
+								title: "内容",
 								align: 'center',
 							},{
+								field: "budget",
+								title: "是否预算",
+								align: 'center',
+								search: true,
+								edit: false,
+								templet: function(d){
+									if(d.budget==0){
+										return "是"
+									}else{
+									return "否"
+									}
+								}
+							},{
+								field: "money",
+								title: "报销申请金额",
+							},{
 								field: "expenseDate",
-								title: "申请日期",
-							}, {
+								title: "报销申请日期",
+							},{
 								field: "flag",
 								title: "审核状态",
 								templet:  function(d){
@@ -232,12 +237,20 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
+						var a="";
+						var b="";
+						if($("#selectone").val()=="expenseDate"){
+							a="2019-05-08 00:00:00"
+						}else{
+							b="2019-05-08 00:00:00"
+						}
 						var post={
 							customerName:field.customerName,
 							flag:field.flag,
 							orderTimeBegin:field.orderTimeBegin,
 							orderTimeEnd:field.orderTimeEnd,
-							expenseDate:"2019-05-08 00:00:00",
+							expenseDate:a,
+							paymentDate:b,
 						}
 						table.reload('tableData', {
 							where: post

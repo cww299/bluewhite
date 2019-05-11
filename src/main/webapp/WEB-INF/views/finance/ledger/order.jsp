@@ -70,7 +70,7 @@
 					<th class="text-center">乙方</th>
 					<th class="text-center">当批批次号</th>
 					<th class="text-center">当批计划单号</th>
-					<th class="text-center">当批产品名</th>
+					<th class="text-center" style="width: 300px;">当批产品名</th>
 					<th class="text-center">当批合同数量</th>
 					<th class="text-center">当批合同总价（元）</th>
 					<th class="text-center">预付款备注</th>
