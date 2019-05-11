@@ -25,14 +25,10 @@
 					<table>
 						<tr>
 							<td>报销人:</td>
-							<td><input type="text" name="username" id="firstNames" class="layui-input" /></td>
-							<td>&nbsp&nbsp</td>
-							<td>报销内容:</td>
-							<td><input type="text" name="content" class="layui-input" /></td>
+							<td><input type="text" name="customerName" id="firstNames" class="layui-input" /></td>
 							<td>&nbsp&nbsp</td>
 							<td><select class="layui-input" name="selectone" id="selectone">
-									<option value="expenseDate">申请日期</option>
-									<option value="paymentDate">付款日期</option>
+									<option value="expenseDate">预计付款日期</option>
 							</select></td>
 							<td>&nbsp&nbsp</td>
 							<td>开始:</td>
@@ -131,7 +127,7 @@
 						url: '${ctx}/fince/getConsumption' ,
 						where:{
 							flag:0,
-							type:6
+							type:7
 						},
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page

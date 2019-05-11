@@ -30,11 +30,11 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>供应商名称:</td>
+							<td>报销人:</td>
 							<td><input type="text" name="customerName" id="firstNames" class="layui-input" /></td>
 							<td>&nbsp&nbsp</td>
 							<td><select class="form-control" name="expenseDate" id="selectone">
-									<option value="2018-10-08 00:00:00">申请日期</option>
+									<option value="2018-10-08 00:00:00">预计付款日期</option>
 								</select></td>
 							<td>&nbsp&nbsp</td>
 							<td>开始:</td>
@@ -119,9 +119,6 @@
 						placeholder="请输入预计付款日期 " class="layui-input">
 				</div>
 			</div>
-
-
-			
 		</div>
 	</form>	
 
@@ -132,7 +129,7 @@
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
 				<span class="layui-btn layui-btn-sm" lay-event="update">编辑</span>
 			</div>
-		</script>
+	</script>
 
 	<script>
 			layui.config({

@@ -31,7 +31,7 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>供应商名称:</td>
+							<td>借款方:</td>
 							<td><input type="text" name="customerName" id="firstNames" class="layui-input" /></td>
 							<td>&nbsp&nbsp</td>
 							<td><select class="form-control" name="expenseDate" id="selectone">
