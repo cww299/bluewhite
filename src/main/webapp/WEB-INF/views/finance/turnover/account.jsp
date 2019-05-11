@@ -27,20 +27,16 @@
 							<td>申请人:</td>
 							<td><input type="text" name="Username" id="firstNames" class="layui-input" /></td>
 							<td>&nbsp&nbsp</td>
-							<td>申请内容:</td>
-							<td><input type="text" name="content" class="layui-input" /></td>
-							<td>&nbsp&nbsp</td>
 							<td><select class="form-control" name="expenseDate" id="selectone">
 									<option value="2018-10-08 00:00:00">回款日期</option>
 								</select></td>
 							<td>&nbsp&nbsp</td>
-							<td>开始:</td>
-							<td><input id="startTime" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
 							</td>
-							<td>&nbsp&nbsp</td>
+							<!-- <td>&nbsp&nbsp</td>
 							<td>结束:</td>
 							<td><input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="layui-input laydate-icon">
-							</td>
+							</td> -->
 							<td>&nbsp&nbsp</td>
 							<td>是否核对:
 							<td><select class="form-control" name="flag">
@@ -101,6 +97,7 @@
 					laydate.render({
 						elem: '#startTime',
 						type: 'datetime',
+						range: '~',
 					});
 					laydate.render({
 						elem: '#endTime',
@@ -191,18 +188,22 @@
 							},{
 								field: "money",
 								title: "申请金额",
-								edit: 'text'
+								edit: 'text',
+								align: 'center',
 							}, {
 								field: "expenseDate",
 								title: "回款日期",
+								align: 'center',
 								edit: 'text'
 							}, {
 								field: "withholdReason",
 								title: "扣款事由",
+								align: 'center',
 								edit: 'text'
 							}, {
 								field: "withholdMoney",
 								title: "扣款金额",
+								align: 'center',
 								edit: 'text'
 							}]
 						],
@@ -395,6 +396,9 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
+						var orderTime=field.orderTimeBegin.split('~');
+						field.orderTimeBegin=orderTime[0];
+						field.orderTimeEnd=orderTime[1];
 						table.reload('tableData', {
 							where: field
 						});

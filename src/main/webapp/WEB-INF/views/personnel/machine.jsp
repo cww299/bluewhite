@@ -207,8 +207,7 @@
 								number:data.number,
 								address:$("#select1").val(),
 						}
-			    	  console.log(postData)
-			    	index = layer.confirm('<div>输入密码:<input id="password" /></div>', {btn: ['确定', '取消']},function(){
+			    	index = top.layer.confirm('<div>输入密码:<input type="passWord" id="password" /></div>', {btn: ['确定', '取消']},function(){
 			    		if($("#password").val()==3116){
 			    	  $.ajax({
 							url:"${ctx}/personnel/deleteUser",
