@@ -31,13 +31,12 @@
 									<option value="expenseDate">预计付款日期</option>
 							</select></td>
 							<td>&nbsp&nbsp</td>
-							<td>开始:</td>
-							<td><input id="startTime" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
 							</td>
-							<td>&nbsp&nbsp</td>
+							<!-- <td>&nbsp&nbsp</td>
 							<td>结束:</td>
 							<td><input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="layui-input laydate-icon">
-							</td>
+							</td> -->
 							<td>&nbsp&nbsp</td>
 							<td>需要支付总额:
 							<td><input type="text" id="allPrice" disabled class="layui-input"  /></td>
@@ -91,11 +90,12 @@
 					laydate.render({
 						elem: '#startTime',
 						type: 'datetime',
+						range: '~',
 					});
-					laydate.render({
+					/* laydate.render({
 						elem: '#endTime',
 						type: 'datetime',
-					});
+					}); */
 				 
 					$.ajax({
 						url: '${ctx}/system/user/findAllUser',
@@ -237,20 +237,15 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
-						var a="";
-						var b="";
-						if($("#selectone").val()=="expenseDate"){
-							a="2019-05-08 00:00:00"
-						}else{
-							b="2019-05-08 00:00:00"
-						}
+						var orderTime=field.orderTimeBegin.split('~');
+						orderTimeBegin=orderTime[0];
+						orderTimeEnd=orderTime[1];
 						var post={
 							customerName:field.customerName,
 							flag:field.flag,
-							orderTimeBegin:field.orderTimeBegin,
-							orderTimeEnd:field.orderTimeEnd,
-							expenseDate:a,
-							paymentDate:b,
+							orderTimeBegin:orderTimeBegin,
+							orderTimeEnd:orderTimeEnd,
+							expenseDate:"2019-05-08 00:00:00",
 						}
 						table.reload('tableData', {
 							where: post

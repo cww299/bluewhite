@@ -38,13 +38,12 @@
 									<option value="2018-10-08 00:00:00">申请日期</option>
 								</select></td>
 							<td>&nbsp&nbsp</td>
-							<td>开始:</td>
-							<td><input id="startTime" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
 							</td>
-							<td>&nbsp&nbsp</td>
+							<!-- <td>&nbsp&nbsp</td>
 							<td>结束:</td>
 							<td><input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="layui-input laydate-icon">
-							</td>
+							</td> -->
 							<td>&nbsp&nbsp</td>
 							<td>是否核对:
 							<td><select class="form-control" name="flag">
@@ -180,10 +179,7 @@
 					laydate.render({
 						elem: '#startTime',
 						type: 'datetime',
-					});
-					laydate.render({
-						elem: '#endTime',
-						type: 'datetime',
+						range: '~',
 					});
 				 
 				
@@ -490,6 +486,9 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
+						var orderTime=field.orderTimeBegin.split('~');
+						field.orderTimeBegin=orderTime[0];
+						field.orderTimeEnd=orderTime[1];
 						table.reload('tableData', {
 							where: field
 						});

@@ -38,13 +38,12 @@
 									<option value="paymentDate">实际付款日期</option>
 							</select></td>
 							<td>&nbsp&nbsp</td>
-							<td>开始:</td>
-							<td><input id="startTime" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input">
+							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input">
 							</td>
-							<td>&nbsp&nbsp</td>
+							<!-- <td>&nbsp&nbsp</td>
 							<td>结束:</td>
 							<td><input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="layui-input">
-							</td>
+							</td> -->
 							<td>&nbsp&nbsp</td>
 							<td>是否核对:
 							<td><select class="form-control" name="flag">
@@ -109,6 +108,7 @@
 					laydate.render({
 						elem: '#startTime',
 						type: 'datetime',
+						range: '~',
 					});
 					laydate.render({
 						elem: '#endTime',
@@ -315,6 +315,9 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
+						var orderTime=field.orderTimeBegin.split('~');
+						orderTimeBegin=orderTime[0];
+						orderTimeEnd=orderTime[1];
 						var a="";
 						var b="";
 						if($("#selectone").val()=="expenseDate"){
@@ -325,8 +328,8 @@
 						var post={
 							customerName:field.customerName,
 							flag:field.flag,
-							orderTimeBegin:field.orderTimeBegin,
-							orderTimeEnd:field.orderTimeEnd,
+							orderTimeBegin:orderTimeBegin,
+							orderTimeEnd:orderTimeEnd,
 							expenseDate:a,
 							paymentDate:b,
 						}
