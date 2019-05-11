@@ -30,6 +30,7 @@ import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 import com.sun.star.reflection.InvocationTargetException;
 
+
 /**
  * 
  * @author zhangliang
@@ -74,7 +75,7 @@ public class IndexAction {
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse login(HttpServletRequest request,
-			HttpServletResponse reponse, String username, String password){
+			HttpServletResponse reponse, String username, String password,Boolean rememberme){
 		CommonResponse cr = new CommonResponse();
 		Subject subject = SecurityUtils.getSubject();
 		CurrentUser cu = (CurrentUser)subject.getSession().getAttribute("user");
@@ -82,6 +83,11 @@ public class IndexAction {
 		if(cu != null && subject.isAuthenticated() && subject.getPrincipal().equals(username)){
 			cr.setMessage("用户已登录");
 		}else{
+            // 不论用户输入的是用户名还是手机号, 前台标签统一用username接收
+            UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+            // 设置是否'记住我'
+            rememberme = rememberme == null ? false : rememberme;   //null=>false
+            token.setRememberMe(rememberme);
 			//用户未登录
 			try {
 				subject.login(new UsernamePasswordToken(username, password));
@@ -98,6 +104,27 @@ public class IndexAction {
 		}
 		return cr;
 	}
+	
+	
+	
+	/**
+	 * 普通用户登录
+	 * @param request 请求
+	 * @param reponse 回复
+	 * @param username 用户名
+	 * @param password 密码
+	 * @return cr
+	 */
+	@RequestMapping(value = "/test", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse test(User user){
+		CommonResponse cr = new CommonResponse();
+		cr.setData(userService.findUserList(user));
+		return cr;
+	}
+	
+	
+	
 	
 
 	/**
