@@ -23,6 +23,12 @@ import com.bluewhite.system.user.entity.User;
 @Entity
 @Table(name = "online_procurement")
 public class Procurement extends BaseEntity<Long>{
+	
+	/**
+	 * 单据号
+	 */
+	@Column(name = "document_number")
+	private String documentNumber;
 
 	/**
 	 * 经手人id
@@ -92,6 +98,15 @@ public class Procurement extends BaseEntity<Long>{
 	
 	
 	
+	
+
+	public String getDocumentNumber() {
+		return documentNumber;
+	}
+
+	public void setDocumentNumber(String documentNumber) {
+		this.documentNumber = documentNumber;
+	}
 
 	public Integer getStatus() {
 		return status;

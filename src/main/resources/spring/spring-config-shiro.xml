@@ -8,7 +8,16 @@
 	 <!-- 继承自AuthorizingRealm的自定义Realm,即指定Shiro验证用户登录的类为自定义的 继承 AuthorizingRealm -->  
 	<bean id="userRealm" class="com.bluewhite.shiro.realm.UserRealm">
 	  	<property name="credentialsMatcher" ref="credentialsMatcher" /> 
-		<property name="cachingEnabled" value="false"></property>
+		 <!-- 打开缓存 -->
+        <property name="cachingEnabled" value="true"/>
+        <!-- 打开身份认证缓存 -->
+        <property name="authenticationCachingEnabled" value="true"/>
+        <!-- 打开授权缓存 -->
+        <property name="authorizationCachingEnabled" value="true"/>
+        <!-- 缓存AuthenticationInfo信息的缓存名称 --> 
+        <property name="authenticationCacheName" value="sysUserCache"/>
+        <!-- 缓存AuthorizationInfo信息的缓存名称 -->
+        <property name="authorizationCacheName" value="sysAuthCache"/>
 	</bean>
 	
 	<!-- 凭证匹配器  -->
@@ -19,11 +28,11 @@
         <property name="hashIterations" value="1"></property>
     </bean>
 	
-	<!-- shiro缓存管理器 
+	<!-- shiro缓存管理器   -->
 	<bean id="shiroCacheManager" class="com.bluewhite.shiro.cache.spring.SpringCacheManagerWrapper">
         <property name="cacheManager" ref="springCacheManager"/>
     </bean>
-    -->
+  
      <!---cookie-->
     <!-- 会话ID生成器 -->
     <bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator"/>
@@ -36,20 +45,19 @@
     </bean>
     
     
-	<!--<bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+	<bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
         <constructor-arg value="rememberMe"/>
         <property name="httpOnly" value="true"/>
-        <property name="maxAge" value="2592000"/>30天
-    </bean> -->
+        <property name="maxAge" value="2592000"/><!-- 30天 -->
+    </bean> 
     
 	<!-- rememberMe管理器 -->
     <!-- rememberMe cookie加密的密钥 默认AES算法 密钥长度（128 256 512 位）-->
-	<!--     
 	<bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
         <property name="cipherKey"
                   value="#{T(org.apache.shiro.codec.Base64).decode('4AvVhmFLUs0KTA3Kprsdag==')}"/>
         <property name="cookie" ref="rememberMeCookie"/>
-    </bean> -->
+    </bean> 
 
 	<!-- 会话DAO -->
     <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
@@ -79,8 +87,8 @@
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
 		<property name="realm" ref="userRealm"></property>
 		<property name="sessionManager" ref="sessionManager"/>
-    <!--     <property name="cacheManager" ref="shiroCacheManager"/> -->
-   <!--      <property name="rememberMeManager" ref="rememberMeManager"/> -->
+        <property name="cacheManager" ref="shiroCacheManager"/> 
+        <property name="rememberMeManager" ref="rememberMeManager"/> 
 	</bean>
     <!-- 退出登录过滤器 -->
     <bean id="logoutFilter" class="org.apache.shiro.web.filter.authc.LogoutFilter">
@@ -95,10 +103,10 @@
 		<property name="securityManager" ref="securityManager"/>
 		 <!-- 要求登录时的链接(可根据项目的URL进行替换),非必须的属性,默认会自动寻找Web工程根目录下的"/login.jsp"页面 -->
 		<property name="loginUrl" value="/login.jsp"/>
-		 <!-- 登录成功后要跳转的连接(也可以根据实际要求登录后登录到被拒绝的页面，登录成功后的处理逻辑可以在LoginController里编写) 
-         <property name="successUrl" value="" /> -->  
-        <!-- 用户访问未对其授权的资源时,所显示的连接(此配置 要求登录) -->  
-		<property name="unauthorizedUrl" value="/common/500"/>
+		 <!-- 登录成功后要跳转的连接(也可以根据实际要求登录后登录到被拒绝的页面，登录成功后的处理逻辑可以在LoginController里编写)-->
+        <property name="successUrl" value="/index.jsp" />  
+        <!-- 用户访问未对其授权的资源时,所显示的连接(此配置 要求登录) 
+		<property name="unauthorizedUrl" value="/login.jsp"/> --> 
 		  <!-- Shiro过滤器的定义 -->  
 		<property name="filters"> 
             <util:map>

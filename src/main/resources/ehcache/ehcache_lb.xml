@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE xml>
 <ehcache name="es">
-
     <diskStore path="java.io.tmpdir"/>
-    
       <!--
        name:缓存名称。
        maxElementsInMemory：缓存最大个数。
@@ -38,7 +35,7 @@
     </cache>
 
     <!-- 系统用户缓存  没必要过期 -->
-    <cache name="sys-userCache"
+    <cache name="sysUserCache"
            maxEntriesLocalHeap="10000"
            overflowToDisk="false"
            eternal="false"
@@ -48,7 +45,7 @@
            statistics="true"/>
 
     <!-- 系统用户授权缓存  没必要过期 -->
-    <cache name="sys-authCache"
+    <cache name="sysAuthCache"
            maxEntriesLocalHeap="10000"
            overflowToDisk="false"
            eternal="false"
@@ -59,7 +56,7 @@
            statistics="true"/>
 
     <!-- 菜单缓存  没必要过期 -->
-    <cache name="sys-menuCache"
+    <cache name="sysMenuCache"
            maxEntriesLocalHeap="10000"
            overflowToDisk="false"
            eternal="false"
@@ -79,37 +76,6 @@
            timeToIdleSeconds="0"
            statistics="true"/>
            
-    <!-- 用户访问接口的accessToken缓存，24小时 -->
-    <cache name="apiAccessTokenCache"
-           maxEntriesLocalHeap="2000"
-           eternal="false"
-           timeToIdleSeconds="3600"
-           timeToLiveSeconds="0"
-           overflowToDisk="false"
-           statistics="true">
-    </cache>
-    
-    
-    
-     <cache name="code-cache-auth2"
-           maxEntriesLocalHeap="2000"
-           eternal="false"
-           timeToIdleSeconds="30"
-           timeToLiveSeconds="0"
-           overflowToDisk="false"
-           statistics="true">
-    </cache>
-    
-    <!-- 专门给部门树检索增加缓存  -->
-    <cache name="department-user-search-cash"
-           maxEntriesLocalHeap="2000"
-           eternal="false"
-           timeToIdleSeconds="300"
-           timeToLiveSeconds="0"
-           overflowToDisk="false"
-           statistics="true">
-    </cache>
-    
     
 
 </ehcache>

@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -341,6 +342,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			}else{
 				user.setPassword( new SimpleHash("md5", "123456").toHex());
 				user.setForeigns(0);
+				user.setStatus(0);
 				UserContract userContract = new UserContract();
 				userContractDao.save(userContract);
 				user.setUserContract(userContract);
@@ -352,6 +354,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	}
 
 	@Override
+	@Cacheable(value="testDao")
 	public List<User> findUserList(User user) {
 		List<User> result = userDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();

@@ -31,6 +31,12 @@ import com.bluewhite.system.user.entity.User;
 @Entity
 @Table(name = "online_order")
 public class OnlineOrder extends BaseEntity<Long> {
+	
+	/**
+	 * 单据号
+	 */
+	@Column(name = "document_number")
+	private String documentNumber;
 
 	/**
 	 * 销售人员id
@@ -170,13 +176,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 	 */
 	@Column(name = "status")
 	private String status;
-	
-	/**
-	 * 单据号
-	 */
-	@Column(name = "document_number")
-	private String documentNumber;
-	
 	
 	/**
 	 * 整单优惠
