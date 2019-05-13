@@ -176,12 +176,13 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		order.setAshoreNumber(NumUtils.setzro(order.getAshoreNumber()));
 		order.setDisputeNumber(NumUtils.setzro(order.getDisputeNumber()));
 		 String test=order.getProductName();
-		 if (test.indexOf("裸熊")!=-1 || test.indexOf("KT")!=-1 || test.indexOf("漫威")!=-1 || test.indexOf("老皮")!=-1 || test.indexOf("阿宝")!=-1 || test.indexOf("哔莫")!=-1 || test.indexOf("熊熊遇见你午睡枕")!=-1 || test.indexOf("芝麻街")!=-1){
-			 order.setProductName(order.getProductName()+"(版权)");//当批产品名
-	        }else{
-	        order.setProductName(order.getProductName());//当批产品名
-	        }
+		 
 		if(order.getId()==null){
+			if (test.indexOf("裸熊")!=-1 || test.indexOf("KT")!=-1 || test.indexOf("漫威")!=-1 || test.indexOf("老皮")!=-1 || test.indexOf("阿宝")!=-1 || test.indexOf("哔莫")!=-1 || test.indexOf("熊熊遇见你午睡枕")!=-1 || test.indexOf("芝麻街")!=-1){
+				 order.setProductName(order.getProductName()+"(版权)");//当批产品名
+		        }else{
+		        order.setProductName(order.getProductName());//当批产品名
+		        }
 			Order order2 = new Order();
 			order2.setOrderTimeBegin(DatesUtil.getFirstDayOfMonth(order.getContractTime()));
 			order2.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(order.getContractTime()));

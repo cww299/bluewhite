@@ -209,6 +209,7 @@
 					table.render({
 						elem: '#tableData',
 						size: 'lg',
+						height:'700px',
 						url: '${ctx}/fince/getConsumption' ,
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
