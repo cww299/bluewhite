@@ -13,7 +13,6 @@
 	<script src="${ctx }/static/js/laypage/laypage.js"></script> 
 	<link rel="stylesheet" href="${ctx }/static/css/main.css">
 	<link rel="stylesheet" href="${ctx }/static/sfm/css/bootstrap-datetimepicker.min.css">
-	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>批次管理</title>

@@ -16,7 +16,6 @@
 	<script src="${ctx }/static/js/layer/layer.js"></script>
 	<script src="${ctx }/static/js/laypage/laypage.js"></script> 
 	<link rel="stylesheet" href="${ctx }/static/css/main.css">
-	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 	
 
 <meta name="description" content="">

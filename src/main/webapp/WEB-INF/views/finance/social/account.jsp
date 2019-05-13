@@ -9,7 +9,6 @@
 <%-- <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/autocomplete/jquery-ui.css" media="all"> --%>
 <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
 <script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
-<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 <%-- <script src="${ctx }/static/layui-v2.4.5/autocomplete/jquery-ui.js"></script> --%>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <link rel="stylesheet" href="${ctx }/static/css/bootstrap.min.css"> 

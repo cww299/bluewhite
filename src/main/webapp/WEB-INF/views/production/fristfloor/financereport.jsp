@@ -19,7 +19,6 @@
 	<script src="${ctx }/static/js/laypage/laypage.js"></script>
 	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
-	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 <meta name="description" content="">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />

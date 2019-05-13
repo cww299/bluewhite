@@ -9,7 +9,6 @@
 	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
 	<script src="${ctx }/static/js/layer/layer.js"></script>
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
-	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>菜单管理</title>

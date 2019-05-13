@@ -6,7 +6,6 @@
 <head>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
-	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>订单列表</title>
 </head>
