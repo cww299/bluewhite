@@ -227,7 +227,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			if (!StringUtils.isEmpty(user.getRetire())) {
 				if(!StringUtils.isEmpty(user.getGender())){
 					if (user.getGender()==1) {
-						predicate.add(cb.greaterThan(root.get("age").as(Integer.class), 55 ));
+						predicate.add(cb.greaterThan(root.get("age").as(Integer.class), 50 ));
 					}else{
 						predicate.add(cb.greaterThan(root.get("age").as(Integer.class), 60 ));
 					}
