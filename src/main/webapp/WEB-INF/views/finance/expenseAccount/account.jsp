@@ -69,7 +69,7 @@
 			<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
 			
 			<shiro:hasAnyRoles name="superAdmin,personnel">
-   				 <p id="totalAll" style="text-align:center;"></p>
+   				 <p id="totalAll" style="text-align:center;color:red;"></p>
 			</shiro:hasAnyRoles>
 			
 		</div>
@@ -122,15 +122,14 @@
 								url:"${ctx}/fince/countConsumptionMoney",
 								success:function(result){
 									if(0==result.code){
-										return;
 										var html="";
 										var data=result.data;
-										html+='<label>预算报销总计:'+data+'<label>'
-											+'<label>报销总计：'+data+'</label>'
-											+'<label>共计：'+data+'</label>';
-										$('#total').append(html);
+										html+='<label>预算报销总计:'+data.budget+'<label>&nbsp;&nbsp;&nbsp;&nbsp;'
+											+'<label>报销总计：'+data.nonBudget+'</label>&nbsp;&nbsp;&nbsp;&nbsp;'
+											+'<label>共计：'+data.sumBudget+'</label>';
+										$('#totalAll').html(html);
 									}else{
-										$('#total').append('<label style="color:red;">获取数据异常</label>');
+										$('#totalAll').append('<label style="color:red;">获取数据异常</label>');
 									}
 								}
 							})
