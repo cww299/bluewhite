@@ -83,11 +83,11 @@ public class IndexAction {
 		if(cu != null && subject.isAuthenticated() && subject.getPrincipal().equals(username)){
 			cr.setMessage("用户已登录");
 		}else{
-            // 不论用户输入的是用户名还是手机号, 前台标签统一用username接收
+       /*    // 不论用户输入的是用户名还是手机号, 前台标签统一用username接收
             UsernamePasswordToken token = new UsernamePasswordToken(username, password);
             // 设置是否'记住我'
             rememberme = rememberme == null ? false : rememberme;   //null=>false
-            token.setRememberMe(rememberme);
+            token.setRememberMe(rememberme);*/
 			//用户未登录
 			try {
 				subject.login(new UsernamePasswordToken(username, password));

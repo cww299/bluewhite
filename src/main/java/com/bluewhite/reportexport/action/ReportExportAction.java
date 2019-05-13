@@ -80,7 +80,9 @@ import com.bluewhite.reportexport.entity.ProductPoi;
 import com.bluewhite.reportexport.entity.ReworkPoi;
 import com.bluewhite.reportexport.entity.UserPoi;
 import com.bluewhite.reportexport.service.ReportExportService;
+import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.entity.UserContract;
+import com.bluewhite.system.user.service.UserService;
 
 @Controller
 @RequestMapping("excel")
@@ -118,6 +120,8 @@ public class ReportExportAction {
 	@Autowired
 	private AttendanceTimeService attendanceTimeService;
 	
+	@Autowired
+	private UserService userService;
 	/**
 	 * 基础产品导入                          
 	 * @param residentmessage
@@ -847,79 +851,18 @@ public class ReportExportAction {
 	
 	
 	/**
-	 * 人事导出考勤
+	 * 人事导出
 	 * @author zhangliang
 	 * @throws ParseException 
 	 */
-	@RequestMapping("/importExcel/personnel/DownAttendance")
+	@RequestMapping("/importExcel/personnel/DownRetireUser")
 	public void DownPersonnelAttendance(HttpServletRequest request,HttpServletResponse response, AttendanceTime attendance) throws ParseException{
 		response.setContentType("octets/stream");
 	    response.addHeader("Content-Disposition", "attachment;filename=attendancePay.xlsx");
-	    
-	   Long size =  DatesUtil.getDaySub(attendance.getOrderTimeBegin(), DatesUtil.getLastDayOftime(attendance.getOrderTimeEnd()));
-	    // 声明String数组，并初始化元素（表头名称）
-       //第一行表头字段，合并单元格时字段跨几列就将该字段重复几次
-	   String excelHeader0String = ""+","+""+","+""+","+"日期"; 
-	   //  “0,2,0,0”  ===>  “起始行，截止行，起始列，截止列”
-	   String headnum0String = "0,0,0,0" +"."+ "0,0,1,1"+"."+ "0,0,2,2"+"."+"0,0,3,3";
-	   
-	   //第二行表头字段，合并单元格时字段跨几列就将该字段重复几次
-	   String excelHeader1String = ""+","+""+","+""+","+"星期"; 
-	   //  “0,2,0,0”  ===>  “起始行，截止行，起始列，截止列”
-	   String headnum1String = "1,1,0,0" +"."+ "1,1,1,1"+"."+ "1,1,2,2"+"."+"1,1,3,3";
-	   
-	   //第三行表头字段，合并单元格时字段跨几列就将该字段重复几次
-	   String excelHeader2String = "该人员所在部"+","+"姓名"+","+"约定正常工作时间保底小时工资"+","+"约定加班小时工资"; 
-	   
-	   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
-	   int count = 3;
-	   int sount = 3;
-	   Date starTime = attendance.getOrderTimeBegin();
-		for(int i=0 ; i<size ; i++){
-			count++;
-			sount++;
-			Date beginTimes = null;
-			if(i!=0){
-				//获取下一天的时间
-				beginTimes = DatesUtil.nextDay(starTime);
-			}else{
-				beginTimes = starTime;
-			}
-			 
-			String week =DatesUtil.JudgeWeek(beginTimes);
-			String work = "出勤,加班,缺勤";
-//			(0,0,4,6) (0,0,7,9)
-			String headnum = "0,0,"+count+","+(++count+1);
-			String headnum1 = "1,1,"+sount+","+(++sount+1);
-			excelHeader0String = excelHeader0String+","+sdf.format(beginTimes);
-			headnum0String = headnum0String +"."+ headnum;
-			excelHeader1String = excelHeader1String+","+week;
-			headnum1String = headnum1String +"."+ headnum1;
-			excelHeader2String = excelHeader2String +","+work;
-			count++;
-			sount++;
-			starTime = beginTimes;
-		}
-		
-		excelHeader2String = excelHeader2String + ",出勤,加班,缺勤,总出勤";
-		
-		String[] excelHeader0 = null;
-		String[] headnum0  = null;
-		String[] excelHeader1 = null;
-		String[] headnum1  = null;
-		String[] excelHeader2 = null;
-		if(!StringUtils.isEmpty(excelHeader0String) && !StringUtils.isEmpty(headnum0String)){
-			excelHeader0 = excelHeader0String.split(",");
-			headnum0 = headnum0String.split("\\.");
-			excelHeader1 = excelHeader1String.split(",");
-			headnum1 = headnum1String.split("\\.");
-			excelHeader2 = excelHeader2String.split(",");
-		}
-	    
 	    // 第一步，创建一个webbook，对应一个Excel文件  
         XSSFWorkbook wb = new XSSFWorkbook();  
         // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet  
-        XSSFSheet sheet = wb.createSheet("考勤报表"); 
+        XSSFSheet sheet = wb.createSheet("报表"); 
         
         // 表头样式
         XSSFCellStyle headStyle = wb.createCellStyle();
@@ -935,200 +878,42 @@ public class ReportExportAction {
         sheet.setDefaultColumnWidth(5);
         // 在sheet中添加表头第0行
         XSSFRow row = sheet.createRow(0);
-        int j = 0;
-        for (int i = 0; i < excelHeader0.length; i++) {
-        	if(i>4){
-        		j=j+2;
-        	}
-        	int num = i>4 ? (i+j) : i;
-          	 XSSFCell cell = row.createCell(num);
-             cell.setCellValue(excelHeader0[i]);
-             cell.setCellStyle(headStyle);
-        }
-
-        // 动态合并单元格
-        for (int i = 0; i < headnum0.length; i++) {
-            String[] temp = headnum0[i].split(",");
-            Integer startrow = Integer.parseInt(temp[0]);
-            Integer overrow = Integer.parseInt(temp[1]);
-            Integer startcol = Integer.parseInt(temp[2]);
-            Integer overcol = Integer.parseInt(temp[3]);
-            if (!(startrow.equals(overrow) && startcol.equals(overcol))) {  
-            	CellRangeAddress cra = new CellRangeAddress(startrow, overrow, startcol, overcol);
-                sheet.addMergedRegion(cra); 
-                // 使用RegionUtil类为合并后的单元格添加边框
-        		RegionUtil.setBorderBottom(1, cra, sheet); // 下边框
-        		RegionUtil.setBorderLeft(1, cra, sheet); // 左边框
-        		RegionUtil.setBorderRight(1, cra, sheet); // 有边框
-        		RegionUtil.setBorderTop(1, cra, sheet); // 上边框
-
-           }  
-        }
+        XSSFCell cell = row.createCell(0);  
+        cell.setCellValue("员工部门");  
+        cell.setCellStyle(headStyle);  
+        cell = row.createCell(1);  
+        cell.setCellValue("员工姓名");  
+        cell.setCellStyle(headStyle);  
+        cell = row.createCell(2);  
+        cell.setCellValue("出生时间");  
+        cell.setCellStyle(headStyle); 
+        User user = new User();
+        user.setRetire(1);
+        user.setQuit(0);  
+        List<User> userList = userService.getPagedUser(new PageParameter(0,Integer.MAX_VALUE), user).getRows();
+        //获取符合日期的退休人员
         
-        // 第二行表头
-        XSSFRow  row1 = sheet.createRow(1);
-        j = 0;
-        for (int i = 0; i < excelHeader1.length; i++) {
-        	if(i>4){
-        		j=j+2;
-        	}
-        	int num = i>4 ? (i+j) : i;
-		   	 XSSFCell cell = row1.createCell(num);
-		     cell.setCellValue(excelHeader1[i]);
-		     cell.setCellStyle(headStyle);
-        }
-
-        // 动态合并单元格
-        for (int i = 0; i < headnum1.length; i++) {
-            String[] temp = headnum1[i].split(",");
-            Integer startrow = Integer.parseInt(temp[0]);
-            Integer overrow = Integer.parseInt(temp[1]);
-            Integer startcol = Integer.parseInt(temp[2]);
-            Integer overcol = Integer.parseInt(temp[3]);
-            if (!(startrow.equals(overrow) && startcol.equals(overcol))) {  
-            	CellRangeAddress cra = new CellRangeAddress(startrow, overrow, startcol, overcol);
-                sheet.addMergedRegion(cra);   
-                // 使用RegionUtil类为合并后的单元格添加边框
-        		RegionUtil.setBorderBottom(1, cra, sheet); // 下边框
-        		RegionUtil.setBorderLeft(1, cra, sheet); // 左边框
-        		RegionUtil.setBorderRight(1, cra, sheet); // 有边框
-        		RegionUtil.setBorderTop(1, cra, sheet); // 上边框
-
-           } 
-        }
+//        DatesUtil.getFirstDayOfMonth(dates);
+//        DatesUtil.getLastDayOfMonth(dates);
+//        
+//        userList.stream().forEach(us->{
+//        	
+//        	if(){
+//        		
+//        	}
+//        		us.getBirthDate();
+//        	
+//        });
         
-        
-        // 第三行表头
-        XSSFRow row2 = sheet.createRow(2);
-        for (int i = 0; i < excelHeader2.length; i++) {
-        	 XSSFCell cell = row2.createCell(i);
-             cell.setCellValue(excelHeader2[i]);
-             cell.setCellStyle(headStyle);
-        }
-        
-        
-       //填充数据
-        //一整个月的考勤查询出来
-       List<Map<String, Object>> mapList = attendanceTimeService.findAttendanceTimeCollect(attendance);
-       int l = 2;
-       for (int p = 0; p < mapList.size(); p++) {
-    	   //获取人员考勤详细
-    	   List<AttendanceTime> psList =  (List<AttendanceTime>)mapList.get(p).get("attendanceTimeData");
-//    	 	  获取汇总
-//    	   AttendanceCollect attendanceCollect  = (AttendanceCollect) mapList.get(p).get("collect");
-			//创建行，行初始是0，数据从第三行写入
-			row = sheet.createRow(++l);
-			row.createCell(0).setCellValue(attendance.getOrgName()); 
-			row.createCell(2).setCellValue(""); 
-			row.createCell(3).setCellValue(""); 
-			//创建列，列初始是0，数据从第五列写入
-			int k = 3; 
-			for (int i = 0; i < psList.size(); i++){
-				XSSFCell cell1 = row.createCell(++k);
-				cell1.setCellValue(psList.get(i).getTurnWorkTime());
-				cell1.setCellType(CellType.NUMERIC); 
-				XSSFCell cell2 = row.createCell(++k);
-				cell2.setCellValue(psList.get(i).getOvertime());
-				cell2.setCellType(CellType.NUMERIC); 
-				XSSFCell cell3 = row.createCell(++k);
-				cell3.setCellValue(psList.get(i).getDutytime());
-				cell3.setCellType(CellType.NUMERIC);
-	        }
-			
-			
-			//写入汇总数据，从基础数据写完后拼接
-			//写入汇总公式,出勤，加班，缺勤，总出勤,重新定义行数据
-			int rowCount = l+1;
-			String formula1 = "";
-			String formula2 = "";
-			String formula3 = "";
-			String formula4 = "";
-			
-			if(size==31){
-				 formula1 = "E"+rowCount+"+H"+rowCount+"+K"+rowCount+"+N"+rowCount+"+Q"+rowCount+"+T"+rowCount+"+W"+rowCount+"+Z"+rowCount+
-						"+AC"+rowCount+"+AF"+rowCount+"+AI"+rowCount+"+AL"+rowCount+"+AO"+rowCount+"+AR"+rowCount+"+AU"+rowCount+"+AX"+rowCount+
-						"+BA"+rowCount+"+BD"+rowCount+"+BG"+rowCount+"+BJ"+rowCount+"+BM"+rowCount+"+BP"+rowCount+"+BS"+rowCount+"+BV"+rowCount+"+BY"+rowCount+
-						"+CB"+rowCount+"+CE"+rowCount+"+CH"+rowCount+"+CK"+rowCount+"+CN"+rowCount+"+CQ"+rowCount;
-				 formula2 = "F"+rowCount+"+I"+rowCount+"+L"+rowCount+"+O"+rowCount+"+R"+rowCount+"+U"+rowCount+"+X"+rowCount+
-						"+AA"+rowCount+"+AD"+rowCount+"+AG"+rowCount+"+AJ"+rowCount+"+AM"+rowCount+"+AP"+rowCount+"+AS"+rowCount+"+AV"+rowCount+"+AY"+rowCount+
-						"+BB"+rowCount+"+BE"+rowCount+"+BH"+rowCount+"+BK"+rowCount+"+BN"+rowCount+"+BQ"+rowCount+"+BT"+rowCount+"+BW"+rowCount+"+BZ"+rowCount+
-						"+CC"+rowCount+"+CF"+rowCount+"+CI"+rowCount+"+CL"+rowCount+"+CO"+rowCount+"+CR"+rowCount;
-				 formula3 ="G"+rowCount+"+J"+rowCount+"+M"+rowCount+"+P"+rowCount+"+S"+rowCount+"+V"+rowCount+"+Y"+rowCount+
-						"+AB"+rowCount+"+AE"+rowCount+"+AH"+rowCount+"+AK"+rowCount+"+AN"+rowCount+"+AQ"+rowCount+"+AT"+rowCount+"+AW"+rowCount+"+AZ"+rowCount+
-						"+BC"+rowCount+"+BF"+rowCount+"+BI"+rowCount+"+BL"+rowCount+"+BO"+rowCount+"+BR"+rowCount+"+BU"+rowCount+"+BX"+rowCount+
-						"+CA"+rowCount+"+CD"+rowCount+"+CG"+rowCount+"+CJ"+rowCount+"+CM"+rowCount+"+CP"+rowCount+"+CS"+rowCount;
-				 formula4 = "CT"+rowCount+"+CU"+rowCount;
-			}
-			
-			if(size==30){
-				 formula1 = "E"+rowCount+"+H"+rowCount+"+K"+rowCount+"+N"+rowCount+"+Q"+rowCount+"+T"+rowCount+"+W"+rowCount+"+Z"+rowCount+
-						"+AC"+rowCount+"+AF"+rowCount+"+AI"+rowCount+"+AL"+rowCount+"+AO"+rowCount+"+AR"+rowCount+"+AU"+rowCount+"+AX"+rowCount+
-						"+BA"+rowCount+"+BD"+rowCount+"+BG"+rowCount+"+BJ"+rowCount+"+BM"+rowCount+"+BP"+rowCount+"+BS"+rowCount+"+BV"+rowCount+"+BY"+rowCount+
-						"+CB"+rowCount+"+CE"+rowCount+"+CH"+rowCount+"+CK"+rowCount+"+CN"+rowCount;
-				 formula2 = "F"+rowCount+"+I"+rowCount+"+L"+rowCount+"+O"+rowCount+"+R"+rowCount+"+U"+rowCount+"+X"+rowCount+
-						"+AA"+rowCount+"+AD"+rowCount+"+AG"+rowCount+"+AJ"+rowCount+"+AM"+rowCount+"+AP"+rowCount+"+AS"+rowCount+"+AV"+rowCount+"+AY"+rowCount+
-						"+BB"+rowCount+"+BE"+rowCount+"+BH"+rowCount+"+BK"+rowCount+"+BN"+rowCount+"+BQ"+rowCount+"+BT"+rowCount+"+BW"+rowCount+"+BZ"+rowCount+
-						"+CC"+rowCount+"+CF"+rowCount+"+CI"+rowCount+"+CL"+rowCount+"+CO"+rowCount;
-				 formula3 ="G"+rowCount+"+J"+rowCount+"+M"+rowCount+"+P"+rowCount+"+S"+rowCount+"+V"+rowCount+"+Y"+rowCount+
-						"+AB"+rowCount+"+AE"+rowCount+"+AH"+rowCount+"+AK"+rowCount+"+AN"+rowCount+"+AQ"+rowCount+"+AT"+rowCount+"+AW"+rowCount+"+AZ"+rowCount+
-						"+BC"+rowCount+"+BF"+rowCount+"+BI"+rowCount+"+BL"+rowCount+"+BO"+rowCount+"+BR"+rowCount+"+BU"+rowCount+"+BX"+rowCount+
-						"+CA"+rowCount+"+CD"+rowCount+"+CG"+rowCount+"+CJ"+rowCount+"+CM"+rowCount+"+CP"+rowCount;
-				 formula4 = "CQ"+rowCount+"+CR"+rowCount;
-			}
-			
-			if(size==29){
-				 formula1 = "E"+rowCount+"+H"+rowCount+"+K"+rowCount+"+N"+rowCount+"+Q"+rowCount+"+T"+rowCount+"+W"+rowCount+"+Z"+rowCount+
-						"+AC"+rowCount+"+AF"+rowCount+"+AI"+rowCount+"+AL"+rowCount+"+AO"+rowCount+"+AR"+rowCount+"+AU"+rowCount+"+AX"+rowCount+
-						"+BA"+rowCount+"+BD"+rowCount+"+BG"+rowCount+"+BJ"+rowCount+"+BM"+rowCount+"+BP"+rowCount+"+BS"+rowCount+"+BV"+rowCount+"+BY"+rowCount+
-						"+CB"+rowCount+"+CE"+rowCount+"+CH"+rowCount+"+CK"+rowCount;
-				 formula2 = "F"+rowCount+"+I"+rowCount+"+L"+rowCount+"+O"+rowCount+"+R"+rowCount+"+U"+rowCount+"+X"+rowCount+
-						"+AA"+rowCount+"+AD"+rowCount+"+AG"+rowCount+"+AJ"+rowCount+"+AM"+rowCount+"+AP"+rowCount+"+AS"+rowCount+"+AV"+rowCount+"+AY"+rowCount+
-						"+BB"+rowCount+"+BE"+rowCount+"+BH"+rowCount+"+BK"+rowCount+"+BN"+rowCount+"+BQ"+rowCount+"+BT"+rowCount+"+BW"+rowCount+"+BZ"+rowCount+
-						"+CC"+rowCount+"+CF"+rowCount+"+CI"+rowCount+"+CL"+rowCount;
-				 formula3 ="G"+rowCount+"+J"+rowCount+"+M"+rowCount+"+P"+rowCount+"+S"+rowCount+"+V"+rowCount+"+Y"+rowCount+
-						"+AB"+rowCount+"+AE"+rowCount+"+AH"+rowCount+"+AK"+rowCount+"+AN"+rowCount+"+AQ"+rowCount+"+AT"+rowCount+"+AW"+rowCount+"+AZ"+rowCount+
-						"+BC"+rowCount+"+BF"+rowCount+"+BI"+rowCount+"+BL"+rowCount+"+BO"+rowCount+"+BR"+rowCount+"+BU"+rowCount+"+BX"+rowCount+
-						"+CA"+rowCount+"+CD"+rowCount+"+CG"+rowCount+"+CJ"+rowCount+"+CM"+rowCount;
-				 formula4 = "CN"+rowCount+"+CO"+rowCount;
-			}
-			
-			if(size==28){
-				 formula1 = "E"+rowCount+"+H"+rowCount+"+K"+rowCount+"+N"+rowCount+"+Q"+rowCount+"+T"+rowCount+"+W"+rowCount+"+Z"+rowCount+
-						"+AC"+rowCount+"+AF"+rowCount+"+AI"+rowCount+"+AL"+rowCount+"+AO"+rowCount+"+AR"+rowCount+"+AU"+rowCount+"+AX"+rowCount+
-						"+BA"+rowCount+"+BD"+rowCount+"+BG"+rowCount+"+BJ"+rowCount+"+BM"+rowCount+"+BP"+rowCount+"+BS"+rowCount+"+BV"+rowCount+"+BY"+rowCount+
-						"+CB"+rowCount+"+CE"+rowCount+"+CH"+rowCount;
-				 formula2 = "F"+rowCount+"+I"+rowCount+"+L"+rowCount+"+O"+rowCount+"+R"+rowCount+"+U"+rowCount+"+X"+rowCount+
-						"+AA"+rowCount+"+AD"+rowCount+"+AG"+rowCount+"+AJ"+rowCount+"+AM"+rowCount+"+AP"+rowCount+"+AS"+rowCount+"+AV"+rowCount+"+AY"+rowCount+
-						"+BB"+rowCount+"+BE"+rowCount+"+BH"+rowCount+"+BK"+rowCount+"+BN"+rowCount+"+BQ"+rowCount+"+BT"+rowCount+"+BW"+rowCount+"+BZ"+rowCount+
-						"+CC"+rowCount+"+CF"+rowCount+"+CI"+rowCount;
-				 formula3 ="G"+rowCount+"+J"+rowCount+"+M"+rowCount+"+P"+rowCount+"+S"+rowCount+"+V"+rowCount+"+Y"+rowCount+
-						"+AB"+rowCount+"+AE"+rowCount+"+AH"+rowCount+"+AK"+rowCount+"+AN"+rowCount+"+AQ"+rowCount+"+AT"+rowCount+"+AW"+rowCount+"+AZ"+rowCount+
-						"+BC"+rowCount+"+BF"+rowCount+"+BI"+rowCount+"+BL"+rowCount+"+BO"+rowCount+"+BR"+rowCount+"+BU"+rowCount+"+BX"+rowCount+
-						"+CA"+rowCount+"+CD"+rowCount+"+CG"+rowCount+"+CJ"+rowCount;
-				 formula4 = "CK"+rowCount+"+CL"+rowCount;
-			}
-			
-			
-			
-			if(k == (psList.size()*3+3)){
-			int o = k ;
-			XSSFCell cell1 = row.createCell(++o);
-			cell1.setCellFormula(formula1);
-//			cell1.setCellValue(attendanceCollect.getTurnWork());
-			
-			XSSFCell cell2 = row.createCell(++o);
-			cell2.setCellFormula(formula2);
-//			cell2.setCellValue(attendanceCollect.getOvertime());
-			
-			XSSFCell cell3 = row.createCell(++o);
-			cell3.setCellFormula(formula3);
-//			cell3.setCellValue(attendanceCollect.getDutyWork());
-			
-			XSSFCell cell4 = row.createCell(++o);
-			cell4.setCellFormula(formula4);	
-//			cell4.setCellValue(attendanceCollect.getAllWork());
-			}
-       }
+        SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+      	for (int i = 0; i < userList.size(); i++)  
+          {  
+              row = sheet.createRow( i + 1);  
+              // 第四步，创建单元格，并设置值  
+              row.createCell(1).setCellValue(userList.get(i).getOrgName().getName());
+              row.createCell(0).setCellValue(userList.get(i).getUserName());  
+              row.createCell(2).setCellValue(sdf.format(userList.get(i).getBirthDate()));  
+          } 
     try {	
     	OutputStream outputStream=response.getOutputStream();
     	wb.write(outputStream);
