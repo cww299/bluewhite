@@ -106,26 +106,6 @@ public class IndexAction {
 	}
 	
 	
-	
-	/**
-	 * 普通用户登录
-	 * @param request 请求
-	 * @param reponse 回复
-	 * @param username 用户名
-	 * @param password 密码
-	 * @return cr
-	 */
-	@RequestMapping(value = "/test", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse test(User user){
-		CommonResponse cr = new CommonResponse();
-		cr.setData(userService.findUserList(user));
-		return cr;
-	}
-	
-	
-	
-	
 
 	/**
 	 * 登出

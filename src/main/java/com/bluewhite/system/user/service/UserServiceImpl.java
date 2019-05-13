@@ -354,7 +354,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	}
 
 	@Override
-	@Cacheable(value="testDao")
 	public List<User> findUserList(User user) {
 		List<User> result = userDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
