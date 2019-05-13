@@ -8,7 +8,6 @@
 	<link rel="stylesheet" href="${ctx }/static/css/font-awesome.min.css">
 	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script> 
 	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
-	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">	
 <head>
 <meta charset="utf-8">

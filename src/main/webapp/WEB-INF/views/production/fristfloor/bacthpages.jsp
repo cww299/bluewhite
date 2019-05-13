@@ -16,7 +16,6 @@
 	<script src="${ctx }/static/js/layer/layer.js"></script>
 	<script src="${ctx }/static/js/laypage/laypage.js"></script> 
 	<link rel="stylesheet" href="${ctx }/static/css/main.css">
-	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 	
 
 <meta name="description" content="">
@@ -692,7 +691,6 @@
 							  area: ['40%', '200px'], 
 							  btnAlign: 'c',//宽高
 							  maxmin: true,
-							  offset:(parent.document.documentElement.scrollTop+100)+'px',
 							  title:"人员信息",
 							  content: dicDiv,
 							  btn: ['关闭'],
@@ -734,9 +732,8 @@
 						  skin: 'layui-layer-rim', //加上边框
 						  area: ['80%', '100%'], 
 						  btnAlign: 'c',//宽高
-						  offset:(parent.document.documentElement.scrollTop+50)+'px',
 						  maxmin: true,
-						  title:name,
+						  title:this.innerHTML,
 						  content: dicDiv,
 						  
 						  yes:function(index, layero){

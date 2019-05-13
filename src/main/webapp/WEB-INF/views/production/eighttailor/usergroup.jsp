@@ -15,7 +15,6 @@
 	<script src="${ctx }/static/js/laypage/laypage.js"></script>
 	<script src="${ctx }/static/js/vendor/typeahead.js"></script>
 	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
-	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>员工分组</title>

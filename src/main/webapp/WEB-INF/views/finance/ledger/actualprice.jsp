@@ -13,7 +13,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
-	  <script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 </head>
 
 <body>

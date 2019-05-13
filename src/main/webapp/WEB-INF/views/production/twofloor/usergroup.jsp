@@ -24,7 +24,6 @@
 	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
 
 	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>  <!-- 使用layui 因此需要引入 -->
-	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 </head>
 
 <body>

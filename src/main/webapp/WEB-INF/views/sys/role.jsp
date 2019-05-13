@@ -12,7 +12,6 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/formSelect/formSelects-v4.css" />
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
-	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script> 
 <title>角色管理</title>
 

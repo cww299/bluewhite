@@ -8,7 +8,6 @@
 
 <script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
 <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
-<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 
 
 

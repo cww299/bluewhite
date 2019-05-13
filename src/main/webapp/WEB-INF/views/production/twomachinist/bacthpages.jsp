@@ -19,7 +19,6 @@
 	<script src="${ctx }/static/js/layer/layer.js"></script>
 	<script src="${ctx }/static/js/laypage/laypage.js"></script> 
 	<link rel="stylesheet" href="${ctx }/static/css/main.css">
-	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 </head>
 
 <body>
@@ -712,7 +711,7 @@
 						  area: ['80%', '100%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
-						  title:name,
+						  title:this.innerHTML,
 						  content: dicDiv,
 						  
 						  yes:function(index, layero){

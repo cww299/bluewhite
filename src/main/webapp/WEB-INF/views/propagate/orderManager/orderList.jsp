@@ -6,7 +6,6 @@
 <head>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
-	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>订单列表</title>
 </head>
@@ -127,8 +126,8 @@ td{
 <div id="customNameDiv" style="display:none;">
 	<table class="layui-form">
 		<tr>
-			<td><select name=""><option value="">按来往单位分类</option></select></td>			<td>&nbsp;</td>
-			<td><select name=""><option value="">按单位名称</option></select></td>				<td>&nbsp;</td>
+			<td><select name=""><option value="">按客户类别分类</option></select></td>			<td>&nbsp;</td>
+			<td><select name=""><option value="">按客户名称</option></select></td>				<td>&nbsp;</td>
 			<td><input type="text" class="layui-input"></td>									<td>&nbsp;</td>
 			<td><button lay-submit 	lay-filter="searchCustom"	type="button" class="layui-btn layui-btn-sm">
 					<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i></button>				<td>&nbsp;</td>
@@ -281,8 +280,8 @@ td{
 <!-- 订单列表的工具栏  -->
 <script type="text/html" id="onlineOrderToolbar">
 <div class="layui-button-container">
-	<span class="layui-btn layui-btn-sm" lay-event="add">新增表单</span>
-	<span class="layui-btn layui-btn-sm" lay-event="edit">修改表单</span>
+	<span class="layui-btn layui-btn-sm" lay-event="add">新增订单</span>
+	<span class="layui-btn layui-btn-sm" lay-event="edit">修改订单</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">删除商品</span>
 </div>
 </script>
@@ -696,7 +695,7 @@ layui.config({
 			chooseProductWin = layer.open({		
 				type:1,
 				title:'选择产品',
-				area:['80%','90%'],
+				area:['80%','80%'],
 				content:$('#addProductDiv'),
 			})
 			table.render({
@@ -730,7 +729,7 @@ layui.config({
 
 		function openCustomWindow(){		//选择客户弹窗
 			customChooseWin=layer.open({
-				title:'选择来往单位',
+				title:'选择客户',
 				area:['80%','80%'],
 				type:1,
 				content:$('#customNameDiv')

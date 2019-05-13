@@ -22,7 +22,6 @@
 	<script src="${ctx }/static/js/laypage/laypage.js"></script>
 	<script src="${ctx }/static/js/vendor/typeahead.js"></script>    <!-- 员工分组需要加入此链接 -->
 	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
-	<script src="${ctx}/static/js/common/iframeResizer.contentWindow.min.js"></script> 
 </head>
 
 <body>
