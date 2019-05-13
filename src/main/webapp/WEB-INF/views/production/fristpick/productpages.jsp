@@ -26,7 +26,7 @@
 <body>
 	
 <div class="panel panel-default">
-	<div class="panel-body">
+	<div class="panel-body"  style="height:750px;">
 		<table>
 			<tr>
 				<td>产品编号:</td>

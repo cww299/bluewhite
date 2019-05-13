@@ -712,7 +712,7 @@
 						  area: ['80%', '100%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
-						  title:name,
+						  title:this.innerHTML,
 						  content: dicDiv,
 						  
 						  yes:function(index, layero){
