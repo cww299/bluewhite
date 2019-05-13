@@ -42,7 +42,6 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 	 * 查找用户有权限访问的菜单
 	 */
 	@Override
-	@Cacheable(value="sysMenuCache")
 	public List<Menu> findHasPermissionMenusByUsername(String username) {
 		User user = userService.findByUserName(username);
 		List<Menu> result = new ArrayList<Menu>();
