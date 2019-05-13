@@ -70,7 +70,7 @@
 			
 			<shiro:hasAnyRoles name="superAdmin,personnel">
    				 <p id="totalAll" style="text-align:center;color:red;"></p>
-			</shiro:hasAnyRoles>
+			</shiro:hasAnyRoles> 
 			
 		</div>
 	</div>
