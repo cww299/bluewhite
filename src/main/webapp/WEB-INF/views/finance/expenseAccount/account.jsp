@@ -68,7 +68,7 @@
 			</div>
 			<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
 			
-			<shiro:hasAnyRoles name="personnel">
+			<shiro:hasAnyRoles name="superAdmin,personnel">
    				 <p id="totalAll" style="text-align:center;"></p>
 			</shiro:hasAnyRoles>
 			
@@ -114,7 +114,7 @@
 						,tablePlug = layui.tablePlug //表格插件
 						,element = layui.element;
 					
-					
+					getDate();
 					//预算报销总计、报销总计、共计。数据获取
 					function getDate(){
 						if(document.getElementById("totalAll")!=null){
