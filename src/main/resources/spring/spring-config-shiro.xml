@@ -98,6 +98,10 @@
 	<bean id="sysUserFilter" class="com.bluewhite.shiro.web.filter.user.SysUserFilter">
 	</bean>
 	
+	  <!-- 登录表单过滤器 -->
+	<bean id="formLoginFilter" class="com.bluewhite.shiro.web.filter.user.FormLoginFilter">
+	</bean>
+	
 	<!-- shiro主过滤器 -->
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<property name="securityManager" ref="securityManager"/>
@@ -105,22 +109,25 @@
 		<property name="loginUrl" value="/login.jsp"/>
 		 <!-- 登录成功后要跳转的连接(也可以根据实际要求登录后登录到被拒绝的页面，登录成功后的处理逻辑可以在LoginController里编写)-->
         <property name="successUrl" value="/index.jsp" />  
-        <!-- 用户访问未对其授权的资源时,所显示的连接(此配置 要求登录) 
-		<property name="unauthorizedUrl" value="/login.jsp"/> --> 
+        <!-- 用户访问未对其授权的资源时,所显示的连接(此配置 要求登录)-->  
+		<property name="unauthorizedUrl" value="/login.jsp"/> 
 		  <!-- Shiro过滤器的定义 -->  
 		<property name="filters"> 
             <util:map>
             	<entry key="sysUserFilter" value-ref="sysUserFilter"/>
+            	<entry key="formLoginFilter" value-ref="formLoginFilter"/>
                 <entry key="logout" value-ref="logoutFilter"/>
             </util:map>
         </property>
 		<property name="filterChainDefinitions">
 			<value>
-		  		<!-- anon表示此地址不需要任何权限即可访问 -->  
-				/static/**=anon <!--设置静态资源文件为游客可访问-->
-				/views/common/**=anon
-			 	/**=sysUserFilter  <!--	 默认系统用户请求过滤  -->
-				/logout=logout<!-- 退出登录 -->
+			  <!-- anon表示此地址不需要任何权限即可访问 -->
+			  	 	/login.jsp = anon
+			  	<!--	/login = formLoginFilter -->
+					/static/**=anon <!--设置静态资源文件为游客可访问-->
+					/views/common/**=anon
+				 	/**=authc  <!--	 默认系统用户请求过滤  -->
+					/logout=logout<!-- 退出登录 -->
 			</value>
 		</property>
 	</bean>

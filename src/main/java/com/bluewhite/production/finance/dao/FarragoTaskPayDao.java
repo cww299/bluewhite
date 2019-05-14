@@ -31,5 +31,16 @@ public interface FarragoTaskPayDao extends BaseRepository<FarragoTaskPay, Long>{
 	 */
 	List<FarragoTaskPay> findByUserIdAndTypeAndAllotTimeBetween(Long userId, Integer type, Date orderTimeBegin,
 			Date orderTimeEnd);
+	
+	/**
+	 * 根据条件查询杂工工资
+	 * @param userId
+	 * @param type
+	 * @param orderTimeBegin
+	 * @param orderTimeEnd
+	 * @return
+	 */
+	List<FarragoTaskPay> findByTypeAndAllotTimeBetween(Integer type, Date orderTimeBegin,
+			Date orderTimeEnd);
 
 }

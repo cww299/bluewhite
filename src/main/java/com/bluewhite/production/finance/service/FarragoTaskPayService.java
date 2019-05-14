@@ -14,5 +14,7 @@ public interface FarragoTaskPayService  extends BaseCRUDService<FarragoTaskPay,L
 	public PageResult<FarragoTaskPay>  findPages(FarragoTaskPay farragoTaskPay, PageParameter page);
 
 	public List<FarragoTaskPay> findFarragoTaskPay(FarragoTaskPay farragoTaskPay);
+	
+	public List<FarragoTaskPay> findFarragoTaskPayTwo(FarragoTaskPay farragoTaskPay);
 
 }
