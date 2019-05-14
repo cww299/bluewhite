@@ -175,7 +175,7 @@
 							form.on('submit(LAY-sealAttendanceCollect)', function() {  //进行存档
 								 $.ajax({
 										url:"${ctx}/personnel/sealAttendanceCollect",
-										data:field,
+										data:onlyField,
 										type:"POST",
 										beforeSend:function(){
 											index = layer.load(1, {

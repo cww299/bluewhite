@@ -6,7 +6,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>主页</title>
+  <title>蓝白工艺</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -64,8 +64,8 @@
               <cite><shiro:principal /></cite>
             </a>
             <dl class="layui-nav-child">
-              <dd><a lay-href="set/user/info.html">基本资料</a></dd>
-              <dd><a lay-href="set/user/password.html">修改密码</a></dd>
+              <!-- <dd><a lay-href="set/user/info.html">基本资料</a></dd> -->
+              <dd><a lay-href="${ctx}/menusToUrl?url=decorator/updatePwd">修改密码</a></dd>
               <dd style="text-align: center;"><a id="logout">退出</a></dd>
             </dl>
           </li>
@@ -195,12 +195,51 @@ layui.use(['form','element','layer','jquery'],function(){
     		}
     		return html+'</dl>';
     	}
+    	 //监听关闭点击事件是否为考勤汇总
+    	$(document).on('mousedown', '.layui-tab-close', function (event) {  
+    		 if($(event.target).parent().attr("lay-id")=='/bluewhite/menusToUrl?url=personnel/update'){
+    			var closeBtn=$(this);
+    			var ifmDocument=document.getElementById('/bluewhite/menusToUrl?url=personnel/update').contentWindow.document;	//获取考勤汇总iframe中的document对象
+    			  if($(ifmDocument.getElementById('div-test3')).text().length>100){ 
+    				layer.confirm("考勤汇总是否存档",{
+    					btn:['确认','取消']}
+    					,function(index){
+    						ifmDocument.getElementById('sealAttendanceCollect').click();
+    						layer.close(index);
+    						setTimeout(function () {
+    							closeBtn.click();
+    						}, 100);
+    					}
+    					,function(index){layer.close(index);
+    						closeBtn.click();
+    					});
+    			}  
+    		} 
+    	});
+    	 //监听刷新的页面是否为考勤汇总
+    	$(document).on('mousedown', '.layui-icon-refresh-3', function (event) {  
+    		 var elem=document.getElementById('/bluewhite/menusToUrl?url=personnel/update');			//获取考勤汇总iframe元素对象
+	   		 if(elem!=null && elem.parentNode.getAttribute('class').indexOf('layui-show')>0){			//如果ifram存在，且为当前显示状态
+	   			  var refresh=$(this);
+	   			  if($(elem.contentWindow.document.getElementById('div-test3')).text().length>100){ 	//如果有查询内容
+	   				layer.confirm("考勤汇总是否存档",{
+	   					btn:['确认','取消']}
+	   					,function(index){
+	   						elem.contentWindow.document.getElementById('sealAttendanceCollect').click();
+	   						layer.close(index);
+	   						setTimeout(function () {
+	   							refresh.click();
+	   						}, 100);
+	   					}
+	   					,function(index){layer.close(index);
+	   						refresh.click();
+	   					});
+	   			}  
+   			} 
+   		});
    		
 
 })
-
- 
- 
  </script>
 </body>
 </html>
