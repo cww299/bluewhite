@@ -25,13 +25,13 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.ZkemUtils.ZkemSDKUtils;
-import com.bluewhite.personnel.attendance.dao.RestTypeDao;
+import com.bluewhite.personnel.attendance.dao.PersonVariableDao;
 import com.bluewhite.personnel.attendance.entity.ApplicationLeave;
 import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.entity.AttendanceCollect;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
-import com.bluewhite.personnel.attendance.entity.RestType;
+import com.bluewhite.personnel.attendance.entity.PersonVariable;
 import com.bluewhite.personnel.attendance.service.ApplicationLeaveService;
 import com.bluewhite.personnel.attendance.service.AttendanceCollectService;
 import com.bluewhite.personnel.attendance.service.AttendanceInitService;
@@ -56,7 +56,7 @@ public class AttendanceAction {
 	@Autowired
 	private AttendanceCollectService attendanceCollectService;
 	@Autowired
-	private RestTypeDao restTypeDao;
+	private PersonVariableDao personVariableDao;
 	
 	
 	private ClearCascadeJSON clearCascadeJSON;
@@ -505,8 +505,8 @@ public class AttendanceAction {
 	public CommonResponse findRestType() {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(RestType.class, "id", "weeklyRestDate", "monthRestDate")
-				.format(restTypeDao.findAll()).toJSON());
+				.addRetainTerm(PersonVariable.class, "id", "keyValue", "keyValueTwo")
+				.format(personVariableDao.findByType(0)).toJSON());
 		return cr;
 	}
 	
@@ -517,14 +517,14 @@ public class AttendanceAction {
 	 */
 	@RequestMapping(value = "/personnel/updateRestType", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse updateRestType(RestType restType) {
+	public CommonResponse updateRestType(PersonVariable personVariable) {
 		CommonResponse cr = new CommonResponse();
-		if(restType.getId()!=null){
-			RestType ot = restTypeDao.findOne(restType.getId());
-			BeanCopyUtils.copyNotEmpty(restType,ot,"");
+		if(personVariable.getId()!=null){
+			PersonVariable ot = personVariableDao.findOne(personVariable.getId());
+			BeanCopyUtils.copyNotEmpty(personVariable,ot,"");
 			cr.setData(ClearCascadeJSON.get()
-					.addRetainTerm(RestType.class, "id", "weeklyRestDate", "monthRestDate")
-					.format(restTypeDao.save(ot) ).toJSON());
+					.addRetainTerm(PersonVariable.class, "id", "keyValue", "keyValueTwo")
+					.format(personVariableDao.save(ot) ).toJSON());
 			cr.setMessage("修改成功");
 		}else{
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
