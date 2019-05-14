@@ -64,8 +64,8 @@
               <cite><shiro:principal /></cite>
             </a>
             <dl class="layui-nav-child">
-              <dd><a lay-href="set/user/info.html">基本资料</a></dd>
-              <dd><a lay-href="set/user/password.html">修改密码</a></dd>
+              <!-- <dd><a lay-href="set/user/info.html">基本资料</a></dd> -->
+              <dd><a lay-href="${ctx}/menusToUrl?url=decorator/updatePwd">修改密码</a></dd>
               <dd style="text-align: center;"><a id="logout">退出</a></dd>
             </dl>
           </li>
