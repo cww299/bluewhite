@@ -28,12 +28,12 @@ import com.bluewhite.personnel.attendance.dao.ApplicationLeaveDao;
 import com.bluewhite.personnel.attendance.dao.AttendanceDao;
 import com.bluewhite.personnel.attendance.dao.AttendanceInitDao;
 import com.bluewhite.personnel.attendance.dao.AttendanceTimeDao;
-import com.bluewhite.personnel.attendance.dao.RestTypeDao;
+import com.bluewhite.personnel.attendance.dao.PersonVariableDao;
 import com.bluewhite.personnel.attendance.entity.ApplicationLeave;
 import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
-import com.bluewhite.personnel.attendance.entity.RestType;
+import com.bluewhite.personnel.attendance.entity.PersonVariable;
 
 @Service
 public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeave, Long>
@@ -49,7 +49,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 	@Autowired
 	private AttendanceDao attendanceDao;
 	@Autowired
-	private RestTypeDao restTypeDao;
+	private PersonVariableDao personVariableDao;
 
 	@Override
 	public PageResult<ApplicationLeave> findApplicationLeavePage(ApplicationLeave param, PageParameter page) {
@@ -229,15 +229,15 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 				if (attendanceTime.getCheckIn()!=null && attendanceTime.getCheckOut()!=null) {
 					double actualOverTime = 0.0;
 					if(attendanceInit.getRestDay()!=null || attendanceInit.getRestType()!=null){
-						List<RestType> restType = restTypeDao.findAll();
+						PersonVariable restType = personVariableDao.findByType(0);
 						List<String> allArr = new ArrayList<>();
 						if(attendanceInit.getRestType() == 1){
-							String[] weekArr = restType.get(0).getWeeklyRestDate().split(",");
+							String[] weekArr = restType.getKeyValue().split(",");
 							List<String> listWeek =  Arrays.asList(weekArr);
 							allArr.addAll(listWeek);
 						}
 						if(attendanceInit.getRestType() == 2){
-							String[] monthArr = restType.get(0).getMonthRestDate().split(",");
+							String[] monthArr = restType.getKeyValueTwo().split(",");
 							List<String> listMonth =  Arrays.asList(monthArr);
 							allArr.addAll(listMonth);
 						}

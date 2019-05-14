@@ -12,23 +12,17 @@ import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
-import org.hibernate.id.enhanced.TableStructure;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.druid.sql.visitor.functions.Now;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ServiceException;
-import com.bluewhite.common.entity.ErrorCode;
-import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.personnel.attendance.dao.ApplicationLeaveDao;
@@ -36,22 +30,21 @@ import com.bluewhite.personnel.attendance.dao.AttendanceCollectDao;
 import com.bluewhite.personnel.attendance.dao.AttendanceDao;
 import com.bluewhite.personnel.attendance.dao.AttendanceInitDao;
 import com.bluewhite.personnel.attendance.dao.AttendanceTimeDao;
-import com.bluewhite.personnel.attendance.dao.RestTypeDao;
+import com.bluewhite.personnel.attendance.dao.PersonVariableDao;
 import com.bluewhite.personnel.attendance.entity.ApplicationLeave;
 import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.entity.AttendanceCollect;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
-import com.bluewhite.personnel.attendance.entity.RestType;
+import com.bluewhite.personnel.attendance.entity.PersonVariable;
 import com.bluewhite.system.user.entity.User;
-import com.bluewhite.system.user.entity.UserContract;
 import com.bluewhite.system.user.service.UserService;
 
 @Service
 public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, Long> implements AttendanceTimeService {
 
 	@Autowired
-	private RestTypeDao restTypeDao;
+	private PersonVariableDao personVariableDao;
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -160,10 +153,10 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 				boolean rout = false;
-				List<RestType> restType = restTypeDao.findAll();
+				PersonVariable restType = personVariableDao.findByType(0);
 				// 1.周休一天，
 				if (attendanceInit.getRestType() == 1) {
-					String[] weeklyRestDate = restType.get(0).getWeeklyRestDate().split(",");
+					String[] weeklyRestDate = restType.getKeyValue().split(",");
 					if (weeklyRestDate.length > 0) {
 						for (int j = 0; j < weeklyRestDate.length; j++) {
 							if (DatesUtil.getfristDayOftime(beginTimes).compareTo(sdf.parse(weeklyRestDate[j]))==0) {
@@ -176,7 +169,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				
 				//2.月休两天
 				if (attendanceInit.getRestType() == 2) {
-					String[] monthRestDate = restType.get(0).getMonthRestDate().split(",");
+					String[] monthRestDate = restType.getKeyValueTwo().split(",");
 					if (monthRestDate.length > 0) {
 						for (int j = 0; j < monthRestDate.length; j++) {
 							if (DatesUtil.getfristDayOftime(beginTimes).compareTo(sdf.parse(monthRestDate[j]))==0) {

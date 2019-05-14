@@ -378,7 +378,7 @@ public class UserAction {
 		user.setIsAdmin(null);
 		cr.setData(ClearCascadeJSON
 				.get()
-				.addRetainTerm(User.class,"id","userName")
+				.addRetainTerm(User.class,"id","userName","phone")
 				.format(userService.findUserList(user)).toJSON());
 		return cr;
 	}
