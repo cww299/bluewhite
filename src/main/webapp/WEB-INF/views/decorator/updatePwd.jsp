@@ -8,34 +8,82 @@
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>修改密码</title>
+<style>
+
+.layadmin-user-login-header {
+    text-align: center;
+}
+
+.layadmin-user-login-box {
+    padding: 20px;
+}
+.layadmin-user-login-body .layui-form-item .layui-input {
+    padding-left: 38px;
+}
+.layui-input, .layui-textarea {
+    display: block;
+    width: 100%;
+    padding-left: 10px;
+}
+.layadmin-user-login-icon {
+    position: absolute;
+    left: 1px;
+    top: 1px;
+    width: 38px;
+    line-height: 36px;
+    text-align: center;
+    color: #d2d2d2;
+}
+</style>
 </head>
 <body>
 
+
 <div class="layui-card">
 	<div class="layui-card-body">
-		<h2 style="text-align:center;">修改密码</h2>
-		<div style="margin:0 auto;width:60%;margin-top:60px;margin-bottom:60px;">
-			<div class="layui-form">
-				<div class="layui-form-item">
-					<label class="layui-form-label">原密码：</label>
-					<div class="layui-input-block">
-						<input type="password" lay-verify="required" name="oldPwd" class="layui-input"></div>
-				</div>
-				<div class="layui-form-item">
-					<label class="layui-form-label">新密码：</label>
-					<div class="layui-input-block">
-						<input type="password" lay-verify="required" name="newPwd1" class="layui-input"></div>
-				</div>
-				<div class="layui-form-item">
-					<label class="layui-form-label">确认密码：</label>
-					<div class="layui-input-block">
-						<input type="password" lay-verify="required" name="newPwd2" class="layui-input"></div>
-				</div>
-				<button type="button" lay-submit class="layui-btn" lay-filter="update">修改</button>
-			</div>
+		<div class="layadmin-user-login layadmin-user-display-show" style="margin:0 auto;width:375px;">
+		    <div class="layadmin-user-login-main ">
+		      <div class="layadmin-user-login-box layadmin-user-login-header">
+		        <h2>蓝白工艺</h2>
+		        <p>蓝白工艺后台管理--修改密码</p>
+		      </div>
+		      <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+		         <div class="layui-form-item">
+		         	<div class="layui-row">
+		             <div class="layui-col-xs12">
+			             <label class="layadmin-user-login-icon layui-icon layui-icon-vercode" for="oldPwd"></label>
+			             <input type="password" name="oldPwd" id="oldPwd" lay-verify="required" placeholder="请输入原密码" class="layui-input">
+		         	</div>
+		         	</div>
+		         </div>
+		         <div class="layui-form-item">
+		           <div class="layui-row">
+		             <div class="layui-col-xs12">
+		               <label class="layadmin-user-login-icon layui-icon layui-icon-vercode" for="newPwd1"></label>
+		               <input type="password" name="newPwd1" id="newPwd1" lay-verify="required" placeholder="请输入新密码" class="layui-input">
+		             </div>
+		           </div>
+		         </div>
+		         <div class="layui-form-item">
+		           <div class="layui-row">
+		             <div class="layui-col-xs12">
+		               <label class="layadmin-user-login-icon layui-icon layui-icon-vercode" for="newPwd2"></label>
+		               <input type="password" name="newPwd2" id="newPwd2" lay-verify="required" placeholder="请再一次输入新密码" class="layui-input">
+		             </div>
+		           </div>
+		         </div>
+		         <div class="layui-form-item">
+		           <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="update">确认修改</button>
+		         </div>
+		    </div>
+		  </div>
 		</div>
 	</div>
 </div>
+
+
+
+
 </body>
 
 
