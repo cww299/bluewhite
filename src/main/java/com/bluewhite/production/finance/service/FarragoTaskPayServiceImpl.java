@@ -74,4 +74,10 @@ public class FarragoTaskPayServiceImpl extends BaseServiceImpl<FarragoTaskPay, L
 		return dao.findByUserIdAndTypeAndAllotTimeBetween(farragoTaskPay.getUserId(),farragoTaskPay.getType(),farragoTaskPay.getOrderTimeBegin(),farragoTaskPay.getOrderTimeEnd());
 	}
 
+	@Override
+	public List<FarragoTaskPay> findFarragoTaskPayTwo(FarragoTaskPay farragoTaskPay) {
+		return dao.findByTypeAndAllotTimeBetween(farragoTaskPay.getType(),farragoTaskPay.getOrderTimeBegin(),farragoTaskPay.getOrderTimeEnd());
+
+	}
+
 }

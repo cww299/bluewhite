@@ -31,5 +31,15 @@ public interface PayBDao extends BaseRepository<PayB, Long>{
 	 */
 	List<PayB> findByUserIdAndTypeAndAllotTimeBetween(Long userId, Integer type, Date orderTimeBegin,
 			Date orderTimeEnd);
+	
+	/**
+	 * 根据条件查询b
+	 * @param type
+	 * @param orderTimeBegin
+	 * @param orderTimeEnd
+	 * @return
+	 */
+	List<PayB> findByTypeAndAllotTimeBetween(Integer type, Date orderTimeBegin,
+			Date orderTimeEnd);
 
 }

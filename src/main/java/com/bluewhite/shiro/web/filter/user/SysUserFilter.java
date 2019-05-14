@@ -47,23 +47,20 @@ public class SysUserFilter extends AccessControlFilter {
 		//获取请求的路径拍判断为前段用户请求或后端请求
 		String requestUri = WebUtils.getPathWithinApplication(req);
 		//用户缓存查询
-		if(requestUri.startsWith("/login.jsp")){
-			//判断有没有用户登录成功，没有则返回错误信息继续登录
-			Cache<String, User> apiAccessTokenCache = cacheManager.getCache("sysUserCache");
-			CurrentUser currentUser = SessionManager.getUserSession();
-			CommonResponse commonResponse = new CommonResponse();
-			if (currentUser == null) {
-				return true;
-			}else{
-				WebUtils.issueRedirect(request, response, "/");
-			}
-		}
+		//判断有没有用户登录成功，没有则返回错误信息继续登录
+		Cache<String, User> apiAccessTokenCache = cacheManager.getCache("sysUserCache");
+		CurrentUser currentUser = SessionManager.getUserSession();
+		CommonResponse commonResponse = new CommonResponse();
 		return true;
     }
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
-        getSubject(request, response).logout();
-        return false;
+    	
+    	
+       
+        
+        
+        return true;
     }
 }
