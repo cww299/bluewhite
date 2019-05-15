@@ -14,8 +14,8 @@ import org.apache.shiro.web.util.WebUtils;
 
 public class FormLoginFilter extends PathMatchingFilter{
 	
-	 	private String loginUrl = "/login.jsp";  
-	 	private String login = "/login";  
+	 	private String loginUrlJsp = "/login.jsp";  
+	 	private String loginUrl = "/login";  
 	    private String successUrl = "/"; 
 	    
 	    @Override  
@@ -24,42 +24,33 @@ public class FormLoginFilter extends PathMatchingFilter{
 	        HttpServletResponse resp = (HttpServletResponse) response;  
 	        if(SecurityUtils.getSubject().isAuthenticated()) {  
 	        	 return redirectToSuccessUrl(req, resp);//已经登录过  
-	        }  
-	        if(isLoginRequest(req)) {  
-	            if("post".equalsIgnoreCase(req.getMethod())) {//form表单提交  
-	                boolean loginSuccess = login(req); //登录  
-	                if(loginSuccess) {  
-	                    return redirectToSuccessUrl(req, resp);  
-	                }  
-	            }  
-	            return true;//继续过滤器链  
-	        } else {//保存当前地址并重定向到登录界面  
-	            saveRequestAndRedirectToLogin(req, resp);  
-	            return false;  
+	        }else{
+	        	if(isLoginRequest(req) || isLoginRequestJsp(req)) {  
+	        		return true;//继续过滤器链  
+	        	} else {//保存当前地址并重定向到登录界面  
+	        		saveRequestAndRedirectToLogin(req, resp);  
+	        		return false;  
+	        	}  
 	        }  
 	    }  
+	    
 	    private boolean redirectToSuccessUrl(HttpServletRequest req, HttpServletResponse resp) throws IOException {  
-	        WebUtils.issueRedirect(req, resp, successUrl);  
+	        WebUtils.redirectToSavedRequest(req, resp, successUrl);  
 	        return false;  
 	    }  
 	    private void saveRequestAndRedirectToLogin(HttpServletRequest req, HttpServletResponse resp) throws IOException {  
 	        WebUtils.saveRequest(req);  
-	        WebUtils.issueRedirect(req, resp, loginUrl);  
+	        WebUtils.issueRedirect(req, resp, loginUrlJsp);  
 	    }  
 	  
-	    private boolean login(HttpServletRequest req) {  
-	        String username = req.getParameter("username");  
-	        String password = req.getParameter("password");  
-	        try {  
-	            SecurityUtils.getSubject().login(new UsernamePasswordToken(username, password));  
-	        } catch (Exception e) {  
-	            req.setAttribute("shiroLoginFailure", e.getClass());  
-	            return false;  
-	        }  
-	        return true;  
-	    }  
+	    //登录页面
 	    private boolean isLoginRequest(HttpServletRequest req) {  
-	        return pathsMatch(loginUrl, WebUtils.getPathWithinApplication(req)) || pathsMatch(login, WebUtils.getPathWithinApplication(req));  
+	        return pathsMatch(loginUrlJsp, WebUtils.getPathWithinApplication(req));  
+	    }  
+	    
+	    //登录方法
+	    private boolean isLoginRequestJsp(HttpServletRequest req) {  
+	        return pathsMatch(loginUrl, WebUtils.getPathWithinApplication(req));  
 	    }  
 
 }

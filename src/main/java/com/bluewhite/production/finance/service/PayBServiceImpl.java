@@ -135,52 +135,51 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 			//b工资加上加绩工资，加上杂工和杂工绩效 。 一天的总工资
 			Double sumPayB = 0.0;
 			Double sumPayF = 0.0;
-			 List<Double> listDoubleB = new ArrayList<>();
-			 List<Double> listDoubleF = new ArrayList<>();
+			List<Double> listDoubleB = new ArrayList<>();
+			List<Double> listDoubleF = new ArrayList<>();
 			 if(BList.size()>0){
 				 BList.stream().forEach(c->{
-					 listDoubleB.add(NumUtils.sub(NumUtils.setzro(c.getPayNumber()), NumUtils.setzro(c.getPerformancePayNumber())));
+					 listDoubleB.add(NumUtils.sum(NumUtils.setzro(c.getPayNumber()), NumUtils.setzro(c.getPerformancePayNumber())));
 			    	});
 				 sumPayB = NumUtils.sum(listDoubleB);
 			    }
 			 if(FList.size()>0){
 				 FList.stream().forEach(c->{
-					 listDoubleF.add(NumUtils.sub(NumUtils.setzro(c.getPayNumber()), NumUtils.setzro(c.getPerformancePayNumber())));
+					 listDoubleF.add(NumUtils.sum(NumUtils.setzro(c.getPayNumber()), NumUtils.setzro(c.getPerformancePayNumber())));
 			    	});
 				 sumPayF = NumUtils.sum(listDoubleF);
 			    }
-			 
-				//b工资+杂工工资
-				collect.setPayB(NumUtils.sum(sumPayB, sumPayF));
-				//整体上浮后的B
-				collect.setAddPayB(NumUtils.mul(collect.getPayB(), collectPay.getAddNumber()));
-				//个人调节系数
-				collect.setAddSelfNumber(1.0);
-				//考虑个人调节上浮后的B
-				collect.setAddSelfPayB(NumUtils.mul(collect.getPayB(),collect.getAddSelfNumber()));
-				//上浮后的加绩
-				collect.setAddPerformancePay(NumUtils.sub(collect.getAddSelfPayB(),collect.getPayA())>0 ? NumUtils.sub(collect.getAddSelfPayB(),collect.getPayA()) : 0.0);
-				//手动调节上浮后的加绩
-				collect.setHardAddPerformancePay(collectPay.getHardAddPerformancePay());
-				//上浮后无加绩固定给予(当没有考勤的员工无此加绩固定工资)
-				collect.setNoPerformanceNumber( collect.getPayA()!=0.0 ? collectPay.getNoPerformancePay() : 0.0);
-				//无绩效小时工资
-				collect.setNoTimePay( NumUtils.div(collect.getPayA(), collect.getTime(), 5) );
-				//有绩效小时工资(取所有工资中的最大项)
-				Double timePay = 0.0 ;
-				if(collect.getAddSelfPayB()>collect.getPayA()){
-					timePay = NumUtils.div(collect.getAddSelfPayB(),collect.getTime(),5);
-				}else{
-					timePay = NumUtils.div(NumUtils.sum(collect.getPayA(),collect.getNoPerformanceNumber()),collect.getTime(),5);
-				}
-				collect.setTimePay(timePay);
+		 
+			//b工资+杂工工资
+			collect.setPayB(NumUtils.sum(sumPayB, sumPayF));
+			//整体上浮后的B
+			collect.setAddPayB(NumUtils.mul(collect.getPayB(), collectPay.getAddNumber()));
+			//个人调节系数
+			collect.setAddSelfNumber(1.0);
+			//考虑个人调节上浮后的B
+			collect.setAddSelfPayB(NumUtils.mul(collect.getPayB(),collect.getAddSelfNumber()));
+			//上浮后的加绩
+			collect.setAddPerformancePay(NumUtils.sub(collect.getAddSelfPayB(),collect.getPayA())>0 ? NumUtils.sub(collect.getAddSelfPayB(),collect.getPayA()) : 0.0);
+			//手动调节上浮后的加绩
+			collect.setHardAddPerformancePay(collectPay.getHardAddPerformancePay());
+			//上浮后无加绩固定给予(当没有考勤的员工无此加绩固定工资)
+			collect.setNoPerformanceNumber( collect.getPayA()!=0.0 ? collectPay.getNoPerformancePay() : 0.0);
+			//无绩效小时工资
+			collect.setNoTimePay( NumUtils.div(collect.getPayA(), collect.getTime(), 5) );
+			//有绩效小时工资(取所有工资中的最大项)
+			Double timePay = 0.0 ;
+			if(collect.getAddSelfPayB()>collect.getPayA()){
+				timePay = NumUtils.div(collect.getAddSelfPayB(),collect.getTime(),5);
+			}else{
+				timePay = NumUtils.div(NumUtils.sum(collect.getPayA(),collect.getNoPerformanceNumber()),collect.getTime(),5);
+			}
+			collect.setTimePay(timePay);
 			
 			//查询这条数据是否存在加绩流水表中
 			collect.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 			collect.setOrderTimeEnd(collectPay.getOrderTimeEnd());
 			collect.setType(collectPay.getType());
 			CollectPay cpList = collectPayService.findCollectPay(collect);
-			
 			if(cpList!=null){
 				//根据查询出来的统计数据和计算数据比对，不相同重新计算
 				if(cpList.getPayA().equals(collect.getPayA())  && cpList.getPayB().equals(collect.getPayB())){

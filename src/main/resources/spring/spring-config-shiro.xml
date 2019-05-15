@@ -107,10 +107,6 @@
 		<property name="securityManager" ref="securityManager"/>
 		 <!-- 要求登录时的链接(可根据项目的URL进行替换),非必须的属性,默认会自动寻找Web工程根目录下的"/login.jsp"页面 -->
 		<property name="loginUrl" value="/login.jsp"/>
-		 <!-- 登录成功后要跳转的连接(也可以根据实际要求登录后登录到被拒绝的页面，登录成功后的处理逻辑可以在LoginController里编写)-->
-        <property name="successUrl" value="/index.jsp" />  
-        <!-- 用户访问未对其授权的资源时,所显示的连接(此配置 要求登录)-->  
-		<property name="unauthorizedUrl" value="/login.jsp"/> 
 		  <!-- Shiro过滤器的定义 -->  
 		<property name="filters"> 
             <util:map>
@@ -122,11 +118,11 @@
 		<property name="filterChainDefinitions">
 			<value>
 			  <!-- anon表示此地址不需要任何权限即可访问 -->
-			  	 	/login.jsp = anon
-			  	<!--	/login = formLoginFilter -->
+			  	 	/login.jsp = formLoginFilter
+			  	 	/login = formLoginFilter
 					/static/**=anon <!--设置静态资源文件为游客可访问-->
-					/views/common/**=anon
-				 	/**=authc  <!--	 默认系统用户请求过滤  -->
+					/views/error/**=anon
+				 	/**=sysUserFilter  <!--	 默认系统用户请求过滤  -->
 					/logout=logout<!-- 退出登录 -->
 			</value>
 		</property>

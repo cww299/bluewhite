@@ -68,7 +68,7 @@ public class CollectPay extends BaseEntity<Long> {
 	private Double payA;
 	
 	/**
-	 * B工资数额
+	 * b工资+杂工工资
 	 */
 	@Column(name = "payB")
 	@Poi(name = "B工资数额", column = "D", department="machinist")

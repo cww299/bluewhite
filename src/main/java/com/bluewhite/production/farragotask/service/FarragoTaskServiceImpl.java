@@ -105,6 +105,7 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 				farragoTaskPay.setPayNumber(farragoTask.getPayB()/farragoTask.getUsersIds().length);
 				farragoTaskPay.setType(farragoTask.getType());
 				farragoTaskPay.setUserId(user.getId());
+				farragoTaskPay.setGroupId(user.getGroupId());
 				farragoTaskPay.setTaskId(farragoTask.getId());
 				farragoTaskPay.setUserName(user.getUserName());
 				farragoTaskPay.setTaskName(farragoTask.getName());

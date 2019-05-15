@@ -65,6 +65,7 @@ public class AttendancePayAction {
 						AttendancePay attendance = new AttendancePay();
 						User user = userService.findOne(userid);
 						attendance.setUserId(userid);
+						attendance.setGroupId(user.getGroupId());
 						attendance.setAllotTime(ProTypeUtils.countAllotTime(attendancePay.getAllotTime(), attendancePay.getType()));
 						//获取今天的开始和结束时间
 						attendance.setOrderTimeBegin(DatesUtil.getfristDayOftime(attendance.getAllotTime()));
