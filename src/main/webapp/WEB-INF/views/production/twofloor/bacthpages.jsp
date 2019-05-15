@@ -405,7 +405,6 @@
 			      				+'<td class="text-center  name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
 			      				+'<td class="text-center  name">'+parseFloat((o.payB).toFixed(4))+'</td>'
 			      				+'<td class="text-center edit number">'+o.number+'</td>'
-			      				+'<td class="text-center edit name">'+o.taskActualTime+'</td>'
 			      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
 								+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button></td></tr>'
 								
@@ -527,9 +526,20 @@
 						if($(this).text() == "编辑"){
 							$(this).text("保存")
 							
-							$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-					            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
+							$(this).parent().siblings(".edit").each(function(index) {  // 获取当前行的其他单元格
+								//修改编辑单元弹出，时间选择板。代码如下：
+								if(index==0){	
+									$(this).html('<input type="text" id="editTime" class="input-mini form-control laydate-icon" value="'+$(this).text()+'"/>');
+									document.getElementById('editTime').onclick=function(){
+										laydate({
+										    elem: '#editTime',
+										    istime: true, format: "YYYY-MM-DD hh:mm:ss"
+										  });
+									}
+								}else
+					       			$(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
+								//原代码：
+								//$(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
 					        });
 						}else{
 								$(this).text("编辑")
@@ -778,9 +788,21 @@
 					if($(this).text() == "编辑"){
 						$(this).text("保存")
 						
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+						$(this).parent().siblings(".edit").each(function(index) {  // 获取当前行的其他单元格
 
-				            $(this).html("<input class='input-mini' type='text' style='width:80px; height:30px;' value='"+$(this).text()+"'>");
+							//修改编辑单元弹出，时间选择板。代码如下：
+							if(index==1){	
+								$(this).html('<input type="text" id="editTime" class="input-mini form-control laydate-icon" value="'+$(this).text()+'"/>');
+								document.getElementById('editTime').onclick=function(){
+									laydate({
+									    elem: '#editTime',
+									    istime: true, format: "YYYY-MM-DD hh:mm:ss"
+									  });
+								}
+							}else
+				       			$(this).html("<input class='input-mini' type='text' style='width:50px;' value='"+$(this).text()+"'>");
+							//原代码：
+							//$(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
 				        });
 					}else{
 							$(this).text("编辑")

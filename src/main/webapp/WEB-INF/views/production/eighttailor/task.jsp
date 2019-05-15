@@ -296,9 +296,21 @@
 					if($(this).text() == "编辑"){
 						$(this).text("保存")
 						
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+						$(this).parent().siblings(".edit").each(function(index) {  // 获取当前行的其他单元格
 
-				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
+							//修改编辑单元弹出，时间选择板。代码如下：
+							if(index==0){	
+								$(this).html('<input type="text" id="editTime" class="input-mini form-control laydate-icon" value="'+$(this).text()+'"/>');
+								document.getElementById('editTime').onclick=function(){
+									laydate({
+									    elem: '#editTime',
+									    istime: true, format: "YYYY-MM-DD hh:mm:ss"
+									  });
+								}
+							}else
+				       			$(this).html("<input class='input-mini' type='text' style='width:60px;' value='"+$(this).text()+"'>");
+							//原代码：
+							//$(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
 				        });
 					}else{
 							$(this).text("编辑")

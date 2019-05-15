@@ -214,7 +214,7 @@
 					class="layui-input laydate-icon">
 				<td>&nbsp;&nbsp;</td>
 				<div>
-					<textarea name="weeklyRestDate" id="weeklyRestDate"
+					<textarea name="keyValue" id="weeklyRestDate"
 						class="layui-textarea"></textarea>
 				</div>
 			</div>
@@ -222,11 +222,11 @@
 		<div class="layui-form-item">
 			<label class="layui-form-label" style="width: 130px;">月休2天</label>
 			<div class="layui-input-inline">
-				<input type="text" name="applytime" id="month"
+				<input type="text" id="month"
 					placeholder="请输入月休2天的设定时间" class="layui-input laydate-icon">
 				<td>&nbsp;&nbsp;</td>
 				<div>
-					<textarea name="monthRestDate" id="monthRestDate"
+					<textarea name="keyValueTwo" id="monthRestDate"
 						class="layui-textarea"></textarea>
 				</div>
 			</div>
@@ -706,9 +706,9 @@
 							        ,yes: function(index, layero){
 							        	form.on('submit(addRole2)', function(data) {
 							        		var data=data.field
-							        		var key=data.weeklyRestDate
+							        		var key=data.keyValue
 							        		var s=key.charAt(key.length-1)
-							        		var key2=data.monthRestDate
+							        		var key2=data.keyValueTwo
 							        		var s2=key2.charAt(key2.length-1)
 							        		if(s=="," ||s2==","){
 							        			return layer.msg("周休一天或月休两天的末尾不能是,号", {icon: 2});

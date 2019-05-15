@@ -16,7 +16,6 @@
 	<script src="${ctx }/static/js/layer/layer.js"></script>
 	<script src="${ctx }/static/js/laypage/laypage.js"></script> 
 	<link rel="stylesheet" href="${ctx }/static/css/main.css">
-	
 
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -380,7 +379,10 @@
 		      				+'<td class="text-center ">'+parseFloat((o.time).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
 		      				+'<td class="text-center ">'+strname+'</td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button> <button class="btn btn-sm btn-primary btn-trans addDicttw" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+' data-number='+o.number+'>分配2</button> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
+							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button>'
+							+'<button class="btn btn-sm btn-primary btn-trans addDicttw" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+' data-number='+o.number+'>分配2</button>'
+							+'<button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button>'
+							+'<button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
 							
 		      			}); 
 		      			self.setCount(result.data.pageNum)
@@ -801,61 +803,64 @@
 				$('.updateremake').on('click',function(){
 					if($(this).text() == "编辑"){
 						$(this).text("保存")
-						
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
+						$(this).parent().siblings(".edit").each(function(index) {  // 获取当前行的其他单元格
+							//修改编辑单元弹出，时间选择板。代码如下：
+							if(index==0){	
+								$(this).html('<input type="text" id="editTime" class="input-mini form-control laydate-icon" value="'+$(this).text()+'"/>');
+								document.getElementById('editTime').onclick=function(){
+									laydate({
+									    elem: '#editTime',
+									    istime: true, format: "YYYY-MM-DD hh:mm:ss"
+									  });
+								}
+							}else
+				       			$(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
+							//原代码：
+							//$(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
 				        });
 					}else{
-							$(this).text("编辑")
+						$(this).text("编辑")
 						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
-
-					       
-					                $(this).html(obj_text.val()); 
-									
-							});
-							
-							var postData = {
-									id:$(this).data('id'),
-									number:$(this).parent().parent('tr').find(".number").text(),
-									remarks:$(this).parent().parent('tr').find(".remarks").text(),
-									allotTime:$(this).parent().parent('tr').find(".allotTime").text(),
-							}
-							
-							var index;
-							$.ajax({
-								url:"${ctx}/bacth/addBacth",
-								data:postData,
-								type:"POST",
-								beforeSend:function(){
-									index = layer.load(1, {
-										  shade: [0.1,'#fff'] //0.1透明度的白色背景
-										});
-								},
-								
-								success:function(result){
-									if(0==result.code){
-									layer.msg("修改成功！", {icon: 1});
-									var data={
-											page:self.getCount(),
-									  		size:13,	
-									  		type:1,
-									  		flag:0,
-									  		status:$('#selectstate').val(),
-									} 
-								   self.loadPagination(data);
-									layer.close(index);
-									}else{
-										layer.msg("修改失败！", {icon: 1});
-										layer.close(index);
-									}
-								},error:function(){
-									layer.msg("操作失败！", {icon: 2});
+			            	obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+			                $(this).html(obj_text.val()); 
+						});
+						var postData = {
+								id:$(this).data('id'),
+								number:$(this).parent().parent('tr').find(".number").text(),
+								remarks:$(this).parent().parent('tr').find(".remarks").text(),
+								allotTime:$(this).parent().parent('tr').find(".allotTime").text(),
+						}
+						var index;
+						$.ajax({
+							url:"${ctx}/bacth/addBacth",
+							data:postData,
+							type:"POST",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							success:function(result){
+								if(0==result.code){
+								layer.msg("修改成功！", {icon: 1});
+								var data={
+										page:self.getCount(),
+								  		size:13,	
+								  		type:1,
+								  		flag:0,
+								  		status:$('#selectstate').val(),
+								} 
+							   self.loadPagination(data);
+								layer.close(index);
+								}else{
+									layer.msg("修改失败！", {icon: 1});
 									layer.close(index);
 								}
-							});
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
 					}
 				})
 				
