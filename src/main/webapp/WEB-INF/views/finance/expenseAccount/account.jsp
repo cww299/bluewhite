@@ -27,6 +27,9 @@
 							<td>报销人:</td>
 							<td><input type="text" name="Username" id="firstNames" class="layui-input" /></td>
 							<td>&nbsp;&nbsp;</td>
+							<td>报销内容:</td>
+							<td><input type="text" name="content"  class="layui-input" /></td>
+							<td>&nbsp;&nbsp;</td>
 							<td><select class="form-control" name="expenseDate" id="selectone">
 									<option value="2018-10-08 00:00:00">申请日期</option>
 								</select></td>
