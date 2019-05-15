@@ -405,7 +405,6 @@
 			      				+'<td class="text-center  name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
 			      				+'<td class="text-center  name">'+parseFloat((o.payB).toFixed(4))+'</td>'
 			      				+'<td class="text-center edit number">'+o.number+'</td>'
-			      				+'<td class="text-center edit name">'+o.taskActualTime+'</td>'
 			      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
 								+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button></td></tr>'
 								
