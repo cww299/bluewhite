@@ -17,7 +17,7 @@
 </head>
 <body>
 
-<div class="layui-card" style="height:800px;">
+<div class="layui-card">
 	<div class="layui-card-body">
 		<table class="layui-form">
 			<tr>

@@ -44,7 +44,7 @@ td{
 </style>
 <body>
 <div class="layui-card">
-	<div class="layui-card-body " style="height:850px;">
+	<div class="layui-card-body ">
 			<div class="layui-form">
 				<div class="layui-form-item">
 					<div class="layui-input-inline"><select lay-search name="status"><option value="">交易状态</option></select></div>

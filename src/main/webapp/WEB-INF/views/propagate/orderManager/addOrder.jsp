@@ -26,7 +26,7 @@ td{
 </head>
 <body>
 <div class="layui-card">
-	<div class="layui-card-body" style="height:850px">	<!-- 主页面内容 -->
+	<div class="layui-card-body">	<!-- 主页面内容 -->
 		<table class="layui-form" style="width:100%" id="headerTool">
 			
 			<tr>
