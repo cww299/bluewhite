@@ -10,7 +10,6 @@ import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -25,7 +24,6 @@ import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
-import com.bluewhite.finance.attendance.service.AttendancePayService;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.dao.PayBDao;
@@ -39,7 +37,6 @@ import com.bluewhite.production.task.dao.TaskDao;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.User;
-import com.bluewhite.system.user.entity.UserContract;
 @Service
 public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements TaskService{
 
@@ -66,6 +63,14 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	@Override
 	@Transactional
 	public Task addTask(Task task){
+		if(task.getId()!=null){
+			//查出该任务的所有b工资并删除
+			List<PayB> payBList = payBDao.findByTaskId(task.getId());
+			if(payBList.size()>0){
+				payBDao.delete(payBList);
+			}
+		}
+		
 		//将用户变成string类型储存
 		if (!StringUtils.isEmpty(task.getUserIds())) {
 			String[] idArr = task.getUserIds().split(",");
@@ -389,118 +394,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	}
 
 
-	@Override
-	@Transactional
-	public Task upTask(Task task) {
-		
-		Task oldTask = dao.findOne(task.getId());
-		BeanCopyUtils.copyNotEmpty(task,oldTask);
-		
-		//查出该任务的所有b工资并删除
-		List<PayB> payBList = payBDao.findByTaskId(oldTask.getId());
-		if(payBList.size()>0){
-			payBDao.delete(payBList);
-		}
-		//预计时间
-		oldTask.setExpectTime(NumUtils.round(ProTypeUtils.sumTaskTime(oldTask.getProcedure().getWorkingTime(),oldTask.getType(),oldTask.getNumber()), null));
-		//实际时间
-		oldTask.setTaskTime(oldTask.getExpectTime());
-		//预计完成价值
-		oldTask.setExpectTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(oldTask.getExpectTime(), oldTask.getType(),0,null), null));
-		//实际任务价值（通过实际完成时间得出）
-		oldTask.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(oldTask.getTaskTime(), oldTask.getType(),0,null), null));
-		//B工资净值
-		oldTask.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(oldTask.getTaskPrice(),  oldTask.getType()), null));
-		//更新加绩数据
-		dao.save(oldTask);
-		
-		
-		//总考勤时间
-		double sunTime = 0;
-		Date orderTimeBegin = DatesUtil.getfristDayOftime(oldTask.getAllotTime());
-		Date orderTimeEnd = DatesUtil.getLastDayOftime(oldTask.getAllotTime());
-		if(oldTask.getType()==2){
-			//总考勤时间
-			for(String userTypeId : oldTask.getUsersIds()){
-				Long userId = Long.parseLong(userTypeId);
-				Temporarily temporarily = temporarilyDao.findByUserIdAndTemporarilyDateAndType(userId,DatesUtil.getfristDayOftime(oldTask.getAllotTime()),oldTask.getType());
-				if(!StringUtils.isEmpty(temporarily)){
-					sunTime+=temporarily.getWorkTime();
-				}else{
-					List<AttendancePay> attendancePay = attendancePayDao.findByUserIdAndTypeAndAllotTimeBetween(userId,oldTask.getType(),orderTimeBegin,orderTimeEnd);
-					if(attendancePay.size()>0){
-						sunTime+=attendancePay.get(0).getWorkTime();
-					}
-				}
-			}
-			
-		}
-		///员工和任务形成多对多关系
-		if (oldTask.getUsersIds().length>0) {
-			for (int j = 0; j < oldTask.getUsersIds().length; j++) {
-				Long userid = Long.parseLong(oldTask.getUsersIds()[j]);
-				User user = userDao.findOne(userid);
-				SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
-				//给予每个员工b工资
-				PayB payB  = new PayB();
-				payB.setUserId(userid);
-				payB.setUserName(user.getUserName());
-				payB.setBacth(oldTask.getBacthNumber());
-				payB.setBacthId(oldTask.getBacthId());
-				payB.setProductId(oldTask.getProductId());
-				payB.setProductName(oldTask.getProductName());
-				payB.setTaskId(oldTask.getId());
-				payB.setType(oldTask.getType());
-				payB.setAllotTime(oldTask.getAllotTime());
-				payB.setFlag(oldTask.getFlag());
-				
-		
-				//计算B工资数值
-				//包装分配任务，员工b工资根据考情占比分配，其他部门是均分
-				if(oldTask.getType()==2){
-					Temporarily  temporarily = temporarilyDao.findByUserIdAndTemporarilyDateAndType(userid,DatesUtil.getfristDayOftime(oldTask.getAllotTime()),oldTask.getType());
-					List<AttendancePay> attendancePay = attendancePayDao.findByUserIdAndTypeAndAllotTimeBetween(userid,oldTask.getType(),orderTimeBegin,orderTimeEnd);
-					if(StringUtils.isEmpty(temporarily) && attendancePay.size()==0){
-							throw new ServiceException("员工"+user.getUserName()+"没有"+dateFormater.format(oldTask.getAllotTime())+"的考勤记录，无法分配任务");
-					}
-					//按考情时间占比分配B工资
-					payB.setPayNumber(oldTask.getPayB() * (attendancePay.size()==0 ? temporarily.getWorkTime() : attendancePay.get(0).getWorkTime())/sunTime);
-				}else{
-					payB.setPayNumber(oldTask.getPayB()/oldTask.getUsersIds().length);
-				}
-				
-				//当存在加绩时，计算加绩工资
-				if(oldTask.getPerformanceNumber()!=null){
-					payB.setPerformancePayNumber(oldTask.getPerformancePrice()/oldTask.getUsersIds().length);
-				}
-				payBDao.save(payB);
-			}
-		}
-				//查出该批次的所有任务
-				Bacth bacth = bacthDao.findOne(oldTask.getBacthId());
-				//计算出该批次下所有人的实际成本总和
-				int count = 0;
-				Double sumTaskPrice = 0.0;
-				for(Task ta : bacth.getTasks()){
-					sumTaskPrice +=ta.getTaskPrice();
-					if(oldTask.getType()==2){
-						if(ta.getProcedureName().indexOf(Constants.BAGABOARD)!=-1 || ta.getProcedureName().indexOf(Constants.BOXBOARD)!=-1){
-							count+=ta.getNumber();
-						}
-					}
-				};
-				if(bacth.getNumber()==count){
-					bacth.setStatus(1);
-					bacth.setStatusTime(oldTask.getAllotTime());
-				}
-				bacth.setSumTaskPrice(sumTaskPrice);
-				//计算出该批次的地区差价
-				if(bacth.getFlag()==0){
-					bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType()), null));
-				}
-				bacthDao.save(bacth);
-				return oldTask;
-}
+
 
 
 	@Override

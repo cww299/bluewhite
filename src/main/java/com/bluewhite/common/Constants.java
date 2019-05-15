@@ -2,12 +2,21 @@ package com.bluewhite.common;
 
 public class Constants {
 
-	/** TOP 密匙   **/
+	/** Ail 密匙   **/
 	public static String ALI_APP_KEY = "4879538";
 	public static String ALI_APP_SECRET = "oBhKXN1W38";
-	
+	/** TOP 密匙   **/
 	public static String TOP_APP_KEY = "4879538";
 	public static String TOP_APP_SECRET = "oBhKXN1W38";
+	
+	/**Ail refreshToken 失效时期为半年，失效后重新获取，用户获取ali accessToken **/
+	public static String  ALI_REFRESH_TOKEN = "78d8da3d-d2e0-428b-b383-053fbd7cea2e";
+	/**	获取  accessToken 的url   **/
+	public static String  ALI_URL = "https://gw.open.1688.com/openapi/http/1/system.oauth2/getToken/4879538";
+	
+	
+	
+	
     
     /**   角色英文名称           **/
     
