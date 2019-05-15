@@ -65,7 +65,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	
 	@Override
 	@Transactional
-	public Task addTask(Task task) throws Exception {
+	public Task addTask(Task task){
 		//将用户变成string类型储存
 		if (!StringUtils.isEmpty(task.getUserIds())) {
 			String[] idArr = task.getUserIds().split(",");
@@ -125,9 +125,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				}
 				dao.save(newTask);
 				
-				
-				
-				
 				//总考勤时间
 				double sunTime = 0;
 				Date orderTimeBegin = DatesUtil.getfristDayOftime(task.getAllotTime());
@@ -157,7 +154,8 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
 						//给予每个员工b工资
 						PayB payB  = new PayB();
-						payB.setUserId(userid);
+						payB.setUserId(userid);  
+						payB.setGroupId(user.getGroupId());
 						payB.setUserName(user.getUserName());
 						payB.setBacth(newTask.getBacthNumber());
 						payB.setBacthId(newTask.getBacthId());
@@ -390,102 +388,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	
 	}
 
-	@Override
-	@Transactional
-	public int updateTask(String ids) throws Exception{
-		int count = 0;
-		if (!StringUtils.isEmpty(ids)) {
-			String[] idArr = ids.split(",");
-			if (idArr.length>0) {
-				for (int i = 0; i < idArr.length; i++) {
-					Long id = Long.parseLong(idArr[i]);
-					Task task = dao.findOne(id);
-					if(task.getStatus()==null){
-						throw new ServiceException("编号为"+id+"任务，未开始，无法结束，请核实后操作");
-					}
-					//先停止任务，更新出实际时间
-					this.getTaskActualTime(id, 2);
-					
-					//查出该任务的所有b工资并删除
-					List<PayB> payBList = payBDao.findByTaskId(id);
-					if(payBList.size()>0){
-						payBDao.delete(payBList);
-					}
-					//更新为结束状态
-					task.setStatus(2);
-					
-					//实际任务价值（通过实际完成时间得出）
-					task.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(task.getTaskActualTime(), task.getType(),0,null), null));
-					//B工资净值
-					task.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(task.getTaskPrice(),  task.getType()), null));
-					dao.save(task);
-					//将用户变成string类型储存
-					if (!StringUtils.isEmpty(task.getUserIds())) {
-						String[] taskArr = task.getUserIds().split(",");
-						for (int j= 0; j < taskArr.length; j++) {
-							Long userid = Long.parseLong(taskArr[j]);
-							User user = userDao.findOne(userid);
-							//给予每个员工b工资
-							PayB payB  = new PayB();
-							payB.setUserId(userid);
-							payB.setUserName(user.getUserName());
-							payB.setBacth(task.getBacthNumber());
-							payB.setBacthId(task.getBacthId());
-							payB.setProductName(task.getProductName());
-							payB.setTaskId(task.getId());
-							payB.setType(task.getType());
-							payB.setAllotTime(task.getAllotTime());
-							payB.setFlag(task.getFlag());
-							//计算B工资数值
-							payB.setPayNumber(task.getPayB()/taskArr.length);
-							payBDao.save(payB);
-							count++;
-						}
-					}
-				}
-			}
-		}
-		return count;
-		
-	}
-
-	
-	@Override
-	public void getTaskActualTime(Long id,Integer status) throws Exception {
-			Task task = dao.findOne(id);
-			//开始
-			if(status==0){
-				if(task.getStatus()==null){
-					task.setStartTime(new Date());
-				}else if(task.getStatus()==2){
-					throw new ServiceException("任务编号为"+id+"的任务已经结束，无法开始或暂停");
-				}
-			
-			}
-			//暂停
-			if(status==1){
-				if(task.getStatus()==null){
-					throw new ServiceException("任务编号为"+id+"的任务未开始，无法暂停或结束，请先开始任务");
-				} 
-				if(task.getStatus()==2){
-					throw new ServiceException("任务编号为"+id+"的任务已经结束，无法开始或暂停");
-				}
-				//得到任务实时时间
-				task.setTaskActualTime(DatesUtil.getTime(task.getStartTime(),new Date()));
-				//同时更新开始时间
-				task.setStartTime(new Date());
-			}
-			//结束
-			if(status==2){
-				if(task.getStatus()==null){
-					throw new ServiceException("任务编号为"+id+"的任务未开始，无法暂停或结束，请先开始任务");
-				} 
-				//得到任务实时时间
-				task.setTaskActualTime(DatesUtil.getTime(task.getStartTime(),new Date()));
-			}
-			task.setStatus(status);
-			dao.save(task);
-		}
 
 	@Override
 	@Transactional
@@ -574,7 +476,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				payBDao.save(payB);
 			}
 		}
-		
 				//查出该批次的所有任务
 				Bacth bacth = bacthDao.findOne(oldTask.getBacthId());
 				//计算出该批次下所有人的实际成本总和
@@ -601,23 +502,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				return oldTask;
 }
 
-	
-
-	@Override
-	public Integer getTaskNumber(Task task) {
-		if(task.getProcedureIds().length>0){
-			Task newTask = null;
-			for (int i = 0; i < task.getProcedureIds().length; i++) {
-				newTask = new Task();
-				BeanCopyUtils.copyNullProperties(task,newTask);
-				Long id = Long.parseLong(task.getProcedureIds()[i]);
-				Procedure procedure = procedureDao.findOne(id);
-				newTask.setNumber(NumUtils.roundTwo(ProTypeUtils.getTaskNumber(newTask.getTaskTime(), newTask.getType(), procedure.getWorkingTime())));
-			}
-		}
-		return null;
-		
-	}
 
 	@Override
 	@Transactional

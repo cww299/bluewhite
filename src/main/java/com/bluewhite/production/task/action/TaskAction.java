@@ -88,13 +88,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 			//新增
 			if(!StringUtils.isEmpty(task.getUserIds())){
 				task.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime(), task.getType()));
-				try {
-					taskService.addTask(task);
-				} catch (Exception e) {
-					cr.setMessage(e.getMessage());
-					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-					return cr;
-				}
+				taskService.addTask(task);
 				cr.setMessage("任务分配成功");
 			}else{
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -120,24 +114,16 @@ private static final Log log = Log.getLog(TaskAction.class);
 					if(ta.getProcedureId().equals(tk.getProcedureId())){
 						count+=ta.getNumber();
 					}
-					
 				}
 				if((count-tk.getNumber()+task.getNumber())>tk.getBacth().getNumber()){
 					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 					cr.setMessage("修改数量不能超过该批次总数:"+tk.getBacth().getNumber());
 					return cr;
 				}
-				
 				Task oldTask = taskService.findOne(task.getId());
 				BeanCopyUtils.copyNullProperties(oldTask,task);
 				task.setCreatedAt(oldTask.getCreatedAt());
-				try {
-					taskService.addTask(task);
-				} catch (Exception e) {
-					cr.setMessage(e.getMessage());
-					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-					return cr;
-				}
+				taskService.addTask(task);
 				cr.setMessage("修改成功");
 			}else{
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -174,75 +160,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 	}
 	
 	
-	
-	
-	
-	/**
-	 *	2楼环境，记录任务实际完成时间（暂停开始）
-	 * 
-	 * 
-	 */
-	@RequestMapping(value = "/task/getTaskActualTime", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse getTaskActualTime(HttpServletRequest request,String ids,Integer status) {
-		CommonResponse cr = new CommonResponse();
-			if(!StringUtils.isEmpty(ids)){
-					String[] idArr = ids.split(",");
-					if (idArr.length>0) {
-						for (int i = 0; i < idArr.length; i++) {
-							Long id = Long.parseLong(idArr[i]);
-							try {
-								taskService.getTaskActualTime(id,status);
-							} catch (Exception e) {
-								cr.setMessage(e.getMessage());
-								cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-								return cr;
-							}
-						}
-					}
-					if(status==0){
-						cr.setMessage("开始成功");
-					}else{
-						cr.setMessage("暂停成功");
-					}
-				}else{
-					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-					cr.setMessage("领取人不能为空");
-				}
-		return cr;
-	}
-	
-	
-	
-	/**
-	 *	2楼环境，需要实时获取任务时间，通过结束状态进行任务及B工资的修改
-	 * （批量结束）
-	 * @throws Exception 
-	 * 
-	 */
-	@RequestMapping(value = "/task/updateTask", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse updateTask(HttpServletRequest request,String ids)  {
-		CommonResponse cr = new CommonResponse();
-			if(!StringUtils.isEmpty(ids)){
-					int count = 0;
-					try {
-						count = taskService.updateTask(ids);
-					} catch (Exception e) {
-						cr.setMessage(e.getMessage());
-						cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-						return cr;
-					}
-					cr.setMessage("成功结束"+count+"条任务");
-				}else{
-					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-					cr.setMessage("任务不能为空");
-				}
-		return cr;
-	}
-	
-	
-	
+
 	/** 
 	 * 分页查询所有任务
 	 * 

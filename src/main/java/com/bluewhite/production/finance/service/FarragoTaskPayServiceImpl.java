@@ -63,9 +63,9 @@ public class FarragoTaskPayServiceImpl extends BaseServiceImpl<FarragoTaskPay, L
 				query.where(predicate.toArray(pre));
 	        	return null;
 	        }, SalesUtils.getQueryNoPageParameter());
-		 PageResultStat<FarragoTaskPay> result = new PageResultStat<>(pages,page);
-		  result.setAutoStateField("performancePayNumber", "payNumber");
-		  result.count();
+		 	PageResultStat<FarragoTaskPay> result = new PageResultStat<>(pages,page);
+		 	result.setAutoStateField("performancePayNumber", "payNumber");
+		 	result.count();
 	        return result;
 	    }
 

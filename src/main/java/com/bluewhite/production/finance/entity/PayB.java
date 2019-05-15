@@ -129,6 +129,12 @@ public class PayB extends BaseEntity<Long>{
 	
 	
 	/**
+	 * 查询字段 
+	 */
+	@Column(name = "group_id")
+	private Long groupId;
+	
+	/**
 	 * 查询字段
 	 */
 	@Transient
@@ -139,15 +145,19 @@ public class PayB extends BaseEntity<Long>{
 	@Transient
 	private Date orderTimeEnd;
 	
-	/**
-	 * 查询字段 
-	 */
-	@Transient
-	private Long groupId;
+
 	
 	
 	
 	
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 	public String getPerformance() {
 		return performance;

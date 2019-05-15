@@ -84,6 +84,12 @@ public class FarragoTaskPay extends BaseEntity<Long> {
 	private Date allotTime;
 	
 	/**
+	 * 分组
+	 */
+	@Column(name = "group_id")
+	private Long groupId;
+	
+	/**
 	 * 查询字段
 	 */
 	@Transient
@@ -94,15 +100,17 @@ public class FarragoTaskPay extends BaseEntity<Long> {
 	@Transient
 	private Date orderTimeEnd;
 	
-	/**
-	 * 查询字段 
-	 */
-	@Transient
-	private Long groupId;
+
 	
 	
 	
 	
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
+	}
 	public String getPerformance() {
 		return performance;
 	}

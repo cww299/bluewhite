@@ -354,6 +354,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			
 			attendancePay.setUserId((long)98);
 			attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
+			
 			if(userList.contains((long)98)){
 				name = name+","+ attendancePayList.get(0).getUserName();
 				count = count+1;
@@ -375,9 +376,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				count = count+1;
 				atttime = atttime + attendancePayList.get(0).getWorkTime();
 			}
-			
-		
-			
 			monthlyProduction.setReworkNumber(count);
 			monthlyProduction.setUserName(name);
 			monthlyProduction.setPeopleNumber(peopleNumber-count);
@@ -406,54 +404,58 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 
 	@Override
 	public List<Map<String,Object>> bPayAndTaskPay(MonthlyProduction monthlyProduction) {
-		PageParameter page  = new PageParameter();
-		page.setSize(Integer.MAX_VALUE);
 		List<Map<String,Object>> bPayAndTaskPay = new ArrayList<Map<String,Object>>();
 		Group gp = new Group();
 		gp.setType(3);
 		List<Group> groupList = groupService.findList(gp);
+		//A工资
+		AttendancePay attendancePay = new AttendancePay();
+		attendancePay.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
+		attendancePay.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
+		attendancePay.setType(monthlyProduction.getType());
+		List<AttendancePay> attendancePayList = attendancePayService.findAttendancePayNoId(attendancePay);
+		//B工资
+		PayB payB = new PayB();
+		payB.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
+		payB.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
+		payB.setType(monthlyProduction.getType());
+		List<PayB> payBList = payBService.findPayBTwo(payB);
+		//杂工工资
+		FarragoTaskPay farragoTaskPay =new FarragoTaskPay();
+		farragoTaskPay.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
+		farragoTaskPay.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
+		farragoTaskPay.setType(monthlyProduction.getType());
+		List<FarragoTaskPay> farragoTaskPayList = farragoTaskPayService.findFarragoTaskPayTwo(farragoTaskPay);
+		
 		Map<String,Object>  map = null;
 			for(Group group : groupList){
 				map = new HashMap<String, Object>();
-				AttendancePay attendancePay = new AttendancePay();
-				attendancePay.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
-				attendancePay.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
-				attendancePay.setType(monthlyProduction.getType());
-				attendancePay.setGroupId(group.getId());
-				List<AttendancePay> attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
-				List<AttendancePay> list = attendancePayList.stream().filter(AttendancePay->AttendancePay.getWorkTime()!=0).collect(Collectors.toList());
+				List<AttendancePay> list = attendancePayList.stream().filter(
+						AttendancePay->AttendancePay.getUser().getGroupId() != null 
+									&& AttendancePay.getUser().getGroupId().equals(group.getId())
+						).collect(Collectors.toList());
 				//考勤总时间
 				double sunTime = list.stream().mapToDouble(AttendancePay::getWorkTime).sum();
 				double overTime = list.stream().filter(AttendancePay->AttendancePay.getOverTime()!=null).mapToDouble(AttendancePay::getOverTime).sum();
-				
-				//B工资
-				PayB payB = new PayB();
-				payB.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
-				payB.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
-				payB.setType(monthlyProduction.getType());
-				payB.setGroupId(group.getId());
-				List<PayB> payBList = payBService.findPages(payB, page).getRows();
 				//分组人员B工资总和
-				double sumBPay = payBList.stream().mapToDouble(PayB::getPayNumber).sum();
-				
-				//杂工工资
-				FarragoTaskPay farragoTaskPay =new FarragoTaskPay();
-				farragoTaskPay.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
-				farragoTaskPay.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
-				farragoTaskPay.setType(monthlyProduction.getType());
-				farragoTaskPay.setGroupId(group.getId());
-				List<FarragoTaskPay> farragoTaskPayList = farragoTaskPayService.findPages(farragoTaskPay, page).getRows();
+				double sumBPay = payBList.stream().filter(
+						PayB->PayB.getUser().getGroupId() != null 
+						&& PayB.getUser().getGroupId().equals(group.getId())
+				).mapToDouble(PayB::getPayNumber).sum();
 				//分组人员杂工工资总和
-				double sumfarragoTaskPay = farragoTaskPayList.stream().mapToDouble(FarragoTaskPay::getPayNumber).sum();
-				
-				map.put("name", group.getName());
+				double sumfarragoTaskPay = farragoTaskPayList.stream().filter(
+						FarragoTaskPay->FarragoTaskPay.getUser().getGroupId() !=null 
+						&& FarragoTaskPay.getUser().getGroupId().equals(group.getId())).mapToDouble(FarragoTaskPay::getPayNumber).sum();
 				map.put("id", group.getId());
-				map.put("sunTime", sunTime+overTime);
-				map.put("sumBPay", sumBPay+sumfarragoTaskPay);
-				Double sum = (sumBPay+sumfarragoTaskPay)/(sunTime+overTime);
-				map.put("specificValue", sum.isNaN()?0.0:sum);
+				map.put("name", group.getName());
+				map.put("sunTime", NumUtils.sum(sunTime,overTime));
+				map.put("sumBPay", NumUtils.sum(sumBPay,sumfarragoTaskPay));
+				Double sum = 0.0;
+				if(NumUtils.sum(sunTime,overTime)!= 0.0){
+					 sum = NumUtils.div(NumUtils.sum(sumBPay,sumfarragoTaskPay),NumUtils.sum(sunTime,overTime),5);
+				}
+				map.put("specificValue",sum);
 				map.put("price", list.size()>0 ?list.get(0).getWorkPrice() : 0);
-				
 				bPayAndTaskPay.add(map);
 			}
 		return bPayAndTaskPay;

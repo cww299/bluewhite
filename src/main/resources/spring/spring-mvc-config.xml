@@ -29,7 +29,7 @@
     <!-- 静态资源映射 -->  
     <mvc:annotation-driven/> 
  	<mvc:resources location="/static/" mapping="/static/**"  />
- 	<mvc:resources location="/views/common/" mapping="/common/**"  />
+ 	<mvc:resources location="/views/error/" mapping="/error/**"  />
           
 
     

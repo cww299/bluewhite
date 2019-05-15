@@ -112,6 +112,12 @@ public class AttendancePay  extends BaseEntity<Long>{
 	private Double disparity;
 	
 	/**
+	 * 分组
+	 */
+	@Column(name = "group_id")
+	private Long groupId;
+	
+	/**
 	 * 查询字段
 	 */
 	@Transient
@@ -121,12 +127,6 @@ public class AttendancePay  extends BaseEntity<Long>{
 	 */
 	@Transient
 	private Date orderTimeEnd;
-	
-	/**
-	 * 查询字段 
-	 */
-	@Transient
-	private Long groupId;
 	
 	/**
 	 * 工种id
