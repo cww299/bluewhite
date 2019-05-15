@@ -37,14 +37,7 @@ public interface TaskService extends BaseCRUDService<Task,Long>{
 	 * @param task
 	 */
 	public List<Task> assembleTask(Task task);
-	
-	
-	/**
-	 * 修改任务
-	 * @param task
-	 * @return
-	 */
-	public Task upTask(Task task);
+
 	
 	/**
 	 * 二楼机工添加返工任务

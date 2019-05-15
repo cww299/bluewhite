@@ -123,6 +123,8 @@ private static final Log log = Log.getLog(TaskAction.class);
 				Task oldTask = taskService.findOne(task.getId());
 				BeanCopyUtils.copyNullProperties(oldTask,task);
 				task.setCreatedAt(oldTask.getCreatedAt());
+				String[] arrayRefVar = {String.valueOf(task.getProcedureId())};
+				task.setProcedureIds(arrayRefVar);
 				taskService.addTask(task);
 				cr.setMessage("修改成功");
 			}else{

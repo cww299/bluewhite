@@ -4,5 +4,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface TopService {
+	
+	
+	public String getAccessToken();
 
 }

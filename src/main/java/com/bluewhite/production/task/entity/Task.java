@@ -128,18 +128,6 @@ public class Task  extends BaseEntity<Long>{
 	@Column(name = "task_time")
     private Double taskTime;
 	
-    /**
-     * 实时任务完成时间（二楼实时）
-     */
-	@Column(name = "task_actual_time")
-    private Double taskActualTime;
-	
-	/**
-     * 实时任务,开始时间（二楼实时）
-     */
-	@Column(name = "start_time")
-    private Date startTime;
-	
 	
 	/**
 	 * 任务价值(预计成本费用)
@@ -291,22 +279,6 @@ public class Task  extends BaseEntity<Long>{
 
 	public void setProductId(Long productId) {
 		this.productId = productId;
-	}
-
-	public Date getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
-	}
-
-	public Double getTaskActualTime() {
-		return taskActualTime;
-	}
-
-	public void setTaskActualTime(Double taskActualTime) {
-		this.taskActualTime = taskActualTime;
 	}
 
 	public String getTimes() {
