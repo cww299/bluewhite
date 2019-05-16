@@ -742,7 +742,7 @@
 									                }
 									              })
 									            }else{
-									            	table.reload("tableData", {
+									            	table.reload("tableBudget", {
 										                page: {
 										                }
 										              })
