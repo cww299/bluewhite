@@ -16,7 +16,9 @@ import com.alibaba.trade.param.AlibabaTradeGetSellerOrderListResult;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
+import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
 import com.bluewhite.onlineretailers.inventory.service.CommodityService;
 import com.bluewhite.onlineretailers.inventory.service.OnlineCustomerService;
@@ -66,7 +68,7 @@ public class TopAction {
 	 */
 	@RequestMapping(value = "/getSellerOrderList", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getSellerOrderList(OnlineOrder onlineOrder , PageParameter page) {
+	public CommonResponse getSellerOrderList(PageParameter page) {
 		CommonResponse cr = new CommonResponse();
 		//设置appkey和密钥(seckey)
 		ApiExecutor apiExecutor = new ApiExecutor(Constants.ALI_APP_KEY,Constants.ALI_APP_SECRET);
@@ -77,9 +79,26 @@ public class TopAction {
 		AlibabaOpenplatformTradeModelTradeInfo[] list = null;
 		if(result.getResult()!=null){
 			list = result.getResult();
+			if(list.length>0){
+				for(AlibabaOpenplatformTradeModelTradeInfo info : list){
+					OnlineOrder onlineOrder = new OnlineOrder();
+					onlineOrder.setAddress(info.getNativeLogistics().getAddress());
+					
+				}
+				
+				
+				
+				
+			}
+			
+			
+			
+			cr.setData(list);
+			cr.setMessage("同步成功");
+		}else{
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("请重试！");
 		}
-		cr.setData(list);
-		cr.setMessage("查询成功");
 		return cr;
 	}
 	
@@ -94,17 +113,20 @@ public class TopAction {
 	 */
 	@RequestMapping(value = "/getProductList", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getProductList(OnlineOrder onlineOrder , PageParameter page) {
+	public CommonResponse getProductList(PageParameter page) {
 		CommonResponse cr = new CommonResponse();
 		//设置appkey和密钥(seckey)
 		ApiExecutor apiExecutor = new ApiExecutor(Constants.ALI_APP_KEY,Constants.ALI_APP_SECRET); 
-		//订单列表
+		//商品列表
 		AlibabaProductListGetParam  param = new AlibabaProductListGetParam();
+		param.setPageNo(1);
+		param.setPageSize(40);
 		//调用API并获取返回结果
-		AlibabaProductListGetResult result = apiExecutor.execute(param,"dab108b6-0e8b-4b6b-b2de-ddc4c549ebaa").getResult(); 
+		AlibabaProductListGetResult result = apiExecutor.execute(param,topService.getAccessToken()).getResult(); 
 		AlibabaProductProductInfoListResult list = null;
 		if(result.getResult()!=null){
 			list = result.getResult();
+			Commodity Commodity = new Commodity();
 		}
 		cr.setData(list);
 		cr.setMessage("查询成功");

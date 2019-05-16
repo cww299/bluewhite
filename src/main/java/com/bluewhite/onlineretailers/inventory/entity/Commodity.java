@@ -23,6 +23,13 @@ public class Commodity extends BaseEntity<Long>{
 	private String number;
 	
 	/**
+	 * 商品类型，在线批发商品(wholesale)
+	 * 		 或者询盘商品(sourcing)，1688网站缺省为wholesale
+	 * 
+	 */
+	@Column(name = "type")
+	private String type;
+	/**
      * 产品图片地址
      */
 	@Column(name = "pic_url")
@@ -107,6 +114,17 @@ public class Commodity extends BaseEntity<Long>{
 	 */
 	@Column(name = "warehouse")
 	private Integer warehouse;
+
+	
+	
+	public String getType() {
+		return type;
+	}
+
+
+	public void setType(String type) {
+		this.type = type;
+	}
 
 
 	public String getNumber() {

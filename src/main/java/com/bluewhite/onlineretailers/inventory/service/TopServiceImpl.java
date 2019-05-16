@@ -5,11 +5,12 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.utils.SSLClient;
 
 @Service
-public class TopServiceImpl implements  TopService{
+public class TopServiceImpl implements TopService {
 
 	@Override
 	public String getAccessToken() {
@@ -17,21 +18,17 @@ public class TopServiceImpl implements  TopService{
 		map.put("grant_type", "refresh_token");
 		map.put("need_refresh_token", "true");
 		map.put("client_id", Constants.ALI_APP_KEY);
-		map.put("client_secret",Constants.ALI_APP_SECRET);
-		map.put("redirect_uri", "");
+		map.put("client_secret", Constants.ALI_APP_SECRET);
 		map.put("refresh_token", Constants.ALI_REFRESH_TOKEN);
-		String res = "";
+		JSONObject result = null;
 		try {
-			res = SSLClient.doPost(map, Constants.ALI_URL, "", "UTF-8", "UTF-8");
-			System.out.println(res);
+			String res = SSLClient.post(Constants.ALI_URL, map, null);
+			res = res.substring(res.indexOf("{"));// 截取
+			result = JSONObject.parseObject(res);// 转JSON
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		return null;
+		return result.get("access_token").toString();
 	}
-	
-	
-	
 
 }

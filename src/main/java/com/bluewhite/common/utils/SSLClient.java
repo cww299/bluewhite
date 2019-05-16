@@ -1,28 +1,23 @@
 package com.bluewhite.common.utils;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Iterator;
 import java.util.Map;
 
-import javax.net.ssl.SSLContext;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContextBuilder;
-import org.apache.http.conn.ssl.TrustStrategy;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-import org.springframework.util.StringUtils;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
 
 /**
  * 用于进行Https请求的HttpClient
@@ -33,110 +28,355 @@ import org.springframework.util.StringUtils;
  */
 public class SSLClient {
 
-	// 请求配置，设置链接超时和读取超时
-	private static final RequestConfig config = RequestConfig.custom().setConnectTimeout(30000).setSocketTimeout(30000)
-			.build();
+	private static final int TIMEOUT = 45000;
+	public static final String ENCODING = "UTF-8";
 
-	// https策略，绕过安全检查
-	private static CloseableHttpClient getSingleSSLConnection() throws Exception {
-		// CloseableHttpClient httpClient = null;
-		try {
-			SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
-				public boolean isTrusted(X509Certificate[] paramArrayOfX509Certificate, String paramString)
-						throws CertificateException {
-					return true;
+	/**
+	 * 创建HTTP连接
+	 * 
+	 * @param url
+	 *            地址
+	 * @param method
+	 *            方法
+	 * @param headerParameters
+	 *            头信息
+	 * @param body
+	 *            请求内容
+	 * @return
+	 * @throws Exception
+	 */
+	private static HttpURLConnection createConnection(String url, String method, Map<String, String> headerParameters,
+			String body) throws Exception {
+		URL Url = new URL(url);
+		trustAllHttpsCertificates();
+		HttpURLConnection httpConnection = (HttpURLConnection) Url.openConnection();
+		// 设置请求时间
+		httpConnection.setConnectTimeout(TIMEOUT);
+		// 设置 header
+		if (headerParameters != null) {
+			Iterator<String> iteratorHeader = headerParameters.keySet().iterator();
+			while (iteratorHeader.hasNext()) {
+				String key = iteratorHeader.next();
+				httpConnection.setRequestProperty(key, headerParameters.get(key));
+			}
+		}
+		httpConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + ENCODING);
+
+		// 设置请求方法
+		httpConnection.setRequestMethod(method);
+		httpConnection.setDoOutput(true);
+		httpConnection.setDoInput(true);
+		// 写query数据流
+		if (!(body == null || body.trim().equals(""))) {
+			OutputStream writer = httpConnection.getOutputStream();
+			try {
+				writer.write(body.getBytes(ENCODING));
+			} finally {
+				if (writer != null) {
+					writer.flush();
+					writer.close();
 				}
-			}).build();
-			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext,
-					SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-			// return
-			// HttpClients.custom().setDefaultRequestConfig(config).build();
-			return HttpClients.custom().setSSLSocketFactory(sslsf).setDefaultRequestConfig(config).build();
+			}
+		}
+
+		// 请求结果
+		int responseCode = httpConnection.getResponseCode();
+		if (responseCode != 200) {
+			throw new Exception(responseCode + ":" + inputStream2String(httpConnection.getErrorStream(), ENCODING));
+		}
+
+		return httpConnection;
+	}
+
+	/**
+	 * POST请求
+	 * 
+	 * @param address
+	 *            请求地址
+	 * @param headerParameters
+	 *            参数
+	 * @param body
+	 * @return
+	 * @throws Exception
+	 */
+	public static String post(String address, Map<String, String> headerParameters, String body) throws Exception {
+
+		return proxyHttpRequest(address, "POST", null, getRequestBody(headerParameters));
+	}
+
+	/**
+	 * GET请求
+	 * 
+	 * @param address
+	 * @param headerParameters
+	 * @param body
+	 * @return
+	 * @throws Exception
+	 */
+	public static String get(String address, Map<String, String> headerParameters, String body) throws Exception {
+
+		return proxyHttpRequest(address + "?" + getRequestBody(headerParameters), "GET", null, null);
+	}
+
+	/**
+	 * 读取网络文件
+	 * 
+	 * @param address
+	 * @param headerParameters
+	 * @param body
+	 * @param file
+	 * @return
+	 * @throws Exception
+	 */
+	public static String getFile(String address, Map<String, String> headerParameters, File file) throws Exception {
+		String result = "fail";
+
+		HttpURLConnection httpConnection = null;
+		try {
+			httpConnection = createConnection(address, "POST", null, getRequestBody(headerParameters));
+			result = readInputStream(httpConnection.getInputStream(), file);
+
 		} catch (Exception e) {
 			throw e;
+		} finally {
+			if (httpConnection != null) {
+				httpConnection.disconnect();
+			}
+
 		}
+
+		return result;
+	}
+
+	public static byte[] getFileByte(String address, Map<String, String> headerParameters) throws Exception {
+		byte[] result = null;
+
+		HttpURLConnection httpConnection = null;
+		try {
+			httpConnection = createConnection(address, "POST", null, getRequestBody(headerParameters));
+			result = readInputStreamToByte(httpConnection.getInputStream());
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (httpConnection != null) {
+				httpConnection.disconnect();
+			}
+
+		}
+
+		return result;
+	}
+
+	/**
+	 * 读取文件流
+	 * 
+	 * @param in
+	 * @return
+	 * @throws Exception
+	 */
+	public static String readInputStream(InputStream in, File file) throws Exception {
+		FileOutputStream out = null;
+		ByteArrayOutputStream output = null;
+
+		try {
+			output = new ByteArrayOutputStream();
+			byte[] buffer = new byte[1024];
+			int len = 0;
+			while ((len = in.read(buffer)) != -1) {
+				output.write(buffer, 0, len);
+			}
+
+			out = new FileOutputStream(file);
+			out.write(output.toByteArray());
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (output != null) {
+				output.close();
+			}
+			if (out != null) {
+				out.close();
+			}
+		}
+		return "success";
+	}
+
+	public static byte[] readInputStreamToByte(InputStream in) throws Exception {
+		FileOutputStream out = null;
+		ByteArrayOutputStream output = null;
+		byte[] byteFile = null;
+
+		try {
+			output = new ByteArrayOutputStream();
+			byte[] buffer = new byte[1024];
+			int len = 0;
+			while ((len = in.read(buffer)) != -1) {
+				output.write(buffer, 0, len);
+			}
+			byteFile = output.toByteArray();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (output != null) {
+				output.close();
+			}
+			if (out != null) {
+				out.close();
+			}
+		}
+
+		return byteFile;
+	}
+
+	/**
+	 * HTTP请求
+	 * 
+	 * @param address
+	 *            地址
+	 * @param method
+	 *            方法
+	 * @param headerParameters
+	 *            头信息
+	 * @param body
+	 *            请求内容
+	 * @return
+	 * @throws Exception
+	 */
+	public static String proxyHttpRequest(String address, String method, Map<String, String> headerParameters,
+			String body) throws Exception {
+		String result = null;
+		HttpURLConnection httpConnection = null;
+
+		try {
+			httpConnection = createConnection(address, method, headerParameters, body);
+
+			String encoding = "UTF-8";
+			if (httpConnection.getContentType() != null && httpConnection.getContentType().indexOf("charset=") >= 0) {
+				encoding = httpConnection.getContentType()
+						.substring(httpConnection.getContentType().indexOf("charset=") + 8);
+			}
+			result = inputStream2String(httpConnection.getInputStream(), encoding);
+			// logger.info("HTTPproxy response: {},{}", address,
+			// result.toString());
+
+		} catch (Exception e) {
+			// logger.info("HTTPproxy error: {}", e.getMessage());
+			throw e;
+		} finally {
+			if (httpConnection != null) {
+				httpConnection.disconnect();
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * 将参数化为 body
+	 * 
+	 * @param params
+	 * @return
+	 */
+	public static String getRequestBody(Map<String, String> params) {
+		return getRequestBody(params, true);
+	}
+
+	/**
+	 * 将参数化为 body
+	 * 
+	 * @param params
+	 * @return
+	 */
+	public static String getRequestBody(Map<String, String> params, boolean urlEncode) {
+		StringBuilder body = new StringBuilder();
+
+		Iterator<String> iteratorHeader = params.keySet().iterator();
+		while (iteratorHeader.hasNext()) {
+			String key = iteratorHeader.next();
+			String value = params.get(key);
+
+			if (urlEncode) {
+				try {
+					body.append(key + "=" + URLEncoder.encode(value, ENCODING) + "&");
+				} catch (UnsupportedEncodingException e) {
+					// e.printStackTrace();
+				}
+			} else {
+				body.append(key + "=" + value + "&");
+			}
+		}
+
+		if (body.length() == 0) {
+			return "";
+		}
+		return body.substring(0, body.length() - 1);
+	}
+
+	/**
+	 * 读取inputStream 到 string
+	 * 
+	 * @param input
+	 * @param encoding
+	 * @return
+	 * @throws IOException
+	 */
+	private static String inputStream2String(InputStream input, String encoding) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(input, encoding));
+		StringBuilder result = new StringBuilder();
+		String temp = null;
+		while ((temp = reader.readLine()) != null) {
+			result.append(temp);
+		}
+
+		return result.toString();
 
 	}
 
 	/**
-	 * HTTP Post 获取内容
-	 *
-	 * @param params
-	 *            请求的参数，key-value形式
-	 * @param reqMsg
-	 *            请求的参数，字符串
-	 * @param url
-	 *            请求的url地址 ?之前的地址
-	 * @param reqCharset
-	 *            编码格式
-	 * @param resCharset
-	 *            编码格式
-	 * @return 页面内容
+	 * 设置 https 请求
+	 * 
+	 * @throws Exception
 	 */
-	public static String doPost(Map<String, String> params, String url, String reqMsg, String reqCharset,
-			String resCharset) throws Exception {
-		// 获取绕过安全检查的httpClient，以便发送https请求
-		CloseableHttpClient httpClient = getSingleSSLConnection();
-		CloseableHttpResponse response = null;
-		if (StringUtils.isEmpty(url)) {
+	private static void trustAllHttpsCertificates() throws Exception {
+		HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+			public boolean verify(String str, SSLSession session) {
+				return true;
+			}
+		});
+		javax.net.ssl.TrustManager[] trustAllCerts = new javax.net.ssl.TrustManager[1];
+		javax.net.ssl.TrustManager tm = new miTM();
+		trustAllCerts[0] = tm;
+		javax.net.ssl.SSLContext sc = javax.net.ssl.SSLContext.getInstance("SSL");
+		sc.init(null, trustAllCerts, null);
+		javax.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+	}
+
+	// 设置 https 请求证书
+	static class miTM implements javax.net.ssl.TrustManager, javax.net.ssl.X509TrustManager {
+
+		public java.security.cert.X509Certificate[] getAcceptedIssuers() {
 			return null;
 		}
-		try {
-			// 创建httppost方法
-			HttpPost httpPost = new HttpPost(url);
-			// 添加head，需要什么填什么
-			httpPost.addHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
-			httpPost.addHeader("Content-type", "text/html,application/xhtml+xml,application/xml");
 
-			// 组装请求参数，key-value形式的
-			List<NameValuePair> pairs = null;
-			if (params != null && !params.isEmpty()) {
-				pairs = new ArrayList<NameValuePair>(params.size());
-				for (Map.Entry<String, String> entry : params.entrySet()) {
-					String value = entry.getValue();
-					if (value != null) {
-						pairs.add(new BasicNameValuePair(entry.getKey(), value));
-					}
-				}
-			}
-			if (pairs != null && pairs.size() > 0) {
-				httpPost.setEntity(new UrlEncodedFormEntity(pairs, reqCharset));
-			}
-			// 这个是直接post一串字符串的方式，如json串，并不用带key
-			/*
-			 * StringEntity reqEntity = new StringEntity(reqMsg,
-			 * "GBK");//解决中文乱码问题 reqEntity.setContentEncoding("GBK");
-			 * reqEntity.setContentType("application/json");
-			 * httpPost.setEntity(reqEntity);
-			 */
-
-			HttpEntity entity = null;
-			String result = null;
-			// 执行post方法
-			response = httpClient.execute(httpPost);
-			int statusCode = response.getStatusLine().getStatusCode();
-			if (statusCode != 200) {// 出现链接异常，抛出
-				httpPost.abort();
-				throw new Exception("HttpClient,error status code :" + statusCode);
-			}
-			// 获得返回结果
-			entity = response.getEntity();
-			if (entity != null) {
-				// 返回结果转为字符串
-				result = EntityUtils.toString(entity, resCharset);
-			}
-			EntityUtils.consume(entity);
-			response.close();
-			return result;
-		} catch (Exception e) {
-			throw e;
-		} finally {
-			if (response != null)
-				try {
-					response.close();
-				} catch (IOException e) {
-				}
+		public boolean isServerTrusted(java.security.cert.X509Certificate[] certs) {
+			return true;
 		}
+
+		public boolean isClientTrusted(java.security.cert.X509Certificate[] certs) {
+			return true;
+		}
+
+		public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType)
+				throws java.security.cert.CertificateException {
+			return;
+		}
+
+		public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType)
+				throws java.security.cert.CertificateException {
+			return;
+		}
+
 	}
 
 }
