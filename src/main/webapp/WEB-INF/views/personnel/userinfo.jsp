@@ -210,7 +210,6 @@
 			<form class="form-horizontal addDictDivTypeForm">
 				<div class="row col-xs-12  col-sm-12  col-md-12 ">
 
-
 					<div class="form-group">
 						<label class="col-sm-2 col-md-2 control-label">员工姓名:</label>
 						<div class="col-sm-2 col-md-2">
@@ -227,14 +226,14 @@
 						</div>
 					</div>
 					<div class="form-group">
+						<label class="col-sm-2 control-label">手机号:</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control phone">
+						</div>
 						<label class="col-sm-2 control-label">民族:</label>
 						<div class="col-sm-2 working">
 							<select class="form-control nation"><option value="汉">汉</option>
 								<option value="少数民族">少数民族</option></select>
-						</div>
-						<label class="col-sm-2 control-label">手机号:</label>
-						<div class="col-sm-2">
-							<input type="text" class="form-control phone">
 						</div>
 						<label class="col-sm-2 control-label">现居住地址:</label>
 						<div class="col-sm-2">
@@ -242,9 +241,12 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-sm-2 control-label">邮箱:</label>
-						<div class="col-sm-2 working">
-							<input type="text" class="form-control email">
+						<label class="col-sm-2 control-label">合同:</label>
+						<div class="col-sm-2">
+							<select class="form-control commitment"><option
+									value="0">未签</option>
+								<option value="1">已签</option>
+								<option value="2">续签</option></select>
 						</div>
 						<label class="col-sm-2 control-label">性别:</label>
 						<div class="col-sm-2">
@@ -261,6 +263,10 @@
 					</div>
 
 					<div class="form-group">
+						<label class="col-sm-2 control-label">身份证号:</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control idCard">
+						</div>
 						<label class="col-sm-2 control-label">婚姻状况:</label>
 						<div class="col-sm-2 working">
 							<select class="form-control marriage"><option value="0">已婚</option>
@@ -271,19 +277,11 @@
 							<select class="form-control procreate"><option value="0">已育</option>
 								<option value="1">未育</option></select>
 						</div>
-						<label class="col-sm-2 control-label">身份证号:</label>
-						<div class="col-sm-2">
-							<input type="text" class="form-control idCard">
-						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-sm-2 control-label">学历:</label>
-						<div class="col-sm-2 working">
-							<select class="form-control education"><option
-									value="本科">本科</option>
-								<option value="大专">大专</option>
-								<option value="高中">高中</option>
-								<option value="初中及以下">初中及以下</option></select>
+						<label class="col-sm-2 control-label">协议:</label>
+						<div class="col-sm-2 agreementtw">
+							<!-- <input type="text" class="form-control agreement"> -->
 						</div>
 						<label class="col-sm-2 control-label">毕业学校:</label>
 						<div class="col-sm-2">
@@ -295,14 +293,17 @@
 						</div>
 					</div>
 					<div class="form-group">
+						<label class="col-sm-2 control-label">实际转正时间:</label>
+						<div class="col-sm-2">
+							<input id="actua" placeholder="请输入时间"
+								class="form-control laydate-icon"
+								onClick="laydate({elem: '#actua', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+						</div>
 						<label class="col-sm-2 control-label">紧急联系方式:</label>
 						<div class="col-sm-2 working">
 							<input type="text" class="form-control information">
 						</div>
-						<label class="col-sm-2 control-label">紧急联系人:</label>
-						<div class="col-sm-2">
-							<input type="text" class="form-control contacts">
-						</div>
+						
 						<label class="col-sm-2 control-label">入职时间:</label>
 						<div class="col-sm-2">
 							<input id="entry" placeholder="请输入时间"
@@ -317,11 +318,9 @@
 								class="form-control laydate-icon"
 								onClick="laydate({elem: '#estimate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 						</div>
-						<label class="col-sm-2 control-label">实际转正时间:</label>
+						<label class="col-sm-2 control-label">紧急联系人:</label>
 						<div class="col-sm-2">
-							<input id="actua" placeholder="请输入时间"
-								class="form-control laydate-icon"
-								onClick="laydate({elem: '#actua', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+							<input type="text" class="form-control contacts">
 						</div>
 						<label class="col-sm-2 control-label">社保缴纳时间:</label>
 						<div class="col-sm-2 working">
@@ -336,16 +335,17 @@
 							<select class="form-control promise"><option value="0">未签</option>
 								<option value="1">已签</option></select>
 						</div>
-						<label class="col-sm-2 control-label">合同:</label>
-						<div class="col-sm-2">
-							<select class="form-control commitment"><option
-									value="0">未签</option>
-								<option value="1">已签</option>
-								<option value="2">续签</option></select>
+						<label class="col-sm-2 control-label">邮箱:</label>
+						<div class="col-sm-2 working">
+							<input type="text" class="form-control email">
 						</div>
-						<label class="col-sm-2 control-label">协议:</label>
-						<div class="col-sm-2 agreementtw">
-							<!-- <input type="text" class="form-control agreement"> -->
+						<label class="col-sm-2 control-label">学历:</label>
+						<div class="col-sm-2 working">
+							<select class="form-control education"><option
+									value="本科">本科</option>
+								<option value="大专">大专</option>
+								<option value="高中">高中</option>
+								<option value="初中及以下">初中及以下</option></select>
 						</div>
 					</div>
 					<div class="form-group">
@@ -381,6 +381,12 @@
 						</div>
 					</div>
 					<div class="form-group">
+						<label class="col-sm-2 control-label">身份证到期时间:</label>
+						<div class="col-sm-2">
+							<input id="idCardEnd" placeholder="请输入时间"
+								class="form-control laydate-icon"
+								onClick="laydate({elem: '#idCardEnd', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+						</div>
 						<label class="col-sm-2 control-label">工作状态:</label>
 						<div class="col-sm-2 working">
 							<select class="form-control quit"><option value="0">在职</option>
@@ -392,27 +398,21 @@
 								class="form-control laydate-icon"
 								onClick="laydate({elem: '#quitDate', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 						</div>
-						<label class="col-sm-2 control-label">身份证到期时间:</label>
-						<div class="col-sm-2">
-							<input id="idCardEnd" placeholder="请输入时间"
-								class="form-control laydate-icon"
-								onClick="laydate({elem: '#idCardEnd', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-sm-2 control-label">离职理由:</label>
-						<div class="col-sm-2 working">
-							<input type="text" class="form-control reason">
-						</div>
-						<label class="col-sm-2 control-label">合同:</label>
-						<div class="col-sm-2 remarktww">
-							<!-- <input type="text" class="form-control remark"> -->
-						</div>
 						<label class="col-sm-2 control-label">合同到期时间:</label>
 						<div class="col-sm-2">
 							<input id="contractDateEnd" placeholder="请输入时间"
 								class="form-control laydate-icon"
 								onClick="laydate({elem: '#contractDateEnd', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+						</div>
+						<label class="col-sm-2 control-label">合同:</label>
+						<div class="col-sm-2 remarktww">
+							<!-- <input type="text" class="form-control remark"> -->
+						</div>
+						<label class="col-sm-2 control-label">离职理由:</label>
+						<div class="col-sm-2 working">
+							<input type="text" class="form-control reason">
 						</div>
 					</div>
 					<div class="form-group">
