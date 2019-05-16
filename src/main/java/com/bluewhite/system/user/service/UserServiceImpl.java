@@ -60,11 +60,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 
 	@Override
 	public User loginByUsernameAndPassword(String username, String password) {
-//		  	String newPassword = new SimpleHash("md5", password).toHex();
-	        User user = dao.findByUserNameAndPassword(username, password);
-	        if (user != null) {
-	            user.setPermissions(findStringPermissions(user));
-	        }
+		  	String newPassword = new SimpleHash("md5", password).toHex();
+	        User user = dao.findByUserNameAndPassword(username, newPassword);
 	        return user;
 	}
 	

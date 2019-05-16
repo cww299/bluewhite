@@ -12,6 +12,9 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.web.filter.PathMatchingFilter;
 import org.apache.shiro.web.util.WebUtils;
 
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
+
 public class FormLoginFilter extends PathMatchingFilter{
 	
 	 	private String loginUrlJsp = "/login.jsp";  
@@ -21,8 +24,9 @@ public class FormLoginFilter extends PathMatchingFilter{
 	    @Override  
 	    protected boolean onPreHandle(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {  
 	        HttpServletRequest req = (HttpServletRequest) request;  
-	        HttpServletResponse resp = (HttpServletResponse) response;  
-	        if(SecurityUtils.getSubject().isAuthenticated()) {  
+	        HttpServletResponse resp = (HttpServletResponse) response;
+	        CurrentUser cu = SessionManager.getUserSession();
+	        if(cu!=null) {   
 	        	 return redirectToSuccessUrl(req, resp);//已经登录过  
 	        }else{
 	        	if(isLoginRequest(req) || isLoginRequestJsp(req)) {  

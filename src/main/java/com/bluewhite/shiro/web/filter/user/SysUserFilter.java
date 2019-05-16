@@ -7,15 +7,18 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.cache.Cache;
+import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.StringUtils;
 import org.apache.shiro.web.filter.AccessControlFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.alibaba.fastjson.JSON;
 import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
-import com.bluewhite.shiro.cache.spring.SpringCacheManagerWrapper;
+import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
@@ -26,10 +29,9 @@ import com.bluewhite.system.user.service.UserService;
  */
 public class SysUserFilter extends AccessControlFilter {
 	
-
-	@Autowired
-	private SpringCacheManagerWrapper cacheManager;
 	
+	@Autowired
+	private CacheManager cacheManager;
     @Autowired
     private UserService userService;
     
@@ -39,15 +41,23 @@ public class SysUserFilter extends AccessControlFilter {
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
     	HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse rep = (HttpServletResponse) response;
-		if(SecurityUtils.getSubject().isAuthenticated()){
+		CurrentUser cu = SessionManager.getUserSession();
+		if(cu==null){
+			return false;
+		}else{
+			//获取缓存
+			Cache<String, User> sysUserCache =  cacheManager.getCache("sysUserCache");
+			if(sysUserCache.get(cu.getUserName())==null){
+				return false;
+			}
 			return true;
 		}
-        return false;//跳到onAccessDenied处理  
     }  
   
     @Override  
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {  
-        if (!SecurityUtils.getSubject().isAuthenticated()) {//表示没有登录，重定向到登录页面  
+    	CurrentUser cu = SessionManager.getUserSession();
+        if (cu==null) {//表示没有登录，重定向到登录页面  
             saveRequest(request);  
             WebUtils.issueRedirect(request, response, loginUrl);  
         } else {  
