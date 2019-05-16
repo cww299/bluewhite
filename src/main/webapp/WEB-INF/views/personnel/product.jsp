@@ -53,9 +53,9 @@
 </div>
 </script>
 <!-- 工具栏 -->
+<!-- <span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">删除产品</span> -->
 <script type="text/html" id="toolbarOfProduct">
 	<div class="layui-btn-container layui-inline layui-form">
-		<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">删除产品</span>
 		<span class="layui-btn layui-btn-sm" lay-event="add">新增产品</span>
 		<span class="layui-btn layui-btn-sm" lay-event="edit">编辑产品</span>
 	</div>	
