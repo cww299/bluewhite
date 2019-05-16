@@ -11,6 +11,8 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.cache.Cache;
+import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
@@ -29,36 +31,44 @@ public class UserRealm extends AuthorizingRealm {
 	
 	@Autowired
     private UserService userService;
+	@Autowired
+	private CacheManager cacheManager;
 	
 	//AuthorizationInfo:角色的权限信息集合
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-    	 String username = (String) principals.getPrimaryPrincipal();
-    	 User user = userService.findByUserName(username);
-         // 根据用户查询当前用户拥有的角色
-         Set<String> roleNames = new HashSet<String>();
-         for (Role role : user.getRoles()) {
-             roleNames.add(role.getRole());
-         }
-         // 根据用户查询当前用户权限
-         Set<String> permissions = userService.findStringPermissions(user);
-         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
-         // 将角色名称提供给info
-         authorizationInfo.setRoles(roleNames);
-         // 将权限名称提供给info
-         authorizationInfo.setStringPermissions(permissions);
-         CurrentUser currentUser = SessionManager.getUserSession();
- 		if (currentUser == null || currentUser.getId().equals(user.getId())) {
-			currentUser = new CurrentUser();
-			currentUser.setId(user.getId());
-			currentUser.setIsAdmin(user.getIsAdmin());
-			currentUser.setUserName(user.getUserName());
-			currentUser.setOrgNameId(user.getOrgNameId());
-			currentUser.setPositionId(user.getPositionId());
-			currentUser.setRole(roleNames);
-			currentUser.setPermissions(permissions);
-		}
-         SessionManager.setUserSession(currentUser);
+    	String username = (String) principals.getPrimaryPrincipal();
+    	//获取缓存
+    	Cache<String, SimpleAuthorizationInfo> apiAccessTokenCache =  cacheManager.getCache("sysAuthCache");
+    	SimpleAuthorizationInfo authorizationInfo = apiAccessTokenCache.get(username);
+    	if(authorizationInfo==null){
+    		User user = userService.findByUserName(username);
+    		// 根据用户查询当前用户拥有的角色
+    		Set<String> roleNames = new HashSet<String>();
+    		for (Role role : user.getRoles()) {
+    			roleNames.add(role.getRole());
+    		}
+    		// 根据用户查询当前用户权限
+    		Set<String> permissions = userService.findStringPermissions(user);
+    		authorizationInfo = new SimpleAuthorizationInfo();
+    		// 将角色名称提供给info
+    		authorizationInfo.setRoles(roleNames);
+    		// 将权限名称提供给info
+    		authorizationInfo.setStringPermissions(permissions);
+    		CurrentUser currentUser = SessionManager.getUserSession();
+    		if (currentUser == null || currentUser.getId().equals(user.getId())) {
+    			currentUser = new CurrentUser();
+    			currentUser.setId(user.getId());
+    			currentUser.setIsAdmin(user.getIsAdmin());
+    			currentUser.setUserName(user.getUserName());
+    			currentUser.setOrgNameId(user.getOrgNameId());
+    			currentUser.setPositionId(user.getPositionId());
+    			currentUser.setRole(roleNames);
+    			currentUser.setPermissions(permissions);
+    		}
+    		SessionManager.setUserSession(currentUser);
+    		apiAccessTokenCache.put(username, authorizationInfo);
+    	}
         return authorizationInfo;
     }
     

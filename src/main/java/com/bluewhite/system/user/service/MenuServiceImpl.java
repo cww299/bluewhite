@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.cache.Cache;
+import org.apache.shiro.cache.CacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -37,12 +40,20 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private CacheManager cacheManager;
 
 	/**
 	 * 查找用户有权限访问的菜单
 	 */
 	@Override
 	public List<Menu> findHasPermissionMenusByUsername(String username) {
+    	Cache<String, List<Menu>> sysMenuCache =  cacheManager.getCache("sysMenuCache");
+    	List<Menu> cacheList = sysMenuCache.get(username);
+		if(cacheList!=null){
+			return cacheList;
+		}
 		User user = userService.findByUserName(username);
 		List<Menu> result = new ArrayList<Menu>();
 		Set<Role> roles = user.getRoles();
@@ -84,6 +95,7 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 				}
 			} // end else
 		} // end for
+		sysMenuCache.put(username, topTree);
 		return topTree;
 	}
 

@@ -7,6 +7,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.cache.Cache;
+import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,9 +18,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bluewhite.common.Log;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
+import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
 
@@ -34,6 +38,9 @@ public class IndexAction {
 
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private CacheManager cacheManager;
+	
 	
 	/**
 	 * 跳转首页
@@ -68,20 +75,26 @@ public class IndexAction {
 	public CommonResponse login(HttpServletRequest request,
 			HttpServletResponse reponse, String username, String password,Boolean rememberme){
 		CommonResponse cr = new CommonResponse();
+		Cache<String, User> sysUserCache = cacheManager.getCache("sysUserCache");
 		Subject subject = SecurityUtils.getSubject();
-		CurrentUser cu = (CurrentUser)subject.getSession().getAttribute("user");
+		CurrentUser cu = SessionManager.getUserSession();
 		//当用户已经认证且用户匹配时
 		if(cu != null && subject.isAuthenticated() && subject.getPrincipal().equals(username)){
 			cr.setMessage("用户已登录");
 		}else{
-       /*    // 不论用户输入的是用户名还是手机号, 前台标签统一用username接收
-            UsernamePasswordToken token = new UsernamePasswordToken(username, password);
-            // 设置是否'记住我'
-            rememberme = rememberme == null ? false : rememberme;   //null=>false
-            token.setRememberMe(rememberme);*/
 			//用户未登录
 			try {
 				subject.login(new UsernamePasswordToken(username, password));
+				User user = userService.loginByUsernameAndPassword(username, password);
+				//登录后更新缓存和session用户信息
+				sysUserCache.put(username, user);
+				cu = new CurrentUser();
+				cu.setId(user.getId());
+				cu.setIsAdmin(user.getIsAdmin());
+				cu.setUserName(user.getUserName());
+				cu.setOrgNameId(user.getOrgNameId());
+				cu.setPositionId(user.getPositionId());
+				SessionManager.setUserSession(cu);
 			} catch (ServiceException e) {
 				cr.setCode(ErrorCode.FORBIDDEN.getCode());
 				cr.setMessage(e.getCause().getMessage());
@@ -106,7 +119,7 @@ public class IndexAction {
 	 */
 	@RequestMapping(value = "/logout" , method = RequestMethod.GET)
 	public String logout() {
-		 SecurityUtils.getSubject().logout();  
+		SessionManager.removeUserSession();
 		return "redirect:login.jsp";
 	}
 	
