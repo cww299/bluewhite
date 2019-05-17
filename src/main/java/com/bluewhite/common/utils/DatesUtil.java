@@ -426,17 +426,17 @@ public class DatesUtil {
 		// 设置年份
 		begin.set(Calendar.YEAR, date.get(Calendar.YEAR));
 		// 设置月份
-		begin.set(Calendar.MONTH, 5);
+		begin.set(Calendar.MONTH, 3);
 		//设置天
-		begin.set(Calendar.DAY_OF_MONTH, 1);
-		begin.set(Calendar.HOUR_OF_DAY, 0);// 设置时为0点
-		begin.set(Calendar.MINUTE, 0);// 设置分钟为0分
-		begin.set(Calendar.SECOND, 0);// 设置秒为0秒
+		begin.set(Calendar.DAY_OF_MONTH, 30);
+		begin.set(Calendar.HOUR_OF_DAY, 23);// 设置时为0点
+		begin.set(Calendar.MINUTE, 59);// 设置分钟为0分
+		begin.set(Calendar.SECOND, 59);// 设置秒为0秒
 		Calendar end = Calendar.getInstance();
 		// 设置年份
 		end.set(Calendar.YEAR, date.get(Calendar.YEAR));
 		// 设置月份
-		end.set(Calendar.MONTH, 9);
+		end.set(Calendar.MONTH, 8);
 		//设置天
 		end.set(Calendar.DAY_OF_MONTH, 30);
 		end.set(Calendar.HOUR_OF_DAY, 23);// 设置时为0点
@@ -488,14 +488,12 @@ public class DatesUtil {
 
 	
 	
-	
-	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException {
 		
-		List<Date> xx = getPerDaysByStartAndEndDate("2019-02-01","2019-02-03","yyyy-MM-dd");
-		for (int i = 0; i < xx.size(); i++) {
-			System.out.println(xx.get(i));
-		}
+		String string = "2019-05-01 00:00:00";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		belongCalendar(sdf.parse(string));
+		
 		
 	}
 	

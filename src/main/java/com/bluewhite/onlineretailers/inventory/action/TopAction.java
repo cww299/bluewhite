@@ -85,10 +85,6 @@ public class TopAction {
 					onlineOrder.setAddress(info.getNativeLogistics().getAddress());
 					
 				}
-				
-				
-				
-				
 			}
 			
 			

@@ -83,9 +83,6 @@ public class Constants {
     public static String  ONLINEORDER_7 ="TRADE_FINISHED";//(交易成功); 
     public static String  ONLINEORDER_8 ="TRADE_CLOSED";//(付款以后用户退款成功，交易自动关闭) 
     public static String  ONLINEORDER_9 ="TRADE_CLOSED_BY_TAOBAO";//(付款以前，卖家或买家主动关闭交易) 
-    public static String  ONLINEORDER_10 ="PAY_PENDING";//(国际信用卡支付付款确认中) 
-    public static String  ONLINEORDER_11 ="WAIT_PRE_AUTH_CONFIRM";//(0元购合约中) 
-    public static String  ONLINEORDER_12 ="PAID_FORBID_CONSIGN";//(拼团中订单或者发货强管控的订单，已付款但禁止发货)
     
 
 }

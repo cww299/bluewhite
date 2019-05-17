@@ -49,6 +49,18 @@ public class OnlineOrderChild  extends BaseEntity<Long> {
 	@JoinColumn(name = "online_order_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private OnlineOrder onlineOrder;
 	
+	
+	/**
+	 * 订单状态交易状态。可选值: 
+	 * WAIT_SELLER_SEND_GOODS(等待卖家发货,即:买家已付款)
+	 * WAIT_BUYER_CONFIRM_GOODS(等待买家确认收货,即:卖家已发货) 
+	 * TRADE_BUYER_SIGNED(买家已签收,货到付款专用) 
+	 * TRADE_FINISHED(交易成功) 
+	 * 
+	 */
+	@Column(name = "status")
+	private String status;
+	
 	/**
 	 * 数量
 	 */
@@ -89,6 +101,14 @@ public class OnlineOrderChild  extends BaseEntity<Long> {
 	private Double actualSum;
 	
 	
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
 	public Long getOnlineOrderId() {
 		return onlineOrderId;

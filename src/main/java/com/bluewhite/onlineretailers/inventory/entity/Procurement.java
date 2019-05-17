@@ -3,6 +3,7 @@ package com.bluewhite.onlineretailers.inventory.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,7 +17,7 @@ import com.bluewhite.base.BaseEntity;
 import com.bluewhite.system.user.entity.User;
 
 /**
- * 电商采购单实体
+ * 电商出库入库单（对于商品的库存管理）
  * @author zhangliang
  *
  */
@@ -48,7 +49,7 @@ public class Procurement extends BaseEntity<Long>{
 	/**
 	 * 商品集合 （一个采购单可以有多个商品）
 	 */
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	@JoinTable(name = "online_procurement_commodity", joinColumns = @JoinColumn(name = "online_procurement_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "commodity_id", referencedColumnName = "id"))
 	private Set<Commodity> commoditys = new HashSet<Commodity>();
 	
@@ -59,7 +60,6 @@ public class Procurement extends BaseEntity<Long>{
 	@Column(name = "commodity_number")
 	private String commodityNumber;
 	
-	
 	/**
 	 * 总数量
 	 * 
@@ -69,8 +69,15 @@ public class Procurement extends BaseEntity<Long>{
 	
 	/**
 	 * 库存状态有两种，第一种是入库单的订单状态，第二种是出库单的订单状态
-	 * （ ）
-	 * （ ）
+	 * （0=采购入库）
+	 * （1=销售退货入库 ）
+	 * （2=销售换货入库 ）
+	 * （4=生产入库）
+	 * 
+	 * （0=销售入库）
+	 * （1=采购退货入库 ）
+	 * （2=销售换货入库 ）
+	 * （4=调拨出库）
 	 */
 	@Column(name = "status")
 	private Integer status;

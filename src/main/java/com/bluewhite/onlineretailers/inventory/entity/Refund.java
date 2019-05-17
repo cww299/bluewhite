@@ -61,9 +61,6 @@ public class Refund extends BaseEntity<Long>{
 	 * TRADE_FINISHED(交易成功) 
 	 * TRADE_CLOSED(交易关闭) 
 	 * TRADE_CLOSED_BY_TAOBAO(交易被淘宝关闭) 
-	 * ALL_WAIT_PAY(包含：WAIT_BUYER_PAY、TRADE_NO_CREATE_PAY) 
-	 * ALL_CLOSED(包含：TRADE_CLOSED、TRADE_CLOSED_BY_TAOBAO) 
-	 * 取自"http://open.taobao.com/dev/index.php/%E4%BA%A4%E6%98%93%E7%8A%B6%E6%80%81"
 	 */
 	@Column(name="order_status")
 	private String orderStatus;

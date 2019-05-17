@@ -16,19 +16,19 @@ import com.bluewhite.base.BaseEntity;
 public class Commodity extends BaseEntity<Long>{
 	
 	/**
+	 * 商品ID（电商线上同步信息字段）
+	 * 
+	 */
+	@Column(name = "product_ID")
+	private Long productID;
+	
+	/**
 	 * 商品编号（sku）
 	 * 
 	 */
 	@Column(name = "number")
 	private String number;
 	
-	/**
-	 * 商品类型，在线批发商品(wholesale)
-	 * 		 或者询盘商品(sourcing)，1688网站缺省为wholesale
-	 * 
-	 */
-	@Column(name = "type")
-	private String type;
 	/**
      * 产品图片地址
      */
@@ -43,6 +43,13 @@ public class Commodity extends BaseEntity<Long>{
 	private String name;
 	
 	/**
+	 * 商品详情描述，可包含图片中心的图片URL
+	 * 
+	 */
+	@Column(name = "description")
+	private String description;
+	
+	/**
 	 * 商品重量
 	 * 
 	 */
@@ -50,7 +57,7 @@ public class Commodity extends BaseEntity<Long>{
 	private Double weight;
 	
 	/**
-	 * 商品销售属性
+	 * 商品高度
 	 * 
 	 */
 	@Column(name = "size")
@@ -117,15 +124,26 @@ public class Commodity extends BaseEntity<Long>{
 
 	
 	
-	public String getType() {
-		return type;
+	
+
+	public Long getProductID() {
+		return productID;
 	}
 
 
-	public void setType(String type) {
-		this.type = type;
+	public void setProductID(Long productID) {
+		this.productID = productID;
 	}
 
+
+	public String getDescription() {
+		return description;
+	}
+
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	public String getNumber() {
 		return number;

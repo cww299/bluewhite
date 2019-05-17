@@ -1,11 +1,14 @@
 package com.bluewhite.system.user.action;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
@@ -22,6 +25,7 @@ import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
+import com.bluewhite.system.user.entity.Menu;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
@@ -119,6 +123,14 @@ public class IndexAction {
 	 */
 	@RequestMapping(value = "/logout" , method = RequestMethod.GET)
 	public String logout() {
+		//获取缓存
+		Cache<String, User> sysUserCache =  cacheManager.getCache("sysUserCache");
+		Cache<String, SimpleAuthorizationInfo> apiAccessTokenCache =  cacheManager.getCache("sysAuthCache");
+		Cache<String, List<Menu>> sysMenuCache =  cacheManager.getCache("sysMenuCache");
+		CurrentUser currentUser = SessionManager.getUserSession();
+		sysUserCache.remove(currentUser.getUserName());
+		apiAccessTokenCache.remove(currentUser.getUserName());
+		sysMenuCache.remove(currentUser.getUserName());
 		SessionManager.removeUserSession();
 		return "redirect:login.jsp";
 	}
