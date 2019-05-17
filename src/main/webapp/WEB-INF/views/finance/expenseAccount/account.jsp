@@ -87,7 +87,9 @@
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
 				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
-				<span class="layui-btn layui-btn-sm" lay-event="openBudget">预算报销单</span>
+				<shiro:hasAnyRoles name="superAdmin,personnel">
+					<span class="layui-btn layui-btn-sm" lay-event="openBudget">预算报销单</span>
+				</shiro:hasAnyRoles> 
 			</div>
 	</script>
 
@@ -485,18 +487,20 @@
 								});
 								break;
 							case 'openBudget':
-								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
-									if(checkedIds.length>1){
-										return layer.msg("只能选择一条数据", {
-											icon: 2
-										});
-									}
-								var str = checkedIds.join(',');
-								if(str==""){
+								//var checkedIds = tablePlug.tableCheck.getChecked(tableId);
+								var checkedIds = layui.table.checkStatus(tableId).data;
+								if(checkedIds.length>1){
+									return layer.msg("只能选择一条数据", {
+										icon: 2
+									});
+								}
+								if(checkedIds.length<1){
 									return layer.msg("请选择一条数据", {
 										icon: 2
 									});
 								}
+								console.log(checkedIds);
+								var str = checkedIds[0].id;
 								self.setIndex(str)
 								table.render({
 									elem: '#tableBudget',
@@ -514,7 +518,7 @@
 									},//开启分页
 									loading: true,
 									toolbar: '#toolbar2', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
-									/*totalRow: true //开启合计行 */
+									totalRow: true, //开启合计行 
 									cellMinWidth: 90,
 									colFilterRecord: true,
 									smartReloadModel: true,// 开启智能重载
@@ -530,7 +534,8 @@
 										[{
 											type: 'checkbox',
 											align: 'center',
-											fixed: 'left'
+											fixed: 'left',
+											totalRowText:'合计'
 										}, {
 											field: "content",
 											title: "报销内容",
@@ -548,7 +553,8 @@
 											field: "money",
 											title: "报销申请金额",
 											align: 'center',
-											edit: 'text'
+											edit: 'text',
+											totalRow:true
 										}, {
 											field: "expenseDate",
 											title: "报销申请日期",
