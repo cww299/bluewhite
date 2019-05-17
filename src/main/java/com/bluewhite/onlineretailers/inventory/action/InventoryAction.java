@@ -56,10 +56,7 @@ private static final Log log = Log.getLog(InventoryAction.class);
 					,"warehouse","shippingType","createdAt","updatedAt","onlineOrder Child"
 					,"address","phone","zipCode","buyerName","provinces","city","county")
 			.addRetainTerm(OnlineOrderChild.class,"id","number","commodity","price",
-					"sumPrice","systemPreferential","sellerReadjustPrices","actualSum")
-			.addRetainTerm(Commodity.class,"id","number","name","weight","size",
-					"material","fillers","cost","propagandaCost","remark","remark","price","quantity",
-					"warehouse")
+					"sumPrice","systemPreferential","sellerReadjustPrices","actualSum","status")
 			.addRetainTerm(User.class,"id","userName")
 			.addRetainTerm(RegionAddress.class,"id","regionName","parentId");
 	}
@@ -103,7 +100,8 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	@ResponseBody
 	public CommonResponse deleteOnlineOrder(String ids) {
 		CommonResponse cr = new CommonResponse();
-		onlineOrderService.deleteOnlineOrder(ids);
+		int count = onlineOrderService.deleteOnlineOrder(ids);
+		cr.setMessage("成功删除"+count+"t条销售单");
 		return cr;
 	}
 	
@@ -148,7 +146,8 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	@ResponseBody
 	public CommonResponse deleteCommodity(String ids) {
 		CommonResponse cr = new CommonResponse();
-		
+		int count = commodityService.deleteCommodity(ids);
+		cr.setMessage("成功删除"+count+"件商品");
 		return cr;
 	}
 	
@@ -196,7 +195,8 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	@ResponseBody
 	public CommonResponse deleteOnlineCustomer(String ids) {
 		CommonResponse cr = new CommonResponse();
-		
+		int count = onlineCustomerService.deleteOnlineCustomer(ids);
+		cr.setMessage("成功删除"+count+"件商品");
 		return cr;
 	}
 	
@@ -204,7 +204,7 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	/**** 采购  ***/
 	
 	/**
-	 * 分页查看采购单
+	 * 分页查看出库入库单
 	 * @param onlineCustomer
 	 * @param page
 	 * @return
@@ -219,7 +219,7 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	}
 	
 	/** 
-	 * 新增采购
+	 * 新增出库入库单
 	 * 
 	 */
 	@RequestMapping(value = "/inventory/addProcurement", method = RequestMethod.POST)
@@ -233,7 +233,7 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	
 	
 	/** 
-	 * 删除采购
+	 * 删除出库入库单
 	 * 
 	 */
 	@RequestMapping(value = "/inventory/deleteProcurement", method = RequestMethod.GET)

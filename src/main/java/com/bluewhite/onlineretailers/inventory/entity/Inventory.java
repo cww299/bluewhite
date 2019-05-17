@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * 库存
+ * 库存预警设置
  * @author zhangliang
  *
  */

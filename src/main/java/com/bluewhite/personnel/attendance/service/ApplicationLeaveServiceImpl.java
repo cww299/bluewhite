@@ -160,19 +160,20 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 					restEndTime = DatesUtil.dayTime(dateLeave, restTimeArr[1]);
 					restTime = attendanceInit.getRestSummer();
 					turnWorkTime = attendanceInit.getTurnWorkTimeSummer();
+				}else{
+					// 冬令时
+					String[] workTimeArr = attendanceInit.getWorkTimeWinter().split(" - ");
+					// 将 工作间隔开始结束时间转换成当前日期的时间
+					workTime = DatesUtil.dayTime(dateLeave, workTimeArr[0]);
+					workTimeEnd = DatesUtil.dayTime(dateLeave, workTimeArr[1]);
+					// 将 休息间隔开始结束时间转换成当前日期的时间
+					String[] restTimeArr = attendanceInit.getRestTimeSummer().split(" - ");
+					// 将 休息间隔开始结束时间转换成当前日期的时间
+					restBeginTime = DatesUtil.dayTime(dateLeave, restTimeArr[0]);
+					restEndTime = DatesUtil.dayTime(dateLeave, restTimeArr[1]);
+					restTime = attendanceInit.getRestWinter();
+					turnWorkTime = attendanceInit.getTurnWorkTimeWinter();
 				}
-				// 冬令时
-				String[] workTimeArr = attendanceInit.getWorkTimeWinter().split(" - ");
-				// 将 工作间隔开始结束时间转换成当前日期的时间
-				workTime = DatesUtil.dayTime(dateLeave, workTimeArr[0]);
-				workTimeEnd = DatesUtil.dayTime(dateLeave, workTimeArr[1]);
-				// 将 休息间隔开始结束时间转换成当前日期的时间
-				String[] restTimeArr = attendanceInit.getRestTimeSummer().split(" - ");
-				// 将 休息间隔开始结束时间转换成当前日期的时间
-				restBeginTime = DatesUtil.dayTime(dateLeave, restTimeArr[0]);
-				restEndTime = DatesUtil.dayTime(dateLeave, restTimeArr[1]);
-				restTime = attendanceInit.getRestWinter();
-				turnWorkTime = attendanceInit.getTurnWorkTimeWinter();
 			}
 
 			if (applicationLeave.isHoliday()) {

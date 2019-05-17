@@ -18,5 +18,11 @@ public interface CommodityService  extends BaseCRUDService<Commodity,Long>{
 	 * @return
 	 */
 	public PageResult<Commodity> findPage(Commodity commodity, PageParameter page);
+	/**
+	 * 删除商品
+	 * @param ids
+	 * @return
+	 */
+	public int deleteCommodity(String ids);
 
 }

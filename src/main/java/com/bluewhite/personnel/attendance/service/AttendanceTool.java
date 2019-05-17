@@ -2,6 +2,8 @@ package com.bluewhite.personnel.attendance.service;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.bluewhite.common.utils.DatesUtil;
@@ -241,7 +243,7 @@ public class AttendanceTool {
 
 	private static Double setActualbelateTime(Date beginTime, Date endTime) {
 		double actualbelateTime = 0;
-		double sec = DatesUtil.getTimeSec(beginTime, endTime);
+		double sec = DatesUtil.getTimeSec(beginTime, endTime);  
 		double alltime = Math.floor(sec / 60);
 		actualbelateTime = alltime + 1;
 		return actualbelateTime;

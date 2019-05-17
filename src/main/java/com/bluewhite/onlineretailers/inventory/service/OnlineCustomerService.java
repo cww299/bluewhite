@@ -18,4 +18,11 @@ public interface OnlineCustomerService extends BaseCRUDService<OnlineCustomer,Lo
 	 */
 	public PageResult<OnlineCustomer> findPage(OnlineCustomer OnlineCustomer, PageParameter page);
 
+	/**
+	 * 删除客户
+	 * @param ids
+	 * @return
+	 */
+	public int deleteOnlineCustomer(String ids);
+
 }

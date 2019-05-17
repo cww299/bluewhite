@@ -90,17 +90,17 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				onlineOrderChild.setSellerReadjustPrices(jsonObject.getDouble("sellerReadjustPrices"));
 				onlineOrderChild.setActualSum(jsonObject.getDouble("actualSum"));
 				onlineOrderChild.setOnlineOrderId(onlineOrder.getId());
-				onlineOrder.getOnlineOrderChilds().add(onlineOrderChild);
-				
 				//当订单状态是下单，减少库存
-				if(onlineOrder.getStatus().equals(Constants.ONLINEORDER_4)){
+				if(onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_4)){
 					Commodity commodity = commodityDao.findOne(onlineOrderChild.getCommodityId());
 					commodity.setQuantity(commodity.getQuantity()-onlineOrderChild.getNumber());
 					commodityDao.save(commodity);
 				}
+				onlineOrder.getOnlineOrderChilds().add(onlineOrderChild);
 			}
 		}
-		
+		//总数量
+		onlineOrder.setNum(onlineOrder.getOnlineOrderChilds().stream().mapToInt(OnlineOrderChild::getNumber).sum());
 		return dao.save(onlineOrder);
 	}
 

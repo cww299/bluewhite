@@ -51,4 +51,19 @@ public class CommodityServiceImpl  extends BaseServiceImpl<Commodity, Long> impl
 	        PageResult<Commodity> result = new PageResult<>(pages,page);
 	        return result;
 	    }
+
+	@Override
+	public int deleteCommodity(String ids) {
+		int count = 0;
+		if(!StringUtils.isEmpty(ids)){
+			String[] pers = ids.split(",");
+			if(pers.length>0){
+				for(String idString : pers){
+					dao.delete(Long.valueOf(idString));
+					count++;
+				}
+			}
+		}
+		return count;
+	}
 }

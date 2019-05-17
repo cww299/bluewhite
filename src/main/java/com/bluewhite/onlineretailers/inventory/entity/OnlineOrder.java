@@ -90,7 +90,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 	@Column(name = "buyer_name")
 	private String buyerName;
 	
-	
 	/**
 	 * 卖家昵称
 	 */
@@ -110,13 +109,7 @@ public class OnlineOrder extends BaseEntity<Long> {
 	private String payment;
 	
 	/**
-	 * 卖家是否已评价。可选值:true(已评价),false(未评价)
-	 */
-	@Column(name = "seller_rate")
-	private Boolean sellerRate;
-	
-	/**
-	 * 邮费。精确到2位小数;单位:元。如:200.07，表示:200元7分
+	 * 邮费。
 	 */
 	@Column(name = "post_fee")
 	private Double postFee;
@@ -128,20 +121,13 @@ public class OnlineOrder extends BaseEntity<Long> {
 	private Date consignTime;
 	
 	/**
-	 * 卖家实际收到的支付宝打款金额（由于子订单可以部分确认收货，这个金额会随着子订单的确认收货而不断增加，交易成功后等于买家实付款减去退款金额）。精确到2位小数;单位:元。如:200.07，表示:200元7分
+	 * 卖家实际收到的支付宝打款金额（由于子订单可以部分确认收货，这个金额会随着子订单的确认收货而不断增加，交易成功后等于买家实付款减去退款金额）
 	 */
 	@Column(name = "received_payment")
 	private Double receivedPayment;
 	
 	/**
-	 * 交易编号 (父订单的交易编号)
-	 * 
-	 */
-	@Column(name = "tid")
-	private Number tid;
-	
-	/**
-	 * 	商品购买数量。取值范围：大于零的整数,对于一个trade对应多个order的时候（一笔主订单，对应多笔子订单），num=0，num是一个跟商品关联的属性，一笔订单对应多比子订单的时候，主订单上的num无意义。
+	 * 	商品购买数量
 	 */
 	@Column(name = "num")
 	private Number num;
@@ -167,11 +153,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 	 * WAIT_BUYER_CONFIRM_GOODS(等待买家确认收货,即:卖家已发货) 
 	 * TRADE_BUYER_SIGNED(买家已签收,货到付款专用) 
 	 * TRADE_FINISHED(交易成功) *
-	 * TRADE_CLOSED(付款以后用户退款成功，交易自动关闭) *
-	 * TRADE_CLOSED_BY_TAOBAO(付款以前，卖家或买家主动关闭交易) 
-	 * PAY_PENDING(国际信用卡支付付款确认中) *
-	 * WAIT_PRE_AUTH_CONFIRM(0元购合约中) *
-	 * PAID_FORBID_CONSIGN(拼团中订单或者发货强管控的订单，已付款但禁止发货)
 	 * 
 	 */
 	@Column(name = "status")
@@ -227,14 +208,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 	@Column(name = "seller_flag")
 	private Number sellerFlag;
 	
-	/**
-	 * 买家是否已评价。可选值:true(已评价),false(未评价)。如买家只评价未打分，此字段仍返回false
-	 * 
-	 */
-	@Column(name = "buyer_rate")
-	private Number buyerRate;
-	
-
 	/**
 	 * 发货仓库类型（0=主仓库，1=客供仓库，2=次品）
 	 * 
@@ -472,14 +445,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 		this.payment = payment;
 	}
 
-	public Boolean getSellerRate() {
-		return sellerRate;
-	}
-
-	public void setSellerRate(Boolean sellerRate) {
-		this.sellerRate = sellerRate;
-	}
-
 	public Double getPostFee() {
 		return postFee;
 	}
@@ -504,13 +469,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 		this.receivedPayment = receivedPayment;
 	}
 
-	public Number getTid() {
-		return tid;
-	}
-
-	public void setTid(Number tid) {
-		this.tid = tid;
-	}
 
 	public Number getNum() {
 		return num;
@@ -576,13 +534,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 		this.sellerFlag = sellerFlag;
 	}
 
-	public Number getBuyerRate() {
-		return buyerRate;
-	}
-
-	public void setBuyerRate(Number buyerRate) {
-		this.buyerRate = buyerRate;
-	}
 
 	public String getShippingType() {
 		return shippingType;
