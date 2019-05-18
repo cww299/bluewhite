@@ -163,7 +163,7 @@ td{
 		<td>广宣成本</td>
 		<td><input type="text" class="layui-input" name="propagandaCost"></td></tr>
 	<tr><td>商品编号</td>
-		<td><input type="text" class="layui-input" lay-verify="required" name="number"></td>
+		<td><input type="text" class="layui-input" lay-verify="required" name="skuCode"></td>
 		<td>备注</td>
 		<td><textarea type="text" class="layui-input" name="remark"></textarea></td></tr>
 	<tr><td colspan="4"><button lay-submit lay-filter="sureAddNew" class="layui-btn layui-btn-sm">确定</button></td></tr>
@@ -345,7 +345,7 @@ layui.config({
 			       {field:'sellerMemo', title:'卖家备注',   align:'center'},
 			       {field:'postFee',       title:'邮费',       align:'center'},
 			       {field:'receivedPayment',title:'实收金额',   align:'center'},
-			       {field:'num',     title:'件数',       align:'center'},
+			       {field:'number',     title:'件数',       align:'center'},
 			       {field:'trackingNumber',title:'运单号',     align:'center'},
 			       {field:'status',        title:'状态',       align:'center'},
 			       {field:'address',            title:'收货地址',   align:'center'},
@@ -559,9 +559,9 @@ layui.config({
 				page:false,
 				cols:[[
 				       {type:'checkbox',align:'center',fixed:'left'},
-				       {field:'number',		title:'商品编号',	align:'center'},
+				       {field:'skuCode',		title:'商品编号',	align:'center'},
 				       {field:'name',		title:'商品名称',	align:'center'},
-				       {field:'num',		title:'数量',       align:'center',		edit:'text', totalRow:true,},
+				       {field:'number',		title:'数量',       align:'center',		edit:'text', totalRow:true,},
 				       {field:'price',   	title:'单价',   		align:'center',		edit:'text',},
 				       {field:'sumPrice',   title:'单价总金额', align:'center', totalRow:true},
 				       {field:'systemPreferential',   	title:'系统优惠',   align:'center',	edit:'text', templet:''},
@@ -577,8 +577,8 @@ layui.config({
 						if(choosedProduct[i].id==obj.data.id){		//重新对该行的相关数据进行计算
 							var choosed=choosedProduct[i];
 							choosed[obj.field]=obj.value;
-							choosed.sumPrice=choosed.num*choosed.price;
-							choosed.actualSum=(choosed.price-(-choosed.sellerReadjustPrices)-choosed.systemPreferential)*choosed.num;
+							choosed.sumPrice=choosed.number*choosed.price;
+							choosed.actualSum=(choosed.price-(-choosed.sellerReadjustPrices)-choosed.systemPreferential)*choosed.number;
 							choosedProduct[i][obj.field]=obj.value;
 							choosedProduct[i].sumPrice=choosed.sumPrice;
 							choosedProduct[i].actualSum=choosed.actualSum;
@@ -597,7 +597,7 @@ layui.config({
 					layer.msg("请选择商品",{icon:2});
 					return;
 				}
-				data.commodityNumber=JSON.stringify(choosedProduct);
+				data.childOrder=JSON.stringify(choosedProduct);
 				var load=layer.load(1);
 				$.ajax({
 					url:"${ctx}/inventory/addOnlineOrder",
@@ -663,18 +663,18 @@ layui.config({
 				var j=0;
 				for(var j=0;j<choosedProduct.length;j++){	
 					if(choosedProduct[j].commodityId==choosed[i].id)	{			//判断选择的商品是否已存在选择列表
-						choosedProduct[j].num++;
-						choosedProduct[j].sumPrice=choosedProduct[j].num*choosedProduct[j].price;
-						choosedProduct[j].actualSum=(choosedProduct[j].price-choosedProduct[j].sellerReadjustPrices-choosedProduct[j].systemPreferential)*choosedProduct[j].num;
+						choosedProduct[j].number++;
+						choosedProduct[j].sumPrice=choosedProduct[j].number*choosedProduct[j].price;
+						choosedProduct[j].actualSum=(choosedProduct[j].price-choosedProduct[j].sellerReadjustPrices-choosedProduct[j].systemPreferential)*choosedProduct[j].number;
 						break;
 					}
 				}
 				if(!(j<choosedProduct.length) || choosedProduct.length==0){				//如果不存在
 					var orderChild={
-							number:choosed[i].number,		//商品编号
+							skuCode:choosed[i].skuCode,		//商品编号
 							name:choosed[i].name,			//商品名称
 							commodityId:choosed[i].id,		//商品id
-							num:1,							//商品数量
+							number:1,							//商品数量
 							price:choosed[i].price,			//商品单价
 							sumPrice:choosed[i].price,		//单价总金额
 							systemPreferential:0,			//系统优惠
@@ -696,7 +696,7 @@ layui.config({
 			chooseProductWin = layer.open({		
 				type:1,
 				title:'选择产品',
-				area:['80%','82%'],
+				area:['80%','80%'],
 				content:$('#addProductDiv'),
 			})
 			table.render({

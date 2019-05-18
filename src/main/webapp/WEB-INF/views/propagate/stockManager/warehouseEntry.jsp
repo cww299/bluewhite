@@ -108,7 +108,7 @@
 									 <option value="1">客供仓库</option>
 									 <option value="2">次品</option></select></td>
 		<td>经手人</td>
-		<td><select name="userId" value="{{ d.userId }}"><option value="0">管理员</option></select></td></tr>
+		<td><select name="userId" value="{{ d.userId }}"><option value="1">管理员</option></select></td></tr>
 	<tr><td>备注</td>
 		<td colspan="3"><input type="text" name="remark" class="layui-input" value="{{ d.remark }}"></td>
 		<td>操作</td>
