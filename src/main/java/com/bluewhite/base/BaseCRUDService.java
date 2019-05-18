@@ -72,6 +72,9 @@ public interface BaseCRUDService<T,ID> {
      * @return 返回分页实体
      */
     public List<T> findAll( Specification<T> t);
+
+
+	
     
     
 }

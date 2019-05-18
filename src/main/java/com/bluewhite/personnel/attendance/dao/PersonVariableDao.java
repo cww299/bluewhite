@@ -7,4 +7,5 @@ public interface PersonVariableDao  extends BaseRepository<PersonVariable, Long>
 	
 	
 	PersonVariable findByType(Integer type);
+	
 }

@@ -1132,18 +1132,6 @@
 							  $('.addDictDivTypeForm')[0].reset(); 
 							  $("#addDictDivType").hide();
 							  $('.checkworking').text(""); 
-							  var data={
-									  page:self.getCount(),
-										size:13,
-							  			type:1,
-							  			name:$('#name').val(),
-							  			bacthNumber:$('#number').val(),
-							  			 orderTimeBegin:$("#startTime").val(),
-							  			orderTimeEnd:$("#endTime").val(), 
-							  			status:$("#selectstate").val(),
-							  			flag:0,
-								} 
-							    self.loadPagination(data); 
 						  } 
 					});
 					
@@ -1616,6 +1604,17 @@
 							success:function(result){
 								if(0==result.code){
 									layer.msg(result.message, {icon: 1});
+									var _datae = {
+								  			page:1,
+								  			size:13,
+								  			type:1,
+								  			name:$('#name').val(),
+								  			bacthNumber:$('#number').val(),
+								  			 orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(), 
+								  			status:$("#selectstate").val(),
+								  			flag:0,
+								  	}
 									self.loadPagination(_datae);
 								}else{
 									layer.msg(result.message, {icon: 2});

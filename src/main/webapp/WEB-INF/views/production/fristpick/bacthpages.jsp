@@ -1279,14 +1279,6 @@
 							  $('.addDictDivTypeForm')[0].reset(); 
 							  $("#addDictDivType").hide();
 							  $('.checkworking').text(""); 
-							  var date={
-										page:self.getCount(),
-								  		size:12,	
-								  		type:2,
-								  		flag:0,
-								  	status:$('.selectchoice').val(),
-								} 
-							   self.loadPagination(date);
 							
 						  } 
 					});
@@ -1886,6 +1878,16 @@
 							success:function(result){
 								if(0==result.code){
 									layer.msg(result.message, {icon: 1});
+									var _datae = {
+								  			page:1,
+								  			size:12,
+								  			type:2,
+								  			name:$('#name').val(),
+								  			bacthNumber:$('#number').val(),
+								  			 orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(), 
+								  			status:$('.selectchoice').val(),
+								  	}
 									self.loadPagination(_datae);
 								}else{
 									layer.msg(result.message, {icon: 2});

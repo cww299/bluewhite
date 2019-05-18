@@ -6,8 +6,12 @@
 <%@ taglib uri="http://shiro.apache.org/tags" prefix="shiro" %>
 
 <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/linkSelect/cyStyle.css" media="all">
+<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/linkSelect/cyType.css" media="all">
+<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/linkSelect/font-awesome.min.css" media="all">
 <script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
-
+<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+<script src="${ctx }/static/layui-v2.4.5/linkSelect/transferTool.js"></script>
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -61,6 +65,8 @@
 		</div>
 	</div>
 	
+	
+	
 	<form action="" id="layuiadmin-form-admin"
 		style="padding: 20px 30px 0 60px; display:none;  text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
@@ -93,59 +99,48 @@
 	</form>	
 	
 	
-	<form action="" id="layuiadmin-form-admin2"
-		style="padding: 20px 0px 0 50px; display:none;  text-align:">
+	<form action="" id="layuiadmin-form-admin2"style="padding: 20px 0px 0 50px; display:none;  text-align:">
+		<div class="layui-input-normal layui-form">
+		<input type="text" name="id" id="hostelId" style="display: none;"><!--阻止回车键提交表单   如果form里面只有一个input type＝text，那么无论有没有submit按钮，在input中回车都会提交表单。
+     如果不想回车提交，需要再加一个input type=text，然后设置display:none.  -->
+    	<div cyType="transferTool" cyProps="url:'${ctx}/system/user/findAllUser'"  data_value="10,12,11"  id="divID" name="province[]" ></div>
+		</div>
+	</form>
+	
+	
+	<form action="" id="layuiadmin-form-admin3"
+		style="padding: 20px 30px 0 60px; display:none;  text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
-		<input type="text" name="id" id="ids" style="display:none;">
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">姓名</label>
+				<label class="layui-form-label" style="width: 100px;">宿舍名</label>
 				<div class="layui-input-inline">
-					<select name="userId" style="width:290px;" lay-filter="userId" id="userId" lay-search="true"></select>
+					<input type="text"  name="name"
+						lay-verify="required" 
+						class="layui-input laydate-icon">
 				</div>
 			</div>
-
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">报餐类型</label>
-				<div class="layui-input-inline">
-					<select name="mode" style="width:290px;"  lay-filter="mode" id="mode" lay-search="true">
-						<option value="">请选择</option>
-						<option value="1">早餐</option>
-						<option value="2">中餐</option>
-						<option value="3">晚餐</option>
-					</select>
-				</div>
-			</div>
-
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">日期</label>
-					<div class="layui-input-inline">
-						<input type="text" 
-							style="width: 190px; position: absolute; float: left;" name="time"
-							id="tradeDaysTime" lay-verify="tradeDaysTime" placeholder="请输入日期"
-							class="layui-input laydate-icon">
-					</div>
-				</div>
 		</div>
 	</form>
 	
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
-				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增一行</span>
-				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
-				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
-				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
+				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增宿舍</span>
 				<span class="layui-btn layui-btn-sm" lay-event="openMeal">报餐价格</span>
 			</div>
 	</script>
-
+	
+	<script type="text/html" id="barDemo">
+  		<a class="layui-btn layui-btn-trans layui-btn-sm"  lay-event="update">人员</a>
+	</script>
 	
 	<script>
 			layui.config({
 				base: '${ctx}/static/layui-v2.4.5/'
 			}).extend({
-				tablePlug: 'tablePlug/tablePlug'
+				tablePlug: 'tablePlug/tablePlug',
+				linkSelect:'linkSelect/linkSelect'
 			}).define(
-				['tablePlug', 'laydate', 'element'],
+				['tablePlug', 'laydate','element','linkSelect'],
 				function() {
 					var $ = layui.jquery
 						,layer = layui.layer //弹层
@@ -153,8 +148,8 @@
 						,table = layui.table //表格
 						,laydate = layui.laydate //日期控件
 						,tablePlug = layui.tablePlug //表格插件
-						,element = layui.element;
-					
+						,element = layui.element
+						,linkSelect = layui.linkSelect;
 					//全部字段
 					var allField;
 					var self = this;
@@ -170,7 +165,6 @@
 					var index = layer.load(1, {
 						shade: [0.1, '#fff'] //0.1透明度的白色背景
 					});
-					
 					laydate.render({
 						elem: '#startTime',
 						type: 'datetime',
@@ -184,28 +178,6 @@
 				    range: '~',
 				  });
 				
-					$.ajax({
-						url: '${ctx}/system/user/findAllUser',
-						type: "GET",
-						async: false,
-						beforeSend: function() {
-							index;
-						},
-						success: function(result) {
-							$(result.data).each(function(i, o) {
-								htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
-							})
-							$("#selectUserId").html(htmls)
-							$("#userId").html(htmls)
-							layer.close(index);
-						},
-						error: function() {
-							layer.msg("操作失败！", {
-								icon: 2
-							});
-							layer.close(index);
-						}
-					});
 					
 					var getdataa={type:"orgName",}
 					var htmlfrn= '<option value="">请选择</option>';
@@ -243,25 +215,12 @@
 						};
 					};
 
-					var fn2 = function(field) {
-						return function(d) {
-							return ['<select name="selectTwo" class="selectTwo" lay-filter="lay_selecte" lay-search="true" data-value="' + d.mode + '">',
-								'<option value="">请选择</option>',
-								'<option value="1">早餐</option>',
-								'<option value="2">中餐</option>',
-								'<option value="3">晚餐</option>',
-								'</select>'
-							].join('');
-
-						};
-					};
 					
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
 						size: 'lg',
-						height:'700px',
-						url: '${ctx}/personnel/getMeal' ,
+						url: '${ctx}/personnel/getHostel' ,
 						where:{
 							type:1
 						},
@@ -291,31 +250,16 @@
 								align: 'center',
 								fixed: 'left'
 							},{
-								field: "userId",
-								title: "姓名",
+								field: "name",
+								title: "宿舍名",
 								align: 'center',
-								search: true,
 								edit: false,
-								type: 'normal',
-								templet: fn1('selectOne')
-							},{
-								field: "mode",
-								title: "报餐类型",
-								align: 'center',
-								search: true,
-								edit: false,
-								type: 'normal',
-								templet: fn2('selectTwo')
 							},{
 								field: "price",
 								title: "餐费",
 								align: 'center',
 								edit: false,
-							},{
-								field: "tradeDaysTime",
-								title: "日期",
-								edit: 'text'
-							}]
+							},{fixed:'right', title:'操作', align: 'center', toolbar: '#barDemo'}]
 						],
 						done: function() {
 							var tableView = this.elem.next();
@@ -392,11 +336,11 @@
 						var tableId = config.id;
 						switch(obj.event) {
 							case 'addTempData':
-								var	dicDiv=$("#layuiadmin-form-admin2");
+								var	dicDiv=$("#layuiadmin-form-admin3");
 								layer.open({
 									type:1,
-									title:'报餐新增',
-									area:['30%','60%'],
+									title:'新增宿舍',
+									area:['35%','20%'],
 									btn:['确认','取消'],
 									content:dicDiv,
 									id: 'LAY_layuipro' ,
@@ -412,35 +356,17 @@
 							        },
 									yes:function(){
 										form.on('submit(addRole)', function(data) {
-											mainJs.fAdd(data.field); 
-											document.getElementById("layuiadmin-form-admin2").reset();
+											mainJs.fAdd(data.field)
+											document.getElementById("layuiadmin-form-admin3").reset();
 								        	layui.form.render();
 										})
 									},end:function(){ 
-							        	document.getElementById("layuiadmin-form-admin2").reset();
-							        	layui.form.render();
+							        	$('#fightDiv').html("");
 									  }
 								})
 								
 								
 								break;
-							case 'saveTempData':
-								var data = table.getTemp(tableId).data;
-								var flag=false;
-								var a=0;
-								data.forEach(function(postData,i){
-							    	a++;
-							    	if(a==data.length){
-							    		flag=true
-							    	}
-									})
-								if(flag==true){
-								data.forEach(function(postData,i){
-									 mainJs.fAdd(postData);
-									table.cleanTemp(tableId);
-									})	
-								}
-						          break;
 							case 'deleteSome':
 								// 获得当前选中的
 								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
@@ -491,89 +417,6 @@
 									layer.close(index);
 								});
 								break;
-							case 'openMeal':
-								
-								$.ajax({
-									url: '${ctx}/personnel/getpersonVariabledao',
-									type: "GET",
-									data:{
-										type:1
-									},
-									async: false,
-									beforeSend: function() {
-										index;
-									},
-									success: function(result) {
-										$(result.data).each(function(i, o) {
-											$("#ids").val(o.id);
-											$("#keyValue").val(o.keyValue);
-											$("#keyValueTwo").val(o.keyValueTwo);
-											$("#keyValueThree").val(o.keyValueThree);
-										})
-										
-										layer.close(index);
-									},
-									error: function() {
-										layer.msg("操作失败！", {
-											icon: 2
-										});
-										layer.close(index);
-									}
-								});
-								
-								
-								//报价修改
-							var	dicDiv=$("#layuiadmin-form-admin");
-								layer.open({
-									type:1,
-									title:'报餐价格',
-									area:['30%','60%'],
-									btn:['确认','取消'],
-									content:dicDiv,
-									id: 'LAY_layuipro' ,
-									btnAlign: 'c',
-								    moveType: 1, //拖拽模式，0或者1
-									success : function(layero, index) {
-							        	layero.addClass('layui-form');
-										// 将保存按钮改变成提交按钮
-										layero.find('.layui-layer-btn0').attr({
-											'lay-filter' : 'addRole',
-											'lay-submit' : ''
-										})
-							        },
-									yes:function(){
-										form.on('submit(addRole)', function(data) {
-											$.ajax({
-												url: '${ctx}/personnel/addPersonVaiable',
-												type: "POST",
-												data:data.field,
-												async: false,
-												beforeSend: function() {
-													index;
-												},
-												success: function(result) {
-												if(result.code==0){
-													layer.msg("修改成功！", {
-														icon: 1
-													});
-												}else{
-													layer.msg("修改失败！", {
-														icon: 2
-													});
-												}
-													layer.close(index);
-												},
-												error: function() {
-													layer.msg("操作失败！", {
-														icon: 2
-													});
-													layer.close(index);
-												}
-											});
-										})
-									}
-								})
-								break;
 							case 'cleanTempData':	
 									table.cleanTemp(tableId);
 							break;
@@ -581,17 +424,58 @@
 					});
 
 					//监听单元格编辑
-					table.on('edit(tableData)', function(obj) {
+					table.on('tool(tableData)', function(obj) {
 						var value = obj.value ,//得到修改后的值
 							data = obj.data ,//得到所在行所有键值
 							field = obj.field, //得到字段
-							id = data.id;
-							var postData = {
-								id:id,
-								[field]:value
+							id = data.id,
+							userid=data.users,
+							myArray = [];
+							for (var i = 0; i < userid.length; i++) {
+								myArray.push(userid[i].id)
 							}
-							//调用新增修改
-							mainJs.fUpdate(postData);
+						var a=0;
+						if(obj.event === 'update'){
+							$("#hostelId").val(id)
+							$("#divID").attr("data_value",myArray)
+							$("#divID").attr("name","province[]")
+							var transferTools = $("[cyType='transferTool']");
+						    for (var i = 0; i < transferTools.length; i++) {
+						        $(transferTools[i]).transferTool();
+						    }
+						    form.render();
+							var	dicDiv=$("#layuiadmin-form-admin2");
+						var index=layer.open({
+								type:1,
+								title:'宿舍分配',
+								area:['35%','60%'],
+								btn:['确认','取消'],
+								content:dicDiv,
+								id: 'LAY_layuipro' ,
+								btnAlign: 'c',
+							    moveType: 1, //拖拽模式，0或者1
+								success : function(layero, index) {
+						        	layero.addClass('layui-form');
+									// 将保存按钮改变成提交按钮
+									layero.find('.layui-layer-btn0').attr({
+										'lay-filter' : 'addRole',
+										'lay-submit' : ''
+									})
+						        },
+								yes:function(){
+									form.on('submit(addRole)', function(data) {
+										post={
+											jsonName:JSON.stringify(data.field)
+										}
+										console.log(JSON.stringify(data.field))
+										 mainJs.fUpdate(post) 
+										layer.close(index);
+									})
+								},end:function(){ 
+						        	$('#fightDiv').html("");
+								  }
+							})
+						}
 					});
 					
 					//监听搜索
@@ -611,7 +495,7 @@
 						//新增							
 					    fAdd : function(data){
 					    	$.ajax({
-								url: "${ctx}/fince/addMeal",
+								url: "${ctx}/fince/addHostel",
 								data: data,
 								type: "POST",
 								beforeSend: function() {
@@ -650,7 +534,7 @@
 				    		return;
 				    	}
 				    	$.ajax({
-							url: "${ctx}/fince/addMeal",
+							url: "${ctx}/fince/updateUserHostelId",
 							data: data,
 							type: "POST",
 							beforeSend: function() {
