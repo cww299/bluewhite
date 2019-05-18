@@ -26,8 +26,8 @@ public class Commodity extends BaseEntity<Long>{
 	 * 商品编号（sku）
 	 * 
 	 */
-	@Column(name = "number")
-	private String number;
+	@Column(name = "sku_code")
+	private String skuCode;
 	
 	/**
 	 * 产品图片id
@@ -178,13 +178,13 @@ public class Commodity extends BaseEntity<Long>{
 		this.description = description;
 	}
 
-	public String getNumber() {
-		return number;
+	public String getSkuCode() {
+		return skuCode;
 	}
 
 
-	public void setNumber(String number) {
-		this.number = number;
+	public void setSkuCode(String skuCode) {
+		this.skuCode = skuCode;
 	}
 
 
