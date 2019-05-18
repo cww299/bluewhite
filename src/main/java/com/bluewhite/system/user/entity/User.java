@@ -18,13 +18,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
-
 import com.alibaba.fastjson.annotation.JSONField;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
-import com.bluewhite.common.utils.excel.Poi;
 import com.bluewhite.production.group.entity.Group;
 
 /**
@@ -415,6 +411,7 @@ public class User extends BaseEntity<Long> {
 	private Integer sale;
 	
 	
+	
 	/**
 	 * 
 	 * 位置编号
@@ -492,10 +489,6 @@ public class User extends BaseEntity<Long> {
 	@Transient
 	private Long adjustTimeId;
 	
-	
-
-
-
 	public Long getAdjustTimeId() {
 		return adjustTimeId;
 	}

@@ -79,7 +79,7 @@
 	
 	<div style="display: none;" id="layuiOpen">
 			<table id="tableBudget" class="table_th_search" lay-filter="tableBudget"></table>
-		</div>
+	</div>
 	
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
@@ -499,7 +499,6 @@
 										icon: 2
 									});
 								}
-								console.log(checkedIds);
 								var str = checkedIds[0].id;
 								self.setIndex(str)
 								table.render({

@@ -725,52 +725,7 @@
 			
 			this.mater=function(){
 				//提示人员姓名
-				$("#leader").typeahead({
-					//ajax 拿way数据
-					source : function(query, process) {
-							return $.ajax({
-								url : '${ctx}/system/user/pages',
-								type : 'GET',
-								data : {
-									userName:query
-								},
-								success : function(result) {
-									//转换成 json集合
-									 var resultList = result.data.rows.map(function (item) {
-										 	//转换成 json对象
-					                        var aItem = {name: item.userName, id:item.id}
-					                        //处理 json对象为字符串
-					                        return JSON.stringify(aItem);
-					                    });
-									//提示框返回数据
-									 return process(resultList);
-								},
-							})
-						
-							//提示框显示
-						}, highlighter: function (item) {
-						    //转出成json对象
-							 var item = JSON.parse(item);
-							return item.name
-							//按条件匹配输出
-		                }, matcher: function (item) {
-		                	//转出成json对象
-					        var item = JSON.parse(item);
-					        self.setIndex(item.id);
-					        self.setName(item.name);
-					    	return item.id
-					    },
-						//item是选中的数据
-						updater:function(item){
-							//转出成json对象
-							var item = JSON.parse(item);
-							self.setIndex(item.id);
-						  	self.setName(item.name);
-								return item.name
-						},
-
-						
-					});
+			
 			}
 			this.events = function(){
 				//新增小组
@@ -929,18 +884,15 @@
 					//ajax 拿way数据
 					source : function(query, process) {
 							return $.ajax({
-								url : '${ctx}/system/user/pages',
+								url : '${ctx}/system/user/findUserList',
 								type : 'GET',
 								data : {
-									page:1,
-							  		size:10,								
 							  		temporarilyName:$.trim(query),
-									temporarily:4,
 								},
 								success : function(result) {
 									
 									//转换成 json集合
-									 var resultList = result.data.rows.map(function (item) {
+									 var resultList = result.data.map(function (item) {
 										 	//转换成 json对象
 					                        var aItem = {name: item.userName, id:item.id}
 					                        //处理 json对象为字符串
