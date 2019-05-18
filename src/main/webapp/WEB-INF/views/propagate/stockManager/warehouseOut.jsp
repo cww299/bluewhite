@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>入库单</title>
+<title>出库单</title>
 <style>
 .layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
      top: 50%;
@@ -97,13 +97,13 @@
 <div class="padding:10px;">
 <table class="layui-form layui-table">
 	<tr><td><input type="hidden" name="id" value="{{ d.id }}"></td>
-		<td><input type="hidden" name="type" value="0"></td></tr>
-	<tr><td>入库类型</td>
-		<td><select name="status" value="{{ d.status }}"><option value="0">采购入库</option>
-								  <option value="1">销售退货入库</option>
-								  <option value="2">销售换货入库</option>
-								  <option value="3">生产入库</option></select>
-		<td>入库仓库</td>
+		<td><input type="hidden" name="type" value="1"></td></tr>
+	<tr><td>出库类型</td>
+		<td><select name="status" value="{{ d.status }}"><option value="0">销售出库</option>
+								  <option value="1">采购退出出库</option>
+								  <option value="2">销售换货出库</option>
+								  <option value="3">调拨出库</option></select>
+		<td>出库仓库</td>
 		<td><select name="warehouse" value="{{ d.warehouse }}"><option value="0">主仓库</option>
 									 <option value="1">客供仓库</option>
 									 <option value="2">次品</option></select></td>
@@ -157,7 +157,7 @@ layui.config({
 		
 		table.render({				//渲染主页面入库单表格
 			elem:'#warehouseTable',
-			url:'${ctx}/inventory/procurementPage?type=0',
+			url:'${ctx}/inventory/procurementPage?type=1',
 			toolbar:'#warehouseTableToolbar',
 			loading:true,
 			page:true,
@@ -176,9 +176,9 @@ layui.config({
 			cols:[[
 			       {align:'center', type:'checkbox',},
 			       {align:'center', title:'单据编号',   field:'',		width:'',},
-			       {align:'center', title:'入库类型',   field:'',	width:'',},
+			       {align:'center', title:'出库类型',   field:'',	width:'',},
 			       {align:'center', title:'日期',   field:'',		width:'',},
-			       {align:'center', title:'入库仓库',   field:'',		width:'',},
+			       {align:'center', title:'出库仓库',   field:'',		width:'',},
 			       {align:'center', title:'总数量', field:''},
 			       {align:'center', title:'经手人', field:''},
 			       {align:'center', title:'备注', field:''},
@@ -251,7 +251,7 @@ layui.config({
 					layer.msg("请选择商品",{icon:2});
 					return;
 				}
-				var child=[],allNum=0;
+				var child=[],allNum=0;									//传递商品id跟数量转json格式。商品总数量
 				for(var i=0;i<choosedProduct.length;i++){
 					child.push({commodityId:choosedProduct[i].commodityId,number:choosedProduct[i].number});
 					allNum+=choosedProduct[i].number;

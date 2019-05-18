@@ -21,9 +21,11 @@
 	<div class="layui-card-body">
 		<table class="layui-form">
 			<tr>
-				<td><select name="" lay-search><option value="">商品名称</option></select></td>
-				<td><select name="" lay-search><option value="">按分类</option></select></td>
-				<td><button type="button" lay-submit lay-filter="search">搜索</button></td>
+				<td><select name="name" lay-search><option value="">商品名称</option></select></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td><select name="type" lay-search><option value="">按分类</option></select></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
 		<table class="layui-form" id="productTable" lay-filter="productTable"></table>
@@ -50,7 +52,7 @@
 <div class="layui-form" style="padding:10px;">
 	<input type="hidden" name="id" value="{{d.id}}">
 	<div class="layui-item">
-		<label class="layui-form-label">编号</label>
+		<label class="layui-form-label">编号(sku)</label>
 		<div class="layui-input-block">
 			<input class="layui-input" name="number" value="{{d.number}}">
 		</div>
@@ -89,6 +91,15 @@
 		<label class="layui-form-label">成本</label>
 		<div class="layui-input-block">
 			<input class="layui-input" name="cost" value="{{d.cost}}">
+		</div>
+	</div>
+	<div class="layui-item">
+		<label class="layui-form-label">分类</label>
+		<div class="layui-input-block">
+			<select name="type">
+				<option value="0" {{ d.type==0?'selected':'' }} >毛绒玩偶</option>
+				<option value="1" {{ d.type==1?'selected':'' }} >抱枕</option>
+			</select>
 		</div>
 	</div>
 	<div class="layui-item">
@@ -172,6 +183,12 @@ layui.config({
 			       ]]
 		})
 		
+		form.on('submit(search)',function(obj){
+			layer.msg(JSON.stringify(obj.field));
+			table.reload('productTable',{
+				where:{name:obj.field.name,grade:obj.field.type}
+			})
+		}) 
 		table.on('toolbar(productTable)',function(obj){
 			switch(obj.event){
 			case 'add':		addEdit('add');		break;
@@ -183,7 +200,7 @@ layui.config({
 		
 		function addEdit(type){
 			var data={
-					id:'',number:'',name:'',weight:'',size:'',material:'',fillers:'',cost:'',propagandaCost:'',remark:'',price:'',quantity:'',warehouse:''},
+					id:'',number:'',name:'',weight:'',size:'',material:'',fillers:'',cost:'',propagandaCost:'',remark:'',price:'',quantity:'',warehouse:'',type:0},
 			title='新增商品',
 			html='',
 			choosed=layui.table.checkStatus('productTable').data,
@@ -198,6 +215,7 @@ layui.config({
 					return;
 				}
 				data=choosed[0];
+				data.type=0;	//新增字段，更新后台代码后删除
 				title="修改商品";
 			}
 			laytpl(tpl).render(data,function(h){
@@ -238,8 +256,31 @@ layui.config({
 				layer.msg('请选择商品',{icon:2});
 				return;
 			}
-			
-			layer.msg("接口还未完善");
+			layer.confirm("是否确认删除？",function(){
+				var ids='';
+				for(var i=0;i<choosed.length;i++){
+					ids+=(choosed[i].id+",");
+				}
+				var load=layer.load(1);
+				$.ajax({
+					url:"${ctx}/inventory/deleteCommodity",
+					data:{ids:ids},
+					success:function(result){
+						if(0==result.code){
+							layer.msg(result.message,{icon:1});
+							table.reload('productTable');
+						}
+						else{
+							layer.msg(result.message,{icon:2});
+						}
+						layer.close(load);
+					},
+					error:function(result){
+						layer.msg('ajax异常',{icon:2});
+						layer.close(load);
+					}
+				})
+			})
 		}
 		function refresh(){
 			table.reload('productTable');
