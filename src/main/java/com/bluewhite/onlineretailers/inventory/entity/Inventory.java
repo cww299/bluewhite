@@ -1,5 +1,6 @@
 package com.bluewhite.onlineretailers.inventory.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -10,9 +11,16 @@ import javax.persistence.Table;
  */
 //@Entity
 //@Table(name = "online_inventory")
-public class Inventory {
-	
-	
-	
-
-}
+//public class Inventory {
+//	
+//	
+//	/**
+//	 * 预警数量
+//	 * 
+//	 */
+//	@Column(name = "number")
+//	private Integer number;
+//	
+//	
+//
+//}

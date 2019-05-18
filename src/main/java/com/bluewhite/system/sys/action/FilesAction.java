@@ -40,7 +40,7 @@ public class FilesAction {
 
 	
 	/**
-	 * 员工相片上传
+	 * 照片上传
 	 * @param files
 	 * @param request
 	 * @return

@@ -30,6 +30,12 @@ public class Commodity extends BaseEntity<Long>{
 	private String number;
 	
 	/**
+	 * 产品图片id
+	 */
+	@Column(name = "file_id")
+	private Long fileId;
+	
+	/**
      * 产品图片地址
      */
 	@Column(name = "pic_url")
@@ -116,6 +122,13 @@ public class Commodity extends BaseEntity<Long>{
 	
 	
 	/**
+	 * 商品分类
+	 * 
+	 */
+	@Column(name = "type")
+	private Integer type;
+	
+	/**
 	 * 仓库类型（0=主仓库，1=客供仓库，2=次品）
 	 * 
 	 */
@@ -125,6 +138,26 @@ public class Commodity extends BaseEntity<Long>{
 	
 	
 	
+
+	public Long getFileId() {
+		return fileId;
+	}
+
+
+	public void setFileId(Long fileId) {
+		this.fileId = fileId;
+	}
+
+
+	public Integer getType() {
+		return type;
+	}
+
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
 
 	public Long getProductID() {
 		return productID;
