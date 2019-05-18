@@ -34,8 +34,8 @@ public class CommodityServiceImpl  extends BaseServiceImpl<Commodity, Long> impl
 				}
 	        	
 	        	//按编号过滤
-	        	if (!StringUtils.isEmpty(param.getNumber())) {
-					predicate.add(cb.equal(root.get("number").as(String.class),param.getNumber()));
+	        	if (!StringUtils.isEmpty(param.getSkuCode())) {
+					predicate.add(cb.equal(root.get("skuCode").as(String.class),param.getSkuCode()));
 				}
 	        	
 	        	//按产品名称过滤

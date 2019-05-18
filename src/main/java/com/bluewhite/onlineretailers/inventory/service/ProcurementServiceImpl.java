@@ -56,7 +56,6 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 
 	@Override
 	public Procurement saveProcurement(Procurement procurement) {
-		//新增子订单
 		if(!StringUtils.isEmpty(procurement.getCommodityNumber())){
 			JSONArray jsonArray = JSON.parseArray(procurement.getCommodityNumber());
 			for (int i = 0; i < jsonArray.size(); i++) {
