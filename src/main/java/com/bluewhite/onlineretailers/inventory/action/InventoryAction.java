@@ -1,6 +1,12 @@
 package com.bluewhite.onlineretailers.inventory.action;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -9,14 +15,19 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
+import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.metadata.Sheet;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineCustomer;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
@@ -26,6 +37,7 @@ import com.bluewhite.onlineretailers.inventory.service.CommodityService;
 import com.bluewhite.onlineretailers.inventory.service.OnlineCustomerService;
 import com.bluewhite.onlineretailers.inventory.service.OnlineOrderService;
 import com.bluewhite.onlineretailers.inventory.service.ProcurementService;
+import com.bluewhite.reportexport.entity.ProductPoi;
 import com.bluewhite.system.sys.entity.RegionAddress;
 import com.bluewhite.system.user.entity.User;
 
@@ -56,7 +68,7 @@ private static final Log log = Log.getLog(InventoryAction.class);
 					,"warehouse","shippingType","createdAt","updatedAt","onlineOrder Child"
 					,"address","phone","zipCode","buyerName","provinces","city","county")
 			.addRetainTerm(OnlineOrderChild.class,"id","number","commodity","price",
-					"sumPrice","systemPreferential","sellerReadjustPrices","actualSum","status")
+					"sumPrice","systemPreferential","sellerReadjustPrices","actualSum","status") 
 			.addRetainTerm(User.class,"id","userName")
 			.addRetainTerm(RegionAddress.class,"id","regionName","parentId");
 	}
@@ -196,7 +208,7 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	public CommonResponse deleteOnlineCustomer(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = onlineCustomerService.deleteOnlineCustomer(ids);
-		cr.setMessage("成功删除"+count+"件商品");
+		cr.setMessage("成功删除"+count+"个客户");
 		return cr;
 	}
 	
@@ -243,6 +255,26 @@ private static final Log log = Log.getLog(InventoryAction.class);
 		
 		return cr;
 	}
+	
+	/**
+	 *                           
+	 * @param response
+	 * @param request
+	 * @return
+	 * @throws IOException 
+	 */
+	@RequestMapping(value = "/inventory/import/test",method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse importProduct(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request) throws IOException{
+		CommonResponse cr = new CommonResponse();
+		InputStream inputStream = file.getInputStream();
+		ExcelListener excelListener = new ExcelListener();
+        EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1), excelListener);
+        inputStream.close();
+		return cr;
+	}
+	
+	
 	
 	
 	

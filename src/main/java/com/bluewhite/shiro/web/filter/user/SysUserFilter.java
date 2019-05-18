@@ -1,11 +1,14 @@
 package com.bluewhite.shiro.web.filter.user;
 
+import java.util.zip.CRC32;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.subject.Subject;
@@ -49,6 +52,15 @@ public class SysUserFilter extends AccessControlFilter {
 			Cache<String, User> sysUserCache =  cacheManager.getCache("sysUserCache");
 			if(sysUserCache.get(cu.getUserName())==null){
 				return false;
+			}else{
+				if(cu.getRole()==null && cu.getPermissions()==null){
+					Cache<String, SimpleAuthorizationInfo> apiAccessTokenCache =  cacheManager.getCache("sysAuthCache");
+					SimpleAuthorizationInfo simpleAuthorizationInfo = apiAccessTokenCache.get(cu.getUserName());
+					if(simpleAuthorizationInfo!=null){
+						cu.setRole(simpleAuthorizationInfo.getRoles());
+						cu.setPermissions(simpleAuthorizationInfo.getStringPermissions());
+					}
+				}
 			}
 			return true;
 		}

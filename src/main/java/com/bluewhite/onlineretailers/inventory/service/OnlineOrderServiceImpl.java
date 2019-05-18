@@ -75,7 +75,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 
 
 	@Override
-	public OnlineOrder addOnlineOrder(OnlineOrder onlineOrder) {
+	public OnlineOrder addOnlineOrder(OnlineOrder onlineOrder) {  
 		//新增子订单
 		if(!StringUtils.isEmpty(onlineOrder.getChildOrder())){
 			JSONArray jsonArray = JSON.parseArray(onlineOrder.getChildOrder());
@@ -89,6 +89,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				onlineOrderChild.setSystemPreferential(jsonObject.getDouble("systemPreferential"));
 				onlineOrderChild.setSellerReadjustPrices(jsonObject.getDouble("sellerReadjustPrices"));
 				onlineOrderChild.setActualSum(jsonObject.getDouble("actualSum"));
+				onlineOrderChild.setStatus(jsonObject.getString("status"));
 				onlineOrderChild.setOnlineOrderId(onlineOrder.getId());
 				//当订单状态是下单，减少库存
 				if(onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_4)){

@@ -64,11 +64,11 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				Commodity commodity = commodityService.findOne(jsonObject.getLong("commodityId"));
 				//入库单
 				if(procurement.getType()==0){
-					commodity.setQuantity(commodity.getQuantity()+jsonObject.getIntValue("commodityId"));
+					commodity.setQuantity(commodity.getQuantity()+jsonObject.getIntValue("number"));
 				}
 				//出库单
 				if(procurement.getType()==1){
-					commodity.setQuantity(commodity.getQuantity()-jsonObject.getIntValue("commodityId"));
+					commodity.setQuantity(commodity.getQuantity()-jsonObject.getIntValue("number"));
 				}
 				procurement.getCommoditys().add(commodity);
 			}

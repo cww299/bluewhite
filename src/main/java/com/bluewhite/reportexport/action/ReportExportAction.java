@@ -131,8 +131,8 @@ public class ReportExportAction {
 	@ResponseBody
 	public CommonResponse importProduct(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request){
 		CommonResponse cr = new CommonResponse();
+		List<ProductPoi> excelProduct = new ArrayList<ProductPoi>();
 		try {
-				List<ProductPoi> excelProduct = new ArrayList<ProductPoi>();
 				InputStream in = file.getInputStream();
 				String filename = file.getOriginalFilename();
 				// 创建excel工具类
@@ -142,6 +142,7 @@ public class ReportExportAction {
 				if(count > 0){
 					cr.setMessage("成功导入"+count+"条数据");
 				}
+				in.close();
 		} catch (Exception e) {
 			cr.setMessage("导入失败");
 		}
@@ -223,6 +224,7 @@ public class ReportExportAction {
 				if(count > 0){
 					cr.setMessage("成功导入"+count+"条数据");
 				}
+				in.close();
 		} catch (Exception e) {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("导入失败");
@@ -249,6 +251,7 @@ public class ReportExportAction {
 				if(count > 0){
 					cr.setMessage("成功导入"+count+"条数据");
 				}
+				in.close();
 		} catch (Exception e) {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("导入失败");
@@ -276,6 +279,7 @@ public class ReportExportAction {
 				if(count > 0){
 					cr.setMessage("成功导入"+count+"条数据");
 				}
+				in.close();
 		} catch (Exception e) {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("导入失败");
@@ -288,17 +292,13 @@ public class ReportExportAction {
 	 * 导出返工价值
 	 * @param request
 	 * @param response
+	 * @throws IOException 
 	 */
 	@RequestMapping("/importExcel")
-	public void DownStudentExcel(HttpServletResponse response,Task task){
+	public void DownStudentExcel(HttpServletResponse response,Task task) throws IOException{
 		response.setContentType("octets/stream");
 	    response.addHeader("Content-Disposition", "attachment;filename=rework.xls");
-	    OutputStream out=null;
-        try {  
-            out = response.getOutputStream();  
-        } catch (IOException e) {  
-            e.printStackTrace();  
-		}  
+	    OutputStream out = response.getOutputStream();  
         //输出的实体与反射的实体相对应
         task.setFlag(1);
         task.setStatus(1);
@@ -330,6 +330,7 @@ public class ReportExportAction {
  		}  
 	    Excelutil<ReworkPoi> util = new Excelutil<ReworkPoi>(ReworkPoi.class);
         util.exportExcel(reworkPoiList, "返工价值表", out);// 导出  
+        out.close();
 	}
 	
 	
@@ -337,23 +338,20 @@ public class ReportExportAction {
 	 * 导出月产量报表
 	 * @param request
 	 * @param response
+	 * @throws IOException 
 	 */
 	@RequestMapping("/importExcel/monthlyProduction")
-	public void DownMonthlyProductionExcel(HttpServletResponse response,MonthlyProduction monthlyProduction){
+	public void DownMonthlyProductionExcel(HttpServletResponse response,MonthlyProduction monthlyProduction) throws IOException{
 		response.setContentType("octets/stream");
 	    response.addHeader("Content-Disposition", "attachment;filename=rework.xls");
-	    OutputStream out=null;
-        try {  
-            out = response.getOutputStream();  
-        } catch (IOException e) {  
-            e.printStackTrace();  
-		}  
+	    OutputStream out = response.getOutputStream();  
         //输出的实体与反射的实体相对应
         List<MonthlyProduction> monthlyProductionList =  collectPayBService.monthlyProduction(monthlyProduction);
         SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd"); 
         monthlyProductionList.stream().forEach(MonthlyProduction->MonthlyProduction.setStartDate(sdf.format(MonthlyProduction.getOrderTimeBegin())));
 	    Excelutil<MonthlyProduction> util = new Excelutil<MonthlyProduction>(MonthlyProduction.class);
-        util.exportExcel(monthlyProductionList, "月产量报表", out);// 导出  
+        util.exportExcel(monthlyProductionList, "月产量报表", out);// 导出 
+        out.close();
 	}
 	
 	
@@ -361,23 +359,20 @@ public class ReportExportAction {
 	 * 导出各组产量报表
 	 * @param request
 	 * @param response
+	 * @throws IOException 
 	 */
 	@RequestMapping("/importExcel/groupProduction")
-	public void groupProduction(HttpServletResponse response,GroupProduction groupProduction){
+	public void groupProduction(HttpServletResponse response,GroupProduction groupProduction) throws IOException{
 		response.setContentType("octets/stream");
 	    response.addHeader("Content-Disposition", "attachment;filename=rework.xls");
-	    OutputStream out=null;
-        try {  
-            out = response.getOutputStream();  
-        } catch (IOException e) {  
-            e.printStackTrace();  
-		}  
+	    OutputStream out = response.getOutputStream();  
         //输出的实体与反射的实体相对应
         List<GroupProduction> production =  collectPayBService.groupProduction(groupProduction);	
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
         production.stream().forEach(GroupProduction->GroupProduction.setStartDate(sdf.format(GroupProduction.getOrderTimeBegin())));
 	    Excelutil<GroupProduction> util = new Excelutil<GroupProduction>(GroupProduction.class);
         util.exportExcel(production, "月产量报表", out);// 导出  
+        out.close();
 	}
 	
 	
@@ -403,6 +398,7 @@ public class ReportExportAction {
 				if(count > 0){
 					cr.setMessage("成功导入"+count+"条数据");
 				}
+				in.close();
 		} catch (Exception e) {
 			cr.setMessage("导入失败");
 		}
@@ -432,6 +428,7 @@ public class ReportExportAction {
 				if(count > 0){
 					cr.setMessage("成功导入"+count+"条数据");
 				}
+				in.close();
 		} catch (Exception e) {
 			cr.setMessage("导入失败");
 		}
@@ -461,6 +458,7 @@ public class ReportExportAction {
 				if(count > 0){
 					cr.setMessage("成功导入"+count+"条数据");
 				}
+				in.close();
 		} catch (Exception e) {
 			cr.setMessage("导入失败");
 		}
@@ -489,6 +487,7 @@ public class ReportExportAction {
 				if(count > 0){
 					cr.setMessage("成功导入"+count+"条数据");
 				}
+				in.close();
 		} catch (Exception e) {
 			cr.setMessage("导入失败");
 		}
@@ -500,23 +499,19 @@ public class ReportExportAction {
 	 * 导出包装绩效
 	 * @param request
 	 * @param response
+	 * @throws IOException 
 	 */
 	@RequestMapping("/importExcel/DownCollectPay")
-	public void DownCollectPay(HttpServletResponse response,CollectPay collectPay){
+	public void DownCollectPay(HttpServletResponse response,CollectPay collectPay) throws IOException{
 		response.setContentType("octets/stream");
 	    response.addHeader("Content-Disposition", "attachment;filename=rework.xls");
-	    OutputStream out=null;
-        try {  
-            out = response.getOutputStream();  
-        } catch (IOException e) {  
-            e.printStackTrace();
-		}  
-        //输出的实体与反射的实体相对应
+	    OutputStream out = response.getOutputStream();  
         List<CollectPay> collectPayList = payBService.collectPay(collectPay);
         SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd"); 
         collectPayList.stream().forEach(CollectPay->CollectPay.setStartDate(sdf.format(collectPay.getOrderTimeBegin())));
 	    Excelutil<CollectPay> util = new Excelutil<CollectPay>(CollectPay.class);
         util.exportExcel(collectPayList, "绩效报表", out);// 导出  
+        out.close();
 	}
 	
 	
@@ -524,21 +519,18 @@ public class ReportExportAction {
 	 * 导出机工绩效
 	 * @param request
 	 * @param response
+	 * @throws IOException 
 	 */
 	@RequestMapping("/importExcel/DownMachinistCollectPay")
-	public void DownMachinistCollectPay(HttpServletResponse response,CollectPay collectPay){
+	public void DownMachinistCollectPay(HttpServletResponse response,CollectPay collectPay) throws IOException{
 		response.setContentType("octets/stream");
 	    response.addHeader("Content-Disposition", "attachment;filename=rework.xls");
-	    OutputStream out=null;
-        try {  
-            out = response.getOutputStream();  
-        } catch (IOException e) {  
-            e.printStackTrace();
-		}  
+	    OutputStream out = response.getOutputStream();  
         //输出的实体与反射的实体相对应
         List<CollectPay> collectPayList = collectPayBService.twoPerformancePay(collectPay);
 	    Excelutil<CollectPay> util = new Excelutil<CollectPay>(CollectPay.class);
         util.exportExcelTwo(collectPayList, "绩效报表", "machinist", out);// 导出  
+        out.close();
 	}
 	
 
@@ -819,6 +811,7 @@ public class ReportExportAction {
 		if(count > 0){
 			cr.setMessage("成功导入"+count+"条数据");
 		}
+		in.close();
 		return cr;
 	}
 	
@@ -844,84 +837,9 @@ public class ReportExportAction {
 		if(count > 0){
 			cr.setMessage("成功导入"+count+"条数据");
 		}
+		in.close();
 		return cr;
 	}	
-	
-	
-	/**
-	 * 人事导出
-	 * @author zhangliang
-	 * @throws ParseException 
-	 */
-	@RequestMapping("/importExcel/personnel/DownRetireUser")
-	public void DownPersonnelAttendance(HttpServletRequest request,HttpServletResponse response, AttendanceTime attendance) throws ParseException{
-		response.setContentType("octets/stream");
-	    response.addHeader("Content-Disposition", "attachment;filename=attendancePay.xlsx");
-	    // 第一步，创建一个webbook，对应一个Excel文件  
-        XSSFWorkbook wb = new XSSFWorkbook();  
-        // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet  
-        XSSFSheet sheet = wb.createSheet("报表"); 
-        
-        // 表头样式
-        XSSFCellStyle headStyle = wb.createCellStyle();
-        // 竖向居中
-        headStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-        // 横向居中
-        headStyle.setAlignment(HorizontalAlignment.CENTER);
-        // 边框
-        headStyle.setBorderBottom(BorderStyle.THIN);
-        headStyle.setBorderLeft(BorderStyle.THIN);
-        headStyle.setBorderRight(BorderStyle.THIN);
-        headStyle.setBorderTop(BorderStyle.THIN);
-        sheet.setDefaultColumnWidth(5);
-        // 在sheet中添加表头第0行
-        XSSFRow row = sheet.createRow(0);
-        XSSFCell cell = row.createCell(0);  
-        cell.setCellValue("员工部门");  
-        cell.setCellStyle(headStyle);  
-        cell = row.createCell(1);  
-        cell.setCellValue("员工姓名");  
-        cell.setCellStyle(headStyle);  
-        cell = row.createCell(2);  
-        cell.setCellValue("出生时间");  
-        cell.setCellStyle(headStyle); 
-        User user = new User();
-        user.setRetire(1);
-        user.setQuit(0);  
-        List<User> userList = userService.getPagedUser(new PageParameter(0,Integer.MAX_VALUE), user).getRows();
-        //获取符合日期的退休人员
-        
-//        DatesUtil.getFirstDayOfMonth(dates);
-//        DatesUtil.getLastDayOfMonth(dates);
-//        
-//        userList.stream().forEach(us->{
-//        	
-//        	if(){
-//        		
-//        	}
-//        		us.getBirthDate();
-//        	
-//        });
-        
-        SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-      	for (int i = 0; i < userList.size(); i++)  
-          {  
-              row = sheet.createRow( i + 1);  
-              // 第四步，创建单元格，并设置值  
-              row.createCell(1).setCellValue(userList.get(i).getOrgName().getName());
-              row.createCell(0).setCellValue(userList.get(i).getUserName());  
-              row.createCell(2).setCellValue(sdf.format(userList.get(i).getBirthDate()));  
-          } 
-    try {	
-    	OutputStream outputStream=response.getOutputStream();
-    	wb.write(outputStream);
-    	outputStream.flush();
-    	outputStream.close(); 
-  		} catch (IOException e1) {
-  			e1.printStackTrace();
-  		}
-}
-	
 	
 	
 	/**

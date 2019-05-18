@@ -12,6 +12,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.system.user.entity.User;
@@ -52,13 +53,6 @@ public class Procurement extends BaseEntity<Long>{
 	@ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	@JoinTable(name = "online_procurement_commodity", joinColumns = @JoinColumn(name = "online_procurement_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "commodity_id", referencedColumnName = "id"))
 	private Set<Commodity> commoditys = new HashSet<Commodity>();
-	
-	/**
-	 * json 储存商品id和数量
-	 * 
-	 */
-	@Column(name = "commodity_number")
-	private String commodityNumber;
 	
 	/**
 	 * 总数量
@@ -103,7 +97,12 @@ public class Procurement extends BaseEntity<Long>{
 	@Column(name = "remark")
 	private String remark;
 	
-	
+	/**
+	 * json 储存商品id和数量
+	 * 
+	 */
+	@Column(name = "commodity_number")
+	private String commodityNumber;
 	
 	
 
