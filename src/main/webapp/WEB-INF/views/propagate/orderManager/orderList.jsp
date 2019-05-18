@@ -597,7 +597,7 @@ layui.config({
 					layer.msg("请选择商品",{icon:2});
 					return;
 				}
-				data.childOrder=JSON.stringify(choosedProduct);
+				data.commodityNumber=JSON.stringify(choosedProduct);
 				var load=layer.load(1);
 				$.ajax({
 					url:"${ctx}/inventory/addOnlineOrder",
@@ -680,6 +680,7 @@ layui.config({
 							systemPreferential:0,			//系统优惠
 							sellerReadjustPrices:0,			//卖家调价
 							actualSum:choosed[i].price,		//实际金额
+							status:'WAIT_SELLER_SEND_GOODS',//状态默认值
 					}
 					choosedProduct.push(orderChild);
 				}
@@ -695,7 +696,7 @@ layui.config({
 			chooseProductWin = layer.open({		
 				type:1,
 				title:'选择产品',
-				area:['80%','80%'],
+				area:['80%','82%'],
 				content:$('#addProductDiv'),
 			})
 			table.render({
@@ -704,14 +705,14 @@ layui.config({
 				url:'${ctx}/inventory/commodityPage',
 				loading:true,
 				page:true,
-				height:'600',
+				height:'605',
 				request:{
 					pageName:'page',
 					limitName:'size'
 				},
 				parseData:function(ret){	
 					return{
-						code:	ret.code,msg:	ret.message,data:	ret.data.rows,count:	ret.total,
+						code:ret.code, msg:ret.message, data:ret.data.rows, count:ret.data.total,
 					}
 				},
 				cols:[[

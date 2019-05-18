@@ -30,11 +30,13 @@
 						<option value="0">一级</option>
 						<option value="1">二级</option>
 						<option value="2">三级</option></select></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td><select name="type" lay-search>
 						<option value="">客户类型</option>
 						<option value="0">电商</option>
 						<option value="1">商超</option>
 						<option value="2">线下</option></select></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td><button type="button" lay-submit lay-filter="search" class="layui-btn layui-btn-sm">搜索</button></td>
 			</tr>
 		</table>
@@ -174,6 +176,13 @@ layui.config({
 			       ]]
 		})
 		
+		form.on('submit(search)',function(obj){
+			//layer.msg(JSON.stringify(obj.field))
+			table.reload('customTable',{
+				where:{grade:obj.field.grade,type:obj.field.type}
+			});
+		})
+		
 		table.on('toolbar(customTable)',function(obj){
 			switch(obj.event){
 			case 'add':		addEdit('add');		break;
@@ -261,7 +270,35 @@ layui.config({
 			});  
 		}
 		function deletes(){
-			layer.msg('删除');
+			var choosed=layui.table.checkStatus('customTable').data;
+			if(choosed.length<1){
+				layer.msg('请选择商品',{icon:2});
+				return;
+			}
+			layer.confirm('是否确认删除？',function(){
+				var ids='';
+				for(var i=0;i<choosed.length;i++){
+					ids+=(choosed[i].id+",");
+				}
+				var load=layer.load(1);
+				$.ajax({
+					url:"${ctx}/inventory/deleteOnlineCustomer",
+					data:{ids:ids},
+					success:function(result){
+						if(0==result.code){
+							layer.msg(result.message,{icon:1});
+							table.reload('customTable');
+						}else{
+							layer.msg(result.message,{icon:2});
+						}
+						layer.close(load);
+					},
+					error:function(){
+						layer.msg("ajax错误",{icon:2});
+						layer.close(load);
+					}
+				})
+			})
 		}
 		function refresh(){
 			table.reload('customTable');
