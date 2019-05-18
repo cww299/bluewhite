@@ -18,13 +18,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
-
 import com.alibaba.fastjson.annotation.JSONField;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
-import com.bluewhite.common.utils.excel.Poi;
 import com.bluewhite.production.group.entity.Group;
 
 /**
@@ -414,6 +410,29 @@ public class User extends BaseEntity<Long> {
 	@Column(name = "sale")
 	private Integer sale;
 	
+	/**
+	 * 床位编号
+	 */
+	@Column(name = "bed")
+	private Integer bed;
+	
+	/**
+	 * 入住时间
+	 */
+	@Column(name = "in_live_date")
+    private Date inLiveDate;
+	
+	/**
+	 * 退房时间
+	 */
+	@Column(name = "ot_live_date")
+    private Date otLiveDate;
+	
+	/**
+	 * 宿舍备注
+	 */
+	@Column(name = "live_remark")
+	private String liveRemark;
 	
 	/**
 	 * 
@@ -495,6 +514,38 @@ public class User extends BaseEntity<Long> {
 	
 
 
+
+	public Integer getBed() {
+		return bed;
+	}
+
+	public void setBed(Integer bed) {
+		this.bed = bed;
+	}
+
+	public Date getInLiveDate() {
+		return inLiveDate;
+	}
+
+	public void setInLiveDate(Date inLiveDate) {
+		this.inLiveDate = inLiveDate;
+	}
+
+	public Date getOtLiveDate() {
+		return otLiveDate;
+	}
+
+	public void setOtLiveDate(Date otLiveDate) {
+		this.otLiveDate = otLiveDate;
+	}
+
+	public String getLiveRemark() {
+		return liveRemark;
+	}
+
+	public void setLiveRemark(String liveRemark) {
+		this.liveRemark = liveRemark;
+	}
 
 	public Long getAdjustTimeId() {
 		return adjustTimeId;

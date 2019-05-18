@@ -4,6 +4,7 @@ import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.personnel.attendance.entity.Hostel;
+import com.bluewhite.system.user.entity.User;
 
 public interface HostelService  extends BaseCRUDService<Hostel,Long>{
 	
@@ -23,4 +24,10 @@ public interface HostelService  extends BaseCRUDService<Hostel,Long>{
 	 * @param onlineOrder
 	 */
 	public void updateUserHostelId(Hostel hostel);
+	
+	/**
+	 * 修改宿舍人员信息
+	 * @param onlineOrder
+	 */
+	public void updateUser(User user);
 }

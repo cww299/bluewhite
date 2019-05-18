@@ -25,19 +25,20 @@ import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.entity.Hostel;
 import com.bluewhite.personnel.attendance.service.HostelService;
 import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.service.UserService;
 
 @Controller
 public class HostelAction {
 
 	@Autowired
 	private HostelService service;
-	
-	
+	@Autowired
+	private UserService userService;
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
 				.addRetainTerm(Attendance.class, "name")
-				.addRetainTerm(User.class, "id", "userName","orgName","orgNameId","age");
+				.addRetainTerm(User.class, "id", "userName","orgName","orgNameId","age","bed","inLiveDate","otLiveDate","liveRemark");
 	}
 
 	/**
@@ -93,6 +94,29 @@ public class HostelAction {
 		CommonResponse cr = new CommonResponse();
 		cr.setMessage("分配成功");
 		service.updateUserHostelId(hostel);
+		return cr;
+	}
+	
+	/**
+	 * 修改员工信息
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/fince/updateUser", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateUser(HttpServletRequest request, User user) {
+		CommonResponse cr = new CommonResponse();
+		if(user.getId() != null){
+			User user2 = userService.findOne(user.getId());
+				BeanCopyUtils.copyNullProperties(user2, user);
+				user.setCreatedAt(user2.getCreatedAt());
+			cr.setMessage("修改成功");
+		}else{
+			cr.setMessage("添加成功");
+		}
+		service.updateUser(user);
 		return cr;
 	}
 	

@@ -61,7 +61,10 @@
 			<shiro:hasAnyRoles name="superAdmin,personnel">
    				 <p id="totalAll" style="text-align:center;color:red;"></p>
 			</shiro:hasAnyRoles> 
-			
+			<!-- 宿舍人员详情 -->
+			<div style="display: none;" id="layuiOpen">
+			<table id="tableBudget" class="table_th_search" lay-filter="tableBudget"></table>
+			</div>
 		</div>
 	</div>
 	
@@ -133,6 +136,9 @@
   		<a class="layui-btn layui-btn-trans layui-btn-sm"  lay-event="update">人员</a>
 	</script>
 	
+	<script type="text/html" id="barDemo2">
+  		<a class="layui-btn layui-btn-trans layui-btn-sm"  lay-event="live">宿舍人员详情</a>
+	</script>
 	<script>
 			layui.config({
 				base: '${ctx}/static/layui-v2.4.5/'
@@ -254,12 +260,9 @@
 								title: "宿舍名",
 								align: 'center',
 								edit: false,
-							},{
-								field: "price",
-								title: "餐费",
-								align: 'center',
-								edit: false,
-							},{fixed:'right', title:'操作', align: 'center', toolbar: '#barDemo'}]
+							}
+							,{fixed:'right', title:'宿舍详情', align: 'center', toolbar: '#barDemo2'}
+							,{fixed:'right', title:'操作', align: 'center', toolbar: '#barDemo'}]
 						],
 						done: function() {
 							var tableView = this.elem.next();
@@ -364,58 +367,6 @@
 							        	$('#fightDiv').html("");
 									  }
 								})
-								
-								
-								break;
-							case 'deleteSome':
-								// 获得当前选中的
-								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
-								layer.confirm('您是否确定要删除选中的' + checkedIds.length + '条记录？', function() {
-									var postData = {
-										ids: checkedIds,
-									}
-									$.ajax({
-										url: "${ctx}/fince/deleteMeal",
-										data: postData,
-										traditional: true,
-										type: "GET",
-										beforeSend: function() {
-											index;
-										},
-										success: function(result) {
-											if(0 == result.code) {
-												var configTemp = tablePlug.getConfig("tableData");
-									            if (configTemp.page && configTemp.page.curr > 1) {
-									              table.reload("tableData", {
-									                page: {
-									                  curr: configTemp.page.curr - 1
-									                }
-									              })
-									            }else{
-									            	table.reload("tableData", {
-										                page: {
-										                }
-										              })
-									            };
-												layer.msg(result.message, {
-													icon: 1,
-													time:800
-												});
-											} else {
-												layer.msg(result.message, {
-													icon: 2,
-													time:800
-												});
-											}
-										},
-										error: function() {
-											layer.msg("操作失败！", {
-												icon: 2
-											});
-										}
-									});
-									layer.close(index);
-								});
 								break;
 							case 'cleanTempData':	
 									table.cleanTemp(tableId);
@@ -428,6 +379,7 @@
 						var value = obj.value ,//得到修改后的值
 							data = obj.data ,//得到所在行所有键值
 							field = obj.field, //得到字段
+							title=obj.data.name,
 							id = data.id,
 							userid=data.users,
 							myArray = [];
@@ -467,7 +419,6 @@
 										post={
 											jsonName:JSON.stringify(data.field)
 										}
-										console.log(JSON.stringify(data.field))
 										 mainJs.fUpdate(post) 
 										layer.close(index);
 									})
@@ -476,6 +427,164 @@
 								  }
 							})
 						}
+						//查看宿舍人员详情
+						if(obj.event === 'live'){
+							
+							table.render({
+								elem: '#tableBudget',
+								size: 'lg',
+								url: '${ctx}/personnel/getHostel' ,
+								where:{
+									id:id,
+								},
+								request:{
+									pageName: 'page' ,//页码的参数名称，默认：page
+									limitName: 'size' //每页数据量的参数名，默认：limit
+								},
+								page: {
+								},//开启分页
+								loading: true,
+								//toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+								//totalRow: true,		 //开启合计行 */
+								cellMinWidth: 90,
+								colFilterRecord: true,
+								smartReloadModel: true,// 开启智能重载
+								parseData: function(ret) {
+									return {
+										code: ret.code,
+										msg: ret.message,
+										count:ret.data.total,
+										data: ret.data.rows[0].users
+									}
+								},
+								cols: [
+									[{
+										field: "userName",
+										title: "姓名",
+										align: 'center',
+									},{
+										field: "name",
+										title: "部门",
+										align: 'center',
+										templet:function(d){
+											return d.orgName.name
+										}
+									},{
+										field: "age",
+										title: "年龄",
+										align: 'center',
+									},{
+										field: "bed",
+										title: "床号",
+										align: 'center',
+										edit:"text",
+									},{
+										field: "inLiveDate",
+										title: "入住日期",
+										align: 'center',
+										edit:"text",
+									},{
+										field: "otLiveDate",
+										title: "退房日期",
+										align: 'center',
+										edit:"text",
+									},{
+										field: "liveRemark",
+										title: "备注",
+										align: 'center',
+										edit:"text",
+									}
+									]
+								],
+								done: function() {
+									var tableView = this.elem.next();
+									tableView.find('.layui-table-grid-down').remove();
+									var totalRow = tableView.find('.layui-table-total');
+									var limit = this.page ? this.page.limit : this.limit;
+									layui.each(totalRow.find('td'), function(index, tdElem) {
+										tdElem = $(tdElem);
+										var text = tdElem.text();
+										if(text && !isNaN(text)) {
+											text = (parseFloat(text) / limit).toFixed(2);
+											tdElem.find('div.layui-table-cell').html(text);
+										}
+									});
+								},
+								//下拉框回显赋值
+								done: function(res, curr, count) {
+									var tableView = this.elem.next();
+									var tableElem = this.elem.next('.layui-table-view');
+									layui.each(tableElem.find('select'), function(index, item) {
+										var elem = $(item);
+										elem.val(elem.data('value'));
+									});
+									form.render();
+									// 初始化laydate
+									layui.each(tableView.find('td[data-field="inLiveDate"]'), function(index, tdElem) {
+										tdElem.onclick = function(event) {
+											layui.stope(event)
+										};
+										laydate.render({
+											elem: tdElem.children[0],
+											format: 'yyyy-MM-dd HH:mm:ss',
+											done: function(value, date) {
+													var id = table.cache[tableView.attr('lay-id')][index].id
+													var postData = {
+														id: id,
+														inLiveDate: value,
+													};
+													//调用新增修改
+													 mainJs.fUpdateUser(postData);
+														}
+													})
+												})
+									layui.each(tableView.find('td[data-field="otLiveDate"]'), function(index, tdElem) {
+										tdElem.onclick = function(event) {
+											layui.stope(event)
+										};
+										laydate.render({
+											elem: tdElem.children[0],
+											format: 'yyyy-MM-dd HH:mm:ss',
+											done: function(value, date) {
+													var id = table.cache[tableView.attr('lay-id')][index].id
+													var postData = {
+														id: id,
+														otLiveDate: value,
+													};
+													//调用新增修改
+													 mainJs.fUpdateUser(postData);
+														}
+													})
+												})			
+											},
+										});
+							
+							var dicDiv=$('#layuiOpen');
+							layer.open({
+						         type: 1
+						        ,title: title //不显示标题栏
+						        ,closeBtn: false
+						        ,zindex:-1
+						        ,area:['80%', '90%']
+						        ,shade: 0.5
+						        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+						        ,btn: ['取消']
+						        ,btnAlign: 'c'
+						        ,moveType: 1 //拖拽模式，0或者1
+						        ,content:dicDiv
+						        ,success : function(layero, index) {
+						        	layero.addClass('layui-form');
+									// 将保存按钮改变成提交按钮
+									layero.find('.layui-layer-btn0').attr({
+										'lay-filter' : 'addRole',
+										'lay-submit' : ''
+									})
+						        }
+						        ,end:function(){
+								  } 
+						      });
+						}
+						
 					});
 					
 					//监听搜索
@@ -565,7 +674,46 @@
 							},
 						});
 						layer.close(index);
-				    }
+				    },
+					    
+					  //修改员工信息							
+					    fUpdateUser : function(data){
+					    	if(data.id==""){
+					    		return;
+					    	}
+					    	$.ajax({
+								url: "${ctx}/fince/updateUser",
+								data: data,
+								type: "POST",
+								beforeSend: function() {
+									index;
+								},
+								success: function(result) {
+									if(0 == result.code) {
+									 	 table.reload("tableBudget", {
+							                page: {
+							                }
+							              }) 
+										layer.msg(result.message, {
+											icon: 1,
+											time:800
+										});
+									
+									} else {
+										layer.msg(result.message, {
+											icon: 2,
+											time:800
+										});
+									}
+								},
+								error: function() {
+									layer.msg("操作失败！请重试", {
+										icon: 2
+									});
+								},
+							});
+							layer.close(index);
+					    }
 					}
 
 				}

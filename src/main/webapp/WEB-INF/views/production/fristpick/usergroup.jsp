@@ -737,14 +737,14 @@
 					//ajax 拿way数据
 					source : function(query, process) {
 							return $.ajax({
-								url : '${ctx}/system/user/pages',
+								url : '${ctx}/system/user/findUserList',
 								type : 'GET',
 								data : {
-									userName:query
+									temporarilyName:$.trim(query),
 								},
 								success : function(result) {
 									//转换成 json集合
-									 var resultList = result.data.rows.map(function (item) {
+									 var resultList = result.data.map(function (item) {
 										 	//转换成 json对象
 					                        var aItem = {name: item.userName, id:item.id}
 					                        //处理 json对象为字符串
@@ -992,17 +992,14 @@
 					//ajax 拿way数据
 					source : function(query, process) {
 							return $.ajax({
-								url : '${ctx}/system/user/pages',
+								url : '${ctx}/system/user/findUserList',
 								type : 'GET',
 								data : {
-									page:1,
-							  		size:10,								
 							  		temporarilyName:$.trim(query),
-									temporarily:4,
 								},
 								success : function(result) {
 									//转换成 json集合
-									 var resultList = result.data.rows.map(function (item) {
+									 var resultList = result.data.map(function (item) {
 										 	//转换成 json对象
 					                        var aItem = {name: item.userName, id:item.id}
 					                        //处理 json对象为字符串

@@ -35,6 +35,9 @@ public class HostelServiceImpl extends BaseServiceImpl<Hostel, Long>
 	public PageResult<Hostel> findPage(Hostel param, PageParameter page) {
 		Page<Hostel> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
+			if (param.getId() != null) {
+				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
+			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
@@ -66,5 +69,10 @@ public class HostelServiceImpl extends BaseServiceImpl<Hostel, Long>
 		}
 		hostel2.setUsers(users);
 		dao.save(hostel2);
+	}
+
+	@Override
+	public void updateUser(User user) {
+		userDao.save(user);
 	}
 }
