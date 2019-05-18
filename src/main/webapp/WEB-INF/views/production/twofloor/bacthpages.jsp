@@ -1138,19 +1138,6 @@
 							  $('.addDictDivTypeForm')[0].reset(); 
 							  $("#addDictDivType").hide();
 							   $('.checkworking').text(""); 
-							   var data={
-										page:self.getCount(),
-										size:13,
-							  			type:3,
-							  			name:$('#name').val(),
-							  			bacthNumber:$('#number').val(),
-							  			orderTimeBegin:$("#startTime").val(),
-							  			orderTimeEnd:$("#endTime").val(), 
-							  			status:$("#selectstate").val(),
-							  			flag:0,
-							  			statusTime:$("#startTime").val(),
-								} 
-							   self.loadPagination(data);
 						  } 
 					});
 					
@@ -1200,7 +1187,7 @@
 							 
 						var index;
 						 index = layer.confirm('<input type="text" id="some" class="tele form-control " placeholder="请输入时间" onClick=laydate({elem:"#some",istime:true,format:"YYYY-MM-DD"})>', {btn: ['确定', '取消'],offset:'(parent.document.documentElement.scrollTop+50)'+'px',
-},function(){
+						},function(){
 							var a="";
 							if($('#some').val()==""){
 								a="";
@@ -1229,6 +1216,18 @@
 							success:function(result){
 								if(0==result.code){
 									layer.msg(result.message, {icon: 1});
+									var _datae={
+											page:1,
+									  		size:13,
+									  		type:3,
+								  			name:$('#name').val(),
+								  			bacthNumber:$('#number').val(),
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(),
+								  			flag:0,
+								  			status:$('#selectstate').val(),
+								  			statusTime:$("#startTime").val(),
+									}
 									self.loadPagination(_datae);
 								}else{
 									layer.msg(result.message, {icon: 2});

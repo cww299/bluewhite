@@ -15,7 +15,7 @@ public interface MealDao extends BaseRepository<Meal, Long>{
 	 * @param endDate
 	 * @return
 	 */
-	public List<Meal> findByUserIdAndTradeDaysTimeBetween(Long userId,Date orderTimeBegin, Date orderTimeEnd);
+	public List<Meal> findByUserIdAndOrgNameIdAndTradeDaysTimeBetween(Long userId,Long orgNameId,Date orderTimeBegin, Date orderTimeEnd);
 	
 
 }

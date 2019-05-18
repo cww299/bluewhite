@@ -1137,19 +1137,6 @@
 							  $('.addDictDivTypeForm')[0].reset(); 
 							  $("#addDictDivType").hide();
 							   $('.checkworking').text(""); 
-							   var data={
-										page:self.getCount(),
-										size:13,
-							  			type:4,
-							  			name:$('#name').val(),
-							  			bacthNumber:$('#number').val(),
-							  			 orderTimeBegin:$("#startTime").val(),
-							  			orderTimeEnd:$("#endTime").val(), 
-							  			status:$("#selectstate").val(),
-							  			machinist:$("#choice").val(),
-							  			flag:0,
-								} 
-							   self.loadPagination(data);
 						  } 
 					});
 					
@@ -1220,7 +1207,7 @@
 								ids:arr,
 								flag:0,
 								time:a,
-						}
+							}
 						$.ajax({
 							url:"${ctx}/bacth/statusBacth",
 							data:data,
@@ -1235,6 +1222,17 @@
 							success:function(result){
 								if(0==result.code){
 									layer.msg(result.message, {icon: 1});
+									var _datae={
+											size:13,
+											type:4,
+								  			name:$('#name').val(),
+								  			bacthNumber:$('#number').val(),
+								  			 orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(), 
+								  			status:$("#selectstate").val(),
+								  			machinist:$("#choice").val(),
+								  			flag:0,
+										}
 									self.loadPagination(_datae);
 								}else{
 									layer.msg(result.message, {icon: 2});

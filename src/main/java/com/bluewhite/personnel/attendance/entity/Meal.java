@@ -14,7 +14,7 @@ import com.bluewhite.base.BaseEntity;
 import com.bluewhite.system.user.entity.User;
 
 /**
- * 签到记录 
+ * 报餐记录
  * 
  * @author qiyong
  *
@@ -61,6 +61,35 @@ public class Meal extends BaseEntity<Long> {
 	private String userName;
 	
 	/**
+	 *(1.早餐次数 2.中餐次数 3.晚餐次数) 
+	 */
+	@Transient
+	private Integer modeOne;
+	
+	/**
+	 *(2.中餐次数) 
+	 */
+	@Transient
+	private Integer modeTwo;
+	
+	/**
+	 *(3.晚餐次数) 
+	 */
+	@Transient
+	private Integer modeThree;
+	
+	/**
+	 * 汇总餐价
+	 */
+	@Transient
+	private Double summaryPrice ;
+	
+	/**
+	 * 时间传参
+	 */
+	@Transient
+	private String time;
+	/**
 	 * 查询字段
 	 */
 	@Transient
@@ -72,9 +101,8 @@ public class Meal extends BaseEntity<Long> {
 	private Date orderTimeEnd;
 	
 	/**
-	 * 查询字段（部门）
+	 * 部门Id
 	 */
-	@Transient
 	private Long orgNameId;
 	
 	/**
@@ -84,6 +112,14 @@ public class Meal extends BaseEntity<Long> {
 	private String orgName;
 
 	
+
+	public String getTime() {
+		return time;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
+	}
 
 	public Integer getMode() {
 		return mode;
@@ -164,6 +200,38 @@ public class Meal extends BaseEntity<Long> {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public Integer getModeOne() {
+		return modeOne;
+	}
+
+	public void setModeOne(Integer modeOne) {
+		this.modeOne = modeOne;
+	}
+
+	public Integer getModeTwo() {
+		return modeTwo;
+	}
+
+	public void setModeTwo(Integer modeTwo) {
+		this.modeTwo = modeTwo;
+	}
+
+	public Integer getModeThree() {
+		return modeThree;
+	}
+
+	public void setModeThree(Integer modeThree) {
+		this.modeThree = modeThree;
+	}
+
+	public Double getSummaryPrice() {
+		return summaryPrice;
+	}
+
+	public void setSummaryPrice(Double summaryPrice) {
+		this.summaryPrice = summaryPrice;
 	}
 	
 

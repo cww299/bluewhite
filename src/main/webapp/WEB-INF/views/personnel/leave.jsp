@@ -869,6 +869,7 @@
 						        			if(data.field.repairtime==""){
 						        				return layer.msg("补签日期不能为空", {icon: 2});
 						        			}
+						        			
 						        			variable='addSignIn' 
 						        			repairtime=data.field.repairtime;
 						        			Sign=data.field.Sign
