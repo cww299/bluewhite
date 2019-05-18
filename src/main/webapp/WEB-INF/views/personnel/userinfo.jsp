@@ -1966,8 +1966,8 @@ jQuery(function($){
 													,yes: function(index, layero){
 														//window.location.href = "${ctx}/menusToUrl?url=personnel/init"
 														//此处是修改员工后的询问
-															$('#personnelInit', window.parent.document)[0].click();	//从父窗口中找到超链接并产生点击事件，[0]不能省略，因为超链接a中有子元素，点击的是子元素
-															layer.close(init); 
+															window.parent.document.getElementById("personnelInit").click();
+															layer.close(init); 								   
 														}
 													}); 
 											}else if($(".quit").val()==1){
@@ -2492,7 +2492,8 @@ jQuery(function($){
 										if (2==result.code) {
 											//修改如下：
 											var con=layer.confirm('新增员工成功！是否前往初始化',function(){
-												$('#personnelInit', window.parent.document)[0].click();
+												window.parent.document.getElementById("personnelInit").click();
+												console.log(1)
 												layer.close(con);
 											});
 												

@@ -159,8 +159,8 @@ layui.use(['form','element','layer','jquery'],function(){
 					var data=result.data;
 					for(var i=0;i<data.length;i++){
 						$("#nav").find('span.layui-nav-bar').remove();
-						html+='<li data-name="'+data[i].identity+'" class="layui-nav-item">'+
-								'<a href="javascript:;" lay-tips="'+data[i].name+'" lay-direction="2">'+
+						html+='<li data-name="'+data[i].identity+'" class="layui-nav-item" >'+
+								'<a href="javascript:;" lay-tips="'+data[i].name+'" lay-direction="2" id="'+data[i].identity+'">'+
 									'<i class="layui-icon layui-icon-'+data[i].icon+'"></i>  '+
 										'<cite>'+data[i].name+'</cite></a>'
 						if(data[i].children!=null)
@@ -179,14 +179,14 @@ layui.use(['form','element','layer','jquery'],function(){
     		for(var i=0;i<child.length;i++){
     			if(child[i].children!=null){
     				html+='<dd data-name="'+child[i].identity+'" class>'+
-						'<a href="javascript:;">'+
+						'<a href="javascript:;" id="'+child[i].identity+'">'+
 							'<i class="layui-icon layui-icon-'+child[i].icon+'"></i>  '+
 							'<cite>'+child[i].name+'</cite></a>';
 						
     			}else{
     				var href='${ctx}/menusToUrl?url='+child[i].url;
 		    		html+='<dd data-name="'+child[i].identity+'" class>'+
-		    					'<a lay-href="'+href+'">'+
+		    					'<a lay-href="'+href+'" id="'+child[i].identity+'">'+
 		    					'<i class="layui-icon layui-icon-'+child[i].icon+'"></i>  '+
 								'<cite>'+child[i].name+'</cite></a>';
     			}
