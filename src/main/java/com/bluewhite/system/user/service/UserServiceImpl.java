@@ -92,7 +92,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	@Override
 	public PageResult<User> getPagedUser(PageParameter page, User user) {
 		CurrentUser cu = SessionManager.getUserSession();
-		if(user.getTemporarily()==null){
 			//质检
 			if(cu.getRole().contains(Constants.PRODUCT_FRIST_QUALITY)){
 				user.setQuit(0);
@@ -118,7 +117,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				user.setQuit(0);
 				user.setOrgNameIds(Constants.TAILOR_ORGNAME);
 			}
-		}
 //		user.setOrgNameIds(String.valueOf(cu.getOrgNameId()));
 		page.setSort(null);
 		Page<User> pageUser = userDao.findAll((root, query, cb) -> {
@@ -392,6 +390,11 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			//按员工编号
 			if (!StringUtils.isEmpty(user.getNumber())) {
 				predicate.add(cb.like(root.get("number").as(String.class),"%" + user.getNumber() + "%"));
+			}
+			
+			//外调中按姓名精确查找
+			if (!StringUtils.isEmpty(user.getTemporarilyName())) {
+				predicate.add(cb.equal(root.get("userName").as(String.class),user.getTemporarilyName()));
 			}
 			
 			//按位置编号

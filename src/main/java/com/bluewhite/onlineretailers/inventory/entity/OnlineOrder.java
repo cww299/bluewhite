@@ -1,5 +1,6 @@
 package com.bluewhite.onlineretailers.inventory.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -74,7 +75,7 @@ public class OnlineOrder extends BaseEntity<Long> {
 	 */
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
 	@JoinColumn(name = "online_order_id")
-	private List<OnlineOrderChild> onlineOrderChilds;
+	private List<OnlineOrderChild> onlineOrderChilds = new ArrayList<>();
 	
 	
 	/**
@@ -109,7 +110,7 @@ public class OnlineOrder extends BaseEntity<Long> {
 	private String payment;
 	
 	/**
-	 * 邮费。
+	 * 邮费
 	 */
 	@Column(name = "post_fee")
 	private Double postFee;
@@ -209,6 +210,7 @@ public class OnlineOrder extends BaseEntity<Long> {
 	private Number sellerFlag;
 	
 	/**
+	 * （当出库时，才开始更新字段）
 	 * 发货仓库类型（0=主仓库，1=客供仓库，2=次品）
 	 * 
 	 */

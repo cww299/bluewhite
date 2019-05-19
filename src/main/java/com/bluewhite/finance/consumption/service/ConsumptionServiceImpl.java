@@ -226,15 +226,27 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 					Long id = Long.parseLong(idArr[i]);
 					Consumption consumption = dao.findOne(id);
 					if (consumption.getFlag() == 0) {
-						List<Consumption> consumptionList= dao.findByParentId(id);
-						consumptionList.stream().forEach(co->co.setParentId(null));
-						dao.save(consumptionList);
+						CurrentUser cu = SessionManager.getUserSession();
+						//获取当前采购单，判断是否为预算
+						if(consumption.getBudget()==1){
+							//获取所有的子报销单,删除子报销单时，同步更新父报销单的费用
+							List<Consumption> consumptionList= dao.findByParentId(id);
+							if(consumptionList.size()>0){
+								consumptionList.stream().forEach(co->co.setParentId(null));
+							}
+							dao.save(consumptionList);
+						}else{//不为预算单时，当拥有父id，属于子报销单，删除同时更新父预算报销单的金额
+							if(consumption.getParentId()!=null){
+								Consumption pConsumption = dao.findOne(id);
+								pConsumption.setMoney(NumUtils.sum(pConsumption.getMoney(), consumption.getMoney()));
+								dao.save(pConsumption);
+							}
+						}
 						dao.delete(id);
 						count++;
 					} else {
 						throw new ServiceException(consumption.getContent() + "已经审核放款无法删除");
 					}
-
 				}
 			}
 		}

@@ -43,6 +43,23 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 					predicate.add(cb.equal(root.get("id").as(Long.class),param.getId()));
 				}
 	        	
+	        	//按客服id过滤
+	        	if (param.getUserId() != null) {
+					predicate.add(cb.equal(root.get("userId").as(Long.class),param.getUserId()));
+				}
+	        	//按客户id过滤
+	        	if (param.getOnlineCustomerId() != null) {
+					predicate.add(cb.equal(root.get("onlineCustomerId").as(Long.class),param.getOnlineCustomerId()));
+				}
+	        	//交易状态过滤
+	        	if (!StringUtils.isEmpty(param.getStatus())) {
+					predicate.add(cb.equal(root.get("status").as(String.class),param.getStatus()));
+				}
+	        	//按物流方式
+	        	if (!StringUtils.isEmpty(param.getShippingType())) {
+					predicate.add(cb.equal(root.get("shippingType").as(String.class),param.getShippingType()));
+				}
+	        	
 	        	//按编号过滤
 	        	if (!StringUtils.isEmpty(param.getNum())) {
 					predicate.add(cb.equal(root.get("num").as(String.class),param.getNum()));

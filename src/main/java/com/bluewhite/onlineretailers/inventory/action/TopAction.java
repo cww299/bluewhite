@@ -86,9 +86,6 @@ public class TopAction {
 					
 				}
 			}
-			
-			
-			
 			cr.setData(list);
 			cr.setMessage("同步成功");
 		}else{

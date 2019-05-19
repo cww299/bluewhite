@@ -373,7 +373,6 @@ public class UserAction {
 	@ResponseBody
 	public CommonResponse findUserList(User user) {
 		CommonResponse cr = new CommonResponse();
-		user.setForeigns(0);
 		user.setQuit(0);
 		user.setIsAdmin(null);
 		cr.setData(ClearCascadeJSON
