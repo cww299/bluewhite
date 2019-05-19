@@ -51,6 +51,12 @@ public class User extends BaseEntity<Long> {
 	private Integer foreigns;
 	
 	/**
+	 * 是否是可转正人员（true=是）
+	 */
+	@Column(name = "positive")
+	private Boolean positive = false;
+	
+	/**
 	 * 是否锁定
 	 */
 	@Column(name = "del_flag")
@@ -493,8 +499,16 @@ public class User extends BaseEntity<Long> {
 	private Long adjustTimeId;
 	
 	
+	
 
 
+	public Boolean getPositive() {
+		return positive;
+	}
+
+	public void setPositive(Boolean positive) {
+		this.positive = positive;
+	}
 
 	public Long getAdjustTimeId() {
 		return adjustTimeId;

@@ -431,21 +431,21 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			for(Group group : groupList){
 				map = new HashMap<String, Object>();
 				List<AttendancePay> list = attendancePayList.stream().filter(
-						AttendancePay->AttendancePay.getUser().getGroupId() != null 
-									&& AttendancePay.getUser().getGroupId().equals(group.getId())
+						AttendancePay->AttendancePay.getGroupId() != null 
+									&& AttendancePay.getGroupId().equals(group.getId())
 						).collect(Collectors.toList());
 				//考勤总时间
 				double sunTime = list.stream().mapToDouble(AttendancePay::getWorkTime).sum();
 				double overTime = list.stream().filter(AttendancePay->AttendancePay.getOverTime()!=null).mapToDouble(AttendancePay::getOverTime).sum();
 				//分组人员B工资总和
 				double sumBPay = payBList.stream().filter(
-						PayB->PayB.getUser().getGroupId() != null 
-						&& PayB.getUser().getGroupId().equals(group.getId())
+						PayB->PayB.getGroupId() != null 
+						&& PayB.getGroupId().equals(group.getId())
 				).mapToDouble(PayB::getPayNumber).sum();
 				//分组人员杂工工资总和
 				double sumfarragoTaskPay = farragoTaskPayList.stream().filter(
-						FarragoTaskPay->FarragoTaskPay.getUser().getGroupId() !=null 
-						&& FarragoTaskPay.getUser().getGroupId().equals(group.getId())).mapToDouble(FarragoTaskPay::getPayNumber).sum();
+						FarragoTaskPay->FarragoTaskPay.getGroupId() !=null 
+						&& FarragoTaskPay.getGroupId().equals(group.getId())).mapToDouble(FarragoTaskPay::getPayNumber).sum();
 				map.put("id", group.getId());
 				map.put("name", group.getName());
 				map.put("sunTime", NumUtils.sum(sunTime,overTime));
