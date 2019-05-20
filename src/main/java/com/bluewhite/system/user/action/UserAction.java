@@ -373,7 +373,6 @@ public class UserAction {
 	@ResponseBody
 	public CommonResponse findUserList(User user) {
 		CommonResponse cr = new CommonResponse();
-		user.setQuit(0);
 		user.setIsAdmin(null);
 		cr.setData(ClearCascadeJSON
 				.get()
@@ -414,6 +413,36 @@ public class UserAction {
 	  	cr.setMessage("修改成功");
 		return cr;
 	}
+	
+	
+	/**
+	 * 获取可转正人员 
+	 * （人事自动获取）
+	 */
+	@RequestMapping(value = "/getPositiveUser", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getPositiveUser() {
+		CommonResponse cr = new CommonResponse();
+	  	cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(User.class,"id","userName","phone","type")
+				.format(userService.getPositiveUser()).toJSON());
+	  	cr.setMessage("成功");
+		return cr;
+	}
+	
+	/**
+	 * 一键转正人员 
+	 */
+	@RequestMapping(value = "/positiveUser", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse positiveUser(String positiveUser) {
+		CommonResponse cr = new CommonResponse();
+	    int count = userService.positiveUser(positiveUser);
+	  	cr.setMessage("成功转正"+count+"名员工");
+		return cr;
+	}
+	
 	
 	
 	

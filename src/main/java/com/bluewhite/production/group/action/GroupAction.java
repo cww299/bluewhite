@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -271,10 +272,11 @@ public class GroupAction {
 		if (StringUtils.isEmpty(temporarily.getUserId())) {
 			User user = new User();
 			user.setForeigns(1);
-			user.setPassword("123456");
+			user.setPassword( new SimpleHash("md5", "123456").toHex());
 			user.setUserName(temporarily.getUserName());
 			user.setStatus(0);
 			user.setType(temporarily.getType());
+			user.setPositive(temporarily.getPositive());
 			userService.save(user);
 			temporarily.setUserId(user.getId());
 		}

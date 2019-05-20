@@ -63,6 +63,12 @@ public interface UserDao extends BaseRepository<User, Long> {
 	 * @return
 	 */
 	public List<User> findByForeignsAndIsAdminAndQuit(Integer foreigns,boolean admin,Integer quit);
+
+	/**
+	 * 获取转正人员
+	 * @return
+	 */
+	public List<User> findByForeignsAndPositive(int foreigns, boolean positive);
 	
 
 }

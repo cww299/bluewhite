@@ -117,7 +117,24 @@ public interface UserService extends BaseCRUDService<User, Long> {
 	 * @return
 	 */
 	public List<User> findUserList(User user);
-
+	/**
+	 * 修改密码
+	 * @param password
+	 * @return
+	 */
 	public boolean checkPassword(String password);
+	
+	/**
+	 * 获取转正人员
+	 * @return
+	 */
+	public List<User> getPositiveUser();
+	
+	/**
+	 * 转正人员
+	 * @param positiveUser
+	 * @return
+	 */
+	public int positiveUser(String positiveUser);
 
 }
