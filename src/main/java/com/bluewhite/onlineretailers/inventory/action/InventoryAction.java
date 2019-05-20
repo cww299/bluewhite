@@ -65,7 +65,7 @@ private static final Log log = Log.getLog(InventoryAction.class);
 					,"receivedPayment","tid","buyerRemarks","num","payTime"
 					,"endTime","status","documentNumber","allBillPreferential","trackingNumber"
 					,"buyerMessage","buyerMemo","buyerFlag","sellerMemo","sellerFlag","buyerRate"
-					,"warehouse","shippingType","createdAt","updatedAt","onlineOrder Child"
+					,"warehouse","shippingType","createdAt","updatedAt","onlineOrderChild"
 					,"address","phone","zipCode","buyerName","provinces","city","county")
 			.addRetainTerm(OnlineOrderChild.class,"id","number","commodity","price",
 					"sumPrice","systemPreferential","sellerReadjustPrices","actualSum","status") 
@@ -100,6 +100,7 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	public CommonResponse addOnlineOrder(OnlineOrder onlineOrder) {
 		CommonResponse cr = new CommonResponse();
 		onlineOrderService.addOnlineOrder(onlineOrder);
+		cr.setMessage("新增成功");
 		return cr;
 	}
 	
