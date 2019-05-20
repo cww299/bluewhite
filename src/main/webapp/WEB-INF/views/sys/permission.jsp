@@ -376,7 +376,12 @@ layui.config({
 				,yes:function(){
 					var data={
 							userId:$('#userIdSelect').val(),
-							ids:formSelects.value('roleIdSelect', 'valStr')
+							ids:formSelects.value('roleIdSelect', 'valStr'),
+							foreigns:0,
+					}
+					if(data.userId==''||data.ids==''){
+						layer.msg('用户与角色不能为空',{icon:2});
+						return;
 					}
 					var load=layer.load(1);
 					$.ajax({
