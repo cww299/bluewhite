@@ -22,7 +22,7 @@
 	<div class="layui-card-body">
 		<table class="layui-form">
 			<tr>
-				<td><input type="text" class="layui-input" name="" id="date"></td>
+				<td><input type="text" class="layui-input" name="" id="" placeHolder="请输入日期"></td>
 				<td>&nbsp;&nbsp;</td>
 				<td><select name=""><option value="">按单据编号</option></select>
 				<td>&nbsp;&nbsp;</td>
@@ -47,7 +47,6 @@
 			<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProduct" >
 					<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i></button></td>					<td>&nbsp;</td>
 			<td><button type="button" class="layui-btn layui-btn-sm" id="addNewProduct" >添加新商品</button></td>		<td>&nbsp;</td>
-			<td><button type="button" class="layui-btn layui-btn-sm" id="refreshProduct" >刷新</button></td>				<td>&nbsp;</td>
 			<td><button type="button" class="layui-btn layui-btn-sm" id="sure" >确定添加</button></td>
 		</tr>
 	</table>
@@ -55,60 +54,62 @@
 </div>
 
 <!-- 添加新商品隐藏框 -->
-<table class="layui-form layui-table" style="display:none;" id="addNewProductWin">
-	<tr><td>商品名称</td>
-		<td><input type="text" class="layui-input" lay-verify="required" name="name"></td>
-		<td>商品重量</td>
-		<td><input type="text" class="layui-input" name="weight"></td></tr>
-	<tr><td>商品材质</td>
-		<td><input type="text" class="layui-input" name="material"></td>
-		<td>商品规格</td>
-		<td><input type="text" class="layui-input" lay-verify="required" name="size"></td></tr>
-	<tr><td>商品填充物</td>
-		<td><input type="text" class="layui-input" name="fillers"></td>
-		<td>商品成本</td>
-		<td><input type="text" class="layui-input" name="cost"></td></tr>
-	<tr><td>库存数量</td>
-		<td><input type="text" class="layui-input" name="quantity"></td>
-		<td>仓库类型</td>
-		<td><input type="text" class="layui-input" name="warehouse"></td></tr>
-	<tr><td>商品单价</td>
-		<td><input type="text" class="layui-input" lay-verify="required" name="price"></td>
-		<td>广宣成本</td>
-		<td><input type="text" class="layui-input" name="propagandaCost"></td></tr>
-	<tr><td>商品编号</td>
-		<td><input type="text" class="layui-input" lay-verify="required" name="number"></td>
-		<td>备注</td>
-		<td><textarea type="text" class="layui-input" name="remark"></textarea></td></tr>
-	<tr><td colspan="4"><button lay-submit lay-filter="sureAddNew" class="layui-btn layui-btn-sm">确定</button></td></tr>
-</table>
-
+<form style="display:none;" id="addNewProductWin">
+	<table class="layui-form layui-table" >
+		<tr><td>商品名称</td>
+			<td><input type="text" class="layui-input" lay-verify="required" name="name"></td>
+			<td>商品重量</td>
+			<td><input type="text" class="layui-input" name="weight"></td></tr>
+		<tr><td>商品材质</td>
+			<td><input type="text" class="layui-input" name="material"></td>
+			<td>商品规格</td>
+			<td><input type="text" class="layui-input" lay-verify="required" name="size"></td></tr>
+		<tr><td>商品填充物</td>
+			<td><input type="text" class="layui-input" name="fillers"></td>
+			<td>商品成本</td>
+			<td><input type="text" class="layui-input" name="cost"></td></tr>
+		<tr><td>库存数量</td>
+			<td><input type="text" class="layui-input" name="quantity"></td>
+			<td>仓库类型</td>
+			<td><input type="text" class="layui-input" name="warehouse"></td></tr>
+		<tr><td>商品单价</td>
+			<td><input type="text" class="layui-input" lay-verify="required" name="price"></td>
+			<td>广宣成本</td>
+			<td><input type="text" class="layui-input" name="propagandaCost"></td></tr>
+		<tr><td>商品编号</td>
+			<td><input type="text" class="layui-input" lay-verify="required" name="number"></td>
+			<td>备注</td>
+			<td><textarea type="text" class="layui-input" name="remark"></textarea></td></tr>
+		<tr><td colspan="4"><button type="button" lay-submit lay-filter="sureAddNew" class="layui-btn layui-btn-sm">确定</button>
+							<button type="reset" class="layui-btn layui-btn-sm">重置</button></td></tr>
+	</table>
+</form>
 <!-- 入库单表格工具栏 -->
 <script type="text/html" id="warehouseTableToolbar" >
 <div  class="layui-button-container">
 	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增</span>
 	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除</span>
-	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改</span>
-	<span lay-event="refresh"  class="layui-btn layui-btn-sm" >刷新</span>
+	<span lay-event="update"  class="layui-btn layui-btn-sm" >查看</span>
 </div>
 </script>
 
 <script type="text/html" id="addEditTpl">
 <div class="padding:10px;">
 <table class="layui-form layui-table">
-	<tr><td><input type="hidden" name="id" value="{{ d.id }}"></td>
-		<td><input type="hidden" name="type" value="0"></td></tr>
-	<tr><td>入库类型</td>
-		<td><select name="status" value="{{ d.status }}"><option value="0">采购入库</option>
-								  <option value="1">销售退货入库</option>
-								  <option value="2">销售换货入库</option>
-								  <option value="3">生产入库</option></select>
+	<tr><td>入库类型 <input type="hidden" name="id" value="{{ d.id }}">
+					<input type="hidden" name="type" value="0"></td></td>
+		<td><select name="status">
+								  <option value="0" {{ d.status=="0"?'selected':'' }}>采购入库</option>
+								  <option value="1" {{ d.status=="1"?'selected':'' }}>销售退货入库</option>
+								  <option value="2" {{ d.status=="2"?'selected':'' }}>销售换货入库</option>
+								  <option value="3" {{ d.status=="3"?'selected':'' }}>生产入库</option></select>
 		<td>入库仓库</td>
-		<td><select name="warehouse" value="{{ d.warehouse }}"><option value="0">主仓库</option>
-									 <option value="1">客供仓库</option>
-									 <option value="2">次品</option></select></td>
+		<td><select name="warehouse">
+									 <option value="0" {{ d.warehouse=="0"?'selected':'' }}>主仓库</option>
+									 <option value="1" {{ d.warehouse=="1"?'selected':'' }}>客供仓库</option>
+									 <option value="2" {{ d.warehouse=="2"?'selected':'' }}>次品</option></select></td>
 		<td>经手人</td>
-		<td><select name="userId" value="{{ d.userId }}"><option value="0">管理员</option></select></td></tr>
+		<td><select name="userId" value="{{ d.userId }}"><option value="1">管理员</option></select></td></tr>
 	<tr><td>备注</td>
 		<td colspan="3"><input type="text" name="remark" class="layui-input" value="{{ d.remark }}"></td>
 		<td>操作</td>
@@ -123,6 +124,28 @@
 	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增</span>
 	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除</span>
 </div>
+</script>
+<!-- 入库类型转换模板 -->
+<script type="text/html" id="statusTpl">
+{{# if(d.status==0){  }}
+	<span class="layui-badge layui-bg-orange">采购入库</span>
+{{# }else if(d.status==1){  }}
+	<span class="layui-badge layui-bg-green">销售退货入库</span>
+{{# }else if(d.status==2){  }}
+	<span class="layui-badge layui-bg-cyan">销售换货入库</span>
+{{# }else if(d.status==3){  }}
+	<span class="layui-badge layui-bg-blue">生产入库</span>
+{{# } }}
+</script>
+<!-- 入库仓库类型转换 -->
+<script type="text/html" id="warehouseTpl">
+{{# if(d.warehouse==0){  }}
+	<span class="layui-badge layui-bg-orange">主仓库</span>
+{{# }else if(d.warehouse==1){  }}
+	<span class="layui-badge layui-bg-green">客供仓库</span>
+{{# }else if(d.warehouse==2){  }}
+	<span class="layui-badge layui-bg-cyan">次品</span>
+{{# } }}
 </script>
 
 </body>
@@ -175,13 +198,13 @@ layui.config({
 			},
 			cols:[[
 			       {align:'center', type:'checkbox',},
-			       {align:'center', title:'单据编号',   field:'',		width:'',},
-			       {align:'center', title:'入库类型',   field:'',	width:'',},
-			       {align:'center', title:'日期',   field:'',		width:'',},
-			       {align:'center', title:'入库仓库',   field:'',		width:'',},
-			       {align:'center', title:'总数量', field:''},
-			       {align:'center', title:'经手人', field:''},
-			       {align:'center', title:'备注', field:''},
+			       {align:'center', title:'单据编号',   field:'id',		   width:'',},
+			       {align:'center', title:'入库类型',   field:'status',	   width:'', templet:'#statusTpl',},
+			       {align:'center', title:'日期',   		field:'createdAt', width:'', },
+			       {align:'center', title:'入库仓库',   field:'warehouse',  width:'', templet:'#warehouseTpl'},
+			       {align:'center', title:'购买数量', 	field:'number'},
+			       {align:'center', title:'经手人',templet:'<p>{{ d.user.userName }}</p>'},
+			       {align:'center', title:'备注', 	field:'remark'},
 			       ]]
 		})
 		
@@ -190,7 +213,6 @@ layui.config({
 			case 'add':		addEdit('add');		break;
 			case 'update':	addEdit('edit'); 	break;
 			case 'delete':	deletes();			break;
-			case 'refresh':	refresh();			break;
 			}
 		})
 		
@@ -210,8 +232,13 @@ layui.config({
 					layer.msg("请选择编辑",{icon:2});
 					return;
 				}
-				title="";
+				title="修改入库单";
 				data=choosed[0];
+				var numberList=eval('(' + data.commodityNumber + ')');
+				for(var i=0;i<data.commoditys.length;i++){
+					choosedProduct.push(data.commoditys[i])
+					choosedProduct[i].number=numberList[i].number;
+				}
 			}
 			laytpl(tpl).render(data,function(h){					//渲染新增、编辑入库单的模板
 				html=h;
@@ -227,14 +254,15 @@ layui.config({
 				elem:'#productListTable',
 				toolbar:'#productListTableToolbar',
 				size:'lg',
+				data:choosedProduct,
 				loading:true,
 				cols:[[
 				       {type:'checkbox', align:'center', fixed:'left'},
 				       {align:'center', title:'商品名称', field:'name',},
 				       {align:'center', title:'成本', 	  field:'cost',},
-				       {align:'center', title:'仓库类型', field:'warehouse',},
+				       {align:'center', title:'仓库类型', field:'warehouse', templet:"#warehouseTpl",},
 				       {align:'center', title:'总库存',   field:'quantity',},
-				       {align:'center', title:'数量',     field:'number',},
+				       {align:'center', title:'数量',     field:'number', edit:'true',},
 				       {align:'center', title:'销售价',   field:'price',},
 				       {align:'center', title:'备注', 	  field:'remark',}, 
 				       ]]
@@ -245,6 +273,27 @@ layui.config({
 				case 'delete':deleteChoosedProduct();break;
 				}
 			})
+			table.on('edit(productListTable)', function(obj){ 			//监听编辑表格单元
+				if(isNaN(obj.value)){
+					layer.msg("修改无效！请输入正确的数字",{icon:2});
+				}
+				else
+					for(var i=0;i<choosedProduct.length;i++){
+						/* if(choosedProduct[i].commodityId==obj.data.commodityId){		//重新对该行的相关数据进行计算
+							var choosed=choosedProduct[i];
+							choosed[obj.field]=obj.value;
+							choosed.sumPrice=choosed.number*choosed.price;
+							choosed.actualSum=(choosed.price-(-choosed.sellerReadjustPrices)-choosed.systemPreferential)*choosed.number;
+							choosedProduct[i][obj.field]=obj.value;
+							choosedProduct[i].sumPrice=choosed.sumPrice;
+							choosedProduct[i].actualSum=choosed.actualSum;
+						}
+						allPayment+=choosedProduct[i].actualSum;	//计算收款金额 */
+					}
+				table.reload('productListTable',{
+					data:choosedProduct
+				})
+			});
 			form.on('submit(sureAdd)',function(obj){					//确定添加入库单
 				var data=obj.field;
 				if(choosedProduct.length==0){
@@ -281,19 +330,36 @@ layui.config({
 			}) 
 		}
 		function deletes(){							//删除入库单表格
-			layer.msg('删除');
+			var choosed=layui.table.checkStatus('warehouseTable').data;
+			if(choosed.length<1){
+				layer.msg('请选择入库单',{icon:2});
+				return;
+			}
+			layer.msg('接口未完成');
+			return;
+			/* layer.confirm('是否确认删除？',function(){
+				var ids='';
+				for(var i=0;i<choosed.length;i++)
+					ids+=(choosed[i].id+',');
+				var load=layer.load(1);
+				$.ajax({
+					url:'${ctx}/inventory/deleteProcurement?ids='+ids,
+					success:function(result){
+						if(0==result.code){
+							table.reload('warehouseTable');
+							layer.msg(result.message,{icon:1});
+						}else
+							layer.msg(result.message,{icon:2});
+						layer.close(load);
+					}
+				})
+			}) */
+		
 		}
-		function refresh(){							//刷新入库单表格
-			layer.msg('刷新成功',{icon:1});
-		}
-		//选择商品隐藏框的按钮监听.添加商品弹窗共4个按钮监听。搜索、添加新商品、确定添加、刷新
+		//选择商品隐藏框的按钮监听.添加商品弹窗共4个按钮监听。搜索、添加新商品、确定添加
 		$('#sure').on('click',function(){	;
 			if(sureChoosed())											//如果选择成功
 				layer.close(chooseProductWin);							
-		})
-		$('#refreshProduct').on('click',function(){
-			table.reload('productChooseTable');
-			layer.msg('刷新成功！',{icon:1});
 		})
 		$('#addNewProduct').on('click',function(){						//添加新产品
 			openAddNewPorductWin();
@@ -358,7 +424,7 @@ layui.config({
 					var orderChild={
 							name:choosed[i].name,			//商品名称
 							commodityId:choosed[i].id,		//商品id
-							number:1,							//商品数量
+							number:1,						//商品数量
 							cost:choosed[i].cost,			//成本
 							warehouse:choosed[i].warehouse, //仓库类型
 							quantity:choosed[i].quantity,	//总库存
@@ -435,6 +501,4 @@ layui.config({
 	}//end define function
 )//endedefine
 </script>
-
-
 </html>

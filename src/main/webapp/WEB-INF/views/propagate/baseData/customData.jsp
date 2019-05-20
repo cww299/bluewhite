@@ -50,7 +50,7 @@
 
 <!-- 新增、修改用户模板 -->
 <script type="text/html" id="addEditTpl">
-	<div class="layui-form" style="padding:10px;">
+	<form class="layui-form" style="padding:10px;">
 		<input type="hidden" name="id" value="{{d.id}}">
 		<div class="layui-item">
 			<label class="layui-form-label">昵称</label>
@@ -116,8 +116,9 @@
 				<input class="layui-input" name="zipCode" value="{{d.zipCode}}">
 			</div>
 		</div>
-		<p style="text-align:center;"><button class="layui-btn layui-btn-sm" lay-submit lay-filter="sure">确定</button></p>	
-	</div>
+		<p style="text-align:center;"><button class="layui-btn layui-btn-sm" type="reset">重置</button>
+									 <button class="layui-btn layui-btn-sm" type="button" lay-submit lay-filter="sure">确定</button></p>	
+	</form>
 </script>
 
 <!-- 表格工具栏模板 -->
@@ -126,11 +127,29 @@
 	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增</span>
 	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除</span>
 	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改</span>
-	<span lay-event="refresh"  class="layui-btn layui-btn-sm" >刷新</span>
 </div>
 </script>
+<!-- 客户等级转换模板 -->
+<script type="text/html" id="gradeTpl">
+{{# if(d.grade==0){ }}
+	<span class="layui-badge layui-bg-green">一级</span>
+{{# }else if(d.grade==1){ }}
+	<span class="layui-badge layui-bg-green">二级</span>
+{{# }else if(d.grade==2){ }}
+	<span class="layui-badge layui-bg-green">三级</span>
+{{# } }}
+</script>
+<!-- 客户类型转换模板 -->
+<script type="text/html" id="typeTpl">
+{{# if(d.type==0){ }}
+	<span class="layui-badge layui-bg-orange">电商</span>
+{{# }else if(d.type==1){ }}
+	<span class="layui-badge layui-bg-cyan">商超</span>
+{{# }else if(d.type==2){ }}
+	<span class="layui-badge layui-bg-blue">线下</span>
+{{# } }}
 
-
+</script>
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
@@ -171,7 +190,8 @@ layui.config({
 			       {align:'center', title:'名称',   field:'name',		width:'15%',},
 			       {align:'center', title:'姓名',   field:'buyerName',	width:'10%',},
 			       {align:'center', title:'手机',   field:'phone',		width:'10%',},
-			       {align:'center', title:'等级',   field:'grade',		width:'15%',},
+			       {align:'center', title:'等级',   field:'grade',		width:'10%',	templet:"#gradeTpl",},
+			       {align:'center', title:'类型',   field:'type',		width:'10%',	templet:"#typeTpl",},
 			       {align:'center', title:'所在地', field:'address'},
 			       ]]
 		})
@@ -188,7 +208,6 @@ layui.config({
 			case 'add':		addEdit('add');		break;
 			case 'update':	addEdit('edit'); 	break;
 			case 'delete':	deletes();			break;
-			case 'refresh':	refresh();			break;
 			}
 		})
 		
@@ -229,7 +248,7 @@ layui.config({
 			var addEditWin=layer.open({
 				type:1,
 				title:title,
-				area:['40%','80%'],
+				area:['40%','50%'],
 				content:html
 			})
 			getdataOfSelect(0,'province',provinceId);
@@ -299,10 +318,6 @@ layui.config({
 					}
 				})
 			})
-		}
-		function refresh(){
-			table.reload('customTable');
-			layer.msg('刷新成功',{icon:1});
 		}
 		
 		$(document).on('click', '.layui-table-view tbody tr', function(event) {

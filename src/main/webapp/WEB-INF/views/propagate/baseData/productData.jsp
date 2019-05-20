@@ -41,7 +41,6 @@
 	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增</span>
 	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除</span>
 	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改</span>
-	<span lay-event="refresh"  class="layui-btn layui-btn-sm" >刷新</span>
 </div>
 </script>
 
@@ -54,7 +53,7 @@
 	<div class="layui-item">
 		<label class="layui-form-label">编号(sku)</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="number" value="{{d.number}}">
+			<input class="layui-input" name="skuCode" value="{{d.skuCode}}">
 		</div>
 	</div>
 	<div class="layui-item">
@@ -174,7 +173,7 @@ layui.config({
 			},
 			cols:[[
 			       {align:'center', type:'checkbox',},
-			       {align:'center', title:'商品编号',   field:'number',	width:'10%',},
+			       {align:'center', title:'商品编号',   field:'skuCode',	width:'10%',},
 			       {align:'center', title:'名称',   		field:'name'},
 			       {align:'center', title:'销售属性',   field:'size'},
 			       {align:'center', title:'销售价',   	field:'price',	width:'5%',},
@@ -194,13 +193,12 @@ layui.config({
 			case 'add':		addEdit('add');		break;
 			case 'update':	addEdit('edit'); 	break;
 			case 'delete':	deletes();			break;
-			case 'refresh':	refresh();			break;
 			}
 		})
 		
 		function addEdit(type){
 			var data={
-					id:'',number:'',name:'',weight:'',size:'',material:'',fillers:'',cost:'',propagandaCost:'',remark:'',price:'',quantity:'',warehouse:'',type:0},
+					id:'',skuCode:'',name:'',weight:'',size:'',material:'',fillers:'',cost:'',propagandaCost:'',remark:'',price:'',quantity:'',warehouse:'',type:0},
 			title='新增商品',
 			html='',
 			choosed=layui.table.checkStatus('productTable').data,
@@ -281,10 +279,6 @@ layui.config({
 					}
 				})
 			})
-		}
-		function refresh(){
-			table.reload('productTable');
-			layer.msg('刷新成功',{icon:1});
 		}
 		
 		$(document).on('click', '.layui-table-view tbody tr', function(event) {

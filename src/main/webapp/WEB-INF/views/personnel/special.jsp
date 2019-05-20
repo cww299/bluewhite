@@ -50,7 +50,11 @@
 		</div>
 		<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
 	</div>
+</div>
 
+<!-- 特急人员弹窗 -->
+<div id="specialWinDiv" style="diaplay:none;">
+	<table class="layui-table" id="specialTable" lay-filter="specialTable"></table>
 </div>
 
 	<script type="text/html" id="toolbar">
@@ -382,7 +386,13 @@
 						layer.close(index);
 				    }
 					}
-
+					function openSpecialWin(){				//打开特急人员弹窗
+						var specialWin=layer.open({
+							title:'即将转正人员',
+							type:1,
+							content:$('#specialTable')
+						})
+					}
 				}
 			)
 		</script>

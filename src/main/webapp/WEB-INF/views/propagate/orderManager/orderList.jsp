@@ -84,10 +84,6 @@ td{
 					<div class="layui-input-inline"  style="width:60px;"><input class="layui-input" value="0"></div>
 					<label class="layui-form-label">至</label>
 					<div class="layui-input-inline"  style="width:60px;"><input class="layui-input" value="0"></div>
-					<label class="layui-form-label" style=" width:60px;">宝贝件数:</label>
-					<div class="layui-input-inline"  style="width:60px;"><input class="layui-input" value="0"></div>
-					<label class="layui-form-label">至</label>
-					<div class="layui-input-inline"  style="width:60px;"><input class="layui-input" value="0"></div>
 					<div class="layui-input-inline"><select><option value="">订单数</option></select></div>
 				</div>
 			</div>
@@ -107,6 +103,7 @@ td{
 <div id="addProductDiv" style="display:none;">
 	<table class="layui-form" lay-filter="productListTool">
 		<tr>
+			<td><button type="button" class="layui-btn layui-btn-sm" id="sure" >确定添加</button></td><td>&nbsp;</td>
 			<td><select><option value="">出售中			</option></select></td>			<td>&nbsp;</td>
 			<td><select><option value="">按产品分类		</option></select></td>			<td>&nbsp;</td>
 			<td><select><option value="">按淘宝宝贝分类	</option></select></td>			<td>&nbsp;</td>
@@ -115,8 +112,7 @@ td{
 			<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProduct" >
 					<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i></button></td><td>&nbsp;</td>
 			<td><button type="button" class="layui-btn layui-btn-sm" id="addNewProduct" >添加新商品</button></td>			 <td>&nbsp;</td>
-			<td><button type="button" class="layui-btn layui-btn-sm" id="refreshProduct" >刷新</button></td>					 <td>&nbsp;</td>
-			<td><button type="button" class="layui-btn layui-btn-sm" id="sure" >确定添加</button></td>
+			
 		</tr>
 	</table>
 	<table class="layui-table" id="productListTable" lay-filter="productListTable"></table>
@@ -141,7 +137,8 @@ td{
 
 
 <!-- 添加新商品隐藏框 -->
-<table class="layui-form layui-table" style="display:none;" id="addProductWindow">
+<form style="display:none;" id="addProductWindow">
+<table class="layui-form layui-table" >
 	<tr><td>商品名称</td>
 		<td><input type="text" class="layui-input" lay-verify="required" name="name"></td>
 		<td>商品重量</td>
@@ -163,22 +160,31 @@ td{
 		<td>广宣成本</td>
 		<td><input type="text" class="layui-input" name="propagandaCost"></td></tr>
 	<tr><td>商品编号</td>
-		<td><input type="text" class="layui-input" lay-verify="required" name="number"></td>
+		<td><input type="text" class="layui-input" lay-verify="required" name="skuCode"></td>
 		<td>备注</td>
 		<td><textarea type="text" class="layui-input" name="remark"></textarea></td></tr>
-	<tr><td colspan="4"><button lay-submit lay-filter="sureAddNew" class="layui-btn layui-btn-sm">确定</button></td></tr>
+	<tr><td colspan="4"><button lay-submit lay-filter="sureAddNew" class="layui-btn layui-btn-sm">确定</button>
+						<button type="reset" class="layui-btn layui-btn-sm">重置</button></td></tr>
 </table>
-
+</form>
 <!-- 添加客户隐藏框  -->
-<table class="layui-form layui-table" style="display:none;" id="addCustomWindow">
+<form style="display:none;" id="addCustomWindow">
+<table class="layui-form layui-table">
 	<tr><td>买家姓名</td>
 		<td><input type="text" class="layui-input" name="buyerName" lay-verify="required"></td>
 		<td>客户名称</td>
 		<td><input type="text" class="layui-input" name="name" lay-verify="required"></td></tr>
 	<tr><td>客户等级</td>
-		<td><input type="text" class="layui-input" name="grade"></td>
+		<td><select name="grade" id="addCustomGrade">
+					<option value="0">一级</option>
+					<option value="1">二级</option>
+					<option value="2">三级</option>
+				</select></td>
 		<td>客户类型</td>
-		<td><input type="text" class="layui-input" name="type"></td></tr>
+		<td><select name="type" id="addCustomType">
+					<option value="0">电商</option>
+					<option value="1">商超</option>
+					<option value="2">线下</option></select></td></tr>
 	<tr><td>手机</td>
 		<td><input type="text" class="layui-input" name="phone" lay-verify="required"></td>
 		<td>帐号</td>
@@ -194,9 +200,11 @@ td{
 		<td colspan="3"><input type="text" class="layui-input" name="address"></td></tr>
 	<tr><td>邮编</td>
 		<td><input type="text" class="layui-input" name="zipCode"></td>
-		<td colspan="2"><button class="layui-btn layui-btn-sm" lay-submit lay-filter="sureAddCustom">确定</button></td></tr>
+		<td colspan="2"><button class="layui-btn layui-btn-sm" type="button" lay-submit lay-filter="sureAddCustom">确定</button>
+						<button type="reset" class="layui-btn layui-btn-sm" id="resetCustomAdd">重置</button></td></tr>
 </table>
-<!-- 新增、修改订单隐藏框 -->
+</form>
+<!-- 新增、查看订单隐藏框 -->
 <script type="text/html" id="addEditTpl">
 	<div>
 		<table class="layui-form" style="width:100%" id="headerTool">
@@ -208,26 +216,34 @@ td{
 					<input type="hidden" name="id" value="{{ d.id }}">
 				</td>
 				<td>订单状态：</td>			
-				<td><input type="text" class="layui-input" name="status" value="{{ d.status }}"></td>
+				<td><select name="status">
+						<option {{ d.status=="WAIT_SELLER_SEND_GOODS"?'selected':'' }} 	 value="WAIT_SELLER_SEND_GOODS">等待卖家发货,即:买家已付款</option>
+						<option {{ d.status=="TRADE_NO_CREATE_PAY"?'selected':'' }} 	 value="TRADE_NO_CREATE_PAY">没有创建支付宝交易</option>
+						<option {{ d.status=="WAIT_BUYER_PAY"?'selected':'' }} 			 value="WAIT_BUYER_PAY">等待买家付款</option>
+						<option {{ d.status=="SELLER_CONSIGNED_PART"?'selected':'' }} 	 value="SELLER_CONSIGNED_PART">卖家部分发货</option>
+						<option {{ d.status=="TRADE_BUYER_SIGNED"?'selected':'' }}	 	 value="TRADE_BUYER_SIGNED">买家已签收,货到付款专用</option>
+						<option {{ d.status=="TRADE_FINISHED"?'selected':'' }} 			 value="TRADE_FINISHED">交易成功</option>
+						<option {{ d.status=="WAIT_BUYER_CONFIRM_GOODS"?'selected':'' }} value="WAIT_BUYER_CONFIRM_GOODS">等待买家确认收货,即:卖家已发货</option></select></td>	
 			</tr>
 			<tr>
 				<td><a style="color:blue" href="#"  id="customName">客户名称：</a></td>	
 				<td><input type="text" class="layui-input" name="name" id="customNames" lay-verify="required" readonly value="{{ d.onlineCustomer.name }}"></td>
 				<td>订单编号：</td>			
 				<td><input type="text" class="layui-input" name="tid" value="{{ d.tid }}"></td>
-				
-				
 				<td>所属客服：</td>			
-				<td><select name="userId" value="{{}}"><option value="">请选择</option></select></td>
+				<td><select name="userId" value="{{}}"><option value="1">客服1</option></select></td>
 			</tr>
 			<tr>
 				<td>收货人：</td>			
 				<td><input type="text" class="layui-input" id="customRealName" name="buyerName" value="{{ d.buyerName }}"></td>
 				<td>收款金额：</td>			
-				<td><input type="text" class="layui-input" name="payment" value="{{ d.receivedPayment }}"></td>
+				<td><input type="text" class="layui-input" id="customPayment" name="payment" value="{{ d.payment }}"></td>
 				
-				<td>发货仓库：</td>			
-				<td><input type="text" class="layui-input" name="warehouse" value="{{ d.warehouse }}"></td>
+				<td>发货仓库：</td>	
+				<td><select name="warehouse">
+									 <option {{ d.warehouse=='0'?'selected':'' }} value="0">主仓库</option>
+									 <option {{ d.warehouse=='1'?'selected':'' }} value="1">客供仓库</option>
+									 <option {{ d.warehouse=='2'?'selected':'' }} value="2">次品</option></select></td>		
 			</tr>
 			<tr>
 				<td>手机：</td>			
@@ -245,8 +261,13 @@ td{
 								<div class="layui-input-inline"><select lay-search id="city" name="cityId"></select></div>
 								<div class="layui-input-inline"><select lay-search id="area" name="countyId"></select></div>
 								</div></td>
-				<td>物流方式：</td>			
-				<td><input type="text" class="layui-input" name="shippingType" value="{{ d.shippingType }}"></td>
+				<td>物流方式：</td>
+				<td><select name="shippingType" value="{{ d.shippingType }}">
+									 <option {{ d.shippingType=='free'?'selected':'' }} value="free">卖家包邮</option>
+									 <option {{ d.shippingType=='post'?'selected':'' }} value="post">平邮</option>
+									 <option {{ d.shippingType=='express'?'selected':'' }} value="express">快递</option>
+									 <option {{ d.shippingType=='ems'?'selected':'' }} value="ems">EMS</option>
+									 <option {{ d.shippingType=='virtual'?'selected':'' }} value="virtual">虚拟发货</option></select></td>			
 			</tr>
 			<tr>
 				<td>详细地址：</td>			
@@ -281,11 +302,61 @@ td{
 <script type="text/html" id="onlineOrderToolbar">
 <div class="layui-button-container">
 	<span class="layui-btn layui-btn-sm" lay-event="add">新增订单</span>
-	<span class="layui-btn layui-btn-sm" lay-event="edit">修改订单</span>
-	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">删除商品</span>
+	<span class="layui-btn layui-btn-sm" lay-event="edit">查看订单</span>
+	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">删除订单</span>
 </div>
 </script>
+<!-- 解析状态模板 -->
+<script type="text/html" id="statusTpl">
+  {{#  if(d.status == 'WAIT_SELLER_SEND_GOODS' ){ }}
+    	买家已付款
+  {{#  } else if(d.status == 'TRADE_NO_CREATE_PAY'){ }}
+    	没有创建交易
+  {{#  } else if(d.status == 'WAIT_BUYER_PAY'){ }}
+    	等待买家付款
+  {{#  } else if(d.status == 'SELLER_CONSIGNED_PART'){ }}
+    	卖家部分发货
+  {{#  } else if(d.status == 'TRADE_BUYER_SIGNED'){ }}
+    	买家已签收
+  {{#  } else if(d.status == 'TRADE_FINISHED'){ }}
+    	交易成功
+  {{#  } else if(d.status == 'WAIT_BUYER_CONFIRM_GOODS'){ }}
+    	卖家已发货
+  {{#  } }}						
+</script>		
+<script type="text/html" id="provincesTpl">
+  {{ d.provinces.regionName }}
+</script>				
 
+<script type="text/html" id="systemPreferentialTpl">
+  {{#  if(d.systemPreferential < 0 ){ }}
+    <span style="color: red;">{{d.systemPreferential}}</span>
+  {{#  } else { }}
+    <span style="color: #009688;">{{d.systemPreferential}}</span>
+  {{#  } }}
+</script>
+
+<script type="text/html" id="sellerReadjustPricesTpl">
+  {{#  if(d.sellerReadjustPrices < 0 ){ }}
+    <p style="color: red;">{{d.sellerReadjustPrices}}</p>
+  {{#  } else { }}
+    <label style="color: #009688;">{{d.sellerReadjustPrices}}</label>
+  {{#  } }}
+</script>
+<script type="text/html" id="priceTpl">
+  {{#  if(d.price < 0 ){ }}
+    <p style="color: red;">{{d.price}}</p>
+  {{#  } else { }}
+    <label style="color: #009688;">{{d.price}}</label>
+  {{#  } }}
+</script>
+<script type="text/html" id="numberTpl">
+  {{#  if(d.number < 0 ){ }}
+    <p style="color: red;">{{d.number}}</p>
+  {{#  } else { }}
+    <label style="color: #009688;">{{d.number}}</label>
+  {{#  } }}
+</script>
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
@@ -312,7 +383,6 @@ layui.config({
 		form.render();
 		form.on('submit(search)',function(obj){			//订单列表搜索
 			layer.msg('搜索');
-			console.log(obj.field)
 		})
 		
 		$("#customPosition").hover(function() {			//鼠标移入事件
@@ -323,7 +393,7 @@ layui.config({
 			$('#positionChoose').hide();	
 	    });
 
-		table.render({
+		table.render({		//渲染主页面表格
 			elem:'#onlineOrder',
 			height:'680',
 			url:'${ctx}/inventory/onlineOrderPage',
@@ -339,16 +409,16 @@ layui.config({
 			},
 			cols:[[
 			       {type:'checkbox',align:'center',fixed:'left'},
-			       {field:'createdAt',	title:'下单时间',   align:'center', width:'15%'},
-			       {field:'tid',        title:'订单号',     align:'center'},
+			       {field:'createdAt',	title:'下单时间',   align:'center', width:'10%'},
+			       {field:'tid',        title:'订单号',     align:'center', width:'8%',},
 			       {field:'buyerMemo',  title:'买家留言',   align:'center'},
 			       {field:'sellerMemo', title:'卖家备注',   align:'center'},
-			       {field:'postFee',       title:'邮费',       align:'center'},
-			       {field:'receivedPayment',title:'实收金额',   align:'center'},
-			       {field:'num',     title:'件数',       align:'center'},
-			       {field:'trackingNumber',title:'运单号',     align:'center'},
-			       {field:'status',        title:'状态',       align:'center'},
-			       {field:'address',            title:'收货地址',   align:'center'},
+			       {field:'postFee',    title:'邮费',       align:'center', width:'4%'},
+			       {field:'payment',    title:'实收金额',   align:'center', width:'6%'},
+			       {field:'num',     	title:'件数',       align:'center', width:'4%'},
+			       {field:'trackingNumber',title:'运单号',  align:'center', width:'8%',},
+			       {field:'status',        title:'状态',    align:'center', width:'8%', templet:'#statusTpl'},
+			       {field:'provinces',     title:'所在地区',align:'center', width:'8%', templet:'#provincesTpl'},
 			       ]]
 		}) 
 		
@@ -361,12 +431,13 @@ layui.config({
 		})
 		
 		function addEditOrder(type){
+			choosedProduct=[];				//清空之前选中的数据
 			var tpl=addEditTpl.innerHTML
 			, html=''
-			, title='新增'
+			, winTitle='新增订单'
 			, choosed=layui.table.checkStatus('onlineOrder').data
 			, data={
-				onlineCustomer:{ id:'',name:''},		//客户
+				onlineCustomer:{ id:'',name:''},//客户
 				id:'',							//订单id
 				buyerName:'',					//收货人
 				phone:'',						//手机
@@ -374,7 +445,7 @@ layui.config({
 				buyerMemo:'',					//买家备注
 				sellerMemo:'',					//卖家备注
 				tid:'',							//订单编号
-				receivedPayment:'',				//实收金额
+				payment:'',						//实收金额
 				allBillPreferential:'',			//整单优惠
 				status:'',						//订单状态
 				userId:'',						//所属人员
@@ -386,30 +457,77 @@ layui.config({
 			};
 			if(type=='edit'){
 				if(choosed.length>1){
-					layer.msg('无法同时编辑多个订单',{icon:2});
+					layer.msg('无法同时查看多个订单',{icon:2});
 					return;
 				}
 				if(choosed.length<1){
-					layer.msg('请选择订单编辑',{icon:2});
+					layer.msg('请选择订单查看',{icon:2});
 					return;
 				}
-				data=choosed[0];
-				console.table(choosed[0])
+				winTitle='查看订单';
+				data=choosed[0];		//渲染基本数据
+				//渲染商品信息
+				var all=choosed[0].onlineOrderChilds;
+				for(var i=0;i<all.length;i++){
+					var orderChild={
+							skuCode:all[i].commodity.skuCode,	//商品编号
+							name:all[i].commodity.name,			//商品名称
+							commodityId:all[i].commodity.id,	//商品id
+							number:all[i].number,				//商品数量
+							price:all[i].price,					//商品单价
+							sumPrice:all[i].sumPrice,			//单价总金额
+							systemPreferential:all[i].systemPreferential,	 //系统优惠
+							sellerReadjustPrices:all[i].sellerReadjustPrices,//卖家调价
+							actualSum:all[i].actualSum,			//实际金额
+							status:all[i].status,				//状态默认值
+							}
+					choosedProduct.push(orderChild); 
+				}
 			}
-			
 			laytpl(tpl).render(data,function(h){ html=h; })			//新增、修改订单模板渲染
 			layer.open({
-				title:title,
+				title:winTitle,
 				type:1,
 				area:['90%','90%'],
 				content:html
 			})
 			form.render();
-			initAddEditOrderWin();
+			if("edit"==type){			//如果为修改。重新渲染地址下拉框,并且赋值
+				renderSelect(data.provinces.id,data.city.id);
+				$('#province').val(data.provinces.id);
+				$('#city').val(data.city.id);
+				$('#area').val(data.county.id); 
+			}else
+				renderSelect(0,0);			//初始化渲染下拉地址框，确保所有地址框都有值
+			initAddEditOrderWin();			//弹窗的初始化，表格的渲染等。。
 		}
 		
 		function deletes(){
-			layer.msg("删除")
+			var choosed=layui.table.checkStatus('onlineOrder').data;
+			if(choosed.length<1){
+				layer.msg('请选择至少一条信息',{icon:2});
+			}
+			else{
+				layer.confirm('是否确认删除？',function(){
+					var ids='';
+					for(var i=0;i<choosed.length;i++)
+						ids+=(choosed[i].id+',');
+					var load=layer.load(1);
+					$.ajax({
+						url:'${ctx}/inventory/deleteOnlineOrder',
+						data:{ids:ids},
+						success:function(result){
+							if(0==result.code){
+								layer.msg(result.message,{icon:1});
+								table.reload('onlineOrder');
+							}
+							else
+								layer.msg(result.message,{icon:2});
+							layer.close(load);
+						}
+					})//end ajax
+				})//end confirm
+			}
 		}
 		
 		
@@ -424,6 +542,12 @@ layui.config({
 			layer.msg('添加客户');
 			openAddNewCustomWin();
 		})
+		$('#resetCustomAdd').on('click',function(){									//重置新添加客户内容
+			renderSelectAdd();														//重置地址下拉框信息
+			document.getElementById('addCustomGrade').options[0].selected=true;		//更改下拉框显示内容
+			document.getElementById('addCustomType').options[0].selected=true;
+			form.render();
+		})	
 		form.on('submit(searchCustom)',function(obj){
 			layer.msg('搜索');
 		})
@@ -461,9 +585,7 @@ layui.config({
 			if(sureChoosed())											//如果选择成功
 				layer.close(chooseProductWin);							
 		})
-		$('#refreshProduct').on('click',function(){
-			layer.msg('刷新');
-		})
+		
 		$('#addNewProduct').on('click',function(){						//添加新产品
 			openAddNewPorductWin();
 		})
@@ -545,47 +667,52 @@ layui.config({
 		}
 		
 		function initAddEditOrderWin(){			//初始化，新增修改订单的弹窗功能
-			choosedProduct=[];			
 			$('#headerTool').find("td:even").css({backgroundColor:"rgba(65, 161, 210, 0.45)",padding:"1px"}); //设置表头背景颜色
 			form.render();
-			renderSelect();
 			table.render({
 				elem:"#productTable", 					//表单中选择商品的表格
 				toolbar:'#productTableToolbar',
 				height:'460',
 				loading:true,
-				data:[],
+				data:[], //此处不能使用choosedProduct数据进行渲染，否则会造成数据的绑定。当监听修改表格中的数据时，会自动修改数组数据的内容。所以所有数据的渲染只能使用reload
 				totalRow:true,
-				page:false,
+				page:{},
 				cols:[[
 				       {type:'checkbox',align:'center',fixed:'left'},
-				       {field:'number',		title:'商品编号',	align:'center'},
+				       {field:'skuCode',	title:'商品编号',	align:'center', width:'8%'},
 				       {field:'name',		title:'商品名称',	align:'center'},
-				       {field:'num',		title:'数量',       align:'center',		edit:'text', totalRow:true,},
-				       {field:'price',   	title:'单价',   		align:'center',		edit:'text',},
-				       {field:'sumPrice',   title:'单价总金额', align:'center', totalRow:true},
-				       {field:'systemPreferential',   	title:'系统优惠',   align:'center',	edit:'text', templet:''},
-				       {field:'sellerReadjustPrices',   title:'卖家调价',   align:'center',	edit:'text',},
-				       {field:'actualSum',  title:'实际金额',   align:'center',	totalRow:true},
+				       {field:'number',		title:'数量',       align:'center', width:'4%',		edit:'text',templet:'#numberTpl', totalRow:true,},
+				       {field:'price',   	title:'单价',   	    align:'center', width:'4%',		edit:'text',templet:'#priceTpl'},
+				       {field:'sumPrice',   title:'单价总金额', align:'center', width:'8%', totalRow:true, style:"color:blue;"},
+				       {field:'systemPreferential',   		title:'系统优惠',   align:'center', width:'6%',	edit:'text', templet:'#systemPreferentialTpl'},
+				       {field:'sellerReadjustPrices',   		title:'卖家调价',   align:'center', width:'6%',	edit:'text', templet:"#sellerReadjustPricesTpl"},
+				       {field:'actualSum',  title:'实际金额',   align:'center', width:'6%',	totalRow:true, style:"color:blue;"},
 				       ]]
 			})
+			table.reload('productTable',{
+				data:choosedProduct
+			})
 			table.on('edit(productTable)', function(obj){ 			//监听编辑表格单元
-				if(isNaN(obj.value))
+				if(isNaN(obj.value)){
 					layer.msg("修改无效！请输入正确的数字",{icon:2});
-				else
+				}
+				else{
+					var allPayment=0;
 					for(var i=0;i<choosedProduct.length;i++){
-						if(choosedProduct[i].id==obj.data.id){		//重新对该行的相关数据进行计算
+						if(choosedProduct[i].commodityId==obj.data.commodityId){		//重新对该行的相关数据进行计算
 							var choosed=choosedProduct[i];
 							choosed[obj.field]=obj.value;
-							choosed.sumPrice=choosed.num*choosed.price;
-							choosed.actualSum=(choosed.price-(-choosed.sellerReadjustPrices)-choosed.systemPreferential)*choosed.num;
+							choosed.sumPrice=choosed.number*choosed.price;
+							choosed.actualSum=(choosed.price-(-choosed.sellerReadjustPrices)-choosed.systemPreferential)*choosed.number;
 							choosedProduct[i][obj.field]=obj.value;
 							choosedProduct[i].sumPrice=choosed.sumPrice;
 							choosedProduct[i].actualSum=choosed.actualSum;
-							break;
 						}
+						allPayment+=choosedProduct[i].actualSum;	//计算收款金额
 					}
-				table.reload('productTable',{
+					$('#customPayment').val(allPayment);				
+				}
+				table.reload('productTable',{       //将表格的数据重新渲染为数组的内容（即时修改为非数据时，也需要重新渲染）
 					data:choosedProduct
 				})
 			});
@@ -593,11 +720,15 @@ layui.config({
 			//主窗口一个四个按钮。确定添加、新增、删除、客户名分别进行绑定
 			form.on('submit(sureAdd)',function(obj){					//确定添加按钮
 				var data=obj.field;
+				/* if(data.id!=''){		//测试中允许数据修改
+					layer.msg('订单无法修改！',{icon:2});
+					return;
+				} */
 				if(choosedProduct.length==0){
 					layer.msg("请选择商品",{icon:2});
 					return;
 				}
-				data.commodityNumber=JSON.stringify(choosedProduct);
+				data.childOrder=JSON.stringify(choosedProduct);
 				var load=layer.load(1);
 				$.ajax({
 					url:"${ctx}/inventory/addOnlineOrder",
@@ -605,7 +736,9 @@ layui.config({
 					data:data,
 					success:function(result){
 						if(0==result.code){
+							layer.closeAll();
 							layer.msg(result.message,{icon:1});
+							table.reload('onlineOrder');
 						}
 						else
 							layer.msg(result.message,{icon:2});
@@ -634,17 +767,20 @@ layui.config({
 			function deletes(){
 				var choosed = layui.table.checkStatus('productTable').data;
 				if(choosed.length==0){
-					layer.msg("请选择商品删除");
+					layer.msg("请选择商品删除",{icon:2});
 					return;
 				}
+				var allPayment=$('#customPayment').val();
 				for(var i=0;i<choosed.length;i++){
 					for(var j=0;j<choosedProduct.length;j++){
-						if(choosed[i].id==choosedProduct[j].id){
+						if(choosed[i].commodityId==choosedProduct[j].commodityId){
+							allPayment-=choosedProduct[j].actualSum;	//计算收款金额
 							choosedProduct.splice(j,1);
 							break;
 						}
 					}
 				}
+				$('#customPayment').val(allPayment);	
 				table.reload('productTable',{
 					data:choosedProduct,
 				})
@@ -663,18 +799,20 @@ layui.config({
 				var j=0;
 				for(var j=0;j<choosedProduct.length;j++){	
 					if(choosedProduct[j].commodityId==choosed[i].id)	{			//判断选择的商品是否已存在选择列表
-						choosedProduct[j].num++;
-						choosedProduct[j].sumPrice=choosedProduct[j].num*choosedProduct[j].price;
-						choosedProduct[j].actualSum=(choosedProduct[j].price-choosedProduct[j].sellerReadjustPrices-choosedProduct[j].systemPreferential)*choosedProduct[j].num;
+						choosedProduct[j].number++;
+						choosedProduct[j].sumPrice=choosedProduct[j].number*choosedProduct[j].price;
+						$('#customPayment').val($('#customPayment').val()-choosedProduct[j].actualSum);		//减去之前的价格
+						choosedProduct[j].actualSum=(choosedProduct[j].price-choosedProduct[j].sellerReadjustPrices-choosedProduct[j].systemPreferential)*choosedProduct[j].number;
+						$('#customPayment').val($('#customPayment').val()-(-choosedProduct[j].actualSum));		//重新加上计算后的价格
 						break;
 					}
 				}
 				if(!(j<choosedProduct.length) || choosedProduct.length==0){				//如果不存在
 					var orderChild={
-							number:choosed[i].number,		//商品编号
+							skuCode:choosed[i].skuCode,		//商品编号
 							name:choosed[i].name,			//商品名称
 							commodityId:choosed[i].id,		//商品id
-							num:1,							//商品数量
+							number:1,							//商品数量
 							price:choosed[i].price,			//商品单价
 							sumPrice:choosed[i].price,		//单价总金额
 							systemPreferential:0,			//系统优惠
@@ -682,13 +820,14 @@ layui.config({
 							actualSum:choosed[i].price,		//实际金额
 							status:'WAIT_SELLER_SEND_GOODS',//状态默认值
 					}
+					$('#customPayment').val($('#customPayment').val()-(-orderChild.actualSum));	//使用-计算、确保不会发生字符串拼接
 					choosedProduct.push(orderChild);
 				}
 			}
 			table.reload('productTable',{
 				data:choosedProduct
 			});
-			layer.msg('添加成功');
+			layer.msg('添加成功',{icon:1});
 			return true;
 		}
 
@@ -696,7 +835,7 @@ layui.config({
 			chooseProductWin = layer.open({		
 				type:1,
 				title:'选择产品',
-				area:['80%','82%'],
+				area:['80%','80%'],
 				content:$('#addProductDiv'),
 			})
 			table.render({
@@ -778,6 +917,7 @@ layui.config({
 				area:['60%','50%'],
 				content:$('#addCustomWindow')
 			})
+			renderSelectAdd();			//渲染添加新用户弹窗页面的下拉框
 			form.render();
 		}
 		
@@ -819,26 +959,24 @@ layui.config({
 				}
 			});
 		}
-		function renderSelect(){							//初始化渲染下拉框
+		function renderSelect(cpId,apId){							//渲染下拉框
+			var cityParent=cpId==0?'110000':cpId;
+			var areaParent=apId==0?'110100':apId;
 			getdataOfSelect(0,'province');
-			getdataOfSelect('110000','city');
-			getdataOfSelect('110100','area');
+			getdataOfSelect(cityParent,'city');
+			getdataOfSelect(areaParent,'area');
+		}
+		function renderSelectAdd(){
 			getdataOfSelect(0,'addProvince');
 			getdataOfSelect('110000','addCity');
 			getdataOfSelect('110100','addArea');
 		}
-		
 		$(document).on('click', '.layui-table-view tbody tr', function(event) {
 			var elemTemp = $(this);
 			var tableView = elemTemp.closest('.layui-table-view');
 			var trIndex = elemTemp.data('index');
 			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
 		})
-		
-		
-		
-		
-		
 	}//define function
 )
 </script>
