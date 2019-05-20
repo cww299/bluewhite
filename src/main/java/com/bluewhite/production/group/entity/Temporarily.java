@@ -80,7 +80,24 @@ public class Temporarily extends BaseEntity<Long>{
 	@Transient
 	private String userName;
 	
+	/**
+	 * 是否是转正人员(在生产线上直接添加的外来人员，可成为正式员工)
+	 */
+	@Transient
+	private Boolean positive = false;
 	
+	
+	
+
+	public Boolean getPositive() {
+		return positive;
+	}
+
+
+	public void setPositive(Boolean positive) {
+		this.positive = positive;
+	}
+
 
 	public User getUser() {
 		return user;

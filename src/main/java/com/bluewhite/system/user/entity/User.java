@@ -47,6 +47,12 @@ public class User extends BaseEntity<Long> {
 	private Integer foreigns;
 	
 	/**
+	 * 是否是转正人员(在生产线上直接添加的外来人员，可成为正式员工)
+	 */
+	@Column(name = "positive")
+	private Boolean positive = false;
+	
+	/**
 	 * 是否锁定
 	 */
 	@Column(name = "del_flag")
@@ -172,8 +178,6 @@ public class User extends BaseEntity<Long> {
      */
 	@Column(name = "major")
     private String major;
-	
-	
     /**
      * 紧急联系人
      */
@@ -294,8 +298,6 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Column(name = "remark")
 	private String remark;
-	
-	
 	/**
 	 * 合同id
 	 */
@@ -489,6 +491,17 @@ public class User extends BaseEntity<Long> {
 	@Transient
 	private Long adjustTimeId;
 	
+	
+	
+	
+	public Boolean getPositive() {
+		return positive;
+	}
+
+	public void setPositive(Boolean positive) {
+		this.positive = positive;
+	}
+
 	public Long getAdjustTimeId() {
 		return adjustTimeId;
 	}
