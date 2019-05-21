@@ -14,11 +14,20 @@
 <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>  <!-- 时间插件 -->
 <script src="${ctx }/static/js/layer/layer.js"></script>
 <script src="${ctx }/static/js/laypage/laypage.js"></script> 
+
+<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
+
 <link rel="stylesheet" href="${ctx }/static/css/main.css">
  <!-- Drop Zone-->
     <link rel="stylesheet" href="${ctx }/static/css/dropzone.css">
     <script src="${ctx }/static/js/vendor/dropzone.min.js"></script>
- 
+<style>
+.layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
+     top: 50%;
+     transform: translateY(-50%);
+}
+</style>
     
 </head>
 <body>
@@ -128,12 +137,16 @@
 										class="btn btn-default btn-square btn-sm btn-3d  searchtask">
 										查&nbsp;找</button>
 								</span>
-								<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> <span class="input-group-btn">
+								&nbsp;&nbsp;&nbsp;&nbsp;<span class="input-group-btn">
+									<button type="button" class="btn btn-success  btn-sm btn-3d" id="lookoverBecome">
+										特急人员</button>
+								</span>
+								&nbsp;&nbsp;&nbsp;&nbsp; <span class="input-group-btn">
 									<button type="button"
 										class="btn btn-success  btn-sm btn-3d addDict">
 										新增员工</button>
 								</span>
-								<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> <span class="input-group-btn">
+								&nbsp;&nbsp;&nbsp;&nbsp;<span class="input-group-btn">
 									<button type="button"
 										class="btn btn-success  btn-sm btn-3d savemode"
 										data-toggle="modal" data-target="#myModal">员工提示
@@ -213,7 +226,7 @@
 					<div class="form-group">
 						<label class="col-sm-2 col-md-2 control-label">员工姓名:</label>
 						<div class="col-sm-2 col-md-2">
-							<input type="text" class="form-control username">
+							<input type="text" class="form-control username" id="username">
 						</div>
 						<label class="col-sm-2 control-label">员工编号:</label>
 						<div class="col-sm-2">
@@ -586,9 +599,141 @@
 		</table>
 	</div>
 
-	
+	<!-- 特急人员弹窗 -->
+<div id="specialWinDiv" style="diaplay:none;">
+	<table class="layui-table" id="specialTable" lay-filter="specialTable"></table>
+</div>
+<!-- 转正特急人员表格工具栏 -->
+<script type="text/html" id="specialTableToolbar">
+	<span class="layui-btn layui-btn-sm" lay-event="becomeFull">转正</span>
+</script>
 
-	
+<!-- 转正人员表格类型转换模板 -->
+
+<script type="text/html" id="typeTpl">
+	{{# 
+		var color='',title='无类型';
+		if(d.type==1){ 
+			title="一楼质检";  color="orange";
+		}else if(d.type==2){ 
+			title="一楼包装";  color="green";
+		}else if(d.type==3){
+			title="二楼针工";  color="cyan";
+		}else if(d.type==4){
+			title="二楼机工";  color="blue";
+		}else if(d.type==5){
+			title="8号仓库";  color="gray";
+		}
+	}}
+	<span class="layui-badge layui-bg-{{ color }}">{{ title }}</span>
+</script>
+
+<script>
+
+var isBecomeId='';			//设置全局变量，保证layui作用于与jquery作用域对同一对象访问,用于特急人员转正时，以新增的方式打开弹窗，需要在新增员工时传该特急人员id，以区别普通的员工新增
+layui.config({
+	base: '${ctx}/static/layui-v2.4.5/'
+}).extend({
+	tablePlug: 'tablePlug/tablePlug'
+}).define(
+	['table'],
+	function() {
+		var table = layui.table;
+		
+		$.ajax({					//获取是否有特急人员需要转正，并且给出提示
+			url:'${ctx}/system/user/getPositiveUser',
+			success:function(r){
+				if(r.code==0){
+					if(r.data.length>0){
+						$('#lookoverBecome').html('特急人员<span class="layui-badge">'+r.data.length+'</span></li>')
+					}
+				}
+			}
+		})
+		$('#lookoverBecome').on('click',function(){	//监听查看特急人员按钮
+			openSpecialWin();
+		})
+		function openSpecialWin(){				//打开特急人员弹窗
+			var specialWin=layer.open({
+				title:'特急人员',
+				type:1,
+				area:['50%','80%'],
+				content:$('#specialWinDiv'),
+				end:function(){
+					$('#specialWinDiv').hide();		//在弹窗销毁后，隐藏弹窗内容DIV
+				}
+			})
+			table.render({
+				elem:'#specialTable',
+				toolbar:'#specialTableToolbar',
+				url:'${ctx}/system/user/getPositiveUser',
+				page:false,
+				loading:true,
+				parseData:function(ret){
+					return{ code:ret.code, data:ret.data, }
+				},
+				cols:[[
+				       {align:'center',type:'checkbox'},
+				       {align:'center',field:'userName',title:'姓名'},
+				       {align:'center',field:'type',	title:'类型',	templet:'#typeTpl'},
+				       ]]		
+			})
+			table.on('toolbar(specialTable)',function(obj){	
+				switch(obj.event){
+				case 'becomeFull':becomeFull(); break; 
+				}
+			})
+			function becomeFull(){
+				var choosed = layui.table.checkStatus('specialTable').data;
+				if(choosed.length<1){
+					layer.msg('请选择人员',{icon:2});
+					return;
+				}
+				if(choosed.length>1){
+					layer.msg('不能同时转正多名人员',{icon:2});
+					return;
+				}
+				layer.confirm('是否确认转正？',function(){
+					var positiveUser='';
+					for(var i=0;i<choosed.length;i++){
+						positiveUser+=(choosed[i].id+',');
+					}
+					var load=layer.load(1);
+					$.ajax({
+						url:'${ctx}/system/user/positiveUser?positiveUser='+positiveUser,
+						success:function(result){
+							if(0==result.code){
+								layer.msg(result.message,{icon:1});
+								table.reload('specialTable');
+								layer.close(load);
+								$('#username').val(choosed[0].userName);
+								isBecomeId=choosed[0].id;
+								$('.addDict').click();
+							}else{
+								layer.msg(result.message,{icon:2});
+							}
+							layer.close(load);
+						}
+					})
+				})//end confirm
+			}//end becomeFull
+		}// end open
+		
+		
+		//递归调用，栈溢出（原因不明）
+		/* $(document).on('click', '.layui-table-view tbody tr', function(event) {console.log(1);
+			var elemTemp = $(this);
+			var tableView = elemTemp.closest('.layui-table-view');
+			var trIndex = elemTemp.data('index');
+			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
+		}) */
+		
+})//end define
+
+
+
+
+</script>	
 	
 	
 	
@@ -1161,7 +1306,7 @@ jQuery(function($){
 											}else if (2==result.code) {
 												layer.open({
 													   title: '提示'
-													  ,content:'该员工没有初始化设定,请点击添加'
+													  ,content:'信息修改成功，但该员工没有初始化设定,是否添加？'
 													  ,btn: ['确认', '取消']
 													,yes: function(index, layero){
 														//此处也是不知道什么的修改
@@ -1961,7 +2106,7 @@ jQuery(function($){
 											}else if (2==result.code && $(".quit").val()!=1) {
 												var init=layer.open({
 													   title: '提示'
-													  ,content:'该员工没有初始化设定,请点击添加'
+													  ,content:'信息修改成功，但该员工没有初始化设定,是否添加？'
 													  ,btn: ['确认', '取消']
 													,yes: function(index, layero){
 														//window.location.href = "${ctx}/menusToUrl?url=personnel/init"
@@ -2249,7 +2394,6 @@ jQuery(function($){
 				});
 				/* 新增员工 */
 				$('.addDict').on('click',function(){
-					
 					 var indextwo;
 					    var htmltwo = '';
 					    var htmlth = '';
@@ -2456,6 +2600,11 @@ jQuery(function($){
 										idCardEnd:$('#idCardEnd').val(),
 										contractDateEnd:$('#contractDateEnd').val(),
 										type:$('#type4').val(),
+								}
+								//如果是从转正人员点击跳转的，设置id
+								if(isBecomeId!=''){
+									postData.id=isBecomeId;
+									isBecomeId='';		//清空内容，确保下次点击新增时不会影响
 								}
 							    $.ajax({
 									url:"${ctx}/system/user/add",
