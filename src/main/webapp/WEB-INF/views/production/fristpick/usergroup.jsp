@@ -110,6 +110,15 @@
 						<input type="text" id="grouptime" class="form-control">
 					</div>
 				</div>
+				<div class="form-group">		<!-- 新增是否转正 -->
+					<label class="col-sm-3 control-label">是否转正</label>
+					<div class="col-sm-6">
+						<select class="form-control" id="isPositive">
+						   <option value='false'>不转正</option>
+						   <option value="true">待转正</option>
+						</select>
+					</div>
+				</div>
 				<div class="form-group">
 					<label class="col-sm-3 control-label">小组:</label>
 					<div class="col-sm-6" id="groupp"></div>
@@ -169,13 +178,13 @@
 															class="form-control laydate-icon"
 															onClick="laydate({elem: '#startTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 														</td>
-														<td>&nbsp&nbsp</td>
+														<td>&nbsp;&nbsp;</td>
 													</tr>
 												</table>
 												<span class="input-group-btn">
 													<button type="button"
 														class="btn btn-info btn-square btn-sm btn-3d searchtask">
-														查&nbsp找</button>
+														查&nbsp;找</button></span>
 											</div>
 										</div>
 									</div>
@@ -380,7 +389,7 @@
 					      			  $(result.data).each(function(k,j){
 					      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
 					      			  });  
-					      			 $('.allgroupName').html("<select class='form-control allselectcomplete'><option value="+""+">请选择&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>"+htmlth+"</select>") 
+					      			 $('.allgroupName').html("<select class='form-control allselectcomplete'><option value="+""+">请选择&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>"+htmlth+"</select>") 
 							      $('.allselectcomplete').each(function(i,o){
 										var id=$(o).parent().data("groupid");
 										$(o).val(id);
@@ -526,7 +535,7 @@
 						
 						success:function(result){
 							$(result.data.users).each(function(i,o){
-							html+=o.userName+"&nbsp&nbsp&nbsp&nbsp"
+							html+=o.userName+"&nbsp;&nbsp;&nbsp;&nbsp;"
 							})
 							$('.modal-body').html(html);
 							layer.close(index);
@@ -906,7 +915,7 @@
 	      			  $(result.data).each(function(k,j){
 	      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
 	      			  });  
-	      			 $('#groupp').html("<select class='form-control selectcomplete'><option value="+""+">请选择&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>"+htmlth+"</select>") 
+	      			 $('#groupp').html("<select class='form-control selectcomplete'><option value="+""+">请选择&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>"+htmlth+"</select>") 
 			      }
 			  });
 				
@@ -938,6 +947,7 @@
 									  userId:self.getCache(),
 									  temporarilyDate:$('#startTime').val(),
 									  workTime:$('#grouptime').val(),
+									  positive:$('#isPositive').val(),		//新增是否转正字段
 									  type:2,
 									  groupId:$('.selectcomplete').val(),
 									  foreign:a,
@@ -1030,7 +1040,7 @@
 						    	  name=item.name
 						      }
 						      self.setCache(item.id); 
-						      console.log($(".dropdown-menu").parent().parent())
+						      //console.log($(".dropdown-menu").parent().parent())
 						    	 return  name;
 					    },
 						//item是选中的数据
