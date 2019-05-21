@@ -428,11 +428,12 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		for(int i=0 ;i<arrIds.length;i++){
 			Long id = Long.valueOf(arrIds[i]);
 			User user = dao.findOne(id);
-			if(user.getPhone()!=null){
-				throw  new ServiceException(user.getUserName() +"的手机号为空，不能转正，请先添加手机号");
+			if(!StringUtils.isEmpty(user.getPhone())){
+				throw new ServiceException(user.getUserName() +"的手机号为空，不能转正，请先添加手机号");
 			}
 			user.setForeigns(0);
 			dao.save(user);
+			count++;
 		}
 		return count;
 	}
