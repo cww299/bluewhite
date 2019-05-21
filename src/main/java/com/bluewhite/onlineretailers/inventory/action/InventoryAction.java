@@ -65,7 +65,7 @@ private static final Log log = Log.getLog(InventoryAction.class);
 					,"receivedPayment","tid","buyerRemarks","num","payTime"
 					,"endTime","status","documentNumber","allBillPreferential","trackingNumber"
 					,"buyerMessage","buyerMemo","buyerFlag","sellerMemo","sellerFlag","buyerRate"
-					,"warehouse","shippingType","createdAt","updatedAt","onlineOrderChild"
+					,"warehouse","shippingType","createdAt","updatedAt","onlineOrderChilds"
 					,"address","phone","zipCode","buyerName","provinces","city","county")
 			.addRetainTerm(OnlineOrderChild.class,"id","number","commodity","price",
 					"sumPrice","systemPreferential","sellerReadjustPrices","actualSum","status") 
