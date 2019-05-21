@@ -376,7 +376,7 @@
 						var tableId = config.id;
 						switch(obj.event) {
 							case 'addTempData':
-								allField = {id: '', content: '', budget: '',userId:'',money: '', expenseDate: '', 
+								allField = {id: '', content: '', budget: 0,userId:'',money: '', expenseDate: '', 
 									withholdReason: '',withholdMoney:'',settleAccountsMode:'',type:'1'};
 								table.addTemp(tableId,allField,function(trElem) {
 									// 进入回调的时候this是当前的表格的config
@@ -662,7 +662,7 @@
 						var tableId = config.id;
 						switch(obj.event) {
 							case 'addTempData':
-								allField = {id: '', content: '', budget: '',userId:'',money: '', expenseDate: '', 
+								allField = {id: '', content: '', budget: 0,userId:'',money: '', expenseDate: '', 
 									withholdReason: '',withholdMoney:'',settleAccountsMode:'',type:'1',parentId:self.getIndex()};
 								table.addTemp(tableId,allField,function(trElem) {
 									// 进入回调的时候this是当前的表格的config
