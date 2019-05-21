@@ -9,14 +9,15 @@
 
 <title>人员汇总</title>
 
-<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
 <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
-<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>  <!-- 时间插件 -->
 <script src="${ctx }/static/js/layer/layer.js"></script>
-<script src="${ctx }/static/js/laypage/laypage.js"></script> 
-
 <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 <script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
+<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>  <!-- 时间插件 -->
+<script src="${ctx }/static/js/laypage/laypage.js"></script> 
+
+
 
 <link rel="stylesheet" href="${ctx }/static/css/main.css">
  <!-- Drop Zone-->
@@ -139,7 +140,8 @@
 								</span>
 								&nbsp;&nbsp;&nbsp;&nbsp;<span class="input-group-btn">
 									<button type="button" class="btn btn-success  btn-sm btn-3d" id="lookoverBecome">
-										特急人员</button>
+										特急人员  <span class="layui-badge">0</span></button>
+									<button type="button"  style="display:none;" id="openEditBtn" data-id=''>隐藏打开修改用户弹窗按钮</button>
 								</span>
 								&nbsp;&nbsp;&nbsp;&nbsp; <span class="input-group-btn">
 									<button type="button"
@@ -631,6 +633,10 @@
 <script>
 
 var isBecomeId='';			//设置全局变量，保证layui作用于与jquery作用域对同一对象访问,用于特急人员转正时，以新增的方式打开弹窗，需要在新增员工时传该特急人员id，以区别普通的员工新增
+var openEditWin;		//全局变量，打开修改弹窗函数
+
+
+
 layui.config({
 	base: '${ctx}/static/layui-v2.4.5/'
 }).extend({
@@ -639,13 +645,14 @@ layui.config({
 	['table'],
 	function() {
 		var table = layui.table;
-		
+		var positiveNumber=0;
 		$.ajax({					//获取是否有特急人员需要转正，并且给出提示
 			url:'${ctx}/system/user/getPositiveUser',
 			success:function(r){
 				if(r.code==0){
 					if(r.data.length>0){
-						$('#lookoverBecome').html('特急人员<span class="layui-badge">'+r.data.length+'</span></li>')
+						$('#lookoverBecome').html('特急人员  <span class="layui-badge">'+r.data.length+'</span>')
+						positiveNumber=r.data.length;
 					}
 				}
 			}
@@ -653,7 +660,8 @@ layui.config({
 		$('#lookoverBecome').on('click',function(){	//监听查看特急人员按钮
 			openSpecialWin();
 		})
-		function openSpecialWin(){				//打开特急人员弹窗
+		$('#openEditBtn').on('click',function(){ openEditWin(this); });	//隐藏按钮打开修改用户弹窗绑定事件
+		function openSpecialWin(){					//打开特急人员弹窗
 			var specialWin=layer.open({
 				title:'特急人员',
 				type:1,
@@ -682,13 +690,13 @@ layui.config({
 			table.on('edit(specialTable)',function(obj){
 				var load=layer.load(1);
 			 	$.ajax({
-					url:'${ctx}/system/user/updateForeigns',
+					url:'${ctx}/system/user/update',
 					type:'post',
 					data:{	id:obj.data.id,
 						  	phone:obj.data.phone,
 						  	positive:'true'},
 					success:function(r){
-						if(0==r.code){
+						if(2==r.code){
 							layer.msg(r.message,{icon:1});
 						}else
 							layer.msg(r.message,{icon:2});
@@ -729,13 +737,13 @@ layui.config({
 						url:'${ctx}/system/user/positiveUser?positiveUser='+positiveUser,
 						success:function(result){
 							if(0==result.code){
-								layer.msg(result.message,{icon:1});
+								positiveNumber--;
+								$('#lookoverBecome').html('特急人员<span class="layui-badge">'+positiveNumber+'</span></li>')
 								table.reload('specialTable');
+								$('#openEditBtn').data('id',choosed[0].id);
+								$('#openEditBtn').click();
 								layer.close(load);
-								$('#username').val(choosed[0].userName);		//打开新增窗口时，数据回显 id="username"
-								$('#phone').val(choosed[0].phone);
-								isBecomeId=choosed[0].id;
-								$('.addDict').click();
+								layer.msg(result.message,{icon:1});
 							}else{
 								layer.msg(result.message,{icon:2});
 							}
@@ -748,13 +756,12 @@ layui.config({
 		
 		
 		//递归调用，栈溢出（原因不明）
-		/* $(document).on('click', '.layui-table-view tbody tr', function(event) {
+		/*  $(document).on('click', '.layui-table-view tbody tr', function(event) {
 			var elemTemp = $(this);
 			var tableView = elemTemp.closest('.layui-table-view');
 			var trIndex = elemTemp.data('index');
-			console.log(trIndex);
 			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
-		})  */
+		})   */
 		
 		
 })//end define
@@ -885,17 +892,13 @@ jQuery(function($){
 			 this.select=function(){
 				 
 				 //------------------修改---------------------------------------------------------
-				 $('.username2').on('click',function(){					
+				 $('.username2').on('click',function(){		console.log(1)			
 					 var _index
 						var index
 						var postData   
 						var postId=$(this).data('postid');
 						var nameId=$(this).data('nameid');
 						var dicDiv=$('#addDictDivType');
-						var userName=$(this).data('name');
-						var bacthDepartmentPrice=$(this).parent().parent().find('.departmentPrice').text();
-						var bacthHairPrice=$(this).parent().parent().find('.hairPrice').text();
-						$('#proName').val(userName);
 						var id=$(this).data('id');
 						var a="";
 						var c="";
@@ -1650,18 +1653,16 @@ jQuery(function($){
 				  
 				  
 				//-------------员工详情 -----------------------------------------------	//修改此处
-					$('.addbatch').on('click',function(){		//员工详情弹窗
+					$('.addbatch').on('click',function(){ openEditWin(this) });
+				  
+				  openEditWin=function(obj){		//员工详情弹窗
 						var _index
 						var index
 						var postData ;							//发送的数据  
-						var postId=$(this).data('postid');		//当前员工职位？
-						var nameId=$(this).data('nameid');		//当前员工？
+						var postId=$(obj).data('postid');		//当前员工职位？
+						var nameId=$(obj).data('nameid');		//当前员工？
 						var dicDiv=$('#addDictDivType');
-						var userName=$(this).data('name');
-						var bacthDepartmentPrice=$(this).parent().parent().find('.departmentPrice').text();
-						var bacthHairPrice=$(this).parent().parent().find('.hairPrice').text();
-						$('#proName').val(userName);
-						var id=$(this).data('id');
+						var id=$(obj).data('id');
 						var a="";
 						var c="";
 						//遍历工序类型
@@ -2017,7 +2018,7 @@ jQuery(function($){
 							  area: ['80%', '90%'], 
 							  btnAlign: 'c',//宽高
 							  maxmin: true,
-							  title:userName,
+							  title:'修改用户信息',
 							  content: dicDiv,
 							  btn: ['确定', '取消'],
 							  yes:function(index, layero){
@@ -2163,7 +2164,7 @@ jQuery(function($){
 								  layer.close(index);
 							  }
 						});
-					})
+					}
 					
 					/* 在职人员档案 */
 					$('.addbatchtw').on('click',function(){
@@ -2173,10 +2174,6 @@ jQuery(function($){
 						var postId=$(this).data('postid');
 						var nameId=$(this).data('nameid');
 						var dicDiv=$('#addDictDivTypetw');
-						var userName=$(this).data('name');
-						var bacthDepartmentPrice=$(this).parent().parent().find('.departmentPrice').text();
-						var bacthHairPrice=$(this).parent().parent().find('.hairPrice').text();
-						$('#proName').val(userName);
 						var id=$(this).data('idd');
 						var ids=$(this).data('ids');
 						if(ids==""){
@@ -2257,7 +2254,7 @@ jQuery(function($){
 							  area: ['80%', '90%'], 
 							  btnAlign: 'c',//宽高
 							  maxmin: true,
-							  title:userName,
+							  title:'员工档案位置',
 							  content: dicDiv,
 							  btn: ['确定', '取消'],
 							  yes:function(index, layero){
