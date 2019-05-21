@@ -131,9 +131,13 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	@Override
 	@Transactional
 	public Consumption addConsumption(Consumption consumption) {
+		CurrentUser cu = SessionManager.getUserSession();
 		Consumption ot = null;
 		if (consumption.getId() != null) {
 			ot = dao.findOne(consumption.getId());
+			if(cu.getOrgNameId()!=ot.getOrgNameId()){
+				throw new ServiceException("无权限修改");
+			}
 			if (ot.getFlag() == 1) {
 				throw new ServiceException("已放款，无法修改");
 			}
@@ -208,7 +212,6 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		if(consumption.getMoney()==null){
 			throw new ServiceException("申请金额不能为空");
 		}
-		CurrentUser cu = SessionManager.getUserSession();
 		consumption.setOrgNameId(cu.getOrgNameId());
 		consumption.setFlag(0);
 		
@@ -218,6 +221,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	@Override
 	@Transactional
 	public int deleteConsumption(String ids) {
+		CurrentUser cu = SessionManager.getUserSession();
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idArr = ids.split(",");
@@ -225,8 +229,10 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Consumption consumption = dao.findOne(id);
+					if(cu.getOrgNameId()!= consumption.getOrgNameId()){
+						throw new ServiceException("无权限删除");
+					}
 					if (consumption.getFlag() == 0) {
-						CurrentUser cu = SessionManager.getUserSession();
 						//获取当前采购单，判断是否为预算
 						if(consumption.getBudget()==1){
 							//获取所有的子报销单,删除子报销单时，同步更新父报销单的费用
