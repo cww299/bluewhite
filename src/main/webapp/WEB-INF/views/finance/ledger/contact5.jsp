@@ -294,6 +294,7 @@
 								title: "到岸数量",
 								edit:'text',
 								align: 'center',
+								style:'background-color: #d8fe83',
 							},{
 								field: "",
 								title: "预计借款日期",
@@ -306,6 +307,7 @@
 								title: "争议数字",
 								edit:'text',
 								align: 'center',
+								style:'background-color: #d8fe83',
 							}]
 						],
 								});

@@ -147,7 +147,8 @@
 						url: '${ctx}/fince/getConsumption' ,
 						where:{
 							flag:0,
-							type:1
+							type:1,
+							budget:0,
 						},
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
@@ -373,6 +374,7 @@
 							orderTimeEnd:orderTimeEnd,
 							expenseDate:a,
 							paymentDate:b,
+							budget:0,
 						}
 						table.reload('tableData', {
 							where: post
