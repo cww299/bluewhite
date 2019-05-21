@@ -69,6 +69,21 @@ public class Live  extends BaseEntity<Long>{
 	 */
 	@Column(name = "live_remark")
 	private String liveRemark;
+	
+	/**
+	 * 状态
+	 */
+	@Column(name = "type")
+	private Integer type;
+	
+	
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
 
 	public Long getUserId() {
 		return userId;

@@ -38,7 +38,7 @@ public class HostelAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
 				.addRetainTerm(Attendance.class, "name")
-				.addRetainTerm(User.class, "id", "userName","orgName","orgNameId","age","bed","inLiveDate","otLiveDate","liveRemark");
+				.addRetainTerm(User.class, "id", "userName","orgName","orgNameId","age");
 	}
 
 	/**
