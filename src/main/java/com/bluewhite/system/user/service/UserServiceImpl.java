@@ -432,6 +432,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				throw new ServiceException(user.getUserName() +"的手机号为空，不能转正，请先添加手机号");
 			}
 			user.setForeigns(0);
+			user.setPositive(false);
 			dao.save(user);
 			count++;
 		}

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.persistence.criteria.Predicate;
 
@@ -16,7 +17,9 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.personnel.attendance.dao.HostelDao;
+import com.bluewhite.personnel.attendance.dao.LiveDao;
 import com.bluewhite.personnel.attendance.entity.Hostel;
+import com.bluewhite.personnel.attendance.entity.Live;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.User;
 
@@ -28,6 +31,8 @@ public class HostelServiceImpl extends BaseServiceImpl<Hostel, Long>
 	
 	@Autowired
 	private UserDao  userDao;
+	@Autowired
+	private LiveDao liveDao;
 	/**
      * 按条件查询住宿
      */
@@ -61,12 +66,43 @@ public class HostelServiceImpl extends BaseServiceImpl<Hostel, Long>
 		JSONObject jsonObject =JSONObject.parseObject(hostel.getJsonName());
 		String id = jsonObject.getString("id");
 		Hostel hostel2= dao.findOne(Long.valueOf(id));
+		//获取宿舍原本人员
+		Set<User> userList =  hostel2.getUsers();
 		int  size =	jsonObject.size();
+		//新增的人员
 		Set<User> users = new HashSet<User>();
+		List<Live> lives=new ArrayList<Live>();
+		CopyOnWriteArraySet<User>  exSet = new  CopyOnWriteArraySet<User>(userList);
 		for (int i = 0; i < size-1; i++) {
 			String aString= jsonObject.getString("province["+i+"]");
-			users.add(userDao.findOne(Long.valueOf(aString)));
+			User user= userDao.findOne(Long.valueOf(aString));
+			//当宿舍原本人员新增人员
+			if(!userList.contains(user)){
+				Live livee = liveDao.findByUserIdAndType(Long.valueOf(aString), 1);
+				if (livee!=null) {
+					livee.setType(2);
+					liveDao.save(livee);
+				}
+				Live live = new Live();
+				live.setHostelId(Long.valueOf(id));
+				live.setUserId(Long.valueOf(aString));
+				live.setType(1);
+				lives.add(live);
+			}
+			//当宿舍人员减少
+			if(exSet.contains(user)){
+				exSet.remove(user);
+			}
+			
+			users.add(user);
 		}
+		for (User user2 : exSet) {
+			Live live=liveDao.findByUserIdAndType(user2.getId(), 1);
+			live.setType(2);
+			liveDao.save(live);
+		}
+		liveDao.save(lives);
+		hostel2.setNumber(size-1);
 		hostel2.setUsers(users);
 		dao.save(hostel2);
 	}

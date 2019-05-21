@@ -15,7 +15,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>报销申请</title>
+<title>住宿管理</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
@@ -64,6 +64,11 @@
 			<!-- 宿舍人员详情 -->
 			<div style="display: none;" id="layuiOpen">
 			<table id="tableBudget" class="table_th_search" lay-filter="tableBudget"></table>
+			</div>
+			
+			<!-- 水电详情 -->
+			<div style="display: none;" id="layuipower">
+			<table id="powerWater" class="table_th_search" lay-filter="powerWater"></table>
 			</div>
 		</div>
 	</div>
@@ -124,11 +129,49 @@
 			</div>
 		</div>
 	</form>
+	<!-- 水费 -->
+	<form action="" id="layuiadmin-form-admin4"
+		style="padding: 20px 30px 0 60px; display:none;  text-align:">
+		<div class="layui-form" lay-filter="layuiadmin-form-admin">
+		<input type="text" id="water" name="hostelId" style="display: none;" />
+		<input type="text" name="type" value="1" style="display: none;" />
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">所属月份</label>
+				<div class="layui-input-inline">
+					<input type="text" name="monthDate" id="monthDate"
+						lay-verify="required" placeholder="请输入所属月份"
+						class="layui-input laydate-icon">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">上月吨数</label>
+				<div class="layui-input-inline">
+					<input type="text"  name="upperDegreeNum"
+						lay-verify="required" 
+						class="layui-input laydate-icon">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">本月吨数</label>
+				<div class="layui-input-inline">
+					<input type="text"  name="nowDegreeNum"
+						lay-verify="required" 
+						class="layui-input laydate-icon">
+				</div>
+			</div>
+		</div>
+	</form>
 	
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
 				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增宿舍</span>
 				<span class="layui-btn layui-btn-sm" lay-event="openMeal">报餐价格</span>
+			</div>
+	</script>
+	
+	<script type="text/html" id="toolbarwater">
+			<div class="layui-btn-container layui-inline">
+				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增水费</span>
 			</div>
 	</script>
 	
@@ -138,6 +181,14 @@
 	
 	<script type="text/html" id="barDemo2">
   		<a class="layui-btn layui-btn-trans layui-btn-sm"  lay-event="live">宿舍人员详情</a>
+	</script>
+	
+	<script type="text/html" id="barDemo3">
+  		<a class="layui-btn layui-btn-trans layui-btn-sm"  lay-event="water">水费详情</a>
+	</script>
+	
+	<script type="text/html" id="barDemo4">
+  		<a class="layui-btn layui-btn-trans layui-btn-sm"  lay-event="power">电费详情</a>
 	</script>
 	<script>
 			layui.config({
@@ -176,7 +227,13 @@
 						type: 'datetime',
 						range: '~',
 					});
-				 
+				 	
+					laydate.render({
+						elem: '#monthDate',
+						type : 'month',
+						format:'yyyy-MM-01 HH:mm:ss'
+					});
+					
 				  // 多选
 				  laydate.render({
 				    elem: '#tradeDaysTime',
@@ -262,7 +319,9 @@
 								edit: false,
 							}
 							,{fixed:'right', title:'宿舍详情', align: 'center', toolbar: '#barDemo2'}
-							,{fixed:'right', title:'操作', align: 'center', toolbar: '#barDemo'}]
+							,{fixed:'right', title:'水费详情', align: 'center', toolbar: '#barDemo3'}
+							,{fixed:'right', title:'电费详情', align: 'center', toolbar: '#barDemo4'}
+							,{fixed:'right', title:'人员详情', align: 'center', toolbar: '#barDemo'}]
 						],
 						done: function() {
 							var tableView = this.elem.next();
@@ -373,7 +432,11 @@
 							break;
 						}
 					});
-
+					
+					
+					
+					
+					
 					//监听单元格编辑
 					table.on('tool(tableData)', function(obj) {
 						var value = obj.value ,//得到修改后的值
@@ -383,6 +446,7 @@
 							id = data.id,
 							userid=data.users,
 							myArray = [];
+						$('#water').val(obj.data.id);	
 							for (var i = 0; i < userid.length; i++) {
 								myArray.push(userid[i].id)
 							}
@@ -433,9 +497,10 @@
 							table.render({
 								elem: '#tableBudget',
 								size: 'lg',
-								url: '${ctx}/personnel/getHostel' ,
+								url: '${ctx}/personnel/getLive' ,
 								where:{
-									id:id,
+									hostelId:id,
+									type:1,
 								},
 								request:{
 									pageName: 'page' ,//页码的参数名称，默认：page
@@ -454,7 +519,7 @@
 										code: ret.code,
 										msg: ret.message,
 										count:ret.data.total,
-										data: ret.data.rows[0].users
+										data: ret.data.rows
 									}
 								},
 								cols: [
@@ -462,17 +527,23 @@
 										field: "userName",
 										title: "姓名",
 										align: 'center',
+										templet:function(d){
+											return d.user.userName
+										}
 									},{
 										field: "name",
 										title: "部门",
 										align: 'center',
 										templet:function(d){
-											return d.orgName.name
+											return d.user.orgName.name
 										}
 									},{
 										field: "age",
 										title: "年龄",
 										align: 'center',
+										templet:function(d){
+											return d.user.age
+										}
 									},{
 										field: "bed",
 										title: "床号",
@@ -534,7 +605,7 @@
 														inLiveDate: value,
 													};
 													//调用新增修改
-													 mainJs.fUpdateUser(postData);
+													  mainJs.fUpdateUser(postData); 
 														}
 													})
 												})
@@ -567,7 +638,7 @@
 						        ,zindex:-1
 						        ,area:['80%', '90%']
 						        ,shade: 0.5
-						        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+						        ,id: 'LAY_layuipro2' //设定一个id，防止重复弹出
 						        ,btn: ['取消']
 						        ,btnAlign: 'c'
 						        ,moveType: 1 //拖拽模式，0或者1
@@ -576,7 +647,7 @@
 						        	layero.addClass('layui-form');
 									// 将保存按钮改变成提交按钮
 									layero.find('.layui-layer-btn0').attr({
-										'lay-filter' : 'addRole',
+										'lay-filter' : 'addRole2',
 										'lay-submit' : ''
 									})
 						        }
@@ -585,8 +656,246 @@
 						      });
 						}
 						
+						
+						//查看宿舍水费详情
+						if(obj.event === 'water'){
+							table.render({
+								elem: '#powerWater',
+								size: 'lg',
+								url: '${ctx}/personnel/getHydropower' ,
+								where:{
+									hostelId:id,
+									type:1,
+								},
+								request:{
+									pageName: 'page' ,//页码的参数名称，默认：page
+									limitName: 'size' //每页数据量的参数名，默认：limit
+								},
+								page: {
+								},//开启分页
+								loading: true,
+								toolbar: '#toolbarwater', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+								//totalRow: true,		 //开启合计行 */
+								cellMinWidth: 90,
+								colFilterRecord: true,
+								smartReloadModel: true,// 开启智能重载
+								parseData: function(ret) {
+									return {
+										code: ret.code,
+										msg: ret.message,
+										count:ret.data.total,
+										data: ret.data.rows
+									}
+								},
+								cols: [
+									[{
+										field: "userName",
+										title: "姓名",
+										align: 'center',
+										templet:function(d){
+											var html=""
+											 $(d.hostel.users).each(function(k,j){
+												 html+=j.userName+' '
+											 })
+											return html
+										}
+									},{
+										field: "number",
+										title: "人数",
+										align: 'center',
+										templet:function(d){
+											return d.hostel.number
+										}
+									},{
+										field: "monthDate",
+										title: "月份",
+										align: 'center',
+									},{
+										field: "upperDegreeNum",
+										title: "上月抄表",
+										align: 'center',
+										edit:'text',
+										style:'background-color: #f7e932;'
+									},{
+										field: "nowDegreeNum",
+										title: "本月抄表",
+										align: 'center',
+										edit:'text',
+										style:'background-color: #f7e932;'
+									},{
+										field: "sum",
+										title: "实际吨数",
+										align: 'center',
+									},{
+										field: "price",
+										title: "每一吨金额",
+										align: 'center',
+										edit:'text',
+										style:'background-color: #f7e932;'
+									},{
+										field: "summaryPrice",
+										title: "总金额",
+										align: 'center',
+										style:'background-color: #31c798;'
+									},{
+										field: "talonNum",
+										title: "标准",
+										align: 'center',
+										edit:"text",
+										style:'background-color: #f7e932;'
+									},{
+										field: "exceedNum",
+										title: "超支",
+										align: 'center',
+									},{
+										field: "exceedPrice",
+										title: "超支金额",
+										align: 'center',
+										style:'background-color: #31c798;'
+									}
+									]
+								],
+								done: function() {
+									var tableView = this.elem.next();
+									tableView.find('.layui-table-grid-down').remove();
+									var totalRow = tableView.find('.layui-table-total');
+									var limit = this.page ? this.page.limit : this.limit;
+									layui.each(totalRow.find('td'), function(index, tdElem) {
+										tdElem = $(tdElem);
+										var text = tdElem.text();
+										if(text && !isNaN(text)) {
+											text = (parseFloat(text) / limit).toFixed(2);
+											tdElem.find('div.layui-table-cell').html(text);
+										}
+									});
+								},
+								//下拉框回显赋值
+								done: function(res, curr, count) {
+									var tableView = this.elem.next();
+									var tableElem = this.elem.next('.layui-table-view');
+									layui.each(tableElem.find('select'), function(index, item) {
+										var elem = $(item);
+										elem.val(elem.data('value'));
+									});
+									form.render();
+									// 初始化laydate
+									layui.each(tableView.find('td[data-field="monthDate"]'), function(index, tdElem) {
+										tdElem.onclick = function(event) {
+											layui.stope(event)
+										};
+										laydate.render({
+											elem: tdElem.children[0],
+											type : 'month',
+											format: 'yyyy-MM-dd HH:mm:ss',
+											done: function(value, date) {
+													var id = table.cache[tableView.attr('lay-id')][index].id
+													var postData = {
+														id: id,
+														monthDate: value,
+													};
+													//调用新增修改
+													  mainJs.fUpdatepower(postData); 
+														}
+													})
+												})
+											},
+										});
+							
+							var dicDiv=$('#layuipower');
+							layer.open({
+						         type: 1
+						        ,title: title //不显示标题栏
+						        ,closeBtn: false
+						        ,zindex:-1
+						        ,area:['80%', '90%']
+						        ,shade: 0.5
+						        ,id: 'LAY_layuipro3' //设定一个id，防止重复弹出
+						        ,btn: ['取消']
+						        ,btnAlign: 'c'
+						        ,moveType: 1 //拖拽模式，0或者1
+						        ,content:dicDiv
+						        ,success : function(layero, index) {
+						        	layero.addClass('layui-form');
+									// 将保存按钮改变成提交按钮
+									layero.find('.layui-layer-btn0').attr({
+										'lay-filter' : 'addRole2',
+										'lay-submit' : ''
+									})
+						        }
+						        ,end:function(){
+								  } 
+						      });
+						}
 					});
 					
+					//监听水费头工具栏事件
+					table.on('toolbar(powerWater)', function(obj) {
+						var config = obj.config;
+						var btnElem = $(this);
+						var tableId = config.id;
+						switch(obj.event) {
+							case 'addTempData':
+								var	dicDiv=$("#layuiadmin-form-admin4");
+								layer.open({
+									type:1,
+									title:'新增水费',
+									area:['35%','40%'],
+									btn:['确认','取消'],
+									content:dicDiv,
+									id: 'LAY_layuipro' ,
+									btnAlign: 'c',
+								    moveType: 1, //拖拽模式，0或者1
+									success : function(layero, index) {
+							        	layero.addClass('layui-form');
+										// 将保存按钮改变成提交按钮
+										layero.find('.layui-layer-btn0').attr({
+											'lay-filter' : 'addRole',
+											'lay-submit' : ''
+										})
+							        },
+									yes:function(){
+										form.on('submit(addRole)', function(data) {
+											 mainJs.fUpdatepower(data.field) 
+											document.getElementById("layuiadmin-form-admin4").reset();
+								        	layui.form.render();
+										})
+									},end:function(){ 
+							        	
+									  }
+								})
+								break;
+						}
+					});
+					
+					
+					//监听单元格编辑 (宿舍人员详情)
+					table.on('edit(tableBudget)', function(obj) {
+						var value = obj.value ,//得到修改后的值
+							data = obj.data ,//得到所在行所有键值
+							field = obj.field, //得到字段
+							id = data.id;
+							var postData = {
+								id:id,
+								[field]:value
+							}
+							//调用新增修改
+							 mainJs.fUpdateUser(postData); 
+					});
+					
+					//监听单元格编辑 (水费详情)
+					table.on('edit(powerWater)', function(obj) {
+						console.log(obj.field)
+						var value = obj.value ,//得到修改后的值
+							data = obj.data ,//得到所在行所有键值
+							field = obj.field, //得到字段
+							id = data.id;
+							var postData = {
+								id:id,
+								[field]:value
+							}
+							//调用新增修改
+							mainJs.fUpdatepower(postData);
+					});
 					//监听搜索
 					form.on('submit(LAY-search)', function(obj) {		//修改此处
 						var field = obj.field;
@@ -676,13 +985,13 @@
 						layer.close(index);
 				    },
 					    
-					  //修改员工信息							
+					  //修改宿舍人员详情							
 					    fUpdateUser : function(data){
 					    	if(data.id==""){
 					    		return;
 					    	}
 					    	$.ajax({
-								url: "${ctx}/fince/updateUser",
+								url: "${ctx}/fince/addLive",
 								data: data,
 								type: "POST",
 								beforeSend: function() {
@@ -713,7 +1022,46 @@
 								},
 							});
 							layer.close(index);
-					    }
+					    },
+				    
+				  //新增宿水费详情							
+				    fUpdatepower : function(data){
+				    	if(data.id==""){
+				    		return;
+				    	}
+				    	$.ajax({
+							url: "${ctx}/fince/addHydropower",
+							data: data,
+							type: "POST",
+							beforeSend: function() {
+								index;
+							},
+							success: function(result) {
+								if(0 == result.code) {
+								 	 table.reload("powerWater", {
+						                page: {
+						                }
+						              }) 
+									layer.msg(result.message, {
+										icon: 1,
+										time:800
+									});
+								
+								} else {
+									layer.msg(result.message, {
+										icon: 2,
+										time:800
+									});
+								}
+							},
+							error: function() {
+								layer.msg("操作失败！请重试", {
+									icon: 2
+								});
+							},
+						});
+						layer.close(index);
+				    }
 					}
 
 				}

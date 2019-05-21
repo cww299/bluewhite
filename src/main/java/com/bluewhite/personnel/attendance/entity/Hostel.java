@@ -29,6 +29,12 @@ public class Hostel  extends BaseEntity<Long>{
 	private String name;
 	
 	/**
+	 * 人数
+	 */
+	@Column(name = "number")
+	private Integer number;
+	
+	/**
 	 * 分组人员
 	 */
 	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
@@ -64,6 +70,14 @@ public class Hostel  extends BaseEntity<Long>{
 
 	public void setUsers(Set<User> users) {
 		this.users = users;
+	}
+
+	public Integer getNumber() {
+		return number;
+	}
+
+	public void setNumber(Integer number) {
+		this.number = number;
 	}
 	
 	
