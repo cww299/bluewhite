@@ -241,7 +241,7 @@
 					<div class="form-group">
 						<label class="col-sm-2 control-label">手机号:</label>
 						<div class="col-sm-2">
-							<input type="text" class="form-control phone">
+							<input type="text" class="form-control phone" id="phone">
 						</div>
 						<label class="col-sm-2 control-label">民族:</label>
 						<div class="col-sm-2 working">
@@ -676,7 +676,29 @@ layui.config({
 				       {align:'center',type:'checkbox'},
 				       {align:'center',field:'userName',title:'姓名'},
 				       {align:'center',field:'type',	title:'类型',	templet:'#typeTpl'},
+				       {align:'center',field:'phone',	title:'手机',	edit:true,},
 				       ]]		
+			})
+			table.on('edit(specialTable)',function(obj){
+				var load=layer.load(1);
+			 	$.ajax({
+					url:'${ctx}/system/user/updateForeigns',
+					type:'post',
+					data:{	id:obj.data.id,
+						  	phone:obj.data.phone,
+						  	positive:'true'},
+					success:function(r){
+						if(0==r.code){
+							layer.msg(r.message,{icon:1});
+						}else
+							layer.msg(r.message,{icon:2});
+						layer.close(load);
+					},
+					error:function(){
+						layer.msg('ajax异常',{icon:2});
+						layer.close(load);
+					}
+				}) 
 			})
 			table.on('toolbar(specialTable)',function(obj){	
 				switch(obj.event){
@@ -693,6 +715,10 @@ layui.config({
 					layer.msg('不能同时转正多名人员',{icon:2});
 					return;
 				}
+				if(choosed[0].phone==''){
+					layer.msg('转正人员需要填写号码！',{icon:2});
+					return;
+				}
 				layer.confirm('是否确认转正？',function(){
 					var positiveUser='';
 					for(var i=0;i<choosed.length;i++){
@@ -706,7 +732,8 @@ layui.config({
 								layer.msg(result.message,{icon:1});
 								table.reload('specialTable');
 								layer.close(load);
-								$('#username').val(choosed[0].userName);
+								$('#username').val(choosed[0].userName);		//打开新增窗口时，数据回显 id="username"
+								$('#phone').val(choosed[0].phone);
 								isBecomeId=choosed[0].id;
 								$('.addDict').click();
 							}else{
@@ -721,12 +748,14 @@ layui.config({
 		
 		
 		//递归调用，栈溢出（原因不明）
-		/* $(document).on('click', '.layui-table-view tbody tr', function(event) {console.log(1);
+		/* $(document).on('click', '.layui-table-view tbody tr', function(event) {
 			var elemTemp = $(this);
 			var tableView = elemTemp.closest('.layui-table-view');
 			var trIndex = elemTemp.data('index');
+			console.log(trIndex);
 			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
-		}) */
+		})  */
+		
 		
 })//end define
 
@@ -1691,7 +1720,6 @@ jQuery(function($){
 							      				htmltwo +='<option value="'+o.id+'">'+o.name+'</option>'
 							      			});  
 							      			var html='<select class="form-control  selectChange">'+htmltwo+'</select>'
-							      			console.log("1:"+html)
 							      			$(".position").html(html);
 							      			
 							      			layer.close(indextwo);
@@ -2642,7 +2670,6 @@ jQuery(function($){
 											//修改如下：
 											var con=layer.confirm('新增员工成功！是否前往初始化',function(){
 												window.parent.document.getElementById("personnelInit").click();
-												console.log(1)
 												layer.close(con);
 											});
 												

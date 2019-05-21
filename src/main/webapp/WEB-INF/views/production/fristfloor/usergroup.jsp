@@ -54,7 +54,7 @@
 										<td class="text-center">外调组</td>
 										<td class="text-center"><button
 												class="btn btn-primary btn-trans btn-sm savemodetw"
-												data-toggle="modal" data-target="#myModaltw")">查看人员</button></td>
+												data-toggle="modal" data-target="#myModaltw">查看人员</button></td>
 										<td class="text-center"><button type="button" id="add"
 												class="btn btn-success btn-sm btn-3d">外调人员</button></td>
 									</tr>
@@ -109,6 +109,15 @@
 					<label class="col-sm-3 control-label">工作时长:</label>
 					<div class="col-sm-6">
 						<input type="text" id="grouptime" class="form-control">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">是否转正</label>
+					<div class="col-sm-6">
+						<select class="form-control" id="isPositive">
+						   <option value='false'>不转正</option>
+						   <option value="true">待转正</option>
+						</select>
 					</div>
 				</div>
 				<div class="form-group">
@@ -170,13 +179,13 @@
 															class="form-control laydate-icon"
 															onClick="laydate({elem: '#startTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 														</td>
-														<td>&nbsp&nbsp</td>
+														<td>&nbsp;&nbsp;</td>
 													</tr>
 												</table>
 												<span class="input-group-btn">
 													<button type="button"
 														class="btn btn-info btn-square btn-sm btn-3d searchtask">
-														查&nbsp找</button>
+														查&nbsp;找</button></span>
 											</div>
 										</div>
 									</div>
@@ -392,7 +401,7 @@
 						
 						success:function(result){
 							$(result.data.users).each(function(i,o){
-							html+=o.userName+"&nbsp&nbsp&nbsp&nbsp"
+							html+=o.userName+"&nbsp;&nbsp;&nbsp;&nbsp;"
 							})
 							$('.modal-body').html(html);
 							layer.close(index);
@@ -580,7 +589,7 @@
 	      			  $(result.data).each(function(k,j){
 	      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
 	      			  });  
-	      			 $('#groupp').html("<select class='form-control selectcomplete'><option value="+""+">请选择&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>"+htmlth+"</select>") 
+	      			 $('#groupp').html("<select class='form-control selectcomplete'><option value="+""+">请选择&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>"+htmlth+"</select>") 
 			      }
 			  });
 				//外调人员
@@ -593,7 +602,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '45%'], 
+						  area: ['30%', '50%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"新增人员",
@@ -612,6 +621,7 @@
 									  userId:self.getCache(),
 									  temporarilyDate:$('#startTime').val(),
 									  workTime:$('#grouptime').val(),
+									  positive:$('#isPositive').val(),		//新增是否转正
 									  type:1,
 									  groupId:$('.selectcomplete').val(),
 									  foreign:a,
@@ -622,20 +632,17 @@
 						            traditional: true,
 									type:"post",
 									beforeSend:function(){
-										index = layer.load(1, {
-											  shade: [0.1,'#fff'] //0.1透明度的白色背景
-											});
+										index = layer.load(1);
 									},
-									
 									success:function(result){
 										if(0==result.code){
 											layer.msg(result.message, {icon: 1});
 											$('#addDictDivTypetw').hide();
 											layer.close(index);
+											layer.close(_index);
 										}else{
 											layer.msg(result.message, {icon: 2});
 										}
-										
 										layer.close(index);
 									},error:function(){
 										layer.msg("操作失败！", {icon: 2});
@@ -645,7 +652,6 @@
 							},
 						  end:function(){
 							  $('#addDictDivTypetw').hide();
-						
 							  $('.addDictDivTypeFormtw')[0].reset(); 
 							
 						  }
