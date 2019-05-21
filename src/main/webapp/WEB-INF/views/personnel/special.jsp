@@ -52,11 +52,6 @@
 	</div>
 </div>
 
-<!-- 特急人员弹窗 -->
-<div id="specialWinDiv" style="diaplay:none;">
-	<table class="layui-table" id="specialTable" lay-filter="specialTable"></table>
-</div>
-
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
@@ -83,6 +78,10 @@
 						tablePlug = layui.tablePlug //表格插件
 						,
 						element = layui.element;
+					
+					
+					
+					
 					//全部字段
 					var allField;
 					//select全局变量
@@ -385,13 +384,6 @@
 						});
 						layer.close(index);
 				    }
-					}
-					function openSpecialWin(){				//打开特急人员弹窗
-						var specialWin=layer.open({
-							title:'即将转正人员',
-							type:1,
-							content:$('#specialTable')
-						})
 					}
 				}
 			)
