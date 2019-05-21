@@ -639,13 +639,14 @@ layui.config({
 	['table'],
 	function() {
 		var table = layui.table;
-		
+		var positiveNumber=0;
 		$.ajax({					//获取是否有特急人员需要转正，并且给出提示
 			url:'${ctx}/system/user/getPositiveUser',
 			success:function(r){
 				if(r.code==0){
 					if(r.data.length>0){
 						$('#lookoverBecome').html('特急人员<span class="layui-badge">'+r.data.length+'</span></li>')
+						positiveNumber=r.data.length;
 					}
 				}
 			}
@@ -729,13 +730,15 @@ layui.config({
 						url:'${ctx}/system/user/positiveUser?positiveUser='+positiveUser,
 						success:function(result){
 							if(0==result.code){
-								layer.msg(result.message,{icon:1});
+								positiveNumber--;
+								$('#lookoverBecome').html('特急人员<span class="layui-badge">'+positiveNumber+'</span></li>')
 								table.reload('specialTable');
-								layer.close(load);
 								$('#username').val(choosed[0].userName);		//打开新增窗口时，数据回显 id="username"
 								$('#phone').val(choosed[0].phone);
 								isBecomeId=choosed[0].id;
 								$('.addDict').click();
+								layer.close(load);
+								layer.msg(result.message,{icon:1});
 							}else{
 								layer.msg(result.message,{icon:2});
 							}
