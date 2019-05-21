@@ -229,12 +229,12 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Consumption consumption = dao.findOne(id);
-					if(cu.getOrgNameId()!= consumption.getOrgNameId()){
+					if(cu.getOrgNameId() != consumption.getOrgNameId()){
 						throw new ServiceException("无权限删除");
 					}
 					if (consumption.getFlag() == 0) {
 						//获取当前采购单，判断是否为预算
-						if(consumption.getBudget()==1){
+						if(consumption.getBudget()!=null && consumption.getBudget()==1){
 							//获取所有的子报销单,删除子报销单时，同步更新父报销单的费用
 							List<Consumption> consumptionList= dao.findByParentId(id);
 							if(consumptionList.size()>0){

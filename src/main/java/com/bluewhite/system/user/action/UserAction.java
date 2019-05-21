@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.crypto.hash.SimpleHash;
+import org.jsoup.select.Collector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -33,13 +34,17 @@ import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.BankUtil;
 import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.finance.attendance.dao.AttendancePayDao;
+import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.service.AttendanceInitService;
+import com.bluewhite.production.finance.dao.PayBDao;
+import com.bluewhite.production.finance.entity.FarragoTaskPay;
+import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.service.GroupService;
 import com.bluewhite.system.sys.entity.SysLog;
 import com.bluewhite.system.user.dao.UserContractDao;
-import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.entity.UserContract;
@@ -109,7 +114,7 @@ public class UserAction {
 		userService.addUser(user);
 		cr.setCode(2);
 		return cr;
-	}
+	} 
 	
 	
 	
@@ -444,6 +449,33 @@ public class UserAction {
 	}
 	
 	
+	@Autowired
+	private PayBDao attendancePayDao;
+	
+	
+	/**
+	 *
+	 */
+	@RequestMapping(value = "/test", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse test(User user) {
+		CommonResponse cr = new CommonResponse();
+		int count = 0;
+	   List<User> userlist = userService.findUserList(user);
+	   List<PayB> attendancePayList =  attendancePayDao.findByAllotTimeBetween(user.getOrderTimeBegin(),user.getOrderTimeEnd());
+	   for(User us : userlist){
+		   List<PayB> FList =  attendancePayList.stream().filter(PayB->PayB.getUserName().equals(us.getUserName())).collect(Collectors.toList());
+		   for(PayB at : FList){
+			   if(at.getUserId() != us.getId()){
+				   at.setUserId(us.getId());
+				   count++;
+			   }
+		   }
+		   attendancePayDao.save(FList);
+	   }
+	   cr.setMessage(count+"");
+	   return cr;
+	}
 	
 	
 	@InitBinder
