@@ -43,4 +43,6 @@ public interface FarragoTaskPayDao extends BaseRepository<FarragoTaskPay, Long>{
 	List<FarragoTaskPay> findByTypeAndAllotTimeBetween(Integer type, Date orderTimeBegin,
 			Date orderTimeEnd);
 
+	List<FarragoTaskPay> findByAllotTimeBetween(Date orderTimeBegin, Date orderTimeEnd);
+
 }
