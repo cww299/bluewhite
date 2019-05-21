@@ -198,7 +198,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			flag = false;
 			break;
 		}
-		if (flag && consumption.getCustomId() == null) {
+		if (flag && (consumption.getCustomId() == null || consumption.getCustomId() == 0)) {
 			Custom custom = new Custom();
 			custom.setName(consumption.getCustomerName());
 			custom.setType(consumption.getType());

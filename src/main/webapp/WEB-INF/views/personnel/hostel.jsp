@@ -162,6 +162,38 @@
 		</div>
 	</form>
 	
+	<!-- 水费 -->
+	<form action="" id="layuiadmin-form-admin5"
+		style="padding: 20px 30px 0 60px; display:none;  text-align:">
+		<div class="layui-form" lay-filter="layuiadmin-form-admin">
+		<input type="text" id="power" name="hostelId" style="display: none;" />
+		<input type="text" name="type" value="2" style="display: none;" />
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">所属月份</label>
+				<div class="layui-input-inline">
+					<input type="text" name="monthDate" id="monthDate"
+						lay-verify="required" placeholder="请输入所属月份"
+						class="layui-input laydate-icon">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">上月度数</label>
+				<div class="layui-input-inline">
+					<input type="text"  name="upperDegreeNum"
+						lay-verify="required" 
+						class="layui-input laydate-icon">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">本月度数</label>
+				<div class="layui-input-inline">
+					<input type="text"  name="nowDegreeNum"
+						lay-verify="required" 
+						class="layui-input laydate-icon">
+				</div>
+			</div>
+		</div>
+	</form>
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
 				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增宿舍</span>
@@ -172,6 +204,12 @@
 	<script type="text/html" id="toolbarwater">
 			<div class="layui-btn-container layui-inline">
 				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增水费</span>
+			</div>
+	</script>
+	
+	<script type="text/html" id="toolbarpower">
+			<div class="layui-btn-container layui-inline">
+				<span class="layui-btn layui-btn-sm" lay-event="addTempData2">新增电费</span>
 			</div>
 	</script>
 	
@@ -447,6 +485,7 @@
 							userid=data.users,
 							myArray = [];
 						$('#water').val(obj.data.id);	
+						$('#power').val(obj.data.id);
 							for (var i = 0; i < userid.length; i++) {
 								myArray.push(userid[i].id)
 							}
@@ -826,6 +865,176 @@
 								  } 
 						      });
 						}
+						
+						//查看宿舍水费详情
+						if(obj.event === 'power'){
+							table.render({
+								elem: '#powerWater',
+								size: 'lg',
+								url: '${ctx}/personnel/getHydropower' ,
+								where:{
+									hostelId:id,
+									type:2,
+								},
+								request:{
+									pageName: 'page' ,//页码的参数名称，默认：page
+									limitName: 'size' //每页数据量的参数名，默认：limit
+								},
+								page: {
+								},//开启分页
+								loading: true,
+								toolbar: '#toolbarpower', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+								//totalRow: true,		 //开启合计行 */
+								cellMinWidth: 90,
+								colFilterRecord: true,
+								smartReloadModel: true,// 开启智能重载
+								parseData: function(ret) {
+									return {
+										code: ret.code,
+										msg: ret.message,
+										count:ret.data.total,
+										data: ret.data.rows
+									}
+								},
+								cols: [
+									[{
+										field: "userName",
+										title: "姓名",
+										align: 'center',
+										templet:function(d){
+											var html=""
+											 $(d.hostel.users).each(function(k,j){
+												 html+=j.userName+' '
+											 })
+											return html
+										}
+									},{
+										field: "number",
+										title: "人数",
+										align: 'center',
+										templet:function(d){
+											return d.hostel.number
+										}
+									},{
+										field: "monthDate",
+										title: "月份",
+										align: 'center',
+									},{
+										field: "upperDegreeNum",
+										title: "上月抄表",
+										align: 'center',
+										edit:'text',
+										style:'background-color: #f7e932;'
+									},{
+										field: "nowDegreeNum",
+										title: "本月抄表",
+										align: 'center',
+										edit:'text',
+										style:'background-color: #f7e932;'
+									},{
+										field: "sum",
+										title: "实际度数",
+										align: 'center',
+									},{
+										field: "price",
+										title: "每一度金额",
+										align: 'center',
+										edit:'text',
+										style:'background-color: #f7e932;'
+									},{
+										field: "summaryPrice",
+										title: "总金额",
+										align: 'center',
+										style:'background-color: #31c798;'
+									},{
+										field: "talonNum",
+										title: "标准",
+										align: 'center',
+										edit:"text",
+										style:'background-color: #f7e932;'
+									},{
+										field: "exceedNum",
+										title: "超支",
+										align: 'center',
+									},{
+										field: "exceedPrice",
+										title: "超支金额",
+										align: 'center',
+										style:'background-color: #31c798;'
+									}
+									]
+								],
+								done: function() {
+									var tableView = this.elem.next();
+									tableView.find('.layui-table-grid-down').remove();
+									var totalRow = tableView.find('.layui-table-total');
+									var limit = this.page ? this.page.limit : this.limit;
+									layui.each(totalRow.find('td'), function(index, tdElem) {
+										tdElem = $(tdElem);
+										var text = tdElem.text();
+										if(text && !isNaN(text)) {
+											text = (parseFloat(text) / limit).toFixed(2);
+											tdElem.find('div.layui-table-cell').html(text);
+										}
+									});
+								},
+								//下拉框回显赋值
+								done: function(res, curr, count) {
+									var tableView = this.elem.next();
+									var tableElem = this.elem.next('.layui-table-view');
+									layui.each(tableElem.find('select'), function(index, item) {
+										var elem = $(item);
+										elem.val(elem.data('value'));
+									});
+									form.render();
+									// 初始化laydate
+									layui.each(tableView.find('td[data-field="monthDate"]'), function(index, tdElem) {
+										tdElem.onclick = function(event) {
+											layui.stope(event)
+										};
+										laydate.render({
+											elem: tdElem.children[0],
+											type : 'month',
+											format: 'yyyy-MM-dd HH:mm:ss',
+											done: function(value, date) {
+													var id = table.cache[tableView.attr('lay-id')][index].id
+													var postData = {
+														id: id,
+														monthDate: value,
+													};
+													//调用新增修改
+													  mainJs.fUpdatepower(postData); 
+														}
+													})
+												})
+											},
+										});
+							
+							var dicDiv=$('#layuipower');
+							layer.open({
+						         type: 1
+						        ,title: title //不显示标题栏
+						        ,closeBtn: false
+						        ,zindex:-1
+						        ,area:['80%', '90%']
+						        ,shade: 0.5
+						        ,id: 'LAY_layuipro3' //设定一个id，防止重复弹出
+						        ,btn: ['取消']
+						        ,btnAlign: 'c'
+						        ,moveType: 1 //拖拽模式，0或者1
+						        ,content:dicDiv
+						        ,success : function(layero, index) {
+						        	layero.addClass('layui-form');
+									// 将保存按钮改变成提交按钮
+									layero.find('.layui-layer-btn0').attr({
+										'lay-filter' : 'addRole2',
+										'lay-submit' : ''
+									})
+						        }
+						        ,end:function(){
+								  } 
+						      });
+						}
 					});
 					
 					//监听水费头工具栏事件
@@ -864,6 +1073,36 @@
 									  }
 								})
 								break;
+							case 'addTempData2':
+								var	dicDiv=$("#layuiadmin-form-admin5");
+								layer.open({
+									type:1,
+									title:'新增水费',
+									area:['35%','40%'],
+									btn:['确认','取消'],
+									content:dicDiv,
+									id: 'LAY_layuipro9' ,
+									btnAlign: 'c',
+								    moveType: 1, //拖拽模式，0或者1
+									success : function(layero, index) {
+							        	layero.addClass('layui-form');
+										// 将保存按钮改变成提交按钮
+										layero.find('.layui-layer-btn0').attr({
+											'lay-filter' : 'addRole',
+											'lay-submit' : ''
+										})
+							        },
+									yes:function(){
+										form.on('submit(addRole)', function(data) {
+											 mainJs.fUpdatepower(data.field) 
+											document.getElementById("layuiadmin-form-admin5").reset();
+								        	layui.form.render();
+										})
+									},end:function(){ 
+							        	
+									  }
+								})
+								break;	
 						}
 					});
 					
