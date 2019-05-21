@@ -472,10 +472,7 @@
 							                        //处理 json对象为字符串
 							                        return JSON.stringify(aItem);
 							                    });
-											console.log(result.data.rows)
-											if(result.data.rows=="" || result.data.rows=="undefined"){
-												 self.setIndex("");
-											}
+												 self.setIndex(0);
 											//提示框返回数据
 											 return process(resultList);
 										},

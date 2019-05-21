@@ -483,7 +483,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 					try {
 						order2.setContractTime(sdf.parse(order.getContractTime() != null ? order.getContractTime() : ""));//合同签订日期
 						order2.setProductNumber(order.getProductNumber());//产品编号
-					// order2.setAshoreTime(sdf.parse(order.getAshoreTime()!= null ? order.getAshoreTime() : ""));//到岸日期
+						order2.setAshoreTime(sdf.parse(order.getAshoreTime()!= null ? order.getAshoreTime() : ""));//到岸日期
 					} catch (ParseException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

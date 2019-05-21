@@ -24,35 +24,17 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>报销人:</td>
-							<td><input type="text" name="Username" id="firstNames" class="layui-input" /></td>
+							<td>乙方:</td>
+							<td><input type="text" name="partyNames" id="firstNames" class="layui-input" /></td>
 							<td>&nbsp;&nbsp;</td>
-							<td><select class="form-control" name="expenseDate" id="selectone">
-									<option value="2018-10-08 00:00:00">申请日期</option>
-								</select></td>
+							<td>产品名:</td>
+							<td><input type="text" name="productName" id="firstNames" class="layui-input" /></td>
 							<td>&nbsp;&nbsp;</td>
-							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							<td>批次号:</td>
+							<td><input type="text" name="batchNumber" id="firstNames" class="layui-input" /></td>
+							<td>&nbsp;&nbsp;</td>
+							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入合同开始结束时间" class="layui-input laydate-icon">
 							</td>
-							<td>&nbsp;&nbsp;</td>
-							<!-- <td>结束:</td>
-							<td><input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="layui-input laydate-icon">
-							</td> -->
-							<!-- 修改如下 -->
-							<td>&nbsp;&nbsp;</td>
-							<td>是否预算:
-							<td><select class="form-control" name="budget">
-									<option value="">请选择</option>
-									<option value="1">是</option>
-									<option value="0">否</option>
-							</select></td>
-							
-							<td>&nbsp;&nbsp;</td>
-							<td>是否核对:
-							<td><select class="form-control" name="flag">
-									<option value="">请选择</option>
-									<option value="0">未核对</option>
-									<option value="1">已核对</option>
-							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
@@ -269,6 +251,10 @@
 								field: "batchNumber",
 								title: "当批批次号",
 								align: 'center',
+							},{
+								field: "productName",
+								title: "当批产品名",
+								align: 'center',
 							}, {
 								field: "contractNumber",
 								title: "当批合同数量",
@@ -294,6 +280,7 @@
 								title: "到岸数量",
 								edit:'text',
 								align: 'center',
+								style:'background-color: #d8fe83',
 							},{
 								field: "",
 								title: "预计借款日期",
@@ -306,6 +293,7 @@
 								title: "争议数字",
 								edit:'text',
 								align: 'center',
+								style:'background-color: #d8fe83',
 							}]
 						],
 								});
@@ -356,10 +344,6 @@
 						                page: {
 						                }
 						              }) 
-						              table.reload("tableBudget", {
-							                page: {
-							                }
-							              }) 
 									layer.msg(result.message, {
 										icon: 1,
 										time:800

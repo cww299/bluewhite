@@ -827,9 +827,9 @@ layui.define(['table'], function (exports) {
     that.layMain.find('.' + NONE).remove();
     that.elem.removeClass('layui-table-none-overflow');
     // 追加到最后
-    that.layMain.find('tbody').prepend('<tr class="layui-tablePlug-data-temp" data-index="' + numbers + '">' + tds.join('') + '</tr>');
-    that.layFixLeft.find('tbody').prepend('<tr class="layui-tablePlug-data-temp" data-index="' + numbers + '">' + tds_fixed.join('') + '</tr>');
-    that.layFixRight.find('tbody').prepend('<tr class="layui-tablePlug-data-temp" data-index="' + numbers + '">' + tds_fixed_r.join('') + '</tr>');
+    that.layMain.find('tbody').append('<tr class="layui-tablePlug-data-temp" data-index="' + numbers + '">' + tds.join('') + '</tr>');
+    that.layFixLeft.find('tbody').append('<tr class="layui-tablePlug-data-temp" data-index="' + numbers + '">' + tds_fixed.join('') + '</tr>');
+    that.layFixRight.find('tbody').append('<tr class="layui-tablePlug-data-temp" data-index="' + numbers + '">' + tds_fixed_r.join('') + '</tr>');
     that.renderForm();
     that.resize();
     // 滚动到底部
@@ -904,7 +904,10 @@ layui.define(['table'], function (exports) {
     var btnElem = $(this);
     var trElem = btnElem.closest('tr');
     var tableId = trElem.closest('.layui-table-view').attr('lay-id');
+    var con=  layer.confirm("是否确定删除",function(){
     table.cleanTemp(tableId, trElem.data('index'));
+    layer.close(con);
+    })
   });
 
   //遍历表头
