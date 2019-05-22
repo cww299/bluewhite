@@ -37,6 +37,7 @@
     top: 105px;
     display:none;
     background-color:#f2f2f2;
+    z-index: 99999;
 }
 td{
 	text-align:center;
