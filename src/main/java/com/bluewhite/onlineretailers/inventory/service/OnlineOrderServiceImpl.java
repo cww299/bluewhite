@@ -2,6 +2,7 @@ package com.bluewhite.onlineretailers.inventory.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.criteria.Predicate;
 
@@ -17,10 +18,12 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.onlineretailers.inventory.dao.CommodityDao;
+import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
+import com.bluewhite.onlineretailers.inventory.dao.OnlineOrderChildDao;
 import com.bluewhite.onlineretailers.inventory.dao.OnlineOrderDao;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
+import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrderChild;
 
@@ -29,9 +32,12 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	
 	@Autowired
 	private OnlineOrderDao dao;
-	
 	@Autowired
 	private CommodityDao commodityDao;
+	@Autowired
+	private  OnlineOrderChildDao  onlineOrderChildDao;
+	@Autowired
+	private  InventoryDao inventoryDao;
 	
 
 	@Override
@@ -108,18 +114,51 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				onlineOrderChild.setActualSum(jsonObject.getDouble("actualSum"));
 				onlineOrderChild.setStatus(jsonObject.getString("status"));
 				onlineOrderChild.setOnlineOrderId(onlineOrder.getId());
-				//当订单状态是下单，减少库存
-				if(onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_4)){
-					Commodity commodity = commodityDao.findOne(onlineOrderChild.getCommodityId());
-					commodity.setQuantity(commodity.getQuantity()-onlineOrderChild.getNumber());
-					commodityDao.save(commodity);
-				}
 				onlineOrder.getOnlineOrderChilds().add(onlineOrderChild);
 			}
 		}
+		
+		
+		
 		//总数量
 		onlineOrder.setNum(onlineOrder.getOnlineOrderChilds().stream().mapToInt(OnlineOrderChild::getNumber).sum());
 		return dao.save(onlineOrder);
+	}
+
+
+	@Override
+	public List<OnlineOrder> delivery(String delivery) {
+		if(!StringUtils.isEmpty(delivery)){
+			JSONArray jsonArray = JSON.parseArray(delivery);
+			for (int i = 0; i < jsonArray.size(); i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				Long id = jsonObject.getLong("id");
+				Long warehouseId = jsonObject.getLong("warehouseId");
+				int number = jsonObject.getIntValue("number");
+				//获取子订单
+				OnlineOrderChild onlineOrderChild = onlineOrderChildDao.findOne(id);
+				//当订单的状态是买家已付款时
+				if(onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_5)){
+					//获取商品
+					Commodity commodity = onlineOrderChild.getCommodity();
+					//获取所有商品的库存
+					Set<Inventory> inventorys = commodity.getInventorys();
+					//减少库存
+					if(inventorys.size()>0){
+						for(Inventory inventory : inventorys){
+							if(inventory.getWarehouseId().equals(warehouseId)){
+								inventory.setNumber(inventory.getNumber()-number);
+								inventoryDao.save(inventory);
+							}
+						}
+					}	
+					
+				}
+			}
+		}
+				
+		
+		return null;
 	}
 
 

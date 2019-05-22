@@ -12,7 +12,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.system.user.entity.User;
@@ -27,10 +26,10 @@ import com.bluewhite.system.user.entity.User;
 public class Procurement extends BaseEntity<Long>{
 	
 	/**
-	 * 单据号
+	 * 批次号
 	 */
-	@Column(name = "document_number")
-	private String documentNumber;
+	@Column(name = "batch_number")
+	private String batchNumber;
 
 	/**
 	 * 经手人id
@@ -104,14 +103,29 @@ public class Procurement extends BaseEntity<Long>{
 	@Column(name = "commodity_number")
 	private String commodityNumber;
 	
+	/**
+	 * 是否反冲（0=否，1=是）
+	 */
+	@Column(name = "flag")
+	private Integer flag;
 	
 
-	public String getDocumentNumber() {
-		return documentNumber;
+	
+
+	public Integer getFlag() {
+		return flag;
 	}
 
-	public void setDocumentNumber(String documentNumber) {
-		this.documentNumber = documentNumber;
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
+
+	public String getBatchNumber() {
+		return batchNumber;
+	}
+
+	public void setBatchNumber(String batchNumber) {
+		this.batchNumber = batchNumber;
 	}
 
 	public Integer getStatus() {

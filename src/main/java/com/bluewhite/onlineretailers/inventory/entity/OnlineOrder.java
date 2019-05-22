@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,12 +14,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.system.sys.entity.RegionAddress;
-import com.bluewhite.system.user.entity.RoleMenuPermission;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -52,7 +47,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User user;
-	
 	
 	/**
 	 * 客户id
@@ -134,18 +128,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 	private Number num;
 	
 	/**
-	 * 付款时间。格式:yyyy-MM-dd HH:mm:ss。订单的付款时间即为物流订单的创建时间
-	 */
-	@Column(name = "pay_time")
-	private Double payTime;
-	
-	/**
-	 * 交易结束时间。交易成功时间(更新交易状态为成功的同时更新)/确认收货时间或者交易关闭时间 。格式:yyyy-MM-dd HH:mm:ss
-	 */
-	@Column(name = "end_time")
-	private Double endTime;
-
-	/**
 	 * 订单状态交易状态。可选值: 
 	 * TRADE_NO_CREATE_PAY(没有创建支付宝交易) 
 	 * WAIT_BUYER_PAY(等待买家付款) 
@@ -209,19 +191,18 @@ public class OnlineOrder extends BaseEntity<Long> {
 	@Column(name = "seller_flag")
 	private Number sellerFlag;
 	
-	/**
-	 * （当出库时，才开始更新字段）
-	 * 发货仓库类型（0=主仓库，1=客供仓库，2=次品）
-	 * 
-	 */
-	@Column(name = "warehouse")
-	private Integer warehouse;
 
 	/**
-	 * 创建交易时的物流方式（交易完成前，物流方式有可能改变，但系统里的这个字段一直不变）。可
-	 * 选值：free(卖家包邮),post(平邮),express(快递),ems(EMS),virtual(虚拟发货)，25(次日必达)，26(预约配送)
+	 * 创建交易时的物流方式（交易完成前，物流方式有可能改变，但系统里的这个字段一直不变）。
+	 * 可选值：
+	 * free(卖家包邮),
+	 * post(平邮),
+	 * express(快递),
+	 * ems(EMS),
+	 * virtual(虚拟发货)，
+	 * 25(次日必达)，
+	 * 26(预约配送)
 	 * 
-	 * @return
 	 */
 	@Column(name = "shipping_type")
 	private String shippingType;
@@ -240,8 +221,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "provinces_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private RegionAddress provinces;
-	
-	
 	
 	/**
 	 * 收货人的所在市
@@ -480,22 +459,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 		this.num = num;
 	}
 
-	public Double getPayTime() {
-		return payTime;
-	}
-
-	public void setPayTime(Double payTime) {
-		this.payTime = payTime;
-	}
-
-	public Double getEndTime() {
-		return endTime;
-	}
-
-	public void setEndTime(Double endTime) {
-		this.endTime = endTime;
-	}
-
 	public String getBuyerMessage() {
 		return buyerMessage;
 	}
@@ -543,14 +506,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 
 	public void setShippingType(String shippingType) {
 		this.shippingType = shippingType;
-	}
-
-	public Integer getWarehouse() {
-		return warehouse;
-	}
-
-	public void setWarehouse(Integer warehouse) {
-		this.warehouse = warehouse;
 	}
 
 	public String getDocumentNumber() {

@@ -14,13 +14,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
-import com.bluewhite.common.Constants;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.onlineretailers.inventory.dao.ProcurementDao;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
-import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
-import com.bluewhite.onlineretailers.inventory.entity.OnlineOrderChild;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 @Service
 public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> implements  ProcurementService{
@@ -63,11 +60,9 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				Commodity commodity = commodityService.findOne(jsonObject.getLong("commodityId"));
 				//入库单
 				if(procurement.getType()==0){
-					commodity.setQuantity(commodity.getQuantity()+jsonObject.getIntValue("number"));
 				}
 				//出库单
 				if(procurement.getType()==1){
-					commodity.setQuantity(commodity.getQuantity()-jsonObject.getIntValue("number"));
 				}
 				procurement.getCommoditys().add(commodity);
 			}
