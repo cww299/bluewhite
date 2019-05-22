@@ -104,6 +104,7 @@
 		    ,url:'${ctx}/personnel/getAllUser'
 		    ,toolbar: '#toolbarDemo'
 		    ,where: {address:'192.168.1.204'} 
+		    ,loading:true
 		    ,method:'GET'
 		  ,parseData: function(res){ //res 即为原始返回的数据
 	             return {
@@ -162,7 +163,7 @@
 		  });  
 		  
 		//监听单元格编辑
-		  table.on('edit(test3)', function(obj){		console.log("1")
+		  table.on('edit(test3)', function(obj){		
 		    var value = obj.value //得到修改后的值
 		    ,data = obj.data //得到所在行所有键值
 		    ,field = obj.field; //得到字段
@@ -179,7 +180,7 @@
 				type:"GET",
 				beforeSend:function(){
 					index = layer.load(1, {
-						  shade: [0.1,'black'] //0.1透明度的白色背景
+						  shade: [0.1,'black'] 
 						});
 				},
 				success:function(result){
@@ -206,31 +207,34 @@
 								number:data.number,
 								address:$("#select1").val(),
 						}
-			    	index = top.layer.confirm('<div>输入密码:<input type="passWord" id="password" /></div>', {btn: ['确定', '取消']},function(){
-			    		if($("#password").val()==3116){
-			    	  $.ajax({
-							url:"${ctx}/personnel/deleteUser",
-							data:postData,
-							type:"GET",
-							beforeSend:function(){
-								index = layer.load(1, {
-									  shade: [0.1,'black'] //0.1透明度的白色背景
-									});
-							},
-							success:function(result){
-								if(0==result.code){
-									layer.msg("删除成功！", {icon: 1,offset:'150px'});
-									obj.del();
-									layer.close(index);
-								}else{
-									layer.msg("删除失败！", {icon: 2,offset:'150px'});
-									layer.close(index);
-								}
-							},error:function(){
-								layer.msg("操作失败！", {icon: 2,offset:'150px'});
-								layer.close(index);
-							}
-						});
+			    	index = layer.confirm('<div>输入密码:<input type="password" id="password" /></div>', {btn: ['确定', '取消']},function(){
+			    		 if($("#password").val()==3116){
+					    	  $.ajax({
+									url:"${ctx}/personnel/deleteUser",
+									data:postData,
+									type:"GET",
+									beforeSend:function(){
+										load = layer.load(1);
+									},
+									success:function(result){
+										if(0==result.code){
+											layer.msg("删除成功！", {icon: 1,offset:'150px'});
+											obj.del();
+										}else{
+											layer.msg("删除失败！", {icon: 2,offset:'150px'});
+										}
+										layer.close(index);
+										layer.close(load);
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2,offset:'150px'});
+										layer.close(index);
+										layer.close(load);
+									}
+								}); 
+			    		} 
+			    		else{
+			    			layer.close(index);
+			    			layer.msg("密码错误！", {icon: 2,offset:'150px'});
 			    		}
 			      });
 			    }
