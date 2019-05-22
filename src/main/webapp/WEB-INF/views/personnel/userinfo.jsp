@@ -17,7 +17,7 @@
 <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>  <!-- 时间插件 -->
 <script src="${ctx }/static/js/laypage/laypage.js"></script> 
 
-
+ 
 
 <link rel="stylesheet" href="${ctx }/static/css/main.css">
  <!-- Drop Zone-->
@@ -1239,7 +1239,7 @@ jQuery(function($){
 										  	agreementId:numberr,
 											commitmentId:values,
 										 	userName:$('.userName').val(),
-											number:$('.number').val(),
+											//number:$('.number').val(),
 											nation:$('.nation').val(),
 											phone:$('.phone').val(),
 											email:$('.email').val(),
@@ -2035,7 +2035,7 @@ jQuery(function($){
 										  	agreementId:numberr,
 											commitmentId:values,
 										 	userName:$('.userName').val(),
-											number:$('.number').val(),
+											//number:$('.number').val(),
 											nation:$('.nation').val(),
 											phone:$('.phone').val(),
 											email:$('.email').val(),
@@ -2271,7 +2271,7 @@ jQuery(function($){
 										  secrecyAgreement:$('.secrecyAgreementnumber').val(),
 										  remark:$('.remarktw').val(),
 										  contract:$('.contractnumber').val(),
-										  number:$('.numbertw').val(),
+										  //number:$('.numbertw').val(),
 								  }
 								   $.ajax({
 										url:"${ctx}/system/user/updateContract",
