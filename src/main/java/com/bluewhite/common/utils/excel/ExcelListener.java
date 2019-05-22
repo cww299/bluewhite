@@ -21,6 +21,17 @@ public class ExcelListener extends AnalysisEventListener {
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
+    	
     }
+
+	public List<Object> getData() {
+		return data;
+	}
+
+	public void setData(List<Object> data) {
+		this.data = data;
+	}
+    
+    
     
 }

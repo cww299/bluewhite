@@ -1,15 +1,18 @@
 package com.bluewhite.finance.ledger.entity;
+
+import javax.persistence.Column;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import com.bluewhite.base.BaseEntity;
+
+
 /**
  * 财务 客户产品价格
  * @author qiyong
  *
  */
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-import com.bluewhite.base.BaseEntity;
 @Entity
 @Table(name = "fin_ledger_contact" )
 public class Contact extends BaseEntity<Long>{

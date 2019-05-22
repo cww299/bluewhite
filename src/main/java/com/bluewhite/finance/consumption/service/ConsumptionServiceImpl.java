@@ -25,12 +25,16 @@ import com.bluewhite.common.entity.PageResultStat;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
+import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.finance.consumption.dao.ConsumptionDao;
 import com.bluewhite.finance.consumption.dao.CustomDao;
 import com.bluewhite.finance.consumption.entity.Consumption;
+import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
 import com.bluewhite.finance.consumption.entity.Custom;
 import com.bluewhite.finance.ledger.dao.ContactDao;
 import com.bluewhite.finance.ledger.entity.Contact;
+import com.bluewhite.system.user.dao.UserDao;
+import com.bluewhite.system.user.entity.User;
 
 @Service
 public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> implements ConsumptionService {
@@ -43,6 +47,10 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	
 	@Autowired
 	private ContactDao contactDao;
+	
+	@Autowired
+	private UserDao userDao;
+	
 	@Override
 	public PageResult<Consumption> findPages(Consumption param, PageParameter page) {
 		CurrentUser cu = SessionManager.getUserSession();
@@ -174,6 +182,22 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			}
 			break;
 		case 2:
+			if(consumption.getId() != null && consumption.getCustomId() != null){
+				if(!StringUtils.isEmpty(consumption.getCustomerName())){
+					Custom custom =  customDao.findByTypeAndName(consumption.getType(), consumption.getCustomerName());
+					if(custom!=null){
+						consumption.setCustomId(custom.getId());
+					}
+				}
+			}
+			if(consumption.getId() != null && consumption.getUserId() != null){
+				if(!StringUtils.isEmpty(consumption.getUsername())){
+					User user = userDao.findByUserName(consumption.getUsername());
+					if(user!=null){
+						consumption.setUserId(user.getId());
+					}
+				}
+			}
 			break;
 		case 3:
 			flag = false;
@@ -306,6 +330,28 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	    map.put("nonBudget", nonBudget);
 	    map.put("sumBudget", NumUtils.sum(budget, nonBudget));
 		return map;
+	}
+
+	@Override
+	public int excelAddConsumption(ExcelListener excelListener) {
+		int count = 0;
+		//获取导入的订单
+		List<Object> excelListenerList = excelListener.getData();
+		for(Object object : excelListenerList){
+			ConsumptionPoi  cPoi = (ConsumptionPoi)object;
+			Consumption consumption = new Consumption();
+			consumption.setBatchNumber(cPoi.getBatchNumber());
+			consumption.setContent(cPoi.getContent());
+			consumption.setCustomerName(cPoi.getCustomerName());
+			consumption.setUsername(cPoi.getUsername());
+			consumption.setMoney(cPoi.getMoney());
+			consumption.setExpenseDate(cPoi.getExpenseDate());
+			consumption.setLogisticsDate(cPoi.getLogisticsDate());
+			consumption.setType(2);
+			addConsumption(consumption);
+			count++;
+		}
+		return count;
 	}
 
 }

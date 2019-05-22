@@ -1,5 +1,7 @@
 package com.bluewhite.finance.consumption.action;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,16 +14,22 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
+import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.metadata.Sheet;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.finance.consumption.entity.Consumption;
+import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
 import com.bluewhite.finance.consumption.entity.Custom;
 import com.bluewhite.finance.consumption.service.ConsumptionService;
 import com.bluewhite.finance.consumption.service.CustomService;
@@ -109,6 +117,21 @@ public class ConsumptionAction {
 		return cr;
 	}
 
+	/**
+	 * 财务新增订单（导入）
+	 * 
+	 */
+	@RequestMapping(value = "/fince/excel/addConsumption", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse importProduct(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request) throws IOException{
+		CommonResponse cr = new CommonResponse();
+		InputStream inputStream = file.getInputStream();
+		ExcelListener excelListener = new ExcelListener();
+	    EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1,ConsumptionPoi.class), excelListener);
+	    consumptionService.excelAddConsumption(excelListener);
+	    inputStream.close();
+	    return cr;
+	}	
 	
 	/**
 	 * 财务审核放款
