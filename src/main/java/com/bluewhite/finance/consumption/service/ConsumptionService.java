@@ -5,6 +5,7 @@ import java.util.Map;
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.finance.consumption.entity.Consumption;
 
 public interface ConsumptionService extends BaseCRUDService<Consumption, Long> {
@@ -51,5 +52,11 @@ public interface ConsumptionService extends BaseCRUDService<Consumption, Long> {
 	 * @throws Exception
 	 */
 	Map<String,Object> countConsumptionMoney();
+	/**
+	 * 导入订单
+	 * @param excelListener
+	 * @return
+	 */
+	int  excelAddConsumption(ExcelListener excelListener);
 
 }

@@ -1,10 +1,4 @@
 package com.bluewhite.finance.ledger.entity;
-/**
- * 财务 订单实体
- * @author qiyong
- *
- */
-
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -15,8 +9,13 @@ import javax.persistence.Transient;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.common.utils.excel.Poi;
 
+/**
+ * 财务 订单实体
+ * @author qiyong
+ *
+ */
 @Entity
-@Table(name = "fin_ledger_Actualprice" )
+@Table(name = "fin_ledger_actualprice" )
 public class Actualprice extends BaseEntity<Long>{
 	/**
 	 * 批次号

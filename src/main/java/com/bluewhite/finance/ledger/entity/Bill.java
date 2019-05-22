@@ -17,7 +17,8 @@ import com.bluewhite.base.BaseEntity;
  *
  */
 @Entity
-@Table(name = "fin_ledger_bill" ,indexes = {	@Index(columnList = "party_names_id")
+@Table(name = "fin_ledger_bill" ,indexes = {	
+											@Index(columnList = "party_names_id")
 												})
 public class Bill extends BaseEntity<Long>{
 

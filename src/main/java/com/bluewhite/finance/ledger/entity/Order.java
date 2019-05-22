@@ -1,9 +1,4 @@
 package com.bluewhite.finance.ledger.entity;
-/**
- * 财务 订单实体
- * @author qiyong
- *
- */
 
 import java.util.Date;
 
@@ -18,6 +13,12 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 
+
+/**
+ * 财务 订单实体
+ * @author qiyong
+ *
+ */
 @Entity
 @Table(name = "fin_ledger_order"  ,indexes = {	@Index(columnList = "party_names_id")})
 public class Order extends BaseEntity<Long>{

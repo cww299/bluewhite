@@ -1,9 +1,5 @@
 package com.bluewhite.finance.ledger.entity;
-/**
- * 财务 除货款以外的杂支
- * @author qiyong
- *
- */
+
 
 import java.util.Date;
 
@@ -14,8 +10,13 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 
+/**
+ * 财务 除货款以外的杂支
+ * @author qiyong
+ *
+ */
 @Entity
-@Table(name = "fin_ledger_Mixed")
+@Table(name = "fin_ledger_mixed")
 public class Mixed extends BaseEntity<Long> {
 
 	/**

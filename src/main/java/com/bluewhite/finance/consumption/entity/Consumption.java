@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.finance.ledger.entity.Contact;
 import com.bluewhite.system.user.entity.User;
@@ -82,6 +83,12 @@ public class Consumption extends BaseEntity<Long> {
 	 */
 	@Column(name = "content")
 	private String content;
+	
+	/**
+	 * 订单批次号（根据销售部数据得来,用于关联）
+	 */
+	@Column(name = "batch_number")
+    private String batchNumber;
 
 	/**
 	 * 税点
@@ -120,7 +127,7 @@ public class Consumption extends BaseEntity<Long> {
 	private Date paymentDate;
 	
 	/**
-	 * (物流订单日期)
+	 * 其余类型日期
 	 */
 	@Column(name = "logistics_date")
 	private Date logisticsDate;
@@ -200,6 +207,14 @@ public class Consumption extends BaseEntity<Long> {
 	
 	
 	
+	public String getBatchNumber() {
+		return batchNumber;
+	}
+
+	public void setBatchNumber(String batchNumber) {
+		this.batchNumber = batchNumber;
+	}
+
 	public Contact getContact() {
 		return contact;
 	}
