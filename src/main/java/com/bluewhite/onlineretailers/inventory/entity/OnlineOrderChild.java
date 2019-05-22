@@ -74,7 +74,6 @@ public class OnlineOrderChild  extends BaseEntity<Long> {
 	@Column(name = "price")
 	private Double price;
 	
-
 	
 	/**
 	 * 单价总金额
@@ -100,7 +99,36 @@ public class OnlineOrderChild  extends BaseEntity<Long> {
 	@Column(name = "actual_sum")
 	private Double actualSum;
 	
+	/**
+	 * 仓库类型id
+	 */
+	@Column(name = "warehouse_id")
+	private Long warehouseId;
 	
+	/**
+	 * 仓库类型（0=主仓库，1=客供仓库，2=次品）
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "warehouse_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData warehouse;
+	
+	
+	
+	public Long getWarehouseId() {
+		return warehouseId;
+	}
+
+	public void setWarehouseId(Long warehouseId) {
+		this.warehouseId = warehouseId;
+	}
+
+	public BaseData getWarehouse() {
+		return warehouse;
+	}
+
+	public void setWarehouse(BaseData warehouse) {
+		this.warehouse = warehouse;
+	}
 
 	public String getStatus() {
 		return status;

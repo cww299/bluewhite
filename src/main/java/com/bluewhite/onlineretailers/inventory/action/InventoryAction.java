@@ -3,8 +3,6 @@ package com.bluewhite.onlineretailers.inventory.action;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,6 +20,7 @@ import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.metadata.Sheet;
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
@@ -37,9 +36,9 @@ import com.bluewhite.onlineretailers.inventory.service.CommodityService;
 import com.bluewhite.onlineretailers.inventory.service.OnlineCustomerService;
 import com.bluewhite.onlineretailers.inventory.service.OnlineOrderService;
 import com.bluewhite.onlineretailers.inventory.service.ProcurementService;
-import com.bluewhite.reportexport.entity.ProductPoi;
 import com.bluewhite.system.sys.entity.RegionAddress;
 import com.bluewhite.system.user.entity.User;
+import com.sun.xml.internal.xsom.impl.WildcardImpl.Other;
 
 
 @Controller
@@ -104,6 +103,22 @@ private static final Log log = Log.getLog(InventoryAction.class);
 		return cr;
 	}
 	
+	/** 
+	 * 一键发货
+	 * 1.将父订单的状态改变成发货状态和一个仓库时，所有子订单的发货状态和仓库改变
+	 * 2.子订单部分发货和不同仓库
+	 * （将销售状态改变,同时减少库存）
+	 * 
+	 */
+	@RequestMapping(value = "/inventory/delivery", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse delivery(String delivery) {
+		CommonResponse cr = new CommonResponse();
+		onlineOrderService.delivery(delivery);
+		cr.setMessage("发货成功");
+		return cr;
+	}
+	
 	
 	/** 
 	 * 删除销售单
@@ -141,10 +156,13 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	@ResponseBody
 	public CommonResponse addCommodity(Commodity commodity) {
 		CommonResponse cr = new CommonResponse();
-		commodityService.save(commodity);
 		if(commodity.getId()!=null){
+			Commodity ot  = commodityService.findOne(commodity.getId());
+			BeanCopyUtils.copyNotEmpty(commodity,ot,"");
+			commodityService.save(ot);
 			cr.setMessage("修改成功");
 		}else{
+			commodityService.save(commodity);
 			cr.setMessage("新增成功");
 		}
 		return cr;
@@ -274,6 +292,8 @@ private static final Log log = Log.getLog(InventoryAction.class);
         inputStream.close();
 		return cr;
 	}
+	
+	
 	
 	
 	

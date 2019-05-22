@@ -141,7 +141,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			if (ot.getFlag() == 1) {
 				throw new ServiceException("已放款，无法修改");
 			}
-			BeanCopyUtils.copyNotEmpty(consumption,ot,"");
+			BeanCopyUtils.copyNotEmpty(consumption,ot,null);
 			consumption = ot;
 		} 
 		

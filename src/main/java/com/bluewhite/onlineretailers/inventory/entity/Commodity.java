@@ -1,10 +1,18 @@
 package com.bluewhite.onlineretailers.inventory.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.system.user.entity.User;
 
 /**
  * 电商在售商品
@@ -106,21 +114,28 @@ public class Commodity extends BaseEntity<Long>{
 	private String remark;
 	
 	/**
-	 * 商品单价
+	 * 商品天猫单价
 	 * 
 	 */
-	@Column(name = "price")
-	private Double price;
+	@Column(name = "tianmao_price")
+	private Double tianmaoPrice;
+	
+	/**
+	 * 1688批发价
+	 * 
+	 */
+	@Column(name = "OSEE_price")
+	private Double OSEEPrice;
 	
 	
 	/**
-	 * 库存数量
+	 * 线下批发价
 	 * 
 	 */
-	@Column(name = "quantity")
-	private Integer quantity;
+	@Column(name = "offline_price")
+	private Double offlinePrice;
 	
-	
+
 	/**
 	 * 商品分类
 	 * 
@@ -128,16 +143,24 @@ public class Commodity extends BaseEntity<Long>{
 	@Column(name = "type")
 	private Integer type;
 	
+	
 	/**
-	 * 仓库类型（0=主仓库，1=客供仓库，2=次品）
-	 * 
+	 * 库存数量
 	 */
-	@Column(name = "warehouse")
-	private Integer warehouse;
+	@OneToMany(mappedBy = "commodity")
+	private Set<Inventory> inventorys = new HashSet<Inventory>();
+
 
 	
-	
-	
+	public Set<Inventory> getInventorys() {
+		return inventorys;
+	}
+
+
+	public void setInventorys(Set<Inventory> inventorys) {
+		this.inventorys = inventorys;
+	}
+
 
 	public Long getFileId() {
 		return fileId;
@@ -277,34 +300,39 @@ public class Commodity extends BaseEntity<Long>{
 	}
 
 
-	public Double getPrice() {
-		return price;
+	
+
+
+	public Double getTianmaoPrice() {
+		return tianmaoPrice;
 	}
 
 
-	public void setPrice(Double price) {
-		this.price = price;
+	public void setTianmaoPrice(Double tianmaoPrice) {
+		this.tianmaoPrice = tianmaoPrice;
 	}
 
 
-	public Integer getQuantity() {
-		return quantity;
+	public Double getOSEEPrice() {
+		return OSEEPrice;
 	}
 
 
-	public void setQuantity(Integer quantity) {
-		this.quantity = quantity;
+	public void setOSEEPrice(Double oSEEPrice) {
+		OSEEPrice = oSEEPrice;
 	}
 
 
-	public Integer getWarehouse() {
-		return warehouse;
+	public Double getOfflinePrice() {
+		return offlinePrice;
 	}
 
 
-	public void setWarehouse(Integer warehouse) {
-		this.warehouse = warehouse;
+	public void setOfflinePrice(Double offlinePrice) {
+		this.offlinePrice = offlinePrice;
 	}
+
+
 	
 	
 	

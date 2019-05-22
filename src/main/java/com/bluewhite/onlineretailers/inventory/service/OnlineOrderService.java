@@ -1,5 +1,7 @@
 package com.bluewhite.onlineretailers.inventory.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -29,5 +31,11 @@ public interface OnlineOrderService extends BaseCRUDService<OnlineOrder,Long>{
 	 * @param onlineOrder
 	 */
 	public OnlineOrder addOnlineOrder(OnlineOrder onlineOrder);
+
+	/**
+	 * 一键发货销售单
+	 * @param onlineOrder
+	 */
+	public List<OnlineOrder> delivery(String delivery);
 
 }
