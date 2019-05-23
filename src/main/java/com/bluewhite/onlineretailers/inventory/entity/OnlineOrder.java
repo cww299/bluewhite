@@ -29,10 +29,17 @@ import com.bluewhite.system.user.entity.User;
 public class OnlineOrder extends BaseEntity<Long> {
 	
 	/**
-	 * 单据号
+	 * 订单编号
 	 */
 	@Column(name = "document_number")
 	private String documentNumber;
+	
+
+	/**
+	 * 运单号
+	 */
+	@Column(name = "tracking_number")
+	private String trackingNumber;
 
 	/**
 	 * 销售人员id
@@ -80,7 +87,7 @@ public class OnlineOrder extends BaseEntity<Long> {
 	private String name;
 	
 	/**
-	 * 客户真实姓名
+	 * 收货人姓名
 	 */
 	@Column(name = "buyer_name")
 	private String buyerName;
@@ -98,10 +105,16 @@ public class OnlineOrder extends BaseEntity<Long> {
 	private String picPath;
 	
 	/**
+	 * 货品总价。精确到2位小数;单位:元。如:200.07，表示:200元7分
+	 */
+	@Column(name = "sumPrice")
+	private Double sumPrice;
+	
+	/**
 	 * 实付金额。精确到2位小数;单位:元。如:200.07，表示:200元7分
 	 */
 	@Column(name = "payment")
-	private String payment;
+	private Double payment;
 	
 	/**
 	 * 邮费
@@ -148,11 +161,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 	private Double allBillPreferential;
 
 
-	/**
-	 * 运单号
-	 */
-	@Column(name = "tracking_number")
-	private String trackingNumber;
 
 	/**
 	 * 买家留言
@@ -266,6 +274,13 @@ public class OnlineOrder extends BaseEntity<Long> {
 	private String phone;
 	
 	/**
+	 * 买家电话号
+	 * 
+	 */
+	@Column(name = "telephone")
+	private String telephone;
+	
+	/**
 	 * 邮编
 	 */
 	@Column(name = "zip_code")
@@ -278,9 +293,21 @@ public class OnlineOrder extends BaseEntity<Long> {
 	@Transient
 	private String childOrder;
 
+	/**
+	 * 是否反冲（0=否，1=是）
+	 */
+	@Column(name = "flag")
+	private Integer flag;
 	
 	
-	
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
 
 	public String getChildOrder() {
 		return childOrder;
@@ -418,11 +445,19 @@ public class OnlineOrder extends BaseEntity<Long> {
 		this.picPath = picPath;
 	}
 
-	public String getPayment() {
+	public Double getSumPrice() {
+		return sumPrice;
+	}
+
+	public void setSumPrice(Double sumPrice) {
+		this.sumPrice = sumPrice;
+	}
+
+	public Double getPayment() {
 		return payment;
 	}
 
-	public void setPayment(String payment) {
+	public void setPayment(Double payment) {
 		this.payment = payment;
 	}
 

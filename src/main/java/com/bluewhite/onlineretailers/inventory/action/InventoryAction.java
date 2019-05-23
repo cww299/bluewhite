@@ -32,13 +32,13 @@ import com.bluewhite.onlineretailers.inventory.entity.OnlineCustomer;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrderChild;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
+import com.bluewhite.onlineretailers.inventory.entity.poi.OnlineOrderPoi;
 import com.bluewhite.onlineretailers.inventory.service.CommodityService;
 import com.bluewhite.onlineretailers.inventory.service.OnlineCustomerService;
 import com.bluewhite.onlineretailers.inventory.service.OnlineOrderService;
 import com.bluewhite.onlineretailers.inventory.service.ProcurementService;
 import com.bluewhite.system.sys.entity.RegionAddress;
 import com.bluewhite.system.user.entity.User;
-import com.sun.xml.internal.xsom.impl.WildcardImpl.Other;
 
 
 @Controller
@@ -103,6 +103,25 @@ private static final Log log = Log.getLog(InventoryAction.class);
 		return cr;
 	}
 	
+	/**
+	 *  新增销售单(导入)                         
+	 * @param response
+	 * @param request
+	 * @return
+	 * @throws IOException 
+	 */
+	@RequestMapping(value = "/inventory/import/test",method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse importProduct(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request) throws IOException{
+		CommonResponse cr = new CommonResponse();
+		InputStream inputStream = file.getInputStream();
+		ExcelListener excelListener = new ExcelListener();
+        EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1,OnlineOrderPoi.class), excelListener);
+        onlineOrderService.excelOnlineOrder(excelListener);
+        inputStream.close();
+		return cr;
+	}
+	
 	/** 
 	 * 一键发货
 	 * 1.将父订单的状态改变成发货状态和一个仓库时，所有子订单的发货状态和仓库改变
@@ -114,8 +133,8 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	@ResponseBody
 	public CommonResponse delivery(String delivery) {
 		CommonResponse cr = new CommonResponse();
-		onlineOrderService.delivery(delivery);
-		cr.setMessage("发货成功");
+		int count = onlineOrderService.delivery(delivery);
+		cr.setMessage("成功发货"+count+"销售单");
 		return cr;
 	}
 	
@@ -129,7 +148,7 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	public CommonResponse deleteOnlineOrder(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = onlineOrderService.deleteOnlineOrder(ids);
-		cr.setMessage("成功删除"+count+"t条销售单");
+		cr.setMessage("成功删除"+count+"条销售单");
 		return cr;
 	}
 	
@@ -177,7 +196,7 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	@ResponseBody
 	public CommonResponse deleteCommodity(String ids) {
 		CommonResponse cr = new CommonResponse();
-		int count = commodityService.deleteCommodity(ids);
+		int count = commodityService.deleteCommodity(ids);   
 		cr.setMessage("成功删除"+count+"件商品");
 		return cr;
 	}
@@ -264,37 +283,16 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	
 	
 	/** 
-	 * 删除出库入库单
+	 * 作废出库入库单
 	 * 
 	 */
 	@RequestMapping(value = "/inventory/deleteProcurement", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse deleteProcurement(String ids) {
 		CommonResponse cr = new CommonResponse();
-		
+		procurementService.deleteProcurement(ids);
 		return cr;
 	}
-	
-	/**
-	 *                           
-	 * @param response
-	 * @param request
-	 * @return
-	 * @throws IOException 
-	 */
-	@RequestMapping(value = "/inventory/import/test",method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse importProduct(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request) throws IOException{
-		CommonResponse cr = new CommonResponse();
-		InputStream inputStream = file.getInputStream();
-		ExcelListener excelListener = new ExcelListener();
-        EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1), excelListener);
-        inputStream.close();
-		return cr;
-	}
-	
-	
-	
 	
 	
 	

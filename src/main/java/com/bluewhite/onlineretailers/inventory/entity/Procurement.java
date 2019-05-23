@@ -1,6 +1,8 @@
 package com.bluewhite.onlineretailers.inventory.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -11,13 +13,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.system.user.entity.User;
 
 /**
- * 电商出库入库单（对于商品的库存管理）
+ * 电商采购单（对于商品的库存管理）
  * @author zhangliang
  *
  */
@@ -45,13 +49,13 @@ public class Procurement extends BaseEntity<Long>{
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User user;
 	
-	
 	/**
-	 * 商品集合 （一个采购单可以有多个商品）
+	 * 子订单list
 	 */
-	@ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-	@JoinTable(name = "online_procurement_commodity", joinColumns = @JoinColumn(name = "online_procurement_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "commodity_id", referencedColumnName = "id"))
-	private Set<Commodity> commoditys = new HashSet<Commodity>();
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+	@JoinColumn(name = "procurement_id")
+	private List<ProcurementChild> procurementChilds = new ArrayList<>();
+	
 	
 	/**
 	 * 总数量
@@ -60,34 +64,13 @@ public class Procurement extends BaseEntity<Long>{
 	@Column(name = "number")
 	private Integer number;
 	
-	/**
-	 * 库存状态有两种，第一种是入库单的订单状态，第二种是出库单的订单状态
-	 * （0=采购入库）
-	 * （1=销售退货入库 ）
-	 * （2=销售换货入库 ）
-	 * （4=生产入库）
-	 * 
-	 * （0=销售入库）
-	 * （1=采购退货入库 ）
-	 * （2=销售换货入库 ）
-	 * （4=调拨出库）
-	 */
-	@Column(name = "status")
-	private Integer status;
-	
 	
 	/**
-	 *  库存类型(0=入库单，1=出库单,2=生产单，3=针工单)
+	 *  单据类型(0=生产单，1=针工单,2=入库单，3=出库单)
 	 */
 	@Column(name = "type")
 	private Integer type;
 	
-	/**
-	 * 发货仓库类型（0=主仓库，1=客供仓库，2=次品）
-	 * 
-	 */
-	@Column(name = "warehouse")
-	private Integer warehouse;
 	
 	/**
 	 * 备注
@@ -96,12 +79,6 @@ public class Procurement extends BaseEntity<Long>{
 	@Column(name = "remark")
 	private String remark;
 	
-	/**
-	 * json 储存商品id和数量
-	 * 
-	 */
-	@Column(name = "commodity_number")
-	private String commodityNumber;
 	
 	/**
 	 * 是否反冲（0=否，1=是）
@@ -109,8 +86,24 @@ public class Procurement extends BaseEntity<Long>{
 	@Column(name = "flag")
 	private Integer flag;
 	
+	/**
+	 * json 储存商品id和数量
+	 * 
+	 */
+	@Transient
+	private String commodityNumber;
 
 	
+
+	
+	
+	public List<ProcurementChild> getProcurementChilds() {
+		return procurementChilds;
+	}
+
+	public void setProcurementChilds(List<ProcurementChild> procurementChilds) {
+		this.procurementChilds = procurementChilds;
+	}
 
 	public Integer getFlag() {
 		return flag;
@@ -126,14 +119,6 @@ public class Procurement extends BaseEntity<Long>{
 
 	public void setBatchNumber(String batchNumber) {
 		this.batchNumber = batchNumber;
-	}
-
-	public Integer getStatus() {
-		return status;
-	}
-
-	public void setStatus(Integer status) {
-		this.status = status;
 	}
 
 	public Integer getType() {
@@ -174,22 +159,6 @@ public class Procurement extends BaseEntity<Long>{
 
 	public void setUser(User user) {
 		this.user = user;
-	}
-
-	public Set<Commodity> getCommoditys() {
-		return commoditys;
-	}
-
-	public void setCommoditys(Set<Commodity> commoditys) {
-		this.commoditys = commoditys;
-	}
-
-	public Integer getWarehouse() {
-		return warehouse;
-	}
-
-	public void setWarehouse(Integer warehouse) {
-		this.warehouse = warehouse;
 	}
 
 	public String getRemark() {

@@ -24,5 +24,12 @@ public interface CustomService  extends BaseCRUDService<Custom, Long> {
 	 * @return
 	 */
 	PageResult<Custom> findPages(Custom custom, PageParameter page);
+	
+	/**
+	 * 批量删除
+	 * @param ids
+	 * @return
+	 */
+	int deleteCustom(String ids);
 
 }
