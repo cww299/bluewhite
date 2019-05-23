@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
 @Service
 public interface OnlineOrderService extends BaseCRUDService<OnlineOrder,Long>{
@@ -36,6 +37,13 @@ public interface OnlineOrderService extends BaseCRUDService<OnlineOrder,Long>{
 	 * 一键发货销售单
 	 * @param onlineOrder
 	 */
-	public List<OnlineOrder> delivery(String delivery);
+	public int delivery(String delivery);
+	
+	/**
+	 * 导入销售单
+	 * @param excelListener
+	 * @return
+	 */
+	public int excelOnlineOrder(ExcelListener excelListener);
 
 }

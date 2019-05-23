@@ -16,8 +16,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.common.utils.excel.ExcelListener;
+import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
 import com.bluewhite.onlineretailers.inventory.dao.CommodityDao;
 import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
 import com.bluewhite.onlineretailers.inventory.dao.OnlineOrderChildDao;
@@ -26,6 +30,9 @@ import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrderChild;
+import com.bluewhite.onlineretailers.inventory.entity.Procurement;
+import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
+import com.bluewhite.onlineretailers.inventory.entity.poi.OnlineOrderPoi;
 
 @Service
 public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> implements  OnlineOrderService{
@@ -117,9 +124,6 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				onlineOrder.getOnlineOrderChilds().add(onlineOrderChild);
 			}
 		}
-		
-		
-		
 		//总数量
 		onlineOrder.setNum(onlineOrder.getOnlineOrderChilds().stream().mapToInt(OnlineOrderChild::getNumber).sum());
 		return dao.save(onlineOrder);
@@ -127,7 +131,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 
 
 	@Override
-	public List<OnlineOrder> delivery(String delivery) {
+	public int delivery(String delivery) {
+		int count =0;
 		if(!StringUtils.isEmpty(delivery)){
 			JSONArray jsonArray = JSON.parseArray(delivery);
 			for (int i = 0; i < jsonArray.size(); i++) {
@@ -138,26 +143,104 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				//获取子订单
 				OnlineOrderChild onlineOrderChild = onlineOrderChildDao.findOne(id);
 				//当订单的状态是买家已付款时
-				if(onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_5)){
+				if(onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_4)){
 					//获取商品
 					Commodity commodity = onlineOrderChild.getCommodity();
 					//获取所有商品的库存
 					Set<Inventory> inventorys = commodity.getInventorys();
-					//减少库存
+					//减少库存的同时改变状态
 					if(inventorys.size()>0){
 						for(Inventory inventory : inventorys){
 							if(inventory.getWarehouseId().equals(warehouseId)){
 								inventory.setNumber(inventory.getNumber()-number);
 								inventoryDao.save(inventory);
+								onlineOrderChild.setStatus(Constants.ONLINEORDER_5);
+								onlineOrderChildDao.save(onlineOrderChild);
 							}
 						}
 					}	
-				}
+				} 
+				count++;
 			}
 		}
+		return count;
+	}
+
+
+	@Override
+	public int excelOnlineOrder(ExcelListener excelListener) {
+		int count = 0;
+		//获取导入的订单
+		List<Object> excelListenerList = excelListener.getData();
+		List<OnlineOrder> onlineOrderList = new ArrayList<>();
+		List<Procurement> procurementList = new ArrayList<>();
+		for(int i = 0; i < excelListenerList.size(); i++){
+			OnlineOrder onlineOrder = null;
+			Procurement procurement = null;
+			OnlineOrderPoi  cPoi = (OnlineOrderPoi)excelListenerList.get(i);
+			if(cPoi.getDocumentNumber()!=null){
+				onlineOrder = new OnlineOrder();
+				procurement = new Procurement();
+				procurement.setType(3);
+				onlineOrder.setDocumentNumber(cPoi.getDocumentNumber());
+				onlineOrder.setStatus(Constants.ONLINEORDER_5);
+				onlineOrder.setName(cPoi.getName());
+				onlineOrder.setPayment(cPoi.getPayment());
+				onlineOrder.setPostFee(cPoi.getPostFee());
+				onlineOrder.setAllBillPreferential(cPoi.getAllBillPreferential());
+				onlineOrder.setSumPrice(cPoi.getSumPrice());
+				onlineOrder.setBuyerName(cPoi.getBuyerName());
+				onlineOrder.setAddress(cPoi.getAddress());
+				onlineOrder.setPhone(cPoi.getPhone());
+				onlineOrder.setBuyerMessage(cPoi.getBuyerMessage());
+				onlineOrder.setTrackingNumber(cPoi.getTrackingNumber());
+			}
+				List<OnlineOrderChild> onlineOrderChilds = onlineOrder.getOnlineOrderChilds();
+				//创建子订单
+				OnlineOrderChild onlineOrderChild = new OnlineOrderChild();
+				onlineOrderChild.setStatus(Constants.ONLINEORDER_5);
+				onlineOrderChild.setOnlineOrder(onlineOrder);
+				onlineOrderChild.setPrice(cPoi.getPrice());
+				onlineOrderChild.setNumber(cPoi.getNumber());
+				onlineOrderChild.setWarehouseId(cPoi.getWarehouseId());
+				onlineOrderChild.setSumPrice(NumUtils.mul(onlineOrderChild.getPrice(), onlineOrderChild.getNumber()));
+				if(cPoi.getCommodityName()!=null){
+					Commodity commodity = commodityDao.findByName(cPoi.getCommodityName());
+					if(commodity!=null){
+						onlineOrderChild.setCommodityId(commodity.getId());
+						ProcurementChild procurementChild = new ProcurementChild();
+						procurementChild.setCommodityId(commodity.getId());
+						procurementChild.setNumber(cPoi.getNumber());
+						procurementChild.setWarehouseId(cPoi.getWarehouseId());
+						//获取所有商品的库存
+						Set<Inventory> inventorys = commodity.getInventorys();
+						//出库单
+						if(procurement.getType()==3){
+							//减少库存
+							if(inventorys.size()>0){
+								for(Inventory inventory : inventorys){
+									if(inventory.getWarehouseId().equals(procurementChild.getWarehouseId())){
+										inventory.setNumber(inventory.getNumber()-procurementChild.getNumber());
+									}
+								}
+							}
+						}
+					}else{
+						throw new ServiceException("当前导入excel第"+(i+2)+"条数据的商品不存在，请先添加");
+					}
+					
+				}
+				onlineOrderChilds.add(onlineOrderChild);
+				//当下一条数据没有订单编号时,自动存储上面所有的父子订单
+				OnlineOrderPoi onlineOrderPoiNext = (OnlineOrderPoi)excelListenerList.get(i+1);
+				if(onlineOrderPoiNext.getDocumentNumber()!=null){
+					onlineOrderList.add(onlineOrder);
+					procurementList.add(procurement);
+				}
 				
-		
-		return null;
+		}
+		dao.save(onlineOrderList);
+		return count;
 	}
 
 

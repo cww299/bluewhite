@@ -22,5 +22,12 @@ public interface ProcurementService  extends BaseCRUDService<Procurement,Long>{
 	 * @param procurement
 	 */
 	Procurement saveProcurement(Procurement procurement);
+	
+	/**
+	 * 作废采购单
+	 * @param ids
+	 * @return
+	 */
+	int deleteProcurement(String ids);
 
 }

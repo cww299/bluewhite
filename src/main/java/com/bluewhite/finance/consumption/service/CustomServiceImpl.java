@@ -47,4 +47,12 @@ public class CustomServiceImpl extends BaseServiceImpl<Custom, Long> implements 
 		PageResult<Custom> result = new PageResult<>(pages, page);
 		return result;
 	}
+
+	@Override
+	public int deleteCustom(String ids) {
+		int count = 0;
+		
+		
+		return count;
+	}
 }

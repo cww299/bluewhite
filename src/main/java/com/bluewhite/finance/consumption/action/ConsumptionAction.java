@@ -128,8 +128,9 @@ public class ConsumptionAction {
 		InputStream inputStream = file.getInputStream();
 		ExcelListener excelListener = new ExcelListener();
 	    EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1,ConsumptionPoi.class), excelListener);
-	    consumptionService.excelAddConsumption(excelListener);
+	    int count = consumptionService.excelAddConsumption(excelListener);
 	    inputStream.close();
+	    cr.setMessage("成功导入"+count+"条数据");
 	    return cr;
 	}	
 	
@@ -217,7 +218,7 @@ public class ConsumptionAction {
 	@ResponseBody
 	public CommonResponse deleteCustom(HttpServletRequest request,String ids) {
 		CommonResponse cr = new CommonResponse();
-		int count = customService.delete(ids);
+		int count = customService.deleteCustom(ids);
 		cr.setMessage("成功删除"+count+"条");
 		return cr;
 	}

@@ -121,10 +121,27 @@ public class OnlineCustomer extends BaseEntity<Long>{
 	private String zipCode;
 	
 
+	/**
+	 * 买家电话号
+	 * 
+	 */
+	@Column(name = "telephone")
+	private String telephone;
+	
 	
 
 	
-	
+	 
+
+	public String getTelephone() {
+		return telephone;
+	}
+
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+
 
 	public Long getProvincesId() {
 		return provincesId;
