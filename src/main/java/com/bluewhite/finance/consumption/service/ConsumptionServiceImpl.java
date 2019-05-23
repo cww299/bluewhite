@@ -63,6 +63,10 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
+			// 按人员过滤
+			if (param.getUserId() != null) {
+				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
+			}
 			// 按部门id过滤
 			if (param.getOrgNameId() != null) {
 				//当部门id不为null，过滤掉存在父id的数据
@@ -122,6 +126,14 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 				// 按财务付款日期
 				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
 					predicate.add(cb.between(root.get("paymentDate").as(Date.class), param.getOrderTimeBegin(),
+							param.getOrderTimeEnd()));
+				}
+			}
+			
+			if (!StringUtils.isEmpty(param.getLogisticsDate())) {
+				// 按其他日期
+				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+					predicate.add(cb.between(root.get("logisticsDate").as(Date.class), param.getOrderTimeBegin(),
 							param.getOrderTimeEnd()));
 				}
 			}
