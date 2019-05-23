@@ -182,7 +182,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			}
 			break;
 		case 2:
-			if(consumption.getId() != null && consumption.getCustomId() == null){
+			if(consumption.getId() == null && consumption.getCustomId() == null){
 				if(!StringUtils.isEmpty(consumption.getCustomerName())){
 					Custom custom =  customDao.findByTypeAndName(consumption.getType(), consumption.getCustomerName());
 					if(custom!=null){
@@ -190,7 +190,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 					}
 				}
 			}
-			if(consumption.getId() != null && consumption.getUserId() == null){
+			if(consumption.getId() == null && consumption.getUserId() == null){
 				if(!StringUtils.isEmpty(consumption.getUsername())){
 					User user = userDao.findByUserName(consumption.getUsername());
 					if(user!=null){
