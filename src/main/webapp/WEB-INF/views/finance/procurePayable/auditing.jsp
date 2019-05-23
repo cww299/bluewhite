@@ -28,11 +28,11 @@
 			<div class="layui-form-item">
 				<table>
 					<tr>
-						<td>借款方:</td>
-						<td><input type="text" name="customerName" id="firstNames" class="layui-input" /></td>
+						<td>批次号:</td>
+						<td><input type="text" name="batchNumber" id="firstNames" class="layui-input" /></td>
 						<td>&nbsp;&nbsp;</td>
 						<td><select class="layui-input" id="selectone">
-								<option value="expenseDate">预计付款日期</option>
+								<option value="expenseDate">付款日期</option>
 								<option value="paymentDate">实际付款日期</option>
 						</select></td>
 						<td>&nbsp;&nbsp;</td>
@@ -88,7 +88,7 @@ layui.config({
 			elem: '#tableData',
 			size: 'lg',
 			height:'700px',
-			url: '${ctx}/fince/getConsumption?type=10' ,
+			url: '${ctx}/fince/getConsumption?type=2' ,
 			where:{ flag:0 },
 			request:{ pageName: 'page' , limitName: 'size'  },
 			page: {},
@@ -107,14 +107,44 @@ layui.config({
 			},
 			cols: [[
 			       { align: 'center', type: 'checkbox', fixed: 'left' },
-			       { align: 'center', field: "withholdReason", 	title: "借款方", 		templet: function(d){ return d.custom.name } },
+			       { align: 'center', field: "batchNumber", 	title: "批次号", 		width:'10%', },
 			       { align: 'center', field: "content", 		title: "内容",},
-			       { align: 'center', field: "money", 			title: "支付金额", }, 
-			       { align: 'center', field: "expenseDate", 	title: "预计付款日期", },
-			       { align: 'center', field: "paymentDate", 	title: "实际付款时间", 	style:'background-color: #d8fe83', }, 
-			       { align: 'center', field: "paymentMoney",	title: "付款金额", 		style:'background-color: #d8fe83', edit: 'text', },
-			       { align: 'center', field: "flag", 			title: "审核状态", 		templet:  function(d){ return d.flag==0?'未审核':'已审核';}}
+			       { align: 'center', field: "", 				title: "客户",   		width:'12%', templet:function(d){ return d.custom.name; }}, 
+			       { align: 'center', field: "", 				title: "订料人",   		width:'6%',  templet:function(d){ return d.user==null?'':d.user.userName }},
+			       { align: 'center', field: "money", 			title: "金额", 			width:'6%',}, 
+			       { align: 'center', field: "expenseDate", 	title: "付款日期", 		width:'10%', },
+			       { align: 'center', field: "logisticsDate", 	title: "到货日",			width:'10%', },
+			       { align: 'center', field: "paymentDate", 	title: "实际付款时间", 	width:'10%', style:'background-color: #d8fe83', }, 
+			       { align: 'center', field: "paymentMoney",	title: "付款金额", 		width:'6%',  style:'background-color: #d8fe83', edit: 'text', },
+			       { align: 'center', field: "flag", 			title: "审核状态", 		width:'6%', templet:  function(d){ return d.flag==0?'未审核':'已审核';}}
 			       ]],
+	       done: function(res, curr, count) {
+				var tableView = this.elem.next();
+				var tableElem = this.elem.next('.layui-table-view');
+				layui.each(tableElem.find('select'), function(index, item) {
+					var elem = $(item);
+					elem.val(elem.data('value'));
+				});
+				form.render();
+				// 初始化laydate
+				layui.each(tableView.find('td[data-field="paymentDate"]'), function(index, tdElem) {
+					tdElem.onclick = function(event) {
+						layui.stope(event)
+					};
+					laydate.render({
+						elem: tdElem.children[0],
+						format: 'yyyy-MM-dd HH:mm:ss',
+						done: function(value, date) {
+								var id = table.cache[tableView.attr('lay-id')][index].id
+								var postData = {
+									id: id,
+									paymentDate: value,
+								};
+								mainJs.fUpdate(postData);
+						}
+					})
+				})
+			},
 		});
 
 		
@@ -167,12 +197,12 @@ layui.config({
 				b="2019-05-08 00:00:00"
 			}
 			var post={
-				customerName:field.customerName,
 				flag:field.flag,
 				orderTimeBegin:orderTimeBegin,
 				orderTimeEnd:orderTimeEnd,
 				expenseDate:a,
 				paymentDate:b,
+				batchNumber:field.batchNumber,
 			}
 			table.reload('tableData', {
 				where: post

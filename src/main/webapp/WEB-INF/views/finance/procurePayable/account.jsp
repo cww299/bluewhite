@@ -3,14 +3,12 @@
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html class="no-js">
-<%@ taglib uri="http://shiro.apache.org/tags" prefix="shiro" %>
 	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
 	<script src="${ctx }/static/js/vendor/typeahead.js"></script>
   	<link rel="stylesheet" href="${ctx }/static/css/bootstrap.min.css"> 
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
 	<link rel="stylesheet" href="${ctx }/static/css/main.css">  
-
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -22,44 +20,45 @@
 <body>
 <div class="layui-card">
 	<div class="layui-card-body">
-		<div class="layui-form layui-card-header layuiadmin-card-header-auto">
-			<div class="layui-form-item">
-				<table>
-					<tr>
-						<td>订料人:</td>
-						<td><select name="userId" id="userIdSelect" lay-search></select></td>
-						<td>&nbsp;&nbsp;</td>
-						<td>采购内容:</td>
-						<td><input type="text" name="content"  class="layui-input" /></td>
-						<td>&nbsp;&nbsp;</td>
-						<td><select class="form-control" name="dataType" id="selectone">
-								<option value="expenseDate">付款日期</option>
-								<option value="logisticsDate">到货日期</option>
-							</select></td>
-						<td>&nbsp;&nbsp;</td>
-						<td><input id="startTime" name="orderTimeBegin" style="width:300px;" placeholder="请输入开始时间" class="layui-input">
-						</td>
-						<td>&nbsp;&nbsp;</td>
-						<td>是否核对:
-						<td><select class="form-control" name="flag">
-								<option value="">请选择</option>
-								<option value="0">未核对</option>
-								<option value="1">已核对</option>
-						</select></td>
-						<td>&nbsp;&nbsp;</td>
-						<td>
-							<div class="layui-inline">
-								<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
-									<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-								</button>&nbsp;
-								<button type="button" class="layui-btn" id="">
-								  <i class="layui-icon">&#xe67c;</i>导入数据</button>
-							</div>
-						</td>
-					</tr>
-				</table>
-			</div>
-		</div>
+		<table class="layui-form">
+			<tr>
+				<td>订料人:</td>
+				<td><select name="userId" id="userIdSelect" lay-search></select></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>采购内容:</td>
+				<td><input type="text" name="content"  class="layui-input" /></td>
+				<td>&nbsp;&nbsp;</td>
+				<td><select class="form-control" name="dataType" id="selectone">
+						<option value="expenseDate">付款日期</option>
+						<option value="logisticsDate">到货日期</option>
+					</select></td>
+				<td>&nbsp;&nbsp;</td>
+				<td><input id="startTime" name="orderTimeBegin" style="width:300px;" placeholder="请输入开始时间" class="layui-input">
+				</td>
+				<td>&nbsp;&nbsp;</td>
+				<td>是否核对:
+				<td><select class="form-control" name="flag">
+						<option value="">请选择</option>
+						<option value="0">未核对</option>
+						<option value="1">已核对</option>
+				</select></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>
+					<div class="layui-inline">
+						<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
+							<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+						</button>&nbsp;
+						<button type="button" class="layui-btn" id="uploadData">
+						  <i class="layui-icon">&#xe67c;</i>导入数据</button>
+					</div>
+				</td>
+			</tr>
+			<tr style="height:3px;"></tr>
+			<tr>
+				<td>批次号：</td>
+				<td><input type="text" name="batchNumber"  class="layui-input" /></td>
+			</tr>
+		</table>
 		<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
 	</div>
 </div>
@@ -115,7 +114,7 @@ layui.config({
 }).extend({
 	tablePlug: 'tablePlug/tablePlug'
 }).define(
-	['tablePlug', 'laydate', 'element'],
+	['tablePlug', 'laydate', 'element','upload'],
 	function() {
 		var $ = layui.jquery
 			,layer = layui.layer //弹层
@@ -123,13 +122,29 @@ layui.config({
 			,table = layui.table //表格
 			,laydate = layui.laydate //日期控件
 			,tablePlug = layui.tablePlug //表格插件
-			,laytpl = layui.laytpl;
+			,laytpl = layui.laytpl
+			,upload = layui.upload;
 		
 		var allUser = getAllUser();
 		laydate.render({ elem: '#startTime', type: 'datetime',range:'~'});
 		$('#userIdSelect').html(getSelectHtml(''));
 		form.render();
 		
+		upload.render({
+		   	  elem: '#uploadData'
+		   	  ,url: '${ctx}/fince/excel/addConsumption'
+		 	  ,before: function(obj){ 	//obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+		 		layer.load(1); //上传loading
+			  }
+		   	  ,done: function(res, index, upload){ //上传后的回调
+		   		layer.closeAll();
+		   		layer.msg(res.message);
+		   		table.reload('tableData');
+		   	  } 
+		   	  ,accept: 'file' //允许上传的文件类型
+		   	  ,exts: 'xlsx'
+		})
+		   	
 		table.render({
 			elem: '#tableData',
 			size: 'lg',
@@ -253,6 +268,7 @@ layui.config({
 			var orderTime=field.orderTimeBegin.split('~');
 			var searchData = {
 				userId: 		field.userId,
+				batchNumber:    field.batchNumber,
 				content:		field.content,
 				flag:			field.flag,				
 				expenseDate:	'',

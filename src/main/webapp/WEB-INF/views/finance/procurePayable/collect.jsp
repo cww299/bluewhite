@@ -21,8 +21,8 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>借款方:</td>
-							<td><input type="text" name="customerName" id="firstNames" class="layui-input" /></td>
+							<td>批次号:</td>
+							<td><input type="text" name="batchNumber" id="firstNames" class="layui-input" /></td>
 							<td>&nbsp;&nbsp;</td>
 							<td><select class="layui-input" name="selectone" id="selectone">
 									<option value="expenseDate">申请日期</option>
@@ -36,8 +36,6 @@
 							<td><button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
 									<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
 								</button></td>
-							<td>&nbsp;&nbsp;</td>
-							<td><button class="layui-btn" id="uploadData"><i class="layui-icon">&#xe67c;</i>导入数据</button></td>
 						</tr>
 					</table>
 				</div>
@@ -66,10 +64,10 @@
 				elem: '#tableData',
 				size: 'lg',
 				height:'700px',
-				url: '${ctx}/fince/getConsumption?type=10' ,
+				url: '${ctx}/fince/getConsumption?type=2' ,
 				where:{ flag:0, },
 				request:{
-					pageName: 'page' ,
+					pageName: 'page',
 					limitName: 'size' 
 				},
 				page: {},
@@ -87,11 +85,14 @@
 					}
 				},
 				cols:[[
-				       { align: 'center', field: "withholdReason", 	title: "借款方", 		templet: function(d){ return d.custom.name } },
-				       { align: 'center', field: "content", 		title: "内容", },
-					   { align: 'center', field: "money", 			title: "报销申请金额", },
-					   { align: 'center', field: "expenseDate", 	title: "报销申请日期", },
-					   { align: 'center', field: "flag", 			title: "审核状态", 		templet:  function(d){ return d.flag==0?'未审核':'已审核';} }
+						{ align: 'center', field: "batchNumber", 	title: "批次号", 		width:'10%', },
+						{ align: 'center', field: "content", 		title: "内容",},
+						{ align: 'center', field: "", 				title: "客户",   		width:'12%', templet:function(d){ return d.custom.name; }}, 
+						{ align: 'center', field: "", 				title: "订料人",   		width:'6%',  templet:function(d){ return d.user==null?'':d.user.userName }},
+						{ align: 'center', field: "money", 			title: "金额", 			width:'6%',}, 
+						{ align: 'center', field: "expenseDate", 	title: "付款日期", 		width:'10%', },
+						{ align: 'center', field: "logisticsDate", 	title: "到货日",			width:'10%', },
+						{ align: 'center', field: "flag", 			title: "审核状态", 		width:'6%', templet:  function(d){ return d.flag==0?'未审核':'已审核';}}
 					 ]],
 			});
 
@@ -106,32 +107,13 @@
 					orderTimeBegin:orderTimeBegin,
 					orderTimeEnd:orderTimeEnd,
 					expenseDate:"2019-05-08 00:00:00",
+					batchNumber:field.batchNumber,
 				}
 				table.reload('tableData', {
 					where: post
 				});
 			});
 			
-			
-			$('#uploadData').on('click',function(){
-				layer.msg('尚未完善！',{icon:2});
-			})
-			//报错？！！
-		    var load;		
-			upload.render({
-			   	  elem: '#uploadData',
-			   	  url: '${ctx}/excel/importActualprice',
-			 	  before: function(obj){ 
-			 		 load = layer.load(3); 
-				  },
-				  done: function(res, index, upload){ //上传后的回调
-			   		layer.closeAll();
-			   		layer.msg(res.message, {icon: 1});
-			   		table.reload('tableData');
-			   	  },
-			   	  accept: 'file',
-			   	  field:'file'
-			}) 
 		}
 	)
 </script>
