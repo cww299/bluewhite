@@ -14,7 +14,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>报销申请</title>
+<title>采购申请</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
@@ -86,7 +86,7 @@
 			<div class="layui-input-block">
 				<input type="text" class="layui-input" name="money"  value="{{ d.money }}"></div></div>
 		<div class="layui-form-item">
-			<label class="layui-form-label">付款日期</label>
+			<label class="layui-form-label">付款日</label>
 			<div class="layui-input-block">
 				<input type="text" class="layui-input" name="expenseDate" id="addEditExpenseDate" value="{{ d.expenseDate }}"></div></div>
 		<div class="layui-form-item">
@@ -199,7 +199,7 @@ layui.config({
 			layer.open({
 				type:1,
 				title:title,
-				area:['30%','55%'],
+				area:['35%','60%'],
 				btn:['确定','取消'],
 				content:html,
 				yes:function(){
