@@ -37,7 +37,7 @@
 								<option value="logisticsDate">到货日期</option>
 							</select></td>
 						<td>&nbsp;&nbsp;</td>
-						<td><input id="startTime" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input">
+						<td><input id="startTime" name="orderTimeBegin" style="width:300px;" placeholder="请输入开始时间" class="layui-input">
 						</td>
 						<td>&nbsp;&nbsp;</td>
 						<td>是否核对:
@@ -51,7 +51,9 @@
 							<div class="layui-inline">
 								<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
 									<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-								</button>
+								</button>&nbsp;
+								<button type="button" class="layui-btn" id="">
+								  <i class="layui-icon">&#xe67c;</i>导入数据</button>
 							</div>
 						</td>
 					</tr>
@@ -75,7 +77,7 @@
 		<div class="layui-form-item">
 			<label class="layui-form-label">客户</label>
 			<div class="layui-input-block">
-				<input type="text" class="layui-input" id="addEditCustomName" name="customName" value="{{ d.custom.name }}">
+				<input type="text" class="layui-input" id="addEditCustomName" name="customerName" value="{{ d.custom.name }}">
 				<input type="hidden" id="addEditCustomId" name="customId" value="{{ d.custom.id }}"></div></div>
 		<div class="layui-form-item">
 			<label class="layui-form-label">订料人</label>
@@ -124,7 +126,7 @@ layui.config({
 			,laytpl = layui.laytpl;
 		
 		var allUser = getAllUser();
-		laydate.render({ elem: '#startTime', type: 'datetime'});
+		laydate.render({ elem: '#startTime', type: 'datetime',range:'~'});
 		$('#userIdSelect').html(getSelectHtml(''));
 		form.render();
 		
@@ -174,7 +176,7 @@ layui.config({
 		});
 	
 		function addEdit(type){
-			var	data={id:'',batchNumber:'',content:'',money:'',expenseDate:'',logisticsDate:'',custom:{name:'',id:0}},
+			var	data={id:'',batchNumber:'',content:'',money:'',expenseDate:'',logisticsDate:'',custom:{name:'',id:''}},
 				choosed = layui.table.checkStatus('tableData').data,
 				tpl=addEditTpl.innerHTML,
 				title='新增',
@@ -210,7 +212,7 @@ layui.config({
 			laydate.render({ elem: '#addEditExpenseDate', type: 'datetime'});
 			laydate.render({ elem: '#addEditLogisticsDate', type: 'datetime'});
 			form.on('submit(addEditSuer)',function(obj){
-				save(obj.field);
+				save(obj.field,type);
 			})
 			form.render();
 			  $("#addEditCustomName").typeahead({
@@ -224,7 +226,7 @@ layui.config({
 				                        var aItem = {name: item.name, id:item.id}	//转换成 json对象
 				                        return JSON.stringify(aItem);				//处理 json对象为字符串
 				                    });
-								 	$('#addEditCustomId').val(0);
+								 	$('#addEditCustomId').val('');
 								 return process(resultList);
 							},
 						})
@@ -247,17 +249,21 @@ layui.config({
 		//监听搜索
 		form.on('submit(LAY-search)', function(obj) {		
 			var field = obj.field;
+			
+			var orderTime=field.orderTimeBegin.split('~');
 			var searchData = {
 				userId: 		field.userId,
 				content:		field.content,
 				flag:			field.flag,				
 				expenseDate:	'',
 				logisticsDate:	'',
+				orderTimeBegin:orderTime[0],
+				orderTimeEnd:orderTime[1],
 			};
 			if(field.dataType=='expenseDate'){
-				searchData.expenseDate = field.orderTimeBegin;
+				searchData.expenseDate = orderTime[0];
 			}else
-				searchData.logisticsDate = field.orderTimeBegin;
+				searchData.logisticsDate = orderTime[0];
 			table.reload('tableData', {
 				where: searchData
 			});  
@@ -301,7 +307,9 @@ layui.config({
 				layer.close(load);
 			});
 		}
-		function save(data){
+		function save(data,type){
+			if(type=='edit'&&data.customId=='')
+				data.customId=0;
 			var load = layer.load(1);
 	    	$.ajax({
 				url: "${ctx}/fince/addConsumption",
