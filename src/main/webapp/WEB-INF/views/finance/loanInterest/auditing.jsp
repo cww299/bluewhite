@@ -115,6 +115,34 @@ layui.config({
 			       { align: 'center', field: "paymentMoney",	title: "付款金额", 		style:'background-color: #d8fe83', edit: 'text', },
 			       { align: 'center', field: "flag", 			title: "审核状态", 		templet:  function(d){ return d.flag==0?'未审核':'已审核';}}
 			       ]],
+	       done: function(res, curr, count) {
+				var tableView = this.elem.next();
+				var tableElem = this.elem.next('.layui-table-view');
+				layui.each(tableElem.find('select'), function(index, item) {
+					var elem = $(item);
+					elem.val(elem.data('value'));
+				});
+				form.render();
+				// 初始化laydate
+				layui.each(tableView.find('td[data-field="paymentDate"]'), function(index, tdElem) {
+					tdElem.onclick = function(event) {
+						layui.stope(event)
+					};
+					laydate.render({
+						elem: tdElem.children[0],
+						format: 'yyyy-MM-dd HH:mm:ss',
+						done: function(value, date) {
+								var id = table.cache[tableView.attr('lay-id')][index].id
+								var postData = {
+									id: id,
+									paymentDate: value,
+								};
+								//调用新增修改
+								mainJs.fUpdate(postData);
+						}
+					})
+				})
+			},
 		});
 
 		
