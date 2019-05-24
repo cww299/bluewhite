@@ -1,9 +1,7 @@
 package com.bluewhite.personnel.attendance.action;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,38 +19,40 @@ import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
+import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.personnel.attendance.entity.Attendance;
-import com.bluewhite.personnel.attendance.entity.Live;
-import com.bluewhite.personnel.attendance.service.LiveService;
-import com.bluewhite.system.user.entity.User;
+import com.bluewhite.personnel.attendance.dao.SundryDao;
+import com.bluewhite.personnel.attendance.entity.Hostel;
+import com.bluewhite.personnel.attendance.entity.Sundry;
+import com.bluewhite.personnel.attendance.service.SundryService;
 
 @Controller
-public class LiveAction {
+public class SundryAction {
 
 	@Autowired
-	private LiveService service;
+	private SundryService service;
+	@Autowired
+	private SundryDao sundryDao;
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Attendance.class,"id","name","hostel","bed","inLiveDate","otLiveDate","liveRemark","type")
-				.addRetainTerm(User.class, "id", "userName","orgName","orgNameId","age");
-				
+				.addRetainTerm(Sundry.class,"id","name","hostel","hostelId","monthDate","rent","water","power","coal","broadband","Administration","fixed")
+				.addRetainTerm(Hostel.class, "id", "name","number");
 	}
 
 	/**
-	 * 分页查看报餐
+	 * 分页查看
 	 * 
 	 * @param request 请求
 	 * @return cr
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/personnel/getLive", method = RequestMethod.GET)
+	@RequestMapping(value = "/personnel/getSundry", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getContact(HttpServletRequest request,PageParameter page,Live live) {
+	public CommonResponse getContact(HttpServletRequest request,PageParameter page,Sundry sundry) {
 		CommonResponse cr = new CommonResponse();
-		PageResult<Live>  mealList= service.findPage(live, page); 
+		PageResult<Sundry>  mealList= service.findPage(sundry, page); 
 		cr.setData(clearCascadeJSON.format(mealList).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
@@ -65,38 +65,30 @@ public class LiveAction {
 	 * @return cr
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/fince/addLive", method = RequestMethod.POST)
+	@RequestMapping(value = "/fince/addSundry", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addConsumption(HttpServletRequest request, Live live) {
+	public CommonResponse addConsumption(HttpServletRequest request, Sundry sundry) {
 		CommonResponse cr = new CommonResponse();
-		if(live.getId() != null){
-			Live live2 = service.findOne(live.getId());
-				BeanCopyUtils.copyNullProperties(live2, live);
-				live.setCreatedAt(live2.getCreatedAt());
+		if(sundry.getId() != null){
+			Sundry sundry2 = service.findOne(sundry.getId());
+				BeanCopyUtils.copyNullProperties(sundry2, sundry);
+				sundry.setCreatedAt(sundry2.getCreatedAt());
 			cr.setMessage("修改成功");
+			service.addSundry(sundry);
 		}else{
-			cr.setMessage("添加成功");
+		List<Sundry> list=sundryDao.findByMonthDate(sundry.getMonthDate());
+			if (list.size()>0) {
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				cr.setMessage("当月已有数据 请勿重复添加");
+			}else {
+				cr.setMessage("添加成功");
+				service.addSundry(sundry);
+			}
 		}
-		service.addLive(live);
 		return cr;
 	}
 
-	/**
-	 * 宿舍分摊
-	 * 
-	 * @param request 请求
-	 * @return cr
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/personnel/getSummaryShare", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse findShareSummary(Date monthDate,Long hostelId) {
-		CommonResponse cr = new CommonResponse();
-		 List<Map<String, Object>> list = service.findShareSummary(monthDate,hostelId); 
-		cr.setData(clearCascadeJSON.format(list).toJSON());
-		cr.setMessage("查询成功");
-		return cr;
-	}
+
 
 
 	
