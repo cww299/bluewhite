@@ -18,13 +18,13 @@ public interface ProcurementService  extends BaseCRUDService<Procurement,Long>{
 	PageResult<Procurement> findPage(Procurement param, PageParameter page);
 	
 	/**
-	 * 新增采购单
+	 * 新增单据
 	 * @param procurement
 	 */
 	Procurement saveProcurement(Procurement procurement);
 	
 	/**
-	 * 作废采购单
+	 * 反冲单据
 	 * @param ids
 	 * @return
 	 */

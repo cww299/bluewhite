@@ -50,10 +50,16 @@ public class ProcurementChild  extends BaseEntity<Long>{
 	private Procurement procurement;
 	
 	/**
-	 * 数量
+	 * 子单原数量
 	 */
 	@Column(name = "number")
 	private Integer number;
+	
+	/**
+	 * 转换剩余数量
+	 */
+	@Column(name = "residue_number")
+	private Integer residueNumber;
 	
 	
 	/**
@@ -87,8 +93,35 @@ public class ProcurementChild  extends BaseEntity<Long>{
 	@Column(name = "status")
 	private Integer status;
 	
+	/**
+	 * 备注
+	 * 
+	 */
+	@Column(name = "child_remark")
+	private String childRemark;
+
+	
 	
 
+
+
+	public Integer getResidueNumber() {
+		return residueNumber;
+	}
+
+
+	public void setResidueNumber(Integer residueNumber) {
+		this.residueNumber = residueNumber;
+	}
+
+	public String getChildRemark() {
+		return childRemark;
+	}
+
+
+	public void setChildRemark(String childRemark) {
+		this.childRemark = childRemark;
+	}
 
 	public Long getCommodityId() {
 		return commodityId;

@@ -140,7 +140,7 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	
 	
 	/** 
-	 * 删除销售单
+	 * 一键反冲销售单(整单)
 	 * 
 	 */
 	@RequestMapping(value = "/inventory/deleteOnlineOrder", method = RequestMethod.GET)
@@ -269,7 +269,8 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	}
 	
 	/** 
-	 * 新增出库入库单
+	 * 新增生产单
+	 * 
 	 * 
 	 */
 	@RequestMapping(value = "/inventory/addProcurement", method = RequestMethod.POST)
@@ -283,14 +284,14 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	
 	
 	/** 
-	 * 作废出库入库单
+	 * 一键反冲单据(整单)
 	 * 
 	 */
 	@RequestMapping(value = "/inventory/deleteProcurement", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse deleteProcurement(String ids) {
 		CommonResponse cr = new CommonResponse();
-		procurementService.deleteProcurement(ids);
+		int count = procurementService.deleteProcurement(ids);
 		return cr;
 	}
 	

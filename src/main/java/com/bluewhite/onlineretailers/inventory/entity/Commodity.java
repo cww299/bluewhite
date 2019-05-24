@@ -75,7 +75,7 @@ public class Commodity extends BaseEntity<Long>{
 	 * 
 	 */
 	@Column(name = "size")
-	private String size;
+	private Double size;
 	
 	
 	/**
@@ -136,18 +136,11 @@ public class Commodity extends BaseEntity<Long>{
 	private Double offlinePrice;
 	
 
-	/**
-	 * 商品分类
-	 * 
-	 */
-	@Column(name = "type")
-	private Integer type;
-	
 	
 	/**
 	 * 库存数量
 	 */
-	@OneToMany(mappedBy = "commodity")
+	@OneToMany(mappedBy = "commodity" ,cascade = CascadeType.ALL)
 	private Set<Inventory> inventorys = new HashSet<Inventory>();
 
 
@@ -166,19 +159,8 @@ public class Commodity extends BaseEntity<Long>{
 		return fileId;
 	}
 
-
 	public void setFileId(Long fileId) {
 		this.fileId = fileId;
-	}
-
-
-	public Integer getType() {
-		return type;
-	}
-
-
-	public void setType(Integer type) {
-		this.type = type;
 	}
 
 
@@ -239,13 +221,12 @@ public class Commodity extends BaseEntity<Long>{
 		this.picUrl = picUrl;
 	}
 
-
-	public String getSize() {
+	public Double getSize() {
 		return size;
 	}
 
 
-	public void setSize(String size) {
+	public void setSize(Double size) {
 		this.size = size;
 	}
 

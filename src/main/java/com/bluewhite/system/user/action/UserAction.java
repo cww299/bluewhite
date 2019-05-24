@@ -185,7 +185,13 @@ public class UserAction {
 	@ResponseBody
 	public CommonResponse updateContract(HttpServletRequest request, UserContract userContract) {
 		CommonResponse cr = new CommonResponse();
-		if(userContract.getNumber()!=null){
+		if(userContract.getId() == null){
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("id为空");
+			return cr;
+		}
+		UserContract oldUser = userContractDao.findOne(userContract.getId());
+		if(userContract.getNumber()!=null && oldUser.getNumber()!=userContract.getNumber()){
 			UserContract uc = userContractDao.findByNumber(userContract.getNumber());
 			if(uc!=null){
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -193,12 +199,6 @@ public class UserAction {
 				return cr;
 			}
 		}
-		if(userContract.getId() == null){
-			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("id为空");
-			return cr;
-		}
-		UserContract oldUser = userContractDao.findOne(userContract.getId());
 		BeanCopyUtils.copyNotEmpty(userContract,oldUser);
 		cr.setData(clearCascadeJSON.format(userContractDao.save(oldUser)).toJSON());
 		cr.setMessage("修改成功");
