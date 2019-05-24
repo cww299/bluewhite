@@ -20,6 +20,7 @@ import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.metadata.Sheet;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
@@ -32,6 +33,7 @@ import com.bluewhite.onlineretailers.inventory.entity.OnlineCustomer;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrderChild;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
+import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 import com.bluewhite.onlineretailers.inventory.entity.poi.OnlineOrderPoi;
 import com.bluewhite.onlineretailers.inventory.service.CommodityService;
 import com.bluewhite.onlineretailers.inventory.service.OnlineCustomerService;
@@ -39,6 +41,7 @@ import com.bluewhite.onlineretailers.inventory.service.OnlineOrderService;
 import com.bluewhite.onlineretailers.inventory.service.ProcurementService;
 import com.bluewhite.system.sys.entity.RegionAddress;
 import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.entity.UserContract;
 
 
 @Controller
@@ -262,8 +265,16 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	@RequestMapping(value = "/inventory/procurementPage", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse procurementPage(Procurement procurement , PageParameter page) {
-		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(procurementService.findPage(procurement,page))
-				.toJSON());
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(Procurement.class, "id","batchNumber", "user","procurementChilds",
+						"number","residueNumber","type","flag","remark")
+				.addRetainTerm(ProcurementChild.class, "id","commodity", "number","residueNumber",
+						"warehouse","status","childRemark")
+				.addRetainTerm(User.class,"username")
+				.addRetainTerm(BaseData.class,"name")
+				.format(procurementService.findPage(procurement,page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -292,6 +303,26 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	public CommonResponse deleteProcurement(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = procurementService.deleteProcurement(ids);
+		cr.setMessage("成功反冲"+count+"个客户");
+		return cr;
+	}
+	
+	
+	/**************    预警设置    *************/
+	
+	
+	/** 
+	 * 自动检测预警数据
+	 * 
+	 * 
+	 */
+	@RequestMapping(value = "/inventory/checkWarning", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse checkWarning() {
+		CommonResponse cr = new CommonResponse();
+		
+		commodityService.checkWarning();
+		cr.setMessage("新增成功");
 		return cr;
 	}
 	
