@@ -23,7 +23,7 @@ public class Inventory extends BaseEntity<Long>{
 	 * 产品id
 	 */
 	@Column(name = "commodity_id")
-	private Long commodity_id;
+	private Long commodityId;
 	
 	/**
 	 * 产品
@@ -38,6 +38,14 @@ public class Inventory extends BaseEntity<Long>{
 	 */
 	@Column(name = "number")
 	private Integer number;
+	
+	
+	/**
+	 * 库存位置
+	 * 
+	 */
+	@Column(name = "place")
+	private String place;
 	
 	/**
 	 * 仓库类型id
@@ -54,12 +62,26 @@ public class Inventory extends BaseEntity<Long>{
 
 	
 	
-	public Long getCommodity_id() {
-		return commodity_id;
+
+
+	
+	
+
+
+	public String getPlace() {
+		return place;
 	}
 
-	public void setCommodity_id(Long commodity_id) {
-		this.commodity_id = commodity_id;
+	public void setPlace(String place) {
+		this.place = place;
+	}
+
+	public Long getCommodityId() {
+		return commodityId;
+	}
+
+	public void setCommodityId(Long commodityId) {
+		this.commodityId = commodityId;
 	}
 
 	public Commodity getCommodity() {

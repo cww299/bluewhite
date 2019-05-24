@@ -21,7 +21,6 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.excel.ExcelListener;
-import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
 import com.bluewhite.onlineretailers.inventory.dao.CommodityDao;
 import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
 import com.bluewhite.onlineretailers.inventory.dao.OnlineOrderChildDao;
@@ -42,9 +41,9 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	@Autowired
 	private CommodityDao commodityDao;
 	@Autowired
-	private  OnlineOrderChildDao  onlineOrderChildDao;
+	private OnlineOrderChildDao  onlineOrderChildDao;
 	@Autowired
-	private  InventoryDao inventoryDao;
+	private InventoryDao inventoryDao;
 	
 
 	@Override
@@ -95,7 +94,29 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			String[] pers = ids.split(",");
 			if(pers.length>0){
 				for(String idString : pers){
-					dao.delete(Long.valueOf(idString));
+					Long id = Long.valueOf(idString);
+					OnlineOrder onlineOrder = dao.findOne(id);
+					for(OnlineOrderChild onlineOrderChild : onlineOrder.getOnlineOrderChilds()){
+						//当订单的状态是已发货
+						if(onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_5)){
+							//获取商品
+							Commodity commodity = onlineOrderChild.getCommodity();
+							//获取所有商品的库存
+							Set<Inventory> inventorys = commodity.getInventorys();
+							//减少库存的同时改变状态
+							if(inventorys.size()>0){
+								for(Inventory inventory : inventorys){
+									if(inventory.getWarehouseId().equals(onlineOrderChild.getWarehouseId())){
+										inventory.setNumber(inventory.getNumber()-onlineOrderChild.getNumber());
+										inventoryDao.save(inventory);
+										onlineOrderChild.setStatus(Constants.ONLINEORDER_4);
+									}
+								}
+							}	
+						} 
+					}
+					dao.save(onlineOrder);
+					onlineOrder.setFlag(1);
 					count++;
 				}
 			}
@@ -126,6 +147,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		}
 		//总数量
 		onlineOrder.setNum(onlineOrder.getOnlineOrderChilds().stream().mapToInt(OnlineOrderChild::getNumber).sum());
+		onlineOrder.setFlag(0);
 		return dao.save(onlineOrder);
 	}
 
@@ -148,6 +170,9 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 					Commodity commodity = onlineOrderChild.getCommodity();
 					//获取所有商品的库存
 					Set<Inventory> inventorys = commodity.getInventorys();
+					if(inventorys.size()==0){
+						throw new ServiceException(commodity.getName()+"没有任何库存,无法出库");
+					}
 					//减少库存的同时改变状态
 					if(inventorys.size()>0){
 						for(Inventory inventory : inventorys){
@@ -198,6 +223,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				List<OnlineOrderChild> onlineOrderChilds = onlineOrder.getOnlineOrderChilds();
 				//创建子订单
 				OnlineOrderChild onlineOrderChild = new OnlineOrderChild();
+				onlineOrder.setFlag(0);
 				onlineOrderChild.setStatus(Constants.ONLINEORDER_5);
 				onlineOrderChild.setOnlineOrder(onlineOrder);
 				onlineOrderChild.setPrice(cPoi.getPrice());
@@ -216,6 +242,9 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 						Set<Inventory> inventorys = commodity.getInventorys();
 						//出库单
 						if(procurement.getType()==3){
+							if(inventorys.size()==0){
+								throw new ServiceException(commodity.getName()+"没有任何库存,无法出库");
+							}
 							//减少库存
 							if(inventorys.size()>0){
 								for(Inventory inventory : inventorys){

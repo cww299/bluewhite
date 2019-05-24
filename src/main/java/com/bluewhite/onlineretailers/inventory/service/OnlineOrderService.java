@@ -1,7 +1,5 @@
 package com.bluewhite.onlineretailers.inventory.service;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;

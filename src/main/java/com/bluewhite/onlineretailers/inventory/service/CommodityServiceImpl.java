@@ -6,7 +6,6 @@ import java.util.List;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.support.DaoSupport;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -17,7 +16,6 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.onlineretailers.inventory.dao.CommodityDao;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
-import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
 @Service
 public class CommodityServiceImpl  extends BaseServiceImpl<Commodity, Long> implements  CommodityService{
 	

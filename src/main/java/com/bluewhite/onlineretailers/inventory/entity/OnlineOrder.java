@@ -286,19 +286,17 @@ public class OnlineOrder extends BaseEntity<Long> {
 	@Column(name = "zip_code")
 	private String zipCode;
 
-	
-	/**
-	 * 新增子订单json数据
-	 */
-	@Transient
-	private String childOrder;
-
 	/**
 	 * 是否反冲（0=否，1=是）
 	 */
 	@Column(name = "flag")
 	private Integer flag;
 	
+	/**
+	 * 新增子订单json数据
+	 */
+	@Transient
+	private String childOrder;
 	
 
 	public Integer getFlag() {

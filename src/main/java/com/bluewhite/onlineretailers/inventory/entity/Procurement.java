@@ -64,6 +64,11 @@ public class Procurement extends BaseEntity<Long>{
 	@Column(name = "number")
 	private Integer number;
 	
+	/**
+	 * 转换剩余总数量
+	 */
+	@Column(name = "residue_number")
+	private Integer residueNumber;
 	
 	/**
 	 *  单据类型(0=生产单，1=针工单,2=入库单，3=出库单)
@@ -71,13 +76,6 @@ public class Procurement extends BaseEntity<Long>{
 	@Column(name = "type")
 	private Integer type;
 	
-	
-	/**
-	 * 备注
-	 * 
-	 */
-	@Column(name = "remark")
-	private String remark;
 	
 	
 	/**
@@ -87,6 +85,19 @@ public class Procurement extends BaseEntity<Long>{
 	private Integer flag;
 	
 	/**
+	 * 上一阶段单据id（用于做反冲数据时确定上一阶段反冲数据）
+	 */
+	@Column(name = "parent_id")
+	private Long parentId;
+	
+	/**
+	 * 备注
+	 * 
+	 */
+	@Column(name = "remark")
+	private String remark;
+	
+	/**
 	 * json 储存商品id和数量
 	 * 
 	 */
@@ -94,9 +105,24 @@ public class Procurement extends BaseEntity<Long>{
 	private String commodityNumber;
 
 	
+	
+	
+	public Integer getResidueNumber() {
+		return residueNumber;
+	}
 
-	
-	
+	public void setResidueNumber(Integer residueNumber) {
+		this.residueNumber = residueNumber;
+	}
+
+	public Long getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
+	}
+
 	public List<ProcurementChild> getProcurementChilds() {
 		return procurementChilds;
 	}
