@@ -117,6 +117,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 					for (ProcurementChild pChild : oldProcurement.getProcurementChilds()) {
 						if (pChild.getCommodityId() == procurementChild.getCommodityId()) {
 							pChild.setResidueNumber(pChild.getResidueNumber() - procurementChild.getNumber());
+							// 当单据为入库单时,针工单转化数量不够自动变成0
 							if (procurement.getType() == 2) {
 								pChild.setResidueNumber((pChild.getResidueNumber() - procurementChild.getNumber()) < 0
 										? 0 : pChild.getResidueNumber() - procurementChild.getNumber());
@@ -125,45 +126,45 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 					}
 					//更新上级单据
 					dao.save(oldProcurement);
-
-					// 当单据为入库单时,针工单转化数量不够自动变成0
-					if (procurement.getType() == 2) {
-						Commodity commodity = commodityService.findOne(procurementChild.getCommodityId());
-						procurementChild.setWarehouseId(jsonObject.getLong("warehouseId"));
-						procurementChild.setStatus(4);
-						// 创建商品的库存
-						Set<Inventory> inventorys = commodity.getInventorys();
-						Inventory inventory = new Inventory();
-						inventory.setPlace(jsonObject.getString("place"));
-						inventory.setCommodityId(procurementChild.getCommodityId());
-						inventory.setNumber(procurementChild.getNumber());
-						inventory.setWarehouseId(procurementChild.getWarehouseId());
-						inventorys.add(inventory);
-						commodity.setInventorys(inventorys);
-						commodityService.save(commodity);
-					}
-
-					// 出库单
-					if (procurement.getType() == 3) {
-						Commodity commodity = commodityService.findOne(procurementChild.getCommodityId());
-						Set<Inventory> inventorys = commodity.getInventorys();
-						if (inventorys.size() == 0) {
-							throw new ServiceException(commodity.getName() + "没有任何库存,无法出库");
-						}
-						// 减少库存
-						if (inventorys.size() > 0) {
-							for (Inventory inventory : inventorys) {
-								if (inventory.getWarehouseId().equals(procurementChild.getWarehouseId())) {
-									inventory.setNumber(inventory.getNumber() - procurementChild.getNumber());
-								}
-							}
-						}
-						commodityService.save(commodity);
-					}
-					
 				}else{
 					procurementChild.setResidueNumber(jsonObject.getIntValue("number"));
 				}
+				
+				
+				if (procurement.getType() == 2) {
+					Commodity commodity = commodityService.findOne(procurementChild.getCommodityId());
+					procurementChild.setWarehouseId(jsonObject.getLong("warehouseId"));
+					procurementChild.setStatus(4);
+					// 创建商品的库存
+					Set<Inventory> inventorys = commodity.getInventorys();
+					Inventory inventory = new Inventory();
+					inventory.setPlace(jsonObject.getString("place"));
+					inventory.setCommodityId(procurementChild.getCommodityId());
+					inventory.setNumber(procurementChild.getNumber());
+					inventory.setWarehouseId(procurementChild.getWarehouseId());
+					inventorys.add(inventory);
+					commodity.setInventorys(inventorys);
+					commodityService.save(commodity);
+				}
+
+				// 出库单
+				if (procurement.getType() == 3) {
+					Commodity commodity = commodityService.findOne(procurementChild.getCommodityId());
+					Set<Inventory> inventorys = commodity.getInventorys();
+					if (inventorys.size() == 0) {
+						throw new ServiceException(commodity.getName() + "没有任何库存,无法出库");
+					}
+					// 减少库存
+					if (inventorys.size() > 0) {
+						for (Inventory inventory : inventorys) {
+							if (inventory.getWarehouseId().equals(procurementChild.getWarehouseId())) {
+								inventory.setNumber(inventory.getNumber() - procurementChild.getNumber());
+							}
+						}
+					}
+					commodityService.save(commodity);
+				}
+				
 				// 将子单放入父单
 				upProcurement.getProcurementChilds().add(procurementChild);
 				upProcurement.setNumber(upProcurement.getProcurementChilds().stream().mapToInt(ProcurementChild::getNumber).sum());
