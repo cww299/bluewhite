@@ -51,27 +51,51 @@
 <div class="layui-form" style="padding:10px;">
 	<input type="hidden" name="id" value="{{d.id}}">
 	<div class="layui-item">
-		<label class="layui-form-label">编号(sku)</label>
+		<label class="layui-form-label">商品编号</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="skuCode" value="{{d.skuCode}}">
+			<input class="layui-input" name="skuCode" value="{{d.skuCode}}" lay-verify="required">
 		</div>
 	</div>
 	<div class="layui-item">
-		<label class="layui-form-label">名称</label>
+		<label class="layui-form-label">1688批发价</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="name" value="{{d.name}}">
+			<input class="layui-input" name="OSEEPrice" value="{{d.oSEEPrice}}" lay-verify="number">
 		</div>
 	</div>
 	<div class="layui-item">
-		<label class="layui-form-label">重量</label>
+		<label class="layui-form-label">天猫单价</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="weight" value="{{d.weight}}">
+			<input class="layui-input" name="tianmaoPrice" value="{{d.tianmaoPrice}}" lay-verify="number">
 		</div>
 	</div>
 	<div class="layui-item">
-		<label class="layui-form-label">销售属性</label>
+		<label class="layui-form-label">线下批发价</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="size" value="{{d.size}}">
+			<input class="layui-input" name="offlinePrice" value="{{d.offlinePrice}}" lay-verify="number">
+		</div>
+	</div>
+	<div class="layui-item">
+		<label class="layui-form-label">商品重量</label>
+		<div class="layui-input-block">
+			<input class="layui-input" name="weight" value="{{d.weight}}" lay-verify="number">
+		</div>
+	</div>
+	<div class="layui-item">
+		<label class="layui-form-label">商品高度</label>
+		<div class="layui-input-block">
+			<input class="layui-input" name="size" value="{{d.size}}" lay-verify="number">
+		</div>
+	</div>
+	<div class="layui-item">
+		<label class="layui-form-label">成本</label>
+		<div class="layui-input-block">
+			<input class="layui-input" name="cost" value="{{d.cost}}" lay-verify="number">
+		</div>
+	</div>
+	<div class="layui-item">
+		<label class="layui-form-label">广宣成本</label>
+		<div class="layui-input-block">
+			<input class="layui-input" name="propagandaCost" value="{{d.propagandaCost}}" lay-verify="number">
 		</div>
 	</div>
 	<div class="layui-item">
@@ -87,52 +111,9 @@
 		</div>
 	</div>
 	<div class="layui-item">
-		<label class="layui-form-label">成本</label>
-		<div class="layui-input-block">
-			<input class="layui-input" name="cost" value="{{d.cost}}">
-		</div>
-	</div>
-	<div class="layui-item">
-		<label class="layui-form-label">分类</label>
-		<div class="layui-input-block">
-			<select name="type">
-				<option value="0" {{ d.type==0?'selected':'' }} >毛绒玩偶</option>
-				<option value="1" {{ d.type==1?'selected':'' }} >抱枕</option>
-			</select>
-		</div>
-	</div>
-	<div class="layui-item">
-		<label class="layui-form-label">广宣成本</label>
-		<div class="layui-input-block">
-			<input class="layui-input" name="propagandaCost" value="{{d.propagandaCost}}">
-		</div>
-	</div>
-	<div class="layui-item">
 		<label class="layui-form-label">备注</label>
 		<div class="layui-input-block">
 			<input class="layui-input" name="remark" value="{{d.remark}}">
-		</div>
-	</div>
-	<div class="layui-item">
-		<label class="layui-form-label">单价</label>
-		<div class="layui-input-block">
-			<input class="layui-input" name="price" value="{{d.price}}">
-		</div>
-	</div>
-	<div class="layui-item">
-		<label class="layui-form-label">数量</label>
-		<div class="layui-input-block">
-			<input class="layui-input" name="quantity" value="{{d.quantity}}">
-		</div>
-	</div>
-	<div class="layui-item">
-		<label class="layui-form-label">仓库类型</label>
-		<div class="layui-input-block">
-			<select name="warehouse">
-				<option value="0" {{ d.warehouse==0?'selected':'' }} >主仓库</option>
-				<option value="1" {{ d.warehouse==1?'selected':'' }} >客供仓库</option>
-				<option value="2" {{ d.warehouse==2?'selected':'' }} >次品</option>
-			</select>
 		</div>
 	</div>
 	<p style="text-align:center;"><button class="layui-btn layui-btn-sm" lay-submit lay-filter="sure">确定</button></p>
@@ -174,11 +155,16 @@ layui.config({
 			cols:[[
 			       {align:'center', type:'checkbox',},
 			       {align:'center', title:'商品编号',   field:'skuCode',	width:'10%',},
-			       {align:'center', title:'名称',   		field:'name'},
-			       {align:'center', title:'销售属性',   field:'size'},
-			       {align:'center', title:'销售价',   	field:'price',	width:'5%',},
+			       {align:'center', title:'商品高度',   field:'size',    width:'7%',},
+			       {align:'center', title:'商品重量', 	field:'weight', width:'7%',},
+			       {align:'center', title:'1688单价',   	field:'oSEEPrice',		width:'7%',},
+			       {align:'center', title:'天猫单价',   	field:'tianmaoPrice',	width:'7%',},
+			       {align:'center', title:'线下单价',   	field:'offlinePrice',	width:'7%',},
 			       {align:'center', title:'成本价', 		field:'cost',	width:'5%',},
-			       {align:'center', title:'重量', 		field:'weight', width:'5%',},
+			       {align:'center', title:'广宣成本', 	field:'propagandaCost',	width:'7%',},
+			       {align:'center', title:'材质', 		field:'material',	},
+			       {align:'center', title:'填充物', 		field:'fillers',	},
+			       {align:'center', title:'备注', 		field:'remark',	},
 			       ]]
 		})
 		
@@ -197,12 +183,11 @@ layui.config({
 		})
 		
 		function addEdit(type){
-			var data={
-					id:'',skuCode:'',name:'',weight:'',size:'',material:'',fillers:'',cost:'',propagandaCost:'',remark:'',price:'',quantity:'',warehouse:'',type:0},
-			title='新增商品',
-			html='',
+			var data={id:'',skuCode:'',weight:'',size:'',material:'',fillers:'',cost:'',propagandaCost:'',remark:'',tianmaoPrice:'',oSEEPrice:'',offlinePrice:''},
 			choosed=layui.table.checkStatus('productTable').data,
-			tpl=addEditTpl.innerHTML;
+			tpl=addEditTpl.innerHTML,
+			title='新增商品',
+			html='';
 			if(type=='edit'){
 				if(choosed.length>1){
 					layer.msg("不能同时编辑多条信息",{icon:2});
@@ -213,7 +198,6 @@ layui.config({
 					return;
 				}
 				data=choosed[0];
-				data.type=0;	//新增字段，更新后台代码后删除
 				title="修改商品";
 			}
 			laytpl(tpl).render(data,function(h){
@@ -222,7 +206,7 @@ layui.config({
 			var addEditWin=layer.open({
 				type:1,
 				title:title,
-				area:['40%','90%'],
+				area:['40%','65%'],
 				content:html
 			})
 			form.render();

@@ -2271,7 +2271,7 @@ jQuery(function($){
 										  secrecyAgreement:$('.secrecyAgreementnumber').val(),
 										  remark:$('.remarktw').val(),
 										  contract:$('.contractnumber').val(),
-										  //number:$('.numbertw').val(),
+										  number:$('.numbertw').val(),
 								  }
 								   $.ajax({
 										url:"${ctx}/system/user/updateContract",
@@ -2320,7 +2320,7 @@ jQuery(function($){
 											  			ascriptionBank1:$("#bankCardtw").val(),
 											  			education:$("#education2").val(),
 											  	}
-												layer.close(index);
+												layer.close(_index);
 												$("#productId").text("");
 												self.loadPagination(data);
 											}else if (2==result.code) {
