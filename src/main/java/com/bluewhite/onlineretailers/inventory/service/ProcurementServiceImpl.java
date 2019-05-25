@@ -58,7 +58,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			
 			// 按批次号过滤
 			if (!StringUtils.isEmpty(param.getBatchNumber())) {
-				predicate.add(cb.equal(root.get("batchNumber").as(Integer.class), param.getBatchNumber()));
+				predicate.add(cb.equal(root.get("batchNumber").as(String.class), param.getBatchNumber()));
 			}
 			
 			//按单据生产时间过滤
@@ -98,6 +98,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 		} else {
 			upProcurement = procurement;
 			upProcurement.setResidueNumber(upProcurement.getNumber());
+			upProcurement.setFlag(0);
 		}
 
 		// 创建子单据
@@ -184,18 +185,22 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 					// 当单据的父id存在，说明拥有上级单据，反冲恢复上级单据的总剩余数量
 					if (procurement.getParentId() != null) {
 						Procurement parentProcurement = dao.findOne(procurement.getParentId());
-						parentProcurement.setResidueNumber(parentProcurement.getNumber());
-						// 将上级子单数据恢复
-						for (ProcurementChild procurementChilds : parentProcurement.getProcurementChilds()) {
-							procurementChilds.setResidueNumber(procurementChilds.getNumber());
+						parentProcurement.setResidueNumber(procurement.getNumber());
+						// 那本级的子单和上级子单对比，同时将上级子单数据恢复
+						for (ProcurementChild parentProcurementChilds : parentProcurement.getProcurementChilds()) {
+							  for(ProcurementChild procurementChilds : procurement.getProcurementChilds()){
+								  if(parentProcurementChilds.getCommodityId() == procurementChilds.getCommodityId()){
+									  parentProcurementChilds.setResidueNumber(procurement.getNumber());
+								  }
+							  }
+							}
 						}
-					}
 
 					// 当单据为出库入库单时，恢复库存
 					for (ProcurementChild procurementChilds : procurement.getProcurementChilds()) {
 						// 获取商品
 						Commodity commodity = procurementChilds.getCommodity();
-						// 获取所有商品的库存
+						// 获取所有商品的库存 
 						Set<Inventory> inventorys = commodity.getInventorys();
 						// 反冲库存数据
 						if (inventorys.size() > 0) {
@@ -215,6 +220,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 						}
 						commodityService.save(commodity);
 					}
+					
 					dao.save(procurement);
 					count++;
 				}
