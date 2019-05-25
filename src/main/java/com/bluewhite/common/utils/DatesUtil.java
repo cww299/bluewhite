@@ -207,6 +207,23 @@ public class DatesUtil {
 		return calendar.getTime();
 	}
 	
+	/**
+	 * <li>功能描述：日期加上天数返回一个新日期
+	 * 
+	 * @param beginDateStr
+	 * @param endDateStr
+	 * @return long
+	 */
+	public static Date getDaySum(Date beginDate, Integer day) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(beginDate);
+		calendar.add(Calendar.DATE, day);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);// 设置时为0点
+		calendar.set(Calendar.MINUTE, 0);// 设置分钟为0分
+		calendar.set(Calendar.SECOND, 0);// 设置秒为0秒
+		calendar.set(Calendar.MILLISECOND, 000);// 设置毫秒为000
+		return calendar.getTime();
+	}
 
 	/**
 	 * <li>功能描述：考勤特殊处理时间方法
@@ -485,33 +502,5 @@ public class DatesUtil {
 	    }
 	    return null;
 	}
-
-	
-	
-	public static void main(String[] args) throws ParseException {
-		
-		String string = "2019-05-01 00:00:00";
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		belongCalendar(sdf.parse(string));
-		
-		
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 }

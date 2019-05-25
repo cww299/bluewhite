@@ -1,6 +1,7 @@
 package com.bluewhite.onlineretailers.inventory.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -44,10 +45,22 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
 
-			// 按类型过滤
-			if (!StringUtils.isEmpty(param.getType())) {
+			// 按单据类型过滤
+			if (param.getType()!=null) {
 				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
 			}
+			
+			// 按批次号过滤
+			if (!StringUtils.isEmpty(param.getBatchNumber())) {
+				predicate.add(cb.equal(root.get("b atchNumber").as(Integer.class), param.getBatchNumber()));
+			}
+			
+			//按单据生产时间过滤
+    		if (!StringUtils.isEmpty(param.getOrderTimeBegin()) &&  !StringUtils.isEmpty(param.getOrderTimeEnd()) ) {
+    			predicate.add(cb.between(root.get("createdAt").as(Date.class),
+    					param.getOrderTimeBegin(),
+    					param.getOrderTimeEnd()));
+    		}
 
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
@@ -62,17 +75,19 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	public Procurement saveProcurement(Procurement procurement) {
 		// 逻辑处理：优先处理父级单据所有数据
 		Procurement upProcurement = new Procurement();
-		if (procurement.getId() != null) {
+		if (procurement.getId() != null) {  
 			// 查找是否已经拥有上级单据id的单据
 			upProcurement = dao.findByParentId(procurement.getId());
 			// 当单据为null，说明是新增，否则是修改
-			if (upProcurement == null) {
+			if (upProcurement == null) { 
 				upProcurement = new Procurement();
 				// 将 转换的单据id变成新单据的父id
 				upProcurement.setParentId(procurement.getId());
 				// 获取到上一级单据的数据
 				Procurement oldProcurement = dao.findOne(procurement.getId());
 				upProcurement.setBatchNumber(oldProcurement.getBatchNumber());
+				upProcurement.setType(procurement.getType());
+				upProcurement.setNumber(procurement.getNumber());
 				upProcurement.setResidueNumber(procurement.getNumber());
 				// 将上级单据的剩余总数改变
 				oldProcurement.setResidueNumber(oldProcurement.getResidueNumber() - procurement.getNumber());
@@ -108,6 +123,8 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 							}
 						}
 					}
+					//更新上级单据
+					dao.save(parentProcurement);
 
 					// 当单据为入库单时,针工单转化数量不够自动变成0
 					if (procurement.getType() == 2) {
@@ -201,6 +218,11 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			}
 		}
 		return count;
+	}
+
+	@Override
+	public List<Procurement> findByTypeAndCreatedAt(int type, Date startTime, Date endTime) {
+		return dao.findByTypeAndCreatedAtBetween(type,startTime,endTime);
 	}
 
 }

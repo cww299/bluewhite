@@ -1,5 +1,8 @@
 package com.bluewhite.onlineretailers.inventory.service;
 
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -29,5 +32,14 @@ public interface ProcurementService  extends BaseCRUDService<Procurement,Long>{
 	 * @return
 	 */
 	int deleteProcurement(String ids);
+	
+	/**
+	 * 根据时间和类型获取单据
+	 * @param type
+	 * @param date
+	 * @param beginTime
+	 * @return
+	 */
+	List<Procurement> findByTypeAndCreatedAt(int type, Date startTime, Date endTime);
 
 }
