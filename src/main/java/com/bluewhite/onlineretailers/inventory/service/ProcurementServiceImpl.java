@@ -109,6 +109,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				procurementChild.setCommodityId(jsonObject.getLong("commodityId"));
 				procurementChild.setNumber(jsonObject.getIntValue("number"));
 				procurementChild.setChildRemark(jsonObject.getString("childRemark"));
+				procurementChild.setResidueNumber(jsonObject.getIntValue("number"));
 				// 表示拥有上一阶段的单据，减少上一次单据的子单数量
 				if (procurement.getId() != null) {
 					// 减少子单数量
