@@ -39,5 +39,11 @@ public interface CommodityService  extends BaseCRUDService<Commodity,Long>{
 	 * @param warning
 	 */
 	public Warning saveWarning(Warning warning);
+	
+	/**
+	 * 批量删除仓库预警
+	 * @param ids
+	 */
+	public int deleteWarning(String ids);
 
 }

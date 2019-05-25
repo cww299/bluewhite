@@ -164,7 +164,7 @@ public class InventoryAction {
 						"weight", "size", "material", "fillers", "cost", "propagandaCost", "remark", "tianmaoPrice",
 						"OSEEPrice", "offlinePrice", "inventorys")
 				.addRetainTerm(Inventory.class, "number", "place", "warehouse")
-				.addRetainTerm(BaseData.class, "name")
+				.addRetainTerm(BaseData.class, "id","name")
 				.format(commodityService.findPage(commodity, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
@@ -184,6 +184,8 @@ public class InventoryAction {
 			commodityService.save(ot);
 			cr.setMessage("修改成功");
 		} else {
+			//同步商品名称
+			commodity.setName(commodity.getSkuCode());
 			commodityService.save(commodity);
 			cr.setMessage("新增成功");
 		}
@@ -266,7 +268,7 @@ public class InventoryAction {
 						"residueNumber", "type", "flag", "remark")
 				.addRetainTerm(ProcurementChild.class, "id", "commodity", "number", "residueNumber", "warehouse",
 						"status", "childRemark")
-				.addRetainTerm(Commodity.class, "id","name", "inventorys")
+				.addRetainTerm(Commodity.class, "id","skuCode","name", "inventorys")
 				.addRetainTerm(Inventory.class, "number", "place", "warehouse")
 				.addRetainTerm(User.class, "username")
 				.addRetainTerm(BaseData.class, "name")

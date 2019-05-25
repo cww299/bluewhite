@@ -123,7 +123,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 				Product products1 = productDao.findByDepartmentNumber(proPoi.getNumber());
 				//下面存入各部门产品编号
 				if(products!=null || products1!=null){
-					throw new ServiceException("已有该产品编号的产品，请检查后再次添加");
+					throw new ServiceException("已有产品编号为"+proPoi.getNumber()+"的产品，请检查后再次添加");
 				}else{
 					//同时判断各部门的编号是否和最终的产品编号位数相同，如果相同，则存入产品编号中，同时清空来源部门，让产品变成共同的集合
 					if(proPoi.getNumber().length()==7){
@@ -134,7 +134,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 						productList.add(pro);
 						count++;
 					}else{
-						throw new ServiceException("编号不符合规范");
+						throw new ServiceException(proPoi.getNumber()+"的编号不符合规范");
 					};
 				}
 			}
