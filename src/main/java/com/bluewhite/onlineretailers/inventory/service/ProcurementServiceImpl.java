@@ -161,6 +161,8 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 						}
 						commodityService.save(commodity);
 					}
+				}else{
+					procurementChild.setResidueNumber(jsonObject.getIntValue("number"));
 				}
 				// 将子单放入父单
 				upProcurement.getProcurementChilds().add(procurementChild);
