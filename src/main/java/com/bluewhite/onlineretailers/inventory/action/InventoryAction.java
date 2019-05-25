@@ -311,11 +311,11 @@ public class InventoryAction {
 	 * 
 	 * 
 	 */
-	@RequestMapping(value = "/inventory/checkWarning", method = RequestMethod.POST)
+	@RequestMapping(value = "/inventory/checkWarning", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse checkWarning() {
 		CommonResponse cr = new CommonResponse();
-		commodityService.checkWarning();
+		cr.setData(commodityService.checkWarning());
 		cr.setMessage("新增成功");
 		return cr;
 	}
@@ -339,7 +339,7 @@ public class InventoryAction {
 	 * 
 	 * 
 	 */
-	@RequestMapping(value = "/inventory/deleteWarning", method = RequestMethod.POST)
+	@RequestMapping(value = "/inventory/deleteWarning", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse deleteWarning(String ids) {
 		CommonResponse cr = new CommonResponse();
