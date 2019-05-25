@@ -29,6 +29,7 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
+import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineCustomer;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrderChild;
@@ -44,12 +45,11 @@ import com.bluewhite.system.sys.entity.RegionAddress;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.entity.UserContract;
 
-
 @Controller
 public class InventoryAction {
-	
-private static final Log log = Log.getLog(InventoryAction.class);
-	
+
+	private static final Log log = Log.getLog(InventoryAction.class);
+
 	@Autowired
 	private OnlineOrderService onlineOrderService;
 	@Autowired
@@ -58,43 +58,38 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	private CommodityService commodityService;
 	@Autowired
 	private ProcurementService procurementService;
-	
+
 	private ClearCascadeJSON clearCascadeJSON;
 	{
-	clearCascadeJSON = ClearCascadeJSON
-			.get()
-			.addRetainTerm(OnlineOrder.class,"id","user","sellerNick","picPath","payment"
-					,"sellerRate","postFee","onlineCustomer","consignTime"
-					,"receivedPayment","tid","buyerRemarks","num","payTime"
-					,"endTime","status","documentNumber","allBillPreferential","trackingNumber"
-					,"buyerMessage","buyerMemo","buyerFlag","sellerMemo","sellerFlag","buyerRate"
-					,"warehouse","shippingType","createdAt","updatedAt","onlineOrderChilds"
-					,"address","phone","zipCode","buyerName","provinces","city","county")
-			.addRetainTerm(OnlineOrderChild.class,"id","number","commodity","price",
-					"sumPrice","systemPreferential","sellerReadjustPrices","actualSum","status") 
-			.addRetainTerm(User.class,"id","userName")
-			.addRetainTerm(RegionAddress.class,"id","regionName","parentId");
+		clearCascadeJSON = ClearCascadeJSON.get()
+				.addRetainTerm(OnlineOrder.class, "id", "user", "sellerNick", "picPath", "payment", "sellerRate",
+						"postFee", "onlineCustomer", "consignTime", "receivedPayment", "tid", "buyerRemarks", "num",
+						"payTime", "endTime", "status", "documentNumber", "allBillPreferential", "trackingNumber",
+						"buyerMessage", "buyerMemo", "buyerFlag", "sellerMemo", "sellerFlag", "buyerRate", "warehouse",
+						"shippingType", "createdAt", "updatedAt", "onlineOrderChilds", "address", "phone", "zipCode",
+						"buyerName", "provinces", "city", "county")
+				.addRetainTerm(OnlineOrderChild.class, "id", "number", "commodity", "price", "sumPrice",
+						"systemPreferential", "sellerReadjustPrices", "actualSum", "status")
+				.addRetainTerm(User.class, "id", "userName")
+				.addRetainTerm(RegionAddress.class, "id", "regionName", "parentId");
 	}
-	
-	
-	
-	/****** 订单  *****/
-	
-	/** 
+
+	/****** 订单 *****/
+
+	/**
 	 * 获取销售单列表
 	 * 
 	 */
 	@RequestMapping(value = "/inventory/onlineOrderPage", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse onlineOrderPage(OnlineOrder onlineOrder , PageParameter page) {
-		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(onlineOrderService.findPage(onlineOrder,page))
-				.toJSON());
+	public CommonResponse onlineOrderPage(OnlineOrder onlineOrder, PageParameter page) {
+		CommonResponse cr = new CommonResponse(
+				clearCascadeJSON.format(onlineOrderService.findPage(onlineOrder, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
-	/** 
+
+	/**
 	 * 新增销售单
 	 * 
 	 */
@@ -106,30 +101,30 @@ private static final Log log = Log.getLog(InventoryAction.class);
 		cr.setMessage("新增成功");
 		return cr;
 	}
-	
+
 	/**
-	 *  新增销售单(导入)                         
+	 * 新增销售单(导入)
+	 * 
 	 * @param response
 	 * @param request
 	 * @return
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	@RequestMapping(value = "/inventory/import/test",method = RequestMethod.POST)
+	@RequestMapping(value = "/inventory/import/test", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse importProduct(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request) throws IOException{
+	public CommonResponse importProduct(@RequestParam(value = "file", required = false) MultipartFile file,
+			HttpServletRequest request) throws IOException {
 		CommonResponse cr = new CommonResponse();
 		InputStream inputStream = file.getInputStream();
 		ExcelListener excelListener = new ExcelListener();
-        EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1,OnlineOrderPoi.class), excelListener);
-        onlineOrderService.excelOnlineOrder(excelListener);
-        inputStream.close();
+		EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1, OnlineOrderPoi.class), excelListener);
+		onlineOrderService.excelOnlineOrder(excelListener);
+		inputStream.close();
 		return cr;
 	}
-	
-	/** 
-	 * 一键发货
-	 * 1.将父订单的状态改变成发货状态和一个仓库时，所有子订单的发货状态和仓库改变
-	 * 2.子订单部分发货和不同仓库
+
+	/**
+	 * 一键发货 1.将父订单的状态改变成发货状态和一个仓库时，所有子订单的发货状态和仓库改变 2.子订单部分发货和不同仓库
 	 * （将销售状态改变,同时减少库存）
 	 * 
 	 */
@@ -138,12 +133,11 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	public CommonResponse delivery(String delivery) {
 		CommonResponse cr = new CommonResponse();
 		int count = onlineOrderService.delivery(delivery);
-		cr.setMessage("成功发货"+count+"销售单");
+		cr.setMessage("成功发货" + count + "销售单");
 		return cr;
 	}
-	
-	
-	/** 
+
+	/**
 	 * 一键反冲销售单(整单)
 	 * 
 	 */
@@ -152,26 +146,31 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	public CommonResponse deleteOnlineOrder(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = onlineOrderService.deleteOnlineOrder(ids);
-		cr.setMessage("成功删除"+count+"条销售单");
+		cr.setMessage("成功删除" + count + "条销售单");
 		return cr;
 	}
-	
-	
-	/****** 商品  *****/
-	/** 
+
+	/****** 商品 *****/
+	/**
 	 * 获取商品列表
 	 * 
 	 */
 	@RequestMapping(value = "/inventory/commodityPage", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse commodityPage(Commodity commodity , PageParameter page) {
-		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(commodityService.findPage(commodity,page))
-				.toJSON());
+	public CommonResponse commodityPage(Commodity commodity, PageParameter page) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON.get()
+				.addRetainTerm(Commodity.class, "id", "productID", "skuCode", "fileId", "picUrl", "name", "description",
+						"weight", "size", "material", "fillers", "cost", "propagandaCost", "remark", "tianmaoPrice",
+						"OSEEPrice", "offlinePrice", "inventorys")
+				.addRetainTerm(Inventory.class, "number", "place", "warehouse")
+				.addRetainTerm(BaseData.class, "name")
+				.format(commodityService.findPage(commodity, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	/** 
+
+	/**
 	 * 新增商品
 	 * 
 	 */
@@ -179,20 +178,19 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	@ResponseBody
 	public CommonResponse addCommodity(Commodity commodity) {
 		CommonResponse cr = new CommonResponse();
-		if(commodity.getId()!=null){
-			Commodity ot  = commodityService.findOne(commodity.getId());
-			BeanCopyUtils.copyNotEmpty(commodity,ot,"");
+		if (commodity.getId() != null) {
+			Commodity ot = commodityService.findOne(commodity.getId());
+			BeanCopyUtils.copyNotEmpty(commodity, ot, "");
 			commodityService.save(ot);
 			cr.setMessage("修改成功");
-		}else{
+		} else {
 			commodityService.save(commodity);
 			cr.setMessage("新增成功");
 		}
 		return cr;
 	}
-	
-	
-	/** 
+
+	/**
 	 * 删除商品
 	 * 
 	 */
@@ -200,30 +198,27 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	@ResponseBody
 	public CommonResponse deleteCommodity(String ids) {
 		CommonResponse cr = new CommonResponse();
-		int count = commodityService.deleteCommodity(ids);   
-		cr.setMessage("成功删除"+count+"件商品");
+		int count = commodityService.deleteCommodity(ids);
+		cr.setMessage("成功删除" + count + "件商品");
 		return cr;
 	}
-	
-	
-	
-	
-	/****** 客户  *****/
-	
-	/** 
+
+	/****** 客户 *****/
+
+	/**
 	 * 获取客户列表
 	 * 
 	 */
 	@RequestMapping(value = "/inventory/onlineCustomerPage", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse onlineCustomerPage(OnlineCustomer onlineCustomer , PageParameter page) {
-		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(onlineCustomerService.findPage(onlineCustomer,page))
-				.toJSON());
+	public CommonResponse onlineCustomerPage(OnlineCustomer onlineCustomer, PageParameter page) {
+		CommonResponse cr = new CommonResponse(
+				clearCascadeJSON.format(onlineCustomerService.findPage(onlineCustomer, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	/** 
+
+	/**
 	 * 新增客户
 	 * 
 	 */
@@ -232,16 +227,15 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	public CommonResponse addOnlineCustomer(OnlineCustomer onlineCustomer) {
 		CommonResponse cr = new CommonResponse();
 		onlineCustomerService.save(onlineCustomer);
-		if(onlineCustomer.getId()!=null){
+		if (onlineCustomer.getId() != null) {
 			cr.setMessage("修改成功");
-		}else{
+		} else {
 			cr.setMessage("新增成功");
 		}
 		return cr;
 	}
-	
-	
-	/** 
+
+	/**
 	 * 删除客户
 	 * 
 	 */
@@ -250,37 +244,38 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	public CommonResponse deleteOnlineCustomer(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = onlineCustomerService.deleteOnlineCustomer(ids);
-		cr.setMessage("成功删除"+count+"个客户");
+		cr.setMessage("成功删除" + count + "个客户");
 		return cr;
 	}
-	
-	
-	/**** 采购  ***/
-	
+
+	/**** 采购 ***/
+
 	/**
 	 * 分页查看出库入库单
+	 * 
 	 * @param onlineCustomer
 	 * @param page
 	 * @return
 	 */
 	@RequestMapping(value = "/inventory/procurementPage", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse procurementPage(Procurement procurement , PageParameter page) {
+	public CommonResponse procurementPage(Procurement procurement, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(ClearCascadeJSON
-				.get()
-				.addRetainTerm(Procurement.class, "id","batchNumber", "user","procurementChilds",
-						"number","residueNumber","type","flag","remark")
-				.addRetainTerm(ProcurementChild.class, "id","commodity", "number","residueNumber",
-						"warehouse","status","childRemark")
-				.addRetainTerm(User.class,"username")
-				.addRetainTerm(BaseData.class,"name")
-				.format(procurementService.findPage(procurement,page)).toJSON());
+		cr.setData(ClearCascadeJSON.get()
+				.addRetainTerm(Procurement.class, "id", "batchNumber", "user", "procurementChilds", "number",
+						"residueNumber", "type", "flag", "remark")
+				.addRetainTerm(ProcurementChild.class, "id", "commodity", "number", "residueNumber", "warehouse",
+						"status", "childRemark")
+				.addRetainTerm(Commodity.class, "id","name", "inventorys")
+				.addRetainTerm(Inventory.class, "number", "place", "warehouse")
+				.addRetainTerm(User.class, "username")
+				.addRetainTerm(BaseData.class, "name")
+				.format(procurementService.findPage(procurement, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	/** 
+
+	/**
 	 * 新增生产单
 	 * 
 	 * 
@@ -293,9 +288,8 @@ private static final Log log = Log.getLog(InventoryAction.class);
 		cr.setMessage("新增成功");
 		return cr;
 	}
-	
-	
-	/** 
+
+	/**
 	 * 一键反冲单据(整单)
 	 * 
 	 */
@@ -304,15 +298,13 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	public CommonResponse deleteProcurement(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = procurementService.deleteProcurement(ids);
-		cr.setMessage("成功反冲"+count+"个客户");
+		cr.setMessage("成功反冲" + count + "条单据");
 		return cr;
 	}
-	
-	
-	/**************    预警设置    *************/
-	
-	
-	/** 
+
+	/************** 预警设置 *************/
+
+	/**
 	 * 自动检测预警数据
 	 * 
 	 * 
@@ -325,8 +317,8 @@ private static final Log log = Log.getLog(InventoryAction.class);
 		cr.setMessage("新增成功");
 		return cr;
 	}
-	
-	/** 
+
+	/**
 	 * 新建（修改）仓库预警
 	 * 
 	 * 
@@ -339,17 +331,26 @@ private static final Log log = Log.getLog(InventoryAction.class);
 		cr.setMessage("新增成功");
 		return cr;
 	}
-	
-	
+
+	/**
+	 * 删除仓库预警
+	 * 
+	 * 
+	 */
+	@RequestMapping(value = "/inventory/deleteWarning", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse deleteWarning(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = commodityService.deleteWarning(ids);
+		cr.setMessage("成功删除" + count + "条库存预警");
+		return cr;
+	}
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
-		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
-				DateTimePattern.DATEHMS.getPattern());
-		binder.registerCustomEditor(java.util.Date.class, null,
-				new CustomDateEditor(dateTimeFormat, true));
-		binder.registerCustomEditor(byte[].class,
-				new ByteArrayMultipartFileEditor());
+		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(DateTimePattern.DATEHMS.getPattern());
+		binder.registerCustomEditor(java.util.Date.class, null, new CustomDateEditor(dateTimeFormat, true));
+		binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
 	}
 
 }
