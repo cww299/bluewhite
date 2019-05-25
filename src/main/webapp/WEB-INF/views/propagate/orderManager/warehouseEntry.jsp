@@ -7,11 +7,14 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>入库单</title>
+<title>生产单</title>
 <style>
 .layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
      top: 50%;
      transform: translateY(-50%);
+}
+td{
+	text-align:center;
 }
 </style>
 </head>
@@ -22,28 +25,77 @@
 	<div class="layui-card-body">
 		<table class="layui-form">
 			<tr>
-				<td><input type="text" class="layui-input" name="" id="" placeHolder="请输入日期"></td>
+				<td><select name=""><option>按批次号</option></select>
 				<td>&nbsp;&nbsp;</td>
-				<td><select name=""><option value="">按单据编号</option></select>
+				<td><input type="text" class="layui-input" name="batchNumber" placeholder='请输入要查找的相关信息'></td>
 				<td>&nbsp;&nbsp;</td>
-				<td><input type="text" class="layui-input" name=""></td>
+				<td><select name="warehouseId" id='warehouseIdSelect'><option value="">入库仓库</option></select>
+				<td>&nbsp;&nbsp;</td>
+				<td><select name="status"><option value="">入库类型</option>
+									<option value="0">生产入库</option>
+									<option value="1">调拨入库</option>
+									<option value="2">销售退货入库 </option>
+									<option value="3">销售换货入库</option>
+									<option value="4">采购入库</option></select>
+				<td>&nbsp;&nbsp;</td>
+				<td><select name="flag"><option value="">是否反冲</option><option value="1">反冲</option><option value="0">未反冲</option></select>
 				<td>&nbsp;&nbsp;</td>
 				<td><span class="layui-btn" lay-submit lay-filter="search">搜索</span></td>
 			</tr>
 		</table>
-		<table class="layui-table" id="warehouseTable" lay-filter="warehouseTable"></table>
+		<table class="layui-table" id="productOrderTable" lay-filter="productOrderTable"></table>
 	</div>
 </div>
+
+<!-- 添加订单隐藏框  -->
+<div id="addOrderDiv" style="display:none;padding:10px;">
+	<table class="layui-form layui-table">
+		<tr><td>批次号<input type="hidden" name="type" value="2" ></td>	<!-- 默认type类型为2，表示为入库单 -->
+			<td><input type="text" class="layui-input" name='batchNumber' lay-verify='required'></td>
+			<td>经手人</td>
+			<td><select name="userId"><option value="1" >测试人admin</option></select></td>
+			<td>备注</td>
+			<td colspan="3"><input type="text" name="remark" class="layui-input"></td></tr>
+		<tr>
+			<td>入库数量</td>
+			<td><input type="text" class="layui-input" name='number' id="addOrderNumber" value='0' id="become_bacthNumber" readonly></td>
+			<td>默认入库仓库</td>
+			<td><select lay-filter="defaultSelect" type='inventory' id='defaultInventorySelect'><option value="">获取数据中.....</option></select></td>
+			<td>默认入库类型</td>
+			<td><select lay-filter="defaultSelect" type='status'>
+						<option value="0">生产入库</option>
+						<option value="1">调拨入库</option>
+						<option value="2">销售退货入库</option>
+						<option value="3">销售换货入库 </option>
+						<option value="4">采购入库</option></select></td>
+			<td>操作</td>
+			<td><span class="layui-btn" lay-submit lay-filter="sureAdd" >确定</span></td></tr>
+	</table>
+	<table class="layui-table" id="productListTable" lay-filter="productListTable"></table>
+</div>
+
+<!-- 查看订单隐藏框  -->
+<div id="lookoverOrderDiv" style="display:none;padding:10px;">
+	<table class="layui-form layui-table" lay-skin="line">
+		<tr><td>批次号</td>	
+			<td><input type="text" class="layui-input" readonly id="look_batchNumber"></td>
+			<td>经手人</td>
+			<td><select disabled><option value="1" id="look_userName">测试人admin</option></select></td>
+			<td>总数量</td>
+			<td><input type="text" class="layui-input" id="look_number" readonly></td></tr>
+		<tr><td>备注</td>
+			<td colspan="5"><input type="text" id="look_remark" class="layui-input" readonly></td></tr>
+	</table>
+	<table class="layui-table" id="lookOverProductListTable" lay-filter="lookOverProductListTable"></table>
+</div>
+
 
 <!-- 商品选择隐藏框 -->
 <div id="productChooseDiv" style="display:none;">
 	<table class="layui-form" lay-filter="productChooseTool">
 		<tr>
-			<td><select><option value="">出售中			</option></select></td>			<td>&nbsp;</td>
-			<td><select><option value="">按产品分类		</option></select></td>			<td>&nbsp;</td>
-			<td><select><option value="">按淘宝宝贝分类	</option></select></td>			<td>&nbsp;</td>
 			<td><select><option value="">按产品名称		</option></select></td>			<td>&nbsp;</td>
-			<td><input type="text" class="layui-input"></td>							<td>&nbsp;</td>
+			<td><input type="text" class="layui-input" name="skuCode" placeholder="请输入查找的商品名"></td>				<td>&nbsp;</td>
 			<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProduct" >
 					<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i></button></td>					<td>&nbsp;</td>
 			<td><button type="button" class="layui-btn layui-btn-sm" id="addNewProduct" >添加新商品</button></td>		<td>&nbsp;</td>
@@ -53,99 +105,59 @@
 	<table class="layui-table" id="productChooseTable" lay-filter="productChooseTable"></table>
 </div>
 
+
 <!-- 添加新商品隐藏框 -->
-<form style="display:none;" id="addNewProductWin">
-	<table class="layui-form layui-table" >
-		<tr><td>商品名称</td>
-			<td><input type="text" class="layui-input" lay-verify="required" name="name"></td>
-			<td>商品重量</td>
-			<td><input type="text" class="layui-input" name="weight"></td></tr>
-		<tr><td>商品材质</td>
-			<td><input type="text" class="layui-input" name="material"></td>
-			<td>商品规格</td>
-			<td><input type="text" class="layui-input" lay-verify="required" name="size"></td></tr>
-		<tr><td>商品填充物</td>
-			<td><input type="text" class="layui-input" name="fillers"></td>
-			<td>商品成本</td>
-			<td><input type="text" class="layui-input" name="cost"></td></tr>
-		<tr><td>库存数量</td>
-			<td><input type="text" class="layui-input" name="quantity"></td>
-			<td>仓库类型</td>
-			<td><input type="text" class="layui-input" name="warehouse"></td></tr>
-		<tr><td>商品单价</td>
-			<td><input type="text" class="layui-input" lay-verify="required" name="price"></td>
-			<td>广宣成本</td>
-			<td><input type="text" class="layui-input" name="propagandaCost"></td></tr>
-		<tr><td>商品编号</td>
-			<td><input type="text" class="layui-input" lay-verify="required" name="number"></td>
-			<td>备注</td>
-			<td><textarea type="text" class="layui-input" name="remark"></textarea></td></tr>
-		<tr><td colspan="4"><button type="button" lay-submit lay-filter="sureAddNew" class="layui-btn layui-btn-sm">确定</button>
-							<button type="reset" class="layui-btn layui-btn-sm">重置</button></td></tr>
-	</table>
+<form class="layui-form layui-table" style="display:none;" id="addNewProductWin">
+<table style="width:100%;">
+	<tr><td>商品名称</td>
+		<td><input type="text" class="layui-input" lay-verify="required"	name="skuCode"></td>
+		<td>1688批发价</td>
+		<td><input type="text" class="layui-input" lay-verify="number"		name="OSEEPrice"></td></tr>
+	<tr><td>天猫单价</td>
+		<td><input type="text" class="layui-input" lay-verify="number"		name="tianmaoPrice"> </td>
+		<td>线下批发价</td>
+		<td><input type="text" class="layui-input" lay-verify="number"		name="offlinePrice"></td></tr>
+	<tr><td>商品重量</td>
+		<td><input type="text" class="layui-input" lay-verify="number"		name="weight" ></td>
+		<td>商品高度</td>
+		<td><input type="text" class="layui-input" lay-verify="number"		name="size" ></td></tr>
+	<tr><td>商品成本</td>
+		<td><input type="text" class="layui-input" lay-verify="number"		name="cost"></td>
+		<td>广宣成本</td>
+		<td><input type="text" class="layui-input" lay-verify="number"		name="propagandaCost" ></td></tr>
+	<tr><td>商品填充物</td>
+		<td><input type="text" class="layui-input" name="fillers"></td>
+		<td>商品材质</td>
+		<td><input type="text" class="layui-input" name="material"></td></tr>
+	<tr><td>备注</td>
+		<td colspan="3"><textarea type="text" class="layui-input" name="remark"></textarea></td></tr>
+	<tr><td colspan="4"><button type="reset"   class="layui-btn layui-btn-sm layui-btn-danger">清空</button>
+						<button type="button"  class="layui-btn layui-btn-sm"  lay-submit lay-filter="sureAddNew">确定</button></td></tr>
+</table>
 </form>
-<!-- 入库单表格工具栏 -->
-<script type="text/html" id="warehouseTableToolbar" >
+
+<!-- 生产单表格工具栏 -->
+<script type="text/html" id="productOrderTableToolbar" >
 <div  class="layui-button-container">
 	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增</span>
-	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除</span>
-	<span lay-event="update"  class="layui-btn layui-btn-sm" >查看</span>
+	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >一键反冲</span>
+	<span class="layui-badge" >小提示：双击查看详细信息</span>
 </div>
 </script>
 
-<script type="text/html" id="addEditTpl">
-<div class="padding:10px;">
-<table class="layui-form layui-table">
-	<tr><td>入库类型 <input type="hidden" name="id" value="{{ d.id }}">
-					<input type="hidden" name="type" value="0"></td></td>
-		<td><select name="status">
-								  <option value="0" {{ d.status=="0"?'selected':'' }}>采购入库</option>
-								  <option value="1" {{ d.status=="1"?'selected':'' }}>销售退货入库</option>
-								  <option value="2" {{ d.status=="2"?'selected':'' }}>销售换货入库</option>
-								  <option value="3" {{ d.status=="3"?'selected':'' }}>生产入库</option></select>
-		<td>入库仓库</td>
-		<td><select name="warehouse">
-									 <option value="0" {{ d.warehouse=="0"?'selected':'' }}>主仓库</option>
-									 <option value="1" {{ d.warehouse=="1"?'selected':'' }}>客供仓库</option>
-									 <option value="2" {{ d.warehouse=="2"?'selected':'' }}>次品</option></select></td>
-		<td>经手人</td>
-		<td><select name="userId" value="{{ d.userId }}"><option value="1">管理员</option></select></td></tr>
-	<tr><td>备注</td>
-		<td colspan="3"><input type="text" name="remark" class="layui-input" value="{{ d.remark }}"></td>
-		<td>操作</td>
-		<td><span class="layui-btn" lay-submit lay-filter="sureAdd" >确定</span></td></tr>
-</table>
-<table class="layui-table" id="productListTable" lay-filter="productListTable"></table>
-</div>
-</script>
-<!-- 入库单商品列表表格工具栏 -->
+<!-- 商品列表表格工具栏 -->
 <script type="text/html" id="productListTableToolbar" >
 <div  class="layui-button-container">
 	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增</span>
 	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除</span>
 </div>
 </script>
-<!-- 入库类型转换模板 -->
-<script type="text/html" id="statusTpl">
-{{# if(d.status==0){  }}
-	<span class="layui-badge layui-bg-orange">采购入库</span>
-{{# }else if(d.status==1){  }}
-	<span class="layui-badge layui-bg-green">销售退货入库</span>
-{{# }else if(d.status==2){  }}
-	<span class="layui-badge layui-bg-cyan">销售换货入库</span>
-{{# }else if(d.status==3){  }}
-	<span class="layui-badge layui-bg-blue">生产入库</span>
-{{# } }}
-</script>
-<!-- 入库仓库类型转换 -->
-<script type="text/html" id="warehouseTpl">
-{{# if(d.warehouse==0){  }}
-	<span class="layui-badge layui-bg-orange">主仓库</span>
-{{# }else if(d.warehouse==1){  }}
-	<span class="layui-badge layui-bg-green">客供仓库</span>
-{{# }else if(d.warehouse==2){  }}
-	<span class="layui-badge layui-bg-cyan">次品</span>
-{{# } }}
+
+<!-- 是否反冲转换模板 -->
+<script type="text/html" id="flagTpl">
+	{{# var color=d.flag==1?'':'green';
+		var msg=d.flag==1?'反冲数据':'未反冲';}}
+	<span class="layui-badge layui-bg-{{ color }}">{{ msg }}</span>
 </script>
 
 </body>
@@ -161,183 +173,59 @@ layui.config({
 		, layer = layui.layer 				
 		, form = layui.form			 		
 		, table = layui.table 
-		, laytpl = layui.laytpl
 		, tablePlug = layui.tablePlug;
 		
-		/*参数说明：
-			choosedProduct：新增、修改入库单时，用于记录本订单已经选择的商品列表
-			productListTable：显示已经选择的商品列表表格
-			productChooseTable：打开商品选择时，所有的商品显示的表格
-			warehouseTable：主页面显示的订单表格
-			addNewProductWin：添加新商品的弹窗
-			chooseProductWin：选择商品的弹窗
-		*/
-		var chooseProductWin
-		,addNewProductWin
-		,choosedProduct=[];			//用户已经选择上的产品
+		var chooseProductWin;		//选择商品弹窗
+		var allInventory=[];		//所有仓库
+		
+		getAllInventory();
+		renderInventorySelect('warehouseIdSelect');
+		renderInventorySelect('defaultInventorySelect');
 		
 		form.render();
-		
-		table.render({				//渲染主页面入库单表格
-			elem:'#warehouseTable',
-			url:'${ctx}/inventory/procurementPage?type=0',
-			toolbar:'#warehouseTableToolbar',
+		table.render({				//渲染主页面单表格
+			elem:'#productOrderTable',
+			url:'${ctx}/inventory/procurementPage?type=2',
+			toolbar:'#productOrderTableToolbar',
 			loading:true,
-			page:true,
-			request:{
-				pageName:'page',
-				limitName:'size'
-			},
+			page:{},
+			request:{pageName:'page',limitName:'size'},
 			parseData:function(ret){
-				return {
-					data:ret.data.rows,
-					count:ret.data.total,
-					msg:ret.message,
-					code:ret.code
-				}
-			},
+				return {data:ret.data.rows,count:ret.data.total,msg:ret.message,code:ret.code}},
 			cols:[[
 			       {align:'center', type:'checkbox',},
-			       {align:'center', title:'单据编号',   field:'id',		   width:'',},
-			       {align:'center', title:'入库类型',   field:'status',	   width:'', templet:'#statusTpl',},
-			       {align:'center', title:'日期',   		field:'createdAt', width:'', },
-			       {align:'center', title:'入库仓库',   field:'warehouse',  width:'', templet:'#warehouseTpl'},
-			       {align:'center', title:'购买数量', 	field:'number'},
-			       {align:'center', title:'经手人',templet:'<p>{{ d.user.userName }}</p>'},
+			       {align:'center', title:'批次号',   field:'batchNumber',		   width:'',},
+			       {align:'center', title:'计划总数量', field:'number'},
+			       {align:'center', title:'剩余总数量', field:'residueNumber'},
+			       {align:'center', title:'经手人',	templet:'<p>{{ d.user }}</p>'},
 			       {align:'center', title:'备注', 	field:'remark'},
+			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl'},
 			       ]]
 		})
 		
-		table.on('toolbar(warehouseTable)',function(obj){	//监听入库单表格按钮
+		table.on('toolbar(productOrderTable)',function(obj){	//监听单表格按钮
 			switch(obj.event){
-			case 'add':		addEdit('add');		break;
-			case 'update':	addEdit('edit'); 	break;
-			case 'delete':	deletes();			break;
+			case 'add':			add();			break;
+			case 'delete':		deletes();		break;
 			}
 		})
 		
-		function addEdit(type){										//新增、编辑入库单
-			choosedProduct=[];										//清空已选中的商品内容
-			var data={ id:'',status:0,warehouse:0,userId:0,remark:'' },
-			title='新增入库单',
-			html='',
-			choosed=layui.table.checkStatus('warehouseTable').data,
-			tpl=addEditTpl.innerHTML;
-			if(type=='edit'){
-				if(choosed.length>1){
-					layer.msg('无法同时编辑多条信息',{icon:2});
-					return;
-				}
-				if(choosed.length<1){
-					layer.msg("请选择编辑",{icon:2});
-					return;
-				}
-				title="修改入库单";
-				data=choosed[0];
-				var numberList=eval('(' + data.commodityNumber + ')');
-				for(var i=0;i<data.commoditys.length;i++){
-					choosedProduct.push(data.commoditys[i])
-					choosedProduct[i].number=numberList[i].number;
-				}
-			}
-			laytpl(tpl).render(data,function(h){					//渲染新增、编辑入库单的模板
-				html=h;
+		table.on('rowDouble(productOrderTable)',function(obj){
+			lookover(obj.data);
+		})
+		form.on('submit(search)',function(obj){
+			table.reload('productOrderTable',{
+				where:obj.field
 			})
-			var addEditWin=layer.open({
-				type:1,
-				title:title,
-				area:['90%','90%'],
-				content:html
-			})
-			form.render();
-			table.render({										//渲染选择后的商品表格
-				elem:'#productListTable',
-				toolbar:'#productListTableToolbar',
-				size:'lg',
-				data:choosedProduct,
-				loading:true,
-				cols:[[
-				       {type:'checkbox', align:'center', fixed:'left'},
-				       {align:'center', title:'商品名称', field:'name',},
-				       {align:'center', title:'成本', 	  field:'cost',},
-				       {align:'center', title:'仓库类型', field:'warehouse', templet:"#warehouseTpl",},
-				       {align:'center', title:'总库存',   field:'quantity',},
-				       {align:'center', title:'数量',     field:'number', edit:'true',},
-				       {align:'center', title:'销售价',   field:'price',},
-				       {align:'center', title:'备注', 	  field:'remark',}, 
-				       ]]
-			})
-			table.on('toolbar(productListTable)',function(obj){		//监听选择商品表格的工具栏按钮
-				switch(obj.event){
-				case 'add': openChooseProductWin(); break;
-				case 'delete':deleteChoosedProduct();break;
-				}
-			})
-			table.on('edit(productListTable)', function(obj){ 			//监听编辑表格单元
-				if(isNaN(obj.value)){
-					layer.msg("修改无效！请输入正确的数字",{icon:2});
-				}
-				else
-					for(var i=0;i<choosedProduct.length;i++){
-						/* if(choosedProduct[i].commodityId==obj.data.commodityId){		//重新对该行的相关数据进行计算
-							var choosed=choosedProduct[i];
-							choosed[obj.field]=obj.value;
-							choosed.sumPrice=choosed.number*choosed.price;
-							choosed.actualSum=(choosed.price-(-choosed.sellerReadjustPrices)-choosed.systemPreferential)*choosed.number;
-							choosedProduct[i][obj.field]=obj.value;
-							choosedProduct[i].sumPrice=choosed.sumPrice;
-							choosedProduct[i].actualSum=choosed.actualSum;
-						}
-						allPayment+=choosedProduct[i].actualSum;	//计算收款金额 */
-					}
-				table.reload('productListTable',{
-					data:choosedProduct
-				})
-			});
-			form.on('submit(sureAdd)',function(obj){					//确定添加入库单
-				var data=obj.field;
-				if(choosedProduct.length==0){
-					layer.msg("请选择商品",{icon:2});
-					return;
-				}
-				var child=[],allNum=0;
-				for(var i=0;i<choosedProduct.length;i++){
-					child.push({commodityId:choosedProduct[i].commodityId,number:choosedProduct[i].number});
-					allNum+=choosedProduct[i].number;
-				}
-				data.number=allNum;
-				data.commodityNumber=JSON.stringify(child);			//子列表商品
-				var load = layer.load(1);
-				$.ajax({
-					url:"${ctx}/inventory/addProcurement",
-					type:"post",
-					data:obj.field,			//总数量。单据号传递
-					success:function(result){
-						if(0==result.code){
-							table.reload('warehouseTable');
-							layer.msg(result.message,{icon:1});
-							layer.close(addEditWin);
-						}else{
-							layer.msg(result.message,{icon:2});
-						}
-						layer.close(load);
-					},
-					error:function(){
-						layer.msg("服务器异常",{icon:2});
-						layer.close(load);
-					}
-				})
-			}) 
-		}
-		function deletes(){							//删除入库单表格
-			var choosed=layui.table.checkStatus('warehouseTable').data;
+		})
+		
+		function deletes(){							//删除生产单表格
+			var choosed=layui.table.checkStatus('productOrderTable').data;
 			if(choosed.length<1){
-				layer.msg('请选择入库单',{icon:2});
+				layer.msg('请选择生产单',{icon:2});
 				return;
 			}
-			layer.msg('接口未完成');
-			return;
-			/* layer.confirm('是否确认删除？',function(){
+			layer.confirm('是否确认反冲？',function(){
 				var ids='';
 				for(var i=0;i<choosed.length;i++)
 					ids+=(choosed[i].id+',');
@@ -346,26 +234,205 @@ layui.config({
 					url:'${ctx}/inventory/deleteProcurement?ids='+ids,
 					success:function(result){
 						if(0==result.code){
-							table.reload('warehouseTable');
+							table.reload('productOrderTable');
 							layer.msg(result.message,{icon:1});
 						}else
 							layer.msg(result.message,{icon:2});
 						layer.close(load);
 					}
 				})
-			}) */
-		
+			})
 		}
+		
+		//-------查看入库单功能--------------------
+		function lookover(data){
+			layer.open({
+				type : 1,
+				title : '查看生产单',
+				area : ['90%','90%'],
+				content : $('#lookoverOrderDiv')
+			})
+			table.render({									//渲染选择后的商品表格
+				elem:'#lookOverProductListTable',
+				data:data.procurementChilds,
+				page:{},
+				loading:true,
+				cols:[[
+				       {align:'center', title:'商品名称',  templet:'<p>{{ d.commodity.skuCode }}</p>'},
+				       {align:'center', title:'数量',     field:'number',},
+				       {align:'center', title:'剩余数量', field:'residueNumber'},
+				       {align:'center', title:'入库仓库', 	  templet:function(d){return d.warehouse.name; },}, 
+				       {align:'center', title:'入库类型', 	 templet:function(d){return d.status;},}, 
+				       {align:'center', title:'备注', 	  field:'childRemark',}, 
+				       ]]
+			})
+			$('#look_batchNumber').val(data.batchNumber);
+			$('#look_remark').val(data.remark);
+			$('#look_number').val(data.number);
+			//$('#look_user').val(choosed[0].user);
+		}
+		//-------新增生产单功能---------------
+		var choosedProduct=[];		//用户已经选择上的产品,渲染新增单的产品表格数据
+		var defaultStatus=0;
+		var defaultInventory='';
+		function add(){										//新增单
+			defaultInventory=defaultInventory==''?allInventory[0].id:defaultInventory;
+			layer.open({
+				type : 1,
+				title : '新增生产单',
+				area : ['90%','90%'],
+				content : $('#addOrderDiv')
+			})
+			table.render({									//渲染选择后的商品表格
+				elem:'#productListTable',
+				toolbar:'#productListTableToolbar',
+				data:[],
+				page:{},
+				size:'lg',
+				loading:true,
+				cols:[[
+				       {type:'checkbox', align:'center', fixed:'left'},
+				       {align:'center', title:'商品名称', field:'skuCode',},
+				       {align:'center', title:'计划数量',     field:'number', edit:'true',},
+				       {align:'center', title:'入库仓库',     field:'warehouseId', templet: getInventorySelectHtml()},
+				       {align:'center', title:'入库类型',     field:'status',  templet: getStatusSelectHtml()},
+				       {align:'center', title:'仓位',  	 	  field:'place', 	edit : true,}, 
+				       {align:'center', title:'备注',  	  field:'childRemark', edit:true}, 
+				       ]],
+			   	done: function (res, curr, count) {	//设置下拉框初始			
+	                layui.each( $('select'), function (index, item) {
+	                    var elem = $(item);
+	                	if(elem.data('value')!=undefined)		
+	                    	elem.val(elem.data('value')).parents('div.layui-table-cell').css('overflow', 'visible');
+	                });
+	                form.render(); 
+	            },
+			})
+			table.reload('productListTable',{ data : choosedProduct });
+		}
+		table.on('toolbar(productListTable)',function(obj){		//监听选择商品表格的工具栏按钮
+			switch(obj.event){
+			case 'add': openChooseProductWin(); break;
+			case 'delete':deleteChoosedProduct();break;
+			}
+		})
+		form.on('select(selectStatus)', function (data) {		//监听数据表格中的 价格选择下拉框
+            var elem = $(data.elem);
+            var trElem = elem.parents('tr');
+            choosedProduct[trElem.data('index')].status = data.value;
+        });				
+		form.on('select(selectInventory)', function (data) {
+            var elem = $(data.elem);
+            var trElem = elem.parents('tr');
+            choosedProduct[trElem.data('index')].warehouseId = data.value;
+        });
+		form.on('select(defaultSelect)',function(obj){
+			switch(obj.elem.getAttribute('type')){
+			case 'inventory' : defaultInventory=obj.value;    break;
+			case 'status' : defaultStatus=obj.value; 		break;
+			}
+			table.reload('productListTable');
+		})
+		table.on('edit(productListTable)', function(obj){ 			//监听编辑表格单元
+			if(obj.field=='number'){
+				if(isNaN(obj.value))
+					layer.msg("修改无效！请输入正确的数字",{icon:2});
+				else if(obj.value=='')
+					layer.msg('计划的数量不能为空',{icon:2});
+				else if(obj.value<0)
+					layer.msg('计划的数量不能小于0',{icon:2});
+				else if(obj.value%1 !== 0)
+					 layer.msg('计划的数量必须为整数',{icon:2});
+				else
+					for(var i=0;i<choosedProduct.length;i++){
+						 if(choosedProduct[i].commodityId==obj.data.commodityId){		//重新对该行的相关数据进行计算
+						 	$('#addOrderNumber').val($('#addOrderNumber').val()-choosedProduct[i].number-(-parseInt(obj.value)));
+							choosedProduct[i].number=parseInt(obj.value);
+						 	layer.msg('修改成功！',{icon:1});
+						 	break;
+						}
+					}
+			}else{
+				for(var i=0;i<choosedProduct.length;i++){
+					 if(choosedProduct[i].commodityId==obj.data.commodityId){		//重新对该行的相关数据进行计算
+						 if(obj.field=='childRemark')
+							choosedProduct[i].childRemark=obj.data.childRemark;
+						 else
+							 choosedProduct[i].place = obj.value;
+					 	break;
+					}
+				}
+			}
+			table.reload('productListTable',{
+				data : choosedProduct
+			})
+		});
+		form.on('submit(sureAdd)',function(obj){					//确定添加入库单
+			var child=[],allNum=0;
+			for(var i=0;i<choosedProduct.length;i++){
+				var t=choosedProduct[i];			
+				if(t.number<1){
+					layer.msg('计划数量不能为0！',{icon:2});
+					return;
+				}
+				child.push({
+					commodityId : 	t.commodityId,
+					number : 		t.number,
+					warehouseId : 	t.warehouseId==undefined ? defaultInventory : t.warehouseId,
+					place : 		t.place==undefined ? '' : t.place,
+					status : 		t.status==undefined ? defaultStatus : t.status,
+					childRemark : 	t.childRemark==undefined ? '' : t.childRemark
+				});
+			}
+			
+			var data=obj.field;
+			data.number=$('#addOrderNumber').val();
+			data.commodityNumber=JSON.stringify(child);			//子列表商品
+			var load = layer.load(1);
+			$.ajax({
+				url:"${ctx}/inventory/addProcurement",
+				type:"post",
+				data:data,			
+				success:function(result){
+					if(0==result.code){
+						$('#resetAddOrder').click();
+						layer.closeAll();
+						table.reload('productOrderTable');
+						layer.msg(result.message,{icon:1});
+					}else{
+						layer.msg(result.message,{icon:2});
+					}
+					layer.close(load);
+				},
+				error:function(){
+					layer.msg("服务器异常",{icon:2});
+					layer.close(load);
+				}
+			})
+		}) 
+	
 		//选择商品隐藏框的按钮监听.添加商品弹窗共4个按钮监听。搜索、添加新商品、确定添加
-		$('#sure').on('click',function(){	;
+		$('#sure').on('click',function(){	
 			if(sureChoosed())											//如果选择成功
 				layer.close(chooseProductWin);							
 		})
-		$('#addNewProduct').on('click',function(){						//添加新产品
+		
+		$('#resetAddOrder').on('click',function(){			//此处如果加confirm提示。则新增成功时无法清空
+			$('#addRemark').val('');
+			$('#addBatchNumber').val('');
+			$('#addOrderNumber').val(0);
+			choosedProduct=[];	
+			table.reload('productListTable',{
+				data:choosedProduct
+			})
+		})
+		
+		
+		//----添加新商品功能--------------
+		$('#addNewProduct').on('click',function(){						
 			openAddNewPorductWin();
 		})
-	
-		//添加新产品隐藏框监听-------弹窗按钮---1个：确定添加
+
 		form.on('submit(sureAddNew)',function(obj){			
 			var load=layer.load(1);
 			$.ajax({
@@ -406,6 +473,33 @@ layui.config({
 				data:choosedProduct,
 			})
 		}
+		function openChooseProductWin(){					//商品选择隐藏框
+			chooseProductWin = layer.open({		
+				type:1,
+				title:'选择产品',
+				area:['80%','70%'],
+				content:$('#productChooseDiv'),
+			})
+			table.render({
+				elem:'#productChooseTable',
+				url:'${ctx}/inventory/commodityPage',
+				loading:true,
+				page:true,
+				request:{
+					pageName:'page',
+					limitName:'size'
+				},
+				parseData:function(ret){	
+					return{ code:ret.code, msg:ret.message, data:ret.data.rows, count:ret.data.total,}},
+				cols:[[
+				       {type:'checkbox', align:'center', fixed:'left'},
+				       {align:'center', title:'商品名称', field:'skuCode',},
+				       {align:'center', title:'成本', 	  field:'cost',},
+				       {align:'center', title:'备注', 	  field:'remark',}, 
+				      ]],
+			});
+			form.render();
+		}
 		function sureChoosed(){					//确定商品选择
 			var choosed=layui.table.checkStatus('productChooseTable').data;
 			if(choosed.length<1){
@@ -417,28 +511,26 @@ layui.config({
 				for(var j=0;j<choosedProduct.length;j++){	
 					if(choosedProduct[j].commodityId==choosed[i].id)	{			//判断选择的商品是否已存在选择列表
 						choosedProduct[j].number++;
+						$('#addOrderNumber').val($('#addOrderNumber').val()-(-1));
 						break;
 					}
 				}
 				if(!(j<choosedProduct.length) || choosedProduct.length==0){				//如果不存在
 					var orderChild={
-							name:choosed[i].name,			//商品名称
+							skuCode:choosed[i].skuCode,			//商品名称
 							commodityId:choosed[i].id,		//商品id
 							number:1,						//商品数量
 							cost:choosed[i].cost,			//成本
-							warehouse:choosed[i].warehouse, //仓库类型
-							quantity:choosed[i].quantity,	//总库存
 							remark:choosed[i].remark,		//备注
-							price:choosed[i].price,			//商品单价
-							actualSum:choosed[i].price,		//实际金额
 					};
+					$('#addOrderNumber').val($('#addOrderNumber').val()-(-1));
 					choosedProduct.push(orderChild);
 				} 
 			}
 			table.reload('productListTable',{
 				data:choosedProduct
 			});
-			layer.msg('添加成功');
+			layer.msg('添加成功',{icon:1});
 			return true;
 		}
 		
@@ -451,52 +543,65 @@ layui.config({
 			})
 			form.render();
 		}
-		function openChooseProductWin(){					//商品选择隐藏框
-			chooseProductWin = layer.open({		
-				type:1,
-				title:'选择产品',
-				area:['80%','85%'],
-				content:$('#productChooseDiv'),
-			})
-			table.render({
-				elem:'#productChooseTable',
-				size:'lg',
-				url:'${ctx}/inventory/commodityPage',
-				loading:true,
-				page:true,
-				height:'605',
-				request:{
-					pageName:'page',
-					limitName:'size'
-				},
-				parseData:function(ret){	
-					return{
-						code:ret.code, msg:ret.message, data:ret.data.rows, count:ret.data.total,
+		
+		function getAllInventory(){
+			$.ajax({
+				url:'${ctx}/basedata/list?type=inventory',
+				async:false,
+				success:function(r){
+					if(0==r.code){
+						allInventory=r.data;
 					}
-				},
-				cols:[[
-				       {type:'checkbox', align:'center', fixed:'left'},
-				       {align:'center', title:'商品名称', field:'name',},
-				       {align:'center', title:'成本', 	  field:'cost',},
-				       {align:'center', title:'仓库类型', field:'warehouse',},
-				       {align:'center', title:'总库存',   field:'quantity',},
-				       {align:'center', title:'销售价',   field:'price',},
-				       {align:'center', title:'备注', 	  field:'remark',}, 
-				      ]],
-			});
-			form.render();
+				}
+			})
 		}
-		
-		
-		
+		function renderInventorySelect(select){
+			var html='';
+			if(select!='defaultInventorySelect')
+				html='<option value="">入库仓库</option>';
+			if(allInventory.length==0){
+				html='<option value="">暂无仓库可使用</option>';
+			}else{
+				for(var i=0;i<allInventory.length;i++){
+					var t=allInventory[i],
+					    disable = t.flag==1?'':'disabled';
+					html+=('<option value="'+t.id+'" '+disable+'>'+t.name+'</option>');
+				}
+			}
+			$('#'+select).html(html);
+		}
+		function getStatusSelectHtml(){				//获取类型下拉框
+			return function(d) {		
+				var html='<select id="selectStatus" lay-filter="selectStatus" lay-search="true" data-value="'+defaultStatus+'"> '+
+						'<option value="0">生产入库</option>'+
+						'<option value="1">调拨入库</option>'+
+						'<option value="2">销售退货入库</option>'+
+						'<option value="3">销售换货入库 </option>'+
+						'<option value="4">采购入库</option>'+
+						'</select>';
+				return html;
+
+			};
+		}
+		function getInventorySelectHtml() {				//获取仓库下拉框
+			return function(d) {		
+				if(allInventory.length==0){
+					return '没有可用仓库';
+				}
+				var html='<select id="selectInventory" lay-filter="selectInventory" lay-search="true" data-value="'+defaultInventory+'"> ';
+				for(var i=0;i<allInventory.length;i++){
+					var disable = allInventory[i].flag==1?'':'disabled';
+					html+='<option value="'+allInventory[i].id+'" '+disable+'>'+allInventory[i].name+'</option>';
+				}
+				return html; 
+			};
+		};
 		$(document).on('click', '.layui-table-view tbody tr', function(event) {
 			var elemTemp = $(this);
 			var tableView = elemTemp.closest('.layui-table-view');
 			var trIndex = elemTemp.data('index');
 			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
 		})
-		
-		
 		
 	}//end define function
 )//endedefine

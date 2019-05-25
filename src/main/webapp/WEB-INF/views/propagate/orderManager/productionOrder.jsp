@@ -29,6 +29,8 @@ td{
 				<td>&nbsp;&nbsp;</td>
 				<td><input type="text" class="layui-input" name="batchNumber" placeholder='请输入要查找的相关信息'></td>
 				<td>&nbsp;&nbsp;</td>
+				<td><select name="flag"><option value="">是否反冲</option><option value="1">反冲</option><option value="0">未反冲</option></select>
+				<td>&nbsp;&nbsp;</td>
 				<td><span class="layui-btn" lay-submit lay-filter="search">搜索</span></td>
 			</tr>
 		</table>
@@ -151,6 +153,12 @@ td{
 </div>
 </script>
 
+<!-- 是否反冲转换模板 -->
+<script type="text/html" id="flagTpl">
+	{{# var color=d.flag==1?'':'green';
+		var msg=d.flag==1?'反冲数据':'未反冲';}}
+	<span class="layui-badge layui-bg-{{ color }}">{{ msg }}</span>
+</script>
 </body>
 <script>
 layui.config({
@@ -186,6 +194,7 @@ layui.config({
 			       {align:'center', title:'剩余总数量', field:'residueNumber'},
 			       {align:'center', title:'经手人',	templet:'<p>{{ d.user.userName }}</p>'},
 			       {align:'center', title:'备注', 	field:'remark'},
+			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl'},
 			       ]]
 		})
 		
@@ -246,6 +255,10 @@ layui.config({
 				layer.msg('无法同时使用多条信息生产针工单',{icon:2});
 				return;
 			}
+			if(choosed[0].flag==1){
+				layer.msg('已反冲的数据无法进行转换',{icon:2});
+				return;
+			}
 			$('#becomeOrderId').val(choosed[0].id);		//设置被转成针工单的生产单id
 			layer.open({
 				type : 1,
@@ -286,17 +299,12 @@ layui.config({
 			var allNumber=0;
 			for(var i=0;i<choosed.length;i++){
 				var t=choosed[i];
-				if(t.becomeNumber==undefined){
-					layer.msg('生成针工单的商品数量不能为空，请检查是否漏填或者错误勾选！',{icon:2});
-					return;
-				}else{
-					c.push({	//真正需要传参的只有这三个参数，去除不必要的参数传递
-						commodityId:t.commodity.id,
-						number:t.becomeNumber,
-						childRemark:t.becomeChildRemark==undefined?'':t.becomeChildRemark
-					})
-					allNumber-=(-t.becomeNumber);	//使用+号会拼接成字符串，无法完成正常计算
-				}
+				c.push({	//真正需要传参的只有这三个参数，去除不必要的参数传递
+					commodityId:t.commodity.id,
+					number:t.becomeNumber,
+					childRemark:t.becomeChildRemark==undefined?'':t.becomeChildRemark
+				})
+				allNumber-=(-t.becomeNumber);	//使用+号会拼接成字符串，无法完成正常计算
 			}
 			var data=obj.field;	//表单field中有batchNumber、userId、remark、type，其他的参数需要手动设置
 			data.number=allNumber;
@@ -326,6 +334,8 @@ layui.config({
 			if(obj.field=='becomeNumber'){
 				if(isNaN(obj.value))
 					layer.msg("修改无效！请输入正确的数字",{icon:2});
+				else if(obj.value=='')
+					layer.msg('转成针工单的数量不能为空',{icon:2});
 				else if(obj.value<0)
 					layer.msg('转成针工单的数量不能小于0',{icon:2});
 				else if(obj.value%1 !== 0)
@@ -336,7 +346,7 @@ layui.config({
 							 if(obj.value>becomeProduct[i].residueNumber)
 								 layer.msg('转成针工单的数量不能大于剩余数量',{icon:2});
 							 else
-							 	 becomeProduct[i].becomeNumber=obj.value;
+							 	 becomeProduct[i].becomeNumber=parseInt(obj.value);
 						 	break;
 						}
 					}
@@ -369,6 +379,7 @@ layui.config({
 				cols:[[
 				       {align:'center', title:'商品名称',  templet:'<p>{{ d.commodity.skuCode }}</p>'},
 				       {align:'center', title:'数量',     field:'number',},
+				       {align:'center', title:'剩余数量', field:'residueNumber'},
 				       {align:'center', title:'备注', 	  field:'childRemark',}, 
 				       ]]
 			})
@@ -380,7 +391,7 @@ layui.config({
 		//-------新增生产单功能---------------
 		var choosedProduct=[];		//用户已经选择上的产品,渲染新增单的产品表格数据
 		function add(){										//新增单
-			choosedProduct=[];								//清空已选中的商品内容
+			//choosedProduct=[];								//清空已选中的商品内容
 			layer.open({
 				type : 1,
 				title : '新增生产单',
@@ -400,6 +411,7 @@ layui.config({
 				       {align:'center', title:'备注',  	  field:'childRemark', edit:true}, 
 				       ]]
 			})
+			table.reload('productListTable',{ data : choosedProduct });
 		}
 		table.on('toolbar(productListTable)',function(obj){		//监听选择商品表格的工具栏按钮
 			switch(obj.event){
@@ -409,14 +421,19 @@ layui.config({
 		})
 		table.on('edit(productListTable)', function(obj){ 			//监听编辑表格单元
 			if(obj.field=='number'){
-				if(isNaN(obj.value)){
+				if(isNaN(obj.value))
 					layer.msg("修改无效！请输入正确的数字",{icon:2});
-				}
+				else if(obj.value=='')
+					layer.msg('计划的数量不能为空',{icon:2});
+				else if(obj.value<0)
+					layer.msg('计划的数量不能小于0',{icon:2});
+				else if(obj.value%1 !== 0)
+					 layer.msg('计划的数量必须为整数',{icon:2});
 				else
 					for(var i=0;i<choosedProduct.length;i++){
 						 if(choosedProduct[i].commodityId==obj.data.commodityId){		//重新对该行的相关数据进行计算
-						 	$('#addNumber').val($('#addNumber').val()-choosedProduct[i].number-(-obj.value));
-							choosedProduct[i].number=obj.value;
+						 	$('#addNumber').val($('#addNumber').val()-choosedProduct[i].number-(-parseInt(obj.value)));
+							choosedProduct[i].number=parseInt(obj.value);
 						 	layer.msg('修改成功！',{icon:1});
 						 	break;
 						}
@@ -431,7 +448,7 @@ layui.config({
 				}
 			}
 			table.reload('productListTable',{
-				data:choosedProduct
+				data : choosedProduct
 			})
 		});
 		form.on('submit(sureAdd)',function(obj){					//确定添加生产单
@@ -474,15 +491,13 @@ layui.config({
 				layer.close(chooseProductWin);							
 		})
 		
-		$('#resetAddOrder').on('click',function(){
-			layer.confirm('是否确认清空？',function(){
-				$('#addRemark').val('');
-				$('#addBatchNumber').val('');
-				$('#addNumber').val('');
-				choosedProduct=[];	
-				table.reload('productListTable',{
-					data:choosedProduct
-				})
+		$('#resetAddOrder').on('click',function(){			//此处如果加confirm提示。则新增成功时无法清空
+			$('#addRemark').val('');
+			$('#addBatchNumber').val('');
+			$('#addNumber').val(0);
+			choosedProduct=[];	
+			table.reload('productListTable',{
+				data:choosedProduct
 			})
 		})
 		
