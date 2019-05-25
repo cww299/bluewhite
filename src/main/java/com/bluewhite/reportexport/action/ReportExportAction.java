@@ -126,13 +126,13 @@ public class ReportExportAction {
 	 * @param response
 	 * @param request
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/importProduct",method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse importProduct(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request){
+	public CommonResponse importProduct(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request) throws Exception{
 		CommonResponse cr = new CommonResponse();
 		List<ProductPoi> excelProduct = new ArrayList<ProductPoi>();
-		try {
 				InputStream in = file.getInputStream();
 				String filename = file.getOriginalFilename();
 				// 创建excel工具类
@@ -143,9 +143,7 @@ public class ReportExportAction {
 					cr.setMessage("成功导入"+count+"条数据");
 				}
 				in.close();
-		} catch (Exception e) {
-			cr.setMessage("导入失败");
-		}
+		
 		return cr;
 	}
 	
