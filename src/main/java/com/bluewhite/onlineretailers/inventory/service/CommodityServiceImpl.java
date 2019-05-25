@@ -113,14 +113,16 @@ public class CommodityServiceImpl  extends BaseServiceImpl<Commodity, Long> impl
 					Map<Long, List<ProcurementChild>> mapProcurementChildList = procurementChildList.stream().collect(Collectors.groupingBy(ProcurementChild::getCommodityId,Collectors.toList()));
 					//按产品id分组
 					for(Long ps : mapProcurementChildList.keySet()){ 
-						//获取当前商品
-						Commodity commodity = commodityDao.findOne(ps);
-						
 						List<ProcurementChild> psList= mapProcurementChildList.get(ps); 
 						//按库存类型分类
 						Map<Long, List<ProcurementChild>> mapWarehouse = psList.stream().collect(Collectors.groupingBy(ProcurementChild::getWarehouseId,Collectors.toList()));
 						
+						//获取当前商品
+						Commodity commodity = commodityDao.findOne(ps);
+						//获取当前商品所有的库存
 						for(Inventory inventory : commodity.getInventorys()){
+							
+							
 							
 							
 							
