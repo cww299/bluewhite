@@ -25,6 +25,7 @@ import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.onlineretailers.inventory.dao.CommodityDao;
 import com.bluewhite.onlineretailers.inventory.dao.WarningDao;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
+import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 import com.bluewhite.onlineretailers.inventory.entity.Warning;
@@ -39,6 +40,8 @@ public class CommodityServiceImpl  extends BaseServiceImpl<Commodity, Long> impl
 	private ProcurementService procurementService;
 	@Autowired
 	private BaseDataService service;
+	@Autowired
+	private CommodityDao commodityDao;
 
 	@Override
 	public PageResult<Commodity> findPage(Commodity param, PageParameter page) {
@@ -94,7 +97,6 @@ public class CommodityServiceImpl  extends BaseServiceImpl<Commodity, Long> impl
 			Warning warning1 = warningDao.findByTypeAndWarehouseId(2, pWarehouse.getId());
 			//3.库存时间过长预警
 			Warning warning2 = warningDao.findByTypeAndWarehouseId(3, pWarehouse.getId());
-			
 			if(warning.getType()==1){
 				//获取天数 
 				Integer time = warning.getTime();
@@ -111,10 +113,21 @@ public class CommodityServiceImpl  extends BaseServiceImpl<Commodity, Long> impl
 					Map<Long, List<ProcurementChild>> mapProcurementChildList = procurementChildList.stream().collect(Collectors.groupingBy(ProcurementChild::getCommodityId,Collectors.toList()));
 					//按产品id分组
 					for(Long ps : mapProcurementChildList.keySet()){ 
-						List<ProcurementChild> psList= mapProcurementChildList.get(ps);
-						Map<Long, List<ProcurementChild>> mapWarehouse = psList.stream().collect(Collectors.groupingBy(ProcurementChild::getWarehouseId,Collectors.toList()));
+						//获取当前商品
+						Commodity commodity = commodityDao.findOne(ps);
+						
+						List<ProcurementChild> psList= mapProcurementChildList.get(ps); 
 						//按库存类型分类
+						Map<Long, List<ProcurementChild>> mapWarehouse = psList.stream().collect(Collectors.groupingBy(ProcurementChild::getWarehouseId,Collectors.toList()));
+						
+						for(Inventory inventory : commodity.getInventorys()){
+							
+							
+							
+						}
+						
 						for(Long pWarehouseId : mapWarehouse.keySet()){
+							
 							List<ProcurementChild> psWarehouse = mapProcurementChildList.get(pWarehouseId);
 							IntSummaryStatistics stats = psWarehouse.stream().mapToInt((x) -> x.getNumber()).summaryStatistics();
 							//获取每个产品在时间段内的出库数量
