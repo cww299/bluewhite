@@ -102,7 +102,7 @@ layui.config({
 		
 		table.render({				//渲染主页面入库单表格
 			elem:'#needleOrderTable',
-			url:'${ctx}/inventory/procurementPage?type=2',
+			url:'${ctx}/inventory/procurementPage?type=1',
 			toolbar:'#needleOrderTableToolbar',
 			loading:true,
 			page:{},

@@ -181,7 +181,8 @@ layui.config({
 			cols:[[
 			       {align:'center', type:'checkbox',},
 			       {align:'center', title:'批次号',   field:'batchNumber',		   width:'',},
-			       {align:'center', title:'商品数量', field:'number'},
+			       {align:'center', title:'计划总数量', field:'number'},
+			       {align:'center', title:'剩余总数量', field:'residueNumber'},
 			       {align:'center', title:'经手人',	templet:'<p>{{ d.user.userName }}</p>'},
 			       {align:'center', title:'备注', 	field:'remark'},
 			       ]]
@@ -259,6 +260,7 @@ layui.config({
 				       {type:'checkbox', align:'center', fixed:'left'},
 				       {align:'center', title:'商品名称', templet:'<p>{{ d.commodity.skuCode }}</p>',},
 				       {align:'center', title:'商品数量', field:'number', },
+				       {align:'center', title:'剩余数量', field:'residueNumber'},
 				       {align:'center', title:'生成针工单数量',    field:'becomeNumber', 	 edit:true,  templet:function(d){ return d.becomeNumber==undefined?(defaultBecomeNumber=='all'?d.number:0):d.becomeNumber;}},
 				       {align:'center', title:'针工单备注',  	  field:'becomeChildRemark', edit:true}, 
 				       ]]
@@ -330,10 +332,10 @@ layui.config({
 				else{
 					for(var i=0;i<becomeProduct.length;i++){
 						 if(becomeProduct[i].id==obj.data.id){		
-							 if(obj.value>becomeProduct[i].number)
+							 if(obj.value>becomeProduct[i].residueNumber)
 								 layer.msg('转成针工单的数量不能大于商品本身数量',{icon:2});
 							 else
-							 	 becomeProduct[i].becomeNumber=obj.value;
+							 	 becomeProduct[i].residueNumber=obj.value;
 						 	break;
 						}
 					}
