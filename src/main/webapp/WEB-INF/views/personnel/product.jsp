@@ -27,7 +27,9 @@
 				<td>产品编号：</td>
 				<td><input type="text" class="layui-input" name="departmentNumber" ></td>
 				<td>&nbsp;&nbsp;</td>
-				<td><button type="button" class="layui-btn layui-btn-sm" lay-filter="find" lay-submit>查找</button></td>
+				<td><button type="button" class="layui-btn layui-btn-sm" lay-filter="find" lay-submit>查找</button>
+					<button type="button" class="layui-btn layui-btn-sm" id="uploadData">
+						  <i class="layui-icon">&#xe67c;</i>导入数据</button></td>
 		</table>
 		<table class="layui-table" id="productTable" lay-filter="productTable"></table>
 	</div>
@@ -66,13 +68,14 @@ layui.config({
 }).extend({
 	tablePlug : 'tablePlug/tablePlug'
 }).define(
-	['tablePlug'],
+	['tablePlug','upload'],
 	function(){
 		var $ = layui.jquery
 		, table = layui.table
 		, laytpl = layui.laytpl
 		, layer = layui.layer
 		, form = layui.form
+		, upload = layui.upload
 		, tablePlug = layui.tablePlug; 		
 
 		form.on('submit(find)',function(obj){
@@ -85,6 +88,21 @@ layui.config({
 					departmentNumber:obj.field.departmentNumber
 				}
 			});
+		})
+		
+		upload.render({
+		   	  elem: '#uploadData'
+		   	  ,url: '${ctx}/excel/importProduct'
+		 	  ,before: function(obj){ 	//obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+		 		layer.load(1); //上传loading
+			  }
+		   	  ,done: function(res, index, upload){ //上传后的回调
+		   		layer.closeAll();
+		   		layer.msg(res.message);
+		   		table.reload('productTable');
+		   	  } 
+		   	  ,accept: 'file' //允许上传的文件类型
+		   	  ,exts: 'xlsx'
 		})
 		
 		table.render({

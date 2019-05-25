@@ -40,15 +40,16 @@ td{
 <div id="addOrderDiv" style="display:none;padding:10px;">
 	<table class="layui-form layui-table">
 		<tr><td>批次号<input type="hidden" name="type" value="0" ></td>	<!-- 默认type类型为0，表示为生产单 -->
-			<td><input type="text" class="layui-input" name="batchNumber" lay-verify='required'></td>
+			<td><input type="text" class="layui-input" name="batchNumber" lay-verify='required' id="addBatchNumber"></td>
 			<td>经手人</td>
 			<td><select name="userId"><option value="1" >测试人admin</option></select></td>
 			<td>数量</td>
 			<td><input type="text" class="layui-input" name="number" id="addNumber" readonly value='0'></td></tr>
 		<tr><td>备注</td>
-			<td colspan="3"><input type="text" name="remark" class="layui-input"></td>
+			<td colspan="3"><input type="text" name="remark" class="layui-input" id="addRemark"></td>
 			<td>操作</td>
-			<td><span class="layui-btn" lay-submit lay-filter="sureAdd" >确定</span></td></tr>
+			<td><span class="layui-btn layui-btn-danger" id='resetAddOrder' >清空</span>
+				<span class="layui-btn" lay-submit lay-filter="sureAdd" >确定</span></td></tr>
 	</table>
 	<table class="layui-table" id="productListTable" lay-filter="productListTable"></table>
 </div>
@@ -261,7 +262,7 @@ layui.config({
 				       {align:'center', title:'商品名称', templet:'<p>{{ d.commodity.skuCode }}</p>',},
 				       {align:'center', title:'商品数量', field:'number', },
 				       {align:'center', title:'剩余数量', field:'residueNumber'},
-				       {align:'center', title:'生成针工单数量',    field:'becomeNumber', 	 edit:true,  templet:function(d){ return d.becomeNumber==undefined?(defaultBecomeNumber=='all'?d.number:0):d.becomeNumber;}},
+				       {align:'center', title:'生成针工单数量',    field:'becomeNumber', 	 edit:true,  templet:function(d){ return d.becomeNumber==undefined?(defaultBecomeNumber=='all'?d.residueNumber:0):d.becomeNumber;}},
 				       {align:'center', title:'针工单备注',  	  field:'becomeChildRemark', edit:true}, 
 				       ]]
 			})
@@ -333,9 +334,9 @@ layui.config({
 					for(var i=0;i<becomeProduct.length;i++){
 						 if(becomeProduct[i].id==obj.data.id){		
 							 if(obj.value>becomeProduct[i].residueNumber)
-								 layer.msg('转成针工单的数量不能大于商品本身数量',{icon:2});
+								 layer.msg('转成针工单的数量不能大于剩余数量',{icon:2});
 							 else
-							 	 becomeProduct[i].residueNumber=obj.value;
+							 	 becomeProduct[i].becomeNumber=obj.value;
 						 	break;
 						}
 					}
@@ -451,6 +452,7 @@ layui.config({
 				data:data,			
 				success:function(result){
 					if(0==result.code){
+						$('#resetAddOrder').click();
 						layer.closeAll();
 						table.reload('productOrderTable');
 						layer.msg(result.message,{icon:1});
@@ -472,6 +474,17 @@ layui.config({
 				layer.close(chooseProductWin);							
 		})
 		
+		$('#resetAddOrder').on('click',function(){
+			layer.confirm('是否确认清空？',function(){
+				$('#addRemark').val('');
+				$('#addBatchNumber').val('');
+				$('#addNumber').val('');
+				choosedProduct=[];	
+				table.reload('productListTable',{
+					data:choosedProduct
+				})
+			})
+		})
 		
 		
 		//----添加新商品功能--------------
