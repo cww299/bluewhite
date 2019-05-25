@@ -56,14 +56,25 @@ td{
 <!-- 生成入库单隐藏框  -->
 <div id="becomeOrderDiv" style="display:none;padding:10px;">
 	<table class="layui-form layui-table">
-		<tr><td>批次号<input type="hidden" name="type" value="2" ></td>	<!-- 默认type类型为2，表示为入库单 -->
+		<tr><td>批次号<input type="hidden" name="type" value="2" >
+					  <input type="hidden" name="id" id='becomeOrderId' ></td>	<!-- 默认type类型为2，表示为入库单 -->
 			<td><input type="text" class="layui-input" name='batchNumber' id="become_bacthNumber" readonly></td>
 			<td>经手人</td>
 			<td><select name="userId"><option value="1" >测试人admin</option></select></td>
-			<td>总数量</td>
-			<td><select lay-filter="defaultNumberSelect"><option value="zero">默认生成入库单数量为0</option><option value="all">全部生成入库单</option></select></tr>
-		<tr><td>备注</td>
-			<td colspan="3"><input type="text" name="remark" class="layui-input"></td>
+			<td>备注</td>
+			<td colspan="3"><input type="text" name="remark" class="layui-input"></td></tr>
+		<tr>
+			<td>默认转单数量</td>
+			<td><select lay-filter="defaultSelect" type='number'><option value="zero">默认生成入库单数量为0</option><option value="all">全部生成入库单</option></select>
+			<td>默认入库仓库</td>
+			<td><select lay-filter="defaultSelect" type='inventory' id='defaultInventorySelect'><option value="">获取数据中.....</option></select></td>
+			<td>默认入库类型</td>
+			<td><select lay-filter="defaultSelect" type='status'>
+						<option value="0">生产入库</option>
+						<option value="1">调拨入库</option>
+						<option value="2">销售退货入库</option>
+						<option value="3">销售换货入库 </option>
+						<option value="4">采购入库</option></select></td>
 			<td>操作</td>
 			<td><span class="layui-btn" lay-submit lay-filter="sureBecome" >确定</span></td></tr>
 	</table>
@@ -102,6 +113,10 @@ layui.config({
 		, tablePlug = layui.tablePlug;
 		
 		var choosedProduct=[];			//用户已经选择上的产品
+		var allInventory=[];
+		
+		getAllInventory();
+		rederDefaultInventorySelect();
 		
 		form.render();
 		
@@ -133,7 +148,6 @@ layui.config({
 		})
 		
 		table.on('rowDouble(needleOrderTable)',function(obj){
-			console.log(obj.data)
 			lookover(obj.data);
 		})
 		form.on('submit(search)',function(obj){
@@ -171,7 +185,10 @@ layui.config({
 		//-------生成入库单功能---------------
 		var becomeProduct=[];
 		var defaultBecomeNumber='zero';	//默认转单数量模式
+		var defaultStatus=0;
+		var defaultInventory='';
 		function becomeEntry(){
+			defaultInventory=defaultInventory==''?allInventory[0].id:defaultInventory;
 			becomeProduct=[];			//清空之前的数据
 			$('#becomeOrderId').val('');
 			var choosed = layui.table.checkStatus('needleOrderTable').data;
@@ -197,26 +214,57 @@ layui.config({
 			table.render({									//渲染选择后的商品表格
 				elem:'#becomeProductListTable',
 				page:{},
+				size:'lg',
 				loading:true,
 				cols:[[
 				       {type:'checkbox', align:'center', fixed:'left'},
 				       {align:'center', title:'商品名称', templet:'<p>{{ d.commodity.skuCode }}</p>',},
 				       {align:'center', title:'商品数量', field:'number', },
 				       {align:'center', title:'剩余数量', field:'residueNumber'},
-				       {align:'center', title:'生成入库单数量',    field:'becomeNumber', 	 edit:true,  templet:function(d){ return d.becomeNumber==undefined?(defaultBecomeNumber=='all'?d.residueNumber:0):d.becomeNumber;}},
+				       {align:'center', title:'入库仓库',  	  field:'warehouseId', 	templet: getInventorySelectHtml()}, 
+				       {align:'center', title:'入库类型',  	  field:'status', 		templet: getStatusSelectHtml()}, 
+				       {align:'center', title:'仓位',  	 	  field:'place', 				edit : true,}, 
+				       {align:'center', title:'生成入库单数量',    field:'becomeNumber', 	 edit:true,  templet:getBecomeNumberHtml()},
 				       {align:'center', title:'入库单备注',  	  field:'becomeChildRemark', edit:true}, 
-				       ]]
+				       ]],
+		       	done: function (res, curr, count) {				
+	                layui.each( $('select'), function (index, item) {
+	                    var elem = $(item);
+	                	if(elem.data('value')!=undefined)		
+	                    	elem.val(elem.data('value')).parents('div.layui-table-cell').css('overflow', 'visible');
+	                });
+	                form.render(); 
+	            },
 			})
-			becomeProduct=choosed[0].procurementChilds;
+			becomeProduct=choosed[0].procurementChilds;			//回显该订单的子订单
 			$('#become_bacthNumber').val(choosed[0].batchNumber);
 			table.reload('becomeProductListTable',{
 				data:becomeProduct
 			})
 		}
-		form.on('select(defaultNumberSelect)',function(obj){
-			defaultBecomeNumber=obj.value
+	
+		form.on('select(selectStatus)', function (data) {		//监听数据表格中的 价格选择下拉框
+            var elem = $(data.elem);
+            var trElem = elem.parents('tr');
+            var tableData = table.cache['becomeProductListTable'];
+            tableData[trElem.data('index')]['status'] = data.value;
+        });				
+		form.on('select(selectInventory)', function (data) {
+            var elem = $(data.elem);
+            var trElem = elem.parents('tr');
+            var tableData = table.cache['becomeProductListTable'];
+            tableData[trElem.data('index')]['warehouseId'] = data.value;
+        });
+		
+		form.on('select(defaultSelect)',function(obj){
+			switch(obj.elem.getAttribute('type')){
+			case 'number': defaultBecomeNumber=obj.value;  break;
+			case 'inventory' : defaultInventory=obj.value;    break;
+			case 'status' : defaultStatus=obj.value; 		break;
+			}
 			table.reload('becomeProductListTable');
 		})
+		
 		form.on('submit(sureBecome)',function(obj){
 			var choosed = layui.table.checkStatus('becomeProductListTable').data;
 			if(choosed.length<1){
@@ -224,22 +272,26 @@ layui.config({
 				return;
 			}
 			var c=[];       //用于存放提取真正需要的数据
+			var allNum=0;
 			for(var i=0;i<choosed.length;i++){
-				var t=choosed[i];
-				if(t.becomeNumber==undefined){
-					layer.msg('生成针工单的商品数量不能为空，请检查是否漏填或者错误勾选！',{icon:2});
+				var t=choosed[i];					
+				if(t.becomeNumber==undefined && defaultBecomeNumber == 'zero'){			//如果没有填写数量，且默认值为0
+					layer.msg('转单的数量不能为0，请检查是否错勾选或填写有误！',{icon:2});
 					return;
-				}else{
-					c.push({
-						commodityId:t.commodity.id,
-						number:t.becomeNumber,
-						childRemark:t.becomeChildRemark==undefined?'':t.becomeChildRemark
-					})
 				}
+				allNum+=(t.becomeNumber==undefined ? t.residueNumber : t.becomeNumber);
+				c.push({																//如果没有选择或者设置值，则为默认值
+					commodityId : 	t.commodity.id,
+					number : 		t.becomeNumber==undefined ? t.residueNumber : t.becomeNumber,
+					warehouseId : 	t.warehouseId==undefined ? defaultInventory : t.warehouseId,
+					place : 		t.place==undefined ? '' : t.place,
+					status : 		t.status==undefined ? defaultStatus : t.status,
+					childRemark : 	t.becomeChildRemark==undefined ? '' : t.becomeChildRemark
+				})
 			}
-			var data=obj.field;
-			data.number=$('#become_number').val();
-			data.commodityNumber=JSON.stringify(c);		
+			var data=obj.field;						//订单的基本数据，在form表单中
+			data.number=allNum;						//订单的总数量
+			data.commodityNumber=JSON.stringify(c);	//订单的子订单
 			var load = layer.load(1);
 			$.ajax({
 				url:"${ctx}/inventory/addProcurement",
@@ -286,7 +338,10 @@ layui.config({
 			}else{
 				for(var i=0;i<becomeProduct.length;i++){
 					 if(becomeProduct[i].id==obj.data.id){		//重新对该行的相关数据进行计算
-						 becomeProduct[i].becomeChildRemark=obj.data.becomeChildRemark;
+					 	if(obj.field=='becomeChildRemark')
+							 becomeProduct[i].becomeChildRemark=obj.data.becomeChildRemark;
+						else
+							becomeProduct[i].place = obj.data.place;
 					 	break;
 					}
 				}
@@ -321,6 +376,63 @@ layui.config({
 			//$('#look_user').val(choosed[0].user);
 		}
 	
+		
+		function getAllInventory(){
+			$.ajax({
+				url:'${ctx}/basedata/list?type=inventory',
+				async:false,
+				success:function(r){
+					if(0==r.code){
+						allInventory=r.data;
+					}
+				}
+			})
+		}
+		
+		function rederDefaultInventorySelect(){
+			var html='';
+			if(allInventory.length==0){
+				html='<option value="">暂无仓库可使用</option>';
+			}else{
+				for(var i=0;i<allInventory.length;i++){
+					var t=allInventory[i],
+					    disable = t.flag==1?'':'disabled';
+					html+=('<option value="'+t.id+'" '+disable+'>'+t.name+'</option>');
+				}
+			}
+			$('#defaultInventorySelect').html(html);
+		}
+		function getBecomeNumberHtml(){				//获取转单数量
+			return function(d){
+				return d.becomeNumber==undefined?(defaultBecomeNumber=='all'?d.residueNumber:0):d.becomeNumber;
+			}
+		}
+		function getStatusSelectHtml(){				//获取类型下拉框
+			return function(d) {		
+				var html='<select id="selectStatus" lay-filter="selectStatus" lay-search="true" data-value="'+defaultStatus+'"> '+
+						'<option value="0">生产入库</option>'+
+						'<option value="1">调拨入库</option>'+
+						'<option value="2">销售退货入库</option>'+
+						'<option value="3">销售换货入库 </option>'+
+						'<option value="4">采购入库</option>'+
+						'</select>';
+				return html;
+
+			};
+		}
+		function getInventorySelectHtml() {				//获取仓库下拉框
+			return function(d) {		
+				if(allInventory.length==0){
+					return '没有可用仓库';
+				}
+				var html='<select id="selectInventory" lay-filter="selectInventory" lay-search="true" data-value="'+defaultInventory+'"> ';
+				for(var i=0;i<allInventory.length;i++){
+					var disable = allInventory[i].flag==1?'':'disabled';
+					html+='<option value="'+allInventory[i].id+'" '+disable+'>'+allInventory[i].name+'</option>';
+				}
+				return html; 
+			};
+		};
 		$(document).on('click', '.layui-table-view tbody tr', function(event) {
 			var elemTemp = $(this);
 			var tableView = elemTemp.closest('.layui-table-view');
