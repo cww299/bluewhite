@@ -80,7 +80,8 @@ public class HydropowerServiceImpl extends BaseServiceImpl<Hydropower, Long>
 			hydropower.setSum(hydropower.getNowDegreeNum()-hydropower.getUpperDegreeNum());
 			//每一度（d吨)的钱
 			hydropower.setSummaryPrice((hydropower.getNowDegreeNum()-hydropower.getUpperDegreeNum())*hydropower.getPrice());
-			hydropower.setExceedNum(hydropower.getNowDegreeNum()-hydropower.getUpperDegreeNum()-hydropower.getTalonNum());
+			Integer aInteger =hydropower.getNowDegreeNum()-hydropower.getUpperDegreeNum()-hydropower.getTalonNum();
+			hydropower.setExceedNum((aInteger<0? 0 : aInteger));
 			hydropower.setExceedPrice(hydropower.getExceedNum()*hydropower.getPrice());
 			 dao.save(hydropower);
 		}

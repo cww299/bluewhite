@@ -8,11 +8,12 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.system.user.entity.User;
 /**
- * 住宿
+ * 住宿记录
  * @author qiyong
  *
  */
@@ -76,7 +77,35 @@ public class Live  extends BaseEntity<Long>{
 	@Column(name = "type")
 	private Integer type;
 	
+	/**
+	 * 预存天数
+	 */
+	@Transient
+	private Long day;
 	
+	/**
+	 * 预存金额
+	 */
+	@Transient
+	private Double money;
+
+	
+	public Double getMoney() {
+		return money;
+	}
+
+	public void setMoney(Double money) {
+		this.money = money;
+	}
+
+	public Long getDay() {
+		return day;
+	}
+
+	public void setDay(Long day) {
+		this.day = day;
+	}
+
 	public Integer getType() {
 		return type;
 	}

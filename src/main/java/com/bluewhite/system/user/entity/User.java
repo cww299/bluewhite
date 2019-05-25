@@ -412,7 +412,11 @@ public class User extends BaseEntity<Long> {
 	@Column(name = "sale")
 	private Integer sale;
 	
-	
+	/**
+	 * 宿舍ID
+	 */
+	@Column(name = "hostel_id")
+	private Long hostelId;
 	
 	/**
 	 * 
@@ -1098,6 +1102,14 @@ public class User extends BaseEntity<Long> {
 
 	public void setForeigns(Integer foreigns) {
 		this.foreigns = foreigns;
+	}
+
+	public Long getHostelId() {
+		return hostelId;
+	}
+
+	public void setHostelId(Long hostelId) {
+		this.hostelId = hostelId;
 	}
 
 
