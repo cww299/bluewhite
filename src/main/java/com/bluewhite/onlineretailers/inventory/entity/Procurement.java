@@ -1,6 +1,7 @@
 package com.bluewhite.onlineretailers.inventory.entity;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -104,9 +105,36 @@ public class Procurement extends BaseEntity<Long>{
 	@Transient
 	private String commodityNumber;
 
+	/**
+	 * 时间查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 时间查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
 	
 	
 	
+	
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
+
 	public Integer getResidueNumber() {
 		return residueNumber;
 	}

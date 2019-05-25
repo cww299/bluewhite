@@ -1,5 +1,6 @@
 package com.bluewhite.onlineretailers.inventory.entity;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.system.user.entity.User;
@@ -143,8 +145,39 @@ public class Commodity extends BaseEntity<Long>{
 	@OneToMany(mappedBy = "commodity" ,cascade = CascadeType.ALL)
 	private Set<Inventory> inventorys = new HashSet<Inventory>();
 
-
+	/**
+	 * 时间查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 时间查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
 	
+	
+	
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
+
+
 	public Set<Inventory> getInventorys() {
 		return inventorys;
 	}

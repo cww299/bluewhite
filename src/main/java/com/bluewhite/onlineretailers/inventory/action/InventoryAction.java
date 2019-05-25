@@ -34,6 +34,7 @@ import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrderChild;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
+import com.bluewhite.onlineretailers.inventory.entity.Warning;
 import com.bluewhite.onlineretailers.inventory.entity.poi.OnlineOrderPoi;
 import com.bluewhite.onlineretailers.inventory.service.CommodityService;
 import com.bluewhite.onlineretailers.inventory.service.OnlineCustomerService;
@@ -320,13 +321,25 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	@ResponseBody
 	public CommonResponse checkWarning() {
 		CommonResponse cr = new CommonResponse();
-		
 		commodityService.checkWarning();
 		cr.setMessage("新增成功");
 		return cr;
 	}
 	
-	
+	/** 
+	 * 新建（修改）仓库预警
+	 * 
+	 * 
+	 */
+	@RequestMapping(value = "/inventory/addWarning", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse addWarning(Warning warning) {
+		CommonResponse cr = new CommonResponse();
+		commodityService.saveWarning(warning);
+		
+		cr.setMessage("新增成功");
+		return cr;
+	}
 	
 	
 

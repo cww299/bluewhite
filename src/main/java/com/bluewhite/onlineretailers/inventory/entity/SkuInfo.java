@@ -63,7 +63,7 @@ public class SkuInfo extends BaseEntity<Long>{
 	private String specId;
 	
 	/**
-	 * specId
+	 * 
 	 * 
 	 */
 	@Column(name = "consign_price")
