@@ -474,15 +474,13 @@ layui.config({
 				layer.close(chooseProductWin);							
 		})
 		
-		$('#resetAddOrder').on('click',function(){
-			layer.confirm('是否确认清空？',function(){
-				$('#addRemark').val('');
-				$('#addBatchNumber').val('');
-				$('#addNumber').val('');
-				choosedProduct=[];	
-				table.reload('productListTable',{
-					data:choosedProduct
-				})
+		$('#resetAddOrder').on('click',function(){			//此处如果加confirm提示。则新增成功时无法清空
+			$('#addRemark').val('');
+			$('#addBatchNumber').val('');
+			$('#addNumber').val(0);
+			choosedProduct=[];	
+			table.reload('productListTable',{
+				data:choosedProduct
 			})
 		})
 		
