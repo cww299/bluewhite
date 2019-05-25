@@ -71,7 +71,8 @@ td{
 <!-- 生成针工单隐藏框  -->
 <div id="becomeOrderDiv" style="display:none;padding:10px;">
 	<table class="layui-form layui-table">
-		<tr><td>批次号<input type="hidden" name="type" value="1" ></td>	<!-- 默认type类型为1，表示为针工单 -->
+		<tr><td>批次号<input type="hidden" name="type" value="1" >		<!-- 默认type类型为1，表示为针工单 -->	
+					  <input type="hidden" name="id" id="becomeOrderId" ></td>		<!-- 生成针工单的生产单id。用于生产单数量的减少 -->
 			<td><input type="text" class="layui-input" name='batchNumber' id="become_bacthNumber" readonly></td>
 			<td>经手人</td>
 			<td><select name="userId"><option value="1" >测试人admin</option></select></td>
@@ -232,7 +233,8 @@ layui.config({
 		var becomeProduct=[];			//生成针工单时，所选中的生产单的子订单集合
 		var defaultBecomeNumber='zero';	//默认转单数量模式
 		function becomeNeedle(){
-			becomeProduct=[];
+			becomeProduct=[];			//清空之前的数据
+			$('#becomeOrderId').val('');
 			var choosed = layui.table.checkStatus('productOrderTable').data;
 			if(choosed.length<1){
 				layer.msg('请选择信息',{icon:2});
@@ -242,6 +244,7 @@ layui.config({
 				layer.msg('无法同时使用多条信息生产针工单',{icon:2});
 				return;
 			}
+			$('#becomeOrderId').val(choosed[0].id);		//设置被转成针工单的生产单id
 			layer.open({
 				type : 1,
 				title:'生成针工单',
@@ -256,7 +259,7 @@ layui.config({
 				       {type:'checkbox', align:'center', fixed:'left'},
 				       {align:'center', title:'商品名称', templet:'<p>{{ d.commodity.skuCode }}</p>',},
 				       {align:'center', title:'商品数量', field:'number', },
-				       {align:'center', title:'生成针工单数量',    field:'becomeNumber', 	 edit:true,  templet:function(d){ return defaultBecomeNumber=='all'?d.number:0;}},
+				       {align:'center', title:'生成针工单数量',    field:'becomeNumber', 	 edit:true,  templet:function(d){ return d.becomeNumber==undefined?(defaultBecomeNumber=='all'?d.number:0):d.becomeNumber;}},
 				       {align:'center', title:'针工单备注',  	  field:'becomeChildRemark', edit:true}, 
 				       ]]
 			})
@@ -289,7 +292,7 @@ layui.config({
 						number:t.becomeNumber,
 						childRemark:t.becomeChildRemark==undefined?'':t.becomeChildRemark
 					})
-					allNumber+=t.becomeNumber;
+					allNumber-=(-t.becomeNumber);	//使用+号会拼接成字符串，无法完成正常计算
 				}
 			}
 			var data=obj.field;	//表单field中有batchNumber、userId、remark、type，其他的参数需要手动设置
@@ -437,9 +440,7 @@ layui.config({
 			var child=[],allNum=0;
 			for(var i=0;i<choosedProduct.length;i++){
 				child.push({commodityId:choosedProduct[i].commodityId,number:choosedProduct[i].number,childRemark:choosedProduct[i].childRemark});
-				allNum+=choosedProduct[i].number;
 			}
-			data.number=allNum;
 			data.commodityNumber=JSON.stringify(child);			//子列表商品
 			var load = layer.load(1);
 			$.ajax({
