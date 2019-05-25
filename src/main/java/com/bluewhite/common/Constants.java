@@ -70,7 +70,6 @@ public class Constants {
     
     
     
-    
     /**
      *  电商订单状态
      */
