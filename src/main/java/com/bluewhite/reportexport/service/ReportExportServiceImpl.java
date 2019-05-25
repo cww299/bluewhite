@@ -21,6 +21,7 @@ import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.basedata.service.BaseDataService;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.finance.ledger.dao.ActualpriceDao;
@@ -117,17 +118,24 @@ public class ReportExportServiceImpl implements ReportExportService{
 		int count = 0;
 		if(excelProduct.size()>0){
 			List<Product> productList = new ArrayList<Product>();
-			List<Product> productList1 = productDao.findAll();
 			for(ProductPoi proPoi :excelProduct){
-				List<Product> product = productList1.stream()
-						.filter(Product ->Product.getNumber() != null && Product.getNumber().equals(proPoi.getNumber()) )
-						.collect(Collectors.toList());
-				if(product.size()==0){
-					Product product1  = new Product();
-					product1.setNumber(proPoi.getNumber());
-					product1.setName(proPoi.getName());
-					productList.add(product1);
-					count++;
+				Product products = productDao.findByNumber(proPoi.getNumber());
+				Product products1 = productDao.findByDepartmentNumber(proPoi.getNumber());
+				//下面存入各部门产品编号
+				if(products!=null || products1!=null){
+					throw new ServiceException("已有该产品编号的产品，请检查后再次添加");
+				}else{
+					//同时判断各部门的编号是否和最终的产品编号位数相同，如果相同，则存入产品编号中，同时清空来源部门，让产品变成共同的集合
+					if(proPoi.getNumber().length()==7){
+						Product pro  = new Product();
+						pro.setNumber(proPoi.getNumber());
+						pro.setName(proPoi.getName());
+						pro.setDepartmentNumber(proPoi.getNumber());
+						productList.add(pro);
+						count++;
+					}else{
+						throw new ServiceException("编号不符合规范");
+					};
 				}
 			}
 			this.saveAllProduct(productList);
