@@ -336,7 +336,6 @@ private static final Log log = Log.getLog(InventoryAction.class);
 	public CommonResponse addWarning(Warning warning) {
 		CommonResponse cr = new CommonResponse();
 		commodityService.saveWarning(warning);
-		
 		cr.setMessage("新增成功");
 		return cr;
 	}
