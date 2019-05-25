@@ -23,6 +23,7 @@ import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
 import com.bluewhite.onlineretailers.inventory.dao.ProcurementDao;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
+import com.bluewhite.onlineretailers.inventory.entity.OnlineOrderChild;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 
@@ -102,8 +103,8 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 		}
 
 		// 创建子单据
-		if (!StringUtils.isEmpty(upProcurement.getCommodityNumber())) {
-			JSONArray jsonArray = JSON.parseArray(upProcurement.getCommodityNumber());
+		if (!StringUtils.isEmpty(procurement.getCommodityNumber())) {
+			JSONArray jsonArray = JSON.parseArray(procurement.getCommodityNumber());
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				ProcurementChild procurementChild = new ProcurementChild();
@@ -163,6 +164,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				}
 				// 将子单放入父单
 				upProcurement.getProcurementChilds().add(procurementChild);
+				upProcurement.setNumber(upProcurement.getProcurementChilds().stream().mapToInt(ProcurementChild::getNumber).sum());
 			}
 		}
 		return dao.save(upProcurement);
