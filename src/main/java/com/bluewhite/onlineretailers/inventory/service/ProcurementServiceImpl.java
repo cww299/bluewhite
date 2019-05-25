@@ -51,9 +51,14 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
 			}
 			
+			// 按是否反冲
+			if (param.getFlag()!=null) {
+				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
+			}
+			
 			// 按批次号过滤
 			if (!StringUtils.isEmpty(param.getBatchNumber())) {
-				predicate.add(cb.equal(root.get("b atchNumber").as(Integer.class), param.getBatchNumber()));
+				predicate.add(cb.equal(root.get("batchNumber").as(Integer.class), param.getBatchNumber()));
 			}
 			
 			//按单据生产时间过滤
@@ -76,27 +81,20 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	public Procurement saveProcurement(Procurement procurement) {
 		// 逻辑处理：优先处理父级单据所有数据
 		Procurement upProcurement = new Procurement();
+		// 获取到上一级单据的数据
+		Procurement oldProcurement =null;
 		if (procurement.getId() != null) {  
-			// 查找是否已经拥有上级单据id的单据
-			upProcurement = dao.findByParentId(procurement.getId());
-			// 当单据为null，说明是新增，否则是修改
-			if (upProcurement == null) { 
 				upProcurement = new Procurement();
 				// 将 转换的单据id变成新单据的父id
 				upProcurement.setParentId(procurement.getId());
-				// 获取到上一级单据的数据
-				Procurement oldProcurement = dao.findOne(procurement.getId());
+				oldProcurement = dao.findOne(procurement.getId());
 				upProcurement.setBatchNumber(oldProcurement.getBatchNumber());
 				upProcurement.setType(procurement.getType());
 				upProcurement.setNumber(procurement.getNumber());
 				upProcurement.setResidueNumber(procurement.getNumber());
+				upProcurement.setRemark(procurement.getRemark());
 				// 将上级单据的剩余总数改变
 				oldProcurement.setResidueNumber(oldProcurement.getResidueNumber() - procurement.getNumber());
-			} else {
-				// 表示是同一个上级转化的针工单，此时更新剩余数量和总数
-				upProcurement.setNumber(upProcurement.getNumber() + procurement.getNumber());
-				upProcurement.setResidueNumber(upProcurement.getResidueNumber() + procurement.getNumber());
-			}
 		} else {
 			upProcurement = procurement;
 			upProcurement.setResidueNumber(upProcurement.getNumber());
@@ -112,10 +110,9 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				procurementChild.setNumber(jsonObject.getIntValue("number"));
 				procurementChild.setChildRemark(jsonObject.getString("childRemark"));
 				// 表示拥有上一阶段的单据，减少上一次单据的子单数量
-				if (upProcurement.getParentId() != null) {
-					Procurement parentProcurement = findOne(upProcurement.getParentId());
+				if (procurement.getId() != null) {
 					// 减少子单数量
-					for (ProcurementChild pChild : parentProcurement.getProcurementChilds()) {
+					for (ProcurementChild pChild : oldProcurement.getProcurementChilds()) {
 						if (pChild.getCommodityId() == procurementChild.getCommodityId()) {
 							pChild.setResidueNumber(pChild.getResidueNumber() - procurementChild.getNumber());
 							if (procurement.getType() == 2) {
@@ -125,7 +122,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 						}
 					}
 					//更新上级单据
-					dao.save(parentProcurement);
+					dao.save(oldProcurement);
 
 					// 当单据为入库单时,针工单转化数量不够自动变成0
 					if (procurement.getType() == 2) {
@@ -161,6 +158,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 						}
 						commodityService.save(commodity);
 					}
+					
 				}else{
 					procurementChild.setResidueNumber(jsonObject.getIntValue("number"));
 				}
