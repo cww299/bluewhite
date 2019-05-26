@@ -44,13 +44,18 @@
 			</div>
 		</div>
 		<div class="layui-form-item">
+			<label class="layui-form-label">是否可用</label>
+			<div class="layui-input-block">
+				<input type="checkbox" value="1" name="flag" lay-skin="switch" {{ d.flag==1?'checked':'' }} lay-text="是|否"}>
+			</div>
+		</div>
+		<div class="layui-form-item">
 			<label class="layui-form-label">备注</label>
 			<div class="layui-input-block">
 				<input type="text" value="{{ d.remark }}" name="remark" class="layui-input" lay-verify="required">
 			</div>
 		</div>
 		<input type="hidden" value="0" name="parentId">
-		<input type="hidden" value="1" name="flag">
 		<input type="hidden" value="inventory" name="type">
 		<input type="hidden" name="id" value="{{ d.id }}">
 		<p align="center"><button type="button" lay-submit lay-filter="addData" class="layui-btn layui-btn-sm">确定</button></p>
@@ -83,7 +88,7 @@ layui.config({
 		
 		function addEidt(type){ 
 			var choosedData=layui.table.checkStatus('inventoryTable').data;
-			var data={id:'',name:'',remark:'仓库'};
+			var data={id:'',name:'',remark:'仓库',flag:'1'};
 			var title="新增数据";
 			var html="";
 			var tpl=addEditTpl.innerHTML;
@@ -103,12 +108,14 @@ layui.config({
 			})
 			var open=layer.open({
 				title:title,
-				area:['30%','30%'],
+				area:['30%','20%'],
 				type:1,
 				content:html,
 			})
 			form.render();
 			form.on('submit(addData)',function(obj){
+				if(obj.field.flag!=1)			//如果开关没打开
+					obj.field.flag=0;
 				var load=layer.load(1);
 				$.ajax({
 					url:"${ctx}/basedata/add",
@@ -119,7 +126,7 @@ layui.config({
 							layer.close(open);
 							table.reload('inventoryTable');
 							if(type=='add')
-								layer.msg("添加成功",{icon:1});
+								layer.msg("添加成功",{icon:1});		//返回的messag为空
 							else if(type=='edit')
 								layer.msg("修改成功",{icon:1});
 						}
