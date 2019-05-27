@@ -147,6 +147,18 @@
 	</shiro:hasAnyRoles> 
 	
 	
+<script type="text/html" id='typeTpl'>
+{{# var color='';
+	var text='';
+	switch(d.type){
+		case 1: text='库存下限预警'; color=''; break;
+		case 2: text='库存上限预警'; color='green'; break;
+		case 3: text='库存时间过长预警'; color='blue'; break;
+	}
+}}
+<span style='margin-top: 10px;' class='layui-badge layui-bg-{{ color}}'>{{ text }}</span>
+</script>
+	
  <script src="${ctx }/static/layuiadmin/layui/layui.js"></script>
  <script>
  layui.config({
@@ -169,7 +181,7 @@ layui.use(['form','element','layer','jquery','table'],function(){
     		$('#hiddenButton').click();
     	})
     	
-    	//广宣预警弹窗
+    	//-------------------------广宣预警弹窗-------------------------
     	$('#lookoverWarn').on('click',warn);
     	warn();
     	function warn(){
@@ -179,7 +191,7 @@ layui.use(['form','element','layer','jquery','table'],function(){
 					title:'仓库预警',
 					type:1,
 					shadeClose: true,
-					area:['500px','500px'],
+					area:['50%','80%'],
 					content:$('#warningDiv'),
 				})
 				 table.render({
@@ -187,24 +199,25 @@ layui.use(['form','element','layer','jquery','table'],function(){
 					size:'lg',
 					url:'${ctx}/inventory/checkWarning',
 					parseData:function(r){
-						// $('#warnNumber').html();
+						$('#warnNumber').html(r.data.length);
 						return {
 							code:r.code,
-							data:r.data.row,
+							data:r.data,
 							msg:r.message,
 						}
 					},
 					cols:[[
-					       {align:'center', title:'预警仓库', field:''},
-					       {align:'center', title:'预警类型', field:''},
-					       {align:'center', title:'预警数量', field:''},
-					       {align:'center', title:'预警时间', field:''},
+					       {align:'center', title:'预警仓库', field:'inventoryName'},
+					       {align:'center', title:'商品名称', field:'name'},
+					       {align:'center', title:'预警类型', field:'type',templet:'#typeTpl'},
+					       {align:'center', title:'仓库数量', field:'countInventory'},
+					       {align:'center', title:'销售数量', field:'countSales'},
 					       ]],
 				}) 
 			}
 		}
     	
-    	
+    	//--------------------广宣预警弹窗结束--------------------
     	
     	$.ajax({
 			url:"${ctx}/menus",
