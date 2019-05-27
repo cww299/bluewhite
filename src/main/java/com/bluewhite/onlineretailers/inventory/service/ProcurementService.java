@@ -41,4 +41,5 @@ public interface ProcurementService  extends BaseCRUDService<Procurement,Long>{
 	 * @return
 	 */
 	List<Procurement> findByTypeAndCreatedAt(int type, Date startTime, Date endTime);
+	
 }

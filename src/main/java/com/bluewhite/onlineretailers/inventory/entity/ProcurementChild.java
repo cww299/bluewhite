@@ -1,4 +1,4 @@
-package com.bluewhite.onlineretailers.inventory.entity;
+ package com.bluewhite.onlineretailers.inventory.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

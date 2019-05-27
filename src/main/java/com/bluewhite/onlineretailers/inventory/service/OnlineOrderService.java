@@ -1,12 +1,17 @@
 package com.bluewhite.onlineretailers.inventory.service;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.excel.ExcelListener;
+import com.bluewhite.onlineretailers.inventory.entity.OnlineCustomer;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
+import com.bluewhite.onlineretailers.inventory.entity.OnlineOrderChild;
 @Service
 public interface OnlineOrderService extends BaseCRUDService<OnlineOrder,Long>{
 	
@@ -43,5 +48,23 @@ public interface OnlineOrderService extends BaseCRUDService<OnlineOrder,Long>{
 	 * @return
 	 */
 	public int excelOnlineOrder(ExcelListener excelListener);
+	
+	/**
+	 * 根据时间和类型获取销售报表
+	 * @param type
+	 * @param date
+	 * @param beginTime
+	 * @return
+	 */
+	List<Map<String, Object>> reportSales(OnlineOrder onlineOrder);
+	
+	/**
+	 * 根据时间和类型获取销售子报表
+	 * @param type
+	 * @param date
+	 * @param beginTime
+	 * @return
+	 */
+	List<OnlineOrderChild> reportSalesChild(OnlineOrderChild onlineOrderChild);
 
 }

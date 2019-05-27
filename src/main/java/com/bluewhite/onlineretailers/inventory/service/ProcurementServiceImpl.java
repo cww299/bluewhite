@@ -160,6 +160,8 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 
 				// 出库单
 				if (procurement.getType() == 3) {
+					procurementChild.setWarehouseId(jsonObject.getLong("warehouseId"));
+					procurementChild.setStatus(jsonObject.getIntValue("status"));
 					Commodity commodity = commodityService.findOne(procurementChild.getCommodityId());
 					Set<Inventory> inventorys = commodity.getInventorys();
 					if (inventorys.size() == 0) {

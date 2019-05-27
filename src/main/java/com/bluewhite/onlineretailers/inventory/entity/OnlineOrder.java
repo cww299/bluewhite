@@ -144,8 +144,8 @@ public class OnlineOrder extends BaseEntity<Long> {
 	 * 订单状态交易状态。可选值: 
 	 * TRADE_NO_CREATE_PAY(没有创建支付宝交易) 
 	 * WAIT_BUYER_PAY(等待买家付款) 
-	 * SELLER_CONSIGNED_PART(卖家部分发货) 
 	 * WAIT_SELLER_SEND_GOODS(等待卖家发货,即:买家已付款)
+	 * SELLER_CONSIGNED_PART(卖家部分发货) 
 	 * WAIT_BUYER_CONFIRM_GOODS(等待买家确认收货,即:卖家已发货) 
 	 * TRADE_BUYER_SIGNED(买家已签收,货到付款专用) 
 	 * TRADE_FINISHED(交易成功) *
@@ -298,6 +298,42 @@ public class OnlineOrder extends BaseEntity<Long> {
 	@Transient
 	private String childOrder;
 	
+	/**
+	 * 时间查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 时间查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
+	
+	
+
+	public String getTelephone() {
+		return telephone;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
 
 	public Integer getFlag() {
 		return flag;
