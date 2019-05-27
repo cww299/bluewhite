@@ -41,13 +41,6 @@ public class Inventory extends BaseEntity<Long>{
 	
 	
 	/**
-	 * 库存位置
-	 * 
-	 */
-	@Column(name = "place")
-	private String place;
-	
-	/**
 	 * 仓库类型id
 	 */
 	@Column(name = "warehouse_id")
@@ -64,17 +57,6 @@ public class Inventory extends BaseEntity<Long>{
 	
 
 
-	
-	
-
-
-	public String getPlace() {
-		return place;
-	}
-
-	public void setPlace(String place) {
-		this.place = place;
-	}
 
 	public Long getCommodityId() {
 		return commodityId;

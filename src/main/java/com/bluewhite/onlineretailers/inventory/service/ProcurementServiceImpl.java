@@ -1,5 +1,7 @@
 package com.bluewhite.onlineretailers.inventory.service;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -133,16 +135,28 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				if (procurement.getType() == 2) {
 					Commodity commodity = commodityService.findOne(procurementChild.getCommodityId());
 					procurementChild.setWarehouseId(jsonObject.getLong("warehouseId"));
-					procurementChild.setStatus(4);
+					procurementChild.setPlace(jsonObject.getString("place"));
+					if(procurement.getId() != null){
+						procurementChild.setStatus(4);
+					}else{
+						procurementChild.setStatus(jsonObject.getIntValue("status"));
+					}
 					// 创建商品的库存
 					Set<Inventory> inventorys = commodity.getInventorys();
-					Inventory inventory = new Inventory();
-					inventory.setPlace(jsonObject.getString("place"));
-					inventory.setCommodityId(procurementChild.getCommodityId());
-					inventory.setNumber(procurementChild.getNumber());
-					inventory.setWarehouseId(procurementChild.getWarehouseId());
-					inventorys.add(inventory);
-					commodity.setInventorys(inventorys);
+					if(inventorys.size()==0){
+						Inventory inventory = new Inventory();
+						inventory.setCommodityId(procurementChild.getCommodityId());
+						inventory.setNumber(procurementChild.getNumber());
+						inventory.setWarehouseId(procurementChild.getWarehouseId());
+						inventorys.add(inventory);
+						commodity.setInventorys(inventorys);
+					}else{
+						inventorys.stream().forEach(in->{
+							if(in.getWarehouseId()==procurementChild.getWarehouseId()){
+								in.setNumber(in.getNumber()+procurementChild.getNumber());
+							}
+						});
+					}
 					commodityService.save(commodity);
 				}
 

@@ -41,15 +41,4 @@ public interface ProcurementService  extends BaseCRUDService<Procurement,Long>{
 	 * @return
 	 */
 	List<Procurement> findByTypeAndCreatedAt(int type, Date startTime, Date endTime);
-	
-	/**
-	 * 根据类型获取单据
-	 * @param type
-	 * @param date
-	 * @param beginTime
-	 * @return
-	 */
-	List<Procurement> findByType(int type);
-	
-
 }

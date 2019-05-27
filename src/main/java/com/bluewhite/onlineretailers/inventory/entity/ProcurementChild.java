@@ -100,9 +100,24 @@ public class ProcurementChild  extends BaseEntity<Long>{
 	@Column(name = "child_remark")
 	private String childRemark;
 
-	
+	/**
+	 * 库存位置
+	 * 
+	 */
+	@Column(name = "place")
+	private String place;
 	
 
+
+
+	public String getPlace() {
+		return place;
+	}
+
+
+	public void setPlace(String place) {
+		this.place = place;
+	}
 
 
 	public Integer getResidueNumber() {
