@@ -29,6 +29,8 @@ import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 import com.bluewhite.onlineretailers.inventory.entity.Warning;
 
+import javassist.expr.NewArray;
+
 @Service
 public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> implements CommodityService {
 
@@ -97,7 +99,7 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 			Map<String, Object> map = new HashMap<>();
 			// 1.库存下限预警
 			// 2.库存上限预警
-			List<Warning> warningList = warningDao.findByTypeIn("1,2");
+			List<Warning> warningList = warningDao.findAll();
 			for (Warning warning : warningList) {
 				// 获取天数
 				Integer time = warning.getTime();

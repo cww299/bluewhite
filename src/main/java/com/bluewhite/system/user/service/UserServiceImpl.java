@@ -117,7 +117,10 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				user.setQuit(0);
 				user.setOrgNameIds(Constants.TAILOR_ORGNAME);
 			}
-			
+		
+			if(!cu.getRole().contains("superAdmin") && !cu.getRole().contains("personnel")){
+				user.setOrgNameIds(String.valueOf(cu.getOrgNameId()));
+			}
 			
 		page.setSort(null);
 		Page<User> pageUser = userDao.findAll((root, query, cb) -> {

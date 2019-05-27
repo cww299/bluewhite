@@ -22,6 +22,6 @@ public interface WarningDao extends BaseRepository<Warning, Long>{
 	 * @param warehouseId
 	 * @return
 	 */
-	List<Warning> findByTypeIn(String type);
+	List<Warning> findByTypeIn(List<Integer> type);
 
 }
