@@ -21,9 +21,9 @@
 	<div class="layui-card-body">
 		<table class="layui-form">
 			<tr>
-				<td><select name="name" lay-search><option value="">商品名称</option></select></td>
+				<td><select name=""><option value="skuCode">按商品编号查找</option></select></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td><select name="type" lay-search><option value="">按分类</option></select></td>
+				<td><input type='text' name='skuCode' class='layui-input' placeholder='请输入查找信息'></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
@@ -43,9 +43,9 @@
 <!-- 表格工具栏模板 -->
 <script type="text/html" id="productTableToolbar">
 <div>
-	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增</span>
-	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除</span>
-	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改</span>
+	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增商品</span>
+	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改商品</span>
+	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除商品</span>
 	<span class="layui-badge" >提示：双击查看库存</span>
 </div>
 </script>
@@ -63,43 +63,43 @@
 		</div>
 	</div>
 	<div class="layui-item">
-		<label class="layui-form-label">1688批发价</label>
+		<label class="layui-form-label">1688价/元</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="OSEEPrice" value="{{d.oSEEPrice}}" lay-verify="number">
+			<input class="layui-input" name="oseePrice" value="{{d.oseePrice}}" lay-verify="number">
 		</div>
 	</div>
 	<div class="layui-item">
-		<label class="layui-form-label">天猫单价</label>
+		<label class="layui-form-label">天猫价/元</label>
 		<div class="layui-input-block">
 			<input class="layui-input" name="tianmaoPrice" value="{{d.tianmaoPrice}}" lay-verify="number">
 		</div>
 	</div>
 	<div class="layui-item">
-		<label class="layui-form-label">线下批发价</label>
+		<label class="layui-form-label">线下价/元</label>
 		<div class="layui-input-block">
 			<input class="layui-input" name="offlinePrice" value="{{d.offlinePrice}}" lay-verify="number">
 		</div>
 	</div>
 	<div class="layui-item">
-		<label class="layui-form-label">商品重量</label>
+		<label class="layui-form-label">商品重量/g</label>
 		<div class="layui-input-block">
 			<input class="layui-input" name="weight" value="{{d.weight}}" lay-verify="number">
 		</div>
 	</div>
 	<div class="layui-item">
-		<label class="layui-form-label">商品高度</label>
+		<label class="layui-form-label">商品高度/cm</label>
 		<div class="layui-input-block">
 			<input class="layui-input" name="size" value="{{d.size}}" lay-verify="number">
 		</div>
 	</div>
 	<div class="layui-item">
-		<label class="layui-form-label">成本</label>
+		<label class="layui-form-label">成本/元</label>
 		<div class="layui-input-block">
 			<input class="layui-input" name="cost" value="{{d.cost}}" lay-verify="number">
 		</div>
 	</div>
 	<div class="layui-item">
-		<label class="layui-form-label">广宣成本</label>
+		<label class="layui-form-label">广宣成本/元</label>
 		<div class="layui-input-block">
 			<input class="layui-input" name="propagandaCost" value="{{d.propagandaCost}}" lay-verify="number">
 		</div>
@@ -152,19 +152,14 @@ layui.config({
 				limitName:'size'
 			},
 			parseData:function(ret){
-				return {
-					data:ret.data.rows,
-					count:ret.data.total,
-					msg:ret.message,
-					code:ret.code
-				}
+				return {data:ret.data.rows,count:ret.data.total,msg:ret.message,code:ret.code }
 			},
 			cols:[[
 			       {align:'center', type:'checkbox',},
 			       {align:'center', title:'商品编号',   field:'skuCode',	width:'10%',},
 			       {align:'center', title:'商品高度',   field:'size',    width:'7%',},
 			       {align:'center', title:'商品重量', 	field:'weight', width:'7%',},
-			       {align:'center', title:'1688单价',   	field:'oSEEPrice',		width:'7%',},
+			       {align:'center', title:'1688单价',   	field:'oseePrice',		width:'7%',},
 			       {align:'center', title:'天猫单价',   	field:'tianmaoPrice',	width:'7%',},
 			       {align:'center', title:'线下单价',   	field:'offlinePrice',	width:'7%',},
 			       {align:'center', title:'成本价', 		field:'cost',	width:'5%',},
@@ -176,9 +171,8 @@ layui.config({
 		})
 		
 		form.on('submit(search)',function(obj){
-			layer.msg(JSON.stringify(obj.field));
 			table.reload('productTable',{
-				where:{name:obj.field.name,grade:obj.field.type}
+				where:{skuCode:obj.field.skuCode}
 			})
 		}) 
 		table.on('toolbar(productTable)',function(obj){
@@ -195,6 +189,7 @@ layui.config({
 			layer.open({
 				title:data.skuCode,
 				type:1,
+				shadeClose:true,
 				area:['30%','50%'],
 				content:$('#lookoverDiv'),
 			})
@@ -211,7 +206,7 @@ layui.config({
 		}
 		
 		function addEdit(type){
-			var data={id:'',skuCode:'',weight:'',size:'',material:'',fillers:'',cost:'',propagandaCost:'',remark:'',tianmaoPrice:'',oSEEPrice:'',offlinePrice:''},
+			var data={id:'',skuCode:'',weight:'',size:'',material:'',fillers:'',cost:'',propagandaCost:'',remark:'',tianmaoPrice:'',oseePrice:'',offlinePrice:''},
 			choosed=layui.table.checkStatus('productTable').data,
 			tpl=addEditTpl.innerHTML,
 			title='新增商品',
