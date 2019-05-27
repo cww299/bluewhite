@@ -129,14 +129,15 @@ td{
 <!-- 商品库存情况模板 -->
 <script type="text/html" id="inventoryTpl">
 	{{# var inv=d.inventorys;
-		var str='暂无库存';
+		var str='';
 		var color='red';
 		if(inv.length>0){
 			for(var i=0;i<inv.length;i++){
 				str+=inv[i].warehouse.name+':'+inv[i].number+'  ';
 			}
 			color='green';
-		}
+		}else
+			str='暂无库存';
 	}}
 	<span style='color:{{ color }};'>{{ str }}</span>
 </script>
@@ -304,11 +305,6 @@ layui.config({
 			case 'delete':deleteChoosedProduct();break;
 			}
 		})
-		form.on('select(selectStatus)', function (data) {		//监听数据表格中的 状态选择下拉框
-            var elem = $(data.elem);
-            var trElem = elem.parents('tr');
-            choosedProduct[trElem.data('index')].status = data.value;
-        });				
 		form.on('select(selectInventory)', function (data) {
             var elem = $(data.elem);
             var trElem = elem.parents('tr');
@@ -362,19 +358,19 @@ layui.config({
 					 layer.msg('计划的数量必须为整数',{icon:2});
 				else
 					for(var i=0;i<choosedProduct.length;i++){
-						var inv=choosedProduct[i].inventorys;
-						for(var j=0;j<inv.length;j++){
-							if(inv[j].warehouse.id == choosedProduct[i].warehouseId){
-								if(inv[j].number<obj.value){
-									layer.msg('计划数量不能大于仓库剩余数量，请重新修改数量或选择其他出货仓库！',{icon:2});
-									table.reload('productListTable',{data : choosedProduct,});
-									return;
+						if(choosedProduct[i].commodityId==obj.data.commodityId){		
+							var inv=choosedProduct[i].inventorys;
+							for(var j=0;j<inv.length;j++){
+								if(inv[j].warehouse.id == choosedProduct[i].warehouseId){
+									if(inv[j].number<obj.value){
+										layer.msg('计划数量不能大于仓库剩余数量，请重新修改数量或选择其他出货仓库！',{icon:2});
+										table.reload('productListTable',{data : choosedProduct,});
+										return;
+									}
+									break;
 								}
-								break;
 							}
-						}
-						if(choosedProduct[i].commodityId==obj.data.commodityId){		//重新对该行的相关数据进行计算
-						 	$('#addOrderNumber').val($('#addOrderNumber').val()-choosedProduct[i].number-(-parseInt(obj.value)));
+							$('#addOrderNumber').val($('#addOrderNumber').val()-choosedProduct[i].number-(-parseInt(obj.value)));
 							choosedProduct[i].number=parseInt(obj.value);
 						 	break;
 						}
@@ -415,6 +411,7 @@ layui.config({
 			}
 			var data=obj.field;
 			data.number=$('#addOrderNumber').val();
+			data.status = defaultStatus;
 			data.commodityNumber=JSON.stringify(child);			//子列表商品
 			var load = layer.load(1);
 			$.ajax({
@@ -559,7 +556,7 @@ layui.config({
 		}
 		function getStatusSelectHtml(){				//获取类型下拉框
 			return function(d) {		
-				var html='<select  lay-filter="selectStatus" > ';
+				var html='<select  disabled> ';
 				 	html+='<option value="0" '+ (defaultStatus=='0'?'selected':'') +'>销售出库</option>';
 				 	html+='<option value="1" '+ (defaultStatus=='1'?'selected':'') +'>调拨出库</option>';
 				 	html+='<option value="2" '+ (defaultStatus=='2'?'selected':'') +'>销售换货出库</option>';
