@@ -25,7 +25,7 @@ td{
 	<div class="layui-card-body">
 		<table class="layui-form">
 			<tr>
-				<td><select name=""><option>按批次号</option></select>
+				<td><select name=""><option>按批次号查找</option></select>
 				<td>&nbsp;&nbsp;</td>
 				<td><input type="text" class="layui-input" name="batchNumber" placeholder='请输入要查找的相关信息'></td>
 				<td>&nbsp;&nbsp;</td>
@@ -40,7 +40,7 @@ td{
 
 <!-- 添加订单隐藏框  -->
 <div id="addOrderDiv" style="display:none;padding:10px;">
-	<table class="layui-form layui-table">
+	<table class="layui-form layui-table"  lay-size="sm" lay-skin="nob">
 		<tr><td>批次号<input type="hidden" name="type" value="0" ></td>	<!-- 默认type类型为0，表示为生产单 -->
 			<td><input type="text" class="layui-input" name="batchNumber" lay-verify='required' id="addBatchNumber"></td>
 			<td>经手人</td>
@@ -49,16 +49,15 @@ td{
 			<td><input type="text" class="layui-input" name="number" id="addNumber" readonly value='0'></td></tr>
 		<tr><td>备注</td>
 			<td colspan="3"><input type="text" name="remark" class="layui-input" id="addRemark"></td>
-			<td>操作</td>
-			<td><span class="layui-btn layui-btn-danger" id='resetAddOrder' >清空</span>
-				<span class="layui-btn" lay-submit lay-filter="sureAdd" >确定</span></td></tr>
+			<td colspan="2" style="text-align:right;"><span class="layui-btn" lay-submit lay-filter="sureAdd" >确定新增</span>
+							<span class="layui-btn layui-btn-danger" id='resetAddOrder' >清空数据</span> </td></tr>
 	</table>
 	<table class="layui-table" id="productListTable" lay-filter="productListTable"></table>
 </div>
 
 <!-- 查看订单隐藏框  -->
 <div id="lookoverOrderDiv" style="display:none;padding:10px;">
-	<table class="layui-form layui-table" lay-skin="line">
+	<table class="layui-form layui-table" lay-size="sm" lay-skin="nob">
 		<tr><td>批次号</td>	
 			<td><input type="text" class="layui-input" readonly id="look_batchNumber"></td>
 			<td>经手人</td>
@@ -66,15 +65,15 @@ td{
 			<td>总数量</td>
 			<td><input type="text" class="layui-input" id="look_number" readonly></td></tr>
 		<tr><td>备注</td>
-			<td colspan="5"><input type="text" id="look_remark" class="layui-input" readonly></td></tr>
+			<td colspan="3"><input type="text" id="look_remark" class="layui-input" readonly></td></tr>
 	</table>
 	<table class="layui-table" id="lookOverProductListTable" lay-filter="lookOverProductListTable"></table>
 </div>
 
 <!-- 生成针工单隐藏框  -->
 <div id="becomeOrderDiv" style="display:none;padding:10px;">
-	<table class="layui-form layui-table">
-		<tr><td>批次号<input type="hidden" name="type" value="1" >		<!-- 默认type类型为1，表示为针工单 -->	
+	<table class="layui-form layui-table" lay-size="sm" lay-skin="nob">
+		<tr><td>批次号<input type="hidden" name="type" value="1" >					<!-- 默认type类型为1，表示为针工单 -->	
 					  <input type="hidden" name="id" id="becomeOrderId" ></td>		<!-- 生成针工单的生产单id。用于生产单数量的减少 -->
 			<td><input type="text" class="layui-input" name='batchNumber' id="become_bacthNumber" readonly></td>
 			<td>经手人</td>
@@ -91,14 +90,13 @@ td{
 
 <!-- 商品选择隐藏框 -->
 <div id="productChooseDiv" style="display:none;">
-	<table class="layui-form" lay-filter="productChooseTool">
+	<table class="layui-form layui-table" lay-size="sm" lay-skin="nob"  style="width:60%;">
 		<tr>
-			<td><select><option value="">按产品名称		</option></select></td>			<td>&nbsp;</td>
-			<td><input type="text" class="layui-input" name="skuCode" placeholder="请输入查找的商品名"></td>				<td>&nbsp;</td>
-			<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProduct" >
-					<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i></button></td>					<td>&nbsp;</td>
-			<td><button type="button" class="layui-btn layui-btn-sm" id="addNewProduct" >添加新商品</button></td>		<td>&nbsp;</td>
-			<td><button type="button" class="layui-btn layui-btn-sm" id="sure" >确定添加</button></td>
+			<td><select><option value="1">按商品名称查找</option></select></td>			
+			<td><input type="text" class="layui-input" name="skuCode" placeholder="请输入查找的信息"></td>				
+			<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProduct" >搜索</button>				
+				<button type="button" class="layui-btn layui-btn-sm" id="sure" >确定添加</button>
+				<button type="button" class="layui-btn layui-btn-sm" id="addNewProduct" >添加新商品</button>	</td>
 		</tr>
 	</table>
 	<table class="layui-table" id="productChooseTable" lay-filter="productChooseTable"></table>
@@ -110,19 +108,19 @@ td{
 <table style="width:100%;">
 	<tr><td>商品名称</td>
 		<td><input type="text" class="layui-input" lay-verify="required"	name="skuCode"></td>
-		<td>1688批发价</td>
+		<td>1688批发价/元</td>
 		<td><input type="text" class="layui-input" lay-verify="number"		name="OSEEPrice"></td></tr>
-	<tr><td>天猫单价</td>
+	<tr><td>天猫单价/元</td>
 		<td><input type="text" class="layui-input" lay-verify="number"		name="tianmaoPrice"> </td>
-		<td>线下批发价</td>
+		<td>线下批发价/元</td>
 		<td><input type="text" class="layui-input" lay-verify="number"		name="offlinePrice"></td></tr>
-	<tr><td>商品重量</td>
+	<tr><td>商品重量/g</td>
 		<td><input type="text" class="layui-input" lay-verify="number"		name="weight" ></td>
-		<td>商品高度</td>
+		<td>商品高度/cm</td>
 		<td><input type="text" class="layui-input" lay-verify="number"		name="size" ></td></tr>
-	<tr><td>商品成本</td>
+	<tr><td>商品成本/元</td>
 		<td><input type="text" class="layui-input" lay-verify="number"		name="cost"></td>
-		<td>广宣成本</td>
+		<td>广宣成本/元</td>
 		<td><input type="text" class="layui-input" lay-verify="number"		name="propagandaCost" ></td></tr>
 	<tr><td>商品填充物</td>
 		<td><input type="text" class="layui-input" name="fillers"></td>
@@ -138,9 +136,9 @@ td{
 <!-- 生产单表格工具栏 -->
 <script type="text/html" id="productOrderTableToolbar" >
 <div  class="layui-button-container">
-	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增</span>
+	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增生产单</span>
+	<span lay-event="becomeNeedle"  class="layui-btn layui-btn-sm" >生成针工单</span>
 	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >一键反冲</span>
-	<span lay-event="becomeNeedle"  class="layui-btn layui-btn-sm" >生产针工单</span>
 	<span class="layui-badge" >小提示：双击查看详细信息</span>
 </div>
 </script>
@@ -148,8 +146,8 @@ td{
 <!-- 商品列表表格工具栏 -->
 <script type="text/html" id="productListTableToolbar" >
 <div  class="layui-button-container">
-	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增</span>
-	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除</span>
+	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增商品</span>
+	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除商品</span>
 </div>
 </script>
 
@@ -211,7 +209,8 @@ layui.config({
 		})
 		form.on('submit(search)',function(obj){
 			table.reload('productOrderTable',{
-				where:obj.field
+				where:obj.field,
+				page: {  curr: 1   }
 			})
 		})
 		
@@ -275,8 +274,8 @@ layui.config({
 				       {align:'center', title:'商品名称', templet:'<p>{{ d.commodity.skuCode }}</p>',},
 				       {align:'center', title:'商品数量', field:'number', },
 				       {align:'center', title:'剩余数量', field:'residueNumber'},
-				       {align:'center', title:'生成针工单数量',    field:'becomeNumber', 	 edit:true,  templet:function(d){ return d.becomeNumber==undefined?(defaultBecomeNumber=='all'?d.residueNumber:0):d.becomeNumber;}},
-				       {align:'center', title:'针工单备注',  	  field:'becomeChildRemark', edit:true}, 
+				       {align:'center', title:'生成针工单数量',    style:'color:blue', field:'becomeNumber', 	 edit:true,  templet:function(d){ return d.becomeNumber==undefined?(defaultBecomeNumber=='all'?d.residueNumber:0):d.becomeNumber;}},
+				       {align:'center', title:'针工单备注',  	  style:'color:blue', field:'becomeChildRemark', edit:true}, 
 				       ]]
 			})
 			becomeProduct=choosed[0].procurementChilds;
@@ -407,8 +406,8 @@ layui.config({
 				cols:[[
 				       {type:'checkbox', align:'center', fixed:'left'},
 				       {align:'center', title:'商品名称', field:'skuCode',},
-				       {align:'center', title:'数量',     field:'number', edit:'true',},
-				       {align:'center', title:'备注',  	  field:'childRemark', edit:true}, 
+				       {align:'center', title:'数量',     field:'number', edit:true,style:'color:blue', },
+				       {align:'center', title:'备注',  	  field:'childRemark', edit:true,style:'color:blue', }, 
 				       ]]
 			})
 			table.reload('productListTable',{ data : choosedProduct });
@@ -500,7 +499,12 @@ layui.config({
 				data:choosedProduct
 			})
 		})
-		
+		form.on('submit(searchProduct)',function(obj){
+			table.reload('productChooseTable',{
+				where:obj.field,
+				page: {  curr: 1   }
+			})
+		})
 		
 		//----添加新商品功能--------------
 		$('#addNewProduct').on('click',function(){						
@@ -551,7 +555,7 @@ layui.config({
 			chooseProductWin = layer.open({		
 				type:1,
 				title:'选择产品',
-				area:['80%','70%'],
+				area:['80%','80%'],
 				content:$('#productChooseDiv'),
 			})
 			table.render({
@@ -569,7 +573,7 @@ layui.config({
 				       {type:'checkbox', align:'center', fixed:'left'},
 				       {align:'center', title:'商品名称', field:'skuCode',},
 				       {align:'center', title:'成本', 	  field:'cost',},
-				       {align:'center', title:'备注', 	  field:'remark',}, 
+				       {align:'center', title:'广宣成本', 	  field:'propagandaCost',}, 
 				      ]],
 			});
 			form.render();
@@ -577,7 +581,7 @@ layui.config({
 		function sureChoosed(){					//确定商品选择
 			var choosed=layui.table.checkStatus('productChooseTable').data;
 			if(choosed.length<1){
-				layer.msg("请选择相关商品");
+				layer.msg("请选择相关商品",{icon:2});
 				return false;
 			}
 	 		for(var i=0;i<choosed.length;i++){
