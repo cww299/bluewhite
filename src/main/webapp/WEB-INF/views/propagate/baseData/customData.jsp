@@ -248,7 +248,7 @@ layui.config({
 			var addEditWin=layer.open({
 				type:1,
 				title:title,
-				area:['40%','50%'],
+				area:['40%','60%'],
 				content:html
 			})
 			getdataOfSelect(0,'province',provinceId);
