@@ -126,8 +126,8 @@ public class Commodity extends BaseEntity<Long>{
 	 * 1688批发价
 	 * 
 	 */
-	@Column(name = "OSEE_price")
-	private Double OSEEPrice;
+	@Column(name = "osee_price")
+	private Double oseePrice;
 	
 	
 	/**
@@ -326,14 +326,13 @@ public class Commodity extends BaseEntity<Long>{
 		this.tianmaoPrice = tianmaoPrice;
 	}
 
-
-	public Double getOSEEPrice() {
-		return OSEEPrice;
+	public Double getOseePrice() {
+		return oseePrice;
 	}
 
 
-	public void setOSEEPrice(Double oSEEPrice) {
-		OSEEPrice = oSEEPrice;
+	public void setOseePrice(Double oseePrice) {
+		this.oseePrice = oseePrice;
 	}
 
 
