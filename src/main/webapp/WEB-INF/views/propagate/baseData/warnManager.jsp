@@ -73,6 +73,17 @@
 	<p style="text-align:center;"><button class="layui-btn layui-btn-sm" lay-submit lay-filter="sure">确定</button></p>
 </div>
 </script>
+<script type="text/html" id='typeTpl'>
+{{# var color='';
+	var text='';
+	switch(d.type){
+		case 1: text='库存下限预警'; color=''; break;
+		case 2: text='库存上限预警'; color='green'; break;
+		case 3: text='库存时间过长预警'; color='blue'; break;
+	}
+}}
+<span style='margin-top: 10px;' class='layui-badge layui-bg-{{ color}}'>{{ text }}</span>
+</script>
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
@@ -100,17 +111,16 @@ layui.config({
 			url:'${ctx}/inventory/checkWarning',
 			toolbar:'#warningTableToolbar',
 			loading:true,
-			page:true,
 			size:'lg',
-			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){
-				return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } },
+				return { data:ret.data, msg:ret.message, code:ret.code } },
 			cols:[[
 			       {align:'center', type:'checkbox',},
-			       {align:'center', title:'预警类型',   field:'type',	},
-			       {align:'center', title:'预警数量',   field:'number',   },
-			       {align:'center', title:'预警时间',   field:'time',  },
-			       {align:'center', title:'预警仓库',   field:'',   templet:'<span>{{ d.warehouse}}</span>'},
+			       {align:'center', title:'预警仓库', field:'inventoryName'},
+			       {align:'center', title:'商品名称', field:'name'},
+			       {align:'center', title:'预警类型', field:'type', templet:'#typeTpl'},
+			       {align:'center', title:'仓库数量', field:'countInventory'},
+			       {align:'center', title:'销售数量', field:'countSales'},
 			       ]]
 		})
 		
@@ -171,7 +181,7 @@ layui.config({
 					data:obj.field,
 					success:function(result){
 						if(0==result.code){
-							table.reload('');
+							table.reload('warningTable');
 							layer.close(addEditWin);
 							layer.msg(result.message,{icon:1});
 						}else
