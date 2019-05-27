@@ -63,16 +63,10 @@
 			<select id="addEditType" lay-filter='addEditType' name='type'><option value=''>获取数据中...</option></select>
 		</div>
 	</div>
-	<div class="layui-item" id='addEditNumber'>
-		<label class="layui-form-label">预警数量</label>
-		<div class="layui-input-block">
-			<input class="layui-input" name="number" value="{{d.number}}" >
-		</div>
-	</div>
 	<div class="layui-item" id='addEditTime'>
 		<label class="layui-form-label">预警时间</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="time" value="{{d.time}}">
+			<input class="layui-input" name="time" value="{{d.time}}" lay-verify='number'>
 			<span class="layui-badge" >提示：时间单位/天数</span>
 		</div>
 	</div>
@@ -158,55 +152,18 @@ layui.config({
 			//初始化页面设置，下拉框的填充。显示隐藏的切换
 			$('#addEditWarehouse').html(getWarehouseSelectHtml(data.warehouseId));
 			$('#addEditType').html(getTypeSelectHtml(data.type));
-			if(data.type==1 || data.type==2){
-				$('#addEditNumber').show();
-				$('#addEditTime').hide();
-			}else{
-				$('#addEditTime').show();
-				$('#addEditNumber').hide();
-			}
 			form.render();
-			form.on('select(addEditType)',function(obj){
-				if(obj.value==1 || obj.value==2){
-					$('#addEditNumber').show();
-					$('#addEditTime').hide();
-				}else{
-					$('#addEditTime').show();
-					$('#addEditNumber').hide();
-				}
-			})
 			form.on('submit(sure)',function(obj){
-				if(obj.field.type==1 || obj.field.type==2){
-					var msg='';
-					if(obj.field.number=='')
-						msg='预警数量不能为空';
-					else if(isNaN(obj.field.number))
-						msg='预警数量只能为数字！';
-					else if(obj.field.number%1!==0)
-						msg='预警数量只能为整数！';
-					else if(parseInt(obj.field.number)<0)
-						msg='预警数量不能为负数！';
-					if(msg!=''){
-						layer.msg(msg,{icon:2});
-						return;
-					}
-					obj.field.number=parseInt(obj.field.number);
-				}else if(obj.field.type==3){
-					var msg='';
-					if(obj.field.time=='')
-						msg='预警时间不能为空';
-					else if(isNaN(obj.field.time))
-						msg='预警时间只能为数字！';
-					else if(obj.field.time%1!==0)
-						msg='预警时间只能为整数！';
-					else if(parseInt(obj.field.time)<0)
-						msg='预警时间不能为负数！';
-					if(msg!=''){
-						layer.msg(msg,{icon:2});
-						return;
-					}
-					obj.field.time=parseInt(obj.field.time);
+				var msg='';
+				if(obj.field.time%1!==0)
+					msg='预警时间只能为整数！';
+				else if(parseInt(obj.field.time)<0)
+					msg='预警时间不能为负数！';
+				if(msg!=''){
+					layer.msg(msg,{icon:2});
+					return;
 				}
+				obj.field.time=parseInt(obj.field.time);
 				var load=layer.load(1);
 				$.ajax({
 					url:'${ctx}/inventory/addWarning',

@@ -108,7 +108,8 @@ layui.config({
 			})
 			var open=layer.open({
 				title:title,
-				area:['30%','20%'],
+				area:['30%','40%'],
+				shadeClose:true,
 				type:1,
 				content:html,
 			})

@@ -7,6 +7,7 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/formSelect/formSelects-v4.css" />
 <title>角色管理</title>
 <style>
 .layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
@@ -25,7 +26,7 @@
 				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td><select name="" lay-search><option value=""></option></select></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
+				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button>&nbsp;<span class="layui-badge" >提示：双击分配角色</span></td>
 			</tr>
 		</table>
 		<table class="layui-form" id="userTable" lay-filter="userTable"></table>
@@ -44,13 +45,14 @@
 		</div>
 	</div>
 	<div class="layui-form-item">
-		<input type='hidden' name='userId'>
 		<label class="layui-form-label">角色</label>
 		<div class="layui-input-block">
-			<select id='roleSelect' name='roleId'><option value=''>获取数据中....</option></select>
+			<select id="roleIdSelect" lay-search  xm-select="roleIdSelect" xm-select-show-count="5" name='roleId'>
+					<option value="">获取数据中...</option></select>
 		</div>
 	</div>
-	<p style="text-align:center;"><button type='button' class='layui-btn' lay-submit lay-filter='sureAdd'>确定</button></p>
+	<p style="text-align:center;">
+		<button type='button' class='layui-btn layui-btn-sm' lay-submit lay-filter='sureAdd'>确定</button></p>
 </div>
 
 <!-- 表格工具栏模板 -->
@@ -70,13 +72,15 @@ layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	tablePlug : 'tablePlug/tablePlug',
+	formSelects : 'formSelect/formSelects-v4'
 }).define(
-	['tablePlug'],
+	['tablePlug','formSelects'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
 		, form = layui.form			 		
 		, table = layui.table 
+		, formSelects = layui.formSelects
 		, laytpl = layui.laytpl
 		, tablePlug = layui.tablePlug;
 		
@@ -86,7 +90,7 @@ layui.config({
 		table.render({
 			elem:'#userTable',
 			url:'${ctx}/system/user/pages?orgNameIds=35&quit=0',			//在职的广宣部人员
-			toolbar:'#userTableToolbar',
+			//toolbar:'#userTableToolbar',
 			loading:true,
 			page:true,
 			size:'lg',
@@ -105,19 +109,20 @@ layui.config({
 			renderSelect(0);
 			layer.open({
 				title:'分配用户角色',
-				area:['50%','50%'],
+				area:['40%','60%'],
+				shadeClose: true,
 				type:1,
 				content:$('#addRoleDiv'),
 			})
 			$('#addRoleUserId').val( obj.data.id );
-			
 			$('#addRoleUserName').val( obj.data.userName );
+			$('#roleIdSelect').html(getSelectRoleHtml(''));
+			formSelects.render();
 		})
 		
 		form.on('submit(sureAdd)',function(obj){
 			layer.confirm('是否确认？',function(){
-				
-				console.log($('#addRoleUserId').val())
+				//formSelects.value('roleIdSelect', 'valStr'),
 				console.log(obj.field);
 				return;
 				
@@ -142,6 +147,21 @@ layui.config({
 			})
 			
 		})
+		
+		function getSelectRoleHtml(idStr){
+			var html='<option value="">请选择</option>';
+			var ids=idStr.split(',');
+			var isSelect='';
+			layui.each(allRole,function(index,item){ 
+				isSelect='';
+				for(var i=0;i<ids.length;i++){
+					if(ids[i]==item.id)
+						isSelect='selected';
+					html+='<option value="'+item.id+'" '+isSelect+' >'+item.name+'</option>';
+				}
+			})
+			return html;
+		}
 		
 		function renderSelect(role){
 			var html='<select >请选择角色</select>'
