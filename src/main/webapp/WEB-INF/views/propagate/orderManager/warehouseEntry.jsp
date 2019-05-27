@@ -151,6 +151,21 @@ td{
 	<span class="layui-badge layui-bg-{{ color }}">{{ msg }}</span>
 </script>
 
+<!-- 入库单查看类型转换模板 -->
+<script type="text/html" id='typeTpl'>
+	{{#	var text='',color='';
+		switch(d.status){
+		case 0: text='生产入库'; 	color=''; break;
+		case 1: text='调拨入库'; 	color='blue'; break;
+		case 2: text='销售退货入库'; color='green'; break;
+		case 3: text='销售换货入库'; color='cyan'; break;
+		case 4: text='采购入库'; 	color='orange'; break;
+		}
+	}}	
+	<span class='layui-badge layui-bg-{{ color }}'>{{text}}</span>
+</script>
+
+
 <!-- 商品销售属性模板 -->
 <script type="text/html" id="saleAttributeTpl">
 	{{# var str='';
@@ -289,8 +304,8 @@ layui.config({
 				       {align:'center', title:'商品名称',  templet:'<p>{{ d.commodity.skuCode }}</p>'},
 				       {align:'center', title:'数量',     field:'number',},
 				       {align:'center', title:'剩余数量', field:'residueNumber'},
-				       {align:'center', title:'出库仓库', 	  templet:function(d){return d.warehouse.name; },}, 
-				       {align:'center', title:'出库类型', 	 templet:function(d){return d.status;},}, 
+				       {align:'center', title:'入库仓库', 	  templet:function(d){return d.warehouse.name; },}, 
+				       {align:'center', title:'入库类型', 	 templet:'#typeTpl',}, 
 				       {align:'center', title:'备注', 	  field:'childRemark',}, 
 				       ]]
 			})

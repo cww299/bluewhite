@@ -150,6 +150,19 @@ td{
 	}}
 	<span style='color:orange;'>{{ str }}</span>
 </script>
+
+<!-- 出库单查看类型转换模板 -->
+<script type="text/html" id='typeTpl'>
+	{{#	var text='',color='';
+		switch(d.status){
+		case 0: text='销售出库'; 	color='';	 break;
+		case 1: text='调拨出库'; 	color='blue'; break;
+		case 2: text='销售换货出库'; color='orange'; break;
+		case 3: text='采购退货出库'; color='green'; 	break;
+		}
+	}}	
+	<span class='layui-badge layui-bg-{{color}}'>{{text}}</span>
+</script>
 </body>
 <script>
 layui.config({
@@ -255,7 +268,7 @@ layui.config({
 				       {align:'center', title:'商品名称',  templet:'<p>{{ d.commodity.skuCode }}</p>'},
 				       {align:'center', title:'数量',     field:'number',},
 				       {align:'center', title:'出库仓库', 	  templet:function(d){return d.warehouse.name; },}, 
-				       {align:'center', title:'出库类型', 	 templet:function(d){return d.status;},}, 
+				       {align:'center', title:'出库类型', 	 templet:'#typeTpl',}, 
 				       {align:'center', title:'仓位',  	  field:'place',}, 
 				       {align:'center', title:'备注', 	  field:'childRemark',}, 
 				       ]]
