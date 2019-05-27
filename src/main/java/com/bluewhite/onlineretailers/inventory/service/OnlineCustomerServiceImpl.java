@@ -17,6 +17,7 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.onlineretailers.inventory.dao.OnlineCustomerDao;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineCustomer;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
+import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 @Service
 public class OnlineCustomerServiceImpl extends BaseServiceImpl<OnlineCustomer, Long> implements  OnlineCustomerService{
 	@Autowired

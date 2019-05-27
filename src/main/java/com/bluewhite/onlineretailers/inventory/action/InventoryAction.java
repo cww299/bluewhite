@@ -316,7 +316,20 @@ public class InventoryAction {
 	public CommonResponse checkWarning() {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(commodityService.checkWarning());
-		cr.setMessage("新增成功");
+		cr.setMessage("成功");
+		return cr;
+	}
+	
+	/**
+	 * 获取所有的库存预警
+	 * 
+	 */
+	@RequestMapping(value = "/inventory/getWarning", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getWarning() {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(commodityService.findAll());
+		cr.setMessage("成功");
 		return cr;
 	}
 
@@ -347,6 +360,47 @@ public class InventoryAction {
 		cr.setMessage("成功删除" + count + "条库存预警");
 		return cr;
 	}
+	
+	
+	
+	
+	
+	/*********************  报表  ************************/
+	/**
+	 * 1.销售报表
+	 * 2.入库报表
+	 */
+	
+	/**
+	 * 1.销售
+	 * 日报表
+	 * 月报表
+	 * 商品销售报表
+	 * 员工销售报表
+	 * 
+	 */
+	@RequestMapping(value = "/inventory/report/sales", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse day(Procurement procurement) {
+		CommonResponse cr = new CommonResponse();
+		
+		
+		
+		
+		
+		cr.setMessage("成功");
+		return cr;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {

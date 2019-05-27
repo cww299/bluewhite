@@ -1,11 +1,12 @@
 package com.bluewhite.onlineretailers.inventory.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineCustomer;
 @Service
 public interface OnlineCustomerService extends BaseCRUDService<OnlineCustomer,Long>{
@@ -25,4 +26,5 @@ public interface OnlineCustomerService extends BaseCRUDService<OnlineCustomer,Lo
 	 */
 	public int deleteOnlineCustomer(String ids);
 
+	
 }

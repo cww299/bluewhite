@@ -77,7 +77,22 @@ public class Procurement extends BaseEntity<Long>{
 	@Column(name = "type")
 	private Integer type;
 	
-	
+	/**
+	 * 第一种是入库单的订单状态，第二种是出库单的订单状态
+	 * （0=生产入库）
+	 * （1=调拨入库）
+	 * （2=销售退货入库 ）
+	 * （3=销售换货入库 ）
+	 * （4=采购入库）
+	 * 
+	 * 
+	 * （0=销售出库）
+	 * （1=调拨出库）
+	 * （2=销售换货出库 ）
+	 * （3=采购退货出库 ）
+	 */
+	@Column(name = "status")
+	private Integer status;
 	
 	/**
 	 * 是否反冲（0=否，1=是）
@@ -119,6 +134,15 @@ public class Procurement extends BaseEntity<Long>{
 	
 	
 	
+	
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
 	public Date getOrderTimeBegin() {
 		return orderTimeBegin;
 	}
