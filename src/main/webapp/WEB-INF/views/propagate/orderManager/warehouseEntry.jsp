@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>生产单</title>
+<title>入库单</title>
 <style>
 .layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
      top: 50%;
@@ -29,21 +29,12 @@ td{
 				<td>&nbsp;&nbsp;</td>
 				<td><input type="text" class="layui-input" name="batchNumber" placeholder='请输入要查找的相关信息'></td>
 				<td>&nbsp;&nbsp;</td>
-				<td><select name="warehouseId" id='warehouseIdSelect'><option value="">入库仓库</option></select>
-				<td>&nbsp;&nbsp;</td>
-				<td><select name="status"><option value="">入库类型</option>
-									<option value="0">生产入库</option>
-									<option value="1">调拨入库</option>
-									<option value="2">销售退货入库 </option>
-									<option value="3">销售换货入库</option>
-									<option value="4">采购入库</option></select>
-				<td>&nbsp;&nbsp;</td>
 				<td><select name="flag"><option value="">是否反冲</option><option value="1">反冲</option><option value="0">未反冲</option></select>
 				<td>&nbsp;&nbsp;</td>
 				<td><span class="layui-btn" lay-submit lay-filter="search">搜索</span></td>
 			</tr>
 		</table>
-		<table class="layui-table" id="productOrderTable" lay-filter="productOrderTable"></table>
+		<table class="layui-table" id="entryOrderTable" lay-filter="entryOrderTable"></table>
 	</div>
 </div>
 
@@ -58,7 +49,7 @@ td{
 			<td colspan="3"><input type="text" name="remark" class="layui-input"></td></tr>
 		<tr>
 			<td>入库数量</td>
-			<td><input type="text" class="layui-input" name='number' id="addOrderNumber" value='0' id="become_bacthNumber" readonly></td>
+			<td><input type="text" class="layui-input" name='number' id="addOrderNumber" value='0' readonly></td>
 			<td>默认入库仓库</td>
 			<td><select lay-filter="defaultSelect" type='inventory' id='defaultInventorySelect'><option value="">获取数据中.....</option></select></td>
 			<td>默认入库类型</td>
@@ -136,8 +127,8 @@ td{
 </table>
 </form>
 
-<!-- 生产单表格工具栏 -->
-<script type="text/html" id="productOrderTableToolbar" >
+<!-- 入库单表格工具栏 -->
+<script type="text/html" id="entryOrderTableToolbar" >
 <div  class="layui-button-container">
 	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增</span>
 	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >一键反冲</span>
@@ -175,18 +166,18 @@ layui.config({
 		, table = layui.table 
 		, tablePlug = layui.tablePlug;
 		
-		var chooseProductWin;		//选择商品弹窗
+		var chooseProductWin,		//选择商品弹窗
+			addNewPorductWin;
 		var allInventory=[];		//所有仓库
 		
 		getAllInventory();
-		renderInventorySelect('warehouseIdSelect');
 		renderInventorySelect('defaultInventorySelect');
 		
 		form.render();
 		table.render({				//渲染主页面单表格
-			elem:'#productOrderTable',
+			elem:'#entryOrderTable',
 			url:'${ctx}/inventory/procurementPage?type=2',
-			toolbar:'#productOrderTableToolbar',
+			toolbar:'#entryOrderTableToolbar',
 			loading:true,
 			page:{},
 			request:{pageName:'page',limitName:'size'},
@@ -194,7 +185,7 @@ layui.config({
 				return {data:ret.data.rows,count:ret.data.total,msg:ret.message,code:ret.code}},
 			cols:[[
 			       {align:'center', type:'checkbox',},
-			       {align:'center', title:'批次号',   field:'batchNumber',		   width:'',},
+			       {align:'center', title:'批次号',   field:'batchNumber',		},
 			       {align:'center', title:'计划总数量', field:'number'},
 			       {align:'center', title:'剩余总数量', field:'residueNumber'},
 			       {align:'center', title:'经手人',	templet:'<p>{{ d.user }}</p>'},
@@ -203,24 +194,24 @@ layui.config({
 			       ]]
 		})
 		
-		table.on('toolbar(productOrderTable)',function(obj){	//监听单表格按钮
+		table.on('toolbar(entryOrderTable)',function(obj){	//监听单表格按钮
 			switch(obj.event){
 			case 'add':			add();			break;
 			case 'delete':		deletes();		break;
 			}
 		})
 		
-		table.on('rowDouble(productOrderTable)',function(obj){
+		table.on('rowDouble(entryOrderTable)',function(obj){
 			lookover(obj.data);
 		})
 		form.on('submit(search)',function(obj){
-			table.reload('productOrderTable',{
+			table.reload('entryOrderTable',{
 				where:obj.field
 			})
 		})
 		
 		function deletes(){							//删除生产单表格
-			var choosed=layui.table.checkStatus('productOrderTable').data;
+			var choosed=layui.table.checkStatus('entryOrderTable').data;
 			if(choosed.length<1){
 				layer.msg('请选择生产单',{icon:2});
 				return;
@@ -234,7 +225,7 @@ layui.config({
 					url:'${ctx}/inventory/deleteProcurement?ids='+ids,
 					success:function(result){
 						if(0==result.code){
-							table.reload('productOrderTable');
+							table.reload('entryOrderTable');
 							layer.msg(result.message,{icon:1});
 						}else
 							layer.msg(result.message,{icon:2});
@@ -271,6 +262,7 @@ layui.config({
 			$('#look_number').val(data.number);
 			//$('#look_user').val(choosed[0].user);
 		}
+		
 		//-------新增生产单功能---------------
 		var choosedProduct=[];		//用户已经选择上的产品,渲染新增单的产品表格数据
 		var defaultStatus=0;
@@ -294,8 +286,8 @@ layui.config({
 				       {type:'checkbox', align:'center', fixed:'left'},
 				       {align:'center', title:'商品名称', field:'skuCode',},
 				       {align:'center', title:'计划数量',     field:'number', edit:'true',},
-				       {align:'center', title:'入库仓库',     field:'warehouseId', templet: getInventorySelectHtml()},
-				       {align:'center', title:'入库类型',     field:'status',  templet: getStatusSelectHtml()},
+				       {align:'center', title:'入库仓库',     field:'warehouseId', 	templet: getInventorySelectHtml()},
+				       {align:'center', title:'入库类型',     field:'status',  		templet: getStatusSelectHtml()},
 				       {align:'center', title:'仓位',  	 	  field:'place', 	edit : true,}, 
 				       {align:'center', title:'备注',  	  field:'childRemark', edit:true}, 
 				       ]],
@@ -316,7 +308,7 @@ layui.config({
 			case 'delete':deleteChoosedProduct();break;
 			}
 		})
-		form.on('select(selectStatus)', function (data) {		//监听数据表格中的 价格选择下拉框
+		form.on('select(selectStatus)', function (data) {		//监听数据表格中的 状态选择下拉框
             var elem = $(data.elem);
             var trElem = elem.parents('tr');
             choosedProduct[trElem.data('index')].status = data.value;
@@ -348,7 +340,6 @@ layui.config({
 						 if(choosedProduct[i].commodityId==obj.data.commodityId){		//重新对该行的相关数据进行计算
 						 	$('#addOrderNumber').val($('#addOrderNumber').val()-choosedProduct[i].number-(-parseInt(obj.value)));
 							choosedProduct[i].number=parseInt(obj.value);
-						 	layer.msg('修改成功！',{icon:1});
 						 	break;
 						}
 					}
@@ -356,7 +347,7 @@ layui.config({
 				for(var i=0;i<choosedProduct.length;i++){
 					 if(choosedProduct[i].commodityId==obj.data.commodityId){		//重新对该行的相关数据进行计算
 						 if(obj.field=='childRemark')
-							choosedProduct[i].childRemark=obj.data.childRemark;
+							choosedProduct[i].childRemark = obj.value;
 						 else
 							 choosedProduct[i].place = obj.value;
 					 	break;
@@ -378,13 +369,12 @@ layui.config({
 				child.push({
 					commodityId : 	t.commodityId,
 					number : 		t.number,
-					warehouseId : 	t.warehouseId==undefined ? defaultInventory : t.warehouseId,
-					place : 		t.place==undefined ? '' : t.place,
-					status : 		t.status==undefined ? defaultStatus : t.status,
-					childRemark : 	t.childRemark==undefined ? '' : t.childRemark
+					warehouseId : 	t.warehouseId	==	undefined ? defaultInventory : t.warehouseId,
+					place : 		t.place			==	undefined ? '' : t.place,
+					status : 		t.status		==	undefined ? defaultStatus : t.status,
+					childRemark : 	t.childRemark	==	undefined ? '' : t.childRemark
 				});
 			}
-			
 			var data=obj.field;
 			data.number=$('#addOrderNumber').val();
 			data.commodityNumber=JSON.stringify(child);			//子列表商品
@@ -397,12 +387,12 @@ layui.config({
 					if(0==result.code){
 						$('#resetAddOrder').click();
 						layer.closeAll();
-						table.reload('productOrderTable');
+						table.reload('entryOrderTable');
 						layer.msg(result.message,{icon:1});
 					}else{
 						layer.msg(result.message,{icon:2});
+						layer.close(load);
 					}
-					layer.close(load);
 				},
 				error:function(){
 					layer.msg("服务器异常",{icon:2});
