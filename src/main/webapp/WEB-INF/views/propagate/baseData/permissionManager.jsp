@@ -65,6 +65,17 @@
 </div>
 </script>
 
+<!-- 角色解析模板 -->
+<script type="text/html" id='roleTpl'>
+	{{# var ids=d.roles;
+		for(var i=0;i<ids.length;i++)
+			for(var j=0;j<allRole.length;j++)
+				if(ids[i]==allRole[j].id){  }}
+					<span class='layui-badge'>{{ allRole[j].name }}</span>
+    			{{# break; } }}
+	{{# }}
+</script>
+
 </body>
 
 <script>
@@ -100,7 +111,7 @@ layui.config({
 			       {align:'center', type:'checkbox',},
 			       {align:'center', title:'用户id',   field:'id',	},
 			       {align:'center', title:'用户姓名',   field:'userName',   },
-			       {align:'center', title:'角色', 	field:'', 	},
+			       {align:'center', title:'角色', 	templet:'#roleTpl' 	},
 			       ]]
 		})
 		
@@ -120,31 +131,23 @@ layui.config({
 		})
 		
 		form.on('submit(sureAdd)',function(obj){
-			layer.confirm('是否确认？',function(){
-				//formSelects.value('roleIdSelect', 'valStr'),
-				console.log(obj.field);
-				return;
-				
-				
-				var data=obj.field;
-				var load=layer.load(1);
-				$.ajax({
-					url:'${ctx}/roles/saveUserRole',
-					type:"post",
-					data:data,
-					success:function(result){
-						if(result.code==0){
-							layer.closeAll();
-							layer.msg(result.message,{icon:1});
-							table.reload('userRoleTable');
-						}
-						else
-							layer.msg(result.code+' '+result.message,{icon:2});
-						layer.close(load);
+			var data=obj.field;
+			var load=layer.load(1);
+			$.ajax({
+				url:'${ctx}/roles/saveUserRole',
+				type:"post",
+				data:data,
+				success:function(result){
+					if(result.code==0){
+						layer.closeAll();
+						layer.msg(result.message,{icon:1});
+						table.reload('userTable');
 					}
-				}) 
-			})
-			
+					else
+						layer.msg(result.code+' '+result.message,{icon:2});
+					layer.close(load);
+				}
+			}) 
 		})
 		
 		function getSelectRoleHtml(idStr){
@@ -173,10 +176,10 @@ layui.config({
 		
 		function getAllRole(){
 			$.ajax({
-				url:'${ctx}/roles/page' ,											//获取全部角色
+				url:'${ctx}/roles/page?size=99' ,											//获取全部角色
 				success:function(result){
 					if(result.code==0){
-						var row=result.data;
+						var row=result.data.rows;
 						for(var i=0;i<row.length;i++){
 							var role={id:row[i].id,name:row[i].name};
 							allRole.push(role);
