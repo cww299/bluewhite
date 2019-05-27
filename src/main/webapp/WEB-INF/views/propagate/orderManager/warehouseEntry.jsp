@@ -162,14 +162,15 @@ td{
 <!-- 商品库存情况模板 -->
 <script type="text/html" id="inventoryTpl">
 	{{# var inv=d.inventorys;
-		var str='暂无库存';
+		var str='';
 		var color='red';
 		if(inv.length>0){
 			for(var i=0;i<inv.length;i++){
 				str+=inv[i].warehouse.name+':'+inv[i].number+'  ';
 			}
 			color='green';
-		}
+		}else
+			str='暂无库存';
 	}}
 	<span style='color:{{ color }};'>{{ str }}</span>
 </script>
@@ -218,7 +219,7 @@ layui.config({
 				return {data:ret.data.rows,count:ret.data.total,msg:ret.message,code:ret.code}},
 			cols:[[
 			       {align:'center', type:'checkbox',},
-			       {align:'center', title:'批次号',   field:'batchNumber',		},
+			       {align:'center', title:'批次号',   field:'batchNumber',},
 			       {align:'center', title:'计划总数量', field:'number'},
 			       {align:'center', title:'剩余总数量', field:'residueNumber'},
 			       {align:'center', title:'经手人',	templet:'<p>{{ d.user }}</p>'},
@@ -312,7 +313,6 @@ layui.config({
 			table.render({									//渲染选择后的商品表格
 				elem:'#productListTable',
 				toolbar:'#productListTableToolbar',
-				data:[],
 				page:{},
 				size:'lg',
 				loading:true,
@@ -326,11 +326,6 @@ layui.config({
 				       {align:'center', title:'备注',  	  field:'childRemark',  edit:true, style:'color:blue',}, 
 				       ]],
 			   	done: function (res, curr, count) {	//设置下拉框初始			
-	                layui.each( $('select'), function (index, item) {
-	                    var elem = $(item);
-	                	if(elem.data('value')!=undefined)		
-	                    	elem.val(elem.data('value')).parents('div.layui-table-cell').css('overflow', 'visible');
-	                });
 	                form.render(); 
 	            },
 			})
@@ -342,11 +337,6 @@ layui.config({
 			case 'delete':deleteChoosedProduct();break;
 			}
 		})
-		form.on('select(selectStatus)', function (data) {		//监听数据表格中的 状态选择下拉框
-            var elem = $(data.elem);
-            var trElem = elem.parents('tr');
-            choosedProduct[trElem.data('index')].status = data.value;
-        });				
 		form.on('select(selectInventory)', function (data) {
             var elem = $(data.elem);
             var trElem = elem.parents('tr');
@@ -354,10 +344,16 @@ layui.config({
         });
 		form.on('select(defaultSelect)',function(obj){
 			switch(obj.elem.getAttribute('type')){
-			case 'inventory' : defaultInventory=obj.value;    break;
-			case 'status' : defaultStatus=obj.value; 		break;
+			case 'inventory' : defaultInventory=obj.value;    
+								for(var i=0;i<choosedProduct.length;i++)
+									choosedProduct[i].warehouseId=defaultInventory;
+							break;
+			case 'status' : defaultStatus=obj.value; 	
+								for(var i=0;i<choosedProduct.length;i++)
+									choosedProduct[i].status=defaultStatus;
+							break;
 			}
-			table.reload('productListTable');
+			table.reload('productListTable',{ data : choosedProduct });
 		})
 		table.on('edit(productListTable)', function(obj){ 			//监听编辑表格单元
 			if(obj.field=='number'){
@@ -407,13 +403,14 @@ layui.config({
 				child.push({
 					commodityId : 	t.commodityId,
 					number : 		t.number,
-					warehouseId : 	t.warehouseId	==	undefined ? defaultInventory : t.warehouseId,
+					warehouseId : 	t.warehouseId,
+					status : 		t.status,
 					place : 		t.place			==	undefined ? '' : t.place,
-					status : 		t.status		==	undefined ? defaultStatus : t.status,
 					childRemark : 	t.childRemark	==	undefined ? '' : t.childRemark
 				});
 			}
 			var data=obj.field;
+			data.status=defaultStatus;
 			data.number=$('#addOrderNumber').val();
 			data.commodityNumber=JSON.stringify(child);			//子列表商品
 			var load = layer.load(1);
@@ -606,15 +603,14 @@ layui.config({
 		}
 		function getStatusSelectHtml(){				//获取类型下拉框
 			return function(d) {		
-				var html='<select id="selectStatus" lay-filter="selectStatus" lay-search="true" data-value="'+defaultStatus+'"> '+
-						'<option value="0">生产入库</option>'+
-						'<option value="1">调拨入库</option>'+
-						'<option value="2">销售退货入库</option>'+
-						'<option value="3">销售换货入库 </option>'+
-						'<option value="4">采购入库</option>'+
-						'</select>';
+				var html='<select  disabled > ';
+					html+=	'<option value="0" '+ (d.status==0?"selected":"") +'>生产入库</option>';
+					html+=	'<option value="1" '+ (d.status==1?"selected":"") +'>调拨入库</option>';
+					html+=	'<option value="2" '+ (d.status==2?"selected":"") +'>销售退货入库</option>';
+					html+=	'<option value="3" '+ (d.status==3?"selected":"") +'>销售换货入库 </option>';
+					html+=	'<option value="4" '+ (d.status==4?"selected":"") +'>采购入库</option>';
+					html+=	'</select>';
 				return html;
-
 			};
 		}
 		function getInventorySelectHtml() {				//获取仓库下拉框
@@ -622,10 +618,11 @@ layui.config({
 				if(allInventory.length==0){
 					return '没有可用仓库';
 				}
-				var html='<select id="selectInventory" lay-filter="selectInventory" lay-search="true" data-value="'+defaultInventory+'"> ';
+				var html='<select id="selectInventory" lay-filter="selectInventory" > ';
 				for(var i=0;i<allInventory.length;i++){
 					var disable = allInventory[i].flag==1?'':'disabled';
-					html+='<option value="'+allInventory[i].id+'" '+disable+'>'+allInventory[i].name+'</option>';
+					var selected = d.warehouseId ==allInventory[i].id?'selected':'';
+					html+='<option value="'+allInventory[i].id+'" '+disable+' '+selected+'>'+allInventory[i].name+'</option>';
 				}
 				return html; 
 			};

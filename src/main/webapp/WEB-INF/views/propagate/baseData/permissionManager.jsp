@@ -89,8 +89,7 @@ layui.config({
 		
 		table.render({
 			elem:'#userTable',
-			url:'${ctx}/system/user/pages?orgNameIds=35&quit=0',			//在职的广宣部人员
-			//toolbar:'#userTableToolbar',
+			url:'${ctx}/system/user/pages?orgNameIds=35&quit=0',//(放到线上的时候需要把部门id去除)			//在职的广宣部人员
 			loading:true,
 			page:true,
 			size:'lg',
@@ -174,7 +173,7 @@ layui.config({
 		
 		function getAllRole(){
 			$.ajax({
-				url:'${ctx}/roles' ,											//获取全部角色
+				url:'${ctx}/roles/page' ,											//获取全部角色
 				success:function(result){
 					if(result.code==0){
 						var row=result.data;
