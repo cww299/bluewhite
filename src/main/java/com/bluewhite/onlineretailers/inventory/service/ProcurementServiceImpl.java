@@ -133,9 +133,9 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				
 				
 				if (procurement.getType() == 2) {
-					Commodity commodity = commodityService.findOne(procurementChild.getCommodityId());
 					procurementChild.setWarehouseId(jsonObject.getLong("warehouseId"));
 					procurementChild.setPlace(jsonObject.getString("place"));
+					Commodity commodity = commodityService.findOne(procurementChild.getCommodityId());
 					if(procurement.getId() != null){
 						procurementChild.setStatus(4);
 					}else{
@@ -143,19 +143,17 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 					}
 					// 创建商品的库存
 					Set<Inventory> inventorys = commodity.getInventorys();
-					if(inventorys.size()==0){
-						Inventory inventory = new Inventory();
+					//获取库存
+					Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(jsonObject.getLong("commodityId"),jsonObject.getLong("warehouseId"));
+					if(inventory==null){
+						inventory = new Inventory();
 						inventory.setCommodityId(procurementChild.getCommodityId());
 						inventory.setNumber(procurementChild.getNumber());
 						inventory.setWarehouseId(procurementChild.getWarehouseId());
 						inventorys.add(inventory);
 						commodity.setInventorys(inventorys);
 					}else{
-						inventorys.stream().forEach(in->{
-							if(in.getWarehouseId()==procurementChild.getWarehouseId()){
-								in.setNumber(in.getNumber()+procurementChild.getNumber());
-							}
-						});
+						inventory.setNumber(inventory.getNumber()+procurementChild.getNumber());
 					}
 					commodityService.save(commodity);
 				}
