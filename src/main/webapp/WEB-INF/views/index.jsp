@@ -44,6 +44,15 @@
               <span class="layui-badge-dot"></span>
             </a>
           </li> -->
+          
+           <!-- 广宣部门查看预警按钮 -->
+          <shiro:hasAnyRoles name="superAdmin">
+	          <li class="layui-nav-item layui-hide-xs" lay-unselect>
+	            <a href="javascript:;" id='lookoverWarn' >仓库预警<span class="layui-badge" id='warnNumber'>0</span></a>
+	          </li>
+          </shiro:hasAnyRoles> 
+          
+          
           <li class="layui-nav-item layui-hide-xs" lay-unselect>
             <a href="javascript:;" layadmin-event="theme">
               <i class="layui-icon layui-icon-theme"></i>
@@ -79,6 +88,7 @@
           <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-unselect>
             <a href="javascript:;" layadmin-event="more"><i class="layui-icon layui-icon-more-vertical"></i></a>
           </li> -->
+          
         </ul>
       </div>
       
@@ -128,7 +138,15 @@
       <div class="layadmin-body-shade" layadmin-event="shade"></div>
     </div>
   </div>
-
+	
+	<!-- 广宣预警弹窗 -->
+	<shiro:hasAnyRoles name="superAdmin">
+   		<div id="warningDiv" style="display:none;">
+			<table id='warnTable' lay-filter='warnTable' class="layui-table"></table>   		
+   		</div>
+	</shiro:hasAnyRoles> 
+	
+	
  <script src="${ctx }/static/layuiadmin/layui/layui.js"></script>
  <script>
  layui.config({
@@ -137,9 +155,10 @@
    index : 'lib/index',  //主入口模块
  }).use('index');
  
-layui.use(['form','element','layer','jquery'],function(){
+layui.use(['form','element','layer','jquery','table'],function(){
 	var form = layui.form,
-		element = layui.element;
+		element = layui.element,
+		table = layui.table,
 		$ = layui.$;
     	layer = parent.layer === undefined ? layui.layer : top.layer;
 		
@@ -149,6 +168,43 @@ layui.use(['form','element','layer','jquery'],function(){
     	$('#updatePwd').on('click',function(){				//修改密码
     		$('#hiddenButton').click();
     	})
+    	
+    	//广宣预警弹窗
+    	$('#lookoverWarn').on('click',warn);
+    	warn();
+    	function warn(){
+    		//debugger;
+			if(document.getElementById("warningDiv")!=null){
+				layer.open({
+					title:'仓库预警',
+					type:1,
+					shadeClose: true,
+					area:['500px','500px'],
+					content:$('#warningDiv'),
+				})
+				 table.render({
+					elem:'#warnTable',
+					size:'lg',
+					url:'${ctx}/inventory/checkWarning',
+					parseData:function(r){
+						// $('#warnNumber').html();
+						return {
+							code:r.code,
+							data:r.data.row,
+							msg:r.message,
+						}
+					},
+					cols:[[
+					       {align:'center', title:'预警仓库', field:''},
+					       {align:'center', title:'预警类型', field:''},
+					       {align:'center', title:'预警数量', field:''},
+					       {align:'center', title:'预警时间', field:''},
+					       ]],
+				}) 
+			}
+		}
+    	
+    	
     	
     	$.ajax({
 			url:"${ctx}/menus",

@@ -32,6 +32,11 @@
 	</div>
 </div>
 
+<!-- 查看商品库存隐藏框 -->
+<div style="display:none;" id="lookoverDiv">
+	<table class="layui-table" id="lookoverTable" lay-filter='lookoverTable'></table>
+</div>
+
 
 </body>
 
@@ -41,6 +46,7 @@
 	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增</span>
 	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除</span>
 	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改</span>
+	<span class="layui-badge" >提示：双击查看库存</span>
 </div>
 </script>
 
@@ -140,6 +146,7 @@ layui.config({
 			toolbar:'#productTableToolbar',
 			loading:true,
 			page:true,
+			size:'lg',
 			request:{
 				pageName:'page',
 				limitName:'size'
@@ -181,6 +188,30 @@ layui.config({
 			case 'delete':	deletes();			break;
 			}
 		})
+		table.on('rowDouble(productTable)',function(obj){
+			lookover(obj.data);
+		})
+		function lookover(data){
+			layer.open({
+				title:'查看商品库存',
+				type:1,
+				area:['80%','80%'],
+				content:$('#lookoverDiv'),
+			})
+			table.render({
+				elem:'#lookoverTable',
+				data:data.inventorys,
+				size:'lg',
+				page:{},
+				totalRow:true,
+				cols:[[
+					   {align:'center',  title:'商品名称',  field:'',  templet:function(d){ return data.skuCode; }},
+				       {align:'center',  title:'仓库名称',  field:'',  templet:'<span>{{ d.warehouse.name }}</span>'},
+				       {align:'center',  title:'库存数量',  field:'number',totalRow:true,  },
+				       {align:'center',  title:'仓位',  field:'place', },
+				       ]],
+			})
+		}
 		
 		function addEdit(type){
 			var data={id:'',skuCode:'',weight:'',size:'',material:'',fillers:'',cost:'',propagandaCost:'',remark:'',tianmaoPrice:'',oSEEPrice:'',offlinePrice:''},
