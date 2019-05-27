@@ -78,9 +78,15 @@ public class Sundry  extends BaseEntity<Long>{
 	/**
 	 * 当月安检管理费
 	 */
-	@Column(name = "Administration")
-	private Double Administration;
-
+	@Column(name = "administration")
+	private Double administration;
+	
+	/**
+	 * 当月总费用
+	 */
+	@Column(name = "summary_price")
+	private Double summaryPrice;
+	
 	public Long getHostelId() {
 		return hostelId;
 	}
@@ -145,12 +151,22 @@ public class Sundry  extends BaseEntity<Long>{
 		this.broadband = broadband;
 	}
 
+	
+
+	public Double getSummaryPrice() {
+		return summaryPrice;
+	}
+
+	public void setSummaryPrice(Double summaryPrice) {
+		this.summaryPrice = summaryPrice;
+	}
+
 	public Double getAdministration() {
-		return Administration;
+		return administration;
 	}
 
 	public void setAdministration(Double administration) {
-		Administration = administration;
+		this.administration = administration;
 	}
 
 	public Double getFixed() {

@@ -102,6 +102,12 @@ public class Hydropower  extends BaseEntity<Long>{
 	 */
 	@Column(name = "exceed_price")
 	private Double exceedPrice;
+	
+	/**
+	 * 标准内支金额
+	 */
+	@Column(name = "not_price")
+	private Double notPrice;
 	public User getUser() {
 		return user;
 	}
@@ -206,6 +212,14 @@ public class Hydropower  extends BaseEntity<Long>{
 
 	public void setSum(Integer sum) {
 		this.sum = sum;
+	}
+
+	public Double getNotPrice() {
+		return notPrice;
+	}
+
+	public void setNotPrice(Double notPrice) {
+		this.notPrice = notPrice;
 	}
 
 

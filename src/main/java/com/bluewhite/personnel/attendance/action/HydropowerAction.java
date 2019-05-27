@@ -18,8 +18,10 @@ import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
+import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.personnel.attendance.dao.HydropowerDao;
 import com.bluewhite.personnel.attendance.entity.Hydropower;
 import com.bluewhite.personnel.attendance.service.HydropowerService;
 import com.bluewhite.system.user.entity.User;
@@ -29,6 +31,8 @@ public class HydropowerAction {
 
 	@Autowired
 	private HydropowerService service;
+	@Autowired
+	private HydropowerDao hydropowerDao;
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
@@ -69,11 +73,23 @@ public class HydropowerAction {
 			Hydropower hydropower2 = service.findOne(hydropower.getId());
 				BeanCopyUtils.copyNullProperties(hydropower2, hydropower);
 				hydropower.setCreatedAt(hydropower2.getCreatedAt());
-			cr.setMessage("修改成功");
+				cr.setMessage("修改成功");
+				service.addHydropower(hydropower);
 		}else{
-			cr.setMessage("添加成功");
+			Hydropower  hydropowers=hydropowerDao.findByMonthDateAndHostelIdAndType(hydropower.getMonthDate(), hydropower.getHostelId(),hydropower.getType());
+			if (hydropowers!=null) {
+				if (hydropower.getType()==1) {
+					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+					cr.setMessage("当月水费已有数据 请勿重复添加");
+				}else{
+					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+					cr.setMessage("当月电费已有数据 请勿重复添加");
+				}
+			}else{
+				cr.setMessage("添加成功");
+				service.addHydropower(hydropower);
+			}
 		}
-		service.addHydropower(hydropower);
 		return cr;
 	}
 

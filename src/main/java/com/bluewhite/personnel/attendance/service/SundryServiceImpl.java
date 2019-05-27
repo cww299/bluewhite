@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
@@ -53,6 +54,12 @@ public class SundryServiceImpl extends BaseServiceImpl<Sundry, Long>
 	public Sundry addSundry(Sundry sundry) {
 		Hydropower hydropower=hydropowerDao.findByMonthDateAndHostelIdAndType(sundry.getMonthDate(), sundry.getHostelId(),1);
 		Hydropower hydropower2=hydropowerDao.findByMonthDateAndHostelIdAndType(sundry.getMonthDate(), sundry.getHostelId(),2);
+		if(hydropower2==null){
+			throw new ServiceException("请先填写当前月份的电费");
+		}
+		if(hydropower==null){
+			throw new ServiceException("请先填写当前月份的水费");
+		}
 		//实际吨数
 		Integer integer=hydropower.getSum();
 		//标准吨数
@@ -79,6 +86,7 @@ public class SundryServiceImpl extends BaseServiceImpl<Sundry, Long>
 		if (sundry.getId()==null) {
 		double allprice = 0;
 		List<Fixed> fixeds=fixedDao.findByHostelId(sundry.getHostelId());
+		if (fixeds.size()>0) {
 		for (Fixed fixed2 : fixeds) {
 			if (fixed2.getSurplusSum()>0) {
 				Double aDouble=	NumUtils.sub(fixed2.getSurplusSum(),fixed2.getPrice());
@@ -87,8 +95,10 @@ public class SundryServiceImpl extends BaseServiceImpl<Sundry, Long>
 				fixedDao.save(fixed2);
 			}
 		}
+		}
 		sundry.setFixed(allprice);
 		}
+		sundry.setSummaryPrice(NumUtils.sum(sundry.getRent(),sundry.getWater(),sundry.getPower(),sundry.getCoal(),sundry.getFixed(),sundry.getBroadband(),sundry.getAdministration()));
 		return dao.save(sundry);
 	}
 
