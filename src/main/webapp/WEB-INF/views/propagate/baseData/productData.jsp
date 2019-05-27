@@ -193,22 +193,19 @@ layui.config({
 		})
 		function lookover(data){
 			layer.open({
-				title:'查看商品库存',
+				title:data.skuCode,
 				type:1,
-				area:['80%','80%'],
+				area:['30%','50%'],
 				content:$('#lookoverDiv'),
 			})
 			table.render({
 				elem:'#lookoverTable',
 				data:data.inventorys,
 				size:'lg',
-				page:{},
 				totalRow:true,
 				cols:[[
-					   {align:'center',  title:'商品名称',  field:'',  templet:function(d){ return data.skuCode; }},
-				       {align:'center',  title:'仓库名称',  field:'',  templet:'<span>{{ d.warehouse.name }}</span>'},
+				       {align:'center',  title:'仓库名称',  templet:'<span>{{ d.warehouse.name }}</span>'},
 				       {align:'center',  title:'库存数量',  field:'number',totalRow:true,  },
-				       {align:'center',  title:'仓位',  field:'place', },
 				       ]],
 			})
 		}

@@ -35,7 +35,7 @@
 						<option value="192.168.1.204">三楼打卡机</option>
 						<option value="192.168.1.250">二楼打卡机</option>
 						<option value="192.168.1.205">一楼打卡机</option>
-						<option value="192.168.3.110">八号卡机</option>
+						<option value="192.168.3.113">八号卡机</option>
 					</select>
 				</td>
 				<td>&nbsp;</td>
