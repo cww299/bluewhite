@@ -25,6 +25,7 @@ import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.onlineretailers.inventory.dao.CommodityDao;
 import com.bluewhite.onlineretailers.inventory.dao.WarningDao;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
+import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 import com.bluewhite.onlineretailers.inventory.entity.Warning;
@@ -94,12 +95,15 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 		// 预警集合
 		List<Map<String, Object>> mapList = new ArrayList<>();
 		// 获取所有的仓库
-		List<BaseData> baseDataList = service.getBaseDataListByType("inventory");
+		List<BaseData> baseDataList = service.getBaseDataTreeByType("inventory");
 		for (BaseData pWarehouse : baseDataList) {
 			Map<String, Object> map = new HashMap<>();
 			// 1.库存下限预警
 			// 2.库存上限预警
 			List<Warning> warningList = warningDao.findAll();
+			if(warningList.size()==0){
+				return mapList; 
+			}
 			for (Warning warning : warningList) {
 				// 获取天数
 				Integer time = warning.getTime();
@@ -127,13 +131,13 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 						// 当前商品的出库数量
 						// 如果是type=3，则是商品的入库数量
 						int countSales = psList.stream()
-								.filter(ProcurementChild -> ProcurementChild.getWarehouseId() == pWarehouse.getId())
-								.mapToInt(p -> p.getNumber()).sum();
+								.filter(ProcurementChild -> ProcurementChild.getWarehouseId().equals(pWarehouse.getId()))
+								.mapToInt(ProcurementChild :: getNumber).sum();
 						// 当前商品的库存
 						Commodity commodity = commodityDao.findOne(ps);
 						int countInventory = commodity.getInventorys().stream()
-								.filter(Inventory -> Inventory.getId() == pWarehouse.getId())
-								.mapToInt(x -> x.getNumber()).sum();
+								.filter(Inventory -> Inventory.getWarehouseId().equals(pWarehouse.getId()))
+								.mapToInt(Inventory :: getNumber).sum();
 
 						// 1.库存下限预警
 						if (warning.getType() == 1) {
@@ -164,7 +168,7 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 						// 3.库存时间过长预警
 						if (warning.getType() == 3) {
 							// 当入库商品数量小于等于剩余库存数，将商品存入预警集合
-							if (countSales <= countInventory) {
+							if (countSales < countInventory) {
 								map.put("name", commodity.getSkuCode());
 								map.put("type", 3);
 								// 商品剩余库存
