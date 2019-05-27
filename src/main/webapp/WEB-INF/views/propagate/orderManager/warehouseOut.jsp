@@ -40,7 +40,7 @@ td{
 
 <!-- 添加订单隐藏框  -->
 <div id="addOrderDiv" style="display:none;padding:10px;">
-	<table class="layui-form layui-table">
+	<table class="layui-form layui-table" lay-size="sm" lay-skin="nob">
 		<tr><td>批次号<input type="hidden" name="type" value="3" ></td>	<!-- 默认type类型为2，表示为入库单 -->
 			<td><input type="text" class="layui-input" name='batchNumber' lay-verify='required'></td>
 			<td>经手人</td>
@@ -49,7 +49,7 @@ td{
 			<td colspan="3"><input type="text" name="remark" class="layui-input"></td></tr>
 		<tr>
 			<td>出库数量</td>
-			<td><input type="text" class="layui-input" name='number' id="addOrderNumber" readonly></td>
+			<td><input type="text" class="layui-input" name='number' id="addOrderNumber" readonly value="0"></td>
 			<td>默认出库数量</td>
 			<td><select lay-filter="defaultSelect" type='number' ><option value="zero">不出库</option><option value="all">出库全部</option></select></td>
 			<td>默认出库类型</td>
@@ -58,15 +58,14 @@ td{
 						<option value="1">调拨出库</option>
 						<option value="2">销售换货出库</option>
 						<option value="3">采购退货出库 </option></select></td>
-			<td>操作</td>
-			<td><span class="layui-btn" lay-submit lay-filter="sureAdd" >确定</span></td></tr>
+			<td colsapn="2"><span class="layui-btn" lay-submit lay-filter="sureAdd" >确定</span></td></tr>
 	</table>
 	<table class="layui-table" id="productListTable" lay-filter="productListTable"></table>
 </div>
 
 <!-- 查看订单隐藏框  -->
 <div id="lookoverOrderDiv" style="display:none;padding:10px;">
-	<table class="layui-form layui-table" lay-skin="line">
+	<table class="layui-form layui-table"  lay-size="sm" lay-skin="nob">
 		<tr><td>批次号</td>	
 			<td><input type="text" class="layui-input" readonly id="look_batchNumber"></td>
 			<td>经手人</td>
@@ -74,7 +73,7 @@ td{
 			<td>总数量</td>
 			<td><input type="text" class="layui-input" id="look_number" readonly></td></tr>
 		<tr><td>备注</td>
-			<td colspan="5"><input type="text" id="look_remark" class="layui-input" readonly></td></tr>
+			<td colspan="3"><input type="text" id="look_remark" class="layui-input" readonly></td></tr>
 	</table>
 	<table class="layui-table" id="lookOverProductListTable" lay-filter="lookOverProductListTable"></table>
 </div>
@@ -82,13 +81,12 @@ td{
 
 <!-- 商品选择隐藏框 -->
 <div id="productChooseDiv" style="display:none;">
-	<table class="layui-form" lay-filter="productChooseTool">
+	<table class="layui-form layui-table" lay-size="sm" lay-skin="nob" style='width:60%;'>
 		<tr>
-			<td><select><option value="">按产品名称		</option></select></td>			<td>&nbsp;</td>
-			<td><input type="text" class="layui-input" name="skuCode" placeholder="请输入查找的商品名"></td>				<td>&nbsp;</td>
-			<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProduct" >
-					<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i></button></td>					<td>&nbsp;</td>
-			<td><button type="button" class="layui-btn layui-btn-sm" id="sure" >确定添加</button></td>
+			<td><select><option value="1">按产品名称</option></select></td>			
+			<td><input type="text" class="layui-input" name="skuCode" placeholder="请输入查找的商品名"></td>				
+			<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProduct" >搜索</button>			
+				<button type="button" class="layui-btn layui-btn-sm" id="sure" >确定添加</button></td>
 		</tr>
 	</table>
 	<table class="layui-table" id="productChooseTable" lay-filter="productChooseTable"></table>
@@ -98,7 +96,7 @@ td{
 <!-- 出库单表格工具栏 -->
 <script type="text/html" id="outOrderTableToolbar" >
 <div  class="layui-button-container">
-	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增</span>
+	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增出库单</span>
 	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >一键反冲</span>
 	<span class="layui-badge" >小提示：双击查看详细信息</span>
 </div>
@@ -118,7 +116,39 @@ td{
 		var msg=d.flag==1?'反冲数据':'未反冲';}}
 	<span class="layui-badge layui-bg-{{ color }}">{{ msg }}</span>
 </script>
-
+<!-- 商品销售属性模板 -->
+<script type="text/html" id="saleAttributeTpl">
+	{{# var str='';
+		if(d.size!=null)
+			str+='高度：'+d.size+'cm   ';
+		if(d.weight!=null)
+			str+='重量：'+d.weight+'g';
+	}}
+	<span style='color:blue;'>{{ str }}</span>
+</script>
+<!-- 商品库存情况模板 -->
+<script type="text/html" id="inventoryTpl">
+	{{# var inv=d.inventorys;
+		var str='暂无库存';
+		var color='red';
+		if(inv.length>0){
+			for(var i=0;i<inv.length;i++){
+				str+=inv[i].warehouse.name+':'+inv[i].number+'  ';
+			}
+			color='green';
+		}
+	}}
+	<span style='color:{{ color }};'>{{ str }}</span>
+</script>
+<!-- 商品价格模板 -->
+<script type="text/html" id="priceTpl">
+	{{# var str='';
+		str+='天猫价格:'+d.tianmaoPrice+' ';
+		str+='1688价格:'+d.oseePrice+' ';
+		str+='线下价格:'+d.offlinePrice;
+	}}
+	<span style='color:orange;'>{{ str }}</span>
+</script>
 </body>
 <script>
 layui.config({
@@ -172,10 +202,16 @@ layui.config({
 		})
 		form.on('submit(search)',function(obj){
 			table.reload('outOrderTable',{
-				where:obj.field
+				where:obj.field,
+				page: {  curr: 1   }
 			})
 		})
-		
+		form.on('submit(searchProduct)',function(obj){
+			table.reload('productChooseTable',{
+				where:obj.field,
+				page: {  curr: 1   }
+			})
+		})
 		function deletes(){							//删除生产单表格
 			var choosed=layui.table.checkStatus('outOrderTable').data;
 			if(choosed.length<1){
@@ -201,16 +237,14 @@ layui.config({
 			})
 		}
 		
-		//-------查看入库单功能--------------------
+		//-------查看出库单功能--------------------
 		function lookover(data){
 			layer.open({
 				type : 1,
-				title : '查看生产单',
+				title : '查看出库单',
 				area : ['90%','90%'],
 				content : $('#lookoverOrderDiv')
 			})
-			console.log(data);
-			return;
 			table.render({									//渲染选择后的商品表格
 				elem:'#lookOverProductListTable',
 				data:data.procurementChilds,
@@ -238,7 +272,7 @@ layui.config({
 		function add(){										//新增单
 			layer.open({
 				type : 1,
-				title : '新增生产单',
+				title : '新增入库单',
 				area : ['90%','90%'],
 				content : $('#addOrderDiv')
 			})
@@ -252,11 +286,11 @@ layui.config({
 				cols:[[
 				       {type:'checkbox', align:'center', fixed:'left'},
 				       {align:'center', title:'商品名称', field:'skuCode',},
-				       {align:'center', title:'出库数量',     field:'number', edit:'true', },
+				       {align:'center', title:'出库数量',     field:'number', edit:true,style:'color:blue',  },
 				       {align:'center', title:'出库仓库',     field:'warehouseId', 	templet: getInventorySelectHtml()},
 				       {align:'center', title:'出库类型',     field:'status',  		templet: getStatusSelectHtml()},
-				       {align:'center', title:'仓位',  	 	  field:'place', }, 
-				       {align:'center', title:'备注',  	  field:'childRemark', edit:true}, 
+				       {align:'center', title:'仓位',  	 	  field:'place',   edit:true,style:'color:blue', }, 
+				       {align:'center', title:'备注',  	  field:'childRemark', edit:true,style:'color:blue', }, 
 				       ]],
 			   	done: function (res, curr, count) {	//设置下拉框初始			
 	                form.render(); 
@@ -350,6 +384,8 @@ layui.config({
 					 if(choosedProduct[i].commodityId==obj.data.commodityId){		//重新对该行的相关数据进行计算
 						 if(obj.field=='childRemark')
 							choosedProduct[i].childRemark = obj.value;
+						 else
+							 choosedProduct[i].place = obj.value;
 					 	break;
 					}
 				}
@@ -362,6 +398,10 @@ layui.config({
 				var t=choosedProduct[i];			
 				if(t.number<1){
 					layer.msg('计划数量不能为0！',{icon:2});
+					return;
+				}
+				if(isNaN(t.number)){
+					layer.msg('不能选择库存为0的商品！',{icon:2});
 					return;
 				}
 				child.push({
@@ -438,7 +478,7 @@ layui.config({
 			chooseProductWin = layer.open({		
 				type:1,
 				title:'选择产品',
-				area:['80%','70%'],
+				area:['80%','80%'],
 				content:$('#productChooseDiv'),
 			})
 			table.render({
@@ -455,8 +495,9 @@ layui.config({
 				cols:[[
 				       {type:'checkbox', align:'center', fixed:'left'},
 				       {align:'center', title:'商品名称', field:'skuCode',},
-				       {align:'center', title:'成本', 	  field:'cost',},
-				       {align:'center', title:'备注', 	  field:'remark',}, 
+				       {align:'center', title:'销售属性', 	  templet:'#saleAttributeTpl',},
+				       {align:'center', title:'库存情况', 	  templet:'#inventoryTpl',}, 
+				       {align:'center', title:'售价详情', 	  templet:'#priceTpl',}, 
 				      ]],
 			});
 			form.render();

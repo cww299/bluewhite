@@ -25,7 +25,7 @@ td{
 	<div class="layui-card-body">
 		<table class="layui-form">
 			<tr>
-				<td><select name=""><option>按批次号</option></select>
+				<td><select name=""><option>按批次号查找</option></select>
 				<td>&nbsp;&nbsp;</td>
 				<td><input type="text" class="layui-input" name="batchNumber" placeholder='请输入要查找的相关信息'></td>
 				<td>&nbsp;&nbsp;</td>
@@ -40,7 +40,7 @@ td{
 
 <!-- 查看订单隐藏框  -->
 <div id="lookoverOrderDiv" style="display:none;padding:10px;">
-	<table class="layui-form layui-table" lay-skin="line">
+	<table class="layui-form layui-table"  lay-size="sm" lay-skin="nob">
 		<tr><td>批次号</td>	
 			<td><input type="text" class="layui-input" readonly id="look_batchNumber"></td>
 			<td>经手人</td>
@@ -48,14 +48,14 @@ td{
 			<td>总数量</td>
 			<td><input type="text" class="layui-input" id="look_number" readonly></td></tr>
 		<tr><td>备注</td>
-			<td colspan="5"><input type="text" id="look_remark" class="layui-input" readonly></td></tr>
+			<td colspan="3"><input type="text" id="look_remark" class="layui-input" readonly></td></tr>
 	</table>
 	<table class="layui-table" id="lookOverProductListTable" lay-filter="lookOverProductListTable"></table>
 </div>
 
 <!-- 生成入库单隐藏框  -->
 <div id="becomeOrderDiv" style="display:none;padding:10px;">
-	<table class="layui-form layui-table">
+	<table class="layui-form layui-table" lay-size="sm" lay-skin="nob">
 		<tr><td>批次号<input type="hidden" name="type" value="2" >
 					  <input type="hidden" name="id" id='becomeOrderId' ></td>	<!-- 默认type类型为2，表示为入库单 -->
 			<td><input type="text" class="layui-input" name='batchNumber' id="become_bacthNumber" readonly></td>
@@ -69,7 +69,7 @@ td{
 			<td>默认入库仓库</td>
 			<td><select lay-filter="defaultSelect" type='inventory' id='defaultInventorySelect'><option value="">获取数据中.....</option></select></td>
 			<td>默认入库类型</td>
-			<td><select lay-filter="defaultSelect" type='status'>
+			<td><select lay-filter="defaultSelect" type='status' disabled>
 						<option value="0">生产入库</option>
 						<option value="1">调拨入库</option>
 						<option value="2">销售退货入库</option>
@@ -85,8 +85,8 @@ td{
 <!-- 入库单表格工具栏 -->
 <script type="text/html" id="needleOrderTableToolbar" >
 <div  class="layui-button-container">
-	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >一键反冲</span>
 	<span lay-event="becomeEntry"  class="layui-btn layui-btn-sm" >生成入库单</span>
+	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >一键反冲</span>
 	<span class="layui-badge" >小提示：双击查看详细信息</span>
 </div>
 </script>
@@ -152,7 +152,8 @@ layui.config({
 		})
 		form.on('submit(search)',function(obj){
 			table.reload('needleOrderTable',{
-				where:obj.field
+				where:obj.field,
+				page: {  curr: 1   }
 			})
 		})
 		
@@ -223,9 +224,9 @@ layui.config({
 				       {align:'center', title:'剩余数量', field:'residueNumber'},
 				       {align:'center', title:'入库仓库',  	  field:'warehouseId', 	templet: getInventorySelectHtml()}, 
 				       {align:'center', title:'入库类型',  	  field:'status', 		templet: getStatusSelectHtml()}, 
-				       {align:'center', title:'仓位',  	 	  field:'place', 				edit : true,}, 
-				       {align:'center', title:'生成入库单数量',    field:'becomeNumber', 	 edit:true,  templet:getBecomeNumberHtml()},
-				       {align:'center', title:'入库单备注',  	  field:'becomeChildRemark', edit:true}, 
+				       {align:'center', title:'仓位',  	 	  field:'place', 				 edit:true, style:'color:blue',}, 
+				       {align:'center', title:'生成入库单数量',    field:'becomeNumber', 	 edit:true, style:'color:blue', templet:getBecomeNumberHtml()},
+				       {align:'center', title:'入库单备注',  	  field:'becomeChildRemark', edit:true, style:'color:blue',}, 
 				       ]],
 		       	done: function (res, curr, count) {				
 	                layui.each( $('select'), function (index, item) {
@@ -409,7 +410,7 @@ layui.config({
 		}
 		function getStatusSelectHtml(){				//获取类型下拉框
 			return function(d) {		
-				var html='<select id="selectStatus" lay-filter="selectStatus" lay-search="true" data-value="'+defaultStatus+'"> '+
+				var html='<select id="selectStatus" lay-filter="selectStatus" disabled data-value="'+defaultStatus+'"> '+
 						'<option value="0">生产入库</option>'+
 						'<option value="1">调拨入库</option>'+
 						'<option value="2">销售退货入库</option>'+
