@@ -90,15 +90,30 @@ public class LiveAction {
 	 */
 	@RequestMapping(value = "/personnel/getSummaryShare", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse findShareSummary(Date monthDate,Long hostelId) {
+	public CommonResponse findShareSummary(Date monthDate,Long hostelId,Long orgNameId) {
 		CommonResponse cr = new CommonResponse();
-		 List<Map<String, Object>> list = service.findShareSummary(monthDate,hostelId); 
+		 List<Map<String, Object>> list = service.findShareSummary(monthDate,hostelId,orgNameId); 
 		cr.setData(clearCascadeJSON.format(list).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
 
-
+	/**
+	 * 部门分摊
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/getSummaryDepartment", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse findShareSummaryDepartment(Date monthDate,Long hostelId,Long orgNameId) {
+		CommonResponse cr = new CommonResponse();
+		 List<Map<String, Object>> list = service.findShareSummaryDepartment(monthDate,hostelId,orgNameId); 
+		cr.setData(clearCascadeJSON.format(list).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
 	
 	
 	@InitBinder

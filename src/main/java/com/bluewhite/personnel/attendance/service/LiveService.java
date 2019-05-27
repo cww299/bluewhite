@@ -37,5 +37,14 @@ public interface LiveService  extends BaseCRUDService<Live,Long>{
 	 * @param endDate
 	 * @return
 	 */
-	public List<Map<String, Object>> findShareSummary(Date monthDate, Long hostelId);
+	public List<Map<String, Object>> findShareSummary(Date monthDate, Long hostelId,Long orgNameId);
+	
+	/**
+	 * 部门分摊
+	 * @param userId
+	 * @param beginDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<Map<String, Object>> findShareSummaryDepartment(Date monthDate, Long hostelId,Long orgNameId);
 }

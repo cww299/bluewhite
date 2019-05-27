@@ -1,7 +1,6 @@
 package com.bluewhite.personnel.attendance.action;
 
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,25 +18,21 @@ import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
-import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.personnel.attendance.dao.SundryDao;
 import com.bluewhite.personnel.attendance.entity.Hostel;
-import com.bluewhite.personnel.attendance.entity.Sundry;
-import com.bluewhite.personnel.attendance.service.SundryService;
+import com.bluewhite.personnel.attendance.entity.Total;
+import com.bluewhite.personnel.attendance.service.TotalService;
 
 @Controller
-public class SundryAction {
+public class TotalAction {
 
 	@Autowired
-	private SundryService service;
-	@Autowired
-	private SundryDao sundryDao;
+	private TotalService service;
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Sundry.class,"id","name","hostel","hostelId","monthDate","rent","water","power","coal","broadband","administration","fixed")
+				.addRetainTerm(Total.class,"id","monthDate","liveRemark","type","oneNowNum","oneUpperNum","twoNowNum","twoUpperNum","threeNowNum","threeUpperNum","loss","buse","copper","individual","summary","summaryPrice")
 				.addRetainTerm(Hostel.class, "id", "name","number");
 	}
 
@@ -48,15 +43,16 @@ public class SundryAction {
 	 * @return cr
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/personnel/getSundry", method = RequestMethod.GET)
+	@RequestMapping(value = "/personnel/getTotal", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getContact(HttpServletRequest request,PageParameter page,Sundry sundry) {
+	public CommonResponse getContact(HttpServletRequest request,PageParameter page,Total total) {
 		CommonResponse cr = new CommonResponse();
-		PageResult<Sundry>  mealList= service.findPage(sundry, page); 
+		PageResult<Total>  mealList= service.findPage(total, page); 
 		cr.setData(clearCascadeJSON.format(mealList).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
+	
 	
 	/**
 	 * 新增修改
@@ -65,30 +61,21 @@ public class SundryAction {
 	 * @return cr
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/fince/addSundry", method = RequestMethod.POST)
+	@RequestMapping(value = "/fince/addTotal", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addConsumption(HttpServletRequest request, Sundry sundry) {
+	public CommonResponse addConsumption(HttpServletRequest request, Total total) {
 		CommonResponse cr = new CommonResponse();
-		if(sundry.getId() != null){
-			Sundry sundry2 = service.findOne(sundry.getId());
-				BeanCopyUtils.copyNullProperties(sundry2, sundry);
-				sundry.setCreatedAt(sundry2.getCreatedAt());
+		if(total.getId() != null){
+			Total total2 = service.findOne(total.getId());
+				BeanCopyUtils.copyNullProperties(total2, total);
+				total.setCreatedAt(total2.getCreatedAt());
 			cr.setMessage("修改成功");
-			service.addSundry(sundry);
 		}else{
-		List<Sundry> list=sundryDao.findByMonthDate(sundry.getMonthDate());
-			if (list.size()>0) {
-				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				cr.setMessage("当月已有数据 请勿重复添加");
-			}else {
-				cr.setMessage("添加成功");
-				service.addSundry(sundry);
-			}
+			cr.setMessage("添加成功");
 		}
+		service.addTotal(total);
 		return cr;
 	}
-
-
 
 
 	

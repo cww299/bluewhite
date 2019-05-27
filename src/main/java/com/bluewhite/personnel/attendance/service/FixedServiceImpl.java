@@ -44,6 +44,7 @@ public class FixedServiceImpl extends BaseServiceImpl<Fixed, Long>
 	@Override
 	public Fixed addFixed(Fixed fixed) {
 		fixed.setPrice(NumUtils.div(fixed.getSum(),fixed.getBranch(),2));
+		fixed.setSurplusSum(fixed.getSum());
 		return dao.save(fixed);
 	}
 

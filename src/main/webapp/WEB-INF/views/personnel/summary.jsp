@@ -12,7 +12,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>报销申请</title>
+<title>餐费汇总</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
@@ -25,14 +25,14 @@
 					<table>
 						<tr>
 							<td>姓名:</td>
-							<td><select class="form-control" id="selectUserId" name="userId"></select></td>
+							<td><select class="form-control" id="selectUserId" lay-search="true" name="userId"></select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>日期:</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
 							</td>
 							<td>&nbsp;&nbsp;</td>
 							<td>部门:</td>
-							<td ><select class="form-control" name="orgNameId" id="orgName"></select></td>
+							<td ><select class="form-control" name="orgNameId" lay-search="true" id="orgName"></select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
