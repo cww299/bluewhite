@@ -46,19 +46,21 @@ td{
 			<td>经手人</td>
 			<td><select name="userId"><option value="1" >测试人admin</option></select></td>
 			<td>备注</td>
-			<td colspan="3"><input type="text" name="remark" class="layui-input"></td></tr>
-		<tr>
+			<td colspan=""><input type="text" name="remark" class="layui-input"></td>
 			<td>入库数量</td>
-			<td><input type="text" class="layui-input" name='number' id="addOrderNumber" value='0' readonly></td>
+			<td><input type="text" class="layui-input" name='number' id="addOrderNumber" value='0' readonly></td></tr>
+		<tr>
 			<td>默认入库仓库</td>
 			<td><select lay-filter="defaultSelect" type='inventory' id='defaultInventorySelect'><option value="">获取数据中.....</option></select></td>
-			<td>默认入库类型</td>
+			<td>入库类型</td>
 			<td><select lay-filter="defaultSelect" type='status'>
 						<option value="0">生产入库</option>
 						<option value="1">调拨入库</option>
 						<option value="2">销售退货入库</option>
 						<option value="3">销售换货入库 </option>
 						<option value="4">采购入库</option></select></td>
+			<td id='textTd'></td>
+			<td id='selectTd' style='width:280px;'></td>
 			<td colspan="2"><span class="layui-btn" lay-submit lay-filter="sureAdd" >确定新增</span></td></tr>
 	</table>
 	<table class="layui-table" id="productListTable" lay-filter="productListTable"></table>
@@ -298,7 +300,7 @@ layui.config({
 			//$('#look_user').val(choosed[0].user);
 		}
 		
-		//-------新增生产单功能---------------
+		//-------新增入库单功能---------------
 		var choosedProduct=[];		//用户已经选择上的产品,渲染新增单的产品表格数据
 		var defaultStatus=0;
 		var defaultInventory='';
@@ -306,7 +308,7 @@ layui.config({
 			defaultInventory=defaultInventory==''?allInventory[0].id:defaultInventory;
 			layer.open({
 				type : 1,
-				title : '新增生产单',
+				title : '新增入库单',
 				area : ['90%','90%'],
 				content : $('#addOrderDiv')
 			})
@@ -349,13 +351,24 @@ layui.config({
 									choosedProduct[i].warehouseId=defaultInventory;
 							break;
 			case 'status' : defaultStatus=obj.value; 	
-								for(var i=0;i<choosedProduct.length;i++)
+								for(var i=0;i<choosedProduct.length;i++)			//设置已选商品的状态默认值
 									choosedProduct[i].status=defaultStatus;
+								if(obj.value==1){
+									$('#textTd').html('调拨');
+									$('#selectTd').html('<select id="" name=""><option>测试</option></select>');
+								}
+								else if(obj.value==2){
+									$('#textTd').html('客户');
+									$('#selectTd').html('<select id="" name=""><option>测试</option></select>');
+								}else{
+									$('#textTd').html('');
+									$('#selectTd').html('');
+								}
 							break;
 			}
 			table.reload('productListTable',{ data : choosedProduct });
 		})
-		table.on('edit(productListTable)', function(obj){ 			//监听编辑表格单元
+		table.on('edit(productListTable)', function(obj){ 							//监听编辑表格单元
 			if(obj.field=='number'){
 				if(isNaN(obj.value))
 					layer.msg("修改无效！请输入正确的数字",{icon:2});
