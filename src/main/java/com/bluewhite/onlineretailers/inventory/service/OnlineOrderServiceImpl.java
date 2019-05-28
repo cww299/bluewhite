@@ -123,6 +123,9 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 						if (onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_5)) {
 							// 获取商品
 							Commodity commodity = onlineOrderChild.getCommodity();
+							// 获取库存
+//							Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(commodity.getId(),
+//									onlineOrderChild.getWarehouseId());
 							// 获取所有商品的库存
 							Set<Inventory> inventorys = commodity.getInventorys();
 							// 减少库存的同时改变状态

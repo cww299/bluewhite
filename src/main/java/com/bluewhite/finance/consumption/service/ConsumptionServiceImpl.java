@@ -155,9 +155,9 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		Consumption ot = null;
 		if (consumption.getId() != null) {
 			ot = dao.findOne(consumption.getId());
-			if(cu.getOrgNameId()!=ot.getOrgNameId()){
-				throw new ServiceException("无权限修改");
-			}
+//			if(cu.getOrgNameId()!=ot.getOrgNameId()){
+//				throw new ServiceException("无权限修改");
+//			}
 			if (ot.getFlag() == 1) {
 				throw new ServiceException("已放款，无法修改");
 			}
