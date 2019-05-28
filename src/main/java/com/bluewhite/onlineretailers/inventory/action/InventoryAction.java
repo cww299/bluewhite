@@ -69,15 +69,19 @@ public class InventoryAction {
 						"onlineOrderChilds", "sellerNick", "name", "buyerName", "picPath", "payment", "postFee",
 						"consignTime", "buyerRemarks", "num", "sumPrice", "status", "allBillPreferential",
 						"trackingNumber", "buyerMessage", "buyerMemo", "buyerFlag", "sellerMemo", "sellerFlag",
-						"buyerRate", "warehouse", "shippingType", "createdAt", "updatedAt", "address", "phone",
+						"buyerRate",  "shippingType", "createdAt", "updatedAt", "address", "phone",
 						"zipCode", "buyerName", "provinces", "city", "county", "flag", "telephone")
 				.addRetainTerm(OnlineOrderChild.class, "id", "number", "commodity", "price", "sumPrice",
-						"systemPreferential", "sellerReadjustPrices", "actualSum", "status")
+						"systemPreferential", "sellerReadjustPrices", "actualSum", "warehouse","status")
 				.addRetainTerm(Commodity.class, "id", "productID", "skuCode", "fileId", "picUrl", "name", "description",
 						"weight", "size", "material", "fillers", "cost", "propagandaCost", "remark", "tianmaoPrice",
 						"oseePrice", "offlinePrice")
+				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName")
-				.addRetainTerm(RegionAddress.class, "id", "regionName", "parentId");
+				.addRetainTerm(RegionAddress.class, "id", "regionName", "parentId")
+				
+				
+				;
 	}
 
 	/****** 订单 *****/
@@ -170,7 +174,8 @@ public class InventoryAction {
 						"weight", "size", "material", "fillers", "cost", "propagandaCost", "remark", "tianmaoPrice",
 						"oseePrice", "offlinePrice", "inventorys")
 				.addRetainTerm(Inventory.class, "number", "place", "warehouse")
-				.addRetainTerm(BaseData.class, "id", "name").format(commodityService.findPage(commodity, page))
+				.addRetainTerm(BaseData.class, "id", "name"
+						).format(commodityService.findPage(commodity, page))
 				.toJSON());
 		cr.setMessage("查询成功");
 		return cr;
