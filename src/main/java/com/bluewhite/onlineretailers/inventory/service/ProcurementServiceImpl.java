@@ -59,10 +59,20 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			if (param.getType() != null) {
 				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
 			}
+			
+			// 按状态过滤
+			if (param.getStatus() != null) {
+				predicate.add(cb.equal(root.get("status").as(Integer.class), param.getStatus()));
+			}
 
 			// 按是否反冲
 			if (param.getFlag() != null) {
 				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
+			}
+			
+			// 按仓库id
+			if (param.getWarehouseId() != null) {
+				predicate.add(cb.equal(root.get("procurementChilds").get("warehouseId").as(Long.class), param.getWarehouseId()));
 			}
 
 			// 按批次号过滤

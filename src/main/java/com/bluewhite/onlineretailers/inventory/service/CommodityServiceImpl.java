@@ -57,7 +57,7 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 
 			// 按编号过滤
 			if (!StringUtils.isEmpty(param.getSkuCode())) {
-				predicate.add(cb.equal(root.get("skuCode").as(String.class), param.getSkuCode()));
+				predicate.add(cb.like(root.get("skuCode").as(String.class), "%" + StringUtil.specialStrKeyword(param.getSkuCode()) + "%"));
 			}
 
 			// 按产品名称过滤
@@ -82,7 +82,12 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 			String[] pers = ids.split(",");
 			if (pers.length > 0) {
 				for (String idString : pers) {
-					dao.delete(Long.valueOf(idString));
+					try {
+						dao.delete(Long.valueOf(idString));
+					} catch (Exception e) {
+						throw new ServiceException("商品已拥有销售单或采购单，无法删除");
+					}
+					
 					count++;
 				}
 			}

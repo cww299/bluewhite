@@ -299,6 +299,13 @@ public class OnlineOrder extends BaseEntity<Long> {
 	private String childOrder;
 	
 	/**
+	 * 客户名称
+	 * 
+	 */
+	@Transient
+	private String onlineCustomerName;
+	
+	/**
 	 * 时间查询字段
 	 */
 	@Transient
@@ -315,6 +322,15 @@ public class OnlineOrder extends BaseEntity<Long> {
 	private Integer report;
 	
 	
+	
+	public String getOnlineCustomerName() {
+		return onlineCustomerName;
+	}
+
+	public void setOnlineCustomerName(String onlineCustomerName) {
+		this.onlineCustomerName = onlineCustomerName;
+	}
+
 	public Integer getReport() {
 		return report;
 	}
