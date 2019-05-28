@@ -14,29 +14,31 @@
      top: 50%;
      transform: translateY(-50%);
 }
-.layui-form-item .layui-input-inline{
+.layui-table, .layui-table-view {
+     margin: 0px; 
+}
+#headerTool .layui-form-item .layui-input-inline{		/* 查看订单弹窗样式 */
 	width:100px;
 	margin-left: 5px;
 	margin-right:0px;
 }
-.layui-input, .layui-select, .layui-textarea {
+#headerTool .layui-input, .layui-select, .layui-textarea {
     height: 28px;
 }
-.layui-form-label {
+#headerTool .layui-form-label {
     padding: 5px 5px;
     width: 10px;
 }
 #positionChoose{		/* 客户所在地选择隐藏框样式*/
     height: 300px;
     width: 200px;
-    padding:20px;
-    z-index: 99;
-    border:1px solid #d2d2d2;
+    padding: 20px;
+    border: 1px solid #d2d2d2;
     position: absolute;
-    left: 430px;
-    top: 105px;
-    display:none;
-    background-color:#f2f2f2;
+    left: 47%;
+    top: 4%;
+    display: none;
+    background-color: #cfe2db;
     z-index: 99999;
 }
 td{
@@ -48,44 +50,37 @@ td{
 	<div class="layui-card-body ">
 			<div class="layui-form">
 				<div class="layui-form-item">
-					<div class="layui-input-inline"><select lay-search name="status"><option value="">交易状态</option></select></div>
-					<div class="layui-input-inline"><select lay-search name=""><option value="">打印状态</option></select></div>
-					<div class="layui-input-inline"><select lay-search><option value="">出库状态</option></select></div>
-					<div class="layui-input-inline"><select lay-search><option value="">评价状态</option></select></div>
-					<label class="layui-form-label" style="width:30px;">日期</label>
-					<div class="layui-input-inline"><input type="text" class="layui-input"></div>
-					<div class="layui-input-inline"><select lay-search><option value="">买家id</option></select></div>
-					<div class="layui-input-inline"><input type="text" class="layui-input"></div>
-					<div class="layui-input-inline"><button class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></div>
-				</div>
-				<div class="layui-form-item">
-					<div class="layui-input-inline"><select><option value="">正常发货</option></select></div>
-					<div class="layui-input-inline"><select><option value="">成交时间</option></select></div>
-					<label class="layui-form-label">从</label>
-					<div class="layui-input-inline" style="width:80px;"><select lay-search id="sinceHour"><option value="">0</option></select></div>
-					<label class="layui-form-label">时</label>
-					<div class="layui-input-inline" style="width:80px;"><select lay-search id="sinceMin"><option value="">0</option></select></div>
-					<label class="layui-form-label">分</label>
-					<label class="layui-form-label">到</label>
-					<div class="layui-input-inline" style="width:80px;"><select lay-search id="forHour"><option value="">23</option></select></div>
-					<label class="layui-form-label">时</label>
-					<div class="layui-input-inline" style="width:80px;"><select lay-search id="forMin"><option value="">59</option></select></div>
-					<label class="layui-form-label">分</label>
-					<label class="layui-form-label"  style="width:30px;">排序</label>
-					<div class="layui-input-inline"><select><option value="">成交时间</option></select></div>
-				</div>
-				<div class="layui-form-item">
-					<div class="layui-input-inline"><select lay-search><option value="">订单来源</option></select></div>
-					<div class="layui-input-inline"><select lay-search><option value="">审核状态</option></select></div>
-					<div class="layui-input-inline"><select lay-search><option value="">物流公司</option></select></div>
-					<div class="layui-input-inline"><select lay-search><option value="">物流方式</option></select></div>
-					<div class="layui-input-inline"><a href="#" style="color:blue;" id="customPosition">收货人所在省份</a></div>
-					
-					<label class="layui-form-label" style=" width:60px;">订单金额:</label>
-					<div class="layui-input-inline"  style="width:60px;"><input class="layui-input" value="0"></div>
-					<label class="layui-form-label">至</label>
-					<div class="layui-input-inline"  style="width:60px;"><input class="layui-input" value="0"></div>
-					<div class="layui-input-inline"><select><option value="">订单数</option></select></div>
+					<div class="layui-input-inline">
+						<select lay-search name="userId" id='userIdSelect'><option value="">客服人员</option></select></div>
+					<div class="layui-input-inline">
+						<select lay-search name="onlineCustomerId" id='customIdSelect'><option value="">客户</option></select></div>
+					<div class="layui-input-inline">
+						<select lay-search name='status'><option value="">交易状态</option>
+														<option  value="WAIT_SELLER_SEND_GOODS">等待卖家发货,即:买家已付款</option>
+														<option  value="TRADE_NO_CREATE_PAY">没有创建支付宝交易</option>
+														<option  value="WAIT_BUYER_PAY">等待买家付款</option>
+														<option  value="SELLER_CONSIGNED_PART">卖家部分发货</option>
+														<option  value="TRADE_BUYER_SIGNED">买家已签收,货到付款专用</option>
+														<option  value="TRADE_FINISHED">交易成功</option>
+														<option  value="WAIT_BUYER_CONFIRM_GOODS">等待买家确认收货,即:卖家已发货</option></select></div>
+					<div class="layui-input-inline">
+						<select lay-search name='shippingType'><option value="">物流方式</option>
+																<option  value="free"		>卖家包邮</option>
+																 <option  value="post"		>平邮</option>
+																 <option  value="express"	>快递</option>
+																 <option  value="ems"		>EMS</option>
+																 <option  value="virtual"	>虚拟发货</option></select></div>
+					<div class="layui-input-inline" style='width:70px;'><a href="#" style="color:blue;" id="customPosition">所在省份</a></div>  <!-- provincesId收货人的所在省份 -->
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input" name='documentNumber' placeholder='请输入产品编号'></div>
+					<div class="layui-input-inline">
+						<select lay-search name='createdAt'><option value="">订单时间</option></select></div>
+					<div class="layui-input-inline">
+						<select lay-search name='flag'><option value="">是否反冲</option>
+														<option value='1'>反冲</option>
+														<option value='0'>不反冲</option></select></div>
+					<div class="layui-input-inline">
+						<button class="layui-btn" lay-submit lay-filter="search">搜索</button></div>
 				</div>
 			</div>
 		<table class="laui-table" id="onlineOrder" lay-filter="onlineOrder" ></table>
@@ -113,14 +108,18 @@ td{
 					<input type="hidden" name="id" value="{{ d.id }}">
 				</td>
 				<td>订单状态：</td>			
-				<td><select name="status" disabled>
-						<option {{ d.status=="WAIT_SELLER_SEND_GOODS"?'selected':'' }} 	 value="WAIT_SELLER_SEND_GOODS">等待卖家发货,即:买家已付款</option>
-						<option {{ d.status=="TRADE_NO_CREATE_PAY"?'selected':'' }} 	 value="TRADE_NO_CREATE_PAY">没有创建支付宝交易</option>
-						<option {{ d.status=="WAIT_BUYER_PAY"?'selected':'' }} 			 value="WAIT_BUYER_PAY">等待买家付款</option>
-						<option {{ d.status=="SELLER_CONSIGNED_PART"?'selected':'' }} 	 value="SELLER_CONSIGNED_PART">卖家部分发货</option>
-						<option {{ d.status=="TRADE_BUYER_SIGNED"?'selected':'' }}	 	 value="TRADE_BUYER_SIGNED">买家已签收,货到付款专用</option>
-						<option {{ d.status=="TRADE_FINISHED"?'selected':'' }} 			 value="TRADE_FINISHED">交易成功</option>
-						<option {{ d.status=="WAIT_BUYER_CONFIRM_GOODS"?'selected':'' }} value="WAIT_BUYER_CONFIRM_GOODS">等待买家确认收货,即:卖家已发货</option></select></td>	
+				<td>{{# var text='';
+						switch(d.status){
+						case "WAIT_SELLER_SEND_GOODS":	text='等待卖家发货,即:买家已付款';  break;
+						case 'TRADE_NO_CREATE_PAY':	text='没有创建支付宝交易';  break;
+						case 'WAIT_BUYER_PAY':	text='等待买家付款';  break;
+						case 'SELLER_CONSIGNED_PART':		text='卖家部分发货';  break;
+						case 'TRADE_BUYER_SIGNED':	text='买家已签收,货到付款专用';  break;
+						case 'TRADE_FINISHED':	text='交易成功';  break;
+						case 'WAIT_BUYER_CONFIRM_GOODS':	text='等待买家确认收货,即:卖家已发货';  break;
+						}
+					}}
+						<input type="text" class="layui-input" value="{{ text }}" readonly></td>		
 			</tr>
 			<tr>
 				<td>客户名称：</td>	
@@ -128,7 +127,7 @@ td{
 				<td>订单编号：</td>			
 				<td><input type="text" class="layui-input" name="tid" value="{{ d.tid }}" readonly></td>
 				<td>所属客服：</td>			
-				<td><select name="userId" disabled><option value="1">客服1</option></select></td>
+				<td><input type="text" class="layui-input" name="" value="{{ d.user.userName }}" readonly></td>
 			</tr>
 			<tr>
 				<td>收货人：</td>			
@@ -154,17 +153,21 @@ td{
 				<td>所在地：</td>			
 				<td colspan="3">
 						<div class="layui-form-item">
-								<div class="layui-input-inline"><select id="province" name="provincesId" disabled></select></div>
-								<div class="layui-input-inline"><select id="city" name="cityId" disabled></select></div>
-								<div class="layui-input-inline"><select id="area" name="countyId" disabled></select></div>
+								<div class="layui-input-inline"><input type='text' class='layui-input' readonly value='{{ d.provinces.regionName}}'></div>
+								<div class="layui-input-inline"><input type='text' class='layui-input' readonly value='{{ d.city.regionName}}'></div>
+								<div class="layui-input-inline"><input type='text' class='layui-input' readonly value='{{ d.county.regionName}}'></div>
 								</div></td>
 				<td>物流方式：</td>
-				<td><select name="shippingType" value="{{ d.shippingType }}" disabled>
-									 <option {{ d.shippingType=='free'?'selected':'' }} value="free">卖家包邮</option>
-									 <option {{ d.shippingType=='post'?'selected':'' }} value="post">平邮</option>
-									 <option {{ d.shippingType=='express'?'selected':'' }} value="express">快递</option>
-									 <option {{ d.shippingType=='ems'?'selected':'' }} value="ems">EMS</option>
-									 <option {{ d.shippingType=='virtual'?'selected':'' }} value="virtual">虚拟发货</option></select></td>			
+				<td>{{# var text='';
+						switch(d.shippingType){
+						case 'free':	text='卖家包邮';  break;
+						case 'post':	text='平邮';  break;
+						case 'express':	text='快递';  break;
+						case 'ems':		text='EMS';  break;
+						case 'virtual':	text='虚拟发货';  break;
+						}
+					}}
+						<input type="text" class="layui-input" value="{{ text }}" readonly></td>			
 			</tr>
 			<tr>
 				<td>详细地址：</td>			
@@ -193,7 +196,7 @@ td{
 <div class="layui-button-container">
 	<span class="layui-btn layui-btn-sm" lay-event="add">导入订单</span>
 	<span class="layui-btn layui-btn-sm" lay-event="edit">查看订单</span>
-	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">删除订单</span>
+	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">反冲订单</span>
 </div>
 </script>
 <!-- 解析状态模板 -->
@@ -264,7 +267,12 @@ layui.config({
 		
 		
 		var choosedProduct=[];			//用户已经选择上的产品
-		var allInventory=[];			//所有的仓库
+		var allInventory=[],			//所有的仓库
+			allUser=[],
+			allCustom=[];
+		
+		getAllUser();
+		getAllCustom();
 		
 		searchToolInit();
 		form.render();
@@ -282,7 +290,6 @@ layui.config({
 
 		table.render({		//渲染主页面表格
 			elem:'#onlineOrder',
-			height:'680',
 			url:'${ctx}/inventory/onlineOrderPage',
 			toolbar:'#onlineOrderToolbar',
 			loading:true,
@@ -448,7 +455,6 @@ layui.config({
 			form.render();
 			table.render({
 				elem:"#productTable", 					//表单中选择商品的表格
-				height:'450',
 				loading:true,
 				data:[], //此处不能使用choosedProduct数据进行渲染，否则会造成数据的绑定。当监听修改表格中的数据时，会自动修改数组数据的内容。所以所有数据的渲染只能使用reload
 				totalRow:true,
@@ -508,15 +514,51 @@ layui.config({
 			getdataOfSelect(cityParent,'city');
 			getdataOfSelect(areaParent,'area');
 		}
-		function getAllInventory(){					//获取所有仓库
+		function getAllUser(){
 			$.ajax({
-				url:'${ctx}/basedata/list?type=inventory',
-				async:false,
+				url:'${ctx}/system/user/pages?size=99',
 				success:function(r){
-					if(0==r.code)
-						allInventory=r.data;
+					if(0==r.code){
+						for(var i=0;i<r.data.rows.length;i++)
+							allUser.push({
+								id:			r.data.rows[i].id,
+								userName:	r.data.rows[i].userName
+							})
+						renderUserSelect('userIdSelect');
+					}
 				}
 			})
+		}
+		function getAllCustom(){
+			$.ajax({
+				url:'${ctx}/inventory/onlineCustomerPage',
+				success:function(r){
+					if(0==r.code){
+						for(var i=0;i<r.data.rows.length;i++)
+							allCustom.push({
+								id:			r.data.rows[i].id,
+								userName:	r.data.rows[i].buyerName
+							})
+						renderCustomSelect('customIdSelect');
+					}
+				}
+			})
+		}
+		function renderCustomSelect(select){			//根据id渲染客服下拉框
+			var html='';
+			for(var i=0;i<allCustom.length;i++){
+				html+='<option value="'+allCustom[i].id+'">'+allCustom[i].userName+'</option>';
+			}
+			$('#'+select).append(html);
+			form.render();
+		}
+		function renderUserSelect(select){			//根据id渲染客服下拉框
+			var html='';
+			for(var i=0;i<allUser.length;i++){
+				html+='<option value="'+allUser[i].id+'">'+allUser[i].userName+'</option>';
+			}
+			$('#'+select).append(html);
+			form.render();
 		}
 		$(document).on('click', '.layui-table-view tbody tr', function(event) {
 			var elemTemp = $(this);
