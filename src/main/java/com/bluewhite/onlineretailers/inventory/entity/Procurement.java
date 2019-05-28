@@ -51,6 +51,36 @@ public class Procurement extends BaseEntity<Long>{
 	private User user;
 	
 	/**
+	 * 调拨人id
+	 * 
+	 */
+	@Column(name = "transfers_user_id")
+	private Long transfersUserId;
+
+	/**
+	 * 调拨人
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "transfers_user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User transfersUser;
+	
+	/**
+	 * 退货客户id
+	 * 
+	 */
+	@Column(name = "online_customer_id")
+	private Long onlineCustomerId;
+	
+
+	/**
+	 * 退货客户
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "online_customer_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private OnlineCustomer onlineCustomer;
+	
+	
+	/**
 	 * 子订单list
 	 */
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
@@ -131,10 +161,54 @@ public class Procurement extends BaseEntity<Long>{
 	@Transient
 	private Date orderTimeEnd;
 	
+	/**
+	 * 报表report
+	 */
+	@Transient
+	private Integer report;
 	
 	
 	
-	
+	public Integer getReport() {
+		return report;
+	}
+
+	public void setReport(Integer report) {
+		this.report = report;
+	}
+
+	public Long getTransfersUserId() {
+		return transfersUserId;
+	}
+
+	public void setTransfersUserId(Long transfersUserId) {
+		this.transfersUserId = transfersUserId;
+	}
+
+	public User getTransfersUser() {
+		return transfersUser;
+	}
+
+	public void setTransfersUser(User transfersUser) {
+		this.transfersUser = transfersUser;
+	}
+
+	public Long getOnlineCustomerId() {
+		return onlineCustomerId;
+	}
+
+	public void setOnlineCustomerId(Long onlineCustomerId) {
+		this.onlineCustomerId = onlineCustomerId;
+	}
+
+	public OnlineCustomer getOnlineCustomer() {
+		return onlineCustomer;
+	}
+
+	public void setOnlineCustomer(OnlineCustomer onlineCustomer) {
+		this.onlineCustomer = onlineCustomer;
+	}
+
 	public Integer getStatus() {
 		return status;
 	}

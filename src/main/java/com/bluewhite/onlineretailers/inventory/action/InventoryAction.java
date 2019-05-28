@@ -265,12 +265,12 @@ public class InventoryAction {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(Procurement.class, "id", "batchNumber", "user", "procurementChilds", "number",
-						"residueNumber", "type", "flag", "remark")
+						"residueNumber", "type", "flag", "remark","transfersUser","onlineCustomer")
 				.addRetainTerm(ProcurementChild.class, "id", "commodity", "number", "residueNumber", "warehouse",
 						"status", "childRemark")
 				.addRetainTerm(Commodity.class, "id","skuCode","name", "inventorys")
 				.addRetainTerm(Inventory.class, "number", "place", "warehouse")
-				.addRetainTerm(User.class, "username")
+				.addRetainTerm(User.class,"id","username")
 				.addRetainTerm(BaseData.class, "name")
 				.format(procurementService.findPage(procurement, page)).toJSON());
 		cr.setMessage("查询成功");
@@ -375,28 +375,90 @@ public class InventoryAction {
 	 * 1.销售
 	 * 日报表
 	 * 月报表
-	 * 商品销售报表
-	 * 员工销售报表
 	 * 
 	 */
-	@RequestMapping(value = "/inventory/report/sales", method = RequestMethod.GET)
+	@RequestMapping(value = "/inventory/report/salesDay", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse day(Procurement procurement) {
+	public CommonResponse sales(OnlineOrder onlineOrder) {
 		CommonResponse cr = new CommonResponse();
-		
-		
-		
-		
-		
+		cr.setData(onlineOrderService.reportSales(onlineOrder));
+		cr.setMessage("成功");
+		return cr;
+	}
+	
+	/**
+	 * 1.销售
+	 * 商品销售报表
+	 * 
+	 */
+	@RequestMapping(value = "/inventory/report/salesGoods", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse salesMonth(OnlineOrder onlineOrder) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(onlineOrderService.reportSalesGoods(onlineOrder));
+		cr.setMessage("成功");
+		return cr;
+	}
+	
+	/**
+	 * 1.销售
+	 * 员工销售报表
+	 * 客户销售报表
+	 */
+	@RequestMapping(value = "/inventory/report/salesUser", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse salesUser(OnlineOrder onlineOrder) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(onlineOrderService.reportSalesUser(onlineOrder));
 		cr.setMessage("成功");
 		return cr;
 	}
 	
 	
 	
+	/**
+	 * 2.入库
+	 * 日报表
+	 * 月报表
+	 * 
+	 */
+	@RequestMapping(value = "/inventory/report/storageDay", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse storageDay(Procurement procurement) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(procurementService.reportStorage(procurement));
+		cr.setMessage("成功");
+		return cr;
+	}
 	
+	/**
+	 * 2.入库
+	 * 商品销售报表
+	 * 
+	 */
+	@RequestMapping(value = "/inventory/report/storageGoods", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse storageGoods(Procurement procurement) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(procurementService.reportStorageGoods(procurement));
+		cr.setMessage("成功");
+		return cr;
+	}
 	
-	
+	/**
+	 * 2.入库
+	 * 员工销售报表
+	 * 客户销售报表
+	 * 
+	 */
+	@RequestMapping(value = "/inventory/report/storageUser", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse storageUser(Procurement procurement) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(procurementService.reportStorageUser(procurement));
+		cr.setMessage("成功");
+		return cr;
+	}
 	
 	
 	

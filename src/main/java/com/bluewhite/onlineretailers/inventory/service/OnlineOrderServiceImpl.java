@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
@@ -278,20 +279,35 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	@Override
 	public List<Map<String, Object>> reportSales(OnlineOrder onlineOrder) {
 		List<Map<String, Object>> mapList = new ArrayList<>();
+		long size = 0;
 		//按天查询
-		long size = DatesUtil.getDaySub(onlineOrder.getOrderTimeBegin(), onlineOrder.getOrderTimeEnd());
+		if(onlineOrder.getReport()==1){
+			size =  DatesUtil.getDaySub(onlineOrder.getOrderTimeBegin(), onlineOrder.getOrderTimeEnd());
+		}
 		//按月查询
+		if(onlineOrder.getReport()==2){
+			size =  1;
+		}
 		for (int i = 0; i < size; i++) {
 			Date beginTimes = null;
-			if (i != 0) {
-				// 获取下一天的时间
-				beginTimes = DatesUtil.nextDay(onlineOrder.getOrderTimeBegin());
-			} else {
-				// 获取第一天的开始时间
-				beginTimes = onlineOrder.getOrderTimeBegin();
+			Date endTimes =  null;
+			//按天查询
+			if(onlineOrder.getReport()==1){
+				if (i != 0) {
+					// 获取下一天的时间
+					beginTimes = DatesUtil.nextDay(onlineOrder.getOrderTimeBegin());
+				} else {
+					// 获取第一天的开始时间
+					beginTimes = onlineOrder.getOrderTimeBegin();
+				}
+				// 获取一天的结束时间
+				endTimes = DatesUtil.getLastDayOftime(beginTimes);
 			}
-			// 获取一天的结束时间
-			Date endTimes = DatesUtil.getLastDayOftime(beginTimes);
+			//按月查询
+			if(onlineOrder.getReport()==2){
+				beginTimes = onlineOrder.getOrderTimeBegin();
+				endTimes = onlineOrder.getOrderTimeEnd();
+			}
 
 			Map<String, Object> mapSale = new HashMap<String, Object>();
 			// 获取所有的已发货的订单
@@ -330,8 +346,14 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			// 每单平均金额
 			mapSale.put("averageAmount", NumUtils.div(sumPayment, onlineOrderList.size(), 2));
 			// 广宣成本
-			double sumCost = onlineOrderChildList.stream()
-					.mapToDouble(OnlineOrderChild -> OnlineOrderChild.getCommodity().getPropagandaCost()).sum();
+			List<Double> listSumCost = new ArrayList<>();
+			Double sumCost = 0.0;
+			if (onlineOrderList.size() > 0) {
+				onlineOrderChildList.stream().forEach(c -> {
+					listPayment.add(c.getCommodity().getPropagandaCost());
+				});
+				sumCost = NumUtils.sum(listPayment);
+			}
 			mapSale.put("sumCost", sumCost);
 			// 利润
 			mapSale.put("profits", NumUtils.sub(sumPayment, sumCost, sumpostFee));
@@ -347,6 +369,90 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		List<OnlineOrderChild> onlineOrderChildList = onlineOrderChildDao.findByStatusAndCreatedAtBetween(
 				Constants.ONLINEORDER_5, onlineOrderChild.getOrderTimeBegin(), onlineOrderChild.getOrderTimeEnd());
 		return null;
+	}
+
+	@Override
+	public List<Map<String, Object>> reportSalesGoods(OnlineOrder onlineOrder) {
+		List<Map<String, Object>> mapList = new ArrayList<>();
+		// 获取所有的已发货的子订单订单
+		List<OnlineOrderChild> onlineOrderChildList = onlineOrderChildDao.findByStatusAndCreatedAtBetween(
+				Constants.ONLINEORDER_5, onlineOrder.getOrderTimeBegin(), onlineOrder.getOrderTimeEnd());
+		//根据商品id分组
+		Map<Long, List<OnlineOrderChild>> mapOnlineOrderChildList = onlineOrderChildList.stream()
+				.collect(Collectors.groupingBy(OnlineOrderChild::getCommodityId, Collectors.toList()));
+		for (Long ps : mapOnlineOrderChildList.keySet()) {
+			List<OnlineOrderChild> psList = mapOnlineOrderChildList.get(ps);
+			Map<String, Object> mapSale = new HashMap<String, Object>();
+			int sunNumber = psList.stream().mapToInt(OnlineOrderChild::getNumber).sum();
+			List<Double> listSumPayment = new ArrayList<>();
+			Double sumPayment = 0.0;
+			if (psList.size() > 0) {
+				psList.stream().forEach(c -> {
+					listSumPayment.add(c.getSumPrice());
+				});
+				sumPayment = NumUtils.sum(sumPayment);
+			}
+			mapSale.put("name", psList.get(0).getCommodity().getSkuCode());
+			mapSale.put("singular", psList.size());
+			mapSale.put("sumPayment", sumPayment);
+			mapSale.put("sunNumber", sunNumber);
+			// 每单平均金额
+			mapSale.put("averageAmount", NumUtils.div(sumPayment, psList.size(), 2));
+			mapList.add(mapSale);
+		}
+		return mapList;
+	}
+
+	@Override
+	public List<Map<String, Object>> reportSalesUser(OnlineOrder onlineOrder) {
+		List<Map<String, Object>> mapList = new ArrayList<>();
+		// 获取所有的已发货的订单
+		List<OnlineOrder> onlineOrderList = onlineOrderDao.findByStatusAndCreatedAtBetween(Constants.ONLINEORDER_5,
+				onlineOrder.getOrderTimeBegin(),onlineOrder.getOrderTimeEnd());
+		Map<Long, List<OnlineOrder>> mapOnlineOrderList = null;
+		if(onlineOrder.getReport()==3){
+			//根据员工id分组
+			 mapOnlineOrderList = onlineOrderList.stream()
+					.collect(Collectors.groupingBy(OnlineOrder::getUserId, Collectors.toList()));
+		}
+		if(onlineOrder.getReport()==4){
+			//根据员工id分组
+			 mapOnlineOrderList = onlineOrderList.stream()
+					.collect(Collectors.groupingBy(OnlineOrder::getOnlineCustomerId, Collectors.toList()));
+		}
+		for (Long ps : mapOnlineOrderList.keySet()) {
+			List<OnlineOrder> psList = mapOnlineOrderList.get(ps);
+			Map<String, Object> mapSale = new HashMap<String, Object>();
+			// 成交单数
+			mapSale.put("user", onlineOrder.getReport()==3 ? psList.get(0).getUser().getUserName() : psList.get(0).getOnlineCustomer().getName() );
+			// 成交单数
+			mapSale.put("singular", psList.size());
+			int proNumber = psList.stream().mapToInt(OnlineOrder::getNum).sum();
+			//宝贝数量
+			mapSale.put("proNumber", proNumber);
+			//总金额
+			List<Double> listSumPayment = new ArrayList<>();
+			// 实际运费
+			List<Double> listPostFee = new ArrayList<>();
+			Double sumPayment = 0.0;
+			Double sumpostFee = 0.0;
+			if (psList.size() > 0) {
+				psList.stream().forEach(c -> {
+					listSumPayment.add(c.getSumPrice());
+				});
+				sumPayment = NumUtils.sum(sumPayment);
+				sumpostFee = NumUtils.sum(listPostFee);
+			}
+			// 成交金额
+			mapSale.put("sumPayment", sumPayment);
+			// 实际邮费
+			mapSale.put("sumpostFee", sumpostFee);
+			// 每单平均金额
+			mapSale.put("averageAmount", NumUtils.div(sumPayment, psList.size(), 2));
+			mapList.add(mapSale);
+		
+		}
+		return mapList;
 	}
 
 }

@@ -66,5 +66,19 @@ public interface OnlineOrderService extends BaseCRUDService<OnlineOrder,Long>{
 	 * @return
 	 */
 	List<OnlineOrderChild> reportSalesChild(OnlineOrderChild onlineOrderChild);
+	
+	/**
+	 * 根据时间和类型获取商品
+	 * @param onlineOrder
+	 * @return
+	 */
+	public List<Map<String, Object>> reportSalesGoods(OnlineOrder onlineOrder);
+	
+	/**
+	 * 根据销员工获取销售报表
+	 * @param onlineOrder
+	 * @return
+	 */
+	public List<Map<String, Object>> reportSalesUser(OnlineOrder onlineOrder);
 
 }

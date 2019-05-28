@@ -138,7 +138,7 @@ public class OnlineOrder extends BaseEntity<Long> {
 	 * 	商品购买数量
 	 */
 	@Column(name = "num")
-	private Number num;
+	private Integer num;
 	
 	/**
 	 * 订单状态交易状态。可选值: 
@@ -308,8 +308,20 @@ public class OnlineOrder extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Date orderTimeEnd;
+	/**
+	 * 报表report(1=日，2=月，3=员工，4=客户)
+	 */
+	@Transient
+	private Integer report;
 	
 	
+	public Integer getReport() {
+		return report;
+	}
+
+	public void setReport(Integer report) {
+		this.report = report;
+	}
 
 	public String getTelephone() {
 		return telephone;
@@ -519,12 +531,11 @@ public class OnlineOrder extends BaseEntity<Long> {
 		this.receivedPayment = receivedPayment;
 	}
 
-
-	public Number getNum() {
+	public Integer getNum() {
 		return num;
 	}
 
-	public void setNum(Number num) {
+	public void setNum(Integer num) {
 		this.num = num;
 	}
 
