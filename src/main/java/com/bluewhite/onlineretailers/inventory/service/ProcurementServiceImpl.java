@@ -15,6 +15,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
@@ -59,7 +60,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			if (param.getType() != null) {
 				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
 			}
-			
+
 			// 按状态过滤
 			if (param.getStatus() != null) {
 				predicate.add(cb.equal(root.get("status").as(Integer.class), param.getStatus()));
@@ -69,10 +70,11 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			if (param.getFlag() != null) {
 				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
 			}
-			
+
 			// 按仓库id
 			if (param.getWarehouseId() != null) {
-				predicate.add(cb.equal(root.get("procurementChilds").get("warehouseId").as(Long.class), param.getWarehouseId()));
+				predicate.add(cb.equal(root.get("procurementChilds").get("warehouseId").as(Long.class),
+						param.getWarehouseId()));
 			}
 
 			// 按批次号过滤
@@ -96,6 +98,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	}
 
 	@Override
+	@Transactional
 	public Procurement saveProcurement(Procurement procurement) {
 		// 逻辑处理：优先处理父级单据所有数据
 		Procurement upProcurement = new Procurement();
@@ -140,7 +143,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 							if (procurement.getType() == 2) {
 								pChild.setResidueNumber((pChild.getResidueNumber() - procurementChild.getNumber()) > 0
 										? 0 : pChild.getResidueNumber() - procurementChild.getNumber());
-							}else{
+							} else {
 								pChild.setResidueNumber(pChild.getResidueNumber() - procurementChild.getNumber());
 							}
 						}
@@ -204,6 +207,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	}
 
 	@Override
+	@Transactional
 	public int deleteProcurement(String ids) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
@@ -216,42 +220,46 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 					// 当单据的父id存在，说明拥有上级单据，反冲恢复上级单据的总剩余数量
 					if (procurement.getParentId() != null) {
 						Procurement parentProcurement = dao.findOne(procurement.getParentId());
-						parentProcurement.setResidueNumber(procurement.getNumber());
+						parentProcurement.setResidueNumber(procurement.getResidueNumber()+procurement.getNumber());
 						// 拿本级的子单和上级子单对比，同时将上级子单数据恢复
 						for (ProcurementChild parentProcurementChilds : parentProcurement.getProcurementChilds()) {
 							for (ProcurementChild procurementChilds : procurement.getProcurementChilds()) {
 								if (parentProcurementChilds.getCommodityId() == procurementChilds.getCommodityId()) {
-									parentProcurementChilds.setResidueNumber(procurement.getNumber());
+									parentProcurementChilds.setResidueNumber(parentProcurementChilds.getResidueNumber()+procurement.getNumber());
 								}
 							}
 						}
+						dao.save(parentProcurement);
 					}
-
-					// 当单据为出库入库单时，恢复库存
-					for (ProcurementChild procurementChilds : procurement.getProcurementChilds()) {
-						// 获取商品
-						Commodity commodity = procurementChilds.getCommodity();
-						// 获取所有商品的库存
-						Set<Inventory> inventorys = commodity.getInventorys();
-						// 反冲库存数据
-						if (inventorys.size() > 0) {
-							for (Inventory inventory : inventorys) {
-								if (inventory.getWarehouseId().equals(procurementChilds.getWarehouseId())) {
-									// 入库单
-									if (procurement.getType() == 2) {
-										inventory.setNumber(inventory.getNumber() - procurementChilds.getNumber());
+					
+					if(procurement.getType() == 2 || procurement.getType() == 3){
+						// 当单据为出库入库单时，恢复库存
+						for (ProcurementChild procurementChilds : procurement.getProcurementChilds()) {
+							// 获取商品
+							Commodity commodity = procurementChilds.getCommodity();
+							// 获取所有商品的库存
+							Set<Inventory> inventorys = commodity.getInventorys();
+							// 反冲库存数据
+							if (inventorys.size() > 0) {
+								for (Inventory inventory : inventorys) {
+									if (inventory.getWarehouseId().equals(procurementChilds.getWarehouseId())) {
+										// 入库单
+										if (procurement.getType() == 2) {
+											inventory.setNumber(inventory.getNumber() - procurementChilds.getNumber());
+										}
+										// 出库单
+										if (procurement.getType() == 3) {
+											inventory.setNumber(inventory.getNumber() + procurementChilds.getNumber());
+										}
+										inventoryDao.save(inventory);
 									}
-									// 出库单
-									if (procurement.getType() == 3) {
-										inventory.setNumber(inventory.getNumber() + procurementChilds.getNumber());
-									}
-									inventoryDao.save(inventory);
 								}
 							}
+							commodityService.save(commodity);
 						}
-						commodityService.save(commodity);
 					}
-
+					
+					
 					dao.save(procurement);
 					count++;
 				}
@@ -269,19 +277,19 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	public List<Map<String, Object>> reportStorage(Procurement procurement) {
 		List<Map<String, Object>> mapList = new ArrayList<>();
 		long size = 0;
-		//按天查询
-		if(procurement.getReport()==1){
-			size =  DatesUtil.getDaySub(procurement.getOrderTimeBegin(), procurement.getOrderTimeEnd());
+		// 按天查询
+		if (procurement.getReport() == 1) {
+			size = DatesUtil.getDaySub(procurement.getOrderTimeBegin(), procurement.getOrderTimeEnd());
 		}
-		//按月查询
-		if(procurement.getReport()==2){
-			size =  1;
+		// 按月查询
+		if (procurement.getReport() == 2) {
+			size = 1;
 		}
 		for (int i = 0; i < size; i++) {
 			Date beginTimes = null;
-			Date endTimes =  null;
-			//按天查询
-			if(procurement.getReport()==1){
+			Date endTimes = null;
+			// 按天查询
+			if (procurement.getReport() == 1) {
 				if (i != 0) {
 					// 获取下一天的时间
 					beginTimes = DatesUtil.nextDay(procurement.getOrderTimeBegin());
@@ -292,15 +300,15 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				// 获取一天的结束时间
 				endTimes = DatesUtil.getLastDayOftime(beginTimes);
 			}
-			//按月查询
-			if(procurement.getReport()==2){
+			// 按月查询
+			if (procurement.getReport() == 2) {
 				beginTimes = procurement.getOrderTimeBegin();
 				endTimes = procurement.getOrderTimeEnd();
 			}
 			Map<String, Object> mapSale = new HashMap<String, Object>();
 			// 获取所有的单据
-			List<Procurement> procurementList = dao.findByTypeAndCreatedAtBetween(procurement.getType(),
-					beginTimes,endTimes);
+			List<Procurement> procurementList = dao.findByTypeAndCreatedAtBetween(procurement.getType(), beginTimes,
+					endTimes);
 			// 单数
 			mapSale.put("singular", procurementList.size());
 			// 宝贝数量
@@ -310,22 +318,20 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 		}
 		return mapList;
 	}
-	
-	
 
 	@Override
 	public List<Map<String, Object>> reportStorageGoods(Procurement procurement) {
 		List<Map<String, Object>> mapList = new ArrayList<>();
 		// 获取所有的单据
-		List<Procurement> procurementList = dao.findByTypeAndCreatedAtBetween(
-				procurement.getType(), procurement.getOrderTimeBegin(), procurement.getOrderTimeEnd());
+		List<Procurement> procurementList = dao.findByTypeAndCreatedAtBetween(procurement.getType(),
+				procurement.getOrderTimeBegin(), procurement.getOrderTimeEnd());
 		// 将所有的子单数据取出
 		List<ProcurementChild> procurementChildList = new ArrayList<>();
 		// 将当前时间段所有的出库商品过滤出
 		procurementList.stream().forEach(pt -> {
 			procurementChildList.addAll(pt.getProcurementChilds());
 		});
-		//根据商品id分组
+		// 根据商品id分组
 		Map<Long, List<ProcurementChild>> mapProcurementChildList = procurementChildList.stream()
 				.collect(Collectors.groupingBy(ProcurementChild::getCommodityId, Collectors.toList()));
 		for (Long ps : mapProcurementChildList.keySet()) {

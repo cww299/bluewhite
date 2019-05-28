@@ -13,6 +13,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
@@ -108,6 +109,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	}
 
 	@Override
+	@Transactional
 	public int deleteOnlineOrder(String ids) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
@@ -145,6 +147,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	}
 
 	@Override
+	@Transactional
 	public OnlineOrder addOnlineOrder(OnlineOrder onlineOrder) {
 		// 新增子订单
 		if (!StringUtils.isEmpty(onlineOrder.getChildOrder())) {
@@ -171,6 +174,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	}
 
 	@Override
+	@Transactional
 	public int delivery(String delivery) {
 		int count = 0;
 		if (!StringUtils.isEmpty(delivery)) {
@@ -207,6 +211,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	}
 
 	@Override
+	@Transactional
 	public int excelOnlineOrder(ExcelListener excelListener) {
 		int count = 0;
 		// 获取导入的订单
