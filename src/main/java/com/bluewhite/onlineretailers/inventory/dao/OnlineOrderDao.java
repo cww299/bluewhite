@@ -10,7 +10,7 @@ public interface OnlineOrderDao  extends BaseRepository<OnlineOrder, Long>{
 	
 	
 	/**
-	 * 
+	 * 根据状态和时间查询销售单
 	 * @param status
 	 * @param orderTimeBegin
 	 * @param orderTimeEnd

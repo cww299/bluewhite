@@ -167,8 +167,23 @@ public class Procurement extends BaseEntity<Long>{
 	@Transient
 	private Integer report;
 	
+	/**
+	 * 仓库类型id
+	 */
+	@Transient
+	private Long warehouseId;
 	
 	
+	
+	
+	public Long getWarehouseId() {
+		return warehouseId;
+	}
+
+	public void setWarehouseId(Long warehouseId) {
+		this.warehouseId = warehouseId;
+	}
+
 	public Integer getReport() {
 		return report;
 	}

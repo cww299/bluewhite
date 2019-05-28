@@ -433,7 +433,7 @@ public class InventoryAction {
 	
 	/**
 	 * 2.入库
-	 * 商品销售报表
+	 * 商品入库报表
 	 * 
 	 */
 	@RequestMapping(value = "/inventory/report/storageGoods", method = RequestMethod.GET)
@@ -447,8 +447,8 @@ public class InventoryAction {
 	
 	/**
 	 * 2.入库
-	 * 员工销售报表
-	 * 客户销售报表
+	 * 员工入库报表
+	 * 客户入库报表
 	 * 
 	 */
 	@RequestMapping(value = "/inventory/report/storageUser", method = RequestMethod.GET)

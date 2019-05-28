@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.onlineretailers.inventory.dao.OnlineCustomerDao;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineCustomer;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
@@ -32,10 +33,27 @@ public class OnlineCustomerServiceImpl extends BaseServiceImpl<OnlineCustomer, L
         	if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class),param.getId()));
 			}
-        	//按编号过滤
+        	//按名称过滤
         	if (!StringUtils.isEmpty(param.getName())) {
-				predicate.add(cb.equal(root.get("name").as(String.class),param.getName()));
+				predicate.add(cb.like(root.get("name").as(String.class),"%" + StringUtil.specialStrKeyword(param.getName()) + "%"));
 			}
+        	//按真实名称过滤
+        	if (!StringUtils.isEmpty(param.getBuyerName())) {
+				predicate.add(cb.like(root.get("buyerName").as(String.class),"%" + StringUtil.specialStrKeyword(param.getBuyerName()) + "%"));
+			}
+        	//按真实名称过滤
+        	if (!StringUtils.isEmpty(param.getPhone())) {
+				predicate.add(cb.like(root.get("phone").as(String.class),"%" + StringUtil.specialStrKeyword(param.getPhone()) + "%"));
+			}
+        	//按类型过滤
+        	if (param.getType()!= null) {
+				predicate.add(cb.equal(root.get("type").as(Integer.class),param.getType()));
+			}
+        	//按等级过滤
+        	if (param.getGrade()!= null) {
+				predicate.add(cb.equal(root.get("grade").as(Integer.class),param.getGrade()));
+			}
+        	
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
         	return null;
