@@ -331,7 +331,10 @@ public class InventoryAction {
 	@ResponseBody
 	public CommonResponse getWarning() {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(warningDao.findAll());
+		cr.setData(ClearCascadeJSON.get()
+				.addRetainTerm(Warning.class, "id", "type", "number", "time", "warehouseId","warehouse")				
+				.addRetainTerm(BaseData.class, "name")
+				.format(warningDao.findAll()).toJSON());
 		cr.setMessage("成功");
 		return cr;
 	}
