@@ -72,13 +72,13 @@ td{
 		<tr><td>批次号</td>	
 			<td><input type="text" class="layui-input" readonly id="look_batchNumber"></td>
 			<td>经手人</td>
-			<td><select disabled id="look_user"><option value="1" >无经手人...</option></select></td>
+			<td><input type="text" class="layui-input" readonly id="look_user"></td>
 			<td>总数量</td>
 			<td><input type="text" class="layui-input" id="look_number" readonly></td></tr>
 		<tr><td>备注</td>
 			<td><input type="text" id="look_remark" class="layui-input" readonly></td>
 			<td>入库类型</td>
-			<td><input type="text" class="layui-input" id="look_type" readonly></td>
+			<td><input type="text" class="layui-input" id="look_status" readonly></td>
 			<td id='look_textTd'></td>
 			<td id='look_inputTd' style='width:280px;'></td></tr>
 	</table>
@@ -250,7 +250,7 @@ layui.config({
 			       {align:'center', title:'批次号',   field:'batchNumber',},
 			       {align:'center', title:'计划总数量', field:'number'},
 			       {align:'center', title:'剩余总数量', field:'residueNumber'},
-			       {align:'center', title:'经手人',	templet:'<p>{{ d.user }}</p>'},
+			       {align:'center', title:'经手人',	templet:'<p>{{ d.user.userName }}</p>'},
 			       {align:'center', title:'备注', 	field:'remark'},
 			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl'},
 			       ]]
@@ -330,20 +330,19 @@ layui.config({
 			case 0: statusText='生产入库'; break;
 			case 1: statusText='调拨入库'; 
 					tdText='调拨人';
-					tdInput='<input type="text" readonly class="layui-input" value="'+data.transfersUser.name+'">';
+					tdInput='<input type="text" readonly class="layui-input" value="'+data.transfersUser.userName+'">';
 					break;
 			case 2: statusText='销售退货入库'; 
-					tdText='调拨人';
-					tdInput='<input type="text" readonly class="layui-input" value="'+data.onlineCustomer.name+'">';
+					tdText='客户';
+					tdInput='<input type="text" readonly class="layui-input" value="'+data.onlineCustomer.buyerName+'">';
 					break;
 			case 3: statusText='销售换货入库'; break;
 			case 4: statusText='采购入库'; break;
 			}
-			$('#look_textTd').val(tdText);
+			$('#look_textTd').html(tdText);
 			$('#look_inputTd').html(tdInput);
-			$('#look_type').html(statusText);
-			if(data.user!=null)
-				getUserSelect(data.user.id,'look_user',allUser);
+			$('#look_status').val(statusText);
+			$('#look_user').val(data.user.userName);
 		}
 		
 		//-------新增入库单功能---------------
@@ -556,6 +555,7 @@ layui.config({
 			for(var i=0;i<choosed.length;i++){
 				for(var j=0;j<choosedProduct.length;j++){
 					if(choosed[i].id==choosedProduct[j].id){
+						$('#addOrderNumber').val($('#addOrderNumber').val()-choosedProduct[i].number);
 						choosedProduct.splice(j,1);
 						break;
 					}
@@ -614,6 +614,8 @@ layui.config({
 							commodityId:choosed[i].id,		//商品id
 							number:1,						//商品数量
 							cost:choosed[i].cost,			//成本
+							status : defaultStatus,			//状态
+							warehouseId : defaultInventory, //仓库
 							remark:choosed[i].remark,		//备注
 					};
 					$('#addOrderNumber').val($('#addOrderNumber').val()-(-1));

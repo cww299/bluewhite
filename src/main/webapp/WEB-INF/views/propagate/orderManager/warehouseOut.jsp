@@ -69,7 +69,7 @@ td{
 		<tr><td>批次号</td>	
 			<td><input type="text" class="layui-input" readonly id="look_batchNumber"></td>
 			<td>经手人</td>
-			<td><select disabled id="look_user"><option value="1" >无经手人...</option></select></td>
+			<td><input type="text" class="layui-input" readonly id="look_user" value='无经手人'></td>
 			<td>总数量</td>
 			<td><input type="text" class="layui-input" id="look_number" readonly></td></tr>
 		<tr><td>备注</td>
@@ -202,7 +202,7 @@ layui.config({
 			       {align:'center', title:'批次号',   field:'batchNumber',		},
 			       {align:'center', title:'总数量', field:'number'},
 			       {align:'center', title:'剩余总数量', field:'residueNumber'},
-			       {align:'center', title:'经手人',	templet:'<p>{{ d.user }}</p>'},
+			       {align:'center', title:'经手人',	templet:'<p>{{ d.user.userName }}</p>'},
 			       {align:'center', title:'备注', 	field:'remark'},
 			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl'},
 			       ]]
@@ -273,15 +273,14 @@ layui.config({
 				       {align:'center', title:'数量',     field:'number',},
 				       {align:'center', title:'出库仓库', 	  templet:function(d){return d.warehouse.name; },}, 
 				       {align:'center', title:'出库类型', 	 templet:'#typeTpl',}, 
-				       {align:'center', title:'仓位',  	  field:'place',}, 
+				       /* {align:'center', title:'仓位',  	  field:'place',},  */
 				       {align:'center', title:'备注', 	  field:'childRemark',}, 
 				       ]]
 			})
 			$('#look_batchNumber').val(data.batchNumber);
 			$('#look_remark').val(data.remark);
 			$('#look_number').val(data.number);
-			if(data.user!=null)
-				getUserSelect(data.user.id,'look_user');
+			$('#look_user').val(data.user.userName);
 			var statusText='无类型';
 			switch(data.status){
 			case 0: statusText='销售出库'; break;
