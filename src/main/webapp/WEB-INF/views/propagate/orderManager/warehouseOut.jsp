@@ -44,7 +44,7 @@ td{
 		<tr><td>批次号<input type="hidden" name="type" value="3" ></td>	<!-- 默认type类型为2，表示为入库单 -->
 			<td><input type="text" class="layui-input" name='batchNumber' lay-verify='required'></td>
 			<td>经手人</td>
-			<td><select name="userId"><option value="1" >测试人admin</option></select></td>
+			<td><select name="userId" id='userIdSelect' lay-search><option value="1" >测试人admin</option></select></td>
 			<td>备注</td>
 			<td colspan="3"><input type="text" name="remark" class="layui-input"></td></tr>
 		<tr>
@@ -69,11 +69,13 @@ td{
 		<tr><td>批次号</td>	
 			<td><input type="text" class="layui-input" readonly id="look_batchNumber"></td>
 			<td>经手人</td>
-			<td><select disabled><option value="1" id="look_userName">测试人admin</option></select></td>
+			<td><select disabled id="look_user"><option value="1" >无经手人...</option></select></td>
 			<td>总数量</td>
 			<td><input type="text" class="layui-input" id="look_number" readonly></td></tr>
 		<tr><td>备注</td>
-			<td colspan="3"><input type="text" id="look_remark" class="layui-input" readonly></td></tr>
+			<td colspan="3"><input type="text" id="look_remark" class="layui-input" readonly></td>
+			<td>出库类型</td>
+			<td><input type="text" class="layui-input" id="look_type" readonly></td></tr>
 	</table>
 	<table class="layui-table" id="lookOverProductListTable" lay-filter="lookOverProductListTable"></table>
 </div>
@@ -150,6 +152,19 @@ td{
 	}}
 	<span style='color:orange;'>{{ str }}</span>
 </script>
+
+<!-- 出库单查看类型转换模板 -->
+<script type="text/html" id='typeTpl'>
+	{{#	var text='',color='';
+		switch(d.status){
+		case 0: text='销售出库'; 	color='';	 break;
+		case 1: text='调拨出库'; 	color='blue'; break;
+		case 2: text='销售换货出库'; color='orange'; break;
+		case 3: text='采购退货出库'; color='green'; 	break;
+		}
+	}}	
+	<span class='layui-badge layui-bg-{{color}}'>{{text}}</span>
+</script>
 </body>
 <script>
 layui.config({
@@ -166,9 +181,11 @@ layui.config({
 		, tablePlug = layui.tablePlug;
 		
 		var chooseProductWin;		//选择商品弹窗
-		var allInventory=[];		//所有仓库
-		
+		var allInventory=[],		//所有仓库
+			allUser=[];
+			
 		getAllInventory();
+		getAllUser();
 		
 		form.render();
 		table.render({				//渲染主页面单表格
@@ -255,7 +272,7 @@ layui.config({
 				       {align:'center', title:'商品名称',  templet:'<p>{{ d.commodity.skuCode }}</p>'},
 				       {align:'center', title:'数量',     field:'number',},
 				       {align:'center', title:'出库仓库', 	  templet:function(d){return d.warehouse.name; },}, 
-				       {align:'center', title:'出库类型', 	 templet:function(d){return d.status;},}, 
+				       {align:'center', title:'出库类型', 	 templet:'#typeTpl',}, 
 				       {align:'center', title:'仓位',  	  field:'place',}, 
 				       {align:'center', title:'备注', 	  field:'childRemark',}, 
 				       ]]
@@ -263,7 +280,16 @@ layui.config({
 			$('#look_batchNumber').val(data.batchNumber);
 			$('#look_remark').val(data.remark);
 			$('#look_number').val(data.number);
-			//$('#look_user').val(choosed[0].user);
+			if(data.user!=null)
+				getUserSelect(data.user.id,'look_user');
+			var statusText='无类型';
+			switch(data.status){
+			case 0: statusText='销售出库'; break;
+			case 1: statusText='调拨出库'; break;
+			case 2: statusText='销售换货出库'; break;
+			case 3: statusText='采购退货出库'; break;
+			}
+			$('#look_type').val(statusText);
 		}
 		
 		//-------新增出库单功能---------------
@@ -273,14 +299,14 @@ layui.config({
 		function add(){										//新增单
 			layer.open({
 				type : 1,
-				title : '新增入库单',
+				title : '新增出库单',
 				area : ['90%','90%'],
 				content : $('#addOrderDiv')
 			})
+			getUserSelect('','userIdSelect');
 			table.render({									//渲染选择后的商品表格
 				elem:'#productListTable',
 				toolbar:'#productListTableToolbar',
-				data:[],
 				page:{},
 				size:'lg',
 				loading:true,
@@ -542,7 +568,29 @@ layui.config({
 			layer.msg('添加成功',{icon:1});
 			return true;
 		}
-		
+		function getAllUser(){
+			$.ajax({
+				url:'${ctx}/system/user/pages?size=999',
+				success:function(r){
+					if(0==r.code){
+						for(var i=0;i<r.data.rows.length;i++)
+							allUser.push({
+								id:			r.data.rows[i].id,
+								userName:	r.data.rows[i].userName
+							})
+					}
+				}
+			})
+		}
+		function getUserSelect(id,select){
+			var html='';
+			for(var i=0;i<allUser.length;i++){
+				var selected=( id==allUser[i].id?'selected':'' );
+				html+='<option value="'+allUser[i].id+'" '+selected+'>'+allUser[i].userName+'</option>';
+			}
+			$('#'+select).html(html);
+			form.render();
+		}
 		function getAllInventory(){
 			$.ajax({
 				url:'${ctx}/basedata/list?type=inventory',

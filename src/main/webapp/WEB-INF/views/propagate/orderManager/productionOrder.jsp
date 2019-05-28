@@ -44,7 +44,7 @@ td{
 		<tr><td>批次号<input type="hidden" name="type" value="0" ></td>	<!-- 默认type类型为0，表示为生产单 -->
 			<td><input type="text" class="layui-input" name="batchNumber" lay-verify='required' id="addBatchNumber"></td>
 			<td>经手人</td>
-			<td><select name="userId"><option value="1" >测试人admin</option></select></td>
+			<td><select name="userId" id='userIdSelectAdd' lay-search><option value="1" >获取数据中...</option></select></td>
 			<td>数量</td>
 			<td><input type="text" class="layui-input" name="number" id="addNumber" readonly value='0'></td></tr>
 		<tr><td>备注</td>
@@ -61,7 +61,7 @@ td{
 		<tr><td>批次号</td>	
 			<td><input type="text" class="layui-input" readonly id="look_batchNumber"></td>
 			<td>经手人</td>
-			<td><select disabled><option value="1" id="look_userName">测试人admin</option></select></td>
+			<td><select disabled id="look_user"><option value="1" >无经手人...</option></select></td>
 			<td>总数量</td>
 			<td><input type="text" class="layui-input" id="look_number" readonly></td></tr>
 		<tr><td>备注</td>
@@ -77,7 +77,7 @@ td{
 					  <input type="hidden" name="id" id="becomeOrderId" ></td>		<!-- 生成针工单的生产单id。用于生产单数量的减少 -->
 			<td><input type="text" class="layui-input" name='batchNumber' id="become_bacthNumber" readonly></td>
 			<td>经手人</td>
-			<td><select name="userId"><option value="1" >测试人admin</option></select></td>
+			<td><select name="userId" id='userIdSelectBecome' lay-search><option value="1" >获取数据中...</option></select></td>
 			<td>默认生成针工单数量</td>
 			<td><select lay-filter="defaultNumberSelect"><option value="zero">默认生成针工单数量为0</option><option value="all">全部生成针工单</option></select></tr>
 		<tr><td>备注</td>
@@ -173,7 +173,9 @@ layui.config({
 		, tablePlug = layui.tablePlug;
 		
 		var chooseProductWin;		//选择商品弹窗
+		var allUser=[];
 		
+		getAllUser();
 		
 		form.render();
 		table.render({				//渲染主页面单表格
@@ -279,6 +281,7 @@ layui.config({
 				       ]]
 			})
 			becomeProduct=choosed[0].procurementChilds;
+			getUserSelect('','userIdSelectBecome');
 			$('#become_bacthNumber').val(choosed[0].batchNumber);
 			table.reload('becomeProductListTable',{
 				data:becomeProduct
@@ -385,7 +388,8 @@ layui.config({
 			$('#look_batchNumber').val(data.batchNumber);
 			$('#look_remark').val(data.remark);
 			$('#look_number').val(data.number);
-			//$('#look_user').val(choosed[0].user);
+			if(data.user!=null)
+				getUserSelect(data.user.id,'look_user');
 		}
 		//-------新增生产单功能---------------
 		var choosedProduct=[];		//用户已经选择上的产品,渲染新增单的产品表格数据
@@ -397,6 +401,7 @@ layui.config({
 				area : ['90%','90%'],
 				content : $('#addOrderDiv')
 			})
+			getUserSelect('','userIdSelectAdd');
 			table.render({									//渲染选择后的商品表格
 				elem:'#productListTable',
 				toolbar:'#productListTableToolbar',
@@ -611,7 +616,29 @@ layui.config({
 			layer.msg('添加成功');
 			return true;
 		}
-		
+		function getAllUser(){
+			$.ajax({
+				url:'${ctx}/system/user/pages?size=999',
+				success:function(r){
+					if(0==r.code){
+						for(var i=0;i<r.data.rows.length;i++)
+							allUser.push({
+								id:			r.data.rows[i].id,
+								userName:	r.data.rows[i].userName
+							})
+					}
+				}
+			})
+		}
+		function getUserSelect(id,select){
+			var html='';
+			for(var i=0;i<allUser.length;i++){
+				var selected=( id==allUser[i].id?'selected':'' );
+				html+='<option value="'+allUser[i].id+'" '+selected+'>'+allUser[i].userName+'</option>';
+			}
+			$('#'+select).html(html);
+			form.render();
+		}
 		function openAddNewPorductWin(){		//添加新产品窗口
 			addNewPorductWin = layer.open({								
 				type:1,
