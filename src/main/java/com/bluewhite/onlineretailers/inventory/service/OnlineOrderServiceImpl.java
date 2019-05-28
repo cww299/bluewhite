@@ -26,6 +26,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.onlineretailers.inventory.dao.CommodityDao;
 import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
@@ -38,6 +39,8 @@ import com.bluewhite.onlineretailers.inventory.entity.OnlineOrderChild;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 import com.bluewhite.onlineretailers.inventory.entity.poi.OnlineOrderPoi;
+import com.bluewhite.system.sys.dao.RegionAddressDao;
+import com.bluewhite.system.sys.entity.RegionAddress;
 
 @Service
 public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> implements OnlineOrderService {
@@ -52,6 +55,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	private OnlineOrderDao onlineOrderDao;
 	@Autowired
 	private InventoryDao inventoryDao;
+	@Autowired
+	private RegionAddressDao regionAddressDao;
 
 	@Override
 	public PageResult<OnlineOrder> findPage(OnlineOrder param, PageParameter page) {
@@ -238,6 +243,21 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				onlineOrder.setSumPrice(cPoi.getSumPrice());
 				onlineOrder.setBuyerName(cPoi.getBuyerName());
 				//將地址转换成省市县
+				List<Map<String,String>> addressMap = StringUtil.addressResolution(cPoi.getAddress());
+				String province = "";
+				String city = "";
+				String county = "";
+				for(Map<String,String> map : addressMap){
+					province = map.get("province");
+					city = map.get("city");
+					county = map.get("county");
+				}
+				RegionAddress provinces = regionAddressDao.findByRegionName(province);
+				RegionAddress citys = regionAddressDao.findByRegionName(city);
+				RegionAddress countys = regionAddressDao.findByRegionName(county);
+				onlineOrder.setProvinces(provinces);
+				onlineOrder.setCity(citys);
+				onlineOrder.setCounty(countys);
 				onlineOrder.setAddress(cPoi.getAddress());
 				onlineOrder.setPhone(cPoi.getPhone());
 				onlineOrder.setBuyerMessage(cPoi.getBuyerMessage());
@@ -275,7 +295,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 						}
 					}
 				} else {
-					throw new ServiceException("当前导入excel第" + (i + 2) + "条数据的商品不存在，请先添加");
+					throw new ServiceException("当前导入excel第" + (i+2) + "条数据的商品不存在，请先添加");
 				}
 
 			}
