@@ -85,7 +85,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			
 			// 按客户名称过滤
 			if (!StringUtils.isEmpty(param.getOnlineCustomerName())) {
-				predicate.add(cb.like(root.get("onlineCustomer").as(String.class), "%" + StringUtil.specialStrKeyword(param.getOnlineCustomerName()) + "%"));
+				predicate.add(cb.like(root.get("name").as(String.class), "%" + StringUtil.specialStrKeyword(param.getOnlineCustomerName()) + "%"));
 			}
 			// 交易状态过滤
 			if (!StringUtils.isEmpty(param.getStatus())) {
@@ -235,11 +235,11 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		List<Object> excelListenerList = excelListener.getData();
 		List<OnlineOrder> onlineOrderList = new ArrayList<>();
 		List<Procurement> procurementList = new ArrayList<>();
+		OnlineOrder onlineOrder = null;
+		Procurement procurement = null;
 		for (int i = 0; i < excelListenerList.size(); i++) {
-			OnlineOrder onlineOrder = null;
-			Procurement procurement = null;
 			OnlineOrderPoi cPoi = (OnlineOrderPoi) excelListenerList.get(i);
-			if (cPoi.getDocumentNumber() != null) {
+			if (cPoi.getDocumentNumber() != null) {  
 				onlineOrder = new OnlineOrder();
 				procurement = new Procurement();
 				procurement.setType(3);
@@ -251,6 +251,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				onlineOrder.setAllBillPreferential(cPoi.getAllBillPreferential());
 				onlineOrder.setSumPrice(cPoi.getSumPrice());
 				onlineOrder.setBuyerName(cPoi.getBuyerName());
+				//客户
+//				onlineOrder.setOnlineCustomerId(onlineCustomerId);
 				// 將地址转换成省市县
 				List<Map<String, String>> addressMap = StringUtil.addressResolution(cPoi.getAddress());
 				String province = "";
@@ -310,12 +312,14 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			}
 			onlineOrderChilds.add(onlineOrderChild);
 			// 当下一条数据没有订单编号时,自动存储上面所有的父子订单
-			OnlineOrderPoi onlineOrderPoiNext = (OnlineOrderPoi) excelListenerList.get(i + 1);
-			if (onlineOrderPoiNext.getDocumentNumber() != null) {
-				onlineOrderList.add(onlineOrder);
-				procurementList.add(procurement);
+			OnlineOrderPoi onlineOrderPoiNext = null;
+			if(i<excelListenerList.size()-1){
+				onlineOrderPoiNext = (OnlineOrderPoi) excelListenerList.get(i + 1);
+				if (onlineOrderPoiNext.getDocumentNumber() != null) {
+					onlineOrderList.add(onlineOrder);
+					procurementList.add(procurement);
+				}
 			}
-
 		}
 		dao.save(onlineOrderList);
 		return count;
