@@ -85,8 +85,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			
 			// 按客户名称过滤
 			if (!StringUtils.isEmpty(param.getOnlineCustomerName())) {
-				predicate.add(cb.equal(root.get("onlineCustomer").get("name").as(String.class),
-						param.getOnlineCustomerName()));
+				predicate.add(cb.like(root.get("onlineCustomer").as(String.class), "%" + StringUtil.specialStrKeyword(param.getOnlineCustomerName()) + "%"));
 			}
 			// 交易状态过滤
 			if (!StringUtils.isEmpty(param.getStatus())) {
