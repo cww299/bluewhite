@@ -44,7 +44,7 @@ td{
 		<tr><td>批次号<input type="hidden" name="type" value="2" ></td>	<!-- 默认type类型为2，表示为入库单 -->
 			<td><input type="text" class="layui-input" name='batchNumber' lay-verify='required'></td>
 			<td>经手人</td>
-			<td><select name="userId"><option value="1" >测试人admin</option></select></td>
+			<td><select name="userId" id='userIdSelect' lay-search><option value="1" >获取数据中...</option></select></td>
 			<td>备注</td>
 			<td colspan=""><input type="text" name="remark" class="layui-input"></td>
 			<td>入库数量</td>
@@ -72,11 +72,15 @@ td{
 		<tr><td>批次号</td>	
 			<td><input type="text" class="layui-input" readonly id="look_batchNumber"></td>
 			<td>经手人</td>
-			<td><select disabled><option value="1" id="look_userName">测试人admin</option></select></td>
+			<td><select disabled id="look_user"><option value="1" >无经手人...</option></select></td>
 			<td>总数量</td>
 			<td><input type="text" class="layui-input" id="look_number" readonly></td></tr>
 		<tr><td>备注</td>
-			<td colspan="3"><input type="text" id="look_remark" class="layui-input" readonly></td></tr>
+			<td><input type="text" id="look_remark" class="layui-input" readonly></td>
+			<td>入库类型</td>
+			<td><input type="text" class="layui-input" id="look_type" readonly></td>
+			<td id='look_textTd'></td>
+			<td id='look_inputTd' style='width:280px;'></td></tr>
 	</table>
 	<table class="layui-table" id="lookOverProductListTable" lay-filter="lookOverProductListTable"></table>
 </div>
@@ -219,9 +223,14 @@ layui.config({
 		
 		var chooseProductWin,		//选择商品弹窗
 			addNewPorductWin;
-		var allInventory=[];		//所有仓库
+		var allInventory=[],		//所有仓库
+			allUser=[],
+			allCustom=[],
+			allUserOrg=[];
 		
 		getAllInventory();
+		getAllUser();
+		
 		renderInventorySelect('defaultInventorySelect');
 		
 		form.render();
@@ -312,7 +321,27 @@ layui.config({
 			$('#look_batchNumber').val(data.batchNumber);
 			$('#look_remark').val(data.remark);
 			$('#look_number').val(data.number);
-			//$('#look_user').val(choosed[0].user);
+			var statusText='无类型';
+			var tdText='';
+			var tdInput='';
+			switch(data.status){
+			case 0: statusText='生产入库'; break;
+			case 1: statusText='调拨入库'; 
+					tdText='调拨人';
+					tdInput='<input type="text" readonly class="layui-input" value="'+data.transfersUser.name+'">';
+					break;
+			case 2: statusText='销售退货入库'; 
+					tdText='调拨人';
+					tdInput='<input type="text" readonly class="layui-input" value="'+data.onlineCustomer.name+'">';
+					break;
+			case 3: statusText='销售换货入库'; break;
+			case 4: statusText='采购入库'; break;
+			}
+			$('#look_textTd').val(tdText);
+			$('#look_inputTd').html(tdInput);
+			$('#look_type').html(statusText);
+			if(data.user!=null)
+				getUserSelect(data.user.id,'look_user',allUser);
 		}
 		
 		//-------新增入库单功能---------------
@@ -321,6 +350,7 @@ layui.config({
 		var defaultInventory='';
 		function add(){										//新增单
 			defaultInventory=defaultInventory==''?allInventory[0].id:defaultInventory;
+			getUserSelect('','userIdSelect',allUser);
 			layer.open({
 				type : 1,
 				title : '新增入库单',
@@ -370,11 +400,13 @@ layui.config({
 									choosedProduct[i].status=defaultStatus;
 								if(obj.value==1){
 									$('#textTd').html('调拨');
-									$('#selectTd').html('<select id="" name=""><option>测试</option></select>');
+									$('#selectTd').html('<select id="userIdOrg" name="transfersUserId"><option>获取数据中...</option></select>');
+									getUserSelect('','userIdOrg',allUserOrg);
 								}
 								else if(obj.value==2){
 									$('#textTd').html('客户');
-									$('#selectTd').html('<select id="" name=""><option>测试</option></select>');
+									$('#selectTd').html('<select id="customId" name="onlineCustomerId"><option>获取数据中...</option></select>');
+									getUserSelect('','customId',allCustom);
 								}else{
 									$('#textTd').html('');
 									$('#selectTd').html('');
@@ -613,6 +645,57 @@ layui.config({
 					}
 				}
 			})
+		}
+		function getAllUserOrg(){
+			$.ajax({
+				url:'${ctx}/system/user/pages?size=99&orgNameIds=29',
+				success:function(r){
+					if(0==r.code){
+						for(var i=0;i<r.data.rows.length;i++)
+							allUserOrg.push({
+								id:			r.data.rows[i].id,
+								userName:	r.data.rows[i].userName
+							})
+					}
+				}
+			})
+		}
+		function getAllCustom(){
+			$.ajax({
+				url:'${ctx}/inventory/onlineCustomerPage',
+				success:function(r){
+					if(0==r.code){
+						for(var i=0;i<r.data.rows.length;i++)
+							allCustom.push({
+								id:			r.data.rows[i].id,
+								userName:	r.data.rows[i].buyerName
+							})
+					}
+				}
+			})
+		}
+		function getAllUser(){
+			$.ajax({
+				url:'${ctx}/system/user/pages?size=999',
+				success:function(r){
+					if(0==r.code){
+						for(var i=0;i<r.data.rows.length;i++)
+							allUser.push({
+								id:			r.data.rows[i].id,
+								userName:	r.data.rows[i].userName
+							})
+					}
+				}
+			})
+		}
+		function getUserSelect(id,select,user){
+			var html='';
+			for(var i=0;i<user.length;i++){
+				var selected=( id==user[i].id?'selected':'' );
+				html+='<option value="'+user[i].id+'" '+selected+'>'+user[i].userName+'</option>';
+			}
+			$('#'+select).html(html);
+			form.render();
 		}
 		function renderInventorySelect(select){
 			var html='';

@@ -44,7 +44,7 @@ td{
 		<tr><td>批次号</td>	
 			<td><input type="text" class="layui-input" readonly id="look_batchNumber"></td>
 			<td>经手人</td>
-			<td><select disabled><option value="1" id="look_userName">测试人admin</option></select></td>
+			<td><select disabled id="look_user"><option value="1" >无经手人...</option></select></td>
 			<td>总数量</td>
 			<td><input type="text" class="layui-input" id="look_number" readonly></td></tr>
 		<tr><td>备注</td>
@@ -60,7 +60,7 @@ td{
 					  <input type="hidden" name="id" id='becomeOrderId' ></td>	<!-- 默认type类型为2，表示为入库单 -->
 			<td><input type="text" class="layui-input" name='batchNumber' id="become_bacthNumber" readonly></td>
 			<td>经手人</td>
-			<td><select name="userId"><option value="1" >测试人admin</option></select></td>
+			<td><select name="userId" id='userIdSelect'><option value="1" >测试人admin</option></select></td>
 			<td>备注</td>
 			<td colspan="3"><input type="text" name="remark" class="layui-input"></td></tr>
 		<tr>
@@ -113,10 +113,12 @@ layui.config({
 		, tablePlug = layui.tablePlug;
 		
 		var choosedProduct=[];			//用户已经选择上的产品
-		var allInventory=[];
+		var allInventory=[],
+			allUser=[];
 		
 		getAllInventory();
-		rederDefaultInventorySelect();
+		getAllUser();
+		renderDefaultInventorySelect();
 		
 		form.render();
 		
@@ -131,11 +133,11 @@ layui.config({
 				return {data:ret.data.rows,count:ret.data.total,msg:ret.message,code:ret.code}},
 			cols:[[
 			       {align:'center', type:'checkbox',},
-			       {align:'center', title:'批次号',   field:'batchNumber',		   width:'',},
-			       {align:'center', title:'计划数量', 	field:'number'},
-			       {align:'center', title:'剩余数量', 	field:'residueNumber'},
+			       {align:'center', title:'批次号',   	field:'batchNumber',	},
+			       {align:'center', title:'计划数量', 	field:'number',			},
+			       {align:'center', title:'剩余数量', 	field:'residueNumber',	},
 			       {align:'center', title:'经手人',templet:'<p>{{ d.user }}</p>'},
-			       {align:'center', title:'备注', 	field:'remark'},
+			       {align:'center', title:'备注', 		field:'remark',			},
 			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl'},
 			       ]]
 		})
@@ -239,6 +241,7 @@ layui.config({
 				becomeProduct[i].status=defaultStatus;
 			}
 			$('#become_bacthNumber').val(choosed[0].batchNumber);
+			$('#userIdSelect').html(getUserSelect(''));		//如果经手人为同一人，此处因加上之前经手人的id
 			table.reload('becomeProductListTable',{
 				data:becomeProduct
 			})
@@ -377,7 +380,8 @@ layui.config({
 			$('#look_batchNumber').val(data.batchNumber);
 			$('#look_remark').val(data.remark);
 			$('#look_number').val(data.number);
-			//$('#look_user').val(choosed[0].user);
+			if(choosed[0].user!=null)
+				$('#look_user').html(getUserSelect(choosed[0].user.id));
 		}
 	
 		
@@ -392,8 +396,30 @@ layui.config({
 				}
 			})
 		}
+		function getAllUser(){
+			$.ajax({
+				url:'${ctx}/system/user/pages?size=999',
+				success:function(r){
+					if(0==r.code){
+						for(var i=0;i<r.data.rows.length;i++)
+							allUser.push({
+								id:			r.data.rows[i].id,
+								userName:	r.data.rows[i].userName
+							})
+					}
+				}
+			})
+		}
+		function getUserSelect(id){
+			var html='';
+			for(var i=0;i<allUser.length;i++){
+				var selected=( id==allUser[i].id?'selected':'' );
+				html+='<option value="'+allUser[i].id+'" '+selected+'>'+allUser[i].userName+'</option>';
+			}
+			return html;
+		}
 		
-		function rederDefaultInventorySelect(){
+		function renderDefaultInventorySelect(){
 			var html='';
 			if(allInventory.length==0){
 				html='<option value="">暂无仓库可使用</option>';
