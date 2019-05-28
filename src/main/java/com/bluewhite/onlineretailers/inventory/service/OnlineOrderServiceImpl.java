@@ -71,10 +71,18 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			if (param.getUserId() != null) {
 				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
 			}
-			// 按所在省份过滤
-			if (param.getProvincesId() != null) {
-				predicate.add(cb.equal(root.get("provincesId").as(Long.class), param.getProvincesId()));
+			
+			//按所在省份过滤,多个
+			if (!StringUtils.isEmpty(param.getProvincesIds())) {
+				List<Long>  provincesIdList = new ArrayList<Long>();
+					String[] idArr = param.getProvincesIds().split(",");
+					for (String idStr : idArr) {
+						Long id = Long.parseLong(idStr);
+						provincesIdList.add(id);
+					}
+				predicate.add(cb.and(root.get("provincesId").as(Long.class).in(provincesIdList)));
 			}
+			
 			// 按客户名称过滤
 			if (!StringUtils.isEmpty(param.getOnlineCustomerName())) {
 				predicate.add(cb.equal(root.get("onlineCustomer").get("name").as(String.class),
@@ -129,8 +137,9 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 							// 获取商品
 							Commodity commodity = onlineOrderChild.getCommodity();
 							// 获取库存
-//							Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(commodity.getId(),
-//									onlineOrderChild.getWarehouseId());
+							// Inventory inventory =
+							// inventoryDao.findByCommodityIdAndWarehouseId(commodity.getId(),
+							// onlineOrderChild.getWarehouseId());
 							// 获取所有商品的库存
 							Set<Inventory> inventorys = commodity.getInventorys();
 							// 减少库存的同时改变状态
@@ -243,12 +252,12 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				onlineOrder.setAllBillPreferential(cPoi.getAllBillPreferential());
 				onlineOrder.setSumPrice(cPoi.getSumPrice());
 				onlineOrder.setBuyerName(cPoi.getBuyerName());
-				//將地址转换成省市县
-				List<Map<String,String>> addressMap = StringUtil.addressResolution(cPoi.getAddress());
+				// 將地址转换成省市县
+				List<Map<String, String>> addressMap = StringUtil.addressResolution(cPoi.getAddress());
 				String province = "";
 				String city = "";
 				String county = "";
-				for(Map<String,String> map : addressMap){
+				for (Map<String, String> map : addressMap) {
 					province = map.get("province");
 					city = map.get("city");
 					county = map.get("county");
@@ -272,7 +281,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			onlineOrderChild.setOnlineOrder(onlineOrder);
 			onlineOrderChild.setPrice(cPoi.getPrice());
 			onlineOrderChild.setNumber(cPoi.getNumber());
-			onlineOrderChild.setWarehouseId(cPoi.getWarehouseId());
+			onlineOrderChild.setWarehouseId(cPoi.getWarehouseId()==null ? 157 : cPoi.getWarehouseId());
 			onlineOrderChild.setSumPrice(NumUtils.mul(onlineOrderChild.getPrice(), onlineOrderChild.getNumber()));
 			if (cPoi.getCommodityName() != null) {
 				Commodity commodity = commodityDao.findByName(cPoi.getCommodityName());
@@ -296,7 +305,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 						}
 					}
 				} else {
-					throw new ServiceException("当前导入excel第" + (i+2) + "条数据的商品不存在，请先添加");
+					throw new ServiceException("当前导入excel第" + (i + 2) + "条数据的商品不存在，请先添加");
 				}
 
 			}
@@ -363,38 +372,37 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				});
 				sumPayment = NumUtils.sum(listPayment);
 				sumpostFee = NumUtils.sum(listPostFee);
-			}
-			// 将所有的子单数据取出
-			List<OnlineOrderChild> onlineOrderChildList = new ArrayList<>();
-			// 将当前时间段所有的出库商品过滤出
-			onlineOrderList.stream().forEach(pt -> {
-				onlineOrderChildList.addAll(pt.getOnlineOrderChilds());
-			});
-
-			// 成交金额
-			mapSale.put("sumPayment", sumPayment);
-			// 成交单数
-			mapSale.put("singular", onlineOrderList.size());
-			// 实际邮费
-			mapSale.put("sumpostFee", sumpostFee);
-			// 成交宝贝数量
-			int proNumber = onlineOrderChildList.stream().mapToInt(OnlineOrderChild::getNumber).sum();
-			mapSale.put("proNumber", proNumber);
-			// 每单平均金额
-			mapSale.put("averageAmount", NumUtils.div(sumPayment, onlineOrderList.size(), 2));
-			// 广宣成本
-			List<Double> listSumCost = new ArrayList<>();
-			Double sumCost = 0.0;
-			if (onlineOrderList.size() > 0) {
-				onlineOrderChildList.stream().forEach(c -> {
-					listPayment.add(c.getCommodity().getPropagandaCost());
+				// 将所有的子单数据取出
+				List<OnlineOrderChild> onlineOrderChildList = new ArrayList<>();
+				// 将当前时间段所有的出库商品过滤出
+				onlineOrderList.stream().forEach(pt -> {
+					onlineOrderChildList.addAll(pt.getOnlineOrderChilds());
 				});
-				sumCost = NumUtils.sum(listPayment);
+				// 成交金额
+				mapSale.put("sumPayment", sumPayment);
+				// 成交单数
+				mapSale.put("singular", onlineOrderList.size());
+				// 实际邮费
+				mapSale.put("sumpostFee", sumpostFee);
+				// 成交宝贝数量
+				int proNumber = onlineOrderChildList.stream().mapToInt(OnlineOrderChild::getNumber).sum();
+				mapSale.put("proNumber", proNumber);
+				// 每单平均金额
+				mapSale.put("averageAmount", NumUtils.div(sumPayment, onlineOrderList.size(), 2));
+				// 广宣成本
+				List<Double> listSumCost = new ArrayList<>();
+				Double sumCost = 0.0;
+				if (onlineOrderList.size() > 0) {
+					onlineOrderChildList.stream().forEach(c -> {
+						listPayment.add(c.getCommodity().getPropagandaCost());
+					});
+					sumCost = NumUtils.sum(listPayment);
+				}
+				mapSale.put("sumCost", sumCost);
+				// 利润
+				mapSale.put("profits", NumUtils.sub(sumPayment, sumCost, sumpostFee));
+				mapList.add(mapSale);
 			}
-			mapSale.put("sumCost", sumCost);
-			// 利润
-			mapSale.put("profits", NumUtils.sub(sumPayment, sumCost, sumpostFee));
-			mapList.add(mapSale);
 		}
 
 		return mapList;

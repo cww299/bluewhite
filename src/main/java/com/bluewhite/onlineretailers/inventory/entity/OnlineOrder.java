@@ -321,8 +321,38 @@ public class OnlineOrder extends BaseEntity<Long> {
 	@Transient
 	private Integer report;
 	
+	/**
+	 * 按多个省份查询
+	 */
+	@Transient
+	private String provincesIds;
 	
 	
+	
+	public Integer getBuyerFlag() {
+		return buyerFlag;
+	}
+
+	public void setBuyerFlag(Integer buyerFlag) {
+		this.buyerFlag = buyerFlag;
+	}
+
+	public Integer getSellerFlag() {
+		return sellerFlag;
+	}
+
+	public void setSellerFlag(Integer sellerFlag) {
+		this.sellerFlag = sellerFlag;
+	}
+
+	public String getProvincesIds() {
+		return provincesIds;
+	}
+
+	public void setProvincesIds(String provincesIds) {
+		this.provincesIds = provincesIds;
+	}
+
 	public String getOnlineCustomerName() {
 		return onlineCustomerName;
 	}
