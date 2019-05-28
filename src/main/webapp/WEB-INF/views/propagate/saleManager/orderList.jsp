@@ -31,8 +31,8 @@
 }
 #positionChoose{		/* 客户所在地选择隐藏框样式*/
     height: 300px;
-    width: 200px;
-    padding: 20px;
+    width: 400px;
+    padding: 5px;
     border: 1px solid #d2d2d2;
     position: absolute;
     left: 47%;
@@ -40,6 +40,9 @@
     display: none;
     background-color: #cfe2db;
     z-index: 99999;
+}
+#positionChoose td{
+	text-align:left;
 }
 td{
 	text-align:center;
@@ -53,7 +56,7 @@ td{
 					<div class="layui-input-inline">
 						<select lay-search name="userId" id='userIdSelect'><option value="">客服人员</option></select></div>
 					<div class="layui-input-inline">
-						<select lay-search name="onlineCustomerId" id='customIdSelect'><option value="">客户</option></select></div>
+						<input type="text" name="onlineCustomerName" id='customNameSelect' class='layui-input' placeholder='客户名称'></div>
 					<div class="layui-input-inline">
 						<select lay-search name='status'><option value="">交易状态</option>
 														<option  value="WAIT_SELLER_SEND_GOODS">等待卖家发货,即:买家已付款</option>
@@ -74,7 +77,7 @@ td{
 					<div class="layui-input-inline">
 						<input type="text" class="layui-input" name='documentNumber' placeholder='请输入产品编号'></div>
 					<div class="layui-input-inline">
-						<select lay-search name='createdAt'><option value="">订单时间</option></select></div>
+						<input type="text" class='layui-input' id='searchTime' placeholder='输入查找时间'></div>
 					<div class="layui-input-inline">
 						<select lay-search name='flag'><option value="">是否反冲</option>
 														<option value='1'>反冲</option>
@@ -89,8 +92,6 @@ td{
 
 <!-- 位置选择隐藏框 -->
 <div id="positionChoose">
-	<input type="checkbox">广东
-	<input type="checkbox">江苏
 </div>	
 		
 </body>
@@ -256,12 +257,13 @@ layui.config({
 }).extend({
 	tablePlug : 'tablePlug/tablePlug',
 }).define(
-	['tablePlug'],
+	['tablePlug','laydate'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
 		, form = layui.form			 		
 		, table = layui.table
+		, laydate = layui.laydate
 		, laytpl = layui.laytpl
 		, tablePlug = layui.tablePlug;
 		
@@ -274,10 +276,20 @@ layui.config({
 		getAllUser();
 		getAllCustom();
 		
-		searchToolInit();
+		laydate.render({ elem:'#searchTime', type: 'datetime', range:'~' }) 
 		form.render();
 		form.on('submit(search)',function(obj){			//订单列表搜索
-			layer.msg('搜索');
+			var provincesIds='';
+			$('input[name="provinces"]:checked').each(function(){
+				provincesIds+=($(this).val()+',');
+	        });
+			obj.field.provincesIds=provincesIds;
+			var t=$('#searchTime').val().split('~');
+			obj.field.orderTimeBegin = t[0];
+			obj.field.orderTimeEnd = t[1];
+			table.reload('onlineOrder',{
+				where:obj.field
+			})
 		})
 		
 		$("#customPosition").hover(function() {			//鼠标移入事件
@@ -386,13 +398,6 @@ layui.config({
 				content:html
 			})
 			form.render();
-			if("edit"==type){			//如果为修改。重新渲染地址下拉框,并且赋值
-				renderSelect(data.provinces.id,data.city.id);
-				$('#province').val(data.provinces.id);
-				$('#city').val(data.city.id);
-				$('#area').val(data.county.id); 
-			}else
-				renderSelect(0,0);			//初始化渲染下拉地址框，确保所有地址框都有值
 			initAddEditOrderWin();			//弹窗的初始化，表格的渲染等。。
 		}
 		
@@ -426,29 +431,6 @@ layui.config({
 		
 		
 		
-		function searchToolInit(){										//搜索工具栏初始化
-			var sinceHourHtml='';
-			for(var i=0;i<24;i++){
-				sinceHourHtml+='<option value="'+i+'">'+i+'</option>';
-			}
-			$('#sinceHour').html(sinceHourHtml);
-			var sinceMinHtml='';
-			for(var i=0;i<60;i++){
-				sinceMinHtml+='<option value="'+i+'">'+i+'</option>';
-			}
-			$('#sinceMin').html(sinceMinHtml);
-			
-			var forHourHtml='';
-			for(var i=0;i<24;i++){
-				forHourHtml+='<option value="'+i+'">'+i+'</option>';
-			}
-			$('#forHour').html(forHourHtml);
-			var forMinHtml='';
-			for(var i=0;i<60;i++){
-				forMinHtml+='<option value="'+i+'">'+i+'</option>';
-			}
-			$('#forMin').html(forMinHtml);
-		}
 		
 		function initAddEditOrderWin(){			//初始化，新增修改订单的弹窗功能
 			$('#headerTool').find("td:even").css({backgroundColor:"rgba(65, 161, 210, 0.45)",padding:"1px"}); //设置表头背景颜色
@@ -484,35 +466,27 @@ layui.config({
 			})
 			
 		}
-		
-		function getdataOfSelect(parentId,select){			//获取下拉框的数据并渲染
-			var child=[];
+		getProvince();
+		function getProvince(){			//获取省份
 			$.ajax({
 				url:"${ctx}/regionAddress/queryProvince",
-				data:{parentId:parentId},
-				async:false,
+				data:{parentId:0},
 				success:function(result){
 					if(0==result.code){
-						var html='';
+						var html='<table>';
 						var data=result.data;	
 						for(var i=0;i<data.length;i++){
-							html+='<option value="'+data[i].id+'">'+data[i].regionName+'</option>';
+							if(i%3==0)
+								html+='<tr>';
+							html+='<td><input type="checkbox" name="provinces" value="'+data[i].id+'" >'+data[i].regionName+'</td>';
+							if(i+2%3==0)
+								html+='</tr>';
 						}
-						$('#'+select).html(html);
-						form.render();
-					}
-					else{
-						layer.msg(result.message,{icon:2});
+						html+='</html>';
+						$('#positionChoose').html(html);
 					}
 				}
 			});
-		}
-		function renderSelect(cpId,apId){							//渲染下拉框
-			var cityParent=cpId==0?'110000':cpId;
-			var areaParent=apId==0?'110100':apId;
-			getdataOfSelect(0,'province');
-			getdataOfSelect(cityParent,'city');
-			getdataOfSelect(areaParent,'area');
 		}
 		function getAllUser(){
 			$.ajax({
@@ -544,7 +518,7 @@ layui.config({
 				}
 			})
 		}
-		function renderCustomSelect(select){			//根据id渲染客服下拉框
+		function renderCustomSelect(select){			//根据id渲染客户下拉框
 			var html='';
 			for(var i=0;i<allCustom.length;i++){
 				html+='<option value="'+allCustom[i].id+'">'+allCustom[i].userName+'</option>';
