@@ -390,7 +390,7 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 100px;">二楼总表上月</label>
 				<div class="layui-input-inline">
-					<input type="text"  name="oneNowNum" 
+					<input type="text" id="ddds1" name="oneNowNum" 
 						lay-verify="required" 
 						class="layui-input laydate-icon">
 				</div>
@@ -406,7 +406,7 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 100px;">三楼总表上月</label>
 				<div class="layui-input-inline">
-					<input type="text"  name="twoNowNum" 
+					<input type="text" id="ddds2" name="twoNowNum" 
 						lay-verify="required" 
 						class="layui-input laydate-icon">
 				</div>
@@ -422,7 +422,7 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 100px;">四楼总表上月</label>
 				<div class="layui-input-inline">
-					<input type="text"  name="threeNowNum" 
+					<input type="text" id="ddds3" name="threeNowNum" 
 						lay-verify="required" 
 						class="layui-input laydate-icon">
 				</div>
@@ -758,6 +758,7 @@
 								field: "name",
 								title: "宿舍名",
 								align: 'center',
+								filter:true,
 								edit: false,
 							}
 							,{fixed:'right', title:'宿舍详情', align: 'center', toolbar: '#barDemo2'}
@@ -846,7 +847,8 @@
 								layer.open({
 									type:1,
 									title:'新增宿舍',
-									area:['35%','20%'],
+									shadeClose:true,
+									area:['45%','30%'],
 									btn:['确认','取消'],
 									content:dicDiv,
 									id: 'LAY_layuipro' ,
@@ -964,7 +966,7 @@
 									layer.open({
 										type:1,
 										title:'水费标准',
-										area:['30%','60%'],
+										area:['40%','60%'],
 										btn:['确认','取消'],
 										content:dicDiv,
 										id: 'LAY_layuipro' ,
@@ -1046,7 +1048,7 @@
 									layer.open({
 										type:1,
 										title:'电费标准',
-										area:['30%','60%'],
+										area:['40%','60%'],
 										btn:['确认','取消'],
 										content:dicDiv,
 										id: 'LAY_layuipro' ,
@@ -1115,6 +1117,9 @@
 									colFilterRecord: true,
 									smartReloadModel: true,// 开启智能重载
 									parseData: function(ret) {
+										$("#ddds1").val(ret.data.rows[0].oneUpperNum)
+										$("#ddds2").val(ret.data.rows[0].twoUpperNum)
+										$("#ddds3").val(ret.data.rows[0].threeUpperNum)
 										return {
 											code: ret.code,
 											msg: ret.message,
@@ -1127,6 +1132,7 @@
 											field: "monthDate",
 											title: "月份",
 											align: 'center',
+											width:'100',
 											
 										},{
 											field: "oneNowNum",
@@ -1250,7 +1256,7 @@
 							        ,title: '新增总水电' 
 							        ,closeBtn: false
 							        ,zindex:-1
-							        ,area:['80%', '90%']
+							        ,area:['90%', '90%']
 							        ,shade: 0.5
 							        ,id: 'LAY_layuipro50' //设定一个id，防止重复弹出
 							        ,btn: ['取消']
@@ -1435,7 +1441,7 @@
 						var index=layer.open({
 								type:1,
 								title:title,
-								area:['35%','60%'],
+								area:['55%','60%'],
 								btn:['确认','取消'],
 								content:dicDiv,
 								id: 'LAY_layuipro' ,
@@ -1682,6 +1688,7 @@
 										field: "monthDate",
 										title: "月份",
 										align: 'center',
+										width:'100',
 									},{
 										field: "upperDegreeNum",
 										title: "上月抄表",
@@ -1779,7 +1786,7 @@
 						        ,title: title //不显示标题栏
 						        ,closeBtn: false
 						        ,zindex:-1
-						        ,area:['80%', '90%']
+						        ,area:['90%', '90%']
 						        ,shade: 0.5
 						        ,id: 'LAY_layuipro110' //设定一个id，防止重复弹出
 						        ,btn: ['取消']
@@ -1989,6 +1996,7 @@
 										field: "monthDate",
 										title: "月份",
 										align: 'center',
+										width:'100',
 									},{
 										field: "upperDegreeNum",
 										title: "上月抄表",
@@ -2086,7 +2094,7 @@
 						        ,title: title //不显示标题栏
 						        ,closeBtn: false
 						        ,zindex:-1
-						        ,area:['80%', '90%']
+						        ,area:['90%', '90%']
 						        ,shade: 0.5
 						        ,id: 'LAY_layuipro3' //设定一个id，防止重复弹出
 						        ,btn: ['取消']
@@ -2263,7 +2271,7 @@
 								layer.open({
 									type:1,
 									title:'新增总电费',
-									area:['30%','70%'],
+									area:['40%','70%'],
 									btn:['确认','取消'],
 									content:dicDiv,
 									id: 'LAY_layuipro65' ,
@@ -2302,7 +2310,7 @@
 								layer.open({
 									type:1,
 									title:'新增总电费',
-									area:['30%','70%'],
+									area:['45%','70%'],
 									btn:['确认','取消'],
 									content:dicDiv,
 									id: 'LAY_layuipro36' ,
@@ -2341,7 +2349,8 @@
 								layer.open({
 									type:1,
 									title:'新增水费',
-									area:['35%','50%'],
+									shadeClose:true,
+									area:['45%','50%'],
 									btn:['确认','取消'],
 									content:dicDiv,
 									id: 'LAY_layuipro' ,
@@ -2372,7 +2381,8 @@
 								layer.open({
 									type:1,
 									title:'新增电费',
-									area:['35%','50%'],
+									shadeClose:true,
+									area:['45%','50%'],
 									btn:['确认','取消'],
 									content:dicDiv,
 									id: 'LAY_layuipro9' ,
@@ -2412,7 +2422,8 @@
 								layer.open({
 									type:1,
 									title:'新增固定资产',
-									area:['35%','50%'],
+									area:['45%','50%'],
+									shadeClose:true,
 									btn:['确认','取消'],
 									content:dicDiv,
 									id: 'LAY_layuipro' ,
@@ -2452,7 +2463,8 @@
 								layer.open({
 									type:1,
 									title:'新增其他费用',
-									area:['35%','50%'],
+									shadeClose:true,
+									area:['45%','50%'],
 									btn:['确认','取消'],
 									content:dicDiv,
 									id: 'LAY_layuipro' ,
