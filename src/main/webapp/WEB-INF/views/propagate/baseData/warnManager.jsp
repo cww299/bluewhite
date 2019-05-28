@@ -19,18 +19,6 @@
 
 <div class="layui-card">
 	<div class="layui-card-body">
-		<table class="layui-form">
-			<tr>
-				<td><select name="type" ><option value="">预警类型</option>
-										<option value="1">库存下限预警</option>
-										<option value="2">库存上限预警</option>
-										<option value="3">库存时间过长预警</option></select></td>
-				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td><select name="warehouseId" id='warehouseIdSelect'><option value="">预警仓库</option></select></td>
-				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
-			</tr>
-		</table>
 		<table class="layui-form" id="warningTable" lay-filter="warningTable"></table>
 	</div>
 </div>
@@ -40,8 +28,8 @@
 <!-- 表格工具栏模板 -->
 <script type="text/html" id="warningTableToolbar">
 <div>
-	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增</span>
-	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除</span>
+	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增预警</span>
+	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除预警</span>
 	<span class="layui-badge" >提示：双击进行编辑</span>
 </div>
 </script>
@@ -118,20 +106,12 @@ layui.config({
 						 code:ret.code } }, 
 			cols:[[
 			       {align:'center', type:'checkbox',},
-			       {align:'center', title:'预警仓库', field:'inventoryName'},
-			       {align:'center', title:'商品名称', field:'name'},
+			       {align:'center', title:'预警仓库', field:'',	templet:'<span>{{d.warehouse.name}}</span>'},
 			       {align:'center', title:'预警类型', field:'type', templet:'#typeTpl'},
-			       {align:'center', title:'仓库数量', field:'countInventory'},
-			       {align:'center', title:'销售数量', field:'countSales'},
+			       {align:'center', title:'预警时间/天', field:'time'},
 			       ]]
 		})
 		
-		form.on('submit(search)',function(obj){
-			//layer.msg(JSON.stringify(obj.field));
-			table.reload('',{
-				where:{}
-			})
-		}) 
 		table.on('toolbar(warningTable)',function(obj){
 			switch(obj.event){
 			case 'add':		addEdit('add');		break;
