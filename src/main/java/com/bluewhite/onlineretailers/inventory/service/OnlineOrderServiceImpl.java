@@ -171,6 +171,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				onlineOrderChild.setSellerReadjustPrices(jsonObject.getDouble("sellerReadjustPrices"));
 				onlineOrderChild.setActualSum(jsonObject.getDouble("actualSum"));
 				onlineOrderChild.setStatus(jsonObject.getString("status"));
+				onlineOrderChild.setWarehouseId(jsonObject.getLong("warehouseId"));
 				onlineOrderChild.setOnlineOrderId(onlineOrder.getId());
 				onlineOrder.getOnlineOrderChilds().add(onlineOrderChild);
 			}
