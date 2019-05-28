@@ -306,7 +306,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		allAttendance("192.168.1.204", startTime, endTime);
 		allAttendance("192.168.1.205", startTime, endTime);
 		allAttendance("192.168.1.250", startTime, endTime);
-		allAttendance("192.168.3.133", startTime, endTime);
+		allAttendance("192.168.3.113", startTime, endTime);
 		return attendanceList.size();
 	}
 
