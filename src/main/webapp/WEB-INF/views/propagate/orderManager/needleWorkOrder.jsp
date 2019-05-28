@@ -44,7 +44,7 @@ td{
 		<tr><td>批次号</td>	
 			<td><input type="text" class="layui-input" readonly id="look_batchNumber"></td>
 			<td>经手人</td>
-			<td><select disabled id="look_user"><option value="1" >无经手人...</option></select></td>
+			<td><input type="text" class="layui-input" readonly id="look_user" val='无经手人'></td>
 			<td>总数量</td>
 			<td><input type="text" class="layui-input" id="look_number" readonly></td></tr>
 		<tr><td>备注</td>
@@ -69,7 +69,7 @@ td{
 			<td>默认入库仓库</td>
 			<td><select lay-filter="defaultSelect" type='inventory' id='defaultInventorySelect'><option value="">获取数据中.....</option></select></td>
 			<td>默认入库类型</td>
-			<td><select lay-filter="defaultSelect" type='status' disabled>
+			<td><select lay-filter="defaultSelect" type='status' name='status' disabled>
 						<option value="0">生产入库</option>
 						<option value="1">调拨入库</option>
 						<option value="2">销售退货入库</option>
@@ -136,7 +136,7 @@ layui.config({
 			       {align:'center', title:'批次号',   	field:'batchNumber',	},
 			       {align:'center', title:'计划数量', 	field:'number',			},
 			       {align:'center', title:'剩余数量', 	field:'residueNumber',	},
-			       {align:'center', title:'经手人',templet:'<p>{{ d.user }}</p>'},
+			       {align:'center', title:'经手人',templet:'<p>{{ d.user.userName }}</p>'},
 			       {align:'center', title:'备注', 		field:'remark',			},
 			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl'},
 			       ]]
@@ -380,8 +380,7 @@ layui.config({
 			$('#look_batchNumber').val(data.batchNumber);
 			$('#look_remark').val(data.remark);
 			$('#look_number').val(data.number);
-			if(choosed[0].user!=null)
-				$('#look_user').html(getUserSelect(choosed[0].user.id));
+			$('#look_user').val(data.user.userName);
 		}
 	
 		

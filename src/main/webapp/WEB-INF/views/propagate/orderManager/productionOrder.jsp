@@ -61,7 +61,7 @@ td{
 		<tr><td>批次号</td>	
 			<td><input type="text" class="layui-input" readonly id="look_batchNumber"></td>
 			<td>经手人</td>
-			<td><select disabled id="look_user"><option value="1" >无经手人...</option></select></td>
+			<td><input type="text" class="layui-input" readonly id="look_user" value='无经手人'></td>
 			<td>总数量</td>
 			<td><input type="text" class="layui-input" id="look_number" readonly></td></tr>
 		<tr><td>备注</td>
@@ -389,7 +389,7 @@ layui.config({
 			$('#look_remark').val(data.remark);
 			$('#look_number').val(data.number);
 			if(data.user!=null)
-				getUserSelect(data.user.id,'look_user');
+				$('#look_user').val(data.user.userName);
 		}
 		//-------新增生产单功能---------------
 		var choosedProduct=[];		//用户已经选择上的产品,渲染新增单的产品表格数据
