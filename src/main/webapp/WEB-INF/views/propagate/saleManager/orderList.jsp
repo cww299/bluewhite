@@ -83,7 +83,8 @@ td{
 														<option value='1'>反冲</option>
 														<option value='0'>不反冲</option></select></div>
 					<div class="layui-input-inline">
-						<button class="layui-btn" lay-submit lay-filter="search">搜索</button></div>
+						<button class="layui-btn" lay-submit lay-filter="search">搜索</button>
+						<span class="layui-btn" id="uploadData">导入订单</span></div>
 				</div>
 			</div>
 		<table class="laui-table" id="onlineOrder" lay-filter="onlineOrder" ></table>
@@ -195,8 +196,7 @@ td{
 <!-- 订单列表的工具栏  -->
 <script type="text/html" id="onlineOrderToolbar">
 <div class="layui-button-container">
-	<span class="layui-btn layui-btn-sm" lay-event="add">导入订单</span>
-	<span class="layui-btn layui-btn-sm" lay-event="edit">查看订单</span>
+	<span class="layui-btn layui-btn-sm" lay-event="oneKey">一键发货</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">反冲订单</span>
 </div>
 </script>
@@ -219,9 +219,16 @@ td{
   {{#  } }}						
 </script>		
 <script type="text/html" id="provincesTpl">
-  {{ d.provinces.regionName }}
+  {{#  var str="";
+		str+=(d.name+',');
+		str+=(d.phone+',');
+		str+=(d.address);
+  }}
+	<span>{{ str }}</span>
 </script>				
-
+<script type="text/html" id="customTpl">
+  {{ d.buyerName }}
+</script>	
 <script type="text/html" id="systemPreferentialTpl">
   {{#  if(d.systemPreferential < 0 ){ }}
     <span style="color: red;">{{d.systemPreferential}}</span>
@@ -257,7 +264,7 @@ layui.config({
 }).extend({
 	tablePlug : 'tablePlug/tablePlug',
 }).define(
-	['tablePlug','laydate'],
+	['tablePlug','laydate','upload'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -265,6 +272,7 @@ layui.config({
 		, table = layui.table
 		, laydate = layui.laydate
 		, laytpl = layui.laytpl
+		, upload = layui.upload
 		, tablePlug = layui.tablePlug;
 		
 		
@@ -292,6 +300,20 @@ layui.config({
 			})
 		})
 		
+		upload.render({
+		   	  elem: '#uploadData'
+		   	  ,url: '${ctx}/inventory/import/excelOnlineOrder'
+		 	  ,before: function(obj){ 	
+		 		layer.load(1); 
+			  }
+		   	  ,done: function(res, index, upload){ 
+		   		layer.closeAll();
+		   		layer.msg(res.message);
+		   		table.reload('onlineOrder');
+		   	  } 
+		   	  ,accept: 'file' 
+		   	  ,exts: 'xlsx'
+		})
 		$("#customPosition").hover(function() {			//鼠标移入事件
 			$('#positionChoose').show();
 			form.render();
@@ -305,6 +327,7 @@ layui.config({
 			url:'${ctx}/inventory/onlineOrderPage',
 			toolbar:'#onlineOrderToolbar',
 			loading:true,
+			size:'sm',
 			page:true,
 			request:{
 				pageName: 'page' ,		
@@ -315,84 +338,84 @@ layui.config({
 			},
 			cols:[[
 			       {type:'checkbox',align:'center',fixed:'left'},
-			       {field:'createdAt',	title:'下单时间',   align:'center', width:'10%'},
+			       {field:'createdAt',	title:'下单时间',   align:'center', width:'9%'},
 			       {field:'tid',        title:'订单号',     align:'center', width:'8%',},
+			       {field:'',           title:'客户名称',     align:'center', width:'6%', templet:'#customTpl'},
 			       {field:'buyerMemo',  title:'买家留言',   align:'center'},
 			       {field:'sellerMemo', title:'卖家备注',   align:'center'},
 			       {field:'postFee',    title:'邮费',       align:'center', width:'4%'},
-			       {field:'payment',    title:'实收金额',   align:'center', width:'6%'},
+			       {field:'payment',    title:'实收金额',   align:'center', width:'5%'},
 			       {field:'num',     	title:'件数',       align:'center', width:'4%'},
 			       {field:'trackingNumber',title:'运单号',  align:'center', width:'8%',},
 			       {field:'status',        title:'状态',    align:'center', width:'8%', templet:'#statusTpl'},
-			       {field:'provinces',     title:'所在地区',align:'center', width:'8%', templet:'#provincesTpl'},
+			       {field:'provinces',     title:'所在地区',align:'center', templet:'#provincesTpl'},
 			       ]]
 		}) 
 		
 		table.on('toolbar(onlineOrder)',function(obj){				//新增、删除按钮
 			switch(obj.event){
-			case 'add':    layer.msg('还未完善');  break;
-			case 'edit':   addEditOrder('edit'); break;
+			case 'oneKey':   oneKey(); break;
 			case 'delete': deletes(); break;
 			}
 		})
-		
-		function addEditOrder(type){
-			choosedProduct=[];				//清空之前选中的数据
+		table.on('rowDouble(onlineOrder)',function(obj){
+			addEditOrder(obj.data);
+		})
+		function oneKey(){
+			var choosed = layui.table.checkStatus('onlineOrder').data;
+			if(choosed.length<1){
+				layer.msg('请选择订单',{icon:2});
+				return;
+			}
+			var c=[];
+			for(var j=0;j<choosed.length;j++){
+				var child=choosed[j].onlineOrderChilds;
+				for(var i=0;i<child.length;i++){
+					c.push({
+						warehouseId : child[i].warehouse.id,
+						id:child[i].id,
+						number:child[i].number
+					})
+				}
+			}
+			var load;
+			$.ajax({
+				url:'${ctx}/inventory/delivery',
+				type:'post',
+				data:{delivery:JSON.stringify(c)},
+				beforeSend:function(){ load = layer.load(1); },
+				success:function(r){
+					if(0==r.code){
+						layer.msg(r.message,{icon:1});
+						table.reload('onlineOrder');
+					}else
+						layer.msg(r.message,{icon:2});
+					layer.close(load);
+				}
+			})
+		}
+		function addEditOrder(data){
 			var tpl=addEditTpl.innerHTML
-			, html=''
-			, winTitle='新增订单'
-			, choosed=layui.table.checkStatus('onlineOrder').data
-			, data={
-				onlineCustomer:{ id:'',name:''},//客户
-				id:'',							//订单id
-				buyerName:'',					//收货人
-				phone:'',						//手机
-				address:'',						//详细地址
-				buyerMemo:'',					//买家备注
-				sellerMemo:'',					//卖家备注
-				tid:'',							//订单编号
-				payment:'',						//实收金额
-				allBillPreferential:'',			//整单优惠
-				status:'',						//订单状态
-				userId:'',						//所属人员
-				warehouse:'',					//发货仓库
-				postFee:'',						//邮费
-				shippingType:'',				//物流方式
-				zipCode:'',						//邮编
-				buyerFlag:'',					//买家旗帜
-			};
-			if(type=='edit'){
-				if(choosed.length>1){
-					layer.msg('无法同时查看多个订单',{icon:2});
-					return;
-				}
-				if(choosed.length<1){
-					layer.msg('请选择订单查看',{icon:2});
-					return;
-				}
-				winTitle='查看订单';
-				data=choosed[0];		//渲染基本数据
-				//渲染商品信息
-				var all=choosed[0].onlineOrderChilds;
-				for(var i=0;i<all.length;i++){
-					var orderChild={
-							skuCode:all[i].commodity.skuCode,	//商品编号
-							name:all[i].commodity.name,			//商品名称
-							commodityId:all[i].commodity.id,	//商品id
-							number:all[i].number,				//商品数量
-							price:all[i].price,					//商品单价
-							sumPrice:all[i].sumPrice,			//单价总金额
-							systemPreferential:all[i].systemPreferential,	 //系统优惠
-							sellerReadjustPrices:all[i].sellerReadjustPrices,//卖家调价
-							actualSum:all[i].actualSum,			//实际金额
-							status:all[i].status,				//状态默认值
-							}
-					choosedProduct.push(orderChild); 
-				}
+				, html='';
+			var all=data.onlineOrderChilds;
+			for(var i=0;i<all.length;i++){
+				var orderChild={
+						skuCode:all[i].commodity.skuCode,	//商品编号
+						name:all[i].commodity.name,			//商品名称
+						commodityId:all[i].commodity.id,	//商品id
+						number:all[i].number,				//商品数量
+						price:all[i].price,					//商品单价
+						sumPrice:all[i].sumPrice,			//单价总金额
+						systemPreferential:all[i].systemPreferential,	 //系统优惠
+						sellerReadjustPrices:all[i].sellerReadjustPrices,//卖家调价
+						actualSum:all[i].actualSum,			//实际金额
+						status:all[i].status,				//状态默认值
+						}
+				choosedProduct.push(orderChild); 
 			}
 			laytpl(tpl).render(data,function(h){ html=h; })			//新增、修改订单模板渲染
 			layer.open({
-				title:winTitle,
+				title: '查看订单',
 				type:1,
 				area:['90%','90%'],
 				content:html
