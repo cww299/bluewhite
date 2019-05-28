@@ -28,6 +28,7 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.excel.ExcelListener;
+import com.bluewhite.onlineretailers.inventory.dao.WarningDao;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineCustomer;
@@ -58,6 +59,8 @@ public class InventoryAction {
 	private CommodityService commodityService;
 	@Autowired
 	private ProcurementService procurementService;
+	@Autowired
+	private WarningDao warningDao;
 
 	private ClearCascadeJSON clearCascadeJSON;
 	{
@@ -265,12 +268,12 @@ public class InventoryAction {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(Procurement.class, "id", "batchNumber", "user", "procurementChilds", "number",
-						"residueNumber", "type", "flag", "remark","transfersUser","onlineCustomer")
+						"residueNumber", "type", "flag", "remark","transfersUser","onlineCustomer","status")
 				.addRetainTerm(ProcurementChild.class, "id", "commodity", "number", "residueNumber", "warehouse",
 						"status", "childRemark")
 				.addRetainTerm(Commodity.class, "id","skuCode","name", "inventorys")
 				.addRetainTerm(Inventory.class, "number", "place", "warehouse")
-				.addRetainTerm(User.class,"id","username")
+				.addRetainTerm(User.class,"id","userName")
 				.addRetainTerm(BaseData.class, "name")
 				.format(procurementService.findPage(procurement, page)).toJSON());
 		cr.setMessage("查询成功");
@@ -328,7 +331,7 @@ public class InventoryAction {
 	@ResponseBody
 	public CommonResponse getWarning() {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(commodityService.findAll());
+		cr.setData(warningDao.findAll());
 		cr.setMessage("成功");
 		return cr;
 	}

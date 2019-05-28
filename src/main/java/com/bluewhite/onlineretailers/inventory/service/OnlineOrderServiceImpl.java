@@ -230,8 +230,6 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				onlineOrder.setSumPrice(cPoi.getSumPrice());
 				onlineOrder.setBuyerName(cPoi.getBuyerName());
 				//將地址转换成省市县
-				
-				
 				onlineOrder.setAddress(cPoi.getAddress());
 				onlineOrder.setPhone(cPoi.getPhone());
 				onlineOrder.setBuyerMessage(cPoi.getBuyerMessage());

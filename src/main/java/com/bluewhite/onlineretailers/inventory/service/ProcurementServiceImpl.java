@@ -111,6 +111,8 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			upProcurement.setNumber(procurement.getNumber());
 			upProcurement.setResidueNumber(procurement.getNumber());
 			upProcurement.setRemark(procurement.getRemark());
+			upProcurement.setUserId(procurement.getUserId());
+			upProcurement.setStatus(procurement.getStatus());
 			// 将上级单据的剩余总数改变
 			oldProcurement.setResidueNumber(oldProcurement.getResidueNumber() - procurement.getNumber());
 		} else {
@@ -134,11 +136,12 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 					// 减少子单数量
 					for (ProcurementChild pChild : oldProcurement.getProcurementChilds()) {
 						if (pChild.getCommodityId() == procurementChild.getCommodityId()) {
-							pChild.setResidueNumber(pChild.getResidueNumber() - procurementChild.getNumber());
 							// 当单据为入库单时,针工单转化数量不够自动变成0
 							if (procurement.getType() == 2) {
-								pChild.setResidueNumber((pChild.getResidueNumber() - procurementChild.getNumber()) < 0
+								pChild.setResidueNumber((pChild.getResidueNumber() - procurementChild.getNumber()) > 0
 										? 0 : pChild.getResidueNumber() - procurementChild.getNumber());
+							}else{
+								pChild.setResidueNumber(pChild.getResidueNumber() - procurementChild.getNumber());
 							}
 						}
 					}
@@ -151,12 +154,8 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				if (procurement.getType() == 2) {
 					procurementChild.setWarehouseId(jsonObject.getLong("warehouseId"));
 					procurementChild.setPlace(jsonObject.getString("place"));
+					procurementChild.setStatus(jsonObject.getIntValue("status"));
 					Commodity commodity = commodityService.findOne(procurementChild.getCommodityId());
-					if (procurement.getId() != null) {
-						procurementChild.setStatus(4);
-					} else {
-						procurementChild.setStatus(jsonObject.getIntValue("status"));
-					}
 					// 创建商品的库存
 					Set<Inventory> inventorys = commodity.getInventorys();
 					// 获取库存
@@ -218,7 +217,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 					if (procurement.getParentId() != null) {
 						Procurement parentProcurement = dao.findOne(procurement.getParentId());
 						parentProcurement.setResidueNumber(procurement.getNumber());
-						// 那本级的子单和上级子单对比，同时将上级子单数据恢复
+						// 拿本级的子单和上级子单对比，同时将上级子单数据恢复
 						for (ProcurementChild parentProcurementChilds : parentProcurement.getProcurementChilds()) {
 							for (ProcurementChild procurementChilds : procurement.getProcurementChilds()) {
 								if (parentProcurementChilds.getCommodityId() == procurementChilds.getCommodityId()) {
