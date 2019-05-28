@@ -258,8 +258,6 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 							commodityService.save(commodity);
 						}
 					}
-					
-					
 					dao.save(procurement);
 					count++;
 				}

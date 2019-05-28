@@ -182,7 +182,7 @@ public class OnlineOrder extends BaseEntity<Long> {
 	 * 
 	 */
 	@Column(name = "buyer_flag")
-	private Number buyerFlag;
+	private Integer buyerFlag;
 
 	/**
 	 * 卖家备注（与淘宝网上订单的卖家备注对应，只有卖家才能查看该字段）
@@ -197,7 +197,7 @@ public class OnlineOrder extends BaseEntity<Long> {
 	 * 
 	 */
 	@Column(name = "seller_flag")
-	private Number sellerFlag;
+	private Integer sellerFlag;
 	
 
 	/**
@@ -571,14 +571,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 		this.buyerMemo = buyerMemo;
 	}
 
-	public Number getBuyerFlag() {
-		return buyerFlag;
-	}
-
-	public void setBuyerFlag(Number buyerFlag) {
-		this.buyerFlag = buyerFlag;
-	}
-
 	public String getSellerMemo() {
 		return sellerMemo;
 	}
@@ -586,15 +578,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 	public void setSellerMemo(String sellerMemo) {
 		this.sellerMemo = sellerMemo;
 	}
-
-	public Number getSellerFlag() {
-		return sellerFlag;
-	}
-
-	public void setSellerFlag(Number sellerFlag) {
-		this.sellerFlag = sellerFlag;
-	}
-
 
 	public String getShippingType() {
 		return shippingType;

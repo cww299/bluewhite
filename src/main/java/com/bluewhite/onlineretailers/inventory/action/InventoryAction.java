@@ -65,14 +65,17 @@ public class InventoryAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(OnlineOrder.class, "id", "user", "sellerNick", "picPath", "payment", "sellerRate",
-						"postFee", "onlineCustomer", "consignTime", "receivedPayment", "tid", "buyerRemarks", "num",
-						"payTime", "endTime", "status", "documentNumber", "allBillPreferential", "trackingNumber",
-						"buyerMessage", "buyerMemo", "buyerFlag", "sellerMemo", "sellerFlag", "buyerRate", "warehouse",
-						"shippingType", "createdAt", "updatedAt", "onlineOrderChilds", "address", "phone", "zipCode",
-						"buyerName", "provinces", "city", "county")
+				.addRetainTerm(OnlineOrder.class, "documentNumber", "trackingNumber", "id", "user", "onlineCustomer",
+						"onlineOrderChilds", "sellerNick", "name", "buyerName", "picPath", "payment", "postFee",
+						"consignTime", "buyerRemarks", "num", "sumPrice", "status", "allBillPreferential",
+						"trackingNumber", "buyerMessage", "buyerMemo", "buyerFlag", "sellerMemo", "sellerFlag",
+						"buyerRate", "warehouse", "shippingType", "createdAt", "updatedAt", "address", "phone",
+						"zipCode", "buyerName", "provinces", "city", "county", "flag", "telephone")
 				.addRetainTerm(OnlineOrderChild.class, "id", "number", "commodity", "price", "sumPrice",
 						"systemPreferential", "sellerReadjustPrices", "actualSum", "status")
+				.addRetainTerm(Commodity.class, "id", "productID", "skuCode", "fileId", "picUrl", "name", "description",
+						"weight", "size", "material", "fillers", "cost", "propagandaCost", "remark", "tianmaoPrice",
+						"oseePrice", "offlinePrice")
 				.addRetainTerm(User.class, "id", "userName")
 				.addRetainTerm(RegionAddress.class, "id", "regionName", "parentId");
 	}
@@ -113,9 +116,9 @@ public class InventoryAction {
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "/inventory/import/test", method = RequestMethod.POST)
+	@RequestMapping(value = "/inventory/import/excelOnlineOrder", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse importProduct(@RequestParam(value = "file", required = false) MultipartFile file,
+	public CommonResponse excelOnlineOrder(@RequestParam(value = "file", required = false) MultipartFile file,
 			HttpServletRequest request) throws IOException {
 		CommonResponse cr = new CommonResponse();
 		InputStream inputStream = file.getInputStream();
@@ -167,8 +170,8 @@ public class InventoryAction {
 						"weight", "size", "material", "fillers", "cost", "propagandaCost", "remark", "tianmaoPrice",
 						"oseePrice", "offlinePrice", "inventorys")
 				.addRetainTerm(Inventory.class, "number", "place", "warehouse")
-				.addRetainTerm(BaseData.class, "id","name")
-				.format(commodityService.findPage(commodity, page)).toJSON());
+				.addRetainTerm(BaseData.class, "id", "name").format(commodityService.findPage(commodity, page))
+				.toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -187,7 +190,7 @@ public class InventoryAction {
 			commodityService.save(ot);
 			cr.setMessage("修改成功");
 		} else {
-			//同步商品名称
+			// 同步商品名称
 			commodity.setName(commodity.getSkuCode());
 			commodityService.save(commodity);
 			cr.setMessage("新增成功");
@@ -268,13 +271,12 @@ public class InventoryAction {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(Procurement.class, "id", "batchNumber", "user", "procurementChilds", "number",
-						"residueNumber", "type", "flag", "remark","transfersUser","onlineCustomer","status")
+						"residueNumber", "type", "flag", "remark", "transfersUser", "onlineCustomer", "status")
 				.addRetainTerm(ProcurementChild.class, "id", "commodity", "number", "residueNumber", "warehouse",
 						"status", "childRemark")
-				.addRetainTerm(Commodity.class, "id","skuCode","name", "inventorys")
+				.addRetainTerm(Commodity.class, "id", "skuCode", "name", "inventorys")
 				.addRetainTerm(Inventory.class, "number", "place", "warehouse")
-				.addRetainTerm(User.class,"id","userName")
-				.addRetainTerm(BaseData.class, "name")
+				.addRetainTerm(User.class, "id", "userName").addRetainTerm(BaseData.class, "name")
 				.format(procurementService.findPage(procurement, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
@@ -322,7 +324,7 @@ public class InventoryAction {
 		cr.setMessage("成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 获取所有的库存预警
 	 * 
@@ -332,9 +334,8 @@ public class InventoryAction {
 	public CommonResponse getWarning() {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(Warning.class, "id", "type", "number", "time", "warehouseId","warehouse")				
-				.addRetainTerm(BaseData.class, "name")
-				.format(warningDao.findAll()).toJSON());
+				.addRetainTerm(Warning.class, "id", "type", "number", "time", "warehouseId", "warehouse")
+				.addRetainTerm(BaseData.class, "name").format(warningDao.findAll()).toJSON());
 		cr.setMessage("成功");
 		return cr;
 	}
@@ -366,21 +367,14 @@ public class InventoryAction {
 		cr.setMessage("成功删除" + count + "条库存预警");
 		return cr;
 	}
-	
-	
-	
-	
-	
-	/*********************  报表  ************************/
+
+	/********************* 报表 ************************/
 	/**
-	 * 1.销售报表
-	 * 2.入库报表
+	 * 1.销售报表 2.入库报表
 	 */
-	
+
 	/**
-	 * 1.销售
-	 * 日报表
-	 * 月报表
+	 * 1.销售 日报表 月报表
 	 * 
 	 */
 	@RequestMapping(value = "/inventory/report/salesDay", method = RequestMethod.GET)
@@ -391,10 +385,9 @@ public class InventoryAction {
 		cr.setMessage("成功");
 		return cr;
 	}
-	
+
 	/**
-	 * 1.销售
-	 * 商品销售报表
+	 * 1.销售 商品销售报表
 	 * 
 	 */
 	@RequestMapping(value = "/inventory/report/salesGoods", method = RequestMethod.GET)
@@ -405,11 +398,9 @@ public class InventoryAction {
 		cr.setMessage("成功");
 		return cr;
 	}
-	
+
 	/**
-	 * 1.销售
-	 * 员工销售报表
-	 * 客户销售报表
+	 * 1.销售 员工销售报表 客户销售报表
 	 */
 	@RequestMapping(value = "/inventory/report/salesUser", method = RequestMethod.GET)
 	@ResponseBody
@@ -419,13 +410,9 @@ public class InventoryAction {
 		cr.setMessage("成功");
 		return cr;
 	}
-	
-	
-	
+
 	/**
-	 * 2.入库
-	 * 日报表
-	 * 月报表
+	 * 2.入库 日报表 月报表
 	 * 
 	 */
 	@RequestMapping(value = "/inventory/report/storageDay", method = RequestMethod.GET)
@@ -436,10 +423,9 @@ public class InventoryAction {
 		cr.setMessage("成功");
 		return cr;
 	}
-	
+
 	/**
-	 * 2.入库
-	 * 商品入库报表
+	 * 2.入库 商品入库报表
 	 * 
 	 */
 	@RequestMapping(value = "/inventory/report/storageGoods", method = RequestMethod.GET)
@@ -450,11 +436,9 @@ public class InventoryAction {
 		cr.setMessage("成功");
 		return cr;
 	}
-	
+
 	/**
-	 * 2.入库
-	 * 员工入库报表
-	 * 客户入库报表
+	 * 2.入库 员工入库报表 客户入库报表
 	 * 
 	 */
 	@RequestMapping(value = "/inventory/report/storageUser", method = RequestMethod.GET)
@@ -465,10 +449,6 @@ public class InventoryAction {
 		cr.setMessage("成功");
 		return cr;
 	}
-	
-	
-	
-	
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
