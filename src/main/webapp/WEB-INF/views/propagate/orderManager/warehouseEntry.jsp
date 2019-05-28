@@ -230,6 +230,8 @@ layui.config({
 		
 		getAllInventory();
 		getAllUser();
+		getAllCustom();
+		getAllUserOrg();
 		
 		renderInventorySelect('defaultInventorySelect');
 		

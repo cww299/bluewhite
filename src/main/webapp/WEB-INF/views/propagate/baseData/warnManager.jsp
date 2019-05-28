@@ -108,12 +108,14 @@ layui.config({
 		
 		table.render({
 			elem:'#warningTable',
-			url:'${ctx}/inventory/checkWarning',
+			url:'${ctx}/inventory/getWarning',
 			toolbar:'#warningTableToolbar',
 			loading:true,
 			size:'lg',
 			parseData:function(ret){
-				return { data:ret.data, msg:ret.message, code:ret.code } },
+				return { data:ret.data, 
+						 msg:ret.message, 
+						 code:ret.code } }, 
 			cols:[[
 			       {align:'center', type:'checkbox',},
 			       {align:'center', title:'预警仓库', field:'inventoryName'},

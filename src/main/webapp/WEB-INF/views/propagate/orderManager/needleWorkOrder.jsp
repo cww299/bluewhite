@@ -69,7 +69,7 @@ td{
 			<td>默认入库仓库</td>
 			<td><select lay-filter="defaultSelect" type='inventory' id='defaultInventorySelect'><option value="">获取数据中.....</option></select></td>
 			<td>默认入库类型</td>
-			<td><select lay-filter="defaultSelect" type='status' disabled>
+			<td><select lay-filter="defaultSelect" type='status' name='status' disabled>
 						<option value="0">生产入库</option>
 						<option value="1">调拨入库</option>
 						<option value="2">销售退货入库</option>

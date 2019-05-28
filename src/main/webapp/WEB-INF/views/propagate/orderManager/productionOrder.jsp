@@ -192,7 +192,7 @@ layui.config({
 			       {align:'center', title:'批次号',   field:'batchNumber',		   width:'',},
 			       {align:'center', title:'计划总数量', field:'number'},
 			       {align:'center', title:'剩余总数量', field:'residueNumber'},
-			       {align:'center', title:'经手人',	templet:'<p>{{ d.user.userName }}</p>'},
+			       {align:'center', title:'经手人',	templet:'<p>{{ d.user.id }}</p>'},
 			       {align:'center', title:'备注', 	field:'remark'},
 			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl'},
 			       ]]
