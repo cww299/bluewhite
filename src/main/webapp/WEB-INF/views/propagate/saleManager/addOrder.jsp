@@ -342,11 +342,10 @@ layui.config({
 					var c=choosedProduct[i];
 					var t={
 						commodityId : 	c.commodityId,
-						skuCode : 		c.skuCode,
 						number : 		c.number,
 						price : 		c.price,
 						status : 		c.status,
-						inventory : 	c.inventory,
+						warehouseId : 	c.inventory,
 						sumPrice : 		c.sumPrice,
 						actualSum : 	c.actualSum,
 						systemPreferential : 	c.systemPreferential,
