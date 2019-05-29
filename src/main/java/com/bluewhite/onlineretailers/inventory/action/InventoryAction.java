@@ -274,7 +274,7 @@ public class InventoryAction {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(Procurement.class, "id","documentNumber", "batchNumber", "user", "procurementChilds", "number",
-						"residueNumber", "type", "flag", "remark", "transfersUser", "onlineCustomer", "status")
+						"residueNumber", "type", "flag", "remark", "transfersUser", "onlineCustomer", "status","createdAt")
 				.addRetainTerm(ProcurementChild.class, "id", "commodity", "number", "residueNumber", "warehouse",
 						"status", "childRemark")
 				.addRetainTerm(Commodity.class, "id", "skuCode", "name", "inventorys")
