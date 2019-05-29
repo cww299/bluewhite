@@ -30,12 +30,10 @@ td{
 	<form>
 		<table class="layui-form" style="width:100%" id="headerTool">
 			<tr>
-				<td>操作</td>
-				<td colspan="3" style="text-align:left;">
-					<button class="layui-btn layui-btn-sm" lay-submit       type="button" lay-filter="sureAdd">确定添加</button>
-					<button class="layui-btn layui-btn-sm layui-btn-danger" type="reset" id="resetAll">清空</button>
-					<input type="hidden" name="onlineCustomerId" id="customId">
-				</td>
+				<td><a style="color:blue" href="#"  id="customName">客户名称：</a></td>	
+				<td><input type="text" class="layui-input" name="name" id="customNames" lay-verify="required" readonly ></td>
+				<td>订单编号：</td>		
+				<td><input type="text" class="layui-input" name="tid"></td>
 				<td>订单状态：</td>			
 				<td><select name="status">
 						<option  value="WAIT_SELLER_SEND_GOODS">等待卖家发货,即:买家已付款</option>
@@ -47,20 +45,14 @@ td{
 						<option  value="WAIT_BUYER_CONFIRM_GOODS">等待买家确认收货,即:卖家已发货</option></select></td>	
 			</tr>
 			<tr>
-				<td><a style="color:blue" href="#"  id="customName">客户名称：</a></td>	
-				<td><input type="text" class="layui-input" name="name" id="customNames" lay-verify="required" readonly ></td>
-				<td>订单编号：</td>			
-				<td><input type="text" class="layui-input" name="tid"></td>
-				<td>所属客服：</td>			
-				<td><select name="userId" id='userIdSelect' lay-search><option value="">获取数据中..</option></select></td>
-			</tr>
-			<tr>
 				<td>收货人：</td>			
 				<td><input type="text" class="layui-input" id="customRealName" name="buyerName"></td>
 				<td>收款金额：</td>			
 				<td><input type="text" class="layui-input" name="payment" id="customPayment"></td>
-				<td>发货仓库：</td>			
-				<td><select name="warehouse" id='warehouseSelect'><option value="">获取数据中..</option></select></td>		
+				<td>所属客服：</td>			
+				<td><select name="userId" id='userIdSelect' lay-search><option value="">获取数据中..</option></select></td>
+			</tr>
+			<tr>
 			</tr>
 			<tr>
 				<td>手机：</td>			
@@ -96,8 +88,12 @@ td{
 			<tr>
 				<td>卖家备注：</td>			
 				<td colspan="3"><input type="text" class="layui-input" placeholder="" name="sellerMemo"></td>
-				<td rowspan="2">旗帜：</td>			
-				<td rowspan="2"></td>
+				<td rowspan="2">操作</td>
+				<td rowspan="2">
+					<button class="layui-btn layui-btn-sm" lay-submit       type="button" lay-filter="sureAdd">确定添加</button>
+					<button class="layui-btn layui-btn-sm layui-btn-danger" type="reset" id="resetAll">清空</button>
+					<input type="hidden" name="onlineCustomerId" id="customId">
+				</td>
 			</tr>
 			<tr>
 				<td>买家备注：</td>			
@@ -210,8 +206,8 @@ td{
 		<td colspan="3"><input type="text" class="layui-input" name="address"></td></tr>
 	<tr><td>邮编</td>
 		<td><input type="text" class="layui-input" name="zipCode"></td>
-		<td colspan="2"><button type="reset" class="layui-btn layui-btn-sm layui-btn-danger" id="resetCustomAdd">清空</button>
-						<button class="layui-btn layui-btn-sm" type="button" lay-submit lay-filter="sureAddCustom">确定</button></td></tr>
+		<td colspan="2"><button type="reset" class="layui-btn layui-btn-danger" id="resetCustomAdd">清空</button>
+						<button class="layui-btn " type="button" lay-submit lay-filter="sureAddCustom">确定</button></td></tr>
 </table>
 </form>
 
@@ -329,14 +325,20 @@ layui.config({
 		});
 		
 		
-		//主页面一个四个按钮。确定添加、新增、删除、客户名分别进行绑定
 		form.on('submit(sureAdd)',function(obj){					//确定添加按钮
+			var data=obj.field;										//对添加数据的判断
+			var msg='';
+			if(choosedProduct.length==0)		
+				msg="请选择商品";
+			else if(isNaN(data.payment))
+				msg="收款金额只能为数字";
+			else if(data.payment<0)
+				msg="收款金额不能为负数";
+			if(msg!=''){
+				layer.msg(msg,{icon:2});
+				return;
+			}
 			layer.confirm('一旦添加完成，订单的数据无法修改，请确认是否输入有误！是否确认添加？',function(){
-				var data=obj.field;
-				if(choosedProduct.length==0){
-					layer.msg("请选择商品",{icon:2});
-					return;
-				}
 				var updataData=[];
 				for(var i=0;i<choosedProduct.length;i++){			//取出真正需要的数据进行传参
 					var c=choosedProduct[i];
@@ -638,16 +640,17 @@ layui.config({
 				layer.msg("请选择商品删除",{icon:2});
 				return;
 			}
-			var allPayment=$('#customPayment').val();
 			for(var i=0;i<choosed.length;i++){
 				for(var j=0;j<choosedProduct.length;j++){
 					if(choosed[i].commodityId==choosedProduct[j].commodityId){
-						allPayment-=choosedProduct[j].actualSum;	//计算收款金额
 						choosedProduct.splice(j,1);
 						break;
 					}
 				}
 			}
+			var allPayment=0;
+			for(var j=0;j<choosedProduct.length;j++)		//重新对价格计算
+				allPayment+=choosedProduct[j].actualSum;
 			$('#customPayment').val(allPayment);	
 			table.reload('productTable',{
 				data:choosedProduct,
@@ -695,7 +698,7 @@ layui.config({
 							sumPrice:choosed[i].price,		
 							systemPreferential:0,			
 							sellerReadjustPrices:0,			
-							actualSum:choosed[i].price,		
+							actualSum : choosed[i].price,		
 							status:'WAIT_SELLER_SEND_GOODS',
 							inventory:choosed[i].inventory,	//发货仓库
 							price:choosed[i].price,			//发货选择的价格
