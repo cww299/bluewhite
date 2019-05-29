@@ -229,7 +229,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 
 	@Override
 	@Transactional
-	public int excelOnlineOrder(ExcelListener excelListener) {
+	public int excelOnlineOrder(ExcelListener excelListener,Long onlineCustomerId,Long userId) {
 		int count = 0;
 		// 获取导入的订单
 		List<Object> excelListenerList = excelListener.getData();
@@ -251,8 +251,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				onlineOrder.setAllBillPreferential(cPoi.getAllBillPreferential());
 				onlineOrder.setSumPrice(cPoi.getSumPrice());
 				onlineOrder.setBuyerName(cPoi.getBuyerName());
-				//客户
-//				onlineOrder.setOnlineCustomerId(onlineCustomerId);
+				onlineOrder.setOnlineCustomerId(onlineCustomerId);
+				onlineOrder.setUserId(userId);
 				// 將地址转换成省市县
 				List<Map<String, String>> addressMap = StringUtil.addressResolution(cPoi.getAddress());
 				String province = "";
@@ -308,7 +308,6 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				} else {
 					throw new ServiceException("当前导入excel第" + (i + 2) + "条数据的商品不存在，请先添加");
 				}
-
 			}
 			onlineOrderChilds.add(onlineOrderChild);
 			// 当下一条数据没有订单编号时,自动存储上面所有的父子订单
