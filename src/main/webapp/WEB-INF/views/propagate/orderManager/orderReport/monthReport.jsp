@@ -19,6 +19,12 @@
 				<td>查询时间:&nbsp;&nbsp;</td>
 				<td><input type='text' id='time' class='layui-input' placeholder='请输入查询时间'></td>
 				<td>&nbsp;&nbsp;</td>
+				<td>单据类型:&nbsp;&nbsp;</td>
+				<td><select id='type'><option value='0'>生产单</option>
+										<option value='1'>针工单</option>
+										<option value='2'>入库单</option>
+										<option value='3'>出库单</option></select></td>
+				<td>&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-sm" id='search'>搜索</button></td>
 			</tr>
 		</table>
@@ -53,6 +59,7 @@ layui.config({
 			table.reload('dayReport',{
 				url:'${ctx}/inventory/report/storageDay?report=2',
 				where:{
+					type: $('#type').val(),
 					orderTimeBegin : bengin
 				}
 			})
@@ -70,7 +77,7 @@ layui.config({
 					data:ret.data,
 					} },
 			cols:[[
-			       {align:'center', title:'时间',       field:'time',	 },
+			       {align:'center', title:'时间',     totalRowText: '合计',   field:'time',	 },
 			       {align:'center', title:'成交金额',   field:'sumPayment',	totalRow:true,style:"color:#ff000a;"},
 			       {align:'center', title:'成交单数',   field:'singular',  totalRow:true, },
 			       {align:'center', title:'实际邮费', 	field:'sumpostFee', totalRow:true,	},

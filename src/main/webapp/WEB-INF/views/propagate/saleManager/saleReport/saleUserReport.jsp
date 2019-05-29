@@ -72,7 +72,7 @@ layui.config({
 					data:ret.data,
 					} },
 			cols:[[
-			       {align:'center', title:'用户',   field:'user',	},
+			       {align:'center', title:'用户',   totalRowText: '合计', field:'user',	},
 			       {align:'center', title:'成交单数',   field:'singular',   totalRow:true,},
 			       {align:'center', title:'宝贝数量', 	field:'proNumber', totalRow:true,	},
 			       {align:'center', title:'成交金额',   field:'sumPayment',	totalRow:true,},
