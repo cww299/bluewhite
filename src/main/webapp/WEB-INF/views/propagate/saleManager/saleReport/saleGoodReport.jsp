@@ -76,7 +76,7 @@ layui.config({
 					data:ret.data,
 					} },
 			cols:[[
-			       {align:'center', title:'商品名称',   field:'name',	 },
+			       {align:'center', title:'商品名称',   totalRowText: '合计', field:'name',	 },
 			       {align:'center', title:'成交单数',   field:'singular',   totalRow:true,},
 			       {align:'center', title:'总金额', 	    field:'sumPayment', totalRow:true,	},
 			       {align:'center', title:'总数量',   field:'sunNumber',	   totalRow:true,},

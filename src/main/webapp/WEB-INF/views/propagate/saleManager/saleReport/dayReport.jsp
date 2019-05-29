@@ -76,7 +76,7 @@ layui.config({
 					data:ret.data,
 					} },
 			cols:[[
-			       {align:'center', title:'时间',       field:'time',	 },
+			       {align:'center', title:'时间',      totalRowText: '合计', field:'time',	 },
 			       {align:'center', title:'成交金额',   field:'sumPayment',	totalRow:true,style:"color:#ff000a;"},
 			       {align:'center', title:'成交单数',   field:'singular',  totalRow:true, },
 			       {align:'center', title:'实际邮费', 	field:'sumpostFee',totalRow:true, 	},

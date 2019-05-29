@@ -22,6 +22,12 @@
 				<td>商品名称:&nbsp;&nbsp;</td>
 				<td><input type='text' id='skuCode' class='layui-input' placeholder='请输入查询信息'></td>
 				<td>&nbsp;&nbsp;</td>
+				<td>单据类型:&nbsp;&nbsp;</td>
+				<td><select id='type'><option value='0'>生产单</option>
+										<option value='1'>针工单</option>
+										<option value='2'>入库单</option>
+										<option value='3'>出库单</option></select></td>
+				<td>&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-sm" id='search'>搜索</button></td>
 			</tr>
 		</table>
@@ -57,6 +63,7 @@ layui.config({
 			table.reload('dayReport',{
 				url:'${ctx}/inventory/report/storageGoods',
 				where:{
+					type: $('#type').val(),
 					orderTimeBegin : t[0],
 					orderTimeEnd : t[1],
 					skuCode : $('#skuCode') .val()
@@ -76,7 +83,7 @@ layui.config({
 					data:ret.data,
 					} },
 			cols:[[
-			       {align:'center', title:'商品名称',   field:'name',	 },
+			       {align:'center', title:'商品名称',   totalRowText: '合计', field:'name',	 },
 			       {align:'center', title:'成交单数',   field:'singular', totalRow:true,  },
 			       {align:'center', title:'总金额', 	    field:'sumPayment', totalRow:true,	},
 			       {align:'center', title:'总数量',   field:'sunNumber',	totalRow:true,},

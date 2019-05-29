@@ -206,13 +206,14 @@ layui.config({
 				return {data:ret.data.rows,count:ret.data.total,msg:ret.message,code:ret.code}},
 			cols:[[
 			       {align:'center', type:'checkbox',},
+			       {align:'center', title:'单据编号',   	field:'documentNumber',	},
 			       {align:'center', title:'批次号',   field:'batchNumber',		},
-			       {align:'center', title:'总数量', field:'number'},
-			       {align:'center', title:'剩余总数量', field:'residueNumber'},
+			       {align:'center', title:'数量', field:'number'},
 			       {align:'center', title:'经手人',	templet:'<p>{{ d.user.userName }}</p>'},
 			       {align:'center', title:'出库类型', templet:'#statusTpl'},
 			       {align:'center', title:'备注', 	field:'remark'},
 			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl'},
+			       {align:'center', title:'日期',   	field:'createAt',	},
 			       ]]
 		})
 		
