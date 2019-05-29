@@ -1,12 +1,16 @@
 package com.bluewhite.common.utils;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.bluewhite.common.Constants;
 
 
 public class StringUtil {
@@ -86,8 +90,37 @@ public class StringUtil {
 	public static void main(String[] args) {
 		System.out.println(addressResolution("福建省 厦门市 思明区 嘉莲街道 龙山南路113号66婚博园非常六加一儿童摄影 "));
 	}
-
 	
+	/**
+     * 获取单据号前缀
+     * @author lin
+     * @param address
+     * @return
+     */
+    public static String getDocumentNumber(String type){
+    	String documentNumber = "";
+    	SimpleDateFormat  sdf = new SimpleDateFormat("yyyyMMdd");
+    	String time = sdf.format(new Date());
+    	switch (type) {
+		case "XS":
+			documentNumber= Constants.XS +"-"+ time +"-";
+			break;
+		case "3":
+			documentNumber= Constants.CK +"-"+ time +"-";
+			break;
+		case "2":
+			documentNumber= Constants.XS +"-"+ time +"-";		
+			break;
+		case "0":
+			documentNumber= Constants.RK +"-"+ time +"-";
+			break;
+		case "1":
+			documentNumber= Constants.ZG +"-"+ time +"-";
+			break;
+		default:
+			break;
+		}
+        return documentNumber;
+    }
 	
-
 }

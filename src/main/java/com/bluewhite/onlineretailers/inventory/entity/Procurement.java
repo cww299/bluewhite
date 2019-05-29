@@ -31,6 +31,12 @@ import com.bluewhite.system.user.entity.User;
 public class Procurement extends BaseEntity<Long>{
 	
 	/**
+	 * 单据编号
+	 */
+	@Column(name = "document_number")
+	private String documentNumber;
+	
+	/**
 	 * 批次号
 	 */
 	@Column(name = "batch_number")
@@ -176,6 +182,14 @@ public class Procurement extends BaseEntity<Long>{
 	
 	
 	
+	public String getDocumentNumber() {
+		return documentNumber;
+	}
+
+	public void setDocumentNumber(String documentNumber) {
+		this.documentNumber = documentNumber;
+	}
+
 	public Long getWarehouseId() {
 		return warehouseId;
 	}
