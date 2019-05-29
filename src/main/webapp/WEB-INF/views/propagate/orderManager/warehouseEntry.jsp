@@ -31,6 +31,14 @@ td{
 				<td>&nbsp;&nbsp;</td>
 				<td><select name="flag"><option value="">是否反冲</option><option value="1">反冲</option><option value="0">未反冲</option></select>
 				<td>&nbsp;&nbsp;</td>
+				<td><select name='status'>
+						<option value="">入库类型</option>
+						<option value="0">生产入库</option>
+						<option value="1">调拨入库</option>
+						<option value="2">销售退货入库</option>
+						<option value="3">销售换货入库 </option>
+						<option value="4">采购入库</option></select></td>
+				<td>&nbsp;&nbsp;</td>
 				<td><span class="layui-btn" lay-submit lay-filter="search">搜索</span></td>
 			</tr>
 		</table>
@@ -156,7 +164,7 @@ td{
 </script>
 
 <!-- 入库单查看类型转换模板 -->
-<script type="text/html" id='typeTpl'>
+<script type="text/html" id='statusTpl'>
 	{{#	var text='',color='';
 		switch(d.status){
 		case 0: text='生产入库'; 	color=''; break;
@@ -251,6 +259,7 @@ layui.config({
 			       {align:'center', title:'计划总数量', field:'number'},
 			       {align:'center', title:'剩余总数量', field:'residueNumber'},
 			       {align:'center', title:'经手人',	templet:'<p>{{ d.user.userName }}</p>'},
+			       {align:'center', title:'入库类型', templet:'#statusTpl'},
 			       {align:'center', title:'备注', 	field:'remark'},
 			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl'},
 			       ]]
@@ -316,7 +325,7 @@ layui.config({
 				       {align:'center', title:'数量',     field:'number',},
 				       {align:'center', title:'剩余数量', field:'residueNumber'},
 				       {align:'center', title:'入库仓库', 	  templet:function(d){return d.warehouse.name; },}, 
-				       {align:'center', title:'入库类型', 	 templet:'#typeTpl',}, 
+				       {align:'center', title:'入库类型', 	 templet:'#statusTpl',}, 
 				       {align:'center', title:'备注', 	  field:'childRemark',}, 
 				       ]]
 			})
