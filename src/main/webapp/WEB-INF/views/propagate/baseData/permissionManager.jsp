@@ -47,7 +47,7 @@
 	<div class="layui-form-item">
 		<label class="layui-form-label">角色</label>
 		<div class="layui-input-block">
-			<select id="roleIdSelect" lay-search  xm-select="roleIdSelect" xm-select-show-count="5" name='roleId'>
+			<select id="roleIdSelect" lay-search  xm-select="roleIdSelect" xm-select-show-count="5" name='ids'>
 					<option value="">获取数据中...</option></select>
 		</div>
 	</div>
@@ -63,17 +63,6 @@
 	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改</span>
 	<span class="layui-badge" >提示：双击分配角色</span>
 </div>
-</script>
-
-<!-- 角色解析模板 -->
-<script type="text/html" id='roleTpl'>
-	{{# var ids=d.roles;
-		for(var i=0;i<ids.length;i++)
-			for(var j=0;j<allRole.length;j++)
-				if(ids[i]==allRole[j].id){  }}
-					<span class='layui-badge'>{{ allRole[j].name }}</span>
-    			{{# break; } }}
-	{{# }}
 </script>
 
 </body>
@@ -111,10 +100,19 @@ layui.config({
 			       {align:'center', type:'checkbox',},
 			       {align:'center', title:'用户id',   field:'id',	},
 			       {align:'center', title:'用户姓名',   field:'userName',   },
-			       {align:'center', title:'角色', 	templet:'#roleTpl' 	},
+			       {align:'center', title:'角色', 	templet:function(d){ 
+			    	   											var ids=d.roles;
+			    	   											var html='';
+			    	   											debugger;
+																for(var i=0;i<ids.length;i++)
+																	for(var j=0;j<allRole.length;j++)
+																		if(ids[i]==allRole[j].id) 
+																			html+= '<span class="layui-badge">'+ allRole[j].name +'</span>';
+															 
+			       												return html;
+			       												}},
 			       ]]
 		})
-		
 		table.on('rowDouble()',function(obj){
 			renderSelect(0);
 			layer.open({
