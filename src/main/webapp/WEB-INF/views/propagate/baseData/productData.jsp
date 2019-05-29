@@ -172,7 +172,8 @@ layui.config({
 		
 		form.on('submit(search)',function(obj){
 			table.reload('productTable',{
-				where:{skuCode:obj.field.skuCode}
+				where:{skuCode:obj.field.skuCode},
+				page: { curr : 1}
 			})
 		}) 
 		table.on('toolbar(productTable)',function(obj){

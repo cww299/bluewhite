@@ -55,13 +55,13 @@
 		<div class="layui-item">
 			<label class="layui-form-label">昵称</label>
 			<div class="layui-input-block">
-				<input class="layui-input" name="name" value="{{d.name}}">
+				<input class="layui-input" name="name" value="{{d.name}}" lay-verify="required">
 			</div>
 		</div>
 		<div class="layui-item">
 			<label class="layui-form-label">真实姓名</label>
 			<div class="layui-input-block">
-				<input class="layui-input" name="buyerName" value="{{d.buyerName}}">
+				<input class="layui-input" name="buyerName" value="{{d.buyerName}}" >
 			</div>
 		</div>
 		<div class="layui-item">
@@ -101,7 +101,7 @@
 		<div class="layui-item">
 			<label class="layui-form-label">手机</label>
 			<div class="layui-input-block">
-				<input class="layui-input" name="phone" value="{{d.phone}}">
+				<input class="layui-input" name="phone" value="{{d.phone}}" lay-verify="required">
 			</div>
 		</div>
 		<div class="layui-item">
@@ -116,7 +116,8 @@
 				<input class="layui-input" name="zipCode" value="{{d.zipCode}}">
 			</div>
 		</div>
-		<p style="text-align:center;"><button class="layui-btn layui-btn-sm" type="reset">重置</button>
+		<p style="text-align:center;margin-top:20px;">
+									 <button class="layui-btn layui-btn-sm" type="reset" id="resetCustom">清空</button>
 									 <button class="layui-btn layui-btn-sm" type="button" lay-submit lay-filter="sure">确定</button></p>	
 	</form>
 </script>
@@ -124,9 +125,9 @@
 <!-- 表格工具栏模板 -->
 <script type="text/html" id="customTableToolbar" >
 <div  class="layui-button-container">
-	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增</span>
-	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除</span>
-	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改</span>
+	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增客户</span>
+	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除客户</span>
+	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改客户信息</span>
 </div>
 </script>
 <!-- 客户等级转换模板 -->
@@ -134,9 +135,9 @@
 {{# if(d.grade==0){ }}
 	<span class="layui-badge layui-bg-green">一级</span>
 {{# }else if(d.grade==1){ }}
-	<span class="layui-badge layui-bg-green">二级</span>
+	<span class="layui-badge layui-bg-orange">二级</span>
 {{# }else if(d.grade==2){ }}
-	<span class="layui-badge layui-bg-green">三级</span>
+	<span class="layui-badge ">三级</span>
 {{# } }}
 </script>
 <!-- 客户类型转换模板 -->
@@ -197,9 +198,9 @@ layui.config({
 		})
 		
 		form.on('submit(search)',function(obj){
-			//layer.msg(JSON.stringify(obj.field))
 			table.reload('customTable',{
-				where:{grade:obj.field.grade,type:obj.field.type}
+				where:{grade:obj.field.grade,type:obj.field.type},
+				page : { curr : 1}
 			});
 		})
 		
@@ -217,6 +218,7 @@ layui.config({
 			},
 			title='新增客户',
 			html='',
+			btnText='清空信息',
 			provinceId=0,cityId=0,countyId=0,cityParentId='110000',countyParentId='110100',
 			choosed=layui.table.checkStatus('customTable').data,
 			tpl=addEditTpl.innerHTML;
@@ -230,6 +232,7 @@ layui.config({
 					return;
 				}
 				title="修改客户信息";
+				btnText='恢复初始值',
 				data=choosed[0];
 				if(data.provinces!=null)
 					provinceId=data.provinces.id;
@@ -251,9 +254,16 @@ layui.config({
 				area:['40%','60%'],
 				content:html
 			})
+			$('#resetCustom').html(btnText);
 			getdataOfSelect(0,'province',provinceId);
 			getdataOfSelect(cityParentId,'city',cityId);
 			getdataOfSelect(countyParentId,'county',countyId);
+			
+			$('#resetCustom').on('click',function(){			//重置按钮时,恢复地址下拉框的默认值
+				getdataOfSelect(0,'province',provinceId);
+				getdataOfSelect(cityParentId,'city',cityId);
+				getdataOfSelect(countyParentId,'county',countyId);
+			})
 			
 			form.render();
 			form.on('submit(sure)',function(obj){

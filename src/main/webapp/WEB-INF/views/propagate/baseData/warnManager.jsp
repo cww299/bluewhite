@@ -178,9 +178,9 @@ layui.config({
 			})
 		}
 		function deletes(){
-			var choosed=layui.table.checkStatus('').data;
+			var choosed=layui.table.checkStatus('warningTable').data;
 			if(choosed.length<1){
-				layer.msg('请选择商品',{icon:2});
+				layer.msg('请选择预警',{icon:2});
 				return;
 			}
 			layer.confirm("是否确认删除？",function(){
@@ -195,7 +195,7 @@ layui.config({
 					success:function(result){
 						if(0==result.code){
 							layer.msg(result.message,{icon:1});
-							table.reload('');
+							table.reload('warningTable');
 						}
 						else{
 							layer.msg(result.message,{icon:2});
