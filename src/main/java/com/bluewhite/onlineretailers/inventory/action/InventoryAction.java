@@ -115,20 +115,18 @@ public class InventoryAction {
 	/**
 	 * 新增销售单(导入)
 	 * 
-	 * @param response
-	 * @param request
 	 * @return
 	 * @throws IOException
 	 */
 	@RequestMapping(value = "/inventory/import/excelOnlineOrder", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse excelOnlineOrder(@RequestParam(value = "file", required = false) MultipartFile file,
-			HttpServletRequest request) throws IOException {
+	public CommonResponse excelOnlineOrder(@RequestParam(value = "file", required = false) MultipartFile file
+			,Long onlineCustomerId,Long userId ) throws IOException {
 		CommonResponse cr = new CommonResponse();
 		InputStream inputStream = file.getInputStream();
 		ExcelListener excelListener = new ExcelListener();
 		EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1, OnlineOrderPoi.class), excelListener);
-		onlineOrderService.excelOnlineOrder(excelListener);
+		onlineOrderService.excelOnlineOrder(excelListener,onlineCustomerId,userId);
 		inputStream.close();
 		return cr;
 	}

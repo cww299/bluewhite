@@ -2,6 +2,7 @@ package com.bluewhite.onlineretailers.inventory.service;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -307,6 +308,16 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			// 获取所有的单据
 			List<Procurement> procurementList = dao.findByTypeAndCreatedAtBetween(procurement.getType(), beginTimes,
 					endTimes);
+			SimpleDateFormat  sdf = new SimpleDateFormat("yyyy-MM-dd");
+			if(procurement.getReport() == 1){
+				// 时间
+				mapSale.put("time", sdf.format(beginTimes));
+			}
+			if(procurement.getReport() == 2){
+				sdf = new SimpleDateFormat("yyyy-MM");
+				// 时间
+				mapSale.put("time", sdf.format(beginTimes));
+			}
 			// 单数
 			mapSale.put("singular", procurementList.size());
 			// 宝贝数量
