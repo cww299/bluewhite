@@ -4,7 +4,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
@@ -21,7 +24,6 @@ public class MyExceptionHandlerExceptionResolver implements HandlerExceptionReso
 
 	private static Logger logger = Logger.getLogger(MyExceptionHandlerExceptionResolver.class);
 
-
 	@Override
 	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
 			Exception exception) {
@@ -37,6 +39,11 @@ public class MyExceptionHandlerExceptionResolver implements HandlerExceptionReso
 			if (se.getErrorCode() != null) {
 				responseInfo.setCode(se.getErrorCode().getCode());
 			}
+
+		}
+		if (exception instanceof UnauthorizedException) {
+			mav.setViewName("error/500");
+			return mav;
 		} else {
 			responseInfo.setMessage("抱歉,服务器异常了,详情 ["
 					+ (exception == null ? "未知" : exception.getClass().getSimpleName().replace("Exception", "")) + "]");
