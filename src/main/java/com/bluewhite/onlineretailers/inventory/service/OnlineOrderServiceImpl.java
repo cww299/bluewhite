@@ -351,21 +351,11 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			onlineOrder.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(onlineOrder.getOrderTimeBegin()));
 			size = 1;
 		}
+		//开始时间
+		Date beginTimes = onlineOrder.getOrderTimeBegin();
 		for (int i = 0; i < size; i++) {
-			Date beginTimes = null;
-			Date endTimes = null;
-			// 按天查询
-			if (onlineOrder.getReport() == 1) {
-				if (i != 0) {
-					// 获取下一天的时间
-					beginTimes = DatesUtil.nextDay(onlineOrder.getOrderTimeBegin());
-				} else {
-					// 获取第一天的开始时间
-					beginTimes = onlineOrder.getOrderTimeBegin();
-				}
-				// 获取一天的结束时间
-				endTimes = DatesUtil.getLastDayOftime(beginTimes);
-			}
+			// 获取一天的结束时间
+			Date endTimes = DatesUtil.getLastDayOftime(beginTimes);
 			// 按月查询
 			if (onlineOrder.getReport() == 2) {
 				beginTimes = onlineOrder.getOrderTimeBegin();
@@ -431,6 +421,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				}
 				mapList.add(mapSale);
 			}
+			beginTimes = DatesUtil.nextDay(beginTimes);
 		}
 
 		return mapList;
