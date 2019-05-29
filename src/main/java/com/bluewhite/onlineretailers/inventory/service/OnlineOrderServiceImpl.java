@@ -1,5 +1,6 @@
 package com.bluewhite.onlineretailers.inventory.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
+import org.junit.Ignore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -205,6 +207,16 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				OnlineOrderChild onlineOrderChild = onlineOrderChildDao.findOne(id);
 				// 获取父订单
 				OnlineOrder onlineOrder = onlineOrderChild.getOnlineOrder();
+				//更新父订单的状态(当自订单)
+				List<OnlineOrderChild> onlineOrderChildList = onlineOrder.getOnlineOrderChilds();
+				
+//				onlineOrderChildList.stream().forEach(o->{
+//					int sumStatus = 0;
+//					if(onlineOrder.getStatus().equals(Constants.ONLINEORDER_4)){
+//						sumStatus++;
+//					}
+//				});
+				
 				// 当订单的状态是买家已付款时
 				if (onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_4)) {
 					// 获取商品
@@ -220,6 +232,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 					} else {
 						throw new ServiceException(commodity.getName() + "当前仓库没有库存,无法出库");
 					}
+				}else{
+					throw new ServiceException(onlineOrder.getDocumentNumber() + "不是等待卖家发货状态,无法发货");
 				}
 				count++;
 			}
@@ -380,6 +394,16 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				onlineOrderList.stream().forEach(pt -> {
 					onlineOrderChildList.addAll(pt.getOnlineOrderChilds());
 				});
+				SimpleDateFormat  sdf = new SimpleDateFormat("yyyy-MM-dd");
+				if(onlineOrder.getReport() == 1){
+					// 时间
+					mapSale.put("time", sdf.format(beginTimes));
+				}
+				if(onlineOrder.getReport() == 2){
+					sdf = new SimpleDateFormat("yyyy-MM");
+					// 时间
+					mapSale.put("time", sdf.format(beginTimes));
+				}
 				// 成交金额
 				mapSale.put("sumPayment", sumPayment);
 				// 成交单数
