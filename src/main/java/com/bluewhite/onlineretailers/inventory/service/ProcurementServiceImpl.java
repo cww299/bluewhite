@@ -285,21 +285,11 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			procurement.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(procurement.getOrderTimeBegin()));
 			size = 1;
 		}
+		//开始时间
+		Date beginTimes = procurement.getOrderTimeBegin();
 		for (int i = 0; i < size; i++) {
-			Date beginTimes = null;
-			Date endTimes = null;
-			// 按天查询
-			if (procurement.getReport() == 1) {
-				if (i != 0) {
-					// 获取下一天的时间
-					beginTimes = DatesUtil.nextDay(procurement.getOrderTimeBegin());
-				} else {
-					// 获取第一天的开始时间
-					beginTimes = procurement.getOrderTimeBegin();
-				}
-				// 获取一天的结束时间
-				endTimes = DatesUtil.getLastDayOftime(beginTimes);
-			}
+			// 获取一天的结束时间
+			Date endTimes = DatesUtil.getLastDayOftime(beginTimes);
 			// 按月查询
 			if (procurement.getReport() == 2) {
 				beginTimes = procurement.getOrderTimeBegin();
@@ -325,6 +315,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			int proNumber = procurementList.stream().mapToInt(Procurement::getNumber).sum();
 			mapSale.put("proNumber", proNumber);
 			mapList.add(mapSale);
+			beginTimes = DatesUtil.nextDay(beginTimes);
 		}
 		return mapList;
 	}
