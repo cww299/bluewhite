@@ -419,18 +419,18 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				mapSale.put("sumCost", sumCost);
 				// 利润
 				mapSale.put("profits", NumUtils.sub(sumPayment, sumCost, sumpostFee));
+				SimpleDateFormat  sdf = new SimpleDateFormat("yyyy-MM-dd");
+				if(onlineOrder.getReport() == 1){
+					// 时间
+					mapSale.put("time", sdf.format(beginTimes));
+				}
+				if(onlineOrder.getReport() == 2){
+					sdf = new SimpleDateFormat("yyyy-MM");
+					// 时间
+					mapSale.put("time", sdf.format(beginTimes));
+				}
+				mapList.add(mapSale);
 			}
-			SimpleDateFormat  sdf = new SimpleDateFormat("yyyy-MM-dd");
-			if(onlineOrder.getReport() == 1){
-				// 时间
-				mapSale.put("time", sdf.format(beginTimes));
-			}
-			if(onlineOrder.getReport() == 2){
-				sdf = new SimpleDateFormat("yyyy-MM");
-				// 时间
-				mapSale.put("time", sdf.format(beginTimes));
-			}
-			mapList.add(mapSale);
 		}
 
 		return mapList;
