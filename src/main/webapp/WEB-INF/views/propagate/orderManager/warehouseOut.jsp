@@ -31,6 +31,13 @@ td{
 				<td>&nbsp;&nbsp;</td>
 				<td><select name="flag"><option value="">是否反冲</option><option value="1">反冲</option><option value="0">未反冲</option></select>
 				<td>&nbsp;&nbsp;</td>
+				<td><select name='status'>
+						<option value="">出库类型</option>
+						<option value="0">销售出库</option>
+						<option value="1">调拨出库</option>
+						<option value="2">销售换货出库</option>
+						<option value="3">采购退货出库 </option></select></td>
+			    <td>&nbsp;&nbsp;</td>
 				<td><span class="layui-btn" lay-submit lay-filter="search">搜索</span></td>
 			</tr>
 		</table>
@@ -41,7 +48,7 @@ td{
 <!-- 添加订单隐藏框  -->
 <div id="addOrderDiv" style="display:none;padding:10px;">
 	<table class="layui-form layui-table" lay-size="sm" lay-skin="nob">
-		<tr><td>批次号<input type="hidden" name="type" value="3" ></td>	<!-- 默认type类型为2，表示为入库单 -->
+		<tr><td>批次号<input type="hidden" name="type" value="3" ></td>	<!-- 默认type类型为3，表示为出库单 -->
 			<td><input type="text" class="layui-input" name='batchNumber' lay-verify='required'></td>
 			<td>经手人</td>
 			<td><select name="userId" id='userIdSelect' lay-search><option value="1" >测试人admin</option></select></td>
@@ -154,7 +161,7 @@ td{
 </script>
 
 <!-- 出库单查看类型转换模板 -->
-<script type="text/html" id='typeTpl'>
+<script type="text/html" id='statusTpl'>
 	{{#	var text='',color='';
 		switch(d.status){
 		case 0: text='销售出库'; 	color='';	 break;
@@ -203,6 +210,7 @@ layui.config({
 			       {align:'center', title:'总数量', field:'number'},
 			       {align:'center', title:'剩余总数量', field:'residueNumber'},
 			       {align:'center', title:'经手人',	templet:'<p>{{ d.user.userName }}</p>'},
+			       {align:'center', title:'出库类型', templet:'#statusTpl'},
 			       {align:'center', title:'备注', 	field:'remark'},
 			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl'},
 			       ]]
@@ -272,7 +280,7 @@ layui.config({
 				       {align:'center', title:'商品名称',  templet:'<p>{{ d.commodity.skuCode }}</p>'},
 				       {align:'center', title:'数量',     field:'number',},
 				       {align:'center', title:'出库仓库', 	  templet:function(d){return d.warehouse.name; },}, 
-				       {align:'center', title:'出库类型', 	 templet:'#typeTpl',}, 
+				       {align:'center', title:'出库类型', 	 templet:'#statusTpl',}, 
 				       /* {align:'center', title:'仓位',  	  field:'place',},  */
 				       {align:'center', title:'备注', 	  field:'childRemark',}, 
 				       ]]
@@ -413,7 +421,7 @@ layui.config({
 			}
 			table.reload('productListTable',{ data : choosedProduct })
 		});
-		form.on('submit(sureAdd)',function(obj){					//确定添加入库单
+		form.on('submit(sureAdd)',function(obj){					//确定添加出库单
 			var child=[],allNum=0;
 			for(var i=0;i<choosedProduct.length;i++){
 				var t=choosedProduct[i];			
