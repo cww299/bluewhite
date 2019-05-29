@@ -84,7 +84,7 @@ td{
 														<option value='0'>不反冲</option></select></div>
 					<div class="layui-input-inline">
 						<button class="layui-btn" lay-submit lay-filter="search">搜索</button>
-						<span class="layui-btn" id="uploadData">导入订单</span></div>
+						<span class="layui-btn" id="uploadDataBtn">导入订单</span></div>
 				</div>
 			</div>
 		<table class="laui-table" id="onlineOrder" lay-filter="onlineOrder" ></table>
@@ -92,11 +92,16 @@ td{
 </div>
 
 <!-- 位置选择隐藏框 -->
-<div id="positionChoose">
-</div>	
+<div id="positionChoose"></div>	
 		
 </body>
 
+<!-- 上传文件隐藏框 -->
+<div id='uploadDiv' style="display:none;padding:20px;" class="layui-form">
+	<select id='uploadUser' lay-search><option value="">经手人</option></select>
+	<select id='uploadCustom' lay-search><option value="">客户</option></select>
+	<button type='button' id='uploadData' style="display:none;"></button>
+</div>
 
 <!-- 查看订单隐藏框 -->
 <script type="text/html" id="addEditTpl">
@@ -127,7 +132,7 @@ td{
 				<td>客户名称：</td>	
 				<td><input type="text" class="layui-input" name="name" id="customNames" lay-verify="required" readonly value="{{ d.onlineCustomer.name }}"></td>
 				<td>订单编号：</td>			
-				<td><input type="text" class="layui-input" name="tid" value="{{ d.tid }}" readonly></td>
+				<td><input type="text" class="layui-input" name="tid" value="{{ d.tid==null?'无订单编号':d.tid }}" readonly></td>
 				<td>所属客服：</td>			
 				<td><input type="text" class="layui-input" name="" value="{{ d.user.userName }}" readonly></td>
 			</tr>
@@ -138,10 +143,7 @@ td{
 				<td><input type="text" class="layui-input" id="customPayment" name="payment" value="{{ d.payment }}" readonly></td>
 				
 				<td>发货仓库：</td>	
-				<td><select name="warehouse" disabled>
-									 <option {{ d.warehouse=='0'?'selected':'' }} value="0">主仓库</option>
-									 <option {{ d.warehouse=='1'?'selected':'' }} value="1">客供仓库</option>
-									 <option {{ d.warehouse=='2'?'selected':'' }} value="2">次品</option></select></td>		
+				<td><select name="" disabled> <option value="">无默认仓库</option></select></td>		
 			</tr>
 			<tr>
 				<td>手机：</td>			
@@ -283,9 +285,8 @@ layui.config({
 		
 		getAllUser();
 		getAllCustom();
-		
+		//------------搜索功能---------------------
 		laydate.render({ elem:'#searchTime', type: 'datetime', range:'~' }) 
-		form.render();
 		form.on('submit(search)',function(obj){			//订单列表搜索
 			var provincesIds='';
 			$('input[name="provinces"]:checked').each(function(){
@@ -299,21 +300,46 @@ layui.config({
 				where:obj.field
 			})
 		})
-		
+		form.render();
+		//--------------上传文件功能-----------------------		
+		var load;
 		upload.render({
 		   	  elem: '#uploadData'
 		   	  ,url: '${ctx}/inventory/import/excelOnlineOrder'
 		 	  ,before: function(obj){ 	
-		 		layer.load(1); 
+		 		  this.data={  userId:$('#uploadUser').val(),  onlineCustomerId:$('#uploadCustom').val()  };
+		 		 load = layer.load(1); 
 			  }
 		   	  ,done: function(res, index, upload){ 
-		   		layer.closeAll();
-		   		layer.msg(res.message);
-		   		table.reload('onlineOrder');
+		   		  if(res.code==0){
+				   		layer.closeAll();
+				   		layer.msg(res.message,{icon:1});
+				   		table.reload('onlineOrder');
+		   		  }else{
+			   			layer.close(load);
+			   			layer.msg(res.message,{icon:2});
+		   		  }
 		   	  } 
 		   	  ,accept: 'file' 
 		   	  ,exts: 'xlsx'
 		})
+		$('#uploadDataBtn').on('click',function(){
+			layer.open({
+				title:'导入订单数据',
+				area:['30%','40%'],
+				type:1,
+				content:$('#uploadDiv'),
+				btn:['选择文件','取消'],
+				yes:function(){
+					if($('#uploadUser').val()!='' && $('#uploadCustom').val()!=''){
+						$('#uploadData').click();
+					}else
+						layer.msg('请选择经手人与客户',{icon:2});
+				}
+			})
+		})
+		
+		//-----------------主页面功能--------------------
 		$("#customPosition").hover(function() {			//鼠标移入事件
 			$('#positionChoose').show();
 			form.render();
@@ -397,22 +423,6 @@ layui.config({
 		function addEditOrder(data){
 			var tpl=addEditTpl.innerHTML
 				, html='';
-			var all=data.onlineOrderChilds;
-			for(var i=0;i<all.length;i++){
-				var orderChild={
-						skuCode:all[i].commodity.skuCode,	//商品编号
-						name:all[i].commodity.name,			//商品名称
-						commodityId:all[i].commodity.id,	//商品id
-						number:all[i].number,				//商品数量
-						price:all[i].price,					//商品单价
-						sumPrice:all[i].sumPrice,			//单价总金额
-						systemPreferential:all[i].systemPreferential,	 //系统优惠
-						sellerReadjustPrices:all[i].sellerReadjustPrices,//卖家调价
-						actualSum:all[i].actualSum,			//实际金额
-						status:all[i].status,				//状态默认值
-						}
-				choosedProduct.push(orderChild); 
-			}
 			laytpl(tpl).render(data,function(h){ html=h; })			//新增、修改订单模板渲染
 			layer.open({
 				title: '查看订单',
@@ -420,8 +430,7 @@ layui.config({
 				area:['90%','90%'],
 				content:html
 			})
-			form.render();
-			initAddEditOrderWin();			//弹窗的初始化，表格的渲染等。。
+			initAddEditOrderWin(data.onlineOrderChilds);			//弹窗的初始化，表格的渲染等。。
 		}
 		
 		function deletes(){
@@ -453,23 +462,17 @@ layui.config({
 		}
 		
 		
-		
-		
-		function initAddEditOrderWin(){			//初始化，新增修改订单的弹窗功能
+		function initAddEditOrderWin(child){			//初始化，新增修改订单的弹窗功能
 			$('#headerTool').find("td:even").css({backgroundColor:"rgba(65, 161, 210, 0.45)",padding:"1px"}); //设置表头背景颜色
 			form.render();
 			table.render({
 				elem:"#productTable", 					//表单中选择商品的表格
 				loading:true,
-				data:[], //此处不能使用choosedProduct数据进行渲染，否则会造成数据的绑定。当监听修改表格中的数据时，会自动修改数组数据的内容。所以所有数据的渲染只能使用reload
+				data: child,
 				totalRow:true,
-				page:{},
 				cols:[[
-				       {field:'skuCode',		title:'商品名称',	align:'center'},
-				       {field:'inventory',	title:'发货仓库',	align:'center', width:'8%', templet:function(d){
-																								for(var i=0;i<allInventory.length;i++){ 
-																									if(allInventory[i].id==d.inventory)
-																										return '<span>'+allInventory[i].name+'</span>';}	}},
+				       {field:'',		title:'商品名称',	align:'center',templet:function(d){ return '<span>'+d.commodity.skuCode+'</span>';} },
+				       {field:'inventory',	title:'发货仓库',	align:'center', width:'8%', templet:function(d){ return '<span>'+d.warehouse.name+'</span>';} },
 				       {field:'number',		title:'数量',       align:'center', width:'4%',		templet:'#numberTpl', totalRow:true,},
 				       {field:'price',   	title:'单价',   	    align:'center', width:'4%',		templet:'#priceTpl'},
 				       {field:'sumPrice',   title:'单价总金额', align:'center', width:'8%', totalRow:true, style:"color:blue;"},
@@ -478,19 +481,14 @@ layui.config({
 				       {field:'actualSum',  title:'实际金额',   align:'center', width:'6%',	totalRow:true, style:"color:blue;"},
 				       ]]
 			})
-			table.reload('productTable',{
-				data:choosedProduct
-			})
-			
-			//主窗口一个四个按钮。确定添加、新增、删除、客户名分别进行绑定
-			form.on('submit(sureAdd)',function(obj){					//确定添加按钮
+			form.on('submit(sureAdd)',function(obj){					
 				layer.closeAll();
 				return;
 			})
-			
+			form.render();
 		}
-		getProvince();
-		function getProvince(){			//获取省份
+		getProvince();	//获取省份,用于地址筛选
+		function getProvince(){			
 			$.ajax({
 				url:"${ctx}/regionAddress/queryProvince",
 				data:{parentId:0},
@@ -522,6 +520,7 @@ layui.config({
 								userName:	r.data.rows[i].userName
 							})
 						renderUserSelect('userIdSelect');
+						renderUserSelect('uploadUser');
 					}
 				}
 			})
@@ -537,6 +536,7 @@ layui.config({
 								userName:	r.data.rows[i].buyerName
 							})
 						renderCustomSelect('customIdSelect');
+						renderCustomSelect('uploadCustom');
 					}
 				}
 			})
