@@ -50,12 +50,16 @@ layui.config({
 		}) 
 		$('#search').on('click',function(){
 			var time=$('#time').val();
+			if(time==''){
+				layer.msg('请输入搜索时间！',{icon:2});
+				return;
+			}
 			var t=time.split('~');
 			table.reload('dayReport',{
 				url:'${ctx}/inventory/report/storageDay?report=1',
 				where:{
 					orderTimeBegin : t[0],
-					orderTimeEnd : t[1],
+					orderTimeEnd : t[1].substring(0,12)+'23:59:59'
 				}
 			})
 		})
@@ -63,6 +67,7 @@ layui.config({
 			elem:'#dayReport',
 			loading:true,
 			size:'sm',
+			totalRow:true,
 			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){
 				return {  
@@ -72,13 +77,13 @@ layui.config({
 					} },
 			cols:[[
 			       {align:'center', title:'时间',       field:'time',	 },
-			       {align:'center', title:'成交金额',   field:'sumPayment',	style:"color:#ff000a;"},
-			       {align:'center', title:'成交单数',   field:'singular',   },
-			       {align:'center', title:'实际邮费', 	field:'sumpostFee', 	},
-			       {align:'center', title:'成交宝贝数量',   field:'proNumber',	},
-			       {align:'center', title:'每单平均金额',   field:'averageAmount',	},
-			       {align:'center', title:'广宣成本',   field:'sumCost',	style:"color:blue;"},
-			       {align:'center', title:'利润',   field:'profits',	style:"color:#0fda87;"},
+			       {align:'center', title:'成交金额',   totalRow:true,field:'sumPayment',	style:"color:#ff000a;"},
+			       {align:'center', title:'成交单数',   totalRow:true,field:'singular',   },
+			       {align:'center', title:'实际邮费', 	totalRow:true,field:'sumpostFee', 	},
+			       {align:'center', title:'成交宝贝数量', totalRow:true,  field:'proNumber',	},
+			       {align:'center', title:'每单平均金额',  totalRow:true, field:'averageAmount',	},
+			       {align:'center', title:'广宣成本',   totalRow:true,field:'sumCost',	style:"color:blue;"},
+			       {align:'center', title:'利润',   totalRow:true,field:'profits',	style:"color:#0fda87;"},
 			       ]]
 		})
 		

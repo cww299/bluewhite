@@ -67,6 +67,7 @@ layui.config({
 			elem:'#dayReport',
 			loading:true,
 			size:'sm',
+			totalRow:true,
 			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){
 				return {  
@@ -75,12 +76,11 @@ layui.config({
 					data:ret.data,
 					} },
 			cols:[[
-			       {align:'center', title:'时间',       field:'time',	 },
 			       {align:'center', title:'商品名称',   field:'name',	 },
-			       {align:'center', title:'成交单数',   field:'singular',   },
-			       {align:'center', title:'总金额', 	    field:'sumPayment', 	},
-			       {align:'center', title:'总数量',   field:'sunNumber',	},
-			       {align:'center', title:'每单平均金额',   field:'averageAmount',	},
+			       {align:'center', title:'成交单数',   field:'singular', totalRow:true,  },
+			       {align:'center', title:'总金额', 	    field:'sumPayment', totalRow:true,	},
+			       {align:'center', title:'总数量',   field:'sunNumber',	totalRow:true,},
+			       {align:'center', title:'每单平均金额',   field:'averageAmount',	totalRow:true,},
 			       ]]
 		})
 		
