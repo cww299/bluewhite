@@ -52,7 +52,7 @@ layui.config({
 			var time=$('#time').val();
 			var t=time.split('~');
 			table.reload('dayReport',{
-				url:'${ctx}/inventory/report/salesDay?report=3',
+				url:'${ctx}/inventory/report/salesUser?report=3',
 				where:{
 					orderTimeBegin : t[0],
 					orderTimeEnd : t[1],
@@ -63,6 +63,7 @@ layui.config({
 			elem:'#dayReport',
 			loading:true,
 			size:'sm',
+			totalRow:true,
 			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){
 				return {  
@@ -71,13 +72,12 @@ layui.config({
 					data:ret.data,
 					} },
 			cols:[[
-			       {align:'center', title:'时间',       field:'time',	 },
 			       {align:'center', title:'用户',   field:'user',	},
-			       {align:'center', title:'成交单数',   field:'singular',   },
-			       {align:'center', title:'宝贝数量', 	field:'proNumber', 	},
-			       {align:'center', title:'成交金额',   field:'sumPayment',	},
-			       {align:'center', title:'实际运费',   field:'sumpostFee',	style:"color:blue;"},
-			       {align:'center', title:'每单平均金额',   field:'averageAmount',	},
+			       {align:'center', title:'成交单数',   field:'singular',   totalRow:true,},
+			       {align:'center', title:'宝贝数量', 	field:'proNumber', totalRow:true,	},
+			       {align:'center', title:'成交金额',   field:'sumPayment',	totalRow:true,},
+			       {align:'center', title:'实际运费',   field:'sumpostFee',	totalRow:true,style:"color:blue;"},
+			       {align:'center', title:'每单平均金额',   field:'averageAmount',	totalRow:true,},
 			       ]]
 		})
 		

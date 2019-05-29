@@ -67,6 +67,7 @@ layui.config({
 			elem:'#dayReport',
 			loading:true,
 			size:'sm',
+			totalRow:true,
 			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){
 				return {  
@@ -76,13 +77,13 @@ layui.config({
 					} },
 			cols:[[
 			       {align:'center', title:'时间',       field:'time',	 },
-			       {align:'center', title:'成交金额',   field:'sumPayment',	style:"color:#ff000a;"},
-			       {align:'center', title:'成交单数',   field:'singular',   },
-			       {align:'center', title:'实际邮费', 	field:'sumpostFee', 	},
-			       {align:'center', title:'成交宝贝数量',   field:'proNumber',	},
-			       {align:'center', title:'每单平均金额',   field:'averageAmount',	},
-			       {align:'center', title:'广宣成本',   field:'sumCost',	style:"color:blue;"},
-			       {align:'center', title:'利润',   field:'profits',	style:"color:#0fda87;"},
+			       {align:'center', title:'成交金额',   field:'sumPayment',	totalRow:true,style:"color:#ff000a;"},
+			       {align:'center', title:'成交单数',   field:'singular',  totalRow:true, },
+			       {align:'center', title:'实际邮费', 	field:'sumpostFee',totalRow:true, 	},
+			       {align:'center', title:'成交宝贝数量',   field:'proNumber',totalRow:true,	},
+			       {align:'center', title:'每单平均金额',   field:'averageAmount',totalRow:true,	},
+			       {align:'center', title:'广宣成本',   field:'sumCost',	style:"color:blue;",totalRow:true,},
+			       {align:'center', title:'利润',   field:'profits',	style:"color:#0fda87;",totalRow:true,},
 			       ]]
 		})
 		
