@@ -50,12 +50,16 @@ layui.config({
 		}) 
 		$('#search').on('click',function(){
 			var time=$('#time').val();
+			if(time==''){
+				layer.msg('请输入搜索时间！',{icon:2});
+				return;
+			}
 			var t=time.split('~');
 			table.reload('dayReport',{
 				url:'${ctx}/inventory/report/salesDay?report=1',
 				where:{
 					orderTimeBegin : t[0],
-					orderTimeEnd : t[1],
+					orderTimeEnd : t[1].substring(0,12)+'23:59:59'
 				}
 			})
 		})
