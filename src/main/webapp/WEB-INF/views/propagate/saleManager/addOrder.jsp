@@ -66,9 +66,9 @@ td{
 				<td>手机：</td>			
 				<td><input type="text" class="layui-input" id="customPhone" name="phone"></td>
 				<td>整单优惠：</td>			
-				<td><input type="text" class="layui-input" name="allBillPreferential"></td>
+				<td><input type="text" class="layui-input" name="allBillPreferential" value="0"></td>
 				<td>邮费：</td>			
-				<td><input type="text" class="layui-input" name="postFee"></td>
+				<td><input type="text" class="layui-input" name="postFee" value='0'></td>
 			</tr>
 			<tr>
 				<td>所在地：</td>			

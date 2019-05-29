@@ -428,6 +428,7 @@ layui.config({
 				title: '查看订单',
 				type:1,
 				area:['90%','90%'],
+				shadeClose:true,
 				content:html
 			})
 			initAddEditOrderWin(data.onlineOrderChilds);			//弹窗的初始化，表格的渲染等。。
