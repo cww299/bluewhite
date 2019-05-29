@@ -31,7 +31,6 @@ public class SysUserFilter extends AccessControlFilter {
     @Autowired
     private UserService userService;
     
-    private String unauthorizedUrl = "/error/500.jsp";  
     private String loginUrl = "/login.jsp";  
     
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
@@ -43,7 +42,9 @@ public class SysUserFilter extends AccessControlFilter {
 		}else{
 			//获取缓存
 			Cache<String, User> sysUserCache =  cacheManager.getCache("sysUserCache");
+			//从缓存中获取当前登录用户，当缓存中没有，重定向到登录页面，同时清空session
 			if(sysUserCache.get(cu.getUserName())==null){
+				SessionManager.removeUserSession();
 				return false;
 			}else{
 				if(cu.getRole()==null && cu.getPermissions()==null){
@@ -61,17 +62,7 @@ public class SysUserFilter extends AccessControlFilter {
   
     @Override  
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {  
-    	CurrentUser cu = SessionManager.getUserSession();
-        if (cu==null) {//表示没有登录，重定向到登录页面  
-            saveRequest(request);  
-            WebUtils.issueRedirect(request, response, loginUrl);  
-        } else {  
-            if (StringUtils.hasText(unauthorizedUrl)) {//如果有未授权页面跳转过去  
-                WebUtils.issueRedirect(request, response, unauthorizedUrl);  
-            } else {//否则返回401未授权状态码  
-                WebUtils.toHttp(response).sendError(HttpServletResponse.SC_UNAUTHORIZED);  
-            }  
-        }  
+        WebUtils.issueRedirect(request, response, loginUrl);  
         return false;  
     }  
 

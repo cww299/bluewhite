@@ -282,6 +282,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 		}
 		// 按月查询
 		if (procurement.getReport() == 2) {
+			procurement.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(procurement.getOrderTimeBegin()));
 			size = 1;
 		}
 		for (int i = 0; i < size; i++) {

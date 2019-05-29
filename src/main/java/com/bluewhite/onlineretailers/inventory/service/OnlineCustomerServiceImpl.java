@@ -41,7 +41,7 @@ public class OnlineCustomerServiceImpl extends BaseServiceImpl<OnlineCustomer, L
         	if (!StringUtils.isEmpty(param.getBuyerName())) {
 				predicate.add(cb.like(root.get("buyerName").as(String.class),"%" + StringUtil.specialStrKeyword(param.getBuyerName()) + "%"));
 			}
-        	//按真实名称过滤
+        	//按手机号过滤
         	if (!StringUtils.isEmpty(param.getPhone())) {
 				predicate.add(cb.like(root.get("phone").as(String.class),"%" + StringUtil.specialStrKeyword(param.getPhone()) + "%"));
 			}

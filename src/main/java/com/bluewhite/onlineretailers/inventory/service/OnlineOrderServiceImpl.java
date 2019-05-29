@@ -348,6 +348,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		}
 		// 按月查询
 		if (onlineOrder.getReport() == 2) {
+			onlineOrder.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(onlineOrder.getOrderTimeBegin()));
 			size = 1;
 		}
 		for (int i = 0; i < size; i++) {
@@ -488,7 +489,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 					.collect(Collectors.groupingBy(OnlineOrder::getUserId, Collectors.toList()));
 		}
 		if (onlineOrder.getReport() == 4) {
-			// 根据员工id分组
+			// 根据客户id分组
 			mapOnlineOrderList = onlineOrderList.stream()
 					.collect(Collectors.groupingBy(OnlineOrder::getOnlineCustomerId, Collectors.toList()));
 		}
