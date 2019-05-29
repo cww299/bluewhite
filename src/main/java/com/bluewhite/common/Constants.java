@@ -83,5 +83,14 @@ public class Constants {
     public static String  ONLINEORDER_8 ="TRADE_CLOSED";//(付款以后用户退款成功，交易自动关闭) 
     public static String  ONLINEORDER_9 ="TRADE_CLOSED_BY_TAOBAO";//(付款以前，卖家或买家主动关闭交易) 
     
+    /**
+     *  电商单据编号前缀
+     */
+    public static String  XS = "XS";
+    public static String  CK = "CK";
+    public static String  RK = "RK";
+    public static String  SC = "SC";
+    public static String  ZG = "ZG";
+    
 
 }

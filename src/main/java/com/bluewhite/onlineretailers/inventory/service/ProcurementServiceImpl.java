@@ -29,6 +29,8 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.common.utils.SalesUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
 import com.bluewhite.onlineretailers.inventory.dao.ProcurementDao;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
@@ -101,6 +103,8 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	@Override
 	@Transactional
 	public Procurement saveProcurement(Procurement procurement) {
+		//生成单据编号
+		procurement.setDocumentNumber(StringUtil.getDocumentNumber(String.valueOf(procurement.getType())) + SalesUtils.get0LeftString((int)dao.count(), 8));
 		// 逻辑处理：优先处理父级单据所有数据
 		Procurement upProcurement = new Procurement();
 		// 获取到上一级单据的数据
@@ -117,6 +121,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			upProcurement.setRemark(procurement.getRemark());
 			upProcurement.setUserId(procurement.getUserId());
 			upProcurement.setStatus(procurement.getStatus());
+			upProcurement.setDocumentNumber(procurement.getDocumentNumber());
 			// 将上级单据的剩余总数改变
 			oldProcurement.setResidueNumber(oldProcurement.getResidueNumber() - procurement.getNumber());
 		} else {

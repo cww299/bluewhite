@@ -28,6 +28,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.onlineretailers.inventory.dao.CommodityDao;
@@ -167,6 +168,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	@Override
 	@Transactional
 	public OnlineOrder addOnlineOrder(OnlineOrder onlineOrder) {
+		//生成销售单编号
+		onlineOrder.setDocumentNumber(StringUtil.getDocumentNumber(Constants.XS) + SalesUtils.get0LeftString((int)dao.count(), 8));
 		// 新增子订单
 		if (!StringUtils.isEmpty(onlineOrder.getChildOrder())) {
 			JSONArray jsonArray = JSON.parseArray(onlineOrder.getChildOrder());
@@ -476,12 +479,12 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		Map<Long, List<OnlineOrder>> mapOnlineOrderList = null;
 		if (onlineOrder.getReport() == 3) {
 			// 根据员工id分组
-			mapOnlineOrderList = onlineOrderList.stream()
+			mapOnlineOrderList = onlineOrderList.stream().filter(OnlineOrder->OnlineOrder.getUserId()!=null)
 					.collect(Collectors.groupingBy(OnlineOrder::getUserId, Collectors.toList()));
 		}
 		if (onlineOrder.getReport() == 4) {
 			// 根据客户id分组
-			mapOnlineOrderList = onlineOrderList.stream()
+			mapOnlineOrderList = onlineOrderList.stream().filter(OnlineOrder->OnlineOrder.getOnlineCustomerId()!=null)
 					.collect(Collectors.groupingBy(OnlineOrder::getOnlineCustomerId, Collectors.toList()));
 		}
 		for (Long ps : mapOnlineOrderList.keySet()) {
@@ -500,18 +503,19 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			// 实际运费
 			List<Double> listPostFee = new ArrayList<>();
 			Double sumPayment = 0.0;
-			Double sumpostFee = 0.0;
+			Double sumPostFee = 0.0;
 			if (psList.size() > 0) {
 				psList.stream().forEach(c -> {
 					listSumPayment.add(c.getSumPrice());
+					listPostFee.add(c.getPostFee());
 				});
-				sumPayment = NumUtils.sum(sumPayment);
-				sumpostFee = NumUtils.sum(listPostFee);
+				sumPayment = NumUtils.sum(listSumPayment);
+				sumPostFee = NumUtils.sum(listPostFee);
 			}
 			// 成交金额
 			mapSale.put("sumPayment", sumPayment);
 			// 实际邮费
-			mapSale.put("sumpostFee", sumpostFee);
+			mapSale.put("sumpostFee", sumPostFee);
 			// 每单平均金额
 			mapSale.put("averageAmount", NumUtils.div(sumPayment, psList.size(), 2));
 			mapList.add(mapSale);

@@ -12,5 +12,8 @@ public interface InventoryDao extends BaseRepository<Inventory, Long>{
 	 * @return
 	 */
 	Inventory findByCommodityIdAndWarehouseId(Long commodityId, Long warehouseId);
+	
+	
+	
 
 }

@@ -273,7 +273,7 @@ public class InventoryAction {
 	public CommonResponse procurementPage(Procurement procurement, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(Procurement.class, "id", "batchNumber", "user", "procurementChilds", "number",
+				.addRetainTerm(Procurement.class, "id","documentNumber", "batchNumber", "user", "procurementChilds", "number",
 						"residueNumber", "type", "flag", "remark", "transfersUser", "onlineCustomer", "status")
 				.addRetainTerm(ProcurementChild.class, "id", "commodity", "number", "residueNumber", "warehouse",
 						"status", "childRemark")
