@@ -127,12 +127,13 @@ td{
 </div>
 
 <!-- 客户选择隐藏框 -->
-<div id="customNameDiv" style="display:none;">
+<div id="customNameDiv" style="display:none;padding:5px;">
 	<table class="layui-form">
 		<tr>
-			<td><select name=""><option value="">按来往单位分类</option></select></td>			<td>&nbsp;</td>
-			<td><select name=""><option value="">按单位名称</option></select></td>				<td>&nbsp;</td>
-			<td><input type="text" class="layui-input"></td>									<td>&nbsp;</td>
+			<td>客户名称：</td>
+			<td><input type="text" name='name' class="layui-input" placeholder='请输入查找信息'></td>		<td>&nbsp;</td>
+			<td>手机号：</td>
+			<td><input type="text" name='phone' class="layui-input" placeholder='请输入查找信息'></td>		<td>&nbsp;</td>
 			<td><button lay-submit 	lay-filter="searchCustom"	type="button" class="layui-btn layui-btn-sm">
 					<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i></button>				<td>&nbsp;</td>
 			<td><button id="addCustom"	type="button" class="layui-btn layui-btn-sm">添加新客户</button>		<td>&nbsp;</td>
@@ -400,7 +401,10 @@ layui.config({
 		})
 		
 		form.on('submit(searchCustom)',function(obj){				//搜索客户
-			layer.msg('搜索');
+			table.reload('customTable',{
+				where:obj.field,
+				page: {  curr: 1   }
+			})
 		})
 		$('#addCustom').on('click',function(){
 			renderSelectAdd();										//渲染地址下拉框
@@ -465,7 +469,8 @@ layui.config({
 			var data = obj.field;
 			defaultPrice=data.defaultPriceSelect==''?'tianmao':data.defaultPriceSelect;
 			table.reload('productListTable',{
-				where:{ skuCode : obj.field.textSearch}
+				where:{ skuCode : obj.field.textSearch},
+				page: {  curr: 1   }
 			});
 		})
 		
@@ -584,7 +589,7 @@ layui.config({
 		});
 		function openCustomWindow(){		//选择客户弹窗
 			customChooseWin=layer.open({
-				title:'选择来往单位',
+				title:'选择客户',
 				area:['80%','80%'],
 				type:1,
 				content:$('#customNameDiv')

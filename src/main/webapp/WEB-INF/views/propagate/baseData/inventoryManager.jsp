@@ -190,9 +190,10 @@ layui.config({
 				},
 				cols:[[
 				       {type: 'checkbox',align : 'center',fixed: 'left'},
-						{field : "id",title : "数据id",sort : true,align : 'center'},
-						{field : "name",title : "名称",align : 'center'},
-						{field : "remark",title : "remark",align : 'center'},
+						{field : "id",     title : "仓库编号",sort : true,align : 'center'},
+						{field : "name",   title : "名称",align : 'center'},
+						{field : "remark", title : "备注",align : 'center'},
+						{field : "", title : "是否可用",align : 'center', templet:'<span>{{ d.flag==1?"可用":"不可用"}}</span>'},
 				      ]],
 			});
 		}

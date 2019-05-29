@@ -228,9 +228,6 @@ td{
   }}
 	<span>{{ str }}</span>
 </script>				
-<script type="text/html" id="customTpl">
-  {{ d.buyerName }}
-</script>	
 <script type="text/html" id="systemPreferentialTpl">
   {{#  if(d.systemPreferential < 0 ){ }}
     <span style="color: red;">{{d.systemPreferential}}</span>
@@ -366,9 +363,9 @@ layui.config({
 			       {type:'checkbox',align:'center',fixed:'left'},
 			       {field:'createdAt',	title:'下单时间',   align:'center', width:'9%'},
 			       {field:'tid',        title:'订单号',     align:'center', width:'8%',},
-			       {field:'',           title:'客户名称',     align:'center', width:'6%', templet:'#customTpl'},
-			       {field:'buyerMemo',  title:'买家留言',   align:'center'},
-			       {field:'sellerMemo', title:'卖家备注',   align:'center'},
+			       {field:'name',           title:'客户名称',     align:'center', width:'8%', },
+			       {field:'buyerMemo',  title:'买家留言',   align:'center',width:'12%', },
+			       {field:'sellerMemo', title:'卖家备注',   align:'center',width:'12%', },
 			       {field:'postFee',    title:'邮费',       align:'center', width:'4%'},
 			       {field:'payment',    title:'实收金额',   align:'center', width:'5%'},
 			       {field:'num',     	title:'件数',       align:'center', width:'4%'},
