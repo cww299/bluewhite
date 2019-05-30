@@ -118,8 +118,8 @@ td{
 					<option value="tianmao">天猫销售价</option>
 					<option value="_1688">1688销售价</option>
 					<option value="offline">线下批发价</option></select></td>	<td>&nbsp;</td>
-			<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProduct" >确定</button></td><td>&nbsp;</td>
-			<td><button type="button" class="layui-btn layui-btn-sm" id="addNewProduct" >添加新商品</button></td>			 <td>&nbsp;</td>
+			<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProduct" > <i class="layui-icon">&#xe615;</i>搜索</button></td><td>&nbsp;</td>
+			<td><button type="button" class="layui-btn layui-btn-sm" id="addNewProduct" >新增商品</button></td>			 <td>&nbsp;</td>
 			<td><button type="button" class="layui-btn layui-btn-sm" id="sure" >确定添加</button></td>						<td>&nbsp;</td>
 		</tr>
 	</table>

@@ -72,7 +72,7 @@ private static final Log log = Log.getLog(BacthAction.class);
 			List<Procedure> procedureList =procedureDao.findByProductIdAndTypeAndFlag(bacth.getProductId(), bacth.getType(), bacth.getFlag());
 			double time = procedureList.stream().mapToDouble(Procedure::getWorkingTime).sum();
 			if(procedureList!=null && procedureList.size()>0){
-				bacth.setTime(time*bacth.getNumber()/60);
+				bacth.setTime(NumUtils.div(NumUtils.mul(time, bacth.getNumber()),60,5));
 				}
 			bacthService.save(bacth);
 			cr.setMessage("修改成功");

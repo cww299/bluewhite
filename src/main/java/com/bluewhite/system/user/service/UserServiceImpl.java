@@ -92,6 +92,12 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	@Override
 	public PageResult<User> getPagedUser(PageParameter page, User user) {
 		CurrentUser cu = SessionManager.getUserSession();
+		
+		if(!cu.getRole().contains("superAdmin") && !cu.getRole().contains("personnel")){
+			user.setQuit(0);
+			user.setOrgNameIds(String.valueOf(cu.getOrgNameId()));
+		}
+		
 			//质检
 			if(cu.getRole().contains(Constants.PRODUCT_FRIST_QUALITY)){
 				user.setQuit(0);
@@ -118,9 +124,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				user.setOrgNameIds(Constants.TAILOR_ORGNAME);
 			}
 		
-			if(!cu.getRole().contains("superAdmin") && !cu.getRole().contains("personnel")){
-				user.setOrgNameIds(String.valueOf(cu.getOrgNameId()));
-			}
+			
 			
 		page.setSort(null);
 		Page<User> pageUser = userDao.findAll((root, query, cb) -> {
