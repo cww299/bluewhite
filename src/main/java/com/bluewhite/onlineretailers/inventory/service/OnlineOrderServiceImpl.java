@@ -35,6 +35,7 @@ import com.bluewhite.onlineretailers.inventory.dao.CommodityDao;
 import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
 import com.bluewhite.onlineretailers.inventory.dao.OnlineOrderChildDao;
 import com.bluewhite.onlineretailers.inventory.dao.OnlineOrderDao;
+import com.bluewhite.onlineretailers.inventory.dao.ProcurementDao;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
@@ -60,6 +61,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	private InventoryDao inventoryDao;
 	@Autowired
 	private RegionAddressDao regionAddressDao;
+	@Autowired
+	private ProcurementDao procurementDao;
 
 	@Override
 	public PageResult<OnlineOrder> findPage(OnlineOrder param, PageParameter page) {
@@ -200,6 +203,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	public int delivery(String delivery) {
 		int count = 0;
 		if (!StringUtils.isEmpty(delivery)) {
+			Procurement procurement = new Procurement();
+			procurement.setDocumentNumber(StringUtil.getDocumentNumber(Constants.CK) + SalesUtils.get0LeftString((int)procurementDao.count(), 8));
 			JSONArray jsonArray = JSON.parseArray(delivery);
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -208,17 +213,26 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				int number = jsonObject.getIntValue("number");
 				// 获取子订单
 				OnlineOrderChild onlineOrderChild = onlineOrderChildDao.findOne(id);
+				
 				// 获取父订单
 				OnlineOrder onlineOrder = onlineOrderChild.getOnlineOrder();
-				//更新父订单的状态(当自订单)
-				List<OnlineOrderChild> onlineOrderChildList = onlineOrder.getOnlineOrderChilds();
+				if(onlineOrder.getTrackingNumber()==null){
+					throw new ServiceException(onlineOrder.getDocumentNumber() + "销售单，没有运单编号，无法发货");
+				}
 				
-//				onlineOrderChildList.stream().forEach(o->{
-//					int sumStatus = 0;
-//					if(onlineOrder.getStatus().equals(Constants.ONLINEORDER_4)){
-//						sumStatus++;
-//					}
-//				});
+				//一个子订单拥有一个子出库单
+				ProcurementChild procurementChild = new ProcurementChild();
+				procurementChild.setCommodityId(onlineOrderChild.getCommodityId());
+				procurementChild.setNumber(number);
+				procurementChild.setWarehouseId(warehouseId);	
+				procurementChild.setStatus(0);
+				procurement.getProcurementChilds().add(procurementChild);
+				//更新父订单的状态(当自订单)当所有的子订单发货完成更新为卖家已发货，否则是部分发货
+				List<OnlineOrderChild> onlineOrderChildList = onlineOrder.getOnlineOrderChilds();
+				int onlineOrderChildListCount = (int)onlineOrderChildList.stream().filter(OnlineOrderChild->OnlineOrderChild.getStatus().equals(Constants.ONLINEORDER_5)).count();
+				if(onlineOrderChildList.size()==onlineOrderChildListCount){
+					onlineOrder.setStatus(Constants.ONLINEORDER_5);
+				}
 				
 				// 当订单的状态是买家已付款时
 				if (onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_4)) {
@@ -226,7 +240,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 					Commodity commodity = onlineOrderChild.getCommodity();
 					// 获取库存
 					Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(commodity.getId(),
-							jsonObject.getLong("warehouseId"));
+							warehouseId);
 					if (inventory != null) {
 						inventory.setNumber(inventory.getNumber() - number);
 						inventoryDao.save(inventory);
@@ -239,6 +253,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 					throw new ServiceException(onlineOrder.getDocumentNumber() + "不是等待卖家发货状态,无法发货");
 				}
 				count++;
+				procurementDao.save(procurement);
 			}
 		}
 		return count;
@@ -311,6 +326,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 					procurementChild.setWarehouseId(cPoi.getWarehouseId());
 					// 出库单
 					if (procurement.getType() == 3) {
+						procurement.setNumber(cPoi.getNumber());
 						// 获取库存
 						Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(commodity.getId(),
 								procurementChild.getWarehouseId());

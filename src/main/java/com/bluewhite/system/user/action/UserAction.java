@@ -294,7 +294,7 @@ public class UserAction {
 		}
 		//合同到期时间
 		List<Map<String , Object>> userContractList = new ArrayList<Map<String , Object>>();
-		List<User> userContract = userList.stream().filter(User->User.getContractDateEnd()!=null  && User.getQuit()!=1 && User.getQuit()!=null  ).collect(Collectors.toList());
+		List<User> userContract = userList.stream().filter(User->User.getContractDateEnd()!=null  &&  User.getQuit()!=null && User.getQuit()!=1  ).collect(Collectors.toList());
 		for(User user : userContract ){
 			Map<String,Object> us = new HashMap<String,Object>();
 			long co = DatesUtil.getDaySub( DatesUtil.getfristDayOftime(new Date()),DatesUtil.getfristDayOftime(user.getContractDateEnd()));

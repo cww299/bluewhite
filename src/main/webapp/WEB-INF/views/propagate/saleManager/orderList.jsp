@@ -84,7 +84,7 @@ td{
 														<option value='0'>不反冲</option></select></div>
 					<div class="layui-input-inline">
 						<button class="layui-btn" lay-submit lay-filter="search">搜索</button>
-						<span class="layui-btn" id="uploadDataBtn">导入订单</span></div>
+						<button class="layui-btn" id="uploadDataBtn">导入订单</button></div>
 				</div>
 			</div>
 		<table class="laui-table" id="onlineOrder" lay-filter="onlineOrder" ></table>
@@ -362,7 +362,7 @@ layui.config({
 			cols:[[
 			       {type:'checkbox',align:'center',fixed:'left'},
 			       {field:'createdAt',	title:'下单时间',   align:'center', width:'9%'},
-			       {field:'tid',        title:'订单号',     align:'center', width:'8%',},
+			       {field:'documentNumber',        title:'订单号',     align:'center', width:'8%',},
 			       {field:'name',           title:'客户名称',     align:'center', width:'8%', },
 			       {field:'buyerMemo',  title:'买家留言',   align:'center',width:'12%', },
 			       {field:'sellerMemo', title:'卖家备注',   align:'center',width:'12%', },

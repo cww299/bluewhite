@@ -82,7 +82,7 @@ public class Procedure extends BaseEntity<Long> {
 	private Double hairPrice;
 	
     /**
-     * 部门生产总价
+     * 部门生产预计单价
      */
 	@Column(name = "department_price")
     private Double departmentPrice;
