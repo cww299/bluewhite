@@ -109,19 +109,19 @@ td{
 	<tr><td>商品名称</td>
 		<td><input type="text" class="layui-input" lay-verify="required"	name="skuCode"></td>
 		<td>1688批发价/元</td>
-		<td><input type="text" class="layui-input" lay-verify="number"		name="OSEEPrice"></td></tr>
+		<td><input type="text" class="layui-input" 		name="OSEEPrice"></td></tr>
 	<tr><td>天猫单价/元</td>
-		<td><input type="text" class="layui-input" lay-verify="number"		name="tianmaoPrice"> </td>
+		<td><input type="text" class="layui-input" 		name="tianmaoPrice"> </td>
 		<td>线下批发价/元</td>
-		<td><input type="text" class="layui-input" lay-verify="number"		name="offlinePrice"></td></tr>
+		<td><input type="text" class="layui-input" 		name="offlinePrice"></td></tr>
 	<tr><td>商品重量/g</td>
-		<td><input type="text" class="layui-input" lay-verify="number"		name="weight" ></td>
+		<td><input type="text" class="layui-input" 		name="weight" ></td>
 		<td>商品高度/cm</td>
-		<td><input type="text" class="layui-input" lay-verify="number"		name="size" ></td></tr>
+		<td><input type="text" class="layui-input" 		name="size" ></td></tr>
 	<tr><td>商品成本/元</td>
-		<td><input type="text" class="layui-input" lay-verify="number"		name="cost"></td>
+		<td><input type="text" class="layui-input" 		name="cost"></td>
 		<td>广宣成本/元</td>
-		<td><input type="text" class="layui-input" lay-verify="number"		name="propagandaCost" ></td></tr>
+		<td><input type="text" class="layui-input" 		name="propagandaCost" ></td></tr>
 	<tr><td>商品填充物</td>
 		<td><input type="text" class="layui-input" name="fillers"></td>
 		<td>商品材质</td>

@@ -60,43 +60,43 @@
 	<div class="layui-item">
 		<label class="layui-form-label">1688价/元</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="oseePrice" value="{{d.oseePrice}}" lay-verify="number">
+			<input class="layui-input" name="oseePrice" value="{{d.oseePrice}}">
 		</div>
 	</div>
 	<div class="layui-item">
 		<label class="layui-form-label">天猫价/元</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="tianmaoPrice" value="{{d.tianmaoPrice}}" lay-verify="number">
+			<input class="layui-input" name="tianmaoPrice" value="{{d.tianmaoPrice}}">
 		</div>
 	</div>
 	<div class="layui-item">
 		<label class="layui-form-label">线下价/元</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="offlinePrice" value="{{d.offlinePrice}}" lay-verify="number">
+			<input class="layui-input" name="offlinePrice" value="{{d.offlinePrice}}">
 		</div>
 	</div>
 	<div class="layui-item">
 		<label class="layui-form-label">商品重量/g</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="weight" value="{{d.weight}}" lay-verify="number">
+			<input class="layui-input" name="weight" value="{{d.weight}}">
 		</div>
 	</div>
 	<div class="layui-item">
 		<label class="layui-form-label">商品高度/cm</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="size" value="{{d.size}}" lay-verify="number">
+			<input class="layui-input" name="size" value="{{d.size}}">
 		</div>
 	</div>
 	<div class="layui-item">
 		<label class="layui-form-label">成本/元</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="cost" value="{{d.cost}}" lay-verify="number">
+			<input class="layui-input" name="cost" value="{{d.cost}}">
 		</div>
 	</div>
 	<div class="layui-item">
 		<label class="layui-form-label">广宣成本/元</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="propagandaCost" value="{{d.propagandaCost}}" lay-verify="number">
+			<input class="layui-input" name="propagandaCost" value="{{d.propagandaCost}}">
 		</div>
 	</div>
 	<div class="layui-item">
