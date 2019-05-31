@@ -395,31 +395,33 @@ layui.config({
 				layer.msg('请选择订单',{icon:2});
 				return;
 			}
-			var c=[];
-			for(var j=0;j<choosed.length;j++){
-				var child=choosed[j].onlineOrderChilds;
-				for(var i=0;i<child.length;i++){
-					c.push({
-						warehouseId : child[i].warehouse.id,
-						id:child[i].id,
-						number:child[i].number
-					})
+			layer.confirm('是否确认一键发货？',function(){
+				var c=[];
+				for(var j=0;j<choosed.length;j++){
+					var child=choosed[j].onlineOrderChilds;
+					for(var i=0;i<child.length;i++){
+						c.push({
+							warehouseId : child[i].warehouse.id,
+							id:child[i].id,
+							number:child[i].number
+						})
+					}
 				}
-			}
-			var load;
-			$.ajax({
-				url:'${ctx}/inventory/delivery',
-				type:'post',
-				data:{delivery:JSON.stringify(c)},
-				beforeSend:function(){ load = layer.load(1); },
-				success:function(r){
-					if(0==r.code){
-						layer.msg(r.message,{icon:1});
-						table.reload('onlineOrder');
-					}else
-						layer.msg(r.message,{icon:2});
-					layer.close(load);
-				}
+				var load;
+				$.ajax({
+					url:'${ctx}/inventory/delivery',
+					type:'post',
+					data:{delivery:JSON.stringify(c)},
+					beforeSend:function(){ load = layer.load(1); },
+					success:function(r){
+						if(0==r.code){
+							layer.msg(r.message,{icon:1});
+							table.reload('onlineOrder');
+						}else
+							layer.msg(r.message,{icon:2});
+						layer.close(load);
+					}
+				})
 			})
 		}
 		function addEditOrder(data){
