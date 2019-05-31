@@ -32,11 +32,6 @@
 	</div>
 </div>
 
-<!-- 查看商品库存隐藏框 -->
-<div style="display:none;" id="lookoverDiv">
-	<table class="layui-table" id="lookoverTable" lay-filter='lookoverTable'></table>
-</div>
-
 
 </body>
 
@@ -140,6 +135,37 @@ layui.config({
 		, laytpl = layui.laytpl
 		, tablePlug = layui.tablePlug;
 		
+		var allInventory=[];
+		getAllInventory();
+		var cols=[[
+					{align:'center', type:'checkbox',},
+					{align:'center', title:'商品编号',   field:'skuCode',	width:'10%',},
+					{align:'center', title:'商品高度',   field:'size',    width:'',},
+					{align:'center', title:'商品重量', 	field:'weight', width:'',},
+					{align:'center', title:'1688单价',   	field:'oseePrice',		width:'',},
+					{align:'center', title:'天猫单价',   	field:'tianmaoPrice',	width:'',},
+					{align:'center', title:'线下单价',   	field:'offlinePrice',	width:'',},
+					{align:'center', title:'成本价', 		field:'cost',	width:'',},
+					{align:'center', title:'广宣成本', 	field:'propagandaCost',	width:'',},
+					{align:'center', title:'材质', 		field:'material',	},
+					{align:'center', title:'填充物', 		field:'fillers',	},
+					{align:'center', title:'备注', 		field:'remark',	},
+		           ]];
+		for(var i=0;i<allInventory.length;i++)
+			cols[0].push({align:'center', title:allInventory[i].name, templet : getInventoryNumber(allInventory[i].id),	})
+		
+		function getInventoryNumber(warehouseId){
+			return function(d){
+				var inv=d.inventorys;
+				console.log(d.field)
+				for(var j=0;j<inv.length;j++){
+					if(inv[j].warehouse.id==warehouseId)
+						return '<span style="color:blue;">'+inv[j].number+'</span>';
+				}
+				return '<span style="color:red;">无库存</span>';
+			}
+		}
+		
 		table.render({
 			elem:'#productTable',
 			url:'${ctx}/inventory/commodityPage',
@@ -154,20 +180,7 @@ layui.config({
 			parseData:function(ret){
 				return {data:ret.data.rows,count:ret.data.total,msg:ret.message,code:ret.code }
 			},
-			cols:[[
-			       {align:'center', type:'checkbox',},
-			       {align:'center', title:'商品编号',   field:'skuCode',	width:'10%',},
-			       {align:'center', title:'商品高度',   field:'size',    width:'7%',},
-			       {align:'center', title:'商品重量', 	field:'weight', width:'7%',},
-			       {align:'center', title:'1688单价',   	field:'oseePrice',		width:'7%',},
-			       {align:'center', title:'天猫单价',   	field:'tianmaoPrice',	width:'7%',},
-			       {align:'center', title:'线下单价',   	field:'offlinePrice',	width:'7%',},
-			       {align:'center', title:'成本价', 		field:'cost',	width:'5%',},
-			       {align:'center', title:'广宣成本', 	field:'propagandaCost',	width:'7%',},
-			       {align:'center', title:'材质', 		field:'material',	},
-			       {align:'center', title:'填充物', 		field:'fillers',	},
-			       {align:'center', title:'备注', 		field:'remark',	},
-			       ]]
+			cols:cols
 		})
 		
 		form.on('submit(search)',function(obj){
@@ -183,28 +196,6 @@ layui.config({
 			case 'delete':	deletes();			break;
 			}
 		})
-		table.on('rowDouble(productTable)',function(obj){
-			lookover(obj.data);
-		})
-		function lookover(data){
-			layer.open({
-				title:data.skuCode,
-				type:1,
-				shadeClose:true,
-				area:['30%','50%'],
-				content:$('#lookoverDiv'),
-			})
-			table.render({
-				elem:'#lookoverTable',
-				data:data.inventorys,
-				size:'lg',
-				totalRow:true,
-				cols:[[
-				       {align:'center',  title:'仓库名称',  templet:'<span>{{ d.warehouse.name }}</span>'},
-				       {align:'center',  title:'库存数量',  field:'number',totalRow:true,  },
-				       ]],
-			})
-		}
 		
 		function addEdit(type){
 			var data={id:'',skuCode:'',weight:'',size:'',material:'',fillers:'',cost:'',propagandaCost:'',remark:'',tianmaoPrice:'',oseePrice:'',offlinePrice:''},
@@ -288,7 +279,19 @@ layui.config({
 				})
 			})
 		}
-		
+		function getAllInventory(){					//获取所有仓库
+			$.ajax({
+				url:'${ctx}/basedata/list?type=inventory',
+				async:false,
+				success:function(r){
+					if(0==r.code){
+						for(var i=0;i<r.data.length;i++){
+							allInventory.push({ id:r.data[i].id,name:r.data[i].name});
+						}
+					}
+				}
+			})
+		}
 		$(document).on('click', '.layui-table-view tbody tr', function(event) {
 			var elemTemp = $(this);
 			var tableView = elemTemp.closest('.layui-table-view');

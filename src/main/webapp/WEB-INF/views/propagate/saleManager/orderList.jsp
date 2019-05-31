@@ -556,7 +556,6 @@ layui.config({
 								disabled='disabled';
 							html+='<option value="'+r.data[i].id+'" '+disabled+'>'+r.data[i].name+'</option>';
 						}
-						console.log(html)
 						$('#uploadWarehouse').html(html);
 					}
 				}
