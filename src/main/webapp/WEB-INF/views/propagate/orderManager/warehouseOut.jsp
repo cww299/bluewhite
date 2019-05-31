@@ -49,7 +49,7 @@ td{
 <div id="addOrderDiv" style="display:none;padding:10px;">
 	<table class="layui-form layui-table" lay-size="sm" lay-skin="nob">
 		<tr><td>批次号<input type="hidden" name="type" value="3" ></td>	<!-- 默认type类型为3，表示为出库单 -->
-			<td><input type="text" class="layui-input" name='batchNumber' lay-verify='required'></td>
+			<td><input type="text" class="layui-input" id="addBatchNumber" name='batchNumber' lay-verify='required'></td>
 			<td>经手人</td>
 			<td><select name="userId" id='userIdSelect' lay-search><option value="1" >测试人admin</option></select></td>
 			<td>备注</td>
@@ -65,7 +65,8 @@ td{
 						<option value="1">调拨出库</option>
 						<option value="2">销售换货出库</option>
 						<option value="3">采购退货出库 </option></select></td>
-			<td colsapn="2"><span class="layui-btn" lay-submit lay-filter="sureAdd" >确定</span></td></tr>
+			<td colsapn="2"><span class="layui-btn" lay-submit lay-filter="sureAdd" >确定</span>
+							<span class="layui-btn layui-btn-danger" id='resetAddOrder' >清空数据</span></td></tr>
 	</table>
 	<table class="layui-table" id="productListTable" lay-filter="productListTable"></table>
 </div>
@@ -278,11 +279,11 @@ layui.config({
 				page:{},
 				loading:true,
 				cols:[[
+				       {align:'center', title:'批次号', field:'batchNumber',},
 				       {align:'center', title:'商品名称',  templet:'<p>{{ d.commodity.skuCode }}</p>'},
 				       {align:'center', title:'数量',     field:'number',},
 				       {align:'center', title:'出库仓库', 	  templet:function(d){return d.warehouse.name; },}, 
 				       {align:'center', title:'出库类型', 	 templet:'#statusTpl',}, 
-				       /* {align:'center', title:'仓位',  	  field:'place',},  */
 				       {align:'center', title:'备注', 	  field:'childRemark',}, 
 				       ]]
 			})
@@ -320,6 +321,7 @@ layui.config({
 				loading:true,
 				cols:[[
 				       {type:'checkbox', align:'center', fixed:'left'},
+				       {align:'center', title:'批次号', field:'batchNumber', edit:true, style:'color:blue',},
 				       {align:'center', title:'商品名称', field:'skuCode',},
 				       {align:'center', title:'出库数量',     field:'number', edit:true,style:'color:blue',  },
 				       {align:'center', title:'出库仓库',     field:'warehouseId', 	templet: getInventorySelectHtml()},
@@ -333,6 +335,11 @@ layui.config({
 			})
 			table.reload('productListTable',{ data : choosedProduct });
 		}
+		$('#addBatchNumber').change(function(){
+			for(var i=0;i<choosedProduct.length;i++)
+				choosedProduct[i].batchNumber=$('#addBatchNumber').val();
+			table.reload('productListTable',{ data : choosedProduct });
+		})
 		table.on('toolbar(productListTable)',function(obj){		//监听选择商品表格的工具栏按钮
 			switch(obj.event){
 			case 'add': openChooseProductWin(); break;
@@ -414,8 +421,10 @@ layui.config({
 					 if(choosedProduct[i].commodityId==obj.data.commodityId){		//重新对该行的相关数据进行计算
 						 if(obj.field=='childRemark')
 							choosedProduct[i].childRemark = obj.value;
-						 else
+						 else if(obj.field=='place')
 							 choosedProduct[i].place = obj.value;
+						 else if(obj.field=='batchNumber')
+							 choosedProduct[i].batchNumber = obj.value;
 					 	break;
 					}
 				}
@@ -424,6 +433,10 @@ layui.config({
 		});
 		form.on('submit(sureAdd)',function(obj){					//确定添加出库单
 			var child=[],allNum=0;
+			if(!choosedProduct.length>0){
+				layer.msg('出库商品不能为空！',{icon:2});
+				return;
+			}
 			for(var i=0;i<choosedProduct.length;i++){
 				var t=choosedProduct[i];			
 				if(t.number<1){
@@ -434,6 +447,10 @@ layui.config({
 					layer.msg('不能选择库存为0的商品！',{icon:2});
 					return;
 				}
+				if(t.batchNumber==""){
+					layer.msg('商品批次号不能为空！',{icon:2});
+					return;
+				}
 				child.push({
 					commodityId : 	t.commodityId,
 					number : 		t.number,
@@ -441,6 +458,7 @@ layui.config({
 					status : 		t.status,
 					childRemark : 	t.childRemark	==	undefined ? '' : t.childRemark,
 					warehouseId :	t.warehouseId,
+					batchNumber : 	t.batchNumber,
 				});
 			}
 			var data=obj.field;
@@ -495,7 +513,8 @@ layui.config({
 			for(var i=0;i<choosed.length;i++){
 				for(var j=0;j<choosedProduct.length;j++){
 					if(choosed[i].id==choosedProduct[j].id){
-						$('#addOrderNumber').val($('#addOrderNumber').val()-choosedProduct[j].number);
+						if(!isNaN(choosedProduct[j].number))
+							$('#addOrderNumber').val($('#addOrderNumber').val()-choosedProduct[j].number);
 						choosedProduct.splice(j,1);
 						break;
 					}
@@ -565,6 +584,7 @@ layui.config({
 							status:defaultStatus,			//出库状态
 							warehouseId:warehouseId,		 //选择的仓库id
 							inventorys:choosed[i].inventorys,//库存情况
+							batchNumber : $('#addBatchNumber').val(),
 							
 					};
 					choosedProduct.push(orderChild);

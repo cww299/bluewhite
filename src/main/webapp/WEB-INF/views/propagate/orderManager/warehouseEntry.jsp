@@ -49,8 +49,8 @@ td{
 <!-- 添加订单隐藏框  -->
 <div id="addOrderDiv" style="display:none;padding:10px;">
 	<table class="layui-form layui-table" lay-size="sm" lay-skin="nob">
-		<tr><td>批次号<input type="hidden" name="type" value="2" ></td>	<!-- 默认type类型为2，表示为入库单 -->
-			<td><input type="text" class="layui-input" name='batchNumber' lay-verify='required'></td>
+		<tr><td>默认批次号<input type="hidden" name="type" value="2" ></td>	<!-- 默认type类型为2，表示为入库单 -->
+			<td><input type="text" class="layui-input" id='addBatchNumber' name='batchNumber' lay-verify='required'></td>
 			<td>经手人</td>
 			<td><select name="userId" id='userIdSelect' lay-search><option value="1" >获取数据中...</option></select></td>
 			<td>备注</td>
@@ -69,7 +69,8 @@ td{
 						<option value="4">采购入库</option></select></td>
 			<td id='textTd'></td>
 			<td id='selectTd' style='width:280px;'></td>
-			<td colspan="2"><span class="layui-btn" lay-submit lay-filter="sureAdd" >确定新增</span></td></tr>
+			<td colspan="2"><span class="layui-btn" lay-submit lay-filter="sureAdd" >确定新增</span>
+						<span class="layui-btn layui-btn-danger" id='resetAddOrder' >清空数据</span></td></tr>
 	</table>
 	<table class="layui-table" id="productListTable" lay-filter="productListTable"></table>
 </div>
@@ -323,6 +324,7 @@ layui.config({
 				page:{},
 				loading:true,
 				cols:[[
+				       {align:'center', title:'批次号', field:'batchNumber',},
 				       {align:'center', title:'商品名称',  templet:'<p>{{ d.commodity.skuCode }}</p>'},
 				       {align:'center', title:'数量',     field:'number',},
 				       {align:'center', title:'剩余数量', field:'residueNumber'},
@@ -377,19 +379,25 @@ layui.config({
 				loading:true,
 				cols:[[
 				       {type:'checkbox', align:'center', fixed:'left'},
+				       {align:'center', title:'批次号', field:'batchNumber', edit:true, style:'color:blue',},
 				       {align:'center', title:'商品名称', field:'skuCode',},
 				       {align:'center', title:'计划数量',     field:'number', edit:'true',},
 				       {align:'center', title:'入库仓库',     field:'warehouseId', 	templet: getInventorySelectHtml()},
 				       {align:'center', title:'入库类型',     field:'status',  		templet: getStatusSelectHtml()},
 				       {align:'center', title:'仓位',  	 	  field:'place', 	edit:true, style:'color:blue',}, 
 				       {align:'center', title:'备注',  	  field:'childRemark',  edit:true, style:'color:blue',}, 
-				       ]],
+				       ]],	
 			   	done: function (res, curr, count) {	//设置下拉框初始			
 	                form.render(); 
 	            },
 			})
 			table.reload('productListTable',{ data : choosedProduct });
 		}
+		$('#addBatchNumber').change(function(){
+			for(var i=0;i<choosedProduct.length;i++)
+				choosedProduct[i].batchNumber=$('#addBatchNumber').val();
+			table.reload('productListTable',{ data : choosedProduct });
+		})
 		table.on('toolbar(productListTable)',function(obj){		//监听选择商品表格的工具栏按钮
 			switch(obj.event){
 			case 'add': openChooseProductWin(); break;
@@ -450,8 +458,10 @@ layui.config({
 					 if(choosedProduct[i].commodityId==obj.data.commodityId){		//重新对该行的相关数据进行计算
 						 if(obj.field=='childRemark')
 							choosedProduct[i].childRemark = obj.value;
-						 else
+						 else if(obj.field=='place')
 							 choosedProduct[i].place = obj.value;
+						 else if(obj.field=='batchNumber')
+							 choosedProduct[i].batchNumber = obj.value;
 					 	break;
 					}
 				}
@@ -472,13 +482,18 @@ layui.config({
 					layer.msg('计划数量不能为0！',{icon:2});
 					return;
 				}
+				if(t.batchNumber==""){
+					layer.msg('商品批次号不能为空！',{icon:2});
+					return;
+				}
 				child.push({
 					commodityId : 	t.commodityId,
 					number : 		t.number,
 					warehouseId : 	t.warehouseId,
 					status : 		t.status,
 					place : 		t.place			==	undefined ? '' : t.place,
-					childRemark : 	t.childRemark	==	undefined ? '' : t.childRemark
+					childRemark : 	t.childRemark	==	undefined ? '' : t.childRemark,
+					batchNumber : 	t.batchNumber,
 				});
 			}
 			var data=obj.field;
@@ -628,6 +643,7 @@ layui.config({
 							status : defaultStatus,			//状态
 							warehouseId : defaultInventory, //仓库
 							remark:choosed[i].remark,		//备注
+							batchNumber : $('#addBatchNumber').val(),
 					};
 					$('#addOrderNumber').val($('#addOrderNumber').val()-(-1));
 					choosedProduct.push(orderChild);
