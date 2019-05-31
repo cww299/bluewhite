@@ -223,6 +223,7 @@ layui.config({
 				loading:true,
 				cols:[[
 				       {type:'checkbox', align:'center', fixed:'left'},
+				       {align:'center', title:'批次号',   field:'batchNumber',},
 				       {align:'center', title:'商品名称', templet:'<p>{{ d.commodity.skuCode }}</p>',},
 				       {align:'center', title:'商品数量', field:'number', },
 				       {align:'center', title:'剩余数量', field:'residueNumber'},

@@ -41,7 +41,7 @@ td{
 <!-- 添加订单隐藏框  -->
 <div id="addOrderDiv" style="display:none;padding:10px;">
 	<table class="layui-form layui-table"  lay-size="sm" lay-skin="nob">
-		<tr><td>批次号<input type="hidden" name="type" value="0" ></td>	<!-- 默认type类型为0，表示为生产单 -->
+		<tr><td>默认批次号<input type="hidden" name="type" value="0" ></td>	<!-- 默认type类型为0，表示为生产单 -->
 			<td><input type="text" class="layui-input" name="batchNumber" lay-verify='required' id="addBatchNumber"></td>
 			<td>经手人</td>
 			<td><select name="userId" id='userIdSelectAdd' lay-search><option value="1" >获取数据中...</option></select></td>
@@ -109,19 +109,19 @@ td{
 	<tr><td>商品名称</td>
 		<td><input type="text" class="layui-input" lay-verify="required"	name="skuCode"></td>
 		<td>1688批发价/元</td>
-		<td><input type="text" class="layui-input" lay-verify="number"		name="OSEEPrice"></td></tr>
+		<td><input type="text" class="layui-input" 		name="OSEEPrice"></td></tr>
 	<tr><td>天猫单价/元</td>
-		<td><input type="text" class="layui-input" lay-verify="number"		name="tianmaoPrice"> </td>
+		<td><input type="text" class="layui-input" 		name="tianmaoPrice"> </td>
 		<td>线下批发价/元</td>
-		<td><input type="text" class="layui-input" lay-verify="number"		name="offlinePrice"></td></tr>
+		<td><input type="text" class="layui-input" 		name="offlinePrice"></td></tr>
 	<tr><td>商品重量/g</td>
-		<td><input type="text" class="layui-input" lay-verify="number"		name="weight" ></td>
+		<td><input type="text" class="layui-input" 		name="weight" ></td>
 		<td>商品高度/cm</td>
-		<td><input type="text" class="layui-input" lay-verify="number"		name="size" ></td></tr>
+		<td><input type="text" class="layui-input" 		name="size" ></td></tr>
 	<tr><td>商品成本/元</td>
-		<td><input type="text" class="layui-input" lay-verify="number"		name="cost"></td>
+		<td><input type="text" class="layui-input" 		name="cost"></td>
 		<td>广宣成本/元</td>
-		<td><input type="text" class="layui-input" lay-verify="number"		name="propagandaCost" ></td></tr>
+		<td><input type="text" class="layui-input" 		name="propagandaCost" ></td></tr>
 	<tr><td>商品填充物</td>
 		<td><input type="text" class="layui-input" name="fillers"></td>
 		<td>商品材质</td>
@@ -275,6 +275,7 @@ layui.config({
 				loading:true,
 				cols:[[
 				       {type:'checkbox', align:'center', fixed:'left'},
+				       {align:'center', title:'批次号',   field:'batchNumber',},
 				       {align:'center', title:'商品名称', templet:'<p>{{ d.commodity.skuCode }}</p>',},
 				       {align:'center', title:'商品数量', field:'number', },
 				       {align:'center', title:'剩余数量', field:'residueNumber'},
@@ -381,6 +382,7 @@ layui.config({
 				page:{},
 				loading:true,
 				cols:[[
+					   {align:'center', title:'批次号',   field:'batchNumber',},
 				       {align:'center', title:'商品名称',  templet:'<p>{{ d.commodity.skuCode }}</p>'},
 				       {align:'center', title:'数量',     field:'number',},
 				       {align:'center', title:'剩余数量', field:'residueNumber'},
@@ -408,10 +410,10 @@ layui.config({
 				elem:'#productListTable',
 				toolbar:'#productListTableToolbar',
 				data:[],
-				page:{},
 				loading:true,
 				cols:[[
 				       {type:'checkbox', align:'center', fixed:'left'},
+				       {align:'center', title:'批次号',   field:'batchNumber', edit:true,style:'color:blue', },
 				       {align:'center', title:'商品名称', field:'skuCode',},
 				       {align:'center', title:'数量',     field:'number', edit:true,style:'color:blue', },
 				       {align:'center', title:'备注',  	  field:'childRemark', edit:true,style:'color:blue', }, 
@@ -419,6 +421,12 @@ layui.config({
 			})
 			table.reload('productListTable',{ data : choosedProduct });
 		}
+		$('#addBatchNumber').change(function(){			//默认批次号改变
+			for(var i=0;i<choosedProduct.length;i++){
+				choosedProduct[i].batchNumber=$('#addBatchNumber').val();
+			}
+			table.reload('productListTable',{ data : choosedProduct });
+		})
 		table.on('toolbar(productListTable)',function(obj){		//监听选择商品表格的工具栏按钮
 			switch(obj.event){
 			case 'add': openChooseProductWin(); break;
@@ -447,7 +455,10 @@ layui.config({
 			}else{
 				for(var i=0;i<choosedProduct.length;i++){
 					 if(choosedProduct[i].commodityId==obj.data.commodityId){		//重新对该行的相关数据进行计算
-						choosedProduct[i].childRemark=obj.data.childRemark;
+						if(obj.field=='childRemark')
+						 	choosedProduct[i].childRemark=obj.data.childRemark;
+						else if(obj.field=='batchNumber')
+							choosedProduct[i].batchNumber=obj.data.batchNumber;
 					 	layer.msg('修改成功！',{icon:1});
 					 	break;
 					}
@@ -465,7 +476,10 @@ layui.config({
 			}
 			var child=[],allNum=0;
 			for(var i=0;i<choosedProduct.length;i++){
-				child.push({commodityId:choosedProduct[i].commodityId,number:choosedProduct[i].number,childRemark:choosedProduct[i].childRemark});
+				child.push({batchNumber : choosedProduct[i].batchNumber,
+							commodityId : choosedProduct[i].commodityId,
+							number : choosedProduct[i].number,
+							childRemark : choosedProduct[i].childRemark});
 			}
 			data.commodityNumber=JSON.stringify(child);			//子列表商品
 			var load = layer.load(1);
@@ -607,6 +621,7 @@ layui.config({
 							number:1,						//商品数量
 							cost:choosed[i].cost,			//成本
 							remark:choosed[i].remark,		//备注
+							batchNumber:$('#addBatchNumber').val(),
 					};
 					$('#addNumber').val($('#addNumber').val()-(-1));
 					choosedProduct.push(orderChild);

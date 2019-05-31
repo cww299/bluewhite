@@ -99,7 +99,8 @@ td{
 <!-- 上传文件隐藏框 -->
 <div id='uploadDiv' style="display:none;padding:20px;" class="layui-form">
 	<select id='uploadUser' lay-search><option value="">经手人</option></select>
-	<select id='uploadCustom' lay-search><option value="">客户</option></select>
+	<select id='uploadCustom' lay-search><option value="">选择客户</option></select>
+	<select id='uploadWarehouse'><option value="">仓库选择</option></select>
 	<button type='button' id='uploadData' style="display:none;"></button>
 </div>
 
@@ -282,6 +283,7 @@ layui.config({
 		
 		getAllUser();
 		getAllCustom();
+		getAllInventory();
 		//------------搜索功能---------------------
 		laydate.render({ elem:'#searchTime', type: 'datetime', range:'~' }) 
 		form.on('submit(search)',function(obj){			//订单列表搜索
@@ -304,7 +306,10 @@ layui.config({
 		   	  elem: '#uploadData'
 		   	  ,url: '${ctx}/inventory/import/excelOnlineOrder'
 		 	  ,before: function(obj){ 	
-		 		  this.data={  userId:$('#uploadUser').val(),  onlineCustomerId:$('#uploadCustom').val()  };
+		 		  this.data={  
+		 				  userId:$('#uploadUser').val(),  
+		 				  onlineCustomerId:$('#uploadCustom').val(),  
+		 				  warehouseId:$('#uploadWarehouse').val()  };
 		 		 load = layer.load(1); 
 			  }
 		   	  ,done: function(res, index, upload){ 
@@ -390,31 +395,33 @@ layui.config({
 				layer.msg('请选择订单',{icon:2});
 				return;
 			}
-			var c=[];
-			for(var j=0;j<choosed.length;j++){
-				var child=choosed[j].onlineOrderChilds;
-				for(var i=0;i<child.length;i++){
-					c.push({
-						warehouseId : child[i].warehouse.id,
-						id:child[i].id,
-						number:child[i].number
-					})
+			layer.confirm('是否确认一键发货？',function(){
+				var c=[];
+				for(var j=0;j<choosed.length;j++){
+					var child=choosed[j].onlineOrderChilds;
+					for(var i=0;i<child.length;i++){
+						c.push({
+							warehouseId : child[i].warehouse.id,
+							id:child[i].id,
+							number:child[i].number
+						})
+					}
 				}
-			}
-			var load;
-			$.ajax({
-				url:'${ctx}/inventory/delivery',
-				type:'post',
-				data:{delivery:JSON.stringify(c)},
-				beforeSend:function(){ load = layer.load(1); },
-				success:function(r){
-					if(0==r.code){
-						layer.msg(r.message,{icon:1});
-						table.reload('onlineOrder');
-					}else
-						layer.msg(r.message,{icon:2});
-					layer.close(load);
-				}
+				var load;
+				$.ajax({
+					url:'${ctx}/inventory/delivery',
+					type:'post',
+					data:{delivery:JSON.stringify(c)},
+					beforeSend:function(){ load = layer.load(1); },
+					success:function(r){
+						if(0==r.code){
+							layer.msg(r.message,{icon:1});
+							table.reload('onlineOrder');
+						}else
+							layer.msg(r.message,{icon:2});
+						layer.close(load);
+					}
+				})
 			})
 		}
 		function addEditOrder(data){
@@ -535,6 +542,23 @@ layui.config({
 							})
 						renderCustomSelect('customIdSelect');
 						renderCustomSelect('uploadCustom');
+					}
+				}
+			})
+		}
+		function getAllInventory(){					//获取所有仓库
+			$.ajax({
+				url:'${ctx}/basedata/list?type=inventory',
+				success:function(r){
+					if(0==r.code){
+						var html='';
+						for(var i=0;i<r.data.length;i++){
+							var disabled='';
+							if(r.data[i].flag==0)
+								disabled='disabled';
+							html+='<option value="'+r.data[i].id+'" '+disabled+'>'+r.data[i].name+'</option>';
+						}
+						$('#uploadWarehouse').html(html);
 					}
 				}
 			})
