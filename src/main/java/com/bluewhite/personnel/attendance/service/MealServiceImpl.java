@@ -1,5 +1,6 @@
 package com.bluewhite.personnel.attendance.service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.personnel.attendance.dao.MealDao;
 import com.bluewhite.personnel.attendance.dao.PersonVariableDao;
+import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.entity.Meal;
 import com.bluewhite.personnel.attendance.entity.PersonVariable;
 import com.bluewhite.system.user.entity.User;
@@ -35,6 +37,8 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 	private PersonVariableDao personVariableDao;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private AttendanceTimeService attendanceTimeService;
 	@Override
 	public PageResult<Meal> findPage(Meal param, PageParameter page) {
 		Page<Meal> pages = dao.findAll((root, query, cb) -> {
@@ -105,7 +109,6 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 	public Meal addMeal(Meal meal) {
 		//按报餐类型查找  找出每餐费用
 	 User user= userService.findOne(meal.getUserId());
-	 meal.setOrgNameId(user.getOrgNameId());
 	 PersonVariable variable=personVariableDao.findByType(1);
 	 if (meal.getMode()==1) {
 		 meal.setPrice(Double.valueOf(variable.getKeyValue()));
@@ -185,6 +188,83 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 			}
 		
 		return allList;
+	}
+	//同步吃饭记录
+	@Override
+	public int InitMeal(AttendanceTime attendanceTime) throws ParseException {
+	List<AttendanceTime> attendanceTimes=attendanceTimeService.findAttendanceTime(attendanceTime);
+	List<Meal> list=dao.findByTypeAndTradeDaysTimeBetween(2,DatesUtil.getFirstDayOfMonth(attendanceTime.getOrderTimeBegin()),DatesUtil.getLastDayOfMonth(attendanceTime.getOrderTimeBegin()));
+	if (list.size()>0) {
+		dao.delete(list);
+	} 
+	List<Meal> meals=new ArrayList<Meal>();
+	PersonVariable variable=personVariableDao.findByType(1);
+	for (AttendanceTime attendanceTime2 : attendanceTimes) {
+		//基础数据 每一餐的价格
+		if (attendanceTime2.getCheckOut()!=null || attendanceTime2.getCheckIn()!=null) {
+		if (attendanceTime2.getCheckIn()!=null) {
+			if (attendanceTime2.getEatType()!=null) {
+				//早饭
+				if (attendanceTime2.getEatType()==1) {
+					Meal meal2=new Meal();
+					meal2.setTradeDaysTime(attendanceTime2.getCheckIn());
+					meal2.setPrice(Double.valueOf(variable.getKeyValue()));
+					meal2.setMode(1);
+					meal2.setUserName(attendanceTime2.getUserName());
+					meal2.setUserId(attendanceTime2.getUserId());
+					meal2.setType(2);
+					meals.add(meal2);
+				}
+			}
+		}
+		if (attendanceTime2.getCheckOut()!=null) {
+			if (attendanceTime2.getEatType()!=null) {
+				//晚饭
+			if (attendanceTime2.getEatType()==2) {
+				Meal meal2=new Meal();
+				meal2.setTradeDaysTime(attendanceTime2.getCheckOut());
+				meal2.setPrice(Double.valueOf(variable.getKeyValueThree()));
+				meal2.setMode(3);
+				meal2.setUserName(attendanceTime2.getUserName());
+				meal2.setUserId(attendanceTime2.getUserId());
+				meal2.setType(2);
+				meals.add(meal2);
+			} 
+			}
+		}
+		if (attendanceTime2.getEatType()!=null) {
+			//早饭晚饭都吃
+			if (attendanceTime2.getEatType()==3) {
+				Meal meal2=new Meal();
+				meal2.setTradeDaysTime(attendanceTime2.getCheckIn());
+				meal2.setPrice(Double.valueOf(variable.getKeyValue()));
+				meal2.setMode(1);
+				meal2.setUserName(attendanceTime2.getUserName());
+				meal2.setUserId(attendanceTime2.getUserId());
+				meal2.setType(2);
+				meals.add(meal2);
+				Meal meal3=new Meal();
+				meal3.setTradeDaysTime(attendanceTime2.getCheckOut());
+				meal3.setPrice(Double.valueOf(variable.getKeyValueThree()));
+				meal3.setMode(3);
+				meal3.setUserName(attendanceTime2.getUserName());
+				meal3.setUserId(attendanceTime2.getUserId());
+				meal2.setType(2);
+				meals.add(meal3);
+		}
+		}
+		 	Meal meal2=new Meal();
+			meal2.setTradeDaysTime(attendanceTime.getOrderTimeBegin());
+			meal2.setPrice(Double.valueOf(variable.getKeyValueTwo()));
+			meal2.setMode(2);
+			meal2.setUserName(attendanceTime2.getUserName());
+			meal2.setUserId(attendanceTime2.getUserId());
+			meal2.setType(2);
+			meals.add(meal2);
+		}
+	}
+		dao.save(meals);
+		return 0;
 	}
 
 	

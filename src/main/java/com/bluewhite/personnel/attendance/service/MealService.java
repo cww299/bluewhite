@@ -1,11 +1,13 @@
 package com.bluewhite.personnel.attendance.service;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.entity.Meal;
 import com.bluewhite.personnel.attendance.entity.PersonVariable;
 
@@ -47,4 +49,10 @@ public interface MealService  extends BaseCRUDService<Meal,Long>{
 	 * @return
 	 */
 	public List<Map<String, Object>> findMealSummary(Meal meal);
+	
+	/**
+	 * 同步吃饭
+	 * @param onlineOrder
+	 */
+	public int InitMeal(AttendanceTime attendanceTime) throws ParseException;
 }

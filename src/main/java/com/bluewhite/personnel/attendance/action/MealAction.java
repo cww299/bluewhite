@@ -1,5 +1,6 @@
 package com.bluewhite.personnel.attendance.action;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.personnel.attendance.dao.PersonVariableDao;
 import com.bluewhite.personnel.attendance.entity.Attendance;
+import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.entity.Meal;
 import com.bluewhite.personnel.attendance.entity.PersonVariable;
 import com.bluewhite.personnel.attendance.service.MealService;
@@ -163,6 +165,28 @@ public class MealAction {
 		 List<Map<String, Object>> list = service.findMealSummary(meal); 
 		cr.setData(clearCascadeJSON.format(list).toJSON());
 		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/**
+	 * 同步报餐记录
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/getEatType", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getEatType(AttendanceTime attendanceTime) {
+		CommonResponse cr = new CommonResponse();
+		 int list;
+		try {
+			list = service.InitMeal(attendanceTime);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		cr.setMessage("同步成功");
 		return cr;
 	}
 	@InitBinder

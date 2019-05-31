@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.SetJoin;
@@ -14,10 +13,7 @@ import javax.transaction.Transactional;
 
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -27,10 +23,8 @@ import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
-import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.system.user.dao.UserContractDao;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.Role;
@@ -380,6 +374,10 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				predicate.add(cb.equal(root.get("quit").as(Integer.class),user.getQuit()));
 			}
 			
+			//是否是销售人员
+			if (user.getSale() != null) {
+				predicate.add(cb.equal(root.get("sale").as(Integer.class),user.getSale()));
+			}
 			//按手机号查找
 			if (!StringUtils.isEmpty(user.getPhone())) {
 				predicate.add(cb.like(root.get("phone").as(String.class),"%" + user.getPhone() + "%"));

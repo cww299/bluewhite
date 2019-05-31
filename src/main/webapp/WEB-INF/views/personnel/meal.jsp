@@ -48,6 +48,17 @@
 									</button>
 								</div>
 							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td><input id="startTime2" style="width: 150px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td>
+								<div class="layui-inline">
+									<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-eat">
+										<i class="layui-icon layuiadmin-button-btn"> 同步</i>
+									</button>
+								</div>
+							</td>
 						</tr>
 					</table>
 				</div>
@@ -176,7 +187,11 @@
 						type: 'datetime',
 						range: '~',
 					});
-				 
+					laydate.render({
+						elem: '#startTime2',
+						type : 'month',
+						format:'yyyy-MM-01 HH:mm:ss'
+					});
 				  // 多选
 				  laydate.render({
 				    elem: '#tradeDaysTime',
@@ -605,7 +620,48 @@
 						});  
 					});
 					
-					
+					form.on('submit(LAY-eat)', function(obj) {		//修改此处
+							var a=$("#startTime2").val()
+							if(a==""){
+								return layer.msg("请先填写同步时间",{icon:2})
+							}
+						$.ajax({
+							url: "${ctx}/personnel/getEatType",
+							data: {
+								orderTimeBegin:a
+							},
+							type: "GET",
+							beforeSend: function() {
+								 indextwo = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									  });
+							},
+							success: function(result) {
+								if(0 == result.code) {
+									layer.close(indextwo);
+								 	 table.reload("tableData", {
+						                page: {
+						                }
+						              }) 
+									layer.msg(result.message, {
+										icon: 1,
+										time:800
+									});
+								
+								} else {
+									layer.msg(result.message, {
+										icon: 2,
+										time:800
+									});
+								}
+							},
+							error: function() {
+								layer.msg("操作失败！请重试", {
+									icon: 2
+								});
+							},
+						});
+					});
 					//封装ajax主方法
 					var mainJs = {
 						//新增							

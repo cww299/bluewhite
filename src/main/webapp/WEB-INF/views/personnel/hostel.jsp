@@ -346,7 +346,7 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 100px;">价值</label>
 				<div class="layui-input-inline">
-					<input type="text"  name="sum"
+					<input type="number"  name="sum"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
 				</div>
@@ -602,6 +602,9 @@
 				  	this.getIndex = function(){
 				  		return _index;
 				  	}
+				  	
+				  	
+				  	
 					//select全局变量
 					var htmls = '<option value="">请选择</option>';
 					var index = layer.load(1, {

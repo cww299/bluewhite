@@ -81,7 +81,14 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				User user = userService.findOne(attendance.getUserId());
 				userList.add(user);
 			}
-
+			if (attendance.getUserId()==null && attendance.getOrgNameId()==null) {
+				User user2=new User();
+				user2.setIsAdmin(false);
+				user2.setQuit(0);
+				user2.setForeigns(0);
+				List<User> user = userService.findUserList(user2);
+				userList.addAll(user);
+			}
 			String exUser = "";
 			// 开始汇总每个人的考勤
 			for (User us : userList) {
@@ -112,7 +119,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					exUser += exUser.equals("") ? us.getUserName() : ","+us.getUserName();
 					continue;
 				}
-
+				
 				// 上班开始时间
 				Date workTime = null;
 				// 上班结束时间
@@ -125,6 +132,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				Double turnWorkTime = null;
 				// 休息时长
 				Double restTime = null;
+				//报餐吃饭记录
+				attendanceTime.setEatType(attendanceInit.getEatType());
 				// flag=ture 为夏令时
 				if (flag) {
 					String[] workTimeArr = attendanceInit.getWorkTimeSummer().split(" - ");

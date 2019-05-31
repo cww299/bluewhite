@@ -424,8 +424,6 @@
 					        },
 							yes:function(){
 								form.on('submit(addRole)', function(data) {
-									console.log(self.getIndex())
-									console.log(self.getCache())
 						        	var	field={
 						        			id:id,
 						        			logisticsDate:data.field.logisticsDate,

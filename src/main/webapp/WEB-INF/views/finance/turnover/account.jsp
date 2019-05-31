@@ -171,12 +171,12 @@
 								type: 'checkbox',
 								align: 'center',
 								fixed: 'left'
-							}, {
+							},{
 								field: "content",
 								title: "申请内容",
 								align: 'center',
 								edit: 'text'
-							}, {
+							},{
 								field: "userId",
 								title: "申请人",
 								align: 'center',
@@ -186,20 +186,20 @@
 								templet: fn1('selectOne')
 							},{
 								field: "money",
-								title: "申请金额",
+								title: "金额",
 								edit: 'text',
 								align: 'center',
-							}, {
+							},{
 								field: "expenseDate",
 								title: "回款日期",
 								align: 'center',
 								edit: 'text'
-							}, {
+							},{
 								field: "withholdReason",
 								title: "扣款事由",
 								align: 'center',
 								edit: 'text'
-							}, {
+							},{
 								field: "withholdMoney",
 								title: "扣款金额",
 								align: 'center',

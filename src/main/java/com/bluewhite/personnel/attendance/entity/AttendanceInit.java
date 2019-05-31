@@ -2,7 +2,6 @@ package com.bluewhite.personnel.attendance.entity;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -128,7 +127,14 @@ public class AttendanceInit extends BaseEntity<Long> {
 	 */
 	@Column(name = "earth_work")
 	private boolean earthWork = false;
-
+	
+	/**
+	 * 吃饭（1.早饭2.晚餐3.早晚餐）
+	 * 
+	 */
+	@Column(name = "eat_type")
+	private Integer eatType;
+	
 	/**
 	 * 员工姓名
 	 */
@@ -167,6 +173,16 @@ public class AttendanceInit extends BaseEntity<Long> {
 
 	
 	
+
+
+	public Integer getEatType() {
+		return eatType;
+	}
+
+
+	public void setEatType(Integer eatType) {
+		this.eatType = eatType;
+	}
 
 
 	public boolean isEarthWork() {

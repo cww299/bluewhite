@@ -43,6 +43,12 @@ public class Meal extends BaseEntity<Long> {
 	private Integer mode;
 	
 	/**
+	 *( 2.同步自动添加 ) 
+	 */
+	@Column(name = "type")
+	private Integer type;
+	
+	/**
 	 * 吃饭日期
 	 */
 	@Column(name = "tradeDays_time")
@@ -103,6 +109,7 @@ public class Meal extends BaseEntity<Long> {
 	/**
 	 * 部门Id
 	 */
+	@Transient
 	private Long orgNameId;
 	
 	/**
@@ -112,6 +119,14 @@ public class Meal extends BaseEntity<Long> {
 	private String orgName;
 
 	
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
 
 	public String getTime() {
 		return time;

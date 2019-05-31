@@ -73,38 +73,30 @@
 			<input type="text" name="id" id="usID" style="display:none;">
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">报销人</label>
+				<label class="layui-form-label" style="width: 130px;">扣税单位</label>
 				<div class="layui-input-inline">
 						<input type="text" value="{{d.custom.name }}" name="customerName" id="userId"
-						placeholder="请输入借款方名称"
+						placeholder="请输入扣税单位名称"
 						class="layui-input laydate-icon" data-provide="typeahead">
 				</div>
 			</div>
 			
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">内容</label>
+				<label class="layui-form-label" style="width: 130px;">税种</label>
 				<div class="layui-input-inline">
 					<input type="text" value="{{d.content }}" name="content" id="content"
-						lay-verify="required" placeholder="请输入内容"
+						lay-verify="required" placeholder="请输入税种"
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			
-			<div class="layui-form-item">
-					<label class="layui-form-label" style="width: 130px;">是否是预算</label>
-					<div class="layui-input-inline">
-						<select name="budget" id="budget">
-							<option value="0" {{ d.budget==0?'selected':'' }}>是</option>
-							<option value="1" {{ d.budget==1?'selected':'' }}>否</option>
-							</select>
-					</div>
-				</div>
+		
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">借款金额</label>
+				<label class="layui-form-label" style="width: 130px;">金额</label>
 				<div class="layui-input-inline">
 					<input type="text" value="{{d.money }}" name="money" id="money"
-						lay-verify="required" placeholder="请输入支付金额"
+						lay-verify="required" placeholder="请输入金额"
 						class="layui-input laydate-icon">
 				</div>
 			</div>
@@ -257,30 +249,17 @@
 								fixed: 'left'
 							},{
 								field: "withholdReason",
-								title: "报销人",
+								title: "扣税单位",
 								templet: function(d){
 									return d.custom.name
 								}
 							},{
 								field: "content",
-								title: "内容",
+								title: "税种",
 								align: 'center',
-							},{
-								field: "budget",
-								title: "是否预算",
-								align: 'center',
-								search: true,
-								edit: false,
-								templet: function(d){
-									if(d.budget==0){
-										return "是"
-									}else{
-									return "否"
-									}
-								}
 							},{
 								field: "money",
-								title: "支付金额",
+								title: "金额",
 								align: 'center',
 							}, {
 								field: "expenseDate",
@@ -427,14 +406,11 @@
 					        },
 							yes:function(){
 								form.on('submit(addRole)', function(data) {
-									console.log(self.getIndex())
-									console.log(self.getCache())
 						        	var	field={
 						        			id:id,
 						        			customerName:data.field.customerName,
 						        			content:data.field.content,
 						        			money:data.field.money,
-						        			budget:data.field.budget,
 						        			customId:self.getIndex(),
 						        			contactName:data.field.contactName,
 						        			expenseDate:data.field.expenseDate,

@@ -91,15 +91,7 @@
 				</div>
 			</div>
 			
-			<div class="layui-form-item">
-					<label class="layui-form-label" style="width: 130px;">是否是预算</label>
-					<div class="layui-input-inline">
-						<select name="budget" id="budget">
-							<option value="0" {{ d.budget==0?'selected':'' }}>是</option>
-							<option value="1" {{ d.budget==1?'selected':'' }}>否</option>
-							</select>
-					</div>
-				</div>
+			
 
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 130px;">借款金额</label>
@@ -270,19 +262,6 @@
 								title: "内容",
 								align: 'center',
 							},{
-								field: "budget",
-								title: "是否预算",
-								align: 'center',
-								search: true,
-								edit: false,
-								templet: function(d){
-									if(d.budget==0){
-										return "是"
-									}else{
-									return "否"
-									}
-								}
-							},{
 								field: "money",
 								title: "支付金额",
 								align: 'center',
@@ -435,7 +414,6 @@
 						        			customerName:data.field.customerName,
 						        			content:data.field.content,
 						        			money:data.field.money,
-						        			budget:data.field.budget,
 						        			customId:self.getIndex(),
 						        			contactName:data.field.contactName,
 						        			expenseDate:data.field.expenseDate,
