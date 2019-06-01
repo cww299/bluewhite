@@ -36,11 +36,6 @@ public class Procurement extends BaseEntity<Long>{
 	@Column(name = "document_number")
 	private String documentNumber;
 	
-	/**
-	 * 批次号
-	 */
-	@Column(name = "batch_number")
-	private String batchNumber;
 
 	/**
 	 * 经手人id
@@ -130,6 +125,7 @@ public class Procurement extends BaseEntity<Long>{
 	@Column(name = "status")
 	private Integer status;
 	
+	
 	/**
 	 * 是否反冲（0=否，1=是）
 	 */
@@ -180,8 +176,23 @@ public class Procurement extends BaseEntity<Long>{
 	private Long warehouseId;
 	
 	
+	/**
+	 * 批次号
+	 */
+	@Transient
+	private String batchNumber;
 	
 	
+	
+	
+	public String getBatchNumber() {
+		return batchNumber;
+	}
+
+	public void setBatchNumber(String batchNumber) {
+		this.batchNumber = batchNumber;
+	}
+
 	public String getDocumentNumber() {
 		return documentNumber;
 	}
@@ -294,13 +305,6 @@ public class Procurement extends BaseEntity<Long>{
 		this.flag = flag;
 	}
 
-	public String getBatchNumber() {
-		return batchNumber;
-	}
-
-	public void setBatchNumber(String batchNumber) {
-		this.batchNumber = batchNumber;
-	}
 
 	public Integer getType() {
 		return type;

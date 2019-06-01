@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.bluewhite.common.Constants;
 import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.personnel.attendance.entity.Attendance;
@@ -53,10 +54,10 @@ public class Task {
 		Date time = cal.getTime();
 		Date startTime = DatesUtil.getfristDayOftime(time);
 		Date endTime = DatesUtil.getLastDayOftime(time);
-		attendanceService.allAttendance("192.168.1.204", startTime, endTime);
-		attendanceService.allAttendance("192.168.1.205", startTime, endTime);
-		attendanceService.allAttendance("192.168.1.250", startTime, endTime);
-		attendanceService.allAttendance("192.168.3.113", startTime, endTime);
+		attendanceService.allAttendance(Constants.THREE_FLOOR, startTime, endTime);
+		attendanceService.allAttendance(Constants.TWO_FLOOR, startTime, endTime);
+		attendanceService.allAttendance(Constants.ONE_FLOOR, startTime, endTime);
+		attendanceService.allAttendance(Constants.EIGHT_WAREHOUSE, startTime, endTime);
 	}
 
 

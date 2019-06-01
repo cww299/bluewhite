@@ -154,7 +154,7 @@ public class InventoryAction {
 	public CommonResponse deleteOnlineOrder(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = onlineOrderService.deleteOnlineOrder(ids);
-		cr.setMessage("成功删除" + count + "条销售单");
+		cr.setMessage("成功反冲" + count + "条销售单");
 		return cr;
 	}
 

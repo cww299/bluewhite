@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -303,10 +304,10 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		List<Attendance> attendanceList = findPageAttendance(attendance, new PageParameter(0, Integer.MAX_VALUE))
 				.getRows().stream().filter(Attendance->Attendance.getInOutMode()!=2).collect(Collectors.toList());
 		dao.delete(attendanceList);
-		allAttendance("192.168.1.204", startTime, endTime);
-		allAttendance("192.168.1.205", startTime, endTime);
-		allAttendance("192.168.1.250", startTime, endTime);
-		allAttendance("192.168.3.113", startTime, endTime);
+		allAttendance(Constants.THREE_FLOOR, startTime, endTime);
+		allAttendance(Constants.TWO_FLOOR, startTime, endTime);
+		allAttendance(Constants.ONE_FLOOR, startTime, endTime);
+		allAttendance(Constants.EIGHT_WAREHOUSE, startTime, endTime);
 		return attendanceList.size();
 	}
 

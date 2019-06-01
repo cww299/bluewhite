@@ -24,7 +24,7 @@ public interface OnlineOrderService extends BaseCRUDService<OnlineOrder,Long>{
 	public PageResult<OnlineOrder> findPage(OnlineOrder onlineOrder, PageParameter page);
 	
 	/**
-	 * 批量删除
+	 * 反冲销售单
 	 * @param ids
 	 */
 	public int deleteOnlineOrder(String ids);

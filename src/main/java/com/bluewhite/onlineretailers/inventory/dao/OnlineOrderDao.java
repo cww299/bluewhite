@@ -17,5 +17,5 @@ public interface OnlineOrderDao  extends BaseRepository<OnlineOrder, Long>{
 	 * @return
 	 */
 	List<OnlineOrder> findByStatusAndCreatedAtBetween(String status, Date orderTimeBegin, Date orderTimeEnd);
-
+	
 }

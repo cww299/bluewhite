@@ -85,6 +85,12 @@ public class OnlineOrderChild  extends BaseEntity<Long> {
 	private Double sumPrice;
 	
 	/**
+	 * 运单号（部分发货时，子单会出现运单号）
+	 */
+	@Column(name = "tracking_number")
+	private String trackingNumber;
+	
+	/**
 	 * 系统优惠
 	 */
 	@Column(name = "system_preferential")
@@ -129,6 +135,14 @@ public class OnlineOrderChild  extends BaseEntity<Long> {
 	
 	
 	
+	public String getTrackingNumber() {
+		return trackingNumber;
+	}
+
+	public void setTrackingNumber(String trackingNumber) {
+		this.trackingNumber = trackingNumber;
+	}
+
 	public Date getOrderTimeBegin() {
 		return orderTimeBegin;
 	}

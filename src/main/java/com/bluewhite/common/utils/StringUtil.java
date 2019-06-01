@@ -109,7 +109,7 @@ public class StringUtil {
 			documentNumber= Constants.CK +"-"+ time +"-";
 			break;
 		case "2":
-			documentNumber= Constants.XS +"-"+ time +"-";		
+			documentNumber= Constants.RK +"-"+ time +"-";		
 			break;
 		case "0":
 			documentNumber= Constants.SC +"-"+ time +"-";
