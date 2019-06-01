@@ -645,6 +645,7 @@
 							        ,zindex:-1
 							        ,area:['30%', '100%']
 							        ,shade: 0.5
+							        ,shadeClose:true
 							        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
 							        ,btn: ['确认', '取消']
 							        ,btnAlign: 'c'
@@ -833,6 +834,7 @@
 						        ,closeBtn: false
 						        ,area:['30%', '100%']
 						        ,shade: 0.5
+						        ,shadeClose:true
 						        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
 						        ,btn: ['确定', '取消']
 						        ,btnAlign: 'c'
