@@ -292,7 +292,6 @@
 								// 获得当前选中的
 								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
 								layer.confirm('您是否确定取消审核选中的' + checkedIds.length + '条记录？', function() {
-									console.log(checkedIds)
 									var postData = {
 										ids:checkedIds,
 										flag:0,

@@ -155,29 +155,23 @@
 								type: 'checkbox',
 								align: 'center',
 								fixed: 'left'
-							}, {
-								field: "userId",
-								title: "报销人",
+							},{
+								field: "content",
+								title: "工资内容",
 								align: 'center',
-								search: true,
-								edit: false,
-								type: 'normal',
-								templet: function(d){
-									return d.user.userName;
-								}
-							}, {
+							},{
 								field: "money",
 								title: "工资申请金额",
-							}, {
+							},{
 								field: "expenseDate",
 								title: "工资申请日期",
-							}, {
+							},{
 								field: "withholdReason",
 								title: "扣款事由",
-							}, {
+							},{
 								field: "withholdMoney",
 								title: "扣款金额",
-							}, {
+							},{
 								field: "flag",
 								title: "审核状态",
 								templet:  function(d){

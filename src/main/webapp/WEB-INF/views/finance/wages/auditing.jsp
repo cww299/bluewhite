@@ -173,15 +173,9 @@
 								align: 'center',
 								fixed: 'left'
 							}, {
-								field: "userId",
-								title: "报销人",
+								field: "content",
+								title: "工资内容",
 								align: 'center',
-								search: true,
-								edit: false,
-								type: 'normal',
-								templet: function(d){
-									return d.user.userName;
-								}
 							}, {
 								field: "money",
 								title: "工资申请金额",
@@ -284,7 +278,6 @@
 								// 获得当前选中的
 								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
 								layer.confirm('您是否确定取消审核选中的' + checkedIds.length + '条记录？', function() {
-									console.log(checkedIds)
 									var postData = {
 										ids:checkedIds,
 										flag:0,

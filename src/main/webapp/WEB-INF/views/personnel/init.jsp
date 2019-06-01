@@ -201,6 +201,18 @@
 						<option value="3">超过24:30后默认休息7.5小时</option></select>
 				</div>
 			</div>
+			
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">吃饭状态</label>
+				<div class="layui-input-inline">
+					<select name="eatType" lay-filter="eatType"
+						id="eatType"  lay-search="true"><option
+							value="">请选择</option>
+						<option value="1">早餐</option>
+						<option value="2">晚餐</option>
+						<option value="3">早餐or晚餐</option></select>
+				</div>
+			</div>
 		</div>
 	</form>
 
@@ -808,6 +820,11 @@
 					    	   $("#kai").attr("checked",false);
 						    	form.render();
 					       }
+							$('#eatType').each(function(j,k){
+					    		var id=data.eatType;
+								$(k).val(id);
+								form.render('select');
+							});
 							$("#restTimeSummer").val(data.restTimeSummer)
 					    	$("#layuiadmin-form-admin").setForm({restDay:data.restDay,workTimeSummer:data.workTimeSummer,workTimeWinter:data.workTimeWinter,turnWorkTimeSummer:data.turnWorkTimeSummer,turnWorkTimeWinter:data.turnWorkTimeWinter,restTimeSummer:data.restTimeSummer,restTimeWinter:data.restTimeWinter,restSummer:data.restSummer,restWinter:data.restWinter});
 					    	layer.open({

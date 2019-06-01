@@ -166,6 +166,12 @@ public class AttendanceTime extends BaseEntity<Long> {
 	private String holidayDetail;
 	
 	/**
+	 * 吃饭（1.早饭2.晚餐3.早晚餐）
+	 * 
+	 */
+	@Transient
+	private Integer eatType;
+	/**
 	 * 员工姓名
 	 */
 	@Transient
@@ -198,6 +204,14 @@ public class AttendanceTime extends BaseEntity<Long> {
 	
 	
 
+
+	public Integer getEatType() {
+		return eatType;
+	}
+
+	public void setEatType(Integer eatType) {
+		this.eatType = eatType;
+	}
 
 	public Double getTakeWork() {
 		return takeWork;

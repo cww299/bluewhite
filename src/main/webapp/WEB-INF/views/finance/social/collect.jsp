@@ -157,30 +157,17 @@
 								fixed: 'left'
 							},{
 								field: "withholdReason",
-								title: "报销人",
+								title: "扣税单位",
 								templet: function(d){
 									return d.custom.name
 								}
 							},{
 								field: "content",
-								title: "内容",
+								title: "税种",
 								align: 'center',
-							},{
-								field: "budget",
-								title: "是否预算",
-								align: 'center',
-								search: true,
-								edit: false,
-								templet: function(d){
-									if(d.budget==0){
-										return "是"
-									}else{
-									return "否"
-									}
-								}
 							},{
 								field: "money",
-								title: "报销申请金额",
+								title: "金额",
 							},{
 								field: "expenseDate",
 								title: "报销申请日期",

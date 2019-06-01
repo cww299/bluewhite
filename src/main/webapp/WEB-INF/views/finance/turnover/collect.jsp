@@ -167,7 +167,7 @@
 								}
 							}, {
 								field: "money",
-								title: "申请金额",
+								title: "金额",
 							}, {
 								field: "expenseDate",
 								title: "回款日期",

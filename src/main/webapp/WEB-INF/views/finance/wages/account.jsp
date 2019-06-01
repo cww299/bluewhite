@@ -25,28 +25,28 @@
 						<tr>
 							<td>报销人:</td>
 							<td><input type="text" name="Username" id="firstNames" class="layui-input" /></td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td>报销内容:</td>
 							<td><input type="text" name="content" class="layui-input" /></td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td><select class="form-control" name="expenseDate" id="selectone">
 									<option value="2018-10-08 00:00:00">工资申请日期</option>
 								</select></td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
 							</td>
 							<!-- <td>&nbsp&nbsp</td>
 							<td>结束:</td>
 							<td><input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="layui-input laydate-icon">
 							</td> -->
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td>是否核对:
 							<td><select class="form-control" name="flag">
 									<option value="">请选择</option>
 									<option value="0">未核对</option>
 									<option value="1">已核对</option>
 							</select></td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
 									<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
@@ -196,14 +196,11 @@
 								align: 'center',
 								fixed: 'left'
 							}, {
-								field: "userId",
-								title: "姓名",
+								field: "content",
+								title: "工资内容",
 								align: 'center',
-								search: true,
-								edit: false,
-								type: 'normal',
-								templet: fn1('selectOne')
-							}, {
+								edit: 'text',
+							},{
 								field: "money",
 								title: "工资申请金额",
 								edit: 'text',
@@ -327,8 +324,8 @@
 								var flag=false;
 								var a=0;
 								data.forEach(function(postData,i){
-								 	if(postData.userId==""){
-							    		return layer.msg("请填写报销申请人", {
+								 	if(postData.content==""){
+							    		return layer.msg("请填写工资内容", {
 											icon: 2,
 										});
 							    	}
@@ -423,6 +420,19 @@
 						});
 					});
 					
+					//监听单元格编辑
+					table.on('edit(tableData)', function(obj) {
+						var value = obj.value ,//得到修改后的值
+							data = obj.data ,//得到所在行所有键值
+							field = obj.field, //得到字段
+							id = data.id;
+							var postData = {
+								id:id,
+								[field]:value
+							}
+							//调用新增修改
+							mainJs.fUpdate(postData);
+					});
 					
 					//封装ajax主方法
 					var mainJs = {
