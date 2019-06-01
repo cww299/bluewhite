@@ -562,15 +562,14 @@ layui.config({
 			}
 			for(var i=0;i<choosed.length;i++){
 				for(var j=0;j<choosedProduct.length;j++){
-					if(choosed[i].id==choosedProduct[j].id){
+					if(choosed[i].commodityId==choosedProduct[j].commodityId){
+						$('#addNumber').val($('#addNumber').val()-choosedProduct[j].number);
 						choosedProduct.splice(j,1);
 						break;
 					}
 				}
 			}
-			table.reload('productListTable',{
-				data:choosedProduct,
-			})
+			table.reload('productListTable',{ data:choosedProduct, })
 		}
 		function openChooseProductWin(){					//商品选择隐藏框
 			chooseProductWin = layer.open({		
