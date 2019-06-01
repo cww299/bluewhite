@@ -21,6 +21,12 @@ public class ProcurementChild  extends BaseEntity<Long>{
 	
 	
 	/**
+	 * 批次号
+	 */
+	@Column(name = "batch_number")
+	private String batchNumber;
+	
+	/**
 	 * 商品id
 	 */
 	@Column(name = "commodity_id")
@@ -56,7 +62,7 @@ public class ProcurementChild  extends BaseEntity<Long>{
 	private Integer number;
 	
 	/**
-	 * 转换剩余数量
+	 * 转换剩余数量(入库单数量无法转换，在出库单生成时，自动减去按时间排序的入库单剩余数量)
 	 */
 	@Column(name = "residue_number")
 	private Integer residueNumber;
@@ -94,6 +100,20 @@ public class ProcurementChild  extends BaseEntity<Long>{
 	private Integer status;
 	
 	/**
+	 * 当入库单状态是销售出库时，存入销售子单的id
+	 */
+	@Column(name = "online_order_id")
+	private Long  onlineOrderId;
+	
+	/**
+	 * 当单据为库单时，同时记录一下是从那个生产单出库的，便于反冲数据直接获取
+	 * 因为出库数据可能存在不够的情况，存入ids
+	 */
+	@Column(name = "put_warehouse_ids")
+	private String putWarehouseIds;
+	
+	
+	/**
 	 * 备注
 	 * 
 	 */
@@ -107,7 +127,38 @@ public class ProcurementChild  extends BaseEntity<Long>{
 	@Column(name = "place")
 	private String place;
 	
+	
 
+
+
+	public Long getOnlineOrderId() {
+		return onlineOrderId;
+	}
+
+
+	public void setOnlineOrderId(Long onlineOrderId) {
+		this.onlineOrderId = onlineOrderId;
+	}
+
+
+	public String getPutWarehouseIds() {
+		return putWarehouseIds;
+	}
+
+
+	public void setPutWarehouseIds(String putWarehouseIds) {
+		this.putWarehouseIds = putWarehouseIds;
+	}
+
+
+	public String getBatchNumber() {
+		return batchNumber;
+	}
+
+
+	public void setBatchNumber(String batchNumber) {
+		this.batchNumber = batchNumber;
+	}
 
 
 	public String getPlace() {

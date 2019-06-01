@@ -68,7 +68,13 @@ public class Constants {
     public static String TRIALPRODUCT = "trialProduce";
     
     
-    
+    /**
+     * 人事考勤机ip
+     */
+    public static String THREE_FLOOR = "192.168.1.204";
+    public static String TWO_FLOOR = "192.168.1.205";
+    public static String ONE_FLOOR = "192.168.1.250";
+    public static String EIGHT_WAREHOUSE = "192.168.3.113";
     
     /**
      *  电商订单状态
@@ -91,6 +97,8 @@ public class Constants {
     public static String  RK = "RK";
     public static String  SC = "SC";
     public static String  ZG = "ZG";
+    
+    
     
 
 }

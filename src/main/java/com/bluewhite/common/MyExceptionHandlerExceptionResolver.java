@@ -40,8 +40,7 @@ public class MyExceptionHandlerExceptionResolver implements HandlerExceptionReso
 				responseInfo.setCode(se.getErrorCode().getCode());
 			}
 
-		}
-		if (exception instanceof UnauthorizedException) {
+		}else if (exception instanceof UnauthorizedException) {
 			mav.setViewName("error/500");
 			return mav;
 		} else {

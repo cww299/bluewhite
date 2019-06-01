@@ -23,5 +23,5 @@ public interface ProcurementDao  extends BaseRepository<Procurement, Long>{
 	 * @return
 	 */
 	List<Procurement> findByTypeAndCreatedAtBetween(int type, Date startTime, Date endTime);
-
+	
 }

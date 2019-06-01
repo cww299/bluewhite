@@ -2,16 +2,15 @@ package com.bluewhite.onlineretailers.inventory.service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
-import org.junit.Ignore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -24,6 +23,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
@@ -35,6 +36,7 @@ import com.bluewhite.onlineretailers.inventory.dao.CommodityDao;
 import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
 import com.bluewhite.onlineretailers.inventory.dao.OnlineOrderChildDao;
 import com.bluewhite.onlineretailers.inventory.dao.OnlineOrderDao;
+import com.bluewhite.onlineretailers.inventory.dao.ProcurementChildDao;
 import com.bluewhite.onlineretailers.inventory.dao.ProcurementDao;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
@@ -63,6 +65,10 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	private RegionAddressDao regionAddressDao;
 	@Autowired
 	private ProcurementDao procurementDao;
+	@Autowired
+	private ProcurementChildDao procurementChildDao;
+	@Autowired
+	private ProcurementService procurementService;
 
 	@Override
 	public PageResult<OnlineOrder> findPage(OnlineOrder param, PageParameter page) {
@@ -77,21 +83,22 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			if (param.getUserId() != null) {
 				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
 			}
-			
-			//按所在省份过滤,多个
+
+			// 按所在省份过滤,多个
 			if (!StringUtils.isEmpty(param.getProvincesIds())) {
-				List<Long>  provincesIdList = new ArrayList<Long>();
-					String[] idArr = param.getProvincesIds().split(",");
-					for (String idStr : idArr) {
-						Long id = Long.parseLong(idStr);
-						provincesIdList.add(id);
-					}
+				List<Long> provincesIdList = new ArrayList<Long>();
+				String[] idArr = param.getProvincesIds().split(",");
+				for (String idStr : idArr) {
+					Long id = Long.parseLong(idStr);
+					provincesIdList.add(id);
+				}
 				predicate.add(cb.and(root.get("provincesId").as(Long.class).in(provincesIdList)));
 			}
-			
+
 			// 按客户名称过滤
 			if (!StringUtils.isEmpty(param.getOnlineCustomerName())) {
-				predicate.add(cb.like(root.get("name").as(String.class), "%" + StringUtil.specialStrKeyword(param.getOnlineCustomerName()) + "%"));
+				predicate.add(cb.like(root.get("name").as(String.class),
+						"%" + StringUtil.specialStrKeyword(param.getOnlineCustomerName()) + "%"));
 			}
 			// 交易状态过滤
 			if (!StringUtils.isEmpty(param.getStatus())) {
@@ -136,31 +143,34 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				for (String idString : pers) {
 					Long id = Long.valueOf(idString);
 					OnlineOrder onlineOrder = dao.findOne(id);
+					if(onlineOrder.getFlag()==1){
+						throw new ServiceException("该数据已经反冲，无法再次反冲");
+					}
+					onlineOrder.setStatus(Constants.ONLINEORDER_4);
+					onlineOrder.setFlag(1);
 					for (OnlineOrderChild onlineOrderChild : onlineOrder.getOnlineOrderChilds()) {
 						// 当订单的状态是已发货
 						if (onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_5)) {
 							// 获取商品
 							Commodity commodity = onlineOrderChild.getCommodity();
-							// 获取库存
-							// Inventory inventory =
-							// inventoryDao.findByCommodityIdAndWarehouseId(commodity.getId(),
-							// onlineOrderChild.getWarehouseId());
-							// 获取所有商品的库存
-							Set<Inventory> inventorys = commodity.getInventorys();
-							// 减少库存的同时改变状态
-							if (inventorys.size() > 0) {
-								for (Inventory inventory : inventorys) {
-									if (inventory.getWarehouseId().equals(onlineOrderChild.getWarehouseId())) {
-										inventory.setNumber(inventory.getNumber() - onlineOrderChild.getNumber());
-										inventoryDao.save(inventory);
-										onlineOrderChild.setStatus(Constants.ONLINEORDER_4);
-									}
-								}
+							// 获取出库单,反冲出库单
+							List<ProcurementChild>  procurementChildList = procurementChildDao
+									.findByOnlineOrderId(onlineOrderChild.getId());
+							//排除已反冲的出库单
+							procurementChildList = procurementChildList.stream().filter(ProcurementChild ->ProcurementChild.getProcurement().getFlag()==0).collect(Collectors.toList());
+							procurementService.deleteProcurement(String.valueOf(procurementChildList.get(0).getProcurement().getId()));
+							// 获取商品库存
+							Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(commodity.getId(),
+									onlineOrderChild.getWarehouseId());
+							// 增加库存的同时改变状态
+							if (inventory != null) {
+								inventory.setNumber(inventory.getNumber() + onlineOrderChild.getNumber());
+								inventoryDao.save(inventory);
+								onlineOrderChild.setStatus(Constants.ONLINEORDER_4);
 							}
 						}
 					}
 					dao.save(onlineOrder);
-					onlineOrder.setFlag(1);
 					count++;
 				}
 			}
@@ -171,8 +181,9 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	@Override
 	@Transactional
 	public OnlineOrder addOnlineOrder(OnlineOrder onlineOrder) {
-		//生成销售单编号
-		onlineOrder.setDocumentNumber(StringUtil.getDocumentNumber(Constants.XS) + SalesUtils.get0LeftString((int)dao.count(), 8));
+		// 生成销售单编号
+		onlineOrder.setDocumentNumber(
+				StringUtil.getDocumentNumber(Constants.XS) + SalesUtils.get0LeftString((int) dao.count(), 8));
 		// 新增子订单
 		if (!StringUtils.isEmpty(onlineOrder.getChildOrder())) {
 			JSONArray jsonArray = JSON.parseArray(onlineOrder.getChildOrder());
@@ -201,10 +212,18 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	@Override
 	@Transactional
 	public int delivery(String delivery) {
+		CurrentUser cu = SessionManager.getUserSession();
 		int count = 0;
 		if (!StringUtils.isEmpty(delivery)) {
+			// 新建父出库单
 			Procurement procurement = new Procurement();
-			procurement.setDocumentNumber(StringUtil.getDocumentNumber(Constants.CK) + SalesUtils.get0LeftString((int)procurementDao.count(), 8));
+			procurement.setUserId(cu.getId());
+			// 出库单编号
+			procurement.setDocumentNumber(
+					StringUtil.getDocumentNumber("3") + SalesUtils.get0LeftString((int) procurementDao.count(), 8));
+			procurement.setStatus(0);
+			procurement.setFlag(0);
+			procurement.setType(3);
 			JSONArray jsonArray = JSON.parseArray(delivery);
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -213,55 +232,101 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				int number = jsonObject.getIntValue("number");
 				// 获取子订单
 				OnlineOrderChild onlineOrderChild = onlineOrderChildDao.findOne(id);
-				
 				// 获取父订单
 				OnlineOrder onlineOrder = onlineOrderChild.getOnlineOrder();
-				if(onlineOrder.getTrackingNumber()==null){
-					throw new ServiceException(onlineOrder.getDocumentNumber() + "销售单，没有运单编号，无法发货");
+				if (onlineOrder.getFlag() == 1) {
+					throw new ServiceException(onlineOrder.getDocumentNumber() + "销售单，反冲数据，无法发货");
 				}
-				
-				//一个子订单拥有一个子出库单
+				procurement.setRemark("销售出库：" + onlineOrder.getDocumentNumber());
+				// 需完善打印电子面单功能后，获取到运单号
+				// if (onlineOrderChild.getTrackingNumber() == null) {
+				// throw new ServiceException(onlineOrder.getDocumentNumber() +
+				// "销售单，没有运单编号，无法发货");
+				// }
+
+				// 新建子出库单，一个子订单拥有一个子出库单
 				ProcurementChild procurementChild = new ProcurementChild();
 				procurementChild.setCommodityId(onlineOrderChild.getCommodityId());
 				procurementChild.setNumber(number);
-				procurementChild.setWarehouseId(warehouseId);	
+				procurementChild.setWarehouseId(warehouseId);
 				procurementChild.setStatus(0);
+				// 存入销售子单的销售单id
+				procurementChild.setOnlineOrderId(onlineOrderChild.getId());
 				procurement.getProcurementChilds().add(procurementChild);
-				//更新父订单的状态(当自订单)当所有的子订单发货完成更新为卖家已发货，否则是部分发货
-				List<OnlineOrderChild> onlineOrderChildList = onlineOrder.getOnlineOrderChilds();
-				int onlineOrderChildListCount = (int)onlineOrderChildList.stream().filter(OnlineOrderChild->OnlineOrderChild.getStatus().equals(Constants.ONLINEORDER_5)).count();
-				if(onlineOrderChildList.size()==onlineOrderChildListCount){
-					onlineOrder.setStatus(Constants.ONLINEORDER_5);
+
+				// 查询商品在当前库存下所有数量大于0的入库单，优先入库时间最早的入库单出库,出库数量可能存在一单无法满足，按时间依次删减出库单数量
+				List<ProcurementChild> procurementChildList = procurementChildDao
+						.findByCommodityIdAndStatusAndResidueNumberGreaterThan(onlineOrderChild.getCommodityId(), 0, 0);
+				procurementChildList = procurementChildList.stream()
+						.filter(ProcurementChild -> ProcurementChild.getProcurement().getType() == 2)
+						.sorted(Comparator.comparing(ProcurementChild::getCreatedAt)).collect(Collectors.toList());
+				// 出库单剩余数量
+				int residueNumber = number;
+				String ids = "";
+				List<ProcurementChild> newProcurementChild = new ArrayList<>();
+				for (ProcurementChild updateProcurementChild : procurementChildList) {
+					// 当入库单数量小于出库单时,更新剩余数量
+					if (updateProcurementChild.getResidueNumber() < residueNumber) {
+						residueNumber = number - updateProcurementChild.getResidueNumber();
+						updateProcurementChild.setResidueNumber(0);
+						newProcurementChild.add(updateProcurementChild);
+						ids += updateProcurementChild.getId() + ",";
+					} else {
+						updateProcurementChild
+								.setResidueNumber(updateProcurementChild.getResidueNumber() - residueNumber);
+						newProcurementChild.add(updateProcurementChild);
+						ids += updateProcurementChild.getId() + ",";
+						break;
+					}
 				}
-				
-				// 当订单的状态是买家已付款时
-				if (onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_4)) {
+				// 更新改变数量的入库单的剩余数量
+				procurementChildDao.save(newProcurementChild);
+				// 将出库单ids存入入库单，便于反冲
+				procurementChild.setPutWarehouseIds(ids);
+				// 当订单的状态是买家已付款时货部分发货
+				if (onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_4)
+						|| onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_3)) {
 					// 获取商品
 					Commodity commodity = onlineOrderChild.getCommodity();
 					// 获取库存
-					Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(commodity.getId(),
-							warehouseId);
+					Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(commodity.getId(), warehouseId);
 					if (inventory != null) {
 						inventory.setNumber(inventory.getNumber() - number);
 						inventoryDao.save(inventory);
+						// 更新子订单为发货状态
 						onlineOrderChild.setStatus(Constants.ONLINEORDER_5);
 						onlineOrderChildDao.save(onlineOrderChild);
 					} else {
 						throw new ServiceException(commodity.getName() + "当前仓库没有库存,无法出库");
 					}
-				}else{
+				} else {
 					throw new ServiceException(onlineOrder.getDocumentNumber() + "不是等待卖家发货状态,无法发货");
 				}
+
+				// 更新父订单的状态当所有的子订单发货完成更新为卖家已发货，否则是部分发货
+				List<OnlineOrderChild> onlineOrderChildList = onlineOrder.getOnlineOrderChilds();
+				int onlineOrderChildListCount = (int) onlineOrderChildList.stream()
+						.filter(OnlineOrderChild -> OnlineOrderChild.getStatus().equals(Constants.ONLINEORDER_5))
+						.count();
+				if (onlineOrderChildList.size() == onlineOrderChildListCount) {
+					onlineOrder.setStatus(Constants.ONLINEORDER_5);
+				} else {
+					onlineOrder.setStatus(Constants.ONLINEORDER_3);
+				}
 				count++;
-				procurementDao.save(procurement);
 			}
+
+			// 更新总发货单的数量
+			int procurementNumber = procurement.getProcurementChilds().stream().mapToInt(p -> p.getNumber()).sum();
+			procurement.setNumber(procurementNumber);
+			procurementDao.save(procurement);
 		}
 		return count;
 	}
 
 	@Override
 	@Transactional
-	public int excelOnlineOrder(ExcelListener excelListener,Long onlineCustomerId,Long userId) {
+	public int excelOnlineOrder(ExcelListener excelListener, Long onlineCustomerId, Long userId) {
 		int count = 0;
 		// 获取导入的订单
 		List<Object> excelListenerList = excelListener.getData();
@@ -271,7 +336,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		Procurement procurement = null;
 		for (int i = 0; i < excelListenerList.size(); i++) {
 			OnlineOrderPoi cPoi = (OnlineOrderPoi) excelListenerList.get(i);
-			if (cPoi.getDocumentNumber() != null) {  
+			if (cPoi.getDocumentNumber() != null) {
 				onlineOrder = new OnlineOrder();
 				procurement = new Procurement();
 				procurement.setType(3);
@@ -314,7 +379,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			onlineOrderChild.setOnlineOrder(onlineOrder);
 			onlineOrderChild.setPrice(cPoi.getPrice());
 			onlineOrderChild.setNumber(cPoi.getNumber());
-			onlineOrderChild.setWarehouseId(cPoi.getWarehouseId()==null ? 157 : cPoi.getWarehouseId());
+			onlineOrderChild.setWarehouseId(cPoi.getWarehouseId() == null ? 157 : cPoi.getWarehouseId());
 			onlineOrderChild.setSumPrice(NumUtils.mul(onlineOrderChild.getPrice(), onlineOrderChild.getNumber()));
 			if (cPoi.getCommodityName() != null) {
 				Commodity commodity = commodityDao.findByName(cPoi.getCommodityName());
@@ -345,7 +410,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			onlineOrderChilds.add(onlineOrderChild);
 			// 当下一条数据没有订单编号时,自动存储上面所有的父子订单
 			OnlineOrderPoi onlineOrderPoiNext = null;
-			if(i<excelListenerList.size()-1){
+			if (i < excelListenerList.size() - 1) {
 				onlineOrderPoiNext = (OnlineOrderPoi) excelListenerList.get(i + 1);
 				if (onlineOrderPoiNext.getDocumentNumber() != null) {
 					onlineOrderList.add(onlineOrder);
@@ -370,7 +435,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			onlineOrder.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(onlineOrder.getOrderTimeBegin()));
 			size = 1;
 		}
-		//开始时间
+		// 开始时间
 		Date beginTimes = onlineOrder.getOrderTimeBegin();
 		for (int i = 0; i < size; i++) {
 			// 获取一天的结束时间
@@ -404,7 +469,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				onlineOrderList.stream().forEach(pt -> {
 					onlineOrderChildList.addAll(pt.getOnlineOrderChilds());
 				});
-				
+
 				// 成交金额
 				mapSale.put("sumPayment", sumPayment);
 				// 成交单数
@@ -428,12 +493,12 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				mapSale.put("sumCost", sumCost);
 				// 利润
 				mapSale.put("profits", NumUtils.sub(sumPayment, sumCost, sumpostFee));
-				SimpleDateFormat  sdf = new SimpleDateFormat("yyyy-MM-dd");
-				if(onlineOrder.getReport() == 1){
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				if (onlineOrder.getReport() == 1) {
 					// 时间
 					mapSale.put("time", sdf.format(beginTimes));
 				}
-				if(onlineOrder.getReport() == 2){
+				if (onlineOrder.getReport() == 2) {
 					sdf = new SimpleDateFormat("yyyy-MM");
 					// 时间
 					mapSale.put("time", sdf.format(beginTimes));
@@ -495,12 +560,13 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		Map<Long, List<OnlineOrder>> mapOnlineOrderList = null;
 		if (onlineOrder.getReport() == 3) {
 			// 根据员工id分组
-			mapOnlineOrderList = onlineOrderList.stream().filter(OnlineOrder->OnlineOrder.getUserId()!=null)
+			mapOnlineOrderList = onlineOrderList.stream().filter(OnlineOrder -> OnlineOrder.getUserId() != null)
 					.collect(Collectors.groupingBy(OnlineOrder::getUserId, Collectors.toList()));
 		}
 		if (onlineOrder.getReport() == 4) {
 			// 根据客户id分组
-			mapOnlineOrderList = onlineOrderList.stream().filter(OnlineOrder->OnlineOrder.getOnlineCustomerId()!=null)
+			mapOnlineOrderList = onlineOrderList.stream()
+					.filter(OnlineOrder -> OnlineOrder.getOnlineCustomerId() != null)
 					.collect(Collectors.groupingBy(OnlineOrder::getOnlineCustomerId, Collectors.toList()));
 		}
 		for (Long ps : mapOnlineOrderList.keySet()) {
