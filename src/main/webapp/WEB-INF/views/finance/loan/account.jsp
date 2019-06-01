@@ -372,7 +372,7 @@
 					
 					
 					function addEidt(type){
-						var data={custom:{name:''},money:'',contactName:'',expenseDate:'',content:'',withholdMoney:'',withholdReason:''};
+						var data={custom:{name:''},money:'',contactName:'',expenseDate:'',content:'贷款本金',withholdMoney:'',withholdReason:''};
 						var title="新增数据";
 						var html="";
 						var tpl=addEditTpl.innerHTML;

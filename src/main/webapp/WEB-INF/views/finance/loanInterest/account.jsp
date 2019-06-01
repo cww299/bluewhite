@@ -189,7 +189,7 @@ layui.config({
 		});
 		
 		function addEidt(type){
-			var data={id:'',custom:{name:''},money:'',expenseDate:'',content:'',withholdMoney:'',withholdReason:''};
+			var data={id:'',custom:{name:''},money:'',expenseDate:'',content:'借款利息',withholdMoney:'',withholdReason:''};
 			var title="新增数据";
 			var html="";
 			var tpl=addEditTpl.innerHTML;
