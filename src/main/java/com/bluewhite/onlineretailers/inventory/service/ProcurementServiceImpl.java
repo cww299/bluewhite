@@ -119,6 +119,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 		Procurement oldProcurement = null;
 		if (procurement.getId() != null) {
 			upProcurement = new Procurement();
+			upProcurement.setFlag(0);
 			// 将 转换的单据id变成新单据的父id
 			upProcurement.setParentId(procurement.getId());
 			oldProcurement = dao.findOne(procurement.getId());

@@ -3,6 +3,7 @@ package com.bluewhite.shiro.realm;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.LockedAccountException;
@@ -97,4 +98,6 @@ public class UserRealm extends AuthorizingRealm {
                 getName());
         return authenticationInfo;
     }
+    
+    
 }
