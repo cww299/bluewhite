@@ -104,7 +104,6 @@ public class IndexAction {
 				cu.setPositionId(user.getPositionId());
 				SessionManager.setUserSession(cu);
 			} catch (ServiceException e) {
-				cr.setCode(ErrorCode.FORBIDDEN.getCode());
 				cr.setMessage(e.getCause().getMessage());
 				return cr;
 			} catch (IncorrectCredentialsException e1) {

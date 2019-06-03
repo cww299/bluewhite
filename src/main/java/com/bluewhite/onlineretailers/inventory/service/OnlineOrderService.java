@@ -81,4 +81,5 @@ public interface OnlineOrderService extends BaseCRUDService<OnlineOrder,Long>{
 	 */
 	public List<Map<String, Object>> reportSalesUser(OnlineOrder onlineOrder);
 
+
 }
