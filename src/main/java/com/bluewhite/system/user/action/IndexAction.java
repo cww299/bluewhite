@@ -124,6 +124,7 @@ public class IndexAction {
 	 * @return cr
 	 */
 	@RequestMapping(value = "/getCurrentUser" , method = RequestMethod.GET)
+	@ResponseBody
 	public CommonResponse getCurrentUser() {
 		CommonResponse cr = new CommonResponse();
 		CurrentUser currentUser = SessionManager.getUserSession();
@@ -139,6 +140,7 @@ public class IndexAction {
 	 * @return cr
 	 */
 	@RequestMapping(value = "/getAllUserCache" , method = RequestMethod.GET)
+	@ResponseBody
 	public CommonResponse getAllUserCache() {
 		CommonResponse cr = new CommonResponse();
 		Cache<String, User> sysUserCache =  cacheManager.getCache("sysUserCache");
@@ -153,6 +155,7 @@ public class IndexAction {
 	 * @return cr
 	 */
 	@RequestMapping(value = "/cleanUserCache" , method = RequestMethod.GET)
+	@ResponseBody
 	public CommonResponse cleanUserCache(String username) {
 		CommonResponse cr = new CommonResponse();
 		roleService.cleanRole();
