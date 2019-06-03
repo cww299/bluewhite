@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.persistence.criteria.Predicate;
 
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.cache.Cache;
+import org.apache.shiro.cache.CacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -17,7 +20,9 @@ import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.system.user.dao.RoleDao;
+import com.bluewhite.system.user.entity.Menu;
 import com.bluewhite.system.user.entity.Role;
+import com.bluewhite.system.user.entity.User;
 
 
 
@@ -27,6 +32,8 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements
 
 	@Autowired
 	private RoleDao dao;
+	@Autowired
+	private CacheManager cacheManager;
 
 	@Override
 	public PageResult<Role> getPage(PageParameter page, Role role) {
@@ -61,6 +68,22 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements
 	@Override
 	public Role findByName(String name) {
 		return dao.findByName(name);
+	}
+
+	@Override
+	public void cleanRole() {
+			Cache<String, SimpleAuthorizationInfo> apiAccessTokenCache =  cacheManager.getCache("sysAuthCache");
+			Cache<String, List<Menu>> sysMenuCache =  cacheManager.getCache("sysMenuCache");
+			apiAccessTokenCache.clear();
+			sysMenuCache.clear();
+	}
+
+	@Override
+	public void cleanRole(String username) {
+		Cache<String, SimpleAuthorizationInfo> apiAccessTokenCache =  cacheManager.getCache("sysAuthCache");
+		Cache<String, List<Menu>> sysMenuCache =  cacheManager.getCache("sysMenuCache");
+		apiAccessTokenCache.remove(username);
+		sysMenuCache.remove(username);
 	}
 
 

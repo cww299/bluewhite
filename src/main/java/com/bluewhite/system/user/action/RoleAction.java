@@ -9,10 +9,11 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.cache.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,6 +26,7 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.shiro.realm.UserRealm;
 import com.bluewhite.system.user.dao.RoleMenuPermissionDao;
 import com.bluewhite.system.user.entity.Menu;
 import com.bluewhite.system.user.entity.Permission;
@@ -50,6 +52,8 @@ public class RoleAction {
 	private MenuService menuService;
 	@Autowired
 	private PermissionService permissionService;
+	@Autowired
+	private UserRealm userRealm;
 
 	private ClearCascadeJSON clearCascadeJSON;
 	{
@@ -219,6 +223,7 @@ public class RoleAction {
 				roleMenuPermissionDao.save(roleMenuPermission);
 			}
 		}
+		roleService.cleanRole();
 		return cr;
 	}
 	
@@ -245,6 +250,7 @@ public class RoleAction {
 		}
 		user.setRoles(roleSet);
 		userService.save(user);
+		roleService.cleanRole(user.getUserName());
 		cr.setMessage("分配成功");
 		return cr;
 	}
@@ -270,6 +276,7 @@ public class RoleAction {
 				roleMenuPermission.setPermissionIds(permissionIdsLong);
 				roleMenuPermissionDao.save(roleMenuPermission);
 		}
+		roleService.cleanRole();
 		cr.setMessage("修改成功");
 		return cr;
 	}
@@ -290,6 +297,7 @@ public class RoleAction {
 			roleMenuPermission.setRole(null);
 			roleMenuPermissionDao.delete(roleMenuPermission);
 		}
+		roleService.cleanRole();
 		cr.setMessage("删除成功");
 		return cr;
 	}

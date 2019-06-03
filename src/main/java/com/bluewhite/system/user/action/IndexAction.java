@@ -26,7 +26,9 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.system.user.entity.Menu;
+import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.service.RoleService;
 import com.bluewhite.system.user.service.UserService;
 
 
@@ -44,13 +46,15 @@ public class IndexAction {
 	private UserService userService;
 	@Autowired
 	private CacheManager cacheManager;
+	@Autowired
+	private RoleService roleService;
 	
 	
 	/**
 	 * 跳转首页
 	 * @return
 	 */
-	@RequiresPermissions( "sys:*" ) 
+	@RequiresPermissions( "sysIndex:*" ) 
 	@RequestMapping(value="/")
 	public String index() {
 		return "index";
@@ -110,6 +114,49 @@ public class IndexAction {
             }
 			cr.setMessage("用户登录成功");
 		}
+		return cr;
+	}
+	
+	
+	/**
+	 * 当前登录用户
+	 * 
+	 * @return cr
+	 */
+	@RequestMapping(value = "/getCurrentUser" , method = RequestMethod.GET)
+	public CommonResponse getCurrentUser() {
+		CommonResponse cr = new CommonResponse();
+		CurrentUser currentUser = SessionManager.getUserSession();
+		cr.setData(currentUser);
+		cr.setMessage("成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * 获取所有缓存对象
+	 * 
+	 * @return cr
+	 */
+	@RequestMapping(value = "/getAllUserCache" , method = RequestMethod.GET)
+	public CommonResponse getAllUserCache() {
+		CommonResponse cr = new CommonResponse();
+		Cache<String, User> sysUserCache =  cacheManager.getCache("sysUserCache");
+		sysUserCache.values();
+		cr.setMessage("成功");
+		return cr;
+	}
+	
+	/**
+	 * 清除指定user缓存对象
+	 * 
+	 * @return cr
+	 */
+	@RequestMapping(value = "/cleanUserCache" , method = RequestMethod.GET)
+	public CommonResponse cleanUserCache(String username) {
+		CommonResponse cr = new CommonResponse();
+		roleService.cleanRole();
+		cr.setMessage("成功");
 		return cr;
 	}
 	

@@ -143,7 +143,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				for (String idString : pers) {
 					Long id = Long.valueOf(idString);
 					OnlineOrder onlineOrder = dao.findOne(id);
-					if(onlineOrder.getFlag()==1){
+					if (onlineOrder.getFlag() == 1) {
 						throw new ServiceException("该数据已经反冲，无法再次反冲");
 					}
 					onlineOrder.setStatus(Constants.ONLINEORDER_4);
@@ -154,11 +154,14 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 							// 获取商品
 							Commodity commodity = onlineOrderChild.getCommodity();
 							// 获取出库单,反冲出库单
-							List<ProcurementChild>  procurementChildList = procurementChildDao
+							List<ProcurementChild> procurementChildList = procurementChildDao
 									.findByOnlineOrderId(onlineOrderChild.getId());
-							//排除已反冲的出库单
-							procurementChildList = procurementChildList.stream().filter(ProcurementChild ->ProcurementChild.getProcurement().getFlag()==0).collect(Collectors.toList());
-							procurementService.deleteProcurement(String.valueOf(procurementChildList.get(0).getProcurement().getId()));
+							// 排除已反冲的出库单
+							procurementChildList = procurementChildList.stream()
+									.filter(ProcurementChild -> ProcurementChild.getProcurement().getFlag() == 0)
+									.collect(Collectors.toList());
+							procurementService.deleteProcurement(
+									String.valueOf(procurementChildList.get(0).getProcurement().getId()));
 							// 获取商品库存
 							Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(commodity.getId(),
 									onlineOrderChild.getWarehouseId());
@@ -560,13 +563,16 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		Map<Long, List<OnlineOrder>> mapOnlineOrderList = null;
 		if (onlineOrder.getReport() == 3) {
 			// 根据员工id分组
-			mapOnlineOrderList = onlineOrderList.stream().filter(OnlineOrder -> OnlineOrder.getUserId() != null)
+			mapOnlineOrderList = onlineOrderList.stream()
+					.filter(OnlineOrder -> OnlineOrder.getUserId() != null
+							&& OnlineOrder.getUserId().equals(onlineOrder.getUserId()))
 					.collect(Collectors.groupingBy(OnlineOrder::getUserId, Collectors.toList()));
 		}
 		if (onlineOrder.getReport() == 4) {
 			// 根据客户id分组
 			mapOnlineOrderList = onlineOrderList.stream()
-					.filter(OnlineOrder -> OnlineOrder.getOnlineCustomerId() != null)
+					.filter(OnlineOrder -> OnlineOrder.getOnlineCustomerId() != null
+							&& OnlineOrder.getOnlineCustomerId().equals(onlineOrder.getOnlineCustomerId()))
 					.collect(Collectors.groupingBy(OnlineOrder::getOnlineCustomerId, Collectors.toList()));
 		}
 		for (Long ps : mapOnlineOrderList.keySet()) {

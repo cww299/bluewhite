@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.criteria.JoinType;
@@ -27,6 +28,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.system.user.dao.UserContractDao;
 import com.bluewhite.system.user.dao.UserDao;
+import com.bluewhite.system.user.entity.Menu;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.RoleMenuPermission;
 import com.bluewhite.system.user.entity.User;
@@ -79,6 +81,10 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
                 }
             }
         }
+        //登录用户默认拥有首页权限
+  		if(!result.contains("sysIndex:*")){  
+  			result.add("sysIndex:*");
+  		}
         return result;
     }
 
