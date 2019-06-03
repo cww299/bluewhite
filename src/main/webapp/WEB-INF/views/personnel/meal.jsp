@@ -23,7 +23,7 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>报销人:</td>
+							<td>姓名:</td>
 							<td><select class="form-control" id="selectUserId" lay-search="true"  name="userId"></select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>日期:</td>

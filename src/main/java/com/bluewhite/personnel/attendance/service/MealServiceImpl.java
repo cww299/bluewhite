@@ -254,7 +254,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 		}
 		}
 		 	Meal meal2=new Meal();
-			meal2.setTradeDaysTime(attendanceTime.getOrderTimeBegin());
+			meal2.setTradeDaysTime(attendanceTime2.getTime());
 			meal2.setPrice(Double.valueOf(variable.getKeyValueTwo()));
 			meal2.setMode(2);
 			meal2.setUserName(attendanceTime2.getUserName());
