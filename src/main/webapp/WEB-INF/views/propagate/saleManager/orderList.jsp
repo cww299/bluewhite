@@ -59,13 +59,13 @@ td{
 						<input type="text" name="onlineCustomerName" id='customNameSelect' class='layui-input' placeholder='客户名称'></div>
 					<div class="layui-input-inline">
 						<select lay-search name='status'><option value="">交易状态</option>
-														<option  value="WAIT_SELLER_SEND_GOODS">等待卖家发货,即:买家已付款</option>
-														<option  value="TRADE_NO_CREATE_PAY">没有创建支付宝交易</option>
+														<option  value="WAIT_SELLER_SEND_GOODS">买家已付款</option>
+														<!-- <option  value="TRADE_NO_CREATE_PAY">没有创建支付宝交易</option>
 														<option  value="WAIT_BUYER_PAY">等待买家付款</option>
 														<option  value="SELLER_CONSIGNED_PART">卖家部分发货</option>
 														<option  value="TRADE_BUYER_SIGNED">买家已签收,货到付款专用</option>
-														<option  value="TRADE_FINISHED">交易成功</option>
-														<option  value="WAIT_BUYER_CONFIRM_GOODS">等待买家确认收货,即:卖家已发货</option></select></div>
+														<option  value="TRADE_FINISHED">交易成功</option> -->
+														<option  value="WAIT_BUYER_CONFIRM_GOODS">卖家已发货</option></select></div>
 					<div class="layui-input-inline">
 						<select lay-search name='shippingType'><option value="">物流方式</option>
 																<option  value="free"		>卖家包邮</option>
@@ -81,7 +81,7 @@ td{
 					<div class="layui-input-inline">
 						<select lay-search name='flag'><option value="">是否反冲</option>
 														<option value='1'>反冲</option>
-														<option value='0'>不反冲</option></select></div>
+														<option value='0' selected>不反冲</option></select></div>
 					<div class="layui-input-inline">
 						<button class="layui-btn" lay-submit lay-filter="search">搜索</button>
 						<button class="layui-btn" id="uploadDataBtn">导入订单</button></div>
@@ -296,7 +296,8 @@ layui.config({
 			obj.field.orderTimeBegin = t[0];
 			obj.field.orderTimeEnd = t[1];
 			table.reload('onlineOrder',{
-				where:obj.field
+				where:obj.field,
+				url:'${ctx}/inventory/onlineOrderPage',
 			})
 		})
 		form.render();
@@ -352,7 +353,7 @@ layui.config({
 
 		table.render({		//渲染主页面表格
 			elem:'#onlineOrder',
-			url:'${ctx}/inventory/onlineOrderPage',
+			url:'${ctx}/inventory/onlineOrderPage?flag=0',
 			toolbar:'#onlineOrderToolbar',
 			loading:true,
 			size:'sm',
