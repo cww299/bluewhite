@@ -68,6 +68,7 @@ layui.config({
 			loading:true,
 			size:'sm',
 			totalRow:true,
+			toolbar: true,
 			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){
 				return {  
