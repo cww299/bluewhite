@@ -66,7 +66,7 @@ td{
 			<td>经手人</td>
 			<td><select name="userId" id='userIdSelect' lay-search><option value="1" >获取数据中...</option></select></td>
 			<td>备注</td>
-			<td colspan=""><input type="text" name="remark" class="layui-input"></td>
+			<td colspan=""><input type="text" name="remark" id="addRemark" class="layui-input"></td>
 			<td>入库数量</td>
 			<td><input type="text" class="layui-input" name='number' id="addOrderNumber" value='0' readonly></td></tr>
 		<tr>
@@ -585,10 +585,10 @@ layui.config({
 		$('#resetAddOrder').on('click',function(){			//此处如果加confirm提示。则新增成功时无法清空
 			$('#addRemark').val('');
 			$('#addOrderNumber').val(0);
+			$('#addCreatedAt').val('');
 			choosedProduct=[];	
-			table.reload('productListTable',{
-				data:choosedProduct
-			})
+			getUserSelect(currUser.id,'userIdSelect',allUser);
+			table.reload('productListTable',{ data:choosedProduct })
 		})
 		form.on('submit(searchProduct)',function(obj){
 			table.reload('productChooseTable',{
