@@ -207,7 +207,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 				//早饭
 				if (attendanceTime2.getEatType()==1) {
 					Meal meal2=new Meal();
-					meal2.setTradeDaysTime(attendanceTime2.getCheckIn());
+					meal2.setTradeDaysTime(attendanceTime2.getTime());
 					meal2.setPrice(Double.valueOf(variable.getKeyValue()));
 					meal2.setMode(1);
 					meal2.setUserName(attendanceTime2.getUserName());
@@ -222,7 +222,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 				//晚饭
 			if (attendanceTime2.getEatType()==2) {
 				Meal meal2=new Meal();
-				meal2.setTradeDaysTime(attendanceTime2.getCheckOut());
+				meal2.setTradeDaysTime(attendanceTime2.getTime());
 				meal2.setPrice(Double.valueOf(variable.getKeyValueThree()));
 				meal2.setMode(3);
 				meal2.setUserName(attendanceTime2.getUserName());
@@ -236,7 +236,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 			//早饭晚饭都吃
 			if (attendanceTime2.getEatType()==3) {
 				Meal meal2=new Meal();
-				meal2.setTradeDaysTime(attendanceTime2.getCheckIn());
+				meal2.setTradeDaysTime(attendanceTime2.getTime());
 				meal2.setPrice(Double.valueOf(variable.getKeyValue()));
 				meal2.setMode(1);
 				meal2.setUserName(attendanceTime2.getUserName());
@@ -244,12 +244,12 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 				meal2.setType(2);
 				meals.add(meal2);
 				Meal meal3=new Meal();
-				meal3.setTradeDaysTime(attendanceTime2.getCheckOut());
+				meal3.setTradeDaysTime(attendanceTime2.getTime());
 				meal3.setPrice(Double.valueOf(variable.getKeyValueThree()));
 				meal3.setMode(3);
 				meal3.setUserName(attendanceTime2.getUserName());
 				meal3.setUserId(attendanceTime2.getUserId());
-				meal2.setType(2);
+				meal3.setType(2);
 				meals.add(meal3);
 		}
 		}

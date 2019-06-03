@@ -2567,7 +2567,6 @@
 					});
 					//监听单元格编辑 (总用水费用详情)
 					table.on('edit(summaryer)', function(obj) {
-						console.log(obj)
 						var value = obj.value ,//得到修改后的值
 							data = obj.data ,//得到所在行所有键值
 							field = obj.field, //得到字段
