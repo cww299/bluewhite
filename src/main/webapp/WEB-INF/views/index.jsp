@@ -46,7 +46,7 @@
           </li> -->
           
            <!-- 广宣部门查看预警按钮 -->
-          <shiro:hasAnyRoles name="superAdmin">
+          <shiro:hasAnyRoles name="superAdmin,propagateManager">
 	          <li class="layui-nav-item layui-hide-xs" lay-unselect>
 	            <a href="javascript:;" id='lookoverWarn' >仓库预警<span class="layui-badge" id='warnNumber'>0</span></a>
 	          </li>
@@ -140,7 +140,7 @@
   </div>
 	
 	<!-- 广宣预警弹窗 -->
-	<shiro:hasAnyRoles name="superAdmin">
+	<shiro:hasAnyRoles name="superAdmin,propagateManager">
    		<div id="warningDiv" style="display:none;">
 			<table id='warnTable' lay-filter='warnTable' class="layui-table"></table>   		
    		</div>
@@ -185,7 +185,6 @@ layui.use(['form','element','layer','jquery','table'],function(){
     	$('#lookoverWarn').on('click',warn);
     	warn();
     	function warn(){
-    		//debugger;
 			if(document.getElementById("warningDiv")!=null){
 				layer.open({
 					title:'仓库预警',
