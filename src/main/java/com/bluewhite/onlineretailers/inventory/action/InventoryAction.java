@@ -413,6 +413,7 @@ public class InventoryAction {
 		cr.setMessage("成功");
 		return cr;
 	}
+	
 
 	/**
 	 * 2.入库 日报表 月报表

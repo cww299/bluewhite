@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,14 +84,14 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 
 			// 按仓库id
 			if (param.getWarehouseId() != null) {
-				predicate.add(cb.equal(root.get("procurementChilds").get("warehouseId").as(Long.class),
-						param.getWarehouseId()));
+				Join<Procurement,ProcurementChild> join = root.join(root.getModel().getSet("procurementChilds", ProcurementChild.class),JoinType.LEFT);
+				predicate.add(cb.equal(root.get("warehouseId").as(Long.class),param.getWarehouseId()));
 			}
 
 			// 按批次号过滤
 			if (!StringUtils.isEmpty(param.getBatchNumber())) {
-				predicate.add(cb.equal(root.get("procurementChilds").get("batchNumber").as(String.class),
-						param.getBatchNumber()));
+				Join<Procurement,ProcurementChild> join = root.join(root.getModel().getSet("procurementChilds", ProcurementChild.class),JoinType.LEFT);
+				predicate.add(cb.like(join.get("batchNumber").as(String.class),"%"+param.getBatchNumber()+"%"));
 			}
 
 			// 按单据生产时间过滤
