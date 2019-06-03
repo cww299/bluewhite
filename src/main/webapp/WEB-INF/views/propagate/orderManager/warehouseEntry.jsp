@@ -16,6 +16,18 @@
 td{
 	text-align:center;
 }
+.layui-card .layui-table-cell{	
+	  height:auto;
+	  overflow:visible;
+	  padding:0px;
+}
+.layui-card  .layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
+     top: 50%;
+     transform: translateY(0%);
+}
+.layui-table tbody tr:hover, .layui-table-hover {
+	background-color: transparent;
+}
 </style>
 </head>
 <body>
@@ -29,7 +41,7 @@ td{
 				<td>&nbsp;&nbsp;</td>
 				<td><input type="text" class="layui-input" name="batchNumber" placeholder='请输入要查找的相关信息'></td>
 				<td>&nbsp;&nbsp;</td>
-				<td><select name="flag"><option value="">是否反冲</option><option value="1">反冲</option><option value="0">未反冲</option></select>
+				<td><select name="flag"><option value="">是否反冲</option><option value="1">反冲</option><option value="0" selected>未反冲</option></select>
 				<td>&nbsp;&nbsp;</td>
 				<td><select name='status'>
 						<option value="">入库类型</option>
@@ -49,8 +61,8 @@ td{
 <!-- 添加订单隐藏框  -->
 <div id="addOrderDiv" style="display:none;padding:10px;">
 	<table class="layui-form layui-table" lay-size="sm" lay-skin="nob">
-		<tr><td>默认批次号<input type="hidden" name="type" value="2" ></td>	<!-- 默认type类型为2，表示为入库单 -->
-			<td><input type="text" class="layui-input" id='addBatchNumber' name='batchNumber' lay-verify='required'></td>
+		<tr><td>下单时间<input type="hidden" name="type" value="2" ></td>	<!-- 默认type类型为2，表示为入库单 -->
+			<td><input type="text" class="layui-input" name="createdAt" id="addCreatedAt"></td>
 			<td>经手人</td>
 			<td><select name="userId" id='userIdSelect' lay-search><option value="1" >获取数据中...</option></select></td>
 			<td>备注</td>
@@ -69,7 +81,7 @@ td{
 						<option value="4">采购入库</option></select></td>
 			<td id='textTd'></td>
 			<td id='selectTd' style='width:280px;'></td>
-			<td colspan="2"><span class="layui-btn" lay-submit lay-filter="sureAdd" >确定新增</span>
+			<td colspan="2" style="text-align:right;"><span class="layui-btn" lay-submit lay-filter="sureAdd" >确定新增</span>
 						<span class="layui-btn layui-btn-danger" id='resetAddOrder' >清空数据</span></td></tr>
 	</table>
 	<table class="layui-table" id="productListTable" lay-filter="productListTable"></table>
@@ -78,8 +90,8 @@ td{
 <!-- 查看订单隐藏框  -->
 <div id="lookoverOrderDiv" style="display:none;padding:10px;">
 	<table class="layui-form layui-table"  lay-size="sm" lay-skin="nob">
-		<tr><td>批次号</td>	
-			<td><input type="text" class="layui-input" readonly id="look_batchNumber"></td>
+		<tr><td>下单时间</td>	
+			<td><input type="text" class="layui-input" readonly id="look_createdAt"></td>
 			<td>经手人</td>
 			<td><input type="text" class="layui-input" readonly id="look_user"></td>
 			<td>总数量</td>
@@ -168,10 +180,10 @@ td{
 <script type="text/html" id='statusTpl'>
 	{{#	var text='',color='';
 		switch(d.status){
-		case 0: text='生产入库'; 	color=''; break;
-		case 1: text='调拨入库'; 	color='blue'; break;
+		case 0: text='生产入库'; 	color='blue'; break;
+		case 1: text='调拨入库'; 	color='cyan'; break;
 		case 2: text='销售退货入库'; color='green'; break;
-		case 3: text='销售换货入库'; color='cyan'; break;
+		case 3: text='销售换货入库'; color='gray'; break;
 		case 4: text='采购入库'; 	color='orange'; break;
 		}
 	}}	
@@ -222,12 +234,13 @@ layui.config({
 }).extend({
 	tablePlug : 'tablePlug/tablePlug',
 }).define(
-	['tablePlug'],
+	['tablePlug','laydate'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
 		, form = layui.form			 		
 		, table = layui.table 
+		, laydate = layui.laydate
 		, tablePlug = layui.tablePlug;
 		
 		var chooseProductWin,		//选择商品弹窗
@@ -235,19 +248,21 @@ layui.config({
 		var allInventory=[],		//所有仓库
 			allUser=[],
 			allCustom=[],
-			allUserOrg=[];
+			allUserOrg=[],
+			currUser={id:''};     
 		
 		getAllInventory();
 		getAllUser();
 		getAllCustom();
 		getAllUserOrg();
+		getCurrUser();
 		
 		renderInventorySelect('defaultInventorySelect');
 		
 		form.render();
 		table.render({				//渲染主页面单表格
 			elem:'#entryOrderTable',
-			url:'${ctx}/inventory/procurementPage?type=2',
+			url:'${ctx}/inventory/procurementPage?type=2&flag=0',
 			toolbar:'#entryOrderTableToolbar',
 			loading:true,
 			page:{},
@@ -257,16 +272,57 @@ layui.config({
 			cols:[[
 			       {align:'center', type:'checkbox',},
 			       {align:'center', title:'单据编号',   	field:'documentNumber',	},
-			       {align:'center', title:'批次号',   field:'batchNumber',},
-			       {align:'center', title:'计划数量', field:'number'},
-			       {align:'center', title:'剩余数量', field:'residueNumber'},
-			       {align:'center', title:'经手人',	templet:'<p>{{ d.user.userName }}</p>'},
-			       {align:'center', title:'入库类型', templet:'#statusTpl'},
+			       {align:'center', title:'计划数量', field:'number', width:'6%',	},
+			       {align:'center', title:'剩余数量', field:'residueNumber',width:'6%',	},
+			       {align:'center', title:'经手人',	templet:'<p>{{ d.user.userName }}</p>',width:'7%',	},
+			       {align:'center', title:'入库类型', templet:'#statusTpl',width:'6%',	},
 			       {align:'center', title:'备注', 	field:'remark'},
-			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl'},
-			       {align:'center', title:'日期',   	field:'createAt',	},
+			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl',width:'6%',	},
+			       {align:'center', title:'日期',   	field:'createdAt',	},
+			       {align:'center', title:'批次号',	templet: orderContentBatchNumber(), width:'10%'	,},
+					{align:'center', title:'商品名',	templet: orderContentName(),width:'20%'	,},
+					{align:'center', title:'剩余数量',templet: orderContentNumber(), width:'5%'	,},
 			       ]]
 		})
+		function orderContentBatchNumber(){
+			return function(d){
+				var html='<table style="width:100%;" class="layui-table">';
+				for(var i=0;i<d.procurementChilds.length;i++){
+					var t=d.procurementChilds[i];
+					var style='';
+					if(i==d.procurementChilds.length-1)
+						style='border-bottom:none';
+					html+='<tr><td style="border-right:none; '+style+'">'+t.batchNumber+'</td></tr>';
+				}
+				return html+'</table>';
+			}
+		}
+		function orderContentName(){
+			return function(d){
+				var html='<table style="width:100%;" class="table-noclickline">';
+				for(var i=0;i<d.procurementChilds.length;i++){
+					var t=d.procurementChilds[i];
+					var style='';
+					if(i==d.procurementChilds.length-1)
+						style='border-bottom:none';
+					html+='<tr><td style="border-right:none; '+style+'">'+t.commodity.skuCode+'</td></tr>';
+				}
+				return html+'</table>';
+			}
+		}
+		function orderContentNumber(){
+			return function(d){
+				var html='<table style="width:100%;" class="table-noclickline">';
+				for(var i=0;i<d.procurementChilds.length;i++){
+					var t=d.procurementChilds[i];
+					var style='';
+					if(i==d.procurementChilds.length-1)
+						style='border-bottom:none';
+					html+='<tr><td style="border-right:none; '+style+'">'+t.residueNumber+'</td></tr>';
+				}
+				return html+'</tbody></table>'; 
+			}
+		}
 		
 		table.on('toolbar(entryOrderTable)',function(obj){	//监听单表格按钮
 			switch(obj.event){
@@ -281,7 +337,8 @@ layui.config({
 		form.on('submit(search)',function(obj){
 			table.reload('entryOrderTable',{
 				where:obj.field,
-				page: {  curr: 1   }
+				page: {  curr: 1   },
+				url:'${ctx}/inventory/procurementPage?type=2',
 			})
 		})
 		
@@ -333,7 +390,7 @@ layui.config({
 				       {align:'center', title:'备注', 	  field:'childRemark',}, 
 				       ]]
 			})
-			$('#look_batchNumber').val(data.batchNumber);
+			$('#look_createdAt').val(data.createdAt);
 			$('#look_remark').val(data.remark);
 			$('#look_number').val(data.number);
 			var statusText='无类型';
@@ -359,12 +416,13 @@ layui.config({
 		}
 		
 		//-------新增入库单功能---------------
+		laydate.render({ elem:'#addCreatedAt', type:'datetime' });
 		var choosedProduct=[];		//用户已经选择上的产品,渲染新增单的产品表格数据
 		var defaultStatus=0;
 		var defaultInventory='';
 		function add(){										//新增单
 			defaultInventory=defaultInventory==''?allInventory[0].id:defaultInventory;
-			getUserSelect('','userIdSelect',allUser);
+			getUserSelect(currUser.id,'userIdSelect',allUser);
 			layer.open({
 				type : 1,
 				title : '新增入库单',
@@ -393,11 +451,6 @@ layui.config({
 			})
 			table.reload('productListTable',{ data : choosedProduct });
 		}
-		$('#addBatchNumber').change(function(){
-			for(var i=0;i<choosedProduct.length;i++)
-				choosedProduct[i].batchNumber=$('#addBatchNumber').val();
-			table.reload('productListTable',{ data : choosedProduct });
-		})
 		table.on('toolbar(productListTable)',function(obj){		//监听选择商品表格的工具栏按钮
 			switch(obj.event){
 			case 'add': openChooseProductWin(); break;
@@ -419,7 +472,7 @@ layui.config({
 								for(var i=0;i<choosedProduct.length;i++)			//设置已选商品的状态默认值
 									choosedProduct[i].status=defaultStatus;
 								if(obj.value==1){
-									$('#textTd').html('调拨');
+									$('#textTd').html('调拨人');
 									$('#selectTd').html('<select id="userIdOrg" name="transfersUserId"><option>获取数据中...</option></select>');
 									getUserSelect('','userIdOrg',allUserOrg);
 								}
@@ -531,7 +584,6 @@ layui.config({
 		
 		$('#resetAddOrder').on('click',function(){			//此处如果加confirm提示。则新增成功时无法清空
 			$('#addRemark').val('');
-			$('#addBatchNumber').val('');
 			$('#addOrderNumber').val(0);
 			choosedProduct=[];	
 			table.reload('productListTable',{
@@ -643,7 +695,7 @@ layui.config({
 							status : defaultStatus,			//状态
 							warehouseId : defaultInventory, //仓库
 							remark:choosed[i].remark,		//备注
-							batchNumber : $('#addBatchNumber').val(),
+							batchNumber : '',
 					};
 					$('#addOrderNumber').val($('#addOrderNumber').val()-(-1));
 					choosedProduct.push(orderChild);
@@ -769,6 +821,15 @@ layui.config({
 				return html; 
 			};
 		};
+		function getCurrUser(){
+			$.ajax({
+				url:'${ctx}/getCurrentUser',
+				success:function(r){
+					if(0==r.code)
+						currUser = r.data;
+				}
+			})
+		}
 		$(document).on('click', '.layui-table-view tbody tr', function(event) {
 			var elemTemp = $(this);
 			var tableView = elemTemp.closest('.layui-table-view');
