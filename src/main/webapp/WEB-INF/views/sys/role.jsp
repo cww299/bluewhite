@@ -62,7 +62,7 @@
   <div class="layui-form-item layui-form-text">
     <label class="layui-form-label">请填写描述</label>
     <div class="layui-input-block">
-      <textarea placeholder="请输入内容" class="layui-textarea" id="editDescription" id="editDescription" value="{{ d.description }}"></textarea>
+      <textarea placeholder="请输入内容" class="layui-textarea" id="editDescription">{{ d.description }}</textarea>
     </div>
   </div>
 </div>
