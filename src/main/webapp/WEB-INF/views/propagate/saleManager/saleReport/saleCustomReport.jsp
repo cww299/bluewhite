@@ -31,8 +31,7 @@
 </div>
 </body>
 <!-- 查看销售详情隐藏框 -->
-<div style="display:none;padding:20px;" id="lookoverDiv" >
-	<label>销售人员销售明细：</label>
+<div style="display:none;" id="lookoverDiv" >
 	<table class="layui-table" id="lookoverTable" lay-filter="lookoverTable"></table>
 </div>
 
@@ -103,16 +102,16 @@ layui.config({
 				request:{ pageName:'page', limitName:'size' },
 				parseData:function(ret){ return {  msg:ret.message,  code:ret.code , data:ret.data.rows, count:ret.data.total, } },
 				cols:[[
-						{align:'center', title:'日期',   		field:'createdAt',	},
-						{align:'center', title:'单据编号',   	templet:'<span>{{ d.onlineOrder.documentNumber }}</span>', 	},
-						{align:'center', title:'运单号',   		templet:'<span>{{ d.onlineOrder.trackingNumber }}</span>', 	},
+						{align:'center', title:'日期',   		field:'createdAt',	width:'11%',},
+						{align:'center', title:'单据编号',   	templet:'<span>{{ d.onlineOrder.documentNumber }}</span>', 	width:'12%',},
+						{align:'center', title:'运单号',   		templet:'<span>{{ d.onlineOrder.trackingNumber }}</span>', 	width:'8%',},
 						{align:'center', title:'商品名称', 		templet:'<span>{{ d.commodity.skuCode }}</span>', 	},
-						{align:'center', title:'商品数量', 		field:'number', 	},
-						{align:'center', title:'商品单价', 		field:'price',	},
-						{align:'center', title:'商品总价', 		field:'sumPrice', 	},
-						{align:'center', title:'仓库名称',   	templet:'<span>{{ d.warehouse.name }}</span>',	},
-						{align:'center', title:'客户名称',   	templet:'<span>{{ d.onlineOrder.onlineCustomer.name }}</span>',	},
-						{align:'center', title:'经手人',   		templet:'<span>{{ d.onlineOrder.user.userName }}</span>',	},
+						{align:'center', title:'商品数量', 		field:'number', width:'6%', 	},
+						{align:'center', title:'商品单价', 		field:'price',	width:'6%', },
+						{align:'center', title:'商品总价', 		field:'sumPrice', 	width:'6%', },
+						{align:'center', title:'仓库名称',   	templet:'<span>{{ d.warehouse.name }}</span>',	width:'7%',},
+						{align:'center', title:'客户名称',   	templet:'<span>{{ d.onlineOrder.onlineCustomer.name }}</span>',	width:'7%',},
+						{align:'center', title:'经手人',   		templet:'<span>{{ d.onlineOrder.user.userName }}</span>',	width:'6%',},
 				       ]]
 			}) 
 		})
