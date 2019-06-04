@@ -285,11 +285,11 @@
 							if($("#moren").get(0).checked==true){
 								var a='';
 								if($("#qianru").get(0).checked==true){
-									a = time[0]+' '+'08:30:00'
+									a = time[0]+' '+'08:00:00'
 									timeAll=(timeAll==''? a:(c+','+a));
 								}
 								if($("#qianchu").get(0).checked==true){
-									a=time[0]+' '+'17:30:00'
+									a=time[0]+' '+'18:00:00'
 									timeAll=(timeAll==''? a:(c+','+a));
 								}
 							}else{
