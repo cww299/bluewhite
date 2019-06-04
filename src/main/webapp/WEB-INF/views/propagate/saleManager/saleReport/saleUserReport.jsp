@@ -31,7 +31,7 @@
 </div>
 </body>
 <!-- 查看销售详情隐藏框 -->
-<div style="display:none;padding:20px;" id="lookoverDiv" >
+<div style="display:none;" id="lookoverDiv" >
 	<label>销售人员销售明细：</label>
 	<table class="layui-table" id="lookoverTable" lay-filter="lookoverTable"></table>
 </div>
@@ -91,12 +91,13 @@ layui.config({
 			layer.open({
 				type:1,
 				title:obj.data.user,
+				area:['60%','60%'],
 				content:$('#lookoverDiv'),
 				shadeClose:true,
 			})
-			/* table.render({
-				url : '${ctx}/inventory/onlineOrderPage?userId='+obj.data.userId,
-				elem : 'lookoverTable',
+			table.render({
+				url : '${ctx}/inventory/report/salesUserDetailed?userId='+obj.data.userId,
+				elem : '#lookoverTable',
 				size : 'sm',
 				page : true,
 				request:{ pageName:'page', limitName:'size' },
@@ -109,7 +110,7 @@ layui.config({
 				       {align:'center', title:'客户名称',   	field:'',	},
 				       {align:'center', title:'经手人',   	field:'',	},
 				       ]]
-			}) */
+			}) 
 		})
 		
 		var allUser=[];
