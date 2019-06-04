@@ -36,20 +36,20 @@ td{
 				<td><input type="text" class="layui-input" name="tid"></td>
 				<td>订单状态：</td>			
 				<td><select name="status">
-						<option  value="WAIT_SELLER_SEND_GOODS">等待卖家发货,即:买家已付款</option>
-						<option  value="TRADE_NO_CREATE_PAY">没有创建支付宝交易</option>
+						<option  value="WAIT_SELLER_SEND_GOODS">买家已付款</option>
+						<!-- <option  value="TRADE_NO_CREATE_PAY">没有创建支付宝交易</option>
 						<option  value="WAIT_BUYER_PAY">等待买家付款</option>
 						<option  value="SELLER_CONSIGNED_PART">卖家部分发货</option>
 						<option  value="TRADE_BUYER_SIGNED">买家已签收,货到付款专用</option>
-						<option  value="TRADE_FINISHED">交易成功</option>
-						<option  value="WAIT_BUYER_CONFIRM_GOODS">等待买家确认收货,即:卖家已发货</option></select></td>	
+						<option  value="TRADE_FINISHED">交易成功</option> -->
+						<option  value="WAIT_BUYER_CONFIRM_GOODS">卖家已发货</option></select></td>	
 			</tr>
 			<tr>
 				<td>收货人：</td>			
 				<td><input type="text" class="layui-input" id="customRealName" name="buyerName"></td>
 				<td>收款金额：</td>			
 				<td><input type="text" class="layui-input" name="payment" id="customPayment"></td>
-				<td>所属客服：</td>			
+				<td>经手人：</td>			
 				<td><select name="userId" id='userIdSelect' lay-search><option value="">获取数据中..</option></select></td>
 			</tr>
 			<tr>
@@ -60,7 +60,7 @@ td{
 				<td>整单优惠：</td>			
 				<td><input type="text" class="layui-input" name="allBillPreferential" value="0"></td>
 				<td>邮费：</td>			
-				<td><input type="text" class="layui-input" name="postFee" value='0'></td>
+				<td><input type="text" class="layui-input" name="postFee" value='0' id='AddPostFee'></td>
 			</tr>
 			<tr>
 				<td>所在地：</td>			
@@ -325,6 +325,18 @@ layui.config({
 			})
 		});
 		
+		var lastPostFee=0;     				 	//用于保存修改前的邮费价格，进行重新计算
+		$('#AddPostFee').change(function(){
+			if(isNaN($('#AddPostFee').val())){
+				layer.msg('修改无效！请正确输入邮费信息！',{icon:2});
+				$('#AddPostFee').val(lastPostFee);
+				return;
+			}else if($('#AddPostFee').val()==''){
+				$('#AddPostFee').val(0);
+			}
+			$('#customPayment').val($('#customPayment').val()-lastPostFee-(-$('#AddPostFee').val()));	
+			lastPostFee=$('#AddPostFee').val();
+		})
 		
 		form.on('submit(sureAdd)',function(obj){					//确定添加按钮
 			var data=obj.field;										//对添加数据的判断
@@ -782,9 +794,24 @@ layui.config({
 			})
 		}
 		function renderUserSelect(select){			//根据id渲染客服下拉框
+			var user;
+			$.ajax({
+				url:'${ctx}/getCurrentUser',		//获取当前登录用户
+				async:false,
+				success:function(r){
+					if(0==r.code){
+						user = r.data;
+					}
+				}
+			})
 			var html='';
+			if(user==null)
+				html='无法获取当前登录用户信息';
 			for(var i=0;i<allUser.length;i++){
-				html+='<option value="'+allUser[i].id+'">'+allUser[i].userName+'</option>';
+				var isSelected='';
+				if(allUser[i].id==user.id)
+					isSelected='selected';
+				html+='<option value="'+allUser[i].id+'" '+isSelected+'>'+allUser[i].userName+'</option>';
 			}
 			$('#'+select).html(html);
 			form.render();

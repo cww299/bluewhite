@@ -16,6 +16,18 @@
 td{
 	text-align:center;
 }
+.layui-card .layui-table-cell{	
+	  height:auto;
+	  overflow:visible;
+	  padding:0px;
+}
+.layui-card  .layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
+     top: 50%;
+     transform: translateY(0%);
+}
+.layui-table tbody tr:hover, .layui-table-hover {
+	background-color: transparent;
+}
 </style>
 </head>
 <body>
@@ -29,7 +41,7 @@ td{
 				<td>&nbsp;&nbsp;</td>
 				<td><input type="text" class="layui-input" name="batchNumber" placeholder='请输入要查找的相关信息'></td>
 				<td>&nbsp;&nbsp;</td>
-				<td><select name="flag"><option value="">是否反冲</option><option value="1">反冲</option><option value="0">未反冲</option></select>
+				<td><select name="flag"><option value="">是否反冲</option><option value="1">反冲</option><option value="0" selected>未反冲</option></select>
 				<td>&nbsp;&nbsp;</td>
 				<td><span class="layui-btn" lay-submit lay-filter="search">搜索</span></td>
 			</tr>
@@ -41,8 +53,8 @@ td{
 <!-- 查看订单隐藏框  -->
 <div id="lookoverOrderDiv" style="display:none;padding:10px;">
 	<table class="layui-form layui-table"  lay-size="sm" lay-skin="nob">
-		<tr><td>批次号</td>	
-			<td><input type="text" class="layui-input" readonly id="look_batchNumber"></td>
+		<tr><td>下单时间</td>	
+			<td><input type="text" class="layui-input" readonly id="look_createdAt"></td>
 			<td>经手人</td>
 			<td><input type="text" class="layui-input" readonly id="look_user" val='无经手人'></td>
 			<td>总数量</td>
@@ -55,14 +67,18 @@ td{
 <!-- 添加订单隐藏框  -->
 <div id="addOrderDiv" style="display:none;padding:10px;">
 	<table class="layui-form layui-table"  lay-size="sm" lay-skin="nob">
-		<tr><td>默认批次号<input type="hidden" name="type" value="1" ></td>	<!-- 默认type类型为1，表示为针工单 -->
-			<td><input type="text" class="layui-input" name="batchNumber" lay-verify='required' id="addBatchNumber"></td>
+		<tr>
+			<td>下单时间 <input type="hidden" name="type" value="1" ></td> <!-- 默认type类型为1，表示为针工单 -->
+			<td><input type="text" class="layui-input" name="createdAt" id="addCreatedAt"></td>
 			<td>经手人</td>
 			<td><select name="userId" id='userIdSelectAdd' lay-search><option value="1" >获取数据中...</option></select></td>
 			<td>数量</td>
 			<td><input type="text" class="layui-input" name="number" id="addNumber" readonly value='0'></td></tr>
-		<tr><td>备注</td>
-			<td colspan="3"><input type="text" name="remark" class="layui-input" id="addRemark"></td>
+		<tr>
+			<td>默认批次号</td>	
+			<td><input type="text" class="layui-input" name="batchNumber" lay-verify='required' id="addBatchNumber"></td>
+			<td>备注</td>
+			<td><input type="text" name="remark" class="layui-input" id="addRemark"></td>
 			<td colspan="2" style="text-align:right;"><span class="layui-btn" lay-submit lay-filter="sureAdd" >确定新增</span>
 							<span class="layui-btn layui-btn-danger" id='resetAddOrder' >清空数据</span> </td></tr>
 	</table>
@@ -71,11 +87,11 @@ td{
 <!-- 生成入库单隐藏框  -->
 <div id="becomeOrderDiv" style="display:none;padding:10px;">
 	<table class="layui-form layui-table" lay-size="sm" lay-skin="nob">
-		<tr><td>批次号<input type="hidden" name="type" value="2" >
+		<tr><td>下单时间<input type="hidden" name="type" value="2" >
 					  <input type="hidden" name="id" id='becomeOrderId' ></td>	<!-- 默认type类型为2，表示为入库单 -->
-			<td><input type="text" class="layui-input" name='batchNumber' id="become_bacthNumber" readonly></td>
+			<td><input type="text" class="layui-input" name="createdAt" id="becomeCreatedAt"  ></td>
 			<td>经手人</td>
-			<td><select name="userId" id='userIdSelect'><option value="1" >测试人admin</option></select></td>
+			<td><select name="userId" id='userIdSelect'><option value="1" >获取数据中...</option></select></td>
 			<td>备注</td>
 			<td colspan="3"><input type="text" name="remark" class="layui-input"></td></tr>
 		<tr>
@@ -171,26 +187,29 @@ layui.config({
 }).extend({
 	tablePlug : 'tablePlug/tablePlug',
 }).define(
-	['tablePlug'],
+	['tablePlug','laydate'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
 		, form = layui.form			 		
 		, table = layui.table 
+		, laydate = layui.laydate
 		, tablePlug = layui.tablePlug;
 		
 		var allInventory=[],
-			allUser=[];
+			allUser=[],
+		    currUser={id:''};      
 		
 		getAllInventory();
 		getAllUser();
+		getCurrUser();
 		renderDefaultInventorySelect();
 		
 		form.render();
 		
 		table.render({				//渲染主页面入库单表格
 			elem:'#needleOrderTable',
-			url:'${ctx}/inventory/procurementPage?type=1',
+			url:'${ctx}/inventory/procurementPage?type=1&flag=0',
 			toolbar:'#needleOrderTableToolbar',
 			loading:true,
 			page:{},
@@ -200,16 +219,56 @@ layui.config({
 			cols:[[
 			       {align:'center', type:'checkbox',},
 			       {align:'center', title:'单据编号',   	field:'documentNumber',	},
-			       {align:'center', title:'批次号',   	field:'batchNumber',	},
-			       {align:'center', title:'计划数量', 	field:'number',			},
-			       {align:'center', title:'剩余数量', 	field:'residueNumber',	},
-			       {align:'center', title:'经手人',templet:'<p>{{ d.user.userName }}</p>'},
+			       {align:'center', title:'计划数量', 	field:'number',			width:'6%',	},
+			       {align:'center', title:'剩余数量', 	field:'residueNumber',	width:'6%',	},
+			       {align:'center', title:'经手人',templet:'<p>{{ d.user.userName }}</p>',width:'8%',},
 			       {align:'center', title:'备注', 		field:'remark',			},
-			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl'},
-			       {align:'center', title:'日期',   	field:'createAt',	},
+			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl',width:'6%',},
+			       {align:'center', title:'日期',   	field:'createdAt',	},
+			       {align:'center', title:'批次号',	templet: orderContentBatchNumber(), width:'10%'	,},
+					{align:'center', title:'商品名',	templet: orderContentName(),width:'20%'	,},
+					{align:'center', title:'剩余数量',templet: orderContentNumber(), width:'5%'	,},
 			       ]]
 		})
-		
+		function orderContentBatchNumber(){
+			return function(d){
+				var html='<table style="width:100%;" class="layui-table">';
+				for(var i=0;i<d.procurementChilds.length;i++){
+					var t=d.procurementChilds[i];
+					var style='';
+					if(i==d.procurementChilds.length-1)
+						style='border-bottom:none';
+					html+='<tr><td style="border-right:none; '+style+'">'+t.batchNumber+'</td></tr>';
+				}
+				return html+'</table>';
+			}
+		}
+		function orderContentName(){
+			return function(d){
+				var html='<table style="width:100%;" class="table-noclickline">';
+				for(var i=0;i<d.procurementChilds.length;i++){
+					var t=d.procurementChilds[i];
+					var style='';
+					if(i==d.procurementChilds.length-1)
+						style='border-bottom:none';
+					html+='<tr><td style="border-right:none; '+style+'">'+t.commodity.skuCode+'</td></tr>';
+				}
+				return html+'</table>';
+			}
+		}
+		function orderContentNumber(){
+			return function(d){
+				var html='<table style="width:100%;" class="table-noclickline">';
+				for(var i=0;i<d.procurementChilds.length;i++){
+					var t=d.procurementChilds[i];
+					var style='';
+					if(i==d.procurementChilds.length-1)
+						style='border-bottom:none';
+					html+='<tr><td style="border-right:none; '+style+'">'+t.residueNumber+'</td></tr>';
+				}
+				return html+'</tbody></table>'; 
+			}
+		}
 		table.on('toolbar(needleOrderTable)',function(obj){	//监听入库单表格按钮
 			switch(obj.event){
 			case 'delete':		deletes();		break;
@@ -224,10 +283,12 @@ layui.config({
 		form.on('submit(search)',function(obj){
 			table.reload('needleOrderTable',{
 				where:obj.field,
-				page: {  curr: 1   }
+				page: {  curr: 1   },
+				url:'${ctx}/inventory/procurementPage?type=1',
 			})
 		})
 		//--------------新增针工单------------
+		laydate.render({ elem:'#addCreatedAt', type:'datetime' });
 		var choosedProduct=[];			//用户已经选择上的产品
 		function addNeedle(){
 			layer.open({
@@ -236,7 +297,7 @@ layui.config({
 				area : ['90%','90%'],
 				content : $('#addOrderDiv')
 			})
-			getUserSelectAdd('','userIdSelectAdd');
+			getUserSelect(currUser.id,'userIdSelectAdd');
 			table.render({									//渲染选择后的商品表格
 				elem:'#productListTable',
 				toolbar:'#productListTableToolbar',
@@ -462,15 +523,6 @@ layui.config({
 			layer.msg('添加成功');
 			return true;
 		}
-		function getUserSelectAdd(id,select){
-			var html='';
-			for(var i=0;i<allUser.length;i++){
-				var selected=( id==allUser[i].id?'selected':'' );
-				html+='<option value="'+allUser[i].id+'" '+selected+'>'+allUser[i].userName+'</option>';
-			}
-			$('#'+select).html(html);
-			form.render();
-		}
 		function openAddNewPorductWin(){		//添加新产品窗口
 			addNewPorductWin = layer.open({								
 				type:1,
@@ -507,6 +559,7 @@ layui.config({
 		}
 		
 		//-------生成入库单功能---------------
+		laydate.render({ elem:'#becomeCreatedAt', type:'datetime' })
 		var becomeProduct=[];
 		var defaultBecomeNumber='zero';	//默认转单数量
 		var defaultInventory='';
@@ -563,7 +616,7 @@ layui.config({
 				becomeProduct[i].status=defaultStatus;
 			}
 			$('#become_bacthNumber').val(choosed[0].batchNumber);
-			$('#userIdSelect').html(getUserSelect(''));		//如果经手人为同一人，此处因加上之前经手人的id
+			getUserSelect(currUser.id,'userIdSelect');		
 			table.reload('becomeProductListTable',{
 				data:becomeProduct
 			})
@@ -610,6 +663,7 @@ layui.config({
 				}
 				allNum+=t.becomeNumber;
 				c.push({																//如果没有选择或者设置值，则为默认值
+					batchNumber : 	t.batchNumber,
 					commodityId : 	t.commodity.id,
 					number : 		t.becomeNumber,
 					warehouseId : 	t.warehouseId,
@@ -700,7 +754,7 @@ layui.config({
 				       {align:'center', title:'备注', 	  field:'childRemark',}, 
 				       ]]
 			})
-			$('#look_batchNumber').val(data.batchNumber);
+			$('#look_createdAt').val(data.createdAt);
 			$('#look_remark').val(data.remark);
 			$('#look_number').val(data.number);
 			$('#look_user').val(data.user.userName);
@@ -732,13 +786,14 @@ layui.config({
 				}
 			})
 		}
-		function getUserSelect(id){
+		function getUserSelect(id,select){
 			var html='';
 			for(var i=0;i<allUser.length;i++){
 				var selected=( id==allUser[i].id?'selected':'' );
 				html+='<option value="'+allUser[i].id+'" '+selected+'>'+allUser[i].userName+'</option>';
 			}
-			return html;
+			$('#'+select).html(html);
+			form.render();
 		}
 		
 		function renderDefaultInventorySelect(){
@@ -781,6 +836,15 @@ layui.config({
 				return html; 
 			};
 		};
+		function getCurrUser(){
+			$.ajax({
+				url:'${ctx}/getCurrentUser',
+				success:function(r){
+					if(0==r.code)
+						currUser = r.data;
+				}
+			})
+		}
 		$(document).on('click', '.layui-table-view tbody tr', function(event) {
 			var elemTemp = $(this);
 			var tableView = elemTemp.closest('.layui-table-view');
