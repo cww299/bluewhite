@@ -25,7 +25,7 @@
 #headerTool .layui-input, .layui-select, .layui-textarea {
     height: 28px;
 }
-#headerTool .layui-form-label {
+#headerTool .layui-form-label { 
     padding: 5px 5px;
     width: 10px;
 }
