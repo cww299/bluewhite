@@ -369,6 +369,8 @@ layui.config({
 		
 		//-------查看入库单功能--------------------
 		function lookover(data){
+			if(data.type==undefined)				//防止空数据弹窗bug，双击详细内容时
+				return;
 			layer.open({
 				type : 1,
 				title : '查看入库单',
