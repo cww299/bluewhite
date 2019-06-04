@@ -422,7 +422,7 @@ public class InventoryAction {
 	public CommonResponse salesUserDetailed(OnlineOrderChild onlineOrderChild, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(OnlineOrderChild.class, "id", "commodity", "onlineOrder","warehouse","created_at")
+				.addRetainTerm(OnlineOrderChild.class, "id", "commodity", "onlineOrder","warehouse","createdAt")
 				.addRetainTerm(Commodity.class, "skuCode")
 				.addRetainTerm(OnlineOrder.class, "documentNumber","trackingNumber","user","onlineCustomer")
 				.addRetainTerm(User.class, "username")

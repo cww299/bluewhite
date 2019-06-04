@@ -156,7 +156,7 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 					// 2.库存上限限预警
 					if (warning.getType() == 2) {
 						// 当出售商品数量小于等于剩余库存数，将商品存入预警集合
-						if (countSales >= countInventory) {
+						if (countSales <= countInventory) {
 							map.put("name", commodity.getSkuCode());
 							map.put("type", 2);
 							map.put("countSales", countSales);
