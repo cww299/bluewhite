@@ -72,12 +72,12 @@ td{
 						<option value="2">销售换货出库</option>
 						<option value="3">采购退货出库 </option></select></td></tr>
 		<tr>
-			<td>备注</td>
-			<td><input type="text" name="remark" class="layui-input"></td>
-			<td>默认出库数量</td>
-			<td><select lay-filter="defaultSelect" type='number' ><option value="zero">不出库</option><option value="all">出库全部</option></select></td>
 			<td>默认批次号</td>	
 			<td><input type="text" class="layui-input" id="addBatchNumber" name='batchNumber' lay-verify='required'></td>
+			<td>默认出库数量</td>
+			<td><select lay-filter="defaultSelect" type='number' ><option value="zero">不出库</option><option value="all">出库全部</option></select></td>
+			<td>备注</td>
+			<td><input type="text" name="remark" class="layui-input" id="addRemark"></td>
 			<td colsapn="2" style="text-align:right;"><span class="layui-btn" lay-submit lay-filter="sureAdd" >确定</span>
 							<span class="layui-btn layui-btn-danger" id='resetAddOrder' >清空数据</span></td></tr>
 	</table>
@@ -557,10 +557,10 @@ layui.config({
 			$('#addRemark').val('');
 			$('#addBatchNumber').val('');
 			$('#addOrderNumber').val(0);
+			$('#addCreatedAt').val('');
 			choosedProduct=[];	
-			table.reload('productListTable',{
-				data:choosedProduct
-			})
+			getUserSelect(currUser.id,'userIdSelect');
+			table.reload('productListTable',{ data:choosedProduct })
 		})
 		
 		function deleteChoosedProduct(){								//删除商品

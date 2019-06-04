@@ -63,6 +63,7 @@ layui.config({
 			elem:'#dayReport',
 			loading:true,
 			size:'sm',
+			toolbar: true,
 			totalRow:true,
 			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){

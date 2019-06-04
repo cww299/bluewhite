@@ -404,11 +404,11 @@ layui.config({
 		$('#resetAddOrder').on('click',function(){			//此处如果加confirm提示。则新增成功时无法清空
 			$('#addRemark').val('');
 			$('#addBatchNumber').val('');
+			$('#addCreatedAt').val('');
 			$('#addNumber').val(0);
 			choosedProduct=[];	
-			table.reload('productListTable',{
-				data:choosedProduct
-			})
+			getUserSelect(currUser.id,'userIdSelectAdd');
+			table.reload('productListTable',{ data:choosedProduct })
 		})
 		form.on('submit(searchProduct)',function(obj){
 			table.reload('productChooseTable',{
