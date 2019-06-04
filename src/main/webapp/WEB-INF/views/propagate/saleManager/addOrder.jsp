@@ -26,14 +26,14 @@ td{
 </head>
 <body>
 <div class="layui-card">
-	<div class="layui-card-body">	<!-- 主页面内容 -->
+	<div class="layui-card-body">	
 	<form>
 		<table class="layui-form" style="width:100%" id="headerTool">
 			<tr>
 				<td><a style="color:blue" href="#"  id="customName">客户名称：</a></td>	
 				<td><input type="text" class="layui-input" name="name" id="customNames" lay-verify="required" readonly ></td>
-				<td>订单编号：</td>		
-				<td><input type="text" class="layui-input" name="tid"></td>
+				<td>收款金额：</td>			
+				<td><input type="text" class="layui-input" name="payment" id="customPayment" value="0" ></td>
 				<td>订单状态：</td>			
 				<td><select name="status">
 						<option  value="WAIT_SELLER_SEND_GOODS">买家已付款</option>
@@ -47,8 +47,8 @@ td{
 			<tr>
 				<td>收货人：</td>			
 				<td><input type="text" class="layui-input" id="customRealName" name="buyerName"></td>
-				<td>收款金额：</td>			
-				<td><input type="text" class="layui-input" name="payment" id="customPayment"></td>
+				<td>整单优惠：</td>			
+				<td><input type="text" class="layui-input" name="allBillPreferential" value="0"></td>
 				<td>经手人：</td>			
 				<td><select name="userId" id='userIdSelect' lay-search><option value="">获取数据中..</option></select></td>
 			</tr>
@@ -57,10 +57,17 @@ td{
 			<tr>
 				<td>手机：</td>			
 				<td><input type="text" class="layui-input" id="customPhone" name="phone"></td>
-				<td>整单优惠：</td>			
-				<td><input type="text" class="layui-input" name="allBillPreferential" value="0"></td>
 				<td>邮费：</td>			
 				<td><input type="text" class="layui-input" name="postFee" value='0' id='AddPostFee'></td>
+				<td>物流方式：</td>			
+				<td><select name="shippingType">
+									 <option  value="free"		>卖家包邮</option>
+									 <option  value="post"		>平邮</option>
+									 <option  value="express"	>快递</option>
+									 <option  value="ems"		>EMS</option>
+									 <option  value="virtual"	>虚拟发货</option></select></td>	
+				<!-- <td>订单编号：</td>		
+				<td><input type="text" class="layui-input" name="tid"></td>  -->
 			</tr>
 			<tr>
 				<td>所在地：</td>			
@@ -70,30 +77,24 @@ td{
 								<div class="layui-input-inline"><select lay-search id="city" 	name="cityId"><option value="">获取数据中..</option></select></div>
 								<div class="layui-input-inline"><select lay-search id="area" 	name="countyId"><option value="">获取数据中..</option></select></div>
 								</div></td>
-				<td>物流方式：</td>			
-				<td><select name="shippingType">
-									 <option  value="free"		>卖家包邮</option>
-									 <option  value="post"		>平邮</option>
-									 <option  value="express"	>快递</option>
-									 <option  value="ems"		>EMS</option>
-									 <option  value="virtual"	>虚拟发货</option></select></td>	
+				<td>邮编：</td>			
+				<td><input type="text" class="layui-input" id="customZipCode" name="zipCode"></td>
+				
 			</tr>
 			<tr>
 				<td>详细地址：</td>			
 				<td colspan="3"><input type="text" class="layui-input" id="customAddress" name="address"
 								placeholder="您可以直接黏贴淘宝或拼多多的收货地址,会自动提取省市区和收货人信息"></td>
-				<td>邮编：</td>			
-				<td><input type="text" class="layui-input" id="customZipCode" name="zipCode"></td>
-			</tr>
-			<tr>
-				<td>卖家备注：</td>			
-				<td colspan="3"><input type="text" class="layui-input" placeholder="" name="sellerMemo"></td>
-				<td rowspan="2">操作</td>
-				<td rowspan="2">
+				<td rowspan="3">操作</td>
+				<td rowspan="3">
 					<button class="layui-btn layui-btn-sm" lay-submit       type="button" lay-filter="sureAdd">确定添加</button>
 					<button class="layui-btn layui-btn-sm layui-btn-danger" type="reset" id="resetAll">清空</button>
 					<input type="hidden" name="onlineCustomerId" id="customId">
 				</td>
+			</tr>
+			<tr>
+				<td>卖家备注：</td>			
+				<td colspan="3"><input type="text" class="layui-input" placeholder="" name="sellerMemo"></td>
 			</tr>
 			<tr>
 				<td>买家备注：</td>			
