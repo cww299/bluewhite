@@ -98,7 +98,7 @@ layui.config({
 				url : '${ctx}/inventory/report/salesUserDetailed?userId='+obj.data.userId,
 				elem : '#lookoverTable',
 				size : 'sm',
-				page : true,
+				page : true, 
 				request:{ pageName:'page', limitName:'size' },
 				parseData:function(ret){ return {  msg:ret.message,  code:ret.code , data:ret.data.rows, count:ret.data.total, } },
 				cols:[[
