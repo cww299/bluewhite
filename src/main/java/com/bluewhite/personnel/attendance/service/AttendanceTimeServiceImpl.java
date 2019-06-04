@@ -315,6 +315,21 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				}
 				// 当一天的考勤记录条数小于2时。为异常的考勤
 				if (attList.size() < 2) {
+					if(attList.size()==1){
+						
+						Date date=	new Date(attList.get(0).getTime().getTime());
+						int j=date.getHours();
+						if (j<12) {
+							attendanceTime.setCheckIn(new Date(attList.get(0).getTime().getTime()));
+						}
+						if (j>12) {
+							attendanceTime.setCheckOut(new Date(attList.get(0).getTime().getTime()));
+						}
+						if (j==12) {
+							attendanceTime.setCheckIn(new Date(attList.get(0).getTime().getTime()));
+							attendanceTime.setCheckOut(new Date(attList.get(0).getTime().getTime()));
+						}
+					}
 					if (rout) {
 						attendanceTime.setFlag(3);
 						attendanceTimeList.add(attendanceTime);
@@ -342,10 +357,6 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		}
 		return attendanceTimeList;
 	}
-	
-	
-
-
 	@Override
 	public List<Map<String, Object>> findAttendanceTimeCollectAdd(AttendanceTime attendanceTime) throws ParseException {
 		return attendanceCollect(attendanceTimeByApplication(findAttendanceTime(attendanceTime)), true);

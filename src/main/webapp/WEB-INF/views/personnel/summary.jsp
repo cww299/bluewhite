@@ -203,6 +203,11 @@
 								align: 'center',
 								totalRowText: '合计'
 							},{
+								field: "orgName",
+								title: "部门",
+								align: 'center',
+								edit: false,
+							},{
 								field: "money",
 								title: "餐费汇总",
 								align: 'center',

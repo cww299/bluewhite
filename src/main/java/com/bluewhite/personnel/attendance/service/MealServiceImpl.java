@@ -1,6 +1,7 @@
 package com.bluewhite.personnel.attendance.service;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.personnel.attendance.dao.MealDao;
 import com.bluewhite.personnel.attendance.dao.PersonVariableDao;
+import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.entity.Meal;
 import com.bluewhite.personnel.attendance.entity.PersonVariable;
@@ -39,6 +41,8 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 	private UserService userService;
 	@Autowired
 	private AttendanceTimeService attendanceTimeService;
+	@Autowired
+	private AttendanceInitService attendanceInitService;
 	@Override
 	public PageResult<Meal> findPage(Meal param, PageParameter page) {
 		Page<Meal> pages = dao.findAll((root, query, cb) -> {
@@ -179,8 +183,10 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 			double modeThree=psList1.stream().filter(Meal->Meal.getUserId().equals(Meal.getUserId()) && Meal.getMode()==3).count();
 			User user= userService.findOne(ps1);
 			String aString= user.getUserName();
+			String org=user.getOrgName().getName();
 			allMap.put("username", aString);
 			allMap.put("money", budget);
+			allMap.put("orgName", org);
 			allMap.put("modeOne",modeOne);
 			allMap.put("modeTwo",modeTwo);
 			allMap.put("modeThree",modeThree);
@@ -261,6 +267,55 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 			meal2.setUserId(attendanceTime2.getUserId());
 			meal2.setType(2);
 			meals.add(meal2);
+		}else{
+			AttendanceInit attendanceInit = attendanceInitService.findByUserId(attendanceTime2.getUserId());
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			PersonVariable restType = personVariableDao.findByType(0);
+			boolean rout = false;
+			// 1.周休一天，
+			if (attendanceInit.getWorkType()==1 || attendanceInit.getWorkType()==2) {
+			if (attendanceInit.getRestType() == 1) {
+				String[] weeklyRestDate = restType.getKeyValue().split(",");
+				if (weeklyRestDate.length > 0) {
+					for (int j = 0; j < weeklyRestDate.length; j++) {
+						if (DatesUtil.getfristDayOftime(attendanceTime2.getTime()).compareTo(sdf.parse(weeklyRestDate[j]))==0) {
+							rout=true;
+						}
+					}
+					if (rout==false) {
+						Meal meal2=new Meal();
+						meal2.setTradeDaysTime(attendanceTime2.getTime());
+						meal2.setPrice(Double.valueOf(variable.getKeyValueTwo()));
+						meal2.setMode(2);
+						meal2.setUserName(attendanceTime2.getUserName());
+						meal2.setUserId(attendanceTime2.getUserId());
+						meal2.setType(2);
+						meals.add(meal2);
+					}
+				}
+			}
+			//2.月休两天
+			if (attendanceInit.getRestType() == 2) {
+				String[] weeklyRestDate = restType.getKeyValue().split(",");
+				if (weeklyRestDate.length > 0) {
+					for (int j = 0; j < weeklyRestDate.length; j++) {
+						if (DatesUtil.getfristDayOftime(attendanceTime2.getTime()).compareTo(sdf.parse(weeklyRestDate[j]))==0) {
+							rout=true;
+						}
+					}
+					if (rout==false) {
+						Meal meal2=new Meal();
+						meal2.setTradeDaysTime(attendanceTime2.getTime());
+						meal2.setPrice(Double.valueOf(variable.getKeyValueTwo()));
+						meal2.setMode(2);
+						meal2.setUserName(attendanceTime2.getUserName());
+						meal2.setUserId(attendanceTime2.getUserId());
+						meal2.setType(2);
+						meals.add(meal2);
+					}
+				}
+			}
+			}
 		}
 	}
 		dao.save(meals);
