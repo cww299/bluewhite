@@ -132,6 +132,53 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		PageResult<OnlineOrder> result = new PageResult<>(pages, page);
 		return result;
 	}
+	
+	
+	
+	@Override
+	public PageResult<OnlineOrderChild> findPage(OnlineOrderChild param, PageParameter page) {
+		Page<OnlineOrderChild> pages = onlineOrderChildDao.findAll((root, query, cb) -> {
+			List<Predicate> predicate = new ArrayList<>();
+			// 按id过滤
+			if (param.getId() != null) {
+				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
+			}
+			// 按客服id过滤
+			if (param.getUserId() != null) {
+				predicate.add(cb.equal(root.get("OnlineOrder").get("userId").as(Long.class), param.getUserId()));
+			}
+			// 按客服id过滤
+			if (param.getOnlineCustomerId() != null) {
+				predicate.add(cb.equal(root.get("OnlineOrder").get("onlineCustomerId").as(Long.class), param.getOnlineCustomerId()));
+			}
+			// 交易状态过滤
+			if (!StringUtils.isEmpty(param.getStatus())) {
+				predicate.add(cb.equal(root.get("status").as(String.class), param.getStatus()));
+			}
+
+			// 按订单时间过滤
+			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+				predicate.add(cb.between(root.get("createdAt").as(Date.class), param.getOrderTimeBegin(),
+						param.getOrderTimeEnd()));
+			}
+			// 按是否反冲
+			if (param.getFlag() != null) {
+				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
+			}
+
+			Predicate[] pre = new Predicate[predicate.size()];
+			query.where(predicate.toArray(pre));
+			return null;
+		}, page);
+
+		PageResult<OnlineOrderChild> result = new PageResult<>(pages, page);
+		return result;
+	}
+	
+	
+	
+	
+	
 
 	@Override
 	@Transactional
@@ -533,6 +580,9 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				.collect(Collectors.groupingBy(OnlineOrderChild::getCommodityId, Collectors.toList()));
 		for (Long ps : mapOnlineOrderChildList.keySet()) {
 			List<OnlineOrderChild> psList = mapOnlineOrderChildList.get(ps);
+			if(psList.size()==0){
+				continue;
+			}
 			Map<String, Object> mapSale = new HashMap<String, Object>();
 			int sunNumber = psList.stream().mapToInt(OnlineOrderChild::getNumber).sum();
 			List<Double> listSumPayment = new ArrayList<>();
@@ -564,7 +614,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		if (onlineOrder.getReport() == 3) {
 			// 根据员工id分组
 			mapOnlineOrderList = onlineOrderList.stream()
-					.filter(OnlineOrder -> OnlineOrder.getUserId() != null
+					.filter(OnlineOrder ->  OnlineOrder.getUserId() != null
 							&& OnlineOrder.getUserId().equals(onlineOrder.getUserId()))
 					.collect(Collectors.groupingBy(OnlineOrder::getUserId, Collectors.toList()));
 		}
@@ -577,8 +627,14 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		}
 		for (Long ps : mapOnlineOrderList.keySet()) {
 			List<OnlineOrder> psList = mapOnlineOrderList.get(ps);
+			if(psList.size()==0){
+				continue;
+			}
 			Map<String, Object> mapSale = new HashMap<String, Object>();
-			// 成交单数
+			// id
+			mapSale.put("userId", onlineOrder.getReport() == 3 ? psList.get(0).getUserId()
+					: psList.get(0).getOnlineCustomerId());
+			// 姓名
 			mapSale.put("user", onlineOrder.getReport() == 3 ? psList.get(0).getUser().getUserName()
 					: psList.get(0).getOnlineCustomer().getName());
 			// 成交单数
@@ -594,7 +650,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			Double sumPostFee = 0.0;
 			if (psList.size() > 0) {
 				psList.stream().forEach(c -> {
-					listSumPayment.add(c.getSumPrice());
+					listSumPayment.add(c.getPayment());
 					listPostFee.add(c.getPostFee());
 				});
 				sumPayment = NumUtils.sum(listSumPayment);
@@ -607,9 +663,18 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			// 每单平均金额
 			mapSale.put("averageAmount", NumUtils.div(sumPayment, psList.size(), 2));
 			mapList.add(mapSale);
-
 		}
 		return mapList;
 	}
+
+	@Override
+	public Object reportSalesUserDetailed(OnlineOrder onlineOrder) {
+		
+		
+		
+		return null;
+	}
+
+
 
 }

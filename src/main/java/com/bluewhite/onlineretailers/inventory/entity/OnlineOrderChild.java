@@ -122,6 +122,27 @@ public class OnlineOrderChild  extends BaseEntity<Long> {
 	private BaseData warehouse;
 	
 	/**
+	 * 客户id
+	 * 
+	 */
+	@Transient
+	private Long onlineCustomerId;
+	
+	/**
+	 * 销售人员id
+	 * 
+	 */
+	@Transient
+	private Long userId;
+	
+	/**
+	 * 是否反冲（0=否，1=是）
+	 */
+	@Transient
+	private Integer flag;
+	
+	
+	/**
 	 * 时间查询字段
 	 */
 	@Transient
@@ -135,6 +156,30 @@ public class OnlineOrderChild  extends BaseEntity<Long> {
 	
 	
 	
+	public Long getOnlineCustomerId() {
+		return onlineCustomerId;
+	}
+
+	public void setOnlineCustomerId(Long onlineCustomerId) {
+		this.onlineCustomerId = onlineCustomerId;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
+
 	public String getTrackingNumber() {
 		return trackingNumber;
 	}
