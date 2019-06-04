@@ -614,15 +614,17 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		if (onlineOrder.getReport() == 3) {
 			// 根据员工id分组
 			mapOnlineOrderList = onlineOrderList.stream()
-					.filter(OnlineOrder ->  OnlineOrder.getUserId() != null
-							&& OnlineOrder.getUserId().equals(onlineOrder.getUserId()))
+					.filter(OnlineOrder ->   onlineOrder.getUserId() != null ?
+							 OnlineOrder.getUserId().equals(onlineOrder.getUserId()) 
+							 : OnlineOrder.getUserId() != null)
 					.collect(Collectors.groupingBy(OnlineOrder::getUserId, Collectors.toList()));
 		}
 		if (onlineOrder.getReport() == 4) {
 			// 根据客户id分组
 			mapOnlineOrderList = onlineOrderList.stream()
-					.filter(OnlineOrder -> OnlineOrder.getOnlineCustomerId() != null
-							&& OnlineOrder.getOnlineCustomerId().equals(onlineOrder.getOnlineCustomerId()))
+					.filter(OnlineOrder ->  onlineOrder.getOnlineCustomerId() !=null ?
+						  OnlineOrder.getOnlineCustomerId().equals(onlineOrder.getOnlineCustomerId())
+						 :OnlineOrder.getOnlineCustomerId() != null)
 					.collect(Collectors.groupingBy(OnlineOrder::getOnlineCustomerId, Collectors.toList()));
 		}
 		for (Long ps : mapOnlineOrderList.keySet()) {
@@ -666,15 +668,5 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		}
 		return mapList;
 	}
-
-	@Override
-	public Object reportSalesUserDetailed(OnlineOrder onlineOrder) {
-		
-		
-		
-		return null;
-	}
-
-
 
 }
