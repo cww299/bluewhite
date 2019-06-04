@@ -18,7 +18,7 @@ td{
 }
 .layui-card .layui-table-cell{	
 	  height:auto;
-	  overflow:visible;
+	  /* overflow:visible; */
 	  padding:0px;
 }
 .layui-card  .layui-table-cell .layui-form-checkbox[lay-skin="primary"]{

@@ -19,14 +19,21 @@
 				<td>查询时间:&nbsp;&nbsp;</td>
 				<td><input type='text' id='time' class='layui-input' style='width:350px;' placeholder='请输入查询时间'></td>
 				<td>&nbsp;&nbsp;</td>
+				<td><select id="userIdSelect" lay-search><option value="">获取数据中</option></select></td>
+				<td>&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-sm" id='search'>搜索</button></td>
+				<td>&nbsp;&nbsp;</td>
+				<td><span class="layui-badge">双击查看员工的销售详情</span></td>
 			</tr>
 		</table>
-		<table class="layui-form" id="dayReport" lay-filter="dayReport"></table>
+		<table class="layui-form" id="userReport" lay-filter="userReport"></table>
 	</div>
 </div>
 </body>
-
+<!-- 查看销售详情隐藏框 -->
+<div style="display:none;" id="lookoverDiv" >
+	<table class="layui-table" id="lookoverTable" lay-filter="lookoverTable"></table>
+</div>
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
@@ -42,36 +49,34 @@ layui.config({
 		, laydate = layui.laydate
 		, tablePlug = layui.tablePlug;
 		
+		getAllUser();
 		form.render();
-	 	laydate.render({
-			elem:'#time',
-			type: 'datetime',
-			range:'~'
-		}) 
+	 	laydate.render({ elem:'#time', type: 'datetime', range:'~' });
+	 	
 		$('#search').on('click',function(){
 			var time=$('#time').val();
+			if(time==''){
+				layer.msg('请输入查找时间',{icon:2});
+				return;
+			}
 			var t=time.split('~');
-			table.reload('dayReport',{
+			table.reload('userReport',{
 				url:'${ctx}/inventory/report/salesUser?report=3',
 				where:{
 					orderTimeBegin : t[0],
 					orderTimeEnd : t[1],
+					userId : $('#userIdSelect').val(),
 				}
 			})
 		})
 		table.render({
-			elem:'#dayReport',
+			elem:'#userReport',
 			loading:true,
 			size:'sm',
 			totalRow:true,
 			toolbar: true,
 			request:{ pageName:'page', limitName:'size' },
-			parseData:function(ret){
-				return {  
-					msg:ret.message, 
-					code:ret.code ,
-					data:ret.data,
-					} },
+			parseData:function(ret){ return {  msg:ret.message,  code:ret.code , data:ret.data, } },
 			cols:[[
 			       {align:'center', title:'用户',   totalRowText: '合计', field:'user',	},
 			       {align:'center', title:'成交单数',   field:'singular',   totalRow:true,},
@@ -81,7 +86,59 @@ layui.config({
 			       {align:'center', title:'每单平均金额',   field:'averageAmount',	totalRow:true,},
 			       ]]
 		})
+		table.on("rowDouble(userReport)",function(obj){
+			layer.open({
+				type:1,
+				title:obj.data.user,
+				area:['80%','80%'],
+				content:$('#lookoverDiv'),
+				shadeClose:true,
+			})
+			table.render({
+				url : '${ctx}/inventory/report/salesUserDetailed?userId='+obj.data.userId,
+				elem : '#lookoverTable',
+				size : 'sm',
+				page : true, 
+				request:{ pageName:'page', limitName:'size' },
+				parseData:function(ret){ return {  msg:ret.message,  code:ret.code , data:ret.data.rows, count:ret.data.total, } },
+				cols:[[
+						{align:'center', title:'日期',   		field:'createdAt',	width:'11%',},
+						{align:'center', title:'单据编号',   	templet:'<span>{{ d.onlineOrder.documentNumber }}</span>', 	width:'12%',},
+						{align:'center', title:'运单号',   		templet:'<span>{{ d.onlineOrder.trackingNumber }}</span>', 	width:'8%',},
+						{align:'center', title:'商品名称', 		templet:'<span>{{ d.commodity.skuCode }}</span>', 	},
+						{align:'center', title:'商品数量', 		field:'number', width:'6%', 	},
+						{align:'center', title:'商品单价', 		field:'price',	width:'6%', },
+						{align:'center', title:'商品总价', 		field:'sumPrice', 	width:'6%', },
+						{align:'center', title:'仓库名称',   	templet:'<span>{{ d.warehouse.name }}</span>',	width:'7%',},
+						{align:'center', title:'客户名称',   	templet:'<span>{{ d.onlineOrder.onlineCustomer.name }}</span>',	width:'7%',},
+						{align:'center', title:'经手人',   		templet:'<span>{{ d.onlineOrder.user.userName }}</span>',	width:'6%',},
+				       ]]
+			}) 
+		})
 		
+		var allUser=[];
+		function getAllUser(){
+			$.ajax({
+				url:'${ctx}/system/user/pages?size=99',
+				success:function(r){
+					if(0==r.code){
+						for(var i=0;i<r.data.rows.length;i++)
+							allUser.push({
+								id:			r.data.rows[i].id,
+								userName:	r.data.rows[i].userName
+							})
+						renderUserSelect('userIdSelect');
+					}
+				}
+			})
+		}
+		function renderUserSelect(select){			//根据id渲染客服下拉框
+			var html='<option value="">销售人员</option>';
+			for(var i=0;i<allUser.length;i++)
+				html+='<option value="'+allUser[i].id+'">'+allUser[i].userName+'</option>';
+			$('#'+select).html(html);
+			form.render();
+		}
 	}//end define function
 )//endedefine
 </script>
