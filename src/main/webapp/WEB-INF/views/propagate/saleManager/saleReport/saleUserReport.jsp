@@ -19,7 +19,7 @@
 				<td>查询时间:&nbsp;&nbsp;</td>
 				<td><input type='text' id='time' class='layui-input' style='width:350px;' placeholder='请输入查询时间'></td>
 				<td>&nbsp;&nbsp;</td>
-				<td><select id="userIdSelect"><option value="">获取数据中</option></select></td>
+				<td><select id="userIdSelect" lay-search><option value="">获取数据中</option></select></td>
 				<td>&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-sm" id='search'>搜索</button></td>
 				<td>&nbsp;&nbsp;</td>
@@ -32,7 +32,6 @@
 </body>
 <!-- 查看销售详情隐藏框 -->
 <div style="display:none;" id="lookoverDiv" >
-	<label>销售人员销售明细：</label>
 	<table class="layui-table" id="lookoverTable" lay-filter="lookoverTable"></table>
 </div>
 <script>
@@ -91,7 +90,7 @@ layui.config({
 			layer.open({
 				type:1,
 				title:obj.data.user,
-				area:['60%','60%'],
+				area:['80%','80%'],
 				content:$('#lookoverDiv'),
 				shadeClose:true,
 			})
@@ -101,14 +100,18 @@ layui.config({
 				size : 'sm',
 				page : true,
 				request:{ pageName:'page', limitName:'size' },
-				parseData:function(ret){ return {  msg:ret.message,  code:ret.code , data:ret.data, } },
+				parseData:function(ret){ return {  msg:ret.message,  code:ret.code , data:ret.data.rows, count:ret.data.total, } },
 				cols:[[
 				       {align:'center', title:'日期',   		field:'createdAt',	},
-				       {align:'center', title:'单据编号',   	field:'documentNumber', 	},
-				       {align:'center', title:'商品名称', 	field:'', 	},
-				       {align:'center', title:'仓库名称',   	field:'',	},
-				       {align:'center', title:'客户名称',   	field:'',	},
-				       {align:'center', title:'经手人',   	field:'',	},
+				       {align:'center', title:'单据编号',   	templet:'<span>{{ d.onlineOrder.documentNumber }}</span>', 	},
+				       {align:'center', title:'运单号',   	templet:'<span>{{ d.onlineOrder.trackingNumber }}</span>', 	},
+				       {align:'center', title:'商品名称', 	templet:'<span>{{ d.commodity.skuCode }}</span>', 	},
+				       {align:'center', title:'商品数量', 	field:'number', 	},
+				       {align:'center', title:'商品单价', 	field:'price',	},
+				       {align:'center', title:'商品总价', 	field:'sumPrice', 	},
+				       {align:'center', title:'仓库名称',   	templet:'<span>{{ d.warehouse.name }}</span>',	},
+				       {align:'center', title:'客户名称',   	templet:'<span>{{ d.onlineOrder.onlineCustomer.name }}</span>',	},
+				       {align:'center', title:'经手人',   	templet:'<span>{{ d.onlineOrder.user.userName }}</span>',	},
 				       ]]
 			}) 
 		})

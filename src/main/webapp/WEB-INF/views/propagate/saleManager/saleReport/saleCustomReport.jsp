@@ -26,7 +26,7 @@
 				<td><span class="layui-badge">双击查看客户的购买详情</span></td>
 			</tr>
 		</table>
-		<table class="layui-form" id="dayReport" lay-filter="dayReport"></table>
+		<table class="layui-form" id="customReport" lay-filter="customReport"></table>
 	</div>
 </div>
 </body>
@@ -61,17 +61,17 @@ layui.config({
 				return;
 			}
 			var t=time.split('~');
-			table.reload('dayReport',{
+			table.reload('customReport',{
 				url:'${ctx}/inventory/report/salesUser?report=4',
 				where:{
 					orderTimeBegin : t[0],
 					orderTimeEnd : t[1],
-					customId : $('#customIdSelect').val(),
+					onlineCustomerId : $('#customIdSelect').val(),
 				}
 			})
 		})
 		table.render({
-			elem:'#dayReport',
+			elem:'#customReport',
 			loading:true,
 			size:'sm',
 			toolbar: true,
@@ -87,29 +87,34 @@ layui.config({
 			       {align:'center', title:'每单平均金额',   field:'averageAmount',totalRow:true,	},
 			       ]]
 		})
-		table.on("rowDouble(userReport)",function(obj){
+		table.on("rowDouble(customReport)",function(obj){
 			layer.open({
 				type:1,
 				title:obj.data.user,
+				area:['80%','80%'],
 				content:$('#lookoverDiv'),
 				shadeClose:true,
 			})
-			/* table.render({
-				url : '${ctx}/inventory/onlineOrderPage?userId='+obj.data.userId,
-				elem : 'lookoverTable',
+			table.render({
+				url : '${ctx}/inventory/report/salesUserDetailed?onlineCustomerId='+obj.data.userId,
+				elem : '#lookoverTable',
 				size : 'sm',
 				page : true,
 				request:{ pageName:'page', limitName:'size' },
-				parseData:function(ret){ return {  msg:ret.message,  code:ret.code , data:ret.data, } },
+				parseData:function(ret){ return {  msg:ret.message,  code:ret.code , data:ret.data.rows, count:ret.data.total, } },
 				cols:[[
-				       {align:'center', title:'日期',   		field:'createdAt',	},
-				       {align:'center', title:'单据编号',   	field:'documentNumber', 	},
-				       {align:'center', title:'商品名称', 	field:'', 	},
-				       {align:'center', title:'仓库名称',   	field:'',	},
-				       {align:'center', title:'客户名称',   	field:'',	},
-				       {align:'center', title:'经手人',   	field:'',	},
+						{align:'center', title:'日期',   		field:'createdAt',	},
+						{align:'center', title:'单据编号',   	templet:'<span>{{ d.onlineOrder.documentNumber }}</span>', 	},
+						{align:'center', title:'运单号',   		templet:'<span>{{ d.onlineOrder.trackingNumber }}</span>', 	},
+						{align:'center', title:'商品名称', 		templet:'<span>{{ d.commodity.skuCode }}</span>', 	},
+						{align:'center', title:'商品数量', 		field:'number', 	},
+						{align:'center', title:'商品单价', 		field:'price',	},
+						{align:'center', title:'商品总价', 		field:'sumPrice', 	},
+						{align:'center', title:'仓库名称',   	templet:'<span>{{ d.warehouse.name }}</span>',	},
+						{align:'center', title:'客户名称',   	templet:'<span>{{ d.onlineOrder.onlineCustomer.name }}</span>',	},
+						{align:'center', title:'经手人',   		templet:'<span>{{ d.onlineOrder.user.userName }}</span>',	},
 				       ]]
-			}) */
+			}) 
 		})
 		var allCustom=[];
 		function getAllCustom(){
