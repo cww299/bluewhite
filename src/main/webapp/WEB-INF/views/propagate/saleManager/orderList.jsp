@@ -59,7 +59,7 @@ td{
 						<input type="text" name="onlineCustomerName" id='customNameSelect' class='layui-input' placeholder='客户名称'></div>
 					<div class="layui-input-inline">
 						<select lay-search name='status'><option value="">交易状态</option>
-														<option  value="WAIT_SELLER_SEND_GOODS">买家已付款</option>
+														<option  value="WAIT_SELLER_SEND_GOODS" selected>买家已付款</option>
 														<!-- <option  value="TRADE_NO_CREATE_PAY">没有创建支付宝交易</option>
 														<option  value="WAIT_BUYER_PAY">等待买家付款</option>
 														<option  value="SELLER_CONSIGNED_PART">卖家部分发货</option>
@@ -353,7 +353,7 @@ layui.config({
 
 		table.render({		//渲染主页面表格
 			elem:'#onlineOrder',
-			url:'${ctx}/inventory/onlineOrderPage?flag=0',
+			url:'${ctx}/inventory/onlineOrderPage?flag=0&status=WAIT_SELLER_SEND_GOODS',		//默认查找未反冲+已付款
 			toolbar:'#onlineOrderToolbar',
 			loading:true,
 			size:'sm',
