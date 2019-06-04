@@ -24,6 +24,14 @@ public interface OnlineOrderService extends BaseCRUDService<OnlineOrder,Long>{
 	public PageResult<OnlineOrder> findPage(OnlineOrder onlineOrder, PageParameter page);
 	
 	/**
+	 * 分页查看销售单子单
+	 * @param onlineOrder
+	 * @param page
+	 * @return
+	 */
+	public PageResult<OnlineOrderChild> findPage(OnlineOrderChild onlineOrderChild, PageParameter page);
+	
+	/**
 	 * 反冲销售单
 	 * @param ids
 	 */
@@ -80,6 +88,6 @@ public interface OnlineOrderService extends BaseCRUDService<OnlineOrder,Long>{
 	 * @return
 	 */
 	public List<Map<String, Object>> reportSalesUser(OnlineOrder onlineOrder);
-
+	
 
 }

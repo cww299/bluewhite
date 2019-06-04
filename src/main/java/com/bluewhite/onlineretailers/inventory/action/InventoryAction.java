@@ -414,6 +414,25 @@ public class InventoryAction {
 		return cr;
 	}
 	
+	/**
+	 * 1.销售 员工销售报表 客户销售报表详细
+	 */
+	@RequestMapping(value = "/inventory/report/salesUserDetailed", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse salesUserDetailed(OnlineOrderChild onlineOrderChild, PageParameter page) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON.get()
+				.addRetainTerm(OnlineOrderChild.class, "id", "commodity", "onlineOrder","warehouse","created_at")
+				.addRetainTerm(Commodity.class, "skuCode")
+				.addRetainTerm(OnlineOrder.class, "documentNumber","trackingNumber","user","onlineCustomer")
+				.addRetainTerm(User.class, "username")
+				.addRetainTerm(OnlineCustomer.class, "name","buyerName")
+				.addRetainTerm(BaseData.class, "name")
+				.format(onlineOrderService.findPage(onlineOrderChild, page)).toJSON());
+		cr.setMessage("成功");
+		return cr;
+	}
+	
 
 	/**
 	 * 2.入库 日报表 月报表
