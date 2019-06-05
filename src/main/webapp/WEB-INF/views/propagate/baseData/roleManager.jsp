@@ -91,9 +91,10 @@ layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	tablePlug : 'tablePlug/tablePlug',
-	formSelects : 'formSelect/formSelects-v4'
+	formSelects : 'formSelect/formSelects-v4',
+	menuTree : 'layui/myModules/menuTree'
 }).define(
-	[ 'tablePlug','jquery','formSelects'],
+	[ 'tablePlug','jquery','formSelects','menuTree'],
 	function() {
 		var $ = layui.jquery
 		, formSelects = layui.formSelects	//多选下拉框插件
@@ -101,11 +102,21 @@ layui.config({
 		, form = layui.form			 		//表单
 		, table = layui.table 				//表格
 		, tablePlug = layui.tablePlug 		//表格插件
-		, laytpl = layui.laytpl;			//模板引擎
+		, laytpl = layui.laytpl				//模板引擎
+		, menuTree = layui.menuTree;
 		
 		getMenu();   			//获取菜单，添加权限级联时使用
 		getPermissionLevel();   //获取权限等级
 		/* formSelects.btns( ['select', 'remove', ]); */
+		
+		
+		
+		
+		
+		
+	      
+	      
+	      
 		table.render({
 			elem : '#LAY-role-table',
 			size : 'lg',
@@ -322,7 +333,6 @@ layui.config({
 					switch(obj.event){
 					case 'add': 
 								var roleId=$(this).data('roleid');
-								console.log($(this).data())
 								addPermission(roleId);						//新增权限
 								break;
 				}
@@ -406,20 +416,20 @@ layui.config({
 				
 				choosePermission=[];  		 			//每次打开加权限的按钮，对之前所添加的权限清空
 				var html='';       						//打开加权限窗口的内容
-				html+='<div style="width:40%;float:left;border:1px solid gray;height:400px;overflow:auto;margin:10px;padding:10px;" id="menuDiv">';    //左侧存放联级菜单的div
-				for(var i=0;i<allMenu.length;i++){    	//拼接菜单级联
+				html+='<div style="width:40%;float:left;border:1px solid gray;height:400px;overflow:auto;margin:10px;padding:10px;" id="menuDiv"></div>';    //左侧存放联级菜单的div
+				/* for(var i=0;i<allMenu.length;i++){    	//拼接菜单级联
 					html+='<div><p><a href="javascript:;" value="'+allMenu[i].id+'" url="'+allMenu[i].url+'" parent="'+allMenu[i].parentId+'" name="'+allMenu[i].name+'">'+allMenu[i].name+'</a></p>';
 					if(allMenu[i].children!=null)   	//如果有下级菜单，进行递归拼接 creatHtml(子菜单,'相对于父菜单所使用的缩进')
 						html+=creatHtml(allMenu[i].children,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
 					html+='</div>';
-				}
-				html+='</div>'+   						//左侧菜单链接div结束
-						'<div style="margin:auto;margin-top:150px;float:left;width:5%;text-align:center;"><p><i class="layui-icon layui-icon-next" ></i></p>'+	 
+				} */
+				html+=	'<div style="margin:auto;margin-top:150px;float:left;width:5%;text-align:center;"><p><i class="layui-icon layui-icon-next" ></i></p>'+	 
 						'<p>选择添加权限</p></div>'+	   //中间存放添加菜单按钮的div
 						'<div style="float:right;width:40%;height:400px;border:1px solid gray;margin:10px;padding:10px;overflow:auto;" id="choosedDiv"></div>'+    //右侧存放选中菜单的div
 						'<div style="float:right;width:100%;text-align:center;"><button type="button" lay-submit lay-filter="addPermissionSure"'+
 						' value="'+roleId+'" class="layui-btn layui-btn-sm" >确定</button></div>'; //确定按钮
-				function creatHtml(menu,nbsp){   		//对多级菜单进行递归拼接
+				/*
+					function creatHtml(menu,nbsp){   		//对多级菜单进行递归拼接
 					var str='<div style="display:none;">';
 					for(var i=0;i<menu.length;i++){
 						str+='<p>'+nbsp+'<a href="javascript:;" value="'+menu[i].id+'" url="'+menu[i].url+'" name="'+menu[i].name+'" parent="'+menu[i].parentId+'">|-'+menu[i].name+'</a>';
@@ -429,13 +439,24 @@ layui.config({
 						str+='</p>';
 					}
 					return str+'</div>';
-				}
+				} */
 				var addPer=layer.open({    							//打开添加权限的窗口
 					 title: '添加权限'
 					   ,type:1
 					   ,area: ['40%', '80%']
 					   ,content:html
 				}) 
+				menuTree.render({
+		    	  elem:'#menuDiv',
+		    	  url: "${ctx}/getTreeMenuPage",
+		        });
+				form.on('checkbox(menuTreeCheckbox)',function(obj){		
+					console.log(menuTree.getTreeData('menuDiv'))
+					menuTree.render({
+						elem:'#choosedDiv',
+						data:menuTree.getTreeData('menuDiv'),
+					})
+				})
 				form.on('submit(addPermissionSure)',function(obj){   	//加权限中，确定按钮的监听
 					var roleId=obj.elem.value;							
 					//--------------传递数据初始化-------------
@@ -445,12 +466,8 @@ layui.config({
 								"permissionIds":formSelects.value('selectId'+choosePermission[i].id, 'valStr') }; 
 						permissions.push(t);
 					}
-					
-					
 					permissions.push({"menuId":15,"permissionIds":'1,'});  //添加首页的权限，首页id为15 线上的数据库也为15
 					permissions.push({"menuId":8,"permissionIds":'1,'});  //添加广宣管理的权限，首页id为8 线上的数据库也为8
-					
-					
 					var PLids=[];
 					for(var i=0;i<permissionLevel.length;i++){
 						PLids.push(permissionLevel[i].id);
