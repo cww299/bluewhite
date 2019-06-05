@@ -10,14 +10,17 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.security.MessageDigest;
 
 /**
-*
-* 快递鸟电子面单接口
-*
-*/
+ *
+ * 快递鸟电子面单接口
+ *
+ */
 public class KdGoldAPI {
 
 	// 电商ID
@@ -34,13 +37,27 @@ public class KdGoldAPI {
 	 * @throws Exception
 	 */
 	public static String orderOnlineByJson() throws Exception {
-		String requestData = "{'OrderCode': '012657700387'," + "'ShipperCode':'EMS'," + "'PayType':1," + "'ExpType':1,"
-				+ "'Cost':1.0," + "'OtherCost':1.0," + "'Sender':" + "{"
+		String requestData = 
+				"{'OrderCode': '012657700387'," 
+				+ "'ShipperCode':'EMS'," 
+				+ "'PayType':1," 
+				+ "'ExpType':1,"
+				+ "'Cost':1.0,"
+				+ "'OtherCost':1.0," 
+				+ "'Sender':" 
+				+ "{"
 				+ "'Company':'LV','Name':'Taylor','Mobile':'15018442396','ProvinceName':'上海','CityName':'上海','ExpAreaName':'青浦区','Address':'明珠路73号'},"
-				+ "'Receiver':" + "{"
+				+ "'Receiver':" 
+				+ "{"
 				+ "'Company':'GCCUI','Name':'Yann','Mobile':'15018442396','ProvinceName':'北京','CityName':'北京','ExpAreaName':'朝阳区','Address':'三里屯街道雅秀大厦'},"
-				+ "'Commodity':" + "[{" + "'GoodsName':'鞋子','Goodsquantity':1,'GoodsWeight':1.0}]," + "'Weight':1.0,"
-				+ "'Quantity':1," + "'Volume':0.0," + "'Remark':'小心轻放'," + "'IsReturnPrintTemplate':1}";
+				+ "'Commodity':" 
+				+ "[{" 
+				+ "'GoodsName':'鞋子','Goodsquantity':1,'GoodsWeight':1.0}]," 
+				+ "'Weight':1.0,"
+				+ "'Quantity':1," 
+				+ "'Volume':0.0," 
+				+ "'Remark':'小心轻放'," 
+				+ "'IsReturnPrintTemplate':1}";
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("RequestData", urlEncoder(requestData, "UTF-8"));
 		params.put("EBusinessID", EBusinessID);
@@ -50,16 +67,11 @@ public class KdGoldAPI {
 		params.put("DataType", "2");
 
 		String result = sendPost(ReqURL, params);
-
-		// 根据公司业务处理返回的信息......
+		 
 
 		return result;
 	}
-	
-	public static void main(String[] args) throws Exception {
-			orderOnlineByJson();
-	
-	}
+
 
 	/**
 	 * MD5加密
@@ -199,6 +211,5 @@ public class KdGoldAPI {
 		}
 		return result.toString();
 	}
-	
-	
+
 }

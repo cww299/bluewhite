@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
-import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
@@ -22,7 +21,6 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.system.user.dao.RoleDao;
 import com.bluewhite.system.user.entity.Menu;
 import com.bluewhite.system.user.entity.Role;
-import com.bluewhite.system.user.entity.User;
 
 
 
