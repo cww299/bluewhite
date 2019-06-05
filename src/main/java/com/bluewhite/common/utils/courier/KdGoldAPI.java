@@ -10,37 +10,54 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.security.MessageDigest;
 
 /**
-*
-* 快递鸟电子面单接口
-*
-*/
+ *
+ * 快递鸟电子面单接口
+ *
+ */
 public class KdGoldAPI {
 
 	// 电商ID
-	private String EBusinessID = "1530092";
+	private static String EBusinessID = "1530092";
 	// 电商加密私钥，快递鸟提供，注意保管，不要泄漏
-	private String AppKey = "5353bbe7-bc47-4e5a-949f-f4dc42f54b4b";
+	private static String AppKey = "5353bbe7-bc47-4e5a-949f-f4dc42f54b4b";
 	// 请求url, 正式环境地址：http://api.kdniao.com/api/Eorderservice
 	// 测试环境地址：http://testapi.kdniao.com:8081/api/EOrderService
-	private String ReqURL = "http://testapi.kdniao.com:8081/api/Eorderservice";
+	private static String ReqURL = "http://testapi.kdniao.com:8081/api/Eorderservice";
 
 	/**
 	 * Json方式 电子面单
 	 * 
 	 * @throws Exception
 	 */
-	public String orderOnlineByJson() throws Exception {
-		String requestData = "{'OrderCode': '012657700387'," + "'ShipperCode':'SF'," + "'PayType':1," + "'ExpType':1,"
-				+ "'Cost':1.0," + "'OtherCost':1.0," + "'Sender':" + "{"
+	public static String orderOnlineByJson() throws Exception {
+		String requestData = 
+				"{'OrderCode': '012657700387'," 
+				+ "'ShipperCode':'EMS'," 
+				+ "'PayType':1," 
+				+ "'ExpType':1,"
+				+ "'Cost':1.0,"
+				+ "'OtherCost':1.0," 
+				+ "'Sender':" 
+				+ "{"
 				+ "'Company':'LV','Name':'Taylor','Mobile':'15018442396','ProvinceName':'上海','CityName':'上海','ExpAreaName':'青浦区','Address':'明珠路73号'},"
-				+ "'Receiver':" + "{"
+				+ "'Receiver':" 
+				+ "{"
 				+ "'Company':'GCCUI','Name':'Yann','Mobile':'15018442396','ProvinceName':'北京','CityName':'北京','ExpAreaName':'朝阳区','Address':'三里屯街道雅秀大厦'},"
-				+ "'Commodity':" + "[{" + "'GoodsName':'鞋子','Goodsquantity':1,'GoodsWeight':1.0}]," + "'Weight':1.0,"
-				+ "'Quantity':1," + "'Volume':0.0," + "'Remark':'小心轻放'," + "'IsReturnPrintTemplate':1}";
+				+ "'Commodity':" 
+				+ "[{" 
+				+ "'GoodsName':'鞋子','Goodsquantity':1,'GoodsWeight':1.0}]," 
+				+ "'Weight':1.0,"
+				+ "'Quantity':1," 
+				+ "'Volume':0.0," 
+				+ "'Remark':'小心轻放'," 
+				+ "'IsReturnPrintTemplate':1}";
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("RequestData", urlEncoder(requestData, "UTF-8"));
 		params.put("EBusinessID", EBusinessID);
@@ -50,11 +67,11 @@ public class KdGoldAPI {
 		params.put("DataType", "2");
 
 		String result = sendPost(ReqURL, params);
-
-		// 根据公司业务处理返回的信息......
+		 
 
 		return result;
 	}
+
 
 	/**
 	 * MD5加密
@@ -66,7 +83,7 @@ public class KdGoldAPI {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unused")
-	private String MD5(String str, String charset) throws Exception {
+	private static String MD5(String str, String charset) throws Exception {
 		MessageDigest md = MessageDigest.getInstance("MD5");
 		md.update(str.getBytes(charset));
 		byte[] result = md.digest();
@@ -90,13 +107,13 @@ public class KdGoldAPI {
 	 *            编码方式
 	 * @throws UnsupportedEncodingException
 	 */
-	private String base64(String str, String charset) throws UnsupportedEncodingException {
+	private static String base64(String str, String charset) throws UnsupportedEncodingException {
 		String encoded = Base64.encode(str.getBytes(charset));
 		return encoded;
 	}
 
 	@SuppressWarnings("unused")
-	private String urlEncoder(String str, String charset) throws UnsupportedEncodingException {
+	private static String urlEncoder(String str, String charset) throws UnsupportedEncodingException {
 		String result = URLEncoder.encode(str, charset);
 		return result;
 	}
@@ -115,7 +132,7 @@ public class KdGoldAPI {
 	 * @return DataSign签名
 	 */
 	@SuppressWarnings("unused")
-	private String encrypt(String content, String keyValue, String charset)
+	private static String encrypt(String content, String keyValue, String charset)
 			throws UnsupportedEncodingException, Exception {
 		if (keyValue != null) {
 			return base64(MD5(content + keyValue, charset), charset);
@@ -133,7 +150,7 @@ public class KdGoldAPI {
 	 * @return 远程资源的响应结果
 	 */
 	@SuppressWarnings("unused")
-	private String sendPost(String url, Map<String, String> params) {
+	private static String sendPost(String url, Map<String, String> params) {
 		OutputStreamWriter out = null;
 		BufferedReader in = null;
 		StringBuilder result = new StringBuilder();
@@ -194,4 +211,5 @@ public class KdGoldAPI {
 		}
 		return result.toString();
 	}
+
 }

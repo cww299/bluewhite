@@ -1,3 +1,4 @@
+@charset "utf-8";
 .layui-table-view .layui-disabled.layui-form-checkbox.layui-form-checked[lay-skin="primary"] i,
 .layui-table-view .layui-disabled.layui-form-checkbox.layui-form-checked[lay-skin="primary"] i:hover {
   background-color: lightgray !important;
