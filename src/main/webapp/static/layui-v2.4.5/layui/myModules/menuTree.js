@@ -153,7 +153,7 @@ layui.define(['element','jquery','form'],function(exports){
 			  return createTree(0);
 			  function createTree(parentId){
 				  var child = [];
-				  for(var i=checked.length-1;i>=0;i--){
+				  for(var i=0;i<checked.length;i++){
 					  if($(checked[i]).prev().attr('parentid')==parentId){
 						  child.push({
 							  id : $(checked[i]).prev().attr('value'),
