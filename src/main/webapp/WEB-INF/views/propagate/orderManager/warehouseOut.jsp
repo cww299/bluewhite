@@ -227,14 +227,27 @@ layui.config({
 			       {align:'center', title:'数量', field:'number', width:'6%',	},
 			       {align:'center', title:'经手人',	templet:'<p>{{ d.user.userName }}</p>', width:'7%',	},
 			       {align:'center', title:'出库类型', templet:'#statusTpl', width:'6%',	},
-			       {align:'center', title:'备注', 	field:'remark'},
 			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl', width:'6%',	},
 			       {align:'center', title:'日期',   	field:'createdAt',	},
 			       {align:'center', title:'批次号',	templet: orderContentBatchNumber(), width:'10%'	,},
 					{align:'center', title:'商品名',	templet: orderContentName(),width:'20%'	,},
 					{align:'center', title:'剩余数量',templet: orderContentNumber(), width:'5%'	,},
+					 {align:'center', title:'备注', 	templet: orderContentRemark(), width:'10%'	,	},
 			       ]]
 		})
+		function orderContentRemark(){
+			return function(d){
+				var html='<table style="width:100%;" class="layui-table">';
+				for(var i=0;i<d.procurementChilds.length;i++){
+					var t=d.procurementChilds[i];
+					var style='';
+					if(i==d.procurementChilds.length-1)
+						style='border-bottom:none';
+					html+='<tr><td style="border-right:none; '+style+'">'+t.childRemark+'&nbsp;</td></tr>';
+				}
+				return html+'</table>';
+			}
+		}
 		function orderContentBatchNumber(){
 			return function(d){
 				var html='<table style="width:100%;" class="layui-table">';
