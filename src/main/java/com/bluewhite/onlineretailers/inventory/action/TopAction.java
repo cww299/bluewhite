@@ -12,17 +12,17 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.xmlbeans.impl.util.Base64;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.utils.courier.KdGoldAPI;
 
-
+import com.sun.xml.internal.messaging.saaj.util.Base64;
 
 
 @Controller
@@ -115,7 +115,15 @@ public class TopAction {
 	// 电商加密私钥，快递鸟提供，注意保管，不要泄漏
 	private static String AppKey = "5353bbe7-bc47-4e5a-949f-f4dc42f54b4b";
     final Integer IsPreview = 1; //是否预览 0-不预览 1-预览
-
+    
+    /**
+     * 获取打印信息
+     * @param request
+     * @param OrderCode
+     * @param ip
+     * @return
+     * @throws Exception
+     */
     @RequestMapping("/getPrintData")
     @ResponseBody
     public Map<String, Object> getCloudPrintData(HttpServletRequest request,String OrderCode,String ip) throws Exception{
@@ -126,23 +134,36 @@ public class TopAction {
         dataMap.put("OrderCode", OrderCode);
         dataMap.put("PortName", "Xprinter XP-DT108A LABEL");
         list.add(dataMap);
-        String jsonString = JSONArray.toJSONString(dataMap);
+          
+        String jsonString = new JSONObject(dataMap).toJSONString();
         
         map.put("RequestData", URLEncoder.encode(jsonString, "UTF-8"));
         if(StringUtils.isEmpty(ip)) {
             ip = getIpAddress(request);
         }
-        map.put("DataSign",encrpy(ip + jsonString, AppKey));
+        map.put("DataSign",encrpy("120.195.120.55" + jsonString, AppKey));
         System.out.println("map:"+map);
         return map;
     }
     
+    /**
+     * 获取ip
+     * @param request
+     * @return
+     * @throws IOException
+     */
     @RequestMapping("/getIpAddress")
     @ResponseBody
     public String getIpAddressByJava(HttpServletRequest request) throws IOException {
         return getIpAddress(request);
     }
     
+    /**
+     * 获取电子面单和号码
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @RequestMapping("/electronicSurfaceSingle")
     @ResponseBody
     public CommonResponse electronicSurfaceSingle(HttpServletRequest request) throws Exception {
@@ -153,6 +174,8 @@ public class TopAction {
 		 cr.setData(jsonArray);
         return cr;
     }
+    
+    
     
     
     private String encrpy(String content, String key) throws UnsupportedEncodingException, Exception {
