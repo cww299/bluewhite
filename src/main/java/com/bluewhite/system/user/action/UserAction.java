@@ -88,10 +88,30 @@ public class UserAction {
 	@ResponseBody
 	public CommonResponse userPages(HttpServletRequest request, User user,PageParameter page) {
 		CommonResponse cr = new CommonResponse();
+		user.setLotionNumber(1);
 		cr.setData(clearCascadeJSON.format(userService.getPagedUser(page,user)).toJSON());
 		return cr;
 	}
 	
+	
+	/**
+	 *  查看特急
+	 *  按不同部门显示的不同的人员
+	 * @param request
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = "/foreignsPages", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse foreignsPages(HttpServletRequest request, User user,PageParameter page) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(User.class,"id","idCardEnd","price","status","workTime", "userName", "phone","idCard")
+				.format(userService.getPagedUser(page,user)).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
 	
 	
 	
@@ -147,7 +167,7 @@ public class UserAction {
 		if(attendanceInit==null){
 			cr.setCode(2);
 		}
-		cr.setData(clearCascadeJSON.format(userService.save(oldUser)).toJSON());
+		userService.save(oldUser);
 		cr.setMessage("修改成功");
 		return cr;
 	}
@@ -200,7 +220,7 @@ public class UserAction {
 			}
 		}
 		BeanCopyUtils.copyNotEmpty(userContract,oldUser);
-		cr.setData(clearCascadeJSON.format(userContractDao.save(oldUser)).toJSON());
+		userContractDao.save(oldUser);
 		cr.setMessage("修改成功");
 		return cr;
 	}

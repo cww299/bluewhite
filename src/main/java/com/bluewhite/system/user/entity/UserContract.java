@@ -1,10 +1,13 @@
 package com.bluewhite.system.user.entity;
 
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -94,47 +97,11 @@ public class UserContract extends BaseEntity<Long>{
 	private String remark;
 	
 	/**
-	 *工作状态(在职离职)
+	 * 工作状态(在职离职)
 	 */
 	@Column(name = "quit")
     private Integer quit;
 	
-	/**
-	 * 用户id
-	 */
-	@Column(name="user_id" )
-	private Long userId; 
-	
-	/**
-	 * 一对一user
-	 */
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "user_id" ,referencedColumnName = "id", insertable = false, updatable = false)
-	private User user; 
-	
-	
-	
-
-	public Long getUserId() {
-		return userId;
-	}
-
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-
-
-	public User getUser() {
-		return user;
-	}
-
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-
 	public Integer getQuit() {
 		return quit;
 	}

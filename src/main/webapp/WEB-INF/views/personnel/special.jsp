@@ -146,12 +146,10 @@
 						};
 					};
 					
-				   	tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
-						height:'700px',
 						size:'lg',
-						url: '${ctx}/system/user/pages',
+						url: '${ctx}/system/user/foreignsPages',
 						where:{
 							foreigns:1,
 						},
@@ -159,15 +157,10 @@
 							pageName: 'page' ,//页码的参数名称，默认：page
 							limitName: 'size' //每页数据量的参数名，默认：limit
 						},
-						page: {
-							
-						},//开启分页
+						page:true,
 						loading: true,
 						toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
-						/*totalRow: true //开启合计行 */
 						cellMinWidth: 90,
-						colFilterRecord: true,
-						smartReloadModel: true,// 开启智能重载
 						parseData: function(ret) {
 							return {
 								code: ret.code,
@@ -219,7 +212,7 @@
 							var tableView = this.elem.next();
 							tableView.find('.layui-table-grid-down').remove();
 							var totalRow = tableView.find('.layui-table-total');
-							var limit = this.page ? this.page.limit : this.limit;
+							var limit = this.page ? this.page.size : this.limit;
 							layui.each(totalRow.find('td'), function(index, tdElem) {
 								tdElem = $(tdElem);
 								var text = tdElem.text();

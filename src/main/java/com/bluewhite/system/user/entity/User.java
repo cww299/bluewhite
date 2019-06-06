@@ -368,10 +368,10 @@ public class User extends BaseEntity<Long> {
 	private Set<Role> roles = new HashSet<Role>();
 	
 	/**
-	 * 一对一的用户合同位置实体
+	 * 合同位置实体
 	 */
-    @OneToOne(fetch=FetchType.LAZY,cascade = CascadeType.ALL) 
-    @JoinColumn(name="user_contract_id",referencedColumnName="id",nullable=true)
+    @ManyToOne(fetch=FetchType.LAZY,cascade = CascadeType.ALL) 
+    @JoinColumn(name = "user_contract_id", referencedColumnName = "id", insertable = false, updatable = false)
     private UserContract userContract;
 	
 	/**
