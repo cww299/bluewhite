@@ -141,20 +141,20 @@ layui.config({
 		getAllInventory();
 		var cols=[[
 					{align:'center', type:'checkbox',},
-					{align:'center', title:'商品编号',   field:'skuCode',	width:'10%',},
-					{align:'center', title:'商品高度',   field:'size',    width:'',},
-					{align:'center', title:'商品重量', 	field:'weight', width:'',},
-					{align:'center', title:'1688单价',   	field:'oseePrice',		width:'',},
-					{align:'center', title:'天猫单价',   	field:'tianmaoPrice',	width:'',},
-					{align:'center', title:'线下单价',   	field:'offlinePrice',	width:'',},
-					{align:'center', title:'成本价', 		field:'cost',	width:'',},
-					{align:'center', title:'广宣成本', 	field:'propagandaCost',	width:'',},
-					{align:'center', title:'材质', 		field:'material',	},
-					{align:'center', title:'填充物', 		field:'fillers',	},
-					{align:'center', title:'备注', 		field:'remark',	},
+					{ title:'商品编号',   field:'skuCode',	width:'15%',},
+					{ title:'商品高度',   field:'size',    width:'',},
+					{ title:'商品重量', 	field:'weight', width:'',},
+					{ title:'1688单价',   	field:'oseePrice',		width:'',},
+					{ title:'天猫单价',   	field:'tianmaoPrice',	width:'',},
+					{ title:'线下单价',   	field:'offlinePrice',	width:'',},
+					{ title:'成本价', 		field:'cost',	width:'',},
+					{ title:'广宣成本', 	field:'propagandaCost',	width:'',},
+					{ title:'材质', 		field:'material',	},
+					{ title:'填充物', 		field:'fillers',	},
+					{ title:'备注', 		field:'remark',	},
 		           ]];
 		for(var i=0;i<allInventory.length;i++)
-			cols[0].push({align:'center', title:allInventory[i].name, templet : getInventoryNumber(allInventory[i].id),	})
+			cols[0].push({ title:allInventory[i].name, templet : getInventoryNumber(allInventory[i].id),	})
 		
 		function getInventoryNumber(warehouseId){
 			return function(d){
