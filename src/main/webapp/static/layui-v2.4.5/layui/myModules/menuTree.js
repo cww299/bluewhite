@@ -75,7 +75,8 @@ layui.define(['element','jquery','form'],function(exports){
 								  break;
 							  }
 						  }
-						  html+='<input type="checkbox" lay-filter="menuTreeCheckbox" parentId="'+data[i].parentId+'" value="'+data[i].id+'" '+c+' '+d+' lay-skin="primary">';//复选框
+						  html+='<input type="checkbox" lay-filter="menuTreeCheckbox" parentid="'+data[i].parentId+'" icon="'+data[i].icon+'" '+
+						  		'value="'+data[i].id+'" '+c+' '+d+' lay-skin="primary">';//复选框
 						  html+='<i class="layui-icon layui-icon-'+data[i].icon+'"></i>&nbsp;&nbsp;'			//菜单图标
 						  html+='<span>'+data[i].name+'</span>&nbsp;&nbsp;';				//菜单名
 						  if(menuTree.sumNumber)
@@ -148,26 +149,21 @@ layui.define(['element','jquery','form'],function(exports){
 		  },
 		  getTreeData:function(elem){
 			  if(elem==undefined){  console.error('获取树形数据时，需要指定获取对象的id'); return; }
-			  var checked = this.getVal(elem);
-			  var data = menuTree.data;
-			  return createTreeData(data,checked);
-			  function createTreeData(data,checked){
-				  var child=[];
-				  layui.each(data,function(index,item){
-					  for(var i=0;i<checked.length;i++)
-						  if(checked[i]==item.id){
-							  var t={
-									  id : item.id,
-									  icon: item.icon,
-									  name : item.name,
-									  url : item.url,
-									  children : [],
-								  };
-							  t.children = createTreeData(item.children,checked);
-							  child.push(t)
-							  break;
-						  }
-				  })
+			  var checked = $('#'+elem).find('div[class~="layui-form-checked"]');
+			  return createTree(0);
+			  function createTree(parentId){
+				  var child = [];
+				  for(var i=0;i<checked.length;i++){
+					  if($(checked[i]).prev().attr('parentid')==parentId){
+						  child.push({
+							  id : $(checked[i]).prev().attr('value'),
+							  name : $(checked[i]).siblings('span').html(),
+							  parentId : parentId,
+							  icon : $(checked[i]).prev().attr('icon'),
+							  children : createTree($(checked[i]).prev().attr('value')),
+						  })
+					  }
+				  }
 				  return child;
 			  }
 		  }

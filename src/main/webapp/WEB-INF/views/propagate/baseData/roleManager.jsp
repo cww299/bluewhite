@@ -14,7 +14,23 @@
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script> 
 <title>角色管理</title>
-
+<style type="text/css">
+.treeMenuDiv{
+	width:40%;
+	height:80%;
+	border:1px solid gray;
+	overflow:auto;
+	margin:10px;
+	padding:10px;
+}
+.treeMenuControl{
+	margin:auto;
+	margin-top:150px;
+	float:left;
+	width:5%;
+	text-align:center;
+}
+</style>
 </head>
 
 <body>
@@ -301,7 +317,7 @@ layui.config({
 			var aboutPermission=layer.open({     	//打开查看权限内容的弹窗
 				   title: '查看角色权限：'+data.name
 				   ,type:1
-				   ,area: ['80%', '80%']
+				   ,area: ['80%', '95%']
 				   ,content:'<div class="table_th_search" lay-filter="LAY-lookOver-Permissions" id="LAY-lookOver-Permissions"></div>'  //permissionTable
 				   ,end:function(){
 					   $('#LAY-lookOver-Permissions').css("display","none");
@@ -413,59 +429,35 @@ layui.config({
 				})
 			}
 			function addPermission(roleId){    			//增加权限
-				
-				choosePermission=[];  		 			//每次打开加权限的按钮，对之前所添加的权限清空
 				var html='';       						//打开加权限窗口的内容
-				html+='<div style="width:40%;float:left;border:1px solid gray;height:400px;overflow:auto;margin:10px;padding:10px;" id="menuDiv"></div>';    //左侧存放联级菜单的div
-				/* for(var i=0;i<allMenu.length;i++){    	//拼接菜单级联
-					html+='<div><p><a href="javascript:;" value="'+allMenu[i].id+'" url="'+allMenu[i].url+'" parent="'+allMenu[i].parentId+'" name="'+allMenu[i].name+'">'+allMenu[i].name+'</a></p>';
-					if(allMenu[i].children!=null)   	//如果有下级菜单，进行递归拼接 creatHtml(子菜单,'相对于父菜单所使用的缩进')
-						html+=creatHtml(allMenu[i].children,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
-					html+='</div>';
-				} */
-				html+=	'<div style="margin:auto;margin-top:150px;float:left;width:5%;text-align:center;"><p><i class="layui-icon layui-icon-next" ></i></p>'+	 
-						'<p>选择添加权限</p></div>'+	   //中间存放添加菜单按钮的div
-						'<div style="float:right;width:40%;height:400px;border:1px solid gray;margin:10px;padding:10px;overflow:auto;" id="choosedDiv"></div>'+    //右侧存放选中菜单的div
+				html+='<div style="float:left;" class="treeMenuDiv" id="menuDiv"></div>';    //左侧存放联级菜单的div
+				html+=	'<div class="treeMenuControl"><p><i class="layui-icon layui-icon-next" ></i></p>'+	 
+						'<p>确定选择</p></div>'+	   										//中间存放添加菜单按钮的div
+						'<div style="right;" class="treeMenuDiv" id="choosedDiv"></div>'+    //右侧存放选中菜单的div
 						'<div style="float:right;width:100%;text-align:center;"><button type="button" lay-submit lay-filter="addPermissionSure"'+
 						' value="'+roleId+'" class="layui-btn layui-btn-sm" >确定</button></div>'; //确定按钮
-				/*
-					function creatHtml(menu,nbsp){   		//对多级菜单进行递归拼接
-					var str='<div style="display:none;">';
-					for(var i=0;i<menu.length;i++){
-						str+='<p>'+nbsp+'<a href="javascript:;" value="'+menu[i].id+'" url="'+menu[i].url+'" name="'+menu[i].name+'" parent="'+menu[i].parentId+'">|-'+menu[i].name+'</a>';
-						if(menu[i].children!=null){ 	//如果有下级，继续递归
-							str+=creatHtml(menu[i].children,nbsp+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
-						}
-						str+='</p>';
-					}
-					return str+'</div>';
-				} */
 				var addPer=layer.open({    							//打开添加权限的窗口
 					 title: '添加权限'
 					   ,type:1
-					   ,area: ['40%', '80%']
+					   ,area: ['40%', '90%']
 					   ,content:html
 				}) 
 				menuTree.render({
 		    	  elem:'#menuDiv',
 		    	  url: "${ctx}/getTreeMenuPage",
 		        });
-				form.on('checkbox(menuTreeCheckbox)',function(obj){		
-					console.log(menuTree.getTreeData('menuDiv'))
-					menuTree.render({
-						elem:'#choosedDiv',
-						data:menuTree.getTreeData('menuDiv'),
-					})
+				$('.treeMenuControl').find('p').on('click',function(){
+					 menuTree.render({
+							elem:'#choosedDiv',
+							data:menuTree.getTreeData('menuDiv'),
+					})  
 				})
 				form.on('submit(addPermissionSure)',function(obj){   	//加权限中，确定按钮的监听
+					return;
+				
 					var roleId=obj.elem.value;							
 					//--------------传递数据初始化-------------
 					var permissions=[]; 
-					for(var i=0;i<choosePermission.length;i++){   		//将所有的select的选择赋值给choosePermission
-						var t={"menuId":''+choosePermission[i].id,
-								"permissionIds":formSelects.value('selectId'+choosePermission[i].id, 'valStr') }; 
-						permissions.push(t);
-					}
 					permissions.push({"menuId":15,"permissionIds":'1,'});  //添加首页的权限，首页id为15 线上的数据库也为15
 					permissions.push({"menuId":8,"permissionIds":'1,'});  //添加广宣管理的权限，首页id为8 线上的数据库也为8
 					var PLids=[];
@@ -506,113 +498,7 @@ layui.config({
 						}
 					})
 				})
-				//监听加权限中菜单级联中 a 的点击操作
-				$('#menuDiv').find('a').on('click',function(){   
-					 var p= $(this).attr("url");
-					 if(p=="#"){                   								//如果为#,则只切换下级菜单栏的显示、隐藏。不做其他操作 return
-						 var display =$(this).parent().next().css("display")    //菜单下级菜单隐藏显示的切换
-						 if(display=='none'){
-							$(this).parent().next().css("display","block");  
-						}else{
-							$(this).parent().next().css("display","none"); 
-						}  
-					 	//将该菜单存于父parent菜单数组中,用于子菜单被选中时，父菜单的联级反应
-					 	var i=0;
-					 	for(;i<parentMenu.length;i++){
-					 		if(parentMenu[i].id==$(this).attr("value"))
-					 			break;
-					 	}
-					 	if(!(i<parentMenu.length)){
-					 		var par={ id:$(this).attr("value"),
-			 						name:$(this).attr("name"),
-			 						parent:$(this).attr("parent"),
-			 						choosed:false,
-			 						level:1,
-			 						choosedNum:0};
-					 		parentMenu.push(par); 
-					 	}
-					 	return;
-					 }  
-					//以下是选中权限的操作，通过背景颜色判断是选中还是取消操作         
-					 var bg=$(this).parent().css("background-color");
-					 if(bg=="rgb(204, 255, 255)"){         				//如果有背景颜色,则该点击为取消选中操作
-					 	$(this).parent().css("background-color","");
-					 	for(var i=0;i<choosePermission.length;i++){    	//从选中数组中去除该对象
-					 		if(choosePermission[i].id==$(this).attr("value")){
-					 			$('#p-'+$(this).attr("value")).remove();
-					 			choosePermission.splice(i,1);
-					 		}
-					 	}
-					 }
-					 else{														//如果没有颜色，则该点击为选中操作
-					 	$(this).parent().css("background-color","#CCFFFF");   	//CCFFFF对应rgb(204, 255, 255)
-					 	var perm={
-					 			id:$(this).attr("value"),
-					 			name:$(this).attr("name"),
-					 			parent:$(this).attr("parent"),
-					 			level:''
-					 	}
-					 	choosePermission.push(perm);  	//添加到选中数组
-					 	 var html='';       			//对选中数组在选中div中的显示
-						 html+='<p id="p-'+perm.id+'">&nbsp;<a href="javascript:;" value="'+perm.id+'">'+perm.name+'</a>'+getPermissionLevelSelect(perm)+'</p>';
-						 $('#choosedDiv').append(html);
-						 formSelects.render('selectId'+perm.id);  	//渲染多选下拉框。无参数时，自动渲染所有
-					 }
-					 
-					 parentChoose();  	//子菜单选中对父级菜单的级联反应，选中子菜单，父菜单默认选中
-					 function parentChoose(){
-						for(var i=0;i<parentMenu.length;i++){  		//对父菜单数据初始化，便于重新计算
-							parentMenu[i].choosed=false;
-							parentMenu[i].choosedNum=0;
-						}
-						for(var i=0;i<choosePermission.length;i++){   //重新计算父菜单中子菜单选中的个数
-							var c=choosePermission[i];
-							for(var j=0;j<parentMenu.length;j++){     //如果选中的菜单数组中父id等于父数组中的id
-								if(c.parent==parentMenu[j].id){
-									if(parentMenu[j].choosed==false){
-										parentMenu[j].choosed=true;
-										parentMenu[j].choosedNum=1;
-									}
-									else 
-										parentMenu[j].choosedNum+=1;
-								}
-							}
-						}  //for end
-						for(var i=0;i<parentMenu.length;i++){ //对父菜单的父菜单的计算，此处为写死，只能渲染3级菜单，正确写法应该使用递归进行渲染
-							if(parentMenu[i].parent!=0 && parentMenu[i].choosedNum!=0 ){//parentMenu[i]父id不为0，表示该菜单有上级菜单,且该菜单中有子菜单被选中
-								for(var j=0;j<parentMenu.length;j++){    
-									if(parentMenu[i].parent==parentMenu[j].id ){  	//找出该菜单的父菜单parentMenu[j]
-										if(parentMenu[j].choosed==false){
-											parentMenu[j].choosed=true;
-											parentMenu[j].choosedNum=parentMenu[i].choosedNum;
-										}
-										else
-											parentMenu[j].choosedNum+=parentMenu[i].choosedNum;
-									}
-								}
-							}
-						}  // for end
-						for(var i=0;i<parentMenu.length;i++){      //对父菜单的渲染
-							$('#menuDiv').find('a').each(function(){
-								if($(this).attr("value")==parentMenu[i].id){ 
-									var prefix='';
-									if($(this).text().indexOf("|-")>=0)
-										prefix="|-";
-									if(parentMenu[i].choosed==false){
-										$(this).html(prefix+parentMenu[i].name);
-										$(this).parent().css("background-color","");
-									}else{
-										$(this).parent().css("background-color",'#CCFFFF');
-										$(this).html(prefix+parentMenu[i].name+' '+'<span class="layui-badge">'+parentMenu[i].choosedNum+'</span>')
-									}
-								}
-							}) //('a').each() end
-						} // for end
-					 }//子菜单选中，父菜单默认选中结束
-				 })//监听a点击事件结束		
 			}//加权限结束（窗口的弹出、逻辑的判断。。）
-			
-			
 		}//查看角色权限结束
 		
 	}// defind end
