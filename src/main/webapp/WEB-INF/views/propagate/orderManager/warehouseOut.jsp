@@ -238,7 +238,7 @@ layui.config({
 		function orderContentRemark(){
 			return function(d){
 				var html='<table style="width:100%;" class="layui-table">';
-				for(var i=0;i<d.procurementChilds.length;i++){
+				for(var i=0;i<d.procurementChilds.length;i++){ 
 					var t=d.procurementChilds[i];
 					var style='';
 					if(i==d.procurementChilds.length-1)
