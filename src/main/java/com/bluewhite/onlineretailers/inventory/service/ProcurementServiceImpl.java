@@ -112,6 +112,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	@Override
 	@Transactional
 	public Procurement saveProcurement(Procurement procurement) {
+		procurement.setCreatedAt(procurement.getCreatedAt()==null ? new Date() : procurement.getCreatedAt());
 		// 生成单据编号
 		procurement.setDocumentNumber(StringUtil.getDocumentNumber(String.valueOf(procurement.getType()))
 				+ SalesUtils.get0LeftString((int) dao.count(), 8));

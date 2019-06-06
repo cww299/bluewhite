@@ -73,7 +73,7 @@ td{
 						<option value="3">采购退货出库 </option></select></td></tr>
 		<tr>
 			<td>默认批次号</td>	
-			<td><input type="text" class="layui-input" id="addBatchNumber" name='batchNumber' lay-verify='required'></td>
+			<td><input type="text" class="layui-input" id="addBatchNumber" name='batchNumber'></td>
 			<td>默认出库数量</td>
 			<td><select lay-filter="defaultSelect" type='number' ><option value="zero">不出库</option><option value="all">出库全部</option></select></td>
 			<td>备注</td>

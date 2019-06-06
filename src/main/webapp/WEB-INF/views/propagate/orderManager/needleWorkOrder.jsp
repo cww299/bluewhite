@@ -76,7 +76,7 @@ td{
 			<td><input type="text" class="layui-input" name="number" id="addNumber" readonly value='0'></td></tr>
 		<tr>
 			<td>默认批次号</td>	
-			<td><input type="text" class="layui-input" name="batchNumber" lay-verify='required' id="addBatchNumber"></td>
+			<td><input type="text" class="layui-input" name="batchNumber"  id="addBatchNumber"></td>
 			<td>备注</td>
 			<td><input type="text" name="remark" class="layui-input" id="addRemark"></td>
 			<td colspan="2" style="text-align:right;"><span class="layui-btn" lay-submit lay-filter="sureAdd" >确定新增</span>
