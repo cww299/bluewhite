@@ -141,7 +141,7 @@ layui.config({
 		getAllInventory();
 		var cols=[[
 					{align:'center', type:'checkbox',},
-					{ title:'商品编号',   field:'skuCode',	width:'15%',},
+					{ title:'商品编号',   field:'skuCode',	width:'20%',},
 					{ title:'商品高度',   field:'size',    width:'',},
 					{ title:'商品重量', 	field:'weight', width:'',},
 					{ title:'1688单价',   	field:'oseePrice',		width:'',},
