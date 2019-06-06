@@ -273,7 +273,10 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     		}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
-			query.orderBy(cb.desc(root.get("userContract").get("number").as(Integer.class)));
+			if(user.getLotionNumber()!=null){
+				query.orderBy(cb.desc(root.get("userContract").get("number").as(Integer.class)));
+			}
+			
 			query.distinct(true);
 			return null;
 		}, page);
@@ -339,6 +342,13 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	@Override
 	@Transactional
 	public User addUser(User user) {
+		User oldUser = userDao.findByUserName(user.getUserName());
+		if(oldUser!=null){
+			if(oldUser.getForeigns()==1){
+				throw  new ServiceException("该用户姓名在特急人员出现，请前往特急人员信息中确认是否需要转正");
+			}
+		}
+		
 		if(!StringUtils.isEmpty(user.getPhone())){
 			User u = findByPhone(user.getPhone());
 			if(u != null){
