@@ -5,12 +5,14 @@ layui.define(['element','jquery','form'],function(exports){
 	  	
 	  var MENUTREE = 'menuTree';
 	  var menuTree = {
-		  data:[],
-		  checked:[],
-		  elem:'',
-		  result:'',
-		  sumNumber:false,
-		  disabled:[],
+		  data:[],		//显示的数据
+		  checked:[],	//默认复选框选中的数据
+		  elem:'',		//绑定的元素对象
+		  result:'',	//进行渲染的html文本结果
+		  sumNumber:false,//父菜单下子菜单选择的条数，是否开启
+		  disabled:[],		//不可选择的对象
+		  checkbox:true,	//是否开启复选框
+		  hide:true,		//是否隐藏子菜单
 		  render:function(obj){					//渲染数据。参数的初始化
 			  if(obj.hasOwnProperty('elem'))	//如果没有elem属性
 			  	this.elem = obj.elem;
@@ -38,6 +40,10 @@ layui.define(['element','jquery','form'],function(exports){
 				  this.disabled = obj.disabled;
 			  if(obj.hasOwnProperty('sumNumber'))
 				  this.sumNumber = obj.sumNumber;
+			  if(obj.hasOwnProperty('checkbox'))
+				  this.checkbox = obj.checkbox;
+			  if(obj.hasOwnProperty('hide'))
+				  this.hide = obj.hide;
 			  this.createTree();
 		  },
 		  reload:function(){
@@ -58,7 +64,7 @@ layui.define(['element','jquery','form'],function(exports){
 						  html+='<div class="layui-tree-entry layui-inline" style="height:24px;">';
 						  html+=nbsp;																//加缩进
 						  if(data[i].children!=null && data[i].children.length>0)
-							  html+='<i class="layui-icon layui-icon-down"></i>&nbsp;';				//展开、收缩图标
+							  html+='<i class="layui-icon layui-icon-'+(menuTree.hide?'down':'up')+'"></i>&nbsp;';				//展开、收缩图标
 						  else
 							  html+='<i class="layui-icon layui-icon-file"></i>&nbsp;';
 						  var c='';		//是否选中
@@ -75,15 +81,16 @@ layui.define(['element','jquery','form'],function(exports){
 								  break;
 							  }
 						  }
-						  html+='<input type="checkbox" lay-filter="menuTreeCheckbox" parentid="'+data[i].parentId+'" icon="'+data[i].icon+'" '+
-						  		'value="'+data[i].id+'" '+c+' '+d+' lay-skin="primary">';//复选框
+						  if(menuTree.checkbox)
+							  html+='<input type="checkbox" lay-filter="menuTreeCheckbox" parentid="'+data[i].parentId+'" icon="'+data[i].icon+'" '+
+							  		'value="'+data[i].id+'" '+c+' '+d+' lay-skin="primary">';//复选框
 						  html+='<i class="layui-icon layui-icon-'+data[i].icon+'"></i>&nbsp;&nbsp;'			//菜单图标
 						  html+='<span>'+data[i].name+'</span>&nbsp;&nbsp;';				//菜单名
 						  if(menuTree.sumNumber)
 							  html+='<span class="layui-badge layui-bg-green" lay-filter="menu-tree-number">0</span>';
 						  html+='</div>'
 						  if(data[i].children!=null && data[i].children.length>0)
-								 html+='<div class="layui-tree-child" style="display:none">'+tree(data[i].children,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+nbsp)+'</div>';	//子菜单
+								 html+='<div class="layui-tree-child" style="display:'+(menuTree.hide?"none":"")+';">'+tree(data[i].children,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+nbsp)+'</div>';	//子菜单
 						  html+='</div>'
 					  }
 					  return html;
