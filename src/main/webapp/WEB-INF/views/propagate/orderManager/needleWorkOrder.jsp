@@ -349,7 +349,7 @@ layui.config({
 					 layer.msg('计划的数量必须为整数',{icon:2});
 				else
 					for(var i=0;i<choosedProduct.length;i++){
-						 if(choosedProduct[i].commodityId==obj.data.commodityId){		//重新对该行的相关数据进行计算
+						 if(choosedProduct[i].id==obj.data.id){		//重新对该行的相关数据进行计算
 						 	$('#addNumber').val($('#addNumber').val()-choosedProduct[i].number-(-parseInt(obj.value)));
 							choosedProduct[i].number=parseInt(obj.value);
 						 	layer.msg('修改成功！',{icon:1});
@@ -358,7 +358,7 @@ layui.config({
 					}
 			}else{
 				for(var i=0;i<choosedProduct.length;i++){
-					 if(choosedProduct[i].commodityId==obj.data.commodityId){		//重新对该行的相关数据进行计算
+					 if(choosedProduct[i].id==obj.data.id){		//重新对该行的相关数据进行计算
 						if(obj.field=='childRemark')
 						 	choosedProduct[i].childRemark=obj.data.childRemark;
 						else if(obj.field=='batchNumber')
@@ -378,8 +378,19 @@ layui.config({
 				layer.msg("请选择商品",{icon:2});
 				return;
 			}
-			var child=[],allNum=0;
+			var child=[];
 			for(var i=0;i<choosedProduct.length;i++){
+				if(choosedProduct[i].batchNumber==''){
+					layer.msg('商品批次号不可省略！',{icon:2});
+					return;
+				}
+				for(var j=0;j<choosedProduct.length;j++){
+					var item = choosedProduct[j];
+					if( item.id != choosedProduct[i].id && item.commodityId == choosedProduct[i].commodityId && item.batchNumber == choosedProduct[i].batchNumber){
+						layer.msg('相同的商品不能同时使用相同的批次号！',{icon:2});
+						return;
+					}
+				}
 				child.push({batchNumber : choosedProduct[i].batchNumber,
 							commodityId : choosedProduct[i].commodityId,
 							number : choosedProduct[i].number,
@@ -464,7 +475,7 @@ layui.config({
 			}
 			for(var i=0;i<choosed.length;i++){
 				for(var j=0;j<choosedProduct.length;j++){
-					if(choosed[i].commodityId==choosedProduct[j].commodityId){
+					if(choosed[i].id==choosedProduct[j].id){
 						$('#addNumber').val($('#addNumber').val()-choosedProduct[j].number);
 						choosedProduct.splice(j,1);
 						break;
@@ -502,38 +513,28 @@ layui.config({
 			});
 			form.render();
 		}
+		var choosedId=0;	//由于可以选择不同的商品进行不同的批次号选择，因此原本的商品id无法作为唯一标识，因此相同的商品可能多次选择，因此需要添加一个字段作为标识
 		function sureChoosed(){					//确定商品选择
 			var choosed=layui.table.checkStatus('productChooseTable').data;
 			if(choosed.length<1){
 				layer.msg("请选择相关商品",{icon:2});
 				return false;
 			}
-	 		for(var i=0;i<choosed.length;i++){
-				var j=0;
-				for(var j=0;j<choosedProduct.length;j++){	
-					if(choosedProduct[j].commodityId==choosed[i].id)	{			//判断选择的商品是否已存在选择列表
-						choosedProduct[j].number++;
-						$('#addNumber').val($('#addNumber').val()-(-1));
-						break;
-					}
-				}
-				if(!(j<choosedProduct.length) || choosedProduct.length==0){				//如果不存在
-					var orderChild={
-							skuCode:choosed[i].skuCode,			//商品名称
-							commodityId :choosed[i].id,		//商品id
-							number:1,						//商品数量
-							cost:choosed[i].cost,			//成本
-							remark:choosed[i].remark,		//备注
-							batchNumber:$('#addBatchNumber').val(),
-					};
-					$('#addNumber').val($('#addNumber').val()-(-1));
-					choosedProduct.push(orderChild);
-				} 
+			for(var i=0;i<choosed.length;i++){
+				var orderChild={
+						skuCode : choosed[i].skuCode,			//商品名称
+						commodityId : choosed[i].id,			//商品id
+						number : 1,								//商品数量
+						cost : choosed[i].cost,					//成本
+						remark : choosed[i].remark,				//备注
+						batchNumber : $('#addBatchNumber').val(),
+						id : choosedId++,  						//仅仅用于标识不同的数据
+				};
+				$('#addNumber').val($('#addNumber').val()-(-1));
+				choosedProduct.push(orderChild);
 			}
-			table.reload('productListTable',{
-				data:choosedProduct
-			});
-			layer.msg('添加成功');
+			table.reload('productListTable',{ data:choosedProduct });
+			layer.msg('添加成功',{icon:1});
 			return true;
 		}
 		function openAddNewPorductWin(){		//添加新产品窗口
