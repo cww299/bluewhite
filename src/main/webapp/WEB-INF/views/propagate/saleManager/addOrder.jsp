@@ -302,6 +302,9 @@ layui.config({
 					{field:'actualSum',  title:'实际金额',   align:'center', width:'8%',	totalRow:true, style:"color:blue;"},
 			       ]]
 		})
+		$('#customAddress').change(function(obj){
+			//湖南省  张家界市  永定区  南庄坪街道张家界天门中学  000000  胡奎  17886975668
+		})
 		table.on('edit(productTable)', function(obj){ 			//监听编辑表格单元
 			if(isNaN(obj.value))
 				layer.msg("修改无效！请输入正确的数字",{icon:2});
@@ -311,19 +314,18 @@ layui.config({
 					if(choosedProduct[i].commodityId==obj.data.commodityId){		//重新对该行的相关数据进行计算
 						var choosed=choosedProduct[i];
 						choosed[obj.field]=obj.value;
-						choosed.sumPrice=choosed.number*choosed.price;
-						choosed.actualSum=(choosed.price-(-choosed.sellerReadjustPrices)-choosed.systemPreferential)*choosed.number;
+						choosed.sumPrice=parseFloat(choosed.number*choosed.price).toFixed(2);
+						choosed.actualSum=parseFloat((choosed.price-(-choosed.sellerReadjustPrices)-choosed.systemPreferential)*choosed.number).toFixed(2);
 						choosedProduct[i][obj.field]=obj.value;
 						choosedProduct[i].sumPrice=choosed.sumPrice;
 						choosedProduct[i].actualSum=choosed.actualSum;
 					}
-					allPayment+=choosedProduct[i].actualSum;	//计算收款金额
+					allPayment-=(-choosedProduct[i].actualSum);		//计算收款金额
 				}
+				allPayment-=(-$('#AddPostFee').val());				//加	上邮费
 				$('#customPayment').val(allPayment);			
 			}
-			table.reload('productTable',{
-				data:choosedProduct
-			})
+			table.reload('productTable',{ data:choosedProduct })
 		});
 		
 		var lastPostFee=0;     				 	//用于保存修改前的邮费价格，进行重新计算
