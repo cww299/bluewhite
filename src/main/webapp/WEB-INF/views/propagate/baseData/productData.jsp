@@ -144,7 +144,7 @@ layui.config({
 					{ title:'商品编号',   field:'skuCode',	width:'20%',},
 					{ title:'商品高度',   field:'size',    width:'',},
 					{ title:'商品重量', 	field:'weight', width:'',},
-					{ title:'1688单价',   	field:'oseePrice',		width:'',},
+					{ title:'1688单价',   	field:'oseePrice',		width:'', },
 					{ title:'天猫单价',   	field:'tianmaoPrice',	width:'',},
 					{ title:'线下单价',   	field:'offlinePrice',	width:'',},
 					{ title:'成本价', 		field:'cost',	width:'',},
@@ -154,7 +154,7 @@ layui.config({
 					{ title:'备注', 		field:'remark',	},
 		           ]];
 		for(var i=0;i<allInventory.length;i++)
-			cols[0].push({ title:allInventory[i].name, templet : getInventoryNumber(allInventory[i].id),	})
+			cols[0].push({ title:allInventory[i].name, sort:true, templet : getInventoryNumber(allInventory[i].id),	})
 		
 		function getInventoryNumber(warehouseId){
 			return function(d){

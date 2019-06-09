@@ -368,7 +368,7 @@ layui.config({
 			cols:[[
 			       {type:'checkbox',align:'center',fixed:'left'},
 			       {field:'createdAt',	title:'下单时间',   align:'center', width:'9%'},
-			       {field:'documentNumber',        title:'订单号',     align:'center', width:'8%',},
+			       {field:'documentNumber',        title:'订单号',     align:'center', width:'10%',},
 			       {field:'name',           title:'客户名称',     align:'center', width:'8%', },
 			       {field:'buyerMemo',  title:'买家留言',   align:'center',width:'12%', },
 			       {field:'sellerMemo', title:'卖家备注',   align:'center',width:'12%', },
@@ -432,7 +432,7 @@ layui.config({
 			layer.open({
 				title: '查看订单',
 				type:1,
-				area:['90%','90%'],
+				area:['90%','95%'],
 				shadeClose:true,
 				content:html
 			})
@@ -475,11 +475,12 @@ layui.config({
 				elem:"#productTable", 					//表单中选择商品的表格
 				loading:true,
 				data: child,
+				page:{},
 				totalRow:true,
 				cols:[[
 				       {field:'',		title:'商品名称',	align:'center',templet:function(d){ return '<span>'+d.commodity.skuCode+'</span>';} },
 				       {field:'inventory',	title:'发货仓库',	align:'center', width:'8%', templet:function(d){ return '<span>'+d.warehouse.name+'</span>';} },
-				       {field:'number',		title:'数量',       align:'center', width:'4%',		templet:'#numberTpl', totalRow:true,},
+				       {field:'number',		title:'数量',       align:'center', width:'5%',		templet:'#numberTpl', totalRow:true,},
 				       {field:'price',   	title:'单价',   	    align:'center', width:'4%',		templet:'#priceTpl'},
 				       {field:'sumPrice',   title:'单价总金额', align:'center', width:'8%', totalRow:true, style:"color:blue;"},
 				       {field:'systemPreferential',   		title:'系统优惠',   align:'center', width:'6%',	 templet:'#systemPreferentialTpl'},
@@ -575,10 +576,25 @@ layui.config({
 		function renderUserSelect(select){			//根据id渲染客服下拉框
 			var html='';
 			for(var i=0;i<allUser.length;i++){
-				html+='<option value="'+allUser[i].id+'">'+allUser[i].userName+'</option>';
+				var selected='';
+				if(select == 'uploadUser' && currentUser.id == allUser[i].id)
+					selected='selected';
+				html+='<option value="'+allUser[i].id+'" '+selected+'>'+allUser[i].userName+'</option>';
 			}
 			$('#'+select).append(html);
 			form.render();
+		}
+		var currentUser;
+		getCurrentUser();
+		function getCurrentUser(){			//根据id渲染客服下拉框
+			$.ajax({
+				url:'${ctx}/getCurrentUser',		//获取当前登录用户
+				success:function(r){
+					if(0==r.code){
+						currentUser = r.data;
+					}
+				}
+			})
 		}
 		$(document).on('click', '.layui-table-view tbody tr', function(event) {
 			var elemTemp = $(this);
