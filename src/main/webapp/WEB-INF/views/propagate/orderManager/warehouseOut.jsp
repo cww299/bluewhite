@@ -659,14 +659,11 @@ layui.config({
 							warehouseId:warehouseId,		 //选择的仓库id
 							inventorys:choosed[i].inventorys,//库存情况
 							batchNumber : $('#addBatchNumber').val(),
-							
 					};
 					choosedProduct.push(orderChild);
 				} 
 			}
-			table.reload('productListTable',{
-				data:choosedProduct
-			});
+			table.reload('productListTable',{ data:choosedProduct });
 			layer.msg('添加成功',{icon:1});
 			return true;
 		}
