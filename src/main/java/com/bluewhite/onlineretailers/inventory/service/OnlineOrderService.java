@@ -55,7 +55,7 @@ public interface OnlineOrderService extends BaseCRUDService<OnlineOrder,Long>{
 	 * @param excelListener
 	 * @return
 	 */
-	public int excelOnlineOrder(ExcelListener excelListener,Long onlineCustomerId,Long userId);
+	public int excelOnlineOrder(ExcelListener excelListener,Long onlineCustomerId,Long userId,Long warehouseId);
 	
 	/**
 	 * 根据时间和类型获取销售报表

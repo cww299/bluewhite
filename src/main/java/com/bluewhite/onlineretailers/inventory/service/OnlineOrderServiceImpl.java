@@ -376,7 +376,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 
 	@Override
 	@Transactional
-	public int excelOnlineOrder(ExcelListener excelListener, Long onlineCustomerId, Long userId) {
+	public int excelOnlineOrder(ExcelListener excelListener, Long onlineCustomerId, Long userId,Long warehouseId) {
 		int count = 0;
 		// 获取导入的订单
 		List<Object> excelListenerList = excelListener.getData();
@@ -413,9 +413,10 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				RegionAddress provinces = regionAddressDao.findByRegionName(province);
 				RegionAddress citys = regionAddressDao.findByRegionName(city);
 				RegionAddress countys = regionAddressDao.findByRegionName(county);
-				onlineOrder.setProvinces(provinces);
-				onlineOrder.setCity(citys);
-				onlineOrder.setCounty(countys);
+				onlineOrder.setProvincesId(provinces.getId());
+				onlineOrder.setCityId(citys.getId());
+				onlineOrder.setCountyId(countys.getId());
+				
 				onlineOrder.setAddress(cPoi.getAddress());
 				onlineOrder.setPhone(cPoi.getPhone());
 				onlineOrder.setBuyerMessage(cPoi.getBuyerMessage());
@@ -429,7 +430,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			onlineOrderChild.setOnlineOrder(onlineOrder);
 			onlineOrderChild.setPrice(cPoi.getPrice());
 			onlineOrderChild.setNumber(cPoi.getNumber());
-			onlineOrderChild.setWarehouseId(cPoi.getWarehouseId() == null ? 157 : cPoi.getWarehouseId());
+			onlineOrderChild.setWarehouseId(cPoi.getWarehouseId() == null ? 157 : warehouseId);
 			onlineOrderChild.setSumPrice(NumUtils.mul(onlineOrderChild.getPrice(), onlineOrderChild.getNumber()));
 			if (cPoi.getCommodityName() != null) {
 				Commodity commodity = commodityDao.findByName(cPoi.getCommodityName());
@@ -438,13 +439,13 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 					ProcurementChild procurementChild = new ProcurementChild();
 					procurementChild.setCommodityId(commodity.getId());
 					procurementChild.setNumber(cPoi.getNumber());
-					procurementChild.setWarehouseId(cPoi.getWarehouseId());
+					procurementChild.setWarehouseId(warehouseId);
 					// 出库单
 					if (procurement.getType() == 3) {
 						procurement.setNumber(cPoi.getNumber());
 						// 获取库存
 						Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(commodity.getId(),
-								procurementChild.getWarehouseId());
+								warehouseId);
 						if (inventory != null) {
 							// 减少库存
 							inventory.setNumber(inventory.getNumber() - procurementChild.getNumber());

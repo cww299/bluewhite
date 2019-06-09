@@ -84,11 +84,14 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 			if (pers.length > 0) {
 				for (String idString : pers) {
 					try {
+						Commodity commodity = dao.findOne(Long.valueOf(idString));
+						if(commodity.getInventorys().size()>0){
+							throw new ServiceException("商品有库存，无法删除");
+						}
 						dao.delete(Long.valueOf(idString));
 					} catch (Exception e) {
 						throw new ServiceException("商品已拥有销售单或采购单，无法删除");
 					}
-
 					count++;
 				}
 			}

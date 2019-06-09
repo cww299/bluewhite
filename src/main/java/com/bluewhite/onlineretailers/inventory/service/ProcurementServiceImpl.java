@@ -84,14 +84,16 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 
 			// 按仓库id
 			if (param.getWarehouseId() != null) {
-				Join<Procurement,ProcurementChild> join = root.join(root.getModel().getSet("procurementChilds", ProcurementChild.class),JoinType.LEFT);
-				predicate.add(cb.equal(root.get("warehouseId").as(Long.class),param.getWarehouseId()));
+				Join<Procurement, ProcurementChild> join = root
+						.join(root.getModel().getSet("procurementChilds", ProcurementChild.class), JoinType.LEFT);
+				predicate.add(cb.equal(root.get("warehouseId").as(Long.class), param.getWarehouseId()));
 			}
 
 			// 按批次号过滤
 			if (!StringUtils.isEmpty(param.getBatchNumber())) {
-				Join<Procurement,ProcurementChild> join = root.join(root.getModel().getSet("procurementChilds", ProcurementChild.class),JoinType.LEFT);
-				predicate.add(cb.like(join.get("batchNumber").as(String.class),"%"+param.getBatchNumber()+"%"));
+				Join<Procurement, ProcurementChild> join = root
+						.join(root.getModel().getSet("procurementChilds", ProcurementChild.class), JoinType.LEFT);
+				predicate.add(cb.like(join.get("batchNumber").as(String.class), "%" + param.getBatchNumber() + "%"));
 			}
 
 			// 按单据生产时间过滤
@@ -112,7 +114,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	@Override
 	@Transactional
 	public Procurement saveProcurement(Procurement procurement) {
-		procurement.setCreatedAt(procurement.getCreatedAt()==null ? new Date() : procurement.getCreatedAt());
+		procurement.setCreatedAt(procurement.getCreatedAt() == null ? new Date() : procurement.getCreatedAt());
 		// 生成单据编号
 		procurement.setDocumentNumber(StringUtil.getDocumentNumber(String.valueOf(procurement.getType()))
 				+ SalesUtils.get0LeftString((int) dao.count(), 8));
@@ -156,13 +158,18 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				if (procurement.getId() != null) {
 					// 减少子单数量
 					for (ProcurementChild pChild : oldProcurement.getProcurementChilds()) {
-						if ((pChild.getBatchNumber() == procurementChild.getBatchNumber()) && (pChild.getCommodityId() == procurementChild.getCommodityId())) {
-							// 当单据为入库单时,针工单转化数量不够自动变成0
-							if (procurement.getType() == 2) {
-								pChild.setResidueNumber((pChild.getResidueNumber() - procurementChild.getNumber()) < 0
-										? 0 : pChild.getResidueNumber() - procurementChild.getNumber());
-							} else {
-								pChild.setResidueNumber(pChild.getResidueNumber() - procurementChild.getNumber());
+						//当前产品id和上一阶段产品id
+						if (pChild.getCommodityId().equals( procurementChild.getCommodityId())) {
+							//当前批次和上一阶段批次
+							if (pChild.getBatchNumber().equals(procurementChild.getBatchNumber())) {
+								// 当单据为入库单时,针工单转化数量不够自动变成0
+								if (procurement.getType() == 2) {
+									pChild.setResidueNumber(
+											(pChild.getResidueNumber() - procurementChild.getNumber()) < 0 ? 0
+													: pChild.getResidueNumber() - procurementChild.getNumber());
+								} else {
+									pChild.setResidueNumber(pChild.getResidueNumber() - procurementChild.getNumber());
+								}
 							}
 						}
 					}
@@ -234,7 +241,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				for (String idString : pers) {
 					Long id = Long.valueOf(idString);
 					Procurement procurement = dao.findOne(id);
-					if(procurement.getFlag()==1){
+					if (procurement.getFlag() == 1) {
 						throw new ServiceException("该数据已经反冲，无法再次反冲");
 					}
 					procurement.setFlag(1);
@@ -245,7 +252,9 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 						// 拿本级的子单和上级子单对比，同时将上级子单数据恢复
 						for (ProcurementChild parentProcurementChilds : parentProcurement.getProcurementChilds()) {
 							for (ProcurementChild procurementChilds : procurement.getProcurementChilds()) {
-								if (parentProcurementChilds.getBatchNumber() == procurementChilds.getBatchNumber() &&  (parentProcurementChilds.getCommodityId() == procurementChilds.getCommodityId())) {
+								if (parentProcurementChilds.getBatchNumber().equals(procurementChilds.getBatchNumber())
+										&& (parentProcurementChilds.getCommodityId() == procurementChilds
+												.getCommodityId())) {
 									parentProcurementChilds.setResidueNumber(
 											parentProcurementChilds.getResidueNumber() + procurement.getNumber());
 								}
@@ -274,36 +283,43 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 									String[] idArr = procurementChild.getPutWarehouseIds().split(",");
 									// 反冲入库单数据
 									int residueNumber = procurementChild.getNumber();
-									for(String idtoSting : idArr){
-										ProcurementChild procurementChildSale = procurementChildDao.findOne(Long.valueOf(idtoSting));
-										if(procurementChildSale.getNumber()-procurementChildSale.getResidueNumber()<residueNumber){
-											residueNumber -= procurementChildSale.getNumber()-procurementChildSale.getResidueNumber();
+									for (String idtoSting : idArr) {
+										ProcurementChild procurementChildSale = procurementChildDao
+												.findOne(Long.valueOf(idtoSting));
+										if (procurementChildSale.getNumber()
+												- procurementChildSale.getResidueNumber() < residueNumber) {
+											residueNumber -= procurementChildSale.getNumber()
+													- procurementChildSale.getResidueNumber();
 											procurementChildSale.setResidueNumber(procurementChildSale.getNumber());
-										}else{
-											procurementChildSale.setResidueNumber(procurementChildSale.getResidueNumber()+residueNumber);
+										} else {
+											procurementChildSale.setResidueNumber(
+													procurementChildSale.getResidueNumber() + residueNumber);
 										}
 										procurementChildDao.save(procurementChildSale);
 									}
-									
+
 									// 当出库单类型是销售出库，同时反冲销售单的状态
-									if(procurement.getStatus() == 0){
-										OnlineOrderChild onlineOrderChild = onlineOrderChildDao.findOne(procurementChild.getOnlineOrderId());
+									if (procurement.getStatus() == 0) {
+										OnlineOrderChild onlineOrderChild = onlineOrderChildDao
+												.findOne(procurementChild.getOnlineOrderId());
 										onlineOrderChild.setStatus(Constants.ONLINEORDER_4);
 										onlineOrderChildDao.save(onlineOrderChild);
-										OnlineOrder	onlineOrder = onlineOrderChild.getOnlineOrder();
+										OnlineOrder onlineOrder = onlineOrderChild.getOnlineOrder();
 										// 更新父订单的状态当所有的子订单反冲为等待发货更新为卖家为发货，否则是部分发货
-										List<OnlineOrderChild> onlineOrderChildList = onlineOrder.getOnlineOrderChilds();
+										List<OnlineOrderChild> onlineOrderChildList = onlineOrder
+												.getOnlineOrderChilds();
 										int onlineOrderChildListCount = (int) onlineOrderChildList.stream()
-												.filter(OnlineOrderChild -> OnlineOrderChild.getStatus().equals(Constants.ONLINEORDER_4))
+												.filter(OnlineOrderChild -> OnlineOrderChild.getStatus()
+														.equals(Constants.ONLINEORDER_4))
 												.count();
 										if (onlineOrderChildList.size() == onlineOrderChildListCount) {
 											onlineOrder.setStatus(Constants.ONLINEORDER_4);
-										}else{
+										} else {
 											onlineOrder.setStatus(Constants.ONLINEORDER_3);
 										}
 									}
-									
-									//反冲库存数据
+
+									// 反冲库存数据
 									inventory.setNumber(inventory.getNumber() + procurementChild.getNumber());
 								}
 								inventoryDao.save(inventory);
