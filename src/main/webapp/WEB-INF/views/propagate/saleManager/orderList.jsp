@@ -604,6 +604,18 @@ layui.config({
 				}
 			})
 		}
+		var currentUser;
+		getCurrentUser();
+		function getCurrentUser(){			//根据id渲染客服下拉框
+			$.ajax({
+				url:'${ctx}/getCurrentUser',		//获取当前登录用户
+				success:function(r){
+					if(0==r.code){
+						currentUser = r.data;
+					}
+				}
+			})
+		}
 		$(document).on('click', '.layui-table-view tbody tr', function(event) {
 			var elemTemp = $(this);
 			var tableView = elemTemp.closest('.layui-table-view');
