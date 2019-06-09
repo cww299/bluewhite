@@ -75,6 +75,7 @@ public class Constants {
     public static String TWO_FLOOR = "192.168.1.205";
     public static String ONE_FLOOR = "192.168.1.250";
     public static String EIGHT_WAREHOUSE = "192.168.3.113";
+    public static String NEW_IGHT_WAREHOUSE = "192.168.4.115";
     
     /**
      *  电商订单状态

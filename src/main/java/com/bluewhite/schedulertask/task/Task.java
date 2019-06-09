@@ -58,6 +58,7 @@ public class Task {
 		attendanceService.allAttendance(Constants.TWO_FLOOR, startTime, endTime);
 		attendanceService.allAttendance(Constants.ONE_FLOOR, startTime, endTime);
 		attendanceService.allAttendance(Constants.EIGHT_WAREHOUSE, startTime, endTime);
+		attendanceService.allAttendance(Constants.NEW_IGHT_WAREHOUSE, startTime, endTime);
 	}
 
 
