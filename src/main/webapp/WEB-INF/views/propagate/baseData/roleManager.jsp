@@ -20,15 +20,15 @@
 	height:80%;
 	border:1px solid gray;
 	overflow:auto;
-	margin:10px;
 	padding:10px;
+	margin:12px;
 }
 .treeMenuControl{
 	margin:auto;
 	margin-top:150px;
-	float:left;
-	width:5%;
+	width:8%;
 	text-align:center;
+	word-break: break-word;
 }
 </style>
 </head>
@@ -292,16 +292,17 @@ layui.config({
 			addPermission(roleId)
 			function addPermission(roleId){    			//增加权限
 				var html='';       						//打开加权限窗口的内容
-				html+='<div style="float:left;" class="treeMenuDiv" id="menuDiv"></div>';    //左侧存放联级菜单的div
-				html+=	'<div class="treeMenuControl"><p><i class="layui-icon layui-icon-next" ></i></p>'+	 
-						'<p>确定选择</p></div>'+	   										//中间存放添加菜单按钮的div
-						'<div style="right;" class="treeMenuDiv" id="choosedDiv"></div>'+    //右侧存放选中菜单的div
+				html+='<div style="float:left;" class="treeMenuDiv" id="menuDiv"></div>'+    //左侧存放联级菜单的div
+						'<div style="float:right;" class="treeMenuDiv" id="choosedDiv"></div>'+    //右侧存放选中菜单的div
+						'<div class="treeMenuControl"><p><i class="layui-icon layui-icon-next" ></i></p>'+	 
+						'<p>确定选择</p>'+	   											//中间存放添加菜单按钮的div
+						'<p><span style="color:red;">提示：勾选完的权限需要点击此处进行添加</span></p></div>'+
 						'<div style="float:right;width:100%;text-align:center;"><button type="button" lay-submit lay-filter="addPermissionSure"'+
 						' value="'+roleId+'" class="layui-btn layui-btn-sm" >确定</button></div>'; //确定按钮
 				var addPer=layer.open({    							//打开添加权限的窗口
 					 title: '编辑权限'
 					   ,type:1
-					   ,area: ['40%', '90%']
+					   ,area: ['60%', '90%']
 					   ,content:html
 				}) 
 				var checked=[];					//该角色已拥有的权限，用于回显，对比修改完后的权限进行删除
@@ -317,22 +318,27 @@ layui.config({
 						    	  elem:'#menuDiv',
 						    	  url: "${ctx}/menus",
 						    	  checked:checked,
+						    	  hide : false,
+						    	  disabled : [],
 						    });
 							$('.treeMenuControl').find('p').click();
 						}
 					}
 				})
 				$('.treeMenuControl').find('p').on('click',function(){
+					 var data = menuTree.getTreeData('menuDiv');
+					 var ids = menuTree.getVal('menuDiv');
 					 menuTree.render({
-							elem:'#choosedDiv',
-							data:menuTree.getTreeData('menuDiv'),
-							checkbox : false,
+							elem : '#choosedDiv',
+							data : data,
+							checked : ids,
+							disabled : ids,
 							hide : false,
 					})  
 				})
 				form.on('submit(addPermissionSure)',function(obj){   	//加权限中，确定按钮的监听
 					var roleId=obj.elem.value;	
-					var newCheck = menuTree.getVal('menuDiv');
+					var newCheck = menuTree.getVal('choosedDiv');
 					newCheck.push(15);									//添加首页的权限，首页id为15 线上的数据库也为15
 					layer.confirm('是否保存更改？',function(){
 						var load = layer.load(1);
@@ -372,7 +378,7 @@ layui.config({
 									layer.msg(result.code+''+result.message,{icon:2});
 							},
 						})
-						layer.close(load);
+						layer.closeAll();
 						layer.msg('保存成功......',{icon:1});
 					})
 				})
