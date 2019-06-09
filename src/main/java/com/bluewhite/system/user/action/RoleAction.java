@@ -138,7 +138,9 @@ public class RoleAction {
 		});
 		cr.setData(ClearCascadeJSON
 				.get()
-				.addRetainTerm(RoleMenuPermission.class, "id","menuName", "permissionNames","createdAt","updatedAt").format(role.getResourcePermission()).toJSON());
+				.addRetainTerm(RoleMenuPermission.class, "id","menuId","menuName", "permissionNames","createdAt","updatedAt","role")
+				.addRetainTerm(Role.class, "id","role")
+				.format(role.getResourcePermission()).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
