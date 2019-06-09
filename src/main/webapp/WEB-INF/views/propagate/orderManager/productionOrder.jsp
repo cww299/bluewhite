@@ -568,6 +568,13 @@ layui.config({
 					layer.msg('商品批次号不可省略！',{icon:2});
 					return;
 				}
+				for(var j=0;j<choosedProduct.length;j++){
+					var item = choosedProduct[j];
+					if( item.id != choosedProduct[i].id && item.commodityId == choosedProduct[i].commodityId && item.batchNumber == choosedProduct[i].batchNumber){
+						layer.msg('相同的商品不能同时使用相同的批次号！',{icon:2});
+						return;
+					}
+				}
 				child.push({batchNumber : choosedProduct[i].batchNumber,
 							commodityId : choosedProduct[i].commodityId,
 							number : choosedProduct[i].number,
