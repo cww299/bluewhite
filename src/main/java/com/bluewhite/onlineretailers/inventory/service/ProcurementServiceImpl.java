@@ -156,7 +156,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				if (procurement.getId() != null) {
 					// 减少子单数量
 					for (ProcurementChild pChild : oldProcurement.getProcurementChilds()) {
-						if (pChild.getBatchNumber() == procurementChild.getBatchNumber()) {
+						if ((pChild.getBatchNumber() == procurementChild.getBatchNumber()) && (pChild.getCommodityId() == procurementChild.getCommodityId())) {
 							// 当单据为入库单时,针工单转化数量不够自动变成0
 							if (procurement.getType() == 2) {
 								pChild.setResidueNumber((pChild.getResidueNumber() - procurementChild.getNumber()) < 0
@@ -245,7 +245,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 						// 拿本级的子单和上级子单对比，同时将上级子单数据恢复
 						for (ProcurementChild parentProcurementChilds : parentProcurement.getProcurementChilds()) {
 							for (ProcurementChild procurementChilds : procurement.getProcurementChilds()) {
-								if (parentProcurementChilds.getBatchNumber() == procurementChilds.getBatchNumber()) {
+								if (parentProcurementChilds.getBatchNumber() == procurementChilds.getBatchNumber() &&  (parentProcurementChilds.getCommodityId() == procurementChilds.getCommodityId())) {
 									parentProcurementChilds.setResidueNumber(
 											parentProcurementChilds.getResidueNumber() + procurement.getNumber());
 								}

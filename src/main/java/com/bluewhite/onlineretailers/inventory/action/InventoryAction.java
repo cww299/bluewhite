@@ -3,6 +3,10 @@ package com.bluewhite.onlineretailers.inventory.action;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,6 +24,9 @@ import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
@@ -472,6 +479,49 @@ public class InventoryAction {
 		cr.setMessage("成功");
 		return cr;
 	}
+	
+	
+	/**
+	 * 库存(导入)
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/inventory/import/excelInventory", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse excelInventory(@RequestParam(value = "file", required = false) MultipartFile file
+			 ) throws IOException {
+		CommonResponse cr = new CommonResponse();
+		InputStream inputStream = file.getInputStream();
+		ExcelListener excelListener = new ExcelListener();
+		EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1), excelListener);
+		List<Object> objects = excelListener.getData();
+		for(Object ob : objects){
+			Procurement procurement = new Procurement();
+			List<Map<String, Object>> mapList = new ArrayList<>();
+			List<Object> obs = (List<Object>) ob;
+			Map<String, Object> map = new HashMap<>();
+			map.put("batchNumber", obs.get(0));
+			map.put("number", obs.get(1));
+			map.put("commodityId", obs.get(2));
+			map.put("warehouseId", 157);
+			map.put("status",0);
+			mapList.add(map);
+		    //map转字符串
+			procurement.setType(2);
+			procurement.setStatus(0);
+			procurement.setUserId((long)770);
+			procurement.setNumber(Integer.valueOf((String) obs.get(1)));
+			JSONArray ja = JSONArray.parseArray(JSON.toJSONString(mapList));
+			procurement.setCommodityNumber(ja.toJSONString());
+			procurementService.saveProcurement(procurement);	
+		}
+		inputStream.close();
+		return cr;
+	}
+	
+	
+	
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
