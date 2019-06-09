@@ -377,10 +377,18 @@ layui.config({
 			       {field:'num',     	title:'件数',       align:'center', width:'4%'},
 			       {field:'trackingNumber',title:'运单号',  align:'center', width:'8%',},
 			       {field:'status',        title:'状态',    align:'center', width:'8%', templet:'#statusTpl'},
+			       {				       title:'是否反冲',    align:'center', width:'5%', templet:isFlag(),},
 			       {field:'provinces',     title:'所在地区',align:'center', templet:'#provincesTpl'},
-			       ]]
+			       ]],
 		}) 
-		
+		function isFlag(){
+			return function(d){
+				if(d.flag == 0)
+					return '<span class="layui-badge layui-bg-green">未反冲</span>';
+				else
+					return '<span class="layui-badge">反冲</span>';
+			}
+		}
 		table.on('toolbar(onlineOrder)',function(obj){				//新增、删除按钮
 			switch(obj.event){
 			case 'oneKey':   oneKey(); break;
