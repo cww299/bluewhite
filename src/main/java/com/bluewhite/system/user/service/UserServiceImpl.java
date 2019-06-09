@@ -273,10 +273,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     		}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
-			if(user.getLotionNumber()!=null){
-				query.orderBy(cb.desc(root.get("userContract").get("number").as(Integer.class)));
-			}
-			
+			query.orderBy(cb.desc(root.get("userContract").get("number").as(Integer.class)));
 			query.distinct(true);
 			return null;
 		}, page);
@@ -359,7 +356,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				user.setStatus(0);
 				UserContract userContract = new UserContract();
 				userContractDao.save(userContract);
-				user.setUserContract(userContract);
+				user.setUserContractId(userContract.getId());
 			}
 		}else{
 			throw  new ServiceException("手机号不能为空");

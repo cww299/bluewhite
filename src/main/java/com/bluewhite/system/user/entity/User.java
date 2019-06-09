@@ -368,6 +368,12 @@ public class User extends BaseEntity<Long> {
 	private Set<Role> roles = new HashSet<Role>();
 	
 	/**
+	 * 合同id
+	 */
+	@Column(name = "user_contract_id")
+    private Long userContractId;
+	
+	/**
 	 * 合同位置实体
 	 */
     @ManyToOne(fetch=FetchType.LAZY,cascade = CascadeType.ALL) 
@@ -498,6 +504,14 @@ public class User extends BaseEntity<Long> {
 	
 	
 	
+	public Long getUserContractId() {
+		return userContractId;
+	}
+
+	public void setUserContractId(Long userContractId) {
+		this.userContractId = userContractId;
+	}
+
 	public Boolean getPositive() {
 		return positive;
 	}

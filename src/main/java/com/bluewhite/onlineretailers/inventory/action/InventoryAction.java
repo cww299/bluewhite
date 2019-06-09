@@ -128,12 +128,12 @@ public class InventoryAction {
 	@RequestMapping(value = "/inventory/import/excelOnlineOrder", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse excelOnlineOrder(@RequestParam(value = "file", required = false) MultipartFile file
-			,Long onlineCustomerId,Long userId ) throws IOException {
+			,Long onlineCustomerId,Long userId ,Long warehouseId) throws IOException {
 		CommonResponse cr = new CommonResponse();
 		InputStream inputStream = file.getInputStream();
 		ExcelListener excelListener = new ExcelListener();
 		EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1, OnlineOrderPoi.class), excelListener);
-		onlineOrderService.excelOnlineOrder(excelListener,onlineCustomerId,userId);
+		onlineOrderService.excelOnlineOrder(excelListener,onlineCustomerId,userId,warehouseId);
 		inputStream.close();
 		return cr;
 	}

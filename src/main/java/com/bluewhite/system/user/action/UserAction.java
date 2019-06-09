@@ -88,7 +88,6 @@ public class UserAction {
 	@ResponseBody
 	public CommonResponse userPages(HttpServletRequest request, User user,PageParameter page) {
 		CommonResponse cr = new CommonResponse();
-		user.setLotionNumber(1);
 		cr.setData(clearCascadeJSON.format(userService.getPagedUser(page,user)).toJSON());
 		return cr;
 	}
