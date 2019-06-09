@@ -148,15 +148,15 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				ProcurementChild procurementChild = new ProcurementChild();
 				procurementChild.setCommodityId(jsonObject.getLong("commodityId"));
+				procurementChild.setBatchNumber(jsonObject.getString("batchNumber"));
 				procurementChild.setNumber(jsonObject.getIntValue("number"));
 				procurementChild.setChildRemark(jsonObject.getString("childRemark"));
 				procurementChild.setResidueNumber(jsonObject.getIntValue("number"));
-				procurementChild.setBatchNumber(jsonObject.getString("batchNumber"));
 				// 表示拥有上一阶段的单据，减少上一次单据的子单数量
 				if (procurement.getId() != null) {
 					// 减少子单数量
 					for (ProcurementChild pChild : oldProcurement.getProcurementChilds()) {
-						if (pChild.getCommodityId() == procurementChild.getCommodityId()) {
+						if (pChild.getBatchNumber() == procurementChild.getBatchNumber()) {
 							// 当单据为入库单时,针工单转化数量不够自动变成0
 							if (procurement.getType() == 2) {
 								pChild.setResidueNumber((pChild.getResidueNumber() - procurementChild.getNumber()) < 0
@@ -245,7 +245,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 						// 拿本级的子单和上级子单对比，同时将上级子单数据恢复
 						for (ProcurementChild parentProcurementChilds : parentProcurement.getProcurementChilds()) {
 							for (ProcurementChild procurementChilds : procurement.getProcurementChilds()) {
-								if (parentProcurementChilds.getCommodityId() == procurementChilds.getCommodityId()) {
+								if (parentProcurementChilds.getBatchNumber() == procurementChilds.getBatchNumber()) {
 									parentProcurementChilds.setResidueNumber(
 											parentProcurementChilds.getResidueNumber() + procurement.getNumber());
 								}
