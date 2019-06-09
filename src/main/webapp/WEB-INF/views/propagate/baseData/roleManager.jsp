@@ -304,11 +304,13 @@ layui.config({
 					   ,area: ['40%', '90%']
 					   ,content:html
 				}) 
-				var checked=[];		//该角色已拥有的权限，用于回显，对比修改完后的权限进行删除
+				var checked=[];					//该角色已拥有的权限，用于回显，对比修改完后的权限进行删除
+				var allRolePermission=[];		//该角色的相关权限详细信息
 				$.ajax({
 					url:"${ctx}/getRole?id="+roleId,
 					success:function(r){
 						if(r.code == 0){
+							allRolePermission = r.data;
 							for(var i=0;i<r.data.length;i++)
 								checked.push(r.data[i].menuId);
 							menuTree.render({
@@ -324,29 +326,34 @@ layui.config({
 					 menuTree.render({
 							elem:'#choosedDiv',
 							data:menuTree.getTreeData('menuDiv'),
-							checkbox:false,
-							hide:false,
+							checkbox : false,
+							hide : false,
 					})  
 				})
 				form.on('submit(addPermissionSure)',function(obj){   	//加权限中，确定按钮的监听
 					var roleId=obj.elem.value;	
-					var newCheck = menuTree.getVal(choosedDiv);
+					var newCheck = menuTree.getVal('menuDiv');
 					newCheck.push(15);									//添加首页的权限，首页id为15 线上的数据库也为15
 					layer.confirm('是否保存更改？',function(){
 						var load = layer.load(1);
 						layer.msg('保存权限更改中......');
 						layui.each(checked,function(index,item){		//首先删除之前存在，本次却没有选择的权限
 							if(!newCheck.indexOf(item)>-1){
-								$.ajax({
-									url:'${ctx}/roles/deleteRole',
-									async:false,
-									type:"post",
-									data:{id:item},
-									success:function(result){
-										if(0!=result.code)
-											layer.msg(result.code+''+result.message,{icon:2});
+								for(var i=0;i<allRolePermission.length;i++){
+									if(allRolePermission[i].menuId == item){
+										$.ajax({
+											url:'${ctx}/roles/deleteRole',
+											async:false,
+											type:"post",
+											data:{ id : allRolePermission[i].id },
+											success:function(result){
+												if(0!=result.code)
+													layer.msg(result.code+''+result.message,{icon:2});
+											}
+										})
+										break;
 									}
-								})
+								}
 							}
 						})
 						var permissions=[];
@@ -365,6 +372,7 @@ layui.config({
 									layer.msg(result.code+''+result.message,{icon:2});
 							},
 						})
+						layer.close(load);
 						layer.msg('保存成功......',{icon:1});
 					})
 				})
