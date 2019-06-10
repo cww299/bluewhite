@@ -62,9 +62,9 @@ td{
 		<tr><td>下单时间<input type="hidden" name="type" value="3" ></td>	<!-- 默认type类型为3，表示为出库单 -->
 			<td><input type="text" class="layui-input" name="createdAt" id="addCreatedAt"></td>
 			<td>经手人</td>
-			<td><select name="userId" id='userIdSelect' lay-search><option value="1" >测试人admin</option></select></td>
-			<td>出库数量</td>
-			<td><input type="text" class="layui-input" name='number' id="addOrderNumber" readonly value="0"></td>
+			<td><select name="userId" id='userIdSelect' lay-search><option value="1" >获取数据中...</option></select></td>
+			<td>客户</td>
+			<td><select name="onlineCustomerId" id='customerIdSelect' lay-search><option value="1" >获取数据中...</option></select></td>
 			<td>默认出库类型</td>
 			<td><select lay-filter="defaultSelect" type='status'>
 						<option value="0">销售出库</option>
@@ -78,7 +78,9 @@ td{
 			<td><select lay-filter="defaultSelect" type='number' ><option value="zero">不出库</option><option value="all">出库全部</option></select></td>
 			<td>备注</td>
 			<td><input type="text" name="remark" class="layui-input" id="addRemark"></td>
-			<td colsapn="2" style="text-align:right;"><span class="layui-btn" lay-submit lay-filter="sureAdd" >确定</span>
+			<td><span style="float:left;margin-top: 10px;">出库数量</span>
+				<input type="text" class="layui-input" name='number' id="addOrderNumber" readonly value="0" style="width:50px;float:right;"></td>
+			<td style="text-align:right;"><span class="layui-btn" lay-submit lay-filter="sureAdd" >确定</span>
 							<span class="layui-btn layui-btn-danger" id='resetAddOrder' >清空数据</span></td></tr>
 	</table>
 	<table class="layui-table" id="productListTable" lay-filter="productListTable"></table>
@@ -205,10 +207,12 @@ layui.config({
 		var chooseProductWin;		//选择商品弹窗
 		var allInventory=[],		//所有仓库
 			allUser=[],
+			allCustom=[],
 			currUser={id:''};     
 			
 		getAllInventory();
 		getAllUser();
+		getAllCustom();
 		getCurrUser();
 		
 		form.render();
@@ -226,6 +230,7 @@ layui.config({
 			       {align:'center', title:'单据编号',   	field:'documentNumber',	},
 			       {align:'center', title:'数量', field:'number', width:'6%',	},
 			       {align:'center', title:'经手人',	templet:'<p>{{ d.user.userName }}</p>', width:'7%',	},
+			       {align:'center', title:'客户',	templet:'<p>{{ d.onlineCustomer!=null?d.onlineCustomer.buyerName:"&nbsp" }}</p>', width:'7%',	},
 			       {align:'center', title:'出库类型', templet:'#statusTpl', width:'6%',	},
 			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl', width:'6%',	},
 			       {align:'center', title:'日期',   	field:'createdAt',	},
@@ -256,7 +261,7 @@ layui.config({
 					var style='';
 					if(i==d.procurementChilds.length-1)
 						style='border-bottom:none';
-					html+='<tr><td style="border-right:none; '+style+'">'+t.batchNumber+'</td></tr>';
+					html+='<tr><td style="border-right:none; '+style+'">'+t.batchNumber+'&nbsp;</td></tr>';
 				}
 				return html+'</table>';
 			}
@@ -269,7 +274,7 @@ layui.config({
 					var style='';
 					if(i==d.procurementChilds.length-1)
 						style='border-bottom:none';
-					html+='<tr><td style="border-right:none; '+style+'">'+t.commodity.skuCode+'</td></tr>';
+					html+='<tr><td style="border-right:none; '+style+'">'+t.commodity.skuCode+'&nbsp;</td></tr>';
 				}
 				return html+'</table>';
 			}
@@ -387,6 +392,7 @@ layui.config({
 				content : $('#addOrderDiv')
 			})
 			getUserSelect(currUser.id,'userIdSelect');
+			getCustomSelect('','customerIdSelect');
 			table.render({									//渲染选择后的商品表格
 				elem:'#productListTable',
 				toolbar:'#productListTableToolbar',
@@ -473,7 +479,7 @@ layui.config({
 					 layer.msg('计划的数量必须为整数',{icon:2});
 				else
 					for(var i=0;i<choosedProduct.length;i++){
-						if(choosedProduct[i].commodityId==obj.data.commodityId){		
+						if(choosedProduct[i].id==obj.data.id){		
 							var inv=choosedProduct[i].inventorys;
 							for(var j=0;j<inv.length;j++){
 								if(inv[j].warehouse.id == choosedProduct[i].warehouseId){
@@ -492,7 +498,7 @@ layui.config({
 					}
 			}else{
 				for(var i=0;i<choosedProduct.length;i++){
-					 if(choosedProduct[i].commodityId==obj.data.commodityId){		//重新对该行的相关数据进行计算
+					 if(choosedProduct[i].id==obj.data.id){		//重新对该行的相关数据进行计算
 						 if(obj.field=='childRemark')
 							choosedProduct[i].childRemark = obj.value;
 						 else if(obj.field=='place')
@@ -519,10 +525,6 @@ layui.config({
 				}
 				if(isNaN(t.number)){
 					layer.msg('不能选择库存为0的商品！',{icon:2});
-					return;
-				}
-				if(t.batchNumber==""){
-					layer.msg('商品批次号不能为空！',{icon:2});
 					return;
 				}
 				child.push({
@@ -626,6 +628,7 @@ layui.config({
 			});
 			form.render();
 		}
+		var choosedId=0;
 		function sureChoosed(){					//确定商品选择
 			var choosed=layui.table.checkStatus('productChooseTable').data;
 			if(choosed.length<1){
@@ -633,35 +636,28 @@ layui.config({
 				return false;
 			}
 	 		for(var i=0;i<choosed.length;i++){
-				var j=0;
-				for(var j=0;j<choosedProduct.length;j++){	
-					if(choosedProduct[j].commodityId==choosed[i].id)	{			//判断选择的商品是否已存在选择列表,已存在，则不操作
-						break;
-					}
+				var number='无库存数量，无法出库';
+				var warehouseId='';
+				var place='';
+				if(choosed[i].inventorys.length>0){
+					number=defaultNumber=='all'?choosed[i].inventorys[0].number:0;
+					warehouseId=choosed[i].inventorys[0].warehouse.id;
+					place = choosed[i].inventorys[0].place;
+					$('#addOrderNumber').val($('#addOrderNumber').val()-(-number));
 				}
-				if(!(j<choosedProduct.length) || choosedProduct.length==0){				//如果不存在,则新添加，注意初始值的赋值！！！
-					var number='无库存数量，无法出库';
-					var warehouseId='';
-					var place='';
-					if(choosed[i].inventorys.length>0){
-						number=defaultNumber=='all'?choosed[i].inventorys[0].number:0;
-						warehouseId=choosed[i].inventorys[0].warehouse.id;
-						place = choosed[i].inventorys[0].place;
-						$('#addOrderNumber').val($('#addOrderNumber').val()-(-number));
-					}
-					var orderChild={
-							skuCode:choosed[i].skuCode,			//商品名称
-							commodityId:choosed[i].id,		//商品id
-							remark:choosed[i].remark,		//备注
-							number:number,					 //商品数量，设置
-							place:place,					//仓位备注
-							status:defaultStatus,			//出库状态
-							warehouseId:warehouseId,		 //选择的仓库id
-							inventorys:choosed[i].inventorys,//库存情况
-							batchNumber : $('#addBatchNumber').val(),
-					};
-					choosedProduct.push(orderChild);
-				} 
+				var orderChild={
+						skuCode:choosed[i].skuCode,			//商品名称
+						commodityId:choosed[i].id,		//商品id
+						remark:choosed[i].remark,		//备注
+						number:number,					 //商品数量，设置
+						place:place,					//仓位备注
+						status:defaultStatus,			//出库状态
+						warehouseId:warehouseId,		 //选择的仓库id
+						inventorys:choosed[i].inventorys,//库存情况
+						batchNumber : $('#addBatchNumber').val(),
+						id : choosedId++,
+				};
+				choosedProduct.push(orderChild);
 			}
 			table.reload('productListTable',{ data:choosedProduct });
 			layer.msg('添加成功',{icon:1});
@@ -686,6 +682,28 @@ layui.config({
 			for(var i=0;i<allUser.length;i++){
 				var selected=( id==allUser[i].id?'selected':'' );
 				html+='<option value="'+allUser[i].id+'" '+selected+'>'+allUser[i].userName+'</option>';
+			}
+			$('#'+select).html(html);
+			form.render();
+		}
+		function getAllCustom(){
+			$.ajax({
+				url:'${ctx}/inventory/onlineCustomerPage?size=99999',
+				success:function(r){
+					if(0==r.code){
+						for(var i=0;i<r.data.rows.length;i++)
+							allCustom.push({
+								id:			r.data.rows[i].id,
+								userName:	r.data.rows[i].buyerName
+							})
+					}
+				}
+			})
+		}
+		function getCustomSelect(id,select){
+			var html='<option value="">客户选择</option>';
+			for(var i=0;i<allCustom.length;i++){
+				html+='<option value="'+allCustom[i].id+'">'+allCustom[i].userName+'</option>';
 			}
 			$('#'+select).html(html);
 			form.render();

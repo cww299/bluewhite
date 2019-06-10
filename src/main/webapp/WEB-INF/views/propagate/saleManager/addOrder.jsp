@@ -119,7 +119,7 @@ td{
 					<option value="tianmao">天猫销售价</option>
 					<option value="_1688">1688销售价</option>
 					<option value="offline">线下批发价</option></select></td>	<td>&nbsp;</td>
-			<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProduct" > <i class="layui-icon">&#xe615;</i>搜索</button></td><td>&nbsp;</td>
+			<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProduct" id="searchProduct" > <i class="layui-icon">&#xe615;</i>搜索</button></td><td>&nbsp;</td>
 			<td><button type="button" class="layui-btn layui-btn-sm" id="addNewProduct" >新增商品</button></td>			 <td>&nbsp;</td>
 			<td><button type="button" class="layui-btn layui-btn-sm" id="sure" >确定添加</button></td>						<td>&nbsp;</td>
 		</tr>
@@ -132,10 +132,10 @@ td{
 	<table class="layui-form">
 		<tr>
 			<td>客户名称：</td>
-			<td><input type="text" name='name' class="layui-input" placeholder='请输入查找信息'></td>		<td>&nbsp;</td>
+			<td><input type="text" name='buyerName' class="layui-input" placeholder='请输入查找信息'></td>		<td>&nbsp;</td>
 			<td>手机号：</td>
 			<td><input type="text" name='phone' class="layui-input" placeholder='请输入查找信息'></td>		<td>&nbsp;</td>
-			<td><button lay-submit 	lay-filter="searchCustom"	type="button" class="layui-btn layui-btn-sm">
+			<td><button lay-submit 	lay-filter="searchCustom"	type="button" class="layui-btn layui-btn-sm" id="searchCustomer">
 					<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i></button>				<td>&nbsp;</td>
 			<td><button id="addCustom"	type="button" class="layui-btn layui-btn-sm">添加新客户</button>		<td>&nbsp;</td>
 			<td><span class="layui-badge">小提示：双击选中客户对象</span></td>
@@ -205,7 +205,9 @@ td{
 					<div class="layui-input-inline"><select lay-search name="countyId" id="addArea"></select></div>
 					</div></td></tr>
 	<tr><td>详细地址</td>
-		<td colspan="3"><input type="text" class="layui-input" name="address"></td></tr>
+		<td><input type="text" class="layui-input" name="address"></td>
+		<td>业务员</td>
+		<td><select name="userId" id="addUserId" lay-search><option value="">获取数据中...</option></select></td></tr>
 	<tr><td>邮编</td>
 		<td><input type="text" class="layui-input" name="zipCode"></td>
 		<td colspan="2"><button type="reset" class="layui-btn layui-btn-danger" id="resetCustomAdd">清空</button>
@@ -311,7 +313,7 @@ layui.config({
 			else{
 				var allPayment=0;
 				for(var i=0;i<choosedProduct.length;i++){
-					if(choosedProduct[i].commodityId==obj.data.commodityId){		//重新对该行的相关数据进行计算
+					if(choosedProduct[i].id==obj.data.id){		//重新对该行的相关数据进行计算
 						var choosed=choosedProduct[i];
 						choosed[obj.field]=obj.value;
 						choosed.sumPrice=parseFloat(choosed.number*choosed.price).toFixed(2);
@@ -404,9 +406,8 @@ layui.config({
 		$('#resetAll').on('click',function(){						//清空表单
 			choosedProduct = [];
 			rederSelect();
-			table.reload('productTable',{
-				data : choosedProduct,
-			});
+			renderUserSelect('userIdSelect');
+			table.reload('productTable',{ data : choosedProduct, });
 			form.render();
 			layer.msg('清空成功',{icon:1});
 		})
@@ -491,7 +492,10 @@ layui.config({
 		
 		//以下是功能函数---------------------------------------------------------------------------------------------------
 		var defaultPrice='tianmao';  			//默认发货价
+		var currPageData=[];					//当前显示页的数据
+		var checkData = [];						//已勾选的数据
 		function openChooseProductWin(){
+			checkData = [];	
 			chooseProductWin = layer.open({		//选择产品窗口
 				type:1,
 				title:'选择产品',
@@ -504,13 +508,8 @@ layui.config({
 				url:'${ctx}/inventory/commodityPage',
 				loading:true,
 				page:true,
-				request:{
-					pageName:'page',
-					limitName:'size'
-				},
-				parseData:function(ret){	
-					return{ code:	ret.code,msg:	ret.message,data:	ret.data.rows,count:	ret.data.total,}
-				},
+				request:{pageName:'page', limitName:'size' },
+				parseData:function(ret){return{ code:	ret.code,msg:	ret.message,data:	ret.data.rows,count:	ret.data.total,}},
 				cols:[[
 				       {type:'checkbox', align:'center', fixed:'left'},
 				       {align:'center', title:'商品名称', field:'skuCode',},
@@ -519,7 +518,7 @@ layui.config({
 				       {align:'center', title:'销售价',        templet:getPriceSelectHtml()},
 				       {align:'center', title:'备注', 	  field:'remark',}, 
 				      ]],
-		      	done: function (res, curr, count) {		
+		      	done: function (res, curr, count) {	
 		      		var data=res.data;
 		      		for(var i=0;i<data.length;i++){
 		      			if(data[i].inventorys.length>0)
@@ -530,18 +529,61 @@ layui.config({
 			      		case 'offline':data[i].price=data[i].offlinePrice;break;
 			      		}
 		      		}
+		      		currPageData = res.data
+                     for(var i=0;i< res.data.length;i++){
+                         for (var j = 0; j < checkData.length; j++) {
+                             if(res.data[i].id == checkData[j].id)
+                             {
+                                 res.data[i]["LAY_CHECKED"]='true';
+                                 var index= res.data[i]['LAY_TABLE_INDEX'];
+                                 $('#productListTable').next().find('.layui-table-fixed-l tr[data-index=' + index + '] input[type="checkbox"]').prop('checked', true);
+                                 $('#productListTable').next().find('.layui-table-fixed-l tr[data-index=' + index + '] input[type="checkbox"]').next().addClass('layui-form-checked');
+                             }
+                         }
+                     }
+                     var checkStatus = table.checkStatus('productListTable');
+                     if(checkStatus.isAll){
+                         $('#productListTable').next().find(' .layui-table-header th[data-field="0"] input[type="checkbox"]').prop('checked', true);
+                         $('#productListTable').next().find('.layui-table-header th[data-field="0"] input[type="checkbox"]').next().addClass('layui-form-checked');
+                     }
 	                form.render(); 
 	            },
 			});
 			form.render();
 		}
+		table.on('checkbox(productListTable)', function (obj) {
+	           if(obj.checked==true){
+	               if(obj.type=='one')
+	            	   checkData.push(obj.data);
+	              else{
+	                   for(var i=0;i<currPageData.length;i++)
+	                	   checkData.push(currPageData[i]);
+	               }
+	           }else{
+	               if(obj.type=='one'){
+	                   for(var i=0;i<checkData.length;i++)
+	                      if(checkData[i].id==obj.data.id){
+	                    	  checkData.splice(i,1);
+	                    	  break;
+	                       }
+	               }else{
+	            	   for(var i=0;i<currPageData.length;i++)
+	            		   for(var j=0;j<checkData.length;j++)
+	            			   if(checkData[j].id == currPageData[i].id){
+	            				   checkData.splice(j,1);
+	            				   break;
+	            			   }
+	               }
+	           }
+	    });
+		$('#addProductDiv').find('input').bind('keypress',function(event){  
+            if(event.keyCode == "13")      
+  				$('#searchProduct').click();
+	    });
 		form.on('select(selectPrice)', function (data) {		//监听数据表格中的 价格选择下拉框
             var elem = $(data.elem);
             var trElem = elem.parents('tr');
             var tableData = table.cache['productListTable'];
-            // 更新到表格的缓存数据中，才能在获得选中行等等其他的方法中得到更新之后的值
-            // trElem.data('index')  当前行数据的索引
-            // 修改缓存中的数据，字段为price
             tableData[trElem.data('index')]['price'] = data.value;
         });				
 		form.on('select(selectInventory)', function (data) {
@@ -549,8 +591,13 @@ layui.config({
             var trElem = elem.parents('tr');
             var tableData = table.cache['productListTable'];
             tableData[trElem.data('index')]['inventory'] = data.value;
+            layui.each(checkData,function(index,item){
+            	if(item.id == tableData[trElem.data('index')]['id']){
+            		item.inventory = data.value;
+            		return;
+            	}
+            })
         });
-		
 		function getPriceSelectHtml(){
 			return function(d) {			//d为当行数据
 				var html='<select lay-filter="selectPrice" > '+
@@ -563,13 +610,20 @@ layui.config({
 			};
 		}
 		function getInventorySelectHtml() {
-			return function(d) {		//d为当行数据
+			return function(d) {		
 				var inv = d.inventorys;
 				var html='<span style="color:red;">暂无库存！无法发货</span>';
 				if(inv.length>0){
 					html='<select lay-filter="selectInventory">'
 					for(var i=0;i<inv.length;i++){
-						html+='<option value="'+inv[i].warehouse.id+'">'+inv[i].warehouse.name+':'+inv[i].number+'</option>';
+						var selected='';
+						layui.each(checkData,function(index,item){			//该商品是否勾选，且已选择发货仓库
+							if(item.id == d.id && item.inventory == inv[i].warehouse.id){
+								selected = 'selected';
+								return;
+							}
+						})
+						html+='<option value="'+inv[i].warehouse.id+'" '+selected+'>'+inv[i].warehouse.name+':'+inv[i].number+'</option>';
 					}
 					html+='</select>'
 				}
@@ -612,30 +666,23 @@ layui.config({
 			form.render();
 			table.render({
 				url:"${ctx}/inventory/onlineCustomerPage",
-				size:"lg",
 				elem:"#customTable",
 				loading:true,
 				page:true,
-				request:{
-					pageName:'page',
-					limitName:'size'
-				},
-				parseData:function(ret){
-					return{
-						code:ret.code,
-						msg:ret.message,
-						data:ret.data.rows,
-						count:ret.data.total,
-					}
-				},
+				request:{ pageName:'page', limitName:'size' },
+				parseData:function(ret){ return{ code:ret.code, msg:ret.message, data:ret.data.rows, count:ret.data.total, } },
 				cols:[[
-				       {align:'center',title:'客户名称',	field:'name'},
+				       {align:'center',title:'客户名称',	field:'buyerName'},
 				       {align:'center',title:'客户类别',	field:'type'},
 				       {align:'center',title:'手机',		field:'phone'},
 				       {align:'center',title:'所在地',	field:'address'},
 				       ]]
 			})
 		}
+		$('#customNameDiv').find('input').bind('keypress',function(event){  
+            if(event.keyCode == "13")      
+  				$('#searchCustomer').click();
+	    });
 		function openAddNewPorductWin(){		//添加新产品窗口
 			addNewPorductWin = layer.open({								
 				type:1,
@@ -662,7 +709,7 @@ layui.config({
 			}
 			for(var i=0;i<choosed.length;i++){
 				for(var j=0;j<choosedProduct.length;j++){
-					if(choosed[i].commodityId==choosedProduct[j].commodityId){
+					if(choosed[i].id==choosedProduct[j].id){
 						choosedProduct.splice(j,1);
 						break;
 					}
@@ -670,66 +717,51 @@ layui.config({
 			}
 			var allPayment=0;
 			for(var j=0;j<choosedProduct.length;j++)		//重新对价格计算
-				allPayment+=choosedProduct[j].actualSum;
+				allPayment-=(-choosedProduct[j].actualSum);
 			$('#customPayment').val(allPayment);	
-			table.reload('productTable',{
-				data:choosedProduct,
-			})
+			table.reload('productTable',{ data:choosedProduct, })
 		}
+		var choosedId=0;
 		function sureChoosed(){												//确定商品选择
-			var choosed=layui.table.checkStatus('productListTable').data;
+			var choosed=checkData;
 			if(choosed.length<1){
 				layer.msg("请选择相关商品",{icon:2});
 				return false;
 			}
+			var list=[];				//使用临时数据进行存放，防止出现非法数据时，污染原先的数据
 			for(var i=0;i<choosed.length;i++){
-				var j=0;
-				for(var j=0;j<choosedProduct.length;j++){	
-					if(choosedProduct[j].commodityId==choosed[i].id)	{											
-						//如果商品已经存在列表，判断该产品的发货仓库或者价格是否与之前选择的商品不同
-						var msg='';
-						if(choosedProduct[j].inventory != choosed[i].inventory)									//如果本次选择的的与已选中的不同
-							msg='相同的产品无法同时从多个仓库发货，请重新选择商品的发货仓库';
-						else if(choosed[i].price!=choosedProduct[j].price)			//如果产品没有价格，且默认的与已选中的不同
-							msg='相同的产品无法同时选择多个价格';
-						if(msg!=''){
-							layer.msg(msg,{icon:2});
-							return;
-						}
-						choosedProduct[j].number++;
-						choosedProduct[j].sumPrice=choosedProduct[j].number*choosedProduct[j].price;
-						$('#customPayment').val($('#customPayment').val()-choosedProduct[j].actualSum);			//减去之前的价格
-						choosedProduct[j].actualSum=(choosedProduct[j].price-choosedProduct[j].sellerReadjustPrices-choosedProduct[j].systemPreferential)*choosedProduct[j].number;
-						$('#customPayment').val($('#customPayment').val()-(-choosedProduct[j].actualSum));		//重新加上计算后的价格
-						break;
-					}
+				if(choosed[i].inventory==undefined){
+					layer.msg('商品无库存，无法选择',{icon:2});
+					return;
 				}
-				if(!(j<choosedProduct.length) || choosedProduct.length==0){			//如果不存在，取出真正需要的数据，用于json转换并传到后台。
-					//如果商品不存在列表，需要添加进选择的商品列表中，并判断价格与仓库的选择
-					if(choosed[i].inventory==undefined){
-						layer.msg('商品无库存，无法选择',{icon:2});
+				var result=true;
+				layui.each(choosedProduct,function(index,item){
+					if(item.commodityId == choosed[i].id && item.inventory == choosed[i].inventory){
+						layer.msg('商品："'+choosed[i].skuCode+'"已存在相同的发货仓库，请勿重复添加',{icon:2});
+						result = false;
 						return;
 					}
-					var orderChild={
-							skuCode:choosed[i].skuCode,		
-							name:choosed[i].name,			
-							commodityId:choosed[i].id,		
-							number:1,						
-							sumPrice:choosed[i].price,		
-							systemPreferential:0,			
-							sellerReadjustPrices:0,			
-							actualSum : choosed[i].price,		
-							status:'WAIT_SELLER_SEND_GOODS',
-							inventory:choosed[i].inventory,	//发货仓库
-							price:choosed[i].price,			//发货选择的价格
-					}
-					$('#customPayment').val($('#customPayment').val()-(-orderChild.actualSum));		//使用-计算、确保不会发生字符串拼接
-					choosedProduct.push(orderChild);
+				})
+				if(!result) return;
+				var orderChild={
+						skuCode : choosed[i].skuCode,		
+						name : choosed[i].name,			
+						commodityId : choosed[i].id,		
+						number : 1,						
+						sumPrice : choosed[i].price,		
+						systemPreferential:0,			
+						sellerReadjustPrices:0,			
+						actualSum : choosed[i].price,		
+						status : 'WAIT_SELLER_SEND_GOODS',
+						inventory : choosed[i].inventory,	
+						price : choosed[i].price,			
+						id : choosedId++,
 				}
+				$('#customPayment').val($('#customPayment').val()-(-orderChild.actualSum));		
+				list.push(orderChild);
 			}
-			table.reload('productTable',{
-				data:choosedProduct
-			});
+			layui.each(list,function(index,item){  choosedProduct.push(item); })
+			table.reload('productTable',{ data:choosedProduct });
 			layer.msg('添加成功',{icon:1});
 			layer.close(chooseProductWin);	
 		}
@@ -792,6 +824,7 @@ layui.config({
 								userName:	r.data.rows[i].userName
 							})
 						renderUserSelect('userIdSelect');
+						renderUserSelect('addUserId');
 					}
 				}
 			})

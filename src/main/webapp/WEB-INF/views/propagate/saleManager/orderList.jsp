@@ -65,6 +65,7 @@ td{
 														<option  value="SELLER_CONSIGNED_PART">卖家部分发货</option>
 														<option  value="TRADE_BUYER_SIGNED">买家已签收,货到付款专用</option>
 														<option  value="TRADE_FINISHED">交易成功</option> -->
+														<option  value="SELLER_CONSIGNED_PART">部分发货</option>
 														<option  value="WAIT_BUYER_CONFIRM_GOODS">卖家已发货</option></select></div>
 					<div class="layui-input-inline">
 						<select lay-search name='shippingType'><option value="">物流方式</option>
@@ -155,13 +156,10 @@ td{
 				<td><input type="text" class="layui-input" name="postFee" value="{{ d.postFee }}" readonly></td>
 			</tr>
 			<tr>
-				<td>所在地：</td>			
-				<td colspan="3">
-						<div class="layui-form-item">
-								<div class="layui-input-inline"><input type='text' class='layui-input' readonly value='{{ d.provinces.regionName}}'></div>
-								<div class="layui-input-inline"><input type='text' class='layui-input' readonly value='{{ d.city.regionName}}'></div>
-								<div class="layui-input-inline"><input type='text' class='layui-input' readonly value='{{ d.county.regionName}}'></div>
-								</div></td>
+				<td>卖家备注：</td>			
+				<td><input type="text" class="layui-input" placeholder="" name="sellerMemo" value="{{ d.sellerMemo }}" readonly></td>
+				<td>买家备注：</td>			
+				<td><input type="text" class="layui-input" name="buyerMemo" value="{{ d.buyerMemo }}" readonly></td>
 				<td>物流方式：</td>
 				<td>{{# var text='';
 						switch(d.shippingType){
@@ -172,25 +170,25 @@ td{
 						case 'virtual':	text='虚拟发货';  break;
 						}
 					}}
-						<input type="text" class="layui-input" value="{{ text }}" readonly></td>			
+						<input type="text" class="layui-input" value="{{ text }}" readonly></td>	
 			</tr>
 			<tr>
-				<td>详细地址：</td>			
-				<td colspan="3"><input type="text" class="layui-input" id="customAddress" name="address" readonly
-								placeholder="您可以直接黏贴淘宝或拼多多的收货地址,会自动提取省市区和收货人信息" value="{{ d.address }}"></td>
+				<td>所在地：</td>			
+				<td colspan="3">
+						<div class="layui-form-item">
+								<div class="layui-input-inline"><input type='text' class='layui-input' readonly value='{{ d.provinces.regionName}}'></div>
+								<div class="layui-input-inline"><input type='text' class='layui-input' readonly value='{{ d.city.regionName}}'></div>
+								<div class="layui-input-inline"><input type='text' class='layui-input' readonly value='{{ d.county.regionName}}'></div>
+								</div></td>
 				<td>邮编：</td>			
 				<td><input type="text" class="layui-input" id="customZipCode" name="zipCode" value="{{ d.zipCode }}" readonly></td>
 			</tr>
 			<tr>
-				<td>卖家备注：</td>			
-				<td colspan="3"><input type="text" class="layui-input" placeholder="" name="sellerMemo" value="{{ d.sellerMemo }}" readonly></td>
-				<td rowspan="2">旗帜：</td>			
-				<td rowspan="2"></td>
+				<td>详细地址：</td>			
+				<td colspan="5"><input type="text" class="layui-input" id="customAddress" name="address" readonly
+								placeholder="您可以直接黏贴淘宝或拼多多的收货地址,会自动提取省市区和收货人信息" value="{{ d.address }}"></td>
 			</tr>
-			<tr>
-				<td>买家备注：</td>			
-				<td colspan="3"><input type="text" class="layui-input" name="buyerMemo" value="{{ d.buyerMemo }}" readonly></td>
-			</tr>
+			
 		</table>
 		<table class="layui-table" id="productTable" lay-filter="productTable"></table>
 	</div>
@@ -200,6 +198,7 @@ td{
 <script type="text/html" id="onlineOrderToolbar">
 <div class="layui-button-container">
 	<span class="layui-btn layui-btn-sm" lay-event="oneKey">一键发货</span>
+	<span class="layui-btn layui-btn-sm" lay-event="partDelivery">部分发货</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">反冲订单</span>
 </div>
 </script>
@@ -219,6 +218,8 @@ td{
     	交易成功
   {{#  } else if(d.status == 'WAIT_BUYER_CONFIRM_GOODS'){ }}
     	卖家已发货
+  {{#  } else if(d.status == 'SELLER_CONSIGNED_PART'){ }}
+    	部分发货
   {{#  } }}						
 </script>		
 <script type="text/html" id="provincesTpl">
@@ -393,11 +394,71 @@ layui.config({
 			switch(obj.event){
 			case 'oneKey':   oneKey(); break;
 			case 'delete': deletes(); break;
+			case 'partDelivery' : partDelivery(); break;
 			}
 		})
 		table.on('rowDouble(onlineOrder)',function(obj){
 			addEditOrder(obj.data);
 		})
+		function partDelivery(){	
+			var choosed = layui.table.checkStatus('onlineOrder').data;
+			if(choosed.length<1){ layer.msg('请选择订单',{icon:2}); return; }
+			if(choosed.length>1){ layer.msg('部分发货无法同时发货多天信息',{icon:2}); return; }
+			var obj = choosed[0];
+			layer.open({
+				type : 1,
+				area : ['80%','70%'],
+				title:'部分发货：'+obj.documentNumber,
+				content : '<div style="padding:10px;"><table id="partDeliveryTable" lay-filter="partDeliveryTable" class="layui-table"></table></div>',
+				btn : ['确认发货','取消'],
+				yes : function(){
+					var c =[];  	//发货的对象
+					var dataSuccess = layui.each(partDeliveryTable.config.data,function(index,item){
+						if(item.LAY_CHECKED){		//如果选中
+							if(isNaN(item.deliveryNumber)){ layer.msg('发货数量请输入正确的数字',{icon:2}); return false;}
+							if(item.deliveryNumber>item.residueNumber){ layer.msg('发货数量不能大于剩余数量',{icon:2}); return false;}
+							c.push({
+								warehouseId : item.warehouse.id,
+								id: item.id,
+								number: item.deliveryNumber
+							})
+						}
+					}) 
+					if(!dataSuccess) return;			//如果数据格式非法	
+					var load;
+					$.ajax({
+						url:'${ctx}/inventory/delivery',
+						type:'post',
+						data:{delivery:JSON.stringify(c)},
+						beforeSend:function(){ load = layer.load(1); },
+						success:function(r){
+							if(0==r.code){
+								layer.msg(r.message,{icon:1});
+								table.reload('onlineOrder');
+							}else
+								layer.msg(r.message,{icon:2});
+							layer.close(load);
+						}
+					})
+				}
+			})
+			layui.each(obj.onlineOrderChilds,function(index,item){			//设置默认发货数量为剩余全部数量
+				item.deliveryNumber = item.residueNumber;
+			})
+			var partDeliveryTable = table.render({
+				elem : '#partDeliveryTable',
+				data : obj.onlineOrderChilds,
+				page : {},
+				cols : [[
+				           { align:'center', type:'checkbox',},
+				           {field:'',		title:'商品名称',			  align:'center', templet:function(d){ return '<span>'+d.commodity.skuCode+'</span>';} },
+					       {field:'inventory',	title:'发货仓库',	  align:'center', width:'8%', templet:function(d){ return '<span>'+d.warehouse.name+'</span>';} },
+					       {field:'number',		title:'总数量',        align:'center', width:'10%',		},
+					       {field:'residueNumber',   title:'剩余发货数量',    align:'center', width:'10%',		},
+					       {field:'deliveryNumber',  title:'本次发货数量',  align:'center', width:'10%',  edit:true,   },
+				         ]],
+			})
+		}
 		function oneKey(){
 			var choosed = layui.table.checkStatus('onlineOrder').data;
 			if(choosed.length<1){
@@ -440,7 +501,7 @@ layui.config({
 			layer.open({
 				title: '查看订单',
 				type:1,
-				area:['90%','95%'],
+				area:['90%','98%'],
 				shadeClose:true,
 				content:html
 			})
@@ -484,9 +545,10 @@ layui.config({
 				loading:true,
 				data: child,
 				page:{},
+				toolbar:true,
 				totalRow:true,
 				cols:[[
-				       {field:'',		title:'商品名称',	align:'center',templet:function(d){ return '<span>'+d.commodity.skuCode+'</span>';} },
+				       {field:'a',		title:'商品名称',	align:'center',templet:function(d){ return '<span>'+d.commodity.skuCode+'</span>';} },
 				       {field:'inventory',	title:'发货仓库',	align:'center', width:'8%', templet:function(d){ return '<span>'+d.warehouse.name+'</span>';} },
 				       {field:'number',		title:'数量',       align:'center', width:'5%',		templet:'#numberTpl', totalRow:true,},
 				       {field:'price',   	title:'单价',   	    align:'center', width:'4%',		templet:'#priceTpl'},
@@ -591,6 +653,18 @@ layui.config({
 			}
 			$('#'+select).append(html);
 			form.render();
+		}
+		var currentUser;
+		getCurrentUser();
+		function getCurrentUser(){			//根据id渲染客服下拉框
+			$.ajax({
+				url:'${ctx}/getCurrentUser',		//获取当前登录用户
+				success:function(r){
+					if(0==r.code){
+						currentUser = r.data;
+					}
+				}
+			})
 		}
 		var currentUser;
 		getCurrentUser();
