@@ -892,7 +892,7 @@ jQuery(function($){
 			 this.select=function(){
 				 
 				 //------------------修改---------------------------------------------------------
-				 $('.username2').on('click',function(){		console.log(1)			
+				 $('.username2').on('click',function(){				
 					 var _index
 						var index
 						var postData   
@@ -1222,7 +1222,7 @@ jQuery(function($){
 							  area: ['80%', '90%'], 
 							  btnAlign: 'c',//宽高
 							  maxmin: true,
-							  title:userName,
+							  title:'',
 							  content: dicDiv,
 							  btn: ['确定', '取消'],
 							  yes:function(index, layero){

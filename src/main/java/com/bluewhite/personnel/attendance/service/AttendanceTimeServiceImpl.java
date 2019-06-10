@@ -84,10 +84,14 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			if (attendance.getUserId()==null && attendance.getOrgNameId()==null) {
 				User user2=new User();
 				user2.setIsAdmin(false);
-				user2.setQuit(0);
 				user2.setForeigns(0);
 				List<User> user = userService.findUserList(user2);
-				userList.addAll(user);
+				List<User> users = new ArrayList<>();
+				List<User> list=user.stream().filter(User->User.getQuitDate()!=null && User.getQuit().equals(1) && User.getQuitDate().after(attendance.getOrderTimeBegin())).collect(Collectors.toList());
+				List<User> list2=user.stream().filter(User->User.getQuit()!=null &&User.getQuit().equals(0)).collect(Collectors.toList());
+				users.addAll(list);
+				users.addAll(list2);
+				userList.addAll(users);
 			}
 			String exUser = "";
 			// 开始汇总每个人的考勤
