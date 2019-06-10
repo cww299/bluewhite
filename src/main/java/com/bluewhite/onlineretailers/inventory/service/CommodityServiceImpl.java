@@ -53,6 +53,9 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 
 	@Override
 	public PageResult<Commodity> findPage(Commodity param, PageParameter page) {
+		if(param.getWarehouseSort()!=null){
+			page.setSort(null);
+		}
 		Page<Commodity> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
@@ -75,7 +78,6 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 			if(param.getWarehouseSort()!=null){
 				//获取排序条件
 				String[] sort = param.getWarehouseSort().split(":");
-				page.setSort(null);
 				Join<Commodity,Inventory> join = root.join(root.getModel().getSet("inventorys", Inventory.class),JoinType.LEFT);
 				//根据仓库id排序	
 				predicate.add(cb.equal(join.get("warehouseId").as(Integer.class),sort[0]));

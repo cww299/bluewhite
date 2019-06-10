@@ -158,9 +158,9 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				if (procurement.getId() != null) {
 					// 减少子单数量
 					for (ProcurementChild pChild : oldProcurement.getProcurementChilds()) {
-						//当前产品id和上一阶段产品id
-						if (pChild.getCommodityId().equals( procurementChild.getCommodityId())) {
-							//当前批次和上一阶段批次
+						// 当前产品id和上一阶段产品id
+						if (pChild.getCommodityId().equals(procurementChild.getCommodityId())) {
+							// 当前批次和上一阶段批次
 							if (pChild.getBatchNumber().equals(procurementChild.getBatchNumber())) {
 								// 当单据为入库单时,针工单转化数量不够自动变成0
 								if (procurement.getType() == 2) {
@@ -252,11 +252,10 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 						// 拿本级的子单和上级子单对比，同时将上级子单数据恢复
 						for (ProcurementChild parentProcurementChilds : parentProcurement.getProcurementChilds()) {
 							for (ProcurementChild procurementChilds : procurement.getProcurementChilds()) {
-								if (parentProcurementChilds.getBatchNumber().equals(procurementChilds.getBatchNumber())
-										&& (parentProcurementChilds.getCommodityId() == procurementChilds
-												.getCommodityId())) {
+								if (parentProcurementChilds.getCommodityId().equals(procurementChilds.getCommodityId()) 
+										&& parentProcurementChilds.getBatchNumber().equals(procurementChilds.getBatchNumber())) {
 									parentProcurementChilds.setResidueNumber(
-											parentProcurementChilds.getResidueNumber() + procurement.getNumber());
+											parentProcurementChilds.getResidueNumber() + procurementChilds.getNumber());
 								}
 							}
 						}

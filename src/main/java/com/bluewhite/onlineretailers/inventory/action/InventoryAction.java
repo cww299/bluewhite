@@ -118,6 +118,22 @@ public class InventoryAction {
 		cr.setMessage("新增成功");
 		return cr;
 	}
+	
+	/**
+	 * 获取上一个相同商品的订单的单价
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/inventory/getOnlineOrderPrice", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getOnlineOrderPrice(Long commodityId){
+		CommonResponse cr = new CommonResponse();
+		int price = onlineOrderService.getOnlineOrderPrice(commodityId);
+		cr.setData(price);
+		cr.setMessage("成功");
+		return cr;
+	}
 
 	/**
 	 * 新增销售单(导入)
@@ -137,6 +153,9 @@ public class InventoryAction {
 		inputStream.close();
 		return cr;
 	}
+	
+
+	
 
 	/**
 	 * 一键发货 1.将父订单的状态改变成发货状态和一个仓库时，所有子订单的发货状态和仓库改变 2.子订单部分发货和不同仓库
