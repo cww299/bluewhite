@@ -27,6 +27,8 @@
 				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td><input type='text' name='skuCode' class='layui-input' placeholder='请输入查找信息'></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td><select name="warehouseSort" id="warehouseSortSelect"><option value="">排序方式</option></select></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
@@ -153,8 +155,7 @@ layui.config({
 					{ title:'备注', 		field:'remark',	},
 		           ]];
 		for(var i=0;i<allInventory.length;i++)
-			cols[0].push({ title:allInventory[i].name, sort:true, templet : getInventoryNumber(allInventory[i].id),	})
-		
+			cols[0].push({ field:'id'+allInventory[i].id, title:allInventory[i].name, sort:true, templet : getInventoryNumber(allInventory[i].id),	})
 		function getInventoryNumber(warehouseId){
 			return function(d){
 				var inv=d.inventorys;
@@ -172,15 +173,11 @@ layui.config({
 			toolbar:'#productTableToolbar',
 			loading:true,
 			page:true,
+			autoSort:false,
 			limits:[10,25,50,100],
 			limit:100,
-			request:{
-				pageName:'page',
-				limitName:'size'
-			},
-			parseData:function(ret){
-				return {data:ret.data.rows,count:ret.data.total,msg:ret.message,code:ret.code }
-			},
+			request:{ pageName:'page', limitName:'size' },
+			parseData:function(ret){ return {data:ret.data.rows,count:ret.data.total,msg:ret.message,code:ret.code } },
 			cols:cols
 		})
 		
@@ -195,9 +192,16 @@ layui.config({
 			case 'add':		addEdit('add');		break;
 			case 'update':	addEdit('edit'); 	break;
 			case 'delete':	deletes();			break;
-			}
+			} 	
 		})
-		
+		table.on('sort(productTable)',function(obj){
+			 table.reload('productTable', {
+			    initSort: obj 
+			    ,where: { 
+			      warehouseSort: obj.field.substring(2,99)+":"+obj.type
+			    }
+			 }) 
+		})
 		function addEdit(type){	
 			var data={id:'',skuCode:'',weight:'',size:'',material:'',fillers:'',cost:'',propagandaCost:'',remark:'',tianmaoPrice:'',oseePrice:'',offlinePrice:''},
 			choosed=layui.table.checkStatus('productTable').data,
@@ -210,7 +214,6 @@ layui.config({
 					return;
 				}
 				if(choosed.length<1){
-					console.log(choosed.length)
 					layer.msg("至少选择一条信息编辑",{icon:2,offset:'10px;'});
 					return;
 				}
@@ -289,16 +292,28 @@ layui.config({
 						for(var i=0;i<r.data.length;i++){
 							allInventory.push({ id:r.data[i].id,name:r.data[i].name});
 						}
+						renderSelect('warehouseSortSelect');
 					}
 				}
 			})
 		}
+		function renderSelect(select){
+			var html='';
+			layui.each(allInventory,function(index,item){
+				html+='<option value="'+item.id+':asc">'+item.name+'升序</option>';
+				html+='<option value="'+item.id+':desc">'+item.name+'降序</option>';
+			})
+			$('#'+select).append(html);
+			form.render();
+		}
+		
 		$(document).on('click', '.layui-table-view tbody tr', function(event) {
 			var elemTemp = $(this);
 			var tableView = elemTemp.closest('.layui-table-view');
 			var trIndex = elemTemp.data('index');
 			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
 		})
+		
 		//-----------------------cookie保存筛选列-----------------
 		var COOKIENAME = 'productDataCookie';		//变量名，存放的cookie名
 	 	readCookie();
@@ -308,10 +323,10 @@ layui.config({
 	 			return;
 	 		$('.layui-icon-cols').click();    			//打开筛选列
 	 		var panel = $('.layui-table-tool-panel');	//筛选面板
-	 		
 	 		var hf = hideField.split(',');
-	 		for(var i=0;i<hf.length;i++){
-	 			panel.find('.layui-form-checkbox')[hf[i]].click();
+	 		for(var i=0;i<hf.length;i++){	
+	 			if(!isNaN(hf[i]))						// cookie 存储bug
+	 				panel.find('.layui-form-checkbox')[hf[i]].click();
 	 		}
 	 		$('.layui-table').click(); 					//关闭筛选列，随便点击一个地方即关闭
 	 	}
