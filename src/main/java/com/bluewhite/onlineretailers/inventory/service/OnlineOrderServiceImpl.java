@@ -683,4 +683,11 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		return mapList;
 	}
 
+
+
+	@Override
+	public int getOnlineOrderPrice(Long commodityId) {
+		return onlineOrderChildDao.getOnlineOrderPrice(commodityId);
+	}
+
 }

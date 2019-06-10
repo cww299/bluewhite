@@ -88,6 +88,12 @@ public interface OnlineOrderService extends BaseCRUDService<OnlineOrder,Long>{
 	 * @return
 	 */
 	public List<Map<String, Object>> reportSalesUser(OnlineOrder onlineOrder);
+	/**
+	 * 获取商品最后一次订单单价
+	 * @param commodityId
+	 * @return
+	 */
+	public int getOnlineOrderPrice(Long commodityId);
 	
 
 }
