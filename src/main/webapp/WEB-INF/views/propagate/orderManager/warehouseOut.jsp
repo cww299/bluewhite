@@ -230,6 +230,7 @@ layui.config({
 			       {align:'center', title:'单据编号',   	field:'documentNumber',	},
 			       {align:'center', title:'数量', field:'number', width:'6%',	},
 			       {align:'center', title:'经手人',	templet:'<p>{{ d.user.userName }}</p>', width:'7%',	},
+			       {align:'center', title:'客户',	templet:'<p>{{ d.onlineCustomer!=null?d.onlineCustomer.buyerName:"&nbsp" }}</p>', width:'7%',	},
 			       {align:'center', title:'出库类型', templet:'#statusTpl', width:'6%',	},
 			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl', width:'6%',	},
 			       {align:'center', title:'日期',   	field:'createdAt',	},
@@ -260,7 +261,7 @@ layui.config({
 					var style='';
 					if(i==d.procurementChilds.length-1)
 						style='border-bottom:none';
-					html+='<tr><td style="border-right:none; '+style+'">'+t.batchNumber+'</td></tr>';
+					html+='<tr><td style="border-right:none; '+style+'">'+t.batchNumber+'&nbsp;</td></tr>';
 				}
 				return html+'</table>';
 			}
@@ -273,7 +274,7 @@ layui.config({
 					var style='';
 					if(i==d.procurementChilds.length-1)
 						style='border-bottom:none';
-					html+='<tr><td style="border-right:none; '+style+'">'+t.commodity.skuCode+'</td></tr>';
+					html+='<tr><td style="border-right:none; '+style+'">'+t.commodity.skuCode+'&nbsp;</td></tr>';
 				}
 				return html+'</table>';
 			}
