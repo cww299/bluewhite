@@ -85,6 +85,12 @@
 			</div>
 		</div>
 		<div class="layui-item">
+			<label class="layui-form-label">业务员</label>
+			<div class="layui-input-block">
+				<select name="userId" id='userIdSelect' lay-search><option>获取数据中...</option></select>
+			</div>
+		</div>
+		<div class="layui-item">
 			<label class="layui-form-label">省份</label>
 			<div class="layui-input-block" id="provinceCityCounty">
 				<div class="layui-input-inline"><select lay-search id="province" name="provincesId"></select></div>
@@ -165,7 +171,11 @@ layui.config({
 		, table = layui.table 
 		, laytpl = layui.laytpl
 		, tablePlug = layui.tablePlug;
+		var allUser=[],
+			currUser={id:''};     
 		
+		getAllUser();
+		getCurrUser();
 		form.render();
 		
 		table.render({
@@ -218,6 +228,7 @@ layui.config({
 			},
 			title='新增客户',
 			html='',
+			userId=currUser.id,		//当前业务员id
 			btnText='清空信息',
 			provinceId=0,cityId=0,countyId=0,cityParentId='110000',countyParentId='110100',
 			choosed=layui.table.checkStatus('customTable').data,
@@ -244,16 +255,16 @@ layui.config({
 					countyParentId=data.county.parentId;
 					countyId=data.county.id;
 				}
+				userId = data.userId;
 			}
-			laytpl(tpl).render(data,function(h){
-				html=h;
-			})
+			laytpl(tpl).render(data,function(h){ html=h; })
 			var addEditWin=layer.open({
 				type:1,
 				title:title,
 				area:['40%','60%'],
 				content:html
 			})
+			getUserSelect(userId,'userIdSelect');
 			$('#resetCustom').html(btnText);
 			getdataOfSelect(0,'province',provinceId);
 			getdataOfSelect(cityParentId,'city',cityId);
@@ -263,6 +274,7 @@ layui.config({
 				getdataOfSelect(0,'province',provinceId);
 				getdataOfSelect(cityParentId,'city',cityId);
 				getdataOfSelect(countyParentId,'county',countyId);
+				getUserSelect(currUser.id,'userIdSelect');
 			})
 			
 			form.render();
@@ -362,6 +374,40 @@ layui.config({
 					}
 				}
 			});
+		}
+		function getUserSelect(id,select){ 
+			var html='';
+			if(id==null || id=='')
+				html+='<option value="">无所属业务员</option>'
+			for(var i=0;i<allUser.length;i++){
+				var selected=( id==allUser[i].id?'selected':'' );
+				html+='<option value="'+allUser[i].id+'" '+selected+'>'+allUser[i].userName+'</option>';
+			}
+			$('#'+select).html(html);
+			form.render();
+		}
+		function getAllUser(){
+			$.ajax({
+				url:'${ctx}/system/user/pages?size=999',
+				success:function(r){
+					if(0==r.code){
+						for(var i=0;i<r.data.rows.length;i++)
+							allUser.push({
+								id:			r.data.rows[i].id,
+								userName:	r.data.rows[i].userName
+							})
+					}
+				}
+			})
+		}
+		function getCurrUser(){
+			$.ajax({
+				url:'${ctx}/getCurrentUser',
+				success:function(r){
+					if(0==r.code)
+						currUser = r.data;
+				}
+			})
 		}
 		
 	}//end define function

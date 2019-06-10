@@ -205,7 +205,9 @@ td{
 					<div class="layui-input-inline"><select lay-search name="countyId" id="addArea"></select></div>
 					</div></td></tr>
 	<tr><td>详细地址</td>
-		<td colspan="3"><input type="text" class="layui-input" name="address"></td></tr>
+		<td><input type="text" class="layui-input" name="address"></td>
+		<td>业务员</td>
+		<td><select name="userId" id="addUserId" lay-search><option value="">获取数据中...</option></select></td></tr>
 	<tr><td>邮编</td>
 		<td><input type="text" class="layui-input" name="zipCode"></td>
 		<td colspan="2"><button type="reset" class="layui-btn layui-btn-danger" id="resetCustomAdd">清空</button>
@@ -404,9 +406,8 @@ layui.config({
 		$('#resetAll').on('click',function(){						//清空表单
 			choosedProduct = [];
 			rederSelect();
-			table.reload('productTable',{
-				data : choosedProduct,
-			});
+			renderUserSelect('userIdSelect');
+			table.reload('productTable',{ data : choosedProduct, });
 			form.render();
 			layer.msg('清空成功',{icon:1});
 		})
@@ -657,6 +658,7 @@ layui.config({
 			})
 			form.render();
 		}
+		
 		function deletes(){
 			var choosed = layui.table.checkStatus('productTable').data;
 			if(choosed.length==0){
@@ -795,6 +797,7 @@ layui.config({
 								userName:	r.data.rows[i].userName
 							})
 						renderUserSelect('userIdSelect');
+						renderUserSelect('addUserId');
 					}
 				}
 			})
