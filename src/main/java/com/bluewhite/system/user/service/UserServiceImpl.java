@@ -271,7 +271,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     		}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
-			query.orderBy(cb.desc(root.get("userContract").get("number").as(Integer.class)));
+			if(user.getNumberSort()!=null){
+				query.orderBy(cb.desc(root.get("userContract").get("number").as(Integer.class)));
+			}
 			query.distinct(true);
 			return null;
 		}, page);

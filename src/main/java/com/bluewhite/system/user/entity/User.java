@@ -501,9 +501,22 @@ public class User extends BaseEntity<Long> {
 	@Transient
 	private Long adjustTimeId;
 	
+	/**
+	 * 按位置编号排序
+	 */
+	@Transient
+	private Integer numberSort;
 	
 	
 	
+	public Integer getNumberSort() {
+		return numberSort;
+	}
+
+	public void setNumberSort(Integer numberSort) {
+		this.numberSort = numberSort;
+	}
+
 	public Long getUserContractId() {
 		return userContractId;
 	}

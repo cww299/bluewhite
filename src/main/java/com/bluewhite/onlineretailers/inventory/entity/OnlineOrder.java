@@ -141,6 +141,12 @@ public class OnlineOrder extends BaseEntity<Long> {
 	private Integer num;
 	
 	/**
+	 * 剩余发货数量
+	 */
+	@Column(name = "residue_number")
+	private Integer residueNumber;
+	
+	/**
 	 * 订单状态交易状态。可选值: 
 	 * TRADE_NO_CREATE_PAY(没有创建支付宝交易) 
 	 * WAIT_BUYER_PAY(等待买家付款) 
@@ -329,6 +335,14 @@ public class OnlineOrder extends BaseEntity<Long> {
 	
 	
 	
+	public Integer getResidueNumber() {
+		return residueNumber;
+	}
+
+	public void setResidueNumber(Integer residueNumber) {
+		this.residueNumber = residueNumber;
+	}
+
 	public Integer getBuyerFlag() {
 		return buyerFlag;
 	}

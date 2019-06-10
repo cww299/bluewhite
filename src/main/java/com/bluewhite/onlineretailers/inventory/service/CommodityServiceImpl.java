@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.onlineretailers.inventory.dao.CommodityDao;
+import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
 import com.bluewhite.onlineretailers.inventory.dao.WarningDao;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
@@ -45,6 +48,8 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 	private BaseDataService service;
 	@Autowired
 	private CommodityDao commodityDao;
+	@Autowired
+	private InventoryDao inventoryDao;
 
 	@Override
 	public PageResult<Commodity> findPage(Commodity param, PageParameter page) {
@@ -66,14 +71,52 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 				predicate.add(cb.like(root.get("name").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getName()) + "%"));
 			}
+			
+			if(param.getWarehouseSort()!=null){
+				//获取排序条件
+				String[] sort = param.getWarehouseSort().split(":");
+				page.setSort(null);
+				Join<Commodity,Inventory> join = root.join(root.getModel().getSet("inventorys", Inventory.class),JoinType.LEFT);
+				//根据仓库id排序	
+				predicate.add(cb.equal(join.get("warehouseId").as(Integer.class),sort[0]));
+				//匹配正序倒叙
+				if(sort[1].equals("desc")){
+					query.orderBy(cb.desc(join.get("number").as(Integer.class)));
+				}else{
+					query.orderBy(cb.asc(join.get("number").as(Integer.class)));
+				}
+			}
+			Predicate[] pre = new Predicate[predicate.size()];
+			query.where(predicate.toArray(pre));
+			return null;
+		}, page);
+		PageResult<Commodity> result = new PageResult<>(pages, page);
+		return result;
+	}
+	
+	@Override
+	public PageResult<Inventory> findPage(Inventory param, PageParameter page) {
+		Page<Inventory> pages = inventoryDao.findAll((root, query, cb) -> {
+			List<Predicate> predicate = new ArrayList<>();
+			// 按id过滤
+			if (param.getId() != null) {
+				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
+			}
+
+			// 按编号过滤
+			if (!StringUtils.isEmpty(param.getSkuCode())) {
+				predicate.add(cb.like(root.get("skuCode").as(String.class),
+						"%" + StringUtil.specialStrKeyword(param.getSkuCode()) + "%"));
+			}
 
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
 		}, page);
 
-		PageResult<Commodity> result = new PageResult<>(pages, page);
+		PageResult<Inventory> result = new PageResult<>(pages, page);
 		return result;
+		
 	}
 
 	@Override
@@ -215,4 +258,6 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 		}
 		return count;
 	}
+
+
 }
