@@ -119,7 +119,7 @@ td{
 					<option value="tianmao">天猫销售价</option>
 					<option value="_1688">1688销售价</option>
 					<option value="offline">线下批发价</option></select></td>	<td>&nbsp;</td>
-			<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProduct" > <i class="layui-icon">&#xe615;</i>搜索</button></td><td>&nbsp;</td>
+			<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProduct" id="searchProduct" > <i class="layui-icon">&#xe615;</i>搜索</button></td><td>&nbsp;</td>
 			<td><button type="button" class="layui-btn layui-btn-sm" id="addNewProduct" >新增商品</button></td>			 <td>&nbsp;</td>
 			<td><button type="button" class="layui-btn layui-btn-sm" id="sure" >确定添加</button></td>						<td>&nbsp;</td>
 		</tr>
@@ -132,10 +132,10 @@ td{
 	<table class="layui-form">
 		<tr>
 			<td>客户名称：</td>
-			<td><input type="text" name='name' class="layui-input" placeholder='请输入查找信息'></td>		<td>&nbsp;</td>
+			<td><input type="text" name='buyerName' class="layui-input" placeholder='请输入查找信息'></td>		<td>&nbsp;</td>
 			<td>手机号：</td>
 			<td><input type="text" name='phone' class="layui-input" placeholder='请输入查找信息'></td>		<td>&nbsp;</td>
-			<td><button lay-submit 	lay-filter="searchCustom"	type="button" class="layui-btn layui-btn-sm">
+			<td><button lay-submit 	lay-filter="searchCustom"	type="button" class="layui-btn layui-btn-sm" id="searchCustomer">
 					<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i></button>				<td>&nbsp;</td>
 			<td><button id="addCustom"	type="button" class="layui-btn layui-btn-sm">添加新客户</button>		<td>&nbsp;</td>
 			<td><span class="layui-badge">小提示：双击选中客户对象</span></td>
@@ -504,13 +504,8 @@ layui.config({
 				url:'${ctx}/inventory/commodityPage',
 				loading:true,
 				page:true,
-				request:{
-					pageName:'page',
-					limitName:'size'
-				},
-				parseData:function(ret){	
-					return{ code:	ret.code,msg:	ret.message,data:	ret.data.rows,count:	ret.data.total,}
-				},
+				request:{pageName:'page', limitName:'size' },
+				parseData:function(ret){return{ code:	ret.code,msg:	ret.message,data:	ret.data.rows,count:	ret.data.total,}},
 				cols:[[
 				       {type:'checkbox', align:'center', fixed:'left'},
 				       {align:'center', title:'商品名称', field:'skuCode',},
@@ -535,6 +530,10 @@ layui.config({
 			});
 			form.render();
 		}
+		$('#addProductDiv').find('input').bind('keypress',function(event){  
+            if(event.keyCode == "13")      
+  				$('#searchProduct').click();
+	    });
 		form.on('select(selectPrice)', function (data) {		//监听数据表格中的 价格选择下拉框
             var elem = $(data.elem);
             var trElem = elem.parents('tr');
@@ -629,13 +628,17 @@ layui.config({
 					}
 				},
 				cols:[[
-				       {align:'center',title:'客户名称',	field:'name'},
+				       {align:'center',title:'客户名称',	field:'buyerName'},
 				       {align:'center',title:'客户类别',	field:'type'},
 				       {align:'center',title:'手机',		field:'phone'},
 				       {align:'center',title:'所在地',	field:'address'},
 				       ]]
 			})
 		}
+		$('#customNameDiv').find('input').bind('keypress',function(event){  
+            if(event.keyCode == "13")      
+  				$('#searchCustomer').click();
+	    });
 		function openAddNewPorductWin(){		//添加新产品窗口
 			addNewPorductWin = layer.open({								
 				type:1,
