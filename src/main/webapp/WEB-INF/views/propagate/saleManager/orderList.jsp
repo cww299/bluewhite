@@ -415,7 +415,6 @@ layui.config({
 				content : '<div style="padding:10px;"><table id="partDeliveryTable" lay-filter="partDeliveryTable" class="layui-table"></table></div>',
 				btn : ['确认发货','取消'],
 				yes : function(){
-					console.log(partDeliveryTable.config.data)
 					var c =[];  	//发货的对象
 					var dataSuccess = layui.each(partDeliveryTable.config.data,function(index,item){
 						if(item.LAY_CHECKED){		//如果选中
