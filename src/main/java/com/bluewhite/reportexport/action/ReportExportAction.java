@@ -3,11 +3,12 @@ package com.bluewhite.reportexport.action;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,9 +17,6 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -52,7 +50,6 @@ import com.bluewhite.finance.ledger.entity.Actualprice;
 import com.bluewhite.finance.ledger.entity.Order;
 import com.bluewhite.finance.ledger.service.OrderService;
 import com.bluewhite.personnel.attendance.entity.Attendance;
-import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.service.AttendanceService;
 import com.bluewhite.personnel.attendance.service.AttendanceTimeService;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
@@ -78,9 +75,9 @@ import com.bluewhite.reportexport.entity.ProductPoi;
 import com.bluewhite.reportexport.entity.ReworkPoi;
 import com.bluewhite.reportexport.entity.UserPoi;
 import com.bluewhite.reportexport.service.ReportExportService;
+import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.entity.UserContract;
-import com.bluewhite.system.user.service.UserService;
 
 @Controller
 @RequestMapping("excel")
@@ -119,7 +116,7 @@ public class ReportExportAction {
 	private AttendanceTimeService attendanceTimeService;
 	
 	@Autowired
-	private UserService userService;
+	private UserDao userDao;
 	/**
 	 * 基础产品导入                          
 	 * @param residentmessage
@@ -882,6 +879,57 @@ public class ReportExportAction {
   			e1.printStackTrace();
   		}
 }
+	
+	
+	/**
+	 * 导出退休返聘
+	 * @param request
+	 * @param response
+	 * @throws IOException 
+	 */
+	@RequestMapping("/importExcel/retire")
+	public void DownMonthlyProductionExcel(HttpServletResponse response) throws IOException{
+		response.setContentType("octets/stream");
+	    response.addHeader("Content-Disposition", "attachment;filename=rework.xls");
+	    OutputStream out = response.getOutputStream();  
+        //输出的实体与反射的实体相对应
+	    Calendar calendar = new GregorianCalendar();
+	    Calendar calendar2 = new GregorianCalendar();
+		Date date2 = new Date();
+		Date date3;
+		Date date4;
+		calendar.setTime(date2);
+		calendar2.setTime(date2);
+	    calendar.add(calendar.YEAR, -50);//把日期往后增加一年.整数往后推,负数往前移动
+	    calendar2.add(calendar.YEAR, -60);//把日期往后增加一年.整数往后推,负数往前移动
+	    date3=calendar.getTime(); 
+	    date4=calendar2.getTime(); 
+	    List<User> lists = new ArrayList<>();
+	    List<User> users= userDao.findAll();
+	    List<User> list=users.stream().filter(User->User.getGender()!=null && User.getAge()!=null && User.getBirthDate()!=null && User.getGender().equals(1) && User.getAge()>=50 && User.getBirthDate().before(date3)).collect(Collectors.toList());
+	    List<User> list2=users.stream().filter(User->User.getGender()!=null && User.getAge()!=null && User.getBirthDate()!=null && User.getGender().equals(0) && User.getAge()>=60 && User.getBirthDate().before(date4)).collect(Collectors.toList());
+	    lists.addAll(list);
+	    lists.addAll(list2);
+	    Excelutil<User> util = new Excelutil<User>(User.class);
+        util.exportExcel(lists, "退休返聘", out);// 导出 
+        out.close();
+	}
+	
+	public static void main(String[] args) {
+	SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+	Calendar calendar = new GregorianCalendar();
+	Calendar calendar2 = new GregorianCalendar();
+	Date date3;
+	Date date4;
+	Date date = new Date();
+	calendar.setTime(date); 
+    calendar.add(calendar.YEAR, -60);//把日期往后增加一年.整数往后推,负数往前移动
+    calendar2.add(calendar2.YEAR, -50);//把日期往后增加一年.整数往后推,负数往前移动
+    date3=calendar.getTime(); 
+    date4=calendar2.getTime(); 
+    System.out.println(fmt.format(date3));
+    System.out.println(fmt.format(date4));
+	}
 	
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
