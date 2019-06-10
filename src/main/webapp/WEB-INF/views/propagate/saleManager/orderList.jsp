@@ -156,13 +156,10 @@ td{
 				<td><input type="text" class="layui-input" name="postFee" value="{{ d.postFee }}" readonly></td>
 			</tr>
 			<tr>
-				<td>所在地：</td>			
-				<td colspan="3">
-						<div class="layui-form-item">
-								<div class="layui-input-inline"><input type='text' class='layui-input' readonly value='{{ d.provinces.regionName}}'></div>
-								<div class="layui-input-inline"><input type='text' class='layui-input' readonly value='{{ d.city.regionName}}'></div>
-								<div class="layui-input-inline"><input type='text' class='layui-input' readonly value='{{ d.county.regionName}}'></div>
-								</div></td>
+				<td>卖家备注：</td>			
+				<td><input type="text" class="layui-input" placeholder="" name="sellerMemo" value="{{ d.sellerMemo }}" readonly></td>
+				<td>买家备注：</td>			
+				<td><input type="text" class="layui-input" name="buyerMemo" value="{{ d.buyerMemo }}" readonly></td>
 				<td>物流方式：</td>
 				<td>{{# var text='';
 						switch(d.shippingType){
@@ -173,25 +170,25 @@ td{
 						case 'virtual':	text='虚拟发货';  break;
 						}
 					}}
-						<input type="text" class="layui-input" value="{{ text }}" readonly></td>			
+						<input type="text" class="layui-input" value="{{ text }}" readonly></td>	
 			</tr>
 			<tr>
-				<td>详细地址：</td>			
-				<td colspan="3"><input type="text" class="layui-input" id="customAddress" name="address" readonly
-								placeholder="您可以直接黏贴淘宝或拼多多的收货地址,会自动提取省市区和收货人信息" value="{{ d.address }}"></td>
+				<td>所在地：</td>			
+				<td colspan="3">
+						<div class="layui-form-item">
+								<div class="layui-input-inline"><input type='text' class='layui-input' readonly value='{{ d.provinces.regionName}}'></div>
+								<div class="layui-input-inline"><input type='text' class='layui-input' readonly value='{{ d.city.regionName}}'></div>
+								<div class="layui-input-inline"><input type='text' class='layui-input' readonly value='{{ d.county.regionName}}'></div>
+								</div></td>
 				<td>邮编：</td>			
 				<td><input type="text" class="layui-input" id="customZipCode" name="zipCode" value="{{ d.zipCode }}" readonly></td>
 			</tr>
 			<tr>
-				<td>卖家备注：</td>			
-				<td colspan="3"><input type="text" class="layui-input" placeholder="" name="sellerMemo" value="{{ d.sellerMemo }}" readonly></td>
-				<td rowspan="2">旗帜：</td>			
-				<td rowspan="2"></td>
+				<td>详细地址：</td>			
+				<td colspan="5"><input type="text" class="layui-input" id="customAddress" name="address" readonly
+								placeholder="您可以直接黏贴淘宝或拼多多的收货地址,会自动提取省市区和收货人信息" value="{{ d.address }}"></td>
 			</tr>
-			<tr>
-				<td>买家备注：</td>			
-				<td colspan="3"><input type="text" class="layui-input" name="buyerMemo" value="{{ d.buyerMemo }}" readonly></td>
-			</tr>
+			
 		</table>
 		<table class="layui-table" id="productTable" lay-filter="productTable"></table>
 	</div>
@@ -504,7 +501,7 @@ layui.config({
 			layer.open({
 				title: '查看订单',
 				type:1,
-				area:['90%','95%'],
+				area:['90%','98%'],
 				shadeClose:true,
 				content:html
 			})
@@ -548,9 +545,10 @@ layui.config({
 				loading:true,
 				data: child,
 				page:{},
+				toolbar:true,
 				totalRow:true,
 				cols:[[
-				       {field:'',		title:'商品名称',	align:'center',templet:function(d){ return '<span>'+d.commodity.skuCode+'</span>';} },
+				       {field:'a',		title:'商品名称',	align:'center',templet:function(d){ return '<span>'+d.commodity.skuCode+'</span>';} },
 				       {field:'inventory',	title:'发货仓库',	align:'center', width:'8%', templet:function(d){ return '<span>'+d.warehouse.name+'</span>';} },
 				       {field:'number',		title:'数量',       align:'center', width:'5%',		templet:'#numberTpl', totalRow:true,},
 				       {field:'price',   	title:'单价',   	    align:'center', width:'4%',		templet:'#priceTpl'},
