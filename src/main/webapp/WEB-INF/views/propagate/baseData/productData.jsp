@@ -43,7 +43,6 @@
 	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增商品</span>
 	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改商品</span>
 	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除商品</span>
-	<span class="layui-badge" >提示：双击查看库存</span>
 </div>
 </script>
 
@@ -62,43 +61,43 @@
 	<div class="layui-item">
 		<label class="layui-form-label">1688价/元</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="oseePrice" value="{{d.oseePrice}}">
+			<input class="layui-input" name="oseePrice" value="{{d.oseePrice==null?'':d.oseePrice}}">
 		</div>
 	</div>
 	<div class="layui-item">
 		<label class="layui-form-label">天猫价/元</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="tianmaoPrice" value="{{d.tianmaoPrice}}">
+			<input class="layui-input" name="tianmaoPrice" value="{{d.tianmaoPrice==null?'':d.tianmaoPrice}}">
 		</div>
 	</div>
 	<div class="layui-item">
 		<label class="layui-form-label">线下价/元</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="offlinePrice" value="{{d.offlinePrice}}">
+			<input class="layui-input" name="offlinePrice" value="{{d.offlinePrice==null?'':d.offlinePrice}}">
 		</div>
 	</div>
 	<div class="layui-item">
 		<label class="layui-form-label">商品重量/g</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="weight" value="{{d.weight}}">
+			<input class="layui-input" name="weight" value="{{d.weight==null?'':d.weight}}">
 		</div>
 	</div>
 	<div class="layui-item">
 		<label class="layui-form-label">商品高度/cm</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="size" value="{{d.size}}">
+			<input class="layui-input" name="size" value="{{d.size==null?'':d.size}}">
 		</div>
 	</div>
 	<div class="layui-item">
 		<label class="layui-form-label">成本/元</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="cost" value="{{d.cost}}">
+			<input class="layui-input" name="cost" value="{{d.cost==null?'':d.cost}}">
 		</div>
 	</div>
 	<div class="layui-item">
 		<label class="layui-form-label">广宣成本/元</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="propagandaCost" value="{{d.propagandaCost}}">
+			<input class="layui-input" name="propagandaCost" value="{{d.propagandaCost==null?'':d.propagandaCost}}">
 		</div>
 	</div>
 	<div class="layui-item">
@@ -159,7 +158,6 @@ layui.config({
 		function getInventoryNumber(warehouseId){
 			return function(d){
 				var inv=d.inventorys;
-				console.log(d.field)
 				for(var j=0;j<inv.length;j++){
 					if(inv[j].warehouse.id==warehouseId)
 						return '<span style="color:blue;">'+inv[j].number+'</span>';
@@ -192,7 +190,7 @@ layui.config({
 				page: { curr : 1}
 			})
 		}) 
-		table.on('toolbar(productTable)',function(obj){
+		table.on('toolbar(productTable)',function(obj){	
 			switch(obj.event){
 			case 'add':		addEdit('add');		break;
 			case 'update':	addEdit('edit'); 	break;
@@ -200,32 +198,32 @@ layui.config({
 			}
 		})
 		
-		function addEdit(type){
+		function addEdit(type){	
 			var data={id:'',skuCode:'',weight:'',size:'',material:'',fillers:'',cost:'',propagandaCost:'',remark:'',tianmaoPrice:'',oseePrice:'',offlinePrice:''},
 			choosed=layui.table.checkStatus('productTable').data,
 			tpl=addEditTpl.innerHTML,
 			title='新增商品',
 			html='';
-			if(type=='edit'){
+			if(type=='edit'){	
 				if(choosed.length>1){
-					layer.msg("不能同时编辑多条信息",{icon:2});
+					layer.msg("不能同时编辑多条信息",{icon:2,offset:'10px;'});
 					return;
 				}
 				if(choosed.length<1){
-					layer.msg("至少选择一条信息编辑",{icon:2});
+					console.log(choosed.length)
+					layer.msg("至少选择一条信息编辑",{icon:2,offset:'10px;'});
 					return;
 				}
 				data=choosed[0];
 				title="修改商品";
 			}
-			laytpl(tpl).render(data,function(h){
-				html=h;
-			})
+			laytpl(tpl).render(data,function(h){ html=h; })
 			var addEditWin=layer.open({
-				type:1,
-				title:title,
-				area:['40%','65%'],
-				content:html
+				type : 1,
+				title : title,
+				offset:'10px;',
+				area : ['40%','65%'],
+				content : html,
 			})
 			form.render();
 			form.on('submit(sure)',function(obj){
