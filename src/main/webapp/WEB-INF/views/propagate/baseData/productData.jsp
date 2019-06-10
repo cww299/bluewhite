@@ -174,7 +174,6 @@ layui.config({
 			toolbar:'#productTableToolbar',
 			loading:true,
 			page:true,
-			size:'lg',
 			limits:[10,25,50,100],
 			limit:100,
 			request:{
