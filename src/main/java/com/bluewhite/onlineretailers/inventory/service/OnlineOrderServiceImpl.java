@@ -242,6 +242,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				onlineOrderChild.setCommodityId(jsonObject.getLong("commodityId"));
 				onlineOrderChild.setNumber(jsonObject.getInteger("number"));
+				onlineOrderChild.setResidueNumber(jsonObject.getInteger("number"));
 				onlineOrderChild.setPrice(jsonObject.getDouble("price"));
 				onlineOrderChild.setSumPrice(jsonObject.getDouble("sumPrice"));
 				onlineOrderChild.setSystemPreferential(jsonObject.getDouble("systemPreferential"));
@@ -255,6 +256,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		}
 		// 总数量
 		onlineOrder.setNum(onlineOrder.getOnlineOrderChilds().stream().mapToInt(OnlineOrderChild::getNumber).sum());
+		//总剩余数量
+		onlineOrder.setResidueNumber(onlineOrder.getNum());
 		onlineOrder.setFlag(0);
 		return dao.save(onlineOrder);
 	}
@@ -282,6 +285,15 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				int number = jsonObject.getIntValue("number");
 				// 获取子订单
 				OnlineOrderChild onlineOrderChild = onlineOrderChildDao.findOne(id);
+				
+				//子订单部分发货
+				if(onlineOrderChild.getResidueNumber()>number){
+					onlineOrderChild.setStatus(Constants.ONLINEORDER_3);
+					onlineOrderChild.setResidueNumber(onlineOrderChild.getNumber()-number);
+				}else{
+					onlineOrderChild.setStatus(Constants.ONLINEORDER_5);
+				}
+				
 				// 获取父订单
 				OnlineOrder onlineOrder = onlineOrderChild.getOnlineOrder();
 				if (onlineOrder.getFlag() == 1) {
@@ -343,8 +355,6 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 					if (inventory != null) {
 						inventory.setNumber(inventory.getNumber() - number);
 						inventoryDao.save(inventory);
-						// 更新子订单为发货状态
-						onlineOrderChild.setStatus(Constants.ONLINEORDER_5);
 						onlineOrderChildDao.save(onlineOrderChild);
 					} else {
 						throw new ServiceException(commodity.getName() + "当前仓库没有库存,无法出库");
@@ -358,16 +368,19 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				int onlineOrderChildListCount = (int) onlineOrderChildList.stream()
 						.filter(OnlineOrderChild -> OnlineOrderChild.getStatus().equals(Constants.ONLINEORDER_5))
 						.count();
+				int onlineOrderChildListNumber = onlineOrderChildList.stream().mapToInt(p -> p.getResidueNumber()).sum();
+				onlineOrder.setResidueNumber(onlineOrderChildListNumber);
 				if (onlineOrderChildList.size() == onlineOrderChildListCount) {
 					onlineOrder.setStatus(Constants.ONLINEORDER_5);
 				} else {
 					onlineOrder.setStatus(Constants.ONLINEORDER_3);
 				}
 				count++;
+				
 			}
-
 			// 更新总发货单的数量
 			int procurementNumber = procurement.getProcurementChilds().stream().mapToInt(p -> p.getNumber()).sum();
+			
 			procurement.setNumber(procurementNumber);
 			procurementDao.save(procurement);
 		}
