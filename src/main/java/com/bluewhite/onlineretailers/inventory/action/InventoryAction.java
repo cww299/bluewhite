@@ -200,10 +200,14 @@ public class InventoryAction {
 			commodityService.save(ot);
 			cr.setMessage("修改成功");
 		} else {
-			// 同步商品名称
-			commodity.setName(commodity.getSkuCode());
-			commodityService.save(commodity);
-			cr.setMessage("新增成功");
+			if(commodityService.findByName(commodity.getSkuCode())!=null){
+				cr.setMessage("该商品已存在无法新增");
+			}else{
+				// 同步商品名称
+				commodity.setName(commodity.getSkuCode());
+				commodityService.save(commodity);
+				cr.setMessage("新增成功");
+			}
 		}
 		return cr;
 	}

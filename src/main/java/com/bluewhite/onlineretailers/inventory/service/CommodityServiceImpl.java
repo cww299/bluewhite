@@ -79,7 +79,7 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 				Join<Commodity,Inventory> join = root.join(root.getModel().getSet("inventorys", Inventory.class),JoinType.LEFT);
 				//根据仓库id排序	
 				predicate.add(cb.equal(join.get("warehouseId").as(Integer.class),sort[0]));
-				//匹配正序倒叙
+				//匹配正序倒序
 				if(sort[1].equals("desc")){
 					query.orderBy(cb.desc(join.get("number").as(Integer.class)));
 				}else{
@@ -257,6 +257,11 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 			}
 		}
 		return count;
+	}
+
+	@Override
+	public Commodity findByName(String name) {
+		return dao.findByName(name);
 	}
 
 

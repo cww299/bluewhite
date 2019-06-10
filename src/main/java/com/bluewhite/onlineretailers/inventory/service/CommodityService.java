@@ -55,5 +55,11 @@ public interface CommodityService  extends BaseCRUDService<Commodity,Long>{
 	 * @param ids
 	 */
 	public int deleteWarning(String ids);
+	
+	/**
+	 * 根据名字查询
+	 * @param ids
+	 */
+	public  Commodity findByName(String name);
 
 }

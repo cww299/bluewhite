@@ -227,7 +227,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				predicate.add(cb.isNotNull(join.get("id").as(Long.class)));
 			}
 			
-			//退休返聘（男age>60，女age>55,还在正常工作）
+			//退休返聘（男age>60，女age>50,还在正常工作）
 			if (!StringUtils.isEmpty(user.getRetire())) {
 				if(!StringUtils.isEmpty(user.getGender())){
 					if (user.getGender()==1) {
