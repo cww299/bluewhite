@@ -207,6 +207,7 @@
 								title: "部门",
 								align: 'center',
 								edit: false,
+								filter:true,
 							},{
 								field: "money",
 								title: "餐费汇总",

@@ -839,10 +839,10 @@
 							                page: {
 							                }
 							              }) 
-							              table.reload("tableBudget", {
+							               table.reload("tableBudget", {
 							                page: {
 							                }
-							              }) 
+							              })  
 										layer.msg(result.message, {
 											icon: 1,
 											time:800
