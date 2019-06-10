@@ -77,9 +77,9 @@ public class InventoryAction {
 						"consignTime", "buyerRemarks", "num", "sumPrice", "status", "allBillPreferential",
 						"trackingNumber", "buyerMessage", "buyerMemo", "buyerFlag", "sellerMemo", "sellerFlag",
 						"buyerRate",  "shippingType", "createdAt", "updatedAt", "address", "phone",
-						"zipCode", "buyerName", "provinces", "city", "county", "flag", "telephone")
+						"zipCode", "buyerName", "provinces", "city", "county", "flag", "telephone","residueNumber")
 				.addRetainTerm(OnlineOrderChild.class, "id", "number", "commodity", "price", "sumPrice",
-						"systemPreferential", "sellerReadjustPrices", "actualSum", "warehouse","status")
+						"systemPreferential", "sellerReadjustPrices", "actualSum", "warehouse","status","residueNumber")
 				.addRetainTerm(Commodity.class, "id", "productID", "skuCode", "fileId", "picUrl", "name", "description",
 						"weight", "size", "material", "fillers", "cost", "propagandaCost", "remark", "tianmaoPrice",
 						"oseePrice", "offlinePrice")
