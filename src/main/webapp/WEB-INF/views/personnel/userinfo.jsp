@@ -130,7 +130,12 @@
 										<td>&nbsp;&nbsp;</td>    <!-- 修改此处 -->
 										<td>协议:</td>
 										<td><select id="agreementsSelect" class="form-control">
-												<option value="">请选择</option></select>
+												<option value="">请选择</option></select></td>
+											<td>&nbsp;&nbsp;</td>	
+										<td><button type="button"
+										class="btn btn-success  btn-sm btn-3d ecxel" id="export">导出返聘
+										</button></td>
+												
 									</tr>
 								</table>
 								<span class="input-group-btn">
@@ -2356,6 +2361,13 @@ jQuery(function($){
 			  }
 			  
 			this.events = function(){
+				
+				//导出
+				$('#export').on('click',function(){
+					location.href="${ctx}/excel/importExcel/retire";
+				})
+				
+				
 				var getdataa={type:"orgName",}
 				var htmlfrn="";
 				var htmlthn="";
