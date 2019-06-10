@@ -9,7 +9,7 @@ import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
-import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
+import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.onlineretailers.inventory.entity.Warning;
 @Service
 public interface CommodityService  extends BaseCRUDService<Commodity,Long>{
@@ -22,6 +22,16 @@ public interface CommodityService  extends BaseCRUDService<Commodity,Long>{
 	 * @return
 	 */
 	public PageResult<Commodity> findPage(Commodity commodity, PageParameter page);
+	
+	/**
+	 * 分页查看商品
+	 * @param onlineOrder
+	 * @param page
+	 * @return
+	 */
+	public PageResult<Inventory> findPage(Inventory inventory, PageParameter page);
+	
+	
 	/**
 	 * 删除商品
 	 * @param ids

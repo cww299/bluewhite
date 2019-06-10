@@ -57,6 +57,7 @@ public class OnlineOrderChild  extends BaseEntity<Long> {
 	 * 订单状态交易状态。可选值: 
 	 * WAIT_SELLER_SEND_GOODS(等待卖家发货,即:买家已付款)
 	 * WAIT_BUYER_CONFIRM_GOODS(等待买家确认收货,即:卖家已发货) 
+	 * SELLER_CONSIGNED_PART(卖家部分发货) 
 	 * TRADE_BUYER_SIGNED(买家已签收,货到付款专用) 
 	 * TRADE_FINISHED(交易成功) 
 	 * 
@@ -69,6 +70,12 @@ public class OnlineOrderChild  extends BaseEntity<Long> {
 	 */
 	@Column(name = "number")
 	private Integer number;
+	
+	/**
+	 * 剩余发货数量
+	 */
+	@Column(name = "residue_number")
+	private Integer residueNumber;
 	
 	
 	/**
@@ -156,6 +163,14 @@ public class OnlineOrderChild  extends BaseEntity<Long> {
 	
 	
 	
+	public Integer getResidueNumber() {
+		return residueNumber;
+	}
+
+	public void setResidueNumber(Integer residueNumber) {
+		this.residueNumber = residueNumber;
+	}
+
 	public Long getOnlineCustomerId() {
 		return onlineCustomerId;
 	}

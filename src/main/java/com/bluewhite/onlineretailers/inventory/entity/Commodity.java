@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -156,8 +157,27 @@ public class Commodity extends BaseEntity<Long>{
 	@Transient
 	private Date orderTimeEnd;
 	
+	/**
+	 * 仓库类型id
+	 */
+	@Transient
+	private String warehouseSort;
 	
 	
+	
+	
+
+
+	public String getWarehouseSort() {
+		return warehouseSort;
+	}
+
+
+	public void setWarehouseSort(String warehouseSort) {
+		this.warehouseSort = warehouseSort;
+	}
+
+
 	public Date getOrderTimeBegin() {
 		return orderTimeBegin;
 	}

@@ -6,6 +6,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
@@ -53,10 +54,27 @@ public class Inventory extends BaseEntity<Long>{
 	@JoinColumn(name = "warehouse_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData warehouse;
 
+	/**
+	 * 商品编号（sku）
+	 * 
+	 */
+	@Transient
+	private String skuCode;
+	
+	
+	
 	
 	
 
 
+
+	public String getSkuCode() {
+		return skuCode;
+	}
+
+	public void setSkuCode(String skuCode) {
+		this.skuCode = skuCode;
+	}
 
 	public Long getCommodityId() {
 		return commodityId;
