@@ -21,7 +21,7 @@
 				<td>查询时间:&nbsp;&nbsp;</td>
 				<td><input type='text' id='time' class='layui-input' style='width:350px;' placeholder='请输入查询时间'></td>
 				<td>&nbsp;&nbsp;</td>
-				<td><select id="customIdSelect"><option value="">获取数据中</option></select></td>
+				<td><select id="customIdSelect" lay-search><option value="">获取数据中</option></select></td>
 				<td>&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-sm" id='search'>搜索</button></td>
 				<td>&nbsp;&nbsp;</td>
