@@ -355,23 +355,25 @@ layui.config({
 							}
 						}) 
 					}else{
+						var attr = $(this).parent().attr('data-key');		//动态获取 data-key 值
+						var key = attr.substring(0,attr.length-1);
 						choosedProduct[i][obj.field]=obj.value;
 						var c=choosedProduct[i];
 						choosedProduct[i].sumPrice=parseFloat(c.number*c.price).toFixed(2);
 						choosedProduct[i].actualSum=parseFloat((c.price-(-c.sellerReadjustPrices)-c.systemPreferential)*c.number).toFixed(2);
-						$(this).parent().siblings('td[data-key="3-0-7"]').find('div').html(choosedProduct[i].sumPrice);		//更新数据表格的内容
-						$(this).parent().siblings('td[data-key="3-0-8"]').find('div').html(choosedProduct[i].actualSum); 
+						$(this).parent().siblings('td[data-key="'+key+'7"]').find('div').html(choosedProduct[i].sumPrice);//更新数据表格的内容
+						$(this).parent().siblings('td[data-key="'+key+'8"]').find('div').html(choosedProduct[i].actualSum); 
 					}
 				}
 				allPayment-=(-choosedProduct[i].actualSum);		//计算收款金额
-			}
+			} 
 			allPayment-=(-$('#AddPostFee').val());				//加	上邮费
 			$('#customPayment').val(allPayment);			
 		});
 		
 		var lastPostFee=0;     				 	//用于保存修改前的邮费价格，进行重新计算
 		$('#AddPostFee').change(function(){
-			if(isNaN($('#AddPostFee').val())){
+			if(isNaN($('#AddPostFee').val())){ 
 				layer.msg('修改无效！请正确输入邮费信息！',{icon:2});
 				$('#AddPostFee').val(lastPostFee);
 				return;
