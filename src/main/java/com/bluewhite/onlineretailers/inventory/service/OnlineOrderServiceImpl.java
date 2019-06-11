@@ -445,6 +445,9 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			onlineOrderChild.setNumber(cPoi.getNumber());
 			onlineOrderChild.setWarehouseId(cPoi.getWarehouseId() == null ? 157 : warehouseId);
 			onlineOrderChild.setSumPrice(NumUtils.mul(onlineOrderChild.getPrice(), onlineOrderChild.getNumber()));
+			onlineOrderChild.setActualSum(onlineOrderChild.getSumPrice());
+			onlineOrderChild.setSystemPreferential(0.0);
+			onlineOrderChild.setSellerReadjustPrices(0.0);
 			if (cPoi.getCommodityName() != null) {
 				Commodity commodity = commodityDao.findByName(cPoi.getCommodityName());
 				if (commodity != null) {
