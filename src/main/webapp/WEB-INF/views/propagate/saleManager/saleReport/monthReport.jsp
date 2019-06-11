@@ -44,10 +44,19 @@ layui.config({
 		, laydate = layui.laydate
 		, tablePlug = layui.tablePlug;
 		
+		function p(s) { return s < 10 ? '0' + s: s; }
+		var myDate = new Date();
+		var year=myDate.getFullYear();
+		var month=myDate.getMonth()+1;
+		var day = new Date(year,month,0);
+		var firstdate = year + '-' + p(month) + '-01'+' '+'00:00:00';
+		var lastdate = year + '-' + p(month) + '-' + day.getDate() +' '+'23:59:59';
+		
 		form.render();
 	 	laydate.render({
 			elem:'#time',
 			type: 'month',
+			value: year + '-' + p(month),
 		}) 
 		$('#search').on('click',function(){
 			var time=$('#time').val();
@@ -60,6 +69,10 @@ layui.config({
 			})
 		})
 		table.render({
+			url:'${ctx}/inventory/report/salesDay?report=2',
+			where:{
+				orderTimeBegin : firstdate
+			},
 			elem:'#dayReport',
 			loading:true,
 			size:'sm',
