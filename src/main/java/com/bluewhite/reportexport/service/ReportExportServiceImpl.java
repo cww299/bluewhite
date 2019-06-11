@@ -170,13 +170,13 @@ public class ReportExportServiceImpl implements ReportExportService{
 		if(excelUser.size()>0){
 			List<User> userList = new ArrayList<User>();
 			for(UserPoi proPoi :excelUser){
-				User user  = userDao.findByUserName(proPoi.getLogin_name());
+//				User user  = userDao.findByUserName(proPoi.getLogin_name());
 //				UserContract userContract =null;
-				if(user==null){
-					user = new User();
-					user.setUserName(proPoi.getLogin_name());
-					user.setForeigns(0);
-				}
+//				if(user==null){
+//					user = new User();
+//					user.setUserName(proPoi.getLogin_name());
+//					user.setForeigns(0);
+//				}
 //				
 //				Date entry = null;
 //				Date quitDate = null;
@@ -199,8 +199,8 @@ public class ReportExportServiceImpl implements ReportExportService{
 //				} catch (ParseException e) {
 //					e.printStackTrace();
 //				}
-				user.setGender(proPoi.getGender());
-				user.setQuit(proPoi.getQuit());
+//				user.setGender(proPoi.getGender());
+//				user.setQuit(proPoi.getQuit());
 //				user.setQuitDate(proPoi.getQuit_date());
 //				user.setContractDate(proPoi.getContract_date());
 //				user.setPhone(proPoi.getPhone());
@@ -221,7 +221,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 //				if(userContract!=null){
 //					user.setUserContract(userContract);
 //				}
-				userList.add(user);
+//				userList.add(user);
 				count++;
 			}
 			userDao.save(userList);
