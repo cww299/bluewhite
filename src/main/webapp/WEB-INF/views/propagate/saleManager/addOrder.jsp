@@ -373,7 +373,7 @@ layui.config({
 		
 		var lastPostFee=0;     				 	//用于保存修改前的邮费价格，进行重新计算
 		$('#AddPostFee').change(function(){
-			if(isNaN($('#AddPostFee').val())){
+			if(isNaN($('#AddPostFee').val())){ 
 				layer.msg('修改无效！请正确输入邮费信息！',{icon:2});
 				$('#AddPostFee').val(lastPostFee);
 				return;
