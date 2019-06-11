@@ -910,8 +910,19 @@ public class ReportExportAction {
 	    List<User> list2=users.stream().filter(User->User.getGender()!=null && User.getAge()!=null && User.getBirthDate()!=null && User.getGender().equals(0) && User.getAge()>=60 && User.getBirthDate().before(date4)).collect(Collectors.toList());
 	    lists.addAll(list);
 	    lists.addAll(list2);
-	    Excelutil<User> util = new Excelutil<User>(User.class);
-        util.exportExcel(lists, "退休返聘", out);// 导出 
+	    List<UserPoi> lists2 = new ArrayList<>();
+	    SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+	   for (User user : lists) {
+		UserPoi poi=new UserPoi();
+		poi.setName(user.getUserName());
+		poi.setAge(user.getAge());
+		poi.setBirthDate(fmt.format(user.getBirthDate()));
+		poi.setOrgName(user.getOrgName().getName());
+		poi.setGender(user.getGender()==0 ? "男" :"女");
+		lists2.add(poi);
+	}
+	    Excelutil<UserPoi> util = new Excelutil<UserPoi>(UserPoi.class);
+        util.exportExcel(lists2, "退休返聘", out);// 导出 
         out.close();
 	}
 	

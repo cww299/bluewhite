@@ -20,7 +20,6 @@ import javax.persistence.Transient;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
-import com.bluewhite.common.utils.excel.Poi;
 import com.bluewhite.production.group.entity.Group;
 
 /**
@@ -81,7 +80,6 @@ public class User extends BaseEntity<Long> {
 	 * 员工姓名
 	 */
 	@Column(name = "username")
-	@Poi(name = "姓名", column = "A")
 	private String userName;
 	
 	/**
@@ -124,14 +122,12 @@ public class User extends BaseEntity<Long> {
 	 * 生日
 	 */
 	@Column(name = "birth_date")
-	@Poi(name = "生日", column = "C")
 	private Date birthDate;
 	
 	/**
 	 * 年龄
 	 */
 	@Column(name = "age")
-	@Poi(name = "年龄", column = "B")
 	private Integer age;
 	
 	/**

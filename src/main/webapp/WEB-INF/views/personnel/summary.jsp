@@ -36,7 +36,7 @@
 							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
-									<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
+									<button class="layui-btn layuiadmin-btn-admin" id="LAY-search5" lay-submit lay-filter="LAY-search">
 										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
 									</button>
 								</div>
@@ -328,6 +328,14 @@
 								break;
 						}
 					}); */
+					
+					$(document).keydown(function(event){
+						　　if(event.keyCode==13){
+						　   $("#LAY-search5").click();
+						　　}
+						});
+					
+					
 					//监听搜索
 					form.on('submit(LAY-search)', function(obj) {		//修改此处
 						var field = obj.field;

@@ -1,7 +1,5 @@
 package com.bluewhite.reportexport.entity;
 
-import java.util.Date;
-
 import com.bluewhite.common.utils.excel.Poi;
 
 public class UserPoi {
@@ -22,14 +20,29 @@ public class UserPoi {
 	/**
 	 * 生日
 	 */
-	@Poi(name = "生日", column = "C")
-    private Date birthDate;
+	@Poi(name = "生日", column = "D")
+    private String birthDate;
 	
 	/**
 	 * 部门
 	 */
-	@Poi(name = "部门", column = "D")
+	@Poi(name = "部门", column = "E")
 	private String orgName;
+	
+	/**
+	 * 性别(0=男，1=女)
+	 */
+	@Poi(name = "性别", column = "C")
+	private String gender;
+	
+	
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
 
 	public String getName() {
 		return name;
@@ -47,11 +60,11 @@ public class UserPoi {
 		this.age = age;
 	}
 
-	public Date getBirthDate() {
+	public String getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(Date birthDate) {
+	public void setBirthDate(String birthDate) {
 		this.birthDate = birthDate;
 	}
 
