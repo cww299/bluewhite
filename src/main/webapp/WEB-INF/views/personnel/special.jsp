@@ -54,7 +54,7 @@
 
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
-				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
+				<span class="layui-btn layui-btn-sm" lay-event="becomeFull">一键转正</span>
 			</div>
 		</script>
 
@@ -257,7 +257,7 @@
 						var btnElem = $(this);
 						var tableId = config.id;
 						switch(obj.event) {
-							case 'deleteSome':
+							/* case 'deleteSome':
 								// 获得当前选中的
 								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
 								layer.confirm('您是否确定要删除选中的' + checkedIds.length + '条记录？', function() {
@@ -306,8 +306,38 @@
 									});
 									layer.close(index);
 								});
+								break; */
+							case 'becomeFull': 
+								var choosed = layui.table.checkStatus('tableData').data;
+								if(choosed.length<1){
+									layer.msg('请选择人员',{icon:2});
+									return;
+								}
+								if(choosed[0].phone==''){
+									layer.msg('转正人员需要填写号码！',{icon:2});
+									return;
+								}
+								layer.confirm('是否确认转正？',function(){
+									var positiveUser='';
+									for(var i=0;i<choosed.length;i++){
+										positiveUser+=(choosed[i].id+',');
+									}
+									var load=layer.load(1);
+									$.ajax({
+										url:'${ctx}/system/user/positiveUser?positiveUser='+positiveUser,
+										success:function(result){
+											if(0==result.code){
+												table.reload('tableData');
+												layer.close(load);
+												layer.msg(result.message,{icon:1});
+											}else{
+												layer.msg(result.message,{icon:2});
+											}
+											layer.close(load);
+										}
+									})
+								})//end confirm
 								break;
-								
 							case 'cleanTempData':	
 									table.cleanTemp(tableId);
 							break;
