@@ -185,8 +185,7 @@ td{
 			</tr>
 			<tr>
 				<td>详细地址：</td>			
-				<td colspan="5"><input type="text" class="layui-input" id="customAddress" name="address" readonly
-								placeholder="您可以直接黏贴淘宝或拼多多的收货地址,会自动提取省市区和收货人信息" value="{{ d.address }}"></td>
+				<td colspan="5"><input type="text" class="layui-input" id="customAddress" name="address" readonly value="{{ d.address }}"></td>
 			</tr>
 			
 		</table>
@@ -325,7 +324,7 @@ layui.config({
 		   		  }
 		   	  } 
 		   	  ,accept: 'file' 
-		   	  ,exts: 'xlsx,xls'
+		   	  ,exts: 'xlsx|xls'
 		})
 		$('#uploadDataBtn').on('click',function(){
 			layer.open({
@@ -451,7 +450,7 @@ layui.config({
 				page : {},
 				cols : [[
 				           { align:'center', type:'checkbox',},
-				           {field:'',		title:'商品名称',			  align:'center', templet:function(d){ return '<span>'+d.commodity.skuCode+'</span>';} },
+				           {field:'skuCode',		title:'商品名称',			  align:'center', templet:function(d){ return '<span>'+d.commodity.skuCode+'</span>';} },
 					       {field:'inventory',	title:'发货仓库',	  align:'center', width:'8%', templet:function(d){ return '<span>'+d.warehouse.name+'</span>';} },
 					       {field:'number',		title:'总数量',        align:'center', width:'10%',		},
 					       {field:'residueNumber',   title:'剩余发货数量',    align:'center', width:'10%',		},

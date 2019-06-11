@@ -319,10 +319,10 @@ layui.config({
 		function deletes(){							//删除生产单表格
 			var choosed=layui.table.checkStatus('outOrderTable').data;
 			if(choosed.length<1){
-				layer.msg('请选择生产单',{icon:2});
+				layer.msg('请选择生产单',{icon:2,offset:'100px',});
 				return;
 			}
-			layer.confirm('是否确认反冲？',function(){
+			layer.confirm('是否确认反冲？',{offset:'100px',},function(){
 				var ids='';
 				for(var i=0;i<choosed.length;i++)
 					ids+=(choosed[i].id+',');
@@ -332,9 +332,9 @@ layui.config({
 					success:function(result){
 						if(0==result.code){
 							table.reload('outOrderTable');
-							layer.msg(result.message,{icon:1});
+							layer.msg(result.message,{icon:1,offset:'100px',});
 						}else
-							layer.msg(result.message,{icon:2});
+							layer.msg(result.message,{icon:2,offset:'100px',});
 						layer.close(load);
 					}
 				})
@@ -348,6 +348,7 @@ layui.config({
 			layer.open({
 				type : 1,
 				title : '查看出库单',
+				offset:'30px',
 				area : ['90%','90%'],
 				content : $('#lookoverOrderDiv')
 			})
@@ -389,6 +390,7 @@ layui.config({
 				type : 1,
 				title : '新增出库单',
 				area : ['90%','90%'],
+				offset:'30px',
 				content : $('#addOrderDiv')
 			})
 			getUserSelect(currUser.id,'userIdSelect');
@@ -469,33 +471,39 @@ layui.config({
 		})
 		table.on('edit(productListTable)', function(obj){ 			//监听编辑表格单元
 			if(obj.field=='number'){
+				var msg='';
 				if(isNaN(obj.value))
-					layer.msg("修改无效！请输入正确的数字",{icon:2});
+					msg="修改无效！请输入正确的数字";
 				else if(obj.value=='')
-					layer.msg('计划的数量不能为空',{icon:2});
+					msg='计划的数量不能为空';
 				else if(obj.value<0)
-					layer.msg('计划的数量不能小于0',{icon:2});
+					msg='计划的数量不能小于0';
 				else if(obj.value%1 !== 0)
-					 layer.msg('计划的数量必须为整数',{icon:2});
-				else
-					for(var i=0;i<choosedProduct.length;i++){
-						if(choosedProduct[i].id==obj.data.id){		
-							var inv=choosedProduct[i].inventorys;
-							for(var j=0;j<inv.length;j++){
-								if(inv[j].warehouse.id == choosedProduct[i].warehouseId){
-									if(inv[j].number<obj.value){
-										layer.msg('计划数量不能大于仓库剩余数量，请重新修改数量或选择其他出货仓库！',{icon:2});
-										table.reload('productListTable',{data : choosedProduct,});
-										return;
-									}
-									break;
-								}
-							}
-							$('#addOrderNumber').val($('#addOrderNumber').val()-choosedProduct[i].number-(-parseInt(obj.value)));
-							choosedProduct[i].number=parseInt(obj.value);
-						 	break;
+					msg='计划的数量必须为整数';
+				for(var i=0;i<choosedProduct.length;i++){
+					if(choosedProduct[i].id==obj.data.id){		
+						if(msg!=''){
+							layer.msg('"'+obj.value+'" 为非法输入！'+msg,{icon:2,offset:'100px',});
+							$(this).val(0)
+							choosedProduct[i].number=0;
+							return;
 						}
+						var inv=choosedProduct[i].inventorys;
+						for(var j=0;j<inv.length;j++){
+							if(inv[j].warehouse.id == choosedProduct[i].warehouseId){
+								if(inv[j].number<obj.value){
+									layer.msg('计划数量不能大于仓库剩余数量，请重新修改数量或选择其他出货仓库！',{icon:2,offset:'100px',});
+									return;
+								}
+								break;
+							}
+						}
+						$('#addOrderNumber').val($('#addOrderNumber').val()-choosedProduct[i].number-(-parseInt(obj.value)));
+						$(this).val(parseInt(obj.value))
+						choosedProduct[i].number=parseInt(obj.value);
+						return;
 					}
+				}
 			}else{
 				for(var i=0;i<choosedProduct.length;i++){
 					 if(choosedProduct[i].id==obj.data.id){		//重新对该行的相关数据进行计算
@@ -509,22 +517,21 @@ layui.config({
 					}
 				}
 			}
-			table.reload('productListTable',{ data : choosedProduct })
 		});
 		form.on('submit(sureAdd)',function(obj){					//确定添加出库单
 			var child=[],allNum=0;
 			if(!choosedProduct.length>0){
-				layer.msg('出库商品不能为空！',{icon:2});
+				layer.msg('出库商品不能为空！',{icon:2,offset:'100px',});
 				return;
 			}
 			for(var i=0;i<choosedProduct.length;i++){
 				var t=choosedProduct[i];			
 				if(t.number<1){
-					layer.msg('计划数量不能为0！',{icon:2});
+					layer.msg('计划数量不能为0！',{icon:2,offset:'100px',});
 					return;
 				}
 				if(isNaN(t.number)){
-					layer.msg('不能选择库存为0的商品！',{icon:2});
+					layer.msg('不能选择库存为0的商品！',{icon:2,offset:'100px',});
 					return;
 				}
 				child.push({
@@ -551,14 +558,14 @@ layui.config({
 						$('#resetAddOrder').click();
 						layer.closeAll();
 						table.reload('outOrderTable');
-						layer.msg(result.message,{icon:1});
+						layer.msg(result.message,{icon:1,offset:'100px',});
 					}else{
-						layer.msg(result.message,{icon:2});
+						layer.msg(result.message,{icon:2,offset:'100px',});
 						layer.close(load);
 					}
 				},
 				error:function(){
-					layer.msg("服务器异常",{icon:2});
+					layer.msg("服务器异常",{icon:2,offset:'100px',});
 					layer.close(load);
 				}
 			})
@@ -583,7 +590,7 @@ layui.config({
 		function deleteChoosedProduct(){								//删除商品
 			var choosed = layui.table.checkStatus('productListTable').data;
 			if(choosed.length==0){
-				layer.msg("请选择商品删除");
+				layer.msg("请选择商品删除",{icon:2,offset:'100px',});
 				return;
 			}
 			for(var i=0;i<choosed.length;i++){
@@ -604,6 +611,7 @@ layui.config({
 			chooseProductWin = layer.open({		
 				type:1,
 				title:'选择产品',
+				offset:'60px',
 				area:['80%','80%'],
 				content:$('#productChooseDiv'),
 			})
@@ -632,7 +640,7 @@ layui.config({
 		function sureChoosed(){					//确定商品选择
 			var choosed=layui.table.checkStatus('productChooseTable').data;
 			if(choosed.length<1){
-				layer.msg("请选择相关商品");
+				layer.msg("请选择相关商品",{icon:2,offset:'100px',});
 				return false;
 			}
 	 		for(var i=0;i<choosed.length;i++){
@@ -660,7 +668,7 @@ layui.config({
 				choosedProduct.push(orderChild);
 			}
 			table.reload('productListTable',{ data:choosedProduct });
-			layer.msg('添加成功',{icon:1});
+			layer.msg('添加成功',{icon:1,offset:'100px',});
 			return true;
 		}
 		function getAllUser(){
