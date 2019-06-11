@@ -59,7 +59,7 @@ td{
 						<input type="text" name="onlineCustomerName" id='customNameSelect' class='layui-input' placeholder='客户名称'></div>
 					<div class="layui-input-inline">
 						<select lay-search name='status'><option value="">交易状态</option>
-														<option  value="WAIT_SELLER_SEND_GOODS" selected>买家已付款</option>
+														<option  value="WAIT_SELLER_SEND_GOODS">买家已付款</option>
 														<!-- <option  value="TRADE_NO_CREATE_PAY">没有创建支付宝交易</option>
 														<option  value="WAIT_BUYER_PAY">等待买家付款</option>
 														<option  value="SELLER_CONSIGNED_PART">卖家部分发货</option>
@@ -110,12 +110,11 @@ td{
 	<div>
 		<table class="layui-form" style="width:100%" id="headerTool">
 			<tr>
-				<td>操作</td>
-				<td colspan="3" style="text-align:left;">
-					<button class="layui-btn layui-btn-sm" lay-submit lay-filter="sureAdd">确定</button>
-					<input type="hidden" name="onlineCustomerId" id="customId" value="{{ d.onlineCustomer.id }}">
-					<input type="hidden" name="id" value="{{ d.id }}">
-				</td>
+				<td>客户名称：<input type="hidden" name="onlineCustomerId" id="customId" value="{{ d.onlineCustomer.id }}">
+							  <input type="hidden" name="id" value="{{ d.id }}"></td>	
+				<td><input type="text" class="layui-input" name="name" id="customNames" lay-verify="required" readonly value="{{ d.onlineCustomer.name }}"></td>
+				<td>订单编号：</td>			
+				<td><input type="text" class="layui-input" name="tid" value="{{ d.tid==null?'无订单编号':d.tid }}" readonly></td>
 				<td>订单状态：</td>			
 				<td>{{# var text='';
 						switch(d.status){
@@ -131,21 +130,12 @@ td{
 						<input type="text" class="layui-input" value="{{ text }}" readonly></td>		
 			</tr>
 			<tr>
-				<td>客户名称：</td>	
-				<td><input type="text" class="layui-input" name="name" id="customNames" lay-verify="required" readonly value="{{ d.onlineCustomer.name }}"></td>
-				<td>订单编号：</td>			
-				<td><input type="text" class="layui-input" name="tid" value="{{ d.tid==null?'无订单编号':d.tid }}" readonly></td>
-				<td>所属客服：</td>			
-				<td><input type="text" class="layui-input" name="" value="{{ d.user.userName }}" readonly></td>
-			</tr>
-			<tr>
 				<td>收货人：</td>			
 				<td><input type="text" class="layui-input" id="customRealName" name="buyerName" value="{{ d.buyerName }}" readonly></td>
 				<td>收款金额：</td>			
 				<td><input type="text" class="layui-input" id="customPayment" name="payment" value="{{ d.payment }}" readonly></td>
-				
-				<td>发货仓库：</td>	
-				<td><select name="" disabled> <option value="">无默认仓库</option></select></td>		
+				<td>所属客服：</td>			
+				<td><input type="text" class="layui-input" name="" value="{{ d.user.userName }}" readonly></td>
 			</tr>
 			<tr>
 				<td>手机：</td>			
@@ -185,7 +175,9 @@ td{
 			</tr>
 			<tr>
 				<td>详细地址：</td>			
-				<td colspan="5"><input type="text" class="layui-input" id="customAddress" name="address" readonly value="{{ d.address }}"></td>
+				<td colspan="3"><input type="text" class="layui-input" id="customAddress" name="address" readonly value="{{ d.address }}"></td>
+				<td>操作</td>
+				<td><button class="layui-btn layui-btn-sm" type="button" id="printBtn">打印订单</button></td>
 			</tr>
 			
 		</table>
@@ -199,6 +191,7 @@ td{
 	<span class="layui-btn layui-btn-sm" lay-event="oneKey">一键发货</span>
 	<span class="layui-btn layui-btn-sm" lay-event="partDelivery">部分发货</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">反冲订单</span>
+	<span class="layui-btn layui-btn-sm " lay-event="printOrder">打印订单</span>
 </div>
 </script>
 <!-- 解析状态模板 -->
@@ -353,7 +346,7 @@ layui.config({
 
 		table.render({		//渲染主页面表格
 			elem:'#onlineOrder',
-			url:'${ctx}/inventory/onlineOrderPage?flag=0&status=WAIT_SELLER_SEND_GOODS',		//默认查找未反冲+已付款
+			url:'${ctx}/inventory/onlineOrderPage?flag=0&status=SELLER_CONSIGNED_PART,WAIT_SELLER_SEND_GOODS',		//默认查找未反冲+未发货+部分发货
 			toolbar:'#onlineOrderToolbar',
 			loading:true,
 			size:'sm',
@@ -370,14 +363,16 @@ layui.config({
 			       {field:'createdAt',	title:'下单时间',   align:'center', width:'9%'},
 			       {field:'documentNumber',        title:'订单号',     align:'center', width:'10%',},
 			       {field:'name',           title:'客户名称',     align:'center', width:'8%', },
-			       {field:'buyerMemo',  title:'买家留言',   align:'center',width:'12%', },
-			       {field:'sellerMemo', title:'卖家备注',   align:'center',width:'12%', },
+			       {field:'userName',           title:'业务员',     align:'center', width:'6%', templet:function(d){return d.user.userName}},
+			       {field:'buyerMemo',  title:'买家留言',   align:'center',width:'8%', },
+			       {field:'sellerMemo', title:'卖家备注',   align:'center',width:'8%', },
 			       {field:'postFee',    title:'邮费',       align:'center', width:'4%'},
 			       {field:'payment',    title:'实收金额',   align:'center', width:'5%'},
 			       {field:'num',     	title:'件数',       align:'center', width:'4%'},
+			       {field:'residueNumber', title:'剩余件数',       align:'center', width:'5%'},
 			       {field:'trackingNumber',title:'运单号',  align:'center', width:'8%',},
 			       {field:'status',        title:'状态',    align:'center', width:'8%', templet:'#statusTpl'},
-			       {				       title:'是否反冲',    align:'center', width:'5%', templet:isFlag(),},
+			       {field:'isFlag',		   title:'是否反冲',    align:'center', width:'5%', templet:isFlag(),},
 			       {field:'provinces',     title:'所在地区',align:'center', templet:'#provincesTpl'},
 			       ]],
 		}) 
@@ -394,11 +389,23 @@ layui.config({
 			case 'oneKey':   oneKey(); break;
 			case 'delete': deletes(); break;
 			case 'partDelivery' : partDelivery(); break;
+			case 'printOrder' : printOrder(); break;
 			}
 		})
 		table.on('rowDouble(onlineOrder)',function(obj){
 			addEditOrder(obj.data);
 		})
+		function  printOrder(){
+			var choosed = layui.table.checkStatus('onlineOrder').data;
+			if(choosed.length<1){ layer.msg('请选择订单',{icon:2}); return; }
+			var ids=[];
+			for(var i=0;i<choosed.length;i++){
+				ids.push(choosed[i].id);
+			}
+			$.ajax({
+				url:'${ctx}/inventory/export/excelOnlineOrderDetail?ids='+ids.join(','),
+			})
+		}
 		function partDelivery(){	
 			var choosed = layui.table.checkStatus('onlineOrder').data;
 			if(choosed.length<1){ layer.msg('请选择订单',{icon:2}); return; }
@@ -505,6 +512,11 @@ layui.config({
 				content:html
 			})
 			initAddEditOrderWin(data.onlineOrderChilds);			//弹窗的初始化，表格的渲染等。。
+			$('#printBtn').on('click',function(obj){
+				$.ajax({
+					url:'${ctx}/inventory/export/excelOnlineOrderDetail?ids='+data.id,
+				})
+			})
 		}
 		
 		function deletes(){
@@ -544,7 +556,6 @@ layui.config({
 				loading:true,
 				data: child,
 				page:{},
-				toolbar:true,
 				totalRow:true,
 				cols:[[
 				       {field:'a',		title:'商品名称',	align:'center',templet:function(d){ return '<span>'+d.commodity.skuCode+'</span>';} },
@@ -556,10 +567,6 @@ layui.config({
 				       {field:'sellerReadjustPrices',   		title:'卖家调价',   align:'center', width:'6%',	 templet:"#sellerReadjustPricesTpl"},
 				       {field:'actualSum',  title:'实际金额',   align:'center', width:'6%',	totalRow:true, style:"color:blue;"},
 				       ]]
-			})
-			form.on('submit(sureAdd)',function(obj){					
-				layer.closeAll();
-				return;
 			})
 			form.render();
 		}

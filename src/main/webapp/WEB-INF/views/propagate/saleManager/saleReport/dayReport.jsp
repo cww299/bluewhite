@@ -45,11 +45,15 @@ layui.config({
 		, tablePlug = layui.tablePlug;
 		
 		form.render();
-	 	laydate.render({
-			elem:'#time',
-			type: 'datetime',
-			range:'~'
-		}) 
+		
+		function p(s) { return s < 10 ? '0' + s: s; }
+		var myDate = new Date();
+		var year=myDate.getFullYear();
+		var month=myDate.getMonth()+1;
+		var day = new Date(year,month,0);
+		var firstdate = year + '-' + p(month) + '-01'+' '+'00:00:00';
+		var lastdate = year + '-' + p(month) + '-' + day.getDate() +' '+'23:59:59';
+		
 		$('#search').on('click',function(){
 			var time=$('#time').val();
 			if(time==''){
@@ -65,7 +69,21 @@ layui.config({
 				}
 			})
 		})
+		
+		laydate.render({ 
+			elem:'#time', 
+			type: 'datetime', 
+			range:'~', 
+			value: firstdate+' ~ '+lastdate,
+		}) 
+		
+		
 		table.render({
+			url : '${ctx}/inventory/report/salesDay?report=1',
+			where:{
+				orderTimeBegin : firstdate,
+				orderTimeEnd : lastdate
+			},
 			elem:'#dayReport',
 			loading:true,
 			size:'sm',
@@ -73,11 +91,7 @@ layui.config({
 			toolbar: true,
 			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){
-				return {  
-					msg:ret.message, 
-					code:ret.code ,
-					data:ret.data,
-					} },
+				return {   msg:ret.message,  code:ret.code , data:ret.data, } },
 			cols:[[
 			       {align:'center', title:'时间',      totalRowText: '合计', field:'time',	 },
 			       {align:'center', title:'成交金额',   field:'sumPayment',	totalRow:true,style:"color:#ff000a;"},

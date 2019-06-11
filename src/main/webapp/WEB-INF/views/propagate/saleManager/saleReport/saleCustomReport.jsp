@@ -21,7 +21,7 @@
 				<td>查询时间:&nbsp;&nbsp;</td>
 				<td><input type='text' id='time' class='layui-input' style='width:350px;' placeholder='请输入查询时间'></td>
 				<td>&nbsp;&nbsp;</td>
-				<td><select id="customIdSelect"><option value="">获取数据中</option></select></td>
+				<td><select id="customIdSelect" lay-search><option value="">获取数据中</option></select></td>
 				<td>&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-sm" id='search'>搜索</button></td>
 				<td>&nbsp;&nbsp;</td>
@@ -52,9 +52,22 @@ layui.config({
 		, laydate = layui.laydate
 		, tablePlug = layui.tablePlug;
 		
+		function p(s) { return s < 10 ? '0' + s: s; }
+		var myDate = new Date();
+		var year=myDate.getFullYear();
+		var month=myDate.getMonth()+1;
+		var day = new Date(year,month,0);
+		var firstdate = year + '-' + p(month) + '-01'+' '+'00:00:00';
+		var lastdate = year + '-' + p(month) + '-' + day.getDate() +' '+'23:59:59';
+		
 		getAllCustom();
 		form.render();
-	 	laydate.render({ elem:'#time', type: 'datetime', range:'~' }) 
+	 	laydate.render({ 
+	 		elem:'#time', 
+	 		type: 'datetime',
+	 		range:'~',
+	 		value:firstdate+' ~ '+lastdate,
+	 	}) 
 		$('#search').on('click',function(){
 			var time=$('#time').val();
 			if(time==''){
@@ -72,6 +85,11 @@ layui.config({
 			})
 		})
 		table.render({
+			url:'${ctx}/inventory/report/salesUser?report=4',
+			where:{
+				orderTimeBegin : firstdate,
+				orderTimeEnd : lastdate,
+			},
 			elem:'#customReport',
 			loading:true,
 			size:'sm',

@@ -302,32 +302,73 @@ layui.config({
 					{field:'systemPreferential',   			title:'系统优惠',   align:'center', width:'6%',	edit:'text', templet:'#systemPreferentialTpl'},
 					{field:'sellerReadjustPrices',   		title:'卖家调价',   align:'center', width:'6%',	edit:'text', templet:"#sellerReadjustPricesTpl"},
 					{field:'actualSum',  title:'实际金额',   align:'center', width:'8%',	totalRow:true, style:"color:blue;"},
-			       ]]
-		})
-		$('#customAddress').change(function(obj){
-			//湖南省  张家界市  永定区  南庄坪街道张家界天门中学  000000  胡奎  17886975668
-		})
-		table.on('edit(productTable)', function(obj){ 			//监听编辑表格单元
-			if(isNaN(obj.value))
-				layer.msg("修改无效！请输入正确的数字",{icon:2});
-			else{
-				var allPayment=0;
-				for(var i=0;i<choosedProduct.length;i++){
-					if(choosedProduct[i].id==obj.data.id){		//重新对该行的相关数据进行计算
-						var choosed=choosedProduct[i];
-						choosed[obj.field]=obj.value;
-						choosed.sumPrice=parseFloat(choosed.number*choosed.price).toFixed(2);
-						choosed.actualSum=parseFloat((choosed.price-(-choosed.sellerReadjustPrices)-choosed.systemPreferential)*choosed.number).toFixed(2);
-						choosedProduct[i][obj.field]=obj.value;
-						choosedProduct[i].sumPrice=choosed.sumPrice;
-						choosedProduct[i].actualSum=choosed.actualSum;
+			       ]],
+			done:function(){
+				var isDouble=0;
+				$('td[data-edit="text"]').on('click',function(obj){
+					if(++isDouble%2!=0)
+						$(this).click();
+					if( $('.layui-table-edit').length>0 ){
+						if($('.layui-table-edit').val()=='  0  ')
+							$('.layui-table-edit').val(0)
 					}
-					allPayment-=(-choosedProduct[i].actualSum);		//计算收款金额
-				}
-				allPayment-=(-$('#AddPostFee').val());				//加	上邮费
-				$('#customPayment').val(allPayment);			
+				})
 			}
-			table.reload('productTable',{ data:choosedProduct })
+		})
+		document.onkeydown = function(event) {
+	    	if( $('.layui-table-edit').length>0){
+	    		var key = $('.layui-table-edit').parent().attr('data-key');		//编辑的当前列
+	    		var ctrlKey = event.ctrlKey;
+	    		if(ctrlKey)	 //如果ctrl键按住了
+		    		switch(event.keyCode){
+		    		case 37: //左键
+		    				$('.layui-table-edit').parent().prev().click();
+	   				         break;
+		    		case 39: //右键
+		    				$('.layui-table-edit').parent().next().click();
+		    				break;
+		    		case 38: //上键
+		    				$('.layui-table-edit').parent().parent().prev().find('td[data-key="'+key+'"]').click();
+		    				break;
+		    		case 40: //下键
+	   						$('.layui-table-edit').parent().parent().next().find('td[data-key="'+key+'"]').click(); 
+		    				break;
+		    		}
+	    	}
+		} 
+		
+		table.on('edit(productTable)', function(obj){ 			//监听编辑表格单元
+			/* 	直接更新表格的缓存数据，因为没有进行重新渲染，所以更新完的数据无法显示出来，因此需要直接更改数据表格的内容
+				choosedProduct主要用于记录真实使用的数据，用于数据的回滚操作	
+			*/
+			var msg='';
+			if(isNaN(obj.value))
+				msg = "修改无效！请输入正确的数字";
+			var allPayment=0;
+			for(var i=0;i<choosedProduct.length;i++){
+				if(choosedProduct[i].id==obj.data.id){		//重新对该行的相关数据进行计算
+					if(msg!=''){
+						layer.msg(msg,{icon:2});
+						$(this).val(choosedProduct[i][obj.field]);					//设置输入框值
+						layui.each(table.cache.productTable,function(index,item){	//设置表格显示的值
+							if(obj.data.id == item.id){
+								item[obj.field] = choosedProduct[i][obj.field];
+								return;
+							}
+						}) 
+					}else{
+						choosedProduct[i][obj.field]=obj.value;
+						var c=choosedProduct[i];
+						choosedProduct[i].sumPrice=parseFloat(c.number*c.price).toFixed(2);
+						choosedProduct[i].actualSum=parseFloat((c.price-(-c.sellerReadjustPrices)-c.systemPreferential)*c.number).toFixed(2);
+						$(this).parent().siblings('td[data-key="3-0-5"]').find('div').html(choosedProduct[i].sumPrice);		//更新数据表格的内容
+						$(this).parent().siblings('td[data-key="3-0-8"]').find('div').html(choosedProduct[i].actualSum); 
+					}
+				}
+				allPayment-=(-choosedProduct[i].actualSum);		//计算收款金额
+			}
+			allPayment-=(-$('#AddPostFee').val());				//加	上邮费
+			$('#customPayment').val(allPayment);			
 		});
 		
 		var lastPostFee=0;     				 	//用于保存修改前的邮费价格，进行重新计算
@@ -752,15 +793,16 @@ layui.config({
 							price = r.data;
 					}
 				})
+				console.log(price)
 				var orderChild={
 						skuCode : choosed[i].skuCode,		
 						name : choosed[i].name,			
 						commodityId : choosed[i].id,		
 						number : 1,						
-						sumPrice : choosed[i].price,		
-						systemPreferential:0,			
-						sellerReadjustPrices:0,			
-						actualSum : choosed[i].price,		
+						sumPrice : price,		
+						systemPreferential : 0,			
+						sellerReadjustPrices : 0,			
+						actualSum : price,		
 						status : 'WAIT_SELLER_SEND_GOODS',
 						inventory : choosed[i].inventory,	
 						price : price,			
