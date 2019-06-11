@@ -6,7 +6,9 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -64,17 +66,17 @@ public class InventoryExcelAction {
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "/inventory/export/excelOnlineOrderDetail", method = RequestMethod.POST)
+	@RequestMapping(value = "/inventory/export/excelOnlineOrderDetail", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse excelOnlineOrderDetail(String ids,HttpServletResponse response) throws IOException  {
 		CommonResponse cr = new CommonResponse();
 	    OutputStream out = response.getOutputStream();  
 	    response.setContentType("multipart/form-data");
         response.setCharacterEncoding("utf-8");
-        response.setHeader("Content-disposition", "attachment;filename= 销售报表.xlsx");
+        response.setHeader("Content-disposition", "attachment;filename=sale.xlsx");
         ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX, true);
-        Sheet sheet1 = new Sheet(1, 0);
-        sheet1.setSheetName("销售报表");
+        Sheet sheet1 = new Sheet(1, 0, SalesDetailPoi.class);
+        sheet1.setSheetName("sheet1");
         String [] idArr = ids.split(",");
         List<SalesDetailPoi> salesDetailPoiList = new ArrayList<>();
         for(String id : idArr){
