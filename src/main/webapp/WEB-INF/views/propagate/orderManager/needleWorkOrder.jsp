@@ -385,7 +385,8 @@ layui.config({
 			}
 			var child=[];
 			for(var i=0;i<choosedProduct.length;i++){
-				if(choosedProduct[i].batchNumber==''){
+				console.log(choosedProduct[i].batchNumber)
+				if(choosedProduct[i].batchNumber.replace(/(^\s*)|(\s*$)/g, '')==''){
 					layer.msg('商品批次号不可省略！',{icon:2,offset:'100px',});
 					return;
 				}
@@ -396,7 +397,7 @@ layui.config({
 						return;
 					}
 				}
-				child.push({batchNumber : choosedProduct[i].batchNumber,
+				child.push({batchNumber : choosedProduct[i].batchNumber.replace(/(^\s*)|(\s*$)/g, ''),
 							commodityId : choosedProduct[i].commodityId,
 							number : choosedProduct[i].number,
 							childRemark : choosedProduct[i].childRemark});
