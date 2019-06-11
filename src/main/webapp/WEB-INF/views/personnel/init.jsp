@@ -345,6 +345,7 @@
 							layer.close(index);
 						$('#selectOne').html(htmls);
 						$("#userId").append(htmls);
+						form.render();
 						},
 						error: function() {
 							layer.msg("操作失败！", {
@@ -371,6 +372,7 @@
 								});
 								
 								$("#orgNameId").append(htmlfr);
+								form.render();
 								layer.close(index);
 							}
 						});
