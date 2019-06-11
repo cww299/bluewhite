@@ -129,33 +129,12 @@ public class InventoryAction {
 	@ResponseBody
 	public CommonResponse getOnlineOrderPrice(Long commodityId){
 		CommonResponse cr = new CommonResponse();
-		int price = onlineOrderService.getOnlineOrderPrice(commodityId);
+		double price = onlineOrderService.getOnlineOrderPrice(commodityId);
 		cr.setData(price);
 		cr.setMessage("成功");
 		return cr;
 	}
 
-	/**
-	 * 新增销售单(导入)
-	 * 
-	 * @return
-	 * @throws IOException
-	 */
-	@RequestMapping(value = "/inventory/import/excelOnlineOrder", method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse excelOnlineOrder(@RequestParam(value = "file", required = false) MultipartFile file
-			,Long onlineCustomerId,Long userId ,Long warehouseId) throws IOException {
-		CommonResponse cr = new CommonResponse();
-		InputStream inputStream = file.getInputStream();
-		ExcelListener excelListener = new ExcelListener();
-		EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1, OnlineOrderPoi.class), excelListener);
-		onlineOrderService.excelOnlineOrder(excelListener,onlineCustomerId,userId,warehouseId);
-		inputStream.close();
-		return cr;
-	}
-	
-
-	
 
 	/**
 	 * 一键发货 1.将父订单的状态改变成发货状态和一个仓库时，所有子订单的发货状态和仓库改变 2.子订单部分发货和不同仓库

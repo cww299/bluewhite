@@ -686,8 +686,9 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 
 
 	@Override
-	public int getOnlineOrderPrice(Long commodityId) {
-		return onlineOrderChildDao.getOnlineOrderPrice(commodityId);
+	public double getOnlineOrderPrice(Long commodityId) {
+		Double price = onlineOrderChildDao.getOnlineOrderPrice(commodityId);
+		return  price == null ? 0 : price  ;
 	}
 
 }

@@ -3,8 +3,6 @@ package com.bluewhite.onlineretailers.inventory.dao;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Transient;
-
 import org.springframework.data.jpa.repository.Query;
 
 import com.bluewhite.base.BaseRepository;
@@ -28,6 +26,6 @@ public interface OnlineOrderChildDao  extends BaseRepository<OnlineOrderChild, L
 	 * @return
 	 */
 	@Query("select price from OnlineOrderChild c group by c.commodityId HAVING c.commodityId=?1")
-	double getOnlineOrderPrice(Long commodityId);
+	Double getOnlineOrderPrice(Long commodityId);
 
 }
