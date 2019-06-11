@@ -177,7 +177,7 @@ td{
 				<td>详细地址：</td>			
 				<td colspan="3"><input type="text" class="layui-input" id="customAddress" name="address" readonly value="{{ d.address }}"></td>
 				<td>操作</td>
-				<td><button class="layui-btn layui-btn-sm" type="button" id="printBtn">打印订单</button></td>
+				<td style="float:left;padding-left:10px;"><button class="layui-btn layui-btn-sm" type="button" id="printBtn">导出订单</button></td>
 			</tr>
 			
 		</table>
@@ -191,7 +191,7 @@ td{
 	<span class="layui-btn layui-btn-sm" lay-event="oneKey">一键发货</span>
 	<span class="layui-btn layui-btn-sm" lay-event="partDelivery">部分发货</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">反冲订单</span>
-	<span class="layui-btn layui-btn-sm " lay-event="printOrder">打印订单</span>
+	<span class="layui-btn layui-btn-sm " lay-event="printOrder">导出订单</span>
 </div>
 </script>
 <!-- 解析状态模板 -->
@@ -402,9 +402,7 @@ layui.config({
 			for(var i=0;i<choosed.length;i++){
 				ids.push(choosed[i].id);
 			}
-			$.ajax({
-				url:'${ctx}/inventory/export/excelOnlineOrderDetail?ids='+ids.join(','),
-			})
+			location.href='${ctx}/inventory/export/excelOnlineOrderDetail?ids='+ids.join(',');
 		}
 		function partDelivery(){	
 			var choosed = layui.table.checkStatus('onlineOrder').data;
@@ -513,9 +511,7 @@ layui.config({
 			})
 			initAddEditOrderWin(data.onlineOrderChilds);			//弹窗的初始化，表格的渲染等。。
 			$('#printBtn').on('click',function(obj){
-				$.ajax({
-					url:'${ctx}/inventory/export/excelOnlineOrderDetail?ids='+data.id,
-				})
+				location.href='${ctx}/inventory/export/excelOnlineOrderDetail?ids='+data.id;
 			})
 		}
 		

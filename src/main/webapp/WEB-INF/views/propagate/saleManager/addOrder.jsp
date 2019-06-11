@@ -298,14 +298,14 @@ layui.config({
 																						return '<span>'+allInventory[i].name+'</span>';}	}},
 					{field:'number',	title:'数量',       align:'center', width:'6%',		edit:'text',templet:'#numberTpl', totalRow:true,},
 					{field:'price',   	title:'单价',   	    align:'center', width:'4%',		edit:'text',templet:'#priceTpl'},
-					{field:'sumPrice',   title:'单价总金额', align:'center', width:'8%', totalRow:true, style:"color:blue;"},
 					{field:'systemPreferential',   			title:'系统优惠',   align:'center', width:'6%',	edit:'text', templet:'#systemPreferentialTpl'},
 					{field:'sellerReadjustPrices',   		title:'卖家调价',   align:'center', width:'6%',	edit:'text', templet:"#sellerReadjustPricesTpl"},
+					{field:'sumPrice',   title:'单价总金额', align:'center', width:'8%', totalRow:true, style:"color:blue;"},
 					{field:'actualSum',  title:'实际金额',   align:'center', width:'8%',	totalRow:true, style:"color:blue;"},
 			       ]],
 			done:function(){
 				var isDouble=0;
-				$('td[data-edit="text"]').on('click',function(obj){
+				$('td[data-edit="text"]').on('click',function(obj){		//去除前后空格bug
 					if(++isDouble%2!=0)
 						$(this).click();
 					if( $('.layui-table-edit').length>0 ){
@@ -339,8 +339,7 @@ layui.config({
 		
 		table.on('edit(productTable)', function(obj){ 			//监听编辑表格单元
 			/* 	直接更新表格的缓存数据，因为没有进行重新渲染，所以更新完的数据无法显示出来，因此需要直接更改数据表格的内容
-				choosedProduct主要用于记录真实使用的数据，用于数据的回滚操作	
-			*/
+				choosedProduct主要用于记录真实使用的数据，用于数据的回滚操作	*/
 			var msg='';
 			if(isNaN(obj.value))
 				msg = "修改无效！请输入正确的数字";
@@ -361,7 +360,7 @@ layui.config({
 						var c=choosedProduct[i];
 						choosedProduct[i].sumPrice=parseFloat(c.number*c.price).toFixed(2);
 						choosedProduct[i].actualSum=parseFloat((c.price-(-c.sellerReadjustPrices)-c.systemPreferential)*c.number).toFixed(2);
-						$(this).parent().siblings('td[data-key="3-0-5"]').find('div').html(choosedProduct[i].sumPrice);		//更新数据表格的内容
+						$(this).parent().siblings('td[data-key="3-0-7"]').find('div').html(choosedProduct[i].sumPrice);		//更新数据表格的内容
 						$(this).parent().siblings('td[data-key="3-0-8"]').find('div').html(choosedProduct[i].actualSum); 
 					}
 				}
@@ -597,8 +596,17 @@ layui.config({
 	               if(obj.type=='one')
 	            	   checkData.push(obj.data);
 	              else{
-	                   for(var i=0;i<currPageData.length;i++)
-	                	   checkData.push(currPageData[i]);
+	                   for(var i=0;i<currPageData.length;i++){
+	                	   var isHas=false;
+	                	   layui.each(checkData,function(index,item){
+	                		   if(item.id == currPageData[i].id){
+	                			   isHas = true;
+	                		   		return;
+	                		   }
+	                	   })
+	                	   if(!isHas)
+	                	   		checkData.push(currPageData[i]);
+	                   }
 	               }
 	           }else{
 	               if(obj.type=='one'){
@@ -610,7 +618,7 @@ layui.config({
 	               }else{
 	            	   for(var i=0;i<currPageData.length;i++)
 	            		   for(var j=0;j<checkData.length;j++)
-	            			   if(checkData[j].id == currPageData[i].id){
+	            			   if(checkData[j].id == currPageData[i].id){	
 	            				   checkData.splice(j,1);
 	            				   break;
 	            			   }
