@@ -366,7 +366,7 @@ layui.config({
 					}
 				}
 				allPayment-=(-choosedProduct[i].actualSum);		//计算收款金额
-			}
+			} 
 			allPayment-=(-$('#AddPostFee').val());				//加	上邮费
 			$('#customPayment').val(allPayment);			
 		});
