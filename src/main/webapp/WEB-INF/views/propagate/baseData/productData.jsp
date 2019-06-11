@@ -27,8 +27,6 @@
 				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td><input type='text' name='skuCode' class='layui-input' placeholder='请输入查找信息'></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td><select name="warehouseSort" id="warehouseSortSelect"><option value="">排序方式</option></select></td>
-				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
@@ -292,19 +290,9 @@ layui.config({
 						for(var i=0;i<r.data.length;i++){
 							allInventory.push({ id:r.data[i].id,name:r.data[i].name});
 						}
-						renderSelect('warehouseSortSelect');
 					}
 				}
 			})
-		}
-		function renderSelect(select){
-			var html='';
-			layui.each(allInventory,function(index,item){
-				html+='<option value="'+item.id+':asc">'+item.name+'升序</option>';
-				html+='<option value="'+item.id+':desc">'+item.name+'降序</option>';
-			})
-			$('#'+select).append(html);
-			form.render();
 		}
 		
 		$(document).on('click', '.layui-table-view tbody tr', function(event) {
