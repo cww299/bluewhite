@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
-import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.basedata.service.BaseDataService;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
@@ -32,8 +31,6 @@ import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 import com.bluewhite.onlineretailers.inventory.entity.Warning;
-
-import javassist.expr.NewArray;
 
 @Service
 public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> implements CommodityService {

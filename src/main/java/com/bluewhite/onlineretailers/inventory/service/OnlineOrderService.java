@@ -93,7 +93,7 @@ public interface OnlineOrderService extends BaseCRUDService<OnlineOrder,Long>{
 	 * @param commodityId
 	 * @return
 	 */
-	public int getOnlineOrderPrice(Long commodityId);
+	public double getOnlineOrderPrice(Long commodityId);
 	
 
 }
