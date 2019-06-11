@@ -553,7 +553,7 @@ layui.config({
 			}
 			for(var i=0;i<choosedProduct.length;i++){
 				var t=choosedProduct[i];		
-				if(t.batchNumber==''){
+				if(t.batchNumber.replace(/(^\s*)|(\s*$)/g, '')==''){
 					layer.msg('商品批次号不可省略！',{icon:2,offset:'100px',});
 					return;
 				}
@@ -575,7 +575,7 @@ layui.config({
 					status : 		t.status,
 					place : 		t.place,
 					childRemark : 	t.childRemark,
-					batchNumber : 	t.batchNumber,
+					batchNumber : 	t.batchNumber.replace(/(^\s*)|(\s*$)/g, ''),
 				});
 			}
 			data.status=defaultStatus;
