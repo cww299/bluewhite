@@ -507,22 +507,29 @@ layui.config({
 		})
 		table.on('edit(productListTable)', function(obj){ 							//监听编辑表格单元
 			if(obj.field=='number'){
+				var msg='';
 				if(isNaN(obj.value))
-					layer.msg("修改无效！请输入正确的数字",{icon:2,offset:'100px',});
+					msg="修改无效！请输入正确的数字";
 				else if(obj.value=='')
-					layer.msg('计划的数量不能为空',{icon:2,offset:'100px',});
+					msg='计划的数量不能为空';
 				else if(obj.value<0)
-					layer.msg('计划的数量不能小于0',{icon:2,offset:'100px',});
+					msg='计划的数量不能小于0';
 				else if(obj.value%1 !== 0)
-					 layer.msg('计划的数量必须为整数',{icon:2,offset:'100px',});
-				else
-					for(var i=0;i<choosedProduct.length;i++){
-						 if(choosedProduct[i].id==obj.data.id){		//重新对该行的相关数据进行计算
-						 	$('#addOrderNumber').val($('#addOrderNumber').val()-choosedProduct[i].number-(-parseInt(obj.value)));
-							choosedProduct[i].number=parseInt(obj.value);
-						 	break;
+					msg='计划的数量必须为整数';
+				for(var i=0;i<choosedProduct.length;i++){
+					if(choosedProduct[i].id==obj.data.id){		
+						if(msg!=''){
+							layer.msg('"'+obj.value+'" 为非法输入！'+msg,{icon:2,offset:'100px',});
+							$(this).val(1)
+							choosedProduct[i].number=1;
+							return;
 						}
+						$('#addOrderNumber').val($('#addOrderNumber').val()-choosedProduct[i].number-(-parseInt(obj.value)));
+						$(this).val(parseInt(obj.value))
+						choosedProduct[i].number=parseInt(obj.value);
+						return;
 					}
+				}
 			}else{
 				for(var i=0;i<choosedProduct.length;i++){
 					 if(choosedProduct[i].id==obj.data.id){		//重新对该行的相关数据进行计算
@@ -536,9 +543,6 @@ layui.config({
 					}
 				}
 			}
-			table.reload('productListTable',{
-				data : choosedProduct
-			})
 		});
 		form.on('submit(sureAdd)',function(obj){					//确定添加入库单
 			var child=[];
