@@ -743,6 +743,15 @@ layui.config({
 					}
 				})
 				if(!result) return;
+				var price = choosed[i].price;
+				$.ajax({
+					url:'${ctx}/inventory/getOnlineOrderPrice',
+					async:false,
+					success:function(r){
+						if(r.code == 0 && r.data!=null)
+							price = r.data;
+					}
+				})
 				var orderChild={
 						skuCode : choosed[i].skuCode,		
 						name : choosed[i].name,			
@@ -754,7 +763,7 @@ layui.config({
 						actualSum : choosed[i].price,		
 						status : 'WAIT_SELLER_SEND_GOODS',
 						inventory : choosed[i].inventory,	
-						price : choosed[i].price,			
+						price : price,			
 						id : choosedId++,
 				}
 				$('#customPayment').val($('#customPayment').val()-(-orderChild.actualSum));		
