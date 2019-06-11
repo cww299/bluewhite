@@ -324,7 +324,7 @@ layui.config({
 		   		  }
 		   	  } 
 		   	  ,accept: 'file' 
-		   	  ,exts: 'xlsx,xls'
+		   	  ,exts: 'xlsx|xls'
 		})
 		$('#uploadDataBtn').on('click',function(){
 			layer.open({
