@@ -915,21 +915,6 @@ public class ReportExportAction {
         out.close();
 	}
 	
-	public static void main(String[] args) {
-	SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
-	Calendar calendar = new GregorianCalendar();
-	Calendar calendar2 = new GregorianCalendar();
-	Date date3;
-	Date date4;
-	Date date = new Date();
-	calendar.setTime(date); 
-    calendar.add(calendar.YEAR, -60);//把日期往后增加一年.整数往后推,负数往前移动
-    calendar2.add(calendar2.YEAR, -50);//把日期往后增加一年.整数往后推,负数往前移动
-    date3=calendar.getTime(); 
-    date4=calendar2.getTime(); 
-    System.out.println(fmt.format(date3));
-    System.out.println(fmt.format(date4));
-	}
 	
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
