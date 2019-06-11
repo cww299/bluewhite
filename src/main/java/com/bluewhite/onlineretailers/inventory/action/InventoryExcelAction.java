@@ -54,8 +54,9 @@ public class InventoryExcelAction {
 		InputStream inputStream = file.getInputStream();
 		ExcelListener excelListener = new ExcelListener();
 		EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1, OnlineOrderPoi.class), excelListener);
-		onlineOrderService.excelOnlineOrder(excelListener,onlineCustomerId,userId,warehouseId);
+		int connt = onlineOrderService.excelOnlineOrder(excelListener,onlineCustomerId,userId,warehouseId);
 		inputStream.close();
+		cr.setMessage("成功导入"+connt+"条销售单");
 		return cr;
 	}
 	

@@ -103,7 +103,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			// 交易状态过滤
 			if (!StringUtils.isEmpty(param.getStatus())) {
 				List<String> statusList = new ArrayList<>();
-				String[] idArr = param.getProvincesIds().split(",");
+				String[] idArr = param.getStatus().split(",");
 				for (String idStr : idArr) {
 					statusList.add(idStr);
 				}
@@ -477,6 +477,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			if (i < excelListenerList.size() - 1) {
 				onlineOrderPoiNext = (OnlineOrderPoi) excelListenerList.get(i + 1);
 				if (onlineOrderPoiNext.getDocumentNumber() != null) {
+					onlineOrder.setNum(onlineOrder.getOnlineOrderChilds().stream().mapToInt((OnlineOrderChild::getNumber)).sum());
 					onlineOrderList.add(onlineOrder);
 					procurementList.add(procurement);
 				}
@@ -522,8 +523,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			Double sumpostFee = 0.0;
 			if (onlineOrderList.size() > 0) {
 				onlineOrderList.stream().forEach(c -> {
-					listPayment.add(c.getPayment());
-					listPostFee.add(c.getPostFee());
+					listPayment.add(c.getPayment()==null ? 0 : c.getPayment());
+					listPostFee.add(c.getPostFee()==null ? 0 : c.getPayment());
 				});
 				sumPayment = NumUtils.sum(listPayment);
 				sumpostFee = NumUtils.sum(listPostFee);
@@ -550,7 +551,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				Double sumCost = 0.0;
 				if (onlineOrderList.size() > 0) {
 					onlineOrderChildList.stream().forEach(c -> {
-						listPayment.add(c.getCommodity().getPropagandaCost());
+						listPayment.add(c.getCommodity().getPropagandaCost()==null? 0 : c.getCommodity().getPropagandaCost());
 					});
 					sumCost = NumUtils.sum(listPayment);
 				}
@@ -666,8 +667,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			Double sumPostFee = 0.0;
 			if (psList.size() > 0) {
 				psList.stream().forEach(c -> {
-					listSumPayment.add(c.getPayment());
-					listPostFee.add(c.getPostFee());
+					listSumPayment.add(c.getPayment()==null ? 0 : c.getPayment());
+					listPostFee.add(c.getPostFee()==null ? 0 : c.getPayment());
 				});
 				sumPayment = NumUtils.sum(listSumPayment);
 				sumPostFee = NumUtils.sum(listPostFee);
@@ -688,7 +689,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	@Override
 	public double getOnlineOrderPrice(Long commodityId) {
 		Double price = onlineOrderChildDao.getOnlineOrderPrice(commodityId);
-		return  price == null ? 0 : price  ;
+		return  price == null ? 0 : price;
 	}
 
 }
