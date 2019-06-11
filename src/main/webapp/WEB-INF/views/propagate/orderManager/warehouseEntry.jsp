@@ -305,7 +305,7 @@ layui.config({
 					var style='';
 					if(i==d.procurementChilds.length-1)
 						style='border-bottom:none';
-					html+='<tr><td style="border-right:none; '+style+'">'+t.batchNumber+'</td></tr>';
+					html+='<tr><td style="border-right:none; '+style+'">'+t.batchNumber+'&nbsp;</td></tr>';
 				}
 				return html+'</table>';
 			}
@@ -318,7 +318,7 @@ layui.config({
 					var style='';
 					if(i==d.procurementChilds.length-1)
 						style='border-bottom:none';
-					html+='<tr><td style="border-right:none; '+style+'">'+t.commodity.skuCode+'</td></tr>';
+					html+='<tr><td style="border-right:none; '+style+'">'+t.commodity.skuCode+'&nbsp;</td></tr>';
 				}
 				return html+'</table>';
 			}
@@ -331,7 +331,7 @@ layui.config({
 					var style='';
 					if(i==d.procurementChilds.length-1)
 						style='border-bottom:none';
-					html+='<tr><td style="border-right:none; '+style+'">'+t.residueNumber+'</td></tr>';
+					html+='<tr><td style="border-right:none; '+style+'">'+t.residueNumber+'&nbsp;</td></tr>';
 				}
 				return html+'</tbody></table>'; 
 			}
@@ -358,10 +358,10 @@ layui.config({
 		function deletes(){							//删除生产单表格
 			var choosed=layui.table.checkStatus('entryOrderTable').data;
 			if(choosed.length<1){
-				layer.msg('请选择生产单',{icon:2});
+				layer.msg('请选择生产单',{icon:2,offset:'100px',});
 				return;
 			}
-			layer.confirm('是否确认反冲？',function(){
+			layer.confirm('是否确认反冲？',{offset:'100px',},function(){
 				var ids='';
 				for(var i=0;i<choosed.length;i++)
 					ids+=(choosed[i].id+',');
@@ -371,9 +371,9 @@ layui.config({
 					success:function(result){
 						if(0==result.code){
 							table.reload('entryOrderTable');
-							layer.msg(result.message,{icon:1});
+							layer.msg(result.message,{icon:1,offset:'100px',});
 						}else
-							layer.msg(result.message,{icon:2});
+							layer.msg(result.message,{icon:2,offset:'100px',});
 						layer.close(load);
 					}
 				})
@@ -387,6 +387,7 @@ layui.config({
 			layer.open({
 				type : 1,
 				title : '查看入库单',
+				offset:'30px',
 				area : ['90%','90%'],
 				content : $('#lookoverOrderDiv')
 			})
@@ -442,6 +443,7 @@ layui.config({
 				type : 1,
 				title : '新增入库单',
 				area : ['90%','90%'],
+				offset:'30px',
 				content : $('#addOrderDiv')
 			})
 			table.render({									//渲染选择后的商品表格
@@ -506,13 +508,13 @@ layui.config({
 		table.on('edit(productListTable)', function(obj){ 							//监听编辑表格单元
 			if(obj.field=='number'){
 				if(isNaN(obj.value))
-					layer.msg("修改无效！请输入正确的数字",{icon:2});
+					layer.msg("修改无效！请输入正确的数字",{icon:2,offset:'100px',});
 				else if(obj.value=='')
-					layer.msg('计划的数量不能为空',{icon:2});
+					layer.msg('计划的数量不能为空',{icon:2,offset:'100px',});
 				else if(obj.value<0)
-					layer.msg('计划的数量不能小于0',{icon:2});
+					layer.msg('计划的数量不能小于0',{icon:2,offset:'100px',});
 				else if(obj.value%1 !== 0)
-					 layer.msg('计划的数量必须为整数',{icon:2});
+					 layer.msg('计划的数量必须为整数',{icon:2,offset:'100px',});
 				else
 					for(var i=0;i<choosedProduct.length;i++){
 						 if(choosedProduct[i].id==obj.data.id){		//重新对该行的相关数据进行计算
@@ -542,23 +544,23 @@ layui.config({
 			var child=[];
 			var data=obj.field;
 			if(!choosedProduct.length>0){
-				layer.msg('入库商品不能为空！',{icon:2});
+				layer.msg('入库商品不能为空！',{icon:2,offset:'100px',});
 				return;
 			}
 			for(var i=0;i<choosedProduct.length;i++){
 				var t=choosedProduct[i];		
 				if(t.batchNumber==''){
-					layer.msg('商品批次号不可省略！',{icon:2});
+					layer.msg('商品批次号不可省略！',{icon:2,offset:'100px',});
 					return;
 				}
 				if(t.number<1){
-					layer.msg('计划数量不能为0！',{icon:2});
+					layer.msg('计划数量不能为0！',{icon:2,offset:'100px',});
 					return;
 				}
 				for(var j=0;j<choosedProduct.length;j++){
 					var item = choosedProduct[j];
 					if( item.id != choosedProduct[i].id && item.commodityId == choosedProduct[i].commodityId && item.batchNumber == choosedProduct[i].batchNumber){
-						layer.msg('相同的商品不能同时使用相同的批次号！',{icon:2});
+						layer.msg('相同的商品不能同时使用相同的批次号！',{icon:2,offset:'100px',});
 						return;
 					}
 				}
@@ -585,14 +587,14 @@ layui.config({
 						$('#resetAddOrder').click();
 						layer.closeAll();
 						table.reload('entryOrderTable');
-						layer.msg(result.message,{icon:1});
+						layer.msg(result.message,{icon:1,offset:'100px',});
 					}else{
-						layer.msg(result.message,{icon:2});
+						layer.msg(result.message,{icon:2,offset:'100px',});
 						layer.close(load);
 					}
 				},
 				error:function(){
-					layer.msg("服务器异常",{icon:2});
+					layer.msg("服务器异常",{icon:2,offset:'100px',});
 					layer.close(load);
 				}
 			})
@@ -634,14 +636,14 @@ layui.config({
 					if(0==result.code){
 						table.reload('productChooseTable');
 						layer.close(addNewPorductWin);
-						layer.msg(result.message,{icon:1});
+						layer.msg(result.message,{icon:1,offset:'100px',});
 					}
 					else
-						layer.msg(result.message,{icon:2});
+						layer.msg(result.message,{icon:2,offset:'100px',});
 					layer.close(load);
 				},
 				error:function(result){
-					layer.msg('发生未知错误',{icon:2});
+					layer.msg('发生未知错误',{icon:2,offset:'100px',});
 					layer.close(load);
 				}
 			})
@@ -649,27 +651,26 @@ layui.config({
 		function deleteChoosedProduct(){								//删除商品
 			var choosed = layui.table.checkStatus('productListTable').data;
 			if(choosed.length==0){
-				layer.msg("请选择商品删除");
+				layer.msg("请选择商品删除",{icon:2,offset:'100px',});
 				return;
 			}
 			for(var i=0;i<choosed.length;i++){
 				for(var j=0;j<choosedProduct.length;j++){
 					if(choosed[i].id==choosedProduct[j].id){
-						$('#addOrderNumber').val($('#addOrderNumber').val()-choosedProduct[i].number);
+						$('#addOrderNumber').val($('#addOrderNumber').val()-choosedProduct[j].number);
 						choosedProduct.splice(j,1);
 						break;
 					}
 				}
 			}
-			table.reload('productListTable',{
-				data:choosedProduct,
-			})
+			table.reload('productListTable',{ data:choosedProduct, })
 		}
 		function openChooseProductWin(){					//商品选择隐藏框
 			chooseProductWin = layer.open({		
 				type:1,
 				title:'选择产品',
 				area:['80%','80%'],
+				offset:'60px',
 				content:$('#productChooseDiv'),
 			})
 			table.render({
@@ -697,7 +698,7 @@ layui.config({
 		function sureChoosed(){					//确定商品选择
 			var choosed=layui.table.checkStatus('productChooseTable').data;
 			if(choosed.length<1){
-				layer.msg("请选择相关商品",{icon:2});
+				layer.msg("请选择相关商品",{icon:2,offset:'100px',});
 				return false;
 			}
 	 		for(var i=0;i<choosed.length;i++){
@@ -717,7 +718,7 @@ layui.config({
 				choosedProduct.push(orderChild);
 			} 
 			table.reload('productListTable',{ data:choosedProduct });
-			layer.msg('添加成功',{icon:1});
+			layer.msg('添加成功',{icon:1,offset:'100px',});
 			return true;
 		}
 		
@@ -725,6 +726,7 @@ layui.config({
 			addNewPorductWin = layer.open({								
 				type:1,
 				title:'添加产品',
+				offset:'100px',
 				content:$('#addNewProductWin'),
 				area:['60%','60%']
 			})

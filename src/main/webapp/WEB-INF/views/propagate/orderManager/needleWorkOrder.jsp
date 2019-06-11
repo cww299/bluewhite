@@ -251,7 +251,7 @@ layui.config({
 					var style='';
 					if(i==d.procurementChilds.length-1)
 						style='border-bottom:none';
-					html+='<tr><td style="border-right:none; '+style+'">'+t.batchNumber+'</td></tr>';
+					html+='<tr><td style="border-right:none; '+style+'">'+t.batchNumber+'&nbsp;</td></tr>';
 				}
 				return html+'</table>';
 			}
@@ -264,7 +264,7 @@ layui.config({
 					var style='';
 					if(i==d.procurementChilds.length-1)
 						style='border-bottom:none';
-					html+='<tr><td style="border-right:none; '+style+'">'+t.commodity.skuCode+'</td></tr>';
+					html+='<tr><td style="border-right:none; '+style+'">'+t.commodity.skuCode+'&nbsp;</td></tr>';
 				}
 				return html+'</table>';
 			}
@@ -277,7 +277,7 @@ layui.config({
 					var style='';
 					if(i==d.procurementChilds.length-1)
 						style='border-bottom:none';
-					html+='<tr><td style="border-right:none; '+style+'">'+t.residueNumber+'</td></tr>';
+					html+='<tr><td style="border-right:none; '+style+'">'+t.residueNumber+'&nbsp;</td></tr>';
 				}
 				return html+'</tbody></table>'; 
 			}
@@ -307,6 +307,7 @@ layui.config({
 			layer.open({
 				type : 1,
 				title : '新增针工单',
+				offset:'30px',
 				area : ['90%','90%'],
 				content : $('#addOrderDiv')
 			})
@@ -315,6 +316,7 @@ layui.config({
 				elem:'#productListTable',
 				toolbar:'#productListTableToolbar',
 				loading:true,
+				page:{},
 				cols:[[
 				       {type:'checkbox', align:'center', fixed:'left'},
 				       {align:'center', title:'批次号',   field:'batchNumber', edit:true,style:'color:blue', },
@@ -340,19 +342,19 @@ layui.config({
 		table.on('edit(productListTable)', function(obj){ 			//监听编辑表格单元
 			if(obj.field=='number'){
 				if(isNaN(obj.value))
-					layer.msg("修改无效！请输入正确的数字",{icon:2});
+					layer.msg("修改无效！请输入正确的数字",{icon:2,offset:'100px',});
 				else if(obj.value=='')
-					layer.msg('计划的数量不能为空',{icon:2});
+					layer.msg('计划的数量不能为空',{icon:2,offset:'100px',});
 				else if(obj.value<0)
-					layer.msg('计划的数量不能小于0',{icon:2});
+					layer.msg('计划的数量不能小于0',{icon:2,offset:'100px',});
 				else if(obj.value%1 !== 0)
-					 layer.msg('计划的数量必须为整数',{icon:2});
+					 layer.msg('计划的数量必须为整数',{icon:2,offset:'100px',});
 				else
 					for(var i=0;i<choosedProduct.length;i++){
 						 if(choosedProduct[i].id==obj.data.id){		//重新对该行的相关数据进行计算
 						 	$('#addNumber').val($('#addNumber').val()-choosedProduct[i].number-(-parseInt(obj.value)));
 							choosedProduct[i].number=parseInt(obj.value);
-						 	layer.msg('修改成功！',{icon:1});
+						 	layer.msg('修改成功！',{icon:1,offset:'100px',});
 						 	break;
 						}
 					}
@@ -363,7 +365,7 @@ layui.config({
 						 	choosedProduct[i].childRemark=obj.data.childRemark;
 						else if(obj.field=='batchNumber')
 							choosedProduct[i].batchNumber=obj.data.batchNumber;
-					 	layer.msg('修改成功！',{icon:1});
+					 	layer.msg('修改成功！',{icon:1,offset:'100px',});
 					 	break;
 					}
 				}
@@ -375,19 +377,19 @@ layui.config({
 		form.on('submit(sureAdd)',function(obj){					//确定添加生产单
 			var data=obj.field;
 			if(choosedProduct.length==0){
-				layer.msg("请选择商品",{icon:2});
+				layer.msg("请选择商品",{icon:2,offset:'100px',});
 				return;
 			}
 			var child=[];
 			for(var i=0;i<choosedProduct.length;i++){
 				if(choosedProduct[i].batchNumber==''){
-					layer.msg('商品批次号不可省略！',{icon:2});
+					layer.msg('商品批次号不可省略！',{icon:2,offset:'100px',});
 					return;
 				}
 				for(var j=0;j<choosedProduct.length;j++){
 					var item = choosedProduct[j];
 					if( item.id != choosedProduct[i].id && item.commodityId == choosedProduct[i].commodityId && item.batchNumber == choosedProduct[i].batchNumber){
-						layer.msg('相同的商品不能同时使用相同的批次号！',{icon:2});
+						layer.msg('相同的商品不能同时使用相同的批次号！',{icon:2,offset:'100px',});
 						return;
 					}
 				}
@@ -407,14 +409,14 @@ layui.config({
 						$('#resetAddOrder').click();
 						layer.closeAll();
 						table.reload('needleOrderTable');
-						layer.msg(result.message,{icon:1});
+						layer.msg(result.message,{icon:1,offset:'100px',});
 					}else{
-						layer.msg(result.message,{icon:2});
+						layer.msg(result.message,{icon:2,offset:'100px',});
 					}
 					layer.close(load);
 				},
 				error:function(){
-					layer.msg("服务器异常",{icon:2});
+					layer.msg("服务器异常",{icon:2,offset:'100px',});
 					layer.close(load);
 				}
 			})
@@ -455,14 +457,14 @@ layui.config({
 					if(0==result.code){
 						table.reload('productChooseTable');
 						layer.close(addNewPorductWin);
-						layer.msg(result.message,{icon:1});
+						layer.msg(result.message,{icon:1,offset:'100px',});
 					}
 					else
-						layer.msg(result.message,{icon:2});
+						layer.msg(result.message,{icon:2,offset:'100px',});
 					layer.close(load);
 				},
 				error:function(result){
-					layer.msg('发生未知错误',{icon:2});
+					layer.msg('发生未知错误',{icon:2,offset:'100px',});
 					layer.close(load);
 				}
 			})
@@ -470,7 +472,7 @@ layui.config({
 		function deleteChoosedProduct(){								//删除商品
 			var choosed = layui.table.checkStatus('productListTable').data;
 			if(choosed.length==0){
-				layer.msg("请选择商品删除");
+				layer.msg("请选择商品删除",{icon:2,offset:'100px',});
 				return;
 			}
 			for(var i=0;i<choosed.length;i++){
@@ -490,6 +492,7 @@ layui.config({
 			chooseProductWin = layer.open({		
 				type:1,
 				title:'选择产品',
+				offset:'60px',
 				area:['80%','80%'],
 				content:$('#productChooseDiv'),
 			})
@@ -517,7 +520,7 @@ layui.config({
 		function sureChoosed(){					//确定商品选择
 			var choosed=layui.table.checkStatus('productChooseTable').data;
 			if(choosed.length<1){
-				layer.msg("请选择相关商品",{icon:2});
+				layer.msg("请选择相关商品",{icon:2,offset:'100px',});
 				return false;
 			}
 			for(var i=0;i<choosed.length;i++){
@@ -534,13 +537,14 @@ layui.config({
 				choosedProduct.push(orderChild);
 			}
 			table.reload('productListTable',{ data:choosedProduct });
-			layer.msg('添加成功',{icon:1});
+			layer.msg('添加成功',{icon:1,offset:'100px',});
 			return true;
 		}
 		function openAddNewPorductWin(){		//添加新产品窗口
 			addNewPorductWin = layer.open({								
 				type:1,
 				title:'添加产品',
+				offset:'100px',
 				content:$('#addNewProductWin'),
 				area:['60%','60%']
 			})
@@ -550,10 +554,10 @@ layui.config({
 		function deletes(){							//反冲针工单表格
 			var choosed=layui.table.checkStatus('needleOrderTable').data;
 			if(choosed.length<1){
-				layer.msg('请选择生产单',{icon:2});
+				layer.msg('请选择生产单',{icon:2,offset:'100px',});
 				return;
 			}
-			layer.confirm('是否确认反冲？',function(){
+			layer.confirm('是否确认反冲？',{offset:'100px',},function(){
 				var ids='';
 				for(var i=0;i<choosed.length;i++)
 					ids+=(choosed[i].id+',');
@@ -563,9 +567,9 @@ layui.config({
 					success:function(result){
 						if(0==result.code){
 							table.reload('needleOrderTable');
-							layer.msg(result.message,{icon:1});
+							layer.msg(result.message,{icon:1,offset:'100px',});
 						}else
-							layer.msg(result.message,{icon:2});
+							layer.msg(result.message,{icon:2,offset:'100px',});
 						layer.close(load);
 					}
 				})
@@ -584,21 +588,22 @@ layui.config({
 			$('#becomeOrderId').val('');
 			var choosed = layui.table.checkStatus('needleOrderTable').data;
 			if(choosed.length<1){
-				layer.msg('请选择信息',{icon:2});
+				layer.msg('请选择信息',{icon:2,offset:'100px',});
 				return;
 			}
 			if(choosed.length>1){
-				layer.msg('无法同时使用多条信息生成入库单',{icon:2});
+				layer.msg('无法同时使用多条信息生成入库单',{icon:2,offset:'100px',});
 				return;
 			}
 			if(choosed[0].flag==1){
-				layer.msg('已反冲的数据无法进行转换',{icon:2});
+				layer.msg('已反冲的数据无法进行转换',{icon:2,offset:'100px',});
 				return;
 			}
 			$('#becomeOrderId').val(choosed[0].id);		//设置被转成针工单的生产单id
 			layer.open({
 				type : 1,
 				title:'生成入库单',
+				offset:'30px',
 				area : ['90%','90%'],
 				content:$('#becomeOrderDiv'),
 			})
@@ -664,7 +669,7 @@ layui.config({
 		form.on('submit(sureBecome)',function(obj){
 			var choosed = layui.table.checkStatus('becomeProductListTable').data;
 			if(choosed.length<1){
-				layer.msg('请勾选需要生成入库单的信息',{icon:2});
+				layer.msg('请勾选需要生成入库单的信息',{icon:2,offset:'100px',});
 				return;
 			}
 			var c=[];       //用于存放提取真正需要的数据
@@ -672,7 +677,7 @@ layui.config({
 			for(var i=0;i<choosed.length;i++){
 				var t=choosed[i];					
 				if(t.becomeNumber==0){			
-					layer.msg('转单的数量不能为0，请检查是否错勾选或填写有误！',{icon:2});
+					layer.msg('转单的数量不能为0，请检查是否错勾选或填写有误！',{icon:2,offset:'100px',});
 					return;
 				}
 				allNum+=t.becomeNumber;
@@ -698,9 +703,9 @@ layui.config({
 					if(0==result.code){
 						layer.closeAll();
 						table.reload('needleOrderTable');
-						layer.msg(result.message,{icon:1});
+						layer.msg(result.message,{icon:1,offset:'100px',});
 					}else{
-						layer.msg(result.message,{icon:2});
+						layer.msg(result.message,{icon:2,offset:'100px',});
 					}
 					layer.close(load);
 				},
@@ -713,18 +718,18 @@ layui.config({
 		table.on('edit(becomeProductListTable)', function(obj){ 			//监听编辑表格单元
 			if(obj.field=='becomeNumber'){
 				if(isNaN(obj.value)){
-					layer.msg("修改无效！请输入正确的数字",{icon:2});
+					layer.msg("修改无效！请输入正确的数字",{icon:2,offset:'100px',});
 				}else if(obj.value=='')
-					layer.msg('转成入库单的数量不能为空',{icon:2});
+					layer.msg('转成入库单的数量不能为空',{icon:2,offset:'100px',});
 				else if(obj.value<0)
-					layer.msg('转成入库单的数量不能小于0',{icon:2});
+					layer.msg('转成入库单的数量不能小于0',{icon:2,offset:'100px',});
 				else if(obj.value%1 !== 0)
-					 layer.msg('转成入库单的数量必须为整数',{icon:2});
+					 layer.msg('转成入库单的数量必须为整数',{icon:2,offset:'100px',});
 				else{
 					for(var i=0;i<becomeProduct.length;i++){
 						 if(becomeProduct[i].id==obj.data.id){		//重新对该行的相关数据进行计算
 							 if(obj.value>becomeProduct[i].residueNumber)
-								 layer.msg('转成入库单的数量不能大于剩余数量',{icon:2});
+								 layer.msg('转成入库单的数量不能大于剩余数量',{icon:2,offset:'100px',});
 							 else{
 							 	 becomeProduct[i].becomeNumber=parseInt(obj.value);
 							 }
@@ -754,6 +759,7 @@ layui.config({
 			layer.open({
 				type : 1,
 				title : '查看针工单',
+				offset:'30px',
 				area : ['90%','90%'],
 				content : $('#lookoverOrderDiv')
 			})
