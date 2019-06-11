@@ -310,7 +310,8 @@ layui.config({
 						$(this).click();
 					if( $('.layui-table-edit').length>0 ){
 						if($('.layui-table-edit').val()=='  0  ')
-							$('.layui-table-edit').val(0)
+							$('.layui-table-edit').val(0);
+						$(this).find('input').select()
 					}
 				})
 			}
@@ -318,21 +319,19 @@ layui.config({
 		document.onkeydown = function(event) {
 	    	if( $('.layui-table-edit').length>0){
 	    		var key = $('.layui-table-edit').parent().attr('data-key');		//编辑的当前列
-	    		var ctrlKey = event.ctrlKey;
-	    		if(ctrlKey)	 //如果ctrl键按住了
 		    		switch(event.keyCode){
 		    		case 37: //左键
 		    				$('.layui-table-edit').parent().prev().click();
-	   				         break;
+		    				return false;
 		    		case 39: //右键
 		    				$('.layui-table-edit').parent().next().click();
-		    				break;
+		    				return false;
 		    		case 38: //上键
 		    				$('.layui-table-edit').parent().parent().prev().find('td[data-key="'+key+'"]').click();
-		    				break;
+		    				return false;
 		    		case 40: //下键
 	   						$('.layui-table-edit').parent().parent().next().find('td[data-key="'+key+'"]').click(); 
-		    				break;
+	   						return false;
 		    		}
 	    	}
 		} 
@@ -801,7 +800,6 @@ layui.config({
 							price = r.data;
 					}
 				})
-				console.log(price)
 				var orderChild={
 						skuCode : choosed[i].skuCode,		
 						name : choosed[i].name,			
