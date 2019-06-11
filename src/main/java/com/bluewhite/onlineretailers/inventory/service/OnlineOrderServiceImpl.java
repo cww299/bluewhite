@@ -94,16 +94,22 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				}
 				predicate.add(cb.and(root.get("provincesId").as(Long.class).in(provincesIdList)));
 			}
-
 			// 按客户名称过滤
 			if (!StringUtils.isEmpty(param.getOnlineCustomerName())) {
 				predicate.add(cb.like(root.get("name").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getOnlineCustomerName()) + "%"));
 			}
+			
 			// 交易状态过滤
 			if (!StringUtils.isEmpty(param.getStatus())) {
-				predicate.add(cb.equal(root.get("status").as(String.class), param.getStatus()));
+				List<String> statusList = new ArrayList<>();
+				String[] idArr = param.getProvincesIds().split(",");
+				for (String idStr : idArr) {
+					statusList.add(idStr);
+				}
+				predicate.add(cb.and(root.get("status").as(String.class).in(statusList)));
 			}
+			
 			// 按物流方式
 			if (!StringUtils.isEmpty(param.getShippingType())) {
 				predicate.add(cb.equal(root.get("shippingType").as(String.class), param.getShippingType()));
@@ -285,15 +291,6 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				int number = jsonObject.getIntValue("number");
 				// 获取子订单
 				OnlineOrderChild onlineOrderChild = onlineOrderChildDao.findOne(id);
-				
-				//子订单部分发货
-				if(onlineOrderChild.getResidueNumber()>number){
-					onlineOrderChild.setStatus(Constants.ONLINEORDER_3);
-					onlineOrderChild.setResidueNumber(onlineOrderChild.getNumber()-number);
-				}else{
-					onlineOrderChild.setStatus(Constants.ONLINEORDER_5);
-				}
-				
 				// 获取父订单
 				OnlineOrder onlineOrder = onlineOrderChild.getOnlineOrder();
 				if (onlineOrder.getFlag() == 1) {
@@ -345,14 +342,21 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				procurementChildDao.save(newProcurementChild);
 				// 将出库单ids存入入库单，便于反冲
 				procurementChild.setPutWarehouseIds(ids);
-				// 当订单的状态是买家已付款时货部分发货
-				if (onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_4)
-						|| onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_3)) {
+				// 当订单的状态是买家已付款时或部分发货
+				if (onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_4) || onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_3)) {
+					
 					// 获取商品
 					Commodity commodity = onlineOrderChild.getCommodity();
 					// 获取库存
 					Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(commodity.getId(), warehouseId);
 					if (inventory != null) {
+						//子订单部分发货
+						if(onlineOrderChild.getResidueNumber()!=0 && onlineOrderChild.getResidueNumber() >= number){
+							onlineOrderChild.setStatus(Constants.ONLINEORDER_3);
+							onlineOrderChild.setResidueNumber(onlineOrderChild.getResidueNumber()-number);
+						}else{
+							onlineOrderChild.setStatus(Constants.ONLINEORDER_5);
+						}
 						inventory.setNumber(inventory.getNumber() - number);
 						inventoryDao.save(inventory);
 						onlineOrderChildDao.save(onlineOrderChild);
@@ -363,14 +367,11 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 					throw new ServiceException(onlineOrder.getDocumentNumber() + "不是等待卖家发货状态,无法发货");
 				}
 
-				// 更新父订单的状态当所有的子订单发货完成更新为卖家已发货，否则是部分发货
+				// 更新父订单剩余数量为0更新为卖家已发货，否则是部分发货
 				List<OnlineOrderChild> onlineOrderChildList = onlineOrder.getOnlineOrderChilds();
-				int onlineOrderChildListCount = (int) onlineOrderChildList.stream()
-						.filter(OnlineOrderChild -> OnlineOrderChild.getStatus().equals(Constants.ONLINEORDER_5))
-						.count();
 				int onlineOrderChildListNumber = onlineOrderChildList.stream().mapToInt(p -> p.getResidueNumber()).sum();
 				onlineOrder.setResidueNumber(onlineOrderChildListNumber);
-				if (onlineOrderChildList.size() == onlineOrderChildListCount) {
+				if (onlineOrderChildListNumber == 0) {
 					onlineOrder.setStatus(Constants.ONLINEORDER_5);
 				} else {
 					onlineOrder.setStatus(Constants.ONLINEORDER_3);
@@ -380,7 +381,6 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			}
 			// 更新总发货单的数量
 			int procurementNumber = procurement.getProcurementChilds().stream().mapToInt(p -> p.getNumber()).sum();
-			
 			procurement.setNumber(procurementNumber);
 			procurementDao.save(procurement);
 		}
