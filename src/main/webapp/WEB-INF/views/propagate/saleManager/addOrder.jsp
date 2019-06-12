@@ -363,6 +363,15 @@ layui.config({
 						choosedProduct[i].actualSum=parseFloat((c.price-(-c.sellerReadjustPrices)-c.systemPreferential)*c.number).toFixed(2);
 						$(this).parent().siblings('td[data-key="'+key+'7"]').find('div').html(choosedProduct[i].sumPrice);//更新数据表格的内容
 						$(this).parent().siblings('td[data-key="'+key+'8"]').find('div').html(choosedProduct[i].actualSum); 
+						var allSumPrice = 0, allActualSum = 0,allNumber = 0;
+						layui.each(choosedProduct,function(index,item){
+							allSumPrice-=(-item.sumPrice);
+							allActualSum-=(-item.actualSum);
+							allNumber-=(-item.number);
+						})
+						$('div[class="layui-table-total"]').find('td[data-field="sumPrice"]').find('div').html(allSumPrice);	//修改统计行的数据
+						$('div[class="layui-table-total"]').find('td[data-field="actualSum"]').find('div').html(allActualSum);
+						$('div[class="layui-table-total"]').find('td[data-field="number"]').find('div').html(allNumber);
 					}
 				}
 				allPayment-=(-choosedProduct[i].actualSum);		//计算收款金额
