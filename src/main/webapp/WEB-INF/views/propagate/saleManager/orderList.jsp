@@ -417,10 +417,22 @@ layui.config({
 				btn : ['确认发货','取消'],
 				yes : function(){
 					var c =[];  	//发货的对象
-					var dataSuccess = layui.each(partDeliveryTable.config.data,function(index,item){
+					if(layui.table.checkStatus('partDeliveryTable').data.length==0){
+						layer.msg('请勾选发货的信息！',{icon:2}); return false;
+					}
+					var dataSuccess = true;
+					layui.each(partDeliveryTable.config.data,function(index,item){
 						if(item.LAY_CHECKED){		//如果选中
-							if(isNaN(item.deliveryNumber)){ layer.msg('发货数量请输入正确的数字',{icon:2}); return false;}
-							if(item.deliveryNumber>item.residueNumber){ layer.msg('发货数量不能大于剩余数量',{icon:2}); return false;}
+							if(isNaN(item.deliveryNumber)){ 
+								layer.msg('商品：'+item.commodity.skuCode+' 发货数量请输入正确的数字',{icon:2}); 
+								dataSuccess=false; 
+								return;
+							}
+							if(item.deliveryNumber>item.residueNumber){ 
+								layer.msg('商品：'+item.commodity.skuCode+' 发货数量不能大于剩余数量',{icon:2}); 
+								dataSuccess=false; 
+								return;
+							}
 							c.push({
 								warehouseId : item.warehouse.id,
 								id: item.id,

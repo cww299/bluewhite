@@ -781,7 +781,7 @@ layui.config({
 			var list=[];				//使用临时数据进行存放，防止出现非法数据时，污染原先的数据
 			for(var i=0;i<choosed.length;i++){
 				if(choosed[i].inventory==undefined){
-					layer.msg('商品无库存，无法选择',{icon:2});
+					layer.msg('商品：'+choosed[i].skuCode+' 无库存，无法选择',{icon:2});
 					return;
 				}
 				var result=true;
