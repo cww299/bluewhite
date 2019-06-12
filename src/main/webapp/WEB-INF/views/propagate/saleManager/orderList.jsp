@@ -618,7 +618,7 @@ layui.config({
 		}
 		function getAllCustom(){
 			$.ajax({
-				url:'${ctx}/inventory/onlineCustomerPage',
+				url:'${ctx}/inventory/onlineCustomerPage?size=9999',
 				success:function(r){
 					if(0==r.code){
 						for(var i=0;i<r.data.rows.length;i++)
