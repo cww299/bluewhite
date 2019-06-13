@@ -160,6 +160,12 @@
 										class="btn btn-success  btn-sm btn-3d ecxel" id="export">导出返聘
 										</button>
 										</span>
+										
+								&nbsp;&nbsp;<span class="input-group-btn">
+										<button type="button"
+										class="btn btn-success  btn-sm btn-3d ecxel" id="export2">导出身份证号
+										</button>
+										</span>		
 							</div>
 						</div>
 					</div>
@@ -2363,11 +2369,14 @@ jQuery(function($){
 			  
 			this.events = function(){
 				
-				//导出
+				//导出退休返聘
 				$('#export').on('click',function(){
 					location.href="${ctx}/excel/importExcel/retire";
 				})
-				
+				//导出身份证号
+				$('#export2').on('click',function(){
+					location.href="${ctx}/excel/importExcel/cat";
+				})
 				
 				var getdataa={type:"orgName",}
 				var htmlfrn="";
