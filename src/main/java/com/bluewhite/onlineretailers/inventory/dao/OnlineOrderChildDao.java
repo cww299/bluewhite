@@ -24,8 +24,9 @@ public interface OnlineOrderChildDao  extends BaseRepository<OnlineOrderChild, L
 	 * 获取商品最后一次订单单价
 	 * @param commodityId
 	 * @return
+	 * nativeQuery 表示原生sql 支持limit
 	 */
-	@Query("select price from OnlineOrderChild c group by c.commodityId HAVING c.commodityId=?1")
+	@Query(nativeQuery=true,value ="select price from online_order_child where commodity_id=?1 ORDER BY created_at DESC LIMIT 1")
 	Double getOnlineOrderPrice(Long commodityId);
 
 }

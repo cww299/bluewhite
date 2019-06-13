@@ -84,8 +84,7 @@ public class Procurement extends BaseEntity<Long>{
 	/**
 	 * 子订单list
 	 */
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
-	@JoinColumn(name = "procurement_id")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true,mappedBy = "procurement")
 	private List<ProcurementChild> procurementChilds = new ArrayList<>();
 	
 	
@@ -182,9 +181,23 @@ public class Procurement extends BaseEntity<Long>{
 	@Transient
 	private String batchNumber;
 	
+	/**
+	 * 商品名称
+	 */
+	@Transient
+	private String commodityName;
 	
 	
 	
+	
+	public String getCommodityName() {
+		return commodityName;
+	}
+
+	public void setCommodityName(String commodityName) {
+		this.commodityName = commodityName;
+	}
+
 	public String getBatchNumber() {
 		return batchNumber;
 	}
