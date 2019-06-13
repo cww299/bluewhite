@@ -85,17 +85,24 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			// 按仓库id
 			if (param.getWarehouseId() != null) {
 				Join<Procurement, ProcurementChild> join = root
-						.join(root.getModel().getSet("procurementChilds", ProcurementChild.class), JoinType.LEFT);
+						.join(root.getModel().getList("procurementChilds", ProcurementChild.class), JoinType.LEFT);
 				predicate.add(cb.equal(root.get("warehouseId").as(Long.class), param.getWarehouseId()));
 			}
 
 			// 按批次号过滤
 			if (!StringUtils.isEmpty(param.getBatchNumber())) {
 				Join<Procurement, ProcurementChild> join = root
-						.join(root.getModel().getSet("procurementChilds", ProcurementChild.class), JoinType.LEFT);
+						.join(root.getModel().getList("procurementChilds", ProcurementChild.class), JoinType.LEFT);
 				predicate.add(cb.like(join.get("batchNumber").as(String.class), "%" + param.getBatchNumber() + "%"));
 			}
-
+			
+			// 按商品名称过滤
+			if (!StringUtils.isEmpty(param.getCommodityName())) {
+				Join<Procurement, ProcurementChild> join = root
+						.join(root.getModel().getList("procurementChilds", ProcurementChild.class), JoinType.LEFT);
+				predicate.add(cb.like(join.get("commodity").get("skuCode").as(String.class),"%" + StringUtil.specialStrKeyword(param.getCommodityName()) + "%") );
+			}
+			
 			// 按单据生产时间过滤
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
 				predicate.add(cb.between(root.get("createdAt").as(Date.class), param.getOrderTimeBegin(),
