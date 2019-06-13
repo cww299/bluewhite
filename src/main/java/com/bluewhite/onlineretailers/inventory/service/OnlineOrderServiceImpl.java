@@ -317,7 +317,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				List<ProcurementChild> procurementChildList = procurementChildDao
 						.findByCommodityIdAndStatusAndResidueNumberGreaterThan(onlineOrderChild.getCommodityId(), 0, 0);
 				procurementChildList = procurementChildList.stream()
-						.filter(ProcurementChild -> ProcurementChild.getProcurement().getType() == 2)
+						.filter(ProcurementChild -> ProcurementChild.getProcurement().getType() == 2 && ProcurementChild.getProcurement().getFlag()==0)
 						.sorted(Comparator.comparing(ProcurementChild::getCreatedAt)).collect(Collectors.toList());
 				// 出库单剩余数量
 				int residueNumber = number;
