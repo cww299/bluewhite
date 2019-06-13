@@ -489,7 +489,7 @@ layui.config({
 						c.push({
 							warehouseId : child[i].warehouse.id,
 							id:child[i].id,
-							number:child[i].number
+							number:child[i].residueNumber
 						})
 					}
 				}
