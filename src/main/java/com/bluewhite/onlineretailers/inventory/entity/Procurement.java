@@ -84,7 +84,8 @@ public class Procurement extends BaseEntity<Long>{
 	/**
 	 * 子订单list
 	 */
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true,mappedBy = "procurement")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+	@JoinColumn(name = "procurement_id")
 	private List<ProcurementChild> procurementChilds = new ArrayList<>();
 	
 	
