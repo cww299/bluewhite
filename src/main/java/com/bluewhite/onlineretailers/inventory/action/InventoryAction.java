@@ -1,4 +1,4 @@
-package com.bluewhite.onlineretailers.inventory.action;
+  package com.bluewhite.onlineretailers.inventory.action;
 
 import java.io.IOException;
 import java.io.InputStream;

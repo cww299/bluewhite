@@ -25,6 +25,7 @@ import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
@@ -186,6 +187,12 @@ public class UserAction {
 		if(user.getId() == null){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("id为空");
+			return cr;
+		}
+		User u = userService.findByPhone(user.getPhone());
+		if(u != null){
+			cr.setCode(ErrorCode.SYSTEM_PHONE_NUM_REPEAT.getCode());
+			cr.setMessage("该用户手机号已存在");
 			return cr;
 		}
 		User oldUser = userService.findOne(user.getId());
