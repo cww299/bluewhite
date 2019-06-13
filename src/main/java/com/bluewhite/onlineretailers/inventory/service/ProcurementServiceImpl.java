@@ -252,6 +252,12 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 						throw new ServiceException("该数据已经反冲，无法再次反冲");
 					}
 					procurement.setFlag(1);
+					//检查是否拥有下级单据
+					List<Procurement> nextProcurement =dao.findByFlagAndParentId(0,id);
+					if(nextProcurement.size()>0){
+						throw new ServiceException("该数据已拥有下级单据，无法反冲，请先反冲下级单据");
+					}
+					
 					// 当单据的父id存在，说明拥有上级单据，反冲恢复上级单据的总剩余数量
 					if (procurement.getParentId() != null) {
 						Procurement parentProcurement = dao.findOne(procurement.getParentId());

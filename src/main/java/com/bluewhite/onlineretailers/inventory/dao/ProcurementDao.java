@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.bluewhite.base.BaseRepository;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
+import java.lang.Integer;
 
 public interface ProcurementDao  extends BaseRepository<Procurement, Long>{
 	
@@ -13,7 +14,7 @@ public interface ProcurementDao  extends BaseRepository<Procurement, Long>{
 	 * @param parentId
 	 * @return
 	 */
-	Procurement findByParentId(Long parentId);
+	List<Procurement> findByFlagAndParentId(Integer flag,Long parentId);
 	
 	/**
 	 * 根据类型和时间查询
