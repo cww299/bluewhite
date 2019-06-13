@@ -37,9 +37,11 @@ td{
 	<div class="layui-card-body">
 		<table class="layui-form">
 			<tr>
-				<td><select name="1"><option>按批次号查找</option></select>
+				<td>批次号:</td>
+				<td><input type="text" class="layui-input" name="batchNumber" placeholder='请输入批次号'></td>
 				<td>&nbsp;&nbsp;</td>
-				<td><input type="text" class="layui-input" name="batchNumber" placeholder='请输入要查找的相关信息'></td>
+				<td>商品名:</td>
+				<td><input type="text" class="layui-input" name="commodityName" placeholder='请输入商品名'></td>
 				<td>&nbsp;&nbsp;</td>
 				<td><select name="flag"><option value="">是否反冲</option><option value="1">反冲</option><option value="0" selected>未反冲</option></select>
 				<td>&nbsp;&nbsp;</td>
