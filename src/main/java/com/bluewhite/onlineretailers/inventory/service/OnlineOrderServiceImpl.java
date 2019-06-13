@@ -307,6 +307,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				ProcurementChild procurementChild = new ProcurementChild();
 				procurementChild.setCommodityId(onlineOrderChild.getCommodityId());
 				procurementChild.setNumber(number);
+				procurementChild.setResidueNumber(number);
 				procurementChild.setWarehouseId(warehouseId);
 				procurementChild.setStatus(0);
 				// 存入销售子单的销售单id
@@ -459,6 +460,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 					// 出库单
 					if (procurement.getType() == 3) {
 						procurement.setNumber(cPoi.getNumber());
+						procurementChild.setResidueNumber(cPoi.getNumber());
 						// 获取库存
 						Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(commodity.getId(),
 								warehouseId);
