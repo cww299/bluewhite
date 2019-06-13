@@ -65,13 +65,6 @@
 										<td><select class="form-control" id="retire"><option
 													value="">否</option>
 												<option value="0">是</option></select></td>
-										<td>&nbsp;&nbsp;</td>
-										<td>合同:</td>
-										<td><select class="form-control" id="commitment"><option
-													value="">请选择</option>
-												<option value="0">未签</option>
-												<option value="1">已签</option>
-												<option value="2">续签</option></select></td>
 									</tr>
 									<tr>
 										<td><div style="height: 10px"></div></td>
@@ -105,12 +98,6 @@
 													value="">请选择</option>
 												<option value="0">未缴</option>
 												<option value="1">已缴</option></select></td>
-										<td>&nbsp;&nbsp;</td>
-										<td>承诺书:</td>
-										<td><select class="form-control" id="promise"><option
-													value="">请选择</option>
-												<option value="0">未签</option>
-												<option value="1">已签</option></select></td>
 									</tr>
 									<tr>
 										<td><div style="height: 10px"></div></td>
@@ -131,11 +118,19 @@
 										<td>协议:</td>
 										<td><select id="agreementsSelect" class="form-control">
 												<option value="">请选择</option></select></td>
-											<td>&nbsp;&nbsp;</td>	
-										<td><button type="button"
-										class="btn btn-success  btn-sm btn-3d ecxel" id="export">导出返聘
-										</button></td>
-												
+											<td>&nbsp;&nbsp;</td>
+										<td>合同:</td>
+										<td><select class="form-control" id="commitment"><option
+													value="">请选择</option>
+												<option value="0">未签</option>
+												<option value="1">已签</option>
+												<option value="2">续签</option></select></td>
+											<td>&nbsp;&nbsp;</td>
+										<td>承诺书:</td>
+										<td><select class="form-control" id="promise"><option
+													value="">请选择</option>
+												<option value="0">未签</option>
+												<option value="1">已签</option></select></td>	
 									</tr>
 								</table>
 								<span class="input-group-btn">
@@ -143,22 +138,28 @@
 										class="btn btn-default btn-square btn-sm btn-3d  searchtask">
 										查&nbsp;找</button>
 								</span>
-								&nbsp;&nbsp;&nbsp;&nbsp;<span class="input-group-btn">
+								&nbsp;&nbsp;<span class="input-group-btn">
 									<button type="button" class="btn btn-success  btn-sm btn-3d" id="lookoverBecome">
 										特急人员  <span class="layui-badge">0</span></button>
 									<button type="button"  style="display:none;" id="openEditBtn" data-id=''>隐藏打开修改用户弹窗按钮</button>
 								</span>
-								&nbsp;&nbsp;&nbsp;&nbsp; <span class="input-group-btn">
+								&nbsp;&nbsp; <span class="input-group-btn">
 									<button type="button"
 										class="btn btn-success  btn-sm btn-3d addDict">
 										新增员工</button>
 								</span>
-								&nbsp;&nbsp;&nbsp;&nbsp;<span class="input-group-btn">
+								&nbsp;&nbsp;<span class="input-group-btn">
 									<button type="button"
 										class="btn btn-success  btn-sm btn-3d savemode"
 										data-toggle="modal" data-target="#myModal">员工提示
 									</button>
 								</span>
+								
+								&nbsp;&nbsp;<span class="input-group-btn">
+										<button type="button"
+										class="btn btn-success  btn-sm btn-3d ecxel" id="export">导出返聘
+										</button>
+										</span>
 							</div>
 						</div>
 					</div>
