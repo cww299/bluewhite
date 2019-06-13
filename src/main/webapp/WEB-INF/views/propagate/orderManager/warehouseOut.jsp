@@ -230,16 +230,16 @@ layui.config({
 			cols:[[
 			       {align:'center', type:'checkbox',},
 			       {align:'center', title:'单据编号',   	field:'documentNumber',	},
-			       {align:'center', title:'数量', field:'number', width:'6%',	},
-			       {align:'center', title:'经手人',	templet:'<p>{{ d.user.userName }}</p>', width:'7%',	},
-			       {align:'center', title:'客户',	templet:'<p>{{ d.onlineCustomer!=null?d.onlineCustomer.buyerName:"&nbsp" }}</p>', width:'7%',	},
+			       {align:'center', title:'数量', field:'number', width:'4%',	},
+			       {align:'center', title:'经手人',	templet:'<p>{{ d.user.userName }}</p>', width:'4%',	},
+			       {align:'center', title:'客户',	templet:'<p>{{ d.onlineCustomer!=null?d.onlineCustomer.buyerName:"&nbsp" }}</p>', width:'4%',	},
 			       {align:'center', title:'出库类型', templet:'#statusTpl', width:'6%',	},
-			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl', width:'6%',	},
+			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl', width:'4%',	},
 			       {align:'center', title:'日期',   	field:'createdAt',	},
 			       {align:'center', title:'批次号',	templet: orderContentBatchNumber(), width:'10%'	,},
 					{align:'center', title:'商品名',	templet: orderContentName(),width:'20%'	,},
 					{align:'center', title:'剩余数量',templet: orderContentNumber(), width:'5%'	,},
-					 {align:'center', title:'备注', 	templet: orderContentRemark(), width:'10%'	,	},
+					 {align:'center', title:'备注', 	templet: orderContentRemark(), width:'20%'	,	},
 			       ]]
 		})
 		function orderContentRemark(){
@@ -250,7 +250,7 @@ layui.config({
 					var style='';
 					if(i==d.procurementChilds.length-1)
 						style='border-bottom:none';
-					html+='<tr><td style="border-right:none; '+style+'">'+t.childRemark+'&nbsp;</td></tr>';
+					html+='<tr><td style="border-right:none; text-align:left;'+style+'">'+t.childRemark+'&nbsp;</td></tr>';
 				}
 				return html+'</table>';
 			}
