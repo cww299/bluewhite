@@ -363,6 +363,15 @@ layui.config({
 						choosedProduct[i].actualSum=parseFloat((c.price-(-c.sellerReadjustPrices)-c.systemPreferential)*c.number).toFixed(2);
 						$(this).parent().siblings('td[data-key="'+key+'7"]').find('div').html(choosedProduct[i].sumPrice);//更新数据表格的内容
 						$(this).parent().siblings('td[data-key="'+key+'8"]').find('div').html(choosedProduct[i].actualSum); 
+						var allSumPrice = 0, allActualSum = 0,allNumber = 0;
+						layui.each(choosedProduct,function(index,item){
+							allSumPrice-=(-item.sumPrice);
+							allActualSum-=(-item.actualSum);
+							allNumber-=(-item.number);
+						})
+						$('div[class="layui-table-total"]').find('td[data-field="sumPrice"]').find('div').html(allSumPrice);	//修改统计行的数据
+						$('div[class="layui-table-total"]').find('td[data-field="actualSum"]').find('div').html(allActualSum);
+						$('div[class="layui-table-total"]').find('td[data-field="number"]').find('div').html(allNumber);
 					}
 				}
 				allPayment-=(-choosedProduct[i].actualSum);		//计算收款金额
@@ -781,7 +790,7 @@ layui.config({
 			var list=[];				//使用临时数据进行存放，防止出现非法数据时，污染原先的数据
 			for(var i=0;i<choosed.length;i++){
 				if(choosed[i].inventory==undefined){
-					layer.msg('商品无库存，无法选择',{icon:2});
+					layer.msg('商品：'+choosed[i].skuCode+' 无库存，无法选择',{icon:2});
 					return;
 				}
 				var result=true;

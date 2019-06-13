@@ -453,6 +453,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			}
 			user.setForeigns(0);
 			user.setPositive(false);
+			UserContract userContract = new UserContract();
+			userContractDao.save(userContract);
+			user.setUserContractId(userContract.getId());
 			dao.save(user);
 			count++;
 		}
