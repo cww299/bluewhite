@@ -97,9 +97,10 @@ layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	tablePlug : 'tablePlug/tablePlug',
-	formSelects : 'formSelect/formSelects-v4'
+	formSelects : 'formSelect/formSelects-v4',
+	menuTree : 'layui/myModules/menuTree1'
 }).define(
-	[ 'tablePlug','jquery','formSelects'],
+	[ 'tablePlug','jquery','formSelects','menuTree'],
 	function() {
 		var $ = layui.jquery
 		, formSelects = layui.formSelects	//多选下拉框插件
@@ -107,6 +108,7 @@ layui.config({
 		, form = layui.form			 		//表单
 		, table = layui.table 				//表格
 		, tablePlug = layui.tablePlug 		//表格插件
+		, menuTree = layui.menuTree 
 		, laytpl = layui.laytpl;			//模板引擎
 		
 		getMenu();   			//获取菜单，添加权限级联时使用
