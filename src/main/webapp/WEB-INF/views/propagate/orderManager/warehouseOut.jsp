@@ -329,7 +329,7 @@ layui.config({
 		})
 		form.on('submit(searchProduct)',function(obj){
 			table.reload('productChooseTable',{
-				where:obj.field,
+				where:obj.field, 
 				page: {  curr: 1   }
 			})
 		})
