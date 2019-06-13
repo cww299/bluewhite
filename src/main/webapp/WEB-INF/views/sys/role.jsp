@@ -108,7 +108,7 @@ layui.config({
 		, form = layui.form			 		//表单
 		, table = layui.table 				//表格
 		, tablePlug = layui.tablePlug 		//表格插件
-		, menuTree = layui.menuTree
+		, menuTree = layui.menuTree 
 		, laytpl = layui.laytpl;			//模板引擎
 		
 		getMenu();   			//获取菜单，添加权限级联时使用
