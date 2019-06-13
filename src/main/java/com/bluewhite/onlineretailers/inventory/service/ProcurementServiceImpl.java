@@ -108,9 +108,12 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				predicate.add(cb.between(root.get("createdAt").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));
 			}
-
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
+			//去重
+			if(!StringUtils.isEmpty(param.getBatchNumber()) || !StringUtils.isEmpty(param.getCommodityName())){
+				query.distinct(true);
+			}
 			return null;
 		}, page);
 
