@@ -93,7 +93,7 @@ td{
 					  <input type="hidden" name="id" id='becomeOrderId' ></td>	<!-- 默认type类型为2，表示为入库单 -->
 			<td><input type="text" class="layui-input" name="createdAt" id="becomeCreatedAt"  ></td>
 			<td>经手人</td>
-			<td><select name="userId" id='userIdSelect'><option value="1" >获取数据中...</option></select></td>
+			<td><select name="userId" id='userIdSelect' lay-search><option value="1" >获取数据中...</option></select></td>
 			<td>备注</td>
 			<td colspan="3"><input type="text" name="remark" class="layui-input"></td></tr>
 		<tr>

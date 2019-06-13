@@ -492,12 +492,12 @@ layui.config({
 									choosedProduct[i].status=defaultStatus;
 								if(obj.value==1){
 									$('#textTd').html('调拨人');
-									$('#selectTd').html('<select id="userIdOrg" name="transfersUserId"><option>获取数据中...</option></select>');
+									$('#selectTd').html('<select id="userIdOrg" lay-search name="transfersUserId"><option>获取数据中...</option></select>');
 									getUserSelect('','userIdOrg',allUserOrg);
 								}
 								else if(obj.value==2){
 									$('#textTd').html('客户');
-									$('#selectTd').html('<select id="customId" name="onlineCustomerId"><option>获取数据中...</option></select>');
+									$('#selectTd').html('<select id="customId" lay-search name="onlineCustomerId"><option>获取数据中...</option></select>');
 									getUserSelect('','customId',allCustom);
 								}else{
 									$('#textTd').html('');
