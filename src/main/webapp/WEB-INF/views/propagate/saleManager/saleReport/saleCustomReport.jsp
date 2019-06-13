@@ -111,6 +111,7 @@ layui.config({
 				type:1,
 				title:obj.data.user,
 				area:['80%','80%'],
+				offset:'30px',
 				content:$('#lookoverDiv'),
 				shadeClose:true,
 			})

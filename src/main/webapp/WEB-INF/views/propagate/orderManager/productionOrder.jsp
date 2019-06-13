@@ -16,10 +16,9 @@ td{
      top: 50%;
      transform: translateY(-50%);
 }
-.layui-card .layui-table-cell{	
-	  height:auto;
-	 /*  overflow:visible; */
-	  padding:0px;
+.layui-card .layui-table-cell{	/* 表格内容自动换行样式 */
+	  height:auto; 
+	  padding:0px; 
 }
 .layui-card  .layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
      top: 50%;
@@ -191,9 +190,10 @@ layui.config({
 		, tablePlug = layui.tablePlug;
 		
 		var chooseProductWin;		//选择商品弹窗
-		var allUser=[];
-		var currUser={id:''};       		//当前用户
-		
+		var allUser = [];
+		var currUser = {id:''};       		//当前用户
+		var searchBatchNumber = '';			//记录搜索使用的数据，用于过滤筛选子单数据
+		var searchCommodityName = '';
 		getAllUser();
 		getCurrUser();
 		
@@ -222,10 +222,12 @@ layui.config({
 		})
 		function orderContentRemark(){
 			return function(d){
-				var html='<table style="width:100%;" class="layui-table">';
+				var html='<table style="width:100%;">';
 				for(var i=0;i<d.procurementChilds.length;i++){
 					var t=d.procurementChilds[i];
 					var style='';
+					if(t.batchNumber.indexOf(searchBatchNumber)==-1 || t.commodity.skuCode.indexOf(searchCommodityName)==-1)
+						continue;
 					if(i==d.procurementChilds.length-1)
 						style='border-bottom:none';
 					html+='<tr><td style="text-align:left;border-right:none; '+style+'">'+t.childRemark+'&nbsp;</td></tr>';
@@ -239,6 +241,8 @@ layui.config({
 				for(var i=0;i<d.procurementChilds.length;i++){
 					var t=d.procurementChilds[i];
 					var style='';
+					if(t.batchNumber.indexOf(searchBatchNumber)==-1 || t.commodity.skuCode.indexOf(searchCommodityName)==-1)
+						continue;
 					if(i==d.procurementChilds.length-1)
 						style='border-bottom:none';
 					html+='<tr><td style="border-right:none; '+style+'">'+t.batchNumber+'&nbsp;</td></tr>';
@@ -252,6 +256,8 @@ layui.config({
 				for(var i=0;i<d.procurementChilds.length;i++){
 					var t=d.procurementChilds[i];
 					var style='';
+					if(t.batchNumber.indexOf(searchBatchNumber)==-1 || t.commodity.skuCode.indexOf(searchCommodityName)==-1)
+						continue;
 					if(i==d.procurementChilds.length-1)
 						style='border-bottom:none';
 					html+='<tr><td style="border-right:none; '+style+'">'+t.commodity.skuCode+'&nbsp;</td></tr>';
@@ -265,6 +271,8 @@ layui.config({
 				for(var i=0;i<d.procurementChilds.length;i++){
 					var t=d.procurementChilds[i];
 					var style='';
+					if(t.batchNumber.indexOf(searchBatchNumber)==-1 || t.commodity.skuCode.indexOf(searchCommodityName)==-1)
+						continue;
 					if(i==d.procurementChilds.length-1)
 						style='border-bottom:none';
 					html+='<tr><td style="border-right:none; '+style+'">'+t.residueNumber+'&nbsp;</td></tr>';
@@ -284,6 +292,10 @@ layui.config({
 			lookover(obj.data);
 		})
 		form.on('submit(search)',function(obj){
+			obj.field.batchNumber = obj.field.batchNumber.trim();
+			obj.field.commodityName = obj.field.commodityName.trim();
+			searchBatchNumber = obj.field.batchNumber;
+			searchCommodityName = obj.field.commodityName;
 			table.reload('productOrderTable',{
 				where:obj.field,
 				page: {  curr: 1   },
