@@ -73,6 +73,7 @@ import com.bluewhite.reportexport.entity.OrderPoi;
 import com.bluewhite.reportexport.entity.ProcedurePoi;
 import com.bluewhite.reportexport.entity.ProductPoi;
 import com.bluewhite.reportexport.entity.ReworkPoi;
+import com.bluewhite.reportexport.entity.User2Poi;
 import com.bluewhite.reportexport.entity.UserPoi;
 import com.bluewhite.reportexport.service.ReportExportService;
 import com.bluewhite.system.user.dao.UserDao;
@@ -912,7 +913,7 @@ public class ReportExportAction {
 	    lists.addAll(list2);
 	    List<UserPoi> lists2 = new ArrayList<>();
 	    SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
-	   for (User user : lists) {
+	    for (User user : lists) {
 		UserPoi poi=new UserPoi();
 		poi.setName(user.getUserName());
 		poi.setAge(user.getAge());
@@ -920,12 +921,52 @@ public class ReportExportAction {
 		poi.setOrgName(user.getOrgName().getName());
 		poi.setGender(user.getGender()==0 ? "男" :"女");
 		lists2.add(poi);
-	}
+	   	}
 	    Excelutil<UserPoi> util = new Excelutil<UserPoi>(UserPoi.class);
         util.exportExcel(lists2, "退休返聘", out);// 导出 
         out.close();
 	}
 	
+	
+	/**
+	 * 导出身份证号码
+	 * @param request
+	 * @param response
+	 * @throws IOException 
+	 */
+	@RequestMapping("/importExcel/cat")
+	public void DownMonthlyUserExcel(HttpServletResponse response) throws IOException{
+		response.setContentType("octets/stream");
+	    response.addHeader("Content-Disposition", "attachment;filename=rework.xls");
+	    OutputStream out = response.getOutputStream();  
+        //输出的实体与反射的实体相对应
+	    List<User> lists = new ArrayList<>();
+	    List<User> users= userDao.findAll();
+	    List<User> list=users.stream().filter(User->User.getIdCard()!=null && User.getForeigns().equals(0) && User.getIsAdmin()==false).collect(Collectors.toList());
+	    lists.addAll(list);
+	    List<User2Poi> lists2 = new ArrayList<>();
+	    for (User user : lists) {
+		User2Poi poi=new User2Poi();
+		poi.setName(user.getUserName());
+		if (user.getOrgName()!=null) {
+			poi.setOrgName(user.getOrgName().getName());
+		}
+		if (user.getGender()!=null) {
+			poi.setGender(user.getGender()==0 ? "男" :"女");
+		}
+		if (user.getQuit()!=null) {
+			poi.setQuit(user.getQuit()==0 ? "在职" :"离职");
+		}
+		poi.setIdCard(user.getIdCard());
+		if (user.getPosition()!=null) {
+			poi.setPositionName(user.getPosition().getName());
+		}
+		lists2.add(poi);
+	   	}
+	    Excelutil<User2Poi> util = new Excelutil<User2Poi>(User2Poi.class);
+        util.exportExcel(lists2, "身份证", out);// 导出 
+        out.close();
+	}
 	
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
