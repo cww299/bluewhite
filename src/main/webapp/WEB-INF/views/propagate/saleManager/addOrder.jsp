@@ -804,7 +804,7 @@ layui.config({
 				if(!result) return;
 				var price = choosed[i].price;
 				$.ajax({
-					url:'${ctx}/inventory/getOnlineOrderPrice',
+					url:'${ctx}/inventory/getOnlineOrderPrice?commodityId='+choosed[i].id,
 					async:false,
 					success:function(r){
 						if(r.code == 0 && r.data!=null)
