@@ -251,7 +251,10 @@ layui.config({
 			allUser=[],
 			allCustom=[],
 			allUserOrg=[],
-			currUser={id:''};     
+			currUser={id:''};    
+		
+		var searchBatchNumber = '';			//记录搜索使用的数据，用于过滤筛选子单数据
+		var searchCommodityName = '';
 		
 		getAllInventory();
 		getAllUser();
@@ -292,6 +295,8 @@ layui.config({
 				for(var i=0;i<d.procurementChilds.length;i++){
 					var t=d.procurementChilds[i];
 					var style='';
+					if(t.batchNumber.indexOf(searchBatchNumber)==-1 || t.commodity.skuCode.indexOf(searchCommodityName)==-1)
+						continue;
 					if(i==d.procurementChilds.length-1)
 						style='border-bottom:none';
 					html+='<tr><td style="border-right:none;text-align:left; '+style+'">'+t.childRemark+'&nbsp;</td></tr>';
@@ -305,6 +310,8 @@ layui.config({
 				for(var i=0;i<d.procurementChilds.length;i++){
 					var t=d.procurementChilds[i];
 					var style='';
+					if(t.batchNumber.indexOf(searchBatchNumber)==-1 || t.commodity.skuCode.indexOf(searchCommodityName)==-1)
+						continue;
 					if(i==d.procurementChilds.length-1)
 						style='border-bottom:none';
 					html+='<tr><td style="border-right:none; '+style+'">'+t.batchNumber+'&nbsp;</td></tr>';
@@ -318,6 +325,8 @@ layui.config({
 				for(var i=0;i<d.procurementChilds.length;i++){
 					var t=d.procurementChilds[i];
 					var style='';
+					if(t.batchNumber.indexOf(searchBatchNumber)==-1 || t.commodity.skuCode.indexOf(searchCommodityName)==-1)
+						continue;
 					if(i==d.procurementChilds.length-1)
 						style='border-bottom:none';
 					html+='<tr><td style="border-right:none; '+style+'">'+t.commodity.skuCode+'&nbsp;</td></tr>';
@@ -331,6 +340,8 @@ layui.config({
 				for(var i=0;i<d.procurementChilds.length;i++){
 					var t=d.procurementChilds[i];
 					var style='';
+					if(t.batchNumber.indexOf(searchBatchNumber)==-1 || t.commodity.skuCode.indexOf(searchCommodityName)==-1)
+						continue;
 					if(i==d.procurementChilds.length-1)
 						style='border-bottom:none';
 					html+='<tr><td style="border-right:none; '+style+'">'+t.residueNumber+'&nbsp;</td></tr>';
@@ -350,6 +361,10 @@ layui.config({
 			lookover(obj.data);
 		})
 		form.on('submit(search)',function(obj){
+			obj.field.batchNumber = obj.field.batchNumber.trim();
+			obj.field.commodityName = obj.field.commodityName.trim();
+			searchBatchNumber = obj.field.batchNumber;
+			searchCommodityName = obj.field.commodityName;
 			table.reload('entryOrderTable',{
 				where:obj.field,
 				page: {  curr: 1   },
