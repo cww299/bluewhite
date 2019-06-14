@@ -51,8 +51,10 @@ layui.define(['jquery','form'],function(exports){
 		self.createTree();
 	};
 	//菜单树重载
-    Class.prototype.reload = function(){
-        this.createTree();  
+    Class.prototype.reload = function(options){
+    	var that = this;
+    	that.config = $.extend({}, that.config, options);
+    	that.createTree();  
     };
     //创建树形结构树
     Class.prototype.createTree = function(){
@@ -93,7 +95,7 @@ layui.define(['jquery','form'],function(exports){
 					    }
 				    }
 				    if(conf.checkbox)
-					    html+='<input type="checkbox" lay-filter="menuTreeCheckbox" parentid="'+data[i].parentId+'" icon="'+data[i].icon+'" '+
+					    html+='<input type="checkbox" lay-filter="menuTreeCheckbox-'+self.index+'" parentid="'+data[i].parentId+'" icon="'+data[i].icon+'" '+
 					  		'value="'+data[i].id+'" '+c+' '+d+' lay-skin="primary">';//复选框
 				    html+='<i class="layui-icon layui-icon-'+data[i].icon+'"></i>&nbsp;&nbsp;'			//菜单图标
 				    html+='<span>'+data[i].name+'</span>&nbsp;&nbsp;';				//菜单名
@@ -130,20 +132,20 @@ layui.define(['jquery','form'],function(exports){
             $(obj.target).unbind();
             $('.'+HIDEICON).on('click',function(obj){  show(obj); })
         }
-        form.on('checkbox(menuTreeCheckbox)',function(obj){							
-            layui.each($(obj.elem).parent().next().find('input[type="checkbox"]'),function(index,item){		//遍历下级复选框，进行同步选择
-                item.checked = obj.elem.checked;
-                form.render();
-            })
-            choosedParent($(obj.elem))
-            function choosedParent(par){						//选中父级菜单
-                if(par.parent().parent().parent().prev().find('input[type="checkbox"]').length>0){
-                    par.parent().parent().parent().prev().find('input[type="checkbox"]')[0].checked=true;
-                    choosedParent(par.parent().parent().parent().prev().find('input[type="checkbox"]'));
-                }
-            }
-            form.render();
-        })
+        if(!conf.closeCheckLink)
+	        form.on('checkbox(menuTreeCheckbox-'+self.index+')',function(obj){		
+	        	layui.each($(obj.elem).parent().next().find('input[type="checkbox"]'),function(index,item){		//遍历下级复选框，进行同步选择
+	                item.checked = obj.elem.checked;
+	            })
+	            choosedParent($(obj.elem))
+	            function choosedParent(par){						//选中父级菜单
+	                if(par.parent().parent().parent().prev().find('input[type="checkbox"]').length>0){
+	                    par.parent().parent().parent().prev().find('input[type="checkbox"]')[0].checked=true;
+	                    choosedParent(par.parent().parent().parent().prev().find('input[type="checkbox"]'));
+	                }
+	            }
+	        	form.render();
+	        })
     };
     //获取复选框选中的值
     menuTree.getVal = function(id){
@@ -181,6 +183,28 @@ layui.define(['jquery','form'],function(exports){
             return child;
         }
     };
+  //获取复选框   没有   选中的树形结构数据
+    menuTree.getUncheckedTreeData = function(id){
+        if(!id){  console.error('获取树形数据时，需要指定获取对象的id'); return; }
+        if(!menuTree.menuTreeObj['#'+id]){ console.error('找不到指定对象'+id); return;}
+        var unchecked = $('#'+id).find('div[class="layui-unselect layui-form-checkbox"]');		//获取没有选中的
+        return getTreeVal(0);
+        function getTreeVal(parentId){
+            var child = [];
+            for(var i=0;i<unchecked.length;i++){
+                if($(unchecked[i]).prev().attr('parentid')==parentId){
+                    child.push({
+                        id : $(unchecked[i]).prev().attr('value'),
+                        name : $(unchecked[i]).siblings('span').html(),
+                        parentId : parentId,
+                        icon : $(unchecked[i]).prev().attr('icon'),
+                        children : getTreeVal($(unchecked[i]).prev().attr('value')),
+                    })
+                }
+            }
+            return child;
+        }
+    };
     //获取所有的数据
     menuTree.getAllData = function(id){
         var val=[];
@@ -190,9 +214,15 @@ layui.define(['jquery','form'],function(exports){
     };
     menuTree.render = function(obj){
         var newTree = new Class(obj);
-        var id = newTree.config.elem || newTree.index;
+        var id = newTree.config.elem || newTree.index;			
         menuTree.menuTreeObj[id] = newTree;			//将当前实例对象记录下来
         menuTree.menuTreeConfig = newTree.config;
+    };
+    menuTree.reload = function(id,options){
+    	if(menuTree.menuTreeObj['#'+id])
+    		menuTree.menuTreeObj['#'+id].reload(options);
+    	else
+    		console.error('重载时无法找到id:'+id);
     }
 	exports('menuTree',menuTree);
 });
