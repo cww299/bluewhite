@@ -777,7 +777,7 @@ layui.config({
 			var allPayment=0;
 			for(var j=0;j<choosedProduct.length;j++)		//重新对价格计算
 				allPayment-=(-choosedProduct[j].actualSum);
-			$('#customPayment').val(allPayment);	
+			$('#customPayment').val(allPayment-=(-$('#AddPostFee').val()));	
 			table.reload('productTable',{ data:choosedProduct, })
 		}
 		var choosedId=0;
