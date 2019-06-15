@@ -142,6 +142,14 @@
 	<!-- 广宣预警弹窗 -->
 	<shiro:hasAnyRoles name="superAdmin,propagateManager">
    		<div id="warningDiv" style="display:none;">
+   			<table class="layui-form" style="margin: 10px 20px 0px;">
+   				<tr>
+   					<td>商品名称： &nbsp;&nbsp;</td>
+   					<td><input type="text" name="skuCode" class="layui-input"></td>
+   					<td>&nbsp;&nbsp;</td>
+   					<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchWarnOfProduct">搜索</button></td>
+   				</tr>
+   			</table>
 			<table id='warnTable' lay-filter='warnTable' class="layui-table"></table>   		
    		</div>
 	</shiro:hasAnyRoles> 
@@ -193,6 +201,12 @@ layui.use(['form','element','layer','jquery','table'],function(){
 					area:['50%','80%'],
 					content:$('#warningDiv'),
 				})
+				form.on('submit(searchWarnOfProduct)',function(obj){
+					obj.field.skuCode = obj.field.skuCode.trim();
+					table.reload('warnTable',{
+						where : obj.field,
+					})
+				})
 				 table.render({
 					elem:'#warnTable',
 					size:'lg',
@@ -206,11 +220,11 @@ layui.use(['form','element','layer','jquery','table'],function(){
 						}
 					},
 					cols:[[
-					       {align:'center', title:'预警仓库', field:'inventoryName'},
-					       {align:'center', title:'商品名称', field:'name'},
-					       {align:'center', title:'预警类型', field:'type',templet:'#typeTpl'},
-					       {align:'center', title:'仓库数量', field:'countInventory'},
-					       {align:'center', title:'销售数量', field:'countSales'},
+					       {align:'center', title:'预警仓库', field:'inventoryName',width : '15%',},
+					       {align:'center', title:'商品名称', field:'name', width : '',},
+					       {align:'center', title:'预警类型', field:'type',templet:'#typeTpl', width : '20%',},
+					       {align:'center', title:'仓库数量', field:'countInventory', width : '10%',},
+					       {align:'center', title:'销售数量', field:'countSales', width : '10%',},
 					       ]],
 				}) 
 			}
