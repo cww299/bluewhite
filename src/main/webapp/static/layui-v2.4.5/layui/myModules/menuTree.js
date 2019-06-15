@@ -54,7 +54,7 @@ layui.define(['jquery','form'],function(exports){
     Class.prototype.reload = function(options){
     	var that = this;
     	that.config = $.extend({}, that.config, options);
-    	that.createTree();  
+    	that.render();  
     };
     //创建树形结构树
     Class.prototype.createTree = function(){
@@ -72,16 +72,14 @@ layui.define(['jquery','form'],function(exports){
 				var html=''
 				, checked = conf.checked
 				, disabled = conf.disabled;
+				if(conf.reloadConf){
+					checked = conf.reloadConf.checked;
+					var display = conf.reloadConf.display;
+				}
 				for(var i=0; i < data.length; i++){
-					html+='<div class="layui-tree-grade">';
-					html+='<div class="layui-tree-entry layui-inline" style="height:24px;">';
-					html+=nbsp;																				//加缩进
-					if(data[i].children!=null && data[i].children.length>0)
-						html+='<i class="layui-icon '+(conf.hide?HIDEICON:SHOWICON)+'"></i>&nbsp;';	//展开、收缩图标
-					else
-						html+='<i class="layui-icon layui-icon-file"></i>&nbsp;';
 					var c='';		//是否选中
 					var d='';		//是否可选
+					var di='none';		//是否展开
 					for(var j=0;j<checked.length;j++){
 						if(checked[j] == data[i].id ){
 						    c='checked';
@@ -94,16 +92,41 @@ layui.define(['jquery','form'],function(exports){
 						    break;
 					    }
 				    }
+				    if(display)
+				    	 for(var j=0;j<display.length;j++){
+						    if(display[j] == data[i].id ){
+							    di='';
+							    break;
+						    }
+						 }
+					html+='<div class="layui-tree-grade">';
+					html+='<div class="layui-tree-entry layui-inline" style="height:24px;">';
+					html+=nbsp;																				//加缩进
+					if(data[i].children!=null && data[i].children.length>0)
+						html+='<i class="layui-icon '+( display? (di ? HIDEICON:SHOWICON): (conf.hide?HIDEICON:SHOWICON))+'"></i>&nbsp;';	//展开、收缩图标
+					else
+						html+='<i class="layui-icon layui-icon-file"></i>&nbsp;';
 				    if(conf.checkbox)
 					    html+='<input type="checkbox" lay-filter="menuTreeCheckbox-'+self.index+'" parentid="'+data[i].parentId+'" icon="'+data[i].icon+'" '+
 					  		'value="'+data[i].id+'" '+c+' '+d+' lay-skin="primary">';//复选框
 				    html+='<i class="layui-icon layui-icon-'+data[i].icon+'"></i>&nbsp;&nbsp;'			//菜单图标
 				    html+='<span>'+data[i].name+'</span>&nbsp;&nbsp;';				//菜单名
+				    if(conf.toolbar){
+				    	conf.toolbar = conf.toolbar == true?['add','edit','delete'] : conf.toolbar;
+				    	html += '<div class="menuControl" style="float: right;display:none;" lay-id="menuToolbar-'+self.index+'" data-id="'+data[i].id+'">';
+				    	if(conf.toolbar.indexOf('add')!=-1)
+				    	    html += '<i class="layui-icon layui-icon-add-1" type="add"></i>&nbsp;';
+				    	if(conf.toolbar.indexOf('edit')!=-1)
+				    		html += '<i class="layui-icon layui-icon-edit" type="edit"></i>&nbsp;';
+				    	if(conf.toolbar.indexOf('delete')!=-1)
+				    		html += '<i class="layui-icon layui-icon-delete" type="delete"></i>&nbsp;';
+				    	html += '</div>';
+				    }
 				    if(conf.sumNumber)
 					    html+='<span class="layui-badge layui-bg-green" lay-filter="menu-tree-number">0</span>';
 				    html+='</div>'
 				    if(data[i].children!=null && data[i].children.length>0)
-						html+='<div class="layui-tree-child" style="display:'+(conf.hide?"none":"")+';">'+
+						html+='<div class="layui-tree-child" style="display:'+( display? di : (conf.hide?"none":""))+';">'+
 						 		tree(data[i].children,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+nbsp)+'</div>';	//子菜单
 				    html+='</div>'
 			    }
@@ -146,7 +169,72 @@ layui.define(['jquery','form'],function(exports){
 	            }
 	        	form.render();
 	        })
+        var elem = $('div[class="layui-tree-entry layui-inline"');
+	    if(conf.toolbar){
+	    	elem.mouseover(function(){
+	    		$(this).css("cursor","pointer");								  //鼠标变手
+	    		$(this).find('div[lay-id="menuToolbar-'+self.index+'"]').show();  //显示工具
+	    	}).mouseout(function (){  
+	    		$(this).css("cursor","default");
+	    		$(this).find('div[lay-id="menuToolbar-'+self.index+'"]').hide();  
+	        });
+	    	elem.find('div[lay-id="menuToolbar-'+self.index+'"]').find('i').mouseover(function(){
+	    		$(this).css('color','#0bcc20');
+	    	}).mouseout(function(){
+	    		$(this).css('color','black');
+	    	})
+	    	elem.find('span').on('click',function(){
+	    		$(this).parent().children(':first').click();
+	    	})
+	    }else{
+	    	elem.mouseover(function(){
+	    		$(this).css("cursor","pointer");								  //鼠标变手
+	    	}).mouseout(function (){  
+	    		$(this).css("cursor","default");
+	        });
+	    }
+	    if(conf.reloadConf)			//删除数据重载配置、防止重载污染
+	    	delete conf.reloadConf;
+	    if(conf.onToolbar)
+	    	self.onToolbar();
     };
+    //绑定工具栏点击事件
+    Class.prototype.onToolbar = function(){		
+    	var self = this;
+    	var allData = self.config.data;
+		$(this.config.elem).find('div[class="layui-tree-entry layui-inline"]').find('div[class="menuControl"]').find('i').on('click',function(){
+			var data = null;
+			var id = $(this).parent().attr('data-id');
+			findDataById(allData)
+			function findDataById(d){				//根据id配置当行相关数据
+				layui.each(d,function(index,item){
+					if(data) return;
+					if(item.id == id)
+						data = item;
+					if(item.children)
+						findDataById(item.children)
+				})
+			}
+			var obj = {
+					elem : $(this),
+					type : $(this).attr('type'),
+					data : data,
+			}
+			if(obj.data)
+				self.config.onToolbar(obj);
+			else
+				console.error('数据异常，无法找到相关数据');
+		})
+    }
+    //监听控制按钮
+    menuTree.onToolbar = function(id,callback){
+    	if(!menuTree.menuTreeObj['#'+id])
+    		console.error('监听事件找不到id：'+id);
+    	else{
+    		menuTree.menuTreeObj['#'+id].config.onToolbar = callback;
+    		menuTree.menuTreeObj['#'+id].onToolbar()
+    	}
+    }
     //获取复选框选中的值
     menuTree.getVal = function(id){
         var val=[];
@@ -216,11 +304,28 @@ layui.define(['jquery','form'],function(exports){
         var newTree = new Class(obj);
         var id = newTree.config.elem || newTree.index;			
         menuTree.menuTreeObj[id] = newTree;			//将当前实例对象记录下来
-        menuTree.menuTreeConfig = newTree.config;
+        menuTree.menuTreeConfig[id] = newTree.config;
     };
     menuTree.reload = function(id,options){
     	if(menuTree.menuTreeObj['#'+id])
     		menuTree.menuTreeObj['#'+id].reload(options);
+    	else
+    		console.error('重载时无法找到id:'+id);
+    }
+    menuTree.reloadData = function(id,options){
+    	if(menuTree.menuTreeObj['#'+id]){
+    		var display = [];
+    		layui.each($('#'+id).find('div[class="layui-tree-entry layui-inline"]'),function(index,item){
+    			if($(item).next().length > 0 && $(item).next().css('display') != 'none')
+    				display.push($(item).find('div[class="menuControl"]').attr('data-id'))
+    		})
+    		options = options ? options : {};
+    		options.reloadConf = {		//菜单树重载,只重载数据，需要记录重载前菜单的展开状态和选中状态
+    			checked : menuTree.menuTreeObj['#'+id].config.checkbox ? menuTree.getVal(id) : [],
+    			display : display
+    		}
+    		menuTree.menuTreeObj['#'+id].reload(options);
+    	}
     	else
     		console.error('重载时无法找到id:'+id);
     }
