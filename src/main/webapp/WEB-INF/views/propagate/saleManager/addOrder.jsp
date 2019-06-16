@@ -761,6 +761,7 @@ layui.config({
 			form.render();
 		}
 		function deletes(){
+			debugger
 			var choosed = layui.table.checkStatus('productTable').data;
 			if(choosed.length==0){
 				layer.msg("请选择商品删除",{icon:2});
@@ -778,7 +779,7 @@ layui.config({
 			for(var j=0;j<choosedProduct.length;j++)		//重新对价格计算
 				allPayment-=(-choosedProduct[j].actualSum);
 			$('#customPayment').val((allPayment-=(-$('#AddPostFee').val())).toFixed(2));	
-			table.reload('productTable',{ data:choosedProduct, })
+			table.reload('productTable',{ data:choosedProduct, page:{ curr : 1, }})
 		}
 		var choosedId=0;
 		function sureChoosed(){												//确定商品选择
