@@ -369,15 +369,15 @@ layui.config({
 							allActualSum-=(-item.actualSum);
 							allNumber-=(-item.number);
 						})
-						$('div[class="layui-table-total"]').find('td[data-field="sumPrice"]').find('div').html(allSumPrice);	//修改统计行的数据
-						$('div[class="layui-table-total"]').find('td[data-field="actualSum"]').find('div').html(allActualSum);
-						$('div[class="layui-table-total"]').find('td[data-field="number"]').find('div').html(allNumber);
+						$('div[class="layui-table-total"]').find('td[data-field="sumPrice"]').find('div').html(allSumPrice.toFixed(2));	//修改统计行的数据
+						$('div[class="layui-table-total"]').find('td[data-field="actualSum"]').find('div').html(allActualSum.toFixed(2));
+						$('div[class="layui-table-total"]').find('td[data-field="number"]').find('div').html(allNumber.toFixed(2));
 					}
 				}
 				allPayment-=(-choosedProduct[i].actualSum);		//计算收款金额
 			} 
 			allPayment-=(-$('#AddPostFee').val());				//加	上邮费
-			$('#customPayment').val(allPayment);			
+			$('#customPayment').val(allPayment.toFixed(2));			
 		});
 		
 		var lastPostFee=0;     				 	//用于保存修改前的邮费价格，进行重新计算
@@ -563,7 +563,7 @@ layui.config({
 				cols:[[
 				       {type:'checkbox', align:'center', fixed:'left'},
 				       {align:'center', title:'商品名称', field:'skuCode',},
-				       {align:'center', title:'成本', 	  field:'cost',},
+				       {align:'center', title:'成本', 	  field:'cost', width:'10%',},
 				       {align:'center', title:'发货仓库',  	  templet:getInventorySelectHtml()},
 				       {align:'center', title:'销售价',        templet:getPriceSelectHtml()},
 				       {align:'center', title:'备注', 	  field:'remark',}, 
@@ -777,7 +777,7 @@ layui.config({
 			var allPayment=0;
 			for(var j=0;j<choosedProduct.length;j++)		//重新对价格计算
 				allPayment-=(-choosedProduct[j].actualSum);
-			$('#customPayment').val(allPayment-=(-$('#AddPostFee').val()));	
+			$('#customPayment').val((allPayment-=(-$('#AddPostFee').val())).toFixed(2));	
 			table.reload('productTable',{ data:choosedProduct, })
 		}
 		var choosedId=0;
@@ -787,7 +787,7 @@ layui.config({
 				layer.msg("请选择相关商品",{icon:2});
 				return false;
 			}
-			var list=[];				//使用临时数据进行存放，防止出现非法数据时，污染原先的数据
+			var list=[];				//存放验证合法的数据
 			for(var i=0;i<choosed.length;i++){
 				if(choosed[i].inventory==undefined){
 					layer.msg('商品：'+choosed[i].skuCode+' 无库存，无法选择',{icon:2});
@@ -825,10 +825,12 @@ layui.config({
 						price : price,			
 						id : choosedId++,
 				}
-				$('#customPayment').val($('#customPayment').val()-(-orderChild.actualSum));		
 				list.push(orderChild);
 			}
-			layui.each(list,function(index,item){  choosedProduct.push(item); })
+			layui.each(list,function(index,item){ 
+				$('#customPayment').val(($('#customPayment').val()-(-item.actualSum)).toFixed(2));		
+				choosedProduct.push(item); 
+			})
 			table.reload('productTable',{ data:choosedProduct });
 			layer.msg('添加成功',{icon:1});
 			layer.close(chooseProductWin);	
