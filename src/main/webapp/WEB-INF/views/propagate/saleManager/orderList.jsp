@@ -517,7 +517,8 @@ layui.config({
 			layer.open({
 				title: '查看订单',
 				type:1,
-				area:['90%','98%'],
+				offset : '30px',
+				area:['90%','90%'],
 				shadeClose:true,
 				content:html
 			})
