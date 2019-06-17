@@ -199,7 +199,6 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 					if (onlineOrder.getFlag() == 1) {
 						throw new ServiceException("该数据已经反冲，无法再次反冲");
 					}
-					onlineOrder.setStatus(Constants.ONLINEORDER_4);
 					onlineOrder.setFlag(1);
 					for (OnlineOrderChild onlineOrderChild : onlineOrder.getOnlineOrderChilds()) {
 						// 当订单的状态是已发货
@@ -215,15 +214,6 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 									.collect(Collectors.toList());
 							procurementService.deleteProcurement(
 									String.valueOf(procurementChildList.get(0).getProcurement().getId()));
-							// 获取商品库存
-							Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(commodity.getId(),
-									onlineOrderChild.getWarehouseId());
-							// 增加库存的同时改变状态
-							if (inventory != null) {
-								inventory.setNumber(inventory.getNumber() + onlineOrderChild.getNumber());
-								inventoryDao.save(inventory);
-								onlineOrderChild.setStatus(Constants.ONLINEORDER_4);
-							}
 						}
 					}
 					dao.save(onlineOrder);
@@ -296,6 +286,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				if (onlineOrder.getFlag() == 1) {
 					throw new ServiceException(onlineOrder.getDocumentNumber() + "销售单，反冲数据，无法发货");
 				}
+				onlineOrder.setConsignTime(new Date());
 				procurement.setRemark("销售出库：" + onlineOrder.getDocumentNumber());
 				// 需完善打印电子面单功能后，获取到运单号
 				// if (onlineOrderChild.getTrackingNumber() == null) {
@@ -352,10 +343,11 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 					Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(commodity.getId(), warehouseId);
 					if (inventory != null) {
 						//子订单部分发货
-						if(onlineOrderChild.getResidueNumber()!=0 && onlineOrderChild.getResidueNumber() >= number){
+						if(onlineOrderChild.getResidueNumber()!=0 && onlineOrderChild.getResidueNumber() > number){
 							onlineOrderChild.setStatus(Constants.ONLINEORDER_3);
 							onlineOrderChild.setResidueNumber(onlineOrderChild.getResidueNumber()-number);
 						}else{
+							onlineOrderChild.setResidueNumber(0);
 							onlineOrderChild.setStatus(Constants.ONLINEORDER_5);
 						}
 						inventory.setNumber(inventory.getNumber() - number);
@@ -529,7 +521,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			if (onlineOrderList.size() > 0) {
 				onlineOrderList.stream().forEach(c -> {
 					listPayment.add(c.getPayment()==null ? 0 : c.getPayment());
-					listPostFee.add(c.getPostFee()==null ? 0 : c.getPayment());
+					listPostFee.add(c.getPostFee()==null ? 0 : c.getPostFee());
 				});
 				sumPayment = NumUtils.sum(listPayment);
 				sumpostFee = NumUtils.sum(listPostFee);
@@ -556,7 +548,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				Double sumCost = 0.0;
 				if (onlineOrderList.size() > 0) {
 					onlineOrderChildList.stream().forEach(c -> {
-						listPayment.add(c.getCommodity().getPropagandaCost()==null? 0 : c.getCommodity().getPropagandaCost());
+						listPayment.add(c.getCommodity().getPropagandaCost()==null ? 0 : c.getCommodity().getPropagandaCost());
 					});
 					sumCost = NumUtils.sum(listPayment);
 				}
@@ -673,7 +665,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			if (psList.size() > 0) {
 				psList.stream().forEach(c -> {
 					listSumPayment.add(c.getPayment()==null ? 0 : c.getPayment());
-					listPostFee.add(c.getPostFee()==null ? 0 : c.getPayment());
+					listPostFee.add(c.getPostFee()==null ? 0 : c.getPostFee());
 				});
 				sumPayment = NumUtils.sum(listSumPayment);
 				sumPostFee = NumUtils.sum(listPostFee);
