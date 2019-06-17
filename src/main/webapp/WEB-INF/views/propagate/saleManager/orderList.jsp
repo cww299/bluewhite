@@ -107,7 +107,7 @@ td{
 
 <!-- 查看订单隐藏框 -->
 <script type="text/html" id="addEditTpl">
-	<div>
+	<div id="orderContentDiv">
 		<table class="layui-form" style="width:100%" id="headerTool">
 			<tr>
 				<td>客户名称：<input type="hidden" name="onlineCustomerId" id="customId" value="{{ d.onlineCustomer.id }}">
@@ -177,7 +177,8 @@ td{
 				<td>详细地址：</td>			
 				<td colspan="3"><input type="text" class="layui-input" id="customAddress" name="address" readonly value="{{ d.address }}"></td>
 				<td>操作</td>
-				<td style="float:left;padding-left:10px;"><button class="layui-btn layui-btn-sm" type="button" id="printBtn">导出订单</button></td>
+				<td style="float:left;padding-left:10px;"><button class="layui-btn layui-btn-sm" type="button" id="printBtn">导出订单</button>
+														  <button class="layui-btn layui-btn-sm" type="button" id="printBtns">打印订单</button></td>
 			</tr>
 			
 		</table>
@@ -251,6 +252,7 @@ td{
     <label style="color: #009688;">{{d.number}}</label>
   {{#  } }}
 </script>
+
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
@@ -517,14 +519,62 @@ layui.config({
 			layer.open({
 				title: '查看订单',
 				type:1,
-				area:['90%','98%'],
+				offset : '30px',
+				area:['90%','90%'],
 				shadeClose:true,
 				content:html
 			})
 			initAddEditOrderWin(data.onlineOrderChilds);			//弹窗的初始化，表格的渲染等。。
-			$('#printBtn').on('click',function(obj){
+			$('#printBtn').on('click',function(obj){				//导出订单
 				location.href='${ctx}/inventory/export/excelOnlineOrderDetail?ids='+data.id;
 			})
+			$('#printBtns').on('click',function(obj){				//打印订单
+				printpage('orderContentDiv');
+			})
+			//打印的元素ID
+			function printpage(myDiv){    
+				var printHtml = '<div style="width:100%;text-align:center;">';           //document.getElementById(myDiv).innerHTML;
+				printHtml += ['<table style="text-align:center;">',
+				                 '<tr>',
+				                     '<td>买家：</td><td>' + data.name +'</td>',
+				                     '<td>&nbsp;&nbsp;</td>',
+				                     '<td>收货人：</td><td>' + data.buyerName + '</td>',
+				                     '<td>&nbsp;&nbsp;</td>',
+				                     '<td>手机：</td><td>' + data.phone + '</td>',
+				                 '</tr>',
+				                 '<tr>',
+			                         '<td>收货地址：</td><td colspan="7" style="text-align: left;">' + data.address + '</td>',
+			                     '</tr>',
+			                     '<tr>',
+		                             '<td>发货日期：</td><td></td>',
+		                             '<td>&nbsp;&nbsp;</td>',
+		                             '<td>物流单号：</td><td></td>',
+		                             '<td>&nbsp;&nbsp;</td>',
+		                             '<td>发货合计数量：</td><td></td>',
+		                         '</tr>',
+				             '</table>',
+				             '<table border="1" style="text-align:center;">',
+				                 '<tr>',
+				                     '<td>行号</td>',
+	                                 '<td style="width:500px;">商品编号</td>',
+	                                 '<td>发货数量</td>',
+	                             '</tr>',
+				             ].join('');
+				layui.each(data.onlineOrderChilds,function(index,item){
+					printHtml += [
+					              '<tr>',
+					                  '<td>' + (index+1) + '</td>',
+					                  '<td>' + item.commodity.skuCode + '</td>',
+					                  '<td>' + item.residueNumber + '</td>',
+					              '</tr>',
+					              ].join('');
+				})
+				printHtml += '</table></div>';
+				var wind = window.open("",'newwindow', 'height=800, width=1500, top=100, left=100, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=n o, status=no');
+				wind.document.body.innerHTML = printHtml;
+				wind.print();
+				return false; 
+			} 
 		}
 		
 		function deletes(){
@@ -569,6 +619,7 @@ layui.config({
 				       {field:'a',		title:'商品名称',	align:'center',templet:function(d){ return '<span>'+d.commodity.skuCode+'</span>';} },
 				       {field:'inventory',	title:'发货仓库',	align:'center', width:'8%', templet:function(d){ return '<span>'+d.warehouse.name+'</span>';} },
 				       {field:'number',		title:'数量',       align:'center', width:'5%',		templet:'#numberTpl', totalRow:true,},
+				       {field:'residueNumber',title:'剩余发货数量',   align:'center', width:'8%', totalRow:true,},
 				       {field:'price',   	title:'单价',   	    align:'center', width:'4%',		templet:'#priceTpl'},
 				       {field:'sumPrice',   title:'单价总金额', align:'center', width:'8%', totalRow:true, style:"color:blue;"},
 				       {field:'systemPreferential',   		title:'系统优惠',   align:'center', width:'6%',	 templet:'#systemPreferentialTpl'},
