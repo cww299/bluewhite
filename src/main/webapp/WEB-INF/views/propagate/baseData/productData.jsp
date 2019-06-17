@@ -158,8 +158,10 @@ layui.config({
 			return function(d){
 				var inv=d.inventorys;
 				for(var j=0;j<inv.length;j++){
-					if(inv[j].warehouse.id==warehouseId)
+					if(inv[j].warehouse.id==warehouseId){
+						layui.table.cache.productTable[d.LAY_TABLE_INDEX]['id'+warehouseId] = inv[j].number;	//更新数据表格的内容，用于导出数据时显示
 						return '<span style="color:blue;">'+inv[j].number+'</span>';
+					}
 				}
 				return '<span style="color:red;">无库存</span>';
 			}
