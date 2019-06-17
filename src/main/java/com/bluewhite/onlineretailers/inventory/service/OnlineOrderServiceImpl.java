@@ -1,5 +1,7 @@
 package com.bluewhite.onlineretailers.inventory.service;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -396,20 +398,21 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	@Override
 	@Transactional
 	public int excelOnlineOrder(ExcelListener excelListener, Long onlineCustomerId, Long userId,Long warehouseId) {
-		int count = 0;
 		// 获取导入的订单
 		List<Object> excelListenerList = excelListener.getData();
 		List<OnlineOrder> onlineOrderList = new ArrayList<>();
 		List<Procurement> procurementList = new ArrayList<>();
+		List<Delivery> deliveryList = new ArrayList<>();
 		OnlineOrder onlineOrder = null;
 		Procurement procurement = null;
+		Delivery deli =null;
 		for (int i = 0; i < excelListenerList.size(); i++) {
 			OnlineOrderPoi cPoi = (OnlineOrderPoi) excelListenerList.get(i);
 			if (cPoi.getDocumentNumber() != null) {
 				onlineOrder = new OnlineOrder();
 				procurement = new Procurement();
 				//新建主发货单
-				Delivery deli = new Delivery();
+				deli = new Delivery();
 				procurement.setType(3);
 				onlineOrder.setDocumentNumber(cPoi.getDocumentNumber());
 				onlineOrder.setStatus(Constants.ONLINEORDER_5);
@@ -440,9 +443,12 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				onlineOrder.setAddress(cPoi.getAddress());
 				onlineOrder.setPhone(cPoi.getPhone());
 				onlineOrder.setBuyerMessage(cPoi.getBuyerMessage());
+				dao.save(onlineOrder);
+				deli.setOnlineOrderId(onlineOrder.getId());
+				deli.setTrackingNumber(cPoi.getTrackingNumber());
 			}
 			List<OnlineOrderChild> onlineOrderChilds = onlineOrder.getOnlineOrderChilds();
-			List<Delivery> deliverys = onlineOrder.getDeliverys();
+			List<DeliveryChild> deliverys = deli.getDeliveryChilds();
 			// 创建子订单
 			OnlineOrderChild onlineOrderChild = new OnlineOrderChild();
 			onlineOrder.setFlag(0);
@@ -450,15 +456,21 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			onlineOrderChild.setOnlineOrder(onlineOrder);
 			onlineOrderChild.setPrice(cPoi.getPrice());
 			onlineOrderChild.setNumber(cPoi.getNumber());
+			onlineOrderChild.setResidueNumber(0);
 			onlineOrderChild.setWarehouseId(cPoi.getWarehouseId() == null ? 157 : warehouseId);
 			onlineOrderChild.setSumPrice(NumUtils.mul(onlineOrderChild.getPrice(), onlineOrderChild.getNumber()));
 			onlineOrderChild.setActualSum(onlineOrderChild.getSumPrice());
 			onlineOrderChild.setSystemPreferential(0.0);
 			onlineOrderChild.setSellerReadjustPrices(0.0);
+			//发货子单
+			DeliveryChild deliveryChild = new DeliveryChild();
+			deliveryChild.setNumber(cPoi.getNumber());
+			
 			if (cPoi.getCommodityName() != null) {
 				Commodity commodity = commodityDao.findByName(cPoi.getCommodityName());
 				if (commodity != null) {
 					onlineOrderChild.setCommodityId(commodity.getId());
+					deliveryChild.setCommodityId(onlineOrderChild.getCommodityId());
 					ProcurementChild procurementChild = new ProcurementChild();
 					procurementChild.setCommodityId(commodity.getId());
 					procurementChild.setNumber(cPoi.getNumber());
@@ -483,19 +495,26 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				}
 			}
 			onlineOrderChilds.add(onlineOrderChild);
+			deliverys.add(deliveryChild);
+			 
 			// 当下一条数据没有订单编号时,自动存储上面所有的父子订单
 			OnlineOrderPoi onlineOrderPoiNext = null;
-			if (i < excelListenerList.size() - 1) {
-				onlineOrderPoiNext = (OnlineOrderPoi) excelListenerList.get(i + 1);
-				if (onlineOrderPoiNext.getDocumentNumber() != null) {
-					onlineOrder.setNum(onlineOrder.getOnlineOrderChilds().stream().mapToInt((OnlineOrderChild::getNumber)).sum());
-					onlineOrderList.add(onlineOrder);
-					procurementList.add(procurement);
-				}
+			try {
+				onlineOrderPoiNext =  (OnlineOrderPoi) excelListenerList.get(i + 1);
+			} catch (Exception e) {
+			}
+			if ( i == excelListenerList.size()-1 || onlineOrderPoiNext == null || onlineOrderPoiNext.getDocumentNumber() != null) {
+				onlineOrder.setNum(onlineOrder.getOnlineOrderChilds().stream().mapToInt(OnlineOrderChild::getNumber).sum());
+				deli.setSumNumber(deli.getDeliveryChilds().stream().mapToInt(DeliveryChild::getNumber).sum());
+				onlineOrderList.add(onlineOrder);
+				procurementList.add(procurement);
+				deliveryList.add(deli);
 			}
 		}
 		dao.save(onlineOrderList);
-		return count;
+		procurementDao.save(procurementList);
+		deliveryDao.save(deliveryList);
+		return onlineOrderList.size();
 	}
 
 	@Override
