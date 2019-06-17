@@ -293,6 +293,7 @@ layui.config({
 			table.reload('onlineOrder',{
 				where:obj.field,
 				url:'${ctx}/inventory/onlineOrderPage',
+				page : { curr : 1 },
 			})
 		})
 		form.render();
