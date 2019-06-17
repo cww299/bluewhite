@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -230,11 +231,15 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 		}
 		//过滤
 		if(skuCode!=null){
-			mapList.stream().filter(m->m.get("name").toString().contains(skuCode));
+			mapList = mapList.stream().filter(map-> String.valueOf(map.get("name")).contains(skuCode))
+					  .collect(Collectors.toList());
 		}
 		return mapList;
 
 	}
+	
+
+	
 
 	@Override
 	public Warning saveWarning(Warning warning) {

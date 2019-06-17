@@ -34,13 +34,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 	@Column(name = "document_number")
 	private String documentNumber;
 	
-
-	/**
-	 * 运单号
-	 */
-	@Column(name = "tracking_number")
-	private String trackingNumber;
-
 	/**
 	 * 销售人员id
 	 * 
@@ -77,6 +70,13 @@ public class OnlineOrder extends BaseEntity<Long> {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
 	@JoinColumn(name = "online_order_id")
 	private List<OnlineOrderChild> onlineOrderChilds = new ArrayList<>();
+	
+	/**
+	 * 子发货单list
+	 */
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+	@JoinColumn(name = "online_order_id")
+	private List<Delivery> deliverys = new ArrayList<>();
 	
 	
 	/**
@@ -121,12 +121,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 	 */
 	@Column(name = "post_fee")
 	private Double postFee;
-	
-	/**
-	 * 卖家发货时间
-	 */
-	@Column(name = "consign_time")
-	private Date consignTime;
 	
 	/**
 	 * 卖家实际收到的支付宝打款金额（由于子订单可以部分确认收货，这个金额会随着子订单的确认收货而不断增加，交易成功后等于买家实付款减去退款金额）
@@ -334,7 +328,28 @@ public class OnlineOrder extends BaseEntity<Long> {
 	private String provincesIds;
 	
 	
+	@Transient
+	private List<List<Delivery>> deliveryLists = new ArrayList<>();
 	
+	
+	
+	public List<List<Delivery>> getDeliveryLists() {
+		return deliveryLists;
+	}
+
+	public void setDeliveryLists(List<List<Delivery>> deliveryLists) {
+		this.deliveryLists = deliveryLists;
+	}
+
+
+	public List<Delivery> getDeliverys() {
+		return deliverys;
+	}
+
+	public void setDeliverys(List<Delivery> deliverys) {
+		this.deliverys = deliverys;
+	}
+
 	public Integer getResidueNumber() {
 		return residueNumber;
 	}
@@ -575,14 +590,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 		this.postFee = postFee;
 	}
 
-	public Date getConsignTime() {
-		return consignTime;
-	}
-
-	public void setConsignTime(Date consignTime) {
-		this.consignTime = consignTime;
-	}
-
 	public Double getReceivedPayment() {
 		return receivedPayment;
 	}
@@ -661,14 +668,6 @@ public class OnlineOrder extends BaseEntity<Long> {
 
 	public void setOnlineCustomer(OnlineCustomer onlineCustomer) {
 		this.onlineCustomer = onlineCustomer;
-	}
-
-	public String getTrackingNumber() {
-		return trackingNumber;
-	}
-
-	public void setTrackingNumber(String trackingNumber) {
-		this.trackingNumber = trackingNumber;
 	}
 
 	public Double getAllBillPreferential() {

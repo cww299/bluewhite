@@ -36,7 +36,6 @@ public class OnlineOrderChild  extends BaseEntity<Long> {
 	@JoinColumn(name = "commodity_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Commodity commodity;
 	
-	
 	/**
 	 * 订单id
 	 * 
@@ -90,12 +89,6 @@ public class OnlineOrderChild  extends BaseEntity<Long> {
 	 */
 	@Column(name = "sum_price")
 	private Double sumPrice;
-	
-	/**
-	 * 运单号（部分发货时，子单会出现运单号）
-	 */
-	@Column(name = "tracking_number")
-	private String trackingNumber;
 	
 	/**
 	 * 系统优惠
@@ -193,14 +186,6 @@ public class OnlineOrderChild  extends BaseEntity<Long> {
 
 	public void setFlag(Integer flag) {
 		this.flag = flag;
-	}
-
-	public String getTrackingNumber() {
-		return trackingNumber;
-	}
-
-	public void setTrackingNumber(String trackingNumber) {
-		this.trackingNumber = trackingNumber;
 	}
 
 	public Date getOrderTimeBegin() {
