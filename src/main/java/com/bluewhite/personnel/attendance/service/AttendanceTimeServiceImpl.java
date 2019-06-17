@@ -216,6 +216,10 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				// 加班后默认到岗时间(1.按点上班，2.第二天上班时间以超过24:00后的时间往后推,3.超过24:30后默认休息7.5小时)
 				// 获取前一天员工的签出时间。是当天的24:00到6:00之间的签出记录
 				List<Attendance> afterAttendance = null;
+				if(attendanceInit.getComeWork() == 1){
+					afterAttendance = attendanceDao.findByUserIdAndTimeBetween(us.getId(),
+							DatesUtil.dayTime(beginTimes, "00:00:00"), DatesUtil.dayTime(beginTimes, "06:00:00"));
+				}
 				if (attendanceInit.getComeWork() == 2) {
 					afterAttendance = attendanceDao.findByUserIdAndTimeBetween(us.getId(),
 							DatesUtil.dayTime(beginTimes, "00:00:00"), DatesUtil.dayTime(beginTimes, "06:00:00"));

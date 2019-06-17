@@ -142,7 +142,7 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 	}
 
 	@Override
-	public List<Map<String, Object>> checkWarning() {
+	public List<Map<String, Object>> checkWarning(String skuCode) {
 		// 预警集合
 		List<Map<String, Object>> mapList = new ArrayList<>();
 		// 1.库存下限预警
@@ -227,6 +227,10 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 					}
 				}
 			}
+		}
+		//过滤
+		if(skuCode!=null){
+			mapList.stream().filter(m->m.get("name").toString().contains(skuCode));
 		}
 		return mapList;
 

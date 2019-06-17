@@ -325,14 +325,14 @@ public class InventoryAction {
 
 	/**
 	 * 自动检测预警数据
-	 * 
+	 * (可过滤)
 	 * 
 	 */
 	@RequestMapping(value = "/inventory/checkWarning", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse checkWarning() {
+	public CommonResponse checkWarning(String skuCode) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(commodityService.checkWarning());
+		cr.setData(commodityService.checkWarning(skuCode));
 		cr.setMessage("成功");
 		return cr;
 	}

@@ -42,7 +42,7 @@ public interface CommodityService  extends BaseCRUDService<Commodity,Long>{
 	/**
 	 * 自动预警
 	 */
-	public List<Map<String, Object>> checkWarning();
+	public List<Map<String, Object>> checkWarning( String skuCode);
 	
 	/**
 	 * 新增仓库预警
