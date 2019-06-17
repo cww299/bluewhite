@@ -37,6 +37,8 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.onlineretailers.inventory.dao.WarningDao;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
+import com.bluewhite.onlineretailers.inventory.entity.Delivery;
+import com.bluewhite.onlineretailers.inventory.entity.DeliveryChild;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineCustomer;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
@@ -72,23 +74,20 @@ public class InventoryAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(OnlineOrder.class, "documentNumber", "trackingNumber", "id", "user", "onlineCustomer",
+				.addRetainTerm(OnlineOrder.class, "documentNumber", "id", "user", "onlineCustomer",
 						"onlineOrderChilds", "sellerNick", "name", "buyerName", "picPath", "payment", "postFee",
 						"consignTime", "buyerRemarks", "num", "sumPrice", "status", "allBillPreferential",
 						"trackingNumber", "buyerMessage", "buyerMemo", "buyerFlag", "sellerMemo", "sellerFlag",
 						"buyerRate",  "shippingType", "createdAt", "updatedAt", "address", "phone",
-						"zipCode", "buyerName", "provinces", "city", "county", "flag", "telephone","residueNumber")
+						"zipCode", "buyerName", "provinces", "city", "county", "flag", "telephone","residueNumber","deliverys")
 				.addRetainTerm(OnlineOrderChild.class, "id", "number", "commodity", "price", "sumPrice",
 						"systemPreferential", "sellerReadjustPrices", "actualSum", "warehouse","status","residueNumber")
-				.addRetainTerm(Commodity.class, "id", "productID", "skuCode", "fileId", "picUrl", "name", "description",
-						"weight", "size", "material", "fillers", "cost", "propagandaCost", "remark", "tianmaoPrice",
-						"oseePrice", "offlinePrice")
+				.addRetainTerm(Delivery.class, "id", "sumNumber", "trackingNumber","deliveryChilds","createdAt")
+				.addRetainTerm(DeliveryChild.class, "id", "number", "commodity")
+				.addRetainTerm(Commodity.class, "id", "skuCode")
 				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName")
-				.addRetainTerm(RegionAddress.class, "id", "regionName", "parentId")
-				
-				
-				;
+				.addRetainTerm(RegionAddress.class, "id", "regionName", "parentId");
 	}
 
 	/****** 订单 *****/
@@ -433,7 +432,7 @@ public class InventoryAction {
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(OnlineOrderChild.class, "id", "commodity", "onlineOrder","warehouse","createdAt","number","price","sumPrice")
 				.addRetainTerm(Commodity.class, "skuCode")
-				.addRetainTerm(OnlineOrder.class, "documentNumber","trackingNumber","user","onlineCustomer")
+				.addRetainTerm(OnlineOrder.class, "documentNumber","user","onlineCustomer")
 				.addRetainTerm(User.class, "userName")
 				.addRetainTerm(OnlineCustomer.class, "name","buyerName")
 				.addRetainTerm(BaseData.class, "name")

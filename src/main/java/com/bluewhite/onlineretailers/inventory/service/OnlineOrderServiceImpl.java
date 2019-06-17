@@ -33,12 +33,15 @@ import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.onlineretailers.inventory.dao.CommodityDao;
+import com.bluewhite.onlineretailers.inventory.dao.DeliveryDao;
 import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
 import com.bluewhite.onlineretailers.inventory.dao.OnlineOrderChildDao;
 import com.bluewhite.onlineretailers.inventory.dao.OnlineOrderDao;
 import com.bluewhite.onlineretailers.inventory.dao.ProcurementChildDao;
 import com.bluewhite.onlineretailers.inventory.dao.ProcurementDao;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
+import com.bluewhite.onlineretailers.inventory.entity.Delivery;
+import com.bluewhite.onlineretailers.inventory.entity.DeliveryChild;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrderChild;
@@ -69,6 +72,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	private ProcurementChildDao procurementChildDao;
 	@Autowired
 	private ProcurementService procurementService;
+	@Autowired
+	private DeliveryDao deliveryDao;
 
 	@Override
 	public PageResult<OnlineOrder> findPage(OnlineOrder param, PageParameter page) {
@@ -266,6 +271,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		if (!StringUtils.isEmpty(delivery)) {
 			// 新建父出库单
 			Procurement procurement = new Procurement();
+			//新建主发货单
+			Delivery deli = new Delivery();
 			procurement.setUserId(cu.getId());
 			// 出库单编号
 			procurement.setDocumentNumber(
@@ -279,6 +286,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				Long id = jsonObject.getLong("id");
 				Long warehouseId = jsonObject.getLong("warehouseId");
 				int number = jsonObject.getIntValue("number");
+				String trackingNumber = jsonObject.getString("trackingNumber");
 				// 获取子订单
 				OnlineOrderChild onlineOrderChild = onlineOrderChildDao.findOne(id);
 				// 获取父订单
@@ -286,14 +294,16 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				if (onlineOrder.getFlag() == 1) {
 					throw new ServiceException(onlineOrder.getDocumentNumber() + "销售单，反冲数据，无法发货");
 				}
-				onlineOrder.setConsignTime(new Date());
 				procurement.setRemark("销售出库：" + onlineOrder.getDocumentNumber());
-				// 需完善打印电子面单功能后，获取到运单号
-				// if (onlineOrderChild.getTrackingNumber() == null) {
-				// throw new ServiceException(onlineOrder.getDocumentNumber() +
-				// "销售单，没有运单编号，无法发货");
-				// }
-
+				deli.setOnlineOrderId(onlineOrder.getId());
+				deli.setTrackingNumber(trackingNumber);
+				//发货单
+				DeliveryChild deliveryChild = new DeliveryChild();
+				deliveryChild.setCommodityId(onlineOrderChild.getCommodityId());
+				deliveryChild.setNumber(number);
+				deli.getDeliveryChilds().add(deliveryChild);
+				
+				
 				// 新建子出库单，一个子订单拥有一个子出库单
 				ProcurementChild procurementChild = new ProcurementChild();
 				procurementChild.setCommodityId(onlineOrderChild.getCommodityId());
@@ -374,8 +384,11 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			}
 			// 更新总发货单的数量
 			int procurementNumber = procurement.getProcurementChilds().stream().mapToInt(p -> p.getNumber()).sum();
+			int sumNumber = deli.getDeliveryChilds().stream().mapToInt(p -> p.getNumber()).sum();
 			procurement.setNumber(procurementNumber);
+			deli.setSumNumber(sumNumber);
 			procurementDao.save(procurement);
+			deliveryDao.save(deli);
 		}
 		return count;
 	}
@@ -395,6 +408,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			if (cPoi.getDocumentNumber() != null) {
 				onlineOrder = new OnlineOrder();
 				procurement = new Procurement();
+				//新建主发货单
+				Delivery deli = new Delivery();
 				procurement.setType(3);
 				onlineOrder.setDocumentNumber(cPoi.getDocumentNumber());
 				onlineOrder.setStatus(Constants.ONLINEORDER_5);
@@ -422,13 +437,12 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				onlineOrder.setProvincesId(provinces.getId());
 				onlineOrder.setCityId(citys.getId());
 				onlineOrder.setCountyId(countys.getId());
-				
 				onlineOrder.setAddress(cPoi.getAddress());
 				onlineOrder.setPhone(cPoi.getPhone());
 				onlineOrder.setBuyerMessage(cPoi.getBuyerMessage());
-				onlineOrder.setTrackingNumber(cPoi.getTrackingNumber());
 			}
 			List<OnlineOrderChild> onlineOrderChilds = onlineOrder.getOnlineOrderChilds();
+			List<Delivery> deliverys = onlineOrder.getDeliverys();
 			// 创建子订单
 			OnlineOrderChild onlineOrderChild = new OnlineOrderChild();
 			onlineOrder.setFlag(0);
