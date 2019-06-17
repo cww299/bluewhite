@@ -184,11 +184,50 @@ td{
 		<table class="layui-table" id="productTable" lay-filter="productTable"></table>
 	</div>
 </script>	
-
+<!-- 发货单模板 -->
+<script type="text/html" id="deliveryOrderTpl">
+<div style="padding:20px;" id="deliveryDiv{{ d.id }}">          
+    <table style="margin: auto;width: 80%;">
+        <tr>
+            <td style="text-align:center;">买家：</td><td>{{ d.name }} </td>
+            <td>&nbsp;&nbsp;</td>
+            <td style="text-align:center;">收货人：</td><td>{{ d.buyerName }}</td>
+            <td>&nbsp;&nbsp;</td>
+            <td style="text-align:center;">手机：</td><td>{{ d.phone }}</td>
+        </tr>
+        <tr>
+            <td style="text-align:center;">收货地址：</td><td colspan="7" style="text-align: left;">{{ d.address }}</td>
+        </tr>
+        <tr>
+            <td style="text-align:center;">发货日期：</td><td>{{ d.createdAt }}</td>
+            <td>&nbsp;&nbsp;</td>
+            <td style="text-align:center;">物流单号：</td><td>{{ d.trackingNumber}}</td>
+            <td>&nbsp;&nbsp;</td>
+            <td style="text-align:center;">发货合计数量：</td><td>{{ d.sumNumber }}</td>
+        </tr>
+    </table>
+    <table border="1" style="margin: auto;width: 80%;text-align:center;">
+        <tr>
+            <td>行号</td>
+            <td style="width:500px;">商品编号</td>
+            <td>发货数量</td>
+        </tr>
+		{{# layui.each(d.deliveryChilds,function(index,item){  }}
+		<tr>
+            <td>{{ index+1 }}</td>
+            <td>{{ item.commodity.skuCode}}</td>
+            <td>{{ item.number}}</td>
+        </tr>
+        {{# }) }}
+    </table>
+</div>
+	<p style="text-align:center;"><button type="button" class="layui-btn layui-btn-sm" data-deliveryDiv="deliveryDiv{{ d.id }}">打印</button></p>
+<hr/>
+</script>
 <!-- 订单列表的工具栏  -->
 <script type="text/html" id="onlineOrderToolbar">
 <div class="layui-button-container">
-	<span class="layui-btn layui-btn-sm" lay-event="oneKey">一键发货</span>
+	<span class="layui-btn layui-btn-sm" lay-event="oneKey">发货</span>
 	<span class="layui-btn layui-btn-sm" lay-event="partDelivery">部分发货</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">反冲订单</span>
 	<span class="layui-btn layui-btn-sm " lay-event="printOrder">导出订单</span>
@@ -407,77 +446,34 @@ layui.config({
 			if(checked.length<1){
 				layer.msg('请选择订单',{icon:2});return;
 			}
+			var html = '';
+			layui.each(checked[0].deliverys,function(index,item){
+				item.name = checked[0].name;
+				item.buyerName = checked[0].buyerName;
+				item.address = checked[0].address;
+				item.phone = checked[0].phone;
+				var tpl = deliveryOrderTpl.innerHTML;
+				laytpl(tpl).render(item,function(h){ html += h; })			
+			})
 			layer.open({
 				type : 1,
 				title : '查看发货单',
 				area : ['80%','80%'],
-				content : ['<span class="layui-badge">提示：单击预览、双击打印运货单</span>',
-				           '<table id="deliveryOrderTable" lay-filter="deliveryOrderTable" class="layui-table"></table>',
-				           '<div id="deliveryOrderDiv"></div>'].join(''),
+				shadeClose : true,
+				content : html,
 			});
-			table.render({
-				elem : '#deliveryOrderTable',
-				data : checked[0],
-				cols : [[
-				         { align:'center', title:'买家', field:'name', },
-				         { align:'center', title:'收货人', field:'buyerName', },
-				         { align:'center', title:'手机', field:'phone', },
-				         { align:'center', title:'收货地址', field:'address', },
-				         { align:'center', title:'发货日期', field:'createdAt', },
-				         { align:'center', title:'运单号', field:'trackingNumber', },
-				         ]],
-			})
-			table.on('rowDouble(deliveryOrderTable)',function(obj){
-				
-			})
-			table.on('row(deliveryOrderTable)',function(obj){
-				//$('#deliveryOrderDiv').html()
+			$('button[data-deliveryDiv]').on('click',function(obj){
+				printpage($(this).attr('data-deliveryDiv'));
 			})
 		}
-		/* //打印的元素ID
+		//打印的元素ID
 		function printpage(myDiv){    
-			var printHtml = '<div style="width:100%;text-align:center;">';           //document.getElementById(myDiv).innerHTML;
-			printHtml += ['<table style="text-align:center;">',
-			                 '<tr>',
-			                     '<td>买家：</td><td>' + data.name +'</td>',
-			                     '<td>&nbsp;&nbsp;</td>',
-			                     '<td>收货人：</td><td>' + data.buyerName + '</td>',
-			                     '<td>&nbsp;&nbsp;</td>',
-			                     '<td>手机：</td><td>' + data.phone + '</td>',
-			                 '</tr>',
-			                 '<tr>',
-		                         '<td>收货地址：</td><td colspan="7" style="text-align: left;">' + data.address + '</td>',
-		                     '</tr>',
-		                     '<tr>',
-	                             '<td>发货日期：</td><td>' + data.consignTime + '</td>',
-	                             '<td>&nbsp;&nbsp;</td>',
-	                             '<td>物流单号：</td><td>' + data.trackingNumber + '</td>',
-	                             '<td>&nbsp;&nbsp;</td>',
-	                             '<td>发货合计数量：</td><td></td>',
-	                         '</tr>',
-			             '</table>',
-			             '<table border="1" style="text-align:center;">',
-			                 '<tr>',
-			                     '<td>行号</td>',
-                                 '<td style="width:500px;">商品编号</td>',
-                                 '<td>发货数量</td>',
-                             '</tr>',
-			             ].join('');
-			layui.each(data.onlineOrderChilds,function(index,item){
-				printHtml += [
-				              '<tr>',
-				                  '<td>' + (index+1) + '</td>',
-				                  '<td>' + item.commodity.skuCode + '</td>',
-				                  '<td>' + item.residueNumber + '</td>',
-				              '</tr>',
-				              ].join('');
-			})
-			printHtml += '</table></div>';
+			var printHtml = document.getElementById(myDiv).innerHTML;
 			var wind = window.open("",'newwindow', 'height=800, width=1500, top=100, left=100, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=n o, status=no');
 			wind.document.body.innerHTML = printHtml;
 			wind.print();
 			return false; 
-		}  */
+		}  
 		function  printOrder(){
 			var choosed = layui.table.checkStatus('onlineOrder').data;
 			if(choosed.length<1){ layer.msg('请选择订单',{icon:2}); return; }
@@ -496,7 +492,10 @@ layui.config({
 				type : 1,
 				area : ['80%','70%'],
 				title:'部分发货：'+obj.documentNumber,
-				content : '<div style="padding:10px;"><table id="partDeliveryTable" lay-filter="partDeliveryTable" class="layui-table"></table></div>',
+				content : '<div style="padding:10px;">'+
+							'<span style="float:left;">运单号：</span>'+
+							'<input type="text" class="layui-input" id="deliveryNumber" style="float:left;width:200px;">'+
+							'<table id="partDeliveryTable" lay-filter="partDeliveryTable" class="layui-table"></table></div>',
 				btn : ['确认发货','取消'],
 				yes : function(){
 					var c =[];  	//发货的对象
@@ -517,6 +516,7 @@ layui.config({
 								return;
 							}
 							c.push({
+								trackingNumber : $('#deliveryNumber').val().trim(),
 								warehouseId : item.warehouse.id,
 								id: item.id,
 								number: item.deliveryNumber
