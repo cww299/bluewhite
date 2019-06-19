@@ -235,6 +235,7 @@ layui.config({
 			       {align:'center', title:'单据编号',   	field:'documentNumber',	width:'10%',},
 			       {align:'center', title:'数量', field:'number', width:'4%',	},
 			       {align:'center', title:'经手人',	templet:'<p>{{ d.user.userName }}</p>', width:'4%',	},
+			       {align:'center', title:'备注',  field:'remark',	  	},
 			       {align:'center', title:'客户',	templet:'<p>{{ d.onlineCustomer!=null?d.onlineCustomer.buyerName:"&nbsp" }}</p>', width:'4%',	},
 			       {align:'center', title:'出库类型', templet:'#statusTpl', width:'6%',	},
 			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl', width:'4%',	},
@@ -242,7 +243,7 @@ layui.config({
 			       {align:'center', title:'批次号',	  templet: orderContent('batchNumber'),   width:'10%'	,},
 				   {align:'center', title:'商品名',	  templet: orderContent('skuCode'),		  width:'18%'	,},
 			       {align:'center', title:'数量',  templet: orderContent('number'),		  width:'4%',	},
-				   {align:'center', title:'备注', 	  templet: orderContent('childRemark'),   	}
+				   {align:'center', title:'备注',	  templet: orderContent('childRemark'),   	}
 			       ]]
 		})
 		function orderContent(field){
