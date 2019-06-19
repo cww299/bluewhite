@@ -20,6 +20,15 @@ public interface OnlineOrderChildDao  extends BaseRepository<OnlineOrderChild, L
 	 */
 	List<OnlineOrderChild> findByStatusAndCreatedAtBetween(String status,Date orderTimeBegin,Date orderTimeEnd);
 	
+	/***
+	 * 获取已发货的销售子单
+	 * @param status
+	 * @param orderTimeBegin
+	 * @param orderTimeEnd
+	 * @return
+	 */
+	List<OnlineOrderChild> findByCreatedAtBetween(Date orderTimeBegin,Date orderTimeEnd);
+	
 	/**
 	 * 获取商品最后一次订单单价
 	 * @param commodityId

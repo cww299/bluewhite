@@ -248,7 +248,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 		if (!StringUtils.isEmpty(ids)) {
 			String[] pers = ids.split(",");
 			if (pers.length > 0) {
-				for (String idString : pers) {
+				for (String idString : pers) {	
 					Long id = Long.valueOf(idString);
 					Procurement procurement = dao.findOne(id);
 					if (procurement.getFlag() == 1) {
@@ -294,25 +294,26 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 								}
 								// 出库单
 								if (procurement.getType() == 3) {
-									// 获取出库单出库数据的ids
-									String[] idArr = procurementChild.getPutWarehouseIds().split(",");
-									// 反冲入库单数据
-									int residueNumber = procurementChild.getNumber();
-									for (String idtoSting : idArr) {
-										ProcurementChild procurementChildSale = procurementChildDao
-												.findOne(Long.valueOf(idtoSting));
-										if (procurementChildSale.getNumber()
-												- procurementChildSale.getResidueNumber() < residueNumber) {
-											residueNumber -= procurementChildSale.getNumber()
-													- procurementChildSale.getResidueNumber();
-											procurementChildSale.setResidueNumber(procurementChildSale.getNumber());
-										} else {
-											procurementChildSale.setResidueNumber(
-													procurementChildSale.getResidueNumber() + residueNumber);
+									if(!StringUtils.isEmpty(procurementChild.getPutWarehouseIds())){
+										// 获取出库单出库数据的ids
+										String[] idArr = procurementChild.getPutWarehouseIds().split(",");
+										// 反冲入库单数据
+										int residueNumber = procurementChild.getNumber();
+										for (String idtoSting : idArr) {
+											ProcurementChild procurementChildSale = procurementChildDao
+													.findOne(Long.valueOf(idtoSting));
+											if (procurementChildSale.getNumber()
+													- procurementChildSale.getResidueNumber() < residueNumber) {
+												residueNumber -= procurementChildSale.getNumber()
+														- procurementChildSale.getResidueNumber();
+												procurementChildSale.setResidueNumber(procurementChildSale.getNumber());
+											} else {
+												procurementChildSale.setResidueNumber(
+														procurementChildSale.getResidueNumber() + residueNumber);
+											}
+											procurementChildDao.save(procurementChildSale);
 										}
-										procurementChildDao.save(procurementChildSale);
 									}
-
 									// 当出库单类型是销售出库，同时反冲销售单的状态
 									if (procurement.getStatus() == 0) {
 										OnlineOrderChild onlineOrderChild = onlineOrderChildDao

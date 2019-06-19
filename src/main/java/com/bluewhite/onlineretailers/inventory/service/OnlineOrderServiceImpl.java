@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,6 +137,13 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			// 按是否反冲
 			if (param.getFlag() != null) {
 				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
+			}
+			
+			// 按商品名称过滤
+			if (!StringUtils.isEmpty(param.getCommodityName())) {
+				Join<OnlineOrder, OnlineOrderChild> join = root
+						.join(root.getModel().getList("onlineOrderChilds", OnlineOrderChild.class), JoinType.LEFT);
+				predicate.add(cb.like(join.get("commodity").get("skuCode").as(String.class),"%" + StringUtil.specialStrKeyword(param.getCommodityName()) + "%") );
 			}
 
 			Predicate[] pre = new Predicate[predicate.size()];
@@ -542,8 +551,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			}
 
 			Map<String, Object> mapSale = new HashMap<String, Object>();
-			// 获取所有的已发货的订单
-			List<OnlineOrder> onlineOrderList = onlineOrderDao.findByStatusAndCreatedAtBetween(Constants.ONLINEORDER_5,
+			// 获取所有订单
+			List<OnlineOrder> onlineOrderList = onlineOrderDao.findByFlagAndCreatedAtBetween(0,
 					beginTimes, endTimes);
 			// 实付金额
 			List<Double> listPayment = new ArrayList<>();
@@ -618,8 +627,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	public List<Map<String, Object>> reportSalesGoods(OnlineOrder onlineOrder) {
 		List<Map<String, Object>> mapList = new ArrayList<>();
 		// 获取所有的已发货的子订单订单
-		List<OnlineOrderChild> onlineOrderChildList = onlineOrderChildDao.findByStatusAndCreatedAtBetween(
-				Constants.ONLINEORDER_5, onlineOrder.getOrderTimeBegin(), onlineOrder.getOrderTimeEnd());
+		List<OnlineOrderChild> onlineOrderChildList = onlineOrderChildDao.findByCreatedAtBetween(
+				 onlineOrder.getOrderTimeBegin(), onlineOrder.getOrderTimeEnd());
 		// 根据商品id分组
 		Map<Long, List<OnlineOrderChild>> mapOnlineOrderChildList = onlineOrderChildList.stream()
 				.collect(Collectors.groupingBy(OnlineOrderChild::getCommodityId, Collectors.toList()));
@@ -653,7 +662,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	public List<Map<String, Object>> reportSalesUser(OnlineOrder onlineOrder) {
 		List<Map<String, Object>> mapList = new ArrayList<>();
 		// 获取所有的已发货的订单
-		List<OnlineOrder> onlineOrderList = onlineOrderDao.findByStatusAndCreatedAtBetween(Constants.ONLINEORDER_5,
+		List<OnlineOrder> onlineOrderList = onlineOrderDao.findByFlagAndCreatedAtBetween(0,
 				onlineOrder.getOrderTimeBegin(), onlineOrder.getOrderTimeEnd());
 		Map<Long, List<OnlineOrder>> mapOnlineOrderList = null;
 		if (onlineOrder.getReport() == 3) {

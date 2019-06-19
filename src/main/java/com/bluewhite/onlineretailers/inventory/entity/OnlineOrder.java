@@ -328,19 +328,22 @@ public class OnlineOrder extends BaseEntity<Long> {
 	private String provincesIds;
 	
 	
+	/**
+	 * 商品名称
+	 */
 	@Transient
-	private List<List<Delivery>> deliveryLists = new ArrayList<>();
+	private String commodityName;
 	
 	
 	
-	public List<List<Delivery>> getDeliveryLists() {
-		return deliveryLists;
+	
+	public String getCommodityName() {
+		return commodityName;
 	}
 
-	public void setDeliveryLists(List<List<Delivery>> deliveryLists) {
-		this.deliveryLists = deliveryLists;
+	public void setCommodityName(String commodityName) {
+		this.commodityName = commodityName;
 	}
-
 
 	public List<Delivery> getDeliverys() {
 		return deliverys;

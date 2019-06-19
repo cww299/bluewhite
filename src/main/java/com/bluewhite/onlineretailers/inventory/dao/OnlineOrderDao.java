@@ -18,4 +18,14 @@ public interface OnlineOrderDao  extends BaseRepository<OnlineOrder, Long>{
 	 */
 	List<OnlineOrder> findByStatusAndCreatedAtBetween(String status,Date orderTimeBegin, Date orderTimeEnd);
 	
+	
+	/**
+	 * 查询销售单
+	 * @param status
+	 * @param orderTimeBegin
+	 * @param orderTimeEnd
+	 * @return
+	 */
+	List<OnlineOrder> findByFlagAndCreatedAtBetween(Integer flag,Date orderTimeBegin, Date orderTimeEnd);
+	
 }
