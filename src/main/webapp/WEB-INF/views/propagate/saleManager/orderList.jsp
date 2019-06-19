@@ -76,7 +76,7 @@ td{
 																 <option  value="virtual"	>虚拟发货</option></select></div>
 					<div class="layui-input-inline" style='width:70px;'><a href="#" style="color:blue;" id="customPosition">所在省份</a></div>  <!-- provincesId收货人的所在省份 -->
 					<div class="layui-input-inline">
-						<input type="text" class="layui-input" name='documentNumber' placeholder='请输入产品编号'></div>
+						<input type="text" class="layui-input" name='skuCode' placeholder='请输入产品编号'></div>
 					<div class="layui-input-inline">
 						<input type="text" class='layui-input' id='searchTime' placeholder='输入查找时间'></div>
 					<div class="layui-input-inline">

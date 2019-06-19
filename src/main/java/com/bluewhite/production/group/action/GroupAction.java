@@ -85,7 +85,6 @@ public class GroupAction {
 			group.setCreatedAt(oldGroup.getCreatedAt());
 			groupService.save(group);
 			cr.setMessage("工序修改成功");
-			
 		}else{
 			if(group.getType()!=null){
 				cr.setData(clearCascadeJSON.format(groupService.save(group)).toJSON());
@@ -356,9 +355,13 @@ public class GroupAction {
 	public CommonResponse getTemporarily(HttpServletRequest request,Integer type,Date temporarilyDate) {
 		CommonResponse cr = new CommonResponse();
 		List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndTemporarilyDate(type,temporarilyDate);
-		for(Temporarily tp : temporarilyList){
-			Group group = groupService.findOne(tp.getGroupId());
-			tp.setGroupName(group.getName());
+			for(Temporarily tp : temporarilyList){
+				if(tp.getGroupId()!=null){
+				Group group = groupService.findOne(tp.getGroupId());
+				if(group!=null){
+					tp.setGroupName(group.getName());
+				}
+			}
 		}
 		cr.setData(ClearCascadeJSON
 				.get()
