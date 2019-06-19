@@ -3,6 +3,7 @@ package com.bluewhite.reportexport.action;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -887,16 +888,22 @@ public class ReportExportAction {
 	 * @param request
 	 * @param response
 	 * @throws IOException 
+	 * @throws ParseException 
 	 */
 	@RequestMapping("/importExcel/retire")
-	public void DownMonthlyProductionExcel(HttpServletResponse response) throws IOException{
+	public void DownMonthlyProductionExcel(HttpServletResponse response,Date orderTimeBegin) throws IOException, ParseException{
 		response.setContentType("octets/stream");
 	    response.addHeader("Content-Disposition", "attachment;filename=rework.xls");
 	    OutputStream out = response.getOutputStream();  
         //输出的实体与反射的实体相对应
 	    Calendar calendar = new GregorianCalendar();
 	    Calendar calendar2 = new GregorianCalendar();
-		Date date2 = new Date();
+	    Date date2 = null;
+	    if (orderTimeBegin!=null) {
+	    	date2=orderTimeBegin;
+		}else {
+			 date2 = new Date();
+		}
 		Date date3;
 		Date date4;
 		calendar.setTime(date2);
@@ -907,8 +914,8 @@ public class ReportExportAction {
 	    date4=calendar2.getTime(); 
 	    List<User> lists = new ArrayList<>();
 	    List<User> users= userDao.findAll();
-	    List<User> list=users.stream().filter(User->User.getGender()!=null && User.getAge()!=null && User.getBirthDate()!=null && User.getGender().equals(1) && User.getAge()>=50 && User.getBirthDate().before(date3)).collect(Collectors.toList());
-	    List<User> list2=users.stream().filter(User->User.getGender()!=null && User.getAge()!=null && User.getBirthDate()!=null && User.getGender().equals(0) && User.getAge()>=60 && User.getBirthDate().before(date4)).collect(Collectors.toList());
+	    List<User> list=users.stream().filter(User->User.getGender()!=null && User.getAge()!=null && User.getBirthDate()!=null && User.getForeigns().equals(0) && User.getGender().equals(1) && User.getAge()>=50 && User.getBirthDate().before(date3)).collect(Collectors.toList());
+	    List<User> list2=users.stream().filter(User->User.getGender()!=null && User.getAge()!=null && User.getBirthDate()!=null && User.getForeigns().equals(0) && User.getGender().equals(0) && User.getAge()>=60 && User.getBirthDate().before(date4)).collect(Collectors.toList());
 	    lists.addAll(list);
 	    lists.addAll(list2);
 	    List<UserPoi> lists2 = new ArrayList<>();
@@ -942,7 +949,7 @@ public class ReportExportAction {
         //输出的实体与反射的实体相对应
 	    List<User> lists = new ArrayList<>();
 	    List<User> users= userDao.findAll();
-	    List<User> list=users.stream().filter(User->User.getIdCard()!=null && User.getForeigns().equals(0) && User.getIsAdmin()==false).collect(Collectors.toList());
+	    List<User> list=users.stream().filter(User->User.getIdCard()!=null && !User.getIdCard().equals("") && User.getForeigns().equals(0) && User.getIsAdmin()==false).collect(Collectors.toList());
 	    lists.addAll(list);
 	    List<User2Poi> lists2 = new ArrayList<>();
 	    for (User user : lists) {

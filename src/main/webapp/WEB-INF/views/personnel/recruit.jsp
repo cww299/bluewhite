@@ -92,6 +92,7 @@
 					var allField;
 					//select全局变量
 					var htmls = '<option value="">请选择</option>';
+					var htmltwo = '<option value="">请选择</option>';
 					var index = layer.load(1, {
 						shade: [0.1, '#fff'] //0.1透明度的白色背景
 					});
@@ -106,32 +107,54 @@
 						type: 'datetime',
 					}); */
 				 
-					$.ajax({
-						url: '${ctx}/system/user/findAllUser',
-						type: "GET",
-						async: false,
-						beforeSend: function() {
-							index;
-						},
-						success: function(result) {
-							$(result.data).each(function(i, o) {
-								htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
-							})
-							layer.close(index);
-						},
-						error: function() {
-							layer.msg("操作失败！", {
-								icon: 2
-							});
-							layer.close(index);
-						}
-					});
+					 var getdata={type:"orgName",}
+	      			$.ajax({								//获取部门列表数据，部门下拉框的填充
+					      url:"${ctx}/basedata/list",
+					      data:getdata,
+					      type:"GET",
+					      async:false,
+					      beforeSend:function(){
+					    	  indextwo = layer.load(1, {
+							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							  });
+						  }, 
+			      		  success: function (result) {				//初始填充部门
+			      			  $(result.data).each(function(k,j){
+			      				htmls +='<option value="'+j.id+'">'+j.name+'</option>'
+			      			  });
+			      			layer.close(indextwo);
+					      }
+					  });
+					form.on('select(lay_selecte)', function(data) {
+						alert(1)
+					})
+					
+					var data={
+    						id:10,
+    					  }
+				     $.ajax({
+					      url:"${ctx}/basedata/children",
+					      data:data,
+					      type:"GET",
+					      async:false,
+					      beforeSend:function(){
+					    	  indextwo = layer.load(1, {
+							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							  });
+						  }, 
+			      		  success: function (result) {
+			      			  $(result.data).each(function(i,o){
+			      				htmltwo +='<option value="'+o.id+'">'+o.name+'</option>'
+			      			});  
+			      			layer.close(indextwo);
+					      }
+					  });
 					
 					// 处理操作列
 					var fn1 = function(field) {
-						return function(d) {
+						return function(d) { 
 							return [
-								'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' + d.userId + '">' +
+								'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' + d.orgNameId + '">' +
 								htmls +
 								'</select>'
 							].join('');
@@ -155,16 +178,47 @@
 					};
 					var fn3 = function(field) {
 						return function(d) {
-							return ['<select name="selectThree" lay-filter="lay_selecte" lay-search="true" data-value="' + d.settleAccountsMode + '">',
-								'<option value="0">请选择</option>',
-								'<option value="1">现金</option>',
-								'<option value="2">月结</option>',
+							return ['<select name="selectThree" lay-filter="lay_selecte" lay-search="true" data-value="' + d.gender + '">',
+								'<option value="0">男</option>',
+								'<option value="1">女</option>',
 								'</select>'
 							].join('');
 
 						};
 					};
 					
+					var fn4 = function(field) {
+						return function(d) {
+							return ['<select name="selectFour" lay-filter="lay_selecte" lay-search="true" data-value="' + d.type + '">',
+								'<option value="0">否</option>',
+								'<option value="1">是</option>',
+								'</select>'
+							].join('');
+
+						};
+					};
+					
+					var fn5 = function(field) {
+						return function(d) {
+							return ['<select name="selectFive" lay-filter="lay_selecte" lay-search="true" data-value="' + d.typeOne + '">',
+								'<option value="0">否</option>',
+								'<option value="1">是</option>',
+								'</select>'
+							].join('');
+
+						};
+					};
+					
+					var fn6 = function(field) {
+						return function(d) {
+							return ['<select name="selectSix" lay-filter="lay_selecte" lay-search="true" data-value="' + d.typeTwo + '">',
+								'<option value="0">否</option>',
+								'<option value="1">是</option>',
+								'</select>'
+							].join('');
+
+						};
+					};
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
@@ -199,31 +253,91 @@
 								type: 'checkbox',
 								align: 'center',
 								fixed: 'left'
-							}, {
-								field: "content",
+							},{
+								field: "time",
+								title: "时间",
+								align: 'center',
+								edit: 'text'
+							},{
+								field: "platformId",
 								title: "邀约平台",
 								align: 'center',
 								edit: false,
 								type: 'normal',
 								templet: fn2('selectTwo')
 							},{
-								field: "money",
-								title: "工资申请金额",
-								edit: 'text',
+								field: "orgNameId",
+								title: "部门",
 								align: 'center',
-							}, {
-								field: "expenseDate",
-								title: "工资申请日期",
+								edit: false,
+								type: 'normal',
+								templet: fn1('selectOne')
+							},{
+								field: "position",
+								title: "职位",
 								align: 'center',
 								edit: 'text'
-							}, {
-								field: "withholdReason",
+							},{
+								field: "name",
+								title: "面试人姓名",
 								align: 'center',
-								title: "扣款事由",
 								edit: 'text'
-							}, {
-								field: "withholdMoney",
-								title: "扣款金额",
+							},{
+								field: "gender",
+								align: 'center',
+								title: "性别",
+								edit: false,
+								type: 'normal',
+								templet: fn3('selectThree')
+							},{
+								field: "phone",
+								title: "电话",
+								align: 'center',
+								edit: 'text'
+							},{
+								field: "livingAddress",
+								title: "现居住地址",
+								align: 'center',
+								edit: 'text'
+							},{
+								field: "entry",
+								title: "面试时间",
+								align: 'center',
+								edit: 'text'
+							},{
+								field: "type",
+								align: 'center',
+								title: "是否应面",
+								edit: false,
+								type: 'normal',
+								templet: fn4('selectFour')
+							},{
+								field: "remarks",
+								title: "备注",
+								align: 'center',
+								edit: 'text'
+							},{
+								field: "typeOne",
+								align: 'center',
+								title: "一面",
+								edit: false,
+								type: 'normal',
+								templet: fn5('selectFive')
+							},{
+								field: "remarksOne",
+								title: "一面备注",
+								align: 'center',
+								edit: 'text'
+							},{
+								field: "typeTwo",
+								align: 'center',
+								title: "二面",
+								edit: false,
+								type: 'normal',
+								templet: fn6('selectSix')
+							},{
+								field: "remarksTwo",
+								title: "二面备注",
 								align: 'center',
 								edit: 'text'
 							}]
@@ -252,24 +366,45 @@
 							});
 							form.render();
 							// 初始化laydate
-							layui.each(tableView.find('td[data-field="expenseDate"]'), function(index, tdElem) {
+							layui.each(tableView.find('td[data-field="entry"]'), function(index, tdElem) {
 								tdElem.onclick = function(event) {
 									layui.stope(event)
 								};
 								laydate.render({
 									elem: tdElem.children[0],
-									format: 'yyyy-MM-dd HH:mm:ss',
+									format: 'HH:mm:ss',
+									type: 'time',
 									done: function(value, date) {
 											var id = table.cache[tableView.attr('lay-id')][index].id
 											var postData = {
 												id: id,
-												expenseDate: value,
+												entry: value,
 											};
 											//调用新增修改
 											mainJs.fUpdate(postData);
 												}
 											})
 										})
+										
+							layui.each(tableView.find('td[data-field="time"]'), function(index, tdElem) {
+								tdElem.onclick = function(event) {
+									layui.stope(event)
+								};
+								laydate.render({
+									elem: tdElem.children[0],
+									type: 'datetime',
+									done: function(value, date) {
+											var id = table.cache[tableView.attr('lay-id')][index].id
+											var postData = {
+												id: id,
+												time: value,
+											};
+											//调用新增修改
+											mainJs.fUpdate(postData);
+												}
+											})
+										})
+										
 									},
 								});
 
@@ -297,27 +432,27 @@
 						var tableId = config.id;
 						switch(obj.event) {
 							case 'addTempData':
-								allField = {id: '', content: '', budget: '',userId:'',money: '', expenseDate: '', 
-									withholdReason: '',withholdMoney:'',settleAccountsMode:'',type:'3'};
+								allField = {id: '', name: '', entry: '',typeOne:0,type:0,typeTwo:0,gender:0};
 								table.addTemp(tableId,allField,function(trElem) {
 									// 进入回调的时候this是当前的表格的config
 									var that = this;
 									// 初始化laydate
-									layui.each(trElem.find('td[data-field="expenseDate"]'), function(index, tdElem) {
+									layui.each(trElem.find('td[data-field="entry"]'), function(index, tdElem) {
 										tdElem.onclick = function(event) {
 											layui.stope(event)
 										};
 										laydate.render({
 											elem: tdElem.children[0],
-											format: 'yyyy-MM-dd HH:mm:ss',
+											format: 'HH:mm:ss',
+											type: 'time',
 											done: function(value, date) {
 												var trElem = $(this.elem[0]).closest('tr');
 												var tableView = trElem.closest('.layui-table-view');
-												table.cache[that.id][trElem.data('index')]['expenseDate'] = value;
+												table.cache[that.id][trElem.data('index')]['entry'] = value;
 												var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
 												var postData = {
 													id: id,
-													expenseDate:value,
+													entry:value,
 												}
 												mainJs.fUpdate(postData);
 											}
@@ -330,18 +465,8 @@
 								var flag=false;
 								var a=0;
 								data.forEach(function(postData,i){
-								 	if(postData.content==""){
-							    		return layer.msg("请填写工资内容", {
-											icon: 2,
-										});
-							    	}
-							    	if(postData.money=="" || isNaN(postData.money)){
-							    		return layer.msg("请填写报销申请金额（且必须为数字）", {
-											icon: 2,
-										});
-							    	} 
-							    	if(postData.expenseDate==""){
-							    		return layer.msg("请填写报销申请日期", {
+								 	if(postData.name==""){
+							    		return layer.msg("请填写人员姓名", {
 											icon: 2,
 										});
 							    	}
@@ -365,7 +490,7 @@
 										ids: checkedIds,
 									}
 									$.ajax({
-										url: "${ctx}/fince/deleteConsumption",
+										url: "${ctx}/personnel/deleteRecruit",
 										data: postData,
 										traditional: true,
 										type: "GET",
