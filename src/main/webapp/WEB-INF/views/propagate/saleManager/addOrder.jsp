@@ -389,8 +389,9 @@ layui.config({
 			}else if($('#AddPostFee').val()==''){
 				$('#AddPostFee').val(0);
 			}
-			$('#customPayment').val($('#customPayment').val()-lastPostFee-(-$('#AddPostFee').val()));	
-			lastPostFee=$('#AddPostFee').val();
+			var t = $('#customPayment').val()-lastPostFee-(-$('#AddPostFee').val());
+			$('#customPayment').val(t.toFixed(2));	
+			lastPostFee = $('#AddPostFee').val();
 		})
 		
 		form.on('submit(sureAdd)',function(obj){					//确定添加按钮
