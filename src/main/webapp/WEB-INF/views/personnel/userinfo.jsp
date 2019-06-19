@@ -2368,10 +2368,11 @@ jQuery(function($){
 			  }
 			  
 			this.events = function(){
-				
 				//导出退休返聘
 				$('#export').on('click',function(){
-					location.href="${ctx}/excel/importExcel/retire";
+				var a=$("#startTime").val();
+				console.log(a)
+					location.href="${ctx}/excel/importExcel/retire?orderTimeBegin="+a+"";
 				})
 				//导出身份证号
 				$('#export2').on('click',function(){

@@ -655,7 +655,6 @@
 					});
 
 					
-					
 					table.on('toolbar(tableBudget)', function(obj) {
 						var config = obj.config;
 						var btnElem = $(this);

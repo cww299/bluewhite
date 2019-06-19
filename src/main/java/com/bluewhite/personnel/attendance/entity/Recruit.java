@@ -24,25 +24,23 @@ import com.bluewhite.basedata.entity.BaseData;
 public class Recruit extends BaseEntity<Long> {
 	
 	/**
+	 * 时间
+	 */
+	@Column(name = "time")
+	private Date time;
+	
+	/**
 	 * 平台Id
 	 */
 	@Column(name = "platform_id")
 	private Long platformId;
 	
 	/**
-	 * 职位id
-	 */
-	@Column(name = "position_id")
-	private Long positionId;
-	
-	/**
 	 * 职位
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "position_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private BaseData position;
+	@Column(name = "position")
+	private String position;
 	
-
 	/**
 	 * 部门id
 	 */
@@ -84,7 +82,7 @@ public class Recruit extends BaseEntity<Long> {
      * 面试时间
      */
 	@Column(name = "entry")
-    private Date entry;
+    private String entry;
 	
 	
 	/**
@@ -140,16 +138,17 @@ public class Recruit extends BaseEntity<Long> {
 	public void setPlatformId(Long platformId) {
 		this.platformId = platformId;
 	}
-	public Long getPositionId() {
-		return positionId;
+	
+	public Date getTime() {
+		return time;
 	}
-	public void setPositionId(Long positionId) {
-		this.positionId = positionId;
+	public void setTime(Date time) {
+		this.time = time;
 	}
-	public BaseData getPosition() {
+	public String getPosition() {
 		return position;
 	}
-	public void setPosition(BaseData position) {
+	public void setPosition(String position) {
 		this.position = position;
 	}
 	public Long getOrgNameId() {
@@ -188,10 +187,11 @@ public class Recruit extends BaseEntity<Long> {
 	public void setLivingAddress(String livingAddress) {
 		this.livingAddress = livingAddress;
 	}
-	public Date getEntry() {
+	
+	public String getEntry() {
 		return entry;
 	}
-	public void setEntry(Date entry) {
+	public void setEntry(String entry) {
 		this.entry = entry;
 	}
 	public Integer getType() {

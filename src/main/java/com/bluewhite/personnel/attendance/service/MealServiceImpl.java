@@ -1,5 +1,6 @@
 package com.bluewhite.personnel.attendance.service;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -208,6 +209,84 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 	for (AttendanceTime attendanceTime2 : attendanceTimes) {
 		//基础数据 每一餐的价格
 		if (attendanceTime2.getCheckOut()!=null || attendanceTime2.getCheckIn()!=null) {
+		if (attendanceTime2.getCheckOut()!=null && attendanceTime2.getCheckIn()!=null) {
+			DateFormat df = new SimpleDateFormat("HH:mm:ss");
+			Date dt1 = df.parse("08:30:00");
+			Date dt3 = df.parse("13:30:00");
+			Date dt4 = df.parse("18:30:00");
+			Date dt5 = df.parse("04:30:00");
+			String  aString=df.format(attendanceTime2.getCheckIn());
+			Date dt2= df.parse(aString);
+			
+			String  aString2=df.format(attendanceTime2.getCheckOut());
+			Date dt6= df.parse(aString2);
+			//签出时间 小时dt5 重新赋值
+			if (dt6.compareTo(dt5)==-1) {
+				dt6=df.parse("23:59:59");
+			}
+			int a= dt2.compareTo(dt1);
+			int b= dt2.compareTo(dt3);
+			int c= dt6.compareTo(dt4);
+			int d= dt2.compareTo(dt4);//吃晚饭  第一次打卡要小于18.30
+			if (attendanceTime2.getEatType()!=null) {
+				//早饭 签入时间小于dt1
+				if (attendanceTime2.getEatType()==1 &&  a==-1) {
+					Meal meal2=new Meal();
+					meal2.setTradeDaysTime(attendanceTime2.getTime());
+					meal2.setPrice(Double.valueOf(variable.getKeyValue()));
+					meal2.setMode(1);
+					meal2.setUserName(attendanceTime2.getUserName());
+					meal2.setUserId(attendanceTime2.getUserId());
+					meal2.setType(2);
+					meals.add(meal2);
+				}
+			}
+			
+			if (b==-1) {
+				//中餐 签入时间小于dt3
+				Meal meal2=new Meal();
+				meal2.setTradeDaysTime(attendanceTime2.getTime());
+				meal2.setPrice(Double.valueOf(variable.getKeyValueTwo()));
+				meal2.setMode(2);
+				meal2.setUserName(attendanceTime2.getUserName());
+				meal2.setUserId(attendanceTime2.getUserId());
+				meal2.setType(2);
+				meals.add(meal2);
+			}
+			
+			if (attendanceTime2.getEatType()!=null) {
+				//晚饭 签出时间大于dt4
+			if (attendanceTime2.getEatType()==2 && d==-1 && c==1) {
+				Meal meal2=new Meal();
+				meal2.setTradeDaysTime(attendanceTime2.getTime());
+				meal2.setPrice(Double.valueOf(variable.getKeyValueThree()));
+				meal2.setMode(3);
+				meal2.setUserName(attendanceTime2.getUserName());
+				meal2.setUserId(attendanceTime2.getUserId());
+				meal2.setType(2);
+				meals.add(meal2);
+			} 
+			//早晚饭
+			if (attendanceTime2.getEatType()==3 &&  a==-1 && c==1) {
+				Meal meal2=new Meal();
+				meal2.setTradeDaysTime(attendanceTime2.getTime());
+				meal2.setPrice(Double.valueOf(variable.getKeyValue()));
+				meal2.setMode(1);
+				meal2.setUserName(attendanceTime2.getUserName());
+				meal2.setUserId(attendanceTime2.getUserId());
+				meal2.setType(2);
+				meals.add(meal2);
+				Meal meal3=new Meal();
+				meal3.setTradeDaysTime(attendanceTime2.getTime());
+				meal3.setPrice(Double.valueOf(variable.getKeyValueThree()));
+				meal3.setMode(3);
+				meal3.setUserName(attendanceTime2.getUserName());
+				meal3.setUserId(attendanceTime2.getUserId());
+				meal3.setType(2);
+				meals.add(meal3);
+		}
+			}
+		}else {
 		if (attendanceTime2.getCheckIn()!=null) {
 			if (attendanceTime2.getEatType()!=null) {
 				//早饭
@@ -267,6 +346,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 			meal2.setUserId(attendanceTime2.getUserId());
 			meal2.setType(2);
 			meals.add(meal2);
+		}
 		}else{
 			AttendanceInit attendanceInit = attendanceInitService.findByUserId(attendanceTime2.getUserId());
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -323,7 +403,14 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 	}
 
 	
-	
+	public static void main(String[] args) throws ParseException {
+		Date date=new Date();
+		DateFormat df = new SimpleDateFormat("HH:mm:ss");
+		Date dt1 = df.parse("10:00:00");
+		String  aString=df.format(date);
+		Date date2= df.parse(aString);
+		System.out.println(date2.compareTo(dt1));
+	}
 	
 	
 

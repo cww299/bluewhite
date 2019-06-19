@@ -319,6 +319,8 @@
 					laydate.render({
 						elem: '#startTime',
 						type: 'datetime',
+						calendar: true,
+						theme: '#393D49'
 					});
 					laydate.render({
 						elem: '#endTime',

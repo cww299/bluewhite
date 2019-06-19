@@ -500,7 +500,7 @@
 			      type:"GET",
 	      		  success: function (result) {
 	      			  $(result.data).each(function(k,j){
-	      				htmlth +='<option value="'+j.id+'" emoney="'+j.kindWork.id+'">'+j.name+'</option>'
+	      				htmlth +='<option value="'+j.id+'" emoney="'+(j.kindWork.id==null ? 0 :j.kindWork.id)+'">'+j.name+'</option>'
 	      			  });  
 	      			 $('#groupp').html("<select class='form-control selectcomplete'><option value="+""+">请选择&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>"+htmlth+"</select>") 
 			      }
