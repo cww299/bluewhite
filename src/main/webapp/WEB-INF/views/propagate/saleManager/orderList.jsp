@@ -657,7 +657,7 @@ layui.config({
 				layer.msg('请选择至少一条信息',{icon:2});
 			}
 			else{
-				layer.confirm('是否确认删除？',function(){
+				layer.confirm('是否确认反冲？',function(){
 					var ids='';
 					for(var i=0;i<choosed.length;i++)
 						ids+=(choosed[i].id+',');
