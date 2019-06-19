@@ -200,7 +200,10 @@
 				  });
 				
 					$.ajax({
-						url: '${ctx}/system/user/findAllUser',
+						url: '${ctx}/system/user/findUserList',
+						data:{
+							foreigns:0
+						},
 						type: "GET",
 						async: false,
 						beforeSend: function() {
@@ -622,7 +625,8 @@
 						field.orderTimeBegin=orderTime[0];
 						field.orderTimeEnd=orderTime[1];
 						table.reload('tableData', {
-							where: field
+							where: field,
+							 page: { curr : 1 }
 						});  
 					});
 					$(document).on('click', '.layui-table-view tbody tr', function(event) {
@@ -651,8 +655,7 @@
 								if(0 == result.code) {
 									layer.close(indextwo);
 								 	 table.reload("tableData", {
-						                page: {
-						                }
+						                page:{}
 						              }) 
 									layer.msg(result.message, {
 										icon: 1,

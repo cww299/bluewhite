@@ -190,7 +190,7 @@
 		<div class="layui-input-normal layui-form">
 		<input type="text" name="id" id="hostelId" style="display: none;"><!--阻止回车键提交表单   如果form里面只有一个input type＝text，那么无论有没有submit按钮，在input中回车都会提交表单。
      如果不想回车提交，需要再加一个input type=text，然后设置display:none.  -->
-    	<div cyType="transferTool" cyProps="url:'${ctx}/system/user/findAllUser'"  data_value="10,12,11"  id="divID" name="province[]" ></div>
+    	<div cyType="transferTool" cyProps="url:'${ctx}/system/user/findUserList?foreigns=0'"  data_value="10,12,11"  id="divID" name="province[]" ></div>
 		</div>
 	</form>
 	
