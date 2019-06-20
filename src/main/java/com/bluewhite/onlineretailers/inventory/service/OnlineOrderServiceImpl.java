@@ -124,9 +124,9 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				predicate.add(cb.equal(root.get("shippingType").as(String.class), param.getShippingType()));
 			}
 
-			// 按编号过滤
-			if (!StringUtils.isEmpty(param.getNum())) {
-				predicate.add(cb.equal(root.get("num").as(String.class), param.getNum()));
+			// 按订单编号过滤
+			if (!StringUtils.isEmpty(param.getDocumentNumber())) {
+				predicate.add(cb.like(root.get("documentNumber").as(String.class), "%" + param.getDocumentNumber()+ "%"));
 			}
 
 			// 按订单时间过滤
@@ -630,7 +630,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		List<OnlineOrderChild> onlineOrderChildList = onlineOrderChildDao.findByCreatedAtBetween(
 				 onlineOrder.getOrderTimeBegin(), onlineOrder.getOrderTimeEnd());
 		// 根据商品id分组
-		Map<Long, List<OnlineOrderChild>> mapOnlineOrderChildList = onlineOrderChildList.stream()
+		Map<Long, List<OnlineOrderChild>> mapOnlineOrderChildList = onlineOrderChildList.stream().filter(OnlineOrderChild->OnlineOrderChild.getOnlineOrder().getFlag()!=1)
 				.collect(Collectors.groupingBy(OnlineOrderChild::getCommodityId, Collectors.toList()));
 		for (Long ps : mapOnlineOrderChildList.keySet()) {
 			List<OnlineOrderChild> psList = mapOnlineOrderChildList.get(ps);
@@ -661,7 +661,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	@Override
 	public List<Map<String, Object>> reportSalesUser(OnlineOrder onlineOrder) {
 		List<Map<String, Object>> mapList = new ArrayList<>();
-		// 获取所有的已发货的订单
+		// 获取所有的订单
 		List<OnlineOrder> onlineOrderList = onlineOrderDao.findByFlagAndCreatedAtBetween(0,
 				onlineOrder.getOrderTimeBegin(), onlineOrder.getOrderTimeEnd());
 		Map<Long, List<OnlineOrder>> mapOnlineOrderList = null;
