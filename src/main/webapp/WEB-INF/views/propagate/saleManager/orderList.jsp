@@ -68,15 +68,10 @@ td{
 														<option  value="SELLER_CONSIGNED_PART">部分发货</option>
 														<option  value="WAIT_BUYER_CONFIRM_GOODS">卖家已发货</option></select></div>
 					<div class="layui-input-inline">
-						<select lay-search name='shippingType'><option value="">物流方式</option>
-																<option  value="free"		>卖家包邮</option>
-																 <option  value="post"		>平邮</option>
-																 <option  value="express"	>快递</option>
-																 <option  value="ems"		>EMS</option>
-																 <option  value="virtual"	>虚拟发货</option></select></div>
+						<input type="text" class='layui-input' name='documentNumber' placeholder='输入查找订单号'></div>
 					<div class="layui-input-inline" style='width:70px;'><a href="#" style="color:blue;" id="customPosition">所在省份</a></div>  <!-- provincesId收货人的所在省份 -->
 					<div class="layui-input-inline">
-						<input type="text" class="layui-input" name='skuCode' placeholder='请输入产品编号'></div>
+						<input type="text" class="layui-input" name='commodityName' placeholder='请输入产品编号'></div>
 					<div class="layui-input-inline">
 						<input type="text" class='layui-input' id='searchTime' placeholder='输入查找时间'></div>
 					<div class="layui-input-inline">
