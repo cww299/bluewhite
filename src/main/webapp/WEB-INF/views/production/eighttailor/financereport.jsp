@@ -55,14 +55,14 @@
 								class="form-control laydate-icon"
 								onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 							</td>
-						</tr>
-					</table>
 					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 					<td><span class="input-group-btn">
 						<button type="button"
 							class="btn btn-info btn-square btn-sm btn-3d searchtask">
 							查&nbsp;找</button>
 					</span></td>
+						</tr>
+					</table>
 					<h1 class="page-header"></h1>			
 					<!-- 查询结束 -->
 					<table class="table table-hover">
@@ -83,7 +83,6 @@
 				</div>
 				<!-- 质检月产量报表 -->
 				<div class="tab-pane" id="profile2">
-				
 					<table>
 						<tr>
 							<td>开始:</td>
