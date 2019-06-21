@@ -20,6 +20,7 @@
 	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
 	<link rel="stylesheet" href="${ctx }/static/css/main.css">
 	<script src="${ctx }/static/js/laypage/laypage.js"></script>
+	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
 </head>
 
 <body>
