@@ -118,7 +118,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	@ResponseBody
 	public CommonResponse allPayBSum(HttpServletRequest request,PayB payB) {
 		CommonResponse cr = new CommonResponse();
-			List<PayB> payBList = payBService.findPayNumber(payB);
+//			List<PayB> payBList = payBService.findPayNumber(payB);
 //			// 总金额
 //			List<Double> listPayNumber = new ArrayList<>();
 //			// 实际运费
@@ -136,7 +136,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 			Map<String, Object> map = new HashMap<>();
 //			map.put("sumPayNumber", sumPayNumber);
 //			map.put("sumPerformancePayNumber", sumPerformancePayNumber);
-			cr.setData(payBList.size());
+//			cr.setData(payBList.size());
 			cr.setMessage("查询成功");
 		return cr;
 	}

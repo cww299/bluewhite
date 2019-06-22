@@ -3,14 +3,9 @@ package com.bluewhite.onlineretailers.inventory.action;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +25,10 @@ import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrderChild;
 import com.bluewhite.onlineretailers.inventory.entity.poi.OnlineOrderPoi;
+import com.bluewhite.onlineretailers.inventory.entity.poi.OutProcurementPoi;
 import com.bluewhite.onlineretailers.inventory.entity.poi.SalesDetailPoi;
 import com.bluewhite.onlineretailers.inventory.service.OnlineOrderService;
+import com.bluewhite.onlineretailers.inventory.service.ProcurementService;
 
 @Controller
 public class InventoryExcelAction {
@@ -39,6 +36,8 @@ public class InventoryExcelAction {
 	
 	@Autowired
 	private OnlineOrderService onlineOrderService;
+	@Autowired
+	private ProcurementService procurementService;
 	
 	/**
 	 * 新增销售单(导入)
@@ -54,12 +53,32 @@ public class InventoryExcelAction {
 		InputStream inputStream = file.getInputStream();
 		ExcelListener excelListener = new ExcelListener();
 		EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1, OnlineOrderPoi.class), excelListener);
-		int connt = onlineOrderService.excelOnlineOrder(excelListener,onlineCustomerId,userId,warehouseId);
+		int count = onlineOrderService.excelOnlineOrder(excelListener,onlineCustomerId,userId,warehouseId);
 		inputStream.close();
-		cr.setMessage("成功导入"+connt+"条销售单");
+		cr.setMessage("成功导入"+count+"条销售单");
 		return cr;
 	}
 	
+	
+	/**
+	 * 新增出库单(导入)
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/inventory/import/excelOutProcurement", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse excelOutProcurement(@RequestParam(value = "file", required = false) MultipartFile file
+			,Long userId ,Long warehouseId) throws IOException {
+		CommonResponse cr = new CommonResponse();
+		InputStream inputStream = file.getInputStream();
+		ExcelListener excelListener = new ExcelListener();
+		EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1, OutProcurementPoi.class), excelListener);
+		int count = procurementService.excelProcurement(excelListener, userId, warehouseId);
+		inputStream.close();
+		cr.setMessage("成功导入"+count+"条出库单");
+		return cr;
+	}
 	
 	/**
 	 * 销售单明细(导出)
