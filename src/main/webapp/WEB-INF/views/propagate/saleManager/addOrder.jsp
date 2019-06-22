@@ -419,10 +419,10 @@ layui.config({
 			else if(data.payment<0)
 				msg="收款金额不能为负数";
 			if(msg!=''){
-				layer.msg(msg,{icon:2});
+				layer.msg(msg,{icon:2,offset:'100px'});
 				return;
 			}
-			layer.confirm('一旦添加完成，订单的数据无法修改，请确认是否输入有误！是否确认添加？',function(){
+			layer.confirm('一旦添加完成，订单的数据无法修改，请确认是否输入有误！是否确认添加？',{offset:'320px'},function(){
 				var updataData=[];
 				for(var i=0;i<choosedProduct.length;i++){			//取出真正需要的数据进行传参
 					var c=choosedProduct[i];
@@ -448,14 +448,14 @@ layui.config({
 					success:function(result){
 						if(0==result.code){
 							$('#resetAll').click();
-							layer.msg(result.message,{icon:1});
+							layer.msg(result.message,{icon:1,offset:'100px'});
 						}
 						else
-							layer.msg(result.message,{icon:2});
+							layer.msg(result.message,{icon:2,offset:'100px'});
 						layer.close(load);
 					},
 					error:function(result){
-						layer.msg("发生异常错误",{icon:2});
+						layer.msg("发生异常错误",{icon:2,offset:'100px'});
 						layer.close(load);
 					}
 				})
