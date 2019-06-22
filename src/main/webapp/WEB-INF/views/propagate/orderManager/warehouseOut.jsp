@@ -290,11 +290,11 @@ layui.config({
 			       {align:'center', title:'日期',   	field:'createdAt',	width:'9%',},
 			       {align:'center', title:'批次号',	  templet: orderContent('batchNumber'),   width:'10%'	,},
 				   {align:'center', title:'商品名',	  templet: orderContent('skuCode'),		  width:'18%'	,},
-			       {align:'center', title:'数量',  templet: orderContent('number'),		  width:'4%',	},
+			       {align:'center', title:'数量',     templet: orderContent('number'),		  width:'4%',	},
 				   {align:'center', title:'备注',	  templet: orderContent('childRemark'),   	}
 			       ]]
 		})
-		function orderContent(field){
+		function orderContent(field){		//子单内容显示
 			return function(d){
 				var html = '<table style="width:100%;" class="layui-table">';
 				for(var i=0;i<d.procurementChilds.length;i++){
@@ -331,12 +331,6 @@ layui.config({
 				where:obj.field,
 				page: {  curr: 1   },
 				url:'${ctx}/inventory/procurementPage?type=3',
-			})
-		})
-		form.on('submit(searchProduct)',function(obj){
-			table.reload('productChooseTable',{
-				where:obj.field, 
-				page: {  curr: 1   }
 			})
 		})
 		function deletes(){							//删除生产单表格
@@ -592,13 +586,17 @@ layui.config({
 				}
 			})
 		}) 
-	
+		form.on('submit(searchProduct)',function(obj){
+			table.reload('productChooseTable',{
+				where:obj.field, 
+				page: {  curr: 1   }
+			})
+		})
 		//选择商品隐藏框的按钮监听.添加商品弹窗共4个按钮监听。搜索、确定添加
 		$('#sure').on('click',function(){	
 			if(sureChoosed())											//如果选择成功
 				layer.close(chooseProductWin);							
 		})
-		
 		$('#resetAddOrder').on('click',function(){			//此处如果加confirm提示。则新增成功时无法清空
 			$('#addRemark').val('');
 			$('#addBatchNumber').val('');
@@ -693,70 +691,7 @@ layui.config({
 			layer.msg('添加成功',{icon:1,offset:'100px',});
 			return true;
 		}
-		function getAllUser(){
-			$.ajax({
-				url:'${ctx}/system/user/pages?size=999',
-				success:function(r){
-					if(0==r.code){
-						for(var i=0;i<r.data.rows.length;i++)
-							allUser.push({
-								id:			r.data.rows[i].id,
-								userName:	r.data.rows[i].userName
-							})
-					}
-				}
-			})
-		}
-		function getUserSelect(id,select){
-			var html='';
-			for(var i=0;i<allUser.length;i++){
-				var selected=( id==allUser[i].id?'selected':'' );
-				html+='<option value="'+allUser[i].id+'" '+selected+'>'+allUser[i].userName+'</option>';
-			}
-			$('#'+select).html(html);
-			form.render();
-		}
-		function getAllCustom(){
-			$.ajax({
-				url:'${ctx}/inventory/onlineCustomerPage?size=99999',
-				success:function(r){
-					if(0==r.code){
-						for(var i=0;i<r.data.rows.length;i++)
-							allCustom.push({
-								id:			r.data.rows[i].id,
-								userName:	r.data.rows[i].buyerName
-							})
-						getCustomSelect('','uploadCustom');		//渲染导入文件的下拉框
-						getCustomSelect('','customerIdSelect'); //渲染新增订单的客户下拉框
-					}
-				}
-			})
-		}
-		function getCustomSelect(id,select){
-			var html='<option value="">客户选择</option>';
-			for(var i=0;i<allCustom.length;i++){
-				html+='<option value="'+allCustom[i].id+'">'+allCustom[i].userName+'</option>';
-			}
-			$('#'+select).html(html);
-			form.render();
-		}
-		function getAllInventory(){
-			$.ajax({
-				url:'${ctx}/basedata/list?type=inventory',
-				async:false,
-				success:function(r){
-					if(0==r.code){
-						allInventory=r.data;
-						var html = '';
-						layui.each(r.data,function(index,item){
-							html += '<option value="'+item.id+'">'+item.name+'</option>';
-						})
-						$('#uploadWarehouse').html(html);	//渲染导入文件仓库下拉框
-					}
-				}
-			})
-		}
-		function getStatusSelectHtml(){				//获取类型下拉框
+		function getStatusSelectHtml(){					//获取类型下拉框
 			return function(d) {		
 				var html='<select  disabled> ';
 				 	html+='<option value="0" '+ (defaultStatus=='0'?'selected':'') +'>销售出库</option>';
@@ -768,7 +703,7 @@ layui.config({
 
 			};
 		}
-		function getInventorySelectHtml() {				//获取仓库下拉框
+		function getInventorySelectHtml() {				//渲染仓库下拉框
 			return function(d) {	
 				var inventorys=d.inventorys;
 				if(inventorys.length==0){
@@ -785,7 +720,70 @@ layui.config({
 				return html; 
 			};
 		};
-		function getCurrUser(){					//获取当前登录用户
+		function getUserSelect(id,select){			//渲染经手人下拉框
+			var html='';
+			for(var i=0;i<allUser.length;i++){
+				var selected=( id==allUser[i].id?'selected':'' );
+				html+='<option value="'+allUser[i].id+'" '+selected+'>'+allUser[i].userName+'</option>';
+			}
+			$('#'+select).html(html);
+			form.render();
+		}
+		function getCustomSelect(id,select){       //渲染客户下拉框
+			var html='<option value="">客户选择</option>';
+			for(var i=0;i<allCustom.length;i++){
+				html+='<option value="'+allCustom[i].id+'">'+allCustom[i].userName+'</option>';
+			}
+			$('#'+select).html(html);
+			form.render();
+		}
+		function getAllCustom(){				//获取所有客户
+			$.ajax({
+				url:'${ctx}/inventory/onlineCustomerPage?size=99999',
+				success:function(r){
+					if(0==r.code){
+						for(var i=0;i<r.data.rows.length;i++)
+							allCustom.push({
+								id:			r.data.rows[i].id,
+								userName:	r.data.rows[i].buyerName
+							})
+						getCustomSelect('','uploadCustom');		//渲染导入文件的下拉框
+						getCustomSelect('','customerIdSelect'); //渲染新增订单的客户下拉框
+					}
+				}
+			})
+		}
+		function getAllUser(){					//获取所有经手人
+			$.ajax({
+				url:'${ctx}/system/user/pages?size=999',
+				success:function(r){
+					if(0==r.code){
+						for(var i=0;i<r.data.rows.length;i++)
+							allUser.push({
+								id:			r.data.rows[i].id,
+								userName:	r.data.rows[i].userName
+							})
+					}
+				}
+			})
+		}
+		function getAllInventory(){				//获取所有仓库
+			$.ajax({
+				url:'${ctx}/basedata/list?type=inventory',
+				async:false,
+				success:function(r){
+					if(0==r.code){
+						allInventory=r.data;
+						var html = '';
+						layui.each(r.data,function(index,item){
+							html += '<option value="'+item.id+'">'+item.name+'</option>';
+						})
+						$('#uploadWarehouse').html(html);	//渲染导入文件仓库下拉框
+					}
+				}
+			})
+		}
+		function getCurrUser(){								//获取当前登录用户
 			$.ajax({
 				url:'${ctx}/getCurrentUser',
 				success:function(r){
