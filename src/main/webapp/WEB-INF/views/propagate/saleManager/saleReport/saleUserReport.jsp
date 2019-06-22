@@ -100,7 +100,7 @@ layui.config({
 			       {align:'center', title:'成交单数',   field:'singular',   totalRow:true,},
 			       {align:'center', title:'宝贝数量', 	field:'proNumber', totalRow:true,	},
 			       {align:'center', title:'成交金额',   field:'sumPayment',	totalRow:true,},
-			       {align:'center', title:'实际运费',   field:'sumpostFee',	totalRow:true,style:"color:blue;"},
+			       {align:'center', title:'实际运费',   field:'sumpostFee',	totalRow:true,},
 			       {align:'center', title:'每单平均金额',   field:'averageAmount',	totalRow:true,},
 			       ]]
 		})
