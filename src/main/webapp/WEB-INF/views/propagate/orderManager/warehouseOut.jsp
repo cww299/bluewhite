@@ -231,7 +231,7 @@ layui.config({
 		var load;
 		upload.render({
 		   	  elem: '#uploadData'
-		   	  ,url: '${ctx}/'
+		   	  ,url: '${ctx}/inventory/import/excelOutProcurement'
 		 	  ,before: function(obj){ 	
 		 		  this.data={  
 		 				  userId:$('#uploadUser').val(),  
