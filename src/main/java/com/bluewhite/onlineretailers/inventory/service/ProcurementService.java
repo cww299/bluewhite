@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 
 @Service
@@ -37,6 +38,14 @@ public interface ProcurementService extends BaseCRUDService<Procurement, Long> {
 	 * @return
 	 */
 	int deleteProcurement(String ids);
+	
+	/**
+	 * 导入出库单据
+	 * 
+	 * @param ids
+	 * @return
+	 */
+	int excelProcurement(ExcelListener excelListener,Long userId ,Long warehouseId);
 
 	/**
 	 * 根据时间和类型获取单据

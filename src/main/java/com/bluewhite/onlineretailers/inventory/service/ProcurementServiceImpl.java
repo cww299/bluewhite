@@ -30,6 +30,7 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
+import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
 import com.bluewhite.onlineretailers.inventory.dao.OnlineOrderChildDao;
 import com.bluewhite.onlineretailers.inventory.dao.OnlineOrderDao;
@@ -41,6 +42,7 @@ import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrderChild;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
+import com.bluewhite.onlineretailers.inventory.entity.poi.OutProcurementPoi;
 
 @Service
 public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> implements ProcurementService {
@@ -433,6 +435,41 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	@Override
 	public List<Map<String, Object>> reportStorageUser(Procurement procurement) {
 		return null;
+	}
+
+	@Override
+	public int excelProcurement(ExcelListener excelListener,Long userId ,Long warehouseId) {
+		int count = 0;
+		Procurement procurement = new Procurement();
+		procurement.setType(3);
+		procurement.setUserId(userId);
+		procurement.setStatus(0);
+		int sumNumber = 0;
+		// 获取导入的出库单
+		List<Object> excelListenerList = excelListener.getData();
+		JSONArray jsonArray = new JSONArray();
+		for (int i = 0; i < excelListenerList.size(); i++) {
+			count++;
+			OutProcurementPoi cPoi = (OutProcurementPoi) excelListenerList.get(i);
+			JSONObject jsonObject = new JSONObject();
+			Commodity commodity = commodityService.findByName(cPoi.getName());
+			if(commodity!=null){
+				jsonObject.put("commodityId", commodity.getId());
+			}else{
+				throw new ServiceException("当前导入excel第" + (i + 2) + "条数据的商品不存在，请先添加");
+			}
+			jsonObject.put("number", cPoi.getNumber());
+			jsonObject.put("warehouseId", warehouseId);
+			jsonObject.put("status", 0);
+			jsonObject.put("batchNumber", "");
+			jsonObject.put("childRemark", "导入出库单");
+			jsonArray.add(jsonObject);
+			sumNumber+=cPoi.getNumber();
+		}
+		procurement.setCommodityNumber(jsonArray.toJSONString());
+		procurement.setNumber(sumNumber);
+		saveProcurement(procurement);
+		return count;
 	}
 
 }

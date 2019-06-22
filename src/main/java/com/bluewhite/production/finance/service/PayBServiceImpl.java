@@ -10,18 +10,14 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.entity.PageResultStat;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
-import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.production.finance.dao.CollectPayDao;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.CollectPay;
@@ -90,10 +86,8 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 					Predicate[] pre = new Predicate[predicate.size()];
 					query.where(predicate.toArray(pre));
 		        	return null;
-		        }, SalesUtils.getQueryNoPageParameter());
-			  PageResultStat<PayB> result = new PageResultStat<>(pages,page);
-			  result.setAutoStateField("performancePayNumber", "payNumber");
-			  result.count();
+		        }, page);
+			  PageResult<PayB> result = new PageResult<>(pages, page);
 		      return result;
 		    }
 

@@ -243,7 +243,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	@Override
 	@Transactional
 	public OnlineOrder addOnlineOrder(OnlineOrder onlineOrder) {
-		if(onlineOrder.getOnlineCustomer()==null){
+		if(onlineOrder.getOnlineCustomerId()==null){
 			throw new ServiceException("没有客户，无法新增订单");
 		}
 		// 生成销售单编号
