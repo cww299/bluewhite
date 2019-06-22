@@ -48,7 +48,7 @@ td{
 				<td>收货人：</td>			
 				<td><input type="text" class="layui-input" id="customRealName" name="buyerName"></td>
 				<td>整单优惠：</td>			
-				<td><input type="text" class="layui-input" name="allBillPreferential" value="0"></td>
+				<td><input type="text" class="layui-input" name="allBillPreferential" value="0" id='AddAllBillPre'></td>
 				<td>经手人：</td>			
 				<td><select name="userId" id='userIdSelect' lay-search><option value="">获取数据中..</option></select></td>
 			</tr>
@@ -377,10 +377,12 @@ layui.config({
 				allPayment-=(-choosedProduct[i].actualSum);		//计算收款金额
 			} 
 			allPayment-=(-$('#AddPostFee').val());				//加	上邮费
+			allPayment-=$('#AddAllBillPre').val();				//减掉整单优惠
 			$('#customPayment').val(allPayment.toFixed(2));			
 		});
 		
-		var lastPostFee=0;     				 	//用于保存修改前的邮费价格，进行重新计算
+		var lastPostFee = 0;     				 	//用于保存修改前的邮费价格、整单优惠，进行重新计算
+		var lastAllBillPre = 0;						
 		$('#AddPostFee').change(function(){
 			if(isNaN($('#AddPostFee').val())){ 
 				layer.msg('修改无效！请正确输入邮费信息！',{icon:2});
@@ -392,6 +394,20 @@ layui.config({
 			var t = $('#customPayment').val()-lastPostFee-(-$('#AddPostFee').val());
 			$('#customPayment').val(t.toFixed(2));	
 			lastPostFee = $('#AddPostFee').val();
+			$('#AddPostFee').val(parseFloat(lastPostFee))
+		})
+		$('#AddAllBillPre').change(function(){
+			if(isNaN($('#AddAllBillPre').val())){ 
+				layer.msg('修改无效！请正确输入整单优惠信息！',{icon:2});
+				$('#AddAllBillPre').val(lastPostFee);
+				return;
+			}else if($('#AddAllBillPre').val()==''){
+				$('#AddAllBillPre').val(0);
+			}
+			var t = $('#customPayment').val()-(-lastAllBillPre)-$('#AddAllBillPre').val();
+			$('#customPayment').val(t.toFixed(2));	
+			$('#AddAllBillPre').val(parseFloat($('#AddAllBillPre').val()))
+			lastAllBillPre = $('#AddAllBillPre').val();
 		})
 		
 		form.on('submit(sureAdd)',function(obj){					//确定添加按钮
@@ -455,6 +471,8 @@ layui.config({
 		})
 		
 		$('#resetAll').on('click',function(){						//清空表单
+			lastPostFee = 0;     				 	
+			lastAllBillPre = 0;	
 			choosedProduct = [];
 			rederSelect();
 			renderUserSelect('userIdSelect');
@@ -779,7 +797,8 @@ layui.config({
 			var allPayment=0;
 			for(var j=0;j<choosedProduct.length;j++)		//重新对价格计算
 				allPayment-=(-choosedProduct[j].actualSum);
-			$('#customPayment').val((allPayment-=(-$('#AddPostFee').val())).toFixed(2));	
+			allPayment = allPayment - $('#AddAllBillPre').val() - (-$('#AddPostFee').val());
+			$('#customPayment').val(allPayment.toFixed(2));	
 			table.reload('productTable',{ data:choosedProduct, page:{ curr : 1, }})
 		}
 		var choosedId=0;
