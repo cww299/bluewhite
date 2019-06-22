@@ -243,6 +243,9 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	@Override
 	@Transactional
 	public OnlineOrder addOnlineOrder(OnlineOrder onlineOrder) {
+		if(onlineOrder.getOnlineCustomer()==null){
+			throw new ServiceException("没有客户，无法新增订单");
+		}
 		// 生成销售单编号
 		onlineOrder.setDocumentNumber(
 				StringUtil.getDocumentNumber(Constants.XS) + SalesUtils.get0LeftString((int) dao.count(), 8));
@@ -253,6 +256,9 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				OnlineOrderChild onlineOrderChild = new OnlineOrderChild();
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				onlineOrderChild.setCommodityId(jsonObject.getLong("commodityId"));
+				if(onlineOrderChild.getCommodityId()==null){
+					throw new ServiceException("没有商品，无法新增订单");
+				}
 				onlineOrderChild.setNumber(jsonObject.getInteger("number"));
 				onlineOrderChild.setResidueNumber(jsonObject.getInteger("number"));
 				onlineOrderChild.setPrice(jsonObject.getDouble("price"));

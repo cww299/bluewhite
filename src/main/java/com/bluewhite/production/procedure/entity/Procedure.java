@@ -19,8 +19,7 @@ import com.bluewhite.product.product.entity.Product;
  *
  */
 @Entity
-@Table(name = "pro_procedure",indexes = {	@Index(columnList = "type"),
-											@Index(columnList = "product_id"),
+@Table(name = "pro_procedure",indexes = {	@Index(columnList = "product_id"),
 											@Index(columnList = "flag")})
 public class Procedure extends BaseEntity<Long> {
 	

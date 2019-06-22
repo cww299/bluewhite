@@ -3,26 +3,31 @@ package com.bluewhite.production.finance.dao;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
+
 import com.bluewhite.base.BaseRepository;
 import com.bluewhite.production.finance.entity.PayB;
 
-public interface PayBDao extends BaseRepository<PayB, Long>{
+public interface PayBDao extends BaseRepository<PayB, Long> {
 	/**
 	 * 根据任务id查询工资
+	 * 
 	 * @return
 	 */
 	List<PayB> findByTaskId(Long id);
-	
+
 	/**
 	 * 根据任务id和员工id查询工资
+	 * 
 	 * @param id
 	 * @param userid
 	 * @return
 	 */
 	PayB findByTaskIdAndUserId(Long id, Long userid);
-	
+
 	/**
 	 * 根据条件查询b
+	 * 
 	 * @param userId
 	 * @param type
 	 * @param orderTimeBegin
@@ -31,17 +36,34 @@ public interface PayBDao extends BaseRepository<PayB, Long>{
 	 */
 	List<PayB> findByUserIdAndTypeAndAllotTimeBetween(Long userId, Integer type, Date orderTimeBegin,
 			Date orderTimeEnd);
-	
+
 	/**
 	 * 根据条件查询b
+	 * 
 	 * @param type
 	 * @param orderTimeBegin
 	 * @param orderTimeEnd
 	 * @return
 	 */
-	List<PayB> findByTypeAndAllotTimeBetween(Integer type, Date orderTimeBegin,
-			Date orderTimeEnd);
+	List<PayB> findByTypeAndAllotTimeBetween(Integer type, Date orderTimeBegin, Date orderTimeEnd);
 
+	/**
+	 * 根据条件查询b工资
+	 * 
+	 * @param type
+	 * @param orderTimeBegin
+	 * @param orderTimeEnd
+	 * @return
+	 */
+	@Query(nativeQuery = true, value = "SELECT * FROM pro_payb WHERE type = ?1 AND (allot_time BETWEEN ?2 AND ?3 )")
+	List<PayB> findPayNumber(Integer type, Date orderTimeBegin, Date orderTimeEnd);
+	
+	/**
+	 * 根据时间查询
+	 * @param orderTimeBegin
+	 * @param orderTimeEnd
+	 * @return
+	 */
 	List<PayB> findByAllotTimeBetween(Date orderTimeBegin, Date orderTimeEnd);
 
 }
