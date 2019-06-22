@@ -16,8 +16,7 @@ import com.bluewhite.common.utils.excel.Poi;
  *
  */
 @Entity
-@Table(name = "pro_collect_pay",indexes = {	@Index(columnList = "type"),
-											@Index(columnList = "user_id"),
+@Table(name = "pro_collect_pay",indexes = {	@Index(columnList = "user_id"),
 											@Index(columnList = "allot_time")})
 public class CollectPay extends BaseEntity<Long> {
 	
