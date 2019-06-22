@@ -40,9 +40,9 @@
 								<ul class="nav nav-tabs col-md-12">
 									<li class="active col-md-4"><a href="#home1"
 										data-toggle="tab">A工资流水详情</a></li>
-									<li class="col-md-4"><a href="#profile1" data-toggle="tab">B工资流水详情</a>
+									<li class="col-md-4" id="profiles"><a href="#profile1" data-toggle="tab">B工资流水详情</a>
 									</li>
-									<li class="col-md-4"><a href="#profile2" data-toggle="tab">杂工资流水详情</a>
+									<li class="col-md-4" id="profiles2"><a href="#profile2" data-toggle="tab">杂工资流水详情</a>
 									</li>
 								</ul>
 								<div class="tab-content">
@@ -114,6 +114,20 @@
 											<tbody id="tablecontentth">
 
 											</tbody>
+											<thead>
+											<tr>
+												<td class="text-center">合计</td>
+												<td class="text-center"></td>
+												<td class="text-center"></td>
+												<td class="text-center" id="totale"></td>
+												<td class="text-center"></td>
+												<td class="text-center"></td>
+												<td class="text-center"></td>
+												<td class="text-center"></td>
+												<td class="text-center"></td>
+												<td class="text-center" id="totaltw"></td>
+											</tr>
+										</thead>
 										</table>
 										<div id="pagerth" class="pull-right"></div>
 									</div>
@@ -184,6 +198,17 @@
 											<tbody id="tablecontent">
 
 											</tbody>
+											<thead>
+												<tr>
+													<td class="text-center">合计</td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center" id="total2"></td>
+													<td class="text-center" id="total"></td>
+												</tr>
+						</thead>
 										</table>
 										<div id="pager" class="pull-right"></div>
 									</div>
@@ -248,6 +273,15 @@
 											<tbody id="tablecontenttw">
 
 											</tbody>
+											<thead>
+											<tr>
+												<td class="text-center">合计</td>
+												<td class="text-center"></td>
+												<td class="text-center"></td>
+												<td class="text-center" id="totaltr"></td>
+				
+											</tr>
+						</thead>
 										</table>
 										<div id="pagertw" class="pull-right"></div>
 									</div>
@@ -323,10 +357,14 @@
 				
 				//注册绑定事件
 				self.events();
-				self.loadPagination(data);
-				self.loadPaginationtw(data);
 				self.loadPaginationth(data);
 			}
+			$("#profiles").on('click',function(){
+					self.loadPagination(data);
+			})
+			$("#profiles2").on('click',function(){
+				self.loadPaginationtw(data);
+			})
 			//加载分页
 			  this.loadPagination = function(data){
 			    var index;
@@ -392,6 +430,24 @@
 					  }
 				  });
 			  //B工资流水结束
+			    $.ajax({
+				      url:"${ctx}/finance/allPayBSum",
+				      data:data,
+				      type:"GET",
+				      beforeSend:function(){
+					 	  index = layer.load(1, {
+						  shade: [0.1,'#fff'] //0.1透明度的白色背景
+						  });
+					  }, 
+		      		  success: function (result) {
+		      			 $("#total").text(result.data.sumPayNumber)
+		      			 $("#total2").text(result.data.sumPerformancePayNumber)
+					   	layer.close(index);
+				      },error:function(){
+							layer.msg("加载失败！", {icon: 2});
+							layer.close(index);
+					  }
+				  });
 			}
 			  this.loadPaginationtw = function(data){
 				//杂工工资流水开始
@@ -407,6 +463,7 @@
 							  });
 						  }, 
 			      		  success: function (result) {
+			      			$("#totaltr").text(result.data.statData.statAmount)
 			      			 $(result.data.rows).each(function(i,o){
 			      				htmltw +='<tr>'
 			      				+'<td class="text-center edit ">'+o.userName+'</td>'
@@ -479,7 +536,8 @@
 						  });
 					  }, 
 		      		  success: function (result) {
-		      			 
+		      			$("#totale").text(result.data.statData.stateCount)
+		      			  $("#totaltw").text(result.data.statData.statAmount)
 		      			 $(result.data.rows).each(function(i,o){
 		      				 if(o.overTime==null){
 		      					o.overTime=0
