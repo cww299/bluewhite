@@ -40,9 +40,9 @@
 								<ul class="nav nav-tabs col-md-12">
 									<li class="active col-md-4"><a href="#home1"
 										data-toggle="tab">A工资流水详情</a></li>
-									<li class="col-md-4"><a href="#profile1" data-toggle="tab">B工资流水详情</a>
+									<li class="col-md-4" id="profiles"><a href="#profile1" data-toggle="tab">B工资流水详情</a>
 									</li>
-									<li class="col-md-4"><a href="#profile2" data-toggle="tab">杂工资流水详情</a>
+									<li class="col-md-4" id="profiles2"><a href="#profile2" data-toggle="tab">杂工资流水详情</a>
 									</li>
 								</ul>
 								<div class="tab-content">
@@ -323,10 +323,14 @@
 				
 				//注册绑定事件
 				self.events();
-				self.loadPagination(data);
-				self.loadPaginationtw(data);
 				self.loadPaginationth(data);
 			}
+			$("#profiles").on('click',function(){
+					self.loadPagination(data);
+			})
+			$("#profiles2").on('click',function(){
+				self.loadPaginationtw(data);
+			})
 			//加载分页
 			  this.loadPagination = function(data){
 			    var index;
