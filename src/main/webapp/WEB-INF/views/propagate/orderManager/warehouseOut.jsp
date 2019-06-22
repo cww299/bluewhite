@@ -13,17 +13,15 @@
      top: 50%;
      transform: translateY(-50%);
 }
+.layui-card  .layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
+     transform: translateY(0%);
+}
 td{
 	text-align:center;
 }
-.layui-card .layui-table-cell{	
+.layui-card .layui-table-cell{		/*  取消高度    */
 	  height:auto;
-	 /*  overflow:visible; */
 	  padding:0px;
-}
-.layui-card  .layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
-     top: 50%;
-     transform: translateY(0%);
 }
 .layui-table tbody tr:hover, .layui-table-hover {
 	background-color: transparent;
@@ -51,11 +49,20 @@ td{
 						<option value="2">销售换货出库</option>
 						<option value="3">采购退货出库 </option></select></td>
 			    <td>&nbsp;&nbsp;</td>
-				<td><span class="layui-btn" lay-submit lay-filter="search">搜索</span></td>
+				<td><span class="layui-btn" lay-submit lay-filter="search">搜索</span>
+				    <span class="layui-btn" id="uploadDataBtn">导入订单</span></td>
 			</tr>
 		</table>
 		<table class="layui-table" id="outOrderTable" lay-filter="outOrderTable"></table>
 	</div>
+</div>
+
+<!-- 上传文件隐藏框 -->
+<div id='uploadDiv' style="display:none;padding:20px;" class="layui-form">
+	<select id='uploadUser' lay-search></select>
+	<!-- <select id='uploadCustom' lay-search><option value="">选择客户</option></select> -->
+	<select id='uploadWarehouse'><option value="">仓库选择</option></select>
+	<button type='button' id='uploadData' style="display:none;"></button>
 </div>
 
 <!-- 添加订单隐藏框  -->
@@ -197,28 +204,69 @@ layui.config({
 }).extend({
 	tablePlug : 'tablePlug/tablePlug',
 }).define(
-	['tablePlug','laydate'],
+	['tablePlug','laydate','upload'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
 		, form = layui.form			 		
 		, table = layui.table
+		, upload = layui.upload 
 		, laydate = layui.laydate
 		, tablePlug = layui.tablePlug;
 		
-		var chooseProductWin;		//选择商品弹窗
-		var allInventory=[],		//所有仓库
-			allUser=[],
-			allCustom=[],
-			currUser={id:''};     
-		
-		var searchBatchNumber = '';			//记录搜索使用的数据，用于过滤筛选子单数据
-		var searchCommodityName = '';
+		var chooseProductWin,		//选择商品弹窗
+		    allInventory = [],		//所有仓库
+			allUser = [],
+			allCustom = [],
+			currUser = {id:''},    
+		    searchBatchNumber = '',			//记录搜索使用的数据，用于过滤筛选子单数据,即显示搜索出相关的商品
+		    searchCommodityName = '';
 			
+		getCurrUser();
 		getAllInventory();
 		getAllUser();
 		getAllCustom();
-		getCurrUser();
+		
+		//--------------导入出库单功能-----------------------		
+		var load;
+		upload.render({
+		   	  elem: '#uploadData'
+		   	  ,url: '${ctx}/inventory/import/excelOutProcurement'
+		 	  ,before: function(obj){ 	
+		 		  this.data={  
+		 				  userId:$('#uploadUser').val(),  
+		 				  warehouseId:$('#uploadWarehouse').val()  };
+		 		 load = layer.load(1); 
+			  }
+		   	  ,done: function(res, index, upload){ 
+		   		  if(res.code==0){
+				   		layer.closeAll();
+				   		layer.msg(res.message,{icon:1});
+				   		table.reload('outOrderTable');
+		   		  }else{
+			   			layer.close(load);
+			   			layer.msg(res.message,{icon:2});
+		   		  }
+		   	  } 
+		   	  ,accept: 'file' 
+		   	  ,exts: 'xlsx|xls'
+		})
+		$('#uploadDataBtn').on('click',function(){
+			layer.open({
+				title:'导入订单数据',
+				area:['30%','40%'],
+				offset: '100px',
+				type:1,
+				content:$('#uploadDiv'),
+				btn:['选择文件','取消'],
+				yes:function(){
+					$('#uploadData').click();
+				}
+			})
+			getUserSelect(currUser.id,'uploadUser');
+		}) 
+		
+		//-----------------主页面功能--------------------
 		
 		form.render();
 		table.render({				//渲染主页面单表格
@@ -369,7 +417,6 @@ layui.config({
 				content : $('#addOrderDiv')
 			})
 			getUserSelect(currUser.id,'userIdSelect');
-			getCustomSelect('','customerIdSelect');
 			table.render({									//渲染选择后的商品表格
 				elem:'#productListTable',
 				toolbar:'#productListTableToolbar',
@@ -679,6 +726,8 @@ layui.config({
 								id:			r.data.rows[i].id,
 								userName:	r.data.rows[i].buyerName
 							})
+						getCustomSelect('','uploadCustom');		//渲染导入文件的下拉框
+						getCustomSelect('','customerIdSelect'); //渲染新增订单的客户下拉框
 					}
 				}
 			})
@@ -698,6 +747,11 @@ layui.config({
 				success:function(r){
 					if(0==r.code){
 						allInventory=r.data;
+						var html = '';
+						layui.each(r.data,function(index,item){
+							html += '<option value="'+item.id+'">'+item.name+'</option>';
+						})
+						$('#uploadWarehouse').html(html);	//渲染导入文件仓库下拉框
 					}
 				}
 			})
@@ -731,7 +785,7 @@ layui.config({
 				return html; 
 			};
 		};
-		function getCurrUser(){
+		function getCurrUser(){					//获取当前登录用户
 			$.ajax({
 				url:'${ctx}/getCurrentUser',
 				success:function(r){
