@@ -129,18 +129,18 @@ private static final Log log = Log.getLog(FinanceAction.class);
 			Double sumPayNumber = 0.0;
 			Double sumPerformancePayNumber = 0.0;
 			if (payBList.size() > 0) {
-				payBList.stream().forEach(c -> {
-					PayB pb = (PayB)c;
-					listPayNumber.add(pb.getPayNumber()==null ? 0 : pb.getPayNumber());
-					listPerformancePayNumber.add(pb.getPerformancePayNumber()==null ? 0 : pb.getPerformancePayNumber());
-				});
+				for(Object pb : payBList){
+					Object[] objects = (Object[])pb;
+					listPayNumber.add((double)(objects[0] ==null ? 0.0:objects[0]));
+					listPerformancePayNumber.add((double)(objects[1] ==null ? 0.0:objects[1]));
+				}
 				sumPayNumber = NumUtils.sum(listPayNumber);
 				sumPerformancePayNumber = NumUtils.sum(listPerformancePayNumber);
 			}
 			Map<String, Object> map = new HashMap<>();
 			map.put("sumPayNumber", sumPayNumber);
 			map.put("sumPerformancePayNumber", sumPerformancePayNumber);
-			cr.setData(payBList.size());
+			cr.setData(map);
 			cr.setMessage("查询成功");
 		return cr;
 	}
