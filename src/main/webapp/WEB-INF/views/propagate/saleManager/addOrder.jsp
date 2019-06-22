@@ -273,7 +273,7 @@ layui.config({
 			allUser=[];
 		var chooseCuctomWin				//各个弹窗
 			,chooseProductWin
-			,addNewProductWin
+			,addNewProductWin 
 			,addNewCustomWin;
 		
 		$('#headerTool').find("td:even").css({backgroundColor:"rgba(65, 161, 210, 0.45)",padding:"1px"}); //表格颜色
@@ -281,7 +281,7 @@ layui.config({
 		getAllInventory();					//获取所有仓库
 		getAllUser();
 		form.render();
-		
+console.log(document.scripts)
 		table.render({
 			elem:"#productTable", 
 			toolbar:'#productTableToolbar',
