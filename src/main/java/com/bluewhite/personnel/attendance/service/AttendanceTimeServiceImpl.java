@@ -139,6 +139,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				Double restTime = null;
 				//报餐吃饭记录
 				attendanceTime.setEatType(attendanceInit.getEatType());
+				attendanceTime.setFail(attendanceInit.getFail());
 				// flag=ture 为夏令时
 				if (flag) {
 					String[] workTimeArr = attendanceInit.getWorkTimeSummer().split(" - ");

@@ -1,5 +1,8 @@
 package com.bluewhite.personnel.attendance.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -20,13 +23,5 @@ public interface RecruitService  extends BaseCRUDService<Recruit,Long>{
 	 */
 	public Recruit addRecruit(Recruit recruit);
 	
-	/**
-	 * 删除
-	 * 
-	 * @param ids
-	 *            多条id
-	 * @return boolean
-	 */
-	public boolean deleteRecruit(String ids);
-	
+	public  List<Map<String, Object>> Statistics(Recruit recruit);
 }

@@ -468,7 +468,7 @@ public class AttendanceAction {
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(AttendanceInit.class, "id", "restType", "restDay", "workTimeSummer", "user",
 						"workTimeWinter", "turnWorkTimeSummer", "turnWorkTimeWinter", "restTimeSummer",
-						"restTimeWinter", "restSummer", "restWinter", "restTimeWork", "overTimeType", "comeWork","workType","earthWork","eatType")
+						"restTimeWinter", "restSummer", "restWinter", "restTimeWork", "overTimeType", "comeWork","workType","earthWork","eatType","fail")
 				.addRetainTerm(User.class, "id", "userName")
 				.format(attendanceInitService.findAttendanceInitPage(attendanceInit, page)).toJSON());
 		cr.setMessage("查询成功");
