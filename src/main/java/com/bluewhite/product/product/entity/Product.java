@@ -62,7 +62,7 @@ public class Product extends BaseEntity<Long>{
      * 各个部门自己的产品编号
      */
  	@Column(name = "department_number")
-     private String departmentNumber;
+    private String departmentNumber;
     
    /**
     * 产品来源部门
@@ -71,7 +71,7 @@ public class Product extends BaseEntity<Long>{
     private String originDepartment;
 	
    /**
-    * 产品分类
+    * 产品分类(1=成品，2=皮壳)
     */
 	@Column(name = "product_type")
     private Integer productType;
