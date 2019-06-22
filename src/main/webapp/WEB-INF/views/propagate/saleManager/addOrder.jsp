@@ -281,7 +281,6 @@ layui.config({
 		getAllInventory();					//获取所有仓库
 		getAllUser();
 		form.render();
-console.log(document.scripts)
 		table.render({
 			elem:"#productTable", 
 			toolbar:'#productTableToolbar',
