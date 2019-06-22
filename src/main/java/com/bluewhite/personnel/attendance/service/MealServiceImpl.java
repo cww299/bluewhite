@@ -207,6 +207,9 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 	List<Meal> meals=new ArrayList<Meal>();
 	PersonVariable variable=personVariableDao.findByType(1);
 	for (AttendanceTime attendanceTime2 : attendanceTimes) {
+		if (attendanceTime2.getFail()==2) {
+			
+		}else{ 
 		//基础数据 每一餐的价格
 		if (attendanceTime2.getCheckOut()!=null || attendanceTime2.getCheckIn()!=null) {
 		if (attendanceTime2.getCheckOut()!=null && attendanceTime2.getCheckIn()!=null) {
@@ -397,6 +400,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 			}
 			}
 		}
+	}
 	}
 		dao.save(meals);
 		return 0;

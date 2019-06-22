@@ -213,6 +213,16 @@
 						<option value="3">早餐or晚餐</option></select>
 				</div>
 			</div>
+			
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">倒班状态</label>
+				<div class="layui-input-inline">
+					<select name="fail" lay-filter="fail"
+						id="fail"  lay-search="true"><option
+							value="1">不倒班</option>
+						<option value="2">倒班</option></select>
+				</div>
+			</div>
 		</div>
 	</form>
 
@@ -799,6 +809,11 @@
 					       }
 							$('#eatType').each(function(j,k){
 					    		var id=data.eatType;
+								$(k).val(id);
+								form.render('select');
+							});
+							$('#fail').each(function(j,k){
+					    		var id=data.fail;
 								$(k).val(id);
 								form.render('select');
 							});

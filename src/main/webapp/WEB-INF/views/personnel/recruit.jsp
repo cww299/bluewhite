@@ -11,7 +11,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>工资申请</title>
+<title>招聘信息</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
@@ -23,15 +23,8 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>报销人:</td>
-							<td><input type="text" name="Username" id="firstNames" class="layui-input" /></td>
-							<td>&nbsp;&nbsp;</td>
-							<td>报销内容:</td>
-							<td><input type="text" name="content" class="layui-input" /></td>
-							<td>&nbsp;&nbsp;</td>
-							<td><select class="form-control" name="expenseDate" id="selectone">
-									<option value="2018-10-08 00:00:00">工资申请日期</option>
-								</select></td>
+							<td>姓名:</td>
+							<td><input type="text" name="name" id="firstNames" class="layui-input" /></td>
 							<td>&nbsp;&nbsp;</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
 							</td>
@@ -40,11 +33,25 @@
 							<td><input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="layui-input laydate-icon">
 							</td> -->
 							<td>&nbsp;&nbsp;</td>
-							<td>是否核对:
-							<td><select class="form-control" name="flag">
+							<td>是否应面:
+							<td><select class="form-control" name="type">
 									<option value="">请选择</option>
-									<option value="0">未核对</option>
-									<option value="1">已核对</option>
+									<option value="0">否</option>
+									<option value="1">是</option>
+							</select></td>
+							<td>&nbsp;&nbsp;</td>
+							<td>一面:
+							<td><select class="form-control" name="typeOne">
+									<option value="">请选择</option>
+									<option value="0">否</option>
+									<option value="1">是</option>
+							</select></td>
+							<td>&nbsp;&nbsp;</td>
+							<td>二面:
+							<td><select class="form-control" name="typeTwo">
+									<option value="">请选择</option>
+									<option value="0">否</option>
+									<option value="1">是</option>
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
@@ -62,6 +69,28 @@
 		</div>
 	</div>
 	
+<div style="display: none;" id="layuiShare">
+			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+				<div class="layui-form-item">
+					<table>
+						<tr>
+							<td>查询月份:</td>
+							<td><input id="monthDate3" style="width: 180px;" name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td>
+								<div class="layui-inline">
+									<button class="layui-btn layuiadmin-btn-admin"  lay-submit lay-filter="LAY-search2">
+										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+									</button>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<table id="layuiShare2"  class="table_th_search" lay-filter="layuiShare"></table>
+			</div>
 	
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
@@ -69,6 +98,9 @@
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
 				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
+				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="audit">一键入职</span>
+				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="onaudit">拒绝入职</span>
+				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="summary">招聘汇总</span>
 			</div>
 		</script>
 
@@ -102,10 +134,10 @@
 						type: 'datetime',
 						range: '~',
 					});
-					/* laydate.render({
-						elem: '#endTime',
-						type: 'datetime',
-					}); */
+					 laydate.render({
+						elem: '#monthDate3',
+						type : 'month',
+					}); 
 				 
 					 var getdata={type:"orgName",}
 	      			$.ajax({								//获取部门列表数据，部门下拉框的填充
@@ -125,9 +157,6 @@
 			      			layer.close(indextwo);
 					      }
 					  });
-					form.on('select(lay_selecte)', function(data) {
-						alert(1)
-					})
 					
 					var data={
     						id:10,
@@ -222,12 +251,9 @@
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
-						size: 'lg',
+						size: 'mg',
 						height:'700px',
 						url: '${ctx}/personnel/getRecruit' ,
-						where:{
-							type:3
-						},
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
 							limitName: 'size' //每页数据量的参数名，默认：limit
@@ -340,6 +366,22 @@
 								title: "二面备注",
 								align: 'center',
 								edit: 'text'
+							},{ 
+								align: 'center',
+								field: "state",
+								title: "入职状态", 
+								templet:  function(d){ 
+									if(d.state==0){
+										return '未入职';
+									}
+									if(d.state==1){
+										return '已入职';
+									}
+									if(d.state==2){
+										return '拒绝入职';
+									}
+											
+								}
 							}]
 						],
 						done: function() {
@@ -432,7 +474,7 @@
 						var tableId = config.id;
 						switch(obj.event) {
 							case 'addTempData':
-								allField = {id: '', name: '', entry: '',typeOne:0,type:0,typeTwo:0,gender:0};
+								allField = {id: '', name: '', entry: '',typeOne:0,type:0,typeTwo:0,gender:0,state:0};
 								table.addTemp(tableId,allField,function(trElem) {
 									// 进入回调的时候this是当前的表格的config
 									var that = this;
@@ -458,6 +500,28 @@
 											}
 										})
 									})
+									
+								layui.each(trElem.find('td[data-field="time"]'), function(index, tdElem) {
+								tdElem.onclick = function(event) {
+									layui.stope(event)
+								};
+								laydate.render({
+									elem: tdElem.children[0],
+									type: 'datetime',
+									done: function(value, date) {
+										var trElem = $(this.elem[0]).closest('tr');
+										var tableView = trElem.closest('.layui-table-view');
+										table.cache[that.id][trElem.data('index')]['time'] = value;
+										var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
+											var postData = {
+												id: id,
+												time: value,
+											};
+											//调用新增修改
+											mainJs.fUpdate(postData);
+												}
+											})
+										})
 								});
 								break;
 							case 'saveTempData':
@@ -536,9 +600,147 @@
 							case 'cleanTempData':	
 									table.cleanTemp(tableId);
 							break;
+							
+							case 'audit':
+								// 获得当前选中的
+								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
+								var data = table.checkStatus(tableId).data;//获取选中数据
+								if(data[0].state==1){
+									return layer.msg("当前员工已入职",{icon: 2})
+								}
+								if(checkedIds.length>1){
+									return layer.msg("只能选择一条",{icon: 2})
+								}
+								layer.confirm('您是否确定要审核选中的' + checkedIds.length + '条记录？', function() {
+									var postData = {
+										ids:checkedIds,
+										state:1,
+									}
+									mainJs.fUpdate2(postData);
+								});
+								break;
+								
+							case 'onaudit':
+								// 获得当前选中的
+								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
+								var data = table.checkStatus(tableId).data;//获取选中数据
+								if(data[0].state==1){
+									return layer.msg("当前员工已入职",{icon: 2})
+								}
+								if(checkedIds.length>1){
+									return layer.msg("只能选择一条",{icon: 2})
+								}
+								layer.confirm('您是否确定要审核选中的' + checkedIds.length + '条记录？', function() {
+									var postData = {
+										ids:checkedIds,
+										state:2,
+									}
+									mainJs.fUpdate2(postData);
+								});
+								break;
+								
+							case 'summary':
+								table.reload("layuiShare2") 
+								var dicDiv=$('#layuiShare');
+								layer.open({
+							         type: 1
+							        ,title: '招聘汇总' //不显示标题栏
+							        ,closeBtn: false
+							        ,zindex:-1
+							        ,area:['50%', '90%']
+							        ,shade: 0.5
+							        ,id: 'LAY_layuipro2' //设定一个id，防止重复弹出
+							        ,btn: ['取消']
+							        ,btnAlign: 'c'
+							        ,moveType: 1 //拖拽模式，0或者1
+							        ,content:dicDiv
+							        ,success : function(layero, index) {
+							        	layero.addClass('layui-form');
+										// 将保存按钮改变成提交按钮
+										layero.find('.layui-layer-btn0').attr({
+											'lay-filter' : 'addRole2',
+											'lay-submit' : ''
+										})
+							        }
+							        ,end:function(){
+							        	$("#layuiShare").hide();
+									  } 
+							      });
+								break;	
 						}
 					});
 
+					
+					form.on('submit(LAY-search2)', function(obj) {
+						onlyField=obj.field;
+						onlyField.time=onlyField.time+'-01 00:00:00';
+						eventd(onlyField);
+						
+					})
+					var eventd=function(data){
+						table.reload("layuiShare2",{
+							where:data
+						})
+					};
+					table.render({
+						elem: '#layuiShare2',
+						size: 'lg',
+						url: '${ctx}/personnel/Statistics' ,
+						request:{
+							pageName: 'page' ,//页码的参数名称，默认：page
+							limitName: 'size' //每页数据量的参数名，默认：limit
+						},
+						//开启分页
+						loading: true,
+						toolbar: '#toolbar5', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+						totalRow: true,		 //开启合计行 */
+						cellMinWidth: 90,
+						colFilterRecord: true,
+						smartReloadModel: true,// 开启智能重载
+						parseData: function(ret) {
+							return {
+								code: ret.code,
+								msg: ret.message,
+								data: ret.data
+							}
+						},
+						cols: [
+							[{
+								field: "username",
+								title: "姓名",
+								align: 'center',
+								totalRowText: '合计'
+							},{
+								field: "mod1",
+								title: "邀约面试",
+								align: 'center',
+								totalRow: true
+							},{
+								field: "mod2",
+								title: "应邀面试",
+								align: 'center',
+								totalRow: true
+							},{
+								field: "mod3",
+								title: "面试合格",
+								align: 'center',
+								totalRow: true
+							},{
+								field: "mod4",
+								title: "拒绝入职",
+								align: 'center',
+								totalRow: true
+							},{
+								field: "mod5",
+								title: "已入职",
+								align: 'center',
+								totalRow: true
+							}
+							]
+						],
+					
+								});
+					
 
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
@@ -612,6 +814,7 @@
 							url: "${ctx}/personnel/addRecruit",
 							data: data,
 							type: "POST",
+							traditional: true,
 							beforeSend: function() {
 								index;
 							},
@@ -640,7 +843,47 @@
 							},
 						});
 						layer.close(index);
-				    }
+				    },
+					    
+					  //修改							
+					    fUpdate2 : function(data){
+					    	if(data.id==""){
+					    		return;
+					    	}
+					    	$.ajax({
+								url: "${ctx}/personnel/updateRecruit",
+								data: data,
+								type: "GET",
+								traditional: true,
+								beforeSend: function() {
+									index;
+								},
+								success: function(result) {
+									if(0 == result.code) {
+									 	 table.reload("tableData", {
+							                page: {
+							                }
+							              })   
+										layer.msg(result.message, {
+											icon: 1,
+											time:800
+										});
+									
+									} else {
+										layer.msg(result.message, {
+											icon: 2,
+											time:800
+										});
+									}
+								},
+								error: function() {
+									layer.msg("操作失败！请重试", {
+										icon: 2
+									});
+								},
+							});
+							layer.close(index);
+					    }
 					}
 
 				}

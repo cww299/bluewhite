@@ -171,6 +171,14 @@ public class AttendanceTime extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Integer eatType;
+	
+	/**
+	 * 倒班（1.不倒班2.倒班）
+	 * 
+	 */
+	@Transient
+	private Integer fail;
+	
 	/**
 	 * 员工姓名
 	 */
@@ -204,6 +212,14 @@ public class AttendanceTime extends BaseEntity<Long> {
 	
 	
 
+
+	public Integer getFail() {
+		return fail;
+	}
+
+	public void setFail(Integer fail) {
+		this.fail = fail;
+	}
 
 	public Integer getEatType() {
 		return eatType;

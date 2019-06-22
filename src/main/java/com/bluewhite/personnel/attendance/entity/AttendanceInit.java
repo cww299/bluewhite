@@ -136,6 +136,13 @@ public class AttendanceInit extends BaseEntity<Long> {
 	private Integer eatType;
 	
 	/**
+	 * 倒班（1.不倒班2.倒班）
+	 * 
+	 */
+	@Column(name = "fail")
+	private Integer fail;
+	
+	/**
 	 * 员工姓名
 	 */
 	@Transient
@@ -173,6 +180,16 @@ public class AttendanceInit extends BaseEntity<Long> {
 
 	
 	
+
+
+	public Integer getFail() {
+		return fail;
+	}
+
+
+	public void setFail(Integer fail) {
+		this.fail = fail;
+	}
 
 
 	public Integer getEatType() {

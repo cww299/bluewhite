@@ -121,6 +121,11 @@ public class Recruit extends BaseEntity<Long> {
 	@Column(name = "remarks_two")
     private String remarksTwo;
 	
+	/**
+	 * 入职状态(0=没入职，1=已入职,2=拒绝入职)
+	 */
+	@Column(name = "state")
+	private Integer state;
 	
 	/**
 	 * 查询字段
@@ -241,6 +246,12 @@ public class Recruit extends BaseEntity<Long> {
 	}
 	public void setOrderTimeEnd(Date orderTimeEnd) {
 		this.orderTimeEnd = orderTimeEnd;
+	}
+	public Integer getState() {
+		return state;
+	}
+	public void setState(Integer state) {
+		this.state = state;
 	}
 	
 	

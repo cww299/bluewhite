@@ -1,6 +1,8 @@
 package com.bluewhite.personnel.attendance.action;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,16 +25,20 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.personnel.attendance.entity.Recruit;
 import com.bluewhite.personnel.attendance.service.RecruitService;
+import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.service.UserService;
 
 @Controller
 public class RecruitAction {
 
 	@Autowired
 	private RecruitService service;
+	@Autowired
+	private UserService userService;
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Recruit.class,"id", "platformId","time","position","orgNameId","orgName","name","gender","phone","livingAddress","entry","type","remarks","typeOne","remarksOne","typeTwo","remarksTwo");
+				.addRetainTerm(Recruit.class,"id", "platformId","time","position","orgNameId","orgName","name","gender","phone","livingAddress","entry","type","remarks","typeOne","remarksOne","typeTwo","remarksTwo","state");
 	}
 
 	/**
@@ -91,7 +97,7 @@ public class RecruitAction {
 		if(!StringUtils.isEmpty(ids)){
 			for (int i = 0; i < ids.length; i++) {
 				Long id = Long.parseLong(ids[i]);
-				service.delete(id);
+				service.delete(id); 
 				count++;
 			}
 		}
@@ -99,7 +105,60 @@ public class RecruitAction {
 		return cr;
 	}
 	
+	/**
+	 * 审核
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/updateRecruit", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse updateConsumption(HttpServletRequest request, String[] ids,Integer state) {
+		CommonResponse cr = new CommonResponse();
+		int count = 0;
+		if(!StringUtils.isEmpty(ids)){
+			for (int i = 0; i < ids.length; i++) {
+				Long id = Long.parseLong(ids[i]);
+			Recruit recruit=service.findOne(id);
+			if (state==1) {
+				recruit.setState(state);
+				service.save(recruit);
+				User user=new User();
+				user.setUserName(recruit.getName());
+				user.setPhone(recruit.getPhone());
+				user.setForeigns(0);
+				user.setQuit(0);
+				userService.addUser(user);
+				count++;
+			}
+			if (state==2) {
+				recruit.setState(state);
+				service.save(recruit);
+				count++;
+			}
+			}
+		}
+		cr.setMessage("成功入职"+count+"人");
+		return cr;
+	}
 	
+	/**
+	 * 统计
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/Statistics", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse Statistics(HttpServletRequest request, Recruit recruit) {
+		CommonResponse cr = new CommonResponse();
+		 List<Map<String, Object>> list = service.Statistics(recruit);
+			cr.setData(clearCascadeJSON.format(list).toJSON());
+			cr.setMessage("查询成功");
+		return cr;
+	}
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
 		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(DateTimePattern.DATEHMS.getPattern());
