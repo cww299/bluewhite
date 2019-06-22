@@ -30,6 +30,7 @@ import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
+import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.CollectInformation;
 import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.FarragoTaskPay;
@@ -67,6 +68,8 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	private UsualConsumeService usualConsumeservice;
 	@Autowired
 	private CollectInformationService collectInformationService;
+	@Autowired
+	private PayBDao payBDao;
 	
 	
 	private ClearCascadeJSON clearCascadeJSON;
@@ -118,25 +121,26 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	@ResponseBody
 	public CommonResponse allPayBSum(HttpServletRequest request,PayB payB) {
 		CommonResponse cr = new CommonResponse();
-//			List<PayB> payBList = payBService.findPayNumber(payB);
-//			// 总金额
-//			List<Double> listPayNumber = new ArrayList<>();
-//			// 实际运费
-//			List<Double> listPerformancePayNumber = new ArrayList<>();
-//			Double sumPayNumber = 0.0;
-//			Double sumPerformancePayNumber = 0.0;
-//			if (payBList.size() > 0) {
-//				payBList.stream().forEach(c -> {
-//					listPayNumber.add(c.getPayNumber()==null ? 0 : c.getPayNumber());
-//					listPerformancePayNumber.add(c.getPerformancePayNumber()==null ? 0 : c.getPerformancePayNumber());
-//				});
-//				sumPayNumber = NumUtils.sum(listPayNumber);
-//				sumPerformancePayNumber = NumUtils.sum(listPerformancePayNumber);
-//			}
+			List<Object> payBList = payBDao.findPayNumber(payB.getType(),payB.getOrderTimeBegin(),payB.getOrderTimeEnd(),payB.getUserName(),payB.getBacth(),payB.getProductName());
+			// 总金额
+			List<Double> listPayNumber = new ArrayList<>();
+			// 实际运费
+			List<Double> listPerformancePayNumber = new ArrayList<>();
+			Double sumPayNumber = 0.0;
+			Double sumPerformancePayNumber = 0.0;
+			if (payBList.size() > 0) {
+				payBList.stream().forEach(c -> {
+					PayB pb = (PayB)c;
+					listPayNumber.add(pb.getPayNumber()==null ? 0 : pb.getPayNumber());
+					listPerformancePayNumber.add(pb.getPerformancePayNumber()==null ? 0 : pb.getPerformancePayNumber());
+				});
+				sumPayNumber = NumUtils.sum(listPayNumber);
+				sumPerformancePayNumber = NumUtils.sum(listPerformancePayNumber);
+			}
 			Map<String, Object> map = new HashMap<>();
-//			map.put("sumPayNumber", sumPayNumber);
-//			map.put("sumPerformancePayNumber", sumPerformancePayNumber);
-//			cr.setData(payBList.size());
+			map.put("sumPayNumber", sumPayNumber);
+			map.put("sumPerformancePayNumber", sumPerformancePayNumber);
+			cr.setData(payBList.size());
 			cr.setMessage("查询成功");
 		return cr;
 	}
