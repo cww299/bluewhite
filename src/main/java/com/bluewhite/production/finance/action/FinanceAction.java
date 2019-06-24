@@ -26,6 +26,7 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
@@ -108,8 +109,16 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	@ResponseBody
 	public CommonResponse allPayB(HttpServletRequest request,PayB payB,PageParameter page) {
 		CommonResponse cr = new CommonResponse();
-			cr.setData(clearCascadeJSON.format(payBService.findPages(payB, page)).toJSON());
-			cr.setMessage("查询成功");
+		long startTime = System.currentTimeMillis(); // 获取开始时间  
+		PageResult<PayB> list = payBService.findPages(payB, page);
+        long endTime = System.currentTimeMillis(); // 获取结束时间  
+        System.out.println("程序运行时间： " + (endTime - startTime) + "ms");  
+        
+        long startTime1 = System.currentTimeMillis(); // 获取开始时间  
+		cr.setData(clearCascadeJSON.format(list).toJSON());
+		long endTime1 = System.currentTimeMillis(); // 获取结束时间  	
+		 System.out.println("程序运行时间1： " + (endTime1 - startTime1) + "ms");  
+		cr.setMessage("查询成功");
 		return cr;
 	}
 	

@@ -25,7 +25,8 @@ import com.bluewhite.production.task.entity.Task;
  *
  */
 @Entity
-@Table(name = "pro_bacth" ,indexes = {	@Index(columnList = "allot_time")})
+@Table(name = "pro_bacth" ,indexes = {	@Index(name="bacth_index_1",columnList = "type"),
+										@Index(name="bacth_index_1",columnList = "allot_time")})
 public class Bacth extends BaseEntity<Long>{
 	
 	/**
