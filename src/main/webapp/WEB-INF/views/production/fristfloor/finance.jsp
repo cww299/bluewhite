@@ -347,23 +347,7 @@
 				  });
 			  //B工资流水结束
 			  
-			    $.ajax({
-				      url:"${ctx}/finance/allPayBSum",
-				      data:data,
-				      type:"GET",
-				      beforeSend:function(){
-					 	  index = layer.load(1, {
-						  shade: [0.1,'#fff'] //0.1透明度的白色背景
-						  });
-					  }, 
-		      		  success: function (result) {
-		      			 $("#total").text(result.data.sumPayNumber)
-		      			 $("#total2").text(result.data.sumPerformancePayNumber)
-				      },error:function(){
-							layer.msg("加载失败！", {icon: 2});
-							layer.close(index);
-					  }
-				  });
+			  
 			}
 			  this.loadPaginationtw = function(data){
 				//杂工工资流水开始
@@ -611,7 +595,23 @@
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
 				  	}
-			
+					  $.ajax({
+					      url:"${ctx}/finance/allPayBSum",
+					      data:data,
+					      type:"GET",
+					      beforeSend:function(){
+						 	  index = layer.load(1, {
+							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							  });
+						  }, 
+			      		  success: function (result) {
+			      			 $("#total").text(result.data.sumPayNumber)
+			      			 $("#total2").text(result.data.sumPerformancePayNumber)
+					      },error:function(){
+								layer.msg("加载失败！", {icon: 2});
+								layer.close(index);
+						  }
+					  });
 				self.loadPagination(data);
 				});
 				$('.searchtasktw').on('click',function(){
