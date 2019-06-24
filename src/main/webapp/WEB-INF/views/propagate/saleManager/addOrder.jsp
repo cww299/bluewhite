@@ -270,7 +270,7 @@ layui.config({
 		
 		var choosedProduct=[],			//用户已经选择上的产品
 			allInventory=[],			//所有的仓库
-			allUser=[];
+			allUser=[]; 
 		var chooseCuctomWin				//各个弹窗
 			,chooseProductWin
 			,addNewProductWin 
