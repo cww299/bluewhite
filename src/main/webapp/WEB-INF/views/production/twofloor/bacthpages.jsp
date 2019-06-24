@@ -341,7 +341,10 @@
 					      curr:  result.data.pageNum || 1, 
 					      jump: function(obj, first){ 
 					    	  if(!first){ 
-					    		 
+					    		  var a="";
+									if($("#selectstate").val()==1){
+										a=$("#startTime").val()
+									}
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
@@ -352,7 +355,7 @@
 								  			orderTimeEnd:$("#endTime").val(),
 								  			flag:0,
 								  			status:$('#selectstate').val(),
-								  			statusTime:$("#startTime").val(),
+								  			statusTime:a,
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -775,6 +778,10 @@
 						success:function(result){
 							if(0==result.code){
 							layer.msg("删除成功！", {icon: 1});
+							var a="";
+							if($("#selectstate").val()==1){
+								a=$("#startTime").val()
+							}
 							var data={
 									page:1,
 							  		size:13,	
@@ -785,7 +792,7 @@
 						  			orderTimeEnd:$("#endTime").val(),
 						  			flag:0,
 						  			status:$('#selectstate').val(),
-						  			statusTime:$("#startTime").val(),
+						  			statusTime:a,
 							} 
 							self.loadPagination(data)
 							layer.close(index);
@@ -1169,6 +1176,10 @@
 				
 				//查询
 				$('.searchtask').on('click',function(){
+					var a="";
+					if($("#selectstate").val()==1){
+						a=$("#startTime").val()
+					}
 					var data = {
 				  			page:1,
 				  			size:13,
@@ -1179,7 +1190,7 @@
 				  			orderTimeEnd:$("#endTime").val(), 
 				  			status:$("#selectstate").val(),
 				  			flag:0,
-				  			statusTime:$("#startTime").val(),
+				  			statusTime:a,
 				  	}
 		            self.loadPagination(data);
 				});
@@ -1233,6 +1244,10 @@
 							success:function(result){
 								if(0==result.code){
 									layer.msg(result.message, {icon: 1});
+									var a="";
+									if($("#selectstate").val()==1){
+										a=$("#startTime").val()
+									}
 									var _datae={
 											page:1,
 									  		size:13,
@@ -1243,7 +1258,7 @@
 								  			orderTimeEnd:$("#endTime").val(),
 								  			flag:0,
 								  			status:$('#selectstate').val(),
-								  			statusTime:$("#startTime").val(),
+								  			statusTime:a,
 									}
 									self.loadPagination(_datae);
 								}else{

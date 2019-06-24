@@ -92,7 +92,7 @@
 			<table id="layuiShare2"  class="table_th_search" lay-filter="layuiShare"></table>
 </div>
 	
-	
+	<script type="text/html" id="addEditTpl">
 	<form action="" id="layuiadmin-form-admin"
 		style="padding: 20px 30px 0 60px; text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
@@ -165,12 +165,13 @@
 		</div>
 	</form>	
 	
-	
+	</script>
 	
 	
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
 				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增一行</span>
+				<span class="layui-btn layui-btn-sm" lay-event="update">编辑</span>
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
 				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
@@ -195,7 +196,8 @@
 						,table = layui.table //表格
 						,laydate = layui.laydate //日期控件
 						,tablePlug = layui.tablePlug //表格插件
-						,element = layui.element;
+						,element = layui.element
+						,laytpl = layui.laytpl;
 					//全部字段
 					var allField;
 					//select全局变量
@@ -743,6 +745,10 @@
 									  } 
 							      });
 								break;	
+							
+							case 'update' :
+								 addEidt('edit')
+								break;	
 						}
 					});
 
@@ -818,6 +824,72 @@
 								});
 					
 
+					function addEidt(type){
+						var data={custom:{name:''},money:'',contactName:'',expenseDate:'',content:'贷款本金',withholdMoney:'',withholdReason:''};
+						var title="新增数据";
+						var html="";
+						var tpl=addEditTpl.innerHTML;
+						var choosed=layui.table.checkStatus("tableData").data;
+						var id="";
+						if(type=='edit'){
+							title="编辑数据"
+							if(choosed.length>1){
+								layer.msg("无法同时编辑多条信息",{icon:2});
+								return;
+							}
+							data=choosed[0];
+							id=data.id
+						}
+						laytpl(tpl).render(data,function(h){
+							html=h;
+						})
+						layer.open({
+							type:1,
+							title:title,
+							area:['30%','60%'],
+							btn:['确认','取消'],
+							content:html,
+							id: 'LAY_layuipro' ,
+							btnAlign: 'c',
+						    moveType: 1, //拖拽模式，0或者1
+							success : function(layero, index) {
+					        	layero.addClass('layui-form');
+								// 将保存按钮改变成提交按钮
+								layero.find('.layui-layer-btn0').attr({
+									'lay-filter' : 'addRole',
+									'lay-submit' : ''
+								})
+					        },
+							yes:function(){
+								form.on('submit(addRole)', function(data) {
+						        	var	field={
+						        			id:id,
+						        			customerName:data.field.customerName,
+						        			content:data.field.content,
+						        			money:data.field.money,
+						        			customId:self.getIndex(),
+						        			contactName:data.field.contactName,
+						        			expenseDate:data.field.expenseDate,
+						        			type:6
+						        		}
+						        	  mainJs.fAdd(field);
+						        	if(id==""){
+						        	document.getElementById("layuiadmin-form-admin").reset();
+						        	layui.form.render();
+						        	}
+									})
+							}
+						})
+						form.render();
+						 laydate.render({
+								elem: '#entry',
+								type: 'time',
+							});
+						
+					}
+					
+					
+					
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
