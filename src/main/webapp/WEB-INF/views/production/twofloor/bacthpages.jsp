@@ -1169,6 +1169,10 @@
 				
 				//查询
 				$('.searchtask').on('click',function(){
+					var a="";
+					if($("#selectstate").val()==1){
+						a=$("#startTime").val()
+					}
 					var data = {
 				  			page:1,
 				  			size:13,
@@ -1179,7 +1183,7 @@
 				  			orderTimeEnd:$("#endTime").val(), 
 				  			status:$("#selectstate").val(),
 				  			flag:0,
-				  			statusTime:$("#startTime").val(),
+				  			statusTime:a,
 				  	}
 		            self.loadPagination(data);
 				});
