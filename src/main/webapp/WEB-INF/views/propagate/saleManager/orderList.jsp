@@ -80,7 +80,7 @@ td{
 														<option value='0' selected>不反冲</option></select></div>
 					<div class="layui-input-inline">
 						<button class="layui-btn" lay-submit lay-filter="search">搜索</button>
-						<button class="layui-btn" id="uploadDataBtn">导入订单</button></div>
+						<button class="layui-btn" id="uploadDataBtn">导入</button></div>
 				</div>
 			</div>
 		<table class="laui-table" id="onlineOrder" lay-filter="onlineOrder" ></table>
@@ -388,6 +388,8 @@ layui.config({
 			loading:true,
 			size:'sm',
 			page:true,
+			limits:[20,30,50,100],
+			limit:20,
 			request:{
 				pageName: 'page' ,		
 				limitName: 'size' 		
