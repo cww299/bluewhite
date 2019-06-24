@@ -109,15 +109,8 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	@ResponseBody
 	public CommonResponse allPayB(HttpServletRequest request,PayB payB,PageParameter page) {
 		CommonResponse cr = new CommonResponse();
-		long startTime = System.currentTimeMillis(); // 获取开始时间  
 		PageResult<PayB> list = payBService.findPages(payB, page);
-        long endTime = System.currentTimeMillis(); // 获取结束时间  
-        System.out.println("程序运行时间： " + (endTime - startTime) + "ms");  
-        
-        long startTime1 = System.currentTimeMillis(); // 获取开始时间  
 		cr.setData(clearCascadeJSON.format(list).toJSON());
-		long endTime1 = System.currentTimeMillis(); // 获取结束时间  	
-		 System.out.println("程序运行时间1： " + (endTime1 - startTime1) + "ms");  
 		cr.setMessage("查询成功");
 		return cr;
 	}
