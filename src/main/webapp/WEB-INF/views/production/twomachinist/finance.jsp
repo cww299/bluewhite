@@ -393,7 +393,6 @@
 		      		  success: function (result) {
 		      			 $("#total").text(result.data.sumPayNumber)
 		      			 $("#total2").text(result.data.sumPerformancePayNumber)
-					   	layer.close(index);
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
