@@ -152,11 +152,28 @@
 		  	this.setCount = function(count){
 		  		_count=count;
 		  	}
+		  	function p(s) {
+				return s < 10 ? '0' + s: s;
+				}
+		  	var myDate = new Date(new Date().getTime() - 86400000);
+			//获取当前年
+			var year=myDate.getFullYear();
+			//获取当前月
+			var month=myDate.getMonth()+1;
+			//获取当前日
+			var date=myDate.getDate(); 
+			var day = new Date(year,month,0);  
+			var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
+			var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
+			$('#startTime').val(firstdate);
+			$('#endTime').val(lastdate);
+			
 			 var data={
 						page:1,
 				  		size:13,	
 				  		type:1,
-						
+				  		orderTimeBegin:$("#startTime").val(),
+				  		orderTimeEnd:$("#endTime").val(),
 				} 
 			this.init = function(){
 				

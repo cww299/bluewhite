@@ -279,14 +279,8 @@
 				
 				//注册绑定事件
 				self.events();
-				self.loadPaginationth(data);
 			}
-				$("#profiles").on('click',function(){
-					self.loadPagination(data);
-				})
-				$("#profiles2").on('click',function(){
-					self.loadPaginationtw(data);
-				})
+				
 			//加载分页
 			  this.loadPagination = function(data){
 			    var index;
