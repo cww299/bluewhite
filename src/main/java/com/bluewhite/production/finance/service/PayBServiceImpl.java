@@ -39,6 +39,7 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 	
 	@Override
 	public PageResult<PayB> findPages(PayB param, PageParameter page) {
+			  page.setSort(null);
 			  Page<PayB> pages = dao.findAll((root,query,cb) -> {
 		        	List<Predicate> predicate = new ArrayList<>();
 		        	//按id过滤

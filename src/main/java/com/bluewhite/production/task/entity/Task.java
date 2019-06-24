@@ -20,7 +20,8 @@ import com.bluewhite.production.procedure.entity.Procedure;
  *
  */
 @Entity
-@Table(name = "pro_task" ,indexes = {	@Index(columnList = "allot_time")})
+@Table(name = "pro_task" ,indexes = {	@Index(name="task_index_1",columnList = "type"),
+										@Index(name="task_index_1",columnList = "allot_time")})
 public class Task  extends BaseEntity<Long>{
 	
 	/**
