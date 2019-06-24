@@ -859,6 +859,8 @@
 					self.loadworking(datae);
 				});
 				$('.searchtask').on('click',function(){
+					$("#total").text("计算中...")
+	      			 $("#total2").text("计算中...")
 					var data = {
 				  			page:1,
 				  			size:13,
