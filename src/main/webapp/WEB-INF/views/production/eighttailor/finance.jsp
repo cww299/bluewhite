@@ -357,14 +357,7 @@
 				
 				//注册绑定事件
 				self.events();
-				self.loadPaginationth(data);
 			}
-			$("#profiles").on('click',function(){
-					self.loadPagination(data);
-			})
-			$("#profiles2").on('click',function(){
-				self.loadPaginationtw(data);
-			})
 			//加载分页
 			  this.loadPagination = function(data){
 			    var index;
@@ -442,7 +435,6 @@
 		      		  success: function (result) {
 		      			 $("#total").text(result.data.sumPayNumber)
 		      			 $("#total2").text(result.data.sumPerformancePayNumber)
-					   	layer.close(index);
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);

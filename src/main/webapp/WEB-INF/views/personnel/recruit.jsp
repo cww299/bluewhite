@@ -90,7 +90,83 @@
 				</div>
 			</div>
 			<table id="layuiShare2"  class="table_th_search" lay-filter="layuiShare"></table>
+</div>
+	
+	
+	<form action="" id="layuiadmin-form-admin"
+		style="padding: 20px 30px 0 60px; text-align:">
+		<div class="layui-form" lay-filter="layuiadmin-form-admin">
+			<input type="text" name="id" id="usID" style="display:none;">
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">姓名</label>
+				<div class="layui-input-inline">
+						<input type="text" value="{{d.name }}" name="name" id="userId"
+						 lay-verify="required"  placeholder="请输入姓名"
+						class="layui-input laydate-icon" data-provide="typeahead">
+				</div>
 			</div>
+			
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">电话</label>
+				<div class="layui-input-inline">
+					<input type="text" value="{{d.phone }}" name="content" id="content"
+						lay-verify="required" placeholder="请输入内容"
+						class="layui-input laydate-icon">
+				</div>
+			</div>
+			
+			
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">现居住地址</label>
+				<div class="layui-input-inline">
+					<input type="text" value="{{d.livingAddress }}" name="money" id="money"
+						lay-verify="required" placeholder="请输入现居住地址"
+						class="layui-input laydate-icon">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">面试日期</label>
+				<div class="layui-input-inline">
+					<input type="text" value="{{d.entry }}" name="entry"
+						id="entry" lay-verify="required"
+						 class="layui-input">
+				</div>
+			</div>
+		  
+		   <div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">备注</label>
+				<div class="layui-input-inline">
+					<input type="text" value="{{d.remarks }}" name="remarks"
+						id="remarks" 
+						 class="layui-input">
+				</div>
+			</div>
+			
+			 <div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">一面备注</label>
+				<div class="layui-input-inline">
+					<input type="text" value="{{d.remarksOne }}" name="remarksOne"
+						id="remarksOne" 
+						 class="layui-input">
+				</div>
+			</div>
+			
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">二面备注</label>
+				<div class="layui-input-inline">
+					<input type="text" value="{{d.remarksTwo }}" name="remarksTwo"
+						id="remarksTwo" 
+						 class="layui-input">
+				</div>
+			</div>
+		</div>
+	</form>	
+	
+	
+	
 	
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
