@@ -25,6 +25,8 @@
 	<div class="layui-card-body">
 		<table class="layui-form">
 			<tr>
+				<td><input type="text" name="buyerName" class="layui-input" placeholder="客户名称"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td><select name="grade" lay-search>
 						<option value="">客户等级</option>
 						<option value="0">一级</option>
@@ -209,7 +211,7 @@ layui.config({
 		
 		form.on('submit(search)',function(obj){
 			table.reload('customTable',{
-				where:{grade:obj.field.grade,type:obj.field.type},
+				where:obj.field,
 				page : { curr : 1}
 			});
 		})
