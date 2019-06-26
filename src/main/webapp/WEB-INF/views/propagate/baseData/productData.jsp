@@ -160,8 +160,10 @@ layui.config({
 			return function(d){
 				var inv=d.inventorys;
 				for(var j=0;j<inv.length;j++){
-					if(inv[j].warehouse.id==warehouseId){
-						layui.table.cache.productTable[d.LAY_TABLE_INDEX]['id'+warehouseId] = inv[j].number;	//更新数据表格的内容，用于导出数据时显示
+					if(inv[j].warehouse.id==warehouseId){   //LAY_INDEX 为表格缓冲记录数，该数会加上翻页之前的数
+						var length = layui.table.cache.productTable.length;					//当前每页显示的数量
+						var index = (d.LAY_INDEX-1)%length;									//当前条目在本页数据的位置
+						layui.table.cache.productTable[index]['id'+warehouseId] = inv[j].number;	//更新数据表格的内容，用于导出数据时显示
 						return '<span style="color:blue;">'+inv[j].number+'</span>';
 					}
 				}
