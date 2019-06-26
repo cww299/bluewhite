@@ -117,7 +117,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	
 	/** 
 	 * 查询b工资流水同时汇总金额
-	 * 
+	 *      
 	 */
 	@RequestMapping(value = "/finance/allPayBSum", method = RequestMethod.GET)
 	@ResponseBody

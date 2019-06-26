@@ -56,13 +56,13 @@ public interface PayBDao extends BaseRepository<PayB, Long> {
 	 * @return
 	 */
 	@Query(nativeQuery = true, value = "SELECT pay_number,performance_pay_number FROM pro_payb WHERE type = ?1 AND allot_time BETWEEN ?2 AND ?3 "
-			+ "and if(?4 !='',user_name = ?4,1=1) and if(?5 !='',bacth = ?5,1=1) and if(?6 !='',product_name like ?6,1=1)")
-	List<Object> findPayNumber(Integer type, Date orderTimeBegin, Date orderTimeEnd,String userName,String bacth,String productName);
-	
-	
-	
+			+ "and if(?4 !='',user_name like CONCAT('%',?4,'%'),1=1) and if(?5 !='',bacth = ?5,1=1) and if(?6 !='',product_name like CONCAT('%',?6,'%'),1=1)")
+	List<Object> findPayNumber(Integer type, Date orderTimeBegin, Date orderTimeEnd, String userName, String bacth,
+			String productName);
+
 	/**
 	 * 根据时间查询
+	 * 
 	 * @param orderTimeBegin
 	 * @param orderTimeEnd
 	 * @return

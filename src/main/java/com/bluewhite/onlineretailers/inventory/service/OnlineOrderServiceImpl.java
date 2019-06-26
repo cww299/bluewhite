@@ -108,7 +108,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				predicate.add(cb.like(root.get("name").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getOnlineCustomerName()) + "%"));
 			}
-			
+
 			// 交易状态过滤
 			if (!StringUtils.isEmpty(param.getStatus())) {
 				List<String> statusList = new ArrayList<>();
@@ -118,7 +118,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				}
 				predicate.add(cb.and(root.get("status").as(String.class).in(statusList)));
 			}
-			
+
 			// 按物流方式
 			if (!StringUtils.isEmpty(param.getShippingType())) {
 				predicate.add(cb.equal(root.get("shippingType").as(String.class), param.getShippingType()));
@@ -126,7 +126,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 
 			// 按订单编号过滤
 			if (!StringUtils.isEmpty(param.getDocumentNumber())) {
-				predicate.add(cb.like(root.get("documentNumber").as(String.class), "%" + param.getDocumentNumber()+ "%"));
+				predicate.add(
+						cb.like(root.get("documentNumber").as(String.class), "%" + param.getDocumentNumber() + "%"));
 			}
 
 			// 按订单时间过滤
@@ -138,12 +139,13 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			if (param.getFlag() != null) {
 				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
 			}
-			
+
 			// 按商品名称过滤
 			if (!StringUtils.isEmpty(param.getCommodityName())) {
 				Join<OnlineOrder, OnlineOrderChild> join = root
 						.join(root.getModel().getList("onlineOrderChilds", OnlineOrderChild.class), JoinType.LEFT);
-				predicate.add(cb.like(join.get("commodity").get("skuCode").as(String.class),"%" + StringUtil.specialStrKeyword(param.getCommodityName()) + "%") );
+				predicate.add(cb.like(join.get("commodity").get("skuCode").as(String.class),
+						"%" + StringUtil.specialStrKeyword(param.getCommodityName()) + "%"));
 			}
 
 			Predicate[] pre = new Predicate[predicate.size()];
@@ -154,9 +156,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		PageResult<OnlineOrder> result = new PageResult<>(pages, page);
 		return result;
 	}
-	
-	
-	
+
 	@Override
 	public PageResult<OnlineOrderChild> findPage(OnlineOrderChild param, PageParameter page) {
 		Page<OnlineOrderChild> pages = onlineOrderChildDao.findAll((root, query, cb) -> {
@@ -171,7 +171,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			}
 			// 按客服id过滤
 			if (param.getOnlineCustomerId() != null) {
-				predicate.add(cb.equal(root.get("onlineOrder").get("onlineCustomerId").as(Long.class), param.getOnlineCustomerId()));
+				predicate.add(cb.equal(root.get("onlineOrder").get("onlineCustomerId").as(Long.class),
+						param.getOnlineCustomerId()));
 			}
 			// 交易状态过滤
 			if (!StringUtils.isEmpty(param.getStatus())) {
@@ -196,11 +197,6 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		PageResult<OnlineOrderChild> result = new PageResult<>(pages, page);
 		return result;
 	}
-	
-	
-	
-	
-	
 
 	@Override
 	@Transactional
@@ -243,7 +239,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	@Override
 	@Transactional
 	public OnlineOrder addOnlineOrder(OnlineOrder onlineOrder) {
-		if(onlineOrder.getOnlineCustomerId()==null){
+		if (onlineOrder.getOnlineCustomerId() == null) {
 			throw new ServiceException("没有客户，无法新增订单");
 		}
 		// 生成销售单编号
@@ -256,7 +252,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				OnlineOrderChild onlineOrderChild = new OnlineOrderChild();
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				onlineOrderChild.setCommodityId(jsonObject.getLong("commodityId"));
-				if(onlineOrderChild.getCommodityId()==null){
+				if (onlineOrderChild.getCommodityId() == null) {
 					throw new ServiceException("没有商品，无法新增订单");
 				}
 				onlineOrderChild.setNumber(jsonObject.getInteger("number"));
@@ -274,7 +270,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		}
 		// 总数量
 		onlineOrder.setNum(onlineOrder.getOnlineOrderChilds().stream().mapToInt(OnlineOrderChild::getNumber).sum());
-		//总剩余数量
+		// 总剩余数量
 		onlineOrder.setResidueNumber(onlineOrder.getNum());
 		onlineOrder.setFlag(0);
 		return dao.save(onlineOrder);
@@ -288,7 +284,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		if (!StringUtils.isEmpty(delivery)) {
 			// 新建父出库单
 			Procurement procurement = new Procurement();
-			//新建主发货单
+			// 新建主发货单
 			Delivery deli = new Delivery();
 			procurement.setUserId(cu.getId());
 			// 出库单编号
@@ -314,13 +310,12 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				procurement.setRemark("销售出库：" + onlineOrder.getDocumentNumber());
 				deli.setOnlineOrderId(onlineOrder.getId());
 				deli.setTrackingNumber(trackingNumber);
-				//发货单
+				// 发货单
 				DeliveryChild deliveryChild = new DeliveryChild();
 				deliveryChild.setCommodityId(onlineOrderChild.getCommodityId());
 				deliveryChild.setNumber(number);
 				deli.getDeliveryChilds().add(deliveryChild);
-				
-				
+
 				// 新建子出库单，一个子订单拥有一个子出库单
 				ProcurementChild procurementChild = new ProcurementChild();
 				procurementChild.setCommodityId(onlineOrderChild.getCommodityId());
@@ -336,7 +331,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				List<ProcurementChild> procurementChildList = procurementChildDao
 						.findByCommodityIdAndStatusAndResidueNumberGreaterThan(onlineOrderChild.getCommodityId(), 0, 0);
 				procurementChildList = procurementChildList.stream()
-						.filter(ProcurementChild -> ProcurementChild.getProcurement().getType() == 2 && ProcurementChild.getProcurement().getFlag()==0)
+						.filter(ProcurementChild -> ProcurementChild.getProcurement().getType() == 2
+								&& ProcurementChild.getProcurement().getFlag() == 0)
 						.sorted(Comparator.comparing(ProcurementChild::getCreatedAt)).collect(Collectors.toList());
 				// 出库单剩余数量
 				int residueNumber = number;
@@ -362,18 +358,19 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				// 将出库单ids存入入库单，便于反冲
 				procurementChild.setPutWarehouseIds(ids);
 				// 当订单的状态是买家已付款时或部分发货
-				if (onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_4) || onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_3)) {
-					
+				if (onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_4)
+						|| onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_3)) {
+
 					// 获取商品
 					Commodity commodity = onlineOrderChild.getCommodity();
 					// 获取库存
 					Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(commodity.getId(), warehouseId);
 					if (inventory != null) {
-						//子订单部分发货
-						if(onlineOrderChild.getResidueNumber()!=0 && onlineOrderChild.getResidueNumber() > number){
+						// 子订单部分发货
+						if (onlineOrderChild.getResidueNumber() != 0 && onlineOrderChild.getResidueNumber() > number) {
 							onlineOrderChild.setStatus(Constants.ONLINEORDER_3);
-							onlineOrderChild.setResidueNumber(onlineOrderChild.getResidueNumber()-number);
-						}else{
+							onlineOrderChild.setResidueNumber(onlineOrderChild.getResidueNumber() - number);
+						} else {
 							onlineOrderChild.setResidueNumber(0);
 							onlineOrderChild.setStatus(Constants.ONLINEORDER_5);
 						}
@@ -389,7 +386,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 
 				// 更新父订单剩余数量为0更新为卖家已发货，否则是部分发货
 				List<OnlineOrderChild> onlineOrderChildList = onlineOrder.getOnlineOrderChilds();
-				int onlineOrderChildListNumber = onlineOrderChildList.stream().mapToInt(p -> p.getResidueNumber()).sum();
+				int onlineOrderChildListNumber = onlineOrderChildList.stream().mapToInt(p -> p.getResidueNumber())
+						.sum();
 				onlineOrder.setResidueNumber(onlineOrderChildListNumber);
 				if (onlineOrderChildListNumber == 0) {
 					onlineOrder.setStatus(Constants.ONLINEORDER_5);
@@ -397,7 +395,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 					onlineOrder.setStatus(Constants.ONLINEORDER_3);
 				}
 				count++;
-				
+
 			}
 			// 更新总发货单的数量
 			int procurementNumber = procurement.getProcurementChilds().stream().mapToInt(p -> p.getNumber()).sum();
@@ -412,7 +410,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 
 	@Override
 	@Transactional
-	public int excelOnlineOrder(ExcelListener excelListener, Long onlineCustomerId, Long userId,Long warehouseId) {
+	public int excelOnlineOrder(ExcelListener excelListener, Long onlineCustomerId, Long userId, Long warehouseId) {
 		// 获取导入的订单
 		List<Object> excelListenerList = excelListener.getData();
 		List<OnlineOrder> onlineOrderList = new ArrayList<>();
@@ -420,13 +418,13 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		List<Delivery> deliveryList = new ArrayList<>();
 		OnlineOrder onlineOrder = null;
 		Procurement procurement = null;
-		Delivery deli =null;
+		Delivery deli = null;
 		for (int i = 0; i < excelListenerList.size(); i++) {
 			OnlineOrderPoi cPoi = (OnlineOrderPoi) excelListenerList.get(i);
 			if (cPoi.getDocumentNumber() != null) {
 				onlineOrder = new OnlineOrder();
 				procurement = new Procurement();
-				//新建主发货单
+				// 新建主发货单
 				deli = new Delivery();
 				procurement.setType(3);
 				onlineOrder.setDocumentNumber(cPoi.getDocumentNumber());
@@ -477,10 +475,10 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			onlineOrderChild.setActualSum(onlineOrderChild.getSumPrice());
 			onlineOrderChild.setSystemPreferential(0.0);
 			onlineOrderChild.setSellerReadjustPrices(0.0);
-			//发货子单
+			// 发货子单
 			DeliveryChild deliveryChild = new DeliveryChild();
 			deliveryChild.setNumber(cPoi.getNumber());
-			
+
 			if (cPoi.getCommodityName() != null) {
 				Commodity commodity = commodityDao.findByName(cPoi.getCommodityName());
 				if (commodity != null) {
@@ -511,15 +509,17 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			}
 			onlineOrderChilds.add(onlineOrderChild);
 			deliverys.add(deliveryChild);
-			 
+
 			// 当下一条数据没有订单编号时,自动存储上面所有的父子订单
 			OnlineOrderPoi onlineOrderPoiNext = null;
 			try {
-				onlineOrderPoiNext =  (OnlineOrderPoi) excelListenerList.get(i + 1);
+				onlineOrderPoiNext = (OnlineOrderPoi) excelListenerList.get(i + 1);
 			} catch (Exception e) {
 			}
-			if ( i == excelListenerList.size()-1 || onlineOrderPoiNext == null || onlineOrderPoiNext.getDocumentNumber() != null) {
-				onlineOrder.setNum(onlineOrder.getOnlineOrderChilds().stream().mapToInt(OnlineOrderChild::getNumber).sum());
+			if (i == excelListenerList.size() - 1 || onlineOrderPoiNext == null
+					|| onlineOrderPoiNext.getDocumentNumber() != null) {
+				onlineOrder.setNum(
+						onlineOrder.getOnlineOrderChilds().stream().mapToInt(OnlineOrderChild::getNumber).sum());
 				deli.setSumNumber(deli.getDeliveryChilds().stream().mapToInt(DeliveryChild::getNumber).sum());
 				onlineOrderList.add(onlineOrder);
 				procurementList.add(procurement);
@@ -558,8 +558,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 
 			Map<String, Object> mapSale = new HashMap<String, Object>();
 			// 获取所有订单
-			List<OnlineOrder> onlineOrderList = onlineOrderDao.findByFlagAndCreatedAtBetween(0,
-					beginTimes, endTimes);
+			List<OnlineOrder> onlineOrderList = onlineOrderDao.findByFlagAndCreatedAtBetween(0, beginTimes, endTimes);
 			// 实付金额
 			List<Double> listPayment = new ArrayList<>();
 			// 实际运费
@@ -568,8 +567,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			Double sumpostFee = 0.0;
 			if (onlineOrderList.size() > 0) {
 				onlineOrderList.stream().forEach(c -> {
-					listPayment.add(c.getPayment()==null ? 0 : c.getPayment());
-					listPostFee.add(c.getPostFee()==null ? 0 : c.getPostFee());
+					listPayment.add(c.getPayment() == null ? 0 : c.getPayment());
+					listPostFee.add(c.getPostFee() == null ? 0 : c.getPostFee());
 				});
 				sumPayment = NumUtils.sum(listPayment);
 				sumpostFee = NumUtils.sum(listPostFee);
@@ -596,7 +595,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				Double sumCost = 0.0;
 				if (onlineOrderList.size() > 0) {
 					onlineOrderChildList.stream().forEach(c -> {
-						listPayment.add(c.getCommodity().getPropagandaCost()==null ? 0 : c.getCommodity().getPropagandaCost());
+						listPayment.add(c.getCommodity().getPropagandaCost() == null ? 0
+								: c.getCommodity().getPropagandaCost());
 					});
 					sumCost = NumUtils.sum(listPayment);
 				}
@@ -633,14 +633,17 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	public List<Map<String, Object>> reportSalesGoods(OnlineOrder onlineOrder) {
 		List<Map<String, Object>> mapList = new ArrayList<>();
 		// 获取所有的已发货的子订单订单
-		List<OnlineOrderChild> onlineOrderChildList = onlineOrderChildDao.findByCreatedAtBetween(
-				 onlineOrder.getOrderTimeBegin(), onlineOrder.getOrderTimeEnd());
+		List<OnlineOrderChild> onlineOrderChildList = onlineOrderChildDao
+				.findByCreatedAtBetween(onlineOrder.getOrderTimeBegin(), onlineOrder.getOrderTimeEnd());
 		// 根据商品id分组
-		Map<Long, List<OnlineOrderChild>> mapOnlineOrderChildList = onlineOrderChildList.stream().filter(OnlineOrderChild->OnlineOrderChild.getOnlineOrder().getFlag()!=1)
-				.collect(Collectors.groupingBy(OnlineOrderChild::getCommodityId, Collectors.toList()));
+		Map<Long, List<OnlineOrderChild>> mapOnlineOrderChildList = onlineOrderChildList.stream()
+				.filter(OnlineOrderChild -> OnlineOrderChild.getOnlineOrder().getFlag() != 1
+						&& onlineOrder.getCommodityName() != null ? OnlineOrderChild.getCommodity().getSkuCode().contains(onlineOrder.getCommodityName())
+								: OnlineOrderChild.getCommodity() != null
+				).collect(Collectors.groupingBy(OnlineOrderChild::getCommodityId, Collectors.toList()));
 		for (Long ps : mapOnlineOrderChildList.keySet()) {
 			List<OnlineOrderChild> psList = mapOnlineOrderChildList.get(ps);
-			if(psList.size()==0){
+			if (psList.size() == 0) {
 				continue;
 			}
 			Map<String, Object> mapSale = new HashMap<String, Object>();
@@ -674,28 +677,27 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		if (onlineOrder.getReport() == 3) {
 			// 根据员工id分组
 			mapOnlineOrderList = onlineOrderList.stream()
-					.filter(OnlineOrder ->   onlineOrder.getUserId() != null ?
-							 OnlineOrder.getUserId().equals(onlineOrder.getUserId()) 
-							 : OnlineOrder.getUserId() != null)
+					.filter(OnlineOrder -> onlineOrder.getUserId() != null
+							? OnlineOrder.getUserId().equals(onlineOrder.getUserId()) : OnlineOrder.getUserId() != null)
 					.collect(Collectors.groupingBy(OnlineOrder::getUserId, Collectors.toList()));
 		}
 		if (onlineOrder.getReport() == 4) {
 			// 根据客户id分组
 			mapOnlineOrderList = onlineOrderList.stream()
-					.filter(OnlineOrder ->  onlineOrder.getOnlineCustomerId() !=null ?
-						  OnlineOrder.getOnlineCustomerId().equals(onlineOrder.getOnlineCustomerId())
-						 :OnlineOrder.getOnlineCustomerId() != null)
+					.filter(OnlineOrder -> onlineOrder.getOnlineCustomerId() != null
+							? OnlineOrder.getOnlineCustomerId().equals(onlineOrder.getOnlineCustomerId())
+							: OnlineOrder.getOnlineCustomerId() != null)
 					.collect(Collectors.groupingBy(OnlineOrder::getOnlineCustomerId, Collectors.toList()));
 		}
 		for (Long ps : mapOnlineOrderList.keySet()) {
 			List<OnlineOrder> psList = mapOnlineOrderList.get(ps);
-			if(psList.size()==0){
+			if (psList.size() == 0) {
 				continue;
 			}
 			Map<String, Object> mapSale = new HashMap<String, Object>();
 			// id
-			mapSale.put("userId", onlineOrder.getReport() == 3 ? psList.get(0).getUserId()
-					: psList.get(0).getOnlineCustomerId());
+			mapSale.put("userId",
+					onlineOrder.getReport() == 3 ? psList.get(0).getUserId() : psList.get(0).getOnlineCustomerId());
 			// 姓名
 			mapSale.put("user", onlineOrder.getReport() == 3 ? psList.get(0).getUser().getUserName()
 					: psList.get(0).getOnlineCustomer().getName());
@@ -712,8 +714,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			Double sumPostFee = 0.0;
 			if (psList.size() > 0) {
 				psList.stream().forEach(c -> {
-					listSumPayment.add(c.getPayment()==null ? 0 : c.getPayment());
-					listPostFee.add(c.getPostFee()==null ? 0 : c.getPostFee());
+					listSumPayment.add(c.getPayment() == null ? 0 : c.getPayment());
+					listPostFee.add(c.getPostFee() == null ? 0 : c.getPostFee());
 				});
 				sumPayment = NumUtils.sum(listSumPayment);
 				sumPostFee = NumUtils.sum(listPostFee);
@@ -729,12 +731,10 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		return mapList;
 	}
 
-
-
 	@Override
 	public double getOnlineOrderPrice(Long commodityId) {
 		Double price = onlineOrderChildDao.getOnlineOrderPrice(commodityId);
-		return  price == null ? 0 : price;
+		return price == null ? 0 : price;
 	}
 
 }
