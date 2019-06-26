@@ -71,7 +71,7 @@ layui.config({
 				where:{
 					orderTimeBegin : t[0],
 					orderTimeEnd : t[1],
-					skuCode : $('#skuCode') .val()
+					commodityName : $('#skuCode') .val()
 				}
 			})
 		})
