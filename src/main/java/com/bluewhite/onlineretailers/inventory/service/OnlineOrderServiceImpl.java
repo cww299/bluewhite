@@ -593,12 +593,14 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				// 广宣成本
 				List<Double> listSumCost = new ArrayList<>();
 				Double sumCost = 0.0;
-				if (onlineOrderList.size() > 0) {
+				// 实付金额
+				List<Double> listCost = new ArrayList<>();
+				if (onlineOrderChildList.size() > 0) {
 					onlineOrderChildList.stream().forEach(c -> {
-						listPayment.add(c.getCommodity().getPropagandaCost() == null ? 0
-								: c.getCommodity().getPropagandaCost());
+						listCost.add(NumUtils.mul(c.getCommodity().getPropagandaCost() == null ? 0
+								: c.getCommodity().getPropagandaCost(), c.getNumber()));
 					});
-					sumCost = NumUtils.sum(listPayment);
+					sumCost = NumUtils.sum(listCost);
 				}
 				mapSale.put("sumCost", sumCost);
 				// 利润
@@ -638,8 +640,8 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		// 根据商品id分组
 		Map<Long, List<OnlineOrderChild>> mapOnlineOrderChildList = onlineOrderChildList.stream()
 				.filter(OnlineOrderChild -> OnlineOrderChild.getOnlineOrder().getFlag() != 1
-						&& onlineOrder.getCommodityName() != null ? OnlineOrderChild.getCommodity().getSkuCode().contains(onlineOrder.getCommodityName())
-								: OnlineOrderChild.getCommodity() != null
+						&& (onlineOrder.getCommodityName() != null ? OnlineOrderChild.getCommodity().getSkuCode().contains(onlineOrder.getCommodityName())
+								: OnlineOrderChild.getCommodity() != null)
 				).collect(Collectors.groupingBy(OnlineOrderChild::getCommodityId, Collectors.toList()));
 		for (Long ps : mapOnlineOrderChildList.keySet()) {
 			List<OnlineOrderChild> psList = mapOnlineOrderChildList.get(ps);

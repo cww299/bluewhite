@@ -87,7 +87,71 @@ public class Temporarily extends BaseEntity<Long>{
 	private Boolean positive = false;
 	
 	
+	/**
+	 * 查看方式（日期）（1=按天，2=按月）
+	 */
+	@Transient
+	private Integer viewTypeDate;
 	
+	/**
+	 * 查看方式（员工）（1=按个人，2=按分组）
+	 */
+	@Transient
+	private Integer viewTypeUser;
+	
+	/**
+	 * 时间查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 时间查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
+	
+	
+	
+
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
+
+
+	public Integer getViewTypeDate() {
+		return viewTypeDate;
+	}
+
+
+	public void setViewTypeDate(Integer viewTypeDate) {
+		this.viewTypeDate = viewTypeDate;
+	}
+
+
+	public Integer getViewTypeUser() {
+		return viewTypeUser;
+	}
+
+
+	public void setViewTypeUser(Integer viewTypeUser) {
+		this.viewTypeUser = viewTypeUser;
+	}
+
 
 	public Boolean getPositive() {
 		return positive;

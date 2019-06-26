@@ -1,5 +1,6 @@
 package com.bluewhite.common.utils.ZkemUtils;
 
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -223,13 +224,12 @@ public class ZkemSDKUtils {
 			// 只支持2位、3位、4位长度的中文名字。
 			String name = sName.getStringRef();
 			int index = name.indexOf("\0");
-			String newStr = "";
 			if (index > -1) {
 				name = name.substring(0, index);
 			}
-			if (sName.getStringRef().length() > 4) {
-				name = sName.getStringRef().substring(0, 4);
-			}
+//			if (sName.getStringRef().length() > 4) {
+//				name = sName.getStringRef().substring(0, 4);
+//			}
 			// 如果没有名字，跳过。
 			if (name.trim().length() == 0)
 				continue;
@@ -294,9 +294,9 @@ public class ZkemSDKUtils {
 			if (index > -1) {
 				name = name.substring(0, index);
 			}
-			if (sName.getStringRef().length() > 4) {
-				name = sName.getStringRef().substring(0, 4);
-			}
+//			if (sName.getStringRef().length() > 4) {
+//				name = sName.getStringRef().substring(0, 4);
+//			}
 			Map<String, Object> m = new HashMap<String, Object>();
 			m.put("number", number);
 			m.put("name", name.trim());
