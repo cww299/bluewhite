@@ -421,9 +421,11 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			procurementChildList.addAll(pt.getProcurementChilds());
 		});
 		// 根据商品id分组
-		Map<Long, List<ProcurementChild>> mapProcurementChildList = procurementChildList.stream().filter(ProcurementChild-> procurement.getCommodityName() != null ? ProcurementChild.getCommodity().getSkuCode().contains(procurement.getCommodityName())
-						: ProcurementChild.getCommodity() != null
-		).collect(Collectors.groupingBy(ProcurementChild::getCommodityId, Collectors.toList()));
+		Map<Long, List<ProcurementChild>> mapProcurementChildList = procurementChildList.stream()
+				.filter(ProcurementChild -> (procurement.getCommodityName() != null
+						? ProcurementChild.getCommodity().getSkuCode().contains(procurement.getCommodityName())
+						: ProcurementChild.getCommodity() != null))
+				.collect(Collectors.groupingBy(ProcurementChild::getCommodityId, Collectors.toList()));
 		for (Long ps : mapProcurementChildList.keySet()) {
 			List<ProcurementChild> psList = mapProcurementChildList.get(ps);
 			Map<String, Object> mapSale = new HashMap<String, Object>();

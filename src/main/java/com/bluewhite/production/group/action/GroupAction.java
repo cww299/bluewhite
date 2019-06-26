@@ -353,7 +353,7 @@ public class GroupAction {
 	@RequestMapping(value = "/production/getTemporarily", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse getTemporarily(HttpServletRequest request,Integer type,Date temporarilyDate) {
-		CommonResponse cr = new CommonResponse();
+		CommonResponse cr = new CommonResponse();  
 		List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndTemporarilyDate(type,temporarilyDate);
 			for(Temporarily tp : temporarilyList){
 				if(tp.getGroupId()!=null){
@@ -373,19 +373,18 @@ public class GroupAction {
 	}
 	
 	/**
-	 * 归还借调人员
+	 * 打特急人员绩效汇总
 	 * 
-	 * (1=一楼质检，2=一楼包装)
 	 * @param request 请求
 	 * @return cr
 	 */
-	@RequestMapping(value = "/production/deleteTemporarily", method = RequestMethod.GET)
+	@RequestMapping(value = "/production/sumTemporarily", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteTemporarily(HttpServletRequest request,String[] ids) {
+	public CommonResponse sumTemporarily(Temporarily temporarily) {
 		CommonResponse cr = new CommonResponse();
-		for (String id : ids) {
-			temporarilyDao.delete(Long.parseLong(id));
-		}
+		groupService.sumTemporarily(temporarily);
+		
+		
 		cr.setMessage("删除成功");
 		return cr;
 	}
