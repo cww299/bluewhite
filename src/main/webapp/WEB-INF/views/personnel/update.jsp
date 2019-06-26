@@ -40,7 +40,7 @@
 				<table>
 					<tr>
 						<td>人员:</td>
-						<td><select id="userId" class="form-control search-query name"  lay-search="true" name="userId"><option value="">请选择</option></select></td>
+						<td><select id="userId" class="form-control search-query name"  lay-search="true" name="userId"></select></td>
 						<td>&nbsp;&nbsp;</td>
 						<td>部门:</td>
 						<td><select id="orgNameId" class="form-control search-query name" lay-search="true" name="orgNameId"><option value="">请选择</option></select></td>
@@ -99,7 +99,7 @@
 							laydate.render({
 								elem : '#startTime',
 								type : 'month',
-								format:'yyyy-MM-01 HH:mm:ss',
+								//format:'yyyy-MM-01 HH:mm:ss',
 							});
 							var htmls = '<option value="">请选择</option>';
 							var index = layer.load(1, {
@@ -163,9 +163,15 @@
 										limit:15,
 									};
 							form.on('submit(LAY-role-searche)', function(data) {
+								var field=data.field
+								if(!field.userId && !field.orgNameId){			//输入判断，部门或人员必选其一
+									layer.msg('请选择部门获取相关人员',{icon:2})
+									return;
+								}
 								onlyField={
+										userId : data.field.userId,
 										orgNameId:data.field.orgNameId,
-										orderTimeBegin:data.field.orderTimeBegin,
+										orderTimeBegin:data.field.orderTimeBegin+"-01 00:00:00",
 										page:1,
 										limit:15,
 								}

@@ -105,7 +105,7 @@
 							laydate.render({
 								elem : '#startTime',
 								type : 'month',
-								format:'yyyy-MM-01 HH:mm:ss'
+								//format:'yyyy-MM-01 HH:mm:ss'
 							});
 							var htmls = '<option value="">请选择</option>';
 							var index = layer.load(1, {
@@ -161,29 +161,25 @@
 									});
 							
 							form.on('submit(LAY-role-search)', function(data) {
-								if($("#firstNames").val()==""){
-									if($("#selectOrgNameId").val()==""){
-										return layer.msg("请输入人员 或者 部门", {icon: 2});
-									}
-								}
 								var field=data.field
+								if(!field.userId && !field.orgNameId){			//输入判断，部门或人员必选其一
+									layer.msg('请选择部门获取相关人员',{icon:2})
+									return;
+								}
+								field.orderTimeBegin+="-01 00:00:00";
 								var postUrl='${ctx}/personnel/intAttendanceTime'
 								even(postUrl,field)
 								
 							})
 							
 							form.on('submit(LAY-role-searche)', function(data) {
-								if($("#firstNames").val()==""){
-									if($("#selectOrgNameId").val()==""){
-										return layer.msg("请输入人员 或者 部门", {icon: 2});
-									}
+								var field=data.field
+								if(!field.userId && !field.orgNameId){			//输入判断，部门或人员必选其一
+									layer.msg('请选择部门获取相关人员',{icon:2})
+									return;
 								}
-								var field={
-										userId:data.field.userId,
-										orgNameId:data.field.orgNameId,
-										orderTimeBegin:data.field.orderTimeBegin,
-										sign:1,
-								}
+								field.orderTimeBegin+="-01 00:00:00";
+								field.sign = 1;
 								var postUrl='${ctx}/personnel/addAttendanceTime'
 								even(postUrl,field)
 							})
