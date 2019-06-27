@@ -1,5 +1,6 @@
 package com.bluewhite.system.user.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bluewhite.base.BaseRepository;
@@ -69,6 +70,9 @@ public interface UserDao extends BaseRepository<User, Long> {
 	 * @return
 	 */
 	public List<User> findByForeignsAndPositive(int foreigns, boolean positive);
-	
-
+	/**
+	 * 根据离职时间查询
+	 * @return
+	 */
+	public List<User> findByQuitDateBetween(Date orderTimeBegin, Date orderTimeEnd);
 }

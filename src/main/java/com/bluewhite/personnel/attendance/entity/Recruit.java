@@ -12,6 +12,7 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.system.user.entity.User;
 
 /**
  * 招聘记录
@@ -30,16 +31,36 @@ public class Recruit extends BaseEntity<Long> {
 	private Date time;
 	
 	/**
+	 * userId
+	 */
+	@Column(name = "user_id")
+	private Long userId;
+	
+	/**
+	 * 员工
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User user;
+	/**
 	 * 平台Id
 	 */
 	@Column(name = "platform_id")
 	private Long platformId;
 	
+	
+	/**
+	 * 职位id
+	 */
+	@Column(name = "position_id")
+	private Long positionId;
+	
 	/**
 	 * 职位
 	 */
-	@Column(name = "position")
-	private String position;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "position_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData position;
 	
 	/**
 	 * 部门id
@@ -122,10 +143,34 @@ public class Recruit extends BaseEntity<Long> {
     private String remarksTwo;
 	
 	/**
-	 * 入职状态(0=没入职，1=已入职,2=拒绝入职)
+	 * 状态备注
+	 */
+	@Column(name = "remarks_three")
+    private String remarksThree;
+	
+	/**
+	 * 面试结果(0=不通过，1=通过)
+	 */
+	@Column(name = "adopt")
+	private Integer adopt;
+	
+	/**
+	 * 入职状态(0=没入职，1=已入职,2=拒绝入职,3=即将入职)
 	 */
 	@Column(name = "state")
 	private Integer state;
+	
+	/**
+	 * 入职时间
+	 */
+	@Column(name = "test_time")
+	private Date testTime;
+	
+	/**
+	 * 查询字段(是否离职)
+	 */
+	@Transient
+	private Integer quit;
 	
 	/**
 	 * 查询字段
@@ -144,16 +189,50 @@ public class Recruit extends BaseEntity<Long> {
 		this.platformId = platformId;
 	}
 	
+	
+	
+	public String getRemarksThree() {
+		return remarksThree;
+	}
+	public void setRemarksThree(String remarksThree) {
+		this.remarksThree = remarksThree;
+	}
 	public Date getTime() {
 		return time;
 	}
 	public void setTime(Date time) {
 		this.time = time;
 	}
-	public String getPosition() {
+
+	
+	public Integer getQuit() {
+		return quit;
+	}
+	public void setQuit(Integer quit) {
+		this.quit = quit;
+	}
+	public Date getTestTime() {
+		return testTime;
+	}
+	public void setTestTime(Date testTime) {
+		this.testTime = testTime;
+	}
+	public Integer getAdopt() {
+		return adopt;
+	}
+	public void setAdopt(Integer adopt) {
+		this.adopt = adopt;
+	}
+	public Long getPositionId() {
+		return positionId;
+	}
+	public void setPositionId(Long positionId) {
+		this.positionId = positionId;
+	}
+	public BaseData getPosition() {
 		return position;
 	}
-	public void setPosition(String position) {
+	public void setPosition(BaseData position) {
 		this.position = position;
 	}
 	public Long getOrgNameId() {
@@ -252,6 +331,18 @@ public class Recruit extends BaseEntity<Long> {
 	}
 	public void setState(Integer state) {
 		this.state = state;
+	}
+	public Long getUserId() {
+		return userId;
+	}
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
 	}
 	
 	

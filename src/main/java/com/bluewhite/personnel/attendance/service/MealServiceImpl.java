@@ -207,6 +207,18 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 	List<Meal> meals=new ArrayList<Meal>();
 	PersonVariable variable=personVariableDao.findByType(1);
 	for (AttendanceTime attendanceTime2 : attendanceTimes) {
+		if (attendanceTime2.getCheckIn()!=null || attendanceTime2.getCheckOut()!=null) {
+			int j=attendanceTime2.getCheckIn().getHours();
+			if (j>12) {
+				attendanceTime.setCheckOut(attendanceTime2.getCheckIn());
+				attendanceTime.setCheckIn(null);
+			}
+			if (j==12) {
+				attendanceTime.setCheckIn(attendanceTime2.getCheckIn());
+				attendanceTime.setCheckOut(attendanceTime2.getCheckIn());
+			}
+		}
+		
 		if (attendanceTime2.getFail()==2) {
 			
 		}else{ 
