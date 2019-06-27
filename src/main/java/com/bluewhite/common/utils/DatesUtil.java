@@ -293,6 +293,21 @@ public class DatesUtil {
 		Date date = calendar.getTime();
 		return date;
 	}
+	
+	/**
+	 * 获取某个日期的上一天
+	 * 
+	 * @param beginDate
+	 * @param endDate
+	 * @return
+	 */
+	public static Date lastDay(Date beginDate) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(beginDate);
+		calendar.add(Calendar.DATE, -1);
+		Date date = calendar.getTime();
+		return date;
+	}
 
 	/**
 	 * 判断两个日期是否属于同一个月

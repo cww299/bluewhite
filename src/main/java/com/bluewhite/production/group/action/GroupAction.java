@@ -382,13 +382,29 @@ public class GroupAction {
 	@ResponseBody
 	public CommonResponse sumTemporarily(Temporarily temporarily) {
 		CommonResponse cr = new CommonResponse();
-		groupService.sumTemporarily(temporarily);
-		
-		
+		cr.setData(groupService.sumTemporarily(temporarily));
 		cr.setMessage("删除成功");
 		return cr;
 	}
 
+	/**
+	 * 归还借调人员
+	 * 
+	 * (1=一楼质检，2=一楼包装)
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/production/deleteTemporarily", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteTemporarily(HttpServletRequest request,String[] ids) {
+		CommonResponse cr = new CommonResponse();
+		for (String id : ids) {
+			temporarilyDao.delete(Long.parseLong(id));
+		}
+		cr.setMessage("删除成功");
+		return cr;
+	}
+	
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
 		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(

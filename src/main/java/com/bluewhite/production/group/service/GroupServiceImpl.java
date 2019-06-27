@@ -1,6 +1,8 @@
 package com.bluewhite.production.group.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,18 +108,40 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 					.collect(Collectors.groupingBy(Temporarily::getGroupId, Collectors.toList()));
 			break;
 		}
-		for (int i = 0; i < size; i++) {
-			for (Long ps : mapTemporarilyList.keySet()) {
-				List<Temporarily> psList = mapTemporarilyList.get(ps);
+		// 获取一天的开始时间
+		Date beginTimes = temporarily.getOrderTimeBegin();
+		for (Long ps : mapTemporarilyList.keySet()) {
+			for (int i = 0; i < size; i++) {
 				Map<String, Object> mapTe = new HashMap<>();
-				double sumWorkTime = psList.stream().filter(Temporarily -> Temporarily.getWorkTime() != null)
-						.mapToDouble(Temporarily::getWorkTime).sum();
-				// mapTe.put("date", temporarily.getViewTypeDate()==1 : )
-				mapTe.put("name", psList.get(0).getUser().getUserName());
-				mapTe.put("sumWorkTime", sumWorkTime);
-				mapTe.put("kindWork", "");
-
+				List<Temporarily> psList = mapTemporarilyList.get(ps);
+				List<Temporarily> psListTe = null;
+				if (temporarily.getViewTypeDate() == 1) {
+					psListTe = new ArrayList<>();
+					for (Temporarily te : psList) {
+						if (te.getTemporarilyDate().compareTo(beginTimes) == 0) {
+							psListTe.add(te);
+						}
+					}
+					psList = psListTe;
+				}
+				if (psList.size() > 0) {
+					double sumWorkTime = psList.stream().filter(Temporarily -> Temporarily.getWorkTime() != null)
+							.mapToDouble(Temporarily::getWorkTime).sum();
+					Group group = null;
+					if (temporarily.getViewTypeUser() == 2) {
+						group = dao.findOne(ps);
+					}
+					SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+					SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM");
+					mapTe.put("date", temporarily.getViewTypeDate()==1 ? formatter.format(beginTimes) : formatter2.format(beginTimes));
+					mapTe.put("name", temporarily.getViewTypeUser() == 1 ? psList.get(0).getUser().getUserName()
+							:group==null ? "" :group.getName());
+					mapTe.put("sumWorkTime", sumWorkTime);
+					mapTe.put("kindWork", "");
+					mapList.add(mapTe);
+				}
 			}
+			beginTimes = DatesUtil.nextDay(beginTimes);
 		}
 		return mapList;
 
