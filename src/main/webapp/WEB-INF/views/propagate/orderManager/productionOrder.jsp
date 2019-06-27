@@ -120,8 +120,8 @@ td{
 
 
 <!-- 添加新商品隐藏框 -->
-<form class="layui-form layui-table" style="display:none;" id="addNewProductWin">
-<table style="width:100%;">
+<form class="layui-form" style="display:none;padding:10px;" id="addNewProductWin">
+<table style="width:100%;height:330px;">
 	<tr><td>商品名称</td>
 		<td><input type="text" class="layui-input" lay-verify="required"	name="skuCode"></td>
 		<td>1688批发价/元</td>

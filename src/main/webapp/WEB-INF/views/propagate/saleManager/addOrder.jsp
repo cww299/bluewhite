@@ -146,8 +146,8 @@ td{
 
 
 <!-- 添加新商品隐藏框 -->
-<form class="layui-form layui-table" style="display:none;" id="addProductWindow">
-<table style="width:100%;">
+<form class="layui-form" style="display:none;padding:10px;" id="addProductWindow">
+<table style="width:100%;height:330px;">
 	<tr><td>商品名称</td>
 		<td><input type="text" class="layui-input" lay-verify="required"	name="skuCode"></td>
 		<td>1688批发价</td>
@@ -568,6 +568,7 @@ layui.config({
 				type:1,
 				title:'选择产品',
 				area:['80%','90%'],
+				offset:'30px',
 				content:$('#addProductDiv'),
 			})
 			table.render({
@@ -765,6 +766,7 @@ layui.config({
 				type:1,
 				title:'添加产品',
 				content:$('#addProductWindow'),
+				offset:'200px',
 				area:['60%','50%']
 			})
 			form.render();
