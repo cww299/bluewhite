@@ -85,6 +85,7 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 		// 获取当前时间所有外调人员信息
 		List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndTemporarilyDateBetween(temporarily.getType(),
 				temporarily.getOrderTimeBegin(), temporarily.getOrderTimeEnd());
+		temporarilyList.stream().filter(Temporarily->Temporarily.getUser().getForeigns()==1);
 		// 按天按月查看
 		long size = 0;
 		switch (temporarily.getViewTypeDate()) {

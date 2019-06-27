@@ -180,6 +180,18 @@ public class AttendanceTime extends BaseEntity<Long> {
 	private Integer fail;
 	
 	/**
+	 * 约定休息方式（1.周休一天，2.月休两天，其他周日算加班,3.全年无休）
+	 */
+	@Transient
+	private Integer restType;
+	
+	/**
+	 * 出勤方式（1.无到岗要求，2，无打卡要求，3.按到岗小时计算）
+	 */
+	@Transient
+	private Integer workType;
+	
+	/**
 	 * 员工姓名
 	 */
 	@Transient
@@ -212,6 +224,22 @@ public class AttendanceTime extends BaseEntity<Long> {
 	
 	
 
+
+	public Integer getRestType() {
+		return restType;
+	}
+
+	public void setRestType(Integer restType) {
+		this.restType = restType;
+	}
+
+	public Integer getWorkType() {
+		return workType;
+	}
+
+	public void setWorkType(Integer workType) {
+		this.workType = workType;
+	}
 
 	public Integer getFail() {
 		return fail;

@@ -62,6 +62,15 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
 	@Override
 	public List<AttendanceTime> findAttendanceTime(AttendanceTime attendance) throws ParseException {
+		//报餐系统所需要的人员
+		List<User> list = null;
+		if (attendance.getUserId()==null && attendance.getOrgNameId()==null) {
+			User user=new User();
+			user.setIsAdmin(false);
+			user.setForeigns(0);
+			list = userService.findUserList(user).stream().filter(User->User.getQuitDate()!=null && User.getQuitDate().before(attendance.getOrderTimeBegin())).collect(Collectors.toList());
+		}
+		
 		// 检查当前月份属于夏令时或冬令时 flag=ture 为夏令时
 		boolean flag = DatesUtil.belongCalendar(attendance.getOrderTimeBegin());
 		long size = DatesUtil.getDaySub(attendance.getOrderTimeBegin(),
@@ -81,18 +90,10 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				User user = userService.findOne(attendance.getUserId());
 				userList.add(user);
 			}
-			if (attendance.getUserId()==null && attendance.getOrgNameId()==null) {
-				User user2=new User();
-				user2.setIsAdmin(false);
-				user2.setForeigns(0);
-				List<User> user = userService.findUserList(user2);
-				List<User> users = new ArrayList<>();
-				List<User> list=user.stream().filter(User->User.getQuitDate()!=null && User.getQuit().equals(1) && User.getQuitDate().after(attendance.getOrderTimeBegin())).collect(Collectors.toList());
-				List<User> list2=user.stream().filter(User->User.getQuit()!=null &&User.getQuit().equals(0)).collect(Collectors.toList());
-				users.addAll(list);
-				users.addAll(list2);
-				userList.addAll(users);
+			if(attendance.getUserId()==null && attendance.getOrgNameId()==null){
+				userList.addAll(list);
 			}
+		
 			String exUser = "";
 			// 开始汇总每个人的考勤
 			for (User us : userList) {
@@ -140,6 +141,9 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				//报餐吃饭记录
 				attendanceTime.setEatType(attendanceInit.getEatType());
 				attendanceTime.setFail(attendanceInit.getFail());
+				attendanceTime.setWorkType(attendanceInit.getWorkType());
+				attendanceTime.setRestType(attendanceInit.getRestType());
+				
 				// flag=ture 为夏令时
 				if (flag) {
 					String[] workTimeArr = attendanceInit.getWorkTimeSummer().split(" - ");
@@ -322,19 +326,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				// 当一天的考勤记录条数小于2时。为异常的考勤
 				if (attList.size() < 2) {
 					if(attList.size()==1){
-						
-						Date date=	new Date(attList.get(0).getTime().getTime());
-						int j=date.getHours();
-						if (j<12) {
-							attendanceTime.setCheckIn(new Date(attList.get(0).getTime().getTime()));
-						}
-						if (j>12) {
-							attendanceTime.setCheckOut(new Date(attList.get(0).getTime().getTime()));
-						}
-						if (j==12) {
-							attendanceTime.setCheckIn(new Date(attList.get(0).getTime().getTime()));
-							attendanceTime.setCheckOut(new Date(attList.get(0).getTime().getTime()));
-						}
+						attendanceTime.setCheckIn(new Date(attList.get(0).getTime().getTime()));
 					}
 					if (rout) {
 						attendanceTime.setFlag(3);
