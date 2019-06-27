@@ -1,4 +1,4 @@
-  package com.bluewhite.onlineretailers.inventory.action;
+package com.bluewhite.onlineretailers.inventory.action;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -74,18 +74,18 @@ public class InventoryAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(OnlineOrder.class, "documentNumber", "id", "user", "onlineCustomer",
-						"onlineOrderChilds", "sellerNick", "name", "buyerName", "picPath", "payment", "postFee",
-						"consignTime", "buyerRemarks", "num", "sumPrice", "status", "allBillPreferential",
-						"trackingNumber", "buyerMessage", "buyerMemo", "buyerFlag", "sellerMemo", "sellerFlag",
-						"buyerRate",  "shippingType", "createdAt", "updatedAt", "address", "phone",
-						"zipCode", "buyerName", "provinces", "city", "county", "flag", "telephone","residueNumber","deliverys")
+				.addRetainTerm(OnlineOrder.class, "documentNumber", "id", "user", "onlineCustomer", "onlineOrderChilds",
+						"sellerNick", "name", "buyerName", "picPath", "payment", "postFee", "consignTime",
+						"buyerRemarks", "num", "sumPrice", "status", "allBillPreferential", "trackingNumber",
+						"buyerMessage", "buyerMemo", "buyerFlag", "sellerMemo", "sellerFlag", "buyerRate",
+						"shippingType", "createdAt", "updatedAt", "address", "phone", "zipCode", "buyerName",
+						"provinces", "city", "county", "flag", "telephone", "residueNumber", "deliverys")
 				.addRetainTerm(OnlineOrderChild.class, "id", "number", "commodity", "price", "sumPrice",
-						"systemPreferential", "sellerReadjustPrices", "actualSum", "warehouse","status","residueNumber")
-				.addRetainTerm(Delivery.class, "id", "sumNumber", "trackingNumber","deliveryChilds","createdAt")
+						"systemPreferential", "sellerReadjustPrices", "actualSum", "warehouse", "status",
+						"residueNumber")
+				.addRetainTerm(Delivery.class, "id", "sumNumber", "trackingNumber", "deliveryChilds", "createdAt")
 				.addRetainTerm(DeliveryChild.class, "id", "number", "commodity")
-				.addRetainTerm(Commodity.class, "id", "skuCode")
-				.addRetainTerm(BaseData.class, "id", "name")
+				.addRetainTerm(Commodity.class, "id", "skuCode").addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName")
 				.addRetainTerm(RegionAddress.class, "id", "regionName", "parentId");
 	}
@@ -117,7 +117,7 @@ public class InventoryAction {
 		cr.setMessage("新增成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 获取上一个相同商品的订单的单价
 	 * 
@@ -126,14 +126,13 @@ public class InventoryAction {
 	 */
 	@RequestMapping(value = "/inventory/getOnlineOrderPrice", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getOnlineOrderPrice(Long commodityId){
+	public CommonResponse getOnlineOrderPrice(Long commodityId) {
 		CommonResponse cr = new CommonResponse();
 		double price = onlineOrderService.getOnlineOrderPrice(commodityId);
 		cr.setData(price);
 		cr.setMessage("成功");
 		return cr;
 	}
-
 
 	/**
 	 * 一键发货 1.将父订单的状态改变成发货状态和一个仓库时，所有子订单的发货状态和仓库改变 2.子订单部分发货和不同仓库
@@ -176,8 +175,7 @@ public class InventoryAction {
 						"weight", "size", "material", "fillers", "cost", "propagandaCost", "remark", "tianmaoPrice",
 						"oseePrice", "offlinePrice", "inventorys")
 				.addRetainTerm(Inventory.class, "number", "place", "warehouse")
-				.addRetainTerm(BaseData.class, "id", "name"
-						).format(commodityService.findPage(commodity, page))
+				.addRetainTerm(BaseData.class, "id", "name").format(commodityService.findPage(commodity, page))
 				.toJSON());
 		cr.setMessage("查询成功");
 		return cr;
@@ -197,9 +195,9 @@ public class InventoryAction {
 			commodityService.save(ot);
 			cr.setMessage("修改成功");
 		} else {
-			if(commodityService.findByName(commodity.getSkuCode())!=null){
+			if (commodityService.findByName(commodity.getSkuCode()) != null) {
 				cr.setMessage("该商品已存在无法新增");
-			}else{
+			} else {
 				// 同步商品名称
 				commodity.setName(commodity.getSkuCode());
 				commodityService.save(commodity);
@@ -231,8 +229,13 @@ public class InventoryAction {
 	@RequestMapping(value = "/inventory/onlineCustomerPage", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse onlineCustomerPage(OnlineCustomer onlineCustomer, PageParameter page) {
-		CommonResponse cr = new CommonResponse(
-				clearCascadeJSON.format(onlineCustomerService.findPage(onlineCustomer, page)).toJSON());
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON.get()
+				.addRetainTerm(Commodity.class, "id", "user", "name", "buyerName", "grade", "type", "provinces",
+						"city", "county", "address", "phone", "account", "zipCode", "telephone")
+				.addRetainTerm(User.class, "userName")
+				.addRetainTerm(RegionAddress.class, "id", "regionName", "parentId")
+				.format(onlineCustomerService.findPage(onlineCustomer, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -281,8 +284,9 @@ public class InventoryAction {
 	public CommonResponse procurementPage(Procurement procurement, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(Procurement.class, "id","documentNumber", "user", "procurementChilds", "number",
-						"residueNumber", "type", "flag", "remark", "transfersUser", "onlineCustomer", "status","createdAt")
+				.addRetainTerm(Procurement.class, "id", "documentNumber", "user", "procurementChilds", "number",
+						"residueNumber", "type", "flag", "remark", "transfersUser", "onlineCustomer", "status",
+						"createdAt")
 				.addRetainTerm(ProcurementChild.class, "id", "commodity", "number", "residueNumber", "warehouse",
 						"status", "childRemark", "batchNumber")
 				.addRetainTerm(Commodity.class, "id", "skuCode", "name", "inventorys")
@@ -323,8 +327,7 @@ public class InventoryAction {
 	/************** 预警设置 *************/
 
 	/**
-	 * 自动检测预警数据
-	 * (可过滤)
+	 * 自动检测预警数据 (可过滤)
 	 * 
 	 */
 	@RequestMapping(value = "/inventory/checkWarning", method = RequestMethod.GET)
@@ -421,7 +424,7 @@ public class InventoryAction {
 		cr.setMessage("成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 1.销售 员工销售报表 客户销售报表详细
 	 */
@@ -430,17 +433,16 @@ public class InventoryAction {
 	public CommonResponse salesUserDetailed(OnlineOrderChild onlineOrderChild, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(OnlineOrderChild.class, "id", "commodity", "onlineOrder","warehouse","createdAt","number","price","sumPrice")
+				.addRetainTerm(OnlineOrderChild.class, "id", "commodity", "onlineOrder", "warehouse", "createdAt",
+						"number", "price", "sumPrice")
 				.addRetainTerm(Commodity.class, "skuCode")
-				.addRetainTerm(OnlineOrder.class, "documentNumber","user","onlineCustomer")
-				.addRetainTerm(User.class, "userName")
-				.addRetainTerm(OnlineCustomer.class, "name","buyerName")
-				.addRetainTerm(BaseData.class, "name")
-				.format(onlineOrderService.findPage(onlineOrderChild, page)).toJSON());
+				.addRetainTerm(OnlineOrder.class, "documentNumber", "user", "onlineCustomer")
+				.addRetainTerm(User.class, "userName").addRetainTerm(OnlineCustomer.class, "name", "buyerName")
+				.addRetainTerm(BaseData.class, "name").format(onlineOrderService.findPage(onlineOrderChild, page))
+				.toJSON());
 		cr.setMessage("成功");
 		return cr;
 	}
-	
 
 	/**
 	 * 2.入库 日报表 月报表
@@ -480,8 +482,7 @@ public class InventoryAction {
 		cr.setMessage("成功");
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 库存(导入)
 	 * 
@@ -490,14 +491,14 @@ public class InventoryAction {
 	 */
 	@RequestMapping(value = "/inventory/import/excelInventory", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse excelInventory(@RequestParam(value = "file", required = false) MultipartFile file
-			 ) throws IOException {
+	public CommonResponse excelInventory(@RequestParam(value = "file", required = false) MultipartFile file)
+			throws IOException {
 		CommonResponse cr = new CommonResponse();
 		InputStream inputStream = file.getInputStream();
 		ExcelListener excelListener = new ExcelListener();
 		EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1), excelListener);
 		List<Object> objects = excelListener.getData();
-		for(Object ob : objects){
+		for (Object ob : objects) {
 			Procurement procurement = new Procurement();
 			List<Map<String, Object>> mapList = new ArrayList<>();
 			List<Object> obs = (List<Object>) ob;
@@ -506,23 +507,20 @@ public class InventoryAction {
 			map.put("number", obs.get(1));
 			map.put("commodityId", obs.get(2));
 			map.put("warehouseId", 157);
-			map.put("status",0);
+			map.put("status", 0);
 			mapList.add(map);
-		    //map转字符串
+			// map转字符串
 			procurement.setType(2);
 			procurement.setStatus(0);
-			procurement.setUserId((long)770);
+			procurement.setUserId((long) 770);
 			procurement.setNumber(Integer.valueOf((String) obs.get(1)));
 			JSONArray ja = JSONArray.parseArray(JSON.toJSONString(mapList));
 			procurement.setCommodityNumber(ja.toJSONString());
-			procurementService.saveProcurement(procurement);	
+			procurementService.saveProcurement(procurement);
 		}
 		inputStream.close();
 		return cr;
 	}
-	
-	
-	
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {

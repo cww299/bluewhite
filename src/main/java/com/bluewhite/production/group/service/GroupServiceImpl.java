@@ -112,7 +112,7 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 				Map<String, Object> mapTe = new HashMap<>();
 				double sumWorkTime = psList.stream().filter(Temporarily -> Temporarily.getWorkTime() != null)
 						.mapToDouble(Temporarily::getWorkTime).sum();
-//				mapTe.put("date", temporarily.getViewTypeDate()==1 :  )
+				// mapTe.put("date", temporarily.getViewTypeDate()==1 : )
 				mapTe.put("name", psList.get(0).getUser().getUserName());
 				mapTe.put("sumWorkTime", sumWorkTime);
 				mapTe.put("kindWork", "");
