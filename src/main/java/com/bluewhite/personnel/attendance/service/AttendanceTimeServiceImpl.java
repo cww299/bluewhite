@@ -68,7 +68,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			User user=new User();
 			user.setIsAdmin(false);
 			user.setForeigns(0);
-			list = userService.findUserList(user).stream().filter(User->User.getQuitDate()!=null && User.getQuitDate().before(attendance.getOrderTimeBegin())).collect(Collectors.toList());
+			list = userService.findUserList(user).stream().filter(User->(User.getQuitDate()!=null && User.getQuitDate().before(attendance.getOrderTimeBegin()))).collect(Collectors.toList());
 		}
 		
 		// 检查当前月份属于夏令时或冬令时 flag=ture 为夏令时
