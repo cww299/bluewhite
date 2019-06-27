@@ -203,6 +203,7 @@ layui.config({
 			       {align:'center', title:'名称',   field:'name',		width:'15%',},
 			       {align:'center', title:'姓名',   field:'buyerName',	width:'10%',},
 			       {align:'center', title:'手机',   field:'phone',		width:'10%',},
+			       {align:'center', title:'业务员',   field:'',		width:'10%', templet:'<span>{{ d.user.userName }}</span>'},
 			       {align:'center', title:'等级',   field:'grade',		width:'10%',	templet:"#gradeTpl",},
 			       {align:'center', title:'类型',   field:'type',		width:'10%',	templet:"#typeTpl",},
 			       {align:'center', title:'所在地', field:'address'},
