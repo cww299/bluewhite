@@ -18,13 +18,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.personnel.attendance.dao.MealDao;
 import com.bluewhite.personnel.attendance.dao.PersonVariableDao;
-import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.entity.Meal;
 import com.bluewhite.personnel.attendance.entity.PersonVariable;
@@ -207,7 +207,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 	List<Meal> meals=new ArrayList<Meal>();
 	PersonVariable variable=personVariableDao.findByType(1);
 	for (AttendanceTime attendanceTime2 : attendanceTimes) {
-		if (attendanceTime2.getCheckIn()!=null || attendanceTime2.getCheckOut()!=null) {
+		if (attendanceTime2.getCheckIn()!=null && attendanceTime2.getCheckOut()==null) {
 			int j=attendanceTime2.getCheckIn().getHours();
 			if (j>12) {
 				attendanceTime.setCheckOut(attendanceTime2.getCheckIn());
@@ -219,9 +219,6 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 			}
 		}
 		
-		if (attendanceTime2.getFail()==2) {
-			
-		}else{ 
 		//基础数据 每一餐的价格
 		if (attendanceTime2.getCheckOut()!=null || attendanceTime2.getCheckIn()!=null) {
 		if (attendanceTime2.getCheckOut()!=null && attendanceTime2.getCheckIn()!=null) {
@@ -363,13 +360,15 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 			meals.add(meal2);
 		}
 		}else{
-			AttendanceInit attendanceInit = attendanceInitService.findByUserId(attendanceTime2.getUserId());
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			PersonVariable restType = personVariableDao.findByType(0);
 			boolean rout = false;
+			if (attendanceTime2.getWorkType()==null || attendanceTime2.getRestType()==null) {
+				throw new ServiceException(attendanceTime2.getUser().getUserName()+"没有考勤初始设定数据，请填写后操作");
+			}
 			// 1.周休一天，
-			if (attendanceInit.getWorkType()==1 || attendanceInit.getWorkType()==2) {
-			if (attendanceInit.getRestType() == 1) {
+			if (attendanceTime2.getWorkType()==1 || attendanceTime2.getWorkType()==2) {
+			if (attendanceTime2.getRestType() == 1) {
 				String[] weeklyRestDate = restType.getKeyValue().split(",");
 				if (weeklyRestDate.length > 0) {
 					for (int j = 0; j < weeklyRestDate.length; j++) {
@@ -390,7 +389,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 				}
 			}
 			//2.月休两天
-			if (attendanceInit.getRestType() == 2) {
+			if (attendanceTime2.getRestType() == 2) {
 				String[] weeklyRestDate = restType.getKeyValue().split(",");
 				if (weeklyRestDate.length > 0) {
 					for (int j = 0; j < weeklyRestDate.length; j++) {
@@ -412,10 +411,10 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 			}
 			}
 		}
-	}
+	
 	}
 		dao.save(meals);
-		return 0;
+		return meals.size();
 	}
 
 	

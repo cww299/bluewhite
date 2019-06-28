@@ -36,6 +36,14 @@ public class Recruit extends BaseEntity<Long> {
 	@Column(name = "user_id")
 	private Long userId;
 	
+	
+	/**
+	 * 招聘人
+	 */
+	@Column(name = "recruit_id")
+	private Long recruitId;
+	
+	
 	/**
 	 * 员工
 	 */
@@ -189,8 +197,12 @@ public class Recruit extends BaseEntity<Long> {
 		this.platformId = platformId;
 	}
 	
-	
-	
+	public Long getRecruitId() {
+		return recruitId;
+	}
+	public void setRecruitId(Long recruitId) {
+		this.recruitId = recruitId;
+	}
 	public String getRemarksThree() {
 		return remarksThree;
 	}

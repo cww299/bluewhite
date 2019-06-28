@@ -183,6 +183,25 @@
 			</div>
 			
 			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">面试人</label>
+				<div class="layui-input-inline">
+						<input type="text" value="{{d.name }}" name="name" id="userId"
+						 lay-verify="required"  placeholder="请输入姓名"
+						class="layui-input laydate-icon" data-provide="typeahead">
+				</div>
+			</div>
+			
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">招聘人</label>
+				<div class="layui-input-inline">
+						<select name="recruitId" lay-filter="recruitId" id="recruitId" lay-search="true">
+								
+						</select>
+
+					</div>
+			</div>
+
+			<div class="layui-form-item">
 					<label class="layui-form-label" style="width: 130px;">邀约平台</label>
 					<div class="layui-input-inline">
 						<select name="platformId" lay-filter="platformId" 
@@ -219,14 +238,6 @@
 					</div>
 			</div>			
 
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">姓名</label>
-				<div class="layui-input-inline">
-						<input type="text" value="{{d.name }}" name="name" id="userId"
-						 lay-verify="required"  placeholder="请输入姓名"
-						class="layui-input laydate-icon" data-provide="typeahead">
-				</div>
-			</div>
 
 			<div class="layui-form-item">
 					<label class="layui-form-label" style="width: 130px;">性别</label>
@@ -279,58 +290,6 @@
 						 class="layui-input">
 				</div>
 			</div>
-
-		<div class="layui-form-item">
-					<label class="layui-form-label" style="width: 130px;">一面</label>
-					<div class="layui-input-inline">
-						<select name="typeOne" lay-filter="typeOne" 
-							id="typeOne" lay-search="true"><option value="">请选择</option>
-							<option {{d.typeOne==0 ? "selected" : ""}} value="0">否</option>
-							<option {{d.typeOne==1 ? "selected" : ""}} value="1">是</option>
-							</select>
-					</div>
-			</div>				
-
-			 <div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">一面备注</label>
-				<div class="layui-input-inline">
-					<input type="text" value="{{d.remarksOne }}" name="remarksOne"
-						id="remarksOne" 
-						 class="layui-input">
-				</div>
-			</div>
-
-			<div class="layui-form-item">
-					<label class="layui-form-label" style="width: 130px;">二面</label>
-					<div class="layui-input-inline">
-						<select name="typeTwo" lay-filter="typeTwo" 
-							id="typeTwo" lay-search="true"><option value="">请选择</option>
-							<option {{d.typeTwo==0 ? "selected" : ""}} value="0">否</option>
-							<option {{d.typeTwo==1 ? "selected" : ""}} value="1">是</option>
-							</select>
-					</div>
-			</div>			
-
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">二面备注</label>
-				<div class="layui-input-inline">
-					<input type="text" value="{{d.remarksTwo }}" name="remarksTwo"
-						id="remarksTwo" 
-						 class="layui-input">
-				</div>
-			</div>
-
-			<div class="layui-form-item">
-					<label class="layui-form-label" style="width: 130px;">面试情况</label>
-					<div class="layui-input-inline">
-						<select name="adopt" lay-filter="adopt" 
-							id="adopt" lay-search="true"><option value="">请选择</option>
-							<option {{d.adopt==0 ? "selected" : ""}} value="0">不通过</option>
-							<option {{d.adopt==1 ? "selected" : ""}} value="1">通过</option>
-							</select>
-					</div>
-			</div>	
-			
 		</div>
 	</form>	
 	
@@ -1251,6 +1210,7 @@
 							state=data.state;
 							orgNameId=data.orgNameId;
 							positionId=data.positionId;
+							recruitId=data.recruitId;
 						}
 						laytpl(tpl).render(data,function(h){
 							html=h;
@@ -1316,6 +1276,35 @@
 					      			layer.close(indextwo);
 							      }
 							  });
+						 
+						 var htmlr='<option value="">请选择</option>';
+						 $.ajax({
+								url: '${ctx}/system/user/findUserList',
+								data:{
+									foreigns:0
+								},
+								type: "GET",
+								async: false,
+								beforeSend: function() {
+									index;
+								},
+								success: function(result) {
+									$(result.data).each(function(i, o) {
+										htmlr += '<option '+(recruitId==o.id ? "selected" : "")+' value=' + o.id + '>' + o.userName + '</option>'
+									})
+									$("#recruitId").html(htmlr)
+									layui.form.render()
+									layer.close(index);
+								},
+								error: function() {
+									layer.msg("操作失败！", {
+										icon: 2
+									});
+									layer.close(index);
+								}
+							});
+						 
+						 
 						 var html=""
 				      			$.ajax({								//获取当前部门下拉框选择的子数据：职位
 								      url:"${ctx}/basedata/children",
@@ -1351,7 +1340,6 @@
 					
 					 var check="off";
 					form.on('checkbox(lockDemo)', function(obj){
-						console.log(obj.elem.checked)
 						if(obj.elem.checked==true){
 							check="on"
 						}else{

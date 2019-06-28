@@ -173,19 +173,18 @@ public class MealAction {
 	 * 
 	 * @param request 请求
 	 * @return cr
+	 * @throws ParseException 
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/personnel/getEatType", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getEatType(AttendanceTime attendanceTime) {
+	public CommonResponse getEatType(AttendanceTime attendanceTime) throws ParseException {
 		CommonResponse cr = new CommonResponse();
 		 int list;
-		try {
+		
 			list = service.InitMeal(attendanceTime);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+		
+		
 		cr.setMessage("同步成功");
 		return cr;
 	}
