@@ -42,7 +42,7 @@ public class RecruitAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Recruit.class,"id","user","remarksThree", "platformId","testTime","platformName","position","positionId","time","position","orgNameId","orgName","name","gender","phone","livingAddress","entry","type","remarks","typeOne","remarksOne","typeTwo","remarksTwo","state","adopt");
+				.addRetainTerm(Recruit.class,"id","user","remarksThree", "platformId","testTime","platformName","position","positionId","time","position","orgNameId","orgName","name","gender","phone","livingAddress","entry","type","remarks","typeOne","remarksOne","typeTwo","remarksTwo","state","adopt","recruitId");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONUser;
