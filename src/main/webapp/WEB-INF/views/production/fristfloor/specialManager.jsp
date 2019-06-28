@@ -84,7 +84,7 @@ layui.use(['jquery','laydate','table'],
 				}
 				var time = $('#dayTime').val().split("~");
 				data.orderTimeBegin = time[0]+"00:00:00";
-				data.orderTimeEnd = time[1]+" 00:00:00";
+				data.orderTimeEnd = time[1]+" 23:59:59";
 			}else{
 				if($('#monthTime').val()==""){
 					layer.msg('查询时间不能为空',{icon:2});
