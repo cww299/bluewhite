@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title></title>
+<title>特急管理</title>
 </head>
 <body>
 
@@ -57,6 +57,7 @@ layui.use(['jquery','laydate','table'],
 			loading:true,
 			size:'sm',
 			data:[],
+			toolbar: true,
 			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){ return { data:ret.data, msg:ret.message, code:ret.code } },
 			cols:[[
