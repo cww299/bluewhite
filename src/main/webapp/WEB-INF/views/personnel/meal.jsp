@@ -663,10 +663,9 @@
 									});
 								
 								} else {
-									layer.msg(result.message, {
-										icon: 2,
-										time:800
-									});
+									layer.confirm(result.message + '请填写考勤初始化', function() {
+											layer.close(indextwo);
+									}
 								}
 							},
 							error: function() {
