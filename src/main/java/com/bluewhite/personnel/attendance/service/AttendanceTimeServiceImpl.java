@@ -99,6 +99,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				userList = userService.findByOrgNameId(attendance.getOrgNameId());
 				Attendance ae = new Attendance();
 				ae.setOrgNameId(attendance.getOrgNameId());
+				ae.setOrderTimeBegin(attendance.getOrderTimeBegin());
+				ae.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin()));
 				allAttList = attendanceService.findPageAttendance(ae, new PageParameter(0, Integer.MAX_VALUE))
 						.getRows();
 			}
