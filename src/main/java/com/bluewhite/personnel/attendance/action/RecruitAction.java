@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
@@ -25,7 +26,10 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.personnel.attendance.entity.Recruit;
 import com.bluewhite.personnel.attendance.service.RecruitService;
+import com.bluewhite.production.group.entity.Group;
+import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.entity.UserContract;
 import com.bluewhite.system.user.service.UserService;
 
 @Controller
@@ -38,9 +42,23 @@ public class RecruitAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Recruit.class,"id", "platformId","time","position","orgNameId","orgName","name","gender","phone","livingAddress","entry","type","remarks","typeOne","remarksOne","typeTwo","remarksTwo","state");
+				.addRetainTerm(Recruit.class,"id","user","remarksThree", "platformId","testTime","platformName","position","positionId","time","position","orgNameId","orgName","name","gender","phone","livingAddress","entry","type","remarks","typeOne","remarksOne","typeTwo","remarksTwo","state","adopt");
 	}
 
+	private ClearCascadeJSON clearCascadeJSONUser;
+	{
+		clearCascadeJSONUser = ClearCascadeJSON.get()
+		.addRetainTerm(User.class,"id","fileId","idCardEnd","price","status","workTime","number","pictureUrl", "userName", "phone","position","orgName","idCard",
+				"nation","email","gender","birthDate","group","idCard","permanentAddress","livingAddress","marriage","procreate","education"
+				,"school","major","contacts","information","entry","estimate","actua","socialSecurity","bankCard1","bankCard2","agreement","safe","commitment"
+				,"frequency","quitDate","quit","reason","train","remark","userContract","commitments"
+				,"agreementId","company","age","type","ascriptionBank1","sale","roles")
+		.addRetainTerm(Group.class, "id","name", "type", "price")
+		.addRetainTerm(Role.class, "name", "role", "description","id")
+		.addRetainTerm(BaseData.class, "id","name", "type")
+		.addRetainTerm(UserContract.class, "id","number", "username","archives","pic","idCard","bankCard","physical",
+				"qualification","formalSchooling","agreement","secrecyAgreement","contract","remark","quit");
+	}
 	/**
 	 * 分页查看招聘
 	 * 
@@ -122,29 +140,39 @@ public class RecruitAction {
 				Long id = Long.parseLong(ids[i]);
 			Recruit recruit=service.findOne(id);
 			if (state==1) {
-				recruit.setState(state);
-				service.save(recruit);
 				User user=new User();
 				user.setUserName(recruit.getName());
 				user.setPhone(recruit.getPhone());
 				user.setForeigns(0);
 				user.setQuit(0);
+				user.setEntry(recruit.getTestTime());
 				userService.addUser(user);
+				recruit.setUserId(user.getId());
+				recruit.setState(state);
+				service.save(recruit);
 				count++;
+				cr.setMessage("成功入职"+count+"人");
 			}
 			if (state==2) {
 				recruit.setState(state);
 				service.save(recruit);
 				count++;
+				cr.setMessage("拒绝入职"+count+"人");
+			}
+			if (state==3) {
+				recruit.setState(state);
+				service.save(recruit);
+				count++;
+				cr.setMessage("即将入职"+count+"人");
 			}
 			}
 		}
-		cr.setMessage("成功入职"+count+"人");
+		
 		return cr;
 	}
 	
 	/**
-	 * 统计
+	 * 招聘汇总
 	 * 
 	 * @param request 请求
 	 * @return cr
@@ -159,6 +187,42 @@ public class RecruitAction {
 			cr.setMessage("查询成功");
 		return cr;
 	}
+	
+	/**
+	 * 短期入职人员
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/soon", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse soon(HttpServletRequest request, Recruit recruit) {
+		CommonResponse cr = new CommonResponse();
+		 List<Recruit> list = service.soon(recruit);
+			cr.setData(clearCascadeJSON.format(list).toJSON());
+			cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/**
+	 * 离职人员
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/usersl", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse users(HttpServletRequest request, Recruit recruit) {
+		CommonResponse cr = new CommonResponse();
+		 List<User> list = service.users(recruit);
+			cr.setData(clearCascadeJSONUser.format(list).toJSON());
+			cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
 		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(DateTimePattern.DATEHMS.getPattern());

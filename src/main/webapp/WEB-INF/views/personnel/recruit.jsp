@@ -14,12 +14,17 @@
 <title>招聘信息</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<style type="text/css">
+.layui-form-switch{
+	
+}
+</style>
 </head>
 
 <body>
 	<div class="layui-card">
 		<div class="layui-card-body">
-			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+			<div class="layui-form">
 				<div class="layui-form-item">
 					<table>
 						<tr>
@@ -28,10 +33,6 @@
 							<td>&nbsp;&nbsp;</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
 							</td>
-							<!-- <td>&nbsp&nbsp</td>
-							<td>结束:</td>
-							<td><input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="layui-input laydate-icon">
-							</td> -->
 							<td>&nbsp;&nbsp;</td>
 							<td>是否应面:
 							<td><select class="form-control" name="type">
@@ -54,6 +55,7 @@
 									<option value="1">是</option>
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
+							
 							<td>
 								<div class="layui-inline">
 									<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
@@ -64,6 +66,33 @@
 						</tr>
 					</table>
 				</div>
+				<div class="layui-form-item">
+				<table>
+					<tr>
+					<td>入职状态:
+							<td><select class="form-control" name="state">
+									<option value="">请选择</option>
+									<option value="0">未入职</option>
+									<option value="1">已入职</option>
+									<option value="2">拒绝入职</option>
+									<option value="3">即将入职</option>
+							</select></td>
+							<td>&nbsp;&nbsp;</td>
+							<td>在职情况:</td>
+							<td><select class="form-control" name="quit">
+									<option value="">请选择</option>
+									<option value="0">在职</option>
+									<option value="1">离职</option>
+							</select></td>
+							<td>
+								<div class="layui-input-block">
+							      <input type="checkbox" name="like[write]" lay-filter="lockDemo" title="入职在职">
+							    </div>
+							</td>
+					</tr>
+				</table>
+				</div>
+				
 			</div>
 			<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
 		</div>
@@ -91,12 +120,104 @@
 			</div>
 			<table id="layuiShare2"  class="table_th_search" lay-filter="layuiShare"></table>
 </div>
-	
+
+<div style="display: none;" id="layuiSharequit">
+			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+				<div class="layui-form-item">
+					<table>
+						<tr>
+							<td>查询月份:</td>
+							<td><input id="monthDate5" style="width: 180px;" name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td>
+								<div class="layui-inline">
+									<button class="layui-btn layuiadmin-btn-admin"  lay-submit lay-filter="layuiSharequit2">
+										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+									</button>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<table id="layuiSharequit1"  class="table_th_search" lay-filter="layuiShare"></table>
+</div>
+
+
+<div style="display: none;" id="layuiShare5">
+			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+				<div class="layui-form-item">
+					<table>
+						<tr>
+							<td>查询月份:</td>
+							<td><input id="monthDate4" style="width: 180px;" name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td>
+								<div class="layui-inline">
+									<button class="layui-btn layuiadmin-btn-admin"  lay-submit lay-filter="LAY-search7">
+										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+									</button>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<table id="layuiShare6"  class="table_th_search" lay-filter="layuiShare8"></table>
+</div>	
 	<script type="text/html" id="addEditTpl">
 	<form action="" id="layuiadmin-form-admin"
 		style="padding: 20px 30px 0 60px; text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
 			<input type="text" name="id" id="usID" style="display:none;">
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">面试时间</label>
+				<div class="layui-input-inline">
+					<input type="text" value="{{d.time }}" name="time"
+						id="time" lay-verify="required"
+						 class="layui-input">
+				</div>
+			</div>
+			
+			<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 130px;">邀约平台</label>
+					<div class="layui-input-inline">
+						<select name="platformId" lay-filter="platformId" 
+							id="platformId" lay-search="true"><option value="">请选择</option>
+								<option {{d.platformId==1 ? "selected" : ""}} value="1">广告招聘</option>
+								<option {{d.platformId==2 ? "selected" : ""}} value="2">前程无忧</option>
+								<option {{d.platformId==3 ? "selected" : ""}} value="3">58同城</option>
+								<option {{d.platformId==4 ? "selected" : ""}} value="4">BOSS直聘</option>
+								<option {{d.platformId==5 ? "selected" : ""}} value="5">扬子人才网</option>
+							</select>
+					</div>
+			</div>	
+			
+			<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 130px;">部门</label>
+					<div class="layui-input-inline">
+						<select name="orgNameId" lay-filter="orgNameId" id="orgNameId" lay-search="true">
+								
+						</select>
+
+					</div>
+			</div>
+
+			<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 130px;">职位</label>
+					<div class="layui-input-inline" >
+					<select name="positionId" lay-filter="positionId" id="position" lay-search="true">
+								
+						</select>
+
+								
+						</select>
+
+					</div>
+			</div>			
 
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 130px;">姓名</label>
@@ -106,11 +227,22 @@
 						class="layui-input laydate-icon" data-provide="typeahead">
 				</div>
 			</div>
-			
+
+			<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 130px;">性别</label>
+					<div class="layui-input-inline">
+						<select name="gender" lay-filter="gender" 
+							id="gender" lay-search="true"><option value="">请选择</option>
+							<option {{d.gender==0 ? "selected" : ""}} value="0">男</option>
+							<option {{d.gender==1 ? "selected" : ""}} value="1">女</option>
+							</select>
+					</div>
+			</div>			
+
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 130px;">电话</label>
 				<div class="layui-input-inline">
-					<input type="text" value="{{d.phone }}" name="content" id="content"
+					<input type="text" value="{{d.phone }}" name="phone" id="phone"
 						lay-verify="required" placeholder="请输入内容"
 						class="layui-input laydate-icon">
 				</div>
@@ -121,21 +253,24 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 130px;">现居住地址</label>
 				<div class="layui-input-inline">
-					<input type="text" value="{{d.livingAddress }}" name="money" id="money"
+					<input type="text" value="{{d.livingAddress }}" name="livingAddress" id="livingAddress"
 						lay-verify="required" placeholder="请输入现居住地址"
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 
+
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">面试日期</label>
-				<div class="layui-input-inline">
-					<input type="text" value="{{d.entry }}" name="entry"
-						id="entry" lay-verify="required"
-						 class="layui-input">
-				</div>
-			</div>
-		  
+					<label class="layui-form-label" style="width: 130px;">是否应面</label>
+					<div class="layui-input-inline">
+						<select name="type" lay-filter="type" 
+							id="type" lay-search="true"><option value="">请选择</option>
+							<option {{d.type==0 ? "selected" : ""}} value="0">否</option>
+							<option {{d.type==1 ? "selected" : ""}} value="1">是</option>
+							</select>
+					</div>
+			</div>		  
+
 		   <div class="layui-form-item">
 				<label class="layui-form-label" style="width: 130px;">备注</label>
 				<div class="layui-input-inline">
@@ -144,7 +279,18 @@
 						 class="layui-input">
 				</div>
 			</div>
-			
+
+		<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 130px;">一面</label>
+					<div class="layui-input-inline">
+						<select name="typeOne" lay-filter="typeOne" 
+							id="typeOne" lay-search="true"><option value="">请选择</option>
+							<option {{d.typeOne==0 ? "selected" : ""}} value="0">否</option>
+							<option {{d.typeOne==1 ? "selected" : ""}} value="1">是</option>
+							</select>
+					</div>
+			</div>				
+
 			 <div class="layui-form-item">
 				<label class="layui-form-label" style="width: 130px;">一面备注</label>
 				<div class="layui-input-inline">
@@ -153,7 +299,18 @@
 						 class="layui-input">
 				</div>
 			</div>
-			
+
+			<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 130px;">二面</label>
+					<div class="layui-input-inline">
+						<select name="typeTwo" lay-filter="typeTwo" 
+							id="typeTwo" lay-search="true"><option value="">请选择</option>
+							<option {{d.typeTwo==0 ? "selected" : ""}} value="0">否</option>
+							<option {{d.typeTwo==1 ? "selected" : ""}} value="1">是</option>
+							</select>
+					</div>
+			</div>			
+
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 130px;">二面备注</label>
 				<div class="layui-input-inline">
@@ -162,6 +319,18 @@
 						 class="layui-input">
 				</div>
 			</div>
+
+			<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 130px;">面试情况</label>
+					<div class="layui-input-inline">
+						<select name="adopt" lay-filter="adopt" 
+							id="adopt" lay-search="true"><option value="">请选择</option>
+							<option {{d.adopt==0 ? "selected" : ""}} value="0">不通过</option>
+							<option {{d.adopt==1 ? "selected" : ""}} value="1">通过</option>
+							</select>
+					</div>
+			</div>	
+			
 		</div>
 	</form>	
 	
@@ -170,18 +339,30 @@
 	
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
-				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增一行</span>
+				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增</span>
 				<span class="layui-btn layui-btn-sm" lay-event="update">编辑</span>
-				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
-				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
+				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="soon">即将入职</span>
 				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="audit">一键入职</span>
 				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="onaudit">拒绝入职</span>
 				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="summary">招聘汇总</span>
+				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="short">短期离职</span>
+				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="quit">离职人员</span>
 			</div>
 		</script>
 
-	
+<script type="text/html" id="switchTpl">
+  <input type="checkbox" name="adopt" value="{{d.id}}" lay-skin="switch" lay-text="通过|不通过" lay-filter="adopt" {{ d.adopt == 1 ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="switchTpl2">
+  <input type="checkbox" name="type" value="{{d.id}}" lay-skin="switch" lay-text="是|否" lay-filter="type" {{ d.type == 1 ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="switchTpl3">
+  <input type="checkbox" name="typeOne" value="{{d.id}}" lay-skin="switch" lay-text="是|否" lay-filter="typeOne" {{ d.typeOne == 1 ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="switchTpl4">
+  <input type="checkbox" name="typeTwo" value="{{d.id}}" lay-skin="switch" lay-text="是|否" lay-filter="typeTwo" {{ d.typeTwo == 1 ? 'checked' : '' }}>
+</script>	
 	<script>
 			layui.config({
 				base: '${ctx}/static/layui-v2.4.5/'
@@ -216,25 +397,33 @@
 						elem: '#monthDate3',
 						type : 'month',
 					}); 
-				 
+				 	laydate.render({
+						elem: '#monthDate4',
+						type : 'month',
+					}); 
+				 	laydate.render({
+						elem: '#monthDate5',
+						type : 'month',
+					}); 
 					 var getdata={type:"orgName",}
-	      			$.ajax({								//获取部门列表数据，部门下拉框的填充
-					      url:"${ctx}/basedata/list",
-					      data:getdata,
-					      type:"GET",
-					      async:false,
-					      beforeSend:function(){
-					    	  indextwo = layer.load(1, {
-							  shade: [0.1,'#fff'] //0.1透明度的白色背景
-							  });
-						  }, 
-			      		  success: function (result) {				//初始填充部门
-			      			  $(result.data).each(function(k,j){
-			      				htmls +='<option value="'+j.id+'">'+j.name+'</option>'
-			      			  });
-			      			layer.close(indextwo);
-					      }
-					  });
+		      			$.ajax({								//获取部门列表数据，部门下拉框的填充
+						      url:"${ctx}/basedata/list",
+						      data:getdata,
+						      type:"GET",
+						      async:false,
+						      beforeSend:function(){
+						    	  indextwo = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								  });
+							  }, 
+				      		  success: function (result) {				//初始填充部门
+				      			  $(result.data).each(function(k,j){
+				      				htmls +='<option value="'+j.id+'">'+j.name+'</option>'
+				      			  });
+				      		layui.form.render()
+				      			layer.close(indextwo);
+						      }
+						  });
 					
 					var data={
     						id:10,
@@ -326,10 +515,13 @@
 
 						};
 					};
+					
+				
+					
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
-						size: 'mg',
+						skin:'nob',
 						height:'700px',
 						url: '${ctx}/personnel/getRecruit' ,
 						request:{
@@ -358,63 +550,80 @@
 								align: 'center',
 								fixed: 'left'
 							},{
-								field: "time",
-								title: "时间",
+								field: "name",
+								title: "面试人姓名",
 								align: 'center',
-								edit: 'text'
+								fixed : 'left',
+							},{
+								field: "time",
+								title: "面试时间",
+								align: 'center',
+								width : 160,
 							},{
 								field: "platformId",
 								title: "邀约平台",
 								align: 'center',
 								edit: false,
 								type: 'normal',
-								templet: fn2('selectTwo')
+								templet:  function(d){ 
+									if(d.platformId==1){
+										return "广告招聘"
+									}
+									if(d.platformId==2){
+										return "前程无忧"
+									}
+									if(d.platformId==3){
+										return "58同城"
+									}
+									if(d.platformId==4){
+										return "BOSS直聘"
+									}
+									if(d.platformId==5){
+										return "扬子人才网"
+									}
+									
+									}
 							},{
 								field: "orgNameId",
 								title: "部门",
 								align: 'center',
 								edit: false,
-								type: 'normal',
-								templet: fn1('selectOne')
+								templet:  function(d){ 
+									return d.orgName.name
+									}
 							},{
 								field: "position",
 								title: "职位",
 								align: 'center',
-								edit: 'text'
-							},{
-								field: "name",
-								title: "面试人姓名",
-								align: 'center',
-								edit: 'text'
+								templet:  function(d){ 
+									return d.position.name
+									}
 							},{
 								field: "gender",
 								align: 'center',
 								title: "性别",
 								edit: false,
 								type: 'normal',
-								templet: fn3('selectThree')
+								templet: function(d){ 
+									if(d.gender==0){
+										return "男"
+									}else{
+										return "女"
+									}
+									
+								}
 							},{
 								field: "phone",
 								title: "电话",
 								align: 'center',
-								edit: 'text'
-							},{
-								field: "livingAddress",
-								title: "现居住地址",
-								align: 'center',
-								edit: 'text'
-							},{
-								field: "entry",
-								title: "面试时间",
-								align: 'center',
-								edit: 'text'
+								width : 120,
 							},{
 								field: "type",
 								align: 'center',
 								title: "是否应面",
 								edit: false,
 								type: 'normal',
-								templet: fn4('selectFour')
+								templet:'#switchTpl2', unresize: true
 							},{
 								field: "remarks",
 								title: "备注",
@@ -426,7 +635,7 @@
 								title: "一面",
 								edit: false,
 								type: 'normal',
-								templet: fn5('selectFive')
+								templet:'#switchTpl3', unresize: true
 							},{
 								field: "remarksOne",
 								title: "一面备注",
@@ -438,19 +647,26 @@
 								title: "二面",
 								edit: false,
 								type: 'normal',
-								templet: fn6('selectSix')
+								templet:'#switchTpl4', unresize: true
 							},{
 								field: "remarksTwo",
 								title: "二面备注",
 								align: 'center',
 								edit: 'text'
+							},{
+								field: "adopt",
+								align: 'center',
+								title: "面试情况",
+								edit: false,
+								type: 'normal',
+								templet: '#switchTpl', unresize: true
 							},{ 
 								align: 'center',
 								field: "state",
 								title: "入职状态", 
 								templet:  function(d){ 
 									if(d.state==0){
-										return '未入职';
+										return '未入职'; 
 									}
 									if(d.state==1){
 										return '已入职';
@@ -458,24 +674,28 @@
 									if(d.state==2){
 										return '拒绝入职';
 									}
-											
+									if(d.state==3){
+										return '即将入职';
+									}		
 								}
+							},{
+								field: "livingAddress",
+								title: "现居住地址",
+								align: 'center',
+							},{
+								field: "testTime",
+								title: "时间",
+								align: 'center',
+								fixed : 'right',
+								width : 118,
+							},{
+								field: "remarksThree",
+								title: "备注",
+								align: 'center',
+								fixed : 'right',
+								edit: 'text'
 							}]
 						],
-						done: function() {
-							var tableView = this.elem.next();
-							tableView.find('.layui-table-grid-down').remove();
-							var totalRow = tableView.find('.layui-table-total');
-							var limit = this.page ? this.page.limit : this.limit;
-							layui.each(totalRow.find('td'), function(index, tdElem) {
-								tdElem = $(tdElem);
-								var text = tdElem.text();
-								if(text && !isNaN(text)) {
-									text = (parseFloat(text) / limit).toFixed(2);
-									tdElem.find('div.layui-table-cell').html(text);
-								}
-							});
-						},
 						//下拉框回显赋值
 						done: function(res, curr, count) {
 							var tableView = this.elem.next();
@@ -486,48 +706,43 @@
 							});
 							form.render();
 							// 初始化laydate
-							layui.each(tableView.find('td[data-field="entry"]'), function(index, tdElem) {
+							layui.each(tableView.find('td[data-field="testTime"]'), function(index, tdElem) {
 								tdElem.onclick = function(event) {
 									layui.stope(event)
 								};
 								laydate.render({
 									elem: tdElem.children[0],
-									format: 'HH:mm:ss',
-									type: 'time',
+									format: 'yyyy-MM-dd HH:mm:ss',
 									done: function(value, date) {
 											var id = table.cache[tableView.attr('lay-id')][index].id
 											var postData = {
 												id: id,
-												entry: value,
+												testTime: value,
 											};
 											//调用新增修改
 											mainJs.fUpdate(postData);
 												}
 											})
 										})
-										
-							layui.each(tableView.find('td[data-field="time"]'), function(index, tdElem) {
-								tdElem.onclick = function(event) {
-									layui.stope(event)
-								};
-								laydate.render({
-									elem: tdElem.children[0],
-									type: 'datetime',
-									done: function(value, date) {
-											var id = table.cache[tableView.attr('lay-id')][index].id
-											var postData = {
-												id: id,
-												time: value,
-											};
-											//调用新增修改
-											mainJs.fUpdate(postData);
-												}
-											})
-										})
-										
 									},
 								});
-
+					
+					 form.on('switch()', function(obj){
+							var field=this.name
+							var id=this.value
+							var a=""
+							if(obj.elem.checked==true){
+								a=1
+							}else{
+								a=0
+							}
+						    var postData = {
+									id: id,
+									[field]:a
+								}
+								//调用新增修改
+								mainJs.fUpdate(postData);
+						  });
 					// 监听表格中的下拉选择将数据同步到table.cache中
 					form.on('select(lay_selecte)', function(data) {
 						var selectElem = $(data.elem);
@@ -552,78 +767,8 @@
 						var tableId = config.id;
 						switch(obj.event) {
 							case 'addTempData':
-								allField = {id: '', name: '', entry: '',typeOne:0,type:0,typeTwo:0,gender:0,state:0};
-								table.addTemp(tableId,allField,function(trElem) {
-									// 进入回调的时候this是当前的表格的config
-									var that = this;
-									// 初始化laydate
-									layui.each(trElem.find('td[data-field="entry"]'), function(index, tdElem) {
-										tdElem.onclick = function(event) {
-											layui.stope(event)
-										};
-										laydate.render({
-											elem: tdElem.children[0],
-											format: 'HH:mm:ss',
-											type: 'time',
-											done: function(value, date) {
-												var trElem = $(this.elem[0]).closest('tr');
-												var tableView = trElem.closest('.layui-table-view');
-												table.cache[that.id][trElem.data('index')]['entry'] = value;
-												var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
-												var postData = {
-													id: id,
-													entry:value,
-												}
-												mainJs.fUpdate(postData);
-											}
-										})
-									})
-									
-								layui.each(trElem.find('td[data-field="time"]'), function(index, tdElem) {
-								tdElem.onclick = function(event) {
-									layui.stope(event)
-								};
-								laydate.render({
-									elem: tdElem.children[0],
-									type: 'datetime',
-									done: function(value, date) {
-										var trElem = $(this.elem[0]).closest('tr');
-										var tableView = trElem.closest('.layui-table-view');
-										table.cache[that.id][trElem.data('index')]['time'] = value;
-										var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
-											var postData = {
-												id: id,
-												time: value,
-											};
-											//调用新增修改
-											mainJs.fUpdate(postData);
-												}
-											})
-										})
-								});
+								addEidt("")
 								break;
-							case 'saveTempData':
-								var data = table.getTemp(tableId).data;
-								var flag=false;
-								var a=0;
-								data.forEach(function(postData,i){
-								 	if(postData.name==""){
-							    		return layer.msg("请填写人员姓名", {
-											icon: 2,
-										});
-							    	}
-							    	a++;
-							    	if(a==data.length){
-							    		flag=true
-							    	}
-									})
-								if(flag==true){
-								data.forEach(function(postData,i){
-									 mainJs.fAdd(postData);
-									table.cleanTemp(tableId);
-									})	
-								}
-						          break;
 							case 'deleteSome':
 								// 获得当前选中的
 								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
@@ -675,21 +820,49 @@
 								});
 								break;
 								
-							case 'cleanTempData':	
-									table.cleanTemp(tableId);
-							break;
+							
+							case 'soon':
+								// 获得当前选中的
+								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
+								var data = table.checkStatus(tableId).data;//获取选中数据
+								if(data[0].adopt==0){
+									return layer.msg("面试未通过",{icon: 2})
+								} 
+								if(data[0].testTime==null){
+									return layer.msg("时间不能为空",{icon: 2})
+								}
+								 if(data[0].state==1){
+										return layer.msg("当前员工已入职",{icon: 2})
+									} 
+								if(checkedIds.length>1){
+									return layer.msg("只能选择一条",{icon: 2})
+								}
+								layer.confirm('您是否确定要审核选中的' + checkedIds.length + '条记录？', function() {
+									var postData = {
+										ids:checkedIds,
+										state:3,
+									}
+									mainJs.fUpdate2(postData);
+								});
+								break;
 							
 							case 'audit':
 								// 获得当前选中的
 								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
 								var data = table.checkStatus(tableId).data;//获取选中数据
+								if(data[0].adopt==0){
+									return layer.msg("面试未通过",{icon: 2})
+								}
+								if(data[0].testTime==null){
+									return layer.msg("时间不能为空",{icon: 2})
+								}
 								if(data[0].state==1){
 									return layer.msg("当前员工已入职",{icon: 2})
 								}
 								if(checkedIds.length>1){
 									return layer.msg("只能选择一条",{icon: 2})
 								}
-								layer.confirm('您是否确定要审核选中的' + checkedIds.length + '条记录？', function() {
+								layer.confirm('您是否确定要审核选中的'+ checkedIds.length + '条记录？', function() {
 									var postData = {
 										ids:checkedIds,
 										state:1,
@@ -702,9 +875,12 @@
 								// 获得当前选中的
 								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
 								var data = table.checkStatus(tableId).data;//获取选中数据
-								if(data[0].state==1){
-									return layer.msg("当前员工已入职",{icon: 2})
+								if(data[0].adopt==0){
+									return layer.msg("面试未通过",{icon: 2})
 								}
+								 if(data[0].state==1){
+									return layer.msg("当前员工已入职",{icon: 2})
+								} 
 								if(checkedIds.length>1){
 									return layer.msg("只能选择一条",{icon: 2})
 								}
@@ -746,12 +922,83 @@
 							      });
 								break;	
 							
+							case 'short':
+								table.reload("layuiShare6") 
+								var dicDiv=$('#layuiShare5');
+								layer.open({
+							         type: 1
+							        ,title: '短期入职离职人员' //不显示标题栏
+							        ,closeBtn: false
+							        ,zindex:-1
+							        ,area:['50%', '90%']
+							        ,shade: 0.5
+							        ,id: 'LAY_layuipro2' //设定一个id，防止重复弹出
+							        ,btn: ['取消']
+							        ,btnAlign: 'c'
+							        ,moveType: 1 //拖拽模式，0或者1
+							        ,content:dicDiv
+							        ,success : function(layero, index) {
+							        	layero.addClass('layui-form');
+										// 将保存按钮改变成提交按钮
+										layero.find('.layui-layer-btn0').attr({
+											'lay-filter' : 'addRole2',
+											'lay-submit' : ''
+										})
+							        }
+							        ,end:function(){
+							        	$("#layuiShare5").hide();
+									  } 
+							      });
+								break;
+								
+							case 'quit':
+								table.reload("layuiSharequit1") 
+								var dicDiv=$('#layuiSharequit');
+								layer.open({
+							         type: 1
+							        ,title: '离职人员' //不显示标题栏
+							        ,closeBtn: false
+							        ,zindex:-1
+							        ,area:['50%', '90%']
+							        ,shade: 0.5
+							        ,id: 'LAY_layuipro2' //设定一个id，防止重复弹出
+							        ,btn: ['取消']
+							        ,btnAlign: 'c'
+							        ,moveType: 1 //拖拽模式，0或者1
+							        ,content:dicDiv
+							        ,success : function(layero, index) {
+							        	layero.addClass('layui-form');
+										// 将保存按钮改变成提交按钮
+										layero.find('.layui-layer-btn0').attr({
+											'lay-filter' : 'addRole2',
+											'lay-submit' : ''
+										})
+							        }
+							        ,end:function(){
+							        	$("#layuiSharequit").hide();
+									  } 
+							      });
+								break;
 							case 'update' :
 								 addEidt('edit')
 								break;	
 						}
 					});
-
+					
+					form.on('submit(layuiSharequit2)', function(obj) {
+						onlyField=obj.field;
+						onlyField.time=onlyField.time+'-01 00:00:00';
+						eventd3(onlyField);
+						
+					})
+					
+					
+					form.on('submit(LAY-search7)', function(obj) {
+						onlyField=obj.field;
+						onlyField.time=onlyField.time+'-01 00:00:00';
+						eventd2(onlyField);
+						
+					})
 					
 					form.on('submit(LAY-search2)', function(obj) {
 						onlyField=obj.field;
@@ -764,6 +1011,156 @@
 							where:data
 						})
 					};
+					
+					var eventd2=function(data){
+						table.reload("layuiShare6",{
+							where:data
+						})
+					};
+					
+					var eventd3=function(data){
+						table.reload("layuiSharequit1",{
+							where:data
+						})
+					};
+					
+					table.render({
+						elem: '#layuiSharequit1',
+						size: 'lg',
+						url: '${ctx}/personnel/usersl' ,
+						request:{
+							pageName: 'page' ,//页码的参数名称，默认：page
+							limitName: 'size' //每页数据量的参数名，默认：limit
+						},
+						//开启分页
+						loading: true,
+						toolbar: '#toolbar5', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+						totalRow: true,		 //开启合计行 */
+						cellMinWidth: 90,
+						colFilterRecord: true,
+						smartReloadModel: true,// 开启智能重载
+						parseData: function(ret) {
+							return {
+								code: ret.code,
+								msg: ret.message,
+								data: ret.data
+							}
+						},
+						cols: [
+							[{
+								field: "userName",
+								title: "姓名",
+								align: 'center',
+								totalRowText: '合计'
+							},{
+								field: "orgName",
+								title: "部门",
+								align: 'center',
+								templet:  function(d){ 
+									if(d.orgName==null){
+										return "";
+									}else{
+									return d.orgName.name		
+									}
+								}
+							},{
+								field: "position",
+								title: "职位",
+								align: 'center',
+								templet:  function(d){ 
+									if(d.position==null){
+										return "";
+									}else{
+									return d.position.name		
+									}
+								}
+							},{
+								field: "entry",
+								title: "入职时间",
+								align: 'center',
+							},{
+								field: "quitDate",
+								title: "离职时间",
+								align: 'center',
+							},{
+								field: "reason",
+								title: "离职原因",
+								align: 'center',
+							}
+							]
+						],
+					
+								});
+					
+					table.render({
+						elem: '#layuiShare6',
+						size: 'lg',
+						url: '${ctx}/personnel/soon' ,
+						request:{
+							pageName: 'page' ,//页码的参数名称，默认：page
+							limitName: 'size' //每页数据量的参数名，默认：limit
+						},
+						//开启分页
+						loading: true,
+						toolbar: '#toolbar5', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+						totalRow: true,		 //开启合计行 */
+						cellMinWidth: 90,
+						colFilterRecord: true,
+						smartReloadModel: true,// 开启智能重载
+						parseData: function(ret) {
+							return {
+								code: ret.code,
+								msg: ret.message,
+								data: ret.data
+							}
+						},
+						cols: [
+							[{
+								field: "name",
+								title: "姓名",
+								align: 'center',
+								totalRowText: '合计'
+							},{
+								field: "orgName",
+								title: "部门",
+								align: 'center',
+								templet:  function(d){ 
+									return d.orgName.name		
+								}
+							},{
+								field: "position",
+								title: "职位",
+								align: 'center',
+								templet:  function(d){ 
+									return d.position.name		
+								}
+							},{
+								field: "entry",
+								title: "入职时间",
+								align: 'center',
+								templet:  function(d){ 
+									return d.user.entry		
+								}
+							},{
+								field: "quitDate",
+								title: "离职时间",
+								align: 'center',
+								templet:  function(d){ 
+									return d.user.quitDate		
+								}
+							},{
+								field: "reason",
+								title: "离职原因",
+								align: 'center',
+								templet:  function(d){ 
+									return d.user.reason		
+								}
+							}
+							]
+						],
+					
+								});
+					
 					table.render({
 						elem: '#layuiShare2',
 						size: 'lg',
@@ -814,7 +1211,17 @@
 								totalRow: true
 							},{
 								field: "mod5",
-								title: "已入职",
+								title: "已入职且在职",
+								align: 'center',
+								totalRow: true
+							},{
+								field: "mod6",
+								title: "即将入职",
+								align: 'center',
+								totalRow: true
+							},{
+								field: "mod7",
+								title: "短期入职离职",
 								align: 'center',
 								totalRow: true
 							}
@@ -825,12 +1232,14 @@
 					
 
 					function addEidt(type){
-						var data={custom:{name:''},money:'',contactName:'',expenseDate:'',content:'贷款本金',withholdMoney:'',withholdReason:''};
+						var data={time:"",platformId:'',orgNameId:'',name:'',gender:'',phone:'',livingAddress:'',entry:'',type:'',remarks:'',typeOne:'',remarksOne:'',typeTwo:'',remarksTwo:'',state:0};
 						var title="新增数据";
 						var html="";
 						var tpl=addEditTpl.innerHTML;
 						var choosed=layui.table.checkStatus("tableData").data;
 						var id="";
+						var state=0;
+						var orgNameId="";
 						if(type=='edit'){
 							title="编辑数据"
 							if(choosed.length>1){
@@ -838,7 +1247,10 @@
 								return;
 							}
 							data=choosed[0];
-							id=data.id
+							id=data.id;
+							state=data.state;
+							orgNameId=data.orgNameId;
+							positionId=data.positionId;
 						}
 						laytpl(tpl).render(data,function(h){
 							html=h;
@@ -862,17 +1274,12 @@
 					        },
 							yes:function(){
 								form.on('submit(addRole)', function(data) {
-						        	var	field={
-						        			id:id,
-						        			customerName:data.field.customerName,
-						        			content:data.field.content,
-						        			money:data.field.money,
-						        			customId:self.getIndex(),
-						        			contactName:data.field.contactName,
-						        			expenseDate:data.field.expenseDate,
-						        			type:6
-						        		}
-						        	  mainJs.fAdd(field);
+									data.field.id=id;
+									data.field.state=state;
+									if(!(/^1[3456789]\d{9}$/.test(data.field.phone))){ 
+										return layer.msg("手机号码有误,请重新填写",{icon: 2}) 
+								    } 
+						        	mainJs.fAdd(data.field)
 						        	if(id==""){
 						        	document.getElementById("layuiadmin-form-admin").reset();
 						        	layui.form.render();
@@ -885,23 +1292,97 @@
 								elem: '#entry',
 								type: 'time',
 							});
-						
+						 laydate.render({
+								elem: '#time',
+								type: 'datetime',
+							});
+						 var getdata={type:"orgName",}
+			      			$.ajax({								//获取部门列表数据，部门下拉框的填充
+							      url:"${ctx}/basedata/list",
+							      data:getdata,
+							      type:"GET",
+							      async:false,
+							      beforeSend:function(){
+							    	  indextwo = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									  });
+								  }, 
+					      		  success: function (result) {				//初始填充部门
+					      			  $(result.data).each(function(k,j){
+					      				htmls +='<option '+(orgNameId==j.id ? "selected" : "")+' value="'+j.id+'">'+j.name+'</option>'
+					      			  });
+					      		  $("#orgNameId").html(htmls);
+					      		layui.form.render()
+					      			layer.close(indextwo);
+							      }
+							  });
+						 var html=""
+				      			$.ajax({								//获取当前部门下拉框选择的子数据：职位
+								      url:"${ctx}/basedata/children",
+								      data:{id:orgNameId},
+								      type:"GET",
+								      async:false,
+						      		  success: function (result) {				//填充职位下拉框
+						      			  	$(result.data).each(function(i,o){
+							      				  html +='<option '+(positionId==i.id ? "selected" : "")+' value="'+o.id+'">'+o.name+'</option>'
+						      				});  
+						      			$("#position").html(html); 
+						      			layui.form.render()
+								      }
+								  });
+						 form.on('select(orgNameId)', function(data){
+							 var html=""
+				      			$.ajax({								//获取当前部门下拉框选择的子数据：职位
+								      url:"${ctx}/basedata/children",
+								      data:{id:data.value},
+								      type:"GET",
+								      async:false,
+						      		  success: function (result) {				//填充职位下拉框
+						      			  	$(result.data).each(function(i,o){
+							      				  html +='<option  value="'+o.id+'">'+o.name+'</option>'
+						      				});  
+						      			$("#position").html(html); 
+						      			layui.form.render()
+								      }
+								  });
+						 })
+			      			
 					}
 					
-					
-					
+					 var check="off";
+					form.on('checkbox(lockDemo)', function(obj){
+						console.log(obj.elem.checked)
+						if(obj.elem.checked==true){
+							check="on"
+						}else{
+						check="off"
+						}
+					  });
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
 						var orderTime=field.orderTimeBegin.split('~');
 						field.orderTimeBegin=orderTime[0];
 						field.orderTimeEnd=orderTime[1];
+						field.time="2019-06-02 11:00:00";
+						if(check=="on"){
+						field.time="";
+						field.testTime="2019-06-02 11:00:00";
+						field.quit=0;
+						field.state=1;
+						}else{
+							field.testTime="";
+						}
+						if(field.state!=""){
+							field.testTime="2019-06-02 11:00:00";
+							field.time="";
+						}
 						table.reload('tableData', {
 							where: field
 						});
 					});
 					
-					//监听单元格编辑
+					
 					table.on('edit(tableData)', function(obj) {
 						var value = obj.value ,//得到修改后的值
 							data = obj.data ,//得到所在行所有键值
@@ -913,7 +1394,7 @@
 							}
 							//调用新增修改
 							mainJs.fUpdate(postData);
-					});
+					}); 
 					
 					//封装ajax主方法
 					var mainJs = {
