@@ -84,7 +84,7 @@ layui.config({
 			
 			menuTree.render({
 				elem : '#menuTreeDiv',
-				url :  "${ctx}/menus",
+				url :  "${ctx}/getTreeMenuPage",
 				checkbox : false,
 				toolbar : true,
 			})
