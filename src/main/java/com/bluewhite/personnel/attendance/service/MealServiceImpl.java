@@ -18,6 +18,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
@@ -31,7 +32,6 @@ import com.bluewhite.personnel.attendance.dao.PersonVariableDao;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.entity.Meal;
 import com.bluewhite.personnel.attendance.entity.PersonVariable;
-import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
@@ -209,13 +209,15 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 
 	// 同步吃饭记录
 	@Override
+	@Transactional
 	public int InitMeal(AttendanceTime attendanceTime) throws ParseException {
 		List<AttendanceTime> attendanceTimes = attendanceTimeService.findAttendanceTime(attendanceTime);
 		List<Meal> list = dao.findByTypeAndTradeDaysTimeBetween(2,
 				DatesUtil.getFirstDayOfMonth(attendanceTime.getOrderTimeBegin()),
 				DatesUtil.getLastDayOfMonth(attendanceTime.getOrderTimeBegin()));
 		if (list.size() > 0) {
-			deleteAllMeals(list);
+			List<Long> idLong = list.stream().map(Meal::getId).collect(Collectors.toList());
+			dao.deleteList(idLong);
 		}
 		List<Meal> meals = new ArrayList<Meal>();
 		PersonVariable variable = personVariableDao.findByType(1);
@@ -450,21 +452,4 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		 entityManager.close();
 	   }
 	
-	/**
-	 * 批量删除报餐记录
-	 * @param productList
-	 */
-	private void deleteAllMeals(List<Meal> mealList) {
-		entityManager.setFlushMode(FlushModeType.COMMIT);
-		 for (int i = 0; i < mealList.size(); i++){
-			 Meal meal = mealList.get(i);
-			 entityManager.remove(meal);
-	            if (i % 1000 == 0 && i > 0) {
-	            	entityManager.flush();
-	            	entityManager.clear();
-	            }
-	        }
-		 entityManager.close();
-	   }
-
 }
