@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +31,12 @@ import com.bluewhite.personnel.attendance.dao.PersonVariableDao;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.entity.Meal;
 import com.bluewhite.personnel.attendance.entity.PersonVariable;
+import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
 @Service
-public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
-		implements MealService {
+public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements MealService {
 	@Autowired
 	private MealDao dao;
 	@Autowired
@@ -44,6 +47,9 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 	private AttendanceTimeService attendanceTimeService;
 	@Autowired
 	private AttendanceInitService attendanceInitService;
+	@PersistenceContext
+	protected EntityManager entityManager;
+
 	@Override
 	public PageResult<Meal> findPage(Meal param, PageParameter page) {
 		Page<Meal> pages = dao.findAll((root, query, cb) -> {
@@ -76,6 +82,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 		PageResult<Meal> result = new PageResult<>(pages, page);
 		return result;
 	}
+
 	/*
 	 * 去除分页查询
 	 */
@@ -109,55 +116,56 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 			return null;
 		});
 		return list;
-	}	
+	}
+
 	@Override
 	public Meal addMeal(Meal meal) {
-		//按报餐类型查找  找出每餐费用
-	 User user= userService.findOne(meal.getUserId());
-	 PersonVariable variable=personVariableDao.findByType(1);
-	 if (meal.getMode()==1) {
-		 meal.setPrice(Double.valueOf(variable.getKeyValue()));
-	 }
-	 if (meal.getMode()==2) {
-		 meal.setPrice(Double.valueOf(variable.getKeyValueTwo()));
-	 }
-	 if (meal.getMode()==3) {
-		 meal.setPrice(Double.valueOf(variable.getKeyValueThree()));
-	 }
-	 if (meal.getId()==null) {
-	 String date = meal.getTime();
-	 String[] addDate = date.split("~");
-	 List<Date> dateList=DatesUtil.getPerDaysByStartAndEndDate(addDate[0],addDate[1],"yyyy-MM-dd");
-	 List<Meal> meals=new ArrayList<Meal>();
-	 for (Date date2 : dateList) {
-		 Meal meal2=new Meal();
-		 meal2.setTradeDaysTime(date2);
-		 meal2.setPrice(meal.getPrice());
-		 meal2.setMode(meal.getMode());
-		 meal2.setUserName(meal.getUserName());
-		 meal2.setUserId(meal.getUserId());
-		 meals.add(meal2);
+		// 按报餐类型查找 找出每餐费用
+		User user = userService.findOne(meal.getUserId());
+		PersonVariable variable = personVariableDao.findByType(1);
+		if (meal.getMode() == 1) {
+			meal.setPrice(Double.valueOf(variable.getKeyValue()));
+		}
+		if (meal.getMode() == 2) {
+			meal.setPrice(Double.valueOf(variable.getKeyValueTwo()));
+		}
+		if (meal.getMode() == 3) {
+			meal.setPrice(Double.valueOf(variable.getKeyValueThree()));
+		}
+		if (meal.getId() == null) {
+			String date = meal.getTime();
+			String[] addDate = date.split("~");
+			List<Date> dateList = DatesUtil.getPerDaysByStartAndEndDate(addDate[0], addDate[1], "yyyy-MM-dd");
+			List<Meal> meals = new ArrayList<Meal>();
+			for (Date date2 : dateList) {
+				Meal meal2 = new Meal();
+				meal2.setTradeDaysTime(date2);
+				meal2.setPrice(meal.getPrice());
+				meal2.setMode(meal.getMode());
+				meal2.setUserName(meal.getUserName());
+				meal2.setUserId(meal.getUserId());
+				meals.add(meal2);
+			}
+			dao.save(meals);
+		} else {
+			dao.save(meal);
+		}
+		return meal;
 	}
-	 dao.save(meals);
-	 }else{
-	 dao.save(meal);
-	 }
-	return meal;
-	}
-	
-	//查询字典表中 报餐价格
+
+	// 查询字典表中 报餐价格
 	@Override
 	public PersonVariable findByType(Integer type) {
-		
+
 		return personVariableDao.findByType(type);
 	}
 
 	@Override
 	public PersonVariable updateperson(PersonVariable personVariable) {
-		
+
 		return personVariableDao.save(personVariable);
 	}
-	
+
 	/*
 	 * 汇总查询
 	 */
@@ -166,218 +174,103 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 		List<Map<String, Object>> allList = new ArrayList<>();
 		// 单向数据map
 		Map<String, Object> allMap = null;
-		List<Meal> mealsList= findMeal(meal);
-		Map<Long, List<Meal>> mealMap = mealsList.stream()
-			.filter(Meal -> Meal.getUserId() != null)
-			.collect(Collectors.groupingBy(Meal::getUserId, Collectors.toList()));
+		List<Meal> mealsList = findMeal(meal);
+		Map<Long, List<Meal>> mealMap = mealsList.stream().filter(Meal -> Meal.getUserId() != null)
+				.collect(Collectors.groupingBy(Meal::getUserId, Collectors.toList()));
 		for (Long ps1 : mealMap.keySet()) {
 			allMap = new HashMap<>();
 			// 获取单一员工日期区间所有的报餐数据
 			List<Meal> psList1 = mealMap.get(ps1);
 			List<Double> listDouble = new ArrayList<>();
-			psList1.stream().filter(Meal->Meal.getUserId().equals(Meal.getUserId())).forEach(
-					c->{listDouble.add(c.getPrice());
+			psList1.stream().filter(Meal -> Meal.getUserId().equals(Meal.getUserId())).forEach(c -> {
+				listDouble.add(c.getPrice());
 			});
 			double budget = NumUtils.sum(listDouble);
-			double modeOne=psList1.stream().filter(Meal->Meal.getUserId().equals(Meal.getUserId()) && Meal.getMode()==1).count();
-			double modeTwo=psList1.stream().filter(Meal->Meal.getUserId().equals(Meal.getUserId()) && Meal.getMode()==2).count();
-			double modeThree=psList1.stream().filter(Meal->Meal.getUserId().equals(Meal.getUserId()) && Meal.getMode()==3).count();
-			User user= userService.findOne(ps1);
-			String aString= user.getUserName();
-			String org=user.getOrgName().getName();
+			double modeOne = psList1.stream()
+					.filter(Meal -> Meal.getUserId().equals(Meal.getUserId()) && Meal.getMode() == 1).count();
+			double modeTwo = psList1.stream()
+					.filter(Meal -> Meal.getUserId().equals(Meal.getUserId()) && Meal.getMode() == 2).count();
+			double modeThree = psList1.stream()
+					.filter(Meal -> Meal.getUserId().equals(Meal.getUserId()) && Meal.getMode() == 3).count();
+			User user = userService.findOne(ps1);
+			String aString = user.getUserName();
+			String org = user.getOrgName().getName();
 			allMap.put("username", aString);
 			allMap.put("money", budget);
 			allMap.put("orgName", org);
-			allMap.put("modeOne",modeOne);
-			allMap.put("modeTwo",modeTwo);
-			allMap.put("modeThree",modeThree);
+			allMap.put("modeOne", modeOne);
+			allMap.put("modeTwo", modeTwo);
+			allMap.put("modeThree", modeThree);
 			allList.add(allMap);
-			}
-		
+		}
+
 		return allList;
 	}
-	//同步吃饭记录
+
+	// 同步吃饭记录
 	@Override
 	public int InitMeal(AttendanceTime attendanceTime) throws ParseException {
-	List<AttendanceTime> attendanceTimes=attendanceTimeService.findAttendanceTime(attendanceTime);
-	List<Meal> list=dao.findByTypeAndTradeDaysTimeBetween(2,DatesUtil.getFirstDayOfMonth(attendanceTime.getOrderTimeBegin()),DatesUtil.getLastDayOfMonth(attendanceTime.getOrderTimeBegin()));
-	if (list.size()>0) {
-		dao.delete(list);
-	} 
-	List<Meal> meals=new ArrayList<Meal>();
-	PersonVariable variable=personVariableDao.findByType(1);
-	PersonVariable restType = personVariableDao.findByType(0);
-	for (AttendanceTime attendanceTime2 : attendanceTimes) {
-		if (attendanceTime2.getCheckIn()!=null && attendanceTime2.getCheckOut()==null) {
-			int j=attendanceTime2.getCheckIn().getHours();
-			if (j>12) {
-				attendanceTime.setCheckOut(attendanceTime2.getCheckIn());
-				attendanceTime.setCheckIn(null);
-			}
-			if (j==12) {
-				attendanceTime.setCheckIn(attendanceTime2.getCheckIn());
-				attendanceTime.setCheckOut(attendanceTime2.getCheckIn());
-			}
+		List<AttendanceTime> attendanceTimes = attendanceTimeService.findAttendanceTime(attendanceTime);
+		List<Meal> list = dao.findByTypeAndTradeDaysTimeBetween(2,
+				DatesUtil.getFirstDayOfMonth(attendanceTime.getOrderTimeBegin()),
+				DatesUtil.getLastDayOfMonth(attendanceTime.getOrderTimeBegin()));
+		if (list.size() > 0) {
+			deleteAllMeals(list);
 		}
-		
-		//基础数据 每一餐的价格
-		if (attendanceTime2.getCheckOut()!=null || attendanceTime2.getCheckIn()!=null) {
-		if (attendanceTime2.getCheckOut()!=null && attendanceTime2.getCheckIn()!=null) {
-			DateFormat df = new SimpleDateFormat("HH:mm:ss");
-			Date dt1 = df.parse("08:30:00");
-			Date dt3 = df.parse("13:30:00");
-			Date dt4 = df.parse("18:30:00");
-			Date dt5 = df.parse("04:30:00");
-			String  aString=df.format(attendanceTime2.getCheckIn());
-			Date dt2= df.parse(aString);
-			
-			String  aString2=df.format(attendanceTime2.getCheckOut());
-			Date dt6= df.parse(aString2);
-			//签出时间 小时dt5 重新赋值
-			if (dt6.compareTo(dt5)==-1) {
-				dt6=df.parse("23:59:59");
-			}
-			int a= dt2.compareTo(dt1);
-			int b= dt2.compareTo(dt3);
-			int c= dt6.compareTo(dt4);
-			int d= dt2.compareTo(dt4);//吃晚饭  第一次打卡要小于18.30
-			if (attendanceTime2.getEatType()!=null) {
-				//早饭 签入时间小于dt1
-				if (attendanceTime2.getEatType()==1 &&  a==-1) {
-					Meal meal2=new Meal();
-					meal2.setTradeDaysTime(attendanceTime2.getTime());
-					meal2.setPrice(Double.valueOf(variable.getKeyValue()));
-					meal2.setMode(1);
-					meal2.setUserName(attendanceTime2.getUserName());
-					meal2.setUserId(attendanceTime2.getUserId());
-					meal2.setType(2);
-					meals.add(meal2);
+		List<Meal> meals = new ArrayList<Meal>();
+		PersonVariable variable = personVariableDao.findByType(1);
+		PersonVariable restType = personVariableDao.findByType(0);
+		for (AttendanceTime attendanceTime2 : attendanceTimes) {
+			if (attendanceTime2.getCheckIn() != null && attendanceTime2.getCheckOut() == null) {
+				int j = attendanceTime2.getCheckIn().getHours();
+				if (j > 12) {
+					attendanceTime.setCheckOut(attendanceTime2.getCheckIn());
+					attendanceTime.setCheckIn(null);
+				}
+				if (j == 12) {
+					attendanceTime.setCheckIn(attendanceTime2.getCheckIn());
+					attendanceTime.setCheckOut(attendanceTime2.getCheckIn());
 				}
 			}
-			
-			if (b==-1) {
-				//中餐 签入时间小于dt3
-				Meal meal2=new Meal();
-				meal2.setTradeDaysTime(attendanceTime2.getTime());
-				meal2.setPrice(Double.valueOf(variable.getKeyValueTwo()));
-				meal2.setMode(2);
-				meal2.setUserName(attendanceTime2.getUserName());
-				meal2.setUserId(attendanceTime2.getUserId());
-				meal2.setType(2);
-				meals.add(meal2);
-			}
-			
-			if (attendanceTime2.getEatType()!=null) {
-				//晚饭 签出时间大于dt4
-			if (attendanceTime2.getEatType()==2 && d==-1 && c==1) {
-				Meal meal2=new Meal();
-				meal2.setTradeDaysTime(attendanceTime2.getTime());
-				meal2.setPrice(Double.valueOf(variable.getKeyValueThree()));
-				meal2.setMode(3);
-				meal2.setUserName(attendanceTime2.getUserName());
-				meal2.setUserId(attendanceTime2.getUserId());
-				meal2.setType(2);
-				meals.add(meal2);
-			} 
-			//早晚饭
-			if (attendanceTime2.getEatType()==3 &&  a==-1 && c==1) {
-				Meal meal2=new Meal();
-				meal2.setTradeDaysTime(attendanceTime2.getTime());
-				meal2.setPrice(Double.valueOf(variable.getKeyValue()));
-				meal2.setMode(1);
-				meal2.setUserName(attendanceTime2.getUserName());
-				meal2.setUserId(attendanceTime2.getUserId());
-				meal2.setType(2);
-				meals.add(meal2);
-				Meal meal3=new Meal();
-				meal3.setTradeDaysTime(attendanceTime2.getTime());
-				meal3.setPrice(Double.valueOf(variable.getKeyValueThree()));
-				meal3.setMode(3);
-				meal3.setUserName(attendanceTime2.getUserName());
-				meal3.setUserId(attendanceTime2.getUserId());
-				meal3.setType(2);
-				meals.add(meal3);
-		}
-			}
-		}else {
-		if (attendanceTime2.getCheckIn()!=null) {
-			if (attendanceTime2.getEatType()!=null) {
-				//早饭
-				if (attendanceTime2.getEatType()==1) {
-					Meal meal2=new Meal();
-					meal2.setTradeDaysTime(attendanceTime2.getTime());
-					meal2.setPrice(Double.valueOf(variable.getKeyValue()));
-					meal2.setMode(1);
-					meal2.setUserName(attendanceTime2.getUserName());
-					meal2.setUserId(attendanceTime2.getUserId());
-					meal2.setType(2);
-					meals.add(meal2);
-				}
-			}
-		}
-		if (attendanceTime2.getCheckOut()!=null) {
-			if (attendanceTime2.getEatType()!=null) {
-				//晚饭
-			if (attendanceTime2.getEatType()==2) {
-				Meal meal2=new Meal();
-				meal2.setTradeDaysTime(attendanceTime2.getTime());
-				meal2.setPrice(Double.valueOf(variable.getKeyValueThree()));
-				meal2.setMode(3);
-				meal2.setUserName(attendanceTime2.getUserName());
-				meal2.setUserId(attendanceTime2.getUserId());
-				meal2.setType(2);
-				meals.add(meal2);
-			} 
-			}
-		}
-		if (attendanceTime2.getEatType()!=null) {
-			//早饭晚饭都吃
-			if (attendanceTime2.getEatType()==3) {
-				Meal meal2=new Meal();
-				meal2.setTradeDaysTime(attendanceTime2.getTime());
-				meal2.setPrice(Double.valueOf(variable.getKeyValue()));
-				meal2.setMode(1);
-				meal2.setUserName(attendanceTime2.getUserName());
-				meal2.setUserId(attendanceTime2.getUserId());
-				meal2.setType(2);
-				meals.add(meal2);
-				Meal meal3=new Meal();
-				meal3.setTradeDaysTime(attendanceTime2.getTime());
-				meal3.setPrice(Double.valueOf(variable.getKeyValueThree()));
-				meal3.setMode(3);
-				meal3.setUserName(attendanceTime2.getUserName());
-				meal3.setUserId(attendanceTime2.getUserId());
-				meal3.setType(2);
-				meals.add(meal3);
-		}
-		}
-		 	Meal meal2=new Meal();
-			meal2.setTradeDaysTime(attendanceTime2.getTime());
-			meal2.setPrice(Double.valueOf(variable.getKeyValueTwo()));
-			meal2.setMode(2);
-			meal2.setUserName(attendanceTime2.getUserName());
-			meal2.setUserId(attendanceTime2.getUserId());
-			meal2.setType(2);
-			meals.add(meal2);
-		}
-		}else{
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			boolean rout = false;
-			if (attendanceTime2.getWorkType()==null || attendanceTime2.getRestType()==null) {
-				throw new ServiceException(attendanceTime2.getUser().getUserName()+"没有考勤初始设定数据，请填写后操作");
-			}
-			// 1.周休一天，
-			if (attendanceTime2.getWorkType()==1 || attendanceTime2.getWorkType()==2) {
-			if (attendanceTime2.getRestType() == 1) {
-				String[] weeklyRestDate = restType.getKeyValue().split(",");
-				if (weeklyRestDate.length > 0) {
-					for (int j = 0; j < weeklyRestDate.length; j++) {
-						if (DatesUtil.getfristDayOftime(attendanceTime2.getTime()).compareTo(sdf.parse(weeklyRestDate[j]))==0) {
-							rout=true;
+
+			// 基础数据 每一餐的价格
+			if (attendanceTime2.getCheckOut() != null || attendanceTime2.getCheckIn() != null) {
+				if (attendanceTime2.getCheckOut() != null && attendanceTime2.getCheckIn() != null) {
+					DateFormat df = new SimpleDateFormat("HH:mm:ss");
+					Date dt1 = df.parse("08:30:00");
+					Date dt3 = df.parse("13:30:00");
+					Date dt4 = df.parse("18:30:00");
+					Date dt5 = df.parse("04:30:00");
+					String aString = df.format(attendanceTime2.getCheckIn());
+					Date dt2 = df.parse(aString);
+
+					String aString2 = df.format(attendanceTime2.getCheckOut());
+					Date dt6 = df.parse(aString2);
+					// 签出时间 小时dt5 重新赋值
+					if (dt6.compareTo(dt5) == -1) {
+						dt6 = df.parse("23:59:59");
+					}
+					int a = dt2.compareTo(dt1);
+					int b = dt2.compareTo(dt3);
+					int c = dt6.compareTo(dt4);
+					int d = dt2.compareTo(dt4);// 吃晚饭 第一次打卡要小于18.30
+					if (attendanceTime2.getEatType() != null) {
+						// 早饭 签入时间小于dt1
+						if (attendanceTime2.getEatType() == 1 && a == -1) {
+							Meal meal2 = new Meal();
+							meal2.setTradeDaysTime(attendanceTime2.getTime());
+							meal2.setPrice(Double.valueOf(variable.getKeyValue()));
+							meal2.setMode(1);
+							meal2.setUserName(attendanceTime2.getUserName());
+							meal2.setUserId(attendanceTime2.getUserId());
+							meal2.setType(2);
+							meals.add(meal2);
 						}
 					}
-					if (rout==false) {
-						Meal meal2=new Meal();
+
+					if (b == -1) {
+						// 中餐 签入时间小于dt3
+						Meal meal2 = new Meal();
 						meal2.setTradeDaysTime(attendanceTime2.getTime());
 						meal2.setPrice(Double.valueOf(variable.getKeyValueTwo()));
 						meal2.setMode(2);
@@ -386,47 +279,192 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 						meal2.setType(2);
 						meals.add(meal2);
 					}
-				}
-			}
-			//2.月休两天
-			if (attendanceTime2.getRestType() == 2) {
-				String[] weeklyRestDate = restType.getKeyValue().split(",");
-				if (weeklyRestDate.length > 0) {
-					for (int j = 0; j < weeklyRestDate.length; j++) {
-						if (DatesUtil.getfristDayOftime(attendanceTime2.getTime()).compareTo(sdf.parse(weeklyRestDate[j]))==0) {
-							rout=true;
+
+					if (attendanceTime2.getEatType() != null) {
+						// 晚饭 签出时间大于dt4
+						if (attendanceTime2.getEatType() == 2 && d == -1 && c == 1) {
+							Meal meal2 = new Meal();
+							meal2.setTradeDaysTime(attendanceTime2.getTime());
+							meal2.setPrice(Double.valueOf(variable.getKeyValueThree()));
+							meal2.setMode(3);
+							meal2.setUserName(attendanceTime2.getUserName());
+							meal2.setUserId(attendanceTime2.getUserId());
+							meal2.setType(2);
+							meals.add(meal2);
+						}
+						// 早晚饭
+						if (attendanceTime2.getEatType() == 3 && a == -1 && c == 1) {
+							Meal meal2 = new Meal();
+							meal2.setTradeDaysTime(attendanceTime2.getTime());
+							meal2.setPrice(Double.valueOf(variable.getKeyValue()));
+							meal2.setMode(1);
+							meal2.setUserName(attendanceTime2.getUserName());
+							meal2.setUserId(attendanceTime2.getUserId());
+							meal2.setType(2);
+							meals.add(meal2);
+							Meal meal3 = new Meal();
+							meal3.setTradeDaysTime(attendanceTime2.getTime());
+							meal3.setPrice(Double.valueOf(variable.getKeyValueThree()));
+							meal3.setMode(3);
+							meal3.setUserName(attendanceTime2.getUserName());
+							meal3.setUserId(attendanceTime2.getUserId());
+							meal3.setType(2);
+							meals.add(meal3);
 						}
 					}
-					if (rout==false) {
-						Meal meal2=new Meal();
-						meal2.setTradeDaysTime(attendanceTime2.getTime());
-						meal2.setPrice(Double.valueOf(variable.getKeyValueTwo()));
-						meal2.setMode(2);
-						meal2.setUserName(attendanceTime2.getUserName());
-						meal2.setUserId(attendanceTime2.getUserId());
-						meal2.setType(2);
-						meals.add(meal2);
+				} else {
+					if (attendanceTime2.getCheckIn() != null) {
+						if (attendanceTime2.getEatType() != null) {
+							// 早饭
+							if (attendanceTime2.getEatType() == 1) {
+								Meal meal2 = new Meal();
+								meal2.setTradeDaysTime(attendanceTime2.getTime());
+								meal2.setPrice(Double.valueOf(variable.getKeyValue()));
+								meal2.setMode(1);
+								meal2.setUserName(attendanceTime2.getUserName());
+								meal2.setUserId(attendanceTime2.getUserId());
+								meal2.setType(2);
+								meals.add(meal2);
+							}
+						}
+					}
+					if (attendanceTime2.getCheckOut() != null) {
+						if (attendanceTime2.getEatType() != null) {
+							// 晚饭
+							if (attendanceTime2.getEatType() == 2) {
+								Meal meal2 = new Meal();
+								meal2.setTradeDaysTime(attendanceTime2.getTime());
+								meal2.setPrice(Double.valueOf(variable.getKeyValueThree()));
+								meal2.setMode(3);
+								meal2.setUserName(attendanceTime2.getUserName());
+								meal2.setUserId(attendanceTime2.getUserId());
+								meal2.setType(2);
+								meals.add(meal2);
+							}
+						}
+					}
+					if (attendanceTime2.getEatType() != null) {
+						// 早饭晚饭都吃
+						if (attendanceTime2.getEatType() == 3) {
+							Meal meal2 = new Meal();
+							meal2.setTradeDaysTime(attendanceTime2.getTime());
+							meal2.setPrice(Double.valueOf(variable.getKeyValue()));
+							meal2.setMode(1);
+							meal2.setUserName(attendanceTime2.getUserName());
+							meal2.setUserId(attendanceTime2.getUserId());
+							meal2.setType(2);
+							meals.add(meal2);
+							Meal meal3 = new Meal();
+							meal3.setTradeDaysTime(attendanceTime2.getTime());
+							meal3.setPrice(Double.valueOf(variable.getKeyValueThree()));
+							meal3.setMode(3);
+							meal3.setUserName(attendanceTime2.getUserName());
+							meal3.setUserId(attendanceTime2.getUserId());
+							meal3.setType(2);
+							meals.add(meal3);
+						}
+					}
+					Meal meal2 = new Meal();
+					meal2.setTradeDaysTime(attendanceTime2.getTime());
+					meal2.setPrice(Double.valueOf(variable.getKeyValueTwo()));
+					meal2.setMode(2);
+					meal2.setUserName(attendanceTime2.getUserName());
+					meal2.setUserId(attendanceTime2.getUserId());
+					meal2.setType(2);
+					meals.add(meal2);
+				}
+			} else {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				boolean rout = false;
+				if (attendanceTime2.getWorkType() == null || attendanceTime2.getRestType() == null) {
+					throw new ServiceException(attendanceTime2.getUser().getUserName() + "没有考勤初始设定数据，请填写后操作");
+				}
+				// 1.周休一天，
+				if (attendanceTime2.getWorkType() == 1 || attendanceTime2.getWorkType() == 2) {
+					if (attendanceTime2.getRestType() == 1) {
+						String[] weeklyRestDate = restType.getKeyValue().split(",");
+						if (weeklyRestDate.length > 0) {
+							for (int j = 0; j < weeklyRestDate.length; j++) {
+								if (DatesUtil.getfristDayOftime(attendanceTime2.getTime())
+										.compareTo(sdf.parse(weeklyRestDate[j])) == 0) {
+									rout = true;
+								}
+							}
+							if (rout == false) {
+								Meal meal2 = new Meal();
+								meal2.setTradeDaysTime(attendanceTime2.getTime());
+								meal2.setPrice(Double.valueOf(variable.getKeyValueTwo()));
+								meal2.setMode(2);
+								meal2.setUserName(attendanceTime2.getUserName());
+								meal2.setUserId(attendanceTime2.getUserId());
+								meal2.setType(2);
+								meals.add(meal2);
+							}
+						}
+					}
+					// 2.月休两天
+					if (attendanceTime2.getRestType() == 2) {
+						String[] weeklyRestDate = restType.getKeyValue().split(",");
+						if (weeklyRestDate.length > 0) {
+							for (int j = 0; j < weeklyRestDate.length; j++) {
+								if (DatesUtil.getfristDayOftime(attendanceTime2.getTime())
+										.compareTo(sdf.parse(weeklyRestDate[j])) == 0) {
+									rout = true;
+								}
+							}
+							if (rout == false) {
+								Meal meal2 = new Meal();
+								meal2.setTradeDaysTime(attendanceTime2.getTime());
+								meal2.setPrice(Double.valueOf(variable.getKeyValueTwo()));
+								meal2.setMode(2);
+								meal2.setUserName(attendanceTime2.getUserName());
+								meal2.setUserId(attendanceTime2.getUserId());
+								meal2.setType(2);
+								meals.add(meal2);
+							}
+						}
 					}
 				}
 			}
-			}
 		}
-	}
-		dao.save(meals);
+		saveAllMeals(meals);
 		return meals.size();
 	}
-
-	
-	public static void main(String[] args) throws ParseException {
-		Date date=new Date();
-		DateFormat df = new SimpleDateFormat("HH:mm:ss");
-		Date dt1 = df.parse("10:00:00");
-		String  aString=df.format(date);
-		Date date2= df.parse(aString);
-		System.out.println(date2.compareTo(dt1));
-	}
 	
 	
-
+	
+	/**
+	 * 批量新增报餐记录
+	 * @param productList
+	 */
+	private void saveAllMeals(List<Meal> mealList) {
+		entityManager.setFlushMode(FlushModeType.COMMIT);
+		 for (int i = 0; i < mealList.size(); i++){
+			 Meal meal = mealList.get(i);
+			 entityManager.merge(meal);
+	            if (i % 1000 == 0 && i > 0) {
+	            	entityManager.flush();
+	            	entityManager.clear();
+	            }
+	        }
+		 entityManager.close();
+	   }
+	
+	/**
+	 * 批量删除报餐记录
+	 * @param productList
+	 */
+	private void deleteAllMeals(List<Meal> mealList) {
+		entityManager.setFlushMode(FlushModeType.COMMIT);
+		 for (int i = 0; i < mealList.size(); i++){
+			 Meal meal = mealList.get(i);
+			 entityManager.remove(meal);
+	            if (i % 1000 == 0 && i > 0) {
+	            	entityManager.flush();
+	            	entityManager.clear();
+	            }
+	        }
+		 entityManager.close();
+	   }
 
 }
