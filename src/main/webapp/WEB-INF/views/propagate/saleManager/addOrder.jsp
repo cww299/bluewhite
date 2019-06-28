@@ -270,16 +270,17 @@ layui.config({
 		
 		var choosedProduct=[],			//用户已经选择上的产品
 			allInventory=[],			//所有的仓库
-			allUser=[]; 
+			allUser=[],
+		    currUser = { id:"" };
 		var chooseCuctomWin				//各个弹窗
 			,chooseProductWin
 			,addNewProductWin 
 			,addNewCustomWin;
 		
 		$('#headerTool').find("td:even").css({backgroundColor:"rgba(65, 161, 210, 0.45)",padding:"1px"}); //表格颜色
+		getCurrUser();
 		rederSelect();						//渲染地址下拉框，给出默认值
 		getAllInventory();					//获取所有仓库
-		getAllUser();
 		form.render();
 		table.render({
 			elem:"#productTable", 
@@ -743,7 +744,7 @@ layui.config({
 			});
 			form.render();
 			table.render({
-				url:"${ctx}/inventory/onlineCustomerPage",
+				url:"${ctx}/inventory/onlineCustomerPage?userId="+currUser.id,
 				elem:"#customTable",
 				loading:true,
 				page:true,
@@ -921,26 +922,30 @@ layui.config({
 				}
 			})
 		}
-		function renderUserSelect(select){			//根据id渲染客服下拉框
-			var user;
+		function getCurrUser(){
 			$.ajax({
 				url:'${ctx}/getCurrentUser',		//获取当前登录用户
 				async:false,
 				success:function(r){
 					if(0==r.code){
-						user = r.data;
+						currUser = r.data;
 					}
 				}
 			})
+			getAllUser();
+		}
+		function renderUserSelect(select){			//根据id渲染客服下拉框
+			var user = currUser;
 			var html='';
 			if(user==null)
-				html='无法获取当前登录用户信息';
-			for(var i=0;i<allUser.length;i++){
-				var isSelected='';
-				if(allUser[i].id==user.id)
-					isSelected='selected';
-				html+='<option value="'+allUser[i].id+'" '+isSelected+'>'+allUser[i].userName+'</option>';
-			}
+				html='<option value="">无法获取当前登录用户信息</option>';
+			else
+				for(var i=0;i<allUser.length;i++){
+					var isSelected='';
+					if(allUser[i].id==user.id)
+						isSelected='selected';
+					html+='<option value="'+allUser[i].id+'" '+isSelected+'>'+allUser[i].userName+'</option>';
+				}
 			$('#'+select).html(html);
 			form.render();
 		}
