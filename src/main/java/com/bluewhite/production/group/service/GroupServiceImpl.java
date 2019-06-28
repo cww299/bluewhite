@@ -100,8 +100,8 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 		}
 
 		Map<Long, List<Temporarily>> mapTemporarilyList = null;
-		// 按个人按分组查看
-		switch (temporarily.getViewTypeUser()) {
+		// 按个人按分组查看	
+		switch (temporarily.getViewTypeUser()) {  
 		case 1:
 			mapTemporarilyList = temporarilyList.stream().filter(Temporarily -> Temporarily.getUserId() != null)
 					.collect(Collectors.groupingBy(Temporarily::getUserId, Collectors.toList()));
@@ -113,8 +113,8 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 		}
 		// 获取一天的开始时间
 		Date beginTimes = temporarily.getOrderTimeBegin();
-		for (Long ps : mapTemporarilyList.keySet()) {
-			for (int i = 0; i < size; i++) {
+		for (int i = 0; i < size; i++) {
+			for (Long ps : mapTemporarilyList.keySet()) {
 				Map<String, Object> mapTe = new HashMap<>();
 				List<Temporarily> psList = mapTemporarilyList.get(ps);
 				List<Temporarily> psListTe = null;
