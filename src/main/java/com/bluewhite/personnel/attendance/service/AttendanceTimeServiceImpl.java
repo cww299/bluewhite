@@ -65,7 +65,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
 	@Override
 	public List<AttendanceTime> findAttendanceTime(AttendanceTime attendance) throws ParseException {
-		//获取固定休息日
+		// 获取固定休息日
 		PersonVariable restType = personVariableDao.findByType(0);
 		// 报餐系统所需要的人员
 		List<User> list = null;
@@ -81,7 +81,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 							|| (User.getQuitDate() != null && User.getQuitDate().after(attendance.getOrderTimeBegin())))
 					.collect(Collectors.toList());
 			attendanceInitList = attendanceInitDao.findAll();
-			allAttList = attendanceDao.findByTimeBetween(attendance.getOrderTimeBegin(), DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin()));
+			allAttList = attendanceDao.findByTimeBetween(attendance.getOrderTimeBegin(),
+					DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin()));
 		}
 
 		// 检查当前月份属于夏令时或冬令时 flag=ture 为夏令时
@@ -121,8 +122,9 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			for (User us : userList) {
 				List<Attendance> attUserList = new ArrayList<>();
 				// 获取员工一天内的打卡记录并按照自然排序
-				List<Attendance> attUserListSort = allAttList.stream()
-						.filter(Attendance ->Attendance.getUserId()!=null && Attendance.getUserId().equals(us.getId())).collect(Collectors.toList());
+				List<Attendance> attUserListSort = allAttList.stream().filter(
+						Attendance -> Attendance.getUserId() != null && Attendance.getUserId().equals(us.getId()))
+						.collect(Collectors.toList());
 				for (Attendance at : attUserListSort) {
 					if ((at.getTime().after(beginTimes) || at.getTime().compareTo(beginTimes) == 0)
 							&& (at.getTime().before(endTimes) || at.getTime().compareTo(endTimes) == 0)) {
@@ -153,10 +155,11 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				// 获取员工考勤的初始化参数
 				AttendanceInit attendanceInit = null;
 				if (attendance.getUserId() == null && attendance.getOrgNameId() == null) {
-					 List<AttendanceInit> attendanceInitUserList = attendanceInitList.stream()
-							.filter(AttendanceInit -> AttendanceInit.getUserId() !=null && AttendanceInit.getUserId().equals(us.getId()))
+					List<AttendanceInit> attendanceInitUserList = attendanceInitList.stream()
+							.filter(AttendanceInit -> AttendanceInit.getUserId() != null
+									&& AttendanceInit.getUserId().equals(us.getId()))
 							.collect(Collectors.toList());
-					 attendanceInit = attendanceInitUserList.size()>0 ? attendanceInitUserList.get(0) : null;
+					attendanceInit = attendanceInitUserList.size() > 0 ? attendanceInitUserList.get(0) : null;
 				} else {
 					attendanceInit = attendanceInitService.findByUserId(us.getId());
 				}
@@ -259,28 +262,29 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				// 加班后默认到岗时间(1.按点上班，2.第二天上班时间以超过24:00后的时间往后推,3.超过24:30后默认休息7.5小时)
 				// 获取前一天员工的签出时间。是当天的24:00到6:00之间的签出记录
 				List<Attendance> afterAttendance = null;
-				if (attendanceInit.getComeWork() == 2) {
-					afterAttendance = attendanceDao.findByUserIdAndTimeBetween(us.getId(),
-							DatesUtil.dayTime(beginTimes, "00:00:00"), DatesUtil.dayTime(beginTimes, "06:00:00"));
-					if (afterAttendance.size() > 0) {
-						// 得到最后一次签到记录离24：00相差分钟数
-						minute = DatesUtil.getTimeHour(DatesUtil.dayTime(beginTimes, "00:00:00"),
-								afterAttendance.get(afterAttendance.size() - 1).getTime());
-						sign = true;
+				if (attendance.getUserId() != null || attendance.getOrgNameId() != null) {
+					if (attendanceInit.getComeWork() == 2) {
+						afterAttendance = attendanceDao.findByUserIdAndTimeBetween(us.getId(),
+								DatesUtil.dayTime(beginTimes, "00:00:00"), DatesUtil.dayTime(beginTimes, "06:00:00"));
+						if (afterAttendance.size() > 0) {
+							// 得到最后一次签到记录离24：00相差分钟数
+							minute = DatesUtil.getTimeHour(DatesUtil.dayTime(beginTimes, "00:00:00"),
+									afterAttendance.get(afterAttendance.size() - 1).getTime());
+							sign = true;
+						}
+					}
+					// 2.超过24:30后默认休息7.5小时
+					if (attendanceInit.getComeWork() == 3) {
+						afterAttendance = attendanceDao.findByUserIdAndTimeBetween(us.getId(),
+								DatesUtil.dayTime(beginTimes, "00:30:00"), DatesUtil.dayTime(beginTimes, "06:00:00"));
+						if (afterAttendance.size() > 0) {
+							// 得到最后一次签到记录离24：30相差分钟数
+							minute = DatesUtil.getTimeHour(DatesUtil.dayTime(beginTimes, "00:30:00"),
+									afterAttendance.get(afterAttendance.size() - 1).getTime());
+							sign = true;
+						}
 					}
 				}
-				// 2.超过24:30后默认休息7.5小时
-				if (attendanceInit.getComeWork() == 3) {
-					afterAttendance = attendanceDao.findByUserIdAndTimeBetween(us.getId(),
-							DatesUtil.dayTime(beginTimes, "00:30:00"), DatesUtil.dayTime(beginTimes, "06:00:00"));
-					if (afterAttendance.size() > 0) {
-						// 得到最后一次签到记录离24：30相差分钟数
-						minute = DatesUtil.getTimeHour(DatesUtil.dayTime(beginTimes, "00:30:00"),
-								afterAttendance.get(afterAttendance.size() - 1).getTime());
-						sign = true;
-					}
-				}
-
 				// 考情记录有三种情况。当一天的考勤记录条数等于大于2时,为正常的考勤
 				// 大于2时，取集合中的最后一条数据作为考勤记录
 				if (attList.size() >= 2) {
