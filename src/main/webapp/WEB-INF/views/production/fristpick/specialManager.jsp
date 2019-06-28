@@ -55,11 +55,10 @@ layui.use(['jquery','laydate','table'],
 		table.render({
 			elem:'#specialTable',
 			loading:true,
-			page:true,
-			size:'lg',
 			data:[],
+			size:'sm',
 			request:{ pageName:'page', limitName:'size' },
-			parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } },
+			parseData:function(ret){ return { data:ret.data,  msg:ret.message, code:ret.code } },
 			cols:[[
 			       {align:'center', title:'日期',   field:'date',	},
 			       {align:'center', title:'分组/姓名', 	field:'name', 	},
