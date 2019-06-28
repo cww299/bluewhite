@@ -383,7 +383,7 @@ public class GroupAction {
 	public CommonResponse sumTemporarily(Temporarily temporarily) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(groupService.sumTemporarily(temporarily));
-		cr.setMessage("删除成功");
+		cr.setMessage("查询成功");
 		return cr;
 	}
 
