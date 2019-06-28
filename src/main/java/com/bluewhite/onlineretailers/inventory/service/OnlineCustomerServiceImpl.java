@@ -53,7 +53,10 @@ public class OnlineCustomerServiceImpl extends BaseServiceImpl<OnlineCustomer, L
         	if (param.getGrade()!= null) {
 				predicate.add(cb.equal(root.get("grade").as(Integer.class),param.getGrade()));
 			}
-        	
+        	//按经手人过滤
+        	if (param.getUserId() != null) {
+				predicate.add(cb.equal(root.get("userId").as(Long.class),param.getUserId()));
+			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
         	return null;
