@@ -65,6 +65,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
 	@Override
 	public List<AttendanceTime> findAttendanceTime(AttendanceTime attendance) throws ParseException {
+		//获取固定休息日
+		PersonVariable restType = personVariableDao.findByType(0);
 		// 报餐系统所需要的人员
 		List<User> list = null;
 		List<AttendanceInit> attendanceInitList = null;
@@ -78,7 +80,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					.filter(User -> (User.getQuit() != null && User.getQuit() == 0)
 							|| (User.getQuitDate() != null && User.getQuitDate().after(attendance.getOrderTimeBegin())))
 					.collect(Collectors.toList());
-			attendanceInitList = attendanceInitService.findAll();
+			attendanceInitList = attendanceInitDao.findAll();
 			allAttList = attendanceDao.findByTimeBetween(attendance.getOrderTimeBegin(), DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin()));
 		}
 
@@ -120,7 +122,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				List<Attendance> attUserList = new ArrayList<>();
 				// 获取员工一天内的打卡记录并按照自然排序
 				List<Attendance> attUserListSort = allAttList.stream()
-						.filter(Attendance -> Attendance.getUserId().equals(us.getId())).collect(Collectors.toList());
+						.filter(Attendance ->Attendance.getUserId()!=null && Attendance.getUserId().equals(us.getId())).collect(Collectors.toList());
 				for (Attendance at : attUserListSort) {
 					if ((at.getTime().after(beginTimes) || at.getTime().compareTo(beginTimes) == 0)
 							&& (at.getTime().before(endTimes) || at.getTime().compareTo(endTimes) == 0)) {
@@ -151,9 +153,10 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				// 获取员工考勤的初始化参数
 				AttendanceInit attendanceInit = null;
 				if (attendance.getUserId() == null && attendance.getOrgNameId() == null) {
-					attendanceInit = attendanceInitList.stream()
-							.filter(AttendanceInit -> AttendanceInit.getUserId().equals(us.getId()))
-							.collect(Collectors.toList()).get(0);
+					 List<AttendanceInit> attendanceInitUserList = attendanceInitList.stream()
+							.filter(AttendanceInit -> AttendanceInit.getUserId() !=null && AttendanceInit.getUserId().equals(us.getId()))
+							.collect(Collectors.toList());
+					 attendanceInit = attendanceInitUserList.size()>0 ? attendanceInitUserList.get(0) : null;
 				} else {
 					attendanceInit = attendanceInitService.findByUserId(us.getId());
 				}
@@ -209,7 +212,6 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 				boolean rout = false;
-				PersonVariable restType = personVariableDao.findByType(0);
 				// 1.周休一天，
 				if (attendanceInit.getRestType() == 1) {
 					String[] weeklyRestDate = restType.getKeyValue().split(",");

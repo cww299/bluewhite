@@ -206,6 +206,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 	} 
 	List<Meal> meals=new ArrayList<Meal>();
 	PersonVariable variable=personVariableDao.findByType(1);
+	PersonVariable restType = personVariableDao.findByType(0);
 	for (AttendanceTime attendanceTime2 : attendanceTimes) {
 		if (attendanceTime2.getCheckIn()!=null && attendanceTime2.getCheckOut()==null) {
 			int j=attendanceTime2.getCheckIn().getHours();
@@ -361,7 +362,6 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 		}
 		}else{
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			PersonVariable restType = personVariableDao.findByType(0);
 			boolean rout = false;
 			if (attendanceTime2.getWorkType()==null || attendanceTime2.getRestType()==null) {
 				throw new ServiceException(attendanceTime2.getUser().getUserName()+"没有考勤初始设定数据，请填写后操作");
@@ -411,7 +411,6 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long>
 			}
 			}
 		}
-	
 	}
 		dao.save(meals);
 		return meals.size();
