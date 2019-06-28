@@ -79,7 +79,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 							|| (User.getQuitDate() != null && User.getQuitDate().after(attendance.getOrderTimeBegin())))
 					.collect(Collectors.toList());
 			attendanceInitList = attendanceInitService.findAll();
-			allAttList = attendanceDao.findByTimeBetween(attendance.getOrderTimeBegin(), attendance.getOrderTimeEnd());
+			allAttList = attendanceDao.findByTimeBetween(attendance.getOrderTimeBegin(), DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin()));
 		}
 
 		// 检查当前月份属于夏令时或冬令时 flag=ture 为夏令时
@@ -105,7 +105,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			if (!StringUtils.isEmpty(attendance.getUserId())) {
 				User user = userService.findOne(attendance.getUserId());
 				allAttList = attendanceDao.findByUserIdAndTimeBetween(attendance.getUserId(),
-						attendance.getOrderTimeBegin(), attendance.getOrderTimeEnd());
+						attendance.getOrderTimeBegin(), DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin()));
 				userList.add(user);
 			}
 			if (attendance.getUserId() == null && attendance.getOrgNameId() == null) {

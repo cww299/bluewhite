@@ -83,9 +83,11 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 	public List<Map<String, Object>> sumTemporarily(Temporarily temporarily) {
 		List<Map<String, Object>> mapList = new ArrayList<>();
 		// 获取当前时间所有外调人员信息
-		List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndTemporarilyDateBetween(temporarily.getType(),
-				temporarily.getOrderTimeBegin(), temporarily.getViewTypeDate() == 1 ? temporarily.getOrderTimeEnd() : DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin()));
-		temporarilyList.stream().filter(Temporarily->Temporarily.getUser().getForeigns()==1);
+		List<Temporarily> temporarilyList = temporarilyDao
+				.findByTypeAndTemporarilyDateBetween(temporarily.getType(), temporarily.getOrderTimeBegin(),
+						temporarily.getViewTypeDate() == 1 ? temporarily.getOrderTimeEnd()
+								: DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin()))
+				.stream().filter(Temporarily -> Temporarily.getUser().getForeigns() == 1).collect(Collectors.toList());
 		// 按天按月查看
 		long size = 0;
 		switch (temporarily.getViewTypeDate()) {
@@ -134,9 +136,10 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 					}
 					SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 					SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM");
-					mapTe.put("date", temporarily.getViewTypeDate()==1 ? formatter.format(beginTimes) : formatter2.format(beginTimes));
+					mapTe.put("date", temporarily.getViewTypeDate() == 1 ? formatter.format(beginTimes)
+							: formatter2.format(beginTimes));
 					mapTe.put("name", temporarily.getViewTypeUser() == 1 ? psList.get(0).getUser().getUserName()
-							:group==null ? "" :group.getName());
+							: group == null ? "" : group.getName());
 					mapTe.put("sumWorkTime", sumWorkTime);
 					mapTe.put("kindWork", "");
 					mapList.add(mapTe);
