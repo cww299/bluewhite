@@ -335,7 +335,7 @@
 		      				+'<td class="text-center ">'+parseFloat((o.time).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
 		      				+'<td class="text-center ">'+strname+'</td>'
-		      				+'<td class="text-center "><select class="text-center form-control choice"><option value="'+a+'">'+strnametw+'</option><option value="0">二楼机工</option><option value="1">三楼机工</option></select></td>'
+		      				+'<td class="text-center "><select class="text-center form-control choice"><option value="0" '+(o.machinist==0?"selected":"")+'>二楼机工</option><option value="1" '+(o.machinist==1?"selected":"")+'>三楼机工</option></select></td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button>  <button class="btn btn-sm btn-info  btn-trans updateremaketw" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
 							
 		      			}); 

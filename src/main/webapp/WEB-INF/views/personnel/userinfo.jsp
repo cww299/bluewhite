@@ -140,7 +140,7 @@
 								</span>
 								&nbsp;&nbsp;<span class="input-group-btn">
 									<button type="button" class="btn btn-success  btn-sm btn-3d" id="lookoverBecome">
-										特急人员  <span class="layui-badge">0</span></button>
+										待转正人员  <span class="layui-badge">0</span></button>
 									<button type="button"  style="display:none;" id="openEditBtn" data-id=''>隐藏打开修改用户弹窗按钮</button>
 								</span>
 								&nbsp;&nbsp; <span class="input-group-btn">
@@ -663,7 +663,7 @@ layui.config({
 			success:function(r){
 				if(r.code==0){
 					if(r.data.length>0){
-						$('#lookoverBecome').html('特急人员  <span class="layui-badge">'+r.data.length+'</span>')
+						$('#lookoverBecome').html('待转正人员  <span class="layui-badge">'+r.data.length+'</span>')
 						positiveNumber=r.data.length;
 					}
 				}
@@ -675,7 +675,7 @@ layui.config({
 		$('#openEditBtn').on('click',function(){ openEditWin(this); });	//隐藏按钮打开修改用户弹窗绑定事件
 		function openSpecialWin(){					//打开特急人员弹窗
 			var specialWin=layer.open({
-				title:'特急人员',
+				title:'待转正人员 ',
 				type:1,
 				area:['50%','80%'],
 				content:$('#specialWinDiv'),
@@ -750,7 +750,7 @@ layui.config({
 						success:function(result){
 							if(0==result.code){
 								positiveNumber--;
-								$('#lookoverBecome').html('特急人员<span class="layui-badge">'+positiveNumber+'</span></li>')
+								$('#lookoverBecome').html('待转正人员 <span class="layui-badge">'+positiveNumber+'</span></li>')
 								table.reload('specialTable');
 								$('#openEditBtn').data('id',choosed[0].id);
 								$('#openEditBtn').click();
