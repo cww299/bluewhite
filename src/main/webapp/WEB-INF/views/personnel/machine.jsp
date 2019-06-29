@@ -242,7 +242,7 @@
 		  });
 		/*搜索*/
 		  
-		  	active = {
+		  	/* active = {
 				    reload: function(){
 				      var demoReload = $('#demoReload');
 				      //执行重载
@@ -253,13 +253,26 @@
 				        }
 				      });
 				    }
-				  };
+				  }; */
 		  
 		$('#search').on('click', function(){
 			    var type = $(this).data('type');
 			    address=$("#select1").val();
-			    active[type] ? active[type].call(this) : '';
-			  });
+			    //active[type] ? active[type].call(this) : '';
+			    var load = layer.load(1,{shade: [0.1,'black'] });
+			    var demoReload = $('#demoReload');
+			      //执行重载
+			    table.reload('testReload', {
+			        where: {
+			            number: demoReload.val(),
+			            address:$("#select1").val()
+			        },
+			        done: function(){
+					    layer.close(load);
+			        }
+			    });
+	    });
+				  
 			
 		$('#add').on('click', function(){
 		    var add=layer.open({
