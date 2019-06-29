@@ -10,6 +10,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -27,7 +28,7 @@ import com.bluewhite.system.user.entity.User;
  *
  */
 @Entity
-@Table(name = "online_procurement")
+@Table(name = "online_procurement"  ,indexes = {@Index(columnList = "created_at")})
 public class Procurement extends BaseEntity<Long>{
 	
 	/**

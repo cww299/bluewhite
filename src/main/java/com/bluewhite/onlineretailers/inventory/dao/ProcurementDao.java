@@ -25,4 +25,13 @@ public interface ProcurementDao  extends BaseRepository<Procurement, Long>{
 	 */
 	List<Procurement> findByTypeAndCreatedAtBetween(int type, Date startTime, Date endTime);
 	
+	/**
+	 * 查询销售出库的出库单
+	 * @param type
+	 * @param startTime
+	 * @param beginTime
+	 * @return
+	 */
+	List<Procurement> findByTypeAndStatusAndCreatedAtBetween(int type,int status, Date startTime, Date endTime);
+	
 }

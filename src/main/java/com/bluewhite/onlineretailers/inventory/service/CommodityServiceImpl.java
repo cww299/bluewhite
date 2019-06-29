@@ -155,9 +155,9 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 		for (Warning warning : warningList) {
 			// 获取天数
 			Integer time = warning.getTime();
-			// 获取离当前日期加上预警天数之间的出库单
+			// 获取离当前日期加上预警天数之间的销售出库单
 			Date beginTime = DatesUtil.getDaySum(new Date(), -time);
-			List<Procurement> procurementList = procurementService.findByTypeAndCreatedAt(3, beginTime, new Date());
+			List<Procurement> procurementList = procurementService.findByTypeAndStatusAndCreatedAtBetween(3,0,beginTime, new Date());
 			if (warning.getType() == 3) {
 				// 获取时间段内的生产入库单,如果存在，且里面的商品数量存在且合计的数量大于库存，则预警
 				procurementList = procurementService.findByTypeAndCreatedAt(2, beginTime, new Date());
