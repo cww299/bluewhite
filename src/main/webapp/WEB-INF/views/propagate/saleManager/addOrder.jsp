@@ -696,12 +696,14 @@ layui.config({
 					html='<select lay-filter="selectInventory">'
 					for(var i=0;i<inv.length;i++){
 						var selected='';
-						layui.each(checkData,function(index,item){			//该商品是否勾选，且已选择发货仓库
+						if(inv[i].warehouse.id=="157")
+							selected = 'selected';
+						/* layui.each(checkData,function(index,item){			//该商品是否勾选，且已选择发货仓库
 							if(item.id == d.id && item.inventory == inv[i].warehouse.id){
 								selected = 'selected';
 								return;
 							}
-						})
+						}) */
 						html+='<option value="'+inv[i].warehouse.id+'" '+selected+'>'+inv[i].warehouse.name+':'+inv[i].number+'</option>';
 					}
 					html+='</select>'
