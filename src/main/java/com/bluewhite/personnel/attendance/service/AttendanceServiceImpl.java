@@ -315,4 +315,22 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		return attendanceList.size();
 	}
 
+	@Override
+	public Map<String, Object> getUser(String address, String number) {
+		sdk.initSTA();
+		boolean flag = false;
+		Map<String, Object> user = null;
+		try {
+			flag = sdk.connect(address, 4370);
+		} catch (Exception e) {
+			throw new ServiceException("考勤机连接失败");
+		}
+		if (flag) {
+			user = sdk.getUserInfoTmp(number);
+		}
+		sdk.disConnect();
+		sdk.release();
+		return user;
+	}
+
 }

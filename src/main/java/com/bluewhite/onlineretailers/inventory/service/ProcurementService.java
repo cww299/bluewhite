@@ -56,6 +56,15 @@ public interface ProcurementService extends BaseCRUDService<Procurement, Long> {
 	 * @return
 	 */
 	List<Procurement> findByTypeAndCreatedAt(int type, Date startTime, Date endTime);
+	
+	/**
+	 * 查询销售出库的出库单
+	 * @param type
+	 * @param startTime
+	 * @param beginTime
+	 * @return
+	 */
+	List<Procurement> findByTypeAndStatusAndCreatedAtBetween(int type,int status, Date startTime, Date endTime);
 
 	List<Map<String, Object>> reportStorage(Procurement procurement);
 
