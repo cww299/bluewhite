@@ -19,7 +19,7 @@
 <body>
 	
 <div class="layui-card">
-	<div class="layui-card-body" style="height:800px;">
+	<div class="layui-card-body">
 		<table class="layui-form">
 			<tr><td>数据类型：</td><td>&nbsp;&nbsp;</td>
 				<td id="tdSelect">
@@ -309,12 +309,11 @@ layui.config({
 			var trIndex = elemTemp.data('index');
 			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
 		})
-		function renderTable(elem,height){									//表格渲染，要渲染的表格元素，以及高度设置，不设置的话不会出现滚动条（与子数据列表复用函数）
+		function renderTable(elem){									//表格渲染，要渲染的表格元素，以及高度设置，不设置的话不会出现滚动条（与子数据列表复用函数）
 			table.render({
 				elem : elem,
 				size : 'lg',
 				page : false,
-				height : height,
 				loading : true,  
 				toolbar : "#baseDataToolBar",
 				parseData : function(ret) {    		
