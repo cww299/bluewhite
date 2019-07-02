@@ -409,12 +409,23 @@ layui.config({
 			       {field:'payment',    title:'实收金额',   align:'center', width:'5%'},
 			       {field:'num',     	title:'件数',       align:'center', width:'4%'},
 			       {field:'residueNumber', title:'剩余件数',       align:'center', width:'5%'},
-			       {field:'trackingNumber',title:'运单号',  align:'center', width:'8%',},
+			       {field:'',title:'运单号',  align:'center', width:'8%', templet: getTrackingNumber() },
 			       {field:'status',        title:'状态',    align:'center', width:'8%', templet:'#statusTpl'},
 			       {field:'isFlag',		   title:'是否反冲',    align:'center', width:'5%', templet:isFlag(),},
 			       {field:'provinces',     title:'所在地区',align:'center', templet:'#provincesTpl'},
 			       ]],
 		}) 
+		function getTrackingNumber(){
+			return function(d){
+				var tackingNumber = d.deliverys;
+				var html = '';
+				layui.each(tackingNumber,function(index,item){
+					if(item.trackingNumber)
+						html+=(item.trackingNumber+',');
+				})
+				return html;
+			}
+		}
 		function isFlag(){
 			return function(d){
 				if(d.flag == 0)
