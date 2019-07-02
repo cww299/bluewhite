@@ -674,7 +674,8 @@
 										index;
 									},
 									success: function(result) {
-										$("#layuiadmin-form-admin2").setForm({weeklyRestDate:result.data[0].weeklyRestDate,monthRestDate:result.data[0].monthRestDate});
+										$("#weeklyRestDate").val(result.data.keyValue)
+										$("#monthRestDate").val(result.data.keyValueTwo)
 									},
 									error: function() {
 										layer.msg("操作失败！请重试", {

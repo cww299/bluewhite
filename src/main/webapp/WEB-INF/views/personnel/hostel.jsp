@@ -186,7 +186,7 @@
 		</div>
 	</form>	
 	
-	<form action="" id="layuiadmin-form-admin2"style="padding: 20px 0px 0 50px; display:none;  text-align:">
+	<form action="" id="layuiadmin-form-admin2"style=" display:none;  text-align:center;">
 		<div class="layui-input-normal layui-form">
 		<input type="text" name="id" id="hostelId" style="display: none;"><!--阻止回车键提交表单   如果form里面只有一个input type＝text，那么无论有没有submit按钮，在input中回车都会提交表单。
      如果不想回车提交，需要再加一个input type=text，然后设置display:none.  -->
@@ -741,8 +741,6 @@
 						loading: true,
 						toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
 						//totalRow: true,		 //开启合计行 */
-						cellMinWidth: 90,
-						colFilterRecord: true,
 						smartReloadModel: true,// 开启智能重载
 						parseData: function(ret) {
 							return {
@@ -1073,8 +1071,6 @@
 									loading: true,
 									toolbar: '#tool2', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
 									//totalRow: true,		 //开启合计行 */
-									cellMinWidth: 90,
-									colFilterRecord: true,
 									smartReloadModel: true,// 开启智能重载
 									parseData: function(ret) {
 										$("#ddds1").val(ret.data.rows[0].oneUpperNum)
@@ -1092,8 +1088,6 @@
 											field: "monthDate",
 											title: "月份",
 											align: 'center',
-											width:'100',
-											
 										},{
 											field: "oneNowNum",
 											title: "二楼上月抄表数",
@@ -1254,8 +1248,6 @@
 									loading: true,
 									toolbar: '#tool3', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
 									//totalRow: true,		 //开启合计行 */
-									cellMinWidth: 90,
-									colFilterRecord: true,
 									smartReloadModel: true,// 开启智能重载
 									parseData: function(ret) {
 										return {
@@ -1430,7 +1422,6 @@
 						}
 						//查看宿舍人员详情
 						if(obj.event === 'live'){
-							
 							table.render({
 								elem: '#tableBudget',
 								size: 'lg',
@@ -1448,8 +1439,6 @@
 								loading: true,
 								//toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
 								//totalRow: true,		 //开启合计行 */
-								cellMinWidth: 90,
-								colFilterRecord: true,
 								smartReloadModel: true,// 开启智能重载
 								parseData: function(ret) {
 									return {
@@ -1613,8 +1602,6 @@
 								loading: true,
 								toolbar: '#toolbarwater', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
 								//totalRow: true,		 //开启合计行 */
-								cellMinWidth: 90,
-								colFilterRecord: true,
 								smartReloadModel: true,// 开启智能重载
 								parseData: function(ret) {
 									$("#nowDegreeNumss").val(ret.data.rows[0].nowDegreeNum);
@@ -1648,7 +1635,6 @@
 										field: "monthDate",
 										title: "月份",
 										align: 'center',
-										width:'100',
 									},{
 										field: "upperDegreeNum",
 										title: "上月抄表",
@@ -1784,8 +1770,6 @@
 								loading: true,
 								toolbar: '#toolfixed', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
 								//totalRow: true,		 //开启合计行 */
-								cellMinWidth: 90,
-								colFilterRecord: true,
 								smartReloadModel: true,// 开启智能重载
 								parseData: function(ret) {
 									return {
@@ -1921,8 +1905,6 @@
 								loading: true,
 								toolbar: '#toolbarpower', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
 								//totalRow: true,		 //开启合计行 */
-								cellMinWidth: 90,
-								colFilterRecord: true,
 								smartReloadModel: true,// 开启智能重载
 								parseData: function(ret) {
 									$("#nowDegreeNumss2").val(ret.data.rows[0].nowDegreeNum);
@@ -1956,7 +1938,6 @@
 										field: "monthDate",
 										title: "月份",
 										align: 'center',
-										width:'100',
 									},{
 										field: "upperDegreeNum",
 										title: "上月抄表",
@@ -2074,7 +2055,7 @@
 						      });
 						}
 						
-						//查看宿舍电费费详情
+						//查看宿舍其他费用
 						if(obj.event === 'sundry'){
 							table.render({
 								elem: '#sundry',
@@ -2092,8 +2073,6 @@
 								loading: true,
 								toolbar: '#toolsundry', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
 								//totalRow: true,		 //开启合计行 */
-								cellMinWidth: 90,
-								colFilterRecord: true,
 								smartReloadModel: true,// 开启智能重载
 								parseData: function(ret) {
 									return {
@@ -2566,8 +2545,6 @@
 						loading: true,
 						toolbar: '#toolbar5', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
 						totalRow: true,		 //开启合计行 */
-						cellMinWidth: 90,
-						colFilterRecord: true,
 						smartReloadModel: true,// 开启智能重载
 						parseData: function(ret) {
 							return {
@@ -2681,8 +2658,6 @@
 						loading: true,
 						toolbar: '#toolbar5', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
 						totalRow: true,		 //开启合计行 */
-						cellMinWidth: 90,
-						colFilterRecord: true,
 						smartReloadModel: true,// 开启智能重载
 						parseData: function(ret) {
 							return {

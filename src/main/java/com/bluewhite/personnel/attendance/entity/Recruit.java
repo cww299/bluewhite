@@ -43,6 +43,11 @@ public class Recruit extends BaseEntity<Long> {
 	@Column(name = "recruit_id")
 	private Long recruitId;
 	
+	/**
+	 * 招聘人姓名
+	 */
+	@Column(name = "recruit_name")
+	private String recruitName;
 	
 	/**
 	 * 员工
@@ -56,6 +61,12 @@ public class Recruit extends BaseEntity<Long> {
 	@Column(name = "platform_id")
 	private Long platformId;
 	
+	/**
+	 * 平台
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "platform_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData platform;
 	
 	/**
 	 * 职位id
@@ -217,6 +228,18 @@ public class Recruit extends BaseEntity<Long> {
 	}
 
 	
+	public BaseData getPlatform() {
+		return platform;
+	}
+	public void setPlatform(BaseData platform) {
+		this.platform = platform;
+	}
+	public String getRecruitName() {
+		return recruitName;
+	}
+	public void setRecruitName(String recruitName) {
+		this.recruitName = recruitName;
+	}
 	public Integer getQuit() {
 		return quit;
 	}

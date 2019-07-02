@@ -42,9 +42,15 @@ public class RecruitAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Recruit.class,"id","user","remarksThree", "platformId","testTime","platformName","position","positionId","time","position","orgNameId","orgName","name","gender","phone","livingAddress","entry","type","remarks","typeOne","remarksOne","typeTwo","remarksTwo","state","adopt","recruitId");
+				.addRetainTerm(Recruit.class,"id","user","remarksThree", "platformId","testTime","platformName","position","positionId","time","position","orgNameId","orgName","name","gender","phone","livingAddress","entry","type","remarks","typeOne","remarksOne","typeTwo","remarksTwo","state","adopt","platform","recruitId","recruitName");
 	}
-
+	
+	private ClearCascadeJSON clearCascadeJSONRecruit;
+	{
+		clearCascadeJSONRecruit = ClearCascadeJSON.get()
+				.addRetainTerm(Recruit.class,"id","name","recruitName");
+	}
+	
 	private ClearCascadeJSON clearCascadeJSONUser;
 	{
 		clearCascadeJSONUser = ClearCascadeJSON.get()
@@ -216,12 +222,45 @@ public class RecruitAction {
 	@ResponseBody
 	public CommonResponse users(HttpServletRequest request, Recruit recruit) {
 		CommonResponse cr = new CommonResponse();
-		 List<User> list = service.users(recruit);
+		 Map<String, List<Map<String, Object>>> list = service.users(recruit);
 			cr.setData(clearCascadeJSONUser.format(list).toJSON());
 			cr.setMessage("查询成功");
 		return cr;
 	}
 	
+	/**
+	 * 汇总分析
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/analysis", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse analysis(HttpServletRequest request, Recruit recruit) {
+		CommonResponse cr = new CommonResponse();
+		 Map<String, List<Map<String, Object>>> list = service.analysis(recruit);
+			cr.setData(clearCascadeJSONUser.format(list).toJSON());
+			cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/**
+	 *查询录取人
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/listRecruit", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse listRecruit(HttpServletRequest request) {
+		CommonResponse cr = new CommonResponse();
+		 List<Recruit> list = service.findList();
+			cr.setData(clearCascadeJSONRecruit.format(list).toJSON());
+			cr.setMessage("查询成功");
+		return cr;
+	}
 	
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {

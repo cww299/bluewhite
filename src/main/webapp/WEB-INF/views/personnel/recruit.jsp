@@ -142,6 +142,8 @@
 				</div>
 			</div>
 			<table id="layuiSharequit1"  class="table_th_search" lay-filter="layuiShare"></table>
+			
+			<table id="layuiSharequitquit"  class="table_th_search" lay-filter="layuiSharequitquit"></table>
 </div>
 
 
@@ -167,6 +169,31 @@
 			</div>
 			<table id="layuiShare6"  class="table_th_search" lay-filter="layuiShare8"></table>
 </div>	
+
+<div style="display: none;" id="analysis">
+			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+				<div class="layui-form-item">
+					<table>
+						<tr>
+							<td>查询月份:</td>
+							<td><input id="monthDate6" style="width: 180px;" name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td>
+								<div class="layui-inline">
+									<button class="layui-btn layuiadmin-btn-admin"  lay-submit lay-filter="LAY-searchAnalysis">
+										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+									</button>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<table id="analysisRecuit"  class="table_th_search" lay-filter="layuiShare8"></table>
+			<table id="analysisRecuit2"  class="table_th_search" lay-filter="layuiShare8"></table>
+</div>
+
 	<script type="text/html" id="addEditTpl">
 	<form action="" id="layuiadmin-form-admin"
 		style="padding: 20px 30px 0 60px; text-align:">
@@ -204,14 +231,9 @@
 			<div class="layui-form-item">
 					<label class="layui-form-label" style="width: 130px;">邀约平台</label>
 					<div class="layui-input-inline">
-						<select name="platformId" lay-filter="platformId" 
-							id="platformId" lay-search="true"><option value="">请选择</option>
-								<option {{d.platformId==1 ? "selected" : ""}} value="1">广告招聘</option>
-								<option {{d.platformId==2 ? "selected" : ""}} value="2">前程无忧</option>
-								<option {{d.platformId==3 ? "selected" : ""}} value="3">58同城</option>
-								<option {{d.platformId==4 ? "selected" : ""}} value="4">BOSS直聘</option>
-								<option {{d.platformId==5 ? "selected" : ""}} value="5">扬子人才网</option>
-							</select>
+						<select name="platformId" lay-filter="platformId" id="platformId">
+							
+						</select>
 					</div>
 			</div>	
 			
@@ -221,7 +243,6 @@
 						<select name="orgNameId" lay-filter="orgNameId" id="orgNameId" lay-search="true">
 								
 						</select>
-
 					</div>
 			</div>
 
@@ -307,6 +328,7 @@
 				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="summary">招聘汇总</span>
 				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="short">短期离职</span>
 				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="quit">离职人员</span>
+				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="analysis">招聘分析</span>
 			</div>
 		</script>
 
@@ -343,6 +365,7 @@
 					//select全局变量
 					var htmls = '<option value="">请选择</option>';
 					var htmltwo = '<option value="">请选择</option>';
+					var htmlth = '<option value="">请选择</option>';
 					var index = layer.load(1, {
 						shade: [0.1, '#fff'] //0.1透明度的白色背景
 					});
@@ -362,6 +385,10 @@
 					}); 
 				 	laydate.render({
 						elem: '#monthDate5',
+						type : 'month',
+					}); 
+				 	laydate.render({
+						elem: '#monthDate6',
 						type : 'month',
 					}); 
 					 var getdata={type:"orgName",}
@@ -384,26 +411,8 @@
 						      }
 						  });
 					
-					var data={
-    						id:10,
-    					  }
-				     $.ajax({
-					      url:"${ctx}/basedata/children",
-					      data:data,
-					      type:"GET",
-					      async:false,
-					      beforeSend:function(){
-					    	  indextwo = layer.load(1, {
-							  shade: [0.1,'#fff'] //0.1透明度的白色背景
-							  });
-						  }, 
-			      		  success: function (result) {
-			      			  $(result.data).each(function(i,o){
-			      				htmltwo +='<option value="'+o.id+'">'+o.name+'</option>'
-			      			});  
-			      			layer.close(indextwo);
-					      }
-					  });
+					var data="";
+				    
 					
 					// 处理操作列
 					var fn1 = function(field) {
@@ -480,7 +489,6 @@
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
-						skin:'nob',
 						height:'700px',
 						url: '${ctx}/personnel/getRecruit' ,
 						request:{
@@ -525,22 +533,7 @@
 								edit: false,
 								type: 'normal',
 								templet:  function(d){ 
-									if(d.platformId==1){
-										return "广告招聘"
-									}
-									if(d.platformId==2){
-										return "前程无忧"
-									}
-									if(d.platformId==3){
-										return "58同城"
-									}
-									if(d.platformId==4){
-										return "BOSS直聘"
-									}
-									if(d.platformId==5){
-										return "扬子人才网"
-									}
-									
+									return d.platform.name
 									}
 							},{
 								field: "orgNameId",
@@ -572,10 +565,9 @@
 									
 								}
 							},{
-								field: "phone",
-								title: "电话",
+								field: "recruitName",
+								title: "招聘人",
 								align: 'center',
-								width : 120,
 							},{
 								field: "type",
 								align: 'center',
@@ -637,6 +629,11 @@
 										return '即将入职';
 									}		
 								}
+							},{
+								field: "phone",
+								title: "电话",
+								align: 'center',
+								width : 120,
 							},{
 								field: "livingAddress",
 								title: "现居住地址",
@@ -853,8 +850,8 @@
 								break;
 								
 							case 'summary':
-								table.reload("layuiShare2") 
 								var dicDiv=$('#layuiShare');
+								table.reload("layuiShare2");
 								layer.open({
 							         type: 1
 							        ,title: '招聘汇总' //不显示标题栏
@@ -882,8 +879,8 @@
 								break;	
 							
 							case 'short':
-								table.reload("layuiShare6") 
 								var dicDiv=$('#layuiShare5');
+								table.reload("layuiShare6");
 								layer.open({
 							         type: 1
 							        ,title: '短期入职离职人员' //不显示标题栏
@@ -911,8 +908,9 @@
 								break;
 								
 							case 'quit':
-								table.reload("layuiSharequit1") 
 								var dicDiv=$('#layuiSharequit');
+								table.reload("layuiSharequit1");
+								table.reload("layuiSharequitquit");
 								layer.open({
 							         type: 1
 							        ,title: '离职人员' //不显示标题栏
@@ -938,6 +936,37 @@
 									  } 
 							      });
 								break;
+							
+							case 'analysis':
+								var dicDiv=$('#analysis');
+								table.reload("analysisRecuit");
+				              table.reload("analysisRecuit2");
+								layer.open({
+							         type: 1
+							        ,title: '招聘分析' //不显示标题栏
+							        ,closeBtn: false
+							        ,zindex:-1
+							        ,area:['50%', '90%']
+							        ,shade: 0.5
+							        ,id: 'LAY_layuipro2' //设定一个id，防止重复弹出
+							        ,btn: ['取消']
+							        ,btnAlign: 'c'
+							        ,moveType: 1 //拖拽模式，0或者1
+							        ,content:dicDiv
+							        ,success : function(layero, index) {
+							        	layero.addClass('layui-form');
+										// 将保存按钮改变成提交按钮
+										layero.find('.layui-layer-btn0').attr({
+											'lay-filter' : 'addRole2',
+											'lay-submit' : ''
+										})
+							        }
+							        ,end:function(){
+							        	$("#analysis").hide();
+									  } 
+							      });
+								break;
+								
 							case 'update' :
 								 addEidt('edit')
 								break;	
@@ -965,28 +994,28 @@
 						eventd(onlyField);
 						
 					})
-					var eventd=function(data){
-						table.reload("layuiShare2",{
-							where:data
-						})
-					};
 					
-					var eventd2=function(data){
-						table.reload("layuiShare6",{
-							where:data
-						})
+					form.on('submit(LAY-searchAnalysis)', function(obj) {
+						onlyField=obj.field;
+						onlyField.time=onlyField.time+'-01 00:00:00';
+						eventd4(onlyField);
+						
+					})
+					var eventd4=function(data){
+						table.reload("analysisRecuit", {
+							url: '${ctx}/personnel/analysis' ,
+							where:data,
+			              });
+		              table.reload("analysisRecuit2", {
+		            	  url: '${ctx}/personnel/analysis' ,
+						where:data,
+		              })
 					};
-					
-					var eventd3=function(data){
-						table.reload("layuiSharequit1",{
-							where:data
-						})
-					};
-					
 					table.render({
-						elem: '#layuiSharequit1',
+						elem: '#analysisRecuit',
 						size: 'lg',
-						url: '${ctx}/personnel/usersl' ,
+						where:data,
+						data:[],
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
 							limitName: 'size' //每页数据量的参数名，默认：limit
@@ -1002,59 +1031,188 @@
 							return {
 								code: ret.code,
 								msg: ret.message,
-								data: ret.data
+								data: ret.data.Analysis
 							}
 						},
 						cols: [
 							[{
-								field: "userName",
-								title: "姓名",
+								field: "md1",
+								title: "面试通过率",
 								align: 'center',
-								totalRowText: '合计'
+								templet:  function(d){return d.md1+'%'}
 							},{
-								field: "orgName",
-								title: "部门",
+								field: "md2",
+								title: "入职率",
 								align: 'center',
-								templet:  function(d){ 
-									if(d.orgName==null){
-										return "";
-									}else{
-									return d.orgName.name		
-									}
-								}
+								templet:  function(d){return d.md2+'%'}
 							},{
-								field: "position",
-								title: "职位",
+								field: "md3",
+								title: "短期流失率",
 								align: 'center',
-								templet:  function(d){ 
-									if(d.position==null){
-										return "";
-									}else{
-									return d.position.name		
-									}
-								}
+								templet:  function(d){return d.md3+'%'}
 							},{
-								field: "entry",
-								title: "入职时间",
+								field: "md4",
+								title: "离职率",
 								align: 'center',
+								templet:  function(d){return d.md4+'%'}
 							},{
-								field: "quitDate",
-								title: "离职时间",
+								field: "md5",
+								title: "留用率",
 								align: 'center',
-							},{
-								field: "reason",
-								title: "离职原因",
-								align: 'center',
+								templet:  function(d){return d.md5+'%'}
 							}
 							]
 						],
 					
 								});
 					
+					
+					table.render({
+						elem: '#analysisRecuit2',
+						size: 'lg',
+						where:data,
+						data:[],
+						request:{
+							pageName: 'page' ,//页码的参数名称，默认：page
+							limitName: 'size' //每页数据量的参数名，默认：limit
+						},
+						//开启分页
+						loading: true,
+						toolbar: '#toolbar5', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+						totalRow: true,		 //开启合计行 */
+						cellMinWidth: 90,
+						colFilterRecord: true,
+						smartReloadModel: true,// 开启智能重载
+						parseData: function(ret) {
+							return {
+								code: ret.code,
+								msg: ret.message,
+								data: ret.data.summaryCount
+							}
+						},
+						cols: [
+							[{
+								field: "md7",
+								title: "入职途径",
+								align: 'center',
+								templet:  function(d){ 
+									if(d.md7==1){
+										return "广告招聘"
+									}
+									if(d.md7==2){
+										return "前程无忧"
+									}
+									if(d.md7==3){
+										return "58同城"
+									}
+									if(d.md7==4){
+										return "BOSS直聘"
+									}
+									if(d.md7==5){
+										return "扬子人才网"
+									}
+									
+									}
+							},{
+								field: "md6",
+								title: "人数",
+								align: 'center',
+								
+							}
+							]
+						],
+					
+								});
+					
+					var eventd=function(data){
+						table.reload("layuiShare2", {
+							url: '${ctx}/personnel/Statistics',
+							where:data,
+			              })
+					};
+					
+					table.render({
+						elem: '#layuiShare2',
+						size: 'lg',
+						where:data,
+						/* url: '${ctx}/personnel/Statistics' , */
+						data:[],
+						request:{
+							pageName: 'page' ,//页码的参数名称，默认：page
+							limitName: 'size' //每页数据量的参数名，默认：limit
+						},
+						//开启分页
+						loading: true,
+						toolbar: '#toolbar5', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+						totalRow: true,		 //开启合计行 */
+						colFilterRecord: true,
+						smartReloadModel: true,// 开启智能重载
+						parseData: function(ret) {
+							return {
+								code: ret.code,
+								msg: ret.message,
+								data: ret.data
+							}
+						},
+						cols: [
+							[{
+								field: "username",
+								title: "姓名",
+								align: 'center',
+								totalRowText: '合计'
+							},{
+								field: "mod1",
+								title: "邀约面试",
+								align: 'center',
+								totalRow: true
+							},{
+								field: "mod2",
+								title: "应邀面试",
+								align: 'center',
+								totalRow: true
+							},{
+								field: "mod3",
+								title: "面试合格",
+								align: 'center',
+								totalRow: true
+							},{
+								field: "mod4",
+								title: "拒绝入职",
+								align: 'center',
+								totalRow: true
+							},{
+								field: "mod5",
+								title: "已入职且在职",
+								align: 'center',
+								totalRow: true
+							},{
+								field: "mod6",
+								title: "即将入职",
+								align: 'center',
+								totalRow: true
+							},{
+								field: "mod7",
+								title: "短期入职离职",
+								align: 'center',
+								totalRow: true
+							}
+							]
+						],
+					
+								});
+					
+					var eventd2=function(data){
+						table.reload("layuiShare6", {
+							url: '${ctx}/personnel/soon' ,
+							where:data,
+			              })
+					};
+					
 					table.render({
 						elem: '#layuiShare6',
 						size: 'lg',
-						url: '${ctx}/personnel/soon' ,
+						data:[],
+						where:data,
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
 							limitName: 'size' //每页数据量的参数名，默认：limit
@@ -1120,10 +1278,22 @@
 					
 								});
 					
+					var eventd3=function(data){
+						table.reload("layuiSharequit1", {
+							url: '${ctx}/personnel/usersl' ,
+							where:data,
+			              });
+			              table.reload("layuiSharequitquit", {
+							url: '${ctx}/personnel/usersl' ,
+							where:data,
+			              })
+					};
+					
 					table.render({
-						elem: '#layuiShare2',
+						elem: '#layuiSharequit1',
 						size: 'lg',
-						url: '${ctx}/personnel/Statistics' ,
+						where:data,
+						data:[],
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
 							limitName: 'size' //每页数据量的参数名，默认：limit
@@ -1139,55 +1309,80 @@
 							return {
 								code: ret.code,
 								msg: ret.message,
-								data: ret.data
+								data: ret.data.StringUser
 							}
 						},
 						cols: [
 							[{
-								field: "username",
+								field: "userName",
 								title: "姓名",
+								align: 'center',
+							},{
+								field: "orgName",
+								title: "部门",
+								align: 'center',
+							},{
+								field: "positionName",
+								title: "职位",
+								align: 'center',
+							},{
+								field: "entry",
+								title: "入职时间",
+								align: 'center',
+							},{
+								field: "quitDate",
+								title: "离职时间",
+								align: 'center',
+							},{
+								field: "reason",
+								title: "离职原因",
+								align: 'center',
+							}
+							]
+						],
+								});
+					table.render({
+						elem: '#layuiSharequitquit',
+						size: 'lg',
+						where:data,
+						data:[],
+						request:{
+							pageName: 'page' ,//页码的参数名称，默认：page
+							limitName: 'size' //每页数据量的参数名，默认：limit
+						},
+						//开启分页
+						loading: true,
+						toolbar: '#toolbar5', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+						totalRow: true,		 //开启合计行 */
+						cellMinWidth: 90,
+						colFilterRecord: true,
+						smartReloadModel: true,// 开启智能重载
+						parseData: function(ret) {
+							return {
+								code: ret.code,
+								msg: ret.message,
+								data: ret.data.countUser
+							}
+						},
+						cols: [
+							[{
+								field: "orgName",
+								title: "部门",
 								align: 'center',
 								totalRowText: '合计'
 							},{
-								field: "mod1",
-								title: "邀约面试",
-								align: 'center',
-								totalRow: true
-							},{
-								field: "mod2",
-								title: "应邀面试",
-								align: 'center',
-								totalRow: true
-							},{
-								field: "mod3",
-								title: "面试合格",
-								align: 'center',
-								totalRow: true
-							},{
-								field: "mod4",
-								title: "拒绝入职",
-								align: 'center',
-								totalRow: true
-							},{
-								field: "mod5",
-								title: "已入职且在职",
-								align: 'center',
-								totalRow: true
-							},{
-								field: "mod6",
-								title: "即将入职",
-								align: 'center',
-								totalRow: true
-							},{
-								field: "mod7",
-								title: "短期入职离职",
+								field: "count",
+								title: "离职人数",
 								align: 'center',
 								totalRow: true
 							}
 							]
 						],
-					
 								});
+					
+					
+					
+					
 					
 
 					function addEidt(type){
@@ -1199,6 +1394,7 @@
 						var id="";
 						var state=0;
 						var orgNameId="";
+						var platformId="";
 						if(type=='edit'){
 							title="编辑数据"
 							if(choosed.length>1){
@@ -1211,6 +1407,7 @@
 							orgNameId=data.orgNameId;
 							positionId=data.positionId;
 							recruitId=data.recruitId;
+							platformId=data.platformId;
 						}
 						laytpl(tpl).render(data,function(h){
 							html=h;
@@ -1239,6 +1436,7 @@
 									if(!(/^1[3456789]\d{9}$/.test(data.field.phone))){ 
 										return layer.msg("手机号码有误,请重新填写",{icon: 2}) 
 								    } 
+									data.field.recruitName=$('#recruitId option:selected').text();
 						        	mainJs.fAdd(data.field)
 						        	if(id==""){
 						        	document.getElementById("layuiadmin-form-admin").reset();
@@ -1272,6 +1470,27 @@
 					      				htmls +='<option '+(orgNameId==j.id ? "selected" : "")+' value="'+j.id+'">'+j.name+'</option>'
 					      			  });
 					      		  $("#orgNameId").html(htmls);
+					      		layui.form.render()
+					      			layer.close(indextwo);
+							      }
+							  });
+						 
+						 var getdata={type:"platform",}
+			      			$.ajax({								//获取部门列表数据，部门下拉框的填充
+							      url:"${ctx}/basedata/list",
+							      data:getdata,
+							      type:"GET",
+							      async:false,
+							      beforeSend:function(){
+							    	  indextwo = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									  });
+								  }, 
+					      		  success: function (result) {				//初始填充部门
+					      			  $(result.data).each(function(k,j){
+					      				htmlth +='<option '+(platformId==j.id ? "selected" : "")+' value="'+j.id+'">'+j.name+'</option>'
+					      			  });
+					      		  $("#platformId").html(htmlth);
 					      		layui.form.render()
 					      			layer.close(indextwo);
 							      }
