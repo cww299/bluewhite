@@ -23,6 +23,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.personnel.attendance.entity.Advertisement;
 import com.bluewhite.personnel.attendance.service.AdvertisementService;
+import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
 @Controller
@@ -35,7 +36,8 @@ public class AdvertisementAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Advertisement.class,"id","time","platformId","platform", "price","startTime","endTime","recruitId","recruitName","train","trainPrice","userId","user","qualified","type");
+				.addRetainTerm(Advertisement.class,"id","time","platformId","platform", "price","startTime","endTime","recruitId","recruitName","train","trainPrice","userId","user","qualified","type")
+				.addRetainTerm(User.class, "id", "userName","number");
 	}
 	
 	/**
