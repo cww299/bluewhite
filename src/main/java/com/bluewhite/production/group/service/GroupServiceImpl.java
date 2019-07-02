@@ -16,12 +16,14 @@ import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.utils.DatesUtil;
-import com.bluewhite.onlineretailers.inventory.entity.OnlineOrderChild;
+import com.bluewhite.production.finance.dao.PayBDao;
+import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.group.dao.GroupDao;
 import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.system.user.entity.User;
+import com.sun.tools.classfile.Opcode.Set;
 
 @Service
 public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements GroupService {
@@ -30,6 +32,9 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 
 	@Autowired
 	private TemporarilyDao temporarilyDao;
+
+	@Autowired
+	private PayBDao payBDao;
 
 	@Override
 	public List<Group> findByType(Integer type) {
@@ -87,7 +92,12 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 				.findByTypeAndTemporarilyDateBetween(temporarily.getType(), temporarily.getOrderTimeBegin(),
 						temporarily.getViewTypeDate() == 1 ? temporarily.getOrderTimeEnd()
 								: DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin()))
-				.stream().filter(Temporarily -> Temporarily.getUser().getForeigns() == 1).collect(Collectors.toList());
+				.stream().collect(Collectors.toList());
+
+		// 获取特急人员b工资
+		List<PayB> payBList = payBDao.findByTypeAndAllotTimeBetween(temporarily.getType(),
+				temporarily.getOrderTimeBegin(), temporarily.getViewTypeDate() == 1 ? temporarily.getOrderTimeEnd()
+						: DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin()));
 		// 按天按月查看
 		long size = 0;
 		switch (temporarily.getViewTypeDate()) {
@@ -100,8 +110,8 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 		}
 
 		Map<Long, List<Temporarily>> mapTemporarilyList = null;
-		// 按个人按分组查看	
-		switch (temporarily.getViewTypeUser()) {  
+		// 按个人按分组查看
+		switch (temporarily.getViewTypeUser()) {
 		case 1:
 			mapTemporarilyList = temporarilyList.stream().filter(Temporarily -> Temporarily.getUserId() != null)
 					.collect(Collectors.groupingBy(Temporarily::getUserId, Collectors.toList()));
@@ -118,6 +128,7 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 				Map<String, Object> mapTe = new HashMap<>();
 				List<Temporarily> psList = mapTemporarilyList.get(ps);
 				List<Temporarily> psListTe = null;
+				double sumPayb = 0.0;
 				if (temporarily.getViewTypeDate() == 1) {
 					psListTe = new ArrayList<>();
 					for (Temporarily te : psList) {
@@ -126,6 +137,15 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 						}
 					}
 					psList = psListTe;
+					// 获取b工资
+					if (temporarily.getViewTypeDate() == 1) {
+						sumPayb = payBList.stream().mapToDouble(PayB::getPayNumber).sum();
+					}
+					if (temporarily.getViewTypeDate() == 2) {
+						sumPayb =payBList.stream().mapToDouble(PayB::getPayNumber).sum();
+					}
+					
+
 				}
 				if (psList.size() > 0) {
 					double sumWorkTime = psList.stream().filter(Temporarily -> Temporarily.getWorkTime() != null)
@@ -133,6 +153,12 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 					Group group = null;
 					if (temporarily.getViewTypeUser() == 2) {
 						group = dao.findOne(ps);
+						// 获取分组中的所有的人员
+						List<Temporarily> tList = temporarilyDao.findByGroupId(ps);
+						if (temporarily.getViewTypeDate() == 1) {
+							
+						}
+
 					}
 					SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 					SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM");
@@ -140,6 +166,9 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 							: formatter2.format(beginTimes));
 					mapTe.put("name", temporarily.getViewTypeUser() == 1 ? psList.get(0).getUser().getUserName()
 							: group == null ? "" : group.getName());
+					mapTe.put("foreigns", temporarily.getViewTypeUser() == 1
+							? (psList.get(0).getUser().getForeigns() == 0 ? "本厂" : "外厂") : "");
+					mapTe.put("bPay", sumPayb);
 					mapTe.put("sumWorkTime", sumWorkTime);
 					mapTe.put("kindWork", "");
 					mapList.add(mapTe);
