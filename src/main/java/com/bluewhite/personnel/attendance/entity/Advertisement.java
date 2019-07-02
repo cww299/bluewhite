@@ -12,6 +12,7 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.system.user.entity.User;
 
 /**
  * 广告费用
@@ -79,11 +80,20 @@ public class Advertisement extends BaseEntity<Long> {
 	@Column(name = "train")
     private String train;
 	
+	
 	/**
-	 * 培训老师
+	 * 培训老师id
 	 */
-	@Column(name = "Teacher")
-    private String Teacher;
+	@Column(name = "user_id")
+	private Long userId;
+	
+	/**
+	 * 老师
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User user;
+	
 	
 	/**
 	 * 是否培训合格(0=否，1=是)
@@ -156,11 +166,17 @@ public class Advertisement extends BaseEntity<Long> {
 	public void setTrain(String train) {
 		this.train = train;
 	}
-	public String getTeacher() {
-		return Teacher;
+	public Long getUserId() {
+		return userId;
 	}
-	public void setTeacher(String teacher) {
-		Teacher = teacher;
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
 	}
 	public Integer getQualified() {
 		return qualified;

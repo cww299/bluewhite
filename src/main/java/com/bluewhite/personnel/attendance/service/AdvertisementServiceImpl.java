@@ -36,7 +36,13 @@ public class AdvertisementServiceImpl extends BaseServiceImpl<Advertisement, Lon
 			if (!StringUtils.isEmpty(advertisement.getPlatformId())) {
 				predicate.add(cb.equal(root.get("platformId").as(Long.class), advertisement.getPlatformId()));
 			}
-			
+			// 按类型
+			if (!StringUtils.isEmpty(advertisement.getType())) {
+				predicate.add(cb.equal(root.get("type").as(Integer.class), advertisement.getType()));
+			}
+			if (!StringUtils.isEmpty(advertisement.getRecruitId())) {
+				predicate.add(cb.equal(root.get("recruitId").as(Long.class), advertisement.getRecruitId()));
+			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;

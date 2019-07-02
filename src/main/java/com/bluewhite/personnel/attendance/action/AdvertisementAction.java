@@ -35,7 +35,7 @@ public class AdvertisementAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Advertisement.class,"id","time","platformId","platform", "price","startTime","endTime","recruitId","recruitName","train","trainPrice","Teacher","qualified","type");
+				.addRetainTerm(Advertisement.class,"id","time","platformId","platform", "price","startTime","endTime","recruitId","recruitName","train","trainPrice","userId","user","qualified","type");
 	}
 	
 	/**
