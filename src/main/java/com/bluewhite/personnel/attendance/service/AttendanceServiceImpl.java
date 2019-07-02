@@ -112,9 +112,9 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			throw new ServiceException("考勤机连接失败");
 		}
 		if (flag) {
-			if(address.equals(Constants.EIGHT_WAREHOUSE) || address.equals(Constants.NEW_IGHT_WAREHOUSE)){
-				sdk.delectUserById(number);
-			}
+//			if(address.equals(Constants.EIGHT_WAREHOUSE) || address.equals(Constants.NEW_IGHT_WAREHOUSE)){
+//				sdk.delectUserById(number);
+//			}
 			flag = sdk.setUserInfo(number, name, "", isPrivilege, enabled);
 		}
 		sdk.disConnect();
