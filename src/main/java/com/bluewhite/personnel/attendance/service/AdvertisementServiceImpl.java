@@ -8,7 +8,6 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.basedata.dao.BaseDataDao;
@@ -33,14 +32,14 @@ public class AdvertisementServiceImpl extends BaseServiceImpl<Advertisement, Lon
 		Page<Advertisement> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按平台
-			if (!StringUtils.isEmpty(advertisement.getPlatformId())) {
+			if (advertisement.getPlatformId() != null) {
 				predicate.add(cb.equal(root.get("platformId").as(Long.class), advertisement.getPlatformId()));
 			}
 			// 按类型
-			if (!StringUtils.isEmpty(advertisement.getType())) {
+			if (advertisement.getType() != null) {
 				predicate.add(cb.equal(root.get("type").as(Integer.class), advertisement.getType()));
 			}
-			if (!StringUtils.isEmpty(advertisement.getRecruitId())) {
+			if (advertisement.getRecruitId() != null) {
 				predicate.add(cb.equal(root.get("recruitId").as(Long.class), advertisement.getRecruitId()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
