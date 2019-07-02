@@ -23,7 +23,6 @@ import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.system.user.entity.User;
-import com.sun.tools.classfile.Opcode.Set;
 
 @Service
 public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements GroupService {
@@ -128,6 +127,7 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 				Map<String, Object> mapTe = new HashMap<>();
 				List<Temporarily> psList = mapTemporarilyList.get(ps);
 				List<Temporarily> psListTe = null;
+				List<PayB> payBListUser = null;
 				double sumPayb = 0.0;
 				if (temporarily.getViewTypeDate() == 1) {
 					psListTe = new ArrayList<>();
@@ -136,10 +136,17 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 							psListTe.add(te);
 						}
 					}
+					
+					for(PayB payB : payBList.stream().filter(PayB->PayB.getUserId().equals(ps)).collect(Collectors.toList())){
+						payBListUser = new ArrayList<>();
+						     
+						
+					}
+					
 					psList = psListTe;
 					// 获取b工资
 					if (temporarily.getViewTypeDate() == 1) {
-						sumPayb = payBList.stream().mapToDouble(PayB::getPayNumber).sum();
+						sumPayb = payBList.stream().filter(PayB->PayB.getUserId().equals(ps)).mapToDouble(PayB::getPayNumber).sum();
 					}
 					if (temporarily.getViewTypeDate() == 2) {
 						sumPayb =payBList.stream().mapToDouble(PayB::getPayNumber).sum();
@@ -156,6 +163,7 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 						// 获取分组中的所有的人员
 						List<Temporarily> tList = temporarilyDao.findByGroupId(ps);
 						if (temporarily.getViewTypeDate() == 1) {
+							
 							
 						}
 
