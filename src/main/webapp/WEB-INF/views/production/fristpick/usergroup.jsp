@@ -99,6 +99,15 @@
 					</div>
 				</div>
 				<div class="form-group">
+					<label class="col-sm-3 control-label">是否本厂:</label>
+					<div class="col-sm-6">
+						<select class="form-control" id="isLocalFactory">
+						   <option value='0'>是</option>
+						   <option value="1" selected>否</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
 					<label class="col-sm-3 control-label">人员名称:</label>
 					<div class="col-sm-6">
 						<input type="text" id="groupNametw" class="form-control">
@@ -270,6 +279,9 @@
 				  		type:2,
 
 				} 
+		 $('#isLocalFactory').change(function(){		//是否本仓下拉框修改时清空人员名称
+			$('#groupNametw').val(''); 
+		 });
 			 var myDate = new Date(new Date().getTime() - 86400000);
 				//获取当前年
 				var year=myDate.getFullYear();
@@ -746,7 +758,7 @@
 					//ajax 拿way数据
 					source : function(query, process) {
 							return $.ajax({
-								url : '${ctx}/system/user/findUserList',
+								url : '${ctx}/system/user/findUserList?foreigns='+$('#isLocalFactory').val(),
 								type : 'GET',
 								data : {
 									temporarilyName:$.trim(query),
@@ -929,7 +941,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '50%'], 
+						  area: ['30%', '60%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"新增人员",
@@ -1002,7 +1014,7 @@
 					//ajax 拿way数据
 					source : function(query, process) {
 							return $.ajax({
-								url : '${ctx}/system/user/findUserList',
+								url : '${ctx}/system/user/findUserList?foreigns='+$('#isLocalFactory').val(),
 								type : 'GET',
 								data : {
 							  		temporarilyName:$.trim(query),
