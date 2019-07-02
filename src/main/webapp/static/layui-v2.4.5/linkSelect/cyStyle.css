@@ -169,11 +169,11 @@ img{
     border-color: #009f95!important;
 }
 
-.layui-input-normal {
+/* .layui-input-normal {
     float: left;
     width: 370px;
     margin-right: 10px
-}
+} */
 
 .layui-input-normal {
     display: inline-block;

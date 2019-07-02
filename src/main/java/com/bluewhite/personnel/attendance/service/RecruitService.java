@@ -7,7 +7,6 @@ import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.personnel.attendance.entity.Recruit;
-import com.bluewhite.system.user.entity.User;
 
 public interface RecruitService  extends BaseCRUDService<Recruit,Long>{
 	
@@ -28,5 +27,9 @@ public interface RecruitService  extends BaseCRUDService<Recruit,Long>{
 	
 	public  List<Recruit> soon(Recruit recruit);
 	
-	public List<User> users(Recruit recruit);
+	public Map<String,List<Map<String, Object>>>  users(Recruit recruit);
+	
+	public Map<String,List<Map<String, Object>>>  analysis(Recruit recruit);
+	
+	public List<Recruit> findList();
 }
