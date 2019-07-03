@@ -55,7 +55,6 @@ layui.use(['jquery','laydate','table'],
 		})
 		table.render({
 			elem:'#specialTable',
-			loading:true,
 			size:'sm',
 			data:[],
 			totalRow:true,
@@ -64,7 +63,7 @@ layui.use(['jquery','laydate','table'],
 			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){ return { data:ret.data, msg:ret.message, code:ret.code } },
 			cols:[[
-			       {align:'center', title:'日期',   field:'date',	},
+			       {align:'center', title:'日期',   field:'date',	totalRowText:'合计',},
 			       {align:'center', title:'分组/姓名', 	field:'name', 	},
 			       {align:'center', title:'总工时',   field:'sumWorkTime',  totalRow:true,},
 			       {align:'center', title:'工种',   field:'kindWork',	},
