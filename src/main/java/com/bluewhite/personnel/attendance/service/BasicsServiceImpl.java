@@ -118,6 +118,7 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 				 sum2=sum2+Integer.parseInt(aInteger3==null?"":aInteger3.toString());
 			}
 		Basics basics2=	dao.findByTimeBetween(DatesUtil.getFirstDayOfMonth(basics.getTime()),DatesUtil.getLastDayOfMonth(basics.getTime()));
+
 		if(basics2==null){
 			 basics2=new Basics();
 		}
@@ -133,6 +134,7 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 			basics2.setOccupyPrice(0.0);
 		}
 	return basics2;
+
 	}
 	/*
 	 *新增修改
@@ -143,12 +145,6 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 		return dao.save(basics);
 	}
 
-public static void main(String[] args) {
-	String aString="2019-06-02 11:00:00";
-	String aString2="2019-06-03 11:00:00";
-	int c= aString.compareTo(aString2);
-	System.err.println(c);
-}
 
 
 	

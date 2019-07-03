@@ -306,7 +306,9 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		attendance.setOrderTimeEnd(endTime);
 		List<Attendance> attendanceList = findPageAttendance(attendance, new PageParameter(0, Integer.MAX_VALUE))
 				.getRows().stream().filter(Attendance->Attendance.getInOutMode()==null || Attendance.getInOutMode()!=2).collect(Collectors.toList());
-		dao.delete(attendanceList);
+		if(attendanceList.size()>0){
+			dao.delete(attendanceList);
+		}
 		allAttendance(Constants.THREE_FLOOR, startTime, endTime);
 		allAttendance(Constants.TWO_FLOOR, startTime, endTime);
 		allAttendance(Constants.ONE_FLOOR, startTime, endTime);

@@ -102,7 +102,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 
 				if (task.getExpectTime() == null) {
 					newTask.setExpectTime(NumUtils.round(
-							ProTypeUtils.sumExpectTime(procedure, procedure.getType(), newTask.getNumber()), null));
+							ProTypeUtils.sumExpectTime(procedure, procedure.getType(), newTask.getNumber()), 5));
 				}
 
 				// 实际完成时间（1.工序类型不是返工，预计时间等于实际时间，2工序类型是返工，实际完成时间根据公式的出）
@@ -110,14 +110,14 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					newTask.setTaskTime(newTask.getExpectTime());
 				} else {
 					newTask.setTaskTime(NumUtils.round(ProTypeUtils.sumTaskTime(procedure.getWorkingTime(),
-							procedure.getType(), newTask.getNumber()), null));
+							procedure.getType(), newTask.getNumber()), 5));
 				}
 
 				// 预计任务价值（通过预计完成时间得出）（1.工序类型不是返工，预计任务价值通过计算得出
 				// 2.工序类型是返工,没有预计任务价值）
 				if (task.getExpectTime() == null) {
 					newTask.setExpectTaskPrice(NumUtils.round(
-							ProTypeUtils.sumTaskPrice(newTask.getExpectTime(), procedure.getType(), 0, null), null));
+							ProTypeUtils.sumTaskPrice(newTask.getExpectTime(), procedure.getType(), 0, null), 5));
 				} else {
 					newTask.setExpectTaskPrice(null);
 				}
@@ -125,16 +125,16 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				// 实际任务价值（通过实际完成时间得出）
 				newTask.setTaskPrice(NumUtils.round(
 						ProTypeUtils.sumTaskPrice(newTask.getTaskTime(), procedure.getType(), newTask.getFlag(), null),
-						null));
+						5));
 
 				// B工资净值
 				newTask.setPayB(
-						NumUtils.round(ProTypeUtils.sumBPrice(newTask.getTaskPrice(), procedure.getType()), null));
+						NumUtils.round(ProTypeUtils.sumBPrice(newTask.getTaskPrice(), procedure.getType()), 5));
 
 				// 当任务有加绩情况时
 				// 任务加绩具体数值
 				if (task.getPerformanceNumber() != null) {
-					newTask.setPerformancePrice(NumUtils.round(ProTypeUtils.sumtaskPerformancePrice(newTask), null));
+					newTask.setPerformancePrice(NumUtils.round(ProTypeUtils.sumtaskPerformancePrice(newTask), 5));
 				}
 				dao.save(newTask);
 
@@ -142,6 +142,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				double sunTime = 0;
 				Date orderTimeBegin = DatesUtil.getfristDayOftime(task.getAllotTime());
 				Date orderTimeEnd = DatesUtil.getLastDayOftime(task.getAllotTime());
+				//当为包装时，需要按照考勤时间去核算工资
 				if (task.getType() == 2) {
 					// 总考勤时间
 					for (String userTypeId : task.getUsersIds()) {
@@ -155,7 +156,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 									userId, task.getType(), orderTimeBegin, orderTimeEnd);
 							if (attendancePay.size() > 0) {
 								sunTime += (attendancePay.get(0).getGroupWorkTime() != null
-										? attendancePay.get(0).getGroupWorkTime() : attendancePay.get(0).getWorkTime());
+										  ? attendancePay.get(0).getGroupWorkTime() : attendancePay.get(0).getWorkTime());
 							}
 						}
 					}
@@ -194,15 +195,17 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 										+ dateFormater.format(task.getAllotTime()) + "的考勤记录，无法分配任务");
 							}
 							// 按考情时间占比分配B工资
-							payB.setPayNumber(newTask.getPayB() * (attendancePay.size() == 0 ? temporarily.getWorkTime()
-									: attendancePay.get(0).getWorkTime()) / sunTime);
+							payB.setPayNumber(NumUtils.div(
+									NumUtils.mul(newTask.getPayB(), (attendancePay.size() == 0
+											? temporarily.getWorkTime() : attendancePay.get(0).getWorkTime())),
+									sunTime, 5));
 						} else {
-							payB.setPayNumber(newTask.getPayB() / task.getUsersIds().length);
+							payB.setPayNumber(NumUtils.div(newTask.getPayB(),task.getUsersIds().length,5));
 						}
 
 						// 当存在加绩时，计算加绩工资
 						if (newTask.getPerformanceNumber() != null) {
-							payB.setPerformancePayNumber(newTask.getPerformancePrice() / task.getUsersIds().length);
+							payB.setPerformancePayNumber(NumUtils.div(newTask.getPerformancePrice(),task.getUsersIds().length,5));
 						}
 						payBDao.save(payB);
 					}
@@ -216,18 +219,16 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		int count = 0;
 		double sumTime = 0;
 		double bacthDepartmentPrice = 0;
-		if(bacth.getTasks().size()>0){
+		if (bacth.getTasks().size() > 0) {
 			List<Double> listDouble = new ArrayList<>();
-			bacth.getTasks().stream()
-			.filter(SalesUtils.distinctByKey(Task :: getProcedureId))
-			.forEach(a->{
+			bacth.getTasks().stream().filter(SalesUtils.distinctByKey(Task::getProcedureId)).forEach(a -> {
 				Procedure procedure = procedureDao.findOne(a.getProcedureId());
 				listDouble.add(procedure.getWorkingTime());
 			});
 			sumTime = NumUtils.sum(listDouble);
 			bacthDepartmentPrice = ProTypeUtils.sumProTypePrice(sumTime, bacth.getType());
 		}
-		
+
 		for (Task ta : bacth.getTasks()) {
 			sumTaskPrice += ta.getTaskPrice();
 			if (task.getType() == 2) {
@@ -236,17 +237,18 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					count += ta.getNumber();
 				}
 			}
-		};
-		
+		}
+		;
+
 		if (bacth.getNumber() == count) {
 			bacth.setStatus(1);
 			bacth.setStatusTime(task.getAllotTime());
 		}
-		bacth.setSumTaskPrice(NumUtils.round(sumTaskPrice,null));
+		bacth.setSumTaskPrice(NumUtils.round(sumTaskPrice, 5));
 		bacth.setBacthDepartmentPrice(bacthDepartmentPrice);
 		// 计算出该批次的地区差价
 		if (bacth.getFlag() == 0) {
-			bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType()), null));
+			bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType()), 5));
 		}
 		bacthDao.save(bacth);
 		return task;

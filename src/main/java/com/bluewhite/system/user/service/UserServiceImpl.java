@@ -379,7 +379,15 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			
 			//是否外调
 			if (user.getForeigns() != null) {
-				predicate.add(cb.equal(root.get("foreigns").as(Integer.class),user.getForeigns()));
+				Predicate p1 = cb.equal(root.get("foreigns").as(Integer.class),user.getForeigns());
+				if(user.getForeigns() == 1){
+					Predicate p2 = cb.equal(root.get("quit").as(Integer.class),1);
+					predicate.add(cb.or(p1,p2));
+				}else{
+					Predicate p2 = cb.equal(root.get("quit").as(Integer.class),0);
+					predicate.add(cb.and(p1,p2));
+				}
+				
 			}
 			
 			//是否离职

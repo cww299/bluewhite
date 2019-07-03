@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.group.dao.GroupDao;
@@ -127,8 +128,10 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 				Map<String, Object> mapTe = new HashMap<>();
 				List<Temporarily> psList = mapTemporarilyList.get(ps);
 				List<Temporarily> psListTe = null;
-				List<PayB> payBListUser = null;
+				List<PayB> payBListUser = new ArrayList<>();;
 				double sumPayb = 0.0;
+				Group group = null;
+				// 按日
 				if (temporarily.getViewTypeDate() == 1) {
 					psListTe = new ArrayList<>();
 					for (Temporarily te : psList) {
@@ -136,38 +139,93 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 							psListTe.add(te);
 						}
 					}
-					
-					for(PayB payB : payBList.stream().filter(PayB->PayB.getUserId().equals(ps)).collect(Collectors.toList())){
-						payBListUser = new ArrayList<>();
-						     
-						
-					}
-					
 					psList = psListTe;
 					// 获取b工资
-					if (temporarily.getViewTypeDate() == 1) {
-						sumPayb = payBList.stream().filter(PayB->PayB.getUserId().equals(ps)).mapToDouble(PayB::getPayNumber).sum();
+					// 按人员
+					if (temporarily.getViewTypeUser() == 1) {
+						for (PayB payB : payBList) {
+							// b工资时间满足在当日开始时间等于或之后，且满足于当日结束时间等于且之前
+							if (payB.getAllotTime().compareTo(beginTimes) == 0
+									|| payB.getAllotTime().after(beginTimes)
+									|| payB.getAllotTime().compareTo(DatesUtil.getLastDayOftime(beginTimes)) == 0
+											|| payB.getAllotTime().before(DatesUtil.getLastDayOftime(beginTimes))) {
+								payBListUser.add(payB);
+							}
+						}
+						sumPayb = payBListUser.stream().filter(PayB -> PayB.getUserId().equals(ps))
+								.mapToDouble(PayB::getPayNumber).sum();
 					}
-					if (temporarily.getViewTypeDate() == 2) {
-						sumPayb =payBList.stream().mapToDouble(PayB::getPayNumber).sum();
-					}
-					
-
-				}
-				if (psList.size() > 0) {
-					double sumWorkTime = psList.stream().filter(Temporarily -> Temporarily.getWorkTime() != null)
-							.mapToDouble(Temporarily::getWorkTime).sum();
-					Group group = null;
+					// 按分组
 					if (temporarily.getViewTypeUser() == 2) {
 						group = dao.findOne(ps);
 						// 获取分组中的所有的人员
-						List<Temporarily> tList = temporarilyDao.findByGroupId(ps);
-						if (temporarily.getViewTypeDate() == 1) {
-							
-							
+						Map<Long, List<Temporarily>> mapUser = temporarilyList.stream()
+								.filter(Temporarily -> Temporarily.getUserId() != null)
+								.collect(Collectors.groupingBy(Temporarily::getUserId, Collectors.toList()));
+						for (Long ps1 : mapUser.keySet()) {
+							for (PayB payB : payBList) {
+								// b工资时间满足在当日开始时间等于或之后，且满足于当日结束时间等于且之前
+								if (payB.getAllotTime().compareTo(beginTimes) == 0
+										|| payB.getAllotTime().after(beginTimes)
+										|| payB.getAllotTime().compareTo(DatesUtil.getLastDayOftime(beginTimes)) == 0
+												|| payB.getAllotTime()
+														.before(DatesUtil.getLastDayOftime(beginTimes))) {
+									payBListUser.add(payB);
+								}
+							}
+							double sumGroupPayb = payBListUser.stream().filter(PayB -> PayB.getUserId().equals(ps1))
+									.mapToDouble(PayB::getPayNumber).sum();
+							sumPayb += NumUtils.round(sumGroupPayb, 4);
 						}
-
 					}
+				}
+
+				// 按月
+				if (temporarily.getViewTypeDate() == 2) {
+					// 获取b工资
+					// 按人员
+					if (temporarily.getViewTypeUser() == 1) {
+						for (PayB payB : payBList) {
+							// b工资时间满足在当月开始时间等于或之后，且满足于当月结束时间等于且之前
+							if (payB.getAllotTime().compareTo(temporarily.getOrderTimeBegin()) == 0
+									|| payB.getAllotTime().after(temporarily.getOrderTimeBegin())
+									|| payB.getAllotTime().compareTo(DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin())) == 0
+									|| payB.getAllotTime().before(DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin()))) {
+								payBListUser.add(payB);
+							}
+						}
+						sumPayb = payBListUser.stream().filter(PayB -> PayB.getUserId().equals(ps))
+								.mapToDouble(PayB::getPayNumber).sum();
+					}
+					// 按分组
+					if (temporarily.getViewTypeUser() == 2) {
+						group = dao.findOne(ps);
+						// 获取分组中的所有的人员
+						Map<Long, List<Temporarily>> mapUser = temporarilyList.stream()
+								.filter(Temporarily -> Temporarily.getUserId() != null)
+								.collect(Collectors.groupingBy(Temporarily::getUserId, Collectors.toList()));
+						for (Long ps1 : mapUser.keySet()) {
+							for (PayB payB : payBList) {
+								// b工资时间满足在当月开始时间等于或之后，且满足于当月结束时间等于且之前
+								if (payB.getAllotTime().compareTo(temporarily.getOrderTimeBegin()) == 0
+										|| payB.getAllotTime().after(temporarily.getOrderTimeBegin())
+										|| payB.getAllotTime().compareTo(
+												DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin())) == 0
+										|| payB.getAllotTime()
+												.before(DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin()))) {
+									payBListUser.add(payB);
+								}
+							}
+							double sumGroupPayb = payBListUser.stream().filter(PayB -> PayB.getUserId().equals(ps1))
+									.mapToDouble(PayB::getPayNumber).sum();
+							sumPayb += NumUtils.round(sumGroupPayb, 4);
+						}
+					}
+				}
+
+				if (psList.size() > 0) {
+					double sumWorkTime = psList.stream().filter(Temporarily -> Temporarily.getWorkTime() != null)
+							.mapToDouble(Temporarily::getWorkTime).sum();
 					SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 					SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM");
 					mapTe.put("date", temporarily.getViewTypeDate() == 1 ? formatter.format(beginTimes)
@@ -176,9 +234,13 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 							: group == null ? "" : group.getName());
 					mapTe.put("foreigns", temporarily.getViewTypeUser() == 1
 							? (psList.get(0).getUser().getForeigns() == 0 ? "本厂" : "外厂") : "");
-					mapTe.put("bPay", sumPayb);
+					mapTe.put("bPay", NumUtils.round(sumPayb, 4));
 					mapTe.put("sumWorkTime", sumWorkTime);
-					mapTe.put("kindWork", "");
+					mapTe.put("kindWork",
+							temporarily.getViewTypeUser() == 1
+									? (psList.get(0).getGroup().getKindWork() == null ? ""
+											: psList.get(0).getGroup().getKindWork().getName())
+									: group.getKindWork() == null ? "" : group.getKindWork().getName());
 					mapList.add(mapTe);
 				}
 			}
