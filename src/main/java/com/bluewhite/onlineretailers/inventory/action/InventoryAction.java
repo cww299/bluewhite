@@ -76,7 +76,7 @@ public class InventoryAction {
 		clearCascadeJSON = ClearCascadeJSON.get()
 				.addRetainTerm(OnlineOrder.class, "documentNumber", "id", "user", "onlineCustomer", "onlineOrderChilds",
 						"sellerNick", "name", "buyerName", "picPath", "payment", "postFee", "consignTime",
-						"buyerRemarks", "num", "sumPrice", "status", "allBillPreferential", "trackingNumber",
+						"buyerRemarks", "num", "sumPrice", "status", "allBillPreferential",
 						"buyerMessage", "buyerMemo", "buyerFlag", "sellerMemo", "sellerFlag", "buyerRate",
 						"shippingType", "createdAt", "updatedAt", "address", "phone", "zipCode", "buyerName",
 						"provinces", "city", "county", "flag", "telephone", "residueNumber", "deliverys")

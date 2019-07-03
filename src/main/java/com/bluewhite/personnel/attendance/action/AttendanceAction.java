@@ -192,8 +192,8 @@ public class AttendanceAction {
 	@ResponseBody
 	public CommonResponse restAttendance(HttpServletRequest request, String address, Date startTime, Date endTime) {
 		CommonResponse cr = new CommonResponse();
-		attendanceService.restAttendance(address, startTime, endTime);
-		cr.setMessage("重置成功");
+		int count = attendanceService.restAttendance(address, startTime, endTime);
+		cr.setMessage("成功重置"+count+"条考勤记录");
 		return cr;
 	}
 	
