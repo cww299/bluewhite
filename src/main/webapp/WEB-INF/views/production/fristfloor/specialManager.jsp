@@ -64,9 +64,9 @@ layui.use(['jquery','laydate','table'],
 			cols:[[
 			       {align:'center', title:'日期',   field:'date',	},
 			       {align:'center', title:'分组/姓名', 	field:'name', 	},
-			       {align:'center', title:'总工时',   field:'sumWorkTime',  },
+			       {align:'center', title:'总工时',   field:'sumWorkTime',  totalRow:true,},
 			       {align:'center', title:'工种',   field:'kindWork',	},
-			       {align:'center', title:'b工资',   field:'bPay',	},
+			       {align:'center', title:'b工资',   field:'bPay',	totalRow:true,},
 			       ]],
 			done:function(){
 				layer.close(LOAD);
