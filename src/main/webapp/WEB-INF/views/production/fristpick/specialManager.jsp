@@ -65,6 +65,7 @@ layui.use(['jquery','laydate','table'],
 			       {align:'center', title:'分组/姓名', 	field:'name', 	},
 			       {align:'center', title:'总工时',   field:'sumWorkTime',  },
 			       {align:'center', title:'工种',   field:'kindWork',	},
+			       {align:'center', title:'b工资',   field:'bPay',	},
 			       ]]
 		}) 
 		
