@@ -118,6 +118,7 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 				 sum2=sum2+Integer.parseInt(aInteger3==null?"":aInteger3.toString());
 			}
 		Basics basics2=	dao.findByTimeBetween(DatesUtil.getFirstDayOfMonth(basics.getTime()),DatesUtil.getLastDayOfMonth(basics.getTime()));
+		
 		basics.setId(basics2.getId());
 		basics.setRecruitUserPrice(basics2.getRecruitUserPrice()==null ? 0 : basics2.getRecruitUserPrice());//日期内面试招聘人员费用/元填写→
 		basics.setTrainPrice(trainPrice);//培训费
