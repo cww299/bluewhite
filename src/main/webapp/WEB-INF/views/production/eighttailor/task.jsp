@@ -42,6 +42,10 @@
 					placeholder="请输入产品名称"
 					class="form-control search-query name" /></td>
 				<td>&nbsp;&nbsp;</td>
+				<td>工序名称:</td>
+				<td><input type="text" name="procedureName" id="procedureName"
+						placeholder="请输入工序名称" class="form-control search-query name" /></td>
+				<td>&nbsp;&nbsp;</td>
 				<td>开始时间:</td>
 				<td><input id="startTime" placeholder="请输入开始时间"
 					class="form-control laydate-icon"
@@ -496,6 +500,7 @@
 				  			type:5,
 				  			productName:$('#name').val(),
 				  			bacthNumber:$('#number').val(),
+				  			procedureName:$('#procedureName').val(),
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
 				  			flag:$('.selectchoice').val(),
