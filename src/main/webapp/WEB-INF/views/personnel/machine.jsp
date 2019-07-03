@@ -100,6 +100,7 @@
 		  var form = layui.form;
 		  var address='192.168.1.204';	//默认为三楼打卡机
 		  
+		  var load = layer.load(1);
 		  table.render({
 		    elem: '#test'
 		    ,url:'${ctx}/personnel/getAllUser'
@@ -126,6 +127,9 @@
 		      ]]
 	          ,id: 'testReload'
 		    ,page: false
+		    ,done : function(){
+		    	layer.close(load);
+		    }
 		  });
 		  form.render();
 		  form.on('switch()', function(data){	//监听所有开关

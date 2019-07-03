@@ -224,11 +224,33 @@ layui.config({
 	 			        ]],
 	 		})
 	 	}
+	 	var searchTime = '';  //记录搜索查询时间
 	 	form.on('submit(searchTotal)',function(obj){
+	 		searchTime = obj.field.time+'-01 00:00:00';
 	 		table.reload('totalTable',{
 		 		url: '${ctx}/personnel/getBasics',
-		 		where : { time : obj.field.time+'-01 00:00:00'},
+		 		where : { time : searchTime},
 	 		})
+	 	})
+	 	table.on('edit(totalTable)',function(obj){
+	 		var load =layer.load(1);
+	 		if(isNaN(obj.value)){
+	 			layer.msg("招聘人员费用只能为数字！",{icon:2});
+	 		}
+	 		else{
+		 		$.ajax({
+		 			url : '${ctx}/personnel/addBasics',
+		 			type: 'post',
+		 			data: { recruitUserPrice: parseFloat(obj.value), id:table.cache['totalTable'][0]['id'], time:searchTime, },
+		 			async: false,
+		 			success: function(r){
+		 				var icon = (r.code==0)? 1 : 2;
+		 				layer.msg(r.message,{icon:icon});
+		 			}
+		 		})
+	 		} 
+	 		table.reload('totalTable');
+	 		layer.close(load);
 	 	})
 	 	laydate.render({
 	 		elem: '#totalTime',

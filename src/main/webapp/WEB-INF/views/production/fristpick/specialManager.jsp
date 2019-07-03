@@ -43,6 +43,7 @@ layui.use(['jquery','laydate','table'],
 		, laydate = layui.laydate
 		, laytpl = layui.laytpl;
 		
+		var LOAD;
 		laydate.render({
 			elem: '#dayTime',
 			type: 'date', 
@@ -66,7 +67,10 @@ layui.use(['jquery','laydate','table'],
 			       {align:'center', title:'总工时',   field:'sumWorkTime',  },
 			       {align:'center', title:'工种',   field:'kindWork',	},
 			       {align:'center', title:'b工资',   field:'bPay',	},
-			       ]]
+			       ]],
+	        done:function(){
+	        	layer.close(LOAD);
+	        }
 		}) 
 		
 		form.on('radio(time)', function(data){			//单选按钮切换
@@ -96,6 +100,7 @@ layui.use(['jquery','laydate','table'],
 				data.orderTimeBegin = time+"-01 00:00:00";
 				data.orderTimeEnd = "";
 			}
+			LOAD = layer.load(1);
 			table.reload('specialTable',{
 				url:'${ctx}/production/sumTemporarily?type='+TYPE,
 				where:data
