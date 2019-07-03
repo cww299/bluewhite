@@ -102,7 +102,7 @@ layui.use(['jquery','laydate','table'],
 					layer.msg('查询时间不能为空',{icon:2});
 					return;
 				}
-				var time = $('#monthTime').val();
+				var time = $('#monthTime').val(); 
 				data.orderTimeBegin = time+"-01 00:00:00";
 				data.orderTimeEnd = "";
 			}
