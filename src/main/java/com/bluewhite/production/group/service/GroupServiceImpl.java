@@ -131,6 +131,7 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 				List<PayB> payBListUser = new ArrayList<>();;
 				double sumPayb = 0.0;
 				Group group = null;
+				Date endTimes = DatesUtil.getLastDayOftime(beginTimes);
 				// 按日
 				if (temporarily.getViewTypeDate() == 1) {
 					psListTe = new ArrayList<>();
@@ -147,14 +148,15 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 							// b工资时间满足在当日开始时间等于或之后，且满足于当日结束时间等于且之前
 							if (payB.getAllotTime().compareTo(beginTimes) == 0
 									|| payB.getAllotTime().after(beginTimes)
-									|| payB.getAllotTime().compareTo(DatesUtil.getLastDayOftime(beginTimes)) == 0
-											|| payB.getAllotTime().before(DatesUtil.getLastDayOftime(beginTimes))) {
+									|| payB.getAllotTime().compareTo(endTimes) == 0
+											|| payB.getAllotTime().before(endTimes)) {
 								payBListUser.add(payB);
 							}
 						}
 						sumPayb = payBListUser.stream().filter(PayB -> PayB.getUserId().equals(ps))
 								.mapToDouble(PayB::getPayNumber).sum();
 					}
+					
 					// 按分组
 					if (temporarily.getViewTypeUser() == 2) {
 						group = dao.findOne(ps);
