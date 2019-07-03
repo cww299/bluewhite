@@ -59,10 +59,10 @@
 													<button type="button"
 														class="btn btn-default btn-square btn-sm btn-3d  searchtask">
 														查&nbsp找</button>
-												</span> &nbsp <span class="input-group-btn">
+												</span> &nbsp <!-- <span class="input-group-btn">
 													<button type="button" id="synchronization"
 														class="btn btn-success btn-sm btn-3d pull-right">人员同步</button>
-												</span> &nbsp <span class="input-group-btn">
+												</span> &nbsp --> <span class="input-group-btn">
 													<button type="button" id="export"
 														class="btn btn-success btn-sm btn-3d pull-right">导出签到</button>
 												</span> &nbsp <span class="input-group-btn">

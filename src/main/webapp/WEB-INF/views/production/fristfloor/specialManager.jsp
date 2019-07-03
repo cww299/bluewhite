@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>特急管理</title>
+<title>特急汇总</title>
 </head>
 <body>
 
@@ -65,6 +65,7 @@ layui.use(['jquery','laydate','table'],
 			       {align:'center', title:'分组/姓名', 	field:'name', 	},
 			       {align:'center', title:'总工时',   field:'sumWorkTime',  },
 			       {align:'center', title:'工种',   field:'kindWork',	},
+			       {align:'center', title:'b工资',   field:'bPay',	},
 			       ]]
 		}) 
 		
