@@ -294,10 +294,18 @@ public class GroupAction {
 			temporarily.setTemporarilyDate(date);
 			Temporarily temporarily1 = new Temporarily();
 			BeanCopyUtils.copyNullProperties(temporarily,temporarily1);
-	
-			if (temporarilyDao.findByUserIdAndTemporarilyDateAndType(temporarily1.getUserId(),
+			
+			//当类型为针工时，按当日当前分组
+			if(temporarily.getType()==3){
+				if (temporarilyDao.findByUserIdAndTemporarilyDateAndTypeAndGroupId(temporarily1.getUserId(),
+						temporarily1.getTemporarilyDate(), temporarily1.getType(),temporarily1.getGroupId()) != null) {
+					cr.setMessage("当天当前分组已添加过借调人员的工作时间,不必再次添加");
+					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+					return cr;
+				}
+			}else if (temporarilyDao.findByUserIdAndTemporarilyDateAndType(temporarily1.getUserId(),
 					temporarily1.getTemporarilyDate(), temporarily1.getType()) != null) {
-				cr.setMessage("当日已添加过借调人员的工作时间,不必再次添加");
+				cr.setMessage("当天当前分组已添加过借调人员的工作时间,不必再次添加");
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 				return cr;
 			}

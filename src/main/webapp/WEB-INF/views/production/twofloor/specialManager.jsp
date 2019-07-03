@@ -60,6 +60,7 @@ layui.use(['jquery','laydate','table'],
 			data:[],
 			totalRow:true,
 			toolbar: true,
+			totalRow:true,
 			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){ return { data:ret.data, msg:ret.message, code:ret.code } },
 			cols:[[
@@ -68,6 +69,7 @@ layui.use(['jquery','laydate','table'],
 			       {align:'center', title:'总工时',   field:'sumWorkTime',  totalRow:true,},
 			       {align:'center', title:'工种',   field:'kindWork',	},
 			       {align:'center', title:'b工资',   field:'bPay',	totalRow:true,},
+
 			       ]],
 	       done:function(){
 	        	layer.close(LOAD);
