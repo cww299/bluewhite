@@ -14,7 +14,7 @@
 <body>
 
 <div class="layui-card" >
-	<div class="layui-card-body" style="height:800px;">
+	<div class="layui-card-body">
 		<table class="layui-table" lay-filter="userRoleTable" id="userRoleTable"></table>
 	</div> 
 </div>
@@ -147,7 +147,6 @@ layui.config({
 			elem : '#userRoleTable',
 			size : 'lg',
 			url : "${ctx}/allRoleUser",
-			height : '700',
 			request:{
 				pageName: 'page' ,				//页码的参数名称，默认：page
 				limitName: 'size' 				//每页数据量的参数名，默认：limit

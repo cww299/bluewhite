@@ -100,6 +100,7 @@
 		  var form = layui.form;
 		  var address='192.168.1.204';	//默认为三楼打卡机
 		  
+		  var load = layer.load(1);
 		  table.render({
 		    elem: '#test'
 		    ,url:'${ctx}/personnel/getAllUser'
@@ -126,6 +127,9 @@
 		      ]]
 	          ,id: 'testReload'
 		    ,page: false
+		    ,done : function(){
+		    	layer.close(load);
+		    }
 		  });
 		  form.render();
 		  form.on('switch()', function(data){	//监听所有开关
@@ -242,7 +246,7 @@
 		  });
 		/*搜索*/
 		  
-		  	active = {
+		  	/* active = {
 				    reload: function(){
 				      var demoReload = $('#demoReload');
 				      //执行重载
@@ -253,13 +257,26 @@
 				        }
 				      });
 				    }
-				  };
+				  }; */
 		  
 		$('#search').on('click', function(){
 			    var type = $(this).data('type');
 			    address=$("#select1").val();
-			    active[type] ? active[type].call(this) : '';
-			  });
+			    //active[type] ? active[type].call(this) : '';
+			    var load = layer.load(1,{shade: [0.1,'black'] });
+			    var demoReload = $('#demoReload');
+			      //执行重载
+			    table.reload('testReload', {
+			        where: {
+			            number: demoReload.val(),
+			            address:$("#select1").val()
+			        },
+			        done: function(){
+					    layer.close(load);
+			        }
+			    });
+	    });
+				  
 			
 		$('#add').on('click', function(){
 		    var add=layer.open({

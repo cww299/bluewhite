@@ -112,9 +112,9 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			throw new ServiceException("考勤机连接失败");
 		}
 		if (flag) {
-			if(address.equals(Constants.EIGHT_WAREHOUSE) || address.equals(Constants.NEW_IGHT_WAREHOUSE)){
-				sdk.delectUserById(number);
-			}
+//			if(address.equals(Constants.EIGHT_WAREHOUSE) || address.equals(Constants.NEW_IGHT_WAREHOUSE)){
+//				sdk.delectUserById(number);
+//			}
 			flag = sdk.setUserInfo(number, name, "", isPrivilege, enabled);
 		}
 		sdk.disConnect();
@@ -313,6 +313,24 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		allAttendance(Constants.EIGHT_WAREHOUSE, startTime, endTime);
 		allAttendance(Constants.NEW_IGHT_WAREHOUSE, startTime, endTime);
 		return attendanceList.size();
+	}
+
+	@Override
+	public Map<String, Object> getUser(String address, String number) {
+		sdk.initSTA();
+		boolean flag = false;
+		Map<String, Object> user = null;
+		try {
+			flag = sdk.connect(address, 4370);
+		} catch (Exception e) {
+			throw new ServiceException("考勤机连接失败");
+		}
+		if (flag) {
+			user = sdk.getUserInfoTmp(number);
+		}
+		sdk.disConnect();
+		sdk.release();
+		return user;
 	}
 
 }

@@ -267,6 +267,35 @@ public class ZkemSDKUtils {
 				.getBoolean();
 		return result;
 	}
+	
+	/**
+	 * 得到用户指纹信息
+	 *
+	 * @param number
+	 * @param name
+	 * @param password
+	 * @param isPrivilege
+	 *            0為普通用戶,3為管理員;
+	 * @param enabled
+	 *            是否啟用
+	 * @return
+	 */
+	public static Map<String, Object> getUserInfoTmp(String number) {
+		Variant v0 = new Variant(1);
+		Variant dwEnrollNumber = new Variant(number, true);
+		Variant dwFingerIndex = new Variant(0, true);
+		Variant TmpData = new Variant("", true);  
+		Variant TmpLength = new Variant(0, true);
+  		boolean result = zkem.invoke("SSR_GetUserTmpStr", v0, dwEnrollNumber, dwFingerIndex, TmpData, TmpLength)
+			.getBoolean();
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("dwEnrollNumber", dwEnrollNumber.getStringRef());
+		m.put("dwFingerIndex", dwFingerIndex.getIntRef());
+		m.put("TmpData", TmpData.getStringRef());
+		m.put("TmpLength", TmpLength.getIntRef());
+		return m;
+	}
+	
 
 	/**
 	 * 根据考勤号码获取用户信息

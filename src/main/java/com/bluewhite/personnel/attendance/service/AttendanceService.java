@@ -86,5 +86,8 @@ public interface AttendanceService  extends BaseCRUDService<Attendance,Long>{
 	 * @param endTime
 	 */
 	public int restAttendance(String address, Date startTime, Date endTime);
+	
+	
+	public Map<String, Object> getUser(String address ,String number);
 
 }

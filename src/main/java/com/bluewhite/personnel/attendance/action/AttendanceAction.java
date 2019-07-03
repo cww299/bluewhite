@@ -109,6 +109,21 @@ public class AttendanceAction {
 		}
 		return cr;
 	}
+	
+	/**
+	 * 修改考勤机中的人员信息
+	 * 
+	 * @param request
+	 *            请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/personnel/getuser", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getuser(HttpServletRequest request, String address, String number) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(attendanceService.getUser(address, number));
+		return cr;
+	}
 
 	/**
 	 * 删除考勤机中的人员信息（包括指纹，脸，卡）

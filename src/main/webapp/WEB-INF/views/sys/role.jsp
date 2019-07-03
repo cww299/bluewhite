@@ -35,7 +35,7 @@
 <body>
 	
 <div class="layui-card">
-	<div class="layui-card-body" style="height:800px">
+	<div class="layui-card-body">
 		<div id="LAY-role-table" class="table_th_search" lay-filter="LAY-role-table"></div>
 	</div>
 </div>
@@ -131,7 +131,6 @@ layui.config({
 			elem : '#LAY-role-table',
 			size : 'lg',
 			url : '${ctx}/roles/page' ,
-			height:'700px',
 			request:{ pageName: 'page' ,limitName: 'size' 		 },
 			page : {},       			
 			loading : true,     		

@@ -478,4 +478,10 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 		return count;
 	}
 
+	@Override
+	public List<Procurement> findByTypeAndStatusAndCreatedAtBetween(int type, int status, Date startTime,
+			Date endTime) {
+		return dao.findByTypeAndStatusAndCreatedAtBetween(type, status, startTime, endTime);
+	}
+
 }

@@ -590,8 +590,13 @@ layui.config({
 				      ]],
 		      	done: function (res, curr, count) {	
 		      		var data=res.data;
-		      		for(var i=0;i<data.length;i++){
-		      			if(data[i].inventorys.length>0)
+		      		for(var i=0;i<data.length;i++){				//如果存在发货仓库，且发货仓库中有主仓库157.则作为默认发货仓库
+		      			if(data[i].inventorys.length>0){			
+		      				for(var j=0;j<data[i].inventorys.length;j++)
+		      					if(data[i].inventorys[j].warehouse.id == "157")
+		      						data[i].inventory = data[i].inventorys[j].warehouse.id;
+		      			}
+		      			else									//没有主仓库则默认为第一个仓库
 		      				data[i].inventory = data[i].inventorys[0].warehouse.id;
 		      			switch(defaultPrice){
 			      		case 'tianmao':data[i].price=data[i].tianmaoPrice;   break;
@@ -696,12 +701,14 @@ layui.config({
 					html='<select lay-filter="selectInventory">'
 					for(var i=0;i<inv.length;i++){
 						var selected='';
-						layui.each(checkData,function(index,item){			//该商品是否勾选，且已选择发货仓库
+						if(inv[i].warehouse.id=="157")
+							selected = 'selected';
+						/* layui.each(checkData,function(index,item){			//该商品是否勾选，且已选择发货仓库
 							if(item.id == d.id && item.inventory == inv[i].warehouse.id){
 								selected = 'selected';
 								return;
 							}
-						})
+						}) */
 						html+='<option value="'+inv[i].warehouse.id+'" '+selected+'>'+inv[i].warehouse.name+':'+inv[i].number+'</option>';
 					}
 					html+='</select>'
