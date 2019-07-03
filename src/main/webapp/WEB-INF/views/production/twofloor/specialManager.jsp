@@ -55,7 +55,6 @@ layui.use(['jquery','laydate','table'],
 		})
 		table.render({
 			elem:'#specialTable',
-			loading:true,
 			size:'sm',
 			data:[],
 			totalRow:true,
