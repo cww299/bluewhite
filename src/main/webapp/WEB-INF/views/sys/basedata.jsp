@@ -154,6 +154,7 @@ layui.config({
 			var addType=layer.open({
 				title:"新增数据类型",
 				area:['30%','35%'],
+				offset:'200px',
 				type:1,
 				content:$('#addTypeDiv')
 			});
@@ -164,13 +165,13 @@ layui.config({
 					data:obj.field,
 					type:"post",
 					success:function(result){
+						var icon = 2;
 						if(0==result.code){
 							getDataType();			//重新获取下拉框内容
 							layer.closeAll();
-							layer.msg("添加成功",{icon:1});
+							icon = 1;
 						}
-						else
-							layer.msg(result.code+'添加异常',{icon:2});
+						layer.msg(result.message,{icon:icon,offset:'200px'});
 						layer.close(load);
 					}
 				}) 
@@ -189,17 +190,18 @@ layui.config({
 		function more(thisTable){					//查看子数据
 			var choosedData=layui.table.checkStatus(thisTable).data;
 			if(choosedData.length>1){
-				layer.msg("不能同时查看多条数据",{icon:2});
+				layer.msg("不能同时查看多条数据",{icon:2,offset:'200px',});
 				return;
 			}
 			if(choosedData.length==0){
-				layer.msg("至少选中一条数据进行查看",{icon:2});
+				layer.msg("至少选中一条数据进行查看",{icon:2,offset:'200px'});
 				return;
 			}
 			var parent={id:choosedData[0].id,remark:'',type:''};
 			layer.open({
 				title:'子数据',
 				type:1,
+				offset:'30px',
 				area:['90%','90%'],
 				content:'<div class="table_th_search" lay-filter="childrenTable" id="childrenTable"></div>' ,
 			})
@@ -213,7 +215,7 @@ layui.config({
 				case 'add': addEidt('add',parent,'childrenTable');   break;
 				case 'edit': addEidt('edit',parent,'childrenTable'); break;
 				case 'delete':deletes('childrenTable'); 			break;
-				case 'more': layer.msg("该数据没有子数据",{icon:2}); break;
+				case 'more': layer.msg("该数据没有子数据",{icon:2,offset:'200px'}); break;
 				}
 			});
 			
@@ -226,11 +228,11 @@ layui.config({
 			var tpl=addEditTpl.innerHTML;
 			if(type=='edit'){
 				if(choosedData.length>1){
-					layer.msg("不能同时编辑多条数据",{icon:2});
+					layer.msg("不能同时编辑多条数据",{icon:2,offset:'200px'});
 					return;
 				}
 				if(choosedData.length<1){
-					layer.msg("至少选中一条数据进行编辑",{icon:2});
+					layer.msg("至少选中一条数据进行编辑",{icon:2,offset:'200px'});
 					return;
 				}
 				data=choosedData[0];
@@ -242,6 +244,7 @@ layui.config({
 				title:title,
 				area:['30%','60%'],
 				type:1,
+				offset:'200px',
 				content:html,
 			})
 			form.render();
@@ -256,12 +259,12 @@ layui.config({
 							layer.close(open);
 							table.reload(thisTable);
 							if(type=='add')
-								layer.msg("添加成功",{icon:1});
+								layer.msg("添加成功",{icon:1,offset:'200px'});
 							else if(type=='edit')
-								layer.msg("修改成功",{icon:1});
+								layer.msg("修改成功",{icon:1,offset:'200px'});
 						}
 						else
-							layer.msg(result.code+'添加异常',{icon:2});
+							layer.msg(result.code+'添加异常',{icon:2,offset:'200px'});
 						layer.close(load);
 					}
 				})
@@ -271,10 +274,10 @@ layui.config({
 		function deletes(thisTable){
 			var choosedData=layui.table.checkStatus(thisTable).data;
 			if(choosedData.length<1){
-				layer.msg("请至少选中一条数据删除",{icon:2});
+				layer.msg("请至少选中一条数据删除",{icon:2,offset:'200px'});
 				return;
 			}
-			layer.confirm("是否确认删除"+choosedData.length+"条数据",function(){
+			layer.confirm("是否确认删除"+choosedData.length+"条数据",{offset:'200px'},function(){
 				var load=layer.load(1);
 				var i=0;
 				for(i=0;i<choosedData.length;i++){ 
@@ -282,47 +285,25 @@ layui.config({
 						url:"${ctx}/basedata/delete",
 						async:false,
 						data:{id:choosedData[i].id},
-						success:function(result){
-							if(0!=result.code){
-							}
-						},
-						error:function(result){
-							layer.msg("服务器异常",{icon:2});
-						}
 					})
 				}
 				layer.close(load);
 				if(i<choosedData.length){
-					layer.msg("删除第"+i+"条数据时发生异常",{icon:2});
+					layer.msg("删除第"+i+"条数据时发生异常",{icon:2,offset:'200px'});
 				}else{
-					layer.msg("成功删除"+choosedData.length+"条数据",{icon:1});
+					layer.msg("成功删除"+choosedData.length+"条数据",{icon:1,offset:'200px'});
 					table.reload(thisTable);
 				}
 				
 			})
 		}
 		
-		// tr点击触发复选列点击
-		$(document).on('click', '.layui-table-view tbody tr', function(event) {
-			var elemTemp = $(this);
-			var tableView = elemTemp.closest('.layui-table-view');
-			var trIndex = elemTemp.data('index');
-			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
-		})
 		function renderTable(elem){									//表格渲染，要渲染的表格元素，以及高度设置，不设置的话不会出现滚动条（与子数据列表复用函数）
 			table.render({
 				elem : elem,
-				size : 'lg',
-				page : false,
 				loading : true,  
 				toolbar : "#baseDataToolBar",
-				parseData : function(ret) {    		
-					return {
-						code : ret.code,
-						msg : ret.message,
-						data : ret.data,
-					}
-				},
+				parseData : function(ret) { return { code : ret.code, msg : ret.message, data : ret.data, } },
 				cols:[[
 				       {type: 'checkbox',align : 'center',fixed: 'left'},
 						{field : "id",title : "数据id",sort : true,align : 'center'},
@@ -354,11 +335,16 @@ layui.config({
 						form.render();
 					}	
 					else
-						layer.msg("获取数据异常",{icon:2});
+						layer.msg("获取数据异常",{icon:2,offset:'200px'});
 				}
 			})
 		}
-		
+		$(document).on('click', '.layui-table-view tbody tr', function(event) {
+			var elemTemp = $(this);
+			var tableView = elemTemp.closest('.layui-table-view');
+			var trIndex = elemTemp.data('index');
+			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
+		})
 		
 	}//end function
 )//end defind

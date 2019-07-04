@@ -40,13 +40,18 @@
 </div>
 </body>
 <script>
-layui.use(['jquery','laydate','table'],
+layui.config({
+	base: '${ctx}/static/layui-v2.4.5/'
+}).extend({
+	tablePlug: 'tablePlug/tablePlug',
+}).define(['jquery','laydate','table','tablePlug'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
 		, form = layui.form			 		
 		, table = layui.table 
 		, laydate = layui.laydate
+		, tablePlug = layui.tablePlug 
 		, laytpl = layui.laytpl;
 		
 		var LOAD;      //遮罩变量
@@ -59,6 +64,7 @@ layui.use(['jquery','laydate','table'],
 			elem: '#monthTime',
 			type: 'month', 
 		})
+		tablePlug.smartReload.enable(true); 
 		table.render({
 			elem:'#specialTable',
 			data:[],
@@ -72,7 +78,7 @@ layui.use(['jquery','laydate','table'],
 			       {align:'center', title:'日期',   field:'date',	totalRowText:'合计',},
 			       {align:'center', title:'分组/姓名', 	field:'name', 	},
 			       {align:'center', title:'总工时',   field:'sumWorkTime',totalRow:true,  },
-			       {align:'center', title:'工种',   field:'kindWork',	},
+			       {align:'center', title:'工种',   field:'kindWork', filter:true,	},
 			       ]],
 			done:function(){
 				layer.close(LOAD);
