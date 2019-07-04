@@ -73,7 +73,6 @@ layui.use(['jquery','laydate','table'],
 			       {align:'center', title:'分组/姓名', 	field:'name', 	},
 			       {align:'center', title:'总工时',   field:'sumWorkTime',totalRow:true,  },
 			       {align:'center', title:'工种',   field:'kindWork',	},
-			       {align:'center', title:'b工资',   field:'bPay',	totalRow:true,},
 			       ]],
 			done:function(){
 				layer.close(LOAD);
@@ -103,7 +102,7 @@ layui.use(['jquery','laydate','table'],
 					layer.msg('查询时间不能为空',{icon:2});
 					return;
 				}
-				var time = $('#monthTime').val();
+				var time = $('#monthTime').val(); 
 				data.orderTimeBegin = time+"-01 00:00:00";
 				data.orderTimeEnd = "";
 			}
