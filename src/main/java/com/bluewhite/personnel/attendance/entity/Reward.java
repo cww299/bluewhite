@@ -29,7 +29,7 @@ public class Reward extends BaseEntity<Long> {
 	private Date time;
 	
 	/**
-	 * 招聘记录
+	 * 招聘
 	 */
 	@Column(name = "recruit_id")
 	private Long recruitId;
@@ -69,54 +69,6 @@ public class Reward extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Date orderTimeEnd;
-	public Date getTime() {
-		return time;
-	}
-	public void setTime(Date time) {
-		this.time = time;
-	}
-	public Long getRecruitId() {
-		return recruitId;
-	}
-	public void setRecruitId(Long recruitId) {
-		this.recruitId = recruitId;
-	}
-	public Recruit getRecruitName() {
-		return recruitName;
-	}
-	public void setRecruitName(Recruit recruitName) {
-		this.recruitName = recruitName;
-	}
-	public Integer getSpeed() {
-		return speed;
-	}
-	public void setSpeed(Integer speed) {
-		this.speed = speed;
-	}
-	public Double getPrice() {
-		return price;
-	}
-	public void setPrice(Double price) {
-		this.price = price;
-	}
-	public Integer getType() {
-		return type;
-	}
-	public void setType(Integer type) {
-		this.type = type;
-	}
-	public Date getOrderTimeBegin() {
-		return orderTimeBegin;
-	}
-	public void setOrderTimeBegin(Date orderTimeBegin) {
-		this.orderTimeBegin = orderTimeBegin;
-	}
-	public Date getOrderTimeEnd() {
-		return orderTimeEnd;
-	}
-	public void setOrderTimeEnd(Date orderTimeEnd) {
-		this.orderTimeEnd = orderTimeEnd;
-	}
 	
 
 }

@@ -1,7 +1,5 @@
 package com.bluewhite.personnel.attendance.service;
 
-import java.util.List;
-
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -21,6 +19,4 @@ public interface RewardService  extends BaseCRUDService<Reward,Long>{
 	 * @param onlineOrder
 	 */
 	public Reward addReward(Reward reward);
-	
-	public List<Reward> rewards(Reward reward,Integer integer);
 }

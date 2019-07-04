@@ -40,8 +40,6 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 	private BaseDataDao baseDataDao2;
 	@Autowired
 	private UserService userService;
-	@Autowired
-	private BasicsService basicsService;
 	/*
 	 *分页查询
 	 */
@@ -254,32 +252,8 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 	@Override
 	public List<Recruit> findList() {
 		List<Recruit> recruits=	dao.findAll();
-		List<Recruit> list= recruits.stream().filter(Recruit->Recruit.getUserId()!=null && Recruit.getState()==1).collect(Collectors.toList());
+		List<Recruit> list= recruits.stream().filter(Recruit->Recruit.getUserId()!=null && Recruit.getState()==1).collect(Collectors.toList());;
 		return list;
-	}
-	@Override
-	public List<Map<String, Object>> findfGroupList() {
-		List<Recruit> recruits=	dao.findAll();
-		List<Map<String, Object>> allList = new ArrayList<>();
-		Map<String, Object> allMap = null;
-		List<Recruit> list= recruits.stream().filter(Recruit->Recruit.getUserId()!=null && Recruit.getState()==1).collect(Collectors.toList());
-		Map<Long, List<Recruit>> map = list.stream()
-				.filter(Recruit -> Recruit.getRecruitId() != null)
-				.collect(Collectors.groupingBy(Recruit::getRecruitId, Collectors.toList()));
-		for (Long ps1 : map.keySet()) {
-			allMap = new HashMap<>();
-			List<Recruit> psList1 = map.get(ps1);
-			List<Recruit> recruits2=psList1.stream().filter(Recruit->Recruit.getRecruitId().equals(Recruit.getRecruitId())).collect(Collectors.toList());
-			for (Recruit recruit : recruits2) {
-				String string=null;
-				string=	recruit.getRecruitName();
-				Long integer=recruit.getRecruitId();
-				allMap.put("recruitName", string);
-				allMap.put("recruitId", integer);
-			}
-			allList.add(allMap);
-		}
-		return allList;
 	}
 	
 
