@@ -55,18 +55,19 @@ layui.use(['jquery','laydate','table'],
 		})
 		table.render({
 			elem:'#specialTable',
-			loading:true,
 			data:[],
+			totalRow:true,
 			toolbar: true,
 			size:'sm',
+			totalRow:true,
 			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){ return { data:ret.data,  msg:ret.message, code:ret.code } },
 			cols:[[
-			       {align:'center', title:'日期',   field:'date',	},
+			       {align:'center', title:'日期',   field:'date',	totalRowText:'合计',},
 			       {align:'center', title:'分组/姓名', 	field:'name', 	},
-			       {align:'center', title:'总工时',   field:'sumWorkTime',  },
+			       {align:'center', title:'总工时',   field:'sumWorkTime',  totalRow:true,},
 			       {align:'center', title:'工种',   field:'kindWork',	},
-			       {align:'center', title:'b工资',   field:'bPay',	},
+			       {align:'center', title:'b工资',   field:'bPay',	totalRow:true,},
 			       ]],
 			done:function(){
 				layer.close(LOAD);

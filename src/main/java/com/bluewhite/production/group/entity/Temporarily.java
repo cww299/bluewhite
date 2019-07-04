@@ -62,6 +62,13 @@ public class Temporarily extends BaseEntity<Long>{
 	
 	
 	/**
+	 * 借调人员
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "group_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Group group;
+	
+	/**
 	 * 分组
 	 */
 	@Transient
@@ -112,6 +119,16 @@ public class Temporarily extends BaseEntity<Long>{
 	
 	
 	
+
+	public Group getGroup() {
+		return group;
+	}
+
+
+	public void setGroup(Group group) {
+		this.group = group;
+	}
+
 
 	public Date getOrderTimeBegin() {
 		return orderTimeBegin;

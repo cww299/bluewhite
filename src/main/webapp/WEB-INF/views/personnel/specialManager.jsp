@@ -40,13 +40,18 @@
 </div>
 </body>
 <script>
-layui.use(['jquery','laydate','table'],
+layui.config({
+	base: '${ctx}/static/layui-v2.4.5/'
+}).extend({
+	tablePlug: 'tablePlug/tablePlug',
+}).define(['jquery','laydate','table','tablePlug'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
 		, form = layui.form			 		
 		, table = layui.table 
 		, laydate = layui.laydate
+		, tablePlug = layui.tablePlug 
 		, laytpl = layui.laytpl;
 		
 		var LOAD;      //遮罩变量
@@ -59,20 +64,21 @@ layui.use(['jquery','laydate','table'],
 			elem: '#monthTime',
 			type: 'month', 
 		})
+		tablePlug.smartReload.enable(true); 
 		table.render({
 			elem:'#specialTable',
-			loading:true,
 			data:[],
 			toolbar: true,
+			totalRow:true,
 			size:'sm',
+			totalRow:true,
 			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){ return { data:ret.data,  msg:ret.message, code:ret.code } },
 			cols:[[
-			       {align:'center', title:'日期',   field:'date',	},
+			       {align:'center', title:'日期',   field:'date',	totalRowText:'合计',},
 			       {align:'center', title:'分组/姓名', 	field:'name', 	},
-			       {align:'center', title:'总工时',   field:'sumWorkTime',  },
-			       {align:'center', title:'工种',   field:'kindWork',	},
-			       {align:'center', title:'b工资',   field:'bPay',	},
+			       {align:'center', title:'总工时',   field:'sumWorkTime',totalRow:true,  },
+			       {align:'center', title:'工种',   field:'kindWork', filter:true,	},
 			       ]],
 			done:function(){
 				layer.close(LOAD);
@@ -102,7 +108,7 @@ layui.use(['jquery','laydate','table'],
 					layer.msg('查询时间不能为空',{icon:2});
 					return;
 				}
-				var time = $('#monthTime').val();
+				var time = $('#monthTime').val(); 
 				data.orderTimeBegin = time+"-01 00:00:00";
 				data.orderTimeEnd = "";
 			}

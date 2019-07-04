@@ -30,6 +30,10 @@
 <!-- 编辑菜单模板、新增菜单模板 -->
 <script type="text/html" id="templEditMenu">
 <div class="layui-form" id="editMenuDiv" style="padding:20px;"> 
+	<div class="layui-form-item">
+	    <label class="layui-form-label">菜单id</label>
+	    <div class="layui-input-block">
+		    <input type="text" name="id"  readonly value="{{ d.id }}" class="layui-input"></div></div>
     <div class="layui-form-item">
 	    <label class="layui-form-label">身份</label>
 	    <div class="layui-input-block">
@@ -49,7 +53,7 @@
 	<div class="layui-form-item layui-form-text">
 	    <label class="layui-form-label">父菜单id</label>
 	    <div class="layui-input-block">
-		    <input type="text" name="parentId" placeholder="请输入" readonly value="{{ d.parentId }}" class="layui-input"></div></div>
+		    <input type="text" name="parentId" placeholder="请输入" value="{{ d.parentId }}" class="layui-input"></div></div>
 	<div class="layui-form-item layui-form-text">
 	    <label class="layui-form-label">url</label>
 	    <div class="layui-input-block">
@@ -62,7 +66,6 @@
 	    <label class="layui-form-label">排序</label>
 	    <div class="layui-input-block">
 		    <input type="text" name="orderNo" placeholder="请输入" value="{{ d.orderNo }}" class="layui-input"></div></div>
-    <input type="hidden" name="id" value="{{ d.id }}">
     <button type="button" id="submitBtn-{{ d.id ? 'edit-'+d.id : 'add-'+d.parentId }}" lay-submit lay-filter="submitBtn" style="display:none;"></button>
 </div>
 </script>
@@ -119,7 +122,7 @@ layui.config({
 					title : title
 					,type : 1
 					,btn : ['确定','取消']
-					,area:['25%','60%']
+					,area:['25%','70%']
 					,shade : 0
 					,content : html
 					,yes : function(){
