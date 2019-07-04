@@ -48,7 +48,7 @@ public class RecruitAction {
 	private ClearCascadeJSON clearCascadeJSONRecruit;
 	{
 		clearCascadeJSONRecruit = ClearCascadeJSON.get()
-				.addRetainTerm(Recruit.class,"id","name","recruitName");
+				.addRetainTerm(Recruit.class,"id","name","recruitName","testTime");
 	}
 	
 	private ClearCascadeJSON clearCascadeJSONUser;
@@ -262,6 +262,22 @@ public class RecruitAction {
 		return cr;
 	}
 	
+	/**
+	 *查询招聘的 招聘人
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/listGroupRecruit", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse listGroupRecruit(HttpServletRequest request) {
+		CommonResponse cr = new CommonResponse();
+		 List<Map<String, Object>> list = service.findfGroupList();
+			cr.setData(clearCascadeJSONRecruit.format(list).toJSON());
+			cr.setMessage("查询成功");
+		return cr;
+	}
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
 		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(DateTimePattern.DATEHMS.getPattern());
