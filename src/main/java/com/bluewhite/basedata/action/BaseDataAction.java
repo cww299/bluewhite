@@ -62,6 +62,7 @@ public class BaseDataAction{
 			, BaseData baseData){
 		CommonResponse cr = new CommonResponse();
 		service.insertBaseDataType(baseData);
+		cr.setMessage("成功");
 		return cr;
 	}
 	
@@ -77,6 +78,7 @@ public class BaseDataAction{
 			, BaseData baseData){
 		CommonResponse cr = new CommonResponse();
 		service.updateBaseDataType(baseData);
+		cr.setMessage("成功");
 		return cr;
 	}
 	

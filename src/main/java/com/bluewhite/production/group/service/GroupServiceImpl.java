@@ -267,6 +267,8 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 									? (psList.get(0).getGroup().getKindWork() == null ? ""
 											: psList.get(0).getGroup().getKindWork().getName())
 									: group.getKindWork() == null ? "" : group.getKindWork().getName());
+					
+					
 					mapList.add(mapTe);
 				}
 			}
