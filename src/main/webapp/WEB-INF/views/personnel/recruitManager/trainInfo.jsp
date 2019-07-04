@@ -27,6 +27,11 @@
 				<td>招聘人：</td>
 				<td><input type="text" readonly class="layui-input" id="recruitName"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>摊到招聘费用：&nbsp;</td>
+				<td><input type="text" readonly class="layui-input" id="recruitMoney" value="0"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>培训费用：&nbsp;</td>
+				<td><input type="text" readonly class="layui-input" id="trainMoney" value="0"></td>
 			</tr>
 		</table>
 		<table class="layui-form" id="trainTable" lay-filter="trainTable"></table>
@@ -82,20 +87,30 @@ layui.config({
 		getTeacher();
 	 	tablePlug.smartReload.enable(true);  
 	 	form.on('select(searchName)',function(obj){
+	 		var time;
 	 		layui.each($(obj.elem).find('option'),function(index,item){
 	 			if($(item).attr('value') ==obj.value)
 	 				$('#recruitName').val($(item).attr('data-recruitName')) 
+	 				time = $(item).attr('data-time');
 	 		})
-	 		if(obj.value=='')
-	 			table.reload('trainTable',{
-		 			data:[],
-		 			url:'',
-		 		})
-		 	else
+	 		if(obj.value==''){
+	 			table.reload('trainTable',{ data:[], url:'', })
+				$('#recruitMoney').val(0);	 
+	 			$('#trainMoney').val(0);	 
+	 		}
+		 	else{
 		 		table.reload('trainTable',{
 		 			url:'${ctx}/personnel/getAdvertisement?type=1&recruitId='+obj.value,
 		 			page : { curr :1 },
 		 		})
+		 		$.ajax({
+		 			url:'${ctx}/personnel/getBasics?time='+time,
+		 			success:function(r){
+		 				$('#recruitMoney').val(r.data.occupyPrice);	 
+			 			$('#trainMoney').val(r.data.trainPrice);	 
+		 			}
+		 		}) 
+		 	}
 	 	})
 	 			
 		table.render({
@@ -402,7 +417,7 @@ layui.config({
 				success: function(r){
 					var html = '<option value="">应聘人</option>';
 					layui.each(r.data,function(index,item){
-						html+='<option value="'+item.id+'" data-recruitName="'+item.recruitName+'">'+item.name+'</option>';
+						html+='<option value="'+item.id+'" data-recruitName="'+item.recruitName+'" data-time="'+item.testTime+'">'+item.name+'</option>';
 					})
 					$('#searchName').html(html);
 					form.render();
