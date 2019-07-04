@@ -29,32 +29,32 @@ public class Reward extends BaseEntity<Long> {
 	private Date time;
 	
 	/**
-	 * 招聘记录
+	 * 招聘人ID
 	 */
 	@Column(name = "recruit_id")
 	private Long recruitId;
 	
 	/**
+	 * 被聘人ID
+	 */
+	@Column(name = "cover_recruit_id")
+	private Long coverRecruitId;
+	
+	/**
 	 * 招聘
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "recruit_id", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "cover_recruit_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Recruit recruitName;
-	
-	/**
-	 * 手速
-	 */
-	@Column(name = "speed")
-	private Integer speed;
-	
 	
 	/**
 	 * 奖励费用
 	 */
 	@Column(name ="price")
 	private Double price;
+	
 	/**
-	 *0.转正 1.入职满6个月 2.入职满1年
+	 *0.一次奖励 1.二次奖励 2.三次奖励
 	 */
 	@Column(name ="type")
 	private Integer type;
@@ -81,17 +81,17 @@ public class Reward extends BaseEntity<Long> {
 	public void setRecruitId(Long recruitId) {
 		this.recruitId = recruitId;
 	}
+	public Long getCoverRecruitId() {
+		return coverRecruitId;
+	}
+	public void setCoverRecruitId(Long coverRecruitId) {
+		this.coverRecruitId = coverRecruitId;
+	}
 	public Recruit getRecruitName() {
 		return recruitName;
 	}
 	public void setRecruitName(Recruit recruitName) {
 		this.recruitName = recruitName;
-	}
-	public Integer getSpeed() {
-		return speed;
-	}
-	public void setSpeed(Integer speed) {
-		this.speed = speed;
 	}
 	public Double getPrice() {
 		return price;
@@ -117,6 +117,7 @@ public class Reward extends BaseEntity<Long> {
 	public void setOrderTimeEnd(Date orderTimeEnd) {
 		this.orderTimeEnd = orderTimeEnd;
 	}
+	
 	
 
 }

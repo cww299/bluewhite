@@ -23,6 +23,18 @@ import com.bluewhite.basedata.entity.BaseData;
 @Table(name = "person_seat" )
 public class Seat extends BaseEntity<Long> {
 	
+	/**
+	 * 部门id
+	 */
+	@Column(name = "orgName_id")
+	private Long orgNameId;
+	
+	/**
+	 * 部门
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "orgName_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData orgName;
 	
 	/**
 	 * 职位id
