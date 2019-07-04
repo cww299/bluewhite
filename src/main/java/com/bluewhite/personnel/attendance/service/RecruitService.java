@@ -32,5 +32,4 @@ public interface RecruitService  extends BaseCRUDService<Recruit,Long>{
 	public Map<String,List<Map<String, Object>>>  analysis(Recruit recruit);
 	
 	public List<Recruit> findList();
-	public List<Map<String, Object>> findfGroupList();
 }
