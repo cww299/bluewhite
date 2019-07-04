@@ -276,16 +276,25 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 				String string=null;
 				string=	recruit.getRecruitName();
 				Long integer=recruit.getRecruitId();
-				List<Reward> rewards=rewardDao.findByRecruitId(integer);
+				List<Reward> rewards=rewardDao.findByRecruitIdAndType(integer,0);
+				List<Reward> rewards2=rewardDao.findByRecruitIdAndType(integer,1);
+				
 				double price = 0;//汇总奖励多少钱
+				double ReceivePrice = 0;
 				if (rewards!=null) {
 					for (Reward reward : rewards) {
 						price=price+reward.getPrice();
 					}
 				}
+				if (rewards2!=null) {
+					for (Reward reward : rewards) {
+						ReceivePrice=ReceivePrice+reward.getPrice();
+					}
+				}
 				allMap.put("recruitName", string);
 				allMap.put("recruitId", integer);
 				allMap.put("price", price);
+				allMap.put("ReceivePrice", ReceivePrice);
 			}
 			allList.add(allMap);
 		}

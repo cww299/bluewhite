@@ -54,11 +54,16 @@ public class Reward extends BaseEntity<Long> {
 	private Double price;
 	
 	/**
-	 *0.一次奖励 1.二次奖励 2.三次奖励
+	 *0.奖励 1.领取
 	 */
 	@Column(name ="type")
 	private Integer type;
 	
+	/**
+	 *备注
+	 */
+	@Column(name ="remarks")
+	private String remarks;
 	/**
 	 * 查询字段
 	 */

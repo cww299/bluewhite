@@ -35,7 +35,7 @@ public class RewardAction {
 				.addRetainTerm(Reward.class,"id","time","recruitId", "coverRecruitId","recruitName","price","type");
 	}
 	/**
-	 * 分页查看招聘
+	 * 分页查看招聘奖励
 	 * 
 	 * @param request 请求
 	 * @return cr
