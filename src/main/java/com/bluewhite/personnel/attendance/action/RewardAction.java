@@ -21,18 +21,18 @@ import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.personnel.attendance.entity.Seat;
-import com.bluewhite.personnel.attendance.service.SeatService;
+import com.bluewhite.personnel.attendance.entity.Reward;
+import com.bluewhite.personnel.attendance.service.RewardService;
 
 @Controller
-public class SeatAction {
+public class RewardAction {
 
 	@Autowired
-	private SeatService service;
+	private RewardService service;
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Seat.class,"id","positionId","position", "speed","age","price","EntryPrice","yearPrice","orgNameId","orgName");
+				.addRetainTerm(Reward.class,"id","time","recruitId", "coverRecruitId","recruitName","price","type");
 	}
 	/**
 	 * 分页查看招聘
@@ -41,11 +41,11 @@ public class SeatAction {
 	 * @return cr
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/personnel/getSeat", method = RequestMethod.GET)
+	@RequestMapping(value = "/personnel/getReward", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getContact(HttpServletRequest request,PageParameter page,Seat seat) {
+	public CommonResponse getContact(HttpServletRequest request,PageParameter page,Reward reward) {
 		CommonResponse cr = new CommonResponse();
-		PageResult<Seat>  mealList= service.findPage(seat, page); 
+		PageResult<Reward>  mealList= service.findPage(reward, page); 
 		cr.setData(clearCascadeJSON.format(mealList).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
@@ -58,19 +58,19 @@ public class SeatAction {
 	 * @return cr
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/personnel/addSeat", method = RequestMethod.POST)
+	@RequestMapping(value = "/personnel/addReward", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addConsumption(HttpServletRequest request, Seat seat) {
+	public CommonResponse addConsumption(HttpServletRequest request, Reward reward) {
 		CommonResponse cr = new CommonResponse();
-		if(seat.getId() != null){
-			Seat seat2 = service.findOne(seat.getId());
-				BeanCopyUtils.copyNullProperties(seat2, seat);
-				seat.setCreatedAt(seat2.getCreatedAt());
+		if(reward.getId() != null){
+			Reward reward2 = service.findOne(reward.getId());
+				BeanCopyUtils.copyNullProperties(reward2, reward);
+				reward.setCreatedAt(reward2.getCreatedAt());
 			cr.setMessage("修改成功");
 		}else{
 			cr.setMessage("添加成功");
 		}
-		service.addSeat(seat);
+		service.addReward(reward);
 		return cr;
 	}
 	
@@ -82,7 +82,7 @@ public class SeatAction {
 	 * @return cr
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/personnel/deleteSeat", method = RequestMethod.GET)
+	@RequestMapping(value = "/personnel/deleteReward", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse deleteConsumption(HttpServletRequest request, String[] ids) {
 		CommonResponse cr = new CommonResponse();

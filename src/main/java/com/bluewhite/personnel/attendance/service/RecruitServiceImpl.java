@@ -22,7 +22,9 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.personnel.attendance.dao.RecruitDao;
+import com.bluewhite.personnel.attendance.dao.RewardDao;
 import com.bluewhite.personnel.attendance.entity.Recruit;
+import com.bluewhite.personnel.attendance.entity.Reward;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
@@ -41,7 +43,7 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 	@Autowired
 	private UserService userService;
 	@Autowired
-	private BasicsService basicsService;
+	private RewardDao rewardDao;
 	/*
 	 *分页查询
 	 */
@@ -274,12 +276,28 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 				String string=null;
 				string=	recruit.getRecruitName();
 				Long integer=recruit.getRecruitId();
+				List<Reward> rewards=rewardDao.findByRecruitId(integer);
+				double price = 0;//汇总奖励多少钱
+				if (rewards!=null) {
+					for (Reward reward : rewards) {
+						price=price+reward.getPrice();
+					}
+				}
 				allMap.put("recruitName", string);
 				allMap.put("recruitId", integer);
+				allMap.put("price", price);
 			}
 			allList.add(allMap);
 		}
 		return allList;
+	}
+	/*
+	 * 按条件查询被招聘的人
+	 */
+	@Override
+	public List<Recruit> findCondition(Recruit recruit) {
+		List<Recruit> recruits=	dao.findByRecruitId(recruit.getRecruitId());
+		return recruits;
 	}
 	
 

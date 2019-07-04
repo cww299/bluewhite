@@ -33,4 +33,8 @@ public interface RecruitService  extends BaseCRUDService<Recruit,Long>{
 	
 	public List<Recruit> findList();
 	public List<Map<String, Object>> findfGroupList();
+	/*
+	 * 按条件查询被招聘的人
+	 */
+	public List<Recruit> findCondition(Recruit recruit);
 }

@@ -278,6 +278,23 @@ public class RecruitAction {
 			cr.setMessage("查询成功");
 		return cr;
 	}
+	
+	/**
+	 *按条件查询 招聘人
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/findCondition", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse findCondition(HttpServletRequest request,Recruit recruit) {
+		CommonResponse cr = new CommonResponse();
+		 List<Recruit> list = service.findCondition(recruit);
+			cr.setData(clearCascadeJSONRecruit.format(list).toJSON());
+			cr.setMessage("查询成功");
+		return cr;
+	}
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
 		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(DateTimePattern.DATEHMS.getPattern());
