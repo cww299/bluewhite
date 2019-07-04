@@ -31,6 +31,10 @@ public class RewardServiceImpl extends BaseServiceImpl<Reward, Long>
 			if (reward.getRecruitId() != null) {
 				predicate.add(cb.equal(root.get("recruitId").as(Long.class), reward.getRecruitId()));
 			}
+			// 按用户 类型过滤
+			if (reward.getType() != null) {
+				predicate.add(cb.equal(root.get("type").as(Long.class), reward.getType()));
+			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;

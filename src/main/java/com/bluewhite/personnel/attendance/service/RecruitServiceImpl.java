@@ -280,7 +280,7 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 				List<Reward> rewards2=rewardDao.findByRecruitIdAndType(integer,1);
 				
 				double price = 0;//汇总奖励多少钱
-				double ReceivePrice = 0;
+				double ReceivePrice = 0;//汇总领取多少钱
 				if (rewards!=null) {
 					for (Reward reward : rewards) {
 						price=price+reward.getPrice();
