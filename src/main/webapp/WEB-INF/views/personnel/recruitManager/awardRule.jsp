@@ -29,7 +29,7 @@
 <script type="text/html" id="personToolbar">
 <div>
 	<span lay-event="getReward"  class="layui-btn layui-btn-sm" >领取奖金</span>
-	<span class="layui-badge">提示：双击查看奖金详情</span>
+	<span lay-event="lookoverAward"  class="layui-btn layui-btn-sm" >查看流水</span>
 </div>
 </script>
 
@@ -37,7 +37,7 @@
 <div>
 	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增</span>
 	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除</span>
-	<span class="layui-badge">提示：双击修改信息</span>
+	<span lay-event="edit"  class="layui-btn layui-btn-sm" >修改</span>
 </div>
 </script>
 
@@ -83,6 +83,12 @@
 <script type="text/html" id="getRewardTpl">
 <div class="layui-form" style="padding:10px;">
 	<div class="layui-item">
+		<label class="layui-form-label">时间领取</label>
+		<div class="layui-input-block">
+			<input type="text" class="layui-input" lay-verify="required" name="time" id="getAwardTime" >
+		</div>
+	</div>
+	<div class="layui-item">
 		<label class="layui-form-label">领取人</label>
 		<div class="layui-input-block">
 			<input type="text" class="layui-input"  value="{{ d.recruitName }}" >
@@ -101,6 +107,7 @@
 		</div>
 	</div>
 	<input type="hidden" name="recruitId" value="{{d.recruitId}}">
+	<input type="hidden" name="coverRecruitId" value="{{ d.coverRecruitId }}">
 	<input type="hidden" name="type" value="1">
 	<p style="display:none;"><button lay-submit lay-filter="getRewardSureBtn" id="getRewardSureBtn">确定</button></p>
 </div>
@@ -135,9 +142,17 @@ layui.use(
 		table.on('toolbar(personTable)',function(obj){
 			switch(obj.event){
 			case 'getReward':	getReward();			break;
+			case 'lookoverAward': lookoverAward();      break;
 			} 
 		})
-		table.on('rowDouble(personTable)',function(obj){
+		function lookoverAward(){
+			var checked = layui.table.checkStatus('personTable').data;
+			if(checked.length!=1){
+				layer.msg('只能选择一条数据查看！',{icon:2});
+				return;
+			}
+			var obj = { data:{} };
+			obj.data = checked[0];
 			lookoverRecruitId = obj.data.recruitId;
 			getCoverRecruit();	//获取此招聘人的被招聘人
 			layer.open({
@@ -156,8 +171,8 @@ layui.use(
 						cols:[[
 								{align:'center', type:'checkbox',},
 								{align:'center', title:'时间',   field:'time',	},
-								{align:'center', title:'招聘人',   field:'recruitId',	},
-								{align:'center', title:'被聘人',   field:'coverRecruitId',	},
+								{align:'center', title:'招聘人',   field:'recruitId', templet:function(d){ return d.recruitName.recruitName; }	},
+								{align:'center', title:'被聘人',   field:'coverRecruitId',templet:function(d){ return d.recruitName.name; }	},
 								{align:'center', title:'奖励',   field:'price',	},
 								{align:'center', title:'备注',   field:'remarks',	},
 						       ]],
@@ -168,12 +183,16 @@ layui.use(
 				switch(obj.event){
 				case 'add':  addEdit(); break;
 				case 'delete': deleteRewardInfo(); break;
+				case 'edit': 
+					var checked = layui.table.checkStatus('rewardInfoTable').data;
+					if(checked.length!=1){
+						layer.msg('只能修改一条信息',{icon:2,offset:'200px'});
+						return;
+					}
+					addEdit(checked[0]); break;
 				}
 			})
-			table.on('rowDouble(rewardInfoTable)',function(obj){
-				addEdit(obj.data);
-			})
-		})
+		}
 		function getReward(){
 			var checked = layui.table.checkStatus('personTable').data;
 			if(checked.length!=1){
@@ -188,6 +207,12 @@ layui.use(
 				area:['30%','50%'],
 				offset:'100px',
 				content:html,
+				success:function(){
+					laydate.render({
+						elem:'#getAwardTime',
+						type:'datetime',
+					})
+				},
 				yes:function(){
 					$('#getRewardSureBtn').click();
 				}
