@@ -48,7 +48,7 @@ public class RecruitAction {
 	private ClearCascadeJSON clearCascadeJSONRecruit;
 	{
 		clearCascadeJSONRecruit = ClearCascadeJSON.get()
-				.addRetainTerm(Recruit.class,"id","name","recruitName","testTime");
+				.addRetainTerm(Recruit.class,"id","name","recruitName","testTime","receivePrice");
 	}
 	
 	private ClearCascadeJSON clearCascadeJSONUser;
@@ -280,7 +280,7 @@ public class RecruitAction {
 	}
 	
 	/**
-	 *按条件查询 招聘人
+	 *按条件查询 被招聘人
 	 * 
 	 * @param request 请求
 	 * @return cr
@@ -291,6 +291,23 @@ public class RecruitAction {
 	public CommonResponse findCondition(HttpServletRequest request,Recruit recruit) {
 		CommonResponse cr = new CommonResponse();
 		 List<Recruit> list = service.findCondition(recruit);
+			cr.setData(clearCascadeJSONRecruit.format(list).toJSON());
+			cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/**
+	 *按条件查询 被招聘人的合计奖金
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/findPrice", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse findPrice(HttpServletRequest request,Recruit recruit) {
+		CommonResponse cr = new CommonResponse();
+		 Recruit list = service.findPrice(recruit);
 			cr.setData(clearCascadeJSONRecruit.format(list).toJSON());
 			cr.setMessage("查询成功");
 		return cr;
