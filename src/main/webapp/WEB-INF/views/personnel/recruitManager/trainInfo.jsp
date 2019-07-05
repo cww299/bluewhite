@@ -123,13 +123,18 @@ layui.config({
 		 			url:'${ctx}/personnel/getBasics?time='+time,
 		 			success:function(r){
 		 				$('#recruitMoney').val(r.data.occupyPrice);	 
-			 			$('#trainMoney').val(r.data.trainPrice);	 
 		 			}
 		 		}) 
 		 		$.ajax({
 		 			url:'${ctx}/personnel/findPrice?id='+obj.value,
 		 			success:function(r){
 			 			$('#awardMoney').val(r.data.receivePrice);	 
+		 			}
+		 		}) 
+		 		$.ajax({
+		 			url:'${ctx}/personnel/findRecruitId?id='+obj.value,
+		 			success:function(r){
+		 				$('#trainMoney').val(r.data.trainPrice);	  
 		 			}
 		 		}) 
 		 	}
