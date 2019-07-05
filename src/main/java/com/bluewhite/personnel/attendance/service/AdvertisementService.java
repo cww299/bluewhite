@@ -19,4 +19,10 @@ public interface AdvertisementService  extends BaseCRUDService<Advertisement,Lon
 	 * @param onlineOrder
 	 */
 	public Advertisement addAdvertisement(Advertisement advertisement);
+	
+	/**
+	 * 查询培训费用
+	 * @param onlineOrder
+	 */
+	public Advertisement findRecruitId(Long recruitId);
 }

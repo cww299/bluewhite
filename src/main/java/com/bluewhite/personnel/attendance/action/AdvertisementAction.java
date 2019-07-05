@@ -104,6 +104,22 @@ public class AdvertisementAction {
 		return cr;
 	}
 	
+	/**
+	 * 查询单个人的培训汇总
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/findRecruitId", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse findRecruitId(HttpServletRequest request, Long recruitId) {
+		CommonResponse cr = new CommonResponse();
+		Advertisement  advertisement= service.findRecruitId(recruitId);
+		cr.setData(clearCascadeJSON.format(advertisement).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {

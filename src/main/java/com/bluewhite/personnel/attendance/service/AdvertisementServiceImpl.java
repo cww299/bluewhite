@@ -57,6 +57,21 @@ public class AdvertisementServiceImpl extends BaseServiceImpl<Advertisement, Lon
 		
 		return dao.save(advertisement);
 	}
+	
+	/*
+	 *汇总单个人培训费用 
+	 */
+	@Override
+	public Advertisement findRecruitId(Long recruitId) {
+	  List<Advertisement> advertisements=dao.findByRecruitIdAndType(recruitId,1);
+	  double price=0;
+	  for (Advertisement advertisement : advertisements) {
+		  price=price+advertisement.getPrice();
+	}
+	  Advertisement advertisement=new Advertisement();
+	  advertisement.setPrice(price);
+		return advertisement;
+	}
 
 
 
