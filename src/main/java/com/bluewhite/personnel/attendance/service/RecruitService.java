@@ -37,4 +37,9 @@ public interface RecruitService  extends BaseCRUDService<Recruit,Long>{
 	 * 按条件查询被招聘的人
 	 */
 	public List<Recruit> findCondition(Recruit recruit);
+	
+	/*
+	 * 按条件查询被招聘的人合计奖金
+	 */
+	public Recruit findPrice(Recruit recruit);
 }

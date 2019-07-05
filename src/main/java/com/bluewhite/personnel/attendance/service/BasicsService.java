@@ -1,5 +1,8 @@
 package com.bluewhite.personnel.attendance.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.personnel.attendance.entity.Basics;
 
@@ -17,4 +20,10 @@ public interface BasicsService  extends BaseCRUDService<Basics,Long>{
 	 * @param onlineOrder
 	 */
 	public Basics addBasics(Basics basics);
+	
+	/**
+	 * 部门汇总
+	 * 
+	 */
+	public List<Map<String, Object>> findBasicsSummary(Basics basics);
 }

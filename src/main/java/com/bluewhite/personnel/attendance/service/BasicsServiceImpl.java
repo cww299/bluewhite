@@ -1,6 +1,8 @@
 package com.bluewhite.personnel.attendance.service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -9,13 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.basedata.dao.BaseDataDao;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.personnel.attendance.dao.AdvertisementDao;
 import com.bluewhite.personnel.attendance.dao.BasicsDao;
+import com.bluewhite.personnel.attendance.dao.RecruitDao;
+import com.bluewhite.personnel.attendance.dao.RewardDao;
 import com.bluewhite.personnel.attendance.entity.Advertisement;
 import com.bluewhite.personnel.attendance.entity.Basics;
 import com.bluewhite.personnel.attendance.entity.Recruit;
+import com.bluewhite.personnel.attendance.entity.Reward;
 
 @Service
 public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
@@ -26,6 +33,12 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 	private AdvertisementDao advertisementDao;
 	@Autowired
 	private RecruitService recruitService;
+	@Autowired
+	private BaseDataDao baseDataDao;
+	@Autowired
+	private RecruitDao recruitDao;
+	@Autowired
+	private RewardDao rewardDao;
 	/*
 	 *查询汇总数据
 	 */
@@ -143,6 +156,43 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 	public Basics addBasics(Basics basics) {
 		
 		return dao.save(basics);
+	}
+	/*
+	 *部门汇总
+	 */
+	@Override
+	public List<Map<String, Object>> findBasicsSummary(Basics basics) {
+		List<Recruit> list= recruitDao.findByTimeBetween(DatesUtil.getFirstDayOfMonth(basics.getTime()), DatesUtil.getLastDayOfMonth(basics.getTime()));
+		List<Map<String, Object>> allList = new ArrayList<>();
+		Map<String, Object> allMap = null;
+		Map<Long, List<Recruit>> map = list.stream()
+				.filter(Recruit -> Recruit.getOrgNameId() != null)
+				.collect(Collectors.groupingBy(Recruit::getOrgNameId, Collectors.toList()));
+		Basics basics2= findBasics(basics);
+		for (Long ps1 : map.keySet()) {
+			allMap = new HashMap<>();
+			List<Recruit> psList1 = map.get(ps1);
+			Long f=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState().equals(1) && Recruit.getUser().getQuit().equals(0)).count();//已入职且在职
+			//得到入职且在职的人
+			List<Recruit> list2= psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState().equals(1) && Recruit.getUser().getQuit().equals(0)).collect(Collectors.toList());
+			BaseData baseData=baseDataDao.findOne(ps1);
+			String string= baseData.getName();
+			double d= NumUtils.mul(basics2.getOccupyPrice(),f);
+			double ReceivePrice=0;
+			if (list2.size()>0) {
+				for (Recruit recruit : list2) {
+					List<Reward> rewards=rewardDao.findBycoverRecruitIdAndType(recruit.getId(),0);
+					for (Reward reward2 : rewards) {
+						ReceivePrice=ReceivePrice+reward2.getPrice();
+					}
+				}
+			}
+			allMap.put("username", string);
+			allMap.put("occupyPrice",d);
+			allMap.put("ReceivePrice",ReceivePrice);
+			}
+		allList.add(allMap);
+		return allList;
 	}
 
 

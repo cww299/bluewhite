@@ -50,6 +50,7 @@ public class RewardServiceImpl extends BaseServiceImpl<Reward, Long>
 	public Reward addReward(Reward reward) {
 		return dao.save(reward);
 	}
+
 	
 	
 }

@@ -184,7 +184,11 @@ public class Recruit extends BaseEntity<Long> {
 	 */
 	@Column(name = "test_time")
 	private Date testTime;
-	
+	/**
+	 * 被招聘人的奖金
+	 */
+	@Transient
+	private Double ReceivePrice;
 	/**
 	 * 查询字段(是否离职)
 	 */
@@ -226,8 +230,12 @@ public class Recruit extends BaseEntity<Long> {
 	public void setTime(Date time) {
 		this.time = time;
 	}
-
-	
+	public Double getReceivePrice() {
+		return ReceivePrice;
+	}
+	public void setReceivePrice(Double receivePrice) {
+		ReceivePrice = receivePrice;
+	}
 	public BaseData getPlatform() {
 		return platform;
 	}

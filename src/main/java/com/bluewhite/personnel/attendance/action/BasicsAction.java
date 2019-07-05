@@ -1,6 +1,8 @@
 package com.bluewhite.personnel.attendance.action;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -100,7 +102,22 @@ public class BasicsAction {
 		return cr;
 	}
 	
-
+	/**
+	 *按部门汇总
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/findBasicsSummary", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse findBasicsSummary(HttpServletRequest request,Basics basics) {
+		CommonResponse cr = new CommonResponse();
+		 List<Map<String, Object>> list = service.findBasicsSummary(basics);
+			cr.setData(clearCascadeJSON.format(list).toJSON());
+			cr.setMessage("查询成功");
+		return cr;
+	}
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
 		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(DateTimePattern.DATEHMS.getPattern());

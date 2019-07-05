@@ -308,6 +308,16 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 		List<Recruit> recruits=	dao.findByRecruitId(recruit.getRecruitId());
 		return recruits;
 	}
+	@Override
+	public Recruit findPrice(Recruit recruit) {
+			List<Reward> rewards=rewardDao.findBycoverRecruitIdAndType(recruit.getId(),0);
+			double ReceivePrice=0;
+			for (Reward reward2 : rewards) {
+				ReceivePrice=ReceivePrice+reward2.getPrice();
+			}
+			recruit.setReceivePrice(ReceivePrice);
+		return recruit;
+	}
 	
 
 

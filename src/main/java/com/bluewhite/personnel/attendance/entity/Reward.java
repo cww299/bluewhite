@@ -64,6 +64,7 @@ public class Reward extends BaseEntity<Long> {
 	 */
 	@Column(name ="remarks")
 	private String remarks;
+	
 	/**
 	 * 查询字段
 	 */
