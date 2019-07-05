@@ -48,6 +48,7 @@ public class RewardServiceImpl extends BaseServiceImpl<Reward, Long>
 	 */
 	@Override
 	public Reward addReward(Reward reward) {
+		
 		return dao.save(reward);
 	}
 

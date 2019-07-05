@@ -32,7 +32,7 @@ public class RewardAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Reward.class,"id","time","recruitId", "coverRecruitId","recruitName","price","type");
+				.addRetainTerm(Reward.class,"id","time","recruitId", "coverRecruitId","recruitName","price","type","remarks");
 	}
 	/**
 	 * 分页查看招聘奖励
