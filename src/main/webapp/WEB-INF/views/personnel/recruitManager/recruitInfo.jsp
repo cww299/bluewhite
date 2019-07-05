@@ -75,10 +75,10 @@ layui.config({
 			table.reload('recruitTable',{
 				where:{
 					platformId : obj.field.platformId,
-					startTime : time[0]+'00:00:00',
-					endTime : time[1].trim()+' 23:59:59',
-					page : {curr:1},
-				} 
+					startTime : (time?'':(time[0]+'00:00:00')),
+					endTime : (time?"":(time[1].trim()+' 23:59:59')),
+				},
+				page : { curr:1 },
 			})
 		}) 
 		table.render({
