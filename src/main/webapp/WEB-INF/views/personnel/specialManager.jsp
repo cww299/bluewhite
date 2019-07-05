@@ -70,8 +70,8 @@ layui.config({
 			data:[],
 			toolbar: true,
 			totalRow:true,
+			loading:false,
 			size:'sm',
-			totalRow:true,
 			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){ return { data:ret.data,  msg:ret.message, code:ret.code } },
 			cols:[[
