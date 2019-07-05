@@ -411,7 +411,6 @@
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
-						height:'700px',
 						url: '${ctx}/personnel/getRecruit' ,
 						request:{ pageName: 'page' , limitName: 'size', },
 						page: { },
