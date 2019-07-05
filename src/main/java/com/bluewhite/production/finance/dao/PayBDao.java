@@ -46,6 +46,18 @@ public interface PayBDao extends BaseRepository<PayB, Long> {
 	 * @return
 	 */
 	List<PayB> findByTypeAndAllotTimeBetween(Integer type, Date orderTimeBegin, Date orderTimeEnd);
+	
+
+	/**
+	 * 根据条件查询b返回参数减少
+	 * 
+	 * @param type
+	 * @param orderTimeBegin
+	 * @param orderTimeEnd
+	 * @return
+	 */
+	@Query(nativeQuery = true, value = "SELECT pay_number FROM pro_payb WHERE type = ?1 AND allot_time BETWEEN ?2 AND ?3")
+	List<Object> findByTypeAndAllotTimeBetween1(Integer type, Date orderTimeBegin, Date orderTimeEnd);
 
 	/**
 	 * 根据条件查询b工资
