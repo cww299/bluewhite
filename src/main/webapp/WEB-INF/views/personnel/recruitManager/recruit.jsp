@@ -3,11 +3,8 @@
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html class="no-js">
-
 <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 <script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
-
-
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -29,9 +26,10 @@
 					<table>
 						<tr>
 							<td>姓名:</td>
-							<td><input type="text" name="name" id="firstNames" class="layui-input" /></td>
+							<td><input type="text" name="name" id="firstNames" class="layui-input" style="width:212px;" /></td>
 							<td>&nbsp;&nbsp;</td>
-							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							<td>面试时间:</td>
+							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入面试时间" class="layui-input laydate-icon">
 							</td>
 							<td>&nbsp;&nbsp;</td>
 							<td>是否应面:
@@ -69,7 +67,7 @@
 				<div class="layui-form-item">
 				<table>
 					<tr>
-					<td>入职状态:
+					<td>状态:
 							<td><select class="form-control" name="state">
 									<option value="">请选择</option>
 									<option value="0">未入职</option>
@@ -84,11 +82,8 @@
 									<option value="0">在职</option>
 									<option value="1">离职</option>
 							</select></td>
-							<td>
-								<div class="layui-input-block">
-							      <input type="checkbox" name="like[write]" lay-filter="lockDemo" title="入职在职">
-							    </div>
-							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td><input type="checkbox" name="like[write]" lay-filter="lockDemo" title="入职在职"></td>
 					</tr>
 				</table>
 				</div>
@@ -412,105 +407,20 @@
 						  });
 					
 					var data="";
-				    
-					
-					// 处理操作列
-					var fn1 = function(field) {
-						return function(d) { 
-							return [
-								'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' + d.orgNameId + '">' +
-								htmls +
-								'</select>'
-							].join('');
-
-						};
-					};
-
-					var fn2 = function(field) {
-						return function(d) {
-							return ['<select name="selectTwo" align: "center" lay-filter="lay_selecte" lay-search="true" data-value="' + d.platformId + '">',
-								'<option value="0">请选择</option>',
-								'<option value="1">广告招聘</option>',
-								'<option value="2">前程无忧</option>',
-								'<option value="3">58同城</option>',
-								'<option value="4">BOSS直聘</option>',
-								'<option value="5">扬子人才网</option>',
-								'</select>'
-							].join('');
-
-						};
-					};
-					var fn3 = function(field) {
-						return function(d) {
-							return ['<select name="selectThree" lay-filter="lay_selecte" lay-search="true" data-value="' + d.gender + '">',
-								'<option value="0">男</option>',
-								'<option value="1">女</option>',
-								'</select>'
-							].join('');
-
-						};
-					};
-					
-					var fn4 = function(field) {
-						return function(d) {
-							return ['<select name="selectFour" lay-filter="lay_selecte" lay-search="true" data-value="' + d.type + '">',
-								'<option value="0">否</option>',
-								'<option value="1">是</option>',
-								'</select>'
-							].join('');
-
-						};
-					};
-					
-					var fn5 = function(field) {
-						return function(d) {
-							return ['<select name="selectFive" lay-filter="lay_selecte" lay-search="true" data-value="' + d.typeOne + '">',
-								'<option value="0">否</option>',
-								'<option value="1">是</option>',
-								'</select>'
-							].join('');
-
-						};
-					};
-					
-					var fn6 = function(field) {
-						return function(d) {
-							return ['<select name="selectSix" lay-filter="lay_selecte" lay-search="true" data-value="' + d.typeTwo + '">',
-								'<option value="0">否</option>',
-								'<option value="1">是</option>',
-								'</select>'
-							].join('');
-
-						};
-					};
-					
 				
-					
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
 						height:'700px',
 						url: '${ctx}/personnel/getRecruit' ,
-						request:{
-							pageName: 'page' ,//页码的参数名称，默认：page
-							limitName: 'size' //每页数据量的参数名，默认：limit
-						},
-						page: {
-						},//开启分页
+						request:{ pageName: 'page' , limitName: 'size', },
+						page: { },
 						loading: true,
-						toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
-						/*totalRow: true //开启合计行 */
+						toolbar: '#toolbar', 
 						cellMinWidth: 90,
 						colFilterRecord: true,
-						smartReloadModel: true,// 开启智能重载
-						parseData: function(ret) {
-							return {
-								code: ret.code,
-								msg: ret.message,
-								count:ret.data.total,
-								data: ret.data.rows
-							}
-						},
+						smartReloadModel: true,
+						parseData: function(ret) { return { code: ret.code, msg: ret.message, count:ret.data.total, data: ret.data.rows } },
 						cols: [
 							[{
 								type: 'checkbox',
@@ -518,7 +428,7 @@
 								fixed: 'left'
 							},{
 								field: "name",
-								title: "面试人姓名",
+								title: "姓名",
 								align: 'center',
 								fixed : 'left',
 							},{
@@ -636,7 +546,7 @@
 								width : 120,
 							},{
 								field: "livingAddress",
-								title: "现居住地址",
+								title: "地址",
 								align: 'center',
 							},{
 								field: "testTime",
@@ -661,7 +571,6 @@
 								tdElem.onclick = function(event) {
 									layui.stope(event)
 								};
-								console.log(index)
 								laydate.render({
 									elem: tdElem.children[0],
 									format: 'yyyy-MM-dd HH:mm:ss',
@@ -1134,10 +1043,9 @@
 						/* url: '${ctx}/personnel/Statistics' , */
 						data:[],
 						request:{
-							pageName: 'page' ,//页码的参数名称，默认：page
-							limitName: 'size' //每页数据量的参数名，默认：limit
+							pageName: 'page' ,
+							limitName: 'size' 
 						},
-						//开启分页
 						loading: true,
 						toolbar: '#toolbar5', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
 						totalRow: true,		 //开启合计行 */
@@ -1153,7 +1061,7 @@
 						cols: [
 							[{
 								field: "username",
-								title: "姓名",
+								title: "部门",
 								align: 'center',
 								totalRowText: '合计'
 							},{

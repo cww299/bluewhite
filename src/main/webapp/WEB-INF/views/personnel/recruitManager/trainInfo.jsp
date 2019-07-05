@@ -27,6 +27,14 @@
 				<td>招聘人：</td>
 				<td><input type="text" readonly class="layui-input" id="recruitName"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>摊到招聘费用：&nbsp;</td>
+				<td><input type="text" readonly class="layui-input" id="recruitMoney" value="0"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>培训费用：&nbsp;</td>
+				<td><input type="text" readonly class="layui-input" id="trainMoney" value="0"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>招聘人的奖励金额：&nbsp;</td>
+				<td><input type="text" readonly class="layui-input" id="awardMoney" value="0"></td>
 			</tr>
 		</table>
 		<table class="layui-form" id="trainTable" lay-filter="trainTable"></table>
@@ -44,6 +52,17 @@
 	</table>
 	<table class="layui-table" id="totalTable" lay-filter="totalTable"></table>
 </div>
+<!-- 查看部门汇总弹窗 -->
+<div style="display:none;padding:4px;" id="departmentDiv">
+	<table class="layui-form">
+		<tr>
+			<td><input type="text" name="time" id="totalDepartmentTime" lay-verify="required" class="layui-input"></td>
+			<td> &nbsp;&nbsp;</td>
+			<td><button type="button" lay-filter="searchDepartmentTotal"  lay-submit class="layui-btn layui-btn-sm">搜索</button> </td>
+		</tr>
+	</table>
+	<table class="layui-table" id="totalDepartmentTable" lay-filter="totalDepartmentTable"></table>
+</div>
 </body>
 
 <!-- 表格工具栏模板 -->
@@ -53,7 +72,8 @@
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
 	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
-	<span class="layui-btn layui-btn-sm" lay-event="lookoverTotal">查看汇总</span>
+	<span class="layui-btn layui-btn-sm" lay-event="lookoverTotal">费用汇总</span>
+	<span class="layui-btn layui-btn-sm" lay-event="departmentTotal">部门支出</span>
 </div>
 </script>
 
@@ -82,20 +102,37 @@ layui.config({
 		getTeacher();
 	 	tablePlug.smartReload.enable(true);  
 	 	form.on('select(searchName)',function(obj){
+	 		var time;
 	 		layui.each($(obj.elem).find('option'),function(index,item){
 	 			if($(item).attr('value') ==obj.value)
 	 				$('#recruitName').val($(item).attr('data-recruitName')) 
+	 				time = $(item).attr('data-time');
 	 		})
-	 		if(obj.value=='')
-	 			table.reload('trainTable',{
-		 			data:[],
-		 			url:'',
-		 		})
-		 	else
+	 		if(obj.value==''){
+	 			table.reload('trainTable',{ data:[], url:'', })
+				$('#recruitMoney').val(0);	 
+	 			$('#trainMoney').val(0);	 
+	 			$('#awardMoney').val(0);	 
+	 		}
+		 	else{
 		 		table.reload('trainTable',{
 		 			url:'${ctx}/personnel/getAdvertisement?type=1&recruitId='+obj.value,
 		 			page : { curr :1 },
 		 		})
+		 		$.ajax({
+		 			url:'${ctx}/personnel/getBasics?time='+time,
+		 			success:function(r){
+		 				$('#recruitMoney').val(r.data.occupyPrice);	 
+			 			$('#trainMoney').val(r.data.trainPrice);	 
+		 			}
+		 		}) 
+		 		$.ajax({
+		 			url:'${ctx}/personnel/findPrice?id='+obj.value,
+		 			success:function(r){
+			 			$('#awardMoney').val(r.data.receivePrice);	 
+		 			}
+		 		}) 
+		 	}
 	 	})
 	 			
 		table.render({
@@ -180,6 +217,8 @@ layui.config({
 				break;
 			case 'lookoverTotal': lookoverTotal();
 				break;
+			case 'departmentTotal': departmentTotal();
+				break;
 			}
 		})
 		table.on('edit(trainTable)',function(obj){	
@@ -198,18 +237,45 @@ layui.config({
 			postData && updateAjax(postData);	//如果有数据，则进行修改
 			table.reload('trainTable');
 		})
+		laydate.render({
+	 		elem: '#totalDepartmentTime',
+	 		type: 'month',
+	 	})
+		function departmentTotal(){
+	 		layer.open({
+	 			type:1,
+	 			content: $('#departmentDiv'),
+	 			shadeClose : true,
+	 			area : ['60%','60%'],
+	 		})
+	 		table.render({
+	 			elem: '#totalDepartmentTable',
+	 			data: [],
+				parseData:function(ret){ return { data:ret.data, msg:ret.message, code:ret.code } },
+				cols: [[
+				       {align:'center', title:'部门',   field:'username',	  }, 
+				       {align:'center', title:'部门付出奖金',   field:'ReceivePrice',  },
+				       {align:'center', title:'培训费用',   field:'trainPrice',  },
+				       {align:'center', title:'该部门占应聘费用',   field:'occupyPrice',    },
+		 			]],
+	 		})
+	 	}
+	 	form.on('submit(searchDepartmentTotal)',function(obj){
+	 		table.reload('totalDepartmentTable',{
+		 		url: '${ctx}/personnel/findBasicsSummary',
+		 		where : { time : obj.field.time+'-01 00:00:00'},
+	 		})
+	 	})
 		function lookoverTotal(){
 	 		layer.open({
 	 			type:1,
 	 			content: $('#lookoverDiv'),
 	 			shadeClose : true,
 	 			area : ['60%','60%'],
-	 			title: '查看汇总',
 	 		})
 	 		table.render({
 	 			elem: '#totalTable',
 	 			data: [],
-	 			loading:true,
 	 			parseData:function(ret){ 
 	 				var data = [];
 	 				data.push(ret.data);
@@ -402,7 +468,7 @@ layui.config({
 				success: function(r){
 					var html = '<option value="">应聘人</option>';
 					layui.each(r.data,function(index,item){
-						html+='<option value="'+item.id+'" data-recruitName="'+item.recruitName+'">'+item.name+'</option>';
+						html+='<option value="'+item.id+'" data-recruitName="'+item.recruitName+'" data-time="'+item.testTime+'">'+item.name+'</option>';
 					})
 					$('#searchName').html(html);
 					form.render();
