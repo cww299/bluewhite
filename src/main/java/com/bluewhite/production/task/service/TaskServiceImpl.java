@@ -198,7 +198,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 							payB.setPayNumber(NumUtils.div(
 									NumUtils.mul(newTask.getPayB(), (attendancePay.size() == 0
 											? temporarily.getWorkTime() : attendancePay.get(0).getWorkTime())),
-									sunTime, 5));
+									NumUtils.round(sunTime, 5), 5));
 						} else {
 							payB.setPayNumber(NumUtils.div(newTask.getPayB(),task.getUsersIds().length,5));
 						}

@@ -90,11 +90,16 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 	public List<Map<String, Object>> sumTemporarily(Temporarily temporarily) {
 		CurrentUser cu = SessionManager.getUserSession();
 		List<PayB> payBList = new ArrayList<>();
-		if(!cu.getRole().contains("superAdmin") && !cu.getRole().contains("personnel")){
+		if (!cu.getRole().contains("superAdmin") && !cu.getRole().contains("personnel")) {
 			// 获取特急人员b工资
-			payBList = payBDao.findByTypeAndAllotTimeBetween(temporarily.getType(),
-					temporarily.getOrderTimeBegin(), temporarily.getViewTypeDate() == 1 ? temporarily.getOrderTimeEnd()
-							: DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin()));
+			List<PayB> payBList1 = payBDao.findByTypeAndAllotTimeBetween(temporarily.getType(),
+					temporarily.getOrderTimeBegin(), DatesUtil.getCentreDayOfMonth(temporarily.getOrderTimeBegin()));
+			List<PayB> payBList2 = payBDao.findByTypeAndAllotTimeBetween(temporarily.getType(),
+					DatesUtil.getfristDayOftime(
+							DatesUtil.nextDay(DatesUtil.getCentreDayOfMonth(temporarily.getOrderTimeBegin()))),
+					DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin()));
+			payBList.addAll(payBList1);
+			payBList.addAll(payBList2);
 		}
 		List<Map<String, Object>> mapList = new ArrayList<>();
 		// 获取当前时间所有外调人员信息
@@ -103,8 +108,7 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 						temporarily.getViewTypeDate() == 1 ? temporarily.getOrderTimeEnd()
 								: DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin()))
 				.stream().collect(Collectors.toList());
-		
-		
+
 		// 按天按月查看
 		long size = 0;
 		switch (temporarily.getViewTypeDate()) {
@@ -267,8 +271,6 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 									? (psList.get(0).getGroup().getKindWork() == null ? ""
 											: psList.get(0).getGroup().getKindWork().getName())
 									: group.getKindWork() == null ? "" : group.getKindWork().getName());
-					
-					
 					mapList.add(mapTe);
 				}
 			}

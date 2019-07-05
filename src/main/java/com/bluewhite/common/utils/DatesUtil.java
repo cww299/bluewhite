@@ -55,6 +55,33 @@ public class DatesUtil {
 		Date firstDayOfMonth = cal.getTime();
 		return firstDayOfMonth;
 	}
+	
+	
+	/**
+	 * 获得该月的15号 23:59:59:000
+	 * 
+	 * @param year
+	 * @param month
+	 * @return
+	 * @throws ParseException
+	 */
+	public static Date getCentreDayOfMonth(Date dates) {
+		int month = DatesUtil.getDay(dates, 1);
+		int year = DatesUtil.getDay(dates, 2);
+		Calendar cal = Calendar.getInstance();
+		// 设置年份
+		cal.set(Calendar.YEAR, year);
+		// 设置月份
+		cal.set(Calendar.MONTH, month);
+		cal.set(Calendar.HOUR_OF_DAY, 23);// 设置时为0点
+		cal.set(Calendar.MINUTE, 59);// 设置分钟为0分
+		cal.set(Calendar.SECOND, 59);// 设置秒为0秒
+		cal.set(Calendar.MILLISECOND, 999);// 设置毫秒为000
+		// 设置日历中月份的15号
+		cal.set(Calendar.DAY_OF_MONTH, 15);
+		Date firstDayOfMonth = cal.getTime();
+		return firstDayOfMonth;
+	}
 
 	/**
 	 * 获得该月最后一天
