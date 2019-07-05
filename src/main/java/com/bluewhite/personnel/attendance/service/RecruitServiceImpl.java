@@ -246,7 +246,9 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 			countMap = new HashMap<>();
 			List<Recruit> psList1 = map.get(ps1);
 			Long f=psList1.stream().filter(Recruit->Recruit.getPlatformId().equals(Recruit.getPlatformId())).count();//统计入职途径的人数
-			countMap.put("md7", ps1);
+			BaseData baseData=baseDataDao.findOne(ps1);
+			String string= baseData.getName();
+			countMap.put("md7", string);
 			countMap.put("md6", f);
 			countList.add(countMap);
 		}

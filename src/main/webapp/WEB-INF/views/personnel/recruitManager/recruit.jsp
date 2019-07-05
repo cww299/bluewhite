@@ -1000,24 +1000,6 @@
 								field: "md7",
 								title: "入职途径",
 								align: 'center',
-								templet:  function(d){ 
-									if(d.md7==1){
-										return "广告招聘"
-									}
-									if(d.md7==2){
-										return "前程无忧"
-									}
-									if(d.md7==3){
-										return "58同城"
-									}
-									if(d.md7==4){
-										return "BOSS直聘"
-									}
-									if(d.md7==5){
-										return "扬子人才网"
-									}
-									
-									}
 							},{
 								field: "md6",
 								title: "人数",
