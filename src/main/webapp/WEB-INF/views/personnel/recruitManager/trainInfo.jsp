@@ -132,9 +132,9 @@ layui.config({
 		 			}
 		 		}) 
 		 		$.ajax({
-		 			url:'${ctx}/personnel/findRecruitId?id='+obj.value,
+		 			url:'${ctx}/personnel/findRecruitId?recruitId='+obj.value,
 		 			success:function(r){
-		 				$('#trainMoney').val(r.data.trainPrice);	  
+		 				$('#trainMoney').val(r.data.price);	  
 		 			}
 		 		}) 
 		 	}
