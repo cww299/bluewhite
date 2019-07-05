@@ -81,6 +81,13 @@ public class Reward extends BaseEntity<Long> {
 	public void setTime(Date time) {
 		this.time = time;
 	}
+	
+	public String getRemarks() {
+		return remarks;
+	}
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
 	public Long getRecruitId() {
 		return recruitId;
 	}
