@@ -25,7 +25,7 @@
 
 </body>
 
-<!-- 表格工具栏模板 -->
+<!-- 表格工具栏模板 --> 
 <script type="text/html" id="personToolbar">
 <div>
 	<span lay-event="getReward"  class="layui-btn layui-btn-sm" >领取奖金</span>
