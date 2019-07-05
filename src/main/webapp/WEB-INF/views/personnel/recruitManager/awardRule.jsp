@@ -19,15 +19,6 @@
 
 <div class="layui-card">
 	<div class="layui-card-body">
-		<table class="layui-form">
-			<tr>
-				<td><select name="" lay-search><option value=""></option></select></td>
-				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td><select name="" lay-search><option value=""></option></select></td>
-				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
-			</tr>
-		</table>
 		<table class="layui-table" id="personTable" lay-filter="personTable"></table>
 	</div>
 </div>
@@ -46,6 +37,7 @@
 <div>
 	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增</span>
 	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除</span>
+	<span class="layui-badge">提示：双击修改信息</span>
 </div>
 </script>
 
@@ -76,6 +68,12 @@
 			<input class="layui-input" name="price" value="{{d.price}}" lay-verify="number">
 		</div>
 	</div>
+	<div class="layui-item">
+		<label class="layui-form-label">备注</label>
+		<div class="layui-input-block">
+			<input class="layui-input" name="remarks" value="{{d.remarks}}">
+		</div>
+	</div>
 	<input type="hidden" name="recruitId" value="{{d.recruitId}}">
 	<input type="hidden" name="type" value="{{d.type}}">
 	<input type="hidden" name="id" value="{{d.id}}">
@@ -93,7 +91,7 @@
 	<div class="layui-item">
 		<label class="layui-form-label">剩余金额</label>
 		<div class="layui-input-block">
-			<input type="text" class="layui-input" value="{{ d.price - d.ReceivePrice }}" readonly>
+			<input type="text" class="layui-input" value="{{ d.price - d.ReceivePrice }}" readonly id="canGetMoney">
 		</div>
 	</div>
 	<div class="layui-item">
@@ -161,7 +159,7 @@ layui.use(
 								{align:'center', title:'招聘人',   field:'recruitId',	},
 								{align:'center', title:'被聘人',   field:'coverRecruitId',	},
 								{align:'center', title:'奖励',   field:'price',	},
-								{align:'center', title:'备注',   field:'remark',	},
+								{align:'center', title:'备注',   field:'remarks',	},
 						       ]],
 					})
 				},
@@ -195,6 +193,15 @@ layui.use(
 				}
 			})
 			form.on('submit(getRewardSureBtn)',function(obj){
+				var msg = '';
+				if(obj.field.price > $('#canGetMoney').val())
+					msg = '领取失败！领取金额不能大于剩余领取金额';
+				else if(obj.field.price < 0 )
+					msg = '领取失败！领取金额不能为负数！';
+				if(msg!=''){
+					layer.msg(msg,{icon:2,offset:'280px'});
+					return;
+				}
 				var load=layer.load(1);
 				$.ajax({
 					url:'${ctx}/personnel/addReward',
@@ -217,7 +224,7 @@ layui.use(
 	
 		
 		function addEdit(editData){
-			var data={ id:'',time:'',recruitId:lookoverRecruitId,coverRecruitId:'',price:'',type:0, },
+			var data={ id:'',time:'',recruitId:lookoverRecruitId,coverRecruitId:'',price:'',type:0,remarks:'', },
 			tpl=addEditTpl.innerHTML,
 			title='新增奖励流水',
 			html='';
