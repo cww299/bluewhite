@@ -83,7 +83,7 @@ layui.config({
 			} 
 		})
 		function lookoverAward(type){
-			getCoverRecruit();			
+			getCoverRecruit();			 
 			var cols = [
 						{align:'center', type:'checkbox',},
 						{align:'center', title:'时间',   field:'time',	},
