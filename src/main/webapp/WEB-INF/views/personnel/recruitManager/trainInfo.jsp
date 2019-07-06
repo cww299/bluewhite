@@ -332,7 +332,7 @@ layui.config({
 	 			layer.msg('请选择应聘对象',{icon:2});
 	 			return;
 	 		}
-			allField = {train: '', price: '', startTime:'',endTime:'',type:'1',qualified:'', userId:'', recruitId:$('#searchName').val(),};
+			allField = {train: '', price: '', startTime:'',endTime:'',type:'1',qualified:0, userId:'', recruitId:$('#searchName').val(),};
 			table.addTemp('trainTable',allField,function(trElem) {
 				var startTiemTd = trElem.find('td[data-field="startTime"]')[0];
 				laydate.render({
