@@ -592,12 +592,14 @@ layui.config({
 		      		var data=res.data;
 		      		for(var i=0;i<data.length;i++){				//如果存在发货仓库，且发货仓库中有主仓库157.则作为默认发货仓库
 		      			if(data[i].inventorys.length>0){			
-		      				for(var j=0;j<data[i].inventorys.length;j++)
+		      				var j = 0;
+		      				for( j=0;j<data[i].inventorys.length;j++)
 		      					if(data[i].inventorys[j].warehouse.id == "157")
 		      						data[i].inventory = data[i].inventorys[j].warehouse.id;
+		      				if(!j<data[i].inventorys.length){
+		      					data[i].inventory = ( data[i].inventorys[0]?data[i].inventorys[0].warehouse.id : '');//没有主仓库则默认为第一个仓库
+		      				}
 		      			}
-		      			else									//没有主仓库则默认为第一个仓库
-		      				data[i].inventory = data[i].inventorys[0].warehouse.id;
 		      			switch(defaultPrice){
 			      		case 'tianmao':data[i].price=data[i].tianmaoPrice;   break;
 			      		case '_1688':  data[i].price=data[i].oseePrice; break;
@@ -621,7 +623,7 @@ layui.config({
                          $('#productListTable').next().find(' .layui-table-header th[data-field="0"] input[type="checkbox"]').prop('checked', true);
                          $('#productListTable').next().find('.layui-table-header th[data-field="0"] input[type="checkbox"]').next().addClass('layui-form-checked');
                      }
-	                form.render(); 
+	                form.render('select'); 
 	            },
 			});
 			form.render();
