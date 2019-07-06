@@ -13,4 +13,5 @@ public interface RecruitDao extends BaseRepository<Recruit, Long>{
 	public List<Recruit> findByTestTimeBetween(Date orderTimeBegin, Date orderTimeEnd);
 	
 	public List<Recruit> findByRecruitId(Long long1);
+	public List<Recruit> findByRecruitIdAndState(Long long1,Integer state);
 }

@@ -198,7 +198,7 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 130px;">面试时间</label>
 				<div class="layui-input-inline">
-					<input type="text" value="{{d.time }}" name="time"
+					<input type="text" value="{{d.time }}" name="time" 
 						id="time" lay-verify="required"
 						 class="layui-input">
 				</div>
@@ -207,7 +207,7 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 130px;">面试人</label>
 				<div class="layui-input-inline">
-						<input type="text" value="{{d.name }}" name="name" id="userId"
+						<input type="text" value="{{d.name }}" name="name" id="userId" {{d.state==1 ? 'disabled' : ''}}
 						 lay-verify="required"  placeholder="请输入姓名"
 						class="layui-input laydate-icon" data-provide="typeahead">
 				</div>
@@ -216,7 +216,7 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 130px;">招聘人</label>
 				<div class="layui-input-inline">
-						<select name="recruitId" lay-filter="recruitId" id="recruitId" lay-search="true">
+						<select name="recruitId" {{d.state==1 ? 'disabled' : ''}} lay-filter="recruitId" lay-verify="required" id="recruitId" lay-search="true">
 								
 						</select>
 
@@ -226,7 +226,7 @@
 			<div class="layui-form-item">
 					<label class="layui-form-label" style="width: 130px;">邀约平台</label>
 					<div class="layui-input-inline">
-						<select name="platformId" lay-filter="platformId" id="platformId">
+						<select name="platformId" {{d.state==1 ? 'disabled' : ''}} lay-verify="required"  lay-filter="platformId" id="platformId">
 							
 						</select>
 					</div>
@@ -235,7 +235,7 @@
 			<div class="layui-form-item">
 					<label class="layui-form-label" style="width: 130px;">部门</label>
 					<div class="layui-input-inline">
-						<select name="orgNameId" lay-filter="orgNameId" id="orgNameId" lay-search="true">
+						<select name="orgNameId" lay-filter="orgNameId"  id="orgNameId" lay-search="true">
 								
 						</select>
 					</div>
@@ -269,7 +269,7 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 130px;">电话</label>
 				<div class="layui-input-inline">
-					<input type="text" value="{{d.phone }}" name="phone" id="phone"
+					<input type="text" value="{{d.phone }}" {{d.state==1 ? 'disabled' : ''}} name="phone" id="phone"
 						lay-verify="required" placeholder="请输入内容"
 						class="layui-input laydate-icon">
 				</div>
@@ -290,7 +290,7 @@
 			<div class="layui-form-item">
 					<label class="layui-form-label" style="width: 130px;">是否应面</label>
 					<div class="layui-input-inline">
-						<select name="type" lay-filter="type" 
+						<select name="type" {{d.state==1 ? 'disabled' : ''}} lay-filter="type" 
 							id="type" lay-search="true"><option value="">请选择</option>
 							<option {{d.type==0 ? "selected" : ""}} value="0">否</option>
 							<option {{d.type==1 ? "selected" : ""}} value="1">是</option>
@@ -306,6 +306,7 @@
 						 class="layui-input">
 				</div>
 			</div>
+			<input  type="hidden" value="{{d.state }}" name="state">
 		</div>
 	</form>	
 	
@@ -328,16 +329,16 @@
 		</script>
 
 <script type="text/html" id="switchTpl">
-  <input type="checkbox" name="adopt" value="{{d.id}}" lay-skin="switch" lay-text="通过|不通过" lay-filter="adopt" {{ d.adopt == 1 ? 'checked' : '' }}>
+  <input type="checkbox" name="adopt" value="{{d.id}}" data-id="{{d.state}}" lay-skin="switch" lay-text="通过|不通过" lay-filter="adopt" {{ d.adopt == 1 ? 'checked' : '' }}>
 </script>
 <script type="text/html" id="switchTpl2">
-  <input type="checkbox" name="type" value="{{d.id}}" lay-skin="switch" lay-text="是|否" lay-filter="type" {{ d.type == 1 ? 'checked' : '' }}>
+  <input type="checkbox" name="type" value="{{d.id}}" data-id="{{d.state}}" lay-skin="switch" lay-text="是|否" lay-filter="type" {{ d.type == 1 ? 'checked' : '' }}>
 </script>
 <script type="text/html" id="switchTpl3">
-  <input type="checkbox" name="typeOne" value="{{d.id}}" lay-skin="switch" lay-text="是|否" lay-filter="typeOne" {{ d.typeOne == 1 ? 'checked' : '' }}>
+  <input type="checkbox" name="typeOne" value="{{d.id}}" data-id="{{d.state}}" lay-skin="switch" lay-text="是|否" lay-filter="typeOne" {{ d.typeOne == 1 ? 'checked' : '' }}>
 </script>
 <script type="text/html" id="switchTpl4">
-  <input type="checkbox" name="typeTwo" value="{{d.id}}" lay-skin="switch" lay-text="是|否" lay-filter="typeTwo" {{ d.typeTwo == 1 ? 'checked' : '' }}>
+  <input type="checkbox" name="typeTwo" value="{{d.id}}" data-id="{{d.state}}" lay-skin="switch" lay-text="是|否" lay-filter="typeTwo" {{ d.typeTwo == 1 ? 'checked' : '' }}>
 </script>	
 	<script>
 			layui.config({
@@ -405,7 +406,16 @@
 				      			layer.close(indextwo);
 						      }
 						  });
-					
+					var userId;
+					 $.ajax({
+							url:'${ctx}/getCurrentUser',		//获取当前登录用户
+							async:false,
+							success:function(r){
+								if(0==r.code){
+									userId = r.data.id;
+								}
+							}
+						})
 					var data="";
 				
 				   	tablePlug.smartReload.enable(true); 
@@ -575,6 +585,11 @@
 									elem: tdElem.children[0],
 									format: 'yyyy-MM-dd HH:mm:ss',
 									done: function(value, date) {
+										var state=table.cache['tableData'][index].state
+										if(state==1){
+											table.reload('tableData');
+											return layer.msg("已入职不能修改",{icon: 2})
+										}
 										var id = table.cache['tableData'][index].id
 											var postData = {
 												id: id,
@@ -592,6 +607,11 @@
 							var field=this.name
 							var id=this.value
 							var a=""
+							var state=$(this).data('id')
+							if(state==1){
+								table.reload('tableData');
+							return layer.msg("已入职不能修改",{icon: 2})
+							}
 							if(obj.elem.checked==true){
 								a=1
 							}else{
@@ -633,7 +653,7 @@
 							case 'deleteSome':
 								// 获得当前选中的
 								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
-								layer.confirm('您是否确定要删除选中的' + checkedIds.length + '条记录？', function() {
+								layer.confirm('删除数据将会删除所有关联数据 是否删除' + checkedIds.length + '条记录？', function() {
 									var postData = {
 										ids: checkedIds,
 									}
@@ -716,6 +736,13 @@
 								}
 								if(data[0].testTime==null){
 									return layer.msg("时间不能为空",{icon: 2})
+								}
+								if(data[0].type==0){
+									return layer.msg("当前员工没有应面",{icon: 2})
+								}
+								console.log(data[0].typeOne)
+								if(data[0].typeOne==0){
+									return layer.msg("当前员工没有通过一面",{icon: 2})
 								}
 								if(data[0].state==1){
 									return layer.msg("当前员工已入职",{icon: 2})
@@ -1272,7 +1299,7 @@
 					
 
 					function addEidt(type){
-						var data={time:"",platformId:'',orgNameId:'',name:'',gender:'',phone:'',livingAddress:'',entry:'',type:'',remarks:'',typeOne:'',remarksOne:'',typeTwo:'',remarksTwo:'',state:0};
+						var data={time:"",platformId:'',orgNameId:'',name:'',gender:'',phone:'',livingAddress:'',entry:'',type:0,remarks:'',typeOne:0,remarksOne:'',typeTwo:0,remarksTwo:'',state:0};
 						var title="新增数据";
 						var html="";
 						var tpl=addEditTpl.innerHTML;
@@ -1318,10 +1345,9 @@
 							yes:function(){
 								form.on('submit(addRole)', function(data) {
 									data.field.id=id;
-									data.field.state=state;
 									if(!(/^1[3456789]\d{9}$/.test(data.field.phone))){ 
 										return layer.msg("手机号码有误,请重新填写",{icon: 2}) 
-								    } 
+								    }
 									data.field.recruitName=$('#recruitId option:selected').text();
 						        	mainJs.fAdd(data.field)
 						        	if(id==""){
@@ -1382,11 +1408,17 @@
 							      }
 							  });
 						 
+						 
+						
+							
+						 
 						 var htmlr='<option value="">请选择</option>';
 						 $.ajax({
 								url: '${ctx}/system/user/findUserList',
 								data:{
-									foreigns:0
+									foreigns:0,
+									quit:0,
+									isAdmin:0,
 								},
 								type: "GET",
 								async: false,
@@ -1394,6 +1426,10 @@
 									index;
 								},
 								success: function(result) {
+									var re = /^[0-9]+.?[0-9]*$/
+									if(!re.test(recruitId)){
+										recruitId=userId
+									}
 									$(result.data).each(function(i, o) {
 										htmlr += '<option '+(recruitId==o.id ? "selected" : "")+' value=' + o.id + '>' + o.userName + '</option>'
 									})

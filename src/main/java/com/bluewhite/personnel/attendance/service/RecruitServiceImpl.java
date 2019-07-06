@@ -12,6 +12,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
@@ -21,8 +22,10 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.personnel.attendance.dao.AdvertisementDao;
 import com.bluewhite.personnel.attendance.dao.RecruitDao;
 import com.bluewhite.personnel.attendance.dao.RewardDao;
+import com.bluewhite.personnel.attendance.entity.Advertisement;
 import com.bluewhite.personnel.attendance.entity.Recruit;
 import com.bluewhite.personnel.attendance.entity.Reward;
 import com.bluewhite.system.user.dao.UserDao;
@@ -44,6 +47,8 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 	private UserService userService;
 	@Autowired
 	private RewardDao rewardDao;
+	@Autowired
+	private AdvertisementDao advertisementDao;
 	/*
 	 *分页查询
 	 */
@@ -308,7 +313,7 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 	 */
 	@Override
 	public List<Recruit> findCondition(Recruit recruit) {
-		List<Recruit> recruits=	dao.findByRecruitId(recruit.getRecruitId());
+		List<Recruit> recruits=	dao.findByRecruitIdAndState(recruit.getRecruitId(),1);
 		return recruits;
 	}
 	@Override
@@ -320,6 +325,38 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 			}
 			recruit.setReceivePrice(ReceivePrice);
 		return recruit;
+	}
+	@Override
+	@Transactional
+	public int deletes(String[] ids) {
+		int count = 0;
+		if(!StringUtils.isEmpty(ids)){
+			for (int i = 0; i < ids.length; i++) {
+				Long id = Long.parseLong(ids[i]);
+				Recruit recruit=dao.findOne(id);
+				Long userId = recruit.getUserId();
+				recruit.setUserId(null);
+				recruit.setUser(null);
+			 List<Advertisement> advertisement=advertisementDao.findByRecruitIdAndType(id, 1);
+			 if (advertisement.size()>0) {
+				 for (Advertisement advertisement2 : advertisement) {
+					 advertisementDao.delete(advertisement2.getId());
+				 }
+			}
+			List<Reward> reward= rewardDao.findBycoverRecruitId(id);
+			if (reward.size()>0) {
+				for (Reward reward2 : reward) {
+					rewardDao.delete(reward2.getId());
+				}
+			}
+			dao.delete(id); 
+				if (userId!=null) {
+					userService.delete(userId);
+				}
+				count++;
+			}
+		}
+		return count;
 	}
 	
 
