@@ -411,7 +411,6 @@
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
-						height:'700px',
 						url: '${ctx}/personnel/getRecruit' ,
 						request:{ pageName: 'page' , limitName: 'size', },
 						page: { },
@@ -1301,7 +1300,7 @@
 						layer.open({
 							type:1,
 							title:title,
-							area:['30%','60%'],
+							area:['30%','80%'],
 							btn:['确认','取消'],
 							content:html,
 							id: 'LAY_layuipro' ,
