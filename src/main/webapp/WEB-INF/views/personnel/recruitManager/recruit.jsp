@@ -196,14 +196,28 @@
 			<input type="text" name="id" id="usID" style="display:none;">
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">面试时间</label>
+				<label class="layui-form-label" style="width: 130px;">面试日期</label>
 				<div class="layui-input-inline">
-					<input type="text" value="{{d.time }}" name="time" 
+					<input type="text" value="{{ (d.time).split(" ")[0] }}" name="time" 
 						id="time" lay-verify="required"
 						 class="layui-input">
 				</div>
 			</div>
-			
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 130px;">面试时间</label>
+				<div class="layui-input-inline">
+					<select id="tplTime"><option value="">请选择</option>
+						{{# for(var i=8;i<=17;i++){ 
+								var time = (d.time).split(" ")[1];
+								var value1 = (i>9?i:"0"+i)+":00:00";
+								var value2 = (i>9?i:"0"+i)+":30:00";
+						}}
+							<option  value=" {{ value1 }}" {{ value1 == time?'selected':'' }}> {{ i>9?i:"0"+i }}:00 </option>
+							<option  value=" {{ value2 }}" {{ value2 == time?'selected':'' }}> {{ i>9?i:"0"+i }}:30 </option>
+						{{# } }}
+					</select>
+				</div>
+			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 130px;">面试人</label>
 				<div class="layui-input-inline">
@@ -328,9 +342,6 @@
 			</div>
 		</script>
 
-<script type="text/html" id="switchTpl">
-  <input type="checkbox" name="adopt" value="{{d.id}}" data-id="{{d.state}}" lay-skin="switch" lay-text="通过|不通过" lay-filter="adopt" {{ d.adopt == 1 ? 'checked' : '' }}>
-</script>
 <script type="text/html" id="switchTpl2">
   <input type="checkbox" name="type" value="{{d.id}}" data-id="{{d.state}}" lay-skin="switch" lay-text="是|否" lay-filter="type" {{ d.type == 1 ? 'checked' : '' }}>
 </script>
@@ -418,18 +429,59 @@
 						})
 					var data="";
 				
+					 var fn1 = function(field) {
+							return function(d) {
+								return ['<select name="selectTwo" style="outline: none;border: none; " class="selectTwo" lay-filter="lay_selecte" lay-search="true" data-value="' + d.adopt + '">',
+									'<option value="">请选择</option>',	
+									'<option value="0">不通过</option>',
+									'<option value="1">通过</option>',
+									'<option value="2">待定</option>',
+									'</select>'
+								].join('');
+
+							};
+						};
+					 
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
 						url: '${ctx}/personnel/getRecruit' ,
 						request:{ pageName: 'page' , limitName: 'size', },
 						page: { },
+						size:'lg',
 						loading: true,
 						toolbar: '#toolbar', 
 						cellMinWidth: 90,
 						colFilterRecord: true,
 						smartReloadModel: true,
-						parseData: function(ret) { return { code: ret.code, msg: ret.message, count:ret.data.total, data: ret.data.rows } },
+						parseData: function(ret) { 
+							layui.each(ret.data.rows,function(index,item){			//导出数据时，数据的赋值。field字段名已修改！！！！！
+								item.genders = (item.gender == 0 ? '男':'女');
+								item.orgNameIds = item.orgName.name;
+								item.platformIds = item.platform.name;
+								item.positions =item.position.name;
+								item.types = item.type == 1? '是':'否';
+								item.typeOnes = item.typeOne == 1? '通过':'不通过';
+								item.typeTwos = item.typeTwo == 1? '通过':'不通过';
+								if(item.adopt == 0)
+									item.adopts = '不通过';
+								else if(item.adopt == 1)
+									item.adopts = '通过';
+								else if(item.adopt == 2)
+									item.adopts = '待定';
+								else 
+									item.adopts = ''; 
+								if(item.state==0)
+									item.states =  '未入职'; 
+								else if(item.state==1)
+									item.states = '已入职';
+								else if(item.state==2)
+									item.states = '拒绝入职';
+								else if(item.state==3)
+									item.states = '即将入职';
+							})
+							return { code: ret.code, msg: ret.message, count:ret.data.total, data: ret.data.rows } 
+						},
 						cols: [
 							[{
 								type: 'checkbox',
@@ -446,61 +498,62 @@
 								align: 'center',
 								width : 160,
 							},{
-								field: "platformId",
+								field: "platformIds",
 								title: "邀约平台",
 								align: 'center',
 								edit: false,
 								type: 'normal',
-								templet:  function(d){ 
+								/* templet:  function(d){ 
 									return d.platform.name
-									}
+									} */
 							},{
-								field: "orgNameId",
+								field: "orgNameIds",
 								title: "部门",
 								align: 'center',
 								edit: false,
-								templet:  function(d){ 
+								/* templet:  function(d){ 
 									return d.orgName.name
-									}
+									} */
 							},{
-								field: "position",
+								field: "positions",
 								title: "职位",
 								align: 'center',
-								templet:  function(d){ 
+								/* templet:  function(d){ 
 									return d.position.name
-									}
+									} */
 							},{
-								field: "gender",
+								field: "genders",
 								align: 'center',
 								title: "性别",
 								edit: false,
 								type: 'normal',
-								templet: function(d){ 
+								/* templet: function(d){ 
 									if(d.gender==0){
 										return "男"
 									}else{
 										return "女"
 									}
 									
-								}
+								} */
 							},{
 								field: "recruitName",
 								title: "招聘人",
 								align: 'center',
 							},{
-								field: "type",
+								field: "types",
 								align: 'center',
 								title: "是否应面",
 								edit: false,
 								type: 'normal',
-								templet:'#switchTpl2', unresize: true
+								templet:'#switchTpl2', 
+								unresize: true
 							},{
 								field: "remarks",
 								title: "备注",
 								align: 'center',
 								edit: 'text'
 							},{
-								field: "typeOne",
+								field: "typeOnes",
 								align: 'center',
 								title: "一面",
 								edit: false,
@@ -512,7 +565,7 @@
 								align: 'center',
 								edit: 'text'
 							},{
-								field: "typeTwo",
+								field: "typeTwos",
 								align: 'center',
 								title: "二面",
 								edit: false,
@@ -524,15 +577,16 @@
 								align: 'center',
 								edit: 'text'
 							},{
-								field: "adopt",
+								field: "adopts",
 								align: 'center',
 								title: "面试情况",
 								edit: false,
 								type: 'normal',
-								templet: '#switchTpl', unresize: true
+								width : 110,
+								templet: fn1('selectTwo')
 							},{ 
 								align: 'center',
-								field: "state",
+								field: "states",
 								title: "入职状态", 
 								templet:  function(d){ 
 									if(d.state==0){
@@ -575,6 +629,11 @@
 						done: function(res, curr, count) {
 							var tableView = this.elem.next();
 							var tableElem = this.elem.next('.layui-table-view');
+							layui.each(tableElem.find('select'), function(index, item) {
+								var elem = $(item);
+								elem.val(elem.data('value'));
+							});
+							form.render();
 							// 初始化laydate
 							layui.each(tableView.find('div[class="layui-table-fixed layui-table-fixed-r"]').find('td[data-field="testTime"]'), function(index, tdElem) {
 								tdElem.onclick = function(event) {
@@ -590,9 +649,12 @@
 											return layer.msg("已入职不能修改",{icon: 2})
 										}
 										var id = table.cache['tableData'][index].id
+										if(value==""){
+											value="2000-01-01 00:00:00"
+										}
 											var postData = {
 												id: id,
-												testTime: value,
+												testTime:value,
 											};
 											//调用新增修改
 											mainJs.fUpdate(postData);
@@ -634,7 +696,7 @@
 						var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
 						var postData = {
 							id: id,
-							[field]:data.value
+							adopt:data.value
 						}
 						//调用新增修改
 						mainJs.fUpdate(postData);
@@ -1348,6 +1410,7 @@
 										return layer.msg("手机号码有误,请重新填写",{icon: 2}) 
 								    }
 									data.field.recruitName=$('#recruitId option:selected').text();
+									data.field.time += $("#tplTime").val();
 						        	mainJs.fAdd(data.field)
 						        	if(id==""){
 						        	document.getElementById("layuiadmin-form-admin").reset();
@@ -1363,7 +1426,7 @@
 							});
 						 laydate.render({
 								elem: '#time',
-								type: 'datetime',
+								type: 'date',
 							});
 						 var getdata={type:"orgName",}
 			      			$.ajax({								//获取部门列表数据，部门下拉框的填充

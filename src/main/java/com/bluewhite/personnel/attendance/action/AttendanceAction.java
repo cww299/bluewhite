@@ -548,6 +548,24 @@ public class AttendanceAction {
 		return cr;
 	}
 
+	/**
+	 * 查找所有初始化人员
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/personnel/findInitAll", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse findInit() {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON.get()
+				.addRetainTerm(AttendanceInit.class, "id", "restType", "restDay", "workTimeSummer", "user",
+						"workTimeWinter", "turnWorkTimeSummer", "turnWorkTimeWinter", "restTimeSummer",
+						"restTimeWinter", "restSummer", "restWinter", "restTimeWork", "overTimeType", "comeWork","workType","earthWork","eatType","fail")
+				.addRetainTerm(User.class, "id", "userName")
+				.format(attendanceInitService.findInit()).toJSON());
+		return cr;
+	}
+	
 	/*************************************** *************************/
 
 	/**
