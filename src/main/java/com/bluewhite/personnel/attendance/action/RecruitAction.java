@@ -24,6 +24,8 @@ import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.personnel.attendance.dao.AdvertisementDao;
+import com.bluewhite.personnel.attendance.dao.RewardDao;
 import com.bluewhite.personnel.attendance.entity.Recruit;
 import com.bluewhite.personnel.attendance.service.RecruitService;
 import com.bluewhite.production.group.entity.Group;
@@ -39,6 +41,10 @@ public class RecruitAction {
 	private RecruitService service;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private AdvertisementDao advertisementDao;
+	@Autowired
+	private RewardDao rewardDao;
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
@@ -117,14 +123,7 @@ public class RecruitAction {
 	@ResponseBody
 	public CommonResponse deleteConsumption(HttpServletRequest request, String[] ids) {
 		CommonResponse cr = new CommonResponse();
-		int count = 0;
-		if(!StringUtils.isEmpty(ids)){
-			for (int i = 0; i < ids.length; i++) {
-				Long id = Long.parseLong(ids[i]);
-				service.delete(id); 
-				count++;
-			}
-		}
+		int	count=service.deletes(ids);
 		cr.setMessage("成功删除"+count+"条");
 		return cr;
 	}

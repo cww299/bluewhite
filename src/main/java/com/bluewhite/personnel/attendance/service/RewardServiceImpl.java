@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.personnel.attendance.dao.RewardDao;
@@ -48,8 +49,25 @@ public class RewardServiceImpl extends BaseServiceImpl<Reward, Long>
 	 */
 	@Override
 	public Reward addReward(Reward reward) {
-		
-		return dao.save(reward);
+		if (reward.getId()!=null) {
+			List<Reward> list=dao.findByRecruitIdAndType(reward.getRecruitId(),0);//累计奖励
+			double price=0;
+			for (Reward reward2 : list) {
+				price=price+reward2.getPrice();
+			}
+			List<Reward> list2=dao.findByRecruitIdAndType(reward.getRecruitId(),1);//发放的奖励
+			double price2=0;
+			for (Reward reward2 : list2) {
+				price2=price2+reward2.getPrice();
+			}
+			if (price-price2-reward.getPrice()<0) {
+				throw new ServiceException("领取的奖励超过了 累计奖励");
+			}else{
+				return dao.save(reward);
+			}
+		}else{
+			return dao.save(reward);
+		}
 	}
 
 	
