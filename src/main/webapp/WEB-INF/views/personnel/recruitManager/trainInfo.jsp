@@ -482,7 +482,7 @@ layui.config({
 		}
 		function getTeacher(){
 			$.ajax({
-				url:'${ctx}/system/user/findUserList',	
+				url:'${ctx}/system/user/findUserList?isAdmin=0&quit=0',	
 				success:function(r){
 					allTeacher = r.data;
 				}
