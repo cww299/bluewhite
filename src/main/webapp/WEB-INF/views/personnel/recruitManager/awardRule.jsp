@@ -83,17 +83,19 @@ layui.config({
 			} 
 		})
 		function lookoverAward(type){
-			getCoverRecruit();			
+			getCoverRecruit();			 
 			var cols = [
 						{align:'center', type:'checkbox',},
 						{align:'center', title:'时间',   field:'time',	},
 						{align:'center', title:'招聘人',   field:'recruitId', edit:false,templet:function(d){ return d.recruitName.recruitName; }	},
-						{align:'center', title:'被聘人',   field:'coverRecruitId',templet:getSelectHtml(),edit:false,	},
 					    ];
-			if(type==1)
+			if(type==1){
 				cols.push({align:'center', title:'领取奖励',   field:'price', edit:true,});
-			else
+			}
+			else{
+				cols.push({align:'center', title:'被聘人',   field:'coverRecruitId',templet:getSelectHtml(),edit:false,	});
 				cols.push({align:'center', title:'奖励',   field:'price',edit:true,});
+			}
 			cols.push({align:'center', title:'备注',   field:'remarks',	edit:true,});
 			layer.open({
 				type:1,
