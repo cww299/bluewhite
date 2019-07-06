@@ -15,7 +15,6 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.personnel.attendance.dao.AttendanceInitDao;
-import com.bluewhite.personnel.attendance.entity.ApplicationLeave;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.User;
@@ -74,6 +73,13 @@ public class AttendanceInitServiceImpl extends BaseServiceImpl< AttendanceInit, 
 			count++;
 		}
 		return count;
+	}
+
+
+	@Override
+	public List<AttendanceInit> findInit() {
+	List<AttendanceInit> attendanceInits=dao.findAll();
+		return attendanceInits;
 	}
 
 }

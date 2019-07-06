@@ -769,7 +769,6 @@
 						var val=obj.field
 						$("#usID").val(id)
 					    if(obj.event === 'update'){
-					    	
 					    	var dicDiv=$('#layuiadmin-form-admin');
 					    	$('#selectOne').each(function(j,k){
 								var id=data.user.id;

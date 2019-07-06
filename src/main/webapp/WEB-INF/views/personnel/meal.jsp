@@ -111,7 +111,7 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 100px;">姓名</label>
 				<div class="layui-input-inline">
-					<select name="userId" style="width:290px;" lay-filter="userId" id="userId" lay-search="true"></select>
+					<select name="userId" style="width:290px;" lay-filter="id" id="userId" lay-search="true"></select>
 				</div>
 			</div>
 
@@ -138,6 +138,31 @@
 				</div>
 		</div>
 	</form>
+
+<form action="" id="layuiadmin-form-admin3"
+		style="padding: 20px 0px 0 50px; display:none;  text-align:">
+		<div class="layui-form" lay-filter="layuiadmin-form-admin">
+		<input type="text" name="id" id="ids" style="display:none;">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">姓名</label>
+				<div class="layui-input-inline">
+					<select name="id" style="width:290px;" lay-filter="userId" id="userIds" lay-search="true"></select>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">吃饭状态</label>
+				<div class="layui-input-inline">
+					<select name="eatType" lay-filter="eatType"
+						id="eatType"  lay-search="true"><option
+							value="">请选择</option>
+						<option value="1">早餐</option>
+						<option value="2">晚餐</option>
+						<option value="3">早餐or晚餐</option></select>
+				</div>
+			</div>
+		</div>
+	</form>
 	
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
@@ -146,6 +171,7 @@
 				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
 				<span class="layui-btn layui-btn-sm" lay-event="openMeal">报餐价格</span>
+				<span class="layui-btn layui-btn-sm" lay-event="eat">吃饭方式填写</span>
 			</div>
 	</script>
 
@@ -592,6 +618,83 @@
 									}
 								})
 								break;
+							case 'eat':	
+								var htmlsl = '<option value="">请选择</option>';
+								$.ajax({
+									url: '${ctx}/personnel/findInitAll',
+									type: "GET",
+									async: false,
+									beforeSend: function() {
+										index;
+									},
+									success: function(result) {
+										$(result.data).each(function(i, o) {
+											htmlsl += '<option value=' + o.id + '>' + o.user.userName + '</option>'
+										})
+										$("#userIds").html(htmlsl)
+										form.render(); 
+										layer.close(index);
+									},
+									error: function() {
+										layer.msg("操作失败！", {
+											icon: 2
+										});
+										layer.close(index);
+									}
+								});
+								
+								var	dicDiv=$("#layuiadmin-form-admin3");
+								layer.open({
+									type:1,
+									title:'吃饭方式',
+									area:['30%','60%'],
+									btn:['确认','取消'],
+									content:dicDiv,
+									id: 'LAY_layuipro' ,
+									btnAlign: 'c',
+								    moveType: 1, //拖拽模式，0或者1
+									success : function(layero, index) {
+							        	layero.addClass('layui-form');
+										// 将保存按钮改变成提交按钮
+										layero.find('.layui-layer-btn0').attr({
+											'lay-filter' : 'addRole',
+											'lay-submit' : ''
+										})
+							        },
+									yes:function(){
+										form.on('submit(addRole)', function(data) {
+											$.ajax({
+												url: '${ctx}/personnel/addAttendanceInit',
+												type: "POST",
+												data:data.field,
+												async: false,
+												beforeSend: function() {
+													index;
+												},
+												success: function(result) {
+												if(result.code==0){
+													layer.msg("修改成功！", {
+														icon: 1
+													});
+													 layer.closeAll();
+												}else{
+													layer.msg("修改失败！", {
+														icon: 2
+													});
+												}
+													layer.close(index);
+												},
+												error: function() {
+													layer.msg("操作失败！", {
+														icon: 2
+													});
+													layer.close(index);
+												}
+											}); 
+										})
+									}
+								})
+							break;
 							case 'cleanTempData':	
 									table.cleanTemp(tableId);
 							break;

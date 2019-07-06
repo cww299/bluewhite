@@ -1,9 +1,10 @@
 package com.bluewhite.personnel.attendance.service;
 
+import java.util.List;
+
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.personnel.attendance.entity.ApplicationLeave;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 
 public interface AttendanceInitService  extends BaseCRUDService<AttendanceInit,Long>{
@@ -28,5 +29,5 @@ public interface AttendanceInitService  extends BaseCRUDService<AttendanceInit,L
 	 */
 	int deleteAttendanceInit(String ids);
 	
-
+	public List<AttendanceInit> findInit();
 }
