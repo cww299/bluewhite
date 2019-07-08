@@ -64,18 +64,24 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 			if (!StringUtils.isEmpty(sundry.getOrgNameId())) {
 				predicate.add(cb.equal(root.get("orgName").get("id").as(Long.class), sundry.getOrgNameId()));
 			}
+			//是否应面
 			if (sundry.getType()!= null) {
 				predicate.add(cb.equal(root.get("type").as(Integer.class), sundry.getType()));
 			}
+			//一面
 			if (sundry.getTypeOne()!= null) {
 				predicate.add(cb.equal(root.get("typeOne").as(Integer.class), sundry.getTypeOne()));
 			}
+			//二面
 			if (sundry.getTypeTwo()!= null) {
 				predicate.add(cb.equal(root.get("typeTwo").as(Integer.class), sundry.getTypeTwo()));
 			}
-			
 			if (sundry.getState()!= null) {
 				predicate.add(cb.equal(root.get("state").as(Integer.class), sundry.getState()));
+			}
+			//面试状态
+			if (sundry.getAdopt()!= null) {
+				predicate.add(cb.equal(root.get("adopt").as(Integer.class), sundry.getAdopt()));
 			}
 			//是否离职
 			if (sundry.getQuit()!= null) {
@@ -119,16 +125,16 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 			allMap = new HashMap<>();
 			Date date = new Date();
 			List<Recruit> psList1 = map.get(ps1);
-			Long d=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getType().equals(1)).count();//邀约面试
-			Long c=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getTypeOne().equals(1)).count();//应邀面试
-			Long b=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) &&  Recruit.getAdopt()!=null && Recruit.getAdopt().equals(1)).count();//面试合格
-			Long e=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState().equals(2)).count();//拒绝入职
-			Long f=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState().equals(1) && Recruit.getUser().getQuit().equals(0)).count();//已入职且在职
-			Long g=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState().equals(3)).count();//即将入职
+			Long d=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getType()!=null && Recruit.getType().equals(1)).count();//邀约面试
+			Long c=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getTypeOne()!=null && Recruit.getTypeOne().equals(1)).count();//应邀面试
+			Long b=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getAdopt()!=null && Recruit.getAdopt().equals(1)).count();//面试合格
+			Long e=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState()!=null && Recruit.getState().equals(2)).count();//拒绝入职
+			Long f=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState()!=null && Recruit.getUserId()!=null && Recruit.getState().equals(1) && Recruit.getUser().getQuit().equals(0)).count();//已入职且在职
+			Long g=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState()!=null &&  Recruit.getState().equals(3)).count();//即将入职
 			//短期入职离职
 			Long h=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getUserId()!=null && Recruit.getUser().getQuit().equals(1) && DatesUtil.getDaySub(date, Recruit.getUser().getQuitDate())<32).count();
-			Long k=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState().equals(1)).count();//已入职
-			Long l=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState().equals(1) && Recruit.getUser().getQuit().equals(1)).count();//已入职且离职
+			Long k=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState()!=null && Recruit.getState().equals(1)).count();//已入职
+			Long l=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState()!=null && Recruit.getUserId()!=null && Recruit.getState().equals(1) && Recruit.getUser().getQuit().equals(1)).count();//已入职且离职
 			BaseData baseData=baseDataDao.findOne(ps1);
 			String string= baseData.getName();
 			allMap.put("username", string);
@@ -217,7 +223,7 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 		User user = new User();
 		user.setIsAdmin(false);
 		user.setForeigns(0);
-		double sum5=userService.findUserList(user).stream().filter(User ->(User.getQuitDate()!=null && User.getQuitDate().before(recruit.getTime())) && (User.getEntry() != null && User.getEntry().before(recruit.getTime()))).count();//初期人员
+ 		double sum5=userService.findUserList(user).stream().filter(User ->(User.getQuitDate()==null || User.getQuitDate().after(recruit.getTime())) && (User.getEntry() != null && User.getEntry().before(recruit.getTime()))).count();//初期人员
 		for (Map<String, Object> map : maps) {
 		 Object aInteger= map.get("mod2");
 		 Object aInteger2= map.get("mod3");
@@ -230,11 +236,27 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 		 sum3=sum3+Integer.parseInt(aInteger4==null?"":aInteger4.toString());
 		 sum6=sum6+Integer.parseInt(aInteger5==null?"":aInteger5.toString());
 		}
-		double a = NumUtils.div(sum, sum1, 4)*100;//面试通过率
-		double b = NumUtils.div(sum2, sum1, 4)*100;//入职率
-		double c = NumUtils.div(sum3, sum2, 4)*100;//短期流失率
-		double d = NumUtils.div(sum4, (sum5+sum2), 4)*100;//离职率
-		double e = NumUtils.div(sum6,sum1,2)*100;//留用率
+		double a=0;
+		if (sum!=0) {
+			a = NumUtils.div(sum1, sum, 4)*100;//面试通过率
+		}
+		double b=0;
+		if (sum1!=0) {
+			b = NumUtils.div(sum2, sum1, 4)*100;//入职率
+		}
+		double c=0;
+		if (sum2!=0) {
+			c = NumUtils.div(sum3, sum2, 4)*100;//短期流失率
+		}
+		double d=0; 
+		if ((sum5+sum2)!=0) {
+			d = NumUtils.div(sum4, (sum5+sum2), 4)*100;//离职率
+		}
+		double e=0;
+		if (sum1!=0) {
+			 e = NumUtils.div(sum6,sum1,2)*100;//留用率
+		}
+		
 		allMap.put("md1", a);
 		allMap.put("md2", b);
 		allMap.put("md3", c);

@@ -27,33 +27,33 @@
 						<tr>
 							<td>姓名:</td>
 							<td><input type="text" name="name" id="firstNames" class="layui-input" style="width:212px;" /></td>
+							
+							<td>&nbsp;&nbsp;</td>
+							<td>是否应面:
+							<td><select class="form-control" name="type">
+									<option value="">请选择</option>
+									<option value="0">不通过</option>
+									<option value="1">通过</option>
+							</select></td>
+							<td>&nbsp;&nbsp;</td>
+							<td>一面状态:
+							<td><select class="form-control" name="typeOne">
+									<option value="">请选择</option>
+									<option value="0">不通过</option>
+									<option value="1">通过</option>
+							</select></td>
+							<td>&nbsp;&nbsp;</td>
+							<td>二面状态:
+							<td><select class="form-control" name="typeTwo">
+									<option value="">请选择</option>
+									<option value="0">不通过</option>
+									<option value="1">通过</option>
+							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>面试时间:</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入面试时间" class="layui-input laydate-icon">
 							</td>
 							<td>&nbsp;&nbsp;</td>
-							<td>是否应面:
-							<td><select class="form-control" name="type">
-									<option value="">请选择</option>
-									<option value="0">否</option>
-									<option value="1">是</option>
-							</select></td>
-							<td>&nbsp;&nbsp;</td>
-							<td>一面:
-							<td><select class="form-control" name="typeOne">
-									<option value="">请选择</option>
-									<option value="0">否</option>
-									<option value="1">是</option>
-							</select></td>
-							<td>&nbsp;&nbsp;</td>
-							<td>二面:
-							<td><select class="form-control" name="typeTwo">
-									<option value="">请选择</option>
-									<option value="0">否</option>
-									<option value="1">是</option>
-							</select></td>
-							<td>&nbsp;&nbsp;</td>
-							
 							<td>
 								<div class="layui-inline">
 									<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
@@ -77,10 +77,18 @@
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>在职情况:</td>
-							<td><select class="form-control" name="quit">
+							<td><select class="form-control">
 									<option value="">请选择</option>
 									<option value="0">在职</option>
 									<option value="1">离职</option>
+							</select></td>
+							<td>&nbsp;&nbsp;</td>
+							<td>面试情况:</td>
+							<td><select class="form-control" name="adopt">
+									<option value="">请选择</option>
+									<option value="0">通过</option>
+									<option value="1">不通过</option>
+									<option value="2">待定</option>
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td><input type="checkbox" name="like[write]" lay-filter="lockDemo" title="入职在职"></td>
@@ -459,7 +467,7 @@
 								item.genders = (item.gender == 0 ? '男':'女');
 								item.orgNameIds = item.orgName.name;
 								item.platformIds = item.platform.name;
-								item.positions =item.position.name;
+								item.positions = item.position ? item.position.name:'';
 								item.types = item.type == 1? '是':'否';
 								item.typeOnes = item.typeOne == 1? '通过':'不通过';
 								item.typeTwos = item.typeTwo == 1? '通过':'不通过';
