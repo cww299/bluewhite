@@ -23,8 +23,6 @@
 			<tr>
 				<td><select name="platformId" lay-search id="searchPlatformSelect"><option value="">获取数据中....</option></select></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td><input type="text" class="layui-input" placeHolder="请选择时间" id="searchTime"></td>
-				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
@@ -64,19 +62,16 @@ layui.config({
 		
 		var allPlatform = [];
 		getPlatform();
-	 	tablePlug.smartReload.enable(true);   //???????????????
+	 	tablePlug.smartReload.enable(true);  
 	 			
 	 	laydate.render({
 			elem: '#searchTime',
 			range:'~',
 	 	})
 	 	form.on('submit(search)',function(obj){
-	 		var time = $('#searchTime').val().split('~');
 			table.reload('recruitTable',{
 				where:{
 					platformId : obj.field.platformId,
-					startTime : (time?'':(time[0]+'00:00:00')),
-					endTime : (time?"":(time[1].trim()+' 23:59:59')),
 				},
 				page : { curr:1 },
 			})
