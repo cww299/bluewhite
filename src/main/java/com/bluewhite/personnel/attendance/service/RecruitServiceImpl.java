@@ -238,23 +238,23 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 		}
 		double a=0;
 		if (sum!=0) {
-			a = NumUtils.div(sum1, sum, 4)*100;//面试通过率
+			a = NumUtils.div(sum1*100, sum, 2);//面试通过率
 		}
 		double b=0;
 		if (sum1!=0) {
-			b = NumUtils.div(sum2, sum1, 4)*100;//入职率
+			b = NumUtils.div(sum2*100, sum1, 2);//入职率
 		}
 		double c=0;
 		if (sum2!=0) {
-			c = NumUtils.div(sum3, sum2, 4)*100;//短期流失率
+			c = NumUtils.div(sum3*100, sum2, 2);//短期流失率
 		}
 		double d=0; 
 		if ((sum5+sum2)!=0) {
-			d = NumUtils.div(sum4, (sum5+sum2), 4)*100;//离职率
+			d = NumUtils.div(sum4*100, (sum5+sum2), 2);//离职率
 		}
 		double e=0;
 		if (sum1!=0) {
-			 e = NumUtils.div(sum6,sum1,2)*100;//留用率
+			 e = NumUtils.div(sum6*100,sum1,2);//留用率
 		}
 		
 		allMap.put("md1", a);

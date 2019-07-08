@@ -1177,7 +1177,7 @@
 									done: function(res, curr, count) {
 										var tableView = this.elem.next();
 										var tableElem = this.elem.next('.layui-table-view');
-										layui.each(tableElem.find('select'), function(index, item) {
+										layui.each(tableElem.find('.layui-table-box').find('select'), function(index, item) {
 											var elem = $(item);
 											elem.val(elem.data('value'));
 										});

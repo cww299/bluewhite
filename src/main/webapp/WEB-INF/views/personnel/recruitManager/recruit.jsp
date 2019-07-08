@@ -637,7 +637,7 @@
 						done: function(res, curr, count) {
 							var tableView = this.elem.next();
 							var tableElem = this.elem.next('.layui-table-view');
-							layui.each(tableElem.find('select'), function(index, item) {
+							layui.each(tableElem.find('.layui-table-box').find('select'), function(index, item) {
 								var elem = $(item);
 								elem.val(elem.data('value'));
 							});
@@ -1014,7 +1014,6 @@
 					};
 					table.render({
 						elem: '#analysisRecuit',
-						size: 'lg',
 						where:data,
 						data:[],
 						request:{
@@ -1024,9 +1023,6 @@
 						//开启分页
 						loading: true,
 						toolbar: '#toolbar5', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
-						totalRow: true,		 //开启合计行 */
-						cellMinWidth: 90,
-						colFilterRecord: true,
 						smartReloadModel: true,// 开启智能重载
 						parseData: function(ret) {
 							return {
@@ -1070,7 +1066,6 @@
 					
 					table.render({
 						elem: '#analysisRecuit2',
-						size: 'lg',
 						where:data,
 						data:[],
 						request:{
@@ -1081,7 +1076,6 @@
 						loading: true,
 						toolbar: '#toolbar5', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
 						totalRow: true,		 //开启合计行 */
-						cellMinWidth: 90,
 						colFilterRecord: true,
 						smartReloadModel: true,// 开启智能重载
 						parseData: function(ret) {
@@ -1096,11 +1090,12 @@
 								field: "md7",
 								title: "入职途径",
 								align: 'center',
+								totalRowText:'合计'
 							},{
 								field: "md6",
 								title: "人数",
 								align: 'center',
-								
+								totalRow:true,
 							}
 							]
 						],
@@ -1116,7 +1111,6 @@
 					
 					table.render({
 						elem: '#layuiShare2',
-						size: 'lg',
 						where:data,
 						/* url: '${ctx}/personnel/Statistics' , */
 						data:[],
@@ -1192,7 +1186,6 @@
 					
 					table.render({
 						elem: '#layuiShare6',
-						size: 'lg',
 						data:[],
 						where:data,
 						request:{
@@ -1273,7 +1266,6 @@
 					
 					table.render({
 						elem: '#layuiSharequit1',
-						size: 'lg',
 						where:data,
 						data:[],
 						request:{
@@ -1325,7 +1317,6 @@
 								});
 					table.render({
 						elem: '#layuiSharequitquit',
-						size: 'lg',
 						where:data,
 						data:[],
 						request:{
