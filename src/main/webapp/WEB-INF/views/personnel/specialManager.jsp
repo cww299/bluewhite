@@ -76,9 +76,10 @@ layui.config({
 			parseData:function(ret){ return { data:ret.data,  msg:ret.message, code:ret.code } },
 			cols:[[
 			       {align:'center', title:'日期',   field:'date',	totalRowText:'合计',},
-			       {align:'center', title:'分组/姓名', 	field:'name', 	},
+			       {align:'center', title:'分组/姓名', 	field:'name',filter:true,	 	},
 			       {align:'center', title:'总工时',   field:'sumWorkTime',totalRow:true,  },
 			       {align:'center', title:'工种',   field:'kindWork', filter:true,	},
+			       {align:'center', title:'是否工厂',   field:'foreigns',	},
 			       ]],
 			done:function(){
 				layer.close(LOAD);
