@@ -180,8 +180,6 @@
 							pageName: 'page' ,//页码的参数名称，默认：page
 							limitName: 'size' //每页数据量的参数名，默认：limit
 						},
-						page: {
-						},//开启分页
 						loading: true,
 						toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
 						totalRow: true,		 //开启合计行 */
@@ -237,97 +235,6 @@
 					
 					
 					
-					
-					
-					
-					/* //监听头工具栏事件
-					table.on('toolbar(tableData)', function(obj) {
-						var config = obj.config;
-						var btnElem = $(this);
-						var tableId = config.id;
-						switch(obj.event) {
-							case 'openMeal':
-								$.ajax({
-									url: '${ctx}/personnel/getpersonVariabledao',
-									type: "GET",
-									data:{
-										type:1
-									},
-									async: false,
-									beforeSend: function() {
-										index;
-									},
-									success: function(result) {
-										$(result.data).each(function(i, o) {
-											$("#ids").val(o.id);
-											$("#keyValue").val(o.keyValue);
-											$("#keyValueTwo").val(o.keyValueTwo);
-											$("#keyValueThree").val(o.keyValueThree);
-										})
-										
-										layer.close(index);
-									},
-									error: function() {
-										layer.msg("操作失败！", {
-											icon: 2
-										});
-										layer.close(index);
-									}
-								});
-								//报价修改
-							var	dicDiv=$("#layuiadmin-form-admin");
-								layer.open({
-									type:1,
-									title:'报餐价格',
-									area:['30%','60%'],
-									btn:['确认','取消'],
-									content:dicDiv,
-									id: 'LAY_layuipro' ,
-									btnAlign: 'c',
-								    moveType: 1, //拖拽模式，0或者1
-									success : function(layero, index) {
-							        	layero.addClass('layui-form');
-										// 将保存按钮改变成提交按钮
-										layero.find('.layui-layer-btn0').attr({
-											'lay-filter' : 'addRole',
-											'lay-submit' : ''
-										})
-							        },
-									yes:function(){
-										form.on('submit(addRole)', function(data) {
-											$.ajax({
-												url: '${ctx}/personnel/addPersonVaiable',
-												type: "POST",
-												data:data.field,
-												async: false,
-												beforeSend: function() {
-													index;
-												},
-												success: function(result) {
-												if(result.code==0){
-													layer.msg("修改成功！", {
-														icon: 1
-													});
-												}else{
-													layer.msg("修改失败！", {
-														icon: 2
-													});
-												}
-													layer.close(index);
-												},
-												error: function() {
-													layer.msg("操作失败！", {
-														icon: 2
-													});
-													layer.close(index);
-												}
-											});
-										})
-									}
-								})
-								break;
-						}
-					}); */
 					
 					$(document).keydown(function(event){
 						　　if(event.keyCode==13){
