@@ -12,6 +12,8 @@ import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineCustomer;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrderChild;
+import com.bluewhite.onlineretailers.inventory.entity.Procurement;
+import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 @Service
 public interface OnlineOrderService extends BaseCRUDService<OnlineOrder,Long>{
 	
@@ -80,7 +82,7 @@ public interface OnlineOrderService extends BaseCRUDService<OnlineOrder,Long>{
 	 * @param onlineOrder
 	 * @return
 	 */
-	public List<Map<String, Object>> reportSalesGoods(OnlineOrder onlineOrder);
+	public List<Map<String, Object>> reportSalesGoods(Procurement procurement);
 	
 	/**
 	 * 根据销员工获取销售报表

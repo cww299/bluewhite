@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -26,7 +24,6 @@ import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
@@ -46,14 +43,12 @@ import com.bluewhite.onlineretailers.inventory.entity.OnlineOrderChild;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 import com.bluewhite.onlineretailers.inventory.entity.Warning;
-import com.bluewhite.onlineretailers.inventory.entity.poi.OnlineOrderPoi;
 import com.bluewhite.onlineretailers.inventory.service.CommodityService;
 import com.bluewhite.onlineretailers.inventory.service.OnlineCustomerService;
 import com.bluewhite.onlineretailers.inventory.service.OnlineOrderService;
 import com.bluewhite.onlineretailers.inventory.service.ProcurementService;
 import com.bluewhite.system.sys.entity.RegionAddress;
 import com.bluewhite.system.user.entity.User;
-import com.bluewhite.system.user.entity.UserContract;
 
 @Controller
 public class InventoryAction {
@@ -406,9 +401,9 @@ public class InventoryAction {
 	 */
 	@RequestMapping(value = "/inventory/report/salesGoods", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse salesMonth(OnlineOrder onlineOrder) {
+	public CommonResponse salesMonth(Procurement procurement) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(onlineOrderService.reportSalesGoods(onlineOrder));
+		cr.setData(onlineOrderService.reportSalesGoods(procurement));
 		cr.setMessage("成功");
 		return cr;
 	}

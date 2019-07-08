@@ -401,7 +401,6 @@ public class UserAction {
 	@ResponseBody
 	public CommonResponse findUserList(User user) {
 		CommonResponse cr = new CommonResponse();
-		user.setIsAdmin(null);
 		cr.setData(ClearCascadeJSON
 				.get()
 				.addRetainTerm(User.class,"id","userName","phone")

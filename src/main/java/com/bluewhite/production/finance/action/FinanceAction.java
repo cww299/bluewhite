@@ -125,12 +125,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	@ResponseBody
 	public CommonResponse allPayBSum(HttpServletRequest request,PayB payB) {
 		CommonResponse cr = new CommonResponse();
-			List<Object> payBList = new ArrayList<>();
-			List<Object> payBList1 = payBDao.findPayNumber(payB.getType(),payB.getOrderTimeBegin(),DatesUtil.getCentreDayOfMonth(payB.getOrderTimeBegin()),payB.getUserName(),payB.getBacth(),payB.getProductName());
-			List<Object> payBList2 = payBDao.findPayNumber(payB.getType(),DatesUtil.getfristDayOftime(
-				DatesUtil.nextDay(DatesUtil.getCentreDayOfMonth(payB.getOrderTimeBegin()))),payB.getOrderTimeEnd(),payB.getUserName(),payB.getBacth(),payB.getProductName());
-			payBList.addAll(payBList1);
-			payBList.addAll(payBList2);
+			List<Object> payBList = payBDao.findPayNumber(payB.getType(),payB.getOrderTimeBegin(),payB.getOrderTimeEnd(),payB.getUserName(),payB.getBacth(),payB.getProductName());
 			// 总金额
 			List<Double> listPayNumber = new ArrayList<>();
 			// 实际运费

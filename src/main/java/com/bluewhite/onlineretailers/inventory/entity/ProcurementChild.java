@@ -1,11 +1,14 @@
  package com.bluewhite.onlineretailers.inventory.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
@@ -128,6 +131,7 @@ public class ProcurementChild  extends BaseEntity<Long>{
 	private String place;
 	
 	
+
 
 
 

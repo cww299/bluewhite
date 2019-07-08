@@ -270,9 +270,8 @@ public class CollectInformationServiceImpl extends BaseServiceImpl<CollectInform
 
 	@Override
 	public CollectInformation findByType(CollectInformation collectInformation) {
-		
 		if(collectInformation.getStatus()!=null){
-		return	this.collectInformation(collectInformation);
+			return collectInformation(collectInformation);
 		}
 		return dao.findByType(collectInformation.getType());
 	}
