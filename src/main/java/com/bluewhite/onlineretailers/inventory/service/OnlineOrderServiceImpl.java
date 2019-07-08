@@ -632,31 +632,31 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 	}
 
 	@Override
-	public List<Map<String, Object>> reportSalesGoods(OnlineOrder onlineOrder) {
+	public List<Map<String, Object>> reportSalesGoods(Procurement procurement) {
 		List<Map<String, Object>> mapList = new ArrayList<>();
 		// 获取所有的已发货的子订单订单
-		List<OnlineOrderChild> onlineOrderChildList = onlineOrderChildDao
-				.findByCreatedAtBetween(onlineOrder.getOrderTimeBegin(), onlineOrder.getOrderTimeEnd());
+		List<ProcurementChild> procurementChildList = procurementChildDao
+				.findByCreatedAtBetween(procurement.getOrderTimeBegin(), procurement.getOrderTimeEnd());
 		// 根据商品id分组
-		Map<Long, List<OnlineOrderChild>> mapOnlineOrderChildList = onlineOrderChildList.stream()
-				.filter(OnlineOrderChild -> OnlineOrderChild.getOnlineOrder().getFlag() != 1
-						&& (onlineOrder.getCommodityName() != null ? OnlineOrderChild.getCommodity().getSkuCode().contains(onlineOrder.getCommodityName())
-								: OnlineOrderChild.getCommodity() != null)
-				).collect(Collectors.groupingBy(OnlineOrderChild::getCommodityId, Collectors.toList()));
+		Map<Long, List<ProcurementChild>> mapOnlineOrderChildList = procurementChildList.stream()
+				.filter(ProcurementChild -> ProcurementChild.getProcurement().getFlag() != 1 && ProcurementChild.getProcurement().getType()==3
+						&& (procurement.getCommodityName() != null ? ProcurementChild.getCommodity().getSkuCode().contains(procurement.getCommodityName())
+								: ProcurementChild.getCommodity() != null)
+				).collect(Collectors.groupingBy(ProcurementChild::getCommodityId, Collectors.toList()));
 		for (Long ps : mapOnlineOrderChildList.keySet()) {
-			List<OnlineOrderChild> psList = mapOnlineOrderChildList.get(ps);
+			List<ProcurementChild> psList = mapOnlineOrderChildList.get(ps);
 			if (psList.size() == 0) {
 				continue;
 			}
 			Map<String, Object> mapSale = new HashMap<String, Object>();
-			int sunNumber = psList.stream().mapToInt(OnlineOrderChild::getNumber).sum();
+			int sunNumber = psList.stream().mapToInt(ProcurementChild::getNumber).sum();
 			List<Double> listSumPayment = new ArrayList<>();
 			Double sumPayment = 0.0;
 			if (psList.size() > 0) {
 				psList.stream().forEach(c -> {
-					listSumPayment.add(c.getSumPrice());
+					listSumPayment.add(NumUtils.mul(c.getCommodity().getCost() !=null ? c.getCommodity().getCost() : 0,c.getNumber()));
 				});
-				sumPayment = NumUtils.sum(sumPayment);
+				sumPayment = NumUtils.sum(listSumPayment);
 			}
 			mapSale.put("name", psList.get(0).getCommodity().getSkuCode());
 			mapSale.put("singular", psList.size());

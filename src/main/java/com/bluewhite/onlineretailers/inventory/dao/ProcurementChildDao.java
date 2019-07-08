@@ -1,5 +1,6 @@
 package com.bluewhite.onlineretailers.inventory.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bluewhite.base.BaseRepository;
@@ -18,6 +19,14 @@ public interface ProcurementChildDao extends BaseRepository<ProcurementChild, Lo
 	 * @return
 	 */
 	List<ProcurementChild> findByOnlineOrderId(Long id);
+
+	/**
+	 * 
+	 * @param orderTimeBegin
+	 * @param orderTimeEnd
+	 * @return
+	 */
+	List<ProcurementChild> findByCreatedAtBetween(Date orderTimeBegin, Date orderTimeEnd);
 	
 
 }
