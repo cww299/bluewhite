@@ -189,11 +189,13 @@ public class UserAction {
 			cr.setMessage("id为空");
 			return cr;
 		}
-		User u = userService.findByPhone(user.getPhone());
-		if(u != null){
-			cr.setCode(ErrorCode.SYSTEM_PHONE_NUM_REPEAT.getCode());
-			cr.setMessage("该用户手机号已存在");
-			return cr;
+		if(user.getPhone()!=null){
+			User u = userService.findByPhone(user.getPhone());
+			if(u != null){
+				cr.setCode(ErrorCode.SYSTEM_PHONE_NUM_REPEAT.getCode());
+				cr.setMessage("该用户手机号已存在");
+				return cr;
+			}
 		}
 		User oldUser = userService.findOne(user.getId());
 		userService.update(user,oldUser);

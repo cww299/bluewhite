@@ -110,10 +110,8 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 		}
 		List<PayB> payBList = payBDao.findByUserIdInAndAllotTimeBetween(userIds, temporarily.getOrderTimeBegin(),
 				temporarily.getViewTypeDate() == 1 ? temporarily.getOrderTimeEnd() : DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin()));
-
 		// 按天按月查看
 		long size = DatesUtil.getDaySub(temporarily.getOrderTimeBegin(), temporarily.getViewTypeDate() == 1 ? temporarily.getOrderTimeEnd() : DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin())  );
-	
 		// 按个人按分组查看
 		switch (temporarily.getViewTypeUser()) {
 		case 1:
