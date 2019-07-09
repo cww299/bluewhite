@@ -28,7 +28,7 @@
 				</td>
 			</tr>
 		</table>
-		<table class="layui-form" id="specialTable" lay-filter="specialTable"></table>
+		<table id="specialTable" lay-filter="specialTable"></table>
 	</div>
 </div>
 </body>
@@ -69,11 +69,41 @@ layui.use(['jquery','laydate','table'],
 			       {align:'center', title:'工种',   field:'kindWork',	},
 			       {align:'center', title:'是否工厂',   field:'foreigns',	},
 			       {align:'center', title:'b工资',   field:'bPay',	totalRow:true,},
+			       {align:'center', title:'小时单价',   field:'price',	edit:true,},
+			       {align:'center', title:'总工资',   field:'sumPrice',	totalRow:true,},
 			       ]],
 	        done:function(){
 	        	layer.close(LOAD);
 	        }
 		}) 
+		var isUser = false;
+		table.on('edit(specialTable)',function(obj){
+			var val = obj.value,
+			    data = obj.data;
+			if(isNaN(val)){
+				layer.msg('小时单价只能为数字',{icon:2,offset:'200px'})
+			}else if(val<0){
+				layer.msg('小时单价不能为负数',{icon:2,offset:'200px'})
+			}else if(!isUser){
+				layer.msg('无效修改！',{icon:2,offset:'200px'})
+			}else{
+				var load = layer.load(1);
+				$.ajax({
+					url:'${ctx}/system/user/updateForeigns',
+					type:'post',
+					async:false,
+					data: { id: data.id, price: parseFloat(val)},
+					success:function(r){
+						var icon = 2;
+						if(r.code == 0)
+							icon = 1;
+						layer.msg(r.message,{icon:icon,offset:'200px'});
+					}
+				})
+				layer.close(load);
+			}
+			table.reload('specialTable');
+		})
 		
 		form.on('radio(time)', function(data){			//单选按钮切换
 			switch(data.value){
@@ -102,6 +132,10 @@ layui.use(['jquery','laydate','table'],
 				data.orderTimeBegin = time+"-01 00:00:00";
 				data.orderTimeEnd = "";
 			}
+			if(data.viewTypeUser == 1)
+				isUser = true;
+			else 
+				isUser = false;
 			LOAD = layer.load(1);
 			table.reload('specialTable',{
 				url:'${ctx}/production/sumTemporarily?type='+TYPE,
