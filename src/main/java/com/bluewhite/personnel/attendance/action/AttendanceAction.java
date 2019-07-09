@@ -558,9 +558,7 @@ public class AttendanceAction {
 	public CommonResponse findInit() {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(AttendanceInit.class, "id", "restType", "restDay", "workTimeSummer", "user",
-						"workTimeWinter", "turnWorkTimeSummer", "turnWorkTimeWinter", "restTimeSummer",
-						"restTimeWinter", "restSummer", "restWinter", "restTimeWork", "overTimeType", "comeWork","workType","earthWork","eatType","fail")
+				.addRetainTerm(AttendanceInit.class,"user")
 				.addRetainTerm(User.class, "id", "userName")
 				.format(attendanceInitService.findInit()).toJSON());
 		return cr;

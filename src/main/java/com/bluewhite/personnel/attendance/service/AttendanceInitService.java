@@ -29,5 +29,9 @@ public interface AttendanceInitService  extends BaseCRUDService<AttendanceInit,L
 	 */
 	int deleteAttendanceInit(String ids);
 	
+	/**
+	 * 查找所有已经添加初始化信息的人员
+	 * @return
+	 */
 	public List<AttendanceInit> findInit();
 }
