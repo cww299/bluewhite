@@ -457,9 +457,12 @@
 						request:{ pageName: 'page' , limitName: 'size', },
 						page: { },
 						size:'lg',
+						height:700,
 						loading: true,
 						toolbar: '#toolbar', 
+						sort:true,
 						cellMinWidth: 90,
+						limits:[10,20,50,100,150],
 						colFilterRecord: true,
 						smartReloadModel: true,
 						parseData: function(ret) { 
@@ -504,6 +507,7 @@
 								field: "time",
 								title: "面试时间",
 								align: 'center',
+								sort:true,
 								width : 160,
 							},{
 								field: "platformIds",
@@ -552,6 +556,7 @@
 								align: 'center',
 								title: "是否应面",
 								edit: false,
+								filter:true,
 								type: 'normal',
 								templet:'#switchTpl2', 
 								unresize: true
@@ -564,6 +569,7 @@
 								field: "typeOnes",
 								align: 'center',
 								title: "一面",
+								filter:true,
 								edit: false,
 								type: 'normal',
 								templet:'#switchTpl3', unresize: true
@@ -576,6 +582,7 @@
 								field: "typeTwos",
 								align: 'center',
 								title: "二面",
+								filter:true,
 								edit: false,
 								type: 'normal',
 								templet:'#switchTpl4', unresize: true
@@ -588,6 +595,7 @@
 								field: "adopts",
 								align: 'center',
 								title: "面试情况",
+								filter:true,
 								edit: false,
 								type: 'normal',
 								width : 110,
@@ -596,6 +604,7 @@
 								align: 'center',
 								field: "states",
 								title: "入职状态", 
+								filter:true,
 								templet:  function(d){ 
 									if(d.state==0){
 										return '未入职'; 
