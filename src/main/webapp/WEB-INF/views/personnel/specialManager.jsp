@@ -79,7 +79,7 @@ layui.config({
 			       {align:'center', title:'分组/姓名', 	field:'name',filter:true,	 	},
 			       {align:'center', title:'总工时',   field:'sumWorkTime',totalRow:true,  },
 			       {align:'center', title:'工种',   field:'kindWork', filter:true,	},
-			       {align:'center', title:'是否工厂',   field:'foreigns',	},
+			       {align:'center', title:'是否本厂',   field:'foreigns',filter:true,	},
 			       {align:'center', title:'小时单价',   field:'price',	edit:true,},
 			       {align:'center', title:'总工资',   field:'sumPrice',	totalRow:true,},
 			       ]],
