@@ -5,7 +5,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.DoubleSummaryStatistics;
 import java.util.HashMap;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -94,11 +96,12 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 		CurrentUser cu = SessionManager.getUserSession();
 		List<Map<String, Object>> mapList = new ArrayList<>();
 		// 获取当前时间所有外调人员信息
+		// 过滤掉本厂的人.stream().filter(Temporarily->Temporarily.getUser().getForeigns()==1).collect(Collectors.toList())
 		List<Temporarily> temporarilyList = temporarilyDao
 				.findByTypeAndTemporarilyDateBetween(temporarily.getType(), temporarily.getOrderTimeBegin(),
 						temporarily.getViewTypeDate() == 1 
 						? temporarily.getOrderTimeEnd()
-						: DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin())).stream().filter(Temporarily->Temporarily.getUser().getForeigns()==1).collect(Collectors.toList());
+						: DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin()));
 		Map<Long, List<Temporarily>> mapTemporarilyList = temporarilyList.stream().collect(Collectors.groupingBy(Temporarily::getUserId, Collectors.toList()));
 		//获取外调人员的b工资
 		List<Long> userIds = new ArrayList<>();
@@ -165,12 +168,13 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 							}
 						}
 					}
-
+					
 				if (psList.size() > 0) {
 					double sumWorkTime = psList.stream().filter(Temporarily -> Temporarily.getWorkTime() != null)
 							.mapToDouble(Temporarily::getWorkTime).sum();
 					SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-					mapTe.put("date", formatter.format(beginTimes));
+					SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM");
+					mapTe.put("date", temporarily.getViewTypeDate() == 1 ? formatter.format(beginTimes) : formatter2.format(beginTimes));
 					mapTe.put("name", temporarily.getViewTypeUser() == 1 ? psList.get(0).getUser().getUserName() : group == null ? "" : group.getName());
 					mapTe.put("foreigns", temporarily.getViewTypeUser() == 1 ? (psList.get(0).getUser().getForeigns() == 0 ? "本厂" : "外厂") : "");
 					mapTe.put("bPay", NumUtils.round(sumPayb, 4));
@@ -189,13 +193,30 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 			}
 			beginTimes = DatesUtil.nextDay(beginTimes);
 		}
-		SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM");
+		
 		//按月汇总
-//		if( temporarily.getViewTypeDate() == 2 && mapList.size()>0){
-//			List<Map<String, Object>> mapListMonth = new ArrayList<>();
-//				
-//			return mapListMonth;
-//		}
+		if( temporarily.getViewTypeDate() == 2 && mapList.size()>0){
+			List<Map<String, Object>> mapListMonth = new ArrayList<>();
+		    Map<String, List<Map<String, Object>>> glist = mapList.stream().collect(Collectors.groupingBy(e -> e.get("id").toString()));
+		    for (String ps : glist.keySet()) {
+		    	List<Map<String,Object>> slist = glist.get(ps);
+		        Map<String,Object> nmap = new HashMap<>();
+		        DoubleSummaryStatistics mapSumbPay = slist.stream().collect(Collectors.summarizingDouble(e->Double.valueOf(e.get("bPay").toString())));
+		        DoubleSummaryStatistics mapSumWorkTime = slist.stream().collect(Collectors.summarizingDouble(e->Double.valueOf(e.get("sumWorkTime").toString())));
+		        DoubleSummaryStatistics mapsumPrice = slist.stream().collect(Collectors.summarizingDouble(e->Double.valueOf(e.get("sumPrice").toString())));
+		        nmap.put("date", slist.get(0).get("date"));
+		        nmap.put("name", slist.get(0).get("name"));
+		        nmap.put("foreigns", slist.get(0).get("foreigns"));//计算
+		        nmap.put("bPay",  NumUtils.round(mapSumbPay.getSum(),4));
+		        nmap.put("sumWorkTime", mapSumWorkTime.getSum());
+		        nmap.put("id", slist.get(0).get("id"));
+		        nmap.put("price", slist.get(0).get("price"));
+		        nmap.put("sumPrice", mapsumPrice.getSum());
+		        nmap.put("kindWork", slist.get(0).get("kindWork"));
+		        mapListMonth.add(nmap);
+		    };
+			return mapListMonth;
+		}
 		return mapList;
 
 	}
