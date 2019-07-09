@@ -6,7 +6,6 @@
 <head>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
-	<script src="${ctx}/static/js/vendor/jquery-3.3.1.min.js"></script><!-- 使用cookie文件需要引用此文件，layui自带的jquery不可 -->
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>商品入库报表</title>
 <style>
@@ -32,7 +31,7 @@
 				<td><button type="button" class="layui-btn layui-btn-sm" id='search'>搜索</button></td>
 			</tr>
 		</table>
-		<table class="layui-form" id="dayReport" lay-filter="dayReport"></table>
+		<table class="layui-form" id="orderProductReport" lay-filter="orderProductReport"></table>
 	</div>
 </div>
 </body>
@@ -54,7 +53,7 @@ layui.config({
 		, laydate = layui.laydate
 		, tablePlug = layui.tablePlug;
 		
-		cookieCol.cookieName('orderManagerProductReportCookie');		//记录筛选列模块
+		//cookieCol.cookieName('orderManagerProductReportCookie');		//记录筛选列模块
 		function p(s) { return s < 10 ? '0' + s: s; }
 		var myDate = new Date();
 		var year=myDate.getFullYear();
@@ -73,7 +72,7 @@ layui.config({
 		$('#search').on('click',function(){
 			var time=$('#time').val();
 			var t=time.split('~');
-			table.reload('dayReport',{
+			table.reload('orderProductReport',{
 				url:'${ctx}/inventory/report/storageGoods',
 				where:{
 					type: $('#type').val(),
@@ -90,10 +89,11 @@ layui.config({
 				orderTimeBegin : firstdate,
 				orderTimeEnd : lastdate,
 			},
-			elem:'#dayReport',
+			elem:'#orderProductReport',
 			loading:true,
 			size:'sm',
 			toolbar: true,
+			colFilterRecord:'local',
 			totalRow:true,
 			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){
