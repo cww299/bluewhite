@@ -588,15 +588,16 @@ layui.config({
 				       {align:'center', title:'销售价',        templet:getPriceSelectHtml()},
 				       {align:'center', title:'备注', 	  field:'remark',}, 
 				      ]],
-		      	done: function (res, curr, count) {	
+		      	done: function (res, curr, count) {				//初始化赋值，默认发货仓库id赋值
 		      		var data=res.data;
 		      		for(var i=0;i<data.length;i++){				//如果存在发货仓库，且发货仓库中有主仓库157.则作为默认发货仓库
 		      			if(data[i].inventorys.length>0){			
 		      				var j = 0;
 		      				for( j=0;j<data[i].inventorys.length;j++)
-		      					if(data[i].inventorys[j].warehouse.id == "157")
+		      					if(data[i].inventorys[j].warehouse.id == "157"){
 		      						data[i].inventory = data[i].inventorys[j].warehouse.id;
-		      				if(!j<data[i].inventorys.length){
+		      					}
+		      				if(!data[i].inventory){
 		      					data[i].inventory = ( data[i].inventorys[0]?data[i].inventorys[0].warehouse.id : '');//没有主仓库则默认为第一个仓库
 		      				}
 		      			}
