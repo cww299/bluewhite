@@ -86,8 +86,8 @@
 							<td>面试情况:</td>
 							<td><select class="form-control" name="adopt">
 									<option value="">请选择</option>
-									<option value="0">通过</option>
-									<option value="1">不通过</option>
+									<option value="0">不通过</option>
+									<option value="1">通过</option>
 									<option value="2">待定</option>
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
