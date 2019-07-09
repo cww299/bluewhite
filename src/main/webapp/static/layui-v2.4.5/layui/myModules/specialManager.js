@@ -1,8 +1,13 @@
-layui.define(['jquery','laydate','table','form'],function(exports){
+layui.config({
+	base: 'static/layui-v2.4.5/'
+}).extend({
+	tablePlug: 'tablePlug/tablePlug',
+}).define(['jquery','laydate','table','form','tablePlug'],function(exports){
 	var $ = layui.jquery
 	, table = layui.table 
 	, laydate = layui.laydate
 	, form = layui.form
+	, tablePlug = layui.tablePlug
 	, MODNAME = 'specialManager'
 	, specialManager = {
 			
@@ -22,6 +27,7 @@ layui.define(['jquery','laydate','table','form'],function(exports){
 			elem: '#monthTime',
 			type: 'month', 
 		})
+		tablePlug.smartReload.enable(true); 
 		table.render({
 			elem:'#specialTable',
 			data:[],
@@ -33,7 +39,7 @@ layui.define(['jquery','laydate','table','form'],function(exports){
 			parseData:function(ret){ return { data:ret.data,  msg:ret.message, code:ret.code } },
 			cols:[[
 			       {align:'center', title:'日期',   field:'date',	totalRowText:'合计',},
-			       {align:'center', title:'分组/姓名', 	field:'name', 	},
+			       {align:'center', title:'分组/姓名', 	field:'name', filter:true,		},
 			       {align:'center', title:'总工时',   field:'sumWorkTime',  totalRow:true,},
 			       {align:'center', title:'工种',   field:'kindWork',	},
 			       {align:'center', title:'是否工厂',   field:'foreigns',	},
