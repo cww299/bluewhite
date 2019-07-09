@@ -6,7 +6,6 @@
 <head>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
-	<script src="${ctx}/static/js/vendor/jquery-3.3.1.min.js"></script><!-- 使用cookie文件需要引用此文件，layui自带的jquery不可 -->
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>销售日报表</title>
 <style>
@@ -23,7 +22,7 @@
 				<td><button type="button" class="layui-btn layui-btn-sm" id='search'>搜索</button></td>
 			</tr>
 		</table>
-		<table class="layui-form" id="dayReport" lay-filter="dayReport"></table>
+		<table class="layui-form" id="saleDayReport" lay-filter="saleDayReport"></table>
 	</div>
 </div>
 </body>
@@ -44,7 +43,7 @@ layui.config({
 		, cookieCol = layui.cookieCol
 		, laydate = layui.laydate
 		, tablePlug = layui.tablePlug;
-		cookieCol.cookieName('saleManagerDayReportCookie');		//记录筛选列模块
+		//cookieCol.cookieName('saleManagerDayReportCookie');		//记录筛选列模块
 		form.render();
 		function p(s) { return s < 10 ? '0' + s: s; }
 		var myDate = new Date();
@@ -61,7 +60,7 @@ layui.config({
 				return;
 			}
 			var t=time.split('~');
-			table.reload('dayReport',{
+			table.reload('saleDayReport',{
 				url:'${ctx}/inventory/report/salesDay?report=1',
 				where:{
 					orderTimeBegin : t[0],
@@ -84,8 +83,9 @@ layui.config({
 				orderTimeBegin : firstdate,
 				orderTimeEnd : lastdate
 			},
-			elem:'#dayReport',
+			elem:'#saleDayReport',
 			loading:true,
+			colFilterRecord:'local',
 			size:'sm',
 			totalRow:true,
 			toolbar: true,

@@ -6,7 +6,6 @@
 <head>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
-	<script src="${ctx}/static/js/vendor/jquery-3.3.1.min.js"></script> <!-- 使用cookie文件需要引用此文件，layui自带的jquery不可 -->
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>商品资料</title>
 <style>
@@ -137,7 +136,7 @@ layui.config({
 		, cookieCol = layui.cookieCol
 		, tablePlug = layui.tablePlug;
 		
-		cookieCol.cookieName('productDataCookie');		//记录筛选列模块
+		//cookieCol.cookieName('productDataCookie');		//记录筛选列模块
 		var allInventory=[];
 		getAllInventory();
 		var cols=[[
@@ -176,6 +175,7 @@ layui.config({
 			url:'${ctx}/inventory/commodityPage',
 			toolbar:'#productTableToolbar',
 			loading:true,
+			colFilterRecord:'local',
 			page:true,
 			autoSort:false,
 			limits:[10,25,50,100],

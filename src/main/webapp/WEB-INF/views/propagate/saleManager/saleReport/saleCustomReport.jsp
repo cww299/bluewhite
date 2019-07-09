@@ -6,7 +6,6 @@
 <head>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
-	<script src="${ctx}/static/js/vendor/jquery-3.3.1.min.js"></script><!-- 使用cookie文件需要引用此文件，layui自带的jquery不可 -->
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>客户销售报表</title>
 <style>
@@ -27,7 +26,7 @@
 				<td><span class="layui-badge">双击查看客户的购买详情</span></td>
 			</tr>
 		</table>
-		<table class="layui-form" id="customReport" lay-filter="customReport"></table>
+		<table class="layui-form" id="saleCustomReport" lay-filter="saleCustomReport"></table>
 	</div>
 </div>
 </body>
@@ -53,7 +52,7 @@ layui.config({
 		, laydate = layui.laydate
 		, tablePlug = layui.tablePlug;
 		
-		cookieCol.cookieName('saleManagerCustomReportCookie');		//记录筛选列模块
+		//cookieCol.cookieName('saleManagerCustomReportCookie');		//记录筛选列模块
 		function p(s) { return s < 10 ? '0' + s: s; }
 		var myDate = new Date();
 		var year=myDate.getFullYear();
@@ -77,7 +76,7 @@ layui.config({
 				return;
 			}
 			var t=time.split('~');
-			table.reload('customReport',{
+			table.reload('saleCustomReport',{
 				url:'${ctx}/inventory/report/salesUser?report=4',
 				where:{
 					orderTimeBegin : t[0],
@@ -92,8 +91,9 @@ layui.config({
 				orderTimeBegin : firstdate,
 				orderTimeEnd : lastdate,
 			},
-			elem:'#customReport',
+			elem:'#saleCustomReport',
 			loading:true,
+			colFilterRecord:'local',
 			size:'sm',
 			toolbar: true,
 			totalRow:true,
@@ -108,7 +108,7 @@ layui.config({
 			       {align:'center', title:'每单平均金额',   field:'averageAmount',totalRow:true,	},
 			       ]]
 		})
-		table.on("rowDouble(customReport)",function(obj){
+		table.on("rowDouble(saleCustomReport)",function(obj){
 			layer.open({
 				type:1,
 				title:obj.data.user,
