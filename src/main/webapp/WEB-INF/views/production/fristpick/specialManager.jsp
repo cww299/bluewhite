@@ -28,88 +28,22 @@
 				</td>
 			</tr>
 		</table>
-		<table class="layui-form" id="specialTable" lay-filter="specialTable"></table>
+		<table id="specialTable" lay-filter="specialTable"></table>
 	</div>
 </div>
 </body>
 <script>
-var TYPE = 2;			//常量
-layui.use(['jquery','laydate','table'],
+var TYPE = 2;
+layui.config({
+	base : '${ctx}/static/layui-v2.4.5/'
+}).extend({						
+	specialManager : 'layui/myModules/specialManager'
+}).use(['specialManager'],
 	function(){
-		var $ = layui.jquery
-		, layer = layui.layer 				
-		, form = layui.form			 		
-		, table = layui.table 
-		, laydate = layui.laydate
-		, laytpl = layui.laytpl;
+		var specialManager = layui.specialManager;
 		
-		var LOAD;
-		laydate.render({
-			elem: '#dayTime',
-			type: 'date', 
-			range : '~'
-		})
-		laydate.render({
-			elem: '#monthTime',
-			type: 'month', 
-		})
-		table.render({
-			elem:'#specialTable',
-			data:[],
-			toolbar: true,
-			size:'sm',
-			totalRow:true,
-			loading:false,
-			request:{ pageName:'page', limitName:'size' },
-			parseData:function(ret){ return { data:ret.data,  msg:ret.message, code:ret.code } },
-			cols:[[
-			       {align:'center', title:'日期',   field:'date',	totalRowText:'合计',},
-			       {align:'center', title:'分组/姓名', 	field:'name', 	},
-			       {align:'center', title:'总工时',   field:'sumWorkTime', totalRow:true, },
-			       {align:'center', title:'工种',   field:'kindWork',	},
-			       {align:'center', title:'是否工厂',   field:'foreigns',	},
-			       {align:'center', title:'b工资',   field:'bPay',	totalRow:true,},
-			       ]],
-	        done:function(){
-	        	layer.close(LOAD);
-	        }
-		}) 
-		
-		form.on('radio(time)', function(data){			//单选按钮切换
-			switch(data.value){
-			case '1':   $('#dayTime').show(); $('#monthTime').hide(); break;
-			case '2':   $('#dayTime').hide(); $('#monthTime').show(); break;
-			}
-		});  
-		
-		form.on('submit(search)',function(obj){
-			var data = obj.field;
-			var msg="";
-			if(data.viewTypeDate ==1){
-				if($('#dayTime').val()==""){
-					layer.msg('查询时间不能为空',{icon:2});
-					return;
-				}
-				var time = $('#dayTime').val().split("~");
-				data.orderTimeBegin = time[0]+"00:00:00";
-				data.orderTimeEnd = time[1]+" 23:59:59";
-			}else{
-				if($('#monthTime').val()==""){
-					layer.msg('查询时间不能为空',{icon:2});
-					return;
-				}
-				var time = $('#monthTime').val();
-				data.orderTimeBegin = time+"-01 00:00:00";
-				data.orderTimeEnd = "";
-			}
-			LOAD = layer.load(1);
-			table.reload('specialTable',{
-				url:'${ctx}/production/sumTemporarily?type='+TYPE,
-				where:data
-			}) 
-		}) 
-	}//end  function
-)//end use
+		specialManager.render(TYPE,'${ctx}');
+});
 </script>
 
 </html>
