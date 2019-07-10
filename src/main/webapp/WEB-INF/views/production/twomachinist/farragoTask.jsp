@@ -505,11 +505,9 @@
 											layer.msg("添加成功！", {icon: 1});
 											 self.loadPagination(data); 
 											 $('.addDictDivTypeForm')[0].reset();
-											 layer.close(_index);
 										}else{
 											layer.msg("添加失败", {icon: 2});
 										}
-										
 										layer.close(index);
 									},error:function(){
 										layer.msg("操作失败！", {icon: 2});
