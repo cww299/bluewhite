@@ -69,6 +69,12 @@ public class Temporarily extends BaseEntity<Long>{
 	private Group group;
 	
 	/**
+	 * 工作时间段(可多选)
+	 */
+	@Column(name = "work_time_slice")
+	private String workTimeSlice;
+	
+	/**
 	 * 分组
 	 */
 	@Transient
@@ -119,6 +125,16 @@ public class Temporarily extends BaseEntity<Long>{
 	
 	
 	
+
+	public String getWorkTimeSlice() {
+		return workTimeSlice;
+	}
+
+
+	public void setWorkTimeSlice(String workTimeSlice) {
+		this.workTimeSlice = workTimeSlice;
+	}
+
 
 	public Group getGroup() {
 		return group;

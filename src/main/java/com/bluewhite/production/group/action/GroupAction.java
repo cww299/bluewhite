@@ -277,7 +277,6 @@ public class GroupAction {
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 				return cr;
 			}
-			
 			User user = new User();
 			user.setForeigns(1);
 			user.setPassword( new SimpleHash("md5", "123456").toHex());
@@ -298,12 +297,10 @@ public class GroupAction {
 		}else{
 			dateList.add(temporarily.getTemporarilyDate());
 		}
-		
 		for (Date date : dateList) {
 			temporarily.setTemporarilyDate(date);
 			Temporarily temporarily1 = new Temporarily();
 			BeanCopyUtils.copyNullProperties(temporarily,temporarily1);
-			
 			//当类型为针工时，按当日当前分组
 			if(temporarily.getType()==3){
 				if (temporarilyDao.findByUserIdAndTemporarilyDateAndTypeAndGroupId(temporarily1.getUserId(),

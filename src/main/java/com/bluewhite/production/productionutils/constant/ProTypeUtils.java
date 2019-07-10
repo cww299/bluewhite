@@ -902,10 +902,10 @@ public  class ProTypeUtils {
 			sumExpectTime =procedureTime*number/ProTypeUtils.TIME;
 			break;
 		case 4://生产部二楼机工
-			sumExpectTime = procedureTime;
+			sumExpectTime = procedureTime*number/ProTypeUtils.TIME;
 			break;
 		case 5://生产部八号仓库
-			sumExpectTime = procedureTime;
+			sumExpectTime =procedureTime*number/ProTypeUtils.TIME;
 			break;
 		default:
 			break;
