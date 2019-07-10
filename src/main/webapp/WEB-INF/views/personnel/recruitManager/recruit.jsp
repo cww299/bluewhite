@@ -92,12 +92,12 @@
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>部门:</td>
-							<td><select class="form-control" lay-filter="orgNameId" name="orgNameId" lay-search="true" id="orgNames">
+							<td><select class="form-control" lay-filter="orgNameIds" name="orgNameId" lay-search="true" id="orgNames">
 									
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>职位:</td>
-							<td><select class="form-control" name="positionId" lay-search="true" id="position">
+							<td><select class="form-control" name="positionId" lay-search="true" id="positionss">
 									
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
@@ -440,8 +440,8 @@
 				      			layer.close(indextwo);
 						      }
 						  });
-					 form.on('select(orgNameId)', function(data){
-						 alert(1)
+					 form.on('select(orgNameIds)', function(data){
+						 console.log(data)
 						 var html=""
 			      			$.ajax({								//获取当前部门下拉框选择的子数据：职位
 							      url:"${ctx}/basedata/children",
@@ -452,7 +452,8 @@
 					      			  	$(result.data).each(function(i,o){
 						      				  html +='<option  value="'+o.id+'">'+o.name+'</option>'
 					      				});  
-					      			$("#position").html(html); 
+					      			$("#positionss").html(html); 
+					      			layui.form.render()
 							      }
 							  });
 					 })
@@ -473,7 +474,7 @@
 				      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
 				      			  });
 				      		  $("#platform").html(htmlth);
-				      		layui.form.render()
+				      			layui.form.render()
 				      			layer.close(indextwo);
 						      }
 						  });
