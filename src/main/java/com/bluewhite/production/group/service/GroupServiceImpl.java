@@ -124,7 +124,7 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 		
 		//获取外调人员的b工资
 		List<PayB> payBList = null;
-//		if (!cu.getRole().contains("superAdmin") && !cu.getRole().contains("personnel")) {}
+		if (!cu.getRole().contains("superAdmin") && !cu.getRole().contains("personnel")) {
 			// 获取外调人员的b工资
 			List<Long> userIds = new ArrayList<>();
 			for (Object ps : mapTemporarilyList.keySet()) {
@@ -141,7 +141,7 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 					temporarily.getViewTypeDate() == 1 ? temporarily.getOrderTimeEnd()
 							: DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin()));
 		
-		
+		}
 		
 		// 获取一天的开始时间
 		Date beginTimes = temporarily.getOrderTimeBegin();
@@ -157,7 +157,6 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 			}
 			for (Object ps : mapTemporarilyList.keySet()) {
 				Map<String, Object> mapTe = new HashMap<>();
-				
 				// 获取特急人员或者分组
 				List<Temporarily> psList = mapTemporarilyList.get(ps);
 				List<Temporarily> psListTe = new ArrayList<>();
@@ -260,5 +259,5 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 		return mapList;
 
 	}
-
+	
 }
