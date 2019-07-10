@@ -101,28 +101,14 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 		List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndTemporarilyDateBetween(temporarily.getType(),
 				temporarily.getOrderTimeBegin(), temporarily.getViewTypeDate() == 1 ? temporarily.getOrderTimeEnd()
 						: DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin()));
-		 Map<Object, List<Temporarily>> mapTemporarilyList =temporarilyList.stream().collect(Collectors.groupingBy(Temporarily::getUserId, Collectors.toList()));
-	
-		// 按天按月查看
-		long size = DatesUtil.getDaySub(temporarily.getOrderTimeBegin(), temporarily.getViewTypeDate() == 1
-				? temporarily.getOrderTimeEnd() : DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin()));
-		// 按个人按分组查看
-		switch (temporarily.getViewTypeUser()) {
-		case 1:
-			 //针工按人員id和工种分组
-			 if(temporarily.getType()==3){
-				 mapTemporarilyList = temporarilyList.stream()
-						 .collect(Collectors.groupingBy(o ->  o.getUserId() + "_" + o.getGroup().getKindWorkId(),Collectors.toList()));
-			 }
-			break;
-		case 2:
-			mapTemporarilyList = temporarilyList.stream().filter(Temporarily -> Temporarily.getGroupId() != null)
-					.collect(Collectors.groupingBy(Temporarily::getGroupId, Collectors.toList()));
-			break;
+		Map<Object, List<Temporarily>> mapTemporarilyList = temporarilyList.stream()
+				.collect(Collectors.groupingBy(Temporarily::getUserId, Collectors.toList()));
+		// 针工按人員id和工种分组
+		if (temporarily.getType() == 3) {
+			mapTemporarilyList = temporarilyList.stream().collect(Collectors
+					.groupingBy(o -> o.getUserId() + "_" + o.getGroup().getKindWorkId(), Collectors.toList()));
 		}
-		
-		
-		//获取外调人员的b工资
+		// 获取外调人员的b工资
 		List<PayB> payBList = null;
 		if (!cu.getRole().contains("superAdmin") && !cu.getRole().contains("personnel")) {
 			// 获取外调人员的b工资
@@ -140,9 +126,19 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 			payBList = payBDao.findByUserIdInAndAllotTimeBetween(userIds, temporarily.getOrderTimeBegin(),
 					temporarily.getViewTypeDate() == 1 ? temporarily.getOrderTimeEnd()
 							: DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin()));
-		
 		}
-		
+		// 按天按月查看
+		long size = DatesUtil.getDaySub(temporarily.getOrderTimeBegin(), temporarily.getViewTypeDate() == 1
+				? temporarily.getOrderTimeEnd() : DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin()));
+		// 按个人按分组查看
+		switch (temporarily.getViewTypeUser()) {
+		case 1:
+			break;
+		case 2:
+			mapTemporarilyList = temporarilyList.stream().filter(Temporarily -> Temporarily.getGroupId() != null)
+					.collect(Collectors.groupingBy(Temporarily::getGroupId, Collectors.toList()));
+			break;
+		}
 		// 获取一天的开始时间
 		Date beginTimes = temporarily.getOrderTimeBegin();
 		for (int i = 0; i < size; i++) {
@@ -174,7 +170,9 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 				if (temporarily.getViewTypeUser() == 1) {
 					String[] temp = ps.toString().split("_");
 					if (paybDayList.size() > 0) {
-						sumPayb = paybDayList.stream().filter(PayB -> PayB.getUserId().equals(temporarily.getType()==3 ? Long.valueOf(temp[0]):ps ))
+						sumPayb = paybDayList.stream()
+								.filter(PayB -> PayB.getUserId()
+										.equals(temporarily.getType() == 3 ? Long.valueOf(temp[0]) : ps))
 								.mapToDouble(PayB::getPayNumber).sum();
 					}
 				}
@@ -231,8 +229,9 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 		// 按月汇总
 		if (temporarily.getViewTypeDate() == 2 && mapList.size() > 0) {
 			List<Map<String, Object>> mapListMonth = new ArrayList<>();
-			Map<String, List<Map<String, Object>>> glist = mapList.stream().collect(Collectors.groupingBy(e -> e.get("id").toString() + "_" + e.get("kindWork").toString()));
-			
+			Map<String, List<Map<String, Object>>> glist = mapList.stream()
+					.collect(Collectors.groupingBy(e -> e.get("id").toString() + "_" + e.get("kindWork").toString()));
+
 			for (String ps : glist.keySet()) {
 				List<Map<String, Object>> slist = glist.get(ps);
 				Map<String, Object> nmap = new HashMap<>();
@@ -259,5 +258,5 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 		return mapList;
 
 	}
-	
+
 }
