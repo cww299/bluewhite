@@ -893,7 +893,6 @@
 										 	self.loadPagination(data);
 										 	layer.close(_index);       
 											//$('#addDictDivType').hide();
-											
 										}else{
 											layer.msg("添加失败", {icon: 2});
 										}
@@ -919,25 +918,27 @@
 			var data = {
 		  			type:2,
 		  	}
-		    $.ajax({
+		    var getGroup = function(){
+				$.ajax({
 			      url:"${ctx}/production/getGroup",
 			      data:data,
 			      type:"GET",
 	      		  success: function (result) {
+	      			  var htmlth = '';
 	      			  $(result.data).each(function(k,j){
 	      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
 	      			  });  
-	      			 $('#groupp').html("<select class='form-control selectcomplete'><option value="+""+">请选择&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>"+htmlth+"</select>") 
+	      			 $('#groupp').html("<select class='form-control selectcomplete'><option value=''>请选择</option>"+htmlth+"</select>") 
 			      }
 			  });
-				
+			}	
 				//外调人员
 				$('#add').on('click',function(){
-					
 					var _index
 					var index
 					var postData
 					var dicDiv=$('#addDictDivTypetw');
+					getGroup();
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
@@ -969,32 +970,25 @@
 									data:postData,
 						            traditional: true,
 									type:"post",
-									beforeSend:function(){
-										index = layer.load(1, {
-											  shade: [0.1,'#fff'] //0.1透明度的白色背景
-											});
-									},
-									
+									async:false,
+									beforeSend:function(){ index = layer.load(1); },
 									success:function(result){
 										if(0==result.code){
 											layer.msg(result.message, {icon: 1});
-											
 											$('#addDictDivTypetw').hide();
-											layer.close(index);
+											layer.close(_index);
 										}else{
 											layer.msg(result.message, {icon: 2});
 										}
-										//layer.close(index);
-										layer.close(_index);
 									},error:function(){
 										layer.msg("操作失败！", {icon: 2});
 										layer.close(index);
 									}
-								});
+							  });
+						      layer.close(index);
 							},
 						  end:function(){
 							  $('#addDictDivTypetw').hide();
-						
 							  $('.addDictDivTypeFormtw')[0].reset(); 
 							
 						  }
