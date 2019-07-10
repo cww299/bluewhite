@@ -58,11 +58,19 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 			List<Predicate> predicate = new ArrayList<>();
 			// 按姓名查找
 			if (!StringUtils.isEmpty(sundry.getName())) {
-				predicate.add(cb.equal(root.get("name").as(String.class), sundry.getName()));
+				predicate.add(cb.like(root.get("name").as(String.class),"%" + sundry.getName() + "%"));
 			}
 			// 按部门查找
 			if (!StringUtils.isEmpty(sundry.getOrgNameId())) {
 				predicate.add(cb.equal(root.get("orgName").get("id").as(Long.class), sundry.getOrgNameId()));
+			}
+			// 按职位查找
+			if (!StringUtils.isEmpty(sundry.getPositionId())) {
+				predicate.add(cb.equal(root.get("position").get("id").as(Long.class), sundry.getPositionId()));
+			}
+			// 按平台查找
+			if (!StringUtils.isEmpty(sundry.getPlatformId())) {
+				predicate.add(cb.equal(root.get("platform").get("id").as(Long.class), sundry.getPlatformId()));
 			}
 			//是否应面
 			if (sundry.getType()!= null) {
