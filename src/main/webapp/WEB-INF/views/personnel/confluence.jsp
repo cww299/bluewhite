@@ -61,12 +61,12 @@
 						<td>
 							<div class="layui-inline">
 								<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-search">
-									初始化考勤机 <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+									查找考勤 <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
 								</button>
 							</div>
 							<div class="layui-inline">
 								<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-searche">
-									计算后的考勤 <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+									统计考勤 <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
 								</button>
 							</div>
 						</td>
