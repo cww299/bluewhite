@@ -91,6 +91,21 @@
 									<option value="2">待定</option>
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
+							<td>部门:</td>
+							<td><select class="form-control" lay-filter="orgNameId" name="orgNameId" lay-search="true" id="orgNames">
+									
+							</select></td>
+							<td>&nbsp;&nbsp;</td>
+							<td>职位:</td>
+							<td><select class="form-control" name="positionId" lay-search="true" id="position">
+									
+							</select></td>
+							<td>&nbsp;&nbsp;</td>
+							<td>平台:</td>
+							<td><select class="form-control"  name="platformId" lay-search="true" id="platform">
+									
+							</select></td>
+							<td>&nbsp;&nbsp;</td>
 							<td><input type="checkbox" name="like[write]" lay-filter="lockDemo" title="入职在职"></td>
 					</tr>
 				</table>
@@ -421,6 +436,43 @@
 				      			  $(result.data).each(function(k,j){
 				      				htmls +='<option value="'+j.id+'">'+j.name+'</option>'
 				      			  });
+				      		  $("#orgNames").html(htmls)
+				      			layer.close(indextwo);
+						      }
+						  });
+					 form.on('select(orgNameId)', function(data){
+						 alert(1)
+						 var html=""
+			      			$.ajax({								//获取当前部门下拉框选择的子数据：职位
+							      url:"${ctx}/basedata/children",
+							      data:{id:data.value},
+							      type:"GET",
+							      async:false,
+					      		  success: function (result) {				//填充职位下拉框
+					      			  	$(result.data).each(function(i,o){
+						      				  html +='<option  value="'+o.id+'">'+o.name+'</option>'
+					      				});  
+					      			$("#position").html(html); 
+							      }
+							  });
+					 })
+					 
+					 var getdata={type:"platform",}
+		      			$.ajax({								//获取部门列表数据，部门下拉框的填充
+						      url:"${ctx}/basedata/list",
+						      data:getdata,
+						      type:"GET",
+						      async:false,
+						      beforeSend:function(){
+						    	  indextwo = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								  });
+							  }, 
+				      		  success: function (result) {				//初始填充部门
+				      			  $(result.data).each(function(k,j){
+				      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
+				      			  });
+				      		  $("#platform").html(htmlth);
 				      		layui.form.render()
 				      			layer.close(indextwo);
 						      }
@@ -818,7 +870,6 @@
 								if(data[0].type==0){
 									return layer.msg("当前员工没有应面",{icon: 2})
 								}
-								console.log(data[0].typeOne)
 								if(data[0].typeOne==0){
 									return layer.msg("当前员工没有通过一面",{icon: 2})
 								}
@@ -1530,6 +1581,7 @@
 						      			layui.form.render()
 								      }
 								  });
+					}
 						 form.on('select(orgNameId)', function(data){
 							 var html=""
 				      			$.ajax({								//获取当前部门下拉框选择的子数据：职位
@@ -1546,8 +1598,6 @@
 								      }
 								  });
 						 })
-			      			
-					}
 					
 					 var check="off";
 					form.on('checkbox(lockDemo)', function(obj){
