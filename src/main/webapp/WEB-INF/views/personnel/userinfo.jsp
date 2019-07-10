@@ -76,7 +76,7 @@
 										<td>&nbsp;&nbsp;</td>
 										<td>合同：</td>
 										<td><select class="form-control" id="commitments">
-									 		<option value="">合同</option></select></td>
+									 		<option value="">请选择</option></select></td>
 									</tr>
 									<tr>
 										<td><div style="height: 10px"></div></td>
