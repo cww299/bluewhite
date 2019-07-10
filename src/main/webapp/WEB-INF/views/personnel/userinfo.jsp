@@ -28,6 +28,15 @@
      top: 50%;
      transform: translateY(-50%);
 }
+#moreController{
+    width: 5%;
+    position: absolute;
+    left: 96%;
+    top: 70%;
+}
+#moreController button{
+    margin: 5px 0;
+}
 </style>
     
 </head>
@@ -43,12 +52,11 @@
 								<table>
 									<tr>
 										<td>员工姓名:</td>
-										<td><input type="text" id="name"
-											class="form-control name" /></td>
+										<td><input type="text" id="name" class="form-control name" /></td>
 										<td>&nbsp;&nbsp;</td>
 										<td>在离职:</td>
-										<td><select class="form-control" id="groupp"><option
-													value="">请选择</option>
+										<td><select class="form-control" id="groupp">
+												<option value="">请选择</option>
 												<option value="0">在职</option>
 												<option value="1">离职</option></select></td>
 										<td>&nbsp;&nbsp;</td>
@@ -56,46 +64,47 @@
 										<td id="orgName"></td>
 										<td>&nbsp;&nbsp;</td>
 										<td>性别:</td>
-										<td><select class="form-control" id="gender"><option
-													value="">请选择</option>
+										<td><select class="form-control" id="gender">
+												<option value="">请选择</option>
 												<option value="0">男</option>
 												<option value="1">女</option></select></td>
 										<td>&nbsp;&nbsp;</td>
 										<td>退休返聘:</td>
-										<td><select class="form-control" id="retire"><option
-													value="">否</option>
+										<td><select class="form-control" id="retire">
+										 		<option value="">否</option>
 												<option value="0">是</option></select></td>
+										<td>&nbsp;&nbsp;</td>
+										<td>合同：</td>
+										<td><select class="form-control" id="commitments">
+									 		<option value="">合同</option></select></td>
 									</tr>
 									<tr>
 										<td><div style="height: 10px"></div></td>
 									</tr>
 									<tr>
 										<td>位置编号:</td>
-										<td><input type="text" id="number"
-											class="form-control" /></td>
+										<td><input type="text" id="number" class="form-control" /></td>
 										<td>&nbsp;&nbsp;</td>
 										<td>时间查询:</td>
-										<td><select class="form-control" id="timesss"><option
-													value="">请选择</option>
+										<td><select class="form-control" id="timesss">
+												<option value="">请选择</option>
 												<option value="entry">入职时间</option>
 												<option value="actua">实际转正时间</option>
 												<option value="estimate">预计转正时间</option></select></td>
 										<td>&nbsp;&nbsp;</td>
 										<td>开始:</td>
-										<td><input id="startTime" placeholder="请输入开始时间"
-											class="form-control laydate-icon"
+										<td><input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
 											onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 										</td>
 										<td>&nbsp;&nbsp;</td>
 										<td>结束:</td>
-										<td><input id="endTime" placeholder="请输入结束时间"
-											class="form-control laydate-icon"
+										<td><input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
 											onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 										</td>
 										<td>&nbsp;&nbsp;</td>
 										<td>保险详情:</td>
-										<td><select class="form-control" id="safe"><option
-													value="">请选择</option>
+										<td><select class="form-control" id="safe">
+												<option value="">请选择</option>
 												<option value="0">未缴</option>
 												<option value="1">已缴</option></select></td>
 									</tr>
@@ -104,12 +113,11 @@
 									</tr>
 									<tr>
 										<td>所属银行:</td>
-										<td><input type="text" id="bankCardtw"
-											class="form-control" /></td>
+										<td><input type="text" id="bankCardtw" class="form-control" /></td>
 										<td>&nbsp;&nbsp;</td>
 										<td>学历查询:</td>
-										<td><select id="education2" class="form-control"><option
-													value="">请选择</option>
+										<td><select id="education2" class="form-control">
+												<option value="">请选择</option>
 												<option value="本科">本科</option>
 												<option value="大专">大专</option>
 												<option value="高中">高中</option>
@@ -120,52 +128,39 @@
 												<option value="">请选择</option></select></td>
 											<td>&nbsp;&nbsp;</td>
 										<td>合同:</td>
-										<td><select class="form-control" id="commitment"><option
-													value="">请选择</option>
+										<td><select class="form-control" id="commitment">
+												<option value="">请选择</option>
 												<option value="0">未签</option>
 												<option value="1">已签</option>
 												<option value="2">续签</option></select></td>
 											<td>&nbsp;&nbsp;</td>
 										<td>承诺书:</td>
-										<td><select class="form-control" id="promise"><option
-													value="">请选择</option>
+										<td><select class="form-control" id="promise">
+												<option value="">请选择</option>
 												<option value="0">未签</option>
 												<option value="1">已签</option></select></td>	
 									</tr>
 								</table>
 								<span class="input-group-btn">
-									<button type="button"
-										class="btn btn-default btn-square btn-sm btn-3d  searchtask">
-										查&nbsp;找</button>
+									<button type="button" class="btn btn-default btn-square btn-sm btn-3d  searchtask">查找</button>
 								</span>
-								&nbsp;&nbsp;<span class="input-group-btn">
-									<button type="button" class="btn btn-success  btn-sm btn-3d" id="lookoverBecome">
-										待转正人员  <span class="layui-badge">0</span></button>
+								&nbsp;&nbsp;
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-success  btn-sm btn-3d" id="lookoverBecome">待转正人员  <span class="layui-badge">0</span></button>
 									<button type="button"  style="display:none;" id="openEditBtn" data-id=''>隐藏打开修改用户弹窗按钮</button>
 								</span>
-								&nbsp;&nbsp; <span class="input-group-btn">
-									<button type="button"
-										class="btn btn-success  btn-sm btn-3d addDict">
-										新增员工</button>
-								</span>
-								&nbsp;&nbsp;<span class="input-group-btn">
-									<button type="button"
-										class="btn btn-success  btn-sm btn-3d savemode"
-										data-toggle="modal" data-target="#myModal">员工提示
+								&nbsp;&nbsp; 
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-success  btn-sm btn-3d" id="moreControlBtn" statu="hide">
+										<span class="glyphicon glyphicon-plus"></span>
 									</button>
 								</span>
-								
-								&nbsp;&nbsp;<span class="input-group-btn">
-										<button type="button"
-										class="btn btn-success  btn-sm btn-3d ecxel" id="export">导出返聘
-										</button>
-										</span>
-										
-								&nbsp;&nbsp;<span class="input-group-btn">
-										<button type="button"
-										class="btn btn-success  btn-sm btn-3d ecxel" id="export2">导出身份证号
-										</button>
-										</span>		
+								<div id="moreController" style="display:none;">
+									<button type="button" class="btn btn-success  btn-sm btn-3d addDict"> 新增员工</button>
+									<button type="button" class="btn btn-success  btn-sm btn-3d savemode" data-toggle="modal" data-target="#myModal">员工提示 </button>
+									<button type="button" class="btn btn-success  btn-sm btn-3d ecxel" id="export">导出返聘</button>
+									<button type="button" class="btn btn-success  btn-sm btn-3d ecxel" id="export2">导出人员 </button>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -656,6 +651,37 @@ layui.config({
 }).define(
 	['table'],
 	function() {
+		//填充合同下拉框
+		getCommitmentsSelect();
+		function getCommitmentsSelect(){
+			$.ajax({
+				url:'${ctx}/basedata/list?type=commitments',
+				success:function(r){
+					if(r.code==0){
+						var html = '';
+						var data = r.data;
+						for(var i=0;i<data.length;i++){
+							html+= '<option value="'+data[i].id+'">'+data[i].name+'</option>';
+						}
+						$('#commitments').append(html);
+					}
+				}
+			})
+		}
+		$('#moreControlBtn').on('click',function(){
+			var statu = $(this).attr('statu');
+			if(statu == 'hide'){
+				$('#moreController').slideDown();
+				$(this).attr('statu','show');
+				$(this).html('<span class="glyphicon glyphicon-minus"></span>')
+			}
+			else{
+				$('#moreController').slideUp();
+				$(this).attr('statu','hide');
+				$(this).html('<span class="glyphicon glyphicon-plus"></span>')
+			}
+		})
+		
 		var table = layui.table;
 		var positiveNumber=0;
 		$.ajax({					//获取是否有特急人员需要转正，并且给出提示
@@ -2405,19 +2431,19 @@ jQuery(function($){
 					var entry="";
 		  			var estimate="";
 		  			var actua="";
-						
-						if($("#timesss").val()=="entry"){
-							entry="2018-10-08 00:00:00"
-						}
-						if($("#timesss").val()=="estimate"){
-							estimate="2018-10-08 00:00:00"
-						}
-						if($("#timesss").val()=="actua"){
-							actua="2018-10-08 00:00:00"
-						}
+					if($("#timesss").val()=="entry"){
+						entry="2018-10-08 00:00:00"
+					}
+					if($("#timesss").val()=="estimate"){
+						estimate="2018-10-08 00:00:00"
+					}
+					if($("#timesss").val()=="actua"){
+						actua="2018-10-08 00:00:00"
+					}
 					var data = {
 				  			page:1,
 				  			size:13,
+				  			commitmentId:$('#commitments').val(),
 				  			quit:$('#groupp').val(),
 				  			foreigns:0,
 				  			agreementId:$('#agreementsSelect').val(),
