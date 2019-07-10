@@ -259,4 +259,30 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 
 	}
 
+	@Override
+	public List<Temporarily> findTemporarilyList(Temporarily param) {
+		List<Temporarily> result = temporarilyDao.findAll((root, query, cb) -> {
+			List<Predicate> predicate = new ArrayList<>();
+			// 按id过滤
+			if (param.getId() != null) {
+				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
+			}
+			// 按类型
+			if (param.getType() != null) {
+				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
+			}
+			//按时间过滤
+			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) &&  !StringUtils.isEmpty(param.getOrderTimeEnd()) ) {
+				predicate.add(cb.between(root.get("temporarilyDate").as(Date.class),
+						param.getOrderTimeBegin(),
+						param.getOrderTimeEnd()));
+			}
+			Predicate[] pre = new Predicate[predicate.size()];
+			query.where(predicate.toArray(pre));
+			query.orderBy(cb.asc(root.get("temporarilyDate").as(Long.class)));  
+			return null;
+		});
+		return result;
+	}
+
 }
