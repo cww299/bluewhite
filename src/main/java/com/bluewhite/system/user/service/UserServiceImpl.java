@@ -194,6 +194,10 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			if (!StringUtils.isEmpty(user.getCommitment())) {
 				predicate.add(cb.equal(root.get("commitment").as(Integer.class), user.getCommitment() ));
 			}
+			//按签订合同类型查找
+			if (!StringUtils.isEmpty(user.getCommitmentId())) {
+				predicate.add(cb.equal(root.get("commitmentId").as(Long.class), user.getCommitmentId() ));
+			}
 			//是否签订承诺书
 			if (!StringUtils.isEmpty(user.getPromise())) {
 				predicate.add(cb.equal(root.get("promise").as(Integer.class), user.getPromise() ));

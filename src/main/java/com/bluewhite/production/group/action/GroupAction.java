@@ -1,5 +1,7 @@
 package com.bluewhite.production.group.action;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -269,6 +271,13 @@ public class GroupAction {
 			return cr;
 		}
 		if (StringUtils.isEmpty(temporarily.getUserId())) {
+			User u = userService.findByUserName(temporarily.getUserName());
+			if(u!=null){
+				cr.setMessage("系统已有该员工，请确认是否本厂，再次添加");
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				return cr;
+			}
+			
 			User user = new User();
 			user.setForeigns(1);
 			user.setPassword( new SimpleHash("md5", "123456").toHex());
