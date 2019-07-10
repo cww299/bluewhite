@@ -387,6 +387,29 @@ public class GroupAction {
 	}
 	
 	/**
+	 * 查询借调人员
+	 * 
+	 * (1=一楼质检，2=一楼包装)
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/production/getTemporarilyList", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getTemporarilyList(Temporarily temporarily) {
+		CommonResponse cr = new CommonResponse();  
+		List<Temporarily> temporarilyList = groupService.findTemporarilyList(temporarily);
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(Temporarily.class,"id","workTime","workTimeSlice","temporarilyDate","group","user")
+				.addRetainTerm(User.class,"userName")
+				.addRetainTerm(Group.class,"name")
+				.format(temporarilyList).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	
+	/**
 	 * 打特急人员绩效汇总
 	 * 
 	 * @param request 请求

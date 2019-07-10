@@ -35,6 +35,13 @@ public interface GroupService extends BaseCRUDService<Group,Long>{
 	 * @param temporarily
 	 */
 	 List<Map<String, Object>> sumTemporarily(Temporarily temporarily);
+	 
+	 /**
+	 * 按条件查询
+	 * @param temporarily
+	 * @return
+	 */
+	List<Temporarily> findTemporarilyList(Temporarily temporarily);
 	
 
 }
