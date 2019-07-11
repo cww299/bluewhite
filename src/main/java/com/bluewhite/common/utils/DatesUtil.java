@@ -279,6 +279,37 @@ public class DatesUtil {
 		return time;
 	}
 	
+	
+	
+	/**
+	 * <li>功能描述：包装特急出勤特殊处理时间方法
+	 * 
+	 * @param beginDateStr
+	 * @param endDateStr
+	 * @return long
+	 */
+	public static Double getTimeHourPick(Date beginDate, Date endDate) {
+		Double day = getTime(beginDate, endDate);
+		// 获取整除60分钟之后的剩余分钟数
+		double alltime = Math.floor(day / 60);
+		double timele = day % 60;
+		double time = 0.0;
+		if (day > 0) {
+			if (timele < 15) {
+				time = alltime;
+			}
+			if (15 <= timele && timele <= 45) {
+				time = NumUtils.sum(alltime, 0.5);
+			}
+			if (timele > 45) {
+				time = NumUtils.sum(alltime, 1);
+			}
+		}
+		return time;
+	}
+	
+	
+	
 	/**
 	 * <li>功能描述：考勤特殊处理时间方法
 	 * 
