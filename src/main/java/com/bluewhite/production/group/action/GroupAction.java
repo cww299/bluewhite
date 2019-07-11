@@ -340,18 +340,13 @@ public class GroupAction {
 		CommonResponse cr = new CommonResponse();
 		if(temporarily.getId()==null){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("外调人员流水不能为空");
+			cr.setMessage("外调人员不能为空");
 			return cr;
 		}
 		
 		if(StringUtils.isEmpty(temporarily.getUserId())){
 			Temporarily oldtemporarily = temporarilyDao.findOne(temporarily.getId());
 			BeanCopyUtils.copyNotEmpty(temporarily,oldtemporarily);
-			if(temporarily.getGroupId()==null){
-				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				cr.setMessage("分组不能为空");
-				return cr;
-			}
 			//当特急填写时间段后，按特定规则修改工作时长
 			if(!StringUtils.isEmpty(temporarily.getWorkTimeSlice())){  
 				double  workTime = 0;
@@ -364,18 +359,18 @@ public class GroupAction {
 							Date date = new Date(); 
 							Calendar calendarStart = Calendar.getInstance();
 							calendarStart.setTime(date);
-							calendarStart.set(Calendar.HOUR_OF_DAY,Integer.valueOf(tTempStart[0]));
-							calendarStart.set(Calendar.MINUTE, Integer.valueOf(tTempStart[1]));
-							calendarStart.set(Calendar.SECOND, Integer.valueOf(tTempStart[2]));
+							calendarStart.set(Calendar.HOUR_OF_DAY,Integer.valueOf(tTempStart[0].trim()));
+							calendarStart.set(Calendar.MINUTE, Integer.valueOf(tTempStart[1].trim()));
+							calendarStart.set(Calendar.SECOND, Integer.valueOf(tTempStart[2].trim()));
 							Calendar calendarEnd = Calendar.getInstance();
 							calendarEnd.setTime(date);
-							calendarEnd.set(Calendar.HOUR_OF_DAY,Integer.valueOf(tTempEnd[0]));
-							calendarEnd.set(Calendar.MINUTE, Integer.valueOf(tTempEnd[1]));
-							calendarEnd.set(Calendar.SECOND, Integer.valueOf(tTempEnd[2]));
+							calendarEnd.set(Calendar.HOUR_OF_DAY,Integer.valueOf(tTempEnd[0].trim()));
+							calendarEnd.set(Calendar.MINUTE, Integer.valueOf(tTempEnd[1].trim()));
+							calendarEnd.set(Calendar.SECOND, Integer.valueOf(tTempEnd[2].trim()));
 							workTime += DatesUtil.getTimeHourPick(calendarStart.getTime(), calendarEnd.getTime());
 					}
 				}
-				temporarily.setWorkTime(workTime);
+				oldtemporarily.setWorkTime(workTime);
 			}  
 			temporarilyDao.save(oldtemporarily);
 			cr.setMessage("修改成功");

@@ -251,12 +251,10 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 				nmap.put("sumPrice", mapsumPrice.getSum());
 				nmap.put("kindWork", slist.get(0).get("kindWork"));
 				mapListMonth.add(nmap);
-			}
-			;
+			};
 			return mapListMonth;
 		}
 		return mapList;
-
 	}
 
 	@Override

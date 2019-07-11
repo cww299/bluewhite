@@ -20,7 +20,7 @@
 
 <div class="layui-card">
 	<div class="layui-card-body">
-	<form class="layui-form" action="">
+	<form class="layui-form" action="">    
 		<table>
 			<tr>
 				<td>搜索编号：</td>
