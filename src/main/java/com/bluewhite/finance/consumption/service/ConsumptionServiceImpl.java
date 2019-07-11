@@ -248,7 +248,9 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		if(consumption.getMoney()==null){
 			throw new ServiceException("申请金额不能为空");
 		}
-		consumption.setOrgNameId(cu.getOrgNameId());
+		if (consumption.getId() == null) {
+			consumption.setOrgNameId(cu.getOrgNameId());
+		}
 		consumption.setFlag(0);
 		
 		return dao.save(consumption);

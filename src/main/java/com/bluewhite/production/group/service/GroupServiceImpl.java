@@ -227,7 +227,7 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 		}
 
 		// 按月汇总
-		if (temporarily.getViewTypeDate() == 2 && mapList.size() > 0) {
+		if (temporarily.getViewTypeDate() == 2 && mapList.size() > 0) {  
 			List<Map<String, Object>> mapListMonth = new ArrayList<>();
 			Map<String, List<Map<String, Object>>> glist = mapList.stream()
 					.collect(Collectors.groupingBy(e -> e.get("id").toString() + "_" + e.get("kindWork").toString()));
@@ -251,9 +251,19 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 				nmap.put("sumPrice", mapsumPrice.getSum());
 				nmap.put("kindWork", slist.get(0).get("kindWork"));
 				mapListMonth.add(nmap);
+				
+				//当人事查看时，人事进行数据的保存
+				if((cu.getRole().contains("superAdmin") || cu.getRole().contains("personnel")) && temporarily.getViewTypeUser() == 1){
+					
+					
+					
+				} 
+				
 			};
 			return mapListMonth;
 		}
+		
+		
 		return mapList;
 	}
 
