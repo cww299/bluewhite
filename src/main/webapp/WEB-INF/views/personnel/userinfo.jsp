@@ -2397,7 +2397,6 @@ jQuery(function($){
 				//导出退休返聘
 				$('#export').on('click',function(){
 				var a=$("#startTime").val();
-				console.log(a)
 					location.href="${ctx}/excel/importExcel/retire?orderTimeBegin="+a+"";
 				})
 				//导出身份证号
