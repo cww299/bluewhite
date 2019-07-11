@@ -782,16 +782,19 @@
 					
 					//监听单元格编辑
 					table.on('edit(tableData)', function(obj) {
-						var value = obj.value ,//得到修改后的值
-							data = obj.data ,//得到所在行所有键值
-							field = obj.field, //得到字段
-							id = data.id;
-							var postData = {
-								id:id,
-								[field]:value
-							}
-							//调用新增修改
-							mainJs.fUpdate(postData);
+						layer.confirm('是否确认修改？',function(){
+							var value = obj.value ,
+								data = obj.data ,
+								field = obj.field, 
+								id = data.id;
+								var postData = {
+									id:id,
+									[field]:value
+								}
+								mainJs.fUpdate(postData);
+						},function(){
+							table.reload("tableData") 
+						})
 					});
 					
 					//监听单元格编辑
@@ -816,7 +819,8 @@
 						field.orderTimeBegin=orderTime[0];
 						field.orderTimeEnd=orderTime[1];
 						table.reload('tableData', {
-							where: field
+							where: field,
+							page:{curr:1},
 						});  
 					});
 					
@@ -877,24 +881,11 @@
 							},
 							success: function(result) {
 								if(0 == result.code) {
-								 	 table.reload("tableData", {
-						                page: {
-						                }
-						              }) 
-						              table.reload("tableBudget", {
-							                page: {
-							                }
-							              }) 
-									layer.msg(result.message, {
-										icon: 1,
-										time:800
-									});
-								
+								 	table.reload("tableData") 
+						            table.cache['tableBudget'] && table.reload("tableBudget") 
+									layer.msg(result.message, {icon: 1,time:800});
 								} else {
-									layer.msg(result.message, {
-										icon: 2,
-										time:800
-									});
+									layer.msg(result.message, {icon: 2,time:800});
 								}
 							},
 							error: function() {
