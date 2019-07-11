@@ -493,7 +493,6 @@
 						loading: true,
 						toolbar: '#toolbar', 
 						sort:true,
-						cellMinWidth: 85,
 						limits:[10,20,50,100,150],
 						colFilterRecord: true,
 						smartReloadModel: true,
