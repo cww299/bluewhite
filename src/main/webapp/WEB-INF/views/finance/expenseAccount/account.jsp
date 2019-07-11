@@ -782,6 +782,8 @@
 					
 					//监听单元格编辑
 					table.on('edit(tableData)', function(obj) {
+						if(!obj.data.id)
+							return;
 						layer.confirm('是否确认修改？',function(){
 							var value = obj.value ,
 								data = obj.data ,
