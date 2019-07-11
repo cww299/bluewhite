@@ -76,14 +76,6 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 			if (sundry.getType()!= null) {
 				predicate.add(cb.equal(root.get("type").as(Integer.class), sundry.getType()));
 			}
-			//一面
-			if (sundry.getTypeOne()!= null) {
-				predicate.add(cb.equal(root.get("typeOne").as(Integer.class), sundry.getTypeOne()));
-			}
-			//二面
-			if (sundry.getTypeTwo()!= null) {
-				predicate.add(cb.equal(root.get("typeTwo").as(Integer.class), sundry.getTypeTwo()));
-			}
 			if (sundry.getState()!= null) {
 				predicate.add(cb.equal(root.get("state").as(Integer.class), sundry.getState()));
 			}
@@ -133,8 +125,8 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 			allMap = new HashMap<>();
 			Date date = new Date();
 			List<Recruit> psList1 = map.get(ps1);
-			Long d=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getType()!=null && Recruit.getType().equals(1)).count();//邀约面试
-			Long c=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getTypeOne()!=null && Recruit.getTypeOne().equals(1)).count();//应邀面试
+			Long d=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId())).count();//邀约面试
+			Long c=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getType()!=null && Recruit.getType().equals(1)).count();//应邀面试
 			Long b=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getAdopt()!=null && Recruit.getAdopt().equals(1)).count();//面试合格
 			Long e=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState()!=null && Recruit.getState().equals(2)).count();//拒绝入职
 			Long f=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState()!=null && Recruit.getUserId()!=null && Recruit.getState().equals(1) && Recruit.getUser().getQuit().equals(0)).count();//已入职且在职
