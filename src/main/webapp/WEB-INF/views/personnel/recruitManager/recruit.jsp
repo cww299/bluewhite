@@ -490,11 +490,10 @@
 						request:{ pageName: 'page' , limitName: 'size', },
 						page: { },
 						size:'lg',
-						height:700,
 						loading: true,
 						toolbar: '#toolbar', 
 						sort:true,
-						cellMinWidth: 90,
+						cellMinWidth: 85,
 						limits:[10,20,50,100,150],
 						colFilterRecord: true,
 						smartReloadModel: true,
@@ -528,12 +527,10 @@
 							[{
 								type: 'checkbox',
 								align: 'center',
-								fixed: 'left'
 							},{
 								field: "name",
 								title: "姓名",
 								align: 'center',
-								fixed : 'left',
 							},{
 								field: "time",
 								title: "面试时间",
@@ -570,6 +567,7 @@
 								title: "性别",
 								edit: false,
 								type: 'normal',
+								width : 65,
 								/* templet: function(d){ 
 									if(d.gender==0){
 										return "男"
@@ -612,7 +610,7 @@
 								title: "面试情况",
 								edit: false,
 								type: 'normal',
-								width : 110,
+								width : 115,
 								templet: fn1('selectTwo')
 							},{ 
 								align: 'center',
@@ -646,13 +644,11 @@
 								field: "testTime",
 								title: "时间",
 								align: 'center',
-								fixed : 'right',
 								width : 118,
 							},{
 								field: "remarksThree",
 								title: "备注",
 								align: 'center',
-								fixed : 'right',
 								edit: 'text'
 							}]
 						],
@@ -666,7 +662,7 @@
 							});
 							form.render();
 							// 初始化laydate
-							layui.each(tableView.find('div[class="layui-table-fixed layui-table-fixed-r"]').find('td[data-field="testTime"]'), function(index, tdElem) {
+							layui.each(tableView.find('td[data-field="testTime"]'), function(index, tdElem) {
 								tdElem.onclick = function(event) {
 									layui.stope(event)
 								};
