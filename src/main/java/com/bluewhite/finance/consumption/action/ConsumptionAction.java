@@ -84,7 +84,7 @@ public class ConsumptionAction {
 	 * @return cr
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/fince/countConsumptionMoney", method = RequestMethod.GET)
+	@RequestMapping(value = "/fince/countConsumptionMoney", method = RequestMethod.GET)  
 	@ResponseBody
 	public CommonResponse countConsumptionMoney(HttpServletRequest request) {
 		CommonResponse cr = new CommonResponse();
