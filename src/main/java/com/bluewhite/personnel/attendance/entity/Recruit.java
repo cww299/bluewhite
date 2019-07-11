@@ -137,11 +137,6 @@ public class Recruit extends BaseEntity<Long> {
 	@Column(name = "remarks")
     private String remarks;
 	
-	/**
-	 * 一面(0=否，1=是)
-	 */
-	@Column(name = "type_one")
-	private Integer typeOne;
 	
 	/**
 	 * 一面备注
@@ -149,11 +144,6 @@ public class Recruit extends BaseEntity<Long> {
 	@Column(name = "remarks_one")
     private String remarksOne;
 
-	/**
-	 * 二面(0=否，1=是)
-	 */
-	@Column(name = "type_two")
-	private Integer typeTwo;
 	
 	/**
 	 * 二面备注
@@ -333,23 +323,11 @@ public class Recruit extends BaseEntity<Long> {
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
 	}
-	public Integer getTypeOne() {
-		return typeOne;
-	}
-	public void setTypeOne(Integer typeOne) {
-		this.typeOne = typeOne;
-	}
 	public String getRemarksOne() {
 		return remarksOne;
 	}
 	public void setRemarksOne(String remarksOne) {
 		this.remarksOne = remarksOne;
-	}
-	public Integer getTypeTwo() {
-		return typeTwo;
-	}
-	public void setTypeTwo(Integer typeTwo) {
-		this.typeTwo = typeTwo;
 	}
 	public String getRemarksTwo() {
 		return remarksTwo;

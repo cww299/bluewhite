@@ -36,23 +36,14 @@
 									<option value="1">通过</option>
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
-							<td>一面状态:
-							<td><select class="form-control" name="typeOne">
-									<option value="">请选择</option>
-									<option value="0">不通过</option>
-									<option value="1">通过</option>
-							</select></td>
-							<td>&nbsp;&nbsp;</td>
-							<td>二面状态:
-							<td><select class="form-control" name="typeTwo">
-									<option value="">请选择</option>
-									<option value="0">不通过</option>
-									<option value="1">通过</option>
-							</select></td>
-							<td>&nbsp;&nbsp;</td>
 							<td>面试时间:</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入面试时间" class="layui-input laydate-icon">
 							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td>平台:</td>
+							<td><select class="form-control"  name="platformId" lay-search="true" id="platform">
+									
+							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
@@ -98,11 +89,6 @@
 							<td>&nbsp;&nbsp;</td>
 							<td>职位:</td>
 							<td><select class="form-control" name="positionId" lay-search="true" id="positionss">
-									
-							</select></td>
-							<td>&nbsp;&nbsp;</td>
-							<td>平台:</td>
-							<td><select class="form-control"  name="platformId" lay-search="true" id="platform">
 									
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
@@ -368,12 +354,6 @@
 <script type="text/html" id="switchTpl2">
   <input type="checkbox" name="type" value="{{d.id}}" data-id="{{d.state}}" lay-skin="switch" lay-text="是|否" lay-filter="type" {{ d.type == 1 ? 'checked' : '' }}>
 </script>
-<script type="text/html" id="switchTpl3">
-  <input type="checkbox" name="typeOne" value="{{d.id}}" data-id="{{d.state}}" lay-skin="switch" lay-text="是|否" lay-filter="typeOne" {{ d.typeOne == 1 ? 'checked' : '' }}>
-</script>
-<script type="text/html" id="switchTpl4">
-  <input type="checkbox" name="typeTwo" value="{{d.id}}" data-id="{{d.state}}" lay-skin="switch" lay-text="是|否" lay-filter="typeTwo" {{ d.typeTwo == 1 ? 'checked' : '' }}>
-</script>	
 	<script>
 			layui.config({
 				base: '${ctx}/static/layui-v2.4.5/'
@@ -525,8 +505,6 @@
 								item.platformIds = item.platform.name;
 								item.positions = item.position ? item.position.name:'';
 								item.types = item.type == 1? '是':'否';
-								item.typeOnes = item.typeOne == 1? '通过':'不通过';
-								item.typeTwos = item.typeTwo == 1? '通过':'不通过';
 								if(item.adopt == 0)
 									item.adopts = '不通过';
 								else if(item.adopt == 1)
@@ -619,36 +597,19 @@
 								align: 'center',
 								edit: 'text'
 							},{
-								field: "typeOnes",
-								align: 'center',
-								title: "一面",
-								filter:true,
-								edit: false,
-								type: 'normal',
-								templet:'#switchTpl3', unresize: true
-							},{
 								field: "remarksOne",
-								title: "一面备注",
+								title: "一面情况",
 								align: 'center',
 								edit: 'text'
 							},{
-								field: "typeTwos",
-								align: 'center',
-								title: "二面",
-								filter:true,
-								edit: false,
-								type: 'normal',
-								templet:'#switchTpl4', unresize: true
-							},{
 								field: "remarksTwo",
-								title: "二面备注",
+								title: "二面情况",
 								align: 'center',
 								edit: 'text'
 							},{
 								field: "adopts",
 								align: 'center',
 								title: "面试情况",
-								filter:true,
 								edit: false,
 								type: 'normal',
 								width : 110,
@@ -862,7 +823,7 @@
 								// 获得当前选中的
 								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
 								var data = table.checkStatus(tableId).data;//获取选中数据
-								if(data[0].adopt==0){
+								if(data[0].adopt==null || data[0].adopt==0){
 									return layer.msg("面试未通过",{icon: 2})
 								}
 								if(data[0].testTime==null){
@@ -870,9 +831,6 @@
 								}
 								if(data[0].type==0){
 									return layer.msg("当前员工没有应面",{icon: 2})
-								}
-								if(data[0].typeOne==0){
-									return layer.msg("当前员工没有通过一面",{icon: 2})
 								}
 								if(data[0].state==1){
 									return layer.msg("当前员工已入职",{icon: 2})
@@ -1420,7 +1378,7 @@
 					
 
 					function addEidt(type){
-						var data={time:"",platformId:'',orgNameId:'',name:'',gender:'',phone:'',livingAddress:'',entry:'',type:0,remarks:'',typeOne:0,remarksOne:'',typeTwo:0,remarksTwo:'',state:0};
+						var data={time:"",platformId:'',orgNameId:'',name:'',gender:'',phone:'',livingAddress:'',entry:'',type:0,remarks:'',remarksOne:'',remarksTwo:'',state:0};
 						var title="新增数据";
 						var html="";
 						var tpl=addEditTpl.innerHTML;
