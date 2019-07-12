@@ -71,22 +71,22 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 				for (Advertisement advertisement : listFilter2) {
 					//过滤 1.开始时间在区间时间之前 结束时间在区间时间之后（4.1  5.1~5.31  6.1）
 					if (advertisement.getStartTime().compareTo(orderTimeBegin)==-1 && advertisement.getEndTime().compareTo(orderTimeEnd)==1) {
-						long day=DatesUtil.getDaySub(advertisement.getEndTime(),advertisement.getStartTime());//这条记录一共多少天
-						long day1=DatesUtil.getDaySub(orderTimeEnd,orderTimeBegin);//筛选后一共多少天
-						trainPrice=trainPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),2),advertisement.getPrice());//筛选后的广告费
+						long day=DatesUtil.getDaySub(advertisement.getStartTime(),advertisement.getEndTime());//这条记录一共多少天
+						long day1=DatesUtil.getDaySub(orderTimeBegin,orderTimeEnd);//筛选后一共多少天
+						trainPrice=trainPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),6),advertisement.getPrice());//筛选后的广告费
 						
 					}
 					//2. 开始时间在区间时间之后 结束时间在区间时间之后 （5.2  5.1~5.31  6.1）
 					if (advertisement.getStartTime().compareTo(orderTimeBegin)==1 && advertisement.getStartTime().compareTo(orderTimeEnd)==-1&& advertisement.getEndTime().compareTo(orderTimeEnd)==1) {
-						long day=DatesUtil.getDaySub(advertisement.getEndTime(),advertisement.getStartTime());//这条记录一共多少天
-						long day1=DatesUtil.getDaySub(advertisement.getEndTime(),orderTimeBegin);//筛选后一共多少天
-						trainPrice=trainPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),2),advertisement.getPrice());//筛选后的广告费
+						long day=DatesUtil.getDaySub(advertisement.getStartTime(),advertisement.getEndTime());//这条记录一共多少天
+						long day1=DatesUtil.getDaySub(advertisement.getStartTime(),orderTimeEnd);//筛选后一共多少天
+						trainPrice=trainPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),6),advertisement.getPrice());//筛选后的广告费
 					}
 					//过滤 3.开始时间在区间时间之前 结束时间在区间时间之前 （4.1  5.1~5.31  5.30）
 					if (advertisement.getStartTime().compareTo(orderTimeBegin)==-1&& advertisement.getEndTime().compareTo(orderTimeBegin)==1 && advertisement.getEndTime().compareTo(orderTimeEnd)==-1) {
-						long day=DatesUtil.getDaySub(advertisement.getEndTime(),advertisement.getStartTime());//这条记录一共多少天
-						long day1=DatesUtil.getDaySub(orderTimeEnd,advertisement.getStartTime());//筛选后一共多少天
-						trainPrice=trainPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),2),advertisement.getPrice());//筛选后的广告费
+						long day=DatesUtil.getDaySub(advertisement.getStartTime(),advertisement.getEndTime());//这条记录一共多少天
+						long day1=DatesUtil.getDaySub(orderTimeBegin,advertisement.getEndTime());//筛选后一共多少天
+						trainPrice=trainPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),6),advertisement.getPrice());//筛选后的广告费
 					}
 					//4. 开始时间在区间时间之后 结束时间在区间时间之前（5.2  5.1~5.31  5.3）
 					if (advertisement.getStartTime().compareTo(orderTimeBegin)!=-1 && advertisement.getEndTime().compareTo(orderTimeEnd)!=1) {
@@ -98,22 +98,22 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 				for (Advertisement advertisement : listFilter) {
 					//过滤 1.开始时间在区间时间之前 结束时间在区间时间之后（4.1  5.1~5.31  6.1）
 					if (advertisement.getStartTime().compareTo(orderTimeBegin)==-1 && advertisement.getEndTime().compareTo(orderTimeEnd)==1) {
-						long day=DatesUtil.getDaySub(advertisement.getEndTime(),advertisement.getStartTime());//这条记录一共多少天
-						long day1=DatesUtil.getDaySub(orderTimeEnd,orderTimeBegin);//筛选后一共多少天
-						advertisementPrice=advertisementPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),2),advertisement.getPrice());//筛选后的广告费
+						long day=DatesUtil.getDaySub(advertisement.getStartTime(),advertisement.getEndTime());//这条记录一共多少天
+						long day1=DatesUtil.getDaySub(orderTimeBegin,orderTimeEnd);//筛选后一共多少天
+						advertisementPrice=advertisementPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),6),advertisement.getPrice());//筛选后的广告费
 						
 					}
 					//2. 开始时间在区间时间之后 结束时间在区间时间之后 （5.2  5.1~5.31  6.1）
 					if (advertisement.getStartTime().compareTo(orderTimeBegin)==1 && advertisement.getStartTime().compareTo(orderTimeEnd)==-1 && advertisement.getEndTime().compareTo(orderTimeEnd)==1) {
-						long day=DatesUtil.getDaySub(advertisement.getEndTime(),advertisement.getStartTime());//这条记录一共多少天
-						long day1=DatesUtil.getDaySub(advertisement.getEndTime(),orderTimeBegin);//筛选后一共多少天
-						advertisementPrice=advertisementPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),2),advertisement.getPrice());//筛选后的广告费
+						long day=DatesUtil.getDaySub(advertisement.getStartTime(),advertisement.getEndTime());//这条记录一共多少天
+						long day1=DatesUtil.getDaySub(advertisement.getStartTime(),orderTimeEnd);//筛选后一共多少天
+						advertisementPrice=advertisementPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),6),advertisement.getPrice());//筛选后的广告费
 					}
 					//过滤 3.开始时间在区间时间之前 结束时间在区间时间之前 （4.1  5.1~5.31  5.30）
 					if (advertisement.getStartTime().compareTo(orderTimeBegin)==-1 && advertisement.getEndTime().compareTo(orderTimeBegin)==1 && advertisement.getEndTime().compareTo(orderTimeEnd)==-1) {
-						long day=DatesUtil.getDaySub(advertisement.getEndTime(),advertisement.getStartTime());//这条记录一共多少天
-						long day1=DatesUtil.getDaySub(orderTimeEnd,advertisement.getStartTime());//筛选后一共多少天
-						advertisementPrice=advertisementPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),2),advertisement.getPrice());//筛选后的广告费
+						long day=DatesUtil.getDaySub(advertisement.getStartTime(),advertisement.getEndTime());//这条记录一共多少天
+						long day1=DatesUtil.getDaySub(orderTimeBegin,advertisement.getEndTime());//筛选后一共多少天
+						advertisementPrice=advertisementPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),6),advertisement.getPrice());//筛选后的广告费
 					}
 					//4. 开始时间在区间时间之后 结束时间在区间时间之前（5.2  5.1~5.31  5.3）
 					if (advertisement.getStartTime().compareTo(orderTimeBegin)!=-1 && advertisement.getEndTime().compareTo(orderTimeEnd)!=1) {
@@ -197,22 +197,22 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 						for (Advertisement advertisement : listFilter2) {
 							//过滤 1.开始时间在区间时间之前 结束时间在区间时间之后（4.1  5.1~5.31  6.1）
 							if (advertisement.getStartTime().compareTo(orderTimeBegin)==-1 && advertisement.getEndTime().compareTo(orderTimeEnd)==1) {
-								long day=DatesUtil.getDaySub(advertisement.getEndTime(),advertisement.getStartTime());//这条记录一共多少天
-								long day1=DatesUtil.getDaySub(orderTimeEnd,orderTimeBegin);//筛选后一共多少天
-								trainPrice=trainPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),2),advertisement.getPrice());//筛选后的广告费
+								long day=DatesUtil.getDaySub(advertisement.getStartTime(),advertisement.getEndTime());//这条记录一共多少天
+								long day1=DatesUtil.getDaySub(orderTimeBegin,orderTimeEnd);//筛选后一共多少天
+								trainPrice=trainPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),6),advertisement.getPrice());//筛选后的广告费
 								
 							}
 							//2. 开始时间在区间时间之后 结束时间在区间时间之后 （5.2  5.1~5.31  6.1）
 							if (advertisement.getStartTime().compareTo(orderTimeBegin)==1 && advertisement.getStartTime().compareTo(orderTimeEnd)==-1&& advertisement.getEndTime().compareTo(orderTimeEnd)==1) {
-								long day=DatesUtil.getDaySub(advertisement.getEndTime(),advertisement.getStartTime());//这条记录一共多少天
-								long day1=DatesUtil.getDaySub(advertisement.getEndTime(),orderTimeBegin);//筛选后一共多少天
-								trainPrice=trainPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),2),advertisement.getPrice());//筛选后的广告费
+								long day=DatesUtil.getDaySub(advertisement.getStartTime(),advertisement.getEndTime());//这条记录一共多少天
+								long day1=DatesUtil.getDaySub(advertisement.getStartTime(),orderTimeEnd);//筛选后一共多少天
+								trainPrice=trainPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),6),advertisement.getPrice());//筛选后的广告费
 							}
 							//过滤 3.开始时间在区间时间之前 结束时间在区间时间之前 （4.1  5.1~5.31  5.30）
 							if (advertisement.getStartTime().compareTo(orderTimeBegin)==-1&& advertisement.getEndTime().compareTo(orderTimeBegin)==1 && advertisement.getEndTime().compareTo(orderTimeEnd)==-1) {
-								long day=DatesUtil.getDaySub(advertisement.getEndTime(),advertisement.getStartTime());//这条记录一共多少天
-								long day1=DatesUtil.getDaySub(orderTimeEnd,advertisement.getStartTime());//筛选后一共多少天
-								trainPrice=trainPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),2),advertisement.getPrice());//筛选后的广告费
+								long day=DatesUtil.getDaySub(advertisement.getStartTime(),advertisement.getEndTime());//这条记录一共多少天
+								long day1=DatesUtil.getDaySub(orderTimeBegin,advertisement.getEndTime());//筛选后一共多少天
+								trainPrice=trainPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),6),advertisement.getPrice());//筛选后的广告费
 							}
 							//4. 开始时间在区间时间之后 结束时间在区间时间之前（5.2  5.1~5.31  5.3）
 							if (advertisement.getStartTime().compareTo(orderTimeBegin)!=-1 && advertisement.getEndTime().compareTo(orderTimeEnd)!=1) {

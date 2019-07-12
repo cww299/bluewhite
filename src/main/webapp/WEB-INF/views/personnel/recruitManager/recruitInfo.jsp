@@ -199,18 +199,8 @@ layui.config({
 			var load = layer.load(1);
 			var successAdd = 0;
 			for(var i=0;i<tempData.length;i++){
-				$.ajax({
-					url: '${ctx}/personnel/addAdvertisement',
-					type: 'post',
-					async: false,
-					data:  tempData[i],
-					success: function(r){
-						if(r.code==0)
-							successAdd++;
-						else
-							layer.msg(r.message,{icon:2});
-					}
-				}) 
+				if(updateAjax(tempData[i]))
+					successAdd++;
 			}
 			table.cleanTemp('recruitTable');
 			table.reload('recruitTable',{ page:{ curr:1 } })
@@ -253,6 +243,8 @@ layui.config({
 			})
 		}
 		function updateAjax(postData){			//修改数据
+			postData.endTime = postData.endTime.split(' ')[0]+' 23:59:59';
+			var result = false;
 			var load = layer.load(1);
 			$.ajax({
 				url:'${ctx}/personnel/addAdvertisement',
@@ -263,12 +255,14 @@ layui.config({
 					var icon = 2;
 					if(r.code==0){
 						icon=1;
+						result = true;
 						table.reload('recruitTable');
 					}
 					layer.msg(r.message,{icon:icon});
 				}
 			})
 			layer.close(load);
+			return result;
 		}
 		function getPlatformSelect() {
 			return function(d) {
