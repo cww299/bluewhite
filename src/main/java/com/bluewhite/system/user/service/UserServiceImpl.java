@@ -1,10 +1,12 @@
 package com.bluewhite.system.user.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
@@ -19,12 +21,16 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.basedata.dao.BaseDataDao;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.personnel.attendance.dao.AttendanceInitDao;
+import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.system.user.dao.UserContractDao;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.Role;
@@ -45,6 +51,12 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private BaseDataDao baseDataDao;
+	
+	@Autowired
+	private AttendanceInitDao attendanceInitDao;
 
 	
 	@Override
@@ -471,6 +483,33 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			user.setUserContractId(userContract.getId());
 			dao.save(user);
 			count++;
+		}
+		return count;
+	}
+
+	@Override
+	public List<BaseData> findUserOrg() {
+		List<BaseData> baseDataList = baseDataDao.findByType("orgName");
+		User user = new User();
+		user.setIsAdmin(false);
+		user.setForeigns(0);
+		List<User> userList = findUserList(user);
+		for(BaseData baseData : baseDataList ){
+			List<User> users = userList.stream().filter(User->User.getOrgNameId()!=null && User.getOrgNameId().equals(baseData.getId())).collect(Collectors.toList());
+			baseData.setUsers(users);
+		}
+		return baseDataList;
+	}
+
+	@Override
+	public int setUserRestDate(String userIds,String restDay) {
+		int count = 0;
+		if(!StringUtils.isEmpty(userIds)){
+			List<Long> idLongs =Arrays.asList(userIds.split(",")).stream().map(s -> Long.parseLong(s.trim())).collect(Collectors.toList());  
+			List<AttendanceInit> attendanceInitList = attendanceInitDao.findByUserIdIn(idLongs);
+			attendanceInitList.stream().forEach(User->User.setRestDay(restDay));
+			attendanceInitDao.save(attendanceInitList);
+			count = attendanceInitList.size();
 		}
 		return count;
 	}
