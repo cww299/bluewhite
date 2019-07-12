@@ -32,7 +32,7 @@
 							<td ><select class="form-control" lay-search="true" name="id" id="hostelName"></select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
-								<div class="layui-inline">
+								<div class="layui-block">
 									<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
 										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
 									</button>
@@ -95,7 +95,7 @@
 							<td ><select class="form-control" lay-search="true" name="orgNameId" id="orgName"></select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
-								<div class="layui-inline">
+								<div class="layui-block">
 									<button class="layui-btn layuiadmin-btn-admin"  lay-submit lay-filter="LAY-search2">
 										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
 									</button>
@@ -125,7 +125,7 @@
 							<td ><select class="form-control" lay-search="true" name="orgNameId" id="orgName6"></select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
-								<div class="layui-inline">
+								<div class="layui-block">
 									<button class="layui-btn layuiadmin-btn-admin"  lay-submit lay-filter="LAY-search6">
 										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
 									</button>
@@ -140,12 +140,12 @@
 	
 	
 	<form action="" id="layuiadmin-form-admin"
-		style="padding: 20px 30px 0 60px; display:none;  text-align:">
+		style="display:none;  text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
 		<input type="text" name="id" id="ids" style="display:none;">
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">每吨水费价格</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">每吨水费价格</label>
+				<div class="layui-input-block">
 					<input type="text"  name="keyValue" id="keyValue"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
@@ -153,8 +153,8 @@
 			</div>
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">水费标准</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">水费标准</label>
+				<div class="layui-input-block">
 					<input type="text" name="keyValueTwo" id="keyValueTwo"
 						lay-verify="required"
 						class="layui-input laydate-icon">
@@ -163,12 +163,12 @@
 		</div>
 	</form>	
 	<form action="" id="layuiadmin-form-admin6"
-		style="padding: 20px 30px 0 60px; display:none;  text-align:">
+		style="display:none;  text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
 		<input type="text" name="id" id="ids2" style="display:none;">
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">每度电费价格</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">每度电费价格</label>
+				<div class="layui-input-block">
 					<input type="text"  name="keyValue" id="keyValue2"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
@@ -176,8 +176,8 @@
 			</div>
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">电费标准</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">电费标准</label>
+				<div class="layui-input-block">
 					<input type="text" name="keyValueTwo" id="keyValueTwo2"
 						lay-verify="required"
 						class="layui-input laydate-icon">
@@ -196,11 +196,11 @@
 	
 	
 	<form action="" id="layuiadmin-form-admin3"
-		style="padding: 20px 30px 0 60px; display:none;  text-align:">
+		style="display:none;  text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">宿舍名</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">宿舍名</label>
+				<div class="layui-input-block">
 					<input type="text"  name="name"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
@@ -210,29 +210,29 @@
 	</form>
 	<!-- 水费 -->
 	<form action="" id="layuiadmin-form-admin4"
-		style="padding: 20px 30px 0 60px; display:none;  text-align:">
+		style="display:none;   text-align:center;">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
 		<input type="text" id="water" name="hostelId" style="display: none;" />
 		<input type="text" name="type" value="1" style="display: none;" />
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">所属月份</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label" >所属月份</label>
+				<div class="layui-input-block">
 					<input type="text" name="monthDate" id="monthDate"
 						lay-verify="required" placeholder="请输入所属月份"
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">上月吨数</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label" >上月吨数</label>
+				<div class="layui-input-block">
 					<input type="text"  name="upperDegreeNum" id="nowDegreeNumss"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">本月吨数</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label" >本月吨数</label>
+				<div class="layui-input-block">
 					<input type="text"  name="nowDegreeNum"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
@@ -243,29 +243,29 @@
 	
 	<!-- 水费 -->
 	<form action="" id="layuiadmin-form-admin5"
-		style="padding: 20px 30px 0 60px; display:none;  text-align:">
+		style="display:none;  text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
 		<input type="text" id="power" name="hostelId" style="display: none;" />
 		<input type="text" name="type" value="2" style="display: none;" />
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">所属月份</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">所属月份</label>
+				<div class="layui-input-block">
 					<input type="text" name="monthDate" id="monthDate2"
 						lay-verify="required" placeholder="请输入所属月份"
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">上月度数</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">上月度数</label>
+				<div class="layui-input-block">
 					<input type="text"  name="upperDegreeNum" id="nowDegreeNumss2"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">本月度数</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">本月度数</label>
+				<div class="layui-input-block">
 					<input type="text"  name="nowDegreeNum"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
@@ -276,44 +276,44 @@
 	
 	<!-- 其他费用-->
 	<form action="" id="layuiadmin-form-admin8"
-		style="padding: 20px 30px 0 60px; display:none;  text-align:">
+		style="display:none;  text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
 		<input type="text" id="sundrys" name="hostelId" style="display: none;" />
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">所属月份</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">所属月份</label>
+				<div class="layui-input-block">
 					<input type="text" name="monthDate" id="monthDate7"
 						lay-verify="required" placeholder="请输入所属月份"
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">房租费用</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">房租费用</label>
+				<div class="layui-input-block">
 					<input type="text"  name="rent" 
 						lay-verify="required" 
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">煤气费</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">煤气费</label>
+				<div class="layui-input-block">
 					<input type="text"  name="coal"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">宽带费</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">宽带费</label>
+				<div class="layui-input-block">
 					<input type="text"  name="broadband"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">当月安检管理费</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">当月安检管理费</label>
+				<div class="layui-input-block">
 					<input type="text"  name="Administration"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
@@ -324,36 +324,36 @@
 	
 	<!-- 固定资产-->
 	<form action="" id="layuiadmin-form-admin7"
-		style="padding: 20px 30px 0 60px; display:none;  text-align:">
+		style="display:none;  text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
 		<input type="text" id="fixeds" name="hostelId" style="display: none;" />
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">所属月份</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label" >所属月份</label>
+				<div class="layui-input-block">
 					<input type="text" name="monthDate" id="monthDate5"
 						lay-verify="required" placeholder="请输入所属月份"
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">名称</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label" >名称</label>
+				<div class="layui-input-block">
 					<input type="text"  name="name" id="nowDegreeNumss2"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">价值</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label" >价值</label>
+				<div class="layui-input-block">
 					<input type="number"  name="sum"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">平摊多少个月</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">平摊多少个月</label>
+				<div class="layui-input-block">
 					<select name="branch" lay-filter="branch" lay-search="true">
 							<option value="1">1</option>
 							<option value="2">2</option>
@@ -376,92 +376,92 @@
 	
 	<!-- 总水电 -->
 	<form action="" id="layuiadmin-form-admin9"
-		style="padding: 20px 30px 0 60px; display:none;  text-align:">
+		style=" display:none;  text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
 		<input type="text" name="type" value="2" style="display: none;" />
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">所属月份</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label" >所属月份</label>
+				<div class="layui-input-block">
 					<input type="text" name="monthDate" id="monthDate10"
 						lay-verify="required" placeholder="请输入所属月份"
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">二楼总表上月</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label" >二楼总表上月</label>
+				<div class="layui-input-block">
 					<input type="text" id="ddds1" name="oneNowNum" 
 						lay-verify="required" 
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">二楼总表当月</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label" >二楼总表当月</label>
+				<div class="layui-input-block">
 					<input type="text"  name="oneUpperNum"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">三楼总表上月</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label" >三楼总表上月</label>
+				<div class="layui-input-block">
 					<input type="text" id="ddds2" name="twoNowNum" 
 						lay-verify="required" 
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">三楼总表当月</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">三楼总表当月</label>
+				<div class="layui-input-block">
 					<input type="text"  name="twoUpperNum"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">四楼总表上月</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">四楼总表上月</label>
+				<div class="layui-input-block">
 					<input type="text" id="ddds3" name="threeNowNum" 
 						lay-verify="required" 
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">四楼总表当月</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label" >四楼总表当月</label>
+				<div class="layui-input-block">
 					<input type="text"  name="threeUpperNum"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">损耗电量</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">损耗电量</label>
+				<div class="layui-input-block">
 					<input type="text"  name="loss"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">（按面积比例核算）</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">（按面积比例核算）</label>
+				<div class="layui-input-block">
 					<input type="text"  name="buse"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">（铜铁损耗）</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label" >（铜铁损耗）</label>
+				<div class="layui-input-block">
 					<input type="text"  name="copper"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">个体之间的损耗</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">个体之间的损耗</label>
+				<div class="layui-input-block">
 					<input type="text"  name="individual"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
@@ -472,28 +472,28 @@
 	
 	<!-- 总水费 -->
 	<form action="" id="layuiadmin-form-admin11"
-		style="padding: 20px 30px 0 60px; display:none;  text-align:">
+		style="display:none;  text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
 		<input type="text" name="type" value="1" style="display: none;" />
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">所属月份</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">所属月份</label>
+				<div class="layui-input-block">
 					<input type="text" name="monthDate" id="monthDate11"
 						lay-verify="required" placeholder="请输入所属月份"
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">消防电量</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">消防电量</label>
+				<div class="layui-input-block">
 					<input type="text"  name="loss"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">耗损水量</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">耗损水量</label>
+				<div class="layui-input-block">
 					<input type="text"  name="buse"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
@@ -503,10 +503,10 @@
 	</form>
 	
 	<script type="text/html" id="toolbar">
-			<div class="layui-btn-container layui-inline">
+			<div class="layui-btn-container layui-block">
 				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增宿舍</span>
 				<span class="layui-btn layui-btn-sm" lay-event="openMeal">水费标准</span>
-				<span class="layui-btn layui-btn-sm" lay-event="openMea2">电费费标准</span>
+				<span class="layui-btn layui-btn-sm" lay-event="openMea2">电费标准</span>
 				<span class="layui-btn layui-btn-sm" lay-event="openuser">人员分摊</span>
 				<span class="layui-btn layui-btn-sm" lay-event="department">部门分摊</span>
 				<span class="layui-btn layui-btn-sm" lay-event="summary">总电费</span>
@@ -515,41 +515,41 @@
 	</script>
 	
 	<script type="text/html" id="tool2">
-			<div class="layui-btn-container layui-inline">
+			<div class="layui-btn-container layui-block">
 				<span class="layui-btn layui-btn-sm" lay-event="addTempData10">新增总电费</span>
 			</div>
 	</script>
 	
 	<script type="text/html" id="tool3">
-			<div class="layui-btn-container layui-inline">
+			<div class="layui-btn-container layui-block">
 				<span class="layui-btn layui-btn-sm" lay-event="addTempData11">新增总水费</span>
 			</div>
 	</script>
 	<script type="text/html" id="toolbar5">
-			<div class="layui-btn-container layui-inline">
+			<div class="layui-btn-container layui-block">
 				
 			</div>
 	</script>
 	<script type="text/html" id="toolbarwater">
-			<div class="layui-btn-container layui-inline">
+			<div class="layui-btn-container layui-block">
 				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增水费</span>
 			</div>
 	</script>
 	
 	<script type="text/html" id="toolbarpower">
-			<div class="layui-btn-container layui-inline">
+			<div class="layui-btn-container layui-block">
 				<span class="layui-btn layui-btn-sm" lay-event="addTempData2">新增电费</span>
 			</div>
 	</script>
 	
 	<script type="text/html" id="toolfixed">
-			<div class="layui-btn-container layui-inline">
+			<div class="layui-btn-container layui-block">
 				<span class="layui-btn layui-btn-sm" lay-event="addTempData3">新增固定资产</span>
 			</div>
 	</script>
 	
 	<script type="text/html" id="toolsundry">
-			<div class="layui-btn-container layui-inline">
+			<div class="layui-btn-container layui-block">
 				<span class="layui-btn layui-btn-sm" lay-event="addTempData4">新增其他费用</span>
 			</div>
 	</script>
@@ -806,7 +806,7 @@
 									type:1,
 									title:'新增宿舍',
 									shadeClose:true,
-									area:['45%','30%'],
+									area:['25%','20%'],
 									btn:['确认','取消'],
 									content:dicDiv,
 									id: 'LAY_layuipro' ,
@@ -924,7 +924,7 @@
 									layer.open({
 										type:1,
 										title:'水费标准',
-										area:['40%','60%'],
+										area:['22%','30%'],
 										btn:['确认','取消'],
 										content:dicDiv,
 										id: 'LAY_layuipro' ,
@@ -1006,7 +1006,7 @@
 									layer.open({
 										type:1,
 										title:'电费标准',
-										area:['40%','60%'],
+										area:['22%','30%'],
 										btn:['确认','取消'],
 										content:dicDiv,
 										id: 'LAY_layuipro' ,
@@ -1604,7 +1604,9 @@
 								//totalRow: true,		 //开启合计行 */
 								smartReloadModel: true,// 开启智能重载
 								parseData: function(ret) {
+									if(ret.data.rows.length!=0){
 									$("#nowDegreeNumss").val(ret.data.rows[0].nowDegreeNum);
+									}
 									return {
 										code: ret.code,
 										msg: ret.message,
@@ -1907,7 +1909,9 @@
 								//totalRow: true,		 //开启合计行 */
 								smartReloadModel: true,// 开启智能重载
 								parseData: function(ret) {
+									if(ret.data.rows.length!=0){
 									$("#nowDegreeNumss2").val(ret.data.rows[0].nowDegreeNum);
+									}
 									return {
 										code: ret.code,
 										msg: ret.message,
@@ -2210,7 +2214,7 @@
 								layer.open({
 									type:1,
 									title:'新增总电费',
-									area:['40%','70%'],
+									area:['25%','70%'],
 									btn:['确认','取消'],
 									content:dicDiv,
 									id: 'LAY_layuipro65' ,
@@ -2248,8 +2252,8 @@
 								var	dicDiv=$("#layuiadmin-form-admin11");
 								layer.open({
 									type:1,
-									title:'新增总电费',
-									area:['45%','70%'],
+									title:'新增总水费',
+									area:['25%','40%'],
 									btn:['确认','取消'],
 									content:dicDiv,
 									id: 'LAY_layuipro36' ,
@@ -2288,8 +2292,7 @@
 								layer.open({
 									type:1,
 									title:'新增水费',
-									shadeClose:true,
-									area:['45%','50%'],
+									area:['22%','30%'],
 									btn:['确认','取消'],
 									content:dicDiv,
 									id: 'LAY_layuipro' ,
@@ -2321,7 +2324,7 @@
 									type:1,
 									title:'新增电费',
 									shadeClose:true,
-									area:['45%','50%'],
+									area:['22%','30%'],
 									btn:['确认','取消'],
 									content:dicDiv,
 									id: 'LAY_layuipro9' ,
@@ -2361,7 +2364,7 @@
 								layer.open({
 									type:1,
 									title:'新增固定资产',
-									area:['45%','50%'],
+									area:['22%','35%'],
 									shadeClose:true,
 									btn:['确认','取消'],
 									content:dicDiv,
@@ -2403,7 +2406,7 @@
 									type:1,
 									title:'新增其他费用',
 									shadeClose:true,
-									area:['45%','50%'],
+									area:['22%','40%'],
 									btn:['确认','取消'],
 									content:dicDiv,
 									id: 'LAY_layuipro' ,

@@ -240,7 +240,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 				if (attendanceTime2.getCheckOut() != null && attendanceTime2.getCheckIn() != null) {
 					DateFormat df = new SimpleDateFormat("HH:mm:ss");
 					Date dt1 = df.parse("08:30:00");
-					Date dt3 = df.parse("13:30:00");
+					Date dt3 = df.parse("12:00:00");
 					Date dt4 = df.parse("18:30:00");
 					Date dt5 = df.parse("04:30:00");
 					String aString = df.format(attendanceTime2.getCheckIn());
@@ -256,6 +256,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 					int b = dt2.compareTo(dt3);
 					int c = dt6.compareTo(dt4);
 					int d = dt2.compareTo(dt4);// 吃晚饭 第一次打卡要小于18.30
+					int e = dt6.compareTo(dt3);
 					if (attendanceTime2.getEatType() != null) {
 						// 早饭 签入时间小于dt1
 						if (attendanceTime2.getEatType() == 1 && a == -1) {
@@ -270,7 +271,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 						}
 					}
 
-					if (b == -1) {
+					if (b == -1 && e==1) {
 						// 中餐 签入时间小于dt3
 						Meal meal2 = new Meal();
 						meal2.setTradeDaysTime(attendanceTime2.getTime());

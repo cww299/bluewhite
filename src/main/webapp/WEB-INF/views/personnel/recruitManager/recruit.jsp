@@ -1581,7 +1581,10 @@
 							field.time="";
 						}
 						table.reload('tableData', {
-							where: field
+							where: field,
+							page: {
+								curr:1
+			                }
 						});
 					});
 					
