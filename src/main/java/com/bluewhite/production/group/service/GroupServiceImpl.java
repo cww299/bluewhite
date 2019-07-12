@@ -28,9 +28,11 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.group.dao.GroupDao;
+import com.bluewhite.production.group.dao.TemporarilyCollectDao;
 import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.entity.Temporarily;
+import com.bluewhite.production.group.entity.TemporarilyCollect;
 import com.bluewhite.system.user.entity.User;
 
 @Service
@@ -41,6 +43,9 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 	@Autowired
 	private TemporarilyDao temporarilyDao;
 
+	@Autowired
+	private TemporarilyCollectDao temporarilyCollectDao;
+	
 	@Autowired
 	private PayBDao payBDao;
 
@@ -231,7 +236,6 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 			List<Map<String, Object>> mapListMonth = new ArrayList<>();
 			Map<String, List<Map<String, Object>>> glist = mapList.stream()
 					.collect(Collectors.groupingBy(e -> e.get("id").toString() + "_" + e.get("kindWork").toString()));
-
 			for (String ps : glist.keySet()) {
 				List<Map<String, Object>> slist = glist.get(ps);
 				Map<String, Object> nmap = new HashMap<>();
@@ -254,8 +258,7 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 				
 				//当人事查看时，人事进行数据的保存
 				if((cu.getRole().contains("superAdmin") || cu.getRole().contains("personnel")) && temporarily.getViewTypeUser() == 1){
-					
-					
+					TemporarilyCollect temporarilyCollect =  new TemporarilyCollect();
 					
 				} 
 				

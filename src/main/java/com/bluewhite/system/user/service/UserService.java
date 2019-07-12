@@ -6,6 +6,7 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.system.user.entity.User;
@@ -136,5 +137,16 @@ public interface UserService extends BaseCRUDService<User, Long> {
 	 * @return
 	 */
 	public int positiveUser(String positiveUser);
+	
+	/**
+	 * 按部门查找所有人员
+	 * @return
+	 */
+	public List<BaseData> findUserOrg();
+	
+	/**
+	 * 给人员批量设定约定休息日期
+	 */
+	public int setUserRestDate(String userIds,String restDay);
 
 }

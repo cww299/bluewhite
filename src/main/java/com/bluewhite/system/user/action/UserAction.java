@@ -472,33 +472,32 @@ public class UserAction {
 		return cr;
 	}
 	
-	
-	@Autowired
-	private PayBDao attendancePayDao;
-	
+	/**
+	 * 按部门查找所有人员
+	 */
+	@RequestMapping(value = "/findUserOrg", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse findUserOrg() {
+		CommonResponse cr = new CommonResponse();
+	  	cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(BaseData.class,"id","name","users")
+				.addRetainTerm(User.class,"id","userName")
+				.format(userService.findUserOrg()).toJSON());
+	  	cr.setMessage("成功");
+		return cr;
+	}
 	
 	/**
-	 *  
+	 * 给人员批量设定约定休息日期
 	 */
-	@RequestMapping(value = "/test", method = RequestMethod.GET)
+	@RequestMapping(value = "/setUserRestDate", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse test(User user) {
+	public CommonResponse setUserRestDate(String userIds,String restDay) {
 		CommonResponse cr = new CommonResponse();
-		int count = 0;
-	   List<User> userlist = userService.findUserList(user);
-	   List<PayB> attendancePayList =  attendancePayDao.findByAllotTimeBetween(user.getOrderTimeBegin(),user.getOrderTimeEnd());
-	   for(User us : userlist){
-		   List<PayB> FList =  attendancePayList.stream().filter(PayB->PayB.getUserId()!=null && PayB.getUserName().equals(us.getUserName())).collect(Collectors.toList());
-		   for(PayB at : FList){
-			   if(at.getUserId() != us.getId()){
-				   at.setUserId(us.getId());
-				   count++;
-			   }
-		   }
-		   attendancePayDao.save(FList);
-	   }
-	   cr.setMessage(count+"");
-	   return cr;
+		int count  = userService.setUserRestDate(userIds,restDay);
+	  	cr.setMessage("成功设定"+count+"个员工的约定休息日期");
+		return cr;
 	}
 	
 	
