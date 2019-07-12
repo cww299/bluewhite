@@ -104,7 +104,7 @@
 				<input type="text" name="applytime" id="applytime" placeholder="请输入申请时间" class="layui-input laydate-icon">
 				&nbsp;&nbsp;
 				<div>
-					<textarea name="restDay" id="inputapplytime" class="layui-textarea"></textarea>
+					<div id="inputapplytime" class="layui-textarea" style="height:100px;overflow-y:scroll;"></div>
 				</div>
 			</div>
 		</div>
@@ -211,7 +211,7 @@
 		<div class="layui-input-inline">
 			<input type="text" id="weekly" placeholder="请输入周休一天的设定时间" class="layui-input laydate-icon">
 			&nbsp;&nbsp;
-			<div><textarea name="keyValue" id="weeklyRestDate" class="layui-textarea"></textarea></div>
+			<div><div name="" id="weeklyRestDate" class="layui-textarea" style="height:150px;overflow-y:scroll;"></div></div>
 		</div>
 	</div>
 	<div class="layui-form-item">
@@ -220,7 +220,7 @@
 			<input type="text" id="month" placeholder="请输入月休2天的设定时间" class="layui-input laydate-icon">
 			&nbsp;&nbsp;
 			<div>
-				<textarea name="keyValueTwo" id="monthRestDate" class="layui-textarea"></textarea>
+				<div name="" id="monthRestDate" class="layui-textarea" style="height:150px;overflow-y:scroll;"></div>
 			</div>
 		</div>
 	</div>
@@ -352,28 +352,36 @@ layui.config({
 		laydate.render({
 			elem: '#applytime',
 			format: 'yyyy-MM-dd',
-			done: function(value, date) {
-				var c=$('#inputapplytime').val()
-				timeAll=(timeAll==''? value:(c+','+value));
-				$("#inputapplytime").val(timeAll)
+			done: function(val, date) {
+				var html = '<p><span class="layui-badge layui-bg-green" data-value="'+val+'">'+val+'<i class="layui-icon layui-icon-close"></i></span></p>';
+				$('#inputapplytime').append(html);
+				$('#inputapplytime').find('.layui-icon-close').on('click',function(){	//删除节点
+					$(this).parent().parent().remove();
+				})
 			}
 		});
 		var timeAll2='';
 		laydate.render({
 			elem: '#weekly',
 			format: 'yyyy-MM-dd',
-			done: function(value, date) {
-				timeAll2=(timeAll2==''? value:(timeAll2+','+value));
-				$("#weeklyRestDate").val(timeAll2)
+			done: function(val, date) {
+				var html = '<p><span class="layui-badge layui-bg-green" data-value="'+val+'">'+val+'<i class="layui-icon layui-icon-close"></i></span></p>';
+				$('#weeklyRestDate').append(html);
+				$('#weeklyRestDate').find('.layui-icon-close').on('click',function(){	//删除节点
+					$(this).parent().parent().remove();
+				})
 			}
 		});
 		var timeAll3='';
 		laydate.render({
 			elem: '#month',
 			format: 'yyyy-MM-dd',
-			done: function(value, date) {
-				timeAll3=(timeAll3==''? value:(timeAll3+','+value));
-				$("#monthRestDate").val(timeAll3)
+			done: function(val, date) {
+				var html = '<p><span class="layui-badge layui-bg-green" data-value="'+val+'">'+val+'<i class="layui-icon layui-icon-close"></i></span></p>';
+				$('#monthRestDate').append(html);
+				$('#monthRestDate').find('.layui-icon-close').on('click',function(){	//删除节点
+					$(this).parent().parent().remove();
+				})
 			}
 		});
 		$.ajax({
@@ -668,14 +676,14 @@ layui.config({
 				        }
 				        ,yes: function(index, layero){
 				        	form.on('submit(addRole)', function(data) {
-				        		var key=data.field.restDay
-				        		var s=key.charAt(key.length-1)
-				        		if(s==","){
-				        			return layer.msg("约定休息日末尾不能是,号", {icon: 2});
-				        		}else{
-				        	  mainJs.fAdd(data.field); 
-				        	 }
-				        	timeAll=""
+				        		var restDay = '';
+			        			layui.each($('#agreedShowTime').find('span'),function(index,item){
+									var val = $(item).attr('data-value');
+									restDay += (val+',');
+								})
+								data.field.restDay = restDay;
+				        	 	mainJs.fAdd(data.field); 
+				        		timeAll=""
 							})
 				        }
 				        ,end:function(){
@@ -735,8 +743,25 @@ layui.config({
 						type: "GET",
 						beforeSend: function() { index; },
 						success: function(result) {
-							$("#weeklyRestDate").val(result.data.keyValue)
-							$("#monthRestDate").val(result.data.keyValueTwo)
+							//回显
+							layui.each(result.data.keyValue.split(','),function(index1,val){
+								if(val=='')
+									return;
+								var html = '<p><span class="layui-badge layui-bg-green" data-value="'+val+'">'+val+'<i class="layui-icon layui-icon-close"></i></span></p>';
+								$('#weeklyRestDate').append(html);
+								$('#weeklyRestDate').find('.layui-icon-close').on('click',function(){	//删除节点
+									$(this).parent().parent().remove();
+								})
+							})
+							layui.each(result.data.keyValueTwo.split(','),function(index1,val){
+								if(val=='')
+									return;
+								var html = '<p><span class="layui-badge layui-bg-green" data-value="'+val+'">'+val+'<i class="layui-icon layui-icon-close"></i></span></p>';
+								$('#monthRestDate').append(html);
+								$('#monthRestDate').find('.layui-icon-close').on('click',function(){	//删除节点
+									$(this).parent().parent().remove();
+								})
+							})
 						},
 						error: function() {
 							layer.msg("操作失败！请重试", { icon: 2 });
@@ -747,7 +772,7 @@ layui.config({
 				         type: 1
 				        ,title: "设定休息时间" //不显示标题栏
 				        ,closeBtn: false
-				        ,area:['30%', '500px']
+				        ,area:['30%', '70%']
 				        ,shade: 0.5
 				        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
 				        ,btn: ['确认', '取消']
@@ -764,14 +789,19 @@ layui.config({
 				        }
 				        ,yes: function(index, layero){
 				        	form.on('submit(addRole2)', function(data) {
+				        		//保存
 				        		var data=data.field
-				        		var key=data.keyValue
-				        		var s=key.charAt(key.length-1)
-				        		var key2=data.keyValueTwo
-				        		var s2=key2.charAt(key2.length-1)
-				        		if(s=="," ||s2==","){
-				        			return layer.msg("周休一天或月休两天的末尾不能是,号", {icon: 2});
-				        		}else{
+				        		data.keyValue='';
+								data.keyValueTwo='';
+				        		layui.each($('#weeklyRestDate').find('span'),function(index,item){
+									var val = $(item).attr('data-value');
+									console.log(val)
+									data.keyValue += (val+',');
+								})
+								layui.each($('#monthRestDate').find('span'),function(index,item){
+									var val = $(item).attr('data-value');
+									data.keyValueTwo += (val+',');
+								})
 				        		$.ajax({
 									url: "${ctx}/personnel/updateRestType",
 									data: data,
@@ -788,7 +818,7 @@ layui.config({
 										layer.msg("操作失败！请重试", { icon: 2 });
 									},
 								});
-				        		}
+				        		
 				        	document.getElementById("layuiadmin-form-admin2").reset();
 				        	layui.form.render();
 				        	timeAll2="" 
@@ -797,6 +827,8 @@ layui.config({
 				        }
 				        ,end:function(){
 				        	 document.getElementById("layuiadmin-form-admin2").reset();
+				        	$('#weeklyRestDate').html('');
+							$('#monthRestDate').html('');
 				        	layui.form.render();
 				        	timeAll2=""
 				        	timeAll3=""
@@ -887,15 +919,14 @@ layui.config({
 			        }
 			        ,yes: function(index, layero){
 			        	form.on('submit(addRole)', function(data) {
-			        		var key=data.field.restDay
-			        		var s=key.charAt(key.length-1)
-			        		if(s==","){
-			        			return layer.msg("约定休息日末尾不能是,号", {icon: 2});
-			        		}else{
-			        	 mainJs.fAdd(data.field); 
-			        		}
+			        		var restDay = '';
+		        			layui.each($('#agreedShowTime').find('span'),function(index,item){
+								var val = $(item).attr('data-value');
+								restDay += (val+',');
+							})
+							data.field.restDay = restDay;
+			        	 	mainJs.fAdd(data.field); 
 						})
-						
 			        }
 			        ,end:function(){
 			        	document.getElementById("layuiadmin-form-admin").reset();
