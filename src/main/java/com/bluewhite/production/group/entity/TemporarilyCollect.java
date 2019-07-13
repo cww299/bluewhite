@@ -26,6 +26,12 @@ public class TemporarilyCollect extends BaseEntity<Long> {
 	private Long userId;
 
 	/**
+	 * 借调人员姓名
+	 */
+	@Column(name = "user_name")
+	private String userName;
+	
+	/**
 	 * 工作时长
 	 */
 	@Column(name = "work_time")
@@ -59,7 +65,7 @@ public class TemporarilyCollect extends BaseEntity<Long> {
 	 * 汇总日期
 	 */
 	@Column(name = "temporarily_date")
-	private Date temporarilyDate;
+	private String temporarilyDate;
 
 	/**
 	 * 分组所属部门类型 (1=一楼质检，2=一楼包装3.二楼针工)
@@ -78,6 +84,14 @@ public class TemporarilyCollect extends BaseEntity<Long> {
 	@Transient
 	private Date orderTimeEnd;
 	
+	
+	
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 	public Long getUserId() {
 		return userId;
 	}
@@ -114,10 +128,11 @@ public class TemporarilyCollect extends BaseEntity<Long> {
 	public void setForeigns(String foreigns) {
 		this.foreigns = foreigns;
 	}
-	public Date getTemporarilyDate() {
+	
+	public String getTemporarilyDate() {
 		return temporarilyDate;
 	}
-	public void setTemporarilyDate(Date temporarilyDate) {
+	public void setTemporarilyDate(String temporarilyDate) {
 		this.temporarilyDate = temporarilyDate;
 	}
 	public Integer getType() {
