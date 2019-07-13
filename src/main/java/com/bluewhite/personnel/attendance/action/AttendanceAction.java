@@ -392,6 +392,7 @@ public class AttendanceAction {
 			cr.setMessage("修改成功");
 			applicationLeaveService.saveApplicationLeave(applicationLeave);
 		} else {
+			ApplicationLeave applicationLeaveUser = null;
 			if(applicationLeave.getUserId()!=null){     
 				userIds = applicationLeave.getUserId().toString();
 			}
@@ -399,8 +400,10 @@ public class AttendanceAction {
 				String[] idArr = userIds.split(",");
 				if (idArr.length > 0) {
 					for(String id : idArr){
-						applicationLeave.setUserId(Long.valueOf(id));
-						applicationLeaveService.saveApplicationLeave(applicationLeave);
+						applicationLeaveUser = new ApplicationLeave();
+						applicationLeaveUser = applicationLeave;
+						applicationLeaveUser.setUserId(Long.valueOf(id));
+						applicationLeaveService.saveApplicationLeave(applicationLeaveUser);
 					}
 				}
 				cr.setMessage("新增成功"+idArr.length+"条");
