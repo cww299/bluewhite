@@ -25,6 +25,15 @@
 .showTimeDiv span{
 	height:24px;
 }
+#orgAndPersonDiv{
+	float: right;
+    width: 200px;
+    height: 400px;
+    padding: 10px;
+    border: 1px solid #e2e2e2;
+	overflow-y: scroll;
+	display:none;
+}
 </style>
 </head>
 <body>
@@ -61,148 +70,150 @@
 	</div>
 </div>
 	
-<form action="" id="layuiadmin-form-admin" style="padding: 20px 0px 0 60px; display: none; text-align:">
-<div class="layui-form" lay-filter="layuiadmin-form-admin">
-	<div class="layui-form-item">
-		<label class="layui-form-label" style="width: 90px;">申请人</label>
-		<div class="layui-input-inline">
-			<select name="userId" lay-filter="lay_selecte" lay-verify="required" id="selectOne" lay-search="true"></select>
-		</div>
-	</div>
-	<div class="layui-form-item">
-		<label class="layui-form-label" style="width: 90px;">申请时间</label>
-		<div class="layui-input-inline">
-			<input type="text" name="applytime" id="applytime"
-				lay-verify="required" placeholder="请输入申请时间"
-				class="layui-input laydate-icon">
-		</div>
-	</div>
-	<div class="layui-form-item">
-		<label class="layui-form-label" style="width: 90px;">申请项</label>
-		<div class="layui-input-inline" id="selectradio" style="width: 330px;">
-			<input type="radio" lay-filter="variable" id="qing" name="variable" value="0" title="请假" checked="">
-			<input type="radio" lay-filter="variable" id="tiao" name="variable" value="1" title="调休"> 
-			<input type="radio" lay-filter="variable" id="bu" name="variable" value="2" title="补签">
-			<input type="radio" lay-filter="variable" id="jia" name="variable" value="3" title="加班">
-		</div>
-	</div>
-	<!-- 请假 -->
-	<div id="leave" style="display: block;">
+<form action="" id="layuiadmin-form-admin" style="padding: 20px; display: none; text-align:">
+	<div class="layui-form" style="float:left;width:500px;" lay-filter="layuiadmin-form-admin">
 		<div class="layui-form-item">
-			<label class="layui-form-label" style="width: 90px;">请假类型</label>
+			<label class="layui-form-label" style="width: 90px;">申请人</label>
 			<div class="layui-input-inline">
-				<select name="holidayType" lay-filter="holidayType"
-					id="holidayType" lay-search="true"><option value="">请选择</option>
-					<option value="0">事假</option>
-					<option value="1">病假</option>
-					<option value="2">丧假</option>
-					<option value="3">婚假</option>
-					<option value="4">产假</option>
-					<option value="5">护理假</option>
-					<option value="6">抵消迟到</option></select>
+				<select name="userId" lay-filter="lay_selecte" id="selectOne" lay-search="true"></select>
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<label class="layui-form-label" style="width: 90px;">请假原因</label>
+			<label class="layui-form-label" style="width: 90px;">申请时间</label>
 			<div class="layui-input-inline">
-				<input type="text" name="content" id="content"
-					lay-verify="content" placeholder="请输入请假原因 " class="layui-input">
+				<input type="text" name="applytime" id="applytime"
+					lay-verify="required" placeholder="请输入申请时间"
+					class="layui-input laydate-icon">
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<label class="layui-form-label" style="width: 90px;">日期时长</label>
-			<div class="layui-input-inline">
-				<input type="text" name="leavetime" id="leavetime" placeholder="请输入请假日期" class="layui-input">
-			</div>
-			<div class="layui-input-inline" style="width: 15%;">
-				<input type="text" name="leaveduration" id="leaveduration" placeholder="时长 " class="layui-input">
-			</div>
-		</div>
-		<div class="layui-form-item">
-			<label class="layui-form-label" style="width: 90px;">显示</label>
-			<div class="layui-input-inline" style="width: 230px;">
-				<div name="inputapplytime2" id="inputapplytime2" class="layui-textarea showTimeDiv"></div>
+			<label class="layui-form-label" style="width: 90px;">申请项</label>
+			<div class="layui-input-inline" id="selectradio" style="width: 330px;">
+				<input type="radio" lay-filter="variable" id="qing" name="variable" value="0" title="请假" checked="">
+				<input type="radio" lay-filter="variable" id="tiao" name="variable" value="1" title="调休"> 
+				<input type="radio" lay-filter="variable" id="bu" name="variable" value="2" title="补签">
+				<input type="radio" lay-filter="variable" id="jia" name="variable" value="3" title="加班">
 			</div>
 		</div>
-	</div>
-	<!-- 调休 -->
-   <div id="Break" style="display: none;">
-	    <div class="layui-form-item">
-	      <label class="layui-form-label" style="width: 90px;">调休时间</label>
-	      <div class="layui-input-inline">
-	        <input type="text" name="breaktime" id="breaktime" style="width: 190px; position:absolute; float: left;" lay-verify="breaktime" placeholder="请输入调休到哪一天的时间" class="layui-input laydate-icon">
-	      	<input type="text" style="width: 90px; position:absolute; float: left; margin-left: 210px;" name="breakduration" id="breakduration" lay-verify="breakduration" placeholder="时长 " class="layui-input">
-	      </div>
+		<!-- 请假 -->
+		<div id="leave" style="display: block;">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 90px;">请假类型</label>
+				<div class="layui-input-inline">
+					<select name="holidayType" lay-filter="holidayType"
+						id="holidayType" lay-search="true"><option value="">请选择</option>
+						<option value="0">事假</option>
+						<option value="1">病假</option>
+						<option value="2">丧假</option>
+						<option value="3">婚假</option>
+						<option value="4">产假</option>
+						<option value="5">护理假</option>
+						<option value="6">抵消迟到</option></select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 90px;">请假原因</label>
+				<div class="layui-input-inline">
+					<input type="text" name="content" id="content"
+						lay-verify="content" placeholder="请输入请假原因 " class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 90px;">日期时长</label>
+				<div class="layui-input-inline">
+					<input type="text" name="leavetime" id="leavetime" placeholder="请输入请假日期" class="layui-input">
+				</div>
+				<div class="layui-input-inline" style="width: 15%;">
+					<input type="text" name="leaveduration" id="leaveduration" placeholder="时长 " class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 90px;">显示</label>
+				<div class="layui-input-inline" style="width: 230px;">
+					<div name="inputapplytime2" id="inputapplytime2" class="layui-textarea showTimeDiv"></div>
+				</div>
+			</div>
+		</div>
+		<!-- 调休 -->
+	   <div id="Break" style="display: none;">
+		    <div class="layui-form-item">
+		      <label class="layui-form-label" style="width: 90px;">调休时间</label>
+		      <div class="layui-input-inline">
+		        <input type="text" name="breaktime" id="breaktime" style="width: 190px; position:absolute; float: left;" lay-verify="breaktime" placeholder="请输入调休到哪一天的时间" class="layui-input laydate-icon">
+		      	<input type="text" style="width: 90px; position:absolute; float: left; margin-left: 210px;" name="breakduration" id="breakduration" lay-verify="breakduration" placeholder="时长 " class="layui-input">
+		      </div>
+		    </div>
+		    
+		    <div class="layui-form-item" >
+			      <label class="layui-form-label" style="width: 90px;">显示</label>
+			      <div class="layui-input-inline" style="width: 230px;">
+			      <div name="inputapplytime3"   id="inputapplytime3" class="layui-textarea showTimeDiv"></div>
+		      </div>
+		    </div>
 	    </div>
-	    
-	    <div class="layui-form-item" >
-		      <label class="layui-form-label" style="width: 90px;">显示</label>
-		      <div class="layui-input-inline" style="width: 230px;">
-		      <div name="inputapplytime3"   id="inputapplytime3" class="layui-textarea showTimeDiv"></div>
-	      </div>
-	    </div>
-    </div>
-	<!-- 补签 -->
-	<div id="repair" style="display: none;">
-		<div class="layui-form-item">
-			<label class="layui-form-label" style="width: 90px;">补签日期</label>
-			<div class="layui-input-inline">
-				<input type="text" id="repairtime" placeholder="请输入补签日期" class="layui-input">
+		<!-- 补签 -->
+		<div id="repair" style="display: none;">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 90px;">补签日期</label>
+				<div class="layui-input-inline">
+					<input type="text" id="repairtime" placeholder="请输入补签日期" class="layui-input">
+				</div>
+				<input type="checkbox" id="moren" name="like[write]" title="默认" checked="true">
+				<!-- <td>&nbsp;&nbsp;</td> -->
 			</div>
-			<input type="checkbox" id="moren" name="like[write]" title="默认" checked="true">
-			<!-- <td>&nbsp;&nbsp;</td> -->
-		</div>
-		<div class="layui-form-item">
-			<label class="layui-form-label" style="width: 90px;">显示</label>
-			<div class="layui-input-inline" style="width: 230px;">
-				<div name="repairtime" id="inputapplytime" class="layui-textarea showTimeDiv"></div>
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 90px;">显示</label>
+				<div class="layui-input-inline" style="width: 230px;">
+					<div name="repairtime" id="inputapplytime" class="layui-textarea showTimeDiv"></div>
+				</div>
 			</div>
-		</div>
-		<div class="layui-form-item">
-			<label class="layui-form-label" style="width: 90px;">补签状态</label>
-			<div class="layui-input-inline" style="width: 325px;">
-				<input type="radio" name="Sign" id="qianru" value="0" title="签入" checked=""> <input type="radio" name="Sign" id="qianchu" value="1" title="签出">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 90px;">补签状态</label>
+				<div class="layui-input-inline" style="width: 325px;">
+					<input type="radio" name="Sign" id="qianru" value="0" title="签入" checked=""> <input type="radio" name="Sign" id="qianchu" value="1" title="签出">
+				</div>
 			</div>
+			
 		</div>
-		
-	</div>
-	<!-- 加班 -->
-	<div id="overtime" style="display: none;">
-		<div class="layui-form-item">
-			<label class="layui-form-label" style="width: 90px;">加班类型</label>
-			<div class="layui-input-inline">
-				<select name="overtime_type" lay-filter="overtime_type" id="overtime_type" lay-search="true" value="1">
-					<option value="1">正常加班</option>
-					<option value="2">撤销加班</option></select>
+		<!-- 加班 -->
+		<div id="overtime" style="display: none;">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 90px;">加班类型</label>
+				<div class="layui-input-inline">
+					<select name="overtime_type" lay-filter="overtime_type" id="overtime_type" lay-search="true" value="1">
+						<option value="1">正常加班</option>
+						<option value="2">撤销加班</option></select>
+				</div>
 			</div>
-		</div>
-		<div class="layui-form-item">
-			<label class="layui-form-label" style="width: 90px;">加班</label>
-			<div class="layui-input-inline">
-				<input type="text" name="overtime"
-					style="width: 190px; position: absolute; float: left;"
-					id="overdurationtime" lay-verify="overtime" placeholder="请输入加班日期"
-					class="layui-input laydate-icon"> <input type="text"
-					name="overduration"
-					style="width: 90px; position: absolute; float: left; margin-left: 210px;"
-					id="overduration" lay-verify="overduration" placeholder="加班时长 "
-					class="layui-input">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 90px;">加班</label>
+				<div class="layui-input-inline">
+					<input type="text" name="overtime"
+						style="width: 190px; position: absolute; float: left;"
+						id="overdurationtime" lay-verify="overtime" placeholder="请输入加班日期"
+						class="layui-input laydate-icon"> <input type="text"
+						name="overduration"
+						style="width: 90px; position: absolute; float: left; margin-left: 210px;"
+						id="overduration" lay-verify="overduration" placeholder="加班时长 "
+						class="layui-input">
+				</div>
 			</div>
-		</div>
-		<div class="layui-form-item">
-			<label class="layui-form-label" style="width: 90px;">显示</label>
-			<div class="layui-input-inline" style="width: 230px;">
-				<div name="inputapplytime4" id="inputapplytime4" class="layui-textarea showTimeDiv"></div>
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 90px;">显示</label>
+				<div class="layui-input-inline" style="width: 230px;">
+					<div name="inputapplytime4" id="inputapplytime4" class="layui-textarea showTimeDiv"></div>
+				</div>
 			</div>
 		</div>
-	</div>
-
-	<!-- 作用？回车引起404报错 -->
-	<!-- <div class="layui-form-item layui-hide">
-		<button type="submit" class="layui-btn layui-btn-primary">重置</button>
-	</div> -->
-	</div>
+	
+		<!-- 作用？回车引起404报错 -->
+		<!-- <div class="layui-form-item layui-hide">
+			<button type="submit" class="layui-btn layui-btn-primary">重置</button>
+		</div> -->
+		</div>
+	<div id="orgAndPersonDiv"></div>
 </form>
+
 	
 <script type="text/html" id="toolbar">
 	<div class="layui-btn-container layui-inline">
@@ -217,18 +228,19 @@
 	layui.config({
 		base: '${ctx}/static/layui-v2.4.5/'
 	}).extend({
-		tablePlug: 'tablePlug/tablePlug'
+		tablePlug: 'tablePlug/tablePlug',
+		menuTree : 'layui/myModules/menuTree'
 	}).define(
-		['tablePlug', 'laydate', 'element','form'],
+		['tablePlug', 'laydate', 'element','form','menuTree'],
 		function() {
 			var $ = layui.jquery,
 				layer = layui.layer,
 				form = layui.form,
+				menuTree = layui.menuTree,
 				table = layui.table ,
 				laydate = layui.laydate,
 				tablePlug = layui.tablePlug,
 				element = layui.element;
-
 			//select全局变量
 			var htmls = '<option value="">请选择</option>';
 			var index = layer.load(1, {
@@ -522,10 +534,11 @@
 						$("#repair").css("display","none")
 						$("#overtime").css("display","none")
 			        	layui.form.render();
+			        	$('#orgAndPersonDiv').show();	//新增时候显示人员
 						layer.open({
 					         type: 1
 					        ,title: "新增" //不显示标题栏
-					        ,area:['540px', '550px']
+					        ,area:['800px', '550px']
 					        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
 					        ,btn: ['确认', '取消']
 					        ,btnAlign: 'c'
@@ -552,12 +565,10 @@
 					        			if(data.field.holidayType==""){
 					        				return layer.msg("请假类型不能为空", {icon: 2});
 					        			}
-					        			if(data.field.content==""){
+					        			if(data.field.content=="")
 					        				return layer.msg("请假原因不能为空", {icon: 2});
-					        			}
-					        			if($('#inputapplytime2').find('p').length==0){
+					        			if($('#inputapplytime2').find('p').length==0)
 					        				return layer.msg("请假日期跟内容不能为空", {icon: 2});
-					        			}
 					        			variable='holiday';
 					        			holidayType=data.field.holidayType;
 					        			content=data.field.content;
@@ -571,7 +582,7 @@
 												"time": val[1],
 											})
 										})
-					        		}
+					        		} 
 					        		if(data.field.variable==1){
 					        			if($('#inputapplytime3').find('p').length==0){
 					        				return layer.msg("调休时长不能为空", {icon: 2});
@@ -619,25 +630,36 @@
 											})
 										})
 					        		}
-					        	var postData={
-					        			userId:data.field.userId,
-					        			writeTime:data.field.applytime,
-					        			[variable]:'true',
-					        			holidayType:holidayType,
-					        			overtimeType:overtime_type,
-					        			content:content,
-					        			time:JSON.stringify(myArray)
-					        	}	
-					        	 mainJs.fAdd(postData);
-					        	timeAll=""
+					        		//进行是否同时多选，单选判断
+						        	var ids = menuTree.getVal('orgAndPersonDiv');
+						        	if(ids.length>0 && data.field.userId!='')
+						        		return layer.msg('不能同时单选员工与多选员工！',{icon:2});
+						        	var userIds = '';
+						        	layui.each(ids,function(index1,item1){
+						        		if(item1!='' && item1!=0)
+						        			userIds+=(item1+',');
+					        		}); 
+						        	var postData={
+						        			userId:data.field.userId,
+						        			userIds:userIds,
+						        			writeTime:data.field.applytime,
+						        			holidayType:holidayType,
+						        			overtimeType:overtime_type,
+						        			content:content,
+						        			time: JSON.stringify(myArray),
+						        			[variable]:'true',
+						        	} 
+						        	mainJs.fAdd(postData);
+						        	timeAll=""; 
 								})
 					        }
 					        ,end:function(){ 
 					        	document.getElementById("layuiadmin-form-admin").reset();
 					        	layui.form.render();
-					        	timeAll=""
-							  } 
-					      });
+					        	timeAll="";
+					        	$('#orgAndPersonDiv').hide();
+							} 
+					    });
 						break;
 				}
 			});
@@ -787,6 +809,9 @@
 				        			if($('#inputapplytime2').find('p').length==0){
 				        				return layer.msg("请假日期跟内容不能为空", {icon: 2});
 				        			}
+				        			if($('#selectOne').val()==''){
+				        				return layer.msg("申请人不能为空", {icon: 2});
+				        			}
 				        			variable='holiday';
 				        			holidayType=data.field.holidayType;
 				        			content=data.field.content;
@@ -932,8 +957,40 @@
 					});
 					layer.close(index);
 			    }
-			}
-
+			};
+			(function(){			//渲染部门人员树形结构
+				 $.ajax({
+					url:'${ctx}/system/user/findUserOrg',
+					success:function(r){
+						if(0==r.code){
+							var data = [{ id:0, name:'全选所有部门', children:[], }];
+							layui.each(r.data,function(index,item){			//解析数据格式
+								if(item.users.length>0){
+									var children = [];
+									layui.each(item.users,function(index1,item1){
+										children.push({
+											id:item1.id,
+											name:item1.userName,
+										})
+									})
+									data[0].children.push({
+										id:0,			//排除部门id的影响
+										name:item.name,
+										children: children,
+									})
+								} 
+							})
+							menuTree.render({				
+					    	  elem:'#orgAndPersonDiv',
+					    	  data : data,
+							}) 
+						}
+						else
+							layer.msg('请求员工数据异常！',{icon:2});
+					}
+				})  
+				
+			})();
 		}
 	)
 </script>
