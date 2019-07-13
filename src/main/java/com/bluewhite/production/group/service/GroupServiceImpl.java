@@ -259,6 +259,8 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 				//当人事查看时，人事进行数据的保存
 				if((cu.getRole().contains("superAdmin") || cu.getRole().contains("personnel")) && temporarily.getViewTypeUser() == 1){
 					TemporarilyCollect temporarilyCollect =  new TemporarilyCollect();
+					temporarilyCollect.setForeigns(nmap.get("foreigns").toString());
+					
 					
 				} 
 				
