@@ -19,7 +19,7 @@
 </head>
 
 <body>
-<div class="layui-card" style="height:800px;">
+<div class="layui-card">
 	<div class="layui-card-header">
 		<ul>
 			<li style="display: inline;"><i class="fa fa-circle" style="color: #9e9e1f"></i>迟到</li>
@@ -401,7 +401,7 @@
 												
 												
 												table.init('test3', {
-													height:'600px',
+													height:'700px',
 													cols : list2,
 													data : res.data,
 													limit:500,
@@ -418,7 +418,7 @@
 						size: 'lg',
 						url: '${ctx}/personnel/findAttendanceCollect',
 						where :data,
-						height:'600px',
+						height:'700px',
 						method : 'POST',
 						loading: true,
 						toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
