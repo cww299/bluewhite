@@ -386,14 +386,26 @@ public class AttendanceAction {
 	 */
 	@RequestMapping(value = "/personnel/addApplicationLeave", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addApplicationLeave(HttpServletRequest request, ApplicationLeave applicationLeave) throws ParseException {
+	public CommonResponse addApplicationLeave(ApplicationLeave applicationLeave,String userIds) throws ParseException {
 		CommonResponse cr = new CommonResponse();
 		if (applicationLeave.getId() != null) {
 			cr.setMessage("修改成功");
+			applicationLeaveService.saveApplicationLeave(applicationLeave);
 		} else {
-			cr.setMessage("新增成功");
+			if(applicationLeave.getUserId()!=null){     
+				userIds = applicationLeave.getUserId().toString();
+			}
+			if (!StringUtils.isEmpty(userIds)) {
+				String[] idArr = userIds.split(",");
+				if (idArr.length > 0) {
+					for(String id : idArr){
+						applicationLeave.setUserId(Long.valueOf(id));
+						applicationLeaveService.saveApplicationLeave(applicationLeave);
+					}
+				}
+				cr.setMessage("新增成功"+idArr.length+"条");
+			}
 		}
-		applicationLeaveService.saveApplicationLeave(applicationLeave);
 		return cr;
 	}
 
