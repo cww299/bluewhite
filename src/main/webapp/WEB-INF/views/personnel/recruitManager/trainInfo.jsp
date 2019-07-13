@@ -337,6 +337,7 @@ layui.config({
 				var startTiemTd = trElem.find('td[data-field="startTime"]')[0];
 				laydate.render({
 					elem: startTiemTd.children[0],
+					type:'datetime',
 					format: 'yyyy-MM-dd HH:mm:ss',
 					done: function(value, date) {
 						var trElem = $(this.elem[0]).closest('tr');
@@ -348,6 +349,7 @@ layui.config({
 				laydate.render({
 					elem: endTimeTd.children[0],
 					format: 'yyyy-MM-dd HH:mm:ss',
+					type:'datetime',
 					done: function(value, date) {
 						var trElem = $(this.elem[0]).closest('tr');
 						var tableView = trElem.closest('.layui-table-view');
