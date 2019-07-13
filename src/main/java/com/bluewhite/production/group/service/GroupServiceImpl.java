@@ -225,6 +225,7 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 									? (psList.get(0).getGroup().getKindWork() == null ? ""
 											: psList.get(0).getGroup().getKindWork().getName())
 									: group.getKindWork() == null ? "" : group.getKindWork().getName());
+					mapTe.put("type", temporarily.getType());
 					mapList.add(mapTe);
 				}
 			}
@@ -254,15 +255,27 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 				nmap.put("price", slist.get(0).get("price"));
 				nmap.put("sumPrice", mapsumPrice.getSum());
 				nmap.put("kindWork", slist.get(0).get("kindWork"));
+				nmap.put("type", slist.get(0).get("type"));
 				mapListMonth.add(nmap);
 				
 				//当人事查看时，人事进行数据的保存
 				if((cu.getRole().contains("superAdmin") || cu.getRole().contains("personnel")) && temporarily.getViewTypeUser() == 1){
-					TemporarilyCollect temporarilyCollect =  new TemporarilyCollect();
+					TemporarilyCollect temporarilyCollect = temporarilyCollectDao.findByTemporarilyDateAndUserId(nmap.get("date").toString(),(Long)nmap.get("id"));
+					if(temporarilyCollect == null){ 
+						temporarilyCollect =  new TemporarilyCollect();
+					}
 					temporarilyCollect.setForeigns(nmap.get("foreigns").toString());
-					
-					
-				} 
+					temporarilyCollect.setTemporarilyDate(nmap.get("date").toString());
+					temporarilyCollect.setUserId((Long)nmap.get("id"));
+					temporarilyCollect.setUserName(nmap.get("name").toString());
+					temporarilyCollect.setSumPrice((Double)nmap.get("sumPrice"));
+					temporarilyCollect.setWorkTime((Double)nmap.get("workTime"));
+					temporarilyCollect.setPrice((Double)nmap.get("price"));
+					temporarilyCollect.setKindWork(nmap.get("kindWork").toString());
+					temporarilyCollect.setPrice((Double)nmap.get("price"));
+					temporarilyCollect.setType((Integer)nmap.get("type"));
+					temporarilyCollectDao.save(temporarilyCollect);
+				}     
 				
 			};
 			return mapListMonth;

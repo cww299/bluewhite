@@ -401,7 +401,7 @@ public class AttendanceAction {
 				if (idArr.length > 0) {
 					for(String id : idArr){
 						applicationLeaveUser = new ApplicationLeave();
-						applicationLeaveUser = applicationLeave;
+						BeanCopyUtils.copyNotEmpty(applicationLeave,applicationLeaveUser);
 						applicationLeaveUser.setUserId(Long.valueOf(id));
 						applicationLeaveService.saveApplicationLeave(applicationLeaveUser);
 					}
