@@ -374,33 +374,6 @@ layui.config({
 				}
 			});
 		}		
-	/* 	table.on('tool(test3)', function(obj){			//自定义事件名  tdClick-0123(代表出勤、加班、缺勤..)-i  (代表的是第几个)
-			//自定义事件名主要用于计算点击的td的 data-key值（对应点击的列数）  2-2-() 
-			//对应的key值计算
-			var event = (obj.event).split('-');
-			var key = event[2]*4-(-event[1]);
-			var tableKey = $($('.layui-table-body').find('td')[1]).attr('data-key').split('-');
-			var dataKey = tableKey[0]+'-'+tableKey[1]+'-'+key;
-			layui.each($('.layui-table-body').find('td[data-key="'+dataKey+'"]'),function(index,item){
-				$(item).css('background-color',bgColor);	//列变色
-			})
-			bgColorCol.push(dataKey);
-			bgColorRow.push(obj.tr[0].dataset.index);
-			//行变色
-			$(obj.tr[0]).css('background-color',bgColor)
-		});
-		table.on('rowDouble(test3)',function(obj){
-			layui.each(bgColorCol,function(index,item){
-				layui.each($('.layui-table-body').find('td[data-key="'+item+'"]'),function(index1,item1){
-					$(item1).css('background-color','');	//列变色
-				})
-			})
-			bgColorCol = [];
-			bgColorRow = [];
-			layui.each($('.layui-table-body').find('tr'),function(index,item){
-				$(item).css('background-color','#ffffff');
-			})
-		}) */
 		table.on('edit(test5)', function(obj) {
 			var field = obj.field;
 			var postData={
@@ -442,8 +415,9 @@ layui.config({
 				field='turnWorkTime'
 			if(obj.field==1)
 				field='overtime'
-			if(obj.field==2)
+			if(obj.field==2){
 				field='dutytime'
+			}
 			var postData={
 					id:id,
 					[field]:value,
@@ -453,6 +427,7 @@ layui.config({
 				url:"${ctx}/personnel/updateAttendanceTime",
 				data:postData,
 				type:"POST",
+				async:false,
 				success:function(r){
 					var icon = 2;
 					if(0==r.code){
