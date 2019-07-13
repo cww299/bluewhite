@@ -12,7 +12,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>考勤详细</title>
+<title>考勤统计</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <style>
@@ -213,10 +213,9 @@
 															var field={
 																	userId:$('#userId').val(),
 																	orgNameId:$('#orgNameId').val(),
-																	orderTimeBegin:$('#startTime').val(),
+																	orderTimeBegin:$('#startTime').val()+'-01 00:00:00',
 																	sign:2,
 															}
-															console.log(field)
 															var postUrl='${ctx}/personnel/addAttendanceTime'
 															even(postUrl,field)
 															 layer.closeAll();

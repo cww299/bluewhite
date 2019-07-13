@@ -231,7 +231,7 @@
 		<div class="layui-form-item">
 			<label class="layui-form-label">日期</label>
 			<div class="layui-input-inline">
-				<input type="text" id="agreedSetTime" placeholder="请输入请假日期" class="layui-input">
+				<input type="text" id="agreedSetTime" placeholder="请输入日期" class="layui-input">
 			</div>
 		</div>
 		<div class="layui-form-item">
