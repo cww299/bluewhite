@@ -164,19 +164,20 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 	public List<Map<String, Object>> findBasicsSummary(Basics basics) {
 		List<Recruit> list= recruitDao.findByTimeBetween(DatesUtil.getFirstDayOfMonth(basics.getTime()), DatesUtil.getLastDayOfMonth(basics.getTime()));
 		List<Map<String, Object>> allList = new ArrayList<>();
-		Map<String, Object> allMap =new HashMap<>();
+		Map<String, Object> allMap =null;
 		Map<Long, List<Recruit>> map = list.stream()
 				.filter(Recruit -> Recruit.getOrgNameId() != null)
 				.collect(Collectors.groupingBy(Recruit::getOrgNameId, Collectors.toList()));
 		Basics basics2= findBasics(basics);
 		for (Long ps1 : map.keySet()) {
+			allMap =new HashMap<>();
 			List<Recruit> psList1 = map.get(ps1);
 			Long f=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState().equals(1) && Recruit.getUser().getQuit().equals(0)).count();//已入职且在职
 			//得到入职且在职的人
 			List<Recruit> list2= psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState().equals(1) && Recruit.getUser().getQuit().equals(0)).collect(Collectors.toList());
 			BaseData baseData=baseDataDao.findOne(ps1);
 			String string= baseData.getName();
-			double d= NumUtils.mul(basics2.getOccupyPrice(),f);
+			double d= NumUtils.mul(basics2.getOccupyPrice(),f);//占到的应聘费用
 			double ReceivePrice=0;//奖金
 			double trainPrice=0;//培训费
 			if (list2.size()>0) {
@@ -231,8 +232,8 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 			allMap.put("occupyPrice",d);
 			allMap.put("ReceivePrice",ReceivePrice);
 			allMap.put("trainPrice",trainPrice);
+			allList.add(allMap);
 			}
-		allList.add(allMap);
 		return allList;
 	}
 
