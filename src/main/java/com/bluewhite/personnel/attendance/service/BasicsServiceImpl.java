@@ -141,6 +141,11 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 		basics2.setNumber(sum);//应邀面试人数汇总
 		basics2.setAdmissionNum(sum2);//当月应聘被录取人员数量
 		Double d1= NumUtils.sum(advertisementPrice, basics2.getRecruitUserPrice());//广告费+日期内面试招聘人员费用/元填写→
+		if (sum2!=0) {
+			basics2.setSharePrice(NumUtils.div(d1,sum2,2));//摊到的应聘费用
+		}else{
+			basics2.setSharePrice(0.0);//摊到的应聘费用
+		}
 		if(sum!=0){
 			basics2.setOccupyPrice(NumUtils.div(d1,sum, 2));//每人占到应聘费用
 		}else{
@@ -177,7 +182,7 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 			List<Recruit> list2= psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState().equals(1) && Recruit.getUser().getQuit().equals(0)).collect(Collectors.toList());
 			BaseData baseData=baseDataDao.findOne(ps1);
 			String string= baseData.getName();
-			double d= NumUtils.mul(basics2.getOccupyPrice(),f);//占到的应聘费用
+			double d= NumUtils.mul(basics2.getSharePrice(),f);//占到的应聘费用
 			double ReceivePrice=0;//奖金
 			double trainPrice=0;//培训费
 			if (list2.size()>0) {

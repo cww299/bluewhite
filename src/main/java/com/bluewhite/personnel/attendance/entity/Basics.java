@@ -52,6 +52,13 @@ public class Basics extends BaseEntity<Long> {
 	@Transient
 	private Double occupyPrice;
 	
+	
+	/**
+	 * 摊到的招聘费用
+	 */
+	@Transient
+	private Double sharePrice;
+	
 	/**
 	 * 培训费用
 	 */
@@ -75,6 +82,12 @@ public class Basics extends BaseEntity<Long> {
 	private Date orderTimeEnd;
 	
 	
+	public Double getSharePrice() {
+		return sharePrice;
+	}
+	public void setSharePrice(Double sharePrice) {
+		this.sharePrice = sharePrice;
+	}
 	public Double getTrainPrice() {
 		return trainPrice;
 	}
