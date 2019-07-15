@@ -29,7 +29,7 @@
 	float: right;
     width: 200px;
     height: 400px;
-    padding: 10px;
+    padding: 10px; 
     border: 1px solid #e2e2e2;
 	overflow-y: scroll;
 	display:none;
@@ -158,8 +158,7 @@
 				<div class="layui-input-inline">
 					<input type="text" id="repairtime" placeholder="请输入补签日期" class="layui-input">
 				</div>
-				<input type="checkbox" id="moren" name="like[write]" title="默认" checked="true">
-				<!-- <td>&nbsp;&nbsp;</td> -->
+				<input type="checkbox" id="moren" name="like[write]" title="默认" checked lay-filter='moren'>
 			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 90px;">显示</label>
@@ -281,14 +280,19 @@
 				elem: '#endTime',
 				type: 'datetime',
 			});
+			var moren = true;
+			form.on('checkbox(moren)',function (data) {
+				moren = data.elem.checked;
+			})
 			$('#inputapplytime').on('click',function(){
-				var leaveDate=$("#repairtime").val().split(' ')[0];
-				if(leaveDate!=''){
-					var val = leaveDate;
-					if($("#qianru").get(0).checked==true)
-						val +=' 08:00:00'
-					if($("#qianchu").get(0).checked==true)
-						val +=' 18:00:00'
+				var val=$("#repairtime").val();	
+				if(val!=''){
+					if(moren){
+						if($("#qianru").get(0).checked==true)
+							val = val.split(' ')[0] + ' 08:00:00'
+						if($("#qianchu").get(0).checked==true)
+							val = val.split(' ')[0] + ' 18:00:00'
+					}
 					var html = '<p><span class="layui-badge layui-bg-green" data-value="'+val+'">'+val+'<i class="layui-icon layui-icon-close"></i></span></p>';
 					$("#repairtime").val("");		//清空内容
 					$("#inputapplytime").append(html)
@@ -363,13 +367,11 @@
 			});
 			
 			var getdata = {
-					type : "orgName",
+					
 				}
 			var htmlfr=""
 				$.ajax({
-					url : "${ctx}/basedata/list",
-					data : getdata,
-					type : "GET",
+					url : "${ctx}/basedata/list?type=orgName",
 					beforeSend : function() {
 						index;
 					},
@@ -381,35 +383,19 @@
 						layer.close(index);
 					}
 				});
-
-			
-			
-			
 			table.render({
 				elem: '#tableData',
 				size: 'lg',
 				height:'700px',
 				url: '${ctx}/personnel/getApplicationLeavePage' ,
-				request:{
-					pageName: 'page' ,//页码的参数名称，默认：page
-					limitName: 'size' //每页数据量的参数名，默认：limit
-				},
-				page: {
-				} //开启分页
-				,
+				request:{ pageName: 'page' , limitName: 'size'  },
+				page: {},
 				loading: true,
-				toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+				toolbar: '#toolbar', 
 				cellMinWidth: 90,
 				colFilterRecord: true,
-				smartReloadModel: true,// 开启智能重载
-				parseData: function(ret) {
-					return {
-						code: ret.code,
-						msg: ret.message,
-						count:ret.data.total,
-						data: ret.data.rows
-					}
-				},
+				smartReloadModel: true,
+				parseData: function(ret) { return { code: ret.code, msg: ret.message, count:ret.data.total, data: ret.data.rows } },
 				cols: [
 					[{
 						type: 'checkbox',
