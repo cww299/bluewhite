@@ -309,6 +309,7 @@ layui.config({
 					table.init('test3', {
 						cols : list2,
 						data : res.data,
+						limit:500,
 						height: '700px',
 						loading:true,
 					});
