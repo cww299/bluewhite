@@ -89,7 +89,7 @@ layui.config({
 		colorpicker.render({
 		    elem: '#colorChoose'
 		    ,color: '#ffb800' 
-		    ,done: function(color){
+		    ,change: function(color){
 		    	bgColor = color;
 		    	layui.each(bgColorCol,function(index,item){
 					layui.each($('.layui-table-body').find('td[data-key="'+item+'"]'),function(index1,item1){

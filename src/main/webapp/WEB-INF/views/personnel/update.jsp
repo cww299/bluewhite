@@ -105,7 +105,7 @@ layui.config({
 		colorpicker.render({
 		    elem: '#colorChoose'
 		    ,color: '#ffb800' 
-		    ,done: function(color){
+		    ,change: function(color){
 		    	bgColor = color;
 		    	layui.each(bgColorCol,function(index,item){
 					layui.each($('div[lay-id="test3"]').find('.layui-table-body').find('td[data-key="'+item+'"]'),function(index1,item1){
@@ -395,7 +395,6 @@ layui.config({
 			}); 
 		    layer.close(load);
 		})	
-
 		table.on('edit(test3)', function(obj) {
 			var that=this
 			var tde = $(that).closest('td')
@@ -439,7 +438,23 @@ layui.config({
 			}); 
 		    layer.close(load);
 		});
-
+		//---------------还原变色------------------------------------------------------------
+		var cssEdit = '';           //记录编辑单元格的颜色，用于还原
+		var tdElem = null;
+		$(document).on('mouseenter', 'td[data-edit="text"]', function (event) {		//进入单元格td
+			if($('.layui-table-edit').length==0){									//当前页面不存在编辑框
+				cssEdit = '';
+				if($(this).find('div').find('div').length>0)
+					cssEdit = $(this).find('div').find('div').css('background-color');	//记录进入td的div样式
+			}
+		}).on('focus','.layui-table-edit',function(){							//编辑框获得焦点，记录编辑框所在td
+			tdElem = $(this).parent().find('div')[0];								
+		}).on('blur', '.layui-table-edit', function (event) {					//编辑框失去焦点，还原编辑框样式
+			if(cssEdit!='')
+				$(tdElem).html('<div style="background-color:'+cssEdit+';color: #fff">'+$(this).val()+'</div>')
+		});
+		
+		
 		;(function(){
 			var index = layer.load(1);
 			$.ajax({
