@@ -122,7 +122,7 @@ layui.config({
 		 		$.ajax({
 		 			url:'${ctx}/personnel/getBasics?time='+time,
 		 			success:function(r){
-		 				$('#recruitMoney').val(r.data.occupyPrice);	 
+		 				$('#recruitMoney').val(r.data.sharePrice);	 
 		 			}
 		 		}) 
 		 		$.ajax({
