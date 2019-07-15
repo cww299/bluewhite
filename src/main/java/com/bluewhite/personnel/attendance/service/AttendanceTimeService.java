@@ -69,4 +69,10 @@ public interface AttendanceTimeService extends BaseCRUDService<AttendanceTime,Lo
 	 */
 	public List<AttendanceTime> findAttendanceTimePage(AttendanceTime attendanceTime);
 
+	/**
+	 * 同步更新考勤汇总
+	 * @param attendanceTime
+	 */
+	public List<Map<String, Object>> syncAttendanceTimeCollect(AttendanceTime attendanceTime)  throws ParseException;
+
 }
