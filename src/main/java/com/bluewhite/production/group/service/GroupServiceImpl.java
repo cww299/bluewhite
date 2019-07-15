@@ -249,7 +249,7 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 				nmap.put("date", slist.get(0).get("date"));
 				nmap.put("name", slist.get(0).get("name"));
 				nmap.put("foreigns", slist.get(0).get("foreigns"));
-				nmap.put("bPay", NumUtils.round(mapSumbPay.getSum(), 4));
+				nmap.put("bPay", NumUtils.round(mapSumbPay.getSum(), 4));  
 				nmap.put("sumWorkTime", mapSumWorkTime.getSum());
 				nmap.put("id", slist.get(0).get("id"));
 				nmap.put("price", slist.get(0).get("price"));
@@ -261,11 +261,11 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 				//当人事查看时，人事进行数据的保存
 				if((cu.getRole().contains("superAdmin") || cu.getRole().contains("personnel")) && temporarily.getViewTypeUser() == 1){
 					TemporarilyCollect temporarilyCollect = temporarilyCollectDao.findByTemporarilyDateAndUserId(nmap.get("date").toString(),(Long)nmap.get("id"));
-					if(temporarilyCollect == null){ 
+					if(temporarilyCollect == null){
 						temporarilyCollect =  new TemporarilyCollect();
 					}
 					temporarilyCollect.setForeigns(nmap.get("foreigns").toString());
-					temporarilyCollect.setTemporarilyDate(nmap.get("date").toString());
+					temporarilyCollect.setTemporarilyDate(nmap.get("date").toString());   
 					temporarilyCollect.setUserId((Long)nmap.get("id"));
 					temporarilyCollect.setUserName(nmap.get("name").toString());
 					temporarilyCollect.setSumPrice((Double)nmap.get("sumPrice"));
@@ -280,9 +280,7 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 			};
 			return mapListMonth;
 		}
-		
-		
-		return mapList;
+    		return mapList;
 	}
 
 	@Override
