@@ -315,6 +315,7 @@ layui.config({
 					table.init('test3', {
 						height:'700px',
 						cols : list2,
+						limit: 500,
 						data : res.data,
 					});
 					$('.layui-table-fixed-l').find('.layui-table-body').find('tr').on('click',function(){
