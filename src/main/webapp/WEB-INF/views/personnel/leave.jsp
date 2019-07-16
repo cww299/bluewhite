@@ -882,7 +882,8 @@
 					dataType: "json",
 					success: function(result) {
 						table.reload('tableData', {
-							where: field
+							where: field,
+							page:{curr:1},
 						});
 					}
 				});
