@@ -710,7 +710,7 @@ layui.config({
 								var val = $(item).attr('data-value');
 								restDay += (val+',');
 							})
-							if(userIds=='' || restDay==''){
+							if(userIds==''){
 								layer.msg('设定人员或时间不能为空',{icon:2});
 								return;
 							}
@@ -915,6 +915,16 @@ layui.config({
 						layero.find('.layui-layer-btn0').attr({
 							'lay-filter' : 'addRole',
 							'lay-submit' : ''
+						})
+						//回显
+						layui.each(data.restDay.split(','),function(index1,val){
+							if(val=='')
+								return;
+							var html = '<p><span class="layui-badge layui-bg-green" data-value="'+val+'">'+val+'<i class="layui-icon layui-icon-close"></i></span></p>';
+							$('#inputapplytime').html(html);
+						})
+						$('#inputapplytime').find('.layui-icon-close').on('click',function(){	//删除节点
+							$(this).parent().parent().remove();
 						})
 			        }
 			        ,yes: function(index, layero){

@@ -121,10 +121,32 @@ layui.config({
 				layer.msg('请选择部门获取相关人员',{icon:2})
 				return;
 			}
-			field.orderTimeBegin+="-01 00:00:00";
-			field.sign = 1;
+			var d={
+					userId:$('#userId').val(),
+					orgNameId:$('#orgNameId').val(),
+					orderTimeBegin:$('#startTime').val()+'-01 00:00:00',
+					sign:2,
+			}
 			var postUrl='${ctx}/personnel/addAttendanceTime'
-			even(postUrl,field)
+			even(postUrl,d)
+			/* if(res.code==2){
+				layer.open({
+				   title: '提示',
+				   content:res.msg,
+				   btn: ['确认', '取消'],
+				   yes: function(index, layero){
+						var field={
+								userId:$('#userId').val(),
+								orgNameId:$('#orgNameId').val(),
+								orderTimeBegin:$('#startTime').val()+'-01 00:00:00',
+								sign:2,
+						}
+						var postUrl='${ctx}/personnel/addAttendanceTime'
+						even(postUrl,field)
+						layer.closeAll();
+	       		   }
+				}); 
+			} */
 		})
 		var even = function(url, data) {
 			table.render({
@@ -139,24 +161,6 @@ layui.config({
 				parseData : function(res) {  return { "code" : res.code, "msg" : res.message, "data" : res.data,  }; },
 				cols : [],
 				done : function(res, curr, count) {
-					if(res.code==2){
-						layer.open({
-						   title: '提示',
-						   content:res.msg,
-						   btn: ['确认', '取消'],
-						   yes: function(index, layero){
-								var field={
-										userId:$('#userId').val(),
-										orgNameId:$('#orgNameId').val(),
-										orderTimeBegin:$('#startTime').val()+'-01 00:00:00',
-										sign:2,
-								}
-								var postUrl='${ctx}/personnel/addAttendanceTime'
-								even(postUrl,field)
-								layer.closeAll();
-			       		   }
-						}); 
-					}
 					var data = res.data;
 					var list = [];
 					var list1 = [];
