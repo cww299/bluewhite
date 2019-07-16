@@ -893,7 +893,7 @@
 			//封装ajax主方法
 			var mainJs = {
 				//新增							
-			    fAdd : function(data){
+			    fAdd : function(data){ 
 			    	$.ajax({  
 						url: "${ctx}/personnel/addApplicationLeave",
 						data: data,
