@@ -521,6 +521,7 @@
 						$("#overtime").css("display","none")
 			        	layui.form.render();
 			        	$('#orgAndPersonDiv').show();	//新增时候显示人员
+			        	moren = true;
 						layer.open({
 					         type: 1
 					        ,title: "新增" //不显示标题栏
@@ -756,6 +757,7 @@
 							$(this).parent().parent().remove();
 						})
 			    	}
+			    	moren = true;
 			    	layer.open({
 				         type: 1
 				        ,title: "修改" //不显示标题栏
