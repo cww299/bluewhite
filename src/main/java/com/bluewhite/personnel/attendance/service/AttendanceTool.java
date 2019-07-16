@@ -81,7 +81,7 @@ public class AttendanceTool {
 			// 满足于：员工可以加班后晚到岗 ，签入时间在（初始化上班开始时间后的加班分钟数+30分钟）之后，签出时间在工作结束时间之前 出现缺勤
 			// (迟到时间过长导致缺勤)
 			flag = attendanceTime.getCheckIn().after(DatesUtil.getDaySum(workTime, NumUtils.sum(minute, DUTYMIN)))
-					&& attendanceTime.getCheckOut().after(workTimeEnd);
+					&& (attendanceTime.getCheckOut().after(workTimeEnd)  || attendanceTime.getCheckOut().compareTo(workTimeEnd) == 0 );
 			if (flag) {
 				// 等于实际工作时间+前一天的加班时间
 				actualTurnWorkTime = NumUtils.sum(attendanceTime.getWorkTime(), NumUtils.div(minute, 60, 1));
@@ -161,8 +161,7 @@ public class AttendanceTool {
 			// 出勤
 			// 满足于：员工不可以加班后晚到岗，签入时间在默认上班开始时间之前，签出时间在工作结束时间之后 没有缺勤出现（没缺勤）
 			flag = attendanceTime.getCheckIn().before(DatesUtil.getDaySum(workTime, DUTYMIN))
-					&& (attendanceTime.getCheckOut().after(workTimeEnd)
-							|| attendanceTime.getCheckOut().compareTo(workTimeEnd) == 0
+					&& (attendanceTime.getCheckOut().after(workTimeEnd) || attendanceTime.getCheckOut().compareTo(workTimeEnd) == 0
 							|| DatesUtil.getTime(attendanceTime.getCheckOut(), workTimeEnd) <= DUTYMIN);
 			if (flag) {
 				actualTurnWorkTime = turnWorkTime;
@@ -171,7 +170,7 @@ public class AttendanceTool {
 
 			// 满足于：员工不可以加班后晚到岗 ，签入时间在默认上班开始时间之后，签出时间在工作结束时间之后 出现缺勤 (迟到时间过长导致缺勤)
 			flag = attendanceTime.getCheckIn().after(DatesUtil.getDaySum(workTime, DUTYMIN))
-					&& attendanceTime.getCheckOut().after(workTimeEnd);
+					&& (attendanceTime.getCheckOut().after(workTimeEnd) || attendanceTime.getCheckOut().compareTo(workTimeEnd) == 0 );
 			if (flag) {
 				// 等于实际工作时间
 				actualTurnWorkTime = attendanceTime.getWorkTime();
@@ -181,9 +180,8 @@ public class AttendanceTool {
 				flag = false;
 			}
 
-			// 满足于：员工可以不加班后晚到岗 ，签入时间在默认上班开始时间之后，签出时间在工作结束时间之前 出现缺勤 (早退时间过长出现缺勤)
-			flag = attendanceTime.getCheckOut().before(workTimeEnd)
-					&& DatesUtil.getTime(attendanceTime.getCheckOut(), workTimeEnd) > DUTYMIN;
+			// 满足于：员工可以不加班后晚到岗 ，签出时间在工作结束时间之前 出现缺勤 (早退时间过长出现缺勤)
+			flag = attendanceTime.getCheckOut().before(workTimeEnd) && DatesUtil.getTime(attendanceTime.getCheckOut(), workTimeEnd) > DUTYMIN;
 			if (flag) {
 				actualTurnWorkTime = attendanceTime.getWorkTime();
 				actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);
