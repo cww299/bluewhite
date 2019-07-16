@@ -710,7 +710,7 @@ layui.config({
 								var val = $(item).attr('data-value');
 								restDay += (val+',');
 							})
-							if(userIds=='' || restDay==''){
+							if(userIds==''){
 								layer.msg('设定人员或时间不能为空',{icon:2});
 								return;
 							}
