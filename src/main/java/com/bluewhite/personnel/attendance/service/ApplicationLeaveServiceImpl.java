@@ -98,12 +98,12 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 						for (String ad : addDate) {
 							List<Attendance> attendance = attendanceDao
 									.findByUserIdAndTime(applicationLeave.getUserId(), sdf.parse(ad));
-							if (attendance.size() > 0) {
+							if (attendance.size() > 0) {  
 								attendanceDao.delete(attendance);
 							}
 						}
 					}
-				}
+				}  
 			}
 			BeanCopyUtils.copyNotEmpty(applicationLeave, oldApplicationLeave, "");
 		} else {
@@ -146,7 +146,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 				attendanceTime = attendanceTimeDao.findByUserIdAndTime(applicationLeave.getUserId(), dateLeave);
 				flag = DatesUtil.belongCalendar(dateLeave);
 				if (attendanceInit == null) {
-					throw new ServiceException("该员工没有考勤初始化数据，无法申请，请先添加考勤初始数据");
+					throw new ServiceException("该员工没有考勤设定数据，无法申请，请先添加考勤设定数据");
 				}
 				// flag=ture 为夏令时
 				if (flag) {
@@ -207,7 +207,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 			}
 			//补签
 			if (applicationLeave.isAddSignIn()) {
-				holidayDetail = date + (time == "0" ? "补签入" : "补签入");
+				holidayDetail += date + (time == "0" ? "补签入" : "补签出,");
 				SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				// 获取时间区间
 				String[] addDate = date.split(",");
@@ -224,11 +224,12 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 			
 			if (applicationLeave.isApplyOvertime()) {
 				if (attendanceTime == null) {
-					throw new ServiceException("该员工未初始化考勤详细，无法比对加班时长，请先初始化该员工考勤");
+					throw new ServiceException("该员工未统计考勤，无法比对加班时长，请先初始化该员工考勤");
 				}
 				
 				if (attendanceTime.getCheckIn()!=null && attendanceTime.getCheckOut()!=null) {
 					double actualOverTime = 0.0;
+					//获取所有的休息日
 					if(attendanceInit.getRestDay()!=null || attendanceInit.getRestType()!=null){
 						PersonVariable restType = personVariableDao.findByType(0);
 						List<String> allArr = new ArrayList<>();
@@ -249,22 +250,27 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 							allArr.addAll(listRest);
 						}
 						
-						if(allArr.contains(date.substring(0, 10))){
-							actualOverTime = DatesUtil.getTimeHour(attendanceTime.getCheckIn(), attendanceTime.getCheckOut());
-							if(attendanceInit.getRestTimeWork()!=3){
-								double one = 0;
-								double two = 0;
-								if(attendanceTime.getCheckIn().before(restBeginTime)){
-									one = DatesUtil.getTime(attendanceTime.getCheckIn(), restBeginTime);
-								}
-								if(restEndTime.before(attendanceTime.getCheckOut())){
-									two = DatesUtil.getTime(restEndTime,attendanceTime.getCheckOut());
-								}
-								actualOverTime = DatesUtil.getTimeHour(NumUtils.sum(one, two));
+						if(allArr.contains(date.substring(0, 10))){   
+							double one = 0;
+							double two = 0;
+							//签入时间在中午休息开始时间之前
+							if(attendanceTime.getCheckIn().before(restBeginTime)){
+								one = DatesUtil.getTime(attendanceTime.getCheckIn(), restBeginTime);
+							}
+							//签出时间在中午休息结束时间之后
+							if(attendanceTime.getCheckOut().after(restEndTime)){
+								two = DatesUtil.getTime(restEndTime,attendanceTime.getCheckOut());
+							}
+							actualOverTime = DatesUtil.getTimeHour(NumUtils.sum(one, two));
+							if(attendanceInit.getRestTimeWork()==3){
+								actualOverTime += restTime;
 							}
 						}else{
 							if(workTimeEnd.before(attendanceTime.getCheckOut())){
 								actualOverTime = DatesUtil.getTimeHour(workTimeEnd, attendanceTime.getCheckOut());
+								if(attendanceTime.getCheckIn().before(restBeginTime) && attendanceTime.getCheckOut().after(restEndTime) ){
+									actualOverTime += restTime;
+								}
 							}
 						};
 					}
@@ -272,8 +278,8 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 						throw new ServiceException("根据"+date+"的签到时间该员工加班时间为" + actualOverTime + "小时，加班申请时间有误请重新核对");
 					}
 				}
-				holidayDetail = holidayDetail.equals("") ? (date + "申请加班" + time + "小时")
-						: (holidayDetail+"," + date + "申请加班" + time + "小时");
+				holidayDetail = holidayDetail.equals("") ? (date + (applicationLeave.getOvertimeType()==1? "申请加班" : "撤销加班") + time + "小时")
+						: (holidayDetail+"," + date + (applicationLeave.getOvertimeType()==1? "申请加班" : "撤销加班") + time + "小时");
 			}
 			if (applicationLeave.isTradeDays()) {
 				holidayDetail =  holidayDetail.equals("") ? (date + "调休" + time + "小时") : holidayDetail+","+date + "调休" + time + "小时";
