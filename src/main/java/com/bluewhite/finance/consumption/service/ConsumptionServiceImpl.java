@@ -352,7 +352,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		//获取导入的订单
 		List<Object> excelListenerList = excelListener.getData();
 		for(Object object : excelListenerList){
-			ConsumptionPoi  cPoi = (ConsumptionPoi)object;
+			ConsumptionPoi cPoi = (ConsumptionPoi)object;
 			Consumption consumption = new Consumption();
 			consumption.setBatchNumber(cPoi.getBatchNumber());
 			consumption.setContent(cPoi.getContent());

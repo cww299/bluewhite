@@ -123,7 +123,7 @@ public class ConsumptionAction {
 	 */
 	@RequestMapping(value = "/fince/excel/addConsumption", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse importProduct(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request) throws IOException{
+	public CommonResponse importConsumption(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request) throws IOException{
 		CommonResponse cr = new CommonResponse();
 		InputStream inputStream = file.getInputStream();
 		ExcelListener excelListener = new ExcelListener();
