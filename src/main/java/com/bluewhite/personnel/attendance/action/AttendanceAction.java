@@ -253,37 +253,17 @@ public class AttendanceAction {
 	}
 
 	/**
-	 * 新增在请假事项后的考勤工作详情
-	 * 
-	 * @param request
-	 *            请求
+	 * 请假事项后的统计考勤
 	 * @return cr
 	 * @throws ParseException
 	 */
 	@RequestMapping(value = "/personnel/addAttendanceTime", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addAttendanceTime(HttpServletRequest request, AttendanceTime attendanceTime, int sign)
+	public CommonResponse addAttendanceTime( AttendanceTime attendanceTime)
 			throws ParseException {
 		CommonResponse cr = new CommonResponse();
-		switch (sign) {
-		case 1:
-			String ex = attendanceTimeService.checkAttendanceTime(attendanceTime);
-			if (ex != "") {
-				// 当code为2时，已有统计数据，返回前台，由前台确认是否再次统计，再次统计sign=2
-				cr.setCode(2);
-				cr.setMessage(ex);
-				cr.setData(attendanceTimeService.findAttendanceTimeCollectList(attendanceTime));
-			} else {
-				cr.setData(attendanceTimeService.findAttendanceTimeCollectAdd(attendanceTime));
-				cr.setMessage("初始化成功");
-			}
-			break;
-		case 2:
-			attendanceTimeService.deleteAttendanceTimeCollect(attendanceTime);
-			cr.setData(attendanceTimeService.findAttendanceTimeCollectAdd(attendanceTime));
-			cr.setMessage("初始化成功");
-			break;
-		}
+		cr.setData(attendanceTimeService.syncAttendanceTimeCollect(attendanceTime));
+		cr.setMessage("统计成功");
 		return cr;
 	}
 	

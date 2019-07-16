@@ -271,11 +271,11 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 					temporarilyCollect.setSumPrice((Double)nmap.get("sumPrice"));
 					temporarilyCollect.setWorkTime((Double)nmap.get("workTime"));
 					temporarilyCollect.setPrice((Double)nmap.get("price"));
-					temporarilyCollect.setKindWork(nmap.get("kindWork").toString());
+					temporarilyCollect.setKindWork(nmap.get("kindWork").toString());  
 					temporarilyCollect.setPrice((Double)nmap.get("price"));
 					temporarilyCollect.setType((Integer)nmap.get("type"));
 					temporarilyCollectDao.save(temporarilyCollect);
-				}     
+				}      
 				
 			};
 			return mapListMonth;

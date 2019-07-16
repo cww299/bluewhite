@@ -220,14 +220,12 @@ public class AttendanceTool {
 			}
 		}
 
-		if (attendanceTime.getCheckIn().before(restBeginTime) && attendanceTime.getCheckOut().after(restEndTime)
-				&& attendanceInit.getRestTimeWork() == 3) {
+		if (attendanceTime.getCheckIn().before(restBeginTime) && attendanceTime.getCheckOut().after(restEndTime) && attendanceInit.getRestTimeWork() == 3) {
 			actualOverTime += 1.0;
 		}
-		if (attendanceTime.getCheckIn().before(restBeginTime) && attendanceTime.getCheckOut().after(restEndTime)
-				&& attendanceInit.getRestTimeWork() == 2) {
-			actualTurnWorkTime += 1.0;
-		}
+//		if (attendanceTime.getCheckIn().before(restBeginTime) && attendanceTime.getCheckOut().after(restEndTime) && attendanceInit.getRestTimeWork() == 2) {
+//			actualTurnWorkTime += 1.0;
+//		}
 
 		if (attendanceInit.isEarthWork() && DatesUtil.getTime(attendanceTime.getCheckIn(), workTime) >= 20) {
 			actualOverTime += 0.5;

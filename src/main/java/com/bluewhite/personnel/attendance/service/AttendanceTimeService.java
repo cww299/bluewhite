@@ -13,7 +13,7 @@ public interface AttendanceTimeService extends BaseCRUDService<AttendanceTime,Lo
 	/**
 	 * 检测初始化考勤必要条件
 	 */
-	public String checkAttendanceTime(AttendanceTime attendanceTime) ;
+	public void checkAttendanceTime(AttendanceTime attendanceTime) ;
 	
 	/**
 	 * 按日期初始化考勤详细
