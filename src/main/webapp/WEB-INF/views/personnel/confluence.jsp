@@ -86,6 +86,7 @@ layui.config({
 		var bgColorCol = []; 		//记录变色的列
 		var bgColorRow = [];
 		var bgColor = '#ffb800';	//默认颜色
+		var LOAD = null;
 		colorpicker.render({
 		    elem: '#colorChoose'
 		    ,color: '#ffb800' 
@@ -125,42 +126,25 @@ layui.config({
 					userId:$('#userId').val(),
 					orgNameId:$('#orgNameId').val(),
 					orderTimeBegin:$('#startTime').val()+'-01 00:00:00',
-					sign:2,
 			}
 			var postUrl='${ctx}/personnel/addAttendanceTime'
 			even(postUrl,d)
-			/* if(res.code==2){
-				layer.open({
-				   title: '提示',
-				   content:res.msg,
-				   btn: ['确认', '取消'],
-				   yes: function(index, layero){
-						var field={
-								userId:$('#userId').val(),
-								orgNameId:$('#orgNameId').val(),
-								orderTimeBegin:$('#startTime').val()+'-01 00:00:00',
-								sign:2,
-						}
-						var postUrl='${ctx}/personnel/addAttendanceTime'
-						even(postUrl,field)
-						layer.closeAll();
-	       		   }
-				}); 
-			} */
 		})
 		var even = function(url, data) {
+			LOAD = layer.load(1,{shade: [0.1,'black'] });
 			table.render({
 				elem : '#test',
 				size:'sm',
 				url : url,
+				loading:false,
 				where : data,
 				cellMinWidth : 80,
 				height:'700px',
 				method : 'POST',
-				loading:true,
-				parseData : function(res) {  return { "code" : res.code, "msg" : res.message, "data" : res.data,  }; },
+				parseData : function(res) { return { "code" : res.code, "msg" : res.message, "data" : res.data,  }; },
 				cols : [],
 				done : function(res, curr, count) {
+					layer.close(LOAD);
 					var data = res.data;
 					var list = [];
 					var list1 = [];
@@ -314,8 +298,8 @@ layui.config({
 						cols : list2,
 						data : res.data,
 						limit:500,
+						loading:false,
 						height: '700px',
-						loading:true,
 					});
 				},
 			});
