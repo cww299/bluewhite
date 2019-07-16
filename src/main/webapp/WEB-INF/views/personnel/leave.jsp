@@ -154,6 +154,12 @@
 		<!-- 补签 -->
 		<div id="repair" style="display: none;">
 			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 90px;">补签状态</label>
+				<div class="layui-input-inline" style="width: 325px;">
+					<input type="radio" name="Sign" id="qianru" value="0" title="签入" checked=""> <input type="radio" name="Sign" id="qianchu" value="1" title="签出">
+				</div>
+			</div>
+			<div class="layui-form-item"> 
 				<label class="layui-form-label" style="width: 90px;">补签日期</label>
 				<div class="layui-input-inline">
 					<input type="text" id="repairtime" placeholder="请输入补签日期" class="layui-input">
@@ -166,13 +172,6 @@
 					<div name="repairtime" id="inputapplytime" class="layui-textarea showTimeDiv"></div>
 				</div>
 			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 90px;">补签状态</label>
-				<div class="layui-input-inline" style="width: 325px;">
-					<input type="radio" name="Sign" id="qianru" value="0" title="签入" checked=""> <input type="radio" name="Sign" id="qianchu" value="1" title="签出">
-				</div>
-			</div>
-			
 		</div>
 		<!-- 加班 -->
 		<div id="overtime" style="display: none;">
