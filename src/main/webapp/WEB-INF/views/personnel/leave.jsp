@@ -343,46 +343,35 @@
 					})
 				}
 			})
+			var load = layer.load(1);	//下拉框初始渲染
 			$.ajax({
 				url: '${ctx}/system/user/findAllUser',
-				type: "GET",
 				async: false,
-				beforeSend: function() {
-					index;
-				},
 				success: function(result) {
 					$(result.data).each(function(i, o) {
 						htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
 					})
-					layer.close(index);
-				$('#selectOne').append(htmls);
-				$("#userId").append(htmls);
+					$('#selectOne').append(htmls);
+					$("#userId").append(htmls);
 				},
-				error: function() {
-					layer.msg("操作失败！", {
-						icon: 2
+			});
+			$.ajax({
+				url : "${ctx}/basedata/list?type=orgName",
+				async: false,
+				success : function(result) {
+					var htmlfr=""
+					$(result.data).each(function(k, j) {
+						htmlfr += '<option value="'+j.id+'">' + j.name + '</option>'
 					});
-					layer.close(index);
+					$("#orgNameId").append(htmlfr);
 				}
 			});
+			form.render();
+			layer.close(load);
 			
-			var getdata = {
-					
-				}
-			var htmlfr=""
-				$.ajax({
-					url : "${ctx}/basedata/list?type=orgName",
-					beforeSend : function() {
-						index;
-					},
-					success : function(result) {
-						$(result.data).each(function(k, j) {
-							htmlfr += '<option value="'+j.id+'">' + j.name + '</option>'
-						});
-						$("#orgNameId").append(htmlfr);
-						layer.close(index);
-					}
-				});
+			
+			var getdata = {	 };
+				
 			table.render({
 				elem: '#tableData',
 				size: 'lg',
