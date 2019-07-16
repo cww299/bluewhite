@@ -12,6 +12,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
@@ -81,13 +82,14 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 	}
 
 	@Override
+	@Transactional
 	public ApplicationLeave saveApplicationLeave(ApplicationLeave applicationLeave) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		ApplicationLeave oldApplicationLeave = null;
 		if (applicationLeave.getId() != null) {
 			oldApplicationLeave = dao.findOne(applicationLeave.getId());
-			if (applicationLeave.isAddSignIn()) {
-				JSONArray jsonArray = JSON.parseArray(applicationLeave.getTime());
+			if (oldApplicationLeave.isAddSignIn()) {
+				JSONArray jsonArray = JSON.parseArray(oldApplicationLeave.getTime());
 				for (int i = 0; i < jsonArray.size(); i++) {
 					JSONObject jsonObject = jsonArray.getJSONObject(i);
 					String date = jsonObject.getString("date");
@@ -97,7 +99,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 					if (addDate.length > 0) {
 						for (String ad : addDate) {
 							List<Attendance> attendance = attendanceDao
-									.findByUserIdAndTime(applicationLeave.getUserId(), sdf.parse(ad));
+									.findByUserIdAndTime(oldApplicationLeave.getUserId(), sdf.parse(ad));
 							if (attendance.size() > 0) {  
 								attendanceDao.delete(attendance);
 							}
@@ -292,9 +294,10 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 	
 
 	@Override
+	@Transactional
 	public int deleteApplicationLeave(String ids) throws ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		int count = 0;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String[] arrIds = ids.split(",");
 		for (int i = 0; i < arrIds.length; i++) {
 			Long id = Long.valueOf(arrIds[i]);
