@@ -207,7 +207,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 			}
 			//补签
 			if (applicationLeave.isAddSignIn()) {
-				holidayDetail += date + (time == "0" ? "补签入" : "补签出");
+				holidayDetail += date + (time == "0" ? "补签入" : "补签出,");
 				SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				// 获取时间区间
 				String[] addDate = date.split(",");
