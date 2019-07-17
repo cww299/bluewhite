@@ -49,7 +49,7 @@ public class AttendanceTool {
 	 */
 	public static AttendanceTime attendanceIntTool(boolean sign, Date workTime, Date workTimeEnd, Date restBeginTime,
 			Date restEndTime, double minute, Double turnWorkTime, AttendanceTime attendanceTime,
-			AttendanceInit attendanceInit, User user) {
+			AttendanceInit attendanceInit, User user,Double restTime) {
 		boolean flag = false;
 		// 实际出勤，加班，缺勤,早退时间
 		// 实际出勤不可能大于员工默认出勤时长
@@ -219,7 +219,7 @@ public class AttendanceTool {
 		}
 
 		if (attendanceTime.getCheckIn().before(restBeginTime) && attendanceTime.getCheckOut().after(restEndTime) && attendanceInit.getRestTimeWork() == 3) {
-			actualOverTime += 1.0;
+			actualOverTime += restTime; 
 		}
 //		if (attendanceTime.getCheckIn().before(restBeginTime) && attendanceTime.getCheckOut().after(restEndTime) && attendanceInit.getRestTimeWork() == 2) {
 //			actualTurnWorkTime += 1.0;
