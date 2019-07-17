@@ -917,11 +917,12 @@ layui.config({
 							'lay-submit' : ''
 						})
 						//回显
+						$('#inputapplytime').html('');
 						layui.each(data.restDay.split(','),function(index1,val){
 							if(val=='')
 								return;
 							var html = '<p><span class="layui-badge layui-bg-green" data-value="'+val+'">'+val+'<i class="layui-icon layui-icon-close"></i></span></p>';
-							$('#inputapplytime').html(html);
+							$('#inputapplytime').append(html);
 						})
 						$('#inputapplytime').find('.layui-icon-close').on('click',function(){	//删除节点
 							$(this).parent().parent().remove();
