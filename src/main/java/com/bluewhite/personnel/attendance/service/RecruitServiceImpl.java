@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.basedata.dao.BaseDataDao;
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
@@ -59,6 +60,10 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 			// 按姓名查找
 			if (!StringUtils.isEmpty(sundry.getName())) {
 				predicate.add(cb.like(root.get("name").as(String.class),"%" + sundry.getName() + "%"));
+			}
+			// 按手机号查询
+			if (!StringUtils.isEmpty(sundry.getPhone())) {
+				predicate.add(cb.like(root.get("phone").as(String.class),"%" + sundry.getPhone() + "%"));
 			}
 			// 按部门查找
 			if (!StringUtils.isEmpty(sundry.getOrgNameId())) {
@@ -110,7 +115,12 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 	}
 	@Override
 	public Recruit addRecruit(Recruit recruit) {
-		
+		if (recruit.getId()==null) {
+		Recruit recruit2=dao.findByPhone(recruit.getPhone());
+			if (recruit2!=null) {
+				throw  new ServiceException("该用户手机号已存在");
+			}
+		}
 		return dao.save(recruit);
 	}
 	@Override
