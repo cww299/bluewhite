@@ -268,7 +268,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 								DatesUtil.dayTime(beginTimes, "00:00:00"), DatesUtil.dayTime(beginTimes, "06:00:00"));
 						if (afterAttendance.size() > 0) {
 							// 得到最后一次签到记录离24：00相差分钟数
-							minute = DatesUtil.getTimeHour(DatesUtil.dayTime(beginTimes, "00:00:00"),
+							minute = DatesUtil.getTime(DatesUtil.dayTime(beginTimes, "00:00:00"),
 									afterAttendance.get(afterAttendance.size() - 1).getTime());
 							sign = true;
 						}
@@ -279,7 +279,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 								DatesUtil.dayTime(beginTimes, "00:30:00"), DatesUtil.dayTime(beginTimes, "06:00:00"));
 						if (afterAttendance.size() > 0) {
 							// 得到最后一次签到记录离24：30相差分钟数
-							minute = DatesUtil.getTimeHour(DatesUtil.dayTime(beginTimes, "00:30:00"),
+							minute = DatesUtil.getTime(DatesUtil.dayTime(beginTimes, "00:30:00"),
 									afterAttendance.get(afterAttendance.size() - 1).getTime());
 							sign = true;
 						}
@@ -346,17 +346,28 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 												: attendanceTime.getCheckIn(), attendanceTime.getCheckOut()));
 							} else {
 								attendanceTime.setOvertime(NumUtils.sub(
-										DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime) ? workTime
-												: attendanceTime.getCheckIn(), attendanceTime.getCheckOut()),   
+										DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime) ? workTime : attendanceTime.getCheckIn(), 
+												attendanceTime.getCheckOut()),   
 										attendanceTime.getCheckOut().after(restEndTime) ? restTime:0));
 							}
+							//设定加班后可以晚到岗加班时间
+							if(sign){
+								if(attendanceTime.getCheckIn().compareTo(DatesUtil.getDaySum(workTime,minute)) !=1){
+									attendanceTime.setOvertime(   
+											attendanceInit.getRestTimeWork() == 3 
+											? DatesUtil.getTimeHour(workTime , attendanceTime.getCheckOut()) 
+													: NumUtils.sub( DatesUtil.getTimeHour(workTime , attendanceTime.getCheckOut()) 
+														, attendanceTime.getCheckOut().after(restEndTime) ? restTime:0));
+								}
+							}
+							
 						}
 						attendanceTimeList.add(attendanceTime);
 						continue;
 					}
 
 					// 当外协部或者物流部有打卡记录时，按打开记录核算考勤
-					if (us.getOrgNameId() != 45 && us.getOrgNameId() != 23) {
+					if (us.getOrgNameId() != null && us.getOrgNameId() != 45 && us.getOrgNameId() != 23) {
 						// 无到岗要求和无打卡要求
 						if (attendanceInit.getWorkType() == 1 || attendanceInit.getWorkType() == 2) {
 							attendanceTime.setFlag(0);
@@ -368,7 +379,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
 					// 进行出勤，加班，缺勤，迟到，早退的计算
 					AttendanceTool.attendanceIntTool(sign, workTime, workTimeEnd, restBeginTime, restEndTime,
-							NumUtils.mul(minute, 60), turnWorkTime, attendanceTime, attendanceInit, us);
+							NumUtils.mul(minute, 60), turnWorkTime, attendanceTime, attendanceInit, us,restTime);
 				}
 				// 当一天的考勤记录条数小于2时。为异常的考勤
 				if (attList.size() < 2) {

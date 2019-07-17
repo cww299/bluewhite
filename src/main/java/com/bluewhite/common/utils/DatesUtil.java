@@ -190,8 +190,7 @@ public class DatesUtil {
 	 * @return long
 	 */
 	public static long getDaySub(Date beginDate, Date endDate) {
-		long day = (endDate.getTime() - beginDate.getTime() + 1000) / (24 * 60 * 60 * 1000);
-		return day;
+		return (endDate.getTime() - beginDate.getTime() + 1000) / (24 * 60 * 60 * 1000);
 	}
 
 	/**
@@ -203,8 +202,7 @@ public class DatesUtil {
 	 */
 	public static Double getTime(Date beginDate, Date endDate) {
 		Long time = (endDate.getTime() - beginDate.getTime()) / (60 * 1000);
-		Double day = time.doubleValue();
-		return day;
+		return time.doubleValue();
 	}
 	
 	/**
@@ -216,8 +214,7 @@ public class DatesUtil {
 	 */
 	public static Double getTimeSec(Date beginDate, Date endDate) {
 		Long time = (endDate.getTime() - beginDate.getTime()) / 1000;
-		Double day = time.doubleValue();
-		return day;
+		return time.doubleValue();
 	}
 	
 	/**
