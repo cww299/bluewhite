@@ -21,15 +21,16 @@
 	<div class="layui-card-body">
 		<table class="layui-form">
 			<tr>
-				<td><select name=""><option value="">按客户类型查找</option>
+				<td><select name="type"><option value="">按客户类型查找</option>
 									<option value="1">报销</option>
 									<option value="2">采购应付和预算</option>
 									<option value="4">税点应付和预算</option>
 									<option value="5">物流</option>
 									<option value="6">应付借款本金</option>
 									<option value="7">应付社保和税费</option>
-									<option value="8">应入库周转的材料</option></select>
-				<td><span class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</span></td>
+									<option value="8">应入库周转的材料</option></select></td>
+				<td>&nbsp;&nbsp;</td>
+				<td><span class="layui-btn" lay-submit lay-filter="search">搜索</span></td>
 			</tr>
 		</table>
 		<table class="layui-table" id="customTable" lay-filter="customTable"></table>
@@ -43,9 +44,21 @@
 	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除</span>
 </div>
 </script>
-
+<!-- 类型解析模板 -->
+<script type="text/html" id="typeTpl" >
+{{# var text = '';
+    switch(d.type){
+	case 1: text = '报销'; break;
+	case 2: text = '采购应付和预算'; break;
+	case 4: text = '税点应付和预算'; break;
+	case 5: text = '物流'; break;
+	case 6: text = '应付借款本金'; break;
+	case 7: text = '应付社保和税费'; break;
+	case 8: text = '应入库周转的材料'; break;
+} }}
+{{ text }}
+</script>
 </body>
-
 <script>
 layui.config({
 	base: '${ctx}/static/layui-v2.4.5/'
@@ -67,23 +80,13 @@ layui.config({
 			toolbar:'#customTableToolbar',
 			loading:true,
 			page:true,
-			request:{
-				pageName:'page',
-				limitName:'size'
-			},
-			parseData:function(ret){
-				return {
-					data:ret.data.rows,
-					count:ret.data.total,
-					msg:ret.message, 
-					code:ret.code
-				}
-			},
+			request:{ pageName:'page', limitName:'size' },
+			parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total, msg:ret.message,  code:ret.code } },
 			cols:[[
 			       {align:'center', type:'checkbox',},
-			       {align:'center', title:'id',   field:'id',		width:'',},
-			       {align:'center', title:'名称',   field:'name',	width:'',},
-			       {align:'center', title:'类型',   field:'type',		width:'',},
+			       {align:'center', title:'id',   field:'id',		},
+			       {align:'center', title:'名称',   field:'name',	},
+			       {align:'center', title:'类型',   field:'type',  templet:'#typeTpl'},
 			       ]]
 		})
 		
@@ -92,7 +95,12 @@ layui.config({
 			case 'delete':	deletes();			break;
 			}
 		})
-		
+		form.on('submit(search)',function(obj){
+			table.reload('customTable',{
+				where: obj.field,
+				page: {curr:1 }
+			})
+		})
 		function deletes(){
  			var choosed = layui.table.checkStatus('customTable').data;
  			if(choosed.length<1){
