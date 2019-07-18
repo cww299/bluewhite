@@ -185,7 +185,9 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				attendanceTime.setFail(attendanceInit.getFail());
 				attendanceTime.setWorkType(attendanceInit.getWorkType());
 				attendanceTime.setRestType(attendanceInit.getRestType());
-
+				attendanceTime.setRestDay(attendanceInit.getRestDay());
+				attendanceTime.setAttendanceInit(attendanceInit);
+				
 				// flag=ture 为夏令时
 				if (flag) {
 					String[] workTimeArr = attendanceInit.getWorkTimeSummer().split(" - ");
@@ -288,7 +290,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				// 考情记录有三种情况。当一天的考勤记录条数等于大于2时,为正常的考勤
 				// 大于2时，取集合中的最后一条数据作为考勤记录
 				if (attList.size() >= 2) {
-					// 获取签到签出时间
+					// 获取签入签出时间
 					if (attList.get(0).getTime().before(attList.get(attList.size() - 1).getTime())) {
 						// 上班
 						attendanceTime.setCheckIn(new Date(attList.get(0).getTime().getTime()));

@@ -133,7 +133,7 @@ public class AttendanceInit extends BaseEntity<Long> {
 	private boolean earthWork = false;
 	
 	/**
-	 * 吃饭（1.早饭2.晚餐3.早晚餐）
+	 * 吃饭（1.早饭2.晚餐3.早晚餐 4.早晚夜宵）
 	 * 
 	 */
 	@Column(name = "eat_type")

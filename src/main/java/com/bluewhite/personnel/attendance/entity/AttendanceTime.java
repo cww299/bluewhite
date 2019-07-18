@@ -191,6 +191,13 @@ public class AttendanceTime extends BaseEntity<Long> {
 	@Transient
 	private Integer workType;
 	
+    
+	/**
+	 * 约定休息日
+	 */
+	@Transient
+	private String restDay;
+	
 	/**
 	 * 员工姓名
 	 */
@@ -210,6 +217,12 @@ public class AttendanceTime extends BaseEntity<Long> {
 	private String orgName;
 	
 	/**
+	 * 将考勤设定将入，避免查询 
+	 */
+	@Transient
+	private AttendanceInit AttendanceInit;
+	
+	/**
 	 * 查询字段
 	 */
 	@Transient
@@ -224,6 +237,24 @@ public class AttendanceTime extends BaseEntity<Long> {
 	
 	
 
+	
+
+	public AttendanceInit getAttendanceInit() {
+		return AttendanceInit;
+	}
+
+	public void setAttendanceInit(AttendanceInit attendanceInit) {
+		attendanceInit.setUser(null);
+		AttendanceInit = attendanceInit;
+	}
+
+	public String getRestDay() {
+		return restDay;
+	}
+
+	public void setRestDay(String restDay) {
+		this.restDay = restDay;
+	}
 
 	public Integer getRestType() {
 		return restType;

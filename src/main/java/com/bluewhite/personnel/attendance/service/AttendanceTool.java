@@ -218,8 +218,21 @@ public class AttendanceTool {
 			}
 		}
 
-		if (attendanceTime.getCheckIn().before(restBeginTime) && attendanceTime.getCheckOut().after(restEndTime) && attendanceInit.getRestTimeWork() == 3) {
-			actualOverTime += restTime; 
+		if (attendanceInit.getRestTimeWork() == 3  ) {
+			//签入在休息时间之前
+			if(attendanceTime.getCheckIn().compareTo(restBeginTime) !=1 && attendanceTime.getCheckOut().compareTo(restEndTime) !=-1){
+				actualOverTime += restTime; 
+			}
+			if(attendanceTime.getCheckIn().compareTo(restBeginTime) == 1 && attendanceTime.getCheckIn().compareTo(restEndTime) == -1 && attendanceTime.getCheckOut().compareTo(restEndTime) ==1){
+				actualOverTime += DatesUtil.getTimeHour(attendanceTime.getCheckIn(),restEndTime);
+			}
+			if(attendanceTime.getCheckIn().compareTo(restBeginTime) == -1 && attendanceTime.getCheckOut().compareTo(restBeginTime) == 1 && attendanceTime.getCheckOut().compareTo(restEndTime) == -1){
+				actualOverTime += DatesUtil.getTimeHour(restBeginTime,attendanceTime.getCheckOut()); 
+			}
+			//之间
+			if(attendanceTime.getCheckIn().compareTo(restBeginTime) == 1 && attendanceTime.getCheckOut().compareTo(restEndTime) ==-1){
+				actualOverTime += DatesUtil.getTimeHour(attendanceTime.getCheckIn(),attendanceTime.getCheckOut());
+			}
 		}
 //		if (attendanceTime.getCheckIn().before(restBeginTime) && attendanceTime.getCheckOut().after(restEndTime) && attendanceInit.getRestTimeWork() == 2) {
 //			actualTurnWorkTime += 1.0;
