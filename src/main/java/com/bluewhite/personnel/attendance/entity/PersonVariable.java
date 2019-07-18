@@ -35,7 +35,8 @@ public class PersonVariable extends BaseEntity<Long>{
 	
 	
 	/**
-	 * 变量类型(0=休息日期,1=早中晚三餐价值)
+	 * 变量类型(0=休息日期,1=早中晚三餐价值,2=水费，3=电费，4=设定早中晚三餐对于吃饭统计而延迟的分钟数)
+	 * 
 	 */
 	@Column(name = "type")
 	private Integer type;

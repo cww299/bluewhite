@@ -37,13 +37,13 @@ public class Meal extends BaseEntity<Long> {
 	private User user;
 	
 	/**
-	 *(1.早餐 2.中餐 3.晚餐) 
+	 *(1.早餐 2.中餐 3.晚餐4.夜宵) 
 	 */
 	@Column(name = "mode")
 	private Integer mode;
 	
 	/**
-	 *( 2.同步自动添加 ) 
+	 *(1.手动添加 2.同步自动添加 ) 
 	 */
 	@Column(name = "type")
 	private Integer type;
