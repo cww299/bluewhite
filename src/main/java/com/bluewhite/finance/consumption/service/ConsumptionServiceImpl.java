@@ -112,7 +112,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 
 			// 按客户查找
 			if (!StringUtils.isEmpty(param.getCustomId())) {
-				predicate.add(cb.equal(root.get("customerId").as(String.class), param.getCustomId()));
+				predicate.add(cb.equal(root.get("customId").as(String.class), param.getCustomId()));
 			}
 
 			if (!StringUtils.isEmpty(param.getExpenseDate())) {

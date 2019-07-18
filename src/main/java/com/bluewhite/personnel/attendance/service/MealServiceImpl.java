@@ -226,12 +226,12 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			if (attendanceTime2.getCheckIn() != null && attendanceTime2.getCheckOut() == null) {
 				int j = attendanceTime2.getCheckIn().getHours();
 				if (j > 12) {
-					attendanceTime.setCheckOut(attendanceTime2.getCheckIn());
-					attendanceTime.setCheckIn(null);
+					attendanceTime2.setCheckOut(attendanceTime2.getCheckIn());
+					attendanceTime2.setCheckIn(null);
 				}
 				if (j == 12) {
-					attendanceTime.setCheckIn(attendanceTime2.getCheckIn());
-					attendanceTime.setCheckOut(attendanceTime2.getCheckIn());
+					attendanceTime2.setCheckIn(attendanceTime2.getCheckIn());
+					attendanceTime2.setCheckOut(attendanceTime2.getCheckIn());
 				}
 			}
 
@@ -417,6 +417,16 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 							meal2.setType(2);
 							meals.add(meal2);
 						}
+					}
+					if (attendanceTime2.getCheckOut()!=null) {
+							Meal meal2 = new Meal();
+							meal2.setTradeDaysTime(attendanceTime2.getTime());
+							meal2.setPrice(Double.valueOf(variable.getKeyValueTwo()));
+							meal2.setMode(2);
+							meal2.setUserName(attendanceTime2.getUserName());
+							meal2.setUserId(attendanceTime2.getUserId());
+							meal2.setType(2);
+							meals.add(meal2);
 					}
 				}
 			} else {

@@ -493,7 +493,7 @@
 						loading: true,
 						toolbar: '#toolbar', 
 						sort:true,
-						limits:[10,20,50,100,150],
+						limits:[10,15,20,50,100,150],
 						colFilterRecord: true,
 						smartReloadModel: true,
 						parseData: function(ret) { 
@@ -641,7 +641,7 @@
 								align: 'center',
 							},{
 								field: "testTime",
-								title: "时间",
+								title: "预计入职时间",
 								align: 'center',
 								width : 118,
 							},{
