@@ -185,7 +185,7 @@ public class RecruitAction {
 	}
 	
 	/**
-	 * 招聘汇总
+	 * 招聘每月汇总（需要汇总的内容跟每天不一样）
 	 * 
 	 * @param request 请求
 	 * @return cr
@@ -196,6 +196,23 @@ public class RecruitAction {
 	public CommonResponse Statistics(HttpServletRequest request, Recruit recruit) {
 		CommonResponse cr = new CommonResponse();
 		 List<Map<String, Object>> list = service.Statistics(recruit);
+			cr.setData(clearCascadeJSON.format(list).toJSON());
+			cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/**
+	 * 招聘每天的汇总（需要汇总的内容跟每月不一样）
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/sumday", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse sumday(HttpServletRequest request, Recruit recruit) {
+		CommonResponse cr = new CommonResponse();
+		 List<Map<String, Object>> list = service.sumday(recruit);
 			cr.setData(clearCascadeJSON.format(list).toJSON());
 			cr.setMessage("查询成功");
 		return cr;

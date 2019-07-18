@@ -23,6 +23,10 @@ public interface RecruitService  extends BaseCRUDService<Recruit,Long>{
 	 */
 	public Recruit addRecruit(Recruit recruit);
 	
+	/**
+	 * 招聘汇总
+	 * @param onlineOrder
+	 */
 	public  List<Map<String, Object>> Statistics(Recruit recruit);
 	
 	public  List<Recruit> soon(Recruit recruit);
@@ -43,5 +47,10 @@ public interface RecruitService  extends BaseCRUDService<Recruit,Long>{
 	 */
 	public Recruit findPrice(Recruit recruit);
 	
+	/**
+	 * 招聘每天汇总
+	 * @param onlineOrder
+	 */
+	public  List<Map<String, Object>> sumday(Recruit recruit);
 	public int deletes(String[] ids);
 }

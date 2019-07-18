@@ -198,6 +198,29 @@
 			<table id="analysisRecuit2"  class="table_th_search" lay-filter="layuiShare8"></table>
 </div>
 
+<div style="display: none;" id="sumday">
+			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+				<div class="layui-form-item">
+					<table>
+						<tr>
+							<td>查询时间:</td>
+							<td><input id="monthDate9" style="width: 180px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td>
+								<div class="layui-inline">
+									<button class="layui-btn layuiadmin-btn-admin"  lay-submit lay-filter="LAY-searchsumday">
+										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+									</button>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<table id="analysisRecuitsumday"  class="table_th_search" lay-filter="layuiShare10"></table>
+</div>
+
 	<script type="text/html" id="addEditTpl">
 	<form action="" id="layuiadmin-form-admin"
 		style="padding: 20px 30px 0 60px; text-align:">
@@ -348,6 +371,7 @@
 				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="short">短期离职</span>
 				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="quit">离职人员</span>
 				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="analysis">招聘分析</span>
+				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="sumday">每日分析</span>
 			</div>
 		</script>
 
@@ -400,6 +424,11 @@
 				 	laydate.render({
 						elem: '#monthDate6',
 						type : 'month',
+					}); 
+					laydate.render({
+						elem: '#monthDate9',
+						type: 'datetime',
+						range: '~',
 					}); 
 					 var getdata={type:"orgName",}
 		      			$.ajax({								//获取部门列表数据，部门下拉框的填充
@@ -982,6 +1011,35 @@
 							      });
 								break;
 								
+							case 'sumday':
+								var dicDiv=$('#sumday');
+								table.reload("analysisRecuitsumday");
+								layer.open({
+							         type: 1
+							        ,title: '每日分析' //不显示标题栏
+							        ,closeBtn: false
+							        ,zindex:-1
+							        ,area:['50%', '90%']
+							        ,shade: 0.5
+							        ,id: 'LAY_layuipro10' //设定一个id，防止重复弹出
+							        ,btn: ['取消']
+							        ,btnAlign: 'c'
+							        ,moveType: 1 //拖拽模式，0或者1
+							        ,content:dicDiv
+							        ,success : function(layero, index) {
+							        	layero.addClass('layui-form');
+										// 将保存按钮改变成提交按钮
+										layero.find('.layui-layer-btn0').attr({
+											'lay-filter' : 'addRole2',
+											'lay-submit' : ''
+										})
+							        }
+							        ,end:function(){
+							        	$("#sumday").hide();
+									  } 
+							      });
+								break;	
+								
 							case 'update' :
 								 addEidt('edit')
 								break;	
@@ -1026,6 +1084,67 @@
 						where:data,
 		              })
 					};
+					form.on('submit(LAY-searchsumday)', function(obj) {
+						var field = obj.field;
+						var orderTime=field.orderTimeBegin.split('~');
+						field.orderTimeBegin=orderTime[0];
+						field.orderTimeEnd=orderTime[1];
+						eventd8(field);
+						
+					})
+					var eventd8=function(data){
+						table.reload("analysisRecuitsumday", {
+							url: '${ctx}/personnel/sumday' ,
+							where:data,
+			              });
+					};
+					
+					table.render({
+						elem: '#analysisRecuitsumday',
+						where:data,
+						data:[],
+						request:{
+							pageName: 'page' ,//页码的参数名称，默认：page
+							limitName: 'size' //每页数据量的参数名，默认：limit
+						},
+						//开启分页
+						loading: true,
+						toolbar: '#toolbar5', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+						smartReloadModel: true,// 开启智能重载
+						parseData: function(ret) {
+							return {
+								code: ret.code,
+								msg: ret.message,
+								data: ret.data
+							}
+						},
+						cols: [
+							[{
+								field: "md1",
+								title: "录用人数",
+								align: 'center',
+							},{
+								field: "md2",
+								title: "待定人数",
+								align: 'center',
+							},{
+								field: "md3",
+								title: "不合格人数",
+								align: 'center',
+							},{
+								field: "md4",
+								title: "面试人数",
+								align: 'center',
+							},{
+								field: "md5",
+								title: "未应面人数",
+								align: 'center',
+							}
+							]
+						],
+					
+								});
+					
 					table.render({
 						elem: '#analysisRecuit',
 						where:data,

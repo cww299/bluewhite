@@ -766,12 +766,14 @@
 									});
 								
 								} else {
+									layer.close(indextwo);
 									layer.confirm(result.message + '请填写考勤初始化', function() {
 											layer.close(indextwo);
 									})
 								}
 							},
 							error: function() {
+								layer.close(indextwo);
 								layer.msg("操作失败！请重试", {
 									icon: 2
 								});
