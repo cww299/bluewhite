@@ -5,9 +5,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.UnauthorizedException;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
@@ -19,7 +16,7 @@ import com.bluewhite.common.entity.ErrorCode;
  * 控制器异常处理，对表单提交返回的CommonResponse做了特殊处理。
  * 
  */
-@Component
+/*@Component*/
 public class MyExceptionHandlerExceptionResolver implements HandlerExceptionResolver {
 
 	private static Logger logger = Logger.getLogger(MyExceptionHandlerExceptionResolver.class);

@@ -27,7 +27,6 @@
 						<tr>
 							<td>姓名:</td>
 							<td><input type="text" name="name" id="firstNames" class="layui-input" style="width:212px;" /></td>
-							
 							<td>&nbsp;&nbsp;</td>
 							<td>是否应面:
 							<td><select class="form-control" name="type">
@@ -36,14 +35,15 @@
 									<option value="1">通过</option>
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
+							<td>电话查询:</td>
+							<td><input type="text" name="phone" class="layui-input" style="width:212px;" /></td>
+							<td>&nbsp;&nbsp;</td>
+							<td>平台:</td>
+							<td><select class="form-control"  name="platformId" lay-search="true" id="platform"></select></td>
+							<td>&nbsp;&nbsp;</td>
 							<td>面试时间:</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入面试时间" class="layui-input laydate-icon">
 							</td>
-							<td>&nbsp;&nbsp;</td>
-							<td>平台:</td>
-							<td><select class="form-control"  name="platformId" lay-search="true" id="platform">
-									
-							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
@@ -493,7 +493,7 @@
 						loading: true,
 						toolbar: '#toolbar', 
 						sort:true,
-						limits:[10,20,50,100,150],
+						limits:[10,15,20,50,100,150],
 						colFilterRecord: true,
 						smartReloadModel: true,
 						parseData: function(ret) { 
@@ -641,7 +641,7 @@
 								align: 'center',
 							},{
 								field: "testTime",
-								title: "时间",
+								title: "预计入职时间",
 								align: 'center',
 								width : 118,
 							},{
@@ -1430,8 +1430,7 @@
 									data.field.time += $("#tplTime").val();
 						        	mainJs.fAdd(data.field)
 						        	if(id==""){
-						        	document.getElementById("layuiadmin-form-admin").reset();
-						        	layui.form.render();
+						        	
 						        	}
 									})
 							}
@@ -1623,6 +1622,8 @@
 							                page: {
 							                }
 							              })   
+							              document.getElementById("layuiadmin-form-admin").reset();
+						        	layui.form.render();
 										layer.msg(result.message, {
 											icon: 1,
 											time:800

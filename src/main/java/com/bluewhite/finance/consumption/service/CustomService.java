@@ -31,5 +31,12 @@ public interface CustomService  extends BaseCRUDService<Custom, Long> {
 	 * @return
 	 */
 	int deleteCustom(String ids);
+	
+	/**
+	 * 根据类型查询
+	 * @param type
+	 * @return
+	 */
+	public List<Custom> findByType(Integer type);
 
 }

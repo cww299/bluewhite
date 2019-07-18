@@ -226,12 +226,12 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			if (attendanceTime2.getCheckIn() != null && attendanceTime2.getCheckOut() == null) {
 				int j = attendanceTime2.getCheckIn().getHours();
 				if (j > 12) {
-					attendanceTime.setCheckOut(attendanceTime2.getCheckIn());
-					attendanceTime.setCheckIn(null);
+					attendanceTime2.setCheckOut(attendanceTime2.getCheckIn());
+					attendanceTime2.setCheckIn(null);
 				}
 				if (j == 12) {
-					attendanceTime.setCheckIn(attendanceTime2.getCheckIn());
-					attendanceTime.setCheckOut(attendanceTime2.getCheckIn());
+					attendanceTime2.setCheckIn(attendanceTime2.getCheckIn());
+					attendanceTime2.setCheckOut(attendanceTime2.getCheckIn());
 				}
 			}
 
@@ -316,10 +316,18 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 						}
 					}
 				} else {
+					DateFormat df = new SimpleDateFormat("HH:mm:ss");
+					Date dt1 = df.parse("08:30:00");
+					Date dt3 = df.parse("12:00:00");
+					Date dt4 = df.parse("18:30:00");
+					Date dt5 = df.parse("04:30:00");
 					if (attendanceTime2.getCheckIn() != null) {
+						String aString = df.format(attendanceTime2.getCheckIn());
+						Date dt2 = df.parse(aString);
+						int a = dt2.compareTo(dt1);
 						if (attendanceTime2.getEatType() != null) {
 							// 早饭
-							if (attendanceTime2.getEatType() == 1) {
+							if (attendanceTime2.getEatType() == 1 && a == -1) {
 								Meal meal2 = new Meal();
 								meal2.setTradeDaysTime(attendanceTime2.getTime());
 								meal2.setPrice(Double.valueOf(variable.getKeyValue()));
@@ -332,9 +340,17 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 						}
 					}
 					if (attendanceTime2.getCheckOut() != null) {
+						String aString2 = df.format(attendanceTime2.getCheckOut());
+						Date dt6 = df.parse(aString2);
+						// 签出时间 小时dt5 重新赋值
+						if (dt6.compareTo(dt5) == -1) {
+							dt6 = df.parse("23:59:59");
+						}
+						int c = dt6.compareTo(dt4);
+						
 						if (attendanceTime2.getEatType() != null) {
 							// 晚饭
-							if (attendanceTime2.getEatType() == 2) {
+							if (attendanceTime2.getEatType() == 2  && c == 1) {
 								Meal meal2 = new Meal();
 								meal2.setTradeDaysTime(attendanceTime2.getTime());
 								meal2.setPrice(Double.valueOf(variable.getKeyValueThree()));
@@ -348,33 +364,70 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 					}
 					if (attendanceTime2.getEatType() != null) {
 						// 早饭晚饭都吃
-						if (attendanceTime2.getEatType() == 3) {
+						if (attendanceTime2.getCheckIn()!=null) {
+							String aString = df.format(attendanceTime2.getCheckIn());
+							Date dt2 = df.parse(aString);
+							int a = dt2.compareTo(dt1);
+							if (attendanceTime2.getEatType() == 3 && a == -1) {
+								Meal meal2 = new Meal();
+								meal2.setTradeDaysTime(attendanceTime2.getTime());
+								meal2.setPrice(Double.valueOf(variable.getKeyValue()));
+								meal2.setMode(1);
+								meal2.setUserName(attendanceTime2.getUserName());
+								meal2.setUserId(attendanceTime2.getUserId());
+								meal2.setType(2);
+								meals.add(meal2);
+								
+							}
+						}
+						if (attendanceTime2.getCheckOut()!=null) 
+						{ 
+							String aString2 = df.format(attendanceTime2.getCheckOut());
+							Date dt6 = df.parse(aString2);
+							// 签出时间 小时dt5 重新赋值
+							if (dt6.compareTo(dt5) == -1) {
+								dt6 = df.parse("23:59:59");
+							}
+							int c = dt6.compareTo(dt4);
+							if (attendanceTime2.getEatType() == 3  && c == 1) {
+								Meal meal3 = new Meal();
+								meal3.setTradeDaysTime(attendanceTime2.getTime());
+								meal3.setPrice(Double.valueOf(variable.getKeyValueThree()));
+								meal3.setMode(3);
+								meal3.setUserName(attendanceTime2.getUserName());
+								meal3.setUserId(attendanceTime2.getUserId());
+								meal3.setType(2);
+								meals.add(meal3);
+							}
+						}
+						
+						
+					}
+					if (attendanceTime2.getCheckIn()!=null) {
+						String aString = df.format(attendanceTime2.getCheckIn());
+						Date dt2 = df.parse(aString);
+						int b = dt2.compareTo(dt3);
+						if (b == -1) {
 							Meal meal2 = new Meal();
 							meal2.setTradeDaysTime(attendanceTime2.getTime());
-							meal2.setPrice(Double.valueOf(variable.getKeyValue()));
-							meal2.setMode(1);
+							meal2.setPrice(Double.valueOf(variable.getKeyValueTwo()));
+							meal2.setMode(2);
 							meal2.setUserName(attendanceTime2.getUserName());
 							meal2.setUserId(attendanceTime2.getUserId());
 							meal2.setType(2);
 							meals.add(meal2);
-							Meal meal3 = new Meal();
-							meal3.setTradeDaysTime(attendanceTime2.getTime());
-							meal3.setPrice(Double.valueOf(variable.getKeyValueThree()));
-							meal3.setMode(3);
-							meal3.setUserName(attendanceTime2.getUserName());
-							meal3.setUserId(attendanceTime2.getUserId());
-							meal3.setType(2);
-							meals.add(meal3);
 						}
 					}
-					Meal meal2 = new Meal();
-					meal2.setTradeDaysTime(attendanceTime2.getTime());
-					meal2.setPrice(Double.valueOf(variable.getKeyValueTwo()));
-					meal2.setMode(2);
-					meal2.setUserName(attendanceTime2.getUserName());
-					meal2.setUserId(attendanceTime2.getUserId());
-					meal2.setType(2);
-					meals.add(meal2);
+					if (attendanceTime2.getCheckOut()!=null) {
+							Meal meal2 = new Meal();
+							meal2.setTradeDaysTime(attendanceTime2.getTime());
+							meal2.setPrice(Double.valueOf(variable.getKeyValueTwo()));
+							meal2.setMode(2);
+							meal2.setUserName(attendanceTime2.getUserName());
+							meal2.setUserId(attendanceTime2.getUserId());
+							meal2.setType(2);
+							meals.add(meal2);
+					}
 				}
 			} else {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

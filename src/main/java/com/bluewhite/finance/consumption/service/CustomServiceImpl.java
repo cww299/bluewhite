@@ -55,4 +55,10 @@ public class CustomServiceImpl extends BaseServiceImpl<Custom, Long> implements 
 		
 		return count;
 	}
+
+	@Override
+	public List<Custom> findByType(Integer type) {
+	List<Custom> customs=dao.findByType(type);
+		return customs;
+	}
 }

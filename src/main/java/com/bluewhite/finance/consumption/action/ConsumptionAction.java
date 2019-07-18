@@ -208,6 +208,23 @@ public class ConsumptionAction {
 	}
 	
 	/**
+	 * 根据类型
+	 * @param request
+	 *            请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/fince/findCustomBytype", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse findCustomBytype(HttpServletRequest request,Integer type) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON.get()
+				.addRetainTerm(Custom.class, "id", "name")
+				.format(customService.findByType(type)).toJSON());
+		return cr;
+	}
+	
+	/**
 	 * 删除客户
 	 * @param request
 	 *            请求

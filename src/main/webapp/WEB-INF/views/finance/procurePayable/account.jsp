@@ -57,6 +57,9 @@
 			<tr>
 				<td>批次号：</td>
 				<td><input type="text" name="batchNumber"  class="layui-input" /></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>客户:</td>
+				<td><select name="customerId" id="custom" lay-search></select></td>
 			</tr>
 		</table>
 		<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
@@ -129,6 +132,27 @@ layui.config({
 		laydate.render({ elem: '#startTime', type: 'datetime',range:'~'});
 		$('#userIdSelect').html(getSelectHtml(''));
 		form.render();
+		var htmls = '<option value="">请选择</option>';
+		$.ajax({								//获取部门列表数据，部门下拉框的填充
+		      url:"${ctx}/fince/findCustomBytype",
+		      data:{type:2},
+		      type:"GET",
+		      async:false,
+		      beforeSend:function(){
+		    	  indextwo = layer.load(1, {
+				  shade: [0.1,'#fff'] //0.1透明度的白色背景
+				  });
+			  }, 
+    		  success: function (result) {				//初始填充部门
+    			  $(result.data).each(function(k,j){
+    				htmls +='<option value="'+j.id+'">'+j.name+'</option>'
+    			  });
+    		  $("#custom").html(htmls)
+    		  form.render();
+    			layer.close(indextwo);
+		      }
+		  });
+		
 		
 		upload.render({
 		   	  elem: '#uploadData'
@@ -264,13 +288,14 @@ layui.config({
 		//监听搜索
 		form.on('submit(LAY-search)', function(obj) {		
 			var field = obj.field;
-			
+			console.log(field)
 			var orderTime=field.orderTimeBegin.split('~');
 			var searchData = {
 				userId: 		field.userId,
 				batchNumber:    field.batchNumber,
 				content:		field.content,
-				flag:			field.flag,				
+				flag:			field.flag,	
+				customId:     field.customerId,
 				expenseDate:	'',
 				logisticsDate:	'',
 				orderTimeBegin:orderTime[0],

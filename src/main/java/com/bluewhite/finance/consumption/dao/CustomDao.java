@@ -23,4 +23,11 @@ public interface CustomDao extends BaseRepository<Custom, Long>{
 	 * @return
 	 */
 	public Custom findByTypeAndName(Integer type,String name);
+	
+	/**
+	 * 根据类型查询
+	 * @param type
+	 * @return
+	 */
+	public List<Custom> findByType(Integer type);
 }
