@@ -1231,14 +1231,18 @@
 								title: "部门",
 								align: 'center',
 								templet:  function(d){ 
-									return d.orgName.name		
+									if(d.user!=null){
+									return d.user.orgName.name	
+									}
 								}
 							},{
 								field: "position",
 								title: "职位",
 								align: 'center',
 								templet:  function(d){ 
-									return d.position.name		
+									if(d.user!=null){
+									return d.user.position.name		
+									}
 								}
 							},{
 								field: "entry",
