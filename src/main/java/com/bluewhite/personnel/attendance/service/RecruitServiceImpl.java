@@ -399,6 +399,7 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 		List<Recruit> list= dao.findByTimeBetween(recruit.getOrderTimeBegin(),recruit.getOrderTimeEnd());
 		List<Map<String, Object>> allList = new ArrayList<>();
 		Map<String, Object> allMap  = new HashMap<>();
+		Long f=list.stream().filter(Recruit->Recruit.getType()!=null && Recruit.getType().equals(1)).count();//应邀面试
 		Long a=list.stream().filter(Recruit->Recruit.getType()!=null && Recruit.getType().equals(0)).count();//没有应邀面试
 		Long b=list.stream().filter(Recruit->Recruit.getAdopt()!=null && Recruit.getAdopt().equals(1)).count();//面试合格
 		Long c=list.stream().filter(Recruit->Recruit.getAdopt()!=null && Recruit.getAdopt().equals(2)).count();//待定
@@ -409,6 +410,7 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 		allMap.put("md3",d);
 		allMap.put("md4",e);
 		allMap.put("md5",a);
+		allMap.put("md6",f);
 		allList.add(allMap);
 		return allList;
 	}

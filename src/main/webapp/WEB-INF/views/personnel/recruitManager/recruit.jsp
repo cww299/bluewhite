@@ -1136,6 +1136,10 @@
 								title: "面试人数",
 								align: 'center',
 							},{
+								field: "md6",
+								title: "应面人数",
+								align: 'center',
+							},{
 								field: "md5",
 								title: "未应面人数",
 								align: 'center',
