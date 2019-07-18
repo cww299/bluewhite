@@ -158,7 +158,7 @@ public class Recruit extends BaseEntity<Long> {
     private String remarksThree;
 	
 	/**
-	 * 面试结果(0=不通过，1=通过)
+	 * 面试结果(0=不通过，1=通过 ,2=待定)
 	 */
 	@Column(name = "adopt")
 	private Integer adopt;
