@@ -65,21 +65,24 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
 	@Override
 	public List<AttendanceTime> findAttendanceTime(AttendanceTime attendance) throws ParseException {
+		// 获取改时间段所有的打卡记录
+		List<Attendance> allAttList = null;
 		// 获取固定休息日
 		PersonVariable restType = personVariableDao.findByType(0);
 		// 报餐系统所需要的人员
 		List<User> list = null;
+		//报餐人员满足于输入时间内离职和入职
 		List<AttendanceInit> attendanceInitList = null;
-		// 获取改时间段所有的打卡记录
-		List<Attendance> allAttList = null;
 		if (attendance.getUserId() == null && attendance.getOrgNameId() == null) {
 			User user = new User();
 			user.setIsAdmin(false);
 			user.setForeigns(0);
 			list = userService.findUserList(user).stream()
 					.filter(User -> (User.getQuit() != null && User.getQuit() == 0)
-							|| (User.getQuitDate() != null && User.getQuitDate().after(attendance.getOrderTimeBegin())))
-					.collect(Collectors.toList());
+							|| (User.getQuitDate() != null 
+								&& User.getQuitDate().compareTo(attendance.getOrderTimeBegin()) == -1)
+							)
+					.collect(Collectors.toList()).stream().filter(User -> User.getEntry() != null && User.getEntry().compareTo(DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin())) != 1).collect(Collectors.toList());
 			attendanceInitList = attendanceInitDao.findAll();
 			allAttList = attendanceDao.findByTimeBetween(attendance.getOrderTimeBegin(),
 					DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin()));
