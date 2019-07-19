@@ -4,19 +4,14 @@
 <!DOCTYPE html>
 <html class="no-js">
 <%@ taglib uri="http://shiro.apache.org/tags" prefix="shiro" %>
-
 <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 <script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
-
-
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>报销申请</title>
-<meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
-
 <body>
 	<div class="layui-card">
 		<div class="layui-card-body">
@@ -30,28 +25,25 @@
 							<td>报销内容:</td>
 							<td><input type="text" name="content"  class="layui-input" /></td>
 							<td>&nbsp;&nbsp;</td>
-							<td><select class="form-control" name="expenseDate" id="selectone">
-									<option value="2018-10-08 00:00:00">申请日期</option>
-								</select></td>
+							<td>报销金额:</td>
+							<td style="width:100px;"><input type="text" name="money"  class="layui-input" /></td>
 							<td>&nbsp;&nbsp;</td>
-							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							<td>申请日期:</td>
+							<td>&nbsp;&nbsp;</td>
+							<td>
+								<input type="hidden" name="expenseDate" value="2018-10-08 00:00:00"><!-- 默认查找申请日期 -->
+								<input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
 							</td>
 							<td>&nbsp;&nbsp;</td>
-							<!-- <td>结束:</td>
-							<td><input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="layui-input laydate-icon">
-							</td> -->
-							<!-- 修改如下 -->
-							<td>&nbsp;&nbsp;</td>
 							<td>是否预算:
-							<td><select class="form-control" name="budget">
+							<td style="width:100px;"><select class="form-control" name="budget">
 									<option value="">请选择</option>
 									<option value="1">是</option>
 									<option value="0">否</option>
 							</select></td>
-							
 							<td>&nbsp;&nbsp;</td>
 							<td>是否核对:
-							<td><select class="form-control" name="flag">
+							<td style="width:100px;"><select class="form-control" name="flag">
 									<option value="">请选择</option>
 									<option value="0">未核对</option>
 									<option value="1">已核对</option>
