@@ -131,7 +131,7 @@ layui.define(['jquery','layer','form'],function(exports){
 						data = r.data.rows;
 					else
 						data = r.data;
-					callback && callback();
+					callback && callback(data);
 					return data;
 				}
 			}
