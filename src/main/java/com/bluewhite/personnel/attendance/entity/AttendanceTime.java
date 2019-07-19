@@ -164,40 +164,6 @@ public class AttendanceTime extends BaseEntity<Long> {
 	 */
 	@Column(name = "holiday_detail")
 	private String holidayDetail;
-	
-	/**
-	 * 吃饭（1.早饭2.晚餐3.早晚餐）
-	 * 
-	 */
-	@Transient
-	private Integer eatType;
-	
-	/**
-	 * 倒班（1.不倒班2.倒班）
-	 * 
-	 */
-	@Transient
-	private Integer fail;
-	
-	/**
-	 * 约定休息方式（1.周休一天，2.月休两天，其他周日算加班,3.全年无休）
-	 */
-	@Transient
-	private Integer restType;
-	
-	/**
-	 * 出勤方式（1.无到岗要求，2，无打卡要求，3.按到岗小时计算）
-	 */
-	@Transient
-	private Integer workType;
-	
-    
-	/**
-	 * 约定休息日
-	 */
-	@Transient
-	private String restDay;
-	
 	/**
 	 * 员工姓名
 	 */
@@ -248,46 +214,7 @@ public class AttendanceTime extends BaseEntity<Long> {
 		AttendanceInit = attendanceInit;
 	}
 
-	public String getRestDay() {
-		return restDay;
-	}
-
-	public void setRestDay(String restDay) {
-		this.restDay = restDay;
-	}
-
-	public Integer getRestType() {
-		return restType;
-	}
-
-	public void setRestType(Integer restType) {
-		this.restType = restType;
-	}
-
-	public Integer getWorkType() {
-		return workType;
-	}
-
-	public void setWorkType(Integer workType) {
-		this.workType = workType;
-	}
-
-	public Integer getFail() {
-		return fail;
-	}
-
-	public void setFail(Integer fail) {
-		this.fail = fail;
-	}
-
-	public Integer getEatType() {
-		return eatType;
-	}
-
-	public void setEatType(Integer eatType) {
-		this.eatType = eatType;
-	}
-
+	
 	public Double getTakeWork() {
 		return takeWork;
 	}

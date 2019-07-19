@@ -31,8 +31,8 @@ import com.bluewhite.finance.consumption.dao.CustomDao;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
 import com.bluewhite.finance.consumption.entity.Custom;
-import com.bluewhite.finance.ledger.dao.ContactDao;
-import com.bluewhite.finance.ledger.entity.Contact;
+import com.bluewhite.ledger.dao.CustomrDao;
+import com.bluewhite.ledger.entity.Customr;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.User;
 
@@ -46,7 +46,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	private CustomDao customDao;
 	
 	@Autowired
-	private ContactDao contactDao;
+	private CustomDao contactDao;
 	
 	@Autowired
 	private UserDao userDao;
@@ -83,6 +83,16 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			// 按消费类型过滤
 			if (param.getType() != null) {
 				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
+			}
+			
+			// 按报销类型过滤
+			if (param.getApplyTypeId() != null) {
+				predicate.add(cb.equal(root.get("applyTypeId").as(Integer.class), param.getApplyTypeId()));
+			}
+
+			// 按报销类型过滤
+			if (param.getDeleteFlag() != null) {
+				predicate.add(cb.equal(root.get("deleteFlag").as(Integer.class), param.getDeleteFlag()));
 			}
 
 			// 按是否已付款报销过滤
@@ -139,6 +149,14 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 				// 按其他日期
 				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
 					predicate.add(cb.between(root.get("logisticsDate").as(Date.class), param.getOrderTimeBegin(),
+							param.getOrderTimeEnd()));
+				}
+			}
+			
+			if (!StringUtils.isEmpty(param.getRealityDate())) {
+				// 按实际消费日期
+				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+					predicate.add(cb.between(root.get("realityDate").as(Date.class), param.getOrderTimeBegin(),
 							param.getOrderTimeEnd()));
 				}
 			}
@@ -224,8 +242,8 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			break;
 		case 5:
 			if (consumption.getContactId() == null) {
-				Contact contact = new Contact();
-				contact.setConPartyNames(consumption.getContactName());
+				Custom contact = new Custom();
+				contact.setName(consumption.getContactName());
 				contactDao.save(contact);
 				consumption.setContactId(contact.getId());
 			}

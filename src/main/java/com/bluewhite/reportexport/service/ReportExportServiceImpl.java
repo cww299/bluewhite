@@ -21,18 +21,15 @@ import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.basedata.service.BaseDataService;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
-import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.finance.ledger.dao.ActualpriceDao;
-import com.bluewhite.finance.ledger.dao.ContactDao;
-import com.bluewhite.finance.ledger.dao.OrderDao;
-import com.bluewhite.finance.ledger.entity.Actualprice;
-import com.bluewhite.finance.ledger.entity.Contact;
-import com.bluewhite.finance.ledger.entity.Order;
-import com.bluewhite.finance.ledger.service.ActualpriceService;
-import com.bluewhite.finance.ledger.service.BillService;
-import com.bluewhite.finance.ledger.service.OrderService;
+import com.bluewhite.ledger.dao.ActualpriceDao;
+import com.bluewhite.ledger.dao.CustomrDao;
+import com.bluewhite.ledger.dao.OrderDao;
+import com.bluewhite.ledger.entity.Actualprice;
+import com.bluewhite.ledger.entity.Order;
+import com.bluewhite.ledger.service.ActualpriceService;
+import com.bluewhite.ledger.service.BillService;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneTimeDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseThreeDao;
@@ -66,7 +63,7 @@ public class ReportExportServiceImpl implements ReportExportService{
 	@Autowired
 	private ActualpriceService actualpriceService;
 	@Autowired
-	private ContactDao contactDao;
+	private CustomrDao contactDao;
 	@Autowired
 	private BaseDataService baseDataService;
 	
@@ -100,8 +97,6 @@ public class ReportExportServiceImpl implements ReportExportService{
 	@Autowired
 	private OrderDao orderDao;
 	
-	@Autowired
-	private OrderService orderService;
 	
 	@Autowired
 	private ActualpriceDao actualpriceDao;
@@ -498,15 +493,15 @@ public class ReportExportServiceImpl implements ReportExportService{
 					}
 				User user=userDao.findByUserName(d);
 				order2.setFirstNamesId(user.getId());//甲方Id
-				Contact contact=contactDao.findByConPartyNames(order.getPartyNames());
-				if(contact==null){
-					Contact contact2=new Contact();
-					contact2.setConPartyNames(order.getPartyNames());//乙方
-					contactDao.save(contact2);
-					order2.setPartyNamesId(contact2.getId());//乙方Id
-				}else{
-					order2.setPartyNamesId(contact.getId());
-				}
+//				Customr contact=contactDao.findByConPartyNames(order.getPartyNames());
+//				if(contact==null){
+//					Customr contact2=new Customr();
+////					contact2.setConPartyNames(order.getPartyNames());//乙方
+//					contactDao.save(contact2);
+//					order2.setPartyNamesId(contact2.getId());//乙方Id
+//				}else{
+//					order2.setPartyNamesId(contact.getId());
+//				}
 				order2.setContractNumber(NumUtils.roundTwo(order.getContractNumber() != null ? order.getContractNumber() : 0));//当批合同数量
 				// order2.setContractPrice(order.getContractPrice());//当批合同总价
 			order2.setRemarksPrice(order.getRemarksPrice());//预付款备注

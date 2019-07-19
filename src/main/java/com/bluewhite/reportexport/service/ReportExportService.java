@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.bluewhite.finance.ledger.entity.Actualprice;
+import com.bluewhite.ledger.entity.Actualprice;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.BaseOneTime;
 import com.bluewhite.product.primecostbasedata.entity.BaseThree;

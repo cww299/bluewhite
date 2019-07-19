@@ -184,11 +184,6 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				// 休息时长
 				Double restTime = null;
 				// 报餐吃饭记录
-				attendanceTime.setEatType(attendanceInit.getEatType());
-				attendanceTime.setFail(attendanceInit.getFail());
-				attendanceTime.setWorkType(attendanceInit.getWorkType());
-				attendanceTime.setRestType(attendanceInit.getRestType());
-				attendanceTime.setRestDay(attendanceInit.getRestDay());
 				attendanceTime.setAttendanceInit(attendanceInit);
 				
 				// flag=ture 为夏令时

@@ -10,9 +10,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.alibaba.excel.annotation.ExcelProperty;
 import com.bluewhite.base.BaseEntity;
-import com.bluewhite.finance.ledger.entity.Contact;
+import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.ledger.entity.Customr;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -76,7 +76,7 @@ public class Consumption extends BaseEntity<Long> {
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "custom_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Custom custom;
+	private Customr custom;
 
 	/**
 	 * 消费内容
@@ -143,7 +143,7 @@ public class Consumption extends BaseEntity<Long> {
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "contact_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Contact contact;
+	private Customr contact;
 	
 	/**
 	 * 扣款事由填写
@@ -176,6 +176,35 @@ public class Consumption extends BaseEntity<Long> {
 	private Integer flag;
 
 	/**
+	 * 报销预算必要字段
+	 */
+	/**
+	 * 实际消费时间
+	 */
+	@Column(name = "reality_date")
+	private Date realityDate;
+	
+	/**
+	 * 报销类型id
+	 */
+	@Column(name = "apply_type_id")
+	private Long applyTypeId;
+	
+	/**
+	 * 报销类型
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "applyTypeId", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData applyType;
+	
+	/**
+	 * 月底是否删除
+	 */
+	@Column(name = "delete_flag")
+	private Integer deleteFlag;
+
+	
+	/**
 	 * 过滤参数(报销人姓名)
 	 */
 	@Transient
@@ -205,8 +234,40 @@ public class Consumption extends BaseEntity<Long> {
 	private Date orderTimeEnd;
 	
 	
+	    
 	
-	
+	public Date getRealityDate() {
+		return realityDate;
+	}
+
+	public void setRealityDate(Date realityDate) {
+		this.realityDate = realityDate;
+	}
+
+	public Long getApplyTypeId() {
+		return applyTypeId;
+	}
+
+	public void setApplyTypeId(Long applyTypeId) {
+		this.applyTypeId = applyTypeId;
+	}
+
+	public BaseData getApplyType() {
+		return applyType;
+	}
+
+	public void setApplyType(BaseData applyType) {
+		this.applyType = applyType;
+	}
+
+	public Integer getDeleteFlag() {
+		return deleteFlag;
+	}
+
+	public void setDeleteFlag(Integer deleteFlag) {
+		this.deleteFlag = deleteFlag;
+	}
+
 	public String getBatchNumber() {
 		return batchNumber;
 	}
@@ -215,11 +276,11 @@ public class Consumption extends BaseEntity<Long> {
 		this.batchNumber = batchNumber;
 	}
 
-	public Contact getContact() {
+	public Customr getContact() {
 		return contact;
 	}
 
-	public void setContact(Contact contact) {
+	public void setContact(Customr contact) {
 		this.contact = contact;
 	}
 
@@ -279,11 +340,11 @@ public class Consumption extends BaseEntity<Long> {
 		this.customId = customId;
 	}
 
-	public Custom getCustom() {
+	public Customr getCustom() {
 		return custom;
 	}
 
-	public void setCustom(Custom custom) {
+	public void setCustom(Customr custom) {
 		this.custom = custom;
 	}
 
