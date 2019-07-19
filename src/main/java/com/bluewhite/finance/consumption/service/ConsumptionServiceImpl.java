@@ -99,7 +99,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 				predicate.add(
 						cb.like(root.get("user").get("userName").as(String.class), "%" + param.getUsername() + "%"));
 			}
-			// 按报销人姓名查找
+			// 按客户姓名查找
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
 				predicate.add(
 						cb.like(root.get("custom").get("name").as(String.class), "%" + param.getCustomerName() + "%"));
@@ -110,6 +110,11 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 						"%" + StringUtil.specialStrKeyword(param.getContent()) + "%"));
 			}
 
+			// 按报销金额查找
+			if (!StringUtils.isEmpty(param.getMoney())) {
+				predicate.add(cb.equal(root.get("money").as(Double.class), param.getMoney() ));
+			}
+			
 			// 按客户查找
 			if (!StringUtils.isEmpty(param.getCustomId())) {
 				predicate.add(cb.equal(root.get("customId").as(String.class), param.getCustomId()));
@@ -153,11 +158,10 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	public Consumption addConsumption(Consumption consumption) {
 		CurrentUser cu = SessionManager.getUserSession();
 		Consumption ot = null;
+		Double money = null;
 		if (consumption.getId() != null) {
 			ot = dao.findOne(consumption.getId());
-//			if(cu.getOrgNameId()!=ot.getOrgNameId()){
-//				throw new ServiceException("无权限修改");
-//			}
+			money = ot.getMoney();
 			if (ot.getFlag() == 1) {
 				throw new ServiceException("已放款，无法修改");
 			}
@@ -169,19 +173,21 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		switch (consumption.getType()) {
 		case 1:
 			flag = false;
+			//修改子类报销单1.改变当前子类报销金额 2改变父类预算的报销金额
 			if(consumption.getParentId()!=null){
 				//获取报销单的父id实体
 				Consumption parentConsumption = dao.findOne(consumption.getParentId());
 				//表示为修改
 				if(consumption.getId() != null){
-					parentConsumption.setMoney(NumUtils.sum(parentConsumption.getMoney(),NumUtils.sub(consumption.getMoney(),ot.getMoney())));
+					parentConsumption.setMoney(NumUtils.sum(parentConsumption.getMoney(),NumUtils.sub(money,consumption.getMoney())));
 				}else{
 					parentConsumption.setMoney(NumUtils.sub(parentConsumption.getMoney(), consumption.getMoney()));
 				}
 				dao.save(parentConsumption);
 			}
 			
-			if(consumption.getId() != null && consumption.getBudget()==1){
+			//修改父类报销单
+			if(consumption.getId() != null  && consumption.getBudget()==1){
 				//获取父类报销单的全部子类
 				List<Consumption> consumptionList = dao.findByParentId(consumption.getId());
 				if(consumptionList.size()>0){

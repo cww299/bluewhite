@@ -29,6 +29,7 @@ import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.personnel.attendance.dao.MealDao;
 import com.bluewhite.personnel.attendance.dao.PersonVariableDao;
+import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.entity.Meal;
 import com.bluewhite.personnel.attendance.entity.PersonVariable;
@@ -208,302 +209,163 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 	}
 
 	// 同步吃饭记录
+	// 根据打卡记录进行是否有早中晚餐记录
 	@Override
 	@Transactional
 	public int InitMeal(AttendanceTime attendanceTime) throws ParseException {
+		// 检查当前月份属于夏令时或冬令时 flag=ture 为夏令时
+		boolean flag = DatesUtil.belongCalendar(attendanceTime.getOrderTimeBegin());
+
 		List<AttendanceTime> attendanceTimes = attendanceTimeService.findAttendanceTime(attendanceTime);
 		List<Meal> list = dao.findByTypeAndTradeDaysTimeBetween(2,
 				DatesUtil.getFirstDayOfMonth(attendanceTime.getOrderTimeBegin()),
 				DatesUtil.getLastDayOfMonth(attendanceTime.getOrderTimeBegin()));
 		if (list.size() > 0) {
 			List<Long> idLong = list.stream().map(Meal::getId).collect(Collectors.toList());
+			// 同步删除自动添加的报餐数据
 			dao.deleteList(idLong);
 		}
 		List<Meal> meals = new ArrayList<Meal>();
-		PersonVariable variable = personVariableDao.findByType(1);
+		// 0=休息日期,
 		PersonVariable restType = personVariableDao.findByType(0);
-		for (AttendanceTime attendanceTime2 : attendanceTimes) {
-			if (attendanceTime2.getCheckIn() != null && attendanceTime2.getCheckOut() == null) {
-				int j = attendanceTime2.getCheckIn().getHours();
-				if (j > 12) {
-					attendanceTime2.setCheckOut(attendanceTime2.getCheckIn());
-					attendanceTime2.setCheckIn(null);
-				}
-				if (j == 12) {
-					attendanceTime2.setCheckIn(attendanceTime2.getCheckIn());
-					attendanceTime2.setCheckOut(attendanceTime2.getCheckIn());
-				}
-			}
+		// 1=早中晚三餐价值
+		PersonVariable variable = personVariableDao.findByType(1);
+		// 4=设定早中晚三餐对于吃饭统计而延迟的分钟数
+		PersonVariable lagMin = personVariableDao.findByType(4);
 
-			// 基础数据 每一餐的价格
-			if (attendanceTime2.getCheckOut() != null || attendanceTime2.getCheckIn() != null) {
-				if (attendanceTime2.getCheckOut() != null && attendanceTime2.getCheckIn() != null) {
-					DateFormat df = new SimpleDateFormat("HH:mm:ss");
-					Date dt1 = df.parse("08:30:00");
-					Date dt3 = df.parse("12:00:00");
-					Date dt4 = df.parse("18:30:00");
-					Date dt5 = df.parse("04:30:00");
-					String aString = df.format(attendanceTime2.getCheckIn());
-					Date dt2 = df.parse(aString);
-
-					String aString2 = df.format(attendanceTime2.getCheckOut());
-					Date dt6 = df.parse(aString2);
-					// 签出时间 小时dt5 重新赋值
-					if (dt6.compareTo(dt5) == -1) {
-						dt6 = df.parse("23:59:59");
-					}
-					int a = dt2.compareTo(dt1);
-					int b = dt2.compareTo(dt3);
-					int c = dt6.compareTo(dt4);
-					int d = dt2.compareTo(dt4);// 吃晚饭 第一次打卡要小于18.30
-					int e = dt6.compareTo(dt3);
-					if (attendanceTime2.getEatType() != null) {
-						// 早饭 签入时间小于dt1
-						if (attendanceTime2.getEatType() == 1 && a == -1) {
-							Meal meal2 = new Meal();
-							meal2.setTradeDaysTime(attendanceTime2.getTime());
-							meal2.setPrice(Double.valueOf(variable.getKeyValue()));
-							meal2.setMode(1);
-							meal2.setUserName(attendanceTime2.getUserName());
-							meal2.setUserId(attendanceTime2.getUserId());
-							meal2.setType(2);
-							meals.add(meal2);
-						}
-					}
-
-					if (b == -1 && e==1) {
-						// 中餐 签入时间小于dt3
-						Meal meal2 = new Meal();
-						meal2.setTradeDaysTime(attendanceTime2.getTime());
-						meal2.setPrice(Double.valueOf(variable.getKeyValueTwo()));
-						meal2.setMode(2);
-						meal2.setUserName(attendanceTime2.getUserName());
-						meal2.setUserId(attendanceTime2.getUserId());
-						meal2.setType(2);
-						meals.add(meal2);
-					}
-
-					if (attendanceTime2.getEatType() != null) {
-						// 晚饭 签出时间大于dt4
-						if (attendanceTime2.getEatType() == 2 && d == -1 && c == 1) {
-							Meal meal2 = new Meal();
-							meal2.setTradeDaysTime(attendanceTime2.getTime());
-							meal2.setPrice(Double.valueOf(variable.getKeyValueThree()));
-							meal2.setMode(3);
-							meal2.setUserName(attendanceTime2.getUserName());
-							meal2.setUserId(attendanceTime2.getUserId());
-							meal2.setType(2);
-							meals.add(meal2);
-						}
-						// 早晚饭
-						if (attendanceTime2.getEatType() == 3 && a == -1 && c == 1) {
-							Meal meal2 = new Meal();
-							meal2.setTradeDaysTime(attendanceTime2.getTime());
-							meal2.setPrice(Double.valueOf(variable.getKeyValue()));
-							meal2.setMode(1);
-							meal2.setUserName(attendanceTime2.getUserName());
-							meal2.setUserId(attendanceTime2.getUserId());
-							meal2.setType(2);
-							meals.add(meal2);
-							Meal meal3 = new Meal();
-							meal3.setTradeDaysTime(attendanceTime2.getTime());
-							meal3.setPrice(Double.valueOf(variable.getKeyValueThree()));
-							meal3.setMode(3);
-							meal3.setUserName(attendanceTime2.getUserName());
-							meal3.setUserId(attendanceTime2.getUserId());
-							meal3.setType(2);
-							meals.add(meal3);
-						}
-					}
-				} else {
-					DateFormat df = new SimpleDateFormat("HH:mm:ss");
-					Date dt1 = df.parse("08:30:00");
-					Date dt3 = df.parse("12:00:00");
-					Date dt4 = df.parse("18:30:00");
-					Date dt5 = df.parse("04:30:00");
-					if (attendanceTime2.getCheckIn() != null) {
-						String aString = df.format(attendanceTime2.getCheckIn());
-						Date dt2 = df.parse(aString);
-						int a = dt2.compareTo(dt1);
-						if (attendanceTime2.getEatType() != null) {
-							// 早饭
-							if (attendanceTime2.getEatType() == 1 && a == -1) {
-								Meal meal2 = new Meal();
-								meal2.setTradeDaysTime(attendanceTime2.getTime());
-								meal2.setPrice(Double.valueOf(variable.getKeyValue()));
-								meal2.setMode(1);
-								meal2.setUserName(attendanceTime2.getUserName());
-								meal2.setUserId(attendanceTime2.getUserId());
-								meal2.setType(2);
-								meals.add(meal2);
-							}
-						}
-					}
-					if (attendanceTime2.getCheckOut() != null) {
-						String aString2 = df.format(attendanceTime2.getCheckOut());
-						Date dt6 = df.parse(aString2);
-						// 签出时间 小时dt5 重新赋值
-						if (dt6.compareTo(dt5) == -1) {
-							dt6 = df.parse("23:59:59");
-						}
-						int c = dt6.compareTo(dt4);
-						
-						if (attendanceTime2.getEatType() != null) {
-							// 晚饭
-							if (attendanceTime2.getEatType() == 2  && c == 1) {
-								Meal meal2 = new Meal();
-								meal2.setTradeDaysTime(attendanceTime2.getTime());
-								meal2.setPrice(Double.valueOf(variable.getKeyValueThree()));
-								meal2.setMode(3);
-								meal2.setUserName(attendanceTime2.getUserName());
-								meal2.setUserId(attendanceTime2.getUserId());
-								meal2.setType(2);
-								meals.add(meal2);
-							}
-						}
-					}
-					if (attendanceTime2.getEatType() != null) {
-						// 早饭晚饭都吃
-						if (attendanceTime2.getCheckIn()!=null) {
-							String aString = df.format(attendanceTime2.getCheckIn());
-							Date dt2 = df.parse(aString);
-							int a = dt2.compareTo(dt1);
-							if (attendanceTime2.getEatType() == 3 && a == -1) {
-								Meal meal2 = new Meal();
-								meal2.setTradeDaysTime(attendanceTime2.getTime());
-								meal2.setPrice(Double.valueOf(variable.getKeyValue()));
-								meal2.setMode(1);
-								meal2.setUserName(attendanceTime2.getUserName());
-								meal2.setUserId(attendanceTime2.getUserId());
-								meal2.setType(2);
-								meals.add(meal2);
-								
-							}
-						}
-						if (attendanceTime2.getCheckOut()!=null) 
-						{ 
-							String aString2 = df.format(attendanceTime2.getCheckOut());
-							Date dt6 = df.parse(aString2);
-							// 签出时间 小时dt5 重新赋值
-							if (dt6.compareTo(dt5) == -1) {
-								dt6 = df.parse("23:59:59");
-							}
-							int c = dt6.compareTo(dt4);
-							if (attendanceTime2.getEatType() == 3  && c == 1) {
-								Meal meal3 = new Meal();
-								meal3.setTradeDaysTime(attendanceTime2.getTime());
-								meal3.setPrice(Double.valueOf(variable.getKeyValueThree()));
-								meal3.setMode(3);
-								meal3.setUserName(attendanceTime2.getUserName());
-								meal3.setUserId(attendanceTime2.getUserId());
-								meal3.setType(2);
-								meals.add(meal3);
-							}
-						}
-						
-						
-					}
-					if (attendanceTime2.getCheckIn()!=null) {
-						String aString = df.format(attendanceTime2.getCheckIn());
-						Date dt2 = df.parse(aString);
-						int b = dt2.compareTo(dt3);
-						if (b == -1) {
-							Meal meal2 = new Meal();
-							meal2.setTradeDaysTime(attendanceTime2.getTime());
-							meal2.setPrice(Double.valueOf(variable.getKeyValueTwo()));
-							meal2.setMode(2);
-							meal2.setUserName(attendanceTime2.getUserName());
-							meal2.setUserId(attendanceTime2.getUserId());
-							meal2.setType(2);
-							meals.add(meal2);
-						}
-					}
-					if (attendanceTime2.getCheckOut()!=null) {
-							Meal meal2 = new Meal();
-							meal2.setTradeDaysTime(attendanceTime2.getTime());
-							meal2.setPrice(Double.valueOf(variable.getKeyValueTwo()));
-							meal2.setMode(2);
-							meal2.setUserName(attendanceTime2.getUserName());
-							meal2.setUserId(attendanceTime2.getUserId());
-							meal2.setType(2);
-							meals.add(meal2);
-					}
-				}
+		for (AttendanceTime at : attendanceTimes) {
+			AttendanceInit attendanceInit = at.getAttendanceInit();
+			// 第一天的开始签到时间从6点开始新一天的签到
+			Date beginTimes = at.getTime();
+			// 上班开始时间
+			Date workTime = null;
+			// 上班结束时间
+			Date workTimeEnd = null;
+			// 中午休息开始时间
+			Date restBeginTime = null;
+			// flag=ture 为夏令时
+			if (flag) {
+				String[] workTimeArr = attendanceInit.getWorkTimeSummer().split(" - ");
+				// 将 工作间隔开始结束时间转换成当前日期的时间
+				workTime = DatesUtil.dayTime(beginTimes, workTimeArr[0]);
+				workTimeEnd = DatesUtil.dayTime(beginTimes, workTimeArr[1]);
+				String[] restTimeArr = attendanceInit.getRestTimeSummer().split(" - ");
+				// 将 休息间隔开始结束时间转换成当前日期的时间
+				restBeginTime = DatesUtil.dayTime(beginTimes, restTimeArr[0]);
 			} else {
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-				boolean rout = false;
-				if (attendanceTime2.getWorkType() == null || attendanceTime2.getRestType() == null) {
-					throw new ServiceException(attendanceTime2.getUser().getUserName() + "没有考勤初始设定数据，请填写后操作");
+				// 冬令时
+				String[] workTimeArr = attendanceInit.getWorkTimeWinter().split(" - ");
+				// 将 工作间隔开始结束时间转换成当前日期的时间
+				workTime = DatesUtil.dayTime(beginTimes, workTimeArr[0]);
+				workTimeEnd = DatesUtil.dayTime(beginTimes, workTimeArr[1]);
+				// 将 休息间隔开始结束时间转换成当前日期的时间
+				String[] restTimeArr = attendanceInit.getRestTimeWinter().split(" - ");
+				// 将 休息间隔开始结束时间转换成当前日期的时间
+				restBeginTime = DatesUtil.dayTime(beginTimes, restTimeArr[0]);
+			}
+			// 早餐延迟后时间
+			Date breakfastLagTime = DatesUtil.getDaySum(workTime, Double.parseDouble(lagMin.getKeyValue()));
+			// 午餐延迟后时间
+			Date lunchLagTime = DatesUtil.getDaySum(restBeginTime, Double.parseDouble(lagMin.getKeyValueTwo()));
+			// 晚餐延迟时间
+			Date dinnerLagTime = DatesUtil.getDaySum(workTimeEnd, Double.parseDouble(lagMin.getKeyValueThree()));
+			// 夜宵时间
+			Date midnight = DatesUtil.dayTime(at.getTime(), "23:00:00");
+			
+			// 考勤正常，有签入签出
+			if (at.getCheckIn() != null && at.getCheckOut() != null && DatesUtil.getTimeSec(at.getCheckIn(), at.getCheckOut()) > 300) {
+				// 签入时间小于早餐延迟时间
+				if ((attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 1
+						|| attendanceInit.getEatType() == 3 || attendanceInit.getEatType() == 4))
+						&& at.getCheckIn().compareTo(breakfastLagTime) != 1) {
+					meals.add(addMeal(at, 1, variable));
 				}
-				// 1.周休一天，
-				if (attendanceTime2.getWorkType() == 1 || attendanceTime2.getWorkType() == 2) {
-					if (attendanceTime2.getRestType() == 1) {
-						String[] weeklyRestDate = restType.getKeyValue().split(",");
-						if (weeklyRestDate.length > 0) {
-							for (int j = 0; j < weeklyRestDate.length; j++) {
-								if (DatesUtil.getfristDayOftime(attendanceTime2.getTime())
-										.compareTo(sdf.parse(weeklyRestDate[j])) == 0) {
-									rout = true;
-								}
-							}
-							if (rout == false) {
-								Meal meal2 = new Meal();
-								meal2.setTradeDaysTime(attendanceTime2.getTime());
-								meal2.setPrice(Double.valueOf(variable.getKeyValueTwo()));
-								meal2.setMode(2);
-								meal2.setUserName(attendanceTime2.getUserName());
-								meal2.setUserId(attendanceTime2.getUserId());
-								meal2.setType(2);
-								meals.add(meal2);
-							}
-						}
-					}
-					// 2.月休两天
-					if (attendanceTime2.getRestType() == 2) {
-						String[] weeklyRestDate = restType.getKeyValue().split(",");
-						if (weeklyRestDate.length > 0) {
-							for (int j = 0; j < weeklyRestDate.length; j++) {
-								if (DatesUtil.getfristDayOftime(attendanceTime2.getTime())
-										.compareTo(sdf.parse(weeklyRestDate[j])) == 0) {
-									rout = true;
-								}
-							}
-							if (rout == false) {
-								Meal meal2 = new Meal();
-								meal2.setTradeDaysTime(attendanceTime2.getTime());
-								meal2.setPrice(Double.valueOf(variable.getKeyValueTwo()));
-								meal2.setMode(2);
-								meal2.setUserName(attendanceTime2.getUserName());
-								meal2.setUserId(attendanceTime2.getUserId());
-								meal2.setType(2);
-								meals.add(meal2);
-							}
-						}
+				// 1.签出时间大于午餐延迟时间
+				if ( at.getCheckOut().compareTo(lunchLagTime) != -1 ) {
+					meals.add(addMeal(at, 2, variable));
+				}
+				// 1.签入时间小于晚餐延迟时间，2签出时间大于晚餐延迟时间
+				if ((attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 2
+						|| attendanceInit.getEatType() == 3 || attendanceInit.getEatType() == 4))
+						&& (at.getCheckIn().compareTo(dinnerLagTime) != 1
+								&& at.getCheckOut().compareTo(dinnerLagTime) != -1)) {
+					meals.add(addMeal(at, 3, variable));
+				}
+				// 1签出时间大于夜宵时间
+				if ((attendanceInit.getEatType() != null && attendanceInit.getEatType() == 4)
+						&& at.getCheckOut().compareTo(midnight) != -1) {
+					meals.add(addMeal(at, 4, variable));
+				}
+			}
+			
+			// 考勤异常，只有签入
+			if ((at.getCheckIn() != null && at.getCheckOut() == null) || (at.getCheckIn() != null && at.getCheckOut() != null && DatesUtil.getTimeSec(at.getCheckIn(), at.getCheckOut()) <= 300)) {
+				// 签入时间小于早餐延迟时间
+				if (attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 1 || attendanceInit.getEatType() == 3 || attendanceInit.getEatType() == 4)) {
+					meals.add(addMeal(at, 1, variable));
+				}
+					meals.add(addMeal(at, 2, variable));
+				// 1.签入时间小于晚餐延迟时间，2签出时间小于晚餐延迟时间
+				if (attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 2 || attendanceInit.getEatType() == 3 || attendanceInit.getEatType() == 4)) {
+					meals.add(addMeal(at, 3, variable));
+				}
+				// 1.签入时间大于夜宵时间
+				if ((attendanceInit.getEatType() != null && attendanceInit.getEatType() == 4)
+						&& at.getCheckIn().compareTo(midnight) != -1) {
+					meals.add(addMeal(at, 4, variable));
+				}
+			}
+			
+			// 无签到记录
+			if (at.getCheckIn() == null && at.getCheckOut() == null) {
+				// 不需要打卡
+				if (attendanceInit.getWorkType() == 1 || attendanceInit.getWorkType() == 2) {
+					if (at.getFlag() != 3) {
+						meals.add(addMeal(at, 2, variable));
 					}
 				}
 			}
+
 		}
 		saveAllMeals(meals);
 		return meals.size();
 	}
-	
-	
-	
+
+	/**
+	 * 添加报餐记录
+	 * 
+	 * @param attendanceTime
+	 * @param mode
+	 * @param variable
+	 * @return
+	 */
+	private Meal addMeal(AttendanceTime attendanceTime, Integer mode, PersonVariable variable) {
+		Meal meal = new Meal();
+		meal.setTradeDaysTime(attendanceTime.getTime());
+		meal.setUserId(attendanceTime.getUserId());
+		meal.setUserName(attendanceTime.getUserName());
+		meal.setType(2);
+		meal.setPrice(Double.valueOf(variable.getKeyValue()));
+		meal.setMode(mode);
+		return meal;
+	}
+
 	/**
 	 * 批量新增报餐记录
+	 * 
 	 * @param productList
 	 */
 	private void saveAllMeals(List<Meal> mealList) {
 		entityManager.setFlushMode(FlushModeType.COMMIT);
-		 for (int i = 0; i < mealList.size(); i++){
-			 Meal meal = mealList.get(i);
-			 entityManager.merge(meal);
-	            if (i % 1000 == 0 && i > 0) {
-	            	entityManager.flush();
-	            	entityManager.clear();
-	            }
-	        }
-		 entityManager.close();
-	   }
-	
+		for (int i = 0; i < mealList.size(); i++) {
+			Meal meal = mealList.get(i);
+			entityManager.merge(meal);
+			if (i % 1000 == 0 && i > 0) {
+				entityManager.flush();
+				entityManager.clear();
+			}
+		}
+		entityManager.close();
+	}
+
 }
