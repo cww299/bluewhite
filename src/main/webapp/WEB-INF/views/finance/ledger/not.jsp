@@ -94,6 +94,7 @@ layui.config({
 			url:'${ctx}/fince/getOrder',
 			toolbar:'#notTableToolbar',
 			loading:false,
+			height:'680px',
 			cellMinWidth: 100,
 			parseData:function(ret){ return { code : ret.code, msg : ret.msg, count : ret.data.total, data : ret.data.rows } },
 			request:{ pageName: 'page' ,limitName: 'size' },
