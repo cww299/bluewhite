@@ -31,6 +31,9 @@
 				 	<input type="hidden" name="viewTypeDate" value="1">
 				</td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>姓名：</td>
+				<td><input type="text" id="userNameSearch" class="layui-input"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
@@ -61,12 +64,18 @@
 </script>
 <script>
 var TYPE = 2;
-layui.use(['table','laydate','layer','jquery'],
+layui.config({
+	base : '${ctx}/static/layui-v2.4.5/'
+}).extend({
+	tablePlug : 'tablePlug/tablePlug',
+}).define(
+	['tablePlug','laydate','layer','laydate'],
 	function(){
 		var LOAD;
 		var $ = layui.jquery,
 		    table = layui.table,
 		    layer = layui.layer,
+		    tablePlug = layui.tablePlug,
 		    form = layui.form,
 		    laydate = layui.laydate;
 		laydate.render({
@@ -93,6 +102,7 @@ layui.use(['table','laydate','layer','jquery'],
 				$('#timeInput').val('');			//清空内容
 			}
 		}
+		tablePlug.smartReload.enable(true); 
 		table.render({
 			elem:'#specialTable',
 			data:[],
@@ -101,11 +111,23 @@ layui.use(['table','laydate','layer','jquery'],
 			loading:false,
 			size:'sm',
 			request:{ pageName:'page', limitName:'size' },
-			parseData:function(ret){ return { data:ret.data,  msg:ret.message, code:ret.code } },
+			parseData:function(ret){ 
+				var searchName = $('#userNameSearch').val();		//根据姓名搜索功能
+				if(searchName!=''){
+					var data = [];
+					layui.each(ret.data,function(index,item){
+						if(item.user.userName == searchName)
+							data.push(item);
+					})
+					return { data:data,  msg:ret.message, code:ret.code } 
+				}
+				else
+					return { data:ret.data,  msg:ret.message, code:ret.code } 
+			},
 			cols:[[
 			       {align:'center', title:'日期',   field:'temporarilyDate',	totalRowText:'合计', width:'10%',sort:true,},
-			       {align:'center', title:'分组', 	field:'user', width:'10%',	templet:function(d){ return d.group.name; }},
-			       {align:'center', title:'姓名', 	field:'user', width:'10%',	templet:function(d){ return d.user.userName; }},
+			       {align:'center', title:'分组', 	field:'user', width:'10%',	templet:function(d){ return d.group.name; },},
+			       {align:'center', title:'姓名', 	field:'user', width:'10%',	templet:function(d){ return d.user.userName; },},
 			       {align:'center', title:'总工时',   field:'workTime',  totalRow:true, width:'10%', edit:true,},
 			       {align:'center', title:'工时',   field:'workTimeSlice', templet:'#timeTpl'	},
 			       ]],
