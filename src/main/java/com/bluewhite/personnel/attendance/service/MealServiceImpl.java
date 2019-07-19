@@ -276,7 +276,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			if (at.getCheckIn() != null && at.getCheckOut() != null && DatesUtil.getTimeSec(at.getCheckIn(), at.getCheckOut()) > 300) {
 				// 签入时间小于早餐延迟时间
 				if ((attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 1
-						|| attendanceInit.getEatType() == 3 || attendanceInit.getEatType() == 4))
+						|| attendanceInit.getEatType() == 3 || attendanceInit.getEatType() == 4 || attendanceInit.getEatType() == 5))
 						&& at.getCheckIn().compareTo(breakfastLagTime) != 1) {
 					meals.add(addMeal(at, 1, variable));
 				}
@@ -286,13 +286,13 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 				}
 				// 1.签入时间小于晚餐延迟时间，2签出时间大于晚餐延迟时间
 				if ((attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 2
-						|| attendanceInit.getEatType() == 3 || attendanceInit.getEatType() == 4))
+						|| attendanceInit.getEatType() == 3 || attendanceInit.getEatType() == 4 || attendanceInit.getEatType() == 5))
 						&& (at.getCheckIn().compareTo(dinnerLagTime) != 1
 								&& at.getCheckOut().compareTo(dinnerLagTime) != -1)) {
 					meals.add(addMeal(at, 3, variable));
 				}
 				// 1签出时间大于夜宵时间
-				if ((attendanceInit.getEatType() != null && attendanceInit.getEatType() == 4)
+				if ((attendanceInit.getEatType() != null && attendanceInit.getEatType() == 4 || attendanceInit.getEatType() == 5)
 						&& at.getCheckOut().compareTo(midnight) != -1) {
 					meals.add(addMeal(at, 4, variable));
 				}
@@ -301,16 +301,18 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			// 考勤异常，只有签入
 			if ((at.getCheckIn() != null && at.getCheckOut() == null) || (at.getCheckIn() != null && at.getCheckOut() != null && DatesUtil.getTimeSec(at.getCheckIn(), at.getCheckOut()) <= 300)) {
 				// 签入时间小于早餐延迟时间
-				if (attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 1 || attendanceInit.getEatType() == 3 || attendanceInit.getEatType() == 4)) {
+				if (attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 1 
+						|| attendanceInit.getEatType() == 3 || attendanceInit.getEatType() == 4 || attendanceInit.getEatType() == 5)) {
 					meals.add(addMeal(at, 1, variable));
 				}
 					meals.add(addMeal(at, 2, variable));
 				// 1.签入时间小于晚餐延迟时间，2签出时间小于晚餐延迟时间
-				if (attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 2 || attendanceInit.getEatType() == 3 || attendanceInit.getEatType() == 4)) {
+				if (attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 2
+						|| attendanceInit.getEatType() == 3 || attendanceInit.getEatType() == 4 || attendanceInit.getEatType() == 5)) {
 					meals.add(addMeal(at, 3, variable));
 				}
 				// 1.签入时间大于夜宵时间
-				if ((attendanceInit.getEatType() != null && attendanceInit.getEatType() == 4)
+				if ((attendanceInit.getEatType() != null && attendanceInit.getEatType() == 4 || attendanceInit.getEatType() == 5)
 						&& at.getCheckIn().compareTo(midnight) != -1) {
 					meals.add(addMeal(at, 4, variable));
 				}

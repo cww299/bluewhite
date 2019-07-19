@@ -33,7 +33,7 @@ import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
 import com.bluewhite.finance.consumption.entity.Custom;
 import com.bluewhite.finance.consumption.service.ConsumptionService;
 import com.bluewhite.finance.consumption.service.CustomService;
-import com.bluewhite.finance.ledger.entity.Contact;
+import com.bluewhite.ledger.entity.Customr;
 import com.bluewhite.system.user.entity.User;
 
 @Controller
@@ -53,7 +53,7 @@ public class ConsumptionAction {
 				,"budget","money","expenseDate","paymentMoney","paymentDate","withholdReason","remark"
 				,"withholdMoney","settleAccountsMode","remark","flag","taxPoint","custom","user","contact","logisticsDate","contactName","batchNumber")
 				.addRetainTerm(User.class, "userName")
-				.addRetainTerm(Contact.class, "conPartyNames");
+				.addRetainTerm(Custom.class, "conPartyNames");
 	}
 
 	/**
