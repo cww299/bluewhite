@@ -140,33 +140,31 @@
 		</div>
 	</form>
 
-<form action="" id="layuiadmin-form-admin3"
-		style="padding: 20px 0px 0 50px; display:none;  text-align:">
-		<div class="layui-form" lay-filter="layuiadmin-form-admin">
-		<input type="text" name="id" id="ids" style="display:none;">
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">姓名</label>
-				<div class="layui-input-inline">
-					<select name="id" style="width:290px;" lay-filter="userId" id="userIds" lay-search="true"></select>
+<div style="display: none;" id="layuiShare5">
+			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+				<div class="layui-form-item">
+					<table>
+						<tr>
+							<td>姓名:</td>
+							<td><select id="userIds" class="layui-input"  lay-search="true" name="userId"></select></td>
+							<td>&nbsp;&nbsp;</td>
+							<td>部门:</td>
+							<td><select  id="orgNameIds" class="layui-input" lay-search="true" name="orgNameId">
+							<option value="">请选择</select></td>
+							<td>&nbsp;&nbsp;</td>
+							<td>
+								<div class="layui-inline">
+									<button class="layui-btn layuiadmin-btn-admin"  lay-submit lay-filter="LAY-search7">
+										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+									</button>
+								</div>
+							</td>
+						</tr>
+					</table>
 				</div>
 			</div>
-
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">吃饭状态</label>
-				<div class="layui-input-inline">
-					<select name="eatType" lay-filter="eatType"
-						id="eatType"  lay-search="true"><option
-							value="">请选择</option>
-						<option value="1">早餐</option>
-						<option value="2">晚餐</option>
-						<option value="3">早餐or晚餐</option>
-						<option value="4">晚夜宵</option>
-						<option value="5">早晚夜宵</option>
-						</select>
-				</div>
-			</div>
-		</div>
-	</form>
+			<table id="layuiShare6"  class="table_th_search" lay-filter="layuiShare8"></table>
+</div>
 	
 	
 	<form action="" id="layuiadmin-form-admin4"
@@ -279,6 +277,7 @@
 							})
 							$("#selectUserId").html(htmls)
 							$("#userId").html(htmls)
+							$("#userIds").html(htmls)
 							layer.close(index);
 						},
 						error: function() {
@@ -306,6 +305,7 @@
 			      				htmlfrn +='<option value="'+j.id+'">'+j.name+'</option>'
 			      			  });
 			      			$("#orgName").html(htmlfrn);
+			      			$("#orgNameIds").html(htmlfrn);
 			      			layer.close(indextwo);
 					      }
 					  });
@@ -335,7 +335,21 @@
 								'<option value="4">夜宵</option>',
 								'</select>'
 							].join('');
-
+						};
+						form.render(); 
+					};
+					
+					var fn3 = function(field) {
+						return function(d) {
+							return ['<select name="selectThree" class="selectThree" lay-filter="lay_selecte2" lay-search="true" data-value="' + d.eatType + '">',
+								'<option value="">请选择</option>',
+								'<option value="1">早餐</option>',
+								'<option value="2">中餐</option>',
+								'<option value="3">早餐or晚餐</option>',
+								'<option value="4">晚夜宵</option>',
+								'<option value="5">早晚夜宵</option>',
+								'</select>'
+							].join('');
 						};
 					};
 					
@@ -467,7 +481,51 @@
 						//调用新增修改
 						mainJs.fUpdate(postData);
 					});
-					
+					//修改吃饭方式
+					form.on('select(lay_selecte2)', function(data) {
+						var selectElem = $(data.elem);
+						var tdElem = selectElem.closest('td');
+						var trElem = tdElem.closest('tr');
+						var tableView = trElem.closest('.layui-table-view');
+						var field = tdElem.data('field');
+						table.cache[tableView.attr('lay-id')][trElem.data('index')][tdElem.data('field')] = data.value;
+						var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
+						var postData = {
+							id: id,
+							[field]:data.value
+						}
+						$.ajax({
+							url: "${ctx}/personnel/addAttendanceInit",
+							data: postData,
+							type: "POST",
+							beforeSend: function() {
+								index;
+							},
+							success: function(result) {
+								if(0 == result.code) {
+								 	 table.reload("layuiShare6", {
+						                page: {
+						                }
+						              }) 
+									layer.msg(result.message, {
+										icon: 1,
+										time:800
+									});
+								
+								} else {
+									layer.msg(result.message, {
+										icon: 2,
+										time:800
+									});
+								}
+							},
+							error: function() {
+								layer.msg("操作失败！请重试", {
+									icon: 2
+								});
+							},
+						});
+					});
 					//监听头工具栏事件
 					table.on('toolbar(tableData)', function(obj) {
 						var config = obj.config;
@@ -742,88 +800,109 @@
 								break;
 								
 							case 'eat':	
-								var htmlsl = '<option value="">请选择</option>';
-								$.ajax({
-									url: '${ctx}/personnel/findInitAll',
-									type: "GET",
-									async: false,
-									beforeSend: function() {
-										index;
-									},
-									success: function(result) {
-										$(result.data).each(function(i, o) {
-											htmlsl += '<option value=' + o.id + '>' + o.user.userName + '</option>'
-										})
-										$("#userIds").html(htmlsl)
-										form.render(); 
-										layer.close(index);
-									},
-									error: function() {
-										layer.msg("操作失败！", {
-											icon: 2
-										});
-										layer.close(index);
-									}
-								});
-								
-								var	dicDiv=$("#layuiadmin-form-admin3");
+								var	dicDiv=$("#layuiShare5");
+								table.reload("layuiShare6");
 								layer.open({
-									type:1,
-									title:'吃饭方式',
-									area:['30%','60%'],
-									btn:['确认','取消'],
-									content:dicDiv,
-									id: 'LAY_layuipro' ,
-									btnAlign: 'c',
-								    moveType: 1, //拖拽模式，0或者1
-									success : function(layero, index) {
+							         type: 1
+							        ,title: '吃饭方式' //不显示标题栏
+							        ,closeBtn: false
+							        ,zindex:-1
+							        ,area:['50%', '90%']
+							        ,shade: 0.5
+							        ,id: 'LAY_layuipro2' //设定一个id，防止重复弹出
+							        ,btn: ['取消']
+							        ,btnAlign: 'c'
+							        ,moveType: 1 //拖拽模式，0或者1
+							        ,content:dicDiv
+							        ,success : function(layero, index) {
 							        	layero.addClass('layui-form');
 										// 将保存按钮改变成提交按钮
 										layero.find('.layui-layer-btn0').attr({
-											'lay-filter' : 'addRole',
+											'lay-filter' : 'addRole2',
 											'lay-submit' : ''
 										})
-							        },
-									yes:function(){
-										form.on('submit(addRole)', function(data) {
-											$.ajax({
-												url: '${ctx}/personnel/addAttendanceInit',
-												type: "POST",
-												data:data.field,
-												async: false,
-												beforeSend: function() {
-													index;
-												},
-												success: function(result) {
-												if(result.code==0){
-													layer.msg("修改成功！", {
-														icon: 1
-													});
-													 layer.closeAll();
-												}else{
-													layer.msg("修改失败！", {
-														icon: 2
-													});
-												}
-													layer.close(index);
-												},
-												error: function() {
-													layer.msg("操作失败！", {
-														icon: 2
-													});
-													layer.close(index);
-												}
-											}); 
-										})
-									}
-								})
+							        }
+							        ,end:function(){
+							        	$("#layuiShare5").hide();
+									  } 
+							      });
 							break;
 							case 'cleanTempData':	
 									table.cleanTemp(tableId);
 							break;
 						}
 					});
-
+	
+					 form.on('submit(LAY-search7)', function(obj) {
+							var field = obj.field;
+							table.reload('layuiShare6', {
+								where: field,
+								page: {
+									curr:1
+				                }
+							});
+					})
+				
+					
+					table.render({
+						elem: '#layuiShare6',
+						url: '${ctx}/personnel/findAttendanceInit',
+						request:{
+							pageName: 'page' ,//页码的参数名称，默认：page
+							limitName: 'size' //每页数据量的参数名，默认：limit
+						},
+						page: {
+						} ,
+						//开启分页
+						loading: true,
+						toolbar: '#toolbar5', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+						totalRow: true,		 //开启合计行 */
+						cellMinWidth: 90,
+						colFilterRecord: true,
+						smartReloadModel: true,// 开启智能重载
+						parseData: function(ret) {
+							return {
+								code: ret.code,
+								msg: ret.message,
+								count:ret.data.total,
+								data: ret.data.rows
+							}
+						},
+						cols: [
+							[{
+								field: "",
+								title: "员工姓名",
+								align: 'center',
+								fixed: 'left',
+								search: true,
+								edit: false,
+								templet: function(d){
+									return d.user.userName;
+								}
+							},{
+								field: "eatType",
+								title: "吃饭类型",
+								align: 'center',
+								search: true,
+								edit: false,
+								type: 'normal',
+								templet: fn3('selectThree')
+							}
+							]
+						],
+						//下拉框回显赋值
+						done: function(res, curr, count) {
+							var tableView = this.elem.next();
+							var tableElem = this.elem.next('.layui-table-view');
+							layui.each(tableElem.find('.layui-table-box').find('select'), function(index, item) {
+								var elem = $(item);
+								elem.val(elem.data('value'));
+							});
+							form.render();
+									},
+								});
+						
+					
 					//监听单元格编辑
 					table.on('edit(tableData)', function(obj) {
 						var value = obj.value ,//得到修改后的值
@@ -838,11 +917,12 @@
 							mainJs.fUpdate(postData);
 					});
 					
-					$(document).keydown(function(event){
+					
+					/* $(document).keydown(function(event){
 						　　if(event.keyCode==13){
 						　   $("#LAY-search5").click();
 						　　}
-						});
+						}); */
 					
 					//监听搜索
 					form.on('submit(LAY-search)', function(obj) {		//修改此处
