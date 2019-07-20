@@ -436,23 +436,6 @@ layui.config({
 						mainJs.fUpdate(postData);
 				},
 				function(){ 
-					table.reload("tableData")  
-				}
-			)
-		});
-		table.on('edit(tableDataTwo)', function(obj) {
-			if(!obj.data.id) 
-				return;
-			layer.confirm('是否确认修改？',
-				function(){
-					var data = obj.data;
-						var postData = {
-							id: data.id,
-							[obj.field]: obj.value
-						}
-						mainJs.fUpdate(postData);
-				},
-				function(){ 
 					table.reload("tableDataTwo")  
 				}
 			)

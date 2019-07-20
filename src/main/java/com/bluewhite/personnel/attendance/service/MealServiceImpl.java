@@ -1,8 +1,6 @@
 package com.bluewhite.personnel.attendance.service;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
-import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
@@ -122,7 +119,6 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 	@Override
 	public Meal addMeal(Meal meal) {
 		// 按报餐类型查找 找出每餐费用
-		User user = userService.findOne(meal.getUserId());
 		PersonVariable variable = personVariableDao.findByType(1);
 		if (meal.getMode() == 1) {
 			meal.setPrice(Double.valueOf(variable.getKeyValue()));
@@ -132,6 +128,9 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		}
 		if (meal.getMode() == 3) {
 			meal.setPrice(Double.valueOf(variable.getKeyValueThree()));
+		}
+		if (meal.getMode() == 4) {
+			meal.setPrice(Double.valueOf(variable.getKeyValue()));
 		}
 		if (meal.getId() == null) {
 			String date = meal.getTime();
@@ -193,6 +192,8 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 					.filter(Meal -> Meal.getUserId().equals(Meal.getUserId()) && Meal.getMode() == 2).count();
 			double modeThree = psList1.stream()
 					.filter(Meal -> Meal.getUserId().equals(Meal.getUserId()) && Meal.getMode() == 3).count();
+			double modeFour = psList1.stream()
+					.filter(Meal -> Meal.getUserId().equals(Meal.getUserId()) && Meal.getMode() == 4).count();
 			User user = userService.findOne(ps1);
 			String aString = user.getUserName();
 			String org = user.getOrgName().getName();
@@ -202,6 +203,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			allMap.put("modeOne", modeOne);
 			allMap.put("modeTwo", modeTwo);
 			allMap.put("modeThree", modeThree);
+			allMap.put("modeFour", modeFour);
 			allList.add(allMap);
 		}
 

@@ -189,7 +189,10 @@
 					<option value="">请选择</option>
 					<option value="1">早餐</option>
 					<option value="2">晚餐</option>
-					<option value="3">早餐or晚餐</option></select>
+					<option value="3">早餐or晚餐</option>
+					<option value="4">晚夜宵</option>
+					<option value="5">早晚夜宵</option>
+					</select>
 			</div>
 		</div>
 		<div class="layui-form-item">
