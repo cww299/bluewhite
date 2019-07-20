@@ -129,6 +129,7 @@ layui.config({
 		, form = layui.form
 		, tablePlug = layui.tablePlug; 							
 		myutil.config.msgOffset = '150px';	//设置对话框高度
+		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();					//设置行点击
 		
 		form.render();									//渲染表单
@@ -202,7 +203,7 @@ layui.config({
 			if(type=='edit'){
 				choosedData.length>1 && myutil.emsg("不能同时编辑多条数据");
 				choosedData.length<1 && myutil.emsg("至少选中一条数据进行编辑");
-				if(choosedData!=1)
+				if(choosedData.length !=1)
 					return;
 				data=choosedData[0];
 			}

@@ -126,8 +126,8 @@ layui.config({
 			},
 			cols:[[
 			       {align:'center', title:'日期',   field:'temporarilyDate',	totalRowText:'合计', width:'10%',sort:true,},
-			       {align:'center', title:'分组', 	field:'user', width:'10%',	templet:function(d){ return d.group.name; },},
-			       {align:'center', title:'姓名', 	field:'user', width:'10%',	templet:function(d){ return d.user.userName; },},
+			       {align:'center', title:'分组', 	field:'userGroup', width:'10%',	templet:function(d){ return d.group.name; },},
+			       {align:'center', title:'姓名', 	field:'userName', width:'10%',	templet:function(d){ return d.user.userName; },},
 			       {align:'center', title:'总工时',   field:'workTime',  totalRow:true, width:'10%', edit:true,},
 			       {align:'center', title:'工时',   field:'workTimeSlice', templet:'#timeTpl'	},
 			       ]],
@@ -135,6 +135,10 @@ layui.config({
 				layer.close(LOAD);
 				var tableView = this.elem.next();
 				var tableElem = this.elem.next('.layui-table-view');
+				layui.each(table.cache['specialTable'],function(index,item){
+					item.userGroup = item.group.name;
+					item.userName = item.user.userName;
+				})
 				layui.each(tableView.find('td[data-field="workTimeSlice"]'), function(index, tdElem) {
 					tdElem.onclick = function(event) {
 						var addEditTimeWin = layer.open({
