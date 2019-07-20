@@ -21,6 +21,7 @@ import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.metadata.Sheet;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
@@ -51,9 +52,11 @@ public class ConsumptionAction {
 				.get()
 				.addRetainTerm(Consumption.class, "id", "user","content","userId"
 				,"budget","money","expenseDate","paymentMoney","paymentDate","withholdReason","remark"
-				,"withholdMoney","settleAccountsMode","remark","flag","taxPoint","custom","user","contact","logisticsDate","contactName","batchNumber")
+				,"withholdMoney","settleAccountsMode","remark","flag","taxPoint","custom","user"
+				,"contact","logisticsDate","contactName","batchNumber","realityDate","applyType","deleteFlag")
 				.addRetainTerm(User.class, "userName")
-				.addRetainTerm(Custom.class, "conPartyNames");
+				.addRetainTerm(BaseData.class,"id","name")
+				.addRetainTerm(Custom.class, "name");
 	}
 
 	/**
