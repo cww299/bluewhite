@@ -19,9 +19,11 @@ layui.define(['jquery','layer','form'],function(exports){
 			console.error(msg);
 			return;
 		}
+		if(myutil.config.ctx!='')
+			options.url = myutil.config.ctx+options.url;
 		var load = layer.load(1);
 		$.ajax({
-			url : 'http://localhost:8080/bluewhite'+options.url,
+			url : options.url,
 			type : options.type || 'post',	//默认post方法
 			async : options.async || false,
 			data : options.data,
@@ -52,9 +54,11 @@ layui.define(['jquery','layer','form'],function(exports){
 			console.error(msg);
 			return;
 		}
+		if(myutil.config.ctx!='')
+			options.url = myutil.config.ctx+options.url;
 		var load = layer.load(1);
 		$.ajax({
-			url : '${ctx}'+options.url,
+			url : ctxoptions.url,
 			type : options.type || 'get',	
 			async : options.async || false,
 			traditional: options.traditional || 'false',
@@ -84,10 +88,12 @@ layui.define(['jquery','layer','form'],function(exports){
 			console.error(msg);
 			return;
 		}
+		if(myutil.config.ctx!='')
+			options.url = myutil.config.ctx+options.url;
 		var data = [];
 		if(!options.data){
 			$.ajax({
-				url: 'http://localhost:8080/bluewhite'+options.url,
+				url: options.url,
 				type : options.type || 'get',
 				async : options.async || false,	//默认同步,异步需要修改
 				success: function(r){
@@ -143,6 +149,7 @@ layui.define(['jquery','layer','form'],function(exports){
 		c : new Class(),
 		config : {
 			msgOffset : '',
+			ctx:'',
 		},
 	}
 

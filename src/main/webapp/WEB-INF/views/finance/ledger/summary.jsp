@@ -89,6 +89,7 @@ layui.config({
 		, table = layui.table
 		, myutil = layui.myutil
 		, tablePlug = layui.tablePlug;
+		myutil.config.ctx = '${ctx}';
 		myutil.config.msgOffset = '150px';	
 		laydate.render({
 			elem:'#beginTime',

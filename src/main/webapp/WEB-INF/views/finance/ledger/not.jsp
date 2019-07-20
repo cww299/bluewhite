@@ -79,6 +79,7 @@ layui.config({
 		, table = layui.table
 		, myutil = layui.myutil
 		, laytpl = layui.laytpl;
+		myutil.config.ctx = '${ctx}';
 		laydate.render({
 			elem:'#beginTime',
 			type:'datetime'
