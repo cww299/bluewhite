@@ -116,7 +116,10 @@ public class ConsumptionAction {
 		}else{
 			cr.setMessage("添加成功");
 		}
-		consumptionService.addConsumption(consumption);
+		//同步锁，批量新增
+		synchronized (this) {
+			consumptionService.addConsumption(consumption);
+		}
 		return cr;
 	}
 

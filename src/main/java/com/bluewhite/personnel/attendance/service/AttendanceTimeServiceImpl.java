@@ -415,7 +415,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	}
 
 	@Override
-	public synchronized List<Map<String, Object>> findAttendanceTimeCollectAdd(AttendanceTime attendanceTime) throws ParseException {
+	public List<Map<String, Object>> findAttendanceTimeCollectAdd(AttendanceTime attendanceTime) throws ParseException {
 		return  attendanceCollect(attendanceTimeByApplication(findAttendanceTime(attendanceTime)), true);
 	}
 
@@ -750,7 +750,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	}
 
 	@Override
-	public synchronized List<Map<String, Object>> syncAttendanceTimeCollect(AttendanceTime attendanceTime) throws ParseException {
+	public List<Map<String, Object>> syncAttendanceTimeCollect(AttendanceTime attendanceTime) throws ParseException {
 		checkAttendanceTime(attendanceTime);
 		deleteAttendanceTimeCollect(attendanceTime);
 		return findAttendanceTimeCollectAdd(attendanceTime);

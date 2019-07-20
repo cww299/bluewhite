@@ -3,15 +3,12 @@
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
-import com.bluewhite.product.product.entity.Product;
-import com.bluewhite.system.sys.entity.RegionAddress;
 
 /**
  * 贴包
@@ -23,7 +20,7 @@ import com.bluewhite.system.sys.entity.RegionAddress;
 public class Packing  extends BaseEntity<Long>{
 	
 	/**
-	 * 编号(19N7Y20R01)
+	 * 编号 (19N7Y20R01)
 	 */
 	@Column(name = "number")
 	private String number;
@@ -43,18 +40,6 @@ public class Packing  extends BaseEntity<Long>{
 	@JoinColumn(name = "customr_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Customr customr;
 	
-	/**
-	 * 产品id
-	 */
-	@Column(name = "product_id")
-	private Long productId;
-
-	/**
-	 * 产品
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Product product;
 	
 	/**
 	 * 当批外包编号
@@ -75,4 +60,57 @@ public class Packing  extends BaseEntity<Long>{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "packaging_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData packaging;
+
+	public String getNumber() {
+		return number;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
+	}
+
+	public Long getCustomrId() {
+		return customrId;
+	}
+
+	public void setCustomrId(Long customrId) {
+		this.customrId = customrId;
+	}
+
+	public Customr getCustomr() {
+		return customr;
+	}
+
+	public void setCustomr(Customr customr) {
+		this.customr = customr;
+	}
+
+	public Integer getPackagingNumber() {
+		return packagingNumber;
+	}
+
+	public void setPackagingNumber(Integer packagingNumber) {
+		this.packagingNumber = packagingNumber;
+	}
+
+	public Long getPackagingId() {
+		return packagingId;
+	}
+
+	public void setPackagingId(Long packagingId) {
+		this.packagingId = packagingId;
+	}
+
+	public BaseData getPackaging() {
+		return packaging;
+	}
+
+	public void setPackaging(BaseData packaging) {
+		this.packaging = packaging;
+	}
+	
+	
+	
+	
+	
 }
