@@ -272,7 +272,7 @@ layui.config({
 				 done:function(){
 					 choosed=[];
 					 childChoosed=[];
-				 }
+				 } 
 			});
 		}
 		function getDataType(){
