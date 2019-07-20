@@ -272,10 +272,10 @@ layui.config({
 				 done:function(){
 					 choosed=[];
 					 childChoosed=[];
-				 }
+				 } 
 			});
 		}
-		function getDataType(){
+		function getDataType(){ 
 			var html = myutil.getSelectHtml({ 
 				url:'/basedata/types',
 				filter: 'selectId',
