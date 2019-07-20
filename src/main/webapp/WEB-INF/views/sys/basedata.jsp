@@ -275,7 +275,7 @@ layui.config({
 				 } 
 			});
 		}
-		function getDataType(){
+		function getDataType(){ 
 			var html = myutil.getSelectHtml({ 
 				url:'/basedata/types',
 				filter: 'selectId',
