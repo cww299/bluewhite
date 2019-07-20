@@ -194,7 +194,7 @@ public class Consumption extends BaseEntity<Long> {
 	 * 报销类型
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "applyTypeId", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "apply_type_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData applyType;
 	
 	/**

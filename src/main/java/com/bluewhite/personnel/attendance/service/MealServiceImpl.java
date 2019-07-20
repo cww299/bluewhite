@@ -278,23 +278,23 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 				if ((attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 1
 						|| attendanceInit.getEatType() == 3 || attendanceInit.getEatType() == 4 || attendanceInit.getEatType() == 5))
 						&& at.getCheckIn().compareTo(breakfastLagTime) != 1) {
-					meals.add(addMeal(at, 1, variable));
+					meals.add(addMeal(at, 1,Double.valueOf(variable.getKeyValue())));
 				}
 				// 1.签出时间大于午餐延迟时间
 				if ( at.getCheckOut().compareTo(lunchLagTime) != -1 ) {
-					meals.add(addMeal(at, 2, variable));
+					meals.add(addMeal(at, 2, Double.valueOf(variable.getKeyValueTwo())));
 				}
 				// 1.签入时间小于晚餐延迟时间，2签出时间大于晚餐延迟时间
 				if ((attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 2
 						|| attendanceInit.getEatType() == 3 || attendanceInit.getEatType() == 4 || attendanceInit.getEatType() == 5))
 						&& (at.getCheckIn().compareTo(dinnerLagTime) != 1
 								&& at.getCheckOut().compareTo(dinnerLagTime) != -1)) {
-					meals.add(addMeal(at, 3, variable));
+					meals.add(addMeal(at, 3, Double.valueOf(variable.getKeyValueThree())));
 				}
 				// 1签出时间大于夜宵时间
-				if ((attendanceInit.getEatType() != null && attendanceInit.getEatType() == 4 || attendanceInit.getEatType() == 5)
+				if ((attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 4 || attendanceInit.getEatType() == 5))
 						&& at.getCheckOut().compareTo(midnight) != -1) {
-					meals.add(addMeal(at, 4, variable));
+					meals.add(addMeal(at, 4, Double.valueOf(variable.getKeyValue())));
 				}
 			}
 			
@@ -303,18 +303,18 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 				// 签入时间小于早餐延迟时间
 				if (attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 1 
 						|| attendanceInit.getEatType() == 3 || attendanceInit.getEatType() == 4 || attendanceInit.getEatType() == 5)) {
-					meals.add(addMeal(at, 1, variable));
+					meals.add(addMeal(at, 1, Double.valueOf(variable.getKeyValue())));
 				}
-					meals.add(addMeal(at, 2, variable));
+					meals.add(addMeal(at, 2, Double.valueOf(variable.getKeyValueTwo())));
 				// 1.签入时间小于晚餐延迟时间，2签出时间小于晚餐延迟时间
 				if (attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 2
 						|| attendanceInit.getEatType() == 3 || attendanceInit.getEatType() == 4 || attendanceInit.getEatType() == 5)) {
-					meals.add(addMeal(at, 3, variable));
+					meals.add(addMeal(at, 3, Double.valueOf(variable.getKeyValueThree())));
 				}
 				// 1.签入时间大于夜宵时间
-				if ((attendanceInit.getEatType() != null && attendanceInit.getEatType() == 4 || attendanceInit.getEatType() == 5)
+				if ((attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 4 || attendanceInit.getEatType() == 5))
 						&& at.getCheckIn().compareTo(midnight) != -1) {
-					meals.add(addMeal(at, 4, variable));
+					meals.add(addMeal(at, 4, Double.valueOf(variable.getKeyValue())));
 				}
 			}
 			
@@ -323,7 +323,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 				// 不需要打卡
 				if (attendanceInit.getWorkType() == 1 || attendanceInit.getWorkType() == 2) {
 					if (at.getFlag() != 3) {
-						meals.add(addMeal(at, 2, variable));
+						meals.add(addMeal(at, 2, Double.valueOf(variable.getKeyValueTwo())));
 					}
 				}
 			}
@@ -341,13 +341,13 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 	 * @param variable
 	 * @return
 	 */
-	private Meal addMeal(AttendanceTime attendanceTime, Integer mode, PersonVariable variable) {
+	private Meal addMeal(AttendanceTime attendanceTime, Integer mode, Double price) {
 		Meal meal = new Meal();
 		meal.setTradeDaysTime(attendanceTime.getTime());
 		meal.setUserId(attendanceTime.getUserId());
 		meal.setUserName(attendanceTime.getUserName());
 		meal.setType(2);
-		meal.setPrice(Double.valueOf(variable.getKeyValue()));
+		meal.setPrice(price);
 		meal.setMode(mode);
 		return meal;
 	}

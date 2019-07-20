@@ -276,7 +276,6 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			consumption.setOrgNameId(cu.getOrgNameId());
 		}
 		consumption.setFlag(0);
-		
 		return dao.save(consumption);
 	}
 
