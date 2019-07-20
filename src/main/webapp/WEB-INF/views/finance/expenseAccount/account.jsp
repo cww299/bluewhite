@@ -221,7 +221,8 @@ layui.config({
 			elem: '#tableBudget',
 			toolbar: '#toolbar2', 
 			data: [],
-			height: '620px',
+			totalRow:true,
+			height: '600',
 			cols: colsChild,
 		})
 		//所有表格下拉框选择修改功能
@@ -281,10 +282,12 @@ layui.config({
 		    	}
 			}
 			data.forEach(function(postData,i){
-				mainJs.fAdd(postData);
+				mainJs.fAddNotReload(postData);
 			})	
 			table.cleanTemp(tableId);
-			table.reload(tableId);
+		 	table.reload("tableData"); 
+		 	table.reload("tableDataTwo"); 
+            table.cache['tableBudget'] && table.reload("tableBudget");  
 			return true;
 		}
 		function deleteSome(tableId){
@@ -300,12 +303,16 @@ layui.config({
 					success: function(result) {
 						var icon = 2;
 						if(0 == result.code) {
-							var configTemp = tablePlug.getConfig(tableId);
-				            if (configTemp.page && configTemp.page.curr > 1) {
-				              	table.reload(tableId, {  page: { curr: configTemp.page.curr - 1  } })
-				            }else{
-				            	table.reload(tableId)
-				            };
+			              	table.reload('tableData',{
+			              		done:function(){
+					              	table.reload('tableDataTwo',{
+					              		done:function(){
+					              			table.cache['tableBudget'] && table.reload('tableBudget');
+					              		}
+					              	});
+			              			
+			              		}
+			              	})
 				            icon = 1;
 						} 
 						layer.msg(result.message, { icon: icon, time:800 });
@@ -366,7 +373,7 @@ layui.config({
 					}
 					parentId = checkedIds[0].id;
 					table.reload('tableBudget',{
-						url: '${ctx}/fince/getConsumption' ,
+						url: '${ctx}/fince/getConsumption',
 						where: { type:1, parentId: parentId },
 					})
 					layer.open({
@@ -477,6 +484,7 @@ layui.config({
 		    	$.ajax({
 					url: "${ctx}/fince/addConsumption",
 					data: data,
+					async: false,
 					type: "POST",
 					beforeSend: function() {
 						index;
@@ -485,8 +493,16 @@ layui.config({
 						var icon = 2;
 						if(0 == result.code) 
 				            icon = 1;
-					 	table.reload("tableData"); 
-			            table.cache['tableBudget'] && table.reload("tableBudget");  
+						table.reload('tableData',{
+		              		done:function(){
+				              	table.reload('tableDataTwo',{
+				              		done:function(){
+				              			table.cache['tableBudget'] && table.reload('tableBudget');
+				              		}
+				              	});
+		              			
+		              		}
+		              	})
 						layer.msg(result.message, {icon: icon, time:800});
 					},
 					error: function() {
@@ -499,7 +515,28 @@ layui.config({
 		    	if(data.id=="")
 		    		return;
 		    	this.fAdd(data);
-		    }
+		    },
+		    fAddNotReload : function(data){
+		    	$.ajax({
+					url: "${ctx}/fince/addConsumption",
+					data: data,
+					async: false,
+					type: "POST",
+					beforeSend: function() {
+						index;
+					},
+					success: function(result) {
+						var icon = 2;
+						if(0 == result.code) 
+				            icon = 1;
+						layer.msg(result.message, {icon: icon, time:800});
+					},
+					error: function() {
+						layer.msg("操作失败！请重试", { icon: 2 });
+					},
+				});
+				layer.close(index);
+		    },
 		};
 		//其他功能函数
 		function getDate(){
@@ -600,9 +637,10 @@ layui.config({
 				cols:t.cols,
 				where:t.where,
 				toolbar:t.toolbar,
+				totalRow: t.totalRow || false,
 				colFilterRecord: true,
 				smartReloadModel: true,
-				height: t.height || '700px',
+				height: t.height || '700',
 				size:'lg',
 				page: { },
 				request:{ pageName: 'page' , limitName: 'size' },
