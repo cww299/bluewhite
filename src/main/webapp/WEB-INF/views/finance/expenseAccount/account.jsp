@@ -23,47 +23,58 @@
 <body>
 <div class="layui-card">
 	<div class="layui-card-body">
-		<div class="layui-form layui-card-header layuiadmin-card-header-auto">
-			<div class="layui-form-item">
-				<table>
-					<tr>
-						<td>报销人:</td>
-						<td><input type="text" name="Username" id="firstNames" class="layui-input" /></td>
-						<td>&nbsp;&nbsp;</td>
-						<td>报销内容:</td>
-						<td><input type="text" name="content"  class="layui-input" /></td>
-						<td>&nbsp;&nbsp;</td>
-						<td>报销金额:</td>
-						<td style="width:100px;"><input type="text" name="money"  class="layui-input" /></td>
-						<td>&nbsp;&nbsp;</td>
-						<td>申请日期:</td>
-						<td>&nbsp;&nbsp;</td>
-						<td>
-							<input type="hidden" name="expenseDate" value="2018-10-08 00:00:00"><!-- 默认查找申请日期 -->
-							<input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
-						</td>
-						<td>&nbsp;&nbsp;</td>
-						<td>是否预算:
-						<td style="width:100px;"><select class="form-control" lay-filter="isBudget">
-														<option value="0">否</option>
-														<option value="1">是</option></select></td>
-						<td>&nbsp;&nbsp;</td>
-						<td>是否核对:
-						<td style="width:100px;"><select class="form-control" name="flag">
-													<option value="">请选择</option>
-													<option value="0">未核对</option>
-													<option value="1">已核对</option></select></td>
-						<td>&nbsp;&nbsp;</td>
-						<td>
-							<div class="layui-inline">
-								<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
-									<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-								</button>
-							</div>
-						</td>
-					</tr>
-				</table>
-			</div>
+		<div class="layui-form">
+			<table>
+				<tr>
+					<td>报销人:</td>
+					<td><input type="text" name="Username" id="firstNames" class="layui-input" /></td>
+					<td>&nbsp;&nbsp;</td>
+					<td>报销内容:</td>
+					<td><input type="text" name="content"  class="layui-input" /></td>
+					<td>&nbsp;&nbsp;</td>
+					<td><select id="dateTypeSelect">
+							<option value="expenseDate">申请日期</option>
+							<option value="realityDate" disabled="disabled">实际日期</option>
+						</select></td>
+					<td>&nbsp;&nbsp;</td>
+					<td>
+						<input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input">
+					</td>
+					<td>&nbsp;&nbsp;</td>
+					<td>报销金额:</td>
+					<td style="width:100px;"><input type="text" name="money"  class="layui-input" /></td>
+					<td>&nbsp;&nbsp;</td>
+					<td>是否核对:
+					<td style="width:100px;"><select class="form-control" name="flag">
+												<option value="">请选择</option>
+												<option value="0">未核对</option>
+												<option value="1">已核对</option></select></td>
+					<td>&nbsp;&nbsp;</td>
+					<td>
+						<div class="layui-inline">
+							<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
+								<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+							</button>
+						</div>
+					</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td>是否预算:
+					<td style="width:100px;"><select lay-filter="isBudget">
+													<option value="0">否</option>
+													<option value="1">是</option></select></td>
+				</tr>
+				<tr style="height:5px;"></tr>
+				<tr id="searchTr" style="display:none;">
+					<td>类型:</td>
+					<td style="width:182px;"><select id="applyTypeIdSelect"><option value="">请选择</option></select></td>
+					<td>&nbsp;&nbsp;</td>
+					<td>月底删除:</td>
+					<td style="width:182px;"><select id="deleteFlagSelect">
+								<option value="">请选择</option>
+								<option value="1">是</option>
+								<option value="0">否</option></select></td>
+				</tr>
+			</table>
 		</div>
 		<table id="tableData" lay-filter="tableData"></table>
 		<table id="tableDataTwo" lay-filter="tableDataTwo"></table>
@@ -112,8 +123,7 @@ layui.config({
 			,tablePlug = layui.tablePlug 
 			,element = layui.element;
 		
-		getDate();
-		var allField;
+		getDate();		//获取合计数据
 		var parentId = '';
 	  	var load = null;
 	  	function loads(){
@@ -128,18 +138,25 @@ layui.config({
 			type: 'datetime',
 			range: '~',
 		});
-	 
 		form.on('select(isBudget)',function(obj){
 			if(obj.value==0){
 				$('#tableData').next().hide();
+				$('#searchTr').hide();
 				$('#tableDataTwo').next().show();
+				$('#dateTypeSelect').find('option[value="realityDate"]').removeAttr('selected');
+				$('#dateTypeSelect').find('option[value="realityDate"]').attr('disabled','disabled');
 			}else{
+				$('#searchTr').show();
 				$('#tableData').next().show();
+				$('#dateTypeSelect').find('option[value="realityDate"]').removeAttr('disabled');
 				$('#tableDataTwo').next().hide();
 			}
+			$('#dateTypeSelect').find('option[value="expenseDate"]').attr('selected','selected');
+			form.render();
 		})	
 		getAllUser();
 		getAllAccountType();
+		//渲染表格
 		var cols = [[
 		             { type: 'checkbox', fixed: 'left' }, 
 					 { field: "content", title: "报销内容", edit: 'text' }, 
@@ -161,8 +178,8 @@ layui.config({
 							c[0].push(item);
 						})
 						c[0].push({field: "realityDate", title: "实际时间", edit: false });
-						c[0].push({field: "applyTypeId", title: "报销类型", edit: false ,templet:getAccountType(),});
-						c[0].push({field: "deleteFlag",  title: "月底删除", edit: 'text' })
+						c[0].push({field: "applyTypeId", title: "报销类型", edit: false ,templet: getAccountType(),});
+						c[0].push({field: "deleteFlag",  title: "月底删除", edit: false ,templet: getDeleteFlag(), width:'7%',})
 						return c;
 					})(),
 			done:function(that){
@@ -207,7 +224,7 @@ layui.config({
 			height: '620px',
 			cols: colsChild,
 		})
-						
+		//所有表格下拉框选择修改功能
 	   	tablePlug.smartReload.enable(true); 
 		form.on('select(lay_selecte)', function(data) {
 			var selectElem = $(data.elem);
@@ -224,7 +241,7 @@ layui.config({
 			}
 			mainJs.fUpdate(postData);
 		});
-		
+		//增、删、改
 		function addTempData(t){
 			table.addTemp(t.tableId,t.allField,function(trElem) {
 				layui.each(trElem.find('td[data-field="expenseDate"]'), function(index, tdElem) {
@@ -299,11 +316,12 @@ layui.config({
 				});
 			});
 		}
+		//监听工具栏事件
 		table.on('toolbar(tableData)', function(obj) {
 			var tableId = 'tableData';
 			switch(obj.event) {
 				case 'addTempData':
-					allField = {id: '', content: '', budget: 1,userId:'',money: '', expenseDate: '', withholdReason: '',
+					var allField = {id: '', content: '', budget: 1,userId:'',money: '', expenseDate: '', withholdReason: '',
 								withholdMoney:'',settleAccountsMode:'',type:'1',realityDate:'',applyTypeId:'',deleteFlag:''  };
 					addTempData({
 						tableId:tableId,
@@ -362,12 +380,11 @@ layui.config({
 					break;
 			}
 		});
-
 		table.on('toolbar(tableBudget)', function(obj) {
 			var tableId = 'tableBudget';
 			switch(obj.event) {
 				case 'addTempData':
-					allField = {id: '', content: '', budget: 0,userId:'',money: '', expenseDate: '', 
+					var allField = {id: '', content: '', budget: 0,userId:'',money: '', expenseDate: '', 
 						withholdReason: '',withholdMoney:'',settleAccountsMode:'',type:'1',parentId:parentId};
 					addTempData({
 						tableId:tableId,
@@ -384,12 +401,11 @@ layui.config({
 			break;
 			}
 		})
-		
 		table.on('toolbar(tableDataTwo)',function(obj){
 			var tableId = 'tableDataTwo';
 			switch(obj.event){
 				case 'addTempData':
-					allField = {id: '', content: '', budget: 0,userId:'',money: '', expenseDate: '', withholdReason: '',
+					var allField = {id: '', content: '', budget: 0,userId:'',money: '', expenseDate: '', withholdReason: '',
 								withholdMoney:'',settleAccountsMode:'',type:'1', };
 					addTempData({
 						tableId:tableId,
@@ -451,18 +467,28 @@ layui.config({
 			}
 			mainJs.fUpdate(postData);
 		});
-		
+		//搜索功能
 		form.on('submit(LAY-search)', function(obj) {		
 			var field = obj.field;
-			var orderTime=field.orderTimeBegin.split('~');
-			field.orderTimeBegin=orderTime[0];
-			field.orderTimeEnd=orderTime[1];
-			table.reload('tableData', {
+			if(field.orderTimeBegin!=''){
+				var orderTime=field.orderTimeBegin.split('~');
+				field.orderTimeBegin=orderTime[0];
+				field.orderTimeEnd=orderTime[1];
+				field[$('#dateTypeSelect').val()] = '2018-01-01 00:00:00';
+			}
+			var tableId = 'tableDataTwo';
+			var dis = $('#tableData').next().css('display');
+			if(dis!='none'){
+				tableId = 'tableData';
+				field.applyTypeId = $('#applyTypeIdSelect').val();
+				field.deleteFlag = $('#deleteFlagSelect').val();
+			}
+			table.reload(tableId, {
 				where: field,
-				page:{curr:1},
+				page:{ curr:1 },
 			});  
 		});
-		
+		//新增、修改接口
 		var mainJs = {
 		    fAdd : function(data){
 		    	$.ajax({
@@ -492,6 +518,7 @@ layui.config({
 		    	this.fAdd(data);
 		    }
 		};
+		//其他功能函数
 		function getDate(){
 			if(document.getElementById("totalAll")!=null){
 				$.ajax({
@@ -511,7 +538,7 @@ layui.config({
 				})
 			}
 		}
-		// 处理操作列
+		// 获取下拉框
 		function fn1(field) {
 			return function(d) {
 				return [
@@ -521,7 +548,6 @@ layui.config({
 				].join('');
 			};
 		};
-
 		function fn3(field) {
 			return function(d) {
 				return ['<select name="selectThree" lay-filter="lay_selecte" lay-search="true" data-value="' + d.settleAccountsMode + '">',
@@ -534,11 +560,21 @@ layui.config({
 		};
 		function getAccountType(){
 			return function(d){
-				return ['<select lay-filter="lay_selecte" lay-search="true" data-value="' + d.applyTypeId + '">',
+				return ['<select lay-filter="lay_selecte" lay-search="true" data-value="' + (d.applyType && d.applyType.id) + '">',
 				        typeSelectHtml,
 						'</select>',
 					].join('');
 			}
+		}
+		function getDeleteFlag(){
+			return function(d) {
+				return ['<select lay-filter="lay_selecte" lay-search="true" data-value="' + d.deleteFlag + '">',
+					'<option value="">请选择</option>',
+					'<option value="1">是</option>',
+					'<option value="0">否</option>',
+					'</select>'
+				].join('');
+			};
 		}
 		function getAllUser(){
 			loads();
@@ -564,7 +600,9 @@ layui.config({
 				success: function(result) {
 					$(result.data).each(function(i, o) {
 						typeSelectHtml += '<option value=' + o.id + '>' + o.name + '</option>'
-					})
+					});
+					$('#applyTypeIdSelect').html(typeSelectHtml);
+					form.render();
 				},
 				error: function() {
 					layer.msg("操作失败！", { icon: 2 });
