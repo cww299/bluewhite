@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -57,13 +58,12 @@ public class AttendanceAction {
 	private AttendanceCollectService attendanceCollectService;
 	@Autowired
 	private PersonVariableDao personVariableDao;
-	
-	
+
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
 				.addRetainTerm(Attendance.class, "number", "user", "time", "inOutMode", "verifyMode")
-				.addRetainTerm(User.class, "id", "userName","number");
+				.addRetainTerm(User.class, "id", "userName", "number");
 	}
 
 	/***** 考勤机设置 */
@@ -109,7 +109,7 @@ public class AttendanceAction {
 		}
 		return cr;
 	}
-	
+
 	/**
 	 * 修改考勤机中的人员信息
 	 * 
@@ -174,9 +174,9 @@ public class AttendanceAction {
 	 */
 	@RequestMapping(value = "/personnel/getAllAttendance", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getAllAttendance(HttpServletRequest request, String address,Date startTime, Date endTime) {
+	public CommonResponse getAllAttendance(HttpServletRequest request, String address, Date startTime, Date endTime) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSON.format(attendanceService.allAttendance(address,startTime,endTime)).toJSON());
+		cr.setData(clearCascadeJSON.format(attendanceService.allAttendance(address, startTime, endTime)).toJSON());
 		cr.setMessage("同步成功");
 		return cr;
 	}
@@ -193,12 +193,9 @@ public class AttendanceAction {
 	public CommonResponse restAttendance(HttpServletRequest request, String address, Date startTime, Date endTime) {
 		CommonResponse cr = new CommonResponse();
 		int count = attendanceService.restAttendance(address, startTime, endTime);
-		cr.setMessage("成功重置"+count+"条考勤记录");
+		cr.setMessage("成功重置" + count + "条考勤记录");
 		return cr;
 	}
-	
-	
-	
 
 	/**
 	 * 手动修正未同步人员编号时，同步考勤记录而导致的人员姓名为null问题
@@ -247,7 +244,7 @@ public class AttendanceAction {
 	public CommonResponse intAttendanceTime(HttpServletRequest request, AttendanceTime attendanceTime)
 			throws ParseException {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(attendanceTimeService.findAttendanceTimeCollect(attendanceTime)); 
+		cr.setData(attendanceTimeService.findAttendanceTimeCollect(attendanceTime));
 		cr.setMessage("初始化成功");
 		return cr;
 	}
@@ -262,31 +259,38 @@ public class AttendanceAction {
 	public CommonResponse addAttendanceTime( AttendanceTime attendanceTime)
 			throws ParseException {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(attendanceTimeService.syncAttendanceTimeCollect(attendanceTime));
-		cr.setMessage("统计成功");
+		//同步锁，批量新增
+		synchronized (this) {
+			List<Map<String, Object>> maps = attendanceTimeService.syncAttendanceTimeCollect(attendanceTime);
+			cr.setData(maps);
+			cr.setMessage("统计成功");
+		}
 		return cr;
 	}
-	
+
 	/**
 	 * 查询考勤工作详情
 	 * 
 	 * @param request
 	 *            请求
 	 * @return cr
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	@RequestMapping(value = "/personnel/findAttendanceTime", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse findAttendanceTime(HttpServletRequest request, AttendanceTime attendanceTime) throws ParseException {
+	public CommonResponse findAttendanceTime(HttpServletRequest request, AttendanceTime attendanceTime)
+			throws ParseException {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(attendanceTimeService.findAttendanceTimeCollectList(attendanceTime)); 
+		cr.setData(attendanceTimeService.findAttendanceTimeCollectList(attendanceTime));
 		cr.setMessage("查询成功");
 		return cr;
 	}
 
 	/**
 	 * 修改考勤工作详情
-	 * @param request 请求
+	 * 
+	 * @param request
+	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/personnel/updateAttendanceTime", method = RequestMethod.POST)
@@ -305,10 +309,12 @@ public class AttendanceAction {
 		cr.setMessage("修改成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 查看考勤汇总（打印）
-	 * @param request 请求
+	 * 
+	 * @param request
+	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/personnel/findAttendanceCollect", method = RequestMethod.POST)
@@ -316,16 +322,19 @@ public class AttendanceAction {
 	public CommonResponse findAttendanceCollect(HttpServletRequest request, AttendanceCollect attendanceCollect) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(AttendanceCollect.class,"id","time", "turnWork","overtime", "dutyWork", "allWork",
-						"manDay", "manDayOvertime", "weekendTurnWork", "leaveTime", "takeWork", "leaveDetails", "remarks","userName","sign","belateDetails")
+				.addRetainTerm(AttendanceCollect.class, "id", "time", "turnWork", "overtime", "dutyWork", "allWork",
+						"manDay", "manDayOvertime", "weekendTurnWork", "leaveTime", "takeWork", "leaveDetails",
+						"remarks", "userName", "sign", "belateDetails")
 				.format(attendanceCollectService.findAttendanceCollect(attendanceCollect)).toJSON());
 		cr.setMessage("查找成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 修改考勤汇总（打印）
-	 * @param request 请求
+	 * 
+	 * @param request
+	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/personnel/updateAttendanceCollect", method = RequestMethod.POST)
@@ -333,17 +342,19 @@ public class AttendanceAction {
 	public CommonResponse updateAttendanceCollect(HttpServletRequest request, AttendanceCollect attendanceCollect) {
 		CommonResponse cr = new CommonResponse();
 		AttendanceCollect ot = null;
-		if(attendanceCollect.getId()!=null){
+		if (attendanceCollect.getId() != null) {
 			ot = attendanceCollectService.findOne(attendanceCollect.getId());
 		}
 		attendanceCollectService.update(attendanceCollect, ot);
 		cr.setMessage("修改成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 存档考勤汇总
-	 * @param request 请求
+	 * 
+	 * @param request
+	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/personnel/sealAttendanceCollect", method = RequestMethod.POST)
@@ -354,7 +365,6 @@ public class AttendanceAction {
 		cr.setMessage("存档成功");
 		return cr;
 	}
-	
 
 	/**
 	 * 新增修改请假事项
@@ -362,31 +372,31 @@ public class AttendanceAction {
 	 * @param request
 	 *            请求
 	 * @return cr
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	@RequestMapping(value = "/personnel/addApplicationLeave", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addApplicationLeave(ApplicationLeave applicationLeave,String userIds) throws ParseException {
+	public CommonResponse addApplicationLeave(ApplicationLeave applicationLeave, String userIds) throws ParseException {
 		CommonResponse cr = new CommonResponse();
 		if (applicationLeave.getId() != null) {
 			cr.setMessage("修改成功");
 			applicationLeaveService.saveApplicationLeave(applicationLeave);
 		} else {
 			ApplicationLeave applicationLeaveUser = null;
-			if(applicationLeave.getUserId()!=null){     
+			if (applicationLeave.getUserId() != null) {
 				userIds = applicationLeave.getUserId().toString();
 			}
 			if (!StringUtils.isEmpty(userIds)) {
 				String[] idArr = userIds.split(",");
 				if (idArr.length > 0) {
-					for(String id : idArr){
+					for (String id : idArr) {
 						applicationLeaveUser = new ApplicationLeave();
-						BeanCopyUtils.copyNotEmpty(applicationLeave,applicationLeaveUser);
+						BeanCopyUtils.copyNotEmpty(applicationLeave, applicationLeaveUser);
 						applicationLeaveUser.setUserId(Long.valueOf(id));
 						applicationLeaveService.saveApplicationLeave(applicationLeaveUser);
 					}
 				}
-				cr.setMessage("新增成功"+idArr.length+"条");
+				cr.setMessage("新增成功" + idArr.length + "条");
 			}
 		}
 		return cr;
@@ -398,7 +408,7 @@ public class AttendanceAction {
 	 * @param request
 	 *            请求
 	 * @return cr
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	@RequestMapping(value = "/personnel/deleteApplicationLeave", method = RequestMethod.GET)
 	@ResponseBody
@@ -413,7 +423,6 @@ public class AttendanceAction {
 		}
 		return cr;
 	}
-
 
 	/**
 	 * 分页查看请假事项
@@ -450,12 +459,12 @@ public class AttendanceAction {
 			attendanceInitService.update(attendanceInit, ot);
 			cr.setMessage("修改成功");
 		} else {
-			if(attendanceInit.getUserId()!=null){
+			if (attendanceInit.getUserId() != null) {
 				AttendanceInit at = attendanceInitService.findByUserId(attendanceInit.getUserId());
-				if(at!=null){
+				if (at != null) {
 					cr.setMessage("该员工已有考勤初始设定数据，请核对");
 					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				}else{
+				} else {
 					User user = userService.findOne(attendanceInit.getUserId());
 					attendanceInit.setUser(user);
 					attendanceInitService.save(attendanceInit);
@@ -478,7 +487,8 @@ public class AttendanceAction {
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(AttendanceInit.class, "id", "restType", "restDay", "workTimeSummer", "user",
 						"workTimeWinter", "turnWorkTimeSummer", "turnWorkTimeWinter", "restTimeSummer",
-						"restTimeWinter", "restSummer", "restWinter", "restTimeWork", "overTimeType", "comeWork","workType","earthWork","eatType","fail")
+						"restTimeWinter", "restSummer", "restWinter", "restTimeWork", "overTimeType", "comeWork",
+						"workType", "earthWork", "eatType", "fail")
 				.addRetainTerm(User.class, "id", "userName")
 				.format(attendanceInitService.findAttendanceInitPage(attendanceInit, page)).toJSON());
 		cr.setMessage("查询成功");
@@ -503,8 +513,7 @@ public class AttendanceAction {
 		}
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 查找休息方式数据
 	 * 
@@ -514,12 +523,11 @@ public class AttendanceAction {
 	@ResponseBody
 	public CommonResponse findRestType() {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(PersonVariable.class, "id", "keyValue", "keyValueTwo")
+		cr.setData(ClearCascadeJSON.get().addRetainTerm(PersonVariable.class, "id", "keyValue", "keyValueTwo")
 				.format(personVariableDao.findByType(0)).toJSON());
 		return cr;
 	}
-	
+
 	/**
 	 * 修改休息方式数据
 	 * 
@@ -529,14 +537,13 @@ public class AttendanceAction {
 	@ResponseBody
 	public CommonResponse updateRestType(PersonVariable personVariable) {
 		CommonResponse cr = new CommonResponse();
-		if(personVariable.getId()!=null){
+		if (personVariable.getId() != null) {
 			PersonVariable ot = personVariableDao.findOne(personVariable.getId());
-			BeanCopyUtils.copyNotEmpty(personVariable,ot,"");
-			cr.setData(ClearCascadeJSON.get()
-					.addRetainTerm(PersonVariable.class, "id", "keyValue", "keyValueTwo")
-					.format(personVariableDao.save(ot) ).toJSON());
+			BeanCopyUtils.copyNotEmpty(personVariable, ot, "");
+			cr.setData(ClearCascadeJSON.get().addRetainTerm(PersonVariable.class, "id", "keyValue", "keyValueTwo")
+					.format(personVariableDao.save(ot)).toJSON());
 			cr.setMessage("修改成功");
-		}else{
+		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("不能为空");
 		}
@@ -552,13 +559,11 @@ public class AttendanceAction {
 	@ResponseBody
 	public CommonResponse findInit() {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(AttendanceInit.class,"id","user")
-				.addRetainTerm(User.class, "id", "userName")
-				.format(attendanceInitService.findInit()).toJSON());
+		cr.setData(ClearCascadeJSON.get().addRetainTerm(AttendanceInit.class, "id", "user")
+				.addRetainTerm(User.class, "id", "userName").format(attendanceInitService.findInit()).toJSON());
 		return cr;
 	}
-	
+
 	/*************************************** *************************/
 
 	/**
