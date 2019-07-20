@@ -1,520 +1,527 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html class="no-js">
-
-<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
-<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
-
+<!--<![endif]-->
 
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>工资申请</title>
+<title>各类杂支</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+	<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="${ctx }/static/css/main.css">  <!-- 界面样式 -->
+ 
+ 	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+    <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="${ctx }/static/js/layer/layer.js"></script>	
+    <script src="${ctx }/static/js/vendor/typeahead.js"></script>
+    <script src="${ctx }/static/js/laypage/laypage.js"></script> 
+    <script src="${ctx }/static/js/vendor/mSlider.min.js"></script>
+    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script> 
 </head>
 
 <body>
-	<div class="layui-card">
-		<div class="layui-card-body">
-			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
-				<div class="layui-form-item">
-					<table>
+
+<div class="panel panel-default">
+	<div class="panel-body">					
+		<table>
+			<tr>
+				<td>日期开始:</td>
+				<td><input id="startTime" placeholder="请输入开始时间"
+					class="form-control laydate-icon"
+					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>日期结束:</td>
+				<td><input id="endTime" placeholder="请输入结束时间"
+					class="form-control laydate-icon"
+					onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</td>
+				<td>&nbsp;&nbsp;</td>
+				<td>乙方:</td>
+				<td><input type="text" name="name" id="partyNames"
+					class="form-control search-query name" /></td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td><span class="input-group-btn"><button type="button" class="btn btn-info btn-square btn-sm navbar-right btn-3d searchtask">
+						查找 <i class="icon-search icon-on-right bigger-110"></i></button></span></td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
+				<td><span class="input-group-btn"><button type="button"class="btn btn-danger  btn-sm btn-3d start">一键删除</button></span></td>
+			</tr>
+		</table>
+		<h1 class="page-header"></h1>
+										
+						
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th class="center"><label> <input type="checkbox"class="ace checks" /> <span class="lbl"></span></label></th>
+					<th class="text-center">乙方</th>
+					<th class="text-center">往来日期</th>
+					<th class="text-center">往来明细</th>
+					<th class="text-center">往来金额</th>
+					<th class="text-center">操作</th>
+				</tr>
+			</thead>
+			<tr>
+				<td class="text-center"></td>
+				<td class="text-center"><input type="text" id="bName" class="bName2 text-center"
+					style="border: none; width: 68px; height: 30px; background-color: #BFBFBF;"></td>
+				<td class="text-center" style="padding: 9px 0px 2px 350px;"><input id="mixtTime" placeholder="请输入时间"
+					class="form-control laydate-icon" onClick="laydate({elem: '#mixtTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+					style="border: none; width: 90px; height: 30px; background-color: #BFBFBF;"></td>
+				<td class="text-center"><input type="text" id="mixDetailed" style="border: none; width: 150px; height: 30px; background-color: #BFBFBF;"></td>
+				<td class="text-center"><input type="text" id="mixPrice"
+					style="border: none; width: 60px; height: 30px; background-color: #BFBFBF;"></td>
+				<td class="text-center"><button type="button" 	id="addgroup" 	class="btn btn-success btn-sm btn-3d pull-right">新增</button></td>
+			</tr>
+			<tbody id="tablecontent">
+			</tbody>
+		</table>
+		<div id="pager" class="pull-right"></div>
+	</div>
+</div>
+
+	<div class="wrap">
+		<div class="layer-right3" style="display: none;">
+			<div class="panel-body">
+				<table class="table table-hover">
+					<thead>
 						<tr>
-							<td>报销人:</td>
-							<td><input type="text" name="Username" id="firstNames" class="layui-input" /></td>
-							<td>&nbsp;&nbsp;</td>
-							<td>报销内容:</td>
-							<td><input type="text" name="content" class="layui-input" /></td>
-							<td>&nbsp;&nbsp;</td>
-							<td><select class="form-control" name="expenseDate" id="selectone">
-									<option value="2018-10-08 00:00:00">工资申请日期</option>
-								</select></td>
-							<td>&nbsp;&nbsp;</td>
-							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
-							</td>
-							<!-- <td>&nbsp&nbsp</td>
-							<td>结束:</td>
-							<td><input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="layui-input laydate-icon">
-							</td> -->
-							<td>&nbsp;&nbsp;</td>
-							<td>是否核对:
-							<td><select class="form-control" name="flag">
-									<option value="">请选择</option>
-									<option value="0">未核对</option>
-									<option value="1">已核对</option>
-							</select></td>
-							<td>&nbsp;&nbsp;</td>
-							<td>
-								<div class="layui-inline">
-									<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
-										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-									</button>
-								</div>
-							</td>
+							<th class="text-center">当批产品名</th>
+							<th class="text-center">乙方选择</th>
+							<th class="text-center">单只价格（元）</th>
+							<th class="text-center">操作</th>
 						</tr>
-					</table>
-				</div>
+					</thead>
+					<tbody id="tablecontent2">
+
+					</tbody>
+
+				</table>
+				<div id="pager2" class="pull-right"></div>
 			</div>
-			<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
 		</div>
 	</div>
-	
-	
-	<script type="text/html" id="toolbar">
-			<div class="layui-btn-container layui-inline">
-				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增一行</span>
-				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
-				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
-				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
-			</div>
-		</script>
 
-	
+
 	<script>
-			layui.config({
-				base: '${ctx}/static/layui-v2.4.5/'
-			}).extend({
-				tablePlug: 'tablePlug/tablePlug'
-			}).define(
-				['tablePlug', 'laydate', 'element'],
-				function() {
-					var $ = layui.jquery
-						,layer = layui.layer //弹层
-						,form = layui.form //表单
-						,table = layui.table //表格
-						,laydate = layui.laydate //日期控件
-						,tablePlug = layui.tablePlug //表格插件
-						,element = layui.element;
-					//全部字段
-					var allField;
-					//select全局变量
-					var htmls = '<option value="">请选择</option>';
-					var index = layer.load(1, {
-						shade: [0.1, '#fff'] //0.1透明度的白色背景
-					});
-					
-					laydate.render({
-						elem: '#startTime',
-						type: 'datetime',
-						range: '~',
-					});
-					/* laydate.render({
-						elem: '#endTime',
-						type: 'datetime',
-					}); */
-				 
-					$.ajax({
-						url: '${ctx}/system/user/findAllUser',
-						type: "GET",
-						async: false,
-						beforeSend: function() {
-							index;
-						},
-						success: function(result) {
-							$(result.data).each(function(i, o) {
-								htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
-							})
-							layer.close(index);
-						},
-						error: function() {
-							layer.msg("操作失败！", {
-								icon: 2
-							});
-							layer.close(index);
-						}
-					});
-					
-					// 处理操作列
-					var fn1 = function(field) {
-						return function(d) {
-							return [
-								'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' + d.userId + '">' +
-								htmls +
-								'</select>'
-							].join('');
-
-						};
-					};
-
-					var fn2 = function(field) {
-						return function(d) {
-							return ['<select name="selectTwo" align: "center" lay-filter="lay_selecte" lay-search="true" data-value="' + d.budget + '">',
-								'<option value="0">请选择</option>',
-								'<option value="1">预算</option>',
-								'</select>'
-							].join('');
-
-						};
-					};
-					var fn3 = function(field) {
-						return function(d) {
-							return ['<select name="selectThree" lay-filter="lay_selecte" lay-search="true" data-value="' + d.settleAccountsMode + '">',
-								'<option value="0">请选择</option>',
-								'<option value="1">现金</option>',
-								'<option value="2">月结</option>',
-								'</select>'
-							].join('');
-
-						};
-					};
-					
-				   	tablePlug.smartReload.enable(true); 
-					table.render({
-						elem: '#tableData',
-						size: 'lg',
-						height:'700px',
-						url: '${ctx}/fince/getConsumption' ,
-						where:{
-							type:3
-						},
-						request:{
-							pageName: 'page' ,//页码的参数名称，默认：page
-							limitName: 'size' //每页数据量的参数名，默认：limit
-						},
-						page: {
-						},//开启分页
-						loading: true,
-						toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
-						/*totalRow: true //开启合计行 */
-						cellMinWidth: 90,
-						colFilterRecord: true,
-						smartReloadModel: true,// 开启智能重载
-						parseData: function(ret) {
-							return {
-								code: ret.code,
-								msg: ret.message,
-								count:ret.data.total,
-								data: ret.data.rows
-							}
-						},
-						cols: [
-							[{
-								type: 'checkbox',
-								align: 'center',
-								fixed: 'left'
-							}, {
-								field: "mixPartyNames",
-								title: "乙方",
-								align: 'center',
-								edit: 'text',
-							},{
-								field: "newDate",
-								title: "往来日期",
-								edit: false,
-								align: 'center',
-							}, {
-								field: "mixDetailed",
-								title: "往来明细",
-								align: 'center',
-								edit: 'text'
-							}, {
-								field: "mixPrice",
-								align: 'center',
-								title: "往来金额",
-								edit: 'text'
-							}, {
-								field: "withholdMoney",
-								title: "当月日期",
-								align: 'center',
-								edit: 'text'
-							}]
-						],
-						done: function() {
-							var tableView = this.elem.next();
-							tableView.find('.layui-table-grid-down').remove();
-							var totalRow = tableView.find('.layui-table-total');
-							var limit = this.page ? this.page.limit : this.limit;
-							layui.each(totalRow.find('td'), function(index, tdElem) {
-								tdElem = $(tdElem);
-								var text = tdElem.text();
-								if(text && !isNaN(text)) {
-									text = (parseFloat(text) / limit).toFixed(2);
-									tdElem.find('div.layui-table-cell').html(text);
-								}
-							});
-						},
-						//下拉框回显赋值
-						done: function(res, curr, count) {
-							var tableView = this.elem.next();
-							var tableElem = this.elem.next('.layui-table-view');
-							layui.each(tableElem.find('.layui-table-box').find('select'), function(index, item) {
-								var elem = $(item);
-								elem.val(elem.data('value'));
-							});
-							form.render();
-							// 初始化laydate
-							layui.each(tableView.find('td[data-field="newDate"]'), function(index, tdElem) {
-								tdElem.onclick = function(event) {
-									layui.stope(event)
-								};
-								laydate.render({
-									elem: tdElem.children[0],
-									format: 'yyyy-MM-dd HH:mm:ss',
-									done: function(value, date) {
-											var id = table.cache[tableView.attr('lay-id')][index].id
-											var postData = {
-												id: id,
-												newDate: value,
-											};
-											//调用新增修改
-											mainJs.fUpdate(postData);
-												}
-											})
-										})
-									},
-								});
-
-					// 监听表格中的下拉选择将数据同步到table.cache中
-					form.on('select(lay_selecte)', function(data) {
-						var selectElem = $(data.elem);
-						var tdElem = selectElem.closest('td');
-						var trElem = tdElem.closest('tr');
-						var tableView = trElem.closest('.layui-table-view');
-						var field = tdElem.data('field');
-						table.cache[tableView.attr('lay-id')][trElem.data('index')][tdElem.data('field')] = data.value;
-						var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
-						var postData = {
-							id: id,
-							[field]:data.value
-						}
-						//调用新增修改
-						mainJs.fUpdate(postData);
-					});
-					
-					//监听头工具栏事件
-					table.on('toolbar(tableData)', function(obj) {
-						var config = obj.config;
-						var btnElem = $(this);
-						var tableId = config.id;
-						switch(obj.event) {
-							case 'addTempData':
-								allField = {id: '', content: '', budget: '',userId:'',money: '', expenseDate: '', 
-									withholdReason: '',withholdMoney:'',settleAccountsMode:'',type:'3'};
-								table.addTemp(tableId,allField,function(trElem) {
-									// 进入回调的时候this是当前的表格的config
-									var that = this;
-									// 初始化laydate
-									layui.each(trElem.find('td[data-field="expenseDate"]'), function(index, tdElem) {
-										tdElem.onclick = function(event) {
-											layui.stope(event)
-										};
-										laydate.render({
-											elem: tdElem.children[0],
-											format: 'yyyy-MM-dd HH:mm:ss',
-											done: function(value, date) {
-												var trElem = $(this.elem[0]).closest('tr');
-												var tableView = trElem.closest('.layui-table-view');
-												table.cache[that.id][trElem.data('index')]['expenseDate'] = value;
-												var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
-												var postData = {
-													id: id,
-													expenseDate:value,
-												}
-												mainJs.fUpdate(postData);
-											}
-										})
-									})
-								});
-								break;
-							case 'saveTempData':
-								var data = table.getTemp(tableId).data;
-								var flag=false;
-								var a=0;
-								data.forEach(function(postData,i){
-								 	if(postData.content==""){
-							    		return layer.msg("请填写工资内容", {
-											icon: 2,
-										});
-							    	}
-							    	if(postData.money=="" || isNaN(postData.money)){
-							    		return layer.msg("请填写报销申请金额（且必须为数字）", {
-											icon: 2,
-										});
-							    	} 
-							    	if(postData.expenseDate==""){
-							    		return layer.msg("请填写报销申请日期", {
-											icon: 2,
-										});
-							    	}
-							    	a++;
-							    	if(a==data.length){
-							    		flag=true
-							    	}
-									})
-								if(flag==true){
-								data.forEach(function(postData,i){
-									 mainJs.fAdd(postData);
-									table.cleanTemp(tableId);
-									})	
-								}
-						          break;
-							case 'deleteSome':
-								// 获得当前选中的
-								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
-								layer.confirm('您是否确定要删除选中的' + checkedIds.length + '条记录？', function() {
-									var postData = {
-										ids: checkedIds,
-									}
-									$.ajax({
-										url: "${ctx}/fince/deleteConsumption",
-										data: postData,
-										traditional: true,
-										type: "GET",
-										beforeSend: function() {
-											index;
-										},
-										success: function(result) {
-											if(0 == result.code) {
-												var configTemp = tablePlug.getConfig("tableData");
-									            if (configTemp.page && configTemp.page.curr > 1) {
-									              table.reload("tableData", {
-									                page: {
-									                  curr: configTemp.page.curr - 1
-									                }
-									              })
-									            }else{
-									            	table.reload("tableData", {
-										                page: {
-										                }
-										              })
-									            };
-												layer.msg(result.message, {
-													icon: 1,
-													time:800
-												});
-											} else {
-												layer.msg(result.message, {
-													icon: 2,
-													time:800
-												});
-											}
-										},
-										error: function() {
-											layer.msg("操作失败！", {
-												icon: 2
-											});
-										}
-									});
-									layer.close(index);
-								});
-								break;
-								
-							case 'cleanTempData':	
-									table.cleanTemp(tableId);
-							break;
-						}
-					});
-
-
-					//监听搜索
-					form.on('submit(LAY-search)', function(data) {
-						var field = data.field;
-						var orderTime=field.orderTimeBegin.split('~');
-						field.orderTimeBegin=orderTime[0];
-						field.orderTimeEnd=orderTime[1];
-						table.reload('tableData', {
-							where: field
-						});
-					});
-					
-					//监听单元格编辑
-					table.on('edit(tableData)', function(obj) {
-						var value = obj.value ,//得到修改后的值
-							data = obj.data ,//得到所在行所有键值
-							field = obj.field, //得到字段
-							id = data.id;
-							var postData = {
-								id:id,
-								[field]:value
-							}
-							//调用新增修改
-							mainJs.fUpdate(postData);
-					});
-					
-					//封装ajax主方法
-					var mainJs = {
-						//新增							
-					    fAdd : function(data){
-					    	$.ajax({
-								url: "${ctx}/fince/addConsumption",
-								data: data,
-								type: "POST",
-								beforeSend: function() {
-									index;
-								},
-								success: function(result) {
-									if(0 == result.code) {
-									 	 table.reload("tableData", {
-							                page: {
-							                }
-							              })   
-										layer.msg(result.message, {
-											icon: 1,
-											time:800
-										});
-									
-									} else {
-										layer.msg(result.message, {
-											icon: 2,
-											time:800
-										});
-									}
-								},
-								error: function() {
-									layer.msg("操作失败！请重试", {
-										icon: 2
-									});
-								},
-							});
-							layer.close(index);
-					    },
-						
-					//修改							
-				    fUpdate : function(data){
-				    	if(data.id==""){
-				    		return;
-				    	}
-				    	$.ajax({
-							url: "${ctx}/fince/addConsumption",
-							data: data,
-							type: "POST",
-							beforeSend: function() {
-								index;
-							},
-							success: function(result) {
-								if(0 == result.code) {
-								 	 table.reload("tableData", {
-						                page: {
-						                }
-						              })   
-									layer.msg(result.message, {
-										icon: 1,
-										time:800
-									});
-								
-								} else {
-									layer.msg(result.message, {
-										icon: 2,
-										time:800
-									});
-								}
-							},
-							error: function() {
-								layer.msg("操作失败！请重试", {
-									icon: 2
-								});
-							},
-						});
-						layer.close(index);
-				    }
-					}
-
+   jQuery(function($){
+   	var Login = function(){
+			var self = this;
+			//表单jsonArray
+			//初始化js
+			var _cache;
+			this.setCache = function(cache){
+		  		_cache=cache;
+		  	}
+		  	this.getCache = function(){
+		  		return _cache;
+		  	}
+		  	this.setIndex = function(index){
+		  		_index=index;
+		  	}
+		  	
+		  	this.getIndex = function(){
+		  		return _index;
+		  	}
+		  	this.setName = function(name){
+		  		_name=name;
+		  	}
+		  	this.getName = function(){
+		  		return _name;
+		  	}
+		  	this.getCount = function(){
+		  		return _count;
+		  	}
+		  	this.setCount = function(count){
+		  		_count=count;
+		  	}
+		  	function p(s) {
+				return s < 10 ? '0' + s: s;
 				}
-			)
-		</script>
+			var myDate = new Date();
+				//获取当前年
+				var year=myDate.getFullYear();
+				//获取当前月
+				var month=myDate.getMonth()+1;
+				//获取当前日
+				var date=myDate.getDate(); 
+				var h=myDate.getHours();       //获取当前小时数(0-23)
+				var m=myDate.getMinutes();     //获取当前分钟数(0-59)
+				var s=myDate.getSeconds();  
+				var myDate2 = new Date();
+				//获取当前年
+				var year2=myDate2.getFullYear();
+				//获取当前月
+				var month2=myDate2.getMonth()+1;
+				//获取当前日
+				var date2=myDate2.getDate();
+				var now2=year2+'-'+p(month2)+"-"+p(date2)+' '+'00:00:00';
+				var day = new Date(year,month,0);
+				var firstdate = year + '-' + p(month) + '-01'+' '+'00:00:00';
+				var getday = year + '-' + p(month) + date+' '+'00:00:00';
+				var lastdate = year + '-' + p(month) + '-' + day.getDate() +' '+'23:59:59';
+				$('#startTime').val(firstdate);
+				$('#endTime').val(lastdate);
+			 	var data={
+						page:1,
+				  		size:13,
+				  		orderTimeBegin:firstdate,
+				  		orderTimeEnd:lastdate,	
+				} 
+			this.init = function(){
+				
+				//注册绑定事件
+				self.events();
+				self.loadPagination(data);
+				self.mater();
+			}
+			//加载分页
+			  this.loadPagination = function(data){
+			    var index;
+			    var html = '';
+			    $.ajax({
+				      url:"${ctx}/fince/getMixes",
+				      data:data,
+				      type:"GET",
+				      beforeSend:function(){
+					 	  index = layer.load(1, {
+						  shade: [0.1,'#fff'] //0.1透明度的白色背景
+						  });
+					  }, 
+		      		  success: function (result) {
+		      			 $(result.data.rows).each(function(i,o){
+		      				var newDate=/\d{4}-\d{1,2}-\d{1,2}/g.exec(o.mixtTime)
+		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
+		      				+'<td class="hidden batch">'+o.id+'</td>'
+		      				+'<td class="text-center edit  mixPartyNames">'+o.mixPartyNames+'</td>'
+		      				+'<td class="text-center hidden  mixPartyNamesId">'+o.mixPartyNamesId+'</td>'
+		      				+'<td class="text-center editt mixtTime">'+newDate+'</td>'
+		      				+'<td class="text-center editt mixDetailed">'+o.mixDetailed+'</td>'
+		      				+'<td class="text-center editt mixPrice">'+o.mixPrice+'</td>'
+		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button></td></tr>'
+							
+		      			}); 
+		      			self.setCount(result.data.pageNum)
+				        //显示分页
+					   	 laypage({
+					      cont: 'pager', 
+					      pages: result.data.totalPages, 
+					      curr:  result.data.pageNum || 1, 
+					      jump: function(obj, first){ 
+					    	  if(!first){ 
+					    		 
+						        	var _data = {
+						        			page:obj.curr,
+									  		size:13,
+									  		mixPartyNames:$('#partyNames').val(),
+									  		orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(),
+								  			batchNumber:$("#batchNumber2").val(),
+								  	}
+						        
+						            self.loadPagination(_data);
+							     }
+					      }
+					    });  
+					   	layer.close(index);
+					   	 $("#tablecontent").html(html); 
+					   	self.loadEvents();
+					   self.checkeddto();
+				      },error:function(){
+							layer.msg("加载失败！", {icon: 2});
+							layer.close(index);
+					  }
+				  });
+			}
+			  this.checkeddto=function(){
+					
+					$(".checks").on('click',function(){
+						
+	                    if($(this).is(':checked')){ 
+				 			$('.checkboxId').each(function(){  
+	                    //此处如果用attr，会出现第三次失效的情况  
+	                     		$(this).prop("checked",true);
+				 			})
+	                    }else{
+	                    	$('.checkboxId').each(function(){ 
+	                    		$(this).prop("checked",false);
+	                    		
+	                    	})
+	                    }
+	                }); 
+					
+				}
+			this.loadEvents = function(){
+				//修改方法
+				$('.update').on('click',function(){
+					if($(this).text() == "编辑"){
+					
+						$(this).text("保存")
+						
+						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini bName2'  style='border: none;width:90px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				        });
+						$(this).parent().siblings(".editt").each(function() {  // 获取当前行的其他单元格
+
+				            $(this).html("<input class='input-mini aName2'  style='border: none;width:68px; height:30px; background-color: #BFBFBF;'  type='text' value='"+$(this).text()+"'>");
+				        });
+						self.mater();
+					}else{
+							$(this).text("编辑")
+						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+
+					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+
+					       
+					                $(this).html(obj_text.val()); 
+									
+							});
+							$(this).parent().siblings(".editt").each(function() {  // 获取当前行的其他单元格
+
+					            obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+
+					       
+					                $(this).html(obj_text.val()); 
+									
+							});
+							var c;
+							if(self.getCache()==null){
+								c=$(this).parent().parent().find(".mixPartyNamesId").text();
+							}else{
+								c=self.getCache();
+							}
+							var postData = {
+									id:$(this).data('id'),
+									mixPartyNames:$(this).parent().parent().find(".mixPartyNames").text(),
+									mixtTime:$(this).parent().parent().find(".mixtTime").text()+' '+'00:00:00',
+									mixDetailed:$(this).parent().parent().find(".mixDetailed").text(),
+									mixPrice:$(this).parent().parent().find(".mixPrice").text(),
+									mixPartyNamesId:c,
+							}
+							
+							var index;
+							$.ajax({
+								url:"${ctx}/fince/addMixed",
+								data:postData,
+								type:"POST",
+								beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								
+								success:function(result){
+									if(0==result.code){
+									layer.msg("修改成功！", {icon: 1});
+									layer.close(index);
+									}else{
+										layer.msg("修改失败！", {icon: 1});
+										layer.close(index);
+									}
+								},error:function(){
+									layer.msg("操作失败！", {icon: 2});
+									layer.close(index);
+								}
+							});
+					}
+				})
+			}
+			this.mater=function(){
+				
+				
+			/* 	var proposals = ['百度1', '百度2', '百度3', '百度4','a1','a2','a3','a4','b1','b2','b3','b4'];
+				$('.bName2').autocomplete({
+				    hints: proposals,
+				    width: 300,
+				    height: 30,
+				    onSubmit: function(text){
+				       /*  $('#message').html('Selected: <b>' + text + '</b>');
+				    }
+				}); */
+				
+				
+				
+			 	//提示乙方
+				$(".bName2").typeahead({
+					//ajax 拿way数据
+					source : function(query, process) {
+							return $.ajax({
+								url : '${ctx}/fince/getContact',
+								type : 'GET',
+								data : {
+									conPartyNames:query,
+									
+								},
+								success : function(result) {
+									//转换成 json集合
+									 var resultList = result.data.rows.map(function (item) {
+										 	//转换成 json对象
+					                        var aItem = {name: item.conPartyNames, id:item.id}
+					                        //处理 json对象为字符串
+					                        return JSON.stringify(aItem);
+					                    });
+									if(result.data.rows==""){
+										 self.setCache("");
+									}
+									//提示框返回数据
+									 return process(resultList);
+								},
+							})
+						
+							//提示框显示
+						}, highlighter: function (item) {
+						    //转出成json对象
+							 var item = JSON.parse(item);
+							return item.name
+							//按条件匹配输出
+		                }, matcher: function (item) {
+		                	//转出成json对象
+					        var item = JSON.parse(item);
+					        self.setCache(item.id);
+					    	return item.id
+					    },
+						//item是选中的数据
+						updater:function(item){
+							//转出成json对象
+							var item = JSON.parse(item);
+							self.setCache(item.id);
+								return item.name
+						},
+
+						
+					}); 
+			}
+			this.events = function(){
+				$('.searchtask').on('click',function(){
+					var data = {
+				  			page:1,
+				  			size:13,
+				  			mixPartyNames:$('#partyNames').val(),
+				  			orderTimeBegin:$("#startTime").val(),
+				  			orderTimeEnd:$("#endTime").val(),
+				  			batchNumber:$("#batchNumber2").val(),
+				  	}
+		            self.loadPagination(data);
+				});
+				
+				//新增
+				$('#addgroup').on('click',function(){
+					self.mater();
+					var _index;
+					var index;
+					var postData;
+					if($("#bName").val()==""){
+						return	layer.msg("请填写乙方", {icon: 2});
+					}
+					if($("#mixPrice").val()==""){
+						return layer.msg("请填写来往价格", {icon: 2});
+					}
+					if($("#mixtTime").val()==""){
+						return layer.msg("请填写来往日期", {icon: 2});
+					}
+					if(self.getCache()==""){
+						return layer.msg("乙方不在客户表中 请添加", {icon: 2});
+					}
+					  postData={
+							  mixDetailed:$("#mixDetailed").val(),
+							  mixPrice:$("#mixPrice").val(),
+							  mixtTime:$("#mixtTime").val(),
+							  mixPartyNames:$("#bName").val(),
+							  mixPartyNamesId:self.getCache(),
+							  mixtSubordinateTime:$('#startTime').val(),
+					  }
+					  $.ajax({
+							url:"${ctx}/fince/addMixed",
+							data:postData,
+				            traditional: true,
+							type:"post",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+									layer.msg("添加成功！", {icon: 1});
+								 self.loadPagination(data); 
+									$("#mixPrice").val(""),
+									$("#mixDetailed").val("")
+									$("#mixtTime").val("")
+									$("#bName").val("")
+								}else{
+									layer.msg("添加失败", {icon: 2});
+								}
+								
+								layer.close(index);
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+				})
+				//一键删除
+				$('.start').on('click',function(){
+					  var  that=$(".table-hover");
+					  var arr=new Array()//员工id
+					  	that.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+							arr.push($(this).val());   
+						});
+					  var postData = {
+								ids:arr,
+						}
+						
+						var index;
+						 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/fince/deleteMixed",
+							data:postData,
+							traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+								layer.msg("删除成功！", {icon: 1});
+								var data = {
+					        			page:self.getCount(),
+								  		size:13,
+								  		mixPartyNames:$('#partyNames').val(),
+								  		orderTimeBegin:$("#startTime").val(),
+							  			orderTimeEnd:$("#endTime").val(), 
+							  			batchNumber:$("#batchNumber2").val(),
+							  	}
+								self.loadPagination(data)
+								layer.close(index);
+								}else{
+									layer.msg("删除失败！", {icon: 2});
+									layer.close(index);
+								}
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 })
+				})
+			}
+   	}
+   			var login = new Login();
+				login.init();
+			})
+    
+    </script>
+
 </body>
 
 </html>

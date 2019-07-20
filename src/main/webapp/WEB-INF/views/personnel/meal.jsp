@@ -39,6 +39,7 @@
 									<option value="1">早餐</option>
 									<option value="2">中餐</option>
 									<option value="3">晚餐</option>
+									<option value="4">夜宵</option>
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
@@ -107,7 +108,6 @@
 	<form action="" id="layuiadmin-form-admin2"
 		style="padding: 20px 0px 0 50px; display:none;  text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
-		<input type="text" name="id" id="ids" style="display:none;">
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 100px;">姓名</label>
 				<div class="layui-input-inline">
@@ -123,6 +123,7 @@
 						<option value="1">早餐</option>
 						<option value="2">中餐</option>
 						<option value="3">晚餐</option>
+						<option value="4">夜宵</option>
 					</select>
 				</div>
 			</div>
@@ -158,11 +159,47 @@
 							value="">请选择</option>
 						<option value="1">早餐</option>
 						<option value="2">晚餐</option>
-						<option value="3">早餐or晚餐</option></select>
+						<option value="3">早餐or晚餐</option>
+						<option value="4">晚夜宵</option>
+						<option value="5">早晚夜宵</option>
+						</select>
 				</div>
 			</div>
 		</div>
 	</form>
+	
+	
+	<form action="" id="layuiadmin-form-admin4"
+		style="padding: 20px 30px 0 60px; display:none;  text-align:">
+		<div class="layui-form" lay-filter="layuiadmin-form-admin">
+		<input type="text" name="id" id="ids2" style="display:none;">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">早餐</label>
+				<div class="layui-input-inline">
+					<input type="text"  name="keyValue" id="keyValue2"
+						lay-verify="required" 
+						class="layui-input laydate-icon">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">中餐</label>
+				<div class="layui-input-inline">
+					<input type="text" name="keyValueTwo" id="keyValueTwo2"
+						lay-verify="required"
+						class="layui-input laydate-icon">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">晚餐</label>
+				<div class="layui-input-inline">
+					<input type="text"  name="keyValueThree" id="keyValueThree2" lay-verify="required" class="layui-input">
+				</div>
+			</div>
+		</div>
+	</form>	
+	
 	
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
@@ -171,6 +208,7 @@
 				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
 				<span class="layui-btn layui-btn-sm" lay-event="openMeal">报餐价格</span>
+				<span class="layui-btn layui-btn-sm" lay-event="delayed">吃饭延时</span>
 				<span class="layui-btn layui-btn-sm" lay-event="eat">吃饭方式填写</span>
 			</div>
 	</script>
@@ -294,6 +332,7 @@
 								'<option value="1">早餐</option>',
 								'<option value="2">中餐</option>',
 								'<option value="3">晚餐</option>',
+								'<option value="4">夜宵</option>',
 								'</select>'
 							].join('');
 
@@ -565,10 +604,9 @@
 									}
 								});
 								
-								
 								//报价修改
 							var	dicDiv=$("#layuiadmin-form-admin");
-								layer.open({
+							var index3=	layer.open({
 									type:1,
 									title:'报餐价格',
 									area:['30%','60%'],
@@ -600,6 +638,7 @@
 													layer.msg("修改成功！", {
 														icon: 1
 													});
+													layer.close(index3);
 												}else{
 													layer.msg("修改失败！", {
 														icon: 2
@@ -618,6 +657,90 @@
 									}
 								})
 								break;
+								
+							case 'delayed':
+								$.ajax({
+									url: '${ctx}/personnel/getpersonVariabledao',
+									type: "GET",
+									data:{
+										type:4
+									},
+									async: false,
+									beforeSend: function() {
+										index;
+									},
+									success: function(result) {
+										$(result.data).each(function(i, o) {
+											$("#ids2").val(o.id);
+											$("#keyValue2").val(o.keyValue);
+											$("#keyValueTwo2").val(o.keyValueTwo);
+											$("#keyValueThree2").val(o.keyValueThree);
+										})
+										
+										layer.close(index);
+									},
+									error: function() {
+										layer.msg("操作失败！", {
+											icon: 2
+										});
+										layer.close(index);
+									}
+								});
+								
+								//报价修改
+							var	dicDiv=$("#layuiadmin-form-admin4");
+							var index2=	layer.open({
+									type:1,
+									title:'报餐延时',
+									area:['30%','60%'],
+									btn:['确认','取消'],
+									content:dicDiv,
+									id: 'LAY_layuipro' ,
+									btnAlign: 'c',
+								    moveType: 1, //拖拽模式，0或者1
+									success : function(layero, index) {
+							        	layero.addClass('layui-form');
+										// 将保存按钮改变成提交按钮
+										layero.find('.layui-layer-btn0').attr({
+											'lay-filter' : 'addRole',
+											'lay-submit' : ''
+										})
+							        },
+									yes:function(){
+										form.on('submit(addRole)', function(data) {
+											$.ajax({
+												url: '${ctx}/personnel/addPersonVaiable',
+												type: "POST",
+												data:data.field,
+												async: false,
+												beforeSend: function() {
+													index;
+												},
+												success: function(result) {
+												if(result.code==0){
+													layer.msg("修改成功！", {
+														icon: 1
+													});
+													layer.close(index2);
+												}else{
+													layer.msg("修改失败！", {
+														icon: 2
+													});
+												}
+													layer.close(index);
+												},
+												error: function() {
+													layer.msg("操作失败！", {
+														icon: 2
+													});
+													layer.close(index);
+												}
+											});
+										})
+									}
+								})
+								break;
+								
 							case 'eat':	
 								var htmlsl = '<option value="">请选择</option>';
 								$.ajax({

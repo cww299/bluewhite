@@ -42,7 +42,7 @@
 							<td><select class="form-control"  name="platformId" lay-search="true" id="platform"></select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>面试时间:</td>
-							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入面试时间" class="layui-input laydate-icon">
+							<td><input id="startTime" style="width: 300px;" name="startTime" placeholder="请输入面试时间" class="layui-input laydate-icon">
 							</td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
@@ -413,12 +413,13 @@
 					var firstdate = year + '-' + p(month) + '-01'+' '+'00:00:00';
 					var lastdate = year + '-' + p(month) + '-' + day.getDate() +' '+'23:59:59';
 					
-					form.render();
 					laydate.render({
 						elem: '#startTime',
 						type: 'datetime',
+						range: '~',
 						value : firstdate+' ~ '+lastdate,
 					});
+					form.render();
 					 laydate.render({
 						elem: '#monthDate3',
 						type : 'month',
@@ -460,7 +461,6 @@
 						      }
 						  });
 					 form.on('select(orgNameIds)', function(data){
-						 console.log(data)
 						 var html=""
 			      			$.ajax({								//获取当前部门下拉框选择的子数据：职位
 							      url:"${ctx}/basedata/children",
@@ -1704,7 +1704,7 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
-						var orderTime=field.orderTimeBegin.split('~');
+						var orderTime=field.startTime.split('~');
 						field.orderTimeBegin=orderTime[0];
 						field.orderTimeEnd=orderTime[1];
 						field.time="2019-06-02 11:00:00";

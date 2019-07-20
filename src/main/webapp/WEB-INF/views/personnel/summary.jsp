@@ -227,6 +227,11 @@
 								title: "晚餐次数",
 								align: 'center',
 								edit: false,
+							},{
+								field: "modeFour",
+								title: "夜宵次数",
+								align: 'center',
+								edit: false,
 							}]
 						],
 								});
