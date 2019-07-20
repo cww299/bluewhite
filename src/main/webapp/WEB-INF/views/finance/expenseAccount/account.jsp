@@ -73,7 +73,6 @@
 		</shiro:hasAnyRoles> 
 	</div>
 </div>
-	
 <div style="display: none;" id="layuiOpen">
 	<table id="tableBudget" class="table_th_search" lay-filter="tableBudget"></table>
 </div>
@@ -89,7 +88,6 @@
 		</shiro:hasAnyRoles> 
 	</div>
 </script>
-
 <script type="text/html" id="toolbar2">
 	<div class="layui-btn-container layui-inline">
 		<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增一行</span>
@@ -116,18 +114,13 @@ layui.config({
 		
 		getDate();
 		var allField;
-		var self = this;
-		this.setIndex = function(index){
-	  		_index=index;
-	  	}
-	  	this.getIndex = function(){
-	  		return _index;
-	  	}
+		var parentId = '';
 	  	var load = null;
-	  	var loads = function(){
+	  	function loads(){
 	  		load = layer.load(1,{shade:[0.1,'black']} );
 	  	}
 		var htmls = '<option value="">请选择</option>';
+		var typeSelectHtml = '<option value="">请选择</option>';
 		var index = layer.load(1);
 		
 		laydate.render({
@@ -144,101 +137,38 @@ layui.config({
 				$('#tableData').next().show();
 				$('#tableDataTwo').next().hide();
 			}
-		})		
-		loads();
-		$.ajax({
-			url: '${ctx}/system/user/findAllUser',
-			async: false,
-			success: function(result) {
-				$(result.data).each(function(i, o) {
-					htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
-				})
-			},
-			error: function() {
-				layer.msg("操作失败！", { icon: 2 });
-			}
-		});
-		layer.close(load);
-		
-		// 处理操作列
-		var fn1 = function(field) {
-			return function(d) {
-				return [
-					'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' + d.userId + '">',
-					htmls,
-					'</select>'
-				].join('');
-			};
-		};
-
-		var fn2 = function(field) {
-			return function(d) {
-				return ['<select name="selectTwo" lay-filter="lay_selecte" lay-search="true" data-value="' + d.budget + '">',
-					'<option value="0">请选择</option>',
-					'<option value="1">预算</option>',
-					'</select>'
-				].join('');
-
-			};
-		};
-		var fn3 = function(field) {
-			return function(d) {
-				return ['<select name="selectThree" lay-filter="lay_selecte" lay-search="true" data-value="' + d.settleAccountsMode + '">',
-					'<option value="0">请选择</option>',
-					'<option value="1">现金</option>',
-					'<option value="2">月结</option>',
-					'</select>'
-				].join('');
-
-			};
-		};
-		var cols = [
-					[{ type: 'checkbox', fixed: 'left' }, 
+		})	
+		getAllUser();
+		getAllAccountType();
+		var cols = [[
+		             { type: 'checkbox', fixed: 'left' }, 
 					 { field: "content", title: "报销内容", edit: 'text' }, 
 					 { field: "userId",  title: "报销人",   edit: false, templet: fn1('selectOne') }, 
-					 { field: "budget",  title: "是否预算", edit: false, templet: function(d){ return d.budget==1?'是':'否';} }, 
-					 { field: "money",   title: "报销申请金额",     edit: 'text' }, 
-					 { field: "expenseDate", title: "报销申请日期", edit: 'text' },
+					 { field: "budget",  title: "是否预算", edit: false, templet: function(d){ return d.budget==1?'是':'否';},width:'7%', }, 
+					 { field: "money",   title: "申请金额",     edit: 'text',width:'7%', }, 
+					 { field: "expenseDate", title: "报销申请日期", edit: false, },
 					 { field: "withholdReason", title: "扣款事由", edit: 'text' },
-					 { field: "withholdMoney",  title: "扣款金额",  edit: 'text' }, 
-					 { field: "settleAccountsMode", title: "结款模式", edit: false, templet: fn3('selectThree')
-					}]
-				];
-		function renderTable(t){
-			table.render({
-				elem:t.elem,
-				url:t.url,
-				cols:t.cols,
-				done:t.done,
-				where:t.where,
-				toolbar:t.toolbar,
-				colFilterRecord: true,
-				smartReloadModel: true,
-				height:'700px',
-				size:'lg',
-				page: { },
-				request:{ pageName: 'page' , limitName: 'size' },
-				parseData: function(ret) { return { code: ret.code, msg: ret.message, count:ret.data.total, data: ret.data.rows } },
-			})
-		}
-		renderTable({
+					 { field: "withholdMoney",  title: "扣款金额",  edit: 'text',width:'7%', }, 
+					 { field: "settleAccountsMode", title: "结款模式", edit: false,width:'7%', templet: fn3('selectThree')}
+					]];
+		renderTable({			//渲染预算表格
 			elem: '#tableData',
 			toolbar: '#toolbar', 
-			url: '${ctx}/fince/getConsumption?budget=1' ,
-			where:{ type:1 },
-			cols: cols,
-				done: function(res, curr, count) {
-					var tableView = this.elem.next();
-					var tableElem = this.elem.next('.layui-table-view').find('.layui-table-box');
-					layui.each(tableElem.find('select'), function(index, item) {
-						var elem = $(item);
-						elem.val(elem.data('value'));
-					});
-					form.render();
-					layui.each(tableView.find('td[data-field="expenseDate"]'), function(index, tdElem) {
-						tdElem.onclick = function(event) {
-							layui.stope(event)
-						};
+			url: '${ctx}/fince/getConsumption?budget=1&type=1' ,
+			cols:  (function(){
+						var c = [[]];
+						layui.each(cols[0],function(index,item){	//进行深拷贝，避免影响其他表格的渲染
+							c[0].push(item);
+						})
+						c[0].push({field: "realityDate", title: "实际时间", edit: false });
+						c[0].push({field: "applyTypeId", title: "报销类型", edit: false ,templet:getAccountType(),});
+						c[0].push({field: "deleteFlag",  title: "月底删除", edit: 'text' })
+						return c;
+					})(),
+			done:function(that){
+					var tableView = that.elem.next();
+					var tableElem = that.elem.next('.layui-table-view').find('.layui-table-box');
+					layui.each(tableView.find('td[data-field="realityDate"]'), function(index, tdElem) {
 						laydate.render({
 							elem: tdElem.children[0],
 							type: 'datetime',
@@ -246,77 +176,48 @@ layui.config({
 									var id = table.cache['tableData'][index].id
 									var postData = {
 										id: id,
-										expenseDate: value,
+										realityDate: value,
 									};
 									mainJs.fUpdate(postData);
 							}
 						})
 					})
-				},
+				}
 		})
+		renderTable({		//渲染非预算表格
+			elem: '#tableDataTwo',
+			toolbar: '#toolbar2', 
+			url: '${ctx}/fince/getConsumption?budget=0&type=1' ,
+			cols:cols,
+		})
+		var colsChild = [[
+					     { type: 'checkbox', fixed: 'left', totalRowText:'合计' }, 
+						 { field: "content", title: "报销内容", edit: 'text' }, 
+						 { field: "userId",  title: "报销人",   edit: false, templet: fn1('selectOne') }, 
+						 { field: "money",   title: "报销申请金额", 		edit: 'text', totalRow:true },
+						 { field: "expenseDate", title: "报销申请日期", 	edit: 'text' }, 
+						 { field: "withholdReason", title: "扣款事由", 	edit: 'text' }, 
+						 { field: "withholdMoney",  title: "扣款金额",	edit: 'text' }, 
+						 { field: "settleAccountsMode", title: "结款模式", edit: false, templet: fn3('selectThree') }
+						]];
+		renderTable({		//渲染预算报销单表格
+			elem: '#tableBudget',
+			toolbar: '#toolbar2', 
+			data: [],
+			height: '620px',
+			cols: colsChild,
+		})
+						
 	   	tablePlug.smartReload.enable(true); 
-		/* table.render({
-			elem: '#tableData',
-			size: 'lg',
-			url: '${ctx}/fince/getConsumption?budget=1' ,
-			where:{ type:1 },
-			height:'700px',
-			request:{ pageName: 'page' , limitName: 'size' },
-			page: { },
-			toolbar: '#toolbar', 
-			colFilterRecord: true,
-			smartReloadModel: true,// 开启智能重载
-			parseData: function(ret) {
-				return { code: ret.code, msg: ret.message, count:ret.data.total, data: ret.data.rows }
-			},
-			cols: [
-				[{ type: 'checkbox', fixed: 'left' }, 
-				 { field: "content", title: "报销内容", edit: 'text' }, 
-				 { field: "userId",  title: "报销人",   edit: false, templet: fn1('selectOne') }, 
-				 { field: "budget",  title: "是否预算", edit: false, templet: function(d){ return d.budget==1?'是':'否';} }, 
-				 { field: "money",   title: "报销申请金额",     edit: 'text' }, 
-				 { field: "expenseDate", title: "报销申请日期", edit: 'text' },
-				 { field: "withholdReason", title: "扣款事由", edit: 'text' },
-				 { field: "withholdMoney",  title: "扣款金额",  edit: 'text' }, 
-				 { field: "settleAccountsMode", title: "结款模式", edit: false, templet: fn3('selectThree')
-				}]
-			],
-			done: function(res, curr, count) {
-				var tableView = this.elem.next();
-				var tableElem = this.elem.next('.layui-table-view').find('.layui-table-box');
-				layui.each(tableElem.find('select'), function(index, item) {
-					var elem = $(item);
-					elem.val(elem.data('value'));
-				});
-				form.render();
-				layui.each(tableView.find('td[data-field="expenseDate"]'), function(index, tdElem) {
-					tdElem.onclick = function(event) {
-						layui.stope(event)
-					};
-					laydate.render({
-						elem: tdElem.children[0],
-						type: 'datetime',
-						done: function(value, date) {
-								var id = table.cache['tableData'][index].id
-								var postData = {
-									id: id,
-									expenseDate: value,
-								};
-								mainJs.fUpdate(postData);
-						}
-					})
-				})
-			},
-		}); */
-		
 		form.on('select(lay_selecte)', function(data) {
 			var selectElem = $(data.elem);
 			var tdElem = selectElem.closest('td');
 			var trElem = tdElem.closest('tr');
 			var tableView = trElem.closest('.layui-table-view');
+			var tableId = tableView.attr('lay-id');
 			var field = tdElem.data('field');
-			table.cache['tableData'][trElem.data('index')][tdElem.data('field')] = data.value;
-			var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
+			table.cache[tableId][trElem.data('index')][tdElem.data('field')] = data.value;
+			var id = table.cache[tableId][trElem.data('index')].id;
 			var postData = {
 				id: id,
 				[field]:data.value
@@ -324,95 +225,118 @@ layui.config({
 			mainJs.fUpdate(postData);
 		});
 		
+		function addTempData(t){
+			table.addTemp(t.tableId,t.allField,function(trElem) {
+				layui.each(trElem.find('td[data-field="expenseDate"]'), function(index, tdElem) {
+					tdElem.onclick = function(event) {
+						layui.stope(event)
+					};
+					laydate.render({
+						elem: tdElem.children[0],
+						format: 'yyyy-MM-dd HH:mm:ss',
+						done: function(value, date) {
+							var trElem = $(this.elem[0]).closest('tr');
+							var tableView = trElem.closest('.layui-table-view');
+							table.cache[t.tableId][trElem.data('index')]['expenseDate'] = value;
+							var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
+							var postData = {
+								id: id,
+								expenseDate:value,
+							}
+							mainJs.fUpdate(postData);
+						}
+					})
+				})
+				t.done && t.done(trElem);
+			});
+		}
+		function saveTempData(tableId){
+			var data = table.getTemp(tableId).data;
+			var msg = '';
+			for(var i=0;i<data.length;i++){
+				var postData = data[i];
+			 	postData.userId=="" && (msg = "请填写报销申请人");
+		    	(postData.money=="" || isNaN(postData.money)) && (msg = "请填写报销申请金额（且必须为数字）");
+		    	postData.expenseDate=="" && (msg = "请填写报销申请日期");
+		    	if(msg!=''){
+		    		layer.msg(msg,{icon:2});
+		    		return false;
+		    	}
+			}
+			data.forEach(function(postData,i){
+				mainJs.fAdd(postData);
+			})	
+			table.cleanTemp(tableId);
+			table.reload(tableId);
+			return true;
+		}
+		function deleteSome(tableId){
+			var checkedIds = tablePlug.tableCheck.getChecked(tableId);
+			layer.confirm('您是否确定要删除选中的' + checkedIds.length + '条记录？', function() {
+				var postData = {
+					ids: checkedIds,
+				}
+				$.ajax({
+					url: "${ctx}/fince/deleteConsumption",
+					data: postData,
+					traditional: true,
+					success: function(result) {
+						var icon = 2;
+						if(0 == result.code) {
+							var configTemp = tablePlug.getConfig(tableId);
+				            if (configTemp.page && configTemp.page.curr > 1) {
+				              	table.reload(tableId, {  page: { curr: configTemp.page.curr - 1  } })
+				            }else{
+				            	table.reload(tableId)
+				            };
+				            icon = 1;
+						} 
+						layer.msg(result.message, { icon: icon, time:800 });
+					},
+					error: function() {
+						layer.msg("操作失败！", { icon: 2 });
+					}
+				});
+			});
+		}
 		table.on('toolbar(tableData)', function(obj) {
-			var config = obj.config;
-			var btnElem = $(this);
-			var tableId = config.id;
+			var tableId = 'tableData';
 			switch(obj.event) {
 				case 'addTempData':
-					allField = {id: '', content: '', budget: 0,userId:'',money: '', expenseDate: '', withholdReason: '',withholdMoney:'',settleAccountsMode:'',type:'1'};
-					table.addTemp(tableId,allField,function(trElem) {
-						var that = this;
-						layui.each(trElem.find('td[data-field="expenseDate"]'), function(index, tdElem) {
-							tdElem.onclick = function(event) {
-								layui.stope(event)
-							};
-							laydate.render({
-								elem: tdElem.children[0],
-								format: 'yyyy-MM-dd HH:mm:ss',
-								done: function(value, date) {
-									var trElem = $(this.elem[0]).closest('tr');
-									var tableView = trElem.closest('.layui-table-view');
-									table.cache[that.id][trElem.data('index')]['expenseDate'] = value;
-									var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
-									var postData = {
-										id: id,
-										expenseDate:value,
+					allField = {id: '', content: '', budget: 1,userId:'',money: '', expenseDate: '', withholdReason: '',
+								withholdMoney:'',settleAccountsMode:'',type:'1',realityDate:'',applyTypeId:'',deleteFlag:''  };
+					addTempData({
+						tableId:tableId,
+						allField:allField,
+						done:function(trElem){
+							layui.each(trElem.find('td[data-field="realityDate"]'), function(index, tdElem) {
+								tdElem.onclick = function(event) { layui.stope(event) };
+								laydate.render({
+									elem: tdElem.children[0],
+									type: 'datetime',
+									done: function(value, date) {
+										var trElem = $(this.elem[0]).closest('tr');
+										var tableView = trElem.closest('.layui-table-view');
+										table.cache[that.id][trElem.data('index')]['expenseDate'] = value;
+										var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
+										var postData = {
+											id: id,
+											realityDate: value,
+										}
+										mainJs.fUpdate(postData);
 									}
-									mainJs.fUpdate(postData);
-								}
+								})
 							})
-						})
-					});
+						}
+					})
 					break;
 				case 'saveTempData':
-					var data = table.getTemp(tableId).data;
-					var flag=false;
-					var a=0;
-					data.forEach(function(postData,i){
-					 	if(postData.userId==""){
-				    		return layer.msg("请填写报销申请人", { icon: 2, });
-				    	}
-				    	if(postData.money=="" || isNaN(postData.money)){
-				    		return layer.msg("请填写报销申请金额（且必须为数字）", { icon: 2, });
-				    	} 
-				    	if(postData.expenseDate==""){
-				    		return layer.msg("请填写报销申请日期", { icon: 2, });
-				    	}
-				    	a++;
-				    	if(a==data.length){
-				    		flag=true
-				    	}
-					})
-					if(flag==true){
-						data.forEach(function(postData,i){
-						 	mainJs.fAdd(postData);
-						})	
-						table.cleanTemp(tableId);
-					}
-			          break;
+					saveTempData(tableId);
+			        break;
 				case 'deleteSome':
-					var checkedIds = tablePlug.tableCheck.getChecked(tableId);
-					layer.confirm('您是否确定要删除选中的' + checkedIds.length + '条记录？', function() {
-						var postData = {
-							ids: checkedIds,
-						}
-						$.ajax({
-							url: "${ctx}/fince/deleteConsumption",
-							data: postData,
-							traditional: true,
-							beforeSend: function() {
-								index;
-							},
-							success: function(result) {
-								var icon = 2;
-								if(0 == result.code) {
-									var configTemp = tablePlug.getConfig("tableData");
-						            if (configTemp.page && configTemp.page.curr > 1) {
-						              	table.reload("tableData", {  page: { curr: configTemp.page.curr - 1  } })
-						            }else{
-						            	table.reload("tableData")
-						            };
-						            icon = 1;
-								} 
-								layer.msg(result.message, { icon: icon, time:800 });
-							},
-							error: function() {
-								layer.msg("操作失败！", { icon: 2 });
-							}
-						});
-						layer.close(index);
-					});
+					deleteSome(tableId);
+					break;
+				case 'cleanTempData':	 table.cleanTemp(tableId);
 					break;
 				case 'openBudget':
 					var checkedIds = layui.table.checkStatus(tableId).data;
@@ -422,171 +346,66 @@ layui.config({
 					if(checkedIds.length<1){
 						return layer.msg("请选择一条数据", { icon: 2 });
 					}
-					var str = checkedIds[0].id;
-					self.setIndex(str)
-					table.render({
-						elem: '#tableBudget',
-						size: 'lg',
+					parentId = checkedIds[0].id;
+					table.reload('tableBudget',{
 						url: '${ctx}/fince/getConsumption' ,
-						where:{ type:1, parentId:str },
-						request:{ pageName: 'page' , limitName: 'size' },
-						page: { },
-						toolbar: '#toolbar2', 
-						totalRow: true,
-						cellMinWidth: 90,
-						colFilterRecord: true,
-						smartReloadModel: true,
-						parseData: function(ret) {
-							return { code: ret.code, msg: ret.message, count:ret.data.total, data: ret.data.rows }
-						},
-						cols: [[
-						     { type: 'checkbox', fixed: 'left', totalRowText:'合计' }, 
-							 { field: "content", title: "报销内容", edit: 'text' }, 
-							 { field: "userId",  title: "报销人",   edit: false, templet: fn1('selectOne') }, 
-							 { field: "money",   title: "报销申请金额", 		edit: 'text', totalRow:true },
-							 { field: "expenseDate", title: "报销申请日期", 	edit: 'text' }, 
-							 { field: "withholdReason", title: "扣款事由", 	edit: 'text' }, 
-							 { field: "withholdMoney",  title: "扣款金额",	edit: 'text' }, 
-							 { field: "settleAccountsMode", title: "结款模式", edit: false, templet: fn3('selectThree') }
-							 ]],
-						done: function(res, curr, count) {
-							var tableView = this.elem.next();
-							var tableElem = this.elem.next('.layui-table-view');
-							layui.each(tableElem.find('select'), function(index, item) {
-								var elem = $(item);
-								elem.val(elem.data('value'));
-							});
-							form.render();
-							layui.each(tableView.find('td[data-field="expenseDate"]'), function(index, tdElem) {
-								tdElem.onclick = function(event) {
-									layui.stope(event)
-								};
-								laydate.render({
-									elem: tdElem.children[0],
-									format: 'yyyy-MM-dd HH:mm:ss',
-									done: function(value, date) {
-											var id = table.cache[tableView.attr('lay-id')][index].id
-											var postData = {
-												id: id,
-												expenseDate: value,
-											};
-											mainJs.fUpdate(postData);
-									}
-								})
-							})
-						},
-					});
+						where: { type:1, parentId: parentId },
+					})
 					layer.open({
 				         type: 1
 				        ,title: "预算报销单" 
 				        ,area:['80%', '90%']
-				        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
 				        ,btn: ['取消']
 				        ,btnAlign: 'c'
 				        ,content:$('#layuiOpen')
-				      });
-					break;
-				case 'cleanTempData':	 table.cleanTemp(tableId);
+				    });
 					break;
 			}
 		});
 
 		table.on('toolbar(tableBudget)', function(obj) {
-			var config = obj.config;
-			var btnElem = $(this);
-			var tableId = config.id;
+			var tableId = 'tableBudget';
 			switch(obj.event) {
 				case 'addTempData':
 					allField = {id: '', content: '', budget: 0,userId:'',money: '', expenseDate: '', 
-						withholdReason: '',withholdMoney:'',settleAccountsMode:'',type:'1',parentId:self.getIndex()};
-					table.addTemp(tableId,allField,function(trElem) {
-						var that = this;
-						layui.each(trElem.find('td[data-field="expenseDate"]'), function(index, tdElem) {
-							tdElem.onclick = function(event) {
-								layui.stope(event)
-							};
-							laydate.render({
-								elem: tdElem.children[0],
-								format: 'yyyy-MM-dd HH:mm:ss',
-								done: function(value, date) {
-									var trElem = $(this.elem[0]).closest('tr');
-									var tableView = trElem.closest('.layui-table-view');
-									table.cache[that.id][trElem.data('index')]['expenseDate'] = value;
-									var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
-									var postData = {
-										id: id,
-										expenseDate:value,
-									}
-									mainJs.fUpdate(postData);
-								}
-							})
-						})
-					});
+						withholdReason: '',withholdMoney:'',settleAccountsMode:'',type:'1',parentId:parentId};
+					addTempData({
+						tableId:tableId,
+						allField:allField,
+					})
 					break;
 				case 'saveTempData':
-					var data = table.getTemp(tableId).data;
-					var flag=false;
-					var a=0;
-					data.forEach(function(postData,i){
-					 	if(postData.userId==""){
-				    		return layer.msg("请填写报销申请人", { icon: 2, });
-				    	}
-				    	if(postData.money=="" || isNaN(postData.money)){
-				    		return layer.msg("请填写报销申请金额（且必须为数字）", { icon: 2, });
-				    	} 
-				    	if(postData.expenseDate==""){
-				    		return layer.msg("请填写报销申请日期", { icon: 2, });
-				    	}
-				    	a++;
-				    	if(a==data.length){
-				    		flag=true
-				    	}
-					})
-					if(flag==true){
-						data.forEach(function(postData,i){
-							mainJs.fAdd(postData);
-						})	
-						table.cleanTemp(tableId);
-					}
-			          break;
+					saveTempData(tableId);
+			        break;
 				case 'deleteSome':
-					var checkedIds = tablePlug.tableCheck.getChecked(tableId);
-					layer.confirm('您是否确定要删除选中的' + checkedIds.length + '条记录？', function() {
-						var postData = {
-							ids: checkedIds,
-						}
-						$.ajax({
-							url: "${ctx}/fince/deleteConsumption",
-							data: postData,
-							traditional: true,
-							beforeSend: function() {
-								index;
-							},
-							success: function(result) {
-								if(0 == result.code) {
-									var configTemp = tablePlug.getConfig("tableData");
-						            if (configTemp.page && configTemp.page.curr > 1) {
-						              table.reload("tableData", { page: {  curr: configTemp.page.curr - 1 }  })
-						            }else{
-						            	table.reload("tableBudget", { page: {} })
-						            };
-									layer.msg(result.message, { icon: 1, time:800 });
-								} else {
-									layer.msg(result.message, { icon: 2, time:800 });
-								}
-							},
-							error: function() {
-								layer.msg("操作失败！", { icon: 2 });
-							}
-						});
-						layer.close(index);
-					});
+					deleteSome(tableId);
 					break;
 				case 'cleanTempData':	table.cleanTemp(tableId);
 			break;
 			}
 		})
 		
+		table.on('toolbar(tableDataTwo)',function(obj){
+			var tableId = 'tableDataTwo';
+			switch(obj.event){
+				case 'addTempData':
+					allField = {id: '', content: '', budget: 0,userId:'',money: '', expenseDate: '', withholdReason: '',
+								withholdMoney:'',settleAccountsMode:'',type:'1', };
+					addTempData({
+						tableId:tableId,
+						allField:allField,
+					})
+					break;
+				case 'saveTempData':
+					saveTempData(tableId);
+			        break;
+				case 'deleteSome':
+					deleteSome(tableId);
+					break;
+				case 'cleanTempData':	 table.cleanTemp(tableId);
+					break;
+			}
+		})
 		//监听单元格编辑
 		table.on('edit(tableData)', function(obj) {
 			if(!obj.data.id) 
@@ -605,13 +424,31 @@ layui.config({
 				}
 			)
 		});
-		
-		table.on('edit(tableBudget)', function(obj) {
-			var  field = obj.field;
-				var postData = {
-					id: data.id,
-					[field]: obj.value
+		table.on('edit(tableDataTwo)', function(obj) {
+			if(!obj.data.id) 
+				return;
+			layer.confirm('是否确认修改？',
+				function(){
+					var data = obj.data;
+						var postData = {
+							id: data.id,
+							[obj.field]: obj.value
+						}
+						mainJs.fUpdate(postData);
+				},
+				function(){ 
+					table.reload("tableDataTwo")  
 				}
+			)
+		});
+		table.on('edit(tableBudget)', function(obj) {
+			var  data = obj.data;
+			if(data.id=='')
+				return;
+			var postData = {
+				id: data.id,
+				[obj.field]: obj.value
+			}
 			mainJs.fUpdate(postData);
 		});
 		
@@ -640,7 +477,7 @@ layui.config({
 						if(0 == result.code) 
 				            icon = 1;
 					 	table.reload("tableData"); 
-			            table.reload("tableBudget");  
+			            table.cache['tableBudget'] && table.reload("tableBudget");  
 						layer.msg(result.message, {icon: icon, time:800});
 					},
 					error: function() {
@@ -673,6 +510,111 @@ layui.config({
 					}
 				})
 			}
+		}
+		// 处理操作列
+		function fn1(field) {
+			return function(d) {
+				return [
+					'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' + d.userId + '">',
+					htmls,
+					'</select>'
+				].join('');
+			};
+		};
+
+		function fn3(field) {
+			return function(d) {
+				return ['<select name="selectThree" lay-filter="lay_selecte" lay-search="true" data-value="' + d.settleAccountsMode + '">',
+					'<option value="0">请选择</option>',
+					'<option value="1">现金</option>',
+					'<option value="2">月结</option>',
+					'</select>'
+				].join('');
+			};
+		};
+		function getAccountType(){
+			return function(d){
+				return ['<select lay-filter="lay_selecte" lay-search="true" data-value="' + d.applyTypeId + '">',
+				        typeSelectHtml,
+						'</select>',
+					].join('');
+			}
+		}
+		function getAllUser(){
+			loads();
+			$.ajax({
+				url: '${ctx}/system/user/findAllUser',
+				async: false,
+				success: function(result) {
+					$(result.data).each(function(i, o) {
+						htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
+					})
+				},
+				error: function() {
+					layer.msg("操作失败！", { icon: 2 });
+				}
+			});
+			layer.close(load);
+		};
+		function getAllAccountType(){
+			loads();
+			$.ajax({
+				url: '${ctx}/basedata/list?type=applyType',
+				async: false,
+				success: function(result) {
+					$(result.data).each(function(i, o) {
+						typeSelectHtml += '<option value=' + o.id + '>' + o.name + '</option>'
+					})
+				},
+				error: function() {
+					layer.msg("操作失败！", { icon: 2 });
+				}
+			});
+			layer.close(load);
+		}
+		function renderTable(t){
+			table.render({
+				elem:t.elem,
+				url:t.url,
+				cols:t.cols,
+				where:t.where,
+				toolbar:t.toolbar,
+				colFilterRecord: true,
+				smartReloadModel: true,
+				height: t.height || '700px',
+				size:'lg',
+				page: { },
+				request:{ pageName: 'page' , limitName: 'size' },
+				parseData: function(ret) { return { code: ret.code, msg: ret.message, count:ret.data.total, data: ret.data.rows } },
+				done:function(res, curr, count){
+					var tableView = this.elem.next();
+					var tableElem = this.elem.next('.layui-table-view').find('.layui-table-box');
+					layui.each(tableElem.find('select'), function(index, item) {
+						var elem = $(item);
+						elem.val(elem.data('value'));
+					});
+					form.render();
+					layui.each(tableView.find('td[data-field="expenseDate"]'), function(index, tdElem) {
+						tdElem.onclick = function(event) {
+							layui.stope(event)
+						};
+						laydate.render({
+							elem: tdElem.children[0],
+							type: 'datetime',
+							done: function(value, date) {
+									var id = table.cache['tableData'][index].id
+									var postData = {
+										id: id,
+										expenseDate: value,
+									};
+									mainJs.fUpdate(postData);
+							}
+						})//end laydate
+					})//end layui.each
+					t.done && t.done(this);
+					
+				}//end done
+			})//end render
 		}
 		$('#tableData').next().hide();
 	}
