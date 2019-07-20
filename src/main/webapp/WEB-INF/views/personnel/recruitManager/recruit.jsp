@@ -42,7 +42,7 @@
 							<td><select class="form-control"  name="platformId" lay-search="true" id="platform"></select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>面试时间:</td>
-							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入面试时间" class="layui-input laydate-icon">
+							<td><input id="startTime" style="width: 300px;" name="startTime" placeholder="请输入面试时间" class="layui-input laydate-icon">
 							</td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
@@ -404,11 +404,22 @@
 						shade: [0.1, '#fff'] //0.1透明度的白色背景
 					});
 					
+					
+					function p(s) { return s < 10 ? '0' + s: s; }
+					var myDate = new Date();
+					var year=myDate.getFullYear();
+					var month=myDate.getMonth()+1;
+					var day = new Date(year,month,0);
+					var firstdate = year + '-' + p(month) + '-01'+' '+'00:00:00';
+					var lastdate = year + '-' + p(month) + '-' + day.getDate() +' '+'23:59:59';
+					
 					laydate.render({
 						elem: '#startTime',
 						type: 'datetime',
 						range: '~',
+						value : firstdate+' ~ '+lastdate,
 					});
+					form.render();
 					 laydate.render({
 						elem: '#monthDate3',
 						type : 'month',
@@ -450,7 +461,6 @@
 						      }
 						  });
 					 form.on('select(orgNameIds)', function(data){
-						 console.log(data)
 						 var html=""
 			      			$.ajax({								//获取当前部门下拉框选择的子数据：职位
 							      url:"${ctx}/basedata/children",
@@ -516,6 +526,10 @@
 					table.render({
 						elem: '#tableData',
 						url: '${ctx}/personnel/getRecruit' ,
+						where:{
+							orderTimeBegin : firstdate,
+							orderTimeEnd : lastdate,
+						},
 						request:{ pageName: 'page' , limitName: 'size', },
 						page: { },
 						size:'lg',
@@ -847,7 +861,7 @@
 								// 获得当前选中的
 								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
 								var data = table.checkStatus(tableId).data;//获取选中数据
-								if(data[0].adopt==null || data[0].adopt==0){
+								if(data[0].adopt==null || data[0].adopt!=1){
 									return layer.msg("面试未通过",{icon: 2})
 								}
 								if(data[0].testTime==null){
@@ -875,10 +889,10 @@
 								// 获得当前选中的
 								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
 								var data = table.checkStatus(tableId).data;//获取选中数据
-								if(data[0].adopt==0){
+								if(data[0].adopt==null || data[0].adopt!=1){
 									return layer.msg("面试未通过",{icon: 2})
 								}
-								 if(data[0].state==1){
+								if(data[0].state==1){
 									return layer.msg("当前员工已入职",{icon: 2})
 								} 
 								if(checkedIds.length>1){
@@ -1690,7 +1704,7 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
-						var orderTime=field.orderTimeBegin.split('~');
+						var orderTime=field.startTime.split('~');
 						field.orderTimeBegin=orderTime[0];
 						field.orderTimeEnd=orderTime[1];
 						field.time="2019-06-02 11:00:00";
