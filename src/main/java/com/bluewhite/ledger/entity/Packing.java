@@ -1,4 +1,4 @@
-package com.bluewhite.ledger.entity;
+ package com.bluewhite.ledger.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,7 +23,7 @@ import com.bluewhite.system.sys.entity.RegionAddress;
 public class Packing  extends BaseEntity<Long>{
 	
 	/**
-	 * 编号
+	 * 编号(19N7Y20R01)
 	 */
 	@Column(name = "number")
 	private String number;

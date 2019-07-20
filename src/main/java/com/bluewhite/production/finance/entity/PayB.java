@@ -22,7 +22,8 @@ import com.bluewhite.system.user.entity.User;
  *
  */
 @Entity
-@Table(name = "pro_payb" ,indexes = {	@Index(columnList = "allot_time"),
+@Table(name = "pro_payb" ,indexes = {	@Index(name="payb_index_1",columnList = "type"),
+										@Index(name="payb_index_1",columnList = "allot_time"),
 										@Index(columnList = "task_id")})
 public class PayB extends BaseEntity<Long>{
 	
