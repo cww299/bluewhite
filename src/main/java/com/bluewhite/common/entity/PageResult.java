@@ -1,8 +1,6 @@
 package com.bluewhite.common.entity;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.data.domain.Page;
 

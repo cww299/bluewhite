@@ -1,6 +1,5 @@
 package com.bluewhite.common.entity;
 
-import java.io.Serializable;
 import java.util.Set;
 
 import com.alibaba.fastjson.annotation.JSONField;
