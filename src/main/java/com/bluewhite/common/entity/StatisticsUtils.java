@@ -70,7 +70,7 @@ public class StatisticsUtils
 			else
 				result[i] = value;
 		}
-
+		
 		return result;
 	}
 
