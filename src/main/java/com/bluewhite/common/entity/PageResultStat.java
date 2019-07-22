@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.data.domain.Page;
 
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.utils.NumUtils;
 
 /**
  * 分页统计结果集，凡是使用到统计类的。必须手动触发一下统计工作。{@link #count()}
@@ -114,7 +115,7 @@ public class PageResultStat<T> extends PageResult<T> {
         Object[] countValues = StatisticsUtils.c(statisticsFields.values().toArray(new String[]{})).count(totalData);
         int i = 0;
         for (String statisticsField : statisticsFields.keySet()) {
-            addStateData(statisticsField,countValues[i++]);
+            addStateData(statisticsField,NumUtils.round(Double.valueOf(countValues[i++].toString()), 2));
         }
     }
     
