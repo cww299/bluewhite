@@ -25,24 +25,27 @@
 						<tr>
 							<td>报销人:</td>
 							<td><input type="text" name="Username" id="firstNames" class="layui-input" /></td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td>报销内容:</td>
 							<td><input type="text" name="content" class="layui-input" /></td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
+							<td>报销金额:</td>
+							<td><input type="text" name="money" class="layui-input" /></td>
+							<td>&nbsp;&nbsp;</td>
 							<td><select class="layui-input" name="selectone" id="selectone">
 									<option value="expenseDate">申请日期</option>
 							</select></td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
 							</td>
 							<!-- <td>&nbsp&nbsp</td>
 							<td>结束:</td>
 							<td><input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="layui-input laydate-icon">
 							</td> -->
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td>需要支付总额:
 							<td><input type="text" id="allPrice" disabled class="layui-input"  /></td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
 									<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
@@ -251,7 +254,9 @@
 							flag:field.flag,
 							orderTimeBegin:orderTimeBegin,
 							orderTimeEnd:orderTimeEnd,
-							expenseDate:"2019-05-08 00:00:00"
+							expenseDate:"2019-05-08 00:00:00",
+							content:field.content,
+							money:field.money,
 						}
 						table.reload('tableData', {
 							where: post

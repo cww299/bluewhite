@@ -807,7 +807,7 @@
 							        ,title: '吃饭方式' //不显示标题栏
 							        ,closeBtn: false
 							        ,zindex:-1
-							        ,area:['50%', '90%']
+							        ,area:['50%', '95%']
 							        ,shade: 0.5
 							        ,id: 'LAY_layuipro2' //设定一个id，防止重复弹出
 							        ,btn: ['取消']
@@ -846,6 +846,7 @@
 					
 					table.render({
 						elem: '#layuiShare6',
+						size:'lg',
 						url: '${ctx}/personnel/findAttendanceInit',
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
@@ -856,7 +857,6 @@
 						//开启分页
 						loading: true,
 						toolbar: '#toolbar5', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
-						totalRow: true,		 //开启合计行 */
 						cellMinWidth: 90,
 						colFilterRecord: true,
 						smartReloadModel: true,// 开启智能重载
@@ -873,7 +873,6 @@
 								field: "",
 								title: "员工姓名",
 								align: 'center',
-								fixed: 'left',
 								search: true,
 								edit: false,
 								templet: function(d){
