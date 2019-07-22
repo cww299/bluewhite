@@ -42,13 +42,6 @@ public class Packing  extends BaseEntity<Long>{
 	
 	
 	/**
-	 * 当批外包编号
-	 */
-	@Column(name = "packaging_number")
-	private Integer packagingNumber;
-	
-	
-	/**
 	 * 包装物名称id
 	 */
 	@Column(name = "packaging_id")
@@ -60,6 +53,23 @@ public class Packing  extends BaseEntity<Long>{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "packaging_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData packaging;
+	
+	/**
+	 * 包装物数量
+	 */
+	@Column(name = "packaging_count")
+	private Integer packagingCount;
+	
+	
+	
+
+	public Integer getPackagingCount() {
+		return packagingCount;
+	}
+
+	public void setPackagingCount(Integer packagingCount) {
+		this.packagingCount = packagingCount;
+	}
 
 	public String getNumber() {
 		return number;
@@ -85,16 +95,10 @@ public class Packing  extends BaseEntity<Long>{
 		this.customr = customr;
 	}
 
-	public Integer getPackagingNumber() {
-		return packagingNumber;
-	}
-
-	public void setPackagingNumber(Integer packagingNumber) {
-		this.packagingNumber = packagingNumber;
-	}
-
 	public Long getPackagingId() {
 		return packagingId;
+		
+		
 	}
 
 	public void setPackagingId(Long packagingId) {
