@@ -235,20 +235,20 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 		user.setForeigns(0);
  		double sum5=userService.findUserList(user).stream().filter(User ->(User.getQuitDate()==null || User.getQuitDate().after(recruit.getTime())) && (User.getEntry() != null && User.getEntry().before(recruit.getTime()))).count();//初期人员
 		for (Map<String, Object> map : maps) {
-		 Object aInteger= map.get("mod2");
-		 Object aInteger2= map.get("mod3");
-		 Object aInteger3= map.get("mod8");
-		 Object aInteger4= map.get("mod9");
-		 Object aInteger5= map.get("mod5");
-		 sum=sum+Integer.parseInt(aInteger==null?"":aInteger.toString());
-		 sum1=sum1+Integer.parseInt(aInteger2==null?"":aInteger2.toString());
-		 sum2=sum2+Integer.parseInt(aInteger3==null?"":aInteger3.toString());
-		 sum3=sum3+Integer.parseInt(aInteger4==null?"":aInteger4.toString());
-		 sum6=sum6+Integer.parseInt(aInteger5==null?"":aInteger5.toString());
+		 Object aInteger= map.get("mod2");//应邀面试人数
+		 Object aInteger2= map.get("mod3");//面试合格人数
+		 Object aInteger3= map.get("mod8");//已入职
+		 Object aInteger4= map.get("mod9");//已入职且离职
+		 Object aInteger5= map.get("mod5");//已入职且在职
+		 sum=sum+Integer.parseInt(aInteger==null?"":aInteger.toString());//应邀面试人数
+		 sum1=sum1+Integer.parseInt(aInteger2==null?"":aInteger2.toString());//面试合格人数
+		 sum2=sum2+Integer.parseInt(aInteger3==null?"":aInteger3.toString());//已入职
+		 sum3=sum3+Integer.parseInt(aInteger4==null?"":aInteger4.toString());//已入职且离职
+		 sum6=sum6+Integer.parseInt(aInteger5==null?"":aInteger5.toString());//已入职且在职
 		}
 		double a=0;
 		if (sum!=0) {
-			a = NumUtils.div(sum1*100, sum, 2);//面试通过率
+			a = NumUtils.div(sum*100,sum, 2);//面试通过率
 		}
 		double b=0;
 		if (sum1!=0) {
