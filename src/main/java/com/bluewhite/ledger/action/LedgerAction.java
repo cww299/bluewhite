@@ -53,7 +53,7 @@ public class LedgerAction {
 	private ClearCascadeJSON clearCascadeJSON1;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Packing.class, "customr","bacthNumber","product","number")
+				.addRetainTerm(SendGoods.class, "customr","bacthNumber","product","number")
 				.addRetainTerm(Customr.class, "name")
 				.addRetainTerm(Product.class, "name");
 	}
