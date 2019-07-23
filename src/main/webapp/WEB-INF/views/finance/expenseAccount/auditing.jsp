@@ -31,28 +31,31 @@
 						<tr>
 							<td>报销人:</td>
 							<td><input type="text" name="Username" id="firstNames" class="layui-input" /></td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td>报销内容:</td>
 							<td><input type="text" name="content" class="layui-input" /></td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
+							<td>报销金额:</td>
+							<td><input type="text" name="money" class="layui-input" /></td>
+							<td>&nbsp;&nbsp;</td>
 							<td><select class="layui-input" name="selectone" id="selectone">
 									<option name="expenseDate" value="2018-10-08 00:00:00">申请日期</option>
 									<option name="paymentDate" value="2018-11-08 00:00:00">付款日期</option>
 							</select></td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input">
 							</td>
 							<!-- <td>&nbsp&nbsp</td>
 							<td>结束:</td>
 							<td><input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="layui-input">
 							</td> -->
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td>是否核对:
 							<td><select class="form-control" name="flag">
 									<option value="0">未审核</option>
 									<option value="1">已审核</option>
 							</select></td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
 									<button class="layui-btn layuiadmin-btn-admin" lay-submit
@@ -374,6 +377,8 @@
 							expenseDate:a,
 							paymentDate:b,
 							budget:0,
+							content:field.content,
+							money:field.money,
 						}
 						table.reload('tableData', {
 							where: post

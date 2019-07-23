@@ -30,57 +30,64 @@ public class Total  extends BaseEntity<Long>{
 	@Column(name = "live_remark")
 	private String liveRemark;
 	
+	
 	/**
-	 * 状态
+	 * 状态(0.宿舍 1.公司)
+	 */
+	@Column(name = "state")
+	private Integer state;
+	
+	/**
+	 * 状态(1.水费 2.电费 3.房租)
 	 */
 	@Column(name = "type")
 	private Integer type;
 	
 	/**
-	 * 二楼上月抄表数（吨）
+	 * 二楼上月抄表数
 	 */
 	@Column(name = "one_now_num")
 	private Double oneNowNum;
 	
 	/**
-	 * 二楼当月抄表度数（吨）
+	 * 二楼当月抄表度数
 	 */
 	@Column(name = "one_upper_num")
 	private Double oneUpperNum;
 	
 	/**
-	 * 三楼上月抄表数（吨）
+	 * 三楼上月抄表数
 	 */
 	@Column(name = "two_now_num")
 	private Double twoNowNum;
 	
 	/**
-	 * 三楼当月抄表度数（吨）
+	 * 三楼当月抄表度数
 	 */
 	@Column(name = "two_upper_num")
 	private Double twoUpperNum;
 	
 	/**
-	 * 四楼上月抄表数（吨）
+	 * 四楼上月抄表数
 	 */
 	@Column(name = "three_now_num")
 	private Double threeNowNum;
 	
 	/**
-	 * 四楼当月抄表度数（吨）
+	 * 四楼当月抄表度数
 	 */
 	@Column(name = "three_upper_num")
 	private Double threeUpperNum;
 	
 	
 	/**
-	 * 损耗
+	 * 损耗（消防水量）
 	 */
 	@Column(name = "loss")
 	private Double loss;
 	
 	/**
-	 * （按面积比例核算）
+	 * （按面积比例核算）（耗损水量）
 	 */
 	@Column(name = "buse")
 	private Double buse;
@@ -98,13 +105,13 @@ public class Total  extends BaseEntity<Long>{
 	private Double individual;
 	
 	/**
-	 * （总电量）
+	 * （总量）
 	 */
 	@Column(name = "summary")
 	private Double summary;
 	
 	/**
-	 * （总电量价值）
+	 * （总价值）
 	 */
 	@Column(name = "summary_price")
 	private Double summaryPrice;
@@ -143,6 +150,14 @@ public class Total  extends BaseEntity<Long>{
 
 	public Double getOneUpperNum() {
 		return oneUpperNum;
+	}
+
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
 	}
 
 	public void setOneUpperNum(Double oneUpperNum) {

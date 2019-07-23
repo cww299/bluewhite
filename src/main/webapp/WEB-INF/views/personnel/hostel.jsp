@@ -379,6 +379,7 @@
 		style=" display:none;  text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
 		<input type="text" name="type" value="2" style="display: none;" />
+		<input type="text" name="state" value="0" style="display: none;" />
 			<div class="layui-form-item">
 				<label class="layui-form-label" >所属月份</label>
 				<div class="layui-input-block">
@@ -475,6 +476,7 @@
 		style="display:none;  text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
 		<input type="text" name="type" value="1" style="display: none;" />
+		<input type="text" name="state" value="0" style="display: none;" />
 			<div class="layui-form-item">
 				<label class="layui-form-label">所属月份</label>
 				<div class="layui-input-block">
@@ -484,7 +486,7 @@
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label">消防电量</label>
+				<label class="layui-form-label">消防水量</label>
 				<div class="layui-input-block">
 					<input type="text"  name="loss"
 						lay-verify="required" 
@@ -1060,7 +1062,8 @@
 									size: 'lg',
 									url: '${ctx}/personnel/getTotal' ,
 									where:{
-										type:2
+										type:2,
+										state:0,
 									},
 									request:{
 										pageName: 'page' ,//页码的参数名称，默认：page
@@ -1207,7 +1210,7 @@
 								var dicDiv=$('#summ');
 								layer.open({
 							         type: 1
-							        ,title: '新增总水电' 
+							        ,title: '新增总电费' 
 							        ,closeBtn: false
 							        ,zindex:-1
 							        ,area:['90%', '90%']
@@ -1237,7 +1240,8 @@
 									size: 'lg',
 									url: '${ctx}/personnel/getTotal' ,
 									where:{
-										type:1
+										type:1,
+										state:0,
 									},
 									request:{
 										pageName: 'page' ,//页码的参数名称，默认：page
@@ -1277,10 +1281,8 @@
 											style:'background-color: #f7e932;'
 										},{
 											field: "summary",
-											title: "总电量",
+											title: "总水量",
 											align: 'center',
-											edit:"text",
-											style:'background-color: #f7e932;'
 										},{
 											field: "summaryPrice",
 											title: "总价值",

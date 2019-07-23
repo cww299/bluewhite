@@ -40,6 +40,9 @@ public class TotalServiceImpl extends BaseServiceImpl<Total, Long>
 			if (sundry.getType() != null) {
 				predicate.add(cb.equal(root.get("type").as(Long.class), sundry.getType()));
 			}
+			if (sundry.getState() != null) {
+				predicate.add(cb.equal(root.get("state").as(Long.class), sundry.getState()));
+			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
@@ -55,10 +58,13 @@ public class TotalServiceImpl extends BaseServiceImpl<Total, Long>
 			double b=NumUtils.sub(total.getTwoUpperNum(),total.getTwoNowNum());
 			double c=NumUtils.sub(total.getThreeUpperNum(),total.getThreeNowNum());
 			total.setSummary(NumUtils.sum(a,b,c,total.getLoss(),total.getBuse(),total.getCopper(),total.getIndividual()));
+			total.setState(0);
+			/*水费*/
 			if (total.getType()==1) {
 				PersonVariable variable=personVariableDao.findByType(2);
 				total.setSummaryPrice(NumUtils.mul(Double.valueOf(variable.getKeyValue()), total.getSummary()));
 			}
+			/*电费*/
 			if (total.getType()==2) {
 				PersonVariable variable=personVariableDao.findByType(3);
 				total.setSummaryPrice(NumUtils.mul(Double.valueOf(variable.getKeyValue()), total.getSummary()));
