@@ -250,7 +250,7 @@
 						orderTimeEnd=orderTime[1];
 						var post={
 							Username:field.Username,
-							flag:field.flag,
+							flags:field.flags,
 							orderTimeBegin:orderTimeBegin,
 							orderTimeEnd:orderTimeEnd,
 							expenseDate:"2019-05-08 00:00:00",
