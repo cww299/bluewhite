@@ -170,7 +170,7 @@ public class Consumption extends BaseEntity<Long> {
 	private String remark;
 
 	/**
-	 * 是否已付款（0=否，1=是）
+	 * 是否已付款（0=否，1=是，2，部分付款）
 	 */
 	@Column(name = "flag")
 	private Integer flag;
@@ -233,9 +233,17 @@ public class Consumption extends BaseEntity<Long> {
 	@Transient
 	private Date orderTimeEnd;
 	
+	@Transient
+	private String flags;
 	
-	    
-	
+	public String getFlags() {
+		return flags;
+	}
+
+	public void setFlags(String flags) {
+		this.flags = flags;
+	}
+
 	public Date getRealityDate() {
 		return realityDate;
 	}

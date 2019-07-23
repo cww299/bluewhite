@@ -34,7 +34,6 @@ import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
 import com.bluewhite.finance.consumption.entity.Custom;
 import com.bluewhite.finance.consumption.service.ConsumptionService;
 import com.bluewhite.finance.consumption.service.CustomService;
-import com.bluewhite.ledger.entity.Customr;
 import com.bluewhite.system.user.entity.User;
 
 @Controller
@@ -176,6 +175,21 @@ public class ConsumptionAction {
 		}
 		return cr;
 	}
+	
+	
+	/**
+	 * 获取财务未付款的总金额
+	 */
+	@RequestMapping(value = "/fince/totalAmount", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse totalAmount(Integer type) {
+		CommonResponse cr = new CommonResponse();
+		double totalAmount = consumptionService.totalAmount(type);
+		cr.setData(totalAmount);
+		cr.setMessage("不能为空");
+		return cr;
+	}
+	
 	
 	
 	

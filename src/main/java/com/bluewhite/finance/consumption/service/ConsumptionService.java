@@ -58,5 +58,11 @@ public interface ConsumptionService extends BaseCRUDService<Consumption, Long> {
 	 * @return
 	 */
 	int  excelAddConsumption(ExcelListener excelListener);
+	
+	/**
+	 * 计算财务未付款总额
+	 * @return
+	 */
+	double totalAmount(Integer type);
 
 }
