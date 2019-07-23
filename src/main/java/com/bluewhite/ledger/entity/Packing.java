@@ -1,30 +1,33 @@
- package com.bluewhite.ledger.entity;
+package com.bluewhite.ledger.entity;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.onlineretailers.inventory.entity.DeliveryChild;
+import com.bluewhite.product.product.entity.Product;
 
 /**
- * 贴包
+ * 贴包单(发货单)
+ * 
  * @author zhangliang
  *
  */
 @Entity
 @Table(name = "ledger_packing")
-public class Packing  extends BaseEntity<Long>{
-	
-	/**
-	 * 编号 (19N7Y20R01)
-	 */
-	@Column(name = "number")
-	private String number;
-	
+public class Packing extends BaseEntity<Long> {
 	
 	/**
 	 * 客户id
@@ -39,36 +42,128 @@ public class Packing  extends BaseEntity<Long>{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "customr_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Customr customr;
+
+	/**
+	 * 编号 (19N7Y20R01)
+	 */
+	@Column(name = "number")
+	private String number;
+	
+	/**
+	 * 贴包子单list
+	 */
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+	@JoinColumn(name = "packingChild_id")
+	private List<PackingChild> packingChilds = new ArrayList<>();
+	
+	/**
+	 * 包装物
+	 */
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+	@JoinColumn(name = "packingMaterials_id")
+	private List<PackingMaterials> packingMaterials = new ArrayList<>();
+	
+	/**
+	 * 发贴包保时间
+	 */
+	@Column(name = "packing_date")
+	private Date packingDate;
 	
 	
 	/**
-	 * 包装物名称id
+	 * 批次号
 	 */
-	@Column(name = "packaging_id")
-	private Long packagingId;
+	@Transient
+	private String bacthNumber;
+
+	/**
+	 * 产品id
+	 */
+	@Transient
+	private Long productId;
+
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
 	
 	/**
-	 * 包装物名称
+	 * 新增子单json数据
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "packaging_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private BaseData packaging;
-	
-	/**
-	 * 包装物数量
-	 */
-	@Column(name = "packaging_count")
-	private Integer packagingCount;
+	@Transient
+	private String childPacking;
 	
 	
 	
 
-	public Integer getPackagingCount() {
-		return packagingCount;
+	public String getChildPacking() {
+		return childPacking;
 	}
 
-	public void setPackagingCount(Integer packagingCount) {
-		this.packagingCount = packagingCount;
+	public void setChildPacking(String childPacking) {
+		this.childPacking = childPacking;
+	}
+
+	public String getBacthNumber() {
+		return bacthNumber;
+	}
+
+	public void setBacthNumber(String bacthNumber) {
+		this.bacthNumber = bacthNumber;
+	}
+
+	public Long getProductId() {
+		return productId;
+	}
+
+	public void setProductId(Long productId) {
+		this.productId = productId;
+	}
+
+	public List<PackingChild> getPackingChilds() {
+		return packingChilds;
+	}
+
+	public void setPackingChilds(List<PackingChild> packingChilds) {
+		this.packingChilds = packingChilds;
+	}
+
+	public Date getPackingDate() {
+		return packingDate;
+	}
+
+	public void setPackingDate(Date packingDate) {
+		this.packingDate = packingDate;
+	}
+
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
+
+	public List<PackingMaterials> getPackingMaterials() {
+		return packingMaterials;
+	}
+
+	public void setPackingMaterials(List<PackingMaterials> packingMaterials) {
+		this.packingMaterials = packingMaterials;
 	}
 
 	public String getNumber() {
@@ -95,26 +190,4 @@ public class Packing  extends BaseEntity<Long>{
 		this.customr = customr;
 	}
 
-	public Long getPackagingId() {
-		return packagingId;
-		
-		
-	}
-
-	public void setPackagingId(Long packagingId) {
-		this.packagingId = packagingId;
-	}
-
-	public BaseData getPackaging() {
-		return packaging;
-	}
-
-	public void setPackaging(BaseData packaging) {
-		this.packaging = packaging;
-	}
-	
-	
-	
-	
-	
 }

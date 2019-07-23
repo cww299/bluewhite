@@ -8,33 +8,18 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
-import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
 import com.bluewhite.product.product.entity.Product;
-
 /**
- * 贴包 子单
+ * 贴包子单
  * 
  * @author zhangliang
  *
  */
 @Entity
 @Table(name = "ledger_packing_child")
-public class PackingChild extends BaseEntity<Long>{
-
-	/**
-	 * 贴包父类id
-	 * 
-	 */
-	@Column(name = "packing_id")
-	private Long packingId;
-
-	/**
-	 * 贴包父类
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "packing_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Packing packing;
-
+public class PackingChild extends BaseEntity<Long> {
+	
+	
 	/**
 	 * 批次号
 	 */
@@ -55,26 +40,10 @@ public class PackingChild extends BaseEntity<Long>{
 	private Product product;
 
 	/**
-	 * 数量
+	 * 实际数量
 	 */
-	@Column(name = "number")
-	private Integer number;
-
-	public Long getPackingId() {
-		return packingId;
-	}
-
-	public void setPackingId(Long packingId) {
-		this.packingId = packingId;
-	}
-
-	public Packing getPacking() {
-		return packing;
-	}
-
-	public void setPacking(Packing packing) {
-		this.packing = packing;
-	}
+	@Column(name = "count")
+	private Integer count;
 
 	public String getBacthNumber() {
 		return bacthNumber;
@@ -100,15 +69,16 @@ public class PackingChild extends BaseEntity<Long>{
 		this.product = product;
 	}
 
-	public Integer getNumber() {
-		return number;
+	public Integer getCount() {
+		return count;
 	}
 
-	public void setNumber(Integer number) {
-		this.number = number;
+	public void setCount(Integer count) {
+		this.count = count;
 	}
 	
 	
-	 
+	
+
 
 }
