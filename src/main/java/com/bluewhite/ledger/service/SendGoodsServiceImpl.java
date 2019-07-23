@@ -38,8 +38,7 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			}
 			// 按产品id过滤
 			if (param.getProductId() != null) {
-				predicate
-						.add(cb.equal(root.get("packingChilds").get("productId").as(Long.class), param.getProductId()));
+				predicate.add(cb.equal(root.get("packingChilds").get("productId").as(Long.class), param.getProductId()));
 			}
 			// 按批次查找
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
