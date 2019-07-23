@@ -1,11 +1,13 @@
 package com.bluewhite.finance.consumption.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +23,7 @@ import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.entity.PageResultStat;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.finance.consumption.dao.ConsumptionDao;
@@ -31,8 +31,6 @@ import com.bluewhite.finance.consumption.dao.CustomDao;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
 import com.bluewhite.finance.consumption.entity.Custom;
-import com.bluewhite.ledger.dao.CustomrDao;
-import com.bluewhite.ledger.entity.Customr;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.User;
 
@@ -44,17 +42,17 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 
 	@Autowired
 	private CustomDao customDao;
-	
+
 	@Autowired
 	private CustomDao contactDao;
-	
+
 	@Autowired
 	private UserDao userDao;
-	
+
 	@Override
 	public PageResult<Consumption> findPages(Consumption param, PageParameter page) {
 		CurrentUser cu = SessionManager.getUserSession();
-		if(cu!=null && !cu.getIsAdmin() && cu.getOrgNameId() != 6 ){
+		if (cu != null && !cu.getIsAdmin() && cu.getOrgNameId() != 6) {
 			param.setOrgNameId(cu.getOrgNameId());
 		}
 		Page<Consumption> pages = dao.findAll((root, query, cb) -> {
@@ -69,13 +67,13 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			}
 			// 按部门id过滤
 			if (param.getOrgNameId() != null) {
-				//当部门id不为null，过滤掉存在父id的数据
-				if(param.getParentId() == null){
+				// 当部门id不为null，过滤掉存在父id的数据
+				if (param.getParentId() == null) {
 					predicate.add(cb.isNull(root.get("parentId").as(Long.class)));
 				}
 				predicate.add(cb.equal(root.get("orgNameId").as(Long.class), param.getOrgNameId()));
 			}
-			
+
 			// 按父类id过滤
 			if (param.getParentId() != null) {
 				predicate.add(cb.equal(root.get("parentId").as(Long.class), param.getParentId()));
@@ -84,7 +82,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			if (param.getType() != null) {
 				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
 			}
-			
+
 			// 按报销类型过滤
 			if (param.getApplyTypeId() != null) {
 				predicate.add(cb.equal(root.get("applyTypeId").as(Integer.class), param.getApplyTypeId()));
@@ -96,11 +94,19 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			}
 
 			// 按是否已付款报销过滤
-			if (param.getFlag() != null) {
-				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
+			if (!StringUtils.isEmpty(param.getFlags())) {
+				String[] falg = param.getFlags().split(",");
+				List<String> list = Arrays.asList(falg);
+				if (list != null && list.size() > 0) {
+					In<Object> in = cb.in(root.get("id"));
+					for (String id : list) {
+						in.value(Integer.parseInt(id));
+					}
+					predicate.add(in);
+				}
 			}
 
-			// 按是否已付款报销过滤
+			// 按是否預算
 			if (param.getBudget() != null) {
 				predicate.add(cb.equal(root.get("budget").as(Integer.class), param.getBudget()));
 			}
@@ -122,9 +128,9 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 
 			// 按报销金额查找
 			if (!StringUtils.isEmpty(param.getMoney())) {
-				predicate.add(cb.equal(root.get("money").as(Double.class), param.getMoney() ));
+				predicate.add(cb.equal(root.get("money").as(Double.class), param.getMoney()));
 			}
-			
+
 			// 按客户查找
 			if (!StringUtils.isEmpty(param.getCustomId())) {
 				predicate.add(cb.equal(root.get("customId").as(String.class), param.getCustomId()));
@@ -144,7 +150,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 							param.getOrderTimeEnd()));
 				}
 			}
-			
+
 			if (!StringUtils.isEmpty(param.getLogisticsDate())) {
 				// 按其他日期
 				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
@@ -152,7 +158,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 							param.getOrderTimeEnd()));
 				}
 			}
-			
+
 			if (!StringUtils.isEmpty(param.getRealityDate())) {
 				// 按实际消费日期
 				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
@@ -164,10 +170,8 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
-		}, SalesUtils.getQueryNoPageParameter());
-		PageResultStat<Consumption> result = new PageResultStat<>(pages, page);
-		result.setAutoStateField(null, "money");
-		result.count();
+		}, page);
+		PageResult<Consumption> result = new PageResult<>(pages, page);
 		return result;
 	}
 
@@ -183,53 +187,58 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			if (ot.getFlag() == 1) {
 				throw new ServiceException("已放款，无法修改");
 			}
-			BeanCopyUtils.copyNotEmpty(consumption,ot,"");
+			BeanCopyUtils.copyNotEmpty(consumption, ot, "");
 			consumption = ot;
-		} 
-		
+		}
+
 		boolean flag = true;
 		switch (consumption.getType()) {
 		case 1:
 			flag = false;
-			//修改子类报销单1.改变当前子类报销金额 2改变父类预算的报销金额
-			if(consumption.getParentId()!=null){
-				//获取报销单的父id实体
+			// 修改子类报销单1.改变当前子类报销金额 2改变父类预算的报销金额
+			if (consumption.getParentId() != null) {
+				// 获取报销单的父id实体
 				Consumption parentConsumption = dao.findOne(consumption.getParentId());
-				//表示为修改
-				if(consumption.getId() != null){
-					parentConsumption.setMoney(NumUtils.sum(parentConsumption.getMoney(),NumUtils.sub(money,consumption.getMoney())));
-				}else{
+				// 表示为修改
+				if (consumption.getId() != null) {
+					parentConsumption.setMoney(
+							NumUtils.sum(parentConsumption.getMoney(), NumUtils.sub(money, consumption.getMoney())));
+				} else {
 					parentConsumption.setMoney(NumUtils.sub(parentConsumption.getMoney(), consumption.getMoney()));
 				}
 				dao.save(parentConsumption);
 			}
-			
-			//修改父类报销单
-			if(consumption.getId() != null  && consumption.getBudget()==1){
-				//获取父类报销单的全部子类
+
+			// 修改父类报销单
+			if (consumption.getId() != null && consumption.getBudget() == 1) {
+				// 获取父类报销单的全部子类
 				List<Consumption> consumptionList = dao.findByParentId(consumption.getId());
-				if(consumptionList.size()>0){
-					 List<Double> listDouble = new ArrayList<>();
-					    consumptionList.stream().forEach(c->{
-					    	listDouble.add(c.getMoney());
-					    });
-					consumption.setMoney(NumUtils.sub(consumption.getMoney(),NumUtils.sum(listDouble)));
+				if (consumptionList.size() > 0) {
+					List<Double> listDouble = new ArrayList<>();
+					consumptionList.stream().forEach(c -> {
+						listDouble.add(c.getMoney());
+					});
+					consumption.setMoney(NumUtils.sub(consumption.getMoney(), NumUtils.sum(listDouble)));
 				}
+			}
+
+			if (consumption.getPaymentMoney() > consumption.getMoney()) {
+				throw new ServiceException("放款金额不能大于申请金额");
 			}
 			break;
 		case 2:
-			if(consumption.getId() == null && consumption.getCustomId() == null){
-				if(!StringUtils.isEmpty(consumption.getCustomerName())){
-					Custom custom =  customDao.findByTypeAndName(consumption.getType(), consumption.getCustomerName());
-					if(custom!=null){
+			if (consumption.getId() == null && consumption.getCustomId() == null) {
+				if (!StringUtils.isEmpty(consumption.getCustomerName())) {
+					Custom custom = customDao.findByTypeAndName(consumption.getType(), consumption.getCustomerName());
+					if (custom != null) {
 						consumption.setCustomId(custom.getId());
 					}
 				}
 			}
-			if(consumption.getId() == null && consumption.getUserId() == null){
-				if(!StringUtils.isEmpty(consumption.getUsername())){
+			if (consumption.getId() == null && consumption.getUserId() == null) {
+				if (!StringUtils.isEmpty(consumption.getUsername())) {
 					User user = userDao.findByUserName(consumption.getUsername());
-					if(user!=null){
+					if (user != null) {
 						consumption.setUserId(user.getId());
 					}
 				}
@@ -265,11 +274,11 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			customDao.save(custom);
 			consumption.setCustomId(custom.getId());
 		}
-		
-		if(consumption.getExpenseDate()==null){
+
+		if (consumption.getExpenseDate() == null) {
 			throw new ServiceException("申请时间不能为空");
 		}
-		if(consumption.getMoney()==null){
+		if (consumption.getMoney() == null) {
 			throw new ServiceException("申请金额不能为空");
 		}
 		if (consumption.getId() == null) {
@@ -290,20 +299,20 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Consumption consumption = dao.findOne(id);
-					if(cu.getOrgNameId() != consumption.getOrgNameId()){
+					if (cu.getOrgNameId() != consumption.getOrgNameId()) {
 						throw new ServiceException("无权限删除");
 					}
 					if (consumption.getFlag() == 0) {
-						//获取当前采购单，判断是否为预算
-						if(consumption.getBudget()!=null && consumption.getBudget()==1){
-							//获取所有的子报销单,删除子报销单时，同步更新父报销单的费用
-							List<Consumption> consumptionList= dao.findByParentId(id);
-							if(consumptionList.size()>0){
-								consumptionList.stream().forEach(co->co.setParentId(null));
+						// 获取当前采购单，判断是否为预算
+						if (consumption.getBudget() != null && consumption.getBudget() == 1) {
+							// 获取所有的子报销单,删除子报销单时，同步更新父报销单的费用
+							List<Consumption> consumptionList = dao.findByParentId(id);
+							if (consumptionList.size() > 0) {
+								consumptionList.stream().forEach(co -> co.setParentId(null));
 							}
 							dao.save(consumptionList);
-						}else{//不为预算单时，当拥有父id，属于子报销单，删除同时更新父预算报销单的金额
-							if(consumption.getParentId()!=null){
+						} else {// 不为预算单时，当拥有父id，属于子报销单，删除同时更新父预算报销单的金额
+							if (consumption.getParentId() != null) {
 								Consumption pConsumption = dao.findOne(consumption.getParentId());
 								pConsumption.setMoney(NumUtils.sum(pConsumption.getMoney(), consumption.getMoney()));
 								dao.save(pConsumption);
@@ -329,8 +338,12 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Consumption consumption = dao.findOne(id);
-					if (consumption.getPaymentDate() == null && consumption.getPaymentMoney() == null) {
-						throw new ServiceException("返款金额或放款时间不能为空");
+					if (consumption.getPaymentDate() == null
+							&& (consumption.getPaymentMoney() == null || consumption.getPaymentMoney() == 0)) {
+						throw new ServiceException("放款金额或放款时间不能为空或者为0");
+					}
+					if (consumption.getPaymentMoney() < consumption.getMoney()) {
+						flag = 2;
 					}
 					consumption.setFlag(flag);
 					dao.save(consumption);
@@ -343,39 +356,39 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 
 	@Override
 	public Map<String, Object> countConsumptionMoney() {
-		Map<String, Object>  map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>();
 		CurrentUser cu = SessionManager.getUserSession();
-	    List<Consumption> consumptionList =  dao.findByBudgetAndOrgNameId(0,cu.getOrgNameId());
-	    List<Consumption> consumptionList1 =  dao.findByBudgetAndOrgNameId(1,cu.getOrgNameId());
-	    List<Double> listDouble = new ArrayList<>();
-	    Double budget = 0.0;
-	    Double nonBudget =0.0;
-	    if(consumptionList.size()>0){
-	    	consumptionList.stream().forEach(c->{
-	    		listDouble.add(c.getMoney());
-	    	});
-	    	budget = NumUtils.sum(listDouble);
-	    }
-	    List<Double> listDouble1 = new ArrayList<>();
-	    if(consumptionList1.size()>0){
-	    	consumptionList1.stream().forEach(c->{
-	    		listDouble1.add(c.getMoney());
-	    	});
-	    	nonBudget = NumUtils.sum(listDouble1);
-	    }
-	    map.put("budget", budget);
-	    map.put("nonBudget", nonBudget);
-	    map.put("sumBudget", NumUtils.sum(budget, nonBudget));
+		List<Consumption> consumptionList = dao.findByBudgetAndOrgNameId(0, cu.getOrgNameId());
+		List<Consumption> consumptionList1 = dao.findByBudgetAndOrgNameId(1, cu.getOrgNameId());
+		List<Double> listDouble = new ArrayList<>();
+		Double budget = 0.0;
+		Double nonBudget = 0.0;
+		if (consumptionList.size() > 0) {
+			consumptionList.stream().forEach(c -> {
+				listDouble.add(c.getMoney());
+			});
+			budget = NumUtils.sum(listDouble);
+		}
+		List<Double> listDouble1 = new ArrayList<>();
+		if (consumptionList1.size() > 0) {
+			consumptionList1.stream().forEach(c -> {
+				listDouble1.add(c.getMoney());
+			});
+			nonBudget = NumUtils.sum(listDouble1);
+		}
+		map.put("budget", budget);
+		map.put("nonBudget", nonBudget);
+		map.put("sumBudget", NumUtils.sum(budget, nonBudget));
 		return map;
 	}
 
 	@Override
 	public int excelAddConsumption(ExcelListener excelListener) {
 		int count = 0;
-		//获取导入的订单
+		// 获取导入的订单
 		List<Object> excelListenerList = excelListener.getData();
-		for(Object object : excelListenerList){
-			ConsumptionPoi cPoi = (ConsumptionPoi)object;
+		for (Object object : excelListenerList) {
+			ConsumptionPoi cPoi = (ConsumptionPoi) object;
 			Consumption consumption = new Consumption();
 			consumption.setBatchNumber(cPoi.getBatchNumber());
 			consumption.setContent(cPoi.getContent());
@@ -389,6 +402,22 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			count++;
 		}
 		return count;
+	}
+
+	@Override
+	public double totalAmount(Integer type) {
+		List<Consumption> consumptionList = dao.findByTypeAndFlag(type, 0);
+		List<Consumption> consumptionList1 = dao.findByTypeAndFlag(type, 2);
+		double amount = consumptionList.stream().mapToDouble(Consumption::getMoney).sum();
+		double amount1 = 0;
+		List<Double> listDouble = new ArrayList<>();
+		if (consumptionList1.size() > 0) {
+			consumptionList1.stream().forEach(c -> {
+				listDouble.add(NumUtils.sub(c.getMoney(), c.getPaymentMoney()));
+			});
+			amount1 = NumUtils.sum(listDouble);
+		}
+		return NumUtils.sum(NumUtils.round(amount, 2), amount1);
 	}
 
 }

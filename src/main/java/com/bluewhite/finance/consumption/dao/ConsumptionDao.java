@@ -21,5 +21,14 @@ public interface ConsumptionDao extends BaseRepository<Consumption, Long>{
 	 * @return
 	 */
 	public List<Consumption> findByBudgetAndOrgNameId(Integer budget,Long id);
+	
+	/**
+	 * 查出所有未付款和部分付款
+	 * @param type
+	 * @param flag
+	 * @param flag1
+	 * @return
+	 */
+	public List<Consumption> findByTypeAndFlag(Integer type,Integer flag);
 
 }
