@@ -116,7 +116,16 @@
 						}
 					});
 					
-					
+					(function(){
+						$.ajax({
+							url:'${ctx}/fince/totalAmount?type=1',
+							success:function(r){
+								if(r.code==0){
+									$('#allPrice').html(r.data);
+								}
+							}
+						})
+					})();
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
@@ -141,7 +150,6 @@
 						colFilterRecord: true,
 						smartReloadModel: true,// 开启智能重载
 						parseData: function(ret) {
-							$('#allPrice').html(ret.data.statData.statAmount)
 							return {
 								code: ret.code,
 								msg: ret.message,
