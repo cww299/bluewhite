@@ -48,8 +48,7 @@
 							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
-									<button class="layui-btn layuiadmin-btn-admin" lay-submit
-										lay-filter="LAY-search">
+									<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
 										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
 									</button>
 								</div>
@@ -338,7 +337,7 @@
 						}
 						var post={
 							Username:field.Username,
-							flag:field.flag,
+							flags:field.flags,
 							orderTimeBegin:orderTimeBegin,
 							orderTimeEnd:orderTimeEnd,
 							expenseDate:a,

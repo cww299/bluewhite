@@ -44,11 +44,12 @@
 					<td>报销金额:</td>
 					<td style="width:100px;"><input type="text" name="money"  class="layui-input" /></td>
 					<td>&nbsp;&nbsp;</td>
-					<td>是否核对:
-					<td style="width:100px;"><select class="form-control" name="flag">
+					<td>是否审核:</td>
+					<td style="width:100px;"><select class="form-control" name="flags">
 												<option value="">请选择</option>
-												<option value="0">未核对</option>
-												<option value="1">已核对</option></select></td>
+												<option value="0">未审核</option>
+												<option value="1">已审核</option>
+												<option value="2">部分审核</option></select></td>
 					<td>&nbsp;&nbsp;</td>
 					<td>
 						<div class="layui-inline">
@@ -177,7 +178,7 @@ layui.config({
 		renderTable({			//渲染预算表格
 			elem: '#tableData',
 			toolbar: '#toolbar', 
-			url: '${ctx}/fince/getConsumption?budget=1&type=1' ,
+			url: '${ctx}/fince/getConsumption?budget=1&type=1&flags=0,2' ,
 			cols:  (function(){
 						var c = [[]];
 						layui.each(cols[0],function(index,item){	//进行深拷贝，避免影响其他表格的渲染
@@ -210,7 +211,7 @@ layui.config({
 		renderTable({		//渲染非预算表格
 			elem: '#tableDataTwo',
 			toolbar: '#toolbar2', 
-			url: '${ctx}/fince/getConsumption?budget=0&type=1' ,
+			url: '${ctx}/fince/getConsumption?budget=0&type=1&flags=0,2' ,
 			cols:cols,
 		})
 		var colsChild = [[
