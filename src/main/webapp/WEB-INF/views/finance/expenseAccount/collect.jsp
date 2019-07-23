@@ -41,11 +41,10 @@
 							</select></td>
 					<td>&nbsp;&nbsp;</td>
 					<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input"></td>
-					<td>&nbsp;&nbsp;</td>
 					<td><button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">搜索</button></td>
 					<td>&nbsp;&nbsp;</td>
-					<td>需要支付总额:
-					<td><input type="text" id="allPrice" disabled class="layui-input"  /></td>
+					<td>未支付总额:
+					<td><span id="allPrice" style="color:red;font-size: 20px;"></span></td>
 				</tr>
 				<tr style="height:5px;"></tr>
 				<tr>
@@ -56,7 +55,7 @@
 													<option value="1">是</option></select></td>
 					<td>&nbsp;&nbsp;</td>
 					<td>是否审核:</td>
-					<td style="width:100px;"><select name="flag">
+					<td style="width:100px;"><select name="flags">
 												<option value="">请选择</option>
 												<option value="0">审核</option>
 												<option value="1">未审核</option>
@@ -125,7 +124,7 @@
 						height:'700px',
 						url: '${ctx}/fince/getConsumption' ,
 						where:{
-							flag:0,
+							flags:'0,2',
 							type:1
 						},
 						request:{
@@ -142,7 +141,7 @@
 						colFilterRecord: true,
 						smartReloadModel: true,// 开启智能重载
 						parseData: function(ret) {
-							$('#allPrice').val(ret.data.statData.statAmount)
+							$('#allPrice').html(ret.data.statData.statAmount)
 							return {
 								code: ret.code,
 								msg: ret.message,
@@ -218,12 +217,14 @@
 								field: "flag",
 								title: "审核状态",
 								templet:  function(d){
-									if(d.flag==0){
-										return "未审核";
-									}
-									if(d.flag==1){
-										return "已审核";
-									}
+									var text = "";
+									if(d.flag==0)
+										text = "未审核";
+									else if(d.flag==1)
+										text = "已审核";
+									else if(d.flag==2)
+										text = "部分审核";
+									return text;
 								}
 							}]
 						],

@@ -39,7 +39,8 @@
 							</td>
 							<td>&nbsp;&nbsp;</td>
 							<td>是否审核:
-							<td><select class="form-control" name="flag">
+							<td><select class="form-control" name="flags">
+									<option value="">请选择</option>
 									<option value="0">未审核</option>
 									<option value="1">已审核</option>
 									<option value="2">部分审核</option>
@@ -57,8 +58,7 @@
 					</table>
 				</div>
 			</div>
-			<table id="tableData" class="table_th_search"
-				lay-filter="tableData"></table>
+			<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
 		</div>
 
 	</div>
@@ -104,10 +104,6 @@
 						type: 'datetime',
 						range: '~',
 					});
-					/* laydate.render({
-						elem: '#endTime',
-						type: 'datetime',
-					}); */
 				 
 					$.ajax({
 						url: '${ctx}/system/user/findAllUser',
@@ -138,7 +134,7 @@
 						height:'700px',
 						url: '${ctx}/fince/getConsumption' ,
 						where:{
-							flag:0,
+							flags:'0,2',
 							type:1,
 							budget:0,
 						},
