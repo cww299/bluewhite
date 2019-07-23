@@ -186,7 +186,7 @@ public class ConsumptionAction {
 		CommonResponse cr = new CommonResponse();
 		double totalAmount = consumptionService.totalAmount(type);
 		cr.setData(totalAmount);
-		cr.setMessage("不能为空");
+		cr.setMessage("查询成功");
 		return cr;
 	}
 	
