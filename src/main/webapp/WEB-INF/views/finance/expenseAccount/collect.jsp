@@ -180,15 +180,9 @@
 								edit: false,
 								type: 'normal',
 								templet: function(d){
-									if(d.budget==0){
-										return "";
-									}
-									if(d.budget==null){
-										return "";
-									}
-									if(d.budget==1){
-										return "预算";
-									}
+									if(d.budget==1)
+										return "是";
+									return '否';
 								}
 							}, {
 								field: "money",
