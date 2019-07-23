@@ -42,9 +42,9 @@
 					<td>&nbsp;&nbsp;</td>
 					<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input"></td>
 					<td><button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">搜索</button></td>
-					<td>&nbsp;&nbsp;</td>
-					<td>未支付总额:
-					<td><span id="allPrice" style="color:red;font-size: 20px;"></span></td>
+					<td style="width:130px;"></td>
+					<td style="font-size: 20px;">未支付总额:</td>
+					<td id="allPrice" style="color:red;font-size: 20px;"></td>
 				</tr>
 				<tr style="height:5px;"></tr>
 				<tr>
@@ -180,15 +180,9 @@
 								edit: false,
 								type: 'normal',
 								templet: function(d){
-									if(d.budget==0){
-										return "";
-									}
-									if(d.budget==null){
-										return "";
-									}
-									if(d.budget==1){
-										return "预算";
-									}
+									if(d.budget==1)
+										return "是";
+									return '否';
 								}
 							}, {
 								field: "money",

@@ -170,7 +170,7 @@ layui.config({
 					 { field: "withholdReason", title: "扣款事由", edit: 'text' },
 					 { field: "withholdMoney",  title: "扣款金额",  edit: 'text',width:'7%', }, 
 					 { field: "settleAccountsMode", title: "结款模式", edit: false,width:'7%', templet: fn3('selectThree')},
-					 { field: "flag", title: "放款状态", edit: false,width:'6%', templet: function(d){ 
+					 { field: "flag", title: "审核状态", edit: false,width:'6%', templet: function(d){ 
 						 												var text = '未放款'; if(d.flag==1) text='已放款';
 						 																	 else if(d.flag==2) text='部分放款';
 						 												return text; }}
@@ -178,7 +178,8 @@ layui.config({
 		renderTable({			//渲染预算表格
 			elem: '#tableData',
 			toolbar: '#toolbar', 
-			url: '${ctx}/fince/getConsumption?budget=1&type=1&flags=0,2' ,
+			url: '${ctx}/fince/getConsumption?budget=1&type=1' ,
+			where: { flags:'0,2' },
 			cols:  (function(){
 						var c = [[]];
 						layui.each(cols[0],function(index,item){	//进行深拷贝，避免影响其他表格的渲染
@@ -211,7 +212,8 @@ layui.config({
 		renderTable({		//渲染非预算表格
 			elem: '#tableDataTwo',
 			toolbar: '#toolbar2', 
-			url: '${ctx}/fince/getConsumption?budget=0&type=1&flags=0,2' ,
+			url: '${ctx}/fince/getConsumption?budget=0&type=1' ,
+			where: { flags:'0,2' },
 			cols:cols,
 		})
 		var colsChild = [[
