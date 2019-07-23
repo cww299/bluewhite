@@ -98,7 +98,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 				String[] falg = param.getFlags().split(",");
 				List<String> list = Arrays.asList(falg);
 				if (list != null && list.size() > 0) {
-					In<Object> in = cb.in(root.get("id"));
+					In<Object> in = cb.in(root.get("flag"));
 					for (String id : list) {
 						in.value(Integer.parseInt(id));
 					}
