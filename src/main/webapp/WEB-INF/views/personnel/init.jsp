@@ -186,7 +186,7 @@
 			<label class="layui-form-label" style="width: 130px;">吃饭状态</label>
 			<div class="layui-input-inline">
 				<select name="eatType" lay-filter="eatType" id="eatType"  lay-search="true">
-					<option value="">请选择</option>
+					<option value="0">请选择</option>
 					<option value="1">早餐</option>
 					<option value="2">晚餐</option>
 					<option value="3">早餐or晚餐</option>
