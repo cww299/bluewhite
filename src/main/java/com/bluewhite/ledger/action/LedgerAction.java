@@ -17,6 +17,7 @@ import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.ledger.entity.Customr;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.SendGoods;
@@ -43,6 +44,7 @@ public class LedgerAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
 				.addRetainTerm(Packing.class, "number", "customr","packingMaterials","packingChilds","packingDate")
+				.addRetainTerm(Customr.class, "name")
 				.addRetainTerm(PackingChild.class, "bacthNumber", "product","count")
 				.addRetainTerm(Product.class, "name")
 				.addRetainTerm(BaseData.class, "name");
@@ -51,10 +53,9 @@ public class LedgerAction {
 	private ClearCascadeJSON clearCascadeJSON1;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Packing.class, "number", "customr","packingMaterials","packingChilds","packingDate")
-				.addRetainTerm(PackingChild.class, "bacthNumber", "product","count")
-				.addRetainTerm(Product.class, "name")
-				.addRetainTerm(BaseData.class, "name");
+				.addRetainTerm(Packing.class, "customr","bacthNumber","product","number")
+				.addRetainTerm(Customr.class, "name")
+				.addRetainTerm(Product.class, "name");
 	}
 	
 	/**
@@ -128,7 +129,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse getSearchSendGoods(SendGoods sendGoods) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSON1.format(sendGoodsService.findLists(sendGoods )).toJSON());
+		cr.setData(clearCascadeJSON1.format(sendGoodsService.findLists(sendGoods)).toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
