@@ -13,80 +13,73 @@
 <title>财务汇总</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-
+<style type="text/css">
+	td{
+		text-align:center;
+	}
+	.layui-table-cell{
+		text-align:center;
+	}
+</style>
 </head>
-
 <body>
 	<div class="layui-card">
 		<div class="layui-card-body">
-			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
-				<div class="layui-form-item">
-					<table>
-						<tr>
-							<td>报销人:</td>
-							<td><input type="text" name="Username" id="firstNames" class="layui-input" /></td>
-							<td>&nbsp;&nbsp;</td>
-							<td>报销内容:</td>
-							<td><input type="text" name="content" class="layui-input" /></td>
-							<td>&nbsp;&nbsp;</td>
-							<td>报销金额:</td>
-							<td><input type="text" name="money" class="layui-input" /></td>
-							<td>&nbsp;&nbsp;</td>
-							<td><select class="layui-input" name="selectone" id="selectone">
-									<option value="expenseDate">申请日期</option>
+			<table class="layui-form">
+				<tr>
+					<td>报销人:</td>
+					<td><input type="text" name="Username" id="firstNames" class="layui-input" /></td>
+					<td>&nbsp;&nbsp;</td>
+					<td>报销内容:</td>
+					<td><input type="text" name="content" class="layui-input" /></td>
+					<td>&nbsp;&nbsp;</td>
+					<td>报销金额:</td>
+					<td><input type="text" name="money" class="layui-input" /></td>
+					<td>&nbsp;&nbsp;</td>
+					<td><select class="layui-input" name="selectone" id="selectone">
+							<option value="expenseDate">申请日期</option>
 							</select></td>
-							<td>&nbsp;&nbsp;</td>
-							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
-							</td>
-							<!-- <td>&nbsp&nbsp</td>
-							<td>结束:</td>
-							<td><input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="layui-input laydate-icon">
-							</td> -->
-							<td>&nbsp;&nbsp;</td>
-							<td>需要支付总额:
-							<td><input type="text" id="allPrice" disabled class="layui-input"  /></td>
-							<td>&nbsp;&nbsp;</td>
-							<td>
-								<div class="layui-inline">
-									<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
-										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-									</button>
-								</div>
-							</td>
-						</tr>
-					</table>
-				</div>
-			</div>
+					<td>&nbsp;&nbsp;</td>
+					<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input"></td>
+					<td><button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">搜索</button></td>
+					<td>&nbsp;&nbsp;</td>
+					<td>未支付总额:
+					<td><span id="allPrice" style="color:red;font-size: 20px;"></span></td>
+				</tr>
+				<tr style="height:5px;"></tr>
+				<tr>
+					<td>是否预算:</td>
+					<td style="width:100px;"><select name="budget">
+													<option value="">请选择</option>
+													<option value="0">否</option>
+													<option value="1">是</option></select></td>
+					<td>&nbsp;&nbsp;</td>
+					<td>是否审核:</td>
+					<td style="width:100px;"><select name="flags">
+												<option value="">请选择</option>
+												<option value="0">审核</option>
+												<option value="1">未审核</option>
+												<option value="2">部分审核</option></select></td>
+				</tr>
+			</table>
 			<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
 		</div>
-
 	</div>
-
-
-	
 	<script>
 			layui.config({
 				base: '${ctx}/static/layui-v2.4.5/'
 			}).extend({
 				tablePlug: 'tablePlug/tablePlug'
 			}).define(
-				['tablePlug', 'laydate', 'element'],
+				['tablePlug', 'laydate'],
 				function() {
 					var $ = layui.jquery,
-						layer = layui.layer //弹层
-						,
-						form = layui.form //表单
-						,
-						table = layui.table //表格
-						,
-						laydate = layui.laydate //日期控件
-						,
-						tablePlug = layui.tablePlug //表格插件
-						,
-						element = layui.element;
-					//全部字段
+						layer = layui.layer,
+						form = layui.form,
+						table = layui.table,
+						laydate = layui.laydate,
+						tablePlug = layui.tablePlug;
 					var allField;
-					//select全局变量
 					var htmls = '<option value="">请选择</option>';
 					var index = layer.load(1, {
 						shade: [0.1, '#fff'] //0.1透明度的白色背景
@@ -123,7 +116,16 @@
 						}
 					});
 					
-					
+					(function(){
+						$.ajax({
+							url:'${ctx}/fince/totalAmount?type=1',
+							success:function(r){
+								if(r.code==0){
+									$('#allPrice').html(r.data);
+								}
+							}
+						})
+					})();
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
@@ -131,7 +133,7 @@
 						height:'700px',
 						url: '${ctx}/fince/getConsumption' ,
 						where:{
-							flag:0,
+							flags:'0,2',
 							type:1
 						},
 						request:{
@@ -148,7 +150,6 @@
 						colFilterRecord: true,
 						smartReloadModel: true,// 开启智能重载
 						parseData: function(ret) {
-							$('#allPrice').val(ret.data.statData.statAmount)
 							return {
 								code: ret.code,
 								msg: ret.message,
@@ -159,16 +160,13 @@
 						cols: [
 							[{
 								type: 'checkbox',
-								align: 'center',
 								fixed: 'left'
 							}, {
 								field: "content",
 								title: "报销内容",
-								align: 'center',
 							}, {
 								field: "userId",
 								title: "报销人",
-								align: 'center',
 								search: true,
 								edit: false,
 								type: 'normal',
@@ -178,7 +176,6 @@
 							}, {
 								field: "budget",
 								title: "是否预算",
-								align: 'center',
 								search: true,
 								edit: false,
 								type: 'normal',
@@ -228,12 +225,14 @@
 								field: "flag",
 								title: "审核状态",
 								templet:  function(d){
-									if(d.flag==0){
-										return "未审核";
-									}
-									if(d.flag==1){
-										return "已审核";
-									}
+									var text = "";
+									if(d.flag==0)
+										text = "未审核";
+									else if(d.flag==1)
+										text = "已审核";
+									else if(d.flag==2)
+										text = "部分审核";
+									return text;
 								}
 							}]
 						],
@@ -257,9 +256,11 @@
 							expenseDate:"2019-05-08 00:00:00",
 							content:field.content,
 							money:field.money,
+							budget:field.budget,
 						}
 						table.reload('tableData', {
-							where: post
+							where: post,
+							page:{curr:1}
 						}); 
 					});
 					

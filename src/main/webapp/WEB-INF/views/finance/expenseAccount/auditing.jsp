@@ -4,23 +4,15 @@
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html class="no-js">
-
-
 <script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
 <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
-
-
-
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>财务审核</title>
 <meta name="description" content="">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
-
 <body>
 	<div class="layui-card">
 		<div class="layui-card-body">
@@ -45,15 +37,13 @@
 							<td>&nbsp;&nbsp;</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input">
 							</td>
-							<!-- <td>&nbsp&nbsp</td>
-							<td>结束:</td>
-							<td><input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="layui-input">
-							</td> -->
 							<td>&nbsp;&nbsp;</td>
-							<td>是否核对:
-							<td><select class="form-control" name="flag">
+							<td>是否审核:
+							<td><select class="form-control" name="flags">
+									<option value="">请选择</option>
 									<option value="0">未审核</option>
 									<option value="1">已审核</option>
+									<option value="2">部分审核</option>
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
@@ -68,15 +58,14 @@
 					</table>
 				</div>
 			</div>
-			<table id="tableData" class="table_th_search"
-				lay-filter="tableData"></table>
+			<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
 		</div>
 
 	</div>
 
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
-				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="audit">审核</span>
+				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="audit">审核放款</span>
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="noAudit">取消审核</span>
 			</div>
 		</script>
@@ -115,10 +104,6 @@
 						type: 'datetime',
 						range: '~',
 					});
-					/* laydate.render({
-						elem: '#endTime',
-						type: 'datetime',
-					}); */
 				 
 					$.ajax({
 						url: '${ctx}/system/user/findAllUser',
@@ -149,7 +134,7 @@
 						height:'700px',
 						url: '${ctx}/fince/getConsumption' ,
 						where:{
-							flag:0,
+							flags:'0,2',
 							type:1,
 							budget:0,
 						},
@@ -192,24 +177,6 @@
 								type: 'normal',
 								templet: function(d){
 									return d.user.userName;
-								}
-							}, {
-								field: "budget",
-								title: "是否预算",
-								align: 'center',
-								search: true,
-								edit: false,
-								type: 'normal',
-								templet: function(d){
-									if(d.budget==0){
-										return "";
-									}
-									if(d.budget==null){
-										return "";
-									}
-									if(d.budget==1){
-										return "预算";
-									}
 								}
 							}, {
 								field: "money",
