@@ -221,12 +221,14 @@
 								field: "flag",
 								title: "审核状态",
 								templet:  function(d){
-									if(d.flag==0){
-										return "未审核";
-									}
-									if(d.flag==1){
-										return "已审核";
-									}
+									var text = '';
+									if(d.flag==0)
+										text = "未审核";
+									if(d.flag==1)
+										text = "已审核";
+									if(d.flag==2)
+										text = "部分审核";
+									return text;
 								}
 							}]
 						],
