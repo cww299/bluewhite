@@ -143,11 +143,13 @@ layui.config({
 				$('#tableData').next().hide();
 				$('#searchTr').hide();
 				$('#tableDataTwo').next().show();
+				table.reload('tableDataTwo');
 				$('#dateTypeSelect').find('option[value="realityDate"]').removeAttr('selected');
 				$('#dateTypeSelect').find('option[value="realityDate"]').attr('disabled','disabled');
 			}else{
 				$('#searchTr').show();
 				$('#tableData').next().show();
+				table.reload('tableData');
 				$('#dateTypeSelect').find('option[value="realityDate"]').removeAttr('disabled');
 				$('#tableDataTwo').next().hide();
 			}
@@ -166,7 +168,11 @@ layui.config({
 					 { field: "expenseDate", title: "报销申请日期", edit: false, },
 					 { field: "withholdReason", title: "扣款事由", edit: 'text' },
 					 { field: "withholdMoney",  title: "扣款金额",  edit: 'text',width:'7%', }, 
-					 { field: "settleAccountsMode", title: "结款模式", edit: false,width:'7%', templet: fn3('selectThree')}
+					 { field: "settleAccountsMode", title: "结款模式", edit: false,width:'7%', templet: fn3('selectThree')},
+					 { field: "flag", title: "放款状态", edit: false,width:'6%', templet: function(d){ 
+						 												var text = '未放款'; if(d.flag==1) text='已放款';
+						 																	 else if(d.flag==2) text='部分放款';
+						 												return text; }}
 					]];
 		renderTable({			//渲染预算表格
 			elem: '#tableData',
@@ -215,7 +221,11 @@ layui.config({
 						 { field: "expenseDate", title: "报销申请日期", 	edit: 'text' }, 
 						 { field: "withholdReason", title: "扣款事由", 	edit: 'text' }, 
 						 { field: "withholdMoney",  title: "扣款金额",	edit: 'text' }, 
-						 { field: "settleAccountsMode", title: "结款模式", edit: false, templet: fn3('selectThree') }
+						 { field: "settleAccountsMode", title: "结款模式", edit: false, templet: fn3('selectThree') },
+						 { field: "flag", title: "放款状态", edit: false,width:'8%', templet: function(d){ 
+																					var text = '未放款'; if(d.flag==1) text='已放款';
+																										 else if(d.flag==2) text='部分放款';
+																					return text; }}
 						]];
 		renderTable({		//渲染预算报销单表格
 			elem: '#tableBudget',
@@ -303,16 +313,7 @@ layui.config({
 					success: function(result) {
 						var icon = 2;
 						if(0 == result.code) {
-			              	table.reload('tableData',{
-			              		done:function(){
-					              	table.reload('tableDataTwo',{
-					              		done:function(){
-					              			table.cache['tableBudget'] && table.reload('tableBudget');
-					              		}
-					              	});
-			              			
-			              		}
-			              	})
+							table.reload(tableId);
 				            icon = 1;
 						} 
 						layer.msg(result.message, { icon: icon, time:800 });
@@ -383,6 +384,9 @@ layui.config({
 				        ,btn: ['取消']
 				        ,btnAlign: 'c'
 				        ,content:$('#layuiOpen')
+				        ,end:function(){
+				        	table.reload(tableId);
+				        }
 				    });
 					break;
 			}
@@ -443,7 +447,7 @@ layui.config({
 						mainJs.fUpdate(postData);
 				},
 				function(){ 
-					table.reload("tableDataTwo")  
+					table.reload("tableData")  
 				}
 			)
 		});
@@ -456,6 +460,23 @@ layui.config({
 				[obj.field]: obj.value
 			}
 			mainJs.fUpdate(postData);
+		});
+		table.on('edit(tableDataTwo)', function(obj) {
+			if(!obj.data.id) 
+				return;
+			layer.confirm('是否确认修改？',
+				function(){
+					var data = obj.data;
+						var postData = {
+							id: data.id,
+							[obj.field]: obj.value
+						}
+						mainJs.fUpdate(postData);
+				},
+				function(){ 
+					table.reload("tableDataTwo")  
+				}
+			)
 		});
 		//搜索功能
 		form.on('submit(LAY-search)', function(obj) {		
@@ -481,35 +502,26 @@ layui.config({
 		//新增、修改接口
 		var mainJs = {
 		    fAdd : function(data){
+		    	var load = layer.load(1);
 		    	$.ajax({
 					url: "${ctx}/fince/addConsumption",
 					data: data,
 					async: false,
 					type: "POST",
-					beforeSend: function() {
-						index;
-					},
 					success: function(result) {
 						var icon = 2;
 						if(0 == result.code) 
 				            icon = 1;
-						table.reload('tableData',{
-		              		done:function(){
-				              	table.reload('tableDataTwo',{
-				              		done:function(){
-				              			table.cache['tableBudget'] && table.reload('tableBudget');
-				              		}
-				              	});
-		              			
-		              		}
-		              	})
+						/* table.reload('tableData'); 
+		              	table.reload('tableDataTwo');
+	              		table.cache['tableBudget'] && table.reload('tableBudget'); */
 						layer.msg(result.message, {icon: icon, time:800});
 					},
 					error: function() {
 						layer.msg("操作失败！请重试", { icon: 2 });
 					},
 				});
-				layer.close(index);
+				layer.close(load);
 		    },
 		    fUpdate : function(data){
 		    	if(data.id=="")
@@ -517,14 +529,12 @@ layui.config({
 		    	this.fAdd(data);
 		    },
 		    fAddNotReload : function(data){
+		    	var load = layer.load(1);
 		    	$.ajax({
 					url: "${ctx}/fince/addConsumption",
 					data: data,
 					async: false,
 					type: "POST",
-					beforeSend: function() {
-						index;
-					},
 					success: function(result) {
 						var icon = 2;
 						if(0 == result.code) 
@@ -535,7 +545,7 @@ layui.config({
 						layer.msg("操作失败！请重试", { icon: 2 });
 					},
 				});
-				layer.close(index);
+		    	layer.close(load);
 		    },
 		};
 		//其他功能函数
@@ -644,7 +654,9 @@ layui.config({
 				size:'lg',
 				page: { },
 				request:{ pageName: 'page' , limitName: 'size' },
-				parseData: function(ret) { return { code: ret.code, msg: ret.message, count:ret.data.total, data: ret.data.rows } },
+				parseData: function(ret) { 
+					return { code: ret.code, msg: ret.message, count:ret.data.total, data: ret.data.rows } 
+				},
 				done:function(res, curr, count){
 					var tableView = this.elem.next();
 					var tableElem = this.elem.next('.layui-table-view').find('.layui-table-box');
