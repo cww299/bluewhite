@@ -248,7 +248,7 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 		}
 		double a=0;
 		if (sum!=0) {
-			a = NumUtils.div(sum*100,sum, 2);//面试通过率
+			a = NumUtils.div(sum1*100,sum, 2);//面试通过率
 		}
 		double b=0;
 		if (sum1!=0) {
