@@ -93,7 +93,7 @@ public class LedgerAction {
 	 * 获取编号
 	 * 
 	 */
-	@RequestMapping(value = "/ledger/getPackingNumber", method = RequestMethod.POST)
+	@RequestMapping(value = "/ledger/getPackingNumber", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse getPackingNumber() {
 		CommonResponse cr = new CommonResponse();
