@@ -3,6 +3,7 @@ package com.bluewhite.finance.consumption.action;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -182,9 +183,9 @@ public class ConsumptionAction {
 	 */
 	@RequestMapping(value = "/fince/totalAmount", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse totalAmount(Integer type) {
+	public CommonResponse totalAmount(Integer type,Date beginTime, Date endDate) {
 		CommonResponse cr = new CommonResponse();
-		double totalAmount = consumptionService.totalAmount(type);
+		double totalAmount = consumptionService.totalAmount(type,beginTime,endDate);
 		cr.setData(totalAmount);
 		cr.setMessage("查询成功");
 		return cr;
