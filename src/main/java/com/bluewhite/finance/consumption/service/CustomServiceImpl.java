@@ -23,8 +23,8 @@ public class CustomServiceImpl extends BaseServiceImpl<Custom, Long> implements 
 	private CustomDao dao;
 
 	@Override
-	public List<Custom> findCustom(Integer type,String name) {
-		return dao.findByTypeAndNameLike(type,"%"+name+"%");
+	public List<Custom> findCustom(Integer type, String name) {
+		return dao.findByTypeAndNameLike(type, "%" + name + "%");
 	}
 
 	@Override
@@ -51,14 +51,13 @@ public class CustomServiceImpl extends BaseServiceImpl<Custom, Long> implements 
 	@Override
 	public int deleteCustom(String ids) {
 		int count = 0;
-		
-		
+
 		return count;
 	}
 
 	@Override
 	public List<Custom> findByType(Integer type) {
-	List<Custom> customs=dao.findByType(type);
+		List<Custom> customs = dao.findByType(type);
 		return customs;
 	}
 }
