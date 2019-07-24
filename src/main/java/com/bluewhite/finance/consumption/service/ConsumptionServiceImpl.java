@@ -405,19 +405,79 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	}
 
 	@Override
-	public double totalAmount(Integer type, Date beginTime, Date endTime) {
-		List<Consumption> consumptionList = dao.findByTypeAndFlagAndExpenseDateBetween(type, 0, beginTime, endTime);
-		List<Consumption> consumptionList1 = dao.findByTypeAndFlagAndExpenseDateBetween(type, 2, beginTime, endTime);
-		double amount = consumptionList.stream().mapToDouble(Consumption::getMoney).sum();
-		double amount1 = 0;
+	public double totalAmount(Consumption consumption) {
+		List<Consumption> consumptionList = findList(consumption);
+		double amount = 0;
 		List<Double> listDouble = new ArrayList<>();
-		if (consumptionList1.size() > 0) {
-			consumptionList1.stream().forEach(c -> {
-				listDouble.add(NumUtils.sub(c.getMoney(), c.getPaymentMoney()));
+		if (consumptionList.size() > 0) {
+			consumptionList.stream().forEach(c -> {
+				listDouble.add(c.getPaymentMoney() != null ? NumUtils.sub(c.getMoney(), c.getPaymentMoney()) : c.getMoney() );
 			});
-			amount1 = NumUtils.sum(listDouble);
+			amount = NumUtils.sum(listDouble);
 		}
-		return NumUtils.sum(NumUtils.round(amount, 2), amount1);
+		return NumUtils.round(amount, 2);
 	}
 
+	@Override
+	public List<Consumption> findList(Consumption param) {
+		List<Consumption> result = dao.findAll((root, query, cb) -> {
+			List<Predicate> predicate = new ArrayList<>();
+			// 按人员过滤
+			if (param.getUserId() != null) {
+				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
+			}
+
+			// 按消费类型过滤
+			if (param.getType() != null) {
+				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
+			}
+
+			// 按是否已付款报销过滤
+			if (!StringUtils.isEmpty(param.getFlags())) {
+				String[] falg = param.getFlags().split(",");
+				List<String> list = Arrays.asList(falg);
+				if (list != null && list.size() > 0) {
+					In<Object> in = cb.in(root.get("flag"));
+					for (String id : list) {
+						in.value(Integer.parseInt(id));
+					}
+					predicate.add(in);
+				}
+			}
+			// 按是否預算
+			if (param.getBudget() != null) {
+				predicate.add(cb.equal(root.get("budget").as(Integer.class), param.getBudget()));
+			}
+			// 按报销人姓名查找
+			if (!StringUtils.isEmpty(param.getUsername())) {
+				predicate.add(
+						cb.like(root.get("user").get("userName").as(String.class), "%" + param.getUsername() + "%"));
+			}
+			// 按客户姓名查找
+			if (!StringUtils.isEmpty(param.getCustomerName())) {
+				predicate.add(
+						cb.like(root.get("custom").get("name").as(String.class), "%" + param.getCustomerName() + "%"));
+			}
+			// 按报销內容查找
+			if (!StringUtils.isEmpty(param.getContent())) {
+				predicate.add(cb.like(root.get("content").as(String.class),
+						"%" + StringUtil.specialStrKeyword(param.getContent()) + "%"));
+			}
+			// 按报销金额查找
+			if (!StringUtils.isEmpty(param.getMoney())) {
+				predicate.add(cb.equal(root.get("money").as(Double.class), param.getMoney()));
+			}
+			if (!StringUtils.isEmpty(param.getExpenseDate())) {
+				// 按申请日期
+				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+					predicate.add(cb.between(root.get("expenseDate").as(Date.class), param.getOrderTimeBegin(),
+							param.getOrderTimeEnd()));
+				}
+			}
+			Predicate[] pre = new Predicate[predicate.size()];
+			query.where(predicate.toArray(pre));
+			return null;
+		});
+		return result;
+	}
 }

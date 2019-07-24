@@ -1,6 +1,7 @@
 package com.bluewhite.finance.consumption.service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -19,6 +20,15 @@ public interface ConsumptionService extends BaseCRUDService<Consumption, Long> {
 	 * @return
 	 */
 	PageResult<Consumption> findPages(Consumption consumption, PageParameter page);
+	
+	/**
+	 * 按条件查看
+	 * 
+	 * @param expenseAccount
+	 * @param page
+	 * @return
+	 */
+	List<Consumption> findList(Consumption consumption);
 
 	/**
 	 * 新增or修改
@@ -64,6 +74,6 @@ public interface ConsumptionService extends BaseCRUDService<Consumption, Long> {
 	 * 计算财务未付款总额
 	 * @return
 	 */
-	double totalAmount(Integer type,Date beginTime, Date endDate);
+	double totalAmount(Consumption consumption);
 
 }

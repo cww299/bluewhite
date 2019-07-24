@@ -51,7 +51,6 @@ public class CustomServiceImpl extends BaseServiceImpl<Custom, Long> implements 
 	@Override
 	public int deleteCustom(String ids) {
 		int count = 0;
-
 		return count;
 	}
 
