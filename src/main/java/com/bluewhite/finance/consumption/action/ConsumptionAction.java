@@ -183,9 +183,9 @@ public class ConsumptionAction {
 	 */
 	@RequestMapping(value = "/fince/totalAmount", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse totalAmount(Integer type,Date beginTime, Date endDate) {
+	public CommonResponse totalAmount(Integer type,Date beginTime, Date endTime) {
 		CommonResponse cr = new CommonResponse();
-		double totalAmount = consumptionService.totalAmount(type,beginTime,endDate);
+		double totalAmount = consumptionService.totalAmount(type,beginTime,endTime);
 		cr.setData(totalAmount);
 		cr.setMessage("查询成功");
 		return cr;

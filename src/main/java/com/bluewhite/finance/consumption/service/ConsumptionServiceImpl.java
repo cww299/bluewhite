@@ -405,9 +405,9 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	}
 
 	@Override
-	public double totalAmount(Integer type, Date beginTime, Date endDate) {
-		List<Consumption> consumptionList = dao.findByTypeAndFlagAndExpenseDateBetween(type, 0, beginTime, endDate);
-		List<Consumption> consumptionList1 = dao.findByTypeAndFlagAndExpenseDateBetween(type, 2, beginTime, endDate);
+	public double totalAmount(Integer type, Date beginTime, Date endTime) {
+		List<Consumption> consumptionList = dao.findByTypeAndFlagAndExpenseDateBetween(type, 0, beginTime, endTime);
+		List<Consumption> consumptionList1 = dao.findByTypeAndFlagAndExpenseDateBetween(type, 2, beginTime, endTime);
 		double amount = consumptionList.stream().mapToDouble(Consumption::getMoney).sum();
 		double amount1 = 0;
 		List<Double> listDouble = new ArrayList<>();
