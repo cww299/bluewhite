@@ -24,17 +24,14 @@
 					<table>
 						<tr>
 							<td>姓名:</td>
-							<td><select class="form-control" id="selectUserId" lay-search="true"  name="userId"></select></td>
+							<td><select class="form-control" id="singleMealConsumptionId" lay-search="true"  name="singleMealConsumptionId"></select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>日期:</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
 							</td>
 							<td>&nbsp;&nbsp;</td>
-							<td>部门:</td>
-							<td ><select class="form-control" name="orgNameId" id="orgName"></select></td>
-							<td>&nbsp;&nbsp;</td>
 							<td>报餐类型:</td>
-							<td><select class="form-control" name="mode">
+							<td><select class="form-control" name="type">
 									<option value="">请选择</option>
 									<option value="1">早餐</option>
 									<option value="2">中餐</option>
@@ -115,23 +112,10 @@
 					var index = layer.load(1, {
 						shade: [0.1, '#fff'] //0.1透明度的白色背景
 					});
-					
 					laydate.render({
 						elem: '#startTime',
-						type: 'datetime',
-						range: '~',
+						type : 'datetime',
 					});
-					laydate.render({
-						elem: '#startTime2',
-						type : 'month',
-						format:'yyyy-MM-01 HH:mm:ss'
-					});
-				  // 多选
-				  laydate.render({
-				    elem: '#tradeDaysTime',
-				    type: 'date',
-				    range: '~',
-				  });
 				
 					$.ajax({
 						url: '${ctx}/system/user/findUserList',
@@ -197,7 +181,7 @@
 
 					var fn2 = function(field) {
 						return function(d) {
-							return ['<select name="selectTwo" class="selectTwo" lay-filter="lay_selecte" lay-search="true" data-value="' + d.mode + '">',
+							return ['<select name="selectTwo" class="selectTwo" lay-filter="lay_selecte" lay-search="true" data-value="' + d.type + '">',
 								'<option value="">请选择</option>',
 								'<option value="1">早餐</option>',
 								'<option value="2">中餐</option>',
@@ -214,9 +198,6 @@
 						elem: '#tableData',
 						size: 'lg',
 						url: '${ctx}/personnel/getSingleMeal' ,
-						where:{
-							type:1
-						},
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
 							limitName: 'size' //每页数据量的参数名，默认：limit
@@ -243,7 +224,7 @@
 								align: 'center',
 								fixed: 'left'
 							},{
-								field: "userId",
+								field: "singleMealConsumptionId",
 								title: "物料分类",
 								align: 'center',
 								search: true,
@@ -251,22 +232,23 @@
 								type: 'normal',
 								templet: fn1('selectOne')
 							},{
-								field: "mode",
+								field: "content",
 								title: "内容",
+								align: 'center',
+								edit: 'text',
+							},{
+								field: "price",
+								title: "每天花费",
+								align: 'center',
+								edit: 'text',
+							},{
+								field: "type",
+								title: "餐次",
 								align: 'center',
 								search: true,
 								edit: false,
 								type: 'normal',
 								templet: fn2('selectTwo')
-							},{
-								field: "price",
-								title: "每天花费",
-								align: 'center',
-								edit: false,
-							},{
-								field: "tradeDaysTime",
-								title: "餐次",
-								edit: 'text'
 							}]
 						],
 						done: function() {
@@ -342,39 +324,34 @@
 						var btnElem = $(this);
 						var tableId = config.id;
 						switch(obj.event) {
-							case 'addTempData':
-								var	dicDiv=$("#layuiadmin-form-admin2");
-								layer.open({
-									type:1,
-									title:'报餐新增',
-									area:['30%','60%'],
-									btn:['确认','取消'],
-									content:dicDiv,
-									id: 'LAY_layuipro' ,
-									btnAlign: 'c',
-								    moveType: 1, //拖拽模式，0或者1
-									success : function(layero, index) {
-							        	layero.addClass('layui-form');
-										// 将保存按钮改变成提交按钮
-										layero.find('.layui-layer-btn0').attr({
-											'lay-filter' : 'addRole',
-											'lay-submit' : ''
-										})
-							        },
-									yes:function(){
-										form.on('submit(addRole)', function(data) {
-											mainJs.fAdd(data.field); 
-											document.getElementById("layuiadmin-form-admin2").reset();
-								        	layui.form.render();
-										})
-									},end:function(){ 
-							        	document.getElementById("layuiadmin-form-admin2").reset();
-							        	layui.form.render();
-									  }
+						case 'addTempData':
+							allField = {id: '', content: '',type:'0'};
+							table.addTemp(tableId,allField,function(trElem) {
+								// 进入回调的时候this是当前的表格的config
+								var that = this;
+								// 初始化laydate
+								layui.each(trElem.find('td[data-field="time"]'), function(index, tdElem) {
+									tdElem.onclick = function(event) {
+										layui.stope(event)
+									};
+									laydate.render({
+										elem: tdElem.children[0],
+										format: 'yyyy-MM-dd HH:mm:ss',
+										done: function(value, date) {
+											var trElem = $(this.elem[0]).closest('tr');
+											var tableView = trElem.closest('.layui-table-view');
+											table.cache[that.id][trElem.data('index')]['expenseDate'] = value;
+											var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
+											var postData = {
+												id: id,
+												time:value,
+											}
+											mainJs.fUpdate(postData);
+										}
+									})
 								})
-								
-								
-								break;
+							});
+							break;
 							case 'saveTempData':
 								var data = table.getTemp(tableId).data;
 								var flag=false;
@@ -400,7 +377,7 @@
 										ids: checkedIds,
 									}
 									$.ajax({
-										url: "${ctx}/fince/deleteMeal",
+										url: "${ctx}/personnel/deleteSingleMeal",
 										data: postData,
 										traditional: true,
 										type: "GET",

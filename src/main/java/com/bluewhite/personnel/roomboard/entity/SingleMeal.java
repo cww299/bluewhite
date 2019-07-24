@@ -20,7 +20,7 @@ import com.bluewhite.basedata.entity.BaseData;
  *
  */
 @Entity
-@Table(name = "person_reward" )
+@Table(name = "person_single_meal" )
 public class SingleMeal extends BaseEntity<Long> {
 	
 	/**
