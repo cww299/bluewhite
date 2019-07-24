@@ -183,9 +183,9 @@ public class ConsumptionAction {
 	 */
 	@RequestMapping(value = "/fince/totalAmount", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse totalAmount(Integer type,Date beginTime, Date endTime) {
+	public CommonResponse totalAmount( Consumption consumption) {
 		CommonResponse cr = new CommonResponse();
-		double totalAmount = consumptionService.totalAmount(type,beginTime,endTime);
+		double totalAmount = consumptionService.totalAmount(consumption);
 		cr.setData(totalAmount);
 		cr.setMessage("查询成功");
 		return cr;
@@ -256,7 +256,7 @@ public class ConsumptionAction {
 	@ResponseBody
 	public CommonResponse deleteCustom(HttpServletRequest request,String ids) {
 		CommonResponse cr = new CommonResponse();
-		int count = customService.deleteCustom(ids);
+		int count = customService.delete(ids);
 		cr.setMessage("成功删除"+count+"条");
 		return cr;
 	}

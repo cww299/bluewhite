@@ -280,5 +280,10 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		return primeCost;
 	}
 
+	@Override
+	public List<Product> getAllProduct() {
+		return productDao.findByNumberNotNull();
+	}
+
 
 }

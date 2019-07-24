@@ -8,12 +8,9 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.entity.Customr;
 
 @Service
-public interface CustomrService extends BaseCRUDService<Customr,Long>{
-	
-	
-	
+public interface CustomrService extends BaseCRUDService<Customr, Long> {
+
 	public PageResult<Customr> findPages(Customr Customr, PageParameter page);
-	
-	
+
 	public int deleteCustomr(String ids);
 }

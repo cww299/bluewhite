@@ -2,6 +2,7 @@ package com.bluewhite.ledger.action;
 
 import java.text.SimpleDateFormat;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -16,6 +17,8 @@ import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.ledger.entity.Customr;
+import com.bluewhite.ledger.service.CustomrService;
+import com.graphbuilder.math.func.CeilFunction;
 
 /**
  * 财务部 客户
@@ -26,16 +29,19 @@ import com.bluewhite.ledger.entity.Customr;
 
 @Controller
 public class CustomrAction {
+	
+	@Autowired
+	private CustomrService customrService;
+	
 
 	private ClearCascadeJSON clearCascadeJSON;
 
 	{
-		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(Customr.class, "id", "", "",
-				"");
+		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(Customr.class, "id", "name", "address");
 	}
 
 	/**
-	 * 分页查看客户售价
+	 * 分页查看客户
 	 * 
 	 * @param request
 	 *            请求
@@ -46,12 +52,13 @@ public class CustomrAction {
 	@ResponseBody
 	public CommonResponse customrPage(PageParameter page, Customr customr) {
 		CommonResponse cr = new CommonResponse();
+		cr.setData(customrService.findPages(customr, page));
 		cr.setMessage("查询成功");
 		return cr;
 	}
 
 	/**
-	 * 财务客户售价新增
+	 * 客户新增
 	 * @param request
 	 *            请求
 	 * @return cr
@@ -61,11 +68,26 @@ public class CustomrAction {
 	@ResponseBody
 	public CommonResponse addCustomr(Customr customr) {
 		CommonResponse cr = new CommonResponse();
+		customrService.save(customr);
 		cr.setMessage("添加成功");
 		return cr;
 	}
 
-	
+	/**
+	 * 客户批量删除
+	 * @param request
+	 *            请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/ledger/deleteCustomr", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse addCustomr(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = customrService.delete(ids);
+		cr.setMessage("成功删除"+count+"个客户");
+		return cr;
+	}
 	
 	
 	@InitBinder

@@ -84,12 +84,18 @@ public class ProductAction {
 	private OrdinaryLaserService  ordinaryLaserService;
 	
 	private ClearCascadeJSON clearCascadeJSON;
-
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
 				.addRetainTerm(Product.class,"id","number","departmentNumber","originDepartment",
 						"name","departmentPrice","hairPrice","deedlePrice","puncherHairPrice","puncherDepartmentPrice");
+	}
+	
+	private ClearCascadeJSON clearCascadeJSON1;
+	{
+		clearCascadeJSON1 = ClearCascadeJSON
+				.get()
+				.addRetainTerm(Product.class,"id","number","name");
 	}
 	
 	/**
@@ -103,6 +109,22 @@ public class ProductAction {
 	@ResponseBody
 	public CommonResponse productPages(HttpServletRequest request,PageParameter page,Product product) {
 		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(productService.findPages(product,page))
+				.toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/**
+	 * 查看所有的产品
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getAllProduct", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getAllProduct(Product product) {
+		CommonResponse cr = new CommonResponse(clearCascadeJSON1.format(productService.getAllProduct())
 				.toJSON());
 		cr.setMessage("查询成功");
 		return cr;
