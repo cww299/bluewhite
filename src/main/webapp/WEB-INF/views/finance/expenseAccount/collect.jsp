@@ -117,6 +117,9 @@
 					});
 					getTotalAmount({flags: '0,2',type: 1});
 					function getTotalAmount(post){
+						if(post.flags==''){
+							post.flags='0,2';
+						}
 						$.ajax({
 							url: '${ctx}/fince/totalAmount?type=1',
 							data: post,
