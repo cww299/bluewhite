@@ -257,7 +257,7 @@
 							orderTimeEnd:orderTimeEnd || '',
 							expenseDate:"2019-05-08 00:00:00",
 							content:field.content,
-							money:field.money,
+							money:field.money, 
 							budget:field.budget,
 						}
 						table.reload('tableData', {
