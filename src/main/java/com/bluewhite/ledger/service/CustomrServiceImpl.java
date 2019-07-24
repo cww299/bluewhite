@@ -13,7 +13,9 @@ public class CustomrServiceImpl extends BaseServiceImpl<Customr, Long> implement
 	}
 
 	@Override
-	public int deleteCustom(String ids) {
+	public int deleteCustomr(String ids) {
+		
+		
 		return 0;
 	}
 

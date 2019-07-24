@@ -1,5 +1,6 @@
 package com.bluewhite.finance.consumption.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bluewhite.base.BaseRepository;
@@ -29,6 +30,6 @@ public interface ConsumptionDao extends BaseRepository<Consumption, Long>{
 	 * @param flag1
 	 * @return
 	 */
-	public List<Consumption> findByTypeAndFlag(Integer type,Integer flag);
+	public List<Consumption> findByTypeAndFlagAndExpenseDateBetween(Integer type,Integer flag,Date beginTime, Date endDate);
 
 }

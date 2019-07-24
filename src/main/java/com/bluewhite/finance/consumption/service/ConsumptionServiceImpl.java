@@ -222,7 +222,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 				}
 			}
 
-			if (consumption.getPaymentMoney() > consumption.getMoney()) {
+			if (consumption.getPaymentMoney() != null && consumption.getPaymentMoney() > consumption.getMoney()) {
 				throw new ServiceException("放款金额不能大于申请金额");
 			}
 			break;
@@ -405,9 +405,9 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	}
 
 	@Override
-	public double totalAmount(Integer type) {
-		List<Consumption> consumptionList = dao.findByTypeAndFlag(type, 0);
-		List<Consumption> consumptionList1 = dao.findByTypeAndFlag(type, 2);
+	public double totalAmount(Integer type, Date beginTime, Date endDate) {
+		List<Consumption> consumptionList = dao.findByTypeAndFlagAndExpenseDateBetween(type, 0, beginTime, endDate);
+		List<Consumption> consumptionList1 = dao.findByTypeAndFlagAndExpenseDateBetween(type, 2, beginTime, endDate);
 		double amount = consumptionList.stream().mapToDouble(Consumption::getMoney).sum();
 		double amount1 = 0;
 		List<Double> listDouble = new ArrayList<>();

@@ -15,5 +15,5 @@ public interface CustomrService extends BaseCRUDService<Customr,Long>{
 	public PageResult<Customr> findPages(Customr Customr, PageParameter page);
 	
 	
-	public int deleteCustom(String ids);
+	public int deleteCustomr(String ids);
 }
