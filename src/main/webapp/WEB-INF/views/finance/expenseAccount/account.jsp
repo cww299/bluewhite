@@ -487,7 +487,10 @@ layui.config({
 			if(field.orderTimeBegin!=''){
 				var orderTime=field.orderTimeBegin.split('~');
 				field.orderTimeBegin=orderTime[0];
-				field.orderTimeEnd=orderTime[1];
+				if(orderTime[1]){
+					orderTime[1] = orderTime[1].split(' ')[1]+' 23:59:59';
+				}
+				field.orderTimeEnd= orderTime[1];
 				field[$('#dateTypeSelect').val()] = '2018-01-01 00:00:00';
 			}
 			var tableId = 'tableDataTwo';

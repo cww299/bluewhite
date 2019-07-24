@@ -115,17 +115,19 @@
 							layer.close(index);
 						}
 					});
-					
-					(function(){
+					getTotalAmount({flags: '0,2',type: 1});
+					function getTotalAmount(post){
 						$.ajax({
-							url:'${ctx}/fince/totalAmount?type=1',
+							url: '${ctx}/fince/totalAmount?type=1',
+							data: post,
 							success:function(r){
 								if(r.code==0){
 									$('#allPrice').html(r.data);
-								}
+								}else
+									$('#allPrice').html('异常');
 							}
 						})
-					})();
+					};
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
@@ -241,12 +243,15 @@
 						var field = data.field;
 						var orderTime=field.orderTimeBegin.split('~');
 						orderTimeBegin=orderTime[0];
+						if(orderTime[1]){
+							orderTime[1] = orderTime[1].split(' ')[1]+' 23:59:59';
+						}
 						orderTimeEnd=orderTime[1];
 						var post={
 							Username:field.Username,
 							flags:field.flags,
-							orderTimeBegin:orderTimeBegin,
-							orderTimeEnd:orderTimeEnd,
+							orderTimeBegin:orderTimeBegin || '',
+							orderTimeEnd:orderTimeEnd || '',
 							expenseDate:"2019-05-08 00:00:00",
 							content:field.content,
 							money:field.money,
@@ -256,6 +261,7 @@
 							where: post,
 							page:{curr:1}
 						}); 
+						getTotalAmount(post);
 					});
 					
 
