@@ -115,16 +115,16 @@
 							layer.close(index);
 						}
 					});
-					getTotalAmount('','');
-					function getTotalAmount(begin,end){
-						if(end!='')
-							end = end.split(' ')[1]+' 23:59:59';
+					getTotalAmount({});
+					function getTotalAmount(post){
 						$.ajax({
-							url: '${ctx}/fince/totalAmount?type=1&beginTime='+begin+'&endTime='+end,
+							url: '${ctx}/fince/totalAmount?type=1',
+							data: post,
 							success:function(r){
 								if(r.code==0){
 									$('#allPrice').html(r.data);
-								}
+								}else
+									$('#allPrice').html('异常');
 							}
 						})
 					};
@@ -243,6 +243,9 @@
 						var field = data.field;
 						var orderTime=field.orderTimeBegin.split('~');
 						orderTimeBegin=orderTime[0];
+						if(orderTime[1]){
+							orderTime[1] = orderTime[1].split(' ')[1]+' 23:59:59';
+						}
 						orderTimeEnd=orderTime[1];
 						var post={
 							Username:field.Username,
@@ -258,7 +261,7 @@
 							where: post,
 							page:{curr:1}
 						}); 
-						getTotalAmount(orderTimeBegin || '',orderTimeEnd || '');
+						getTotalAmount(post);
 					});
 					
 

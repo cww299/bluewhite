@@ -330,6 +330,9 @@
 						var orderTime=field.orderTimeBegin.split('~');
 						orderTimeBegin=orderTime[0];
 						orderTimeEnd=orderTime[1];
+						if(orderTimeEnd){
+							orderTimeEnd = orderTimeEnd.split(' ')[1]+' 23:59:59';
+						}
 						var a="";
 						var b="";
 						if($("#selectone").val()=="expenseDate"){
@@ -340,8 +343,8 @@
 						var post={
 							Username:field.Username,
 							flags:field.flags,
-							orderTimeBegin:orderTimeBegin,
-							orderTimeEnd:orderTimeEnd,
+							orderTimeBegin:orderTimeBegin || '',
+							orderTimeEnd:orderTimeEnd || '',
 							expenseDate:a,
 							paymentDate:b,
 							budget:0,
