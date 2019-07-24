@@ -30,8 +30,8 @@ import com.graphbuilder.math.func.CeilFunction;
 @Controller
 public class CustomrAction {
 	
-	@Autowired
-	private CustomrService customrService;
+//	@Autowired
+//	private CustomrService customrService;
 	
 
 	private ClearCascadeJSON clearCascadeJSON;
@@ -52,7 +52,7 @@ public class CustomrAction {
 	@ResponseBody
 	public CommonResponse customrPage(PageParameter page, Customr customr) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(customrService.findPages(customr, page));
+//		cr.setData(customrService.findPages(customr, page));
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -68,7 +68,7 @@ public class CustomrAction {
 	@ResponseBody
 	public CommonResponse addCustomr(Customr customr) {
 		CommonResponse cr = new CommonResponse();
-		customrService.save(customr);
+//		customrService.save(customr);
 		cr.setMessage("添加成功");
 		return cr;
 	}
@@ -84,8 +84,8 @@ public class CustomrAction {
 	@ResponseBody
 	public CommonResponse addCustomr(String ids) {
 		CommonResponse cr = new CommonResponse();
-		int count = customrService.delete(ids);
-		cr.setMessage("成功删除"+count+"个客户");
+//		int count = customrService.delete(ids);
+//		cr.setMessage("成功删除"+count+"个客户");
 		return cr;
 	}
 	
