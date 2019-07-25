@@ -117,9 +117,6 @@
 					});
 					getTotalAmount({flags: '0,2',type: 1});
 					function getTotalAmount(post){
-						if(post.flags==''){
-							post.flags='0,2';
-						}
 						$.ajax({
 							url: '${ctx}/fince/totalAmount?type=1',
 							data: post,
@@ -249,6 +246,9 @@
 						if(orderTime[1]){
 							orderTime[1] = orderTime[1].split(' ')[1]+' 23:59:59';
 						}
+						if(field.flags==''){
+							field.flags='0,2';
+						}
 						orderTimeEnd=orderTime[1];
 						var post={
 							Username:field.Username,
@@ -257,7 +257,7 @@
 							orderTimeEnd:orderTimeEnd || '',
 							expenseDate:"2019-05-08 00:00:00",
 							content:field.content,
-							money:field.money,
+							money:field.money, 
 							budget:field.budget,
 						}
 						table.reload('tableData', {
