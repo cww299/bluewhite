@@ -6,17 +6,16 @@ import java.util.List;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.support.DaoSupport;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.finance.consumption.entity.Custom;
 import com.bluewhite.ledger.dao.CustomrDao;
 import com.bluewhite.ledger.entity.Customr;
-
+@Service
 public class CustomrServiceImpl extends BaseServiceImpl<Customr, Long> implements CustomrService{
 	
 	@Autowired
