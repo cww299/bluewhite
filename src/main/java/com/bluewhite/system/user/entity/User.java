@@ -412,12 +412,6 @@ public class User extends BaseEntity<Long> {
 	private Integer type;
 
 	/**
-	 * 销售人员区分字段（1是销售人员）
-	 */
-	@Column(name = "sale")
-	private Integer sale;
-	
-	/**
 	 * 宿舍ID
 	 */
 	@Column(name = "hostel_id")
@@ -546,14 +540,6 @@ public class User extends BaseEntity<Long> {
 
 	public void setAdjustTime(Double adjustTime) {
 		this.adjustTime = adjustTime;
-	}
-
-	public Integer getSale() {
-		return sale;
-	}
-
-	public void setSale(Integer sale) {
-		this.sale = sale;
 	}
 
 	public String getTemporarilyName() {

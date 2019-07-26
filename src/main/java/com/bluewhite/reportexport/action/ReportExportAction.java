@@ -47,7 +47,6 @@ import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.excel.Excelutil;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
-import com.bluewhite.ledger.entity.Actualprice;
 import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.service.AttendanceService;
 import com.bluewhite.personnel.attendance.service.AttendanceTimeService;
@@ -68,7 +67,6 @@ import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.reportexport.entity.EightTailorPoi;
 import com.bluewhite.reportexport.entity.MachinistProcedurePoi;
-import com.bluewhite.reportexport.entity.OrderPoi;
 import com.bluewhite.reportexport.entity.ProcedurePoi;
 import com.bluewhite.reportexport.entity.ProductPoi;
 import com.bluewhite.reportexport.entity.ReworkPoi;
@@ -102,9 +100,6 @@ public class ReportExportAction {
 	
 	@Autowired
 	private ProcedureDao procedureDao;
-	
-//	@Autowired
-//	private OrderService orderService;
 	
 	@Autowired
 	private AttendancePayService attendancePayService;
@@ -724,8 +719,7 @@ public class ReportExportAction {
         
         
        //填充数据
-        //将针工一整个月的考勤查询出来
-        
+       //将针工一整个月的考勤查询出来
        List<AttendancePay> attendancePayList = attendancePayService.findPages(attendancePay, new PageParameter(0,Integer.MAX_VALUE,new Sort(Sort.Direction.ASC,"allotTime"))).getRows();
        //按人员分组
        Map<Long, List<AttendancePay>> mapAttendancePay = attendancePayList.stream().collect(Collectors.groupingBy(AttendancePay::getUserId,Collectors.toList()));
@@ -757,80 +751,6 @@ public class ReportExportAction {
   			e1.printStackTrace();
   		}
 }
-	
-//	/**
-//	 * 导出月产量报表
-//	 * @param request
-//	 * @param response
-//	 */
-//	@RequestMapping("/importExcel/productionOrder")
-//	public void DownProductionOrderExcel(HttpServletResponse response,Order order,PageParameter page){
-//		response.setContentType("octets/stream");
-//	    response.addHeader("Content-Disposition", "attachment;filename=rework.xls");
-//	    OutputStream out=null;
-//        try {  
-//            out = response.getOutputStream();  
-//        } catch (IOException e) {  
-//            e.printStackTrace();  
-//		}  
-//        page.setSize(Integer.MAX_VALUE);
-//        List<Order> orders= orderService.findPages(order, page).getRows();
-//	    Excelutil<Order> util = new Excelutil<Order>(Order.class);
-//        util.exportExcel(orders, "月产量报表", out);// 导出  
-//	}
-	
-	
-	/**
-	 * 财务订单导入                          
-	 * @param residentmessage
-	 * @param response
-	 * @param request
-	 * @return
-	 * @throws Exception 
-	 */
-	@RequestMapping(value = "/importOrder",method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse importOrder(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request) throws Exception{
-		CommonResponse cr = new CommonResponse();
-		List<OrderPoi> excelProduct = new ArrayList<OrderPoi>();
-		InputStream in = file.getInputStream();
-		String filename = file.getOriginalFilename();
-		// 创建excel工具类
-		Excelutil<OrderPoi> util = new Excelutil<OrderPoi>(OrderPoi.class);
-		excelProduct = util.importExcel(filename, in);// 导入
-		int count = reportExportService.importOrderExcel(excelProduct);
-		if(count > 0){
-			cr.setMessage("成功导入"+count+"条数据");
-		}
-		in.close();
-		return cr;
-	}
-	
-	/**
-	 * 财务实战成本导入                         
-	 * @param residentmessage
-	 * @param response
-	 * @param request
-	 * @return
-	 * @throws Exception 
-	 */
-	@RequestMapping(value = "/importActualprice",method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse importActualPrice(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request,Date currentMonth) throws Exception{
-		CommonResponse cr = new CommonResponse();
-		List<Actualprice> excelActualprices = new ArrayList<Actualprice>();
-		InputStream in = file.getInputStream();
-		String filename = file.getOriginalFilename();
-		// 创建excel工具类
-		Excelutil<Actualprice> util = new Excelutil<Actualprice>(Actualprice.class);
-		excelActualprices = util.importExcel(filename, in);// 导入
-		int count = reportExportService.importActualprice(excelActualprices,currentMonth);
-		if(count > 0){
-			cr.setMessage("成功导入"+count+"条数据");
-		}
-		in.close();
-		return cr;
-	}	
 	
 	
 	/**
