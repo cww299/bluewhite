@@ -229,12 +229,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			if (!StringUtils.isEmpty(user.getGender())) {
 				predicate.add(cb.equal(root.get("gender").as(Integer.class), user.getGender() ));
 			}
-			
-			//是否销售
-			if (!StringUtils.isEmpty(user.getSale())) {
-				predicate.add(cb.equal(root.get("sale").as(Integer.class), user.getSale()) );
-			}
-			
 			// 角色不为null
 			if (user.getRole().size()>0) {
 				SetJoin<User,Role> join = root.join(root.getModel().getSet("roles", Role.class),JoinType.LEFT);
@@ -409,11 +403,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			//是否离职
 			if (user.getQuit() != null) {
 				predicate.add(cb.equal(root.get("quit").as(Integer.class),user.getQuit()));
-			}
-			
-			//是否是销售人员
-			if (user.getSale() != null) {
-				predicate.add(cb.equal(root.get("sale").as(Integer.class),user.getSale()));
 			}
 			//按手机号查找
 			if (!StringUtils.isEmpty(user.getPhone())) {

@@ -79,7 +79,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	public Packing addPacking(Packing packing) {
 		packing.setPackingDate(packing.getPackingDate()!=null ? packing.getPackingDate() : new Date());
 		// 新增子单
-		if (!StringUtils.isEmpty(packing.getChildPacking())) {
+		if (!StringUtils.isEmpty(packing.getChildPacking())) { 
 			JSONArray jsonArray = JSON.parseArray(packing.getChildPacking());
 			for (int i = 0; i < jsonArray.size(); i++) {
 				PackingChild packingChild = new PackingChild();

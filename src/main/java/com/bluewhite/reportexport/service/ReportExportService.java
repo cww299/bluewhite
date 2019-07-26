@@ -89,19 +89,5 @@ public interface ReportExportService {
 
 	int importImportUserContract(List<UserContract> excelUser);
 	
-	/**
-	 * 导入财务订单数据
-	 * @param excelUser
-	 * @return
-	 */
-	int importOrderExcel(List<OrderPoi> excelProduct);
-	
-	/**
-	 * 导入财务实战数据
-	 * @param excelUser
-	 * @return
-	 */
-	int importActualprice(List<Actualprice> excelActualprices,Date currentMonth);
-
 
 }

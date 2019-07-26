@@ -5,182 +5,96 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.product.product.entity.Product;
 
 
 /**
- * 财务 订单实体
- * @author qiyong
+ * 订单（下单合同）
+ * @author zhangliang
  *
  */
 @Entity
-@Table(name = "fin_ledger_order"  ,indexes = {	@Index(columnList = "party_names_id")})
+@Table(name = "ledger_order")
 public class Order extends BaseEntity<Long>{
+	
 	/**
-	 * 当月销售编号
+	 * 客户id
+	 * 
 	 */
-	@Column(name = "sales_number")
-    private String salesNumber;
+	@Column(name = "customr_id")
+	private Long customrId;
 	
-	
-	
+
 	/**
-	 * 合同签订日期
-	 */
-	@Column(name = "contract_time")
-    private Date contractTime;
-	
-	
-	/**
-	 * 甲方
-	 */
-	@Column(name = "first_names")
-    private String firstNames;
-	
-	/**
-	 * 甲方id
-	 */
-	@Column(name = "first_names_id")
-    private Long firstNamesId;
-	
-	
-	/**
-	 * 乙方
-	 */
-	@Column(name = "party_names")
-    private String partyNames;
-	
-	/**
-	 * 乙方Id
-	 */
-	@Column(name = "party_names_id")
-    private Long partyNamesId;
-	
-	
-	/**
-	 * 乙方关联
+	 * 客户
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "party_names_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Customr contact;
+	@JoinColumn(name = "customr_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Customr customr;
+	
 	
 	/**
-	 * 当批 批次号
+	 * 批次号
 	 */
-	@Column(name = "batch_number")
-    private String batchNumber;
-	
-	
+	@Column(name = "bacth_number")
+	private String bacthNumber;
+
 	/**
-	 * 当批计划单号
-	 */
-	@Column(name = "plan_numbers")
-    private String planNumbers;
-	
-	
-	/**
-	 * 当批产品名
-	 */
-	@Column(name = "product_name")
-    private String productName;
-	
-	/**
-	 * 产品Id
+	 * 产品id
 	 */
 	@Column(name = "product_id")
-    private Long productId;
+	private Long productId;
+
+	/**
+	 * 产品
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Product product;
 	
 	/**
-	 * 当批产品编号
+	 * 产品编号
 	 */
 	@Column(name = "product_number")
-    private String productNumber;
+	private String productNumber;
 	
 	/**
-	 * 当批合同数量
+	 * 合同数量
 	 */
-	@Column(name = "contract_number")
-    private Integer contractNumber;
+	@Column(name = "number")
+	private Integer number;
 	
 	
 	/**
-	 * 当批合同总价
+	 * 备注
 	 */
-	@Column(name = "contract_price")
-    private Double contractPrice;
-	
+	@Column(name = "remark")
+	private String remark;
 	
 	/**
-	 * 预付款备注
+	 * 下单时间
 	 */
-	@Column(name = "remarks_price")
-    private String remarksPrice;
-	
+	@Column(name = "order_date")
+	private Date orderDate;
 	
 	/**
-	 * 手动填写单只价格
+	 * 单只价格
 	 */
 	@Column(name = "price")
-    private Double price;
+	private Double price;
+	
+	/**
+	 * 批量新增
+	 */
+	@Transient
+	private String orderChild;
 
-
-	/**
-	 * 手动填写到岸数量
-	 */
-	@Column(name = "ashore_number")
-    private Integer ashoreNumber;
-
-
-	/**
-	 * 到岸日期
-	 */
-	@Column(name = "ashore_time")
-    private Date ashoreTime;
-
-	/**
-	 * 核对完毕提示(0 未核对 1已核对 ) 
-	 */
-	@Column(name = "ashore_check")
-    private Integer ashoreCheckr;
-	
-	
-	/**
-	 * 争议数量
-	 */
-	@Column(name = "dispute_number")
-    private Integer disputeNumber;
-	
-	/**
-	 * 在途数量
-	 */
-	@Column(name = "road_number")
-    private Integer roadNumber;
-	
-	/**
-	 * 争议价格
-	 */
-	@Column(name = "dispute_price")
-    private Double disputePrice;
-	
-	
-	/**
-	 * 到岸合同价
-	 */
-	@Column(name = "ashore_price")
-    private Double ashorePrice;
-	
-	/**
-	 * (1.预算成本 2.实战成本)
-	 */
-	@Column(name = "dispute")
-    private Integer dispute;
-	
 	/**
 	 * 查询字段
 	 */
@@ -192,25 +106,22 @@ public class Order extends BaseEntity<Long>{
 	@Transient
 	private Date orderTimeEnd;
 	
-	/**
-	 * 查询字段 争议数字
-	 */
-	@Transient
-	private Integer type;
 	
+	    
 	
-	/**
-	 * 在线状态（0==线下 1==线上） 
-	 */
-	@Column(name = "online")
-    private Integer online;
-	
-	
-	public String getProductNumber() {
-		return productNumber;
+	public String getOrderChild() {
+		return orderChild;
 	}
 
 
+	public void setOrderChild(String orderChild) {
+		this.orderChild = orderChild;
+	}
+
+
+	public String getProductNumber() {
+		return productNumber;
+	}
 
 
 	public void setProductNumber(String productNumber) {
@@ -218,44 +129,13 @@ public class Order extends BaseEntity<Long>{
 	}
 
 
-
-
-	public Integer getOnline() {
-		return online;
+	public Double getPrice() {
+		return price;
 	}
 
 
-	
-
-	public Long getProductId() {
-		return productId;
-	}
-
-
-
-
-	public void setProductId(Long productId) {
-		this.productId = productId;
-	}
-
-
-
-
-	public void setOnline(Integer online) {
-		this.online = online;
-	}
-
-
-
-
-
-	public Integer getType() {
-		return type;
-	}
-
-
-	public void setType(Integer type) {
-		this.type = type;
+	public void setPrice(Double price) {
+		this.price = price;
 	}
 
 
@@ -279,231 +159,84 @@ public class Order extends BaseEntity<Long>{
 	}
 
 
-	public Double getAshorePrice() {
-		return ashorePrice;
+	public Date getOrderDate() {
+		return orderDate;
 	}
 
 
-	public void setAshorePrice(Double ashorePrice) {
-		this.ashorePrice = ashorePrice;
+	public void setOrderDate(Date orderDate) {
+		this.orderDate = orderDate;
+	}
+	public Long getCustomrId() {
+		return customrId;
 	}
 
 
-	public Integer getAshoreNumber() {
-		return ashoreNumber;
+	public void setCustomrId(Long customrId) {
+		this.customrId = customrId;
 	}
 
 
-	public void setAshoreNumber(Integer ashoreNumber) {
-		this.ashoreNumber = ashoreNumber;
+	public Customr getCustomr() {
+		return customr;
 	}
 
 
-	public Date getAshoreTime() {
-		return ashoreTime;
+	public void setCustomr(Customr customr) {
+		this.customr = customr;
 	}
 
 
-	public void setAshoreTime(Date ashoreTime) {
-		this.ashoreTime = ashoreTime;
+	public String getBacthNumber() {
+		return bacthNumber;
 	}
 
 
-	public Integer getAshoreCheckr() {
-		return ashoreCheckr;
+	public void setBacthNumber(String bacthNumber) {
+		this.bacthNumber = bacthNumber;
 	}
 
 
-	public void setAshoreCheckr(Integer ashoreCheckr) {
-		this.ashoreCheckr = ashoreCheckr;
+	public Long getProductId() {
+		return productId;
 	}
 
 
-	public Integer getDisputeNumber() {
-		return disputeNumber;
+	public void setProductId(Long productId) {
+		this.productId = productId;
 	}
 
 
-	public void setDisputeNumber(Integer disputeNumber) {
-		this.disputeNumber = disputeNumber;
+	public Product getProduct() {
+		return product;
 	}
 
 
-	public Integer getRoadNumber() {
-		return roadNumber;
+	public void setProduct(Product product) {
+		this.product = product;
 	}
 
 
-	public void setRoadNumber(Integer roadNumber) {
-		this.roadNumber = roadNumber;
+	public Integer getNumber() {
+		return number;
 	}
 
 
-	public Double getDisputePrice() {
-		return disputePrice;
+	public void setNumber(Integer number) {
+		this.number = number;
 	}
 
 
-	public void setDisputePrice(Double disputePrice) {
-		this.disputePrice = disputePrice;
+	public String getRemark() {
+		return remark;
 	}
 
 
-	public Customr getContact() {
-		return contact;
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
-
-
-	public void setContact(Customr contact) {
-		this.contact = contact;
-	}
-
-
-	public Long getFirstNamesId() {
-		return firstNamesId;
-	}
-
-
-	public void setFirstNamesId(Long firstNamesId) {
-		this.firstNamesId = firstNamesId;
-	}
-
-
-	public Long getPartyNamesId() {
-		return partyNamesId;
-	}
-
-
-	public void setPartyNamesId(Long partyNamesId) {
-		this.partyNamesId = partyNamesId;
-	}
-
-
-	public String getSalesNumber() {
-		return salesNumber;
-	}
-
-
-	public void setSalesNumber(String salesNumber) {
-		this.salesNumber = salesNumber;
-	}
-
-
-	public Date getContractTime() {
-		return contractTime;
-	}
-
-
-	public void setContractTime(Date contractTime) {
-		this.contractTime = contractTime;
-	}
-
-
-
-
-	public String getFirstNames() {
-		return firstNames;
-	}
-
-
-	public void setFirstNames(String firstNames) {
-		this.firstNames = firstNames;
-	}
-
-
-	public String getPartyNames() {
-		return partyNames;
-	}
-
-
-	public void setPartyNames(String partyNames) {
-		this.partyNames = partyNames;
-	}
-
-
-	public String getBatchNumber() {
-		return batchNumber;
-	}
-
-
-	public void setBatchNumber(String batchNumber) {
-		this.batchNumber = batchNumber;
-	}
-
-
-	public String getPlanNumbers() {
-		return planNumbers;
-	}
-
-
-	public void setPlanNumbers(String planNumbers) {
-		this.planNumbers = planNumbers;
-	}
-
-
-
-
-	public String getProductName() {
-		return productName;
-	}
-
-
-	public void setProductName(String productName) {
-		this.productName = productName;
-	}
-
-
-	public Integer getContractNumber() {
-		return contractNumber;
-	}
-
-
-	public void setContractNumber(Integer contractNumber) {
-		this.contractNumber = contractNumber;
-	}
-
-
-	public Double getContractPrice() {
-		return contractPrice;
-	}
-
-
-	public void setContractPrice(Double contractPrice) {
-		this.contractPrice = contractPrice;
-	}
-
-
 	
-
-
-	public Integer getDispute() {
-		return dispute;
-	}
-
-
-	public void setDispute(Integer dispute) {
-		this.dispute = dispute;
-	}
-
-
-	public String getRemarksPrice() {
-		return remarksPrice;
-	}
-
-
-	public void setRemarksPrice(String remarksPrice) {
-		this.remarksPrice = remarksPrice;
-	}
-
-
-	public Double getPrice() {
-		return price;
-	}
-
-
-	public void setPrice(Double price) {
-		this.price = price;
-	}
+	
 	
 	
 	

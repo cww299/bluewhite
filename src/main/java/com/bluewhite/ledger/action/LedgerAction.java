@@ -18,9 +18,11 @@ import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.ledger.entity.Customr;
+import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.SendGoods;
+import com.bluewhite.ledger.service.OrderService;
 import com.bluewhite.ledger.service.PackingService;
 import com.bluewhite.ledger.service.SendGoodsService;
 import com.bluewhite.product.product.entity.Product;
@@ -38,7 +40,8 @@ public class LedgerAction {
 	private PackingService packingService;
 	@Autowired
 	private SendGoodsService sendGoodsService;
-
+	@Autowired
+	private OrderService orderService;
 
 	private ClearCascadeJSON clearCascadeJSON;
 	{
@@ -58,13 +61,85 @@ public class LedgerAction {
 				.addRetainTerm(Product.class, "name");
 	}
 	
+	private ClearCascadeJSON clearCascadeJSONOrder;
+	{
+		clearCascadeJSONOrder = ClearCascadeJSON.get()
+				.addRetainTerm(Order.class, "remark","orderDate","customr","bacthNumber","product","number","price")
+				.addRetainTerm(Customr.class, "name")
+				.addRetainTerm(Product.class, "name");
+	}
+	
+	
 	/**
-	 * 查看贴包单
+	 * 分页查看订单
 	 * 
 	 * @param request 请求
 	 * @return cr
 	 */
-	@RequestMapping(value = "/ledger/getPacking", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/orderPage", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse orderPage(PageParameter page,Order order) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONOrder.format(orderService.findPages(order, page)).toJSON());
+		cr.setMessage("查看成功");
+		return cr;
+	}
+	
+	/**
+	 * 查看订单
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/getOrder", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getOrder(Order order) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONOrder.format(orderService.findList(order)).toJSON());
+		cr.setMessage("查看成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * 新增订单
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/addOrder", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse addOrder(Order order) { 
+		CommonResponse cr = new CommonResponse();
+		orderService.addOrder(order);
+ 		cr.setMessage("新增成功");
+		return cr;
+	}
+	
+	/**
+	 * 删除订单
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/deleteOrder", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteOrder(String ids) { 
+		CommonResponse cr = new CommonResponse();
+		int count = orderService.delete(ids);
+ 		cr.setMessage("成功删除"+count+"订单合同");
+		return cr;
+	}
+	
+
+	
+	/**
+	 * 分页查看贴包单
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/packingPage", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse getPacking(PageParameter page,Packing packing) {
 		CommonResponse cr = new CommonResponse();
