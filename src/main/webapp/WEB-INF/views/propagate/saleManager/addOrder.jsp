@@ -568,13 +568,15 @@ layui.config({
 			chooseProductWin = layer.open({		//选择产品窗口
 				type:1,
 				title:'选择产品',
-				area:['80%','90%'],
+				area:['80%','95%'],
 				offset:'30px',
 				content:$('#addProductDiv'),
 			})
 			table.render({
 				elem:'#productListTable',
 				size:'lg',
+				toolbar:true,
+				colFilterRecord:'local',
 				url:'${ctx}/inventory/commodityPage',
 				loading:true,
 				page:true,
