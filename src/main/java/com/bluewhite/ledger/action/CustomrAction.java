@@ -38,9 +38,9 @@ public class CustomrAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get().addRetainTerm(Customr.class, "id", "name", "address", "type", "provinces", "city", "county",
-						"phone", "user")
-				.addRetainTerm(User.class, "userName")
-				.addRetainTerm(RegionAddress.class, "regionName");
+						"phone", "user","buyerName")
+				.addRetainTerm(User.class, "userName","id")
+				.addRetainTerm(RegionAddress.class, "regionName","id");
 	}
 
 	/**
