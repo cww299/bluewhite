@@ -77,6 +77,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 
 	@Override
 	public Packing addPacking(Packing packing) {
+		packing.setFlag(0);
 		packing.setPackingDate(packing.getPackingDate()!=null ? packing.getPackingDate() : new Date());
 		// 新增子单
 		if (!StringUtils.isEmpty(packing.getChildPacking())) { 
@@ -92,5 +93,21 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 		}
 		dao.save(packing);
  		return packing;
+	}
+
+	@Override
+	public int sendPacking(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) { 
+			String [] idStrings = ids.split(",");
+			for(String id : idStrings){
+				Long idLong = Long.valueOf(id);
+				Packing packing = dao.findOne(idLong);
+				packing.setFlag(1);
+				dao.save(packing);
+				count++;
+			}
+		}
+		return count;
 	}
 }

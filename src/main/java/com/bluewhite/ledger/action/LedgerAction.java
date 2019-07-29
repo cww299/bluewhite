@@ -165,6 +165,23 @@ public class LedgerAction {
 	
 	
 	/**
+	 * 发货贴包单
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/sendPacking", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse sendPacking(String ids) { 
+		CommonResponse cr = new CommonResponse();
+		int count = packingService.sendPacking(ids);
+ 		cr.setMessage("成功发货"+count+"条");
+		return cr;
+	}
+	
+	
+	
+	/**
 	 * 获取编号
 	 * 
 	 */
@@ -180,7 +197,7 @@ public class LedgerAction {
 	
 	
 	/**
-	 * 查看发货单
+	 * 查看待发货单
 	 * 
 	 * @param request 请求
 	 * @return cr
@@ -195,7 +212,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * 通过条件查找发货单
+	 * 通过条件查找待发货单
 	 * 
 	 * @param request 请求
 	 * @return cr
@@ -210,7 +227,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * 新增发货单
+	 * 新增待发货单
 	 * 
 	 * @param request 请求
 	 * @return cr

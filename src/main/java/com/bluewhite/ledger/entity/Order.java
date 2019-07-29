@@ -23,6 +23,13 @@ import com.bluewhite.product.product.entity.Product;
 @Table(name = "ledger_order")
 public class Order extends BaseEntity<Long>{
 	
+	
+	/**
+	 * 销售编号 
+	 */
+	@Column(name = "sale_number")
+	private String saleNumber;
+	
 	/**
 	 * 客户id
 	 * 

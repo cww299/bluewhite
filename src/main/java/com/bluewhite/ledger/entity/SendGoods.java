@@ -58,6 +58,24 @@ public class SendGoods extends BaseEntity<Long>{
 	private Integer number;
 	
 
+	/**
+	 * 已发出数量
+	 */
+	@Column(name = "send_number")
+	private Integer sendNumber;
+	
+	
+	
+
+
+	public Integer getSendNumber() {
+		return sendNumber;
+	}
+
+	public void setSendNumber(Integer sendNumber) {
+		this.sendNumber = sendNumber;
+	}
+
 	public Long getCustomrId() {
 		return customrId;
 	}

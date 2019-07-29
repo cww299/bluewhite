@@ -26,5 +26,12 @@ public interface PackingService extends BaseCRUDService<Packing, Long>{
 	 * @return
 	 */
 	public Packing addPacking(Packing packing);
+	
+	/**
+	 * 一键发货
+	 * @param ids
+	 * @return
+	 */
+	public int sendPacking(String ids);
 
 }

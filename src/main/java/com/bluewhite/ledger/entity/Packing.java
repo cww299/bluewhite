@@ -15,9 +15,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
-import com.bluewhite.basedata.entity.BaseData;
-import com.bluewhite.onlineretailers.inventory.entity.DeliveryChild;
-import com.bluewhite.product.product.entity.Product;
 
 /**
  * 贴包单(发货单)
@@ -64,11 +61,23 @@ public class Packing extends BaseEntity<Long> {
 	private List<PackingMaterials> packingMaterials = new ArrayList<>();
 	
 	/**
-	 * 发贴包保时间
+	 * 贴包时间
 	 */
 	@Column(name = "packing_date")
 	private Date packingDate;
 	
+	
+	/**
+	 * 发货时间
+	 */
+	@Column(name = "send_date")
+	private Date sendDate;
+	
+	/**
+	 * 是否发货
+	 */
+	@Column(name = "flag")
+	private Integer flag;
 	
 	/**
 	 * 批次号
@@ -101,6 +110,22 @@ public class Packing extends BaseEntity<Long> {
 	
 	
 	
+
+	public Date getSendDate() {
+		return sendDate;
+	}
+
+	public void setSendDate(Date sendDate) {
+		this.sendDate = sendDate;
+	}
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
 
 	public String getChildPacking() {
 		return childPacking;
