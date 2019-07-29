@@ -165,7 +165,7 @@ public class LedgerAction {
 	
 	
 	/**
-	 * 发货贴包单
+	 * 出货贴包单
 	 * 
 	 * @param request 请求
 	 * @return cr

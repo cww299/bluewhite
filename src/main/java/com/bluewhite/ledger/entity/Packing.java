@@ -26,6 +26,7 @@ import com.bluewhite.base.BaseEntity;
 @Table(name = "ledger_packing")
 public class Packing extends BaseEntity<Long> {
 	
+	
 	/**
 	 * 客户id
 	 * 

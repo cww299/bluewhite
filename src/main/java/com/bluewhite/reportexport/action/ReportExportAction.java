@@ -787,7 +787,7 @@ public class ReportExportAction {
             row = sheet.createRow( i + 1);  
             // 第四步，创建单元格，并设置值  
             row.createCell(0).setCellValue(attendanceList.get(i).getNumber());  
-            row.createCell(1).setCellValue(attendanceList.get(i).getUser().getUserName());
+            row.createCell(1).setCellValue(attendanceList.get(i).getUser()!=null ? attendanceList.get(i).getUser().getUserName() :"");
             row.createCell(2).setCellValue(sdf.format(attendanceList.get(i).getTime()));  
         } 
     try {	
