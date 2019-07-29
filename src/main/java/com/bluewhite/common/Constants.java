@@ -100,6 +100,16 @@ public class Constants {
     public static String  ZG = "ZG";
     
     
-    
+    /**
+     * 财务销售单版权货物
+     */
+    public static String  LX = "裸熊";
+    public static String  KT = "KT";
+    public static String  MW = "漫威";
+    public static String  BM = "哔莫";
+    public static String  LP = "老皮";
+    public static String  AP = "阿宝";
+    public static String  ZMJ = "芝麻街";
+    public static String  XXYJN = "熊熊遇见你";
 
 }

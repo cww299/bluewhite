@@ -26,6 +26,15 @@ import com.bluewhite.system.user.entity.User;
 @Table(name = "online_commodity")
 public class Commodity extends BaseEntity<Long>{
 	
+	
+	/**
+	 * 商品编号（厂里）
+	 * 
+	 */
+	@Column(name = "number")
+	private String number;
+	
+	
 	/**
 	 * 商品ID（电商线上同步信息字段）
 	 * 
@@ -166,6 +175,16 @@ public class Commodity extends BaseEntity<Long>{
 	
 	
 	
+
+
+	public String getNumber() {
+		return number;
+	}
+
+
+	public void setNumber(String number) {
+		this.number = number;
+	}
 
 
 	public String getWarehouseSort() {
