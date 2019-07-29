@@ -316,7 +316,7 @@ layui.config({
 		function deletes(){
 			var choosed=layui.table.checkStatus('customTable').data;
 			if(choosed.length<1){
-				layer.msg('请选择商品',{icon:2});
+				layer.msg('请选择客户',{icon:2});
 				return;
 			}
 			layer.confirm('是否确认删除？',function(){
