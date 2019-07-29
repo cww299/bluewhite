@@ -50,7 +50,7 @@ td{
 						<option value="3">采购退货出库 </option></select></td>
 			    <td>&nbsp;&nbsp;</td>
 				<td><span class="layui-btn" lay-submit lay-filter="search">搜索</span>
-				    <span class="layui-btn" id="uploadDataBtn">导入订单</span></td>
+				    <span class="layui-btn" id="uploadDataBtn">导入出库单</span></td>
 			</tr>
 		</table>
 		<table class="layui-table" id="outOrderTable" lay-filter="outOrderTable"></table>
