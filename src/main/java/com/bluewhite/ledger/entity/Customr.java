@@ -110,6 +110,22 @@ public class Customr extends BaseEntity<Long> {
 	
 
 
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	public Long getProvincesId() {
 		return provincesId;
 	}
