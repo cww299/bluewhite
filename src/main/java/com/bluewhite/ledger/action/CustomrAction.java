@@ -18,6 +18,8 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.ledger.entity.Customr;
 import com.bluewhite.ledger.service.CustomrService;
+import com.bluewhite.system.sys.entity.RegionAddress;
+import com.bluewhite.system.user.entity.User;
 
 /**
  * 财务部 客户
@@ -28,15 +30,17 @@ import com.bluewhite.ledger.service.CustomrService;
 
 @Controller
 public class CustomrAction {
-	
+
 	@Autowired
 	private CustomrService customrService;
-	
 
 	private ClearCascadeJSON clearCascadeJSON;
-
 	{
-		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(Customr.class, "id", "name", "address");
+		clearCascadeJSON = ClearCascadeJSON
+				.get().addRetainTerm(Customr.class, "id", "name", "address", "type", "provinces", "city", "county",
+						"phone", "user")
+				.addRetainTerm(User.class, "userName")
+				.addRetainTerm(RegionAddress.class, "regionName");
 	}
 
 	/**
@@ -58,6 +62,7 @@ public class CustomrAction {
 
 	/**
 	 * 客户新增
+	 * 
 	 * @param request
 	 *            请求
 	 * @return cr
@@ -74,6 +79,7 @@ public class CustomrAction {
 
 	/**
 	 * 客户批量删除
+	 * 
 	 * @param request
 	 *            请求
 	 * @return cr
@@ -84,11 +90,10 @@ public class CustomrAction {
 	public CommonResponse addCustomr(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = customrService.delete(ids);
-		cr.setMessage("成功删除"+count+"个客户");
+		cr.setMessage("成功删除" + count + "个客户");
 		return cr;
 	}
-	
-	
+
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
 		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(DateTimePattern.DATEHMS.getPattern());

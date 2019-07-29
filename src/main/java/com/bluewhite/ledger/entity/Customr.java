@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.system.sys.entity.RegionAddress;
+import com.bluewhite.system.user.entity.User;
 
 /**
  * 系统中的所有客户
@@ -17,6 +18,20 @@ import com.bluewhite.system.sys.entity.RegionAddress;
 @Entity
 @Table(name = "ledger_customr")
 public class Customr extends BaseEntity<Long> {
+	
+	/**
+	 * 销售人员id
+	 * 
+	 */
+	@Column(name = "user_id")
+	private Long userId;
+
+	/**
+	 * 销售人员
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User user;
 
 	/**
 	 * 客户名稱
