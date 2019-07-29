@@ -51,7 +51,7 @@ public class CustomrAction {
 	@ResponseBody
 	public CommonResponse customrPage(PageParameter page, Customr customr) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(customrService.findPages(customr, page));
+		cr.setData(clearCascadeJSON.format(customrService.findPages(customr, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
