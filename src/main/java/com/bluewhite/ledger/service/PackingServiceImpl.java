@@ -141,7 +141,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					}
 					//判定是否更换客户发货，更换客户发货变成新批次，->Y
 					Order order = orderDao.findByBacthNumber(pc.getBacthNumber());
-					if(order.getCustomerId()!=pc.getPacking().getCustomerId()){
+					if(order.getCustomerId() != pc.getPacking().getCustomerId()){
 						
 						
 					}
