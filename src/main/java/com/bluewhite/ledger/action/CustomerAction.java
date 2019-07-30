@@ -16,8 +16,8 @@ import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.ledger.entity.Customr;
-import com.bluewhite.ledger.service.CustomrService;
+import com.bluewhite.ledger.entity.Customer;
+import com.bluewhite.ledger.service.CustomerService;
 import com.bluewhite.system.sys.entity.RegionAddress;
 import com.bluewhite.system.user.entity.User;
 
@@ -29,15 +29,15 @@ import com.bluewhite.system.user.entity.User;
  */
 
 @Controller
-public class CustomrAction {
+public class CustomerAction {
 
 	@Autowired
-	private CustomrService customrService;
+	private CustomerService customrService;
 
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON
-				.get().addRetainTerm(Customr.class, "id", "name", "address", "type", "provinces", "city", "county",
+				.get().addRetainTerm(Customer.class, "id", "name", "address", "type", "provinces", "city", "county",
 						"phone", "user","buyerName")
 				.addRetainTerm(User.class, "userName","id")
 				.addRetainTerm(RegionAddress.class, "regionName","id");
@@ -51,11 +51,11 @@ public class CustomrAction {
 	 * @return cr
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/ledger/customrPage", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/customerPage", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse customrPage(PageParameter page, Customr customr) {
+	public CommonResponse customerPage(PageParameter page, Customer customer) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSON.format(customrService.findPages(customr, page)).toJSON());
+		cr.setData(clearCascadeJSON.format(customrService.findPages(customer, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -69,9 +69,9 @@ public class CustomrAction {
 	 * @return cr
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/ledger/allCustomr", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/allCustomer", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse allCustomr() {
+	public CommonResponse allCustomer() {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(clearCascadeJSON.format(customrService.findAll()).toJSON());
 		cr.setMessage("查询成功");
@@ -86,11 +86,11 @@ public class CustomrAction {
 	 * @return cr
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/ledger/addCustomr", method = RequestMethod.POST)
+	@RequestMapping(value = "/ledger/addCustomer", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addCustomr(Customr customr) {
+	public CommonResponse addCustomer(Customer customer) {
 		CommonResponse cr = new CommonResponse();
-		customrService.save(customr);
+		customrService.save(customer);
 		cr.setMessage("添加成功");
 		return cr;
 	}
@@ -103,9 +103,9 @@ public class CustomrAction {
 	 * @return cr
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/ledger/deleteCustomr", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/deleteCustomer", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteCustomr(String ids) {
+	public CommonResponse deleteCustomer(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = customrService.deleteCustomr(ids);
 		cr.setMessage("成功删除" + count + "个客户");

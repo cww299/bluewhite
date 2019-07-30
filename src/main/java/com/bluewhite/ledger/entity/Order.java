@@ -43,7 +43,7 @@ public class Order extends BaseEntity<Long>{
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "customr_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Customr customr;
+	private Customer customer;
 	
 	
 	/**
@@ -183,14 +183,23 @@ public class Order extends BaseEntity<Long>{
 		this.customrId = customrId;
 	}
 
-
-	public Customr getCustomr() {
-		return customr;
+	public String getSaleNumber() {
+		return saleNumber;
 	}
 
 
-	public void setCustomr(Customr customr) {
-		this.customr = customr;
+	public void setSaleNumber(String saleNumber) {
+		this.saleNumber = saleNumber;
+	}
+
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 
 

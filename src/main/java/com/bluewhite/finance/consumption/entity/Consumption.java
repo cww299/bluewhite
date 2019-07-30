@@ -12,7 +12,7 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
-import com.bluewhite.ledger.entity.Customr;
+import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -76,7 +76,7 @@ public class Consumption extends BaseEntity<Long> {
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "custom_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Customr custom;
+	private Custom custom;
 
 	/**
 	 * 消费内容
@@ -143,7 +143,7 @@ public class Consumption extends BaseEntity<Long> {
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "contact_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Customr contact;
+	private Customer contact;
 	
 	/**
 	 * 扣款事由填写
@@ -236,6 +236,24 @@ public class Consumption extends BaseEntity<Long> {
 	@Transient
 	private String flags;
 	
+	
+	
+	public Custom getCustom() {
+		return custom;
+	}
+
+	public void setCustom(Custom custom) {
+		this.custom = custom;
+	}
+
+	public Customer getContact() {
+		return contact;
+	}
+
+	public void setContact(Customer contact) {
+		this.contact = contact;
+	}
+
 	public String getFlags() {
 		return flags;
 	}
@@ -284,13 +302,6 @@ public class Consumption extends BaseEntity<Long> {
 		this.batchNumber = batchNumber;
 	}
 
-	public Customr getContact() {
-		return contact;
-	}
-
-	public void setContact(Customr contact) {
-		this.contact = contact;
-	}
 
 	public String getContactName() {
 		return contactName;
@@ -348,13 +359,7 @@ public class Consumption extends BaseEntity<Long> {
 		this.customId = customId;
 	}
 
-	public Customr getCustom() {
-		return custom;
-	}
 
-	public void setCustom(Customr custom) {
-		this.custom = custom;
-	}
 
 	public Integer getType() {
 		return type;

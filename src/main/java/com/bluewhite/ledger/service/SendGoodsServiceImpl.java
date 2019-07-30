@@ -33,8 +33,8 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
 			// 按客户id过滤
-			if (param.getCustomrId() != null) {
-				predicate.add(cb.equal(root.get("customrId").as(Long.class), param.getCustomrId()));
+			if (param.getCustomerId() != null) {
+				predicate.add(cb.equal(root.get("customrId").as(Long.class), param.getCustomerId()));
 			}
 			// 按产品id过滤
 			if (param.getProductId() != null) {
@@ -67,8 +67,8 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
 			// 按客户id过滤
-			if (param.getCustomrId() != null) {
-				predicate.add(cb.equal(root.get("customrId").as(Long.class), param.getCustomrId()));
+			if (param.getCustomerId() != null) {
+				predicate.add(cb.equal(root.get("customrId").as(Long.class), param.getCustomerId()));
 			}
 			// 按产品id过滤
 			if (param.getProductId() != null) {

@@ -3,9 +3,9 @@ package com.bluewhite.ledger.service;
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.ledger.entity.Customr;
+import com.bluewhite.ledger.entity.Customer;
 
-public interface CustomrService extends BaseCRUDService<Customr, Long> {
+public interface CustomerService extends BaseCRUDService<Customer, Long> {
 
 	/**
 	 * 分页查看
@@ -13,7 +13,7 @@ public interface CustomrService extends BaseCRUDService<Customr, Long> {
 	 * @param page
 	 * @return
 	 */
-	public PageResult<Customr> findPages(Customr Customr, PageParameter page);
+	public PageResult<Customer> findPages(Customer Customr, PageParameter page);
 	
 	/**
 	 * 批量删除

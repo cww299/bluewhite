@@ -31,15 +31,15 @@ public class Packing extends BaseEntity<Long> {
 	 * 客户id
 	 * 
 	 */
-	@Column(name = "customr_id")
-	private Long customrId;
+	@Column(name = "customer_id")
+	private Long customerId;
 
 	/**
 	 * 客户
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "customr_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Customr customr;
+	@JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Customer customer;
 
 	/**
 	 * 编号 (19N7Y20R01)
@@ -200,20 +200,22 @@ public class Packing extends BaseEntity<Long> {
 		this.number = number;
 	}
 
-	public Long getCustomrId() {
-		return customrId;
+	public Long getCustomerId() {
+		return customerId;
 	}
 
-	public void setCustomrId(Long customrId) {
-		this.customrId = customrId;
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
 	}
 
-	public Customr getCustomr() {
-		return customr;
+	public Customer getCustomer() {
+		return customer;
 	}
 
-	public void setCustomr(Customr customr) {
-		this.customr = customr;
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
+
+
 
 }
