@@ -87,7 +87,7 @@ layui.define(['jquery','layer','form'],function(exports){
 	Class.prototype.getSelectHtml = function(options,init){ /* data、url、tips、name、filter、selectOption、value、title、*/
 		var msg = '';
 		if(!options.data && !options.url)
-			msg = '请给定数据或接口生产下拉框';
+			msg = '请给定数据或接口生成下拉框';
 		if(msg!=''){
 			console.error(msg);
 			return;
@@ -124,8 +124,8 @@ layui.define(['jquery','layer','form'],function(exports){
 				selected = 'selected';
 			html += '<option value="'+item[value]+'" '+selected+'>'+item[title]+'</option>'
 		})
-		init && init();
-		options.done && options.done();
+		init && init(html);
+		options.done && options.done(html);
 		return html==''?'<select><option value="">无数据</option></select>':html;
 	}
 	
