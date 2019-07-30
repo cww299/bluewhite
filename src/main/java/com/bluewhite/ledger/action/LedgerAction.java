@@ -46,27 +46,27 @@ public class LedgerAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Packing.class, "number", "customer","packingMaterials","packingChilds","packingDate")
-				.addRetainTerm(Customer.class, "name")
-				.addRetainTerm(PackingChild.class, "bacthNumber", "product","count")
-				.addRetainTerm(Product.class, "name")
-				.addRetainTerm(BaseData.class, "name");
+				.addRetainTerm(Packing.class,"id",  "number", "customer","packingMaterials","packingChilds","packingDate")
+				.addRetainTerm(Customer.class,"id",  "name")
+				.addRetainTerm(PackingChild.class,"id", "bacthNumber", "product","count")
+				.addRetainTerm(Product.class, "id", "name","number")
+				.addRetainTerm(BaseData.class,"id",  "name");
 	}
 	
 	private ClearCascadeJSON clearCascadeJSON1;
 	{
 		clearCascadeJSON1 = ClearCascadeJSON.get()
-				.addRetainTerm(SendGoods.class, "customer","bacthNumber","product","number")
-				.addRetainTerm(Customer.class, "name")
-				.addRetainTerm(Product.class, "name");
+				.addRetainTerm(SendGoods.class, "id", "customer","bacthNumber","product","number")
+				.addRetainTerm(Customer.class, "id", "name")
+				.addRetainTerm(Product.class, "name","number");
 	}
 	
 	private ClearCascadeJSON clearCascadeJSONOrder;
 	{
 		clearCascadeJSONOrder = ClearCascadeJSON.get()
-				.addRetainTerm(Order.class, "remark","orderDate","customer","bacthNumber","product","number","price")
-				.addRetainTerm(Customer.class, "name")
-				.addRetainTerm(Product.class, "name");
+				.addRetainTerm(Order.class, "id", "remark","orderDate","customer","bacthNumber","product","number","price")
+				.addRetainTerm(Customer.class,"id", "name")
+				.addRetainTerm(Product.class, "id", "name","number");
 	}
 	
 	
@@ -126,7 +126,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse deleteOrder(String ids) { 
 		CommonResponse cr = new CommonResponse();
-		int count = orderService.delete(ids);
+		int count = orderService.deleteOrder(ids);
  		cr.setMessage("成功删除"+count+"订单合同");
 		return cr;
 	}
