@@ -1,7 +1,6 @@
 package com.bluewhite.ledger.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.criteria.Predicate;
@@ -15,7 +14,6 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.dao.SendGoodsDao;
-import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.SendGoods;
 
 @Service
@@ -55,6 +53,11 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 
 	@Override
 	public SendGoods addSendGoods(SendGoods sendGoods) {
+		
+		
+		
+		
+		
 		return dao.save(sendGoods);
 	}
 

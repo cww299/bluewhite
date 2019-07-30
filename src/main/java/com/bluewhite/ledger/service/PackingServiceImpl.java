@@ -107,13 +107,13 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			for(String id : idStrings){
 				Long idLong = Long.valueOf(id);
 				Packing packing = dao.findOne(idLong);
-				
 				List<PackingChild> packingChildList = packing.getPackingChilds();
-				
 				for(PackingChild pChild : packingChildList){
 					SendGoods sendGoods = sendGoodsDao.findByBacthNumberAndCustomerId(pChild.getBacthNumber(), packing.getCustomerId());
+					sendGoods.setSendNumber(sendGoods.getSendNumber()+pChild.getCount());
 					
 					
+					sendGoodsDao.save(sendGoods);
 				}
 				
 				packing.setFlag(1);
