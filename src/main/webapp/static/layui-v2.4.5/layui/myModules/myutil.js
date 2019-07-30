@@ -33,11 +33,13 @@ layui.define(['jquery','layer','form'],function(exports){
 					r.message && (msg = r.message);
 					myutil.smsg(msg);
 					callback && callback();
+					options.success && options.success(r);
 				}else{
 					msg = '失败';
 					r.message && (msg = r.message);
 					myutil.emsg(msg);
 					error && error();
+					options.error && options.error(r);
 				}
 			}
 		})
@@ -58,7 +60,7 @@ layui.define(['jquery','layer','form'],function(exports){
 			options.url = myutil.config.ctx+options.url;
 		var load = layer.load(1);
 		$.ajax({
-			url : ctxoptions.url,
+			url : options.url,
 			type : options.type || 'get',	
 			async : options.async || false,
 			traditional: options.traditional || 'false',
@@ -69,11 +71,13 @@ layui.define(['jquery','layer','form'],function(exports){
 					r.message && (msg = r.message);
 					myutil.smsg(msg);
 					callback && callback();
+					options.success && options.success(r);
 				}else{
 					msg = '失败';
 					r.message && (msg = r.message);
 					myutil.emsg(msg);
 					error && error();
+					options.error && options.error(r);
 				}
 			}
 		})
@@ -121,6 +125,7 @@ layui.define(['jquery','layer','form'],function(exports){
 			html += '<option value="'+item[value]+'" '+selected+'>'+item[title]+'</option>'
 		})
 		init && init();
+		options.done && options.done();
 		return html==''?'<select><option value="">无数据</option></select>':html;
 	}
 	
@@ -138,6 +143,7 @@ layui.define(['jquery','layer','form'],function(exports){
 					else
 						data = r.data;
 					callback && callback(data);
+					options.done && options.done(data);
 					return data;
 				}
 			}
@@ -158,7 +164,7 @@ layui.define(['jquery','layer','form'],function(exports){
 	};
 	
 	myutil.deleteAjax = function(options,callback,error){
-		myutil.c.saveAjax(options,callback,error);
+		myutil.c.deleteAjax(options,callback,error);
 	};
 	
 	myutil.smsg = function(msg){
