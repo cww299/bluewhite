@@ -16,10 +16,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.Constants;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.ledger.dao.OrderDao;
+import com.bluewhite.ledger.dao.PackingChildDao;
 import com.bluewhite.ledger.dao.PackingDao;
 import com.bluewhite.ledger.dao.SendGoodsDao;
+import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.SendGoods;
@@ -31,6 +35,11 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	private PackingDao dao;
 	@Autowired
 	private SendGoodsDao sendGoodsDao;
+	@Autowired
+	private PackingChildDao packingChildDao;
+	@Autowired
+	private OrderDao orderDao;
+	
 
 	@Override
 	public PageResult<Packing> findPages(Packing param, PageParameter page) {
@@ -43,6 +52,10 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			// 按客户id过滤
 			if (param.getCustomerId() != null) {
 				predicate.add(cb.equal(root.get("customerId").as(Long.class), param.getCustomerId()));
+			}
+			// 按客户名称
+			if (!StringUtils.isEmpty(param.getCustomerName())) {
+				predicate.add(cb.like(root.get("customerName").as(String.class), "%" + param.getCustomerName() + "%"));
 			}
 			// 按产品id过滤
 			if (param.getProductId() != null) {
@@ -80,18 +93,22 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	}
 
 	@Override
-	public Packing addPacking(Packing packing) {            
-		packing.setFlag(0);
+	public Packing addPacking(Packing packing) {	            
 		packing.setPackingDate(packing.getPackingDate()!=null ? packing.getPackingDate() : new Date());
 		// 新增子单
 		if (!StringUtils.isEmpty(packing.getChildPacking())) { 
 			JSONArray jsonArray = JSON.parseArray(packing.getChildPacking());
 			for (int i = 0; i < jsonArray.size(); i++) {
 				PackingChild packingChild = new PackingChild();
+				packingChild.setFlag(0);
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				packingChild.setBacthNumber(jsonObject.getString("bacthNumber"));
 				packingChild.setProductId(jsonObject.getLong("productId"));
+				packingChild.setSendGoodsId(jsonObject.getLong("sendGoodsId"));
 				packingChild.setCount(jsonObject.getInteger("count"));
+				SendGoods sendGoods = sendGoodsDao.findOne(jsonObject.getLong("sendGoodsId"));
+				sendGoods.setSendNumber(sendGoods.getNumber()+packingChild.getCount());
+				sendGoodsDao.save(sendGoods);
 				packing.getPackingChilds().add(packingChild);
 			}
 		}
@@ -100,7 +117,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	}
 
 	@Override
-	public int sendPacking(String ids) {
+	public int sendPacking(String ids,Date time) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) { 
 			String [] idStrings = ids.split(",");
@@ -108,19 +125,64 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				Long idLong = Long.valueOf(id);
 				Packing packing = dao.findOne(idLong);
 				List<PackingChild> packingChildList = packing.getPackingChilds();
-				for(PackingChild pChild : packingChildList){
-					SendGoods sendGoods = sendGoodsDao.findByBacthNumberAndCustomerId(pChild.getBacthNumber(), packing.getCustomerId());
-					sendGoods.setSendNumber(sendGoods.getSendNumber()+pChild.getCount());
-					
-					
-					sendGoodsDao.save(sendGoods);
+				for(PackingChild pc : packingChildList){
+					pc.setSendDate(time);
+					pc.setFlag(1);
+					//判定是否拥有版权
+					if(pc.getProduct().getName().contains(Constants.LX) 
+							||pc.getProduct().getName().contains(Constants.KT)
+							||pc.getProduct().getName().contains(Constants.MW)
+							||pc.getProduct().getName().contains(Constants.BM)
+							||pc.getProduct().getName().contains(Constants.LP)
+							||pc.getProduct().getName().contains(Constants.AB)
+							||pc.getProduct().getName().contains(Constants.ZMJ)
+							||pc.getProduct().getName().contains(Constants.XXYJN)){
+						pc.setCopyright(true);	
+					}
+					//判定是否更换客户发货，更换客户发货变成新批次，->Y
+					Order order = orderDao.findByBacthNumber(pc.getBacthNumber());
+					if(order.getCustomerId()!=pc.getPacking().getCustomerId()){
+						
+						
+					}
 				}
 				
-				packing.setFlag(1);
+				
 				dao.save(packing);
 				count++;
 			}
 		}
 		return count;
 	}
+
+	@Override
+	public PageResult<PackingChild> findPackingChildPage(PackingChild packingChild, PageParameter page) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+//	@Override
+//	public PageResult<PackingChild> findPackingChildPage(PackingChild param, PageParameter page) {
+//		Page<PackingChild> pages = packingChildDao.findAll((root, query, cb) -> {
+//			List<Predicate> predicate = new ArrayList<>();
+//			// 按id过滤
+//			if (param.getId() != null) {
+//				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
+//			}
+//			// 按产品id过滤
+//			if (param.getProductId() != null) {
+//				predicate.add(cb.equal(root.get("productId").as(Long.class), param.getProductId()));
+//			}
+//			// 按批次查找
+//			if (!StringUtils.isEmpty(param.getBacthNumber())) {
+//				predicate.add(cb.like(root.get("packingChilds").get("bacthNumber").as(String.class),
+//						"%" + param.getBacthNumber() + "%"));
+//			}
+//			Predicate[] pre = new Predicate[predicate.size()];
+//			query.where(predicate.toArray(pre));
+//			return null;
+//		}, page);
+//		PageResult<Packing> result = new PageResult<>(pages, page);
+//		return result;
+//	}
 }

@@ -108,7 +108,7 @@ public class Constants {
     public static String  MW = "漫威";
     public static String  BM = "哔莫";
     public static String  LP = "老皮";
-    public static String  AP = "阿宝";
+    public static String  AB = "阿宝";
     public static String  ZMJ = "芝麻街";
     public static String  XXYJN = "熊熊遇见你";
 

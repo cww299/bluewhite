@@ -36,17 +36,20 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
 			// 按客户id过滤
-			if (param.getCustomrId() != null) {
-				predicate.add(cb.equal(root.get("customrId").as(Long.class), param.getCustomrId()));
+			if (param.getCustomerId() != null) {
+				predicate.add(cb.equal(root.get("customerId").as(Long.class), param.getCustomerId()));
 			}
-
+			// 按客户名称
+			if (!StringUtils.isEmpty(param.getCustomerName())) {
+				predicate.add(cb.like(root.get("customerName").as(String.class), "%" + param.getCustomerName() + "%"));
+			}
 			// 按批次
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
 				predicate.add(cb.like(root.get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
 			}
 			// 按下单日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
-				predicate.add(cb.between(root.get("packingDate").as(Date.class), param.getOrderTimeBegin(),
+				predicate.add(cb.between(root.get("orderDate").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
@@ -67,7 +70,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Order order = dao.findOne(id);
-					order.setCustomrId(null);
+					order.setCustomerId(null);
 					dao.delete(order); 
 					count++;
 				}
@@ -88,10 +91,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				orderNew.setOrderDate(order.getOrderDate()!=null ? order.getOrderDate() : new Date());
 				orderNew.setBacthNumber(jsonObject.getString("bacthNumber"));
 				orderNew.setProductId(jsonObject.getLong("productId"));
-				orderNew.setCustomrId(order.getCustomrId());
+				orderNew.setCustomerId(order.getCustomerId());
 				orderNew.setNumber(jsonObject.getInteger("number"));
 				orderNew.setPrice(jsonObject.getDouble("price"));
 				orderNew.setRemark(jsonObject.getString("remark"));
+				orderNew.setOrderDate(jsonObject.getDate("orderDate")!= null ? jsonObject.getDate("orderDate"): new Date());
 				orderList.add(orderNew);
 			}
 		}
@@ -111,8 +115,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				predicate.add(cb.like(root.get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
 			}
 			// 按客户id过滤
-			if (param.getCustomrId() != null) {
-				predicate.add(cb.equal(root.get("customrId").as(Long.class), param.getCustomrId()));
+			if (param.getCustomerId() != null) {
+				predicate.add(cb.equal(root.get("customrId").as(Long.class), param.getCustomerId()));
 			}
 			// 按下单日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
