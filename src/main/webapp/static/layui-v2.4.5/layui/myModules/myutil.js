@@ -134,7 +134,7 @@ layui.define(['jquery','layer','form'],function(exports){
 		var ajax = {
 			url : options.url,
 			type : options.type || 'get',
-			async : options.async || true,
+			async : (options.async==false?false:true),
 			data : options.data || {},
 			success : function(r){
 				if(r.code == 0){
