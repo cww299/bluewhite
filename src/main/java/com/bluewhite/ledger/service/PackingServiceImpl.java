@@ -156,33 +156,27 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	}
 
 	@Override
-	public PageResult<PackingChild> findPackingChildPage(PackingChild packingChild, PageParameter page) {
-		// TODO Auto-generated method stub
-		return null;
+	public PageResult<PackingChild> findPackingChildPage(PackingChild param, PageParameter page) {
+		Page<PackingChild> pages = packingChildDao.findAll((root, query, cb) -> {
+			List<Predicate> predicate = new ArrayList<>();
+			// 按id过滤
+			if (param.getId() != null) {
+				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
+			}
+			// 按产品id过滤
+			if (param.getProductId() != null) {
+				predicate.add(cb.equal(root.get("productId").as(Long.class), param.getProductId()));
+			}
+			// 按批次查找
+			if (!StringUtils.isEmpty(param.getBacthNumber())) {
+				predicate.add(cb.like(root.get("packingChilds").get("bacthNumber").as(String.class),
+						"%" + param.getBacthNumber() + "%"));
+			}
+			Predicate[] pre = new Predicate[predicate.size()];
+			query.where(predicate.toArray(pre));
+			return null;
+		}, page);
+		PageResult<PackingChild> result = new PageResult<>(pages, page);
+		return result;
 	}
-
-//	@Override
-//	public PageResult<PackingChild> findPackingChildPage(PackingChild param, PageParameter page) {
-//		Page<PackingChild> pages = packingChildDao.findAll((root, query, cb) -> {
-//			List<Predicate> predicate = new ArrayList<>();
-//			// 按id过滤
-//			if (param.getId() != null) {
-//				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
-//			}
-//			// 按产品id过滤
-//			if (param.getProductId() != null) {
-//				predicate.add(cb.equal(root.get("productId").as(Long.class), param.getProductId()));
-//			}
-//			// 按批次查找
-//			if (!StringUtils.isEmpty(param.getBacthNumber())) {
-//				predicate.add(cb.like(root.get("packingChilds").get("bacthNumber").as(String.class),
-//						"%" + param.getBacthNumber() + "%"));
-//			}
-//			Predicate[] pre = new Predicate[predicate.size()];
-//			query.where(predicate.toArray(pre));
-//			return null;
-//		}, page);
-//		PageResult<Packing> result = new PageResult<>(pages, page);
-//		return result;
-//	}
 }
