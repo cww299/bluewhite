@@ -197,6 +197,12 @@ layui.define(['jquery','layer','form'],function(exports){
 			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
 		})
 	};
-	
+	myutil.keyDownEntry = function(callback){
+		document.onkeydown = function(event) { 
+			if (event.keyCode == "13") {
+	            callback && callback();
+	        }
+		} 
+	}
 	exports('myutil',myutil);
 })
