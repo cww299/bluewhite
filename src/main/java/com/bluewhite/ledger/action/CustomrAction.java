@@ -59,6 +59,24 @@ public class CustomrAction {
 		cr.setMessage("查询成功");
 		return cr;
 	}
+	
+	/**
+	 * 
+	 * 查看客户
+	 * 
+	 * @param request
+	 *            请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/ledger/allCustomr", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse allCustomr() {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSON.format(customrService.findAll()).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
 
 	/**
 	 * 客户新增
@@ -87,9 +105,9 @@ public class CustomrAction {
 	 */
 	@RequestMapping(value = "/ledger/deleteCustomr", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse addCustomr(String ids) {
+	public CommonResponse deleteCustomr(String ids) {
 		CommonResponse cr = new CommonResponse();
-		int count = customrService.delete(ids);
+		int count = customrService.deleteCustomr(ids);
 		cr.setMessage("成功删除" + count + "个客户");
 		return cr;
 	}
