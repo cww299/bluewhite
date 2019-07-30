@@ -36,7 +36,7 @@ public class Order extends BaseEntity<Long>{
 	 * 客户
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "customr_id", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Customer customer;
 	
 	
