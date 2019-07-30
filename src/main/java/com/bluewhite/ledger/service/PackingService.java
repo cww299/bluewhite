@@ -1,9 +1,12 @@
 package com.bluewhite.ledger.service;
 
+import java.util.Date;
+
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.entity.Packing;
+import com.bluewhite.ledger.entity.PackingChild;
 
 public interface PackingService extends BaseCRUDService<Packing, Long>{
 	/**
@@ -28,10 +31,18 @@ public interface PackingService extends BaseCRUDService<Packing, Long>{
 	public Packing addPacking(Packing packing);
 	
 	/**
-	 * 一键发货
+	 * 一键发货(发货时，加上版权和调拨批次)
 	 * @param ids
 	 * @return
 	 */
-	public int sendPacking(String ids);
+	public int sendPacking(String ids,Date time);
+	
+	/**
+	 * 查看实际发货单
+	 * @param packingChild
+	 * @param page
+	 * @return
+	 */
+	public PageResult<PackingChild> findPackingChildPage(PackingChild packingChild, PageParameter page);
 
 }

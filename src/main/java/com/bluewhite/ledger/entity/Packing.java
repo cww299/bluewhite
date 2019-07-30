@@ -67,19 +67,6 @@ public class Packing extends BaseEntity<Long> {
 	@Column(name = "packing_date")
 	private Date packingDate;
 	
-	
-	/**
-	 * 发货时间
-	 */
-	@Column(name = "send_date")
-	private Date sendDate;
-	
-	/**
-	 * 是否发货
-	 */
-	@Column(name = "flag")
-	private Integer flag;
-	
 	/**
 	 * 批次号
 	 */
@@ -109,23 +96,20 @@ public class Packing extends BaseEntity<Long> {
 	@Transient
 	private String childPacking;
 	
+	/**
+	 * 客户name
+	 * 
+	 */
+	@Transient
+	private String customerName;
 	
-	
 
-	public Date getSendDate() {
-		return sendDate;
+	public String getCustomerName() {
+		return customerName;
 	}
 
-	public void setSendDate(Date sendDate) {
-		this.sendDate = sendDate;
-	}
-
-	public Integer getFlag() {
-		return flag;
-	}
-
-	public void setFlag(Integer flag) {
-		this.flag = flag;
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
 	}
 
 	public String getChildPacking() {

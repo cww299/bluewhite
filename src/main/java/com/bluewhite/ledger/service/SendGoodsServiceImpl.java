@@ -53,11 +53,6 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 
 	@Override
 	public SendGoods addSendGoods(SendGoods sendGoods) {
-		
-		
-		
-		
-		
 		return dao.save(sendGoods);
 	}
 

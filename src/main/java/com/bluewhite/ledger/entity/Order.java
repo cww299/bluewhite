@@ -25,17 +25,11 @@ public class Order extends BaseEntity<Long>{
 	
 	
 	/**
-	 * 销售编号 
-	 */
-	@Column(name = "sale_number")
-	private String saleNumber;
-	
-	/**
 	 * 客户id
 	 * 
 	 */
-	@Column(name = "customr_id")
-	private Long customrId;
+	@Column(name = "customer_id")
+	private Long customerId;
 	
 
 	/**
@@ -97,6 +91,13 @@ public class Order extends BaseEntity<Long>{
 	private Double price;
 	
 	/**
+	 * 客户name
+	 * 
+	 */
+	@Transient
+	private String customerName;
+	
+	/**
 	 * 批量新增
 	 */
 	@Transient
@@ -116,6 +117,16 @@ public class Order extends BaseEntity<Long>{
 	
 	    
 	
+	public String getCustomerName() {
+		return customerName;
+	}
+
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+
 	public String getOrderChild() {
 		return orderChild;
 	}
@@ -174,22 +185,15 @@ public class Order extends BaseEntity<Long>{
 	public void setOrderDate(Date orderDate) {
 		this.orderDate = orderDate;
 	}
-	public Long getCustomrId() {
-		return customrId;
+
+
+	public Long getCustomerId() {
+		return customerId;
 	}
 
 
-	public void setCustomrId(Long customrId) {
-		this.customrId = customrId;
-	}
-
-	public String getSaleNumber() {
-		return saleNumber;
-	}
-
-
-	public void setSaleNumber(String saleNumber) {
-		this.saleNumber = saleNumber;
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
 	}
 
 

@@ -6,6 +6,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.product.product.entity.Product;
@@ -64,9 +65,24 @@ public class SendGoods extends BaseEntity<Long>{
 	@Column(name = "send_number")
 	private Integer sendNumber;
 	
+	/**
+	 * 剩余数量
+	 */
+	@Transient
+	private Integer surplusNumber;
+	
+	
 	
 	
 
+
+	public Integer getSurplusNumber() {
+		return number-sendNumber;
+	}
+
+	public void setSurplusNumber(Integer surplusNumber) {
+		this.surplusNumber = surplusNumber;
+	}
 
 	public Integer getSendNumber() {
 		return sendNumber;
@@ -75,10 +91,6 @@ public class SendGoods extends BaseEntity<Long>{
 	public void setSendNumber(Integer sendNumber) {
 		this.sendNumber = sendNumber;
 	}
-
-
-
-
 
 	public Long getCustomerId() {
 		return customerId;

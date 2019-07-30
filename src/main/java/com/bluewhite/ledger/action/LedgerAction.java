@@ -1,6 +1,7 @@
 package com.bluewhite.ledger.action;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -43,52 +44,54 @@ public class LedgerAction {
 	@Autowired
 	private OrderService orderService;
 
+
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Packing.class,"id",  "number", "customer","packingMaterials","packingChilds","packingDate")
-				.addRetainTerm(Customer.class,"id",  "name")
-				.addRetainTerm(PackingChild.class,"id", "bacthNumber", "product","count")
-				.addRetainTerm(Product.class, "id", "name","number")
-				.addRetainTerm(BaseData.class,"id",  "name");
+				.addRetainTerm(Packing.class, "id", "number", "customer", "packingMaterials", "packingChilds",
+						"packingDate")
+				.addRetainTerm(Customer.class, "id", "name")
+				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count")
+				.addRetainTerm(Product.class, "id", "name", "number").addRetainTerm(BaseData.class, "id", "name");
 	}
-	
+
 	private ClearCascadeJSON clearCascadeJSON1;
 	{
 		clearCascadeJSON1 = ClearCascadeJSON.get()
-				.addRetainTerm(SendGoods.class, "id", "customer","bacthNumber","product","number")
-				.addRetainTerm(Customer.class, "id", "name")
-				.addRetainTerm(Product.class, "name","number");
+				.addRetainTerm(SendGoods.class, "id", "customer", "bacthNumber", "product", "number", "sendNumber",
+						"surplusNumber")
+				.addRetainTerm(Customer.class, "id", "name").addRetainTerm(Product.class, "name", "number");
 	}
-	
+
 	private ClearCascadeJSON clearCascadeJSONOrder;
 	{
 		clearCascadeJSONOrder = ClearCascadeJSON.get()
-				.addRetainTerm(Order.class, "id", "remark","orderDate","customer","bacthNumber","product","number","price")
-				.addRetainTerm(Customer.class,"id", "name")
-				.addRetainTerm(Product.class, "id", "name","number");
+				.addRetainTerm(Order.class, "id", "remark", "orderDate", "customer", "bacthNumber", "product", "number",
+						"price")
+				.addRetainTerm(Customer.class, "id", "name").addRetainTerm(Product.class, "id", "name", "number");
 	}
-	
-	
+
 	/**
 	 * 分页查看订单
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/orderPage", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse orderPage(PageParameter page,Order order) {
+	public CommonResponse orderPage(PageParameter page, Order order) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(clearCascadeJSONOrder.format(orderService.findPages(order, page)).toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 查看订单
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/getOrder", method = RequestMethod.GET)
@@ -99,88 +102,119 @@ public class LedgerAction {
 		cr.setMessage("查看成功");
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 新增订单
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/addOrder", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addOrder(Order order) { 
+	public CommonResponse addOrder(Order order) {
 		CommonResponse cr = new CommonResponse();
 		orderService.addOrder(order);
- 		cr.setMessage("新增成功");
+		cr.setMessage("新增成功");
 		return cr;
 	}
-	
+
+	/**
+	 * 修改订单
+	 * 
+	 * @param request
+	 *            请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/updateOrder", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateOrder(Order order) {
+		CommonResponse cr = new CommonResponse();
+		orderService.save(order);
+		cr.setMessage("修改成功");
+		return cr;
+	}
+
 	/**
 	 * 删除订单
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/deleteOrder", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteOrder(String ids) { 
+	public CommonResponse deleteOrder(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = orderService.deleteOrder(ids);
- 		cr.setMessage("成功删除"+count+"订单合同");
+		cr.setMessage("成功删除" + count + "订单合同");
 		return cr;
 	}
-	
 
-	
 	/**
 	 * 分页查看贴包单
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/packingPage", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getPacking(PageParameter page,Packing packing) {
+	public CommonResponse packingPage(PageParameter page, Packing packing) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(clearCascadeJSON.format(packingService.findPages(packing, page)).toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
-	
+
+	/**
+	 * 分页查看贴包子单（实际发货单）
+	 * 
+	 * @param request
+	 *            请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/packingChildPage", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse packingChildPage(PageParameter page, PackingChild packingChild) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSON.format(packingService.findPackingChildPage(packingChild, page)).toJSON());
+		cr.setMessage("查看成功");
+		return cr;
+	}
+
 	/**
 	 * 新增贴包单
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/addPacking", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addPacking(Packing packing) { 
+	public CommonResponse addPacking(Packing packing) {
 		CommonResponse cr = new CommonResponse();
 		packingService.addPacking(packing);
- 		cr.setMessage("新增成功");
+		cr.setMessage("新增成功");
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 出货贴包单
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/sendPacking", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse sendPacking(String ids) { 
+	public CommonResponse sendPacking(String ids, Date time) {
 		CommonResponse cr = new CommonResponse();
-		int count = packingService.sendPacking(ids);
- 		cr.setMessage("成功发货"+count+"条");
+		int count = packingService.sendPacking(ids, time);
+		cr.setMessage("成功发货" + count + "条");
 		return cr;
 	}
-	
-	
-	
+
 	/**
 	 * 获取编号
 	 * 
@@ -194,27 +228,28 @@ public class LedgerAction {
 		cr.setMessage("新增成功");
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 查看待发货单
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/getSendGoods", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getSendGoods(PageParameter page,SendGoods sendGoods) {
+	public CommonResponse getSendGoods(PageParameter page, SendGoods sendGoods) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(clearCascadeJSON1.format(sendGoodsService.findPages(sendGoods, page)).toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 通过条件查找待发货单
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/getSearchSendGoods", method = RequestMethod.GET)
@@ -225,28 +260,28 @@ public class LedgerAction {
 		cr.setMessage("查看成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 新增待发货单
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/addSendGoods", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addSendGoods(SendGoods sendGoods) { 
+	public CommonResponse addSendGoods(SendGoods sendGoods) {
 		CommonResponse cr = new CommonResponse();
 		sendGoodsService.addSendGoods(sendGoods);
- 		cr.setMessage("新增成功");
+		cr.setMessage("新增成功");
 		return cr;
 	}
-	
-	
+
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
 		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(DateTimePattern.DATEHMS.getPattern());
 		binder.registerCustomEditor(java.util.Date.class, null, new CustomDateEditor(dateTimeFormat, true));
 		binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
 	}
-	
+
 }
