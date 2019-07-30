@@ -76,7 +76,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	}
 
 	@Override
-	public Packing addPacking(Packing packing) {
+	public Packing addPacking(Packing packing) {            
 		packing.setFlag(0);
 		packing.setPackingDate(packing.getPackingDate()!=null ? packing.getPackingDate() : new Date());
 		// 新增子单

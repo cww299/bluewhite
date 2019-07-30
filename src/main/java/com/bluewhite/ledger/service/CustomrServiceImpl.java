@@ -15,6 +15,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.dao.CustomrDao;
 import com.bluewhite.ledger.entity.Customr;
+import com.bluewhite.ledger.entity.Packing;
 @Service
 public class CustomrServiceImpl extends BaseServiceImpl<Customr, Long> implements CustomrService{
 	
@@ -44,9 +45,18 @@ public class CustomrServiceImpl extends BaseServiceImpl<Customr, Long> implement
 
 	@Override
 	public int deleteCustomr(String ids) {
-		
-		
-		return 0;
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) { 
+			String [] idStrings = ids.split(",");
+			for(String id : idStrings){
+				Long idLong = Long.valueOf(id);
+				Customr customr = dao.findOne(idLong);
+				customr.setUserId(null);
+				dao.delete(customr);
+				count++;
+			}
+		}
+		return count;
 	}
 
 	
