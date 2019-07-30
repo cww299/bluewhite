@@ -16,8 +16,8 @@ import com.bluewhite.system.user.entity.User;
  *
  */
 @Entity
-@Table(name = "ledger_customr")
-public class Customr extends BaseEntity<Long> {
+@Table(name = "ledger_customer")
+public class Customer extends BaseEntity<Long> {
 	
 	/**
 	 * 销售人员id

@@ -19,14 +19,18 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.dao.PackingDao;
+import com.bluewhite.ledger.dao.SendGoodsDao;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
+import com.bluewhite.ledger.entity.SendGoods;
 
 @Service
 public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implements PackingService {
 
 	@Autowired
 	private PackingDao dao;
+	@Autowired
+	private SendGoodsDao sendGoodsDao;
 
 	@Override
 	public PageResult<Packing> findPages(Packing param, PageParameter page) {
@@ -37,8 +41,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
 			// 按客户id过滤
-			if (param.getCustomrId() != null) {
-				predicate.add(cb.equal(root.get("customrId").as(Long.class), param.getCustomrId()));
+			if (param.getCustomerId() != null) {
+				predicate.add(cb.equal(root.get("customerId").as(Long.class), param.getCustomerId()));
 			}
 			// 按产品id过滤
 			if (param.getProductId() != null) {
@@ -103,6 +107,15 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			for(String id : idStrings){
 				Long idLong = Long.valueOf(id);
 				Packing packing = dao.findOne(idLong);
+				
+				List<PackingChild> packingChildList = packing.getPackingChilds();
+				
+				for(PackingChild pChild : packingChildList){
+					SendGoods sendGoods = sendGoodsDao.findByBacthNumberAndCustomerId(pChild.getBacthNumber(), packing.getCustomerId());
+					
+					
+				}
+				
 				packing.setFlag(1);
 				dao.save(packing);
 				count++;

@@ -17,7 +17,7 @@ import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.ledger.entity.Customr;
+import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
@@ -46,8 +46,8 @@ public class LedgerAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Packing.class, "number", "customr","packingMaterials","packingChilds","packingDate")
-				.addRetainTerm(Customr.class, "name")
+				.addRetainTerm(Packing.class, "number", "customer","packingMaterials","packingChilds","packingDate")
+				.addRetainTerm(Customer.class, "name")
 				.addRetainTerm(PackingChild.class, "bacthNumber", "product","count")
 				.addRetainTerm(Product.class, "name")
 				.addRetainTerm(BaseData.class, "name");
@@ -56,16 +56,16 @@ public class LedgerAction {
 	private ClearCascadeJSON clearCascadeJSON1;
 	{
 		clearCascadeJSON1 = ClearCascadeJSON.get()
-				.addRetainTerm(SendGoods.class, "customr","bacthNumber","product","number")
-				.addRetainTerm(Customr.class, "name")
+				.addRetainTerm(SendGoods.class, "customer","bacthNumber","product","number")
+				.addRetainTerm(Customer.class, "name")
 				.addRetainTerm(Product.class, "name");
 	}
 	
 	private ClearCascadeJSON clearCascadeJSONOrder;
 	{
 		clearCascadeJSONOrder = ClearCascadeJSON.get()
-				.addRetainTerm(Order.class, "remark","orderDate","customr","bacthNumber","product","number","price")
-				.addRetainTerm(Customr.class, "name")
+				.addRetainTerm(Order.class, "remark","orderDate","customer","bacthNumber","product","number","price")
+				.addRetainTerm(Customer.class, "name")
 				.addRetainTerm(Product.class, "name");
 	}
 	

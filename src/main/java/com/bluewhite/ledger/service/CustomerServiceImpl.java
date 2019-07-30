@@ -13,18 +13,17 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.ledger.dao.CustomrDao;
-import com.bluewhite.ledger.entity.Customr;
-import com.bluewhite.ledger.entity.Packing;
+import com.bluewhite.ledger.dao.CustomerDao;
+import com.bluewhite.ledger.entity.Customer;
 @Service
-public class CustomrServiceImpl extends BaseServiceImpl<Customr, Long> implements CustomrService{
+public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> implements CustomerService{
 	
 	@Autowired
-	private CustomrDao dao;
+	private CustomerDao dao;
 
 	@Override
-	public PageResult<Customr> findPages(Customr param, PageParameter page) {
-		Page<Customr> pages = dao.findAll((root, query, cb) -> {
+	public PageResult<Customer> findPages(Customer param, PageParameter page) {
+		Page<Customer> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按类型过滤
 			if (param.getType() != null) {
@@ -39,7 +38,7 @@ public class CustomrServiceImpl extends BaseServiceImpl<Customr, Long> implement
 			query.where(predicate.toArray(pre));
 			return null;
 		}, page);
-		PageResult<Customr> result = new PageResult<>(pages, page);
+		PageResult<Customer> result = new PageResult<>(pages, page);
 		return result;
 	}
 
@@ -50,9 +49,9 @@ public class CustomrServiceImpl extends BaseServiceImpl<Customr, Long> implement
 			String [] idStrings = ids.split(",");
 			for(String id : idStrings){
 				Long idLong = Long.valueOf(id);
-				Customr customr = dao.findOne(idLong);
-				customr.setUserId(null);
-				dao.delete(customr);
+				Customer customer = dao.findOne(idLong);
+				customer.setUserId(null);
+				dao.delete(customer);
 				count++;
 			}
 		}

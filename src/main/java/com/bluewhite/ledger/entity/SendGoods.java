@@ -22,15 +22,15 @@ public class SendGoods extends BaseEntity<Long>{
 	 * 客户id
 	 * 
 	 */
-	@Column(name = "customr_id")
-	private Long customrId;
+	@Column(name = "customer_id")
+	private Long customerId;
 
 	/**
 	 * 客户
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "customr_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Customr customr;
+	private Customer customer;
 
 	/**
 	 * 批次号
@@ -76,20 +76,24 @@ public class SendGoods extends BaseEntity<Long>{
 		this.sendNumber = sendNumber;
 	}
 
-	public Long getCustomrId() {
-		return customrId;
+
+
+
+
+	public Long getCustomerId() {
+		return customerId;
 	}
 
-	public void setCustomrId(Long customrId) {
-		this.customrId = customrId;
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
 	}
 
-	public Customr getCustomr() {
-		return customr;
+	public Customer getCustomer() {
+		return customer;
 	}
 
-	public void setCustomr(Customr customr) {
-		this.customr = customr;
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 
 	public String getBacthNumber() {

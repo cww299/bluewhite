@@ -19,7 +19,7 @@ import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.ledger.dao.ActualpriceDao;
-import com.bluewhite.ledger.dao.CustomrDao;
+import com.bluewhite.ledger.dao.CustomerDao;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.service.ActualpriceService;
@@ -56,7 +56,7 @@ public class ReportExportServiceImpl implements ReportExportService {
 	@Autowired
 	private ActualpriceService actualpriceService;
 	@Autowired
-	private CustomrDao contactDao;
+	private CustomerDao contactDao;
 	@Autowired
 	private BaseDataService baseDataService;
 
