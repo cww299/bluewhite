@@ -920,7 +920,7 @@ layui.config({
 		}
 		function getAllUser(){
 			$.ajax({
-				url:'${ctx}/system/user/pages?size=99',
+				url:'${ctx}/system/user/pages?size=99&quit=0',
 				success:function(r){
 					if(0==r.code){
 						for(var i=0;i<r.data.rows.length;i++)
