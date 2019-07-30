@@ -20,8 +20,6 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.entity.Order;
-import com.bluewhite.ledger.entity.PackingChild;
-import com.mysql.fabric.xmlrpc.base.Array;
 
 @Service
 public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements OrderService {
@@ -69,11 +67,13 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Order order = dao.findOne(id);
+					order.setCustomrId(null);
+					dao.delete(order); 
+					count++;
 				}
 			}
 		}
 		return count;
-
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				orderNew.setOrderDate(order.getOrderDate()!=null ? order.getOrderDate() : new Date());
 				orderNew.setBacthNumber(jsonObject.getString("bacthNumber"));
 				orderNew.setProductId(jsonObject.getLong("productId"));
-				orderNew.setCustomrId(jsonObject.getLong("customrId"));
+				orderNew.setCustomrId(order.getCustomrId());
 				orderNew.setNumber(jsonObject.getInteger("number"));
 				orderNew.setPrice(jsonObject.getDouble("price"));
 				orderNew.setRemark(jsonObject.getString("remark"));

@@ -2,8 +2,6 @@ package com.bluewhite.ledger.service;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
