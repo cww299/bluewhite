@@ -74,5 +74,10 @@ public interface AttendanceTimeService extends BaseCRUDService<AttendanceTime,Lo
 	 * @param attendanceTime
 	 */
 	public List<Map<String, Object>> syncAttendanceTimeCollect(AttendanceTime attendanceTime)  throws ParseException;
+	
+	/**
+	 * 车间人员根据填写考勤情况和打卡考勤汇总进行对比
+	 */
+	public void workshopAttendanceContrast(AttendanceTime attendanceTime);
 
 }
