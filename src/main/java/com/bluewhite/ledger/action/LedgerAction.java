@@ -61,10 +61,17 @@ public class LedgerAction {
 		clearCascadeJSONChild = ClearCascadeJSON.get()
 				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count"
 						,"packing","price","count","sumPrice","copyright"
-						,"saleNumber","sendDate","flag")
-				.addRetainTerm(Packing.class, "id", "customer")
+						,"saleNumber","sendDate","flag","customer")
 				.addRetainTerm(Customer.class, "id", "name","user")
 				.addRetainTerm(User.class, "id", "userName")
+				.addRetainTerm(Product.class, "id", "name", "number");
+	}
+	
+	private ClearCascadeJSON clearCascadeJSONPricce;
+	{
+		clearCascadeJSONPricce = ClearCascadeJSON.get()
+				.addRetainTerm(PackingChild.class, "id","product","price","customer")
+				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(Product.class, "id", "name", "number");
 	}
 
@@ -197,6 +204,36 @@ public class LedgerAction {
 		cr.setMessage("成功发货" + count + "条");
 		return cr;
 	}
+	
+	
+	/**
+	 * 删除贴包单
+	 * 
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/deletePacking", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deletePacking(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = packingService.deletePacking(ids);
+		cr.setMessage("成功删除" + count + "条贴包单");
+		return cr;
+	}
+	
+	
+	/**
+	 * 删除贴包子单
+	 * 
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/deletePackingChild", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deletePackingChild(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = packingService.deletePackingChild(ids);
+		cr.setMessage("成功删除" + count + "条贴包单");
+		return cr;
+	}
 
 	/**
 	 * 获取编号
@@ -258,6 +295,21 @@ public class LedgerAction {
 		return cr;
 	}
 	
+	/**
+	 * 删除待发货单
+	 * 
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/deleteSendGoods", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteSendGoods(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = sendGoodsService.deleteSendGoods(ids);
+		cr.setMessage("成功删除" + count + "待发货单");
+		return cr;
+	}
+
+	
 	
 	/***************************** 财务 **********************************/
 	
@@ -275,6 +327,19 @@ public class LedgerAction {
 	}
 	
 	/**
+	 * 修改贴包子单（实际发货单）
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/updatePackingChild", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updatePackingChild(PackingChild packingChild) {
+		CommonResponse cr = new CommonResponse();
+		cr.setMessage("查看成功");
+		return cr;
+	}
+	
+	
+	/**
 	 * 根据产品和客户查找以往价格
 	 * @param page
 	 * @param packingChild
@@ -284,10 +349,12 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse getPackingChildPrice(PageParameter page, PackingChild packingChild) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONChild.format(packingService.findPackingChildPage(packingChild, page)).toJSON());
+		cr.setData(clearCascadeJSONPricce.format(packingService.getPackingChildPrice(packingChild)).toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
+	
+	
 	
 
 	@InitBinder

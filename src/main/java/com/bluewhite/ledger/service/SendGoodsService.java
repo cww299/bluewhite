@@ -30,4 +30,11 @@ public interface SendGoodsService extends BaseCRUDService<SendGoods,Long>{
 	 */
 	public List<SendGoods> findLists(SendGoods sendGoods);
 
+	/**
+	 * 批量删除
+	 * @param ids
+	 * @return
+	 */
+	public int deleteSendGoods(String ids);
+
 }

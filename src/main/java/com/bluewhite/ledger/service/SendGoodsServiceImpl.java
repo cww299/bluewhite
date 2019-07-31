@@ -8,14 +8,17 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.dao.PackingChildDao;
 import com.bluewhite.ledger.dao.SendGoodsDao;
+import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.SendGoods;
 
@@ -67,6 +70,9 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			if(sendGoodsList.size()>0){
 				throw new ServiceException("该待发货单已有贴包发货单，无法修改，请先核对贴包发货单");
 			}
+			SendGoods ot = dao.findOne(sendGoods.getId());
+			BeanCopyUtils.copyNotEmpty(sendGoods, ot, "");
+			sendGoods = ot;
 		}else{
 			sendGoods.setSendNumber(0);
 		}
@@ -107,5 +113,28 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			return null;
 		});
 		return result;
+	}
+
+	@Override
+	@Transactional
+	public int deleteSendGoods(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					List<PackingChild> sendGoodsList = packingChildDao.findBySendGoodsId(id);
+					if(sendGoodsList.size()>0){
+						throw new ServiceException("该待发货单已有贴包发货单，无法删除，请先核对贴包发货单");
+					}
+					SendGoods sendGoods = dao.findOne(id);
+					sendGoods.setCustomerId(null);
+					dao.delete(sendGoods); 
+					count++;
+				}
+			}
+		}
+		return count;
 	}
 }

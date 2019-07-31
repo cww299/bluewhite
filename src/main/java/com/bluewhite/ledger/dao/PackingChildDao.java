@@ -7,6 +7,15 @@ import java.util.List;
 
 public interface PackingChildDao  extends BaseRepository<PackingChild, Long>{
 
-	List<PackingChild> findBySendGoodsId(Long sendgoodsid);
+	/**
+	 * 根据待发货单id
+	 * @param sendgoodsid
+	 * @return
+	 */
+	List<PackingChild> findBySendGoodsId(Long sendGoodsId);
 	
+	/**
+	 * 按产品和客户查找
+	 */
+	List<PackingChild> findByProductIdAndCustomerId(Long productId,Long customerId);
 }

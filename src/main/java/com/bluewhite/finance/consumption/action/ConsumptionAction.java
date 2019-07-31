@@ -3,7 +3,6 @@ package com.bluewhite.finance.consumption.action;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -63,9 +62,7 @@ public class ConsumptionAction {
 	 * 分页查看
 	 * 
 	 * @param request
-	 *            请求
 	 * @return cr
-	 * @throws Exception
 	 */
 	@RequestMapping(value = "/fince/getConsumption", method = RequestMethod.GET)
 	@ResponseBody
@@ -83,9 +80,7 @@ public class ConsumptionAction {
 	 * 人事部汇总报销金额
 	 * 
 	 * @param request
-	 *            请求
 	 * @return cr
-	 * @throws Exception
 	 */
 	@RequestMapping(value = "/fince/countConsumptionMoney", method = RequestMethod.GET)  
 	@ResponseBody
@@ -103,9 +98,7 @@ public class ConsumptionAction {
 	 * （一）.未审核 1.填写页面可以修改
 	 * （二）.已审核 1.填写页面和出纳均不可修改
 	 * @param request
-	 *            请求
 	 * @return cr
-	 * @throws Exception
 	 */
 	@RequestMapping(value = "/fince/addConsumption", method = RequestMethod.POST)
 	@ResponseBody
@@ -143,9 +136,7 @@ public class ConsumptionAction {
 	/**
 	 * 财务审核放款
 	 * @param request
-	 *            请求
 	 * @return cr
-	 * @throws Exception
 	 */
 	@RequestMapping(value = "/fince/auditConsumption", method = RequestMethod.POST)
 	@ResponseBody
@@ -159,9 +150,7 @@ public class ConsumptionAction {
 	/**
 	 * 财务删除
 	 * @param request
-	 *            请求
 	 * @return cr
-	 * @throws Exception
 	 */
 	@RequestMapping(value = "/fince/deleteConsumption", method = RequestMethod.GET)
 	@ResponseBody
@@ -197,9 +186,7 @@ public class ConsumptionAction {
 	/**
 	 * 分頁获取客户
 	 * @param request
-	 *            请求
 	 * @return cr
-	 * @throws Exception
 	 */
 	@RequestMapping(value = "/fince/findCustomPage", method = RequestMethod.GET)
 	@ResponseBody
@@ -214,9 +201,7 @@ public class ConsumptionAction {
 	/**
 	 * 根据类型获取客户
 	 * @param request
-	 *            请求
 	 * @return cr
-	 * @throws Exception
 	 */
 	@RequestMapping(value = "/fince/findCustom", method = RequestMethod.GET)
 	@ResponseBody
@@ -231,9 +216,7 @@ public class ConsumptionAction {
 	/**
 	 * 根据类型
 	 * @param request
-	 *            请求
 	 * @return cr
-	 * @throws Exception
 	 */
 	@RequestMapping(value = "/fince/findCustomBytype", method = RequestMethod.GET)
 	@ResponseBody
@@ -248,9 +231,7 @@ public class ConsumptionAction {
 	/**
 	 * 删除客户
 	 * @param request
-	 *            请求
 	 * @return cr
-	 * @throws Exception
 	 */
 	@RequestMapping(value = "/fince/deleteCustom", method = RequestMethod.GET)
 	@ResponseBody
@@ -260,7 +241,6 @@ public class ConsumptionAction {
 		cr.setMessage("成功删除"+count+"条");
 		return cr;
 	}
-	
 	
 
 	@InitBinder
