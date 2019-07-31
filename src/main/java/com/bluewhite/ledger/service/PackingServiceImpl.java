@@ -259,4 +259,12 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 		}
 		return count;
 	}
+
+	@Override
+	public PackingChild updatePackingChild(PackingChild packingChild) {
+		
+		
+		
+		return null;
+	}
 }

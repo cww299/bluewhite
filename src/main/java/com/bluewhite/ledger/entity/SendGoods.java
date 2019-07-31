@@ -122,7 +122,7 @@ public class SendGoods extends BaseEntity<Long>{
 	}
 
 	public Integer getSurplusNumber() {
-		return number-sendNumber;
+		return (number == null || sendNumber==null) ? 0 : number-sendNumber;
 	}
 
 	public void setSurplusNumber(Integer surplusNumber) {

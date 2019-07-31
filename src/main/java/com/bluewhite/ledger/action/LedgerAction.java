@@ -334,6 +334,9 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse updatePackingChild(PackingChild packingChild) {
 		CommonResponse cr = new CommonResponse();
+		packingService.updatePackingChild(packingChild);
+		
+		
 		cr.setMessage("查看成功");
 		return cr;
 	}

@@ -67,5 +67,12 @@ public interface PackingService extends BaseCRUDService<Packing, Long>{
 	 * @return
 	 */
 	public int deletePackingChild(String ids);
+	
+	/**
+	 * 修改贴包子单（实际发货单）
+	 * @param packingChild
+	 * @return
+	 */
+	public PackingChild updatePackingChild(PackingChild packingChild);
 
 }
