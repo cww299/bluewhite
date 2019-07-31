@@ -1,6 +1,8 @@
 package com.bluewhite.personnel.roomboard.action;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -91,6 +93,22 @@ public class SingleMealAction {
 		return cr;
 	}
 	
+	/**
+	 * 汇总
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/getSingleSummary", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getSummaryMeal(HttpServletRequest request,PageParameter page,SingleMeal singleMeal) {
+		CommonResponse cr = new CommonResponse();
+		 List<Map<String, Object>> list = service.SingleSummary(singleMeal);
+		cr.setData(clearCascadeJSON.format(list).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
 	
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {

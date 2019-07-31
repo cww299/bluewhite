@@ -7,7 +7,6 @@
 
 <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 <script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
-
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -23,12 +22,12 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>姓名:</td>
-							<td><select class="form-control" id="singleMealConsumptionId" lay-search="true"  name="singleMealConsumptionId"></select></td>
-							<td>&nbsp;&nbsp;</td>
 							<td>日期:</td>
-							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							<td><input id="startTime"  name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
 							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td>物料:</td>
+							<td><select class="form-control" id="singleMealConsumptionId" lay-search="true"  name="singleMealConsumptionId"></select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>报餐类型:</td>
 							<td><select class="form-control" name="type">
@@ -46,17 +45,6 @@
 									</button>
 								</div>
 							</td>
-							<td>&nbsp;&nbsp;</td>
-							<td><input id="startTime2" style="width: 150px;"  placeholder="请输入开始时间" class="layui-input laydate-icon">
-							</td>
-							<td>&nbsp;&nbsp;</td>
-							<td>
-								<div class="layui-inline">
-									<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-eat">
-										<i class="layui-icon layuiadmin-button-btn"> 同步</i>
-									</button>
-								</div>
-							</td>
 						</tr>
 					</table>
 				</div>
@@ -69,8 +57,6 @@
 			
 		</div>
 	</div>
-	
-	
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
 				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增一行</span>
@@ -117,32 +103,6 @@
 						type : 'datetime',
 					});
 				
-					$.ajax({
-						url: '${ctx}/system/user/findUserList',
-						data:{
-							foreigns:0
-						},
-						type: "GET",
-						async: false,
-						beforeSend: function() {
-							index;
-						},
-						success: function(result) {
-							$(result.data).each(function(i, o) {
-								htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
-							})
-							$("#selectUserId").html(htmls)
-							$("#userId").html(htmls)
-							$("#userIds").html(htmls)
-							layer.close(index);
-						},
-						error: function() {
-							layer.msg("操作失败！", {
-								icon: 2
-							});
-							layer.close(index);
-						}
-					});
 					
 					var getdataa={type:"singleMealConsumption",}
 					var htmlfrn= '<option value="">请选择</option>';
@@ -160,6 +120,7 @@
 			      			  $(result.data).each(function(k,j){
 			      				htmlfrn +='<option value="'+j.id+'">'+j.name+'</option>'
 			      			  });
+			      			  $("#singleMealConsumptionId").html(htmlfrn)
 			      			layer.close(indextwo);
 					      }
 					  });
@@ -249,6 +210,10 @@
 								edit: false,
 								type: 'normal',
 								templet: fn2('selectTwo')
+							},{
+								field: "time",
+								title: "时间",
+								align: 'center',
 							}]
 						],
 						done: function() {
@@ -275,7 +240,7 @@
 							});
 							form.render();
 							// 初始化laydate
-							layui.each(tableView.find('td[data-field="tradeDaysTime"]'), function(index, tdElem) {
+							layui.each(tableView.find('td[data-field="time"]'), function(index, tdElem) {
 								tdElem.onclick = function(event) {
 									layui.stope(event)
 								};
@@ -286,7 +251,7 @@
 											var id = table.cache[tableView.attr('lay-id')][index].id
 											var postData = {
 												id: id,
-												tradeDaysTime: value,
+												time: value,
 											};
 											//调用新增修改
 											mainJs.fUpdate(postData);
@@ -325,7 +290,11 @@
 						var tableId = config.id;
 						switch(obj.event) {
 						case 'addTempData':
-							allField = {id: '', content: '',type:'0'};
+							if($('#startTime').val()==''){
+					 			layer.msg('请先选择日期',{icon:2});
+					 			return;
+					 		}
+							allField = {id: '', content: '',type:'0',time:$('#startTime').val()};
 							table.addTemp(tableId,allField,function(trElem) {
 								// 进入回调的时候this是当前的表格的config
 								var that = this;
@@ -340,7 +309,7 @@
 										done: function(value, date) {
 											var trElem = $(this.elem[0]).closest('tr');
 											var tableView = trElem.closest('.layui-table-view');
-											table.cache[that.id][trElem.data('index')]['expenseDate'] = value;
+											table.cache[that.id][trElem.data('index')]['time'] = value;
 											var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
 											var postData = {
 												id: id,
@@ -364,6 +333,7 @@
 									})
 								if(flag==true){
 								data.forEach(function(postData,i){
+									/* postData.time=$('#startTime').val() */
 									 mainJs.fAdd(postData);
 									table.cleanTemp(tableId);
 									})	
@@ -422,18 +392,6 @@
 						}
 					});
 	
-					 form.on('submit(LAY-search7)', function(obj) {
-							var field = obj.field;
-							table.reload('layuiShare6', {
-								where: field,
-								page: {
-									curr:1
-				                }
-							});
-					})
-				
-					
-					
 					//监听单元格编辑
 					table.on('edit(tableData)', function(obj) {
 						var value = obj.value ,//得到修改后的值
@@ -458,9 +416,6 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(obj) {		//修改此处
 						var field = obj.field;
-						var orderTime=field.orderTimeBegin.split('~');
-						field.orderTimeBegin=orderTime[0];
-						field.orderTimeEnd=orderTime[1];
 						table.reload('tableData', {
 							where: field,
 							 page: { curr : 1 }
@@ -472,48 +427,6 @@
 						var trIndex = elemTemp.data('index');
 						tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
 					})
-					form.on('submit(LAY-eat)', function(obj) {		//修改此处
-							var a=$("#startTime2").val()
-							if(a==""){
-								return layer.msg("请先填写同步时间",{icon:2})
-							}
-						$.ajax({
-							url: "${ctx}/personnel/getEatType",
-							data: {
-								orderTimeBegin:a
-							},
-							type: "GET",
-							beforeSend: function() {
-								 indextwo = layer.load(1, {
-									  shade: [0.1,'#fff'] //0.1透明度的白色背景
-									  });
-							},
-							success: function(result) {
-								if(0 == result.code) {
-									layer.close(indextwo);
-								 	 table.reload("tableData", {
-						                page:{}
-						              }) 
-									layer.msg(result.message, {
-										icon: 1,
-										time:800
-									});
-								
-								} else {
-									layer.close(indextwo);
-									layer.confirm(result.message + '请填写考勤初始化', function() {
-											layer.close(indextwo);
-									})
-								}
-							},
-							error: function() {
-								layer.close(indextwo);
-								layer.msg("操作失败！请重试", {
-									icon: 2
-								});
-							},
-						});
-					});
 					//封装ajax主方法
 					var mainJs = {
 						//新增							
