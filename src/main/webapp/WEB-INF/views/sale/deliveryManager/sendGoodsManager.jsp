@@ -90,13 +90,13 @@ layui.config({
 			parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } },
 			cols:[[
 			       {align:'center', type:'checkbox',},
-			       {align:'center', title:'发货日期',   field:'sendDate', edit:false,},
-			       {align:'center', title:'客户',   field:'customerId',  edit:false, templet: getSelectHtml(allCustom,'customr'), },
+			       {align:'center', title:'发货日期',   field:'sendDate', edit:false, width:'10%',},
+			       {align:'center', title:'客户',   field:'customerId',  edit:false, templet: getSelectHtml(allCustom,'customr'),  width:'12%',},
 			       {align:'center', title:'批次号',   field:'bacthNumber', edit:false, templet: getSelectHtml(allBatch,'batch'),  },
 			       {align:'center', title:'产品', 	field:'productName', edit:false, templet: '<span>{{d.product?d.product.name:""}}</span>'	},
-			       {align:'center', title:'数量',   field:'number',	edit:true,},
-			       {align:'center', title:'发货数量',   field:'sendNumber',	edit:false,},
-			       {align:'center', title:'剩余数量',   field:'surplusNumber', edit:false,	},
+			       {align:'center', title:'数量',   field:'number',	edit:true,  width:'6%',},
+			       {align:'center', title:'发货数量',   field:'sendNumber',	edit:false,  width:'6%',},
+			       {align:'center', title:'剩余数量',   field:'surplusNumber', edit:false, width:'6%',	},
 			       ]],
 			done:function(){
 				layui.each($('#tableData').next().find('td[data-field="sendDate"]'),function(index,item){
@@ -158,10 +158,15 @@ layui.config({
 		})
 		table.on('edit(tableData)',function(obj){
 			var data = obj.data;
+			var val = obj.value, msg ='';
+			isNaN(val) && (msg = '数量只能为数字');
+			val<0 && (msg = '数量只能为数字');
+			if(msg!='')
+				return myutil.emsg(msg);
 			if(data.id!=''){
 				update({
 					id: data.id,
-					number: obj.value
+					number: parseInt(val)
 				})
 			}
 		})
@@ -180,7 +185,7 @@ layui.config({
 			}
 		})
 		function addTempData(){
-			var allField = {customerId:'',bacthNumber:'',productId:'',number:'', };
+			var allField = {customerId:'',bacthNumber:'',productId:'',number:'',sendDate:'' };
 			table.addTemp('tableData',allField,function(trElem){
 				var sendDateTd = trElem.find('td[data-field="sendDate"]')[0];
 				laydate.render({
@@ -198,9 +203,10 @@ layui.config({
 			for(var i=0;i<tempData.length;i++){
 				var t = tempData[i];
 				var msg = '';
-				t.number=='' && (msg=='请填写发货数量');
+				t.number=='' && (msg='请填写发货数量');
 				t.bacthNumber=='' && (msg='请选择批次号');
 				t.customerId=='' && (msg='请选择客户');
+				t.sendDate=='' && (msg='请填写发货时间');
 				if(msg!='')
 					return myutil.emsg(msg);
 			}
@@ -222,7 +228,7 @@ layui.config({
 			else
 				myutil.emsg('新增异常：'+(tempData.length-successAdd)+'条数据');
 		}
-		function deletes(){
+		function deleteSome(){
 			var choosed=layui.table.checkStatus('tableData').data;
 			if(choosed.length<1)
 				return myutil.emsg('请选择商品');
@@ -231,7 +237,7 @@ layui.config({
 				for(var i=0;i<choosed.length;i++)
 					ids+=(choosed[i].id+",");
 				myutil.deleteAjax({
-					url:"",
+					url:"/ledger/deleteSendGoods",
 					ids: ids,
 					success: function(){
 						table.reload('tableData');
