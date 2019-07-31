@@ -365,6 +365,35 @@ public class AttendanceAction {
 		cr.setMessage("存档成功");
 		return cr;
 	}
+	
+	
+	
+	
+	/**
+	 * 车间人员根据填写考勤情况和打卡考勤汇总进行对比
+	 * @param attendanceCollect
+	 * @return
+	 */
+	@RequestMapping(value = "/personnel/workshopAttendanceContrast", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse workshopAttendanceContrast( ) {
+		CommonResponse cr = new CommonResponse();
+		attendanceTimeService.workshopAttendanceContrast( );
+		cr.setMessage("存档成功");
+		return cr;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	/**
 	 * 新增修改请假事项

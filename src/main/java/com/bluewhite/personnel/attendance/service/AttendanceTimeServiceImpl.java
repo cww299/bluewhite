@@ -26,6 +26,7 @@ import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.personnel.attendance.dao.ApplicationLeaveDao;
 import com.bluewhite.personnel.attendance.dao.AttendanceCollectDao;
 import com.bluewhite.personnel.attendance.dao.AttendanceDao;
@@ -62,6 +63,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	private AttendanceCollectDao attendanceCollectDao;
 	@Autowired
 	private ApplicationLeaveDao applicationLeaveDao;
+	@Autowired
+	private AttendancePayDao attendancePayDao;
 
 	@Override
 	public List<AttendanceTime> findAttendanceTime(AttendanceTime attendance) throws ParseException {
@@ -754,6 +757,14 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		checkAttendanceTime(attendanceTime);
 		deleteAttendanceTimeCollect(attendanceTime);
 		return findAttendanceTimeCollectAdd(attendanceTime);
+	}
+
+	@Override
+	public void workshopAttendanceContrast(AttendanceTime attendanceTime) {
+		  
+//		attendancePayDao.findByTypeAndAllotTimeBetween(type, orderTimeBegin, orderTimeEnd);
+		
+		
 	}
 
 }
