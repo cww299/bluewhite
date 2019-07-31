@@ -90,11 +90,11 @@ layui.config({
 			parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } },
 			cols:[[
 			       {align:'center', type:'checkbox',},
-			       {align:'center', title:'发货日期',   field:'sendDate', edit:false, },
+			       {align:'center', title:'发货日期',   field:'sendDate', edit:false,},
 			       {align:'center', title:'客户',   field:'customerId',  edit:false, templet: getSelectHtml(allCustom,'customr'), },
 			       {align:'center', title:'批次号',   field:'bacthNumber', edit:false, templet: getSelectHtml(allBatch,'batch'),  },
 			       {align:'center', title:'产品', 	field:'productName', edit:false, templet: '<span>{{d.product?d.product.name:""}}</span>'	},
-			       {align:'center', title:'数量',   field:'number',	},
+			       {align:'center', title:'数量',   field:'number',	edit:true,},
 			       {align:'center', title:'发货数量',   field:'sendNumber',	edit:false,},
 			       {align:'center', title:'剩余数量',   field:'surplusNumber', edit:false,	},
 			       ]],
@@ -107,12 +107,9 @@ layui.config({
 						done: function(val){
 							var index = $(this.elem).closest('tr').attr('data-index');
 							var trData = table.cache['tableData'][index];
-							myutil.saveAjax({
-								url: '/ledger/addSendGoods',
-								data: {
-									id: trData.id,
-									sendDate: val
-								}
+							update({
+								id: trData.id,
+								sendDate: val
 							})
 						}
 					})
@@ -156,15 +153,17 @@ layui.config({
 					data.productId = pid;
 				}else
 					data.customerId = obj.value;
-				myutil.saveAjax({
-					url: '/ledger/addSendGoods',
-					data: data
-				})
+				update(data);
 			}
 		})
 		table.on('edit(tableData)',function(obj){
-			//判断是否非法输入
-			console.log(obj)
+			var data = obj.data;
+			if(data.id!=''){
+				update({
+					id: data.id,
+					number: obj.value
+				})
+			}
 		})
 		form.on('submit(search)',function(obj){
 			table.reload('tableData',{
@@ -210,8 +209,9 @@ layui.config({
 				myutil.saveAjax({
 					url: '/ledger/addSendGoods',
 					data: tempData[i],
-					success:function(r)
-						r.code==0 && successAdd++;
+					success: function(r){
+						r.code==0 && (successAdd++);
+					}
 				})
 			}
 			if(successAdd==tempData.length){
@@ -239,7 +239,12 @@ layui.config({
 				})
 			})
 		}
-		
+		function update(data){
+			myutil.saveAjax({
+				url: '/ledger/addSendGoods',
+				data: data
+			})
+		}
 	}//end define function
 )//endedefine
 </script>
