@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.product.product.entity.Product;
@@ -94,6 +95,12 @@ public class PackingChild extends BaseEntity<Long> {
 	private boolean copyright = false;
 	
 	/**
+	 * 是否产生新批次号
+	 */
+	@Column(name = "new_bacth")
+	private boolean newBacth = false;
+	
+	/**
 	 * 销售编号 
 	 */
 	@Column(name = "sale_number")
@@ -117,9 +124,58 @@ public class PackingChild extends BaseEntity<Long> {
 	@Column(name = "remark")
 	private String remark;
 	
+	/**
+	 * 产品name
+	 */
+	@Transient
+	private String productName;
+	
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
 	
 	
 	
+	
+	public boolean isNewBacth() {
+		return newBacth;
+	}
+
+	public void setNewBacth(boolean newBacth) {
+		this.newBacth = newBacth;
+	}
+
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
 	public Long getPackingId() {
 		return packingId;
 	}

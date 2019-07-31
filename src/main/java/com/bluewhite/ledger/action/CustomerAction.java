@@ -46,10 +46,7 @@ public class CustomerAction {
 	/**
 	 * 分页查看客户
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
-	 * @throws Exception
 	 */
 	@RequestMapping(value = "/ledger/customerPage", method = RequestMethod.GET)
 	@ResponseBody
@@ -64,10 +61,7 @@ public class CustomerAction {
 	 * 
 	 * 查看客户
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
-	 * @throws Exception
 	 */
 	@RequestMapping(value = "/ledger/allCustomer", method = RequestMethod.GET)
 	@ResponseBody
@@ -81,10 +75,7 @@ public class CustomerAction {
 	/**
 	 * 客户新增
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
-	 * @throws Exception
 	 */
 	@RequestMapping(value = "/ledger/addCustomer", method = RequestMethod.POST)
 	@ResponseBody
@@ -98,10 +89,7 @@ public class CustomerAction {
 	/**
 	 * 客户批量删除
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
-	 * @throws Exception
 	 */
 	@RequestMapping(value = "/ledger/deleteCustomer", method = RequestMethod.GET)
 	@ResponseBody

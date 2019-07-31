@@ -27,6 +27,7 @@ import com.bluewhite.ledger.service.OrderService;
 import com.bluewhite.ledger.service.PackingService;
 import com.bluewhite.ledger.service.SendGoodsService;
 import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.system.user.entity.User;
 
 /**
  * 销售
@@ -54,6 +55,18 @@ public class LedgerAction {
 				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count")
 				.addRetainTerm(Product.class, "id", "name", "number").addRetainTerm(BaseData.class, "id", "name");
 	}
+	
+	private ClearCascadeJSON clearCascadeJSONChild;
+	{
+		clearCascadeJSONChild = ClearCascadeJSON.get()
+				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count"
+						,"packing","price","count","sumPrice","copyright"
+						,"saleNumber","sendDate","flag")
+				.addRetainTerm(Packing.class, "id", "customer")
+				.addRetainTerm(Customer.class, "id", "name","user")
+				.addRetainTerm(User.class, "id", "userName")
+				.addRetainTerm(Product.class, "id", "name", "number");
+	}
 
 	private ClearCascadeJSON clearCascadeJSON1;
 	{
@@ -74,10 +87,9 @@ public class LedgerAction {
 
 	/**
 	 * 分页查看订单
-	 * 
-	 * @param request
-	 *            请求
-	 * @return cr
+	 * @param page
+	 * @param order
+	 * @return
 	 */
 	@RequestMapping(value = "/ledger/orderPage", method = RequestMethod.GET)
 	@ResponseBody
@@ -90,10 +102,8 @@ public class LedgerAction {
 
 	/**
 	 * 查看订单
-	 * 
-	 * @param request
-	 *            请求
-	 * @return cr
+	 * @param order
+	 * @return
 	 */
 	@RequestMapping(value = "/ledger/getOrder", method = RequestMethod.GET)
 	@ResponseBody
@@ -106,10 +116,8 @@ public class LedgerAction {
 
 	/**
 	 * 新增订单
-	 * 
-	 * @param request
-	 *            请求
-	 * @return cr
+	 * @param order
+	 * @return
 	 */
 	@RequestMapping(value = "/ledger/addOrder", method = RequestMethod.POST)
 	@ResponseBody
@@ -123,8 +131,6 @@ public class LedgerAction {
 	/**
 	 * 修改订单
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/updateOrder", method = RequestMethod.POST)
@@ -139,8 +145,6 @@ public class LedgerAction {
 	/**
 	 * 删除订单
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/deleteOrder", method = RequestMethod.GET)
@@ -155,8 +159,6 @@ public class LedgerAction {
 	/**
 	 * 分页查看贴包单
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/packingPage", method = RequestMethod.GET)
@@ -170,16 +172,13 @@ public class LedgerAction {
 
 	/**
 	 * 分页查看贴包子单（实际发货单）
-	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/packingChildPage", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse packingChildPage(PageParameter page, PackingChild packingChild) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSON.format(packingService.findPackingChildPage(packingChild, page)).toJSON());
+		cr.setData(clearCascadeJSONChild.format(packingService.findPackingChildPage(packingChild, page)).toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
@@ -187,8 +186,6 @@ public class LedgerAction {
 	/**
 	 * 新增贴包单
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/addPacking", method = RequestMethod.POST)
@@ -203,8 +200,6 @@ public class LedgerAction {
 	/**
 	 * 出货贴包单
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/sendPacking", method = RequestMethod.POST)
@@ -233,8 +228,6 @@ public class LedgerAction {
 	/**
 	 * 查看待发货单
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/getSendGoods", method = RequestMethod.GET)
@@ -249,8 +242,6 @@ public class LedgerAction {
 	/**
 	 * 通过条件查找待发货单
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/getSearchSendGoods", method = RequestMethod.GET)
@@ -263,18 +254,20 @@ public class LedgerAction {
 	}
 
 	/**
-	 * 新增待发货单
+	 * 新增修改待发货单
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/addSendGoods", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse addSendGoods(SendGoods sendGoods) {
 		CommonResponse cr = new CommonResponse();
+		if(sendGoods.getId()!=null){
+			cr.setMessage("修改成功");
+		}else{
+			cr.setMessage("新增成功");
+		}
 		sendGoodsService.addSendGoods(sendGoods);
-		cr.setMessage("新增成功");
 		return cr;
 	}
 

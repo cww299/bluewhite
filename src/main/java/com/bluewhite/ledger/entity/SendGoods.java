@@ -30,7 +30,7 @@ public class SendGoods extends BaseEntity<Long>{
 	 * 客户
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "customr_id", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Customer customer;
 
 	/**
@@ -53,14 +53,14 @@ public class SendGoods extends BaseEntity<Long>{
 	private Product product;
 
 	/**
-	 * 预计发出数量
+	 * 预计发出总数
 	 */
 	@Column(name = "number")
 	private Integer number;
 	
 
 	/**
-	 * 已发出数量
+	 * 已发数量
 	 */
 	@Column(name = "send_number")
 	private Integer sendNumber;
@@ -71,10 +71,38 @@ public class SendGoods extends BaseEntity<Long>{
 	@Transient
 	private Integer surplusNumber;
 	
+	/**
+	 * 客户name
+	 * 
+	 */
+	@Transient
+	private String customerName;
 	
-	
-	
+	/**
+	 * 产品name
+	 */
+	@Transient
+	private String productName;
 
+
+	
+	
+	
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
 
 	public Integer getSurplusNumber() {
 		return number-sendNumber;
