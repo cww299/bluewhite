@@ -67,6 +67,8 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			if(sendGoodsList.size()>0){
 				throw new ServiceException("该待发货单已有贴包发货单，无法修改，请先核对贴包发货单");
 			}
+		}else{
+			sendGoods.setSendNumber(0);
 		}
 		return dao.save(sendGoods);
 	}
