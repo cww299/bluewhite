@@ -114,9 +114,25 @@ public class Order extends BaseEntity<Long>{
 	@Transient
 	private Date orderTimeEnd;
 	
-	
+	/**
+	 * 产品name
+	 */
+	@Transient
+	private String productName;
 	    
 	
+	
+	
+	public String getProductName() {
+		return productName;
+	}
+
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+
 	public String getCustomerName() {
 		return customerName;
 	}

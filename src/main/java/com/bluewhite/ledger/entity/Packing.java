@@ -74,10 +74,10 @@ public class Packing extends BaseEntity<Long> {
 	private String bacthNumber;
 
 	/**
-	 * 产品id
+	 * 产品name
 	 */
 	@Transient
-	private Long productId;
+	private String productName;
 
 	/**
 	 * 查询字段
@@ -102,6 +102,8 @@ public class Packing extends BaseEntity<Long> {
 	 */
 	@Transient
 	private String customerName;
+	
+	
 	
 
 	public String getCustomerName() {
@@ -128,12 +130,12 @@ public class Packing extends BaseEntity<Long> {
 		this.bacthNumber = bacthNumber;
 	}
 
-	public Long getProductId() {
-		return productId;
+	public String getProductName() {
+		return productName;
 	}
 
-	public void setProductId(Long productId) {
-		this.productId = productId;
+	public void setProductName(String productName) {
+		this.productName = productName;
 	}
 
 	public List<PackingChild> getPackingChilds() {

@@ -1,10 +1,13 @@
 package com.bluewhite.ledger.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,8 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.SalesUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.PackingChildDao;
 import com.bluewhite.ledger.dao.PackingDao;
@@ -27,6 +32,8 @@ import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.SendGoods;
+import com.bluewhite.onlineretailers.inventory.entity.Procurement;
+import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 
 @Service
 public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implements PackingService {
@@ -55,17 +62,18 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			}
 			// 按客户名称
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
-				predicate.add(cb.like(root.get("customerName").as(String.class), "%" + param.getCustomerName() + "%"));
+				predicate.add(cb.like(root.get("customer").get("name").as(String.class), "%" + param.getCustomerName() + "%"));
 			}
-			// 按产品id过滤
-			if (param.getProductId() != null) {
-				predicate
-						.add(cb.equal(root.get("packingChilds").get("productId").as(Long.class), param.getProductId()));
+			// 按商品名称过滤
+			if (!StringUtils.isEmpty(param.getProductName())) {
+				Join<Packing, PackingChild> join = root.join(root.getModel().getList("packingChilds", PackingChild.class), JoinType.LEFT);
+				predicate.add(cb.like(join.get("product").get("name").as(String.class),
+						"%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
 			}
-			// 按批次查找
+			// 按批次号过滤
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
-				predicate.add(cb.like(root.get("packingChilds").get("bacthNumber").as(String.class),
-						"%" + param.getBacthNumber() + "%"));
+				Join<Packing, PackingChild> join = root.join(root.getModel().getList("packingChilds", PackingChild.class), JoinType.LEFT);
+				predicate.add(cb.like(join.get("batchNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
 			}
 			// 按发货贴包日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
@@ -119,6 +127,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	@Override
 	public int sendPacking(String ids,Date time) {
 		int count = 0;
+		SimpleDateFormat  sdf = new SimpleDateFormat("yyyyMMdd");
 		if (!StringUtils.isEmpty(ids)) { 
 			String [] idStrings = ids.split(",");
 			for(String id : idStrings){
@@ -126,6 +135,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				Packing packing = dao.findOne(idLong);
 				List<PackingChild> packingChildList = packing.getPackingChilds();
 				for(PackingChild pc : packingChildList){
+					//生成销售编号
+					pc.setSaleNumber(Constants.XS +"-"+ sdf.format(time) +"-" + SalesUtils.get0LeftString((int) packingChildDao.count(), 8));
 					pc.setSendDate(time);
 					pc.setFlag(1);
 					//判定是否拥有版权
@@ -142,12 +153,10 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					//判定是否更换客户发货，更换客户发货变成新批次，->Y
 					Order order = orderDao.findByBacthNumber(pc.getBacthNumber());
 					if(order.getCustomerId() != pc.getPacking().getCustomerId()){
-						
-						
+						pc.setBacthNumber(pc.getBacthNumber().substring(0,pc.getBacthNumber().length() - 1)+"Y");
+						pc.setNewBacth(true); 
 					}
 				}
-				
-				
 				dao.save(packing);
 				count++;
 			}
@@ -163,14 +172,19 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
-			// 按产品id过滤
-			if (param.getProductId() != null) {
-				predicate.add(cb.equal(root.get("productId").as(Long.class), param.getProductId()));
+			// 按产品name过滤
+			if (!StringUtils.isEmpty(param.getProductName())) {
+				predicate.add(cb.equal(root.get("product").get("name").as(Long.class), "%" + param.getProductName() + "%"));
 			}
 			// 按批次查找
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
-				predicate.add(cb.like(root.get("packingChilds").get("bacthNumber").as(String.class),
+				predicate.add(cb.like(root.get("bacthNumber").as(String.class),
 						"%" + param.getBacthNumber() + "%"));
+			}
+			// 按发货日期
+			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+				predicate.add(cb.between(root.get("sendDate").as(Date.class), param.getOrderTimeBegin(),
+						param.getOrderTimeEnd()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));

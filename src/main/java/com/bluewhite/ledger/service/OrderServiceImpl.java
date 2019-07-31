@@ -41,11 +41,19 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 			// 按客户名称
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
-				predicate.add(cb.like(root.get("customerName").as(String.class), "%" + param.getCustomerName() + "%"));
+				predicate.add(cb.like(root.get("customer").get("name").as(String.class), "%" + param.getCustomerName() + "%"));
 			}
 			// 按批次
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
 				predicate.add(cb.like(root.get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
+			}
+			// 按产品name过滤
+			if (!StringUtils.isEmpty(param.getProductName())) {
+				predicate.add(cb.equal(root.get("product").get("name").as(Long.class), "%" + param.getProductName() + "%"));
+			}
+			// 按产品编号过滤
+			if (!StringUtils.isEmpty(param.getProductNumber())) {
+				predicate.add(cb.equal(root.get("productNumber").as(Long.class), "%" + param.getProductNumber() + "%"));
 			}
 			// 按下单日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
