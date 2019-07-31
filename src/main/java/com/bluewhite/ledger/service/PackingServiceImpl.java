@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.SalesUtils;
@@ -32,8 +33,6 @@ import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.SendGoods;
-import com.bluewhite.onlineretailers.inventory.entity.Procurement;
-import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 
 @Service
 public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implements PackingService {
@@ -114,6 +113,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				packingChild.setProductId(jsonObject.getLong("productId"));
 				packingChild.setSendGoodsId(jsonObject.getLong("sendGoodsId"));
 				packingChild.setCount(jsonObject.getInteger("count"));
+				packingChild.setCustomerId(packing.getCustomerId());
 				SendGoods sendGoods = sendGoodsDao.findOne(jsonObject.getLong("sendGoodsId"));
 				sendGoods.setSendNumber(sendGoods.getNumber()+packingChild.getCount());
 				sendGoodsDao.save(sendGoods);
@@ -136,9 +136,14 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				List<PackingChild> packingChildList = packing.getPackingChilds();
 				for(PackingChild pc : packingChildList){
 					//生成销售编号
-					pc.setSaleNumber(Constants.XS +"-"+ sdf.format(time) +"-" + SalesUtils.get0LeftString((int) packingChildDao.count(), 8));
-					pc.setSendDate(time);
+					pc.setSaleNumber(Constants.XS +"-"+ sdf.format(time==null ? packing.getPackingDate() : time) +"-" + SalesUtils.get0LeftString((int) packingChildDao.count(), 8));
+					pc.setSendDate(time==null ? packing.getPackingDate() : time);
+					//已发货
 					pc.setFlag(1);
+					//未审核
+					pc.setAudit(false);
+					//未收货
+					pc.setDelivery(1);
 					//判定是否拥有版权
 					if(pc.getProduct().getName().contains(Constants.LX) 
 							||pc.getProduct().getName().contains(Constants.KT)
@@ -192,5 +197,54 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 		}, page);
 		PageResult<PackingChild> result = new PageResult<>(pages, page);
 		return result;
+	}
+
+	@Override
+	public List<PackingChild> getPackingChildPrice(PackingChild packingChild) {
+		return packingChildDao.findByProductIdAndCustomerId(packingChild.getProductId(), packingChild.getCustomerId());
+	}
+
+	@Override
+	public int deletePacking(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					Packing packing = dao.findOne(id);
+					List<PackingChild> packingChildList = packing.getPackingChilds();
+					if(packingChildList.size()>0){
+						throw new ServiceException("该待发货单已有贴包发货单，无法删除，请先核对贴包发货单");
+					}
+					packing.setCustomerId(null);
+					dao.delete(packing); 
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+
+	@Override
+	public int deletePackingChild(String ids) {
+//		int count = 0;
+//		if (!StringUtils.isEmpty(ids)) {
+//			String[] idArr = ids.split(",");
+//			if (idArr.length > 0) {
+//				for (int i = 0; i < idArr.length; i++) {
+//					Long id = Long.parseLong(idArr[i]);
+//					Packing packing = dao.findOne(id);
+//					List<PackingChild> packingChildList = packing.getPackingChilds();
+//					if(packingChildList.size()>0){
+//						throw new ServiceException("该待发货单已有贴包发货单，无法删除，请先核对贴包发货单");
+//					}
+//					packing.setCustomerId(null);
+//					dao.delete(packing); 
+//					count++;
+//				}
+//			}
+//		}
+		return 0;
 	}
 }

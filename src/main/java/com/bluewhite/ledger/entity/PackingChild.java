@@ -22,6 +22,21 @@ import com.bluewhite.product.product.entity.Product;
 @Table(name = "ledger_packing_child")
 public class PackingChild extends BaseEntity<Long> {
 	
+	
+	/**
+	 * 客户id
+	 * 
+	 */
+	@Column(name = "customer_id")
+	private Long customerId;
+	
+	/**
+	 * 客户
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Customer customer;
+	
 	/**
 	 * 发货单id
 	 * 
@@ -124,6 +139,38 @@ public class PackingChild extends BaseEntity<Long> {
 	@Column(name = "remark")
 	private String remark;
 	
+	
+	/**
+	 * 到岸（收货）状态（3=全部收货，2=部分收货，1=未收货 ）
+	 */
+	@Column(name = "delivery")
+	private Integer delivery;
+	
+	/**
+	 * 是否审核
+	 */
+	@Column(name = "audit")
+	private boolean audit;
+	
+	
+	/**
+	 * 到岸（收货）数量
+	 */
+	@Column(name = "delivery_number")
+	private Integer deliveryNumber;
+	
+	/**
+	 * 到岸（收货）日期
+	 */
+	@Column(name = "delivery_date")
+	private Date deliveryDate;
+	
+	/**
+	 * 预计到岸（收货）结款日期
+	 */
+	@Column(name = "delivery_collection_date")
+	private Date deliveryCollectionDate;
+	
 	/**
 	 * 产品name
 	 */
@@ -144,6 +191,63 @@ public class PackingChild extends BaseEntity<Long> {
 	
 	
 	
+	
+	public boolean isAudit() {
+		return audit;
+	}
+
+	public void setAudit(boolean audit) {
+		this.audit = audit;
+	}
+
+	public Integer getDelivery() {
+		return delivery;
+	}
+
+	public void setDelivery(Integer delivery) {
+		this.delivery = delivery;
+	}
+
+	public Integer getDeliveryNumber() {
+		return deliveryNumber;
+	}
+
+	public void setDeliveryNumber(Integer deliveryNumber) {
+		this.deliveryNumber = deliveryNumber;
+	}
+
+	public Date getDeliveryDate() {
+		return deliveryDate;
+	}
+
+	public void setDeliveryDate(Date deliveryDate) {
+		this.deliveryDate = deliveryDate;
+	}
+
+	public Date getDeliveryCollectionDate() {
+		return deliveryCollectionDate;
+	}
+
+	public void setDeliveryCollectionDate(Date deliveryCollectionDate) {
+		this.deliveryCollectionDate = deliveryCollectionDate;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
+	public Long getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
+	}
+
 	public boolean isNewBacth() {
 		return newBacth;
 	}

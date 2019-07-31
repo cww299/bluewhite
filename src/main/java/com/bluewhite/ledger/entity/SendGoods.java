@@ -1,5 +1,7 @@
 package com.bluewhite.ledger.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -66,6 +68,12 @@ public class SendGoods extends BaseEntity<Long>{
 	private Integer sendNumber;
 	
 	/**
+	 * 发货日期
+	 */
+	@Column(name = "send_date")
+	private Date sendDate;
+	
+	/**
 	 * 剩余数量
 	 */
 	@Transient
@@ -84,10 +92,19 @@ public class SendGoods extends BaseEntity<Long>{
 	@Transient
 	private String productName;
 
+	
 
 	
 	
 	
+	public Date getSendDate() {
+		return sendDate;
+	}
+
+	public void setSendDate(Date sendDate) {
+		this.sendDate = sendDate;
+	}
+
 	public String getCustomerName() {
 		return customerName;
 	}
