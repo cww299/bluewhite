@@ -313,7 +313,7 @@
 					layer.close(load);
 				}
 				$.ajax({
-					url: '${ctx}/system/user/findUserList?foreigns=0&isAdmin=false'+(isAttend?'&orgNameId='+orgId:''),
+					url: '${ctx}/system/user/findUserList?foreigns=0&isAdmin=false'+(isAttend?'&orgNameIds='+orgId:''),
 					async: false,
 					success: function(result) {
 						$(result.data).each(function(i, o) {
