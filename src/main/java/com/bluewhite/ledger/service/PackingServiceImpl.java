@@ -32,6 +32,7 @@ import com.bluewhite.ledger.dao.SendGoodsDao;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
+import com.bluewhite.ledger.entity.PackingMaterials;
 import com.bluewhite.ledger.entity.SendGoods;
 
 @Service
@@ -120,6 +121,17 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				packing.getPackingChilds().add(packingChild);
 			}
 		}
+		// 新增贴包物
+		if (!StringUtils.isEmpty(packing.getChildPacking())) { 	
+			JSONArray jsonArrayMaterials = JSON.parseArray(packing.getPackingMaterialsJson());
+			for (int i = 0; i < jsonArrayMaterials.size(); i++) {
+				PackingMaterials packingMaterials = new PackingMaterials();
+				JSONObject jsonObject = jsonArrayMaterials.getJSONObject(i);
+				packingMaterials.setPackagingId(jsonObject.getLong("packagingId"));
+				packingMaterials.setPackagingCount(jsonObject.getInteger("packagingCount"));
+				packing.getPackingMaterials().add(packingMaterials);
+			}
+		}
 		dao.save(packing);
  		return packing;
 	}
@@ -133,6 +145,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			for(String id : idStrings){
 				Long idLong = Long.valueOf(id);
 				Packing packing = dao.findOne(idLong);
+				//已发货
+				packing.setFlag(1);
 				List<PackingChild> packingChildList = packing.getPackingChilds();
 				for(PackingChild pc : packingChildList){
 					//生成销售编号
@@ -213,9 +227,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Packing packing = dao.findOne(id);
-					List<PackingChild> packingChildList = packing.getPackingChilds();
-					if(packingChildList.size()>0){
-						throw new ServiceException("该待发货单已有贴包发货单，无法删除，请先核对贴包发货单");
+					if(packing.getFlag()==1){
+						throw new ServiceException("贴报单已发货，无法删除，请先核对发货单");
 					}
 					packing.setCustomerId(null);
 					dao.delete(packing); 
@@ -228,23 +241,22 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 
 	@Override
 	public int deletePackingChild(String ids) {
-//		int count = 0;
-//		if (!StringUtils.isEmpty(ids)) {
-//			String[] idArr = ids.split(",");
-//			if (idArr.length > 0) {
-//				for (int i = 0; i < idArr.length; i++) {
-//					Long id = Long.parseLong(idArr[i]);
-//					Packing packing = dao.findOne(id);
-//					List<PackingChild> packingChildList = packing.getPackingChilds();
-//					if(packingChildList.size()>0){
-//						throw new ServiceException("该待发货单已有贴包发货单，无法删除，请先核对贴包发货单");
-//					}
-//					packing.setCustomerId(null);
-//					dao.delete(packing); 
-//					count++;
-//				}
-//			}
-//		}
-		return 0;
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					PackingChild packingChild = packingChildDao.findOne(id);
+					if(packingChild.getFlag()==1){
+						throw new ServiceException("贴报单已发货，无法删除，请先核对发货单");
+					}
+					packingChild.setCustomerId(null);
+					packingChildDao.delete(packingChild); 
+					count++;
+				}
+			}
+		}
+		return count;
 	}
 }

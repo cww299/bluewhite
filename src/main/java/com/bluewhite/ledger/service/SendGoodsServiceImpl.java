@@ -18,7 +18,6 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.dao.PackingChildDao;
 import com.bluewhite.ledger.dao.SendGoodsDao;
-import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.SendGoods;
 
@@ -72,11 +71,12 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			}
 			SendGoods ot = dao.findOne(sendGoods.getId());
 			BeanCopyUtils.copyNotEmpty(sendGoods, ot, "");
-			sendGoods = ot;
+			dao.save(ot);
 		}else{
 			sendGoods.setSendNumber(0);
+			dao.save(sendGoods);
 		}
-		return dao.save(sendGoods);
+		return sendGoods;
 	}
 
 	@Override
