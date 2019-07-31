@@ -93,9 +93,9 @@ layui.config({
 			parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } },
 			cols:[[
 			       {align:'center', type:'checkbox',},
-			       {align:'center', title:'客户',   field:'customrId',  edit:false,templet: getSelectHtml(allCustom,'customr'), },
+			       {align:'center', title:'客户',   field:'customerId',  edit:false,templet: getSelectHtml(allCustom,'customr'), },
 			       {align:'center', title:'批次号',   field:'bacthNumber', edit:false, templet: getSelectHtml(allBatch,'batch'),  },
-			       {align:'center', title:'产品', 	field:'productId', edit:false, 	},
+			       {align:'center', title:'产品', 	field:'productName', edit:false, 	},
 			       {align:'center', title:'数量',   field:'number',	},
 			       {align:'center', title:'剩余数量',   field:'number', edit:false,	},
 			       ]],
@@ -106,17 +106,38 @@ layui.config({
 		
 		function getSelectHtml(data){
 			return function(d){
-				var html = '<select lay-filter="selectFilter" lay-search>';
+				var html = '<select lay-filter="selectFilter" lay-search><option value="">请选择</option>';
 				layui.each(data,function(index,item){
-					html += '<option value="'+item.id+'">'+(item.buyerName?item.buyerName:(item.bacthNumber+" ~"+item.product.name))+'</option>'
+					var pid = item.product?item.product.id:'';
+					var title = item.buyerName?item.buyerName:(item.bacthNumber+"~ "+item.product.name);
+					html += '<option value="'+item.id+'" data-pid="'+pid+'">'+title+'</option>';
 				})
 				return html += '</select>';
 			}
 		}
 		form.on('select(selectFilter)',function(obj){
-			var selected = $(obj.elem).next().find('input');
+			/* var selected = $(obj.elem).next().find('input');
 			var text = $(selected).val().split('~')[0];
-			$(selected).attr('value',text)
+			$(selected).attr('value',text) */
+			var index = $(obj.elem).closest('tr').attr('data-index');
+			var field = $(obj.elem).closest('td').attr('data-field');
+			var pid = '';
+			if(field == 'bacthNumber'){
+				var opt = $(obj.elem).find('option[value="'+obj.value+'"]'); 
+				pid = $(opt).attr('data-pid');
+				var text = $(opt).html();
+				console.log(pid + ' '+text)
+				layui.table.cache['tableData'][index]['productId'] = pid;
+				$(obj.elem).closest('tr').find('td[data-field=productName]').find('div').html(text.split('~')[1]);
+			}
+			layui.table.cache['tableData'][index][field] = obj.value;
+			if(!index<0){
+				//异步调用修改接口
+			}
+		})
+		table.on('edit(tableData)',function(obj){
+			//判断是否非法输入
+			console.log(obj)
 		})
 		form.on('submit(search)',function(obj){
 			layer.msg(JSON.stringify(obj.field));
@@ -134,13 +155,19 @@ layui.config({
 			}
 		})
 		function addTempData(){
-			var allField = {customrId:'',bacthNumber:'',productId:'',number:'', };
+			var allField = {customerId:'',bacthNumber:'',productId:'',number:'', };
 			table.addTemp('tableData',allField);
 	 	}
 		function saveTempData(){
 			var tempData = table.getTemp('tableData').data;
 			for(var i=0;i<tempData.length;i++){
 				var t = tempData[i];
+				var msg = '';
+				t.number=='' && (msg=='请填写发货数量');
+				t.bacthNumber=='' && (msg='请选择批次号');
+				t.customerId=='' && (msg='请选择客户');
+				if(msg!='')
+					return myutil.emsg(msg);
 			}
 			var successAdd=0;
 			for(var i=0;i<tempData.length;i++){
@@ -148,7 +175,7 @@ layui.config({
 					url: '/ledger/addSendGoods',
 					data: tempData[i],
 					success:function(r){
-						successAdd++;
+						r.code==0 && successAdd++;
 					}
 				})
 			}
