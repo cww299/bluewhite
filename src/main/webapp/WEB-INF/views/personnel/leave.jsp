@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html class="no-js">
@@ -43,12 +44,14 @@
 			<div class="layui-form-item">
 				<table>
 					<tr>
-						<td>申请人:</td>
-						<td><select id="userId" class="layui-input " lay-search="true" name="userId"></select></td>
-						<td>&nbsp;&nbsp;</td>
-						<td>部门:</td>
-						<td><select id="orgNameId" class="layui-input "  lay-search="true" name="orgNameId">
-								<option value=""></option></select></td>
+						<shiro:lacksRole name="attendanceStatistician">
+							<td>申请人:</td>
+							<td><select id="userId" class="layui-input " lay-search="true" name="userId"></select></td>
+							<td>&nbsp;&nbsp;</td>
+							<td>部门:</td>
+							<td><select id="orgNameId" class="layui-input "  lay-search="true" name="orgNameId">
+									<option value=""></option></select></td>
+						</shiro:lacksRole>
 						<td>&nbsp;&nbsp;</td>
 						<td>开始:</td>
 						<td><input id="startTime" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon"></td>
@@ -241,9 +244,8 @@
 				element = layui.element;
 			//select全局变量
 			var htmls = '<option value="">请选择</option>';
-			var index = layer.load(1, {
-				shade: [0.1, '#fff'] //0.1透明度的白色背景
-			});
+			var index = layer.load(1, { shade: [0.1] });
+			layer.close(index)
 			timeAll4='';
 			laydate.render({
 				elem: '#overdurationtime',
@@ -273,13 +275,60 @@
 				elem: '#startTime',
 				type: 'datetime',
 				calendar: true,
-				theme: '#393D49'
 			});
 			laydate.render({
 				elem: '#endTime',
 				type: 'datetime',
 			});
 			var moren = true;
+			
+			var isAttend = true,orgId = '';	  //是否是考情记录员,和所在部门
+			;!(function(){
+				if(document.getElementById('userId')==null){
+					;!(function(){
+						$.ajax({
+							url:'${ctx}/getCurrentUser',		
+							async:false,
+							success:function(r){
+								if(0==r.code)
+									orgId = r.data.orgNameId;
+							}
+						})
+					})();
+				}else{
+					isAttend = false;
+					var load = layer.load(1);	//下拉框初始渲染
+					$.ajax({
+						url : "${ctx}/basedata/list?type=orgName",
+						async: false,
+						success : function(result) {
+							var htmlfr=""
+							$(result.data).each(function(k, j) {
+								htmlfr += '<option value="'+j.id+'">' + j.name + '</option>'
+							});
+							$("#orgNameId").append(htmlfr);
+						}
+					});
+					form.render();
+					layer.close(load);
+				}
+				$.ajax({
+					url: '${ctx}/system/user/findUserList?foreigns=0&isAdmin=false'+(isAttend?'&orgNameId='+orgId:''),
+					async: false,
+					success: function(result) {
+						$(result.data).each(function(i, o) {
+							htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
+						})
+						$('#selectOne').append(htmls);
+						$("#userId").append(htmls);
+					},
+				});
+			})();
+			
+			
+			
+			
+			
 			form.on('checkbox(moren)',function (data) {
 				moren = data.elem.checked;
 			})
@@ -342,32 +391,6 @@
 					})
 				}
 			})
-			var load = layer.load(1);	//下拉框初始渲染
-			$.ajax({
-				url: '${ctx}/system/user/findAllUser',
-				async: false,
-				success: function(result) {
-					$(result.data).each(function(i, o) {
-						htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
-					})
-					$('#selectOne').append(htmls);
-					$("#userId").append(htmls);
-				},
-			});
-			$.ajax({
-				url : "${ctx}/basedata/list?type=orgName",
-				async: false,
-				success : function(result) {
-					var htmlfr=""
-					$(result.data).each(function(k, j) {
-						htmlfr += '<option value="'+j.id+'">' + j.name + '</option>'
-					});
-					$("#orgNameId").append(htmlfr);
-				}
-			});
-			form.render();
-			layer.close(load);
-			
 			
 			var getdata = {	 };
 				
@@ -375,7 +398,7 @@
 				elem: '#tableData',
 				size: 'lg',
 				height:'700px',
-				url: '${ctx}/personnel/getApplicationLeavePage' ,
+				url: '${ctx}/personnel/getApplicationLeavePage'+(isAttend?'?orgNameId='+orgId:'') ,
 				request:{ pageName: 'page' , limitName: 'size'  },
 				page: {},
 				loading: true,
@@ -935,28 +958,32 @@
 					layer.close(index);
 			    }
 			};
-			(function(){			//渲染部门人员树形结构
+		   (function(){			//渲染部门人员树形结构
 				 $.ajax({
 					url:'${ctx}/system/user/findUserOrg',
 					success:function(r){
 						if(0==r.code){
-							var data = [{ id:0, name:'全选所有部门', children:[], }];
-							layui.each(r.data,function(index,item){			//解析数据格式
+							var data = [{ id:0, name:'全选部门', children:[], }];
+							for(var i=0;i<r.data.length;i++){	
+								var item = r.data[i];
+								if(isAttend && item.id != orgId)
+									continue;
 								if(item.users.length>0){
 									var children = [];
-									layui.each(item.users,function(index1,item1){
+									for(var j=0;j<item.users.length;j++){
+										var item1 = item.users[j];
 										children.push({
-											id:item1.id,
+											id: item1.id,
 											name:item1.userName,
 										})
-									})
+									}
 									data[0].children.push({
-										id:0,			//排除部门id的影响
+										id:0,			
 										name:item.name,
 										children: children,
 									})
 								} 
-							})
+							}
 							menuTree.render({				
 					    	  elem:'#orgAndPersonDiv',
 					    	  data : data,
@@ -966,8 +993,7 @@
 							layer.msg('请求员工数据异常！',{icon:2});
 					}
 				})  
-				
-			})();
+			})(); 
 		}
 	)
 </script>

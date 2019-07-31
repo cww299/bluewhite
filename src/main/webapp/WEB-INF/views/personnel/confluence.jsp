@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html class="no-js">
@@ -40,13 +41,15 @@
 			<div class="layui-form-item">
 				<table>
 					<tr>
-						<td>人员:</td>
-						<td><select class="layui-input"  lay-search="true" id="userId" name="userId" >  
-								<option value="">请选择</option></select></td>
-						<td>&nbsp;&nbsp;</td>
-						<td>部门:</td>
-						<td><select  id="orgNameId" class="layui-input"  lay-search="true" name="orgNameId">
-								<option value="">请选择</option></select></td>
+						<shiro:lacksRole name="attendanceStatistician">
+							<td>人员:</td>
+							<td><select class="layui-input"  lay-search="true" id="userId" name="userId" >  
+									<option value="">请选择</option></select></td>
+							<td>&nbsp;&nbsp;</td>
+							<td>部门:</td>
+							<td><select  id="orgNameId" class="layui-input"  lay-search="true" name="orgNameId">
+									<option value="">请选择</option></select></td>
+						</shiro:lacksRole>
 						<td>&nbsp;&nbsp;</td>
 						<td>考勤汇总月份:</td>
 						<td><input name="orderTimeBegin" id="startTime" lay-verify="required" style="width: 200px;" placeholder="请输入考勤汇总月份" class="layui-input">
@@ -67,6 +70,7 @@
 		<table class="layui-hide" lay-filter="test3" id="test"></table>
 	</div>
 </div>
+ 
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
@@ -106,19 +110,70 @@ layui.config({
 			elem : '#startTime',
 			type : 'month',
 		});
+		//如果存在部门和人员选择下拉框
+		var isAttend = true,orgId = '';	  //是否是考情记录员,和所在部门
+		;!(function(){
+			if(document.getElementById('userId')==null){
+				;!(function(){
+					$.ajax({
+						url:'${ctx}/getCurrentUser',		
+						async:false,
+						success:function(r){
+							if(0==r.code)
+								orgId = r.data.orgNameId;
+						}
+					})
+				})();
+			}else{
+				isAttend = false;
+				(function(){
+					var index = layer.load(1);
+					$.ajax({
+						url : '${ctx}/system/user/findAllUser',
+						async : false,
+						success : function(result) {
+							var htmls='<option value="">请选择</option>';;
+							$(result.data).each(function(i, o) {
+								htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
+							})
+							$("#userId").append(htmls);
+							form.render();
+						},
+					});
+					$.ajax({
+						url : "${ctx}/basedata/list?type=orgName",
+						async : false,
+						success : function(result) {
+							var htmlfr = ""
+							$(result.data).each(
+								function(k, j) {
+									htmlfr += '<option value="'+j.id+'">'+ j.name+ '</option>'
+							});
+							$("#orgNameId").append(htmlfr);
+							layer.close(index);
+						}
+					});
+					form.render('select');
+					layer.close(index);
+				})();
+			}
+		})();
+		
+		
 		form.on('submit(LAY-role-search)', function(data) {
 			var field=data.field
-			if(!field.userId && !field.orgNameId){			
-				layer.msg('请选择部门获取相关人员',{icon:2})
+			if(!field.userId && !field.orgNameId && !isAttend){			
+				layer.msg('请选择部门或者相关人员',{icon:2})
 				return;
 			}
+			isAttend && (field.orgNameId = orgId);
 			field.orderTimeBegin+="-01 00:00:00";
-			var postUrl='${ctx}/personnel/intAttendanceTime'
+			var postUrl='${ctx}/personnel/intAttendanceTime';
 			even(postUrl,field)
 		})
 		form.on('submit(LAY-role-searche)', function(data) {
 			var field=data.field
-			if(!field.userId && !field.orgNameId){			
+			if(!field.userId && !field.orgNameId && !isAttend){			
 				layer.msg('请选择部门获取相关人员',{icon:2})
 				return;
 			}
@@ -127,6 +182,7 @@ layui.config({
 					orgNameId:$('#orgNameId').val(),
 					orderTimeBegin:$('#startTime').val()+'-01 00:00:00',
 			}
+			isAttend && (d.orgNameId = orgId);
 			var postUrl='${ctx}/personnel/addAttendanceTime'
 			even(postUrl,d)
 		})
@@ -331,37 +387,6 @@ layui.config({
 				})
 			})
 		};
-	
-		(function(){
-			var index = layer.load(1);
-			$.ajax({
-				url : '${ctx}/system/user/findAllUser',
-				async : false,
-				success : function(result) {
-					var htmls='<option value="">请选择</option>';;
-					$(result.data).each(function(i, o) {
-						htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
-					})
-					$("#userId").append(htmls);
-					form.render();
-				},
-			});
-			$.ajax({
-				url : "${ctx}/basedata/list?type=orgName",
-				async : false,
-				success : function(result) {
-					var htmlfr = ""
-					$(result.data).each(
-						function(k, j) {
-							htmlfr += '<option value="'+j.id+'">'+ j.name+ '</option>'
-					});
-					$("#orgNameId").append(htmlfr);
-					form.render('select');
-					layer.close(index);
-				}
-			});
-			layer.close(index);
-		})();
 })
 </script>
 </body>
