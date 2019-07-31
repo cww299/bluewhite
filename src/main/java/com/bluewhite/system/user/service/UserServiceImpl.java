@@ -404,6 +404,18 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			if (user.getQuit() != null) {
 				predicate.add(cb.equal(root.get("quit").as(Integer.class),user.getQuit()));
 			}
+			
+			//部门,多个
+			if (!StringUtils.isEmpty(user.getOrgNameIds())) {
+				List<Long>  orgNameIdList = new ArrayList<Long>();
+					String[] idArr = user.getOrgNameIds().split(",");
+					for (String idStr : idArr) {
+						Long id = Long.parseLong(idStr);
+						orgNameIdList.add(id);
+					}
+				predicate.add(cb.and(root.get("orgNameId").as(Long.class).in(orgNameIdList)));
+			}
+			
 			//按手机号查找
 			if (!StringUtils.isEmpty(user.getPhone())) {
 				predicate.add(cb.like(root.get("phone").as(String.class),"%" + user.getPhone() + "%"));

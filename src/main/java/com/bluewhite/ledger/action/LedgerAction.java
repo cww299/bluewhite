@@ -171,19 +171,6 @@ public class LedgerAction {
 	}
 
 	/**
-	 * 分页查看贴包子单（实际发货单）
-	 * @return cr
-	 */
-	@RequestMapping(value = "/ledger/packingChildPage", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse packingChildPage(PageParameter page, PackingChild packingChild) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONChild.format(packingService.findPackingChildPage(packingChild, page)).toJSON());
-		cr.setMessage("查看成功");
-		return cr;
-	}
-
-	/**
 	 * 新增贴包单
 	 * 
 	 * @return cr
@@ -270,6 +257,38 @@ public class LedgerAction {
 		sendGoodsService.addSendGoods(sendGoods);
 		return cr;
 	}
+	
+	
+	/***************************** 财务 **********************************/
+	
+	/**
+	 * 分页查看贴包子单（实际发货单）
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/packingChildPage", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse packingChildPage(PageParameter page, PackingChild packingChild) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONChild.format(packingService.findPackingChildPage(packingChild, page)).toJSON());
+		cr.setMessage("查看成功");
+		return cr;
+	}
+	
+	/**
+	 * 根据产品和客户查找以往价格
+	 * @param page
+	 * @param packingChild
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/getPackingChildPrice", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getPackingChildPrice(PageParameter page, PackingChild packingChild) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONChild.format(packingService.findPackingChildPage(packingChild, page)).toJSON());
+		cr.setMessage("查看成功");
+		return cr;
+	}
+	
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
