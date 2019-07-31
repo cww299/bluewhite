@@ -68,6 +68,12 @@ public class Packing extends BaseEntity<Long> {
 	private Date packingDate;
 	
 	/**
+	 * 是否发货
+	 */
+	@Column(name = "flag")
+	private Integer flag;
+	
+	/**
 	 * 批次号
 	 */
 	@Transient
@@ -97,6 +103,12 @@ public class Packing extends BaseEntity<Long> {
 	private String childPacking;
 	
 	/**
+	 * 新增包装物json数据
+	 */
+	@Transient
+	private String packingMaterialsJson;
+	
+	/**
 	 * 客户name
 	 * 
 	 */
@@ -105,6 +117,22 @@ public class Packing extends BaseEntity<Long> {
 	
 	
 	
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
+
+	public String getPackingMaterialsJson() {
+		return packingMaterialsJson;
+	}
+
+	public void setPackingMaterialsJson(String packingMaterialsJson) {
+		this.packingMaterialsJson = packingMaterialsJson;
+	}
 
 	public String getCustomerName() {
 		return customerName;
