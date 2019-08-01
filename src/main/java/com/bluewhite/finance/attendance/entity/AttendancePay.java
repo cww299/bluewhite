@@ -56,6 +56,13 @@ public class AttendancePay extends BaseEntity<Long> {
 	 */
 	@Column(name = "work_time")
 	private Double workTime;
+	
+	/**
+	 * 
+	 * 出勤时长
+	 */
+	@Column(name = "turnWorkTime")
+	private Double turnWorkTime;
 
 	/**
 	 * 加班时间
@@ -152,6 +159,16 @@ public class AttendancePay extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Integer sign;
+
+	
+	
+	public Double getTurnWorkTime() {
+		return turnWorkTime;
+	}
+
+	public void setTurnWorkTime(Double turnWorkTime) {
+		this.turnWorkTime = turnWorkTime;
+	}
 
 	public Double getGroupWorkTime() {
 		return groupWorkTime;

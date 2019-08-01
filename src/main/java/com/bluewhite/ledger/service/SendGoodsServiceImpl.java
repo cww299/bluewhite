@@ -26,7 +26,7 @@ import com.bluewhite.ledger.entity.SendGoods;
 
 @Service
 public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> implements SendGoodsService {
-	
+
 	@Autowired
 	private SendGoodsDao dao;
 	@Autowired
@@ -48,19 +48,26 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			}
 			// 按客户名称
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
-				predicate.add(cb.like(root.get("customer").get("name").as(String.class), "%" + param.getCustomerName() + "%"));
+				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
+						"%" + param.getCustomerName() + "%"));
 			}
 			// 按产品name过滤
 			if (!StringUtils.isEmpty(param.getProductName())) {
-				predicate.add(cb.like(root.get("product").get("name").as(String.class), "%" + param.getProductName() + "%"));
+				predicate.add(
+						cb.like(root.get("product").get("name").as(String.class), "%" + param.getProductName() + "%"));
 			}
 			// 按批次查找
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
-				predicate.add(cb.like(root.get("bacthNumber").as(String.class),"%" + param.getBacthNumber() + "%"));
+				predicate.add(cb.like(root.get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
 			}
 			// 按发货日期
 			if (!StringUtils.isEmpty(param.getSendDate())) {
 				predicate.add(cb.equal(root.get("sendDate").as(Date.class), param.getSendDate()));
+			}
+			// 按发货贴包日期
+			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+				predicate.add(cb.between(root.get("sendDate").as(Date.class), param.getOrderTimeBegin(),
+						param.getOrderTimeEnd()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
@@ -75,15 +82,15 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 		Order order = orderdao.findOne(sendGoods.getOrderId());
 		sendGoods.setBacthNumber(order.getBacthNumber());
 		sendGoods.setProductId(order.getProductId());
-		if(sendGoods.getId()!=null){
+		if (sendGoods.getId() != null) {
 			List<PackingChild> sendGoodsList = packingChildDao.findBySendGoodsId(sendGoods.getId());
-			if(sendGoodsList.size()>0){
+			if (sendGoodsList.size() > 0) {
 				throw new ServiceException("该待发货单已有贴包发货单，无法修改，请先核对贴包发货单");
 			}
 			SendGoods ot = dao.findOne(sendGoods.getId());
 			BeanCopyUtils.copyNotEmpty(sendGoods, ot, "");
 			dao.save(ot);
-		}else{
+		} else {
 			sendGoods.setSendNumber(0);
 			dao.save(sendGoods);
 		}
@@ -108,19 +115,26 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			}
 			// 按客户名称
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
-				predicate.add(cb.like(root.get("customer").get("name").as(String.class), "%" + param.getCustomerName() + "%"));
+				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
+						"%" + param.getCustomerName() + "%"));
 			}
 			// 按产品name过滤
 			if (!StringUtils.isEmpty(param.getProductName())) {
-				predicate.add(cb.like(root.get("product").get("name").as(String.class), "%" + param.getProductName() + "%"));
+				predicate.add(
+						cb.like(root.get("product").get("name").as(String.class), "%" + param.getProductName() + "%"));
 			}
 			// 按批次查找
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
-				predicate.add(cb.like(root.get("bacthNumber").as(String.class),"%" + param.getBacthNumber() + "%"));
+				predicate.add(cb.like(root.get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
 			}
 			// 按发货日期
 			if (!StringUtils.isEmpty(param.getSendDate())) {
 				predicate.add(cb.equal(root.get("sendDate").as(Date.class), param.getSendDate()));
+			}
+			// 按发货贴包日期
+			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+				predicate.add(cb.between(root.get("sendDate").as(Date.class), param.getOrderTimeBegin(),
+						param.getOrderTimeEnd()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
@@ -139,12 +153,12 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					List<PackingChild> sendGoodsList = packingChildDao.findBySendGoodsId(id);
-					if(sendGoodsList.size()>0){
+					if (sendGoodsList.size() > 0) {
 						throw new ServiceException("该待发货单已有贴包发货单，无法删除，请先核对贴包发货单");
 					}
 					SendGoods sendGoods = dao.findOne(id);
 					sendGoods.setCustomerId(null);
-					dao.delete(sendGoods); 
+					dao.delete(sendGoods);
 					count++;
 				}
 			}

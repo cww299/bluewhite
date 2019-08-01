@@ -241,11 +241,11 @@ public class LedgerAction {
 	 */
 	@RequestMapping(value = "/ledger/getPackingNumber", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getPackingNumber() {
+	public CommonResponse getPackingNumber(Date sendDate) {
 		CommonResponse cr = new CommonResponse();
-		String packingNumber = packingService.getPackingNumber();
+		String packingNumber = packingService.getPackingNumber(sendDate);
 		cr.setData(packingNumber);
-		cr.setMessage("新增成功");
+		cr.setMessage("获取成功");
 		return cr;
 	}
 
