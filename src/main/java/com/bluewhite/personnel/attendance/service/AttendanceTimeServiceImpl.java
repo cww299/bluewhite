@@ -804,9 +804,17 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				attendanceTime.getOrderTimeBegin(),attendanceTime.getOrderTimeEnd());
 		// 按打卡记录查出考勤
 		List<AttendanceTime> attendanceTimeList = findAttendanceTimePage(attendanceTime);
-
+		//循环比较是否为同一天
 		
 		
+		for(AttendancePay aPay : attendancePayList ){
+			for(AttendanceTime aTime : attendanceTimeList){
+				if(DatesUtil.sameDate(aPay.getAllotTime(), aTime.getTime())){
+					
+					
+				}
+			}
+		}
 		
 		
 		

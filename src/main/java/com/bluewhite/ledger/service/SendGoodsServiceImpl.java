@@ -1,6 +1,7 @@
 package com.bluewhite.ledger.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.criteria.Predicate;
@@ -43,7 +44,7 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			}
 			// 按客户id过滤
 			if (param.getCustomerId() != null) {
-				predicate.add(cb.equal(root.get("customrId").as(Long.class), param.getCustomerId()));
+				predicate.add(cb.equal(root.get("customerId").as(Long.class), param.getCustomerId()));
 			}
 			// 按客户名称
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
@@ -51,12 +52,15 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			}
 			// 按产品name过滤
 			if (!StringUtils.isEmpty(param.getProductName())) {
-				predicate.add(cb.equal(root.get("product").get("name").as(String.class), "%" + param.getProductName() + "%"));
+				predicate.add(cb.like(root.get("product").get("name").as(String.class), "%" + param.getProductName() + "%"));
 			}
 			// 按批次查找
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
-				predicate.add(cb.like(root.get("packingChilds").get("bacthNumber").as(String.class),
-						"%" + param.getBacthNumber() + "%"));
+				predicate.add(cb.like(root.get("bacthNumber").as(String.class),"%" + param.getBacthNumber() + "%"));
+			}
+			// 按发货日期
+			if (!StringUtils.isEmpty(param.getSendDate())) {
+				predicate.add(cb.equal(root.get("sendDate").as(Date.class), param.getSendDate()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
@@ -108,12 +112,15 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			}
 			// 按产品name过滤
 			if (!StringUtils.isEmpty(param.getProductName())) {
-				predicate.add(cb.equal(root.get("product").get("name").as(String.class), "%" + param.getProductName() + "%"));
+				predicate.add(cb.like(root.get("product").get("name").as(String.class), "%" + param.getProductName() + "%"));
 			}
 			// 按批次查找
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
-				predicate.add(cb.like(root.get("packingChilds").get("bacthNumber").as(String.class),
-						"%" + param.getBacthNumber() + "%"));
+				predicate.add(cb.like(root.get("bacthNumber").as(String.class),"%" + param.getBacthNumber() + "%"));
+			}
+			// 按发货日期
+			if (!StringUtils.isEmpty(param.getSendDate())) {
+				predicate.add(cb.equal(root.get("sendDate").as(Date.class), param.getSendDate()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));

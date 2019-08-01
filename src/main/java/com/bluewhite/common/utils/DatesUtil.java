@@ -3,14 +3,15 @@ package com.bluewhite.common.utils;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 
 public class DatesUtil {
 
@@ -55,8 +56,7 @@ public class DatesUtil {
 		Date firstDayOfMonth = cal.getTime();
 		return firstDayOfMonth;
 	}
-	
-	
+
 	/**
 	 * 获得该月的15号 23:59:59:000
 	 * 
@@ -177,9 +177,9 @@ public class DatesUtil {
 	 * @return
 	 */
 	public static boolean sameDate(Date d1, Date d2) {
-		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
-		// fmt.setTimeZone(new TimeZone()); // 如果需要设置时间区域，可以在这里设置
-		return fmt.format(d1).equals(fmt.format(d2));
+		LocalDate localDate1 = ZonedDateTime.ofInstant(d1.toInstant(), ZoneId.systemDefault()).toLocalDate();
+		LocalDate localDate2 = ZonedDateTime.ofInstant(d2.toInstant(), ZoneId.systemDefault()).toLocalDate();
+		return localDate1.isEqual(localDate2);
 	}
 
 	/**
@@ -204,7 +204,7 @@ public class DatesUtil {
 		Long time = (endDate.getTime() - beginDate.getTime()) / (60 * 1000);
 		return time.doubleValue();
 	}
-	
+
 	/**
 	 * <li>功能描述：时间相减得到时间（秒）
 	 * 
@@ -216,7 +216,7 @@ public class DatesUtil {
 		Long time = (endDate.getTime() - beginDate.getTime()) / 1000;
 		return time.doubleValue();
 	}
-	
+
 	/**
 	 * <li>功能描述：日期加上分钟数返回一个新日期
 	 * 
@@ -230,7 +230,7 @@ public class DatesUtil {
 		calendar.add(Calendar.MINUTE, minute.intValue());
 		return calendar.getTime();
 	}
-	
+
 	/**
 	 * <li>功能描述：日期加上天数返回一个新日期
 	 * 
@@ -275,9 +275,7 @@ public class DatesUtil {
 		}
 		return time;
 	}
-	
-	
-	
+
 	/**
 	 * <li>功能描述：包装特急出勤特殊处理时间方法
 	 * 
@@ -304,9 +302,7 @@ public class DatesUtil {
 		}
 		return time;
 	}
-	
-	
-	
+
 	/**
 	 * <li>功能描述：考勤特殊处理时间方法
 	 * 
@@ -332,8 +328,7 @@ public class DatesUtil {
 		}
 		return time;
 	}
-	
-	
+
 	/**
 	 * 获取某个日期的下一天
 	 * 
@@ -348,7 +343,7 @@ public class DatesUtil {
 		Date date = calendar.getTime();
 		return date;
 	}
-	
+
 	/**
 	 * 获取某个日期的上一天
 	 * 
@@ -503,18 +498,19 @@ public class DatesUtil {
 
 	/**
 	 * 判断是冬令时还是夏令时（5.1-9.30）       
-	 * @throws ParseException 
+	 * 
+	 * @throws ParseException
 	 */
 	public static boolean belongCalendar(Date nowTime) throws ParseException {
 		Calendar date = Calendar.getInstance();
 		date.setTime(nowTime);
-		
+
 		Calendar begin = Calendar.getInstance();
 		// 设置年份
 		begin.set(Calendar.YEAR, date.get(Calendar.YEAR));
 		// 设置月份
 		begin.set(Calendar.MONTH, 3);
-		//设置天
+		// 设置天
 		begin.set(Calendar.DAY_OF_MONTH, 30);
 		begin.set(Calendar.HOUR_OF_DAY, 23);// 设置时为0点
 		begin.set(Calendar.MINUTE, 59);// 设置分钟为0分
@@ -524,7 +520,7 @@ public class DatesUtil {
 		end.set(Calendar.YEAR, date.get(Calendar.YEAR));
 		// 设置月份
 		end.set(Calendar.MONTH, 8);
-		//设置天
+		// 设置天
 		end.set(Calendar.DAY_OF_MONTH, 30);
 		end.set(Calendar.HOUR_OF_DAY, 23);// 设置时为0点
 		end.set(Calendar.MINUTE, 59);// 设置分钟为0分
@@ -537,40 +533,41 @@ public class DatesUtil {
 			return false;
 		}
 	}
-	
-	
+
 	/**
-	 * 获取某日期区间的所有日期  日期倒序
+	 * 获取某日期区间的所有日期 日期倒序
 	 *
-	 * @param startDate  开始日期
-	 * @param endDate    结束日期
-	 * @param dateFormat 日期格式
+	 * @param startDate
+	 *            开始日期
+	 * @param endDate
+	 *            结束日期
+	 * @param dateFormat
+	 *            日期格式
 	 * @return 区间内所有日期
 	 */
 	public static List<Date> getPerDaysByStartAndEndDate(String startDate, String endDate, String dateFormat) {
-	    DateFormat format = new SimpleDateFormat(dateFormat);
-	    try {
-	        Date sDate = format.parse(startDate);
-	        Date eDate = format.parse(endDate);
-	        long start = sDate.getTime();
-	        long end = eDate.getTime();
-	        if (start > end) {
-	            return null;
-	        }
-	        Calendar calendar = Calendar.getInstance();
-	        calendar.setTime(eDate);
-	        List<Date> res = new ArrayList<Date>();
-	        while (end >= start) {
-	            res.add(calendar.getTime());
-	            calendar.add(Calendar.DAY_OF_MONTH, -1);
-	            end = calendar.getTimeInMillis();
-	        }
-	        return res.stream()
-					.sorted(Comparator.comparing(Date::getTime)).collect(Collectors.toList());
-	    } catch (ParseException e) {
-	    	
-	    }
-	    return null;
+		DateFormat format = new SimpleDateFormat(dateFormat);
+		try {
+			Date sDate = format.parse(startDate);
+			Date eDate = format.parse(endDate);
+			long start = sDate.getTime();
+			long end = eDate.getTime();
+			if (start > end) {
+				return null;
+			}
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(eDate);
+			List<Date> res = new ArrayList<Date>();
+			while (end >= start) {
+				res.add(calendar.getTime());
+				calendar.add(Calendar.DAY_OF_MONTH, -1);
+				end = calendar.getTimeInMillis();
+			}
+			return res.stream().sorted(Comparator.comparing(Date::getTime)).collect(Collectors.toList());
+		} catch (ParseException e) {
+
+		}
+		return null;
 	}
 
 }

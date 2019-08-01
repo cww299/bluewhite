@@ -110,14 +110,14 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				PackingChild packingChild = new PackingChild();
 				packingChild.setFlag(0);
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				packingChild.setBacthNumber(jsonObject.getString("bacthNumber"));
-				packingChild.setProductId(jsonObject.getLong("productId"));
-				packingChild.setSendGoodsId(jsonObject.getLong("sendGoodsId"));
 				packingChild.setCount(jsonObject.getInteger("count"));
-				packingChild.setCustomerId(packing.getCustomerId());
 				SendGoods sendGoods = sendGoodsDao.findOne(jsonObject.getLong("sendGoodsId"));
 				sendGoods.setSendNumber(sendGoods.getNumber()+packingChild.getCount());
 				sendGoodsDao.save(sendGoods);
+				packingChild.setSendGoodsId(sendGoods.getId());
+				packingChild.setCustomerId(packing.getCustomerId());
+				packingChild.setBacthNumber(sendGoods.getBacthNumber());
+				packingChild.setProductId(sendGoods.getProductId());
 				packing.getPackingChilds().add(packingChild);
 			}
 		}
