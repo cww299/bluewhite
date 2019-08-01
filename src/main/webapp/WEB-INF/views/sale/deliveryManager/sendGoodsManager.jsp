@@ -88,7 +88,8 @@ layui.config({
 		laydate.render({ elem:'#searchTime',value: searchTime  })
 		table.render({
 			elem:'#tableData',
-			url:'${ctx}/ledger/getSendGoods?sendDate='+searchTime+" 00:00:00",
+			url:'${ctx}/ledger/getSendGoods',
+			where: { sendDate: searchTime+" 00:00:00"},
 			toolbar:'#tableDataToolbar',
 			page:true,
 			size:'lg',
@@ -97,8 +98,8 @@ layui.config({
 			cols:[[
 			       {align:'center', type:'checkbox',},
 			       {align:'center', title:'发货日期',   field:'sendDate', edit:false, width:'10%', templet:'<span>{{ d.sendDate.split(" ")[0] }}</span>', },
-			       {align:'center', title:'客户',   field:'customerId',  edit:false, templet: getSelectHtmlCustom(),  width:'12%',},
-			       {align:'center', title:'批次号',   field:'bacthNumber', edit:false, templet: getSelectHtmlBatch(),  },
+			       {align:'center', title:'客户',   field:'customerId',  edit:false,  width:'12%', templet: getSelectHtml(allCustom,'customerId'),  },
+			       {align:'center', title:'批次号',   field:'bacthNumber', edit:false, templet: getSelectHtml(allBatch,'bacthNumber'),  },
 			       {align:'center', title:'产品', 	field:'productName', edit:false, templet: '<span>{{d.product?d.product.name:""}}</span>'	},
 			       {align:'center', title:'数量',   field:'number',	edit:true,  width:'6%',},
 			       {align:'center', title:'发货数量',   field:'sendNumber',	edit:false,  width:'6%',},
@@ -121,25 +122,18 @@ layui.config({
 				})
 			}
 		})
-		function getSelectHtmlBatch(){
+		function getSelectHtml(data,field){
 			return function(d){
 				var html = '<select lay-filter="selectFilter" lay-search><option value="">请选择</option>';
-				layui.each(allBatch,function(index,item){
-					var pid = item.product?item.product.id:'';
-					var title = item.bacthNumber+"~ "+item.product.name;
-					var selected = (item.id==d.orderId?'selected':'');
+				layui.each(data,function(index,item){
+					var id = d.customer ? d.customer.id : '';
+					var title = item.buyerName;
+					if(field=='bacthNumber'){
+						id=d.orderId;
+						title = item.bacthNumber+"~ "+item.product.name;
+					}
+					var selected = (item.id==id ? 'selected' : '');
 					html += '<option value="'+item.id+'" '+selected+'>'+title+'</option>';
-				})
-				return html += '</select>';
-			}
-		}
-		function getSelectHtmlCustom(){
-			return function(d){
-				var html = '<select lay-filter="selectFilter" lay-search><option value="">请选择</option>';
-				layui.each(allCustom,function(index,item){
-					var id = d.customer?d.customer.id:'';
-					var selected = (item.id==id?'selected':'');
-					html += '<option value="'+item.id+'" '+selected+'>'+item.buyerName+'</option>';
 				})
 				return html += '</select>';
 			}
@@ -158,8 +152,7 @@ layui.config({
 			if(index>=0){
 				var data = { id: trData.id, }
 				if(field=='bacthNumber'){
-					data.bacthNumber = obj.value;
-					data.productId = pid;
+					data.orderId = obj.value;
 				}else
 					data.customerId = obj.value;
 				update(data);
