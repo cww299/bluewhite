@@ -58,7 +58,7 @@ public class AttendancePay extends BaseEntity<Long> {
 	private Double workTime;
 
 	/**
-	 * 加班时间(验货和打棉组固有)
+	 * 加班时间
 	 */
 	@Column(name = "over_time")
 	private Double overTime;

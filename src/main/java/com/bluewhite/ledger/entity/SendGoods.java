@@ -99,11 +99,38 @@ public class SendGoods extends BaseEntity<Long>{
 	@Transient
 	private String productName;
 
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
 	
+	
+	
+	
+	
+	
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
 
-	
-	
-	
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
+
 	public Long getOrderId() {
 		return orderId;
 	}
