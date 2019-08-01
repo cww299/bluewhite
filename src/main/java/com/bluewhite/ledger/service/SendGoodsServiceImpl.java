@@ -16,8 +16,10 @@ import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.PackingChildDao;
 import com.bluewhite.ledger.dao.SendGoodsDao;
+import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.SendGoods;
 
@@ -28,6 +30,8 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 	private SendGoodsDao dao;
 	@Autowired
 	private PackingChildDao packingChildDao;
+	@Autowired
+	private OrderDao orderdao;
 
 	@Override
 	public PageResult<SendGoods> findPages(SendGoods param, PageParameter page) {
@@ -41,13 +45,13 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			if (param.getCustomerId() != null) {
 				predicate.add(cb.equal(root.get("customrId").as(Long.class), param.getCustomerId()));
 			}
-			// 按产品name过滤
-			if (!StringUtils.isEmpty(param.getProductName())) {
-				predicate.add(cb.equal(root.get("product").get("name").as(Long.class), "%" + param.getProductName() + "%"));
-			}
 			// 按客户名称
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
-				predicate.add(cb.like(root.get("customerName").as(String.class), "%" + param.getCustomerName() + "%"));
+				predicate.add(cb.like(root.get("customer").get("name").as(String.class), "%" + param.getCustomerName() + "%"));
+			}
+			// 按产品name过滤
+			if (!StringUtils.isEmpty(param.getProductName())) {
+				predicate.add(cb.equal(root.get("product").get("name").as(String.class), "%" + param.getProductName() + "%"));
 			}
 			// 按批次查找
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
@@ -64,6 +68,9 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 
 	@Override
 	public SendGoods addSendGoods(SendGoods sendGoods) {
+		Order order = orderdao.findOne(sendGoods.getOrderId());
+		sendGoods.setBacthNumber(order.getBacthNumber());
+		sendGoods.setProductId(order.getProductId());
 		if(sendGoods.getId()!=null){
 			List<PackingChild> sendGoodsList = packingChildDao.findBySendGoodsId(sendGoods.getId());
 			if(sendGoodsList.size()>0){
@@ -101,7 +108,7 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			}
 			// 按产品name过滤
 			if (!StringUtils.isEmpty(param.getProductName())) {
-				predicate.add(cb.equal(root.get("product").get("name").as(Long.class), "%" + param.getProductName() + "%"));
+				predicate.add(cb.equal(root.get("product").get("name").as(String.class), "%" + param.getProductName() + "%"));
 			}
 			// 按批次查找
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
