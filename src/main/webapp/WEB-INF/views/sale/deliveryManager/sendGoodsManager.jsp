@@ -21,6 +21,9 @@
 	<div class="layui-card-body">
 		<table class="layui-form">
 			<tr>
+				<td>发货日期：</td>
+				<td><input type="text" name="sendDate" class="layui-input" id="searchTime" lay-verify="required"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>批次号：</td>
 				<td><input type="text" name="bacthNumber" class="layui-input"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
@@ -65,7 +68,9 @@ layui.config({
 		, tablePlug = layui.tablePlug;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
+		myutil.timeFormat();
 		var allBatch = [],allCustom = []; 	//所有的批次号、客户
+		var searchTime = new Date().format("yyyy-MM-dd");;
 		myutil.getData({
 			url:'${ctx}/ledger/allCustomer',
 			async: false,
@@ -80,9 +85,10 @@ layui.config({
 				allBatch = data;
 			}
 		});
+		laydate.render({ elem:'#searchTime',value: searchTime  })
 		table.render({
 			elem:'#tableData',
-			url:'${ctx}/ledger/getSendGoods',
+			url:'${ctx}/ledger/getSendGoods?sendDate='+searchTime+" 00:00:00",
 			toolbar:'#tableDataToolbar',
 			page:true,
 			size:'lg',
@@ -90,9 +96,9 @@ layui.config({
 			parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } },
 			cols:[[
 			       {align:'center', type:'checkbox',},
-			       {align:'center', title:'发货日期',   field:'sendDate', edit:false, width:'10%',},
-			       {align:'center', title:'客户',   field:'customerId',  edit:false, templet: getSelectHtml(allCustom,'customr'),  width:'12%',},
-			       {align:'center', title:'批次号',   field:'bacthNumber', edit:false, templet: getSelectHtml(allBatch,'batch'),  },
+			       {align:'center', title:'发货日期',   field:'sendDate', edit:false, width:'10%', templet:'<span>{{ d.sendDate.split(" ")[0] }}</span>', },
+			       {align:'center', title:'客户',   field:'customerId',  edit:false, templet: getSelectHtmlCustom(),  width:'12%',},
+			       {align:'center', title:'批次号',   field:'bacthNumber', edit:false, templet: getSelectHtmlBatch(),  },
 			       {align:'center', title:'产品', 	field:'productName', edit:false, templet: '<span>{{d.product?d.product.name:""}}</span>'	},
 			       {align:'center', title:'数量',   field:'number',	edit:true,  width:'6%',},
 			       {align:'center', title:'发货数量',   field:'sendNumber',	edit:false,  width:'6%',},
@@ -103,29 +109,37 @@ layui.config({
 					item.children[0].onclick = function(event) { layui.stope(event) };
 					laydate.render({
 						elem: item.children[0],
-						type: 'datetime',
 						done: function(val){
 							var index = $(this.elem).closest('tr').attr('data-index');
 							var trData = table.cache['tableData'][index];
 							update({
 								id: trData.id,
-								sendDate: val
+								sendDate: val+' 00:00:00'
 							})
 						}
 					})
 				})
 			}
 		})
-		
-		function getSelectHtml(data,field){
+		function getSelectHtmlBatch(){
 			return function(d){
 				var html = '<select lay-filter="selectFilter" lay-search><option value="">请选择</option>';
-				layui.each(data,function(index,item){
+				layui.each(allBatch,function(index,item){
 					var pid = item.product?item.product.id:'';
-					var title = item.buyerName?item.buyerName:(item.bacthNumber+"~ "+item.product.name);
-					var id = (field=='customr'?(d.customer?d.customer.id:''):d.bacthNumber);
-					var selected = (item.id==id?'selected':'');
+					var title = item.bacthNumber+"~ "+item.product.name;
+					var selected = (item.id==d.id?'selected':'');
 					html += '<option value="'+item.id+'" data-pid="'+pid+'" '+selected+'>'+title+'</option>';
+				})
+				return html += '</select>';
+			}
+		}
+		function getSelectHtmlCustom(){
+			return function(d){
+				var html = '<select lay-filter="selectFilter" lay-search><option value="">请选择</option>';
+				layui.each(allCustom,function(index,item){
+					var id = d.customer?d.customer.id:'';
+					var selected = (item.id==id?'selected':'');
+					html += '<option value="'+item.id+'" '+selected+'>'+item.buyerName+'</option>';
 				})
 				return html += '</select>';
 			}
@@ -161,16 +175,25 @@ layui.config({
 			var val = obj.value, msg ='';
 			isNaN(val) && (msg = '数量只能为数字');
 			val<0 && (msg = '数量只能为数字');
-			if(msg!='')
+			if(msg!=''){
 				return myutil.emsg(msg);
+			}
 			if(data.id!=''){
-				update({
-					id: data.id,
-					number: parseInt(val)
+				myutil.saveAjax({
+					url: '/ledger/addSendGoods',
+					data: {
+						id: data.id,
+						number: parseInt(val)
+					},
+					success: function(){
+						$(obj.tr[0]).find('td[data-field="surplusNumber"]').find('div').html(val-data.sendNumber);
+					}
 				})
 			}
 		})
 		form.on('submit(search)',function(obj){
+			searchTime = obj.field.sendDate;
+			obj.field.sendDate+=' 00:00:00';
 			table.reload('tableData',{
 				where: obj.field ,
 				page:{ curr:1 },
@@ -185,15 +208,15 @@ layui.config({
 			}
 		})
 		function addTempData(){
-			var allField = {customerId:'',bacthNumber:'',productId:'',number:'',sendDate:'' };
+			var allField = {customerId:'',bacthNumber:'',productId:'',number:'',sendDate:'',id:'' };
 			table.addTemp('tableData',allField,function(trElem){
 				var sendDateTd = trElem.find('td[data-field="sendDate"]')[0];
 				laydate.render({
 					elem: sendDateTd.children[0],
-					type:'datetime',
+					value: searchTime,
 					done: function(val) {
 						var index = $(this.elem).closest('tr').attr('data-index');
-						table.cache['tableData'][index]['sendDate'] = val;
+						table.cache['tableData'][index]['sendDate'] = val+' 00:00:00';
 					}
 				}) 
 			});
