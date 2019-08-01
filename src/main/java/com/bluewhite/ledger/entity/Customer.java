@@ -40,11 +40,6 @@ public class Customer extends BaseEntity<Long> {
 	@Column(name = "name")
 	private String name;
 
-	/**
-	 * 客户真实姓名
-	 */
-	@Column(name = "buyer_name")
-	private String buyerName;
 
 	/**
 	 * 客户类型
@@ -172,14 +167,6 @@ public class Customer extends BaseEntity<Long> {
 
 	public void setCounty(RegionAddress county) {
 		this.county = county;
-	}
-
-	public String getBuyerName() {
-		return buyerName;
-	}
-
-	public void setBuyerName(String buyerName) {
-		this.buyerName = buyerName;
 	}
 
 	public String getPhone() {

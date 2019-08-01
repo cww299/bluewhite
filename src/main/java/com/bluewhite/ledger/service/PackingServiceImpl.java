@@ -89,9 +89,10 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	}
 
 	@Override
-	public String getPackingNumber() {
+	public String getPackingNumber(Date sendDate) {
+		List<Packing> PackingList = dao.findByPackingDate(sendDate);
 		Calendar now = Calendar.getInstance();
-		List<Packing> PackingList = dao.findByPackingDate(now.getTime());
+		now.setTime(sendDate);
 		String year = String.valueOf(now.get(Calendar.YEAR));
 		String month =  String.valueOf(now.get(Calendar.MONTH) + 1);
 		String day =  String.valueOf(now.get(Calendar.DAY_OF_MONTH));
@@ -102,8 +103,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 
 	@Override
 	public Packing addPacking(Packing packing) {	            
-		packing.setPackingDate(packing.getPackingDate()!=null ? packing.getPackingDate() : new Date());
-		// 新增子单
+ 		// 新增子单
 		if (!StringUtils.isEmpty(packing.getChildPacking())) { 
 			JSONArray jsonArray = JSON.parseArray(packing.getChildPacking());
 			for (int i = 0; i < jsonArray.size(); i++) {
@@ -228,7 +228,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					Long id = Long.parseLong(idArr[i]);
 					Packing packing = dao.findOne(id);
 					if(packing.getFlag()==1){
-						 
+						throw new ServiceException("贴报单已发货，无法删除，请先核对发货单");
 					}
 					packing.setCustomerId(null);
 					dao.delete(packing); 

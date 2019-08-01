@@ -22,7 +22,7 @@ public interface PackingService extends BaseCRUDService<Packing, Long>{
 	 * 根据当前得到贴包编号
 	 * @return
 	 */
-	public String getPackingNumber();
+	public String getPackingNumber(Date time);
 
 	/**
 	 * 新增贴包单
