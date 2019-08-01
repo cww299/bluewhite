@@ -76,6 +76,7 @@ public class AttendancePayAction {
 							cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 							return cr;
 						}else{
+							
 							attendance.setWorkTime(attendancePay.getWorkTimes()[i]);
 							if(attendance.getType()==1 || attendance.getType()==2){
 								if(attendance.getWorkTime()==0){
@@ -101,6 +102,7 @@ public class AttendancePayAction {
 							attendance.setUserName(user.getUserName());
 							attendancePayService.addAttendancePay(attendance);
 							cr.setMessage("考勤添加成功");
+							
 						}
 					}
 				}else{
@@ -136,7 +138,7 @@ public class AttendancePayAction {
 		
 		
 		/** 
-		 * 修改员工考情工资流水（由于当月预计小时收入不精确，导致要修改当月员工的所有收入流水）
+		 * 修改员工考勤工资流水（由于当月预计小时收入不精确，导致要修改上月员工的所有收入流水）
 		 * 
 		 */
 		@RequestMapping(value = "/finance/updateAllAttendance", method = RequestMethod.GET)
