@@ -127,8 +127,8 @@ layui.config({
 				layui.each(allBatch,function(index,item){
 					var pid = item.product?item.product.id:'';
 					var title = item.bacthNumber+"~ "+item.product.name;
-					var selected = (item.id==d.id?'selected':'');
-					html += '<option value="'+item.id+'" data-pid="'+pid+'" '+selected+'>'+title+'</option>';
+					var selected = (item.id==d.orderId?'selected':'');
+					html += '<option value="'+item.id+'" '+selected+'>'+title+'</option>';
 				})
 				return html += '</select>';
 			}
@@ -145,21 +145,16 @@ layui.config({
 			}
 		}
 		form.on('select(selectFilter)',function(obj){
-			/* var selected = $(obj.elem).next().find('input');
-			var text = $(selected).val().split('~')[0];
-			$(selected).attr('value',text) */
 			var index = $(obj.elem).closest('tr').attr('data-index');
 			var field = $(obj.elem).closest('td').attr('data-field');
-			var pid = '';
 			var trData = layui.table.cache['tableData'][index];
 			if(field == 'bacthNumber'){
 				var opt = $(obj.elem).find('option[value="'+obj.value+'"]'); 
-				pid = $(opt).attr('data-pid');
 				var text = $(opt).html();
-				trData['productId'] = pid;
 				$(obj.elem).closest('tr').find('td[data-field=productName]').find('div').html(text.split('~')[1]);
-			}
-			trData[field] = obj.value;
+				trData['orderId'] = obj.value;
+			}else
+				trData[field] = obj.value;
 			if(index>=0){
 				var data = { id: trData.id, }
 				if(field=='bacthNumber'){
@@ -208,7 +203,7 @@ layui.config({
 			}
 		})
 		function addTempData(){
-			var allField = {customerId:'',bacthNumber:'',productId:'',number:'',sendDate:'',id:'' };
+			var allField = {customerId:'',number:'',sendDate:searchTime+' 00:00:00' ,id:'',orderId:'' };
 			table.addTemp('tableData',allField,function(trElem){
 				var sendDateTd = trElem.find('td[data-field="sendDate"]')[0];
 				laydate.render({
@@ -227,7 +222,7 @@ layui.config({
 				var t = tempData[i];
 				var msg = '';
 				t.number=='' && (msg='请填写发货数量');
-				t.bacthNumber=='' && (msg='请选择批次号');
+				t.orderId=='' && (msg='请选择批次号');
 				t.customerId=='' && (msg='请选择客户');
 				t.sendDate=='' && (msg='请填写发货时间');
 				if(msg!='')
