@@ -41,15 +41,9 @@
 	<form class="layui-form" style="padding:10px;">
 		<input type="hidden" name="id" value="{{d.id}}">
 		<div class="layui-item">
-			<label class="layui-form-label">昵称</label>
+			<label class="layui-form-label">客户名称</label>
 			<div class="layui-input-block">
 				<input class="layui-input" name="name" value="{{d.name}}" lay-verify="required">
-			</div>
-		</div>
-		<div class="layui-item">
-			<label class="layui-form-label">真实姓名</label>
-			<div class="layui-input-block">
-				<input class="layui-input" name="buyerName" value="{{d.buyerName}}" >
 			</div>
 		</div>
 		<div class="layui-item">
@@ -152,7 +146,7 @@ layui.config({
 			}
 		})
 		function addEdit(type){
-			var data={id:'',name:'',buyerName:'',provincesId:'',cityId:'',countyId:'',address:'',phone:''},
+			var data={id:'',name:'',provincesId:'',cityId:'',countyId:'',address:'',phone:''},
 			title='新增客户',
 			html='',
 			userId=currUser.id,		//当前业务员id

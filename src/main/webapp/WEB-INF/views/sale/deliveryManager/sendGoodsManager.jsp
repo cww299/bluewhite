@@ -137,7 +137,7 @@ layui.config({
 				var html = '<select lay-filter="selectFilter" lay-search><option value="">请选择</option>';
 				layui.each(data,function(index,item){
 					var id = d.customer ? d.customer.id : '';
-					var title = item.buyerName;
+					var title = item.name;
 					if(field=='bacthNumber'){
 						id=d.orderId;
 						title = item.bacthNumber+"~ "+item.product.name;
