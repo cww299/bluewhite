@@ -13,6 +13,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
@@ -28,6 +29,7 @@ import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.PackingChildDao;
 import com.bluewhite.ledger.dao.PackingDao;
+import com.bluewhite.ledger.dao.PackingMaterialsDao;
 import com.bluewhite.ledger.dao.SendGoodsDao;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.Packing;
@@ -46,6 +48,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	private PackingChildDao packingChildDao;
 	@Autowired
 	private OrderDao orderDao;
+	@Autowired
+	private PackingMaterialsDao packingMaterialsDao;
 	
 
 	@Override
@@ -102,14 +106,21 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	}
 
 	@Override
+	@Transactional
 	public Packing addPacking(Packing packing) {	            
  		// 新增子单
 		if (!StringUtils.isEmpty(packing.getChildPacking())) { 
 			JSONArray jsonArray = JSON.parseArray(packing.getChildPacking());
 			for (int i = 0; i < jsonArray.size(); i++) {
-				PackingChild packingChild = new PackingChild();
-				packingChild.setFlag(0);
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				PackingChild packingChild = new PackingChild();
+				if(jsonObject.getLong("packingChildId")!=null){
+					packingChild = packingChildDao.findOne(jsonObject.getLong("packingChildId"));
+					if(packingChild.getFlag()==1){ 
+						throw new ServiceException("贴报单已发货，无法修改");
+					}
+				}
+				packingChild.setFlag(0);
 				packingChild.setCount(jsonObject.getInteger("count"));
 				SendGoods sendGoods = sendGoodsDao.findOne(jsonObject.getLong("sendGoodsId"));
 				sendGoods.setSendNumber(sendGoods.getNumber()+packingChild.getCount());
@@ -127,6 +138,9 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			for (int i = 0; i < jsonArrayMaterials.size(); i++) {
 				PackingMaterials packingMaterials = new PackingMaterials();
 				JSONObject jsonObject = jsonArrayMaterials.getJSONObject(i);
+				if(jsonObject.getLong("packingMaterialsId") != null){
+					packingMaterials = packingMaterialsDao.findOne(jsonObject.getLong("packingMaterialsId") );
+				}
 				packingMaterials.setPackagingId(jsonObject.getLong("packagingId"));
 				packingMaterials.setPackagingCount(jsonObject.getInteger("packagingCount"));
 				packing.getPackingMaterials().add(packingMaterials);
@@ -219,6 +233,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	}
 
 	@Override
+	@Transactional
 	public int deletePacking(String ids) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
@@ -240,6 +255,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	}
 
 	@Override
+	@Transactional
 	public int deletePackingChild(String ids) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
