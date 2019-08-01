@@ -13,6 +13,9 @@
      top: 50%;
      transform: translateY(-50%);
 } 
+#defaultDate{
+	font-weight: bolder;
+}
 </style>
 </head>
 <body>
@@ -22,7 +25,7 @@
 		<table class="layui-form">
 			<tr>
 				<td>发货日期：</td>
-				<td><input type="text" name="sendDate" class="layui-input" id="searchTime" lay-verify="required"></td>
+				<td><input type="text" class="layui-input" id="searchTime"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>批次号：</td>
 				<td><input type="text" name="bacthNumber" class="layui-input"></td>
@@ -43,6 +46,7 @@
 <!-- 表格工具栏模板 -->
 <script type="text/html" id="tableDataToolbar">
 <div class="layui-btn-container layui-inline">
+	<span class="layui-btn layui-btn-primary" id="defaultDate">0000-00-00</span>
 	<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增一行</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
 	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
@@ -85,11 +89,10 @@ layui.config({
 				allBatch = data;
 			}
 		});
-		laydate.render({ elem:'#searchTime',value: searchTime  })
+		laydate.render({ elem:'#searchTime',range:'~'  })
 		table.render({
 			elem:'#tableData',
 			url:'${ctx}/ledger/getSendGoods',
-			where: { sendDate: searchTime+" 00:00:00"},
 			toolbar:'#tableDataToolbar',
 			page:true,
 			size:'lg',
@@ -119,6 +122,13 @@ layui.config({
 							})
 						}
 					})
+				})
+				laydate.render({ 
+					elem:'#defaultDate',
+					value: searchTime,
+					done:function(val){
+						searchTime = val;
+					}
 				})
 			}
 		})
@@ -180,8 +190,14 @@ layui.config({
 			}
 		})
 		form.on('submit(search)',function(obj){
-			searchTime = obj.field.sendDate;
-			obj.field.sendDate+=' 00:00:00';
+			var val = $('#searchTime').val();
+			var beg = '', end = '';
+			if(val!=''){
+				beg = val.split('~')[0].trim()+' 00:00:00';
+				end = val.split('~')[1].trim()+' 23:59:59';
+			}
+			obj.field.orderTimeBegin = beg;
+			obj.field.orderTimeEnd = end;
 			table.reload('tableData',{
 				where: obj.field ,
 				page:{ curr:1 },
