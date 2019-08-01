@@ -107,33 +107,32 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			user.setQuit(0);
 			user.setOrgNameIds(String.valueOf(cu.getOrgNameId()));
 		}
-		
-			//质检
-			if(cu.getRole().contains(Constants.PRODUCT_FRIST_QUALITY)){
-				user.setQuit(0);
-				user.setOrgNameIds(Constants.QUALITY_ORGNAME);
-			}
-			//包装
-			if(cu.getRole().contains(Constants.PRODUCT_FRIST_PACK)){
-				user.setQuit(0);
-				user.setOrgNameIds(Constants.PACK_ORGNAME);
-			}
-			//针工
-			if(cu.getRole().contains(Constants.PRODUCT_TWO_DEEDLE)){
-				user.setQuit(0);
-				user.setOrgNameIds(Constants.DEEDLE_ORGNAME);
-			}
-			//机工
-			if(cu.getRole().contains(Constants.PRODUCT_TWO_MACHINIST)){
-				user.setQuit(0);
-				user.setOrgNameIds(Constants.MACHINIST_ORGNAME);
-			}
-			//裁剪
-			if(cu.getRole().contains(Constants.PRODUCT_RIGHT_TAILOR)){
-				user.setQuit(0);
-				user.setOrgNameIds(Constants.TAILOR_ORGNAME);
-			}
-		
+	
+		//质检
+		if(cu.getRole().contains(Constants.PRODUCT_FRIST_QUALITY)){
+			user.setQuit(0);
+			user.setOrgNameIds(Constants.QUALITY_ORGNAME);
+		}
+		//包装
+		if(cu.getRole().contains(Constants.PRODUCT_FRIST_PACK)){
+			user.setQuit(0);
+			user.setOrgNameIds(Constants.PACK_ORGNAME);
+		}
+		//针工
+		if(cu.getRole().contains(Constants.PRODUCT_TWO_DEEDLE)){
+			user.setQuit(0);
+			user.setOrgNameIds(Constants.DEEDLE_ORGNAME);
+		}
+		//机工
+		if(cu.getRole().contains(Constants.PRODUCT_TWO_MACHINIST)){
+			user.setQuit(0);
+			user.setOrgNameIds(Constants.MACHINIST_ORGNAME);
+		}
+		//裁剪
+		if(cu.getRole().contains(Constants.PRODUCT_RIGHT_TAILOR)){
+			user.setQuit(0);
+			user.setOrgNameIds(Constants.TAILOR_ORGNAME);
+		}
 			
 			
 		page.setSort(null);
@@ -150,7 +149,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			
 			//忽略管理员
 			if (user.getRole().size() == 0) {
-			predicate.add(cb.equal(root.get("isAdmin").as(Boolean.class),false));
+				predicate.add(cb.equal(root.get("isAdmin").as(Boolean.class),false));
 			}
 			//是否外调
 			if (user.getForeigns() != null) {

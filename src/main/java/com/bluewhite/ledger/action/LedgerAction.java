@@ -22,6 +22,7 @@ import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
+import com.bluewhite.ledger.entity.PackingMaterials;
 import com.bluewhite.ledger.entity.SendGoods;
 import com.bluewhite.ledger.service.OrderService;
 import com.bluewhite.ledger.service.PackingService;
@@ -50,10 +51,12 @@ public class LedgerAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
 				.addRetainTerm(Packing.class, "id", "number", "customer", "packingMaterials", "packingChilds",
-						"packingDate")
+						"packingDate","packingMaterials")
 				.addRetainTerm(Customer.class, "id", "name")
-				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count")
-				.addRetainTerm(Product.class, "id", "name", "number").addRetainTerm(BaseData.class, "id", "name");
+				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count","sendGoodsId")
+				.addRetainTerm(PackingMaterials.class, "id", "packagingMaterials","packagingCount")
+				.addRetainTerm(Product.class, "id", "name", "number")
+				.addRetainTerm(BaseData.class, "id", "name");
 	}
 	
 	private ClearCascadeJSON clearCascadeJSONChild;
