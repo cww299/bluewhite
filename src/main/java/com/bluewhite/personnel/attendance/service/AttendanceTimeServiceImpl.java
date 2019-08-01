@@ -777,6 +777,9 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
 	@Override
 	public void workshopAttendanceContrast(AttendanceTime attendanceTime) {
+		Map<String, Object> map = new HashMap<>();
+		
+		
 		attendanceTime.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(attendanceTime.getOrderTimeBegin()));
 		Integer type = null;
 		switch (String.valueOf(attendanceTime.getOrgNameId())) {
@@ -809,11 +812,11 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			for(AttendanceTime aTime : attendanceTimeList){
 				if(DatesUtil.sameDate(aPay.getAllotTime(), aTime.getTime())){
 					//出勤时间比对
-					if(aPay.getTurnWorkTime().equals(aTime.getTurnWorkTime())){
+					if(!aPay.getTurnWorkTime().equals(aTime.getTurnWorkTime())){
 						
 					}
 					//加班时间比对
-					if(aPay.getOverTime().equals(aTime.getOvertime())){
+					if(!aPay.getOverTime().equals(aTime.getOvertime())){
 						
 					}
 					

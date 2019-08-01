@@ -29,7 +29,7 @@ public class PackingMaterials extends BaseEntity<Long>{
 	 * 包装物名称
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "packaging_materials_id", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "packaging_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData packagingMaterials;
 	
 	/**

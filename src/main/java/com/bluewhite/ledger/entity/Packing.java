@@ -58,7 +58,7 @@ public class Packing extends BaseEntity<Long> {
 	 * 包装物
 	 */
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
-	@JoinColumn(name = "packingMaterials_id")
+	@JoinColumn(name = "packaging_materials_id")
 	private List<PackingMaterials> packingMaterials = new ArrayList<>();
 	
 	/**
