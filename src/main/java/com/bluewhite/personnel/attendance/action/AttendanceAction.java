@@ -374,24 +374,14 @@ public class AttendanceAction {
 	 * @param attendanceCollect
 	 * @return
 	 */
-	@RequestMapping(value = "/personnel/workshopAttendanceContrast", method = RequestMethod.POST)
+	@RequestMapping(value = "/personnel/workshopAttendanceContrast", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse workshopAttendanceContrast( ) {
+	public CommonResponse workshopAttendanceContrast(AttendanceTime attendanceTime) {
 		CommonResponse cr = new CommonResponse();
-		attendanceTimeService.workshopAttendanceContrast( );
-		cr.setMessage("存档成功");
+		attendanceTimeService.workshopAttendanceContrast(attendanceTime);
+		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 

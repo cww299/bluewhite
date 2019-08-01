@@ -16,6 +16,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.dao.OrderDao;
@@ -49,11 +50,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 			// 按产品name过滤
 			if (!StringUtils.isEmpty(param.getProductName())) {
-				predicate.add(cb.equal(root.get("product").get("name").as(Long.class), "%" + param.getProductName() + "%"));
+				predicate.add(cb.equal(root.get("product").get("String").as(Long.class), "%" + param.getProductName() + "%"));
 			}
 			// 按产品编号过滤
 			if (!StringUtils.isEmpty(param.getProductNumber())) {
-				predicate.add(cb.equal(root.get("productNumber").as(Long.class), "%" + param.getProductNumber() + "%"));
+				predicate.add(cb.equal(root.get("productNumber").as(String.class), "%" + param.getProductNumber() + "%"));
 			}
 			// 按下单日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
@@ -88,6 +89,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	}
 
 	@Override
+	@Transactional
 	public List<Order> addOrder(Order order) {
 		List<Order> orderList = new ArrayList<>();
 		// 新增子单
@@ -97,6 +99,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				Order orderNew = new Order();
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				orderNew.setOrderDate(order.getOrderDate()!=null ? order.getOrderDate() : new Date());
+				Order oldOrder = dao.findByBacthNumber(jsonObject.getString("bacthNumber"));
+				if(oldOrder!=null){
+					throw new ServiceException("系统已有"+jsonObject.getString("bacthNumber")+"批次号下单合同，请不要重复添加");
+				}
 				orderNew.setBacthNumber(jsonObject.getString("bacthNumber"));
 				orderNew.setProductId(jsonObject.getLong("productId"));
 				orderNew.setCustomerId(order.getCustomerId());

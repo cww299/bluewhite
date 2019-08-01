@@ -228,7 +228,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					Long id = Long.parseLong(idArr[i]);
 					Packing packing = dao.findOne(id);
 					if(packing.getFlag()==1){
-						throw new ServiceException("贴报单已发货，无法删除，请先核对发货单");
+						 
 					}
 					packing.setCustomerId(null);
 					dao.delete(packing); 

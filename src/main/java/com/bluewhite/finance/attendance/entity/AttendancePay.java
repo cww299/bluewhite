@@ -21,8 +21,9 @@ import com.bluewhite.system.user.entity.User;
  *
  */
 @Entity
-@Table(name = "pro_attendance_pay", indexes = { @Index(columnList = "type"), @Index(columnList = "user_id"),
-		@Index(columnList = "allot_time") })
+@Table(name = "pro_attendance_pay", indexes = { @Index(columnList = "type"), 
+												@Index(columnList = "user_id"),
+												@Index(columnList = "allot_time") })
 public class AttendancePay extends BaseEntity<Long> {
 
 	/**
@@ -57,6 +58,18 @@ public class AttendancePay extends BaseEntity<Long> {
 	private Double workTime;
 
 	/**
+	 * 加班时间(验货和打棉组固有)
+	 */
+	@Column(name = "over_time")
+	private Double overTime;
+
+	/**
+	 * 缺勤时间
+	 */
+	@Column(name = "duty_time")
+	private Double dutyTime;
+
+	/**
 	 * 所在组工作时长
 	 */
 	@Column(name = "group_work_time")
@@ -81,18 +94,6 @@ public class AttendancePay extends BaseEntity<Long> {
 	private Date allotTime;
 
 	/**
-	 * 加班时间(验货和打棉组固有)
-	 */
-	@Column(name = "over_time")
-	private Double overTime;
-
-	/**
-	 * 缺勤时间
-	 */
-	@Column(name = "duty_time")
-	private Double dutyTime;
-
-	/**
 	 * 同种最高工资
 	 */
 	@Column(name = "max_pay")
@@ -115,6 +116,7 @@ public class AttendancePay extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Date orderTimeBegin;
+
 	/**
 	 * 查询字段
 	 */
