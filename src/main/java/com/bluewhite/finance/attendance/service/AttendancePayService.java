@@ -18,8 +18,13 @@ public interface AttendancePayService  extends BaseCRUDService<AttendancePay,Lon
 	 * @return
 	 */
 	public PageResult<AttendancePay>  findPages(AttendancePay attendancePay, PageParameter page);
-
-	public void addAttendancePay(AttendancePay attendancePay);
+	
+	/**
+	 * 批量新增考勤
+	 * @param attendancePay
+	 * @return
+	 */
+	public int addAttendancePay(AttendancePay attendancePay);
 
 	public AttendancePay  findByUserIdAndAllotTime(AttendancePay attendancePay);
 	/**
@@ -30,5 +35,11 @@ public interface AttendancePayService  extends BaseCRUDService<AttendancePay,Lon
 	public List<AttendancePay> findAttendancePay(AttendancePay attendancePay);
 
 	List<AttendancePay> findAttendancePayNoId(AttendancePay attendancePay);
+	
+	/**
+	 * 批量修改员工考勤工资流水（由于当月预计小时收入不精确，导致要修改上月员工的所有收入流水）
+	 * 
+	 */
+	public int updateAllAttendance(AttendancePay attendancePay);
 
 }

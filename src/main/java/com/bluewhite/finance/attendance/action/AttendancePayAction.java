@@ -1,7 +1,6 @@
 package com.bluewhite.finance.attendance.action;
 
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,12 +21,9 @@ import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
-import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
-import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
 /**
@@ -55,35 +51,9 @@ public class AttendancePayAction {
 	@Transactional
 	public CommonResponse allAttendancePay(HttpServletRequest request, AttendancePay attendancePay) {
 		CommonResponse cr = new CommonResponse();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		// 新增考勤工资，一键增加考勤
 		if (!StringUtils.isEmpty(attendancePay.getUsersId())) {
-			for (int i = 0; i < attendancePay.getUsersId().length; i++) {
-				Long userid = Long.parseLong(attendancePay.getUsersId()[i]);
-				AttendancePay attendance = new AttendancePay();
-				User user = userService.findOne(userid);
-				attendance.setUserId(userid);
-				attendance.setGroupId(user.getGroupId());
-				attendance.setAllotTime(attendancePay.getAllotTime());
-				attendance.setOrderTimeBegin(DatesUtil.getfristDayOftime(attendance.getAllotTime()));
-				attendance.setOrderTimeEnd(DatesUtil.getLastDayOftime(attendance.getAllotTime()));
-				attendance.setType(attendancePay.getType());
-				if (attendancePayService.findAttendancePay(attendance).size() > 0) {
-					cr.setMessage(user.getUserName() + sdf.format(attendance.getAllotTime())+"日已存在考情记录，无需再次添加，请重新选择");
-					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-					return cr;
-				}
-				// 出勤时长
-				attendance.setTurnWorkTime(attendancePay.getTurnWorkTimes()[i]);
-				// 加班时长
-				attendance.setOverTime(attendancePay.getOvertimes()[i]);
-				// 工作时长
-				attendance.setWorkTime(NumUtils.sum(attendancePay.getWorkTimes()[i], attendancePay.getOvertimes()[i]));
-				attendance.setWorkPrice(user.getPrice());
-				attendance.setUserName(user.getUserName());
-				attendancePayService.addAttendancePay(attendance);
-				cr.setMessage("考勤添加成功");
-			}
+			int count= attendancePayService.addAttendancePay(attendancePay);
+			cr.setMessage("成功添加"+count+"人考勤");
 		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("考勤人员不能为空");
@@ -102,9 +72,9 @@ public class AttendancePayAction {
 		// 修改
 		if (!StringUtils.isEmpty(attendancePay.getId())) {
 			AttendancePay oldAttendancePay = attendancePayService.findOne(attendancePay.getId());
-			BeanCopyUtils.copyNullProperties(oldAttendancePay, attendancePay);
-			attendancePay.setCreatedAt(oldAttendancePay.getCreatedAt());
-			attendancePayService.addAttendancePay(attendancePay);
+			BeanCopyUtils.copyNotEmpty(attendancePay, oldAttendancePay,"");
+			oldAttendancePay.setPayNumber(NumUtils.round(oldAttendancePay.getWorkPrice()*oldAttendancePay.getWorkTime(),2));
+			attendancePayService.save(oldAttendancePay);
 			cr.setMessage("修改成功");
 		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -114,35 +84,17 @@ public class AttendancePayAction {
 	}
 
 	/**
-	 * 修改员工考勤工资流水（由于当月预计小时收入不精确，导致要修改上月员工的所有收入流水）
+	 *  批量修改员工考勤工资流水（由于当月预计小时收入不精确，导致要修改上月员工的所有收入流水）
 	 * 
 	 */
 	@RequestMapping(value = "/finance/updateAllAttendance", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse updateAllAttendance(HttpServletRequest request, AttendancePay attendancePay) {
 		CommonResponse cr = new CommonResponse();
-		PageParameter page = new PageParameter();
-		page.setSize(Integer.MAX_VALUE);
 		// 修改
 		if (!StringUtils.isEmpty(attendancePay.getUsersId())) {
-			for (int i = 0; i < attendancePay.getUsersId().length; i++) {
-				Long userid = Long.parseLong(attendancePay.getUsersId()[i]);
-				User user = userService.findOne(userid);
-				user.setPrice(attendancePay.getWorkPrice());
-				userService.save(user);
-				attendancePay.setUserId(userid);
-				attendancePay.setOrderTimeBegin(
-						DatesUtil.getfristDayOftime(DatesUtil.getFirstDayOfMonth(attendancePay.getAllotTime())));
-				attendancePay.setOrderTimeEnd(
-						DatesUtil.getLastDayOftime(DatesUtil.getLastDayOfMonth(attendancePay.getAllotTime())));
-				// 获取所有的工资流水
-				List<AttendancePay> attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
-				for (AttendancePay pay : attendancePayList) {
-					pay.setWorkPrice(attendancePay.getWorkPrice());
-					attendancePayService.addAttendancePay(pay);
-				}
-			}
-			cr.setMessage("修改成功");
+			int count = attendancePayService.updateAllAttendance(attendancePay);
+			cr.setMessage("成功修改"+count+"人考勤工资流水");
 		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("用户不能为空");
