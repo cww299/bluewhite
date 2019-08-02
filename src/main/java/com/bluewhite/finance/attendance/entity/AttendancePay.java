@@ -129,19 +129,13 @@ public class AttendancePay extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Long kindWorkId;
-
+	//员工id
 	@Transient
 	private String[] usersId;
-
-	@Transient
-	private Double[] workTimes;
-
+	// 出勤时长
 	@Transient
 	private Double[] turnWorkTimes;
-	
-	/**
-	 * 加班时间
-	 */
+	// 加班时长
 	@Transient
 	private Double[] overtimes;
 
@@ -231,14 +225,6 @@ public class AttendancePay extends BaseEntity<Long> {
 
 	public void setDisparity(Double disparity) {
 		this.disparity = disparity;
-	}
-
-	public Double[] getWorkTimes() {
-		return workTimes;
-	}
-
-	public void setWorkTimes(Double[] workTimes) {
-		this.workTimes = workTimes;
 	}
 
 	public String[] getUsersId() {

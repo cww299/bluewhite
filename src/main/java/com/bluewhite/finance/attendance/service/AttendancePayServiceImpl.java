@@ -1,5 +1,6 @@
 package com.bluewhite.finance.attendance.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +17,8 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.basedata.service.BaseDataService;
+import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.entity.PageResultStat;
@@ -24,14 +27,18 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
-import com.bluewhite.production.bacth.entity.Bacth;
+import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.service.UserService;
 @Service
 public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Long> implements AttendancePayService{
 	
 	@Autowired
 	private AttendancePayDao dao;
 	@Autowired
-	BaseDataService service;
+	private BaseDataService service;
+	@Autowired
+	private UserService userService;
+	
 
 	@Override
 	public PageResult<AttendancePay> findPages(AttendancePay param, PageParameter page) {
@@ -116,10 +123,36 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 
 	@Override
 	@Transactional
-	public void addAttendancePay(AttendancePay attendancePay) {
-		attendancePay.setPayNumber(NumUtils.round(attendancePay.getWorkPrice()*
-				( NumUtils.sum(attendancePay.getWorkTime(), attendancePay.getOverTime()==null ? 0 :attendancePay.getOverTime())),2));
-		dao.save(attendancePay);
+	public int addAttendancePay(AttendancePay attendancePay) {
+		int count = 0;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		// 新增考勤工资，一键增加考勤
+		for (int i = 0; i < attendancePay.getUsersId().length; i++) {
+			Long userid = Long.parseLong(attendancePay.getUsersId()[i]);
+			AttendancePay attendance = new AttendancePay();
+			User user = userService.findOne(userid);
+			attendance.setUserId(userid);
+			attendance.setGroupId(user.getGroupId());
+			attendance.setAllotTime(attendancePay.getAllotTime());
+			attendance.setOrderTimeBegin(DatesUtil.getfristDayOftime(attendance.getAllotTime()));
+			attendance.setOrderTimeEnd(DatesUtil.getLastDayOftime(attendance.getAllotTime()));
+			attendance.setType(attendancePay.getType());
+			if (findAttendancePay(attendance).size() > 0) {
+				throw new ServiceException(user.getUserName() + sdf.format(attendance.getAllotTime())+"日已存在考情记录，无需再次添加，请重新选择");
+			}
+			// 出勤时长
+			attendance.setTurnWorkTime(attendancePay.getTurnWorkTimes()[i]);
+			// 加班时长
+			attendance.setOverTime(attendancePay.getOvertimes()[i]);
+			// 工作时长
+			attendance.setWorkTime(NumUtils.sum(attendancePay.getWorkTimes()[i], attendancePay.getOvertimes()[i]));
+			attendance.setWorkPrice(user.getPrice());
+			attendance.setUserName(user.getUserName());
+			attendance.setPayNumber(NumUtils.round(attendance.getWorkPrice()*attendance.getWorkTime(),2));
+			dao.save(attendance);
+			count++;
+		}
+		return count; 
 	}
 
 	@Override
@@ -135,6 +168,32 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 	@Override
 	public List<AttendancePay> findAttendancePayNoId(AttendancePay attendancePay) {
 		return dao.findByTypeAndAllotTimeBetween(attendancePay.getType(),attendancePay.getOrderTimeBegin(),attendancePay.getOrderTimeEnd());
+	}
+
+	@Override
+	public int updateAllAttendance(AttendancePay attendancePay) {
+		int count = 0 ;
+		// 修改
+		for (int i = 0; i < attendancePay.getUsersId().length; i++) {
+			Long userid = Long.parseLong(attendancePay.getUsersId()[i]);
+			User user = userService.findOne(userid);
+			user.setPrice(attendancePay.getWorkPrice());
+			userService.save(user);
+			attendancePay.setUserId(userid);
+			attendancePay.setOrderTimeBegin(
+					DatesUtil.getfristDayOftime(DatesUtil.getFirstDayOfMonth(attendancePay.getAllotTime())));
+			attendancePay.setOrderTimeEnd(
+					DatesUtil.getLastDayOftime(DatesUtil.getLastDayOfMonth(attendancePay.getAllotTime())));
+			// 获取所有的工资流水
+			List<AttendancePay> attendancePayList = findAttendancePay(attendancePay);
+			for (AttendancePay pay : attendancePayList) {
+				pay.setWorkPrice(attendancePay.getWorkPrice());
+				pay.setPayNumber(NumUtils.round(pay.getWorkPrice()*pay.getWorkTime(),2));
+				dao.save(pay);
+			}
+			count++;
+		}
+		return count;
 	}
 
 }
