@@ -500,8 +500,22 @@ public class User extends BaseEntity<Long> {
 	@Transient
 	private Integer numberSort;
 	
+	/**
+	 * 出勤时长
+	 */
+	@Transient
+	private Double  turnWorkTime;
 	
 	
+	  
+	public Double getTurnWorkTime() {
+		return turnWorkTime;
+	}
+
+	public void setTurnWorkTime(Double turnWorkTime) {
+		this.turnWorkTime = turnWorkTime;
+	}
+
 	public Integer getNumberSort() {
 		return numberSort;
 	}

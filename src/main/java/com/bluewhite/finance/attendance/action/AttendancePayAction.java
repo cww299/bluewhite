@@ -24,6 +24,7 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
@@ -67,37 +68,24 @@ public class AttendancePayAction {
 						attendance.setUserId(userid);
 						attendance.setGroupId(user.getGroupId());
 						attendance.setAllotTime(ProTypeUtils.countAllotTime(attendancePay.getAllotTime(), attendancePay.getType()));
-						//获取今天的开始和结束时间
 						attendance.setOrderTimeBegin(DatesUtil.getfristDayOftime(attendance.getAllotTime()));
 						attendance.setOrderTimeEnd(DatesUtil.getLastDayOftime(attendance.getAllotTime()));
 						attendance.setType(attendancePay.getType());
+						
 						if(attendancePayService.findPages(attendance, new PageParameter(0,Integer.MAX_VALUE) ).getRows().size()>0){
 							cr.setMessage(user.getUserName()+"该天已存在考情记录，无需再次添加，请重新选择");
 							cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 							return cr;
 						}else{
-							
-							attendance.setWorkTime(attendancePay.getWorkTimes()[i]);
-							if(attendance.getType()==1 || attendance.getType()==2){
-								if(attendance.getWorkTime()==0){
-									cr.setMessage("考勤时间不能为0");
-									cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-									return cr;
-								}
-								if(!StringUtils.isEmpty(attendance.getWorkPrice())){
-									cr.setMessage(user.getUserName()+"没有到岗小时预计收入，请添加");
-									cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-									return cr;
-								}
-								
-							}
-							
-							if(attendancePay.getDutyTimes()!=null && attendancePay.getDutyTimes().length>0){
-								attendance.setDutyTime(attendancePay.getDutyTimes()[i]); 
+							//出勤时长
+							if(attendancePay.getTurnWorkTimes()!=null && attendancePay.getTurnWorkTimes().length>0){
+							attendance.setTurnWorkTime(attendancePay.getTurnWorkTimes()[i]);
 							}
 							if(attendancePay.getOvertimes()!=null && attendancePay.getOvertimes().length>0){
 								attendance.setOverTime(attendancePay.getOvertimes()[i]);
 							}
+							//工作时长
+							attendance.setWorkTime(NumUtils.sum(attendancePay.getWorkTimes()[i],attendancePay.getOvertimes()[i]));
 							attendance.setWorkPrice(user.getPrice());
 							attendance.setUserName(user.getUserName());
 							attendancePayService.addAttendancePay(attendance);

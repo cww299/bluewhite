@@ -29,6 +29,7 @@ import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.personnel.attendance.dao.AttendanceInitDao;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.system.user.dao.UserContractDao;
@@ -42,21 +43,17 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	
 	@Autowired
 	private UserDao dao;
-	
 	@Autowired
 	private PermissionService permissionService;
-	
 	@Autowired
 	private UserContractDao userContractDao;
-
 	@Autowired
 	private UserDao userDao;
-	
 	@Autowired
 	private BaseDataDao baseDataDao;
-	
 	@Autowired
 	private AttendanceInitDao attendanceInitDao;
+	
 
 	
 	@Override
@@ -108,31 +105,31 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			user.setOrgNameIds(String.valueOf(cu.getOrgNameId()));
 		}
 	
-		//质检
-		if(cu.getRole().contains(Constants.PRODUCT_FRIST_QUALITY)){
-			user.setQuit(0);
-			user.setOrgNameIds(Constants.QUALITY_ORGNAME);
-		}
-		//包装
-		if(cu.getRole().contains(Constants.PRODUCT_FRIST_PACK)){
-			user.setQuit(0);
-			user.setOrgNameIds(Constants.PACK_ORGNAME);
-		}
-		//针工
-		if(cu.getRole().contains(Constants.PRODUCT_TWO_DEEDLE)){
-			user.setQuit(0);
-			user.setOrgNameIds(Constants.DEEDLE_ORGNAME);
-		}
-		//机工
-		if(cu.getRole().contains(Constants.PRODUCT_TWO_MACHINIST)){
-			user.setQuit(0);
-			user.setOrgNameIds(Constants.MACHINIST_ORGNAME);
-		}
-		//裁剪
-		if(cu.getRole().contains(Constants.PRODUCT_RIGHT_TAILOR)){
-			user.setQuit(0);
-			user.setOrgNameIds(Constants.TAILOR_ORGNAME);
-		}
+//		//质检
+//		if(cu.getRole().contains(Constants.PRODUCT_FRIST_QUALITY)){
+//			user.setQuit(0);
+//			user.setOrgNameIds(Constants.QUALITY_ORGNAME);
+//		}
+//		//包装
+//		if(cu.getRole().contains(Constants.PRODUCT_FRIST_PACK)){
+//			user.setQuit(0);
+//			user.setOrgNameIds(Constants.PACK_ORGNAME);
+//		}
+//		//针工
+//		if(cu.getRole().contains(Constants.PRODUCT_TWO_DEEDLE)){
+//			user.setQuit(0);
+//			user.setOrgNameIds(Constants.DEEDLE_ORGNAME);
+//		}
+//		//机工
+//		if(cu.getRole().contains(Constants.PRODUCT_TWO_MACHINIST)){
+//			user.setQuit(0);
+//			user.setOrgNameIds(Constants.MACHINIST_ORGNAME);
+//		}
+//		//裁剪
+//		if(cu.getRole().contains(Constants.PRODUCT_RIGHT_TAILOR)){
+//		 	user.setQuit(0);
+//			user.setOrgNameIds(Constants.TAILOR_ORGNAME);
+//		}
 			
 			
 		page.setSort(null);
@@ -255,8 +252,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 					}
 				predicate.add(cb.and(root.get("orgNameId").as(Long.class).in(orgNameIdList)));
 			}
-			
-			
 			//按时间过滤
     		if (!StringUtils.isEmpty(user.getOrderTimeBegin()) &&  !StringUtils.isEmpty(user.getOrderTimeEnd()) ) {
     			//按入职时间过滤
@@ -287,6 +282,14 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			return null;
 		}, page);
 		PageResult<User> result = new PageResult<>(pageUser,page);
+		if(user.getOrderTimeBegin()!=null && user.getType() != null){
+			// 检查当前月份属于夏令时或冬令时 flag=ture 为夏令时
+			boolean flag = DatesUtil.belongCalendar(user.getOrderTimeBegin());
+			result.getRows().stream().forEach(u->{
+				AttendanceInit attendanceInit =	attendanceInitDao.findByUser(u);
+				u.setTurnWorkTime(flag ? attendanceInit.getTurnWorkTimeSummer() : attendanceInit.getTurnWorkTimeWinter());
+			});
+		}
 		return result;
 	}
 	

@@ -234,7 +234,21 @@ public class LedgerAction {
 	public CommonResponse deletePackingChild(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = packingService.deletePackingChild(ids);
-		cr.setMessage("成功删除" + count + "条贴包单");
+		cr.setMessage("成功删除" + count + "条贴包子单");
+		return cr;
+	}
+	
+	/**
+	 * 删除包装材料子单
+	 * 
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/deletePackingPackingMaterials", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deletePackingPackingMaterials(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = packingService.deletePackingPackingMaterials(ids);
+		cr.setMessage("成功删除" + count + "条包装材料");
 		return cr;
 	}
 

@@ -736,7 +736,6 @@ public class ReportExportAction {
 			for (int i = 0; i < psList.size(); i++){
             	row.createCell(k).setCellValue(psList.get(i).getWorkTime());
             	row.createCell(++k).setCellValue(psList.get(i).getOverTime()!=null ? psList.get(i).getOverTime() : 0.0);
-            	row.createCell(++k).setCellValue(psList.get(i).getDutyTime()!=null ? psList.get(i).getDutyTime() : 0.0);
             	k++;
 	        	}
 			l++;
