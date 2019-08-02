@@ -71,12 +71,6 @@ public class AttendancePay extends BaseEntity<Long> {
 	private Double overTime;
 
 	/**
-	 * 缺勤时间
-	 */
-	@Column(name = "duty_time")
-	private Double dutyTime;
-
-	/**
 	 * 所在组工作时长
 	 */
 	@Column(name = "group_work_time")
@@ -142,17 +136,14 @@ public class AttendancePay extends BaseEntity<Long> {
 	@Transient
 	private Double[] workTimes;
 
+	@Transient
+	private Double[] turnWorkTimes;
+	
 	/**
-	 * 加班时间(验货和打棉组固有)
+	 * 加班时间
 	 */
 	@Transient
 	private Double[] overtimes;
-
-	/**
-	 * 缺勤时间
-	 */
-	@Transient
-	private Double[] dutyTimes;
 
 	/**
 	 * 是否计算同种工资差
@@ -162,6 +153,14 @@ public class AttendancePay extends BaseEntity<Long> {
 
 	
 	
+	public Double[] getTurnWorkTimes() {
+		return turnWorkTimes;
+	}
+
+	public void setTurnWorkTimes(Double[] turnWorkTimes) {
+		this.turnWorkTimes = turnWorkTimes;
+	}
+
 	public Double getTurnWorkTime() {
 		return turnWorkTime;
 	}
@@ -202,14 +201,6 @@ public class AttendancePay extends BaseEntity<Long> {
 		this.overtimes = overtimes;
 	}
 
-	public Double[] getDutyTimes() {
-		return dutyTimes;
-	}
-
-	public void setDutyTimes(Double[] dutyTimes) {
-		this.dutyTimes = dutyTimes;
-	}
-
 	public Long getGroupId() {
 		return groupId;
 	}
@@ -224,14 +215,6 @@ public class AttendancePay extends BaseEntity<Long> {
 
 	public void setOverTime(Double overTime) {
 		this.overTime = overTime;
-	}
-
-	public Double getDutyTime() {
-		return dutyTime;
-	}
-
-	public void setDutyTime(Double dutyTime) {
-		this.dutyTime = dutyTime;
 	}
 
 	public Double getMaxPay() {

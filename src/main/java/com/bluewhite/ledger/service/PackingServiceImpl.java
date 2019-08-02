@@ -94,20 +94,27 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 
 	@Override
 	public String getPackingNumber(Date sendDate) {
-		List<Packing> PackingList = dao.findByPackingDate(sendDate);
+		List<Packing> packingList = dao.findByPackingDate(sendDate);
+		
+//		packingList.stream().forEach(p->{
+//			p.getNumber()
+//		});
 		Calendar now = Calendar.getInstance();
 		now.setTime(sendDate);
 		String year = String.valueOf(now.get(Calendar.YEAR));
 		String month =  String.valueOf(now.get(Calendar.MONTH) + 1);
 		String day =  String.valueOf(now.get(Calendar.DAY_OF_MONTH));
 		String yearString = year.substring(year.length() -2,year.length());   //截取最后两位
-		String packingNumber = yearString+"N"+month+"Y"+day+"R" +(PackingList.size()+1)+"D";
+		
+		
+		String packingNumber = yearString+"N"+month+"Y"+day+"R" +(packingList.size()+1)+"D";
 		return packingNumber;
 	}
 
 	@Override
 	@Transactional
-	public Packing addPacking(Packing packing) {	            
+	public Packing addPacking(Packing packing) {	
+		packing.setFlag(0);
  		// 新增子单
 		if (!StringUtils.isEmpty(packing.getChildPacking())) { 
 			JSONArray jsonArray = JSON.parseArray(packing.getChildPacking());
@@ -122,6 +129,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				}
 				packingChild.setFlag(0);
 				packingChild.setCount(jsonObject.getInteger("count"));
+				//改变待发货单的已发数量
 				SendGoods sendGoods = sendGoodsDao.findOne(jsonObject.getLong("sendGoodsId"));
 				sendGoods.setSendNumber(sendGoods.getNumber()+packingChild.getCount());
 				sendGoodsDao.save(sendGoods);
@@ -245,7 +253,12 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					if(packing.getFlag()==1){
 						throw new ServiceException("贴报单已发货，无法删除，请先核对发货单");
 					}
-					packing.setCustomerId(null);
+					List<PackingChild> packingChildList = packing.getPackingChilds();
+					packingChildList.stream().forEach(p->{
+						SendGoods sendGoods = p.getSendGoods();
+						sendGoods.setSendNumber(sendGoods.getSendNumber()-p.getCount());
+						sendGoodsDao.save(sendGoods);
+					});
 					dao.delete(packing); 
 					count++;
 				}
@@ -267,17 +280,22 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					if(packingChild.getFlag()==1){
 						throw new ServiceException("贴报单已发货，无法删除，请先核对发货单");
 					}
-					packingChild.setCustomerId(null);
+					SendGoods sendGoods = packingChild.getSendGoods();
+					sendGoods.setSendNumber(sendGoods.getSendNumber()-packingChild.getCount());
+					sendGoodsDao.save(sendGoods);
 					packingChildDao.delete(packingChild); 
 					count++;
 				}
-			}
+			} 
 		}
 		return count;
 	}
 
 	@Override
 	public PackingChild updatePackingChild(PackingChild packingChild) {
+		if(packingChild.getId()!=null){
+			PackingChild oldPackingChild = packingChildDao.findOne(packingChild.getId());
+		}
 		
 		
 		
