@@ -145,7 +145,7 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 			// 加班时长
 			attendance.setOverTime(attendancePay.getOvertimes()[i]);
 			// 工作时长
-			attendance.setWorkTime(NumUtils.sum(attendancePay.getWorkTimes()[i], attendancePay.getOvertimes()[i]));
+			attendance.setWorkTime(NumUtils.sum(attendancePay.getTurnWorkTimes()[i], attendancePay.getOvertimes()[i]));
 			attendance.setWorkPrice(user.getPrice());
 			attendance.setUserName(user.getUserName());
 			attendance.setPayNumber(NumUtils.round(attendance.getWorkPrice()*attendance.getWorkTime(),2));
