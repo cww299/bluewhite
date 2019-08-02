@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
@@ -295,11 +296,10 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	public PackingChild updatePackingChild(PackingChild packingChild) {
 		if(packingChild.getId()!=null){
 			PackingChild oldPackingChild = packingChildDao.findOne(packingChild.getId());
+			BeanCopyUtils.copyNotEmpty(packingChild, oldPackingChild,"");
+			packingChildDao.save(oldPackingChild);
 		}
-		
-		
-		
-		return null;
+		return packingChild;
 	}
 
 	@Override
