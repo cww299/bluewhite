@@ -210,19 +210,22 @@ layui.use(['form','element','layer','jquery','table'],function(){
 				 table.render({
 					elem:'#warnTable',
 					size:'lg',
+					toolbar: true,
 					url:'${ctx}/inventory/checkWarning',
 					parseData:function(r){
 						$('#warnNumber').html(r.data.length);
-						return {
-							code:r.code,
-							data:r.data,
-							msg:r.message,
-						}
-					},
+						layui.each(r.data,function(index,item){
+							switch(item.type){
+							case 1: item.typeText='库存下限预警';  break;
+							case 2: item.typeText='库存上限预警';  break;
+							case 3: item.typeText='库存时间过长预警';  break;
+							}
+						})
+						return { code:r.code, data:r.data, msg:r.message, } },
 					cols:[[
 					       {align:'center', title:'预警仓库', field:'inventoryName',width : '15%',},
 					       {align:'center', title:'商品名称', field:'name', width : '',},
-					       {align:'center', title:'预警类型', field:'type',templet:'#typeTpl', width : '20%',},
+					       {align:'center', title:'预警类型', field:'typeText',templet:'#typeTpl', width : '20%',},
 					       {align:'center', title:'仓库数量', field:'countInventory', width : '10%',},
 					       {align:'center', title:'销售数量', field:'countSales', width : '10%',},
 					       ]],
