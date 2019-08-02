@@ -24,6 +24,8 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.finance.consumption.dao.ConsumptionDao;
+import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.personnel.attendance.dao.PersonVariableDao;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
@@ -47,6 +49,8 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 	private AttendanceTimeService attendanceTimeService;
 	@Autowired
 	private AttendanceInitService attendanceInitService;
+	@Autowired
+	private ConsumptionDao consumptionDao;
 	@PersistenceContext
 	protected EntityManager entityManager;
 
@@ -176,6 +180,41 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		List<Map<String, Object>> allList = new ArrayList<>();
 		// 单向数据map
 		Map<String, Object> allMap = null;
+		long a=194;
+		double sum1 = 0;//水费汇总
+		long b=195;
+		double sum2 = 0;//电费汇总
+		long e=198;
+		double sum3 = 0;//房租汇总
+		long d=199;
+		double sum4 = 0;//煤气汇总
+		long day= DatesUtil.getDaySub(DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()), DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));//当月天数
+		List<Consumption> list=	consumptionDao.findByApplyTypeIdAndExpenseDateBetween(a, DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
+				DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
+		for (Consumption consumption : list) {
+			sum1=sum1+consumption.getMoney();
+		}
+		List<Consumption> list2=consumptionDao.findByApplyTypeIdAndExpenseDateBetween(b, DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
+				DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
+		for (Consumption consumption : list2) {
+			sum2=sum2+consumption.getMoney();
+		}
+		List<Consumption> list3=consumptionDao.findByApplyTypeIdAndExpenseDateBetween(e, DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
+				DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
+		for (Consumption consumption : list3) {
+			sum3=sum3+consumption.getMoney();
+		}
+		List<Consumption> list4=consumptionDao.findByApplyTypeIdAndExpenseDateBetween(d, DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
+				DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
+		for (Consumption consumption : list4) {
+			sum4=sum4+consumption.getMoney();
+		}
+		PersonVariable restType = personVariableDao.findByType(5);
+		double water= NumUtils.div(NumUtils.mul(sum1,Double.parseDouble(restType.getKeyValue())),(double)day,2);//每天水费
+		double electric= NumUtils.div(NumUtils.mul(sum2,Double.parseDouble(restType.getKeyValueThree())),(double)day,2);//每天电费
+		double rent= NumUtils.div(NumUtils.mul(sum3,Double.parseDouble(restType.getKeyValueTwo())),(double)day,2);//每天房租费
+		double coal= NumUtils.div(NumUtils.mul(sum4,Double.parseDouble(restType.getKeyValueTwo())),(double)day,2);//每天煤气费
+		double sum=NumUtils.div(NumUtils.sum(water,electric,rent,coal), Double.valueOf(4), 2);//划分到每一餐
 		List<Meal> mealsList = findMeal(meal);
 		Map<Long, List<Meal>> mealMap = mealsList.stream().filter(Meal -> Meal.getUserId() != null)
 				.collect(Collectors.groupingBy(Meal::getUserId, Collectors.toList()));
