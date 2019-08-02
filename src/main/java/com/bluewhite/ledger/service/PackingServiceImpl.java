@@ -301,4 +301,20 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 		
 		return null;
 	}
+
+	@Override
+	public int deletePackingPackingMaterials(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					packingMaterialsDao.delete(id);
+					count++;
+				}
+			} 
+		}
+		return count;
+	}
 }
