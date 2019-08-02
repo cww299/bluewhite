@@ -99,39 +99,10 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	@Override
 	public PageResult<User> getPagedUser(PageParameter page, User user) {
 		CurrentUser cu = SessionManager.getUserSession();
-		
 		if(!cu.getRole().contains("superAdmin") && !cu.getRole().contains("personnel")){
 			user.setQuit(0);
 			user.setOrgNameIds(String.valueOf(cu.getOrgNameId()));
 		}
-	
-//		//质检
-//		if(cu.getRole().contains(Constants.PRODUCT_FRIST_QUALITY)){
-//			user.setQuit(0);
-//			user.setOrgNameIds(Constants.QUALITY_ORGNAME);
-//		}
-//		//包装
-//		if(cu.getRole().contains(Constants.PRODUCT_FRIST_PACK)){
-//			user.setQuit(0);
-//			user.setOrgNameIds(Constants.PACK_ORGNAME);
-//		}
-//		//针工
-//		if(cu.getRole().contains(Constants.PRODUCT_TWO_DEEDLE)){
-//			user.setQuit(0);
-//			user.setOrgNameIds(Constants.DEEDLE_ORGNAME);
-//		}
-//		//机工
-//		if(cu.getRole().contains(Constants.PRODUCT_TWO_MACHINIST)){
-//			user.setQuit(0);
-//			user.setOrgNameIds(Constants.MACHINIST_ORGNAME);
-//		}
-//		//裁剪
-//		if(cu.getRole().contains(Constants.PRODUCT_RIGHT_TAILOR)){
-//		 	user.setQuit(0);
-//			user.setOrgNameIds(Constants.TAILOR_ORGNAME);
-//		}
-			
-			
 		page.setSort(null);
 		Page<User> pageUser = userDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
