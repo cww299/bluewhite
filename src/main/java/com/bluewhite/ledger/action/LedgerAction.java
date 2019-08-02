@@ -237,6 +237,8 @@ public class LedgerAction {
 		cr.setMessage("成功删除" + count + "条贴包单");
 		return cr;
 	}
+	
+	
 
 	/**
 	 * 获取编号

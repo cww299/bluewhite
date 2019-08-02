@@ -501,7 +501,7 @@ public class DatesUtil {
 	 * 
 	 * @throws ParseException
 	 */
-	public static boolean belongCalendar(Date nowTime) throws ParseException {
+	public static boolean belongCalendar(Date nowTime) {
 		Calendar date = Calendar.getInstance();
 		date.setTime(nowTime);
 

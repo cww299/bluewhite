@@ -78,6 +78,6 @@ public interface AttendanceTimeService extends BaseCRUDService<AttendanceTime,Lo
 	/**
 	 * 车间人员根据填写考勤情况和打卡考勤汇总进行对比
 	 */
-	public void workshopAttendanceContrast(AttendanceTime attendanceTime);
+	public List<Map<String, Object>> workshopAttendanceContrast(AttendanceTime attendanceTime);
 
 }
