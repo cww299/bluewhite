@@ -51,7 +51,8 @@ public class LedgerAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
 				.addRetainTerm(Packing.class, "id", "number", "customer", "packingMaterials", "packingChilds",
-						"packingDate","packingMaterials","flag")
+						"packingDate","packingMaterials","flag","user")
+				.addRetainTerm(User.class, "id", "userName")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count","sendGoodsId")
 				.addRetainTerm(PackingMaterials.class, "id", "packagingMaterials","packagingCount")
@@ -195,15 +196,15 @@ public class LedgerAction {
 	}
 
 	/**
-	 * 出货贴包单
+	 * 发货贴包单
 	 * 
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/sendPacking", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse sendPacking(String ids, Date time) {
+	public CommonResponse sendPacking(String ids, Date sendDate) {
 		CommonResponse cr = new CommonResponse();
-		int count = packingService.sendPacking(ids, time);
+		int count = packingService.sendPacking(ids, sendDate);
 		cr.setMessage("成功发货" + count + "条");
 		return cr;
 	}
@@ -243,11 +244,11 @@ public class LedgerAction {
 	 * 
 	 * @return cr
 	 */
-	@RequestMapping(value = "/ledger/deletePackingPackingMaterials", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/deletePackingMaterials", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deletePackingPackingMaterials(String ids) {
+	public CommonResponse deletePackingMaterials(String ids) {
 		CommonResponse cr = new CommonResponse();
-		int count = packingService.deletePackingPackingMaterials(ids);
+		int count = packingService.deletePackingMaterials(ids);
 		cr.setMessage("成功删除" + count + "条包装材料");
 		return cr;
 	}

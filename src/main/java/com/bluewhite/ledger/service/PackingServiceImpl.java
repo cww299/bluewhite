@@ -98,7 +98,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 		List<Packing> packingList = dao.findByPackingDate(sendDate);
 		
 //		packingList.stream().forEach(p->{
-//			p.getNumber()
+//			p.getNumber().substring(p.getBacthNumber().length() - 2,p.getBacthNumber().length());
 //		});
 		Calendar now = Calendar.getInstance();
 		now.setTime(sendDate);
@@ -173,7 +173,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				List<PackingChild> packingChildList = packing.getPackingChilds();
 				for(PackingChild pc : packingChildList){
 					//生成销售编号
-					pc.setSaleNumber(Constants.XS +"-"+ sdf.format(time==null ? packing.getPackingDate() : time) +"-" + SalesUtils.get0LeftString((int) packingChildDao.count(), 8));
+					pc.setSaleNumber(Constants.XS +"-"+ sdf.format(time == null ? packing.getPackingDate() : time) +"-" + SalesUtils.get0LeftString((int) packingChildDao.count(), 8));
 					pc.setSendDate(time==null ? packing.getPackingDate() : time);
 					//已发货
 					pc.setFlag(1);
@@ -303,7 +303,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	}
 
 	@Override
-	public int deletePackingPackingMaterials(String ids) {
+	public int deletePackingMaterials(String ids) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idArr = ids.split(",");

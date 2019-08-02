@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.system.user.entity.User;
 
 /**
  * 贴包单(发货单)
@@ -41,6 +42,20 @@ public class Packing extends BaseEntity<Long> {
 	@JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Customer customer;
 
+	/**
+	 * 贴单人员工id
+	 * 
+	 */
+	@Column(name = "user_id")
+	private Long userId;
+
+	/**
+	 * 贴单人员工
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User user;
+	
 	/**
 	 * 编号 (19N7Y20R01)
 	 */
@@ -117,6 +132,22 @@ public class Packing extends BaseEntity<Long> {
 	
 	
 	
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 	public Integer getFlag() {
 		return flag;

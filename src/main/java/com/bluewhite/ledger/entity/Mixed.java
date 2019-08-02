@@ -1,41 +1,41 @@
 package com.bluewhite.ledger.entity;
 
-
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 
 /**
- * 财务 除货款以外的杂支
- * @author qiyong
+ * 财务 杂项支出
+ * 
+ * @author zhangliang
  *
  */
 @Entity
-@Table(name = "fin_ledger_mixed")
+@Table(name = "ledger_mixed")
 public class Mixed extends BaseEntity<Long> {
 
-	/**
-	 * 所属月份
-	 */
-	@Column(name = "mix_subordinate_time")
-	private Date mixtSubordinateTime;
 
 	/**
-	 * 乙方
+	 * 客户id
+	 * 
 	 */
-	@Column(name = "mix_party_names")
-	private String mixPartyNames;
+	@Column(name = "customer_id")
+	private Long customerId;
 
 	/**
-	 * 乙方id
+	 * 客户
 	 */
-	@Column(name = "mix_party_names_id")
-	private Long mixPartyNamesId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Customer customer;
 
 	/**
 	 * 来往日期
@@ -44,7 +44,7 @@ public class Mixed extends BaseEntity<Long> {
 	private Date mixtTime;
 
 	/**
-	 * 来往明细
+	 * 往來明细
 	 */
 	@Column(name = "mix_detailed")
 	private String mixDetailed;
@@ -81,31 +81,7 @@ public class Mixed extends BaseEntity<Long> {
 	public void setOrderTimeEnd(Date orderTimeEnd) {
 		this.orderTimeEnd = orderTimeEnd;
 	}
-
-	public Long getMixPartyNamesId() {
-		return mixPartyNamesId;
-	}
-
-	public void setMixPartyNamesId(Long mixPartyNamesId) {
-		this.mixPartyNamesId = mixPartyNamesId;
-	}
-
-	public Date getMixtSubordinateTime() {
-		return mixtSubordinateTime;
-	}
-
-	public void setMixtSubordinateTime(Date mixtSubordinateTime) {
-		this.mixtSubordinateTime = mixtSubordinateTime;
-	}
-
-	public String getMixPartyNames() {
-		return mixPartyNames;
-	}
-
-	public void setMixPartyNames(String mixPartyNames) {
-		this.mixPartyNames = mixPartyNames;
-	}
-
+	
 	public Date getMixtTime() {
 		return mixtTime;
 	}

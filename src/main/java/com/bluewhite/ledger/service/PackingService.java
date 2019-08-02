@@ -80,6 +80,6 @@ public interface PackingService extends BaseCRUDService<Packing, Long>{
 	 * @param ids
 	 * @return
 	 */
-	public int deletePackingPackingMaterials(String ids);
+	public int deletePackingMaterials(String ids);
 
 }
