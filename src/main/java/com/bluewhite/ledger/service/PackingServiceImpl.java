@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
@@ -210,6 +212,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					pc.setCopyright(0);
 					// 未收货
 					pc.setDelivery(1);
+					//业务员未确认数据
+					pc.setDeliveryStatus(0);
 					// 价格
 					pc.setPrice(0.0);
 					// 判定是否拥有版权
@@ -269,6 +273,11 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			// 是否有版权
 			if(param.getCopyright()!=null){
 				predicate.add(cb.equal(root.get("copyright").as(Integer.class), param.getCopyright()));
+			}
+			
+			// 是否业务员确认
+			if(param.getDeliveryStatus()!=null){
+				predicate.add(cb.equal(root.get("deliveryStatus").as(Integer.class), param.getDeliveryStatus()));
 			}
 
 			// 按产品name过滤
@@ -353,6 +362,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	public PackingChild updatePackingChild(PackingChild packingChild) {
 		if (packingChild.getId() != null) {
 			PackingChild oldPackingChild = packingChildDao.findOne(packingChild.getId());
+			
 			// 根据收货数量确认状态
 			if (packingChild.getDeliveryNumber() != null) {
 				if (oldPackingChild.getCount() == packingChild.getDeliveryNumber()) {
@@ -364,7 +374,13 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					throw new ServiceException("发货销售单已审核，无法修改");
 				}
 			}
-			BeanCopyUtils.copyNotEmpty(packingChild, oldPackingChild, "");
+			
+			//计算总价
+			oldPackingChild.setSumPrice(NumUtils.mul(oldPackingChild.getCount(), packingChild.getPrice()) );
+			
+			
+			oldPackingChild.setPrice(packingChild.getPrice());
+			oldPackingChild.setRemark(packingChild.getRemark());
 			packingChildDao.save(oldPackingChild);
 		}
 		return packingChild;
@@ -396,7 +412,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					PackingChild packingChild = packingChildDao.findOne(id);
-					if (packingChild.getDeliveryNumber() == null) {
+					if (packingChild.getDeliveryStatus() == 0) {
 						throw new ServiceException("业务员未填写到货数量，无法审核");
 					}
 					if (packingChild.getAudit() == 1) {
@@ -426,7 +442,12 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	public List<Bill> collectBill(Bill bill) {
 		List<PackingChild> pList = findPackingChildList(bill);
 		List<Mixed> mixedList = mixedService.findList(bill);
+		Map<Long, List<PackingChild>> mapPList= pList.stream().collect(Collectors.groupingBy(PackingChild::getCustomerId, Collectors.toList()));
+		Map<Long, List<Mixed>> mapMixedList= mixedList.stream().collect(Collectors.groupingBy(Mixed::getCustomerId, Collectors.toList()));
 
+		
+		
+		
 		return null;
 	}
 

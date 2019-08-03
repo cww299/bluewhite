@@ -68,7 +68,7 @@ public class LedgerAction {
 						,"packing","price","count","sumPrice","copyright","newBacth"
 						,"saleNumber","sendDate","flag","customer" ,"remark","audit","delivery",
 						"deliveryNumber","deliveryDate","disputeNumber","disputeRemark","deliveryCollectionDate"
-						,"offshorePay","acceptPay","disputePay")
+						,"offshorePay","acceptPay","disputePay","deliveryStatus")
 				.addRetainTerm(Customer.class, "id", "name","user")
 				.addRetainTerm(User.class, "id", "userName")
 				.addRetainTerm(Product.class, "id", "name", "number");
