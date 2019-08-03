@@ -34,6 +34,8 @@ import com.bluewhite.ledger.dao.PackingChildDao;
 import com.bluewhite.ledger.dao.PackingDao;
 import com.bluewhite.ledger.dao.PackingMaterialsDao;
 import com.bluewhite.ledger.dao.SendGoodsDao;
+import com.bluewhite.ledger.entity.Bill;
+import com.bluewhite.ledger.entity.Mixed;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
@@ -53,6 +55,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	private OrderDao orderDao;
 	@Autowired
 	private PackingMaterialsDao packingMaterialsDao;
+	@Autowired
+	private MixedService mixedService;
 
 	@Override
 	public PageResult<Packing> findPages(Packing param, PageParameter page) {
@@ -67,7 +71,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				predicate.add(cb.equal(root.get("customerId").as(Long.class), param.getCustomerId()));
 			}
 			// 按是否发货过滤
-			if (param.getFlag()!= null) {
+			if (param.getFlag() != null) {
 				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
 			}
 			// 按客户名称
@@ -199,7 +203,11 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					// 已发货
 					pc.setFlag(1);
 					// 未审核
-					pc.setAudit(false);
+					pc.setAudit(0);
+					// 不转批次
+					pc.setNewBacth(0);
+					// 未拥有版权
+					pc.setCopyright(0);
 					// 未收货
 					pc.setDelivery(1);
 					// 价格
@@ -213,13 +221,13 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 							|| pc.getProduct().getName().contains(Constants.AB)
 							|| pc.getProduct().getName().contains(Constants.ZMJ)
 							|| pc.getProduct().getName().contains(Constants.XXYJN)) {
-						pc.setCopyright(true);
+						pc.setCopyright(1);
 					}
 					// 判定是否更换客户发货，更换客户发货变成新批次，->Y
 					Order order = orderDao.findByBacthNumber(pc.getBacthNumber());
 					if (order.getCustomerId() != pc.getPacking().getCustomerId()) {
 						pc.setBacthNumber(pc.getBacthNumber().substring(0, pc.getBacthNumber().length() - 1) + "Y");
-						pc.setNewBacth(true);
+						pc.setNewBacth(1);
 					}
 				}
 				dao.save(packing);
@@ -237,6 +245,32 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
+			// 按客户名称
+			if (!StringUtils.isEmpty(param.getCustomerName())) {
+				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
+						"%" + param.getCustomerName() + "%"));
+			}
+
+			// 是否发货
+			if (param.getFlag() != null) {
+				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
+			}
+
+			// 是否审核
+			if(param.getAudit() != null){
+				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
+			}
+
+			// 是否转批次
+			if(param.getNewBacth() != null){
+				predicate.add(cb.equal(root.get("newBacth").as(Integer.class), param.getNewBacth()));
+			}
+			
+			// 是否有版权
+			if(param.getCopyright()!=null){
+				predicate.add(cb.equal(root.get("copyright").as(Integer.class), param.getCopyright()));
+			}
+
 			// 按产品name过滤
 			if (!StringUtils.isEmpty(param.getProductName())) {
 				predicate.add(
@@ -261,7 +295,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 
 	@Override
 	public List<PackingChild> getPackingChildPrice(PackingChild packingChild) {
-		return packingChildDao.findByProductIdAndCustomerId(packingChild.getProductId(), packingChild.getCustomerId());
+		return packingChildDao.findByProductIdAndCustomerIdAndAudit(packingChild.getProductId(), packingChild.getCustomerId(),1);
 	}
 
 	@Override
@@ -274,7 +308,6 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Packing packing = dao.findOne(id);
-					
 					if (packing.getFlag() == 1) {
 						throw new ServiceException("贴报单已发货，无法删除，请先核对发货单");
 					}
@@ -320,8 +353,16 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	public PackingChild updatePackingChild(PackingChild packingChild) {
 		if (packingChild.getId() != null) {
 			PackingChild oldPackingChild = packingChildDao.findOne(packingChild.getId());
-			if (oldPackingChild.isAudit()) {
-				throw new ServiceException("发货销售单已审核，无法修改");
+			// 根据收货数量确认状态
+			if (packingChild.getDeliveryNumber() != null) {
+				if (oldPackingChild.getCount() == packingChild.getDeliveryNumber()) {
+					packingChild.setDelivery(3);
+				} else {
+					packingChild.setDelivery(2);
+				}
+				if (oldPackingChild.getAudit() == 1) {
+					throw new ServiceException("发货销售单已审核，无法修改");
+				}
 			}
 			BeanCopyUtils.copyNotEmpty(packingChild, oldPackingChild, "");
 			packingChildDao.save(oldPackingChild);
@@ -347,7 +388,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	}
 
 	@Override
-	public int auditPackingChild(String ids,Boolean audit) {
+	public int auditPackingChild(String ids, Integer audit) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idArr = ids.split(",");
@@ -355,21 +396,23 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					PackingChild packingChild = packingChildDao.findOne(id);
-					if(packingChild.getDeliveryNumber() == null){
+					if (packingChild.getDeliveryNumber() == null) {
 						throw new ServiceException("业务员未填写到货数量，无法审核");
 					}
-					if(!packingChild.isAudit()){
+					if (packingChild.getAudit() == 1) {
 						throw new ServiceException("发货单已审核，请勿多次审核");
 					}
 					packingChild.setAudit(audit);
 					// 审核成功后,生成账单
-					if (audit) {
-						//货款总值
-						packingChild.setOffshorePay(NumUtils.mul(packingChild.getCount(),packingChild.getPrice()));
-						//客户认可货款
-						packingChild.setAcceptPay(NumUtils.mul(packingChild.getDeliveryNumber(),packingChild.getPrice()));
-						//packingChild货款
-						packingChild.setDisputePay(NumUtils.sub(packingChild.getOffshorePay(),packingChild.getAcceptPay()));
+					if (audit == 1) {
+						// 货款总值
+						packingChild.setOffshorePay(NumUtils.mul(packingChild.getCount(), packingChild.getPrice()));
+						// 客户认可货款
+						packingChild
+								.setAcceptPay(NumUtils.mul(packingChild.getDeliveryNumber(), packingChild.getPrice()));
+						// packingChild货款
+						packingChild.setDisputePay(
+								NumUtils.sub(packingChild.getOffshorePay(), packingChild.getAcceptPay()));
 					}
 					packingChildDao.save(packingChild);
 					count++;
@@ -378,4 +421,50 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 		}
 		return count;
 	}
+
+	@Override
+	public List<Bill> collectBill(Bill bill) {
+		List<PackingChild> pList = findPackingChildList(bill);
+		List<Mixed> mixedList = mixedService.findList(bill);
+
+		return null;
+	}
+
+	@Override
+	public List<PackingChild> findPackingChildList(Bill param) {
+		List<PackingChild> result = packingChildDao.findAll((root, query, cb) -> {
+			List<Predicate> predicate = new ArrayList<>();
+			// 按客户id过滤
+			if (param.getCustomerId() != null) {
+				predicate.add(cb.equal(root.get("customerId").as(Long.class), param.getCustomerId()));
+			}
+			// 是否发货
+			if (param.getFlag() != null) {
+				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
+			}
+			// 是否审核
+			predicate.add(cb.equal(root.get("audit").as(Boolean.class), param.isAudit()));
+			
+			// 按客户名称
+			if (!StringUtils.isEmpty(param.getCustomerName())) {
+				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
+						"%" + param.getCustomerName() + "%"));
+			}
+			// 按产品name过滤
+			if (!StringUtils.isEmpty(param.getProductName())) {
+				predicate.add(
+						cb.equal(root.get("product").get("name").as(Long.class), "%" + param.getProductName() + "%"));
+			}
+			// 按发货日期
+			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+				predicate.add(cb.between(root.get("sendDate").as(Date.class), param.getOrderTimeBegin(),
+						param.getOrderTimeEnd()));
+			}
+			Predicate[] pre = new Predicate[predicate.size()];
+			query.where(predicate.toArray(pre));
+			return null;
+		});
+		return result;
+	}
+
 }

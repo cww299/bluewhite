@@ -2,31 +2,25 @@ package com.bluewhite.ledger.entity;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import com.bluewhite.base.BaseEntity;
-
 /**
  * 账单清算实体
  * 
  * @author zhangliang
  *
  */
-@Entity
-@Table(name = "ledger_bill" )
-public class Bill extends BaseEntity<Long>{
-
+public class Bill {
+	
 	/**
-	 * 客户
+	 * 客户id
 	 * 
 	 */
-	private Long customerName;
+	private Long customerId;
+
+	/**
+	 * 客户name
+	 * 
+	 */
+	private String customerName;
 
 	/**
 	 * 账单日期
@@ -34,54 +28,104 @@ public class Bill extends BaseEntity<Long>{
 	private Date billDate;
 
 	/**
-	 * 当表已确定离岸货款值
+	 * 货款总值
 	 */
-	@Column(name = "offshore_pay")
 	private Double offshorePay;
 
 	/**
-	 * 当表经业务员跟进客户已认可的货款
+	 * 客户认可货款
 	 */
 	private Double acceptPay;
 
 	/**
-	 * 当表双方都认可的除货款以外的应付
+	 * 杂支应付
 	 */
 	private Double acceptPayable;
 
 	/**
-	 * 当表在途和有争议货款
+	 * 争议货款
 	 */
 	private Double disputePay;
 
 	/**
-	 * 当月未到货款
+	 * 未到货款
 	 */
 	private Double nonArrivalPay;
 
 	/**
-	 * 当月客户多付货款转下月应付
+	 * 客户多付货款
 	 */
 	private Double overpaymentPay;
 	
 	/**
-	 * 当月货款已到
+	 * 已到货款
 	 */
 	private Double arrivalPay;
 
 	/**
+	 * 产品name
+	 */
+	private String productName;
+	
+	/**
 	 * 查询字段
 	 */
-	@Transient
 	private Date orderTimeBegin;
 	/**
 	 * 查询字段
 	 */
-	@Transient
 	private Date orderTimeEnd;
 	
+	/**
+	 * 是否发货
+	 */
+	private Integer flag;
+	/**
+	 * 是否审核
+	 */
+	private boolean audit;
 	
 	
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
+
+	public boolean isAudit() {
+		return audit;
+	}
+
+	public void setAudit(boolean audit) {
+		this.audit = audit;
+	}
+
+	public Long getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
 
 	public Date getOrderTimeBegin() {
 		return orderTimeBegin;
@@ -114,8 +158,6 @@ public class Bill extends BaseEntity<Long>{
 	public void setBillDate(Date billDate) {
 		this.billDate = billDate;
 	}
-
-
 
 	public Double getOffshorePay() {
 		return offshorePay;

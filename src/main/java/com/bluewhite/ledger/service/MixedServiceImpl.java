@@ -16,6 +16,7 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.dao.MixedDao;
+import com.bluewhite.ledger.entity.Bill;
 import com.bluewhite.ledger.entity.Mixed;
 
 @Service
@@ -28,11 +29,15 @@ public class MixedServiceImpl extends BaseServiceImpl<Mixed, Long> implements Mi
 	public PageResult<Mixed> findPages(Mixed param, PageParameter page) {
 		Page<Mixed> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
-
+			// 按客户名称
+			if (!StringUtils.isEmpty(param.getCustomerName())) {
+				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
+						"%" + param.getCustomerName() + "%"));
+			}
 			// 按合同签订日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
-				predicate.add(
-						cb.between(root.get("").as(Date.class), param.getOrderTimeBegin(), param.getOrderTimeEnd()));
+				predicate.add(cb.between(root.get("mixtTime").as(Date.class), param.getOrderTimeBegin(),
+						param.getOrderTimeEnd()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
@@ -60,5 +65,30 @@ public class MixedServiceImpl extends BaseServiceImpl<Mixed, Long> implements Mi
 				}
 			}
 		}
+	}
+
+	@Override
+	public List<Mixed> findList(Bill param) {
+		List<Mixed> result = dao.findAll((root, query, cb) -> {
+			List<Predicate> predicate = new ArrayList<>();
+			// 按客户id过滤
+			if (param.getCustomerId() != null) {
+				predicate.add(cb.equal(root.get("customerId").as(Long.class), param.getCustomerId()));
+			}
+			// 按客户名称
+			if (!StringUtils.isEmpty(param.getCustomerName())) {
+				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
+						"%" + param.getCustomerName() + "%"));
+			}
+			// 按合同签订日期
+			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+				predicate.add(cb.between(root.get("mixtTime").as(Date.class), param.getOrderTimeBegin(),
+						param.getOrderTimeEnd()));
+			}
+			Predicate[] pre = new Predicate[predicate.size()];
+			query.where(predicate.toArray(pre));
+			return null;
+		});
+		return result;
 	}
 }
