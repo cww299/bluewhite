@@ -403,7 +403,7 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 		Long a=list.stream().filter(Recruit->Recruit.getType()!=null && Recruit.getType().equals(0)).count();//没有应邀面试
 		Long b=list.stream().filter(Recruit->Recruit.getAdopt()!=null && Recruit.getAdopt().equals(1)).count();//面试合格
 		Long c=list.stream().filter(Recruit->Recruit.getAdopt()!=null && Recruit.getAdopt().equals(2)).count();//待定
-		Long d=list.stream().filter(Recruit->Recruit.getAdopt()!=null && Recruit.getAdopt().equals(1)).count();//面试不合格
+		Long d=list.stream().filter(Recruit->Recruit.getAdopt()!=null && Recruit.getAdopt().equals(0)).count();//面试不合格
 		int  e=list.size();
 		allMap.put("md1",b);
 		allMap.put("md2",c);

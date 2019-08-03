@@ -15,7 +15,6 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.ledger.dao.BillDao;
 import com.bluewhite.ledger.dao.MixedDao;
 import com.bluewhite.ledger.entity.Mixed;
 
@@ -24,9 +23,6 @@ public class MixedServiceImpl extends BaseServiceImpl<Mixed, Long> implements Mi
 
 	@Autowired
 	private MixedDao dao;
-
-	@Autowired
-	private BillDao billdao;
 
 	@Override
 	public PageResult<Mixed> findPages(Mixed param, PageParameter page) {
