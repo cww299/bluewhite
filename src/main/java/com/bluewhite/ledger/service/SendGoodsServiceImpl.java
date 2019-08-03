@@ -157,7 +157,6 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 						throw new ServiceException("该待发货单已有贴包发货单，无法删除，请先核对贴包发货单");
 					}
 					SendGoods sendGoods = dao.findOne(id);
-					sendGoods.setCustomerId(null);
 					dao.delete(sendGoods);
 					count++;
 				}

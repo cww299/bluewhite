@@ -152,6 +152,11 @@ public class PackingChild extends BaseEntity<Long> {
 	private Integer delivery;
 	
 	/**
+	 * 到岸数据确认
+	 */
+	@Column(name = "delivery_status")
+	private Integer deliveryStatus;
+	/**
 	 * 到岸（收货）数量
 	 */
 	@Column(name = "delivery_number")
@@ -225,6 +230,15 @@ public class PackingChild extends BaseEntity<Long> {
 	
 	
 	
+	
+	public Integer getDeliveryStatus() {
+		return deliveryStatus;
+	}
+
+	public void setDeliveryStatus(Integer deliveryStatus) {
+		this.deliveryStatus = deliveryStatus;
+	}
+
 	public String getCustomerName() {
 		return customerName;
 	}
