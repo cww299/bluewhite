@@ -78,11 +78,18 @@ public interface PackingService extends BaseCRUDService<Packing, Long>{
 	public int deletePackingChild(String ids);
 	
 	/**
-	 * 修改贴包子单（实际发货单）
+	 * 修改贴包子单（财务）
 	 * @param packingChild
 	 * @return
 	 */
-	public PackingChild updatePackingChild(PackingChild packingChild);
+	public PackingChild updateFinancePackingChild(PackingChild packingChild);
+
+	/**
+	 * 修改贴包子单（业务员）
+	 * @param packingChild
+	 * @return
+	 */
+	public PackingChild updateUserPackingChild(PackingChild packingChild);
 	
 	/**
 	 * 删除包装材料子单
@@ -103,5 +110,14 @@ public interface PackingService extends BaseCRUDService<Packing, Long>{
 	 * @param packingChild
 	 */
 	public List<Bill> collectBill(Bill bill);
+
+	/**
+	 * 确认收货单
+	 * @param ids
+	 * @param deliveryStatus
+	 * @return
+	 */
+	public int auditUserPackingChild(String ids, Integer deliveryStatus);
+
 
 }

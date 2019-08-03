@@ -152,10 +152,11 @@ public class PackingChild extends BaseEntity<Long> {
 	private Integer delivery;
 	
 	/**
-	 * 到岸数据确认
+	 * 到岸數量是否确认 （0=否,1=是）
 	 */
 	@Column(name = "delivery_status")
 	private Integer deliveryStatus;
+	
 	/**
 	 * 到岸（收货）数量
 	 */

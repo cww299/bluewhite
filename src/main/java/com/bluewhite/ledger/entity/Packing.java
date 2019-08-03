@@ -66,14 +66,14 @@ public class Packing extends BaseEntity<Long> {
 	 * 贴包子单list
 	 */
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
-	@JoinColumn(name = "packingChild_id")
+	@JoinColumn(name = "packing_id")
 	private List<PackingChild> packingChilds = new ArrayList<>();
 	
 	/**
-	 * 包装物
+	 * 包装物list
 	 */
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
-	@JoinColumn(name = "packaging_materials_id")
+	@JoinColumn(name = "packing_id")
 	private List<PackingMaterials> packingMaterials = new ArrayList<>();
 	
 	/**

@@ -19,6 +19,22 @@ import com.bluewhite.basedata.entity.BaseData;
 @Table(name = "ledger_packing_materials")
 public class PackingMaterials extends BaseEntity<Long>{
 	
+	
+	/**
+	 * 订单id
+	 * 
+	 */
+	@Column(name = "packing_id")
+	private Long packingId;
+	
+
+	/**
+	 * 父订单实体
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "packing_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Packing packing;
+	
 	/**
 	 * 包装物名称id
 	 */

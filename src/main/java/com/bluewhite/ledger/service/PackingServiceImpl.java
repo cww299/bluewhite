@@ -23,7 +23,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
-import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
@@ -212,7 +211,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					pc.setCopyright(0);
 					// 未收货
 					pc.setDelivery(1);
-					//业务员未确认数据
+					// 业务员未确认数据
 					pc.setDeliveryStatus(0);
 					// 价格
 					pc.setPrice(0.0);
@@ -261,22 +260,22 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			}
 
 			// 是否审核
-			if(param.getAudit() != null){
+			if (param.getAudit() != null) {
 				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
 			}
 
 			// 是否转批次
-			if(param.getNewBacth() != null){
+			if (param.getNewBacth() != null) {
 				predicate.add(cb.equal(root.get("newBacth").as(Integer.class), param.getNewBacth()));
 			}
-			
+
 			// 是否有版权
-			if(param.getCopyright()!=null){
+			if (param.getCopyright() != null) {
 				predicate.add(cb.equal(root.get("copyright").as(Integer.class), param.getCopyright()));
 			}
-			
+
 			// 是否业务员确认
-			if(param.getDeliveryStatus()!=null){
+			if (param.getDeliveryStatus() != null) {
 				predicate.add(cb.equal(root.get("deliveryStatus").as(Integer.class), param.getDeliveryStatus()));
 			}
 
@@ -304,7 +303,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 
 	@Override
 	public List<PackingChild> getPackingChildPrice(PackingChild packingChild) {
-		return packingChildDao.findByProductIdAndCustomerIdAndAudit(packingChild.getProductId(), packingChild.getCustomerId(),1);
+		return packingChildDao.findByProductIdAndCustomerIdAndAudit(packingChild.getProductId(),
+				packingChild.getCustomerId(), 1);
 	}
 
 	@Override
@@ -359,10 +359,31 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	}
 
 	@Override
-	public PackingChild updatePackingChild(PackingChild packingChild) {
+	public PackingChild updateFinancePackingChild(PackingChild packingChild) {
 		if (packingChild.getId() != null) {
 			PackingChild oldPackingChild = packingChildDao.findOne(packingChild.getId());
-			
+			if (oldPackingChild.getAudit() == 1) {
+				throw new ServiceException("销售单已审核，无法修改");
+			}
+			// 计算总价
+			oldPackingChild.setSumPrice(NumUtils.mul(oldPackingChild.getCount(), packingChild.getPrice()));
+			oldPackingChild.setPrice(packingChild.getPrice());
+			oldPackingChild.setRemark(packingChild.getRemark());
+			packingChildDao.save(oldPackingChild);
+		}
+		return packingChild;
+	}
+
+	@Override
+	public PackingChild updateUserPackingChild(PackingChild packingChild) {
+		if (packingChild.getId() != null) {
+			PackingChild oldPackingChild = packingChildDao.findOne(packingChild.getId());
+			if (oldPackingChild.getDeliveryStatus() == 1) {
+				throw new ServiceException("销售单已确认，无法修改");
+			}
+			if (oldPackingChild.getAudit() == 1) {
+				throw new ServiceException("销售单已审核，无法修改");
+			}
 			// 根据收货数量确认状态
 			if (packingChild.getDeliveryNumber() != null) {
 				if (oldPackingChild.getCount() == packingChild.getDeliveryNumber()) {
@@ -370,17 +391,11 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				} else {
 					packingChild.setDelivery(2);
 				}
-				if (oldPackingChild.getAudit() == 1) {
-					throw new ServiceException("发货销售单已审核，无法修改");
-				}
 			}
-			
-			//计算总价
-			oldPackingChild.setSumPrice(NumUtils.mul(oldPackingChild.getCount(), packingChild.getPrice()) );
-			
-			
-			oldPackingChild.setPrice(packingChild.getPrice());
-			oldPackingChild.setRemark(packingChild.getRemark());
+			oldPackingChild.setDeliveryNumber(packingChild.getDeliveryNumber());
+			oldPackingChild.setDeliveryCollectionDate(packingChild.getDeliveryCollectionDate());
+			oldPackingChild.setDeliveryDate(packingChild.getDeliveryDate());
+			oldPackingChild.setDisputeRemark(packingChild.getDisputeRemark());
 			packingChildDao.save(oldPackingChild);
 		}
 		return packingChild;
@@ -413,12 +428,14 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					Long id = Long.parseLong(idArr[i]);
 					PackingChild packingChild = packingChildDao.findOne(id);
 					if (packingChild.getDeliveryStatus() == 0) {
-						throw new ServiceException("业务员未填写到货数量，无法审核");
+						throw new ServiceException("业务员未确认到货数量，无法审核");
 					}
-					if (packingChild.getAudit() == 1) {
+					if (audit == 1 && packingChild.getAudit() == 1) {
 						throw new ServiceException("发货单已审核，请勿多次审核");
 					}
-					packingChild.setAudit(audit);
+					if (audit == 0 && packingChild.getAudit() == 0) {
+						throw new ServiceException("发货单未审核，无需取消审核");
+					}
 					// 审核成功后,生成账单
 					if (audit == 1) {
 						// 货款总值
@@ -426,10 +443,11 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 						// 客户认可货款
 						packingChild
 								.setAcceptPay(NumUtils.mul(packingChild.getDeliveryNumber(), packingChild.getPrice()));
-						// packingChild货款
+						// 争议货款
 						packingChild.setDisputePay(
 								NumUtils.sub(packingChild.getOffshorePay(), packingChild.getAcceptPay()));
 					}
+					packingChild.setAudit(audit);
 					packingChildDao.save(packingChild);
 					count++;
 				}
@@ -442,12 +460,11 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	public List<Bill> collectBill(Bill bill) {
 		List<PackingChild> pList = findPackingChildList(bill);
 		List<Mixed> mixedList = mixedService.findList(bill);
-		Map<Long, List<PackingChild>> mapPList= pList.stream().collect(Collectors.groupingBy(PackingChild::getCustomerId, Collectors.toList()));
-		Map<Long, List<Mixed>> mapMixedList= mixedList.stream().collect(Collectors.groupingBy(Mixed::getCustomerId, Collectors.toList()));
+		Map<Long, List<PackingChild>> mapPList = pList.stream()
+				.collect(Collectors.groupingBy(PackingChild::getCustomerId, Collectors.toList()));
+		Map<Long, List<Mixed>> mapMixedList = mixedList.stream()
+				.collect(Collectors.groupingBy(Mixed::getCustomerId, Collectors.toList()));
 
-		
-		
-		
 		return null;
 	}
 
@@ -465,7 +482,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			}
 			// 是否审核
 			predicate.add(cb.equal(root.get("audit").as(Boolean.class), param.isAudit()));
-			
+
 			// 按客户名称
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
 				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
@@ -488,4 +505,32 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 		return result;
 	}
 
+	@Override
+	public int auditUserPackingChild(String ids, Integer deliveryStatus) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					PackingChild packingChild = packingChildDao.findOne(id);
+					if (packingChild.getAudit() == 0) {
+						if (deliveryStatus == 1 && packingChild.getDeliveryStatus() == 1) {
+							throw new ServiceException("销售单已被确认，请勿多次确认");
+						}
+						if (deliveryStatus == 0 && packingChild.getDeliveryStatus() == 0) {
+							throw new ServiceException("销售单未确认，无需取消");
+						}
+					}
+					if (packingChild.getAudit() == 1) {
+						throw new ServiceException("发货单已审核，无法操作");
+					}
+					packingChild.setDeliveryStatus(deliveryStatus);
+					packingChildDao.save(packingChild);
+					count++;
+				}
+			}
+		}
+		return count;
+	}
 }
