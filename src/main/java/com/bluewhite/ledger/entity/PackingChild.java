@@ -139,19 +139,17 @@ public class PackingChild extends BaseEntity<Long> {
 	@Column(name = "remark")
 	private String remark;
 	
-	
-	/**
-	 * 到岸（收货）状态（3=全部收货，2=部分收货，1=未收货 ）
-	 */
-	@Column(name = "delivery")
-	private Integer delivery;
-	
 	/**
 	 * 是否审核
 	 */
 	@Column(name = "audit")
 	private boolean audit;
 	
+	/**
+	 * 到岸（收货）状态（3=全部收货，2=部分收货，1=未收货 ）
+	 */
+	@Column(name = "delivery")
+	private Integer delivery;
 	
 	/**
 	 * 到岸（收货）数量
@@ -166,10 +164,40 @@ public class PackingChild extends BaseEntity<Long> {
 	private Date deliveryDate;
 	
 	/**
+	 * 争议数量
+	 */
+	@Column(name = "dispute_number")
+	private Integer disputeNumber;
+	
+	/**
+	 * 争议数量备注
+	 */
+	@Column(name = "dispute_remark")
+	private Double disputeRemark;
+	
+	/**
 	 * 预计到岸（收货）结款日期
 	 */
 	@Column(name = "delivery_collection_date")
 	private Date deliveryCollectionDate;
+	
+	/**
+	 * 货款总值
+	 */
+	@Column(name = "offshore_pay")
+	private Double offshorePay;
+
+	/**
+	 * 已收货货款
+	 */
+	@Column(name = "accept_pay")
+	private Double acceptPay;
+	
+	/**
+	 * 争议货款
+	 */
+	@Column(name = "dispute_pay")
+	private Double disputePay;
 	
 	/**
 	 * 产品name
@@ -190,8 +218,46 @@ public class PackingChild extends BaseEntity<Long> {
 	
 	
 	
-	
-	
+	public Integer getDisputeNumber() {
+		return disputeNumber;
+	}
+
+	public void setDisputeNumber(Integer disputeNumber) {
+		this.disputeNumber = disputeNumber;
+	}
+
+	public Double getDisputeRemark() {
+		return disputeRemark;
+	}
+
+	public void setDisputeRemark(Double disputeRemark) {
+		this.disputeRemark = disputeRemark;
+	}
+
+	public Double getDisputePay() {
+		return disputePay;
+	}
+
+	public void setDisputePay(Double disputePay) {
+		this.disputePay = disputePay;
+	}
+
+	public Double getOffshorePay() {
+		return offshorePay;
+	}
+
+	public void setOffshorePay(Double offshorePay) {
+		this.offshorePay = offshorePay;
+	}
+
+	public Double getAcceptPay() {
+		return acceptPay;
+	}
+
+	public void setAcceptPay(Double acceptPay) {
+		this.acceptPay = acceptPay;
+	}
+
 	public boolean isAudit() {
 		return audit;
 	}

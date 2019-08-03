@@ -4,7 +4,9 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Index;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -21,21 +23,14 @@ import com.bluewhite.base.BaseEntity;
 public class Bill extends BaseEntity<Long>{
 
 	/**
-	 * 乙方Id
+	 * 客户
+	 * 
 	 */
-	@Column(name = "party_names_id")
-	private Long partyNamesId;
+	private Long customerName;
 
-	/**
-	 * 乙方
-	 */
-	@Column(name = "party_names")
-	private String partyNames;
-	
 	/**
 	 * 账单日期
 	 */
-	@Column(name = "bill_date")
 	private Date billDate;
 
 	/**
@@ -47,47 +42,33 @@ public class Bill extends BaseEntity<Long>{
 	/**
 	 * 当表经业务员跟进客户已认可的货款
 	 */
-	@Column(name = "accept_pay")
 	private Double acceptPay;
 
 	/**
 	 * 当表双方都认可的除货款以外的应付
 	 */
-	@Column(name = "accept_payable")
 	private Double acceptPayable;
 
 	/**
 	 * 当表在途和有争议货款
 	 */
-	@Column(name = "dispute_pay")
 	private Double disputePay;
 
 	/**
 	 * 当月未到货款
 	 */
-	@Column(name = "non_arrival_pay")
 	private Double nonArrivalPay;
 
 	/**
 	 * 当月客户多付货款转下月应付
 	 */
-	@Column(name = "overpayment_pay")
 	private Double overpaymentPay;
-	
 	
 	/**
 	 * 当月货款已到
 	 */
-	@Column(name = "arrival_pay")
 	private Double arrivalPay;
-	
 
-	/**
-	 * 所有日期,所对应的付款(以及对应的批注)
-	 */
-	@Column(name = "date_to_pay")
-	private String dateToPay;
-	
 	/**
 	 * 查询字段
 	 */
@@ -134,21 +115,7 @@ public class Bill extends BaseEntity<Long>{
 		this.billDate = billDate;
 	}
 
-	public Long getPartyNamesId() {
-		return partyNamesId;
-	}
 
-	public void setPartyNamesId(Long partyNamesId) {
-		this.partyNamesId = partyNamesId;
-	}
-
-	public String getPartyNames() {
-		return partyNames;
-	}
-
-	public void setPartyNames(String partyNames) {
-		this.partyNames = partyNames;
-	}
 
 	public Double getOffshorePay() {
 		return offshorePay;
@@ -198,12 +165,5 @@ public class Bill extends BaseEntity<Long>{
 		this.overpaymentPay = overpaymentPay;
 	}
 
-	public String getDateToPay() {
-		return dateToPay;
-	}
-
-	public void setDateToPay(String dateToPay) {
-		this.dateToPay = dateToPay;
-	}
 
 }
