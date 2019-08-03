@@ -65,7 +65,7 @@ public class LedgerAction {
 	{
 		clearCascadeJSONChild = ClearCascadeJSON.get()
 				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count"
-						,"packing","price","count","sumPrice","copyright","newBacth"
+						,"price","count","sumPrice","copyright","newBacth"
 						,"saleNumber","sendDate","flag","customer" ,"remark","audit","delivery",
 						"deliveryNumber","deliveryDate","disputeNumber","disputeRemark","deliveryCollectionDate"
 						,"offshorePay","acceptPay","disputePay","deliveryStatus")
@@ -375,7 +375,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * 修改贴包子单（实际发货单）( 业务员填写 )
+	 * 审核贴包子单（实际发货单)(业务员)
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/auditUserPackingChild", method = RequestMethod.GET)
@@ -403,7 +403,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * 审核贴包子单（实际发货单）
+	 * 审核贴包子单（实际发货单）（财务）
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/auditPackingChild", method = RequestMethod.GET)
