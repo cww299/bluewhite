@@ -1,5 +1,8 @@
 package com.bluewhite.personnel.roomboard.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -25,4 +28,10 @@ public interface SingleMealService  extends BaseCRUDService<SingleMeal,Long>{
 	 * @param 
 	 */
 	public int deletes(String[] ids);
+	
+	/**
+	 * 汇总每天吃饭物料
+	 * @param
+	 */
+	public  List<Map<String, Object>> SingleSummary(SingleMeal singleMeal);
 }

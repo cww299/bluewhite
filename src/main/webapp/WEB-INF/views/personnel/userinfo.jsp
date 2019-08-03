@@ -2117,6 +2117,17 @@ jQuery(function($){
 											sale:$('#sale').val(),
 											ascriptionBank1:$('.bankCardtw').val(),
 								  }
+								  if(postData.orgNameId==null){
+									return  layer.msg("部门不能为空", {icon: 2});
+								  }
+								  if(postData.positionId==null){
+									return  layer.msg("职位不能为空", {icon: 2});
+								  }
+								  if(postData.quit==1){
+									  if(postData.quitDate==""){
+										  return  layer.msg("离职时间不能为空", {icon: 2});
+									  }
+								  }
 								   $.ajax({
 										url:"${ctx}/system/user/update",
 										data:postData,
@@ -2597,10 +2608,9 @@ jQuery(function($){
 										});
 									}
 									//获取年龄 
-									 var myDate = new Date(); 
+									var myDate = new Date(); 
 									var month = myDate.getMonth() + 1; 
 									var day = myDate.getDate();
-
 									var age = myDate.getFullYear() - UUserCard.substring(6, 10) - 1; 
 									if (UUserCard.substring(10, 12) < month || UUserCard.substring(10, 12) == month && UUserCard.substring(12, 14) <= day) { 
 									age++; 
