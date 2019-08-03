@@ -16,7 +16,6 @@
 </style>
 </head>
 <body>
-
 <div class="layui-card">
 	<div class="layui-card-body">
 		<table class="layui-form">
@@ -70,6 +69,7 @@ layui.config({
 		myutil.config.ctx = '${ctx}';
 		myutil.config.msgOffset = '200px';
 		myutil.clickTr();
+		var tipWin = '';
 		laydate.render({
 			elem:'#searchTime',range:'~'
 		})
@@ -118,7 +118,7 @@ layui.config({
 								if(data.length!=0){
 									html="";
 								}
-								layer.tips(html, elem, {
+								tipWin = layer.tips(html, elem, {
 									  tips: [4, '#78BA32'],
 					                  time:0
 					            });
@@ -127,9 +127,7 @@ layui.config({
 								})
 							}
 						})
-						
 					}
-					
 				})
 			}
 		})
@@ -156,10 +154,22 @@ layui.config({
 				}
 			})
 		}
-		table.on('edit(tableData)',function(){
-			/* myutil.saveAjax({
-				url:'/ledger/updatePackingChild',
-			}) */
+		table.on('edit(tableData)',function(obj){
+			var val = obj.value, msg='';
+			isNaN(val) && (msg="请正确输入单价");
+			val<0 && (msg="单价不能小于0");
+			if(msg!='')
+				myutil.emsg(msg);
+			else
+				myutil.saveAjax({
+					url:'/ledger/updatePackingChild',
+					data: {
+						id: obj.data.id,
+						price: val
+					}
+				}) 
+			layer.close(tipWin);
+			table.reload('tableData');
 		})
 		form.on('submit(search)',function(obj){
 			var val = $('#searchTime').val(), beg='',end='';
@@ -178,5 +188,4 @@ layui.config({
 	}//end define function
 )//endedefine
 </script>
-
 </html>
