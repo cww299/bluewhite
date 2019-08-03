@@ -370,7 +370,7 @@ public class LedgerAction {
 	public CommonResponse updateUserPackingChild(PackingChild packingChild) {
 		CommonResponse cr = new CommonResponse();
 		packingService.updateUserPackingChild(packingChild);
-		cr.setMessage("查看成功");
+		cr.setMessage("修改成功");
 		return cr;
 	}
 	
@@ -378,12 +378,12 @@ public class LedgerAction {
 	 * 修改贴包子单（实际发货单）( 业务员填写 )
 	 * @return cr
 	 */
-	@RequestMapping(value = "/ledger/auditUserPackingChild", method = RequestMethod.get)
+	@RequestMapping(value = "/ledger/auditUserPackingChild", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse auditUserPackingChild(String ids,Integer deliveryStatus) {
 		CommonResponse cr = new CommonResponse();
-		packingService.auditUserPackingChild(ids,deliveryStatus);
-		cr.setMessage("查看成功");
+		int count= packingService.auditUserPackingChild(ids,deliveryStatus);
+		cr.setMessage("成功确认"+count+"条销售单");
 		return cr;
 	}
 	
