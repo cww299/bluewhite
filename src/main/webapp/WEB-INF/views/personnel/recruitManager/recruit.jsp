@@ -422,7 +422,6 @@
 					var lastdate = year + '-' + p(month) + '-' + day.getDate() +' '+'23:59:59';
 					var firstdate2 = year + '-' + p(month) + '-'+ x+date+' '+'00:00:00';
 					var lastdate2 = year + '-' + p(month) + '-' + x+date+' '+'23:59:59';
-					console.log(date)
 					laydate.render({
 						elem: '#startTime',
 						type: 'datetime',
