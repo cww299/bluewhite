@@ -54,7 +54,14 @@ public class Mixed extends BaseEntity<Long> {
 	 */
 	@Column(name = "mix_price")
 	private Double mixPrice;
-
+	
+	/**
+	 * 客户name
+	 * 
+	 */
+	@Transient
+	private String customerName;
+	
 	/**
 	 * 查询字段
 	 */
@@ -65,6 +72,32 @@ public class Mixed extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Date orderTimeEnd;
+	
+	
+
+	public Long getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
 
 	public Date getOrderTimeBegin() {
 		return orderTimeBegin;

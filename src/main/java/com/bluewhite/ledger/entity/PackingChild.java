@@ -104,16 +104,16 @@ public class PackingChild extends BaseEntity<Long> {
 	private Double sumPrice;
 
 	/**
-	 * 是否拥有版权
+	 * 是否拥有版权（0=否1=是）
 	 */
 	@Column(name = "copyright")
-	private boolean copyright = false;
+	private Integer copyright ;
 	
 	/**
-	 * 是否产生新批次号
+	 * 是否产生新批次号（0=否1=是）
 	 */
 	@Column(name = "new_bacth")
-	private boolean newBacth = false;
+	private Integer newBacth ;
 	
 	/**
 	 * 销售编号 
@@ -140,10 +140,10 @@ public class PackingChild extends BaseEntity<Long> {
 	private String remark;
 	
 	/**
-	 * 是否审核
+	 * 是否审核（0=未审核，1=已审核）
 	 */
 	@Column(name = "audit")
-	private boolean audit;
+	private Integer audit;
 	
 	/**
 	 * 到岸（收货）状态（3=全部收货，2=部分收货，1=未收货 ）
@@ -173,7 +173,7 @@ public class PackingChild extends BaseEntity<Long> {
 	 * 争议数量备注
 	 */
 	@Column(name = "dispute_remark")
-	private Double disputeRemark;
+	private String disputeRemark;
 	
 	/**
 	 * 预计到岸（收货）结款日期
@@ -206,6 +206,13 @@ public class PackingChild extends BaseEntity<Long> {
 	private String productName;
 	
 	/**
+	 * 客户name
+	 * 
+	 */
+	@Transient
+	private String customerName;
+	
+	/**
 	 * 查询字段
 	 */
 	@Transient
@@ -218,6 +225,14 @@ public class PackingChild extends BaseEntity<Long> {
 	
 	
 	
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
 	public Integer getDisputeNumber() {
 		return disputeNumber;
 	}
@@ -226,11 +241,11 @@ public class PackingChild extends BaseEntity<Long> {
 		this.disputeNumber = disputeNumber;
 	}
 
-	public Double getDisputeRemark() {
+	public String getDisputeRemark() {
 		return disputeRemark;
 	}
 
-	public void setDisputeRemark(Double disputeRemark) {
+	public void setDisputeRemark(String disputeRemark) {
 		this.disputeRemark = disputeRemark;
 	}
 
@@ -258,13 +273,7 @@ public class PackingChild extends BaseEntity<Long> {
 		this.acceptPay = acceptPay;
 	}
 
-	public boolean isAudit() {
-		return audit;
-	}
 
-	public void setAudit(boolean audit) {
-		this.audit = audit;
-	}
 
 	public Integer getDelivery() {
 		return delivery;
@@ -314,13 +323,7 @@ public class PackingChild extends BaseEntity<Long> {
 		this.customerId = customerId;
 	}
 
-	public boolean isNewBacth() {
-		return newBacth;
-	}
 
-	public void setNewBacth(boolean newBacth) {
-		this.newBacth = newBacth;
-	}
 
 	public Date getOrderTimeBegin() {
 		return orderTimeBegin;
@@ -410,12 +413,29 @@ public class PackingChild extends BaseEntity<Long> {
 		this.flag = flag;
 	}
 
-	public boolean isCopyright() {
+	
+	public Integer getCopyright() {
 		return copyright;
 	}
 
-	public void setCopyright(boolean copyright) {
+	public void setCopyright(Integer copyright) {
 		this.copyright = copyright;
+	}
+
+	public Integer getNewBacth() {
+		return newBacth;
+	}
+
+	public void setNewBacth(Integer newBacth) {
+		this.newBacth = newBacth;
+	}
+
+	public Integer getAudit() {
+		return audit;
+	}
+
+	public void setAudit(Integer audit) {
+		this.audit = audit;
 	}
 
 	public Long getSendGoodsId() {

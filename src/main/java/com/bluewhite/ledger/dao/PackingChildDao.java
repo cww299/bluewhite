@@ -17,5 +17,5 @@ public interface PackingChildDao  extends BaseRepository<PackingChild, Long>{
 	/**
 	 * 按产品和客户查找
 	 */
-	List<PackingChild> findByProductIdAndCustomerId(Long productId,Long customerId);
+	List<PackingChild> findByProductIdAndCustomerIdAndAudit(Long productId,Long customerId,Integer audit);
 }

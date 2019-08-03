@@ -6,6 +6,7 @@ import java.util.List;
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.ledger.entity.Bill;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
 
@@ -45,6 +46,14 @@ public interface PackingService extends BaseCRUDService<Packing, Long>{
 	 * @return
 	 */
 	public PageResult<PackingChild> findPackingChildPage(PackingChild packingChild, PageParameter page);
+	
+	/**
+	 * 查看实际发货单
+	 * @param packingChild
+	 * @param page
+	 * @return
+	 */
+	public List<PackingChild> findPackingChildList(Bill bill);
 	
 	/**
 	 * 根据产品和客户查找以往价格
@@ -87,6 +96,12 @@ public interface PackingService extends BaseCRUDService<Packing, Long>{
 	 * @param packingChild
 	 * @return
 	 */
-	public int auditPackingChild(String ids,Boolean audit);
+	public int auditPackingChild(String ids,Integer audit);
+	
+	/**
+	 * 汇总账单
+	 * @param packingChild
+	 */
+	public List<Bill> collectBill(Bill bill);
 
 }

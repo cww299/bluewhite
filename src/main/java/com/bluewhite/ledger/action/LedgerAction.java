@@ -18,6 +18,7 @@ import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.ledger.entity.Bill;
 import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.Packing;
@@ -347,7 +348,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * 修改贴包子单（实际发货单）(  )
+	 * 修改贴包子单（实际发货单）( 业务员填写 )
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/updatePackingChild", method = RequestMethod.POST)
@@ -381,10 +382,10 @@ public class LedgerAction {
 	 */
 	@RequestMapping(value = "/ledger/auditPackingChild", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse auditPackingChild(String ids,Boolean audit ) {
+	public CommonResponse auditPackingChild(String ids,Integer audit ) {
 		CommonResponse cr = new CommonResponse();
-		packingService.auditPackingChild(ids,audit);
-		cr.setMessage("查看成功");
+		int count= packingService.auditPackingChild(ids,audit);
+		cr.setMessage("成功审核"+count+"条销售单");
 		return cr;
 	}
 	
@@ -395,10 +396,10 @@ public class LedgerAction {
 	 */
 	@RequestMapping(value = "/ledger/collectBill", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse collectBill(PackingChild packingChild ) {
+	public CommonResponse collectBill(Bill bill) {
 		CommonResponse cr = new CommonResponse();
-		
-		cr.setMessage("查看成功");
+		packingService.collectBill(bill);
+		cr.setMessage("汇总成功");
 		return cr;
 	}
 	
