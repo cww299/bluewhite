@@ -131,6 +131,9 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 			Long userid = Long.parseLong(attendancePay.getUsersId()[i]);
 			AttendancePay attendance = new AttendancePay();
 			User user = userService.findOne(userid);
+			if(user.getPrice()==null){
+				throw new ServiceException(user.getUserName() +"小时单价为空，无法添加考勤");
+			}
 			attendance.setUserId(userid);
 			attendance.setGroupId(user.getGroupId());
 			attendance.setAllotTime(attendancePay.getAllotTime());
