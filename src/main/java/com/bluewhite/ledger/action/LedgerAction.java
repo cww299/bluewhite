@@ -348,18 +348,44 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * 修改贴包子单（实际发货单）( 业务员填写 )
+	 * 修改贴包子单（实际发货单）( 财务填写 )
 	 * @return cr
 	 */
-	@RequestMapping(value = "/ledger/updatePackingChild", method = RequestMethod.POST)
+	@RequestMapping(value = "/ledger/updateFinancePackingChild", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse updatePackingChild(PackingChild packingChild) {
+	public CommonResponse updateFinancePackingChild(PackingChild packingChild) {
 		CommonResponse cr = new CommonResponse();
-		packingService.updatePackingChild(packingChild);
+		packingService.updateFinancePackingChild(packingChild);
 		cr.setMessage("查看成功");
 		return cr;
 	}
 	
+	
+	/**
+	 * 修改贴包子单（实际发货单）( 业务员填写 )
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/updateUserPackingChild", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateUserPackingChild(PackingChild packingChild) {
+		CommonResponse cr = new CommonResponse();
+		packingService.updateUserPackingChild(packingChild);
+		cr.setMessage("查看成功");
+		return cr;
+	}
+	
+	/**
+	 * 修改贴包子单（实际发货单）( 业务员填写 )
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/auditUserPackingChild", method = RequestMethod.get)
+	@ResponseBody
+	public CommonResponse auditUserPackingChild(String ids,Integer deliveryStatus) {
+		CommonResponse cr = new CommonResponse();
+		packingService.auditUserPackingChild(ids,deliveryStatus);
+		cr.setMessage("查看成功");
+		return cr;
+	}
 	
 	/**
 	 * 根据产品和客户查找以往价格
