@@ -20,11 +20,13 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.ledger.entity.Bill;
 import com.bluewhite.ledger.entity.Customer;
+import com.bluewhite.ledger.entity.Mixed;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.PackingMaterials;
 import com.bluewhite.ledger.entity.SendGoods;
+import com.bluewhite.ledger.service.MixedService;
 import com.bluewhite.ledger.service.OrderService;
 import com.bluewhite.ledger.service.PackingService;
 import com.bluewhite.ledger.service.SendGoodsService;
@@ -46,6 +48,8 @@ public class LedgerAction {
 	private SendGoodsService sendGoodsService;
 	@Autowired
 	private OrderService orderService;
+	@Autowired
+	private MixedService mixedService;
 
 
 	private ClearCascadeJSON clearCascadeJSON;
@@ -98,6 +102,15 @@ public class LedgerAction {
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(Product.class, "id", "name", "number");
 	}
+	
+	private ClearCascadeJSON clearCascadeJSONMixed;
+	{
+		clearCascadeJSONMixed = ClearCascadeJSON.get()
+				.addRetainTerm(Mixed.class, "id", "customer", "mixtTime", "mixDetailed","mixPrice")
+				.addRetainTerm(Customer.class, "id", "name");
+	}
+	
+	
 
 	/**
 	 * 分页查看订单
@@ -356,7 +369,7 @@ public class LedgerAction {
 	public CommonResponse updateFinancePackingChild(PackingChild packingChild) {
 		CommonResponse cr = new CommonResponse();
 		packingService.updateFinancePackingChild(packingChild);
-		cr.setMessage("查看成功");
+		cr.setMessage("修改成功");
 		return cr;
 	}
 	
@@ -414,6 +427,60 @@ public class LedgerAction {
 		cr.setMessage("成功审核"+count+"条销售单");
 		return cr;
 	}
+	
+	
+	/**
+	 * 分页查看杂支
+	 * @param page
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/mixedPage", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse mixedPage(PageParameter page, Mixed mixed) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONMixed.format(mixedService.findPages(mixed, page)).toJSON());
+		cr.setMessage("查看成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * 新增修改杂支
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/addMixed", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse addMixed(Mixed mixed) {
+		CommonResponse cr = new CommonResponse();
+		if(mixed.getId()!=null){
+			Mixed ot = mixedService.findOne(mixed.getId());
+			mixedService.update(mixed, ot);
+			cr.setMessage("修改成功");
+		}else{
+			mixedService.addMixed(mixed);
+			cr.setMessage("新增成功");
+		}
+		return cr;
+	}
+	
+	
+	/**
+	 * 删除杂支
+	 * 
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/deleteMixed", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteMixed(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = mixedService.deleteMixed(ids);
+		cr.setMessage("成功删除" + count + "条杂支");
+		return cr;
+	}
+
+	
 	
 	
 	/**

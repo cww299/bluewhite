@@ -28,6 +28,7 @@ import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
@@ -135,6 +136,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 		return packingNumber;
 	}
 	
+	
 	@Override
 	@Transactional
 	public Packing addPacking(Packing packing) {
@@ -200,7 +202,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				for (PackingChild pc : packingChildList) {
 					// 生成销售编号
 					pc.setSaleNumber(Constants.XS + "-" + sdf.format(time == null ? packing.getPackingDate() : time)
-							+ "-" + SalesUtils.get0LeftString((int) packingChildDao.count(), 8));
+							+ "-" + SalesUtils.get0LeftString(packingChildDao.findBySendDateBetween(time, DatesUtil.getLastDayOftime(time)).size(), 4));
 					pc.setSendDate(time == null ? packing.getPackingDate() : time);
 					// 已发货
 					pc.setFlag(1);
@@ -472,7 +474,6 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			bl.setDisputePay(NumUtils.round(psList.stream().mapToDouble(PackingChild::getDisputePay).sum(), 2));
 			billList.add(bl);
 		}
-		
 		
 		
 		
