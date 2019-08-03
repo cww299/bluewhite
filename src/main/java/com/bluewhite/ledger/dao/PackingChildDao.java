@@ -5,6 +5,10 @@ import com.bluewhite.ledger.entity.PackingChild;
 import java.lang.Long;
 import java.util.List;
 
+import javax.persistence.Transient;
+
+import java.util.Date;
+
 public interface PackingChildDao  extends BaseRepository<PackingChild, Long>{
 
 	/**
@@ -18,4 +22,9 @@ public interface PackingChildDao  extends BaseRepository<PackingChild, Long>{
 	 * 按产品和客户查找
 	 */
 	List<PackingChild> findByProductIdAndCustomerIdAndAudit(Long productId,Long customerId,Integer audit);
+	
+	/**
+	 * 按发货日期查找
+	 */
+	List<PackingChild> findBySendDateBetween(Date orderTimeBegin, Date orderTimeEnd);
 }

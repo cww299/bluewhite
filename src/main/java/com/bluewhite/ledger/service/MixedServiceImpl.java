@@ -55,16 +55,19 @@ public class MixedServiceImpl extends BaseServiceImpl<Mixed, Long> implements Mi
 
 	@Override
 	@Transactional
-	public void deleteMixed(String ids) {
+	public int deleteMixed(String ids) {
+		int count= 0;
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idArr = ids.split(",");
 			if (idArr.length > 0) {
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					dao.delete(id);
+					count++;
 				}
 			}
 		}
+		return count;
 	}
 
 	@Override

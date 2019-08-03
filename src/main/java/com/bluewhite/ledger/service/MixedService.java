@@ -42,6 +42,6 @@ public interface MixedService extends BaseCRUDService<Mixed, Long> {
 	 * 
 	 * @param ids
 	 */
-	public void deleteMixed(String ids);
+	public int deleteMixed(String ids);
 
 }
