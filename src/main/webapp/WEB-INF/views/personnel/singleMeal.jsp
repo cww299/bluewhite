@@ -51,9 +51,7 @@
 			</div>
 			<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
 			
-			<shiro:hasAnyRoles name="superAdmin,personnel">
-   				 <p id="totalAll" style="text-align:center;color:red;"></p>
-			</shiro:hasAnyRoles> 
+			
 			
 		</div>
 	</div>

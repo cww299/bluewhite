@@ -204,7 +204,7 @@
 					<table>
 						<tr>
 							<td>查询时间:</td>
-							<td><input id="monthDate9" style="width: 180px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							<td><input id="monthDate9" style="width: 320px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
 							</td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
@@ -408,12 +408,21 @@
 					
 					function p(s) { return s < 10 ? '0' + s: s; }
 					var myDate = new Date();
+					var date=myDate.getDate(); 
 					var year=myDate.getFullYear();
 					var month=myDate.getMonth()+1;
 					var day = new Date(year,month,0);
+					var x;
+					if(date<10){
+						x="0"
+					}else{
+						x=""
+					}
 					var firstdate = year + '-' + p(month) + '-01'+' '+'00:00:00';
 					var lastdate = year + '-' + p(month) + '-' + day.getDate() +' '+'23:59:59';
-					
+					var firstdate2 = year + '-' + p(month) + '-'+ x+date+' '+'00:00:00';
+					var lastdate2 = year + '-' + p(month) + '-' + x+date+' '+'23:59:59';
+					console.log(date)
 					laydate.render({
 						elem: '#startTime',
 						type: 'datetime',
@@ -441,6 +450,7 @@
 						elem: '#monthDate9',
 						type: 'datetime',
 						range: '~',
+						value : firstdate2+' ~ '+lastdate2,
 					}); 
 					 var getdata={type:"orgName",}
 		      			$.ajax({								//获取部门列表数据，部门下拉框的填充
