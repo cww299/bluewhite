@@ -81,11 +81,21 @@ layui.config({
 			page:true,
 			toolbar: '#tableToolbar',
 			request:{ pageName:'page', limitName:'size' },
-			parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } },
+			parseData:function(ret){ 
+				layui.each(ret.data.rows,function(index,item){
+					if(item.deliveryStatus==0){
+						item.deliveryNumber = '';
+						item.deliveryDate = '';
+						item.disputeNumber = '';
+						item.disputeRemark = '';
+					}
+				})
+				return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } 
+			},
 			cols:[[
 			       {align:'center', type:'checkbox', fixed:'left',},
 			       {align:'center', title:'销售编号',	width:'6%', field:'saleNumber',   fixed:'left', style:sty },
-			       {align:'center', title:'发货日期',   	width:'8%',	field:'sendDate', 	  fixed:'left', style:sty },
+			       {align:'center', title:'发货日期',   	width:'7%',	field:'sendDate',templet:'<span>{{ d.sendDate?d.sendDate.split(" ")[0]:""}}</span>',  fixed:'left', style:sty },
 			       {align:'center', title:'业务员',   	width:'8%',	field:'user',	 templet:'<span>{{ d.customer?d.customer.user.userName:""}}</span>'},
 			       {align:'center', title:'客户',   		width:'8%',	field:'custom',	 templet:'<span>{{ d.customer?d.customer.name:""}}</span>'},
 			       {align:'center', title:'批次号',   	width:'8%',	field:'bacthNumber',	},
@@ -95,7 +105,7 @@ layui.config({
 			       {align:'center', title:'单价',   		width:'5%',	field:'price', 	edit: 'text', 	},
 			       {align:'center', title:'备注',   		width:'8%',	field:'remark', edit: 'text', 	},
 			       {align:'center', title:'到岸数量',   	width:'6%',	field:'deliveryNumber',	},
-			       {align:'center', title:'到岸日期',   	width:'8%',	field:'deliveryDate',	},
+			       {align:'center', title:'到岸日期',   	width:'7%',	field:'deliveryDate',templet:'<span>{{ d.deliveryDate?d.deliveryDate.split(" ")[0]:""}}</span>',	},
 			       {align:'center', title:'争议数量',   	width:'6%',	field:'disputeNumber',	},
 			       {align:'center', title:'争议备注',   	width:'8%',	field:'disputeRemark',	},
 			       {align:'center', title:'预计结款日期',width:'8%',	field:'deliveryCollectionDate',	},
@@ -116,14 +126,17 @@ layui.config({
 							done: function(data){
 								var html = '无以往价格';
 								if(data.length!=0){
-									html="";
+									html='';
+									layui.each(data,function(index,item){
+										html += '<span style="margin-bottom:5px;" class="layui-badge layui-bg-green" data-price="'+item.price+'">'+item.price+'元</span><br>';
+									})
 								}
 								tipWin = layer.tips(html, elem, {
 									  tips: [4, '#78BA32'],
 					                  time:0
 					            });
-								$('.layui-layer-tips').unbind().on('click',function(){
-									layer.closeAll();
+								$('.layui-layer-tips .layui-badge').unbind().on('click',function(){
+									layer.msg($(this).data('price'))
 								})
 							}
 						})
@@ -162,7 +175,7 @@ layui.config({
 				myutil.emsg(msg);
 			else
 				myutil.saveAjax({
-					url:'/ledger/updatePackingChild',
+					url:'/ledger/updateFinancePackingChild',
 					data: {
 						id: obj.data.id,
 						price: val
