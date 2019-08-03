@@ -82,4 +82,11 @@ public interface PackingService extends BaseCRUDService<Packing, Long>{
 	 */
 	public int deletePackingMaterials(String ids);
 
+	/**
+	 * 审核贴包子单（实际发货单）(同时进行货物账单的生成和统计)
+	 * @param packingChild
+	 * @return
+	 */
+	public int auditPackingChild(String ids,Boolean audit);
+
 }

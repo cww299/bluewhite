@@ -64,8 +64,10 @@ public class LedgerAction {
 	{
 		clearCascadeJSONChild = ClearCascadeJSON.get()
 				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count"
-						,"packing","price","count","sumPrice","copyright"
-						,"saleNumber","sendDate","flag","customer")
+						,"packing","price","count","sumPrice","copyright","newBacth"
+						,"saleNumber","sendDate","flag","customer" ,"remark","audit","delivery",
+						"deliveryNumber","deliveryDate","disputeNumber","disputeRemark","deliveryCollectionDate"
+						,"offshorePay","acceptPay","disputePay")
 				.addRetainTerm(Customer.class, "id", "name","user")
 				.addRetainTerm(User.class, "id", "userName")
 				.addRetainTerm(Product.class, "id", "name", "number");
@@ -345,7 +347,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * 修改贴包子单（实际发货单）
+	 * 修改贴包子单（实际发货单）(  )
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/updatePackingChild", method = RequestMethod.POST)
@@ -369,6 +371,33 @@ public class LedgerAction {
 	public CommonResponse getPackingChildPrice(PageParameter page, PackingChild packingChild) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(clearCascadeJSONPricce.format(packingService.getPackingChildPrice(packingChild)).toJSON());
+		cr.setMessage("查看成功");
+		return cr;
+	}
+	
+	/**
+	 * 审核贴包子单（实际发货单）
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/auditPackingChild", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse auditPackingChild(String ids,Boolean audit ) {
+		CommonResponse cr = new CommonResponse();
+		packingService.auditPackingChild(ids,audit);
+		cr.setMessage("查看成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * 汇总
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/collectBill", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse collectBill(PackingChild packingChild ) {
+		CommonResponse cr = new CommonResponse();
+		
 		cr.setMessage("查看成功");
 		return cr;
 	}

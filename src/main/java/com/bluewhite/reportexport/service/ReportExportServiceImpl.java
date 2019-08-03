@@ -18,11 +18,9 @@ import com.bluewhite.basedata.service.BaseDataService;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.ledger.dao.ActualpriceDao;
 import com.bluewhite.ledger.dao.CustomerDao;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.entity.Order;
-import com.bluewhite.ledger.service.ActualpriceService;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneTimeDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseThreeDao;
@@ -53,8 +51,6 @@ public class ReportExportServiceImpl implements ReportExportService {
 	@Autowired
 	private BaseDataDao baseDataDao;
 
-	@Autowired
-	private ActualpriceService actualpriceService;
 	@Autowired
 	private CustomerDao contactDao;
 	@Autowired
@@ -89,9 +85,6 @@ public class ReportExportServiceImpl implements ReportExportService {
 
 	@Autowired
 	private OrderDao orderDao;
-
-	@Autowired
-	private ActualpriceDao actualpriceDao;
 
 	@Autowired
 	private ProductDao productDao;
@@ -431,9 +424,6 @@ public class ReportExportServiceImpl implements ReportExportService {
 	public int importexcelBaseThreeExcel(List<BaseThree> excelBaseThree) {
 		return baseThreeDao.save(excelBaseThree).size();
 	}
-
-
-
 
 	/**
 	 * 财务订单批处理
