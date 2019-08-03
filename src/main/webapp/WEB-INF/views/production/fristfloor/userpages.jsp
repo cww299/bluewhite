@@ -144,7 +144,8 @@
 						where:{
 							orgNameIds:48,
 							quit:0,
-							type:1,
+							isType:1,
+							foreigns:0,
 							orderTimeBegin:lastdate,
 						},
 						request:{
