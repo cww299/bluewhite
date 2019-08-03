@@ -23,6 +23,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
@@ -133,7 +134,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				+ (numberDef != null ? numberDef : (packingList.size() + 1)) + "D";
 		return packingNumber;
 	}
-
+	
 	@Override
 	@Transactional
 	public Packing addPacking(Packing packing) {
@@ -366,9 +367,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				throw new ServiceException("销售单已审核，无法修改");
 			}
 			// 计算总价
-			oldPackingChild.setSumPrice(NumUtils.mul(oldPackingChild.getCount(), packingChild.getPrice()));
-			oldPackingChild.setPrice(packingChild.getPrice());
-			oldPackingChild.setRemark(packingChild.getRemark());
+			BeanCopyUtils.copyNotEmpty(packingChild, oldPackingChild, "");
+			oldPackingChild.setSumPrice(NumUtils.mul(oldPackingChild.getCount(), oldPackingChild.getPrice()));
 			packingChildDao.save(oldPackingChild);
 		}
 		return packingChild;
@@ -392,10 +392,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					packingChild.setDelivery(2);
 				}
 			}
-			oldPackingChild.setDeliveryNumber(packingChild.getDeliveryNumber());
-			oldPackingChild.setDeliveryCollectionDate(packingChild.getDeliveryCollectionDate());
-			oldPackingChild.setDeliveryDate(packingChild.getDeliveryDate());
-			oldPackingChild.setDisputeRemark(packingChild.getDisputeRemark());
+			BeanCopyUtils.copyNotEmpty(packingChild, oldPackingChild, "");
 			packingChildDao.save(oldPackingChild);
 		}
 		return packingChild;
@@ -458,13 +455,27 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 
 	@Override
 	public List<Bill> collectBill(Bill bill) {
+		List<Bill> billList = new ArrayList<>();
 		List<PackingChild> pList = findPackingChildList(bill);
 		List<Mixed> mixedList = mixedService.findList(bill);
 		Map<Long, List<PackingChild>> mapPList = pList.stream()
 				.collect(Collectors.groupingBy(PackingChild::getCustomerId, Collectors.toList()));
 		Map<Long, List<Mixed>> mapMixedList = mixedList.stream()
 				.collect(Collectors.groupingBy(Mixed::getCustomerId, Collectors.toList()));
-
+		for (Long ps : mapPList.keySet()) {
+			List<PackingChild> psList = mapPList.get(ps);
+			List<Mixed> mixeds = mapMixedList.get(ps);
+			Bill bl = new Bill();
+			bl.setOffshorePay(NumUtils.round(psList.stream().mapToDouble(PackingChild::getOffshorePay).sum(), 2));
+			bl.setAcceptPay(NumUtils.round(psList.stream().mapToDouble(PackingChild::getAcceptPay).sum(), 2));
+			bl.setAcceptPayable(NumUtils.round(mixeds.stream().mapToDouble(Mixed::getMixPrice).sum(), 2));
+			bl.setDisputePay(NumUtils.round(psList.stream().mapToDouble(PackingChild::getDisputePay).sum(), 2));
+			billList.add(bl);
+		}
+		
+		
+		
+		
 		return null;
 	}
 
@@ -487,11 +498,6 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
 				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
 						"%" + param.getCustomerName() + "%"));
-			}
-			// 按产品name过滤
-			if (!StringUtils.isEmpty(param.getProductName())) {
-				predicate.add(
-						cb.equal(root.get("product").get("name").as(Long.class), "%" + param.getProductName() + "%"));
 			}
 			// 按发货日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {

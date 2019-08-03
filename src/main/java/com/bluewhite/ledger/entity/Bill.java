@@ -63,11 +63,6 @@ public class Bill {
 	private Double arrivalPay;
 
 	/**
-	 * 产品name
-	 */
-	private String productName;
-	
-	/**
 	 * 查询字段
 	 */
 	private Date orderTimeBegin;
@@ -117,14 +112,6 @@ public class Bill {
 
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
-	}
-
-	public String getProductName() {
-		return productName;
-	}
-
-	public void setProductName(String productName) {
-		this.productName = productName;
 	}
 
 	public Date getOrderTimeBegin() {
