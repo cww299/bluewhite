@@ -22,6 +22,9 @@
 					<td>员工姓名:</td>
 					<td><input type="text" id="userName" name="userName" class="layui-input" /></td>
 					<td>&nbsp;&nbsp;</td>
+					<td>员工编号:</td>
+					<td><input type="text" id="number" name="number" class="layui-input" /></td>
+					<td>&nbsp;&nbsp;</td>
 					<shiro:lacksRole name="attendanceStatistician">
 						<td>员工部门:</td>
 						<td><select name="orgNameId" id="department"><option value="">请选择</option></select></td>
@@ -143,6 +146,7 @@ layui.use(['table','jquery','form','laydate','layer'],function(){
 	$('#export').on('click',function() {
 		var userName = $('#userName').val();
 		var orgNameId = $("#department").val();
+		var number = $('#number').val();
 		var orderTimeBegin = '';
 		var orderTimeEnd = '';
 		var val = $('#startTime').val();
@@ -152,7 +156,7 @@ layui.use(['table','jquery','form','laydate','layer'],function(){
 			orderTimeEnd = val.split('~')[1]+' 23:59:59';
 		}
 		location.href = "${ctx}/excel/importExcel/personnel/DownAttendanceSign?userName=" + userName + "&orgNameId=" + orgNameId + "&orderTimeBegin=" + orderTimeBegin
-				+ "&orderTimeEnd=" + orderTimeEnd + "";
+				+ "&orderTimeEnd=" + orderTimeEnd + "" +"&number="+number;
 	});
 	function getMode(){
 		return function(d){
