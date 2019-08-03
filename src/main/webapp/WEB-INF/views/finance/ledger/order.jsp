@@ -23,13 +23,20 @@
 				<td>发货日期：</td>
 				<td><input type="text" class="layui-input" id="searchTime"></td>
 				<td>&nbsp;&nbsp;</td>
-				<td>：</td>
-				<td><select name="" lay-search><option value=""></option></select></td>
-				<td>&nbsp;&nbsp;</td>
 				<td>是否审核：</td>
 				<td style="width:150px;"><select name="audit"><option value="">是否审核</option>
 															 <option value="1">审核</option>
 															 <option value="0" selected>未审核</option></select></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>是否版权：</td>
+				<td style="width:150px;"><select name="copyright"><option value="">是否版权</option>
+															 <option value="1">是</option>
+															 <option value="0">否</option></select></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>是否借调：</td>
+				<td style="width:150px;"><select name="newBacth"><option value="">是否借调</option>
+															 <option value="1">借调</option>
+															 <option value="0">非借调</option></select></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>客户名：</td>
 				<td><input type="text" class="layui-input" name="customerName"></td>
@@ -74,6 +81,7 @@ layui.config({
 			elem:'#searchTime',range:'~'
 		})
 		var sty = "background-color: #5FB878;color: #fff;";
+		var bg = "background-color: #ecf7b8;";
 		table.render({
 			elem:'#tableData',
 			url:'${ctx}/ledger/packingChildPage?flag=1',
@@ -81,21 +89,34 @@ layui.config({
 			page:true,
 			toolbar: '#tableToolbar',
 			request:{ pageName:'page', limitName:'size' },
-			parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } },
+			parseData:function(ret){ 
+				layui.each(ret.data.rows,function(index,item){
+					if(item.deliveryStatus==0){
+						item.deliveryNumber = '';
+						item.deliveryDate = '';
+						item.disputeNumber = '';
+						item.disputeRemark = '';
+					}
+				})
+				return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } 
+			},
+			limits:[15,30,50,100],
+			limit:15,
 			cols:[[
 			       {align:'center', type:'checkbox', fixed:'left',},
-			       {align:'center', title:'销售编号',	width:'6%', field:'saleNumber',   fixed:'left', style:sty },
-			       {align:'center', title:'发货日期',   	width:'8%',	field:'sendDate', 	  fixed:'left', style:sty },
+			       {align:'center', title:'销售编号',	width:'11%',field:'saleNumber',   fixed:'left', style: sty },
+			       {align:'center', title:'发货日期',   	width:'7%',	field:'sendDate',templet:'<span>{{ d.sendDate?d.sendDate.split(" ")[0]:""}}</span>',  fixed:'left', style:sty },
 			       {align:'center', title:'业务员',   	width:'8%',	field:'user',	 templet:'<span>{{ d.customer?d.customer.user.userName:""}}</span>'},
 			       {align:'center', title:'客户',   		width:'8%',	field:'custom',	 templet:'<span>{{ d.customer?d.customer.name:""}}</span>'},
 			       {align:'center', title:'批次号',   	width:'8%',	field:'bacthNumber',	},
+			       {align:'center', title:'是否借调',   	width:'6%',	field:'newBacth', templet:'<span>{{ d.newBacth==1?"借调":"非借调"}}</span>'	},
 			       {align:'center', title:'产品名',   	width:'15%',field:'productName',	templet:'<span>{{ d.product?d.product.name:""}}</span>'},
 			       {align:'center', title:'离岸数量',   	width:'6%',	field:'count',	},
-			       {align:'center', title:'总价',   		width:'7%',	field:'sumPrice',	},
-			       {align:'center', title:'单价',   		width:'5%',	field:'price', 	edit: 'text', 	},
-			       {align:'center', title:'备注',   		width:'8%',	field:'remark', edit: 'text', 	},
+			       {align:'center', title:'总价',   		width:'5%',	field:'sumPrice',	},
+			       {align:'center', title:'单价',   		width:'5%',	field:'price', 	edit: 'text', 	style: bg },
+			       {align:'center', title:'备注',   		width:'8%',	field:'remark', edit: 'text', 	style: bg },
 			       {align:'center', title:'到岸数量',   	width:'6%',	field:'deliveryNumber',	},
-			       {align:'center', title:'到岸日期',   	width:'8%',	field:'deliveryDate',	},
+			       {align:'center', title:'到岸日期',   	width:'7%',	field:'deliveryDate',templet:'<span>{{ d.deliveryDate?d.deliveryDate.split(" ")[0]:""}}</span>',	},
 			       {align:'center', title:'争议数量',   	width:'6%',	field:'disputeNumber',	},
 			       {align:'center', title:'争议备注',   	width:'8%',	field:'disputeRemark',	},
 			       {align:'center', title:'预计结款日期',width:'8%',	field:'deliveryCollectionDate',	},
@@ -116,21 +137,44 @@ layui.config({
 							done: function(data){
 								var html = '无以往价格';
 								if(data.length!=0){
-									html="";
+									html='';
+									layui.each(data,function(index,item){
+										html += '<span style="margin:5px;" class="layui-badge layui-bg-green" data-price="'+item.price+'" data-id="'+trData.id+'">发货日期：'+
+										item.sendDate.split(' ')[0]+' -- ￥'+item.price+'</span><br>';
+									})
 								}
 								tipWin = layer.tips(html, elem, {
 									  tips: [4, '#78BA32'],
-					                  time:0
+					                  time:0,
 					            });
-								$('.layui-layer-tips').unbind().on('click',function(){
-									layer.closeAll();
-								})
+								$('.layui-layer-tips .layui-badge').unbind().on('click',function(event){
+									layui.stope(event)
+									myutil.saveAjax({
+										url:'/ledger/updateFinancePackingChild',
+										data: {
+											id: $(this).data('id'),
+											price: $(this).data('price')
+										},
+										success:function(){ 
+											layer.close(tipWin); 
+											table.reload('tableData'); 
+										}
+									}) 
+								}).mouseover(function(){
+						    		$(this).css("cursor","pointer");								
+						    	}).mouseout(function (){  
+						    		$(this).css("cursor","default");
+						        });
 							}
 						})
 					}
 				})
 			}
 		})
+		$(document).on('mousedown', '', function (event) { 
+			if($('.layui-layer-tips').length>0)
+				layer.close(tipWin);
+		});
 		table.on('toolbar(tableData)',function(obj){
 			switch(obj.event){
 			case 'onekeyAudit': onekeyAudit(1); break;
@@ -162,7 +206,7 @@ layui.config({
 				myutil.emsg(msg);
 			else
 				myutil.saveAjax({
-					url:'/ledger/updatePackingChild',
+					url:'/ledger/updateFinancePackingChild',
 					data: {
 						id: obj.data.id,
 						price: val
