@@ -253,7 +253,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			return null;
 		}, page);
 		PageResult<User> result = new PageResult<>(pageUser,page);
-		if(user.getOrderTimeBegin()!=null && user.getType() != null){
+		if(user.getOrderTimeBegin()!=null && user.getIsType() != null){
 			// 检查当前月份属于夏令时或冬令时 flag=ture 为夏令时
 			boolean flag = DatesUtil.belongCalendar(user.getOrderTimeBegin());
 			result.getRows().stream().forEach(u->{

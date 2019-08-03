@@ -506,8 +506,22 @@ public class User extends BaseEntity<Long> {
 	@Transient
 	private Double  turnWorkTime;
 	
+	/**
+	 * 对于陈建人员显示出勤时间特殊字段
+	 */
+	@Transient
+	private Integer isType;
+	
 	
 	  
+	public Integer getIsType() {
+		return isType;
+	}
+
+	public void setIsType(Integer isType) {
+		this.isType = isType;
+	}
+
 	public Double getTurnWorkTime() {
 		return turnWorkTime;
 	}
