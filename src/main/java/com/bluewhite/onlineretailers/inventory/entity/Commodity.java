@@ -28,7 +28,7 @@ public class Commodity extends BaseEntity<Long>{
 	
 	
 	/**
-	 * 商品编号（厂里）
+	 * 商品编号（蓝白产品编号）
 	 * 
 	 */
 	@Column(name = "number")

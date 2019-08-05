@@ -54,8 +54,6 @@ import com.bluewhite.system.sys.entity.SysLog;
 @Controller
 public class ProductAction {
 	
-	private static final Log log = Log.getLog(ProductAction.class);
-	
 	@Autowired
 	private ProductDao dao;
 	@Autowired
