@@ -52,7 +52,7 @@ td{
 				<td>&nbsp;&nbsp;</td>
 				<td>是否发货：</td>
 				<td style="width:120px;"><select name="flag" lay-search><option value="">是否发货</option>
-												   <option value="0">未发货</option>
+												   <option value="0" selected>未发货</option>
 												   <option value="1">已发货</option></select></td>
 				<td>&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn" lay-submit lay-filter="search">搜索</button></td>
@@ -219,6 +219,7 @@ layui.config({
 		table.render({
 			elem:'#packTable',
 			url:'${ctx}/ledger/packingPage',
+			where: { flag:0 },
 			toolbar:'#packToolbar',
 			page:true,
 			size:'lg',
