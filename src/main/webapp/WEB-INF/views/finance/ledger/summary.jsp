@@ -30,24 +30,12 @@
 		<table class="layui-form" id="searchTable">
 			<tr>
 				<td>货款日期：</td>
-				<td><input name="orderTimeBegin" id="beginTime" placeholder="请输入时间" class="layui-input"></td>
+				<td style="width:100px;"><input name="orderTimeBegin" id="beginTime" placeholder="请输入时间" class="layui-input"></td>
 				<td>&nbsp;&nbsp;</td>
-				<td>乙方:</td>
-				<td><select name="partyNamesId"><option value="">请选择</option></select></td>
+				<td>客户：</td>
+				<td><select name="customerId" id="searchCustomer" lay-search><option value="">请选择</option></select></td>
 				<td>&nbsp;&nbsp;</td>
-				<td>在途款:</td>
-				<td class="minTd"><input type="text" readonly id="offshorePay" class="layui-input" /></td>
-				<td>&nbsp;&nbsp;</td>
-				<td>已认可未到货款:</td>
-				<td class="minTd"><input type="text" readonly id="acceptPay" class="layui-input" /></td>
-				<td>&nbsp;&nbsp;</td>
-				<td>客户预付款:</td>
-				<td class="minTd"><input type="text" readonly id="acceptPayable" class="layui-input" /></td>
-				<td>&nbsp;&nbsp;</td>
-				<td>应收账款汇总:</td>
-				<td class="minTd"><input type="text" readonly id="allprice" class="layui-input" /></td>
-				<td>&nbsp;&nbsp;</td>
-				<td><button type="button" class="layui-btn" lay-submit lay-filter="searchTable">查找</button></td>
+				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchTable">统计</button></td>
 			</tr>
 		</table>
 		<table id="summaryTable" lay-filter="summaryTable"></table>
@@ -67,7 +55,7 @@
 </script>
 <script id="summaryTableToolbar" type="html/css">
 	<div>
-		<button class="layui-btn layui-btn-sm" type="button" lay-event="moreInfo">已到款明细</button>
+		<span class="layui-badge">提示：双击查看已到款明细</button>
 	</div>
 </script>
 <script>
@@ -88,28 +76,33 @@ layui.config({
 		, tablePlug = layui.tablePlug;
 		myutil.config.ctx = '${ctx}';
 		myutil.config.msgOffset = '150px';	
+		myutil.timeFormat();
+		myutil.clickTr();
+		var thisMonth = new Date().format("yyyy-MM");
+		var thisMonthFirstDay = thisMonth+'-01 00:00:00';
 		laydate.render({
 			elem:'#beginTime',
-			type:'month'
+			type:'month',
+			value: thisMonth
 		})
 		var lookoverId =''; //查看的id
 		table.render({
 			elem:'#summaryTable',
-			size:'lg',
-			data:[],
+			url: '${ctx}/ledger/collectBill',
+			where: { orderTimeBegin: thisMonthFirstDay},
 			toolbar:'#summaryTableToolbar',
-			loading:false,
+			totalRow: true,			
 			parseData:function(ret){ return { code : ret.code, msg : ret.msg, data : ret.data } },
 			cols:[[
-				   {type:'checkbox'},
-			       {title:'乙方',				field:'partyNames',		},
-			       {title:'已确定离岸货款值',	field:'offshorePay',},
-			       {title:'经业务员跟进客户已认可的货款',field:'acceptPay', 	},
-			       {title:'双方都认可的除货款以外的应付',field:'acceptPayable',	},
-			       {title:'在途和有争议货款',			field:'disputePay',	},
-			       {title:'当月未到货款',				field:'nonArrivalPay'},
-			       {title:'当月客户多付货款转下月应付',	field:'overpaymentPay'},
-			       {title:'已到货款',					field:'arrivalPay',	},
+				   {type:'checkbox', totalRowText:'合计'},
+			       {title:'客户',				field:'customerName',	},
+			       {title:'货款总值',			field:'offshorePay',	totalRow:true,},
+			       {title:'客户认可货款',		field:'acceptPay', 		totalRow:true, },
+			       {title:'杂支应付',			field:'acceptPayable',	totalRow:true,},
+			       {title:'争议货款',			field:'disputePay',		totalRow:true,},
+			       {title:'未到货款',			field:'nonArrivalPay',	totalRow:true,},
+			       {title:'客户多付货款',		field:'overpaymentPay',	totalRow:true,},
+			       {title:'已到货款',			field:'arrivalPay',		totalRow:true,},
 			       ]],
 			       
 		})
@@ -120,37 +113,19 @@ layui.config({
 				url:'${ctx}/ledger/collectBill',
 				where: obj.field,
 			})
-		/* 	myutil.getData({
-				url:'${ctx}/fince/collectBill?orderTimeBegin='+obj.field.orderTimeBegin+'&orderTimeEnd='+obj.field.orderTimeEnd,
-				done: function(data){
-					$("#offshorePay").val(data.offshorePay)
-					$("#acceptPay").val(data.acceptPay)
-					$("#acceptPayable").val(data.acceptPayable)
-					$("#allprice").val(data.offshorePay+data.acceptPay-data.acceptPayable)
-				}
-			}) */
 		})
-		table.on('toolbar(summaryTable)',function(obj){
-			switch(obj.event){
-			case 'moreInfo': 
-				var checked = layui.table.checkStatus('summaryTable').data;
-				checked.length>1 && myutil.emsg('不能同时查看多条数据');
-				checked.length<1 && myutil.emsg('请选择数据');
-				if(checked.length!=1)
-					return;
-				lookoverId = checked[0].id;
-				var win = layer.open({
-					type:1,
-					content:$('#moreInfoDiv'),
-					area:['50%','70%'],
-					success:function(){
-						table.reload('moreInfoTable',{
-							url:'${ctx}/fince/getBillDate?id='+lookoverId,
-						}) 
-					}
-				})
-				break;
-			}
+		table.on('rowDouble(summaryTable)',function(obj){
+			lookoverId = checked[0].id;
+			var win = layer.open({
+				type:1,
+				content:$('#moreInfoDiv'),
+				area:['50%','70%'],
+				success:function(){
+					table.reload('moreInfoTable',{
+						url:'${ctx}/fince/getBillDate?id='+lookoverId,
+					}) 
+				}
+			})
 		})
 		table.render({
 			elem:'#moreInfoTable',
@@ -248,6 +223,16 @@ layui.config({
 				}); 
 			})
 		}
+		myutil.getSelectHtml({
+			url:'/ledger/allCustomer',
+			value: 'id',
+			title: 'name',
+			tips: '请选择客户',
+			done: function(html){
+				$('#searchCustomer').html(html);
+				form.render();
+			}
+		})
 })
 </script>
 </body>
