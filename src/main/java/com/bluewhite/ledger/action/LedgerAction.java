@@ -117,7 +117,7 @@ public class LedgerAction {
 	private ClearCascadeJSON clearCascadeJSONBill;
 	{
 		clearCascadeJSONBill = ClearCascadeJSON.get()
-				.addRetainTerm(Bill.class, "customerName", "billDate", "offshorePay", "acceptPay",
+				.addRetainTerm(Bill.class, "customerName","customerId","billDate", "offshorePay", "acceptPay",
 						"acceptPayable","disputePay","nonArrivalPay","overpaymentPay","arrivalPay");
 	}
 	
