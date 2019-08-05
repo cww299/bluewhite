@@ -124,7 +124,7 @@ public class LedgerAction {
 	private ClearCascadeJSON clearCascadeJSONReceivedMoney;
 	{
 		clearCascadeJSONReceivedMoney = ClearCascadeJSON.get()
-				.addRetainTerm(ReceivedMoney.class, "id", "customer", "receivedMoneyDate", "receivedMoney")
+				.addRetainTerm(ReceivedMoney.class, "id", "customer", "receivedMoneyDate", "receivedMoney","receivedRemark")
 				.addRetainTerm(Customer.class, "id", "name");
 	}
 	
@@ -509,7 +509,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse mixedList(ReceivedMoney receivedMoney,PageParameter page) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONMixed.format(receivedMoneyService.receivedMoneyPage(receivedMoney,page)).toJSON());
+		cr.setData(clearCascadeJSONReceivedMoney.format(receivedMoneyService.receivedMoneyPage(receivedMoney,page)).toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
@@ -552,7 +552,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * 汇总
+	 * 汇总货款
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/collectBill", method = RequestMethod.GET)
