@@ -75,19 +75,18 @@ layui.config({
 		, myutil = layui.myutil
 		, tablePlug = layui.tablePlug;
 		myutil.config.ctx = '${ctx}';
-		myutil.config.msgOffset = '150px';	
+		myutil.config.msgOffset = '200px';	
 		myutil.timeFormat();
 		myutil.clickTr();
 		var thisMonth = new Date().format("yyyy-MM");
 		var thisMonthFirstDay = thisMonth+'-01 00:00:00';
-		laydate.render({
-			elem:'#searchTime', range:"~"
-		})
+		laydate.render({ elem:'#searchTime', range:"~" });
+		var lookoverCustomerId = '';
 		table.render({
 			elem:'#summaryTable',
 			url: '${ctx}/ledger/collectBill',
 			toolbar:'#summaryTableToolbar',
-			totalRow: true,			
+			totalRow: true,
 			parseData:function(ret){ return { code : ret.code, msg : ret.msg, data : ret.data } },
 			cols:[[
 				   {type:'checkbox', totalRowText:'合计'},
@@ -115,6 +114,7 @@ layui.config({
 			})
 		})
 		table.on('rowDouble(summaryTable)',function(obj){
+			lookoverCustomerId = obj.data.customerId;
 			var win = layer.open({
 				type:1,
 				content:$('#moreInfoDiv'),
@@ -123,7 +123,7 @@ layui.config({
 					table.reload('moreInfoTable',{
 						url:'${ctx}/ledger/receivedMoneyPage',
 						where: {
-							customerId: obj.data.customerId,
+							customerId: lookoverCustomerId,
 							billDate: obj.data.billDate ? obj.data.billDate:'',
 						}
 					}) 
@@ -134,15 +134,44 @@ layui.config({
 			elem:'#moreInfoTable',
 			data:[],
 			toolbar:'#moreInfoTableToolbar',
-			parseData:function(ret){ return { code : ret.code, msg : ret.msg, data : ret.data.data } },
+			page: true,
+			parseData:function(ret){ return { code : ret.code, msg : ret.msg, data : ret.data.rows, count:ret.data.total } },
 			request:{ pageName: 'page' ,limitName: 'size' },
 			cols:[[
 				   {type:'checkbox'},
-			       {title:'日期',	field:'name',	edit:false,	},
-			       {title:'到账款',	field:'price',	},
-			       {title:'批注',	field:'value', 	},
+			       {title:'日期',	field:'receivedMoneyDate',	edit: false,	templet:'<span>{{ d.receivedMoneyDate.split(" ")[0]}}</span>'},
+			       {title:'到账款',	field:'receivedMoney',		edit: true, },
+			       {title:'批注',	field:'receivedRemark', 	edit: true, },
 			       ]],
+			done: function(){
+				layui.each($('#moreInfoTable').next().find('td[data-field="receivedMoneyDate"]'),function(index,item){
+					item.children[0].onclick = function(event) { layui.stope(event) };
+					laydate.render({
+						elem: item.children[0],
+						done: function(val){
+							var index = $(this.elem).closest('tr').attr('data-index');
+							var trData = table.cache['moreInfoTable'][index];
+							myutil.saveAjax({
+								url:'/ledger/addReceivedMoney',
+								data: { id: trData.id, receivedMoneyDate: val+' 00:00:00' }
+							});
+						}
+					})
+				})
+			}
 		});
+		table.on('edit(moreInfoTable)',function(obj){
+			var id = obj.data.id, index = $(obj.tr[0]).data('index');
+			table.cache['moreInfoTable'][obj.field] = obj.value;
+			if(id>0){
+				var data = { id: id };
+				data[obj.field] = obj.value;
+				myutil.saveAjax({
+					url:'/ledger/addReceivedMoney',
+					data: data
+				});
+			}
+		})
 		table.on('toolbar(moreInfoTable)',function(obj){
 			switch(obj.event){
 			case 'addTempData': 	addTempData(); break;
@@ -152,16 +181,15 @@ layui.config({
 			}
 		})
 		function addTempData(){
-			allField = {price: '', name:'',value:'',};
+			allField = {receivedMoneyDate: '', receivedMoney:0,receivedRemark:'',};
 			table.addTemp('moreInfoTable',allField,function(trElem) {
-				var time = trElem.find('td[data-field="name"]')[0];
+				var time = trElem.find('td[data-field="receivedMoneyDate"]')[0];
 				laydate.render({
 					elem: time.children[0],
-					type:'datetime',
 					done: function(value, date) {
 						var trElem = $(this.elem[0]).closest('tr');
-						var tableView = trElem.closest('.layui-table-view');
-						table.cache['moreInfoTable'][trElem.data('index')]['name'] = value;
+						var index = trElem.data('index');
+						table.cache['moreInfoTable'][index]['receivedMoneyDate'] = value+' 00:00:00';
 					}
 				}) 
 			});
@@ -170,25 +198,26 @@ layui.config({
 			var tempData = table.getTemp('moreInfoTable').data;
 			for(var i=0;i<tempData.length;i++){
 				var t = tempData[i], msg='';
-				(!t.name || !t.price) && (msg='新增数据字段不能为空！');
-				isNaN(t.price) && (msg='到账款只能为数字！');
-				if(msg!='')
-					return myutil.emsg(msg);
+				t.customerId = lookoverCustomerId;
+				isNaN(t.receivedMoney) && (msg='到账款只能为数字！');
+				t.receivedMoney<0 && (msg='到账款不能小于0！');
+				!t.receivedMoney && (msg='新增数据到账款不能为空！');
+				!t.receivedMoneyDate && (msg='新增数据日期不能为空！');
+				if(msg!='') return myutil.emsg(msg);
 			}
-			layui.each(table.cache['moreInfoTable'],function(index,item){
-				tempData.push(item);
-			})
-			myutil.saveAjax({
-				url:'/fince/updateBill',
-				traditional: true,
-				data:{
-					id:lookoverId,
-					dateToPay:JSON.stringify({"data":tempData})
-				},
-				success: function(){
-					table.reload('moreInfoTable');
-				}
-			}); 
+			var success=0;
+			for(var i=0;i<tempData.length;i++){
+				myutil.saveAjax({
+					url:'/ledger/addReceivedMoney',
+					data: tempData[i],
+					success: function(){  success++; }
+				}); 
+			}
+			if(success == tempData.length){
+				myutil.smsg('成功新增：'+success+'条数据');
+				table.reload('moreInfoTable');
+			}else
+				myutil.emsg('新增第'+(success+1)+'条数据时发生异常');
 		}
 		function deleteSome(){
 			var checked = layui.table.checkStatus('moreInfoTable').data;
@@ -198,21 +227,15 @@ layui.config({
 				return;
 			}
 			layer.confirm('是否确认删除？',function(){
-				layui.each(checked,function(index1,item1){
-					layui.each(data,function(index2,item2){
-						if(item1.price == item2.price && item1.name == item2.name && item1.value ==item2.value){
-							data.splice(index2,1);
-							return;
-						}
-					})
+				var ids = [], checked = layui.table.checkStatus('moreInfoTable').data;
+				if(checked.length==0)
+					return myutil.emsg('请选择信息');
+				layui.each(checked,function(index,item){
+					ids.push(item.id);
 				})
-				myutil.saveAjax({
-					url:'/fince/updateBill',
-					traditional: true,
-					data:{
-						id:lookoverId,
-						dateToPay:JSON.stringify({"data":data})
-					},
+				myutil.deleteAjax({
+					url:'/ledger/deleteReceivedMoney',
+					ids: ids.join(','),
 					success:function(){
 						table.reload('moreInfoTable');
 					}
