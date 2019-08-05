@@ -86,6 +86,13 @@ public class PackingChild extends BaseEntity<Long> {
 	private Product product;
 
 	/**
+	 * 贴包类型（1=发货，2=调拨）
+	 * 
+	 */
+	@Column(name = "type")
+	private Integer type;
+	
+	/**
 	 * 单只价格
 	 */
 	@Column(name = "price")
@@ -232,6 +239,14 @@ public class PackingChild extends BaseEntity<Long> {
 	
 	
 	
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
 	public Integer getDeliveryStatus() {
 		return deliveryStatus;
 	}

@@ -102,8 +102,23 @@ public class Customer extends BaseEntity<Long> {
 	@Column(name = "phone")
 	private String phone;
 
+	/**
+	 * 联系人姓名
+	 * 
+	 */
+	@Column(name = "contact_name")
+	private String contactName;
+
 	
 
+
+	public String getContactName() {
+		return contactName;
+	}
+
+	public void setContactName(String contactName) {
+		this.contactName = contactName;
+	}
 
 	public Long getUserId() {
 		return userId;

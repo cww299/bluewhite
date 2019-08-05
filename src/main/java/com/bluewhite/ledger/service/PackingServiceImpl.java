@@ -80,6 +80,10 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			if (param.getFlag() != null) {
 				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
 			}
+			// 按贴包类型过滤
+			if (param.getType() != null) {
+				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
+			}
 			// 按客户名称
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
 				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
@@ -155,6 +159,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 						throw new ServiceException("贴报单已发货，无法修改");
 					}
 				}
+				packingChild.setType(packing.getType());
 				packingChild.setFlag(0);
 				packingChild.setCount(jsonObject.getInteger("count"));
 				// 改变待发货单的已发数量
@@ -264,6 +269,9 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			if (param.getFlag() != null) {
 				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
 			}
+			
+			// 按贴包类型过滤
+				predicate.add(cb.equal(root.get("type").as(Integer.class), 1));
 
 			// 是否审核
 			if (param.getAudit() != null) {

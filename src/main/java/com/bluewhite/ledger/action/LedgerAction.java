@@ -60,7 +60,7 @@ public class LedgerAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
 				.addRetainTerm(Packing.class, "id", "number", "customer", "packingMaterials", "packingChilds",
-						"packingDate","packingMaterials","flag","user")
+						"packingDate","packingMaterials","flag","user","type")
 				.addRetainTerm(User.class, "id", "userName")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count","sendGoodsId")

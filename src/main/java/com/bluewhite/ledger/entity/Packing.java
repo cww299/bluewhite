@@ -89,6 +89,13 @@ public class Packing extends BaseEntity<Long> {
 	private Integer flag;
 	
 	/**
+	 * 贴包类型（1=发货，2=调拨）
+	 * 
+	 */
+	@Column(name = "type")
+	private Integer type;
+	
+	/**
 	 * 批次号
 	 */
 	@Transient
@@ -132,6 +139,14 @@ public class Packing extends BaseEntity<Long> {
 	
 	
 	
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
 
 	public Long getUserId() {
 		return userId;
