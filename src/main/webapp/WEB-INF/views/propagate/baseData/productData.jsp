@@ -13,6 +13,9 @@
      top: 50%;
      transform: translateY(-50%);
 }
+#addEditDiv .layui-item{
+	margin:5px 0px;
+}
 </style>
 </head>
 <body>
@@ -31,10 +34,24 @@
 		<table class="layui-form" id="productTable" lay-filter="productTable"></table>
 	</div>
 </div>
-
-
 </body>
-
+<!-- 商品选择隐藏框 -->
+<div id="choosedProductDiv" style="display:none;padding:10px;">
+	<table class="layui-form">
+		<tr>
+			<td>商品名称：</td>
+			<td><input class="layui-input" type="text" name="name"></td>
+			<td>&nbsp;&nbsp;</td>
+			<td>商品编号：</td>
+			<td><input class="layui-input" type="text" name="number"></td>
+			<td>&nbsp;&nbsp;</td>
+			<td><span class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProduct" id="searchBtn">搜索</span></td>
+			<td>&nbsp;&nbsp;</td>
+			<td><span class="layui-badge">提示：双击选择</span></td>
+		</tr>
+	</table>
+	<table id="choosedTable" lay-filter="choosedTable"></table>
+</div>
 <!-- 表格工具栏模板 -->
 <script type="text/html" id="productTableToolbar">
 <div>
@@ -44,16 +61,15 @@
 </div>
 </script>
 
-</body>
-
 <!-- 新增、修改商品模板 -->
 <script type="text/html" id="addEditTpl">
-<div class="layui-form" style="padding:10px;">
+<div class="layui-form layui-form-pane" style="padding:20px;" id="addEditDiv">
 	<input type="hidden" name="id" value="{{d.id}}">
 	<div class="layui-item">
 		<label class="layui-form-label">商品编号</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="skuCode" value="{{d.skuCode}}" lay-verify="required">
+			<input type="hidden" name="number" id="addEditNumber">
+			<input type="text" class="layui-input" id="choosedProductBtn" value="点击选择商品" name="skuCode" readonly>
 		</div>
 	</div>
 	<div class="layui-item">
@@ -116,7 +132,7 @@
 			<input class="layui-input" name="remark" value="{{d.remark}}">
 		</div>
 	</div>
-	<p style="text-align:center;"><button class="layui-btn layui-btn-sm" lay-submit lay-filter="sure">确定</button></p>
+	<p><button lay-submit lay-filter="sure" id="addEditSureBtn" style="display:none">确定</button></p>
 </div>
 </script>
 <script>
@@ -124,20 +140,23 @@ layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	tablePlug : 'tablePlug/tablePlug',
-	cookieCol : 'layui/myModules/cookieCol'
+	/* cookieCol : 'layui/myModules/cookieCol' */
+	myutil : 'layui/myModules/myutil' ,
 }).define(
-	['tablePlug','cookieCol',],
+	['tablePlug','myutil',],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
 		, form = layui.form			 		
 		, table = layui.table 
 		, laytpl = layui.laytpl
-		, cookieCol = layui.cookieCol
+		, myutil = layui.myutil
 		, tablePlug = layui.tablePlug;
-		
 		//cookieCol.cookieName('productDataCookie');		//记录筛选列模块
-		var allInventory=[];
+		myutil.config.ctx = '${ctx}';
+		myutil.config.msgOffset = '200px';
+		myutil.clickTr();
+		var allInventory=[],productSelect='',choosedWin='';
 		getAllInventory();
 		var cols=[[
 					{align:'center', type:'checkbox',},
@@ -169,12 +188,10 @@ layui.config({
 				return '<span style="color:red;">无库存</span>';
 			}
 		}
-		
 		table.render({
 			elem:'#productTable',
 			url:'${ctx}/inventory/commodityPage',
 			toolbar:'#productTableToolbar',
-			loading:true,
 			colFilterRecord:'local',
 			page:true,
 			autoSort:false,
@@ -213,14 +230,10 @@ layui.config({
 			title='新增商品',
 			html='';
 			if(type=='edit'){	
-				if(choosed.length>1){
-					layer.msg("不能同时编辑多条信息",{icon:2,offset:'10px;'});
-					return;
-				}
-				if(choosed.length<1){
-					layer.msg("至少选择一条信息编辑",{icon:2,offset:'10px;'});
-					return;
-				}
+				if(choosed.length>1)
+					return myutil.emsg("不能同时编辑多条信息");
+				if(choosed.length<1)
+					return myutil.emsg("至少选择一条信息编辑");
 				data=choosed[0];
 				title="修改商品";
 			}
@@ -229,65 +242,67 @@ layui.config({
 				type : 1,
 				title : title,
 				offset:'10px;',
-				area : ['40%','65%'],
+				btn: ['确定','取消'],
+				area : ['40%','75%'],
 				content : html,
+				success: function(){
+					$("#addEditNumber").val(data.number?data.number:'');
+					$("#choosedProductBtn").val(data.name?data.name:'点击选择商品'); 
+					$('#choosedProductBtn').unbind().on('click',function(){
+						choosedWin = layer.open({
+							title: '选择产品',
+							type:1,
+							offset:'200px;',
+							area:['50%','70%'],
+							content: $('#choosedProductDiv'),
+							success:function(){
+								table.resize('choosedTable');
+							}
+						})
+					})
+					form.render();
+				},
+				yes: function(){
+					$('#addEditSureBtn').click();
+				}
 			})
 			form.render();
 			form.on('submit(sure)',function(obj){
-				var load=layer.load(1);
-				$.ajax({
-					url:'${ctx}/inventory/addCommodity',
-					type:'post',
+				if(obj.field.number=='')
+					return myutil.emsg('请选择商品');
+				myutil.saveAjax({
+					url:'/inventory/addCommodity',
 					data:obj.field,
 					success:function(result){
-						if(0==result.code){
 							table.reload('productTable');
 							layer.close(addEditWin);
-							layer.msg(result.message,{icon:1});
-						}else
-							layer.msg(result.message,{icon:2});
-						layer.close(load);
-					},
-					error:function(){
-						layer.msg("服务器异常");
-						layer.close(load);
 					}
 				})
 			})
 		}
+		table.on('rowDouble',function(obj){
+			$("#addEditNumber").val(obj.data.number);
+			$("#choosedProductBtn").val(obj.data.name);
+			layer.close(choosedWin);
+		})
 		function deletes(){
 			var choosed=layui.table.checkStatus('productTable').data;
-			if(choosed.length<1){
-				layer.msg('请选择商品',{icon:2});
-				return;
-			}
-			layer.confirm("是否确认删除？",function(){
-				var ids='';
-				for(var i=0;i<choosed.length;i++){
-					ids+=(choosed[i].id+",");
-				}
-				var load=layer.load(1);
-				$.ajax({
-					url:"${ctx}/inventory/deleteCommodity",
-					data:{ids:ids},
-					success:function(result){
-						if(0==result.code){
-							layer.msg(result.message,{icon:1});
-							table.reload('productTable');
-						}
-						else{
-							layer.msg(result.message,{icon:2});
-						}
-						layer.close(load);
-					},
-					error:function(result){
-						layer.msg('ajax异常',{icon:2});
-						layer.close(load);
+			if(choosed.length<1)
+				return myutil.emsg('请选择商品');
+			layer.confirm("是否确认删除？",{offset:'200px'},function(){
+				var ids=[];
+				for(var i=0;i<choosed.length;i++)
+					ids.push(choosed[i].id);
+				myutil.deleteAjax({
+					url:"/inventory/deleteCommodity",
+					ids: ids.join(','),
+					success:function(){
+						table.reload('productTable');
 					}
 				})
 			})
 		}
-		function getAllInventory(){					//获取所有仓库
+		function getAllInventory(){					
 			$.ajax({
 				url:'${ctx}/basedata/list?type=inventory',
 				async:false,
@@ -300,15 +315,24 @@ layui.config({
 				}
 			})
 		}
-		
-		$(document).on('click', '.layui-table-view tbody tr', function(event) {
-			var elemTemp = $(this);
-			var tableView = elemTemp.closest('.layui-table-view');
-			var trIndex = elemTemp.data('index');
-			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
+		table.render({
+			elem: '#choosedTable',
+			page: true,
+			url:'${ctx}/productPages',
+			request:{ pageName:'page', limitName:'size' },
+			parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } },
+			cols:[[
+					{ align:'center', title:'产品编号',	field:'number',	},
+					{ align:'center', title:'产品名称',	field:'name',	},
+			       ]],
+		})
+		form.on('submit(searchProduct)',function(obj){
+			table.reload('choosedTable',{
+				where: obj.field,
+				page: { curr:1 },
+			})
 		})
 	}//end define function
 )//endedefine
 </script>
-
 </html>
