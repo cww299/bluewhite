@@ -42,7 +42,7 @@
 	</div>
 </div>
 <!-- 查看明细隐藏框 -->
-<div id="moreInfoDiv" style="display:none;padding:20px;">
+<div id="moreInfoDiv" style="display:none;padding:10px;">
 	<table id="moreInfoTable" lay-filter="moreInfoTable"></table>
 </div>
 <script id="moreInfoTableToolbar" type="html/css">
@@ -83,7 +83,6 @@ layui.config({
 		laydate.render({
 			elem:'#searchTime', range:"~"
 		})
-		var lookoverId =''; //查看的id
 		table.render({
 			elem:'#summaryTable',
 			url: '${ctx}/ledger/collectBill',
@@ -117,16 +116,16 @@ layui.config({
 			})
 		})
 		table.on('rowDouble(summaryTable)',function(obj){
-			//lookoverId = checked[0].id;
 			var win = layer.open({
 				type:1,
 				content:$('#moreInfoDiv'),
 				area:['50%','70%'],
 				success:function(){
 					table.reload('moreInfoTable',{
-						url:'${ctx}/fince/getBillDate',
+						url:'${ctx}/ledger/receivedMoneyPage',
 						where: {
 							customerId: obj.data.customerId,
+							billDate: obj.data.billDate ? obj.data.billDate:'',
 						}
 					}) 
 				}
