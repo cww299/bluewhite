@@ -18,7 +18,6 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.ledger.dao.ReceivedMoneyDao;
 import com.bluewhite.ledger.entity.Bill;
-import com.bluewhite.ledger.entity.Mixed;
 import com.bluewhite.ledger.entity.ReceivedMoney;
 
 @Service
