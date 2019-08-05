@@ -481,6 +481,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			NumUtils.setzro(bl);
 			bl.setBillDate(bill.getOrderTimeBegin());
 			bl.setCustomerName(psList.get(0).getCustomer().getName());
+			bl.setCustomerId(psList.get(0).getCustomerId());
 			if (psList !=null && psList.size() > 0) {
 				// 货款总值
 				bl.setOffshorePay(NumUtils.round(psList.stream().mapToDouble(PackingChild::getOffshorePay).sum(), 2));

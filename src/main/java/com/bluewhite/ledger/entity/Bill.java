@@ -27,7 +27,6 @@ public class Bill {
 	/**
 	 * 账单日期
 	 */
-	@JsonFormat(pattern="yyyy-MM",timezone="GMT+8")
 	private Date billDate;
 
 	/**

@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.ledger.dao.ReceivedMoneyDao;
 import com.bluewhite.ledger.entity.Bill;
 import com.bluewhite.ledger.entity.Mixed;
@@ -48,6 +49,7 @@ public class ReceivedMoneyServiceImpl extends BaseServiceImpl<ReceivedMoney, Lon
 
 	@Override
 	public PageResult<ReceivedMoney> receivedMoneyPage(ReceivedMoney param, PageParameter page) {
+		param.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(param.getOrderTimeBegin()));
 		Page<ReceivedMoney> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按客户id过滤
