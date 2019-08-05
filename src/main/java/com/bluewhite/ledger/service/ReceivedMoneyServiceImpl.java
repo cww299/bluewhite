@@ -48,7 +48,9 @@ public class ReceivedMoneyServiceImpl extends BaseServiceImpl<ReceivedMoney, Lon
 
 	@Override
 	public PageResult<ReceivedMoney> receivedMoneyPage(ReceivedMoney param, PageParameter page) {
-		param.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(param.getOrderTimeBegin()));
+		if(param.getOrderTimeBegin()!=null){
+			param.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(param.getOrderTimeBegin()));
+		}
 		Page<ReceivedMoney> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按客户id过滤
