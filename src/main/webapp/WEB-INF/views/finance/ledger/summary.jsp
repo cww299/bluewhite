@@ -30,7 +30,7 @@
 		<table class="layui-form" id="searchTable">
 			<tr>
 				<td>货款日期：</td>
-				<td style="width:100px;"><input name="orderTimeBegin" id="beginTime" placeholder="请输入时间" class="layui-input"></td>
+				<td><input id="searchTime" placeholder="请输入时间" class="layui-input"></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>客户：</td>
 				<td><select name="customerId" id="searchCustomer" lay-search><option value="">请选择</option></select></td>
@@ -81,15 +81,12 @@ layui.config({
 		var thisMonth = new Date().format("yyyy-MM");
 		var thisMonthFirstDay = thisMonth+'-01 00:00:00';
 		laydate.render({
-			elem:'#beginTime',
-			type:'month',
-			value: thisMonth
+			elem:'#searchTime', range:"~"
 		})
 		var lookoverId =''; //查看的id
 		table.render({
 			elem:'#summaryTable',
 			url: '${ctx}/ledger/collectBill',
-			where: { orderTimeBegin: thisMonthFirstDay},
 			toolbar:'#summaryTableToolbar',
 			totalRow: true,			
 			parseData:function(ret){ return { code : ret.code, msg : ret.msg, data : ret.data } },
@@ -107,22 +104,30 @@ layui.config({
 			       
 		})
 		form.on('submit(searchTable)',function(obj){
-			if(obj.field.orderTimeBegin!='')
-				obj.field.orderTimeBegin+='-01 00:00:00';
+			var val = $('#searchTime').val(), beg="",end="";
+			if(val!=''){
+				beg = val.split('~')[0].trim()+' 00:00:00';
+				end = val.split('~')[1].trim()+' 23:59:59';
+			}
+			obj.field.orderTimeBegin = beg;
+			obj.field.orderTimeEnd = end;
 			table.reload('summaryTable',{
 				url:'${ctx}/ledger/collectBill',
 				where: obj.field,
 			})
 		})
 		table.on('rowDouble(summaryTable)',function(obj){
-			lookoverId = checked[0].id;
+			//lookoverId = checked[0].id;
 			var win = layer.open({
 				type:1,
 				content:$('#moreInfoDiv'),
 				area:['50%','70%'],
 				success:function(){
 					table.reload('moreInfoTable',{
-						url:'${ctx}/fince/getBillDate?id='+lookoverId,
+						url:'${ctx}/fince/getBillDate',
+						where: {
+							customerId: obj.data.customerId,
+						}
 					}) 
 				}
 			})
