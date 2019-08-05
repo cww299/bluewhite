@@ -29,35 +29,20 @@
 	<div class="layui-card-body">					
 		<table class="layui-form" id="searchTable">
 			<tr>
-				<td>开始:</td>
-				<td><input name="orderTimeBegin" id="beginTime" placeholder="请输入开始时间" class="layui-input"></td>
+				<td>货款日期：</td>
+				<td><input id="searchTime" placeholder="请输入时间" class="layui-input"></td>
 				<td>&nbsp;&nbsp;</td>
-				<td>结束:</td>
-				<td><input name="orderTimeEnd" id="endTime" placeholder="请输入结束时间" class="layui-input"></td>
+				<td>客户：</td>
+				<td><select name="customerId" id="searchCustomer" lay-search><option value="">请选择</option></select></td>
 				<td>&nbsp;&nbsp;</td>
-				<td>乙方:</td>
-				<td><select name="partyNamesId"><option value="">请选择</option></select></td>
-				<td>&nbsp;&nbsp;</td>
-				<td>在途款:</td>
-				<td class="minTd"><input type="text" readonly id="offshorePay" class="layui-input" /></td>
-				<td>&nbsp;&nbsp;</td>
-				<td>已认可未到货款:</td>
-				<td class="minTd"><input type="text" readonly id="acceptPay" class="layui-input" /></td>
-				<td>&nbsp;&nbsp;</td>
-				<td>客户预付款:</td>
-				<td class="minTd"><input type="text" readonly id="acceptPayable" class="layui-input" /></td>
-				<td>&nbsp;&nbsp;</td>
-				<td>应收账款汇总:</td>
-				<td class="minTd"><input type="text" readonly id="allprice" class="layui-input" /></td>
-				<td>&nbsp;&nbsp;</td>
-				<td><button type="button" class="layui-btn" lay-submit lay-filter="searchTable">查找</button></td>
+				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchTable">统计</button></td>
 			</tr>
 		</table>
 		<table id="summaryTable" lay-filter="summaryTable"></table>
 	</div>
 </div>
 <!-- 查看明细隐藏框 -->
-<div id="moreInfoDiv" style="display:none;padding:20px;">
+<div id="moreInfoDiv" style="display:none;padding:10px;">
 	<table id="moreInfoTable" lay-filter="moreInfoTable"></table>
 </div>
 <script id="moreInfoTableToolbar" type="html/css">
@@ -70,7 +55,7 @@
 </script>
 <script id="summaryTableToolbar" type="html/css">
 	<div>
-		<button class="layui-btn layui-btn-sm" type="button" lay-event="moreInfo">已到款明细</button>
+		<span class="layui-badge">提示：双击查看已到款明细</button>
 	</div>
 </script>
 <script>
@@ -90,117 +75,121 @@ layui.config({
 		, myutil = layui.myutil
 		, tablePlug = layui.tablePlug;
 		myutil.config.ctx = '${ctx}';
-		myutil.config.msgOffset = '150px';	
-		laydate.render({
-			elem:'#beginTime',
-			type:'datetime'
-		})
-		laydate.render({
-			elem:'#endTime',
-			type:'datetime'
-		})
-		var lookoverId =''; //查看的id
+		myutil.config.msgOffset = '200px';	
+		myutil.timeFormat();
+		myutil.clickTr();
+		var thisMonth = new Date().format("yyyy-MM");
+		var thisMonthFirstDay = thisMonth+'-01 00:00:00';
+		laydate.render({ elem:'#searchTime', range:"~" });
+		var lookoverCustomerId = '';
 		table.render({
 			elem:'#summaryTable',
-			page:true,
-			size:'lg',
-			data:[],
+			url: '${ctx}/ledger/collectBill',
 			toolbar:'#summaryTableToolbar',
-			loading:false,
-			parseData:function(ret){ return { code : ret.code, msg : ret.msg, count : ret.data.total, data : ret.data.rows } },
-			request:{ pageName: 'page' ,limitName: 'size' },
+			totalRow: true,
+			parseData:function(ret){ return { code : ret.code, msg : ret.msg, data : ret.data } },
 			cols:[[
-				   {type:'checkbox'},
-			       {title:'乙方',				field:'partyNames',		},
-			       {title:'已确定离岸货款值',	field:'offshorePay',},
-			       {title:'经业务员跟进客户已认可的货款',field:'acceptPay', 	},
-			       {title:'双方都认可的除货款以外的应付',field:'acceptPayable',	},
-			       {title:'在途和有争议货款',			field:'disputePay',	},
-			       {title:'当月未到货款',				field:'nonArrivalPay'},
-			       {title:'当月客户多付货款转下月应付',	field:'overpaymentPay'},
-			       {title:'已到货款',					field:'arrivalPay',	},
+				   {type:'checkbox', totalRowText:'合计'},
+			       {title:'客户',				field:'customerName',	},
+			       {title:'货款总值',			field:'offshorePay',	totalRow:true,},
+			       {title:'客户认可货款',		field:'acceptPay', 		totalRow:true,},
+			       {title:'杂支应付',			field:'acceptPayable',	totalRow:true,},
+			       {title:'争议货款',			field:'disputePay',		totalRow:true,},
+			       {title:'未到货款',			field:'nonArrivalPay',	totalRow:true,},
+			       {title:'客户多付货款',		field:'overpaymentPay',	totalRow:true,},
+			       {title:'已到货款',			field:'arrivalPay',		totalRow:true,},
 			       ]],
-			       
 		})
 		form.on('submit(searchTable)',function(obj){
+			var val = $('#searchTime').val(), beg="",end="";
+			if(val!=''){
+				beg = val.split('~')[0].trim()+' 00:00:00';
+				end = val.split('~')[1].trim()+' 23:59:59';
+			}
+			obj.field.orderTimeBegin = beg;
+			obj.field.orderTimeEnd = end;
 			table.reload('summaryTable',{
-				url:'${ctx}/fince/getBill',
+				url:'${ctx}/ledger/collectBill',
 				where: obj.field,
-				page: {curr:1},
-			})
-			var data = myutil.getData({
-				url:'${ctx}/fince/collectBill?orderTimeBegin='+obj.field.orderTimeBegin+'&orderTimeEnd='+obj.field.orderTimeEnd,
-			},function(data){
-				console.log(data)
-				if(data){
-					$("#offshorePay").val(data.offshorePay)
-					$("#acceptPay").val(data.acceptPay)
-					$("#acceptPayable").val(data.acceptPayable)
-					$("#allprice").val(data.offshorePay+data.acceptPay-data.acceptPayable)
-				}
 			})
 		})
-		table.on('toolbar(summaryTable)',function(obj){
-			switch(obj.event){
-			case 'moreInfo': 
-				var checked = layui.table.checkStatus('summaryTable').data;
-				checked.length>1 && myutil.emsg('不能同时查看多条数据');
-				checked.length<1 && myutil.emsg('请选择数据');
-				if(checked.length!=1)
-					return;
-				lookoverId = checked[0].id;
-				var win = layer.open({
-					type:1,
-					content:$('#moreInfoDiv'),
-					area:['50%','70%'],
-					success:function(){
-						table.reload('moreInfoTable',{
-							url:'${ctx}/fince/getBillDate?id='+lookoverId,
-						}) 
-					}
-				})
-				break;
-			}
+		table.on('rowDouble(summaryTable)',function(obj){
+			lookoverCustomerId = obj.data.customerId;
+			var win = layer.open({
+				type:1,
+				content:$('#moreInfoDiv'),
+				area:['50%','70%'],
+				success:function(){
+					table.reload('moreInfoTable',{
+						url:'${ctx}/ledger/receivedMoneyPage',
+						where: {
+							customerId: lookoverCustomerId,
+							billDate: obj.data.billDate ? obj.data.billDate:'',
+						}
+					}) 
+				}
+			})
 		})
 		table.render({
 			elem:'#moreInfoTable',
 			data:[],
 			toolbar:'#moreInfoTableToolbar',
-			parseData:function(ret){ return { code : ret.code, msg : ret.msg, data : ret.data.data } },
+			page: true,
+			parseData:function(ret){ return { code : ret.code, msg : ret.msg, data : ret.data.rows, count:ret.data.total } },
 			request:{ pageName: 'page' ,limitName: 'size' },
 			cols:[[
 				   {type:'checkbox'},
-			       {title:'日期',	field:'name',	edit:false,	},
-			       {title:'到账款',	field:'price',},
-			       {title:'批注',field:'value', 	},
+			       {title:'日期',	field:'receivedMoneyDate',	edit: false,	templet:'<span>{{ d.receivedMoneyDate.split(" ")[0]}}</span>'},
+			       {title:'到账款',	field:'receivedMoney',		edit: true, },
+			       {title:'批注',	field:'receivedRemark', 	edit: true, },
 			       ]],
+			done: function(){
+				layui.each($('#moreInfoTable').next().find('td[data-field="receivedMoneyDate"]'),function(index,item){
+					item.children[0].onclick = function(event) { layui.stope(event) };
+					laydate.render({
+						elem: item.children[0],
+						done: function(val){
+							var index = $(this.elem).closest('tr').attr('data-index');
+							var trData = table.cache['moreInfoTable'][index];
+							myutil.saveAjax({
+								url:'/ledger/addReceivedMoney',
+								data: { id: trData.id, receivedMoneyDate: val+' 00:00:00' }
+							});
+						}
+					})
+				})
+			}
 		});
+		table.on('edit(moreInfoTable)',function(obj){
+			var id = obj.data.id, index = $(obj.tr[0]).data('index');
+			table.cache['moreInfoTable'][obj.field] = obj.value;
+			if(id>0){
+				var data = { id: id };
+				data[obj.field] = obj.value;
+				myutil.saveAjax({
+					url:'/ledger/addReceivedMoney',
+					data: data
+				});
+			}
+		})
 		table.on('toolbar(moreInfoTable)',function(obj){
-			var config = obj.config;
-			var btnElem = $(this);
-			var tableId = config.id;
 			switch(obj.event){
-			case 'addTempData': addTempData();
-				break;
-			case 'cleanTempData': table.cleanTemp('moreInfoTable');
-				break;
-			case 'saveTempData': saveTempData();
-				break;
-			case 'deletes': deleteSome();
-				break;
+			case 'addTempData': 	addTempData(); break;
+			case 'cleanTempData': 	table.cleanTemp('moreInfoTable'); break;
+			case 'saveTempData': 	saveTempData(); 	break;
+			case 'deletes': 		deleteSome(); 		break;
 			}
 		})
 		function addTempData(){
-			allField = {price: '', name:'',value:'',};
+			allField = {receivedMoneyDate: '', receivedMoney:0,receivedRemark:'',};
 			table.addTemp('moreInfoTable',allField,function(trElem) {
-				var time = trElem.find('td[data-field="name"]')[0];
+				var time = trElem.find('td[data-field="receivedMoneyDate"]')[0];
 				laydate.render({
 					elem: time.children[0],
-					type:'datetime',
 					done: function(value, date) {
 						var trElem = $(this.elem[0]).closest('tr');
-						var tableView = trElem.closest('.layui-table-view');
-						table.cache['moreInfoTable'][trElem.data('index')]['name'] = value;
+						var index = trElem.data('index');
+						table.cache['moreInfoTable'][index]['receivedMoneyDate'] = value+' 00:00:00';
 					}
 				}) 
 			});
@@ -208,30 +197,27 @@ layui.config({
 		function saveTempData(){
 			var tempData = table.getTemp('moreInfoTable').data;
 			for(var i=0;i<tempData.length;i++){
-				var t = tempData[i];
-				if(!t.name || !t.price){
-					layer.msg('新增数据字段不能为空！',{icon:2});
-					return;
-				}
-				if(isNaN(t.price)){
-					layer.msg('到账款只能为数字！',{icon:2});
-					return;
-				}
+				var t = tempData[i], msg='';
+				t.customerId = lookoverCustomerId;
+				isNaN(t.receivedMoney) && (msg='到账款只能为数字！');
+				t.receivedMoney<0 && (msg='到账款不能小于0！');
+				!t.receivedMoney && (msg='新增数据到账款不能为空！');
+				!t.receivedMoneyDate && (msg='新增数据日期不能为空！');
+				if(msg!='') return myutil.emsg(msg);
 			}
-			layui.each(table.cache['moreInfoTable'],function(index,item){
-				tempData.push(item);
-			})
-			myutil.saveAjax({
-				url:'/fince/updateBill',
-				traditional: true,
-				type:'get',
-				data:{
-					id:lookoverId,
-					dateToPay:JSON.stringify({"data":tempData})
-				}
-			},function(){
+			var success=0;
+			for(var i=0;i<tempData.length;i++){
+				myutil.saveAjax({
+					url:'/ledger/addReceivedMoney',
+					data: tempData[i],
+					success: function(){  success++; }
+				}); 
+			}
+			if(success == tempData.length){
+				myutil.smsg('成功新增：'+success+'条数据');
 				table.reload('moreInfoTable');
-			}); 
+			}else
+				myutil.emsg('新增第'+(success+1)+'条数据时发生异常');
 		}
 		function deleteSome(){
 			var checked = layui.table.checkStatus('moreInfoTable').data;
@@ -241,27 +227,31 @@ layui.config({
 				return;
 			}
 			layer.confirm('是否确认删除？',function(){
-				layui.each(checked,function(index1,item1){
-					layui.each(data,function(index2,item2){
-						if(item1.price == item2.price && item1.name == item2.name && item1.value ==item2.value){
-							data.splice(index2,1);
-							return;
-						}
-					})
+				var ids = [], checked = layui.table.checkStatus('moreInfoTable').data;
+				if(checked.length==0)
+					return myutil.emsg('请选择信息');
+				layui.each(checked,function(index,item){
+					ids.push(item.id);
 				})
-				myutil.saveAjax({
-					url:'/fince/updateBill',
-					traditional: true,
-					type:'get',
-					data:{
-						id:lookoverId,
-						dateToPay:JSON.stringify({"data":data})
+				myutil.deleteAjax({
+					url:'/ledger/deleteReceivedMoney',
+					ids: ids.join(','),
+					success:function(){
+						table.reload('moreInfoTable');
 					}
-				},function(){
-					table.reload('moreInfoTable');
 				}); 
 			})
 		}
+		myutil.getSelectHtml({
+			url:'/ledger/allCustomer',
+			value: 'id',
+			title: 'name',
+			tips: '请选择客户',
+			done: function(html){
+				$('#searchCustomer').html(html);
+				form.render();
+			}
+		})
 })
 </script>
 </body>
