@@ -64,7 +64,6 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	@Autowired
 	private ReceivedMoneyService receivedMoneyService;
 
-
 	@Override
 	public PageResult<Packing> findPages(Packing param, PageParameter page) {
 		Page<Packing> pages = dao.findAll((root, query, cb) -> {
@@ -139,8 +138,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				+ (numberDef != null ? numberDef : (packingList.size() + 1)) + "D";
 		return packingNumber;
 	}
-	
-	
+
 	@Override
 	@Transactional
 	public Packing addPacking(Packing packing) {
@@ -151,7 +149,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				PackingChild packingChild = new PackingChild();
-				if (jsonObject.getLong("packingChildId") != null) {  
+				if (jsonObject.getLong("packingChildId") != null) {
 					packingChild = packingChildDao.findOne(jsonObject.getLong("packingChildId"));
 					if (packingChild.getFlag() == 1) {
 						throw new ServiceException("贴报单已发货，无法修改");
@@ -206,7 +204,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				for (PackingChild pc : packingChildList) {
 					// 生成销售编号
 					pc.setSaleNumber(Constants.XS + "-" + sdf.format(time == null ? packing.getPackingDate() : time)
-							+ "-" + SalesUtils.get0LeftString(packingChildDao.findBySendDateBetween(time, DatesUtil.getLastDayOftime(time)).size(), 4));
+							+ "-" + SalesUtils.get0LeftString(packingChildDao
+									.findBySendDateBetween(time, DatesUtil.getLastDayOftime(time)).size(), 4));
 					pc.setSendDate(time == null ? packing.getPackingDate() : time);
 					// 已发货
 					pc.setFlag(1);
@@ -463,8 +462,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	public List<Bill> collectBill(Bill bill) {
 		bill.setFlag(1);
 		bill.setAudit(1);
-		List<Bill> billList = new ArrayList<>();
 		bill.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(bill.getOrderTimeBegin()));
+		List<Bill> billList = new ArrayList<>();
 		List<PackingChild> pList = findPackingChildList(bill);
 		List<Mixed> mixedList = mixedService.findList(bill);
 		List<ReceivedMoney> receivedMoneyList = receivedMoneyService.receivedMoneyList(bill);
@@ -479,22 +478,29 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			List<Mixed> mixeds = mapMixedList.get(ps);
 			List<ReceivedMoney> receivedMoneys = receivedMoneyMap.get(ps);
 			Bill bl = new Bill();
+			NumUtils.setzro(bl);
 			bl.setBillDate(bill.getOrderTimeBegin());
-			bill.setCustomerName(psList.get(0).getCustomer().getName());
-			//货款总值
-			bl.setOffshorePay(NumUtils.round(psList.stream().mapToDouble(PackingChild::getOffshorePay).sum(), 2));
-			//确认货款
-			bl.setAcceptPay(NumUtils.round(psList.stream().mapToDouble(PackingChild::getAcceptPay).sum(), 2));
-			//杂支
-			bl.setAcceptPayable(NumUtils.round(mixeds.stream().mapToDouble(Mixed::getMixPrice).sum(), 2));
-			//争议货款
-			bl.setDisputePay(NumUtils.round(psList.stream().mapToDouble(PackingChild::getDisputePay).sum(), 2));
-			//已到货款
-			bl.setArrivalPay(NumUtils.round(receivedMoneys.stream().mapToDouble(ReceivedMoney::getReceivedMoney).sum(), 2));
-			//未到货款
+			bl.setCustomerName(psList.get(0).getCustomer().getName());
+			if (psList !=null && psList.size() > 0) {
+				// 货款总值
+				bl.setOffshorePay(NumUtils.round(psList.stream().mapToDouble(PackingChild::getOffshorePay).sum(), 2));
+				// 确认货款
+				bl.setAcceptPay(NumUtils.round(psList.stream().mapToDouble(PackingChild::getAcceptPay).sum(), 2));
+				// 争议货款
+				bl.setDisputePay(NumUtils.round(psList.stream().mapToDouble(PackingChild::getDisputePay).sum(), 2));
+			}
+			if (mixeds!=null && mixeds.size() > 0) {
+				// 杂支
+				bl.setAcceptPayable(NumUtils.round(mixeds.stream().mapToDouble(Mixed::getMixPrice).sum(), 2));
+			}
+			if (receivedMoneys!=null && receivedMoneys.size() > 0) {
+				// 已到货款
+				bl.setArrivalPay(NumUtils.round(receivedMoneys.stream().mapToDouble(ReceivedMoney::getReceivedMoney).sum(), 2));
+			}
+			// 未到货款
 			bl.setNonArrivalPay(NumUtils.sub(NumUtils.sum(bl.getAcceptPay(), bl.getAcceptPayable()), bl.getArrivalPay()));
 			// 客户多付货款
-			bl.setOverpaymentPay(bl.getArrivalPay()<0 ? bl.getArrivalPay() : 0);
+			bl.setOverpaymentPay(bl.getArrivalPay() < 0 ? bl.getArrivalPay() : 0);
 			billList.add(bl);
 		}
 		return billList;
@@ -514,12 +520,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			}
 			// 是否审核
 			if (param.getAudit() != null) {
-				predicate.add(cb.equal(root.get("audit").as(Boolean.class), param.getAudit()));
-			}
-			// 按客户名称
-			if (!StringUtils.isEmpty(param.getCustomerName())) {
-				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
-						"%" + param.getCustomerName() + "%"));
+				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
 			}
 			// 按发货日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
