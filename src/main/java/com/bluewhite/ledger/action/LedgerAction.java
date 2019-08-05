@@ -25,10 +25,12 @@ import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.PackingMaterials;
+import com.bluewhite.ledger.entity.ReceivedMoney;
 import com.bluewhite.ledger.entity.SendGoods;
 import com.bluewhite.ledger.service.MixedService;
 import com.bluewhite.ledger.service.OrderService;
 import com.bluewhite.ledger.service.PackingService;
+import com.bluewhite.ledger.service.ReceivedMoneyService;
 import com.bluewhite.ledger.service.SendGoodsService;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.user.entity.User;
@@ -50,6 +52,8 @@ public class LedgerAction {
 	private OrderService orderService;
 	@Autowired
 	private MixedService mixedService;
+	@Autowired
+	private ReceivedMoneyService receivedMoneyService;
 
 
 	private ClearCascadeJSON clearCascadeJSON;
@@ -110,6 +114,12 @@ public class LedgerAction {
 				.addRetainTerm(Customer.class, "id", "name");
 	}
 	
+	private ClearCascadeJSON clearCascadeJSONBill;
+	{
+		clearCascadeJSONBill = ClearCascadeJSON.get()
+				.addRetainTerm(Bill.class, "customerName", "billDate", "offshorePay", "acceptPay",
+						"acceptPayable","disputePay","nonArrivalPay","overpaymentPay","arrivalPay");
+	}
 	
 
 	/**
@@ -482,6 +492,57 @@ public class LedgerAction {
 
 	
 	
+	/**
+	 * 已到货款分页
+	 * @param page
+	 * @param receivedMoney
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/receivedMoneyPage", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse mixedList(ReceivedMoney receivedMoney,PageParameter page) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONMixed.format(receivedMoneyService.receivedMoneyPage(receivedMoney,page)).toJSON());
+		cr.setMessage("查看成功");
+		return cr;
+	}
+	
+	
+	
+	/**
+	 * 新增修改货款
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/addReceivedMoney", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse addReceivedMoney(ReceivedMoney receivedMoney) {
+		CommonResponse cr = new CommonResponse();
+		if(receivedMoney.getId()!=null){
+			ReceivedMoney ot = receivedMoneyService.findOne(receivedMoney.getId());
+			receivedMoneyService.update(receivedMoney, ot);
+			cr.setMessage("修改成功");
+		}else{
+			receivedMoneyService.save(receivedMoney);
+			cr.setMessage("新增成功");
+		}
+		return cr;
+	}
+	
+	
+	/**
+	 * 删除货款
+	 * 
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/deleteReceivedMoney", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteReceivedMoney(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = receivedMoneyService.deleteReceivedMoney(ids);
+		cr.setMessage("成功删除" + count + "条货款");
+		return cr;
+	}
 	
 	/**
 	 * 汇总
@@ -491,7 +552,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse collectBill(Bill bill) {
 		CommonResponse cr = new CommonResponse();
-		packingService.collectBill(bill);
+		cr.setData(clearCascadeJSONBill.format(packingService.collectBill(bill)).toJSON());
 		cr.setMessage("汇总成功");
 		return cr;
 	}
