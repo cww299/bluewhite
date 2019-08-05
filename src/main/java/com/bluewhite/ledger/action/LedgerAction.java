@@ -121,6 +121,13 @@ public class LedgerAction {
 						"acceptPayable","disputePay","nonArrivalPay","overpaymentPay","arrivalPay");
 	}
 	
+	private ClearCascadeJSON clearCascadeJSONReceivedMoney;
+	{
+		clearCascadeJSONReceivedMoney = ClearCascadeJSON.get()
+				.addRetainTerm(ReceivedMoney.class, "id", "customer", "receivedMoneyDate", "receivedMoney")
+				.addRetainTerm(Customer.class, "id", "name");
+	}
+	
 
 	/**
 	 * 分页查看订单
