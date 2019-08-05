@@ -52,7 +52,7 @@ td{
 				<td>&nbsp;&nbsp;</td>
 				<td>是否发货：</td>
 				<td style="width:120px;"><select name="flag" lay-search><option value="">是否发货</option>
-												   <option value="0">未发货</option>
+												   <option value="0" selected>未发货</option>
 												   <option value="1">已发货</option></select></td>
 				<td>&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn" lay-submit lay-filter="search">搜索</button></td>
@@ -68,13 +68,16 @@ td{
 			<td><input id="sendDate" class="layui-input"></td>
 			<td>&nbsp;&nbsp;</td>
 			<td>客户：</td>
-			<td><select id="addEditCustomer" lay-search><option value="">请选择</option></select></td>
+			<td style="width:150px;"><select id="addEditCustomer" lay-search><option value="">请选择</option></select></td>
 			<td>&nbsp;&nbsp;</td>
 			<td>贴包人：</td>
-			<td><select id="addEditPackPeople" lay-search><option value="">请选择</option></select></td>
+			<td style="width:150px;"><select id="addEditPackPeople" lay-search><option value="">请选择</option></select></td>
 			<td>&nbsp;&nbsp;</td>
 			<td>编号：</td>
-			<td><input id="addEditNumber" class="layui-input"></td>
+			<td style="width:150px;"><input id="addEditNumber" class="layui-input"></td>
+			<td>&nbsp;&nbsp;</td>
+			<td>贴包类型：</td>
+			<td style="width:100px;"><select id="addEditType"><option value="1">发货</option><option value="0">调拨</option></select></td>
 			<td>&nbsp;&nbsp;</td>
 			<td><span class="layui-btn layui-btn-sm" id="sureAddEidtBtn">确定新增</span></td>
 		</tr>
@@ -219,6 +222,7 @@ layui.config({
 		table.render({
 			elem:'#packTable',
 			url:'${ctx}/ledger/packingPage',
+			where: { flag:0 },
 			toolbar:'#packToolbar',
 			page:true,
 			size:'lg',
@@ -268,6 +272,7 @@ layui.config({
 			    material =  table.getTemp('materialTable').data,
 			    number = $('#addEditNumber').val(),
 			    customerId = $('#addEditCustomer').val(),
+				type = $('#addEditType').val(),
 			    packingDate =  $('#sendDate').val();
 			if(addEditId!=''){
 				layui.each(table.cache['childTable'],function(index,item){
@@ -312,6 +317,7 @@ layui.config({
 				data: {
 					id: addEditId,
 					userId: $('#addEditPackPeople').val(),
+					type: type,
 					number: number,
 					packingDate: packingDate+' 00:00:00',
 					customerId: customerId,
@@ -535,6 +541,7 @@ layui.config({
 				materialData = data.packingMaterials;
 				searchTime = data.packingDate.split(' ')[0];
 				$('#addEditNumber').val(data.number);
+				$('#addEditType').val(data.type);
 				$('#sureAddEidtBtn').html('确定修改');
 				$('#sendDate').attr('disabled','disabled');
 				$('#addEditNumber').attr('disabled','disabled');
