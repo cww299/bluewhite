@@ -48,6 +48,13 @@ public class ReceivedMoney extends BaseEntity<Long>{
 	 */
 	@Column(name = "received_money")
 	private Double receivedMoney;
+	
+	
+	/**
+	 * 收款备注
+	 */
+	@Column(name = "received_remark")
+	private String receivedRemark;
 
 	/**
 	 * 查询字段
@@ -61,6 +68,17 @@ public class ReceivedMoney extends BaseEntity<Long>{
 	private Date orderTimeEnd;
 	
 	
+
+	
+	public String getReceivedRemark() {
+		return receivedRemark;
+	}
+
+
+	public void setReceivedRemark(String receivedRemark) {
+		this.receivedRemark = receivedRemark;
+	}
+
 
 	public Date getOrderTimeBegin() {
 		return orderTimeBegin;
