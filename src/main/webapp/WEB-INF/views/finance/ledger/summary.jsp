@@ -93,14 +93,13 @@ layui.config({
 				   {type:'checkbox', totalRowText:'合计'},
 			       {title:'客户',				field:'customerName',	},
 			       {title:'货款总值',			field:'offshorePay',	totalRow:true,},
-			       {title:'客户认可货款',		field:'acceptPay', 		totalRow:true, },
+			       {title:'客户认可货款',		field:'acceptPay', 		totalRow:true,},
 			       {title:'杂支应付',			field:'acceptPayable',	totalRow:true,},
 			       {title:'争议货款',			field:'disputePay',		totalRow:true,},
 			       {title:'未到货款',			field:'nonArrivalPay',	totalRow:true,},
 			       {title:'客户多付货款',		field:'overpaymentPay',	totalRow:true,},
 			       {title:'已到货款',			field:'arrivalPay',		totalRow:true,},
 			       ]],
-			       
 		})
 		form.on('submit(searchTable)',function(obj){
 			var val = $('#searchTime').val(), beg="",end="";
@@ -140,23 +139,16 @@ layui.config({
 			cols:[[
 				   {type:'checkbox'},
 			       {title:'日期',	field:'name',	edit:false,	},
-			       {title:'到账款',	field:'price',},
-			       {title:'批注',field:'value', 	},
+			       {title:'到账款',	field:'price',	},
+			       {title:'批注',	field:'value', 	},
 			       ]],
 		});
 		table.on('toolbar(moreInfoTable)',function(obj){
-			var config = obj.config;
-			var btnElem = $(this);
-			var tableId = config.id;
 			switch(obj.event){
-			case 'addTempData': addTempData();
-				break;
-			case 'cleanTempData': table.cleanTemp('moreInfoTable');
-				break;
-			case 'saveTempData': saveTempData();
-				break;
-			case 'deletes': deleteSome();
-				break;
+			case 'addTempData': 	addTempData(); break;
+			case 'cleanTempData': 	table.cleanTemp('moreInfoTable'); break;
+			case 'saveTempData': 	saveTempData(); 	break;
+			case 'deletes': 		deleteSome(); 		break;
 			}
 		})
 		function addTempData(){
