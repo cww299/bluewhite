@@ -462,7 +462,6 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	public List<Bill> collectBill(Bill bill) {
 		bill.setFlag(1);
 		bill.setAudit(1);
-		bill.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(bill.getOrderTimeBegin()));
 		List<Bill> billList = new ArrayList<>();
 		List<PackingChild> pList = findPackingChildList(bill);
 		List<Mixed> mixedList = mixedService.findList(bill);
