@@ -28,7 +28,6 @@ import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
-import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.excel.ExcelListener;
@@ -53,7 +52,6 @@ import com.bluewhite.system.user.entity.User;
 @Controller
 public class InventoryAction {
 
-	private static final Log log = Log.getLog(InventoryAction.class);
 
 	@Autowired
 	private OnlineOrderService onlineOrderService;

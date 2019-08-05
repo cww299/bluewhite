@@ -94,7 +94,6 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		//裁剪
 		if(cu.getRole().contains(Constants.PRODUCT_RIGHT_TAILOR)){
 			product.setOriginDepartment(Constants.PRODUCT_RIGHT_TAILOR);
-			
 		}
 		
 		  Page<Product> pages = productDao.findAll((root,query,cb) -> {

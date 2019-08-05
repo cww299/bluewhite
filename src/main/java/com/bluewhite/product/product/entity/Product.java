@@ -21,7 +21,7 @@ import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
 import com.bluewhite.system.sys.entity.Files;
 
 /**
- * 
+ * 蓝白产品
  * @author zhangliang
  *
  */
