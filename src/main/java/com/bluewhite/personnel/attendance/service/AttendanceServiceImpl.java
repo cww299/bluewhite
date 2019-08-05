@@ -215,7 +215,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			}
 			
 			// 按编号
-			if (param.getNumber() != null) {
+			if (!StringUtils.isEmpty(param.getNumber())) {
 				predicate.add(cb.equal(root.get("number").as(String.class), param.getNumber()));
 			}
 
@@ -225,7 +225,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			}
 
 			// 按部门查找
-			if (!StringUtils.isEmpty(param.getOrgNameId())) {
+			if (param.getOrgNameId() != null) {
 				predicate.add(cb.equal(root.get("user").get("orgNameId").as(Long.class), param.getOrgNameId()));
 			}
 

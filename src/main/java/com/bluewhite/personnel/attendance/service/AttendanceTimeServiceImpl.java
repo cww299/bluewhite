@@ -807,14 +807,24 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				.sorted(Comparator.comparing(AttendancePay::getAllotTime)).collect(Collectors.toList()); 
 		// 按打卡记录查出考勤 自然排序
 		List<AttendanceTime> attendanceTimeList = findAttendanceTimePage(attendanceTime).stream()
-		.sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList()); 
+		.sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
 		for (int i = 0; i < size; i++) {
 			AttendancePay aPay = attendancePayList.get(i);
 			AttendanceTime aTime = attendanceTimeList.get(i);
 			if(DatesUtil.sameDate(aPay.getAllotTime(),aTime.getTime())){
 				Map<String, Object> map = new HashMap<>();
 				map.put("date", sdf.format(aPay.getAllotTime()));   
-				map.put("name", aPay.getUser().getUserName()  );
+				map.put("name", aPay.getUser().getUserName());
+				//针工
+				if(type==3){
+					if(!aPay.getWorkTime().equals(aTime.getTakeWork())){
+						//记录工作时长
+						map.put("recordTurnWorkTime", aPay.getTurnWorkTime());
+						//打卡工作时长
+						map.put("clockInTurnWorkTime", aTime.getTurnWorkTime());
+					}
+				}
+				
 				//出勤时间比对
 				if(!aPay.getTurnWorkTime().equals(aTime.getTurnWorkTime())){
 					//记录出勤

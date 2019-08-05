@@ -2,6 +2,8 @@ package com.bluewhite.ledger.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * 账单清算实体
  * 
@@ -25,6 +27,7 @@ public class Bill {
 	/**
 	 * 账单日期
 	 */
+	@JsonFormat(pattern="yyyy-MM",timezone="GMT+8")
 	private Date billDate;
 
 	/**
@@ -78,7 +81,7 @@ public class Bill {
 	/**
 	 * 是否审核
 	 */
-	private boolean audit;
+	private Integer audit;
 	
 	
 
@@ -90,11 +93,11 @@ public class Bill {
 		this.flag = flag;
 	}
 
-	public boolean isAudit() {
+	public Integer getAudit() {
 		return audit;
 	}
 
-	public void setAudit(boolean audit) {
+	public void setAudit(Integer audit) {
 		this.audit = audit;
 	}
 
