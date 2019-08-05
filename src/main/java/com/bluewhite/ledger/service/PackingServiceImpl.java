@@ -492,7 +492,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			if (mixeds!=null && mixeds.size() > 0) {
 				// 杂支
 				bl.setAcceptPayable(NumUtils.round(mixeds.stream().mapToDouble(Mixed::getMixPrice).sum(), 2));
-			}
+			} 
 			if (receivedMoneys!=null && receivedMoneys.size() > 0) {
 				// 已到货款
 				bl.setArrivalPay(NumUtils.round(receivedMoneys.stream().mapToDouble(ReceivedMoney::getReceivedMoney).sum(), 2));
