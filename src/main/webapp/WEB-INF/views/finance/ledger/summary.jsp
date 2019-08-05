@@ -29,11 +29,8 @@
 	<div class="layui-card-body">					
 		<table class="layui-form" id="searchTable">
 			<tr>
-				<td>开始:</td>
-				<td><input name="orderTimeBegin" id="beginTime" placeholder="请输入开始时间" class="layui-input"></td>
-				<td>&nbsp;&nbsp;</td>
-				<td>结束:</td>
-				<td><input name="orderTimeEnd" id="endTime" placeholder="请输入结束时间" class="layui-input"></td>
+				<td>货款日期：</td>
+				<td><input name="orderTimeBegin" id="beginTime" placeholder="请输入时间" class="layui-input"></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>乙方:</td>
 				<td><select name="partyNamesId"><option value="">请选择</option></select></td>
@@ -93,22 +90,16 @@ layui.config({
 		myutil.config.msgOffset = '150px';	
 		laydate.render({
 			elem:'#beginTime',
-			type:'datetime'
-		})
-		laydate.render({
-			elem:'#endTime',
-			type:'datetime'
+			type:'month'
 		})
 		var lookoverId =''; //查看的id
 		table.render({
 			elem:'#summaryTable',
-			page:true,
 			size:'lg',
 			data:[],
 			toolbar:'#summaryTableToolbar',
 			loading:false,
-			parseData:function(ret){ return { code : ret.code, msg : ret.msg, count : ret.data.total, data : ret.data.rows } },
-			request:{ pageName: 'page' ,limitName: 'size' },
+			parseData:function(ret){ return { code : ret.code, msg : ret.msg, data : ret.data } },
 			cols:[[
 				   {type:'checkbox'},
 			       {title:'乙方',				field:'partyNames',		},
@@ -123,22 +114,21 @@ layui.config({
 			       
 		})
 		form.on('submit(searchTable)',function(obj){
+			if(obj.field.orderTimeBegin!='')
+				obj.field.orderTimeBegin+='-01 00:00:00';
 			table.reload('summaryTable',{
-				url:'${ctx}/fince/getBill',
+				url:'${ctx}/ledger/collectBill',
 				where: obj.field,
-				page: {curr:1},
 			})
-			var data = myutil.getData({
+		/* 	myutil.getData({
 				url:'${ctx}/fince/collectBill?orderTimeBegin='+obj.field.orderTimeBegin+'&orderTimeEnd='+obj.field.orderTimeEnd,
-			},function(data){
-				console.log(data)
-				if(data){
+				done: function(data){
 					$("#offshorePay").val(data.offshorePay)
 					$("#acceptPay").val(data.acceptPay)
 					$("#acceptPayable").val(data.acceptPayable)
 					$("#allprice").val(data.offshorePay+data.acceptPay-data.acceptPayable)
 				}
-			})
+			}) */
 		})
 		table.on('toolbar(summaryTable)',function(obj){
 			switch(obj.event){
@@ -208,15 +198,11 @@ layui.config({
 		function saveTempData(){
 			var tempData = table.getTemp('moreInfoTable').data;
 			for(var i=0;i<tempData.length;i++){
-				var t = tempData[i];
-				if(!t.name || !t.price){
-					layer.msg('新增数据字段不能为空！',{icon:2});
-					return;
-				}
-				if(isNaN(t.price)){
-					layer.msg('到账款只能为数字！',{icon:2});
-					return;
-				}
+				var t = tempData[i], msg='';
+				(!t.name || !t.price) && (msg='新增数据字段不能为空！');
+				isNaN(t.price) && (msg='到账款只能为数字！');
+				if(msg!='')
+					return myutil.emsg(msg);
 			}
 			layui.each(table.cache['moreInfoTable'],function(index,item){
 				tempData.push(item);
@@ -224,13 +210,13 @@ layui.config({
 			myutil.saveAjax({
 				url:'/fince/updateBill',
 				traditional: true,
-				type:'get',
 				data:{
 					id:lookoverId,
 					dateToPay:JSON.stringify({"data":tempData})
+				},
+				success: function(){
+					table.reload('moreInfoTable');
 				}
-			},function(){
-				table.reload('moreInfoTable');
 			}); 
 		}
 		function deleteSome(){
@@ -252,13 +238,13 @@ layui.config({
 				myutil.saveAjax({
 					url:'/fince/updateBill',
 					traditional: true,
-					type:'get',
 					data:{
 						id:lookoverId,
 						dateToPay:JSON.stringify({"data":data})
+					},
+					success:function(){
+						table.reload('moreInfoTable');
 					}
-				},function(){
-					table.reload('moreInfoTable');
 				}); 
 			})
 		}
