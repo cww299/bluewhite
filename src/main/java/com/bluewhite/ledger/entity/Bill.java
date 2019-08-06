@@ -2,8 +2,6 @@ package com.bluewhite.ledger.entity;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 /**
  * 账单清算实体
  * 
