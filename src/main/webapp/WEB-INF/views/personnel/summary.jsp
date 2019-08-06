@@ -53,7 +53,39 @@
 			
 		</div>
 	</div>
-	
+
+<form action="" id="layuiadmin-form-admin"
+		style="display:none;  text-align:">
+		<div class="layui-form" lay-filter="layuiadmin-form-admin">
+		<input type="text" name="id" id="ids" style="display:none;">
+			<div class="layui-form-item">
+				<label class="layui-form-label">水费占比</label>
+				<div class="layui-input-block">
+					<input type="text"  name="keyValue" id="keyValue"
+						lay-verify="required" 
+						class="layui-input laydate-icon">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">电费占比</label>
+				<div class="layui-input-block">
+					<input type="text" name="keyValueTwo" id="keyValueTwo"
+						lay-verify="required"
+						class="layui-input laydate-icon">
+				</div>
+			</div>
+			
+			<div class="layui-form-item">
+				<label class="layui-form-label">房租占比</label>
+				<div class="layui-input-block">
+					<input type="text" name="keyValueThree" id="keyValueThree"
+						lay-verify="required"
+						class="layui-input laydate-icon">
+				</div>
+			</div>
+		</div>
+	</form>		
 
 	
 <script type="text/html" id="toolbar">
@@ -233,7 +265,85 @@
 						var tableId = config.id;
 						switch(obj.event) {
 							case 'addTempData':
-								alert(1)
+								$.ajax({
+									url: '${ctx}/personnel/getpersonVariabledao',
+									type: "GET",
+									data:{
+										type:5
+									},
+									async: false,
+									beforeSend: function() {
+										index;
+									},
+									success: function(result) {
+										$(result.data).each(function(i, o) {
+											$("#ids").val(o.id);
+											$("#keyValue").val(o.keyValue);
+											$("#keyValueTwo").val(o.keyValueTwo);
+											$("#keyValueThree").val(o.keyValueThree);
+										})
+										
+										layer.close(index);
+									},
+									error: function() {
+										layer.msg("操作失败！", {
+											icon: 2
+										});
+										layer.close(index);
+									}
+								});
+								
+								//报价修改
+								var	dicDiv=$("#layuiadmin-form-admin");
+									layer.open({
+										type:1,
+										title:'水费标准',
+										area:['22%','30%'],
+										btn:['确认','取消'],
+										content:dicDiv,
+										id: 'LAY_layuipro' ,
+										btnAlign: 'c',
+									    moveType: 1, //拖拽模式，0或者1
+										success : function(layero, index) {
+								        	layero.addClass('layui-form');
+											// 将保存按钮改变成提交按钮
+											layero.find('.layui-layer-btn0').attr({
+												'lay-filter' : 'addRole',
+												'lay-submit' : ''
+											})
+								        },
+										yes:function(){
+											form.on('submit(addRole)', function(data) {
+												$.ajax({
+													url: '${ctx}/personnel/addPersonVaiable',
+													type: "POST",
+													data:data.field,
+													async: false,
+													beforeSend: function() {
+														index;
+													},
+													success: function(result) {
+													if(result.code==0){
+														layer.msg("修改成功！", {
+															icon: 1
+														});
+													}else{
+														layer.msg("修改失败！", {
+															icon: 2
+														});
+													}
+														layer.close(index);
+													},
+													error: function() {
+														layer.msg("操作失败！", {
+															icon: 2
+														});
+														layer.close(index);
+													}
+												});
+											})
+										}
+									})
 								break;
 						}
 					});
