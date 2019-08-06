@@ -57,13 +57,13 @@ public class ProcedureServiceImpl extends BaseServiceImpl<Procedure, Long> imple
 		Double sumDEEDLEPrice = ProTypeUtils.getDEEDLE(sumTime, procedure.getType());
 		
 		for(Procedure pro : procedureList){
-			pro.setDepartmentPrice(NumUtils.round(sumPrice, null));
-			pro.setDeedlePrice(NumUtils.round(sumDEEDLEPrice, null));
+			pro.setDepartmentPrice(NumUtils.round(sumPrice, 4));
+			pro.setDeedlePrice(NumUtils.round(sumDEEDLEPrice, 4));
 		}
 		//计算外发价格
 		Double price = ProTypeUtils.sumProTypeHairPrice(procedureList,procedure.getType());
 		for(Procedure pro : procedureList){
-			pro.setHairPrice(NumUtils.round(price, null));
+			pro.setHairPrice(NumUtils.round(price, 4));
 		}
 		procedureDao.save(procedureList);
 	}

@@ -39,7 +39,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.bluewhite.common.DateTimePattern;
-import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
@@ -81,7 +80,6 @@ import com.bluewhite.system.user.entity.UserContract;
 @RequestMapping("excel")
 public class ReportExportAction {
 	
-	private final static Log log = Log.getLog(ReportExportAction.class);
 	
 	@Autowired
 	private ReportExportService reportExportService;
