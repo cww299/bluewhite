@@ -81,8 +81,8 @@ td{
 						<option value="2">销售换货出库</option>
 						<option value="3">采购退货出库 </option></select></td></tr>
 		<tr>
-			<td>默认批次号</td>	
-			<td><input type="text" class="layui-input" id="addBatchNumber" name='batchNumber'></td>
+			<!-- <td>默认批次号</td>	
+			<td><input type="text" class="layui-input" id="addBatchNumber" name='batchNumber'></td> -->
 			<td>默认出库数量</td>
 			<td><select lay-filter="defaultSelect" type='number' ><option value="zero">不出库</option><option value="all">出库全部</option></select></td>
 			<td>备注</td>
@@ -419,7 +419,7 @@ layui.config({
 				loading:true,
 				cols:[[
 				       {type:'checkbox', align:'center', fixed:'left'},
-				       {align:'center', title:'批次号', field:'batchNumber', edit:true, style:'color:blue',},
+				       //{align:'center', title:'批次号', field:'batchNumber', edit:true, style:'color:blue',},
 				       {align:'center', title:'商品名称', field:'skuCode',},
 				       {align:'center', title:'出库数量',     field:'number', edit:true,style:'color:blue',  },
 				       {align:'center', title:'出库仓库',     field:'warehouseId', 	templet: getInventorySelectHtml()},
@@ -433,11 +433,11 @@ layui.config({
 			})
 			table.reload('productListTable',{ data : choosedProduct });
 		}
-		$('#addBatchNumber').change(function(){
+		/* $('#addBatchNumber').change(function(){
 			for(var i=0;i<choosedProduct.length;i++)
 				choosedProduct[i].batchNumber=$('#addBatchNumber').val();
 			table.reload('productListTable',{ data : choosedProduct });
-		})
+		}) */
 		table.on('toolbar(productListTable)',function(obj){		//监听选择商品表格的工具栏按钮
 			switch(obj.event){
 			case 'add': openChooseProductWin(); break;
@@ -599,7 +599,7 @@ layui.config({
 		})
 		$('#resetAddOrder').on('click',function(){			//此处如果加confirm提示。则新增成功时无法清空
 			$('#addRemark').val('');
-			$('#addBatchNumber').val('');
+			//$('#addBatchNumber').val('');
 			$('#addOrderNumber').val(0);
 			$('#addCreatedAt').val('');
 			choosedProduct=[];	
@@ -682,7 +682,7 @@ layui.config({
 						status:defaultStatus,			//出库状态
 						warehouseId:warehouseId,		 //选择的仓库id
 						inventorys:choosed[i].inventorys,//库存情况
-						batchNumber : $('#addBatchNumber').val(),
+						//batchNumber : $('#addBatchNumber').val(),
 						id : choosedId++,
 				};
 				choosedProduct.push(orderChild);
