@@ -33,7 +33,9 @@ import com.bluewhite.personnel.attendance.entity.PersonVariable;
 import com.bluewhite.personnel.attendance.service.AttendanceInitService;
 import com.bluewhite.personnel.attendance.service.AttendanceTimeService;
 import com.bluewhite.personnel.roomboard.dao.MealDao;
+import com.bluewhite.personnel.roomboard.dao.SingleMealDao;
 import com.bluewhite.personnel.roomboard.entity.Meal;
+import com.bluewhite.personnel.roomboard.entity.SingleMeal;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
@@ -53,6 +55,8 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 	private ConsumptionDao consumptionDao;
 	@PersistenceContext
 	protected EntityManager entityManager;
+	@Autowired
+	private SingleMealDao singleMealDao;
 
 	@Override
 	public PageResult<Meal> findPage(Meal param, PageParameter page) {
@@ -215,6 +219,57 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		double rent= NumUtils.div(NumUtils.mul(sum3,Double.parseDouble(restType.getKeyValueTwo())),(double)day,2);//每天房租费
 		double coal= NumUtils.div(NumUtils.mul(sum4,Double.parseDouble(restType.getKeyValueTwo())),(double)day,2);//每天煤气费
 		double sum=NumUtils.div(NumUtils.sum(water,electric,rent,coal), Double.valueOf(4), 2);//划分到每一餐
+		long day1= DatesUtil.getDaySub(meal.getOrderTimeBegin(), meal.getOrderTimeEnd());
+		double a1=day1+1;//选则的天数
+		double sumd= NumUtils.mul(sum, a1);//选则时间内 水电费的总和
+		List<Double> listDouble2 = new ArrayList<>();
+		List<Double> listDouble3 = new ArrayList<>();
+		List<Double> listDouble4 = new ArrayList<>();
+		List<Double> listDouble5 = new ArrayList<>();
+		double budget=0;
+		double budget2=0;
+		double budget3=0;
+		double budget4=0;
+		List<SingleMeal> list1=singleMealDao.findByTimeBetween(meal.getOrderTimeBegin(), meal.getOrderTimeEnd());
+		if (list1.size()>0) {
+			list1.stream().filter(SingleMeal->SingleMeal.getType()!=null && SingleMeal.getType().equals(1)).forEach(c -> {
+				listDouble2.add(c.getPrice());
+			});
+			if (listDouble2.size()>0) {
+				budget = NumUtils.sum(listDouble2);//早餐
+			}
+			
+			list1.stream().filter(SingleMeal->SingleMeal.getType()!=null && SingleMeal.getType().equals(2)).forEach(c -> {
+				listDouble3.add(c.getPrice());
+			});
+			if (listDouble3.size()>0) {
+				budget2 = NumUtils.sum(listDouble3);//午餐
+			}
+			
+			list1.stream().filter(SingleMeal->SingleMeal.getType()!=null && SingleMeal.getType().equals(3)).forEach(c -> {
+				listDouble4.add(c.getPrice());
+			});
+			if (listDouble4.size()>0) {
+				budget3 = NumUtils.sum(listDouble4);//晚餐
+			}
+			
+			list1.stream().filter(SingleMeal->SingleMeal.getType()!=null && SingleMeal.getType().equals(4)).forEach(c -> {
+				listDouble5.add(c.getPrice());
+			});
+			if (listDouble5.size()>0) {
+				budget4 = NumUtils.sum(listDouble5);//夜宵
+			}
+		}
+		double f= NumUtils.sum(sumd, budget);//早餐 加上 每天分摊的房租水电
+		List<Meal> meals=dao.findByTradeDaysTimeBetween(meal.getOrderTimeBegin(), meal.getOrderTimeEnd());
+		long l= meals.stream().filter(Meal->Meal.getMode()!=null && Meal.getMode().equals(1)).count();//早餐数
+		long q= meals.stream().filter(Meal->Meal.getMode()!=null && Meal.getMode().equals(2)).count();//中餐数
+		long w= meals.stream().filter(Meal->Meal.getMode()!=null && Meal.getMode().equals(3)).count();//晚餐数
+		long r= meals.stream().filter(Meal->Meal.getMode()!=null && Meal.getMode().equals(4)).count();//夜宵数
+		double g= NumUtils.div(f, l, 2);//早餐平均
+		double i= NumUtils.div(f, q, 2);//中餐平均
+		double n= NumUtils.div(f, w, 2);//晚餐平均
+		double h= NumUtils.div(f, r, 2);//夜宵平均
 		List<Meal> mealsList = findMeal(meal);
 		Map<Long, List<Meal>> mealMap = mealsList.stream().filter(Meal -> Meal.getUserId() != null)
 				.collect(Collectors.groupingBy(Meal::getUserId, Collectors.toList()));
@@ -222,11 +277,6 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			allMap = new HashMap<>();
 			// 获取单一员工日期区间所有的报餐数据
 			List<Meal> psList1 = mealMap.get(ps1);
-			List<Double> listDouble = new ArrayList<>();
-			psList1.stream().filter(Meal -> Meal.getUserId().equals(Meal.getUserId())).forEach(c -> {
-				listDouble.add(c.getPrice());
-			});
-			double budget = NumUtils.sum(listDouble);
 			double modeOne = psList1.stream()
 					.filter(Meal -> Meal.getUserId().equals(Meal.getUserId()) && Meal.getMode() == 1).count();
 			double modeTwo = psList1.stream()
@@ -235,16 +285,25 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 					.filter(Meal -> Meal.getUserId().equals(Meal.getUserId()) && Meal.getMode() == 3).count();
 			double modeFour = psList1.stream()
 					.filter(Meal -> Meal.getUserId().equals(Meal.getUserId()) && Meal.getMode() == 4).count();
+			double modeOnePrice= NumUtils.mul(modeOne, g);
+			double modeTwoPrice= NumUtils.mul(modeTwo, i);
+			double modeThreePrice= NumUtils.mul(modeThree, n);
+			double modeFourPrice= NumUtils.mul(modeFour, h);
+			double sumPrice=NumUtils.sum(modeOnePrice,modeTwoPrice,modeThreePrice,modeFourPrice);
 			User user = userService.findOne(ps1);
 			String aString = user.getUserName();
 			String org = user.getOrgName().getName();
 			allMap.put("username", aString);
-			allMap.put("money", budget);
 			allMap.put("orgName", org);
 			allMap.put("modeOne", modeOne);
 			allMap.put("modeTwo", modeTwo);
 			allMap.put("modeThree", modeThree);
 			allMap.put("modeFour", modeFour);
+			allMap.put("modeOnePrice", modeOnePrice);
+			allMap.put("modeTwoPrice", modeTwoPrice);
+			allMap.put("modeThreePrice", modeThreePrice);
+			allMap.put("modeFourPrice", modeFourPrice);
+			allMap.put("sumPrice", sumPrice);
 			allList.add(allMap);
 		}
 

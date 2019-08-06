@@ -111,7 +111,7 @@ public class SingleMealServiceImpl extends BaseServiceImpl<SingleMeal, Long>
 		allMap.put("type", aString);
 		allList.add(allMap);
 		}
-		return allList;
+		return null;
 	}
 
 	
