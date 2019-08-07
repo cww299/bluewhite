@@ -72,4 +72,7 @@ public interface ProcurementService extends BaseCRUDService<Procurement, Long> {
 
 	List<Map<String, Object>> reportStorageUser(Procurement procurement);
 
+	Object test(Procurement procurement);
+
+	Object test1(Procurement procurement);
 }

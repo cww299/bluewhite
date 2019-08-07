@@ -42,7 +42,7 @@ public class Customer extends BaseEntity<Long> {
 
 
 	/**
-	 * 客户类型
+	 * 客户类型(1=线下，2=线上)
 	 * 
 	 */
 	@Column(name = "type")
@@ -96,12 +96,19 @@ public class Customer extends BaseEntity<Long> {
 	private String address;
 
 	/**
-	 * 联系方式
+	 * 联系电话
 	 * 
 	 */
 	@Column(name = "phone")
 	private String phone;
 
+	/**
+	 * 联系方式
+	 * 
+	 */
+	@Column(name = "contact")
+	private String contact;
+	
 	/**
 	 * 联系人姓名
 	 * 
@@ -111,6 +118,14 @@ public class Customer extends BaseEntity<Long> {
 
 	
 
+
+	public String getContact() {
+		return contact;
+	}
+
+	public void setContact(String contact) {
+		this.contact = contact;
+	}
 
 	public String getContactName() {
 		return contactName;
