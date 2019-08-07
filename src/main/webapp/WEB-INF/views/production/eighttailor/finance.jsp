@@ -102,7 +102,7 @@
 													<th class="text-center">姓名</th>
 													<th class="text-center">考勤日期</th>
 													<th class="text-center">工作小时</th>
-													<th class="text-center">缺勤时间</th>
+													<th class="text-center">出勤时间</th>
 													<th class="text-center">加班时间</th>
 													<th class="text-center">同种最高工资</th>
 													<th class="text-center">未拿到差价</th>
@@ -527,7 +527,7 @@
 		      				+'<td class="text-center  ">'+o.userName+'</td>'
 		      				+'<td class="text-center ">'+o.allotTime+'</td>'
 		      				+'<td class="text-center edit workTime">'+o.workTime+'</td>'
-		      				+'<td class="text-center edit dutyTimes">'+o.dutyTime+'</td>'
+		      				+'<td class="text-center edit turnWorkTime">'+o.turnWorkTime+'</td>'
 		      				+'<td class="text-center edit overtimes">'+o.overTime+'</td>'
 		      				+'<td class="text-center ">'+o.maxPay+'</td>'
 		      				+'<td class="text-center ">'+o.disparity+'</td>'
@@ -594,7 +594,7 @@
 							var postData = {
 									id:$(this).data('id'),
 									workTime:$(this).parent().parent('tr').find(".workTime").text(),
-									dutyTime:$(this).parent().parent('tr').find(".dutyTimes").text(),
+									turnWorkTime:$(this).parent().parent('tr').find(".turnWorkTime").text(),
 									overtime:$(this).parent().parent('tr').find(".overtimes").text(),
 							}
 							var index;

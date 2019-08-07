@@ -53,14 +53,14 @@
 			
 		</div>
 	</div>
-	
-	<form action="" id="layuiadmin-form-admin"
-		style="padding: 20px 30px 0 60px; display:none;  text-align:">
+
+<form action="" id="layuiadmin-form-admin"
+		style="display:none;  text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
 		<input type="text" name="id" id="ids" style="display:none;">
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">早餐金额</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">水费占比</label>
+				<div class="layui-input-block">
 					<input type="text"  name="keyValue" id="keyValue"
 						lay-verify="required" 
 						class="layui-input laydate-icon">
@@ -68,24 +68,31 @@
 			</div>
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">中餐金额</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">电费占比</label>
+				<div class="layui-input-block">
 					<input type="text" name="keyValueTwo" id="keyValueTwo"
 						lay-verify="required"
 						class="layui-input laydate-icon">
 				</div>
 			</div>
-
+			
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">晚餐金额</label>
-				<div class="layui-input-inline">
-					<input type="text"  name="keyValueThree" id="keyValueThree" lay-verify="required" class="layui-input">
+				<label class="layui-form-label">房租占比</label>
+				<div class="layui-input-block">
+					<input type="text" name="keyValueThree" id="keyValueThree"
+						lay-verify="required"
+						class="layui-input laydate-icon">
 				</div>
 			</div>
 		</div>
-	</form>	
-	
+	</form>		
 
+	
+<script type="text/html" id="toolbar">
+	<div class="layui-btn-container layui-inline">
+		<span class="layui-btn layui-btn-sm" lay-event="addTempData">预设水电</span>
+	</div>
+</script>
 	
 	<script>
 			layui.config({
@@ -170,11 +177,12 @@
 					      }
 					  });
 				   	tablePlug.smartReload.enable(true); 
-				   	var even = function(data) {
+				   	var data="";
 					table.render({
 						elem: '#tableData',
 						size: 'lg',
-						url: '${ctx}/personnel/getSummaryMeal' ,
+						where:data,
+						data:[],
 						where:data,
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
@@ -207,46 +215,146 @@
 								edit: false,
 								filter:true,
 							},{
-								field: "money",
+								field: "sumPrice",
 								title: "餐费汇总",
 								align: 'center',
 								edit: false,
 								totalRow: true
 							},{
 								field: "modeOne",
-								title: "早餐次数",
+								title: "早餐次数/金额",
 								align: 'center',
 								edit: false,
+								templet:function(d){
+									return d.modeOne+'     ～￥'+d.modeOnePrice
+								}
 							},{
 								field: "modeTwo",
-								title: "中餐次数",
+								title: "中餐次数/金额",
 								align: 'center',
 								edit: false,
+								templet:function(d){
+									return d.modeTwo+'     ～￥'+d.modeTwoPrice
+								}
 							},{
 								field: "modeThree",
-								title: "晚餐次数",
+								title: "晚餐次数/金额",
 								align: 'center',
 								edit: false,
+								templet:function(d){
+									return d.modeThree+'     ～￥'+d.modeThreePrice
+								}
 							},{
 								field: "modeFour",
-								title: "夜宵次数",
+								title: "夜宵次数/金额",
 								align: 'center',
 								edit: false,
+								templet:function(d){
+									return d.modeFour+'     ～￥'+d.modeFourPrice
+								}
 							}]
 						],
 								});
-				   	}
+				   	
 					
 					
+					//监听头工具栏事件
+					table.on('toolbar(tableData)', function(obj) {
+						var config = obj.config;
+						var btnElem = $(this);
+						var tableId = config.id;
+						switch(obj.event) {
+							case 'addTempData':
+								$.ajax({
+									url: '${ctx}/personnel/getpersonVariabledao',
+									type: "GET",
+									data:{
+										type:5
+									},
+									async: false,
+									beforeSend: function() {
+										index;
+									},
+									success: function(result) {
+										$(result.data).each(function(i, o) {
+											$("#ids").val(o.id);
+											$("#keyValue").val(o.keyValue);
+											$("#keyValueTwo").val(o.keyValueTwo);
+											$("#keyValueThree").val(o.keyValueThree);
+										})
+										
+										layer.close(index);
+									},
+									error: function() {
+										layer.msg("操作失败！", {
+											icon: 2
+										});
+										layer.close(index);
+									}
+								});
+								
+								//报价修改
+								var	dicDiv=$("#layuiadmin-form-admin");
+									layer.open({
+										type:1,
+										title:'水费标准',
+										area:['22%','30%'],
+										btn:['确认','取消'],
+										content:dicDiv,
+										id: 'LAY_layuipro' ,
+										btnAlign: 'c',
+									    moveType: 1, //拖拽模式，0或者1
+										success : function(layero, index) {
+								        	layero.addClass('layui-form');
+											// 将保存按钮改变成提交按钮
+											layero.find('.layui-layer-btn0').attr({
+												'lay-filter' : 'addRole',
+												'lay-submit' : ''
+											})
+								        },
+										yes:function(){
+											form.on('submit(addRole)', function(data) {
+												$.ajax({
+													url: '${ctx}/personnel/addPersonVaiable',
+													type: "POST",
+													data:data.field,
+													async: false,
+													beforeSend: function() {
+														index;
+													},
+													success: function(result) {
+													if(result.code==0){
+														layer.msg("修改成功！", {
+															icon: 1
+														});
+													}else{
+														layer.msg("修改失败！", {
+															icon: 2
+														});
+													}
+														layer.close(index);
+													},
+													error: function() {
+														layer.msg("操作失败！", {
+															icon: 2
+														});
+														layer.close(index);
+													}
+												});
+											})
+										}
+									})
+								break;
+						}
+					});
 					
-					
-					
-					$(document).keydown(function(event){
-						　　if(event.keyCode==13){
-						　   $("#LAY-search5").click();
-						　　}
-						});
-					
+				   	var even=function(data){
+						table.reload("tableData", {
+							url: '${ctx}/personnel/getSummaryMeal' ,
+							where:data,
+			              });
+			             
+					};
 					
 					//监听搜索
 					form.on('submit(LAY-search)', function(obj) {		//修改此处
@@ -254,9 +362,6 @@
 						var orderTime=field.orderTimeBegin.split('~');
 						field.orderTimeBegin=orderTime[0];
 						field.orderTimeEnd=orderTime[1];
-						table.reload('tableData', {
-							where: field
-						}); 
 						even(field)
 					});
 				}

@@ -55,4 +55,5 @@ public interface MealService  extends BaseCRUDService<Meal,Long>{
 	 * @param onlineOrder
 	 */
 	public int InitMeal(AttendanceTime attendanceTime) throws ParseException;
+	
 }

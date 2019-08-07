@@ -75,6 +75,8 @@
 								<th class="text-center">工作小时</th>
 								<th class="text-center">到岗预计每小时收入</th>
 								<th class="text-center">A工资</th>
+								<th class="text-center">出勤时长</th>
+								<th class="text-center">加班时长</th>
 								<th class="text-center">操作</th>
 							</tr>
 						</thead>
@@ -446,6 +448,8 @@
 		      				+'<td class="text-center edit workTime">'+o.workTime+'</td>'
 		      				+'<td class="text-center  ">'+o.workPrice+'</td>'
 		      				+'<td class="text-center  ">'+parseFloat((o.payNumber).toFixed(2))+'</td>'
+		      				+'<td class="text-center  edit turnWorkTime">'+o.turnWorkTime+'</td>'
+		      				+'<td class="text-center  edit overTime">'+o.overTime+'</td>'
 		      				+'<td class="text-center"> <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> </td></tr>'
 		      			}); 
 		      			self.setCount(result.data.pageNum)
@@ -504,6 +508,8 @@
 							var postData = {
 									id:$(this).data('id'),
 									workTime:$(this).parent().parent('tr').find(".workTime").text(),
+									turnWorkTime:$(this).parent().parent('tr').find(".turnWorkTime").text(),
+									overTime:$(this).parent().parent('tr').find(".overTime").text(),
 							}
 							var index;
 							

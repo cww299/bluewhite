@@ -100,6 +100,7 @@
 						x=""
 					}
 					var lastdate = year + '-' + p(month) + '-' + x+date +' '+'00:00:00';
+					var lastdate2= year + '-' + p(month) + '-' + x+date;
 					//select全局变量
 					var htmls = '<option value="">请选择</option>';
 					var index = layer.load(1, {
@@ -246,8 +247,8 @@
 							form.render();
 							laydate.render({
 								elem: '#startTimes',
-								type : 'datetime',
-								value:lastdate,
+								type : 'date',
+								value:lastdate2,
 							})
 						},
 								});
@@ -304,6 +305,9 @@
 								var overtimes=new Array()//加班时间
 								data.forEach(function(j,k) {  
 									turnWorkTime.push(j.turnWorkTime)
+									if(j.overtimes==""){
+										j.overtimes=0
+									}
 									overtimes.push(j.overtimes)
 									arr.push(j.id)
 								});
@@ -318,7 +322,7 @@
 										usersId:arr,
 										overtimes:overtimes,
 										turnWorkTimes:turnWorkTime,
-										allotTime:$("#startTimes").val()+' '+'00:00:00',
+										allotTime:$("#startTimes").val(),
 								}
 								 mainJs.fAdd(postData);
 						          break;
