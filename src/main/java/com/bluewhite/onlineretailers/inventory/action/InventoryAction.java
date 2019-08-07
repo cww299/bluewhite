@@ -78,7 +78,8 @@ public class InventoryAction {
 						"residueNumber")
 				.addRetainTerm(Delivery.class, "id", "sumNumber", "trackingNumber", "deliveryChilds", "createdAt")
 				.addRetainTerm(DeliveryChild.class, "id", "number", "commodity")
-				.addRetainTerm(Commodity.class, "id", "skuCode").addRetainTerm(BaseData.class, "id", "name")
+				.addRetainTerm(Commodity.class, "id", "skuCode")
+				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName")
 				.addRetainTerm(RegionAddress.class, "id", "regionName", "parentId");
 	}
@@ -166,7 +167,7 @@ public class InventoryAction {
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(Commodity.class, "id", "productID", "skuCode", "fileId", "picUrl", "name", "description",
 						"weight", "size", "material", "fillers", "cost", "propagandaCost", "remark", "tianmaoPrice",
-						"oseePrice", "offlinePrice", "inventorys")
+						"oseePrice", "offlinePrice", "inventorys","number")
 				.addRetainTerm(Inventory.class, "number", "place", "warehouse")
 				.addRetainTerm(BaseData.class, "id", "name").format(commodityService.findPage(commodity, page))
 				.toJSON());
@@ -182,6 +183,8 @@ public class InventoryAction {
 	@ResponseBody
 	public CommonResponse addCommodity(Commodity commodity) {
 		CommonResponse cr = new CommonResponse();
+		// 同步商品名称
+		commodity.setName(commodity.getSkuCode());
 		if (commodity.getId() != null) {
 			Commodity ot = commodityService.findOne(commodity.getId());
 			BeanCopyUtils.copyNotEmpty(commodity, ot, "");
@@ -191,8 +194,6 @@ public class InventoryAction {
 			if (commodityService.findByName(commodity.getSkuCode()) != null) {
 				cr.setMessage("该商品已存在无法新增");
 			} else {
-				// 同步商品名称
-				commodity.setName(commodity.getSkuCode());
 				commodityService.save(commodity);
 				cr.setMessage("新增成功");
 			}
@@ -477,43 +478,28 @@ public class InventoryAction {
 	}
 
 	/**
-	 * 库存(导入)
 	 * 
-	 * @return
-	 * @throws IOException
+	 * 
 	 */
-	@RequestMapping(value = "/inventory/import/excelInventory", method = RequestMethod.POST)
+	@RequestMapping(value = "/inventory/test", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse excelInventory(@RequestParam(value = "file", required = false) MultipartFile file)
-			throws IOException {
+	public CommonResponse test(Procurement procurement) {
 		CommonResponse cr = new CommonResponse();
-		InputStream inputStream = file.getInputStream();
-		ExcelListener excelListener = new ExcelListener();
-		EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1), excelListener);
-		List<Object> objects = excelListener.getData();
-		for (Object ob : objects) {
-			Procurement procurement = new Procurement();
-			List<Map<String, Object>> mapList = new ArrayList<>();
-			List<Object> obs = (List<Object>) ob;
-			Map<String, Object> map = new HashMap<>();
-			map.put("batchNumber", obs.get(0));
-			map.put("number", obs.get(1));
-			map.put("commodityId", obs.get(2));
-			map.put("warehouseId", 157);
-			map.put("status", 0);
-			mapList.add(map);
-			// map转字符串
-			procurement.setType(2);
-			procurement.setStatus(0);
-			procurement.setUserId((long) 770);
-			procurement.setNumber(Integer.valueOf((String) obs.get(1)));
-			JSONArray ja = JSONArray.parseArray(JSON.toJSONString(mapList));
-			procurement.setCommodityNumber(ja.toJSONString());
-			procurementService.saveProcurement(procurement);
-		}
-		inputStream.close();
+		cr.setData(procurementService.test(procurement));
+		cr.setMessage("成功");
 		return cr;
 	}
+	@RequestMapping(value = "/inventory/test1", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse test1(Procurement procurement) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(procurementService.test1(procurement));
+		cr.setMessage("成功");
+		return cr;
+	}
+	
+	
+	
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {

@@ -160,7 +160,7 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 			//上浮后无加绩固定给予(当没有考勤的员工无此加绩固定工资)
 			collect.setNoPerformanceNumber( collect.getPayA()!=0.0 ? collectPay.getNoPerformancePay() : 0.0);
 			//无绩效小时工资
-			collect.setNoTimePay( NumUtils.div(collect.getPayA(), collect.getTime(), 5) );
+			collect.setNoTimePay(NumUtils.div(collect.getPayA(), collect.getTime(), 5) );
 			//有绩效小时工资(取所有工资中的最大项)
 			Double timePay = 0.0 ;
 			if(collect.getAddSelfPayB()>collect.getPayA()){

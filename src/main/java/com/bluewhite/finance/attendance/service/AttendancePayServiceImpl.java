@@ -143,16 +143,18 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 			if (findAttendancePay(attendance).size() > 0) {
 				throw new ServiceException(user.getUserName() + sdf.format(attendance.getAllotTime())+"日已存在考情记录，无需再次添加，请重新选择");
 			}
-			// 出勤时长
-			attendance.setTurnWorkTime(attendancePay.getTurnWorkTimes()[i]);
-			// 加班时长
-			attendance.setOverTime(attendancePay.getOvertimes()[i]);
-			// 工作时长
-			attendance.setWorkTime(NumUtils.sum(attendancePay.getTurnWorkTimes()[i], attendancePay.getOvertimes()[i]));
-			attendance.setWorkPrice(user.getPrice());
-			attendance.setUserName(user.getUserName());
-			attendance.setPayNumber(NumUtils.round(attendance.getWorkPrice()*attendance.getWorkTime(),2));
-			dao.save(attendance);
+			if(attendancePay.getTurnWorkTimes()[i] !=0 || attendancePay.getOvertimes()[i]!=0){
+				// 出勤时长
+				attendance.setTurnWorkTime(attendancePay.getTurnWorkTimes()[i]);
+				// 加班时长
+				attendance.setOverTime(attendancePay.getOvertimes()[i]);
+				// 工作时长
+				attendance.setWorkTime(NumUtils.sum(attendancePay.getTurnWorkTimes()[i], attendancePay.getOvertimes()[i]));
+				attendance.setWorkPrice(user.getPrice());
+				attendance.setUserName(user.getUserName());
+				attendance.setPayNumber(NumUtils.round(attendance.getWorkPrice()*attendance.getWorkTime(),2));
+				dao.save(attendance);
+			}
 			count++;
 		}
 		return count; 

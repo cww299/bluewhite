@@ -307,9 +307,12 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				if (onlineOrder.getFlag() == 1) {
 					throw new ServiceException(onlineOrder.getDocumentNumber() + "销售单，反冲数据，无法发货");
 				}
+				//出库单客户
+				procurement.setOnlineCustomerId(onlineOrder.getOnlineCustomerId());
 				procurement.setRemark("销售出库：" + onlineOrder.getDocumentNumber());
 				deli.setOnlineOrderId(onlineOrder.getId());
 				deli.setTrackingNumber(trackingNumber);
+				deli.setOnlineCustomerId(onlineOrder.getOnlineCustomerId());  
 				// 发货单
 				DeliveryChild deliveryChild = new DeliveryChild();
 				deliveryChild.setCommodityId(onlineOrderChild.getCommodityId());
@@ -338,21 +341,29 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				int residueNumber = number;
 				String ids = "";
 				List<ProcurementChild> newProcurementChild = new ArrayList<>();
-				for (ProcurementChild updateProcurementChild : procurementChildList) {
-					// 当入库单数量小于出库单时,更新剩余数量
-					if (updateProcurementChild.getResidueNumber() < residueNumber) {
-						residueNumber = number - updateProcurementChild.getResidueNumber();
-						updateProcurementChild.setResidueNumber(0);
-						newProcurementChild.add(updateProcurementChild);
-						ids += updateProcurementChild.getId() + ",";
-					} else {
-						updateProcurementChild
-								.setResidueNumber(updateProcurementChild.getResidueNumber() - residueNumber);
-						newProcurementChild.add(updateProcurementChild);
-						ids += updateProcurementChild.getId() + ",";
-						break;
+				if(procurementChildList.size()>0){
+					for (ProcurementChild updateProcurementChild : procurementChildList) {
+						//给出货单增加批次号
+						if (updateProcurementChild.getResidueNumber() < residueNumber) {
+							procurementChild.setBatchNumber( 
+									(StringUtils.isEmpty(procurementChild.getBatchNumber()) ? updateProcurementChild.getBatchNumber()
+											: procurementChild.getBatchNumber() + "," + updateProcurementChild.getBatchNumber())+":"+ updateProcurementChild.getResidueNumber()   );
+							residueNumber = procurementChild.getNumber() - updateProcurementChild.getResidueNumber();
+							updateProcurementChild.setResidueNumber(0);
+							newProcurementChild.add(updateProcurementChild);
+							ids += updateProcurementChild.getId() + ",";
+						} else {
+							procurementChild.setBatchNumber( 
+									(StringUtils.isEmpty(procurementChild.getBatchNumber()) ? updateProcurementChild.getBatchNumber()
+											: procurementChild.getBatchNumber() + "," + updateProcurementChild.getBatchNumber())+":"+ residueNumber  );
+							updateProcurementChild.setResidueNumber(updateProcurementChild.getResidueNumber() - residueNumber);
+							newProcurementChild.add(updateProcurementChild);
+							ids += updateProcurementChild.getId() + ",";
+							break;
+						}
 					}
 				}
+				
 				// 更新改变数量的入库单的剩余数量
 				procurementChildDao.save(newProcurementChild);
 				// 将出库单ids存入入库单，便于反冲
@@ -360,7 +371,6 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				// 当订单的状态是买家已付款时或部分发货
 				if (onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_4)
 						|| onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_3)) {
-
 					// 获取商品
 					Commodity commodity = onlineOrderChild.getCommodity();
 					// 获取库存
@@ -395,7 +405,6 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 					onlineOrder.setStatus(Constants.ONLINEORDER_3);
 				}
 				count++;
-
 			}
 			// 更新总发货单的数量
 			int procurementNumber = procurement.getProcurementChilds().stream().mapToInt(p -> p.getNumber()).sum();
@@ -555,7 +564,6 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				beginTimes = onlineOrder.getOrderTimeBegin();
 				endTimes = onlineOrder.getOrderTimeEnd();
 			}
-
 			Map<String, Object> mapSale = new HashMap<String, Object>();
 			// 获取所有订单
 			List<OnlineOrder> onlineOrderList = onlineOrderDao.findByFlagAndCreatedAtBetween(0, beginTimes, endTimes);

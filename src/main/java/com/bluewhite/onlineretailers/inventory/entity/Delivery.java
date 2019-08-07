@@ -1,7 +1,6 @@
 package com.bluewhite.onlineretailers.inventory.entity;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -60,8 +59,43 @@ public class Delivery extends BaseEntity<Long>{
 	@Column(name = "tracking_number")
 	private String trackingNumber;
 	
+	/**
+	 * 客户id
+	 * 
+	 */
+	@Column(name = "online_customer_id")
+	private Long onlineCustomerId;
+	
+
+	/**
+	 * 客户
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "online_customer_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private OnlineCustomer onlineCustomer;
 	
 	
+	
+
+	public Long getOnlineCustomerId() {
+		return onlineCustomerId;
+	}
+
+
+	public void setOnlineCustomerId(Long onlineCustomerId) {
+		this.onlineCustomerId = onlineCustomerId;
+	}
+
+
+	public OnlineCustomer getOnlineCustomer() {
+		return onlineCustomer;
+	}
+
+
+	public void setOnlineCustomer(OnlineCustomer onlineCustomer) {
+		this.onlineCustomer = onlineCustomer;
+	}
+
 
 	public String getTrackingNumber() {
 		return trackingNumber;

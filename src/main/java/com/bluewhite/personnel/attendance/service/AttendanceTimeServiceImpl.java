@@ -808,9 +808,12 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		// 按打卡记录查出考勤 自然排序
 		List<AttendanceTime> attendanceTimeList = findAttendanceTimePage(attendanceTime).stream()
 		.sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
-		for (int i = 0; i < size; i++) {
+		
+		
+		for (int i = 0; i < size; i++) {     
 			AttendancePay aPay = attendancePayList.get(i);
 			AttendanceTime aTime = attendanceTimeList.get(i);
+			
 			if(DatesUtil.sameDate(aPay.getAllotTime(),aTime.getTime())){
 				Map<String, Object> map = new HashMap<>();
 				map.put("date", sdf.format(aPay.getAllotTime()));   

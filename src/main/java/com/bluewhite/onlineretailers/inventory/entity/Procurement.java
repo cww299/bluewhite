@@ -67,7 +67,7 @@ public class Procurement extends BaseEntity<Long>{
 	private User transfersUser;
 	
 	/**
-	 * 退货客户id
+	 * 客户id
 	 * 
 	 */
 	@Column(name = "online_customer_id")
@@ -75,7 +75,7 @@ public class Procurement extends BaseEntity<Long>{
 	
 
 	/**
-	 * 退货客户
+	 * 客户
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "online_customer_id", referencedColumnName = "id", insertable = false, updatable = false)

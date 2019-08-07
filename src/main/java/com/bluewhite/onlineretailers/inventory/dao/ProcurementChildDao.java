@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.bluewhite.base.BaseRepository;
 import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
+import java.lang.String;
 
 public interface ProcurementChildDao extends BaseRepository<ProcurementChild, Long>{
 	/**
@@ -28,5 +29,10 @@ public interface ProcurementChildDao extends BaseRepository<ProcurementChild, Lo
 	 */
 	List<ProcurementChild> findByCreatedAtBetween(Date orderTimeBegin, Date orderTimeEnd);
 	
+	
+	List<ProcurementChild> findByPutWarehouseIdsIsNull();
+	
+	
+	List<ProcurementChild> findByPutWarehouseIdsNotNull();
 
 }
