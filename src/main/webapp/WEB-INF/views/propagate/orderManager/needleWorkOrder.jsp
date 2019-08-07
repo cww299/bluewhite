@@ -40,6 +40,9 @@ td{
 				<td>批次号:</td>
 				<td><input type="text" class="layui-input" name="batchNumber" placeholder='请输入批次号'></td>
 				<td>&nbsp;&nbsp;</td>
+				<td>单据编号:</td>
+				<td><input type="text" class="layui-input" name="documentNumber" placeholder='请输入单据编号'></td>
+				<td>&nbsp;&nbsp;</td>
 				<td>商品名:</td>
 				<td><input type="text" class="layui-input" name="commodityName" placeholder='请输入商品名'></td>
 				<td>&nbsp;&nbsp;</td>
