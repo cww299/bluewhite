@@ -73,7 +73,7 @@ td{
 			<td>经手人</td>
 			<td><select name="userId" id='userIdSelect' lay-search><option value="1" >获取数据中...</option></select></td>
 			<td>客户</td>
-			<td><select name="onlineCustomerId" id='customerIdSelect' lay-search><option value="1" >获取数据中...</option></select></td>
+			<td><select name="onlineCustomerId" id='customerIdSelect' lay-search lay-verify="required"><option value="1">获取数据中...</option></select></td>
 			<td>默认出库类型</td>
 			<td><select lay-filter="defaultSelect" type='status'>
 						<option value="0">销售出库</option>
