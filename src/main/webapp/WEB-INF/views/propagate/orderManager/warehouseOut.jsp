@@ -33,7 +33,7 @@ td{
 <div class="layui-card">
 	<div class="layui-card-body">
 		<table class="layui-form">
-			<tr>
+			<tr> 
 				<td>批次号:</td>
 				<td><input type="text" class="layui-input" name="batchNumber" placeholder='请输入批次号'></td>
 				<td>&nbsp;&nbsp;</td>
