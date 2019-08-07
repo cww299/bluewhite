@@ -524,7 +524,6 @@ layui.config({
 			var childData = [],materialData = [],cusId = '',userId='';
 			$('#addEditCustomer').val('');
 			$('#sendDate').removeAttr('disabled');
-			$('#addEditNumber').removeAttr('disabled');
 			$('#sureAddEidtBtn').html('确定新增');
 			if(type=='edit'){
 				var msg = '';
@@ -544,7 +543,6 @@ layui.config({
 				$('#addEditType').val(data.type);
 				$('#sureAddEidtBtn').html('确定修改');
 				$('#sendDate').attr('disabled','disabled');
-				$('#addEditNumber').attr('disabled','disabled');
 			}else
 				getNumber();
 			addEditWin=layer.open({
