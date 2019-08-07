@@ -365,6 +365,7 @@ layui.config({
 			layer.open({
 				title: '打印',
 				area: ['80%','80%'],
+				offset: '100px', 
 				content: html+'</div>',
 				btnAlign: 'c',
 				btn: ['打印','取消'],
@@ -394,6 +395,7 @@ layui.config({
 				title:'提示',
 				area: ['25%','35%'],
 				btn: ['确认','取消'],
+				offset: '200px', 
 				content: '<div style="padding:5px;"><span class="layui-badge">提示：请确认发货时间</span><input type="text" class="layui-input" id="sureTime"></div>',
 				success:function(){
 					laydate.render({ elem: '#sureTime',value: defaultTime.split(' ')[0] })
@@ -549,6 +551,7 @@ layui.config({
 				type:1,
 				title:title,
 				area:['90%','90%'],
+				offset: '40px', 
 				content: $('#addEditWin'),
 				success: function(){
 					getAllSend();
