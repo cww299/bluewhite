@@ -155,7 +155,7 @@ public class InventoryAction {
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(Commodity.class, "id", "productID", "skuCode", "fileId", "picUrl", "name", "description",
 						"weight", "size", "material", "fillers", "cost", "propagandaCost", "remark", "tianmaoPrice",
-						"oseePrice", "offlinePrice", "inventorys","number")
+						"oseePrice", "offlinePrice", "inventorys","number","productId")
 				.addRetainTerm(Inventory.class, "number", "place", "warehouse")
 				.addRetainTerm(BaseData.class, "id", "name").format(commodityService.findPage(commodity, page))
 				.toJSON());
@@ -323,10 +323,22 @@ public class InventoryAction {
 	 */
 	@RequestMapping(value = "/inventory/updateProcurement", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse updateProcurement(Procurement procurement) {
+	public CommonResponse updateProcurement(ProcurementChild procurementChild) {
 		CommonResponse cr = new CommonResponse();
-		procurementService.saveProcurement(procurement);
+		procurementService.updateProcurementChild(procurementChild);
 		cr.setMessage("修改成功");
+		return cr;
+	}
+	
+	/**
+	 * 未审核前修改入库单
+	 */
+	@RequestMapping(value = "/inventory/auditProcurement", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse auditProcurement(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count  = procurementService.auditProcurement(ids);
+		cr.setMessage("成功审核"+count+"条入库单");
 		return cr;
 	}
 	
@@ -533,6 +545,7 @@ public class InventoryAction {
 		cr.setMessage("成功");
 		return cr;
 	}
+	
 	@RequestMapping(value = "/inventory/test1", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse test1(Procurement procurement) {

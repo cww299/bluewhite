@@ -70,7 +70,7 @@ public class ProcurementChild  extends BaseEntity<Long>{
 	private Integer number;
 	
 	/**
-	 * 转换剩余数量(入库单数量无法转换，在出库单生成时，自动减去按时间排序的入库单剩余数量)
+	 * 转换剩余数量(在出库单生成时，自动减去按时间排序的入库单剩余数量)
 	 */
 	@Column(name = "residue_number")
 	private Integer residueNumber;
