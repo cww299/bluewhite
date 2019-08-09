@@ -189,7 +189,6 @@ layui.config({
 		table.on('toolbar(needleOrderTable)',function(obj){	//监听入库单表格按钮
 			switch(obj.event){
 			case 'delete':		deletes();		break;
-			case 'becomeEntry':becomeEntry(); break;
 			case 'addNeedle':	addNeedle();	break;
 			}
 		})
@@ -226,9 +225,10 @@ layui.config({
 				page:{},
 				cols:[[
 				       {type:'checkbox', align:'center', fixed:'left'},
-				       {align:'center', title:'批次号',   field:'batchNumber',style:'color:blue', },
+				       {align:'center', title:'批次号',   field:'batchNumber',style:'color:blue', width:'12%' },
 				       {align:'center', title:'商品名称', field:'skuCode',},
-				       {align:'center', title:'数量',     field:'number', edit:true,style:'color:blue', },
+				       {align:'center', title:'数量',     field:'number', edit:true,style:'color:blue', width:'10%' },
+				       {align:'center', title:'剩余数量',     field:'residueNumber',style:'color:red', width:'10%' },
 				       {align:'center', title:'备注',  	  field:'childRemark', edit:true,style:'color:blue', }, 
 				       ]]
 			})
@@ -247,12 +247,12 @@ layui.config({
 				(obj.value=='') && (msg='计划的数量不能为空');
 				(obj.value<0) && (msg='计划的数量不能小于0');
 				(obj.value%1 !== 0) && (msg='计划的数量必须为整数');
+				(obj.value>obj.data.residueNumber) && (msg='计划的数量不能大于剩余数量');
 				for(var i=0;i<choosedProduct.length;i++){
 					if(choosedProduct[i].id==obj.data.id){		
 						if(msg!=''){
 							layer.msg('"'+obj.value+'" 为非法输入！'+msg,{icon:2,offset:'100px',});
-							$(this).val(1)
-							choosedProduct[i].number=1;
+							$(this).val(choosedProduct[i].number)
 							return;
 						}
 						$('#addNumber').val($('#addNumber').val()-choosedProduct[i].number-(-parseInt(obj.value)));
@@ -266,8 +266,6 @@ layui.config({
 					 if(choosedProduct[i].id==obj.data.id){		//重新对该行的相关数据进行计算
 						if(obj.field=='childRemark')
 						 	choosedProduct[i].childRemark=obj.data.childRemark;
-						else if(obj.field=='batchNumber')
-							choosedProduct[i].batchNumber=obj.data.batchNumber;
 					 	layer.msg('修改成功！',{icon:1,offset:'100px',});
 					 	break;
 					}
@@ -384,13 +382,13 @@ layui.config({
 			}
 			for(var i=0;i<choosed.length;i++){
 				var orderChild={
-						skuCode : choosed[i].commodity.name ,			//商品名称
-						commodityId : choosed[i].id,			//商品id
-						number : 1,								//商品数量
-						cost : choosed[i].cost,					//成本
-						childRemark : choosed[i].childRemark,				//备注
+						skuCode : choosed[i].commodity.name ,			
+						commodityId : choosed[i].commodity.productId,			
+						number : 1,								
+						residueNumber: choosed[i].residueNumber,
+						childRemark : choosed[i].childRemark,				
 						batchNumber : choosed[i].batchNumber,
-						id : choosedId++,  						//仅仅用于标识不同的数据
+						id : choosedId++,  						
 				};
 				$('#addNumber').val($('#addNumber').val()-(-1));
 				choosedProduct.push(orderChild);
