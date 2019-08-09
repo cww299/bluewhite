@@ -290,7 +290,8 @@ layui.config({
 				child.push({batchNumber : choosedProduct[i].batchNumber.replace(/(^\s*)|(\s*$)/g, ''),
 							productId : choosedProduct[i].commodityId,
 							number : choosedProduct[i].number,
-							childRemark : choosedProduct[i].childRemark});
+							childRemark : choosedProduct[i].childRemark,
+							parentId: choosedProduct[i].id });
 			}
 			data.commodityNumber=JSON.stringify(child);			//子列表商品
 			var load = layer.load(1);
@@ -377,24 +378,29 @@ layui.config({
 		function sureChoosed(){					//确定商品选择
 			var choosed=layui.table.checkStatus('productChooseTable').data;
 			if(choosed.length<1){
-				layer.msg("请选择相关商品",{icon:2,offset:'100px',});
+				layer.msg("请选择相关商品",{icon:2,offset:'200px',});
 				return false;
 			}
 			for(var i=0;i<choosed.length;i++){
+				for(var j=0;j<choosedProduct.length;j++){
+					if(choosedProduct[j].id == choosed[i].id){
+						 layer.msg('批次号：'+choosed[i].batchNumber+' 商品：'+choosed[i].commodity.name+'已选择，请勿重复添加。',{icon:2,offset:'200px',});
+						 return false;
+					}
+				}
 				var orderChild={
 						skuCode : choosed[i].commodity.name ,			
 						commodityId : choosed[i].commodity.productId,			
-						number : 1,								
+						number : 0,								
 						residueNumber: choosed[i].residueNumber,
 						childRemark : choosed[i].childRemark,				
 						batchNumber : choosed[i].batchNumber,
-						id : choosedId++,  						
+						id : choosed[i].id,  						
 				};
-				$('#addNumber').val($('#addNumber').val()-(-1));
 				choosedProduct.push(orderChild);
 			}
 			table.reload('productListTable',{ data:choosedProduct });
-			layer.msg('添加成功',{icon:1,offset:'100px',});
+			layer.msg('添加成功',{icon:1,offset:'200px',});
 			return true;
 		}
 		function openAddNewPorductWin(){		//添加新产品窗口
