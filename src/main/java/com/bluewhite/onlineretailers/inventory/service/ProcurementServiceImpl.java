@@ -238,6 +238,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 					procurementChild.setResidueNumber(jsonObject.getIntValue("number"));
 				}
 
+				//入库单
 				if (procurement.getType() == 2) {
 					procurementChild.setWarehouseId(jsonObject.getLong("warehouseId"));
 					procurementChild.setPlace(jsonObject.getString("place"));
