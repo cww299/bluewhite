@@ -42,6 +42,11 @@ public class ProcurementChild  extends BaseEntity<Long>{
 	@JoinColumn(name = "commodity_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Commodity commodity;
 	
+	/**
+	 * 上一阶段单据id（用于做反冲数据时确定上一阶段反冲数据）
+	 */
+	@Column(name = "parent_id")
+	private Long parentId;
 	
 	/**
 	 * 父id
@@ -173,6 +178,17 @@ public class ProcurementChild  extends BaseEntity<Long>{
 	
 	
 	
+	
+	public Long getParentId() {
+		return parentId;
+	}
+
+
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
+	}
+
+
 	public String getDocumentNumber() {
 		return documentNumber;
 	}

@@ -28,6 +28,14 @@ import com.bluewhite.system.user.entity.User;
 @Table(name = "online_procurement"  ,indexes = {@Index(columnList = "created_at")})
 public class Procurement extends BaseEntity<Long>{
 	
+	
+	/**
+	 * 订单id
+	 * 
+	 */
+	@Column(name = "order_id")
+	private Long orderId;
+	
 	/**
 	 * 单据编号
 	 */
@@ -131,12 +139,6 @@ public class Procurement extends BaseEntity<Long>{
 	private Integer flag;
 	
 	/**
-	 * 上一阶段单据id（用于做反冲数据时确定上一阶段反冲数据）
-	 */
-	@Column(name = "parent_id")
-	private Long parentId;
-	
-	/**
 	 * 备注
 	 * 
 	 */
@@ -196,6 +198,14 @@ public class Procurement extends BaseEntity<Long>{
 	
 	
 	
+	public Long getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
+	}
+
 	public Integer getAudit() {
 		return audit;
 	}
@@ -306,14 +316,6 @@ public class Procurement extends BaseEntity<Long>{
 
 	public void setResidueNumber(Integer residueNumber) {
 		this.residueNumber = residueNumber;
-	}
-
-	public Long getParentId() {
-		return parentId;
-	}
-
-	public void setParentId(Long parentId) {
-		this.parentId = parentId;
 	}
 
 	public List<ProcurementChild> getProcurementChilds() {

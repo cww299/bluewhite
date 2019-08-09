@@ -10,13 +10,6 @@ import java.lang.Integer;
 public interface ProcurementDao  extends BaseRepository<Procurement, Long>{
 	
 	/**
-	 * 根据父id查询
-	 * @param parentId
-	 * @return
-	 */
-	List<Procurement> findByFlagAndParentId(Integer flag,Long parentId);
-	
-	/**
 	 * 根据类型和时间查询
 	 * @param type
 	 * @param startTime
@@ -34,4 +27,10 @@ public interface ProcurementDao  extends BaseRepository<Procurement, Long>{
 	 */
 	List<Procurement> findByTypeAndStatusAndCreatedAtBetween(int type,int status, Date startTime, Date endTime);
 	
+	
+	/**
+	 * 根据下单合同查找生产单
+	 * @return
+	 */
+	Procurement findByOrderId(Long id);
 }
