@@ -180,6 +180,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	@Override
 	@Transactional
 	public Procurement saveProcurement(Procurement procurement) {
+		procurement.setCreatedAt(procurement.getCreatedAt() !=null ? procurement.getCreatedAt() : new Date());
 		if(procurement.getOrderId()!=null){
 			Procurement oProcurement = dao.findByOrderId(procurement.getOrderId());
 			if(oProcurement!=null){
