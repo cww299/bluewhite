@@ -61,5 +61,11 @@ public interface CommodityService  extends BaseCRUDService<Commodity,Long>{
 	 * @param ids
 	 */
 	public  Commodity findByName(String name);
+	
+	/**
+	 * 根据名字查询
+	 * @param ids
+	 */
+	public  Commodity findByProductId(Long productId);
 
 }

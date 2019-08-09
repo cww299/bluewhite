@@ -9,13 +9,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
-import com.bluewhite.system.user.entity.User;
+import com.bluewhite.product.product.entity.Product;
 
 /**
  * 电商在售商品
@@ -34,13 +34,19 @@ public class Commodity extends BaseEntity<Long>{
 	@Column(name = "number")
 	private String number;
 	
-	
 	/**
-	 * 商品ID（电商线上同步信息字段）
-	 * 
+	 * 产品id
 	 */
-	@Column(name = "product_ID")
-	private Long productID;
+	@Column(name = "product_id")
+	private Long productId;
+
+	/**
+	 * 产品
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Product product;
+	
 	
 	/**
 	 * 商品编号（sku）
@@ -48,6 +54,14 @@ public class Commodity extends BaseEntity<Long>{
 	 */
 	@Column(name = "sku_code")
 	private String skuCode;
+	
+	
+	/**
+	 * 蓝白商品名称
+	 * 
+	 */
+	@Column(name = "name")
+	private String name;
 	
 	/**
 	 * 产品图片id
@@ -61,12 +75,7 @@ public class Commodity extends BaseEntity<Long>{
 	@Column(name = "pic_url")
     private String picUrl;
 	
-	/**
-	 * 商品名称
-	 * 
-	 */
-	@Column(name = "name")
-	private String name;
+
 	
 	/**
 	 * 商品详情描述，可包含图片中心的图片URL
@@ -177,6 +186,26 @@ public class Commodity extends BaseEntity<Long>{
 	
 
 
+	public Long getProductId() {
+		return productId;
+	}
+
+
+	public void setProductId(Long productId) {
+		this.productId = productId;
+	}
+
+
+	public Product getProduct() {
+		return product;
+	}
+
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+
 	public String getNumber() {
 		return number;
 	}
@@ -234,17 +263,6 @@ public class Commodity extends BaseEntity<Long>{
 	public void setFileId(Long fileId) {
 		this.fileId = fileId;
 	}
-
-
-	public Long getProductID() {
-		return productID;
-	}
-
-
-	public void setProductID(Long productID) {
-		this.productID = productID;
-	}
-
 
 	public String getDescription() {
 		return description;

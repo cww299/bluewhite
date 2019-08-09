@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.ledger.entity.Customer;
 /**
  * 电商发货单
  * @author zhangliang
@@ -72,7 +73,7 @@ public class Delivery extends BaseEntity<Long>{
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "online_customer_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private OnlineCustomer onlineCustomer;
+	private Customer onlineCustomer;
 	
 	
 	
@@ -87,12 +88,12 @@ public class Delivery extends BaseEntity<Long>{
 	}
 
 
-	public OnlineCustomer getOnlineCustomer() {
+	public Customer getOnlineCustomer() {
 		return onlineCustomer;
 	}
 
 
-	public void setOnlineCustomer(OnlineCustomer onlineCustomer) {
+	public void setOnlineCustomer(Customer onlineCustomer) {
 		this.onlineCustomer = onlineCustomer;
 	}
 

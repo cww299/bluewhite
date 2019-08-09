@@ -1,12 +1,7 @@
 package com.bluewhite.onlineretailers.inventory.action;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -15,35 +10,28 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
-import com.alibaba.excel.EasyExcelFactory;
-import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.common.utils.excel.ExcelListener;
+import com.bluewhite.ledger.entity.Customer;
+import com.bluewhite.ledger.service.CustomerService;
 import com.bluewhite.onlineretailers.inventory.dao.WarningDao;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 import com.bluewhite.onlineretailers.inventory.entity.Delivery;
 import com.bluewhite.onlineretailers.inventory.entity.DeliveryChild;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
-import com.bluewhite.onlineretailers.inventory.entity.OnlineCustomer;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
 import com.bluewhite.onlineretailers.inventory.entity.OnlineOrderChild;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 import com.bluewhite.onlineretailers.inventory.entity.Warning;
 import com.bluewhite.onlineretailers.inventory.service.CommodityService;
-import com.bluewhite.onlineretailers.inventory.service.OnlineCustomerService;
 import com.bluewhite.onlineretailers.inventory.service.OnlineOrderService;
 import com.bluewhite.onlineretailers.inventory.service.ProcurementService;
 import com.bluewhite.system.sys.entity.RegionAddress;
@@ -56,7 +44,7 @@ public class InventoryAction {
 	@Autowired
 	private OnlineOrderService onlineOrderService;
 	@Autowired
-	private OnlineCustomerService onlineCustomerService;
+	private CustomerService onlineCustomerService;
 	@Autowired
 	private CommodityService commodityService;
 	@Autowired
@@ -183,15 +171,13 @@ public class InventoryAction {
 	@ResponseBody
 	public CommonResponse addCommodity(Commodity commodity) {
 		CommonResponse cr = new CommonResponse();
-		// 同步商品名称
-		commodity.setName(commodity.getSkuCode());
 		if (commodity.getId() != null) {
 			Commodity ot = commodityService.findOne(commodity.getId());
 			BeanCopyUtils.copyNotEmpty(commodity, ot, "");
 			commodityService.save(ot);
 			cr.setMessage("修改成功");
 		} else {
-			if (commodityService.findByName(commodity.getSkuCode()) != null) {
+			if (commodityService.findByProductId(commodity.getProductId()) != null) {
 				cr.setMessage("该商品已存在无法新增");
 			} else {
 				commodityService.save(commodity);
@@ -222,14 +208,14 @@ public class InventoryAction {
 	 */
 	@RequestMapping(value = "/inventory/onlineCustomerPage", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse onlineCustomerPage(OnlineCustomer onlineCustomer, PageParameter page) {
+	public CommonResponse onlineCustomerPage(Customer onlineCustomer, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(Commodity.class, "id", "user", "name", "buyerName", "grade", "type", "provinces",
 						"city", "county", "address", "phone", "account", "zipCode", "telephone")
 				.addRetainTerm(User.class, "userName")
 				.addRetainTerm(RegionAddress.class, "id", "regionName", "parentId")
-				.format(onlineCustomerService.findPage(onlineCustomer, page)).toJSON());
+				.format(onlineCustomerService.findPages(onlineCustomer, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -240,7 +226,7 @@ public class InventoryAction {
 	 */
 	@RequestMapping(value = "/inventory/addOnlineCustomer", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addOnlineCustomer(OnlineCustomer onlineCustomer) {
+	public CommonResponse addOnlineCustomer(Customer onlineCustomer) {
 		CommonResponse cr = new CommonResponse();
 		onlineCustomerService.save(onlineCustomer);
 		if (onlineCustomer.getId() != null) {
@@ -259,7 +245,7 @@ public class InventoryAction {
 	@ResponseBody
 	public CommonResponse deleteOnlineCustomer(String ids) {
 		CommonResponse cr = new CommonResponse();
-		int count = onlineCustomerService.deleteOnlineCustomer(ids);
+		int count = onlineCustomerService.deleteCustomr(ids);
 		cr.setMessage("成功删除" + count + "个客户");
 		return cr;
 	}
@@ -287,6 +273,33 @@ public class InventoryAction {
 				.addRetainTerm(Inventory.class, "number", "place", "warehouse")
 				.addRetainTerm(User.class, "id", "userName").addRetainTerm(BaseData.class, "name")
 				.format(procurementService.findPage(procurement, page)).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * 分页查看生产单
+	 * 
+	 * @param onlineCustomer
+	 * @param page
+	 * @return
+	 */
+	@RequestMapping(value = "/inventory/procurementProPage", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse procurementProPage(ProcurementChild procurementChild, PageParameter page) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON.get()
+				.addRetainTerm(ProcurementChild.class, "id", "commodity", "number", "residueNumber", "warehouse",
+						"status", "childRemark", "batchNumber" ,"procurement")
+				.addRetainTerm(Procurement.class, "id", "documentNumber", "user",  "number",
+						"residueNumber", "type", "flag", "remark", "transfersUser", "onlineCustomer", "status",
+						"createdAt")
+				.addRetainTerm(Commodity.class, "id", "skuCode", "name", "inventorys")
+				.addRetainTerm(Inventory.class, "number", "place", "warehouse")
+				.addRetainTerm(User.class, "id", "userName")
+				.addRetainTerm(BaseData.class,"name")
+				.format(procurementService.findPages(procurementChild, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -431,8 +444,10 @@ public class InventoryAction {
 						"number", "price", "sumPrice")
 				.addRetainTerm(Commodity.class, "skuCode")
 				.addRetainTerm(OnlineOrder.class, "documentNumber", "user", "onlineCustomer")
-				.addRetainTerm(User.class, "userName").addRetainTerm(OnlineCustomer.class, "name", "buyerName")
-				.addRetainTerm(BaseData.class, "name").format(onlineOrderService.findPage(onlineOrderChild, page))
+				.addRetainTerm(User.class, "userName")
+				.addRetainTerm(Customer.class, "name", "buyerName")
+				.addRetainTerm(BaseData.class, "name")
+				.format(onlineOrderService.findPage(onlineOrderChild, page))
 				.toJSON());
 		cr.setMessage("成功");
 		return cr;
@@ -476,6 +491,22 @@ public class InventoryAction {
 		cr.setMessage("成功");
 		return cr;
 	}
+	
+	
+	/**
+	 * 将出库单转换成发货清单
+	 * 确认后转到财务发货清单
+	 * 
+	 */
+	@RequestMapping(value = "/inventory/conversionProcurement", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse storageUser(String ids) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(procurementService.conversionProcurement(ids));
+		cr.setMessage("成功");
+		return cr;
+	}
+	
 
 	/**
 	 * 

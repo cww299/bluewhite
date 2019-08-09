@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.CustomerDao;
 import com.bluewhite.ledger.entity.Customer;
 @Service
@@ -25,13 +26,33 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
 	public PageResult<Customer> findPages(Customer param, PageParameter page) {
 		Page<Customer> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
-			// 按类型过滤
-			if (param.getType() != null) {
-				predicate.add(cb.equal(root.get("type").as(Long.class), param.getType()));
+	       	//按id过滤
+        	if (param.getId() != null) {
+				predicate.add(cb.equal(root.get("id").as(Long.class),param.getId()));
 			}
-			// 按名称查找
-			if (!StringUtils.isEmpty(param.getName())) {
-				predicate.add(cb.like(root.get("name").as(String.class), "%" + param.getName() + "%"));
+        	//按名称过滤
+        	if (!StringUtils.isEmpty(param.getName())) {
+				predicate.add(cb.like(root.get("name").as(String.class),"%" + StringUtil.specialStrKeyword(param.getName()) + "%"));
+			}
+        	//按真实名称过滤
+        	if (!StringUtils.isEmpty(param.getBuyerName())) {
+				predicate.add(cb.like(root.get("buyerName").as(String.class),"%" + StringUtil.specialStrKeyword(param.getBuyerName()) + "%"));
+			}
+        	//按手机号过滤
+        	if (!StringUtils.isEmpty(param.getPhone())) {
+				predicate.add(cb.like(root.get("phone").as(String.class),"%" + StringUtil.specialStrKeyword(param.getPhone()) + "%"));
+			}
+        	//按类型过滤
+        	if (param.getType()!= null) {
+				predicate.add(cb.equal(root.get("type").as(Integer.class),param.getType()));
+			}
+        	//按等级过滤
+        	if (param.getGrade()!= null) {
+				predicate.add(cb.equal(root.get("grade").as(Integer.class),param.getGrade()));
+			}
+        	//按经手人过滤
+        	if (param.getUserId() != null) {
+				predicate.add(cb.equal(root.get("userId").as(Long.class),param.getUserId()));
 			}
 
 			Predicate[] pre = new Predicate[predicate.size()];

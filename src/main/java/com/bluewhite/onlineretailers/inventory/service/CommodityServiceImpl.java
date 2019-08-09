@@ -272,5 +272,10 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 		return dao.findByName(name);
 	}
 
+	@Override
+	public Commodity findByProductId(Long productId) {
+		return dao.findByProductId(productId);
+	}
+
 
 }

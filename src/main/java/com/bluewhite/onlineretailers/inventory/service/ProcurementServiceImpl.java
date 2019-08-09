@@ -32,6 +32,7 @@ import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
+import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
 import com.bluewhite.onlineretailers.inventory.dao.OnlineOrderChildDao;
 import com.bluewhite.onlineretailers.inventory.dao.OnlineOrderDao;
@@ -124,10 +125,57 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			}
 			return null;
 		}, page);
-
 		PageResult<Procurement> result = new PageResult<>(pages, page);
 		return result;
 	}
+	
+	@Override
+	public PageResult<ProcurementChild> findPages(ProcurementChild param, PageParameter page) {
+		Page<ProcurementChild> pages = procurementChildDao.findAll((root, query, cb) -> {
+			List<Predicate> predicate = new ArrayList<>();
+			// 按id过滤
+			if (param.getId() != null) {
+				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
+			}
+
+			// 按单据类型过滤
+			if (param.getType() != null) {
+				predicate.add(cb.equal(root.get("procurement").get("type").as(Integer.class), param.getType()));
+			}
+
+			// 按状态过滤
+			if (param.getStatus() != null) {
+				predicate.add(cb.equal(root.get("status").as(Integer.class), param.getStatus()));
+			}
+
+			// 按是否反冲
+			if (param.getFlag() != null) {
+				predicate.add(cb.equal(root.get("procurement").get("flag").as(Integer.class), param.getFlag()));
+			}
+			
+			// 按批次
+			if (param.getBatchNumber() != null) {
+				predicate.add(cb.equal(root.get("batchNumber").as(String.class), param.getBatchNumber()));
+			}
+
+			//按单据编号
+			if (!StringUtils.isEmpty(param.getDocumentNumber())) {
+				predicate.add(cb.like(root.get("procurement").get("documentNumber").as(String.class),"%" +  param.getDocumentNumber()+ "%" ));
+			}
+
+			// 按单据生产时间过滤
+			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+				predicate.add(cb.between(root.get("createdAt").as(Date.class), param.getOrderTimeBegin(),
+						param.getOrderTimeEnd()));
+			}
+			Predicate[] pre = new Predicate[predicate.size()];
+			query.where(predicate.toArray(pre));
+			return null;
+		}, page);
+		PageResult<ProcurementChild> result = new PageResult<>(pages, page);
+		return result;
+	}
+	
 
 	@Override
 	@Transactional
@@ -160,14 +208,14 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			upProcurement.setResidueNumber(upProcurement.getNumber());
 			upProcurement.setFlag(0);
 		}
-
 		// 创建子单据
 		if (!StringUtils.isEmpty(procurement.getCommodityNumber())) {
 			JSONArray jsonArray = JSON.parseArray(procurement.getCommodityNumber());
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				ProcurementChild procurementChild = new ProcurementChild();
-				procurementChild.setCommodityId(jsonObject.getLong("commodityId"));
+				Commodity commodity = commodityService.findByProductId(jsonObject.getLong("productId"));
+				procurementChild.setCommodityId(commodity.getId());
 				procurementChild.setBatchNumber(jsonObject.getString("batchNumber"));
 				procurementChild.setNumber(jsonObject.getIntValue("number"));
 				procurementChild.setChildRemark(jsonObject.getString("childRemark"));
@@ -194,27 +242,12 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 					procurementChild.setWarehouseId(jsonObject.getLong("warehouseId"));
 					procurementChild.setPlace(jsonObject.getString("place"));
 					procurementChild.setStatus(jsonObject.getIntValue("status"));
-					Commodity commodity = commodityService.findOne(procurementChild.getCommodityId());
-					// 创建商品的库存
-					Set<Inventory> inventorys = commodity.getInventorys();
-					// 获取库存
-					Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(
-							jsonObject.getLong("commodityId"), jsonObject.getLong("warehouseId"));
-					if (inventory == null) {
-						inventory = new Inventory();
-						inventory.setCommodityId(procurementChild.getCommodityId());
-						inventory.setNumber(procurementChild.getNumber());
-						inventory.setWarehouseId(procurementChild.getWarehouseId());
-						inventorys.add(inventory);
-						commodity.setInventorys(inventorys);
-					} else {
-						inventory.setNumber(inventory.getNumber() + procurementChild.getNumber());
-					}
-					commodityService.save(commodity);
 				}
 
 				// 出库单
 				if (procurement.getType() == 3) {
+					//设置未审核
+					upProcurement.setAudit(0);
 					// 查询商品在当前库存下所有数量大于0的入库单，优先入库时间最早的入库单出库,出库数量可能存在一单无法满足，按时间依次删减出库单数量
 					List<ProcurementChild> procurementChildList = procurementChildDao
 							.findByCommodityIdAndStatusAndResidueNumberGreaterThan(procurementChild.getCommodityId(), 0,
@@ -254,7 +287,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 					procurementChild.setPutWarehouseIds(ids);
 					procurementChild.setWarehouseId(jsonObject.getLong("warehouseId"));
 					procurementChild.setStatus(jsonObject.getIntValue("status"));
-					Commodity commodity = commodityService.findOne(procurementChild.getCommodityId());
+					
 					Set<Inventory> inventorys = commodity.getInventorys();
 					if (inventorys.size() == 0) {
 						throw new ServiceException(commodity.getName() + "没有任何库存,无法出库");
@@ -263,6 +296,9 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 					if (inventorys.size() > 0) {
 						for (Inventory inventory : inventorys) {
 							if (inventory.getWarehouseId().equals(procurementChild.getWarehouseId())) {
+								if(inventory.getNumber() < procurementChild.getNumber()){
+									throw new ServiceException(commodity.getName() + "当前仓库库存不足,无法出库，请补充库存");
+								}
 								inventory.setNumber(inventory.getNumber() - procurementChild.getNumber());
 							}
 						}
@@ -586,10 +622,84 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 		procurementChildDao.save(list);
 		return null;
 	}
+
+	@Override
+	public List<PackingChild> conversionProcurement(String ids) {
+		if(!StringUtils.isEmpty(ids)){
+			String [] idStrings = ids.split(",");
+			for(String id :idStrings){
+				Procurement procurement = dao.findOne(Long.valueOf(id));
+				if(procurement.getProcurementChilds().size()>0){
+					procurement.getProcurementChilds().stream().forEach(p->{
+						if(p.getBatchNumber()==null){
+							throw new ServiceException("出库单批次为空，无法转换");
+						}
+						//分隔批次号
+						String[] batchNumber =  p.getBatchNumber().split(",");
+						for(String  bc :  batchNumber){
+							//分割出批次号和数量
+							String[] bnStrings = bc.split(":");
+							if(bnStrings.length>1){
+									//新增发货清单
+									PackingChild packingChild  = new PackingChild();
+									packingChild.setBacthNumber(bnStrings[0]);
+									packingChild.setCount(Integer.getInteger(bnStrings[1]));
+									packingChild.setCustomerId(procurement.getOnlineCustomerId());
+									
+									 
+							}
+							
+						}
+				});
+			}
+			}
+		}
+		
+		
+		
+		
+		return null;
+	}
 	
 	
-	
-	
+	@Override
+	public int auditProcurement(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idStrings = ids.split(",");
+			for (String id : idStrings) {
+				Procurement procurement = dao.findOne(Long.valueOf(id));
+				if(procurement.getAudit() != null){
+					throw new ServiceException(procurement.getDocumentNumber()+"入库单已审核，请勿再次审核");
+				}
+				if (procurement.getProcurementChilds().size() > 0) {
+					procurement.getProcurementChilds().stream().forEach(p -> {
+						Commodity commodity = p.getCommodity();
+						// 创建商品的库存
+						Set<Inventory> inventorys = commodity.getInventorys();
+						// 获取库存
+						Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(
+								p.getCommodityId(), p.getWarehouseId());
+						if (inventory == null) {
+							inventory = new Inventory();
+							inventory.setCommodityId(p.getCommodityId());
+							inventory.setNumber(p.getNumber());
+							inventory.setWarehouseId(p.getWarehouseId());
+							inventorys.add(inventory);
+							commodity.setInventorys(inventorys);
+						} else {
+							inventory.setNumber(inventory.getNumber() + p.getNumber());
+						}
+						commodityService.save(commodity);
+					});
+				}
+				count++;
+			}
+		}
+		return count;
+	}
+
+
 	
 
 }

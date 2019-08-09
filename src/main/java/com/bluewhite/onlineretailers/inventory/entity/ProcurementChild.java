@@ -92,12 +92,14 @@ public class ProcurementChild  extends BaseEntity<Long>{
 	 * （2=销售退货入库 ）
 	 * （3=销售换货入库 ）
 	 * （4=采购入库）
+	 * （5=盘亏入库）
 	 * 
 	 * 
 	 * （0=销售出库）
 	 * （1=调拨出库）
 	 * （2=销售换货出库 ）
 	 * （3=采购退货出库 ）
+	 * （4=盘盈出库 ）
 	 */
 	@Column(name = "status")
 	private Integer status;
@@ -130,9 +132,95 @@ public class ProcurementChild  extends BaseEntity<Long>{
 	@Column(name = "place")
 	private String place;
 	
+
+	/**
+	 * 单据编号
+	 */
+	@Transient
+	private String documentNumber;
 	
+	
+	/**
+	 * 是否反冲（0=否，1=是）
+	 */
+	@Transient
+	private Integer flag;
+	
+	/**
+	 * 是否审核（审核成功后入库）
+	 * 
+	 */
+	@Transient
+	private Integer audit;
+	
+	/**
+	 * 类型
+	 * 
+	 */
+	@Transient
+	private Integer type;
+	
+	/**
+	 * 时间查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 时间查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
+	
+	
+	
+	public String getDocumentNumber() {
+		return documentNumber;
+	}
 
 
+	public void setDocumentNumber(String documentNumber) {
+		this.documentNumber = documentNumber;
+	}
+
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
+
+
+	public Integer getAudit() {
+		return audit;
+	}
+
+
+	public void setAudit(Integer audit) {
+		this.audit = audit;
+	}
+
+
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
 
 
 	public Long getOnlineOrderId() {
@@ -270,6 +358,16 @@ public class ProcurementChild  extends BaseEntity<Long>{
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+
+	public Integer getType() {
+		return type;
+	}
+
+
+	public void setType(Integer type) {
+		this.type = type;
 	}
 	
 	

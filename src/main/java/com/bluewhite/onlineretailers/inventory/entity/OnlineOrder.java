@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.system.sys.entity.RegionAddress;
 import com.bluewhite.system.user.entity.User;
 
@@ -61,7 +62,7 @@ public class OnlineOrder extends BaseEntity<Long> {
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "online_customer_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private OnlineCustomer onlineCustomer;
+	private Customer onlineCustomer;
 	
 	
 	/**
@@ -665,11 +666,11 @@ public class OnlineOrder extends BaseEntity<Long> {
 		this.onlineCustomerId = onlineCustomerId;
 	}
 
-	public OnlineCustomer getOnlineCustomer() {
+	public Customer getOnlineCustomer() {
 		return onlineCustomer;
 	}
 
-	public void setOnlineCustomer(OnlineCustomer onlineCustomer) {
+	public void setOnlineCustomer(Customer onlineCustomer) {
 		this.onlineCustomer = onlineCustomer;
 	}
 
