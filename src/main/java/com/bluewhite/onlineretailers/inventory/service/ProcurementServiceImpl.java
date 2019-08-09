@@ -101,7 +101,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			if (!StringUtils.isEmpty(param.getBatchNumber())) {
 				Join<Procurement, ProcurementChild> join = root
 						.join(root.getModel().getList("procurementChilds", ProcurementChild.class), JoinType.LEFT);
-				predicate.add(cb.like(join.get("batchNumber").as(String.class), "%" + param.getBatchNumber() + "%"));
+				predicate.add(cb.equal(join.get("batchNumber").as(String.class), param.getBatchNumber()));
 			}
 
 			// 按商品名称过滤
@@ -188,7 +188,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 		Procurement upProcurement = new Procurement();
 		// 获取到上一级单据的数据
 		Procurement oldProcurement = null;
-		if (procurement.getId() != null) {
+		if (procurement.getId() != null) { 
 			upProcurement = new Procurement();
 			upProcurement.setFlag(0);
 			// 将 转换的单据id变成新单据的父id
@@ -351,7 +351,6 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 						dao.save(parentProcurement);
 					}
 
-					
 					if (procurement.getType() == 2 || procurement.getType() == 3) {
 						// 当单据为出库入库单时，恢复库存
 						for (ProcurementChild procurementChild : procurement.getProcurementChilds()) {
@@ -364,6 +363,9 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 							if (inventory != null) {
 								// 入库单
 								if (procurement.getType() == 2) {
+									if(procurement.getAudit()==1){
+										throw new ServiceException("已审核入库，无法反冲");
+									}
 									inventory.setNumber(inventory.getNumber() - procurementChild.getNumber());
 								}
 								// 出库单
@@ -376,14 +378,11 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 										for (String idtoSting : idArr) {
 											ProcurementChild procurementChildSale = procurementChildDao
 													.findOne(Long.valueOf(idtoSting));
-											if (procurementChildSale.getNumber()
-													- procurementChildSale.getResidueNumber() < residueNumber) {
-												residueNumber -= procurementChildSale.getNumber()
-														- procurementChildSale.getResidueNumber();
+											if (procurementChildSale.getNumber() - procurementChildSale.getResidueNumber() < residueNumber) {
+												residueNumber -= procurementChildSale.getNumber() - procurementChildSale.getResidueNumber();
 												procurementChildSale.setResidueNumber(procurementChildSale.getNumber());
 											} else {
-												procurementChildSale.setResidueNumber(
-														procurementChildSale.getResidueNumber() + residueNumber);
+												procurementChildSale.setResidueNumber( procurementChildSale.getResidueNumber() + residueNumber);
 											}
 											procurementChildDao.save(procurementChildSale);
 										}

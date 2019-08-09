@@ -269,7 +269,7 @@ public class InventoryAction {
 						"createdAt")
 				.addRetainTerm(ProcurementChild.class, "id", "commodity", "number", "residueNumber", "warehouse",
 						"status", "childRemark", "batchNumber")
-				.addRetainTerm(Commodity.class, "id", "skuCode", "name", "inventorys")
+				.addRetainTerm(Commodity.class, "id", "skuCode", "name", "inventorys","productId")
 				.addRetainTerm(Inventory.class, "number", "place", "warehouse")
 				.addRetainTerm(User.class, "id", "userName").addRetainTerm(BaseData.class, "name")
 				.format(procurementService.findPage(procurement, page)).toJSON());
