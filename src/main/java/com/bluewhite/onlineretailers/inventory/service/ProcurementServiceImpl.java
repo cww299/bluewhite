@@ -180,34 +180,16 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	@Override
 	@Transactional
 	public Procurement saveProcurement(Procurement procurement) {
-		procurement.setCreatedAt(procurement.getCreatedAt() == null ? new Date() : procurement.getCreatedAt());
-		// 生成单据编号
-		procurement.setDocumentNumber(StringUtil.getDocumentNumber(String.valueOf(procurement.getType()))
-				+ SalesUtils.get0LeftString((int) dao.count(), 8));
-		// 逻辑处理：优先处理父级单据所有数据
-		Procurement upProcurement = new Procurement();
-		// 获取到上一级单据的数据
-		Procurement oldProcurement = null;
-		if (procurement.getId() != null) { 
-			upProcurement = new Procurement();
-			upProcurement.setFlag(0);
-			// 将 转换的单据id变成新单据的父id
-			upProcurement.setParentId(procurement.getId());
-			oldProcurement = dao.findOne(procurement.getId());
-			upProcurement.setType(procurement.getType());
-			upProcurement.setNumber(procurement.getNumber());
-			upProcurement.setResidueNumber(procurement.getNumber());
-			upProcurement.setRemark(procurement.getRemark());
-			upProcurement.setUserId(procurement.getUserId());
-			upProcurement.setStatus(procurement.getStatus());
-			upProcurement.setDocumentNumber(procurement.getDocumentNumber());
-			// 将上级单据的剩余总数改变
-			oldProcurement.setResidueNumber(oldProcurement.getResidueNumber() - procurement.getNumber());
-		} else {
-			upProcurement = procurement;
-			upProcurement.setResidueNumber(upProcurement.getNumber());
-			upProcurement.setFlag(0);
+		if(procurement.getOrderId()!=null){
+			Procurement oProcurement = dao.findByOrderId(procurement.getOrderId());
+			if(oProcurement!=null){
+				throw new ServiceException("该生产单已存在，请勿重复添加");
+			}
 		}
+		// 生成单据编号
+		procurement.setDocumentNumber(StringUtil.getDocumentNumber(String.valueOf(procurement.getType())) + SalesUtils.get0LeftString((int) dao.count(), 8));
+		procurement.setFlag(0);
+		procurement.setResidueNumber(procurement.getNumber());
 		// 创建子单据
 		if (!StringUtils.isEmpty(procurement.getCommodityNumber())) {
 			JSONArray jsonArray = JSON.parseArray(procurement.getCommodityNumber());
@@ -220,23 +202,15 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				procurementChild.setNumber(jsonObject.getIntValue("number"));
 				procurementChild.setChildRemark(jsonObject.getString("childRemark"));
 				procurementChild.setResidueNumber(jsonObject.getIntValue("number"));
+				//获取转换的子单id
+				procurementChild.setParentId(jsonObject.getLong("parentId"));
 				// 表示拥有上一阶段的单据，减少上一次单据的子单数量
-				if (procurement.getId() != null) {
-					// 减少子单数量
-					for (ProcurementChild pChild : oldProcurement.getProcurementChilds()) {
-						// 当前产品id和上一阶段产品id
-						if (pChild.getCommodityId().equals(procurementChild.getCommodityId())) {
-							// 当前批次和上一阶段批次
-							if (pChild.getBatchNumber().equals(procurementChild.getBatchNumber())) {
-									pChild.setResidueNumber(pChild.getResidueNumber() - procurementChild.getNumber());
-							}
-						}
-					}
-					// 更新上级单据
-					dao.save(oldProcurement);
-				} else {
-					procurementChild.setResidueNumber(jsonObject.getIntValue("number"));
-				}
+				if (procurementChild.getParentId() != null) {
+					ProcurementChild procurementParentChild = procurementChildDao.findOne(procurementChild.getParentId());
+					procurementParentChild.setResidueNumber(procurementParentChild.getResidueNumber()-procurementChild.getNumber());
+					//同时减少父单的剩余数量
+					procurementParentChild.getProcurement().setResidueNumber(procurementParentChild.getProcurement().getResidueNumber()-procurementChild.getNumber());
+				} 
 
 				//入库单
 				if (procurement.getType() == 2) {
@@ -248,7 +222,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				// 出库单
 				if (procurement.getType() == 3) {
 					//设置未审核
-					upProcurement.setAudit(0);
+					procurement.setAudit(0);
 					// 查询商品在当前库存下所有数量大于0的入库单，优先入库时间最早的入库单出库,出库数量可能存在一单无法满足，按时间依次删减出库单数量
 					List<ProcurementChild> procurementChildList = procurementChildDao
 							.findByCommodityIdAndStatusAndResidueNumberGreaterThan(procurementChild.getCommodityId(), 0,
@@ -308,12 +282,10 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				}
 
 				// 将子单放入父单
-				upProcurement.getProcurementChilds().add(procurementChild);
-				upProcurement.setNumber(
-						upProcurement.getProcurementChilds().stream().mapToInt(ProcurementChild::getNumber).sum());
+				procurement.getProcurementChilds().add(procurementChild);
 			}
 		}
-		return dao.save(upProcurement);
+		return dao.save(procurement);
 	}
 
 	@Override
@@ -330,27 +302,19 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 						throw new ServiceException("该数据已经反冲，无法再次反冲");
 					}
 					procurement.setFlag(1);
-					// 检查是否拥有下级单据
-					List<Procurement> nextProcurement = dao.findByFlagAndParentId(0, id);
-					if (nextProcurement.size() > 0) {
-						throw new ServiceException("该数据已拥有下级单据，无法反冲，请先反冲下级单据");
-					}
-
 					// 当单据的父id存在，说明拥有上级单据，反冲恢复上级单据的总剩余数量
-					if (procurement.getParentId() != null) {
-						Procurement parentProcurement = dao.findOne(procurement.getParentId());
-						parentProcurement.setResidueNumber(parentProcurement.getResidueNumber() + procurement.getNumber());
-						// 拿本级的子单和上级子单对比，同时将上级子单数据恢复
-						for (ProcurementChild parentProcurementChilds : parentProcurement.getProcurementChilds()) {
-							for (ProcurementChild procurementChilds : procurement.getProcurementChilds()) {
-								if (parentProcurementChilds.getCommodityId().equals(procurementChilds.getCommodityId()) 
-										&& parentProcurementChilds.getBatchNumber().equals(procurementChilds.getBatchNumber())) {
-									parentProcurementChilds.setResidueNumber(parentProcurementChilds.getResidueNumber() + procurementChilds.getNumber());
-								}
-							}
+					procurement.getProcurementChilds().stream().forEach(p->{
+						// 检查是否拥有下级单据
+						List<ProcurementChild> nextProcurementChild = procurementChildDao.findByParentId(p.getId()).stream().filter(ProcurementChild->ProcurementChild.getProcurement().getFlag()==0).collect(Collectors.toList());
+						if(nextProcurementChild.size()>0){
+							throw new ServiceException("该数据已拥有下级单据，无法反冲，请先反冲下级单据");
 						}
-						dao.save(parentProcurement);
-					}
+						if(p.getParentId()!=null){
+							ProcurementChild parentProcurementChild= procurementChildDao.findOne(p.getParentId());
+							parentProcurementChild.setResidueNumber(parentProcurementChild.getResidueNumber() + p.getNumber());
+							parentProcurementChild.getProcurement().setResidueNumber(parentProcurementChild.getProcurement().getResidueNumber()+p.getNumber());
+						}
+					});
 
 					if (procurement.getType() == 2 || procurement.getType() == 3) {
 						// 当单据为出库入库单时，恢复库存
@@ -654,10 +618,6 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			}
 			}
 		}
-		
-		
-		
-		
 		return null;
 	}
 	

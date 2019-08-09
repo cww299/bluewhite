@@ -34,5 +34,10 @@ public interface ProcurementChildDao extends BaseRepository<ProcurementChild, Lo
 	
 	
 	List<ProcurementChild> findByPutWarehouseIdsNotNull();
-
+	
+	
+	/**
+	 * 查询子单是否拥有上级数据
+	 */
+	List<ProcurementChild> findByParentId(Long id);
 }

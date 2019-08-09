@@ -238,7 +238,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 
 	@Override
 	@Transactional
-	public OnlineOrder addOnlineOrder(OnlineOrder onlineOrder) {
+	public OnlineOrder addOnlineOrder(OnlineOrder onlineOrder) { 
 		if (onlineOrder.getOnlineCustomerId() == null) {
 			throw new ServiceException("没有客户，无法新增订单");
 		}
@@ -342,7 +342,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				String ids = "";
 				List<ProcurementChild> newProcurementChild = new ArrayList<>();
 				if(procurementChildList.size()>0){
-					for (ProcurementChild updateProcurementChild : procurementChildList) {
+					for (ProcurementChild updateProcurementChild : procurementChildList) { 
 						//给出货单增加批次号
 						if (updateProcurementChild.getResidueNumber() < residueNumber) {
 							procurementChild.setBatchNumber( 
@@ -360,7 +360,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 							newProcurementChild.add(updateProcurementChild);
 							ids += updateProcurementChild.getId() + ",";
 							break;
-						}
+						}   
 					}
 				}
 				

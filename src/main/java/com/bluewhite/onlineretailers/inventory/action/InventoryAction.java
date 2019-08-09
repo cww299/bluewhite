@@ -317,6 +317,19 @@ public class InventoryAction {
 		cr.setMessage("新增成功");
 		return cr;
 	}
+	
+	/**
+	 * 未审核前修改入库单
+	 */
+	@RequestMapping(value = "/inventory/updateProcurement", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateProcurement(Procurement procurement) {
+		CommonResponse cr = new CommonResponse();
+		procurementService.saveProcurement(procurement);
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
 
 	/**
 	 * 一键反冲单据(整单)
