@@ -302,7 +302,8 @@ layui.config({
 				child.push({batchNumber : choosedProduct[i].batchNumber.replace(/(^\s*)|(\s*$)/g, ''),
 							productId : choosedProduct[i].commodityId,
 							number : choosedProduct[i].number,
-							childRemark : choosedProduct[i].childRemark});
+							childRemark : choosedProduct[i].childRemark,
+							orderId: choosedProduct[i].id });
 			}
 			data.commodityNumber=JSON.stringify(child);			//子列表商品
 			data.internal = 1;
