@@ -89,6 +89,13 @@ public interface ProcurementService extends BaseCRUDService<Procurement, Long> {
 	Object test1(Procurement procurement);
 	
 	/**
+	 * 修改入库单
+	 * @param ids
+	 * @return
+	 */
+	ProcurementChild updateProcurementChild(ProcurementChild procurementChild);
+	
+	/**
 	 * 审核入库单(审核成功可以入库无法修改,未审核可以修改数量)
 	 * @param ids
 	 * @return
@@ -100,5 +107,5 @@ public interface ProcurementService extends BaseCRUDService<Procurement, Long> {
 	 * @param ids
 	 * @return
 	 */
-	List<PackingChild> conversionProcurement(String ids);
+	int conversionProcurement(String ids);
 }
