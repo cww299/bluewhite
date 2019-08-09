@@ -265,13 +265,13 @@ public class InventoryAction {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(Procurement.class, "id", "documentNumber", "user", "procurementChilds", "number",
-						"residueNumber", "type", "flag", "remark", "transfersUser", "onlineCustomer", "status",
-						"createdAt")
+						"residueNumber", "type", "flag", "remark", "transfersUser", "onlineCustomer", "status","createdAt")
 				.addRetainTerm(ProcurementChild.class, "id", "commodity", "number", "residueNumber", "warehouse",
 						"status", "childRemark", "batchNumber")
 				.addRetainTerm(Commodity.class, "id", "skuCode", "name", "inventorys","productId")
 				.addRetainTerm(Inventory.class, "number", "place", "warehouse")
-				.addRetainTerm(User.class, "id", "userName").addRetainTerm(BaseData.class, "name")
+				.addRetainTerm(User.class, "id", "userName")
+				.addRetainTerm(BaseData.class, "name")
 				.format(procurementService.findPage(procurement, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
