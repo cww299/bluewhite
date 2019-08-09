@@ -13,7 +13,7 @@ import com.bluewhite.base.BaseEntity;
 import com.bluewhite.system.user.entity.User;
 
 /**
- * 电商在售商品
+ * 工资
  * @author zhangliang
  *
  */
