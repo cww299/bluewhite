@@ -32,36 +32,51 @@ public class Customer extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User user;
-
+	
 	/**
-	 * 客户名稱
+	 * 客户昵称
 	 * 
 	 */
 	@Column(name = "name")
 	private String name;
-
-
+	
 	/**
-	 * 客户类型(1=线下，2=线上)
+	 * 客户真实姓名
+	 */
+	@Column(name = "buyer_name")
+	private String buyerName;
+	
+	/**
+	 * 客户等级
+	 * 
+	 */
+	@Column(name = "grade")
+	private Integer grade;
+	
+	
+	/**
+	 * 客户类型
 	 * 
 	 */
 	@Column(name = "type")
 	private Integer type;
-
+	
 	/**
 	 * 收货人的所在省份
 	 * 
 	 */
 	@Column(name = "provinces_id")
 	private Long provincesId;
-
+	
 	/**
 	 * 省份
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "provinces_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private RegionAddress provinces;
-
+	
+	
+	
 	/**
 	 * 收货人的所在市
 	 * 
@@ -74,7 +89,8 @@ public class Customer extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "city_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private RegionAddress city;
-
+	
+	
 	/**
 	 * 收货人的所在县
 	 * 
@@ -87,20 +103,35 @@ public class Customer extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "county_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private RegionAddress county;
-
+	
+	
 	/**
 	 * 收货人的详细地址
 	 * 
 	 */
 	@Column(name = "address")
 	private String address;
-
+	
 	/**
-	 * 联系电话
+	 * 买家手机号
 	 * 
 	 */
 	@Column(name = "phone")
 	private String phone;
+	
+	/**
+	 * 帐号
+	 * 
+	 */
+	@Column(name = "account")
+	private String account;
+	
+	/**
+	 * 邮编
+	 */
+	@Column(name = "zip_code")
+	private String zipCode;
+	
 
 	/**
 	 * 联系方式
@@ -118,6 +149,38 @@ public class Customer extends BaseEntity<Long> {
 
 	
 
+
+	public String getAccount() {
+		return account;
+	}
+
+	public void setAccount(String account) {
+		this.account = account;
+	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
+
+	public String getBuyerName() {
+		return buyerName;
+	}
+
+	public void setBuyerName(String buyerName) {
+		this.buyerName = buyerName;
+	}
+
+	public Integer getGrade() {
+		return grade;
+	}
+
+	public void setGrade(Integer grade) {
+		this.grade = grade;
+	}
 
 	public String getContact() {
 		return contact;

@@ -40,6 +40,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			if (param.getCustomerId() != null) {
 				predicate.add(cb.equal(root.get("customerId").as(Long.class), param.getCustomerId()));
 			}
+			// 是否电子商务部下单合同
+			if (param.getInternal() != null) {
+				predicate.add(cb.equal(root.get("internal").as(Long.class), param.getInternal()));
+			}
 			// 按客户名称
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
 				predicate.add(cb.like(root.get("customer").get("name").as(String.class), "%" + param.getCustomerName() + "%"));
@@ -106,6 +110,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				orderNew.setBacthNumber(jsonObject.getString("bacthNumber"));
 				orderNew.setProductId(jsonObject.getLong("productId"));
 				orderNew.setCustomerId(order.getCustomerId());
+				//判定是否属于电子商务部的订单合同
+				if(orderNew.getCustomerId().equals("")){
+					orderNew.setInternal(1);
+				}
 				orderNew.setNumber(jsonObject.getInteger("number"));
 				orderNew.setPrice(jsonObject.getDouble("price"));
 				orderNew.setRemark(jsonObject.getString("remark"));

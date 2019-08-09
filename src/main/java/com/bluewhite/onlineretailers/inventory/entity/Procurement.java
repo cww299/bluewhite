@@ -2,9 +2,7 @@ package com.bluewhite.onlineretailers.inventory.entity;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,14 +10,13 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -79,7 +76,7 @@ public class Procurement extends BaseEntity<Long>{
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "online_customer_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private OnlineCustomer onlineCustomer;
+	private Customer onlineCustomer;
 	
 	
 	/**
@@ -147,6 +144,13 @@ public class Procurement extends BaseEntity<Long>{
 	private String remark;
 	
 	/**
+	 * 是否审核（审核成功后入库）
+	 * 
+	 */
+	@Column(name = "audit")
+	private Integer audit;
+	
+	/**
 	 * json 储存商品id和数量
 	 * 
 	 */
@@ -192,6 +196,14 @@ public class Procurement extends BaseEntity<Long>{
 	
 	
 	
+	public Integer getAudit() {
+		return audit;
+	}
+
+	public void setAudit(Integer audit) {
+		this.audit = audit;
+	}
+
 	public String getCommodityName() {
 		return commodityName;
 	}
@@ -256,11 +268,11 @@ public class Procurement extends BaseEntity<Long>{
 		this.onlineCustomerId = onlineCustomerId;
 	}
 
-	public OnlineCustomer getOnlineCustomer() {
+	public Customer getOnlineCustomer() {
 		return onlineCustomer;
 	}
 
-	public void setOnlineCustomer(OnlineCustomer onlineCustomer) {
+	public void setOnlineCustomer(Customer onlineCustomer) {
 		this.onlineCustomer = onlineCustomer;
 	}
 

@@ -91,6 +91,12 @@ public class Order extends BaseEntity<Long>{
 	private Double price;
 	
 	/**
+	 * 是否内部（属于电子商务部的订单）
+	 */
+	@Column(name = "internal")
+	private Integer internal;
+	
+	/**
 	 * 客户name
 	 * 
 	 */
@@ -123,6 +129,16 @@ public class Order extends BaseEntity<Long>{
 	
 	
 	
+	public Integer getInternal() {
+		return internal;
+	}
+
+
+	public void setInternal(Integer internal) {
+		this.internal = internal;
+	}
+
+
 	public String getProductName() {
 		return productName;
 	}

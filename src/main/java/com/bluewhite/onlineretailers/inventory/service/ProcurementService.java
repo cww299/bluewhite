@@ -10,7 +10,9 @@ import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.excel.ExcelListener;
+import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
+import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 
 @Service
 public interface ProcurementService extends BaseCRUDService<Procurement, Long> {
@@ -23,7 +25,17 @@ public interface ProcurementService extends BaseCRUDService<Procurement, Long> {
 	 * @return
 	 */
 	PageResult<Procurement> findPage(Procurement param, PageParameter page);
-
+	
+	
+	/**
+	 * 分页查询
+	 * 
+	 * @param param
+	 * @param page
+	 * @return
+	 */
+	PageResult<ProcurementChild> findPages(ProcurementChild param, PageParameter page);
+	
 	/**
 	 * 新增单据
 	 * 
@@ -75,4 +87,18 @@ public interface ProcurementService extends BaseCRUDService<Procurement, Long> {
 	Object test(Procurement procurement);
 
 	Object test1(Procurement procurement);
+	
+	/**
+	 * 审核入库单(审核成功可以入库无法修改,未审核可以修改数量)
+	 * @param ids
+	 * @return
+	 */
+	int auditProcurement(String ids);
+	
+	/**
+	 * 出库单转换成发货清单
+	 * @param ids
+	 * @return
+	 */
+	List<PackingChild> conversionProcurement(String ids);
 }
