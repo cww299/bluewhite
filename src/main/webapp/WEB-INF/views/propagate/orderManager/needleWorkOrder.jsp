@@ -77,10 +77,10 @@ td{
 			<td>数量</td>
 			<td><input type="text" class="layui-input" name="number" id="addNumber" readonly value='0'></td></tr>
 		<tr>
-			<td>默认批次号</td>	
-			<td><input type="text" class="layui-input" name="batchNumber"  id="addBatchNumber"></td>
 			<td>备注</td>
 			<td><input type="text" name="remark" class="layui-input" id="addRemark"></td>
+			<td></td>	
+			<td></td>
 			<td colspan="2" style="text-align:right;"><span class="layui-btn" lay-submit lay-filter="sureAdd" >确定新增</span>
 							<span class="layui-btn layui-btn-danger" id='resetAddOrder' >清空数据</span> </td></tr>
 	</table>
@@ -91,7 +91,7 @@ td{
 	<table class="layui-form layui-table" lay-size="sm" lay-skin="nob"  style="width:60%;">
 		<tr>
 			<td><select><option value="1">按商品名称查找</option></select></td>			
-			<td><input type="text" class="layui-input" name="skuCode" placeholder="请输入查找的信息"></td>				
+			<td><input type="text" class="layui-input" name="commodityName" placeholder="请输入查找的信息"></td>				
 			<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProduct" >搜索</button>				
 				<button type="button" class="layui-btn layui-btn-sm" id="sure" >确定添加</button></td>
 		</tr>
@@ -226,7 +226,7 @@ layui.config({
 				page:{},
 				cols:[[
 				       {type:'checkbox', align:'center', fixed:'left'},
-				       {align:'center', title:'批次号',   field:'batchNumber', edit:true,style:'color:blue', },
+				       {align:'center', title:'批次号',   field:'batchNumber',style:'color:blue', },
 				       {align:'center', title:'商品名称', field:'skuCode',},
 				       {align:'center', title:'数量',     field:'number', edit:true,style:'color:blue', },
 				       {align:'center', title:'备注',  	  field:'childRemark', edit:true,style:'color:blue', }, 
@@ -234,12 +234,6 @@ layui.config({
 			})
 			table.reload('productListTable',{ data : choosedProduct });
 		}
-		$('#addBatchNumber').change(function(){			//默认批次号改变
-			for(var i=0;i<choosedProduct.length;i++){
-				choosedProduct[i].batchNumber=$('#addBatchNumber').val();
-			}
-			table.reload('productListTable',{ data : choosedProduct });
-		})
 		table.on('toolbar(productListTable)',function(obj){		//监听选择商品表格的工具栏按钮
 			switch(obj.event){
 			case 'add': openChooseProductWin(); break;
@@ -296,7 +290,7 @@ layui.config({
 						return layer.msg('相同的商品不能同时使用相同的批次号！',{icon:2,offset:'100px',});
 				}
 				child.push({batchNumber : choosedProduct[i].batchNumber.replace(/(^\s*)|(\s*$)/g, ''),
-							commodityId : choosedProduct[i].commodityId,
+							productId : choosedProduct[i].commodityId,
 							number : choosedProduct[i].number,
 							childRemark : choosedProduct[i].childRemark});
 			}
@@ -327,7 +321,6 @@ layui.config({
 		
 		$('#resetAddOrder').on('click',function(){		//此处如果加confirm提示。则新增成功时无法清空
 			$('#addRemark').val('');
-			$('#addBatchNumber').val('');
 			$('#addCreatedAt').val('');
 			$('#addNumber').val(0);
 			choosedProduct=[];	
@@ -367,15 +360,17 @@ layui.config({
 			})
 			table.render({
 				elem:'#productChooseTable',
-				url:'${ctx}/inventory/commodityPage',
+				url:'${ctx}/inventory/procurementProPage?type=0',
 				page:true,
 				request:{ pageName:'page', limitName:'size' },
 				parseData:function(ret){  return{ code:ret.code, msg:ret.message, data:ret.data.rows, count:ret.data.total,}},
 				cols:[[
 				       {type:'checkbox', align:'center', fixed:'left'},
-				       {align:'center', title:'商品名称', field:'skuCode',},
-				       {align:'center', title:'成本', 	  field:'cost',},
-				       {align:'center', title:'广宣成本', 	  field:'propagandaCost',}, 
+				       {align:'center', title:'批次号', field:'batchNumber',width:'16%'},
+				       {align:'center', title:'商品名称', field:'productName', templet:'<span>{{ d.commodity.name }}</span>'},
+				       {align:'center', title:'计划数量', field:'number',width:'8%'},
+				       {align:'center', title:'剩余数量', 	  field:'residueNumber',width:'8%'},
+				       {align:'center', title:'备注', 	  field:'childRemark',}, 
 				      ]],
 			});
 			form.render();
@@ -389,12 +384,12 @@ layui.config({
 			}
 			for(var i=0;i<choosed.length;i++){
 				var orderChild={
-						skuCode : choosed[i].skuCode,			//商品名称
+						skuCode : choosed[i].commodity.name ,			//商品名称
 						commodityId : choosed[i].id,			//商品id
 						number : 1,								//商品数量
 						cost : choosed[i].cost,					//成本
-						remark : choosed[i].remark,				//备注
-						batchNumber : $('#addBatchNumber').val(),
+						childRemark : choosed[i].childRemark,				//备注
+						batchNumber : choosed[i].batchNumber,
 						id : choosedId++,  						//仅仅用于标识不同的数据
 				};
 				$('#addNumber').val($('#addNumber').val()-(-1));
@@ -439,7 +434,6 @@ layui.config({
 				})
 			})
 		}
-		
 		//-------查看针工单功能--------------------
 		function lookover(data){
 			if(data.type==undefined)				//防止空数据弹窗bug，双击详细内容时
@@ -455,7 +449,6 @@ layui.config({
 				elem:'#lookOverProductListTable',
 				data:data.procurementChilds,
 				page:{},
-				loading:true,
 				cols:[[
 					   {align:'center', title:'批次号',   	field:'batchNumber',	},
 				       {align:'center', title:'商品名称',  templet:'<p>{{ d.commodity.skuCode }}</p>'},
@@ -469,8 +462,6 @@ layui.config({
 			$('#look_number').val(data.number);
 			$('#look_user').val(data.user.userName);
 		}
-	
-		
 		function getAllUser(){
 			$.ajax({
 				url:'${ctx}/system/user/pages?size=999&quit=0',
@@ -510,7 +501,6 @@ layui.config({
 			var trIndex = elemTemp.data('index');
 			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
 		})
-		
 	}//end define function
 )//endedefine
 </script>
