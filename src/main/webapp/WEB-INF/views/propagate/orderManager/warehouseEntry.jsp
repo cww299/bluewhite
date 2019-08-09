@@ -367,6 +367,7 @@ layui.config({
 		var choosedProduct=[];		//用户已经选择上的产品,渲染新增单的产品表格数据
 		var defaultStatus = 0;
 		var defaultInventory='';
+		var addOrderWin = '';
 		renderAddTable('productListTable');
 		renderAddTable('productListTable1');
 		function renderAddTable(tid){
@@ -397,15 +398,15 @@ layui.config({
 			choosedProduct = [];
 			defaultInventory = defaultInventory==''?allInventory[0].id:defaultInventory;
 			getUserSelect( currUser.id,'userIdSelect',allUser );
-			layer.open({
+			addOrderWin = layer.open({
 				type : 1,
 				title : '新增入库单',
 				area : ['90%','90%'],
 				offset:'30px',
 				content : $('#addOrderDiv'),
 				success: function(){
-					table.resize('productListTable1');
-					table.resize('productListTable');
+					table.reload('productListTable',{ data:[] });
+					table.reload('productListTable1',{ data:[] });
 				}
 			})
 		}
@@ -471,15 +472,17 @@ layui.config({
 			table.on('edit('+tid+')', function(obj){ 							//监听编辑表格单元
 				if(obj.field=='number'){
 					var msg='';
-					isNaN(obj.value) && (msg="修改无效！请输入正确的数字");
-					(obj.value=='')  && (msg='计划的数量不能为空');
+					isNaN(obj.value) && (msg="请输入正确的数字");
+					(obj.value=='')  && (msg='计划的数量不能为空'); 
 					(obj.value<0)  && (msg='计划的数量不能小于0');
 					(obj.value%1 !== 0) && (msg='计划的数量必须为整数');
+					if(tid=='productListTable1')
+						(obj.value>obj.data.residueNumber) && (msg='计划的数量不能大于剩余数量');
 					for(var i=0;i<choosedProduct.length;i++){
 						if(choosedProduct[i].id==obj.data.id){		
 							if(msg!=''){
-								myutil.emsg('"'+obj.value+'" 为非法输入！'+msg);
-								$(this).val(obj.data.number)
+								myutil.emsg('"'+obj.value+'" 为无效修改！'+msg);
+								$(this).val(choosedProduct[i].number)
 								return;
 							}
 							$('#addOrderNumber').val($('#addOrderNumber').val()-choosedProduct[i].number-(-parseInt(obj.value)));
@@ -536,7 +539,8 @@ layui.config({
 				success: function(){
 					$('#resetAddOrder').click();
 					table.reload('entryOrderTable');
-					//layer.closeAll();
+					choosedProduct = [];
+					layer.close(addOrderWin);
 				}
 			})
 		}) 
@@ -551,9 +555,16 @@ layui.config({
 			$('#addCreatedAt').val('');
 			choosedProduct=[];	
 			getUserSelect(currUser.id,'userIdSelect',allUser);
-			table.reload('productListTable',{ data:choosedProduct })
+			if(defaultStatus==0)
+				table.reload('productListTable1',{ data:choosedProduct })
+			else
+				table.reload('productListTable',{ data:choosedProduct })
 		})
 		form.on('submit(searchProduct)',function(obj){
+			if(defaultStatus==0){
+				obj.field.productName = obj.field.skuCode;
+				delete obj.field.skuCode;
+			}
 			table.reload('productChooseTable',{
 				where:obj.field,
 				page: {  curr: 1   }
@@ -595,6 +606,7 @@ layui.config({
 				offset:'60px',
 				content:$('#productChooseDiv'),
 			})
+			$('#addNewProduct').show();
 			var url = '${ctx}/inventory/commodityPage',
 			    cols = [[
 					       {type:'checkbox', align:'center', fixed:'left'},
@@ -604,6 +616,7 @@ layui.config({
 					       {align:'center', title:'售价详情', 	  templet:'#priceTpl',}, 
 					      ]];
 			if(defaultStatus == 0){
+				$('#addNewProduct').hide();
 				url = '${ctx}/inventory/procurementProPage?type=1'
 				cols = [[
 					       {type:'checkbox', align:'center', fixed:'left'},
@@ -635,7 +648,7 @@ layui.config({
 		 		for(var i=0;i<choosed.length;i++){
 		 			var orderChild={
 							skuCode : choosed[i].skuCode,		
-							commodityId : choosed[i].id,		
+							commodityId : choosed[i].productId,		
 							number : 1,						
 							childRemark : choosed[i].remark,		
 							batchNumber : '',
@@ -660,6 +673,7 @@ layui.config({
 							place : '',
 							residueNumber: choosed[i].residueNumber,
 							parentId: choosed[i].id,
+							id : choosedId++, 
 					};
 					choosedProduct.push(orderChild);
 				}
