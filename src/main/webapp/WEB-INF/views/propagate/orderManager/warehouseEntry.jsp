@@ -211,14 +211,15 @@ layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	tablePlug : 'tablePlug/tablePlug',
-	myutil: 'layui/myModules/myutil'
-}).use(['tablePlug','laydate','myutil'],
+	addNew : 'layui/myModules/addNewProduct' ,
+}).use(['tablePlug','laydate','addNew'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
 		, form = layui.form			 		
 		, table = layui.table 
 		, laydate = layui.laydate
+		, addNew = layui.addNew
 		, myutil = layui.myutil
 		, tablePlug = layui.tablePlug;
 		myutil.config.msgOffset = '250px';	
@@ -598,6 +599,12 @@ layui.config({
 			}
 			table.reload(tid,{ data:choosedProduct, })
 		}
+		addNew.render({		//绑定新增商品按钮
+			elem: "#addNewProduct",
+			success: function(){
+				table.reload('productChooseTable');
+			}
+		})
 		function openChooseProductWin(){					//商品选择隐藏框
 			chooseProductWin = layer.open({		
 				type:1,
