@@ -295,8 +295,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 
 			// 按产品name过滤
 			if (!StringUtils.isEmpty(param.getProductName())) {
-				predicate.add(
-						cb.equal(root.get("product").get("name").as(Long.class), "%" + param.getProductName() + "%"));
+				predicate.add(cb.equal(root.get("product").get("name").as(Long.class), "%" + param.getProductName() + "%"));
 			}
 			// 按批次查找
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {

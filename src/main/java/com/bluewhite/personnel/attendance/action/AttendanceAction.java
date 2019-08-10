@@ -378,7 +378,7 @@ public class AttendanceAction {
 	@ResponseBody
 	public CommonResponse workshopAttendanceContrast(AttendanceTime attendanceTime) {
 		CommonResponse cr = new CommonResponse();
-		attendanceTimeService.workshopAttendanceContrast(attendanceTime);
+		cr.setData(attendanceTimeService.workshopAttendanceContrast(attendanceTime));
 		cr.setMessage("查询成功");
 		return cr;
 	}

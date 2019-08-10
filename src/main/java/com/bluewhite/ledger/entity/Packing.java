@@ -95,6 +95,21 @@ public class Packing extends BaseEntity<Long> {
 	@Column(name = "type")
 	private Integer type;
 	
+//	/**
+//	 * 调拨人id
+//	 * 
+//	 */
+//	@Column(name = "user_id")
+//	private Long userId;
+//
+//	/**
+//	 * 调拨人员
+//	 */
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+//	private User user;
+	
+	
 	/**
 	 * 批次号
 	 */

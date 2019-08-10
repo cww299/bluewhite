@@ -1,16 +1,12 @@
 package com.bluewhite.onlineretailers.inventory.entity;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -155,14 +151,6 @@ public class Commodity extends BaseEntity<Long>{
 	 */
 	@Column(name = "offline_price")
 	private Double offlinePrice;
-	
-
-	
-	/**
-	 * 库存数量
-	 */
-	@OneToMany(mappedBy = "commodity" ,cascade = CascadeType.ALL)
-	private Set<Inventory> inventorys = new HashSet<Inventory>();
 
 	/**
 	 * 时间查询字段
@@ -244,17 +232,6 @@ public class Commodity extends BaseEntity<Long>{
 	public void setOrderTimeEnd(Date orderTimeEnd) {
 		this.orderTimeEnd = orderTimeEnd;
 	}
-
-
-	public Set<Inventory> getInventorys() {
-		return inventorys;
-	}
-
-
-	public void setInventorys(Set<Inventory> inventorys) {
-		this.inventorys = inventorys;
-	}
-
 
 	public Long getFileId() {
 		return fileId;

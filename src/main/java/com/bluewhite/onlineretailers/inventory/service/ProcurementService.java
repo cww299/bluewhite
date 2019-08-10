@@ -83,10 +83,6 @@ public interface ProcurementService extends BaseCRUDService<Procurement, Long> {
 	List<Map<String, Object>> reportStorageGoods(Procurement procurement);
 
 	List<Map<String, Object>> reportStorageUser(Procurement procurement);
-
-	Object test(Procurement procurement);
-
-	Object test1(Procurement procurement);
 	
 	/**
 	 * 修改入库单
