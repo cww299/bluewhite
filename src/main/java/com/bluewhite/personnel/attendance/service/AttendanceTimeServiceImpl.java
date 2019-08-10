@@ -832,7 +832,6 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 						.filter(AttendancePay -> AttendancePay.getAllotTime().compareTo(aTime.getTime()) == 0)
 						.collect(Collectors.toList());
 				AttendancePay aPay = null;
-	
 				if (asList.size() > 0) {
 					 aPay = asList.get(0);
 				}else{
@@ -842,6 +841,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					Map<String, Object> map = new HashMap<>();
 					map.put("date", sdf.format(aTime.getTime()));
 					map.put("name", aTime.getUser().getUserName());
+					map.put("userId", aTime.getUserId());
 					// 针工 （检验 管理 开棉）
 					if (aTime.getUser().getGroup().getKindWorkId() != null && aTime.getUser().getGroup().getKindWorkId().equals(113) && aTime.getUser().getGroup().getKindWorkId().equals(116) && aTime.getUser().getGroup().getKindWorkId().equals(120)) {
 						if (!aPay.getWorkTime().equals(aTime.getWorkTime())) {
