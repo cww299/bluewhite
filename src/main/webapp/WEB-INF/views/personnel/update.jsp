@@ -60,7 +60,7 @@
 								<button type="button" class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-searche">查找考勤</button>
 								<button type="button" class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-sealAttendanceCollect" id="sealAttendanceCollect">存档</button>
 							</div>
-							<shiro:hasRole name="superAdmin">
+							<shiro:hasRole name="superAdmin,productEightTailor,productTwoMachinist,productTwoDeedle,productFristPack,productFristQuality,personnel">
 								<div class="layui-inline">
 									<button class="layui-btn" lay-submit id="personMachineCompare" >人机对比 </button>
 								</div>

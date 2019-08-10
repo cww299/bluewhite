@@ -52,7 +52,7 @@
 	          </li>
           </shiro:hasAnyRoles> 
            <!-- 考勤预警按钮 -->
-          <shiro:hasAnyRoles name="superAdmin">
+          <shiro:hasAnyRoles name="superAdmin,productEightTailor,productTwoMachinist,productTwoDeedle,productFristPack,productFristQuality,personnel">
 	          <li class="layui-nav-item layui-hide-xs" lay-unselect>
 	            <a href="javascript:;" id='confluenceWarn' >错误考勤<span class="layui-badge" id='warnConfluenceNumber'>0</span></a>
 	          </li>
