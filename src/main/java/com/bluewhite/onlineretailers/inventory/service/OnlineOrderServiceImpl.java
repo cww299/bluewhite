@@ -374,7 +374,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 					// 获取商品
 					Commodity commodity = onlineOrderChild.getCommodity();
 					// 获取库存
-					Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(commodity.getId(), warehouseId);
+					Inventory inventory = inventoryDao.findByProductIdAndWarehouseId(commodity.getProductId(), warehouseId);
 					if (inventory != null) {
 						// 子订单部分发货
 						if (onlineOrderChild.getResidueNumber() != 0 && onlineOrderChild.getResidueNumber() > number) {
@@ -505,7 +505,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 						procurement.setNumber(cPoi.getNumber());
 						procurementChild.setResidueNumber(cPoi.getNumber());
 						// 获取库存
-						Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(commodity.getId(),
+						Inventory inventory = inventoryDao.findByProductIdAndWarehouseId(commodity.getProductId(),
 								warehouseId);
 						if (inventory != null) {
 							// 减少库存

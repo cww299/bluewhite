@@ -17,6 +17,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
 import com.bluewhite.system.sys.entity.Files;
 
@@ -75,6 +76,12 @@ public class Product extends BaseEntity<Long>{
     */
 	@Column(name = "product_type")
     private Integer productType;
+	
+	/**
+	 * 库存数量
+	 */
+	@OneToMany(mappedBy = "product" ,cascade = CascadeType.ALL)
+	private Set<Inventory> inventorys = new HashSet<Inventory>();
 	 
 	/**
 	 * 八号仓库特殊业务，同一种产品会有会有激光和冲床两种类型工序，同时会产生不同的外发单价（0=激光，1=冲床）
@@ -118,6 +125,17 @@ public class Product extends BaseEntity<Long>{
 	@Transient
 	private Double deedlePrice;
 	
+	
+	
+	
+	public Set<Inventory> getInventorys() {
+		return inventorys;
+	}
+
+	public void setInventorys(Set<Inventory> inventorys) {
+		this.inventorys = inventorys;
+	}
+
 	public Integer getProductType() {
 		return productType;
 	}

@@ -176,9 +176,23 @@ public class ProcurementChild  extends BaseEntity<Long>{
 	@Transient
 	private Date orderTimeEnd;
 	
+	/**
+	 * 产品名称
+	 */
+	@Transient
+	private String productName;
 	
 	
-	
+	public String getProductName() {
+		return productName;
+	}
+
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+
 	public Long getParentId() {
 		return parentId;
 	}

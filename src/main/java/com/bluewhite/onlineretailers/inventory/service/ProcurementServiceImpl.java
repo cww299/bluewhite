@@ -162,6 +162,12 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				predicate.add(cb.equal(root.get("batchNumber").as(String.class), param.getBatchNumber()));
 			}
 
+
+			// 按产品name过滤
+			if (!StringUtils.isEmpty(param.getProductName())) {
+				predicate.add(cb.equal(root.get("commodity").get("name").as(Long.class), "%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
+			}
+			
 			// 按单据编号
 			if (!StringUtils.isEmpty(param.getDocumentNumber())) {
 				predicate.add(cb.like(root.get("procurement").get("documentNumber").as(String.class),
@@ -278,7 +284,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 					procurementChild.setWarehouseId(jsonObject.getLong("warehouseId"));
 					procurementChild.setStatus(jsonObject.getIntValue("status"));
 
-					Set<Inventory> inventorys = commodity.getInventorys();
+					Set<Inventory> inventorys = commodity.getProduct().getInventorys();
 					if (inventorys.size() == 0) {
 						throw new ServiceException(commodity.getName() + "没有任何库存,无法出库");
 					}
@@ -341,7 +347,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 							// 获取商品
 							Commodity commodity = procurementChild.getCommodity();
 							// 获取商品库存
-							Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(commodity.getId(),
+							Inventory inventory = inventoryDao.findByProductIdAndWarehouseId(commodity.getProductId(),
 									procurementChild.getWarehouseId());
 							// 增加库存的同时改变状态
 							if (inventory != null) {
@@ -544,77 +550,8 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	}
 
 	@Override
-	@Transactional
-	public Object test(Procurement procurement) {
-		// 获取所有批次为null的出库单
-		List<ProcurementChild> list = procurementChildDao.findByPutWarehouseIdsIsNull();
-		list = list.stream().filter(ProcurementChild -> ProcurementChild.getProcurement().getType() == 3
-				&& ProcurementChild.getProcurement().getFlag() == 0).collect(Collectors.toList());
-		for (ProcurementChild procurementChild : list) {
-			// 查询商品在当前库存下所有数量大于0的入库单，优先入库时间最早的入库单出库,出库数量可能存在一单无法满足，按时间依次删减出库单数量
-			List<ProcurementChild> procurementChildList = procurementChildDao
-					.findByCommodityIdAndStatusAndResidueNumberGreaterThan(procurementChild.getCommodityId(), 0, 0);
-			procurementChildList = procurementChildList.stream()
-					.filter(ProcurementChild -> ProcurementChild.getProcurement().getType() == 2
-							&& ProcurementChild.getProcurement().getFlag() == 0)
-					.sorted(Comparator.comparing(ProcurementChild::getCreatedAt)).collect(Collectors.toList());
-			// 出库单剩余数量
-			int residueNumber = procurementChild.getNumber();
-			String ids = "";
-			List<ProcurementChild> newProcurementChild = new ArrayList<>();
-			for (ProcurementChild updateProcurementChild : procurementChildList) {
-				// 当入库单数量小于出库单时,更新剩余数量
-				if (updateProcurementChild.getResidueNumber() < residueNumber) {
-					procurementChild.setBatchNumber((StringUtils.isEmpty(procurementChild.getBatchNumber())
-							? updateProcurementChild.getBatchNumber()
-							: procurementChild.getBatchNumber() + "," + updateProcurementChild.getBatchNumber()) + ":"
-							+ updateProcurementChild.getResidueNumber());
-					residueNumber = procurementChild.getNumber() - updateProcurementChild.getResidueNumber();
-					updateProcurementChild.setResidueNumber(0);
-					newProcurementChild.add(updateProcurementChild);
-					ids += updateProcurementChild.getId() + ",";
-				} else {
-					procurementChild.setBatchNumber((StringUtils.isEmpty(procurementChild.getBatchNumber())
-							? updateProcurementChild.getBatchNumber()
-							: procurementChild.getBatchNumber() + "," + updateProcurementChild.getBatchNumber()) + ":"
-							+ residueNumber);
-					updateProcurementChild.setResidueNumber(updateProcurementChild.getResidueNumber() - residueNumber);
-					newProcurementChild.add(updateProcurementChild);
-					ids += updateProcurementChild.getId() + ",";
-					break;
-				}
-			}
-			// 更新改变数量的入库单的剩余数量
-			procurementChildDao.save(newProcurementChild);
-			// 将出库单ids存入入库单，便于反冲
-			procurementChild.setPutWarehouseIds(ids);
-		}
-		procurementChildDao.save(list);
-		return list.size();
-	}
-
-	@Override
-	public Object test1(Procurement procurement) {
-		List<ProcurementChild> list = procurementChildDao.findByPutWarehouseIdsNotNull();
-		list = list.stream().filter(ProcurementChild -> ProcurementChild.getProcurement().getType() == 3
-				&& ProcurementChild.getProcurement().getFlag() == 0).collect(Collectors.toList());
-		for (ProcurementChild procurementChild : list) {
-			if (!StringUtils.isEmpty(procurementChild.getPutWarehouseIds())) {
-				String[] idStrings = procurementChild.getPutWarehouseIds().split(",");
-				for (String id : idStrings) {
-					ProcurementChild procurementChild1 = procurementChildDao.findOne(Long.valueOf(id));
-					procurementChild.setBatchNumber(
-							StringUtils.isEmpty(procurementChild.getBatchNumber()) ? procurementChild1.getBatchNumber()
-									: procurementChild.getBatchNumber() + "," + procurementChild1.getBatchNumber());
-				}
-			}
-		}
-		procurementChildDao.save(list);
-		return null;
-	}
-
-	@Override
 	public int conversionProcurement(String ids) {
+		int count = 0; 
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idStrings = ids.split(",");
 			for (String id : idStrings) {
@@ -660,18 +597,17 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 					procurement.getProcurementChilds().stream().forEach(p -> {
 						Commodity commodity = p.getCommodity();
 						// 创建商品的库存
-						Set<Inventory> inventorys = commodity.getInventorys();
+						Set<Inventory> inventorys = commodity.getProduct().getInventorys();
 						// 获取库存
-						Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(p.getCommodityId(),
-								p.getWarehouseId());
+						Inventory inventory = inventoryDao.findByProductIdAndWarehouseId(p.getCommodity().getProductId(),p.getWarehouseId());
 						if (inventory == null) {
 							inventory = new Inventory();
-							inventory.setCommodityId(p.getCommodityId());
+							inventory.setProductId(p.getCommodity().getProductId());
 							inventory.setNumber(p.getNumber());
 							inventory.setWarehouseId(p.getWarehouseId());
 							inventorys.add(inventory);
-							commodity.setInventorys(inventorys);
-						} else {
+							commodity.getProduct().setInventorys(inventorys);
+						} else { 
 							inventory.setNumber(inventory.getNumber() + p.getNumber());
 						}
 						commodityService.save(commodity);

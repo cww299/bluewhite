@@ -144,7 +144,7 @@ public class InventoryAction {
 	}
 
 	/****** 商品 *****/
-	/**
+	/**  
 	 * 获取商品列表
 	 * 
 	 */
@@ -531,31 +531,6 @@ public class InventoryAction {
 		cr.setMessage("成功");
 		return cr;
 	}
-	
-
-	/**
-	 * 
-	 * 
-	 */
-	@RequestMapping(value = "/inventory/test", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse test(Procurement procurement) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(procurementService.test(procurement));
-		cr.setMessage("成功");
-		return cr;
-	}
-	
-	@RequestMapping(value = "/inventory/test1", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse test1(Procurement procurement) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(procurementService.test1(procurement));
-		cr.setMessage("成功");
-		return cr;
-	}
-	
-	
 	
 
 	@InitBinder

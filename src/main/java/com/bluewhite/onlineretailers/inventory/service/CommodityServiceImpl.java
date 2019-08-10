@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,7 +127,7 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 				for (String idString : pers) {
 					try {
 						Commodity commodity = dao.findOne(Long.valueOf(idString));
-						if(commodity.getInventorys().size()>0){
+						if(commodity.getProduct().getInventorys().size()>0){
 							throw new ServiceException("商品有库存，无法删除");
 						}
 						dao.delete(Long.valueOf(idString));
@@ -182,7 +181,7 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 							.mapToInt(ProcurementChild::getNumber).sum();
 					// 当前商品的库存
 					Commodity commodity = commodityDao.findOne(ps);
-					int countInventory = commodity.getInventorys().stream()
+					int countInventory = commodity.getProduct().getInventorys().stream()
 							.filter(Inventory -> Inventory.getWarehouseId().equals(warning.getWarehouse().getId()))
 							.mapToInt(Inventory::getNumber).sum();
 					Map<String, Object> map = new HashMap<>();

@@ -69,7 +69,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	private AttendancePayDao attendancePayDao;
 
 	@Override
-	public List<AttendanceTime> findAttendanceTime(AttendanceTime attendance) throws ParseException{
+	public List<AttendanceTime> findAttendanceTime(AttendanceTime attendance) throws ParseException {
 		// 获取改时间段所有的打卡记录
 		List<Attendance> allAttList = null;
 		// 获取固定休息日
@@ -430,7 +430,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	}
 
 	@Override
-	public List<Map<String, Object>> findAttendanceTimeCollectAdd(AttendanceTime attendanceTime) throws ParseException  {
+	public List<Map<String, Object>> findAttendanceTimeCollectAdd(AttendanceTime attendanceTime) throws ParseException {
 		return attendanceCollect(attendanceTimeByApplication(findAttendanceTime(attendanceTime)), true);
 	}
 
@@ -487,8 +487,9 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			// 按日期自然排序
 			List<AttendanceTime> attendanceTimeList1 = psList1.stream()
 					.sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
-			AttendanceCollect attendanceCollect = attendanceCollectDao.findByUserIdAndTime(ps1,attendanceTime.getOrderTimeBegin());
-			if(attendanceCollect!=null){
+			AttendanceCollect attendanceCollect = attendanceCollectDao.findByUserIdAndTime(ps1,
+					attendanceTime.getOrderTimeBegin());
+			if (attendanceCollect != null) {
 				attendanceCollectDao.delete(attendanceCollect);
 			}
 		}
@@ -603,7 +604,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
 	@Override
 	@Transactional
-	public List<AttendanceTime> attendanceTimeByApplication(List<AttendanceTime> attendanceTimeList) throws ParseException{
+	public List<AttendanceTime> attendanceTimeByApplication(List<AttendanceTime> attendanceTimeList)
+			throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		// 按人员分组
 		Map<Long, List<AttendanceTime>> mapAttendanceTime = attendanceTimeList.stream()
@@ -773,14 +775,12 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		deleteAttendanceTimeCollect(attendanceTime);
 		return findAttendanceTimeCollectAdd(attendanceTime);
 	}
-	
 
 	@Override
 	public List<Map<String, Object>> workshopAttendanceContrast(AttendanceTime attendanceTime) {
 		List<Map<String, Object>> mapList = new ArrayList<>();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		attendanceTime.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(attendanceTime.getOrderTimeBegin()));
-		long size = DatesUtil.getDaySub(attendanceTime.getOrderTimeBegin(),attendanceTime.getOrderTimeEnd());
 		Integer type = null;
 		switch (String.valueOf(attendanceTime.getOrgNameId())) {
 		case Constants.QUALITY_ORGNAME:
@@ -801,49 +801,74 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		default:
 			break;
 		}
-		// 按类型获取车间填写的人工考勤 自然排序
+
+		// 按打卡记录查出考勤
+		List<AttendanceTime> attendanceTimeList = findAttendanceTimePage(attendanceTime);
+		if(attendanceTimeList.size()==0){
+			throw new ServiceException("该部门当月未统计考勤，无法比对数据，请先统计考勤");
+		}
+		// 按类型获取车间填写的人工考勤
 		List<AttendancePay> attendancePayList = attendancePayDao.findByTypeAndAllotTimeBetween(type,
-				attendanceTime.getOrderTimeBegin(),attendanceTime.getOrderTimeEnd()).stream()
-				.sorted(Comparator.comparing(AttendancePay::getAllotTime)).collect(Collectors.toList()); 
-		// 按打卡记录查出考勤 自然排序
-		List<AttendanceTime> attendanceTimeList = findAttendanceTimePage(attendanceTime).stream()
-		.sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
-		
-		
-		for (int i = 0; i < size; i++) {     
-			AttendancePay aPay = attendancePayList.get(i);
-			AttendanceTime aTime = attendanceTimeList.get(i);
-			
-			if(DatesUtil.sameDate(aPay.getAllotTime(),aTime.getTime())){
-				Map<String, Object> map = new HashMap<>();
-				map.put("date", sdf.format(aPay.getAllotTime()));   
-				map.put("name", aPay.getUser().getUserName());
-				//针工
-				if(type==3){
-					if(!aPay.getWorkTime().equals(aTime.getTakeWork())){
-						//记录工作时长
-						map.put("recordTurnWorkTime", aPay.getTurnWorkTime());
-						//打卡工作时长
-						map.put("clockInTurnWorkTime", aTime.getTurnWorkTime());
+				attendanceTime.getOrderTimeBegin(), attendanceTime.getOrderTimeEnd());
+
+		Map<Long, List<AttendancePay>> mapAttendance = attendancePayList.stream()
+				.filter(AttendancePay -> AttendancePay.getUserId() != null)
+				.collect(Collectors.groupingBy(AttendancePay::getUserId, Collectors.toList()));
+
+		Map<Long, List<AttendanceTime>> mapAttendanceTime = attendanceTimeList.stream()
+				.filter(AttendanceTime -> AttendanceTime.getUserId() != null)
+				.collect(Collectors.groupingBy(AttendanceTime::getUserId, Collectors.toList()));
+
+		for (Long ps1 : mapAttendance.keySet()) {
+			// 获取单一员工车间填写的考勤数据 自然排序
+			List<AttendancePay> attendancePays = mapAttendance.get(ps1).stream()
+					.sorted(Comparator.comparing(AttendancePay::getAllotTime)).collect(Collectors.toList());
+			// 获取单一员工打卡记录的考勤数据 自然排序
+			List<AttendanceTime> attendanceTimes = mapAttendanceTime.get(ps1).stream()
+					.sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
+			//將打卡记录当作循环体，通过日期对比 
+			attendanceTimes.stream().forEach(aTime -> {
+				List<AttendancePay> asList = attendancePays.stream()
+						.filter(AttendancePay -> AttendancePay.getAllotTime().compareTo(aTime.getTime()) == 0)
+						.collect(Collectors.toList());
+				AttendancePay aPay = null;
+				if (asList.size() > 0) {
+					 aPay = asList.get(0);
+				}else{
+					aPay = new AttendancePay();
+					NumUtils.setzro(aPay);
+				}
+					Map<String, Object> map = new HashMap<>();
+					map.put("date", sdf.format(aTime.getTime()));
+					map.put("name", aTime.getUser().getUserName());
+					// 针工 （检验 管理 开棉）
+					if (aTime.getUser().getGroup().getKindWorkId() != null && aTime.getUser().getGroup().getKindWorkId().equals(113) && aTime.getUser().getGroup().getKindWorkId().equals(116) && aTime.getUser().getGroup().getKindWorkId().equals(120)) {
+						if (!aPay.getWorkTime().equals(aTime.getWorkTime())) {
+							// 记录工作时长
+							map.put("recordTurnWorkTime", aPay.getWorkTime());
+							// 打卡工作时长
+							map.put("clockInTurnWorkTime", aTime.getWorkTime());
+						}
+						mapList.add(map);
+					} else {
+						// 出勤时间比对
+						if (!aPay.getTurnWorkTime().equals(aTime.getTurnWorkTime())) {
+							// 记录出勤
+							map.put("recordTurnWorkTime", aPay.getTurnWorkTime());
+							// 打卡出勤
+							map.put("clockInTurnWorkTime", aTime.getTurnWorkTime());
+						}
+						// 加班时间比对
+						if (!aPay.getOverTime().equals(aTime.getOvertime())) {
+							// 记录加班
+							map.put("recordOverTime", aPay.getOverTime());
+							// 打卡加班
+							map.put("clockInOvertime", aTime.getOvertime());
+						}
+						mapList.add(map);
 					}
-				}
-				
-				//出勤时间比对
-				if(!aPay.getTurnWorkTime().equals(aTime.getTurnWorkTime())){
-					//记录出勤
-					map.put("recordTurnWorkTime", aPay.getTurnWorkTime());
-					//打卡出勤
-					map.put("clockInTurnWorkTime", aTime.getTurnWorkTime());
-				}
-				//加班时间比对
-				if(!aPay.getOverTime().equals(aTime.getOvertime())){
-					//记录加班
-					map.put("recordOverTime", aPay.getOverTime());
-					//打卡加班
-					map.put("clockInOvertime", aTime.getOvertime());
-				}
-				mapList.add(map);
-			}
+			});
+
 		}
 		return mapList;
 	}
