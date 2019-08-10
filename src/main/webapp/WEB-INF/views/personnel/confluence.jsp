@@ -171,13 +171,12 @@ layui.config({
 			if(document.getElementById('personMachineCompare')!=null){
 				var compareWin = '';
 				$('#personMachineCompare').on('click',function(){
-				/* 	orgId = $('#orgNameId').val();
+					orgId = $('#orgNameId').val();
 					if(orgId=='')
-						return layer.msg('请选择部门',{icon:2});  */
+						return layer.msg('请选择部门',{icon:2});
 					var html = '获取对比数据异常';
 					$.ajax({
-						//url: '${ctx}/personnel/workshopAttendanceContrast?orgNameId='+orgId+'&orderTimeBegin='+$('#startTime').val()+'-01 00:00:00',
-						url: '${ctx}/personnel/workshopAttendanceContrast?orgNameId='+48+'&orderTimeBegin='+'2019-07-01 00:00:00',
+						url: '${ctx}/personnel/workshopAttendanceContrast?orgNameId='+orgId+'&orderTimeBegin='+$('#startTime').val()+'-01 00:00:00',
 						async: false,
 						success: function(r){
 							var userData = {};
@@ -208,14 +207,17 @@ layui.config({
 										var sub = (item1.clockInTurnWorkTime-(-item1.clockInOvertime)-item1.recordTurnWorkTime-item1.recordOverTime);
 										allSub+=sub;
 										var color = sub>0?"blue":"red";
-										html+= ['<tr>',
+										var trColor = '';
+										if(item1.warning && item1.warning==1)
+											trColor = 'red';
+										html+= ['<tr style="background-color:'+trColor+'">',
 													'<td><span class="layui-badge layui-bg-green">'+item1.date+'</span></td>',
 													'<td>'+item1.clockInTurnWorkTime+'</td>',
 													'<td>'+item1.recordTurnWorkTime+'</td>',
 													'<td>'+item1.clockInOvertime+'</td>',
 													'<td>'+item1.recordOverTime+'</td>',
 													'<td style="color:'+color+'">'+sub+'</td>',
-													'<td style="display:none;">1</td>',	//隐藏行id
+													'<td style="display:none;">'+item1.id+'</td>',	 //隐藏行id
 												'</tr>',
 											   ].join(' ');
 										if(index1==item.length-1){
