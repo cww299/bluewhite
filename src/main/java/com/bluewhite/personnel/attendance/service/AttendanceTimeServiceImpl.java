@@ -832,6 +832,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 						.filter(AttendancePay -> AttendancePay.getAllotTime().compareTo(aTime.getTime()) == 0)
 						.collect(Collectors.toList());
 				AttendancePay aPay = null;
+	
 				if (asList.size() > 0) {
 					 aPay = asList.get(0);
 				}else{
@@ -848,24 +849,22 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 							map.put("recordTurnWorkTime", aPay.getWorkTime());
 							// 打卡工作时长
 							map.put("clockInTurnWorkTime", aTime.getWorkTime());
+							mapList.add(map);
 						}
-						mapList.add(map);
 					} else {
 						// 出勤时间比对
-						if (!aPay.getTurnWorkTime().equals(aTime.getTurnWorkTime())) {
+						if (!aPay.getTurnWorkTime().equals(aTime.getTurnWorkTime()) || !aPay.getOverTime().equals(aTime.getOvertime())) {
 							// 记录出勤
 							map.put("recordTurnWorkTime", aPay.getTurnWorkTime());
 							// 打卡出勤
 							map.put("clockInTurnWorkTime", aTime.getTurnWorkTime());
-						}
-						// 加班时间比对
-						if (!aPay.getOverTime().equals(aTime.getOvertime())) {
+							// 加班时间比对
 							// 记录加班
 							map.put("recordOverTime", aPay.getOverTime());
 							// 打卡加班
 							map.put("clockInOvertime", aTime.getOvertime());
+							mapList.add(map);
 						}
-						mapList.add(map);
 					}
 			});
 
