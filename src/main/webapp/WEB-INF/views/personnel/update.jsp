@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html class="no-js">
@@ -9,7 +10,14 @@
 	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>   
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 <head>
-
+<style>
+.compareTable td{
+	border:1px solid #d2d2d2;
+}
+.compareTable tr:hover{
+	background-color: #dafdf3;
+} 
+</style>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>考勤总汇</title>
@@ -52,6 +60,11 @@
 								<button type="button" class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-searche">查找考勤</button>
 								<button type="button" class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-sealAttendanceCollect" id="sealAttendanceCollect">存档</button>
 							</div>
+							<shiro:hasRole name="superAdmin">
+								<div class="layui-inline">
+									<button class="layui-btn" lay-submit id="personMachineCompare" >人机对比 </button>
+								</div>
+							</shiro:hasRole>
 						</td>
 						<td>标注行颜色：<div id="colorChoose" style="width:30px;height:30px;"></div></td>
 						<td>&nbsp;&nbsp;</td>
@@ -99,6 +112,97 @@ layui.config({
 			elem : '#startTime',
 			type : 'month',
 		});
+		;!(function(){
+			if(document.getElementById('personMachineCompare')!=null){
+				var compareWin = '';
+				$('#personMachineCompare').on('click',function(){
+					orgId = $('#orgNameId').val();
+					if(orgId=='')
+						return layer.msg('请选择部门',{icon:2});
+					var html = '获取对比数据异常';
+					$.ajax({
+						url: '${ctx}/personnel/workshopAttendanceContrast?orgNameId='+orgId+'&orderTimeBegin='+$('#startTime').val()+'-01 00:00:00',
+						async: false,
+						success: function(r){
+							var userData = {};
+							if(r.code==0){
+								html = '';
+								if(r.data.length==0)
+									html='<h3 style="text-align:center;color:#999;;">无对比差距</h3>';
+								layui.each(r.data,function(index,item){		//根据人员分组
+									var t = 'user_'+item.userId;
+									if(!userData[t])
+										userData[t] = [];
+									userData[t].push(item);
+								})
+								layui.each(userData,function(index,item){
+									var allSub = 0;
+									layui.each(item,function(index1,item1){
+										if(index1==0){
+											html += ['<hr><h3 style="color:red;">考勤人员：'+item1.name+'</h3>',
+													 '<table style="text-align:center;margin: auto;width:90%;" class="compareTable">',
+													 	'<th>异常日期</th>',
+													 	'<th>打卡出勤</th>',
+													 	'<th>记录出勤</th>',
+													 	'<th>打卡加班</th>',
+													 	'<th>记录加班</th>',
+													 	'<th>时差</th>',
+													].join('');
+										}
+										var sub = (item1.clockInTurnWorkTime-(-item1.clockInOvertime)-item1.recordTurnWorkTime-item1.recordOverTime);
+										allSub+=sub;
+										var color = sub>0?"blue":"red";
+										var trColor = '';
+										if(item1.warning && item1.warning==1)
+											trColor = 'red';
+										html+= ['<tr style="background-color:'+trColor+'">',
+													'<td><span class="layui-badge layui-bg-green">'+item1.date+'</span></td>',
+													'<td>'+item1.clockInTurnWorkTime+'</td>',
+													'<td>'+item1.recordTurnWorkTime+'</td>',
+													'<td>'+item1.clockInOvertime+'</td>',
+													'<td>'+item1.recordOverTime+'</td>',
+													'<td style="color:'+color+'">'+sub+'</td>',
+													'<td style="display:none;">'+item1.id+'</td>',	 //隐藏行id
+												'</tr>',
+											   ].join(' ');
+										if(index1==item.length-1){
+											html+='<tr><td><span class="layui-badge">总时差：</span></td><td></td><td></td><td></td><td></td><td style="color:red;">'+allSub+'</td></tr>'
+											html+='</table>';
+										}
+									})
+								})
+							}else
+								html = '<h3 style="text-align:center;color:#999;;">'+r.message+'</h3>';
+						}
+					})
+					if(compareWin)
+						layer.close(compareWin);
+					compareWin = layer.open({
+						type:1,
+						title:'人机考勤对比',
+						offset:'r',
+						area:['28%','100%'],
+						shade:0,
+						content: html,
+						success:function(){
+							$('.compareTable').find('tr').unbind().on('click',function(obj){
+								var id = $(obj.currentTarget.lastElementChild).html();
+								var warning = 0;
+								if(layui.getStyle(this, 'background-color')=='rgb(255, 0, 0)'){	//如果背景颜色是红的
+									$(this).css('background-color','');
+								}else{
+									warning = 1;
+									$(this).css('background-color','red');
+								}
+								$.ajax({
+									url: '${ctx}/finance/updateAttendance?id='+id+'&warning='+warning,
+								})
+							})
+						}
+					})
+				})
+			}
+		})();
 		var bgColorCol = []; 		//记录变色的列
 		var bgColorRow = [];
 		var bgColor = '#ffb800';	//默认颜色
@@ -313,7 +417,7 @@ layui.config({
 					list2.push(list1)
 					list2.push(list3)
 					table.init('test3', {
-						height:'700px',
+						height:'650px',
 						cols : list2,
 						limit: 500,
 						data : res.data,
