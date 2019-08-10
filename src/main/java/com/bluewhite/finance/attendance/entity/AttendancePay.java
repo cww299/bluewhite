@@ -111,6 +111,12 @@ public class AttendancePay extends BaseEntity<Long> {
 	 */
 	@Column(name = "group_id")
 	private Long groupId;
+	
+	/**
+	 * 是否错误（0,1）
+	 */
+	@Column(name = "warning")
+	private Integer warning;
 
 	/**
 	 * 查询字段
@@ -147,6 +153,14 @@ public class AttendancePay extends BaseEntity<Long> {
 
 	
 	
+	public Integer getWarning() {
+		return warning;
+	}
+
+	public void setWarning(Integer warning) {
+		this.warning = warning;
+	}
+
 	public Double[] getTurnWorkTimes() {
 		return turnWorkTimes;
 	}

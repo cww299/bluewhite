@@ -832,13 +832,15 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 						.filter(AttendancePay -> AttendancePay.getAllotTime().compareTo(aTime.getTime()) == 0)
 						.collect(Collectors.toList());
 				AttendancePay aPay = null;
+				Map<String, Object> map = new HashMap<>();
 				if (asList.size() > 0) {
 					 aPay = asList.get(0);
+					 map.put("id", aPay.getId());
+					 map.put("warning", aPay.getWarning());
 				}else{
 					aPay = new AttendancePay();
 					NumUtils.setzro(aPay);
 				}
-					Map<String, Object> map = new HashMap<>();
 					map.put("date", sdf.format(aTime.getTime()));
 					map.put("name", aTime.getUser().getUserName());
 					map.put("userId", aTime.getUserId());
