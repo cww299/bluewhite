@@ -67,11 +67,11 @@
 							<div class="layui-inline">
 								<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-searche">统计考勤 </button>
 							</div>
-							<shiro:hasRole name="superAdmin,productEightTailor,productTwoMachinist,productTwoDeedle,productFristPack,productFristQuality,personnel">
+							<shiro:hasAnyRoles name="superAdmin,productEightTailor,productTwoMachinist,productTwoDeedle,productFristPack,productFristQuality,personnel">
 								<div class="layui-inline">
 									<button class="layui-btn" lay-submit id="personMachineCompare" >人机对比 </button>
 								</div>
-							</shiro:hasRole>
+							</shiro:hasAnyRoles>
 							<div class="layui-inline">标注行颜色：<div id="colorChoose" style="width:30px;height:30px;"></div></div>
 						</td>
 					</tr>
@@ -171,9 +171,13 @@ layui.config({
 			if(document.getElementById('personMachineCompare')!=null){
 				var compareWin = '';
 				$('#personMachineCompare').on('click',function(){
-					orgId = $('#orgNameId').val();
-					if(orgId=='')
-						return layer.msg('请选择部门',{icon:2});
+					if(!isAttend){
+						orgId = $('#orgNameId').val();
+						if(orgId=='')
+							return layer.msg('请选择部门',{icon:2});
+					}
+					if($('#startTime').val()=='')
+						return layer.msg('请填写日期',{icon:2});
 					var html = '获取对比数据异常';
 					$.ajax({
 						url: '${ctx}/personnel/workshopAttendanceContrast?orgNameId='+orgId+'&orderTimeBegin='+$('#startTime').val()+'-01 00:00:00',

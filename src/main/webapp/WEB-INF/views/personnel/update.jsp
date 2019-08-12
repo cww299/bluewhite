@@ -60,11 +60,11 @@
 								<button type="button" class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-searche">查找考勤</button>
 								<button type="button" class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-sealAttendanceCollect" id="sealAttendanceCollect">存档</button>
 							</div>
-							<shiro:hasRole name="superAdmin,productEightTailor,productTwoMachinist,productTwoDeedle,productFristPack,productFristQuality,personnel">
+							<shiro:hasAnyRoles name="superAdmin,productEightTailor,productTwoMachinist,productTwoDeedle,productFristPack,productFristQuality,personnel">
 								<div class="layui-inline">
 									<button class="layui-btn" lay-submit id="personMachineCompare" >人机对比 </button>
 								</div>
-							</shiro:hasRole>
+							</shiro:hasAnyRoles>
 						</td>
 						<td>标注行颜色：<div id="colorChoose" style="width:30px;height:30px;"></div></td>
 						<td>&nbsp;&nbsp;</td>
