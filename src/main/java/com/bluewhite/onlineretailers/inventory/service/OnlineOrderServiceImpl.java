@@ -384,9 +384,9 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 							onlineOrderChild.setResidueNumber(0);
 							onlineOrderChild.setStatus(Constants.ONLINEORDER_5);
 						}
-//						if(inventory.getNumber() < number){
-//							throw new ServiceException(commodity.getName() + "当前仓库库存不足,无法出库，请补充库存");
-//						}
+						if(inventory.getNumber() < number){
+							throw new ServiceException(commodity.getName() + "当前仓库库存不足,无法出库，请补充库存");
+						}
 						inventory.setNumber(inventory.getNumber() - number);
 						inventoryDao.save(inventory);
 						onlineOrderChildDao.save(onlineOrderChild);
