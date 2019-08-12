@@ -647,6 +647,14 @@
 								align: 'center',
 								edit: 'text'
 							},{
+								field: "adopts",
+								align: 'center',
+								title: "面试情况",
+								edit: false,
+								type: 'normal',
+								width : 115,
+								templet: fn1('selectTwo')
+							},{
 								field: "remarksOne",
 								title: "一面情况",
 								align: 'center',
@@ -656,14 +664,6 @@
 								title: "二面情况",
 								align: 'center',
 								edit: 'text'
-							},{
-								field: "adopts",
-								align: 'center',
-								title: "面试情况",
-								edit: false,
-								type: 'normal',
-								width : 115,
-								templet: fn1('selectTwo')
 							},{ 
 								align: 'center',
 								field: "states",
