@@ -234,10 +234,11 @@
 						        			page:obj.curr,
 									  		size:13,
 									  		type:1,
-									  		productName:$('#name').val(),
+								  			productName:$('#name').val(),
 								  			bacthNumber:$('#number').val(),
+								  			procedureName:$('#procedureName').val(),
 								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(),
+								  			orderTimeEnd:$("#endTime").val(), 
 								  			flag:$('.selectchoice').val(),
 								  	}
 						        
