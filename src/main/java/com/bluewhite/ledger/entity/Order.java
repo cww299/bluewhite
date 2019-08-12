@@ -71,6 +71,12 @@ public class Order extends BaseEntity<Long>{
 	@Column(name = "number")
 	private Integer number;
 	
+	/**
+	 * 剩余数量
+	 */
+	@Column(name = "surplus_Number")
+	private Integer surplusNumber;
+	
 	
 	/**
 	 * 备注
@@ -129,6 +135,16 @@ public class Order extends BaseEntity<Long>{
 	
 	
 	
+	public Integer getSurplusNumber() {
+		return surplusNumber;
+	}
+
+
+	public void setSurplusNumber(Integer surplusNumber) {
+		this.surplusNumber = surplusNumber;
+	}
+
+
 	public Integer getInternal() {
 		return internal;
 	}
