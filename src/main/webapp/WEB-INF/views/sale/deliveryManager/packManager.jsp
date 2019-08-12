@@ -667,7 +667,6 @@ layui.config({
 				tempData.push(temp[i]);
 			}
 			layui.each(table.cache[tid],function(index,item){
-				console.log(1)
 				var i=0;
 				for(i=0;i<deleteId.length;i++)
 					if(item.id == deleteId[i])
