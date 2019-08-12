@@ -112,7 +112,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				orderNew.setProductId(jsonObject.getLong("productId"));
 				orderNew.setCustomerId(order.getCustomerId());
 				//判定是否属于电子商务部的订单合同
-				if(orderNew.getCustomerId().equals("")){
+				if(orderNew.getCustomerId().equals(1)){
 					orderNew.setInternal(1);
 				}
 				orderNew.setNumber(jsonObject.getInteger("number"));
