@@ -160,7 +160,7 @@
    		</div>
 	</shiro:hasAnyRoles> 
 	<!-- 考勤错误预警弹窗 -->
-	<shiro:hasAnyRoles name="superAdmin">
+	<shiro:hasAnyRoles name="superAdmin,productEightTailor,productTwoMachinist,productTwoDeedle,productFristPack,productFristQuality,personnel">
    		<div id="warningConfluenceDiv" style="display:none;">
 			<table id='warningConfluenceTable' lay-filter='warningConfluenceTable'></table>   		
    		</div>
@@ -209,18 +209,9 @@ layui.use(['form','element','layer','jquery','table'],function(){
     	warn();
     	function confluenceWarn(){
 			if(document.getElementById('confluenceWarn')!=null){
-				if(!currUser)
-					$.ajax({
-						url:'${ctx}/getCurrentUser',		//获取当前登录用户
-						async:false,
-						success:function(r){
-							if(0==r.code)
-								currUser = r.data;
-						}
-					})
 				table.render({
 					elem:'#warningConfluenceTable',
-					url:'${ctx}/finance/allAttendancePay?warning=1&orgNameId='+currUser.orgNameId,
+					data: [],
 					page: true,
 					parseData:function(r){
 						$('#warnConfluenceNumber').html(r.data.total);
@@ -233,6 +224,15 @@ layui.use(['form','element','layer','jquery','table'],function(){
 					       {align:'center', title:'加班时长', field:'overTime',edit:true,},
 					       ]],
 				}) 
+				if(!currUser)
+					$.ajax({
+						url:'${ctx}/getCurrentUser',		//获取当前登录用户
+						async:false,
+						success:function(r){
+							if(0==r.code)
+								currUser = r.data;
+						}
+					})
 				layer.open({
 					title:'考勤错误预警',
 					type:1,
@@ -240,7 +240,9 @@ layui.use(['form','element','layer','jquery','table'],function(){
 					area:['50%','60%'],
 					content:$('#warningConfluenceDiv'),
 					success:function(){
-						table.resize('warningConfluenceTable');
+						table.reload('warningConfluenceTable',{
+							url:'${ctx}/finance/allAttendancePay?warning=1&orgNameId='+currUser.orgNameId,
+						}) 
 					}
 				})
 				table.on('edit(warningConfluenceTable)',function(obj){
