@@ -163,6 +163,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 						throw new ServiceException("贴报单已发货，无法修改");
 					}
 				}
+				packingChild.setConfirm(0);
 				packingChild.setFlag(0);
 				packingChild.setCount(jsonObject.getInteger("count"));
 				// 改变待发货单的剩余数量
@@ -274,10 +275,11 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			if (param.getFlag() != null) {
 				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
 			}
-			
-			// 按贴包类型过滤
-				predicate.add(cb.equal(root.get("type").as(Integer.class), 1));
 
+			// 按贴包类型过滤
+			if (param.getType() != null) {
+				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
+			}
 			// 是否审核
 			if (param.getAudit() != null) {
 				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
@@ -293,6 +295,16 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				predicate.add(cb.equal(root.get("copyright").as(Integer.class), param.getCopyright()));
 			}
 
+			// 按调拨仓库过滤
+			if (param.getWarehouseTypeId() != null) {
+				predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
+			}
+			
+			// 调拨仓库是否确认数量
+			if (param.getConfirm() != null) {
+				predicate.add(cb.equal(root.get("confirm").as(Long.class), param.getConfirm()));
+			}
+			
 			// 是否业务员确认
 			if (param.getDeliveryStatus() != null) {
 				predicate.add(cb.equal(root.get("deliveryStatus").as(Integer.class), param.getDeliveryStatus()));
@@ -300,7 +312,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 
 			// 按产品name过滤
 			if (!StringUtils.isEmpty(param.getProductName())) {
-				predicate.add(cb.equal(root.get("product").get("name").as(Long.class), "%" + param.getProductName() + "%"));
+				predicate.add(
+						cb.equal(root.get("product").get("name").as(Long.class), "%" + param.getProductName() + "%"));
 			}
 			// 按批次查找
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
@@ -493,7 +506,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			bl.setBillDate(bill.getOrderTimeBegin());
 			bl.setCustomerName(psList.get(0).getCustomer().getName());
 			bl.setCustomerId(psList.get(0).getCustomerId());
-			if (psList !=null && psList.size() > 0) {
+			if (psList != null && psList.size() > 0) {
 				// 货款总值
 				bl.setOffshorePay(NumUtils.round(psList.stream().mapToDouble(PackingChild::getOffshorePay).sum(), 2));
 				// 确认货款
@@ -501,16 +514,18 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				// 争议货款
 				bl.setDisputePay(NumUtils.round(psList.stream().mapToDouble(PackingChild::getDisputePay).sum(), 2));
 			}
-			if (mixeds!=null && mixeds.size() > 0) {
+			if (mixeds != null && mixeds.size() > 0) {
 				// 杂支
 				bl.setAcceptPayable(NumUtils.round(mixeds.stream().mapToDouble(Mixed::getMixPrice).sum(), 2));
-			} 
-			if (receivedMoneys!=null && receivedMoneys.size() > 0) {
+			}
+			if (receivedMoneys != null && receivedMoneys.size() > 0) {
 				// 已到货款
-				bl.setArrivalPay(NumUtils.round(receivedMoneys.stream().mapToDouble(ReceivedMoney::getReceivedMoney).sum(), 2));
+				bl.setArrivalPay(
+						NumUtils.round(receivedMoneys.stream().mapToDouble(ReceivedMoney::getReceivedMoney).sum(), 2));
 			}
 			// 未到货款
-			bl.setNonArrivalPay(NumUtils.sub(NumUtils.sum(bl.getAcceptPay(), bl.getAcceptPayable()), bl.getArrivalPay()));
+			bl.setNonArrivalPay(
+					NumUtils.sub(NumUtils.sum(bl.getAcceptPay(), bl.getAcceptPayable()), bl.getArrivalPay()));
 			// 客户多付货款
 			bl.setOverpaymentPay(bl.getArrivalPay() < 0 ? bl.getArrivalPay() : 0);
 			billList.add(bl);

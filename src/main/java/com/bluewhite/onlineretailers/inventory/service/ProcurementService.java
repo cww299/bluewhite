@@ -104,4 +104,7 @@ public interface ProcurementService extends BaseCRUDService<Procurement, Long> {
 	 * @return
 	 */
 	int conversionProcurement(String ids);
+
+
+	int test(String ids);
 }

@@ -35,6 +35,7 @@ import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.ledger.dao.PackingChildDao;
 import com.bluewhite.ledger.entity.PackingChild;
+import com.bluewhite.onlineretailers.inventory.dao.CommodityDao;
 import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
 import com.bluewhite.onlineretailers.inventory.dao.OnlineOrderChildDao;
 import com.bluewhite.onlineretailers.inventory.dao.OnlineOrderDao;
@@ -47,12 +48,18 @@ import com.bluewhite.onlineretailers.inventory.entity.OnlineOrderChild;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 import com.bluewhite.onlineretailers.inventory.entity.poi.OutProcurementPoi;
+import com.bluewhite.product.product.dao.ProductDao;
+import com.bluewhite.product.product.entity.Product;
 
 @Service
 public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> implements ProcurementService {
 
 	@Autowired
+	private ProductDao prodao;
+	@Autowired
 	private ProcurementDao dao;
+	@Autowired
+	private CommodityDao commodityDao;
 	@Autowired
 	private CommodityService commodityService;
 	@Autowired
@@ -645,6 +652,19 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			dao.save(pc.getProcurement());
 		}
 		return procurementChild;
+	}
+
+	@Override
+	public int test(String ids) {
+		List<Commodity> commodityList = commodityDao.findByProductIdIsNull();
+		commodityList.stream().forEach(c->{
+			List<Product> product = prodao.findByNumberNotNullAndNameLike(StringUtil.specialStrKeyword(c.getName()));
+			if(product.size()>0){
+				c.setProductId(product.get(0).getId());
+			}
+		});
+		commodityDao.save(commodityList);
+		return commodityList.size();
 	}
 
 }
