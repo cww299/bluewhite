@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bluewhite.base.BaseRepository;
 import com.bluewhite.product.product.entity.Product;
+import java.lang.String;
 
 /**
  * 
@@ -36,5 +37,8 @@ public interface ProductDao extends BaseRepository<Product, Long> {
 	 * @return
 	 */
 	public List<Product> findByNumberNotNull();
+	
+	
+	List<Product> findByNumberNotNullAndNameLike(String name);
 
 }

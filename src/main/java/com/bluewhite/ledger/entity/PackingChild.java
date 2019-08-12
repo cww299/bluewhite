@@ -107,6 +107,18 @@ public class PackingChild extends BaseEntity<Long> {
 	private Integer type;
 	
 	/**
+	 * 是否确认（调拨单确认入库数字  ）
+	 */
+	@Column(name = "confirm")
+	private Integer confirm ;
+	
+	/**
+	 * 调拨单确认入库数字  
+	 */
+	@Column(name = "confirm_number")
+	private Integer confirmNumber ;
+	
+	/**
 	 * 贴包数量（包或者箱）
 	 */
 	@Column(name = "stick_number")
@@ -259,6 +271,22 @@ public class PackingChild extends BaseEntity<Long> {
 	
 	
 	
+	public Integer getConfirmNumber() {
+		return confirmNumber;
+	}
+
+	public void setConfirmNumber(Integer confirmNumber) {
+		this.confirmNumber = confirmNumber;
+	}
+
+	public Integer getConfirm() {
+		return confirm;
+	}
+
+	public void setConfirm(Integer confirm) {
+		this.confirm = confirm;
+	}
+
 	public Long getWarehouseTypeId() {
 		return warehouseTypeId;
 	}

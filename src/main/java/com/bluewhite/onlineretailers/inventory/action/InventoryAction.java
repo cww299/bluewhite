@@ -34,6 +34,7 @@ import com.bluewhite.onlineretailers.inventory.entity.Warning;
 import com.bluewhite.onlineretailers.inventory.service.CommodityService;
 import com.bluewhite.onlineretailers.inventory.service.OnlineOrderService;
 import com.bluewhite.onlineretailers.inventory.service.ProcurementService;
+import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.sys.entity.RegionAddress;
 import com.bluewhite.system.user.entity.User;
 
@@ -155,9 +156,11 @@ public class InventoryAction {
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(Commodity.class, "id", "productID", "skuCode", "fileId", "picUrl", "name", "description",
 						"weight", "size", "material", "fillers", "cost", "propagandaCost", "remark", "tianmaoPrice",
-						"oseePrice", "offlinePrice", "inventorys","number","productId")
+						"oseePrice", "offlinePrice","number","productId","product")
+				.addRetainTerm(Product.class, "id", "name", "inventorys")
 				.addRetainTerm(Inventory.class, "number", "place", "warehouse")
-				.addRetainTerm(BaseData.class, "id", "name").format(commodityService.findPage(commodity, page))
+				.addRetainTerm(BaseData.class, "id", "name")
+				.format(commodityService.findPage(commodity, page))
 				.toJSON());
 		cr.setMessage("查询成功");
 		return cr;
@@ -528,6 +531,18 @@ public class InventoryAction {
 	public CommonResponse storageUser(String ids) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(procurementService.conversionProcurement(ids));
+		cr.setMessage("成功");
+		return cr;
+	}
+	
+	/**
+	 * 
+	 */
+	@RequestMapping(value = "/inventory/test", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse test(String ids) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(procurementService.test(ids));
 		cr.setMessage("成功");
 		return cr;
 	}
