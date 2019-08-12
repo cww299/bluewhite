@@ -83,7 +83,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Order order = dao.findOne(id);
-					order.setCustomerId(null);
+					
+					
 					dao.delete(order); 
 					count++;
 				}

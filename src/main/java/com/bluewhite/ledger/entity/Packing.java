@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -95,19 +96,11 @@ public class Packing extends BaseEntity<Long> {
 	@Column(name = "type")
 	private Integer type;
 	
-//	/**
-//	 * 调拨人id
-//	 * 
-//	 */
-//	@Column(name = "user_id")
-//	private Long userId;
-//
-//	/**
-//	 * 调拨人员
-//	 */
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
-//	private User user;
+	/**
+	 * 调拨仓库id
+	 */
+	@Column(name = "warehouse_type_id")
+	private Long warehouseTypeId;
 	
 	
 	/**
@@ -154,6 +147,14 @@ public class Packing extends BaseEntity<Long> {
 	
 	
 	
+
+	public Long getWarehouseTypeId() {
+		return warehouseTypeId;
+	}
+
+	public void setWarehouseTypeId(Long warehouseTypeId) {
+		this.warehouseTypeId = warehouseTypeId;
+	}
 
 	public Integer getType() {
 		return type;

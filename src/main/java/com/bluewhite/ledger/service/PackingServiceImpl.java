@@ -84,6 +84,10 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			if (param.getType() != null) {
 				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
 			}
+			// 按调拨仓库过滤
+			if (param.getWarehouseTypeId() != null) {
+				predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
+			}
 			// 按客户名称
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
 				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
@@ -159,17 +163,18 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 						throw new ServiceException("贴报单已发货，无法修改");
 					}
 				}
-				packingChild.setType(packing.getType());
 				packingChild.setFlag(0);
 				packingChild.setCount(jsonObject.getInteger("count"));
-				// 改变待发货单的已发数量
+				// 改变待发货单的剩余数量
 				SendGoods sendGoods = sendGoodsDao.findOne(jsonObject.getLong("sendGoodsId"));
-				sendGoods.setSendNumber(sendGoods.getNumber() + packingChild.getCount());
+				sendGoods.setSurplusNumber(sendGoods.getSurplusNumber() - packingChild.getCount());
 				sendGoodsDao.save(sendGoods);
 				packingChild.setSendGoodsId(sendGoods.getId());
 				packingChild.setCustomerId(packing.getCustomerId());
 				packingChild.setBacthNumber(sendGoods.getBacthNumber());
 				packingChild.setProductId(sendGoods.getProductId());
+				packingChild.setWarehouseTypeId(packing.getWarehouseTypeId());
+				packingChild.setType(packing.getType());
 				packing.getPackingChilds().add(packingChild);
 			}
 		}
@@ -336,7 +341,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					List<PackingChild> packingChildList = packing.getPackingChilds();
 					packingChildList.stream().forEach(p -> {
 						SendGoods sendGoods = p.getSendGoods();
-						sendGoods.setSendNumber(sendGoods.getSendNumber() - p.getCount());
+						sendGoods.setSurplusNumber(sendGoods.getSurplusNumber() + p.getCount());
 						sendGoodsDao.save(sendGoods);
 					});
 					dao.delete(packing);
@@ -361,7 +366,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 						throw new ServiceException("贴报单已发货，无法删除，请先核对发货单");
 					}
 					SendGoods sendGoods = packingChild.getSendGoods();
-					sendGoods.setSendNumber(sendGoods.getSendNumber() - packingChild.getCount());
+					sendGoods.setSurplusNumber(sendGoods.getSurplusNumber() + packingChild.getCount());
 					sendGoodsDao.save(sendGoods);
 					packingChildDao.delete(packingChild);
 					count++;

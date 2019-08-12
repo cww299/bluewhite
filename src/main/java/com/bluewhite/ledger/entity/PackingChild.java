@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.product.product.entity.Product;
 /**
  * 贴包子单
@@ -84,6 +85,19 @@ public class PackingChild extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Product product;
+	
+	/**
+	 * 调拨仓库id
+	 */
+	@Column(name = "warehouse_type_id")
+	private Long warehouseTypeId;
+	
+	/**
+	 * 调拨仓库
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData warehouseType;
 
 	/**
 	 * 贴包类型（1=发货，2=调拨）
@@ -91,6 +105,12 @@ public class PackingChild extends BaseEntity<Long> {
 	 */
 	@Column(name = "type")
 	private Integer type;
+	
+	/**
+	 * 贴包数量（包或者箱）
+	 */
+	@Column(name = "stick_number")
+	private String stickNumber;
 	
 	/**
 	 * 单只价格
@@ -239,6 +259,30 @@ public class PackingChild extends BaseEntity<Long> {
 	
 	
 	
+	public Long getWarehouseTypeId() {
+		return warehouseTypeId;
+	}
+
+	public void setWarehouseTypeId(Long warehouseTypeId) {
+		this.warehouseTypeId = warehouseTypeId;
+	}
+
+	public BaseData getWarehouseType() {
+		return warehouseType;
+	}
+
+	public void setWarehouseType(BaseData warehouseType) {
+		this.warehouseType = warehouseType;
+	}
+
+	public String getStickNumber() {
+		return stickNumber;
+	}
+
+	public void setStickNumber(String stickNumber) {
+		this.stickNumber = stickNumber;
+	}
+
 	public Integer getType() {
 		return type;
 	}
