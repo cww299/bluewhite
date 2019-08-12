@@ -107,7 +107,7 @@ public class PackingChild extends BaseEntity<Long> {
 	private Integer type;
 	
 	/**
-	 * 是否确认（调拨单确认入库数字  ）
+	 * 是否确认（调拨单确认入库  ）
 	 */
 	@Column(name = "confirm")
 	private Integer confirm ;

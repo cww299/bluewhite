@@ -369,8 +369,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				// 将出库单ids存入入库单，便于反冲
 				procurementChild.setPutWarehouseIds(ids);
 				// 当订单的状态是买家已付款时或部分发货
-				if (onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_4)
-						|| onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_3)) {
+				if (onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_4) || onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_3)) {
 					// 获取商品
 					Commodity commodity = onlineOrderChild.getCommodity();
 					// 获取库存
