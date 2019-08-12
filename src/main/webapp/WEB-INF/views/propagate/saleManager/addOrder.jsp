@@ -547,7 +547,7 @@ layui.config({
 				       {type:'checkbox', align:'center', fixed:'left'},
 				       {align:'center', title:'商品名称', field:'skuCode',},
 				       {align:'center', title:'成本', 	  field:'cost', width:'10%',},
-				       {align:'center', title:'发货仓库',  	  templet:getInventorySelectHtml()},
+				       {align:'center', title:'发货仓库',  	  templet: getInventorySelectHtml()},
 				       {align:'center', title:'销售价',        templet:getPriceSelectHtml()},
 				       {align:'center', title:'备注', 	  field:'remark',}, 
 				      ]],
@@ -669,12 +669,6 @@ layui.config({
 						var selected='';
 						if(inv[i].warehouse.id=="157")
 							selected = 'selected';
-						/* layui.each(checkData,function(index,item){			//该商品是否勾选，且已选择发货仓库
-							if(item.id == d.id && item.inventory == inv[i].warehouse.id){
-								selected = 'selected';
-								return;
-							}
-						}) */
 						html+='<option value="'+inv[i].warehouse.id+'" '+selected+'>'+inv[i].warehouse.name+':'+inv[i].number+'</option>';
 					}
 					html+='</select>'
@@ -796,6 +790,16 @@ layui.config({
 							price = r.data;
 					}
 				})
+				var inventoryId = choosed[i].product.inventorys[0].warehouse.id;	//默认以第一个仓库为主
+				if(choosed[i].inventory)	//如果下拉框选中了
+					inventoryId = choosed[i].inventory;
+				else
+					layui.each(choosed[i].product.inventorys,function(index,item){	//如果存在主仓库
+						if(item.warehouse.id=='157'){
+							 inventoryId='157';
+							 return;
+						}
+					})
 				var orderChild={
 						skuCode : choosed[i].skuCode,		
 						name : choosed[i].name,			
@@ -806,10 +810,11 @@ layui.config({
 						sellerReadjustPrices : 0,			
 						actualSum : price,		
 						status : 'WAIT_SELLER_SEND_GOODS',
-						inventory : choosed[i].product.inventorys[0].warehouse.id,	
+						inventory : inventoryId,	
 						price : price,			
 						id : choosedId++,
 				}
+				console.log(orderChild)
 				list.push(orderChild);
 			}
 			layui.each(list,function(index,item){ 
