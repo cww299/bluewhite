@@ -47,8 +47,6 @@ import com.bluewhite.production.finance.service.UsualConsumeService;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
 
-import javassist.expr.NewArray;
-
 /**
  * 生产部财务相关action 
  * @author zhangliang
