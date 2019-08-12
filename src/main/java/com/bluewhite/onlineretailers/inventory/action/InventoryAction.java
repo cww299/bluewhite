@@ -67,7 +67,7 @@ public class InventoryAction {
 						"residueNumber")
 				.addRetainTerm(Delivery.class, "id", "sumNumber", "trackingNumber", "deliveryChilds", "createdAt")
 				.addRetainTerm(DeliveryChild.class, "id", "number", "commodity")
-				.addRetainTerm(Commodity.class, "id", "skuCode")
+				.addRetainTerm(Commodity.class, "id", "skuCode","productId")
 				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName")
 				.addRetainTerm(RegionAddress.class, "id", "regionName", "parentId");
