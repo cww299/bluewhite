@@ -83,7 +83,7 @@ layui.config({
 			cols[0].push({ field:'id'+allInventory[i].id, title:allInventory[i].name, sort:true, templet : getInventoryNumber(allInventory[i].id),	})
 		function getInventoryNumber(warehouseId){
 			return function(d){
-				var inv=d.inventorys;
+				var inv=d.product.inventorys;
 				for(var j=0;j<inv.length;j++){
 					if(inv[j].warehouse.id==warehouseId){   //LAY_INDEX 为表格缓冲记录数，该数会加上翻页之前的数
 						var length = layui.table.cache.productTable.length;					//当前每页显示的数量
