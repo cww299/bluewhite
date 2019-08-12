@@ -129,7 +129,7 @@ layui.define(['jquery','layer','form'],function(exports){
 		return html==''?'<select><option value="">无数据</option></select>':html;
 	}
 	
-	Class.prototype.getData = function(options,callback){ /*url、type、async、data */
+	Class.prototype.getData = function(options,callback){ /*url、type、async、data  默认异步 */
 		var data = [];
 		var ajax = {
 			url : options.url,
@@ -148,7 +148,8 @@ layui.define(['jquery','layer','form'],function(exports){
 				}
 			}
 		}
-		return $.ajax(ajax);
+		$.ajax(ajax);
+		return data;
 	}
 	
 	var myutil = {
@@ -167,17 +168,21 @@ layui.define(['jquery','layer','form'],function(exports){
 		myutil.c.deleteAjax(options,callback,error);
 	};
 	
-	myutil.smsg = function(msg){
+	myutil.smsg = function(msg,opt){
 		var iconAndOffset = { icon:1,};
 		if(myutil.config.msgOffset)
 			iconAndOffset.offset = myutil.config.msgOffset;
+		if(opt)
+			iconAndOffset = $.extend({},iconAndOffset,opt);
 		layer.msg(msg,iconAndOffset);
 	};
 	
-	myutil.emsg = function(msg){
+	myutil.emsg = function(msg,opt){
 		var iconAndOffset = { icon:2,};
 		if(myutil.config.msgOffset)
 			iconAndOffset.offset = myutil.config.msgOffset;
+		if(opt)
+			iconAndOffset = $.extend({},iconAndOffset,opt);
 		layer.msg(msg,iconAndOffset);
 	};
 	
@@ -185,7 +190,11 @@ layui.define(['jquery','layer','form'],function(exports){
 		return myutil.c.getSelectHtml(options,init);
 	};
 	
-	myutil.getData = function(options,callback){
+	myutil.getData = function(options,callback){	//异步获取数据
+		myutil.c.getData(options,callback);
+	};
+	myutil.getDataSync = function(options,callback){	//同步获取数据
+		options.async = false;
 		myutil.c.getData(options,callback);
 	};
 	

@@ -365,6 +365,7 @@ layui.config({
 			layer.open({
 				title: '打印',
 				area: ['80%','80%'],
+				offset: '100px', 
 				content: html+'</div>',
 				btnAlign: 'c',
 				btn: ['打印','取消'],
@@ -394,6 +395,7 @@ layui.config({
 				title:'提示',
 				area: ['25%','35%'],
 				btn: ['确认','取消'],
+				offset: '200px', 
 				content: '<div style="padding:5px;"><span class="layui-badge">提示：请确认发货时间</span><input type="text" class="layui-input" id="sureTime"></div>',
 				success:function(){
 					laydate.render({ elem: '#sureTime',value: defaultTime.split(' ')[0] })
@@ -524,7 +526,6 @@ layui.config({
 			var childData = [],materialData = [],cusId = '',userId='';
 			$('#addEditCustomer').val('');
 			$('#sendDate').removeAttr('disabled');
-			$('#addEditNumber').removeAttr('disabled');
 			$('#sureAddEidtBtn').html('确定新增');
 			if(type=='edit'){
 				var msg = '';
@@ -544,13 +545,13 @@ layui.config({
 				$('#addEditType').val(data.type);
 				$('#sureAddEidtBtn').html('确定修改');
 				$('#sendDate').attr('disabled','disabled');
-				$('#addEditNumber').attr('disabled','disabled');
 			}else
 				getNumber();
 			addEditWin=layer.open({
 				type:1,
 				title:title,
 				area:['90%','90%'],
+				offset: '40px', 
 				content: $('#addEditWin'),
 				success: function(){
 					getAllSend();
@@ -666,7 +667,6 @@ layui.config({
 				tempData.push(temp[i]);
 			}
 			layui.each(table.cache[tid],function(index,item){
-				console.log(1)
 				var i=0;
 				for(i=0;i<deleteId.length;i++)
 					if(item.id == deleteId[i])

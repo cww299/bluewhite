@@ -51,6 +51,12 @@
 	            <a href="javascript:;" id='lookoverWarn' >仓库预警<span class="layui-badge" id='warnNumber'>0</span></a>
 	          </li>
           </shiro:hasAnyRoles> 
+           <!-- 考勤预警按钮 -->
+          <shiro:hasAnyRoles name="superAdmin,productEightTailor,productTwoMachinist,productTwoDeedle,productFristPack,productFristQuality,personnel">
+	          <li class="layui-nav-item layui-hide-xs" lay-unselect>
+	            <a href="javascript:;" id='confluenceWarn' >错误考勤<span class="layui-badge" id='warnConfluenceNumber'>0</span></a>
+	          </li>
+          </shiro:hasAnyRoles> 
           
           
           <li class="layui-nav-item layui-hide-xs" lay-unselect>
@@ -150,9 +156,15 @@
    					<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchWarnOfProduct">搜索</button></td>
    				</tr>
    			</table>
-			<table id='warnTable' lay-filter='warnTable' class="layui-table"></table>   		
+			<table id='warnTable' lay-filter='warnTable'></table>   		
    		</div>
 	</shiro:hasAnyRoles> 
+	<!-- 考勤错误预警弹窗 -->
+	<shiro:hasAnyRoles name="superAdmin,productEightTailor,productTwoMachinist,productTwoDeedle,productFristPack,productFristQuality,personnel">
+   		<div id="warningConfluenceDiv" style="display:none;">
+			<table id='warningConfluenceTable' lay-filter='warningConfluenceTable'></table>   		
+   		</div>
+	</shiro:hasAnyRoles>
 	
 	
 <script type="text/html" id='typeTpl'>
@@ -190,8 +202,74 @@ layui.use(['form','element','layer','jquery','table'],function(){
     	})
     	
     	//-------------------------广宣预警弹窗-------------------------
+    	var currUser = null; //当前登录用户
     	$('#lookoverWarn').on('click',warn);
+    	$('#confluenceWarn').on('click',confluenceWarn);
+    	confluenceWarn();
     	warn();
+    	function confluenceWarn(){
+			if(document.getElementById('confluenceWarn')!=null){
+				table.render({
+					elem:'#warningConfluenceTable',
+					data: [],
+					page: true,
+					parseData:function(r){
+						$('#warnConfluenceNumber').html(r.data.total);
+						return { code:r.code, data:r.data.rows, msg:r.message, count:r.data.total} },
+					cols:[[
+					       {align:'center', title:'时间', field:'allotTime',},
+					       {align:'center', title:'人员', field:'userName',},
+					       {align:'center', title:'工作时长', field:'workTime', },
+					       {align:'center', title:'出勤时长', field:'turnWorkTime',edit:true,},
+					       {align:'center', title:'加班时长', field:'overTime',edit:true,},
+					       ]],
+				}) 
+				if(!currUser)
+					$.ajax({
+						url:'${ctx}/getCurrentUser',		//获取当前登录用户
+						async:false,
+						success:function(r){
+							if(0==r.code)
+								currUser = r.data;
+						}
+					})
+				layer.open({
+					title:'考勤错误预警',
+					type:1,
+					shadeClose: true,
+					area:['50%','60%'],
+					content:$('#warningConfluenceDiv'),
+					success:function(){
+						table.reload('warningConfluenceTable',{
+							url:'${ctx}/finance/allAttendancePay?warning=1&orgNameId='+currUser.orgNameId,
+						}) 
+					}
+				})
+				table.on('edit(warningConfluenceTable)',function(obj){
+					var val = obj.value;
+					var field = obj.field;
+					var id = obj.data.id;
+					var data = { id: id }, msg = '';
+					isNaN(val) && (msg='请正确输入数字');
+					val<0 && (msg='不能小于0');
+					if(msg!=''){
+						layer.msg(msg,{icon:2});
+						table.reload('warningConfluenceTable');
+						return;
+					}
+					data[field] = val;
+					$.ajax({
+						url:'${ctx}/finance/updateAttendance',
+						data: data,
+						success:function(r){
+							var icon = 2;
+							if(r.code==0) icon = 1;
+							layer.msg(r.message,{icon:icon});
+						}
+					})
+				})
+			}
+    	}
     	function warn(){
 			if(document.getElementById("warningDiv")!=null){
 				layer.open({
@@ -200,6 +278,9 @@ layui.use(['form','element','layer','jquery','table'],function(){
 					shadeClose: true,
 					area:['50%','80%'],
 					content:$('#warningDiv'),
+					success:function(){
+						table.resize('warnTable');
+					}
 				})
 				form.on('submit(searchWarnOfProduct)',function(obj){
 					obj.field.skuCode = obj.field.skuCode.trim();
