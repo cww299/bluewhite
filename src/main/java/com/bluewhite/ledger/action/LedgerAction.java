@@ -588,7 +588,7 @@ public class LedgerAction {
 	/**
 	 * 审核入库
 	 */
-	@RequestMapping(value = "/ledger/confirmPackingChild", method = RequestMethod.POST)
+	@RequestMapping(value = "/ledger/confirmPackingChild", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse confirmPackingChild(String ids) {
 		CommonResponse cr = new CommonResponse();

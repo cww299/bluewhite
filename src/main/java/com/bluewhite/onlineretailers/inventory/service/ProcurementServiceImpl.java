@@ -172,7 +172,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 
 			// 按产品name过滤
 			if (!StringUtils.isEmpty(param.getProductName())) {
-				predicate.add(cb.equal(root.get("commodity").get("name").as(Long.class), "%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
+				predicate.add(cb.equal(root.get("commodity").get("skuCode").as(Long.class), "%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
 			}
 			
 			// 按单据编号
