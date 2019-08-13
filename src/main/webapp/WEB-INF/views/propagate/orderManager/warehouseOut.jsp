@@ -295,7 +295,7 @@ layui.config({
 				   {align:'center', title:'商品名',	  templet: orderContent('skuCode'),		  width:'18%'	,},
 			       {align:'center', title:'数量',     templet: orderContent('number'),		  width:'4%',	},
 				   {align:'center', title:'备注',	  templet: orderContent('childRemark'),   	}
-			       ]]
+			       ]] 
 		}) 
 		function orderContent(field){		//子单内容显示
 			return function(d){
