@@ -18,7 +18,6 @@ td{
 }
 .layui-card .layui-table-cell{	
 	  height:auto;
-	  /* overflow:visible; */
 	  padding:0px;
 }
 .layui-card  .layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
@@ -27,6 +26,9 @@ td{
 }
 .layui-table tbody tr:hover, .layui-table-hover {
 	background-color: transparent;
+}
+.minTd{
+	width:120px;
 }
 </style>
 </head>
@@ -46,9 +48,7 @@ td{
 				<td>商品名:</td>
 				<td><input type="text" class="layui-input" name="commodityName" placeholder='请输入商品名'></td>
 				<td>&nbsp;&nbsp;</td>
-				<td><select name="flag"><option value="">是否反冲</option><option value="1">反冲</option><option value="0" selected>未反冲</option></select>
-				<td>&nbsp;&nbsp;</td>
-				<td><select name='status'>
+				<td class="minTd"><select name='status'>
 						<option value="">入库类型</option>
 						<option value="0">生产入库</option>
 						<option value="1">调拨入库</option>
@@ -57,10 +57,12 @@ td{
 						<option value="4">采购入库</option>
 						<option value="5">盘亏入库</option></select></td>
 						<td>&nbsp;&nbsp;</td>
-				<td><select name='confirm'>
+				<td class="minTd"><select name="flag"><option value="">是否反冲</option><option value="1">反冲</option><option value="0" selected>未反冲</option></select>
+				<td>&nbsp;&nbsp;</td>
+				<td class="minTd"><select name='audit'>
 						<option value="">是否审核</option>
 						<option value="1">审核</option>
-						<option value="0">未审核</option></select></td>
+						<option value="0" selected>未审核</option></select></td>
 				<td>&nbsp;&nbsp;</td>
 				<td><span class="layui-btn" lay-submit lay-filter="search">搜索</span></td>
 			</tr>
@@ -122,8 +124,6 @@ td{
 	</table>
 	<table class="layui-table" id="lookOverProductListTable" lay-filter="lookOverProductListTable"></table>
 </div>
-
-
 <!-- 商品选择隐藏框 -->
 <div id="productChooseDiv" style="display:none;">
 	<table class="layui-form layui-table" lay-size="sm" lay-skin="nob" style='width:60%;'>
@@ -137,7 +137,6 @@ td{
 	</table>
 	<table class="layui-table" id="productChooseTable" lay-filter="productChooseTable"></table>
 </div>
-
 <!-- 入库单表格工具栏 -->
 <script type="text/html" id="entryOrderTableToolbar" >
 <div  class="layui-button-container">
@@ -147,7 +146,6 @@ td{
 	<span class="layui-badge" >小提示：双击查看详细信息</span>
 </div>
 </script>
-
 <!-- 商品列表表格工具栏 -->
 <script type="text/html" id="productListTableToolbar" >
 <div  class="layui-button-container">
@@ -155,10 +153,13 @@ td{
 	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除商品</span>
 </div>
 </script>
-
 <!-- 是否反冲转换模板 -->
 <script type="text/html" id="flagTpl">
 	{{# var color=d.flag==1?'':'green',msg=d.flag==1?'反冲数据':'未反冲';}}
+	<span class="layui-badge layui-bg-{{ color }}">{{ msg }}</span>
+</script>
+<script type="text/html" id="auditTpl">
+	{{# var color=d.audit==1?'':'green',msg=d.flag==1?'审核':'未审核';}}
 	<span class="layui-badge layui-bg-{{ color }}">{{ msg }}</span>
 </script>
 
@@ -245,6 +246,7 @@ layui.config({
 		table.render({				//渲染主页面单表格
 			elem:'#entryOrderTable',
 			url:'${ctx}/inventory/procurementPage?type=2&flag=0',
+			where:{ audit:0  },
 			toolbar:'#entryOrderTableToolbar',
 			page:{},
 			request:{pageName:'page',limitName:'size'},
@@ -254,9 +256,10 @@ layui.config({
 			       {align:'center', title:'单据编号',   	field:'documentNumber',width:'10%',	},
 			       {align:'center', title:'计划数量', field:'number', width:'4%',	},
 			       {align:'center', title:'剩余数量', field:'residueNumber', width:'4%',},
-			       {align:'center', title:'经手人',	templet:'<p>{{ d.user.userName }}</p>',width:'4%',	},
+			       {align:'center', title:'经手人',	templet:'<p>{{ d.user?d.user.userName:"--" }}</p>',width:'4%',	},
 			       {align:'center', title:'入库类型', templet:'#statusTpl',width:'6%',	},
 			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl',width:'4%',	},
+			       {align:'center', title:'是否审核', 	field:'audit', templet:'#auditTpl',width:'4%',	},
 			       {align:'center', title:'日期',   	field:'createdAt',	width:'9%',},
 			       {align:'center', title:'批次号',	  templet: orderContent('batchNumber'),   width:'10%'	,},
 				   {align:'center', title:'商品名',	  templet: orderContent('skuCode'),		  width:'18%'	,},
@@ -282,27 +285,19 @@ layui.config({
 				return html+'</table>';
 			}
 		}
-		
 		table.on('toolbar(entryOrderTable)',function(obj){	//监听单表格按钮
 			switch(obj.event){
 			case 'add':			add();			break;
 			case 'delete':		deletes();		break;
 			case 'isVerify':
-				var choosed = table.checkStatus('entryOrderTable').data;
-				if(choosed.length<1)
-					return myutil.emsg('请选择信息');
-				var ids = [];
-				layui.each(choosed,function(index,item){
-					ids.push(item.id);
-				})
-				myutil.deleteAjax({
+				myutil.deleTableIds({
 					url: '/inventory/auditProcurement',
-					ids: ids.join(','),
+					table: 'entryOrderTable',
+					text: '请选择审核的信息|是否确认审核？'
 				})
 				break;
 			}
 		})
-		
 		table.on('rowDouble(entryOrderTable)',function(obj){
 			lookover(obj.data);
 		})
@@ -318,19 +313,10 @@ layui.config({
 			})
 		})
 		function deletes(){
-			var choosed=layui.table.checkStatus('entryOrderTable').data;
-			if(choosed.length<1)
-				return myutil.emsg('请选择生产单');
-			layer.confirm('是否确认反冲？',{offset:'100px',},function(){
-				var ids=[];
-				for(var i=0;i<choosed.length;i++)
-					ids.push(choosed[i].id);
-				myutil.deleAjax({
-					url: '/inventory/deleteProcurement?ids='+ids.join(','),
-					success:function(){
-						table.reload('entryOrderTable');
-					}
-				})
+			myutil.deleTableIds({
+				url: '/inventory/deleteProcurement',
+				table: 'entryOrderTable',
+				text: '请选择生产单|是否确认反冲？'
 			})
 		}
 		function lookover(data){
@@ -350,12 +336,26 @@ layui.config({
 				cols:[[
 				       {align:'center', title:'批次号', field:'batchNumber',},
 				       {align:'center', title:'商品名称',  templet:'<p>{{ d.commodity.skuCode }}</p>'},
-				       {align:'center', title:'数量',     field:'number',},
-				       {align:'center', title:'剩余数量', field:'residueNumber'},
+				       {align:'center', title:'数量',     field:'number', edit:true},
+				       {align:'center', title:'备注', 	  field:'childRemark',edit:true}, 
 				       {align:'center', title:'入库仓库', 	  templet:function(d){return d.warehouse.name; },}, 
 				       {align:'center', title:'入库类型', 	 templet:'#statusTpl',}, 
-				       {align:'center', title:'备注', 	  field:'childRemark',}, 
 				       ]]
+			})
+			table.on('edit(lookOverProductListTable)',function(obj){
+				var trData = obj.data, field = obj.field, val = obj.value;
+				var data = { id : trData.id };
+				if(field==''){
+					
+				}
+				data[field] = val;
+				myutil.saveAjax({
+					url: '/inventory/updateProcurement',
+					data: data,
+					success: function(){
+						table.reload('entryOrderTable');
+					}
+				})
 			})
 			$('#look_createdAt').val(data.createdAt);
 			$('#look_remark').val(data.remark);
@@ -379,7 +379,7 @@ layui.config({
 			$('#look_textTd').html(tdText);
 			$('#look_inputTd').html(tdInput);
 			$('#look_status').val(statusText);
-			$('#look_user').val(data.user.userName);
+			$('#look_user').val(data.user?data.user.userName:'');
 		}
 		
 		//-------新增入库单功能---------------
