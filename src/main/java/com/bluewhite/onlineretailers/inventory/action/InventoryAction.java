@@ -334,9 +334,9 @@ public class InventoryAction {
 	}
 	
 	/**
-	 * 未审核前修改入库单
+	 * 审核入库单
 	 */
-	@RequestMapping(value = "/inventory/auditProcurement", method = RequestMethod.POST)
+	@RequestMapping(value = "/inventory/auditProcurement", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse auditProcurement(String ids) {
 		CommonResponse cr = new CommonResponse();
@@ -530,7 +530,7 @@ public class InventoryAction {
 	@ResponseBody
 	public CommonResponse storageUser(String ids) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(procurementService.conversionProcurement(ids));
+		procurementService.conversionProcurement(ids);
 		cr.setMessage("成功");
 		return cr;
 	}
