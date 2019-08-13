@@ -364,9 +364,8 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 								// 入库单
 								if (procurement.getType() == 2) {
 									if (procurement.getAudit() == 1) {
-										throw new ServiceException("已审核入库，无法反冲");
+										inventory.setNumber(inventory.getNumber() - procurementChild.getNumber());
 									}
-									inventory.setNumber(inventory.getNumber() - procurementChild.getNumber());
 								}
 								// 出库单
 								if (procurement.getType() == 3) {
