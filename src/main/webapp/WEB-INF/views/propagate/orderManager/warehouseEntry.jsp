@@ -56,6 +56,11 @@ td{
 						<option value="3">销售换货入库 </option>
 						<option value="4">采购入库</option>
 						<option value="5">盘亏入库</option></select></td>
+						<td>&nbsp;&nbsp;</td>
+				<td><select name='confirm'>
+						<option value="">是否审核</option>
+						<option value="1">审核</option>
+						<option value="0">未审核</option></select></td>
 				<td>&nbsp;&nbsp;</td>
 				<td><span class="layui-btn" lay-submit lay-filter="search">搜索</span></td>
 			</tr>
@@ -138,6 +143,7 @@ td{
 <div  class="layui-button-container">
 	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增入库单</span>
 	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >一键反冲</span>
+	<span lay-event="isVerify"  class="layui-btn layui-btn-sm" >一键审核</span>
 	<span class="layui-badge" >小提示：双击查看详细信息</span>
 </div>
 </script>
@@ -281,6 +287,19 @@ layui.config({
 			switch(obj.event){
 			case 'add':			add();			break;
 			case 'delete':		deletes();		break;
+			case 'isVerify':
+				var choosed = table.checkStatus('entryOrderTable').data;
+				if(choosed.length<1)
+					return myutil.emsg('请选择信息');
+				var ids = [];
+				layui.each(choosed,function(index,item){
+					ids.push(item.id);
+				})
+				myutil.deleteAjax({
+					url: '/inventory/auditProcurement',
+					ids: ids.join(','),
+				})
+				break;
 			}
 		})
 		
