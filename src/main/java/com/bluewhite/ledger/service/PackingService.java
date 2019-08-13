@@ -118,6 +118,15 @@ public interface PackingService extends BaseCRUDService<Packing, Long>{
 	 * @return
 	 */
 	public int auditUserPackingChild(String ids, Integer deliveryStatus);
+	
+	/**
+	 * 库管确认调拨单入库数量
+	 * @param ids
+	 * @return
+	 */
+	public int confirmPackingChild(String ids);
+
+	public PackingChild updateInventoryPackingChild(PackingChild packingChild);
 
 
 }

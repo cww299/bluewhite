@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Join;
@@ -45,6 +46,10 @@ import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.PackingMaterials;
 import com.bluewhite.ledger.entity.ReceivedMoney;
 import com.bluewhite.ledger.entity.SendGoods;
+import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
+import com.bluewhite.onlineretailers.inventory.entity.Inventory;
+import com.bluewhite.product.product.dao.ProductDao;
+import com.bluewhite.product.product.entity.Product;
 
 @Service
 public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implements PackingService {
@@ -63,6 +68,10 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	private MixedService mixedService;
 	@Autowired
 	private ReceivedMoneyService receivedMoneyService;
+	@Autowired
+	private InventoryDao inventoryDao;
+	@Autowired
+	private ProductDao productDao;
 
 	@Override
 	public PageResult<Packing> findPages(Packing param, PageParameter page) {
@@ -270,7 +279,6 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
 						"%" + param.getCustomerName() + "%"));
 			}
-
 			// 是否发货
 			if (param.getFlag() != null) {
 				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
@@ -588,5 +596,52 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			}
 		}
 		return count;
+	}
+
+	@Override
+	public int confirmPackingChild(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idStrings = ids.split(",");
+			for (String id : idStrings) {
+				PackingChild packingChild = packingChildDao.findOne(Long.valueOf(id));
+				if (packingChild.getConfirm() != null) {
+					throw new ServiceException("调拨单已审核，请勿再次审核");
+				}
+				if (packingChild != null) {
+						Product product = packingChild.getProduct();
+						// 创建商品的库存
+						Set<Inventory> inventorys = product.getInventorys();
+						// 获取库存
+						Inventory inventory = inventoryDao.findByProductIdAndWarehouseId(product.getId(),packingChild.getWarehouseId());
+						if (inventory == null) {
+							inventory = new Inventory();
+							inventory.setProductId(product.getId());
+							inventory.setNumber(packingChild.getConfirmNumber());
+							inventory.setWarehouseId(packingChild.getWarehouseId());
+							inventorys.add(inventory);
+							product.setInventorys(inventorys);
+						} else { 
+							inventory.setNumber(inventory.getNumber() + packingChild.getConfirmNumber());
+						}
+						productDao.save(product);
+					};
+				}
+				count++;
+		}
+		return count;
+	}
+
+	@Override
+	public PackingChild updateInventoryPackingChild(PackingChild packingChild) {
+		if (packingChild.getId() != null) {
+			PackingChild oldPackingChild = packingChildDao.findOne(packingChild.getId());
+			if (oldPackingChild.getConfirm() == 1) {
+				throw new ServiceException("调拨单已确认入库，无法修改");
+			}
+			BeanCopyUtils.copyNotEmpty(packingChild, oldPackingChild, "");
+			packingChildDao.save(oldPackingChild);
+		}
+		return packingChild;
 	}
 }
