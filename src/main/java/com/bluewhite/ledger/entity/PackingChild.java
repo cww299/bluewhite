@@ -119,13 +119,13 @@ public class PackingChild extends BaseEntity<Long> {
 	private Integer confirmNumber ;
 	
 	/**
-	 * 仓库类型id
+	 * 入库仓库类型id
 	 */
 	@Column(name = "warehouse_id")
 	private Long warehouseId;
 	
 	/**
-	 * 仓库类型（0=主仓库，1=客供仓库，2=次品）
+	 * 入库仓库类型（0=主仓库，1=客供仓库，2=次品）
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "warehouse_id", referencedColumnName = "id", insertable = false, updatable = false)
