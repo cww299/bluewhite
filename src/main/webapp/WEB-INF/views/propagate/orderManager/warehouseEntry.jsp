@@ -159,7 +159,7 @@ td{
 	<span class="layui-badge layui-bg-{{ color }}">{{ msg }}</span>
 </script>
 <script type="text/html" id="auditTpl">
-	{{# var color=d.audit==1?'':'green',msg=d.flag==1?'审核':'未审核';}}
+	{{# var color=d.audit==1?'':'green',msg=d.audit==1?'审核':'未审核';}}
 	<span class="layui-badge layui-bg-{{ color }}">{{ msg }}</span>
 </script>
 
