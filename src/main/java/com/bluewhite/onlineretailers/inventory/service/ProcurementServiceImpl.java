@@ -169,10 +169,9 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				predicate.add(cb.equal(root.get("batchNumber").as(String.class), param.getBatchNumber()));
 			}
 
-
 			// 按产品name过滤
 			if (!StringUtils.isEmpty(param.getProductName())) {
-				predicate.add(cb.equal(root.get("commodity").get("skuCode").as(Long.class), "%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
+				predicate.add(cb.like(root.get("commodity").get("skuCode").as(String.class), "%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
 			}
 			
 			// 按单据编号
@@ -580,6 +579,8 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 								PackingChild packingChild = new PackingChild();
 								packingChild.setBacthNumber(bnStrings[0]);
 								packingChild.setCount(Integer.getInteger(bnStrings[1]));
+								packingChild.setConfirm(0);
+								packingChild.setConfirmNumber(packingChild.getCount());
 								packingChild.setCustomerId(procurement.getOnlineCustomerId());
 								packingChild.setProductId(p.getCommodity().getProductId());
 								packingChildDao.save(packingChild);
