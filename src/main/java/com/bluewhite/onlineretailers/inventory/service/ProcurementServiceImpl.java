@@ -534,7 +534,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			JSONObject jsonObject = new JSONObject();
 			Commodity commodity = commodityService.findByName(cPoi.getName());
 			if (commodity != null) {
-				jsonObject.put("commodityId", commodity.getId());
+				jsonObject.put("commodityId", commodity.getProductId());
 			} else {
 				throw new ServiceException("当前导入excel第" + (i + 2) + "条数据的商品不存在，请先添加");
 			}
