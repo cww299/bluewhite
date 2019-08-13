@@ -133,7 +133,7 @@ layui.config({
 		table.render({
 			elem : '#baseDataTable',
 			toolbar : "#baseDataToolBar",
-			url: '${ctx}/basedata/list?type=packingMaterials',
+			url: '${ctx}/basedata/list?type=packagingMaterials',
 			parseData : function(ret) { return { code : ret.code, msg : ret.message, data : ret.data, } },
 			cols:[[
 			       {type: 'checkbox',align : 'center',fixed: 'left'},
