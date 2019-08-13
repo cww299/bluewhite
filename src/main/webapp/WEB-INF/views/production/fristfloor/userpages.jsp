@@ -321,7 +321,7 @@
 										usersId:arr,
 										overtimes:overtimes,
 										turnWorkTimes:turnWorkTime,
-										allotTime:$("#startTimes").val(),
+										allotTime:$("#startTimes").val()+' '+'00:00:00',
 								}
 								 mainJs.fAdd(postData);
 						          break;
