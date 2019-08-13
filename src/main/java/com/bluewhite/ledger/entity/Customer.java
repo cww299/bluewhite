@@ -55,7 +55,7 @@ public class Customer extends BaseEntity<Long> {
 	
 	
 	/**
-	 * 客户类型
+	 * 客户类型(0=电商,1=商超，2=线下 )
 	 * 
 	 */
 	@Column(name = "type")
@@ -74,8 +74,6 @@ public class Customer extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "provinces_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private RegionAddress provinces;
-	
-	
 	
 	/**
 	 * 收货人的所在市
