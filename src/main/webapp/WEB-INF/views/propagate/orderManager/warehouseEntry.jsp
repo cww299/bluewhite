@@ -254,7 +254,7 @@ layui.config({
 			       {align:'center', title:'单据编号',   	field:'documentNumber',width:'10%',	},
 			       {align:'center', title:'计划数量', field:'number', width:'4%',	},
 			       {align:'center', title:'剩余数量', field:'residueNumber', width:'4%',},
-			       {align:'center', title:'经手人',	templet:'<p>{{ d.user.userName }}</p>',width:'4%',	},
+			       {align:'center', title:'经手人',	templet:'<p>{{ d.user?d.user.userName:"--" }}</p>',width:'4%',	},
 			       {align:'center', title:'入库类型', templet:'#statusTpl',width:'6%',	},
 			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl',width:'4%',	},
 			       {align:'center', title:'日期',   	field:'createdAt',	width:'9%',},
