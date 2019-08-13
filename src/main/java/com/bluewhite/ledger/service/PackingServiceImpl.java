@@ -599,6 +599,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	}
 
 	@Override
+	@Transactional
 	public int confirmPackingChild(String ids) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
@@ -608,8 +609,12 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				if (packingChild.getConfirm() == 1) {
 					throw new ServiceException("调拨单已审核，请勿再次审核");
 				}
+				if(packingChild.getWarehouseId()==null){
+					throw new ServiceException("入库仓库不能为空，请选择");
+				}
 				if (packingChild != null) {
 						Product product = packingChild.getProduct();
+						packingChild.setConfirm(1);
 						// 创建商品的库存
 						Set<Inventory> inventorys = product.getInventorys();
 						// 获取库存
@@ -625,6 +630,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 							inventory.setNumber(inventory.getNumber() + packingChild.getConfirmNumber());
 						}
 						productDao.save(product);
+						packingChildDao.save(packingChild);
 					};
 				}
 				count++;
