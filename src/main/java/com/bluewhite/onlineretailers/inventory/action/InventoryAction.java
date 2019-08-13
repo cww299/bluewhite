@@ -282,7 +282,7 @@ public class InventoryAction {
 	
 	
 	/**
-	 * 分页查看生产单
+	 * 分页查看生产子单
 	 * 
 	 * @param onlineCustomer
 	 * @param page
