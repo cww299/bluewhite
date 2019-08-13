@@ -63,7 +63,7 @@ public class LedgerAction {
 						"packingDate","packingMaterials","flag","user","type")
 				.addRetainTerm(User.class, "id", "userName")
 				.addRetainTerm(Customer.class, "id", "name")
-				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count","sendGoodsId")
+				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count","sendGoodsId","warehouseTypeId")
 				.addRetainTerm(PackingMaterials.class, "id", "packagingMaterials","packagingCount")
 				.addRetainTerm(Product.class, "id", "name", "number")
 				.addRetainTerm(BaseData.class, "id", "name");
@@ -567,6 +567,35 @@ public class LedgerAction {
 		return cr;
 	}
 	
+	
+	/*****************   仓库       ************/
+	
+	
+	
+	/**
+	 * 修改贴包子单 ( 仓管填写 )
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/updateInventoryPackingChild", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateInventoryPackingChild(PackingChild packingChild) {
+		CommonResponse cr = new CommonResponse();
+		packingService.updateInventoryPackingChild(packingChild);
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
+	/**
+	 * 审核入库
+	 */
+	@RequestMapping(value = "/ledger/confirmPackingChild", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse confirmPackingChild(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count  = packingService.confirmPackingChild(ids);
+		cr.setMessage("成功审核"+count+"条入库单");
+		return cr;
+	}
 	
 	
 

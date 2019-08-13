@@ -119,6 +119,20 @@ public class PackingChild extends BaseEntity<Long> {
 	private Integer confirmNumber ;
 	
 	/**
+	 * 仓库类型id
+	 */
+	@Column(name = "warehouse_id")
+	private Long warehouseId;
+	
+	/**
+	 * 仓库类型（0=主仓库，1=客供仓库，2=次品）
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "warehouse_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData warehouse;
+	
+	
+	/**
 	 * 贴包数量（包或者箱）
 	 */
 	@Column(name = "stick_number")
@@ -271,6 +285,22 @@ public class PackingChild extends BaseEntity<Long> {
 	
 	
 	
+	public Long getWarehouseId() {
+		return warehouseId;
+	}
+
+	public void setWarehouseId(Long warehouseId) {
+		this.warehouseId = warehouseId;
+	}
+
+	public BaseData getWarehouse() {
+		return warehouse;
+	}
+
+	public void setWarehouse(BaseData warehouse) {
+		this.warehouse = warehouse;
+	}
+
 	public Integer getConfirmNumber() {
 		return confirmNumber;
 	}

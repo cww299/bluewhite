@@ -597,7 +597,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			String[] idStrings = ids.split(",");
 			for (String id : idStrings) {
 				Procurement procurement = dao.findOne(Long.valueOf(id));
-				if (procurement.getAudit() != null) {
+				if (procurement.getAudit() == 1 ) {
 					throw new ServiceException(procurement.getDocumentNumber() + "入库单已审核，请勿再次审核");
 				}
 				if (procurement.getProcurementChilds().size() > 0) {
