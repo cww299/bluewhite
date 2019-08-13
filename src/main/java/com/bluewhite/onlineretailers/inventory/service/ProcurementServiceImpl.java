@@ -307,7 +307,6 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 					}
 					commodityService.save(commodity);
 				}
-
 				// 将子单放入父单
 				procurement.getProcurementChilds().add(procurementChild);
 			}
@@ -630,6 +629,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 
 	@Override
 	public ProcurementChild updateProcurementChild(ProcurementChild procurementChild) {
+		procurementChild.setResidueNumber(procurementChild.getNumber());
 		if (procurementChild.getId() != null) {
 			ProcurementChild pc = procurementChildDao.findOne(procurementChild.getId());
 			if (pc.getAudit() == 1) {
