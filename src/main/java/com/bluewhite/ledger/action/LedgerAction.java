@@ -60,10 +60,10 @@ public class LedgerAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
 				.addRetainTerm(Packing.class, "id", "number", "customer", "packingMaterials", "packingChilds",
-						"packingDate","packingMaterials","flag","user","type")
+						"packingDate","packingMaterials","flag","user","type","warehouseTypeId")
 				.addRetainTerm(User.class, "id", "userName")
 				.addRetainTerm(Customer.class, "id", "name")
-				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count","sendGoodsId","warehouseTypeId")
+				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count","sendGoodsId")
 				.addRetainTerm(PackingMaterials.class, "id", "packagingMaterials","packagingCount")
 				.addRetainTerm(Product.class, "id", "name", "number")
 				.addRetainTerm(BaseData.class, "id", "name");
@@ -573,7 +573,7 @@ public class LedgerAction {
 	
 	
 	/**
-	 * 修改贴包子单 ( 仓管填写 )
+	 * 修改贴包子单 (仓管填写 )
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/updateInventoryPackingChild", method = RequestMethod.POST)
