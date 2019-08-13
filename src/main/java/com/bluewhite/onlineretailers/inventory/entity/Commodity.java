@@ -28,13 +28,6 @@ public class Commodity extends BaseEntity<Long>{
 	
 	
 	/**
-	 * 商品编号（蓝白产品编号）
-	 * 
-	 */
-	@Column(name = "number")
-	private String number;
-	
-	/**
 	 * 产品id
 	 */
 	@Column(name = "product_id")
@@ -209,16 +202,6 @@ public class Commodity extends BaseEntity<Long>{
 
 	public void setProduct(Product product) {
 		this.product = product;
-	}
-
-
-	public String getNumber() {
-		return number;
-	}
-
-
-	public void setNumber(String number) {
-		this.number = number;
 	}
 
 
