@@ -21,4 +21,10 @@ public interface CustomerService extends BaseCRUDService<Customer, Long> {
 	 * @return
 	 */
 	public int deleteCustomr(String ids);
+	
+	/**
+	 * 新增客户
+	 * @param onlineCustomer
+	 */
+	public void saveCustomer(Customer customer);
 }
