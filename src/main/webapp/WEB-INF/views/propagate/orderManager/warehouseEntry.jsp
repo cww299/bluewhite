@@ -288,16 +288,10 @@ layui.config({
 			case 'add':			add();			break;
 			case 'delete':		deletes();		break;
 			case 'isVerify':
-				var choosed = table.checkStatus('entryOrderTable').data;
-				if(choosed.length<1)
-					return myutil.emsg('请选择信息');
-				var ids = [];
-				layui.each(choosed,function(index,item){
-					ids.push(item.id);
-				})
-				myutil.deleteAjax({
+				myutil.deleTableIds({
 					url: '/inventory/auditProcurement',
-					ids: ids.join(','),
+					table: 'entryOrderTable',
+					text: '请选择审核的信息|是否确认审核？'
 				})
 				break;
 			}
@@ -318,19 +312,10 @@ layui.config({
 			})
 		})
 		function deletes(){
-			var choosed=layui.table.checkStatus('entryOrderTable').data;
-			if(choosed.length<1)
-				return myutil.emsg('请选择生产单');
-			layer.confirm('是否确认反冲？',{offset:'100px',},function(){
-				var ids=[];
-				for(var i=0;i<choosed.length;i++)
-					ids.push(choosed[i].id);
-				myutil.deleAjax({
-					url: '/inventory/deleteProcurement?ids='+ids.join(','),
-					success:function(){
-						table.reload('entryOrderTable');
-					}
-				})
+			myutil.deleTableIds({
+				url: '/inventory/deleteProcurement',
+				table: 'entryOrderTable',
+				text: '请选择生产单|是否确认反冲？'
 			})
 		}
 		function lookover(data){
