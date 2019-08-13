@@ -1,7 +1,5 @@
 package com.bluewhite.onlineretailers.inventory.service;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
