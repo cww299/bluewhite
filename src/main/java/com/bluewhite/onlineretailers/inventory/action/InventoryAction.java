@@ -269,7 +269,7 @@ public class InventoryAction {
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(Procurement.class, "id", "documentNumber", "user", "procurementChilds", "number",
 						"residueNumber", "type", "flag", "remark", "transfersUser", "onlineCustomer", "status",
-						"createdAt")
+						"createdAt","audit")
 				.addRetainTerm(ProcurementChild.class, "id", "commodity", "number", "residueNumber", "warehouse",
 						"status", "childRemark", "batchNumber")
 				.addRetainTerm(Commodity.class, "id", "skuCode", "name", "inventorys")
@@ -531,21 +531,11 @@ public class InventoryAction {
 	public CommonResponse storageUser(String ids) {
 		CommonResponse cr = new CommonResponse();
 		procurementService.conversionProcurement(ids);
-		cr.setMessage("成功");
+		cr.setMessage("成功转换成发货单");
 		return cr;
 	}
 	
-	/**
-	 * 
-	 */
-	@RequestMapping(value = "/inventory/test", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse test(String ids) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(procurementService.test(ids));
-		cr.setMessage("成功");
-		return cr;
-	}
+
 	
 
 	@InitBinder

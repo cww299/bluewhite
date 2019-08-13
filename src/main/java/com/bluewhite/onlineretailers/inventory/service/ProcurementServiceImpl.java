@@ -91,6 +91,11 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			if (param.getStatus() != null) {
 				predicate.add(cb.equal(root.get("status").as(Integer.class), param.getStatus()));
 			}
+			
+			// 是否审核
+			if (param.getAudit() != null) {
+				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
+			}
 
 			// 按是否反冲
 			if (param.getFlag() != null) {
@@ -238,6 +243,8 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 
 				// 入库单
 				if (procurement.getType() == 2) {
+					// 设置未审核
+					procurement.setAudit(0);
 					procurementChild.setWarehouseId(jsonObject.getLong("warehouseId"));
 					procurementChild.setPlace(jsonObject.getString("place"));
 					procurementChild.setStatus(jsonObject.getIntValue("status"));
@@ -245,8 +252,6 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 
 				// 出库单
 				if (procurement.getType() == 3) {
-					// 设置未审核
-					procurement.setAudit(0);
 					// 查询商品在当前库存下所有数量大于0的入库单，优先入库时间最早的入库单出库,出库数量可能存在一单无法满足，按时间依次删减出库单数量
 					List<ProcurementChild> procurementChildList = procurementChildDao
 							.findByCommodityIdAndStatusAndResidueNumberGreaterThan(procurementChild.getCommodityId(), 0,
@@ -556,7 +561,6 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 
 	@Override
 	public int conversionProcurement(String ids) {
-		int count = 0; 
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idStrings = ids.split(",");
 			for (String id : idStrings) {
@@ -632,7 +636,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 		procurementChild.setResidueNumber(procurementChild.getNumber());
 		if (procurementChild.getId() != null) {
 			ProcurementChild pc = procurementChildDao.findOne(procurementChild.getId());
-			if (pc.getAudit() == 1) {
+			if (pc.getProcurement().getAudit() == 1) {
 				throw new ServiceException("入库单已审核，无法修改");
 			}
 			BeanCopyUtils.copyNotEmpty(procurementChild, pc, "");
