@@ -76,7 +76,7 @@ public class LedgerAction {
 						,"price","count","sumPrice","copyright","newBacth"
 						,"saleNumber","sendDate","flag","customer" ,"remark","audit","delivery",
 						"deliveryNumber","deliveryDate","disputeNumber","disputeRemark","deliveryCollectionDate"
-						,"offshorePay","acceptPay","disputePay","deliveryStatus","warehouse","warehouseType")
+						,"offshorePay","acceptPay","disputePay","deliveryStatus","warehouse","warehouseType","confirm","confirmNumber")
 				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(Customer.class, "id", "name","user")
 				.addRetainTerm(User.class, "id", "userName")
