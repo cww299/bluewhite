@@ -60,8 +60,8 @@ td{
 												   <td>&nbsp;&nbsp;</td>
 				<td>类型：</td>
 				<td class="minTd"><select name="type"><option value="">订单类型</option>
-												   <option value="0">调拨</option>
-												   <option value="1">发货</option></select></td>
+													<option value="1">发货</option>
+												    <option value="2">调拨</option></select></td>
 				<td>&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
@@ -74,7 +74,7 @@ td{
 		<tr>
 			<td>贴包类型：</td>
 			<td style="width:100px;">
-				<select id="addEditType" lay-filter="addEditType"><option value="1">发货</option><option value="0">调拨</option></select></td>
+				<select id="addEditType" lay-filter="addEditType"><option value="1">发货</option><option value="2">调拨</option></select></td>
 			<td>&nbsp;&nbsp;</td>
 			<td>贴单时间：</td>
 			<td><input id="sendDate" class="layui-input"></td>
@@ -199,7 +199,7 @@ td{
 <script type="text/html" id="typeTpl">
 {{#
   var color='green', text='发货';
-  if(d.type==0)
+  if(d.type==2)
       color='', text='调拨';
 }}
 <span class="layui-badge layui-bg-{{color}}">{{text}}</span>
@@ -336,7 +336,7 @@ layui.config({
 			}
 			var msg = '';
 			customerId=='' && addType==1 && (msg='贴包单客户不能为空');
-			inventoryId=='' && addType==0 && (msg='调拨单，仓库类型不能为空');
+			inventoryId=='' && addType==2 && (msg='调拨单，仓库类型不能为空');
 			number=='' && (msg='贴包单编号不能为空');
 			packingDate=='' && (msg='贴包单贴单日期不能为空');
 			layui.each(child,function(index,item){
