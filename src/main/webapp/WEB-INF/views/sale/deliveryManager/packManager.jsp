@@ -27,6 +27,9 @@
 td{
 	text-align:center;
 }
+.minTd{
+	width:120px;
+}
 </style>
 </head>
 <body>
@@ -39,21 +42,26 @@ td{
 				<td><input type="text" class="layui-input" id="searchTime"></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>编号：</td>
-				<td style="width:120px;"><input type="text" class="layui-input" name="number"></td>
+				<td class="minTd"><input type="text" class="layui-input" name="number"></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>客户：</td>
-				<td style="width:120px;"><input type="text" class="layui-input" name="customerName"></td>
+				<td class="minTd"><input type="text" class="layui-input" name="customerName"></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>批次号：</td>
-				<td style="width:120px;"><input type="text" class="layui-input" name="bacthNumber"></td>
+				<td class="minTd"><input type="text" class="layui-input" name="bacthNumber"></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>产品：</td>
-				<td style="width:120px;"><input type="text" class="layui-input" name="productName"></td>
+				<td class="minTd"><input type="text" class="layui-input" name="productName"></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>是否发货：</td>
-				<td style="width:120px;"><select name="flag" lay-search><option value="">是否发货</option>
+				<td class="minTd"><select name="flag"><option value="">是否发货</option>
 												   <option value="0" selected>未发货</option>
 												   <option value="1">已发货</option></select></td>
+												   <td>&nbsp;&nbsp;</td>
+				<td>类型：</td>
+				<td class="minTd"><select name="type"><option value="">订单类型</option>
+												   <option value="0">调拨</option>
+												   <option value="1">发货</option></select></td>
 				<td>&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
@@ -122,7 +130,7 @@ td{
         <tr>
             <td style="text-align:center;">收货人名：</td>
             <td>&nbsp;&nbsp;</td>
-            <td style="text-align:left;">{{ d.customer.name }}</td>
+            <td style="text-align:left;">{{ d.customer?d.customer.name:"---" }}</td>
             <td>&nbsp;&nbsp;</td>
             <td style="text-align:center;">收货人电话：</td>
         </tr>
@@ -157,7 +165,7 @@ td{
 		<tr>
        	 	<td>包装组贴包人</td>
         	<td>编号</td>
-	    </tr>0
+	    </tr>
 		<tr>
 	        <td>{{ d.user?d.user.userName:'---' }}</td>
 	        <td>{{ d.number}}</td>
@@ -185,6 +193,14 @@ td{
   var color='green', text='未发货';
   if(d.flag==1)
       color='', text='已发货';
+}}
+<span class="layui-badge layui-bg-{{color}}">{{text}}</span>
+</script>
+<script type="text/html" id="typeTpl">
+{{#
+  var color='green', text='发货';
+  if(d.type==0)
+      color='', text='调拨';
 }}
 <span class="layui-badge layui-bg-{{color}}">{{text}}</span>
 </script>
@@ -236,10 +252,11 @@ layui.config({
 			       {align:'center', type:'checkbox',},
 			       {align:'center', title:'包装时间',   field:'packingDate',width:'8%',templet:'<span>{{ d.packingDate.split(" ")[0] }}</span>',	},
 			       {align:'center', title:'编号',   field:'number',  width:'8%', },
-			       {align:'center', title:'客户',   field:'customer',width:'8%', templet:'<span>{{ d.customer?d.customer.name:""}}</span>'	},
+			       {align:'center', title:'客户',   field:'customer',width:'8%', templet:'<span>{{ d.customer?d.customer.name:"---"}}</span>'	},
 			       {align:'center', title:'是否发货',   field:'flag',  width:'8%',templet:'#flagTpl' },
 			       {align:'center', title:'贴包人',   field:'user',  width:'6%', templet:'<span>{{ d.user?d.user.userName:"---"}}</span>'},
 			       {align:'center', title:'包装物及数量',   field:'packingMaterials', 	templet: getMaterial(),},
+			       {align:'center', title:'类型',   field:'type', 	width:'4%', templet: '#typeTpl',},
 			       {align:'center', title:'子单批次号',   field:'packingChilds',width:'8%',templet: getChildHtml('bacthNumber'),	},
 			       {align:'center', title:'子单产品',   field:'packingChilds',width:'18%',templet: getChildHtml('product'),	},
 			       {align:'center', title:'数量',   field:'packingChilds', width:'6%', templet: getChildHtml('count'),	},
@@ -547,7 +564,9 @@ layui.config({
 			var choosed=layui.table.checkStatus('packTable').data,
 			title='新增';
 			searchTime = new Date().format("yyyy-MM-dd");
-			var childData = [],materialData = [],cusId = '',userId='',addEditId = '',type = 1;
+			var childData = [],materialData = [],cusId = '',userId='',type = 1, warehouseTypeId='';
+			addType = 1;
+			addEditId = '';
 			$('#addEditCustomer').val('');
 			$('#sureAddEidtBtn').html('确定新增');
 			$('#sendDate').removeAttr('disabled');
@@ -561,11 +580,13 @@ layui.config({
 				data=choosed[0];
 				title="修改";
 				type = data.type;
+				addType = type;		//当前修改对象的类型
 				addEditId = data.id;	//当前修改对象的id
 				childData = data.packingChilds;
 				materialData = data.packingMaterials;
 				userId = data.user?data.user.id : '';
 				cusId = data.customer?data.customer.id:'';
+				warehouseTypeId = data.warehouseTypeId || '';
 				searchTime = data.packingDate.split(' ')[0];
 				$('#addEditNumber').val(data.number);
 				$('#addEditType').val(data.type);
@@ -587,6 +608,7 @@ layui.config({
 					$('#sendDate').val(searchTime);
 					$('#addEditCustomer').val(cusId);
 					$('#addEditPackPeople').val(userId);
+					$('#addEditInventory').val(warehouseTypeId);
 					table.reload('childTable',{ data: childData });
 					table.reload('materialTable',{ data: materialData });
 					form.render();
@@ -636,7 +658,7 @@ layui.config({
 		
 		function getData(){
 			myutil.getData({
-				url:'${ctx}/basedata/list?type=packingMaterials',
+				url:'${ctx}/basedata/list?type=packagingMaterials',
 				async: false,
 				done: function(data){
 					layui.each(data,function(index,item){
