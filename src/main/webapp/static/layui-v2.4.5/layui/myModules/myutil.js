@@ -219,11 +219,11 @@ layui.define(['jquery','layer','form','table'],function(exports){
 	};
 	
 	myutil.getData = function(options,callback){	//异步获取数据
-		myutil.c.getData(options,callback);
+		return myutil.c.getData(options,callback);
 	};
 	myutil.getDataSync = function(options,callback){	//同步获取数据
 		options.async = false;
-		myutil.c.getData(options,callback);
+		return myutil.c.getData(options,callback);
 	};
 	
 	myutil.clickTr = function(){
