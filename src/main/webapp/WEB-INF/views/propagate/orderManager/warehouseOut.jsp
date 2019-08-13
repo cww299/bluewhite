@@ -244,12 +244,15 @@ layui.config({
 		   	  ,done: function(res, index, upload){ 
 		   		  if(res.code==0){
 				   		layer.closeAll();
-				   		layer.msg(res.message,{icon:1,offset:'100px'});
 				   		table.reload('outOrderTable');
 		   		  }else{
 			   			layer.close(load);
-			   			layer.msg(res.message,{icon:2,offset:'100px'});
 		   		  }
+		   		  layer.alert(res.message, {
+		   			offset:'200px',
+		   		    skin: 'layui-layer-lan' ,
+		   		    closeBtn: 0
+		   		  });
 		   	  } 
 		   	  ,accept: 'file' 
 		   	  ,exts: 'xlsx|xls'
