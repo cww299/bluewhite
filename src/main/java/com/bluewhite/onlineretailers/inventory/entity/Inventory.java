@@ -35,6 +35,19 @@ public class Inventory extends BaseEntity<Long>{
 	@JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Product product;
 	
+	/**
+	 * 商品id
+	 */
+	@Column(name = "commodity_id")
+	private Long commodityId;
+	
+	/**
+	 * 商品实体
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "commodity_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Commodity commodity;
+	
 	
 	/**
 	 * 库存数量
@@ -79,6 +92,22 @@ public class Inventory extends BaseEntity<Long>{
 	private String skuCode;
 	
 
+
+	public Long getCommodityId() {
+		return commodityId;
+	}
+
+	public void setCommodityId(Long commodityId) {
+		this.commodityId = commodityId;
+	}
+
+	public Commodity getCommodity() {
+		return commodity;
+	}
+
+	public void setCommodity(Commodity commodity) {
+		this.commodity = commodity;
+	}
 
 	public Long getProductId() {
 		return productId;

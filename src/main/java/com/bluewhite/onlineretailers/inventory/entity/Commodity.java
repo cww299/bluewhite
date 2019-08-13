@@ -51,7 +51,7 @@ public class Commodity extends BaseEntity<Long>{
 	/**
 	 * 库存数量
 	 */
-	@OneToMany(mappedBy = "product" ,cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "commodity" ,cascade = CascadeType.ALL)
 	private Set<Inventory> inventorys = new HashSet<Inventory>();
 	
 	/**
