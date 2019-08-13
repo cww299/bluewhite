@@ -336,17 +336,22 @@ layui.config({
 				cols:[[
 				       {align:'center', title:'批次号', field:'batchNumber',},
 				       {align:'center', title:'商品名称',  templet:'<p>{{ d.commodity.skuCode }}</p>'},
-				       {align:'center', title:'数量',     field:'number', edit:true},
+				       {align:'center', title:'数量',     field:'number', edit:true, width:'6%'},
 				       {align:'center', title:'备注', 	  field:'childRemark',edit:true}, 
 				       {align:'center', title:'入库仓库', 	  templet:function(d){return d.warehouse.name; },}, 
-				       {align:'center', title:'入库类型', 	 templet:'#statusTpl',}, 
-				       ]]
+				       {align:'center', title:'入库类型', 	 templet:'#statusTpl',width:'10%'}, 
+				       ]],
 			})
 			table.on('edit(lookOverProductListTable)',function(obj){
-				var trData = obj.data, field = obj.field, val = obj.value;
+				var trData = obj.data, field = obj.field, val = obj.value, msg='';
 				var data = { id : trData.id };
-				if(field==''){
-					
+				if(field=='number'){
+					isNaN(val) && (msg='数量请正确填写数字');
+					val<0 && (msg='数量不能小于0');
+					val%1.0!=0 && (msg='数量只能为整数');
+					if(msg!=''){
+						return myutil.emsg(msg);
+					}
 				}
 				data[field] = val;
 				myutil.saveAjax({
