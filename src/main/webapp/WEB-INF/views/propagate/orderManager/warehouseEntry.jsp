@@ -48,8 +48,6 @@ td{
 				<td>商品名:</td>
 				<td><input type="text" class="layui-input" name="commodityName" placeholder='请输入商品名'></td>
 				<td>&nbsp;&nbsp;</td>
-				<td class="minTd"><select name="flag"><option value="">是否反冲</option><option value="1">反冲</option><option value="0" selected>未反冲</option></select>
-				<td>&nbsp;&nbsp;</td>
 				<td class="minTd"><select name='status'>
 						<option value="">入库类型</option>
 						<option value="0">生产入库</option>
@@ -59,6 +57,8 @@ td{
 						<option value="4">采购入库</option>
 						<option value="5">盘亏入库</option></select></td>
 						<td>&nbsp;&nbsp;</td>
+				<td class="minTd"><select name="flag"><option value="">是否反冲</option><option value="1">反冲</option><option value="0" selected>未反冲</option></select>
+				<td>&nbsp;&nbsp;</td>
 				<td class="minTd"><select name='audit'>
 						<option value="">是否审核</option>
 						<option value="1">审核</option>
@@ -362,7 +362,7 @@ layui.config({
 					url: '/inventory/updateProcurement',
 					data: data,
 					success: function(){
-						table.reload('lookOverProductListTable');
+						table.reload('entryOrderTable');
 					}
 				})
 			})
