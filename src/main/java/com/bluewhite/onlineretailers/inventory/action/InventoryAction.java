@@ -45,7 +45,7 @@ public class InventoryAction {
 	@Autowired
 	private OnlineOrderService onlineOrderService;
 	@Autowired
-	private CustomerService onlineCustomerService;
+	private CustomerService customerService;
 	@Autowired
 	private CommodityService commodityService;
 	@Autowired
@@ -218,7 +218,7 @@ public class InventoryAction {
 						"city", "county", "address", "phone", "account", "zipCode", "telephone")
 				.addRetainTerm(User.class, "userName")
 				.addRetainTerm(RegionAddress.class, "id", "regionName", "parentId")
-				.format(onlineCustomerService.findPages(onlineCustomer, page)).toJSON());
+				.format(customerService.findPages(onlineCustomer, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -231,7 +231,7 @@ public class InventoryAction {
 	@ResponseBody
 	public CommonResponse addOnlineCustomer(Customer onlineCustomer) {
 		CommonResponse cr = new CommonResponse();
-		onlineCustomerService.save(onlineCustomer);
+		customerService.saveCustomer(onlineCustomer);
 		if (onlineCustomer.getId() != null) {
 			cr.setMessage("修改成功");
 		} else {
@@ -248,7 +248,7 @@ public class InventoryAction {
 	@ResponseBody
 	public CommonResponse deleteOnlineCustomer(String ids) {
 		CommonResponse cr = new CommonResponse();
-		int count = onlineCustomerService.deleteCustomr(ids);
+		int count = customerService.deleteCustomr(ids);
 		cr.setMessage("成功删除" + count + "个客户");
 		return cr;
 	}
