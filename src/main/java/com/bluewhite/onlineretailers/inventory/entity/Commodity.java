@@ -1,12 +1,16 @@
 package com.bluewhite.onlineretailers.inventory.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -43,6 +47,12 @@ public class Commodity extends BaseEntity<Long>{
 	@JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Product product;
 	
+	
+	/**
+	 * 库存数量
+	 */
+	@OneToMany(mappedBy = "product" ,cascade = CascadeType.ALL)
+	private Set<Inventory> inventorys = new HashSet<Inventory>();
 	
 	/**
 	 * 商品编号（sku）
@@ -171,7 +181,15 @@ public class Commodity extends BaseEntity<Long>{
 	
 	
 	
-	
+
+	public Set<Inventory> getInventorys() {
+		return inventorys;
+	}
+
+
+	public void setInventorys(Set<Inventory> inventorys) {
+		this.inventorys = inventorys;
+	}
 
 
 	public Long getProductId() {
