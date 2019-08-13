@@ -57,7 +57,7 @@ td{
 						<option value="4">采购入库</option>
 						<option value="5">盘亏入库</option></select></td>
 						<td>&nbsp;&nbsp;</td>
-				<td><select name='confirm'>
+				<td><select name='audit'>
 						<option value="">是否审核</option>
 						<option value="1">审核</option>
 						<option value="0">未审核</option></select></td>
