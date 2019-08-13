@@ -18,7 +18,6 @@ td{
 }
 .layui-card .layui-table-cell{	
 	  height:auto;
-	  /* overflow:visible; */
 	  padding:0px;
 }
 .layui-card  .layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
@@ -27,6 +26,9 @@ td{
 }
 .layui-table tbody tr:hover, .layui-table-hover {
 	background-color: transparent;
+}
+.minTd{
+	width:120px;
 }
 </style>
 </head>
@@ -46,9 +48,9 @@ td{
 				<td>商品名:</td>
 				<td><input type="text" class="layui-input" name="commodityName" placeholder='请输入商品名'></td>
 				<td>&nbsp;&nbsp;</td>
-				<td><select name="flag"><option value="">是否反冲</option><option value="1">反冲</option><option value="0" selected>未反冲</option></select>
+				<td class="minTd"><select name="flag"><option value="">是否反冲</option><option value="1">反冲</option><option value="0" selected>未反冲</option></select>
 				<td>&nbsp;&nbsp;</td>
-				<td><select name='status'>
+				<td class="minTd"><select name='status'>
 						<option value="">入库类型</option>
 						<option value="0">生产入库</option>
 						<option value="1">调拨入库</option>
@@ -57,10 +59,10 @@ td{
 						<option value="4">采购入库</option>
 						<option value="5">盘亏入库</option></select></td>
 						<td>&nbsp;&nbsp;</td>
-				<td><select name='audit'>
+				<td class="minTd"><select name='audit'>
 						<option value="">是否审核</option>
 						<option value="1">审核</option>
-						<option value="0">未审核</option></select></td>
+						<option value="0" selected>未审核</option></select></td>
 				<td>&nbsp;&nbsp;</td>
 				<td><span class="layui-btn" lay-submit lay-filter="search">搜索</span></td>
 			</tr>
@@ -161,6 +163,10 @@ td{
 	{{# var color=d.flag==1?'':'green',msg=d.flag==1?'反冲数据':'未反冲';}}
 	<span class="layui-badge layui-bg-{{ color }}">{{ msg }}</span>
 </script>
+<script type="text/html" id="auditTpl">
+	{{# var color=d.audit==1?'':'green',msg=d.flag==1?'审核':'未审核';}}
+	<span class="layui-badge layui-bg-{{ color }}">{{ msg }}</span>
+</script>
 
 <!-- 入库单查看类型转换模板 -->
 <script type="text/html" id='statusTpl'>
@@ -245,6 +251,9 @@ layui.config({
 		table.render({				//渲染主页面单表格
 			elem:'#entryOrderTable',
 			url:'${ctx}/inventory/procurementPage?type=2&flag=0',
+			where:{
+				audit:0
+			},
 			toolbar:'#entryOrderTableToolbar',
 			page:{},
 			request:{pageName:'page',limitName:'size'},
@@ -257,6 +266,7 @@ layui.config({
 			       {align:'center', title:'经手人',	templet:'<p>{{ d.user?d.user.userName:"--" }}</p>',width:'4%',	},
 			       {align:'center', title:'入库类型', templet:'#statusTpl',width:'6%',	},
 			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl',width:'4%',	},
+			       {align:'center', title:'是否审核', 	field:'audit', templet:'#auditTpl',width:'4%',	},
 			       {align:'center', title:'日期',   	field:'createdAt',	width:'9%',},
 			       {align:'center', title:'批次号',	  templet: orderContent('batchNumber'),   width:'10%'	,},
 				   {align:'center', title:'商品名',	  templet: orderContent('skuCode'),		  width:'18%'	,},
@@ -351,6 +361,9 @@ layui.config({
 				myutil.saveAjax({
 					url: '/inventory/updateProcurement',
 					data: data,
+					success: function(){
+						table.reload('lookOverProductListTable');
+					}
 				})
 			})
 			$('#look_createdAt').val(data.createdAt);
