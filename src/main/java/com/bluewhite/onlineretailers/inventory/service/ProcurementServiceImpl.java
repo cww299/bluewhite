@@ -604,6 +604,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				if (procurement.getAudit() == 1 ) {
 					throw new ServiceException(procurement.getDocumentNumber() + "入库单已审核，请勿再次审核");
 				}
+				procurement.setAudit(1);
 				if (procurement.getProcurementChilds().size() > 0) {
 					procurement.getProcurementChilds().stream().forEach(p -> {
 						Commodity commodity = p.getCommodity();
@@ -625,6 +626,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 						commodityService.save(commodity);
 					});
 				}
+				dao.save(procurement);
 				count++;
 			}
 		}
