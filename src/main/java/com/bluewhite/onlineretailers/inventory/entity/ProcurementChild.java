@@ -152,13 +152,6 @@ public class ProcurementChild  extends BaseEntity<Long>{
 	private Integer flag;
 	
 	/**
-	 * 是否审核（审核成功后入库）
-	 * 
-	 */
-	@Transient
-	private Integer audit;
-	
-	/**
 	 * 类型
 	 * 
 	 */
@@ -220,16 +213,6 @@ public class ProcurementChild  extends BaseEntity<Long>{
 
 	public void setFlag(Integer flag) {
 		this.flag = flag;
-	}
-
-
-	public Integer getAudit() {
-		return audit;
-	}
-
-
-	public void setAudit(Integer audit) {
-		this.audit = audit;
 	}
 
 
