@@ -335,12 +335,23 @@ layui.config({
 				cols:[[
 				       {align:'center', title:'批次号', field:'batchNumber',},
 				       {align:'center', title:'商品名称',  templet:'<p>{{ d.commodity.skuCode }}</p>'},
-				       {align:'center', title:'数量',     field:'number',},
-				       {align:'center', title:'剩余数量', field:'residueNumber'},
+				       {align:'center', title:'数量',     field:'number', edit:true},
+				       {align:'center', title:'备注', 	  field:'childRemark',edit:true}, 
 				       {align:'center', title:'入库仓库', 	  templet:function(d){return d.warehouse.name; },}, 
 				       {align:'center', title:'入库类型', 	 templet:'#statusTpl',}, 
-				       {align:'center', title:'备注', 	  field:'childRemark',}, 
 				       ]]
+			})
+			table.on('edit(lookOverProductListTable)',function(obj){
+				var trData = obj.data, field = obj.field, val = obj.value;
+				var data = { id : trData.id };
+				if(field==''){
+					
+				}
+				data[field] = val;
+				myutil.saveAjax({
+					url: '/inventory/updateProcurement',
+					data: data,
+				})
 			})
 			$('#look_createdAt').val(data.createdAt);
 			$('#look_remark').val(data.remark);
@@ -364,7 +375,7 @@ layui.config({
 			$('#look_textTd').html(tdText);
 			$('#look_inputTd').html(tdInput);
 			$('#look_status').val(statusText);
-			$('#look_user').val(data.user.userName);
+			$('#look_user').val(data.user?data.user.userName:'');
 		}
 		
 		//-------新增入库单功能---------------
