@@ -64,20 +64,26 @@ td{
 <div style="display:none;padding:10px;" id="addEditWin">
 	<table class="layui-form">
 		<tr>
+			<td>贴包类型：</td>
+			<td style="width:100px;">
+				<select id="addEditType" lay-filter="addEditType"><option value="1">发货</option><option value="0">调拨</option></select></td>
+			<td>&nbsp;&nbsp;</td>
 			<td>贴单时间：</td>
 			<td><input id="sendDate" class="layui-input"></td>
 			<td>&nbsp;&nbsp;</td>
-			<td>客户：</td>
-			<td style="width:150px;"><select id="addEditCustomer" lay-search><option value="">请选择</option></select></td>
+			<td id="customerTdText">客户：</td>
+			<td id="customerTdSelect" style="width:150px;">
+					<select id="addEditCustomer" lay-search><option value="">请选择</option></select></td>
+			<td>&nbsp;&nbsp;</td>
+			<td id="inventoryTdText" style="display:none;">仓库：</td>
+			<td id="inventoryTdSelect" style="display:none;width:150px;">
+					<select id="addEditInventory" lay-search><option value="">请选择</option></select></td>
 			<td>&nbsp;&nbsp;</td>
 			<td>贴包人：</td>
 			<td style="width:150px;"><select id="addEditPackPeople" lay-search><option value="">请选择</option></select></td>
 			<td>&nbsp;&nbsp;</td>
 			<td>编号：</td>
 			<td style="width:150px;"><input id="addEditNumber" class="layui-input"></td>
-			<td>&nbsp;&nbsp;</td>
-			<td>贴包类型：</td>
-			<td style="width:100px;"><select id="addEditType"><option value="1">发货</option><option value="0">调拨</option></select></td>
 			<td>&nbsp;&nbsp;</td>
 			<td><span class="layui-btn layui-btn-sm" id="sureAddEidtBtn">确定新增</span></td>
 		</tr>
@@ -151,7 +157,7 @@ td{
 		<tr>
        	 	<td>包装组贴包人</td>
         	<td>编号</td>
-	    </tr>
+	    </tr>0
 		<tr>
 	        <td>{{ d.user?d.user.userName:'---' }}</td>
 	        <td>{{ d.number}}</td>
@@ -214,9 +220,7 @@ layui.config({
 				table.reload('childTable');
 			}
 		})
-		laydate.render({
-			elem: '#searchTime',range: '~'
-		})
+		laydate.render({ elem: '#searchTime',range: '~'  })
 		var addEditId = '',addEditWin = null;
 		getData();
 		table.render({
@@ -241,6 +245,24 @@ layui.config({
 			       {align:'center', title:'数量',   field:'packingChilds', width:'6%', templet: getChildHtml('count'),	},
 			       ]]
 		})
+		var addType = 1;	//新增类型、默认发货
+		form.on('select(addEditType)',function(obj){
+			addType = obj.value;
+			showAndHide(obj.value);
+		})
+		function showAndHide(val){
+			if(val==1){	//发货
+				$('#inventoryTdText').hide();
+				$('#inventoryTdSelect').hide();
+				$('#customerTdText').show();
+				$('#customerTdSelect').show();
+			}else{
+				$('#inventoryTdText').show();
+				$('#inventoryTdSelect').show();
+				$('#customerTdText').hide();
+				$('#customerTdSelect').hide();
+			}
+		}
 		function getChildHtml(field){
 			return function(d){
 				var html = '<table style="width:100%;" class="layui-table">';
@@ -272,6 +294,7 @@ layui.config({
 			    material =  table.getTemp('materialTable').data,
 			    number = $('#addEditNumber').val(),
 			    customerId = $('#addEditCustomer').val(),
+			    inventoryId = $('#addEditInventory').val(),
 				type = $('#addEditType').val(),
 			    packingDate =  $('#sendDate').val();
 			if(addEditId!=''){
@@ -295,8 +318,9 @@ layui.config({
 				})
 			}
 			var msg = '';
+			customerId=='' && addType==1 && (msg='贴包单客户不能为空');
+			inventoryId=='' && addType==0 && (msg='调拨单，仓库类型不能为空');
 			number=='' && (msg='贴包单编号不能为空');
-			customerId=='' && (msg='贴包单客户不能为空');
 			packingDate=='' && (msg='贴包单贴单日期不能为空');
 			layui.each(child,function(index,item){
 				item.count==0 && (msg='发货数量不能为0');
@@ -319,9 +343,10 @@ layui.config({
 					userId: $('#addEditPackPeople').val(),
 					type: type,
 					number: number,
-					packingDate: packingDate+' 00:00:00',
-					customerId: customerId,
 					childPacking: JSON.stringify(child),
+					packingDate: packingDate+' 00:00:00',
+					customerId: addType==1?customerId:'',
+					warehouseTypeId: addType==1?'':inventoryId,
 					packingMaterialsJson: JSON.stringify(material),
 				},
 				success:function(){
@@ -518,16 +543,16 @@ layui.config({
 				})
 			})
 		}
-		function addEdit(type){
+		function addEdit(addEditType){
 			var choosed=layui.table.checkStatus('packTable').data,
 			title='新增';
-			addEditId = '';
 			searchTime = new Date().format("yyyy-MM-dd");
-			var childData = [],materialData = [],cusId = '',userId='';
+			var childData = [],materialData = [],cusId = '',userId='',addEditId = '',type = 1;
 			$('#addEditCustomer').val('');
-			$('#sendDate').removeAttr('disabled');
 			$('#sureAddEidtBtn').html('确定新增');
-			if(type=='edit'){
+			$('#sendDate').removeAttr('disabled');
+			$('#addEditType').removeAttr('disabled');
+			if(addEditType=='edit'){
 				var msg = '';
 				choosed.length>1 && (msg = "不能同时编辑多条信息");
 				choosed.length<1 && (msg = "至少选择一条信息编辑");
@@ -535,16 +560,19 @@ layui.config({
 					return myutil.emsg(msg);
 				data=choosed[0];
 				title="修改";
+				type = data.type;
 				addEditId = data.id;	//当前修改对象的id
-				cusId = data.customer.id;
-				userId = data.user?data.user.id : '';
 				childData = data.packingChilds;
 				materialData = data.packingMaterials;
+				userId = data.user?data.user.id : '';
+				cusId = data.customer?data.customer.id:'';
 				searchTime = data.packingDate.split(' ')[0];
 				$('#addEditNumber').val(data.number);
 				$('#addEditType').val(data.type);
 				$('#sureAddEidtBtn').html('确定修改');
 				$('#sendDate').attr('disabled','disabled');
+				$('#addEditType').attr('disabled','disabled');
+				showAndHide(data.type);
 			}else
 				getNumber();
 			addEditWin=layer.open({
@@ -555,6 +583,7 @@ layui.config({
 				content: $('#addEditWin'),
 				success: function(){
 					getAllSend();
+					$('#addEditType').val(type);
 					$('#sendDate').val(searchTime);
 					$('#addEditCustomer').val(cusId);
 					$('#addEditPackPeople').val(userId);
@@ -618,6 +647,7 @@ layui.config({
 				}
 			});
 			getCustomerSelect('');
+			getInventoryType('');
 			getPackPeople();
 		}
 		function getNumber(){
@@ -637,6 +667,17 @@ layui.config({
 					allSend = data;
 				}
 			});
+		}
+		function getInventoryType(){
+			myutil.getSelectHtml({
+				url: '/basedata/list?type=warehouseType&size=99',
+				value: 'id',
+				title: 'name',
+				tips: '请选择仓库',
+				done: function(html){
+					$('#addEditInventory').html(html);
+				}
+			})
 		}
 		function getCustomerSelect(){
 			myutil.getSelectHtml({
