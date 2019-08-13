@@ -241,8 +241,6 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 					procurementChild.setWarehouseId(jsonObject.getLong("warehouseId"));
 					procurementChild.setPlace(jsonObject.getString("place"));
 					procurementChild.setStatus(jsonObject.getIntValue("status"));
-					
-					
 				}
 
 				// 出库单
@@ -612,6 +610,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 						Inventory inventory = inventoryDao.findByProductIdAndWarehouseId(p.getCommodity().getProductId(),p.getWarehouseId());
 						if (inventory == null) {
 							inventory = new Inventory();
+							inventory.setCommodityId(p.getCommodityId());
 							inventory.setProductId(p.getCommodity().getProductId());
 							inventory.setNumber(p.getNumber());
 							inventory.setWarehouseId(p.getWarehouseId());
@@ -638,15 +637,14 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			}
 			BeanCopyUtils.copyNotEmpty(procurementChild, pc, "");
 			// 更新主单总数
-			int number = pc.getProcurement().getProcurementChilds().stream().mapToInt(ProcurementChild::getNumber)
-					.sum();
+			int number = pc.getProcurement().getProcurementChilds().stream().mapToInt(ProcurementChild::getNumber).sum();
 			pc.getProcurement().setNumber(number);
 			pc.getProcurement().setResidueNumber(number);
 			// 更新上级转换的子单数量
 			ProcurementChild pcParent = procurementChildDao.findOne(pc.getParentId());
 			// 子单数量不能大于上级单据的剩余数量
 			if (pc.getNumber() > pcParent.getResidueNumber()) {
-				throw new ServiceException("针工生产单剩余数量不够，无法修改，请确认剩余数量");
+				throw new ServiceException("针工单剩余数量不够，无法修改，请确认剩余数量");
 			} else {
 				pcParent.setResidueNumber(pcParent.getResidueNumber() - pc.getNumber());
 			}
