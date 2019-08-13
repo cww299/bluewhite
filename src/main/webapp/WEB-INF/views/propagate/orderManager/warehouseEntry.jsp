@@ -124,8 +124,6 @@ td{
 	</table>
 	<table class="layui-table" id="lookOverProductListTable" lay-filter="lookOverProductListTable"></table>
 </div>
-
-
 <!-- 商品选择隐藏框 -->
 <div id="productChooseDiv" style="display:none;">
 	<table class="layui-form layui-table" lay-size="sm" lay-skin="nob" style='width:60%;'>
@@ -139,7 +137,6 @@ td{
 	</table>
 	<table class="layui-table" id="productChooseTable" lay-filter="productChooseTable"></table>
 </div>
-
 <!-- 入库单表格工具栏 -->
 <script type="text/html" id="entryOrderTableToolbar" >
 <div  class="layui-button-container">
@@ -149,7 +146,6 @@ td{
 	<span class="layui-badge" >小提示：双击查看详细信息</span>
 </div>
 </script>
-
 <!-- 商品列表表格工具栏 -->
 <script type="text/html" id="productListTableToolbar" >
 <div  class="layui-button-container">
@@ -157,7 +153,6 @@ td{
 	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除商品</span>
 </div>
 </script>
-
 <!-- 是否反冲转换模板 -->
 <script type="text/html" id="flagTpl">
 	{{# var color=d.flag==1?'':'green',msg=d.flag==1?'反冲数据':'未反冲';}}
@@ -251,9 +246,7 @@ layui.config({
 		table.render({				//渲染主页面单表格
 			elem:'#entryOrderTable',
 			url:'${ctx}/inventory/procurementPage?type=2&flag=0',
-			where:{
-				audit:0
-			},
+			where:{ audit:0  },
 			toolbar:'#entryOrderTableToolbar',
 			page:{},
 			request:{pageName:'page',limitName:'size'},
@@ -292,7 +285,6 @@ layui.config({
 				return html+'</table>';
 			}
 		}
-		
 		table.on('toolbar(entryOrderTable)',function(obj){	//监听单表格按钮
 			switch(obj.event){
 			case 'add':			add();			break;
@@ -306,7 +298,6 @@ layui.config({
 				break;
 			}
 		})
-		
 		table.on('rowDouble(entryOrderTable)',function(obj){
 			lookover(obj.data);
 		})
