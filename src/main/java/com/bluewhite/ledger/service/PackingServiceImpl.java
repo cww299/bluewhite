@@ -605,7 +605,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			String[] idStrings = ids.split(",");
 			for (String id : idStrings) {
 				PackingChild packingChild = packingChildDao.findOne(Long.valueOf(id));
-				if (packingChild.getConfirm() != null) {
+				if (packingChild.getConfirm() == 1) {
 					throw new ServiceException("调拨单已审核，请勿再次审核");
 				}
 				if (packingChild != null) {
