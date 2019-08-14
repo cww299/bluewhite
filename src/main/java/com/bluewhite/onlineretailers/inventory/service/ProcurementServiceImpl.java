@@ -27,9 +27,12 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
@@ -561,7 +564,10 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	}
 
 	@Override
+	@Transactional
 	public int conversionProcurement(String ids) {
+		CurrentUser cu = SessionManager.getUserSession();
+		long warehouseTypeDeliveryId  = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idStrings = ids.split(",");
 			for (String id : idStrings) {
@@ -579,6 +585,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 							if (bnStrings.length > 1) {
 								// 新增发货清单
 								PackingChild packingChild = new PackingChild();
+								packingChild.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
 								packingChild.setBacthNumber(bnStrings[0]);
 								packingChild.setCount(Integer.getInteger(bnStrings[1]));
 								packingChild.setCustomerId(procurement.getOnlineCustomerId());
@@ -596,6 +603,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	}
 
 	@Override
+	@Transactional
 	public int auditProcurement(String ids) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
@@ -635,6 +643,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	}
 
 	@Override
+	@Transactional
 	public ProcurementChild updateProcurementChild(ProcurementChild procurementChild) {
 		procurementChild.setResidueNumber(procurementChild.getNumber());
 		if (procurementChild.getId() != null) {
