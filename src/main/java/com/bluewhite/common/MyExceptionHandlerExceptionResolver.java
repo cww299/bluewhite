@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.apache.shiro.ShiroException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
@@ -37,11 +37,11 @@ public class MyExceptionHandlerExceptionResolver implements HandlerExceptionReso
 			if (se.getErrorCode() != null) {
 				responseInfo.setCode(se.getErrorCode().getCode());
 			}
-			
 		}else if(exception instanceof ShiroException){	
 			responseInfo.setMessage(exception.getCause().getMessage());
 		} else {
-			responseInfo.setMessage("抱歉,服务器异常了,详情 [" + (exception == null ? "未知" : exception.getClass().getSimpleName().replace("Exception", "")) + "]");
+			responseInfo.setMessage("抱歉,服务器异常了,详情 ["
+					+ (exception == null ? "未知" : exception.getClass().getSimpleName().replace("Exception", "")) + "]");
 		}
 		view.setAttributesMap(responseInfo.toMap());
 		mav.setView(view);
