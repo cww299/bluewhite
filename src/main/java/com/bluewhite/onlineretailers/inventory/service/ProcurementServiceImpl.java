@@ -303,10 +303,11 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 					if (inventorys.size() > 0) {
 						for (Inventory inventory : inventorys) {
 							if (inventory.getWarehouseId().equals(procurementChild.getWarehouseId())) {
-								if (inventory.getNumber() < procurementChild.getNumber()) {
-									throw new ServiceException(commodity.getName() + "当前仓库库存不足,无法出库，请补充库存");
-								}
-								inventory.setNumber(inventory.getNumber() - procurementChild.getNumber());
+//								if (inventory.getNumber() < procurementChild.getNumber()) {
+//									throw new ServiceException(commodity.getSkuCode() + "当前仓库库存不足,无法出库，请补充库存");
+//								}else{
+									inventory.setNumber(inventory.getNumber() - procurementChild.getNumber());
+//								}
 							}
 						}
 					}
@@ -518,6 +519,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	}
 
 	@Override
+	@Transactional
 	public int excelProcurement(ExcelListener excelListener, Long userId, Long warehouseId) {
 		int count = 0;
 		Procurement procurement = new Procurement();
@@ -534,7 +536,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			JSONObject jsonObject = new JSONObject();
 			Commodity commodity = commodityService.findByName(cPoi.getName());
 			if (commodity != null) {
-				jsonObject.put("commodityId", commodity.getProductId());
+				jsonObject.put("productId", commodity.getProductId());
 			} else {
 				throw new ServiceException("当前导入excel第" + (i + 2) + "条数据的商品不存在，请先添加");
 			}
