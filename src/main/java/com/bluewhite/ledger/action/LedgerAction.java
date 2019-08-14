@@ -386,7 +386,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * 修改销售单( 财务填写 )
+	 * 修改销售单(财务填写 )
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/updateFinanceSale", method = RequestMethod.POST)
@@ -400,7 +400,7 @@ public class LedgerAction {
 	
 	
 	/**
-	 * 修改销售单( 业务员填写 )
+	 * 修改销售单(业务员填写 )
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/updateUserSale", method = RequestMethod.POST)
