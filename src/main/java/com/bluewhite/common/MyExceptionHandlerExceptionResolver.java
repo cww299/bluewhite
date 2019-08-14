@@ -37,10 +37,8 @@ public class MyExceptionHandlerExceptionResolver implements HandlerExceptionReso
 			if (se.getErrorCode() != null) {
 				responseInfo.setCode(se.getErrorCode().getCode());
 			}
-
-		}else if (exception instanceof UnauthorizedException) {
-			mav.setViewName("error/500");
-			return mav;
+		}else if(exception instanceof ShiroException){	
+			responseInfo.setMessage(exception.getCause().getMessage());
 		} else {
 			responseInfo.setMessage("抱歉,服务器异常了,详情 ["
 					+ (exception == null ? "未知" : exception.getClass().getSimpleName().replace("Exception", "")) + "]");
