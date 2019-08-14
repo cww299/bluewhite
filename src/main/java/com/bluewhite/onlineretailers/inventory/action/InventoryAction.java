@@ -34,6 +34,7 @@ import com.bluewhite.onlineretailers.inventory.entity.Warning;
 import com.bluewhite.onlineretailers.inventory.service.CommodityService;
 import com.bluewhite.onlineretailers.inventory.service.OnlineOrderService;
 import com.bluewhite.onlineretailers.inventory.service.ProcurementService;
+import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.sys.entity.RegionAddress;
 import com.bluewhite.system.user.entity.User;
 
@@ -44,7 +45,7 @@ public class InventoryAction {
 	@Autowired
 	private OnlineOrderService onlineOrderService;
 	@Autowired
-	private CustomerService onlineCustomerService;
+	private CustomerService customerService;
 	@Autowired
 	private CommodityService commodityService;
 	@Autowired
@@ -66,7 +67,7 @@ public class InventoryAction {
 						"residueNumber")
 				.addRetainTerm(Delivery.class, "id", "sumNumber", "trackingNumber", "deliveryChilds", "createdAt")
 				.addRetainTerm(DeliveryChild.class, "id", "number", "commodity")
-				.addRetainTerm(Commodity.class, "id", "skuCode")
+				.addRetainTerm(Commodity.class, "id", "skuCode","productId")
 				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName")
 				.addRetainTerm(RegionAddress.class, "id", "regionName", "parentId");
@@ -144,7 +145,7 @@ public class InventoryAction {
 	}
 
 	/****** 商品 *****/
-	/**
+	/**  
 	 * 获取商品列表
 	 * 
 	 */
@@ -155,9 +156,11 @@ public class InventoryAction {
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(Commodity.class, "id", "productID", "skuCode", "fileId", "picUrl", "name", "description",
 						"weight", "size", "material", "fillers", "cost", "propagandaCost", "remark", "tianmaoPrice",
-						"oseePrice", "offlinePrice", "inventorys","number")
+						"oseePrice", "offlinePrice","number","productId","product")
+				.addRetainTerm(Product.class, "id", "name", "inventorys")
 				.addRetainTerm(Inventory.class, "number", "place", "warehouse")
-				.addRetainTerm(BaseData.class, "id", "name").format(commodityService.findPage(commodity, page))
+				.addRetainTerm(BaseData.class, "id", "name")
+				.format(commodityService.findPage(commodity, page))
 				.toJSON());
 		cr.setMessage("查询成功");
 		return cr;
@@ -215,7 +218,7 @@ public class InventoryAction {
 						"city", "county", "address", "phone", "account", "zipCode", "telephone")
 				.addRetainTerm(User.class, "userName")
 				.addRetainTerm(RegionAddress.class, "id", "regionName", "parentId")
-				.format(onlineCustomerService.findPages(onlineCustomer, page)).toJSON());
+				.format(customerService.findPages(onlineCustomer, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -228,7 +231,7 @@ public class InventoryAction {
 	@ResponseBody
 	public CommonResponse addOnlineCustomer(Customer onlineCustomer) {
 		CommonResponse cr = new CommonResponse();
-		onlineCustomerService.save(onlineCustomer);
+		customerService.saveCustomer(onlineCustomer);
 		if (onlineCustomer.getId() != null) {
 			cr.setMessage("修改成功");
 		} else {
@@ -245,7 +248,7 @@ public class InventoryAction {
 	@ResponseBody
 	public CommonResponse deleteOnlineCustomer(String ids) {
 		CommonResponse cr = new CommonResponse();
-		int count = onlineCustomerService.deleteCustomr(ids);
+		int count = customerService.deleteCustomr(ids);
 		cr.setMessage("成功删除" + count + "个客户");
 		return cr;
 	}
@@ -266,7 +269,7 @@ public class InventoryAction {
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(Procurement.class, "id", "documentNumber", "user", "procurementChilds", "number",
 						"residueNumber", "type", "flag", "remark", "transfersUser", "onlineCustomer", "status",
-						"createdAt")
+						"createdAt","audit")
 				.addRetainTerm(ProcurementChild.class, "id", "commodity", "number", "residueNumber", "warehouse",
 						"status", "childRemark", "batchNumber")
 				.addRetainTerm(Commodity.class, "id", "skuCode", "name", "inventorys")
@@ -279,7 +282,7 @@ public class InventoryAction {
 	
 	
 	/**
-	 * 分页查看生产单
+	 * 分页查看生产子单
 	 * 
 	 * @param onlineCustomer
 	 * @param page
@@ -323,10 +326,22 @@ public class InventoryAction {
 	 */
 	@RequestMapping(value = "/inventory/updateProcurement", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse updateProcurement(Procurement procurement) {
+	public CommonResponse updateProcurement(ProcurementChild procurementChild) {
 		CommonResponse cr = new CommonResponse();
-		procurementService.saveProcurement(procurement);
+		procurementService.updateProcurementChild(procurementChild);
 		cr.setMessage("修改成功");
+		return cr;
+	}
+	
+	/**
+	 * 审核入库单
+	 */
+	@RequestMapping(value = "/inventory/auditProcurement", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse auditProcurement(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count  = procurementService.auditProcurement(ids);
+		cr.setMessage("成功审核"+count+"条入库单");
 		return cr;
 	}
 	
@@ -515,34 +530,12 @@ public class InventoryAction {
 	@ResponseBody
 	public CommonResponse storageUser(String ids) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(procurementService.conversionProcurement(ids));
-		cr.setMessage("成功");
+		procurementService.conversionProcurement(ids);
+		cr.setMessage("成功转换成发货单");
 		return cr;
 	}
 	
 
-	/**
-	 * 
-	 * 
-	 */
-	@RequestMapping(value = "/inventory/test", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse test(Procurement procurement) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(procurementService.test(procurement));
-		cr.setMessage("成功");
-		return cr;
-	}
-	@RequestMapping(value = "/inventory/test1", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse test1(Procurement procurement) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(procurementService.test1(procurement));
-		cr.setMessage("成功");
-		return cr;
-	}
-	
-	
 	
 
 	@InitBinder

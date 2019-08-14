@@ -67,13 +67,6 @@ public class SendGoods extends BaseEntity<Long>{
 	@Column(name = "number")
 	private Integer number;
 	
-
-	/**
-	 * 已发数量
-	 */
-	@Column(name = "send_number")
-	private Integer sendNumber;
-	
 	/**
 	 * 发货日期
 	 */
@@ -83,7 +76,7 @@ public class SendGoods extends BaseEntity<Long>{
 	/**
 	 * 剩余数量
 	 */
-	@Transient
+	@Column(name = "surplus_Number")
 	private Integer surplusNumber;
 	
 	/**
@@ -164,19 +157,11 @@ public class SendGoods extends BaseEntity<Long>{
 	}
 
 	public Integer getSurplusNumber() {
-		return (number == null || sendNumber==null) ? 0 : number-sendNumber;
+		return surplusNumber;
 	}
 
 	public void setSurplusNumber(Integer surplusNumber) {
 		this.surplusNumber = surplusNumber;
-	}
-
-	public Integer getSendNumber() {
-		return sendNumber;
-	}
-
-	public void setSendNumber(Integer sendNumber) {
-		this.sendNumber = sendNumber;
 	}
 
 	public Long getCustomerId() {

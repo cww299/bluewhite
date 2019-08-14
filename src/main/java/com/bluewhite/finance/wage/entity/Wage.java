@@ -93,7 +93,4 @@ public class Wage  extends BaseEntity<Long>{
 	public void setWage(Double wage) {
 		this.wage = wage;
 	}
-	
-	
-
 }

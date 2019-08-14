@@ -28,13 +28,6 @@ public class Commodity extends BaseEntity<Long>{
 	
 	
 	/**
-	 * 商品编号（蓝白产品编号）
-	 * 
-	 */
-	@Column(name = "number")
-	private String number;
-	
-	/**
 	 * 产品id
 	 */
 	@Column(name = "product_id")
@@ -47,6 +40,12 @@ public class Commodity extends BaseEntity<Long>{
 	@JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Product product;
 	
+	
+	/**
+	 * 库存数量
+	 */
+	@OneToMany(mappedBy = "commodity" ,cascade = CascadeType.ALL)
+	private Set<Inventory> inventorys = new HashSet<Inventory>();
 	
 	/**
 	 * 商品编号（sku）
@@ -155,14 +154,6 @@ public class Commodity extends BaseEntity<Long>{
 	 */
 	@Column(name = "offline_price")
 	private Double offlinePrice;
-	
-
-	
-	/**
-	 * 库存数量
-	 */
-	@OneToMany(mappedBy = "commodity" ,cascade = CascadeType.ALL)
-	private Set<Inventory> inventorys = new HashSet<Inventory>();
 
 	/**
 	 * 时间查询字段
@@ -183,7 +174,15 @@ public class Commodity extends BaseEntity<Long>{
 	
 	
 	
-	
+
+	public Set<Inventory> getInventorys() {
+		return inventorys;
+	}
+
+
+	public void setInventorys(Set<Inventory> inventorys) {
+		this.inventorys = inventorys;
+	}
 
 
 	public Long getProductId() {
@@ -203,16 +202,6 @@ public class Commodity extends BaseEntity<Long>{
 
 	public void setProduct(Product product) {
 		this.product = product;
-	}
-
-
-	public String getNumber() {
-		return number;
-	}
-
-
-	public void setNumber(String number) {
-		this.number = number;
 	}
 
 
@@ -244,17 +233,6 @@ public class Commodity extends BaseEntity<Long>{
 	public void setOrderTimeEnd(Date orderTimeEnd) {
 		this.orderTimeEnd = orderTimeEnd;
 	}
-
-
-	public Set<Inventory> getInventorys() {
-		return inventorys;
-	}
-
-
-	public void setInventorys(Set<Inventory> inventorys) {
-		this.inventorys = inventorys;
-	}
-
 
 	public Long getFileId() {
 		return fileId;

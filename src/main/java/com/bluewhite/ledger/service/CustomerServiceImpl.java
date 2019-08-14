@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.BeanCopyUtils;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
@@ -70,13 +72,28 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
 			String [] idStrings = ids.split(",");
 			for(String id : idStrings){
 				Long idLong = Long.valueOf(id);
-				Customer customer = dao.findOne(idLong);
-				customer.setUserId(null);
-				dao.delete(customer);
+				dao.delete(idLong);
 				count++;
 			}
 		}
 		return count;
+	}
+
+	@Override
+	public void saveCustomer(Customer customer) {
+		if(customer.getId()!=null){
+			Customer ot = dao.findOne(customer.getId()); 
+			BeanCopyUtils.copyNotEmpty(customer, ot, "");
+			dao.save(ot);
+		}else{
+			if(dao.findByPhone(customer.getPhone())!=null){
+				throw new ServiceException("客户手机号已存在，请勿重复添加");
+			}
+			if(dao.findByName(customer.getName())!=null){
+				throw new ServiceException("客户真实姓名已存在，请勿重复添加");
+			}
+			dao.save(customer);
+		}
 	}
 
 	

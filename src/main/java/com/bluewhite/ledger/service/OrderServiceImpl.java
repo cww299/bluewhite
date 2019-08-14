@@ -21,13 +21,17 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.entity.Order;
+import com.bluewhite.onlineretailers.inventory.dao.ProcurementDao;
+import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 
 @Service
 public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements OrderService {
 
 	@Autowired
 	private OrderDao dao;
-
+	@Autowired
+	private ProcurementDao procurementDao;
+	
 	@Override
 	public PageResult<Order> findPages(Order param, PageParameter page) {
 		Page<Order> pages = dao.findAll((root, query, cb) -> {
@@ -42,7 +46,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 			// 是否电子商务部下单合同
 			if (param.getInternal() != null) {
-				predicate.add(cb.equal(root.get("internal").as(Long.class), param.getInternal()));
+				predicate.add(cb.equal(root.get("internal").as(Integer.class), param.getInternal()));
 			}
 			// 按客户名称
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
@@ -82,9 +86,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			if (idArr.length > 0) {
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
-					Order order = dao.findOne(id);
-					order.setCustomerId(null);
-					dao.delete(order); 
+					Order order =  dao.findOne(id);
+					Procurement procurement = procurementDao.findByOrderId(id);
+					if(procurement!=null){
+						throw new ServiceException("批次号："+order.getBacthNumber()+"产品名："+order.getProduct().getName() +"的下单合同已进行生成，无法删除");
+					}
+					dao.delete(id); 
 					count++;
 				}
 			}
@@ -111,7 +118,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				orderNew.setProductId(jsonObject.getLong("productId"));
 				orderNew.setCustomerId(order.getCustomerId());
 				//判定是否属于电子商务部的订单合同
-				if(orderNew.getCustomerId().equals("")){
+				if(orderNew.getCustomerId().equals(1)){
 					orderNew.setInternal(1);
 				}
 				orderNew.setNumber(jsonObject.getInteger("number"));

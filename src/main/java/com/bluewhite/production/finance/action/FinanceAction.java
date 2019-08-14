@@ -47,8 +47,6 @@ import com.bluewhite.production.finance.service.UsualConsumeService;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
 
-import javassist.expr.NewArray;
-
 /**
  * 生产部财务相关action 
  * @author zhangliang
@@ -97,7 +95,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 			cr.setData(ClearCascadeJSON
 					.get()
 					.addRetainTerm(AttendancePay.class,"id","userName","allotTime","turnWorkTime",
-							"payNumber","workPrice","workTime","overTime","dutyTime","maxPay","disparity")
+							"payNumber","workPrice","workTime","overTime","dutyTime","maxPay","disparity","warning")
 					.format(attendancePayService.findPages(attendancePay, page)).toJSON());
 			cr.setMessage("查询成功");
 		return cr;

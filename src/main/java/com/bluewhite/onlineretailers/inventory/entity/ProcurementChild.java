@@ -70,7 +70,7 @@ public class ProcurementChild  extends BaseEntity<Long>{
 	private Integer number;
 	
 	/**
-	 * 转换剩余数量(入库单数量无法转换，在出库单生成时，自动减去按时间排序的入库单剩余数量)
+	 * 转换剩余数量(在出库单生成时，自动减去按时间排序的入库单剩余数量)
 	 */
 	@Column(name = "residue_number")
 	private Integer residueNumber;
@@ -152,13 +152,6 @@ public class ProcurementChild  extends BaseEntity<Long>{
 	private Integer flag;
 	
 	/**
-	 * 是否审核（审核成功后入库）
-	 * 
-	 */
-	@Transient
-	private Integer audit;
-	
-	/**
 	 * 类型
 	 * 
 	 */
@@ -176,9 +169,23 @@ public class ProcurementChild  extends BaseEntity<Long>{
 	@Transient
 	private Date orderTimeEnd;
 	
+	/**
+	 * 产品名称
+	 */
+	@Transient
+	private String productName;
 	
 	
-	
+	public String getProductName() {
+		return productName;
+	}
+
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+
 	public Long getParentId() {
 		return parentId;
 	}
@@ -206,16 +213,6 @@ public class ProcurementChild  extends BaseEntity<Long>{
 
 	public void setFlag(Integer flag) {
 		this.flag = flag;
-	}
-
-
-	public Integer getAudit() {
-		return audit;
-	}
-
-
-	public void setAudit(Integer audit) {
-		this.audit = audit;
 	}
 
 

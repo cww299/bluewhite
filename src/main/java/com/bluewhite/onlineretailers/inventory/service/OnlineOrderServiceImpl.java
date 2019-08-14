@@ -1,7 +1,5 @@
 package com.bluewhite.onlineretailers.inventory.service;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -369,12 +367,11 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 				// 将出库单ids存入入库单，便于反冲
 				procurementChild.setPutWarehouseIds(ids);
 				// 当订单的状态是买家已付款时或部分发货
-				if (onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_4)
-						|| onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_3)) {
+				if (onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_4) || onlineOrderChild.getStatus().equals(Constants.ONLINEORDER_3)) {
 					// 获取商品
 					Commodity commodity = onlineOrderChild.getCommodity();
 					// 获取库存
-					Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(commodity.getId(), warehouseId);
+					Inventory inventory = inventoryDao.findByProductIdAndWarehouseId(commodity.getProductId(), warehouseId);
 					if (inventory != null) {
 						// 子订单部分发货
 						if (onlineOrderChild.getResidueNumber() != 0 && onlineOrderChild.getResidueNumber() > number) {
@@ -492,7 +489,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			deliveryChild.setNumber(cPoi.getNumber());
 
 			if (cPoi.getCommodityName() != null) {
-				Commodity commodity = commodityDao.findByName(cPoi.getCommodityName());
+				Commodity commodity = commodityDao.findByskuCode(cPoi.getCommodityName());
 				if (commodity != null) {
 					onlineOrderChild.setCommodityId(commodity.getId());
 					deliveryChild.setCommodityId(onlineOrderChild.getCommodityId());
@@ -505,7 +502,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 						procurement.setNumber(cPoi.getNumber());
 						procurementChild.setResidueNumber(cPoi.getNumber());
 						// 获取库存
-						Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(commodity.getId(),
+						Inventory inventory = inventoryDao.findByProductIdAndWarehouseId(commodity.getProductId(),
 								warehouseId);
 						if (inventory != null) {
 							// 减少库存

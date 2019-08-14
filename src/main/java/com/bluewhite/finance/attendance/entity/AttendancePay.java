@@ -21,9 +21,8 @@ import com.bluewhite.system.user.entity.User;
  *
  */
 @Entity
-@Table(name = "pro_attendance_pay", indexes = { @Index(columnList = "type"), 
-												@Index(columnList = "user_id"),
-												@Index(columnList = "allot_time") })
+@Table(name = "pro_attendance_pay", indexes = { @Index(columnList = "type"), @Index(columnList = "user_id"),
+		@Index(columnList = "allot_time") })
 public class AttendancePay extends BaseEntity<Long> {
 
 	/**
@@ -56,7 +55,7 @@ public class AttendancePay extends BaseEntity<Long> {
 	 */
 	@Column(name = "work_time")
 	private Double workTime;
-	
+
 	/**
 	 * 
 	 * 出勤时长
@@ -113,6 +112,12 @@ public class AttendancePay extends BaseEntity<Long> {
 	private Long groupId;
 
 	/**
+	 * 是否错误（0,1）
+	 */
+	@Column(name = "warning")
+	private Integer warning;
+
+	/**
 	 * 查询字段
 	 */
 	@Transient
@@ -129,7 +134,7 @@ public class AttendancePay extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Long kindWorkId;
-	//员工id
+	// 员工id
 	@Transient
 	private String[] usersId;
 	// 出勤时长
@@ -145,8 +150,28 @@ public class AttendancePay extends BaseEntity<Long> {
 	@Transient
 	private Integer sign;
 
-	
-	
+	/**
+	 * 部门id
+	 */
+	@Transient
+	private Long orgNameId;
+
+	public Long getOrgNameId() {
+		return orgNameId;
+	}
+
+	public void setOrgNameId(Long orgNameId) {
+		this.orgNameId = orgNameId;
+	}
+
+	public Integer getWarning() {
+		return warning;
+	}
+
+	public void setWarning(Integer warning) {
+		this.warning = warning;
+	}
+
 	public Double[] getTurnWorkTimes() {
 		return turnWorkTimes;
 	}

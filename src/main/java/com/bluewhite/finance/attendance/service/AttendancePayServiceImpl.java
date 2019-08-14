@@ -17,8 +17,8 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.basedata.service.BaseDataService;
+import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
-import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.entity.PageResultStat;
@@ -42,6 +42,27 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 
 	@Override
 	public PageResult<AttendancePay> findPages(AttendancePay param, PageParameter page) {
+		if(param.getOrgNameId()!=null){
+			switch (String.valueOf(param.getOrgNameId())) {
+			case Constants.QUALITY_ORGNAME:
+				param.setType(1);
+				break;
+			case Constants.PACK_ORGNAME:
+				param.setType(2);
+				break;
+			case Constants.DEEDLE_ORGNAME:
+				param.setType(3);
+				break;
+			case Constants.MACHINIST_ORGNAME:
+				param.setType(4);
+				break;
+			case Constants.TAILOR_ORGNAME:
+				param.setType(5);
+				break;
+			default:
+				break;
+			}
+		}
 		 Page<AttendancePay> pages = dao.findAll((root,query,cb) -> {
 	        	List<Predicate> predicate = new ArrayList<>();
 	        	//按id过滤
@@ -61,6 +82,11 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 	        	//按分组id过滤
 	        	if (param.getGroupId() != null) {
 					predicate.add(cb.equal(root.get("user").get("groupId").as(Long.class),param.getGroupId()));
+				}
+	        	
+	        	//是否错误
+	        	if (param.getWarning() != null) {
+					predicate.add(cb.equal(root.get("warning").as(Integer.class),param.getWarning()));
 				}
 	        	
 	        	//按工种id过滤

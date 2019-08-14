@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -96,6 +97,13 @@ public class Packing extends BaseEntity<Long> {
 	private Integer type;
 	
 	/**
+	 * 调拨仓库id
+	 */
+	@Column(name = "warehouse_type_id")
+	private Long warehouseTypeId;
+	
+	
+	/**
 	 * 批次号
 	 */
 	@Transient
@@ -139,6 +147,14 @@ public class Packing extends BaseEntity<Long> {
 	
 	
 	
+
+	public Long getWarehouseTypeId() {
+		return warehouseTypeId;
+	}
+
+	public void setWarehouseTypeId(Long warehouseTypeId) {
+		this.warehouseTypeId = warehouseTypeId;
+	}
 
 	public Integer getType() {
 		return type;

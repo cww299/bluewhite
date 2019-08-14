@@ -118,17 +118,13 @@
 
 
 	<!-- 开启注解事务支持 -->
-	<tx:annotation-driven transaction-manager="transactionManager"
-		proxy-target-class="false" />
-
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="false" />
 	<!-- 配置Spring的声明式事务 -->
 	 <!-- 配置事务管理器 -->
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
-	  <!--基于 @Transactional 的方式将声明式事务管理：激活启用事务相关处理 Bean 配置-->
-	  <!--另一种命名空间的声明式事务管理，会导致sql链接无法关于，执行多次sql报错，待解决  -->
-    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+
     
     <!-- 配置定时器开关 里面可以配置很多参数，这里只是简单的打开task,并支持@Scheduled -->        
     <task:scheduler id="Scheduler" pool-size="10"/>     

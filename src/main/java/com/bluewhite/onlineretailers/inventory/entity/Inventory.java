@@ -10,6 +10,7 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.product.product.entity.Product;
 
 /**
  * 库存数量
@@ -19,19 +20,34 @@ import com.bluewhite.basedata.entity.BaseData;
 @Entity
 @Table(name = "online_inventory")
 public class Inventory extends BaseEntity<Long>{
+		
 	
 	/**
 	 * 产品id
+	 */
+	@Column(name = "product_id")
+	private Long productId;
+
+	/**
+	 * 产品
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Product product;
+	
+	/**
+	 * 商品id
 	 */
 	@Column(name = "commodity_id")
 	private Long commodityId;
 	
 	/**
-	 * 产品
+	 * 商品实体
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "commodity_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Commodity commodity;
+	
 	
 	/**
 	 * 库存数量
@@ -53,6 +69,20 @@ public class Inventory extends BaseEntity<Long>{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "warehouse_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData warehouse;
+	
+	/**
+	 * 仓库种类id
+	 */
+	@Column(name = "warehouse_type_id")
+	private Long warehouseTypeId;
+	
+	/**
+	 * 仓库种类
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData warehouseType;
+	
 
 	/**
 	 * 商品编号（sku）
@@ -61,20 +91,7 @@ public class Inventory extends BaseEntity<Long>{
 	@Transient
 	private String skuCode;
 	
-	
-	
-	
-	
 
-
-
-	public String getSkuCode() {
-		return skuCode;
-	}
-
-	public void setSkuCode(String skuCode) {
-		this.skuCode = skuCode;
-	}
 
 	public Long getCommodityId() {
 		return commodityId;
@@ -91,6 +108,46 @@ public class Inventory extends BaseEntity<Long>{
 	public void setCommodity(Commodity commodity) {
 		this.commodity = commodity;
 	}
+
+	public Long getProductId() {
+		return productId;
+	}
+
+	public void setProductId(Long productId) {
+		this.productId = productId;
+	}
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public Long getWarehouseTypeId() {
+		return warehouseTypeId;
+	}
+
+	public void setWarehouseTypeId(Long warehouseTypeId) {
+		this.warehouseTypeId = warehouseTypeId;
+	}
+
+	public BaseData getWarehouseType() {
+		return warehouseType;
+	}
+
+	public void setWarehouseType(BaseData warehouseType) {
+		this.warehouseType = warehouseType;
+	}
+
+	public String getSkuCode() {
+		return skuCode;
+	}
+
+	public void setSkuCode(String skuCode) {
+		this.skuCode = skuCode;
+	}    
 
 	public Integer getNumber() {
 		return number;

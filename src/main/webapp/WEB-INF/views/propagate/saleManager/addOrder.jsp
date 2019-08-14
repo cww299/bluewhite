@@ -22,6 +22,9 @@
 td{
 	text-align:center;
 }
+#addEditDiv .layui-input{		/* 新增商品弹窗样式 */
+	height: 38px !important;
+}
 </style>
 </head>
 <body>
@@ -144,37 +147,6 @@ td{
 	<table id="customTable" lay-filter="customTable" class="layui-table"></table>
 </div>
 
-
-<!-- 添加新商品隐藏框 -->
-<form class="layui-form" style="display:none;padding:10px;" id="addProductWindow">
-<table style="width:100%;height:330px;">
-	<tr><td>商品名称</td>
-		<td><input type="text" class="layui-input" lay-verify="required"	name="skuCode"></td>
-		<td>1688批发价</td>
-		<td><input type="text" class="layui-input" 		name="oseePrice"></td></tr>
-	<tr><td>天猫单价</td>
-		<td><input type="text" class="layui-input" 		name="tianmaoPrice"> </td>
-		<td>线下批发价</td>
-		<td><input type="text" class="layui-input" 		name="offlinePrice"></td></tr>
-	<tr><td>商品重量</td>
-		<td><input type="text" class="layui-input" 		name="weight" ></td>
-		<td>商品高度</td>
-		<td><input type="text" class="layui-input" 		name="size" ></td></tr>
-	<tr><td>商品成本</td>
-		<td><input type="text" class="layui-input" 		name="cost"></td>
-		<td>广宣成本</td>
-		<td><input type="text" class="layui-input" 		name="propagandaCost" ></td></tr>
-	<tr><td>商品填充物</td>
-		<td><input type="text" class="layui-input" name="fillers"></td>
-		<td>商品材质</td>
-		<td><input type="text" class="layui-input" name="material"></td></tr>
-	<tr><td>备注</td>
-		<td colspan="3"><textarea type="text" class="layui-input" name="remark"></textarea></td></tr>
-	<tr><td colspan="4"><button type="reset"   class="layui-btn layui-btn-sm layui-btn-danger">清空</button>
-						<button type="button"  class="layui-btn layui-btn-sm"  lay-submit lay-filter="sureAddNew">确定</button></td></tr>
-</table>
-</form>
-
 <!-- 添加新客户隐藏框  -->
 <form style="display:none;" id="addCustomWindow">
 <table class="layui-form layui-table">
@@ -258,15 +230,20 @@ layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	tablePlug : 'tablePlug/tablePlug',
+	addNew : 'layui/myModules/addNewProduct' ,
 }).define(
-	['tablePlug'],
+	['tablePlug','addNew'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
 		, form = layui.form			 		
 		, table = layui.table 
+		, addNew = layui.addNew
 		, laytpl = layui.laytpl
+		, myutil = layui.myutil
 		, tablePlug = layui.tablePlug;
+		
+		myutil.config.ctx = '${ctx}';
 		
 		var choosedProduct=[],			//用户已经选择上的产品
 			allInventory=[],			//所有的仓库
@@ -295,7 +272,7 @@ layui.config({
 					{field:'inventory',	title:'发货仓库',	align:'center', width:'8%',  templet:function(d){
 																			for(var i=0;i<allInventory.length;i++){ 
 																					if(allInventory[i].id==d.inventory)
-																						return '<span>'+allInventory[i].name+'</span>';}	}},
+																						return '<span>'+allInventory[i].name+'</span>';} }},
 					{field:'number',	title:'数量',       align:'center', width:'6%',		edit:'text',templet:'#numberTpl', totalRow:true,},
 					{field:'price',   	title:'单价',   	    align:'center', width:'4%',		edit:'text',templet:'#priceTpl'},
 					{field:'systemPreferential',   			title:'系统优惠',   align:'center', width:'6%',	edit:'text', templet:'#systemPreferentialTpl'},
@@ -501,29 +478,13 @@ layui.config({
 			sureChoosed();											//确定商品选择
 		})
 		
-		$('#addNewProduct').on('click',function(){						//添加新产品
-			openAddNewPorductWin();
+		addNew.render({		//新增商品
+			elem: '#addNewProduct',
+			success: function(){
+				table.reload('productListTable');
+			}
 		})
 		
-		//添加新产品-------弹窗按钮---1个：确定添加
-		form.on('submit(sureAddNew)',function(obj){						//监听按钮
-			var load=layer.load(1);
-			$.ajax({
-				url:'${ctx}/inventory/addCommodity',
-				type:"post",
-				data:obj.field,
-				success:function(result){
-					if(0==result.code){
-						table.reload('productListTable');
-						layer.close(addNewPorductWin);
-						layer.msg(result.message,{icon:1});
-					}
-					else
-						layer.msg(result.message,{icon:2});
-					layer.close(load);
-				}
-			})
-		})
 		//添加新客户--------弹窗按钮---1个：确定添加
 		form.on('submit(sureAddCustom)',function(obj){
 			var load= layer.load(1);
@@ -586,21 +547,21 @@ layui.config({
 				       {type:'checkbox', align:'center', fixed:'left'},
 				       {align:'center', title:'商品名称', field:'skuCode',},
 				       {align:'center', title:'成本', 	  field:'cost', width:'10%',},
-				       {align:'center', title:'发货仓库',  	  templet:getInventorySelectHtml()},
+				       {align:'center', title:'发货仓库',  	  templet: getInventorySelectHtml()},
 				       {align:'center', title:'销售价',        templet:getPriceSelectHtml()},
 				       {align:'center', title:'备注', 	  field:'remark',}, 
 				      ]],
 		      	done: function (res, curr, count) {				//初始化赋值，默认发货仓库id赋值
 		      		var data=res.data;
 		      		for(var i=0;i<data.length;i++){				//如果存在发货仓库，且发货仓库中有主仓库157.则作为默认发货仓库
-		      			if(data[i].inventorys.length>0){			
+		      			if(data[i].product.inventorys.length>0){			
 		      				var j = 0;
-		      				for( j=0;j<data[i].inventorys.length;j++)
-		      					if(data[i].inventorys[j].warehouse.id == "157"){
-		      						data[i].inventory = data[i].inventorys[j].warehouse.id;
+		      				for( j=0;j<data[i].product.inventorys.length;j++)
+		      					if(data[i].product.inventorys[j].warehouse.id == "157"){
+		      						data[i].product.inventory = data[i].product.inventorys[j].warehouse.id;
 		      					}
-		      				if(!data[i].inventory){
-		      					data[i].inventory = ( data[i].inventorys[0]?data[i].inventorys[0].warehouse.id : '');//没有主仓库则默认为第一个仓库
+		      				if(!data[i].product.inventory){
+		      					data[i].product.inventory = ( data[i].product.inventorys[0]?data[i].product.inventorys[0].warehouse.id : '');//没有主仓库则默认为第一个仓库
 		      				}
 		      			}
 		      			switch(defaultPrice){
@@ -700,7 +661,7 @@ layui.config({
 		}
 		function getInventorySelectHtml() {
 			return function(d) {		
-				var inv = d.inventorys;
+				var inv = d.product.inventorys;
 				var html='<span style="color:red;">暂无库存！无法发货</span>';
 				if(inv.length>0){
 					html='<select lay-filter="selectInventory">'
@@ -708,12 +669,6 @@ layui.config({
 						var selected='';
 						if(inv[i].warehouse.id=="157")
 							selected = 'selected';
-						/* layui.each(checkData,function(index,item){			//该商品是否勾选，且已选择发货仓库
-							if(item.id == d.id && item.inventory == inv[i].warehouse.id){
-								selected = 'selected';
-								return;
-							}
-						}) */
 						html+='<option value="'+inv[i].warehouse.id+'" '+selected+'>'+inv[i].warehouse.name+':'+inv[i].number+'</option>';
 					}
 					html+='</select>'
@@ -774,16 +729,6 @@ layui.config({
             if(event.keyCode == "13")      
   				$('#searchCustomer').click();
 	    });
-		function openAddNewPorductWin(){		//添加新产品窗口
-			addNewPorductWin = layer.open({								
-				type:1,
-				title:'添加产品',
-				content:$('#addProductWindow'),
-				offset:'200px',
-				area:['60%','50%']
-			})
-			form.render();
-		}
 		function openAddNewCustomWin(){
 			addNewCustomWin = layer.open({
 				type:1,
@@ -794,7 +739,6 @@ layui.config({
 			form.render();
 		}
 		function deletes(){
-			debugger
 			var choosed = layui.table.checkStatus('productTable').data;
 			if(choosed.length==0){
 				layer.msg("请选择商品删除",{icon:2});
@@ -824,7 +768,7 @@ layui.config({
 			}
 			var list=[];				//存放验证合法的数据
 			for(var i=0;i<choosed.length;i++){
-				if(choosed[i].inventory==undefined){
+				if(choosed[i].product.inventory==undefined){
 					layer.msg('商品：'+choosed[i].skuCode+' 无库存，无法选择',{icon:2});
 					return;
 				}
@@ -846,6 +790,16 @@ layui.config({
 							price = r.data;
 					}
 				})
+				var inventoryId = choosed[i].product.inventorys[0].warehouse.id;	//默认以第一个仓库为主
+				if(choosed[i].inventory)	//如果下拉框选中了
+					inventoryId = choosed[i].inventory;
+				else
+					layui.each(choosed[i].product.inventorys,function(index,item){	//如果存在主仓库
+						if(item.warehouse.id=='157'){
+							 inventoryId='157';
+							 return;
+						}
+					})
 				var orderChild={
 						skuCode : choosed[i].skuCode,		
 						name : choosed[i].name,			
@@ -856,10 +810,11 @@ layui.config({
 						sellerReadjustPrices : 0,			
 						actualSum : price,		
 						status : 'WAIT_SELLER_SEND_GOODS',
-						inventory : choosed[i].inventory,	
+						inventory : inventoryId,	
 						price : price,			
 						id : choosedId++,
 				}
+				console.log(orderChild)
 				list.push(orderChild);
 			}
 			layui.each(list,function(index,item){ 

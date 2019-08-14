@@ -1,10 +1,11 @@
 /* 工具模块
  * 2019/7/6
  */
-layui.define(['jquery','layer','form'],function(exports){
+layui.define(['jquery','layer','form','table'],function(exports){
 	var $ = layui.jquery
 	,layer = layui.layer
 	,form = layui.form
+	,table = layui.table
 	,Class = function(){
 		
 	};
@@ -129,7 +130,7 @@ layui.define(['jquery','layer','form'],function(exports){
 		return html==''?'<select><option value="">无数据</option></select>':html;
 	}
 	
-	Class.prototype.getData = function(options,callback){ /*url、type、async、data */
+	Class.prototype.getData = function(options,callback){ /*url、type、async、data  默认异步 */
 		var data = [];
 		var ajax = {
 			url : options.url,
@@ -148,7 +149,8 @@ layui.define(['jquery','layer','form'],function(exports){
 				}
 			}
 		}
-		return $.ajax(ajax);
+		$.ajax(ajax);
+		return data;
 	}
 	
 	var myutil = {
@@ -167,17 +169,48 @@ layui.define(['jquery','layer','form'],function(exports){
 		myutil.c.deleteAjax(options,callback,error);
 	};
 	
-	myutil.smsg = function(msg){
+	myutil.deleTableIds = function(opt){
+		/*url: '', id:'id', table:'', text:'', offset:'', success */
+		if(!opt.table)
+			return console.warn('请给定操作表格');
+		var tid = opt.table, text = opt.text || '请选择相关信息|是否确认？',offset = opt.offset || '',ids = [];
+		var choosed = table.checkStatus(tid).data;
+		if(choosed.length<1)
+			return myutil.emsg(text.split('|')[0]);
+		layui.each(choosed,function(index,item){
+			var id = opt.id || 'id', val = item;
+			layui.each(id.split('_'),function(i1,t1){
+				val = val[t1] || null;
+			})
+			ids.push(val);
+		})
+		layer.confirm(text.split('|')[1],{ offset:offset },function(){
+			myutil.deleteAjax({
+				url: opt.url,
+				ids: ids.join(','),
+				success: function(){
+					table.reload(tid);
+					opt.success && opt.success();
+				}
+			})
+		})
+	}
+
+	myutil.smsg = function(msg,opt){
 		var iconAndOffset = { icon:1,};
 		if(myutil.config.msgOffset)
 			iconAndOffset.offset = myutil.config.msgOffset;
+		if(opt)
+			iconAndOffset = $.extend({},iconAndOffset,opt);
 		layer.msg(msg,iconAndOffset);
 	};
 	
-	myutil.emsg = function(msg){
+	myutil.emsg = function(msg,opt){
 		var iconAndOffset = { icon:2,};
 		if(myutil.config.msgOffset)
 			iconAndOffset.offset = myutil.config.msgOffset;
+		if(opt)
+			iconAndOffset = $.extend({},iconAndOffset,opt);
 		layer.msg(msg,iconAndOffset);
 	};
 	
@@ -185,8 +218,12 @@ layui.define(['jquery','layer','form'],function(exports){
 		return myutil.c.getSelectHtml(options,init);
 	};
 	
-	myutil.getData = function(options,callback){
-		myutil.c.getData(options,callback);
+	myutil.getData = function(options,callback){	//异步获取数据
+		return myutil.c.getData(options,callback);
+	};
+	myutil.getDataSync = function(options,callback){	//同步获取数据
+		options.async = false;
+		return myutil.c.getData(options,callback);
 	};
 	
 	myutil.clickTr = function(){

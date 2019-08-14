@@ -121,12 +121,14 @@ public class Procurement extends BaseEntity<Long>{
 	 * （2=销售退货入库 ）
 	 * （3=销售换货入库 ）
 	 * （4=采购入库）
+	 * （5=盘亏入库）
 	 * 
 	 * 
 	 * （0=销售出库）
 	 * （1=调拨出库）
 	 * （2=销售换货出库 ）
 	 * （3=采购退货出库 ）
+	 * （4=盘盈出库 ）
 	 */
 	@Column(name = "status")
 	private Integer status;

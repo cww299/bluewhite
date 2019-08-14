@@ -165,7 +165,7 @@ td{
 </script>
 <!-- 商品库存情况模板 -->
 <script type="text/html" id="inventoryTpl">
-	{{# var inv=d.inventorys;
+	{{# var inv=d.product.inventorys;
 		var str='';
 		var color='red';
 		if(inv.length>0){
@@ -181,9 +181,9 @@ td{
 <!-- 商品价格模板 -->
 <script type="text/html" id="priceTpl">
 	{{# var str='';
-		str+='天猫价格:'+d.tianmaoPrice+' ';
-		str+='1688价格:'+d.oseePrice+' ';
-		str+='线下价格:'+d.offlinePrice;
+		str+='天猫价格:'+(d.tianmaoPrice ||'---')+' ';
+		str+='1688价格:'+(d.oseePrice ||'---')+' ';
+		str+='线下价格:'+(d.offlinePrice ||'---');
 	}}
 	<span style='color:orange;'>{{ str }}</span>
 </script>
@@ -244,12 +244,15 @@ layui.config({
 		   	  ,done: function(res, index, upload){ 
 		   		  if(res.code==0){
 				   		layer.closeAll();
-				   		layer.msg(res.message,{icon:1,offset:'100px'});
 				   		table.reload('outOrderTable');
 		   		  }else{
 			   			layer.close(load);
-			   			layer.msg(res.message,{icon:2,offset:'100px'});
 		   		  }
+		   		  layer.alert(res.message, {
+		   			offset:'200px',
+		   		    skin: 'layui-layer-lan' ,
+		   		    closeBtn: 0
+		   		  });
 		   	  } 
 		   	  ,accept: 'file' 
 		   	  ,exts: 'xlsx|xls'
@@ -285,7 +288,7 @@ layui.config({
 			       {align:'center', type:'checkbox',},
 			       {align:'center', title:'单据编号',   	field:'documentNumber',	width:'10%',},
 			       {align:'center', title:'数量', field:'number', width:'4%',	},
-			       {align:'center', title:'经手人',	templet:'<p>{{ d.user.userName }}</p>', width:'4%',	},
+			       {align:'center', title:'经手人',	templet:'<p>{{ d.user?d.user.userName:"---" }}</p>', width:'4%',	},
 			       {align:'center', title:'备注',  field:'remark',	  	},
 			       {align:'center', title:'客户',	templet:'<p>{{ d.onlineCustomer!=null?d.onlineCustomer.buyerName:"&nbsp" }}</p>', width:'4%',	},
 			       {align:'center', title:'出库类型', templet:'#statusTpl', width:'6%',	},
@@ -295,8 +298,8 @@ layui.config({
 				   {align:'center', title:'商品名',	  templet: orderContent('skuCode'),		  width:'18%'	,},
 			       {align:'center', title:'数量',     templet: orderContent('number'),		  width:'4%',	},
 				   {align:'center', title:'备注',	  templet: orderContent('childRemark'),   	}
-			       ]]
-		})
+			       ]] 
+		}) 
 		function orderContent(field){		//子单内容显示
 			return function(d){
 				var html = '<table style="width:100%;" class="layui-table">';
@@ -554,7 +557,7 @@ layui.config({
 					return;
 				}
 				child.push({
-					commodityId : 	t.commodityId,
+					productId : 	t.commodityId,
 					number : 		t.number,
 					place : 		t.place,
 					status : 		t.status,
@@ -670,21 +673,22 @@ layui.config({
 				var number='无库存数量，无法出库';
 				var warehouseId='';
 				var place='';
-				if(choosed[i].inventorys.length>0){
-					number=defaultNumber=='all'?choosed[i].inventorys[0].number:0;
-					warehouseId=choosed[i].inventorys[0].warehouse.id;
-					place = choosed[i].inventorys[0].place;
+				var inventorys = choosed[i].product.inventorys;
+				if(inventorys.length>0){
+					number=defaultNumber=='all'? inventorys[0].number : 0;
+					warehouseId = inventorys[0].warehouse.id;
+					place =  inventorys[0].place;
 					$('#addOrderNumber').val($('#addOrderNumber').val()-(-number));
 				}
 				var orderChild={
 						skuCode:choosed[i].skuCode,			//商品名称
-						commodityId:choosed[i].id,		//商品id
+						commodityId: choosed[i].productId,		//商品id
 						remark:choosed[i].remark,		//备注
 						number:number,					 //商品数量，设置
 						place:place,					//仓位备注
 						status:defaultStatus,			//出库状态
 						warehouseId:warehouseId,		 //选择的仓库id
-						inventorys:choosed[i].inventorys,//库存情况
+						inventorys: inventorys,//库存情况
 						//batchNumber : $('#addBatchNumber').val(),
 						id : choosedId++,
 				};
