@@ -18,7 +18,7 @@ import com.bluewhite.system.user.entity.User;
  *
  */
 @Entity
-@Table(name = " fin_wage")
+@Table(name = "fin_wage")
 public class Wage  extends BaseEntity<Long>{
 	
 	/**
@@ -47,6 +47,20 @@ public class Wage  extends BaseEntity<Long>{
 	@Column(name = "wage")
 	private Double wage;
 	
+	/**
+	 * 类型
+	 */
+	@Column(name = "type")
+	private Integer type;
+
+	
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
 
 	public Long getUserId() {
 		return userId;
