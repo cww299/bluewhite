@@ -37,6 +37,7 @@ public class MyExceptionHandlerExceptionResolver implements HandlerExceptionReso
 			if (se.getErrorCode() != null) {
 				responseInfo.setCode(se.getErrorCode().getCode());
 			}
+			
 		}else if(exception instanceof ShiroException){	
 			responseInfo.setMessage(exception.getCause().getMessage());
 		} else {
