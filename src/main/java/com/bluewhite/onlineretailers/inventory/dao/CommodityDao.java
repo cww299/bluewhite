@@ -7,7 +7,7 @@ import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 
 public interface CommodityDao extends BaseRepository<Commodity, Long>{
 
-	Commodity findByskuCode(String name);
+	Commodity findByName(String name);
 
 	Commodity findByProductId(Long id);
 	

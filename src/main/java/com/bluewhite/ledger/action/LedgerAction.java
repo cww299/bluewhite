@@ -26,13 +26,11 @@ import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.PackingMaterials;
 import com.bluewhite.ledger.entity.ReceivedMoney;
-import com.bluewhite.ledger.entity.Sale;
 import com.bluewhite.ledger.entity.SendGoods;
 import com.bluewhite.ledger.service.MixedService;
 import com.bluewhite.ledger.service.OrderService;
 import com.bluewhite.ledger.service.PackingService;
 import com.bluewhite.ledger.service.ReceivedMoneyService;
-import com.bluewhite.ledger.service.SaleService;
 import com.bluewhite.ledger.service.SendGoodsService;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.user.entity.User;
@@ -56,8 +54,6 @@ public class LedgerAction {
 	private MixedService mixedService;
 	@Autowired
 	private ReceivedMoneyService receivedMoneyService;
-	@Autowired
-	private SaleService saleService;
 
 
 	private ClearCascadeJSON clearCascadeJSON;
@@ -373,54 +369,54 @@ public class LedgerAction {
 	/***************************** 财务 **********************************/
 	
 	/**
-	 * 分页查看销售单
+	 * 分页查看贴包子单（实际发货单）
 	 * @return cr
 	 */
-	@RequestMapping(value = "/ledger/salePage", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/packingChildPage", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse salePage(PageParameter page, Sale sale) {
+	public CommonResponse packingChildPage(PageParameter page, PackingChild packingChild) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONChild.format(saleService.findSalePage(sale, page)).toJSON());
+		cr.setData(clearCascadeJSONChild.format(packingService.findPackingChildPage(packingChild, page)).toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
 	
 	/**
-	 * 修改销售单(财务填写 )
+	 * 修改贴包子单（实际发货单）( 财务填写 )
 	 * @return cr
 	 */
-	@RequestMapping(value = "/ledger/updateFinanceSale", method = RequestMethod.POST)
+	@RequestMapping(value = "/ledger/updateFinancePackingChild", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse updateFinanceSale(Sale sale) {
+	public CommonResponse updateFinancePackingChild(PackingChild packingChild) {
 		CommonResponse cr = new CommonResponse();
-		saleService.updateFinanceSale(sale);
+		packingService.updateFinancePackingChild(packingChild);
 		cr.setMessage("修改成功");
 		return cr;
 	}
 	
 	
 	/**
-	 * 修改销售单(业务员填写 )
+	 * 修改贴包子单（实际发货单）( 业务员填写 )
 	 * @return cr
 	 */
-	@RequestMapping(value = "/ledger/updateUserSale", method = RequestMethod.POST)
+	@RequestMapping(value = "/ledger/updateUserPackingChild", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse updateUserSale(Sale sale) {
+	public CommonResponse updateUserPackingChild(PackingChild packingChild) {
 		CommonResponse cr = new CommonResponse();
-		saleService.updateUserSale(sale);
+		packingService.updateUserPackingChild(packingChild);
 		cr.setMessage("修改成功");
 		return cr;
 	}
 	
 	/**
-	 * 审核销售单(业务员)
+	 * 审核贴包子单（实际发货单)(业务员)
 	 * @return cr
 	 */
-	@RequestMapping(value = "/ledger/auditUserSale", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/auditUserPackingChild", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse auditUserSale(String ids,Integer deliveryStatus) {
+	public CommonResponse auditUserPackingChild(String ids,Integer deliveryStatus) {
 		CommonResponse cr = new CommonResponse();
-		int count= saleService.auditUserSale(ids, deliveryStatus);
+		int count= packingService.auditUserPackingChild(ids,deliveryStatus);
 		cr.setMessage("成功确认"+count+"条销售单");
 		return cr;
 	}
@@ -433,22 +429,22 @@ public class LedgerAction {
 	 */
 	@RequestMapping(value = "/ledger/getPackingChildPrice", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getPackingChildPrice(Sale sale) {
+	public CommonResponse getPackingChildPrice(PageParameter page, PackingChild packingChild) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONPricce.format(saleService.getSalePrice(sale)).toJSON());
+		cr.setData(clearCascadeJSONPricce.format(packingService.getPackingChildPrice(packingChild)).toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
 	
 	/**
-	 * 审核销售单（财务）
+	 * 审核贴包子单（实际发货单）（财务）
 	 * @return cr
 	 */
-	@RequestMapping(value = "/ledger/auditSale", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/auditPackingChild", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse auditSale(String ids,Integer audit) {
+	public CommonResponse auditPackingChild(String ids,Integer audit ) {
 		CommonResponse cr = new CommonResponse();
-		int count= saleService.auditSale(ids, audit);
+		int count= packingService.auditPackingChild(ids,audit);
 		cr.setMessage("成功审核"+count+"条销售单");
 		return cr;
 	}
@@ -567,7 +563,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse collectBill(Bill bill) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONBill.format(saleService.collectBill(bill)).toJSON());
+		cr.setData(clearCascadeJSONBill.format(packingService.collectBill(bill)).toJSON());
 		cr.setMessage("汇总成功");
 		return cr;
 	}
