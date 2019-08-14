@@ -190,7 +190,7 @@ td{
 </script>
 <!-- 商品库存情况模板 -->
 <script type="text/html" id="inventoryTpl">
-	{{# var inv=d.inventorys;
+	{{# var inv=d.product.inventorys;
 		var str='';
 		var color='red';
 		if(inv.length>0){
@@ -206,9 +206,9 @@ td{
 <!-- 商品价格模板 -->
 <script type="text/html" id="priceTpl">
 	{{# var str='';
-		str+='天猫价格:'+d.tianmaoPrice+' ';
-		str+='1688价格:'+d.oseePrice+' ';
-		str+='线下价格:'+d.offlinePrice;
+		str+='天猫价格:'+(d.tianmaoPrice || '--')+' ';
+		str+='1688价格:'+(d.oseePrice || '--')+' ';
+		str+='线下价格:'+(d.offlinePrice || '--');
 	}}
 	<span style='color:orange;'>{{ str }}</span>
 </script>
