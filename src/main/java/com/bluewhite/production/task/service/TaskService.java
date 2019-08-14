@@ -37,31 +37,7 @@ public interface TaskService extends BaseCRUDService<Task,Long>{
 	 * @param task
 	 */
 	public List<Task> assembleTask(Task task);
-	
-	/**
-	 * 批量修改任务
-	 * @param ids
-	 */
-	public int updateTask (String ids) throws Exception;
-	
-	/**
-	 * 暂停开始实时任务时间
-	 * @param id
-	 */
-	public void getTaskActualTime(Long id,Integer status)  throws Exception;
-	
-	/**
-	 * 修改任务
-	 * @param task
-	 * @return
-	 */
-	public Task upTask(Task task);
-	
-	/**
-	 * 根据实际时间的到任务数量
-	 * @param task
-	 */
-	public Integer getTaskNumber(Task task);
+
 	
 	/**
 	 * 二楼机工添加返工任务
@@ -70,7 +46,10 @@ public interface TaskService extends BaseCRUDService<Task,Long>{
 	public Task addReTask(Task task);
 	
 	
-	
+	/**
+	 * 删除返工
+	 * @param ids
+	 */
 	public void deleteReTask(String ids);
 	
 

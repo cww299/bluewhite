@@ -1,6 +1,5 @@
 package com.bluewhite.common.entity;
 
-import java.io.Serializable;
 import java.util.Set;
 
 import com.alibaba.fastjson.annotation.JSONField;
@@ -8,7 +7,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 /**
  * 当前登录用户信息
  * 
- * @author long.xin
+ * @author zhangliang
  *
  */
 public class CurrentUser {
@@ -82,12 +81,14 @@ public class CurrentUser {
 	
 
 
+
+
 	public Long getId() {
 		return id;
 	}
 
-	public void setId(Serializable id) {
-		this.id = (Long)id;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getUserName() {

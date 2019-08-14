@@ -1,23 +1,20 @@
 package com.bluewhite.shiro.web.filter.user;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.cache.Cache;
+import org.apache.shiro.cache.CacheManager;
+import org.apache.shiro.util.StringUtils;
 import org.apache.shiro.web.filter.AccessControlFilter;
+import org.apache.shiro.web.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.alibaba.fastjson.JSON;
 import com.bluewhite.common.SessionManager;
-import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
-import com.bluewhite.common.entity.ErrorCode;
-import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
@@ -28,51 +25,46 @@ import com.bluewhite.system.user.service.UserService;
  */
 public class SysUserFilter extends AccessControlFilter {
 	
-
+	
+	@Autowired
+	private CacheManager cacheManager;
     @Autowired
     private UserService userService;
-
-
-    @Override
+    
+    private String loginUrl = "/login.jsp";  
+    
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
     	HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse rep = (HttpServletResponse) response;
-		HttpSession session = req.getSession();
-		//判断有没有用户登录成功，没有则返回错误信息继续登录
-		CurrentUser currentUser = SessionManager.getUserSession();
-		CommonResponse commonResponse = new CommonResponse();
-		if (currentUser == null) {
-			commonResponse.setCode(ErrorCode.UN_LOGIN_OR_LOGIN_EXPIRED.getCode());
-			commonResponse.setData(null);
-			commonResponse.setMessage("您的登录信息已失效，请重新登录");
-			rep.setContentType("application/json;charset=utf-8");
-			rep.getWriter().print(JSON.toJSONString(commonResponse));
+		CurrentUser cu = SessionManager.getUserSession();
+		if(cu==null){
 			return false;
-		} else {
-			//用户存在，重新更新用户权限，确保用户权限处于最新状态
-			User user = userService.findByUserName(currentUser.getUserName());
-			Set<String> permissions = userService.findStringPermissions(user);
-			Set<String> roles = new HashSet<String>();
-			 for (Role role : user.getRoles()) {
-				 roles.add(role.getRole());
-	         }
-			if (currentUser == null || currentUser.getId().equals(user.getId())) {
-				currentUser = new CurrentUser();
-				currentUser.setIsAdmin(user.getIsAdmin());
-				currentUser.setId(user.getId());
-				currentUser.setUserName(user.getUserName());
-				currentUser.setRole(roles);
-				currentUser.setPermissions(permissions);
+		}else{
+			//获取缓存
+			Cache<String, User> sysUserCache =  cacheManager.getCache("sysUserCache");
+			//从缓存中获取当前登录用户，当缓存中没有，重定向到登录页面，同时清空session
+			if(sysUserCache.get(cu.getUserName())==null){
+				SessionManager.removeUserSession();
+				return false;
+			}else{
+				if(cu.getRole()==null && cu.getPermissions()==null){
+					Cache<String, SimpleAuthorizationInfo> apiAccessTokenCache =  cacheManager.getCache("sysAuthCache");
+					SimpleAuthorizationInfo simpleAuthorizationInfo = apiAccessTokenCache.get(cu.getUserName());
+					if(simpleAuthorizationInfo!=null){
+						cu.setRole(simpleAuthorizationInfo.getRoles());
+						cu.setPermissions(simpleAuthorizationInfo.getStringPermissions());
+					}
+				}
 			}
-			SessionManager.setUserSession(currentUser);
-			session.setAttribute("user", currentUser);
 			return true;
 		}
-    }
+    }  
+  
+    @Override  
+    protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {  
+        WebUtils.issueRedirect(request, response, loginUrl);  
+        return false;  
+    }  
 
-    @Override
-    protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
-        getSubject(request, response).logout();
-        return false;
-    }
+
 }

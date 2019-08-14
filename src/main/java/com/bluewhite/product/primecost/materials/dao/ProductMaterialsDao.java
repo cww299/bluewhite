@@ -14,4 +14,6 @@ public interface ProductMaterialsDao extends BaseRepository<ProductMaterials, Lo
 	 */
 	List<ProductMaterials> findByProductId(Long productId);
 
+	List<ProductMaterials> findByProductIdAndOverstockId(Long productId, Long id);
+
 }

@@ -4,36 +4,69 @@ import com.bluewhite.common.utils.excel.Poi;
 
 public class UserPoi {
 	
-	/**
-	 * 部门
-	 */
-	@Poi(name = "", column = "A")
-	private String orgName;
 	
 	/**
 	 * 姓名
 	 */
-	@Poi(name = "", column = "B")
-	private String userName;
+	@Poi(name = "姓名", column = "A")
+	private String name;
 	
 	/**
-	 * 职位
+	 * 年龄
 	 */
-	@Poi(name = "", column = "C")
-	private String position;
+	@Poi(name = "年龄", column = "B")
+    private Integer age;
 
+	/**
+	 * 生日
+	 */
+	@Poi(name = "生日", column = "D")
+    private String birthDate;
 	
 	/**
-	 * 入职时间
+	 * 部门
 	 */
-	@Poi(name = "", column = "D")
-	private String entry;
+	@Poi(name = "部门", column = "E")
+	private String orgName;
 	
 	/**
-	 * 出生日期
+	 * 性别(0=男，1=女)
 	 */
-	@Poi(name = "", column = "E")
-    private String birthday;
+	@Poi(name = "性别", column = "C")
+	private String gender;
+	
+	
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Integer getAge() {
+		return age;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
+	}
+
+	public String getBirthDate() {
+		return birthDate;
+	}
+
+	public void setBirthDate(String birthDate) {
+		this.birthDate = birthDate;
+	}
 
 	public String getOrgName() {
 		return orgName;
@@ -42,42 +75,10 @@ public class UserPoi {
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
 	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	public String getPosition() {
-		return position;
-	}
-
-	public void setPosition(String position) {
-		this.position = position;
-	}
-
-	public String getEntry() {
-		return entry;
-	}
-
-	public void setEntry(String entry) {
-		this.entry = entry;
-	}
-
-	public String getBirthday() {
-		return birthday;
-	}
-
-	public void setBirthday(String birthday) {
-		this.birthday = birthday;
-	}
+	
 
 
 	
-
 	
 
 	

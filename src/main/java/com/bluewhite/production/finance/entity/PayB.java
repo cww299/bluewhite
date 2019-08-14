@@ -5,15 +5,14 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
-import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.task.entity.Task;
-import com.bluewhite.system.user.entity.User;
 
 /**
  * 生产控制部  B工资实体
@@ -21,7 +20,10 @@ import com.bluewhite.system.user.entity.User;
  *
  */
 @Entity
-@Table(name = "pro_payb")
+@Table(name = "pro_payb" ,indexes = {	@Index(name="payb_index_1",columnList = "type"),
+										@Index(name="payb_index_1",columnList = "allot_time"),
+										@Index(columnList = "allot_time"),
+										@Index(columnList = "task_id")})
 public class PayB extends BaseEntity<Long>{
 	
 	/**
@@ -36,12 +38,6 @@ public class PayB extends BaseEntity<Long>{
 	@Column(name = "user_id")
     private Long userId;
 	
-	/**
-	 * 员工
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private User user;
 	
 	/**
 	 * 任务工资数额
@@ -74,7 +70,7 @@ public class PayB extends BaseEntity<Long>{
 	private Long taskId;
 	
 	/**
-	 * 批次   任务多对一批次
+	 * 任务
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "task_id", referencedColumnName = "id", insertable = false, updatable = false)
@@ -125,6 +121,12 @@ public class PayB extends BaseEntity<Long>{
 	
 	
 	/**
+	 * 查询字段 
+	 */
+	@Column(name = "group_id")
+	private Long groupId;
+	
+	/**
 	 * 查询字段
 	 */
 	@Transient
@@ -135,15 +137,12 @@ public class PayB extends BaseEntity<Long>{
 	@Transient
 	private Date orderTimeEnd;
 	
-	/**
-	 * 查询字段 
-	 */
-	@Transient
-	private Long groupId;
+
 	
 	
 	
 	
+
 
 	public String getPerformance() {
 		return performance;
@@ -289,13 +288,13 @@ public class PayB extends BaseEntity<Long>{
 		this.productName = productName;
 	}
 
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
+//	public User getUser() {
+//		return user;
+//	}
+//
+//	public void setUser(User user) {
+//		this.user = user;
+//	}
 	
 	
 	

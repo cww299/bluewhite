@@ -4,248 +4,218 @@
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html class="no-js">
-<!--<![endif]-->
-
+<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>  <!-- 时间插件 -->
+	<script src="${ctx }/static/js/layer/layer.js"></script>
+	<script src="${ctx }/static/js/laypage/laypage.js"></script> 
+	<link rel="stylesheet" href="${ctx }/static/css/main.css">
 <head>
-     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>批次管理</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-   <link rel="stylesheet" href="${ctx }/static/sfm/css/bootstrap-datetimepicker.min.css">
-   
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>批次管理</title>
+<meta name="description" content="">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<link rel="stylesheet"
+	href="${ctx }/static/sfm/css/bootstrap-datetimepicker.min.css">
+
 </head>
 
 <body>
-    <section id="main-wrapper" class="theme-default">
-        
-        <%@include file="../../decorator/leftbar.jsp"%> 
-        
-        <!--main content start-->
-        
-           <section id="main-content" class="animated fadeInUp">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">批次管理</h3>
-                                <div class="actions pull-right">
-                                    <i class="fa fa-expand"></i>
-                                    <i class="fa fa-chevron-down"></i>
-                                </div>
-                            </div>
-        <div class="row" style="height: 30px; margin:15px 0 10px">
-			<div class="col-xs-11 col-sm-11  col-md-11">
-				<form class="form-search" >
-					<div class="row">
-						<div class="col-xs-11 col-sm-11 col-md-11">
-							<div class="input-group"> 
-								<table><tr><td>批次号:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
-									<td>&nbsp&nbsp</td>
-								<td>产品名称:</td><td><input type="text" name="name" id="name" placeholder="请输入产品名称" class="form-control search-query name" /></td>
-									<td>&nbsp&nbsp</td>
-								<td>开始时间:</td>
-								<td>
-								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
-								</td>
-									<td>&nbsp&nbsp</td>
-				<td>结束时间:</td>
-				<td>
-					<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
-             onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-								</td>
-								<td>&nbsp&nbsp</td>
-								<td>完成状态:</td><td><select class="form-control" id="selectstate"><option value=0>未完成</option><option value=1>已完成</option></select></td>
-								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
-											查&nbsp找
-									</button>
-								</span>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-success  btn-sm btn-3d start">
-									一键完成
-									</button>
-								</span>
-								
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-                            <div class="panel-body">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th class="center">
-											<label> 
-											<input type="checkbox" class="ace checks" /> 
-											<span class="lbl"></span>
-											</label>
-											</th>
-                                        	<th class="text-center">批次号</th>
-                                            <th class="text-center">时间</th>
-                                            <th class="text-center">产品名</th>
-                                            <th class="text-center">数量</th>
-                                            <th class="text-center">预计生产单价</th>
-                                            <th class="text-center">外发价格</th>
-                                            <th class="text-center">针工价格</th>
-                                            <th class="text-center">任务价值</th>
-                                            <th class="text-center">地区差价</th>
-                                            <th class="text-center">当批用时</th>
-                                            <th class="text-center">备注</th>
-                                            <th class="text-center">完成状态</th>
-                                            <th class="text-center">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablecontent">
-                                        
-                                    </tbody>
-                                </table>
-                                <div id="pager" class="pull-right">
-                                
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </section>
-        <!--隐藏框 工序分配开始  -->
-        <div id="addDictDivType" style="display: none;">
-			<div class=" col-xs-12  col-sm-12  col-md-12 ">
-				<div class="space-10"></div>
-				<div style="height: 30px"></div>
-				<form class="form-horizontal addDictDivTypeForm">
-					<div class="row col-xs-12  col-sm-12  col-md-12 ">
+	
+<div class="panel panel-default">
+	<div class="panel-body">		
 		
-                 
-						<div class="form-group">
-                           <label class="col-sm-2 col-md-2 control-label">任务数量:</label>
-                              <div class="col-sm-2 col-md-2">
-                                  <input type="text" class="form-control sumnumber">
-                              </div>
-                               <label class="col-sm-3 control-label">任务分配:</label>
-                                 <div class="col-sm-2">
-                                          <input id="Time" placeholder="时间可不填" class="form-control laydate-icon"
-           									onClick="laydate({elem: '#Time', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-                                      </div>
-                            
-                    	</div>
-                    	<div class="form-group">
-                           <label class="col-sm-2 control-label">选择工序:</label>
-                              <div class="col-sm-2 working">
-                              </div>
-                              <div class="col-sm-2 checkworking"></div>
-                            <label class="col-sm-1 control-label">完成人:</label>
-                                <div class="col-sm-2 complete">
-                                  <input type="text" class="form-control">
-                                </div>
-                                 <div class="col-sm-2 select"></div>
-                    	</div>
-                 </div>
+		<table>
+			<tr>
+				<td>批次号:</td>
+				<td><input type="text" name="number" id="number" placeholder="请输入批次号"
+					class="form-control search-query number" /></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>产品名称:</td>
+				<td><input type="text" name="name" id="name" placeholder="请输入产品名称"
+					class="form-control search-query name" /></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>开始时间:</td>
+				<td><input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
+					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>结束时间:</td>
+				<td><input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
+					onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>完成状态:</td>
+				<td><select class="form-control" id="selectstate"><option value=0>未完成</option>
+						<option value=1>已完成</option></select></td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td><span class="input-group-btn">
+					<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">查&nbsp;找</button></span></td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td><span class="input-group-btn">
+					<button type="button"class="btn btn-success  btn-sm btn-3d start">一键完成</button></span></td>
+						
+			</tr>
+		</table>
+								
+		<h1 class="page-header"></h1>
+	
+		<table class="table table-condensed table-hover">
+			<thead>
+				<tr>
+					<th class="center"><label> <input type="checkbox"
+							class="ace checks" /> <span class="lbl"></span>
+					</label></th>
+					<th class="text-center">批次号</th>
+					<th class="text-center">填写批次时间</th>
+					<th class="text-center" style="width: 250px;">产品名</th>
+					<th class="text-center">数量</th>
+					<th class="text-center">预计生产单价</th>
+					<th class="text-center">外发价格</th>
+					<th class="text-center">针工价格</th>
+					<th class="text-center">任务价值</th>
+					<th class="text-center">地区差价</th>
+					<th class="text-center">当批用时</th>
+					<th class="text-center">备注</th>
+					<th class="text-center">完成状态</th>
+					<th class="text-center">已完成时间</th>
+					<th class="text-center">操作</th>
+				</tr>
+			</thead>
+			<tbody id="tablecontent">
+
+			</tbody>
+			<thead>
+				<tr>
+					<td class="center">合计</td>
+					<td class="text-center"></td>
+					<td class="text-center"></td>
+					<td class="text-center"></td>
+					<td class="text-center" id="total"></td>
+					<td class="text-center"></td>
+					<td class="text-center"></td>
+					<td class="text-center" id="tota2">1</td>	<!-- 修改此处 -->
+					<td class="text-center"></td>
+					<td class="text-center" id="tota3">1</td>	<!-- 修改此处 -->
+					<td class="text-center"></td>
+					<td class="text-center"></td>
+					<td class="text-center"></td>
+					<td class="text-center"></td>
+					<td class="text-center"></td>
+				</tr>
+			</thead>
+		</table>
+		<div id="pager" class="pull-right"></div>
+	</div>
+</div>
+
+	<!--隐藏框 工序分配开始  -->
+	<div id="addDictDivType" style="display: none;">
+		<div class=" col-xs-12  col-sm-12  col-md-12 ">
+			<div class="space-10"></div>
+			<div style="height: 30px"></div>
+			<form class="form-horizontal addDictDivTypeForm">
+				<div class="row col-xs-12  col-sm-12  col-md-12 ">
+
+
+					<div class="form-group">
+						<label class="col-sm-2 col-md-2 control-label">任务数量:</label>
+						<div class="col-sm-2 col-md-2">
+							<input type="text" class="form-control sumnumber">
+						</div>
+						<label class="col-sm-3 control-label">任务分配:</label>
+						<div class="col-sm-2">
+							<input id="Time" placeholder="时间可不填"
+								class="form-control laydate-icon"
+								onClick="laydate({elem: '#Time', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+						</div>
+
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">选择工序:</label>
+						<div class="col-sm-2 working"></div>
+						<div class="col-sm-2 checkworking"></div>
+						<label class="col-sm-1 control-label">完成人:</label>
+						<div class="col-sm-2 complete">
+							<input type="text" class="form-control">
+						</div>
+						<div class="col-sm-2 select"></div>
+					</div>
 				</div>
+		</div>
 
-				</form>
-</div>
-</div>
-<!--隐藏框 工序分配结束  -->
+		</form>
+	</div>
+	</div>
+	<!--隐藏框 工序分配结束  -->
 
-<!-- 任务详情开始-->
-<div id="addworking" style="display: none;position: absolute;z-index: 3;">
-<table><tr>           
-                        <td><button type="button" class="btn btn-default btn-danger btn-xs btn-3d attendance">一键删除</button>&nbsp&nbsp</td>
-                        <td><button type="button" class="btn btn-info  btn-xs btn-3d startto">一键开始</button>&nbsp&nbsp</td>
-                        <td><button type="button" class="btn btn-default btn-success btn-xs btn-3d suspend">一键暂停</button>&nbsp&nbsp</td>
-                        </tr></table>             
-                            <div class="panel-body">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th class="center">
-											<label> 
-											<input type="checkbox" class="ace checksto" /> 
-											<span class="lbl"></span>
-											</label>
-											</th>
-											<th class="text-center">任务编号</th>
-                                        	<th class="text-center">批次号</th>
-                                            <th class="text-center">产品名</th>
-                                            <th class="text-center">时间</th>
-                                            <th class="text-center">工序</th>
-                                            <th class="text-center">预计时间</th>
-                                            <th class="text-center">任务价值</th>
-                                            <th class="text-center">b工资净值</th>
-                                            <th class="text-center">数量</th>
-                                            <th class="text-center">开始结束</th>
-                                            <th class="text-center">实际用时</th>
-                                            <th class="text-center">完成人</th>
-                                            <th class="text-center">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablecontentto">
-                                        
-                                    </tbody>
-                                </table>
-                                <div id="pagerr" class="pull-right">
-                                
-                                </div>
-                            </div>
-
-</div>
-<!-- 任务详情结束-->
-
-<!--隐藏框 人员信息开始  -->
-<div id="savegroup" style="display: none;position: relative; z-index: 5;">
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-					&times;
-				</button>
-				<h4 class="modal-title" id="myModalLabel">
-					人员分组详情
-				</h4>
-			</div>
-			<div class="modal-body">
+	<!-- 任务详情开始-->
+	<div id="addworking"
+		style="display: none; position: absolute; z-index: 3;">
+		<table>
+			<tr>
+				<td><button type="button"
+						class="btn btn-default btn-danger btn-xs btn-3d attendance">一键删除</button>&nbsp;&nbsp;</td>
 				
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
-				</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
-</div>
-</div>
-<!--隐藏框 人员信息结束  -->
+			</tr>
+		</table>
+		<div class="panel-body">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th class="center"><label> <input type="checkbox" class="ace checksto" /> <span class="lbl"></span>
+						</label></th>
+						<th class="text-center">任务编号</th>
+						<th class="text-center">批次号</th>
+						<th class="text-center" style="width: 250px;">产品名</th>
+						<th class="text-center">时间</th>
+						<th class="text-center">工序</th>
+						<th class="text-center">预计时间</th>
+						<th class="text-center">任务价值</th>
+						<th class="text-center">b工资净值</th>
+						<th class="text-center">数量</th>
+						<th class="text-center">完成人</th>
+						<th class="text-center">操作</th>
+					</tr>
+				</thead>
+				<tbody id="tablecontentto">
+
+				</tbody>
+
+			</table>
+			<div id="pagerr" class="pull-right"></div>
+		</div>
+
+	</div>
+	<!-- 任务详情结束-->
+
+	<!--隐藏框 人员信息开始  -->
+	<div id="userInformation" style="display: none;">
+		<div class=" col-xs-12  col-sm-12  col-md-12 ">
+			<div class="space-10"></div>
+			<div style="height: 30px"></div>
+			<form class="form-horizontal addDictDivTypeForm">
+				<div class="form-group">
+					<div   id="modal-body" style="text-align:center">
+						
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<!--隐藏框 人员信息结束  -->
 
 
 
 
 
 
-    </section>
-    
-   
-   
-   <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
-    <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
-    <script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
-    <script src="${ctx }/static/plugins/pace/pace.min.js"></script>
-    <script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-    <script src="${ctx }/static/js/src/app.js"></script>
-     <script src="${ctx }/static/js/laypage/laypage.js"></script> 
-    <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
-    <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
-    <script src="${ctx }/static/sfm/js/bootstrap-datetimepicker.min.js"></script>
-    <script>
+	</section>
+
+
+
+
+	<script>
    jQuery(function($){
    	var Login = function(){
 			var self = this;
@@ -270,12 +240,29 @@
 		  	this.setCount = function(count){
 		  		_count=count;
 		  	}
+		  	function p(s) {
+				return s < 10 ? '0' + s: s;
+				}
+		  	var myDate = new Date(new Date().getTime() - 86400000);
+			//获取当前年
+			var year=myDate.getFullYear();
+			//获取当前月
+			var month=myDate.getMonth()+1;
+			//获取当前日
+			var date=myDate.getDate(); 
+			var day = new Date(year,month,0);  
+			var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
+			var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
+			$('#startTime').val(firstdate);
+			$('#endTime').val(lastdate);
 			 var data={
 						page:1,
 				  		size:13,	
 				  		type:3,
 				  		flag:0,
 				  		status:$('#selectstate').val(),
+				  		orderTimeBegin:$("#startTime").val(),
+				  		orderTimeEnd:$("#endTime").val(),
 				} 
 			this.init = function(){
 				
@@ -296,8 +283,16 @@
 						  shade: [0.1,'#fff'] //0.1透明度的白色背景
 						  });
 					  }, 
-		      		  success: function (result) {
-		      			  
+		      		  success: function (result) { 
+		      			  	//修改合计
+		      			$("#total").text(result.data.statData.number)
+		      			$("#tota2").text(result.data.statData.sumTaskPrice)
+		      			$("#tota3").text(result.data.statData.time)
+		      			//修改此处
+		      			
+		      			
+		      			
+		      			 //$("#total").text(result.data.statData.stateCount)
 		      			 $(result.data.rows).each(function(i,o){
 		      				 if(o.bacthHairPrice==null){
 		      					o.bacthHairPrice=0;
@@ -314,6 +309,12 @@
 		      				 }else{
 		      					strname="未完成";
 		      				 }
+		      				 var s="";
+		      				if(o.statusTime==null){
+		      					s="";
+		      				 }else{
+		      					s=o.statusTime;
+		      				 }
 		      				 html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="hidden batch">'+o.id+'</td>'
 		      				+'<td class="text-center edit bacthNumber">'+o.bacthNumber+'</td>'
@@ -328,6 +329,7 @@
 		      				+'<td class="text-center ">'+parseFloat((o.time).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
 		      				+'<td class="text-center ">'+strname+'</td>'
+		      				+'<td class="text-center edit statusTime">'+s+'</td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button>  <button class="btn btn-sm btn-info  btn-trans updateremaketw" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
 							
 		      			}); 
@@ -339,7 +341,10 @@
 					      curr:  result.data.pageNum || 1, 
 					      jump: function(obj, first){ 
 					    	  if(!first){ 
-					    		 
+					    		  var a="";
+									if($("#selectstate").val()==1){
+										a=$("#startTime").val()
+									}
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
@@ -350,6 +355,7 @@
 								  			orderTimeEnd:$("#endTime").val(),
 								  			flag:0,
 								  			status:$('#selectstate').val(),
+								  			statusTime:a,
 								  	}
 						        
 						            self.loadPagination(_data);
@@ -419,10 +425,8 @@
 			      				+'<td class="text-center  name">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
 			      				+'<td class="text-center  name">'+parseFloat((o.payB).toFixed(4))+'</td>'
 			      				+'<td class="text-center edit number">'+o.number+'</td>'
-			      				+'<td class="text-center" data-id="'+o.id+'" data-status="'+o.status+'"><input type="radio"  class="rest" value="0">开始<input type="radio" class="rest" value="1">暂停</td>'
-			      				+'<td class="text-center edit name">'+o.taskActualTime+'</td>'
 			      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-								+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
+								+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button></td></tr>'
 								
 			      			}); 
 					        //显示分页
@@ -542,9 +546,20 @@
 						if($(this).text() == "编辑"){
 							$(this).text("保存")
 							
-							$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
-
-					            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
+							$(this).parent().siblings(".edit").each(function(index) {  // 获取当前行的其他单元格
+								//修改编辑单元弹出，时间选择板。代码如下：
+								if(index==0){	
+									$(this).html('<input type="text" id="editTime" class="input-mini form-control laydate-icon" value="'+$(this).text()+'"/>');
+									document.getElementById('editTime').onclick=function(){
+										laydate({
+										    elem: '#editTime',
+										    istime: true, format: "YYYY-MM-DD hh:mm:ss"
+										  });
+									}
+								}else
+					       			$(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
+								//原代码：
+								//$(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
 					        });
 						}else{
 								$(this).text("编辑")
@@ -576,13 +591,23 @@
 									success:function(result){
 										if(0==result.code){
 										layer.msg("修改成功！", {icon: 1});
+										var _data = {
+							        			page:1,
+										  		size:13,
+												bacthId:self.getCache(),
+												type:3,
+												flag:0,
+												status:$("#selectstate").val(),
+									  	}
+							        
+							            self.loadPaginationto(_data);
 										layer.close(index);
 										}else{
-											layer.msg("修改失败！", {icon: 1});
+											layer.msg(result.message, {icon: 1});
 											layer.close(index);
 										}
 									},error:function(){
-										layer.msg("操作失败！", {icon: 2});
+										layer.msg(result.message, {icon: 2});
 										layer.close(index);
 									}
 								});
@@ -591,7 +616,7 @@
 					
 					
 					//删除
-							$('.delete').on('click',function(){
+							$('.deletetw').on('click',function(){
 								var postData = {
 										ids:$(this).data('id'),
 								}
@@ -634,39 +659,51 @@
 					//人员详细显示方法
 					$('.savemode').on('click',function(){
 						var id=$(this).data('id')
-						 var display =$("#savegroup").css("display")
-						 if(display=='none'){
-								$("#savegroup").css("display","block");  
-							}
-						 var postData={
-								id:id,
-						}
-						 var arr=new Array();
+						var arr=new Array();
 						var html="";
-						$.ajax({
-							url:"${ctx}/task/taskUser",
-							data:postData,
-							type:"GET",
-							beforeSend:function(){
-								index = layer.load(1, {
-									  shade: [0.1,'#fff'] //0.1透明度的白色背景
-									});
-							},
-							
-							success:function(result){
-								$(result.data).each(function(i,o){
-								html+=o.userName+"&nbsp&nbsp&nbsp&nbsp"
-								})
-								$('.modal-body').html(html);
-								layer.close(index);
-								
-							},error:function(){
-								layer.msg("操作失败！", {icon: 2});
-								layer.close(index);
+						var dicDiv=$('#userInformation');
+						 var postData={
+									id:id,
 							}
-						}); 
-						
-						
+						  $.ajax({
+								url:"${ctx}/task/taskUser",
+								data:postData,
+								type:"GET",
+								beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								
+								success:function(result){
+									$(result.data).each(function(i,o){
+									html+=o.userName+"&nbsp;&nbsp;&nbsp;&nbsp;"
+									})
+									$('#modal-body').html(html);
+									layer.close(index);
+									
+								},error:function(){
+									layer.msg("操作失败！", {icon: 2});
+									layer.close(index);
+								}
+							});
+						_index = layer.open({    //查看人员信息框
+							  type: 1,
+							  skin: 'layui-layer-rim', //加上边框
+							  area: ['40%', '300px'], 
+							  btnAlign: 'c',//宽高
+							  maxmin: true,
+							  offset:(parent.document.documentElement.scrollTop+20)+'px',
+							  title:"人员信息",
+							  content: dicDiv,
+							  btn: ['关闭'],
+							  end:function(){
+								  $('#addDictDivType').hide();
+							
+								  $('.addDictDivTypeForm')[0].reset(); 
+								
+							  }
+						});
 						
 					})
 					
@@ -695,13 +732,13 @@
 							}
 						})
 				var dicDiv=$('#addworking');
-					_index = layer.open({
+					_index = layer.open({     //查看商品
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['70%', '60%'], 
+						  area: ['80%', '100%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
-						  title:name,
+						  title:this.innerHTML,
 						  content: dicDiv,
 						  
 						  yes:function(index, layero){
@@ -741,6 +778,22 @@
 						success:function(result){
 							if(0==result.code){
 							layer.msg("删除成功！", {icon: 1});
+							var a="";
+							if($("#selectstate").val()==1){
+								a=$("#startTime").val()
+							}
+							var data={
+									page:1,
+							  		size:13,	
+							  		type:3,
+							  		name:$('#name').val(),
+						  			bacthNumber:$('#number').val(),
+						  			orderTimeBegin:$("#startTime").val(),
+						  			orderTimeEnd:$("#endTime").val(),
+						  			flag:0,
+						  			status:$('#selectstate').val(),
+						  			statusTime:a,
+							} 
 							self.loadPagination(data)
 							layer.close(index);
 							}else{
@@ -759,9 +812,21 @@
 					if($(this).text() == "编辑"){
 						$(this).text("保存")
 						
-						$(this).parent().siblings(".edit").each(function() {  // 获取当前行的其他单元格
+						$(this).parent().siblings(".edit").each(function(index) {  // 获取当前行的其他单元格
 
-				            $(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
+							//修改编辑单元弹出，时间选择板。代码如下：
+							if(index==1){	
+								$(this).html('<input type="text" id="editTime" class="input-mini form-control laydate-icon" value="'+$(this).text()+'"/>');
+								document.getElementById('editTime').onclick=function(){
+									laydate({
+									    elem: '#editTime',
+									    istime: true, format: "YYYY-MM-DD hh:mm:ss"
+									  });
+								}
+							}else
+				       			$(this).html("<input class='input-mini' type='text' style='width:50px;' value='"+$(this).text()+"'>");
+							//原代码：
+							//$(this).html("<input class='input-mini' type='text' value='"+$(this).text()+"'>");
 				        });
 					}else{
 							$(this).text("编辑")
@@ -782,6 +847,7 @@
 									bacthDeedlePrice:$(this).parent().parent('tr').find(".bacthDeedlePrice").text(),
 									bacthNumber:$(this).parent().parent('tr').find(".bacthNumber").text(),
 									allotTime:$(this).parent().parent('tr').find(".allotTimetw").text(),
+									statusTime:$(this).parent().parent('tr').find(".statusTime").text(),
 							}
 							
 							var index;
@@ -800,11 +866,11 @@
 									layer.msg("修改成功！", {icon: 1});
 									layer.close(index);
 									}else{
-										layer.msg("修改失败！", {icon: 1});
+										layer.msg(result.message, {icon: 1});
 										layer.close(index);
 									}
 								},error:function(){
-									layer.msg("操作失败！", {icon: 2});
+									layer.msg(result.message, {icon: 2});
 									layer.close(index);
 								}
 							});
@@ -921,7 +987,7 @@
 								   var data={
 										  id:id,
 										  type:3,
-										 
+										  temporarilyDate:$('#Time').val(),
 								   }
 			      				$.ajax({
 									url:"${ctx}/production/allGroup",
@@ -966,11 +1032,12 @@
 					  });
 					var postData
 					var dicDiv=$('#addDictDivType');
-					_index = layer.open({
+					_index = layer.open({       //分配框
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['60%', '60%'], 
+						  area: ['80%', '400px'], 
 						  btnAlign: 'c',//宽高
+						  offset:(parent.document.documentElement.scrollTop+30)+'px',
 						  maxmin: true,
 						  title:productName,
 						  content: dicDiv,
@@ -1068,7 +1135,8 @@
 									                    	})
 									                    }
 									                });
-													layer.close(index);
+													//layer.close(index);
+													//layer.close(_index);
 												},error:function(){
 													layer.msg("操作失败！", {icon: 2});
 													layer.close(index);
@@ -1094,14 +1162,6 @@
 							  $('.addDictDivTypeForm')[0].reset(); 
 							  $("#addDictDivType").hide();
 							   $('.checkworking').text(""); 
-							   var data={
-										page:self.getCount(),
-								  		size:13,	
-								  		type:3,
-								  		flag:0,
-								  		status:$('#selectstate').val(),
-								} 
-							   self.loadPagination(data);
 						  } 
 					});
 					
@@ -1116,6 +1176,10 @@
 				
 				//查询
 				$('.searchtask').on('click',function(){
+					var a="";
+					if($("#selectstate").val()==1){
+						a=$("#startTime").val()
+					}
 					var data = {
 				  			page:1,
 				  			size:13,
@@ -1126,7 +1190,7 @@
 				  			orderTimeEnd:$("#endTime").val(), 
 				  			status:$("#selectstate").val(),
 				  			flag:0,
-				  			statusTime:$("#startTime").val(),
+				  			statusTime:a,
 				  	}
 		            self.loadPagination(data);
 				});
@@ -1150,7 +1214,8 @@
 						}
 							 
 						var index;
-						 index = layer.confirm('<input type="text" id="some" class="tele form-control " placeholder="请输入时间" onClick=laydate({elem:"#some",istime:true,format:"YYYY-MM-DD"})>', {btn: ['确定', '取消']},function(){
+						 index = layer.confirm('<input type="text" id="some" class="tele form-control " placeholder="请输入时间" onClick=laydate({elem:"#some",istime:true,format:"YYYY-MM-DD"})>', {btn: ['确定', '取消'],offset:'(parent.document.documentElement.scrollTop+50)'+'px',
+						},function(){
 							var a="";
 							if($('#some').val()==""){
 								a="";
@@ -1179,6 +1244,22 @@
 							success:function(result){
 								if(0==result.code){
 									layer.msg(result.message, {icon: 1});
+									var a="";
+									if($("#selectstate").val()==1){
+										a=$("#startTime").val()
+									}
+									var _datae={
+											page:1,
+									  		size:13,
+									  		type:3,
+								  			name:$('#name').val(),
+								  			bacthNumber:$('#number').val(),
+								  			orderTimeBegin:$("#startTime").val(),
+								  			orderTimeEnd:$("#endTime").val(),
+								  			flag:0,
+								  			status:$('#selectstate').val(),
+								  			statusTime:a,
+									}
 									self.loadPagination(_datae);
 								}else{
 									layer.msg(result.message, {icon: 2});
@@ -1244,7 +1325,7 @@
 						 });
 				  })
 				  /* 一键开始 */
-				   $('.startto').on('click',function(){
+				 /*   $('.startto').on('click',function(){
 					  var  that=$(this);
 					  var arr=new Array()//员工id
 						$(this).parent().parent().parent().parent().parent().find(".checkboxIdto:checked").each(function() {  
@@ -1296,7 +1377,7 @@
 						 });
 				  })
 				  
-				    /* 一键暂停 */
+				    // 一键暂停 
 				$('.suspend').on('click',function(){
 					  var  that=$(this);
 					  var arr=new Array()//员工id
@@ -1347,7 +1428,7 @@
 							}
 						});
 						 });
-				  })
+				  }) */
 				
 			}
    	}
@@ -1356,7 +1437,7 @@
 			})
     
     </script>
-       
+
 </body>
 
 </html>

@@ -1,11 +1,14 @@
 package com.bluewhite.production.group.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
+import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.production.group.entity.Group;
+import com.bluewhite.production.group.entity.Temporarily;
 @Service
 public interface GroupService extends BaseCRUDService<Group,Long>{
 	/**
@@ -15,7 +18,7 @@ public interface GroupService extends BaseCRUDService<Group,Long>{
 	 */
 	List<Group> findByType(Integer type);
 	/**
-	 * 分页插叙
+	 * 按条件查询
 	 * @param group
 	 * @return
 	 */
@@ -26,5 +29,19 @@ public interface GroupService extends BaseCRUDService<Group,Long>{
 	 * @param ids
 	 */
 	void deleteGroup(String ids);
+	
+	/**
+	 * 汇总外调人员绩效
+	 * @param temporarily
+	 */
+	 List<Map<String, Object>> sumTemporarily(Temporarily temporarily);
+	 
+	 /**
+	 * 按条件查询
+	 * @param temporarily
+	 * @return
+	 */
+	List<Temporarily> findTemporarilyList(Temporarily temporarily);
+	
 
 }

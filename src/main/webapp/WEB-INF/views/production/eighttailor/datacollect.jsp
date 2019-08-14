@@ -7,157 +7,121 @@
 <!--<![endif]-->
 
 <head>
-     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>工资总汇</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-   
-   
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>工资总汇</title>
+<meta name="description" content="">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+	<script src="${ctx }/static/js/layer/layer.js"></script>	
+	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+	<link rel="stylesheet" href="${ctx }/static/css/main.css">
+	<script src="${ctx }/static/js/laypage/laypage.js"></script>
+	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 </head>
 
 <body>
-    <section id="main-wrapper" class="theme-default">
-        
-        <%@include file="../../decorator/leftbar.jsp"%> 
-        
-        <!--main content start-->
-        
-           <section id="main-content" class="animated fadeInUp">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">数据汇总详细</h3>
-                                <div class="actions pull-right">
-                                    <i class="fa fa-expand"></i>
-                                    <i class="fa fa-chevron-down"></i>
-                                </div>
-                            </div>
-                             <div class="panel-body">
-                                <div class="tab-wrapper tab-primary">
-                                    <ul class="nav nav-tabs col-md-12">
-                                        <li class="active col-md-6"><a href="#home1" data-toggle="tab">生产成本数据汇总</a>
-                                        </li>
-                                        <li class="col-md-6"><a href="#profile1" data-toggle="tab">员工成本数据汇总</a>
-                                        </li>
-                                    </ul>
-                                    <div class="tab-content">
-                                        <div class="tab-pane active" id="home1">
-                                      <!--查询开始  -->
-          		 <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-8 col-sm-8  col-md-8">
-						<form class="form-search" >
-							<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group"> 
-								<table><tr>
-								<td>开始时间:</td>
-								<td>
-								<input id="startTimeth" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTimeth', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
-								</td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>结束时间:</td>
-								<td>
-								<input id="endTimeth" placeholder="请输入结束时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#endTimeth', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-								</td>
-								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtaskth">
-										查&nbsp找
-									</button>
-								</span>
-							</div>
-						</div>
-					</div>
-				</form>
+
+<div class="panel panel-default">
+	<div class="panel-body">
+		<div class="tab-wrapper tab-primary">
+			<ul class="nav nav-tabs col-md-12">
+				<li class="active col-md-6"><a href="#home1" data-toggle="tab">生产成本数据汇总</a></li>
+				<li class="col-md-6"><a href="#profile1" data-toggle="tab">员工成本数据汇总</a></li>
+			</ul>
+			<div class="tab-content">
+				<!--生产成本数据汇总  -->
+				<div class="tab-pane active" id="home1">
+					<!--查询开始  -->
+				
+					<table>
+						<tr>
+							<td>开始时间:</td>
+							<td><input id="startTimeth" placeholder="请输入开始时间"
+								class="form-control laydate-icon"
+								onClick="laydate({elem: '#startTimeth', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+							</td>
+							<td>&nbsp&nbsp&nbsp&nbsp</td>
+							<td>结束时间:</td>
+							<td><input id="endTimeth" placeholder="请输入结束时间"
+								class="form-control laydate-icon"
+								onClick="laydate({elem: '#endTimeth', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+							</td>
+							<td>&nbsp&nbsp&nbsp&nbsp</td>
+							<td><input type="checkbox" id="check" value="1">详情</td>
+							<td>&nbsp&nbsp&nbsp&nbsp</td>
+							<td>
+							<span class="input-group-btn">
+								<button type="button"
+									class="btn btn-info btn-square btn-sm btn-3d searchtaskth">
+									查&nbsp找</button>
+							</span></td>
+						</tr>
+					</table>
+									
+				<h1 class="page-header"></h1>
+
+				<table class="table table-hover">
+
+					<tbody id="tablecontentth">
+
+					</tbody>
+				</table>
+				<div id="pagerth" class="pull-right"></div>
+			</div>
+				<!-- 员工成本数据汇总 -->
+				<div class="tab-pane" id="profile1">
+					<!--查询开始  -->
+					
+					<table>
+						<tr>
+							<td>股东占比:</td>
+							<td><input type="text" name="number" id="number"
+								placeholder="请输入批次号"
+								class="form-control search-query number" /></td>
+							<td>&nbsp&nbsp&nbsp&nbsp</td>
+							<td>开始时间:</td>
+							<td><input id="startTime" placeholder="请输入开始时间"
+								class="form-control laydate-icon"
+								onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+							</td>
+							<td>&nbsp&nbsp&nbsp&nbsp</td>
+							<td>结束时间:</td>
+							<td><input id="endTime" placeholder="请输入结束时间"
+								class="form-control laydate-icon"
+								onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+							</td>
+							<td>&nbsp&nbsp&nbsp&nbsp</td>
+							<td>
+							<span class="input-group-btn">
+								<button type="button"
+									class="btn btn-info btn-square btn-sm btn-3d searchtask">
+									查&nbsp找</button>
+							</span></td>
+						</tr>
+					</table>
+										
+					<!-- 查询结束 -->
+					<table class="table table-hover">
+	
+						<tbody id="tablecontent">
+	
+						</tbody>
+					</table>
+					<div id="pager" class="pull-right"></div>
+				</div>
+				
 			</div>
 		</div>
-            <!-- 查询结束 -->  
-                                        
-                                            <table class="table table-hover">
-                                    
-                                    <tbody id="tablecontentth">
-                                        
-                                    </tbody>
-                                </table>
-                                <div id="pagerth" class="pull-right"></div>
-                                        </div>
-                     <!-- B工资流水开始 -->
-            <div class="tab-pane" id="profile1">
-                      <!--查询开始  -->
-          		 <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-8 col-sm-8  col-md-8">
-						<form class="form-search" >
-							<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group"> 
-								<table><tr><td>股东占比:</td><td><input type="text" name="number" id="number" placeholder="请输入批次号" class="form-control search-query number" /></td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>开始时间:</td>
-								<td>
-								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
-								</td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>结束时间:</td>
-								<td>
-								<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-								</td>
-								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
-										查&nbsp找
-									</button>
-								</span>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-            <!-- 查询结束 -->  
-                                   <table class="table table-hover">
-                                   
-                                    <tbody id="tablecontent">
-                                        
-                                    </tbody>
-                                </table>
-                                <div id="pager" class="pull-right"></div>
-                                 </div>
-                                 <!-- B工资流水结束 -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    </div>
-                        </div>
-            </section>
-        </section>
+	</div>
+</div>
 
 
 
-
-
-    </section>
-    
-   
-   
-   <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
-    <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
-    <script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
-    <script src="${ctx }/static/plugins/pace/pace.min.js"></script>
-    <script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-    <script src="${ctx }/static/js/src/app.js"></script>
-     <script src="${ctx }/static/js/laypage/laypage.js"></script> 
-    <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
-    <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
-    <script>
+	<script>
    jQuery(function($){
    	var Login = function(){
 			var self = this;
@@ -171,12 +135,7 @@
 		  		return _cache;
 		  	}
 			 var data={
-					 status:1,	
-				  		type:5,
-
-				} 
-			 var date={
-					 status:0,	
+					 	
 				  		type:5,
 
 				} 
@@ -185,12 +144,12 @@
 				//注册绑定事件
 				self.events();
 				self.loadPagination(data);
-				self.loadPaginationth(date);
 			}
 			//加载分页
 			  this.loadPagination = function(data){
 			    var index;
 			    var html = '';
+			    var htmlth = '';
 			    //B工资流水开始
 			    $.ajax({
 				      url:"${ctx}/finance/collectInformation",
@@ -273,9 +232,37 @@
 			      				+'<td class="edit">车间剩余</td>'
 			      				+'<td class="edit">'+result.data.workshopSurplus+'</td>'
 			      				+'</tr>'
-					   	layer.close(index);
 					   	 $("#tablecontent").html(html); 
-					   
+					   	htmlth +='<tr>'
+		      				+'<td class="edit">全表加工费  汇总</td>'
+		      				+'<td class="edit">'+result.data.sumTask+'</td>'
+		      				+'</tr>'
+		      				+'<tr>' 
+		      				+'<td class="edit">返工费 汇总</td>'
+		      				+'<td class="edit">'+result.data.sumTaskFlag+'</td>'
+		      				+'</tr>'
+		      				+'<tr>' 
+		      				+'<td class="edit">杂工费 汇总</td>'
+		      				+'<td class="edit">'+result.data.sumFarragoTask+'</td>'
+		      				+'</tr>'
+		      				+'<tr>' 
+		      				+'<td class="edit">全表加工费,返工费和杂工费汇总</td>'
+		      				+'<td class="edit">'+result.data.priceCollect+'</td>'
+		      				+'</tr>'
+		      				+'<tr>' 
+		      				+'<td class="edit">不予给付汇总占比</td>'
+		      				+'<td class="edit">'+result.data.proportion+'</td>'
+		      				+'</tr>'
+		      				+'<tr>' 
+		      				+'<td class="edit">预算多余在手部分</td>'
+		      				+'<td class="edit">'+result.data.overtop+'</td>'
+		      				+'</tr>'
+		      				+'<tr>' 
+		      				+'<td class="edit">各批次地区差价汇总(不予给付汇总)</td>'
+		      				+'<td class="edit">'+result.data.regionalPrice+'</td>'
+		      				+'</tr>'
+				   	layer.close(index);
+				   	 $("#tablecontentth").html(htmlth); 
 				      },error:function(){
 							layer.msg("加载失败！", {icon: 2});
 							layer.close(index);
@@ -283,7 +270,7 @@
 				  });
 			  //B工资流水结束
 			}
-			this.loadPaginationth=function(date){
+			/* this.loadPaginationth=function(date){
 				//生产成本数据汇总
 				var index;
 			    var htmlth = '';
@@ -334,30 +321,40 @@
 							layer.close(index);
 					  }
 				  });
-			}
-			this.loadEvents = function(){
-			}
+			} */
 			this.events = function(){
 				$('.searchtask').on('click',function(){
+					var status;
+					if($("#check").is(':checked')==true){
+						status=1
+					}else{
+						status=""
+					}
 					var data = {
-							status:1,	
 					  		type:5,
 				  			shareholderProportion:$('#number').val(),
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
+				  			status:status
 				  	}
 			
 				self.loadPagination(data);
 				});
 				$('.searchtaskth').on('click',function(){
-					var date = {
-							status:0,	
+					var status;
+					if($("#check").is(':checked')==true){
+						status=1
+					}else{
+						status=""
+					}
+					var data = {
 					  		type:5,
 				  			orderTimeBegin:$("#startTimeth").val(),
 				  			orderTimeEnd:$("#endTimeth").val(), 
+				  			status:status
 				  	}
 			
-				self.loadPaginationth(date);
+				self.loadPagination(data);
 				});
 			}
    	}
@@ -366,8 +363,8 @@
 			})
     
     </script>
-  
-       
+
+
 </body>
 
 </html>

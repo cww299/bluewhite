@@ -26,6 +26,8 @@ public class PageResult<T> {
 	}
 	
 
+	
+
 	public Integer getPageNum() {
 		return pageNum;
 	}

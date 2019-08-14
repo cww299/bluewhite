@@ -5,16 +5,27 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.criteria.Predicate;
+
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.cache.Cache;
+import org.apache.shiro.cache.CacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
+import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.system.user.dao.MenuDao;
 import com.bluewhite.system.user.entity.Menu;
 import com.bluewhite.system.user.entity.Role;
@@ -29,12 +40,20 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private CacheManager cacheManager;
 
 	/**
 	 * 查找用户有权限访问的菜单
 	 */
 	@Override
 	public List<Menu> findHasPermissionMenusByUsername(String username) {
+    	Cache<String, List<Menu>> sysMenuCache =  cacheManager.getCache("sysMenuCache");
+    	List<Menu> cacheList = sysMenuCache.get(username);
+		if(cacheList!=null){
+			return cacheList;
+		}
 		User user = userService.findByUserName(username);
 		List<Menu> result = new ArrayList<Menu>();
 		Set<Role> roles = user.getRoles();
@@ -76,13 +95,14 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 				}
 			} // end else
 		} // end for
+		sysMenuCache.put(username, topTree);
 		return topTree;
 	}
 
 	@Override
 	public List<Menu> findHasPermissionMenusByUsernameNew(String username) {
-		List<Menu> validMenus = findHasPermissionMenusByUsername(username);
 		CurrentUser currentUser = SessionManager.getUserSession();
+		List<Menu> validMenus = findHasPermissionMenusByUsername(username);
 		Set<String> filterMenus = getFilterMenus(currentUser);
 		return validMenus.stream().filter(m -> {
 			boolean isContain = !filterMenus.contains(m.getIdentity());
@@ -113,5 +133,92 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 		}
 		return result;
 	}
+
+	@Override
+	public PageResult<Menu> getPage(PageParameter page, Menu param) {
+			Page<Menu> pageData = menuDao.findAll((root, query, cb) -> {
+				List<Predicate> predicate = new ArrayList<>();
+				if (param.getId() != null) {
+					predicate.add(cb.equal(root.get("id").as(Long.class),
+							param.getId()));
+				}
+				if (!StringUtils.isEmpty(param.getName())) {
+					predicate.add(cb.like(root.get("name").as(String.class), "%"
+							+ param.getName() + "%"));
+				}
+				Predicate[] pre = new Predicate[predicate.size()];
+				query.where(predicate.toArray(pre));
+				return null;
+			}, page);
+			PageResult<Menu> result = new PageResult<>(pageData,page);
+			return result;
+		}
+
+	@Override
+	public List<Menu> getTreeMenuPage() {
+		List<Menu> result  = menuDao.findAll();
+		// 为分类建立键值对
+		Map mapNodes = new HashMap(result.size());
+		for (Menu treeNode : result) {
+			mapNodes.put(treeNode.getId(), treeNode);
+		}
+		// 初始化多叉树信息，里面只保存顶级分类信息
+		List<Menu> topTree = new ArrayList<Menu>();// 多叉树
+		for (Menu treeNode : result) {
+			if (treeNode.getParentId() != null && treeNode.getParentId() == 0) {// 添加根节点（顶级分类）
+				Menu rootNode = (Menu) mapNodes.get(treeNode.getId());
+				topTree.add(rootNode);
+			} // end if
+			else {
+				Menu parentNode = (Menu) mapNodes.get(treeNode.getParentId());
+				if (parentNode != null) {
+					if (parentNode.getChildren() == null) {
+						parentNode.setChildren(new ArrayList<Menu>());
+					}
+					List<Menu> children = parentNode.getChildren();
+					children.add(treeNode);
+				}
+			} // end else
+		} // end for
+		return topTree;
+	}
+
+	@Override
+	public Optional<Menu> findByIdentity(String identity) {
+		return menuDao.findByIdentity(identity);
+	}
+
+	
+	@Override
+	public List<Menu> getTreeMenuParent(Long id) {
+		List<Menu> result  = menuDao.findByParentIdOrderByOrderNo(id);
+		// 为分类建立键值对
+		Map mapNodes = new HashMap(result.size());
+		for (Menu treeNode : result) {
+			mapNodes.put(treeNode.getId(), treeNode);
+		}
+		// 初始化多叉树信息，里面只保存顶级分类信息
+		List<Menu> topTree = new ArrayList<Menu>();// 多叉树
+		for (Menu treeNode : result) {
+			if (treeNode.getParentId() != null) {// 添加根节点（顶级分类）
+				Menu rootNode = (Menu) mapNodes.get(treeNode.getId());
+				topTree.add(rootNode);
+			} // end if
+			else {
+				Menu parentNode = (Menu) mapNodes.get(treeNode.getParentId());
+				if (parentNode != null) {
+					if (parentNode.getChildren() == null) {
+						parentNode.setChildren(new ArrayList<Menu>());
+					}
+					List<Menu> children = parentNode.getChildren();
+					children.add(treeNode);
+				}
+			} // end else
+		} // end for
+		return topTree;
+	}
+	
+	
+	
 
 }

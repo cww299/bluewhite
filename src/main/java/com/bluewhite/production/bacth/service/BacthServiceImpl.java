@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
@@ -18,6 +18,9 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.entity.PageResultStat;
+import com.bluewhite.common.utils.SalesUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.dao.PayBDao;
@@ -65,7 +68,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 		        	}
 		        	//按产品名称
 		        	if(!StringUtils.isEmpty(param.getName())){
-		        		predicate.add(cb.like(root.get("product").get("name").as(String.class), "%"+param.getName()+"%"));
+		        		predicate.add(cb.like(root.get("product").get("name").as(String.class), "%"+StringUtil.specialStrKeyword(param.getName())+"%"));
 		        	}
 		        	//按产品编号
 		        	if(!StringUtils.isEmpty(param.getProductNumber())){
@@ -98,7 +101,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 		        		predicate.add(cb.equal(root.get("machinist").as(Integer.class), param.getMachinist()));
 		        	}
 		        	
-		        	if( !StringUtils.isEmpty(param.getStatusTime())){
+		        	if(!StringUtils.isEmpty(param.getStatusTime())){
 		        		//按完成时间过滤
 						if (!StringUtils.isEmpty(param.getOrderTimeBegin()) &&  !StringUtils.isEmpty(param.getOrderTimeEnd())  ) {
 							predicate.add(cb.between(root.get("statusTime").as(Date.class),
@@ -113,15 +116,15 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 		        					param.getOrderTimeEnd()));
 		        		}
 		        	}
-					
-				
 		        	
 					Predicate[] pre = new Predicate[predicate.size()];
 					query.where(predicate.toArray(pre));
 		        	return null;
-		        }, page);
-		        PageResult<Bacth> result = new PageResult<>(pages,page);
-		        return result;
+		        }, SalesUtils.getQueryNoPageParameter());
+				  PageResultStat<Bacth> result = new PageResultStat<>(pages,page);
+				  result.setAutoStateField("number", "sumTaskPrice","time");
+				  result.count();
+			  return result;
 		    }
 
 	@Override
@@ -139,7 +142,8 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 	}
 
 	@Override
-	public int statusBacth(String[] ids,Date time) {
+	@Transactional
+	public int statusBacth(String[] ids,Date time) throws Exception {
 		int count = 0;
 		Calendar  cal = Calendar.getInstance();
 		cal.add(Calendar.DATE,-1);
@@ -148,25 +152,34 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 				for (int i = 0; i < ids.length; i++) {
 					Long id = Long.parseLong(ids[i]);
 					Bacth bacth = dao.findOne(id);
-					if(bacth.getType()==3){
+					if(bacth.getStatus()==1){
+						throw new ServiceException("批次编号为"+bacth.getBacthNumber()+"的任务已经完成,无需再次完成");
+					}
+					if(bacth.getType()==3 && bacth.getFlag()==0){
 						Group group = groupDao.findByNameAndType(GROUP,bacth.getType());
 						List<Procedure> procedure = procedureDao.findByProductIdAndProcedureTypeIdAndType(bacth.getProductId(), (long)101, bacth.getType());						
-						if(procedure.size()>0){
-							Task task = new Task();
-							String [] pro =  new String[]{String.valueOf (procedure.get(0).getId())};
-							String userIds = "";
-							for(User user :group.getUsers()){
-								userIds=userIds.equals("") ? String.valueOf(user.getId()) : userIds +","+user.getId();
+						List<Task> taskList = bacth.getTasks().stream().filter(Task->Task.getProcedureId().equals(procedure.get(0).getId())).collect(Collectors.toList());
+						if(taskList.size()==0){
+							if(procedure.size()>0){
+								Task task = new Task();
+								String [] pro =  new String[]{String.valueOf (procedure.get(0).getId())};
+								String userIds = "";
+								String userNames = "";
+								for(User user :group.getUsers()){
+									userIds=userIds.equals("") ? String.valueOf(user.getId()) : userIds +","+user.getId();
+									userNames=userNames.equals("") ? String.valueOf(user.getUserName()) : userNames +","+user.getUserName();
+								}
+								task.setNumber(bacth.getNumber());
+								task.setType(bacth.getType());
+								task.setAllotTime(ProTypeUtils.countAllotTime(time, task.getType()));
+								task.setBacthId(bacth.getId());
+								task.setProductName(bacth.getProduct().getName());
+								task.setBacthNumber(bacth.getBacthNumber());
+								task.setProcedureIds(pro);
+								task.setUserIds(userIds);
+								task.setUserNames(userNames);
+								taskService.addTask(task);
 							}
-							task.setNumber(bacth.getNumber());
-							task.setType(bacth.getType());
-							task.setAllotTime(ProTypeUtils.countAllotTime(time, task.getType()));
-							task.setBacthId(bacth.getId());
-							task.setProductName(bacth.getProduct().getName());
-							task.setBacthNumber(bacth.getBacthNumber());
-							task.setProcedureIds(pro);
-							task.setUserIds(userIds);
-							taskService.addTask(task);
 						}
 					}
 					
@@ -228,4 +241,8 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 		  }
 		return dao.save(bacth);
 	}
+	
+	
+	
+	
 }

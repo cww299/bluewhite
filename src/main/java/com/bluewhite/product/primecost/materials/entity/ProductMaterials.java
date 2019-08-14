@@ -3,6 +3,7 @@ package com.bluewhite.product.primecost.materials.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 /**
@@ -32,6 +33,23 @@ public class ProductMaterials extends BaseEntity<Long>{
 	@Column(name = "materials_name")
     private String materialsName;
 	
+	/**
+	 * 物料名id
+	 */
+	@Column(name = "materiel_id")
+    private Long materielId;
+	
+	/**
+	 * 压货环节id
+	 */
+	@Column(name = "overstock_id")
+	private Long overstockId;
+	
+	/**
+	 * 压货环节↓
+	 */
+	@Column(name = "overstock")
+	private String overstock;
 	
 	/**
 	 * 填写单片用料（单片的用料）
@@ -39,6 +57,11 @@ public class ProductMaterials extends BaseEntity<Long>{
 	@Column(name = "one_material")
     private Double oneMaterial;
 	
+	/**
+	 * 单位填写选择id
+	 */
+	@Column(name = "unit_id")
+    private Long unitId;
 	
 	/**
 	 * 单位填写选择
@@ -70,7 +93,7 @@ public class ProductMaterials extends BaseEntity<Long>{
 	 * 产品单位
 	 */
 	@Column(name = "product_unit")
-    private Double productUnit;
+    private String productUnit;
 	
 	
 	/**
@@ -85,8 +108,54 @@ public class ProductMaterials extends BaseEntity<Long>{
 	@Column(name = "batch_material_price")
     private Double batchMaterialPrice;
 	
+	/**
+	 * 单只除面料以外的其他物料价格
+	 */
+	@Transient
+    private Double oneOtherCutPartsPrice;
 	
 	
+	
+	
+	public Double getOneOtherCutPartsPrice() {
+		return oneOtherCutPartsPrice;
+	}
+
+	public void setOneOtherCutPartsPrice(Double oneOtherCutPartsPrice) {
+		this.oneOtherCutPartsPrice = oneOtherCutPartsPrice;
+	}
+
+	public Long getMaterielId() {
+		return materielId;
+	}
+
+	public void setMaterielId(Long materielId) {
+		this.materielId = materielId;
+	}
+
+	public Long getOverstockId() {
+		return overstockId;
+	}
+
+	public void setOverstockId(Long overstockId) {
+		this.overstockId = overstockId;
+	}
+
+	public String getOverstock() {
+		return overstock;
+	}
+
+	public void setOverstock(String overstock) {
+		this.overstock = overstock;
+	}
+
+	public Long getUnitId() {
+		return unitId;
+	}
+
+	public void setUnitId(Long unitId) {
+		this.unitId = unitId;
+	}
 
 	public Long getProductId() {
 		return productId;
@@ -152,11 +221,12 @@ public class ProductMaterials extends BaseEntity<Long>{
 		this.productCost = productCost;
 	}
 
-	public Double getProductUnit() {
+
+	public String getProductUnit() {
 		return productUnit;
 	}
 
-	public void setProductUnit(Double productUnit) {
+	public void setProductUnit(String productUnit) {
 		this.productUnit = productUnit;
 	}
 

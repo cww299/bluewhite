@@ -3,6 +3,7 @@ package com.bluewhite.product.primecost.cutparts.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 /**
@@ -21,16 +22,40 @@ public class CutParts extends BaseEntity<Long>{
     private Long productId;
 	
 	/**
+	 * 裁剪页面id
+	 */
+	@Column(name = "tailor_id")
+    private Long tailorId;
+	
+	/**
 	 * 批量产品数量或模拟批量数
 	 */
 	@Column(name = "number")
 	private Integer number;
 	
 	/**
+	 * 压货环节id
+	 */
+	@Column(name = "overstock_id")
+	private Long overstockId;
+	
+	/**
+	 * 压货环节↓
+	 */
+	@Column(name = "overstock")
+	private String overstock;
+	
+	/**
 	 * 面料损耗默认值
 	 */
 	@Column(name = "loss")
 	private Double loss;
+	
+	/**
+	 * 选择该样品的裁片id
+	 */
+	@Column(name = "base_id")
+    private Long baseId;
 	
 	/**
 	 * 选择该样品的裁片名字
@@ -57,6 +82,11 @@ public class CutParts extends BaseEntity<Long>{
 	@Column(name = "perimeter")
     private Double perimeter;
 	
+	/**
+	 * 面料产品id
+	 */
+	@Column(name = "materiel_id")
+    private Long materielId;
 	
 	/**
 	 * 面料产品编号
@@ -99,6 +129,14 @@ public class CutParts extends BaseEntity<Long>{
 	 */
 	@Column(name = "one_material")
     private Double oneMaterial;
+	
+	
+	/**
+	 * 单位填写选择id
+	 */
+	@Column(name = "unit_id")
+    private Long unitId;
+	
 	
 	/**
 	 * 单位填写选择
@@ -190,10 +228,66 @@ public class CutParts extends BaseEntity<Long>{
     private Double batchComplexAddPrice;
 	
 	
+	/**
+	 * 面料价格(含复合物料和加工费）
+	 */
+	@Transient
+	private Double oneCutPartsPrice;
+
+	
 
 
 	
 
+	
+
+	public Long getMaterielId() {
+		return materielId;
+	}
+
+	public void setMaterielId(Long materielId) {
+		this.materielId = materielId;
+	}
+
+	public Double getOneCutPartsPrice() {
+		return oneCutPartsPrice;
+	}
+
+	public void setOneCutPartsPrice(Double oneCutPartsPrice) {
+		this.oneCutPartsPrice = oneCutPartsPrice;
+	}
+
+	public Long getOverstockId() {
+		return overstockId;
+	}
+
+	public void setOverstockId(Long overstockId) {
+		this.overstockId = overstockId;
+	}
+
+	public String getOverstock() {
+		return overstock;
+	}
+
+	public void setOverstock(String overstock) {
+		this.overstock = overstock;
+	}
+
+	public Long getBaseId() {
+		return baseId;
+	}
+
+	public void setBaseId(Long baseId) {
+		this.baseId = baseId;
+	}
+
+	public Long getTailorId() {
+		return tailorId;
+	}
+
+	public void setTailorId(Long tailorId) {
+		this.tailorId = tailorId;
+	}
 
 	public String getComplexProductRemark() {
 		return complexProductRemark;
@@ -420,6 +514,16 @@ public class CutParts extends BaseEntity<Long>{
 	public void setBatchMaterialPrice(Double batchMaterialPrice) {
 		this.batchMaterialPrice = batchMaterialPrice;
 	}
+
+	public Long getUnitId() {
+		return unitId;
+	}
+
+	public void setUnitId(Long unitId) {
+		this.unitId = unitId;
+	}
+
+
 	
 	
 	

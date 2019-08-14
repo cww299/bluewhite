@@ -1,12 +1,15 @@
 package com.bluewhite.product.primecostbasedata.action;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,25 +21,33 @@ import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
+import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
-import com.bluewhite.product.primecostbasedata.dao.BaseOneDao;
+import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.product.primecost.cutparts.entity.CutParts;
+import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
+import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
+import com.bluewhite.product.primecost.materials.service.ProductMaterialsService;
+import com.bluewhite.product.primecostbasedata.dao.BaseFourDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneTimeDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseThreeDao;
 import com.bluewhite.product.primecostbasedata.dao.PrimeCoefficientDao;
+import com.bluewhite.product.primecostbasedata.entity.BaseFour;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.BaseOneTime;
 import com.bluewhite.product.primecostbasedata.entity.BaseThree;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.product.primecostbasedata.entity.PrimeCoefficient;
 import com.bluewhite.product.primecostbasedata.service.MaterielService;
-import com.bluewhite.production.productionutils.constant.ProTypeUtils;
+import com.bluewhite.system.sys.entity.SysLog;
 
 @Controller
 public class BaseOneAction {
 	
 	private final static Log log = Log.getLog(BaseOneAction.class);
 	
-
+	@Autowired
+	private BaseFourDao baseFourDao;
 	
 	@Autowired
 	private BaseThreeDao baseThreeDao;
@@ -49,6 +60,11 @@ public class BaseOneAction {
 	
 	@Autowired
 	private PrimeCoefficientDao primeCoefficientDao;
+	
+	@Autowired
+	private CutPartsService cutPartsService;
+	@Autowired
+	private ProductMaterialsService productMaterialsService;
 	
 	/**
 	 * 时间常量
@@ -67,7 +83,8 @@ public class BaseOneAction {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON
 				.get()
-				.addRetainTerm(BaseOne.class, "id","name","textualTime","time")
+				.addRetainTerm(BaseOne.class, "id","name","textualTime","time","baseOneTimes")
+				.addRetainTerm(BaseOneTime.class,"textualTime","time","categorySetting","baseOneId")
 				.format(materielService.findPagesBaseOne(baseOne)).toJSON());
 		cr.setMessage("成功");
 		return cr;
@@ -75,27 +92,7 @@ public class BaseOneAction {
 	
 	
 	/**
-	 * 产品基础数据详细获取
-	 * 
-	 * @param request 请求
-	 * @return cr
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/product/getBaseOneTime", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse getBaseOneTime(HttpServletRequest request,Long id) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(ClearCascadeJSON
-				.get()
-				.addRetainTerm(BaseOneTime.class,"textualTime","time","categorySetting")
-				.format(baseOneTimeDao.findByBaseOneId(id)).toJSON());
-		cr.setMessage("成功");
-		return cr;
-	}
-	
-	
-	/**
-	 * 产品基础数据3获取
+	 * 产品基础数据3获取(手选该裁片的平方M)
 	 * @param request 请求
 	 * @return cr
 	 * @throws Exception
@@ -110,6 +107,58 @@ public class BaseOneAction {
 	}
 	
 	/**
+	 * 产品基础数据3获取,将裁减类型和数据进行匹配
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/product/getBaseThreeOne", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getBaseThreeOne(HttpServletRequest request,Long typeId, Double number) {
+		CommonResponse cr = new CommonResponse();
+		List<BaseThree> baseThreeList = baseThreeDao.findAll();
+		BaseThree BaseThree = null;
+		for(BaseThree bt : baseThreeList){
+			if(bt.getOrdinaryLaser()==number){
+				BaseThree = bt;
+				break;
+			}
+		}
+		
+		double returnNumber = 0 ;
+		switch (typeId.intValue()) {
+		case 71://普通激光切割
+			returnNumber = BaseThree.getTextualOrdinaryLight();
+			break;
+		case 72://绣花激光切割
+			returnNumber = BaseThree.getTextualPositionLight();
+			break;
+		case 73://手工电烫
+			returnNumber = BaseThree.getTextualPerm();
+			break;
+		case 74://设备电烫
+			break;
+		case 75://冲床
+			returnNumber = BaseThree.getTextualPuncher();
+			break;
+		case 76://电推
+			returnNumber = BaseThree.getTextualClippers();
+			break;
+		case 77://手工剪刀
+			returnNumber = BaseThree.getTextualScissors();
+			break;
+		case 78://绣花领取
+			break;
+		default:
+			break;
+		}
+		cr.setData(returnNumber);
+		cr.setMessage("成功");
+		return cr;
+	}
+	
+	
+	/**
 	 * 物料产品基础数据获取
 	 * 
 	 * @param request 请求
@@ -122,11 +171,32 @@ public class BaseOneAction {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON
 				.get()
-				.addRetainTerm(Materiel.class,"number","name","price","type","unit","changePrice","count","convertUnit","convertPrice")
+				.addRetainTerm(Materiel.class,"id","number","name","price","type","unit","changePrice","count","convertUnit","convertPrice")
 				.format(materielService.findPages(materiel)).toJSON());
 		cr.setMessage("成功");
 		return cr;
 	}
+	
+	
+	/**
+	 * 物料产品基础数据获取分页
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/product/getMaterielPage", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getMaterielPage(HttpServletRequest request,Materiel materiel,PageParameter page) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(Materiel.class,"id","number","name","price","type","unit","changePrice","count","convertUnit","convertPrice")
+				.format(materielService.findMaterielPages(materiel,page)).toJSON());
+		cr.setMessage("成功");
+		return cr;
+	}
+	
 	
 	/**
 	 * 新增修改物料产品基础数据
@@ -137,6 +207,7 @@ public class BaseOneAction {
 	 */
 	@RequestMapping(value = "/product/addMateriel", method = RequestMethod.POST)
 	@ResponseBody
+	@SysLogAspectAnnotation(description = "基础数据新增操作", module = "新增管理", operateType = "新增", logType = SysLog.ADMIN_LOG_TYPE)
 	public CommonResponse addMateriel(HttpServletRequest request,Materiel materiel) {
 		CommonResponse cr = new CommonResponse();
 		if(materiel.getId()!=null){
@@ -164,24 +235,43 @@ public class BaseOneAction {
 		CommonResponse cr = new CommonResponse();
 		if(primeCoefficient.getId()!=null){
 			PrimeCoefficient oldPrimeCoefficient = primeCoefficientDao.findOne(primeCoefficient.getId());
-			//每CM 用时/秒
-			oldPrimeCoefficient.setTime(1/primeCoefficient.getPeripheralLaser());
+			BeanCopyUtils.copyNullProperties(oldPrimeCoefficient,primeCoefficient);
+			if(primeCoefficient.getExtent()!=null){
+				//每CM 用时/秒
+				primeCoefficient.setTime(1/primeCoefficient.getExtent());
+			}
 			//被/数
-			oldPrimeCoefficient.setQuilt(primeCoefficient.getQuilt());
+			primeCoefficient.setQuilt(primeCoefficient.getQuilt());
 			//每秒设备折旧费用
-			oldPrimeCoefficient.setDepreciation(primeCoefficient.getWorth()/primeCoefficient.getShareDay()
-					/primeCoefficient.getWorkTime()/TIME/TIME);
+			primeCoefficient.setDepreciation(primeCoefficient.getWorth()/primeCoefficient.getShareDay()
+					/primeCoefficient.getWorkTime()/(primeCoefficient.getNeedleworkOne()!=null ? primeCoefficient.getNeedleworkOne() :1.0)/TIME/TIME);
 			//每秒激光管费用
-			oldPrimeCoefficient.setLaserTubePriceSecond(primeCoefficient.getLaserTubePrice()/primeCoefficient.getShareTime()/TIME/TIME);
+			primeCoefficient.setLaserTubePriceSecond(primeCoefficient.getLaserTubePrice()/primeCoefficient.getShareTime()/(primeCoefficient.getNeedleworkOne()!=null ? primeCoefficient.getNeedleworkOne() :1.0)/TIME/TIME);
 			//每秒维护费用
-			oldPrimeCoefficient.setMaintenanceChargeSecond(primeCoefficient.getMaintenanceCharge()/primeCoefficient.getShareTimeTwo()/TIME/TIME);
+			primeCoefficient.setMaintenanceChargeSecond(primeCoefficient.getMaintenanceCharge()/primeCoefficient.getShareTimeTwo()/(primeCoefficient.getNeedleworkOne()!=null ? primeCoefficient.getNeedleworkOne() :1.0)/TIME/TIME);
 			//每秒耗3费
-			oldPrimeCoefficient.setPerSecondPrice((primeCoefficient.getOmnHorElectric()+primeCoefficient.getOmnHorWater()+primeCoefficient.getOmnHorHouse())/TIME/TIME);
+			primeCoefficient.setPerSecondPrice((primeCoefficient.getOmnHorElectric()+primeCoefficient.getOmnHorWater()+primeCoefficient.getOmnHorHouse())/(primeCoefficient.getNeedleworkOne()!=null ? primeCoefficient.getNeedleworkOne() :1.0)/TIME/TIME);
 			//每秒工价
-			oldPrimeCoefficient.setPerSecondMachinist(primeCoefficient.getOmnHorMachinist()/TIME/TIME);
+			primeCoefficient.setPerSecondMachinist(primeCoefficient.getOmnHorMachinist()/TIME/TIME);
+			//每秒工价2
+			if(primeCoefficient.getOmnHorAuxiliary()!=null){
+				primeCoefficient.setPerSecondMachinistTwo(primeCoefficient.getOmnHorAuxiliary()/TIME/TIME);
+			}
+			
+			//针工车间
+			if(primeCoefficient.getNeedleworkOne()!=null){
+				//每秒耗3费
+				primeCoefficient.setPerSecondPriceTwo(
+						(primeCoefficient.getNeedleworkTwo()+primeCoefficient.getNeedleworkThree()+primeCoefficient.getNeedleworkFour())
+						/primeCoefficient.getManageEquipmentNumber()
+						/TIME/TIME);
+				primeCoefficient.setNeedleworkSeven(primeCoefficient.getNeedleworkFive()/TIME/TIME);
+				primeCoefficient.setNeedleworkEight(primeCoefficient.getNeedleworkSix()/TIME/TIME);
+			}
+			
 			//每秒管理费用
-			oldPrimeCoefficient.setPerSecondManage(primeCoefficient.getManagePrice()/primeCoefficient.getManageEquipmentNumber()/25/8/TIME/TIME);
-			primeCoefficientDao.save(oldPrimeCoefficient);
+			primeCoefficient.setPerSecondManage(primeCoefficient.getManagePrice()/primeCoefficient.getManageEquipmentNumber()/25/8/TIME/TIME);
+			cr.setData(primeCoefficientDao.save(primeCoefficient));
 			cr.setMessage("修改成功");
 		}else{
 			cr.setMessage("不能为空");
@@ -205,6 +295,106 @@ public class BaseOneAction {
 		cr.setData(primeCoefficientDao.findByType(type));
 		return cr;
 	}
+	
+	
+	/**
+	 * 获取机锋时间页面布料
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/product/getBaseFour", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getBaseFour(HttpServletRequest request,String sewingOrder) {
+		CommonResponse cr = new CommonResponse();
+		List<BaseFour> baseFour=null;
+		if(!StringUtils.isEmpty(sewingOrder)){
+			 baseFour = baseFourDao.findBySewingOrderLike("%"+sewingOrder+"%");
+		}else{
+			 baseFour = baseFourDao.findAll();
+		}
+		cr.setMessage("获取成功");
+		cr.setData(baseFour);
+		return cr;
+	}
+	
+	
+	/**
+	 * 获取机锋时间页面布料对应的数据
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/product/getBaseFourDate", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getBaseFourDate(HttpServletRequest request,Long id,Integer type) {
+		CommonResponse cr = new CommonResponse();
+		if(id==null || type==null){
+			cr.setMessage("无数据");
+			return cr;
+		}
+		BaseFour baseFour = baseFourDao.findOne(id);
+		Double baseFourDate = 0.0;
+		switch (type) {
+		case 2://普通激光切割
+			baseFourDate = baseFour.getNeedle56();
+			break;
+		case 3://普通激光切割
+			baseFourDate = baseFour.getNeedle45();
+			break;
+		case 4://普通激光切割
+			baseFourDate = baseFour.getNeedle34();
+			break;
+		}
+		cr.setMessage("获取成功");
+		cr.setData(baseFourDate);
+		return cr;
+	}
+	
+	
+	/**
+	 * 当物料被修改，自动更新裁片页面和dd页面相关值
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/product/updateMaterielAndOther", method = RequestMethod.GET)
+	@ResponseBody
+	@SysLogAspectAnnotation(description = "物料价格变动修改操作", module = "产品价格表", operateType = "修改", logType = SysLog.ADMIN_LOG_TYPE)
+	public CommonResponse updateMaterielAndOther(HttpServletRequest request,Long productId) {
+		CommonResponse cr = new CommonResponse();
+		//裁片
+		List<CutParts> cutPartsList = cutPartsService.findByProductId(productId);
+		cutPartsList = 	cutPartsList.stream().filter(CutParts->CutParts.getMaterielId()!=null).collect(Collectors.toList());
+		for(CutParts cp : cutPartsList){	
+			Materiel materiel = materielService.findOne(cp.getMaterielId());
+			if(materiel.getPrice()!=cp.getProductCost()){
+				cp.setProductCost(materiel.getPrice());
+				cutPartsService.saveCutParts(cp);
+				}
+			}
+		
+		//除裁片
+		List<ProductMaterials>  productMaterialsList = productMaterialsService.findByProductId(productId);
+		for(ProductMaterials pm: productMaterialsList){	
+			Materiel materiel = materielService.findOne(pm.getMaterielId());
+			Double unitCost = null;
+			if(pm.getUnit().equals(pm.getProductUnit())){
+				unitCost=materiel.getPrice();
+			}else{
+				unitCost=materiel.getConvertPrice();
+			}
+			if(unitCost!=pm.getUnitCost()){
+				pm.setUnitCost(unitCost);
+				productMaterialsService.saveProductMaterials(pm);
+			}
+		}
+		return cr;
+	}
+	
 	
 	
 	

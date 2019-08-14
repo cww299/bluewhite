@@ -1,6 +1,9 @@
 package com.bluewhite.production.group.action;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -8,30 +11,40 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
+import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
+import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.finance.attendance.dao.AttendancePayDao;
+import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.production.group.service.GroupService;
+import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
 @Controller
 public class GroupAction {
 	
-private static final Log log = Log.getLog(GroupAction.class);
+	private static final Log log = Log.getLog(GroupAction.class);
 	
 	@Autowired
 	private GroupService groupService;
@@ -42,6 +55,9 @@ private static final Log log = Log.getLog(GroupAction.class);
 	@Autowired
 	private TemporarilyDao temporarilyDao;
 	
+	@Autowired
+	private AttendancePayDao attendancePayDao;
+	
 	
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -49,7 +65,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
 				.addRetainTerm(Group.class,"id","name","price","type","users","userName","userId","kindWork","womanUserName","womanUserId","remark")
-				.addRetainTerm(User.class,"id","userName")
+				.addRetainTerm(User.class,"id","userName","adjustTime","temporarily","adjustTimeId")
 				.addRetainTerm(BaseData.class, "id","name", "type");
 	}
 	
@@ -68,9 +84,8 @@ private static final Log log = Log.getLog(GroupAction.class);
 			Group oldGroup = groupService.findOne(group.getId());
 			BeanCopyUtils.copyNullProperties(oldGroup,group);
 			group.setCreatedAt(oldGroup.getCreatedAt());
-			groupService.update(group);
+			groupService.save(group);
 			cr.setMessage("工序修改成功");
-			
 		}else{
 			if(group.getType()!=null){
 				cr.setData(clearCascadeJSON.format(groupService.save(group)).toJSON());
@@ -113,7 +128,7 @@ private static final Log log = Log.getLog(GroupAction.class);
 	 */
 	@RequestMapping(value = "/production/allGroup", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse allGroup(HttpServletRequest request,Group group) {
+	public CommonResponse allGroup(HttpServletRequest request,Group group,Date temporarilyDate) {
 		CommonResponse cr = new CommonResponse();
 		List<Group> groupAll = null;
 		if(group.getId()==null){
@@ -128,25 +143,42 @@ private static final Log log = Log.getLog(GroupAction.class);
 		}else{
 			groupAll = groupService.findList(group);
 			
-			if(group.getType()==1 || group.getType()==2){
-				List<Temporarily> temporarilyList =  temporarilyDao.findByType(group.getType());
+			if(group.getType()==1 || group.getType()==2 || group.getType()==3){
+				List<Temporarily> temporarilyList = 
+						temporarilyDao.findByTypeAndTemporarilyDateAndGroupId(group.getType(),temporarilyDate !=null ? DatesUtil.getfristDayOftime(temporarilyDate) : 
+							DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(null,group.getType())),group.getId());
 				if(temporarilyList.size()>0){
 					Set<User> userlist  = groupAll.get(0).getUsers();
 					for(Temporarily temporarily : temporarilyList){
 						User user = userService.findOne(temporarily.getUserId());
+						user.setAdjustTime(temporarily.getWorkTime());
+						user.setTemporarily(1);
+						user.setAdjustTimeId(temporarily.getId());
 						userlist.add(user);
 					}
 				}
 			}
 		}
-		for(Group gr : groupAll){
-			Set<User> users= gr.getUsers().stream().filter(u -> u.getStatus()!=1).collect(Collectors.toSet());
+		
+		for (Group gr : groupAll) {
+			Set<User> users = gr.getUsers().stream()
+					.filter(u -> u != null && u.getStatus() != null && u.getStatus() != 1).collect(Collectors.toSet());
+			for (User u : users) {
+				List<AttendancePay> attendancePay = attendancePayDao.findByUserIdAndTypeAndAllotTimeBetween(u.getId(),
+						group.getType(),
+						(temporarilyDate != null ? DatesUtil.getfristDayOftime(temporarilyDate)
+								: DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(null, group.getType()))),
+						(temporarilyDate != null ? DatesUtil.getLastDayOftime(temporarilyDate)
+								: DatesUtil.getLastDayOftime(ProTypeUtils.countAllotTime(null, group.getType()))));
+				if (attendancePay.size() > 0) {
+					u.setAdjustTime(attendancePay.get(0).getGroupWorkTime() != null
+							? attendancePay.get(0).getGroupWorkTime() : attendancePay.get(0).getWorkTime());
+					u.setAdjustTimeId(attendancePay.get(0).getId());
+					u.setTemporarily(0);
+				}
+			}
 			gr.setUsers(users);
 		}
-		
-	
-		
-		
 		cr.setData(clearCascadeJSON.format(groupAll).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
@@ -220,32 +252,129 @@ private static final Log log = Log.getLog(GroupAction.class);
 	}
 	
 	
+	
 	/**
 	 * 新增借调人员
 	 * 
-	 * (1=一楼质检，2=一楼包装)
+	 * (1=一楼质检,2=一楼包装)
 	 * @param request 请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/production/addTemporarily", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addTemporarily(HttpServletRequest request,String ids,Integer type) {
+	public CommonResponse addTemporarily(HttpServletRequest request,Temporarily temporarily){
 		CommonResponse cr = new CommonResponse();
-		if(ids!=null){
-			String[] userIds = ids.split(",");
-			for (String id : userIds) {
-				Temporarily temporarily = new Temporarily();
-				Long userId = Long.parseLong(id);
-				User user = userService.findOne(userId);
-				temporarily.setUserId(userId);
-				temporarily.setUserName(user.getUserName());
-				temporarily.setType(type);
-				temporarilyDao.save(temporarily);
-			}
+		if(temporarily.getGroupId()==null){
+			cr.setMessage("分组不能为空");
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			return cr;
 		}
-		cr.setMessage("添加成功");
+		if (StringUtils.isEmpty(temporarily.getUserId())) {
+			User u = userService.findByUserName(temporarily.getUserName());
+			if(u!=null){
+				cr.setMessage("系统已有该员工，请确认是否本厂，再次添加");
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				return cr;
+			}
+			User user = new User();
+			user.setForeigns(1);
+			user.setPassword( new SimpleHash("md5", "123456").toHex());
+			user.setUserName(temporarily.getUserName());
+			user.setStatus(0);
+			user.setType(temporarily.getType());
+			user.setPositive(temporarily.getPositive());
+			userService.save(user);
+			temporarily.setUserId(user.getId());
+		}
+		
+		List<Date> dateList = new ArrayList<>();
+		if(!StringUtils.isEmpty(temporarily.getTemporarilyDates())){
+			String [] dateArr = temporarily.getTemporarilyDates().split(" ~ ");
+			// 获取所有日期
+			dateList = DatesUtil.getPerDaysByStartAndEndDate(dateArr[0], dateArr[1],
+					"yyyy-MM-dd");
+		}else{
+			dateList.add(temporarily.getTemporarilyDate());
+		}
+		for (Date date : dateList) {
+			temporarily.setTemporarilyDate(date);
+			Temporarily temporarily1 = new Temporarily();
+			BeanCopyUtils.copyNullProperties(temporarily,temporarily1);
+			//当类型为针工时，按当日当前分组
+			if(temporarily.getType()==3){
+				if (temporarilyDao.findByUserIdAndTemporarilyDateAndTypeAndGroupId(temporarily1.getUserId(),
+						temporarily1.getTemporarilyDate(), temporarily1.getType(),temporarily1.getGroupId()) != null) {
+					cr.setMessage("当天当前分组已添加过借调人员的工作时间,不必再次添加");
+					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+					return cr;
+				}
+			}else if (temporarilyDao.findByUserIdAndTemporarilyDateAndType(temporarily1.getUserId(),
+					temporarily1.getTemporarilyDate(), temporarily1.getType()) != null) {
+				cr.setMessage("当天当前分组已添加过借调人员的工作时间,不必再次添加");
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				return cr;
+			}
+			temporarilyDao.save(temporarily1);
+			cr.setMessage("添加成功");
+		}
 		return cr;
 	}
+	
+	
+
+	
+	/**
+	 * 修改借调人员
+	 * 
+	 * (1=一楼质检,2=一楼包装)
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/production/updateTemporarily", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateTemporarily(HttpServletRequest request,Temporarily temporarily){
+		CommonResponse cr = new CommonResponse();
+		if(temporarily.getId()==null){
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("外调人员不能为空");
+			return cr;
+		}
+		
+		if(StringUtils.isEmpty(temporarily.getUserId())){
+			Temporarily oldtemporarily = temporarilyDao.findOne(temporarily.getId());
+			BeanCopyUtils.copyNotEmpty(temporarily,oldtemporarily);
+			//当特急填写时间段后，按特定规则修改工作时长
+			if(!StringUtils.isEmpty(temporarily.getWorkTimeSlice())){  
+				double  workTime = 0;
+				String[] temp = temporarily.getWorkTimeSlice().split(",");
+				if(temp.length>0){
+					for(String time : temp){
+						String[] timeTemp = time.split("~");
+							String[] tTempStart = timeTemp[0].split(":");
+							String[] tTempEnd = timeTemp[1].split(":");
+							Date date = new Date(); 
+							Calendar calendarStart = Calendar.getInstance();
+							calendarStart.setTime(date);
+							calendarStart.set(Calendar.HOUR_OF_DAY,Integer.valueOf(tTempStart[0].trim()));
+							calendarStart.set(Calendar.MINUTE, Integer.valueOf(tTempStart[1].trim()));
+							calendarStart.set(Calendar.SECOND, Integer.valueOf(tTempStart[2].trim()));
+							Calendar calendarEnd = Calendar.getInstance();
+							calendarEnd.setTime(date);
+							calendarEnd.set(Calendar.HOUR_OF_DAY,Integer.valueOf(tTempEnd[0].trim()));
+							calendarEnd.set(Calendar.MINUTE, Integer.valueOf(tTempEnd[1].trim()));
+							calendarEnd.set(Calendar.SECOND, Integer.valueOf(tTempEnd[2].trim()));
+							workTime += DatesUtil.getTimeHourPick(calendarStart.getTime(), calendarEnd.getTime());
+					}
+				}
+				oldtemporarily.setWorkTime(workTime);
+			}  
+			temporarilyDao.save(oldtemporarily);
+			cr.setMessage("修改成功");
+		}
+		return cr;
+	}
+	
+	
 	
 	/**
 	 * 查询借调人员
@@ -256,13 +385,64 @@ private static final Log log = Log.getLog(GroupAction.class);
 	 */
 	@RequestMapping(value = "/production/getTemporarily", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getTemporarily(HttpServletRequest request,Integer type) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(temporarilyDao.findByType(type));
+	public CommonResponse getTemporarily(HttpServletRequest request,Integer type,Date temporarilyDate) {
+		CommonResponse cr = new CommonResponse();  
+		List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndTemporarilyDate(type,temporarilyDate);
+			for(Temporarily tp : temporarilyList){
+				if(tp.getGroupId()!=null){
+				Group group = groupService.findOne(tp.getGroupId());
+				if(group!=null){
+					tp.setGroupName(group.getName());
+				}
+			}
+		}
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(Temporarily.class,"id","userId","workTime","temporarilyDate","groupName","groupId","user")
+				.addRetainTerm(User.class,"userName")
+				.format(temporarilyList).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
 	
+	/**
+	 * 查询借调人员
+	 * 
+	 * (1=一楼质检，2=一楼包装)
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/production/getTemporarilyList", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getTemporarilyList(Temporarily temporarily) {
+		CommonResponse cr = new CommonResponse();  
+		List<Temporarily> temporarilyList = groupService.findTemporarilyList(temporarily);
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(Temporarily.class,"id","workTime","workTimeSlice","temporarilyDate","group","user")
+				.addRetainTerm(User.class,"userName")
+				.addRetainTerm(Group.class,"name")
+				.format(temporarilyList).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * 打特急人员绩效汇总
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 */
+	@RequestMapping(value = "/production/sumTemporarily", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse sumTemporarily(Temporarily temporarily) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(groupService.sumTemporarily(temporarily));
+		cr.setMessage("查询成功");
+		return cr;
+	}
+
 	/**
 	 * 归还借调人员
 	 * 
@@ -280,7 +460,16 @@ private static final Log log = Log.getLog(GroupAction.class);
 		cr.setMessage("删除成功");
 		return cr;
 	}
-
-
+	
+	@InitBinder
+	protected void initBinder(WebDataBinder binder) {
+		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
+				DateTimePattern.DATEHMS.getPattern());
+		binder.registerCustomEditor(java.util.Date.class, null,
+				new CustomDateEditor(dateTimeFormat, true));
+		binder.registerCustomEditor(byte[].class,
+				new ByteArrayMultipartFileEditor());
+	}
+	
 
 }

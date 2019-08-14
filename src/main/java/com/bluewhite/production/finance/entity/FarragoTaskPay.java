@@ -35,17 +35,16 @@ public class FarragoTaskPay extends BaseEntity<Long> {
     private Long userId;
 	
 	/**
-	 * 员工
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private User user;
-	
-	/**
 	 * 杂工工资数额
 	 */
 	@Column(name = "pay_number")
 	private Double payNumber;
+	
+	/**
+	 * 是否工序加价选择(杂工加绩选项)
+	 */
+	@Column(name = "performance")
+	private String performance;
 	
 	/**
 	 * 杂工加绩工资数额
@@ -78,6 +77,12 @@ public class FarragoTaskPay extends BaseEntity<Long> {
 	private Date allotTime;
 	
 	/**
+	 * 分组
+	 */
+	@Column(name = "group_id")
+	private Long groupId;
+	
+	/**
 	 * 查询字段
 	 */
 	@Transient
@@ -88,14 +93,17 @@ public class FarragoTaskPay extends BaseEntity<Long> {
 	@Transient
 	private Date orderTimeEnd;
 	
-	/**
-	 * 查询字段 
-	 */
-	@Transient
-	private Long groupId;
+
 	
 	
 	
+	
+	public String getPerformance() {
+		return performance;
+	}
+	public void setPerformance(String performance) {
+		this.performance = performance;
+	}
 	public Long getGroupId() {
 		return groupId;
 	}
@@ -162,12 +170,7 @@ public class FarragoTaskPay extends BaseEntity<Long> {
 	public void setOrderTimeEnd(Date orderTimeEnd) {
 		this.orderTimeEnd = orderTimeEnd;
 	}
-	public User getUser() {
-		return user;
-	}
-	public void setUser(User user) {
-		this.user = user;
-	}
+
 	
 	
 	

@@ -1,5 +1,6 @@
 package com.bluewhite.reportexport.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -10,9 +11,11 @@ import com.bluewhite.product.primecostbasedata.entity.BaseThree;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.reportexport.entity.EightTailorPoi;
 import com.bluewhite.reportexport.entity.MachinistProcedurePoi;
+import com.bluewhite.reportexport.entity.OrderPoi;
 import com.bluewhite.reportexport.entity.ProcedurePoi;
 import com.bluewhite.reportexport.entity.ProductPoi;
 import com.bluewhite.reportexport.entity.UserPoi;
+import com.bluewhite.system.user.entity.UserContract;
 
 @Service
 public interface ReportExportService {
@@ -82,5 +85,8 @@ public interface ReportExportService {
 	 * @return
 	 */
 	int importexcelBaseThreeExcel(List<BaseThree> excelBaseThree);
+
+	int importImportUserContract(List<UserContract> excelUser);
+	
 
 }

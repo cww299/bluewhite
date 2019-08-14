@@ -1,5 +1,7 @@
 package com.bluewhite.product.primecost.cutparts.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -16,7 +18,7 @@ public interface CutPartsService extends BaseCRUDService<CutParts,Long>{
 	 * @return
 	 * @throws Exception
 	 */
-	public CutParts saveCutParts(CutParts cutParts) throws Exception;
+	public CutParts saveCutParts(CutParts cutParts);
 	
 	/**
 	 * 按条件查询cc裁片
@@ -30,6 +32,20 @@ public interface CutPartsService extends BaseCRUDService<CutParts,Long>{
 	 * 删除裁片
 	 * @param id
 	 */
-	public void deleteCutParts(CutParts cutParts);
+	public void deleteCutParts(Long id );
+	
+	/**
+	 * 根据产品id查询
+	 * @param productId
+	 * @return
+	 */
+	public List<CutParts> findByProductId(Long productId);
+
+	/**
+	 * 根据产品id查询和压货类型id
+	 * @param productId
+	 * @return
+	 */
+	public  List<CutParts> findByProductIdAndOverstockId(Long productId, Long id);
 
 }

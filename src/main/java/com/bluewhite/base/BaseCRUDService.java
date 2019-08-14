@@ -2,6 +2,8 @@ package com.bluewhite.base;
 
 import java.util.List;
 
+import org.springframework.data.jpa.domain.Specification;
+
 public interface BaseCRUDService<T,ID> {
 	/**
      * 保存单个实体
@@ -11,13 +13,22 @@ public interface BaseCRUDService<T,ID> {
      */
     public T save(T t) ;
     
+    
+	/**
+     * 保存多个实体
+     *
+     * @param t 实体
+     * @return 返回保存的实体
+     */
+    public List<T> save( List<T> t) ;
+    
     /**
      * 更新单个实体
      *
      * @param t 实体
      * @return 返回更新的实体
      */
-    public T update(T t) ;
+    public T update(T t,T ot) ;
     
     /**
      * 根据主键删除相应实体
@@ -25,6 +36,13 @@ public interface BaseCRUDService<T,ID> {
      * @param id 主键
      */
     public void delete(ID id);
+    
+    /**
+     * 批量删除
+     *
+     * @param id 主键
+     */
+    public int delete(String ids);
     
     /**
      * 按照主键查询
@@ -46,5 +64,17 @@ public interface BaseCRUDService<T,ID> {
      *
      * @return 实体总数
      */
-    public long count() ;
+    public long count();
+    
+    /**
+     * 查询实体
+     *
+     * @return 返回分页实体
+     */
+    public List<T> findAll( Specification<T> t);
+
+
+	
+    
+    
 }

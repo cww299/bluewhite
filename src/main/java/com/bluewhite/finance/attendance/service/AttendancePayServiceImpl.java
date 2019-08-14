@@ -1,5 +1,6 @@
 package com.bluewhite.finance.attendance.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,22 +17,52 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.basedata.service.BaseDataService;
+import com.bluewhite.common.Constants;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.entity.PageResultStat;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
+import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.service.UserService;
 @Service
 public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Long> implements AttendancePayService{
 	
 	@Autowired
 	private AttendancePayDao dao;
 	@Autowired
-	BaseDataService service;
+	private BaseDataService service;
+	@Autowired
+	private UserService userService;
+	
 
 	@Override
 	public PageResult<AttendancePay> findPages(AttendancePay param, PageParameter page) {
+		if(param.getOrgNameId()!=null){
+			switch (String.valueOf(param.getOrgNameId())) {
+			case Constants.QUALITY_ORGNAME:
+				param.setType(1);
+				break;
+			case Constants.PACK_ORGNAME:
+				param.setType(2);
+				break;
+			case Constants.DEEDLE_ORGNAME:
+				param.setType(3);
+				break;
+			case Constants.MACHINIST_ORGNAME:
+				param.setType(4);
+				break;
+			case Constants.TAILOR_ORGNAME:
+				param.setType(5);
+				break;
+			default:
+				break;
+			}
+		}
 		 Page<AttendancePay> pages = dao.findAll((root,query,cb) -> {
 	        	List<Predicate> predicate = new ArrayList<>();
 	        	//按id过滤
@@ -53,6 +84,11 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 					predicate.add(cb.equal(root.get("user").get("groupId").as(Long.class),param.getGroupId()));
 				}
 	        	
+	        	//是否错误
+	        	if (param.getWarning() != null) {
+					predicate.add(cb.equal(root.get("warning").as(Integer.class),param.getWarning()));
+				}
+	        	
 	        	//按工种id过滤
 	        	if (param.getKindWorkId() != null) {
 					predicate.add(cb.equal(root.get("user").get("group").get("kindWorkId").as(Long.class),param.getGroupId()));
@@ -71,11 +107,13 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 				Predicate[] pre = new Predicate[predicate.size()];
 				query.where(predicate.toArray(pre));
 	        	return null;
-	        }, page);
-			 if(param.getSign()!=null){
-				 this.countMaxPay(pages.getContent(),param);
-			 }
-	        PageResult<AttendancePay> result = new PageResult<AttendancePay>(pages,page);
+	        }, SalesUtils.getQueryNoPageParameter());
+			  if(param.getSign()!=null){
+			 	 this.countMaxPay(pages.getContent(),param);
+			  }
+			  PageResultStat<AttendancePay> result = new PageResultStat<>(pages,page);
+			  result.setAutoStateField("workTime", "payNumber");
+			  result.count();
 	        return result;
 	    }
 	
@@ -111,14 +149,82 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 
 	@Override
 	@Transactional
-	public void addAttendancePay(AttendancePay attendancePay) {
-		attendancePay.setPayNumber(NumUtils.round(attendancePay.getWorkPrice()*attendancePay.getWorkTime(),2));
-		dao.save(attendancePay);
+	public int addAttendancePay(AttendancePay attendancePay) {
+		int count = 0;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		// 新增考勤工资，一键增加考勤
+		for (int i = 0; i < attendancePay.getUsersId().length; i++) {
+			Long userid = Long.parseLong(attendancePay.getUsersId()[i]);
+			AttendancePay attendance = new AttendancePay();
+			User user = userService.findOne(userid);
+			if(user.getPrice()==null){
+				throw new ServiceException(user.getUserName() +"小时单价为空，无法添加考勤");
+			}
+			attendance.setUserId(userid);
+			attendance.setGroupId(user.getGroupId());
+			attendance.setAllotTime(attendancePay.getAllotTime());
+			attendance.setOrderTimeBegin(DatesUtil.getfristDayOftime(attendance.getAllotTime()));
+			attendance.setOrderTimeEnd(DatesUtil.getLastDayOftime(attendance.getAllotTime()));
+			attendance.setType(attendancePay.getType());
+			if (findAttendancePay(attendance).size() > 0) {
+				throw new ServiceException(user.getUserName() + sdf.format(attendance.getAllotTime())+"日已存在考情记录，无需再次添加，请重新选择");
+			}
+			if(attendancePay.getTurnWorkTimes()[i] !=0 || attendancePay.getOvertimes()[i]!=0){
+				// 出勤时长
+				attendance.setTurnWorkTime(attendancePay.getTurnWorkTimes()[i]);
+				// 加班时长
+				attendance.setOverTime(attendancePay.getOvertimes()[i]);
+				// 工作时长
+				attendance.setWorkTime(NumUtils.sum(attendancePay.getTurnWorkTimes()[i], attendancePay.getOvertimes()[i]));
+				attendance.setWorkPrice(user.getPrice());
+				attendance.setUserName(user.getUserName());
+				attendance.setPayNumber(NumUtils.round(attendance.getWorkPrice()*attendance.getWorkTime(),2));
+				dao.save(attendance);
+			}
+			count++;
+		}
+		return count; 
 	}
 
 	@Override
 	public AttendancePay findByUserIdAndAllotTime(AttendancePay attendancePay) {
-		return dao.findByUserIdAndAllotTime(attendancePay.getUserId(),attendancePay.getAllotTime());
+		return dao.findByUserIdAndAllotTimeLike(attendancePay.getUserId(),attendancePay.getAllotTime());
+	}
+
+	@Override
+	public List<AttendancePay> findAttendancePay(AttendancePay attendancePay) {
+		return dao.findByUserIdAndTypeAndAllotTimeBetween(attendancePay.getUserId(),attendancePay.getType(),attendancePay.getOrderTimeBegin(),attendancePay.getOrderTimeEnd());
+	}
+
+	@Override
+	public List<AttendancePay> findAttendancePayNoId(AttendancePay attendancePay) {
+		return dao.findByTypeAndAllotTimeBetween(attendancePay.getType(),attendancePay.getOrderTimeBegin(),attendancePay.getOrderTimeEnd());
+	}
+
+	@Override
+	public int updateAllAttendance(AttendancePay attendancePay) {
+		int count = 0 ;
+		// 修改
+		for (int i = 0; i < attendancePay.getUsersId().length; i++) {
+			Long userid = Long.parseLong(attendancePay.getUsersId()[i]);
+			User user = userService.findOne(userid);
+			user.setPrice(attendancePay.getWorkPrice());
+			userService.save(user);
+			attendancePay.setUserId(userid);
+			attendancePay.setOrderTimeBegin(
+					DatesUtil.getfristDayOftime(DatesUtil.getFirstDayOfMonth(attendancePay.getAllotTime())));
+			attendancePay.setOrderTimeEnd(
+					DatesUtil.getLastDayOftime(DatesUtil.getLastDayOfMonth(attendancePay.getAllotTime())));
+			// 获取所有的工资流水
+			List<AttendancePay> attendancePayList = findAttendancePay(attendancePay);
+			for (AttendancePay pay : attendancePayList) {
+				pay.setWorkPrice(attendancePay.getWorkPrice());
+				pay.setPayNumber(NumUtils.round(pay.getWorkPrice()*pay.getWorkTime(),2));
+				dao.save(pay);
+			}
+			count++;
+		}
+		return count;
 	}
 
 }

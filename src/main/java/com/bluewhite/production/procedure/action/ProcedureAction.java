@@ -53,7 +53,7 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 			Procedure oldProcedure = procedureService.findOne(procedure.getId());
 			BeanCopyUtils.copyNullProperties(oldProcedure,procedure);
 			procedure.setCreatedAt(oldProcedure.getCreatedAt());
-			procedure = procedureService.update(procedure);
+			procedure = procedureService.save(procedure);
 			cr.setMessage("工序修改成功");
 		}else{
 			if(procedure.getProductId()!=null){

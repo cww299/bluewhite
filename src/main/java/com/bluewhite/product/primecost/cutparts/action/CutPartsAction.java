@@ -3,6 +3,7 @@ package com.bluewhite.product.primecost.cutparts.action;
 import java.text.SimpleDateFormat;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -16,14 +17,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.bluewhite.common.BeanCopyUtils;
-import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
+import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
+import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.product.product.service.ProductService;
 
 @Controller
 public class CutPartsAction {
@@ -32,18 +36,9 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 	
 	@Autowired
 	private CutPartsService cutPartsService;
+	@Autowired
+	private ProductService productService;
 	
-	private ClearCascadeJSON clearCascadeJSON;
-
-	{
-		clearCascadeJSON = ClearCascadeJSON
-				.get()
-				.addRetainTerm(CutParts.class,"productId","cutPartsName","cutPartsNumber","allPerimeter","perimeter","materielNumber"
-						,"materielName","composite","doubleComposite","complexMaterielNumber","complexMaterielName","oneMaterial","unit"
-						,"scaleMaterial","addMaterial","manualLoss","productCost","productRemark","batchMaterial","batchMaterialPrice"
-						,"complexProductCost","complexBatchMaterial","batchComplexMaterialPrice","batchComplexAddPrice","compositeManualLoss"
-						,"complexProductRemark");
-	}
 	
 	/**
 	 * cc裁片填写
@@ -60,13 +55,11 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品不能为空");
 		}else{
-			try {
-				cutPartsService.saveCutParts(cutParts);
-			} catch (Exception e) {
-				cr.setMessage(e.getMessage());
-				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				return cr;
-			}
+			cutPartsService.saveCutParts(cutParts);
+			PrimeCost primeCost = new PrimeCost();
+			primeCost.setProductId(cutParts.getProductId());
+			productService.getPrimeCost(primeCost, request);
+			cutParts.setOneCutPartsPrice(primeCost.getOneCutPartsPrice());
 			cr.setMessage("添加成功");
 		}
 		return cr;
@@ -84,20 +77,14 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 	@ResponseBody
 	public CommonResponse updateCutParts(HttpServletRequest request,CutParts cutParts) {
 		CommonResponse cr = new CommonResponse();
-		if(StringUtils.isEmpty(cutParts.getProductId()) || StringUtils.isEmpty(cutParts.getId())){
+		if(StringUtils.isEmpty(cutParts.getId())){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("产品或裁片不能为空");
+			cr.setMessage("裁片不能为空");
 		}else{
-			try {
-				CutParts oldCutParts = cutPartsService.findOne(cutParts.getId());
-				BeanCopyUtils.copyNullProperties(oldCutParts,cutParts);
-				cutParts.setCreatedAt(oldCutParts.getCreatedAt());
-				cutPartsService.saveCutParts(cutParts);
-			} catch (Exception e) {
-				cr.setMessage(e.getMessage());
-				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				return cr;
-			}
+			CutParts oldCutParts = cutPartsService.findOne(cutParts.getId());
+			BeanCopyUtils.copyNullProperties(oldCutParts,cutParts);
+			cutParts.setCreatedAt(oldCutParts.getCreatedAt());
+			cutPartsService.saveCutParts(cutParts);
 			cr.setMessage("修改成功");
 		}
 		return cr;
@@ -115,8 +102,18 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 	@RequestMapping(value = "/product/getCutParts", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse getCutParts(HttpServletRequest request,PageParameter page,CutParts cutParts) {
-		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(cutPartsService.findPages(cutParts,page))
-				.toJSON());
+		CommonResponse cr = new CommonResponse();
+		PageResult<CutParts>  cutPartsList= new PageResult<>(); 
+		if(cutParts.getProductId()!=null){
+			cutPartsList = cutPartsService.findPages(cutParts,page);
+			PrimeCost primeCost = new PrimeCost();
+			primeCost.setProductId(cutParts.getProductId());
+			productService.getPrimeCost(primeCost, request);
+			for(CutParts cp : cutPartsList.getRows()){
+				cp.setOneCutPartsPrice(primeCost.getOneCutPartsPrice());
+			}
+		}
+		cr.setData(cutPartsList);
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -129,15 +126,21 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 	 */
 	@RequestMapping(value = "/product/deleteCutParts", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteCutParts(HttpServletRequest request,CutParts cutParts) {
+	public CommonResponse deleteCutParts(HttpServletRequest request,String ids) {
 		CommonResponse cr = new CommonResponse();
-		if(cutParts.getId()!=null){
-			cutPartsService.deleteCutParts(cutParts);
-			cr.setMessage("删除成功");
-		}else{
-			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("裁片id不能为空");
-		}
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length>0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					cutPartsService.deleteCutParts(id);
+				}
+			}
+				cr.setMessage("删除成功");
+			}else{
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				cr.setMessage("裁片id不能为空");
+			}
 		return cr;
 	}
 	

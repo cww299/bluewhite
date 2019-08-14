@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,10 +27,6 @@ import com.bluewhite.production.group.entity.Group;
  * @author zhangliang
  *
  */
-/**
- * @author LB-BY06
- *
- */
 @Entity
 @Table(name = "sys_user")
 // @Inheritance 的 strategy 属性是指定继承关系的生成策略，JOINED
@@ -43,16 +40,29 @@ public class User extends BaseEntity<Long> {
 	private Boolean isAdmin = false;
 	
 	/**
+	 * 是否是外来人员（0=否，1=是）(外来人员是指当生产线上业务繁忙聘请的临时人员)
+	 */
+	@Column(name = "foreigns")
+	private Integer foreigns;
+	
+	/**
+	 * 是否是转正人员(在生产线上直接添加的外来人员，可成为正式员工)
+	 */
+	@Column(name = "positive")
+	private Boolean positive = false;
+	
+	/**
 	 * 是否锁定
 	 */
 	@Column(name = "del_flag")
 	private Integer delFlag = 1;
 
+	
 	/**
-	 * 登录 名
+	 * 照片id
 	 */
-	@Column(name = "login_name")
-	private String loginName;
+	@Column(name = "file_id")
+	private Long fileId;
 	
 	/**
 	 * 照片url
@@ -61,10 +71,10 @@ public class User extends BaseEntity<Long> {
 	private String pictureUrl;
 	
 	/**
-	 * 用户密码,加密后
+	 * 用户密码
 	 */
 	@Column(name = "password")
-	private String password;
+	private String password; 
 
 	/**
 	 * 员工姓名
@@ -73,7 +83,7 @@ public class User extends BaseEntity<Long> {
 	private String userName;
 	
 	/**
-	 * 员工编号
+	 * 员工编号（考勤机上的编号）
 	 */
 	@Column(name = "number")
 	private String number;
@@ -83,6 +93,12 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Column(name = "nation")
 	private String nation;
+	
+	/**
+	 * 固定电话
+	 */
+	@Column(name = "telephone")
+	private String telephone;
 	
 	/**
 	 * 手机
@@ -97,7 +113,7 @@ public class User extends BaseEntity<Long> {
 	private String email;
 
 	/**
-	 * 性别
+	 * 性别(0=男，1=女)
 	 */
 	@Column(name = "gender")
 	private Integer gender;
@@ -107,6 +123,18 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Column(name = "birth_date")
 	private Date birthDate;
+	
+	/**
+	 * 年龄
+	 */
+	@Column(name = "age")
+	private Integer age;
+	
+	/**
+	 * 身份证到期时间
+	 */
+	@Column(name = "id_card_end")
+	private Date idCardEnd;
 
 	/**
 	 * idcard
@@ -128,12 +156,12 @@ public class User extends BaseEntity<Long> {
      * 婚姻状况
      */
 	@Column(name = "marriage")
-    private String marriage;
+    private Integer marriage;
     /**
      * 生育状况
      */
 	@Column(name = "procreate")
-    private String procreate;
+    private Integer procreate;
     /**
      * 学历
      */
@@ -150,87 +178,112 @@ public class User extends BaseEntity<Long> {
 	@Column(name = "major")
     private String major;
     /**
-     * 联系人
+     * 紧急联系人
      */
 	@Column(name = "contacts")
     private String contacts;
+	
     /**
-     * 联系方式
+     * 紧急联系人关系
+     */
+	@Column(name = "nexus")
+    private String nexus;
+	
+    /**
+     * 紧急联系方式
      */
 	@Column(name = "information")
     private String information;
+	
     /**
-     *入职时间
+     * 入职时间
      */
 	@Column(name = "entry")
     private Date entry;
+	
     /**
-     *预计转正时间 
+     * 预计转正时间 
      */
 	@Column(name = "estimate")
     private Date estimate;
+	
     /**
      * 实际转正开始时间
      */
 	@Column(name = "actua")
     private Date actua;
+	
 	/**
-	 *社保缴纳时间
+	 * 社保缴纳时间
 	 */
 	@Column(name = "social_security")
 	private Date socialSecurity;
-	/**
-	 * 出生日期
-	 */
-	@Column(name = "birthday")
-    private Date birthday;
+	
 	/**
 	 * 银行卡1
 	 */
 	@Column(name = "bank_card1")
     private String bankCard1;
+	
+	/**
+	 * 所属银行1
+	 */
+	@Column(name = "ascription_bank1")
+    private String ascriptionBank1;
+	
 	/**
 	 * 银行卡2
 	 */
 	@Column(name = "bank_card2")
     private String bankCard2;
+	
 	/**
-	 * 协议
+	 * 保险情况
+	 *  0=未缴，1=已缴，
 	 */
-	@Column(name = "agreement")
-    private String agreement;
+	@Column(name = "safe")
+	private Integer safe;
+	
 	/**
-	 * 承诺书
+	 * 是否签订承诺书
+	 *  0=未签，1=已签，
 	 */
 	@Column(name = "promise")
-    private String promise;
+    private Integer promise;
 	/**
-	 * 合同
+	 * 是否签订合同
+	 * 0=未签，1=已签，2=续签
 	 */
-	@Column(name = "contract")
-    private String contract;
+	@Column(name = "commitment")
+    private Integer commitment;
 	/**
 	 * 合同签订开始日期
 	 */
 	@Column(name = "contract_date")
     private Date contractDate;
 	/**
+	 * 合同签订结束日期
+	 */
+	@Column(name = "contract_date_end")
+    private Date contractDateEnd;
+	
+	/**
 	 * 合同签订次数
 	 */
 	@Column(name = "frequency")
 	private Integer frequency;
 	/**
-	 *工作状态(在职离职)
+	 * 工作状态(0=在职1=离职)
 	 */
 	@Column(name = "quit")
-    private String quit;
+    private Integer quit;
 	/**
-	 *离职时间
+	 * 离职时间
 	 */
 	@Column(name = "quit_date")
     private Date quitDate;
 	/**
-	 * 理由
+	 * 离职原因
 	 */
 	@Column(name = "reason")
     private String reason;
@@ -240,10 +293,30 @@ public class User extends BaseEntity<Long> {
 	@Column(name = "train")
     private String train;
 	/**
-	 * 简介
+	 * 备注
 	 */
 	@Column(name = "remark")
 	private String remark;
+	/**
+	 * 合同id
+	 */
+	@Column(name = "commitment_id")
+	private Long commitmentId;
+	
+	/**
+	 * 合同
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "commitment_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData commitments;
+	
+	
+	/**
+	 * 协议id
+	 */
+	@Column(name = "agreement_id")
+	private String agreementId;
+	
 
 	/**
 	 * 职位id
@@ -286,22 +359,25 @@ public class User extends BaseEntity<Long> {
 	@JoinColumn(name = "group_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Group group;
 
-
-
 	/**
 	 * 角色集合
 	 */
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "sys_user_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 	private Set<Role> roles = new HashSet<Role>();
 	
-	
+	/**
+	 * 合同id
+	 */
+	@Column(name = "user_contract_id")
+    private Long userContractId;
 	
 	/**
-	 * 任务id (多对多员工任务关系，只存任务的id集合，减少数据表交互) 
+	 * 合同位置实体
 	 */
-	@Column(name = "task_ids")
-	private String taskIds;
+    @ManyToOne(fetch=FetchType.LAZY,cascade = CascadeType.ALL) 
+    @JoinColumn(name = "user_contract_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private UserContract userContract;
 	
 	/**
 	 * 到岗小时预计收入
@@ -324,12 +400,30 @@ public class User extends BaseEntity<Long> {
 	private Double workTime;
 	
 	/**
-	 * 个人签名
+	 * 签订单位
 	 */
-	@Column(name = "signature")
-	private Double signature;
+	@Column(name = "company")
+	private String company;
 	
+	/**
+	 * 归属车间类型（1=一楼质检，2=一楼包装，3=二楼针工,4=二楼机工,5=8号仓库）
+	 */
+	@Column(name = "type")
+	private Integer type;
 
+	/**
+	 * 宿舍ID
+	 */
+	@Column(name = "hostel_id")
+	private Long hostelId;
+	
+	/**
+	 * 
+	 * 位置编号
+	 */
+	@Transient
+	private Integer lotionNumber;
+	
 	/**
 	 * 权限
 	 */
@@ -359,13 +453,253 @@ public class User extends BaseEntity<Long> {
 	
 	
 	/**
-	 * 分组员工ids
+	 * 外来是否查询
 	 */
 	@Transient
 	private Integer temporarily;
 	
+	/**
+	 * 是否退休返聘
+	 */
+	@Transient
+	private Integer retire;
+	
+	/**
+	 * 时间查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 时间查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
+	
+	/**
+	 * 外调精确查找姓名
+	 */
+	@Transient
+	private String temporarilyName;
 	
 	
+	/**
+	 * 当组分配任务的调整时间
+	 */
+	@Transient
+	private Double adjustTime;
+	
+	/**
+	 * 当组分配任务的调整时间所在数据的id
+	 */
+	@Transient
+	private Long adjustTimeId;
+	
+	/**
+	 * 按位置编号排序
+	 */
+	@Transient
+	private Integer numberSort;
+	
+	/**
+	 * 出勤时长
+	 */
+	@Transient
+	private Double  turnWorkTime;
+	
+	/**
+	 * 对于陈建人员显示出勤时间特殊字段
+	 */
+	@Transient
+	private Integer isType;
+	
+	
+	  
+	public Integer getIsType() {
+		return isType;
+	}
+
+	public void setIsType(Integer isType) {
+		this.isType = isType;
+	}
+
+	public Double getTurnWorkTime() {
+		return turnWorkTime;
+	}
+
+	public void setTurnWorkTime(Double turnWorkTime) {
+		this.turnWorkTime = turnWorkTime;
+	}
+
+	public Integer getNumberSort() {
+		return numberSort;
+	}
+
+	public void setNumberSort(Integer numberSort) {
+		this.numberSort = numberSort;
+	}
+
+	public Long getUserContractId() {
+		return userContractId;
+	}
+
+	public void setUserContractId(Long userContractId) {
+		this.userContractId = userContractId;
+	}
+
+	public Boolean getPositive() {
+		return positive;
+	}
+
+	public void setPositive(Boolean positive) {
+		this.positive = positive;
+	}
+
+	public Long getAdjustTimeId() {
+		return adjustTimeId;
+	}
+
+	public void setAdjustTimeId(Long adjustTimeId) {
+		this.adjustTimeId = adjustTimeId;
+	}
+
+	public Double getAdjustTime() {
+		return adjustTime;
+	}
+
+	public void setAdjustTime(Double adjustTime) {
+		this.adjustTime = adjustTime;
+	}
+
+	public String getTemporarilyName() {
+		return temporarilyName;
+	}
+
+	public void setTemporarilyName(String temporarilyName) {
+		this.temporarilyName = temporarilyName;
+	}
+
+	public String getAscriptionBank1() {
+		return ascriptionBank1;
+	}
+
+	public void setAscriptionBank1(String ascriptionBank1) {
+		this.ascriptionBank1 = ascriptionBank1;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
+
+
+	public Integer getLotionNumber() {
+		return lotionNumber;
+	}
+
+	public void setLotionNumber(Integer lotionNumber) {
+		this.lotionNumber = lotionNumber;
+	}
+
+	public Integer getRetire() {
+		return retire;
+	}
+
+	public void setRetire(Integer retire) {
+		this.retire = retire;
+	}
+
+	public Integer getAge() {
+		return age;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
+	}
+
+	public Long getCommitmentId() {
+		return commitmentId;
+	}
+
+	public void setCommitmentId(Long commitmentId) {
+		this.commitmentId = commitmentId;
+	}
+
+	public BaseData getCommitments() {
+		return commitments;
+	}
+
+	public void setCommitments(BaseData commitments) {
+		this.commitments = commitments;
+	}
+
+
+
+	public String getAgreementId() {
+		return agreementId;
+	}
+
+	public void setAgreementId(String agreementId) {
+		this.agreementId = agreementId;
+	}
+
+	public Date getIdCardEnd() {
+		return idCardEnd;
+	}
+
+	public void setIdCardEnd(Date idCardEnd) {
+		this.idCardEnd = idCardEnd;
+	}
+
+	public UserContract getUserContract() {
+		return userContract;
+	}
+
+	public void setUserContract(UserContract userContract) {
+		this.userContract = userContract;
+	}
+
+	public Integer getSafe() {
+		return safe;
+	}
+
+	public void setSafe(Integer safe) {
+		this.safe = safe;
+	}
+
+	public Date getContractDateEnd() {
+		return contractDateEnd;
+	}
+
+	public void setContractDateEnd(Date contractDateEnd) {
+		this.contractDateEnd = contractDateEnd;
+	}
+
+	public String getTelephone() {
+		return telephone;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
 
 	public Integer getTemporarily() {
 		return temporarily;
@@ -373,14 +707,6 @@ public class User extends BaseEntity<Long> {
 
 	public void setTemporarily(Integer temporarily) {
 		this.temporarily = temporarily;
-	}
-
-	public Double getSignature() {
-		return signature;
-	}
-
-	public void setSignature(Double signature) {
-		this.signature = signature;
 	}
 
 	public Double getWorkTime() {
@@ -407,13 +733,6 @@ public class User extends BaseEntity<Long> {
 		this.status = status;
 	}
 
-	public String getTaskIds() {
-		return taskIds;
-	}
-
-	public void setTaskIds(String taskIds) {
-		this.taskIds = taskIds;
-	}
 
 	public String getUserIds() {
 		return userIds;
@@ -463,19 +782,27 @@ public class User extends BaseEntity<Long> {
 		this.livingAddress = livingAddress;
 	}
 
-	public String getMarriage() {
+	public Long getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(Long fileId) {
+		this.fileId = fileId;
+	}
+
+	public Integer getMarriage() {
 		return marriage;
 	}
 
-	public void setMarriage(String marriage) {
+	public void setMarriage(Integer marriage) {
 		this.marriage = marriage;
 	}
 
-	public String getProcreate() {
+	public Integer getProcreate() {
 		return procreate;
 	}
 
-	public void setProcreate(String procreate) {
+	public void setProcreate(Integer procreate) {
 		this.procreate = procreate;
 	}
 
@@ -535,28 +862,28 @@ public class User extends BaseEntity<Long> {
 		this.bankCard2 = bankCard2;
 	}
 
-	public String getAgreement() {
-		return agreement;
-	}
-
-	public void setAgreement(String agreement) {
-		this.agreement = agreement;
-	}
-
-	public String getPromise() {
+	public Integer getPromise() {
 		return promise;
 	}
 
-	public void setPromise(String promise) {
+	public void setPromise(Integer promise) {
 		this.promise = promise;
 	}
 
-	public String getContract() {
-		return contract;
+	public String getNexus() {
+		return nexus;
 	}
 
-	public void setContract(String contract) {
-		this.contract = contract;
+	public void setNexus(String nexus) {
+		this.nexus = nexus;
+	}
+
+	public Integer getCommitment() {
+		return commitment;
+	}
+
+	public void setCommitment(Integer commitment) {
+		this.commitment = commitment;
 	}
 
 	public Integer getFrequency() {
@@ -567,12 +894,20 @@ public class User extends BaseEntity<Long> {
 		this.frequency = frequency;
 	}
 
-	public String getQuit() {
+	public Integer getQuit() {
 		return quit;
 	}
 
-	public void setQuit(String quit) {
+	public void setQuit(Integer quit) {
 		this.quit = quit;
+	}
+
+	public String getCompany() {
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
 	}
 
 	public String getReason() {
@@ -615,13 +950,6 @@ public class User extends BaseEntity<Long> {
 		this.password = password;
 	}
 
-	public String getLoginName() {
-		return loginName;
-	}
-
-	public void setLoginName(String loginName) {
-		this.loginName = loginName;
-	}
 
 	public String getUserName() {
 		return userName;
@@ -767,13 +1095,6 @@ public class User extends BaseEntity<Long> {
 		this.socialSecurity = socialSecurity;
 	}
 
-	public Date getBirthday() {
-		return birthday;
-	}
-
-	public void setBirthday(Date birthday) {
-		this.birthday = birthday;
-	}
 
 	public Date getContractDate() {
 		return contractDate;
@@ -814,6 +1135,25 @@ public class User extends BaseEntity<Long> {
 	public void setGroup(Group group) {
 		this.group = group;
 	}
+
+	public Integer getForeigns() {
+		return foreigns;
+	}
+
+	public void setForeigns(Integer foreigns) {
+		this.foreigns = foreigns;
+	}
+
+	public Long getHostelId() {
+		return hostelId;
+	}
+
+	public void setHostelId(Long hostelId) {
+		this.hostelId = hostelId;
+	}
+
+
+	
 	
 	
 	

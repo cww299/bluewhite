@@ -1,10 +1,17 @@
 package com.bluewhite.basedata.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.system.user.entity.User;
+
+import javassist.expr.NewArray;
 
 @Entity
 @Table(name = "sys_base_data")
@@ -42,6 +49,22 @@ public class BaseData extends BaseEntity<Long>{
 	 */
 	@Column(name = "flag")
 	private Integer flag = 1;
+	
+	/**
+	 * 员工
+	 */
+	@Transient
+	private List<User> users =new ArrayList<User>();
+
+	
+	
+	public List<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<User> users) {
+		this.users = users;
+	}
 
 	public String getName() {
 		return name;

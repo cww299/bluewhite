@@ -3,6 +3,7 @@ package com.bluewhite.production.procedure.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -10,6 +11,7 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.product.product.entity.Product;
 
 /**
  * 工序实体
@@ -17,7 +19,8 @@ import com.bluewhite.basedata.entity.BaseData;
  *
  */
 @Entity
-@Table(name = "pro_procedure")
+@Table(name = "pro_procedure",indexes = {	@Index(columnList = "product_id"),
+											@Index(columnList = "flag")})
 public class Procedure extends BaseEntity<Long> {
 	
 	/**
@@ -38,6 +41,13 @@ public class Procedure extends BaseEntity<Long> {
 	@Column(name = "product_id")
 	private Long productId;
 	
+//	/**
+//	 * 产品
+//	 */
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
+//	private Product product;
+//	
 	/**
 	 * 是否删除
 	 */
@@ -71,14 +81,14 @@ public class Procedure extends BaseEntity<Long> {
 	private Double hairPrice;
 	
     /**
-     * 部门生产总价
+     * 部门生产预计单价
      */
 	@Column(name = "department_price")
     private Double departmentPrice;
 	
 	
 	/**
-	 * 工序所属部门类型 (1=一楼质检，2=一楼包装，3=二楼针工)
+	 * 工序所属部门类型 (1=一楼质检，2=一楼包装，3=二楼针工，4=机工，5=8号裁剪)
 	 */
 	@Column(name = "type")
 	private Integer type;

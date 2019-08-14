@@ -1,5 +1,7 @@
 package com.bluewhite.reportexport.entity;
 
+import java.util.Date;
+
 import com.bluewhite.common.utils.excel.Poi;
 
 public class ReworkPoi {
@@ -42,6 +44,90 @@ public class ReworkPoi {
 	 */
 	@Poi(name = "被返工单位名", column = "F")
 	private String remark;
+	
+	/**
+	 * 完成日期
+	 */
+	@Poi(name = "完成日期", column = "G")
+	private Date datetime;
+
+	/**
+	 * 返工人员
+	 */
+	@Poi(name = "完成人员", column = "H")
+	private String username;
+	
+	/**
+	 * 批次总数量
+	 */
+	@Poi(name = "批次总数量", column = "I")
+	private Integer sumNumber;
+
+	/**
+	 * 返工率
+	 */
+	@Poi(name = "返工率", column = "J")
+	private Double reworkRate;
+
+	/**
+	 * 实际时间备注
+	 */
+	@Poi(name = "备注", column = "K" ,prompt="实际时间")
+	private String remarkTime;
+
+	
+
+
+
+
+	public String getRemarkTime() {
+		return remarkTime;
+	}
+
+
+	public void setRemarkTime(String remarkTime) {
+		this.remarkTime = remarkTime;
+	}
+
+
+	public Integer getSumNumber() {
+		return sumNumber;
+	}
+
+
+	public void setSumNumber(Integer sumNumber) {
+		this.sumNumber = sumNumber;
+	}
+
+
+	public Double getReworkRate() {
+		return reworkRate;
+	}
+
+
+	public void setReworkRate(Double reworkRate) {
+		this.reworkRate = reworkRate;
+	}
+
+
+	public String getUsername() {
+		return username;
+	}
+
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+
+	public Date getDatetime() {
+		return datetime;
+	}
+
+
+	public void setDatetime(Date datetime) {
+		this.datetime = datetime;
+	}
 
 
 	public String getBacthNumber() {

@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -15,14 +16,16 @@ import com.bluewhite.common.utils.excel.Poi;
  *
  */
 @Entity
-@Table(name = "pro_collect_pay")
+@Table(name = "pro_collect_pay",indexes = {	@Index(name="collect_pay_index_1",columnList = "type"),
+											@Index(name="collect_pay_index_1",columnList = "allot_time"),
+											@Index(columnList = "user_id")})
 public class CollectPay extends BaseEntity<Long> {
 	
 	/**
 	 * 员工姓名
 	 */
 	@Column(name = "user_name")
-	@Poi(name = "员工姓名", column = "A")
+	@Poi(name = "员工姓名", column = "A"  ,department="machinist")
     private String userName;
 	
 	/**
@@ -41,7 +44,7 @@ public class CollectPay extends BaseEntity<Long> {
 	 * 考勤时间
 	 */
 	@Column(name = "time")
-	@Poi(name = "考勤时间", column = "B")
+	@Poi(name = "考勤时间", column = "B"  ,department="machinist")
 	private Double time;
 	
 	/**
@@ -61,12 +64,14 @@ public class CollectPay extends BaseEntity<Long> {
 	 * A工资数额
 	 */
 	@Column(name = "payA")
+	@Poi(name = "A工资数额", column = "C" , department="machinist")
 	private Double payA;
 	
 	/**
-	 * B工资数额
+	 * b工资+杂工工资
 	 */
 	@Column(name = "payB")
+	@Poi(name = "B工资数额", column = "D", department="machinist")
 	private Double payB;
 	
 	/**
@@ -97,8 +102,13 @@ public class CollectPay extends BaseEntity<Long> {
 	 * 上浮后的加绩工资
 	 */
 	@Column(name = "add_performance_pay")
-	@Poi(name = "给予绩效", column = "C")
 	private Double addPerformancePay;
+	
+	/**
+	 * 手动上浮后的加绩工资
+	 */
+	@Column(name = "hard_add_performance_pay")
+	private Double hardAddPerformancePay;
 	
 	/**
 	 * 上浮后无加绩固定给予工资
@@ -148,6 +158,7 @@ public class CollectPay extends BaseEntity<Long> {
 	 * B工资比A工资
 	 */
 	@Column(name = "ratio")
+	@Poi(name = "比值", column = "E", department="machinist")
 	private Double ratio;
 	
 	/**
@@ -161,16 +172,32 @@ public class CollectPay extends BaseEntity<Long> {
 	@Transient
 	private Date orderTimeEnd;
 	
+	/**
+	 * 显示当日详细
+	 */
+	@Transient
+	private Integer detail;
 	
 	/**
 	 * 日期
 	 */
-	@Poi(name = "日期", column = "D")
 	private String startDate;
 	
 	
 	
 
+	public Double getHardAddPerformancePay() {
+		return hardAddPerformancePay;
+	}
+	public void setHardAddPerformancePay(Double hardAddPerformancePay) {
+		this.hardAddPerformancePay = hardAddPerformancePay;
+	}
+	public Integer getDetail() {
+		return detail;
+	}
+	public void setDetail(Integer detail) {
+		this.detail = detail;
+	}
 	public String getStartDate() {
 		return startDate;
 	}

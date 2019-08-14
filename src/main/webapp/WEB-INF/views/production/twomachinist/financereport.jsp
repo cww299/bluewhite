@@ -7,183 +7,159 @@
 <!--<![endif]-->
 
 <head>
-     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>工资总汇</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-   
-   
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>工资总汇</title>
+<meta name="description" content="">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+	<script src="${ctx }/static/js/layer/layer.js"></script>	
+	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+	<link rel="stylesheet" href="${ctx }/static/css/main.css">
+	<script src="${ctx }/static/js/laypage/laypage.js"></script>
+	<script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+	<script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
+	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
 </head>
 
 <body>
-    <section id="main-wrapper" class="theme-default">
-        
-        <%@include file="../../decorator/leftbar.jsp"%> 
-        
-        <!--main content start-->
-        
-           <section id="main-content" class="animated fadeInUp">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">工资详情</h3>
-                                <div class="actions pull-right">
-                                    <i class="fa fa-expand"></i>
-                                    <i class="fa fa-chevron-down"></i>
-                                </div>
-                            </div>
-                             <div class="panel-body">
-                                <div class="tab-wrapper tab-primary">
-                                    <ul class="nav nav-tabs col-md-12">
-                                        <li class="active col-md-6"><a href="#profile1" data-toggle="tab">绩效汇总</a>
-                                        </li>
-                                        <li class="col-md-6"><a href="#profile2" data-toggle="tab">质检月产量报表</a>
-                                        </li>
-                                    </ul>
-                                    <div class="tab-content">
-                     <!-- 绩效水开始 -->
-            <div class="tab-pane active" id="profile1">
-                      <!--查询开始  -->
-          		 <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-8 col-sm-8  col-md-8">
-						<form class="form-search" >
-							<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group"> 
-								<table><tr>
-								<td>姓名:</td><td><input type="text" name="name" id="username" placeholder="请输入姓名" class="form-control search-query name" /></td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>开始:</td>
-								<td>
-								<input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
-								</td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>结束:</td>
-								<td>
-								<input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-								</td>
-								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">
-										查&nbsp找
-									</button>
-								</span>
-							</div>
-						</div>
-					</div>
-				</form>
+
+<div class="panel panel-default">
+	<div class="panel-body">
+		<div class="tab-wrapper tab-primary">
+			<ul class="nav nav-tabs col-md-12">
+				<li class="active col-md-6"><a href="#profile1" data-toggle="tab">绩效汇总</a></li>
+				<li class="col-md-6"><a href="#profile2" data-toggle="tab">质检月产量报表</a> </li>
+			</ul>
+			<div class="tab-content">
+			<!-- 绩效汇总-->
+			<div class="tab-pane active" id="profile1">
+				<!--查询开始  -->
+				<table>
+					<tr>
+						<td>姓名:</td>
+						<td><input type="text" name="name" id="username"
+							placeholder="请输入姓名"
+							class="form-control search-query name" /></td>
+						<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+						<td>开始:</td>
+						<td><input id="startTime" placeholder="请输入开始时间"
+							class="form-control laydate-icon"
+							onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+						</td>
+						<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+						<td>结束:</td>
+						<td><input id="endTime" placeholder="请输入结束时间"
+							class="form-control laydate-icon"
+							onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+						</td>
+						<td>&nbsp;&nbsp;</td>
+						<td>小组查询:</td>
+						<td id="groupp"></td>
+						<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+						<td><input type="checkbox" id="check" value="1">详情</td>
+						<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+						<td><span class="input-group-btn">
+							<button type="button"
+								class="btn btn-info btn-square btn-sm btn-3d searchtask">
+								查&nbsp;找</button>
+						</span></td>
+						<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
+						<td><span
+							class="input-group-btn">
+							<button type="button"
+								class="btn btn-success btn-sm btn-3d pull-right exportth">导出</button>
+						</span>
+						</td>
+					</tr>
+				</table>
+				<h1 class="page-header"></h1>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th class="text-center">姓名</th>
+							<th class="text-center">考勤时间</th>
+							<th class="text-center">A工资汇总</th>
+							<th class="text-center">B工资汇总</th>
+							<th class="text-center">比值</th>
+						</tr>
+					</thead>
+					<tbody id="tablecontent">
+
+					</tbody>
+				</table>
+				<div id="pager" class="pull-right"></div>
+			</div>
+			<!--质检月产量报表  -->
+			<div class="tab-pane" id="profile2">
+				<!--查询开始  -->
+				<table>
+					<tr>
+						<td>开始:</td>
+						<td><input id="startTimetw" placeholder="请输入开始时间"
+							class="form-control laydate-icon"
+							onClick="laydate({elem: '#startTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+						</td>
+						<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+						<td>结束:</td>
+						<td><input id="endTimetw" placeholder="请输入结束时间"
+							class="form-control laydate-icon"
+							onClick="laydate({elem: '#endTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+						</td>
+						<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+						<td>机工选择:</td>
+						<td><select id="choice" class="form-control"><option
+									value="">请选择</option>
+								<option value="0">二楼机工</option>
+								<option value="1">三楼机工</option></select></td>
+						<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
+						<td>
+						<span class="input-group-btn">
+							<button type="button"
+								class="btn btn-info btn-square btn-sm btn-3d searchtasktw">
+								查&nbsp;找</button>
+						</span>
+						</td>
+						<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
+						<td><span
+							class="input-group-btn">
+							<button type="button"
+								class="btn btn-success btn-sm btn-3d pull-right export">导出</button>
+						</span></td>
+					</tr>
+				</table>
+				<h1 class="page-header"></h1>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th class="text-center">日期</th>
+							<th class="text-center">考勤人数</th>
+							<th class="text-center">考勤总时间</th>
+							<th class="text-center">当天产量</th>
+							<th class="text-center">当天产值</th>
+							<th class="text-center">返工人员</th>
+							<th class="text-center">返工时间</th>
+						</tr>
+					</thead>
+					<tbody id="tablecontenttw">
+
+					</tbody>
+				</table>
+				<div id="pagertw" class="pull-right"></div>
+				</div>
 			</div>
 		</div>
-            <!-- 查询结束 -->  
-                                   <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th class="text-center">姓名</th>
-                                        	<th class="text-center">考勤时间</th>
-                                        	<th class="text-center">A工资汇总</th>
-                                        	<th class="text-center">B工资汇总</th>
-                                        	<th class="text-center">比值</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablecontent">
-                                        
-                                    </tbody>
-                                </table>
-                                <div id="pager" class="pull-right"></div>
-                                 </div>
-                                 <!-- 绩效汇总结束 -->
-                                    <div class="tab-pane" id="profile2">
-                                     <!--查询开始  -->
-          		 <div class="row" style="height: 30px; margin:15px 0 10px">
-					<div class="col-xs-8 col-sm-8  col-md-8">
-						<form class="form-search" >
-							<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12">
-							<div class="input-group"> 
-								<table><tr>
-								<td>开始:</td>
-								<td>
-								<input id="startTimetw" placeholder="请输入开始时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#startTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"> 
-								</td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>结束:</td>
-								<td>
-								<input id="endTimetw" placeholder="请输入结束时间" class="form-control laydate-icon"
-             					onClick="laydate({elem: '#endTimetw', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-								</td>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<td>机工选择:</td>
-								<td><select id="choice" class="form-control"><option value="">请选择</option><option value="0">二楼机工</option><option value="1">三楼机工</option></select></td>
-								</tr></table> 
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtasktw">
-										查&nbsp找
-									</button>
-								</span>
-								<td>&nbsp&nbsp&nbsp&nbsp</td>
-								<span class="input-group-btn">
-									<button type="button"  class="btn btn-success btn-sm btn-3d pull-right export">导出</button>
-								</span>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-            <!-- 查询结束 -->
-                                    
-                                            <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                        	<th class="text-center">日期</th>
-                                        	<th class="text-center">考勤人数</th>
-                                        	<th class="text-center">考勤总时间</th>
-                                            <th class="text-center">当天产量  </th>
-                                            <th class="text-center">当天产值</th>
-                                            <th class="text-center">返工人员</th>
-                                            <th class="text-center">返工时间</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablecontenttw">
-                                        
-                                    </tbody>
-                                </table>
-                                <div id="pagertw" class="pull-right"></div>
-                                        </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    </div>
-                        </div>
-            </section>
-        </section>
+	</div>
+</div>
 
 
 
-
-
-    </section>
-    
-   
-   
-   <script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
-    <script src="${ctx }/static/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="${ctx }/static/plugins/navgoco/jquery.navgoco.min.js"></script>
-    <script src="${ctx }/static/plugins/switchery/switchery.min.js"></script>
-    <script src="${ctx }/static/plugins/pace/pace.min.js"></script>
-    <script src="${ctx }/static/plugins/fullscreen/jquery.fullscreen-min.js"></script>
-    <script src="${ctx }/static/js/src/app.js"></script>
-     <script src="${ctx }/static/js/laypage/laypage.js"></script> 
-    <script src="${ctx }/static/plugins/dataTables/js/jquery.dataTables.js"></script>
-    <script src="${ctx }/static/plugins/dataTables/js/dataTables.bootstrap.js"></script>
-    <script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
-    <script>
+	
+	<script>
      
    /*  var date_ = new Date();  
     var year = date_.getYear();  
@@ -275,8 +251,8 @@
 		      				html +='<tr>'
 		      				+'<td class="text-center edit ">'+o.userName+'</td>'
 		      				+'<td class="text-center edit ">'+o.time+'</td>'
-		      				+'<td class="text-center edit ">'+o.payA+'</td>'
-		      				+'<td class="text-center edit ">'+o.payB+'</td>'
+		      				+'<td class="text-center edit ">'+parseFloat((o.payA*1).toFixed(3))+'</td>'
+		      				+'<td class="text-center edit ">'+parseFloat((o.payB*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit ">'+o.ratio+c+'</td></tr>'
 		      				
 		      				
@@ -355,14 +331,20 @@
 			
 			this.events = function(){
 				$('.searchtask').on('click',function(){
+					var detail;
+					if($("#check").is(':checked')==true){
+						detail=1
+					}else{
+						detail=""
+					}
 					var data = {
 							type:4,
 							userName:$("#username").val(),
 				  			orderTimeBegin:$("#startTime").val(),
 				  			orderTimeEnd:$("#endTime").val(), 
-				  			
+				  			groupId:$('.selectcomplete').val(),
+				  			detail:detail,
 				  	}
-			
 				self.loadPagination(data);
 				});
 				$('.searchtasktw').on('click',function(){
@@ -374,16 +356,33 @@
 				  			orderTimeEnd:$("#endTimetw").val(), 
 				  			machinist:$("#choice").val(),
 				  	}
+					
 			
 				self.loadPaginationtw(data);
 				});
-				
+				//遍历人名组别
+				var htmlth="";
+				var data = {
+			  			type:4,
+			  	}
+			    $.ajax({
+				      url:"${ctx}/production/getGroup",
+				      data:data,
+				      type:"GET",
+		      		  success: function (result) {
+		      			  $(result.data).each(function(k,j){
+		      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
+		      			  });  
+		      			 $('#groupp').html("<select class='form-control selectcomplete'><option value="+""+">请选择&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>"+htmlth+"</select>") 
+				      }
+				  });
 				//导出
 				$('.export').on('click',function(){
 					var index; 
 					var a=$("#startTimetw").val();
 					var c= $("#endTimetw").val();
-					location.href="${ctx}/excel/importExcel/monthlyProduction?orderTimeBegin="+a+"&orderTimeEnd="+c+"&type="+4;
+					var y=$("#choice").val();
+					location.href="${ctx}/excel/importExcel/monthlyProduction?orderTimeBegin="+a+"&orderTimeEnd="+c+"&type="+4+"&machinist="+y;
 				})
 				
 				//导出
@@ -393,6 +392,20 @@
 					var e= $("#endTimetw").val();
 					location.href="${ctx}/excel/importExcel/groupProduction?orderTimeBegin="+d+"&orderTimeEnd="+e+"&type="+4;
 				})
+				//导出
+				$('.exportth').on('click',function(){
+					var index; 
+					var d=$("#startTime").val();
+					var e= $("#endTime").val();
+					var y=$('.selectcomplete').val();
+					var detail;
+					if($("#check").is(':checked')==true){
+						detail=1
+					}else{
+						detail=""
+					}
+					location.href="${ctx}/excel/importExcel/DownMachinistCollectPay?orderTimeBegin="+d+"&orderTimeEnd="+e+"&type="+4+"&groupId="+y+"&detail="+detail;
+				})
 			}
    	}
    			var login = new Login();
@@ -400,8 +413,8 @@
 			})
     
     </script>
-  
-       
+
+
 </body>
 
 </html>

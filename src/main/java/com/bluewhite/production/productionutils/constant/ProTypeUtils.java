@@ -106,7 +106,7 @@ public  class ProTypeUtils {
 	 * 一楼打包
 	 * 当外发价格
 	 */
-	private final static double  FRIST_PACKTWO = 0.25;
+	private final static double  FRIST_PACKTWO = 0.20;
 	
 	
 	/**
@@ -438,24 +438,24 @@ public  class ProTypeUtils {
 		Double sumPrice = 0.0 ;
 		switch (type) {
 		case 1:// 生产部一楼质检
-			sumPrice = time*ProTypeUtils.FRIST_QUALITY;
+			sumPrice =  ProTypeUtils.FRIST_QUALITY;
 			break;
 		case 2://生产部一楼打包
-			sumPrice = time*ProTypeUtils.FRIST_PACK;
+			sumPrice = ProTypeUtils.FRIST_PACK;
 				break;
 		case 3://生产部二楼针工
-			sumPrice = time*ProTypeUtils.TOW_DEEDLE;
+			sumPrice = ProTypeUtils.TOW_DEEDLE;
 			break;
 		case 4://生产部二楼机工
-			sumPrice = time*ProTypeUtils.TOW_MACHINIST;
+			sumPrice = ProTypeUtils.TOW_MACHINIST;
 			break;
-		case 5://生产部二楼机工
-			sumPrice = time*ProTypeUtils.RIGHT_TAILOR;
+		case 5://8号裁剪
+			sumPrice = ProTypeUtils.RIGHT_TAILOR;
 			break;
 		default:
 			break;
 		}
-		return sumPrice;
+		return NumUtils.mul(time, sumPrice);
 	}
 	
 	/**
@@ -613,8 +613,6 @@ public  class ProTypeUtils {
 			sumTaskPrice =taskTime*ProTypeUtils.getPackAC8()*ProTypeUtils.TIME;
 			break;
 		case 3://生产部二楼针工
-//			if(flag == 0){
-//			}
 				sumTaskPrice =taskTime*ProTypeUtils.getAC8TWO()*ProTypeUtils.TIME;
 			break;
 		case 4://生产部二楼机工
@@ -904,10 +902,10 @@ public  class ProTypeUtils {
 			sumExpectTime =procedureTime*number/ProTypeUtils.TIME;
 			break;
 		case 4://生产部二楼机工
-			sumExpectTime = procedureTime;
+			sumExpectTime = procedureTime*number/ProTypeUtils.TIME;
 			break;
 		case 5://生产部八号仓库
-			sumExpectTime = procedureTime;
+			sumExpectTime =procedureTime*number/ProTypeUtils.TIME;
 			break;
 		default:
 			break;

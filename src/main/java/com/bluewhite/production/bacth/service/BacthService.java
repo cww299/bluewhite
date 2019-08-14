@@ -29,7 +29,7 @@ public interface BacthService extends BaseCRUDService<Bacth,Long>{
 	 * @param ids
 	 * @return
 	 */
-	public int statusBacth(String[] ids,Date time);
+	public int statusBacth(String[] ids,Date time) throws Exception;
 	
 	/**
 	 *  一键接收批次，改变批次的数量，重新变成批次到包装列表，type=2

@@ -26,5 +26,18 @@ public interface MaterielService extends BaseCRUDService<Materiel,Long>{
 	 * @return
 	 */
 	public  List<BaseOne> findPagesBaseOne(BaseOne baseOne);
+	
+	/**
+	 *  产品基础数据3获取,将裁减类型和数据进行匹配
+	 * @param typeId
+	 * @param number
+	 * @return
+	 */
+	public Double getBaseThreeOne(Long typeId, Double number);
+	
+
+	public PageResult<Materiel> findMaterielPages(Materiel materiel, PageParameter page);
+	
+	
 
 }

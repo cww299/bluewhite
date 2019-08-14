@@ -15,7 +15,10 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.entity.PageResultStat;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.common.utils.SalesUtils;
+import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.farragotask.dao.FarragoTaskDao;
 import com.bluewhite.production.farragotask.entity.FarragoTask;
 import com.bluewhite.production.finance.dao.FarragoTaskPayDao;
@@ -62,8 +65,10 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
         	return null;
-        }, page);
-        PageResult<FarragoTask> result = new PageResult<FarragoTask>(pages,page);
+        }, SalesUtils.getQueryNoPageParameter());
+		  PageResultStat<FarragoTask> result = new PageResultStat<>(pages,page);
+		  result.setAutoStateField("payB", "price");
+		  result.count();
         return result;
 }
 
@@ -100,6 +105,7 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 				farragoTaskPay.setPayNumber(farragoTask.getPayB()/farragoTask.getUsersIds().length);
 				farragoTaskPay.setType(farragoTask.getType());
 				farragoTaskPay.setUserId(user.getId());
+				farragoTaskPay.setGroupId(user.getGroupId());
 				farragoTaskPay.setTaskId(farragoTask.getId());
 				farragoTaskPay.setUserName(user.getUserName());
 				farragoTaskPay.setTaskName(farragoTask.getName());

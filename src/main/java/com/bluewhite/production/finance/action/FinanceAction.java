@@ -1,13 +1,18 @@
 package com.bluewhite.production.finance.action;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,9 +26,12 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
+import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.CollectInformation;
 import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.FarragoTaskPay;
@@ -31,6 +39,7 @@ import com.bluewhite.production.finance.entity.MonthlyProduction;
 import com.bluewhite.production.finance.entity.NonLine;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.finance.entity.UsualConsume;
+import com.bluewhite.production.finance.service.CollectInformationService;
 import com.bluewhite.production.finance.service.CollectPayService;
 import com.bluewhite.production.finance.service.FarragoTaskPayService;
 import com.bluewhite.production.finance.service.PayBService;
@@ -58,6 +67,10 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	private AttendancePayService attendancePayService;
 	@Autowired
 	private UsualConsumeService usualConsumeservice;
+	@Autowired
+	private CollectInformationService collectInformationService;
+	@Autowired
+	private PayBDao payBDao;
 	
 	
 	private ClearCascadeJSON clearCascadeJSON;
@@ -81,7 +94,8 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		CommonResponse cr = new CommonResponse();
 			cr.setData(ClearCascadeJSON
 					.get()
-					.addRetainTerm(AttendancePay.class,"id","userName","allotTime","payNumber","workPrice","workTime","overTime","dutyTime","maxPay","disparity")
+					.addRetainTerm(AttendancePay.class,"id","userName","allotTime","turnWorkTime",
+							"payNumber","workPrice","workTime","overTime","dutyTime","maxPay","disparity","warning")
 					.format(attendancePayService.findPages(attendancePay, page)).toJSON());
 			cr.setMessage("查询成功");
 		return cr;
@@ -96,10 +110,45 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	@ResponseBody
 	public CommonResponse allPayB(HttpServletRequest request,PayB payB,PageParameter page) {
 		CommonResponse cr = new CommonResponse();
-			cr.setData(clearCascadeJSON.format(payBService.findPages(payB, page)).toJSON());
+		PageResult<PayB> list = payBService.findPages(payB, page);
+		cr.setData(clearCascadeJSON.format(list).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/** 
+	 * 查询b工资流水同时汇总金额
+	 *      
+	 */
+	@RequestMapping(value = "/finance/allPayBSum", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse allPayBSum(HttpServletRequest request,PayB payB) {
+		CommonResponse cr = new CommonResponse();
+			List<Object> payBList = payBDao.findPayNumber(payB.getType(),payB.getOrderTimeBegin(),payB.getOrderTimeEnd(),payB.getUserName(),payB.getBacth(),payB.getProductName());
+			// 总金额
+			List<Double> listPayNumber = new ArrayList<>();
+			// 实际运费
+			List<Double> listPerformancePayNumber = new ArrayList<>();
+			Double sumPayNumber = 0.0;
+			Double sumPerformancePayNumber = 0.0;
+			if (payBList.size() > 0) {
+				for(Object pb : payBList){
+					Object[] objects = (Object[])pb;
+					listPayNumber.add((double)(objects[0] ==null ? 0.0:objects[0]));
+					listPerformancePayNumber.add((double)(objects[1] ==null ? 0.0:objects[1]));
+				}
+				sumPayNumber = NumUtils.sum(listPayNumber);
+				sumPerformancePayNumber = NumUtils.sum(listPerformancePayNumber);
+			}
+			Map<String, Object> map = new HashMap<>();
+			map.put("sumPayNumber", sumPayNumber);
+			map.put("sumPerformancePayNumber", sumPerformancePayNumber);
+			cr.setData(map);
 			cr.setMessage("查询成功");
 		return cr;
 	}
+	
+	
 	
 	/** 
 	 * 查询杂工工资流水(包括加绩)
@@ -197,10 +246,17 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	 */
 	@RequestMapping(value = "/finance/delete", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse delete(HttpServletRequest request,UsualConsume usualConsume) {
+	public CommonResponse delete(HttpServletRequest request,String[] ids) {
 		CommonResponse cr = new CommonResponse();
-		usualConsumeservice.delete(usualConsume.getId());
-		cr.setMessage("删除成功");
+		int count = 0;
+		if(!StringUtils.isEmpty(ids)){
+			for (int i = 0; i < ids.length; i++) {
+				Long id = Long.parseLong(ids[i]);
+				usualConsumeservice.delete(id);
+				count++;
+			}
+		}
+		cr.setMessage("成功删除"+count+"条");
 		return cr;
 	}
 	
@@ -255,7 +311,9 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		pay.setAddSelfNumber(collectPay.getAddSelfNumber());
 		pay.setAddSelfPayB(collectPay.getAddSelfNumber()*pay.getPayB());
 		pay.setAddPerformancePay(pay.getAddSelfPayB()-pay.getPayA()>0 ? pay.getAddSelfPayB()-pay.getPayA() : 0.0);
+		pay.setHardAddPerformancePay(collectPay.getHardAddPerformancePay());
 		collectPayBService.save(pay);
+		cr.setData(collectPayBService.save(pay));
 		cr.setMessage("修改成功");
 		return cr;
 	}
@@ -280,30 +338,23 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	
 	
 	/**
-	 * 生产成本数据汇总 0
+	 * 生产成本数据汇总 
 	 * 
-	 * 员工成本数据汇总 1
+	 * 员工成本数据汇总 
 	 * 
 	 */
 	@RequestMapping(value = "/finance/collectInformation", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse collectInformation(HttpServletRequest request,CollectInformation collectInformation) {
 		CommonResponse cr = new CommonResponse();
-		collectInformation = collectPayBService.collectInformation(collectInformation);
-		if(collectInformation.getStatus()==0){
+		collectInformation = collectInformationService.findByType(collectInformation);
 			cr.setData(ClearCascadeJSON
 					.get()
-					.addRetainTerm(CollectInformation.class,"regionalPrice","sumTask","sumTaskFlag","sumFarragoTask","priceCollect","proportion","overtop")
-					.format(collectInformation).toJSON());	
-		}else if(collectInformation.getStatus()==1){
-			cr.setData(ClearCascadeJSON
-					.get()
-					.addRetainTerm(CollectInformation.class,"sumAttendancePay","giveThread","surplusThread","manage",
+					.addRetainTerm(CollectInformation.class,"regionalPrice","sumTask","sumTaskFlag","sumFarragoTask","priceCollect","proportion","overtop","sumAttendancePay","giveThread","surplusThread","manage",
 							"deployPrice","analogDeployPrice","sumChummage","sumHydropower","sumLogistics",
 							"analogPerformance","surplusManage","manageProportion","managePerformanceProportion",
-							"analogTime","grant","giveSurplus","shareholderProportion","shareholder","workshopSurplus").format(collectInformation).toJSON());	
-		}
-				
+							"analogTime","grant","giveSurplus","shareholderProportion","shareholder","workshopSurplus")
+					.format(collectInformation).toJSON());	
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -395,7 +446,7 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	}
 	
 	/**
-	 * 获取整个月分组人员的绩效
+	 * 获取整个月人员的绩效
 	 * 
 	 * @param binder
 	 */
@@ -444,7 +495,24 @@ private static final Log log = Log.getLog(FinanceAction.class);
 		cr.setMessage("查询成功");
 		return cr;
 	}
-
+	
+	
+	/**
+	 * 记录部门支出，存入数据汇总
+	 * 
+	 */
+	@RequestMapping(value = "/finance/departmentalExpenditure ", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse departmentalExpenditure(HttpServletRequest request,CollectInformation collectInformation) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON
+				.get()
+				.addRetainTerm(CollectInformation.class,"")
+				.format(collectInformationService.savaDepartmentalExpenditure(collectInformation)).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
 	
 	
 	

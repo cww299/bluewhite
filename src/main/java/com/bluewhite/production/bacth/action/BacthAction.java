@@ -2,6 +2,7 @@ package com.bluewhite.production.bacth.action;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,6 +27,8 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.bacth.service.BacthService;
+import com.bluewhite.production.procedure.dao.ProcedureDao;
+import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 
 @Controller
@@ -35,6 +38,10 @@ private static final Log log = Log.getLog(BacthAction.class);
 	
 	@Autowired
 	private BacthService bacthService;
+	
+	@Autowired
+	private ProcedureDao procedureDao;
+	
 	
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -62,7 +69,12 @@ private static final Log log = Log.getLog(BacthAction.class);
 			if(bacth.getFlag()==0 && bacth.getRegionalPrice()!=null){
 				bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType()), null));
 			}
-			bacthService.update(bacth);
+			List<Procedure> procedureList =procedureDao.findByProductIdAndTypeAndFlag(bacth.getProductId(), bacth.getType(), bacth.getFlag());
+			double time = procedureList.stream().mapToDouble(Procedure::getWorkingTime).sum();
+			if(procedureList!=null && procedureList.size()>0){
+				bacth.setTime(NumUtils.div(NumUtils.mul(time, bacth.getNumber()),60,5));
+				}
+			bacthService.save(bacth);
 			cr.setMessage("修改成功");
 		}else{
 			if(bacth.getProductId()!=null){
@@ -122,7 +134,14 @@ private static final Log log = Log.getLog(BacthAction.class);
 	@ResponseBody
 	public CommonResponse statusBacth(HttpServletRequest request,String[] ids, Date time ) {
 		CommonResponse cr = new CommonResponse();
-		int count = bacthService.statusBacth(ids,time);
+		int count;
+		try {
+			count = bacthService.statusBacth(ids,time);
+		} catch (Exception e) {
+			cr.setMessage(e.getMessage());
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			return cr;
+		}
 		cr.setMessage("成功完成"+count+"批次");
 		return cr;
 	}
@@ -148,6 +167,9 @@ private static final Log log = Log.getLog(BacthAction.class);
 		cr.setMessage("成功完成"+count+"条批次");
 		return cr;
 	}
+	
+	
+	
 	
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {

@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -19,7 +20,8 @@ import com.bluewhite.production.procedure.entity.Procedure;
  *
  */
 @Entity
-@Table(name = "pro_task")
+@Table(name = "pro_task" ,indexes = {	@Index(name="task_index_1",columnList = "type"),
+										@Index(name="task_index_1",columnList = "allot_time")})
 public class Task  extends BaseEntity<Long>{
 	
 	/**
@@ -124,18 +126,6 @@ public class Task  extends BaseEntity<Long>{
      */
 	@Column(name = "task_time")
     private Double taskTime;
-	
-    /**
-     * 实时任务完成时间（二楼实时）
-     */
-	@Column(name = "task_actual_time")
-    private Double taskActualTime;
-	
-	/**
-     * 实时任务,开始时间（二楼实时）
-     */
-	@Column(name = "start_time")
-    private Date startTime;
 	
 	
 	/**
@@ -250,7 +240,21 @@ public class Task  extends BaseEntity<Long>{
 	@Transient
 	private  Double AC5;
 	
+    /**
+     * 机工区分字段（0=二楼，1=三楼）
+     */
+	@Transient
+    private Integer machinist;
 	
+	
+
+	public Integer getMachinist() {
+		return machinist;
+	}
+
+	public void setMachinist(Integer machinist) {
+		this.machinist = machinist;
+	}
 
 	public Double getAC5() {
 		return AC5;
@@ -274,22 +278,6 @@ public class Task  extends BaseEntity<Long>{
 
 	public void setProductId(Long productId) {
 		this.productId = productId;
-	}
-
-	public Date getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
-	}
-
-	public Double getTaskActualTime() {
-		return taskActualTime;
-	}
-
-	public void setTaskActualTime(Double taskActualTime) {
-		this.taskActualTime = taskActualTime;
 	}
 
 	public String getTimes() {

@@ -12,10 +12,12 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.bluewhite.base.BaseEntity;
 
 
@@ -48,7 +50,7 @@ public class Role extends BaseEntity<Long> {
 	private String roleType;
 
 	/**
-	 *描述
+	 * 描述
 	 */
 	@Column(name = "description")
 	private String description;
@@ -68,10 +70,27 @@ public class Role extends BaseEntity<Long> {
 	/**
 	 * 角色菜单权限类
 	 */
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, targetEntity = RoleMenuPermission.class, mappedBy = "role", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = RoleMenuPermission.class, mappedBy = "role", orphanRemoval = true)
 	@Fetch(FetchMode.SELECT)
-	@Basic(optional = true, fetch = FetchType.EAGER)
+	@Basic(optional = true, fetch = FetchType.LAZY)
 	private List<RoleMenuPermission> resourcePermission;
+	
+	
+	/**
+	 * 角色集合
+	 */
+	@Transient
+	private Set<String> roles;
+	
+	
+	
+	public Set<String> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<String> roles) {
+		this.roles = roles;
+	}
 
 	public String getName() {
 		return name;

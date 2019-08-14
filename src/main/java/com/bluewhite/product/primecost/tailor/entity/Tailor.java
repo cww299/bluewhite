@@ -3,6 +3,7 @@ package com.bluewhite.product.primecost.tailor.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 
@@ -12,7 +13,7 @@ import com.bluewhite.base.BaseEntity;
  *
  */
 @Entity
-@Table(name = "pro_tailor")
+@Table(name = "pro_product_tailor")
 public class Tailor extends BaseEntity<Long>{
 	
 
@@ -22,12 +23,39 @@ public class Tailor extends BaseEntity<Long>{
 	@Column(name = "product_id")
     private Long productId;
 	
+	
+	/**
+	 * 裁片id
+	 */
+	@Column(name = "cutParts_id")
+    private Long cutPartsId;
+	
+	/**
+	 * 裁剪类型页面id
+	 */
+	@Column(name = "ordinaryLaser_id")
+    private Long ordinaryLaserId;
+	
+	/**
+	 * 绣花id
+	 */
+	@Column(name = "embroidery_id")
+    private Long embroideryId;
+	
+	
 	/**
 	 * 批量产品数量或模拟批量数
 	 */
 	@Column(name = "number")
 	private Integer number;
 	
+	
+	
+	/**
+	 * 选择该样品的裁片id
+	 */
+	@Column(name = "base_id")
+    private Long baseId;
 	
 	/**
 	 * 裁剪部位
@@ -62,7 +90,7 @@ public class Tailor extends BaseEntity<Long>{
 	
 	
 	/**
-	 * 手选裁剪方式(储存方式，？1.存实体加id， ？2存字符串)
+	 * 手选裁剪方式
 	 */
 	@Column(name = "tailor_Type")
     private String tailorType;
@@ -86,7 +114,7 @@ public class Tailor extends BaseEntity<Long>{
     private Double ratePrice;
 	
 	/**
-	 * 	选择单个入成本价格
+	 * 选择单个入成本价格
 	 */
 	@Column(name = "cost_price")
     private Double costPrice;
@@ -126,6 +154,55 @@ public class Tailor extends BaseEntity<Long>{
 	 */
 	@Column(name = "machinist_price_down")
     private Double machinistPriceDown;
+	
+	/**
+	 * 单只裁剪价格
+	 */
+	@Transient
+    private Double oneCutPrice;
+	
+
+
+
+	public Long getEmbroideryId() {
+		return embroideryId;
+	}
+
+	public void setEmbroideryId(Long embroideryId) {
+		this.embroideryId = embroideryId;
+	}
+
+	public Double getOneCutPrice() {
+		return oneCutPrice;
+	}
+
+	public void setOneCutPrice(Double oneCutPrice) {
+		this.oneCutPrice = oneCutPrice;
+	}
+
+	public Long getCutPartsId() {
+		return cutPartsId;
+	}
+
+	public void setCutPartsId(Long cutPartsId) {
+		this.cutPartsId = cutPartsId;
+	}
+
+	public Long getBaseId() {
+		return baseId;
+	}
+
+	public void setBaseId(Long baseId) {
+		this.baseId = baseId;
+	}
+
+	public Long getOrdinaryLaserId() {
+		return ordinaryLaserId;
+	}
+
+	public void setOrdinaryLaserId(Long ordinaryLaserId) {
+		this.ordinaryLaserId = ordinaryLaserId;
+	}
 
 	public Long getProductId() {
 		return productId;

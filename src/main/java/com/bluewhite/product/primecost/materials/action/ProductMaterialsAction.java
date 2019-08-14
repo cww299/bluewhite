@@ -3,6 +3,7 @@ package com.bluewhite.product.primecost.materials.action;
 import java.text.SimpleDateFormat;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -15,15 +16,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 import com.bluewhite.product.primecost.materials.service.ProductMaterialsService;
+import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
+import com.bluewhite.product.primecost.tailor.entity.Tailor;
+import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.product.product.service.ProductService;
 
 @Controller 
 public class ProductMaterialsAction {
@@ -34,16 +41,9 @@ public class ProductMaterialsAction {
 	@Autowired
 	private ProductMaterialsService productMaterialsService;
 	
-	private ClearCascadeJSON clearCascadeJSON;
-
-	{
-		clearCascadeJSON = ClearCascadeJSON
-				.get()
-				.addRetainTerm(ProductMaterials.class,"productId","cutPartsName","cutPartsNumber","allPerimeter","perimeter","materielNumber"
-						,"materielName","composite","doubleComposite","complexMaterielNumber","complexMaterielName","oneMaterial","unit"
-						,"scaleMaterial","addMaterial","manualLoss","productCost","productRemark","batchMaterial","batchMaterialPrice"
-						,"complexProductCost","complexBatchMaterial","batchComplexMaterialPrice","batchComplexAddPrice");
-	}
+	@Autowired
+	private ProductService productService;
+	
 	
 	/**
 	 * dd除裁片以外的所有生产用料填写
@@ -60,14 +60,37 @@ public class ProductMaterialsAction {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品不能为空");
 		}else{
-			try {
-				productMaterialsService.saveProductMaterials(productMaterials);
-			} catch (Exception e) {
-				cr.setMessage(e.getMessage());
-				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				return cr;
-			}
+			productMaterialsService.saveProductMaterials(productMaterials);
 			cr.setMessage("添加成功");
+		}
+		return cr;
+	}
+	
+	
+	/**
+	 *  dd除裁片以外的所有生产用料修改
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/product/updateProductMaterials", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateProductMaterials(HttpServletRequest request,ProductMaterials productMaterials) {
+		CommonResponse cr = new CommonResponse();
+		if(StringUtils.isEmpty(productMaterials.getId())){
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("dd除裁片以外的所有生产用料不能为空");
+		}else{
+			ProductMaterials oldProductMaterials = productMaterialsService.findOne(productMaterials.getId());
+			BeanCopyUtils.copyNullProperties(oldProductMaterials,productMaterials);
+			productMaterials.setCreatedAt(oldProductMaterials.getCreatedAt());
+			productMaterialsService.saveProductMaterials(productMaterials);
+			PrimeCost primeCost = new PrimeCost();
+			primeCost.setProductId(productMaterials.getProductId());
+			productService.getPrimeCost(primeCost, request);
+			productMaterials.setOneOtherCutPartsPrice(primeCost.getOneOtherCutPartsPrice());
+			cr.setMessage("修改成功");
 		}
 		return cr;
 	}
@@ -83,8 +106,19 @@ public class ProductMaterialsAction {
 	@RequestMapping(value = "/product/getProductMaterials", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse getProductMaterials(HttpServletRequest request,PageParameter page,ProductMaterials productMaterials) {
-		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(productMaterialsService.findPages(productMaterials,page))
-				.toJSON());
+		CommonResponse cr = new CommonResponse();
+		PageResult<ProductMaterials>  productMaterialsList= new PageResult<>(); 
+		if(productMaterials.getProductId()!=null){
+			productMaterialsList = productMaterialsService.findPages(productMaterials,page);
+			PrimeCost primeCost = new PrimeCost();
+			primeCost.setProductId(productMaterials.getProductId());
+			productService.getPrimeCost(primeCost, request);
+			for(ProductMaterials ps : productMaterialsList.getRows()){
+				ps.setOneOtherCutPartsPrice(primeCost.getOneOtherCutPartsPrice());
+			}
+		
+		}
+		cr.setData(productMaterialsList);
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -97,15 +131,21 @@ public class ProductMaterialsAction {
 	 */
 	@RequestMapping(value = "/product/deleteProductMaterials", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteProductMaterials(HttpServletRequest request,ProductMaterials productMaterials) {
+	public CommonResponse deleteProductMaterials(HttpServletRequest request,String ids) {
 		CommonResponse cr = new CommonResponse();
-		if(productMaterials.getId()!=null){
-			productMaterialsService.deleteProductMaterials(productMaterials);
-			cr.setMessage("删除成功");
-		}else{
-			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("id不能为空");
-		}
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length>0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					productMaterialsService.deleteProductMaterials(id);
+				}
+			}
+				cr.setMessage("删除成功");
+			}else{
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				cr.setMessage("裁片id不能为空");
+			}
 		return cr;
 	}
 	

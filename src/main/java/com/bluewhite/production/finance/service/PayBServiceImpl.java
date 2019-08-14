@@ -3,18 +3,19 @@ package com.bluewhite.production.finance.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
 import com.bluewhite.production.finance.dao.CollectPayDao;
@@ -38,6 +39,7 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 	
 	@Override
 	public PageResult<PayB> findPages(PayB param, PageParameter page) {
+			  page.setSort(null);
 			  Page<PayB> pages = dao.findAll((root,query,cb) -> {
 		        	List<Predicate> predicate = new ArrayList<>();
 		        	//按id过滤
@@ -57,7 +59,7 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 		        		predicate.add(cb.equal(root.get("productId").as(Long.class),param.getProductId()));
 		        	}
 		        	//按id
-		        	if(param.getTaskId()!=null){
+		        	if(!StringUtils.isEmpty(param.getTaskId())){
 		        		predicate.add(cb.equal(root.get("taskId").as(Long.class),param.getTaskId()));
 		        	}
 		        	//按产品名称
@@ -86,32 +88,33 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 					query.where(predicate.toArray(pre));
 		        	return null;
 		        }, page);
-		        PageResult<PayB> result = new PageResult<PayB>(pages,page);
-		        return result;
+			  PageResult<PayB> result = new PageResult<>(pages, page);
+		      return result;
 		    }
 
 	@Override
-	@Transactional
 	public List<CollectPay> collectPay(CollectPay collectPay) {
 		List<CollectPay> collectPayList = new ArrayList<CollectPay>();
-		PageParameter page  = new PageParameter();
-		page.setSize(Integer.MAX_VALUE);
 		//A当天工资
 		AttendancePay attendancePay = new AttendancePay();
 		attendancePay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 		attendancePay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
 		attendancePay.setType(collectPay.getType());
-		List<AttendancePay> attendancePayList = AttendancePayService.findPages(attendancePay, page).getRows();
+		List<AttendancePay> attendancePayList = AttendancePayService.findAttendancePayNoId(attendancePay);
 		//B当天工资
 		PayB payB = new PayB();
 		payB.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 		payB.setOrderTimeEnd(collectPay.getOrderTimeEnd());
 		payB.setType(collectPay.getType());
+		List<PayB> payBList = this.findPayBTwo(payB);
+		
 		//杂工当天工资
 		FarragoTaskPay farragoTaskPay = new FarragoTaskPay();
 		farragoTaskPay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 		farragoTaskPay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
 		farragoTaskPay.setType(collectPay.getType());
+		List<FarragoTaskPay> farragoTaskPayList = farragoTaskPayService.findFarragoTaskPayTwo(farragoTaskPay);
+		
 		for(AttendancePay attendance : attendancePayList ){
 			CollectPay collect = new CollectPay();
 			collect.setType(attendance.getType());
@@ -121,69 +124,79 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 			collect.setAllotTime(collectPay.getOrderTimeBegin());
 			collect.setPayA(attendance.getPayNumber());
 			//个人b工资
-			payB.setUserId(attendance.getUserId());
-			List<PayB> payBList = this.findPages(payB, page).getRows();
+			List<PayB> BList = payBList.stream().filter(PayB->PayB.getUserId().equals(attendance.getUserId())).collect(Collectors.toList());
 			//个人杂工工资
-			farragoTaskPay.setUserId(attendance.getUserId());
-			List<FarragoTaskPay> farragoTaskPayList = farragoTaskPayService.findPages(farragoTaskPay, page).getRows();
+			List<FarragoTaskPay> FList = farragoTaskPayList.stream().filter(FarragoTaskPay->FarragoTaskPay.getUserId().equals(attendance.getUserId())).collect(Collectors.toList());
 			//b工资加上加绩工资，加上杂工和杂工绩效 。 一天的总工资
 			Double sumPayB = 0.0;
 			Double sumPayF = 0.0;
-			for(FarragoTaskPay fPay :farragoTaskPayList){
-				sumPayF+=((fPay.getPayNumber()!=null ? fPay.getPayNumber() : 0.0)+(fPay.getPerformancePayNumber()!=null ? fPay.getPerformancePayNumber() : 0.0 ));
+			List<Double> listDoubleB = new ArrayList<>();
+			List<Double> listDoubleF = new ArrayList<>();
+			 if(BList.size()>0){
+				 BList.stream().forEach(c->{
+					 listDoubleB.add(NumUtils.sum(NumUtils.setzro(c.getPayNumber()), NumUtils.setzro(c.getPerformancePayNumber())));
+			    	});
+				 sumPayB = NumUtils.sum(listDoubleB);
+			    }
+			 if(FList.size()>0){
+				 FList.stream().forEach(c->{
+					 listDoubleF.add(NumUtils.sum(NumUtils.setzro(c.getPayNumber()), NumUtils.setzro(c.getPerformancePayNumber())));
+			    	});
+				 sumPayF = NumUtils.sum(listDoubleF);
+			    }
+		 
+			//b工资+杂工工资
+			collect.setPayB(NumUtils.sum(sumPayB, sumPayF));
+			//整体上浮后的B
+			collect.setAddPayB(NumUtils.mul(collect.getPayB(), collectPay.getAddNumber()));
+			//个人调节系数
+			collect.setAddSelfNumber(1.0);
+			//考虑个人调节上浮后的B
+			collect.setAddSelfPayB(NumUtils.mul(collect.getPayB(),collect.getAddSelfNumber()));
+			//上浮后的加绩
+			collect.setAddPerformancePay(NumUtils.sub(collect.getAddSelfPayB(),collect.getPayA())>0 ? NumUtils.sub(collect.getAddSelfPayB(),collect.getPayA()) : 0.0);
+			//手动调节上浮后的加绩
+			collect.setHardAddPerformancePay(collectPay.getHardAddPerformancePay());
+			//上浮后无加绩固定给予(当没有考勤的员工无此加绩固定工资)
+			collect.setNoPerformanceNumber( collect.getPayA()!=0.0 ? collectPay.getNoPerformancePay() : 0.0);
+			//无绩效小时工资
+			collect.setNoTimePay(NumUtils.div(collect.getPayA(), collect.getTime(), 5) );
+			//有绩效小时工资(取所有工资中的最大项)
+			Double timePay = 0.0 ;
+			if(collect.getAddSelfPayB()>collect.getPayA()){
+				timePay = NumUtils.div(collect.getAddSelfPayB(),collect.getTime(),5);
+			}else{
+				timePay = NumUtils.div(NumUtils.sum(collect.getPayA(),collect.getNoPerformanceNumber()),collect.getTime(),5);
 			}
-			for(PayB payBs :payBList){
-				sumPayB+=((payBs.getPayNumber()!=null ? payBs.getPayNumber() : 0.0)+(payBs.getPerformancePayNumber()!=null ? payBs.getPerformancePayNumber() : 0.0 ));
-			}
-				//b工资+杂工工资
-				collect.setPayB(sumPayB+sumPayF);
-				//整体上浮后的B
-				collect.setAddPayB(collect.getPayB()*collectPay.getAddNumber());
-				//个人调节系数
-				collect.setAddSelfNumber(1.0);
-				//考虑个人调节上浮后的B
-				collect.setAddSelfPayB(collect.getPayB()*collect.getAddSelfNumber());
-				//上浮后的加绩
-				collect.setAddPerformancePay(collect.getAddSelfPayB()-collect.getPayA()>0 ? collect.getAddSelfPayB()-collect.getPayA() : 0.0);
-				//上浮后无加绩固定给予(当没有考勤的员工无此加绩固定工资)
-				collect.setNoPerformanceNumber( collect.getPayA()!=0.0 ? collectPay.getNoPerformancePay() : 0.0);
-				//无绩效小时工资
-				collect.setNoTimePay(collect.getPayA()/collect.getTime());
-				//有绩效小时工资(取所有工资中的最大项)
-				Double timePay = 0.0 ;
-				if(collect.getAddSelfPayB()>collect.getPayA()){
-					timePay = collect.getAddSelfPayB()/collect.getTime();
-				}else{
-					timePay = (collect.getPayA()+collect.getNoPerformanceNumber())/collect.getTime();
-				}
-				collect.setTimePay(timePay);
+			collect.setTimePay(timePay);
 			
 			//查询这条数据是否存在加绩流水表中
 			collect.setOrderTimeBegin(collectPay.getOrderTimeBegin());
 			collect.setOrderTimeEnd(collectPay.getOrderTimeEnd());
 			collect.setType(collectPay.getType());
-			List<CollectPay> cpList = collectPayService.findPages(collect, page).getRows();
-			if(cpList.size()==1){
-				if(cpList.get(0).getPayA().equals(collect.getPayA())  && cpList.get(0).getPayB().equals(collect.getPayB())){
-					collect = cpList.get(0);
+			CollectPay cpList = collectPayService.findCollectPay(collect);
+			if(cpList!=null){
+				//根据查询出来的统计数据和计算数据比对，不相同重新计算
+				if(cpList.getPayA().equals(collect.getPayA())  && cpList.getPayB().equals(collect.getPayB())){
+					collect = cpList;
 				}else{
-					collect.setAddSelfNumber(cpList.get(0).getAddSelfNumber());
+					collect.setAddSelfNumber(cpList.getAddSelfNumber());
 					//考虑个人调节上浮后的B
-					collect.setAddSelfPayB(collect.getPayB()*collect.getAddSelfNumber());
+					collect.setAddSelfPayB(NumUtils.mul(collect.getPayB(),collect.getAddSelfNumber()));
 					//上浮后的加绩
-					collect.setAddPerformancePay(collect.getAddSelfPayB()-collect.getPayA()>0 ? collect.getAddSelfPayB()-collect.getPayA() : 0.0);
+					collect.setAddPerformancePay(NumUtils.sub(collect.getAddSelfPayB(),collect.getPayA())>0 ? NumUtils.sub(collect.getAddSelfPayB(),collect.getPayA()) : 0.0);
 					//上浮后无加绩固定给予(当没有考勤的员工无此加绩固定工资)
 					collect.setNoPerformanceNumber( collect.getPayA()!=0.0 ? collectPay.getNoPerformancePay() : 0.0);
 					//无绩效小时工资
-					collect.setNoTimePay(collect.getPayA()/collect.getTime());
+					collect.setNoTimePay( NumUtils.div(collect.getPayA(), collect.getTime(), 5) );
 					//有绩效小时工资(取所有工资中的最大项)
 					if(collect.getAddSelfPayB()>collect.getPayA()){
-						timePay = collect.getAddSelfPayB()/collect.getTime();
+						timePay = NumUtils.div(collect.getAddSelfPayB(),collect.getTime(),5);
 					}else{
-						timePay = (collect.getPayA()+collect.getNoPerformanceNumber())/collect.getTime();
+						timePay = NumUtils.div(NumUtils.sum(collect.getPayA(),collect.getNoPerformanceNumber()),collect.getTime(),5);
 					}
 					collect.setTimePay(timePay);
-					collect.setId(cpList.get(0).getId());
+					collect.setId(cpList.getId());
 					collectPayDao.save(collect);
 				}
 			}else{
@@ -193,6 +206,16 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 			collectPayList.add(collect);
 		}
 		return collectPayList;
+	}
+
+	@Override
+	public List<PayB> findPayB(PayB payB) {
+		return dao.findByUserIdAndTypeAndAllotTimeBetween(payB.getUserId(),payB.getType(),payB.getOrderTimeBegin(),payB.getOrderTimeEnd());
+	}
+
+	@Override
+	public List<PayB> findPayBTwo(PayB payB) {
+		return dao.findByTypeAndAllotTimeBetween(payB.getType(),payB.getOrderTimeBegin(),payB.getOrderTimeEnd());
 	}
 
 }

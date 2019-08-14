@@ -1,8 +1,5 @@
 package com.bluewhite.system.sys.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +10,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
-import com.bluewhite.common.entity.ErrorCode;
+import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.system.sys.entity.Files;
 import com.bluewhite.system.sys.service.FilesService;
+import com.bluewhite.system.user.entity.Role;
+import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.entity.UserContract;
 
 @Controller
 public class FilesAction {
@@ -26,38 +28,32 @@ public class FilesAction {
 	
 	@Autowired
 	private FilesService fileService;
+	
+	private ClearCascadeJSON clearCascadeJSON;
+
+	{
+		clearCascadeJSON = ClearCascadeJSON
+				.get()
+				.addRetainTerm(Files.class,"id","url");
+	}
 
 
 	
 	/**
-	 * 文件上传
+	 * 照片上传
 	 * @param files
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "upload", method = RequestMethod.POST)
+	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse upload(@RequestParam(value = "file", required = true) MultipartFile[] files,
+	public CommonResponse upload(@RequestParam(value = "file", required = true) MultipartFile files,
 			HttpServletRequest request) {
-		CommonResponse cr = new CommonResponse();
-		List<Files> filesList = new ArrayList<Files>();
-		// 判断file数组不能为空并且长度大于0
-		if (files != null && files.length > 0) {
+			CommonResponse cr = new CommonResponse();
 			// 循环获取file数组中得文件
-			for (int i = 0; i < files.length; i++) {
-				MultipartFile file = files[i];
-				// 保存文件
-				Files fi = fileService.upFile(file, request);
-				filesList.add(fi);
-			}
-		}
-		if(filesList.size()>0){
-			cr.setMessage("成功上传"+filesList.size()+"条");
-			cr.setData(filesList);
-		}else{
-			cr.setCode(ErrorCode.INTERNAL_SERVER_ERROR.getCode());
-			cr.setMessage("上传失败");
-		}
+			Files fi = fileService.upFile(files, request);
+			cr.setMessage("成功上传");
+			cr.setData(clearCascadeJSON.format(fi).toJSON());
 		return cr;
 	}
 	

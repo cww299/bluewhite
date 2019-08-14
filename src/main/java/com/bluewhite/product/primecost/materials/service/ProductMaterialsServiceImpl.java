@@ -15,6 +15,7 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.product.primecost.materials.dao.ProductMaterialsDao;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 import com.bluewhite.product.product.dao.ProductDao;
@@ -30,24 +31,15 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 	
 	@Override
 	@Transactional
-	public ProductMaterials saveProductMaterials(ProductMaterials productMaterials)
-			throws Exception {
-		if(StringUtils.isEmpty(productMaterials.getNumber())){
-			throw new ServiceException("批量产品数量或模拟批量数不能为空");
-		}
+	public ProductMaterials saveProductMaterials(ProductMaterials productMaterials) {
+		NumUtils.setzro(productMaterials);
 		if(StringUtils.isEmpty(productMaterials.getManualLoss())){
 			productMaterials.setBatchMaterial(productMaterials.getOneMaterial()*productMaterials.getNumber());
 		}else{
 			productMaterials.setBatchMaterial(productMaterials.getManualLoss()*productMaterials.getOneMaterial()*productMaterials.getNumber());
 		}
 		productMaterials.setBatchMaterialPrice(productMaterials.getBatchMaterial()*productMaterials.getUnitCost());
-		dao.save(productMaterials);
-		//同时更新产品成本价格表(除面料以外的其他物料价格)
-		List<ProductMaterials> productMaterialsList = dao.findByProductId(productMaterials.getProductId());
-		Product product =  productdao.findOne(productMaterials.getProductId());
-		double batchMaterialPrice = productMaterialsList.stream().mapToDouble(ProductMaterials::getBatchMaterialPrice).sum();
-		product.getPrimeCost().setOtherCutPartsPrice((batchMaterialPrice)/productMaterials.getNumber());
-		productdao.save(product);
+		dao.save((ProductMaterials)NumUtils.setzro(productMaterials));
 		return productMaterials;
 	}
 
@@ -79,15 +71,23 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 
 	@Override
 	@Transactional
-	public void deleteProductMaterials(ProductMaterials productMaterials) {
+	public void deleteProductMaterials(Long id) {
+		ProductMaterials productMaterials = dao.findOne(id);
 		//删除
 		dao.delete(productMaterials.getId());
-		//同时更新产品成本价格表(除面料以外的其他物料价格)
-		List<ProductMaterials> productMaterialsList = dao.findByProductId(productMaterials.getProductId());
-		Product product =  productdao.findOne(productMaterials.getProductId());
-		double batchMaterialPrice = productMaterialsList.stream().mapToDouble(ProductMaterials::getBatchMaterialPrice).sum();
-		product.getPrimeCost().setOtherCutPartsPrice((batchMaterialPrice)/productMaterials.getNumber());
-		productdao.save(product);
+	}
+
+
+	@Override
+	public List<ProductMaterials> findByProductIdAndOverstockId(Long productId, Long id) {
+		
+		return dao.findByProductIdAndOverstockId(productId,id);
+	}
+
+
+	@Override
+	public List<ProductMaterials> findByProductId(Long productId) {
+		return dao.findByProductId(productId);
 	}
 
 }

@@ -30,7 +30,7 @@ import com.bluewhite.common.entity.CommonResponse;
 public class BaseDataAction{
 	
 	private final static ClearCascadeJSON ccj = 
-			ClearCascadeJSON.get().addRetainTerm(BaseData.class, "id", "name", "type", "parentId", "ord", "remark");
+			ClearCascadeJSON.get().addRetainTerm(BaseData.class, "id", "name", "type", "parentId", "ord", "remark","flag");
 	@Autowired
 	BaseDataService service;
 	
@@ -62,6 +62,7 @@ public class BaseDataAction{
 			, BaseData baseData){
 		CommonResponse cr = new CommonResponse();
 		service.insertBaseDataType(baseData);
+		cr.setMessage("成功");
 		return cr;
 	}
 	
@@ -77,6 +78,7 @@ public class BaseDataAction{
 			, BaseData baseData){
 		CommonResponse cr = new CommonResponse();
 		service.updateBaseDataType(baseData);
+		cr.setMessage("成功");
 		return cr;
 	}
 	
@@ -86,10 +88,9 @@ public class BaseDataAction{
 	 * @param response 返回
 	 * @return cr 
 	 */
-	@RequestMapping(value = "delete", method = RequestMethod.DELETE)
+	@RequestMapping(value = "delete", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse insertBaseData(HttpServletRequest request, HttpServletResponse response
-			, @RequestParam(value = "id", required = true) Long id){
+	public CommonResponse insertBaseData(Long id){
 		CommonResponse cr = new CommonResponse();
 		service.deleteBaseDataType(id);
 		return cr;
@@ -145,7 +146,4 @@ public class BaseDataAction{
 		cr.setData(ccj.format(baseDatas).toJSON());
 		return cr;
 	}
-	
-	
-
 }
