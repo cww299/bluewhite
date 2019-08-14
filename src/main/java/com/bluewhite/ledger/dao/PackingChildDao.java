@@ -19,11 +19,6 @@ public interface PackingChildDao  extends BaseRepository<PackingChild, Long>{
 	List<PackingChild> findBySendGoodsId(Long sendGoodsId);
 	
 	/**
-	 * 按产品和客户查找
-	 */
-	List<PackingChild> findByProductIdAndCustomerIdAndAudit(Long productId,Long customerId,Integer audit);
-	
-	/**
 	 * 按发货日期查找
 	 */
 	List<PackingChild> findBySendDateBetween(Date orderTimeBegin, Date orderTimeEnd);

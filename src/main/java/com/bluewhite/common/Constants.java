@@ -19,53 +19,65 @@ public class Constants {
 	
     
     /**   角色英文名称           **/
-    
     /**
      *  生产部一楼质检
      */
     public final static String PRODUCT_FRIST_QUALITY = "productFristQuality";
     //包含的部门
     public final static String QUALITY_ORGNAME = "48";
-    
     /**
      *  生产部一楼打包
      */
     public final static String PRODUCT_FRIST_PACK = "productFristPack";
     //包含的部门
     public final static String PACK_ORGNAME = "79";
-    
     /**
      *  生产部二楼针工
      */
     public final static String PRODUCT_TWO_DEEDLE = "productTwoDeedle";
     //包含的部门
     public final static String DEEDLE_ORGNAME = "84";
-    
     /**
      *  生产部二楼机工
      */
     public final static String PRODUCT_TWO_MACHINIST = "productTwoMachinist";
     //包含的部门
     public final static String MACHINIST_ORGNAME = "76";
-    
     /**
      *  生产部八号裁剪  
      */
     public final static String PRODUCT_RIGHT_TAILOR = "productEightTailor";
     //包含的部门
     public final static String TAILOR_ORGNAME = "72";
-    
-    
     /**
      * 包装部
      */
     public final static String  BAGABOARD = "大包上车";   
     public final static String  BOXBOARD= "箱上车";
-    
     /**
      *  试制部 
      */
     public final static String TRIALPRODUCT = "trialProduce";
+    
+    
+    
+    /******* 仓库管理员权限  ******/
+    /**
+     * 电商仓库管理员
+     */
+    public final static String ONLINEWAREHOUSE  = "onlineWarehouse";
+    /**
+     * 蓝白现场仓库管理员
+     */
+    public final static String SCENEWAREHOUSE  = "sceneWarehouse";
+    /**
+     * 蓝白成品仓库管理员
+     */
+    public final static String FINISHEDWAREHOUSE  = "finishedWarehouse";
+    /**
+     * 八号成品仓库管理员
+     */
+    public final static String EIGHTFINISHEDWAREHOUSE  = "eightFinishedWarehouse";
     
     
     /**
