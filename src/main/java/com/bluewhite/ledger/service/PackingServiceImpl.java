@@ -393,15 +393,14 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 							sendGoods.setSurplusNumber(sendGoods.getSurplusNumber() + p.getCount());
 							sendGoodsDao.save(sendGoods);
 						}
+						//当为八号调拨单发货时，找到调拨单，删除恢复调拨单数量
 						if(p.getLastPackingChildId()!=null){
-							packingChildDao.findByLastPackingChildId(lastpackingchildid);
-							
+							PackingChild packingChild = packingChildDao.findOne(p.getLastPackingChildId());
+							if(packingChild!=null){
+								packingChild.setSurplusNumber(packingChild.getSurplusNumber()+p.getCount());
+							}
+							packingChildDao.save(packingChild);
 						}
-//						if(){
-//							
-//						}
-						
-						
 					});
 					dao.delete(packing);
 					count++;
