@@ -202,9 +202,9 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					packingChild.setBacthNumber(sendGoods.getBacthNumber());
 					packingChild.setProductId(sendGoods.getProductId());
 				}
-				// 八号成品仓库
-				if (jsonObject.getLong("id") != null) {
-					PackingChild packingChildOld = packingChildDao.findOne(jsonObject.getLong("id"));
+				// 八号成品仓库发货 
+				if (jsonObject.getLong("lastPackingChildId") != null) {
+					PackingChild packingChildOld = packingChildDao.findOne(jsonObject.getLong("lastPackingChildId"));
 					packingChild.setBacthNumber(packingChildOld.getBacthNumber());
 					packingChild.setProductId(packingChildOld.getProductId());
 				}
@@ -275,14 +275,14 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					// 价格
 					sale.setPrice(0.0);
 					// 判定是否拥有版权
-					if (sale.getProduct().getName().contains(Constants.LX)
-							|| sale.getProduct().getName().contains(Constants.KT)
-							|| sale.getProduct().getName().contains(Constants.MW)
-							|| sale.getProduct().getName().contains(Constants.BM)
-							|| sale.getProduct().getName().contains(Constants.LP)
-							|| sale.getProduct().getName().contains(Constants.AB)
-							|| sale.getProduct().getName().contains(Constants.ZMJ)
-							|| sale.getProduct().getName().contains(Constants.XXYJN)) {
+					if (pc.getProduct().getName().contains(Constants.LX)
+							|| pc.getProduct().getName().contains(Constants.KT)
+							|| pc.getProduct().getName().contains(Constants.MW)
+							|| pc.getProduct().getName().contains(Constants.BM)
+							|| pc.getProduct().getName().contains(Constants.LP)
+							|| pc.getProduct().getName().contains(Constants.AB)
+							|| pc.getProduct().getName().contains(Constants.ZMJ)
+							|| pc.getProduct().getName().contains(Constants.XXYJN)) {
 						sale.setCopyright(1);
 					}
 					// 判定是否更换客户发货，更换客户发货变成新批次，->Y
