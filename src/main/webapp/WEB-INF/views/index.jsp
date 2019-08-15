@@ -19,7 +19,7 @@
   <div id="LAY_app">
     <div class="layui-layout layui-layout-admin">
       <div class="layui-header">
-        <!-- 头部区域 -->
+        <!-- 头部区域 --> 
         <ul class="layui-nav layui-layout-left">
           <li class="layui-nav-item layadmin-flexible" lay-unselect>
             <a href="javascript:;" layadmin-event="flexible" title="侧边伸缩">
