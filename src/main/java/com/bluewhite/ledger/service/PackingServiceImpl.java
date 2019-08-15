@@ -439,8 +439,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					// 当为八号调拨单发货时，找到调拨单，删除恢复调拨单数量
 					if (packingChild.getLastPackingChildId() != null) {
 						PackingChild oldPackingChild = packingChildDao.findOne(packingChild.getLastPackingChildId());
-						if (packingChild != null) {
-							packingChild.setSurplusNumber(packingChild.getSurplusNumber() + packingChild.getCount());
+						if (oldPackingChild != null) {
+							oldPackingChild.setSurplusNumber(oldPackingChild.getSurplusNumber() + packingChild.getCount());
 						}
 						packingChildDao.save(oldPackingChild);
 					}

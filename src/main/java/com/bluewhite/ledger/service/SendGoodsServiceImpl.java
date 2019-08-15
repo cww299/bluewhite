@@ -69,9 +69,10 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 				predicate.add(cb.between(root.get("sendDate").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));
 			}
-			
 			// 剩余数量大于0的单据
-			predicate.add(cb.greaterThan(root.get("surplusNumber").as(Integer.class), 0));
+			if(param.getSurplusNumber()!=null){
+				predicate.add(cb.greaterThan(root.get("surplusNumber").as(Integer.class), param.getSurplusNumber()));
+			}
 			
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
