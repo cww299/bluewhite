@@ -67,7 +67,7 @@ public class LedgerAction {
 						"packingDate","packingMaterials","flag","user","type","warehouseTypeId","warehouseType")
 				.addRetainTerm(User.class, "id", "userName")
 				.addRetainTerm(Customer.class, "id", "name")
-				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count","sendGoodsId","lastPackingChildId")
+				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count","sendGoodsId","lastPackingChildId","surplusNumber")
 				.addRetainTerm(PackingMaterials.class, "id", "packagingMaterials","packagingCount")
 				.addRetainTerm(Product.class, "id", "name", "number")
 				.addRetainTerm(BaseData.class, "id", "name");

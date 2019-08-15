@@ -209,6 +209,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				// 八号成品仓库发货 
 				if (jsonObject.getLong("lastPackingChildId") != null) {
 					PackingChild packingChildOld = packingChildDao.findOne(jsonObject.getLong("lastPackingChildId"));
+					packingChild.setLastPackingChildId(jsonObject.getLong("lastPackingChildId"));
 					packingChild.setBacthNumber(packingChildOld.getBacthNumber());
 					packingChild.setSurplusNumber(packingChildOld.getSurplusNumber() -  packingChild.getCount());
 					packingChild.setProductId(packingChildOld.getProductId());
@@ -449,6 +450,9 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				if (packingChild.getWarehouseId() == null) {
 					throw new ServiceException("入库仓库不能为空，请选择");
 				}
+				if(packingChild.getConfirmNumber()!=null){
+					throw new ServiceException("确认入库数量未填写，请先填写确认入库数量");
+				}
 				if (packingChild != null) {
 					Product product = packingChild.getProduct();
 					packingChild.setConfirm(1);
@@ -469,10 +473,9 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					}
 					productDao.save(product);
 					packingChildDao.save(packingChild);
-				}
-				;
+				};
+				count++;
 			}
-			count++;
 		}
 		return count;
 	}
@@ -544,6 +547,9 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				predicate.add(cb.between(root.get("sendDate").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));
 			}
+			// 剩余数量大于0的单据
+			predicate.add(cb.greaterThan(root.get("surplusNumber").as(Integer.class), 0));
+			
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
