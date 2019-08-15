@@ -251,8 +251,8 @@ layui.config({
 			var id = table.cache[tableId][trElem.data('index')].id;
 			var postData = {
 				id: id,
-				[field]:data.value
-			}
+			};
+			postData[field] = data.value;
 			mainJs.fUpdate(postData);
 		});
 		//增、删、改
@@ -445,14 +445,13 @@ layui.config({
 					var data = obj.data;
 						var postData = {
 							id: data.id,
-							[obj.field]: obj.value
-						}
-						mainJs.fUpdate(postData);
-				},
-				function(){ 
-					table.reload("tableData")  
-				}
-			)
+						};
+						postData[obj.field] = obj.value;
+						if(mainJs.fUpdate(postData))
+							table.reload("tableData");
+				},function(){
+					table.reload("tableData");
+				})
 		});
 		table.on('edit(tableBudget)', function(obj) {
 			var  data = obj.data;
@@ -460,8 +459,8 @@ layui.config({
 				return;
 			var postData = {
 				id: data.id,
-				[obj.field]: obj.value
-			}
+			};
+			postData[obj.field] = obj.value;
 			mainJs.fUpdate(postData);
 		});
 		table.on('edit(tableDataTwo)', function(obj) {
@@ -472,12 +471,12 @@ layui.config({
 					var data = obj.data;
 						var postData = {
 							id: data.id,
-							[obj.field]: obj.value
-						}
-						mainJs.fUpdate(postData);
-				},
-				function(){ 
-					table.reload("tableDataTwo")  
+						};
+						postData[obj.field] = obj.value;
+						if(mainJs.fUpdate(postData))
+							table.reload("tableDataTwo");
+				},function(){
+					table.reload("tableDataTwo");
 				}
 			)
 		});
@@ -508,31 +507,29 @@ layui.config({
 		//新增、修改接口
 		var mainJs = {
 		    fAdd : function(data){
+		    	var result = false;
 		    	var load = layer.load(1);
 		    	$.ajax({
 					url: "${ctx}/fince/addConsumption",
 					data: data,
 					async: false,
 					type: "POST",
-					success: function(result) {
+					success: function(r) {
 						var icon = 2;
-						if(0 == result.code) 
+						if(0 == r.code) {
+							result = true;
 				            icon = 1;
-						/* table.reload('tableData'); 
-		              	table.reload('tableDataTwo');
-	              		table.cache['tableBudget'] && table.reload('tableBudget'); */
-						layer.msg(result.message, {icon: icon, time:800});
-					},
-					error: function() {
-						layer.msg("操作失败！请重试", { icon: 2 });
-					},
+						}
+						layer.msg(r.message, {icon: icon });
+					}
 				});
 				layer.close(load);
+				return result;
 		    },
 		    fUpdate : function(data){
 		    	if(data.id=="")
-		    		return;
-		    	this.fAdd(data);
+		    		return false;
+		    	return this.fAdd(data);
 		    },
 		    fAddNotReload : function(data){
 		    	var load = layer.load(1);
