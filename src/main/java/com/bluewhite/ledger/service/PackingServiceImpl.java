@@ -175,6 +175,9 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	@Transactional
 	public Packing addPacking(Packing packing) {
 		CurrentUser cu = SessionManager.getUserSession();
+		if (cu.getRole().contains("superAdmin")) {
+			throw new ServiceException("请使用仓库管理员账号登录添加");
+		}
 		long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		packing.setFlag(0);
 		packing.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
@@ -334,12 +337,6 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			if (param.getWarehouseTypeId() != null) {
 				predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
 			}
-
-			// // 按出库仓库过滤
-			// if (param.getWarehouseTypeDeliveryId() != null) {
-			// predicate.add(cb.equal(root.get("warehouseTypeDeliveryId").as(Long.class),
-			// param.getWarehouseTypeDeliveryId()));
-			// }
 
 			// 调拨仓库是否确认数量
 			if (param.getConfirm() != null) {

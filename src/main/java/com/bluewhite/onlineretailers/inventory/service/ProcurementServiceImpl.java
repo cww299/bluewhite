@@ -36,8 +36,12 @@ import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
+import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.PackingChildDao;
+import com.bluewhite.ledger.dao.SaleDao;
+import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.PackingChild;
+import com.bluewhite.ledger.entity.Sale;
 import com.bluewhite.onlineretailers.inventory.dao.CommodityDao;
 import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
 import com.bluewhite.onlineretailers.inventory.dao.OnlineOrderChildDao;
@@ -75,6 +79,10 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	private ProcurementChildDao procurementChildDao;
 	@Autowired
 	private PackingChildDao packingChildDao;
+	@Autowired
+	private OrderDao orderDao;
+	@Autowired
+	private SaleDao saleDao;
 
 	@Override
 	public PageResult<Procurement> findPage(Procurement param, PageParameter page) {
@@ -94,7 +102,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			if (param.getStatus() != null) {
 				predicate.add(cb.equal(root.get("status").as(Integer.class), param.getStatus()));
 			}
-			
+
 			// 是否审核
 			if (param.getAudit() != null) {
 				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
@@ -179,9 +187,10 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 
 			// 按产品name过滤
 			if (!StringUtils.isEmpty(param.getProductName())) {
-				predicate.add(cb.like(root.get("commodity").get("skuCode").as(String.class), "%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
+				predicate.add(cb.like(root.get("commodity").get("skuCode").as(String.class),
+						"%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
 			}
-			
+
 			// 按单据编号
 			if (!StringUtils.isEmpty(param.getDocumentNumber())) {
 				predicate.add(cb.like(root.get("procurement").get("documentNumber").as(String.class),
@@ -305,11 +314,14 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 					if (inventorys.size() > 0) {
 						for (Inventory inventory : inventorys) {
 							if (inventory.getWarehouseId().equals(procurementChild.getWarehouseId())) {
-//								if (inventory.getNumber() < procurementChild.getNumber()) {
-//									throw new ServiceException(commodity.getSkuCode() + "当前仓库库存不足,无法出库，请补充库存");
-//								}else{
-									inventory.setNumber(inventory.getNumber() - procurementChild.getNumber());
-//								}
+								// if (inventory.getNumber() <
+								// procurementChild.getNumber()) {
+								// throw new
+								// ServiceException(commodity.getSkuCode() +
+								// "当前仓库库存不足,无法出库，请补充库存");
+								// }else{
+								inventory.setNumber(inventory.getNumber() - procurementChild.getNumber());
+								// }
 							}
 						}
 					}
@@ -566,7 +578,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	@Transactional
 	public void conversionProcurement(String ids) {
 		CurrentUser cu = SessionManager.getUserSession();
-		long warehouseTypeDeliveryId  = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+		long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idStrings = ids.split(",");
 			for (String id : idStrings) {
@@ -591,6 +603,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 								packingChild.setProductId(p.getCommodity().getProductId());
 								packingChild.setType(1);
 								packingChild.setFlag(0);
+								packingChild.setSendDate(p.getCreatedAt());
 								packingChildDao.save(packingChild);
 							}
 						}
@@ -608,7 +621,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			String[] idStrings = ids.split(",");
 			for (String id : idStrings) {
 				Procurement procurement = dao.findOne(Long.valueOf(id));
-				if (procurement.getAudit() == 1 ) {
+				if (procurement.getAudit() == 1) {
 					throw new ServiceException(procurement.getDocumentNumber() + "入库单已审核，请勿再次审核");
 				}
 				procurement.setAudit(1);
@@ -618,7 +631,8 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 						// 创建商品的库存
 						Set<Inventory> inventorys = commodity.getProduct().getInventorys();
 						// 获取库存
-						Inventory inventory = inventoryDao.findByProductIdAndWarehouseId(p.getCommodity().getProductId(),p.getWarehouseId());
+						Inventory inventory = inventoryDao
+								.findByProductIdAndWarehouseId(p.getCommodity().getProductId(), p.getWarehouseId());
 						if (inventory == null) {
 							inventory = new Inventory();
 							inventory.setCommodityId(p.getCommodityId());
@@ -627,7 +641,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 							inventory.setWarehouseId(p.getWarehouseId());
 							inventorys.add(inventory);
 							commodity.getProduct().setInventorys(inventorys);
-						} else { 
+						} else {
 							inventory.setNumber(inventory.getNumber() + p.getNumber());
 						}
 						commodityService.save(commodity);
@@ -651,7 +665,8 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			}
 			BeanCopyUtils.copyNotEmpty(procurementChild, pc, "");
 			// 更新主单总数
-			int number = pc.getProcurement().getProcurementChilds().stream().mapToInt(ProcurementChild::getNumber).sum();
+			int number = pc.getProcurement().getProcurementChilds().stream().mapToInt(ProcurementChild::getNumber)
+					.sum();
 			pc.getProcurement().setNumber(number);
 			pc.getProcurement().setResidueNumber(number);
 			// 更新上级转换的子单数量
@@ -672,14 +687,72 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	@Override
 	public int test(String ids) {
 		List<Commodity> commodityList = commodityDao.findByProductIdIsNull();
-		commodityList.stream().forEach(c->{
+		commodityList.stream().forEach(c -> {
 			List<Product> product = prodao.findByNumberNotNullAndNameLike(StringUtil.specialStrKeyword(c.getName()));
-			if(product.size()>0){
+			if (product.size() > 0) {
 				c.setProductId(product.get(0).getId());
 			}
 		});
 		commodityDao.save(commodityList);
 		return commodityList.size();
+	}
+
+	@Override
+	public int sendProcurement(String ids) {
+		int count = 0;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idStrings = ids.split(",");
+			for (String id : idStrings) {
+				Long idLong = Long.valueOf(id);
+				PackingChild pc = packingChildDao.findOne(idLong);
+				if (pc.getFlag() == 1) {
+					throw new ServiceException("已发货，请勿重复发货");
+				}
+				// 已发货
+				pc.setFlag(1);
+				// 生成财务销售单
+				Sale sale = new Sale(); 
+				sale.setProductId(pc.getProductId());
+				sale.setCustomerId(pc.getCustomerId());
+				sale.setBacthNumber(pc.getBacthNumber());
+				// 生成销售编号
+				sale.setSaleNumber(Constants.XS + "-" + sdf.format(pc.getSendDate()) + "-" + SalesUtils.get0LeftString(
+						packingChildDao.findBySendDateBetween(pc.getSendDate(), DatesUtil.getLastDayOftime(pc.getSendDate())).size(), 4));
+				// 未审核
+				sale.setAudit(0);
+				// 不转批次
+				sale.setNewBacth(0);
+				// 未拥有版权
+				sale.setCopyright(0);
+				// 未收货
+				sale.setDelivery(1);
+				// 业务员未确认数据
+				sale.setDeliveryStatus(0);
+				// 价格
+				sale.setPrice(0.0);
+				// 判定是否拥有版权
+				if (pc.getProduct().getName().contains(Constants.LX) || pc.getProduct().getName().contains(Constants.KT)
+						|| pc.getProduct().getName().contains(Constants.MW)
+						|| pc.getProduct().getName().contains(Constants.BM)
+						|| pc.getProduct().getName().contains(Constants.LP)
+						|| pc.getProduct().getName().contains(Constants.AB)
+						|| pc.getProduct().getName().contains(Constants.ZMJ)
+						|| pc.getProduct().getName().contains(Constants.XXYJN)) {
+					sale.setCopyright(1);
+				}
+				// 判定是否更换客户发货，更换客户发货变成新批次，->Y
+				Order order = orderDao.findByBacthNumber(pc.getBacthNumber());
+				if (order.getInternal() != 1 && order.getCustomerId() != pc.getCustomerId()) {
+					sale.setBacthNumber(pc.getBacthNumber().substring(0, pc.getBacthNumber().length() - 1) + "Y");
+					sale.setNewBacth(1);
+				}
+				saleDao.save(sale);
+				packingChildDao.save(pc);
+				count++;
+			}
+		}
+		return count;
 	}
 
 }

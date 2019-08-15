@@ -536,6 +536,21 @@ public class InventoryAction {
 		return cr;
 	}
 	
+	/**
+	 * 发货清单成为销售单
+	 * @param ids
+	 * @return
+	 */
+	@RequestMapping(value = "/inventory/sendProcurement", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse sendProcurement(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = procurementService.sendProcurement(ids);
+		cr.setMessage("成功审核"+count+"条发货清单");
+		return cr;
+	}
+	
+	
 	
 
 	@InitBinder

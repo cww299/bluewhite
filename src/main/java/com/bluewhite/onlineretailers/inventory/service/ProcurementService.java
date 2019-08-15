@@ -104,7 +104,14 @@ public interface ProcurementService extends BaseCRUDService<Procurement, Long> {
 	 */
 	void conversionProcurement(String ids);
 
-	
+	/**
+	 * 发货成为销售单
+	 * @param ids
+	 * @return
+	 */
+	int sendProcurement(String ids);
+
+
 	int test(String ids);
 
 
