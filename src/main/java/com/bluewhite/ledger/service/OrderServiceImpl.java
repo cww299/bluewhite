@@ -120,8 +120,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				//判定是否属于电子商务部的订单合同
 				if(orderNew.getCustomerId().equals(1)){
 					orderNew.setInternal(1);
+				}else{
+					orderNew.setInternal(0);
 				}
 				orderNew.setNumber(jsonObject.getInteger("number"));
+				orderNew.setSurplusNumber(jsonObject.getInteger("number"));
 				orderNew.setPrice(jsonObject.getDouble("price"));
 				orderNew.setRemark(jsonObject.getString("remark"));
 				orderNew.setOrderDate(jsonObject.getDate("orderDate")!= null ? jsonObject.getDate("orderDate"): new Date());
