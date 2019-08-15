@@ -617,20 +617,10 @@ layui.config({
 			})
 		}
 		function deletes(){
-			var choosed=layui.table.checkStatus('packTable').data;
-			if(choosed.length<1)
-				return myutil.emsg('请选择删除信息');
-			layer.confirm("是否确认删除？",function(){
-				var ids=[];
-				for(var i=0;i<choosed.length;i++)
-					ids.push(choosed[i].id);
-				myutil.deleteAjax({
-					url:'/ledger/deletePacking',
-					ids: ids.join(','),
-					success: function(){
-						table.reload('packTable');
-					}
-				})
+			myutil.deleTableIds({
+				url: '/ledger/deletePacking',
+				text: '请选择删除信息|是否确认删除？',
+				table: 'packTable',
 			})
 		}
 		
@@ -658,37 +648,23 @@ layui.config({
 		}
 		
 		function getData(){
-			myutil.getData({
+			allMaterials = myutil.getDataSync({
 				url:'${ctx}/basedata/list?type=packagingMaterials',
-				async: false,
-				done: function(data){
-					layui.each(data,function(index,item){
-						allMaterials.push({
-							id: item.id, name: item.name
-						})
-					})
-				}
 			});
 			getCustomerSelect('');
 			getInventoryType('');
 			getPackPeople();
 		}
 		function getNumber(){
-			myutil.getData({
-				url:'${ctx}/ledger/getPackingNumber?sendDate='+searchTime+' 00:00:00',
-				async: false,
-				done: function(data){
-					$('#addEditNumber').val(data);
-				}
-			});
+			$('#addEditNumber').val(
+				myutil.getDataSync({
+					url:'${ctx}/ledger/getPackingNumber?sendDate='+searchTime+' 00:00:00',
+				})
+			);
 		}
 		function getAllSend(){
-			myutil.getData({
+			allSend = myutil.getDataSync({
 				url:'${ctx}/ledger/getSearchSendGoods?sendDate='+searchTime+' 00:00:00',
-				async: false,
-				done: function(data){
-					allSend = data;
-				}
 			});
 		}
 		function getInventoryType(){
