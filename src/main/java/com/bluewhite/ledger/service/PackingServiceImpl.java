@@ -556,4 +556,37 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 		});
 		return result;
 	}
+
+	@Override
+	public int cancelConfirmPackingChild(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idStrings = ids.split(",");
+			for (String id : idStrings) {
+				PackingChild packingChild = packingChildDao.findOne(Long.valueOf(id));
+				List<PackingChild> oldPackingChild = packingChildDao.findByLastPackingChildId(Long.valueOf(id));
+				if (oldPackingChild.size()>0) {
+					throw new ServiceException(packingChild.getBacthNumber()+packingChild.getProduct().getName()+"的调拨单已经有发货单记录，需要取消审核，请先删除发货记录");
+				}
+				if (packingChild.getConfirm() == 0) {
+					throw new ServiceException("调拨单未审核，请勿取消审核");
+				}
+				if (packingChild != null) {
+					Product product = packingChild.getProduct();
+					packingChild.setConfirm(0);
+					// 创建商品的库存
+					Set<Inventory> inventorys = product.getInventorys();
+					// 获取库存
+					Inventory inventory = inventoryDao.findByProductIdAndWarehouseId(product.getId(),
+							packingChild.getWarehouseId());
+					inventory.setNumber(inventory.getNumber() - packingChild.getConfirmNumber());
+					productDao.save(product);
+					packingChildDao.save(packingChild);
+				};
+				count++;
+			}
+		}
+		return count;
+	}
+
 }

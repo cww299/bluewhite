@@ -639,6 +639,17 @@ public class LedgerAction {
 		return cr;
 	}
 	
+	/**
+	 * 取消审核入库
+	 */
+	@RequestMapping(value = "/ledger/cancelConfirmPackingChild", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse cancelConfirmPackingChild(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count  = packingService.cancelConfirmPackingChild(ids);
+		cr.setMessage("成功取消审核"+count+"条入库单");
+		return cr;
+	}
 	
 
 	@InitBinder

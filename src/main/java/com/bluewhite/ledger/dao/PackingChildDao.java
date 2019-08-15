@@ -22,4 +22,11 @@ public interface PackingChildDao  extends BaseRepository<PackingChild, Long>{
 	 * 按发货日期查找
 	 */
 	List<PackingChild> findBySendDateBetween(Date orderTimeBegin, Date orderTimeEnd);
+	
+	/**
+	 * 根据调拨单id
+	 * @param lastpackingchildid
+	 * @return
+	 */
+	List<PackingChild> findByLastPackingChildId(Long lastpackingchildid);
 }
