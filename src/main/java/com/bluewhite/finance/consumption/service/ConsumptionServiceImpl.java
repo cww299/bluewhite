@@ -178,6 +178,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	@Override
 	@Transactional
 	public Consumption addConsumption(Consumption consumption) {
+		Double originalMoney = consumption.getMoney();
 		CurrentUser cu = SessionManager.getUserSession();
 		Consumption ot = null;
 		Double money = null;
@@ -195,8 +196,11 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		switch (consumption.getType()) {
 		case 1:
 			flag = false;
+			if(originalMoney==null){
+				break;
+			}
 			// 修改子类报销单1.改变当前子类报销金额 2改变父类预算的报销金额
-			if (consumption.getParentId() != null) {
+			if (consumption.getId() != null && consumption.getParentId() != null && consumption.getBudget() == 0) {
 				// 获取报销单的父id实体
 				Consumption parentConsumption = dao.findOne(consumption.getParentId());
 				// 表示为修改
@@ -210,16 +214,17 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			}
 
 			// 修改父类报销单
-			if (consumption.getId() != null && consumption.getBudget() == 1) {
-				// 获取父类报销单的全部子类
-				List<Consumption> consumptionList = dao.findByParentId(consumption.getId());
-				if (consumptionList.size() > 0) {
-					List<Double> listDouble = new ArrayList<>();
-					consumptionList.stream().forEach(c -> {
-						listDouble.add(c.getMoney());
-					});
-					consumption.setMoney(NumUtils.sub(consumption.getMoney(), NumUtils.sum(listDouble)));
-				}
+			if (consumption.getId() != null && consumption.getParentId() == null && consumption.getBudget() == 1) {
+					// 获取父类报销单的全部子类
+					List<Consumption> consumptionList = dao.findByParentId(consumption.getId());
+					if (consumptionList.size() > 0) {
+						List<Double> listDouble = new ArrayList<>();
+						consumptionList.stream().forEach(c -> {
+							listDouble.add(c.getMoney());
+						});
+						consumption.setMoney(NumUtils.sub(consumption.getMoney(), NumUtils.sum(listDouble)));
+					}
+				
 			}
 
 			if (consumption.getPaymentMoney() != null && consumption.getPaymentMoney() > consumption.getMoney()) {
