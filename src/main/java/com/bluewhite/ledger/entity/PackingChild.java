@@ -148,7 +148,7 @@ public class PackingChild extends BaseEntity<Long> {
 	 * 八号仓库上一级调拨单id
 	 */
 	@Column(name = "last_packing_childId")
-	private String lastPackingChildId;
+	private Long lastPackingChildId;
 	
 	/**
 	 * 八号仓库上一级调拨单剩余数量
@@ -215,11 +215,11 @@ public class PackingChild extends BaseEntity<Long> {
 		this.surplusNumber = surplusNumber;
 	}
 
-	public String getLastPackingChildId() {
+	public Long getLastPackingChildId() {
 		return lastPackingChildId;
 	}
 
-	public void setLastPackingChildId(String lastPackingChildId) {
+	public void setLastPackingChildId(Long lastPackingChildId) {
 		this.lastPackingChildId = lastPackingChildId;
 	}
 
