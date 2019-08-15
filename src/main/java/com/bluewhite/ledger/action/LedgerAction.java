@@ -89,9 +89,9 @@ public class LedgerAction {
 	
 	private ClearCascadeJSON clearCascadeJSONChild;
 	{
-		clearCascadeJSONSale = ClearCascadeJSON.get()
+		clearCascadeJSONChild = ClearCascadeJSON.get()
 				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count"
-						,"customer" ,"remark","warehouse","warehouseType","confirm","confirmNumber")
+						,"customer" ,"remark","warehouse","warehouseType","confirm","confirmNumber","warehouseTypeDelivery")
 				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(Customer.class, "id", "name","user")
 				.addRetainTerm(User.class, "id", "userName")
