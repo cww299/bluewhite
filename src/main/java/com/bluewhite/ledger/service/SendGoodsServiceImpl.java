@@ -84,9 +84,6 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 
 	@Override
 	public SendGoods addSendGoods(SendGoods sendGoods) {
-		Order order = orderdao.findOne(sendGoods.getOrderId());
-		sendGoods.setBacthNumber(order.getBacthNumber());
-		sendGoods.setProductId(order.getProductId());
 		if (sendGoods.getId() != null) {
 			List<PackingChild> sendGoodsList = packingChildDao.findBySendGoodsId(sendGoods.getId());
 			if (sendGoodsList.size() > 0) {
@@ -96,6 +93,9 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			BeanCopyUtils.copyNotEmpty(sendGoods, ot, "");
 			dao.save(ot);
 		} else {
+			Order order = orderdao.findOne(sendGoods.getOrderId());
+			sendGoods.setBacthNumber(order.getBacthNumber());
+			sendGoods.setProductId(order.getProductId());
 			sendGoods.setSurplusNumber(sendGoods.getNumber());
 			dao.save(sendGoods);
 		}
