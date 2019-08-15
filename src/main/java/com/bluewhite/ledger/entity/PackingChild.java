@@ -144,6 +144,11 @@ public class PackingChild extends BaseEntity<Long> {
 	@JoinColumn(name = "warehouse_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData warehouse;
 	
+	/**
+	 * 八号仓库上一级调拨单id
+	 */
+	@Column(name = "last_packing_childId")
+	private String lastPackingChildId;
 	
 	/**
 	 * 贴包数量（包或者箱）
@@ -196,6 +201,14 @@ public class PackingChild extends BaseEntity<Long> {
 	
 	
 	
+	public String getLastPackingChildId() {
+		return lastPackingChildId;
+	}
+
+	public void setLastPackingChildId(String lastPackingChildId) {
+		this.lastPackingChildId = lastPackingChildId;
+	}
+
 	public Integer getCount() {
 		return count;
 	}

@@ -90,7 +90,7 @@ public class LedgerAction {
 	{
 		clearCascadeJSONChild = ClearCascadeJSON.get()
 				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count","sendDate"
-						,"customer" ,"remark","warehouse","warehouseType","confirm","confirmNumber","warehouseTypeDelivery")
+						,"customer" ,"remark","warehouse","warehouseType","confirm","confirmNumber","warehouseTypeDelivery","lastPackingChildId")
 				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(Customer.class, "id", "name","user")
 				.addRetainTerm(User.class, "id", "userName")
@@ -98,9 +98,9 @@ public class LedgerAction {
 	}
 	
 	
-	private ClearCascadeJSON clearCascadeJSONPricce;
+	private ClearCascadeJSON clearCascadeJSONPrice;
 	{
-		clearCascadeJSONPricce = ClearCascadeJSON.get()
+		clearCascadeJSONPrice = ClearCascadeJSON.get()
 				.addRetainTerm(PackingChild.class, "id","product","price","customer","sendDate")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(Product.class, "id", "name", "number");
@@ -446,7 +446,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse getSalePrice(Sale sale) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONPricce.format(saleService.getSalePrice(sale)).toJSON());
+		cr.setData(clearCascadeJSONPrice.format(saleService.getSalePrice(sale)).toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
