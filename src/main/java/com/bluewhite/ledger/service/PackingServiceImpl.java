@@ -486,4 +486,64 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 		}
 		return packingChild;
 	}
+
+	@Override
+	public List<PackingChild> packingChildList(PackingChild param) {
+		CurrentUser cu = SessionManager.getUserSession();
+		Long warehouseTypeDeliveryId  = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+		if(warehouseTypeDeliveryId!=null){
+			param.setWarehouseTypeId(warehouseTypeDeliveryId);
+		}
+		
+		List<PackingChild> result = packingChildDao.findAll((root, query, cb) -> {
+			List<Predicate> predicate = new ArrayList<>();
+			// 按id过滤
+			if (param.getId() != null) {
+				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
+			}
+			// 按客户名称
+			if (!StringUtils.isEmpty(param.getCustomerName())) {
+				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
+						"%" + param.getCustomerName() + "%"));
+			}
+			// 是否发货
+			if (param.getFlag() != null) {
+				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
+			}
+
+			// 按贴包类型过滤
+			if (param.getType() != null) {
+				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
+			}
+
+			// 按调拨仓库过滤
+			if (param.getWarehouseTypeId() != null) {
+				predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
+			}
+			
+			// 调拨仓库是否确认数量
+			if (param.getConfirm() != null) {
+				predicate.add(cb.equal(root.get("confirm").as(Long.class), param.getConfirm()));
+			}
+
+			// 按产品name过滤
+			if (!StringUtils.isEmpty(param.getProductName())) {
+				predicate.add(
+						cb.equal(root.get("product").get("name").as(Long.class), "%" + param.getProductName() + "%"));
+			}
+			// 按批次查找
+			if (!StringUtils.isEmpty(param.getBacthNumber())) {
+				predicate.add(cb.like(root.get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
+			}
+			// 按发货日期
+			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+				predicate.add(cb.between(root.get("sendDate").as(Date.class), param.getOrderTimeBegin(),
+						param.getOrderTimeEnd()));
+			}
+			Predicate[] pre = new Predicate[predicate.size()];
+			query.where(predicate.toArray(pre));
+			return null;
+		});
+		return result;
+	}
 }

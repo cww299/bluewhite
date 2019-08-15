@@ -1,6 +1,7 @@
 package com.bluewhite.ledger.service;
 
 import java.util.Date;
+import java.util.List;
 
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
@@ -81,6 +82,13 @@ public interface PackingService extends BaseCRUDService<Packing, Long>{
 	 * @return
 	 */
 	public PackingChild updateInventoryPackingChild(PackingChild packingChild);
+	
+	/**
+	 * 查看贴包子单
+	 * @param packingChild
+	 * @return
+	 */
+	public List<PackingChild> packingChildList(PackingChild packingChild);
 
 
 }
