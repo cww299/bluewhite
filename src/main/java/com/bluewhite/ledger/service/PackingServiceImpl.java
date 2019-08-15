@@ -303,7 +303,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 		CurrentUser cu = SessionManager.getUserSession();
 		Long warehouseTypeDeliveryId  = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		if(warehouseTypeDeliveryId!=null){
-			param.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
+			param.setWarehouseTypeId(warehouseTypeDeliveryId);
 		}
 		
 		Page<PackingChild> pages = packingChildDao.findAll((root, query, cb) -> {
@@ -332,10 +332,10 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
 			}
 			
-			// 按出库仓库过滤
-			if (param.getWarehouseTypeDeliveryId() != null) {
-				predicate.add(cb.equal(root.get("warehouseTypeDeliveryId").as(Long.class), param.getWarehouseTypeDeliveryId()));
-			}
+//			// 按出库仓库过滤
+//			if (param.getWarehouseTypeDeliveryId() != null) {
+//				predicate.add(cb.equal(root.get("warehouseTypeDeliveryId").as(Long.class), param.getWarehouseTypeDeliveryId()));
+//			}
 			
 			// 调拨仓库是否确认数量
 			if (param.getConfirm() != null) {
