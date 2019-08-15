@@ -193,9 +193,6 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 						throw new ServiceException("贴报单已发货，无法修改");
 					}
 				}
-				packingChild.setConfirm(0);
-				packingChild.setFlag(0);
-				packingChild.setCount(jsonObject.getInteger("count"));
 				// 蓝白现场仓库发货 改变待发货单的剩余数量
 				if (jsonObject.getLong("sendGoodsId") != null) {
 					packingChild.setSurplusNumber(packingChild.getCount());
@@ -206,18 +203,24 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					packingChild.setBacthNumber(sendGoods.getBacthNumber());
 					packingChild.setProductId(sendGoods.getProductId());
 				}
-				// 八号成品仓库发货 
+				// 八号成品仓库发货
 				if (jsonObject.getLong("lastPackingChildId") != null) {
 					PackingChild packingChildOld = packingChildDao.findOne(jsonObject.getLong("lastPackingChildId"));
 					packingChild.setLastPackingChildId(jsonObject.getLong("lastPackingChildId"));
-					if(packingChildOld.getSurplusNumber()<packingChild.getCount()){
+					Integer surplusNumber = jsonObject.getLong("packingChildId") != null
+							? (packingChildOld.getSurplusNumber() + packingChild.getCount())
+							: packingChildOld.getSurplusNumber();
+					if (surplusNumber < jsonObject.getInteger("count")) {
 						throw new ServiceException("发货数量不能大于剩余数量");
 					}
-					packingChildOld.setSurplusNumber(packingChildOld.getSurplusNumber() - packingChild.getCount());
+					packingChildOld.setSurplusNumber(surplusNumber - jsonObject.getInteger("count"));
 					packingChildDao.save(packingChildOld);
 					packingChild.setSurplusNumber(packingChild.getCount());
 					packingChild.setBacthNumber(packingChildOld.getBacthNumber());
 					packingChild.setProductId(packingChildOld.getProductId());
+					packingChild.setCount(jsonObject.getInteger("count"));
+					packingChild.setConfirm(0);
+					packingChild.setFlag(0);
 				}
 				packingChild.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
 				packingChild.setCustomerId(packing.getCustomerId());
@@ -270,9 +273,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					sale.setCustomerId(pc.getCustomerId());
 					sale.setBacthNumber(pc.getBacthNumber());
 					// 生成销售编号
-					sale.setSaleNumber(Constants.XS + "-" + sdf.format(time)
-							+ "-" + SalesUtils.get0LeftString(packingChildDao
-									.findBySendDateBetween(time, DatesUtil.getLastDayOftime(time)).size(), 4));
+					sale.setSaleNumber(Constants.XS + "-" + sdf.format(time) + "-" + SalesUtils.get0LeftString(
+							packingChildDao.findBySendDateBetween(time, DatesUtil.getLastDayOftime(time)).size(), 4));
 					// 未审核
 					sale.setAudit(0);
 					// 不转批次
@@ -389,15 +391,15 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					List<PackingChild> packingChildList = packing.getPackingChilds();
 					packingChildList.stream().forEach(p -> {
 						SendGoods sendGoods = p.getSendGoods();
-						if(sendGoods!=null){
+						if (sendGoods != null) {
 							sendGoods.setSurplusNumber(sendGoods.getSurplusNumber() + p.getCount());
 							sendGoodsDao.save(sendGoods);
 						}
-						//当为八号调拨单发货时，找到调拨单，删除恢复调拨单数量
-						if(p.getLastPackingChildId()!=null){
+						// 当为八号调拨单发货时，找到调拨单，删除恢复调拨单数量
+						if (p.getLastPackingChildId() != null) {
 							PackingChild packingChild = packingChildDao.findOne(p.getLastPackingChildId());
-							if(packingChild!=null){
-								packingChild.setSurplusNumber(packingChild.getSurplusNumber()+p.getCount());
+							if (packingChild != null) {
+								packingChild.setSurplusNumber(packingChild.getSurplusNumber() + p.getCount());
 							}
 							packingChildDao.save(packingChild);
 						}
@@ -465,7 +467,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				if (packingChild.getWarehouseId() == null) {
 					throw new ServiceException("入库仓库不能为空，请选择");
 				}
-				if(packingChild.getConfirmNumber() == null){
+				if (packingChild.getConfirmNumber() == null) {
 					throw new ServiceException("确认入库数量未填写，请先填写确认入库数量");
 				}
 				if (packingChild != null) {
@@ -488,7 +490,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					}
 					productDao.save(product);
 					packingChildDao.save(packingChild);
-				};
+				}
+				;
 				count++;
 			}
 		}
@@ -563,8 +566,10 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 						param.getOrderTimeEnd()));
 			}
 			// 剩余数量大于0的单据
-			predicate.add(cb.greaterThan(root.get("surplusNumber").as(Integer.class), 0));
-			
+			if(param.getSurplusNumber()!=null){
+				predicate.add(cb.greaterThan(root.get("surplusNumber").as(Integer.class), param.getSurplusNumber()));
+			}
+
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
@@ -580,8 +585,9 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			for (String id : idStrings) {
 				PackingChild packingChild = packingChildDao.findOne(Long.valueOf(id));
 				List<PackingChild> oldPackingChild = packingChildDao.findByLastPackingChildId(Long.valueOf(id));
-				if (oldPackingChild.size()>0) {
-					throw new ServiceException(packingChild.getBacthNumber()+packingChild.getProduct().getName()+"的调拨单已经有发货单记录，需要取消审核，请先删除发货记录");
+				if (oldPackingChild.size() > 0) {
+					throw new ServiceException(packingChild.getBacthNumber() + packingChild.getProduct().getName()
+							+ "的调拨单已经有发货单记录，需要取消审核，请先删除发货记录");
 				}
 				if (packingChild.getConfirm() == 0) {
 					throw new ServiceException("调拨单未审核，请勿取消审核");
@@ -597,7 +603,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					inventory.setNumber(inventory.getNumber() - packingChild.getConfirmNumber());
 					productDao.save(product);
 					packingChildDao.save(packingChild);
-				};
+				}
+				;
 				count++;
 			}
 		}
