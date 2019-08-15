@@ -520,22 +520,22 @@ public class InventoryAction {
 		return cr;
 	}
 	
+	/*************  电子商务库存管理  **************/
 	
 	/**
 	 * 将出库单转换成发货清单
-	 * 确认后转到财务发货清单
-	 * 
+	 * @param ids
+	 * @return
 	 */
 	@RequestMapping(value = "/inventory/conversionProcurement", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse storageUser(String ids) {
+	public CommonResponse conversionProcurement(String ids) {
 		CommonResponse cr = new CommonResponse();
 		procurementService.conversionProcurement(ids);
 		cr.setMessage("成功转换成发货单");
 		return cr;
 	}
 	
-
 	
 
 	@InitBinder

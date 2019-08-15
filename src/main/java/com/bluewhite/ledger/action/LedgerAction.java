@@ -73,10 +73,10 @@ public class LedgerAction {
 				.addRetainTerm(BaseData.class, "id", "name");
 	}
 	
-	private ClearCascadeJSON clearCascadeJSONChild;
+	private ClearCascadeJSON clearCascadeJSONSale;
 	{
-		clearCascadeJSONChild = ClearCascadeJSON.get()
-				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count"
+		clearCascadeJSONSale = ClearCascadeJSON.get()
+				.addRetainTerm(Sale.class, "id", "bacthNumber", "product"
 						,"price","count","sumPrice","copyright","newBacth"
 						,"saleNumber","sendDate","flag","customer" ,"remark","audit","delivery",
 						"deliveryNumber","deliveryDate","disputeNumber","disputeRemark","deliveryCollectionDate"
@@ -86,6 +86,18 @@ public class LedgerAction {
 				.addRetainTerm(User.class, "id", "userName")
 				.addRetainTerm(Product.class, "id", "name", "number");
 	}
+	
+	private ClearCascadeJSON clearCascadeJSONChild;
+	{
+		clearCascadeJSONSale = ClearCascadeJSON.get()
+				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count"
+						,"customer" ,"remark","warehouse","warehouseType","confirm","confirmNumber")
+				.addRetainTerm(BaseData.class, "id", "name")
+				.addRetainTerm(Customer.class, "id", "name","user")
+				.addRetainTerm(User.class, "id", "userName")
+				.addRetainTerm(Product.class, "id", "name", "number");
+	}
+	
 	
 	private ClearCascadeJSON clearCascadeJSONPricce;
 	{
@@ -380,7 +392,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse salePage(PageParameter page, Sale sale) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONChild.format(saleService.findSalePage(sale, page)).toJSON());
+		cr.setData(clearCascadeJSONSale.format(saleService.findSalePage(sale, page)).toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
@@ -431,9 +443,9 @@ public class LedgerAction {
 	 * @param packingChild
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/getPackingChildPrice", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/getSalePrice", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getPackingChildPrice(Sale sale) {
+	public CommonResponse getSalePrice(Sale sale) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(clearCascadeJSONPricce.format(saleService.getSalePrice(sale)).toJSON());
 		cr.setMessage("查看成功");
@@ -575,6 +587,19 @@ public class LedgerAction {
 	
 	/*****************   仓库       ************/
 	
+	
+	/**
+	 * 分页查看贴包子单
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/packingChildPage", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse packingChildPage(PageParameter page, PackingChild packingChild) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONChild.format(packingService.findPackingChildPage(packingChild, page)).toJSON());
+		cr.setMessage("查看成功");
+		return cr;
+	}
 	
 	
 	/**

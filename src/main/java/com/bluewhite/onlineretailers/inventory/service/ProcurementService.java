@@ -10,7 +10,6 @@ import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.excel.ExcelListener;
-import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 
@@ -103,8 +102,10 @@ public interface ProcurementService extends BaseCRUDService<Procurement, Long> {
 	 * @param ids
 	 * @return
 	 */
-	int conversionProcurement(String ids);
+	void conversionProcurement(String ids);
 
-
+	
 	int test(String ids);
+
+
 }

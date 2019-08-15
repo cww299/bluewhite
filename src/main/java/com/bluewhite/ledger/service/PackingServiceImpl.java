@@ -76,6 +76,13 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 
 	@Override
 	public PageResult<Packing> findPages(Packing param, PageParameter page) {
+		
+		CurrentUser cu = SessionManager.getUserSession();
+		Long warehouseTypeDeliveryId  = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+		if(warehouseTypeDeliveryId!=null){
+			param.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
+		}
+		
 		Page<Packing> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
@@ -98,6 +105,12 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			if (param.getWarehouseTypeId() != null) {
 				predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
 			}
+
+			// 按出库仓库过滤
+			if (param.getWarehouseTypeDeliveryId() != null) {
+				predicate.add(cb.equal(root.get("warehouseTypeDeliveryId").as(Long.class), param.getWarehouseTypeDeliveryId()));
+			}
+			
 			// 按客户名称
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
 				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
@@ -163,6 +176,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 		CurrentUser cu = SessionManager.getUserSession();
 		long warehouseTypeDeliveryId  = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		packing.setFlag(0);
+		packing.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
 		// 新增子单
 		if (!StringUtils.isEmpty(packing.getChildPacking())) {
 			JSONArray jsonArray = JSON.parseArray(packing.getChildPacking());
@@ -236,7 +250,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				for (PackingChild pc : packingChildList) {
 					// 已发货
 					pc.setFlag(1);
-					pc.setSendDate(time == null ? packing.getPackingDate() : time);
+					pc.setSendDate(time == null ? pc.getCreatedAt() : time);
 					//生成财务销售单
 					Sale sale = new Sale();
 					sale.setProductId(pc.getProductId());
@@ -271,7 +285,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					}
 					// 判定是否更换客户发货，更换客户发货变成新批次，->Y
 					Order order = orderDao.findByBacthNumber(pc.getBacthNumber());
-					if (order.getCustomerId() != pc.getPacking().getCustomerId()) {
+					if(order.getInternal()!=1 && order.getCustomerId() != pc.getCustomerId()){
 						sale.setBacthNumber(pc.getBacthNumber().substring(0, pc.getBacthNumber().length() - 1) + "Y");
 						sale.setNewBacth(1);
 					}
@@ -286,6 +300,12 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 
 	@Override
 	public PageResult<PackingChild> findPackingChildPage(PackingChild param, PageParameter page) {
+		CurrentUser cu = SessionManager.getUserSession();
+		Long warehouseTypeDeliveryId  = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+		if(warehouseTypeDeliveryId!=null){
+			param.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
+		}
+		
 		Page<PackingChild> pages = packingChildDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
@@ -310,6 +330,11 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			// 按调拨仓库过滤
 			if (param.getWarehouseTypeId() != null) {
 				predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
+			}
+			
+			// 按出库仓库过滤
+			if (param.getWarehouseTypeDeliveryId() != null) {
+				predicate.add(cb.equal(root.get("warehouseTypeDeliveryId").as(Long.class), param.getWarehouseTypeDeliveryId()));
 			}
 			
 			// 调拨仓库是否确认数量

@@ -564,7 +564,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 
 	@Override
 	@Transactional
-	public int conversionProcurement(String ids) {
+	public void conversionProcurement(String ids) {
 		CurrentUser cu = SessionManager.getUserSession();
 		long warehouseTypeDeliveryId  = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		if (!StringUtils.isEmpty(ids)) {
@@ -590,7 +590,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 								packingChild.setCustomerId(procurement.getOnlineCustomerId());
 								packingChild.setProductId(p.getCommodity().getProductId());
 								packingChild.setType(1);
-								packingChild.setSendDate(p.getCreatedAt());
+								packingChild.setFlag(0);
 								packingChildDao.save(packingChild);
 							}
 						}
@@ -598,7 +598,6 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				}
 			}
 		}
-		return 0;
 	}
 
 	@Override
