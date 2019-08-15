@@ -102,12 +102,27 @@ public class Packing extends BaseEntity<Long> {
 	@Column(name = "warehouse_type_id")
 	private Long warehouseTypeId;
 	
+	/**
+	 * 调拨仓库
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData warehouseType;
 	
 	/**
 	 * 出库仓库id
 	 */
 	@Column(name = "warehouse_type_delivery_id")
 	private Long warehouseTypeDeliveryId;
+	
+	
+	/**
+	 * 出库仓库
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "warehouse_type_delivery_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData warehouseTypeDelivery;
+	
 	
 	/**
 	 * 批次号
@@ -154,9 +169,22 @@ public class Packing extends BaseEntity<Long> {
 	
 
 	
-	
-	
 
+	public BaseData getWarehouseType() {
+		return warehouseType;
+	}
+
+	public void setWarehouseType(BaseData warehouseType) {
+		this.warehouseType = warehouseType;
+	}
+
+	public BaseData getWarehouseTypeDelivery() {
+		return warehouseTypeDelivery;
+	}
+
+	public void setWarehouseTypeDelivery(BaseData warehouseTypeDelivery) {
+		this.warehouseTypeDelivery = warehouseTypeDelivery;
+	}
 
 	public Long getWarehouseTypeDeliveryId() {
 		return warehouseTypeDeliveryId;

@@ -76,10 +76,9 @@ public class LedgerAction {
 	private ClearCascadeJSON clearCascadeJSONSale;
 	{
 		clearCascadeJSONSale = ClearCascadeJSON.get()
-				.addRetainTerm(Sale.class, "id", "bacthNumber", "product"
-						,"price","count","sumPrice","copyright","newBacth"
-						,"saleNumber","sendDate","flag","customer" ,"remark","audit","delivery",
-						"deliveryNumber","deliveryDate","disputeNumber","disputeRemark","deliveryCollectionDate"
+				.addRetainTerm(Sale.class, "id", "bacthNumber", "product","price","count","sumPrice","copyright","newBacth"
+						,"saleNumber","sendDate","flag","customer" ,"remark","audit","delivery"
+						,"deliveryNumber","deliveryDate","disputeNumber","disputeRemark","deliveryCollectionDate"
 						,"offshorePay","acceptPay","disputePay","deliveryStatus","warehouse","warehouseType","confirm","confirmNumber")
 				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(Customer.class, "id", "name","user")
@@ -90,7 +89,7 @@ public class LedgerAction {
 	private ClearCascadeJSON clearCascadeJSONChild;
 	{
 		clearCascadeJSONChild = ClearCascadeJSON.get()
-				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count"
+				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count","sendDate"
 						,"customer" ,"remark","warehouse","warehouseType","confirm","confirmNumber","warehouseTypeDelivery")
 				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(Customer.class, "id", "name","user")
@@ -107,9 +106,9 @@ public class LedgerAction {
 				.addRetainTerm(Product.class, "id", "name", "number");
 	}
 
-	private ClearCascadeJSON clearCascadeJSON1;
+	private ClearCascadeJSON clearCascadeJSONSendGoods;
 	{
-		clearCascadeJSON1 = ClearCascadeJSON.get()
+		clearCascadeJSONSendGoods = ClearCascadeJSON.get()
 				.addRetainTerm(SendGoods.class, "id", "customer", "bacthNumber", "product", "number", "sendNumber",
 						"surplusNumber","sendDate","orderId")
 				.addRetainTerm(Customer.class, "id", "name")
@@ -329,7 +328,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse getSendGoods(PageParameter page, SendGoods sendGoods) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSON1.format(sendGoodsService.findPages(sendGoods, page)).toJSON());
+		cr.setData(clearCascadeJSONSendGoods.format(sendGoodsService.findPages(sendGoods, page)).toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
@@ -343,7 +342,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse getSearchSendGoods(SendGoods sendGoods) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSON1.format(sendGoodsService.findLists(sendGoods)).toJSON());
+		cr.setData(clearCascadeJSONSendGoods.format(sendGoodsService.findLists(sendGoods)).toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
