@@ -198,6 +198,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				packingChild.setCount(jsonObject.getInteger("count"));
 				// 蓝白现场仓库发货 改变待发货单的剩余数量
 				if (jsonObject.getLong("sendGoodsId") != null) {
+					packingChild.setSurplusNumber(packingChild.getCount());
 					SendGoods sendGoods = sendGoodsDao.findOne(jsonObject.getLong("sendGoodsId"));
 					sendGoods.setSurplusNumber(sendGoods.getSurplusNumber() - packingChild.getCount());
 					sendGoodsDao.save(sendGoods);
@@ -209,6 +210,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				if (jsonObject.getLong("lastPackingChildId") != null) {
 					PackingChild packingChildOld = packingChildDao.findOne(jsonObject.getLong("lastPackingChildId"));
 					packingChild.setBacthNumber(packingChildOld.getBacthNumber());
+					packingChild.setSurplusNumber(packingChildOld.getSurplusNumber() -  packingChild.getCount());
 					packingChild.setProductId(packingChildOld.getProductId());
 				}
 				packingChild.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
