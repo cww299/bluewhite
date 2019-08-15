@@ -601,6 +601,19 @@ public class LedgerAction {
 		return cr;
 	}
 	
+	/**
+	 * 查看贴包子单
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/packingChildList", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse packingChildList( PackingChild packingChild) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONChild.format(packingService.packingChildList(packingChild)).toJSON());
+		cr.setMessage("查看成功");
+		return cr;
+	}
+	  
 	
 	/**
 	 * 修改贴包子单 (仓管填写 )
