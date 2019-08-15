@@ -268,7 +268,7 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 
 	@Override
 	public Commodity findByName(String name) {
-		return dao.findByName(name);
+		return dao.findByskuCode(name);
 	}
 
 	@Override

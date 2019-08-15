@@ -195,11 +195,11 @@
 						colFilterRecord: true,
 						smartReloadModel: true,// 开启智能重载
 						parseData: function(ret) {
+							var data = ret.data || [];
 							return {
 								code: ret.code,
 								msg: ret.message,
-								count:ret.data.total,
-								data: ret.data
+								data: data
 							}
 						},
 						cols: [
@@ -368,5 +368,4 @@
 			)
 		</script>
 </body>
-
 </html>

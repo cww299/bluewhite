@@ -27,9 +27,12 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
@@ -294,19 +297,19 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 					procurementChild.setPutWarehouseIds(ids);
 					procurementChild.setWarehouseId(jsonObject.getLong("warehouseId"));
 					procurementChild.setStatus(jsonObject.getIntValue("status"));
-
 					Set<Inventory> inventorys = commodity.getProduct().getInventorys();
 					if (inventorys.size() == 0) {
-						throw new ServiceException(commodity.getName() + "没有任何库存,无法出库");
+						throw new ServiceException(commodity.getSkuCode() + "没有任何库存,无法出库");
 					}
 					// 减少库存
 					if (inventorys.size() > 0) {
 						for (Inventory inventory : inventorys) {
 							if (inventory.getWarehouseId().equals(procurementChild.getWarehouseId())) {
-								if (inventory.getNumber() < procurementChild.getNumber()) {
-									throw new ServiceException(commodity.getName() + "当前仓库库存不足,无法出库，请补充库存");
-								}
-								inventory.setNumber(inventory.getNumber() - procurementChild.getNumber());
+//								if (inventory.getNumber() < procurementChild.getNumber()) {
+//									throw new ServiceException(commodity.getSkuCode() + "当前仓库库存不足,无法出库，请补充库存");
+//								}else{
+									inventory.setNumber(inventory.getNumber() - procurementChild.getNumber());
+//								}
 							}
 						}
 					}
@@ -518,6 +521,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	}
 
 	@Override
+	@Transactional
 	public int excelProcurement(ExcelListener excelListener, Long userId, Long warehouseId) {
 		int count = 0;
 		Procurement procurement = new Procurement();
@@ -534,7 +538,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			JSONObject jsonObject = new JSONObject();
 			Commodity commodity = commodityService.findByName(cPoi.getName());
 			if (commodity != null) {
-				jsonObject.put("commodityId", commodity.getId());
+				jsonObject.put("productId", commodity.getProductId());
 			} else {
 				throw new ServiceException("当前导入excel第" + (i + 2) + "条数据的商品不存在，请先添加");
 			}
@@ -559,7 +563,10 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	}
 
 	@Override
+	@Transactional
 	public int conversionProcurement(String ids) {
+		CurrentUser cu = SessionManager.getUserSession();
+		long warehouseTypeDeliveryId  = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idStrings = ids.split(",");
 			for (String id : idStrings) {
@@ -577,12 +584,13 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 							if (bnStrings.length > 1) {
 								// 新增发货清单
 								PackingChild packingChild = new PackingChild();
+								packingChild.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
 								packingChild.setBacthNumber(bnStrings[0]);
 								packingChild.setCount(Integer.getInteger(bnStrings[1]));
-								packingChild.setConfirm(0);
-								packingChild.setConfirmNumber(packingChild.getCount());
 								packingChild.setCustomerId(procurement.getOnlineCustomerId());
 								packingChild.setProductId(p.getCommodity().getProductId());
+								packingChild.setType(1);
+								packingChild.setSendDate(p.getCreatedAt());
 								packingChildDao.save(packingChild);
 							}
 						}
@@ -594,6 +602,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	}
 
 	@Override
+	@Transactional
 	public int auditProcurement(String ids) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
@@ -633,6 +642,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	}
 
 	@Override
+	@Transactional
 	public ProcurementChild updateProcurementChild(ProcurementChild procurementChild) {
 		procurementChild.setResidueNumber(procurementChild.getNumber());
 		if (procurementChild.getId() != null) {
