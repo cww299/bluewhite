@@ -78,7 +78,7 @@ layui.config({
 		var sty = "background-color: #5FB878;color: #fff;";
 		table.render({
 			elem:'#tableData',
-			url:'${ctx}/ledger/packingChildPage?flag=1',
+			url:'${ctx}/ledger/salePage',
 			where: { audit: 0,deliveryStatus:0 },
 			page:true,
 			toolbar: '#tableToolbar',
@@ -109,7 +109,7 @@ layui.config({
 							var index = $(this.elem).closest('tr').attr('data-index');
 							var trData = table.cache['tableData'][index];
 							myutil.saveAjax({
-								url:'/ledger/updateUserPackingChild',
+								url:'/ledger/updateUserSale',
 								data: {
 									id: trData.id,
 									deliveryDate: val+' 00:00:00'
@@ -137,7 +137,7 @@ layui.config({
 				ids.push(choosed[i].id);
 			}
 			myutil.saveAjax({
-				url:'/ledger/auditUserPackingChild?deliveryStatus='+issure,
+				url:'/ledger/auditUserSale?deliveryStatus='+issure,
 				type: 'get',
 				data: { ids:ids.join(',') },
 				success: function(){
@@ -161,7 +161,7 @@ layui.config({
 				var data = { id: obj.data.id, };
 				data[field] = val
 				myutil.saveAjax({
-					url:'/ledger/updateUserPackingChild',
+					url:'/ledger/updateUserSale',
 					data: data
 				}) 
 			}
