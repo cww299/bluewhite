@@ -197,7 +197,13 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				if (jsonObject.getLong("sendGoodsId") != null) {
 					packingChild.setSurplusNumber(packingChild.getCount());
 					SendGoods sendGoods = sendGoodsDao.findOne(jsonObject.getLong("sendGoodsId"));
-					sendGoods.setSurplusNumber(sendGoods.getSurplusNumber() - packingChild.getCount());
+					Integer surplusNumber = jsonObject.getLong("packingChildId") != null
+							? (sendGoods.getSurplusNumber() + packingChild.getCount())
+							: sendGoods.getSurplusNumber();
+					if (surplusNumber < jsonObject.getInteger("count")) {
+						throw new ServiceException("发货数量不能大于剩余数量");
+					}
+					sendGoods.setSurplusNumber(surplusNumber - jsonObject.getInteger("count"));
 					sendGoodsDao.save(sendGoods);
 					packingChild.setSendGoodsId(sendGoods.getId());
 					packingChild.setBacthNumber(sendGoods.getBacthNumber());
@@ -218,10 +224,10 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					packingChild.setSurplusNumber(packingChild.getCount());
 					packingChild.setBacthNumber(packingChildOld.getBacthNumber());
 					packingChild.setProductId(packingChildOld.getProductId());
-					packingChild.setCount(jsonObject.getInteger("count"));
-					packingChild.setConfirm(0);
-					packingChild.setFlag(0);
 				}
+				packingChild.setCount(jsonObject.getInteger("count"));
+				packingChild.setConfirm(0);
+				packingChild.setFlag(0);
 				packingChild.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
 				packingChild.setCustomerId(packing.getCustomerId());
 				packingChild.setWarehouseTypeId(packing.getWarehouseTypeId());
