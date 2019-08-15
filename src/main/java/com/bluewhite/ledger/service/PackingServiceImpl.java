@@ -432,8 +432,18 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 						throw new ServiceException("贴报单已发货，无法删除，请先核对发货单");
 					}
 					SendGoods sendGoods = packingChild.getSendGoods();
-					sendGoods.setSurplusNumber(sendGoods.getSurplusNumber() + packingChild.getCount());
-					sendGoodsDao.save(sendGoods);
+					if (sendGoods != null) {
+						sendGoods.setSurplusNumber(sendGoods.getSurplusNumber() + packingChild.getCount());
+						sendGoodsDao.save(sendGoods);
+					}
+					// 当为八号调拨单发货时，找到调拨单，删除恢复调拨单数量
+					if (packingChild.getLastPackingChildId() != null) {
+						PackingChild oldPackingChild = packingChildDao.findOne(packingChild.getLastPackingChildId());
+						if (packingChild != null) {
+							packingChild.setSurplusNumber(packingChild.getSurplusNumber() + packingChild.getCount());
+						}
+						packingChildDao.save(oldPackingChild);
+					}
 					packingChildDao.delete(packingChild);
 					count++;
 				}
