@@ -252,7 +252,7 @@ layui.config({
 			       {align:'center', type:'checkbox',},
 			       {align:'center', title:'包装时间',   field:'packingDate',width:'8%',templet:'<span>{{ d.packingDate.split(" ")[0] }}</span>',	},
 			       {align:'center', title:'编号',   field:'number',  width:'8%', },
-			       {align:'center', title:'客户/仓库',   field:'customer',width:'8%', templet:'<span>{{ d.customer?d.customer.name:""}}</span>'	},
+			       {align:'center', title:'客户/仓库',   field:'customer',width:'8%', templet:'<span>{{ d.customer?d.customer.name:d.warehouseType?d.warehouseType.name:"---"}}</span>'	},
 			       {align:'center', title:'是否发货',   field:'flag',  width:'8%',templet:'#flagTpl' },
 			       {align:'center', title:'贴包人',   field:'user',  width:'6%', templet:'<span>{{ d.user?d.user.userName:"---"}}</span>'},
 			       {align:'center', title:'包装物及数量',   field:'packingMaterials', 	templet: getMaterial(),},
@@ -567,6 +567,7 @@ layui.config({
 			var childData = [],materialData = [],cusId = '',userId='',type = 1, warehouseTypeId='';
 			addType = 1;
 			addEditId = '';
+			showAndHide(addType);
 			$('#addEditCustomer').val('');
 			$('#sureAddEidtBtn').html('确定新增');
 			$('#sendDate').removeAttr('disabled');
