@@ -450,7 +450,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				if (packingChild.getWarehouseId() == null) {
 					throw new ServiceException("入库仓库不能为空，请选择");
 				}
-				if(packingChild.getConfirmNumber()!=null){
+				if(packingChild.getConfirmNumber() == null){
 					throw new ServiceException("确认入库数量未填写，请先填写确认入库数量");
 				}
 				if (packingChild != null) {
