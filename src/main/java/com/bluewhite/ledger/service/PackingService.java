@@ -89,6 +89,12 @@ public interface PackingService extends BaseCRUDService<Packing, Long>{
 	 * @return
 	 */
 	public List<PackingChild> packingChildList(PackingChild packingChild);
+	/**
+	 * 一件取消审核
+	 * @param ids
+	 * @return
+	 */
+	public int cancelConfirmPackingChild(String ids);
 
 
 }
