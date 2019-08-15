@@ -104,6 +104,12 @@ public class Packing extends BaseEntity<Long> {
 	
 	
 	/**
+	 * 出库仓库id
+	 */
+	@Column(name = "warehouse_type_delivery_id")
+	private Long warehouseTypeDeliveryId;
+	
+	/**
 	 * 批次号
 	 */
 	@Transient
@@ -146,7 +152,19 @@ public class Packing extends BaseEntity<Long> {
 	private String customerName;
 	
 	
+
 	
+	
+	
+
+
+	public Long getWarehouseTypeDeliveryId() {
+		return warehouseTypeDeliveryId;
+	}
+
+	public void setWarehouseTypeDeliveryId(Long warehouseTypeDeliveryId) {
+		this.warehouseTypeDeliveryId = warehouseTypeDeliveryId;
+	}
 
 	public Long getWarehouseTypeId() {
 		return warehouseTypeId;
