@@ -76,13 +76,13 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 
 	@Override
 	public PageResult<Packing> findPages(Packing param, PageParameter page) {
-		
 		CurrentUser cu = SessionManager.getUserSession();
-		Long warehouseTypeDeliveryId  = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
-		if(warehouseTypeDeliveryId!=null){
-			param.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
+		if (!cu.getRole().contains("superAdmin")) {
+			Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+			if (warehouseTypeDeliveryId != null) {
+				param.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
+			}
 		}
-		
 		Page<Packing> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
@@ -108,9 +108,10 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 
 			// 按出库仓库过滤
 			if (param.getWarehouseTypeDeliveryId() != null) {
-				predicate.add(cb.equal(root.get("warehouseTypeDeliveryId").as(Long.class), param.getWarehouseTypeDeliveryId()));
+				predicate.add(cb.equal(root.get("warehouseTypeDeliveryId").as(Long.class),
+						param.getWarehouseTypeDeliveryId()));
 			}
-			
+
 			// 按客户名称
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
 				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
@@ -174,7 +175,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	@Transactional
 	public Packing addPacking(Packing packing) {
 		CurrentUser cu = SessionManager.getUserSession();
-		long warehouseTypeDeliveryId  = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+		long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		packing.setFlag(0);
 		packing.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
 		// 新增子单
@@ -193,7 +194,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				packingChild.setFlag(0);
 				packingChild.setCount(jsonObject.getInteger("count"));
 				// 蓝白现场仓库发货 改变待发货单的剩余数量
-				if(jsonObject.getLong("sendGoodsId")!=null){
+				if (jsonObject.getLong("sendGoodsId") != null) {
 					SendGoods sendGoods = sendGoodsDao.findOne(jsonObject.getLong("sendGoodsId"));
 					sendGoods.setSurplusNumber(sendGoods.getSurplusNumber() - packingChild.getCount());
 					sendGoodsDao.save(sendGoods);
@@ -202,7 +203,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					packingChild.setProductId(sendGoods.getProductId());
 				}
 				// 八号成品仓库
-				if(jsonObject.getLong("id")!=null){
+				if (jsonObject.getLong("id") != null) {
 					PackingChild packingChildOld = packingChildDao.findOne(jsonObject.getLong("id"));
 					packingChild.setBacthNumber(packingChildOld.getBacthNumber());
 					packingChild.setProductId(packingChildOld.getProductId());
@@ -251,7 +252,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					// 已发货
 					pc.setFlag(1);
 					pc.setSendDate(time == null ? pc.getCreatedAt() : time);
-					//生成财务销售单
+					// 生成财务销售单
 					Sale sale = new Sale();
 					sale.setProductId(pc.getProductId());
 					sale.setCustomerId(pc.getCustomerId());
@@ -285,7 +286,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					}
 					// 判定是否更换客户发货，更换客户发货变成新批次，->Y
 					Order order = orderDao.findByBacthNumber(pc.getBacthNumber());
-					if(order.getInternal()!=1 && order.getCustomerId() != pc.getCustomerId()){
+					if (order.getInternal() != 1 && order.getCustomerId() != pc.getCustomerId()) {
 						sale.setBacthNumber(pc.getBacthNumber().substring(0, pc.getBacthNumber().length() - 1) + "Y");
 						sale.setNewBacth(1);
 					}
@@ -301,11 +302,12 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	@Override
 	public PageResult<PackingChild> findPackingChildPage(PackingChild param, PageParameter page) {
 		CurrentUser cu = SessionManager.getUserSession();
-		Long warehouseTypeDeliveryId  = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
-		if(warehouseTypeDeliveryId!=null){
-			param.setWarehouseTypeId(warehouseTypeDeliveryId);
+		if (!cu.getRole().contains("superAdmin")) {
+			Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+			if (warehouseTypeDeliveryId != null) {
+				param.setWarehouseTypeId(warehouseTypeDeliveryId);
+			}
 		}
-		
 		Page<PackingChild> pages = packingChildDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
@@ -331,12 +333,13 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			if (param.getWarehouseTypeId() != null) {
 				predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
 			}
-			
-//			// 按出库仓库过滤
-//			if (param.getWarehouseTypeDeliveryId() != null) {
-//				predicate.add(cb.equal(root.get("warehouseTypeDeliveryId").as(Long.class), param.getWarehouseTypeDeliveryId()));
-//			}
-			
+
+			// // 按出库仓库过滤
+			// if (param.getWarehouseTypeDeliveryId() != null) {
+			// predicate.add(cb.equal(root.get("warehouseTypeDeliveryId").as(Long.class),
+			// param.getWarehouseTypeDeliveryId()));
+			// }
+
 			// 调拨仓库是否确认数量
 			if (param.getConfirm() != null) {
 				predicate.add(cb.equal(root.get("confirm").as(Long.class), param.getConfirm()));
@@ -363,8 +366,6 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 		PageResult<PackingChild> result = new PageResult<>(pages, page);
 		return result;
 	}
-
-	
 
 	@Override
 	@Transactional
@@ -445,31 +446,33 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				if (packingChild.getConfirm() == 1) {
 					throw new ServiceException("调拨单已审核，请勿再次审核");
 				}
-				if(packingChild.getWarehouseId() == null){
+				if (packingChild.getWarehouseId() == null) {
 					throw new ServiceException("入库仓库不能为空，请选择");
 				}
 				if (packingChild != null) {
-						Product product = packingChild.getProduct();
-						packingChild.setConfirm(1);
-						// 创建商品的库存
-						Set<Inventory> inventorys = product.getInventorys();
-						// 获取库存
-						Inventory inventory = inventoryDao.findByProductIdAndWarehouseId(product.getId(),packingChild.getWarehouseId());
-						if (inventory == null) {
-							inventory = new Inventory();
-							inventory.setProductId(product.getId());
-							inventory.setNumber(packingChild.getConfirmNumber());
-							inventory.setWarehouseId(packingChild.getWarehouseId());
-							inventorys.add(inventory);
-							product.setInventorys(inventorys);
-						} else { 
-							inventory.setNumber(inventory.getNumber() + packingChild.getConfirmNumber());
-						}
-						productDao.save(product);
-						packingChildDao.save(packingChild);
-					};
+					Product product = packingChild.getProduct();
+					packingChild.setConfirm(1);
+					// 创建商品的库存
+					Set<Inventory> inventorys = product.getInventorys();
+					// 获取库存
+					Inventory inventory = inventoryDao.findByProductIdAndWarehouseId(product.getId(),
+							packingChild.getWarehouseId());
+					if (inventory == null) {
+						inventory = new Inventory();
+						inventory.setProductId(product.getId());
+						inventory.setNumber(packingChild.getConfirmNumber());
+						inventory.setWarehouseId(packingChild.getWarehouseId());
+						inventorys.add(inventory);
+						product.setInventorys(inventorys);
+					} else {
+						inventory.setNumber(inventory.getNumber() + packingChild.getConfirmNumber());
+					}
+					productDao.save(product);
+					packingChildDao.save(packingChild);
 				}
-				count++;
+				;
+			}
+			count++;
 		}
 		return count;
 	}
@@ -490,11 +493,12 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	@Override
 	public List<PackingChild> packingChildList(PackingChild param) {
 		CurrentUser cu = SessionManager.getUserSession();
-		Long warehouseTypeDeliveryId  = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
-		if(warehouseTypeDeliveryId!=null){
-			param.setWarehouseTypeId(warehouseTypeDeliveryId);
+		if (!cu.getRole().contains("superAdmin")) {
+			Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+			if (warehouseTypeDeliveryId != null) {
+				param.setWarehouseTypeId(warehouseTypeDeliveryId);
+			}
 		}
-		
 		List<PackingChild> result = packingChildDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
@@ -520,7 +524,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			if (param.getWarehouseTypeId() != null) {
 				predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
 			}
-			
+
 			// 调拨仓库是否确认数量
 			if (param.getConfirm() != null) {
 				predicate.add(cb.equal(root.get("confirm").as(Long.class), param.getConfirm()));
