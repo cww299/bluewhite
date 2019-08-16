@@ -160,7 +160,7 @@
    		</div>
 	</shiro:hasAnyRoles> 
 	<!-- 考勤错误预警弹窗 -->
-	<shiro:hasAnyRoles name="superAdmin,productEightTailor,productTwoMachinist,productTwoDeedle,productFristPack,productFristQuality,personnel">
+	<shiro:hasAnyRoles name="superAdmin,productEightTailor,productTwoMachinist,productTwoDeedle,productFristPack,productFristQuality">
    		<div id="warningConfluenceDiv" style="display:none;">
 			<table id='warningConfluenceTable' lay-filter='warningConfluenceTable'></table>   		
    		</div>
