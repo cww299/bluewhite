@@ -19,6 +19,7 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.onlineretailers.inventory.dao.ProcurementDao;
@@ -58,7 +59,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 			// 按产品name过滤
 			if (!StringUtils.isEmpty(param.getProductName())) {
-				predicate.add(cb.equal(root.get("product").get("String").as(Long.class), "%" + param.getProductName() + "%"));
+				predicate.add(cb.equal(root.get("product").get("name").as(String.class), "%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
 			}
 			// 按产品编号过滤
 			if (!StringUtils.isEmpty(param.getProductNumber())) {

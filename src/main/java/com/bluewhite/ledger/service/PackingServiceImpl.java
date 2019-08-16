@@ -321,7 +321,9 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	public PageResult<PackingChild> findPackingChildPage(PackingChild param, PageParameter page) {
 		CurrentUser cu = SessionManager.getUserSession();
 		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
-		param.setWarehouseTypeId(warehouseTypeDeliveryId);
+		if(param.getWarehouseTypeId() == null){
+			param.setWarehouseTypeId(warehouseTypeDeliveryId);
+		}
 		if (warehouseTypeDeliveryId == null) {
 			return new PageResult<PackingChild>();
 		}
@@ -359,7 +361,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			// 按产品name过滤
 			if (!StringUtils.isEmpty(param.getProductName())) {
 				predicate.add(
-						cb.equal(root.get("product").get("name").as(Long.class), "%" + param.getProductName() + "%"));
+						cb.equal(root.get("product").get("name").as(String.class), "%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
 			}
 			// 按批次查找
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
@@ -470,6 +472,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	@Override
 	@Transactional
 	public int confirmPackingChild(String ids) {
+		CurrentUser cu = SessionManager.getUserSession();
+		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idStrings = ids.split(",");
@@ -496,7 +500,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 						inventory = new Inventory();
 						inventory.setProductId(product.getId());
 						inventory.setNumber(packingChild.getConfirmNumber());
-						inventory.setWarehouseId(packingChild.getWarehouseId());
+						//审核入库
+						inventory.setWarehouseTypeId(warehouseTypeDeliveryId);
 						inventorys.add(inventory);
 						product.setInventorys(inventorys);
 					} else {
@@ -567,7 +572,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			// 按产品name过滤
 			if (!StringUtils.isEmpty(param.getProductName())) {
 				predicate.add(
-						cb.equal(root.get("product").get("name").as(Long.class), "%" + param.getProductName() + "%"));
+						cb.equal(root.get("product").get("name").as(String.class), "%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
 			}
 			// 按批次查找
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
@@ -656,8 +661,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 
 				// 按产品name过滤
 				if (!StringUtils.isEmpty(param.getProductName())) {
-					predicate.add(
-							cb.equal(root.get("product").get("name").as(Long.class), "%" + param.getProductName() + "%"));
+					predicate.add(cb.equal(root.get("product").get("name").as(String.class), "%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
 				}
 				// 按批次查找
 				if (!StringUtils.isEmpty(param.getBacthNumber())) {
