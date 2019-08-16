@@ -237,113 +237,114 @@ layui.extend({
 				}
 				trData[t] = val;  //修改缓存值
 			})
-			table.on('toolbar('+tableId+')',function(obj){		//监听工具
-				switch(obj.event){
-				case 'addTempData': 	addTempData(); 	break;
-				case 'saveTempData': 	saveTempData(); break;
-				case 'deleteSome': 		deleteSome(); 	break;
-				case 'cleanTempData': 	table.cleanTemp(tableId); break;
-				}
-				opt.curd.otherBtn && opt.curd.otherBtn(obj);	//如果有其他按钮操作
-				function addTempData(){
-					var field = opt.curd.addTemp || (function(){	//如果没有给出默认值
-						var field = {};
-						layui.each(allField,function(index,item){
-							var t = opt.autoUpdate.field[item]? opt.autoUpdate.field[item]:item;
-							field[t] = '';
-						})
-						return field;
-					})();
-					table.addTemp(tableId,field,function(trElem){ 
-						renderData(dateField,'date');
-						renderData(dateTimeField,'datetime');
-						function renderData(data,type){
-							layui.each(data,function(index1,item1){	 //渲染日期
-								layui.each($(opt.elem).next().find('td[data-field="'+item1+'"]'),function(index,item){
-									item.children[0].onclick = function(event) { layui.stope(event) };
-									var dateTd = trElem.find('td[data-field="'+item1+'"]')[0];
-									laydate.render({
-										elem: dateTd.children[0],
-										type: type,
-										done: function(val){
-											var index = $(this.elem).closest('tr').data('index');
-											var trData = table.cache[tableId][index];
-											if(val.split(' ').length==1)
-												val += ' 00:00:00';
-											var t = opt.autoUpdate.field[item1]? opt.autoUpdate.field[item1] : item1;
-											trData[t] = val;    	//修改缓存值
-										}
+			if(opt.curd)
+				table.on('toolbar('+tableId+')',function(obj){		//监听工具
+					switch(obj.event){
+					case 'addTempData': 	addTempData(); 	break;
+					case 'saveTempData': 	saveTempData(); break;
+					case 'deleteSome': 		deleteSome(); 	break;
+					case 'cleanTempData': 	table.cleanTemp(tableId); break;
+					}
+					opt.curd.otherBtn && opt.curd.otherBtn(obj);	//如果有其他按钮操作
+					function addTempData(){
+						var field = opt.curd.addTemp || (function(){	//如果没有给出默认值
+							var field = {};
+							layui.each(allField,function(index,item){
+								var t = opt.autoUpdate.field[item]? opt.autoUpdate.field[item]:item;
+								field[t] = '';
+							})
+							return field;
+						})();
+						table.addTemp(tableId,field,function(trElem){ 
+							renderData(dateField,'date');
+							renderData(dateTimeField,'datetime');
+							function renderData(data,type){
+								layui.each(data,function(index1,item1){	 //渲染日期
+									layui.each($(opt.elem).next().find('td[data-field="'+item1+'"]'),function(index,item){
+										item.children[0].onclick = function(event) { layui.stope(event) };
+										var dateTd = trElem.find('td[data-field="'+item1+'"]')[0];
+										laydate.render({
+											elem: dateTd.children[0],
+											type: type,
+											done: function(val){
+												var index = $(this.elem).closest('tr').data('index');
+												var trData = table.cache[tableId][index];
+												if(val.split(' ').length==1)
+													val += ' 00:00:00';
+												var t = opt.autoUpdate.field[item1]? opt.autoUpdate.field[item1] : item1;
+												trData[t] = val;    	//修改缓存值
+											}
+										})
 									})
 								})
-							})
-						}
-					});
-				}
-				function saveTempData(){
-					var data = table.getTemp(tableId).data,success = 0,msg='';
-					if(data.length==0)
-						return myutil.emsg('无临时数据可保存！');
-					layui.each(data,function(index,item){
-						if(msg!='') return;
-						for(var i=0;i<notNull.length;i++){
-							var t = notNull[i];
-							t = opt.autoUpdate.field[t]? opt.autoUpdate.field[t] : t;
-							if(isNull(item[t]))
-								msg = '新增失败，'+china[notNull[i]]+'不能为空';
-						}
-						for(var i=0;i<price.length;i++){
-							var t = price[i];
-							t = opt.autoUpdate.field[t]? opt.autoUpdate.field[t] : t;
-							if(!isPrice(item[t]))
-								msg = '新增失败，请正确填写'+china[t];
-						}
-						for(var i=0;i<count.length;i++){
-							var t = count[i];
-							t = opt.autoUpdate.field[t]? opt.autoUpdate.field[t] : t;
-							if(!isCount(item[t]))
-								msg = '新增失败，请正确填写'+china[t];
-						}
-					})
-					if(msg!='') 
-						return myutil.emsg(msg);
-					if(opt.curd.saveFun)
-						opt.curd.saveFun(data);		//如果存在保存函数则执行，否则执行默认保存函数
-					else{
-						for(var i=0;i<data.length;i++)
-							myutil.saveAjax({
-								url: opt.autoUpdate.saveUrl,
-								data: data[i],
-								success: function(){
-									success++;
-								}
-							})
-						if(success==data.length){
-							myutil.smsg('成功新增：'+success+'条数据');
-							table.reload(tableId);
+							}
+						});
+					}
+					function saveTempData(){
+						var data = table.getTemp(tableId).data,success = 0,msg='';
+						if(data.length==0)
+							return myutil.emsg('无临时数据可保存！');
+						layui.each(data,function(index,item){
+							if(msg!='') return;
+							for(var i=0;i<notNull.length;i++){
+								var t = notNull[i];
+								t = opt.autoUpdate.field[t]? opt.autoUpdate.field[t] : t;
+								if(isNull(item[t]))
+									msg = '新增失败，'+china[notNull[i]]+'不能为空';
+							}
+							for(var i=0;i<price.length;i++){
+								var t = price[i];
+								t = opt.autoUpdate.field[t]? opt.autoUpdate.field[t] : t;
+								if(!isPrice(item[t]))
+									msg = '新增失败，请正确填写'+china[t];
+							}
+							for(var i=0;i<count.length;i++){
+								var t = count[i];
+								t = opt.autoUpdate.field[t]? opt.autoUpdate.field[t] : t;
+								if(!isCount(item[t]))
+									msg = '新增失败，请正确填写'+china[t];
+							}
+						})
+						if(msg!='') 
+							return myutil.emsg(msg);
+						if(opt.curd.saveFun)
+							opt.curd.saveFun(data);		//如果存在保存函数则执行，否则执行默认保存函数
+						else{
+							for(var i=0;i<data.length;i++)
+								myutil.saveAjax({
+									url: opt.autoUpdate.saveUrl,
+									data: data[i],
+									success: function(){
+										success++;
+									}
+								})
+							if(success==data.length){
+								myutil.smsg('成功新增：'+success+'条数据');
+								table.reload(tableId);
+							}
 						}
 					}
-				}
-				function deleteSome(){
-					var choosed=layui.table.checkStatus(tableId).data;
-					if(choosed.length<1)
-						return myutil.emsg('请选择相关信息');
-					layer.confirm("是否确认删除？",function(){
-						var ids='';
-						for(var i=0;i<choosed.length;i++)
-							ids+=(choosed[i].id+",");
-						if(opt.curd.deleFun)
-							opt.curd.deleFun(ids);		//如果存在删除函数则执行，否则执行默认删除函数
-						else
-							myutil.deleteAjax({
-								url: opt.autoUpdate.deleUrl,
-								ids: ids,
-								success:function(){
-									table.reload(tableId);
-								},
-							})
-					})
-				}
-			})	
+					function deleteSome(){
+						var choosed=layui.table.checkStatus(tableId).data;
+						if(choosed.length<1)
+							return myutil.emsg('请选择相关信息');
+						layer.confirm("是否确认删除？",function(){
+							var ids='';
+							for(var i=0;i<choosed.length;i++)
+								ids+=(choosed[i].id+",");
+							if(opt.curd.deleFun)
+								opt.curd.deleFun(ids);		//如果存在删除函数则执行，否则执行默认删除函数
+							else
+								myutil.deleteAjax({
+									url: opt.autoUpdate.deleUrl,
+									ids: ids,
+									success:function(){
+										table.reload(tableId);
+									},
+								})
+						})
+					}
+				})	
 			done && done(res, curr, cou);
 		}
 		opt.done = newDone;
