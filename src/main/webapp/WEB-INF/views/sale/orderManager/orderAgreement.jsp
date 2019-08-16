@@ -51,6 +51,9 @@
 			<td>&nbsp;&nbsp;</td>
 			<td>订单时间：</td>
 			<td><input type="text" id="addDefaultTime" class="layui-input" ></td>
+			<td>&nbsp;&nbsp;</td>
+			<td>默认备注：</td>
+			<td><input type="text" id="defaultRemark" class="layui-input" ></td>
 		</tr>
 	</table>
 	<table id="addTable" lay-filter="addTable"></table>
@@ -207,12 +210,22 @@ layui.config({
 		})
 		function add(){
 			var productList = [];	//记录复选框选中的值，用于回显复选框选中
-			var defaultTime = '';
+			var defaultTime = '', defaultRemark = '';
 			var addWin = layer.open({
 				title: '新增',
 				type:1,
 				area:['90%','90%'],
 				content: $('#addWin')
+			})
+			$('#defaultRemark').on('blur',function(obj){
+				var val = $(this).val();
+				if(val!=defaultRemark){
+					defaultRemark = val;
+					layui.each(table.cache['addTable'],function(index,item){
+						item['remark'] = defaultRemark;
+					})
+					table.reload('addTable');
+				}
 			})
 			getAllCustom('customSelect',0);
 			laydate.render({
@@ -232,12 +245,12 @@ layui.config({
 				data:[],
 				cols:[[
 						{ align:'center', type:'checkbox',},
-						{ align:'center', title:'批次号',   	field:'bacthNumber',  edit:true,	},
+						{ align:'center', title:'批次号',   	field:'bacthNumber',  edit:true,width:'10%'	},
 						{ align:'center', title:'下单时间',   field:'orderDateTime', width:'10%',edit:false,	},
-						{ align:'center', title:'产品编号',	field:'productNumber', },
+						{ align:'center', title:'产品编号',	field:'productNumber', width:'10%'},
 						{ align:'center', title:'产品名称',	field:'name',	  },
-						{ align:'center', title:'产品价格',	field:'price',	edit:true,	},
-						{ align:'center', title:'数量',   	field:'number',  edit:true,	},
+						{ align:'center', title:'产品价格',	field:'price',	edit:true,width:'8%'	},
+						{ align:'center', title:'数量',   	field:'number',  edit:true,width:'8%'	},
 						{ align:'center', title:'备注',   	field:'remark', edit:true, 	},
 				       ]],
 				done: function(){
@@ -357,7 +370,7 @@ layui.config({
 							productNumber: item1.number,
 							bacthNumber: '',
 							price: 0,
-							remark: '',
+							remark: defaultRemark,
 							number: 1,
 							orderDateTime: defaultTime,
 						})
