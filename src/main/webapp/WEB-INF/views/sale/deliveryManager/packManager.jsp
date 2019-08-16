@@ -626,6 +626,9 @@ layui.config({
 					table.reload('childTable',{ data: childData });
 					table.reload('materialTable',{ data: materialData });
 					form.render();
+				},
+				end:function(){
+					table.reload(packTable);
 				}
 			})
 		}
