@@ -320,7 +320,7 @@ layui.config({
 						child.push({
 							sendGoodsId: item.sendGoodsId,
 							count: item.count,
-							id: item.id,
+							packingChildId: item.id,
 						})
 					}
 				})
@@ -479,24 +479,35 @@ layui.config({
 			elem: '#childTable',
 			cols: [[
 					{align:'center',type:'checkbox'},
-			        {align:'center',field:'sendGoodsId',title:'日期 ~ 批次号 ~ 产品',edit:false, templet: getSelectHtml('childTable','bacthNumber')},
+			        {align:'center',field:'sendGoodsId',title:'日期 ~ 批次号 ~ 产品 ~ 剩余数量',edit:false, templet: getSelectHtml('childTable','bacthNumber')},
 			        {align:'center',field:'count',title:'数量',width:'10%',edit: 'text',},
 			        ]]
 		})
 		function getSelectHtml(tid,field){
 			return function(d){
 				var data = (field=='bacthNumber'?allSend:allMaterials);
-				var html = '<select lay-search lay-filter="tableSelect" data-table="'+tid+'"><option value="">请选择</option>';
-				for(var i=0;i<data.length;i++){
-					var item = data[i]
-					, id = d.packagingMaterials?d.packagingMaterials.id:''
-					, title = item.name;
-					if(field=='bacthNumber'){
-						id = d.sendGoodsId;
-						title = item.sendDate.split(' ')[0]+" ~ "+item.bacthNumber+" ~ "+item.product.name;
+				var html ='';
+				if(tid=="childTable" && d.id){	//如果是子单且是修改的数据
+					for(var i=0;i<data.length;i++){
+						if(data[i].id == d.sendGoodsId){
+							html = '<input type="text" class="layui-input" readonly value="'+data[i].sendDate.split(' ')[0]+" ~ "+data[i].bacthNumber+" ~ "
+								+data[i].product.name+" ~ "+ (+data[i].surplusNumber+d.count)+'">';
+							break;
+						}
 					}
-					var selected = ( id==item.id?'selected':'');
-					html += '<option value="'+item.id+'" '+selected+'>'+title+'</option>';
+				}else{
+					html = '<select lay-search lay-filter="tableSelect" data-table="'+tid+'"><option value="">请选择</option>';
+					for(var i=0;i<data.length;i++){
+						var item = data[i]
+						, id = d.packagingMaterials?d.packagingMaterials.id:''
+						, title = item.name;
+						if(field=='bacthNumber'){
+							id = d.sendGoodsId;
+							title = item.sendDate.split(' ')[0]+" ~ "+item.bacthNumber+" ~ "+item.product.name+" ~ "+(+item.surplusNumber+d.count);
+						}
+						var selected = ( id==item.id?'selected':'');
+						html += '<option value="'+item.id+'" '+selected+'>'+title+'</option>';
+					}
 				}
 				return html+='</select>';
 			}
@@ -568,6 +579,7 @@ layui.config({
 			addType = 1;
 			addEditId = '';
 			showAndHide(addType);
+			var surplusNumber = false;
 			$('#addEditCustomer').val('');
 			$('#sureAddEidtBtn').html('确定新增');
 			$('#sendDate').removeAttr('disabled');
@@ -580,6 +592,7 @@ layui.config({
 					return myutil.emsg(msg);
 				data=choosed[0];
 				title="修改";
+				surplusNumber = true;
 				type = data.type;
 				addType = type;		//当前修改对象的类型
 				addEditId = data.id;	//当前修改对象的id
@@ -604,7 +617,7 @@ layui.config({
 				offset: '40px', 
 				content: $('#addEditWin'),
 				success: function(){
-					getAllSend();
+					getAllSend(surplusNumber);
 					$('#addEditType').val(type);
 					$('#sendDate').val(searchTime);
 					$('#addEditCustomer').val(cusId);
@@ -662,9 +675,10 @@ layui.config({
 				})
 			);
 		}
-		function getAllSend(){
+		function getAllSend(surplusNumber){
+			var field = surplusNumber?'':'&surplusNumber=0';
 			allSend = myutil.getDataSync({
-				url:'${ctx}/ledger/getSearchSendGoods?sendDate='+searchTime+' 00:00:00',
+				url:'${ctx}/ledger/getSearchSendGoods?sendDate='+searchTime+' 00:00:00'+field,
 			});
 		}
 		function getInventoryType(){
