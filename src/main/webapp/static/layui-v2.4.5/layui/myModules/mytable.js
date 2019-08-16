@@ -50,6 +50,7 @@ layui.extend({
 		var totalRow = opt.totalRow || [];
 		var dateField = [], dateTimeField = [], selectLay = [], allField = [], price = [], count = [], notNull = [], china = [];
 		var tableId = opt.elem.split('#')[1];
+		opt.autoUpdate && (opt.autoUpdate.field = opt.autoUpdate.field || [] );	//开启自动修改没有给field时，默认空
 		layui.each(opt.cols,function(index1,item1){					//表头模板设置------------------------------------------------
 			layui.each(item1,function(index2,item2){
 				item2.field && (allField.push(item2.field));
