@@ -19,7 +19,7 @@
  *						},
  * 增加字段验证规则：verify:{ notNull:[ 非空的字段集合 ], price:[ 价格的字段集合 ], count:[ 数量的字段集合]   }
  * 增加列宽度字段： colsWidth:[0,10,0,20,1,对应的各个字段宽度] 0为自适应，只填数字默认百分比。开启checkbox时，第一个数字应为0保留复选框自适应
- *					
+ * 增加默认导出假字段 exportField: true, //true为关闭、默认开启
  */
 layui.extend({
 	myutil: 'layui/myModules/myutil',
@@ -48,7 +48,7 @@ layui.extend({
 	mytable.render = function(opt,ob){
 		var obj = ob || { parseData:parseDataPage(), request:REQ,page:true, };
 		var totalRow = opt.totalRow || [];
-		var dateField = [], dateTimeField = [], selectLay = [], allField = [], price = [], count = [], notNull = [], china = [];
+		var dateField = [], dateTimeField = [], selectLay = [], allField = [], price = [], count = [], notNull = [], china = [], exportCols = [];
 		var tableId = opt.elem.split('#')[1];
 		layui.each(opt.cols,function(index1,item1){					//表头模板设置------------------------------------------------
 			layui.each(item1,function(index2,item2){
@@ -68,6 +68,8 @@ layui.extend({
 				case 'dateTime': dateTimeField.indexOf(item2.field)<0 && dateTimeField.push(item2.field); (!item2.edit) && (item2.edit = false); break;	//开启日期时间
 				}
 				if(item2.field){
+					if(item2.field.split('_').length>1) //记录假字段、用于导出
+						exportCols.push(item2.field);
 					var tep = function(d){								//默认模板
 						var fie = item2.field.split('_');				
 						var res = '';
@@ -159,6 +161,17 @@ layui.extend({
 		opt.toolbar = toolbar+'</div>';									//设置工具栏模板
 		var done = opt.done || null;//深拷贝回调函数
 		function newDone(res, curr, cou){	 		 //时间、下拉框类型的渲染。修改值时的同步缓存操作、工具栏的操作等------------------------------
+			if(!opt.exportField){ //开启虚拟字段导出
+				layui.each(res.data,function(index1,item1){
+					layui.each(exportCols,function(index2,item2){
+						var t = item1;
+						layui.each(item2.split('_'),function(index3,item3){
+							t = t?(t[item3] || null):null;
+						})
+						item1[item2] = t;
+					})
+				})
+			}
 			renderData(dateField,'date');
 			renderData(dateTimeField,'datetime');
 			function renderData(data,type){
