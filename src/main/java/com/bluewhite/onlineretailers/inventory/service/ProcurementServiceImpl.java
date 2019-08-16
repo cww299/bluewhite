@@ -601,7 +601,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 								PackingChild packingChild = new PackingChild();
 								packingChild.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
 								packingChild.setBacthNumber(bnStrings[0]);
-								packingChild.setCount(Integer.getInteger(bnStrings[1]));
+								packingChild.setCount(Integer.parseInt(bnStrings[1]));
 								packingChild.setCustomerId(procurement.getOnlineCustomerId());
 								packingChild.setProductId(p.getCommodity().getProductId());
 								packingChild.setType(1);

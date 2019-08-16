@@ -12,7 +12,6 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 
-import org.junit.Ignore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -78,11 +77,10 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	@Override
 	public PageResult<Packing> findPages(Packing param, PageParameter page) {
 		CurrentUser cu = SessionManager.getUserSession();
-		if (!cu.getRole().contains("superAdmin")) {
-			Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
-			if (warehouseTypeDeliveryId != null) {
-				param.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
-			}
+		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+		param.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
+		if (warehouseTypeDeliveryId == null) {
+			return new PageResult<Packing>();
 		}
 		Page<Packing> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
@@ -177,7 +175,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	public Packing addPacking(Packing packing) {
 		CurrentUser cu = SessionManager.getUserSession();
 		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
-		if (warehouseTypeDeliveryId==null) {
+		if (warehouseTypeDeliveryId == null) {
 			throw new ServiceException("请使用仓库管理员账号添加");
 		}
 		packing.setFlag(0);
@@ -199,8 +197,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					packingChild.setSurplusNumber(packingChild.getCount());
 					SendGoods sendGoods = sendGoodsDao.findOne(jsonObject.getLong("sendGoodsId"));
 					Integer surplusNumber = jsonObject.getLong("packingChildId") != null
-							? (sendGoods.getSurplusNumber() + packingChild.getCount())
-							: sendGoods.getSurplusNumber();
+							? (sendGoods.getSurplusNumber() + packingChild.getCount()) : sendGoods.getSurplusNumber();
 					if (surplusNumber < jsonObject.getInteger("count")) {
 						throw new ServiceException("发货数量不能大于剩余数量");
 					}
@@ -323,11 +320,10 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	@Override
 	public PageResult<PackingChild> findPackingChildPage(PackingChild param, PageParameter page) {
 		CurrentUser cu = SessionManager.getUserSession();
-		if (!cu.getRole().contains("superAdmin")) {
-			Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
-			if (warehouseTypeDeliveryId != null) {
-				param.setWarehouseTypeId(warehouseTypeDeliveryId);
-			}
+		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+		param.setWarehouseTypeId(warehouseTypeDeliveryId);
+		if (warehouseTypeDeliveryId == null) {
+			return new PageResult<PackingChild>();
 		}
 		Page<PackingChild> pages = packingChildDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
@@ -441,7 +437,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					if (packingChild.getLastPackingChildId() != null) {
 						PackingChild oldPackingChild = packingChildDao.findOne(packingChild.getLastPackingChildId());
 						if (oldPackingChild != null) {
-							oldPackingChild.setSurplusNumber(oldPackingChild.getSurplusNumber() + packingChild.getCount());
+							oldPackingChild
+									.setSurplusNumber(oldPackingChild.getSurplusNumber() + packingChild.getCount());
 						}
 						packingChildDao.save(oldPackingChild);
 					}
@@ -531,11 +528,10 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	@Override
 	public List<PackingChild> packingChildList(PackingChild param) {
 		CurrentUser cu = SessionManager.getUserSession();
-		if (!cu.getRole().contains("superAdmin")) {
-			Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
-			if (warehouseTypeDeliveryId != null) {
-				param.setWarehouseTypeId(warehouseTypeDeliveryId);
-			}
+		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+		param.setWarehouseTypeId(warehouseTypeDeliveryId);
+		if (warehouseTypeDeliveryId == null) {
+			return new ArrayList<PackingChild>();
 		}
 		List<PackingChild> result = packingChildDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
@@ -583,7 +579,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 						param.getOrderTimeEnd()));
 			}
 			// 剩余数量大于0的单据
-			if(param.getSurplusNumber()!=null){
+			if (param.getSurplusNumber() != null) {
 				predicate.add(cb.greaterThan(root.get("surplusNumber").as(Integer.class), param.getSurplusNumber()));
 			}
 
@@ -627,5 +623,66 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 		}
 		return count;
 	}
+
+	@Override
+	public PageResult<PackingChild> findPackingChildElectricityPage(PackingChild param, PageParameter page) {
+			CurrentUser cu = SessionManager.getUserSession();
+			Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+			param.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
+			if (warehouseTypeDeliveryId == null) {
+				return new PageResult<PackingChild>();
+			}
+			Page<PackingChild> pages = packingChildDao.findAll((root, query, cb) -> {
+				List<Predicate> predicate = new ArrayList<>();
+				// 按id过滤
+				if (param.getId() != null) {
+					predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
+				}
+				// 按客户名称
+				if (!StringUtils.isEmpty(param.getCustomerName())) {
+					predicate.add(cb.like(root.get("customer").get("name").as(String.class),
+							"%" + param.getCustomerName() + "%"));
+				}
+				// 是否发货
+				if (param.getFlag() != null) {
+					predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
+				}
+
+				// 按贴包类型过滤
+				if (param.getType() != null) {
+					predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
+				}
+
+				// 按调拨仓库过滤
+				if (param.getWarehouseTypeId() != null) {
+					predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
+				}
+
+				// 调拨仓库是否确认数量
+				if (param.getConfirm() != null) {
+					predicate.add(cb.equal(root.get("confirm").as(Long.class), param.getConfirm()));
+				}
+
+				// 按产品name过滤
+				if (!StringUtils.isEmpty(param.getProductName())) {
+					predicate.add(
+							cb.equal(root.get("product").get("name").as(Long.class), "%" + param.getProductName() + "%"));
+				}
+				// 按批次查找
+				if (!StringUtils.isEmpty(param.getBacthNumber())) {
+					predicate.add(cb.like(root.get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
+				}
+				// 按发货日期
+				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+					predicate.add(cb.between(root.get("sendDate").as(Date.class), param.getOrderTimeBegin(),
+							param.getOrderTimeEnd()));
+				}
+				Predicate[] pre = new Predicate[predicate.size()];
+				query.where(predicate.toArray(pre));
+				return null;
+			}, page);
+			PageResult<PackingChild> result = new PageResult<>(pages, page);
+			return result;
+		}
 
 }

@@ -20,7 +20,9 @@ import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.ledger.entity.Customer;
+import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.service.CustomerService;
+import com.bluewhite.ledger.service.PackingService;
 import com.bluewhite.onlineretailers.inventory.dao.WarningDao;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 import com.bluewhite.onlineretailers.inventory.entity.Delivery;
@@ -52,6 +54,8 @@ public class InventoryAction {
 	private ProcurementService procurementService;
 	@Autowired
 	private WarningDao warningDao;
+	@Autowired
+	private PackingService packingService;
 
 	private ClearCascadeJSON clearCascadeJSON;
 	{
@@ -71,6 +75,17 @@ public class InventoryAction {
 				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName")
 				.addRetainTerm(RegionAddress.class, "id", "regionName", "parentId");
+	}
+	
+	private ClearCascadeJSON clearCascadeJSONChild;
+	{
+		clearCascadeJSONChild = ClearCascadeJSON.get()
+				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count","sendDate"
+						,"customer" ,"remark","warehouse","warehouseType","confirm","confirmNumber","warehouseTypeDelivery","surplusNumber")
+				.addRetainTerm(BaseData.class, "id", "name")
+				.addRetainTerm(Customer.class, "id", "name","user")
+				.addRetainTerm(User.class, "id", "userName")
+				.addRetainTerm(Product.class, "id", "name", "number");
 	}
 
 	/****** 订单 *****/
@@ -533,6 +548,20 @@ public class InventoryAction {
 		CommonResponse cr = new CommonResponse();
 		procurementService.conversionProcurement(ids);
 		cr.setMessage("成功转换成发货单");
+		return cr;
+	}
+	
+	
+	/**
+	 * 分页查看贴包子单
+	 * @return cr
+	 */
+	@RequestMapping(value = "/inventory/packingChildPage", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse packingChildPage(PageParameter page, PackingChild packingChild) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONChild.format(packingService.findPackingChildElectricityPage(packingChild, page)).toJSON());
+		cr.setMessage("查看成功");
 		return cr;
 	}
 	
