@@ -757,7 +757,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				}
 				// 判定是否更换客户发货，更换客户发货变成新批次，->Y
 				Order order = orderDao.findByBacthNumber(pc.getBacthNumber());
-				if (order.getInternal() != 1 && order.getCustomerId() != pc.getCustomerId()) {
+				if (order!=null && order.getInternal() != 1 && order.getCustomerId() != pc.getCustomerId()) {
 					sale.setBacthNumber(pc.getBacthNumber().substring(0, pc.getBacthNumber().length() - 1) + "Y");
 					sale.setNewBacth(1);
 				}
