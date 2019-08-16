@@ -321,7 +321,9 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	public PageResult<PackingChild> findPackingChildPage(PackingChild param, PageParameter page) {
 		CurrentUser cu = SessionManager.getUserSession();
 		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
-		param.setWarehouseTypeId(warehouseTypeDeliveryId);
+		if(param.getWarehouseTypeId() == null){
+			param.setWarehouseTypeId(warehouseTypeDeliveryId);
+		}
 		if (warehouseTypeDeliveryId == null) {
 			return new PageResult<PackingChild>();
 		}
@@ -470,6 +472,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	@Override
 	@Transactional
 	public int confirmPackingChild(String ids) {
+		CurrentUser cu = SessionManager.getUserSession();
+		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idStrings = ids.split(",");
@@ -496,7 +500,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 						inventory = new Inventory();
 						inventory.setProductId(product.getId());
 						inventory.setNumber(packingChild.getConfirmNumber());
-						inventory.setWarehouseId(packingChild.getWarehouseId());
+						//审核入库
+						inventory.setWarehouseTypeId(warehouseTypeDeliveryId);
 						inventorys.add(inventory);
 						product.setInventorys(inventorys);
 					} else {

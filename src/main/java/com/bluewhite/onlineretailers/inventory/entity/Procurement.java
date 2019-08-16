@@ -41,7 +41,6 @@ public class Procurement extends BaseEntity<Long>{
 	 */
 	@Column(name = "document_number")
 	private String documentNumber;
-	
 
 	/**
 	 * 经手人id
