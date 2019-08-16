@@ -155,6 +155,12 @@ public class Procurement extends BaseEntity<Long>{
 	private Integer audit;
 	
 	/**
+	 * 是否转换（0=否，1=是）
+	 */
+	@Column(name = "conversion")
+	private Integer conversion;
+	
+	/**
 	 * json 储存商品id和数量
 	 * 
 	 */
@@ -200,6 +206,14 @@ public class Procurement extends BaseEntity<Long>{
 	
 	
 	
+	public Integer getConversion() {
+		return conversion;
+	}
+
+	public void setConversion(Integer conversion) {
+		this.conversion = conversion;
+	}
+
 	public Long getOrderId() {
 		return orderId;
 	}

@@ -578,7 +578,10 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	@Transactional
 	public void conversionProcurement(String ids) {
 		CurrentUser cu = SessionManager.getUserSession();
-		long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+		if(warehouseTypeDeliveryId==null){
+			throw new ServiceException("请使用仓库管理员账号，转换");
+		}
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idStrings = ids.split(",");
 			for (String id : idStrings) {
@@ -609,6 +612,8 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 						}
 					});
 				}
+				procurement.setConversion(1);
+				dao.save(procurement);
 			}
 		}
 	}

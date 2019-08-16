@@ -12,6 +12,7 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 
+import org.junit.Ignore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -175,10 +176,10 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	@Transactional
 	public Packing addPacking(Packing packing) {
 		CurrentUser cu = SessionManager.getUserSession();
-		if (cu.getRole().contains("superAdmin")) {
-			throw new ServiceException("请使用仓库管理员账号登录添加");
+		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+		if (warehouseTypeDeliveryId==null) {
+			throw new ServiceException("请使用仓库管理员账号添加");
 		}
-		long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		packing.setFlag(0);
 		packing.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
 		// 新增子单
