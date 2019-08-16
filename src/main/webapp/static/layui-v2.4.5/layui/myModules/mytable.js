@@ -95,7 +95,7 @@ layui.extend({
 							text = data[r];	
 						else if(item2.transData.text)						//无值时
 							text = item2.transData.text;
-						if(item2.transData.skin)							//开启皮肤
+						if(!item2.transData.skin)							//开启皮肤
 							text = '<span class="layui-badge layui-bg-'+COLOR[r%7]+'">'+text+'</span>';
 						return text;
 					}
