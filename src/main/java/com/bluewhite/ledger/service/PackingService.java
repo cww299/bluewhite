@@ -85,11 +85,19 @@ public interface PackingService extends BaseCRUDService<Packing, Long>{
 	
 	
 	/**
-	 * 8号成品库管入库
+	 * 8号成品库管修改
 	 * @param packingChild
 	 * @return
 	 */
 	public PackingChild updateInventoryPackingChild(PackingChild packingChild);
+	
+	
+	/**
+	 * 电商成品库管修改
+	 * @param packingChild
+	 * @return
+	 */
+	public PackingChild updateElectricityInventoryPackingChild(PackingChild packingChild);
 	
 	/**
 	 * 查看贴包子单
