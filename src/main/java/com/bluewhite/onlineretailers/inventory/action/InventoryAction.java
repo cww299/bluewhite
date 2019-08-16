@@ -573,7 +573,7 @@ public class InventoryAction {
 	@ResponseBody
 	public CommonResponse updateInventoryPackingChild(PackingChild packingChild) {
 		CommonResponse cr = new CommonResponse();
-		packingService.updateInventoryPackingChild(packingChild);
+		packingService.updateElectricityInventoryPackingChild(packingChild);
 		cr.setMessage("修改成功");
 		return cr;
 	}
