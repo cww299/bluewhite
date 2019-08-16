@@ -648,19 +648,10 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
 				}
 
-				// 按贴包类型过滤
-				if (param.getType() != null) {
-					predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
-				}
-
-				// 按调拨仓库过滤
-				if (param.getWarehouseTypeId() != null) {
-					predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
-				}
-
-				// 调拨仓库是否确认数量
-				if (param.getConfirm() != null) {
-					predicate.add(cb.equal(root.get("confirm").as(Long.class), param.getConfirm()));
+				// 按出库仓库过滤
+				if (param.getWarehouseTypeDeliveryId() != null) {
+					predicate.add(cb.equal(root.get("warehouseTypeDeliveryId").as(Long.class),
+							param.getWarehouseTypeDeliveryId()));
 				}
 
 				// 按产品name过滤

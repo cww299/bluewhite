@@ -284,7 +284,7 @@ public class InventoryAction {
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(Procurement.class, "id", "documentNumber", "user", "procurementChilds", "number",
 						"residueNumber", "type", "flag", "remark", "transfersUser", "onlineCustomer", "status",
-						"createdAt","audit")
+						"createdAt","audit","conversion")
 				.addRetainTerm(ProcurementChild.class, "id", "commodity", "number", "residueNumber", "warehouse",
 						"status", "childRemark", "batchNumber")
 				.addRetainTerm(Commodity.class, "id", "skuCode", "name", "inventorys")
@@ -553,7 +553,7 @@ public class InventoryAction {
 	
 	
 	/**
-	 * 分页查看贴包子单
+	 * 分页查看发货单
 	 * @return cr
 	 */
 	@RequestMapping(value = "/inventory/packingChildPage", method = RequestMethod.GET)
