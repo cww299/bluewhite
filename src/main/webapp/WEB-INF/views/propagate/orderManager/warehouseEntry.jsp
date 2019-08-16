@@ -190,7 +190,7 @@ td{
 </script>
 <!-- 商品库存情况模板 -->
 <script type="text/html" id="inventoryTpl">
-	{{# var inv=d.inventorys;
+	{{# var inv=d.product.inventorys;
 		var str='';
 		var color='red';
 		if(inv.length>0){
