@@ -135,6 +135,7 @@ td{
 <div  class="layui-button-container">
 	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增出库单</span>
 	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >一键反冲</span>
+	<span lay-event="transSendOrder"  class="layui-btn layui-btn-sm" >转换发货单</span>
 	<span class="layui-badge" >小提示：双击查看详细信息</span>
 </div>
 </script>
@@ -206,17 +207,21 @@ layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	tablePlug : 'tablePlug/tablePlug',
+	myutil: 'layui/myModules/myutil',
 }).define(
-	['tablePlug','laydate','upload'],
+	['tablePlug','laydate','upload','myutil'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
 		, form = layui.form			 		
 		, table = layui.table
+		, myutil = layui.myutil
 		, upload = layui.upload 
 		, laydate = layui.laydate
 		, tablePlug = layui.tablePlug;
-		
+		myutil.config.ctx = '${ctx}';
+		myutil.config.msgOffset = '250px';
+		myutil.clickTr();
 		var chooseProductWin,		//选择商品弹窗
 		    allInventory = [],		//所有仓库
 			allUser = [],
@@ -279,11 +284,9 @@ layui.config({
 			elem:'#outOrderTable',
 			url:'${ctx}/inventory/procurementPage?type=3&flag=0',
 			toolbar:'#outOrderTableToolbar',
-			loading:true,
 			page:{},
 			request:{pageName:'page',limitName:'size'},
-			parseData:function(ret){
-				return {data:ret.data.rows,count:ret.data.total,msg:ret.message,code:ret.code}},
+			parseData:function(ret){ return {data:ret.data.rows,count:ret.data.total,msg:ret.message,code:ret.code}},
 			cols:[[
 			       {align:'center', type:'checkbox',},
 			       {align:'center', title:'单据编号',   	field:'documentNumber',	width:'10%',},
@@ -322,6 +325,7 @@ layui.config({
 			switch(obj.event){
 			case 'add':			add();			break;
 			case 'delete':		deletes();		break;
+			case 'transSendOrder': deletes('trans');   break;
 			}
 		})
 		
@@ -339,28 +343,13 @@ layui.config({
 				url:'${ctx}/inventory/procurementPage?type=3',
 			})
 		})
-		function deletes(){							//删除生产单表格
-			var choosed=layui.table.checkStatus('outOrderTable').data;
-			if(choosed.length<1){
-				layer.msg('请选择生产单',{icon:2,offset:'100px',});
-				return;
-			}
-			layer.confirm('是否确认反冲？',{offset:'100px',},function(){
-				var ids='';
-				for(var i=0;i<choosed.length;i++)
-					ids+=(choosed[i].id+',');
-				var load=layer.load(1);
-				$.ajax({
-					url:'${ctx}/inventory/deleteProcurement?ids='+ids,
-					success:function(result){
-						if(0==result.code){
-							table.reload('outOrderTable');
-							layer.msg(result.message,{icon:1,offset:'100px',});
-						}else
-							layer.msg(result.message,{icon:2,offset:'100px',});
-						layer.close(load);
-					}
-				})
+		function deletes(trans){
+			var url = trans?'/inventory/conversionProcurement':'/inventory/deleteProcurement';
+			var text = trans?'请选择生产单|是否确认转换？':'请选择生产单|是否确认反冲？';
+			myutil.deleTableIds({
+				url: url,
+				text: text,
+				table: 'outOrderTable',
 			})
 		}
 		
@@ -379,7 +368,6 @@ layui.config({
 				elem:'#lookOverProductListTable',
 				data:data.procurementChilds,
 				page:{},
-				loading:true,
 				cols:[[
 				       {align:'center', title:'批次号', field:'batchNumber',},
 				       {align:'center', title:'商品名称',  templet:'<p>{{ d.commodity.skuCode }}</p>'},
@@ -422,10 +410,8 @@ layui.config({
 				toolbar:'#productListTableToolbar',
 				page:{},
 				size:'lg',
-				loading:true,
 				cols:[[
 				       {type:'checkbox', align:'center', fixed:'left'},
-				       //{align:'center', title:'批次号', field:'batchNumber', edit:true, style:'color:blue',},
 				       {align:'center', title:'商品名称', field:'skuCode',},
 				       {align:'center', title:'出库数量',     field:'number', edit:true,style:'color:blue',  },
 				       {align:'center', title:'出库仓库',     field:'warehouseId', 	templet: getInventorySelectHtml()},
@@ -439,11 +425,6 @@ layui.config({
 			})
 			table.reload('productListTable',{ data : choosedProduct });
 		}
-		/* $('#addBatchNumber').change(function(){
-			for(var i=0;i<choosedProduct.length;i++)
-				choosedProduct[i].batchNumber=$('#addBatchNumber').val();
-			table.reload('productListTable',{ data : choosedProduct });
-		}) */
 		table.on('toolbar(productListTable)',function(obj){		//监听选择商品表格的工具栏按钮
 			switch(obj.event){
 			case 'add': openChooseProductWin(); break;
@@ -494,29 +475,22 @@ layui.config({
 		table.on('edit(productListTable)', function(obj){ 			//监听编辑表格单元
 			if(obj.field=='number'){
 				var msg='';
-				if(isNaN(obj.value))
-					msg="修改无效！请输入正确的数字";
-				else if(obj.value=='')
-					msg='计划的数量不能为空';
-				else if(obj.value<0)
-					msg='计划的数量不能小于0';
-				else if(obj.value%1 !== 0)
-					msg='计划的数量必须为整数';
+				isNaN(obj.value) && (msg="修改无效！请输入正确的数字");
+				obj.value=='' && (msg='计划的数量不能为空');
+				obj.value<0 && (msg='计划的数量不能小于0');
+				obj.value%1 !=0 && (msg='计划的数量必须为整数');
 				for(var i=0;i<choosedProduct.length;i++){
 					if(choosedProduct[i].id==obj.data.id){		
 						if(msg!=''){
-							layer.msg('"'+obj.value+'" 为非法输入！'+msg,{icon:2,offset:'100px',});
 							$(this).val(0)
 							choosedProduct[i].number=0;
-							return;
+							return myutil.emsg('"'+obj.value+'" 为非法输入！'+msg);
 						}
 						var inv=choosedProduct[i].inventorys;
 						for(var j=0;j<inv.length;j++){
 							if(inv[j].warehouse.id == choosedProduct[i].warehouseId){
-								if(inv[j].number<obj.value){
-									layer.msg('计划数量不能大于仓库剩余数量，请重新修改数量或选择其他出货仓库！',{icon:2,offset:'100px',});
-									return;
-								}
+								if(inv[j].number<obj.value)
+									return myutil.emsg('计划数量不能大于仓库剩余数量，请重新修改数量或选择其他出货仓库！');
 								break;
 							}
 						}
@@ -542,26 +516,20 @@ layui.config({
 		});
 		form.on('submit(sureAdd)',function(obj){					//确定添加出库单
 			var child=[],allNum=0;
-			if(!choosedProduct.length>0){
-				layer.msg('出库商品不能为空！',{icon:2,offset:'100px',});
-				return;
-			}
+			if(!choosedProduct.length>0)
+				return myutil.emsg('出库商品不能为空！');
 			for(var i=0;i<choosedProduct.length;i++){
 				var t=choosedProduct[i];			
-				if(t.number<1){
-					layer.msg('计划数量不能为0！',{icon:2,offset:'100px',});
-					return;
-				}
-				if(isNaN(t.number)){
-					layer.msg('不能选择库存为0的商品！',{icon:2,offset:'100px',});
-					return;
-				}
+				if(t.number<1)
+					return myutil.emsg('计划数量不能为0！');
+				if(isNaN(t.number))
+					return myutil.emsg('不能选择库存为0的商品！');
 				child.push({
 					productId : 	t.commodityId,
 					number : 		t.number,
 					place : 		t.place,
 					status : 		t.status,
-					childRemark : 	t.childRemark	==	undefined ? '' : t.childRemark,
+					childRemark : 	t.childRemark || '',
 					warehouseId :	t.warehouseId,
 					batchNumber : 	t.batchNumber,
 				});
@@ -570,25 +538,13 @@ layui.config({
 			data.number=$('#addOrderNumber').val();
 			data.status = defaultStatus;
 			data.commodityNumber=JSON.stringify(child);			//子列表商品
-			var load = layer.load(1);
-			$.ajax({
+			myutil.saveAjax({
 				url:"${ctx}/inventory/addProcurement",
-				type:"post",
 				data:data,			
-				success:function(result){
-					if(0==result.code){
-						$('#resetAddOrder').click();
-						layer.closeAll();
-						table.reload('outOrderTable');
-						layer.msg(result.message,{icon:1,offset:'100px',});
-					}else{
-						layer.msg(result.message,{icon:2,offset:'100px',});
-						layer.close(load);
-					}
-				},
-				error:function(){
-					layer.msg("服务器异常",{icon:2,offset:'100px',});
-					layer.close(load);
+				success:function(){
+					$('#resetAddOrder').click();
+					table.reload('outOrderTable');
+					layer.closeAll();
 				}
 			})
 		}) 
@@ -605,7 +561,6 @@ layui.config({
 		})
 		$('#resetAddOrder').on('click',function(){			//此处如果加confirm提示。则新增成功时无法清空
 			$('#addRemark').val('');
-			//$('#addBatchNumber').val('');
 			$('#addOrderNumber').val(0);
 			$('#addCreatedAt').val('');
 			choosedProduct=[];	
@@ -615,10 +570,8 @@ layui.config({
 		
 		function deleteChoosedProduct(){								//删除商品
 			var choosed = layui.table.checkStatus('productListTable').data;
-			if(choosed.length==0){
-				layer.msg("请选择商品删除",{icon:2,offset:'100px',});
-				return;
-			}
+			if(choosed.length==0)
+				return myutil.emsg("请选择商品删除");
 			for(var i=0;i<choosed.length;i++){
 				for(var j=0;j<choosedProduct.length;j++){
 					if(choosed[i].id==choosedProduct[j].id){
@@ -629,9 +582,7 @@ layui.config({
 					}
 				}
 			}
-			table.reload('productListTable',{
-				data:choosedProduct,
-			})
+			table.reload('productListTable',{ data:choosedProduct, })
 		}
 		function openChooseProductWin(){					//商品选择隐藏框
 			chooseProductWin = layer.open({		
@@ -644,14 +595,9 @@ layui.config({
 			table.render({
 				elem:'#productChooseTable',
 				url:'${ctx}/inventory/commodityPage',
-				loading:true,
 				page:true,
-				request:{
-					pageName:'page',
-					limitName:'size'
-				},
-				parseData:function(ret){	
-					return{ code:ret.code, msg:ret.message, data:ret.data.rows, count:ret.data.total,}},
+				request:{ pageName:'page', limitName:'size' },
+				parseData:function(ret){	return{ code:ret.code, msg:ret.message, data:ret.data.rows, count:ret.data.total,}},
 				cols:[[
 				       {type:'checkbox', align:'center', fixed:'left'},
 				       {align:'center', title:'商品名称', field:'skuCode',},
@@ -666,7 +612,7 @@ layui.config({
 		function sureChoosed(){					//确定商品选择
 			var choosed=layui.table.checkStatus('productChooseTable').data;
 			if(choosed.length<1){
-				layer.msg("请选择相关商品",{icon:2,offset:'100px',});
+				myutil.emsg("请选择相关商品");
 				return false;
 			}
 	 		for(var i=0;i<choosed.length;i++){
@@ -695,7 +641,7 @@ layui.config({
 				choosedProduct.push(orderChild);
 			}
 			table.reload('productListTable',{ data:choosedProduct });
-			layer.msg('添加成功',{icon:1,offset:'100px',});
+			myutil.smsg('添加成功');
 			return true;
 		}
 		function getStatusSelectHtml(){					//获取类型下拉框
@@ -745,48 +691,39 @@ layui.config({
 			form.render();
 		}
 		function getAllCustom(){				//获取所有客户
-			$.ajax({
+			myutil.getData({
 				url:'${ctx}/inventory/onlineCustomerPage?size=99999',
-				success:function(r){
-					if(0==r.code){
-						for(var i=0;i<r.data.rows.length;i++)
-							allCustom.push({
-								id:			r.data.rows[i].id,
-								userName:	r.data.rows[i].buyerName
-							})
-						getCustomSelect('','uploadCustom');		//渲染导入文件的下拉框
-						getCustomSelect('','customerIdSelect'); //渲染新增订单的客户下拉框
-					}
+				success:function(data){
+					for(var i=0;data.length;i++)
+						allCustom.push({
+							id:			data[i].id,
+							userName:	data[i].buyerName
+						})
+					getCustomSelect('','uploadCustom');		//渲染导入文件的下拉框
+					getCustomSelect('','customerIdSelect'); //渲染新增订单的客户下拉框
 				}
 			})
 		}
 		function getAllUser(){					//获取所有经手人
-			$.ajax({
+			myutil.getData({
 				url:'${ctx}/system/user/pages?size=999&quit=0',
 				success:function(r){
-					if(0==r.code){
-						for(var i=0;i<r.data.rows.length;i++)
-							allUser.push({
-								id:			r.data.rows[i].id,
-								userName:	r.data.rows[i].userName
-							})
-					}
+					for(var i=0;i<data.length;i++)
+						allUser.push({
+							id:			data[i].id,
+							userName:	data[i].userName
+						})
 				}
 			})
 		}
 		function getAllInventory(){				//获取所有仓库
-			$.ajax({
+			myutil.getDataSync({
 				url:'${ctx}/basedata/list?type=inventory',
-				async:false,
-				success:function(r){
-					if(0==r.code){
-						allInventory=r.data;
-						var html = '';
-						layui.each(r.data,function(index,item){
-							html += '<option value="'+item.id+'">'+item.name+'</option>';
-						})
-						$('#uploadWarehouse').html(html);	//渲染导入文件仓库下拉框
-					}
+				success:function(allInventory){
+					layui.each(r.data,function(index,item){
+						html += '<option value="'+item.id+'">'+item.name+'</option>';
+					})
+					$('#uploadWarehouse').html(html);	//渲染导入文件仓库下拉框
 				}
 			})
 		}
@@ -799,13 +736,6 @@ layui.config({
 				}
 			})
 		}
-		$(document).on('click', '.layui-table-view tbody tr', function(event) {
-			var elemTemp = $(this);
-			var tableView = elemTemp.closest('.layui-table-view');
-			var trIndex = elemTemp.data('index');
-			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
-		})
-		
 	}//end define function
 )//endedefine
 </script>
