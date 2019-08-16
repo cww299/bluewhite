@@ -196,11 +196,12 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		switch (consumption.getType()) {
 		case 1:
 			flag = false;
-			if(originalMoney==null){
+			//表示不是修改金额时自动跳过
+			if(consumption.getId() != null &&  originalMoney == null){
 				break;
 			}
 			// 修改子类报销单1.改变当前子类报销金额 2改变父类预算的报销金额
-			if (consumption.getId() != null && consumption.getParentId() != null && consumption.getBudget() == 0) {
+			if (consumption.getParentId() != null && consumption.getBudget() == 0) {
 				// 获取报销单的父id实体
 				Consumption parentConsumption = dao.findOne(consumption.getParentId());
 				// 表示为修改

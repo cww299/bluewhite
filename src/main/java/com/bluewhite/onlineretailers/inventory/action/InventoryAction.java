@@ -81,7 +81,7 @@ public class InventoryAction {
 	{
 		clearCascadeJSONChild = ClearCascadeJSON.get()
 				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count","sendDate"
-						,"customer" ,"remark","warehouse","warehouseType","confirm","confirmNumber","warehouseTypeDelivery","surplusNumber")
+						,"customer" ,"remark","warehouse","warehouseType","confirm","confirmNumber","warehouseTypeDelivery","surplusNumber","flag")
 				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(Customer.class, "id", "name","user")
 				.addRetainTerm(User.class, "id", "userName")
