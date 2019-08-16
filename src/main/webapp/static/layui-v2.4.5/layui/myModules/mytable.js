@@ -3,7 +3,7 @@
  * 主要使用方式：     使用本模块需要先在引用页面实例myutil模块，并设置${ctx}.如果不设置myutil，在设置给定url时需要给全路径即${ctx}不可省略
  * 合计行开启方式：totalRow:['需要开启合计行的字段',...]
  * 字段增加虚拟字段: cols:[[ { field:'user_userName' } ]] 对应user:{ userName: '' };
- * 增加数据转换模板: cols:[[ { field:'user_userName', transData:{data:['对应转化的值','按顺序对应0、1、2..'],text:'无值时的提示',skin:'是否开启皮肤模式 true\false' } ]]
+ * 增加数据转换模板: cols:[[ { field:'user_userName', transData:{data:['对应转化的值','按顺序对应0、1、2..'],text:'无值时的提示',skin:'是否开启皮肤模式 true\false'//默认开启， } ]]
  * 增加数据类型模板：cols:[[ { type:'select', select:{data:你的下拉框数据, id:'对应值',name:'显示名、虚拟字段'/[可多字段拼接], layFilter:'下拉框的lay-filter用于监听' } } ]]
  * 					cols:[[ { type:'date',  } ]]
  * 					cols:[[ { type:'dateTime', } ]]
@@ -50,7 +50,6 @@ layui.extend({
 		var totalRow = opt.totalRow || [];
 		var dateField = [], dateTimeField = [], selectLay = [], allField = [], price = [], count = [], notNull = [], china = [];
 		var tableId = opt.elem.split('#')[1];
-		opt.autoUpdate && (opt.autoUpdate.field = opt.autoUpdate.field || [] );	//开启自动修改没有给field时，默认空
 		layui.each(opt.cols,function(index1,item1){					//表头模板设置------------------------------------------------
 			layui.each(item1,function(index2,item2){
 				item2.field && (allField.push(item2.field));
@@ -127,6 +126,9 @@ layui.extend({
 				}
 			})
 		})
+		if(opt.autoUpdate){		//开启自动修改
+			opt.autoUpdate.field = opt.autoUpdate.field || [] ;		//没有给field时，默认空
+		}
 		if(opt.verify){					//设置验证
 			opt.verify.notNull && addVerify(opt.verify.notNull,notNull);
 			opt.verify.count && addVerify(opt.verify.count,count);
@@ -140,7 +142,7 @@ layui.extend({
 			}
 		}
 		var toolbar = '';						//设置工具模板
-		if(opt.curd){
+		if(opt.curd){					//增、删、改
 			if(typeof(opt.curd.btn)== 'object'){
 				var t = [];
 				t.push(TOOLTPL[0]);
@@ -213,30 +215,31 @@ layui.extend({
 					trData[f] = obj.value;
 				})		
 			})
-			table.on('edit('+tableId+')',function(obj){
-				var val = obj.value, trData = obj.data, data = { id : trData.id },field = obj.field,msg = '';
-				if(data.id && data.id!=''){
-					if(notNull.indexOf(field)>=0 && isNull(val))
-						msg = '修改失败，该值不能为空';
-					if(price.indexOf(field)>=0 && !isPrice(val))
-						msg = '修改失败，请正确填写'+china[field];
-					if(count.indexOf(field)>=0 && !isCount(val))
-						msg = '修改失败，请正确填写'+china[field];
-					if(msg!=''){
-						table.reload(tableId);
-						return myutil.emsg(msg);
+			if(opt.autoUpdate)
+				table.on('edit('+tableId+')',function(obj){
+					var val = obj.value, trData = obj.data, data = { id : trData.id },field = obj.field,msg = '';
+					if(data.id && data.id!=''){
+						if(notNull.indexOf(field)>=0 && isNull(val))
+							msg = '修改失败，该值不能为空';
+						if(price.indexOf(field)>=0 && !isPrice(val))
+							msg = '修改失败，请正确填写'+china[field];
+						if(count.indexOf(field)>=0 && !isCount(val))
+							msg = '修改失败，请正确填写'+china[field];
+						if(msg!=''){
+							table.reload(tableId);
+							return myutil.emsg(msg);
+						}
 					}
-				}
-				var t = opt.autoUpdate.field[field]? opt.autoUpdate.field[field] : field;
-				data[t] = val;
-				if(opt.autoUpdate && trData.id>0){
-					myutil.saveAjax({
-						url: opt.autoUpdate.saveUrl,
-						data: data,
-					})
-				}
-				trData[t] = val;  //修改缓存值
-			})
+					var t = opt.autoUpdate.field[field] || field;
+					data[t] = val;
+					if(opt.autoUpdate && trData.id>0){
+						myutil.saveAjax({
+							url: opt.autoUpdate.saveUrl,
+							data: data,
+						})
+					}
+					trData[t] = val;  //修改缓存值
+				})
 			if(opt.curd)
 				table.on('toolbar('+tableId+')',function(obj){		//监听工具
 					switch(obj.event){
@@ -250,7 +253,7 @@ layui.extend({
 						var field = opt.curd.addTemp || (function(){	//如果没有给出默认值
 							var field = {};
 							layui.each(allField,function(index,item){
-								var t = opt.autoUpdate.field[item]? opt.autoUpdate.field[item]:item;
+								var t = opt.autoUpdate.field[item] || item;
 								field[t] = '';
 							})
 							return field;
