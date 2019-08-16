@@ -676,4 +676,17 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			return result;
 		}
 
+	@Override
+	public PackingChild updateElectricityInventoryPackingChild(PackingChild packingChild) {
+		if (packingChild.getId() != null) {
+			PackingChild oldPackingChild = packingChildDao.findOne(packingChild.getId());
+			if (oldPackingChild.getFlag() == 1) {
+				throw new ServiceException("电商发货单已审核发货，无法修改");
+			}
+			BeanCopyUtils.copyNotEmpty(packingChild, oldPackingChild, "");
+			packingChildDao.save(oldPackingChild);
+		}
+		return packingChild;
+	}
+
 }

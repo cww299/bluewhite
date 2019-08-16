@@ -566,7 +566,20 @@ public class InventoryAction {
 	}
 	
 	/**
-	 * 发货清单成为销售单
+	 * 修改发货单(电商仓管填写 )
+	 * @return cr
+	 */
+	@RequestMapping(value = "/inventory/updateInventoryPackingChild", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateInventoryPackingChild(PackingChild packingChild) {
+		CommonResponse cr = new CommonResponse();
+		packingService.updateInventoryPackingChild(packingChild);
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
+	/**
+	 * 发货清单成为销售单（审核发货）
 	 * @param ids
 	 * @return
 	 */

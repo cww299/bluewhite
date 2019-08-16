@@ -108,6 +108,10 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
 			}
 
+			// 是否转换
+			if (param.getConversion() != null) {
+				predicate.add(cb.equal(root.get("conversion").as(Integer.class), param.getConversion()));
+			}
 			// 按是否反冲
 			if (param.getFlag() != null) {
 				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
@@ -579,14 +583,14 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 	public void conversionProcurement(String ids) {
 		CurrentUser cu = SessionManager.getUserSession();
 		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
-		if(warehouseTypeDeliveryId==null){
+		if (warehouseTypeDeliveryId == null) {
 			throw new ServiceException("请使用仓库管理员账号，转换");
 		}
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idStrings = ids.split(",");
 			for (String id : idStrings) {
 				Procurement procurement = dao.findOne(Long.valueOf(id));
-				if(procurement.getConversion()!=null && procurement.getConversion()==1){
+				if (procurement.getConversion() != null && procurement.getConversion() == 1) {
 					throw new ServiceException("该出库单已经转换，请勿再次转换");
 				}
 				if (procurement.getProcurementChilds().size() > 0) {
@@ -720,13 +724,15 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				// 已发货
 				pc.setFlag(1);
 				// 生成财务销售单
-				Sale sale = new Sale(); 
+				Sale sale = new Sale();
 				sale.setProductId(pc.getProductId());
 				sale.setCustomerId(pc.getCustomerId());
 				sale.setBacthNumber(pc.getBacthNumber());
 				// 生成销售编号
-				sale.setSaleNumber(Constants.XS + "-" + sdf.format(pc.getSendDate()) + "-" + SalesUtils.get0LeftString(
-						packingChildDao.findBySendDateBetween(pc.getSendDate(), DatesUtil.getLastDayOftime(pc.getSendDate())).size(), 4));
+				sale.setSaleNumber(Constants.XS + "-" + sdf.format(pc.getSendDate()) + "-"
+						+ SalesUtils.get0LeftString(packingChildDao
+								.findBySendDateBetween(pc.getSendDate(), DatesUtil.getLastDayOftime(pc.getSendDate()))
+								.size(), 4));
 				// 未审核
 				sale.setAudit(0);
 				// 不转批次
