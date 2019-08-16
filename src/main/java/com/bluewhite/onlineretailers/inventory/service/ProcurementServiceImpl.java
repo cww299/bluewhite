@@ -586,6 +586,9 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			String[] idStrings = ids.split(",");
 			for (String id : idStrings) {
 				Procurement procurement = dao.findOne(Long.valueOf(id));
+				if(procurement.getConversion()!=null && procurement.getConversion()==1){
+					throw new ServiceException("该出库单已经转换，请勿再次转换");
+				}
 				if (procurement.getProcurementChilds().size() > 0) {
 					procurement.getProcurementChilds().stream().forEach(p -> {
 						if (p.getBatchNumber() == null) {
@@ -601,7 +604,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 								PackingChild packingChild = new PackingChild();
 								packingChild.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
 								packingChild.setBacthNumber(bnStrings[0]);
-								packingChild.setCount(Integer.getInteger(bnStrings[1]));
+								packingChild.setCount(Integer.parseInt(bnStrings[1]));
 								packingChild.setCustomerId(procurement.getOnlineCustomerId());
 								packingChild.setProductId(p.getCommodity().getProductId());
 								packingChild.setType(1);

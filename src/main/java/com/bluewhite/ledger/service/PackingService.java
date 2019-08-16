@@ -47,6 +47,14 @@ public interface PackingService extends BaseCRUDService<Packing, Long>{
 	public PageResult<PackingChild> findPackingChildPage(PackingChild packingChild, PageParameter page);
 	
 	/**
+	 * 查看电商实际发货单
+	 * @param packingChild
+	 * @param page
+	 * @return
+	 */
+	public PageResult<PackingChild> findPackingChildElectricityPage(PackingChild packingChild, PageParameter page);
+	
+	/**
 	 * 删除贴包单
 	 * @param ids
 	 * @return
