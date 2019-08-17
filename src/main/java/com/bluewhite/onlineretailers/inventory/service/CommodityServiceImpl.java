@@ -31,6 +31,8 @@ import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 import com.bluewhite.onlineretailers.inventory.entity.Warning;
+import com.bluewhite.product.product.dao.ProductDao;
+import com.bluewhite.product.product.entity.Product;
 
 @Service
 public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> implements CommodityService {
@@ -47,6 +49,8 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 	private CommodityDao commodityDao;
 	@Autowired
 	private InventoryDao inventoryDao;
+	@Autowired
+	private ProductDao productDao;
 
 	@Override
 	public PageResult<Commodity> findPage(Commodity param, PageParameter page) {
@@ -59,7 +63,7 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
-
+  
 			// 按编号过滤
 			if (!StringUtils.isEmpty(param.getSkuCode())) {
 				predicate.add(cb.like(root.get("skuCode").as(String.class),
@@ -94,8 +98,8 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 	}
 	
 	@Override
-	public PageResult<Inventory> findPage(Inventory param, PageParameter page) {
-		Page<Inventory> pages = inventoryDao.findAll((root, query, cb) -> {
+	public PageResult<Product> findPage(Product param, PageParameter page) {
+		Page<Product> pages = productDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
 			if (param.getId() != null) {
@@ -103,9 +107,9 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 			}
 
 			// 按编号过滤
-			if (!StringUtils.isEmpty(param.getSkuCode())) {
-				predicate.add(cb.like(root.get("skuCode").as(String.class),
-						"%" + StringUtil.specialStrKeyword(param.getSkuCode()) + "%"));
+			if (!StringUtils.isEmpty(param.getName())) {
+				predicate.add(cb.like(root.get("name").as(String.class),
+						"%" + StringUtil.specialStrKeyword(param.getName()) + "%"));
 			}
 
 			Predicate[] pre = new Predicate[predicate.size()];
@@ -113,7 +117,7 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 			return null;
 		}, page);
 
-		PageResult<Inventory> result = new PageResult<>(pages, page);
+		PageResult<Product> result = new PageResult<>(pages, page);
 		return result;
 		
 	}

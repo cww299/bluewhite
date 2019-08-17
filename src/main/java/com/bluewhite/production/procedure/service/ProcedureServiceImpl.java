@@ -21,6 +21,7 @@ import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
+import com.bluewhite.production.task.dao.TaskDao;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 
@@ -32,7 +33,9 @@ public class ProcedureServiceImpl extends BaseServiceImpl<Procedure, Long> imple
 	@Autowired
 	private BacthDao bacthDao;
 	@Autowired
-	private  TaskService taskService ;
+	private TaskDao taskDao ;
+	@Autowired
+	private TaskService taskService ;
 	
 	@Override
 	public List<Procedure> findByProductIdAndType(Long productId, Integer type,Integer flag) {
@@ -133,24 +136,13 @@ public class ProcedureServiceImpl extends BaseServiceImpl<Procedure, Long> imple
 
 
 	@Override
-	public void deleteProcedure(Long id) throws Exception {
-		Task task = new Task();
-		task.setProcedureId(id);
-		PageParameter page  = new PageParameter();
-		page.setSize(Integer.MAX_VALUE);
-		List<Task> taskList = taskService.findPages(task, page).getRows();
-		String mag = "";
-		if(taskList.size()>0){
-			for(Task ta : taskList){
-				String idString =  String.valueOf(ta.getId());
-				mag+=" "+idString+" ";
-			}
-			throw new ServiceException("该工序已经分配给任务编号为"+mag+"的任务，需要先删除任务。");
-		}
+	public void deleteProcedure(Long id){
+		List<Task> taskList = taskDao.findByProcedureId(id);
+		String ids =taskList.stream().map(task->String.valueOf(task.getId())).collect(Collectors.joining(","));
+		taskService.deleteTask(ids);
 		Procedure procedure = procedureDao.findOne(id);
 		procedureDao.delete(id);
 		this.countPrice(procedure);
-		
 	}
 
 }
