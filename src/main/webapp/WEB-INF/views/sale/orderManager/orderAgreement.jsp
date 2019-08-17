@@ -207,7 +207,7 @@ layui.config({
 			case 'add':		add();		break;
 			case 'update':	edit(); 	break;
 			case 'delete':	deletes();			break;
-			}
+			} 
 		})
 		function add(){
 			var productList = [];	//记录复选框选中的值，用于回显复选框选中
