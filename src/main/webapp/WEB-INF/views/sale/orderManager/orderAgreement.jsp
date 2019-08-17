@@ -183,6 +183,7 @@ layui.config({
 			       { align:'center', title:'产品编号',	field:'productNumber', width:'10%', 	templet:'<span>{{ d.product?d.product.number:""}}</span>'	},
 			       { align:'center', title:'产品名称',	field:'productName',	templet:'<span>{{ d.product?d.product.name:""}}</span>'},
 			       { align:'center', title:'数量',   field:'number',	 width:'6%'},
+			       { align:'center', title:'剩余数量',   field:'surplusNumber',	 width:'6%'},
 			       { align:'center', title:'价格',   field:'price',  width:'6%'	 },
 			       { align:'center', title:'备注',   field:'remark',	 },
 			       ]]
