@@ -252,7 +252,7 @@ layui.config({
 			       {align:'center', type:'checkbox',},
 			       {align:'center', title:'包装时间',   field:'packingDate',width:'8%',templet:'<span>{{ d.packingDate.split(" ")[0] }}</span>',	},
 			       {align:'center', title:'编号',   field:'number',  width:'8%', },
-			       {align:'center', title:'客户',   field:'customer',width:'8%', templet:'<span>{{ d.customer?d.customer.name:"---"}}</span>'	},
+			       {align:'center', title:'客户/仓库',   field:'customer',width:'8%', templet:'<span>{{ d.customer?d.customer.name:d.warehouseType?d.warehouseType.name:"---"}}</span>'	},
 			       {align:'center', title:'是否发货',   field:'flag',  width:'8%',templet:'#flagTpl' },
 			       {align:'center', title:'贴包人',   field:'user',  width:'6%', templet:'<span>{{ d.user?d.user.userName:"---"}}</span>'},
 			       {align:'center', title:'包装物及数量',   field:'packingMaterials', 	templet: getMaterial(),},
@@ -320,7 +320,7 @@ layui.config({
 						child.push({
 							sendGoodsId: item.sendGoodsId,
 							count: item.count,
-							id: item.id,
+							packingChildId: item.id,
 						})
 					}
 				})
@@ -479,24 +479,35 @@ layui.config({
 			elem: '#childTable',
 			cols: [[
 					{align:'center',type:'checkbox'},
-			        {align:'center',field:'sendGoodsId',title:'日期 ~ 批次号 ~ 产品',edit:false, templet: getSelectHtml('childTable','bacthNumber')},
+			        {align:'center',field:'sendGoodsId',title:'日期 ~ 批次号 ~ 产品 ~ 剩余数量',edit:false, templet: getSelectHtml('childTable','bacthNumber')},
 			        {align:'center',field:'count',title:'数量',width:'10%',edit: 'text',},
 			        ]]
 		})
 		function getSelectHtml(tid,field){
 			return function(d){
 				var data = (field=='bacthNumber'?allSend:allMaterials);
-				var html = '<select lay-search lay-filter="tableSelect" data-table="'+tid+'"><option value="">请选择</option>';
-				for(var i=0;i<data.length;i++){
-					var item = data[i]
-					, id = d.packagingMaterials?d.packagingMaterials.id:''
-					, title = item.name;
-					if(field=='bacthNumber'){
-						id = d.sendGoodsId;
-						title = item.sendDate.split(' ')[0]+" ~ "+item.bacthNumber+" ~ "+item.product.name;
+				var html ='';
+				if(tid=="childTable" && d.id){	//如果是子单且是修改的数据
+					for(var i=0;i<data.length;i++){
+						if(data[i].id == d.sendGoodsId){
+							html = '<input type="text" class="layui-input" readonly value="'+data[i].sendDate.split(' ')[0]+" ~ "+data[i].bacthNumber+" ~ "
+								+data[i].product.name+" ~ "+ (+data[i].surplusNumber+d.count)+'">';
+							break;
+						}
 					}
-					var selected = ( id==item.id?'selected':'');
-					html += '<option value="'+item.id+'" '+selected+'>'+title+'</option>';
+				}else{
+					html = '<select lay-search lay-filter="tableSelect" data-table="'+tid+'"><option value="">请选择</option>';
+					for(var i=0;i<data.length;i++){
+						var item = data[i]
+						, id = d.packagingMaterials?d.packagingMaterials.id:''
+						, title = item.name;
+						if(field=='bacthNumber'){
+							id = d.sendGoodsId;
+							title = item.sendDate.split(' ')[0]+" ~ "+item.bacthNumber+" ~ "+item.product.name+" ~ "+(+item.surplusNumber+d.count);
+						}
+						var selected = ( id==item.id?'selected':'');
+						html += '<option value="'+item.id+'" '+selected+'>'+title+'</option>';
+					}
 				}
 				return html+='</select>';
 			}
@@ -567,6 +578,8 @@ layui.config({
 			var childData = [],materialData = [],cusId = '',userId='',type = 1, warehouseTypeId='';
 			addType = 1;
 			addEditId = '';
+			showAndHide(addType);
+			var surplusNumber = false;
 			$('#addEditCustomer').val('');
 			$('#sureAddEidtBtn').html('确定新增');
 			$('#sendDate').removeAttr('disabled');
@@ -579,6 +592,7 @@ layui.config({
 					return myutil.emsg(msg);
 				data=choosed[0];
 				title="修改";
+				surplusNumber = true;
 				type = data.type;
 				addType = type;		//当前修改对象的类型
 				addEditId = data.id;	//当前修改对象的id
@@ -603,7 +617,7 @@ layui.config({
 				offset: '40px', 
 				content: $('#addEditWin'),
 				success: function(){
-					getAllSend();
+					getAllSend(surplusNumber);
 					$('#addEditType').val(type);
 					$('#sendDate').val(searchTime);
 					$('#addEditCustomer').val(cusId);
@@ -612,24 +626,17 @@ layui.config({
 					table.reload('childTable',{ data: childData });
 					table.reload('materialTable',{ data: materialData });
 					form.render();
+				},
+				end:function(){
+					table.reload(packTable);
 				}
 			})
 		}
 		function deletes(){
-			var choosed=layui.table.checkStatus('packTable').data;
-			if(choosed.length<1)
-				return myutil.emsg('请选择删除信息');
-			layer.confirm("是否确认删除？",function(){
-				var ids=[];
-				for(var i=0;i<choosed.length;i++)
-					ids.push(choosed[i].id);
-				myutil.deleteAjax({
-					url:'/ledger/deletePacking',
-					ids: ids.join(','),
-					success: function(){
-						table.reload('packTable');
-					}
-				})
+			myutil.deleTableIds({
+				url: '/ledger/deletePacking',
+				text: '请选择删除信息|是否确认删除？',
+				table: 'packTable',
 			})
 		}
 		
@@ -657,37 +664,24 @@ layui.config({
 		}
 		
 		function getData(){
-			myutil.getData({
+			allMaterials = myutil.getDataSync({
 				url:'${ctx}/basedata/list?type=packagingMaterials',
-				async: false,
-				done: function(data){
-					layui.each(data,function(index,item){
-						allMaterials.push({
-							id: item.id, name: item.name
-						})
-					})
-				}
 			});
 			getCustomerSelect('');
 			getInventoryType('');
 			getPackPeople();
 		}
 		function getNumber(){
-			myutil.getData({
-				url:'${ctx}/ledger/getPackingNumber?sendDate='+searchTime+' 00:00:00',
-				async: false,
-				done: function(data){
-					$('#addEditNumber').val(data);
-				}
-			});
+			$('#addEditNumber').val(
+				myutil.getDataSync({
+					url:'${ctx}/ledger/getPackingNumber?sendDate='+searchTime+' 00:00:00',
+				})
+			);
 		}
-		function getAllSend(){
-			myutil.getData({
-				url:'${ctx}/ledger/getSearchSendGoods?sendDate='+searchTime+' 00:00:00',
-				async: false,
-				done: function(data){
-					allSend = data;
-				}
+		function getAllSend(surplusNumber){
+			var field = surplusNumber?'':'&surplusNumber=0';
+			allSend = myutil.getDataSync({
+				url:'${ctx}/ledger/getSearchSendGoods?sendDate='+searchTime+' 00:00:00'+field,
 			});
 		}
 		function getInventoryType(){

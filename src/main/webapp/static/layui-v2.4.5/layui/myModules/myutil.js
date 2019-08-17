@@ -32,9 +32,9 @@ layui.define(['jquery','layer','form','table'],function(exports){
 				var msg = '成功';
 				if(r.code == 0){
 					r.message && (msg = r.message);
-					myutil.smsg(msg);
 					callback && callback();
 					options.success && options.success(r);
+					myutil.smsg(msg);
 				}else{
 					msg = '失败';
 					r.message && (msg = r.message);

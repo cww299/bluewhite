@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title></title>
+	<title>订单管理</title>
 <style>
 .layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
      top: 50%;
@@ -84,7 +84,7 @@ layui.config({
 		var bg = "background-color: #ecf7b8;";
 		table.render({
 			elem:'#tableData',
-			url:'${ctx}/ledger/packingChildPage?flag=1',
+			url:'${ctx}/ledger/salePage',
 			where: { audit: 0 },
 			page:true,
 			toolbar: '#tableToolbar',
@@ -133,7 +133,7 @@ layui.config({
 						var index = $(elem).closest('tr').attr('data-index');
 						var trData = table.cache['tableData'][index];
 						myutil.getData({
-							url:'${ctx}/ledger/getPackingChildPrice?customerId='+trData.customer.id+'&productId='+trData.product.id,
+							url:'${ctx}/ledger/getSalePrice?customerId='+trData.customer.id+'&productId='+trData.product.id,
 							done: function(data){
 								var html = '无以往价格';
 								if(data.length!=0){
@@ -150,7 +150,7 @@ layui.config({
 								$('.layui-layer-tips .layui-badge').unbind().on('click',function(event){
 									layui.stope(event)
 									myutil.saveAjax({
-										url:'/ledger/updateFinancePackingChild',
+										url:'/ledger/updateFinanceSale',
 										data: {
 											id: $(this).data('id'),
 											price: $(this).data('price')
@@ -190,7 +190,7 @@ layui.config({
 				ids.push(item.id);
 			})
 			myutil.saveAjax({
-				url:'/ledger/auditPackingChild?audit='+isAudit,
+				url:'/ledger/auditSale?audit='+isAudit,
 				type: 'get',
 				data: { ids:ids.join(',') },
 				success: function(){
@@ -206,7 +206,7 @@ layui.config({
 				myutil.emsg(msg);
 			else
 				myutil.saveAjax({
-					url:'/ledger/updateFinancePackingChild',
+					url:'/ledger/updateFinanceSale',
 					data: {
 						id: obj.data.id,
 						price: val

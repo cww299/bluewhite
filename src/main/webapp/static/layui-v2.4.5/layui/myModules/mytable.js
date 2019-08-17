@@ -3,7 +3,7 @@
  * 主要使用方式：     使用本模块需要先在引用页面实例myutil模块，并设置${ctx}.如果不设置myutil，在设置给定url时需要给全路径即${ctx}不可省略
  * 合计行开启方式：totalRow:['需要开启合计行的字段',...]
  * 字段增加虚拟字段: cols:[[ { field:'user_userName' } ]] 对应user:{ userName: '' };
- * 增加数据转换模板: cols:[[ { field:'user_userName', transData:{data:['对应转化的值','按顺序对应0、1、2..'],text:'无值时的提示',skin:'是否开启皮肤模式 true\false' } ]]
+ * 增加数据转换模板: cols:[[ { field:'user_userName', transData:{data:['对应转化的值','按顺序对应0、1、2..'],text:'无值时的提示',skin:'是否开启皮肤模式 true\false'//默认开启， } ]]
  * 增加数据类型模板：cols:[[ { type:'select', select:{data:你的下拉框数据, id:'对应值',name:'显示名、虚拟字段'/[可多字段拼接], layFilter:'下拉框的lay-filter用于监听' } } ]]
  * 					cols:[[ { type:'date',  } ]]
  * 					cols:[[ { type:'dateTime', } ]]
@@ -19,7 +19,7 @@
  *						},
  * 增加字段验证规则：verify:{ notNull:[ 非空的字段集合 ], price:[ 价格的字段集合 ], count:[ 数量的字段集合]   }
  * 增加列宽度字段： colsWidth:[0,10,0,20,1,对应的各个字段宽度] 0为自适应，只填数字默认百分比。开启checkbox时，第一个数字应为0保留复选框自适应
- *					
+ * 增加默认导出假字段 exportField: true, //true为关闭、默认开启
  */
 layui.extend({
 	myutil: 'layui/myModules/myutil',
@@ -48,7 +48,7 @@ layui.extend({
 	mytable.render = function(opt,ob){
 		var obj = ob || { parseData:parseDataPage(), request:REQ,page:true, };
 		var totalRow = opt.totalRow || [];
-		var dateField = [], dateTimeField = [], selectLay = [], allField = [], price = [], count = [], notNull = [], china = [];
+		var dateField = [], dateTimeField = [], selectLay = [], allField = [], price = [], count = [], notNull = [], china = [], exportCols = [];
 		var tableId = opt.elem.split('#')[1];
 		layui.each(opt.cols,function(index1,item1){					//表头模板设置------------------------------------------------
 			layui.each(item1,function(index2,item2){
@@ -68,6 +68,8 @@ layui.extend({
 				case 'dateTime': dateTimeField.indexOf(item2.field)<0 && dateTimeField.push(item2.field); (!item2.edit) && (item2.edit = false); break;	//开启日期时间
 				}
 				if(item2.field){
+					if(item2.field.split('_').length>1) //记录假字段、用于导出
+						exportCols.push(item2.field);
 					var tep = function(d){								//默认模板
 						var fie = item2.field.split('_');				
 						var res = '';
@@ -94,7 +96,7 @@ layui.extend({
 							text = data[r];	
 						else if(item2.transData.text)						//无值时
 							text = item2.transData.text;
-						if(item2.transData.skin)							//开启皮肤
+						if(!item2.transData.skin)							//开启皮肤
 							text = '<span class="layui-badge layui-bg-'+COLOR[r%7]+'">'+text+'</span>';
 						return text;
 					}
@@ -126,6 +128,9 @@ layui.extend({
 				}
 			})
 		})
+		if(opt.autoUpdate){		//开启自动修改
+			opt.autoUpdate.field = opt.autoUpdate.field || [] ;		//没有给field时，默认空
+		}
 		if(opt.verify){					//设置验证
 			opt.verify.notNull && addVerify(opt.verify.notNull,notNull);
 			opt.verify.count && addVerify(opt.verify.count,count);
@@ -139,7 +144,7 @@ layui.extend({
 			}
 		}
 		var toolbar = '';						//设置工具模板
-		if(opt.curd){
+		if(opt.curd){					//增、删、改
 			if(typeof(opt.curd.btn)== 'object'){
 				var t = [];
 				t.push(TOOLTPL[0]);
@@ -156,6 +161,17 @@ layui.extend({
 		opt.toolbar = toolbar+'</div>';									//设置工具栏模板
 		var done = opt.done || null;//深拷贝回调函数
 		function newDone(res, curr, cou){	 		 //时间、下拉框类型的渲染。修改值时的同步缓存操作、工具栏的操作等------------------------------
+			if(!opt.exportField){ //开启虚拟字段导出
+				layui.each(res.data,function(index1,item1){
+					layui.each(exportCols,function(index2,item2){
+						var t = item1;
+						layui.each(item2.split('_'),function(index3,item3){
+							t = t?(t[item3] || null):null;
+						})
+						item1[item2] = t;
+					})
+				})
+			}
 			renderData(dateField,'date');
 			renderData(dateTimeField,'datetime');
 			function renderData(data,type){
@@ -212,137 +228,139 @@ layui.extend({
 					trData[f] = obj.value;
 				})		
 			})
-			table.on('edit('+tableId+')',function(obj){
-				var val = obj.value, trData = obj.data, data = { id : trData.id },field = obj.field,msg = '';
-				if(data.id && data.id!=''){
-					if(notNull.indexOf(field)>=0 && isNull(val))
-						msg = '修改失败，该值不能为空';
-					if(price.indexOf(field)>=0 && !isPrice(val))
-						msg = '修改失败，请正确填写'+china[field];
-					if(count.indexOf(field)>=0 && !isCount(val))
-						msg = '修改失败，请正确填写'+china[field];
-					if(msg!=''){
-						table.reload(tableId);
-						return myutil.emsg(msg);
+			if(opt.autoUpdate)
+				table.on('edit('+tableId+')',function(obj){
+					var val = obj.value, trData = obj.data, data = { id : trData.id },field = obj.field,msg = '';
+					if(data.id && data.id!=''){
+						if(notNull.indexOf(field)>=0 && isNull(val))
+							msg = '修改失败，该值不能为空';
+						if(price.indexOf(field)>=0 && !isPrice(val))
+							msg = '修改失败，请正确填写'+china[field];
+						if(count.indexOf(field)>=0 && !isCount(val))
+							msg = '修改失败，请正确填写'+china[field];
+						if(msg!=''){
+							table.reload(tableId);
+							return myutil.emsg(msg);
+						}
 					}
-				}
-				var t = opt.autoUpdate.field[field]? opt.autoUpdate.field[field] : field;
-				data[t] = val;
-				if(opt.autoUpdate && trData.id>0){
-					myutil.saveAjax({
-						url: opt.autoUpdate.saveUrl,
-						data: data,
-					})
-				}
-				trData[t] = val;  //修改缓存值
-			})
-			table.on('toolbar('+tableId+')',function(obj){		//监听工具
-				switch(obj.event){
-				case 'addTempData': 	addTempData(); 	break;
-				case 'saveTempData': 	saveTempData(); break;
-				case 'deleteSome': 		deleteSome(); 	break;
-				case 'cleanTempData': 	table.cleanTemp(tableId); break;
-				}
-				opt.curd.otherBtn && opt.curd.otherBtn(obj);	//如果有其他按钮操作
-				function addTempData(){
-					var field = opt.curd.addTemp || (function(){	//如果没有给出默认值
-						var field = {};
-						layui.each(allField,function(index,item){
-							var t = opt.autoUpdate.field[item]? opt.autoUpdate.field[item]:item;
-							field[t] = '';
+					var t = opt.autoUpdate.field[field] || field;
+					data[t] = val;
+					if(opt.autoUpdate && trData.id>0){
+						myutil.saveAjax({
+							url: opt.autoUpdate.saveUrl,
+							data: data,
 						})
-						return field;
-					})();
-					table.addTemp(tableId,field,function(trElem){ 
-						renderData(dateField,'date');
-						renderData(dateTimeField,'datetime');
-						function renderData(data,type){
-							layui.each(data,function(index1,item1){	 //渲染日期
-								layui.each($(opt.elem).next().find('td[data-field="'+item1+'"]'),function(index,item){
-									item.children[0].onclick = function(event) { layui.stope(event) };
-									var dateTd = trElem.find('td[data-field="'+item1+'"]')[0];
-									laydate.render({
-										elem: dateTd.children[0],
-										type: type,
-										done: function(val){
-											var index = $(this.elem).closest('tr').data('index');
-											var trData = table.cache[tableId][index];
-											if(val.split(' ').length==1)
-												val += ' 00:00:00';
-											var t = opt.autoUpdate.field[item1]? opt.autoUpdate.field[item1] : item1;
-											trData[t] = val;    	//修改缓存值
-										}
+					}
+					trData[t] = val;  //修改缓存值
+				})
+			if(opt.curd)
+				table.on('toolbar('+tableId+')',function(obj){		//监听工具
+					switch(obj.event){
+					case 'addTempData': 	addTempData(); 	break;
+					case 'saveTempData': 	saveTempData(); break;
+					case 'deleteSome': 		deleteSome(); 	break;
+					case 'cleanTempData': 	table.cleanTemp(tableId); break;
+					}
+					opt.curd.otherBtn && opt.curd.otherBtn(obj);	//如果有其他按钮操作
+					function addTempData(){
+						var field = opt.curd.addTemp || (function(){	//如果没有给出默认值
+							var field = {};
+							layui.each(allField,function(index,item){
+								var t = opt.autoUpdate.field[item] || item;
+								field[t] = '';
+							})
+							return field;
+						})();
+						table.addTemp(tableId,field,function(trElem){ 
+							renderData(dateField,'date');
+							renderData(dateTimeField,'datetime');
+							function renderData(data,type){
+								layui.each(data,function(index1,item1){	 //渲染日期
+									layui.each($(opt.elem).next().find('td[data-field="'+item1+'"]'),function(index,item){
+										item.children[0].onclick = function(event) { layui.stope(event) };
+										var dateTd = trElem.find('td[data-field="'+item1+'"]')[0];
+										laydate.render({
+											elem: dateTd.children[0],
+											type: type,
+											done: function(val){
+												var index = $(this.elem).closest('tr').data('index');
+												var trData = table.cache[tableId][index];
+												if(val.split(' ').length==1)
+													val += ' 00:00:00';
+												var t = opt.autoUpdate.field[item1]? opt.autoUpdate.field[item1] : item1;
+												trData[t] = val;    	//修改缓存值
+											}
+										})
 									})
 								})
-							})
-						}
-					});
-				}
-				function saveTempData(){
-					var data = table.getTemp(tableId).data,success = 0,msg='';
-					if(data.length==0)
-						return myutil.emsg('无临时数据可保存！');
-					layui.each(data,function(index,item){
-						if(msg!='') return;
-						for(var i=0;i<notNull.length;i++){
-							var t = notNull[i];
-							t = opt.autoUpdate.field[t]? opt.autoUpdate.field[t] : t;
-							if(isNull(item[t]))
-								msg = '新增失败，'+china[notNull[i]]+'不能为空';
-						}
-						for(var i=0;i<price.length;i++){
-							var t = price[i];
-							t = opt.autoUpdate.field[t]? opt.autoUpdate.field[t] : t;
-							if(!isPrice(item[t]))
-								msg = '新增失败，请正确填写'+china[t];
-						}
-						for(var i=0;i<count.length;i++){
-							var t = count[i];
-							t = opt.autoUpdate.field[t]? opt.autoUpdate.field[t] : t;
-							if(!isCount(item[t]))
-								msg = '新增失败，请正确填写'+china[t];
-						}
-					})
-					if(msg!='') 
-						return myutil.emsg(msg);
-					if(opt.curd.saveFun)
-						opt.curd.saveFun(data);		//如果存在保存函数则执行，否则执行默认保存函数
-					else{
-						for(var i=0;i<data.length;i++)
-							myutil.saveAjax({
-								url: opt.autoUpdate.saveUrl,
-								data: data[i],
-								success: function(){
-									success++;
-								}
-							})
-						if(success==data.length){
-							myutil.smsg('成功新增：'+success+'条数据');
-							table.reload(tableId);
+							}
+						});
+					}
+					function saveTempData(){
+						var data = table.getTemp(tableId).data,success = 0,msg='';
+						if(data.length==0)
+							return myutil.emsg('无临时数据可保存！');
+						layui.each(data,function(index,item){
+							if(msg!='') return;
+							for(var i=0;i<notNull.length;i++){
+								var t = notNull[i];
+								t = opt.autoUpdate.field[t]? opt.autoUpdate.field[t] : t;
+								if(isNull(item[t]))
+									msg = '新增失败，'+china[notNull[i]]+'不能为空';
+							}
+							for(var i=0;i<price.length;i++){
+								var t = price[i];
+								t = opt.autoUpdate.field[t]? opt.autoUpdate.field[t] : t;
+								if(!isPrice(item[t]))
+									msg = '新增失败，请正确填写'+china[t];
+							}
+							for(var i=0;i<count.length;i++){
+								var t = count[i];
+								t = opt.autoUpdate.field[t]? opt.autoUpdate.field[t] : t;
+								if(!isCount(item[t]))
+									msg = '新增失败，请正确填写'+china[t];
+							}
+						})
+						if(msg!='') 
+							return myutil.emsg(msg);
+						if(opt.curd.saveFun)
+							opt.curd.saveFun(data);		//如果存在保存函数则执行，否则执行默认保存函数
+						else{
+							for(var i=0;i<data.length;i++)
+								myutil.saveAjax({
+									url: opt.autoUpdate.saveUrl,
+									data: data[i],
+									success: function(){
+										success++;
+									}
+								})
+							if(success==data.length){
+								myutil.smsg('成功新增：'+success+'条数据');
+								table.reload(tableId);
+							}
 						}
 					}
-				}
-				function deleteSome(){
-					var choosed=layui.table.checkStatus(tableId).data;
-					if(choosed.length<1)
-						return myutil.emsg('请选择相关信息');
-					layer.confirm("是否确认删除？",function(){
-						var ids='';
-						for(var i=0;i<choosed.length;i++)
-							ids+=(choosed[i].id+",");
-						if(opt.curd.deleFun)
-							opt.curd.deleFun(ids);		//如果存在删除函数则执行，否则执行默认删除函数
-						else
-							myutil.deleteAjax({
-								url: opt.autoUpdate.deleUrl,
-								ids: ids,
-								success:function(){
-									table.reload(tableId);
-								},
-							})
-					})
-				}
-			})	
+					function deleteSome(){
+						var choosed=layui.table.checkStatus(tableId).data;
+						if(choosed.length<1)
+							return myutil.emsg('请选择相关信息');
+						layer.confirm("是否确认删除？",function(){
+							var ids='';
+							for(var i=0;i<choosed.length;i++)
+								ids+=(choosed[i].id+",");
+							if(opt.curd.deleFun)
+								opt.curd.deleFun(ids);		//如果存在删除函数则执行，否则执行默认删除函数
+							else
+								myutil.deleteAjax({
+									url: opt.autoUpdate.deleUrl,
+									ids: ids,
+									success:function(){
+										table.reload(tableId);
+									},
+								})
+						})
+					}
+				})	
 			done && done(res, curr, cou);
 		}
 		opt.done = newDone;

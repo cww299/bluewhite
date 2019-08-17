@@ -75,20 +75,8 @@ layui.config({
 		myutil.timeFormat();
 		var allBatch = [],allCustom = []; 	//所有的批次号、客户
 		var searchTime = new Date().format("yyyy-MM-dd");;
-		myutil.getData({
-			url:'${ctx}/ledger/allCustomer',
-			async: false,
-			done: function(data){
-				allCustom = data;
-			}
-		});
-		myutil.getData({
-			url:'${ctx}/ledger/getOrder',
-			async: false,
-			done: function(data){
-				allBatch = data;
-			}
-		});
+		allCustom = myutil.getDataSync({ url:'${ctx}/ledger/allCustomer', });
+		allBatch = myutil.getDataSync({ url:'${ctx}/ledger/getOrder', });
 		laydate.render({ elem:'#searchTime',range:'~'  })
 		table.render({
 			elem:'#tableData',
@@ -105,7 +93,6 @@ layui.config({
 			       {align:'center', title:'批次号',   field:'bacthNumber', edit:false, templet: getSelectHtml(allBatch,'bacthNumber'),  },
 			       {align:'center', title:'产品', 	field:'productName', edit:false, templet: '<span>{{d.product?d.product.name:""}}</span>'	},
 			       {align:'center', title:'数量',   field:'number',	edit:true,  width:'6%',},
-			       {align:'center', title:'发货数量',   field:'sendNumber',	edit:false,  width:'6%',},
 			       {align:'center', title:'剩余数量',   field:'surplusNumber', edit:false, width:'6%',	},
 			       ]],
 			done:function(){
@@ -173,16 +160,12 @@ layui.config({
 			var val = obj.value, msg ='';
 			isNaN(val) && (msg = '数量只能为数字');
 			val<0 && (msg = '数量只能为数字');
-			if(msg!=''){
+			if(msg!='')
 				return myutil.emsg(msg);
-			}
 			if(data.id!=''){
 				myutil.saveAjax({
 					url: '/ledger/addSendGoods',
-					data: {
-						id: data.id,
-						number: parseInt(val)
-					},
+					data: { id: data.id, number: parseInt(val) },
 					success: function(){
 						$(obj.tr[0]).find('td[data-field="surplusNumber"]').find('div').html(val-data.sendNumber);
 					}
@@ -256,20 +239,10 @@ layui.config({
 				myutil.emsg('新增异常：'+(tempData.length-successAdd)+'条数据');
 		}
 		function deleteSome(){
-			var choosed=layui.table.checkStatus('tableData').data;
-			if(choosed.length<1)
-				return myutil.emsg('请选择商品');
-			layer.confirm("是否确认删除？",function(){
-				var ids='';
-				for(var i=0;i<choosed.length;i++)
-					ids+=(choosed[i].id+",");
-				myutil.deleteAjax({
-					url:"/ledger/deleteSendGoods",
-					ids: ids,
-					success: function(){
-						table.reload('tableData');
-					}
-				})
+			myutil.deleTableIds({
+				url: '/ledger/deleteSendGoods',
+				text: '请选择删除信息|是否确认删除？',
+				table: 'tableData',
 			})
 		}
 		function update(data){
