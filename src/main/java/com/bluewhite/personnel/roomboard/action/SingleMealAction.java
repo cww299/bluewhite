@@ -53,6 +53,24 @@ public class SingleMealAction {
 		return cr;
 	}
 	
+	
+	/**
+	 * 去除分页
+	 * findSingleMeal
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/getSingle", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getSingle(HttpServletRequest request,SingleMeal singleMealward) {
+		CommonResponse cr = new CommonResponse();
+		List<SingleMeal>  mealList= service.findSingleMeal(singleMealward);
+		cr.setData(clearCascadeJSON.format(mealList).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
 	/**
 	 * 新增修改
 	 * 

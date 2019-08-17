@@ -169,6 +169,23 @@ public class MealAction {
 	}
 	
 	/**
+	 * 每天汇总
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/getSummaryWage", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getSummaryWage(HttpServletRequest request,PageParameter page,Meal meal) {
+		CommonResponse cr = new CommonResponse();
+		 List<Map<String, Object>> list = service.findWage(meal);
+		cr.setData(clearCascadeJSON.format(list).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/**
 	 * 同步报餐记录
 	 * 
 	 * @param request 请求

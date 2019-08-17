@@ -222,35 +222,35 @@
 								totalRow: true
 							},{
 								field: "modeOne",
-								title: "早餐次数/金额",
+								title: "早餐次数/单餐金额/总金额",
 								align: 'center',
 								edit: false,
 								templet:function(d){
-									return d.modeOne+'     ～￥'+d.modeOnePrice
+									return d.modeOne+'     ～￥'+d.modeOneVal+'     ～￥'+d.modeOnePrice
 								}
 							},{
 								field: "modeTwo",
-								title: "中餐次数/金额",
+								title: "中餐次数/单餐金额/总金额",
 								align: 'center',
 								edit: false,
 								templet:function(d){
-									return d.modeTwo+'     ～￥'+d.modeTwoPrice
+									return d.modeTwo+'     ～￥'+d.modeTwoVal+'     ～￥'+d.modeTwoPrice
 								}
 							},{
 								field: "modeThree",
-								title: "晚餐次数/金额",
+								title: "晚餐次数/单餐金额/总金额",
 								align: 'center',
 								edit: false,
 								templet:function(d){
-									return d.modeThree+'     ～￥'+d.modeThreePrice
+									return d.modeThree+'     ～￥'+d.modeThreeVal+'     ～￥'+d.modeThreePrice
 								}
 							},{
 								field: "modeFour",
-								title: "夜宵次数/金额",
+								title: "夜宵次数/单餐金额/总金额",
 								align: 'center',
 								edit: false,
 								templet:function(d){
-									return d.modeFour+'     ～￥'+d.modeFourPrice
+									return d.modeFour+'     ～￥'+d.modeFourVal+'     ～￥'+d.modeFourPrice
 								}
 							}]
 						],

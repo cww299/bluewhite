@@ -114,6 +114,30 @@ public class SingleMealServiceImpl extends BaseServiceImpl<SingleMeal, Long>
 		return null;
 	}
 
+	@Override
+	public List<SingleMeal> findSingleMeal(SingleMeal singleMeal) {
+		List<SingleMeal> list = dao.findAll((root, query, cb) -> {
+			List<Predicate> predicate = new ArrayList<>();
+			// 按物料查找
+			if (!StringUtils.isEmpty(singleMeal.getSingleMealConsumptionId())) {
+				predicate.add(cb.equal(root.get("singleMealConsumption").get("id").as(Long.class), singleMeal.getSingleMealConsumptionId()));
+			}
+			// 按 类型过滤
+			if (singleMeal.getType() != null) {
+				predicate.add(cb.equal(root.get("type").as(Long.class), singleMeal.getType()));
+			}
+			// 按日期
+			if (!StringUtils.isEmpty(singleMeal.getOrderTimeBegin()) && !StringUtils.isEmpty(singleMeal.getOrderTimeEnd())) {
+				predicate.add(cb.between(root.get("time").as(Date.class), singleMeal.getOrderTimeBegin(),
+						singleMeal.getOrderTimeEnd()));
+			}
+			Predicate[] pre = new Predicate[predicate.size()];
+			query.where(predicate.toArray(pre));
+			return null;
+		});
+		return list;
+	}
+
 	
 	
 }

@@ -51,6 +51,15 @@ public interface MealService  extends BaseCRUDService<Meal,Long>{
 	public List<Map<String, Object>> findMealSummary(Meal meal);
 	
 	/**
+	 * 报餐汇总
+	 * @param userId
+	 * @param beginDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<Map<String, Object>> findWage(Meal meal);
+	
+	/**
 	 * 同步吃饭
 	 * @param onlineOrder
 	 */

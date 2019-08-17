@@ -55,12 +55,76 @@
 			
 		</div>
 	</div>
+	
+	<!-- <form action="" id="layuiadmin-form-admin"
+		style="padding: 20px 30px 0 60px; display:none;  text-align:">
+		<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+				<div class="layui-form-item">
+					<table>
+						<tr>
+							<td>查询时间:</td>
+							<td><input id="monthDate9" style="width: 320px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td>
+								<div class="layui-inline">
+									<button class="layui-btn layuiadmin-btn-admin" type="button"  lay-submit lay-filter="LAY-searchsumday">
+										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+									</button>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		<div class="layui-form" lay-filter="layuiadmin-form-admin">
+			<div class="layui-form-item">
+				<div class="layui-input-inline">
+					<table><tr><td>
+					<input type="text" style="width: 150px;"  name="keyValue" id="keyValue"
+						value="物料分类"
+						class="layui-input laydate-icon">
+						</td><td>
+					<input type="text" style="width: 150px;"  name="keyValue" id="keyValue"
+						 
+						class="layui-input laydate-icon">	
+					</td></tr></table>	
+				</div>
+			</div>
+		</div>
+	</form>	 -->
+
+<div style="display: none;" id="layuiShare">
+			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+				<div class="layui-form-item">
+					<table>
+						<tr>
+							<td>查询月份:</td>
+							<td><input id="monthDate9" style="width: 180px;" name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td>
+								<div class="layui-inline">
+									<button class="layui-btn layuiadmin-btn-admin"  lay-submit lay-filter="LAY-search2">
+										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+									</button>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<table id="layuiShare2"  class="table_th_search" lay-filter="layuiShare"></table>
+</div>	
+	
+	
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
 				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增一行</span>
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
 				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
+				<span class="layui-btn layui-btn-sm" lay-event="sumDay">每天费用</span>
 			</div>
 	</script>
 
@@ -100,7 +164,11 @@
 						elem: '#startTime',
 						type : 'datetime',
 					});
-				
+					laydate.render({
+						elem: '#monthDate9',
+						type: 'datetime',
+						range: '~',
+					}); 
 					
 					var getdataa={type:"singleMealConsumption",}
 					var htmlfrn= '<option value="">请选择</option>';
@@ -387,6 +455,34 @@
 									layer.close(index);
 								});
 								break;
+							case 'sumDay':
+								var dicDiv=$('#layuiShare');
+								/* table.reload("analysisRecuitsumday"); */
+								layer.open({
+							         type: 1
+							        ,title: '每天费用' //不显示标题栏
+							        ,closeBtn: false
+							        ,zindex:-1
+							        ,area:['50%', '90%']
+							        ,shade: 0.5
+							        ,id: 'LAY_layuipro10' //设定一个id，防止重复弹出
+							        ,btn: ['取消']
+							        ,btnAlign: 'c'
+							        ,moveType: 1 //拖拽模式，0或者1
+							        ,content:dicDiv
+							        ,success : function(layero, index) {
+							        	layero.addClass('layui-form');
+										// 将保存按钮改变成提交按钮
+										layero.find('.layui-layer-btn0').attr({
+											'lay-filter' : 'addRole2',
+											'lay-submit' : ''
+										})
+							        }
+							        ,end:function(){
+							        	$("#layuiShare").hide();
+									  } 
+							      });
+								break;
 						}
 					});
 	
@@ -405,11 +501,103 @@
 					});
 					
 					
-					/* $(document).keydown(function(event){
-						　　if(event.keyCode==13){
-						　   $("#LAY-search5").click();
-						　　}
-						}); */
+				var data="";
+					form.on('submit(LAY-search2)', function(obj) {
+						var field = obj.field;
+						var orderTime=field.time.split('~');
+						field.orderTimeBegin=orderTime[0];
+						field.orderTimeEnd=orderTime[1];
+						eventd(field);
+					})
+					
+					var eventd=function(data){
+						var datae = [],error = false,msg = '';
+						var china = ['物料采购和数据跟进费','房（自动生成）','电（自动生成）','煤气（自动生成）','人工绩效','人工工资','水（自动生成）']
+						$.ajax({
+							url:'${ctx}/personnel/getSummaryWage',
+							data:{
+								orderTimeBegin:data.orderTimeBegin,
+								orderTimeEnd:data.orderTimeEnd
+							},
+							async:false,
+							success:function(r){
+								if(r.code==0){
+									var i =0;
+									for(var val in r.data[0]){
+										if(val == 'size' || val == 'sumPrice')
+											continue;
+										datae.push({
+											type:'',
+											content: china[i++],
+											price: r.data[0][val]
+										})
+									}
+								}else{
+									error = true;
+									msg = r.message;
+								}
+							}
+						})
+						if(!error){
+							$.ajax({
+								url:'${ctx}/personnel/getSingle',
+								data:{
+									orderTimeBegin:data.orderTimeBegin,
+									orderTimeEnd:data.orderTimeEnd
+								},
+								async:false,
+								success:function(r){
+									if(0==r.code){
+										$(r.data).each(function(j,k){
+											datae.push({
+												type:k.singleMealConsumption.name,
+												content:k.content,
+												price:k.price,
+											})
+										})
+									}else{
+										msg = r.message;
+										datae = [];
+									}
+								}
+							})
+						}
+						table.reload("layuiShare2", {
+							data:datae,
+							text:{
+								none:msg
+							}
+			              })
+					};
+					table.render({
+						elem: '#layuiShare2',
+						data:[],
+						toolbar: '#toolbar5', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+						totalRow: true,		 //开启合计行 */
+						colFilterRecord: true,
+						smartReloadModel: true,// 开启智能重载
+						cols: [
+							[{
+								field: "type",
+								title: "分类",
+								align: 'center',
+								totalRowText: '合计'
+							},{
+								field: "content",
+								title: "邀约面试",
+								align: 'center',
+								totalRow: true
+							},{
+								field: "price",
+								title: "应邀面试",
+								align: 'center',
+								totalRow: true
+							}
+							]
+						],
+					
+								});
+					
 					
 					//监听搜索
 					form.on('submit(LAY-search)', function(obj) {		//修改此处
