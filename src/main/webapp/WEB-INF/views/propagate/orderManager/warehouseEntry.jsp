@@ -652,7 +652,7 @@ layui.config({
 				cols = [[
 					       {type:'checkbox', align:'center', fixed:'left'},
 					       {align:'center', title:'批次号', field:'batchNumber',width:'16%'},
-					       {align:'center', title:'商品名称', field:'productName', templet:'<span>{{ d.commodity.name }}</span>'},
+					       {align:'center', title:'商品名称', field:'productName', templet:'<span>{{ d.commodity.skuCode }}</span>'},
 					       {align:'center', title:'计划数量', field:'number',width:'8%'},
 					       {align:'center', title:'剩余数量', 	  field:'residueNumber',width:'8%'},
 					       {align:'center', title:'备注', 	  field:'childRemark',}, 
@@ -694,7 +694,7 @@ layui.config({
 			}else{
 				for(var i=0;i<choosed.length;i++){
 		 			var orderChild={
-							skuCode : choosed[i].commodity.name,		
+							skuCode : choosed[i].commodity.skuCode,		
 							commodityId : choosed[i].commodity.productId,
 							number : 0,						
 							childRemark : choosed[i].childRemark,		
