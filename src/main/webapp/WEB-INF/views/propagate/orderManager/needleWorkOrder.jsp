@@ -158,7 +158,7 @@ layui.config({
 			       {align:'center', title:'单据编号',   	field:'documentNumber',width:'10%',	},
 			       {align:'center', title:'计划数量', field:'number', width:'4%',},
 			       {align:'center', title:'剩余数量', field:'residueNumber', width:'4%',},
-			       {align:'center', title:'经手人',	templet:'<p>{{ d.user.userName }}</p>',width:'4%',},
+			       {align:'center', title:'经手人',	templet:'<p>{{ d.user?d.user.userName:"--" }}</p>',width:'4%',},
 			       {align:'center', title:'是否反冲', 	field:'flag', templet:'#flagTpl',width:'4%',},
 			       {align:'center', title:'日期',   	field:'createdAt',width:'9%',	},
 				   {align:'center', title:'批次号',	  templet: orderContent('batchNumber'),   width:'10%'	,},
@@ -287,6 +287,9 @@ layui.config({
 					if( item.id != choosedProduct[i].id && item.commodityId == choosedProduct[i].commodityId && item.batchNumber == choosedProduct[i].batchNumber)
 						return layer.msg('相同的商品不能同时使用相同的批次号！',{icon:2,offset:'100px',});
 				}
+				if(choosedProduct[i].number==0){
+					return layer.msg('商品的数量不能为0！',{icon:2,offset:'100px',});
+				}
 				child.push({batchNumber : choosedProduct[i].batchNumber.replace(/(^\s*)|(\s*$)/g, ''),
 							productId : choosedProduct[i].commodityId,
 							number : choosedProduct[i].number,
@@ -366,7 +369,7 @@ layui.config({
 				cols:[[
 				       {type:'checkbox', align:'center', fixed:'left'},
 				       {align:'center', title:'批次号', field:'batchNumber',width:'16%'},
-				       {align:'center', title:'商品名称', field:'productName', templet:'<span>{{ d.commodity.name }}</span>'},
+				       {align:'center', title:'商品名称', field:'productName', templet:'<span>{{ d.commodity.skuCode }}</span>'},
 				       {align:'center', title:'计划数量', field:'number',width:'8%'},
 				       {align:'center', title:'剩余数量', 	  field:'residueNumber',width:'8%'},
 				       {align:'center', title:'备注', 	  field:'childRemark',}, 
@@ -389,7 +392,7 @@ layui.config({
 					}
 				}
 				var orderChild={
-						skuCode : choosed[i].commodity.name ,			
+						skuCode : choosed[i].commodity.skuCode ,			
 						commodityId : choosed[i].commodity.productId,			
 						number : 0,								
 						residueNumber: choosed[i].residueNumber,
