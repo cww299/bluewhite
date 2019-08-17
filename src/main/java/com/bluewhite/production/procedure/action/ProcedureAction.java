@@ -127,17 +127,10 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 	@ResponseBody
 	public CommonResponse delete(HttpServletRequest request,String[] ids) {
 		CommonResponse cr = new CommonResponse();
-		if(ids!=null){
-			try {
+		if(ids.length>0){
 				for(String id : ids){
 					procedureService.deleteProcedure(Long.valueOf(id));
 				}
-				
-			} catch (Exception e) {
-				cr.setMessage(e.getMessage());
-				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				return cr;
-			}
 			cr.setMessage("工序删除成功");
 		}else{
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

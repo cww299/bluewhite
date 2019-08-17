@@ -672,6 +672,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 		procurementChild.setResidueNumber(procurementChild.getNumber());
 		if (procurementChild.getId() != null) {
 			ProcurementChild pc = procurementChildDao.findOne(procurementChild.getId());
+			Integer num = pc.getNumber();
 			if (pc.getProcurement().getAudit() == 1) {
 				throw new ServiceException("入库单已审核，无法修改");
 			}
@@ -684,7 +685,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			// 更新上级转换的子单数量
 			ProcurementChild pcParent = procurementChildDao.findOne(pc.getParentId());
 			// 子单数量不能大于上级单据的剩余数量
-			if (pc.getNumber() > pcParent.getResidueNumber()) {
+			if (pc.getNumber() > (pcParent.getResidueNumber()+num)) {
 				throw new ServiceException("针工单剩余数量不够，无法修改，请确认剩余数量");
 			} else {
 				pcParent.setResidueNumber(pcParent.getResidueNumber() - pc.getNumber());

@@ -46,7 +46,7 @@ public interface ProcedureService extends BaseCRUDService<Procedure,Long>{
 	 * 删除工序
 	 * @param id
 	 */
-	void deleteProcedure(Long id)  throws Exception;
+	void deleteProcedure(Long id);
 
 
 }

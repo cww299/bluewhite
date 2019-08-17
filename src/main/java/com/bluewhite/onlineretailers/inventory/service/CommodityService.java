@@ -11,6 +11,7 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.onlineretailers.inventory.entity.Warning;
+import com.bluewhite.product.product.entity.Product;
 @Service
 public interface CommodityService  extends BaseCRUDService<Commodity,Long>{
 	
@@ -24,12 +25,12 @@ public interface CommodityService  extends BaseCRUDService<Commodity,Long>{
 	public PageResult<Commodity> findPage(Commodity commodity, PageParameter page);
 	
 	/**
-	 * 分页查看商品
+	 * 分页查看商品库存
 	 * @param onlineOrder
 	 * @param page
 	 * @return
 	 */
-	public PageResult<Inventory> findPage(Inventory inventory, PageParameter page);
+	public PageResult<Product> findPage(Product product, PageParameter page);
 	
 	
 	/**
