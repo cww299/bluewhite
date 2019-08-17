@@ -110,7 +110,7 @@ public class DatesUtil {
 		Date lastDayOfMonth = cal.getTime();
 		return lastDayOfMonth;
 	}
-
+	
 	/**
 	 * 获取前一个月第一天
 	 * 
@@ -121,6 +121,10 @@ public class DatesUtil {
 		Calendar calendar1 = Calendar.getInstance();
 		calendar1.add(Calendar.MONTH, -1);
 		calendar1.set(Calendar.DAY_OF_MONTH, 1);
+		calendar1.set(Calendar.HOUR_OF_DAY, 0);// 设置时为0点
+		calendar1.set(Calendar.MINUTE, 0);// 设置分钟为0分
+		calendar1.set(Calendar.SECOND, 0);// 设置秒为0秒
+		calendar1.set(Calendar.MILLISECOND, 000);// 设置毫秒为000
 		return calendar1.getTime();
 
 	}
@@ -134,6 +138,10 @@ public class DatesUtil {
 	public static Date getLastDayOLastMonth(Date dates) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.DAY_OF_MONTH, 0);
+		calendar.set(Calendar.HOUR_OF_DAY, 23);
+		calendar.set(Calendar.MINUTE, 59);
+		calendar.set(Calendar.SECOND, 59);
+		calendar.set(Calendar.MILLISECOND, 999);
 		return calendar.getTime();
 	}
 
