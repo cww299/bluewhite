@@ -69,7 +69,7 @@ layui.config({
 			elem:'#tableData',
 			url:'${ctx}/inventory/packingChildPage',
 			where:{ flag:0 },
-			toolbar:'#tableToolbar',
+			//toolbar:'#tableToolbar',
 			autoUpdate:{ saveUrl:'/inventory/updateInventoryPackingChild', },
 			verify:{ count:['count'],notNull:['count']  },
 			cols:[[
