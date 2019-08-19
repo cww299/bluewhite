@@ -584,7 +584,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 		CurrentUser cu = SessionManager.getUserSession();
 		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		if (warehouseTypeDeliveryId == null) {
-			throw new ServiceException("请使用仓库管理员账号，转换");
+			throw new ServiceException("请使用仓库管理员账号转换");
 		}
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idStrings = ids.split(",");
