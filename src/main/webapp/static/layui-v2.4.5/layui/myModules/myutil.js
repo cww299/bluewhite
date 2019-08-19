@@ -1,5 +1,6 @@
 /* 工具模块
  * 2019/7/6
+ * getSelectHtml：{ url、data、}
  */
 layui.define(['jquery','layer','form','table'],function(exports){
 	var $ = layui.jquery
@@ -144,6 +145,7 @@ layui.define(['jquery','layer','form','table'],function(exports){
 					else
 						data = r.data;
 					callback && callback(data);
+					options.success && options.success(data);
 					options.done && options.done(data);
 					return data;
 				}
@@ -173,7 +175,7 @@ layui.define(['jquery','layer','form','table'],function(exports){
 		/*url: '', id:'id', table:'', text:'', offset:'', success */
 		if(!opt.table)
 			return console.warn('请给定操作表格');
-		var tid = opt.table, text = opt.text || '请选择相关信息|是否确认？',offset = opt.offset || '',ids = [];
+		var tid = opt.table, text = opt.text || '请选择相关信息删除|是否确认删除？',offset = opt.offset || '',ids = [];
 		var choosed = table.checkStatus(tid).data;
 		if(choosed.length<1)
 			return myutil.emsg(text.split('|')[0]);

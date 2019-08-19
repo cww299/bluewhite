@@ -694,11 +694,12 @@ layui.config({
 			myutil.getData({
 				url:'${ctx}/inventory/onlineCustomerPage?size=99999',
 				success:function(data){
-					for(var i=0;data.length;i++)
+					for(var i=0;i<data.length;i++){
 						allCustom.push({
 							id:			data[i].id,
 							userName:	data[i].buyerName
 						})
+					}
 					getCustomSelect('','uploadCustom');		//渲染导入文件的下拉框
 					getCustomSelect('','customerIdSelect'); //渲染新增订单的客户下拉框
 				}
@@ -707,7 +708,7 @@ layui.config({
 		function getAllUser(){					//获取所有经手人
 			myutil.getData({
 				url:'${ctx}/system/user/pages?size=999&quit=0',
-				success:function(r){
+				success:function(data){
 					for(var i=0;i<data.length;i++)
 						allUser.push({
 							id:			data[i].id,
@@ -719,8 +720,9 @@ layui.config({
 		function getAllInventory(){				//获取所有仓库
 			myutil.getDataSync({
 				url:'${ctx}/basedata/list?type=inventory',
-				success:function(allInventory){
-					layui.each(r.data,function(index,item){
+				success:function(data){
+					var html = '';
+					layui.each(data,function(index,item){
 						html += '<option value="'+item.id+'">'+item.name+'</option>';
 					})
 					$('#uploadWarehouse').html(html);	//渲染导入文件仓库下拉框
