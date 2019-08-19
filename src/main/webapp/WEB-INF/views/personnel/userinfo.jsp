@@ -156,7 +156,7 @@
 									</button>
 								</span>
 								<div id="moreController" style="display:none;">
-									<button type="button" class="btn btn-success  btn-sm btn-3d addDict"> 新增员工</button>
+									<!-- <button type="button" class="btn btn-success  btn-sm btn-3d addDict"> 新增员工</button> -->
 									<button type="button" class="btn btn-success  btn-sm btn-3d savemode" data-toggle="modal" data-target="#myModal">员工提示 </button>
 									<button type="button" class="btn btn-success  btn-sm btn-3d ecxel" id="export">导出返聘</button>
 									<button type="button" class="btn btn-success  btn-sm btn-3d ecxel" id="export2">导出人员 </button>
