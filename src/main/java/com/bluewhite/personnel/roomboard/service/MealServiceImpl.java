@@ -2,6 +2,7 @@ package com.bluewhite.personnel.roomboard.service;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,7 @@ import com.bluewhite.finance.consumption.dao.ConsumptionDao;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.wage.dao.WageDao;
 import com.bluewhite.finance.wage.entity.Wage;
+import com.bluewhite.personnel.attendance.dao.AttendanceInitDao;
 import com.bluewhite.personnel.attendance.dao.PersonVariableDao;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
@@ -62,6 +64,8 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 	private SingleMealDao singleMealDao;
 	@Autowired
 	private WageDao wageDao;
+	@Autowired
+	private AttendanceInitDao attendanceInitDao ;
 	@Override
 	public PageResult<Meal> findPage(Meal param, PageParameter page) {
 		Page<Meal> pages = dao.findAll((root, query, cb) -> {
@@ -185,6 +189,14 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 	 */
 	@Override
 	public List<Map<String, Object>> findMealSummary(Meal meal) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(meal.getOrderTimeBegin());
+		int month = cal.get(Calendar.MONTH);
+		cal.setTime(meal.getOrderTimeEnd());
+		int month2 = cal.get(Calendar.MONTH);
+		if (month!=month2) {
+			throw new ServiceException("请选择同一月份时间");
+		}
 		List<Map<String, Object>> allList = new ArrayList<>();
 		// 单向数据map
 		Map<String, Object> allMap = null;
@@ -199,6 +211,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		double sum5 = 0;//上个月煤气汇总
 		double sum6 = 0;//上个月面料主食等汇总
 		double sum9 = 0;//人工工资总和
+		double sum10=0;//当月所有的报销物料
 		long day= DatesUtil.getDaySub(DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()), DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));//当月天数
 		List<Consumption> list=	consumptionDao.findByApplyTypeIdAndExpenseDateBetween(a, DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
 				DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
@@ -245,20 +258,30 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		double sum7= NumUtils.sum(sum6, sum5);////上个月煤气汇总 +上个月面料主食等汇总
 		PersonVariable personVariable1 = personVariableDao.findByType(6);
 		double valA= NumUtils.mul(sum7, Double.parseDouble(personVariable1.getKeyValue()));//采购员收入A
-		double valB= NumUtils.mul(Double.parseDouble(personVariable1.getKeyValueTwo()), Double.parseDouble(personVariable1.getKeyValue()));//采购员收入B
+		List<SingleMeal> singleMeals=singleMealDao.findByTimeBetween(DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()), DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));//当月所有报销物料
+		if (singleMeals.size()>0) {
+			for (SingleMeal singleMeal : singleMeals) {
+				sum10=sum10+singleMeal.getPrice();
+			}
+		}
+		double valB= NumUtils.mul(sum10, Double.parseDouble(personVariable1.getKeyValue()));//采购员收入B
 		double valday= NumUtils.div((valA>valB ? valA : valB), day, 2);//采购员当天收入
 		PersonVariable personVariable2 = personVariableDao.findByType(5);
 		double valPrice= NumUtils.mul(valday,Double.parseDouble(personVariable2.getKeyValue()));//第一个含管理采购收入
-		List<Wage> wage= wageDao.findByTypeAndTimeBetween(223, DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()), DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
+		List<Wage> wage= wageDao.findByTypeAndTimeBetween(281, DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()), DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
 		if (wage.size()==0) {
 			throw new ServiceException("当月数据员工资未查询到");
 		}
 		boolean d1= DatesUtil.belongCalendar(meal.getOrderTimeBegin());//判断时冬令时 还是夏令时
+		AttendanceInit init= attendanceInitDao.findByUserId(wage.get(0).getUserId());
+		if (init==null) {
+			throw new ServiceException("该员工未设定考勤初始化数据");
+		}
 		double val=0;
 		if (d1==true) {
-			val=8.5;
+			val=init.getTurnWorkTimeSummer();
 		}else{
-			val=8;
+			val=init.getTurnWorkTimeWinter();
 		}
 		double valwage=0;//物料跟进人员的工资
 		if (wage.size()>0) {
@@ -267,7 +290,10 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		double valPrice2=NumUtils.mul(NumUtils.div(valwage, 25*val, 2), Double.parseDouble(personVariable1.getKeyValueThree()));//第二个含管理收入
 		double valPrice3= NumUtils.sum(valPrice, valPrice2);//物料采购和数据跟进费
 		double valPrice4= NumUtils.div(valwage, day, 2);//人工工资
-		List<Wage> wages= wageDao.findByTypeAndTimeBetween(224, DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()), DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
+		List<Wage> wages= wageDao.findByTypeAndTimeBetween(282, DatesUtil.getFristDayOfLastMonth(meal.getOrderTimeBegin()), DatesUtil.getLastDayOLastMonth(meal.getOrderTimeBegin()));
+		if (wages.size()==0) {
+			throw new ServiceException("食堂上月工资未查询到");
+		}
 		if (wages.size()>0) {
 			for (Wage wage2 : wages) {
 				sum9=sum9+wage2.getWage();//人工工资总和
@@ -303,6 +329,9 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		double budget3=0;
 		double budget4=0;
 		List<SingleMeal> list1=singleMealDao.findByTimeBetween(meal.getOrderTimeBegin(), meal.getOrderTimeEnd());
+		if (list1.size()==0) {
+			throw new ServiceException("选择时间内 没有物料");
+		}
 		if (list1.size()>0) {
 			list1.stream().filter(SingleMeal->SingleMeal.getType()!=null && SingleMeal.getType().equals(1)).forEach(c -> {
 				listDouble2.add(c.getPrice());
@@ -334,14 +363,30 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			}
 		}
 		double f= NumUtils.sum(sumd, budget);//早餐 加上 每天分摊的房租水电
-		double z= NumUtils.sum(sumd, budget2);//早餐 加上 每天分摊的房租水电
-		double x= NumUtils.sum(sumd, budget3);//早餐 加上 每天分摊的房租水电
-		double c= NumUtils.sum(sumd, budget4);//早餐 加上 每天分摊的房租水电
+		double z= NumUtils.sum(sumd, budget2);//中餐 加上 每天分摊的房租水电
+		double x= NumUtils.sum(sumd, budget3);//晚餐 加上 每天分摊的房租水电
+		double c= NumUtils.sum(sumd, budget4);//夜宵 加上 每天分摊的房租水电
 		
 		long l= meals.stream().filter(Meal->Meal.getMode()!=null && Meal.getMode().equals(1)).count();//早餐数
 		long q= meals.stream().filter(Meal->Meal.getMode()!=null && Meal.getMode().equals(2)).count();//中餐数
 		long w= meals.stream().filter(Meal->Meal.getMode()!=null && Meal.getMode().equals(3)).count();//晚餐数
 		long r= meals.stream().filter(Meal->Meal.getMode()!=null && Meal.getMode().equals(4)).count();//夜宵数
+		if (l==0) {
+			f=0;
+			l=1;
+		}
+		if (q==0) {
+			z=0;
+			q=1;
+		}
+		if (w==0) {
+			x=0;
+			w=1;
+		}
+		if (r==0) {
+			c=0;
+			r=1;
+		}
 		double g= NumUtils.div(f, (double)l, 2);//早餐平均
 		double i= NumUtils.div(z, (double)q, 2);//中餐平均
 		double n= NumUtils.div(x, (double)w, 2);//晚餐平均
@@ -379,6 +424,10 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			allMap.put("modeTwoPrice", modeTwoPrice);
 			allMap.put("modeThreePrice", modeThreePrice);
 			allMap.put("modeFourPrice", modeFourPrice);
+			allMap.put("modeOneVal", g);
+			allMap.put("modeTwoVal", i);
+			allMap.put("modeThreeVal", n);
+			allMap.put("modeFourVal", h);
 			allMap.put("sumPrice", sumPrice);
 			allList.add(allMap);
 		}
@@ -544,6 +593,225 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		}
 		entityManager.close();
 	}
+
+	@Override
+	public List<Map<String, Object>> findWage(Meal meal) {
+		List<Map<String, Object>> allList = new ArrayList<>();
+		// 单向数据map
+		Map<String, Object> allMap =  new HashMap<>();
+		long a=194;
+		double sum1 = 0;//水费汇总
+		long b=195;
+		double sum2 = 0;//电费汇总
+		long e=198;
+		double sum3 = 0;//房租汇总
+		long d=199;
+		double sum4 = 0;//煤气汇总
+		double sum5 = 0;//上个月煤气汇总
+		double sum6 = 0;//上个月面料主食等汇总
+		double sum9 = 0;//人工工资总和
+		double sum10=0;//当月所有的报销物料
+		long day= DatesUtil.getDaySub(DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()), DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));//当月天数
+		List<Consumption> list=	consumptionDao.findByApplyTypeIdAndExpenseDateBetween(a, DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
+				DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
+		if (list.size()>0) {
+			for (Consumption consumption : list) {
+				sum1=sum1+consumption.getMoney();
+			}
+		}
+		List<Consumption> list2=consumptionDao.findByApplyTypeIdAndExpenseDateBetween(b, DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
+				DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
+		if (list2.size()>0) {
+			for (Consumption consumption : list2) {
+				sum2=sum2+consumption.getMoney();
+			}
+		}
+		List<Consumption> list3=consumptionDao.findByApplyTypeIdAndExpenseDateBetween(e, DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
+				DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
+		if (list3.size()>0) {
+			for (Consumption consumption : list3) {
+				sum3=sum3+consumption.getMoney();
+			}
+		}
+		List<Consumption> list4=consumptionDao.findByApplyTypeIdAndExpenseDateBetween(d, DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
+				DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
+		if (list4.size()>0) {
+			for (Consumption consumption : list4) {
+				sum4=sum4+consumption.getMoney();
+			}
+		}
+		
+		List<Consumption> list5=consumptionDao.findByApplyTypeIdAndExpenseDateBetween(d, DatesUtil.getFristDayOfLastMonth(meal.getOrderTimeBegin()),
+				DatesUtil.getLastDayOLastMonth(meal.getOrderTimeBegin()));
+		if (list5.size()>0) {
+			for (Consumption consumption : list5) {
+				sum5=sum5+consumption.getMoney();
+			}
+		}
+		List<SingleMeal> listSingleMeal=singleMealDao.findByTimeBetween(DatesUtil.getFristDayOfLastMonth(meal.getOrderTimeBegin()), DatesUtil.getLastDayOLastMonth(meal.getOrderTimeBegin()));//上个月面料主食等汇总
+		if (listSingleMeal.size()>0) {
+			for (SingleMeal singleMeal : listSingleMeal) {
+				sum6=sum6+singleMeal.getPrice();
+			}
+		}
+		double sum7= NumUtils.sum(sum6, sum5);////上个月煤气汇总 +上个月面料主食等汇总
+		PersonVariable personVariable1 = personVariableDao.findByType(6);
+		double valA= NumUtils.mul(sum7, Double.parseDouble(personVariable1.getKeyValue()));//采购员收入A
+		List<SingleMeal> singleMeals=singleMealDao.findByTimeBetween(DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()), DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));//当月所有报销物料
+		if (singleMeals.size()>0) {
+			for (SingleMeal singleMeal : singleMeals) {
+				sum10=sum10+singleMeal.getPrice();
+			}
+		}
+		double valB= NumUtils.mul(sum10, Double.parseDouble(personVariable1.getKeyValue()));//采购员收入B
+		double valday= NumUtils.div((valA>valB ? valA : valB), day, 2);//采购员当天收入
+		PersonVariable personVariable2 = personVariableDao.findByType(5);
+		double valPrice= NumUtils.mul(valday,Double.parseDouble(personVariable2.getKeyValue()));//第一个含管理采购收入
+		List<Wage> wage= wageDao.findByTypeAndTimeBetween(281, DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()), DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
+		if (wage.size()==0) {
+			throw new ServiceException("当月数据员工资未查询到");
+		}
+		boolean d1= DatesUtil.belongCalendar(meal.getOrderTimeBegin());//判断时冬令时 还是夏令时
+		double val=0;
+		if (d1==true) {
+			val=8.5;
+		}else{
+			val=8;
+		}
+		double valwage=0;//物料跟进人员的工资
+		if (wage.size()>0) {
+			valwage=wage.get(0).getWage();
+		}
+		double valPrice2=NumUtils.mul(NumUtils.div(valwage, 25*val, 2), Double.parseDouble(personVariable1.getKeyValueThree()));//第二个含管理收入
+		double valPrice3= NumUtils.sum(valPrice, valPrice2);//物料采购和数据跟进费
+		double valPrice4= NumUtils.div(valwage, day, 2);//人工工资
+		List<Wage> wages= wageDao.findByTypeAndTimeBetween(282, DatesUtil.getFristDayOfLastMonth(meal.getOrderTimeBegin()), DatesUtil.getLastDayOLastMonth(meal.getOrderTimeBegin()));
+		if (wages.size()==0) {
+			throw new ServiceException("食堂上月工资未查询到");
+		}
+		if (wages.size()>0) {
+			for (Wage wage2 : wages) {
+				sum9=sum9+wage2.getWage();//人工工资总和
+			}
+		}
+		List<Meal> list6=dao.findByTradeDaysTimeBetween(DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()), DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));//查询所有用餐次数
+		if (list6.size()==0) {
+			throw new ServiceException("当月用餐次数未统计");
+		}
+		int size= list6.size();//总用餐人次数
+		double than= NumUtils.div(sum9, size, 2);//人工比
+		List<Meal> meals=dao.findByTradeDaysTimeBetween(meal.getOrderTimeBegin(), meal.getOrderTimeEnd());//选择时间的内的 餐数
+		if (meals.size()==0) {
+			throw new ServiceException("选择时间内 没有用餐次数");
+		}
+		int size1= meals.size();//选择时间的内的 餐数
+		double merits= NumUtils.mul((double)size1,than,(double)0.5);//人工绩效
+		PersonVariable restType = personVariableDao.findByType(5);
+		double water= NumUtils.div(NumUtils.mul(sum1,Double.parseDouble(restType.getKeyValue())),day,2);//每天水费
+		double electric= NumUtils.div(NumUtils.mul(sum2,Double.parseDouble(restType.getKeyValueThree())),day,2);//每天电费
+		double rent= NumUtils.div(NumUtils.mul(sum3,Double.parseDouble(restType.getKeyValueTwo())),day,2);//每天房租费
+		double coal= NumUtils.div(NumUtils.mul(sum4,Double.parseDouble(restType.getKeyValueTwo())),day,2);//每天煤气费
+		double budget=0;
+		List<SingleMeal> list1=singleMealDao.findByTimeBetween(meal.getOrderTimeBegin(), meal.getOrderTimeEnd());
+		
+		if (list1.size()==0) {
+			throw new ServiceException("选择时间内 没有物料");
+		}
+		if (list1.size()>0) {
+			for (SingleMeal singleMeal : list1) {
+				budget=budget+singleMeal.getPrice();
+			}
+			
+		}
+		double sum=NumUtils.sum(water,electric,rent,coal,valPrice3,valPrice4,merits,budget);//总数
+		double sumPrice= NumUtils.div(sum, size1, 2);
+		allMap.put("rent", rent);
+		allMap.put("water", water);
+		allMap.put("electric", electric);
+		allMap.put("coal", coal);
+		allMap.put("valPrice3", valPrice3);
+		allMap.put("valPrice4", valPrice4);
+		allMap.put("merits", merits);
+		allMap.put("size", size1);
+		allMap.put("sumPrice", sumPrice);
+		allList.add(allMap);
+		return allList;
+	}
+
+	@Override
+	public List<Map<String, Object>> findElectric(Meal meal) {
+		List<Map<String, Object>> allList = new ArrayList<>();
+		// 单向数据map
+		Map<String, Object> allMap =  null;
+		long a=194;
+		double sum1 = 0;//水费汇总
+		long b=195;
+		double sum2 = 0;//电费汇总
+		long e=198;
+		double sum3 = 0;//房租汇总
+		long day= DatesUtil.getDaySub(DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()), DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));//当月天数
+		PersonVariable restType = personVariableDao.findByType(5);
+		List<Consumption> list=	consumptionDao.findByApplyTypeIdAndExpenseDateBetween(a, DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
+				DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
+		if (list.size()>0) {
+			for (Consumption consumption : list) {
+				allMap = new HashMap<>();
+				sum1=sum1+consumption.getMoney();
+				double f=NumUtils.mul(sum1,Double.parseDouble(restType.getKeyValue()));
+				double i=NumUtils.div(f,day, 2);//每天水费
+				String string="水费";
+				String modify="keyValue";
+				allMap.put("modify", modify);
+				allMap.put("name", string);
+				allMap.put("sum1", sum1);
+				allMap.put("valPrice1", restType.getKeyValue());
+				allMap.put("val", f);
+				allMap.put("sumday1", i);
+				allList.add(allMap);
+			}
+		}
+		List<Consumption> list2=consumptionDao.findByApplyTypeIdAndExpenseDateBetween(b, DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
+				DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
+		if (list2.size()>0) {
+			for (Consumption consumption : list2) {
+				allMap = new HashMap<>();
+				sum2=sum2+consumption.getMoney();
+				double g=NumUtils.mul(sum2,Double.parseDouble(restType.getKeyValueThree()));
+				double j=NumUtils.div(g,day, 2);//每天电费
+				String string="电费";
+				String modify="keyValueThree";
+				allMap.put("modify", modify);
+				allMap.put("name", string);
+				allMap.put("sum1", sum2);
+				allMap.put("valPrice1", restType.getKeyValueThree());
+				allMap.put("val", g);
+				allMap.put("sumday1", j);
+				allList.add(allMap);
+			}
+		}
+		List<Consumption> list3=consumptionDao.findByApplyTypeIdAndExpenseDateBetween(e, DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
+				DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
+		if (list3.size()>0) {
+			for (Consumption consumption : list3) {
+				allMap = new HashMap<>();
+				sum3=sum3+consumption.getMoney();
+				double h=NumUtils.mul(sum3,Double.parseDouble(restType.getKeyValueTwo()));
+				double k=NumUtils.div(h,day, 2);//每天房租
+				String string="房租费";
+				String modify="keyValueTwo";
+				allMap.put("modify", modify);
+				allMap.put("name", string);
+				allMap.put("sum1", sum3);
+				allMap.put("valPrice1", restType.getKeyValueTwo());
+				allMap.put("val", h);
+				allMap.put("sumday1", k);
+				allList.add(allMap);
+			}
+		}
+		return allList;
+	}
+	
+	
 	
 }
 

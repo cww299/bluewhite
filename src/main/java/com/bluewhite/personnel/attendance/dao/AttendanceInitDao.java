@@ -16,5 +16,6 @@ public interface AttendanceInitDao extends BaseRepository<AttendanceInit, Long>{
 	 * @return
 	 */
 	public List<AttendanceInit> findByUserIdIn(List<Long> idLongs);
-
+	
+	public AttendanceInit findByUserId(Long userId);
 }

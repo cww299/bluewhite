@@ -91,7 +91,11 @@ layui.config({
 			       {align:'center', title:'广告平台',   field:'platformId', edit: false, templet: getPlatformSelect()},
 			       {align:'center', title:'投放费用',   field:'price',     edit:true,},
 			       {align:'center', title:'开始时间', 	field:'startTime',edit: false,	},
-			       {align:'center', title:'结束时间',   field:'endTime',	  edit: false,   }, 
+			       {align:'center', title:'结束时间',   field:'endTime',	  edit: false,   },
+			       {align:'center', title:'合格简历数',   field:'number',edit: true,   },
+			       {align:'center', title:'待定简历数',   field:'number2',edit: true,   }, 
+			       {align:'center', title:'不合格简历数',   field:'number3',edit: true,   }, 
+			       {align:'center', title:'收取简历数',   field:'number4',edit: true,   }, 
 			       ]],
 			done:function(){
 				var tableView = this.elem.next();
@@ -148,10 +152,12 @@ layui.config({
 		table.on('edit(recruitTable)',function(obj){	//修改价格
 			if(!obj.data.id)
 				return;
+			var field = obj.field;
 			if(isNaN(obj.value))
 				layer.msg('投放费用只能为数字',{icon:2});		
 			else{
-				var postData = { id:obj.data.id, price: obj.value};
+				var postData = { id:obj.data.id,};
+				postData[field] = obj.value;
 				updateAjax(postData);
 			}
 			table.reload('recruitTable');
@@ -243,7 +249,7 @@ layui.config({
 			})
 		}
 		function updateAjax(postData){			//修改数据
-			postData.endTime = postData.endTime.split(' ')[0]+' 23:59:59';
+			postData.endTime && (postData.endTime = postData.endTime.split(' ')[0]+' 23:59:59');
 			var result = false;
 			var load = layer.load(1);
 			$.ajax({

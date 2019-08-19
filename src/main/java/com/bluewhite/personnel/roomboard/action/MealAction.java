@@ -169,6 +169,40 @@ public class MealAction {
 	}
 	
 	/**
+	 * 水电
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/getfindElectric", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getfindElectric(HttpServletRequest request,Meal meal) {
+		CommonResponse cr = new CommonResponse();
+		 List<Map<String, Object>> list = service.findElectric(meal);
+		cr.setData(clearCascadeJSON.format(list).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/**
+	 * 每天汇总
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/getSummaryWage", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getSummaryWage(HttpServletRequest request,PageParameter page,Meal meal) {
+		CommonResponse cr = new CommonResponse();
+		 List<Map<String, Object>> list = service.findWage(meal);
+		cr.setData(clearCascadeJSON.format(list).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/**
 	 * 同步报餐记录
 	 * 
 	 * @param request 请求

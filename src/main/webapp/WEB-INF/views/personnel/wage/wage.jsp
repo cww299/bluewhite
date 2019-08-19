@@ -26,16 +26,12 @@
 							<td><input id="startTime"  name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
 							</td>
 							<td>&nbsp;&nbsp;</td>
-							<td>物料:</td>
-							<td><select class="form-control" id="singleMealConsumptionId" lay-search="true"  name="singleMealConsumptionId"></select></td>
+							<td>人员:</td>
+							<td><select class="form-control" id="singleMealConsumptionId" lay-search="true"  name="userId"></select></td>
 							<td>&nbsp;&nbsp;</td>
-							<td>报餐类型:</td>
-							<td><select class="form-control" name="type">
-									<option value="">请选择</option>
-									<option value="1">早餐</option>
-									<option value="2">中餐</option>
-									<option value="3">晚餐</option>
-									<option value="4">夜宵</option>
+							<td>类型:</td>
+							<td><select class="form-control" name="type" id="selectType">
+									
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
@@ -98,7 +94,8 @@
 					});
 					laydate.render({
 						elem: '#startTime',
-						type : 'datetime',
+						type: 'datetime',
+						range: '~',
 					});
 				
 					
@@ -139,10 +136,11 @@
 							  shade: [0.1,'#fff'] //0.1透明度的白色背景
 							  });
 						  }, 
-			      		  success: function (result) {				//初始填充部门
+			      		  success: function (result) {				
 			      			  $(result.data).each(function(k,j){
 			      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
 			      			  });
+			      			  $("#selectType").html(htmlth);
 			      			layui.form.render()
 			      			layer.close(indextwo);
 					      }
@@ -422,6 +420,9 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(obj) {		//修改此处
 						var field = obj.field;
+						var orderTime=field.time.split('~');
+						field.orderTimeBegin=orderTime[0];
+						field.orderTimeEnd=orderTime[1];
 						table.reload('tableData', {
 							where: field,
 							 page: { curr : 1 }

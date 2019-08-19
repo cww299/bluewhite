@@ -119,7 +119,10 @@ public class DatesUtil {
 	 */
 	public static Date getFristDayOfLastMonth(Date dates) {
 		Calendar calendar1 = Calendar.getInstance();
-		calendar1.add(Calendar.MONTH, -1);
+		int month = DatesUtil.getDay(dates, 1);
+		int year = DatesUtil.getDay(dates, 2);
+		calendar1.set(Calendar.YEAR, year);
+		calendar1.set(Calendar.MONTH, month-1);
 		calendar1.set(Calendar.DAY_OF_MONTH, 1);
 		calendar1.set(Calendar.HOUR_OF_DAY, 0);// 设置时为0点
 		calendar1.set(Calendar.MINUTE, 0);// 设置分钟为0分
@@ -129,7 +132,7 @@ public class DatesUtil {
 
 	}
 
-	/**
+	/** 
 	 * 获取前一个月最后一天
 	 * 
 	 * @param dates
@@ -137,6 +140,10 @@ public class DatesUtil {
 	 */
 	public static Date getLastDayOLastMonth(Date dates) {
 		Calendar calendar = Calendar.getInstance();
+		int month = DatesUtil.getDay(dates, 1);
+		int year = DatesUtil.getDay(dates, 2);
+		calendar.set(Calendar.YEAR, year);
+		calendar.set(Calendar.MONTH, month);
 		calendar.set(Calendar.DAY_OF_MONTH, 0);
 		calendar.set(Calendar.HOUR_OF_DAY, 23);
 		calendar.set(Calendar.MINUTE, 59);

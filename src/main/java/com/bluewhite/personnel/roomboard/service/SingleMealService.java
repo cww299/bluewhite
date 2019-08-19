@@ -17,6 +17,8 @@ public interface SingleMealService  extends BaseCRUDService<SingleMeal,Long>{
 	 */
 	public PageResult<SingleMeal> findPage(SingleMeal singleMeal, PageParameter page);
 	
+	public List<SingleMeal> findSingleMeal(SingleMeal singleMeal);
+	
 	/**
 	 * 新增
 	 * @param 
