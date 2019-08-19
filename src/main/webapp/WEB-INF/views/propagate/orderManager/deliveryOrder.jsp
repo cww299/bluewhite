@@ -78,7 +78,7 @@ layui.config({
 			       { title:'客户',   field:'customer_name',	},
 			       { title:'产品',   field:'product_name',	},
 			       { title:'发货数量',   field:'count',  edit:true,},
-			       { title:'是否发货',   field:'flag', transData:{ data:["未发货","发货"]}	},
+			      // { title:'是否发货',   field:'flag', transData:{ data:["未发货","发货"]}	},
 			       ]],
 		})
 		table.on('toolbar(tableData)',function(obj){
