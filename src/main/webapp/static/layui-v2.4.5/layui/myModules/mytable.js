@@ -64,8 +64,8 @@ layui.extend({
 				china[item2.field] = item2.title;					//记录字段对应的中文名
 				switch(item2.type){
 				case 'select': break;
-				case 'date': 	 dateField.indexOf(item2.field)<0 && dateField.push(item2.field); (!item2.edit) && (item2.edit = false);	break;
-				case 'dateTime': dateTimeField.indexOf(item2.field)<0 && dateTimeField.push(item2.field); (!item2.edit) && (item2.edit = false); break;	//开启日期时间
+				case 'date': 	 dateField.indexOf(item2.field)<0 && item2.edit && dateField.push(item2.field); (!item2.edit) && (item2.edit = false);	break;
+				case 'dateTime': dateTimeField.indexOf(item2.field)<0 && item2.edit && dateTimeField.push(item2.field); (!item2.edit) && (item2.edit = false); break;//开启日期时间
 				}
 				if(item2.field){
 					if(item2.field.split('_').length>1) //记录假字段、用于导出

@@ -539,7 +539,7 @@ layui.config({
 			data.status = defaultStatus;
 			data.commodityNumber=JSON.stringify(child);			//子列表商品
 			myutil.saveAjax({
-				url:"${ctx}/inventory/addProcurement",
+				url:"/inventory/addProcurement",
 				data:data,			
 				success:function(){
 					$('#resetAddOrder').click();
