@@ -144,6 +144,7 @@ layui.define(['jquery','layer','form','table'],function(exports){
 					else
 						data = r.data;
 					callback && callback(data);
+					options.success && options.success(data);
 					options.done && options.done(data);
 					return data;
 				}
