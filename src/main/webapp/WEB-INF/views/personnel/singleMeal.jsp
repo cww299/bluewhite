@@ -126,9 +126,12 @@
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
 				<span class="layui-btn layui-btn-sm" lay-event="sumDay">每天费用</span>
 			</div>
+
 	</script>
 
-	
+<script type="text/html" id="toolbar2">
+	用餐人数<input id="start"  disabled="disabled" style="width:100px; height: 30px;">  单人费用<input id="price"  disabled="disabled" style="width:100px; height: 30px;">
+</script>
 	<script>
 			layui.config({
 				base: '${ctx}/static/layui-v2.4.5/'
@@ -166,8 +169,8 @@
 					});
 					laydate.render({
 						elem: '#monthDate9',
-						type: 'datetime',
-						range: '~',
+						type: 'date',
+						
 					}); 
 					
 					var getdataa={type:"singleMealConsumption",}
@@ -504,15 +507,16 @@
 				var data="";
 					form.on('submit(LAY-search2)', function(obj) {
 						var field = obj.field;
-						var orderTime=field.time.split('~');
-						field.orderTimeBegin=orderTime[0];
-						field.orderTimeEnd=orderTime[1];
+						field.orderTimeBegin=field.time+' 00:00:00';
+						field.orderTimeEnd=field.time+' 23:59:59';
 						eventd(field);
 					})
 					
 					var eventd=function(data){
 						var datae = [],error = false,msg = '';
 						var china = ['物料采购和数据跟进费','房（自动生成）','电（自动生成）','煤气（自动生成）','人工绩效','人工工资','水（自动生成）']
+						var size;
+						var sumPrice;
 						$.ajax({
 							url:'${ctx}/personnel/getSummaryWage',
 							data:{
@@ -523,6 +527,8 @@
 							success:function(r){
 								if(r.code==0){
 									var i =0;
+									size=r.data[0].size	
+									sumPrice=r.data[0].sumPrice	
 									for(var val in r.data[0]){
 										if(val == 'size' || val == 'sumPrice')
 											continue;
@@ -566,37 +572,41 @@
 							data:datae,
 							text:{
 								none:msg
+							},
+							done:function(){
+								$("#start").val(size);
+								$("#price").val(sumPrice);
 							}
 			              })
 					};
 					table.render({
 						elem: '#layuiShare2',
 						data:[],
-						toolbar: '#toolbar5', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+						toolbar: '#toolbar2', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
 						totalRow: true,		 //开启合计行 */
 						colFilterRecord: true,
+						loading: true,
 						smartReloadModel: true,// 开启智能重载
 						cols: [
 							[{
 								field: "type",
-								title: "分类",
+								title: "物料分类",
 								align: 'center',
 								totalRowText: '合计'
 							},{
 								field: "content",
-								title: "邀约面试",
+								title: "组成项目",
 								align: 'center',
-								totalRow: true
 							},{
 								field: "price",
-								title: "应邀面试",
+								title: "每天花费",
 								align: 'center',
 								totalRow: true
 							}
 							]
 						],
 					
-								});
+					});
 					
 					
 					//监听搜索

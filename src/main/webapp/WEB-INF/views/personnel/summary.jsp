@@ -54,38 +54,30 @@
 		</div>
 	</div>
 
-<form action="" id="layuiadmin-form-admin"
-		style="display:none;  text-align:">
-		<div class="layui-form" lay-filter="layuiadmin-form-admin">
-		<input type="text" name="id" id="ids" style="display:none;">
-			<div class="layui-form-item">
-				<label class="layui-form-label">水费占比</label>
-				<div class="layui-input-block">
-					<input type="text"  name="keyValue" id="keyValue"
-						lay-verify="required" 
-						class="layui-input laydate-icon">
-				</div>
-			</div>
 
-			<div class="layui-form-item">
-				<label class="layui-form-label">电费占比</label>
-				<div class="layui-input-block">
-					<input type="text" name="keyValueTwo" id="keyValueTwo"
-						lay-verify="required"
-						class="layui-input laydate-icon">
+
+<div style="display: none;" id="layuiShare">
+			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+				<div class="layui-form-item">
+					<table>
+						<tr>
+							<td>查询月份:</td>
+							<td><input id="monthDate9" style="width: 180px;" name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td>
+								<div class="layui-inline">
+									<button class="layui-btn layuiadmin-btn-admin"  lay-submit lay-filter="LAY-search2">
+										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+									</button>
+								</div>
+							</td>
+						</tr>
+					</table>
 				</div>
 			</div>
-			
-			<div class="layui-form-item">
-				<label class="layui-form-label">房租占比</label>
-				<div class="layui-input-block">
-					<input type="text" name="keyValueThree" id="keyValueThree"
-						lay-verify="required"
-						class="layui-input laydate-icon">
-				</div>
-			</div>
-		</div>
-	</form>		
+			<table id="layuiShare2"  class="table_th_search" lay-filter="layuiShare2"></table>
+</div>
 
 	
 <script type="text/html" id="toolbar">
@@ -131,7 +123,10 @@
 						type: 'datetime',
 						range: '~',
 					});
-				 
+					laydate.render({
+						elem: '#monthDate9',
+						type : 'month',
+					}); 
 					$.ajax({
 						url: '${ctx}/system/user/findAllUser',
 						type: "GET",
@@ -265,99 +260,135 @@
 						var tableId = config.id;
 						switch(obj.event) {
 							case 'addTempData':
-								$.ajax({
-									url: '${ctx}/personnel/getpersonVariabledao',
-									type: "GET",
-									data:{
-										type:5
-									},
-									async: false,
-									beforeSend: function() {
-										index;
-									},
-									success: function(result) {
-										$(result.data).each(function(i, o) {
-											$("#ids").val(o.id);
-											$("#keyValue").val(o.keyValue);
-											$("#keyValueTwo").val(o.keyValueTwo);
-											$("#keyValueThree").val(o.keyValueThree);
+								var dicDiv=$('#layuiShare');
+								/* table.reload("analysisRecuitsumday"); */
+								layer.open({
+							         type: 1
+							        ,title: '每月食堂水电费用' //不显示标题栏
+							        ,closeBtn: false
+							        ,zindex:-1
+							        ,area:['50%', '90%']
+							        ,shade: 0.5
+							        ,id: 'LAY_layuipro10' //设定一个id，防止重复弹出
+							        ,btn: ['取消']
+							        ,btnAlign: 'c'
+							        ,moveType: 1 //拖拽模式，0或者1
+							        ,content:dicDiv
+							        ,success : function(layero, index) {
+							        	layero.addClass('layui-form');
+										// 将保存按钮改变成提交按钮
+										layero.find('.layui-layer-btn0').attr({
+											'lay-filter' : 'addRole2',
+											'lay-submit' : ''
 										})
-										
-										layer.close(index);
-									},
-									error: function() {
-										layer.msg("操作失败！", {
-											icon: 2
-										});
-										layer.close(index);
-									}
-								});
-								
-								//报价修改
-								var	dicDiv=$("#layuiadmin-form-admin");
-									layer.open({
-										type:1,
-										title:'水费标准',
-										area:['22%','30%'],
-										btn:['确认','取消'],
-										content:dicDiv,
-										id: 'LAY_layuipro' ,
-										btnAlign: 'c',
-									    moveType: 1, //拖拽模式，0或者1
-										success : function(layero, index) {
-								        	layero.addClass('layui-form');
-											// 将保存按钮改变成提交按钮
-											layero.find('.layui-layer-btn0').attr({
-												'lay-filter' : 'addRole',
-												'lay-submit' : ''
-											})
-								        },
-										yes:function(){
-											form.on('submit(addRole)', function(data) {
-												$.ajax({
-													url: '${ctx}/personnel/addPersonVaiable',
-													type: "POST",
-													data:data.field,
-													async: false,
-													beforeSend: function() {
-														index;
-													},
-													success: function(result) {
-													if(result.code==0){
-														layer.msg("修改成功！", {
-															icon: 1
-														});
-													}else{
-														layer.msg("修改失败！", {
-															icon: 2
-														});
-													}
-														layer.close(index);
-													},
-													error: function() {
-														layer.msg("操作失败！", {
-															icon: 2
-														});
-														layer.close(index);
-													}
-												});
-											})
-										}
-									})
+							        }
+							        ,end:function(){
+							        	$("#layuiShare").hide();
+									  } 
+							      });
 								break;
 						}
 					});
 					
+					var data="";
+					form.on('submit(LAY-search2)', function(obj) {
+						var field = obj.field;
+						field.orderTimeBegin=field.time+'-01 00:00:00';
+						eventd(field);
+					})
+					
+					var eventd=function(data){
+						table.reload("layuiShare2", {
+							url: '${ctx}/personnel/getfindElectric',
+							where:data,
+			              })
+					};
+					
+					table.render({
+						elem: '#layuiShare2',
+						where:data,
+						data:[],
+						totalRow: true,		 //开启合计行 */
+						colFilterRecord: true,
+						smartReloadModel: true,// 开启智能重载
+						cellMinWidth: 90,
+						cols: [
+							[{
+								field: "name",
+								title: "",
+								align: 'center',
+								totalRowText: '合计'
+							},{
+								field: "sum1",
+								title: "缴费金额",
+								align: 'center',
+							},{
+								field: "valPrice1",
+								title: "占比",
+								align: 'center',
+								edit:"text",
+							},{
+								field: "val",
+								title: "每月花费",
+								align: 'center',
+								totalRow: true
+							},{
+								field: "sumday1",
+								title: "每天费用",
+								align: 'center',
+							}
+							]
+						],
+						done:function(){
+						
+						}
+					});
 				   	var even=function(data){
 						table.reload("tableData", {
 							url: '${ctx}/personnel/getSummaryMeal' ,
 							where:data,
+							
 			              });
 			             
 					};
-					
+					table.on('edit(layuiShare2)', function(obj) {
+						var value = obj.value //得到修改后的值
+						var	field = obj.data.modify //得到字段
+							var postData = {
+								id:8,
+								[field]:value
+							}
+						$.ajax({
+							url: '${ctx}/personnel/addPersonVaiable',
+							type: "POST",
+							data:postData,
+							beforeSend: function() {
+								index;
+							},
+							success: function(result) {
+							if(result.code==0){
+								layer.msg("修改成功！", {
+									icon: 1
+								});
+								table.reload("layuiShare2");
+								table.reload("tableData");
+							}else{
+								layer.msg("修改失败！", {
+									icon: 2
+								});
+							}
+								layer.close(index);
+							},
+							error: function() {
+								layer.msg("操作失败！", {
+									icon: 2
+								});
+								layer.close(index);
+							}
+						});
+					});
 					//监听搜索
-					form.on('submit(LAY-search)', function(obj) {		//修改此处
+					form.on('submit(LAY-search)', function(obj) {		
 						var field = obj.field;
 						var orderTime=field.orderTimeBegin.split('~');
 						field.orderTimeBegin=orderTime[0];

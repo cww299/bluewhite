@@ -475,7 +475,7 @@ layui.config({
 				success: function(r){
 					var html = '<option value="">应聘人</option>';
 					layui.each(r.data,function(index,item){
-						html+='<option value="'+item.id+'" data-recruitName="'+item.recruitName+'" data-time="'+item.testTime+'">'+item.name+'</option>';
+						html+='<option value="'+item.id+'" data-recruitName="'+item.recruitName+'" data-time="'+item.testTime+'">'+item.name+'  ('+item.orgName.name+'  '+item.position.name+')</option>';
 					})
 					$('#searchName').html(html);
 					form.render();

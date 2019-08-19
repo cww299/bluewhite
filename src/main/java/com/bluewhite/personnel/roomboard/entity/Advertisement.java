@@ -108,6 +108,34 @@ public class Advertisement extends BaseEntity<Long> {
 	@Column(name = "type")
 	private Integer type;
 	
+	
+	/**
+	 * 合格简历数
+	 */
+	@Column(name = "number")
+	private Integer number;
+	
+	
+	/**
+	 * 待定简历数
+	 */
+	@Column(name = "number2")
+	private Integer number2;
+	
+	
+	/**
+	 * 不合格简历数
+	 */
+	@Column(name = "number3")
+	private Integer number3;
+	
+	
+	/**
+	 * 收取简历数
+	 */
+	@Column(name = "number4")
+	private Integer number4;
+	
 	/**
 	 * 查询字段
 	 */
@@ -118,6 +146,31 @@ public class Advertisement extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Date orderTimeEnd;
+	
+	public Integer getNumber() {
+		return number;
+	}
+	public void setNumber(Integer number) {
+		this.number = number;
+	}
+	public Integer getNumber2() {
+		return number2;
+	}
+	public void setNumber2(Integer number2) {
+		this.number2 = number2;
+	}
+	public Integer getNumber3() {
+		return number3;
+	}
+	public void setNumber3(Integer number3) {
+		this.number3 = number3;
+	}
+	public Integer getNumber4() {
+		return number4;
+	}
+	public void setNumber4(Integer number4) {
+		this.number4 = number4;
+	}
 	public Long getPlatformId() {
 		return platformId;
 	}

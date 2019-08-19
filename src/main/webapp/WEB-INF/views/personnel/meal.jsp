@@ -73,36 +73,6 @@
 		</div>
 	</div>
 	
-	<form action="" id="layuiadmin-form-admin"
-		style="padding: 20px 30px 0 60px; display:none;  text-align:">
-		<div class="layui-form" lay-filter="layuiadmin-form-admin">
-		<input type="text" name="id" id="ids" style="display:none;">
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">早餐金额</label>
-				<div class="layui-input-inline">
-					<input type="text"  name="keyValue" id="keyValue"
-						lay-verify="required" 
-						class="layui-input laydate-icon">
-				</div>
-			</div>
-
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">中餐金额</label>
-				<div class="layui-input-inline">
-					<input type="text" name="keyValueTwo" id="keyValueTwo"
-						lay-verify="required"
-						class="layui-input laydate-icon">
-				</div>
-			</div>
-
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">晚餐金额</label>
-				<div class="layui-input-inline">
-					<input type="text"  name="keyValueThree" id="keyValueThree" lay-verify="required" class="layui-input">
-				</div>
-			</div>
-		</div>
-	</form>	
 	
 	
 	<form action="" id="layuiadmin-form-admin2"
@@ -205,7 +175,6 @@
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
 				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
-				<span class="layui-btn layui-btn-sm" lay-event="openMeal">报餐价格</span>
 				<span class="layui-btn layui-btn-sm" lay-event="delayed">吃饭延时</span>
 				<span class="layui-btn layui-btn-sm" lay-event="eat">吃饭方式填写</span>
 			</div>
@@ -403,11 +372,6 @@
 								edit: false,
 								type: 'normal',
 								templet: fn2('selectTwo')
-							},{
-								field: "price",
-								title: "餐费",
-								align: 'center',
-								edit: false,
 							},{
 								field: "tradeDaysTime",
 								title: "日期",
@@ -631,89 +595,6 @@
 									});
 									layer.close(index);
 								});
-								break;
-							case 'openMeal':
-								
-								$.ajax({
-									url: '${ctx}/personnel/getpersonVariabledao',
-									type: "GET",
-									data:{
-										type:1
-									},
-									async: false,
-									beforeSend: function() {
-										index;
-									},
-									success: function(result) {
-										$(result.data).each(function(i, o) {
-											$("#ids").val(o.id);
-											$("#keyValue").val(o.keyValue);
-											$("#keyValueTwo").val(o.keyValueTwo);
-											$("#keyValueThree").val(o.keyValueThree);
-										})
-										
-										layer.close(index);
-									},
-									error: function() {
-										layer.msg("操作失败！", {
-											icon: 2
-										});
-										layer.close(index);
-									}
-								});
-								
-								//报价修改
-							var	dicDiv=$("#layuiadmin-form-admin");
-							var index3=	layer.open({
-									type:1,
-									title:'报餐价格',
-									area:['30%','60%'],
-									btn:['确认','取消'],
-									content:dicDiv,
-									id: 'LAY_layuipro' ,
-									btnAlign: 'c',
-								    moveType: 1, //拖拽模式，0或者1
-									success : function(layero, index) {
-							        	layero.addClass('layui-form');
-										// 将保存按钮改变成提交按钮
-										layero.find('.layui-layer-btn0').attr({
-											'lay-filter' : 'addRole',
-											'lay-submit' : ''
-										})
-							        },
-									yes:function(){
-										form.on('submit(addRole)', function(data) {
-											$.ajax({
-												url: '${ctx}/personnel/addPersonVaiable',
-												type: "POST",
-												data:data.field,
-												async: false,
-												beforeSend: function() {
-													index;
-												},
-												success: function(result) {
-												if(result.code==0){
-													layer.msg("修改成功！", {
-														icon: 1
-													});
-													layer.close(index3);
-												}else{
-													layer.msg("修改失败！", {
-														icon: 2
-													});
-												}
-													layer.close(index);
-												},
-												error: function() {
-													layer.msg("操作失败！", {
-														icon: 2
-													});
-													layer.close(index);
-												}
-											});
-										})
-									}
-								})
 								break;
 								
 							case 'delayed':
