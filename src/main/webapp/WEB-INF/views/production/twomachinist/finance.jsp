@@ -484,7 +484,7 @@
 		      				htmlth +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center  ">'+o.userName+'</td>'
 		      				+'<td class="text-center ">'+o.allotTime+'</td>'
-		      				+'<td class="text-center edit workTime">'+o.workTime+'</td>'
+		      				+'<td class="text-center  workTime">'+o.workTime+'</td>'
 		      				+'<td class="text-center edit turnWorkTime">'+o.turnWorkTime+'</td>'
 		      				+'<td class="text-center edit overtimes">'+o.overTime+'</td>'
 		      				+'<td class="text-center ">'+o.maxPay+'</td>'
