@@ -26,11 +26,11 @@
 				<td>产品名:</td>
 				<td><input type="text" class="layui-input" name="productName"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td>是否发货:</td>
+				<!-- <td>是否发货:</td>
 				<td><select name="flag"><option value=""></option>
 													<option value="1">发货</option>
 													<option value="0" selected>未发货</option></select></td>
-				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>&nbsp;&nbsp;&nbsp;</td> -->
 				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
@@ -68,7 +68,7 @@ layui.config({
 		mytable.render({
 			elem:'#tableData',
 			url:'${ctx}/inventory/packingChildPage',
-			where:{ flag:0 },
+			where:{ flag:0 },  //默认查找未发货
 			//toolbar:'#tableToolbar',
 			autoUpdate:{ saveUrl:'/inventory/updateInventoryPackingChild', },
 			verify:{ count:['count'],notNull:['count']  },
