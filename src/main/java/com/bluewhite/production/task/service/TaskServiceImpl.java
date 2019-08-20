@@ -86,11 +86,10 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		//初始化参数
 		List<Temporarily> temporarilyList = null;
 		List<AttendancePay> attendancePayList = null;
-		List<User> userList = null;
+		List<User> userList = userDao.findByIdIn(userIdList);;
 		if(task.getType() == 2) {
 			 temporarilyList = temporarilyDao.findByUserIdInAndTemporarilyDateAndType(userIdList,DatesUtil.getfristDayOftime(task.getAllotTime()),task.getType());
 			 attendancePayList = attendancePayDao.findByUserIdInAndTypeAndAllotTimeBetween(userIdList, task.getType(), orderTimeBegin, orderTimeEnd);
-			 userList = userDao.findByIdIn(userIdList);
 		}
 		Double sumTaskPrice = 0.0;
 		// 将工序ids分成多个任务

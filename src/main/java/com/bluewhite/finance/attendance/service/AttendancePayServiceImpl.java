@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.OptionalDouble;
-import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
@@ -29,7 +28,6 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
-import com.bluewhite.production.task.dao.TaskDao;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.system.user.entity.User;
