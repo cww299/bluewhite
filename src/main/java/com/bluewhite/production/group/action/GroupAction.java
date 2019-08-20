@@ -336,7 +336,7 @@ public class GroupAction {
 			dateList.add(ProTypeUtils.countAllotTime(temporarily.getTemporarilyDate()));
 		}
 		for (Date date : dateList) {
-			temporarily.setTemporarilyDate(date);
+			temporarily.setTemporarilyDate(DatesUtil.getfristDayOftime(date));
 			// 当类型为针工时，按当日当前分组
 			if (temporarilyDao.findByUserIdAndTemporarilyDateAndTypeAndGroupId(temporarily.getUserId(),
 					temporarily.getTemporarilyDate(), temporarily.getType(), temporarily.getGroupId()) != null) {
