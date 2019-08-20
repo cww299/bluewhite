@@ -58,8 +58,6 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 	private AttendanceInitService attendanceInitService;
 	@Autowired
 	private ConsumptionDao consumptionDao;
-	@PersistenceContext
-	protected EntityManager entityManager;
 	@Autowired
 	private SingleMealDao singleMealDao;
 	@Autowired
@@ -442,7 +440,6 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 	public int InitMeal(AttendanceTime attendanceTime) throws ParseException {
 		// 检查当前月份属于夏令时或冬令时 flag=ture 为夏令时
 		boolean flag = DatesUtil.belongCalendar(attendanceTime.getOrderTimeBegin());
-
 		List<AttendanceTime> attendanceTimes = attendanceTimeService.findAttendanceTime(attendanceTime);
 		List<Meal> list = dao.findByTypeAndTradeDaysTimeBetween(2,
 				DatesUtil.getFirstDayOfMonth(attendanceTime.getOrderTimeBegin()),
@@ -455,8 +452,6 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		List<Meal> meals = new ArrayList<Meal>();
 		// 0=休息日期,
 		PersonVariable restType = personVariableDao.findByType(0);
-		// 1=早中晚三餐价值
-		PersonVariable variable = personVariableDao.findByType(1);
 		// 4=设定早中晚三餐对于吃饭统计而延迟的分钟数
 		PersonVariable lagMin = personVariableDao.findByType(4);
 
@@ -505,23 +500,23 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 				if ((attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 1
 						|| attendanceInit.getEatType() == 3 || attendanceInit.getEatType() == 5))
 						&& at.getCheckIn().compareTo(breakfastLagTime) != 1) {
-					meals.add(addMeal(at, 1,Double.valueOf(variable.getKeyValue())));
+					meals.add(addMeal(at, 1));
 				}
 				// 1.签出时间大于午餐延迟时间
 				if ( at.getCheckOut().compareTo(lunchLagTime) != -1 ) {
-					meals.add(addMeal(at, 2, Double.valueOf(variable.getKeyValueTwo())));
+					meals.add(addMeal(at, 2));
 				}
 				// 1.签入时间小于晚餐延迟时间，2签出时间大于晚餐延迟时间
 				if ((attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 2
 						|| attendanceInit.getEatType() == 3 || attendanceInit.getEatType() == 4 || attendanceInit.getEatType() == 5))
 						&& (at.getCheckIn().compareTo(dinnerLagTime) != 1
 								&& at.getCheckOut().compareTo(dinnerLagTime) != -1)) {
-					meals.add(addMeal(at, 3, Double.valueOf(variable.getKeyValueThree())));
+					meals.add(addMeal(at, 3));
 				}
 				// 1签出时间大于夜宵时间
 				if ((attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 4 || attendanceInit.getEatType() == 5))
 						&& at.getCheckOut().compareTo(midnight) != -1) {
-					meals.add(addMeal(at, 4, Double.valueOf(variable.getKeyValue())));
+					meals.add(addMeal(at, 4));
 				}
 			}
 			
@@ -529,17 +524,17 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			if ((at.getCheckIn() != null && at.getCheckOut() == null) || (at.getCheckIn() != null && at.getCheckOut() != null && DatesUtil.getTimeSec(at.getCheckIn(), at.getCheckOut()) <= 300)) {
 				if (attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 1 
 						|| attendanceInit.getEatType() == 3  || attendanceInit.getEatType() == 5)) {
-					meals.add(addMeal(at, 1, Double.valueOf(variable.getKeyValue())));
+					meals.add(addMeal(at, 1));
 				}
-					meals.add(addMeal(at, 2, Double.valueOf(variable.getKeyValueTwo())));
+					meals.add(addMeal(at, 2));
 				if (attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 2
 						|| attendanceInit.getEatType() == 3 || attendanceInit.getEatType() == 4 || attendanceInit.getEatType() == 5)) {
-					meals.add(addMeal(at, 3, Double.valueOf(variable.getKeyValueThree())));
+					meals.add(addMeal(at, 3));
 				}
 				// 1.签入时间大于夜宵时间
 				if ((attendanceInit.getEatType() != null && (attendanceInit.getEatType() == 4 || attendanceInit.getEatType() == 5))
 						&& at.getCheckIn().compareTo(midnight) != -1) {
-					meals.add(addMeal(at, 4, Double.valueOf(variable.getKeyValue())));
+					meals.add(addMeal(at, 4));
 				}
 			}
 			
@@ -548,12 +543,12 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 				// 不需要打卡
 				if (attendanceInit.getWorkType() == 1 || attendanceInit.getWorkType() == 2) {
 					if (at.getFlag() != 3) {
-						meals.add(addMeal(at, 2, Double.valueOf(variable.getKeyValueTwo())));
+						meals.add(addMeal(at, 2));
 					}
 				}
 			}
 		}
-		saveAllMeals(meals);
+		batchSave(meals);
 		return meals.size();
 	}
 
@@ -565,33 +560,14 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 	 * @param variable
 	 * @return
 	 */
-	private Meal addMeal(AttendanceTime attendanceTime, Integer mode, Double price) {
+	private Meal addMeal(AttendanceTime attendanceTime, Integer mode) {
 		Meal meal = new Meal();
 		meal.setTradeDaysTime(attendanceTime.getTime());
 		meal.setUserId(attendanceTime.getUserId());
 		meal.setUserName(attendanceTime.getUserName());
 		meal.setType(2);
-		meal.setPrice(price);
 		meal.setMode(mode);
 		return meal;
-	}
-
-	/**
-	 * 批量新增报餐记录
-	 * 
-	 * @param productList
-	 */
-	private void saveAllMeals(List<Meal> mealList) {
-		entityManager.setFlushMode(FlushModeType.COMMIT);
-		for (int i = 0; i < mealList.size(); i++) {
-			Meal meal = mealList.get(i);
-			entityManager.merge(meal);
-			if (i % 1000 == 0 && i > 0) {
-				entityManager.flush();
-				entityManager.clear();
-			}
-		}
-		entityManager.close();
 	}
 
 	@Override

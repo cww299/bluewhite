@@ -179,7 +179,7 @@ public class MealAction {
 	@ResponseBody
 	public CommonResponse getfindElectric(HttpServletRequest request,Meal meal) {
 		CommonResponse cr = new CommonResponse();
-		 List<Map<String, Object>> list = service.findElectric(meal);
+		List<Map<String, Object>> list = service.findElectric(meal);
 		cr.setData(clearCascadeJSON.format(list).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
