@@ -15,7 +15,7 @@ public interface PayBDao extends BaseRepository<PayB, Long> {
 	 * @return
 	 */
 	List<PayB> findByTaskId(Long id);
-
+  
 	/**
 	 * 根据任务id和员工id查询工资
 	 * 
@@ -59,17 +59,6 @@ public interface PayBDao extends BaseRepository<PayB, Long> {
 	
 
 	/**
-	 * 根据条件查询b返回参数减少
-	 * 
-	 * @param type
-	 * @param orderTimeBegin
-	 * @param orderTimeEnd
-	 * @return
-	 */
-	@Query(nativeQuery = true, value = "SELECT pay_number, group_id ,allot_time, user_id FROM pro_payb WHERE type = ?1 AND allot_time BETWEEN ?2 AND ?3")
-	List<Object> findByTypeAndAllotTimeBetween1(Integer type, Date orderTimeBegin, Date orderTimeEnd);
-
-	/**
 	 * 根据条件查询b工资
 	 * 
 	 * @param type
@@ -81,14 +70,5 @@ public interface PayBDao extends BaseRepository<PayB, Long> {
 			+ "and if(?4 !='',user_name like CONCAT('%',?4,'%'),1=1) and if(?5 !='',bacth = ?5,1=1) and if(?6 !='',product_name like CONCAT('%',?6,'%'),1=1)")
 	List<Object> findPayNumber(Integer type, Date orderTimeBegin, Date orderTimeEnd, String userName, String bacth,
 			String productName);
-
-	/**
-	 * 根据时间查询
-	 * 
-	 * @param orderTimeBegin
-	 * @param orderTimeEnd
-	 * @return
-	 */
-	List<PayB> findByAllotTimeBetween(Date orderTimeBegin, Date orderTimeEnd);
 
 }

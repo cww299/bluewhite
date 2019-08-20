@@ -135,7 +135,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 			//查询出该任务的所有B工资
 			List<PayB> payB = payBDao.findByTaskId(task.getId());
 			//删除该任务的所有B工资
-			payBDao.delete(payB);
+			payBDao.deleteInBatch(payB);
 		};
 		dao.delete(id);
 		return 1;

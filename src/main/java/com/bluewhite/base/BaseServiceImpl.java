@@ -1,13 +1,18 @@
 package com.bluewhite.base;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bluewhite.common.BeanCopyUtils;
 
@@ -25,6 +30,9 @@ public abstract class BaseServiceImpl<T extends AbstractEntity<ID>, ID extends S
     public void setBaseRepository(BaseRepository<T, ID> baseRepository) {
         this.baseRepository = baseRepository;
     }
+    
+	@PersistenceContext
+	protected EntityManager entityManager;
    
 
     /**
@@ -161,6 +169,44 @@ public abstract class BaseServiceImpl<T extends AbstractEntity<ID>, ID extends S
      */
     public List<T> findAll( Specification<T> t) {
         return baseRepository.findAll(t);
+    }
+    
+    @Transactional
+    public <S extends T> Iterable<S> batchSave(Iterable<S> var1) {
+        Iterator<S> iterator = var1.iterator();
+        int index = 0;
+        while (iterator.hasNext()){
+        	entityManager.persist(iterator.next());
+            index++;
+            if (index % 500 == 0){
+            	entityManager.flush();
+            	entityManager.clear();
+            }
+        }
+        if (index % 500 != 0){
+        	entityManager.flush();
+        	entityManager.clear();
+        }
+        entityManager.close();
+        return var1;
+    }
+    
+    public <S extends T> Iterable<S> batchUpdate(Iterable<S> var1) {
+        Iterator<S> iterator = var1.iterator();
+        int index = 0;
+        while (iterator.hasNext()){
+        	entityManager.merge(iterator.next());
+            index++;
+            if (index % 500 == 0){
+            	entityManager.flush();
+            	entityManager.clear();
+            }
+        }
+        if (index % 500 != 0){
+        	entityManager.flush();
+        	entityManager.clear();
+        }
+        return var1;
     }
 
 }

@@ -73,8 +73,16 @@ public interface BaseCRUDService<T,ID> {
      */
     public List<T> findAll( Specification<T> t);
 
-
-	
+    /**
+     * 批量新增
+     * @param var1
+     * @return
+     */
+    public <S extends T> Iterable<S> batchSave(Iterable<S> var1);
     
+    /**
+     * 批量更新
+     */
+    public <S extends T> Iterable<S> batchUpdate(Iterable<S> var1); 
     
 }

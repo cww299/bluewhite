@@ -53,6 +53,7 @@ public class ReportExportServiceImpl implements ReportExportService {
 
 	@Autowired
 	private CustomerDao contactDao;
+	
 	@Autowired
 	private BaseDataService baseDataService;
 

@@ -171,8 +171,7 @@ public class GroupAction {
 						(temporarilyDate != null ? DatesUtil.getLastDayOftime(temporarilyDate)
 								: DatesUtil.getLastDayOftime(ProTypeUtils.countAllotTime(null, group.getType()))));
 				if (attendancePay.size() > 0) {
-					u.setAdjustTime(attendancePay.get(0).getGroupWorkTime() != null
-							? attendancePay.get(0).getGroupWorkTime() : attendancePay.get(0).getWorkTime());
+					u.setAdjustTime(attendancePay.get(0).getGroupWorkTime() != null ? attendancePay.get(0).getGroupWorkTime() : attendancePay.get(0).getWorkTime());
 					u.setAdjustTimeId(attendancePay.get(0).getId());
 					u.setTemporarily(0);
 				}

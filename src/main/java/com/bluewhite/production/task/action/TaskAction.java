@@ -253,64 +253,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 	@ResponseBody
 	public CommonResponse giveTaskPerformance(HttpServletRequest request,String[] taskIds,String[] ids, String[] performance , Double[] performanceNumber,Integer update) {
 		CommonResponse cr = new CommonResponse();
-		if (!StringUtils.isEmpty(taskIds)) {
-			if (taskIds.length>0) {
-				for (int i = 0; i < taskIds.length; i++) {
-						Long id = Long.parseLong(taskIds[i]);
-						Task task = taskService.findOne(id);
-						if(!StringUtils.isEmpty(ids) && !StringUtils.isEmpty(performance) && !StringUtils.isEmpty(performanceNumber)){
-							task.setPerformance(performance[i]);
-							task.setPerformanceNumber(performanceNumber[i]);
-							//任务加绩具体数值
-							double performancePrice = NumUtils.round(ProTypeUtils.sumtaskPerformancePrice(task), null);
-							task.setPerformancePrice(performancePrice);
-							if(update==1){
-								List<PayB> payBListO = payBDao.findByTaskId(id);
-								payBListO.stream().filter(PayB->PayB.getPerformancePayNumber()!=null).collect(Collectors.toList());
-								if(payBListO.size()>0){
-									for(PayB pl : payBListO){
-										pl.setPerformance(null);
-										pl.setPerformancePayNumber(null);
-										pl.setPerformanceNumber(null);
-									}
-									payBDao.save(payBListO);
-								}
-							}
-							if (!StringUtils.isEmpty(ids)) {
-								if (ids.length>0) {
-									for (int ii = 0; ii < ids.length; ii++) {
-										Long userid = Long.parseLong(ids[ii]);
-										PayB payB = payBDao.findByTaskIdAndUserId(task.getId(),userid);
-										payB.setPerformance(performance[i]);
-										payB.setPerformancePayNumber(performancePrice/ids.length);
-										payB.setPerformanceNumber(performanceNumber[i]);
-										payBDao.save(payB);
-									}
-								}
-							}
-							List<PayB> payBList = payBDao.findByTaskId(id);
-							task.setPerformancePrice(payBList.stream().filter(PayB->PayB.getPerformancePayNumber()!=null).mapToDouble(PayB::getPerformancePayNumber).sum());
-							
-						}else{
-							task.setPerformance(null);
-							task.setPerformanceNumber(null);
-							task.setPerformancePrice(0.0);
-							List<PayB> payBListO = payBDao.findByTaskId(id);
-							payBListO.stream().filter(PayB->PayB.getPerformancePayNumber()!=null).collect(Collectors.toList());
-							if(payBListO.size()>0){
-								for(PayB pl : payBListO){
-									pl.setPerformance(null);
-									pl.setPerformancePayNumber(null);
-									pl.setPerformanceNumber(null);
-								}
-								payBDao.save(payBListO);
-							}
-							
-						}
-						taskService.save(task);
-				}
-			}
-		}
+		taskService.giveTaskPerformance(taskIds,ids,performance , performanceNumber,update);
 		cr.setMessage("添加成功");
 		return cr;
 	}
