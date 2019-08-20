@@ -1115,7 +1115,7 @@
 										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
 										$('.select').html(s+htmltwo)
 										
-										$(".time2").blur(function(){
+										/* $(".time2").blur(function(){
 											var a=$(this).data('temporarily')
 											var id=$(this).data('id')
 											if(a==1){
@@ -1171,7 +1171,7 @@
 															}
 														});
 											}
-										})
+										}) */
 										
 										$(".checkall").on('click',function(){
 							                    if($(this).is(':checked')){ 

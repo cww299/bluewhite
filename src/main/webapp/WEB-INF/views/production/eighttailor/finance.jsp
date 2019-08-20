@@ -613,6 +613,15 @@
 									if(0==result.code){
 									layer.msg("修改成功！", {icon: 1});
 									layer.close(index);
+									var data = {
+						        			page:self.getCount(),
+									  		size:13,
+									  		type:5,
+									  		userName:$('#usernameth').val(),
+								  			orderTimeBegin:$("#startTimeth").val(),
+								  			orderTimeEnd:$("#endTimeth").val(),
+								  	}
+									self.loadPaginationth(data)
 									}else{
 										layer.msg("修改失败！", {icon: 1});
 										layer.close(index);

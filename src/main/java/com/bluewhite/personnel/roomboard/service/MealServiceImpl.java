@@ -672,12 +672,17 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			throw new ServiceException("当月数据员工资未查询到");
 		}
 		boolean d1= DatesUtil.belongCalendar(meal.getOrderTimeBegin());//判断时冬令时 还是夏令时
+		AttendanceInit init= attendanceInitDao.findByUserId(wage.get(0).getUserId());
+		if (init==null) {
+			throw new ServiceException("该员工未设定考勤初始化数据");
+		}
 		double val=0;
 		if (d1==true) {
-			val=8.5;
+			val=init.getTurnWorkTimeSummer();
 		}else{
-			val=8;
+			val=init.getTurnWorkTimeWinter();
 		}
+		
 		double valwage=0;//物料跟进人员的工资
 		if (wage.size()>0) {
 			valwage=wage.get(0).getWage();
