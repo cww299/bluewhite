@@ -171,9 +171,7 @@
 	
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
-				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增一行</span>
-				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
-				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
+				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增报餐</span>
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
 				<span class="layui-btn layui-btn-sm" lay-event="delayed">吃饭延时</span>
 				<span class="layui-btn layui-btn-sm" lay-event="eat">吃饭方式填写</span>
@@ -529,23 +527,6 @@
 								
 								
 								break;
-							case 'saveTempData':
-								var data = table.getTemp(tableId).data;
-								var flag=false;
-								var a=0;
-								data.forEach(function(postData,i){
-							    	a++;
-							    	if(a==data.length){
-							    		flag=true
-							    	}
-									})
-								if(flag==true){
-								data.forEach(function(postData,i){
-									 mainJs.fAdd(postData);
-									table.cleanTemp(tableId);
-									})	
-								}
-						          break;
 							case 'deleteSome':
 								// 获得当前选中的
 								var checkedIds = tablePlug.tableCheck.getChecked(tableId);

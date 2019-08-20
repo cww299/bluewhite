@@ -144,11 +144,44 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-hidden="true">&times;</button>
-						<h4 class="modal-title" id="myModalLabel">人员分组详情</h4>
-					</div>
-					<div class="modal-body"></div>
+						<div class="row" style="height: 30px; margin: 15px 0 10px">
+							<div class="col-xs-11 col-sm-11  col-md-11">
+								<form class="form-search">
+									<div class="row">
+										<div class="col-xs-12 col-sm-12 col-md-12">
+											<div class="input-group">
+												<table>
+													<tr>
+														<td>开始时间:</td>
+														<td><input id="startTimeTable" placeholder="请输入开始时间"
+															class="form-control laydate-icon"
+															onClick="laydate({elem: '#startTimeTable', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+														</td>
+														<td>&nbsp;&nbsp;</td>
+													</tr>
+												</table>
+												<span class="input-group-btn">
+													<button type="button"
+														class="btn btn-info btn-square btn-sm btn-3d searchtaskTable">
+														查&nbsp;找</button></span>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th class="text-center">人名</th>
+									<th class="text-center">所在组工作时长</th>
+								</tr>
+							</thead>
+							<tbody id="tableUserTime">
+
+							</tbody>
+						</table>
+						</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">关闭
 						</button>
@@ -281,6 +314,7 @@
 				} 
 		 $('#isLocalFactory').change(function(){		//是否本仓下拉框修改时清空人员名称
 			$('#groupNametw').val(''); 
+		 
 		 });
 			 var myDate = new Date(new Date().getTime() - 86400000);
 				//获取当前年
@@ -300,6 +334,7 @@
 				var a=year + '-' + '0'+month + '-' + date+' '+'00:00:00'
 				var b=year + '-' + '0'+month + '-' + date+' '+'23:59:59'
 				$('#startTimetw').val(a);
+				$('#startTimeTable').val(a);
 			this.init = function(){
 				
 				//注册绑定事件
@@ -530,37 +565,70 @@
 					 if(display=='none'){
 							$("#savegroup").css("display","block");  
 						}
+					selectId=id;
 					var postData={
 							id:id,
+							temporarilyDate:$("#startTimeTable").val()
 					}
-					 var arr=new Array();
-					var html="";
-					$.ajax({
-						url:"${ctx}/production/getGroupOne",
-						data:postData,
-						type:"GET",
-						beforeSend:function(){
-							index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								});
-						},
-						
-						success:function(result){
-							$(result.data.users).each(function(i,o){
-							html+=o.userName+"&nbsp;&nbsp;&nbsp;&nbsp;"
-							})
-							$('.modal-body').html(html);
-							layer.close(index);
-							
-						},error:function(){
-							layer.msg("操作失败！", {icon: 2});
-							layer.close(index);
-						}
-					});
-					
-					
-					
+					self.loadworkingTable(postData);
 				})
+				
+				this.loadworkingTable=function(postData){
+					 var arr=new Array();
+						var html="";
+						$.ajax({
+							url:"${ctx}/production/getGroupOne",
+							data:postData,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								$(result.data.users).each(function(i,o){
+									html +='<tr>'
+				      				+'<td class="text-center">'+o.userName+'</td>'
+				      				+'<td class="text-center"><input  class="adjustTime" style="background:none;outline:none;border:0px;text-align:center;" data-id="'+o.id+'" data-ajid="'+o.adjustTimeId+'" value='+(o.adjustTime!=null ? o.adjustTime :0)+' /></td>'
+								})
+								$('#tableUserTime').html(html);
+								layer.close(index);
+								$(".adjustTime").blur(function(){
+									var postData={
+											adjustTime:$(this).val(),
+											adjustId:$(this).data('ajid'),
+										}
+									$.ajax({
+										url:"${ctx}/production/updateAdjustTime",
+										data:postData,
+							            traditional: true,
+										type:"GET",
+										beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'#fff'] //0.1透明度的白色背景
+												});
+										},
+										success:function(result){
+											if(0==result.code){
+												layer.msg("修改成功", {icon: 1});
+											}else{
+												layer.msg(result.message, {icon: 2});
+											}
+											layer.close(index);
+										},error:function(){
+											layer.msg(result.message, {icon: 2});
+											layer.close(index);
+										}
+									});
+								})
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+					
+				}
 				//人员详细显示方法
 				$('.savemodetw').on('click',function(){
 					 var display =$("#savegrouptw").css("display")
@@ -666,6 +734,13 @@
 				})
 				
 			}
+			$('.searchtaskTable').on('click',function(){
+				var postData={
+						id:selectId,
+						temporarilyDate:$("#startTimeTable").val()
+				}
+			self.loadworkingTable(postData);
+			});
 			this.chang=function(){
 				$('.selectgroupChange').change(function(){
 					var that=$(this);

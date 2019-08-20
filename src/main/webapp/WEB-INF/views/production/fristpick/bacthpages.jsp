@@ -1085,7 +1085,7 @@
 			      			  $(result.data).each(function(k,j){
 			      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
 			      			  });  
-			      			 $('.complete').html("<select class='form-control selectcomplete'><option value="+0+">请选择</option><option value="+""+">全部</option>"+htmlth+"</select>") 
+			      			 $('.complete').html("<select class='form-control selectcomplete'><option value="+0+">请选择</option>"+htmlth+"</select>") 
 							//改变事件
 			      			 $(".selectcomplete").change(function(){
 			      				var htmltwo = "";
@@ -1115,7 +1115,7 @@
 										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
 										$('.select').html(s+htmltwo)
 										
-										/* $(".time2").blur(function(){
+										$(".time2").blur(function(){
 											var a=$(this).data('temporarily')
 											var id=$(this).data('id')
 											if(a==1){
@@ -1146,11 +1146,11 @@
 												});
 											}else{
 												var postData={
-														id:id,
-														groupWorkTime:$(this).val()
+														adjustId:id,
+														adjustTime:$(this).val()
 													}
 														$.ajax({
-															url:"${ctx}/finance/updateAttendance",
+															url:"${ctx}/production/updateAdjustTime",
 															data:postData,
 												            traditional: true,
 															type:"GET",
@@ -1161,6 +1161,7 @@
 															},
 															success:function(result){
 																if(0==result.code){
+																	layer.msg(result.message, {icon: 1});
 																}else{
 																	layer.msg(result.message, {icon: 2});
 																}
@@ -1171,7 +1172,7 @@
 															}
 														});
 											}
-										}) */
+										}) 
 										
 										$(".checkall").on('click',function(){
 							                    if($(this).is(':checked')){ 
@@ -1240,7 +1241,6 @@
 									numberr.push($(this).data('residualnumber'));
 								}); 
 							  var arr=new Array()
-							  
 								$(".stuCheckBox:checked").each(function() {   
 								    arr.push($(this).val());   
 								}); 
@@ -1284,6 +1284,7 @@
 										bacthNumber:bacthNumber,
 										allotTime:$('#Time').val(),
 										productId:productId,
+										groupId:$(".selectcomplete").val()
 								}
 								
 							    $.ajax({
