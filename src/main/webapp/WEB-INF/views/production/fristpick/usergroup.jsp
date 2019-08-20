@@ -144,11 +144,18 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-hidden="true">&times;</button>
-						<h4 class="modal-title" id="myModalLabel">人员分组详情</h4>
-					</div>
-					<div class="modal-body"></div>
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th class="text-center">人名</th>
+									<th class="text-center">所在组工作时长</th>
+								</tr>
+							</thead>
+							<tbody id="tableUserTime">
+
+							</tbody>
+						</table>
+						</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">关闭
 						</button>
@@ -547,10 +554,41 @@
 						
 						success:function(result){
 							$(result.data.users).each(function(i,o){
-							html+=o.userName+"&nbsp;&nbsp;&nbsp;&nbsp;"
+								html +='<tr>'
+			      				+'<td class="text-center">'+o.userName+'</td>'
+			      				+'<td class="text-center"><input  class="adjustTime" style="background:none;outline:none;border:0px;text-align:center;" data-id="'+o.id+'" data-ajid="'+o.AdjustTimeId+'" value='+(o.adjustTime!=null ? o.adjustTime :0)+' /></td>'
 							})
-							$('.modal-body').html(html);
+							$('#tableUserTime').html(html);
 							layer.close(index);
+							$(".adjustTime").blur(function(){
+								var postData={
+										id:$(this).data('id'),
+										time:$(this).val(),
+										AdjustTimeId:$(this).data('ajid'),
+									}
+								$.ajax({
+									url:"${ctx}/production/updateAdjustTime",
+									data:postData,
+						            traditional: true,
+									type:"post",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									success:function(result){
+										if(0==result.code){
+											layer.msg("修改成功", {icon: 1});
+										}else{
+											layer.msg(result.message, {icon: 2});
+										}
+										layer.close(index);
+									},error:function(){
+										layer.msg(result.message, {icon: 2});
+										layer.close(index);
+									}
+								});
+							})
 							
 						},error:function(){
 							layer.msg("操作失败！", {icon: 2});

@@ -281,6 +281,7 @@
 											'lay-filter' : 'addRole2',
 											'lay-submit' : ''
 										})
+										table.resize('layuiShare2');
 							        }
 							        ,end:function(){
 							        	$("#layuiShare").hide();

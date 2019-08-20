@@ -126,7 +126,7 @@
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
 				<span class="layui-btn layui-btn-sm" lay-event="sumDay">每天费用</span>
 			</div>
-
+		<input id="startTimes" style="width: 180px; height: 30px;"   placeholder="请输入日期">
 	</script>
 
 <script type="text/html" id="toolbar2">
@@ -298,6 +298,7 @@
 									tdElem.find('div.layui-table-cell').html(text);
 								}
 							});
+							
 						},
 						//下拉框回显赋值
 						done: function(res, curr, count) {
@@ -308,6 +309,10 @@
 								elem.val(elem.data('value'));
 							});
 							form.render();
+							laydate.render({
+								elem: '#startTimes',
+								type : 'datetime',
+							})
 							// 初始化laydate
 							layui.each(tableView.find('td[data-field="time"]'), function(index, tdElem) {
 								tdElem.onclick = function(event) {
@@ -359,11 +364,11 @@
 						var tableId = config.id;
 						switch(obj.event) {
 						case 'addTempData':
-							if($('#startTime').val()==''){
+							if($('#startTimes').val()==''){
 					 			layer.msg('请先选择日期',{icon:2});
 					 			return;
 					 		}
-							allField = {id: '', content: '',type:'0',time:$('#startTime').val()};
+							allField = {id: '', content: '',type:'0',time:$('#startTimes').val()};
 							table.addTemp(tableId,allField,function(trElem) {
 								// 进入回调的时候this是当前的表格的config
 								var that = this;
@@ -480,6 +485,7 @@
 											'lay-filter' : 'addRole2',
 											'lay-submit' : ''
 										})
+										table.resize('layuiShare2');
 							        }
 							        ,end:function(){
 							        	$("#layuiShare").hide();
