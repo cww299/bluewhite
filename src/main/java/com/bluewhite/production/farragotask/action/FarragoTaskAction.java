@@ -93,7 +93,7 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 		}else{
 			//新增
 			if(!StringUtils.isEmpty(farragoTask.getUserIds())){
-				farragoTask.setAllotTime(ProTypeUtils.countAllotTime(farragoTask.getAllotTime(), farragoTask.getType()));
+				farragoTask.setAllotTime(ProTypeUtils.countAllotTime(farragoTask.getAllotTime()));
 				farragoTaskService.addFarragoTask(farragoTask);
 				cr.setMessage("任务分配成功");
 			}else{

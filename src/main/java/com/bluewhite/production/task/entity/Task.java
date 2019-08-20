@@ -50,12 +50,6 @@ public class Task  extends BaseEntity<Long>{
 	@Column(name = "userIds")
 	private  String userIds;
 	
-	/**
-	 * 领取任务人员姓名集合
-	 */
-	@Column(name = "user_names")
-	private  String userNames;
-	
 	
 	/**
 	 * 产品名称
@@ -243,7 +237,21 @@ public class Task  extends BaseEntity<Long>{
 	@Transient
     private Integer machinist;
 	
+	/**
+	 * 分组id
+	 */
+	@Transient
+    private Long groupId;
 	
+	
+
+	public Long getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(Long groupId) {
+		this.groupId = groupId;
+	}
 
 	public Integer getMachinist() {
 		return machinist;
@@ -347,12 +355,6 @@ public class Task  extends BaseEntity<Long>{
 	}
 	public void setAllotTime(Date allotTime) {
 		this.allotTime = allotTime;
-	}
-	public String getUserNames() {
-		return userNames;
-	}
-	public void setUserNames(String userNames) {
-		this.userNames = userNames;
 	}
 	public String[] getProcedureIds() {
 		return procedureIds;

@@ -27,8 +27,6 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.procedure.entity.Procedure;
@@ -87,7 +85,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 		CommonResponse cr = new CommonResponse();
 			//新增
 			if(!StringUtils.isEmpty(task.getUserIds())){
-				task.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime(), task.getType()));
+				task.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime()));
 				taskService.addTask(task);
 				cr.setMessage("任务分配成功");
 			}else{
@@ -150,7 +148,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 			//新增
 			for(Task tasks : taskList){
 				if(!StringUtils.isEmpty(tasks.getUserIds())){
-					tasks.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime(), task.getType()));
+					tasks.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime()));
 					taskService.addTask(tasks);
 					cr.setMessage("任务分配成功");
 				}else{
@@ -311,7 +309,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 			}else{
 				//新增
 				if(!StringUtils.isEmpty(task.getUserIds())){
-					task.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime(), task.getType()));
+					task.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime()));
 					taskService.addReTask(task);
 					cr.setMessage("任务分配成功");
 				}else{

@@ -171,13 +171,12 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 								}
 								task.setNumber(bacth.getNumber());
 								task.setType(bacth.getType());
-								task.setAllotTime(ProTypeUtils.countAllotTime(time, task.getType()));
+								task.setAllotTime(ProTypeUtils.countAllotTime(time));
 								task.setBacthId(bacth.getId());
 								task.setProductName(bacth.getProduct().getName());
 								task.setBacthNumber(bacth.getBacthNumber());
 								task.setProcedureIds(pro);
 								task.setUserIds(userIds);
-								task.setUserNames(userNames);
 								taskService.addTask(task);
 							}
 						}
@@ -229,7 +228,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 
 	@Override
 	public Bacth saveBacth(Bacth bacth) throws Exception {
-		bacth.setAllotTime(ProTypeUtils.countAllotTime(bacth.getAllotTime(), bacth.getType()));
+		bacth.setAllotTime(ProTypeUtils.countAllotTime(bacth.getAllotTime()));
 		bacth.setStatus(0);
 		bacth.setReceive(0);
 		List<Procedure> procedureList =procedureDao.findByProductIdAndTypeAndFlag(bacth.getProductId(), bacth.getType(), bacth.getFlag());

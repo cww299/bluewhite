@@ -730,7 +730,6 @@ public  class ProTypeUtils {
 	 * @return
 	 */
 	public static Double sumtaskPerformancePrice(Task task) {
-		
 		Double sumPerformancePrice = 0.0 ;
 		switch (task.getType()) {
 		case 1:// 生产部一楼质检
@@ -871,19 +870,10 @@ public  class ProTypeUtils {
 	 * @param farragoTask
 	 * @return
 	 */
-	public static Date countAllotTime(Date allotTime,Integer type) {
-		
-		Calendar  cal = Calendar.getInstance();
-		cal.add(Calendar.DATE,-1);
-		if(allotTime == null && type == 1){
-			allotTime = cal.getTime();
-		}else if(allotTime == null && type == 2){
-			allotTime = cal.getTime();
-		}else if(allotTime == null && type == 3){
-			allotTime = cal.getTime();
-		}else if(allotTime == null && type == 4){
-			allotTime = cal.getTime();
-		}else if(allotTime == null && type == 5){
+	public static Date countAllotTime(Date allotTime) {
+		if(allotTime == null ){
+			Calendar  cal = Calendar.getInstance();
+			cal.add(Calendar.DATE,-1);
 			allotTime = cal.getTime();
 		}
 		return allotTime;
