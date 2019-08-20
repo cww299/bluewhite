@@ -23,14 +23,14 @@ public interface TemporarilyDao extends BaseRepository<Temporarily, Long>{
 	public Temporarily findByUserIdAndTemporarilyDateAndType(Long userId, Date getfristDayOftime,Integer type);
 	
 	/**
-	 * 根据人员id和日期查询
+	 * 根据人员id,日期,查询
 	 * 
 	 * @param type
 	 * @param orderTimeBegin
 	 * @param orderTimeEnd
 	 * @return
 	 */
-	List<Temporarily> findByUserIdInAndTemporarilyDateAndType(List<Long> userIds, Date orderTimeBegin, Integer type);
+	List<Temporarily> findByUserIdInAndTemporarilyDateAndTypeAndGroupId(List<Long> userIds, Date orderTimeBegin, Integer type,Long groupId);
 	
 	/**
 	 * 根据分组id，员工id，日期查询

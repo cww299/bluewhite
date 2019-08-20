@@ -298,7 +298,6 @@ public class ReportExportAction {
 	    	reworkPoi.setName(psList.get(0).getProductName());
 	    	reworkPoi.setRemark(psList.get(0).getBacth().getRemarks());
 	    	reworkPoi.setDatetime(psList.get(0).getBacth().getStatusTime());
-	    	reworkPoi.setUsername(psList.get(0).getUserNames());
 	    	//去任务中最大值
 	    	Optional<Task> mactask = psList.stream().max(Comparator.comparingInt(Task::getNumber));
 //	    	IntSummaryStatistics summaryStatistics = psList.stream().collect(Collectors.summarizingInt(Task::getNumber));

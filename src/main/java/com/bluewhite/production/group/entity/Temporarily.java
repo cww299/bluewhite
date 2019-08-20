@@ -60,7 +60,6 @@ public class Temporarily extends BaseEntity<Long>{
 	@Column(name = "group_id")
 	private Long groupId;
 	
-	
 	/**
 	 * 借调人员
 	 */
