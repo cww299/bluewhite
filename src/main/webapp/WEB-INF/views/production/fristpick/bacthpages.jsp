@@ -1115,7 +1115,7 @@
 										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
 										$('.select').html(s+htmltwo)
 										
-										/* $(".time2").blur(function(){
+										$(".time2").blur(function(){
 											var a=$(this).data('temporarily')
 											var id=$(this).data('id')
 											if(a==1){
@@ -1146,11 +1146,11 @@
 												});
 											}else{
 												var postData={
-														id:id,
-														groupWorkTime:$(this).val()
+														adjustId:id,
+														adjustTime:$(this).val()
 													}
 														$.ajax({
-															url:"${ctx}/finance/updateAttendance",
+															url:"${ctx}/production/updateAdjustTime",
 															data:postData,
 												            traditional: true,
 															type:"GET",
@@ -1161,6 +1161,7 @@
 															},
 															success:function(result){
 																if(0==result.code){
+																	layer.msg(result.message, {icon: 1});
 																}else{
 																	layer.msg(result.message, {icon: 2});
 																}
@@ -1171,7 +1172,7 @@
 															}
 														});
 											}
-										}) */
+										}) 
 										
 										$(".checkall").on('click',function(){
 							                    if($(this).is(':checked')){ 
