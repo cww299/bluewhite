@@ -1,5 +1,6 @@
 package com.bluewhite.production.task.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -51,6 +52,26 @@ public interface TaskService extends BaseCRUDService<Task,Long>{
 	 * @param ids
 	 */
 	public void deleteReTask(String ids);
+	
+	/**
+	 * 加绩
+	 * @param taskIds
+	 * @param ids
+	 * @param performance
+	 * @param performanceNumber
+	 * @param update
+	 */
+	public void giveTaskPerformance(String[] taskIds, String[] ids, String[] performance, Double[] performanceNumber,
+			Integer update);
+	
+	/**
+	 * 获取该员工当天做过的所有任务
+	 * @param valueOf
+	 * @param getfristDayOftime
+	 * @param lastDayOftime
+	 * @return
+	 */
+	public List<Task> findByUserIdAndAllotTime(String userid, Date beginTime, Date endTime);
 	
 
 }

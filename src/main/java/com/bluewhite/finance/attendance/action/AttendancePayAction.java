@@ -16,12 +16,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
-import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
-import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
 import com.bluewhite.system.user.service.UserService;
@@ -70,11 +68,8 @@ public class AttendancePayAction {
 	public CommonResponse updateAttendance(HttpServletRequest request, AttendancePay attendancePay) {
 		CommonResponse cr = new CommonResponse();
 		// 修改
-		if (!StringUtils.isEmpty(attendancePay.getId())) {
-			AttendancePay oldAttendancePay = attendancePayService.findOne(attendancePay.getId());
-			BeanCopyUtils.copyNotEmpty(attendancePay, oldAttendancePay,"");
-			oldAttendancePay.setPayNumber(NumUtils.round(oldAttendancePay.getWorkPrice()*oldAttendancePay.getWorkTime(),2));
-			attendancePayService.save(oldAttendancePay);
+		if (attendancePay.getId()!=null) {
+			attendancePayService.updateAttendance(attendancePay);
 			cr.setMessage("修改成功");
 		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

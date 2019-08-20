@@ -41,5 +41,11 @@ public interface AttendancePayService  extends BaseCRUDService<AttendancePay,Lon
 	 * 
 	 */
 	public int updateAllAttendance(AttendancePay attendancePay);
+	
+	/**
+	 * 修改考勤
+	 * @param attendancePay
+	 */
+	public void updateAttendance(AttendancePay attendancePay);
 
 }

@@ -69,19 +69,6 @@ public class Task  extends BaseEntity<Long>{
 	@Column(name = "product_id")
 	private Long productId;
 	
-	
-	/**
-	 * 领取任务人员ids
-	 */
-	@Transient
-	private  String[] usersIds;
-	
-	/**
-	 * 工序ids
-	 */
-	@Transient
-	private  String[] procedureIds;
-	
 	/**
 	 * 工序id
 	 */
@@ -207,13 +194,23 @@ public class Task  extends BaseEntity<Long>{
 	@Transient
 	private Long procedureTypeId;
 	
-	
 	/**
 	 * 产值
 	 */
 	@Transient
 	private Double productPrice;
 	
+	/**
+	 * 领取任务人员ids
+	 */
+	@Transient
+	private  String[] usersIds;
+	
+	/**
+	 * 工序ids
+	 */
+	@Transient
+	private  String[] procedureIds;
 	
 	/**
 	 * 时间段
