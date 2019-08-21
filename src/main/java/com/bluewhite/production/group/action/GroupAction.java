@@ -368,7 +368,6 @@ public class GroupAction {
 			cr.setMessage("外调人员不能为空");
 			return cr;
 		}
-
 		if (StringUtils.isEmpty(temporarily.getUserId())) {
 			Temporarily oldtemporarily = temporarilyDao.findOne(temporarily.getId());
 			BeanCopyUtils.copyNotEmpty(temporarily, oldtemporarily);
