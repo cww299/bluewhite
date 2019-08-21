@@ -48,15 +48,16 @@ import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
 
 /**
- * 生产部财务相关action 
+ * 生产部财务相关action
+ * 
  * @author zhangliang
  *
  */
 @Controller
 public class FinanceAction {
-	
-private static final Log log = Log.getLog(FinanceAction.class);
-	
+
+	private static final Log log = Log.getLog(FinanceAction.class);
+
 	@Autowired
 	private PayBService payBService;
 	@Autowired
@@ -71,460 +72,419 @@ private static final Log log = Log.getLog(FinanceAction.class);
 	private CollectInformationService collectInformationService;
 	@Autowired
 	private PayBDao payBDao;
-	
-	
+
 	private ClearCascadeJSON clearCascadeJSON;
 
 	{
-		clearCascadeJSON = ClearCascadeJSON
-				.get()
-				.addRetainTerm(PayB.class,"id","userName","allotTime","payNumber","bacth","productName",
-						"allotTime","performancePayNumber","task")
-				.addRetainTerm(Task.class,"procedureName");
+		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(PayB.class, "id", "userName", "allotTime", "payNumber",
+				"bacth", "productName", "allotTime", "performancePayNumber", "task")
+				.addRetainTerm(Task.class, "procedureName");
 	}
-	
-	
-	/** 
+
+	/**
 	 * 查询考情工资流水(A工资)
 	 * 
 	 */
 	@RequestMapping(value = "/finance/allAttendancePay", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse allAttendancePay(HttpServletRequest request,AttendancePay attendancePay,PageParameter page) {
+	public CommonResponse allAttendancePay(HttpServletRequest request, AttendancePay attendancePay,
+			PageParameter page) {
 		CommonResponse cr = new CommonResponse();
-			cr.setData(ClearCascadeJSON
-					.get()
-					.addRetainTerm(AttendancePay.class,"id","userName","allotTime","turnWorkTime",
-							"payNumber","workPrice","workTime","overTime","dutyTime","maxPay","disparity","warning")
-					.format(attendancePayService.findPages(attendancePay, page)).toJSON());
-			cr.setMessage("查询成功");
+		cr.setData(ClearCascadeJSON.get()
+				.addRetainTerm(AttendancePay.class, "id", "userName", "allotTime", "turnWorkTime", "payNumber",
+						"workPrice", "workTime", "overTime", "dutyTime", "maxPay", "disparity", "warning")
+				.format(attendancePayService.findPages(attendancePay, page)).toJSON());
+		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
-	/** 
+
+	/**
 	 * 查询b工资流水(正常任务)(包括加绩)
 	 * 
 	 */
 	@RequestMapping(value = "/finance/allPayB", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse allPayB(HttpServletRequest request,PayB payB,PageParameter page) {
+	public CommonResponse allPayB(HttpServletRequest request, PayB payB, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
 		PageResult<PayB> list = payBService.findPages(payB, page);
 		cr.setData(clearCascadeJSON.format(list).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	/** 
+
+	/**
 	 * 查询b工资流水同时汇总金额
-	 *      
+	 * 
 	 */
 	@RequestMapping(value = "/finance/allPayBSum", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse allPayBSum(HttpServletRequest request,PayB payB) {
+	public CommonResponse allPayBSum(HttpServletRequest request, PayB payB) {
 		CommonResponse cr = new CommonResponse();
-			List<Object> payBList = payBDao.findPayNumber(payB.getType(),payB.getOrderTimeBegin(),payB.getOrderTimeEnd(),payB.getUserName(),payB.getBacth(),payB.getProductName());
-			// 总金额
-			List<Double> listPayNumber = new ArrayList<>();
-			// 实际运费
-			List<Double> listPerformancePayNumber = new ArrayList<>();
-			Double sumPayNumber = 0.0;
-			Double sumPerformancePayNumber = 0.0;
-			if (payBList.size() > 0) {
-				for(Object pb : payBList){
-					Object[] objects = (Object[])pb;
-					listPayNumber.add((double)(objects[0] ==null ? 0.0:objects[0]));
-					listPerformancePayNumber.add((double)(objects[1] ==null ? 0.0:objects[1]));
-				}
-				sumPayNumber = NumUtils.sum(listPayNumber);
-				sumPerformancePayNumber = NumUtils.sum(listPerformancePayNumber);
+		List<Object> payBList = payBDao.findPayNumber(payB.getType(), payB.getOrderTimeBegin(), payB.getOrderTimeEnd(),
+				payB.getUserName(), payB.getBacth(), payB.getProductName());
+		// 总金额
+		List<Double> listPayNumber = new ArrayList<>();
+		// 实际运费
+		List<Double> listPerformancePayNumber = new ArrayList<>();
+		Double sumPayNumber = 0.0;
+		Double sumPerformancePayNumber = 0.0;
+		if (payBList.size() > 0) {
+			for (Object pb : payBList) {
+				Object[] objects = (Object[]) pb;
+				listPayNumber.add((double) (objects[0] == null ? 0.0 : objects[0]));
+				listPerformancePayNumber.add((double) (objects[1] == null ? 0.0 : objects[1]));
 			}
-			Map<String, Object> map = new HashMap<>();
-			map.put("sumPayNumber", sumPayNumber);
-			map.put("sumPerformancePayNumber", sumPerformancePayNumber);
-			cr.setData(map);
-			cr.setMessage("查询成功");
+			sumPayNumber = NumUtils.sum(listPayNumber);
+			sumPerformancePayNumber = NumUtils.sum(listPerformancePayNumber);
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("sumPayNumber", sumPayNumber);
+		map.put("sumPerformancePayNumber", sumPerformancePayNumber);
+		cr.setData(map);
+		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
-	
-	/** 
+
+	/**
 	 * 查询杂工工资流水(包括加绩)
 	 * 
 	 */
 	@RequestMapping(value = "/finance/allFarragoTaskPay", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse allFarragoTaskPay(HttpServletRequest request,FarragoTaskPay farragoTaskPay,PageParameter page) {
+	public CommonResponse allFarragoTaskPay(HttpServletRequest request, FarragoTaskPay farragoTaskPay,
+			PageParameter page) {
 		CommonResponse cr = new CommonResponse();
-			cr.setData(ClearCascadeJSON
-					.get()
-					.addRetainTerm(FarragoTaskPay.class,"id","userName","allotTime","performancePayNumber","payNumber","taskId","taskName")
-					.format(farragoTaskPayService.findPages(farragoTaskPay, page)).toJSON());
-			cr.setMessage("查询成功");
+		cr.setData(ClearCascadeJSON
+				.get().addRetainTerm(FarragoTaskPay.class, "id", "userName", "allotTime", "performancePayNumber",
+						"payNumber", "taskId", "taskName")
+				.format(farragoTaskPayService.findPages(farragoTaskPay, page)).toJSON());
+		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 获取日常消费数值
 	 */
 	@RequestMapping(value = "/finance/getUsualConsume", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getUsualConsume(HttpServletRequest request,UsualConsume usualConsume) {
+	public CommonResponse getUsualConsume(HttpServletRequest request, UsualConsume usualConsume) {
 		CommonResponse cr = new CommonResponse();
 		usualConsume = ProTypeUtils.usualConsume(usualConsume);
-			cr.setData(ClearCascadeJSON
-					.get()
-					.addRetainTerm(UsualConsume.class,"peopleLogistics","peopleNumber","monthChummage",
-							"monthHydropower","chummage","hydropower","logistics","monthLogistics","equipment")
-					.format(usualConsumeservice.usualConsume(usualConsume)).toJSON());
-			cr.setMessage("查询成功");
+		cr.setData(ClearCascadeJSON.get()
+				.addRetainTerm(UsualConsume.class, "peopleLogistics", "peopleNumber", "monthChummage",
+						"monthHydropower", "chummage", "hydropower", "logistics", "monthLogistics", "equipment")
+				.format(usualConsumeservice.usualConsume(usualConsume)).toJSON());
+		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
-	
+
 	/**
 	 * 调节日常消费数值
 	 */
 	@RequestMapping(value = "/finance/usualConsume", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse usualConsume(HttpServletRequest request,UsualConsume usualConsume) {
+	public CommonResponse usualConsume(HttpServletRequest request, UsualConsume usualConsume) {
 		ProTypeUtils.updateUsualConsume(usualConsume);
 		CommonResponse cr = new CommonResponse();
-			cr.setData(ClearCascadeJSON
-					.get()
-					.addRetainTerm(UsualConsume.class,"peopleLogistics","peopleNumber","monthChummage",
-							"monthHydropower","chummage","hydropower","logistics","monthLogistics","equipment")
-					.format(usualConsumeservice.usualConsume(usualConsume)).toJSON());
-			cr.setMessage("修改成功");
+		cr.setData(ClearCascadeJSON.get()
+				.addRetainTerm(UsualConsume.class, "peopleLogistics", "peopleNumber", "monthChummage",
+						"monthHydropower", "chummage", "hydropower", "logistics", "monthLogistics", "equipment")
+				.format(usualConsumeservice.usualConsume(usualConsume)).toJSON());
+		cr.setMessage("修改成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 一键填加日常消费
 	 */
 	@RequestMapping(value = "/finance/addUsualConsume", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse addUsualConsume(HttpServletRequest request,UsualConsume usualConsume) {
+	public CommonResponse addUsualConsume(HttpServletRequest request, UsualConsume usualConsume) {
 		CommonResponse cr = new CommonResponse();
-		if(usualConsume.getConsumeDate()==null){
+		if (usualConsume.getConsumeDate() == null) {
 			usualConsume.setConsumeDate(new Date());
 		}
 		PageParameter page = new PageParameter();
 		page.setSize(Integer.MAX_VALUE);
-		//获取今天的开始和结束时间
+		// 获取今天的开始和结束时间
 		usualConsume.setOrderTimeBegin(DatesUtil.getfristDayOftime(usualConsume.getConsumeDate()));
 		usualConsume.setOrderTimeEnd(DatesUtil.getLastDayOftime(usualConsume.getConsumeDate()));
-		if(usualConsumeservice.findPages(usualConsume, page).getRows().size()>0){
+		if (usualConsumeservice.findPages(usualConsume, page).getRows().size() > 0) {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("该日已经添加过日常消费，无需再次添加");
-		}else{
+		} else {
 			usualConsumeservice.save(usualConsume);
 			cr.setMessage("新增成功");
 		}
 		return cr;
 	}
-	
+
 	/**
 	 * 修改日常消费
 	 */
 	@RequestMapping(value = "/finance/updateConsume", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse updateConsume(HttpServletRequest request,UsualConsume usualConsume) {
+	public CommonResponse updateConsume(HttpServletRequest request, UsualConsume usualConsume) {
 		CommonResponse cr = new CommonResponse();
 		usualConsumeservice.save(usualConsume);
 		cr.setMessage("修改成功");
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 删除日常消费
 	 */
 	@RequestMapping(value = "/finance/delete", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse delete(HttpServletRequest request,String[] ids) {
+	public CommonResponse delete(HttpServletRequest request, String[] ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = 0;
-		if(!StringUtils.isEmpty(ids)){
+		if (!StringUtils.isEmpty(ids)) {
 			for (int i = 0; i < ids.length; i++) {
 				Long id = Long.parseLong(ids[i]);
 				usualConsumeservice.delete(id);
 				count++;
 			}
 		}
-		cr.setMessage("成功删除"+count+"条");
+		cr.setMessage("成功删除" + count + "条");
 		return cr;
 	}
-	
-	/** 
+
+	/**
 	 * 查询日销流水
 	 * 
 	 */
 	@RequestMapping(value = "/finance/allUsualConsume", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse allUsualConsume(HttpServletRequest request,UsualConsume usualConsume,PageParameter page) {
+	public CommonResponse allUsualConsume(HttpServletRequest request, UsualConsume usualConsume, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
-			cr.setData(ClearCascadeJSON
-					.get()
-					.addRetainTerm(UsualConsume.class,"chummage","hydropower","logistics","consumeDate","id")
-					.format(usualConsumeservice.findPages(usualConsume, page)).toJSON());
-			cr.setMessage("查询成功");
+		cr.setData(ClearCascadeJSON.get()
+				.addRetainTerm(UsualConsume.class, "chummage", "hydropower", "logistics", "consumeDate", "id")
+				.format(usualConsumeservice.findPages(usualConsume, page)).toJSON());
+		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
-	/**************************  汇总相关业务    ********************************/
-	
-	
-	/** 
+
+	/************************** 汇总相关业务 ********************************/
+
+	/**
 	 * 单天员工的绩效汇总表（上报财务）
 	 * 
 	 */
 	@RequestMapping(value = "/finance/collectPay", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse collectPay(HttpServletRequest request,CollectPay collectPay) {
+	public CommonResponse collectPay(HttpServletRequest request, CollectPay collectPay) {
 		CommonResponse cr = new CommonResponse();
-		if(DatesUtil.sameDate(collectPay.getOrderTimeBegin(), collectPay.getOrderTimeEnd())){
-			cr.setData(payBService.collectPay(collectPay));	
+		if (DatesUtil.sameDate(collectPay.getOrderTimeBegin(), collectPay.getOrderTimeEnd())) {
+			//同步锁，批量新增
+			synchronized (this) {
+				List<CollectPay> collectPayList = payBService.collectPay(collectPay);
+				cr.setData(collectPayList);
+			}
 			cr.setMessage("查询成功");
-		}else{
+		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("请选择两个日期为同一天");
 		}
 		return cr;
 	}
-	
-	
-	/** 
+
+	/**
 	 * 单天员工的绩效按个人比例调节
 	 * 
 	 */
 	@RequestMapping(value = "/finance/updateCollectPay", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse updateCollectPay(HttpServletRequest request,CollectPay collectPay) {
+	public CommonResponse updateCollectPay(HttpServletRequest request, CollectPay collectPay) {
 		CommonResponse cr = new CommonResponse();
 		CollectPay pay = collectPayBService.findOne(collectPay.getId());
 		pay.setAddSelfNumber(collectPay.getAddSelfNumber());
-		pay.setAddSelfPayB(collectPay.getAddSelfNumber()*pay.getPayB());
-		pay.setAddPerformancePay(pay.getAddSelfPayB()-pay.getPayA()>0 ? pay.getAddSelfPayB()-pay.getPayA() : 0.0);
+		pay.setAddSelfPayB(collectPay.getAddSelfNumber() * pay.getPayB());
+		pay.setAddPerformancePay(pay.getAddSelfPayB() - pay.getPayA() > 0 ? pay.getAddSelfPayB() - pay.getPayA() : 0.0);
 		pay.setHardAddPerformancePay(collectPay.getHardAddPerformancePay());
-		collectPayBService.save(pay);
 		cr.setData(collectPayBService.save(pay));
 		cr.setMessage("修改成功");
 		return cr;
 	}
-	
-	
-	/** 
+
+	/**
 	 * 日期内员工的绩效汇总表（上报财务）
 	 * 
 	 */
 	@RequestMapping(value = "/finance/sumCollectPay", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse sumCollectPay(HttpServletRequest request,CollectPay collectPay) {
+	public CommonResponse sumCollectPay(HttpServletRequest request, CollectPay collectPay) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON
-				.get()
-				.addRetainTerm(CollectPay.class,"userName","addPerformancePay","orderTimeBegin","orderTimeEnd","payA","payB","addPayB")
-				.format(collectPayBService.collect(collectPay)).toJSON());	
+				.get().addRetainTerm(CollectPay.class, "userName", "addPerformancePay", "orderTimeBegin",
+						"orderTimeEnd", "payA", "payB", "addPayB")
+				.format(collectPayBService.collect(collectPay)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
-	
+
 	/**
-	 * 生产成本数据汇总 
+	 * 生产成本数据汇总
 	 * 
-	 * 员工成本数据汇总 
+	 * 员工成本数据汇总
 	 * 
 	 */
 	@RequestMapping(value = "/finance/collectInformation", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse collectInformation(HttpServletRequest request,CollectInformation collectInformation) {
+	public CommonResponse collectInformation(HttpServletRequest request, CollectInformation collectInformation) {
 		CommonResponse cr = new CommonResponse();
 		collectInformation = collectInformationService.findByType(collectInformation);
-			cr.setData(ClearCascadeJSON
-					.get()
-					.addRetainTerm(CollectInformation.class,"regionalPrice","sumTask","sumTaskFlag","sumFarragoTask","priceCollect","proportion","overtop","sumAttendancePay","giveThread","surplusThread","manage",
-							"deployPrice","analogDeployPrice","sumChummage","sumHydropower","sumLogistics",
-							"analogPerformance","surplusManage","manageProportion","managePerformanceProportion",
-							"analogTime","grant","giveSurplus","shareholderProportion","shareholder","workshopSurplus")
-					.format(collectInformation).toJSON());	
+		cr.setData(ClearCascadeJSON.get()
+				.addRetainTerm(CollectInformation.class, "regionalPrice", "sumTask", "sumTaskFlag", "sumFarragoTask",
+						"priceCollect", "proportion", "overtop", "sumAttendancePay", "giveThread", "surplusThread",
+						"manage", "deployPrice", "analogDeployPrice", "sumChummage", "sumHydropower", "sumLogistics",
+						"analogPerformance", "surplusManage", "manageProportion", "managePerformanceProportion",
+						"analogTime", "grant", "giveSurplus", "shareholderProportion", "shareholder", "workshopSurplus")
+				.format(collectInformation).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 质检月产量报表
 	 * 
 	 */
 	@RequestMapping(value = "/finance/monthlyProduction", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse monthlyProduction(HttpServletRequest request,MonthlyProduction monthlyProduction) {
+	public CommonResponse monthlyProduction(HttpServletRequest request, MonthlyProduction monthlyProduction) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(ClearCascadeJSON
-				.get()
-				.addRetainTerm(MonthlyProduction.class,"peopleNumber","time","productNumber","productPrice","reworkNumber","reworkTurnTime",
-						"userName","rework","reworkTime","orderTimeBegin","orderTimeEnd","farragoTaskTime","farragoTaskPrice","reworkCount")
+		cr.setData(ClearCascadeJSON.get()
+				.addRetainTerm(MonthlyProduction.class, "peopleNumber", "time", "productNumber", "productPrice",
+						"reworkNumber", "reworkTurnTime", "userName", "rework", "reworkTime", "orderTimeBegin",
+						"orderTimeEnd", "farragoTaskTime", "farragoTaskPrice", "reworkCount")
 				.format(collectPayBService.monthlyProduction(monthlyProduction)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
-	/****************一楼包装固有功能**********************/
-	
+
+	/**************** 一楼包装固有功能 **********************/
+
 	/**
-	 * 每天需要进行更新
-	 * 获取非一线人员的绩效汇总表，
-	 * 将 每个组的男女组长+潘松固定成一个列表
-	 * 男组长产量每天产生，女组长根据进行调控填写
+	 * 每天需要进行更新 获取非一线人员的绩效汇总表， 将 每个组的男女组长+潘松固定成一个列表 男组长产量每天产生，女组长根据进行调控填写
 	 * 
 	 * 
 	 */
 	@RequestMapping(value = "/finance/headmanPay", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse headmanPay(HttpServletRequest request,NonLine nonLine) {
+	public CommonResponse headmanPay(HttpServletRequest request, NonLine nonLine) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(collectPayBService.headmanPay(nonLine));
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
+
 	/**
-	 * 每天需要进行更新
-	 * 获取非一线人员的绩效汇总表，
-	 * 将 每个组的男女组长+潘松固定成一个列表
-	 * 男组长产量每天产生，女组长根据进行调控填写
+	 * 每天需要进行更新 获取非一线人员的绩效汇总表， 将 每个组的男女组长+潘松固定成一个列表 男组长产量每天产生，女组长根据进行调控填写
 	 * 
 	 * 
 	 */
 	@RequestMapping(value = "/finance/updateHeadmanPay", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse updateHeadmanPay(HttpServletRequest request,NonLine nonLine) {
+	public CommonResponse updateHeadmanPay(HttpServletRequest request, NonLine nonLine) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(collectPayBService.updateHeadmanPay(nonLine));
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
+
 	/**
-	 * 获取当月的产量详细数值 
+	 * 获取当月的产量详细数值
 	 * 
 	 */
 	@RequestMapping(value = "/finance/getMouthYields", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse getMouthYields(HttpServletRequest request,Long id,String date) {
+	public CommonResponse getMouthYields(HttpServletRequest request, Long id, String date) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(collectPayBService.getMouthYields(id,date));
+		cr.setData(collectPayBService.getMouthYields(id, date));
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
-	/****************二楼固有功能**********************/
-	
+
+	/**************** 二楼固有功能 **********************/
+
 	/**
 	 * 获取整个月考勤时间的汇总，各组人员的B工资+杂工工资汇总，计算出他们之间的比值
 	 * 
 	 */
 	@RequestMapping(value = "/finance/bPayAndTaskPay", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse bPayAndTaskPay(HttpServletRequest request,MonthlyProduction monthlyProduction) {
+	public CommonResponse bPayAndTaskPay(HttpServletRequest request, MonthlyProduction monthlyProduction) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(collectPayBService.bPayAndTaskPay(monthlyProduction));
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 获取整个月人员的绩效
 	 * 
-	 * @param binder
 	 */
 	@RequestMapping(value = "/finance/twoPerformancePay", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse twoPerformancePay(HttpServletRequest request,CollectPay collectPay) {
+	public CommonResponse twoPerformancePay(HttpServletRequest request, CollectPay collectPay) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(ClearCascadeJSON
-						.get()
-						.addRetainTerm(CollectPay.class,"id","payB","payA","ratio","time","timePrice","timePay","userId","userName","addSelfNumber","addPerformancePay")
-						.format(collectPayBService.twoPerformancePay(collectPay)).toJSON());
+		cr.setData(ClearCascadeJSON.get() 
+				.addRetainTerm(CollectPay.class, "id", "payB", "payA", "ratio", "time", "timePrice", "timePay",
+						"userId", "userName", "addSelfNumber", "addPerformancePay")
+				.format(collectPayBService.twoPerformancePay(collectPay)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 获取整个月分组人员的绩效,根据系数进行调节奖励
 	 * 
 	 */
 	@RequestMapping(value = "/finance/upadtePerformancePay", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse upadtePerformancePay(HttpServletRequest request,CollectPay collectPay) {
+	public CommonResponse upadtePerformancePay(HttpServletRequest request, CollectPay collectPay) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(ClearCascadeJSON
-					.get()
-					.addRetainTerm(CollectPay.class,"id","time","timePrice","timePay","userId","userName","addSelfNumber","addPerformancePay")
-					.format(collectPayBService.upadtePerformancePay(collectPay)).toJSON());
+		cr.setData(ClearCascadeJSON.get()
+				.addRetainTerm(CollectPay.class, "id", "time", "timePrice", "timePay", "userId", "userName",
+						"addSelfNumber", "addPerformancePay")
+				.format(collectPayBService.upadtePerformancePay(collectPay)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 二楼统计出充棉组做其他任务的b工资和数量
 	 * 
 	 */
 	@RequestMapping(value = "/finance/cottonOtherTask ", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse cottonOtherTask(HttpServletRequest request,CollectPay collectPay) {
+	public CommonResponse cottonOtherTask(HttpServletRequest request, CollectPay collectPay) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(ClearCascadeJSON
-				.get()
-				.addRetainTerm(CollectPay.class,"payB","userName")
+		cr.setData(ClearCascadeJSON.get().addRetainTerm(CollectPay.class, "payB", "userName")
 				.format(collectPayBService.cottonOtherTask(collectPay)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 记录部门支出，存入数据汇总
 	 * 
 	 */
 	@RequestMapping(value = "/finance/departmentalExpenditure ", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse departmentalExpenditure(HttpServletRequest request,CollectInformation collectInformation) {
+	public CommonResponse departmentalExpenditure(HttpServletRequest request, CollectInformation collectInformation) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(ClearCascadeJSON
-				.get()
-				.addRetainTerm(CollectInformation.class,"")
+		cr.setData(ClearCascadeJSON.get().addRetainTerm(CollectInformation.class, "")
 				.format(collectInformationService.savaDepartmentalExpenditure(collectInformation)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
-	
-	
+
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
-		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
-				DateTimePattern.DATEHMS.getPattern());
-		binder.registerCustomEditor(java.util.Date.class, null,
-				new CustomDateEditor(dateTimeFormat, true));
-		binder.registerCustomEditor(byte[].class,
-				new ByteArrayMultipartFileEditor());
+		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(DateTimePattern.DATEHMS.getPattern());
+		binder.registerCustomEditor(java.util.Date.class, null, new CustomDateEditor(dateTimeFormat, true));
+		binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
 	}
-	
 
 }

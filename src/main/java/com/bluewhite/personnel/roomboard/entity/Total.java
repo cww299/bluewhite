@@ -8,13 +8,13 @@ import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
 /**
- * 记录所有宿舍的水电
+ * 水，电，房租 费用
  * @author qiyong
  *
  */
 @Entity
 @Table(name = "person_total")
-public class Total  extends BaseEntity<Long>{
+public class Total extends BaseEntity<Long>{
 	
 	
 	/**
@@ -25,20 +25,20 @@ public class Total  extends BaseEntity<Long>{
 	
 	
 	/**
-	 * 宿舍备注
+	 * 备注
 	 */
 	@Column(name = "live_remark")
 	private String liveRemark;
 	
 	
 	/**
-	 * 状态(0.宿舍 1.公司)
+	 * (1.宿舍 2.蓝白 3.八号)
 	 */
 	@Column(name = "state")
 	private Integer state;
 	
 	/**
-	 * 状态(1.水费 2.电费 3.房租)
+	 * 费用类型(1.水费 2.电费 3.房租)
 	 */
 	@Column(name = "type")
 	private Integer type;
@@ -93,25 +93,25 @@ public class Total  extends BaseEntity<Long>{
 	private Double buse;
 	
 	/**
-	 * （铜损耗）
+	 * 铜损耗
 	 */
 	@Column(name = "copper")
 	private Double copper;
 	
 	/**
-	 * （个体之间的损耗）
+	 * 个体之间的损耗
 	 */
 	@Column(name = "individual")
 	private Double individual;
 	
 	/**
-	 * （总量）
+	 * 总量
 	 */
 	@Column(name = "summary")
 	private Double summary;
 	
 	/**
-	 * （总价值）
+	 * 总费用
 	 */
 	@Column(name = "summary_price")
 	private Double summaryPrice;
