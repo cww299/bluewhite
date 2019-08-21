@@ -74,7 +74,7 @@ public class CostLivingServiceImpl extends BaseServiceImpl<CostLiving, Long>
 		if(oldCostLiving!=null){
 			throw new ServiceException("改地点.改类型.改时间段的生活费用已添加,无需再次添加");
 		}
-		long day= DatesUtil.getDaySub(costLiving.getOrderTimeBegin(), costLiving.getOrderTimeBegin());
+		long day= DatesUtil.getDaySub(costLiving.getBeginTime(), costLiving.getEndTime());
 		Double averageCost = NumUtils.div(costLiving.getTotalCost(), day, 2);
 		costLiving.setAverageCost(averageCost);
 		return dao.save(costLiving);
