@@ -186,7 +186,7 @@ layui.config({
 							c[0].push(item);
 						})
 						c[0].push({field: "realityDate", title: "实际时间", edit: false });
-						c[0].push({field: "applyTypeId", title: "报销类型", edit: false ,templet: getAccountType(),});
+					/* 	c[0].push({field: "applyTypeId", title: "报销类型", edit: false ,templet: getAccountType(),}); */
 						c[0].push({field: "deleteFlag",  title: "月底删除", edit: false ,templet: getDeleteFlag(), width:'7%',})
 						return c;
 					})(),
@@ -591,14 +591,14 @@ layui.config({
 				].join('');
 			};
 		};
-		function getAccountType(){
+		/* function getAccountType(){
 			return function(d){
 				return ['<select lay-filter="lay_selecte" lay-search="true" data-value="' + (d.applyType && d.applyType.id) + '">',
 				        typeSelectHtml,
 						'</select>',
 					].join('');
 			}
-		}
+		} */
 		function getDeleteFlag(){
 			return function(d) {
 				return ['<select lay-filter="lay_selecte" lay-search="true" data-value="' + d.deleteFlag + '">',
