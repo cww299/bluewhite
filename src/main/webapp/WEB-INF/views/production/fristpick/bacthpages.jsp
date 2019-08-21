@@ -1121,7 +1121,7 @@
 											if(a==1){
 												var postData={
 														id:id,
-														groupWorkTime:$(this).val()
+														workTime:$(this).val()
 													}
 												$.ajax({
 													url:"${ctx}/production/updateTemporarily",
@@ -1135,8 +1135,9 @@
 													},
 													success:function(result){
 														if(0==result.code){
+															layer.msg(result.message, {icon: 1});
 														}else{
-															layer.msg("失败", {icon: 2});
+															layer.msg(result.message, {icon: 2});
 														}
 														layer.close(index);
 													},error:function(){
