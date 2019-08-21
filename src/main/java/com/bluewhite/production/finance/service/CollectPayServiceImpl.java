@@ -26,6 +26,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
 import com.bluewhite.production.bacth.entity.Bacth;
@@ -33,7 +34,9 @@ import com.bluewhite.production.bacth.service.BacthService;
 import com.bluewhite.production.farragotask.entity.FarragoTask;
 import com.bluewhite.production.farragotask.service.FarragoTaskService;
 import com.bluewhite.production.finance.dao.CollectPayDao;
+import com.bluewhite.production.finance.dao.FarragoTaskPayDao;
 import com.bluewhite.production.finance.dao.NonLineDao;
+import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.FarragoTaskPay;
 import com.bluewhite.production.finance.entity.GroupProduction;
@@ -53,8 +56,10 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	
 	@Autowired
 	private CollectPayDao dao;
+	
 	@Autowired
 	private ProcedureDao  procedureDao;
+	
 	@Autowired
 	private BacthService bacthService;
 	
@@ -84,6 +89,13 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	
 	@Autowired
 	private NonLineDao nonLineDao;
+	
+	@Autowired
+	private PayBDao payBDao;
+	@Autowired
+	private AttendancePayDao attendancePayDao;
+	@Autowired
+	private FarragoTaskPayDao farragoTaskPayDao;
 	
 	private static String rework = "返工再验";
 	
@@ -179,9 +191,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			monthlyProduction.setOrderTimeEnd(endTimes);
 			monthlyProduction.setType(type);
 			monthlyProduction.setMachinist(machinist);
-			
-				
-		
 		AttendancePay attendancePay = new AttendancePay();
 		attendancePay.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
 		attendancePay.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
@@ -285,10 +294,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		}else{
 			monthlyProduction.setProductPrice(NumUtils.round(productPrice, 2));
 		}
-		
-		
-	
-		
 		//返工出勤人数
 		Task task = new Task();
 		task.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
@@ -408,25 +413,15 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		Group gp = new Group();
 		gp.setType(3);
 		List<Group> groupList = groupService.findList(gp);
-		//A工资
-		AttendancePay attendancePay = new AttendancePay();
-		attendancePay.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
-		attendancePay.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
-		attendancePay.setType(monthlyProduction.getType());
-		List<AttendancePay> attendancePayList = attendancePayService.findAttendancePayNoId(attendancePay);
-		//B工资
-		PayB payB = new PayB();
-		payB.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
-		payB.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
-		payB.setType(monthlyProduction.getType());
-		List<PayB> payBList = payBService.findPayBTwo(payB);
-		//杂工工资
-		FarragoTaskPay farragoTaskPay =new FarragoTaskPay();
-		farragoTaskPay.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
-		farragoTaskPay.setOrderTimeEnd(monthlyProduction.getOrderTimeEnd());
-		farragoTaskPay.setType(monthlyProduction.getType());
-		List<FarragoTaskPay> farragoTaskPayList = farragoTaskPayService.findFarragoTaskPayTwo(farragoTaskPay);
-		
+		//A当天工资
+		List<AttendancePay> attendancePayList = attendancePayDao.findByTypeAndAllotTimeBetween(monthlyProduction.getType(),
+				monthlyProduction.getOrderTimeBegin(), monthlyProduction.getOrderTimeEnd());
+		//B当天工资
+		List<PayB> payBList = payBDao.findByTypeAndAllotTimeBetween(monthlyProduction.getType(),
+				monthlyProduction.getOrderTimeBegin(), monthlyProduction.getOrderTimeEnd());
+		//杂工当天工资
+		List<FarragoTaskPay> farragoTaskPayList = farragoTaskPayDao.findByTypeAndAllotTimeBetween(monthlyProduction.getType(),
+				monthlyProduction.getOrderTimeBegin(), monthlyProduction.getOrderTimeEnd());
 		Map<String,Object>  map = null;
 			for(Group group : groupList){
 				map = new HashMap<String, Object>();
@@ -438,10 +433,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				double sunTime = list.stream().mapToDouble(AttendancePay::getWorkTime).sum();
 				double overTime = list.stream().filter(AttendancePay->AttendancePay.getOverTime()!=null).mapToDouble(AttendancePay::getOverTime).sum();
 				//分组人员B工资总和
-				double sumBPay = payBList.stream().filter(
-						PayB->PayB.getGroupId() != null 
-						&& PayB.getGroupId().equals(group.getId())
-				).mapToDouble(PayB::getPayNumber).sum();
+				double sumBPay = payBList.stream().filter(PayB->PayB.getGroupId() != null && PayB.getGroupId().equals(group.getId())).mapToDouble(PayB::getPayNumber).sum();
 				//分组人员杂工工资总和
 				double sumfarragoTaskPay = farragoTaskPayList.stream().filter(
 						FarragoTaskPay->FarragoTaskPay.getGroupId() !=null 
@@ -588,8 +580,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		//将一个月考勤人员按员工id分组
 		Map<Long, List<AttendancePay>> mapCollectPay = attendancePayList.stream().filter(AttendancePay->AttendancePay.getWorkTime()!=0)
 				.collect(Collectors.groupingBy(AttendancePay::getUserId,Collectors.toList()));
-		
-		
 		//b工资
 		PayB payB = new PayB();
 		payB.setOrderTimeBegin(collectPay.getOrderTimeBegin());
@@ -631,14 +621,12 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			List<PayB> payBList = payBService.findPayB(payB);
 			//分组人员B工资总和
 			sumBPay = payBList.stream().mapToDouble(PayB::getPayNumber).sum();
-			
 			//杂工工资
 			double sumfarragoTaskPay = 0;
 			farragoTaskPay.setUserId((Long)ps);
 			List<FarragoTaskPay> farragoTaskPayList = farragoTaskPayService.findFarragoTaskPay(farragoTaskPay);
 			//分组人员杂工工资总和
 			sumfarragoTaskPay = farragoTaskPayList.stream().mapToDouble(FarragoTaskPay::getPayNumber).sum();
-			
 			//汇总考勤总时间
 			collect.setTime(sunTime+overTime);
 			//汇总B工资+杂工工资
@@ -654,7 +642,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			}
 			collectPayList.add(collect);
 		}
-		
 		if(collectPay.getDetail()==null){
 			dao.save(collectPayList);
 		}

@@ -18,6 +18,7 @@ import com.bluewhite.base.BaseEntity;
 @Entity
 @Table(name = "person_sundry")
 public class Sundry  extends BaseEntity<Long>{
+	
 	/**
 	 * 宿舍id
 	 */
@@ -31,13 +32,11 @@ public class Sundry  extends BaseEntity<Long>{
 	@JoinColumn(name = "hostel_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Hostel hostel;
 	
-	
 	/**
 	 * 月份
 	 */
 	@Column(name = "month_date")
     private Date monthDate;
-	
 	
 	/**
 	 * 当月房租
@@ -86,6 +85,8 @@ public class Sundry  extends BaseEntity<Long>{
 	 */
 	@Column(name = "summary_price")
 	private Double summaryPrice;
+	
+	
 	
 	public Long getHostelId() {
 		return hostelId;

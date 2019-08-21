@@ -16,9 +16,11 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
 import com.bluewhite.production.finance.dao.CollectPayDao;
+import com.bluewhite.production.finance.dao.FarragoTaskPayDao;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.FarragoTaskPay;
@@ -29,9 +31,9 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 	@Autowired
 	private PayBDao dao;
 	@Autowired
-	private AttendancePayService AttendancePayService;
+	private AttendancePayDao attendancePayDao;
 	@Autowired
-	private FarragoTaskPayService farragoTaskPayService;
+	private FarragoTaskPayDao farragoTaskPayDao;
 	@Autowired
 	private CollectPayDao collectPayDao;
 	@Autowired
@@ -96,25 +98,20 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 	public List<CollectPay> collectPay(CollectPay collectPay) {
 		List<CollectPay> collectPayList = new ArrayList<CollectPay>();
 		//A当天工资
-		AttendancePay attendancePay = new AttendancePay();
-		attendancePay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
-		attendancePay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
-		attendancePay.setType(collectPay.getType());
-		List<AttendancePay> attendancePayList = AttendancePayService.findAttendancePayNoId(attendancePay);
+		List<AttendancePay> attendancePayList = attendancePayDao.findByTypeAndAllotTimeBetween(collectPay.getType(),
+				collectPay.getOrderTimeBegin(), collectPay.getOrderTimeEnd());
 		//B当天工资
-		PayB payB = new PayB();
-		payB.setOrderTimeBegin(collectPay.getOrderTimeBegin());
-		payB.setOrderTimeEnd(collectPay.getOrderTimeEnd());
-		payB.setType(collectPay.getType());
-		List<PayB> payBList = this.findPayBTwo(payB);
-		
+		List<PayB> payBList = dao.findByTypeAndAllotTimeBetween(collectPay.getType(),
+				collectPay.getOrderTimeBegin(), collectPay.getOrderTimeEnd());
 		//杂工当天工资
-		FarragoTaskPay farragoTaskPay = new FarragoTaskPay();
-		farragoTaskPay.setOrderTimeBegin(collectPay.getOrderTimeBegin());
-		farragoTaskPay.setOrderTimeEnd(collectPay.getOrderTimeEnd());
-		farragoTaskPay.setType(collectPay.getType());
-		List<FarragoTaskPay> farragoTaskPayList = farragoTaskPayService.findFarragoTaskPayTwo(farragoTaskPay);
-		
+		List<FarragoTaskPay> farragoTaskPayList = farragoTaskPayDao.findByTypeAndAllotTimeBetween(collectPay.getType(),
+				collectPay.getOrderTimeBegin(), collectPay.getOrderTimeEnd());
+		//汇总工资
+		List<CollectPay> cpList = collectPayDao.findByTypeAndAllotTimeBetween(collectPay.getType(),
+				collectPay.getOrderTimeBegin(), collectPay.getOrderTimeEnd());
+		if(cpList.size()>0){
+			collectPayDao.deleteInBatch(cpList);
+		}
 		for(AttendancePay attendance : attendancePayList ){
 			CollectPay collect = new CollectPay();
 			collect.setType(attendance.getType());
@@ -144,7 +141,6 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 			    	});
 				 sumPayF = NumUtils.sum(listDoubleF);
 			    }
-		 
 			//b工资+杂工工资
 			collect.setPayB(NumUtils.sum(sumPayB, sumPayF));
 			//整体上浮后的B
@@ -156,7 +152,7 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 			//上浮后的加绩
 			collect.setAddPerformancePay(NumUtils.sub(collect.getAddSelfPayB(),collect.getPayA())>0 ? NumUtils.sub(collect.getAddSelfPayB(),collect.getPayA()) : 0.0);
 			//手动调节上浮后的加绩
-			collect.setHardAddPerformancePay(collectPay.getHardAddPerformancePay());
+			collect.setHardAddPerformancePay(0.0);
 			//上浮后无加绩固定给予(当没有考勤的员工无此加绩固定工资)
 			collect.setNoPerformanceNumber( collect.getPayA()!=0.0 ? collectPay.getNoPerformancePay() : 0.0);
 			//无绩效小时工资
@@ -169,42 +165,9 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 				timePay = NumUtils.div(NumUtils.sum(collect.getPayA(),collect.getNoPerformanceNumber()),collect.getTime(),5);
 			}
 			collect.setTimePay(timePay);
-			
-			//查询这条数据是否存在加绩流水表中
-			collect.setOrderTimeBegin(collectPay.getOrderTimeBegin());
-			collect.setOrderTimeEnd(collectPay.getOrderTimeEnd());
-			collect.setType(collectPay.getType());
-			CollectPay cpList = collectPayService.findCollectPay(collect);
-			if(cpList!=null){
-				//根据查询出来的统计数据和计算数据比对，不相同重新计算
-				if(cpList.getPayA().equals(collect.getPayA())  && cpList.getPayB().equals(collect.getPayB())){
-					collect = cpList;
-				}else{
-					collect.setAddSelfNumber(cpList.getAddSelfNumber());
-					//考虑个人调节上浮后的B
-					collect.setAddSelfPayB(NumUtils.mul(collect.getPayB(),collect.getAddSelfNumber()));
-					//上浮后的加绩
-					collect.setAddPerformancePay(NumUtils.sub(collect.getAddSelfPayB(),collect.getPayA())>0 ? NumUtils.sub(collect.getAddSelfPayB(),collect.getPayA()) : 0.0);
-					//上浮后无加绩固定给予(当没有考勤的员工无此加绩固定工资)
-					collect.setNoPerformanceNumber( collect.getPayA()!=0.0 ? collectPay.getNoPerformancePay() : 0.0);
-					//无绩效小时工资
-					collect.setNoTimePay( NumUtils.div(collect.getPayA(), collect.getTime(), 5) );
-					//有绩效小时工资(取所有工资中的最大项)
-					if(collect.getAddSelfPayB()>collect.getPayA()){
-						timePay = NumUtils.div(collect.getAddSelfPayB(),collect.getTime(),5);
-					}else{
-						timePay = NumUtils.div(NumUtils.sum(collect.getPayA(),collect.getNoPerformanceNumber()),collect.getTime(),5);
-					}
-					collect.setTimePay(timePay);
-					collect.setId(cpList.getId());
-					collectPayDao.save(collect);
-				}
-			}else{
-				//将加绩流水入库
-				collectPayDao.save(collect);
-			};
 			collectPayList.add(collect);
 		}
+		collectPayService.batchSave(collectPayList);
 		return collectPayList;
 	}
 
