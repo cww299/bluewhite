@@ -99,7 +99,7 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>查询月份:</td>
+							<td>查询日期:</td>
 							<td><input id="monthDate9" style="width: 180px;" name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
 							</td>
 							<td>&nbsp;&nbsp;</td>
