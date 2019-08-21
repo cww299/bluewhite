@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
@@ -28,7 +29,8 @@ public class CostLivingAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(CostLiving.class,"id","beginTime","endTime","siteType","liveRemark","costType","total","totalCost");
+				.addRetainTerm(CostLiving.class,"id","beginTime","endTime","siteType","liveRemark","costType","total","totalCost")
+				.addRetainTerm(BaseData.class,"id","name");
 	}
 	
 	
