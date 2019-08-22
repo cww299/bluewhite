@@ -175,7 +175,7 @@
 					var fn1 = function(field) {
 						return function(d) {
 							return [
-								'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' + d.siteTypeId + '">' +
+								'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' +( d.siteType?d.siteType.id :"")+ '">',
 								htmls +
 								'</select>'
 							].join('');
@@ -185,7 +185,7 @@
 
 					var fn2 = function(field) {
 						return function(d) {
-							return ['<select name="selectTwo" class="selectTwo" lay-filter="lay_selecte" lay-search="true" data-value="' + d.costTypeId + '">',
+							return ['<select name="selectTwo" class="selectTwo" lay-filter="lay_selecte" lay-search="true" data-value="' + (d.costType?d.costType.id:"" )+ '">',
 								htmlfrn+
 								'</select>'
 							].join('');
@@ -300,7 +300,7 @@
 											var id = table.cache[tableView.attr('lay-id')][index].id
 											var postData = {
 												id: id,
-												time: value,
+												beginTime: value,
 											};
 											//调用新增修改
 											mainJs.fUpdate(postData);
@@ -314,12 +314,13 @@
 								};
 								laydate.render({
 									elem: tdElem.children[0],
-									format: 'yyyy-MM-dd 23:59:59',
+									format: 'yyyy-MM-dd HH:mm:ss',
+									type:'datetime',
 									done: function(value, date) {
 											var id = table.cache[tableView.attr('lay-id')][index].id
 											var postData = {
 												id: id,
-												time: value,
+												endTime: value,
 											};
 											//调用新增修改
 											mainJs.fUpdate(postData);
@@ -358,7 +359,7 @@
 						var tableId = config.id;
 						switch(obj.event) {
 						case 'addTempData':
-							allField = {id: ''};
+							allField = {id: '',};
 							table.addTemp(tableId,allField,function(trElem) {
 								// 进入回调的时候this是当前的表格的config
 								var that = this;
@@ -472,35 +473,6 @@
 									});
 									layer.close(index);
 								});
-								break;
-							case 'sumDay':
-								var dicDiv=$('#layuiShare');
-								/* table.reload("analysisRecuitsumday"); */
-								layer.open({
-							         type: 1
-							        ,title: '每天费用' //不显示标题栏
-							        ,closeBtn: false
-							        ,zindex:-1
-							        ,area:['50%', '90%']
-							        ,shade: 0.5
-							        ,id: 'LAY_layuipro10' //设定一个id，防止重复弹出
-							        ,btn: ['取消']
-							        ,btnAlign: 'c'
-							        ,moveType: 1 //拖拽模式，0或者1
-							        ,content:dicDiv
-							        ,success : function(layero, index) {
-							        	layero.addClass('layui-form');
-										// 将保存按钮改变成提交按钮
-										layero.find('.layui-layer-btn0').attr({
-											'lay-filter' : 'addRole2',
-											'lay-submit' : ''
-										})
-										table.resize('layuiShare2');
-							        }
-							        ,end:function(){
-							        	$("#layuiShare").hide();
-									  } 
-							      });
 								break;
 						}
 					});
