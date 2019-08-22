@@ -31,12 +31,5 @@ public interface ConsumptionDao extends BaseRepository<Consumption, Long>{
 	 * @return
 	 */
 	public List<Consumption> findByTypeAndFlagAndExpenseDateBetween(Integer type,Integer flag,Date beginTime, Date endTime);
-	
-	
-	/**
-	 * 根据报销类型id 申请时间
-	 * @param applyTypeId
-	 * @return
-	 */
-	public List<Consumption> findByApplyTypeIdAndExpenseDateBetween(Long applyTypeId,Date beginTime, Date endTime);
+
 }

@@ -88,7 +88,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		List<AttendancePay> attendancePayList = null;
 		List<User> userList = userDao.findByIdIn(userIdList);;
 		if(task.getType() == 2) {
-			 temporarilyList = temporarilyDao.findByUserIdInAndTemporarilyDateAndTypeAndGroupId(userIdList,DatesUtil.getfristDayOftime(task.getAllotTime()),task.getType(),userList.get(0).getGroupId());
+			 temporarilyList = temporarilyDao.findByUserIdInAndTemporarilyDateAndTypeAndGroupId(userIdList,
+					 DatesUtil.getfristDayOftime(task.getAllotTime()),
+					 task.getType(),task.getGroupId()!=null ? task.getGroupId() : userList.get(0).getGroupId());
 			 attendancePayList = attendancePayDao.findByUserIdInAndTypeAndAllotTimeBetween(userIdList, task.getType(), orderTimeBegin, orderTimeEnd);
 		}
 		Double sumTaskPrice = 0.0;
@@ -150,15 +152,16 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					for (String userTypeId : task.getUsersIds()) {
 						Long userId = Long.parseLong(userTypeId);
 						List<Temporarily> temporarilyNewList = temporarilyList.stream().filter(Temporarily->Temporarily.getUserId().equals(userId)).collect(Collectors.toList());
+						List<AttendancePay> attendancePayNewList = attendancePayList.stream().filter(AttendancePay->AttendancePay.getUserId().equals(userId)).collect(Collectors.toList());
 						if(temporarilyNewList.size()>0){
 							Temporarily temporarily = temporarilyNewList.get(0);
 							sumTime += temporarily.getWorkTime();
-						} else {
-							AttendancePay attendancePay = attendancePayList.stream().filter(AttendancePay->AttendancePay.getUserId().equals(userId)).collect(Collectors.toList()).get(0);
-							if (attendancePay!=null) {
-								sumTime += (attendancePay.getGroupWorkTime() != null ? attendancePay.getGroupWorkTime() : attendancePay.getWorkTime());
-							}
+						} 
+						if (attendancePayNewList.size()>0) {
+							AttendancePay attendancePay = attendancePayNewList.get(0);
+							sumTime += (attendancePay.getGroupWorkTime() != null ? attendancePay.getGroupWorkTime() : attendancePay.getWorkTime());
 						}
+						
 					}
 				}
 				List<PayB> payBList = new ArrayList<>();
@@ -184,23 +187,24 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						// 计算B工资数值
 						// 包装分配任务，员工b工资根据考情占比分配，其他部门是均分
 						if (task.getType() == 2) {
+							//该员工实际工作时长
+							Double workTime = 0.0;
 							List<Temporarily> temporarilyNewList = temporarilyList.stream().filter(Temporarily->Temporarily.getUserId().equals(userid)).collect(Collectors.toList());
-							Temporarily temporarily = null;
+							List<AttendancePay> attendancePayNewList = attendancePayList.stream().filter(AttendancePay->AttendancePay.getUserId().equals(userid)).collect(Collectors.toList());
 							if(temporarilyNewList.size()>0){
-								temporarily = temporarilyNewList.get(0);
+								workTime = temporarilyNewList.get(0).getWorkTime();
+							} 
+							if (attendancePayNewList.size()>0) {
+								workTime = attendancePayNewList.get(0).getGroupWorkTime() != null ? attendancePayNewList.get(0).getGroupWorkTime() : attendancePayNewList.get(0).getWorkTime();
 							}
-							List<AttendancePay> attendancePay = attendancePayList.stream().filter(AttendancePay->AttendancePay.getUserId().equals(userid)).collect(Collectors.toList());
-							if (temporarily == null && attendancePay.size() == 0) {
+							if (temporarilyNewList.size() == 0 && attendancePayNewList.size() == 0) {
 								throw new ServiceException("员工" + user.getUserName() + "没有" + dateFormater.format(task.getAllotTime()) + "的考勤记录，无法分配任务");
 							}
 							// 按考情时间占比分配B工资
-							payB.setPayNumber(NumUtils.div(
-									NumUtils.mul(newTask.getPayB(),(attendancePay.size() == 0 ? temporarily.getWorkTime(): attendancePay.get(0).getWorkTime())),
-									NumUtils.round(sumTime, 5), 5));
+							payB.setPayNumber(NumUtils.div(NumUtils.mul(newTask.getPayB(),workTime),NumUtils.round(sumTime, 3), 5));
 						} else {
 							payB.setPayNumber(NumUtils.div(newTask.getPayB(), task.getUsersIds().length, 5));
 						}
-
 						// 当存在加绩时，计算加绩工资
 						if (newTask.getPerformanceNumber() != null) {
 							payB.setPerformancePayNumber(NumUtils.div(newTask.getPerformancePrice(), task.getUsersIds().length, 5));

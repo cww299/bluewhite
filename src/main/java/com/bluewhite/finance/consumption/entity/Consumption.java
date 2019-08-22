@@ -185,19 +185,6 @@ public class Consumption extends BaseEntity<Long> {
 	private Date realityDate;
 	
 	/**
-	 * 报销类型id
-	 */
-	@Column(name = "apply_type_id")
-	private Long applyTypeId;
-	
-	/**
-	 * 报销类型
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "apply_type_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private BaseData applyType;
-	
-	/**
 	 * 月底是否删除
 	 */
 	@Column(name = "delete_flag")
@@ -270,21 +257,6 @@ public class Consumption extends BaseEntity<Long> {
 		this.realityDate = realityDate;
 	}
 
-	public Long getApplyTypeId() {
-		return applyTypeId;
-	}
-
-	public void setApplyTypeId(Long applyTypeId) {
-		this.applyTypeId = applyTypeId;
-	}
-
-	public BaseData getApplyType() {
-		return applyType;
-	}
-
-	public void setApplyType(BaseData applyType) {
-		this.applyType = applyType;
-	}
 
 	public Integer getDeleteFlag() {
 		return deleteFlag;

@@ -21,8 +21,9 @@ import com.bluewhite.system.user.entity.User;
  *
  */
 @Entity
-@Table(name = "pro_attendance_pay", indexes = { @Index(columnList = "type"), @Index(columnList = "user_id"),
-		@Index(columnList = "allot_time") })
+@Table(name = "pro_attendance_pay", indexes = { @Index(columnList = "type"), 
+												@Index(columnList = "user_id"),
+												@Index(columnList = "allot_time") })
 public class AttendancePay extends BaseEntity<Long> {
 
 	/**
