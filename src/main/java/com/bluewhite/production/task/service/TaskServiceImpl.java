@@ -88,7 +88,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		List<AttendancePay> attendancePayList = null;
 		List<User> userList = userDao.findByIdIn(userIdList);;
 		if(task.getType() == 2) {
-			 temporarilyList = temporarilyDao.findByUserIdInAndTemporarilyDateAndTypeAndGroupId(userIdList,DatesUtil.getfristDayOftime(task.getAllotTime()),task.getType(),task.getGroupId());
+			 temporarilyList = temporarilyDao.findByUserIdInAndTemporarilyDateAndTypeAndGroupId(userIdList,DatesUtil.getfristDayOftime(task.getAllotTime()),task.getType(),userList.get(0).getGroupId());
 			 attendancePayList = attendancePayDao.findByUserIdInAndTypeAndAllotTimeBetween(userIdList, task.getType(), orderTimeBegin, orderTimeEnd);
 		}
 		Double sumTaskPrice = 0.0;
